@@ -4,7 +4,7 @@ development:
   login:
   password:
 production:
-  host: 
+  host:
   port:
   login:
   password:
