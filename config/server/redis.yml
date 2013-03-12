@@ -4,7 +4,7 @@ development:
   login:
   password:
 production:
-  host:
-  port:
-  login:
-  password:
+  host: cod.redistogo.com
+  port: 9516
+  login: redistogo
+  password: 9b6a4480f7245c334a9cb3f8a1226d4d
