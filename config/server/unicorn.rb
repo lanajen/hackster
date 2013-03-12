@@ -1,5 +1,5 @@
 # Unicorn configuration file to be running by unicorn_init.sh with capistrano task
-# read an example configuration before: http://unicorn.bogomips.org/examples/unicorn.conf.rb
+# read an example configuration before: http://unicorn.bogomips.org/examples/unicorn.redis_conf.rb
 #
 # working_directory, pid, paths - internal Unicorn variables must to setup
 # worker_process 4              - is good enough for serve small production application
@@ -14,20 +14,20 @@
 # config/server/production/unicorn.rb
 
 app_name          = 'halckemy'
-#app_path          = "/var/www/#{app_name}"
+
 #
-#working_directory "#{app_path}/current"
-#pid               "#{app_path}/shared/pids/unicorn.pid"
-#stderr_path       "#{app_path}/shared/log/unicorn.log"
-#stdout_path       "#{app_path}/shared/log/unicorn.log"
-#
+#working_directory ""
+#pid               "/pids/unicorn.pid"
+#stderr_path       "/log/unicorn.log"
+#stdout_path       "/log/unicorn.log"
+
 #listen            "/tmp/#{app_name}.unicorn.production.sock"
-worker_processes  4
+worker_processes  3
 timeout           30
 preload_app       true
 
 #before_exec do |server|
-#  ENV["BUNDLE_GEMFILE"] = "#{app_path}/current/Gemfile"
+#  ENV["BUNDLE_GEMFILE"] = "#{app_path}/Gemfile"
 #end
 
 before_fork do |server, worker|
@@ -37,14 +37,11 @@ before_fork do |server, worker|
   end
 
   if defined?(Resque)
-    Resque.redis.quit
-    Rails.logger.info('Disconnected from Redis')
+    ResqueRedis.disconnect
   end
 
   sleep 1
 end
-
-#redis = YAML::load(File.open(File.join(Rails.root, 'config/server/redis.yml')))[Rails.env]
 
 after_fork do |server, worker|
   if defined?(ActiveRecord::Base)
@@ -53,17 +50,7 @@ after_fork do |server, worker|
   end
 
   if defined?(Resque)
-    redis_conf = YAML::load(File.open(File.join(Rails.root, 'config/server/redis.yml')))[Rails.env]
-    if ENV['REDISTOGO_URL'].present?
-      Resque.redis = ENV['REDISTOGO_URL']
-    else
-      if redis_conf['login'].present?
-        Resque.redis = "#{redis_conf['login']}:#{redis_conf['password']}@#{redis_conf['host']}:#{redis_conf['port']}"
-      else
-        Resque.redis = "#{redis_conf['host']}:#{redis_conf['port']}"
-      end
-    end
-    Resque.redis.namespace = "resque:#{app_name}"
-    Rails.logger.info('Connected to Redis')
+#    I18nRedisBackend.connect
+    ResqueRedis.connect
   end
 end

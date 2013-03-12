@@ -1,5 +1,17 @@
-# Sample localization file for English. Add more files in this directory for other locales.
-# See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
-
 en:
-  hello: "Hello world"
+  follower:
+    project:
+      new_follow: "You're now following %{project_name}."
+      new_unfollow: "You've stopped following %{project_name}."
+  activerecord:
+    errors:
+      messages:
+      models:
+        video:
+          provider_not_supported: "The video provider couldn't be recognized. Allowed video
+          providers are: %{providers_list}."
+          not_found: "The video couldn't be found, did you enter a correct link?"
+          vimeo_communication: "There was an error communicating with Vimeo, please try again."
+  date:
+    formats:
+      month: ! '%b %Y'

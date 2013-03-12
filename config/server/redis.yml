@@ -1,6 +1,6 @@
 development:
   host: localhost
   port: 6379
+  login:
+  password:
 production:
-  host: localhost
-  port: 6380

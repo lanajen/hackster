@@ -14,18 +14,23 @@
   = f.input :city
   = f.input :country
 
-  = f.link_to_add 'Add a website', :websites, class: 'btn btn-mini btn-success'
   = f.simple_fields_for :websites do |f_web|
     = f_web.input :url, label: 'Website'
     = f_web.link_to_remove 'Remove this website', class: 'btn btn-mini btn-danger'
+  = f.link_to_add 'Add a website', :websites, class: 'btn btn-mini btn-success'
 
   %h2 Projects
   = f.link_to_add 'Add a project', :projects, class: 'btn btn-mini btn-success'
   = f.simple_fields_for :projects do |f_project|
     = f_project.input :name
-    = f_project.input :description
+    .control-group
+      .controls
+        = render 'wysihtml5_toolbar'
+    = f_project.input :description, input_html: { id: 'wysihtml5-textarea' }
     = f_project.input :start_date
     = f_project.input :end_date
+    = f_project.simple_fields_for :video do |f_p_video|
+      = f_p_video.input :link, label: 'Video link'
     = f_project.simple_fields_for :images do |f_p_images|
       = f_p_images.input :file, as: :file, label: 'Image'
       = f_p_images.input :file_cache, as: :hidden

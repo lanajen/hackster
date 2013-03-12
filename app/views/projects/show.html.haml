@@ -1,21 +1,57 @@
-%p#notice= notice
+= content_for :no_container do
+  #heading
+    .container
+      .row
+        .span12
+          -#.pull-left.avatar.main-avatar= image_tag @user.avatar(:medium), alt: @user.name
+          .pull-left
+            %h1= @project.name
+            %p.muted
+              = l @project.start_date, format: :month
+              \-
+              = l @project.end_date, format: :month || 'Present'
 
-%p
-  %b User:
-  = @project.user_id
-%p
-  %b Name:
-  = @project.name
-%p
-  %b Description:
-  = @project.description
-%p
-  %b Start date:
-  = @project.start_date
-%p
-  %b End date:
-  = @project.end_date
+          .pull-right
+            - if current_user.try(:is_following_project?, @project)
+              = link_to 'Following', followers_project_path, method: :delete, class: 'btn'
+            - else
+              = link_to 'Follow', followers_project_path, method: :post, class: 'btn'
 
-= link_to 'Edit', edit_project_path(@project)
-\|
-= link_to 'Back', projects_path
+  #main.project
+    .container
+      .row
+        .span8
+          .well
+            .content
+              .headline-image
+                - if @project.video
+                  = @project.video.link
+                - else
+                  = image_tag @project.images.first.file_url(:headline)
+              .image-thumbs
+                - @project.images.each do |image|
+                  = image_tag image.file_url(:small_thumb)
+
+          .well
+            .header
+              %h3 About
+            .content
+              = @project.description.html_safe
+
+          .well
+            .header
+              %h3 Hacker in chief
+            .content
+              = render partial: 'users/user_popover', locals: { user: @project.user.decorate }
+
+        .span4
+          .well.sidebar-nav
+            .header
+              %h3 Followers
+            .content
+              - if @project.followers.any?
+                %ul.user-list
+                  - @project.followers.each do |user|
+                    %li= render partial: 'users/user_thumb_mini', locals: { user: user.decorate }
+              - else
+                No one yet.

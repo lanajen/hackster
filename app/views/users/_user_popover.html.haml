@@ -1,0 +1,4 @@
+.user-popover
+  = image_tag user.avatar(:small), alt: user.name
+  = link_to user.name, user_profile_path(user)
+  = user.status

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130311231938) do
+ActiveRecord::Schema.define(:version => 20130312210746) do
 
   create_table "attachments", :force => true do |t|
     t.string   "file"
@@ -25,10 +25,8 @@ ActiveRecord::Schema.define(:version => 20130311231938) do
   add_index "attachments", ["attachable_id", "attachable_type", "type"], :name => "index_attachments_on_attachable_id_and_attachable_type_and_type"
 
   create_table "follow_relations", :force => true do |t|
-    t.integer  "follower_id", :null => false
-    t.integer  "followed_id", :null => false
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.integer "follower_id", :null => false
+    t.integer "followed_id", :null => false
   end
 
   add_index "follow_relations", ["followed_id"], :name => "index_follow_relations_on_followed_id"
@@ -39,6 +37,14 @@ ActiveRecord::Schema.define(:version => 20130311231938) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
+
+  create_table "project_followers", :id => false, :force => true do |t|
+    t.integer "user_id",    :null => false
+    t.integer "project_id", :null => false
+  end
+
+  add_index "project_followers", ["project_id"], :name => "index_project_followers_on_project_id"
+  add_index "project_followers", ["user_id"], :name => "index_project_followers_on_user_id"
 
   create_table "projects", :force => true do |t|
     t.integer  "user_id",     :null => false
@@ -77,6 +83,21 @@ ActiveRecord::Schema.define(:version => 20130311231938) do
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
+
+  create_table "videos", :force => true do |t|
+    t.string   "title"
+    t.string   "link",            :limit => 100
+    t.string   "provider"
+    t.string   "id_for_provider"
+    t.integer  "project_id",                     :null => false
+    t.string   "thumbnail_link"
+    t.integer  "ratio_height"
+    t.integer  "ratio_width"
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
+  end
+
+  add_index "videos", ["project_id"], :name => "index_videos_on_project_id"
 
   create_table "websites", :force => true do |t|
     t.string   "url"

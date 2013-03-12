@@ -10,28 +10,31 @@
     /[if lt IE 9]
       = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.1/html5shiv.js"
     = stylesheet_link_tag "application", :media => "all"
-    %link(href="favicon.ico" rel="shortcut icon")
-
 
   %body
     #wrapper
       .navbar.navbar-static-top
         .navbar-inner
-          .container
+          .container{ style: 'position: relative;' }
             %a.btn.btn-navbar(data-target=".nav-collapse" data-toggle="collapse")
               %span.icon-bar
               %span.icon-bar
               %span.icon-bar
-            %a.brand(href="#") Halckemy
+            = link_to 'Halckemy', root_path, class: 'brand'
             .container.nav-collapse
-              %ul.nav
+              -# %ul.nav
                 %li= link_to "Link 1", "/path1"
                 %li= link_to "Link 2", "/path2"
                 %li= link_to "Link 3", "/path3"
+              %ul.nav.pull-right
+                - if user_signed_in?
+                  %li= link_to "Hello #{current_user.name}", user_profile_path(current_user.user_name)
+                  %li= link_to 'Edit profile', profile_edit_path
+                  %li= link_to 'Log out', destroy_user_session_path, method: :delete
+                - else
+                  %li= link_to 'Log in', new_user_session_path
+                  %li= link_to 'Sign up', new_user_registration_path
 
-      .container
-        .row
-          .span12
             = bootstrap_flash
 
       - if content_for?(:no_container)

@@ -1,9 +1,15 @@
 .avatar {
-  padding: 3px;
-  background: #f2f2f2;
-  border: 1px solid #e2e2e2;
+  display: inline-block;
   @include border-radius(3px);
-  margin: 0 20px 20px 0;
+  &.main-avatar {
+    padding: 3px;
+    background: #f2f2f2;
+    border: 1px solid #e2e2e2;
+    margin: 0 20px 20px 0;
+  }
+  &.mini-avatar {
+    @include border-radius(1px);
+  }
 }
 
 #heading {
@@ -14,4 +20,15 @@
   p {
     margin: 0 0 1px;
   }
+}
+
+.user-list {
+  margin: 0;
+  li {
+    list-style: none;
+  }
+}
+
+.popover {
+  display: none;
 }

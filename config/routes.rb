@@ -13,7 +13,13 @@ Halckemy::Application.routes.draw do
   end
 
   resources :invite_requests, only: [:new, :create]
-  resources :projects
+  resources :projects do
+    member do
+      get 'followers' => 'project_followers#index', as: :followers
+      post 'followers' => 'project_followers#create', as: :followers
+      delete 'followers' => 'project_followers#destroy', as: :followers
+    end
+  end
 
   get 'contact' => 'contact#new'
   post 'contact' => 'contact#create'

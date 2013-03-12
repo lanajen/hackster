@@ -3,38 +3,62 @@
     .container
       .row
         .span12
-          .pull-left.avatar= image_tag @user.avatar(:medium), alt: @user.name
+          .pull-left.avatar.main-avatar= image_tag @user.avatar(:medium), alt: @user.name
           .pull-left
             %h1= @user.name
             %p= @user.bio
-            %p
-              - @user.websites.each do |website|
-                = link_to website.url, website.url
+            - @user.websites.each do |website|
+              %p= link_to website.url, website.url
 
-          .pull-right= link_to 'Follow', '', class: 'btn'
+          .pull-right
+            - if current_user.try(:is_following?, @user)
+              = link_to 'Following', followers_path, method: :delete, class: 'btn'
+            - else
+              = link_to 'Follow', followers_path, method: :post, class: 'btn'
 
   #main
     .container
       .row
-        .span9
+        .span8
           .well
             .header
               %h3 My projects
             .content
               - if @user.projects.any?
                 - @user.projects.each do |project|
-                  %h4= project.name
-                  = project.description
+                  .project-preview.project
+                    %h4
+                      = link_to project.name, project
+                      .subtitle
+                        = l project.start_date, format: :month
+                        \-
+                        = l project.end_date, format: :month || 'Present'
+                    = project.description.html_safe
+                    .image-thumbs
+                      - project.images.each do |image|
+                        = image_tag image.file_url(:small_thumb)
               - else
                 #{@user.name} has no projects yet.
 
-        .span3
+        .span4
           .well.sidebar-nav
             .header
-              %h3 Sidebar
+              %h3 Following
             .content
-              %ul.nav.nav-list
-                %li.nav-header Sidebar
-                %li= link_to "Link 1", "/path1"
-                %li= link_to "Link 2", "/path2"
-                %li= link_to "Link 3", "/path3"
+              - if @user.followeds.any?
+                %ul.user-list
+                  - @user.followeds.each do |user|
+                    %li= render partial: 'user_thumb_mini', locals: { user: user.decorate }
+              - else
+                No one yet.
+
+          .well.sidebar-nav
+            .header
+              %h3 Followers
+            .content
+              - if @user.followers.any?
+                %ul.user-list
+                  - @user.followers.each do |user|
+                    %li= render partial: 'user_thumb_mini', locals: { user: user.decorate }
+              - else
+                No one yet.

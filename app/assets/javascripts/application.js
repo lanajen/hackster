@@ -15,3 +15,5 @@
 //= require twitter/bootstrap
 //= require bootstrap
 //= require jquery_nested_form
+//= require wysihtml5
+//= require parser_rules/advanced

@@ -7,6 +7,7 @@ group :assets do
   gem 'bootstrap-sass-rails', '2.3.1.0'
   gem 'coffee-rails', '~> 3.2.1'
   gem 'compass-rails', '1.0.3'
+  gem 'font-awesome-sass-rails', '3.0.2.2'
   gem 'less-rails', '2.2.6'
   gem 'sass-rails',   '~> 3.2.3'
   gem 'twitter-bootstrap-rails', '2.2.6'

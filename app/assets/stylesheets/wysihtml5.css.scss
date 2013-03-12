@@ -1,0 +1,56 @@
+.dialog {
+  position: fixed;
+  top: 40%;
+  left: 45%;
+  background: #fff;
+  border: 1px solid #ddd;
+  @include border-radius(3px);
+  @include box-shadow(#999 0 0 10px);
+  padding: 10px;
+}
+
+.tinybtn {
+  padding: 3px 5px;
+  background: #ddd;
+  border: 1px solid #999;
+  color: #333;
+  cursor: pointer;
+  display: inline-block;
+  margin: 2px 0;
+  &:hover {
+    text-decoration: none;
+    background: #ccc;
+  }
+}
+
+.wysiwyg-color-red {
+  color: #f00;
+}
+
+.wysiwyg-color-blue {
+  color: #00f;
+}
+
+.wysiwyg-color-green {
+  color: #008000;
+}
+
+.wysihtml5-commands-disabled .tinybtn.wysihtml5-command {
+  background: #EEE;
+  color: #999;
+  cursor: default;
+}
+
+.wysiwyg-text-align-right {
+  text-align: right;
+}
+
+.wysiwyg-text-align-left {
+  text-align: left;
+}
+
+.wysihtml5-commands-disabled .btn.wysihtml5-command {
+  background: #EEE;
+  color: #999;
+  cursor: default;
+}
