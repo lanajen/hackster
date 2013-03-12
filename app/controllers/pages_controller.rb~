@@ -1,0 +1,15 @@
+class PagesController < ApplicationController
+  def home
+    case request.host
+    when 'www.1000clonetroopers.com', 'www.clontro.com'
+      render 'clone_trooper'
+    when 'www.fruitparfaitsf.com', 'www.frupar.com'
+      render 'fruit_parfait'
+    when 'www.snackboxsf.com', 'www.snabox.com'
+      render 'snacks'
+    else
+#      render 'clone_trooper'
+      render text: 'Looks like something weird happened. Maybe reboot your computer and try again.', status: 500
+    end
+  end
+end

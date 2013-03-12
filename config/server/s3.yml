@@ -1,0 +1,5 @@
+aws_access_key_id: AKIAIVAFEG7ZTHUMPEGA
+aws_secret_access_key: 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
+region: us-east-1
+directory: 
+host: https://s3.amazonaws.com

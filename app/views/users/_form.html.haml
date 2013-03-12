@@ -1,0 +1,43 @@
+= simple_nested_form_for @user, url: profile_path, html: { class: 'form-horizontal' } do |f|
+  = f.error_notification
+
+  = f.input :first_name
+  = f.input :last_name
+  = f.input :user_name
+  = f.input :bio
+
+  = image_tag(@user.avatar.file_url(:thumb)) if @user.avatar.try(:file_url)
+  = f.simple_fields_for :avatar do |f_avatar|
+    = f_avatar.input :file, as: :file, label: 'Avatar'
+    = f_avatar.input :file_cache, as: :hidden
+
+  = f.input :city
+  = f.input :country
+
+  = f.link_to_add 'Add a website', :websites, class: 'btn btn-mini btn-success'
+  = f.simple_fields_for :websites do |f_web|
+    = f_web.input :url, label: 'Website'
+    = f_web.link_to_remove 'Remove this website', class: 'btn btn-mini btn-danger'
+
+  %h2 Projects
+  = f.link_to_add 'Add a project', :projects, class: 'btn btn-mini btn-success'
+  = f.simple_fields_for :projects do |f_project|
+    = f_project.input :name
+    = f_project.input :description
+    = f_project.input :start_date
+    = f_project.input :end_date
+    = f_project.simple_fields_for :images do |f_p_images|
+      = f_p_images.input :file, as: :file, label: 'Image'
+      = f_p_images.input :file_cache, as: :hidden
+      .control-group
+        .controls
+          = f_p_images.link_to_remove 'Remove this image', class: 'btn btn-mini btn-danger'
+    = f_project.link_to_add 'Add an image', :images, class: 'btn btn-mini btn-success'
+
+    .control-group
+      .controls
+        = f_project.link_to_remove 'Remove this project', class: 'btn btn-mini btn-danger'
+
+  .form-actions
+    = f.submit 'Update profile', class: 'btn btn-primary'
+

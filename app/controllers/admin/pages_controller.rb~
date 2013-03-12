@@ -1,0 +1,40 @@
+class Admin::PagesController < Admin::BaseController
+  def root
+  end
+
+  def run_for domain=nil
+    domain ||= params[:domain]
+    Resque.enqueue(ScraperQueue, 'find_web_sources_for', domain)
+    Resque.enqueue(ScraperQueue, 'find_web_sources_for', domain)
+  end
+
+  def run_all
+    config = YAML.load_file(File.join(Rails.root, 'config/scraper_config.yml'))
+    config.key.each do |domain|
+      run_for domain
+    end
+  end
+
+  def scraper
+    config = YAML.load_file(File.join(Rails.root, 'config/scraper_config.yml'))
+    @domains = config.keys
+  end
+
+  def stats
+    @charts_data = DailyStat.graph
+    @charts = @charts_data.map do |type, data|
+      LazyHighCharts::HighChart.new('graph') do |f|
+        f.title(text: type)
+        f.chart({ defaultSeriesType: 'line', height: 300 })
+        f.xAxis(categories: data.map(&:date))
+        f.yAxis(min: 0, title: {text: nil})
+        f.series(data: data.map(&:figure))
+        f.legend(enabled: false)
+      end
+    end
+  end
+
+  def users
+    @users = User.all
+  end
+end

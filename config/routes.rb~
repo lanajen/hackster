@@ -1,0 +1,11 @@
+MarketExperiments::Application.routes.draw do
+  devise_for :users, :controllers => {
+    :registrations => 'users/registrations',
+    :confirmations => 'users/confirmations',
+    :invitations => 'users/invitations',
+  }
+
+  resources :invite_requests, :only => [:new, :create]
+
+  root :to => 'pages#home'
+end

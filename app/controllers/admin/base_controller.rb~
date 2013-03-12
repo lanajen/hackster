@@ -1,0 +1,14 @@
+class Admin::BaseController < ApplicationController
+  before_filter :authenticate_user!
+  before_filter :check_authorization_for_admin
+  after_filter :log_request, :only => []
+  before_filter :set_last_search, :only => []
+  before_filter :set_lat_lon, :only => []
+
+  layout 'layouts/admin'
+
+  private
+    def check_authorization_for_admin
+      raise CanCan::AccessDenied unless current_user.is? :admin
+    end
+end

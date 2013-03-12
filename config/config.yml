@@ -1,0 +1,14 @@
+development:
+  default_host: localhost
+  default_port: 5000
+  send_emails: false
+
+test:
+  default_host: localhost.local
+  default_port: 3000
+  send_emails: false
+
+production:
+  default_host: www.halckemy.com
+  default_port: 80
+  send_emails: true

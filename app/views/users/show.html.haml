@@ -1,0 +1,40 @@
+= content_for :no_container do
+  #heading
+    .container
+      .row
+        .span12
+          .pull-left.avatar= image_tag @user.avatar(:medium), alt: @user.name
+          .pull-left
+            %h1= @user.name
+            %p= @user.bio
+            %p
+              - @user.websites.each do |website|
+                = link_to website.url, website.url
+
+          .pull-right= link_to 'Follow', '', class: 'btn'
+
+  #main
+    .container
+      .row
+        .span9
+          .well
+            .header
+              %h3 My projects
+            .content
+              - if @user.projects.any?
+                - @user.projects.each do |project|
+                  %h4= project.name
+                  = project.description
+              - else
+                #{@user.name} has no projects yet.
+
+        .span3
+          .well.sidebar-nav
+            .header
+              %h3 Sidebar
+            .content
+              %ul.nav.nav-list
+                %li.nav-header Sidebar
+                %li= link_to "Link 1", "/path1"
+                %li= link_to "Link 2", "/path2"
+                %li= link_to "Link 3", "/path3"

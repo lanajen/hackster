@@ -1,0 +1,12 @@
+= simple_form_for(@project) do |f|
+  = f.error_notification
+
+  .form-inputs
+    = f.input :user_id
+    = f.input :name
+    = f.input :description
+    = f.input :start_date
+    = f.input :end_date
+
+  .form-actions
+    = f.button :submit

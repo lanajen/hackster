@@ -1,0 +1,17 @@
+.avatar {
+  padding: 3px;
+  background: #f2f2f2;
+  border: 1px solid #e2e2e2;
+  @include border-radius(3px);
+  margin: 0 20px 20px 0;
+}
+
+#heading {
+  h1 {
+    margin: 0 0 7px;
+    @include font-size(18);
+  }
+  p {
+    margin: 0 0 1px;
+  }
+}
