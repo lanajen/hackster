@@ -21,4 +21,8 @@ class UsersController < ApplicationController
       render action: 'edit'
     end
   end
+
+  def first_login
+    @user = current_user
+  end
 end

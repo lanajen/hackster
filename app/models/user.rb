@@ -15,11 +15,11 @@ class User < ActiveRecord::Base
   attr_accessor :email_confirmation, :skip_registration_confirmation
   attr_accessible :email, :email_confirmation, :password, :password_confirmation,
     :remember_me, :roles, :avatar_attributes, :projects_attributes, :websites_attributes,
-    :first_name, :last_name, :bio, :city, :country, :user_name
+    :first_name, :last_name, :bio, :city, :country, :user_name, :status
   accepts_nested_attributes_for :avatar, :projects, :websites, allow_destroy: true
 
   validates :first_name, :last_name, length: { in: 1..100 }, allow_blank: true
-  validates :user_name, length: { in: 3..100 }, allow_blank: true
+  validates :user_name, length: { in: 3..100 }, uniqueness: true, allow_blank: true
   validates :city, :country, length: { maximum: 50 }, allow_blank: true
   with_options unless: proc { |u| u.skip_registration_confirmation },
     on: :create do |user|
@@ -64,6 +64,8 @@ class User < ActiveRecord::Base
 
   def name
     first_name + ' ' + last_name
+  rescue
+    nil
   end
 
   def roles=(roles)

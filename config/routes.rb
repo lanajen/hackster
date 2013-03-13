@@ -23,13 +23,16 @@ Halckemy::Application.routes.draw do
 
   get 'contact' => 'contact#new'
   post 'contact' => 'contact#create'
+
+  get 'profile/edit' => 'users#edit'
+  put 'profile' => 'users#update'
+  get 'profile/first_login' => 'users#first_login'
+  
   get ':user_name' => 'users#show', as: :user_profile
   scope ':user_name' do
     post 'followers' => 'follow_relations#create'
     delete 'followers' => 'follow_relations#destroy'
   end
-  get 'profile/edit' => 'users#edit'
-  put 'profile' => 'users#update'
 
   root to: 'pages#home'
 end

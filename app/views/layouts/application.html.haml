@@ -28,7 +28,7 @@
                 %li= link_to "Link 3", "/path3"
               %ul.nav.pull-right
                 - if user_signed_in?
-                  %li= link_to "Hello #{current_user.name}", user_profile_path(current_user.user_name)
+                  %li= link_to "Hello #{current_user.name}", user_profile_path(current_user.user_name) if current_user.name and current_user.user_name
                   %li= link_to 'Edit profile', profile_edit_path
                   %li= link_to 'Log out', destroy_user_session_path, method: :delete
                 - else
