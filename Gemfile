@@ -10,7 +10,6 @@ group :assets do
   gem 'font-awesome-sass-rails', '3.0.2.2'
   gem 'less-rails', '2.2.6'
   gem 'sass-rails',   '~> 3.2.3'
-  gem 'twitter-bootstrap-rails', '2.2.6'
   gem 'uglifier', '>= 1.0.3'
 end
 
@@ -55,6 +54,7 @@ gem 'skeleton-rails', '0.0.2'
 gem 'sundawg_country_codes', '0.0.7'
 gem 'text_sanitizer', '0.0.2'
 gem 'therubyracer', '0.10.2'
+gem 'twitter-bootstrap-rails', '2.2.6'
 gem 'unicorn', '4.4.0'
 gem 'vimeo', '1.5.3'
 gem 'will_paginate', '3.0.4'
