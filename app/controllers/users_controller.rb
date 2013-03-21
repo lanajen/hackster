@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
   before_filter :authenticate_user!, except: [:show]
   before_filter :find_user, only: [:show]
+  authorize_resource except: [:first_login]
 
   def show
     @user = @user.decorate

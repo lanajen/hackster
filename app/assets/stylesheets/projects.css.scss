@@ -1,4 +1,4 @@
-.project-preview {
+.project.preview {
   margin: 0 0 20px;
   h4 {
     margin: 0 0 10px;
@@ -14,5 +14,12 @@
   }
   .headline-image {
     margin: 0 0 10px;
+    position: relative;
+    height: 326px;
+    img {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
   }
 }

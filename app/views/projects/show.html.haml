@@ -2,20 +2,20 @@
   #heading
     .container
       .row
-        .span12
+        .span12.teaser
           -#.pull-left.avatar.main-avatar= image_tag @user.avatar(:medium), alt: @user.name
-          .pull-left
-            %h1= @project.name
-            %p.muted
-              = l @project.start_date, format: :month
-              \-
-              = l @project.end_date, format: :month || 'Present'
+          %h1= @project.name
+          %p.muted
+            = l @project.start_date, format: :month
+            \-
+            = l @project.end_date, format: :month || 'Present'
 
-          .pull-right
-            - if current_user.try(:is_following_project?, @project)
-              = link_to 'Following', followers_project_path, method: :delete, class: 'btn'
-            - else
-              = link_to 'Follow', followers_project_path, method: :post, class: 'btn'
+          - if can? :edit, @project
+            = link_to 'Edit', edit_project_path(@project), class: 'btn-edit'
+          - if current_user.try(:is_following_project?, @project)
+            = link_to 'Following', followers_project_path, method: :delete, class: 'btn-follow btn-inverse'
+          - else
+            = link_to 'Follow', followers_project_path, method: :post, class: 'btn-follow'
 
   #main.project
     .container
@@ -27,10 +27,11 @@
                 - if @project.video
                   = @project.video.link
                 - else
-                  = image_tag @project.images.first.file_url(:headline)
+                  - @project.images.each_with_index do |image, i|
+                    = image_tag image.file_url(:headline), class: "image-#{i}", style: "#{'display:none;' unless i==0}"
               .image-thumbs
-                - @project.images.each do |image|
-                  = image_tag image.file_url(:small_thumb)
+                - @project.images.each_with_index do |image, i|
+                  = image_tag image.file_url(:small_thumb), data: { target: "image-#{i}" }
 
           .well
             .header

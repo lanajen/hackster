@@ -1,4 +1,5 @@
 .user-popover
-  = image_tag user.avatar(:small), alt: user.name
-  = link_to user.name, user_profile_path(user)
-  = user.status
+  .image= image_tag user.avatar(:mini), alt: user.name
+  .details
+    %h4= link_to user.name, user_profile_path(user)
+    %p= user.mini_resume

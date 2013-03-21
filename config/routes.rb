@@ -20,6 +20,7 @@ Halckemy::Application.routes.draw do
       delete 'followers' => 'project_followers#destroy', as: :followers
     end
   end
+  resources :publications, except: [:show]
 
   get 'contact' => 'contact#new'
   post 'contact' => 'contact#create'
@@ -27,9 +28,9 @@ Halckemy::Application.routes.draw do
   get 'profile/edit' => 'users#edit'
   put 'profile' => 'users#update'
   get 'profile/first_login' => 'users#first_login'
-  
-  get ':user_name' => 'users#show', as: :user_profile
-  scope ':user_name' do
+
+  get ':user_name' => 'users#show', as: :user_profile, user_name: /[a-z0-9_]{3,}/, constraints: { format: /(html|json)/ }
+  scope ':user_name', as: :user do
     post 'followers' => 'follow_relations#create'
     delete 'followers' => 'follow_relations#destroy'
   end

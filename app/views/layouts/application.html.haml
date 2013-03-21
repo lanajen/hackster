@@ -28,14 +28,23 @@
                 %li= link_to "Link 3", "/path3"
               %ul.nav.pull-right
                 - if user_signed_in?
-                  %li= link_to "Hello #{current_user.name}", user_profile_path(current_user.user_name) if current_user.name and current_user.user_name
-                  %li= link_to 'Edit profile', profile_edit_path
-                  %li= link_to 'Log out', destroy_user_session_path, method: :delete
+                  .btn-group
+                    %button.btn= content_tag(:i, '', class: 'icon-cog')
+                    %button.btn.dropdown-toggle{"data-toggle" => "dropdown"}
+                      %span.caret
+                    %ul.dropdown-menu.pull-right
+                      %li= link_to current_user.name, user_profile_path(current_user)
+                      - if current_user.projects.any?
+                        %li.divider
+                        - current_user.projects.each do |project|
+                          %li= link_to project.name, project
+                      %li.divider
+                      %li= link_to 'Log out', destroy_user_session_path, method: :delete
                 - else
                   %li= link_to 'Log in', new_user_session_path
                   %li= link_to 'Sign up', new_user_registration_path
 
-            = bootstrap_flash
+            .alert-flash= bootstrap_flash
 
       - if content_for?(:no_container)
         = yield(:no_container)

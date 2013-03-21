@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130312210746) do
+ActiveRecord::Schema.define(:version => 20130320230202) do
 
   create_table "attachments", :force => true do |t|
     t.string   "file"
@@ -58,12 +58,23 @@ ActiveRecord::Schema.define(:version => 20130312210746) do
 
   add_index "projects", ["user_id"], :name => "index_projects_on_user_id"
 
+  create_table "publications", :force => true do |t|
+    t.string   "title"
+    t.text     "abstract"
+    t.string   "coauthors"
+    t.date     "published_on"
+    t.string   "journal"
+    t.string   "link"
+    t.integer  "user_id",      :null => false
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  add_index "publications", ["user_id"], :name => "index_publications_on_user_id"
+
   create_table "users", :force => true do |t|
-    t.string   "first_name",             :limit => 100
-    t.string   "last_name",              :limit => 100
     t.string   "user_name",              :limit => 100
-    t.text     "bio"
-    t.string   "status"
+    t.string   "mini_resume",            :limit => 160
     t.string   "city",                   :limit => 50
     t.string   "country",                :limit => 50
     t.integer  "roles_mask"
@@ -79,6 +90,8 @@ ActiveRecord::Schema.define(:version => 20130312210746) do
     t.string   "last_sign_in_ip"
     t.datetime "created_at",                                            :null => false
     t.datetime "updated_at",                                            :null => false
+    t.string   "name"
+    t.text     "websites"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
@@ -98,14 +111,5 @@ ActiveRecord::Schema.define(:version => 20130312210746) do
   end
 
   add_index "videos", ["project_id"], :name => "index_videos_on_project_id"
-
-  create_table "websites", :force => true do |t|
-    t.string   "url"
-    t.integer  "user_id",    :null => false
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
-  add_index "websites", ["user_id"], :name => "index_websites_on_user_id"
 
 end

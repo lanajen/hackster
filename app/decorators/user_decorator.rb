@@ -6,6 +6,8 @@ class UserDecorator < ApplicationDecorator
       avatar = model.avatar.file_url(size)
     else
       width = case size
+      when :tiny
+        20
       when :mini
         40
       when :thumb

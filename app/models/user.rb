@@ -9,23 +9,32 @@ class User < ActiveRecord::Base
   has_and_belongs_to_many :followed_projects, class_name: 'Project',
     join_table: :project_followers
   has_many :projects, dependent: :destroy
-  has_many :websites, dependent: :destroy
+  has_many :publications
   has_one :avatar, as: :attachable, dependent: :destroy
 
   attr_accessor :email_confirmation, :skip_registration_confirmation
   attr_accessible :email, :email_confirmation, :password, :password_confirmation,
     :remember_me, :roles, :avatar_attributes, :projects_attributes, :websites_attributes,
-    :first_name, :last_name, :bio, :city, :country, :user_name, :status
-  accepts_nested_attributes_for :avatar, :projects, :websites, allow_destroy: true
+    :first_name, :last_name, :mini_resume, :city, :country, :user_name, :name,
+    :facebook_link, :twitter_link, :linked_in_link, :website_link,
+    :blog_link
+  accepts_nested_attributes_for :avatar, :projects, allow_destroy: true
 
-  validates :first_name, :last_name, length: { in: 1..100 }, allow_blank: true
-  validates :user_name, length: { in: 3..100 }, uniqueness: true, allow_blank: true
+  store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link, :website_link,
+    :blog_link
+  ]
+
+  validates :name, length: { in: 1..200 }, allow_blank: true
+  validates :user_name, length: { in: 3..100 }, uniqueness: true,
+    format: { with: /^[a-z0-9_]{3,}$/, message: "accepts only letters, numbers and underscores '_'." }, allow_blank: true
   validates :city, :country, length: { maximum: 50 }, allow_blank: true
+  validates :mini_resume, length: { maximum: 160 }, allow_blank: true
   with_options unless: proc { |u| u.skip_registration_confirmation },
     on: :create do |user|
     user.validates :email_confirmation, presence: true
     user.validate :email_matches_confirmation
   end
+  before_validation :ensure_website_protocol
 
   scope :with_role, lambda { |role| { conditions: "roles_mask & #{2**ROLES.index(role.to_s)} > 0"} }
 
@@ -62,12 +71,6 @@ class User < ActiveRecord::Base
     followed_projects.where(id: project.id).any?
   end
 
-  def name
-    first_name + ' ' + last_name
-  rescue
-    nil
-  end
-
   def roles=(roles)
     self.roles_mask = (roles & ROLES).map { |r| 2**ROLES.index(r) }.sum
   end
@@ -95,5 +98,16 @@ class User < ActiveRecord::Base
   private
     def email_matches_confirmation
       errors.add(:email, "doesn't match confirmation") unless email.blank? or email == email_confirmation
+    end
+
+    def ensure_website_protocol
+      return unless websites_changed?
+      websites.each do |type, url|
+        if url.blank?
+          send "#{type}=", nil
+          next
+        end
+        send "#{type}=", 'http://' + url unless url =~ /^http/
+      end
     end
 end

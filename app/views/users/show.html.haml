@@ -2,19 +2,22 @@
   #heading
     .container
       .row
-        .span12
+        .span12.teaser
           .pull-left.avatar.main-avatar= image_tag @user.avatar(:medium), alt: @user.name
           .pull-left
             %h1= @user.name
-            %p= @user.bio
-            - @user.websites.each do |website|
-              %p= link_to website.url, website.url
+            %p= @user.mini_resume
+            - if @user.websites.any?
+              %ul.websites
+                - @user.websites.each do |type, url|
+                  %li= render partial: 'website', locals: { type: type, url: url }
 
-          .pull-right
-            - if current_user.try(:is_following?, @user)
-              = link_to 'Following', followers_path, method: :delete, class: 'btn'
-            - else
-              = link_to 'Follow', followers_path, method: :post, class: 'btn'
+          - if can? :edit, @user
+            = link_to 'Edit', profile_edit_path, class: 'btn-edit'
+          - if current_user.try(:is_following?, @user)
+            = link_to 'Following', followers_path, method: :delete, class: 'btn-inverse btn-follow'
+          - else
+            = link_to 'Follow', followers_path, method: :post, class: 'btn-follow'
 
   #main
     .container
@@ -22,11 +25,14 @@
         .span8
           .well
             .header
-              %h3 My projects
+              %h3
+                My projects
+                - if can? :edit, @user
+                  .pull-right= link_to 'Add a new project', new_project_path, class: 'btn btn-info btn-mini'
             .content
               - if @user.projects.any?
-                - @user.projects.each do |project|
-                  .project-preview.project
+                - @user.projects.each_with_fl do |project, css|
+                  .project.preview{ class: css }
                     %h4
                       = link_to project.name, project
                       .subtitle
@@ -39,6 +45,35 @@
                         = image_tag image.file_url(:small_thumb)
               - else
                 #{@user.name} has no projects yet.
+
+          - if @user.publications.any? or can? :edit, @user
+            .well
+              .header
+                %h3
+                  My articles
+                  - if can? :edit, @user
+                    .pull-right= link_to 'Add a new article', new_publication_path, class: 'btn btn-info btn-mini'
+              .content
+                - @user.publications.each_with_fl do |publication, css|
+                  .publication.preview{ class: css }
+                    %h4
+                      = publication.title
+                      .subtitle
+                        = l publication.published_on, format: :month
+                      - if can? :edit, publication
+                        = link_to 'Edit', edit_publication_path(publication), class: 'btn-edit'
+                    .muted.smaller
+                      - if publication.journal.present?
+                        Published in
+                        = publication.journal
+                        ·
+                      - if publication.coauthors.present?
+                        In collaboration with
+                        = publication.coauthors
+                        ·
+                      - if publication.link.present?
+                        = link_to 'Read more', publication.link
+                    %p= publication.abstract
 
         .span4
           .well.sidebar-nav

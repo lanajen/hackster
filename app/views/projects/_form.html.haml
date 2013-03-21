@@ -1,12 +1,29 @@
-= simple_form_for(@project) do |f|
+= simple_nested_form_for @project do |f|
   = f.error_notification
 
   .form-inputs
-    = f.input :user_id
     = f.input :name
-    = f.input :description
-    = f.input :start_date
-    = f.input :end_date
+    .control-group
+      .controls
+        = render 'wysihtml5_toolbar'
+    = f.input :description, input_html: { id: 'wysihtml5-textarea' }
+    = f.input :start_date, order: [:year, :month],
+      start_year: Date.today.year,
+      end_year: Date.today.year - 50
+    = f.input :end_date, order: [:year, :month],
+      start_year: Date.today.year,
+      end_year: Date.today.year - 50
+    = f.simple_fields_for :video do |f_p_video|
+      = f_p_video.input :link, label: 'Video link'
+    - @project.images.each do |image|
+      = image_tag image.file_url(:thumb) if image and image.file_url(:thumb)
+      = f.simple_fields_for :images, image do |f_p_images|
+        = f_p_images.input :file, as: :file, label: false
+        = f_p_images.input :file_cache, as: :hidden
+        .control-group
+          .controls
+            = f_p_images.link_to_remove 'Remove this image', class: 'btn btn-mini btn-danger'
+    = f.link_to_add 'Add an image', :images, class: 'btn btn-mini btn-success'
 
   .form-actions
     = f.button :submit

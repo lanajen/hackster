@@ -1,0 +1,12 @@
+- if url
+  - case type
+  - when :facebook_link
+    = link_to 'Facebook', url
+  - when :linked_in_link
+    = link_to 'LinkedIn', url
+  - when :twitter_link
+    = link_to 'Twitter', url
+  - when :website_link
+    = link_to url, url
+  - when :blog_link
+    = link_to 'Blog', url

@@ -1,0 +1,27 @@
+%h1 Listing publications
+
+%table
+  %tr
+    %th User
+    %th Name
+    %th Description
+    %th Start date
+    %th End date
+    %th
+    %th
+    %th
+
+  - @publications.each do |publication|
+    %tr
+      %td= publication.user_id
+      %td= publication.name
+      %td= publication.description
+      %td= publication.start_date
+      %td= publication.end_date
+      %td= link_to 'Show', publication
+      %td= link_to 'Edit', edit_publication_path(publication)
+      %td= link_to 'Destroy', publication, method: :delete, data: { confirm: 'Are you sure?' }
+
+%br
+
+= link_to 'New Publication', new_publication_path
