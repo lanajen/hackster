@@ -15,9 +15,9 @@
           - if can? :edit, @user
             = link_to 'Edit', profile_edit_path, class: 'btn-edit'
           - if current_user.try(:is_following?, @user)
-            = link_to 'Following', followers_path, method: :delete, class: 'btn-inverse btn-follow'
+            = link_to 'Following', user_followers_path, method: :delete, class: 'btn-inverse btn-follow'
           - else
-            = link_to 'Follow', followers_path, method: :post, class: 'btn-follow'
+            = link_to 'Follow', user_followers_path, method: :post, class: 'btn-follow'
 
   #main
     .container
