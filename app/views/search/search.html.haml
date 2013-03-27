@@ -1,0 +1,6 @@
+- if @results.any?
+  - @results.each do |result|
+    - model = result_to_model(result)
+    = render partial: "#{result.type}s/thumb", locals: { :"#{result.type}" => model.decorate }
+- else
+  No results.

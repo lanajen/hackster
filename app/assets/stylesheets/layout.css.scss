@@ -1,3 +1,7 @@
+html {
+  font-size: 62.5%;
+}
+
 html, body {
   height: 100%;
 }
@@ -21,6 +25,10 @@ body {
   height: auto !important;
   height: 100%;
   margin: 0 auto -60px;
+}
+
+#main {
+  padding: 20px 0;
 }
 
 #push {
@@ -59,6 +67,9 @@ footer {
   }
   .header {
     border-bottom: 1px solid #e2e2e2;
+    h1, h2, h3, h4 {
+      position: relative;
+    }
   }
   .content {
   }
@@ -70,20 +81,16 @@ footer {
   border-bottom: 1px solid #e2e2e2;
 }
 
-#main {
-  padding: 20px 0;
-}
-
 .alert-flash {
   position: absolute;
   right: 0;
   top: 0;
 }
 
-h4 {
+h1, h2, h3, h4 {
   .subtitle {
     display: inline;
-    font-size: 0.8em;
+    @include font-size(12);
     color: #999;
     font-weight: normal;
   }
@@ -96,7 +103,7 @@ h4 {
 .btn-edit {
   top: 5px;
   font-weight: bold;
-  @include font-size(8);
+  @include font-size(12);
 }
 
 .btn-follow {
@@ -122,4 +129,22 @@ h4 {
     padding-top: 0;
     border-top: none;
   }
+}
+
+.form-search {
+  margin: 5px 0 0 50px;
+  .btn {
+    margin: 0;
+  }
+}
+
+#subnav {
+  .navbar-inner {
+    background: #f8f8f8;
+    padding: 0;
+  }
+}
+
+.istooltip {
+  cursor: help;
 }

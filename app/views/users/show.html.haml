@@ -1,23 +1,8 @@
 = content_for :no_container do
-  #heading
+  #heading.user
     .container
-      .row
-        .span12.teaser
-          .pull-left.avatar.main-avatar= image_tag @user.avatar(:medium), alt: @user.name
-          .pull-left
-            %h1= @user.name
-            %p= @user.mini_resume
-            - if @user.websites.any?
-              %ul.websites
-                - @user.websites.each do |type, url|
-                  %li= render partial: 'website', locals: { type: type, url: url }
-
-          - if can? :edit, @user
-            = link_to 'Edit', profile_edit_path, class: 'btn-edit'
-          - if current_user.try(:is_following?, @user)
-            = link_to 'Following', user_followers_path, method: :delete, class: 'btn-inverse btn-follow'
-          - else
-            = link_to 'Follow', user_followers_path, method: :post, class: 'btn-follow'
+      .display= render 'teaser'
+      .edit{ style: 'display:none;' }
 
   #main
     .container
@@ -27,7 +12,7 @@
             .header
               %h3
                 My projects
-                - if can? :edit, @user
+                - if can? :create, Project, @user
                   .pull-right= link_to 'Add a new project', new_project_path, class: 'btn btn-info btn-mini'
             .content
               - if @user.projects.any?
@@ -38,7 +23,7 @@
                       .subtitle
                         = l project.start_date, format: :month
                         \-
-                        = l project.end_date, format: :month || 'Present'
+                        = project.end_date ? l(project.end_date, format: :month) : 'Present'
                     = project.description.html_safe
                     .image-thumbs
                       - project.images.each do |image|
@@ -46,12 +31,12 @@
               - else
                 #{@user.name} has no projects yet.
 
-          - if @user.publications.any? or can? :edit, @user
+          - if @user.publications.any? or can? :create, Publication, @user
             .well
               .header
                 %h3
                   My articles
-                  - if can? :edit, @user
+                  - if can? :create, Publication, @user
                     .pull-right= link_to 'Add a new article', new_publication_path, class: 'btn btn-info btn-mini'
               .content
                 - @user.publications.each_with_fl do |publication, css|
@@ -62,7 +47,7 @@
                         = l publication.published_on, format: :month
                       - if can? :edit, publication
                         = link_to 'Edit', edit_publication_path(publication), class: 'btn-edit'
-                    .muted.smaller
+                    .details
                       - if publication.journal.present?
                         Published in
                         = publication.journal

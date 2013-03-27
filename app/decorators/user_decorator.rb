@@ -45,6 +45,6 @@ class UserDecorator < ApplicationDecorator
 
   private
     def link_to_user content
-      h.link_to content, h.user_profile_path(model.user_name)
+      h.link_to content, h.user_path(model)
     end
 end

@@ -1,0 +1,4 @@
+$('.user .display').html('<%= escape_javascript render('teaser') %>');
+$('.user .edit').slideUp(function(){
+  $('.user .display').slideDown();
+});

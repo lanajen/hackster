@@ -1,0 +1,15 @@
+.row
+  .span8
+    = render partial: 'blog_post', locals: { project: @project, blog_post: @blog_post }
+
+    .well
+      .header
+        %h3 Discuss
+      .content
+        = render partial: 'comments/form', locals: { comment: Comment.new, commentable: @blog_post }
+
+        - if @blog_post.comments.any?
+          - @blog_post.comments.each do |comment|
+            = render partial: 'comments/comment', locals: { comment: comment }
+        - else
+          There are no comments.

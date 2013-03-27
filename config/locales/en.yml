@@ -3,6 +3,18 @@ en:
     project:
       new_follow: "You're now following %{project_name}."
       new_unfollow: "You've stopped following %{project_name}."
+  comment:
+    form:
+      heading: "Discuss"
+      submit: "Post comment"
+      signin_required: "Please <a href='%{link}'>login</a> to post a comment."
+    create:
+      success: 'Your comment was successfully posted.'
+      error: 'There was an error posting your comment, please try again.'
+    update:
+      success: 'Comment was successfully updated.'
+    destroy:
+      success: 'The comment was deleted.'
   activerecord:
     errors:
       messages:

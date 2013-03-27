@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
+  before_filter :set_new_user_session
   before_filter :store_location_before
   after_filter :store_location_after
 
@@ -81,5 +82,9 @@ class ApplicationController < ActionController::Base
 
     def set_flash_message type, message
       flash[type] = message
+    end
+
+    def set_new_user_session
+      @new_user_session = User.new unless user_signed_in?
     end
 end

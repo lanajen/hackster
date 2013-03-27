@@ -1,5 +1,5 @@
 aws_access_key_id: AKIAIEY3Y5L5J6UGXHYA
 aws_secret_access_key: 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
 region: us-east-1
-directory: halckemy
+directory: hackerio
 host: https://s3.amazonaws.com

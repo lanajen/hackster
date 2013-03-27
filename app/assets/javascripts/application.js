@@ -18,3 +18,4 @@
 //= require wysihtml5
 //= require parser_rules/advanced
 //= require projects
+//= require all

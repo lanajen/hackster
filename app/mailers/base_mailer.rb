@@ -2,7 +2,7 @@ class BaseMailer < ActionMailer::Base
   include SendGrid
   include MailerHelpers
 
-  DEFAULT_EMAIL = 'Ben from Halckemy<ben@halckemy.com>'
+  DEFAULT_EMAIL = 'Ben from Hacker.io<ben@hacker.io>'
   default :from => DEFAULT_EMAIL
   default :to => DEFAULT_EMAIL
 

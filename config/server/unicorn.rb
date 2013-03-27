@@ -13,7 +13,7 @@
 #
 # config/server/production/unicorn.rb
 
-app_name          = 'halckemy'
+app_name          = 'hackerio'
 
 #
 #working_directory ""

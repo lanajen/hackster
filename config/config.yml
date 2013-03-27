@@ -9,6 +9,6 @@ test:
   send_emails: false
 
 production:
-  default_host: www.halckemy.com
+  default_host: www.hacker.io
   default_port: 80
   send_emails: true

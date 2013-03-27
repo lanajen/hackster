@@ -11,4 +11,14 @@ $(document).ready(function(){
       });
     }
   });
+
+  $('#project_current.boolean').click(function(e){
+    if ($(this).is(':checked')) {
+      $('#project_end_date_1i').prop('disabled', true);
+      $('#project_end_date_2i').prop('disabled', true);
+    } else {
+      $('#project_end_date_1i').prop('disabled', false);
+      $('#project_end_date_2i').prop('disabled', false);
+    }
+  });
 });

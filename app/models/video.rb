@@ -53,8 +53,6 @@ class Video < ActiveRecord::Base
       end
       video_info = parsed_response[0]
       self.title = video_info['title']
-      self.height = get_height_from_ratio video_info['height'], video_info['width']
-      self.width = FIXED_WIDTH
       self.ratio_width, self.ratio_height = get_ratio_from_dimensions video_info['width'], video_info['height']
       self.thumbnail_link = video_info['thumbnail_large']
     rescue => e

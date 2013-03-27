@@ -15,7 +15,7 @@
 #heading {
   h1 {
     margin: 0 0 7px;
-    @include font-size(18);
+    @include font-size(26);
   }
   p {
     margin: 0 0 1px;
@@ -39,7 +39,7 @@ ul.websites {
   li {
     float: left;
     margin-right: 5px;
-    @include font-size(8);
+    @include font-size(12);
   }
 }
 
@@ -52,11 +52,11 @@ ul.websites {
   .details {
     float: left;
     h4 {
-      @include font-size(9);
+      @include font-size(14);
       margin-bottom: 5px;
     }
     p {
-      @include font-size(9);
+      @include font-size(14);
     }
   }
 }

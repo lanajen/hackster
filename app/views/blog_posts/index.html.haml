@@ -1,0 +1,28 @@
+.row
+  .span4.offset8
+    - if can? :create, BlogPost, @project
+      .well
+        .content
+          = link_to 'Publish a new blog post', new_project_blog_path, class: 'btn btn-info btn-mini'
+
+- if @blog_posts.any?
+  - @blog_posts.each do |blog_post|
+    .row
+      .span8
+        = render partial: 'blog_post', locals: { project: @project, blog_post: blog_post }
+      .span4
+        .well
+          .content
+            - user = blog_post.user.decorate
+            = image_tag user.avatar
+            = link_to user.name, user
+            %p= l blog_post.created_at, format: :long
+            %p.muted #{blog_post.comments.size} comments
+- else
+  .row
+    .span8
+      .well
+        .content
+          There are no blog posts.
+
+  .span4

@@ -14,7 +14,7 @@ module ResqueRedis
     raise 'No config for Redis' unless $redis_config
     Resque.redis = Redis.new $redis_config
     # set a custom namespace for redis
-    Resque.redis.namespace = "resque:halckemy"
+    Resque.redis.namespace = "resque:hackerio"
     Rails.logger.info('Resque connected to Redis')
   end
 

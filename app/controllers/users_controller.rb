@@ -16,10 +16,19 @@ class UsersController < ApplicationController
     @user = current_user
 
     if @user.update_attributes(params[:user])
-      redirect_to user_profile_url(@user.user_name), notice: 'Profile updated.'
+      respond_to do |format|
+        format.html { redirect_to user_profile_url(@user.user_name), notice: 'Profile updated.' }
+        format.js do
+          @user.avatar = nil unless @user.avatar.try(:file_url)
+          @user = @user.decorate
+        end
+      end
     else
       @user.build_avatar unless @user.avatar
-      render action: 'edit'
+      respond_to do |format|
+        format.html { render action: 'edit' }
+        format.js { render json: @user.errors, status: :unprocessable_entity }
+      end
     end
   end
 

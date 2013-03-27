@@ -1,0 +1,33 @@
+= content_for :no_container do
+  #heading
+    .container
+      .row
+        .span12.teaser
+          -#.pull-left.avatar.main-avatar= image_tag @user.avatar(:medium), alt: @user.name
+          %h1= @project.name
+          %p.muted
+            = l @project.start_date, format: :month
+            \-
+            = @project.end_date ? l(@project.end_date, format: :month) : 'Present'
+
+          - if can? :edit, @project
+            = link_to 'Edit', edit_project_path(@project), class: 'btn-edit'
+          - if current_user.try(:is_following_project?, @project)
+            = link_to 'Following', followers_project_path(@project), method: :delete, class: 'btn-follow btn-inverse'
+          - else
+            = link_to 'Follow', followers_project_path(@project), method: :post, class: 'btn-follow'
+
+  #subnav
+    .navbar.navbar-static-top
+      .navbar-inner
+        .container
+          %ul.nav
+            = active_li_link_to 'Project home', @project
+            = active_li_link_to 'Blog', project_blog_index_path(@project), truncate: true
+            = active_li_link_to 'Private room', '/private_room'
+
+  #main.project
+    .container
+      = yield
+
+= render template: 'layouts/application'

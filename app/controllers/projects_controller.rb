@@ -2,6 +2,7 @@ class ProjectsController < ApplicationController
   before_filter :authenticate_user!, except: [:index, :show]
   load_and_authorize_resource
   skip_load_resource only: [:create]
+  layout 'project'
 
   # GET /projects
   # GET /projects.json
@@ -75,7 +76,7 @@ class ProjectsController < ApplicationController
     @project.destroy
 
     respond_to do |format|
-      format.html { redirect_to user_profile_path(@project.user) }
+      format.html { redirect_to @project.user }
       format.json { head :no_content }
     end
   end

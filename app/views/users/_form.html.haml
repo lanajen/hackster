@@ -1,5 +1,14 @@
-= simple_nested_form_for @user, url: profile_path, html: { class: 'form-horizontal' } do |f|
+= simple_nested_form_for @user, url: profile_path, html: { class: 'form-horizontal remote', data: { remote: true } } do |f|
   = f.error_notification
+
+  .row
+    .span12
+      %h3
+        Edit profile
+        .pull-right
+          = f.submit 'Update profile', class: 'btn btn-primary btn-small'
+          = link_to 'Cancel', '', class: 'btn-cancel btn-link btn-small', data: { show: '.user .display', hide: '.user .edit' }
+      %hr
 
   .row
     .span6
@@ -8,7 +17,8 @@
       = f.input :mini_resume, as: :text, input_html: { rows: 5 },
         hint: 'Maximum 160 characters'
 
-      = image_tag(@user.avatar.file_url(:thumb)) if @user.avatar.try(:file_url)
+      .control-group
+        .controls= image_tag(@user.avatar.file_url(:thumb)) if @user.avatar.try(:file_url)
       = f.simple_fields_for :avatar do |f_avatar|
         = f_avatar.input :file, as: :file, label: 'Profile picture'
         = f_avatar.input :file_cache, as: :hidden
@@ -22,8 +32,4 @@
       = f.input :linked_in_link
       = f.input :website_link
       = f.input :blog_link
-
-  .row
-    .form-actions
-      = f.submit 'Update profile', class: 'btn btn-primary'
 

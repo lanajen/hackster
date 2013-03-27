@@ -1,0 +1,4 @@
+$('.user .edit').html("<%= escape_javascript render('form') %>");
+$('.user .display').slideUp(function(){
+  $('.user .edit').slideDown();
+});

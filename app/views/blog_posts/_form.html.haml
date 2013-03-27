@@ -1,0 +1,14 @@
+= simple_form_for [@project, @blog_post], html: { class: 'form-horizontal' } do |f|
+  = f.error_notification
+
+  .form-inputs
+    = f.input :title
+    .control-group
+      .controls
+        = render 'wysihtml5_toolbar'
+    = f.input :body, input_html: { id: 'wysihtml5-textarea' }
+    = f.input :private, inline_label: 'Make it private', label: false
+
+  .form-actions
+    = f.button :submit
+    = link_to 'Cancel', project_blog_index_path(@project), class: 'btn btn-link'

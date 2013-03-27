@@ -4,4 +4,4 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-Halckemy::Application.load_tasks
+HackerIo::Application.load_tasks

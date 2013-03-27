@@ -9,7 +9,7 @@ if defined?(Bundler)
   # Bundler.require(:default, :assets, Rails.env)
 end
 
-module Halckemy
+module HackerIo
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -67,7 +67,7 @@ module Halckemy
     config.action_mailer.smtp_settings = {
       :address => "smtp.sendgrid.net",
       :port => 587,
-      :domain => "halckemy.com",
+      :domain => "hacker.io",
       :authentication => :plain,
       :user_name => "fansnextdoor",
       :password => "mod3pa55"

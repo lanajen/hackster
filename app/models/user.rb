@@ -1,4 +1,7 @@
 class User < ActiveRecord::Base
+  include Tire::Model::Search
+  include Tire::Model::Callbacks
+
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
@@ -8,8 +11,10 @@ class User < ActiveRecord::Base
   end
   has_and_belongs_to_many :followed_projects, class_name: 'Project',
     join_table: :project_followers
+  has_many :blog_posts, dependent: :destroy
+  has_many :comments, dependent: :destroy
   has_many :projects, dependent: :destroy
-  has_many :publications
+  has_many :publications, dependent: :destroy
   has_one :avatar, as: :attachable, dependent: :destroy
 
   attr_accessor :email_confirmation, :skip_registration_confirmation

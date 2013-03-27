@@ -1,0 +1,17 @@
+.row
+  .span12.teaser
+    .pull-left.avatar.main-avatar= image_tag @user.avatar(:medium), alt: @user.name
+    .pull-left
+      %h1= @user.name
+      %p= @user.mini_resume
+      - if @user.websites.any?
+        %ul.websites
+          - @user.websites.each do |type, url|
+            %li= render partial: 'website', locals: { type: type, url: url }
+
+    - if can? :edit, @user
+      = link_to 'Edit', profile_edit_path, class: 'btn-edit', data: { remote: true }
+    - if current_user.try(:is_following?, @user)
+      = link_to 'Following', user_followers_path(@user), method: :delete, class: 'btn-inverse btn-follow'
+    - else
+      = link_to 'Follow', user_followers_path(@user), method: :post, class: 'btn-follow'

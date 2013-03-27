@@ -1,0 +1,7 @@
+.project.thumb
+  %h4
+    = link_to project.name, project
+  = strip_tags truncate(project.description, length: 100)
+  .image-thumbs
+    - if image = project.images.first
+      = image_tag image.file_url(:small_thumb)

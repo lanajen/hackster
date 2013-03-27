@@ -2,4 +2,9 @@
   h4 {
     position: relative;
   }
+  .details {
+    @extend .muted;
+    @extend .smaller;
+    margin-bottom: 5px;
+  }
 }

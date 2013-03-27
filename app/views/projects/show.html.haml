@@ -1,58 +1,37 @@
-= content_for :no_container do
-  #heading
-    .container
-      .row
-        .span12.teaser
-          -#.pull-left.avatar.main-avatar= image_tag @user.avatar(:medium), alt: @user.name
-          %h1= @project.name
-          %p.muted
-            = l @project.start_date, format: :month
-            \-
-            = l @project.end_date, format: :month || 'Present'
-
-          - if can? :edit, @project
-            = link_to 'Edit', edit_project_path(@project), class: 'btn-edit'
-          - if current_user.try(:is_following_project?, @project)
-            = link_to 'Following', followers_project_path, method: :delete, class: 'btn-follow btn-inverse'
+.row
+  .span8
+    .well
+      .content
+        .headline-image
+          - if @project.video
+            = render partial: 'videos/video', locals: { video: @project.video }
           - else
-            = link_to 'Follow', followers_project_path, method: :post, class: 'btn-follow'
+            - @project.images.each_with_index do |image, i|
+              = image_tag image.file_url(:headline), class: "image-#{i}", style: "#{'display:none;' unless i==0}"
+        .image-thumbs
+          - @project.images.each_with_index do |image, i|
+            = image_tag image.file_url(:small_thumb), data: { target: "image-#{i}" }
 
-  #main.project
-    .container
-      .row
-        .span8
-          .well
-            .content
-              .headline-image
-                - if @project.video
-                  = @project.video.link
-                - else
-                  - @project.images.each_with_index do |image, i|
-                    = image_tag image.file_url(:headline), class: "image-#{i}", style: "#{'display:none;' unless i==0}"
-              .image-thumbs
-                - @project.images.each_with_index do |image, i|
-                  = image_tag image.file_url(:small_thumb), data: { target: "image-#{i}" }
+    .well
+      .header
+        %h3 About
+      .content
+        = @project.description.html_safe
 
-          .well
-            .header
-              %h3 About
-            .content
-              = @project.description.html_safe
+    .well
+      .header
+        %h3 Hacker in chief
+      .content
+        = render partial: 'users/user_popover', locals: { user: @project.user.decorate }
 
-          .well
-            .header
-              %h3 Hacker in chief
-            .content
-              = render partial: 'users/user_popover', locals: { user: @project.user.decorate }
-
-        .span4
-          .well.sidebar-nav
-            .header
-              %h3 Followers
-            .content
-              - if @project.followers.any?
-                %ul.user-list
-                  - @project.followers.each do |user|
-                    %li= render partial: 'users/user_thumb_mini', locals: { user: user.decorate }
-              - else
-                No one yet.
+  .span4
+    .well.sidebar-nav
+      .header
+        %h3 Followers
+      .content
+        - if @project.followers.any?
+          %ul.user-list
+            - @project.followers.each do |user|
+              %li= render partial: 'users/user_thumb_mini', locals: { user: user.decorate }
+        - else
+          No one yet.

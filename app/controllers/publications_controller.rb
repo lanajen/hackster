@@ -41,7 +41,7 @@ class PublicationsController < ApplicationController
 
     respond_to do |format|
       if @publication.save
-        format.html { redirect_to user_profile_path(@publication.user), notice: 'Publication was successfully created.' }
+        format.html { redirect_to @publication.user, notice: 'Publication was successfully created.' }
         format.json { render json: @publication, status: :created, location: @publication }
       else
         format.html { render action: "new" }
@@ -55,7 +55,7 @@ class PublicationsController < ApplicationController
   def update
     respond_to do |format|
       if @publication.update_attributes(params[:publication])
-        format.html { redirect_to user_profile_path(@publication.user), notice: 'Publication was successfully updated.' }
+        format.html { redirect_to @publication.user, notice: 'Publication was successfully updated.' }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }
@@ -70,7 +70,7 @@ class PublicationsController < ApplicationController
     @publication.destroy
 
     respond_to do |format|
-      format.html { redirect_to user_profile_path(@publication.user) }
+      format.html { redirect_to @publication.user }
       format.json { head :no_content }
     end
   end

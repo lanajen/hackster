@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130320230202) do
+ActiveRecord::Schema.define(:version => 20130326215248) do
 
   create_table "attachments", :force => true do |t|
     t.string   "file"
@@ -23,6 +23,32 @@ ActiveRecord::Schema.define(:version => 20130320230202) do
   end
 
   add_index "attachments", ["attachable_id", "attachable_type", "type"], :name => "index_attachments_on_attachable_id_and_attachable_type_and_type"
+
+  create_table "blog_posts", :force => true do |t|
+    t.string   "title"
+    t.text     "body"
+    t.integer  "bloggable_id",   :null => false
+    t.string   "bloggable_type", :null => false
+    t.boolean  "private"
+    t.integer  "user_id",        :null => false
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+  end
+
+  add_index "blog_posts", ["bloggable_id", "bloggable_type"], :name => "index_blog_posts_on_bloggable_id_and_bloggable_type"
+  add_index "blog_posts", ["user_id"], :name => "index_blog_posts_on_user_id"
+
+  create_table "comments", :force => true do |t|
+    t.integer  "user_id",          :null => false
+    t.integer  "commentable_id",   :null => false
+    t.string   "commentable_type", :null => false
+    t.text     "body"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+  end
+
+  add_index "comments", ["commentable_id", "commentable_type"], :name => "index_comments_on_commentable_id_and_commentable_type"
+  add_index "comments", ["user_id"], :name => "index_comments_on_user_id"
 
   create_table "follow_relations", :force => true do |t|
     t.integer "follower_id", :null => false
