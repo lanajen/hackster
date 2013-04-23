@@ -20,9 +20,18 @@
 
     .well
       .header
-        %h3 Hacker in chief
+        %h3
+          Team
+          - if can? :edit, @project
+            .pull-right= link_to 'Add a new team member', new_project_team_member_path(@project), class: 'btn btn-info btn-mini'
       .content
-        = render partial: 'users/user_popover', locals: { user: @project.user.decorate }
+        %ul{ style: 'list-style: none;' }
+          - @project.team_members.each do |team_member|
+            %li{ style: 'position:relative;' }
+              = render partial: 'users/user_popover', locals: { user: team_member.user.decorate }
+              - if can? :edit, @project
+                .pull-right= link_to 'Delete', project_team_member_path(@project, team_member), class: 'btn btn-edit btn-link', method: :delete
+
 
   .span4
     .well.sidebar-nav

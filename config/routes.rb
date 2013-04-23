@@ -21,6 +21,7 @@ HackerIo::Application.routes.draw do
     end
     resources :blog, controller: :blog_posts, except: [:update, :create]
     resources :blog_posts, only: [:update, :create]
+    resources :team_members
   end
   resources :publications, except: [:show]
   get 'blog_posts/:id' => 'blog_posts#redirect_to_show', as: :blog_post
