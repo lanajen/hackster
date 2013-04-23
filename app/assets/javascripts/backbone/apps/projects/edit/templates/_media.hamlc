@@ -1,0 +1,13 @@
+.well
+  .content
+    .headline-image
+      - if @video
+        = render partial: 'videos/video', locals: { video: @project.video }
+      - else
+        - if @images
+          - for image, i in @images
+            != @imageTag image.headline, { class: "image-#{i}", style: "#{'display:none;' unless i==0}" }
+    .image-thumbs
+      - if @images
+        - for image, i in @images
+          != @imageTag image.small_thumb, { 'data-target': "image-#{i}" }

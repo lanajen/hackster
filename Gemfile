@@ -7,12 +7,16 @@ group :assets do
   gem 'bootstrap-sass-rails', '2.3.1.0'
   gem 'coffee-rails', '~> 3.2.1'
   gem 'compass-rails', '1.0.3'
+#  gem 'execjs', '1.4.0'
   gem 'font-awesome-sass-rails', '3.0.2.2'
+#  gem 'haml_coffee_assets', '1.11.1'
   gem 'less-rails', '2.2.6'
+#  gem 'marionette-rails', '1.0.1'
   gem 'sass-rails',   '~> 3.2.3'
   gem 'uglifier', '>= 1.0.3'
 end
 
+#gem 'backbone-on-rails', "1.0.0.0"
 #gem 'bartt-ssl_requirement', '~> 1.4.0', require: 'ssl_requirement'
 gem 'bootstrap-will_paginate', '0.0.9'
 gem 'cancan', '1.6.8'
@@ -29,6 +33,7 @@ gem 'hpricot', '0.8.6'
 #gem 'i18n_country_select', '1.0.16'
 gem 'jquery-rails', '2.1.4'
 gem 'jquery-ui-rails', '2.0.0'
+#gem 'js-routes', '0.9.0'
 #gem 'mailboxer', '0.9.0'
 gem 'nested_form', '0.3.1'
 gem 'newrelic_rpm', '3.5.2.17'
@@ -40,6 +45,8 @@ gem 'nokogiri', '~> 1.5.5'
 #gem 'omniauth-twitter', '0.0.14'
 gem 'pg', '~> 0.14.1'
 gem 'premailer-rails3', '1.3.1'
+gem 'oj', '2.0.10'
+gem 'rabl', '0.8.2'
 gem 'redcarpet', '2.2.2'
 gem 'redis', '3.0.2'
 #gem 'redis-namespace', '1.2.1'
@@ -61,6 +68,8 @@ gem 'vimeo', '1.5.3'
 gem 'will_paginate', '3.0.4'
 gem 'workflow', '0.8.1'
 gem 'wysihtml5-rails', '0.0.4'
+
+#gem 'gon', '4.0.2'  # wants rabl to be defined before
 
 group :development, :test do
   gem 'capybara'

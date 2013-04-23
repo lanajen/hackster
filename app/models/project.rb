@@ -6,6 +6,8 @@ class Project < ActiveRecord::Base
   has_and_belongs_to_many :followers, class_name: 'User', join_table: 'project_followers'
   has_many :blog_posts, as: :bloggable, dependent: :destroy
   has_many :images, as: :attachable, dependent: :destroy
+  has_many :team_members
+  has_many :users, through: :team_members
   has_one :video, dependent: :destroy
 
   sanitize_text :description

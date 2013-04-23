@@ -66,4 +66,6 @@ HackerIo::Application.configure do
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
 
   config.action_controller.asset_host = "//s3.amazonaws.com/#{ENV['FOG_DIRECTORY']}"
+
+  config.assets.initialize_on_precompile = false
 end

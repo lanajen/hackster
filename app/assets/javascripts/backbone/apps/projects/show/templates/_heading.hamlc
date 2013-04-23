@@ -1,0 +1,15 @@
+.container
+  .row
+    .span12.teaser
+      -#.pull-left.avatar.main-avatar= image_tag @user.avatar(:medium), alt: @user.name
+      %h1= @name
+      %p.muted
+        = @start_date
+        \-
+        = @end_date
+      - if @permissions and @permissions.edit
+        != @linkTo 'Edit', Routes.edit_project_path(@), class: 'btn-edit'
+      - if @following
+        != @linkTo 'Following', Routes.followers_project_path(@), class: 'btn-follow btn-inverse delete'
+      - else
+        != @linkTo 'Follow', Routes.followers_project_path(@), class: 'btn-follow put'

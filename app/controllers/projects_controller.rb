@@ -2,14 +2,14 @@ class ProjectsController < ApplicationController
   before_filter :authenticate_user!, except: [:index, :show]
   load_and_authorize_resource
   skip_load_resource only: [:create]
-  layout 'project'
+  layout 'project', except: [:index]
 
   # GET /projects
   # GET /projects.json
   def index
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render json: @projects }
+      format.json
     end
   end
 
@@ -18,7 +18,7 @@ class ProjectsController < ApplicationController
   def show
     respond_to do |format|
       format.html # show.html.erb
-      format.json { render json: @project }
+      format.json
     end
   end
 

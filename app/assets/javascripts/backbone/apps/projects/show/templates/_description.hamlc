@@ -1,0 +1,5 @@
+.well
+  .header
+    %h3 About
+  .content
+    != @description

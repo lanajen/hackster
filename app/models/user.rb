@@ -13,8 +13,9 @@ class User < ActiveRecord::Base
     join_table: :project_followers
   has_many :blog_posts, dependent: :destroy
   has_many :comments, dependent: :destroy
-  has_many :projects, dependent: :destroy
+  has_many :projects, through: :team_members
   has_many :publications, dependent: :destroy
+  has_many :team_members
   has_one :avatar, as: :attachable, dependent: :destroy
 
   attr_accessor :email_confirmation, :skip_registration_confirmation

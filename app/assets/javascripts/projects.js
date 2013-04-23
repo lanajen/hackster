@@ -1,5 +1,5 @@
 $(document).ready(function(){
-  $('.project .image-thumbs img').mouseenter(function(){
+  $('.project .image-thumbs img').live('mouseenter', function(){
     targetClass = $(this).data('target');
     target = $('.project .headline-image img.' + targetClass);
     currentHeadline = $('.project .headline-image img:visible');

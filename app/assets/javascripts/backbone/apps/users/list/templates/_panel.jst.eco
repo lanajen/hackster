@@ -1,0 +1,1 @@
+Total Users: <%= @items.length %>

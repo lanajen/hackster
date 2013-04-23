@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130326215248) do
+ActiveRecord::Schema.define(:version => 20130406001704) do
 
   create_table "attachments", :force => true do |t|
     t.string   "file"
@@ -97,6 +97,17 @@ ActiveRecord::Schema.define(:version => 20130326215248) do
   end
 
   add_index "publications", ["user_id"], :name => "index_publications_on_user_id"
+
+  create_table "team_members", :force => true do |t|
+    t.integer  "user_id",    :null => false
+    t.integer  "project_id", :null => false
+    t.string   "role"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "team_members", ["project_id"], :name => "index_team_members_on_project_id"
+  add_index "team_members", ["user_id"], :name => "index_team_members_on_user_id"
 
   create_table "users", :force => true do |t|
     t.string   "user_name",              :limit => 100

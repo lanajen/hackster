@@ -1,0 +1,7 @@
+.navbar.navbar-static-top
+  .navbar-inner
+    .container
+      %ul.nav
+        %li!= @linkTo 'Project home', Routes.project_path(@)
+        %li!= @linkTo 'Blog', Routes.project_blog_index_path(@)
+        %li!= @linkTo 'Private room', '/private_room'

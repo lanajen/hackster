@@ -1,0 +1,7 @@
+.user-popover
+  .image!= @imageTag @user.avatar_mini, alt: @user.name
+  .details
+    %h4
+      != @linkTo @user.name, @user.profile_link
+      %span.muted= @role
+    %p= @user.mini_resume

@@ -1,0 +1,5 @@
+.well
+  .header
+    %h3 Team
+  .content
+    %ul.team-members

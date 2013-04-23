@@ -1,7 +1,8 @@
 class ApplicationController < ActionController::Base
-  protect_from_forgery
+#  protect_from_forgery
   before_filter :set_new_user_session
   before_filter :store_location_before
+#  before_filter :set_json_globals
   after_filter :store_location_after
 
   unless Rails.application.config.consider_all_requests_local
@@ -82,6 +83,12 @@ class ApplicationController < ActionController::Base
 
     def set_flash_message type, message
       flash[type] = message
+    end
+
+    def set_json_globals
+      unless request.xhr?
+        gon.rabl "app/views/users/show.json.rabl", as: "current_user"
+      end
     end
 
     def set_new_user_session

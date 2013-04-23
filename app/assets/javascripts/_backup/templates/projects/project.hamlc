@@ -1,0 +1,2 @@
+%h3
+  %a{ href: "/projects/#{@id}" }= @name
