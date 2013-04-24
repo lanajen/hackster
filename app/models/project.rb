@@ -4,7 +4,8 @@ class Project < ActiveRecord::Base
 
   belongs_to :user
   has_and_belongs_to_many :followers, class_name: 'User', join_table: 'project_followers'
-  has_many :blog_posts, as: :bloggable, dependent: :destroy
+  has_many :blog_posts, as: :threadable, dependent: :destroy
+  has_many :discussions, as: :threadable, dependent: :destroy
   has_many :images, as: :attachable, dependent: :destroy
   has_many :stages, dependent: :destroy
   has_many :team_members, include: :user

@@ -1,0 +1,32 @@
+.row
+  .span8
+    .well
+      .content
+        This is where the community can discuss ideas and issues.
+  .span4
+    - if can? :create, Discussion, @project
+      .well
+        .content
+          = link_to 'Publish a new discussion', new_project_discussion_path, class: 'btn btn-info btn-mini'
+
+- if @thread_posts.any?
+  - @thread_posts.each do |discussion|
+    .row
+      .span8
+        = render partial: 'discussions/discussion', locals: { project: @project, discussion: discussion }
+      .span4
+        .well
+          .content
+            - user = discussion.user.decorate
+            = image_tag user.avatar
+            = link_to user.name, user
+            %p= l discussion.created_at, format: :long
+            %p.muted #{discussion.comments.size} comments
+- else
+  .row
+    .span8
+      .well
+        .content
+          There are no discussions.
+
+  .span4

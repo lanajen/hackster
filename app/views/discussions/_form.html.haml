@@ -7,8 +7,7 @@
       .controls
         = render 'wysihtml5_toolbar'
     = f.input :body, input_html: { id: 'wysihtml5-textarea' }
-    = f.input :private, inline_label: 'Make it private', label: false
 
   .form-actions
     = f.button :submit
-    = link_to 'Cancel', project_blog_posts_path(@project), class: 'btn btn-link'
+    = link_to 'Cancel', project_discussions_path(@project), class: 'btn btn-link'

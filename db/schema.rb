@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130423212232) do
+ActiveRecord::Schema.define(:version => 20130424011331) do
 
   create_table "attachments", :force => true do |t|
     t.string   "file"
@@ -23,20 +23,6 @@ ActiveRecord::Schema.define(:version => 20130423212232) do
   end
 
   add_index "attachments", ["attachable_id", "attachable_type", "type"], :name => "index_attachments_on_attachable_id_and_attachable_type_and_type"
-
-  create_table "blog_posts", :force => true do |t|
-    t.string   "title"
-    t.text     "body"
-    t.integer  "bloggable_id",   :null => false
-    t.string   "bloggable_type", :null => false
-    t.boolean  "private"
-    t.integer  "user_id",        :null => false
-    t.datetime "created_at",     :null => false
-    t.datetime "updated_at",     :null => false
-  end
-
-  add_index "blog_posts", ["bloggable_id", "bloggable_type"], :name => "index_blog_posts_on_bloggable_id_and_bloggable_type"
-  add_index "blog_posts", ["user_id"], :name => "index_blog_posts_on_user_id"
 
   create_table "comments", :force => true do |t|
     t.integer  "user_id",          :null => false
@@ -118,6 +104,21 @@ ActiveRecord::Schema.define(:version => 20130423212232) do
 
   add_index "team_members", ["project_id"], :name => "index_team_members_on_project_id"
   add_index "team_members", ["user_id"], :name => "index_team_members_on_user_id"
+
+  create_table "threads", :force => true do |t|
+    t.string   "title"
+    t.text     "body"
+    t.integer  "threadable_id",                 :null => false
+    t.string   "threadable_type",               :null => false
+    t.boolean  "private"
+    t.integer  "user_id",                       :null => false
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
+    t.string   "type",            :limit => 20
+  end
+
+  add_index "threads", ["threadable_id", "threadable_type"], :name => "index_blog_posts_on_bloggable_id_and_bloggable_type"
+  add_index "threads", ["user_id"], :name => "index_blog_posts_on_user_id"
 
   create_table "users", :force => true do |t|
     t.string   "user_name",              :limit => 100

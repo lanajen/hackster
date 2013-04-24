@@ -1,7 +1,7 @@
 %h1 Editing blog post
 
-= render 'form'
+= render 'blog_posts/form'
 
-= link_to 'Show', @blog_post
+= link_to 'Show', @thread_post
 \|
-= link_to 'Back', project_blog_index_path(@project)
+= link_to 'Back', project_blog_posts_path(@project)
