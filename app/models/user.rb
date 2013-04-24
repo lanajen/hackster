@@ -77,6 +77,10 @@ class User < ActiveRecord::Base
     followed_projects.where(id: project.id).any?
   end
 
+  def name
+    full_name ? full_name : user_name
+  end
+
   def roles=(roles)
     self.roles_mask = (roles & ROLES).map { |r| 2**ROLES.index(r) }.sum
   end

@@ -56,8 +56,6 @@ footer {
 }
 
 .well {
-  background: #fff;
-  border-color: #e2e2e2;
   padding: 0;
   h1, h2, h3, h4, h5 {
     margin: 0;
@@ -73,6 +71,11 @@ footer {
   }
   .content {
   }
+}
+
+.well, .thumbnail {
+  background: #fff;
+  border-color: #e2e2e2;
 }
 
 #heading {

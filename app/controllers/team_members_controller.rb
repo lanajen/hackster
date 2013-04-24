@@ -1,16 +1,17 @@
 class TeamMembersController < ApplicationController
   before_filter :authenticate_user!, except: [:index, :show]
-#  load_and_authorize_resource
-  skip_load_resource only: [:create]
+  load_and_authorize_resource only: [:destroy]
   before_filter :load_project
   respond_to :html
 
   def new
     @team_member = @project.team_members.new
+    authorize! :create, @team_member
   end
 
   def create
     @team_member = @project.team_members.new(params[:team_member])
+    authorize! :create, @team_member
 
     if @team_member.save
       flash[:notice] = 'Team member added.'
@@ -21,7 +22,6 @@ class TeamMembersController < ApplicationController
   end
 
   def destroy
-    @team_member = TeamMember.find params[:id]
     @team_member.destroy
 
     flash[:notice] = 'Team member removed.'

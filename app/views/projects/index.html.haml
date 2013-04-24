@@ -2,7 +2,6 @@
 
 %table
   %tr
-    %th User
     %th Name
     %th Description
     %th Start date
@@ -13,7 +12,6 @@
 
   - @projects.each do |project|
     %tr
-      %td= project.user_id
       %td= project.name
       %td= project.description
       %td= project.start_date

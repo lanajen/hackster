@@ -11,7 +11,7 @@
           .well
             .header
               %h3
-                My projects
+                Projects
                 - if can? :create, Project, @user
                   .pull-right= link_to 'Add a new project', new_project_path, class: 'btn btn-info btn-mini'
             .content
@@ -35,30 +35,33 @@
             .well
               .header
                 %h3
-                  My articles
+                  Publications
                   - if can? :create, Publication, @user
-                    .pull-right= link_to 'Add a new article', new_publication_path, class: 'btn btn-info btn-mini'
+                    .pull-right= link_to 'Add a new publication', new_publication_path, class: 'btn btn-info btn-mini'
               .content
-                - @user.publications.each_with_fl do |publication, css|
-                  .publication.preview{ class: css }
-                    %h4
-                      = publication.title
-                      .subtitle
-                        = l publication.published_on, format: :month
-                      - if can? :edit, publication
-                        = link_to 'Edit', edit_publication_path(publication), class: 'btn-edit'
-                    .details
-                      - if publication.journal.present?
-                        Published in
-                        = publication.journal
-                        ·
-                      - if publication.coauthors.present?
-                        In collaboration with
-                        = publication.coauthors
-                        ·
-                      - if publication.link.present?
-                        = link_to 'Read more', publication.link
-                    %p= publication.abstract
+                - if @user.publications.any?
+                  - @user.publications.each_with_fl do |publication, css|
+                    .publication.preview{ class: css }
+                      %h4
+                        = publication.title
+                        .subtitle
+                          = l publication.published_on, format: :month
+                        - if can? :edit, publication
+                          = link_to 'Edit', edit_publication_path(publication), class: 'btn-edit'
+                      .details
+                        - if publication.journal.present?
+                          Published in
+                          = publication.journal
+                          ·
+                        - if publication.coauthors.present?
+                          In collaboration with
+                          = publication.coauthors
+                          ·
+                        - if publication.link.present?
+                          = link_to 'Read more', publication.link
+                      %p= publication.abstract
+                - else
+                  #{@user.name} has no publications yet.
 
         .span4
           .well.sidebar-nav

@@ -1,5 +1,5 @@
 class PagesController < ApplicationController
   def home
-    redirect_to current_user
+    @featured_projects = Project.limit 4
   end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130424011331) do
+ActiveRecord::Schema.define(:version => 20130424045753) do
 
   create_table "attachments", :force => true do |t|
     t.string   "file"
@@ -59,7 +59,6 @@ ActiveRecord::Schema.define(:version => 20130424011331) do
   add_index "project_followers", ["user_id"], :name => "index_project_followers_on_user_id"
 
   create_table "projects", :force => true do |t|
-    t.integer  "user_id",     :null => false
     t.string   "name"
     t.text     "description"
     t.date     "start_date"
@@ -67,8 +66,6 @@ ActiveRecord::Schema.define(:version => 20130424011331) do
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
   end
-
-  add_index "projects", ["user_id"], :name => "index_projects_on_user_id"
 
   create_table "publications", :force => true do |t|
     t.string   "title"
@@ -138,7 +135,7 @@ ActiveRecord::Schema.define(:version => 20130424011331) do
     t.string   "last_sign_in_ip"
     t.datetime "created_at",                                            :null => false
     t.datetime "updated_at",                                            :null => false
-    t.string   "name"
+    t.string   "full_name"
     t.text     "websites"
   end
 

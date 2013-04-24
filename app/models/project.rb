@@ -19,7 +19,7 @@ class Project < ActiveRecord::Base
   attr_accessor :current
   accepts_nested_attributes_for :images, :video, allow_destroy: true
 
-  validates :name, :user_id, presence: true
+  validates :name, presence: true
   before_validation :check_if_current
 
   def image

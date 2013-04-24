@@ -23,10 +23,9 @@
             = link_to 'Hacker.io', root_path, class: 'brand'
             .container.nav-collapse
               .pull-left= render 'application/search_form'
-              -# %ul.nav
-                %li= link_to "Link 1", "/path1"
-                %li= link_to "Link 2", "/path2"
-                %li= link_to "Link 3", "/path3"
+              %ul.nav
+                %li= link_to 'New project', new_project_path
+                %li= link_to 'Browse', projects_path
               %ul.nav.pull-right
                 - if user_signed_in?
                   .btn-group

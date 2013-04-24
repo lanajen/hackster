@@ -1,6 +1,6 @@
 class Users::RegistrationsController < Devise::RegistrationsController
   protected
     def after_sign_up_path_for(resource)
-      profile_first_login_path
+      session[:user_return_to] || root_url
     end
 end

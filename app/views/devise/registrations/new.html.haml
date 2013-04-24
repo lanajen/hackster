@@ -2,8 +2,7 @@
   %h2 Create your Hacker.io account
   = simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f|
     = f.error_notification
-    = f.input :name, autofocus: true, label: false, placeholder: 'Full name'
-    = f.input :user_name, label: false, placeholder: 'Username'
+    = f.input :user_name, label: false, placeholder: 'Username', autofocus: true
     = f.input :email, label: false, placeholder: 'Email'
     = f.input :email_confirmation, label: false, placeholder: 'Confirm email'
     = f.input :password, label: false, placeholder: 'Password'

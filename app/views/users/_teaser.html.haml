@@ -11,7 +11,8 @@
 
     - if can? :edit, @user
       = link_to 'Edit', profile_edit_path, class: 'btn-edit', data: { remote: true }
-    - if current_user.try(:is_following?, @user)
-      = link_to 'Following', user_followers_path(@user), method: :delete, class: 'btn-inverse btn-follow'
-    - else
-      = link_to 'Follow', user_followers_path(@user), method: :post, class: 'btn-follow'
+    - if current_user.id != @user.id
+      - if current_user.try(:is_following?, @user)
+        = link_to 'Following', user_followers_path(@user), method: :delete, class: 'btn-inverse btn-follow'
+      - else
+        = link_to 'Follow', user_followers_path(@user), method: :post, class: 'btn-follow'

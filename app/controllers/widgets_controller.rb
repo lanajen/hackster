@@ -1,14 +1,16 @@
 class WidgetsController < ApplicationController
   before_filter :load_stage
-  load_resource
-  skip_load_resource :create
+  load_and_authorize_resource except: [:new, :create]
   respond_to :html
 
   def new
+    @widget = @stage.widgets.new(params[:widget])
+    authorize! :create, @widget
   end
 
   def create
     @widget = @stage.widgets.create(params[:widget])
+    authorize! :create, @widget
 
     if @widget.save
       redirect_to edit_stage_widget_path(@stage, @widget)
