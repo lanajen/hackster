@@ -1,8 +1,9 @@
 $(document).ready(function(){
   $('.project .image-thumbs img').live('mouseenter', function(){
     targetClass = $(this).data('target');
-    target = $('.project .headline-image img.' + targetClass);
-    currentHeadline = $('.project .headline-image img:visible');
+    parent = $(this).parent().parent();
+    target = $('.headline-image img.' + targetClass, parent);
+    currentHeadline = $('.headline-image img:visible', parent);
     if (!currentHeadline.hasClass(targetClass)) {
       currentHeadline.css('z-index', '999');
       target.show();

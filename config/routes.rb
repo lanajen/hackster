@@ -12,6 +12,11 @@ HackerIo::Application.routes.draw do
     mount ResqueAuthServer.new, at: "/resque"
   end
 
+  get 'blog_posts/:id' => 'blog_posts#redirect_to_show', as: :blog_post
+  resources :blog_posts, only: [] do
+    resources :comments, only: [:create]
+  end
+  resources :comments, only: [:update, :destroy]
   resources :invite_requests, only: [:new, :create]
   resources :projects do
     member do
@@ -24,11 +29,9 @@ HackerIo::Application.routes.draw do
     resources :team_members
   end
   resources :publications, except: [:show]
-  get 'blog_posts/:id' => 'blog_posts#redirect_to_show', as: :blog_post
-  resources :blog_posts, only: [] do
-    resources :comments, only: [:create]
+  resources :stages do
+    resources :widgets
   end
-  resources :comments, only: [:update, :destroy]
 
   get 'contact' => 'contact#new'
   post 'contact' => 'contact#create'

@@ -18,6 +18,31 @@
       .content
         = @project.description.html_safe
 
+    - @project.stages.each do |stage|
+      .well
+        .header
+          %h3{ style: 'position:relative;' }
+            = stage.name.humanize
+            %span.smaller.muted #{stage.completion_rate}% completed
+            - if can? :edit, @project
+              .pull-right= link_to 'Add a widget', new_stage_widget_path(stage), class: 'btn btn-info btn-mini'
+        .content
+          %ul{ style: 'list-style: none;margin:0;' }
+            - if stage.widgets.any?
+              - stage.widgets.each do |widget|
+                %li{ style: 'margin-bottom:5px;' }
+                  %h4{ style: 'position:relative;' }
+                    = widget.name
+                    %span.subtitle counts for #{widget.completion_share}%, #{widget.completion_rate}% completed
+                    - if can? :edit, @project
+                      = link_to 'Edit', edit_stage_widget_path(stage, widget), class: 'btn-edit'
+                  = render partial: "widgets/show/#{widget.type.underscore}", locals: { widget: widget }
+            - else
+              %p
+                No widgets yet.
+                - if can? :edit, @project
+                  = link_to 'Add one', new_stage_widget_path(stage), class: 'btn btn-info btn-mini'
+
     .well
       .header
         %h3
@@ -25,10 +50,10 @@
           - if can? :edit, @project
             .pull-right= link_to 'Add a new team member', new_project_team_member_path(@project), class: 'btn btn-info btn-mini'
       .content
-        %ul{ style: 'list-style: none;' }
+        %ul{ style: 'list-style: none;margin:0;' }
           - @project.team_members.each do |team_member|
-            %li{ style: 'position:relative;' }
-              = render partial: 'users/user_popover', locals: { user: team_member.user.decorate }
+            %li{ style: 'position:relative;margin-bottom:5px;' }
+              = render partial: 'users/user_popover', locals: { team_member: team_member, user: team_member.user.decorate }
               - if can? :edit, @project
                 .pull-right= link_to 'Delete', project_team_member_path(@project, team_member), class: 'btn btn-edit btn-link', method: :delete
 

@@ -13,6 +13,7 @@ class TeamMembersController < ApplicationController
     @team_member = @project.team_members.new(params[:team_member])
 
     if @team_member.save
+      flash[:notice] = 'Team member added.'
       respond_with @project
     else
       render action: 'new'
@@ -23,6 +24,7 @@ class TeamMembersController < ApplicationController
     @team_member = TeamMember.find params[:id]
     @team_member.destroy
 
+    flash[:notice] = 'Team member removed.'
     respond_with @project
   end
 

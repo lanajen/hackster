@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130406001704) do
+ActiveRecord::Schema.define(:version => 20130423212232) do
 
   create_table "attachments", :force => true do |t|
     t.string   "file"
@@ -98,6 +98,16 @@ ActiveRecord::Schema.define(:version => 20130406001704) do
 
   add_index "publications", ["user_id"], :name => "index_publications_on_user_id"
 
+  create_table "stages", :force => true do |t|
+    t.integer  "project_id",                     :null => false
+    t.string   "name"
+    t.integer  "completion_rate", :default => 0
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
+  end
+
+  add_index "stages", ["project_id"], :name => "index_stages_on_project_id"
+
   create_table "team_members", :force => true do |t|
     t.integer  "user_id",    :null => false
     t.integer  "project_id", :null => false
@@ -148,5 +158,18 @@ ActiveRecord::Schema.define(:version => 20130406001704) do
   end
 
   add_index "videos", ["project_id"], :name => "index_videos_on_project_id"
+
+  create_table "widgets", :force => true do |t|
+    t.string   "type",                            :null => false
+    t.integer  "stage_id",                        :null => false
+    t.text     "properties"
+    t.integer  "completion_rate",  :default => 0
+    t.integer  "completion_share", :default => 0
+    t.string   "name"
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
+  end
+
+  add_index "widgets", ["stage_id"], :name => "index_widgets_on_stage_id"
 
 end

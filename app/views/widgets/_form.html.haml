@@ -1,0 +1,13 @@
+= simple_nested_form_for [@stage, @widget], url: widget_form_path(@stage, @widget) do |f|
+  = f.error_notification
+  = f.input :name
+  = f.input :completion_share
+  - if @widget.persisted?
+    = render partial: "widgets/form/#{@widget.class.to_s.underscore}_form", locals: { f: f, widget: @widget }
+    = f.input :completion_rate
+    = f.submit 'Save changes', class: 'btn btn-primary'
+    = link_to 'Delete widget', stage_widget_path(@stage, @widget), class: 'btn btn-danger btn-small', method: :delete
+  - else
+    = f.input :type, collection: Widget.all_types
+    = f.submit 'Continue', class: 'btn btn-primary'
+  = link_to 'Cancel', @stage.project, class: 'btn btn-link btn-small'
