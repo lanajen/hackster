@@ -1,6 +1,5 @@
 class User < ActiveRecord::Base
-  include Tire::Model::Search
-  include Tire::Model::Callbacks
+  include Taggable
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
@@ -13,15 +12,17 @@ class User < ActiveRecord::Base
     join_table: :project_followers
   has_many :blog_posts, dependent: :destroy
   has_many :comments, dependent: :destroy
+#  has_many :interests, as: :taggable, dependent: :destroy, class_name: 'InterestTag'
   has_many :projects, through: :team_members
   has_many :publications, dependent: :destroy
+#  has_many :skills, as: :taggable, dependent: :destroy, class_name: 'SkillTag'
   has_many :team_members
   has_one :avatar, as: :attachable, dependent: :destroy
 
   attr_accessor :email_confirmation, :skip_registration_confirmation
   attr_accessible :email, :email_confirmation, :password, :password_confirmation,
     :remember_me, :roles, :avatar_attributes, :projects_attributes, :websites_attributes,
-    :first_name, :last_name, :mini_resume, :city, :country, :user_name, :name,
+    :first_name, :last_name, :mini_resume, :city, :country, :user_name, :full_name,
     :facebook_link, :twitter_link, :linked_in_link, :website_link,
     :blog_link
   accepts_nested_attributes_for :avatar, :projects, allow_destroy: true
@@ -47,6 +48,44 @@ class User < ActiveRecord::Base
   delegate :can?, :cannot?, to: :ability
 
   ROLES = %w(admin confirmed_user)
+
+  taggable :interest_tags, :skill_tags
+
+  # beginning of search methods
+  include Tire::Model::Search
+  include Tire::Model::Callbacks
+  index_name BONSAI_INDEX_NAME
+
+  tire do
+    mapping do
+      indexes :id,              index: :not_analyzed
+      indexes :model,           analyzer: 'keyword', type: 'string'
+      indexes :name,            analyzer: 'snowball', boost: 100, type: 'string'
+      indexes :user_name,       analyzer: 'snowball', boost: 100, type: 'string'
+      indexes :interests,       analyzer: 'snowball'
+      indexes :skills,          analyzer: 'snowball'
+      indexes :mini_resume,     analyzer: 'snowball'
+      indexes :publications,    analyzer: 'snowball'
+      indexes :country,         analyzer: 'snowball', type: 'string'
+      indexes :city,            analyzer: 'snowball', type: 'string'
+    end
+  end
+
+  def to_indexed_json
+    {
+      _id: id,
+      model: self.class.name,
+      name: name,
+      user_name: user_name,
+      city: city,
+      country: country,
+      mini_resume: mini_resume,
+      publications: publications.pluck(:title),
+      interests: interest_tags_string,
+      skills: skill_tags_string,
+    }.to_json
+  end
+  # end of search methods
 
   def ability
     @ability ||= Ability.new(self)

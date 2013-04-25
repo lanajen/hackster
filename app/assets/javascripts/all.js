@@ -7,9 +7,12 @@ $(document).ready(function(){
     e.stopPropagation();
     return false;
   });
-});
 
-$(document).ready(function(){
+  $('#full-search-form').submit(function(e){
+    if ($('input[name=model]', this).length > 1) {
+      $('input[name=model]').prop('checked', false);
+    }
+  });
 
   //[data-remote="true"]
   $('form')

@@ -1,2 +1,5 @@
 %form{ action: '/search', class: 'form-search', method: :get }
-  = text_field_tag :query, params[:query], class: 'input-medium search-query', placeholder: 'Search'
+  .input-prepend
+    %span.add-on
+      %i.icon-search
+    = text_field_tag :query, params[:query], class: 'input-medium', placeholder: 'Search'

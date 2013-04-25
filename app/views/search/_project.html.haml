@@ -1,0 +1,3 @@
+%a{ href: url_for(project) }
+  = image_tag project.image.file_url(:thumb) if project.image
+  %h5= project.name

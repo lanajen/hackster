@@ -1,0 +1,2 @@
+class TechTag < Tag
+end

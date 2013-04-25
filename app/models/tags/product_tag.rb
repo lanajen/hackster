@@ -1,0 +1,2 @@
+class ProductTag < Tag
+end

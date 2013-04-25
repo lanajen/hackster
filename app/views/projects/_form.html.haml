@@ -25,6 +25,8 @@
           .controls
             = f_p_images.link_to_remove 'Remove this image', class: 'btn btn-mini btn-danger'
     = f.link_to_add 'Add an image', :images, class: 'btn btn-mini btn-success'
+    = f.input :product_tags_string, as: :string, label: 'Tags', hint: 'Separate tags by commas'
+    = f.input :tech_tags_string, as: :string, label: 'Technologies used', hint: 'Separate technologies by commas'
 
   .form-actions
     = f.button :submit

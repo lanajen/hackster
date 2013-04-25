@@ -1,6 +1,5 @@
 class Project < ActiveRecord::Base
-  include Tire::Model::Search
-  include Tire::Model::Callbacks
+  include Taggable
 
   belongs_to :user
   has_and_belongs_to_many :followers, class_name: 'User', join_table: 'project_followers'
@@ -21,6 +20,37 @@ class Project < ActiveRecord::Base
 
   validates :name, presence: true
   before_validation :check_if_current
+
+  taggable :product_tags, :tech_tags
+
+  # beginning of search methods
+  include Tire::Model::Search
+  include Tire::Model::Callbacks
+  index_name BONSAI_INDEX_NAME
+
+  tire do
+    mapping do
+      indexes :id,              index: :not_analyzed
+      indexes :name,            analyzer: 'snowball', boost: 100
+      indexes :product_tags,    analyzer: 'snowball'
+      indexes :tech_tags,       analyzer: 'snowball'
+      indexes :description,     analyzer: 'snowball'
+      indexes :text_widgets,    analyzer: 'snowball'
+    end
+  end
+
+  def to_indexed_json
+    {
+      _id: id,
+      name: name,
+      model: self.class.name,
+      description: description,
+      product_tags: product_tags_string,
+      tech_tags: tech_tags_string,
+      text_widgets: Widget.where(type: 'TextWidget').where('widgets.stage_id IN (?)', stages.pluck(:id)).map{ |w| w.content }
+    }.to_json
+  end
+  # end of search methods
 
   def image
     images.first

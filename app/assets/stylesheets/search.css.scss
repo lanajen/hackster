@@ -1,0 +1,20 @@
+.search-results {
+  ul {
+    list-style: none;
+    margin: 0;
+    li {
+      margin-bottom: 20px;
+      img {
+        display: inline;
+        margin-right: 15px;
+        width: 60px;
+      }
+      h5 {
+        display: inline;
+      }
+      &.last {
+        margin-bottom: 0;
+      }
+    }
+ }
+}

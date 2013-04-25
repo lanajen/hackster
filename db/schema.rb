@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130424045753) do
+ActiveRecord::Schema.define(:version => 20130425001716) do
 
   create_table "attachments", :force => true do |t|
     t.string   "file"
@@ -90,6 +90,17 @@ ActiveRecord::Schema.define(:version => 20130424045753) do
   end
 
   add_index "stages", ["project_id"], :name => "index_stages_on_project_id"
+
+  create_table "tags", :force => true do |t|
+    t.integer  "taggable_id",   :null => false
+    t.string   "taggable_type", :null => false
+    t.string   "type",          :null => false
+    t.string   "name"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  add_index "tags", ["taggable_id", "taggable_type", "type"], :name => "index_taggable"
 
   create_table "team_members", :force => true do |t|
     t.integer  "user_id",    :null => false

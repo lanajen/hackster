@@ -15,8 +15,7 @@ module ApplicationHelper
     end
   end
 
-  # tire results don't implement to_param so need to make it work here
-  def result_to_model result
-    result._type.classify.constantize.send :find, result.id
+  def value_for_input param, val
+    param.nil? or param == val ? true : false
   end
 end

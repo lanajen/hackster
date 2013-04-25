@@ -1,6 +1,39 @@
-- if @results.any?
-  - @results.each do |result|
-    - model = result_to_model(result)
-    = render partial: "#{result.type}s/thumb", locals: { :"#{result.type}" => model.decorate }
-- else
-  No results.
+.row
+  .span3
+    .well
+      .header
+        %h3 Filters
+      .content
+        %form{ action: '/search', method: :get, id: 'full-search-form' }
+          .control-group
+            .controls
+              %label Keywords
+              = text_field_tag :query, params[:query], class: 'input-medium', placeholder: 'Search'
+          .control-group
+            .controls
+              %label Result types
+              %label.checkbox
+                %input{ type: 'checkbox', name: 'model', value: 'user', checked: value_for_input(params[:model], 'user') }
+                People
+              %label.checkbox
+                %input{ type: 'checkbox', name: 'model', value: 'project', checked: value_for_input(params[:model], 'project') }
+                Projects
+          = submit_tag 'Update results', class: 'btn btn-mini'
+  .span9
+    .well
+      - if @results.any?
+        .header
+          %h1
+            Results for
+            %em= params[:query]
+        .content.search-results
+          %ul
+            - @results.each_with_index do |result, i|
+              %li{ class: "#{'last' if i == @results.size - 1}" }
+                - model = result.class.name.underscore
+                = render partial: model, locals: { :"#{model}" => result.decorate }
+      - else
+        .header
+          %h1 Search
+        .content.search-results
+          No results.
