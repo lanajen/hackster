@@ -25,6 +25,7 @@ gem 'country-select', '1.1.1'
 gem 'dalli', '2.5.0'  # memcached
 gem 'devise', '2.1.2'
 gem 'draper', '1.0.0.beta3'
+gem 'ffaker'
 gem 'fog', '1.7.0'
 gem 'haml', '3.1.7'
 gem 'haml-rails', '0.3.5'
@@ -43,6 +44,7 @@ gem 'nokogiri', '~> 1.5.5'
 #gem 'omniauth-oauth', '1.0.1'  # for omniauth-twitter
 #gem 'omniauth-oauth2', '1.0.3'  # for omniauth-facebook
 #gem 'omniauth-twitter', '0.0.14'
+gem 'populator'
 gem 'pg', '~> 0.14.1'
 gem 'premailer-rails3', '1.3.1'
 gem 'oj', '2.0.10'

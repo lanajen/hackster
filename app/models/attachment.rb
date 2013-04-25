@@ -14,6 +14,6 @@ class Attachment < ActiveRecord::Base
 
   private
     def ensure_has_file
-      destroy if file.nil? or file.blank?
+      destroy if (file.nil? or file.blank?) and remote_file_url.blank?
     end
 end
