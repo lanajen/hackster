@@ -9,7 +9,7 @@ $(document).ready(function(){
   });
 
   $('#full-search-form').submit(function(e){
-    if ($('input[name=model]', this).length > 1) {
+    if ($('input[name=model]', this).is(':checked').length > 1) {
       $('input[name=model]').prop('checked', false);
     }
   });
