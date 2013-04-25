@@ -1,5 +1,4 @@
 require 'ffaker'
-require 'populator'
 
 100.times do
   user = User.new
