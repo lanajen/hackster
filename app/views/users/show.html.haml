@@ -103,7 +103,7 @@
               %h3 Activity
             .content
               %ul
-                - @user.broadcasts.order('created_at DESC').each do |broadcast|
+                - @user.broadcasts.order('created_at DESC').limit(10).each do |broadcast|
                   %li
                     - broadcast = broadcast.decorate
                     = broadcast.message.html_safe

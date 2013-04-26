@@ -46,6 +46,8 @@ class BroadcastDecorator < ApplicationDecorator
         case model.event.to_sym
         when :new
           "#{user_name} joined Hacker.io"
+        when :update
+          "#{user_name} updated their profile"
         end
       end
     end
