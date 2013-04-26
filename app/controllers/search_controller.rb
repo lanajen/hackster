@@ -1,5 +1,5 @@
 class SearchController < ApplicationController
   def search
-    @results = params[:query] ? SearchRepository.new(params).search.results : []
+    @results = params[:query].present? ? SearchRepository.new(params).search.results : []
   end
 end

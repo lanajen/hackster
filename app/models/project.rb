@@ -66,7 +66,7 @@ class Project < ActiveRecord::Base
     end
 
     def ensure_website_protocol
-      return unless website_changed?
+      return unless website_changed? and website.present?
       self.website = 'http://' + website unless website =~ /^http/
     end
 end

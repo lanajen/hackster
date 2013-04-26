@@ -15,9 +15,9 @@ require 'ffaker'
   user.build_avatar
   user.avatar.skip_file_check!
   user.avatar.remote_file_url = 'http://lorempixel.com/200/200/people'
-  user.save
   user.interest_tags_string = Faker::HipsterIpsum.words(3).join(',')
   user.skill_tags_string = Faker::HipsterIpsum.words(3).join(',')
+  user.save
   user.publications.create(
     title: Faker::Lorem.sentence(4),
     abstract: Faker::Lorem.paragraph,
@@ -44,9 +44,9 @@ users = User.pluck(:id)
   project.logo.skip_file_check!
   project.logo.remote_file_url = 'http://lorempixel.com/200/200/abstract'
   project.website = Faker::Internet.http_url
-  project.save
   project.product_tags_string = Faker::HipsterIpsum.words(3).join(',')
   project.tech_tags_string = Faker::HipsterIpsum.words(3).join(',')
+  project.save
   project.stages.each do |stage|
     widget = TextWidget.create name: Faker::Lorem.words(3).join(' '), stage_id: stage.id
     widget.content = Faker::HTMLIpsum.p(3, fancy: true, include_breaks: true)

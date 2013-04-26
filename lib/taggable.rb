@@ -3,15 +3,17 @@ module Taggable
     def taggable *tags
       tags.each do |tag_type|
         attr_accessible :"#{tag_type}_string"
+        attr_accessor :"#{tag_type}_string"
         has_many tag_type, as: :taggable, dependent: :destroy
+        after_save :"save_#{tag_type}"
         self.send :define_method, "#{tag_type}_string" do
           eval "
-            #{tag_type}.pluck(:name).join(', ')
+            @#{tag_type}_string ||= #{tag_type}.pluck(:name).join(', ')
           "
         end
-        self.send :define_method, "#{tag_type}_string=" do |val|
+        self.send :define_method, "save_#{tag_type}" do
           eval "
-            tags = val.split(',').map{ |s| s.strip }
+            tags = #{tag_type}_string.split(',').map{ |s| s.strip }
             existing = #{tag_type}.pluck(:name)
             (tags - existing).each do |tag|
               #{tag_type}.create name: tag

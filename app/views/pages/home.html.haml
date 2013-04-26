@@ -12,7 +12,9 @@
   .span12
     .well
       .header
-        %h2 Featured projects
+        %h2
+          Featured projects
+          = link_to 'See more featured projects &rarr;'.html_safe, '/search', class: 'btn-edit'
     %ul.thumbnails
       - @featured_projects.each do |project|
         %li.span3
@@ -21,3 +23,46 @@
             .caption
               %h3= link_to project.name, project
               %p= truncate project.description, length: 100
+
+.row
+  .span12
+    .well
+      .header
+        %h2
+          Latest projects
+          = link_to 'See more recent projects &rarr;'.html_safe, '/search', class: 'btn-edit'
+    %ul.thumbnails
+      - @last_projects.each do |project|
+        %li.span3
+          .thumbnail
+            = link_to image_tag(project.image.file_url(:headline)), project if project.image
+            .caption
+              %h3= link_to project.name, project
+              %p= truncate project.description, length: 100
+
+.row
+  .span12
+    .well
+      .header
+        %h2
+          Projects for you
+          = link_to 'See more projects for you &rarr;'.html_safe, "/search?query=#{CGI::escape(@custom_projects_query) + '&' + CGI::escape('model[project]=1') }", class: 'btn-edit'
+    - if @custom_projects
+      - if @custom_projects.any?
+        %ul.thumbnails
+          - @custom_projects.each do |project|
+            %li.span3
+              .thumbnail
+                = link_to image_tag(project.image.file_url(:headline)), project if project.image
+                .caption
+                  %h3= link_to project.name, project
+                  %p= truncate project.description, length: 100
+      - else
+        %p
+          Fill in your interests
+          = link_to 'in your profile', current_user
+          so we can show you more relevant projects.
+    - else
+      %p
+        = link_to 'Log in', new_user_session_path
+        to see projects that match your interests.
