@@ -15,10 +15,10 @@
               %label
                 %strong Result types
               %label.checkbox
-                = check_box_tag 'model[user]', 1, (params[:model] and params[:model][:user] or not params[:model])
+                = check_box_tag 'model[user]', 1, (params[:model] and params[:model][:user])
                 People
               %label.checkbox
-                = check_box_tag 'model[project]', 1, (params[:model] and params[:model][:project] or not params[:model])
+                = check_box_tag 'model[project]', 1, (params[:model] and params[:model][:project])
                 Projects
           .control-group
             .controls

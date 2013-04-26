@@ -26,6 +26,7 @@ require 'ffaker'
   )
 end
 
+users = User.pluck(:id)
 10.times do
   project = Project.new
   3.times do
@@ -36,7 +37,7 @@ end
   project.name = Faker::Lorem.words(3).join(' ')
   project.description = Faker::Lorem.paragraph
   (rand(3)+1).times do
-    project.team_members.new user_id: rand(100)+1, role: %w(CEO CTO Hacker Eng Maker Designer Programmer).sample
+    project.team_members.new user_id: users.sample, role: %w(CEO CTO Hacker Eng Maker Designer Programmer).sample
   end
   project.start_date = rand(100).months.ago
   project.build_logo
