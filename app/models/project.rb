@@ -10,13 +10,14 @@ class Project < ActiveRecord::Base
   has_many :team_members, include: :user
   has_many :users, through: :team_members
   has_many :widgets, through: :stages
-  has_one :video, dependent: :destroy
+  has_one :logo, as: :attachable, class_name: 'Avatar'
+  has_one :video, as: :recordable, dependent: :destroy
 
   sanitize_text :description
   attr_accessible :description, :end_date, :name, :start_date, :images_attributes,
-    :video_attributes, :current
+    :video_attributes, :current, :logo_attributes
   attr_accessor :current
-  accepts_nested_attributes_for :images, :video, allow_destroy: true
+  accepts_nested_attributes_for :images, :video, :logo, allow_destroy: true
 
   validates :name, presence: true
   before_validation :check_if_current

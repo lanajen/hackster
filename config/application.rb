@@ -24,7 +24,9 @@ module HackerIo
     # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
 
     # Activate observers that should always be running.
-    config.active_record.observers = :project_observer, :widget_observer
+    config.active_record.observers = :project_observer, :widget_observer,
+      :user_observer, :comment_observer, :discussion_observer, :blog_post_observer,
+      :publication_observer
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.

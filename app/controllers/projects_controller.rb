@@ -25,6 +25,7 @@ class ProjectsController < ApplicationController
 
     if @project.save
       flash[:notice] = 'Project was successfully created.'
+      current_user.broadcast :new, @project.id, 'Project'
       respond_with @project
     else
       initialize_project
@@ -35,6 +36,7 @@ class ProjectsController < ApplicationController
   def update
     if @project.update_attributes(params[:project])
       flash[:notice] = 'Project was successfully updated.'
+      current_user.broadcast :update, @project.id, 'Project'
       respond_with @project
     else
       initialize_project
@@ -52,5 +54,6 @@ class ProjectsController < ApplicationController
     def initialize_project
       @project.images.new unless @project.images.any?
       @project.build_video unless @project.video
+      @project.build_logo unless @project.logo
     end
 end

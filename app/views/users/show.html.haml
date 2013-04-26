@@ -85,3 +85,15 @@
                     %li= render partial: 'user_thumb_mini', locals: { user: user.decorate }
               - else
                 No one yet.
+
+          .well
+            .header
+              %h3 Activity
+            .content
+              %ul
+                - @user.broadcasts.order('created_at DESC').each do |broadcast|
+                  %li
+                    - broadcast = broadcast.decorate
+                    = broadcast.message.html_safe
+                    .muted
+                      = broadcast.created_at

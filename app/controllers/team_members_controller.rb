@@ -15,6 +15,7 @@ class TeamMembersController < ApplicationController
 
     if @team_member.save
       flash[:notice] = 'Team member added.'
+      current_user.broadcast :update, @project.id, 'Project'
       respond_with @project
     else
       render action: 'new'

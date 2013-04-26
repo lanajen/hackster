@@ -1,6 +1,6 @@
 class Video < ActiveRecord::Base
 
-  belongs_to :project
+  belongs_to :recordable, polymorphic: true
   attr_accessible :link
   attr_accessor :not_found
   before_validation :get_info_from_provider
@@ -67,8 +67,6 @@ class Video < ActiveRecord::Base
     def get_info_from_youtube
       self.provider = :youtube
       self.id_for_provider = get_id_from_link_for_youtube link
-      self.height = DEFAULT_HEIGHT
-      self.width = FIXED_WIDTH
       self.ratio_width = DEFAULT_RATIO_WIDTH
       self.ratio_height = DEFAULT_RATIO_HEIGHT
     end

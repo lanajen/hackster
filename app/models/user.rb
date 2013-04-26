@@ -51,6 +51,14 @@ class User < ActiveRecord::Base
 
   taggable :interest_tags, :skill_tags
 
+  # broadcastable
+  has_many :broadcasts, as: :broadcastable
+
+  def broadcast event, context_model_id, context_model_type
+    broadcasts.create event: event, context_model_id: context_model_id,
+      context_model_type: context_model_type
+  end
+
   # beginning of search methods
   include Tire::Model::Search
   include Tire::Model::Callbacks

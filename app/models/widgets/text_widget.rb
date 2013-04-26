@@ -1,8 +1,4 @@
 class TextWidget < Widget
-
-#  validates :content, presence: true
-
-#  self.identifier = :text
   define_attributes [:content]
 
   def content_definition

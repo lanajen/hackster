@@ -1,10 +1,22 @@
 - widget.images.new if widget.images.empty?
-- widget.images.each do |image|
-  = image_tag image.file_url(:thumb) if image and image.file_url(:thumb)
-  = f.simple_fields_for :images, image do |f_image|
-    = f_image.input :file, as: :file, label: false
-    = f_image.input :file_cache, as: :hidden
-    .control-group
-      .controls
-        = f_image.link_to_remove 'Remove this image', class: 'btn btn-mini btn-danger'
-= f.link_to_add 'Add an image', :images, class: 'btn btn-mini btn-success'
+.form-images
+  - widget.images.each do |image|
+    = f.simple_fields_for :images, image do |f_image|
+      .control-group
+        .controls
+          = image_tag image.file_url(:thumb) if image and image.file_url(:thumb)
+      = f_image.input :file, as: :file, label: false
+      = f_image.input :file_cache, as: :hidden
+      .control-group
+        .controls
+          = f_image.link_to_remove 'Remove this image', class: 'btn btn-mini btn-danger'
+  = f.link_to_add 'Add an image', :images, class: 'btn btn-mini btn-success'
+
+= content_for :js do
+  :javascript
+    jQuery(function($) {
+      $(document).on('nested:fieldAdded', function(event){
+        var field = event.field;
+        field.addClass('new');
+      });
+    });

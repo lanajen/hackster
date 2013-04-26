@@ -11,7 +11,6 @@ class Widget < ActiveRecord::Base
   validates :type, :name, presence: true
 
   class << self
-#    attr_accessor :identifier
     attr_accessor :custom_attributes
 
     def define_attributes attributes
@@ -30,7 +29,14 @@ class Widget < ActiveRecord::Base
       end
     end
   end
-#  self.identifier = :base_widget
+
+  def completion_absolute
+    completion_share * completion_rate / 100
+  end
+
+  def identifier
+    self.class.name.to_s.underscore
+  end
 
   def help_text
     ''
@@ -54,6 +60,7 @@ class Widget < ActiveRecord::Base
       {
         'Images' => 'ImageWidget',
         'Text' => 'TextWidget',
+        'Video' => 'VideoWidget',
       }
     end
 end

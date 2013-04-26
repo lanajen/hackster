@@ -23,3 +23,19 @@
     }
   }
 }
+
+.form-images {
+  .fields {
+    .control-group.file {
+      display: none;
+    }
+    &.new {
+      .control-group.file {
+        display: block;
+      }
+      img {
+        display: none;
+      }
+    }
+  }
+}

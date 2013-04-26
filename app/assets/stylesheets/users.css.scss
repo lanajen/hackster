@@ -26,6 +26,7 @@
   margin: 0;
   li {
     list-style: none;
+    display: inline-block;
   }
 }
 
@@ -60,6 +61,7 @@ ul.websites {
     }
     p {
       @include font-size(14);
+      max-width: 520px;
     }
   }
 }

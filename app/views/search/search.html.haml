@@ -13,10 +13,19 @@
             .controls
               %label Result types
               %label.checkbox
-                %input{ type: 'checkbox', name: 'model', value: 'user', checked: value_for_input(params[:model], 'user') }
+                %input{ type: 'checkbox', name: 'model[user]', value: 1 }
                 People
               %label.checkbox
-                %input{ type: 'checkbox', name: 'model', value: 'project', checked: value_for_input(params[:model], 'project') }
+                %input{ type: 'checkbox', name: 'model[project]', value: 1 }
+                Projects
+          .control-group
+            .controls
+              %label Result types
+              %label.checkbox
+                %input{ type: 'checkbox', name: '', value: 'user' }
+                People
+              %label.checkbox
+                %input{ type: 'checkbox', name: '', value: 'project' }
                 Projects
           = submit_tag 'Update results', class: 'btn btn-mini'
   .span9

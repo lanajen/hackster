@@ -1,4 +1,4 @@
-= simple_nested_form_for @project do |f|
+= simple_nested_form_for @project, html: { class: 'form-horizontal full-size' } do |f|
   = f.error_notification
 
   .form-inputs
@@ -6,7 +6,7 @@
     .control-group
       .controls
         = render 'wysihtml5_toolbar'
-    = f.input :description, input_html: { id: 'wysihtml5-textarea' }
+    = f.input :description, input_html: { id: 'wysihtml5-textarea', rows: 10 }
     = f.input :start_date, order: [:year, :month],
       start_year: Date.today.year,
       end_year: Date.today.year - 50
@@ -14,19 +14,37 @@
       start_year: Date.today.year,
       end_year: Date.today.year - 50
     = f.input :current, as: :boolean, label: false, inline_label: 'Currently working on it'
-    = f.simple_fields_for :video do |f_p_video|
-      = f_p_video.input :link, label: 'Video link'
-    - @project.images.each do |image|
-      = image_tag image.file_url(:thumb) if image and image.file_url(:thumb)
-      = f.simple_fields_for :images, image do |f_p_images|
-        = f_p_images.input :file, as: :file, label: false
-        = f_p_images.input :file_cache, as: :hidden
-        .control-group
-          .controls
-            = f_p_images.link_to_remove 'Remove this image', class: 'btn btn-mini btn-danger'
-    = f.link_to_add 'Add an image', :images, class: 'btn btn-mini btn-success'
+    = f.simple_fields_for :logo do |f_logo|
+      .control-group
+        .controls
+          = image_tag @project.logo.file_url(:thumb) if @project.logo and @project.logo.file_url(:thumb)
+      = f_logo.input :file, as: :file, label: 'Logo'
+      = f_logo.input :file_cache, as: :hidden
+    = f.simple_fields_for :video do |f_video|
+      = f_video.input :link, label: 'Video link'
+    .form-images
+      - @project.images.each do |image|
+        = f.simple_fields_for :images, image do |f_images|
+          .control-group
+            .controls
+              = image_tag image.file_url(:thumb) if image and image.file_url(:thumb)
+          = f_images.input :file, as: :file, label: false
+          = f_images.input :file_cache, as: :hidden
+          .control-group
+            .controls
+              = f_images.link_to_remove 'Remove this image', class: 'btn btn-mini btn-danger'
+      = f.link_to_add 'Add an image', :images, class: 'btn btn-mini btn-success'
     = f.input :product_tags_string, as: :string, label: 'Tags', hint: 'Separate tags by commas'
     = f.input :tech_tags_string, as: :string, label: 'Technologies used', hint: 'Separate technologies by commas'
 
   .form-actions
     = f.button :submit
+
+= content_for :js do
+  :javascript
+    jQuery(function($) {
+      $(document).on('nested:fieldAdded', function(event){
+        var field = event.field;
+        field.addClass('new');
+      });
+    });

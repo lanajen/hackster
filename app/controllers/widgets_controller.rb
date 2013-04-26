@@ -25,6 +25,7 @@ class WidgetsController < ApplicationController
   def update
     if @widget.update_attributes params[@widget.type.underscore]
       flash[:notice] = 'Widget saved.'
+      current_user.broadcast :update, @widget.project.id, 'Project'
       respond_with @stage.project
     else
       render 'edit'

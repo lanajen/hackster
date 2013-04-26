@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130425001716) do
+ActiveRecord::Schema.define(:version => 20130425234103) do
 
   create_table "attachments", :force => true do |t|
     t.string   "file"
@@ -23,6 +23,19 @@ ActiveRecord::Schema.define(:version => 20130425001716) do
   end
 
   add_index "attachments", ["attachable_id", "attachable_type", "type"], :name => "index_attachments_on_attachable_id_and_attachable_type_and_type"
+
+  create_table "broadcasts", :force => true do |t|
+    t.string   "broadcastable_type", :null => false
+    t.integer  "broadcastable_id",   :null => false
+    t.string   "event",              :null => false
+    t.integer  "context_model_id",   :null => false
+    t.string   "context_model_type", :null => false
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+  end
+
+  add_index "broadcasts", ["broadcastable_type", "broadcastable_id"], :name => "index_broadcastable"
+  add_index "broadcasts", ["context_model_type", "context_model_id"], :name => "index_broadcasted"
 
   create_table "comments", :force => true do |t|
     t.integer  "user_id",          :null => false
@@ -158,15 +171,16 @@ ActiveRecord::Schema.define(:version => 20130425001716) do
     t.string   "link",            :limit => 100
     t.string   "provider"
     t.string   "id_for_provider"
-    t.integer  "project_id",                     :null => false
+    t.integer  "recordable_id",                                  :null => false
     t.string   "thumbnail_link"
     t.integer  "ratio_height"
     t.integer  "ratio_width"
-    t.datetime "created_at",                     :null => false
-    t.datetime "updated_at",                     :null => false
+    t.datetime "created_at",                                     :null => false
+    t.datetime "updated_at",                                     :null => false
+    t.string   "recordable_type",                :default => "", :null => false
   end
 
-  add_index "videos", ["project_id"], :name => "index_videos_on_project_id"
+  add_index "videos", ["recordable_id", "recordable_type"], :name => "recordable_index"
 
   create_table "widgets", :force => true do |t|
     t.string   "type",                            :null => false

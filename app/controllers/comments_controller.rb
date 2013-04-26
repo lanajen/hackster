@@ -61,7 +61,9 @@ class CommentsController < ApplicationController
     def path_for_commentable commentable
       case commentable.class.to_s
       when 'BlogPost'
-        project_blog_path(@commentable.bloggable, @commentable)
+        project_blog_post_path(@commentable.threadable, @commentable)
+      when 'Discussion'
+        project_discussion_path(@commentable.threadable, @commentable)
       end
     end
 end
