@@ -8,12 +8,6 @@ $(document).ready(function(){
     return false;
   });
 
-  $('#full-search-form').submit(function(e){
-    if ($('input[name=model]:checked', this).length > 1) {
-      $('input[name=model]').prop('checked', false);
-    }
-  });
-
   //[data-remote="true"]
   $('form')
     .live("ajax:beforeSend", function(evt, xhr, settings){
