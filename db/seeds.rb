@@ -42,6 +42,7 @@ end
   project.build_logo
   project.logo.skip_file_check!
   project.logo.remote_file_url = 'http://lorempixel.com/200/200/abstract'
+  project.website = Faker::Internet.http_url
   project.save
   project.product_tags_string = Faker::HipsterIpsum.words(3).join(',')
   project.tech_tags_string = Faker::HipsterIpsum.words(3).join(',')

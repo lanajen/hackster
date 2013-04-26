@@ -23,7 +23,7 @@
       = f_logo.input :file_cache, as: :hidden
     = f.simple_fields_for :video do |f_video|
       = f_video.input :link, label: 'Video link'
-    .form-images
+    .form-fields
       - @project.images.each do |image|
         = f.simple_fields_for :images, image do |f_images|
           .control-group

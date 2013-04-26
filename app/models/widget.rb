@@ -58,6 +58,7 @@ class Widget < ActiveRecord::Base
   protected
     def self.all_types
       {
+        'Documents' => 'DocumentWidget',
         'Images' => 'ImageWidget',
         'Text' => 'TextWidget',
         'Video' => 'VideoWidget',

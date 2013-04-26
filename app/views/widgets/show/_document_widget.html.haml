@@ -1,0 +1,6 @@
+- if widget.documents.any?
+  %ul
+    - widget.documents.each do |document|
+      %li= link_to document.file_name, document.file_url
+- else
+  %p No documents yet.

@@ -1,5 +1,5 @@
 - widget.images.new if widget.images.empty?
-.form-images
+.form-fields
   - widget.images.each do |image|
     = f.simple_fields_for :images, image do |f_image|
       .control-group

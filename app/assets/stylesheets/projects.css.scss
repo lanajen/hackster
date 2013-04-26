@@ -24,7 +24,7 @@
   }
 }
 
-.form-images {
+.form-fields {
   .fields {
     .control-group.file {
       display: none;
@@ -33,7 +33,7 @@
       .control-group.file {
         display: block;
       }
-      img {
+      .url, img {
         display: none;
       }
     }
