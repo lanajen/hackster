@@ -1,16 +1,15 @@
 class WidgetsController < ApplicationController
   before_filter :load_stage
-  load_and_authorize_resource except: [:new, :create]
+  load_resource except: [:new, :create]
   respond_to :html
+  layout 'project'
 
   def new
     @widget = @stage.widgets.new(params[:widget])
-    authorize! :create, @widget
   end
 
   def create
     @widget = @stage.widgets.create(params[:widget])
-    authorize! :create, @widget
 
     if @widget.save
       redirect_to edit_stage_widget_path(@stage, @widget)
@@ -25,8 +24,8 @@ class WidgetsController < ApplicationController
   def update
     if @widget.update_attributes params[@widget.type.underscore]
       flash[:notice] = 'Widget saved.'
-      current_user.broadcast :update, @widget.project.id, 'Project'
-      respond_with @stage.project
+      current_user.broadcast :update, @project.id, 'Project'
+      respond_with @project
     else
       render 'edit'
     end
@@ -36,11 +35,13 @@ class WidgetsController < ApplicationController
     @widget.destroy
 
     flash[:notice] = 'Widget deleted.'
-    respond_with @stage.project
+    respond_with @project
   end
 
   private
     def load_stage
       @stage = Stage.find params[:stage_id]
+      @project = @stage.project
+      authorize! :update_widgets, @project
     end
 end

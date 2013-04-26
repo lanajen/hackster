@@ -27,10 +27,11 @@ HackerIo::Application.routes.draw do
       get 'followers' => 'project_followers#index', as: :followers
       post 'followers' => 'project_followers#create'
       delete 'followers' => 'project_followers#destroy'
+      get 'team_members' => 'team_members#edit', as: :edit_team_members
+      put 'team_members' => 'team_members#update'
     end
     resources :blog_posts, controller: :thread_posts
     resources :discussions, controller: :thread_posts
-    resources :team_members
   end
   resources :publications, except: [:show]
   resources :stages do

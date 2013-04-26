@@ -15,9 +15,10 @@ class Project < ActiveRecord::Base
 
   sanitize_text :description
   attr_accessible :description, :end_date, :name, :start_date, :images_attributes,
-    :video_attributes, :current, :logo_attributes
+    :video_attributes, :current, :logo_attributes, :team_members_attributes
   attr_accessor :current
-  accepts_nested_attributes_for :images, :video, :logo, allow_destroy: true
+  accepts_nested_attributes_for :images, :video, :logo, :team_members,
+    allow_destroy: true
 
   validates :name, presence: true
   before_validation :check_if_current
