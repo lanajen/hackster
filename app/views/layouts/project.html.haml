@@ -13,6 +13,7 @@
             = l @project.start_date, format: :month
             \-
             = @project.end_date ? l(@project.end_date, format: :month) : 'Present'
+          %p.muted= link_to @project.website, @project.website if @project.website
           %p.muted
             - (@project.product_tags.pluck(:name) + @project.tech_tags.pluck(:name)).each do |tag|
               = link_to tag, "/search?query=#{CGI::escape(tag)}"

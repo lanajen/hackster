@@ -4,9 +4,6 @@
     .pull-left
       %h1= @user.name
       %p{ style: 'max-width:800px' }= @user.mini_resume
-      %p.muted
-        - (@user.interest_tags.pluck(:name) + @user.skill_tags.pluck(:name)).each do |tag|
-          = link_to tag, "/search?query=#{CGI::escape(tag)}"
       - if @user.websites.any?
         %ul.websites
           - @user.websites.each do |type, url|

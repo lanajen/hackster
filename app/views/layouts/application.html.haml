@@ -24,8 +24,6 @@
             = link_to 'Hacker.io', root_path, class: 'brand'
             .container.nav-collapse
               %ul.nav
-                %li= link_to 'Browse', '/search'
-                %li= link_to 'New project', new_project_path
               .pull-left= render 'application/search_form'
               %ul.nav.pull-right
                 - if user_signed_in?
@@ -39,6 +37,7 @@
                         %li.divider
                         - current_user.projects.each do |project|
                           %li= link_to project.name, project
+                        %li= link_to 'Create a new project', new_project_path
                       %li.divider
                       %li= link_to 'Log out', destroy_user_session_path, method: :delete
                 - else

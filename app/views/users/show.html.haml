@@ -63,6 +63,18 @@
                 - else
                   #{@user.name} has no publications yet.
 
+          .well
+            .header
+              %h3 What I do
+            .content
+              = @user.skill_tags.pluck(:name).map{ |tag| link_to tag, "/search?query=#{CGI::escape(tag)}" }.to_sentence.html_safe
+
+          .well
+            .header
+              %h3 What I'm looking for
+            .content
+              = @user.interest_tags.pluck(:name).map{ |tag| link_to tag, "/search?query=#{CGI::escape(tag)}" }.to_sentence.html_safe
+
         .span4
           .well.sidebar-nav
             .header

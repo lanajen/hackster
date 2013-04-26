@@ -15,13 +15,15 @@ class Project < ActiveRecord::Base
 
   sanitize_text :description
   attr_accessible :description, :end_date, :name, :start_date, :images_attributes,
-    :video_attributes, :current, :logo_attributes, :team_members_attributes
+    :video_attributes, :current, :logo_attributes, :team_members_attributes,
+    :website
   attr_accessor :current
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
     allow_destroy: true
 
   validates :name, presence: true
   before_validation :check_if_current
+  before_validation :ensure_website_protocol
 
   taggable :product_tags, :tech_tags
 
@@ -61,5 +63,10 @@ class Project < ActiveRecord::Base
   private
     def check_if_current
       self.end_date = nil if current
+    end
+
+    def ensure_website_protocol
+      return unless website_changed?
+      self.website = 'http://' + website unless website =~ /^http/
     end
 end

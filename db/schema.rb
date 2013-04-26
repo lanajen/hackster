@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130425234103) do
+ActiveRecord::Schema.define(:version => 20130426023848) do
 
   create_table "attachments", :force => true do |t|
     t.string   "file"
@@ -78,6 +78,7 @@ ActiveRecord::Schema.define(:version => 20130425234103) do
     t.date     "end_date"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
+    t.string   "website"
   end
 
   create_table "publications", :force => true do |t|
