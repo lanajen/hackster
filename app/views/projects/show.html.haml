@@ -24,7 +24,7 @@
           %h3{ style: 'position:relative;' }
             = stage.name.humanize
             - if can? :update_stages, @project
-              .pull-right= link_to 'Add a widget', new_stage_widget_path(stage), class: 'btn btn-info btn-mini'
+              .pull-right= link_to 'Add a component', new_stage_widget_path(stage), class: 'btn btn-info btn-mini'
           .progress{ style: 'margin:0' }
             .bar.bar-success{ style: "width:#{stage.completion_rate}%" }
               .percentage{ style: 'padding:0 10px;position:absolute;' } #{stage.completion_rate}% completed
@@ -36,21 +36,22 @@
                 %li{ style: 'margin-bottom:20px;' }
                   %h4{ style: 'position:relative;' }
                     = widget.name
-                    .progress{ style: 'margin:5px 0' }
-                      .bar.bar-success{ style: "width:#{widget.completion_absolute}%" }
-                        .percentage{ style: 'padding:0 10px;position:absolute;' } counts for #{widget.completion_share}%, #{widget.completion_rate}% completed
-                      .bar.bar-warning{ style: "width:#{widget.completion_share-widget.completion_absolute}%" }
-                      .bar{ style: "width:#{100-widget.completion_share}%" }
                     - if can? :update_widgets, @project
                       = link_to 'Edit', edit_stage_widget_path(stage, widget), class: 'btn-edit'
+                  .progress{ style: 'margin:5px 0' }
+                    .bar.bar-success{ style: "width:#{widget.completion_absolute}%" }
+                      .percentage{ style: 'padding:0 10px;position:absolute;' } counts for #{widget.completion_share}%, #{widget.completion_rate}% completed
+                    .bar.bar-warning{ style: "width:#{widget.completion_share-widget.completion_absolute}%" }
+                    -#.bar{ style: "width:#{100-widget.completion_share}%" }
                   = render partial: "widgets/show/#{widget.identifier}", locals: { widget: widget }
             - else
               %p
-                No widgets yet.
+                No components yet.
                 - if can? :update_widgets, @project
                   = link_to 'Add one', new_stage_widget_path(stage), class: 'btn btn-info btn-mini'
 
-    .well
+  .span4
+    .well.sidebar-nav
       .header
         %h3
           Team
@@ -63,8 +64,6 @@
             %li{ style: 'position:relative;margin-bottom:5px;' }
               = render partial: 'users/user_popover', locals: { team_member: team_member, user: team_member.user.decorate }
 
-
-  .span4
     .well.sidebar-nav
       .header
         %h3 Followers

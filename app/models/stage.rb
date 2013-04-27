@@ -10,7 +10,7 @@ class Stage < ActiveRecord::Base
       widgets.each{ |w| total += w.completion_rate * w.completion_share / 100 }
       total
     else
-      100
+      0
     end
     save
   end

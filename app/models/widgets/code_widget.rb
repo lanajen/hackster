@@ -14,26 +14,17 @@ class CodeWidget < Widget
     return unless document and (document.file_changed? or language_changed?)
 
     begin
-      case document.file_changed?
-      when false
-        file_url = case Rails.env
-        when 'development'
-          "http://#{APP_CONFIG['default_host']}:#{APP_CONFIG['default_port']}#{document.file_url}"
-        when 'production'
-          document.file_url
-        end
-        text = open(file_url).read
-
-      when true
-#        text = File.read(File.join(Rails.root, 'public', document.file_url))
-        file_url = "http://#{APP_CONFIG['default_host']}:#{APP_CONFIG['default_port']}#{document.file_url}"
-        text = open(file_url).read
+      file_url = unless document.file_changed? and Rails.env == 'production'
+        "http://#{APP_CONFIG['default_host']}:#{APP_CONFIG['default_port']}#{document.file_url}"
+      else
+        document.file_url
       end
 
     rescue
       text = "Error opening file."
     end
 
+    text = open(file_url).read
     self.formatted_content = Pygments.highlight(text, lexer: language)
   end
 
