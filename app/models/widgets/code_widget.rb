@@ -12,18 +12,27 @@ class CodeWidget < Widget
 
   def format_content
     return unless document and (document.changed? or language_changed?)
-    file_url = case Rails.env
-    when 'development'
-      "http://#{APP_CONFIG['default_host']}:#{APP_CONFIG['default_port']}#{document.file_url}"
-    when 'production'
-      document.file_url
-    end
+
     begin
-      text = open(file_url).read
-      self.formatted_content = Pygments.highlight(text, lexer: language)
+      case document.persisted?
+      when true
+        file_url = case Rails.env
+        when 'development'
+          "http://#{APP_CONFIG['default_host']}:#{APP_CONFIG['default_port']}#{document.file_url}"
+        when 'production'
+          document.file_url
+        end
+        text = open(file_url).read
+
+      when false
+        text = File.read(File.join(Rails.root, 'public', document.file_url))
+      end
+
     rescue
-      self.formatted_content = "<pre><code>Error opening file.</code></pre>"
+      text = "Error opening file."
     end
+
+    self.formatted_content = Pygments.highlight(text, lexer: language)
   end
 
   def help_text
