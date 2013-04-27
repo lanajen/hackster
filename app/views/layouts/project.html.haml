@@ -1,13 +1,10 @@
+- @project = @project.decorate
 = content_for :no_container do
   #heading
     .container
       .row
         .span12.teaser
-          .pull-left.avatar.main-avatar
-            - if @project.logo
-              = image_tag @project.logo.file_url(:thumb), alt: @project.name
-            - else
-              = image_tag ''
+          .pull-left.avatar.main-avatar= @project.logo_link(:thumb)
           %h1= @project.name
           %p.muted
             = l @project.start_date, format: :month

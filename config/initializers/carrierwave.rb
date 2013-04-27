@@ -11,7 +11,7 @@ CarrierWave.configure do |config|
   config.fog_attributes = {'Cache-Control'=>'max-age=315576000'}  # optional, defaults to {}
 end if Rails.env == 'production'
 
-CarrierWave.configure do |config|
-  config.cache_dir = 'uploads'
-  config.root = Rails.root.join('tmp')
-end
+#CarrierWave.configure do |config|
+#  config.cache_dir = 'uploads'
+#  config.root = Rails.root.join('tmp')
+#end

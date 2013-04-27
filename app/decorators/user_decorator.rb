@@ -1,5 +1,4 @@
 class UserDecorator < ApplicationDecorator
-  decorates :user
 
   def avatar size=:thumb
     if model.avatar
@@ -24,7 +23,7 @@ class UserDecorator < ApplicationDecorator
   end
 
   def avatar_link size=:thumb
-    link_to_user h.image_tag(avatar(size), alt: model.name)
+    link_to_model h.image_tag(avatar(size), alt: model.name)
   end
 
   def origin
@@ -40,11 +39,6 @@ class UserDecorator < ApplicationDecorator
   end
 
   def name_link
-    link_to_user model.name
+    link_to_model model.name
   end
-
-  private
-    def link_to_user content
-      h.link_to content, h.user_path(model)
-    end
 end
