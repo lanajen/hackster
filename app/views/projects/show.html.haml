@@ -18,7 +18,7 @@
       .content
         = @project.description.html_safe
 
-    - @project.stages.each do |stage|
+    - @project.stages.order(:created_at).each do |stage|
       .well
         .header
           %h3{ style: 'position:relative;' }
