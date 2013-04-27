@@ -26,6 +26,12 @@ class Widget < ActiveRecord::Base
         send :define_method, attribute do
           properties[attribute]
         end
+        send :define_method, "#{attribute}_was" do
+          properties_was[attribute]
+        end
+        send :define_method, "#{attribute}_changed?" do
+          send("#{attribute}_was") != send(attribute)
+        end
       end
     end
   end
@@ -55,9 +61,15 @@ class Widget < ActiveRecord::Base
     write_attribute :properties, YAML::dump(val)
   end
 
+  def properties_was
+    val = super
+    val.kind_of?(String) ? YAML::load(val) : val
+  end
+
   protected
     def self.all_types
       {
+        'Code' => 'CodeWidget',
         'Documents' => 'DocumentWidget',
         'Images' => 'ImageWidget',
         'Text' => 'TextWidget',

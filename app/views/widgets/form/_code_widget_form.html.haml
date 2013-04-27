@@ -1,0 +1,9 @@
+- widget.build_document unless widget.document
+= f.simple_fields_for :document do |f_document|
+  - if widget.document
+    .control-group.url
+      .controls
+        = widget.document.file_name
+  = f_document.input :file, as: :file, label: false
+  = f_document.input :file_cache, as: :hidden
+= f.input :language, as: :select, collection: { 'C' => 'c', 'Python' => 'python', 'Ruby' => 'ruby' }

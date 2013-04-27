@@ -194,6 +194,7 @@ GEM
     orm_adapter (0.4.0)
     pg (0.14.1)
     polyglot (0.3.3)
+    posix-spawn (0.3.6)
     premailer (1.7.3)
       css_parser (>= 1.1.9)
       htmlentities (>= 4.0.0)
@@ -204,6 +205,9 @@ GEM
       coderay (~> 1.0.5)
       method_source (~> 0.8)
       slop (~> 3.4)
+    pygments.rb (0.5.0)
+      posix-spawn (~> 0.3.6)
+      yajl-ruby (~> 1.1.0)
     rabl (0.8.2)
       activesupport (>= 2.3.14)
     rack (1.4.5)
@@ -278,6 +282,8 @@ GEM
     sanitize (2.0.3)
       nokogiri (>= 1.4.4, < 1.6)
     sass (3.2.7)
+    sass-pygments-rails (0.1)
+      railties (>= 3.1)
     sass-rails (3.2.6)
       railties (~> 3.2.0)
       sass (>= 3.1.10)
@@ -307,7 +313,7 @@ GEM
       tilt (~> 1.1, != 1.3.0)
     sqlite3 (1.3.7)
     sundawg_country_codes (0.0.7)
-    text_sanitizer (0.0.3)
+    text_sanitizer (0.0.4)
       rails (>= 3.0.0)
       sanitize
     therubyracer (0.10.2)
@@ -353,6 +359,7 @@ GEM
       railties (>= 3.1.0)
     xpath (1.0.0)
       nokogiri (~> 1.3)
+    yajl-ruby (1.1.0)
 
 PLATFORMS
   ruby
@@ -394,6 +401,7 @@ DEPENDENCIES
   oj (= 2.0.10)
   pg (~> 0.14.1)
   premailer-rails3 (= 1.3.1)
+  pygments.rb (= 0.5.0)
   rabl (= 0.8.2)
   rails (= 3.2.12)
   rb-inotify
@@ -406,6 +414,7 @@ DEPENDENCIES
   rspec-rails
   rubyzip (= 0.9.9)
   sanitize (= 2.0.3)
+  sass-pygments-rails (= 0.1)
   sass-rails (~> 3.2.3)
   sendgrid (= 1.1.0)
   simple_form (= 2.0.4)
@@ -413,7 +422,7 @@ DEPENDENCIES
   spork
   sqlite3
   sundawg_country_codes (= 0.0.7)
-  text_sanitizer (= 0.0.3)
+  text_sanitizer (= 0.0.4)
   therubyracer (= 0.10.2)
   tire (= 0.5.5)
   twitter-bootstrap-rails (= 2.2.6)
