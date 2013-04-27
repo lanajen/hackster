@@ -7,6 +7,7 @@ class CodeWidget < Widget
 
   attr_accessible :document_attributes
   accepts_nested_attributes_for :document, allow_destroy: true
+  before_validation :disallow_blank_file
   before_validation :guess_language_from_extension
   before_save :format_content
 
@@ -33,7 +34,10 @@ class CodeWidget < Widget
   end
 
   private
-    def guess_language_from_extension
+    def disallow_blank_file
+      document.disallow_blank_file!
+    end
 
+    def guess_language_from_extension
     end
 end

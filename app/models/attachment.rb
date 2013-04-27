@@ -2,7 +2,15 @@ class Attachment < ActiveRecord::Base
   attr_accessible :type, :file, :file_cache, :remote_file_url
 
   belongs_to :attachable, polymorphic: true
-  before_validation :ensure_has_file, unless: proc { |a| a.skip_file_check? }
+  validate :ensure_has_file, unless: proc { |a| a.skip_file_check? }
+
+  def disallow_blank_file?
+    @disallow_blank_file
+  end
+
+  def disallow_blank_file!
+    @disallow_blank_file = true
+  end
 
   def skip_file_check?
     @skip_file_check
@@ -14,6 +22,10 @@ class Attachment < ActiveRecord::Base
 
   private
     def ensure_has_file
-      destroy if (file.nil? or file.blank?) and remote_file_url.blank?
+      unless disallow_blank_file?
+        destroy
+      else
+        errors.add :file, 'cannot be blank'
+      end if file.blank? and remote_file_url.blank?
     end
 end

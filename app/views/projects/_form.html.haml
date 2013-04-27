@@ -16,41 +16,30 @@
       end_year: Date.today.year - 50
     = f.input :current, as: :boolean, label: false, inline_label: 'Currently working on it'
     = f.simple_fields_for :logo do |f_logo|
-      .control-group
-        .controls
-          - if @project.logo and @project.logo.file_url(:thumb)
-            - if @project.logo.persisted?
-              = image_tag @project.logo.file_url(:thumb)
-            - else
-              = image_tag @project.logo.file_url(:thumb).gsub('//s3.amazonaws.com/halckemy', '')
+      - if @project.logo and @project.logo.file_url(:thumb)
+        .control-group
+          .controls
+            = image_tag @project.logo.file_url(:thumb)
       = f_logo.input :file, as: :file, label: 'Logo'
       = f_logo.input :file_cache, as: :hidden
     = f.simple_fields_for :video do |f_video|
       = f_video.input :link, label: 'Video link'
-    .form-fields
-      - if @project.images.any?
-        - @project.images.each do |image|
-          = f.simple_fields_for :images, image do |f_images|
-            .control-group
-              .controls
-                - if @project.logo and @project.logo.file_url(:thumb)
-                  - if @project.logo.persisted?
-                    = image_tag image.file_url(:thumb) if image and image.file_url(:thumb)
-                  - else
-                    = image_tag image.file_url(:thumb) if image and image.file_url(:thumb).gsub('//s3.amazonaws.com/halckemy', '')
-            = f_images.input :file, as: :file, label: false
-            = f_images.input :file_cache, as: :hidden
-            .control-group
-              .controls
-                = f_images.link_to_remove 'Remove this image', class: 'btn btn-mini btn-danger'
-      - else
-        = f.simple_fields_for :images do |f_images|
-          = f_images.input :file, as: :file, label: false
-          = f_images.input :file_cache, as: :hidden
+
+  .form-fields
+    - @project.images.each do |image|
+      = f.simple_fields_for :images, image do |f_image|
+        -  if image.file_url
           .control-group
             .controls
-              = f_images.link_to_remove 'Remove this image', class: 'btn btn-mini btn-danger'
-      = f.link_to_add 'Add an image', :images, class: 'btn btn-mini btn-success'
+              = image_tag image.file_url(:thumb)
+        - else
+          = f_image.input :file, as: :file, label: false
+          = f_image.input :file_cache, as: :hidden
+        .control-group
+          .controls
+            = f_image.link_to_remove 'Remove this image', class: 'btn btn-mini btn-danger'
+    = f.link_to_add 'Add an image', :images, class: 'btn btn-mini btn-success'
+
     = f.input :product_tags_string, as: :string, label: 'Tags', hint: 'Separate tags by commas'
     = f.input :tech_tags_string, as: :string, label: 'Technologies used', hint: 'Separate technologies by commas'
 

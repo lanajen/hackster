@@ -1,12 +1,14 @@
-- widget.images.new if widget.images.empty?
+- widget.images.new
 .form-fields
   - widget.images.each do |image|
     = f.simple_fields_for :images, image do |f_image|
-      .control-group
-        .controls
-          = image_tag image.file_url(:thumb) if image and image.file_url(:thumb)
-      = f_image.input :file, as: :file, label: false
-      = f_image.input :file_cache, as: :hidden
+      -  if image.file_url
+        .control-group
+          .controls
+            = image_tag image.file_url(:thumb)
+      - else
+        = f_image.input :file, as: :file, label: false
+        = f_image.input :file_cache, as: :hidden
       .control-group
         .controls
           = f_image.link_to_remove 'Remove this image', class: 'btn btn-mini btn-danger'

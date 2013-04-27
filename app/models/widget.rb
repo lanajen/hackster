@@ -27,7 +27,7 @@ class Widget < ActiveRecord::Base
           properties[attribute]
         end
         send :define_method, "#{attribute}_was" do
-          properties_was[attribute]
+          properties_was[attribute] if properties_was
         end
         send :define_method, "#{attribute}_changed?" do
           send("#{attribute}_was") != send(attribute)

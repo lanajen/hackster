@@ -1,12 +1,14 @@
-- widget.documents.new if widget.documents.empty?
+- widget.documents.new
 .form-fields
   - widget.documents.each do |document|
     = f.simple_fields_for :documents, document do |f_document|
-      .control-group.url
-        .controls
-          = document.file_name if document
-      = f_document.input :file, as: :file, label: false
-      = f_document.input :file_cache, as: :hidden
+      -  if document.persisted?
+        .control-group.url
+          .controls
+            = document.file_name
+      - else
+        = f_document.input :file, as: :file, label: false
+        = f_document.input :file_cache, as: :hidden
       .control-group
         .controls
           = f_document.link_to_remove 'Remove this document', class: 'btn btn-mini btn-danger'
