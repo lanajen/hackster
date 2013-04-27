@@ -46,7 +46,7 @@
       .header
         %h2
           Projects for you
-          = link_to 'See more projects for you &rarr;'.html_safe, "/search?query=#{CGI::escape(@custom_projects_query) + '&' + CGI::escape('model[project]=1') }", class: 'btn-edit'
+          = link_to 'See more projects for you &rarr;'.html_safe, "/search?query=#{CGI::escape(@custom_projects_query.to_s) + '&' + CGI::escape('model[project]=1') }", class: 'btn-edit'
     - if @custom_projects
       - if @custom_projects.any?
         %ul.thumbnails
