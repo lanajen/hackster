@@ -1,0 +1,6 @@
+%li.span3
+  .thumbnail
+    = link_to project.image_link(:headline)
+    .caption
+      %h3= link_to project.name, project
+      %p= truncate project.description, length: 100
