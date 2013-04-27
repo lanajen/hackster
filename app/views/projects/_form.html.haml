@@ -18,17 +18,33 @@
     = f.simple_fields_for :logo do |f_logo|
       .control-group
         .controls
-          = image_tag @project.logo.file_url(:thumb) if @project.logo and @project.logo.file_url(:thumb)
+          - if @project.logo and @project.logo.file_url(:thumb)
+            - if @project.logo.persisted?
+              = image_tag @project.logo.file_url(:thumb)
+            - else
+              = image_tag @project.logo.file_url(:thumb).gsub('//s3.amazonaws.com/halckemy', '')
       = f_logo.input :file, as: :file, label: 'Logo'
       = f_logo.input :file_cache, as: :hidden
     = f.simple_fields_for :video do |f_video|
       = f_video.input :link, label: 'Video link'
     .form-fields
-      - @project.images.each do |image|
-        = f.simple_fields_for :images, image do |f_images|
-          .control-group
-            .controls
-              = image_tag image.file_url(:thumb) if image and image.file_url(:thumb)
+      - if @project.images.any?
+        - @project.images.each do |image|
+          = f.simple_fields_for :images, image do |f_images|
+            .control-group
+              .controls
+                - if @project.logo and @project.logo.file_url(:thumb)
+                  - if @project.logo.persisted?
+                    = image_tag image.file_url(:thumb) if image and image.file_url(:thumb)
+                  - else
+                    = image_tag image.file_url(:thumb) if image and image.file_url(:thumb).gsub('//s3.amazonaws.com/halckemy', '')
+            = f_images.input :file, as: :file, label: false
+            = f_images.input :file_cache, as: :hidden
+            .control-group
+              .controls
+                = f_images.link_to_remove 'Remove this image', class: 'btn btn-mini btn-danger'
+      - else
+        = f.simple_fields_for :images do |f_images|
           = f_images.input :file, as: :file, label: false
           = f_images.input :file_cache, as: :hidden
           .control-group

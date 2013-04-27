@@ -52,7 +52,7 @@ class ProjectsController < ApplicationController
 
   private
     def initialize_project
-      @project.images.new unless @project.images.any?
+#      @project.images.new unless @project.images.any?
       @project.build_video unless @project.video
       @project.build_logo unless @project.logo
     end
