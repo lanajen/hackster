@@ -22,7 +22,7 @@ HackerIo::Application.routes.draw do
   end
   resources :comments, only: [:update, :destroy]
   resources :invite_requests, only: [:new, :create]
-  resources :projects do
+  resources :projects, except: [:index] do
     member do
       get 'followers' => 'project_followers#index', as: :followers
       post 'followers' => 'project_followers#create'
@@ -37,6 +37,8 @@ HackerIo::Application.routes.draw do
   resources :stages do
     resources :widgets
   end
+
+  get 'help' => 'pages#help'
 
   get 'contact' => 'contact#new'
   post 'contact' => 'contact#create'

@@ -1,4 +1,7 @@
 class PagesController < ApplicationController
+  def help
+  end
+
   def home
     @featured_projects = Project.limit 4
     @last_projects = Project.order('created_at DESC').limit(4)

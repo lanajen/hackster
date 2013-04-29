@@ -44,9 +44,11 @@ footer {
     color: #9b9b9b;
   }
   ul {
+    margin: 0;
+    float: left;
     li {
       display: inline;
-      margin-left: 20px;
+      margin-right: 20px;
     }
   }
   p {

@@ -9,6 +9,7 @@ class Widget < ActiveRecord::Base
   validates :completion_rate, :completion_share, numericality: { in: 0..100,
     only_integer: true }
   validates :type, :name, presence: true
+  validate :total_completion_is_100_max
 
   class << self
     attr_accessor :custom_attributes
@@ -75,5 +76,11 @@ class Widget < ActiveRecord::Base
         'Text' => 'TextWidget',
         'Video' => 'VideoWidget',
       }
+    end
+
+  private
+    def total_completion_is_100_max
+      total_completion = stage.widgets.where('widgets.id <> ?', id).sum(:completion_share) + completion_share
+      errors.add :completion_share, "total completion share for the stage cannot be higher than 100. Current: #{total_completion}" if total_completion > 100
     end
 end

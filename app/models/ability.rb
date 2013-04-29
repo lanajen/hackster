@@ -14,7 +14,7 @@ class Ability
   end
 
   def admin
-
+    can :manage, :all
   end
 
   def confirmed_user
