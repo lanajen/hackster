@@ -1,7 +1,15 @@
 class ProjectDecorator < ApplicationDecorator
 
+  def description
+    if model.description.present?
+      model.description.html_safe
+    else
+      "No description has been entered yet."
+    end
+  end
+
   def logo size=:thumb
-    if model.logo
+    if model.logo and model.logo.file_url
       logo = model.logo.file_url(size)
     else
       width = case size

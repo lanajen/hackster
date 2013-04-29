@@ -1,1 +1,4 @@
-= f.input :content, as: :text
+.control-group
+  .controls
+    = render 'wysihtml5_toolbar'
+= f.input :content, as: :text, input_html: { id: 'wysihtml5-textarea', rows: 10 }

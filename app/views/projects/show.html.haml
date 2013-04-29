@@ -6,17 +6,21 @@
           - if @project.video
             = render partial: 'videos/video', locals: { video: @project.video }
           - else
+            - if @project.images.any?
+              - @project.images.each_with_index do |image, i|
+                = image_tag image.file_url(:headline), class: "image-#{i}", style: "#{'display:none;' unless i==0}"
+            - else
+              = image_tag 'http://placehold.it/580x326'
+        - if @project.images.size > 1
+          .image-thumbs
             - @project.images.each_with_index do |image, i|
-              = image_tag image.file_url(:headline), class: "image-#{i}", style: "#{'display:none;' unless i==0}"
-        .image-thumbs
-          - @project.images.each_with_index do |image, i|
-            = image_tag image.file_url(:small_thumb), data: { target: "image-#{i}" }
+              = image_tag image.file_url(:small_thumb), data: { target: "image-#{i}" }
 
     .well
       .header
         %h3 About
       .content
-        = @project.description.html_safe
+        = @project.description
 
     - @project.stages.order(:created_at).each do |stage|
       .well
@@ -28,7 +32,6 @@
           .progress{ style: 'margin:0' }
             .bar.bar-success{ style: "width:#{stage.completion_rate}%" }
               .percentage{ style: 'padding:0 10px;position:absolute;' } #{stage.completion_rate}% completed
-            .bar.bar-danger{ style: "width:#{100-stage.completion_rate}%" }
         .content
           %ul{ style: 'list-style: none;margin:0;' }
             - if stage.widgets.any?

@@ -9,6 +9,7 @@ class ProjectsController < ApplicationController
   end
 
   def show
+    @project = @project.decorate
   end
 
   def new
