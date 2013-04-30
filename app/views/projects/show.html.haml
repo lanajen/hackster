@@ -22,36 +22,6 @@
       .content
         = @project.description
 
-    - @project.stages.order(:created_at).each do |stage|
-      .well
-        .header
-          %h3{ style: 'position:relative;' }
-            = stage.name.humanize
-            - if can? :update_stages, @project
-              .pull-right= link_to 'Add a component', new_stage_widget_path(stage), class: 'btn btn-info btn-mini'
-          .progress{ style: 'margin:0' }
-            .bar.bar-success{ style: "width:#{stage.completion_rate}%" }
-              .percentage{ style: 'padding:0 10px;position:absolute;' } #{stage.completion_rate}% completed
-        .content
-          %ul{ style: 'list-style: none;margin:0;' }
-            - if stage.widgets.any?
-              - stage.widgets.each do |widget|
-                %li{ style: 'margin-bottom:20px;' }
-                  %h4{ style: 'position:relative;' }
-                    = widget.name
-                    - if can? :update_widgets, @project
-                      = link_to 'Edit', edit_stage_widget_path(stage, widget), class: 'btn-edit'
-                  .progress{ style: 'margin:5px 0' }
-                    .bar.bar-success{ style: "width:#{widget.completion_absolute}%" }
-                      .percentage{ style: 'padding:0 10px;position:absolute;' } counts for #{widget.completion_share}%, #{widget.completion_rate}% completed
-                    .bar.bar-warning{ style: "width:#{widget.completion_share-widget.completion_absolute}%" }
-                    -#.bar{ style: "width:#{100-widget.completion_share}%" }
-                  = render partial: "widgets/show/#{widget.identifier}", locals: { widget: widget }
-            - else
-              %p
-                No components yet.
-                - if can? :update_widgets, @project
-                  = link_to 'Add one', new_stage_widget_path(stage), class: 'btn btn-info btn-mini'
 
   .span4
     .well.sidebar-nav
@@ -77,3 +47,44 @@
               %li= render partial: 'users/user_thumb_mini', locals: { user: user.decorate }
         - else
           No one yet.
+
+- @project.stages.order(:created_at).each do |stage|
+  .row
+    .span12
+      %hr.spacious
+
+  .row
+    .span12
+      .well
+        .header
+          %h3{ style: 'position:relative;' }
+            = stage.name.humanize
+            - if can? :update_stages, @project
+              .pull-right= link_to 'Add a component', new_stage_widget_path(stage), class: 'btn btn-info btn-mini'
+          .progress{ style: 'margin:0' }
+            .bar.bar-success{ style: "width:#{stage.completion_rate}%" }
+              .percentage{ style: 'padding:0 10px;position:absolute;' } #{stage.completion_rate}% completed
+
+  .row
+    - if stage.widgets.any?
+      - stage.widgets.each do |widget|
+        .span6
+          .well
+            .header
+              %h4{ style: 'position:relative;' }
+                = widget.name
+                - if can? :update_widgets, @project
+                  = link_to 'Edit', edit_stage_widget_path(stage, widget), class: 'btn-edit'
+              .progress{ style: 'margin:5px 0' }
+                .bar.bar-success{ style: "width:#{widget.completion_absolute}%" }
+                  .percentage{ style: 'padding:0 10px;position:absolute;' } counts for #{widget.completion_share}%, #{widget.completion_rate}% completed
+                .bar.bar-warning{ style: "width:#{widget.completion_share-widget.completion_absolute}%" }
+            .content
+              = render partial: "widgets/show/#{widget.identifier}", locals: { widget: widget }
+    - else
+      .span6
+        .well
+          .content
+            No components yet.
+            - if can? :update_widgets, @project
+              = link_to 'Add one', new_stage_widget_path(stage), class: 'btn btn-info btn-mini'

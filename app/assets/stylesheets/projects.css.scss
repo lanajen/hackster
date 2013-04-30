@@ -9,6 +9,19 @@
 }
 
 .project {
+  .span6 {
+    .image-thumbs {
+      img {
+        width: 130px;
+      }
+    }
+    .headline-image {
+      height: 236px;
+      img {
+        width: 420px;
+      }
+    }
+  }
   .image-thumbs {
     margin: 10px 0 0;
   }
