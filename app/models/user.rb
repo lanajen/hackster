@@ -42,6 +42,7 @@ class User < ActiveRecord::Base
     user.validate :email_matches_confirmation
   end
   before_validation :ensure_website_protocol
+  validate :is_whitelisted?, unless: proc { |u| u.persisted? }
 
   scope :with_role, lambda { |role| { conditions: "roles_mask & #{2**ROLES.index(role.to_s)} > 0"} }
 
@@ -166,5 +167,10 @@ class User < ActiveRecord::Base
         end
         send "#{type}=", 'http://' + url unless url =~ /^http/
       end
+    end
+
+    def is_whitelisted?
+      return unless email.present?
+      errors.add :email, 'is not on our beta list' unless InviteRequest.email_whitelisted? email
     end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130426023848) do
+ActiveRecord::Schema.define(:version => 20130503200726) do
 
   create_table "attachments", :force => true do |t|
     t.string   "file"
@@ -59,9 +59,13 @@ ActiveRecord::Schema.define(:version => 20130426023848) do
 
   create_table "invite_requests", :force => true do |t|
     t.string   "email"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",                 :null => false
+    t.datetime "updated_at",                 :null => false
+    t.boolean  "whitelisted"
+    t.integer  "user_id",     :default => 0, :null => false
   end
+
+  add_index "invite_requests", ["user_id"], :name => "index_invite_requests_on_user_id"
 
   create_table "project_followers", :id => false, :force => true do |t|
     t.integer "user_id",    :null => false
