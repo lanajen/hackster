@@ -7,7 +7,7 @@
 	  <title>Hackster.io, The Hacker Toolbox</title>
 
 	  <meta name="title" content="Hackster.io, The Hacker Toolbox">
-	  <meta name="description" content="Hackster.io provides mechanical and electrical engineers with all the tools they need to successfuly take a product from concept to mass-production.">
+	  <meta name="description" content="Hackster.io provides mechanical and electrical engineers with all the tools they need to successfuly take a product from concept to production.">
 
 	  <%= stylesheet_link_tag 'splash' %>
     <link href="<%= asset_path 'favicon.ico' %>" rel="shortcut icon" type="image/vnd.microsoft.icon">
@@ -19,7 +19,7 @@
     <div id='wrapper'>
       <div id='middle-box'>
         <h1>Build products</h1>
-        <p>We're creating the toolbox that'll help you take your products from concept to mass-production.</p>
+        <p>We're creating the toolbox that'll help you take your products from concept to production.</p>
         <form action="http://fansnextdoor.us1.list-manage.com/subscribe/post?u=4678c5cdc3f7d2ca3b9adf494&amp;id=90f64a4621" method="post" target="_blank" novalidate>
           <p class='cta'>Be the first to get in:</p>
           <input type='text' placeholder='nikola@tesla.com' name="EMAIL"><button>I'm awesome</button>
@@ -32,7 +32,7 @@
           <%= link_to 'Contact', 'mailto:team@hackster.io' %>
         </li>
         <li>
-          <%= link_to 'Sign in', '' %>
+          <%= link_to 'Sign in', new_user_session_url(subdomain: 'beta') %>
         </li>
       </ul>
     </footer>

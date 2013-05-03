@@ -1,5 +1,5 @@
 module MailerHelpers
-  DEFAULT_EMAIL = 'Ben from Hacker.io<ben@hacker.io>'
+  DEFAULT_EMAIL = 'Ben from Hackster.io<ben@hackster.io>'
 
   extend ActionView::Helpers::UrlHelper
 

@@ -70,7 +70,7 @@ module HackerIo
     config.action_mailer.smtp_settings = {
       :address => "smtp.sendgrid.net",
       :port => 587,
-      :domain => "hacker.io",
+      :domain => "hackster.io",
       :authentication => :plain,
       :user_name => "fansnextdoor",
       :password => "mod3pa55"

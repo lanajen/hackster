@@ -1,11 +1,10 @@
-.span4.offset4
-  %div{ style: 'text-align:center;' }
-    %h2 Sign in to Hacker.io
-    = render 'form'
+.span3.offset4
+  %h2{ style: 'text-align: center' } Log in to Hackster.io
+  = render 'form'
 
-    %p
-      Forgot your password?
-      = link_to 'Reset it', new_password_path(resource_name)
-    %p
-      Don't have an account?
-      = link_to 'Sign up', new_user_registration_path
+  %p
+    Forgot your password?
+    = link_to 'Reset it', new_password_path(resource_name)
+  -# %p
+    Don't have an account?
+    = link_to 'Sign up', new_user_registration_path

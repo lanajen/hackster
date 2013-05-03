@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
 #  protect_from_forgery
   before_filter :set_new_user_session
   before_filter :store_location_before
+  before_filter :authenticate_user!
 #  before_filter :set_json_globals
   after_filter :store_location_after
 

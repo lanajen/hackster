@@ -4,7 +4,7 @@
     %meta(charset="utf-8")
     %meta(http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1")
     %meta(name="viewport" content="width=device-width, initial-scale=1.0")
-    %title= content_for?(:title) ? yield(:title) : "Hacker.io"
+    %title= content_for?(:title) ? yield(:title) : "Hackster.io"
     = csrf_meta_tags
     / Le HTML5 shim, for IE6-8 support of HTML elements
     /[if lt IE 9]
@@ -21,7 +21,7 @@
               %span.icon-bar
               %span.icon-bar
               %span.icon-bar
-            = link_to 'Hacker.io', root_path, class: 'brand'
+            = link_to image_tag('hackster_logo_20.png'), root_path, class: 'brand'
             .container.nav-collapse
               %ul.nav
               .pull-left= render 'application/search_form'
@@ -41,7 +41,7 @@
                       %li.divider
                       %li= link_to 'Log out', destroy_user_session_path, method: :delete
                 - else
-                  %li= link_to 'Sign up', new_user_registration_path
+                  -# %li= link_to 'Sign up', new_user_registration_path
                   %li.dropdown
                     %a.dropdown-toggle{"data-toggle" => "dropdown", href: '#' }
                       Log in
@@ -68,7 +68,7 @@
           %li= link_to 'New project', new_project_path
           %li= link_to 'Help', help_path
           %li
-        %p &copy; Hacker.io 2013
+        %p &copy; Hackster.io 2013
 
     -# = include_gon
     = javascript_include_tag "application"
