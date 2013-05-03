@@ -54,6 +54,7 @@ HackerIo::Application.routes.draw do
       post 'followers' => 'follow_relations#create'
       delete 'followers' => 'follow_relations#destroy'
     end
+    root to: 'pages#home'
   end
 
   root to: 'pages#splash'
