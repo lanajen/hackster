@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	  <meta charset="utf-8">
+	  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+	  <title>Hackster.io, The Hacker Toolbox</title>
+
+	  <meta name="title" content="Hackster.io, The Hacker Toolbox">
+	  <meta name="description" content="Hackster.io gives provides mechanical and electrical engineers with all the tools they need to successfuly take a product from concept to mass-production.">
+
+	  <%= stylesheet_link_tag 'splash' %>
+    <%= favicon_link_tag %>
+  </head>
+  <body>
+    <div id='bg'>
+      <%= image_tag 'bg1920px.jpg' %>
+    </div>
+    <div id='wrapper'>
+      <div id='middle-box'>
+        <h1>Build products</h1>
+        <p>We're creating the toolbox that'll help you take your products from concept to mass-production.</p>
+        <form action="http://fansnextdoor.us1.list-manage.com/subscribe/post?u=4678c5cdc3f7d2ca3b9adf494&amp;id=90f64a4621" method="post" target="_blank" novalidate>
+          <p class='cta'>Be the first to get in:</p>
+          <input type='text' placeholder='nikola@tesla.com' name="EMAIL"><button>I'm awesome</button>
+        </form>
+      </div>
+    </div>
+    <footer>
+      <ul>
+        <li>
+          <%= link_to 'Contact', 'mailto:team@hackster.io' %>
+        </li>
+        <li>
+          <%= link_to 'Sign in', '' %>
+        </li>
+      </ul>
+    </footer>
+  </body>
+</html>

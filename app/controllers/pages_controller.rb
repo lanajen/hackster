@@ -10,4 +10,8 @@ class PagesController < ApplicationController
       @custom_projects = @custom_projects_query.present? ? SearchRepository.new(query: @custom_projects_query, model: { project: 1 }, size: 4).search.results : []
     end
   end
+
+  def splash
+    render layout: false
+  end
 end
