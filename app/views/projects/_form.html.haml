@@ -6,7 +6,7 @@
     .control-group
       .controls
         = render 'wysihtml5_toolbar'
-    = f.input :description, input_html: { id: 'wysihtml5-textarea', rows: 10 }
+    = f.input :description, input_html: { id: 'wysihtml5-textarea', rows: 10 }, label: 'About'
     = f.input :website
     = f.input :start_date, order: [:year, :month],
       start_year: Date.today.year,
@@ -26,6 +26,7 @@
       = f_video.input :link, label: 'Video link'
 
   .form-fields
+    %label.control-label Images
     - @project.images.each do |image|
       = f.simple_fields_for :images, image do |f_image|
         -  if image.file_url

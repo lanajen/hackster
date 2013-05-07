@@ -1,0 +1,7 @@
+%h1 Editing issue
+
+= render 'issues/form'
+
+= link_to 'Show', @thread_post
+\|
+= link_to 'Back', url_for([@threadable, :issues])

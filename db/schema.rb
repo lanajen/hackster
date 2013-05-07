@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130503200726) do
+ActiveRecord::Schema.define(:version => 20130507010515) do
 
   create_table "attachments", :force => true do |t|
     t.string   "file"
@@ -80,10 +80,14 @@ ActiveRecord::Schema.define(:version => 20130503200726) do
     t.text     "description"
     t.date     "start_date"
     t.date     "end_date"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
     t.string   "website"
+    t.boolean  "private",        :default => true, :null => false
+    t.string   "workflow_state"
   end
+
+  add_index "projects", ["private"], :name => "index_projects_on_private"
 
   create_table "publications", :force => true do |t|
     t.string   "title"
@@ -100,13 +104,16 @@ ActiveRecord::Schema.define(:version => 20130503200726) do
   add_index "publications", ["user_id"], :name => "index_publications_on_user_id"
 
   create_table "stages", :force => true do |t|
-    t.integer  "project_id",                     :null => false
+    t.integer  "project_id",                        :null => false
     t.string   "name"
     t.integer  "completion_rate", :default => 0
-    t.datetime "created_at",                     :null => false
-    t.datetime "updated_at",                     :null => false
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
+    t.boolean  "private",         :default => true, :null => false
+    t.string   "workflow_state"
   end
 
+  add_index "stages", ["private"], :name => "index_stages_on_private"
   add_index "stages", ["project_id"], :name => "index_stages_on_project_id"
 
   create_table "tags", :force => true do |t|
@@ -141,6 +148,7 @@ ActiveRecord::Schema.define(:version => 20130503200726) do
     t.datetime "created_at",                    :null => false
     t.datetime "updated_at",                    :null => false
     t.string   "type",            :limit => 20
+    t.string   "workflow_state"
   end
 
   add_index "threads", ["threadable_id", "threadable_type"], :name => "index_blog_posts_on_bloggable_id_and_bloggable_type"
@@ -188,16 +196,18 @@ ActiveRecord::Schema.define(:version => 20130503200726) do
   add_index "videos", ["recordable_id", "recordable_type"], :name => "recordable_index"
 
   create_table "widgets", :force => true do |t|
-    t.string   "type",                            :null => false
-    t.integer  "stage_id",                        :null => false
+    t.string   "type",                               :null => false
+    t.integer  "stage_id",                           :null => false
     t.text     "properties"
     t.integer  "completion_rate",  :default => 0
     t.integer  "completion_share", :default => 0
     t.string   "name"
-    t.datetime "created_at",                      :null => false
-    t.datetime "updated_at",                      :null => false
+    t.datetime "created_at",                         :null => false
+    t.datetime "updated_at",                         :null => false
+    t.boolean  "private",          :default => true, :null => false
   end
 
+  add_index "widgets", ["private"], :name => "index_widgets_on_private"
   add_index "widgets", ["stage_id"], :name => "index_widgets_on_stage_id"
 
 end

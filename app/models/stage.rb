@@ -1,4 +1,18 @@
 class Stage < ActiveRecord::Base
+  include Workflow
+
+  workflow do
+    state :locked do
+      event :unlock, transitions_to: :open
+    end
+    state :open do
+      event :complete, transitions_to: :completed
+    end
+    state :completed do
+      event :reopen, transitions_to: :open
+    end
+  end
+
   belongs_to :project
   has_many :widgets, dependent: :destroy
 

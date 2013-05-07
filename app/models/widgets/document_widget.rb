@@ -1,4 +1,9 @@
 class DocumentWidget < Widget
+
+  def self.model_name
+    Widget.model_name
+  end
+  
   has_many :documents, as: :attachable
 
   attr_accessible :documents_attributes

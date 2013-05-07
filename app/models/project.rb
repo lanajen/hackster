@@ -1,10 +1,11 @@
 class Project < ActiveRecord::Base
   include Taggable
+#  include Workflow
 
   belongs_to :user
   has_and_belongs_to_many :followers, class_name: 'User', join_table: 'project_followers'
   has_many :blog_posts, as: :threadable, dependent: :destroy
-  has_many :discussions, as: :threadable, dependent: :destroy
+  has_many :issues, as: :threadable, dependent: :destroy
   has_many :images, as: :attachable, dependent: :destroy
   has_many :stages, dependent: :destroy
   has_many :team_members, include: :user
@@ -27,6 +28,14 @@ class Project < ActiveRecord::Base
 
   taggable :product_tags, :tech_tags
 
+  # privacy settings
+  attr_accessible :private
+  # levels:
+  # - private (cannot be accessed if not part of the collaborators and not found in search)
+  # - public_profile (can be found in search but only collaborators can see all the widgets)
+  # - public (can be found and fully seen)
+  #
+
   # beginning of search methods
   include Tire::Model::Search
   include Tire::Model::Callbacks
@@ -40,6 +49,7 @@ class Project < ActiveRecord::Base
       indexes :tech_tags,       analyzer: 'snowball'
       indexes :description,     analyzer: 'snowball'
       indexes :text_widgets,    analyzer: 'snowball'
+      indexes :user_names,      analyzer: 'snowball'
     end
   end
 
@@ -51,7 +61,8 @@ class Project < ActiveRecord::Base
       description: description,
       product_tags: product_tags_string,
       tech_tags: tech_tags_string,
-      text_widgets: Widget.where(type: 'TextWidget').where('widgets.stage_id IN (?)', stages.pluck(:id)).map{ |w| w.content }
+      text_widgets: Widget.where(type: 'TextWidget').where('widgets.stage_id IN (?)', stages.pluck(:id)).map{ |w| w.content },
+      user_name: team_members.map{ |t| t.user.name },
     }.to_json
   end
   # end of search methods
@@ -59,6 +70,10 @@ class Project < ActiveRecord::Base
   def image
     images.first
   end
+
+#  def issues
+#    Issue.where(threadable_type: 'Project', threadable_id: id) + Issue.where(threadable_type: 'Widget').where('threadable_id IN (?)', widgets.pluck('widgets.id'))
+#  end
 
   private
     def check_if_current

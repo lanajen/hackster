@@ -2,6 +2,11 @@
 
 class Widget < ActiveRecord::Base
   belongs_to :stage
+  has_many :issues, as: :threadable, dependent: :destroy
+
+  def has_unresolved_issues?
+    issues.where(workflow_state: :unresolved).any?
+  end
 
   attr_accessible :properties, :stage_id, :type, :completion_rate,
     :completion_share, :name

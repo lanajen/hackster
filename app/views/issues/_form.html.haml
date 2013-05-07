@@ -1,0 +1,10 @@
+= simple_form_for [@threadable, @thread_post], html: { class: 'form-horizontal full-size' } do |f|
+  = f.error_notification
+
+  .form-inputs
+    = f.input :title
+    = f.input :body, input_html: { id: 'wysihtml5-textarea', rows: 10 }
+
+  .form-actions
+    = f.button :submit
+    -# = link_to 'Cancel', project_issues_path(@project), class: 'btn btn-link'

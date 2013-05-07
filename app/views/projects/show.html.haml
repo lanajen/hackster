@@ -54,12 +54,15 @@
       %hr.spacious
 
   .row
-    .span12
+    .span12{ style: 'position: relative;' }
+      - if stage.locked?
+        .locked-overlay
+          Complete the previous stage to unlock this one
       .well
         .header
           %h3{ style: 'position:relative;' }
             = stage.name.humanize
-            - if can? :update_stages, @project
+            - if can? :update_stages, @project and stage.open?
               .pull-right= link_to 'Add a component', new_stage_widget_path(stage), class: 'btn btn-info btn-mini'
           .progress{ style: 'margin:0' }
             .bar.bar-success{ style: "width:#{stage.completion_rate}%" }
@@ -73,18 +76,29 @@
             .header
               %h4{ style: 'position:relative;' }
                 = widget.name
-                - if can? :update_widgets, @project
-                  = link_to 'Edit', edit_stage_widget_path(stage, widget), class: 'btn-edit'
+                - if can? :update_widgets, @project and stage.open?
+
+                  - if widget.has_unresolved_issues?
+                    = link_to content_tag(:i, '', class: 'icon-exclamation-sign'), project_issues_path(@project, threadable: widget.id, status: :unresolved)
+                  .btn-group
+                    %button.btn= content_tag(:i, '', class: 'icon-cog')
+                    %button.btn.dropdown-toggle{"data-toggle" => "dropdown"}
+                      %span.caret
+                    %ul.dropdown-menu.pull-right
+                      %li= link_to 'Edit', edit_stage_widget_path(stage, widget)
+                      %li.divider
+                      %li= link_to 'See issues', project_issues_path(@project, threadable: widget.id)
+                      %li= link_to 'New issue', new_widget_issue_path(widget)
               .progress{ style: 'margin:5px 0' }
                 .bar.bar-success{ style: "width:#{widget.completion_absolute}%" }
                   .percentage{ style: 'padding:0 10px;position:absolute;' } counts for #{widget.completion_share}%, #{widget.completion_rate}% completed
                 .bar.bar-warning{ style: "width:#{widget.completion_share-widget.completion_absolute}%" }
             .content
               = render partial: "widgets/show/#{widget.identifier}", locals: { widget: widget }
-    - else
+    -# else
       .span6
         .well
           .content
             No components yet.
-            - if can? :update_widgets, @project
+            - if can? :update_widgets, @project and stage.open?
               = link_to 'Add one', new_stage_widget_path(stage), class: 'btn btn-info btn-mini'

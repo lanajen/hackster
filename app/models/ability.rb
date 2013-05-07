@@ -4,9 +4,9 @@ class Ability
   def initialize(user)
     @user = user
 
-    can :read, [Comment, Discussion, Project, Publication, User]
-    cannot :read, [BlogPost, Discussion]
-    can :read, [BlogPost, Discussion], private: false
+    can :read, [Comment, Issue, Project, Publication, User]
+    cannot :read, [BlogPost, Issue]
+    can :read, [BlogPost, Issue], private: false
 
     member if @user.persisted?
 
@@ -22,8 +22,8 @@ class Ability
   end
 
   def member
-    can :create, [BlogPost, Discussion], bloggable: { user_id: @user.id }
-    can [:read, :update, :destroy], [BlogPost, Discussion], user_id: @user.id
+    can :create, [BlogPost, Issue], bloggable: { user_id: @user.id }
+    can [:read, :update, :destroy], [BlogPost, Issue], user_id: @user.id
 
     can :create, Comment do |comment|
       @user.can? :read, comment.commentable

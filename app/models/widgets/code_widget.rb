@@ -2,6 +2,11 @@ require 'open-uri'
 require 'pygments'
 
 class CodeWidget < Widget
+
+  def self.model_name
+    Widget.model_name
+  end
+  
   define_attributes [:formatted_content, :language]
   has_one :document, as: :attachable
 

@@ -16,7 +16,7 @@ class BroadcastDecorator < ApplicationDecorator
         when :new
           "#{user_name} commented on the #{commentable_type} #{commentable_title} on #{project_name}"
         end
-      when 'BlogPost', 'Discussion'
+      when 'BlogPost', 'Issue'
         project_name = h.link_to model.context_model.threadable.name, model.context_model.threadable
         threadable_type = model.context_model.class.name.underscore.gsub(/_/, ' ')
         threadable_title = h.link_to model.context_model.title, [model.context_model.threadable, model.context_model]
