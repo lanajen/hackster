@@ -54,16 +54,14 @@ class CommentsController < ApplicationController
           return $1.classify.constantize.find(value)
         end
       end
-      return current_platform.projects.first if current_platform.standalone?
-      nil
     end
 
     def path_for_commentable commentable
       case commentable.class.to_s
       when 'BlogPost'
         project_blog_post_path(@commentable.threadable, @commentable)
-      when 'Discussion'
-        project_discussion_path(@commentable.threadable, @commentable)
+      when 'Issue'
+        project_issue_path(@commentable.threadable, @commentable)
       end
     end
 end

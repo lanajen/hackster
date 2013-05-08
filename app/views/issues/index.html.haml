@@ -1,0 +1,36 @@
+.row
+  .span8
+    .row
+      - if @thread_posts.any?
+        - @thread_posts.each do |issue|
+          .well
+            .header
+              %h4
+                = link_to issue.title, url_for([issue.threadable, issue])
+                .subtitle
+                  - if issue.resolved?
+                    %i.icon-ok-sign{ title: 'Resolved' }
+                  - else
+                    %i.icon-exclamation-sign{ title: 'Unresolved' }
+                  by
+                  = link_to issue.user.name, issue.user
+                  on
+                  = l issue.created_at, format: :long
+                  %i.icon-comments
+                  = issue.comments.size
+      - else
+        .well
+          .content
+            There are no issues.
+
+  .span4
+    - if can? :create, Issue, @threadable
+      .well
+        .content
+          = link_to 'Create a new issue', url_for([:new, @threadable, :issue]), class: 'btn btn-info btn-mini'
+          .div
+            Issues for:
+            %ul
+              %li= link_to 'All', project_issues_path(@project)
+              - @thread_posts.map{ |t| t.threadable }.uniq.each do |threadable|
+                %li= link_to "#{threadable.class} #{threadable.name}", project_issues_path(@project, threadable: threadable.id, threadable_type: threadable.class.model_name.underscore)

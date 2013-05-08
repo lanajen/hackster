@@ -121,9 +121,13 @@ h1, h2, h3, h4 {
   @extend .btn;
 }
 
-.btn-edit, .btn-follow {
+.btn-edit, .btn-follow, .btn-heading {
   position: absolute;
   right: 0;
+}
+
+.btn-heading {
+  top: 0;
 }
 
 .smaller {

@@ -11,6 +11,8 @@
       = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.1/html5shiv.js"
     = stylesheet_link_tag "application", :media => "all"
     <link href="#{ asset_path 'favicon.ico' }" rel="shortcut icon" type="image/vnd.microsoft.icon">
+    - unless current_user and current_user.is? :admin
+      = render partial: 'application/analytics', locals: { tracker: 'UA-11926897-15', domain: 'hackster.io' }
 
   %body
     #wrapper
@@ -23,21 +25,21 @@
               %span.icon-bar
             = link_to image_tag('hackster_logo_20.png'), root_path, class: 'brand'
             .container.nav-collapse
-              %ul.nav
               .pull-left= render 'application/search_form'
+              %ul.nav
+                %li= link_to 'Start a project', new_project_path
               %ul.nav.pull-right
                 - if user_signed_in?
                   .btn-group
-                    %button.btn= content_tag(:i, '', class: 'icon-cog')
+                    = link_to image_tag(current_user.decorate.avatar(:mini), style: 'width:30px'), current_user
                     %button.btn.dropdown-toggle{"data-toggle" => "dropdown"}
                       %span.caret
                     %ul.dropdown-menu.pull-right
                       %li= link_to current_user.name, current_user
-                      %li.divider
                       - if current_user.projects.any?
+                        %li.divider
                         - current_user.projects.each do |project|
                           %li= link_to project.name, project
-                      %li= link_to 'Create a new project', new_project_path
                       %li.divider
                       %li= link_to 'Log out', destroy_user_session_path, method: :delete
                 - else

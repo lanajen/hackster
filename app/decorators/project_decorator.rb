@@ -24,7 +24,7 @@ class ProjectDecorator < ApplicationDecorator
       when :big
         200
       end
-      logo = "http://placehold.it/#{width}"
+      logo = "project_default_logo_#{width}.png"
     end
     logo
   end
@@ -37,7 +37,7 @@ class ProjectDecorator < ApplicationDecorator
     if model.image
       image = model.image.file_url(size)
     else
-      image = "http://placehold.it/210x118"
+      image = 'project_default_headline.png'
     end
 
     link_to_model h.image_tag(image, alt: model.name)

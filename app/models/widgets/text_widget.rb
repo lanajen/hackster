@@ -1,6 +1,10 @@
 class TextWidget < Widget
   define_attributes [:content]
 
+  def self.model_name
+    Widget.model_name
+  end
+
   def content_definition
     {
       type: :text,

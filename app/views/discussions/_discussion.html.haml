@@ -1,8 +1,0 @@
-.well.blog-post
-  .header
-    %h3
-      = link_to discussion.title, project_discussion_path(project, discussion)
-      - if can? :edit, discussion
-        = link_to 'Edit', edit_project_discussion_path(project, discussion), class: 'btn-edit'
-  .content
-    = discussion.body.html_safe

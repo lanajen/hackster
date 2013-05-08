@@ -25,7 +25,7 @@ module HackerIo
 
     # Activate observers that should always be running.
     config.active_record.observers = :project_observer, :widget_observer,
-      :user_observer, :comment_observer, :discussion_observer, :blog_post_observer,
+      :user_observer, :comment_observer, :issue_observer, :blog_post_observer,
       :publication_observer
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.

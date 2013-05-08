@@ -1,2 +1,0 @@
-class Discussion < ThreadPost
-end

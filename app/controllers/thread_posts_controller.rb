@@ -4,15 +4,26 @@ class ThreadPostsController < ApplicationController
   load_resource
   skip_authorize_resource only: [:redirect_to_show]
   skip_load_resource only: [:new, :create]
-  before_filter :find_project, except: [:redirect_to_show]
+  before_filter :find_threadable, except: [:redirect_to_show, :update_workflow]
+  before_filter :find_project, except: [:redirect_to_show, :update_workflow]
   layout 'project'
   respond_to :html
   helper_method :index_url_for
   before_filter :get_type
 
   def index
-    @thread_posts = @type.classify.constantize.where(threadable_id: params[:project_id],
-      threadable_type: 'Project')
+    @thread_posts = Issue
+
+    @thread_posts = if params[:threadable]
+      @thread_posts.where(threadable_type: params[:threadable_type].classify, threadable_id: params[:threadable])
+    else
+      (@project.issues + @thread_posts.where(threadable_type: 'Widget').where('threadable_id IN (?)', @project.widgets.pluck('widgets.id'))).sort_by{ |t| t.created_at }.reverse
+    end
+
+    if params[:status]
+      @thread_posts = @thread_posts.where(workflow_state: params[:status])
+    end
+
     render "#{@type}/index"
   end
 
@@ -32,12 +43,12 @@ class ThreadPostsController < ApplicationController
   def create
     @thread_post = @type.classify.constantize.new
     @thread_post.assign_attributes(params[@thread_post.class.to_s.underscore])
-    @thread_post.threadable = @project
+    @thread_post.threadable = @threadable
     @thread_post.user = current_user
 
     if @thread_post.save
       flash[:notice] = "#{@thread_post.type.humanize} was successfully created."
-      respond_with [@thread_post.threadable, @thread_post]
+      respond_with [@threadable, @thread_post]
     else
       render action: 'new', template: "#{@type}/new"
     end
@@ -62,9 +73,25 @@ class ThreadPostsController < ApplicationController
     redirect_to index_url_for(@thread_post)
   end
 
+  def update_workflow
+    @thread_post.send "#{params[:event]}!"
+
+    redirect_to params[:redirect_to], notice: "Update successful!"
+  end
+
   private
     def find_project
-      @project = Project.find params[:project_id]
+      @project ||= @threadable.project
+    end
+
+    def find_threadable
+      params.each do |name, value|
+        if name =~ /(.+)_id$/
+          @threadable = $1.classify.constantize.find(value)
+          instance_variable_set(:"@#{@threadable.class.name.underscore}", @threadable)
+          return
+        end
+      end
     end
 
     def get_type
@@ -72,11 +99,6 @@ class ThreadPostsController < ApplicationController
     end
 
     def index_url_for thread
-      case thread
-      when BlogPost
-        project_blog_posts_url(@project)
-      when Discussion
-        project_discussions_url(@project)
-      end
+      url_for [thread.threadable, thread.class.name.underscore.to_sym]
     end
 end

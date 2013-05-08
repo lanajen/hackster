@@ -1,15 +1,15 @@
 .row
   .span8
-    = render partial: 'discussions/discussion', locals: { project: @project, discussion: @thread_post }
+    = render partial: 'issues/issue', locals: { threadable: @threadable, issue: @thread_post }
 
     .well
       .header
         %h3 Discuss
       .content
-        = render partial: 'comments/form', locals: { comment: Comment.new, commentable: @thread_post }
-
         - if @thread_post.comments.any?
           - @thread_post.comments.each do |comment|
             = render partial: 'comments/comment', locals: { comment: comment }
         - else
           There are no comments.
+
+        = render partial: 'comments/form', locals: { comment: Comment.new, commentable: @thread_post }

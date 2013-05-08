@@ -16,8 +16,8 @@ HackerIo::Application.routes.draw do
     resources :blog_posts, controller: :thread_posts, only: [] do
       resources :comments, only: [:create]
     end
-    get 'discussions/:id' => 'thread_posts#redirect_to_show', as: :discussion
-    resources :discussions, controller: :thread_posts, only: [] do
+    get 'issues/:id' => 'thread_posts#redirect_to_show', as: :issue
+    resources :issues, controller: :thread_posts, only: [] do
       resources :comments, only: [:create]
     end
     resources :comments, only: [:update, :destroy]
@@ -31,12 +31,22 @@ HackerIo::Application.routes.draw do
         put 'team_members' => 'team_members#update'
       end
       resources :blog_posts, controller: :thread_posts
-      resources :discussions, controller: :thread_posts
+      resources :issues, controller: :thread_posts
     end
     resources :publications, except: [:show]
     resources :stages do
       resources :widgets
     end
+    resources :widgets, only: [] do
+      resources :issues, controller: :thread_posts
+    end
+
+    get 'privacy/:type/:id/edit' => 'privacy_settings#edit', as: :edit_privacy_settings
+    post 'privacy/:type/:id' => 'privacy_settings#create', as: :privacy_settings
+    put 'privacy/:type/:id' => 'privacy_settings#update'
+    delete 'privacy/:type/:id' => 'privacy_settings#destroy'
+
+    put 'issues/:id/update_workflow' => 'thread_posts#update_workflow', as: :issue_update_workflow
 
     get 'help' => 'pages#help'
 
