@@ -10,6 +10,11 @@ HackerIo::Application.routes.draw do
 
     namespace :admin do
       mount ResqueAuthServer.new, at: "/resque"
+      resources :invite_requests
+      resources :projects
+      resources :users
+
+      root to: 'pages#root'
     end
 
     get 'blog_posts/:id' => 'thread_posts#redirect_to_show', as: :blog_post
