@@ -3,21 +3,22 @@
     .row
       - if @thread_posts.any?
         - @thread_posts.each do |issue|
-          .well
-            .header
-              %h4
-                = link_to issue.title, url_for([issue.threadable, issue])
-                .subtitle
-                  - if issue.resolved?
-                    %i.icon-ok-sign{ title: 'Resolved' }
-                  - else
-                    %i.icon-exclamation-sign{ title: 'Unresolved' }
-                  by
-                  = link_to issue.user.name, issue.user
-                  on
-                  = l issue.created_at, format: :long
-                  %i.icon-comments
-                  = issue.comments.size
+          - if can? :read, issue
+            .well
+              .header
+                %h4
+                  = link_to issue.title, url_for([issue.threadable, issue])
+                  .subtitle
+                    - if issue.resolved?
+                      %i.icon-ok-sign{ title: 'Resolved' }
+                    - else
+                      %i.icon-exclamation-sign{ title: 'Unresolved' }
+                    by
+                    = link_to issue.user.name, issue.user
+                    on
+                    = l issue.created_at, format: :long
+                    %i.icon-comments
+                    = issue.comments.size
       - else
         .well
           .content

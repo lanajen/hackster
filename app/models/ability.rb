@@ -21,8 +21,13 @@ class Ability
   end
 
   def member
-    can :create, [BlogPost, Issue], bloggable: { user_id: @user.id }
-    can [:read, :update, :destroy], [BlogPost, Issue], user_id: @user.id
+    can :read, [BlogPost, Issue] do |thread|
+      @user.can? :read, thread.threadable
+    end
+
+    can :manage, [BlogPost, Issue] do |thread|
+      @user.can? :update, thread.threadable
+    end
 
     can :create, Comment do |comment|
       @user.can? :read, comment.commentable
@@ -40,7 +45,7 @@ class Ability
       @user.is_team_member? project
     end
 
-    can [:update, :destroy], [Stage, Widget] do |record|
+    can [:create, :update, :destroy], [Stage, Widget] do |record|
       @user.is_team_member? record.project
     end
 

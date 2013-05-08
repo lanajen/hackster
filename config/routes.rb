@@ -34,11 +34,12 @@ HackerIo::Application.routes.draw do
       resources :issues, controller: :thread_posts
     end
     resources :publications, except: [:show]
-    resources :stages do
+    resources :stages, only: [] do
+      put 'update_workflow', on: :member
       resources :widgets
     end
     resources :widgets, only: [] do
-      resources :issues, controller: :thread_posts
+      resources :issues, except: [:index], controller: :thread_posts
     end
 
     get 'privacy/:type/:id/edit' => 'privacy_settings#edit', as: :edit_privacy_settings

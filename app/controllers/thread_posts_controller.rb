@@ -1,9 +1,8 @@
 class ThreadPostsController < ApplicationController
   before_filter :authenticate_user!, except: [:index, :show]
-#  load_and_authorize_resource
-  load_resource
+  load_and_authorize_resource except: [:index, :new, :create]
+#  load_resource
   skip_authorize_resource only: [:redirect_to_show]
-  skip_load_resource only: [:new, :create]
   before_filter :find_threadable, except: [:redirect_to_show, :update_workflow]
   before_filter :find_project, except: [:redirect_to_show, :update_workflow]
   layout 'project'
@@ -12,6 +11,7 @@ class ThreadPostsController < ApplicationController
   before_filter :get_type
 
   def index
+    authorize! :read, @project
     @thread_posts = Issue
 
     @thread_posts = if params[:threadable]
@@ -33,6 +33,8 @@ class ThreadPostsController < ApplicationController
 
   def new
     @thread_post = @type.classify.constantize.new
+    @thread_post.threadable = @threadable
+    authorize! :new, @thread_post
     render "#{@type}/new"
   end
 
@@ -42,8 +44,10 @@ class ThreadPostsController < ApplicationController
 
   def create
     @thread_post = @type.classify.constantize.new
-    @thread_post.assign_attributes(params[@thread_post.class.to_s.underscore])
     @thread_post.threadable = @threadable
+    authorize! :new, @thread_post
+
+    @thread_post.assign_attributes(params[@thread_post.class.to_s.underscore])
     @thread_post.user = current_user
 
     if @thread_post.save
