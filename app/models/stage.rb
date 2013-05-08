@@ -18,6 +18,17 @@ class Stage < ActiveRecord::Base
 
   attr_accessible :completion_rate, :name, :project_id
 
+  def public?
+    private == false
+  end
+  attr_accessible :private, :privacy_rules_attributes
+  has_many :privacy_rules, as: :privatable
+  accepts_nested_attributes_for :privacy_rules, allow_destroy: true
+
+  def visible_to? user
+    public? or user.has_access_group_permissions? self or user.is_team_member? project
+  end
+
   def update_completion_rate!
     self.completion_rate = if widgets.count > 0
       total = 0

@@ -44,6 +44,19 @@
     = f.input :product_tags_string, as: :string, label: 'Tags', hint: 'Separate tags by commas'
     = f.input :tech_tags_string, as: :string, label: 'Technologies used', hint: 'Separate technologies by commas'
 
+    = f.simple_fields_for :access_groups do |f_group|
+      = f_group.input :name
+      = f_group.simple_fields_for :access_group_members do |f_member|
+        = f_member.input :user_id, collection: User.all
+        .control-group
+          .controls
+            = f_member.link_to_remove 'Remove this member', class: 'btn btn-danger btn-mini'
+      = f_group.link_to_add 'Add a group member', :access_group_members, class: 'btn btn-success btn-mini'
+      .control-group
+        .controls
+          = f_group.link_to_remove 'Remove this group', class: 'btn btn-danger btn-mini'
+    = f.link_to_add 'Add an access group', :access_groups, class: 'btn btn-success btn-mini'
+
   .form-actions
     = f.button :submit
 

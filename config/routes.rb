@@ -41,6 +41,11 @@ HackerIo::Application.routes.draw do
       resources :issues, controller: :thread_posts
     end
 
+    get 'privacy/:type/:id/edit' => 'privacy_settings#edit', as: :edit_privacy_settings
+    post 'privacy/:type/:id' => 'privacy_settings#create', as: :privacy_settings
+    put 'privacy/:type/:id' => 'privacy_settings#update'
+    delete 'privacy/:type/:id' => 'privacy_settings#destroy'
+
     put 'issues/:id/update_workflow' => 'thread_posts#update_workflow', as: :issue_update_workflow
 
     get 'help' => 'pages#help'

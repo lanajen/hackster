@@ -16,7 +16,15 @@
               = link_to tag, "/search?query=#{CGI::escape(tag)}"
 
           - if can? :edit, @project
-            = link_to 'Edit', edit_project_path(@project), class: 'btn-edit'
+            .btn-heading
+              = render partial: 'application/locked_icon', locals: { record: @project, size: nil }
+              .btn-group
+                %button.btn.dropdown-toggle{"data-toggle" => "dropdown"}
+                  = content_tag(:i, '', class: 'icon-cog')
+                  %span.caret
+                %ul.dropdown-menu.pull-right
+                  %li= link_to 'Edit', edit_project_path(@project)
+
           - if current_user.try(:is_following_project?, @project)
             = link_to 'Following', followers_project_path(@project), method: :delete, class: 'btn-follow btn-inverse'
           - else

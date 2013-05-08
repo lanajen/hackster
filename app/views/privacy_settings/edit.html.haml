@@ -1,0 +1,39 @@
+%h3 Privacy settings for #{@record.class} #{@record.name}
+
+- if @access_groups.empty?
+  %p.hint
+    You need to create at least one group from the
+    = link_to 'project edition page', edit_project_path(@project)
+    before you can add custom rules.
+
+= simple_nested_form_for @record, as: :record, url: privacy_settings_path(type: @record.class.name.underscore, id: @record.id) do |f|
+  %table#sortable.table.table-condensed
+    %thead
+      %th Visibility
+      %th Group
+      %th
+    %tbody
+      = f.simple_fields_for :privacy_rules, wrapper: false do |f_rule|
+        %tr.fields
+          %td
+            = f_rule.input :id, as: :hidden
+            = f_rule.input :private, label: false, collection: { 'Hidden' => true, 'Visible' => false }
+          %td
+            = f_rule.input :privatable_user_id, collection: @access_groups, label: false
+            = f_rule.input :privatable_user_type, as: :hidden, input_html: { value: 'AccessGroup' }
+          %td= f_rule.link_to_remove content_tag(:i, '', class: 'icon-trash'), class: 'btn'
+      %tr.sortable-disabled
+        %td{ colspan: 3 }= f.link_to_add 'Add a rule', :privacy_rules, class: 'btn btn-success btn-mini'
+  = f.submit class: 'btn'
+  = link_to 'Cancel', params[:redirect_to], class: 'btn btn-link'
+
+= content_for :js do
+  :javascript
+    jQuery(function($) {
+      window.NestedFormEvents.prototype.insertFields = function(content, assoc, link) {
+        var $tr = $(link).closest('tr');
+        content = content.replace(/^<div class="fields">/,"");
+        content = content.replace(/<\/div>$/,"");
+        return $(content).insertBefore($tr);
+      }
+    });

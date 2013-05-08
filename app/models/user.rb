@@ -10,9 +10,11 @@ class User < ActiveRecord::Base
   end
   has_and_belongs_to_many :followed_projects, class_name: 'Project',
     join_table: :project_followers
+  has_many :access_group_members, dependent: :destroy
   has_many :blog_posts, dependent: :destroy
   has_many :comments, dependent: :destroy
 #  has_many :interests, as: :taggable, dependent: :destroy, class_name: 'InterestTag'
+  has_many :privacy_rules, as: :privatable_users
   has_many :projects, through: :team_members
   has_many :publications, dependent: :destroy
 #  has_many :skills, as: :taggable, dependent: :destroy, class_name: 'SkillTag'
@@ -77,6 +79,8 @@ class User < ActiveRecord::Base
       indexes :publications,    analyzer: 'snowball'
       indexes :country,         analyzer: 'snowball', type: 'string'
       indexes :city,            analyzer: 'snowball', type: 'string'
+      indexes :private,         analyzer: 'keyword'
+      indexes :created_at
     end
   end
 
@@ -92,6 +96,8 @@ class User < ActiveRecord::Base
       publications: publications.pluck(:title),
       interests: interest_tags_string,
       skills: skill_tags_string,
+      created_at: created_at,
+      private: false,
     }.to_json
   end
   # end of search methods
@@ -113,6 +119,10 @@ class User < ActiveRecord::Base
     followed_projects << project unless project.in? followed_projects
   end
 
+  def has_access_group_permissions? record
+    id.in? record.privacy_rules.where(private: false).joins('inner join access_groups on access_groups.id = privacy_rules.privatable_user_id').joins('inner join access_group_members on access_group_members.access_group_id = access_groups.id').select('access_group_members.user_id').pluck('access_group_members.user_id') and not id.in? record.privacy_rules.where(private: true).joins('inner join access_groups on access_groups.id = privacy_rules.privatable_user_id').joins('inner join access_group_members on access_group_members.access_group_id = access_groups.id').select('access_group_members.user_id').pluck('access_group_members.user_id')
+  end
+
   def is? role
     role_symbols.include? role
   end
@@ -123,6 +133,10 @@ class User < ActiveRecord::Base
 
   def is_following_project? project
     followed_projects.where(id: project.id).any?
+  end
+
+  def is_team_member? project
+    id.in? project.team_members.pluck(:user_id)
   end
 
   def name

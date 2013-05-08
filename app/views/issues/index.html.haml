@@ -29,7 +29,8 @@
         .content
           = link_to 'Create a new issue', url_for([:new, @threadable, :issue]), class: 'btn btn-info btn-mini'
           .div
-            Filters:
+            Issues for:
             %ul
-              %li Issues for this
-              %li Issues for that
+              %li= link_to 'All', project_issues_path(@project)
+              - @thread_posts.map{ |t| t.threadable }.uniq.each do |threadable|
+                %li= link_to "#{threadable.class} #{threadable.name}", project_issues_path(@project, threadable: threadable.id, threadable_type: threadable.class.model_name.underscore)

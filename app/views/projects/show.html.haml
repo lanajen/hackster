@@ -10,7 +10,7 @@
               - @project.images.each_with_index do |image, i|
                 = image_tag image.file_url(:headline), class: "image-#{i}", style: "#{'display:none;' unless i==0}"
             - else
-              = image_tag 'http://placehold.it/580x326'
+              = image_tag 'project_default_headline.png'
         - if @project.images.size > 1
           .image-thumbs
             - @project.images.each_with_index do |image, i|
@@ -49,56 +49,69 @@
           No one yet.
 
 - @project.stages.order(:created_at).each do |stage|
-  .row
-    .span12
-      %hr.spacious
+  - if can? :read, stage
+    .row
+      .span12
+        %hr.spacious
 
-  .row
-    .span12{ style: 'position: relative;' }
-      - if stage.locked?
-        .locked-overlay
-          Complete the previous stage to unlock this one
-      .well
-        .header
-          %h3{ style: 'position:relative;' }
-            = stage.name.humanize
-            - if can? :update_stages, @project and stage.open?
-              .pull-right= link_to 'Add a component', new_stage_widget_path(stage), class: 'btn btn-info btn-mini'
-          .progress{ style: 'margin:0' }
-            .bar.bar-success{ style: "width:#{stage.completion_rate}%" }
-              .percentage{ style: 'padding:0 10px;position:absolute;' } #{stage.completion_rate}% completed
-
-  .row
-    - if stage.widgets.any?
-      - stage.widgets.each do |widget|
-        .span6
-          .well
-            .header
-              %h4{ style: 'position:relative;' }
-                = widget.name
-                - if can? :update_widgets, @project and stage.open?
-
-                  - if widget.has_unresolved_issues?
-                    = link_to content_tag(:i, '', class: 'icon-exclamation-sign'), project_issues_path(@project, threadable: widget.id, status: :unresolved)
+    .row
+      .span12{ style: 'position: relative;' }
+        - if stage.locked?
+          .locked-overlay
+            Complete the previous stage to unlock this one
+        .well
+          .header
+            %h3{ style: 'position:relative;' }
+              = stage.name.humanize
+              - if can? :update_stages, @project and stage.open?
+                .btn-heading
+                  = render partial: 'application/locked_icon', locals: { record: stage, size: 'btn-small' }
                   .btn-group
-                    %button.btn= content_tag(:i, '', class: 'icon-cog')
-                    %button.btn.dropdown-toggle{"data-toggle" => "dropdown"}
+                    %button.btn.btn-small.dropdown-toggle{"data-toggle" => "dropdown"}
+                      = content_tag(:i, '', class: 'icon-cog')
                       %span.caret
                     %ul.dropdown-menu.pull-right
-                      %li= link_to 'Edit', edit_stage_widget_path(stage, widget)
-                      %li.divider
-                      %li= link_to 'See issues', project_issues_path(@project, threadable: widget.id)
-                      %li= link_to 'New issue', new_widget_issue_path(widget)
-              .progress{ style: 'margin:5px 0' }
-                .bar.bar-success{ style: "width:#{widget.completion_absolute}%" }
-                  .percentage{ style: 'padding:0 10px;position:absolute;' } counts for #{widget.completion_share}%, #{widget.completion_rate}% completed
-                .bar.bar-warning{ style: "width:#{widget.completion_share-widget.completion_absolute}%" }
+                      %li= link_to 'Add a component', new_stage_widget_path(stage)
+
+            .progress{ style: 'margin:0' }
+              .bar.bar-success{ style: "width:#{stage.completion_rate}%" }
+                .percentage{ style: 'padding:0 10px;position:absolute;' } #{stage.completion_rate}% completed
+
+    .row
+      - if stage.widgets.any?
+        - stage.widgets.each do |widget|
+          - if can? :read, widget
+            .span6
+              .well
+                .header
+                  %h4{ style: 'position:relative;' }
+                    = widget.name
+                    - if can? :update_widgets, @project and stage.open?
+
+                      - if widget.has_unresolved_issues?
+                        = link_to content_tag(:i, '', class: 'icon-exclamation-sign'), project_issues_path(@project, threadable: widget.id, status: :unresolved)
+                      .btn-heading
+                        = render partial: 'application/locked_icon', locals: { record: widget, size: 'btn-mini' }
+                        .btn-group
+                          %button.btn.btn-mini.dropdown-toggle{"data-toggle" => "dropdown"}
+                            = content_tag(:i, '', class: 'icon-cog')
+                            %span.caret
+                          %ul.dropdown-menu.pull-right
+                            %li= link_to 'Edit', edit_stage_widget_path(stage, widget)
+                            %li.divider
+                            %li= link_to 'See issues', project_issues_path(@project, threadable: widget.id)
+                            %li= link_to 'New issue', new_widget_issue_path(widget)
+
+                  .progress{ style: 'margin:5px 0' }
+                    .bar.bar-success{ style: "width:#{widget.completion_absolute}%" }
+                      .percentage{ style: 'padding:0 10px;position:absolute;' } counts for #{widget.completion_share}%, #{widget.completion_rate}% completed
+                    .bar.bar-warning{ style: "width:#{widget.completion_share-widget.completion_absolute}%" }
+                .content
+                  = render partial: "widgets/show/#{widget.identifier}", locals: { widget: widget }
+      -# else
+        .span6
+          .well
             .content
-              = render partial: "widgets/show/#{widget.identifier}", locals: { widget: widget }
-    -# else
-      .span6
-        .well
-          .content
-            No components yet.
-            - if can? :update_widgets, @project and stage.open?
-              = link_to 'Add one', new_stage_widget_path(stage), class: 'btn btn-info btn-mini'
+              No components yet.
+              - if can? :update_widgets, @project and stage.open?
+                = link_to 'Add one', new_stage_widget_path(stage), class: 'btn btn-info btn-mini'

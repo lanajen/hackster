@@ -25,7 +25,7 @@
       .header
         %h2
           Latest projects
-          = link_to 'See more recent projects &rarr;'.html_safe, '/search', class: 'btn-edit'
+          = link_to 'See more recent projects &rarr;'.html_safe, '/search?model%5Bproject%5D=1', class: 'btn-edit'
     %ul.thumbnails
       - @last_projects.each do |project|
         = render partial: 'projects/project_thumb', locals: { project: project.decorate }

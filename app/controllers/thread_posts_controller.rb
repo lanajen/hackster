@@ -13,11 +13,11 @@ class ThreadPostsController < ApplicationController
 
   def index
     @thread_posts = Issue
-    
+
     @thread_posts = if params[:threadable]
-      @thread_posts.where(threadable_type: 'Widget', threadable_id: params[:threadable])
+      @thread_posts.where(threadable_type: params[:threadable_type].classify, threadable_id: params[:threadable])
     else
-      @project.issues + @thread_posts.where(threadable_type: 'Widget').where('threadable_id IN (?)', @project.widgets.pluck('widgets.id'))
+      (@project.issues + @thread_posts.where(threadable_type: 'Widget').where('threadable_id IN (?)', @project.widgets.pluck('widgets.id'))).sort_by{ |t| t.created_at }.reverse
     end
 
     if params[:status]

@@ -4,6 +4,8 @@ class Project < ActiveRecord::Base
 
   belongs_to :user
   has_and_belongs_to_many :followers, class_name: 'User', join_table: 'project_followers'
+  has_many :access_groups, dependent: :destroy
+  has_many :access_group_members, through: :access_groups
   has_many :blog_posts, as: :threadable, dependent: :destroy
   has_many :issues, as: :threadable, dependent: :destroy
   has_many :images, as: :attachable, dependent: :destroy
@@ -17,10 +19,10 @@ class Project < ActiveRecord::Base
   sanitize_text :description
   attr_accessible :description, :end_date, :name, :start_date, :images_attributes,
     :video_attributes, :current, :logo_attributes, :team_members_attributes,
-    :website
+    :website, :access_groups_attributes
   attr_accessor :current
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
-    allow_destroy: true
+    :access_groups, allow_destroy: true
 
   validates :name, presence: true
   before_validation :check_if_current
@@ -29,7 +31,18 @@ class Project < ActiveRecord::Base
   taggable :product_tags, :tech_tags
 
   # privacy settings
-  attr_accessible :private
+  attr_accessible :private, :privacy_rules_attributes
+  has_many :privacy_rules, as: :privatable, dependent: :destroy
+  accepts_nested_attributes_for :privacy_rules, allow_destroy: true
+
+  def public?
+    private == false
+  end
+
+  def visible_to? user
+    public? or user.has_access_group_permissions? self or user.is_team_member? self
+  end
+
   # levels:
   # - private (cannot be accessed if not part of the collaborators and not found in search)
   # - public_profile (can be found in search but only collaborators can see all the widgets)
@@ -50,6 +63,8 @@ class Project < ActiveRecord::Base
       indexes :description,     analyzer: 'snowball'
       indexes :text_widgets,    analyzer: 'snowball'
       indexes :user_names,      analyzer: 'snowball'
+      indexes :private,         analyzer: 'keyword'
+      indexes :created_at
     end
   end
 
@@ -63,6 +78,8 @@ class Project < ActiveRecord::Base
       tech_tags: tech_tags_string,
       text_widgets: Widget.where(type: 'TextWidget').where('widgets.stage_id IN (?)', stages.pluck(:id)).map{ |w| w.content },
       user_name: team_members.map{ |t| t.user.name },
+      private: private,
+      created_at: created_at,
     }.to_json
   end
   # end of search methods

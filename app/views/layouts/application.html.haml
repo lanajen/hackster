@@ -11,6 +11,8 @@
       = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.1/html5shiv.js"
     = stylesheet_link_tag "application", :media => "all"
     <link href="#{ asset_path 'favicon.ico' }" rel="shortcut icon" type="image/vnd.microsoft.icon">
+    - unless current_user and current_user.is? :admin
+      = render partial: 'application/analytics', locals: { tracker: 'UA-11926897-15', domain: 'hackster.io' }
 
   %body
     #wrapper
@@ -28,7 +30,7 @@
               %ul.nav.pull-right
                 - if user_signed_in?
                   .btn-group
-                    %button.btn= content_tag(:i, '', class: 'icon-user')
+                    = link_to image_tag(current_user.decorate.avatar(:mini), style: 'width:30px'), current_user
                     %button.btn.dropdown-toggle{"data-toggle" => "dropdown"}
                       %span.caret
                     %ul.dropdown-menu.pull-right

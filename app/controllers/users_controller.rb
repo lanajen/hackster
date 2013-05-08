@@ -17,7 +17,7 @@ class UsersController < ApplicationController
 
     if @user.update_attributes(params[:user])
       respond_to do |format|
-        format.html { redirect_to user_profile_url(@user.user_name), notice: 'Profile updated.' }
+        format.html { redirect_to @user, notice: 'Profile updated.' }
         format.js do
           @user.avatar = nil unless @user.avatar.try(:file_url)
           @user = @user.decorate

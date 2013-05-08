@@ -6,5 +6,6 @@ class CreateAccessGroups < ActiveRecord::Migration
 
       t.timestamps
     end
+    add_index :access_groups, :project_id
   end
 end

@@ -11,7 +11,26 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130507010515) do
+ActiveRecord::Schema.define(:version => 20130507191838) do
+
+  create_table "access_group_members", :force => true do |t|
+    t.integer  "access_group_id"
+    t.integer  "user_id"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
+  add_index "access_group_members", ["access_group_id"], :name => "index_access_group_members_on_access_group_id"
+  add_index "access_group_members", ["user_id"], :name => "index_access_group_members_on_user_id"
+
+  create_table "access_groups", :force => true do |t|
+    t.integer  "project_id"
+    t.string   "name"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "access_groups", ["project_id"], :name => "index_access_groups_on_project_id"
 
   create_table "attachments", :force => true do |t|
     t.string   "file"
@@ -66,6 +85,16 @@ ActiveRecord::Schema.define(:version => 20130507010515) do
   end
 
   add_index "invite_requests", ["user_id"], :name => "index_invite_requests_on_user_id"
+
+  create_table "privacy_rules", :force => true do |t|
+    t.boolean  "private"
+    t.integer  "privatable_id"
+    t.string   "privatable_type"
+    t.integer  "privatable_user_id"
+    t.string   "privatable_user_type"
+    t.datetime "created_at",           :null => false
+    t.datetime "updated_at",           :null => false
+  end
 
   create_table "project_followers", :id => false, :force => true do |t|
     t.integer "user_id",    :null => false
