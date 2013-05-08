@@ -1,4 +1,8 @@
 class Admin::PagesController < Admin::BaseController
+  def projects
+    @projects = Project.all
+  end
+  
   def root
   end
 
