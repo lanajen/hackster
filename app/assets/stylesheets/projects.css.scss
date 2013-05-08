@@ -45,7 +45,20 @@
   height: 100%;
   background: #000;
   @include opacity(50);
+  @include border-radius(4px);
   z-index: 2;
   text-align: center;
   color: #fff;
+  font-weight: bold;
+  .inner-overlay {
+    margin-top: 35px;
+  }
+}
+
+#stages {
+  background: image-url('line.png') center top repeat-y;
+  margin: 50px 0;
+  .stage {
+    margin-bottom: 50px;
+  }
 }

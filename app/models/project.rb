@@ -1,4 +1,5 @@
 class Project < ActiveRecord::Base
+  include Privatable
   include Taggable
 #  include Workflow
 
@@ -29,25 +30,6 @@ class Project < ActiveRecord::Base
   before_validation :ensure_website_protocol
 
   taggable :product_tags, :tech_tags
-
-  # privacy settings
-  attr_accessible :private, :privacy_rules_attributes
-  has_many :privacy_rules, as: :privatable, dependent: :destroy
-  accepts_nested_attributes_for :privacy_rules, allow_destroy: true
-
-  def public?
-    private == false
-  end
-
-  def visible_to? user
-    public? or user.has_access_group_permissions? self or user.is_team_member? self
-  end
-
-  # levels:
-  # - private (cannot be accessed if not part of the collaborators and not found in search)
-  # - public_profile (can be found in search but only collaborators can see all the widgets)
-  # - public (can be found and fully seen)
-  #
 
   # beginning of search methods
   include Tire::Model::Search

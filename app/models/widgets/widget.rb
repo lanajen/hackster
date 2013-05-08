@@ -1,6 +1,8 @@
 #autoload 'widgets'
 
 class Widget < ActiveRecord::Base
+  include Privatable
+  
   belongs_to :stage
   has_many :issues, as: :threadable, dependent: :destroy
 
@@ -71,18 +73,6 @@ class Widget < ActiveRecord::Base
   def properties_was
     val = super
     val.kind_of?(String) ? YAML::load(val) : val
-  end
-
-  def public?
-    private == false
-  end
-  
-  attr_accessible :private, :privacy_rules_attributes
-  has_many :privacy_rules, as: :privatable
-  accepts_nested_attributes_for :privacy_rules, allow_destroy: true
-
-  def visible_to? user
-    public? or user.has_access_group_permissions? self or user.is_team_member? project
   end
 
   protected
