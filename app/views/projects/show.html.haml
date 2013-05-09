@@ -68,7 +68,7 @@
               .header
                 %h3{ style: 'position:relative;' }
                   = stage.name.humanize
-                  - if can? :create, Stage, project_id: @project.id
+                  - if can? :update, stage
                     .btn-heading
                       = render partial: 'application/locked_icon', locals: { record: stage, size: 'btn-small' }
                       - if stage.open?
@@ -102,7 +102,7 @@
                     .header
                       %h4{ style: 'position:relative;' }
                         = widget.name
-                        - if can? :create, Widget, stage_id: stage.id and stage.open?
+                        - if can? :update, widget and stage.open?
 
                           - if widget.has_unresolved_issues?
                             = link_to content_tag(:i, '', class: 'icon-exclamation-sign'), project_issues_path(@project, threadable: widget.id, status: :unresolved, threadable_type: 'widget'), title: 'Unresolved issues'
