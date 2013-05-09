@@ -59,7 +59,7 @@
                           ·
                         - if publication.link.present?
                           = link_to 'Read more', publication.link
-                      %p= publication.abstract
+                      = publication.formatted_abstract.html_safe
                 - else
                   #{@user.name} has no publications yet.
 

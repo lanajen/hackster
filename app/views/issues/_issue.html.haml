@@ -5,18 +5,19 @@
 
       .btn-edit
         - if can? :edit, issue
-          = link_to 'Edit', url_for([:edit, issue.threadable, issue])
+          = link_to 'Edit', url_for([:edit, issue.threadable, issue]), class: 'btn btn-link btn-small'
           - if issue.unresolved?
-            = link_to 'Mark resolved', issue_update_workflow_path(issue, event: :resolve, redirect_to: request.path), method: :put
+            = link_to 'Mark resolved', issue_update_workflow_path(issue, event: :resolve, redirect_to: request.path), method: :put, class: 'btn btn-link btn-small'
           - else
-            = link_to 'Reopen', issue_update_workflow_path(issue, event: :reopen, redirect_to: request.path), method: :put
+            = link_to 'Reopen', issue_update_workflow_path(issue, event: :reopen, redirect_to: request.path), method: :put, class: 'btn btn-link btn-small'
 
-    on #{issue.threadable.class} #{issue.threadable.name}
+    .muted on #{issue.threadable.class} #{issue.threadable.name}
     -# .more
       - user = issue.user.decorate
       = image_tag user.avatar(:mini)
       = link_to user.name, user
       = l issue.created_at, format: :long
       %span.muted #{issue.comments.size} comments
+
   .content
     = issue.body.html_safe

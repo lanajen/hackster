@@ -70,3 +70,15 @@ ul.websites {
   list-style: none;
   margin: 0;
 }
+
+.user-mini-resume, .user-categories {
+  max-width: 800px;
+}
+
+.user-mini-resume {
+}
+
+.user-categories {
+  @include font-size(12);
+  @extend .muted;
+}

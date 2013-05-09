@@ -13,3 +13,11 @@
           There are no comments.
 
         = render partial: 'comments/form', locals: { comment: Comment.new, commentable: @thread_post }
+
+  .span4
+    .well
+      .header
+        %h4 How to solve this issue
+      .content
+        %p= link_to 'Invite people to participate', '', class: 'btn btn-small btn-info'
+        %p= link_to 'Make this issue public', '', class: 'btn btn-small btn-info'

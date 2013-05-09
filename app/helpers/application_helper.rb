@@ -15,6 +15,10 @@ module ApplicationHelper
     end
   end
 
+#  def redirecting_link_to content, link, *args
+#    super content, link, *args
+#  end
+
   def value_for_input param, val
     param.nil? or param == val ? true : false
   end

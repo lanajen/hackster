@@ -7,6 +7,8 @@ class Publication < ActiveRecord::Base
 
   before_validation :ensure_link_protocol
 
+  newlines_to_html_formatter :abstract
+
   private
     def ensure_link_protocol
       return unless link_changed?

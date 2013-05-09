@@ -51,6 +51,7 @@
 #stages
   - previous_stage = nil
   - @project.stages.order(:created_at).each do |stage|
+    - stage = stage.decorate
     - if can? :read, stage
       .stage
         .row{ style: 'position: relative;' }
@@ -67,15 +68,27 @@
               .header
                 %h3{ style: 'position:relative;' }
                   = stage.name.humanize
-                  - if can? :create, Stage, project_id: @project.id and stage.open?
+                  - if can? :create, Stage, project_id: @project.id
                     .btn-heading
                       = render partial: 'application/locked_icon', locals: { record: stage, size: 'btn-small' }
-                      .btn-group
-                        %button.btn.btn-small.dropdown-toggle{"data-toggle" => "dropdown"}
-                          = content_tag(:i, '', class: 'icon-cog')
-                          %span.caret
-                        %ul.dropdown-menu.pull-right
-                          %li= link_to 'Add a component', new_stage_widget_path(stage)
+                      - if stage.open?
+                        .btn-group
+                          %button.btn.btn-small.dropdown-toggle{"data-toggle" => "dropdown"}
+                            = content_tag(:i, '', class: 'icon-cog')
+                            %span.caret
+                          %ul.dropdown-menu.pull-right
+                            %li= link_to 'Add a component', new_stage_widget_path(stage)
+
+                    - if stage.open?
+                      .subtitle
+                        What next?
+                        = stage.next_step
+
+                    - elsif stage.completed?
+                      .subtitle
+                        This stage is completed and locked.
+                        %em Changed your mind?
+                        = link_to 'Reopen it', update_workflow_stage_path(stage, event: :reopen), method: :put
 
                 .progress{ style: 'margin:0' }
                   .bar.bar-success{ style: "width:#{stage.completion_rate}%" }
@@ -92,7 +105,7 @@
                         - if can? :create, Widget, stage_id: stage.id and stage.open?
 
                           - if widget.has_unresolved_issues?
-                            = link_to content_tag(:i, '', class: 'icon-exclamation-sign'), project_issues_path(@project, threadable: widget.id, status: :unresolved), title: 'Unresolved issues'
+                            = link_to content_tag(:i, '', class: 'icon-exclamation-sign'), project_issues_path(@project, threadable: widget.id, status: :unresolved, threadable_type: 'widget'), title: 'Unresolved issues'
                           .btn-heading
                             = render partial: 'application/locked_icon', locals: { record: widget, size: 'btn-mini' }
                             .btn-group

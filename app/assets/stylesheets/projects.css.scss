@@ -64,3 +64,9 @@
     margin-bottom: 50px;
   }
 }
+
+.project-thumb {
+  h3 {
+    @include font-size(16);
+  }
+}

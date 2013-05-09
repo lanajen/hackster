@@ -10,6 +10,7 @@ class Project < ActiveRecord::Base
   has_many :blog_posts, as: :threadable, dependent: :destroy
   has_many :issues, as: :threadable, dependent: :destroy
   has_many :images, as: :attachable, dependent: :destroy
+  has_many :participant_invites
   has_many :stages, dependent: :destroy
   has_many :team_members, include: :user
   has_many :users, through: :team_members

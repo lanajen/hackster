@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130507191838) do
+ActiveRecord::Schema.define(:version => 20130509002846) do
 
   create_table "access_group_members", :force => true do |t|
     t.integer  "access_group_id"
@@ -85,6 +85,19 @@ ActiveRecord::Schema.define(:version => 20130507191838) do
   end
 
   add_index "invite_requests", ["user_id"], :name => "index_invite_requests_on_user_id"
+
+  create_table "participant_invites", :force => true do |t|
+    t.integer  "project_id",                    :null => false
+    t.integer  "user_id"
+    t.integer  "issue_id"
+    t.string   "email"
+    t.boolean  "accepted",   :default => false, :null => false
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
+  end
+
+  add_index "participant_invites", ["accepted"], :name => "index_participant_invites_on_accepted"
+  add_index "participant_invites", ["project_id"], :name => "index_participant_invites_on_project_id"
 
   create_table "privacy_rules", :force => true do |t|
     t.boolean  "private"
@@ -203,6 +216,7 @@ ActiveRecord::Schema.define(:version => 20130507191838) do
     t.datetime "updated_at",                                            :null => false
     t.string   "full_name"
     t.text     "websites"
+    t.integer  "categories_mask"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

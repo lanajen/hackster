@@ -3,7 +3,8 @@
     .pull-left.avatar.main-avatar= image_tag @user.avatar(:medium), alt: @user.name
     .pull-left
       %h1= @user.name
-      %p{ style: 'max-width:800px' }= @user.mini_resume
+      %p.user-mini-resume= @user.mini_resume
+      %p.user-categories= @user.categories.to_sentence
       - if @user.websites.any?
         %ul.websites
           - @user.websites.each do |type, url|

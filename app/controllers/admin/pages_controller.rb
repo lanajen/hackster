@@ -1,12 +1,12 @@
 class Admin::PagesController < Admin::BaseController
   def projects
-    @projects = Project.all
+    @projects = Project.order(:created_at)
   end
-  
+
   def root
   end
 
   def users
-    @users = User.all
+    @users = User.order(:created_at)
   end
 end

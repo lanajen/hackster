@@ -26,7 +26,7 @@ class User < ActiveRecord::Base
     :remember_me, :roles, :avatar_attributes, :projects_attributes, :websites_attributes,
     :first_name, :last_name, :mini_resume, :city, :country, :user_name, :full_name,
     :facebook_link, :twitter_link, :linked_in_link, :website_link,
-    :blog_link
+    :blog_link, :categories
   accepts_nested_attributes_for :avatar, :projects, allow_destroy: true
 
   store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link, :website_link,
@@ -46,10 +46,19 @@ class User < ActiveRecord::Base
   before_validation :ensure_website_protocol
   validate :is_whitelisted?, unless: proc { |u| u.persisted? }
 
+  scope :with_category, lambda { |category| { conditions: "categories_mask & #{2**CATEGORIES.index(category.to_s)} > 0"} }
   scope :with_role, lambda { |role| { conditions: "roles_mask & #{2**ROLES.index(role.to_s)} > 0"} }
 
   delegate :can?, :cannot?, to: :ability
 
+  CATEGORIES = [
+    'Electrical engineer',
+    'Industrial designer',
+    'Investor',
+    'Manufacturer',
+    'Mechanical engineer',
+    'Software developer',
+  ]
   ROLES = %w(admin confirmed_user)
 
   taggable :interest_tags, :skill_tags
@@ -80,6 +89,7 @@ class User < ActiveRecord::Base
       indexes :country,         analyzer: 'snowball', type: 'string'
       indexes :city,            analyzer: 'snowball', type: 'string'
       indexes :private,         analyzer: 'keyword'
+      indexes :categories,      analyzer: 'keyword'
       indexes :created_at
     end
   end
@@ -98,6 +108,7 @@ class User < ActiveRecord::Base
       skills: skill_tags_string,
       created_at: created_at,
       private: false,
+      categories: categories,
     }.to_json
   end
   # end of search methods
@@ -109,6 +120,14 @@ class User < ActiveRecord::Base
   def add_confirmed_role
     self.roles = roles << 'confirmed_user'
     save
+  end
+
+  def categories=(categories)
+    self.categories_mask = (categories & CATEGORIES).map { |r| 2**CATEGORIES.index(r) }.sum
+  end
+
+  def categories
+    CATEGORIES.reject { |r| ((categories_mask || 0) & 2**CATEGORIES.index(r)).zero? }
   end
 
   def follow user

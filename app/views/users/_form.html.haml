@@ -23,10 +23,11 @@
         = f_avatar.input :file, as: :file, label: 'Profile picture'
         = f_avatar.input :file_cache, as: :hidden
 
-    .span6
       = f.input :city
       = f.input :country
 
+    .span6
+      = f.input :categories, as: :check_boxes, collection: User::CATEGORIES.sort
       = f.input :facebook_link
       = f.input :twitter_link
       = f.input :linked_in_link

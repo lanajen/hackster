@@ -236,7 +236,6 @@ GEM
       ffi (>= 0.5.0)
     rdoc (3.12.2)
       json (~> 1.4)
-    redcarpet (2.2.2)
     redis (3.0.2)
     redis-namespace (1.2.1)
       redis (~> 3.0.0)
@@ -309,7 +308,7 @@ GEM
       tilt (~> 1.1, != 1.3.0)
     sqlite3 (1.3.7)
     sundawg_country_codes (0.0.7)
-    text_sanitizer (0.0.4)
+    text_sanitizer (0.1.0)
       rails (>= 3.0.0)
       sanitize
     therubyracer (0.10.2)
@@ -398,14 +397,12 @@ DEPENDENCIES
   pygments.rb (= 0.5.0)
   rails (= 3.2.12)
   rb-inotify
-  redcarpet (= 2.2.2)
   redis (= 3.0.2)
   resque (= 1.23.0)
   resque-scheduler (= 2.0.0)
   rmagick (= 2.13.1)
   rspec-cells
   rspec-rails
-  rubyzip (= 0.9.9)
   sanitize (= 2.0.3)
   sass-pygments-rails (= 0.1)
   sass-rails (~> 3.2.3)
@@ -415,7 +412,7 @@ DEPENDENCIES
   spork
   sqlite3
   sundawg_country_codes (= 0.0.7)
-  text_sanitizer (= 0.0.4)
+  text_sanitizer (= 0.1.0)
   therubyracer (= 0.10.2)
   tire (= 0.5.5)
   twitter-bootstrap-rails (= 2.2.6)
