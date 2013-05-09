@@ -76,7 +76,7 @@ module MailerHelpers
     end
 
     def default_host
-      "http://#{APP_CONFIG['full_host']}"
+      APP_CONFIG['full_host']
     end
 
     def get_value_for_token token
