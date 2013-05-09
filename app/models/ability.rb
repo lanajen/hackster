@@ -7,7 +7,7 @@ class Ability
     can :read, [Comment, Issue, Publication, User]
     can :read, [Project], private: false
 
-    member if @user.persisted?
+    member if @user.persisted? or @user.auth_key_authentified
 
     @user.roles.each{ |role| send role }
   end

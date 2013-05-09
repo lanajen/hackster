@@ -1,0 +1,21 @@
+%h1 Logs
+- model_class = LogLine.new.class
+%table.table.table-striped
+  %thead
+    %tr
+      %th= model_class.human_attribute_name(:log_type)
+      %th= model_class.human_attribute_name(:source)
+      %th= model_class.human_attribute_name(:message)
+      %th= model_class.human_attribute_name(:related_object)
+      %th= model_class.human_attribute_name(:created_at)
+  %tbody
+    - @log_lines.each do |log_line|
+      %tr
+        %td= log_line.log_type
+        %td= log_line.source
+        %td= log_line.message
+        %td= "#{log_line.loggable_type} #{log_line.loggable_id}"
+        %td= log_line.created_at
+
+.pagination
+  = will_paginate @log_lines

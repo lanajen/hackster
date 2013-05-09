@@ -64,7 +64,7 @@
                 - else
                   Complete the #{previous_stage.name} stage to unlock this one
           .span12
-            .well
+            .well{ id: "stage-#{stage.id}" }
               .header
                 %h3{ style: 'position:relative;' }
                   = stage.name.humanize
@@ -98,7 +98,7 @@
             - stage.widgets.each do |widget|
               - if can? :read, widget
                 .span6
-                  .well
+                  .well{ id: "widget-#{widget.id}" }
                     .header
                       %h4{ style: 'position:relative;' }
                         = widget.name

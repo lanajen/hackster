@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130509002846) do
+ActiveRecord::Schema.define(:version => 20130509031942) do
 
   create_table "access_group_members", :force => true do |t|
     t.integer  "access_group_id"
@@ -85,6 +85,16 @@ ActiveRecord::Schema.define(:version => 20130509002846) do
   end
 
   add_index "invite_requests", ["user_id"], :name => "index_invite_requests_on_user_id"
+
+  create_table "log_lines", :force => true do |t|
+    t.string   "log_type"
+    t.string   "source"
+    t.text     "message"
+    t.string   "loggable_type", :limit => 15
+    t.integer  "loggable_id"
+    t.datetime "created_at",                  :null => false
+    t.datetime "updated_at",                  :null => false
+  end
 
   create_table "participant_invites", :force => true do |t|
     t.integer  "project_id",                    :null => false

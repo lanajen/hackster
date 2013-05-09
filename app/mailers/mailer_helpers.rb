@@ -1,43 +1,49 @@
 module MailerHelpers
-  DEFAULT_EMAIL = 'Ben from Hackster.io<ben@hackster.io>'
-
   extend ActionView::Helpers::UrlHelper
 
-  def send_notification type, context
+  DEFAULT_EMAIL = 'Hackster.io<team@hackster.io>'
+
+  def send_notification_email type
     @headers = {
-      :to => DEFAULT_EMAIL,
+      to: DEFAULT_EMAIL,
     }
-    send_email type, context
+    send_email type
   end
 
-  def send_single_email type, context
-    @user = context[:user]
+  def send_single_email type
+    @user = @context[:user]
     @headers = {
-      :to => @user.email,
+      to: @user.email,
     }
-    send_email type, context
+    send_email type
   end
 
-  def send_bulk_email type, context
-    @users = context[:users]
+  def send_bulk_email type
+    @users = @context[:users]
     @headers = {
-      :to => DEFAULT_EMAIL,
+      to: DEFAULT_EMAIL,
     }
-    send_email type, context
+    send_email type
   end
 
-  def send_email type, context
-
-    body = render_to_string "mailers/bodies/#{type}"
-    subject = render_to_string "mailers/subjects/#{type}"
-    premailer = Premailer.new(substitute_in(body, context), :with_html_string => true,
-      :warn_level => Premailer::Warnings::SAFE)
+  def send_email type
+    email = Email.find_by_type(type)
+    if email.nil?
+      self.message.perform_deliveries = false
+      msg = "Email was not sent because template '#{type}' doesn't exist."
+      LogLine.create(source: :mailer, log_type: :mail_delivery_failed,
+        message: msg)
+      return
+    end
+    premailer = Premailer.new(substitute_in(email.body), with_html_string: true,
+      warn_level: Premailer::Warnings::SAFE)
 
     headers = {
-      :subject => substitute_in(subject, context),
+      subject: substitute_in(email.subject),
     }.merge(@headers)
 
     if @users.present?
+      sendgrid_recipients @users.map { |user| user.email }
       premailer.to_plain_text.scan(/\|[a-z_]*\|/).each do |token|
         substitutes = @users.map { |user| get_value_for_token(token, { user: user }) }
         sendgrid_substitute token, substitutes
@@ -45,62 +51,81 @@ module MailerHelpers
     end
 
     output_email = mail(headers.merge(default_headers)) do |format|
-      format.text { render :text => premailer.to_plain_text }
-      format.html { render :text => premailer.to_inline_css }
+      format.text { render text: premailer.to_plain_text }
+      format.html { render text: premailer.to_inline_css }
     end
+
+    LogLine.create(source: :mailer, log_type: :mail_sent,
+      message: "Email sent of type: #{type}")
 
     # Output any CSS warnings
     premailer.warnings.each do |w|
       msg = "#{w[:message]} (#{w[:level]}) may not render properly in #{w[:clients]}"
+      LogLine.create(source: :mailer, log_type: :mail_css_warning,
+        message: msg)
     end
-
     output_email
   end
 
   private
     def default_headers
       {
-        :from => DEFAULT_EMAIL,
-        :reply_to => DEFAULT_EMAIL,
+        from: DEFAULT_EMAIL,
+        reply_to: DEFAULT_EMAIL,
       }
     end
 
-    def get_value_for_token token, context
-      user = context[:user] if context.include? :user
-      invite = context[:invite_request] if context.include? :invite_request
-      error = context[:log_line] if context.include? :log_line
+    def default_host
+      "http://#{APP_CONFIG['full_host']}"
+    end
+
+    def get_value_for_token token
+      issue = @context[:issue] if @context.include? :issue
+      user = @context[:user] if @context.include? :user
+      project = @context[:project] if @context.include? :project
+#      log_line = @context[:error] if @context.include? :log_line
       token = token.gsub(/\|/, '')
       case token.to_sym
-      when :account_with_auth_token_link
-        subscription_url(:auth_token => user.authentication_token, :host => APP_CONFIG['default_host'])
-      when :new_invite_with_auth_token_link
-        new_user_invitation_url(:auth_token => user.authentication_token, :host => APP_CONFIG['default_host'])
-      when :email_confirmation_link
-        user_confirmation_url(:confirmation_token => user.confirmation_token, :host => APP_CONFIG['default_host'])
-      when :invitation_link
-        accept_user_invitation_url(:invitation_token => user.invitation_token, :host => APP_CONFIG['default_host'])
+      when :issue_link
+        url.issue_url(issue, host: default_host)
       when :password_reset_link
-        edit_user_password_url(:reset_password_token => user.reset_password_token, :host => APP_CONFIG['default_host'])
+        url.edit_user_password_url(reset_password_token: user.reset_password_token, host: default_host)
+      when :project_link
+        url.project_url(project, host: default_host)
+      when :project_new_link
+        url.new_project_url(project, host: default_host)
+      when :user_profile_edit_link
+        url.user_url(user, host: default_host)
       else
         split_token = token.split '_', 2
         object = split_token[0]
         attribute = split_token[1]
-        if context.include? object.to_sym and context[object.to_sym].respond_to? attribute
-          context[object.to_sym].send(attribute).to_s
+        if @context.include? object.to_sym and @context[object.to_sym].respond_to? attribute
+          @context[object.to_sym].send(attribute).to_s
         else
           msg = "Called for unknown token: #{token}."
-          logger.info msg
+          LogLine.create(source: :mailer, log_type: :unknown_token,
+            message: msg)
           return token
         end
       end
     end
 
-    def substitute_in text, context
+    def newlines_to_html text
+      paragraphs = text.split(/\r\n/)
+      paragraphs.map { |p| p.present? ? "<p>#{p}</p>" : "<br>" }.join('')
+    end
+
+    def substitute_in text
       text.scan(/\|[a-z_]*\|/).each do |token|
-        if substitute = get_value_for_token(token, context)
-          text = text.gsub(token, substitute)
+        if substitute = get_value_for_token(token)
+          text = text.gsub(token, substitute.to_s)
         end
       end
       text
+    end
+
+    def url
+      UrlGenerator.new
     end
 end

@@ -16,10 +16,4 @@ class TeamMembersController < ApplicationController
       render action: 'edit'
     end
   end
-
-  private
-    def load_and_authorize_project
-      @project = Project.find params[:id]
-      authorize! :update, @project
-    end
 end

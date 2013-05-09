@@ -10,6 +10,7 @@ HackerIo::Application.routes.draw do
 
     namespace :admin do
       mount ResqueAuthServer.new, at: "/resque"
+      get 'logs' => 'pages#logs'
       get 'projects' => 'pages#projects'
       get 'users' => 'pages#users'
 
@@ -40,6 +41,7 @@ HackerIo::Application.routes.draw do
       end
       resources :blog_posts, controller: :thread_posts
       resources :issues, controller: :thread_posts
+      resources :participant_invites, only: [:index]
     end
     resources :publications, except: [:show]
     resources :stages, only: [] do

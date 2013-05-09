@@ -1,0 +1,34 @@
+%h3 Invite people to participate to your project
+
+= simple_nested_form_for @project do |f|
+  %table#sortable.table.table-condensed
+    %thead
+      %th Email
+      %th Issue (if there's a specific issue they should help with)
+      %th Accepted?
+      %th
+    %tbody
+      = f.simple_fields_for :participant_invites, wrapper: false do |f_invite|
+        %tr.fields
+          %td
+            = f_invite.input :email, label: false
+            = f_invite.input :id, as: :hidden
+            = f_invite.input :user_id, input_html: { value: current_user.id }, as: :hidden
+          %td= f_invite.association :issue, collection: @issues, label: false
+          %td= f_invite.input :accepted, disabled: true, label: false, as: :select
+          %td= f_invite.link_to_remove content_tag(:i, '', class: 'icon-trash'), class: 'btn'
+      %tr.sortable-disabled
+        %td{ colspan: 2 }= f.link_to_add 'Add someone else', :participant_invites, class: 'btn btn-success btn-mini'
+  = f.submit class: 'btn'
+  = link_to 'Cancel', params[:redirect_to], class: 'btn btn-link'
+
+= content_for :js do
+  :javascript
+    jQuery(function($) {
+      window.NestedFormEvents.prototype.insertFields = function(content, assoc, link) {
+        var $tr = $(link).closest('tr');
+        content = content.replace(/^<div class="fields">/,"");
+        content = content.replace(/<\/div>$/,"");
+        return $(content).insertBefore($tr);
+      }
+    });

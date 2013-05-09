@@ -21,12 +21,13 @@ class User < ActiveRecord::Base
   has_many :team_members
   has_one :avatar, as: :attachable, dependent: :destroy
 
-  attr_accessor :email_confirmation, :skip_registration_confirmation
+  attr_accessor :email_confirmation, :skip_registration_confirmation,
+    :participant_invite_id, :auth_key_authentified
   attr_accessible :email, :email_confirmation, :password, :password_confirmation,
     :remember_me, :roles, :avatar_attributes, :projects_attributes, :websites_attributes,
     :first_name, :last_name, :mini_resume, :city, :country, :user_name, :full_name,
     :facebook_link, :twitter_link, :linked_in_link, :website_link,
-    :blog_link, :categories
+    :blog_link, :categories, :participant_invite_id, :auth_key_authentified
   accepts_nested_attributes_for :avatar, :projects, allow_destroy: true
 
   store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link, :website_link,
@@ -35,16 +36,16 @@ class User < ActiveRecord::Base
 
   validates :name, length: { in: 1..200 }, allow_blank: true
   validates :user_name, length: { in: 3..100 }, uniqueness: true,
-    format: { with: /^[a-z0-9_]{3,}$/, message: "accepts only letters, numbers and underscores '_'." }, allow_blank: true
+    format: { with: /^[a-z0-9_]+$/, message: "accepts only letters, numbers and underscores '_'." }, allow_blank: true
   validates :city, :country, length: { maximum: 50 }, allow_blank: true
   validates :mini_resume, length: { maximum: 160 }, allow_blank: true
   with_options unless: proc { |u| u.skip_registration_confirmation },
     on: :create do |user|
-    user.validates :email_confirmation, presence: true
-    user.validate :email_matches_confirmation
+      user.validates :email_confirmation, presence: true
+      user.validate :email_matches_confirmation
+      user.validate :is_whitelisted?
   end
   before_validation :ensure_website_protocol
-  validate :is_whitelisted?, unless: proc { |u| u.persisted? }
 
   scope :with_category, lambda { |category| { conditions: "categories_mask & #{2**CATEGORIES.index(category.to_s)} > 0"} }
   scope :with_role, lambda { |role| { conditions: "roles_mask & #{2**ROLES.index(role.to_s)} > 0"} }
@@ -122,6 +123,10 @@ class User < ActiveRecord::Base
     save
   end
 
+  def auth_key_authentified? project
+    auth_key_authentified and participant_invite.try(:project_id) == project.id
+  end
+
   def categories=(categories)
     self.categories_mask = (categories & CATEGORIES).map { |r| 2**CATEGORIES.index(r) }.sum
   end
@@ -139,7 +144,8 @@ class User < ActiveRecord::Base
   end
 
   def has_access_group_permissions? record
-    id.in? record.privacy_rules.where(private: false).joins('inner join access_groups on access_groups.id = privacy_rules.privatable_user_id').joins('inner join access_group_members on access_group_members.access_group_id = access_groups.id').select('access_group_members.user_id').pluck('access_group_members.user_id') and not id.in? record.privacy_rules.where(private: true).joins('inner join access_groups on access_groups.id = privacy_rules.privatable_user_id').joins('inner join access_group_members on access_group_members.access_group_id = access_groups.id').select('access_group_members.user_id').pluck('access_group_members.user_id')
+    id.in? record.privacy_rules.where(private: false, privatable_user_type: 'AccessGroup').joins('inner join access_groups on access_groups.id = privacy_rules.privatable_user_id').joins('inner join access_group_members on access_group_members.access_group_id = access_groups.id').select('access_group_members.user_id').pluck('access_group_members.user_id') or id.in? record.privacy_rules.where(private: false, privatable_user_type: 'User').pluck(:privatable_user_id)
+    #and not id.in? record.privacy_rules.where(private: true).joins('inner join access_groups on access_groups.id = privacy_rules.privatable_user_id').joins('inner join access_group_members on access_group_members.access_group_id = access_groups.id').select('access_group_members.user_id').pluck('access_group_members.user_id')
   end
 
   def is? role
@@ -162,6 +168,10 @@ class User < ActiveRecord::Base
     full_name ? full_name : user_name
   end
 
+  def participant_invite
+    @participant_invite ||= ParticipantInvite.find_by_id participant_invite_id
+  end
+
   def roles=(roles)
     self.roles_mask = (roles & ROLES).map { |r| 2**ROLES.index(r) }.sum
   end
@@ -176,6 +186,10 @@ class User < ActiveRecord::Base
 
   def to_param
     user_name
+  end
+
+  def skip_confirmation!
+    self.skip_registration_confirmation = true
   end
 
   def unfollow user

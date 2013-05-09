@@ -1,9 +1,8 @@
 class ApplicationController < ActionController::Base
-#  protect_from_forgery
+  protect_from_forgery
+  before_filter :authenticate_user_with_key_or_login!
   before_filter :set_new_user_session
   before_filter :store_location_before
-  before_filter :authenticate_user!
-#  before_filter :set_json_globals
   after_filter :store_location_after
 
   unless Rails.application.config.consider_all_requests_local
@@ -48,6 +47,27 @@ class ApplicationController < ActionController::Base
   end
 
   private
+    def authenticate_user_with_key_or_login!
+      authenticate_user! unless authentify_with_auth_key!
+    end
+
+    def authentify_with_auth_key!
+      auth_key = params[:auth_key] || session[:auth_key]
+      return unless auth_key
+
+      if participant_invite = ParticipantInvite.find_by_auth_key(auth_key)
+        if user_signed_in?
+          participant_invite.update_attributes accepted: true
+          participant_invite.project.privacy_rules.create privatable_user_type: 'User',
+            privatable_user_id: current_user.id, private: false
+          session.delete(:auth_key)
+        else
+          @current_user = User.new participant_invite_id: participant_invite.id, auth_key_authentified: true
+          session[:auth_key] = auth_key
+        end
+      end
+    end
+
     def current_ability
       current_user ? current_user.ability : User.new.ability
     end
@@ -55,6 +75,15 @@ class ApplicationController < ActionController::Base
     def find_user
       @user = User.find_by_user_name(params[:user_name])
       raise ActiveRecord::RecordNotFound, 'Not found' unless @user
+    end
+
+    def load_project
+      @project ||= Project.find params[:project_id] || params[:id]
+    end
+
+    def load_and_authorize_project
+      load_project
+      authorize! :update, @project
     end
 
     def require_no_authentication
@@ -70,11 +99,11 @@ class ApplicationController < ActionController::Base
     end
 
     def render_500(exception)
-#      log_line = LogLine.create(message: "#{exception.inspect}", log_type: 'error',
-#        session_data: session.to_s, request_url: request.url[0..254],
-#        request_params: request.params)
+      log_line = LogLine.create(message: "#{exception.inspect}", log_type: 'error',
+        session_data: session.to_s, request_url: request.url[0..254],
+        request_params: request.params)
 #      BaseMailer.enqueue_email 'error_notification', { context_type: :log_line, context_id: log_line.id }
-      logger.info "Exception: #{exception.inspect}"
+      logger.error "Exception: #{exception.inspect}"
       @error = exception
       respond_to do |format|
         format.html { render template: 'errors/error_500', layout: 'layouts/application', status: 500 }
@@ -86,13 +115,11 @@ class ApplicationController < ActionController::Base
       flash[type] = message
     end
 
-    def set_json_globals
-      unless request.xhr?
-        gon.rabl "app/views/users/show.json.rabl", as: "current_user"
-      end
-    end
-
     def set_new_user_session
       @new_user_session = User.new unless user_signed_in?
+    end
+
+    def user_signed_in?
+      current_user and current_user.id
     end
 end

@@ -10,7 +10,7 @@ class Project < ActiveRecord::Base
   has_many :blog_posts, as: :threadable, dependent: :destroy
   has_many :issues, as: :threadable, dependent: :destroy
   has_many :images, as: :attachable, dependent: :destroy
-  has_many :participant_invites
+  has_many :participant_invites, dependent: :destroy
   has_many :stages, dependent: :destroy
   has_many :team_members, include: :user
   has_many :users, through: :team_members
@@ -21,10 +21,10 @@ class Project < ActiveRecord::Base
   sanitize_text :description
   attr_accessible :description, :end_date, :name, :start_date, :images_attributes,
     :video_attributes, :current, :logo_attributes, :team_members_attributes,
-    :website, :access_groups_attributes
+    :website, :access_groups_attributes, :participant_invites_attributes
   attr_accessor :current
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
-    :access_groups, allow_destroy: true
+    :access_groups, :participant_invites, allow_destroy: true
 
   validates :name, presence: true
   before_validation :check_if_current
@@ -67,13 +67,13 @@ class Project < ActiveRecord::Base
   end
   # end of search methods
 
+  def all_issues
+    (issues + Issue.where(threadable_type: 'Widget').where('threadable_id IN (?)', widgets.pluck('widgets.id'))).sort_by{ |t| t.created_at }
+  end
+
   def image
     images.first
   end
-
-#  def issues
-#    Issue.where(threadable_type: 'Project', threadable_id: id) + Issue.where(threadable_type: 'Widget').where('threadable_id IN (?)', widgets.pluck('widgets.id'))
-#  end
 
   private
     def check_if_current

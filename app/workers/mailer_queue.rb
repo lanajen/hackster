@@ -6,9 +6,11 @@ class MailerQueue < BaseWorker
     BaseMailer.prepare_email(type, context_type, context_id).deliver!
   end
 
-  def generic_message name, from_email, to_email, subject, body, message_type
-    message = Message.new(name: name, from_email: from_email, to_email: to_email, subject: subject, body: body, message_type: message_type)
+  def generic_message name, from_email, to_email, subject, body, message_type, recipients
+    message = EphemeralMessage.new(name: name, from_email: from_email, to_email: to_email, subject: subject, body: body, message_type: message_type, recipients: recipients)
     puts "#{Time.now.to_s} - Sending email #{message.message_type} without context."
     GenericMailer.send_message(message).deliver!
   end
 end
+
+#TODO: catch Net::SMTPAuthenticationError and retry later
