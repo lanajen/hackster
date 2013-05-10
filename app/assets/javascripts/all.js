@@ -49,6 +49,10 @@ $(document).ready(function(){
         errors = {message: "Please reload the page and try again"};
       }
 
+      // cleanup before adding new elements
+      $('.error .help-inline').remove();
+      $('.control-group').removeClass('error');
+
       for ( error in errors ) {
         input = $form.find('[name="user['+error+']"]');
         input.parents('.control-group').addClass('error');
