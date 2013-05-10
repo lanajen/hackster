@@ -1,5 +1,5 @@
 class PagesController < ApplicationController
-  skip_before_filter :authenticate_user!, only: [:splash]
+  skip_before_filter :authenticate_user_with_key_or_login!, only: [:splash]
 
   def help
   end
