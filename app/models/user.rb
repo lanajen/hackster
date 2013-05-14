@@ -36,7 +36,7 @@ class User < ActiveRecord::Base
 
   validates :name, length: { in: 1..200 }, allow_blank: true
   validates :user_name, length: { in: 3..100 }, uniqueness: true,
-    format: { with: /^[a-z0-9_]+$/, message: "accepts only letters, numbers and underscores '_'." }, allow_blank: true
+    format: { with: /^[a-z0-9_]+$/, message: "accepts only downcase letters, numbers and underscores '_'." }, allow_blank: true
   validates :city, :country, length: { maximum: 50 }, allow_blank: true
   validates :mini_resume, length: { maximum: 160 }, allow_blank: true
   with_options unless: proc { |u| u.skip_registration_confirmation },
