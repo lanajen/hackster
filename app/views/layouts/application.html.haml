@@ -27,6 +27,7 @@
             .container.nav-collapse
               .pull-left= render 'application/search_form'
               %ul.nav
+                -# %li= link_to 'Find a manufacturer', ''
                 %li= link_to 'Start a project', new_project_path
               %ul.nav.pull-right
                 - if user_signed_in?

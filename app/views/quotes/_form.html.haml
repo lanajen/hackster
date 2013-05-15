@@ -1,0 +1,21 @@
+= simple_nested_form_for @quote, html: { class: 'center-container' } do |f|
+  %h3.top Describe your product
+  .control-group.field-group
+    .controls
+      %label Drawings/Files
+      = f.simple_fields_for :documents do |f_doc|
+        = f_doc.input :file, label: false
+        = f_doc.link_to_remove 'Remove this document', class: 'btn btn-mini btn-danger'
+      = f.link_to_add 'Add another document', :documents, class: 'btn btn-small btn-success'
+  = f.input :materials, as: :text, input_html: { rows: 3 }, placeholder: "(ex: ABS, stainless steel, white durable nylon, UV curable resin, etc. If you're not sure, we can help you decide.)"
+  %h3 Describe your order
+  = f.input :quantity
+  = f.input :manufacturer_preference, as: :text, input_html: { rows: 3 }, label: 'Any particular manufacturers we should quote for you?', placeholder: "Don't worry, if you don't have any suggestions we can choose for you. We choose suppliers that fit your needs based on quality, reliability, and speed."
+  = f.input :manufacturer_comments, as: :text, input_html: { rows: 3 }, label: 'Comments to manufacturers', placeholder: "If you have time constraints, tolerance instructions, etc., let manufacturers know (optional)"
+  = f.input :comments, as: :text, input_html: { rows: 3 }, label: 'Comments to us', placeholder: "If you have specific instructions regarding the quotes we'll send you (optional)"
+  %h3 Contact details
+  = f.input :email, hint: "This is just so we can contact you in regards to your quote, we won't share your email with anyone."
+  = f.input :name
+  %button.btn.btn-large.btn-info
+    Send my request
+    %i.icon-chevron-right

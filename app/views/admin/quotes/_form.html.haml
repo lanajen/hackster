@@ -1,0 +1,11 @@
+= simple_form_for [:admin, @quote], :html => { :class => 'form-horizontal' } do |f|
+  = f.input :quantity
+  = f.input :materials
+  = f.input :manufacturer_preference
+  = f.input :email
+  = f.input :name
+  = f.input :comments
+  = f.input :manufacturer_comments
+  .form-actions
+    = f.button :submit, :class => 'btn-primary'
+    = link_to t('.cancel', :default => t("helpers.links.cancel")), admin_quotes_path, :class => 'btn'

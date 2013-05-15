@@ -50,6 +50,8 @@ class BaseMailer < ActionMailer::Base
       when :project
         project = context[:project] = Project.find(context_id)
         context[:users] = project.users
+      when :quote
+        context[:quote] = Quote.find(context_id)
       when :user
         user = context[:user] = User.find(context_id)
       else

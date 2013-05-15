@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130509031942) do
+ActiveRecord::Schema.define(:version => 20130515190400) do
 
   create_table "access_group_members", :force => true do |t|
     t.integer  "access_group_id"
@@ -154,6 +154,12 @@ ActiveRecord::Schema.define(:version => 20130509031942) do
   end
 
   add_index "publications", ["user_id"], :name => "index_publications_on_user_id"
+
+  create_table "quotes", :force => true do |t|
+    t.text     "properties"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "stages", :force => true do |t|
     t.integer  "project_id",                        :null => false

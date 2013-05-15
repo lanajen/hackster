@@ -16,6 +16,7 @@ HackerIo::Application.routes.draw do
 
       resources :invite_requests
       resources :projects
+      resources :quotes
       resources :users
 
       root to: 'pages#root'
@@ -78,5 +79,11 @@ HackerIo::Application.routes.draw do
     root to: 'pages#home'
   end
 
-  root to: 'pages#splash'
+  constraints subdomain: /www/ do
+    resources :quotes, only: [:create]
+    get 'find_a_manufacturer' => 'quotes#new'
+    get 'quote_requested' => 'quotes#requested'
+
+    root to: 'pages#splash'
+  end
 end
