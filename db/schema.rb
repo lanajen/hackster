@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130515190400) do
+ActiveRecord::Schema.define(:version => 20130519011508) do
 
   create_table "access_group_members", :force => true do |t|
     t.integer  "access_group_id"
@@ -108,6 +108,22 @@ ActiveRecord::Schema.define(:version => 20130515190400) do
 
   add_index "participant_invites", ["accepted"], :name => "index_participant_invites_on_accepted"
   add_index "participant_invites", ["project_id"], :name => "index_participant_invites_on_project_id"
+
+  create_table "parts", :force => true do |t|
+    t.integer  "quantity"
+    t.float    "unit_price"
+    t.float    "total_cost"
+    t.string   "name"
+    t.string   "vendor_name"
+    t.string   "vendor_sku"
+    t.string   "vendor_link"
+    t.string   "partable_type", :null => false
+    t.integer  "partable_id",   :null => false
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  add_index "parts", ["partable_id", "partable_type"], :name => "partable_index"
 
   create_table "privacy_rules", :force => true do |t|
     t.boolean  "private"

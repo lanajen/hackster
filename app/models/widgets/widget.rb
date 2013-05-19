@@ -2,7 +2,7 @@
 
 class Widget < ActiveRecord::Base
   include Privatable
-  
+
   belongs_to :stage
   has_many :issues, as: :threadable, dependent: :destroy
 
@@ -81,6 +81,7 @@ class Widget < ActiveRecord::Base
         'Code' => 'CodeWidget',
         'Documents' => 'DocumentWidget',
         'Images' => 'ImageWidget',
+        'Parts' => 'PartsWidget',
         'Text' => 'TextWidget',
         'Video' => 'VideoWidget',
       }

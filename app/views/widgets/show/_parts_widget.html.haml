@@ -1,0 +1,26 @@
+- if widget.parts.any?
+  %table#sortable.table.table-condensed
+    %thead
+      %th Name
+      %th Vendor name
+      %th Vendor SKU
+      %th Vendor link
+      %th Unit price
+      %th Quantity
+      %th Total cost
+    %tbody
+      - widget.parts.each do |part|
+        %tr.fields
+          %td= part.name
+          %td= part.vendor_name
+          %td= part.vendor_sku
+          %td= part.vendor_link
+          %td.currency= number_to_currency part.unit_price
+          %td= part.quantity
+          %td.currency= number_to_currency part.total_cost
+    %tfoot
+      %tr
+        %td{ colspan: 6, style: 'text-align: right' } Total cost
+        %td.currency= number_to_currency widget.total_cost
+- else
+  %p No parts yet.
