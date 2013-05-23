@@ -20,7 +20,7 @@ class CodeWidget < Widget
     return unless document and (document.file_changed? or language_changed?)
 
     begin
-      file_url = unless document.file_changed? and Rails.env == 'production'
+      file_url = if document.file_changed?
         "http://#{APP_CONFIG['default_host']}:#{APP_CONFIG['default_port']}#{document.file_url}"
       else
         document.file_url
