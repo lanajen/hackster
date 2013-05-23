@@ -103,7 +103,8 @@
               %h3 Activity
             .content
               %ul
-                - @user.broadcasts.order('created_at DESC').group(:context_model_type, :context_model_id, :event).limit(10).each do |broadcast|
+                -# .group(:context_model_type, :context_model_id, :event)
+                - @user.broadcasts.order('created_at DESC').limit(10).each do |broadcast|
                   %li
                     - broadcast = broadcast.decorate
                     = broadcast.message.html_safe
