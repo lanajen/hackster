@@ -9,9 +9,7 @@ CarrierWave.configure do |config|
   config.asset_host     = ENV['FOG_HOST']            # optional, defaults to nil
   config.fog_public     = true                                   # optional, defaults to true
   config.fog_attributes = {'Cache-Control'=>'max-age=315576000'}  # optional, defaults to {}
-end if Rails.env == 'production'
 
-#CarrierWave.configure do |config|
-#  config.cache_dir = 'uploads'
-#  config.root = Rails.root.join('tmp')
-#end
+  config.cache_dir = 'carrierwave'
+  config.root = Rails.root.join('tmp')
+end if Rails.env == 'production'
