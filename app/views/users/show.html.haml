@@ -20,12 +20,12 @@
                   .project.preview{ class: css }
                     %h4
                       = link_to project.name, project
-                      .subtitle
+                      -# .subtitle
                         = l project.start_date, format: :month
                         \-
                         = project.end_date ? l(project.end_date, format: :month) : 'Present'
-                    = project.description.html_safe
-                    .image-thumbs
+                    = project.one_liner
+                    -# .image-thumbs
                       - project.images.each do |image|
                         = image_tag image.file_url(:small_thumb)
               - else

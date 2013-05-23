@@ -1,14 +1,17 @@
 - widget.images.new
 .form-fields
+  %label Add images
   - widget.images.each do |image|
     = f.simple_fields_for :images, image do |f_image|
       -  if image.file_url
         .control-group
           .controls
             = image_tag image.file_url(:thumb)
+        -# = f_image.input :caption
       - else
         = f_image.input :file, as: :file, label: false
         = f_image.input :file_cache, as: :hidden
+        -# = f_image.input :caption
       .control-group
         .controls
           = f_image.link_to_remove 'Remove this image', class: 'btn btn-mini btn-danger'

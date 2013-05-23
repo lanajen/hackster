@@ -1,3 +1,6 @@
 - if widget.document
   %strong= widget.document.file_name
-  = widget.formatted_content.html_safe
+  .code-widget
+    = widget.formatted_content.html_safe
+    %a.more{ href: '#' } Show more
+    %a.less{ href: '#' } Show less

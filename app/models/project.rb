@@ -14,14 +14,15 @@ class Project < ActiveRecord::Base
   has_many :stages, dependent: :destroy
   has_many :team_members, include: :user
   has_many :users, through: :team_members
-  has_many :widgets, through: :stages
+  has_many :widgets#, through: :stages
   has_one :logo, as: :attachable, class_name: 'Avatar'
   has_one :video, as: :recordable, dependent: :destroy
 
   sanitize_text :description
   attr_accessible :description, :end_date, :name, :start_date, :images_attributes,
     :video_attributes, :current, :logo_attributes, :team_members_attributes,
-    :website, :access_groups_attributes, :participant_invites_attributes
+    :website, :access_groups_attributes, :participant_invites_attributes,
+    :one_liner
   attr_accessor :current
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
     :access_groups, :participant_invites, allow_destroy: true
@@ -41,12 +42,12 @@ class Project < ActiveRecord::Base
     mapping do
       indexes :id,              index: :not_analyzed
       indexes :name,            analyzer: 'snowball', boost: 100
-      indexes :product_tags,    analyzer: 'snowball'
-      indexes :tech_tags,       analyzer: 'snowball'
-      indexes :description,     analyzer: 'snowball'
+#      indexes :product_tags,    analyzer: 'snowball'
+#      indexes :tech_tags,       analyzer: 'snowball'
+#      indexes :description,     analyzer: 'snowball'
       indexes :text_widgets,    analyzer: 'snowball'
       indexes :user_names,      analyzer: 'snowball'
-      indexes :private,         analyzer: 'keyword'
+#      indexes :private,         analyzer: 'keyword'
       indexes :created_at
     end
   end
@@ -56,12 +57,12 @@ class Project < ActiveRecord::Base
       _id: id,
       name: name,
       model: self.class.name,
-      description: description,
-      product_tags: product_tags_string,
-      tech_tags: tech_tags_string,
+#      description: description,
+#      product_tags: product_tags_string,
+#      tech_tags: tech_tags_string,
       text_widgets: Widget.where(type: 'TextWidget').where('widgets.stage_id IN (?)', stages.pluck(:id)).map{ |w| w.content },
       user_name: team_members.map{ |t| t.user.name },
-      private: private,
+#      private: private,
       created_at: created_at,
     }.to_json
   end

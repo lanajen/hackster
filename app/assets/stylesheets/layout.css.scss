@@ -15,7 +15,7 @@ body {
 }
 
 .navbar-static-top .navbar-inner {
-  background: #f2f2f2;
+  background: #fff;
   padding: 10px 20px;
   @include box-shadow(none);
 }
@@ -28,7 +28,7 @@ body {
 }
 
 #content {
-  padding: 20px 0;
+  padding: 40px 0;
 }
 
 #push {
@@ -78,6 +78,8 @@ footer {
 .well, .thumbnail {
   background: #fff;
   border-color: #e2e2e2;
+  @include border-radius(0);
+  @include box-shadow(0 1px 1px rgba(0, 0, 0, 0.05));
 }
 
 .thumbnail {
@@ -86,8 +88,8 @@ footer {
 }
 
 #heading {
-  padding: 40px 0;
-  background: #fff;
+  padding: 40px 0 30px;
+  background: #fafafa;
   border-bottom: 1px solid #e2e2e2;
 }
 
@@ -124,6 +126,10 @@ h1, h2, h3, h4 {
 .btn-edit, .btn-follow, .btn-heading {
   position: absolute;
   right: 0;
+}
+
+.btn-edit a {
+  margin-left: 10px;
 }
 
 .btn-heading {
@@ -164,8 +170,14 @@ h1, h2, h3, h4 {
 }
 
 form.full-size {
-  input[type=text], textarea, .uneditable-input, select {
-    width: 400px;
+  input[type=text], textarea, .uneditable-input {
+/*    width: 400px;*/
+    width: 95%;
+    padding-left: 2.5%;
+    padding-right: 2.5%;
+  }
+  select {
+    width: 100%;
   }
 }
 

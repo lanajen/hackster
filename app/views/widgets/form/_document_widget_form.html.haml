@@ -1,5 +1,6 @@
 - widget.documents.new
 .form-fields
+  %label Add your documents
   - widget.documents.each do |document|
     = f.simple_fields_for :documents, document do |f_document|
       -  if document.persisted?

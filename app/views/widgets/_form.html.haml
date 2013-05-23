@@ -1,13 +1,14 @@
-= simple_nested_form_for [@stage, @widget], url: widget_form_path(@stage, @widget), html: { class: 'form-horizontal full-size' } do |f|
+= simple_nested_form_for [@project, @widget], url: widget_form_path(@project, @widget), html: { class: 'full-size widget-form' } do |f|
   = f.error_notification
-  = f.input :name
-  = f.input :completion_share
+  = f.input :name, label: 'Give it a label'
   - if @widget.persisted?
     = render partial: "widgets/form/#{@widget.identifier}_form", locals: { f: f, widget: @widget }
-    = f.input :completion_rate
-    = f.submit 'Save changes', class: 'btn btn-primary'
-    = link_to 'Delete widget', stage_widget_path(@stage, @widget), class: 'btn btn-danger btn-small', method: :delete
+    .form-actions
+      = f.submit 'Save changes', class: 'btn btn-primary'
+      = link_to 'Delete widget', project_widget_path(@project, @widget), class: 'btn btn-danger btn-small', method: :delete
+      = link_to 'Cancel', @project, class: 'btn btn-link btn-small'
   - else
-    = f.input :type, collection: Widget.all_types
-    = f.submit 'Continue', class: 'btn btn-primary'
-  = link_to 'Cancel', @stage.project, class: 'btn btn-link btn-small'
+    = f.input :type, collection: Widget.all_types, label: 'What kind of widget do you want to create?'
+    .form-actions
+      = f.submit 'Save and continue', class: 'btn btn-primary'
+      = link_to 'Cancel', @project, class: 'btn btn-link btn-small'

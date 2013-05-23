@@ -43,11 +43,11 @@ HackerIo::Application.routes.draw do
       resources :blog_posts, controller: :thread_posts
       resources :issues, controller: :thread_posts
       resources :participant_invites, only: [:index]
+      resources :widgets
     end
     resources :publications, except: [:show]
     resources :stages, only: [] do
       put 'update_workflow', on: :member
-      resources :widgets
     end
     resources :widgets, only: [] do
       resources :issues, except: [:index], controller: :thread_posts

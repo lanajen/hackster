@@ -1,36 +1,11 @@
 - @project = @project.decorate
 = content_for :no_container do
-  #heading
+  #heading.project
     .container
-      .row
-        .span12.teaser
-          .pull-left.avatar.main-avatar= @project.logo_link(:thumb)
-          %h1= @project.name
-          %p.muted
-            = l @project.start_date, format: :month
-            \-
-            = @project.end_date ? l(@project.end_date, format: :month) : 'Present'
-          %p.muted= link_to @project.website, @project.website if @project.website
-          %p.muted
-            - (@project.product_tags.pluck(:name) + @project.tech_tags.pluck(:name)).each do |tag|
-              = link_to tag, "/search?query=#{CGI::escape(tag)}"
+      .display= render 'projects/teaser'
+      .edit{ style: 'display:none;' }
 
-          - if can? :edit, @project
-            .btn-heading
-              = render partial: 'application/locked_icon', locals: { record: @project, size: nil }
-              .btn-group
-                %button.btn.dropdown-toggle{"data-toggle" => "dropdown"}
-                  = content_tag(:i, '', class: 'icon-cog')
-                  %span.caret
-                %ul.dropdown-menu.pull-right
-                  %li= link_to 'Edit', edit_project_path(@project)
-
-          - if current_user.try(:is_following_project?, @project)
-            = link_to 'Following', followers_project_path(@project), method: :delete, class: 'btn-follow btn-inverse'
-          - else
-            = link_to 'Follow', followers_project_path(@project), method: :post, class: 'btn-follow'
-
-  #subnav
+  -# #subnav
     .navbar.navbar-static-top
       .navbar-inner
         .container

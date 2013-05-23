@@ -1,6 +1,9 @@
-- if widget.documents.any?
-  %ul
-    - widget.documents.each do |document|
-      %li= link_to document.file_name, document.file_url
-- else
-  %p No documents yet.
+.document-widget
+  - if widget.documents.any?
+    %ul
+      - widget.documents.each do |document|
+        %li.file
+          %i.icon-file.icon-large
+          = link_to document.file_name, document.file_url
+  - else
+    %p No documents yet.

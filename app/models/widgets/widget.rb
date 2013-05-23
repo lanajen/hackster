@@ -3,6 +3,7 @@
 class Widget < ActiveRecord::Base
   include Privatable
 
+  belongs_to :project
   belongs_to :stage
   has_many :issues, as: :threadable, dependent: :destroy
 
@@ -13,11 +14,11 @@ class Widget < ActiveRecord::Base
   attr_accessible :properties, :stage_id, :type, :completion_rate,
     :completion_share, :name
 
-  validates :completion_rate, :completion_share,
-    numericality: { less_than_or_equal_to: 100, greater_than_or_equal_to: 0,
-    only_integer: true }
+#  validates :completion_rate, :completion_share,
+#    numericality: { less_than_or_equal_to: 100, greater_than_or_equal_to: 0,
+#    only_integer: true }
   validates :type, :name, presence: true
-  validate :total_completion_is_100_max
+#  validate :total_completion_is_100_max
 
   class << self
     attr_accessor :custom_attributes
@@ -57,9 +58,9 @@ class Widget < ActiveRecord::Base
     ''
   end
 
-  def project
-    stage.project
-  end
+#  def project
+#    stage.project
+#  end
 
   def properties
     val = read_attribute :properties

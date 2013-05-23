@@ -1,0 +1,4 @@
+$('.project .edit').html("<%= escape_javascript render('form') %>");
+$('.project .display').slideUp(function(){
+  $('.project .edit').slideDown();
+});

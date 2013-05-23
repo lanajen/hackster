@@ -8,6 +8,20 @@ $(document).ready(function(){
     return false;
   });
 
+  // collapse code widgets that are higher than 150px
+  $.each($('.code-widget'), function(i, v){
+    if ($('.highlight pre', v).height() > 150){
+      $(this).addClass('collapsible');
+      $(this).addClass('collapsed');
+    }
+  });
+
+  $('.code-widget.collapsible a').click(function(e){
+    e.preventDefault();
+    $(this).parent().toggleClass('collapsed');
+    return false;
+  });
+
   //[data-remote="true"]
   $('form')
     .live("ajax:beforeSend", function(evt, xhr, settings){

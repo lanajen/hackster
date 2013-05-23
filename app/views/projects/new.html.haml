@@ -1,3 +1,17 @@
-%h1 Create a new project
+.span3.offset4.wellified
+  %h2{ style: 'text-align: center' } New project
 
-= render 'form'
+  = simple_nested_form_for @project do |f|
+    = f.error_notification
+
+    = f.input :name, label: 'How will you call it?'
+    = f.input :one_liner, as: :text, input_html: { rows: 3 }, label: 'One-liner about this project, Twitter-style.'
+    - if @project.logo and @project.logo.file_url(:thumb)
+      .control-group
+        .controls
+          = image_tag @project.logo.file_url(:thumb)
+    = f.simple_fields_for :logo do |f_logo|
+      = f_logo.input :file, as: :file, label: 'Main image'
+      = f_logo.input :file_cache, as: :hidden
+
+    = f.button :submit, 'Go!', class: 'btn-block btn'

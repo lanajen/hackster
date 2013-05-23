@@ -1,18 +1,19 @@
 class WidgetsController < ApplicationController
-  before_filter :load_stage
+  before_filter :load_project
   load_resource except: [:new, :create]
   respond_to :html
   layout 'project'
 
   def new
-    @widget = @stage.widgets.new(params[:widget])
+    @widget = @project.widgets.new(params[:widget])
   end
 
   def create
-    @widget = @stage.widgets.create(params[:widget])
+    @widget = @project.widgets.new(params[:widget])
+    @widget.stage_id = 0
 
     if @widget.save
-      redirect_to edit_stage_widget_path(@stage, @widget)
+      redirect_to edit_project_widget_path(@project, @widget)
     else
       render 'new'
     end
@@ -39,9 +40,9 @@ class WidgetsController < ApplicationController
   end
 
   private
-    def load_stage
-      @stage = Stage.find params[:stage_id]
-      @project = @stage.project
-      authorize! :update_widgets, @project
-    end
+#    def load_stage
+#      @stage = Stage.find params[:stage_id]
+#      @project = @stage.project
+#      authorize! :update_widgets, @project
+#    end
 end

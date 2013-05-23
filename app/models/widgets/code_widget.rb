@@ -6,7 +6,7 @@ class CodeWidget < Widget
   def self.model_name
     Widget.model_name
   end
-  
+
   define_attributes [:formatted_content, :language]
   has_one :document, as: :attachable
 
@@ -40,7 +40,7 @@ class CodeWidget < Widget
 
   private
     def disallow_blank_file
-      document.disallow_blank_file!
+      document.disallow_blank_file! if document
     end
 
     def guess_language_from_extension

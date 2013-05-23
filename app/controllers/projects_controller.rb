@@ -4,6 +4,7 @@ class ProjectsController < ApplicationController
   skip_load_resource only: [:create]
   layout 'project', only: [:edit, :update, :show]
   respond_to :html
+  respond_to :js, only: [:edit, :update]
 
   def index
   end

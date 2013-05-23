@@ -1,4 +1,4 @@
-.row
+-# .row
   .span8
     .well
       .content
@@ -48,88 +48,22 @@
         - else
           No one yet.
 
-#stages
-  - previous_stage = nil
-  - @project.stages.order(:created_at).each do |stage|
-    - stage = stage.decorate
-    - if can? :read, stage
-      .stage
-        .row{ style: 'position: relative;' }
-          - if stage.locked?
-            .locked-overlay
-              .inner-overlay
-                - if previous_stage.completion_rate == 100
-                  Ready to unlock this stage?
-                  = link_to 'Unlock now', update_workflow_stage_path(stage, event: :unlock, redirect_to: request.path), method: :put, class: 'btn'
-                - else
-                  Complete the #{previous_stage.name} stage to unlock this one
-          .span12
-            .well{ id: "stage-#{stage.id}" }
-              .header
-                %h3{ style: 'position:relative;' }
-                  = stage.name.humanize
-                  - if can? :update, stage
-                    .btn-heading
-                      = render partial: 'application/locked_icon', locals: { record: stage, size: 'btn-small' }
-                      - if stage.open?
-                        .btn-group
-                          %button.btn.btn-small.dropdown-toggle{"data-toggle" => "dropdown"}
-                            = content_tag(:i, '', class: 'icon-cog')
-                            %span.caret
-                          %ul.dropdown-menu.pull-right
-                            %li= link_to 'Add a component', new_stage_widget_path(stage)
-
-                    - if stage.open?
-                      .subtitle
-                        What next?
-                        = stage.next_step
-
-                    - elsif stage.completed?
-                      .subtitle
-                        This stage is completed and locked.
-                        %em Changed your mind?
-                        = link_to 'Reopen it', update_workflow_stage_path(stage, event: :reopen), method: :put
-
-                .progress{ style: 'margin:0' }
-                  .bar.bar-success{ style: "width:#{stage.completion_rate}%" }
-                    .percentage{ style: 'padding:0 10px;position:absolute;' } #{stage.completion_rate}% completed
-
-          - if stage.widgets.any?
-            - stage.widgets.each do |widget|
-              - if can? :read, widget
-                .span6
-                  .well{ id: "widget-#{widget.id}" }
-                    .header
-                      %h4{ style: 'position:relative;' }
-                        = widget.name
-                        - if can? :update, widget and stage.open?
-
-                          - if widget.has_unresolved_issues?
-                            = link_to content_tag(:i, '', class: 'icon-exclamation-sign'), project_issues_path(@project, threadable: widget.id, status: :unresolved, threadable_type: 'widget'), title: 'Unresolved issues'
-                          .btn-heading
-                            = render partial: 'application/locked_icon', locals: { record: widget, size: 'btn-mini' }
-                            .btn-group
-                              %button.btn.btn-mini.dropdown-toggle{"data-toggle" => "dropdown"}
-                                = content_tag(:i, '', class: 'icon-cog')
-                                %span.caret
-                              %ul.dropdown-menu.pull-right
-                                %li= link_to 'Edit', edit_stage_widget_path(stage, widget)
-                                %li.divider
-                                %li= link_to 'See issues', project_issues_path(@project, threadable: widget.id, threadable_type: 'Widget')
-                                %li= link_to 'New issue', new_widget_issue_path(widget)
-
-                      .progress{ style: 'margin:5px 0' }
-                        .bar.bar-success{ style: "width:#{widget.completion_absolute}%" }
-                          .percentage{ style: 'padding:0 10px;position:absolute;' } counts for #{widget.completion_share}%, #{widget.completion_rate}% completed
-                        .bar.bar-warning{ style: "width:#{widget.completion_share-widget.completion_absolute}%" }
-                    .content
-                      = render partial: "widgets/show/#{widget.identifier}", locals: { widget: widget }
-        - previous_stage = stage
-
-  .row{ style: 'position: relative;' }
-    .locked-overlay{ style: 'padding-bottom: 20px;' }
-      .inner-overlay Complete all the stages to unlock the moon
+.row
+  - if @project.widgets.any?
+    - half = (@project.widgets.size / 2).ceil
+    .span6
+      - @project.widgets[0..(half-1)].each do |widget|
+        = render partial: 'widgets/widget', locals: { widget: widget }
+    - if @project.widgets.size > 1
+      .span6
+        - @project.widgets[half..@project.widgets.size].each do |widget|
+          = render partial: 'widgets/widget', locals: { widget: widget }
+  - else
     .span6.offset3
-      .well{ style: 'margin: 0;' }
-        .header{ style: 'text-align:center;' }
-          %h3 The moon
+      .well
+        .content
+          - if can? :edit, @project
+            = link_to 'Add a widget', new_project_widget_path(@project)
+            to get started!
+          - else
+            Work in progress, check back later!

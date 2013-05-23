@@ -1,5 +1,5 @@
 module WidgetsHelper
-  def widget_form_path stage, widget
-    @widget.persisted? ? stage_widget_path(stage, widget) : stage_widgets_path(stage)
+  def widget_form_path project, widget
+    @widget.persisted? ? project_widget_path(project, widget) : project_widgets_path(project)
   end
 end
