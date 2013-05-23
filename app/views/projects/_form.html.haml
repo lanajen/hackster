@@ -13,7 +13,8 @@
   .row
     .span6
       = f.input :name
-      = f.input :one_liner, as: :text, input_html: { rows: 3 }
+      = f.input :one_liner, as: :text, input_html: { rows: 4 },
+        hint: 'Maximum 140 characters'
 
     .span6
       - if @project.logo and @project.logo.file_url(:thumb)

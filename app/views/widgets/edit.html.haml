@@ -1,3 +1,4 @@
-.span6.offset3.wellified
-  %h2{ style: 'text-align: center' } Editing widget
-  = render 'form'
+.row
+  .wellified{ class: widget_span_class(@widget) }
+    %h2{ style: 'text-align: center' } Editing widget
+    = render 'form'

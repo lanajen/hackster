@@ -5,7 +5,7 @@
     = f.error_notification
 
     = f.input :name, label: 'How will you call it?'
-    = f.input :one_liner, as: :text, input_html: { rows: 3 }, label: 'One-liner about this project, Twitter-style.'
+    = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner about this project, Twitter-style.'
     - if @project.logo and @project.logo.file_url(:thumb)
       .control-group
         .controls

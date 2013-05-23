@@ -93,6 +93,16 @@ footer {
   border-bottom: 1px solid #e2e2e2;
 }
 
+#heading .teaser {
+  h1 {
+    margin: 0 0 7px;
+    @include font-size(26);
+  }
+  p {
+    margin: 0 0 1px;
+  }
+}
+
 .alert-flash {
   position: absolute;
   right: 0;
@@ -235,4 +245,9 @@ table {
   td.currency {
     text-align: right;
   }
+}
+
+.help-block {
+  @include font-size(12);
+  color: #999;
 }

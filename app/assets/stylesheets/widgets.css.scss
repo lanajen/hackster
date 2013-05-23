@@ -54,8 +54,8 @@
   label {
     font-weight: bold;
   }
-  .help-block {
-    @include font-size(12);
-    color: #999;
+  .form-actions {
+    margin: 20px -20px -30px;
+    padding: 20px;
   }
 }

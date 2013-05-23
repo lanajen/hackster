@@ -12,16 +12,6 @@
   }
 }
 
-#heading {
-  h1 {
-    margin: 0 0 7px;
-    @include font-size(26);
-  }
-  p {
-    margin: 0 0 1px;
-  }
-}
-
 .user-list {
   margin: 0;
   li {
