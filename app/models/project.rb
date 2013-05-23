@@ -42,6 +42,7 @@ class Project < ActiveRecord::Base
     mapping do
       indexes :id,              index: :not_analyzed
       indexes :name,            analyzer: 'snowball', boost: 100
+      indexes :one_liner,       analyzer: 'snowball'
 #      indexes :product_tags,    analyzer: 'snowball'
 #      indexes :tech_tags,       analyzer: 'snowball'
 #      indexes :description,     analyzer: 'snowball'
@@ -57,6 +58,7 @@ class Project < ActiveRecord::Base
       _id: id,
       name: name,
       model: self.class.name,
+      one_liner: one_liner,
 #      description: description,
 #      product_tags: product_tags_string,
 #      tech_tags: tech_tags_string,
