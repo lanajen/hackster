@@ -49,14 +49,14 @@
           No one yet.
 
 .row
-  - if @project.widgets.any?
-    - half = (@project.widgets.size / 2).ceil
+  - if @widgets.any?
+    - half = (@widgets.size / 2).ceil
     .span6
-      - @project.widgets[0..(half-1)].each do |widget|
+      - @widgets[0..(half-1)].each do |widget|
         = render partial: 'widgets/widget', locals: { widget: widget }
-    - if @project.widgets.size > 1
+    - if @widgets.size > 1
       .span6
-        - @project.widgets[half..@project.widgets.size].each do |widget|
+        - @widgets[half..@widgets.size].each do |widget|
           = render partial: 'widgets/widget', locals: { widget: widget }
   - else
     .span6.offset3

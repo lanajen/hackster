@@ -11,6 +11,7 @@ class ProjectsController < ApplicationController
 
   def show
     @project = @project.decorate
+    @widgets = @project.widgets.order(:created_at)
   end
 
   def new
