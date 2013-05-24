@@ -22,7 +22,7 @@
           .controls
             = image_tag @project.logo.file_url(:thumb)
       = f.simple_fields_for :logo do |f_logo|
-        = f_logo.input :file, as: :file, label: 'Main image'
+        = f_logo.input :file, as: :file, label: 'Main image', hint: "Should be squared, at least 200x200px for best results"
         = f_logo.input :file_cache, as: :hidden
 
       -# .control-group

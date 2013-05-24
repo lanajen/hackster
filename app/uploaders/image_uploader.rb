@@ -2,7 +2,7 @@
 
 class ImageUploader < BaseUploader
   version :headline do
-    process resize_to_fill: [580, 326]
+    process resize_to_fill: [580, 435]
   end
   version :thumb do
     process resize_to_fill: [200, 150]
