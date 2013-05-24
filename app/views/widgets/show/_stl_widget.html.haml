@@ -1,0 +1,37 @@
+.stl-widget
+  - if widget.documents.any?
+    #stlviewer{ style: 'width:420px;height:315px' }
+    %ul
+      - widget.documents.each do |document|
+        %li
+          = document.file_name
+          .btn-group
+            = link_to "#{content_tag(:i, '', class: 'icon-play')} Play".html_safe, '#', data: { stlfile: document.file_url }, class: 'loadstl btn btn-small'
+            = link_to "#{content_tag(:i, '', class: 'icon-download-alt')} Download".html_safe, document.file_url, class: 'download btn btn-small btn-inverse'
+
+  - else
+    %p No documents yet.
+
+  <script src="/js/thingiview/Three.js"></script>
+  <script src="/js/thingiview/plane.js"></script>
+  <script src="/js/thingiview/thingiview.js"></script>
+
+  :javascript
+    window.onload = function() {
+      thingiurlbase = "/js/thingiview";
+      thingiview = new Thingiview("stlviewer");
+      thingiview.setRotation(false);
+      thingiview.setObjectColor('#C0D8F0');
+      thingiview.setBackgroundColor('#ffffff');
+      thingiview.initScene();
+      thingiview.loadSTL("#{widget.documents.first.file_url}");
+    }
+
+= content_for :js do
+  :javascript
+    $('a.loadstl').click(function(e){
+      e.preventDefault();
+      file = $(this).data('stlfile');
+      thingiview.loadSTL(file);
+      return false;
+    });

@@ -79,10 +79,11 @@ class Widget < ActiveRecord::Base
   protected
     def self.all_types
       {
+        'Bill of materials' => 'PartsWidget',
         'Code' => 'CodeWidget',
-        'Documents' => 'DocumentWidget',
+        'Files and documents' => 'DocumentWidget',
         'Images' => 'ImageWidget',
-        'Parts' => 'PartsWidget',
+        'STL rendering' => 'StlWidget',
         'Text' => 'TextWidget',
         'Video' => 'VideoWidget',
       }
