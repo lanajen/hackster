@@ -8,7 +8,7 @@
 .row
   .span12
     .well
-      .header
+      .header.no-content
         %h2
           Latest projects
           = link_to 'See more recent projects &rarr;'.html_safe, '/search?model%5Bproject%5D=1', class: 'btn-edit'
@@ -20,7 +20,7 @@
   .row
     .span12
       .well
-        .header
+        .header.no-content
           %h2
             Featured projects
             = link_to 'See more featured projects &rarr;'.html_safe, '/search', class: 'btn-edit'
@@ -31,7 +31,7 @@
   .row
     .span12
       .well
-        .header
+        .header.no-content
           %h2
             Projects for you
             = link_to 'See more projects for you &rarr;'.html_safe, "/search?query=#{CGI::escape(@custom_projects_query.to_s) + '&' + CGI::escape('model[project]=1') }", class: 'btn-edit'

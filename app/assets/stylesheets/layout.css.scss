@@ -70,6 +70,9 @@ footer {
     h1, h2, h3, h4 {
       position: relative;
     }
+    &.no-content {
+      border: none;
+    }
   }
   .content {
   }
@@ -79,7 +82,11 @@ footer {
   background: #fff;
   border-color: #e2e2e2;
   @include border-radius(0);
-  @include box-shadow(0 1px 1px rgba(0, 0, 0, 0.05));
+  @include box-shadow(0 1px 1px #ccc);
+}
+
+.hero-unit {
+  @include border-radius(0);
 }
 
 .thumbnail {

@@ -1,6 +1,6 @@
 - if widget.document
-  %strong= widget.document.file_name
   .code-widget
     = widget.formatted_content.html_safe
-    %a.more{ href: '#' } Show more
-    %a.less{ href: '#' } Show less
+    %a.more{ href: '#' } + show more
+    %a.less{ href: '#' } - show less
+  = link_to "Download #{widget.document.file_name}", widget.document.file_url
