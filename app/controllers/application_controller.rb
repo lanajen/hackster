@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
-  before_filter :authenticate_user_with_key_or_login!
+#  before_filter :authenticate_user_with_key_or_login!
+  before_filter :authenticate_user!
   before_filter :set_new_user_session
   before_filter :store_location_before
   after_filter :store_location_after

@@ -96,10 +96,10 @@ pre, code, kbd, samp {font-family: monospace, sans-serif;}
 label,
 input[type=button],
 input[type=submit],
-button {cursor: pointer;}
+input[type='submit'] {cursor: pointer;}
 
 /* Webkit browsers add a 2px margin outside the chrome of form elements */
-button, input, select, textarea {margin: 0;}
+input[type='submit'], input, select, textarea {margin: 0;}
 
 /* let's clear some floats */
 .group:before, .group:after { content: "\0020"; display: block; height: 0; overflow: hidden; }
@@ -168,7 +168,39 @@ form {
   margin-top: 30px;
 }
 
-input[type='text'] {
+.form-inline {
+  .control-group {
+    display: inline;
+    .controls {
+      display: inline;
+    }
+  }
+}
+
+.control-group.error .help-inline {
+  color: #B94A48;
+}
+
+.help-inline {
+  display: inline-block;
+  margin-bottom: 0;
+  vertical-align: middle;
+  padding-left: 5px;
+  color: #595959;
+}
+
+group.error .checkbox, .control-group.error .radio, .control-group.error input, .control-group.error select, .control-group.error textarea {
+  color: #B94A48;
+}
+
+.control-group.error input, .control-group.error select, .control-group.error textarea {
+  border-color: #B94A48;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+input[type='email'] {
   border: 1px solid #999;
   border-radius: 3px;
   box-shadow: #d8d8d8 -2px 2px 4px inset;
@@ -184,7 +216,8 @@ input::-webkit-input-placeholder {
   padding-top: 2px;
 }
 
-button {
+input[type='submit'] {
+  cursor: pointer;
   color: #f8f8f8;
   font-size: 12px;
   margin: 0 0 0 10px;
@@ -198,11 +231,11 @@ button {
   background: -webkit-gradient(linear, 0 0, 0 100%, from(#333), to(#222));
 }
 
-button:hover {
+input[type='submit']:hover {
   color: #e3e3e3;
 }
 
-button:active, button:focus {
+input[type='submit']:active, input[type='submit']:focus {
   box-shadow: #942a00 -2px 2px 6px inset;
 }
 

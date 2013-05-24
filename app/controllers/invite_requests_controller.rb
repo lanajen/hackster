@@ -1,5 +1,7 @@
 class InviteRequestsController < ApplicationController
 #  before_filter :require_no_authentication, :only => [:new, :create]
+  skip_before_filter :authenticate_user!
+  layout 'splash', only: [:new, :create, :confirm]
 
   # GET /invite_requests/new
   def new
@@ -11,12 +13,16 @@ class InviteRequestsController < ApplicationController
     @invite_request = InviteRequest.new(params[:invite_request])
 
     if @invite_request.save
-      BaseMailer.enqueue_email 'invite_request_notification', { context_type: :invite_request, context_id: @invite_request.id }
+      BaseMailer.enqueue_email 'invite_request_notification', { context_type: :invite_request_notification, context_id: @invite_request.id }
       BaseMailer.enqueue_email 'invite_request_confirmation', { context_type: :invite_request, context_id: @invite_request.id }
-      redirect_to root_path, notice: "Thanks! We'll be in touch soon.".html_safe
+      redirect_to confirm_invite_requests_path
     else
       render action: "new"
     end
+  end
+
+  def confirm
+
   end
 
   def edit

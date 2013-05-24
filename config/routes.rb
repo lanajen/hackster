@@ -80,10 +80,14 @@ HackerIo::Application.routes.draw do
   end
 
   constraints subdomain: /www/ do
-    resources :quotes, only: [:create]
-    get 'find_a_manufacturer' => 'quotes#new'
-    get 'quote_requested' => 'quotes#requested'
+#    resources :quotes, only: [:create]
+#    get 'find_a_manufacturer' => 'quotes#new'
+#    get 'quote_requested' => 'quotes#requested'
 
-    root to: 'pages#splash'
+    resources :invite_requests, only: [:create] do
+      get 'confirm', on: :collection
+    end
+
+    root to: 'invite_requests#new'
   end
 end

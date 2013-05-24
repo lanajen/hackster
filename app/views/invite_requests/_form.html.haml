@@ -1,6 +1,5 @@
 = simple_form_for @invite_request, :html => { :class => 'form-inline' } do |f|
-  = f.error_notification
+  %p.cta Be the first to get in:
 
-  .form-inputs
-    = f.input :email, :placeholder => 'your@email.com', :label => false, :autofocus => true
-    = f.button :submit
+  = f.input :email, :placeholder => 'nikola@tesla.com', :label => false, :autofocus => true
+  = f.submit "I'm awesome"
