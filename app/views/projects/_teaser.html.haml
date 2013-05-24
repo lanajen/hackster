@@ -7,6 +7,11 @@
       .author
         by
         = link_to @project.users.first.name, @project.users.first
+      #share
+        %button.btn.btn-mini
+          %i.icon-share-alt
+          Share
+        #share-box{ style: 'display:none;' }= render 'projects/share'
       -# %p.muted
         = l @project.start_date, format: :month
         \-
