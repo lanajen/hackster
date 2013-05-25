@@ -1,24 +1,23 @@
-- if can? :read, widget
-  .well{ id: "widget-#{widget.id}" }
-    .header
-      %h4{ style: 'position:relative;' }
-        = widget.name
-        - if can? :update, widget
+.well{ id: "widget-#{widget.id}" }
+  .header
+    %h4{ style: 'position:relative;' }
+      = widget.name
+      - if can? :update, widget
 
-          -# if widget.has_unresolved_issues?
-            = link_to content_tag(:i, '', class: 'icon-exclamation-sign'), project_issues_path(@project, threadable: widget.id, status: :unresolved, threadable_type: 'widget'), title: 'Unresolved issues'
-          .btn-edit= link_to 'Edit', edit_project_widget_path(@project, widget)
-          -# .btn-heading
-            -# = render partial: 'application/locked_icon', locals: { record: widget, size: 'btn-mini' }
-            .btn-group
-              %button.btn.btn-mini.dropdown-toggle{"data-toggle" => "dropdown"}
-                = content_tag(:i, '', class: 'icon-cog')
-                %span.caret
-              %ul.dropdown-menu.pull-right
-                %li= link_to 'Edit', edit_project_widget_path(@project, widget)
-                %li.divider
-                %li= link_to 'See issues', project_issues_path(@project, threadable: widget.id, threadable_type: 'Widget')
-                %li= link_to 'New issue', new_widget_issue_path(widget)
+        -# if widget.has_unresolved_issues?
+          = link_to content_tag(:i, '', class: 'icon-exclamation-sign'), project_issues_path(@project, threadable: widget.id, status: :unresolved, threadable_type: 'widget'), title: 'Unresolved issues'
+        .btn-edit= link_to 'Edit', edit_project_widget_path(@project, widget)
+        -# .btn-heading
+          -# = render partial: 'application/locked_icon', locals: { record: widget, size: 'btn-mini' }
+          .btn-group
+            %button.btn.btn-mini.dropdown-toggle{"data-toggle" => "dropdown"}
+              = content_tag(:i, '', class: 'icon-cog')
+              %span.caret
+            %ul.dropdown-menu.pull-right
+              %li= link_to 'Edit', edit_project_widget_path(@project, widget)
+              %li.divider
+              %li= link_to 'See issues', project_issues_path(@project, threadable: widget.id, threadable_type: 'Widget')
+              %li= link_to 'New issue', new_widget_issue_path(widget)
 
-    .content
-      = render partial: "widgets/show/#{widget.identifier}", locals: { widget: widget }
+  .content
+    = render partial: "widgets/show/#{widget.identifier}", locals: { widget: widget }
