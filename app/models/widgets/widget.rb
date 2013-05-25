@@ -83,7 +83,7 @@ class Widget < ActiveRecord::Base
         'Code' => 'CodeWidget',
         'Files and documents' => 'DocumentWidget',
         'Images' => 'ImageWidget',
-        'STL rendering' => 'StlWidget',
+        'STL renderings' => 'StlWidget',
         'Text' => 'TextWidget',
         'Upverter schematics' => 'UpverterWidget',
         'Video' => 'VideoWidget',
