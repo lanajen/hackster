@@ -3,4 +3,4 @@
     = widget.formatted_content.html_safe
     %a.more{ href: '#' } + show more
     %a.less{ href: '#' } - show less
-  = link_to "Download #{widget.document.file_name}", widget.document.file_url
+  = link_to "#{content_tag(:i, '', class: 'icon-download-alt')} Download #{widget.document.file_name}".html_safe, widget.document.file_url, class: 'btn btn-mini'

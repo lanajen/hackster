@@ -85,6 +85,7 @@ class Widget < ActiveRecord::Base
         'Images' => 'ImageWidget',
         'STL rendering' => 'StlWidget',
         'Text' => 'TextWidget',
+        'Upverter schematics' => 'UpverterWidget',
         'Video' => 'VideoWidget',
       }
     end
