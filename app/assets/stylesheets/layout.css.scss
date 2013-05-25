@@ -62,19 +62,25 @@ footer {
   h1, h2, h3, h4, h5 {
     margin: 0;
   }
-  .header, .content {
+  .content {
     padding: 13px 19px;
   }
   .header {
-    border-bottom: 1px solid #e2e2e2;
+    padding: 16px 19px 0;
     h1, h2, h3, h4 {
       position: relative;
+      font-family: 'Open Sans', Tahoma, sans-serif;
+      font-weight: normal;
+      a {
+        font-family: "Helvetica Neue", "HelveticaNeue", Helvetica, Arial, "Lucida Grande", sans-serif;
+      }
+    }
+    h4 {
+      @include font-size(17);
     }
     &.no-content {
-      border: none;
+      padding: 13px 19px;
     }
-  }
-  .content {
   }
 }
 
@@ -130,7 +136,7 @@ h1, h2, h3, h4 {
 }
 
 .btn-edit {
-  top: 5px;
+  top: 0;
   font-weight: bold;
   @include font-size(12);
 }
