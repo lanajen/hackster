@@ -2,29 +2,26 @@
 .form-fields
   %table#sortable.table.table-condensed
     %thead
-      %th Part name
-      %th Vendor name
-      %th Vendor SKU
-      %th Vendor link
-      %th Unit price
+      %th Part #
+      %th Short description
       %th Quantity
-      %th Total cost
       %th
     %tbody
       = f.simple_fields_for :parts, wrapper: false do |f_part|
         %tr.fields
           %td
             = f_part.input :id, as: :hidden
-            = f_part.input :name, label: false
-          %td= f_part.input :vendor_name, label: false
-          %td= f_part.input :vendor_sku, label: false
-          %td= f_part.input :vendor_link, label: false
-          %td= f_part.input :unit_price, label: false
+            = f_part.input :mpn, label: false
+          %td= f_part.input :description, label: false
           %td= f_part.input :quantity, label: false
-          %td= f_part.input :total_cost, label: false, disabled: true
           %td= f_part.link_to_remove content_tag(:i, '', class: 'icon-trash'), class: 'btn btn-mini btn-danger'
       %tr.sortable-disabled
         %td{ colspan: 8 }= f.link_to_add 'Add a part', :parts, class: 'btn btn-mini btn-success'
+%p.help-block
+  You can find part #'s from
+  = link_to 'Octopart.', 'http://www.octopart.com', target: '_blank'
+  Prices will be automatically fetched from there.
+
 
 = content_for :js do
   :javascript

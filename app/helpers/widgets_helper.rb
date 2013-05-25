@@ -5,7 +5,7 @@ module WidgetsHelper
 
   def widget_span_class widget
     case widget
-    when PartsWidget
+    when nil
       'span12'
     else
       'span6 offset3'

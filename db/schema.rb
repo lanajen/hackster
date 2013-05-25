@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130522233257) do
+ActiveRecord::Schema.define(:version => 20130524222313) do
 
   create_table "access_group_members", :force => true do |t|
     t.integer  "access_group_id"
@@ -122,6 +122,8 @@ ActiveRecord::Schema.define(:version => 20130522233257) do
     t.integer  "partable_id",   :null => false
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
+    t.string   "mpn"
+    t.string   "description"
   end
 
   add_index "parts", ["partable_id", "partable_type"], :name => "partable_index"

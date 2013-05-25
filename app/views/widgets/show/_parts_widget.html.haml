@@ -1,16 +1,16 @@
 - if widget.parts.any?
   %table#sortable.table.table-condensed
     %thead
-      %th Part Name
-      %th Vendor info
+      %th Description
+      %th Source
       %th Unit price
-      %th Qtty
+      %th Qty
       %th Total cost
     %tbody
       - widget.parts.each do |part|
         %tr.fields
-          %td= part.name
-          %td= link_to "#{part.vendor_sku} @ #{part.vendor_name}", part.vendor_link, target: '_blank'
+          %td= part.description
+          %td= link_to('Visit', part.vendor_link, target: '_blank') if part.vendor_link
           %td.currency= number_to_currency part.unit_price
           %td= part.quantity
           %td.currency= number_to_currency part.total_cost
