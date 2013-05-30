@@ -100,11 +100,18 @@ class ApplicationController < ActionController::Base
     end
 
     def render_500(exception)
-      log_line = LogLine.create(message: "#{exception.inspect}", log_type: 'error',
-        session_data: session.to_s, request_url: request.url[0..254],
-        request_params: request.params)
-#      BaseMailer.enqueue_email 'error_notification', { context_type: :log_line, context_id: log_line.id }
-      logger.error "Exception: #{exception.inspect}"
+      begin
+        clean_backtrace = Rails.backtrace_cleaner.clean(exception.backtrace)
+        message = "#{exception.inspect} // backtrace: #{clean_backtrace.join(' - ')} // session_data: #{session.to_s} // request_url: #{request.url} // request_params: #{request.params.to_s} // user_agent #{request.headers['HTTP_USER_AGENT']} // ip: #{request.remote_ip} // format: #{request.format} // HTTP_X_REQUESTED_WITH: #{request.headers['HTTP_X_REQUESTED_WITH']}"
+        log_line = LogLine.create_with_no_platform(message: message, log_type: 'error', source: 'controller')
+        logger.error ""
+        logger.error "Exception: #{exception.inspect}"
+        logger.error ""
+        clean_backtrace.each { |line| logger.error "Backtrace: " + line }
+        logger.error ""
+#        BaseMailer.enqueue_email 'error_notification', { context_type: :log_line, context_id: log_line.id }
+      rescue
+      end
       @error = exception
       respond_to do |format|
         format.html { render template: 'errors/error_500', layout: 'layouts/application', status: 500 }
