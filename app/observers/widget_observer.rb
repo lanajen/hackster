@@ -13,6 +13,6 @@ class WidgetObserver < ActiveRecord::Observer
 
   private
     def update_completion_rate_for record
-      record.stage.update_completion_rate!
+      record.stage.update_completion_rate! if record.stage
     end
 end
