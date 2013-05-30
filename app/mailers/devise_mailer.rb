@@ -9,6 +9,6 @@ class DeviseMailer < Devise::Mailer
   end
 
   def reset_password_instructions(record)
-    BaseMailer.enqueue_email 'reset_password_instructions', { context_type: :user, context_id: record.id }
+    BaseMailer.enqueue_email 'password_lost', { context_type: :user, context_id: record.id }
   end
 end

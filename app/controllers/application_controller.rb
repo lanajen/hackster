@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
     rescue_from Exception, with: :render_500
     rescue_from ActionController::RoutingError, with: :render_404
     rescue_from ActionController::UnknownController, with: :render_404
-    rescue_from ActionController::UnknownAction, with: :render_404
+    rescue_from AbstractController::ActionNotFound, with: :render_404
     rescue_from ActiveRecord::RecordNotFound, with: :render_404
   end
 
@@ -103,7 +103,7 @@ class ApplicationController < ActionController::Base
       begin
         clean_backtrace = Rails.backtrace_cleaner.clean(exception.backtrace)
         message = "#{exception.inspect} // backtrace: #{clean_backtrace.join(' - ')} // session_data: #{session.to_s} // request_url: #{request.url} // request_params: #{request.params.to_s} // user_agent #{request.headers['HTTP_USER_AGENT']} // ip: #{request.remote_ip} // format: #{request.format} // HTTP_X_REQUESTED_WITH: #{request.headers['HTTP_X_REQUESTED_WITH']}"
-        log_line = LogLine.create_with_no_platform(message: message, log_type: 'error', source: 'controller')
+        log_line = LogLine.create(message: message, log_type: 'error', source: 'controller')
         logger.error ""
         logger.error "Exception: #{exception.inspect}"
         logger.error ""
