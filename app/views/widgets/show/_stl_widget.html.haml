@@ -16,6 +16,8 @@
   <script src="/js/thingiview/plane.js"></script>
   <script src="/js/thingiview/thingiview.js"></script>
 
+  - stl_url = widget.documents.any? ? widget.documents.first.file_url : ''
+
   :javascript
     window.onload = function() {
       thingiurlbase = "/js/thingiview";
@@ -24,7 +26,7 @@
       thingiview.setObjectColor('#C0D8F0');
       thingiview.setBackgroundColor('#ffffff');
       thingiview.initScene();
-      thingiview.loadSTL("#{widget.documents.first.file_url}");
+      thingiview.loadSTL("#{stl_url}");
     }
 
 = content_for :js do
