@@ -7,6 +7,7 @@
 //= require parser_rules/advanced
 //= require projects
 //= require all
+//= require placeholders
 
 // require js-routes
 // require underscore
