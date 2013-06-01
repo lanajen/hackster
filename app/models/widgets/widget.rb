@@ -18,6 +18,7 @@ class Widget < ActiveRecord::Base
 #    numericality: { less_than_or_equal_to: 100, greater_than_or_equal_to: 0,
 #    only_integer: true }
   validates :type, :name, presence: true
+  before_create :set_position
 #  validate :total_completion_is_100_max
 
   class << self
@@ -44,6 +45,22 @@ class Widget < ActiveRecord::Base
         end
       end
     end
+  end
+
+  def self.first_column
+    column '1'
+  end
+
+  def self.second_column
+    column '2'
+  end
+
+  def self.column col
+    where("widgets.position LIKE '#{col}.%'")
+  end
+
+  def column
+    position.match(/^./)[0].to_i
   end
 
   def completion_absolute
@@ -76,6 +93,10 @@ class Widget < ActiveRecord::Base
     val.kind_of?(String) ? YAML::load(val) : val
   end
 
+  def row
+    position.match(/\.(.+)$/)[1].to_i
+  end
+
   protected
     def self.all_types
       {
@@ -91,6 +112,20 @@ class Widget < ActiveRecord::Base
     end
 
   private
+    def set_position
+      last_widget = nil
+      biggest_row = 0
+      project.widgets.each do |w|
+        if biggest_row <= w.row
+          last_widget = w
+          biggest_row = w.row
+        end
+      end
+      column = last_widget.column == 1 ? 2 : 1
+      row = project.widgets.column(column).last.row + 1
+      self.position = "#{column}.#{row}"
+    end
+
     def total_completion_is_100_max
       total_completion = stage.widgets.where('widgets.id <> ?', id).sum(:completion_share) + completion_share
       errors.add :completion_share, "total completion share for the stage cannot be higher than 100. Current: #{total_completion}" if total_completion > 100

@@ -79,11 +79,11 @@ class Project < ActiveRecord::Base
   end
 
   def widgets_first_col
-    widgets.where("widgets.position LIKE '1.%'")
+    widgets.first_column
   end
 
   def widgets_second_col
-    widgets.where("widgets.position LIKE '2.%'")
+    widgets.second_column
   end
 
   private

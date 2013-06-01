@@ -46,7 +46,9 @@
     function resetPositions(){
       $('#sortable ul').each(function(i){
         $('.position', $(this)).each(function(j){
-          $(this).val(i+1 + '.' + j+1);
+          col = i+1;
+          row = j+1;
+          $(this).val(col + '.' + row);
         });
       });
     }
