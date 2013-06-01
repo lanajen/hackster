@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130524222313) do
+ActiveRecord::Schema.define(:version => 20130531223557) do
 
   create_table "access_group_members", :force => true do |t|
     t.integer  "access_group_id"
@@ -285,8 +285,10 @@ ActiveRecord::Schema.define(:version => 20130524222313) do
     t.datetime "updated_at",                          :null => false
     t.boolean  "private",          :default => false, :null => false
     t.integer  "project_id",       :default => 0,     :null => false
+    t.string   "position",         :default => "",    :null => false
   end
 
+  add_index "widgets", ["position"], :name => "index_widgets_on_position"
   add_index "widgets", ["private"], :name => "index_widgets_on_private"
   add_index "widgets", ["project_id"], :name => "index_widgets_on_project_id"
   add_index "widgets", ["stage_id"], :name => "index_widgets_on_stage_id"

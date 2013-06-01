@@ -14,7 +14,7 @@ class Project < ActiveRecord::Base
   has_many :stages, dependent: :destroy
   has_many :team_members, include: :user
   has_many :users, through: :team_members
-  has_many :widgets#, through: :stages
+  has_many :widgets, order: :position
   has_one :logo, as: :attachable, class_name: 'Avatar'
   has_one :video, as: :recordable, dependent: :destroy
 
@@ -22,10 +22,10 @@ class Project < ActiveRecord::Base
   attr_accessible :description, :end_date, :name, :start_date, :images_attributes,
     :video_attributes, :current, :logo_attributes, :team_members_attributes,
     :website, :access_groups_attributes, :participant_invites_attributes,
-    :one_liner
+    :one_liner, :widgets_attributes
   attr_accessor :current
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
-    :access_groups, :participant_invites, allow_destroy: true
+    :access_groups, :participant_invites, :widgets, allow_destroy: true
 
   validates :name, presence: true
   before_validation :check_if_current
@@ -76,6 +76,14 @@ class Project < ActiveRecord::Base
 
   def image
     images.first
+  end
+
+  def widgets_first_col
+    widgets.where("widgets.position LIKE '1.%'")
+  end
+
+  def widgets_second_col
+    widgets.where("widgets.position LIKE '2.%'")
   end
 
   private

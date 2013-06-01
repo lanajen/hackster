@@ -1,0 +1,65 @@
+.row
+  .wellified{ class: 'span6 offset3' }
+    %h2{ style: 'text-align: center' } Reorder widgets
+    = simple_nested_form_for @project, url: project_widgets_path(@project), html: { class: 'full-size widget-form' } do |f|
+      = f.error_notification
+      #sortable
+        %ul.first
+          - @project.widgets_first_col.each do |widget|
+            %li
+              = f.simple_fields_for :widgets, widget do |f_widget|
+                = f_widget.input :position, as: :hidden, input_html: { class: 'position' }
+                = widget.name
+        %ul.second
+          - @project.widgets_second_col.each do |widget|
+            %li
+              = f.simple_fields_for :widgets, widget do |f_widget|
+                = f_widget.input :position, as: :hidden, input_html: { class: 'position' }
+                = widget.name
+      %p.help-block Just drag and drop widget tiles on the same column or from one column to the other.
+      .form-actions
+        = f.submit 'Save', class: 'btn btn-primary'
+        = link_to 'Cancel', @project, class: 'btn btn-link btn-small'
+
+= content_for :js do
+  :javascript
+    $(function() {
+      updatePlaceholders();
+
+      $('ul')
+        .sortable({
+          connectWith: 'ul',
+          items: 'li:not(".placeholder")',
+          over: function() {
+            $(this).children('.placeholder').hide()
+          },
+          out: function(event, ui) {
+            $(this).children('.placeholder').show();
+          }
+        })
+        .bind('sortstop', function(event, ui) {
+          updatePlaceholders();
+          resetPositions();
+        });
+    });
+
+    function resetPositions(){
+      $('#sortable ul').each(function(i){
+        $('.position', $(this)).each(function(j){
+          $(this).val(i+1 + '.' + j+1);
+        });
+      });
+    }
+    function updatePlaceholders(){
+      $('#sortable ul').each(function(i){
+        length = $(this).children('li:not(".placeholder")').length;
+        if (length == 0) {
+          plLength = $(this).children('li.placeholder').length;
+          if (plLength == 0) {
+            $('<li class="placeholder">Empty</li>').appendTo($(this));
+          }
+        } else {
+          $(this).children('.placeholder').remove();
+        }
+      });
+    }

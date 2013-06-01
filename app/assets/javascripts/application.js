@@ -8,6 +8,7 @@
 //= require projects
 //= require all
 //= require placeholders
+//= require jquery.ui.sortable
 
 // require js-routes
 // require underscore

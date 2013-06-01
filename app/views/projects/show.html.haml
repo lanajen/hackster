@@ -50,14 +50,12 @@
 
 .row
   - if @widgets.any?
-    - half = (@widgets.size / 2).ceil
     .span6
-      - @widgets[0..(half-1)].each do |widget|
+      - @project.widgets_first_col.each do |widget|
         = render partial: 'widgets/widget', locals: { widget: widget }
-    - if @widgets.size > 1
-      .span6
-        - @widgets[half..@widgets.size].each do |widget|
-          = render partial: 'widgets/widget', locals: { widget: widget }
+    .span6
+      - @project.widgets_second_col.each do |widget|
+        = render partial: 'widgets/widget', locals: { widget: widget }
   - else
     .span6.offset3
       .well

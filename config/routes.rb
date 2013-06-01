@@ -44,6 +44,7 @@ HackerIo::Application.routes.draw do
       resources :issues, controller: :thread_posts
       resources :participant_invites, only: [:index]
       resources :widgets
+      put 'widgets' => 'widgets#save'
     end
     resources :publications, except: [:show]
     resources :stages, only: [] do

@@ -4,6 +4,18 @@ class WidgetsController < ApplicationController
   respond_to :html
   layout 'project'
 
+  def index
+#    @widgets = @project.widgets
+  end
+
+  def save
+    if @project.update_attributes(params[:project])
+      redirect_to @project, notice: "Layout saved."
+    else
+      render action: 'index'
+    end
+  end
+
   def new
     @widget = @project.widgets.new(params[:widget])
   end

@@ -26,6 +26,7 @@
         -# = render partial: 'application/locked_icon', locals: { record: @project, size: nil }
         = link_to 'Edit', edit_project_path(@project), data: { remote: true }
         = link_to 'Add a widget', new_project_widget_path(@project)
+        = link_to 'Reorder widgets', project_widgets_path(@project)
 
     -# - if current_user.try(:is_following_project?, @project)
       = link_to 'Following', followers_project_path(@project), method: :delete, class: 'btn-follow btn-inverse'

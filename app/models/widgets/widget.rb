@@ -12,7 +12,7 @@ class Widget < ActiveRecord::Base
   end
 
   attr_accessible :properties, :stage_id, :type, :completion_rate,
-    :completion_share, :name
+    :completion_share, :name, :position
 
 #  validates :completion_rate, :completion_share,
 #    numericality: { less_than_or_equal_to: 100, greater_than_or_equal_to: 0,
