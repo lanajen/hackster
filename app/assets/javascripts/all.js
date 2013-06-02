@@ -1,3 +1,5 @@
+$('input, textarea').placeholder();
+
 $(document).ready(function(){
   $('.btn-cancel').live('click', function(e){
     btn = $(this);

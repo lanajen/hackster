@@ -5,10 +5,10 @@
 //= require jquery_nested_form
 //= require wysihtml5
 //= require parser_rules/advanced
-//= require projects
-//= require all
 //= require placeholders
 //= require jquery.ui.sortable
+//= require projects
+//= require all
 
 // require js-routes
 // require underscore
