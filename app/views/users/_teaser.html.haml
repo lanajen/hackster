@@ -4,7 +4,11 @@
     .pull-left
       %h1= @user.name
       %p.user-mini-resume= @user.mini_resume
-      %p.user-categories= @user.categories.to_sentence
+      -# %p.user-categories= @user.categories.to_sentence
+      - if @user.location
+        %p.user-categories
+          %i.icon-map-marker
+          = @user.location
       - if @user.websites.any?
         %ul.websites
           - @user.websites.each do |type, url|

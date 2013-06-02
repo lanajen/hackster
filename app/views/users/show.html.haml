@@ -7,31 +7,15 @@
   #content
     .container
       .row
-        .span8
-          .well
-            .header
-              %h3
-                Projects
-                - if can? :create, Project, @user
-                  .pull-right= link_to 'Add a new project', new_project_path, class: 'btn btn-info btn-mini'
-            .content
-              - if @user.projects.any?
-                - @user.projects.each_with_fl do |project, css|
-                  .project.preview{ class: css }
-                    %h4
-                      = link_to project.name, project
-                      -# .subtitle
-                        = l project.start_date, format: :month
-                        \-
-                        = project.end_date ? l(project.end_date, format: :month) : 'Present'
-                    = project.one_liner
-                    -# .image-thumbs
-                      - project.images.each do |image|
-                        = image_tag image.file_url(:small_thumb)
-              - else
-                #{@user.name} has no projects yet.
+        .span9
+          - if @user.projects.any?
+            %ul.thumbnails
+              - @user.projects.each do |project|
+                = render partial: 'projects/project_thumb', locals: { project: project.decorate }
+          - else
+            #{@user.name} has no projects yet.
 
-          - if @user.publications.any? or can? :create, Publication, @user
+          -# if @user.publications.any? or can? :create, Publication, @user
             .well
               .header
                 %h3
@@ -63,19 +47,7 @@
                 - else
                   #{@user.name} has no publications yet.
 
-          .well
-            .header
-              %h3 What I do
-            .content
-              = @user.skill_tags.pluck(:name).map{ |tag| link_to tag, "/search?query=#{CGI::escape(tag)}" }.to_sentence.html_safe
-
-          .well
-            .header
-              %h3 What I'm looking for
-            .content
-              = @user.interest_tags.pluck(:name).map{ |tag| link_to tag, "/search?query=#{CGI::escape(tag)}" }.to_sentence.html_safe
-
-        .span4
+        .span3
           -# .well.sidebar-nav
             .header
               %h3 Following
@@ -98,15 +70,28 @@
               - else
                 No one yet.
 
-          .well
+          .transparent-well
             .header
-              %h3 Activity
+              %h4 Interests
+            .content
+              - @user.interest_tags.pluck(:name).each do |tag|
+                %span.label= tag
+          .transparent-well
+            .header
+              %h4 Skills
+            .content
+              - @user.skill_tags.pluck(:name).each do |tag|
+                %span.label= tag
+
+          .transparent-well
+            .header
+              %h4 Recent activity
             .content
               %ul
                 -# .group(:context_model_type, :context_model_id, :event)
-                - @user.broadcasts.order('created_at DESC').limit(10).each do |broadcast|
+                - @broadcasts.each do |broadcast|
                   %li
                     - broadcast = broadcast.decorate
-                    = broadcast.message.html_safe
+                    = broadcast.message
                     .muted
                       = broadcast.created_at

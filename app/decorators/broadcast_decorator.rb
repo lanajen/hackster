@@ -3,9 +3,9 @@ class BroadcastDecorator < ApplicationDecorator
     "#{h.time_ago_in_words(model.created_at)} ago"
   end
 
-  def message
+  def message show_name=false
 #    puts model.inspect
-    case model.broadcastable_type
+    message = case model.broadcastable_type
     when 'User'
       user_name = h.link_to model.broadcastable.name, model.broadcastable
       case model.context_model_type
@@ -17,7 +17,7 @@ class BroadcastDecorator < ApplicationDecorator
         commentable_title = h.link_to model.context_model.commentable.title, model.context_model.commentable
         case model.event.to_sym
         when :new
-          "#{user_name} commented on the #{commentable_type} #{commentable_title} on #{project_name}"
+          "commented on the #{commentable_type} #{commentable_title} on #{project_name}"
         end
       when 'BlogPost', 'Issue'
         project = model.context_model.threadable.respond_to?(:project) ? model.context_model.threadable.project : model.context_model.threadable
@@ -26,34 +26,36 @@ class BroadcastDecorator < ApplicationDecorator
         threadable_title = h.link_to model.context_model.title, model.context_model
         case model.event.to_sym
         when :new
-          "#{user_name} added a new #{threadable_type} #{threadable_title} to #{project_name}"
+          "added a new #{threadable_type} #{threadable_title} to #{project_name}"
         when :update
-          "#{user_name} updated the #{threadable_type} #{threadable_title} for #{project_name}"
+          "updated the #{threadable_type} #{threadable_title} for #{project_name}"
         end
       when 'Project'
         project_name = h.link_to model.context_model.name, model.context_model
         case model.event.to_sym
         when :new
-          "#{user_name} created a new project #{project_name}"
+          "created a new project #{project_name}"
         when :update
-          "#{user_name} updated the project #{project_name}"
+          "updated the project #{project_name}"
         end
       when 'Publication'
         publication_title = model.context_model.title
         case model.event.to_sym
         when :new
-          "#{user_name} added a new publication #{publication_title}"
+          "added a new publication #{publication_title}"
         when :update
-          "#{user_name} updated the publication #{publication_title}"
+          "updated the publication #{publication_title}"
         end
       when 'User'
         case model.event.to_sym
         when :new
-          "#{user_name} joined Hackster.io"
+          "joined Hackster.io"
         when :update
-          "#{user_name} updated their profile"
+          "updated his/her profile"
         end
       end
     end
+    message = "#{user_name} #{message}" if show_name
+    message.html_safe
   end
 end

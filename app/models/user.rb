@@ -27,11 +27,12 @@ class User < ActiveRecord::Base
     :remember_me, :roles, :avatar_attributes, :projects_attributes, :websites_attributes,
     :first_name, :last_name, :mini_resume, :city, :country, :user_name, :full_name,
     :facebook_link, :twitter_link, :linked_in_link, :website_link,
-    :blog_link, :categories, :participant_invite_id, :auth_key_authentified
+    :blog_link, :categories, :participant_invite_id, :auth_key_authentified,
+    :github_link
   accepts_nested_attributes_for :avatar, :projects, allow_destroy: true
 
   store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link, :website_link,
-    :blog_link
+    :blog_link, :github_link
   ]
 
   validates :name, length: { in: 1..200 }, allow_blank: true

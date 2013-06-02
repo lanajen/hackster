@@ -26,7 +26,7 @@ class UserDecorator < ApplicationDecorator
     link_to_model h.image_tag(avatar(size), alt: model.name)
   end
 
-  def origin
+  def location
     if model.city.present? and model.country.present?
       "#{model.city}, #{model.country}"
     elsif model.city.present?
@@ -34,7 +34,7 @@ class UserDecorator < ApplicationDecorator
     elsif model.country.present?
       model.country
     else
-      'somewhere in the world'
+      false
     end
   end
 

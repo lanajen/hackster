@@ -78,6 +78,10 @@ class Project < ActiveRecord::Base
     images.first
   end
 
+  def to_param
+    "#{id}-#{name.gsub(/[^a-zA-Z0-9]/, '-').gsub(/(\-)+$/, '')}"
+  end
+
   def widgets_first_col
     widgets.first_column
   end

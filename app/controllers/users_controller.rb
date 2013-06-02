@@ -5,6 +5,7 @@ class UsersController < ApplicationController
 
   def show
     @user = @user.decorate
+    @broadcasts = @user.broadcasts.where('broadcasts.created_at > ?', 1.day.ago).order('created_at DESC').limit(5).group_by { |b| [b.context_model_type, b.context_model_id, b.event] }.values.map{ |g| g.first }
   end
 
   def edit
