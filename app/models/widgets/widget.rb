@@ -123,7 +123,7 @@ class Widget < ActiveRecord::Base
       end
       if last_widget
         column = last_widget.column == 1 ? 2 : 1
-        row = project.widgets.column(column).last.row + 1
+        row = project.widgets.column(column).try(:last).try(:row).to_i + 1
       else
         column, row = 1, 1
       end
