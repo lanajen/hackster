@@ -121,8 +121,12 @@ class Widget < ActiveRecord::Base
           biggest_row = w.row
         end
       end
-      column = last_widget.column == 1 ? 2 : 1
-      row = project.widgets.column(column).last.row + 1
+      if last_widget
+        column = last_widget.column == 1 ? 2 : 1
+        row = project.widgets.column(column).last.row + 1
+      else
+        column, row = 1, 1
+      end
       self.position = "#{column}.#{row}"
     end
 
