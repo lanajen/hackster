@@ -61,6 +61,8 @@ footer {
   padding: 0;
   h1, h2, h3, h4, h5 {
     margin: 0;
+    font-family: 'Open Sans', Tahoma, sans-serif;
+    font-weight: normal;
   }
   .content {
     padding: 13px 19px;
@@ -69,8 +71,6 @@ footer {
     padding: 16px 19px 0;
     h1, h2, h3, h4 {
       position: relative;
-      font-family: 'Open Sans', Tahoma, sans-serif;
-      font-weight: normal;
       a {
         font-family: "Helvetica Neue", "HelveticaNeue", Helvetica, Arial, "Lucida Grande", sans-serif;
       }
