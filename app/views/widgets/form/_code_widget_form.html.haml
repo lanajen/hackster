@@ -9,4 +9,4 @@
         = widget.document.file_name
   = f_document.input :file, as: :file, label: false
   = f_document.input :file_cache, as: :hidden
-= f.input :language, as: :select, label: 'What programming language is it written in?', collection: { 'C' => 'c', 'Python' => 'python', 'Ruby' => 'ruby' }
+= f.input :language, as: :select, label: 'What programming language is it written in?', collection: CodeWidget::LANGUAGES

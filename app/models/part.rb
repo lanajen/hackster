@@ -2,8 +2,9 @@ class Part < ActiveRecord::Base
   belongs_to :partable, polymorphic: true
   attr_accessible :name, :quantity, :unit_price, :vendor_link, :vendor_name,
     :vendor_sku, :partable_id, :partable_type, :mpn, :description
-  validates :mpn, :description, :quantity, presence: true
+  validates :quantity, presence: true
   validates :description, length: { maximum: 255 }, allow_blank: true
+  validate :mpn_or_description_is_present?
   register_sanitizer :strip_whitespace, :before_validation, :mpn, :description
 #  after_validation :compute_total_cost
 
@@ -13,6 +14,10 @@ class Part < ActiveRecord::Base
   end
 
   private
+    def mpn_or_description_is_present?
+      errors.add :description, 'cannot be blank if part # is blank' if mpn.blank? and description.blank?
+    end
+
     def strip_whitespace text
       text.strip
     end

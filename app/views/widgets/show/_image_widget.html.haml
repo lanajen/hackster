@@ -1,6 +1,6 @@
 .headline-image
   - widget.images.each_with_index do |image, i|
-    = image_tag image.file_url(:headline), class: "image-#{i}", style: "#{'display:none;' unless i==0}"
+    = image_tag image.file_url(:headline_orig), class: "image-#{i}", style: "#{'display:none;' unless i==0}"
 - if widget.images.size > 1
   .image-thumbs
     - widget.images.each_with_index do |image, i|

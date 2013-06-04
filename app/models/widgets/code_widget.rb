@@ -3,6 +3,20 @@ require 'pygments'
 
 class CodeWidget < Widget
 
+  LANGUAGES = {
+    'C' => 'c',
+    'C++' => 'cpp',
+    'C#' => 'csharp',
+    'Console' => 'console',
+    'HTML' => 'html',
+    'Java' => 'Java',
+    'JavaScript' => 'js',
+    'Python' => 'python',
+    'Perl' => 'perl',
+    'Ruby' => 'rb',
+    'XML' => 'xml',
+  }
+
   def self.model_name
     Widget.model_name
   end
