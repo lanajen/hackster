@@ -9,6 +9,7 @@ class Admin::UsersController < Admin::BaseController
 
   def create
     @user = User.new(params[:user])
+    @user.skip_confirmation!
 
     if @user.save
       @user.confirm!
