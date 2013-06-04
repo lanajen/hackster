@@ -9,8 +9,8 @@ class UserObserver < ActiveRecord::Observer
     end
   end
 
-  def after_update record
-    if (record.changes.keys - %w(email password roles_mask updated_at)).size > 0
+  def before_update record
+    if (record.changes.keys - %w(email encrypted_password roles_mask updated_at)).size > 0
       record.broadcast :update, record.id, 'User'
     end
   end
