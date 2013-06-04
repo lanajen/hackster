@@ -124,6 +124,7 @@ class Widget < ActiveRecord::Base
       if last_widget
         column = last_widget.column == 1 ? 2 : 1
         row = project.widgets.column(column).try(:last).try(:row).to_i + 1
+        row = "0#{row}" if row < 10
       else
         column, row = 1, 1
       end

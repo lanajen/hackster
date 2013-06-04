@@ -48,6 +48,9 @@
         $('.position', $(this)).each(function(j){
           col = i+1;
           row = j+1;
+          if (row < 10) {
+            row = '0' + row;
+          }
           $(this).val(col + '.' + row);
         });
       });
