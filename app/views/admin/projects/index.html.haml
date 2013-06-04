@@ -4,15 +4,15 @@
 %table.table.table-striped
   %thead
     %tr
-      %th= model_class.human_attribute_name(:id)
       %th= model_class.human_attribute_name(:name)
+      %th= model_class.human_attribute_name(:team)
       %th= model_class.human_attribute_name(:created_at)
       %th=t '.actions', :default => t("helpers.actions")
   %tbody
     - @projects.each do |project|
       %tr
-        %td= link_to project.id, project
-        %td= project.name
+        %td= link_to project.name, project
+        %td= project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
         %td=l project.created_at
         %td
           = link_to t('.edit', :default => t("helpers.links.edit")), edit_project_path(project), :class => 'btn btn-mini'
