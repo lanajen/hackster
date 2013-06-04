@@ -38,5 +38,13 @@ class SitemapController < ApplicationController
           lastmod: project.updated_at.strftime("%F"),
         }
       end
+
+      User.find_each do |user|
+        @sitemap_pages << {
+          loc: "#{user_url(user, host: APP_CONFIG['default_host'])}",
+          changefreq: 'monthly',
+          lastmod: user.updated_at.strftime("%F"),
+        }
+      end
     end
 end
