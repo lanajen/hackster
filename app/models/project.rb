@@ -22,7 +22,7 @@ class Project < ActiveRecord::Base
   attr_accessible :description, :end_date, :name, :start_date, :images_attributes,
     :video_attributes, :current, :logo_attributes, :team_members_attributes,
     :website, :access_groups_attributes, :participant_invites_attributes,
-    :one_liner, :widgets_attributes
+    :one_liner, :widgets_attributes, :featured
   attr_accessor :current
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
     :access_groups, :participant_invites, :widgets, allow_destroy: true
@@ -71,6 +71,14 @@ class Project < ActiveRecord::Base
     }.to_json
   end
   # end of search methods
+
+  def self.featured
+    where(featured: true).order('created_at DESC')
+  end
+
+  def self.indexable
+    where(private: false)
+  end
 
   def all_issues
     (issues + Issue.where(threadable_type: 'Widget').where('threadable_id IN (?)', widgets.pluck('widgets.id'))).sort_by{ |t| t.created_at }

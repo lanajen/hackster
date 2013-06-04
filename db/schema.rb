@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130604004446) do
+ActiveRecord::Schema.define(:version => 20130604223411) do
 
   create_table "access_group_members", :force => true do |t|
     t.integer  "access_group_id"
@@ -158,6 +158,7 @@ ActiveRecord::Schema.define(:version => 20130604004446) do
     t.boolean  "private",        :default => false, :null => false
     t.string   "workflow_state"
     t.string   "one_liner"
+    t.boolean  "featured"
   end
 
   add_index "projects", ["private"], :name => "index_projects_on_private"

@@ -5,31 +5,26 @@
         %h1{ style: 'text-align:center' } Show & Tell
         %p{ style: 'text-align:center' } Showcase your hardware projects and get them off the ground
 
--# .row
-  .span12
-    .well
-      .header.no-content
-        %h2
-          Latest projects
-          = link_to 'See more recent projects &rarr;'.html_safe, '/search?model%5Bproject%5D=1', class: 'btn-edit'
-    %ul.thumbnails
-      - @last_projects.each do |project|
-        = render partial: 'projects/project_thumb', locals: { project: project.decorate }
-
-
 .row
-  .span6.offset3
+  .span12
     .well
       .header.no-content
         %h2
           Featured projects
           -#  = link_to 'See more featured projects &rarr;'.html_safe, '/search', class: 'btn-edit'
     %ul.thumbnails
-      - project = Project.find 25
-      = render partial: 'projects/project_thumb', locals: { project: project.decorate }
-      - project = Project.find 27
-      = render partial: 'projects/project_thumb', locals: { project: project.decorate }
-      -# - @featured_projects.each do |project|
+      - @featured_projects.each do |project|
+        = render partial: 'projects/project_thumb', locals: { project: project.decorate }
+
+.row
+  .span12
+    .well
+      .header.no-content
+        %h2
+          Latest projects
+          -# = link_to 'See more recent projects &rarr;'.html_safe, '/search?model%5Bproject%5D=1', class: 'btn-edit'
+    %ul.thumbnails
+      - @last_projects.each do |project|
         = render partial: 'projects/project_thumb', locals: { project: project.decorate }
 
 -#

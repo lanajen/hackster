@@ -25,6 +25,8 @@
         = f_logo.input :file, as: :file, label: 'Main image', hint: "Should be squared, at least 200x200px for best results"
         = f_logo.input :file_cache, as: :hidden
       = f.input :private, inline_label: 'Make this project private', label: false
+      - if current_user.is? :admin
+        = f.input :featured, inline_label: 'Feature this project', label: false
 
       -# .control-group
         .controls
