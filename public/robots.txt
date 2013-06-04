@@ -1,5 +1,6 @@
-# User-Agent: *
-# Disallow: /
+User-Agent: *
+Disallow: /users/sign_in
+Disallow: /users/sign_up
 
 User-agent: Googlebot-Image
 Disallow: /

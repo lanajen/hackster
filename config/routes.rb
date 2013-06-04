@@ -1,6 +1,10 @@
 require File.join(Rails.root, 'lib/resque_auth_server.rb')
 
 HackerIo::Application.routes.draw do
+
+  get 'sitemap_index.xml' => 'sitemap#index', as: 'sitemap_index', defaults: { format: 'xml' }
+  get 'sitemap.xml' => 'sitemap#show', as: 'sitemap', defaults: { format: 'xml' }
+  
   constraints subdomain: /beta/ do
     devise_for :users, controllers: {
       :registrations => 'users/registrations',
