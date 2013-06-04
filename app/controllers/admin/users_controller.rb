@@ -12,7 +12,6 @@ class Admin::UsersController < Admin::BaseController
     @user.skip_confirmation!
 
     if @user.save
-      @user.confirm!
       redirect_to admin_users_path, :notice => 'New user created'
     else
       render :new
