@@ -52,6 +52,6 @@ class Octopart
         part.vendor_link = nil
       end
       part.save
-    end
+    end if 'results'.in? server_response
   end
 end
