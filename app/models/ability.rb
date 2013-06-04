@@ -41,7 +41,7 @@ class Ability
     end
 
     can :create, Project
-    can [:update, :destroy, :update_team, :update_stages, :update_widgets], Project do |project|
+    can [:read, :update, :destroy, :update_team, :update_stages, :update_widgets], Project do |project|
       @user.is_team_member? project
     end
 

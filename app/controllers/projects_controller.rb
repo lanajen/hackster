@@ -38,9 +38,13 @@ class ProjectsController < ApplicationController
 
   def update
     if @project.update_attributes(params[:project])
-      flash[:notice] = 'Project was successfully updated.'
       current_user.broadcast :update, @project.id, 'Project'
-      respond_with @project
+      respond_with @project do |format|
+        format.html do
+          flash[:notice] = 'Project was successfully updated.'
+          redirect_to @project
+        end
+      end
     else
       initialize_project
       render action: "edit"

@@ -50,7 +50,7 @@ class Project < ActiveRecord::Base
 #      indexes :description,     analyzer: 'snowball'
       indexes :text_widgets,    analyzer: 'snowball'
       indexes :user_names,      analyzer: 'snowball'
-#      indexes :private,         analyzer: 'keyword'
+      indexes :private,         analyzer: 'keyword'
       indexes :created_at
     end
   end
@@ -66,7 +66,7 @@ class Project < ActiveRecord::Base
 #      tech_tags: tech_tags_string,
       text_widgets: Widget.where(type: 'TextWidget').where('widgets.stage_id IN (?)', stages.pluck(:id)).map{ |w| w.content },
       user_name: team_members.map{ |t| t.user.name },
-#      private: private,
+      private: private,
       created_at: created_at,
     }.to_json
   end

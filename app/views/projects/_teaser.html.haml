@@ -1,3 +1,8 @@
+- if @project.private
+  .row
+    .span12
+      .alert This project is private so only you can see it. Change this by clicking the edit link below when you're ready to go public.
+
 .row
   .span12.teaser
     .pull-left.avatar.main-avatar= image_tag @project.logo(:medium), alt: @project.name

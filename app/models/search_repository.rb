@@ -25,7 +25,7 @@ class SearchRepository
       Tire.search BONSAI_INDEX_NAME, load: true, page: page, per_page: RESULTS_PER_PAGE do
         query { string query, default_operator: 'AND' } if query.present?
         filter :or, filters if filters.any?
-#        filter :term, private: false
+        filter :term, private: false
         sort { by :created_at, 'desc' }
         size size || RESULTS_PER_PAGE
       end
