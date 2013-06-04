@@ -10,7 +10,7 @@ class PartsWidget < Widget
 
   attr_accessible :parts_attributes
   accepts_nested_attributes_for :parts, allow_destroy: true
-  after_save :compute_total_cost, if: :compute_cost?
+  after_save :compute_total_cost, unless: :dont_compute_cost?
 
   def help_text
     "Add parts."
@@ -18,8 +18,8 @@ class PartsWidget < Widget
 
   private
 
-    def compute_cost?
-      @compute_cost ||= true
+    def dont_compute_cost?
+      @dont_compute_cost
     end
 
     def compute_total_cost
@@ -27,7 +27,7 @@ class PartsWidget < Widget
       total = 0
       parts.each{ |p| total += p.total_cost || 0 }
       self.total_cost = total.round(4)
-      @compute_cost = false
+      @dont_compute_cost = true
       save
     end
 end
