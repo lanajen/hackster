@@ -65,6 +65,8 @@ class User < ActiveRecord::Base
 
   taggable :interest_tags, :skill_tags
 
+  self.per_page = 20
+
   # broadcastable
   has_many :broadcasts, as: :broadcastable
 

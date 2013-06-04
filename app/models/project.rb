@@ -33,6 +33,8 @@ class Project < ActiveRecord::Base
 
   taggable :product_tags, :tech_tags
 
+  self.per_page = 20
+
   # beginning of search methods
   include Tire::Model::Search
   include Tire::Model::Callbacks

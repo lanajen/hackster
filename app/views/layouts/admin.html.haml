@@ -28,9 +28,10 @@
           %a.brand(href="/") HackerIo
           .container.nav-collapse
             %ul.nav
-              %li= link_to "Link 1", "/path1"
-              %li= link_to "Link 2", "/path2"
-              %li= link_to "Link 3", "/path3"
+              %li= link_to 'Invite requests', admin_invite_requests_path
+              %li= link_to 'Log lines', admin_logs_path
+              %li= link_to 'Projects', admin_projects_path
+              %li= link_to 'Users', admin_users_path
 
     .container
 

@@ -1,0 +1,12 @@
+= simple_form_for [:admin, @user], :html => { :class => 'form-horizontal' } do |f|
+  = f.input :user_name
+  = f.input :full_name
+  = f.input :email
+  = f.input :password
+  = f.input :mini_resume
+  = f.input :city
+  = f.input :country
+  = f.input :roles, collection: User::ROLES, as: :check_boxes
+  .form-actions
+    = f.button :submit, :class => 'btn-primary'
+    = link_to t('.cancel', :default => t("helpers.links.cancel")), admin_users_path, :class => 'btn'

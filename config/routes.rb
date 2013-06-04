@@ -12,7 +12,6 @@ HackerIo::Application.routes.draw do
       mount ResqueAuthServer.new, at: "/resque"
       get 'logs' => 'pages#logs'
       get 'projects' => 'pages#projects'
-      get 'users' => 'pages#users'
 
       resources :invite_requests
       resources :projects
