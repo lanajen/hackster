@@ -4,10 +4,6 @@ class Admin::PagesController < Admin::BaseController
     @log_lines = LogLine.order(:created_at).paginate(page: params[:page])
   end
 
-  def projects
-    @projects = Project.order(:created_at).paginate(page: params[:page])
-  end
-
   def root
   end
 end
