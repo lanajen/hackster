@@ -71,11 +71,13 @@
     margin: 20px -20px -30px;
     padding: 20px;
   }
-  .fields {
-    border: 1px solid #ccc;
-    padding: 2.5%;
-    margin-bottom: 10px;
-    background: #fff;
+  .form-fields {
+    .fields {
+      border: 1px solid #ccc;
+      padding: 2.5%;
+      margin-bottom: 10px;
+      background: #fff;
+    }
   }
 }
 
@@ -122,6 +124,7 @@
     li {
       display: inline-block;
       position: relative;
+      margin: 0 0 5px 0;
     }
     img {
       width: 130px;
