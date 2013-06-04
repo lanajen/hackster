@@ -7,14 +7,14 @@
         .control-group
           .controls
             = image_tag image.file_url(:thumb)
+        = f_image.input :title, label: 'Image title'
         -# = f_image.input :caption
       - else
         = f_image.input :file, as: :file, label: false
         = f_image.input :file_cache, as: :hidden
+        = f_image.input :title, label: 'Image title'
         -# = f_image.input :caption
-      .control-group
-        .controls
-          = f_image.link_to_remove 'Remove this image', class: 'btn btn-mini btn-danger'
+      = f_image.link_to_remove 'Remove this image', class: 'btn btn-mini btn-danger'
   = f.link_to_add 'Add an image', :images, class: 'btn btn-mini btn-success'
 
 = content_for :js do
