@@ -1,6 +1,7 @@
 $(document).ready(function(){
-  $('.project .image-thumbs img').live('mouseenter', function(){
-    targetClass = $(this).data('target');
+  $('.project .image-thumbs li').live('mouseenter', function(){
+    img = $('img', this);
+    targetClass = img.data('target');
     parent = $(this).parent().parent();
     target = $('.headline-image img.' + targetClass, parent);
     currentHeadline = $('.headline-image img:visible', parent);

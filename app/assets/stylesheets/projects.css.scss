@@ -8,35 +8,6 @@
   }
 }
 
-.project {
-  .span6 {
-    .image-thumbs {
-      img {
-        width: 130px;
-      }
-    }
-    .headline-image {
-      height: 315px;
-      img {
-        width: 420px;
-      }
-    }
-  }
-  .image-thumbs {
-    margin: 10px 0 0;
-  }
-  .headline-image {
-    margin: 0 0 10px;
-    position: relative;
-    height: 435px;
-    img {
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-  }
-}
-
 .locked-overlay {
   position: absolute;
   top: 0;

@@ -4,6 +4,7 @@
       - widget.documents.each do |document|
         %li.file
           %i.icon-file.icon-large
-          = link_to document.file_name, document.file_url
+          - title = document.title ? document.title : document.file_name
+          = link_to title, document.file_url, title: document.file_name
   - else
     %p No documents yet.

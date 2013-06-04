@@ -1,7 +1,10 @@
-.headline-image
-  - widget.images.each_with_index do |image, i|
-    = image_tag image.file_url(:headline_orig), class: "image-#{i}", style: "#{'display:none;' unless i==0}"
-- if widget.images.size > 1
-  .image-thumbs
+.image-widget
+  .headline-image
     - widget.images.each_with_index do |image, i|
-      = image_tag image.file_url(:small_thumb), data: { target: "image-#{i}" }
+      = image_tag image.file_url(:headline_orig), class: "image-#{i}", style: "#{'display:none;' unless i==0}"
+  - if widget.images.size > 1
+    %ul.image-thumbs
+      - widget.images.each_with_index do |image, i|
+        %li
+          = image_tag image.file_url(:small_thumb), data: { target: "image-#{i}" }
+          .overlay-title= image.title
