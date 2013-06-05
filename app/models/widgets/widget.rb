@@ -126,7 +126,7 @@ class Widget < ActiveRecord::Base
         row = project.widgets.column(column).try(:last).try(:row).to_i + 1
         row = "0#{row}" if row < 10
       else
-        column, row = 1, 1
+        column, row = 1, '01'
       end
       self.position = "#{column}.#{row}"
     end
