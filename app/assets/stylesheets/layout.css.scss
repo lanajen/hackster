@@ -276,3 +276,7 @@ input.placeholder, textarea.placeholder {
   @extend .table-condensed;
   @extend .table-bordered;
 }
+
+.link-icon:hover {
+  text-decoration: none;
+}

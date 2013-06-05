@@ -73,7 +73,10 @@
           %li= link_to 'New project', new_project_path
           %li= link_to 'Help', help_path
           %li
-        %p &copy; Hackster.io 2013
+        %ul.pull-right
+          %li= link_to content_tag(:i, '', class: 'icon-twitter icon-large').html_safe, 'http://twitter.com/hacksterio', alt: 'Hackster.io on Twitter', class: 'link-icon'
+          %li= link_to content_tag(:i, '', class: 'icon-facebook icon-large').html_safe, 'http://www.facebook.com/hacksterio', alt: 'Hackster.io on Facebook', class: 'link-icon'
+          %li Hackster.io 2013
 
     -# = include_gon
     = javascript_include_tag "application"

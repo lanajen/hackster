@@ -1,3 +1,5 @@
+Sitemap: http://www.hackster.io/sitemap_index.xml
+
 User-Agent: *
 Disallow: /users/sign_in
 Disallow: /users/sign_up

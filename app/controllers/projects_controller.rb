@@ -11,7 +11,7 @@ class ProjectsController < ApplicationController
 
   def show
     title @project.name
-    meta_desc "#{@project.one_liner.gsub(/\.$/, '')}. Find this and other hardware projects on hackster.io."
+    meta_desc "#{@project.one_liner.gsub(/\.$/, '')}. Find this and other hardware projects on Hackster.io."
     @project = @project.decorate
     @widgets = @project.widgets.order(:created_at)
   end

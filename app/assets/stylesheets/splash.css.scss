@@ -1,3 +1,33 @@
+.icon-twitter:before {
+content: "\f099";
+}
+.icon-facebook:before {
+content: "\f09a";
+}
+.icon-large:before {
+vertical-align: -10%;
+font-size: 1.33333em;
+}
+
+[class^="icon-"]:before, [class*=" icon-"]:before {
+text-decoration: inherit;
+display: inline-block;
+speak: none;
+}
+
+[class^="icon-"]:before, [class*=" icon-"]:before {
+text-decoration: inherit;
+display: inline-block;
+speak: none;
+}
+
+.link-icon:hover {
+  text-decoration: none;
+  color: #666;
+}
+
+@import 'font-awesome';
+
 /*
 	HTML5 Reset :: style.css
 	----------------------------------------------------------
