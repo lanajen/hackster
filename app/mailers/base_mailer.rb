@@ -39,6 +39,9 @@ class BaseMailer < ActionMailer::Base
     def get_context_for context_type, context_id
       context = {}
       case context_type.to_sym
+      when :inviter
+        invited = context[:invited] = User.find(context_id)
+        context[:user] = invited.invited_by
       when :invite_request
         context[:user] = context[:invite] = InviteRequest.find(context_id)
       when :invite_request_notification

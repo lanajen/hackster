@@ -194,7 +194,8 @@ h1, h2, h3, h4 {
 }
 
 form.full-size {
-  input[type=text], textarea, .uneditable-input {
+  input[type=text], input[type=email], input[type=password], textarea,
+    .uneditable-input {
 /*    width: 400px;*/
     width: 95%;
     padding-left: 2.5%;

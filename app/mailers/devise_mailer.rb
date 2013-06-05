@@ -4,7 +4,7 @@ class DeviseMailer < BaseMailer
   end
 
   def invitation_instructions(record)
-    type = record.invited_by.present? ? 'invitation_instructions' : 'invite_request_accepted'
+    type = record.invited_by.present? ? 'invitation_instructions' : 'invite_granted'
     enqueue_email type, { context_type: :user, context_id: record.id }
   end
 

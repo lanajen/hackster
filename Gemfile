@@ -24,6 +24,7 @@ gem 'carrierwave', '0.7.1'
 gem 'country-select', '1.1.1'
 gem 'dalli', '2.5.0'  # memcached
 gem 'devise', '2.1.2'
+gem 'devise_invitable', '1.1.8'
 gem 'draper', '1.0.0.beta3'
 #gem 'ffaker', '1.15.0'
 gem 'fog', '1.7.0'

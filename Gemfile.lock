@@ -81,6 +81,10 @@ GEM
       orm_adapter (~> 0.1)
       railties (~> 3.1)
       warden (~> 1.2.1)
+    devise_invitable (1.1.8)
+      actionmailer (~> 3.0)
+      devise (>= 2.1.2)
+      railties (~> 3.0)
     diff-lcs (1.2.2)
     draper (1.0.0.beta3)
       actionpack (>= 3.0)
@@ -368,6 +372,7 @@ DEPENDENCIES
   dalli (= 2.5.0)
   database_cleaner
   devise (= 2.1.2)
+  devise_invitable (= 1.1.8)
   draper (= 1.0.0.beta3)
   factory_girl_rails
   faker

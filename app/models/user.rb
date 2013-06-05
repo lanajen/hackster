@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
   include Taggable
 
-  devise :database_authenticatable, :registerable,
+  devise :database_authenticatable, :registerable, :invitable,
          :recoverable, :rememberable, :trackable, :validatable
 
   with_options class_name: 'User', join_table: :follow_relations do |u|
@@ -14,6 +14,7 @@ class User < ActiveRecord::Base
   has_many :blog_posts, dependent: :destroy
   has_many :comments, dependent: :destroy
 #  has_many :interests, as: :taggable, dependent: :destroy, class_name: 'InterestTag'
+  has_many :invitations, class_name: self.to_s, as: :invited_by
   has_many :privacy_rules, as: :privatable_users
   has_many :projects, through: :team_members
   has_many :publications, dependent: :destroy
@@ -22,7 +23,8 @@ class User < ActiveRecord::Base
   has_one :avatar, as: :attachable, dependent: :destroy
 
   attr_accessor :email_confirmation, :skip_registration_confirmation,
-    :participant_invite_id, :auth_key_authentified
+    :participant_invite_id, :auth_key_authentified,
+    :friend_invite_id, :new_invitation, :invitation_code
   attr_accessible :email, :email_confirmation, :password, :password_confirmation,
     :remember_me, :roles, :avatar_attributes, :projects_attributes, :websites_attributes,
     :first_name, :last_name, :mini_resume, :city, :country, :user_name, :full_name,
@@ -36,8 +38,8 @@ class User < ActiveRecord::Base
   ]
 
   validates :name, length: { in: 1..200 }, allow_blank: true
-  validates :user_name, length: { in: 3..100 }, uniqueness: true,
-    format: { with: /^[a-z0-9_]+$/, message: "accepts only downcase letters, numbers and underscores '_'." }, allow_blank: true
+  validates :user_name, presence: true, length: { in: 3..100 }, uniqueness: true,
+    format: { with: /^[a-z0-9_]+$/, message: "accepts only downcase letters, numbers and underscores '_'." }, unless: :being_invited?
   validates :city, :country, length: { maximum: 50 }, allow_blank: true
   validates :mini_resume, length: { maximum: 160 }, allow_blank: true
   with_options unless: proc { |u| u.skip_registration_confirmation },
@@ -130,6 +132,10 @@ class User < ActiveRecord::Base
     auth_key_authentified and participant_invite.try(:project_id) == project.id
   end
 
+  def being_invited?
+    new_invitation.present?
+  end
+
   def categories=(categories)
     self.categories_mask = (categories & CATEGORIES).map { |r| 2**CATEGORIES.index(r) }.sum
   end
@@ -149,6 +155,10 @@ class User < ActiveRecord::Base
   def has_access_group_permissions? record
     id.in? record.privacy_rules.where(private: false, privatable_user_type: 'AccessGroup').joins('inner join access_groups on access_groups.id = privacy_rules.privatable_user_id').joins('inner join access_group_members on access_group_members.access_group_id = access_groups.id').select('access_group_members.user_id').pluck('access_group_members.user_id') or id.in? record.privacy_rules.where(private: false, privatable_user_type: 'User').pluck(:privatable_user_id)
     #and not id.in? record.privacy_rules.where(private: true).joins('inner join access_groups on access_groups.id = privacy_rules.privatable_user_id').joins('inner join access_group_members on access_group_members.access_group_id = access_groups.id').select('access_group_members.user_id').pluck('access_group_members.user_id')
+  end
+
+  def invited?
+    invitation_sent_at.present?
   end
 
   def is? role
@@ -222,5 +232,10 @@ class User < ActiveRecord::Base
     def is_whitelisted?
       return unless email.present?
       errors.add :email, 'is not on our beta list' unless InviteRequest.email_whitelisted? email
+    end
+
+  protected
+    def password_required?
+      (!persisted? || !password.nil? || !password_confirmation.nil?) && !being_invited?
     end
 end

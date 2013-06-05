@@ -86,6 +86,14 @@ module MailerHelpers
 #      log_line = @context[:error] if @context.include? :log_line
       token = token.gsub(/\|/, '')
       case token.to_sym
+      when :invite_friends_link
+        url.new_user_invitation_url(host: default_host)
+      when :invited_profile_link
+        url.user_url(@context[:invited], host: default_host)
+      when :inviter_name
+        user.invited_by.name
+      when :invitation_link
+        url.accept_user_invitation_url(invitation_token: user.invitation_token, host: default_host)
       when :issue_link
         url.issue_url(issue, host: default_host)
       when :password_reset_link

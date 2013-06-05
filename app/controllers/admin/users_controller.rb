@@ -1,6 +1,6 @@
 class Admin::UsersController < Admin::BaseController
   def index
-    @users = User.order(:id).paginate(:page => params[:page])
+    @users = User.order('created_at DESC').paginate(:page => params[:page])
   end
 
   def new

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130604223411) do
+ActiveRecord::Schema.define(:version => 20130605215913) do
 
   create_table "access_group_members", :force => true do |t|
     t.integer  "access_group_id"
@@ -77,6 +77,11 @@ ActiveRecord::Schema.define(:version => 20130604223411) do
 
   add_index "follow_relations", ["followed_id"], :name => "index_follow_relations_on_followed_id"
   add_index "follow_relations", ["follower_id"], :name => "index_follow_relations_on_follower_id"
+
+  create_table "friend_invites", :force => true do |t|
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "invite_requests", :force => true do |t|
     t.string   "email"
@@ -241,7 +246,7 @@ ActiveRecord::Schema.define(:version => 20130604223411) do
     t.string   "country",                :limit => 50
     t.integer  "roles_mask"
     t.string   "email",                                 :default => "", :null => false
-    t.string   "encrypted_password",                    :default => "", :null => false
+    t.string   "encrypted_password",                    :default => ""
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
@@ -255,6 +260,12 @@ ActiveRecord::Schema.define(:version => 20130604223411) do
     t.string   "full_name"
     t.text     "websites"
     t.integer  "categories_mask"
+    t.string   "invitation_token",       :limit => 60
+    t.datetime "invitation_sent_at"
+    t.datetime "invitation_accepted_at"
+    t.integer  "invitation_limit"
+    t.integer  "invited_by_id"
+    t.string   "invited_by_type"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

@@ -29,7 +29,6 @@
             .container.nav-collapse
               -# .pull-left= render 'application/search_form'
               %ul.nav
-                -# %li= link_to 'Find a manufacturer', ''
                 %li= link_to 'Start a project', new_project_path
               %ul.nav.pull-right
                 - if user_signed_in?
@@ -43,6 +42,8 @@
                         %li.divider
                         - current_user.projects.each do |project|
                           %li= link_to project.name, project
+                      %li.divider
+                      %li= link_to 'Invite friends', new_user_invitation_path
                       %li.divider
                       %li= link_to 'Log out', destroy_user_session_path, method: :delete
                 - else
@@ -69,7 +70,8 @@
     %footer
       .container
         %ul
-          %li= link_to 'Search', search_path
+          %li= link_to 'Invite friends', new_user_invitation_path
+          -# %li= link_to 'Search', search_path
           %li= link_to 'New project', new_project_path
           %li= link_to 'Help', help_path
           %li
