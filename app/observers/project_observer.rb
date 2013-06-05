@@ -1,9 +1,9 @@
 class ProjectObserver < ActiveRecord::Observer
   def after_create record
-    %w(concept prototype pilot production).each do |name|
-      record.stages.create(name: name)
-    end
-    record.stages.where(name: 'concept').update_all(workflow_state: :open)
+#    %w(concept prototype pilot production).each do |name|
+#      record.stages.create(name: name)
+#    end
+#    record.stages.where(name: 'concept').update_all(workflow_state: :open)
   end
 
   def after_destroy record

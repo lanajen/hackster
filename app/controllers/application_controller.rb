@@ -5,6 +5,8 @@ class ApplicationController < ActionController::Base
   before_filter :set_new_user_session
   before_filter :store_location_before
   after_filter :store_location_after
+  helper_method :title
+  helper_method :meta_desc
 
   unless Rails.application.config.consider_all_requests_local
     rescue_from Exception, with: :render_500
@@ -129,5 +131,22 @@ class ApplicationController < ActionController::Base
 
     def user_signed_in?
       current_user and current_user.id
+    end
+
+  protected
+    def meta_desc meta_desc=nil
+      if meta_desc
+        @meta_desc = meta_desc
+      else
+        @meta_desc || "Do you hack hardware? Build up your hacker identity all in one place and show the world what you're up to. Request an invite to be part of our early user group!"
+      end
+    end
+
+    def title title=nil
+      if title
+        @title = title
+      else
+        @title ? "#{@title} - Hackster.io" : 'Hackster.io - Your Hacker Profile'
+      end
     end
 end

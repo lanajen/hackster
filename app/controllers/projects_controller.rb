@@ -10,6 +10,8 @@ class ProjectsController < ApplicationController
   end
 
   def show
+    title @project.name
+    meta_desc "#{@project.one_liner.gsub(/\.$/, '')}. Find this and other hardware projects on hackster.io."
     @project = @project.decorate
     @widgets = @project.widgets.order(:created_at)
   end
@@ -29,7 +31,6 @@ class ProjectsController < ApplicationController
     if @project.save
       @project.team_members.create(user_id: current_user.id)
       flash[:notice] = 'Project was successfully created.'
-      current_user.broadcast :new, @project.id, 'Project'
       respond_with @project
     else
       initialize_project
@@ -39,7 +40,11 @@ class ProjectsController < ApplicationController
 
   def update
     if @project.update_attributes(params[:project])
-      current_user.broadcast :update, @project.id, 'Project'
+      if @project.private_changed? and @project.private == false
+        current_user.broadcast :new, @project.id, 'Project'
+      elsif @project.private == false
+        current_user.broadcast :update, @project.id, 'Project'
+      end
       @project = @project.decorate
       respond_with @project do |format|
         format.html do

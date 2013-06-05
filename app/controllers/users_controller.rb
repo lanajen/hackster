@@ -4,6 +4,8 @@ class UsersController < ApplicationController
   authorize_resource except: [:first_login]
 
   def show
+    title @user.name
+    meta_desc "#{@user.name} is on hackster.io. Come join him and other hardware hackers to showcase your projects."
     @user = @user.decorate
     @broadcasts = @user.broadcasts.where('broadcasts.created_at > ?', 1.day.ago).order('created_at DESC').limit(5).group_by { |b| [b.context_model_type, b.context_model_id, b.event] }.values.map{ |g| g.first }
   end
