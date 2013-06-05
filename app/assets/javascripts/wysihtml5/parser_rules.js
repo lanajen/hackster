@@ -72,9 +72,7 @@ var wysihtml5CustomParserRules = {
         "wysiwyg-text-align-justify": 1,
         "wysiwyg-text-align-left": 1,
         "wysiwyg-text-align-right": 1,
-        "table": 1,
-        "table-condensed": 1,
-        "table-bordered": 1
+        "table-condensed-bordered": 1
     },
     /**
      * Tag list
@@ -295,7 +293,7 @@ var wysihtml5CustomParserRules = {
             "remove": 1
         },
         "table": {
-          "set_class": "table table-bordered table-condensed"
+          "set_class": "table-condensed-bordered"
         },
         "keygen": {
             "remove": 1

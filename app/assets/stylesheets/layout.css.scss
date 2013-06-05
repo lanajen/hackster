@@ -268,3 +268,10 @@ table {
 input.placeholder, textarea.placeholder {
   color: #aaa;
 }
+
+/*to circumvent wysihtml5 limitation*/
+.table-condensed-bordered {
+  @extend .table;
+  @extend .table-condensed;
+  @extend .table-bordered;
+}
