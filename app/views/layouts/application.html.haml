@@ -18,7 +18,7 @@
 
   %body
     #wrapper
-      - unless user_signed_in? and (@project or @user)
+      - if !user_signed_in? and (@project or @user)
         #hello-world.fade-in
           .container
             %button.close{ data: { close: '#hello-world' } } &times;
