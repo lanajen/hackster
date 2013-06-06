@@ -281,3 +281,26 @@ input.placeholder, textarea.placeholder {
 .link-icon:hover {
   text-decoration: none;
 }
+
+#hello-world {
+  display: none;
+  padding: 10px 0;
+  @include font-size(12);
+  border-bottom: 1px solid #036394;
+  background: #08C;
+  color: white;
+  font-weight: bold;
+  text-shadow: 1px 1px 1px #036394;
+  .close {
+    @include font-size(12);
+    color: white;
+    @include opacity(90);
+  }
+  a {
+    color: #D1E6F0;
+    text-decoration: underline;
+    &:hover {
+      color: #C4DAE4;
+    }
+  }
+}

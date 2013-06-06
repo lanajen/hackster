@@ -10,7 +10,7 @@
         .span9
           - if @user.projects.any?
             %ul.thumbnails
-              - @user.projects.each do |project|
+              - @user.projects.indexable.each do |project|
                 = render partial: 'projects/project_thumb', locals: { project: project.decorate }
           - else
             #{@user.name} has no projects yet.

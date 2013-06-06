@@ -1,6 +1,11 @@
 $('input, textarea').placeholder();
 
 $(document).ready(function(){
+  $('.fade-in').slideDown(500);
+  $('.close').live('click', function(e){
+    target = $(this).data('close');
+    $(target).slideUp(100);
+  });
   $('.btn-cancel').live('click', function(e){
     btn = $(this);
     $(btn.data('hide')).slideUp(function(){
