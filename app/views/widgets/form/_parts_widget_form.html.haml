@@ -1,22 +1,21 @@
 - widget.parts.new if widget.parts.empty?
-.form-fields
-  %table#sortable.table.table-condensed
-    %thead
-      %th Part #
-      %th Short description
-      %th Quantity
-      %th
-    %tbody
-      = f.simple_fields_for :parts, wrapper: false do |f_part|
-        %tr.fields
-          %td
-            = f_part.input :id, as: :hidden
-            = f_part.input :mpn, label: false
-          %td= f_part.input :description, label: false
-          %td= f_part.input :quantity, label: false
-          %td= f_part.link_to_remove content_tag(:i, '', class: 'icon-trash'), class: 'btn btn-mini btn-danger'
-      %tr.sortable-disabled
-        %td{ colspan: 8 }= f.link_to_add 'Add a part', :parts, class: 'btn btn-mini btn-success'
+%table#sortable.table.table-condensed
+  %thead
+    %th Part #
+    %th Short description
+    %th Quantity
+    %th
+  %tbody
+    = f.simple_fields_for :parts, wrapper: false do |f_part|
+      %tr.fields
+        %td
+          = f_part.input :id, as: :hidden
+          = f_part.input :mpn, label: false
+        %td= f_part.input :description, label: false
+        %td= f_part.input :quantity, label: false
+        %td= f_part.link_to_remove content_tag(:i, '', class: 'icon-trash'), class: 'btn btn-mini btn-danger'
+    %tr.sortable-disabled
+      %td{ colspan: 8 }= f.link_to_add 'Add a part', :parts, class: 'btn btn-mini btn-success'
 %p.help-block
   You can find part #'s from
   = link_to 'Octopart.', 'http://www.octopart.com', target: '_blank'

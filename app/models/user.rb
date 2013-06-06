@@ -113,7 +113,7 @@ class User < ActiveRecord::Base
       interests: interest_tags_string,
       skills: skill_tags_string,
       created_at: created_at,
-      private: false,
+      private: !accepted_or_not_invited?,
       categories: categories,
     }.to_json
   end
