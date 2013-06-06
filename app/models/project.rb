@@ -45,7 +45,7 @@ class Project < ActiveRecord::Base
       indexes :id,              index: :not_analyzed
       indexes :name,            analyzer: 'snowball', boost: 100
       indexes :one_liner,       analyzer: 'snowball'
-#      indexes :product_tags,    analyzer: 'snowball'
+      indexes :product_tags,    analyzer: 'snowball', boost: 50
 #      indexes :tech_tags,       analyzer: 'snowball'
 #      indexes :description,     analyzer: 'snowball'
       indexes :text_widgets,    analyzer: 'snowball'
@@ -62,7 +62,7 @@ class Project < ActiveRecord::Base
       model: self.class.name,
       one_liner: one_liner,
 #      description: description,
-#      product_tags: product_tags_string,
+      product_tags: product_tags_string,
 #      tech_tags: tech_tags_string,
       text_widgets: Widget.where(type: 'TextWidget').where('widgets.stage_id IN (?)', stages.pluck(:id)).map{ |w| w.content },
       user_name: team_members.map{ |t| t.user.name },

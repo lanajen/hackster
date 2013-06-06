@@ -18,7 +18,8 @@
 
   %body
     #wrapper
-      - if !user_signed_in? and (@project or @user)
+      -# raise params[:controller].to_s + ' ' + params[:action].to_s
+      - if !user_signed_in? and (params[:controller] == 'projects' or params[:controller] == 'users') and params[:action] == 'show'
         #hello-world.fade-in
           .container
             %button.close{ data: { close: '#hello-world' } } &times;
