@@ -5,11 +5,25 @@
 
 .row
   .span12.teaser
-    .pull-left.avatar.main-avatar= image_tag @project.logo(:medium), alt: @project.name
     .pull-left
-      %h1= @project.name
-      = @project.one_liner
-      .author
+      .avatar.main-avatar= image_tag @project.logo(:medium), alt: @project.name
+
+    .pull-left
+      %h1
+        = @project.name
+        %span.tags
+          - if @project.product_tags.any?
+            - @project.product_tags.pluck(:name).each do |tag|
+              %span= link_to tag, "/search?query=#{CGI::escape(tag)}", class: 'hidden-link'
+          - elsif can? :edit, @project and @project.public?
+            No tags yet.
+            = link_to 'Add some?', edit_project_path(@project), data: { remote: true }
+      - if @project.one_liner.present?
+        = @project.one_liner
+      - elsif can? :edit, @project and @project.public?
+        No one liner yet.
+        = link_to 'Add one?', edit_project_path(@project), data: { remote: true }
+      %p.author
         by
         = @project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
       #share
@@ -22,9 +36,6 @@
         \-
         = @project.end_date ? l(@project.end_date, format: :month) : 'Present'
       -# %p.muted= link_to @project.website, @project.website if @project.website
-      -# %p.muted
-        - (@project.product_tags.pluck(:name) + @project.tech_tags.pluck(:name)).each do |tag|
-          = link_to tag, "/search?query=#{CGI::escape(tag)}"
 
     - if can? :edit, @project
       .btn-edit
