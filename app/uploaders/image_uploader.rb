@@ -5,8 +5,7 @@ class ImageUploader < BaseUploader
     process resize_to_fill: [580, 435]
   end
   version :headline_orig do
-    process resize_and_pad: [580, 435, :transparent, Magick::CenterGravity]
-#    process resize_to_limit_and_pad: [580, 435, :transparent, Magick::CenterGravity]
+    process resize_to_limit_and_pad: [580, 435, :transparent, Magick::CenterGravity]
   end
   version :thumb, from_version: :headline do
     process resize_to_fill: [200, 150]
@@ -15,9 +14,16 @@ class ImageUploader < BaseUploader
     process resize_to_fill: [140, 105]
   end
 
+  # resize_and_pad that doesn't make pictures any bigger than what they already are
   def resize_to_limit_and_pad(width, height, background=:transparent, gravity=::Magick::CenterGravity)
     manipulate! do |img|
-      img = img.resize_to_limit(width, height)
+      geometry = Magick::Geometry.new(width, height, 0, 0, Magick::GreaterGeometry)
+      new_img = img.change_geometry(geometry) do |new_width, new_height|
+        img.resize(new_width, new_height)
+      end
+      destroy_image(img)
+      new_img = yield(new_img) if block_given?
+      img = new_img
       new_img = ::Magick::Image.new(width, height)
       if background == :transparent
         filled = new_img.matte_floodfill(1, 1)
