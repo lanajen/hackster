@@ -103,6 +103,7 @@ class Widget < ActiveRecord::Base
         'Bill of materials' => 'PartsWidget',
         'Code' => 'CodeWidget',
         'Files and documents' => 'DocumentWidget',
+        'Github repo' => 'GithubWidget',
         'Images' => 'ImageWidget',
         'STL renderings' => 'StlWidget',
         'Text' => 'TextWidget',
