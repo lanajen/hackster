@@ -9,6 +9,8 @@
 //= require jquery.ui.sortable
 //= require projects
 //= require all
+//= require ilightbox/jquery.mousewheel
+//= require ilightbox/ilightbox.packed
 
 // require js-routes
 // require underscore

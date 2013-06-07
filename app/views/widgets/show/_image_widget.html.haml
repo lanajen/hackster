@@ -1,7 +1,10 @@
 .image-widget
   .headline-image
     - widget.images.each_with_index do |image, i|
-      = image_tag image.file_url(:headline_orig), class: "image-#{i}", style: "#{'display:none;' unless i==0}"
+      .headline-image-inner
+        %a{ href: "javascript:openLightBox(#{widget.id},#{i});" }
+          %i.icon-fullscreen
+          = image_tag image.file_url(:headline_orig), class: "image-#{i}", style: "#{'display:none;' unless i==0}"
   - if widget.images.size > 1
     %ul.image-thumbs
       - widget.images.each_with_index do |image, i|
@@ -9,3 +12,20 @@
           = image_tag image.file_url(:small_thumb), data: { target: "image-#{i}" }
           - if image.title.present?
             .overlay-title= image.title
+
+= content_for :js do
+  :javascript
+    if (typeof(lightBoxImages) == 'undefined') {
+      lightBoxImages = {};
+    }
+    lightBoxImages[#{widget.id}] = [#{lightbox_elements widget.images}];
+
+    function openLightBox(id, start) {
+      start = start || 0;
+      $.iLightBox(
+        lightBoxImages[id],
+        {
+          skin: 'metro-black',
+          startFrom: start
+        });
+     }
