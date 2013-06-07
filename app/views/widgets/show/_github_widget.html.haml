@@ -1,4 +1,7 @@
 .github-widget{ data: { repo: widget.repo_name } }
 
-= content_for :js do
-  = javascript_include_tag 'jquery.githubRepoWidget.min.js'
+- unless @github_widget_js_init
+  = content_for :js do
+    = javascript_include_tag 'jquery.githubRepoWidget.min.js'
+
+- @github_widget_js_init = true
