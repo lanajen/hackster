@@ -30,7 +30,7 @@ class User < ActiveRecord::Base
     :first_name, :last_name, :mini_resume, :city, :country, :user_name, :full_name,
     :facebook_link, :twitter_link, :linked_in_link, :website_link,
     :blog_link, :categories, :participant_invite_id, :auth_key_authentified,
-    :github_link
+    :github_link, :invitation_limit
   accepts_nested_attributes_for :avatar, :projects, allow_destroy: true
 
   store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link, :website_link,
@@ -178,7 +178,7 @@ class User < ActiveRecord::Base
   end
 
   def name
-    full_name ? full_name : user_name
+    full_name.present? ? full_name : user_name
   end
 
   def participant_invite
