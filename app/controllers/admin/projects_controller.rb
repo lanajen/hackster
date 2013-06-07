@@ -1,6 +1,6 @@
 class Admin::ProjectsController < Admin::BaseController
   def index
-    @projects = Project.order(:id).paginate(page: params[:page])
+    @projects = Project.order('created_at DESC').paginate(page: params[:page])
   end
 
   def new

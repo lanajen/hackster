@@ -1,6 +1,16 @@
 class Admin::UsersController < Admin::BaseController
   def index
-    @users = User.order('created_at DESC').paginate(:page => params[:page])
+    @fields = {
+      'created_at' => 'users.created_at',
+      'last_sign_in' => 'users.last_sign_in_at',
+      'email' => 'users.email',
+      'name' => 'users.name',
+      'screen_name' => 'users.screen_name',
+    }
+    
+    params[:sort_by] ||= 'last_sign_in'
+
+    @users = filter_for User, @fields
   end
 
   def new

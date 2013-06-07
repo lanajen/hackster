@@ -1,4 +1,7 @@
 class Admin::BaseController < ApplicationController
+  include FilterHelper
+  helper AdminHelper
+
   before_filter :authenticate_user!
   before_filter :check_authorization_for_admin
 

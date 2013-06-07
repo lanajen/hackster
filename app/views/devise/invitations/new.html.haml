@@ -6,9 +6,9 @@
       %em Lucky you, you can send as many invites as you want.
     - elsif @invite_limit == 0
       %em Oops, looks like you have no invitations left!
+      = link_to 'Want more?', 'mailto:team@hackster.io?subject=Can%20I%20get%20more%20invites%20please%3F'
     - else
       %em You have #{pluralize(@invite_limit, 'invitation')} left.
-      = link_to 'Want more?', 'mailto:team@hackster.io?subject=Can%20I%20get%20more%20invites%20please%3F'
   - if @invite_limit != 0
     = simple_form_for @friend_invite, url: invitation_path(resource_name), html: { class: 'full-size' } do |f|
       = f.error_notification

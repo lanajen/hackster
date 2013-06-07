@@ -1,6 +1,12 @@
 - model_class = User
 .page-header
   %h1=t '.title', :default => model_class.model_name.human.pluralize
+
+= render 'admin/shared/search_form_tag'
+- (@fields.keys - %w(created_at)).each do |field|
+  = render partial: 'admin/shared/search_form_text_field', locals: { field: field }
+= render 'admin/shared/search_form_sort_and_submit'
+
 %table.table.table-striped
   %thead
     %tr
@@ -10,6 +16,7 @@
       %th= model_class.human_attribute_name(:last_login)
       %th= model_class.human_attribute_name(:login_count)
       %th= model_class.human_attribute_name(:projects_count)
+      %th= model_class.human_attribute_name(:invites_count)
       %th= model_class.human_attribute_name(:invitation_status)
       %th=t '.actions', :default => t("helpers.actions")
   %tbody
@@ -21,6 +28,7 @@
         %td= time_ago_in_words user.last_sign_in_at if user.last_sign_in_at
         %td= user.sign_in_count
         %td= user.projects.size
+        %td= user.invitations.size
         %td
           - if user.invited_by
             %b By:
