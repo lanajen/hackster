@@ -12,6 +12,9 @@
             %ul.thumbnails
               - @user.projects.indexable.each do |project|
                 = render partial: 'projects/project_thumb', locals: { project: project.decorate }
+          - elsif user_is_current?
+            You have no projects.
+            = link_to 'Showcase a new project', new_project_path, class: 'btn btn-info btn-small'
           - else
             #{@user.name} has no projects yet.
 
@@ -70,28 +73,45 @@
               - else
                 No one yet.
 
-          .transparent-well
-            .header
-              %h4 Interests
-            .content
-              - @user.interest_tags.pluck(:name).each do |tag|
-                %span.label= tag
-          .transparent-well
-            .header
-              %h4 Skills
-            .content
-              - @user.skill_tags.pluck(:name).each do |tag|
-                %span.label= tag
+          - if @user.interest_tags.any?
+            .transparent-well
+              .header
+                %h4 Interests
+              .content
+                - @user.interest_tags.pluck(:name).each do |tag|
+                  %span.label= tag
+          - elsif user_is_current?
+            .transparent-well
+              .header
+                %h4 Interests
+              .content
+                No interests.
+                = link_to 'Add some?', profile_edit_path, data: { remote: true }
 
-          .transparent-well
-            .header
-              %h4 Recent activity
-            .content
-              %ul
-                -# .group(:context_model_type, :context_model_id, :event)
-                - @broadcasts.each do |broadcast|
-                  %li
-                    - broadcast = broadcast.decorate
-                    = broadcast.message
-                    .muted
-                      = broadcast.created_at
+          - if @user.skill_tags.any?
+            .transparent-well
+              .header
+                %h4 Skills
+              .content
+                - @user.skill_tags.pluck(:name).each do |tag|
+                  %span.label= tag
+          - elsif user_is_current?
+            .transparent-well
+              .header
+                %h4 Skills
+              .content
+                No skills.
+                = link_to 'Add some?', profile_edit_path, data: { remote: true }
+
+          - if @broadcasts.any?
+            .transparent-well
+              .header
+                %h4 Recent activity
+              .content
+                %ul
+                  - @broadcasts.each do |broadcast|
+                    %li
+                      - broadcast = broadcast.decorate
+                      = broadcast.message
+                      .muted
+                        = broadcast.created_at

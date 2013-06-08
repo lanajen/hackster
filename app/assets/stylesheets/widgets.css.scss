@@ -79,6 +79,13 @@
       background: #fff;
     }
   }
+  &.form-horizontal {
+    .form-actions {
+      input {
+        margin-left: 180px;
+      }
+    }
+  }
 }
 
 .text-widget {

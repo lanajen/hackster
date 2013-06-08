@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
   after_filter :store_location_after
   helper_method :title
   helper_method :meta_desc
+  helper_method :user_return_to
 
   unless Rails.application.config.consider_all_requests_local
     rescue_from Exception, with: :render_500
@@ -35,7 +36,7 @@ class ApplicationController < ActionController::Base
   def store_location cookie_name
 #    logger.info 'controller: ' + params[:controller].to_s
 #    logger.info 'action: ' + params[:action].to_s
-    session[cookie_name] = request.url unless params[:controller] == 'devise/sessions' || params[:controller] == 'users/registrations' || params[:controller] == 'users/confirmations' || params[:controller] == 'users/omniauth_callbacks' || params[:controller] == 'users/facebook_connections' || request.method_symbol != :get
+    session[cookie_name] = request.url unless params[:controller] == 'devise/sessions' || params[:controller] == 'users/registrations' || params[:controller] == 'users/confirmations' || params[:controller] == 'users/omniauth_callbacks' || params[:controller] == 'users/facebook_connections' || params[:controller] == 'users/invitations' || params[:action] == 'after_registration' || request.method_symbol != :get
 #    logger.info 'stored location: ' + session[cookie_name].to_s
   end
 
@@ -47,6 +48,10 @@ class ApplicationController < ActionController::Base
   # Stores location before the request has been processed
   def store_location_before
     store_location :user_return_to
+  end
+
+  def user_return_to
+    params[:redirect_to] || session[:user_return_to] || (user_signed_in? ? current_user : nil) || root_path
   end
 
   private

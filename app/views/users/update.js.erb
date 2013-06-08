@@ -1,4 +1,8 @@
-$('.user .display').html('<%= escape_javascript render('teaser') %>');
-$('.user .edit').slideUp(function(){
-  $('.user .display').slideDown();
-});
+<%- if @refresh %>
+  window.location = '<%= user_path(@user) %>';
+<% else %>
+  $('.user .display').html('<%= escape_javascript render('teaser') %>');
+  $('.user .edit').slideUp(function(){
+    $('.user .display').slideDown();
+  });
+<% end %>

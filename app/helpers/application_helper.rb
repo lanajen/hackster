@@ -19,6 +19,10 @@ module ApplicationHelper
 #    super content, link, *args
 #  end
 
+  def user_is_current?
+    user_signed_in? and current_user.id == @user.id
+  end
+
   def value_for_input param, val
     param.nil? or param == val ? true : false
   end

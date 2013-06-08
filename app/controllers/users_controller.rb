@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   before_filter :authenticate_user!, except: [:show]
   before_filter :find_user, only: [:show]
-  authorize_resource except: [:first_login]
+  authorize_resource except: [:first_login, :after_registration, :after_registration_save]
 
   def show
     title @user.name
@@ -17,6 +17,7 @@ class UsersController < ApplicationController
 
   def update
     @user = current_user
+    old_user = @user.dup
 
     if @user.update_attributes(params[:user])
       respond_to do |format|
@@ -24,6 +25,11 @@ class UsersController < ApplicationController
         format.js do
           @user.avatar = nil unless @user.avatar.try(:file_url)
           @user = @user.decorate
+          logger.info old_user.interest_tags_string
+          logger.info @user.interest_tags_string
+          if old_user.interest_tags_string != @user.interest_tags_string or old_user.skill_tags_string != @user.skill_tags_string
+            @refresh = true
+          end
         end
       end
     else
@@ -35,7 +41,17 @@ class UsersController < ApplicationController
     end
   end
 
-  def first_login
+  def after_registration
     @user = current_user
+    @user.build_avatar unless @user.avatar
+  end
+
+  def after_registration_save
+    @user = current_user
+    if @user.update_attributes(params[:user])
+      redirect_to user_return_to, notice: 'All set!'
+    else
+      render action: 'after_registration'
+    end
   end
 end

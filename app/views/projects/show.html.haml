@@ -1,28 +1,4 @@
 -# .row
-  .span8
-    .well
-      .content
-        .headline-image
-          - if @project.video
-            = render partial: 'videos/video', locals: { video: @project.video }
-          - else
-            - if @project.images.any?
-              - @project.images.each_with_index do |image, i|
-                = image_tag image.file_url(:headline), class: "image-#{i}", style: "#{'display:none;' unless i==0}"
-            - else
-              = image_tag 'project_default_headline.png'
-        - if @project.images.size > 1
-          .image-thumbs
-            - @project.images.each_with_index do |image, i|
-              = image_tag image.file_url(:small_thumb), data: { target: "image-#{i}" }
-
-    .well
-      .header
-        %h3 About
-      .content
-        = @project.description
-
-
   .span4
     .well.sidebar-nav
       .header

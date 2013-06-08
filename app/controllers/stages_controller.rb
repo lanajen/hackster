@@ -15,6 +15,6 @@ class StagesController < ApplicationController
   rescue Workflow::NoTransitionAllowed
     flash[:alert] = "Couldn't update stage status."
   ensure
-    redirect_to params[:redirect_to] || session[:user_return_to]
+    redirect_to user_return_to
   end
 end

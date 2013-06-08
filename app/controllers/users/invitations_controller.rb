@@ -85,6 +85,6 @@ class Users::InvitationsController < Devise::InvitationsController
     end
 
     def after_accept_path_for(resource)
-      root_path
+      user_after_registration_path
     end
 end

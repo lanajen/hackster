@@ -65,6 +65,9 @@ HackerIo::Application.routes.draw do
 #
 #    put 'issues/:id/update_workflow' => 'thread_posts#update_workflow', as: :issue_update_workflow
 
+    get 'users/registration/complete_profile' => 'users#after_registration', as: :user_after_registration
+    put 'users/registration/complete_profile' => 'users#after_registration_save'
+
     get 'help' => 'pages#help'
 
     get 'contact' => 'contact#new'
