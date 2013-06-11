@@ -20,7 +20,7 @@ module ApplicationHelper
 #  end
 
   def user_is_current?
-    user_signed_in? and current_user.id == @user.id
+    user_signed_in? and current_user.id == @user.try(:id)
   end
 
   def value_for_input param, val
