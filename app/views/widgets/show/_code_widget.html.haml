@@ -1,6 +1,7 @@
-- if widget.document
+- if widget.formatted_content.present?
   .code-widget
     = widget.formatted_content.html_safe
     %a.more{ href: '#' } + show more
     %a.less{ href: '#' } - show less
+- if widget.document
   = link_to "#{content_tag(:i, '', class: 'icon-download-alt')} Download #{widget.document.file_name}".html_safe, widget.document.file_url, class: 'btn btn-mini'
