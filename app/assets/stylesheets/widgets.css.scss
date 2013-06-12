@@ -32,30 +32,32 @@
       }
     }
   }
-  .highlight {
-    position: relative;
-    border-left: 3ex solid #CCC;
-    border-left: 3ex solid rgba(0, 0, 0, 0.15);
-    pre {
-      counter-reset: linenumbers;
-      overflow: auto;
-      @include border-radius(0 4px 4px 0);
-      & > span:before {
-        font-size: .9em;
-        color: #777;
-        content: counter(linenumbers);
-        counter-increment: linenumbers;
-        left: -3.2ex;
-        position: absolute;
-        text-align: right;
-        width: 2.5ex;
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        -khtml-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-        font-weight: bold;
+  &.expanded {
+    .highlight {
+      position: relative;
+      border-left: 3ex solid #CCC;
+      border-left: 3ex solid rgba(0, 0, 0, 0.15);
+      pre {
+        counter-reset: linenumbers;
+        overflow: auto;
+        @include border-radius(0 4px 4px 0);
+        & > span:before {
+          font-size: .9em;
+          color: #777;
+          content: counter(linenumbers);
+          counter-increment: linenumbers;
+          left: -3.2ex;
+          position: absolute;
+          text-align: right;
+          width: 2.5ex;
+          -webkit-touch-callout: none;
+          -webkit-user-select: none;
+          -khtml-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+          font-weight: bold;
+        }
       }
     }
   }
@@ -95,8 +97,7 @@
     font-weight: bold;
   }
   .form-actions {
-    margin: 20px -20px -30px;
-    padding: 20px;
+    @extend .expanded-footer
   }
   .form-fields {
     .fields {
@@ -209,6 +210,48 @@
       }
     }
     img {
+    }
+  }
+}
+
+.expanded-footer {
+  margin: 20px -20px -30px;
+  padding: 20px;
+  background-color: #F5F5F5;
+  border-top: 1px solid #E5E5E5;
+}
+
+.comments {
+  @include font-size(12);
+  display: none;
+  textarea {
+    width: 98%;
+    padding: 1%;
+    @include border-radius(0);
+    @include font-size(12);
+    height: 15px;
+    line-height: 17px;
+    min-height: 15px;
+    resize: none;
+    overflow: hidden;
+    width: 370px;
+  }
+  .comment {
+    overflow: hidden;
+    padding: 6px 0;
+    border-bottom: 1px solid #fff;
+    .comment-text {
+      padding-top: 2px;
+      max-width: 380px;
+    }
+    .comment-avatar {
+      margin-right: 8px;
+      img {
+        width: 32px;
+      }
+    }
+    .comment-date {
+      margin-top: 3px;
     }
   }
 }

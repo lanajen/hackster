@@ -5,6 +5,7 @@ class Widget < ActiveRecord::Base
 
   belongs_to :project
   belongs_to :stage
+  has_many :comments, as: :commentable, dependent: :destroy
   has_many :issues, as: :threadable, dependent: :destroy
 
   def has_unresolved_issues?

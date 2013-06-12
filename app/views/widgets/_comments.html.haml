@@ -1,0 +1,8 @@
+.expanded-footer.comments.collapsed{ id: "widget-#{widget.id}-comments" }
+  - if comments.any?
+    - comments.each do |comment|
+      = render partial: 'comments/comment', locals: { comment: comment }
+  - elsif !user_signed_in?
+    %p No comments
+  - if user_signed_in?
+    = render partial: 'comments/form', locals: { commentable: widget }

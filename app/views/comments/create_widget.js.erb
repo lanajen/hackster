@@ -1,0 +1,5 @@
+$('#widget-<%= @commentable.id %>-comments').remove();
+$("<%= escape_javascript render(partial: 'widgets/comments', locals: { widget: @commentable, comments: @commentable.comments }) %>").appendTo('#widget-<%= @commentable.id %> .content');
+$('#widget-<%= @commentable.id %>-comments')
+  .removeClass('collapsed')
+  .show();

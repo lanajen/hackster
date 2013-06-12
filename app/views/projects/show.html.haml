@@ -26,12 +26,13 @@
 
 .row
   - if @widgets.any?
-    .span6
+    #column1.span6
       - @project.widgets_first_col.each do |widget|
         = render partial: 'widgets/widget', locals: { widget: widget }
-    .span6
+    #column2.span6
       - @project.widgets_second_col.each do |widget|
         = render partial: 'widgets/widget', locals: { widget: widget }
+    #sidebar
   - else
     .span6.offset3
       .well

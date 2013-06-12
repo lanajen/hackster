@@ -8,6 +8,7 @@ class Project < ActiveRecord::Base
   has_many :access_groups, dependent: :destroy
   has_many :access_group_members, through: :access_groups
   has_many :blog_posts, as: :threadable, dependent: :destroy
+  has_many :comments, through: :widgets
   has_many :issues, as: :threadable, dependent: :destroy
   has_many :images, as: :attachable, dependent: :destroy
   has_many :participant_invites, dependent: :destroy

@@ -13,10 +13,12 @@ class CommentsController < ApplicationController
     respond_to do |format|
       if @comment.save
         format.html { redirect_to path_for_commentable(@commentable), notice: t('comment.create.success') }
-        format.json { render json: @comment, status: :created, location: @comment }
+#        format.json { render json: @comment, status: :created, location: @comment }
+        format.js { render js_view_for_commentable(@commentable) }
       else
         format.html { redirect_to path_for_commentable(@commentable), alert: t('comment.create.error') }
-        format.json { render json: @comment.errors, status: :unprocessable_entity }
+#        format.json { render json: @comment.errors, status: :unprocessable_entity }
+        format.js { render 'error' }
       end
     end
   end
@@ -56,12 +58,23 @@ class CommentsController < ApplicationController
       end
     end
 
+    def js_view_for_commentable commentable
+      case commentable
+      when Widget
+        'create_widget.js'
+      end
+    end
+
     def path_for_commentable commentable
       case commentable
       when BlogPost
         project_blog_post_path(commentable.threadable, commentable)
       when Issue
         issue_path(commentable)
+      when Project
+        project_path(commentable)
+      when Widget
+        project_path(commentable.project)
       end
     end
 end

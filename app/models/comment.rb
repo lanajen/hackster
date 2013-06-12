@@ -7,5 +7,10 @@ class Comment < ActiveRecord::Base
   validates :body, :user_id, :commentable_type, :commentable_id, presence: true
 
   sanitize_text :body
-  newlines_to_html_text :body
+  register_sanitizer :newlines_to_br, :before_save, :body
+
+  private
+    def newlines_to_br text
+      text.strip.gsub(/\r\n/, '<br>')
+    end
 end

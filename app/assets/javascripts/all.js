@@ -20,12 +20,15 @@ $(document).ready(function(){
     if ($('.highlight pre', v).height() > 150){
       $(this).addClass('collapsible');
       $(this).addClass('collapsed');
+    } else {
+      $(this).addClass('expanded');
     }
   });
 
   $('.code-widget.collapsible a').click(function(e){
     e.preventDefault();
     $(this).parent().toggleClass('collapsed');
+    $(this).parent().toggleClass('expanded');
     return false;
   });
 

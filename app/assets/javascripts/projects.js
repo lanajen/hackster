@@ -23,4 +23,30 @@ $(document).ready(function(){
       $('#project_end_date_2i').prop('disabled', false);
     }
   });
+
+  $('#new_comment textarea').live('keypress', function(event) {
+    if (event.which == 13 && !event.shiftKey) {
+      event.preventDefault();
+      $(this).parents('form').submit();
+    }
+  });
+
+  // auto adjust the height of
+  $("#new_comment textarea").live("keyup keydown",function(){
+    var h=$(this);
+    h.height(15).height(h[0].scrollHeight);//where 60 is minimum height of textarea
+  });
+
+  $('a.expand').click(function(e){
+    e.preventDefault();
+    target = $(this).data('target');
+    $target = $(target);
+    $target.toggleClass('collapsed');
+    $target.slideToggle();
+    if (!$target.hasClass('collapsed')) {
+      $('html, body').stop().animate({
+          'scrollTop': $target.offset().top
+      }, 500, 'swing', function () {});
+    }
+  });
 });
