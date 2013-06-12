@@ -35,8 +35,8 @@
   &.expanded {
     .highlight {
       position: relative;
-      border-left: 3ex solid #CCC;
-      border-left: 3ex solid rgba(0, 0, 0, 0.15);
+      border-left: 4.2ex solid #CCC;
+      border-left: 4.2ex solid rgba(0, 0, 0, 0.15);
       pre {
         counter-reset: linenumbers;
         overflow: auto;
@@ -46,10 +46,10 @@
           color: #777;
           content: counter(linenumbers);
           counter-increment: linenumbers;
-          left: -3.2ex;
+          left: -4ex;
           position: absolute;
           text-align: right;
-          width: 2.5ex;
+          width: 3.5ex;
           -webkit-touch-callout: none;
           -webkit-user-select: none;
           -khtml-user-select: none;
