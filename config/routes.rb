@@ -34,7 +34,7 @@ HackerIo::Application.routes.draw do
 #    resources :issues, controller: :thread_posts, only: [] do
 #      resources :comments, only: [:create]
 #    end
-#    resources :comments, only: [:update, :destroy]
+    resources :comments, only: [:update, :destroy]
     resources :invite_requests, only: [:new, :create]
     resources :projects, except: [:index] do
       member do
@@ -55,7 +55,7 @@ HackerIo::Application.routes.draw do
 #      put 'update_workflow', on: :member
 #    end
     resources :widgets, only: [] do
-      resources :comments
+      resources :comments, only: [:create]
 #      resources :issues, except: [:index], controller: :thread_posts
     end
 

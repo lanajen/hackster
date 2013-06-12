@@ -40,12 +40,12 @@ class CommentsController < ApplicationController
   # DELETE /comments/1
   # DELETE /comments/1.json
   def destroy
+    @commentable = @comment.commentable
     @comment.destroy
-    expire_action project_comments_path @commentable
 
     respond_to do |format|
       format.html { redirect_to path_for_commentable(@commentable), notice: t('comment.destroy.success') }
-      format.json { head :ok }
+      format.js { render js_view_for_commentable(@commentable) }
     end
   end
 
@@ -61,7 +61,7 @@ class CommentsController < ApplicationController
     def js_view_for_commentable commentable
       case commentable
       when Widget
-        'create_widget'
+        'update_widget'
       end
     end
 

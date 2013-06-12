@@ -34,7 +34,7 @@ class Ability
     end
 
     can :create, Publication
-    can [:update, :destroy], Publication, user_id: @user.id
+    can [:update, :destroy], [Comment, Publication], user_id: @user.id
 
     can :read, [Project, Stage, Widget] do |record|
       record.visible_to? @user

@@ -1,5 +1,5 @@
 $(document).ready(function(){
-  $('.project .image-thumbs li').live('mouseenter', function(){
+  $('.project').on('mouseenter', '.image-thumbs li', function(){
     img = $('img', this);
     targetClass = img.data('target');
     parent = $(this).parent().parent();
@@ -24,7 +24,7 @@ $(document).ready(function(){
     }
   });
 
-  $('#new_comment textarea').live('keypress', function(event) {
+  $('.well').on('keypress', '#new_comment textarea',function(){
     if (event.which == 13 && !event.shiftKey) {
       event.preventDefault();
       $(this).parents('form').submit();
@@ -32,9 +32,9 @@ $(document).ready(function(){
   });
 
   // auto adjust the height of
-  $("#new_comment textarea").live("keyup keydown",function(){
-    var h=$(this);
-    h.height(15).height(h[0].scrollHeight);//where 60 is minimum height of textarea
+  $('.well').on('keyup keydown', '#new_comment textarea',function(){
+    var t=$(this);
+    t.height(15).height(t[0].scrollHeight);//where 15 is minimum height of textarea
   });
 
   $('a.expand').click(function(e){
@@ -49,4 +49,12 @@ $(document).ready(function(){
       }, 500, 'swing', function () {});
     }
   });
+
+  $('.well').on({
+    mouseenter: function() {
+      $('.btn-delete', this).show();
+    }, mouseleave: function() {
+      $('.btn-delete', this).hide();
+    }
+  }, '.comment');
 });
