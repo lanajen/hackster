@@ -13,7 +13,7 @@ class BaseMailer < ActionMailer::Base
       return if @context[:users].empty?
       @context[:users] = @context[:users].uniq
       users_copy = @context[:users]
-      users_copy..each_slice(1000) do |users|
+      users_copy.each_slice(1000) do |users|
         @context[:users] = users
         send_bulk_email type
       end
@@ -39,6 +39,11 @@ class BaseMailer < ActionMailer::Base
     def get_context_for context_type, context_id
       context = {}
       case context_type.to_sym
+      when :comment
+        comment = context[:comment] = Comment.find(context_id)
+        project = context[:project] = comment.commentable.project
+        author = context[:author] = comment.user
+        context[:users] = project.users - [author]
       when :inviter
         invited = context[:invited] = User.find(context_id)
         context[:user] = invited.invited_by if invited.invited_by

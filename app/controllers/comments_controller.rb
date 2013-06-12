@@ -61,7 +61,7 @@ class CommentsController < ApplicationController
     def js_view_for_commentable commentable
       case commentable
       when Widget
-        'create_widget.js'
+        'create_widget'
       end
     end
 

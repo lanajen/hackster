@@ -2,7 +2,10 @@
   - if comments.any?
     - comments.each do |comment|
       = render partial: 'comments/comment', locals: { comment: comment }
-  - elsif !user_signed_in?
-    %p No comments
   - if user_signed_in?
     = render partial: 'comments/form', locals: { commentable: widget }
+  - else
+    %p
+      Please
+      = link_to 'log in', new_user_session_path
+      to comment.
