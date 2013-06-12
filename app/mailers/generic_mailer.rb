@@ -5,13 +5,13 @@ class GenericMailer < BaseMailer
     @context = {
       message: @message
     }
-    
+
     sendgrid_category @message.message_type
 
     headers = {
-      subject: substitute_in(@email.title),
+      subject: substitute_in(@email.subject),
       from: @message.from_email.present? ? "#{@message.name}<#{@message.from_email}>" : DEFAULT_EMAIL,
-      reply_to: @message.from_email.present? ? "#{@message.name}<#{@message.from_email}>" : @platform.formatted_from_email,
+      reply_to: @message.from_email.present? ? "#{@message.name}<#{@message.from_email}>" : DEFAULT_EMAIL,
     }
 
     if @message.recipients.present?

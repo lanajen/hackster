@@ -49,6 +49,12 @@ class UsersController < ApplicationController
   def after_registration_save
     @user = current_user
     if @user.update_attributes(params[:user])
+      @message = Message.new
+      @message.body = "used by <a href='#{user_url(current_user)}'>#{current_user.name}</a>"
+      @message.message_type = 'generic'
+      @message.subject = 'New use of after_registration_save'
+      BaseMailer.enqueue_generic_email(@message)
+
       redirect_to user_return_to, notice: 'All set!'
     else
       render action: 'after_registration'
