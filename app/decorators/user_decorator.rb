@@ -1,7 +1,7 @@
 class UserDecorator < ApplicationDecorator
 
   def avatar size=:thumb
-    if model.avatar
+    if model.avatar and model.avatar.file_url
       avatar = model.avatar.file_url(size)
     else
       width = case size

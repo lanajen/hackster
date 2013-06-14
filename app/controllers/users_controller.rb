@@ -43,6 +43,7 @@ class UsersController < ApplicationController
 
   def after_registration
     @user = current_user
+    @user.build_avatar unless @user.avatar
   end
 
   def after_registration_save
