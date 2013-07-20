@@ -7,4 +7,4 @@
     = link_to 'Reset it.', new_password_path(resource_name)
   %p
     Don't have an account?
-    = link_to 'Sign up.', new_user_registration_path
+    = link_to 'Sign up.', root_url(subdomain: 'www') #new_user_registration_path
