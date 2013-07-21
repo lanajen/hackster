@@ -1,0 +1,2 @@
+class GuestDecorator < AccountDecorator
+end

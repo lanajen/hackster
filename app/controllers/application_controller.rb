@@ -36,7 +36,7 @@ class ApplicationController < ActionController::Base
   def store_location cookie_name
 #    logger.info 'controller: ' + params[:controller].to_s
 #    logger.info 'action: ' + params[:action].to_s
-    session[cookie_name] = request.url unless params[:controller] == 'devise/sessions' || params[:controller] == 'users/registrations' || params[:controller] == 'users/confirmations' || params[:controller] == 'users/omniauth_callbacks' || params[:controller] == 'users/facebook_connections' || params[:controller] == 'users/invitations' || params[:action] == 'after_registration' || request.method_symbol != :get
+    session[cookie_name] = request.url unless params[:controller] == 'users/sessions' || params[:controller] == 'users/registrations' || params[:controller] == 'users/confirmations' || params[:controller] == 'users/omniauth_callbacks' || params[:controller] == 'users/facebook_connections' || params[:controller] == 'users/invitations' || params[:action] == 'after_registration' || request.method_symbol != :get
 #    logger.info 'stored location: ' + session[cookie_name].to_s
   end
 
@@ -77,7 +77,7 @@ class ApplicationController < ActionController::Base
     end
 
     def current_ability
-      current_user ? current_user.ability : User.new.ability
+      current_user ? current_user.ability : Account.new.ability
     end
 
     def find_user
@@ -99,7 +99,7 @@ class ApplicationController < ActionController::Base
     end
 
     def render_404(exception)
-#      log_line = LogLine.create(log_type: 'not_found', request_url: request.url)
+      LogLine.create(log_type: 'not_found', source: 'controller', request_url: request.url)
       respond_to do |format|
         format.html { render template: 'errors/error_404', layout: 'layouts/application', status: 404 }
         format.all { render nothing: true, status: 404 }

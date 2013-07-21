@@ -9,6 +9,7 @@ HackerIo::Application.routes.draw do
     devise_for :users, controllers: {
       confirmations: 'users/confirmations',
       invitations: 'users/invitations',
+      sessions: 'users/sessions',
       registrations: 'users/registrations',
     }
 

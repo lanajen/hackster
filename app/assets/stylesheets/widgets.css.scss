@@ -223,9 +223,7 @@
 .comments {
   @include font-size(12);
   display: none;
-  textarea {
-    width: 98%;
-    padding: 1%;
+  textarea, input[type='text'], input[type='email'], input[type='password'] {
     @include border-radius(0);
     @include font-size(12);
     height: 15px;
@@ -233,7 +231,10 @@
     min-height: 15px;
     resize: none;
     overflow: hidden;
-    width: 370px;
+  }
+  textarea {
+    padding: 4px 5px !important;
+    width: 380px !important;
   }
   .comment {
     overflow: hidden;

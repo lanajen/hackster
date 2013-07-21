@@ -1,4 +1,4 @@
-class User < ActiveRecord::Base
+class User < Account
   include Taggable
 
   devise :database_authenticatable, :registerable, :invitable,
@@ -12,7 +12,6 @@ class User < ActiveRecord::Base
     join_table: :project_followers
   has_many :access_group_members, dependent: :destroy
   has_many :blog_posts, dependent: :destroy
-  has_many :comments, dependent: :destroy
 #  has_many :interests, as: :taggable, dependent: :destroy, class_name: 'InterestTag'
   has_many :invitations, class_name: self.to_s, as: :invited_by
   has_many :privacy_rules, as: :privatable_users
@@ -25,9 +24,9 @@ class User < ActiveRecord::Base
   attr_accessor :email_confirmation, :skip_registration_confirmation,
     :participant_invite_id, :auth_key_authentified,
     :friend_invite_id, :new_invitation, :invitation_code
-  attr_accessible :email, :email_confirmation, :password, :password_confirmation,
-    :remember_me, :roles, :avatar_attributes, :projects_attributes, :websites_attributes,
-    :first_name, :last_name, :mini_resume, :city, :country, :user_name, :full_name,
+  attr_accessible :email_confirmation, :password, :password_confirmation,
+    :remember_me, :avatar_attributes, :projects_attributes, :websites_attributes,
+    :first_name, :last_name,
     :facebook_link, :twitter_link, :linked_in_link, :website_link,
     :blog_link, :categories, :participant_invite_id, :auth_key_authentified,
     :github_link, :invitation_limit
@@ -37,11 +36,8 @@ class User < ActiveRecord::Base
     :blog_link, :github_link
   ]
 
-  validates :name, length: { in: 1..200 }, allow_blank: true
   validates :user_name, presence: true, length: { in: 3..100 }, uniqueness: true,
     format: { with: /^[a-z0-9_]+$/, message: "accepts only downcase letters, numbers and underscores '_'." }, unless: :being_invited?
-  validates :city, :country, length: { maximum: 50 }, allow_blank: true
-  validates :mini_resume, length: { maximum: 160 }, allow_blank: true
   with_options unless: proc { |u| u.skip_registration_confirmation },
     on: :create do |user|
       user.validates :email_confirmation, presence: true
@@ -51,9 +47,6 @@ class User < ActiveRecord::Base
   before_validation :ensure_website_protocol
 
   scope :with_category, lambda { |category| { conditions: "categories_mask & #{2**CATEGORIES.index(category.to_s)} > 0"} }
-  scope :with_role, lambda { |role| { conditions: "roles_mask & #{2**ROLES.index(role.to_s)} > 0"} }
-
-  delegate :can?, :cannot?, to: :ability
 
   CATEGORIES = [
     'Electrical engineer',
@@ -63,7 +56,6 @@ class User < ActiveRecord::Base
     'Mechanical engineer',
     'Software developer',
   ]
-  ROLES = %w(admin confirmed_user)
 
   taggable :interest_tags, :skill_tags
 
@@ -119,10 +111,6 @@ class User < ActiveRecord::Base
   end
   # end of search methods
 
-  def ability
-    @ability ||= Ability.new(self)
-  end
-
   def add_confirmed_role
     self.roles = roles << 'confirmed_user'
     save
@@ -161,10 +149,6 @@ class User < ActiveRecord::Base
     invitation_sent_at.present?
   end
 
-  def is? role
-    role_symbols.include? role
-  end
-
   def is_following? user
     user.in? followeds
   end
@@ -177,28 +161,8 @@ class User < ActiveRecord::Base
     id.in? project.team_members.pluck(:user_id)
   end
 
-  def name
-    full_name.present? ? full_name : user_name
-  end
-
   def participant_invite
     @participant_invite ||= ParticipantInvite.find_by_id participant_invite_id
-  end
-
-  def roles=(roles)
-    self.roles_mask = (roles & ROLES).map { |r| 2**ROLES.index(r) }.sum
-  end
-
-  def roles
-    ROLES.reject { |r| ((roles_mask || 0) & 2**ROLES.index(r)).zero? }
-  end
-
-  def role_symbols
-    roles.map(&:to_sym)
-  end
-
-  def to_param
-    user_name
   end
 
   def skip_confirmation!

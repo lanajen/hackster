@@ -1,0 +1,3 @@
+class Guest < Account
+  
+end

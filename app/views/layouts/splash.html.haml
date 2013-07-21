@@ -9,7 +9,8 @@
     %meta{:content => "We're creating the toolbox that'll help you take your products from concept to production. Request an invite to be part of our early user group!", :name => "description"}/
     = stylesheet_link_tag 'splash'
     %link{:href => asset_path('favicon.ico'), :rel => "shortcut icon", :type => "image/vnd.microsoft.icon"}/
-    = render partial: 'application/analytics', locals: { tracker: 'UA-11926897-15', domain: 'hackster.io' }
+    - unless current_user and current_user.is? :admin
+      = render partial: 'application/analytics', locals: { tracker: 'UA-11926897-15', domain: 'hackster.io' }
   %body
     #bg
       = image_tag 'bg1920px.jpg'

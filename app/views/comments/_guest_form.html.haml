@@ -1,0 +1,16 @@
+- comment = commentable.comments.new
+= simple_nested_form_for [commentable, comment], html: { class: 'form-inline comment full-size', data: { remote: true } } do |f|
+  .pull-left
+    - comment.build_user(type: 'Guest')
+    = f.simple_fields_for :user do |f_user|
+      .row-fluid
+        .span6
+          = f_user.input :type, as: :hidden
+          = f_user.input :user_name, label: false, input_html: { placeholder: 'Your user name', size: nil }
+          = f_user.input :email, label: false, input_html: { placeholder: 'Your email', size: nil }
+        .span6
+          = link_to 'Log in', new_user_session_path(redirect_to: request.path)
+          or
+          = link_to 'sign up', root_url(subdomain: 'www')
+
+    = f.input :body, label: false, input_html: { rows: 1, placeholder: 'Write a comment (press enter to send)' }

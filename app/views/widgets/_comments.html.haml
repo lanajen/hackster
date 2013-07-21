@@ -3,11 +3,6 @@
     - comments.each do |comment|
       = render partial: 'comments/comment', locals: { comment: comment }
   - if user_signed_in?
-    = render partial: 'comments/form', locals: { commentable: widget }
+    = render partial: 'comments/signed_in_form', locals: { commentable: widget }
   - else
-    %p
-      Please
-      = link_to 'log in', new_user_session_path
-      or
-      = link_to 'sign up', root_url(subdomain: 'www')
-      to comment.
+    = render partial: 'comments/guest_form', locals: { commentable: widget }

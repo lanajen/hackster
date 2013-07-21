@@ -1,15 +1,20 @@
 class Ability
   include CanCan::Ability
 
-  def initialize(user)
-    @user = user
+  def initialize(resource)
 
     can :read, [Comment, Issue, Publication, User]
     can :read, [Project], private: false
+    can :create, Comment
 
-    member if @user.persisted? or @user.auth_key_authentified
-
-    @user.roles.each{ |role| send role }
+    case resource
+    when Guest
+      @guest = resource
+    when User
+      @user = resource
+      member if @user.persisted? or @user.auth_key_authentified
+      @user.roles.each{ |role| send role }
+    end
   end
 
   def admin
