@@ -2,6 +2,7 @@ class Account < ActiveRecord::Base
   self.table_name = :users
 
   has_many :comments, foreign_key: :user_id, dependent: :destroy
+  has_one :avatar, as: :attachable, dependent: :destroy
 
   attr_accessible :email, :mini_resume, :city, :country, :user_name, :full_name,
     :roles, :type

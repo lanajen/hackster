@@ -13,4 +13,4 @@
     = link_to 'Sign in.', new_user_session_path
   %p
     Need an invite?
-    = link_to 'Request one.', root_url(subdomain: 'www')
+    = link_to 'Request one.', root_url(subdomain: 'www'), onclick: "_gaq.push(['_trackEvent', 'Sign up form', 'Request an invite', '#{request.path}']);"

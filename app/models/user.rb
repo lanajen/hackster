@@ -19,7 +19,6 @@ class User < Account
   has_many :publications, dependent: :destroy
 #  has_many :skills, as: :taggable, dependent: :destroy, class_name: 'SkillTag'
   has_many :team_members
-  has_one :avatar, as: :attachable, dependent: :destroy
 
   attr_accessor :email_confirmation, :skip_registration_confirmation,
     :participant_invite_id, :auth_key_authentified,

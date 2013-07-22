@@ -47,6 +47,7 @@ gem 'nokogiri', '~> 1.5.5'
 #gem 'omniauth-oauth', '1.0.1'  # for omniauth-twitter
 #gem 'omniauth-oauth2', '1.0.3'  # for omniauth-facebook
 #gem 'omniauth-twitter', '0.0.14'
+gem 'oink'  # debug memory leak
 gem 'pg', '~> 0.14.1'
 gem 'premailer-rails3', '1.3.1'
 gem 'pygments.rb', '0.5.0'

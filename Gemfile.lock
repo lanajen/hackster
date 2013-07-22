@@ -149,6 +149,7 @@ GEM
     heroku-api (0.3.7)
       excon (~> 0.16.10)
     hike (1.2.1)
+    hodel_3000_compliant_logger (0.1.1)
     hpricot (0.8.6)
     htmlentities (4.3.1)
     http_parser.rb (0.5.3)
@@ -188,6 +189,9 @@ GEM
     newrelic_rpm (3.5.2.17)
     nokogiri (1.5.9)
     oauth (0.4.7)
+    oink (0.10.1)
+      activerecord
+      hodel_3000_compliant_logger
     orm_adapter (0.4.0)
     pg (0.14.1)
     polyglot (0.3.3)
@@ -392,6 +396,7 @@ DEPENDENCIES
   nested_form (= 0.3.1)
   newrelic_rpm (= 3.5.2.17)
   nokogiri (~> 1.5.5)
+  oink
   pg (~> 0.14.1)
   premailer-rails3 (= 1.3.1)
   pygments.rb (= 0.5.0)
