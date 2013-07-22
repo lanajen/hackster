@@ -56,7 +56,7 @@
                       %li.divider
                       %li= link_to 'Log out', destroy_user_session_path, method: :delete
                 - else
-                  %li= link_to 'Sign up', root_url(subdomain: 'www') #new_user_registration_path, onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '#{request.path}']);"
+                  %li= link_to 'Sign up', root_url(subdomain: 'www'), onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '#{request.path}']);" #new_user_registration_path
                   %li.dropdown
                     %a.dropdown-toggle{"data-toggle" => "dropdown", href: '#' }
                       Log in

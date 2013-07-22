@@ -11,6 +11,6 @@
         .span6
           = link_to 'Log in', new_user_session_path(redirect_to: request.path)
           or
-          = link_to 'sign up', root_url(subdomain: 'www')
+          = link_to 'sign up', root_url(subdomain: 'www'), onclick: "_gaq.push(['_trackEvent', 'Widget comment block', 'Sign up', '#{request.path}']);"
 
     = f.input :body, label: false, input_html: { rows: 1, placeholder: 'Write a comment (press enter to send)' }
