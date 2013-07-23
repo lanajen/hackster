@@ -4,13 +4,14 @@
     %h4{ style: 'position:relative;' }
       = widget.name
 
-      .btn-heading
+      = link_to 'Edit', edit_project_widget_path(@project, widget), class: 'btn-edit'
+      -# .btn-heading
         .btn-group
           - if can? :update, widget
             = link_to content_tag(:i, '', class: 'icon-edit'), edit_project_widget_path(@project, widget), class: 'btn btn-mini', title: 'Edit'
-          - size = comments.size
-          = render partial: 'widgets/comments_button', locals: { size: size, widget: widget }
+            - size = comments.size
+            = render partial: 'widgets/comments_button', locals: { size: size, widget: widget }
 
   .content
     = render partial: "widgets/show/#{widget.identifier}", locals: { widget: widget }
-    = render partial: 'widgets/comments', locals: { widget: widget, comments: comments }
+    -# = render partial: 'widgets/comments', locals: { widget: widget, comments: comments }
