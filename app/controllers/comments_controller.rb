@@ -60,6 +60,8 @@ class CommentsController < ApplicationController
 
     def js_view_for_commentable commentable
       case commentable
+      when Project
+        'update_project'
       when Widget
         'update_widget'
       end

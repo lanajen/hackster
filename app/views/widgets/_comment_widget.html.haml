@@ -1,0 +1,8 @@
+.well{ id: "widget-comments" }
+  .header
+    %h4{ style: 'position:relative;' }
+      Comments
+      .btn-heading
+        = render partial: 'widgets/comments_button', locals: { size: comments.size }
+  .content
+    = render partial: 'widgets/comments', locals: { comments: comments, commentable: commentable }

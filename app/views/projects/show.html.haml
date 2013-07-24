@@ -30,6 +30,7 @@
       - @project.widgets_first_col.each do |widget|
         = render partial: 'widgets/widget', locals: { widget: widget }
     #column2.span6
+      = render partial: 'widgets/comment_widget', locals: { comments: @project.comments, commentable: @project }
       - @project.widgets_second_col.each do |widget|
         = render partial: 'widgets/widget', locals: { widget: widget }
     #sidebar

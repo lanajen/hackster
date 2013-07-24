@@ -37,7 +37,7 @@ $(document).ready(function(){
     t.height(15).height(t[0].scrollHeight);//where 15 is minimum height of textarea
   });
 
-  $('a.expand').click(function(e){
+  $('body').on('click', 'a.expand', function(e){
     e.preventDefault();
     target = $(this).data('target');
     $target = $(target);

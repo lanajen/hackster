@@ -55,7 +55,7 @@ class UsersController < ApplicationController
       @message.subject = 'New use of after_registration_save'
       BaseMailer.enqueue_generic_email(@message)
 
-      redirect_to user_return_to, notice: 'All set!'
+      redirect_to new_project_path, notice: 'Profile info saved! Now how about creating your first project?'
     else
       render action: 'after_registration'
     end

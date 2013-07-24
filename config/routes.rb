@@ -45,6 +45,7 @@ HackerIo::Application.routes.draw do
         get 'team_members' => 'team_members#edit', as: :edit_team_members
         put 'team_members' => 'team_members#update'
       end
+      resources :comments, only: [:create]
 #      resources :blog_posts, controller: :thread_posts
 #      resources :issues, controller: :thread_posts
 #      resources :participant_invites, only: [:index]
@@ -56,7 +57,6 @@ HackerIo::Application.routes.draw do
 #      put 'update_workflow', on: :member
 #    end
     resources :widgets, only: [] do
-      resources :comments, only: [:create]
 #      resources :issues, except: [:index], controller: :thread_posts
     end
 
