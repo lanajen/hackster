@@ -32,6 +32,7 @@ class Users::InvitationsController < Devise::InvitationsController
         flash[:alert] = "Uhoh, you didn't specify anyone?"
         respond_with @friend_invite, :location => new_user_invitation_path
       else
+        raise @friend_invite.errors.inspect
         @invite_limit = current_user.invitation_limit
         respond_with_navigational(@friend_invite) { render :new }
       end

@@ -10,8 +10,8 @@ class Account < ActiveRecord::Base
   validates :name, length: { in: 1..200 }, allow_blank: true
   validates :email, presence: true, uniqueness: true
   validates :email, format: { with: /^\b[a-z0-9._%-\+]+@[a-z0-9.-]+\.[a-z]{2,4}(\.[a-z]{2,4})?\b$/, message: 'is not a valid email address'}
-  validates :user_name, presence: true, length: { in: 3..100 }, uniqueness: true,
-    format: { with: /^[a-z0-9_]+$/, message: "accepts only downcase letters, numbers and underscores '_'." }
+#  validates :user_name, presence: true, length: { in: 3..100 }, uniqueness: true,
+#    format: { with: /^[a-z0-9_]+$/, message: "accepts only downcase letters, numbers and underscores '_'." }
   validates :city, :country, length: { maximum: 50 }, allow_blank: true
   validates :mini_resume, length: { maximum: 160 }, allow_blank: true
 
