@@ -19,6 +19,7 @@ class User < Account
   has_many :publications, dependent: :destroy
 #  has_many :skills, as: :taggable, dependent: :destroy, class_name: 'SkillTag'
   has_many :team_members
+  has_one :reputation
 
   attr_accessor :email_confirmation, :skip_registration_confirmation,
     :participant_invite_id, :auth_key_authentified,
@@ -109,6 +110,10 @@ class User < Account
     }.to_json
   end
   # end of search methods
+
+  def self.top
+    joins(:reputation).order('reputations.points DESC')
+  end
 
   def add_confirmed_role
     self.roles = roles << 'confirmed_user'

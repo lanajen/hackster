@@ -72,3 +72,9 @@ ul.websites {
   @include font-size(12);
   @extend .muted;
 }
+
+.user-thumb {
+  .thumbnail {
+    height: 256px;
+  }
+}

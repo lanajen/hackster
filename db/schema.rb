@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130721113210) do
+ActiveRecord::Schema.define(:version => 20130725094434) do
 
   create_table "access_group_members", :force => true do |t|
     t.integer  "access_group_id"
@@ -187,6 +187,15 @@ ActiveRecord::Schema.define(:version => 20130721113210) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
+
+  create_table "reputations", :force => true do |t|
+    t.integer  "points",     :default => 0
+    t.integer  "user_id",                   :null => false
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+  end
+
+  add_index "reputations", ["user_id"], :name => "index_reputations_on_user_id"
 
   create_table "stages", :force => true do |t|
     t.integer  "project_id",                         :null => false

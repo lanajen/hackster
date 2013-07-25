@@ -1,6 +1,9 @@
 class UserObserver < ActiveRecord::Observer
   def after_create record
-    advertise_new_user record unless record.invited?
+    unless record.invited?
+      advertise_new_user record
+      record.create_reputation
+    end
   end
 
   def before_update record
@@ -10,6 +13,7 @@ class UserObserver < ActiveRecord::Observer
         { context_type: :inviter, context_id: record.id }
     elsif record.accepted_or_not_invited? and (record.changed & %w(user_name mini_resume city country full_name)).any?
       record.broadcast :update, record.id, 'User'
+      record.create_reputation
     end
   end
 
