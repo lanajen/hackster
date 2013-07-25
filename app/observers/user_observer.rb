@@ -11,9 +11,9 @@ class UserObserver < ActiveRecord::Observer
       advertise_new_user record
       BaseMailer.enqueue_email 'invite_request_accepted',
         { context_type: :inviter, context_id: record.id }
+      record.build_reputation unless record.reputation
     elsif record.accepted_or_not_invited? and (record.changed & %w(user_name mini_resume city country full_name)).any?
       record.broadcast :update, record.id, 'User'
-      record.build_reputation
     end
   end
 

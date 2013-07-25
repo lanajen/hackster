@@ -46,7 +46,7 @@ class BroadcastDecorator < ApplicationDecorator
         when :update
           "updated the publication #{publication_title}"
         end
-      when 'Account'
+      when 'User'
         case model.event.to_sym
         when :new
           "joined Hackster.io"
