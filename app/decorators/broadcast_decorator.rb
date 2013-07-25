@@ -6,7 +6,7 @@ class BroadcastDecorator < ApplicationDecorator
   def message show_name=false
 #    puts model.inspect
     message = case model.broadcastable_type
-    when 'User'
+    when 'Account'
       user_name = h.link_to model.broadcastable.name, model.broadcastable
       case model.context_model_type
       when 'Comment'
@@ -46,7 +46,7 @@ class BroadcastDecorator < ApplicationDecorator
         when :update
           "updated the publication #{publication_title}"
         end
-      when 'User'
+      when 'Account'
         case model.event.to_sym
         when :new
           "joined Hackster.io"
@@ -60,6 +60,7 @@ class BroadcastDecorator < ApplicationDecorator
       message.html_safe
     else
       LogLine.create(log_type: :debug, source: :broadcast_decorator, message: "Broadcast #{model.inspect} couldn't be displayed.")
+      nil
     end
   end
 end
