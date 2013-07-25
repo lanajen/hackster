@@ -56,6 +56,10 @@ class BroadcastDecorator < ApplicationDecorator
       end
     end
     message = "#{user_name} #{message}" if show_name
-    message.html_safe
+    if message
+      message.html_safe
+    else
+      LogLine.create(log_type: :debug, source: :broadcast_decorator, message: "Broadcast #{model.inspect} couldn't be displayed.")
+    end
   end
 end
