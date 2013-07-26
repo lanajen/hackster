@@ -15,7 +15,10 @@
         = f_image.input :title, label: 'Image title'
         -# = f_image.input :caption
       = f_image.link_to_remove 'Remove this image', class: 'btn btn-mini btn-danger'
-  = f.link_to_add 'Add an image', :images, class: 'btn btn-mini btn-success'
+  = f.link_to_add 'Add an image', :images, class: 'btn btn-mini btn-success', style: 'margin-bottom:10px;'
+  .alert
+    %strong Heads up!
+    Please limit the number of files you upload at once to 4 or 5 or you might get upload errors.
 
 = content_for :js do
   :javascript

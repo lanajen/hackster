@@ -17,6 +17,7 @@
       %th= model_class.human_attribute_name(:login_count)
       %th= model_class.human_attribute_name(:projects_count)
       %th= model_class.human_attribute_name(:invites_count)
+      %th= model_class.human_attribute_name(:comments_count)
       %th= model_class.human_attribute_name(:invitation_status)
       %th=t '.actions', :default => t("helpers.actions")
   %tbody
@@ -29,6 +30,7 @@
         %td= user.sign_in_count
         %td= user.projects.size
         %td= user.invitations.size
+        %td= user.comments.size
         %td
           - if user.invited_by
             %b By:
