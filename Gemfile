@@ -5,7 +5,7 @@ gem 'rails', '3.2.12'
 
 group :assets do
   gem 'asset_sync', '0.5.0'
-  gem 'bootstrap-sass-rails', '2.3.2.0'
+  gem 'bootstrap-sass-rails', '2.3.2.1'
   gem 'coffee-rails', '~> 3.2.1'
   gem 'compass-rails', '1.0.3'
 #  gem 'execjs', '1.4.0'
@@ -78,7 +78,7 @@ gem 'wysihtml5-rails', '0.0.4'
 #gem 'gon', '4.0.2'  # wants rabl to be defined before
 
 group :development, :test do
-  gem 'capybara'
+#  gem 'capybara'
   gem 'factory_girl_rails'
   gem 'foreman'
   gem 'guard-livereload'
