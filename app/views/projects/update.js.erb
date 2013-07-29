@@ -1,11 +1,7 @@
 $('.project .display').html('<%= escape_javascript render('teaser') %>');
 $('.project .edit').slideUp(function(){
   $('.project .display').slideDown(function(){
-    $('#display-share-box')
-      .tooltip({
-        trigger: 'manual'
-      })
-      .tooltip('show');
+    $('#display-share-box').tooltip('show');
     window.setTimeout(function(){ $('#display-share-box').tooltip('hide'); }, 10000);
   });
 });

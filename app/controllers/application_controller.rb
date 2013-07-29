@@ -1,13 +1,13 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
 #  before_filter :authenticate_user_with_key_or_login!
-  before_filter :authenticate_user!
   before_filter :set_new_user_session
   before_filter :store_location_before
   after_filter :store_location_after
   helper_method :title
   helper_method :meta_desc
   helper_method :user_return_to
+  helper_method :show_hello_world?
 
   unless Rails.application.config.consider_all_requests_local
     rescue_from Exception, with: :render_500
@@ -77,7 +77,7 @@ class ApplicationController < ActionController::Base
     end
 
     def current_ability
-      current_user ? current_user.ability : Account.new.ability
+      current_user ? current_user.ability : User.new.ability
     end
 
     def find_user
@@ -151,7 +151,13 @@ class ApplicationController < ActionController::Base
       if title
         @title = title
       else
-        @title ? "#{@title} - Hackster.io" : 'Hackster.io - Your Hacker Profile'
+        @title ? "#{@title} - Hackster.io" : 'Hackster.io - Hackster.io is the place where hardware hackers showcase their projects.'
       end
+    end
+
+    def show_hello_world?
+      incoming = request.referer.present? ? URI(request.referer).host == APP_CONFIG['default_host'] : true
+
+      incoming and !user_signed_in? and (params[:controller] == 'projects' or params[:controller] == 'users') and params[:action] == 'show'
     end
 end

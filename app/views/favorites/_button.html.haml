@@ -1,0 +1,5 @@
+%span.favorite-button
+  - if user_signed_in? and current_user.favorited? project
+    = link_to content_tag(:i, '', class: 'icon-star'), project_favorites_path(project), data: { method: :delete, remote: true }, class: 'btn btn-mini btn-inverse', title: 'Favorited (click to undo)', rel: 'tooltip'
+  - else
+    = link_to content_tag(:i, '', class: 'icon-star'), project_favorites_path(project), data: { method: :post, remote: true }, class: 'btn btn-mini', title: 'Add to favorites', rel: 'tooltip'

@@ -1,1 +1,12 @@
-= render 'form'
+.span5.offset3.wellified
+  %h2{ style: 'text-align: center' } Get invited to Hackster.io
+  = render 'form'
+
+  %p
+    Already have an account?
+    = link_to 'Sign in.', new_user_session_path
+
+.span3.pull-right
+  %h4 About invites
+  %p Hackster.io is a community of hardware hackers and makers.
+  %p We're invite-only because we want to ensure that everyone who joins will be able to contribute to the community by sharing their work and giving feedback to others.

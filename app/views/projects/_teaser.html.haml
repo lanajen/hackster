@@ -27,9 +27,10 @@
         by
         = @project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
       #share
-        = render partial: 'widgets/comments_button', locals: { size: @project.comments.size }
+        = render partial: 'widgets/comments_button', locals: { size: @project.comments.size, tooltip_orientation: 'top' }
         - if @project.public?
           = render 'projects/share'
+          = render partial: 'favorites/button', locals: { project: @project }
       -# %p.muted
         = l @project.start_date, format: :month
         \-

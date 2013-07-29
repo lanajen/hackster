@@ -5,16 +5,10 @@ class Ability
 
     can :read, [Comment, Issue, Publication, User]
     can :read, [Project], private: false
-    can :create, Comment
 
-    case resource
-    when Guest
-      @guest = resource
-    when User
-      @user = resource
-      member if @user.persisted? or @user.auth_key_authentified
-      @user.roles.each{ |role| send role }
-    end
+    @user = resource
+    member if @user.persisted? or @user.auth_key_authentified
+    @user.roles.each{ |role| send role }
   end
 
   def admin

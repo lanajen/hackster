@@ -1,2 +1,0 @@
-class GuestDecorator < AccountDecorator
-end

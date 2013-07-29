@@ -32,14 +32,6 @@ $(document).ready(function(){
     return false;
   });
 
-  $('#share button').click(function(e){
-    e.preventDefault();
-    $(this).hide(function(){
-      $('#share-box').show();
-    })
-    return false;
-  });
-
   //[data-remote="true"]
   $('form')
     .live("ajax:beforeSend", function(evt, xhr, settings){

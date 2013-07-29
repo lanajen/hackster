@@ -6,7 +6,7 @@ class BroadcastDecorator < ApplicationDecorator
   def message show_name=false
 #    puts model.inspect
     message = case model.broadcastable_type
-    when 'Account'
+    when 'User'
       user_name = h.link_to model.broadcastable.name, model.broadcastable
       case model.context_model_type
       when 'Comment'

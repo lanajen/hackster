@@ -2,10 +2,17 @@ require File.join(Rails.root, 'lib/resque_auth_server.rb')
 
 HackerIo::Application.routes.draw do
 
-  get 'sitemap_index.xml' => 'sitemap#index', as: 'sitemap_index', defaults: { format: 'xml' }
-  get 'sitemap.xml' => 'sitemap#show', as: 'sitemap', defaults: { format: 'xml' }
 
   constraints subdomain: /beta/ do
+    match '(*any)' => redirect { |params, request|
+      URI.parse(request.url).tap { |uri| uri.host.sub!(/^beta\./i, 'www.') }.to_s
+    }
+  end
+
+  constraints subdomain: /www/ do
+    get 'sitemap_index.xml' => 'sitemap#index', as: 'sitemap_index', defaults: { format: 'xml' }
+    get 'sitemap.xml' => 'sitemap#show', as: 'sitemap', defaults: { format: 'xml' }
+
     devise_for :users, controllers: {
       confirmations: 'users/confirmations',
       invitations: 'users/invitations',
@@ -36,7 +43,8 @@ HackerIo::Application.routes.draw do
 #      resources :comments, only: [:create]
 #    end
     resources :comments, only: [:update, :destroy]
-    resources :invite_requests, only: [:new, :create]
+    resources :invite_requests, only: [:create]
+    get 'request/an/invite' => 'invite_requests#new', as: :new_invite_request
     resources :projects, except: [:index] do
       member do
 #        get 'followers' => 'project_followers#index', as: :followers
@@ -46,6 +54,9 @@ HackerIo::Application.routes.draw do
         put 'team_members' => 'team_members#update'
       end
       resources :comments, only: [:create]
+      resources :favorites, only: [:create] do
+        delete '' => 'favorites#destroy', on: :collection
+      end
 #      resources :blog_posts, controller: :thread_posts
 #      resources :issues, controller: :thread_posts
 #      resources :participant_invites, only: [:index]
@@ -87,17 +98,5 @@ HackerIo::Application.routes.draw do
 #      delete 'followers' => 'follow_relations#destroy'
     end
     root to: 'pages#home'
-  end
-
-  constraints subdomain: /www/ do
-#    resources :quotes, only: [:create]
-#    get 'find_a_manufacturer' => 'quotes#new'
-#    get 'quote_requested' => 'quotes#requested'
-
-    resources :invite_requests, only: [:create] do
-      get 'confirm', on: :collection
-    end
-
-    root to: 'invite_requests#new'
   end
 end

@@ -26,12 +26,12 @@
   %body
     #wrapper
       -# raise params[:controller].to_s + ' ' + params[:action].to_s
-      - if !user_signed_in? and (params[:controller] == 'projects' or params[:controller] == 'users') and params[:action] == 'show'
+      - if show_hello_world?
         #hello-world.fade-in
           .container
             %button.close{ data: { close: '#hello-world' } } &times;
             Hackster.io is the place where hardware hackers showcase their projects. Sounds cool?
-            = link_to 'Request an invite.', 'http://www.hackster.io', onclick: "_gaq.push(['_trackEvent', 'Hello world bar', 'Request an invite', '#{request.path}']);"
+            = link_to 'Request an invite.', new_invite_request_path, onclick: "_gaq.push(['_trackEvent', 'Hello world bar', 'Request an invite', '#{request.path}']);"
       .navbar.navbar-static-top
         .navbar-inner
           .container{ style: 'position: relative;' }
@@ -63,7 +63,9 @@
                       %li.divider
                       %li= link_to 'Log out', destroy_user_session_path, method: :delete
                 - else
-                  %li= link_to 'Sign up', root_url(subdomain: 'www'), onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '#{request.path}']);" #new_user_registration_path
+                  - unless request.path == root_path
+                    %li.with-button
+                      %span= link_to 'Request an invite', new_invite_request_path, class: 'btn btn-small btn-info', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Request an invite', '#{request.path}']);" #new_user_registration_path
                   %li.dropdown
                     %a.dropdown-toggle{"data-toggle" => "dropdown", href: '#' }
                       Log in
@@ -86,11 +88,9 @@
     %footer
       .container
         %ul
-          %li= link_to 'Invite friends', new_user_invitation_path
-          -# %li= link_to 'Search', search_path
-          %li= link_to 'New project', new_project_path
           %li= link_to 'Help', help_path
           %li= link_to 'Feedback', 'mailto:team@hackster.io?subject=What%20I%20think%20about%20Hackster.io'
+          %li= link_to 'Jobs', 'mailto:jobs@hackster.io?subject=I want to work with you guys!'
           %li
         %ul.pull-right
           %li= link_to content_tag(:i, '', class: 'icon-twitter icon-large').html_safe, 'http://twitter.com/hacksterio', alt: 'Hackster.io on Twitter', class: 'link-icon'

@@ -3,11 +3,14 @@
   - if comments.any?
     - comments.each do |comment|
       = render partial: 'comments/comment', locals: { comment: comment }
+  - else
+    %p Be the first to comment!
   - if user_signed_in?
     = render partial: 'comments/signed_in_form', locals: { commentable: commentable }
   - else
-    Please
-    = link_to 'log in', new_user_session_path(redirect_to: url_for(commentable))
-    or
-    = link_to 'sign up', root_url(subdomain: 'www')
-    to comment.
+    %p
+      Please
+      = link_to 'log in', new_user_session_path(redirect_to: url_for(commentable))
+      or
+      = link_to 'sign up', new_invite_request_path
+      to comment.

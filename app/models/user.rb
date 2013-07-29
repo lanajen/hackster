@@ -1,5 +1,7 @@
-class User < Account
+class User < ActiveRecord::Base
   include Taggable
+
+  ROLES = %w(admin confirmed_user)
 
   devise :database_authenticatable, :registerable, :invitable,
          :recoverable, :rememberable, :trackable, :validatable
@@ -12,13 +14,17 @@ class User < Account
     join_table: :project_followers
   has_many :access_group_members, dependent: :destroy
   has_many :blog_posts, dependent: :destroy
+  has_many :comments, foreign_key: :user_id, dependent: :destroy
 #  has_many :interests, as: :taggable, dependent: :destroy, class_name: 'InterestTag'
+  has_many :favorites, dependent: :destroy
+  has_many :favorite_projects, through: :favorites, source: :project
   has_many :invitations, class_name: self.to_s, as: :invited_by
   has_many :privacy_rules, as: :privatable_users
   has_many :projects, through: :team_members
   has_many :publications, dependent: :destroy
 #  has_many :skills, as: :taggable, dependent: :destroy, class_name: 'SkillTag'
   has_many :team_members
+  has_one :avatar, as: :attachable, dependent: :destroy
   has_one :reputation
 
   attr_accessor :email_confirmation, :skip_registration_confirmation,
@@ -29,13 +35,21 @@ class User < Account
     :first_name, :last_name,
     :facebook_link, :twitter_link, :linked_in_link, :website_link,
     :blog_link, :categories, :participant_invite_id, :auth_key_authentified,
-    :github_link, :invitation_limit
+    :github_link, :invitation_limit, :email, :mini_resume, :city, :country,
+    :user_name, :full_name, :roles, :type
   accepts_nested_attributes_for :avatar, :projects, allow_destroy: true
 
   store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link, :website_link,
     :blog_link, :github_link
   ]
 
+  validates :name, length: { in: 1..200 }, allow_blank: true
+  validates :email, presence: true, uniqueness: true
+  validates :email, format: { with: /^\b[a-z0-9._%-\+]+@[a-z0-9.-]+\.[a-z]{2,4}(\.[a-z]{2,4})?\b$/, message: 'is not a valid email address'}
+#  validates :user_name, presence: true, length: { in: 3..100 }, uniqueness: true,
+#    format: { with: /^[a-z0-9_]+$/, message: "accepts only downcase letters, numbers and underscores '_'." }
+  validates :city, :country, length: { maximum: 50 }, allow_blank: true
+  validates :mini_resume, length: { maximum: 160 }, allow_blank: true
   validates :user_name, presence: true, length: { in: 3..100 }, uniqueness: true,
     format: { with: /^[a-z0-9_]+$/, message: "accepts only downcase letters, numbers and underscores '_'." }, unless: :being_invited?
   with_options unless: proc { |u| u.skip_registration_confirmation },
@@ -47,6 +61,8 @@ class User < Account
   before_validation :ensure_website_protocol
 
   scope :with_category, lambda { |category| { conditions: "categories_mask & #{2**CATEGORIES.index(category.to_s)} > 0"} }
+
+  scope :with_role, lambda { |role| { conditions: "roles_mask & #{2**ROLES.index(role.to_s)} > 0"} }
 
   CATEGORIES = [
     'Electrical engineer',
@@ -115,9 +131,19 @@ class User < Account
     joins(:reputation).order('reputations.points DESC')
   end
 
+  delegate :can?, :cannot?, to: :ability
+
+  def ability
+    @ability ||= Ability.new(self)
+  end
+
   def add_confirmed_role
     self.roles = roles << 'confirmed_user'
     save
+  end
+
+  def add_favorite project
+    favorite_projects << project
   end
 
   def auth_key_authentified? project
@@ -134,6 +160,10 @@ class User < Account
 
   def categories
     CATEGORIES.reject { |r| ((categories_mask || 0) & 2**CATEGORIES.index(r)).zero? }
+  end
+
+  def favorited? project
+    project.in? favorite_projects
   end
 
   def follow user
@@ -153,6 +183,10 @@ class User < Account
     invitation_sent_at.present?
   end
 
+  def is? role
+    role_symbols.include? role
+  end
+
   def is_following? user
     user.in? followeds
   end
@@ -165,12 +199,36 @@ class User < Account
     id.in? project.team_members.pluck(:user_id)
   end
 
+  def name
+    full_name.present? ? full_name : user_name
+  end
+
   def participant_invite
     @participant_invite ||= ParticipantInvite.find_by_id participant_invite_id
   end
 
+  def remove_favorite project
+    favorite_projects.delete project
+  end
+
+  def roles=(roles)
+    self.roles_mask = (roles & ROLES).map { |r| 2**ROLES.index(r) }.sum
+  end
+
+  def roles
+    ROLES.reject { |r| ((roles_mask || 0) & 2**ROLES.index(r)).zero? }
+  end
+
+  def role_symbols
+    roles.map(&:to_sym)
+  end
+
   def skip_confirmation!
     self.skip_registration_confirmation = true
+  end
+
+  def to_param
+    user_name
   end
 
   def unfollow user

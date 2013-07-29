@@ -1,5 +1,5 @@
-= simple_form_for @invite_request, :html => { :class => 'form-inline' } do |f|
-  %p.cta Be the first to get in:
-
-  = f.input :email, :placeholder => 'nikola@tesla.com', :label => false, :autofocus => true
-  = f.submit "I'm awesome"
+= simple_form_for @invite_request, html: { class: 'full-size' } do |f|
+  = f.input :email, autofocus: true, required: false, placeholder: 'Email (required)', label: false
+  = f.input :profile_url, required: false, placeholder: "URL to your website or something you've made", label: false
+  = f.input :twitter_username, placeholder: "Twitter username", label: false
+  = f.button :submit, 'Request my invite', class: 'btn-block btn'

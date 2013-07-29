@@ -1,7 +1,7 @@
 class InviteRequest < ActiveRecord::Base
   belongs_to :user
 
-  attr_accessible :email, :whitelisted
+  attr_accessible :email, :whitelisted, :profile_url, :twitter_username
 
   validates :email, presence: true
   validates :email, uniqueness: { message: 'has already requested an invite' }

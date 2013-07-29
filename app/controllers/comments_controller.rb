@@ -1,5 +1,5 @@
 class CommentsController < ApplicationController
-  before_filter :authenticate_user!, except: [:create]
+  before_filter :authenticate_user! #, except: [:create]
   load_and_authorize_resource
   skip_load_resource only: [:create]
 
@@ -8,7 +8,7 @@ class CommentsController < ApplicationController
   def create
     @commentable = find_commentable
     @comment = @commentable.comments.build(params[:comment])
-    @comment.user = current_user if current_user
+    @comment.user = current_user
 
     respond_to do |format|
       if @comment.save

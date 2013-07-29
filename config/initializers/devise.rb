@@ -95,7 +95,7 @@ Devise.setup do |config|
   # If invitation_limit is 0, users can't send invitations.
   # If invitation_limit n > 0, users can send n invitations.
   # Default: nil
-  # config.invitation_limit = 5
+  config.invitation_limit = 0
 
   # The key to be used to check existing users when sending an invitation
   # and the regexp used to test it when validate_on_invite is not set.
