@@ -1,6 +1,6 @@
 class WidgetsController < ApplicationController
   before_filter :load_project
-  load_resource except: [:new, :create]
+  load_and_authorize_resource except: [:new, :create]
   respond_to :html
   layout 'project'
 
@@ -18,10 +18,12 @@ class WidgetsController < ApplicationController
 
   def new
     @widget = @project.widgets.new(params[:widget])
+    authorize! :create, @widget
   end
 
   def create
     @widget = @project.widgets.new(params[:widget])
+    authorize! :create, @widget
     @widget.stage_id = 0
 
     if @widget.save
