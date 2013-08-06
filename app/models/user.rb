@@ -4,6 +4,7 @@ class User < Account
   devise :database_authenticatable, :registerable, :invitable,
          :recoverable, :rememberable, :trackable, :validatable
 
+  belongs_to :invite_code
   with_options class_name: 'User', join_table: :follow_relations do |u|
     u.has_and_belongs_to_many :followers, foreign_key: :follower_id, association_foreign_key: :followed_id
     u.has_and_belongs_to_many :followeds, foreign_key: :followed_id, association_foreign_key: :follower_id
@@ -26,7 +27,7 @@ class User < Account
     :friend_invite_id, :new_invitation, :invitation_code
   attr_accessible :email_confirmation, :password, :password_confirmation,
     :remember_me, :avatar_attributes, :projects_attributes, :websites_attributes,
-    :first_name, :last_name,
+    :first_name, :last_name, :invitation_code,
     :facebook_link, :twitter_link, :linked_in_link, :website_link,
     :blog_link, :categories, :participant_invite_id, :auth_key_authentified,
     :github_link, :invitation_limit
@@ -42,7 +43,8 @@ class User < Account
     on: :create do |user|
       user.validates :email_confirmation, presence: true
       user.validate :email_matches_confirmation
-      user.validate :is_whitelisted?
+#      user.validate :is_whitelisted?
+      user.validate :used_valid_invite_code?
   end
   before_validation :ensure_website_protocol
 
@@ -200,6 +202,14 @@ class User < Account
     def is_whitelisted?
       return unless email.present?
       errors.add :email, 'is not on our beta list' unless InviteRequest.email_whitelisted? email
+    end
+
+    def used_valid_invite_code?
+      if invitation_code.present? and invite_code = InviteCode.authenticate(invitation_code)
+        self.invite_code_id = invite_code.id
+      else
+        errors.add :invitation_code, 'is either invalid or expired'
+      end
     end
 
   protected

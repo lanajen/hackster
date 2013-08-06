@@ -17,6 +17,7 @@ HackerIo::Application.routes.draw do
       mount ResqueAuthServer.new, at: "/resque"
       get 'logs' => 'pages#logs'
 
+      resources :invite_codes, except: [:show]
       resources :invite_requests do
         put 'send_invite' => 'invite_requests#send_invite', on: :member
       end

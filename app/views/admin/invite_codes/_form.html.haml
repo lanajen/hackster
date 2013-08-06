@@ -1,0 +1,7 @@
+= simple_form_for [:admin, @invite_code], :html => { :class => 'form-horizontal' } do |f|
+  = f.input :code
+  = f.input :limit
+  = f.input :active
+  .form-actions
+    = f.button :submit, :class => 'btn-primary'
+    = link_to t('.cancel', :default => t("helpers.links.cancel")), admin_invite_codes_path, :class => 'btn'
