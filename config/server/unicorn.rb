@@ -22,7 +22,11 @@ app_name          = 'hackerio'
 #stdout_path       "/log/unicorn.log"
 
 #listen            "/tmp/#{app_name}.unicorn.production.sock"
-worker_processes  3
+if ENV['RAILS_ENV'] == 'development'
+  worker_processes 1
+else
+  worker_processes 3
+end
 timeout           30
 preload_app       true
 

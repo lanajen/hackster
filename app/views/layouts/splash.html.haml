@@ -27,6 +27,8 @@
         %li
           = link_to 'Contact', 'mailto:team@hackster.io'
         %li
+          = link_to 'Jobs', "mailto:team@hackster.io?subject=I want to work with you guys!&body=Here are a few lines about me and samples of my work. Thanks!"
+        %li
           = link_to 'Sign in', new_user_session_url(subdomain: 'beta')
         %li= link_to content_tag(:i, '', class: 'icon-twitter icon-large').html_safe, 'http://twitter.com/hacksterio', alt: 'Hackster.io on Twitter', class: 'link-icon'
         %li= link_to content_tag(:i, '', class: 'icon-facebook icon-large').html_safe, 'http://www.facebook.com/hacksterio', alt: 'Hackster.io on Facebook', class: 'link-icon'
