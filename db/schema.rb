@@ -93,6 +93,14 @@ ActiveRecord::Schema.define(:version => 20130727172705) do
     t.datetime "updated_at", :null => false
   end
 
+  create_table "invite_codes", :force => true do |t|
+    t.string   "code",       :limit => 20
+    t.integer  "limit"
+    t.boolean  "active",                   :default => true
+    t.datetime "created_at",                                 :null => false
+    t.datetime "updated_at",                                 :null => false
+  end
+
   create_table "invite_requests", :force => true do |t|
     t.string   "email"
     t.datetime "created_at",                      :null => false
@@ -288,6 +296,7 @@ ActiveRecord::Schema.define(:version => 20130727172705) do
     t.integer  "invited_by_id"
     t.string   "invited_by_type"
     t.string   "type",                                  :default => "User", :null => false
+    t.integer  "invite_code_id"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

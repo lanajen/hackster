@@ -67,7 +67,7 @@
                     %li.with-button
                       %span= link_to 'Request an invite', new_invite_request_path, class: 'btn btn-small btn-info', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Request an invite', '#{request.path}']);" #new_user_registration_path
                   %li.dropdown
-                    %a.dropdown-toggle{"data-toggle" => "dropdown", href: '#' }
+                    %a#login.dropdown-toggle{"data-toggle" => "dropdown", href: '#' }
                       Log in
                       %strong.caret
                     .dropdown-menu{:style => "padding: 15px; padding-bottom: 0px;"}

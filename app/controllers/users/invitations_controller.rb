@@ -1,7 +1,7 @@
 class Users::InvitationsController < Devise::InvitationsController
-  before_filter :authenticate_inviter!, :only => []
-  before_filter :require_authentication, :only => [:new, :create]
-  before_filter :require_no_authentication, :only => [:edit, :update, :invite]
+  before_filter :authenticate_inviter!, only: []
+  before_filter :require_authentication, only: [:new, :create]
+  before_filter :require_no_authentication, only: [:edit, :update, :invite]
 
   def new
     @invite_limit = current_user.invitation_limit
@@ -49,31 +49,31 @@ class Users::InvitationsController < Devise::InvitationsController
     end
   end
 
-  def invite
-    self.resource = resource_class.new
-    render :generic_invite
-  end
+#  def invite
+#    self.resource = resource_class.new
+#    render :generic_invite
+#  end
 
-  def update
-    if params[resource_name][:invitation_token].present?
-      @invitation_token = params[resource_name][:invitation_token]
-      super
-    else
-      self.resource = resource_class.new(params[resource_name])
-      if invite_code = authenticate_invite_code(params[resource_name][:invitation_code])
-        resource.invite_code_id = invite_code.id
-        if resource.save
-          flash[:notice] = "Cool, just go click on the confirmation link in the email we've just sent you and we're good to go!"
-          respond_with resource, :location => invite_code_path
-        else
-          respond_with_navigational(resource) { render :generic_invite }
-        end
-      else
-        flash[:alert] = "Seems like your invite code is either invalid or expired. Please double check it and try again!"
-        respond_with resource, :location => invite_code_path
-      end
-    end
-  end
+#  def update
+#    if params[resource_name][:invitation_token].present?
+#      @invitation_token = params[resource_name][:invitation_token]
+#      super
+#    else
+#      self.resource = resource_class.new(params[resource_name])
+#      if invite_code = authenticate_invite_code(params[resource_name][:invitation_code])
+#        resource.invite_code_id = invite_code.id
+#        if resource.save
+#          flash[:notice] = "Cool, just go click on the confirmation link in the email we've just sent you and we're good to go!"
+#          respond_with resource, :location => invite_code_path
+#        else
+#          respond_with_navigational(resource) { render :generic_invite }
+#        end
+#      else
+#        flash[:alert] = "Seems like your invite code is either invalid or expired. Please double check it and try again!"
+#        respond_with resource, :location => invite_code_path
+#      end
+#    end
+#  end
 
   private
     def require_authentication

@@ -1,6 +1,6 @@
 class WidgetsController < ApplicationController
   before_filter :load_project
-  load_and_authorize_resource except: [:new, :create]
+  load_and_authorize_resource except: [:new, :create, :save]
   respond_to :html
   layout 'project'
 
@@ -9,6 +9,7 @@ class WidgetsController < ApplicationController
   end
 
   def save
+    authorize! :update, @project
     if @project.update_attributes(params[:project])
       redirect_to @project, notice: "Layout saved."
     else

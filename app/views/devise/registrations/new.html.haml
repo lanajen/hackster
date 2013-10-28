@@ -2,7 +2,14 @@
   %h2{ style: 'text-align:center;' } Create your Hackster.io account
   = simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f|
     = f.error_notification
-    = f.input :user_name, label: false, placeholder: 'Username', autofocus: true
+    - if params[:invitation_code]
+      = f.input :invitation_code, as: :hidden
+      %p
+        Your invite code:
+        %b= params[:invitation_code]
+    - else
+      = f.input :invitation_code, label: false, placeholder: 'Invite code', autofocus: true
+    = f.input :user_name, label: false, placeholder: 'Username', autofocus: params[:invitation_code].present?
     = f.input :email, label: false, placeholder: 'Email'
     = f.input :email_confirmation, label: false, placeholder: 'Confirm email'
     = f.input :password, label: false, placeholder: 'Password'
@@ -14,3 +21,14 @@
   %p
     Need an invite?
     = link_to 'Request one.', root_url(subdomain: 'www'), onclick: "_gaq.push(['_trackEvent', 'Sign up form', 'Request an invite', '#{request.path}']);"
+
+- if params[:invitation_code] and params[:invitation_code] == 'modthat3ds'
+  .span3.pull-right
+    %h4 Welcome ModThat.com visitors!
+    %p Hackster.io is a community of hardware hackers and makers.
+    %p We've teamed up with ModThat.com to give you a venue to showcase your projects and participate in the contest to win an Nintendo 3DS.
+    %p
+      %b How does it work?
+      It's quite straight-forward really: just sign up on the left, then follow the instructions to create a project. Once you're done, don't forget to make your project public and then simply enter its URL on ModThat.com to enter the contest.
+    %p Participations close on August 31st!
+    %p Good luck to all.

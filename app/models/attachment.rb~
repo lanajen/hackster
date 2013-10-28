@@ -1,7 +1,0 @@
-class Attachment < ActiveRecord::Base
-  include Platformator
-  
-  attr_accessible :type, :file, :file_cache, :remote_file_url
-
-  belongs_to :attachable, :polymorphic => true
-end
