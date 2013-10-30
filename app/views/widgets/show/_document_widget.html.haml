@@ -3,7 +3,7 @@
     %ul
       - widget.documents.each do |document|
         %li.file
-          %i.icon-file.icon-large
+          %i.fa.fa-file-o.fa-lg
           - title = document.title.present? ? document.title : document.file_name
           = link_to title, document.file_url, title: document.file_name
   - else

@@ -75,7 +75,5 @@ module HackerIo
       :user_name => "fansnextdoor",
       :password => "mod3pa55"
     }
-
-    config.middleware.use(Oink::Middleware, logger: Hodel3000CompliantLogger.new(STDOUT))
   end
 end

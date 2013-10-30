@@ -1,0 +1,62 @@
+.row
+  .span12
+    .alert.alert-info.text-center
+      Hackster.io is the place where hardware hackers showcase their projects.
+      - unless user_signed_in?
+        = link_to 'Request an invite', new_invite_request_path, class: 'btn btn-info btn-small'
+
+.row
+  .span12
+    .well
+      .header.no-content
+        %h2
+          Featured projects
+          = link_to 'See more featured projects &rarr;'.html_safe, '/search', class: 'btn-edit'
+    %ul.thumbnails
+      - @featured_projects.each do |project|
+        = render partial: 'projects/project_thumb', locals: { project: project.decorate }
+
+.row
+  .span12
+    .well
+      .header.no-content
+        %h2
+          Top users
+          = link_to 'See the leaderboard &rarr;'.html_safe, '/search?model%5Buser%5D=1', class: 'btn-edit'
+    %ul.thumbnails
+      - @top_users.each do |user|
+        = render partial: 'users/user_thumb', locals: { user: user.decorate }
+
+.row
+  .span12
+    .well
+      .header.no-content
+        %h2
+          Latest projects
+          = link_to 'See more recent projects &rarr;'.html_safe, '/search?model%5Bproject%5D=1', class: 'btn-edit'
+    %ul.thumbnails
+      - @last_projects.each do |project|
+        = render partial: 'projects/project_thumb', locals: { project: project.decorate }
+
+-#
+  .row
+    .span12
+      .well
+        .header.no-content
+          %h2
+            Projects for you
+            = link_to 'See more projects for you &rarr;'.html_safe, "/search?query=#{CGI::escape(@custom_projects_query.to_s) + '&' + CGI::escape('model[project]=1') }", class: 'btn-edit'
+      - if @custom_projects
+        - if @custom_projects.any?
+          %ul.thumbnails
+            - @custom_projects.each do |project|
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate }
+        - else
+          %p
+            Fill in your interests
+            = link_to 'in your profile', current_user
+            so we can show you more relevant projects.
+      - else
+        %p
+          = link_to 'Log in', new_user_session_path
+          to see projects that match your interests.

@@ -1,7 +1,9 @@
 class SearchController < ApplicationController
-  before_filter :authenticate_user!
 
   def search
-    @results = SearchRepository.new(params).search.results
+    if params[:q]
+      @results = SearchRepository.new(params).search.results
+      Search.log params: params, user_id: current_user.try(:id), results: @results.size
+    end
   end
 end

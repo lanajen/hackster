@@ -2,6 +2,7 @@ class Project < ActiveRecord::Base
   include Privatable
   include Taggable
 #  include Workflow
+  is_impressionable counter_cache: true, unique: :session_hash
 
   belongs_to :user
   has_and_belongs_to_many :followers, class_name: 'User', join_table: 'project_followers'
@@ -9,10 +10,10 @@ class Project < ActiveRecord::Base
   has_many :access_group_members, through: :access_groups
   has_many :blog_posts, as: :threadable, dependent: :destroy
   has_many :comments, as: :commentable #, through: :widgets
-  has_many :favorites, dependent: :destroy
   has_many :issues, as: :threadable, dependent: :destroy
   has_many :images, as: :attachable, dependent: :destroy
   has_many :participant_invites, dependent: :destroy
+  has_many :respects, dependent: :destroy, class_name: 'Favorite'
   has_many :stages, dependent: :destroy
   has_many :team_members, include: :user
   has_many :users, through: :team_members
@@ -30,6 +31,7 @@ class Project < ActiveRecord::Base
     :access_groups, :participant_invites, :widgets, allow_destroy: true
 
   validates :name, presence: true
+  validates :one_liner, :logo, presence: true, if: proc { |p| p.force_basic_validation? }
   before_validation :check_if_current
   before_validation :ensure_website_protocol
 
@@ -82,12 +84,28 @@ class Project < ActiveRecord::Base
     where(private: false)
   end
 
+  def self.most_viewed
+    order('impressions_count DESC')
+  end
+
   def all_issues
     (issues + Issue.where(threadable_type: 'Widget').where('threadable_id IN (?)', widgets.pluck('widgets.id'))).sort_by{ |t| t.created_at }
   end
 
+  def force_basic_validation!
+    @force_basic_validation = true
+  end
+
+  def force_basic_validation?
+    @force_basic_validation
+  end
+
   def image
     images.first
+  end
+
+  def respects_count
+    respects.size
   end
 
   def to_param

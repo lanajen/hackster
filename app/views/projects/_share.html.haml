@@ -1,26 +1,8 @@
-%a#display-share-box.btn.btn-mini{ "data-toggle" => "modal", :href => "#share-box", :role => "button", title: "Share this project", rel: 'tooltip' }
-  %i.icon-share-alt
+%a.addthis_button_compact.display-share-box.btn.btn-mini
+  %i.fa.fa-share
   Share
 
 = content_for :js do
-  #share-box.modal.hide.fade{"aria-hidden" => "true", "aria-labelledby" => "share-box-header", :role => "dialog", :tabindex => "-1"}
-    .modal-header
-      %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", :type => "button"} ×
-      %h3#share-box-header Share this project
-    .modal-body
-      .muted{ style: 'margin-bottom: 10px' }
-        = project_url(@project)
-
-      .addthis_toolbox.addthis_default_style.addthis_32x32_style
-        %a.addthis_button_addressbar
-        %a.addthis_button_facebook
-        %a.addthis_button_twitter
-        %a.addthis_button_google_plusone_share
-        %a.addthis_button_reddit
-        %a.addthis_button_email
-        %a.addthis_button_compact
-        %a.addthis_counter.addthis_bubble_style
-
   <!-- AddThis Button BEGIN -->
   <script type="text/javascript">var addthis_config = {"data_track_addressbar":false};</script>
   <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-51b26f5613fb83d2"></script>

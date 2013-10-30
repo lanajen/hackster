@@ -6,8 +6,8 @@
         %li
           = document.file_name
           .btn-group
-            = link_to "#{content_tag(:i, '', class: 'icon-play')} Play".html_safe, '#', data: { stlfile: document.file_url }, class: 'loadstl btn btn-small'
-            = link_to "#{content_tag(:i, '', class: 'icon-download-alt')} Download".html_safe, document.file_url, class: 'download btn btn-small btn-inverse'
+            = link_to "#{content_tag(:i, '', class: 'fa fa-play')} Play".html_safe, '#', data: { stlfile: document.file_url }, class: 'loadstl btn btn-small'
+            = link_to "#{content_tag(:i, '', class: 'fa fa-download')} Download".html_safe, document.file_url, class: 'download btn btn-small btn-inverse'
 
   - else
     %p No documents yet.

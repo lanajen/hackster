@@ -93,20 +93,19 @@ footer {
   }
 }
 
-.well, .thumbnail {
+.box-white-bg {
   background: #fff;
   border-color: #e2e2e2;
   @include border-radius(0);
   @include box-shadow(0 1px 1px #ccc);
 }
 
-.hero-unit {
-  @include border-radius(0);
+.well {
+  @extend .box-white-bg;
 }
 
-.thumbnail {
-  height: 336px;
-  overflow: hidden;
+.hero-unit {
+  @include border-radius(0);
 }
 
 #heading {

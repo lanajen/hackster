@@ -13,11 +13,11 @@
 
       - if @user.location
         %p.user-categories
-          %i.icon-map-marker
+          %i.fa.fa-map-marker
           = @user.location
       - elsif user_is_current?
         %p.user-categories
-          %i.icon-map-marker
+          %i.fa.fa-map-marker
           No location.
           = link_to 'Add one?', profile_edit_path, data: { remote: true }
 

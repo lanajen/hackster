@@ -36,16 +36,14 @@
         .navbar-inner
           .container{ style: 'position: relative;' }
             %a.btn.btn-navbar(data-target=".nav-collapse" data-toggle="collapse")
-              %span.icon-bar
-              %span.icon-bar
-              %span.icon-bar
+              %span.fa.fa-bar
+              %span.fa.fa-bar
+              %span.fa.fa-bar
             = link_to image_tag('hackster_logo_20.png'), root_path, class: 'brand'
             .container.nav-collapse
-              -# .pull-left= render 'application/search_form'
+              .pull-left= render 'application/search_form'
               %ul.nav
                 %li= link_to 'Showcase a project', new_project_path
-                - if user_signed_in? and current_user.is? :admin
-                  %li= link_to 'Admin', admin_users_path
               %ul.nav.pull-right
                 - if user_signed_in?
                   .btn-group
@@ -72,6 +70,9 @@
                       %strong.caret
                     .dropdown-menu{:style => "padding: 15px; padding-bottom: 0px;"}
                       = render 'devise/sessions/form'
+              - if user_signed_in? and current_user.is? :admin
+                %ul.nav.pull-right
+                  %li= link_to 'Admin', admin_users_path
 
             .alert-flash= bootstrap_flash
 
@@ -93,8 +94,8 @@
           %li= link_to 'Jobs', 'mailto:jobs@hackster.io?subject=I want to work with you guys!'
           %li
         %ul.pull-right
-          %li= link_to content_tag(:i, '', class: 'icon-twitter icon-large').html_safe, 'http://twitter.com/hacksterio', alt: 'Hackster.io on Twitter', class: 'link-icon'
-          %li= link_to content_tag(:i, '', class: 'icon-facebook icon-large').html_safe, 'http://www.facebook.com/hacksterio', alt: 'Hackster.io on Facebook', class: 'link-icon'
+          %li= link_to content_tag(:i, '', class: 'fa fa-twitter fa-lg').html_safe, 'http://twitter.com/hacksterio', alt: 'Hackster.io on Twitter', class: 'link-icon'
+          %li= link_to content_tag(:i, '', class: 'fa fa-facebook fa-lg').html_safe, 'http://www.facebook.com/hacksterio', alt: 'Hackster.io on Facebook', class: 'link-icon'
           %li Hackster.io 2013
 
     -# = include_gon

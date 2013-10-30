@@ -88,6 +88,8 @@ module MailerHelpers
       case token.to_sym
       when :invite_friends_link
         url.new_user_invitation_url(host: default_host)
+      when :invite_project_url
+        url.project_url(@context[:invite].project, host: default_host) if @context[:invite].project
       when :invited_profile_link
         url.user_url(@context[:invited], host: default_host)
       when :inviter_name

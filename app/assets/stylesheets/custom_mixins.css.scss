@@ -1,6 +1,6 @@
 @mixin font-size($size) {
   font-size: unquote("#{$size}px");
   font-size: unquote("#{$size/10}rem");
-  line-height: unquote("#{$size}px");
-  line-height: unquote("#{$size/10}rem");
+  line-height: unquote("#{$size+$size*0.2}px");
+  line-height: unquote("#{$size/10+$size*0.02}rem");
 }

@@ -1,6 +1,20 @@
 %li.span3.project-thumb
-  .thumbnail
-    = link_to project.logo_link(:big)
-    .caption
+  .thumb
+    .photo-thumb= project.logo_link(:big)
+    .inner-thumb
       %h3= link_to project.name, project
       %p= truncate project.one_liner, length: 140
+      .thumb-bottom
+        %hr
+        - if project.public?
+          %span.counter
+            %i.fa.fa-eye
+            = project.impressions_count
+          %span.counter
+            %i.fa.fa-thumbs-o-up
+            = project.respects_count
+        - else
+          Private
+        %span.counter
+          %i.fa.fa-comments
+          = project.comments.size

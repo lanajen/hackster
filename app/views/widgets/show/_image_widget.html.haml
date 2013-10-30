@@ -3,7 +3,7 @@
     - widget.images.each_with_index do |image, i|
       .headline-image-inner
         %a{ href: "javascript:openLightBox(#{widget.id},#{i});" }
-          %i.icon-fullscreen
+          %i.fa.fa-fullscreen
           = image_tag image.file_url(:headline_orig), class: "image-#{i}", style: "#{'display:none;' unless i==0}"
   - if widget.images.size > 1
     %ul.image-thumbs

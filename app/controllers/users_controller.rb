@@ -2,6 +2,7 @@ class UsersController < ApplicationController
   before_filter :authenticate_user!, except: [:show]
   before_filter :find_user, only: [:show]
   authorize_resource except: [:first_login, :after_registration, :after_registration_save]
+  impressionist actions: [:show], unique: [:impressionable_type, :impressionable_id, :session_hash]
 
   def show
     title @user.name

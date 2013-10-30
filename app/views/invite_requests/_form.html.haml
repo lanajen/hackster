@@ -1,5 +1,12 @@
 = simple_form_for @invite_request, html: { class: 'full-size' } do |f|
-  = f.input :email, autofocus: true, required: false, placeholder: 'Email (required)', label: false
-  = f.input :profile_url, required: false, placeholder: "URL to your website or something you've made", label: false
-  = f.input :twitter_username, placeholder: "Twitter username", label: false
+  = f.input :email, autofocus: true, required: false, placeholder: 'Your email ', label: false, hint: "We'll send the invite to that address. No spam, promise."
+  %br
+  %p
+    %strong Want to get in faster? Show us what you've built
+  = f.simple_fields_for :project do |f_project|
+    = f_project.input :name, label: 'What is it called?', required: false
+    = f_project.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner description, Twitter-style.', required: false
+    = f_project.simple_fields_for :logo do |f_logo|
+      = f_logo.input :file, as: :file, label: 'Main image or logo', required: false
+      = f_logo.input :file_cache, as: :hidden
   = f.button :submit, 'Request my invite', class: 'btn-block btn'

@@ -8,8 +8,8 @@ class SearchRepository
   end
 
   def search
-    query = params[:query] ? CGI::unescape(params[:query].to_s) : nil
-    models = params[:model] ? params[:model].keys : nil
+    query = params[:q] ? CGI::unescape(params[:q].to_s) : nil
+    models = params[:type] ? [params[:type]] : nil
 #    query += ' ' + params[:product_tag].keys.join(' ') if params[:product_tag]
 #    query += ' ' + params[:tech_tag].keys.join(' ') if params[:tech_tag]
     results = self.search_models query, params[:page], models, params[:size]
@@ -24,7 +24,7 @@ class SearchRepository
       Rails.logger.info "Searching for #{query} and model #{models.to_s}"
       Tire.search BONSAI_INDEX_NAME, load: true, page: page, per_page: RESULTS_PER_PAGE do
         query { string query, default_operator: 'AND' } if query.present?
-        filter :or, filters if filters.any?
+        filter :and, filters if filters.any?
         filter :term, private: false
         sort { by :created_at, 'desc' }
         size size || RESULTS_PER_PAGE

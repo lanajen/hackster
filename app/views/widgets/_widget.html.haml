@@ -9,7 +9,7 @@
       -# .btn-heading
         .btn-group
           - if can? :update, widget
-            = link_to content_tag(:i, '', class: 'icon-edit'), edit_project_widget_path(@project, widget), class: 'btn btn-mini', title: 'Edit'
+            = link_to content_tag(:i, '', class: 'fa fa-edit'), edit_project_widget_path(@project, widget), class: 'btn btn-mini', title: 'Edit'
             - size = comments.size
             = render partial: 'widgets/comments_button', locals: { size: size, widget: widget }
 

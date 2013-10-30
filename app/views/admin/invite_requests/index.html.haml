@@ -5,6 +5,7 @@
   %thead
     %tr
       %th= model_class.human_attribute_name(:email)
+      %th= model_class.human_attribute_name(:project)
       %th= model_class.human_attribute_name(:invite_sent)
       %th= model_class.human_attribute_name(:registered)
       %th= model_class.human_attribute_name(:requested_at)
@@ -13,6 +14,7 @@
     - @invite_requests.each do |invite_request|
       %tr
         %td= invite_request.email
+        %td= link_to invite_request.project.name, invite_request.project if invite_request.project
         %td= invite_request.whitelisted
         %td
           - if invite_request.whitelisted

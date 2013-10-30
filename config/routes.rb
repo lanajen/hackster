@@ -55,8 +55,8 @@ HackerIo::Application.routes.draw do
         put 'team_members' => 'team_members#update'
       end
       resources :comments, only: [:create]
-      resources :favorites, only: [:create] do
-        delete '' => 'favorites#destroy', on: :collection
+      resources :respects, only: [:create] do
+        delete '' => 'respects#destroy', on: :collection
       end
 #      resources :blog_posts, controller: :thread_posts
 #      resources :issues, controller: :thread_posts

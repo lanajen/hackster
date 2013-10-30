@@ -1,5 +1,5 @@
-%form{ action: '/search', class: 'form-search', method: :get }
+%form{ action: search_path, class: 'form-search', method: :get }
   .input-prepend
     %span.add-on
-      %i.icon-search
-    = text_field_tag :query, params[:query], class: '', placeholder: 'Search'
+      %i.fa.fa-search
+    = text_field_tag :q, params[:q], class: '', placeholder: 'Search'

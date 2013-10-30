@@ -1,25 +1,20 @@
-.row
+.search-page.row
   .span3
-    .well
-      .header
-        %h3 Filters
+    %ul.nav.nav-tabs.nav-stacked
+      %li{ class: "#{'active' if params[:type] == nil}" }= link_to 'All', search_path(q: params[:q], type: nil)
+      %li{ class: "#{'active' if params[:type] == 'user'}" }= link_to 'People', search_path(q: params[:q], type: 'user')
+      %li{ class: "#{'active' if params[:type] == 'project'}" }= link_to 'Projects', search_path(q: params[:q], type: 'project')
+
+    -# .well
       .content
-        %form{ action: '/search', method: :get, id: 'full-search-form' }
+        %form{ action: search_path, method: :get, id: 'full-search-form' }
           .control-group
             .controls
               %label
                 %strong Keywords
-              = text_field_tag :query, params[:query], class: 'input-medium', placeholder: 'Search'
-          .control-group
-            .controls
-              %label
-                %strong Result types
-              %label.checkbox
-                = check_box_tag 'model[user]', 1, (params[:model] and params[:model][:user])
-                People
-              %label.checkbox
-                = check_box_tag 'model[project]', 1, (params[:model] and params[:model][:project])
-                Projects
+              = text_field_tag :q, params[:q], class: 'input-medium', placeholder: 'Search'
+          .control-group= submit_tag 'Update results', class: 'btn btn-mini'
+
           -# .control-group
             .controls
               %label
@@ -34,18 +29,23 @@
                 %label.checkbox
                   = check_box_tag "tech_tag[#{tag}]", 1, (params[:tech_tag] and params[:tech_tag][tag.to_sym])
                   = tag
-          = submit_tag 'Update results', class: 'btn btn-mini'
   .span9
+    -# = render 'application/search_form'
+
     .well
-      - if @results.any?
-        .header
-          %h5= pluralize @results.count, 'result'
-        .content.search-results
-          %ul
-            - @results.each_with_index do |result, i|
-              %li{ class: "#{'last' if i == @results.size - 1}" }
-                - model = result.class.name.underscore
-                = render partial: model, locals: { :"#{model}" => result.decorate }
+      - if params[:q]
+        - if @results.any?
+          .header
+            %h5= pluralize @results.count, 'result'
+          .content.search-results
+            %ul
+              - @results.each_with_index do |result, i|
+                %li{ class: "#{'last' if i == @results.size - 1}" }
+                  - model = result.class.name.underscore
+                  = render partial: model, locals: { :"#{model}" => result.decorate }
+        - else
+          .content.search-results
+            No results, please modify your query.
       - else
         .content.search-results
-          No results.
+          Go ahead, look something up!

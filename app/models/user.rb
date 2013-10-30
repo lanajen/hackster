@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base
   include Taggable
+  is_impressionable counter_cache: true, unique: :session_hash
 
   ROLES = %w(admin confirmed_user)
 
@@ -17,8 +18,8 @@ class User < ActiveRecord::Base
   has_many :blog_posts, dependent: :destroy
   has_many :comments, foreign_key: :user_id, dependent: :destroy
 #  has_many :interests, as: :taggable, dependent: :destroy, class_name: 'InterestTag'
-  has_many :favorites, dependent: :destroy
-  has_many :favorite_projects, through: :favorites, source: :project
+  has_many :respects, dependent: :destroy, class_name: 'Favorite'
+  has_many :respected_projects, through: :respects, source: :project
   has_many :invitations, class_name: self.to_s, as: :invited_by
   has_many :privacy_rules, as: :privatable_users
   has_many :projects, through: :team_members
@@ -144,8 +145,8 @@ class User < ActiveRecord::Base
     save
   end
 
-  def add_favorite project
-    favorite_projects << project
+  def add_respect project
+    respected_projects << project
   end
 
   def auth_key_authentified? project
@@ -164,8 +165,8 @@ class User < ActiveRecord::Base
     CATEGORIES.reject { |r| ((categories_mask || 0) & 2**CATEGORIES.index(r)).zero? }
   end
 
-  def favorited? project
-    project.in? favorite_projects
+  def respected? project
+    project.in? respected_projects
   end
 
   def follow user
@@ -209,8 +210,8 @@ class User < ActiveRecord::Base
     @participant_invite ||= ParticipantInvite.find_by_id participant_invite_id
   end
 
-  def remove_favorite project
-    favorite_projects.delete project
+  def remove_respect project
+    respected_projects.delete project
   end
 
   def roles=(roles)

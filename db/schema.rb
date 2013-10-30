@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130727172705) do
+ActiveRecord::Schema.define(:version => 20131030072542) do
 
   create_table "access_group_members", :force => true do |t|
     t.integer  "access_group_id"
@@ -70,6 +70,40 @@ ActiveRecord::Schema.define(:version => 20130727172705) do
   add_index "comments", ["commentable_id", "commentable_type"], :name => "index_comments_on_commentable_id_and_commentable_type"
   add_index "comments", ["user_id"], :name => "index_comments_on_user_id"
 
+  create_table "email_threads", :force => true do |t|
+    t.integer  "part_id"
+    t.integer  "quantity"
+    t.float    "unit_price"
+    t.string   "currency"
+    t.integer  "manufacturer_id"
+    t.integer  "lead_time_in_days"
+    t.text     "delivery_terms"
+    t.text     "payment_terms"
+    t.text     "custom_fields"
+    t.string   "thread_hash"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+  end
+
+  add_index "email_threads", ["manufacturer_id"], :name => "index_email_threads_on_manufacturer_id"
+  add_index "email_threads", ["part_id"], :name => "index_email_threads_on_part_id"
+
+  create_table "emails", :force => true do |t|
+    t.integer  "email_thread_id"
+    t.string   "from"
+    t.text     "to"
+    t.text     "cc"
+    t.text     "body"
+    t.string   "subject"
+    t.text     "meta_data"
+    t.integer  "sender_id"
+    t.text     "raw_body"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
+  add_index "emails", ["email_thread_id"], :name => "index_emails_on_email_thread_id"
+
   create_table "favorites", :force => true do |t|
     t.integer  "user_id"
     t.integer  "project_id"
@@ -93,6 +127,31 @@ ActiveRecord::Schema.define(:version => 20130727172705) do
     t.datetime "updated_at", :null => false
   end
 
+  create_table "impressions", :force => true do |t|
+    t.string   "impressionable_type"
+    t.integer  "impressionable_id"
+    t.integer  "user_id"
+    t.string   "controller_name"
+    t.string   "action_name"
+    t.string   "view_name"
+    t.string   "request_hash"
+    t.string   "ip_address"
+    t.string   "session_hash"
+    t.text     "message"
+    t.text     "referrer"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+  end
+
+  add_index "impressions", ["controller_name", "action_name", "ip_address"], :name => "controlleraction_ip_index"
+  add_index "impressions", ["controller_name", "action_name", "request_hash"], :name => "controlleraction_request_index"
+  add_index "impressions", ["controller_name", "action_name", "session_hash"], :name => "controlleraction_session_index"
+  add_index "impressions", ["impressionable_type", "impressionable_id", "ip_address"], :name => "poly_ip_index"
+  add_index "impressions", ["impressionable_type", "impressionable_id", "request_hash"], :name => "poly_request_index"
+  add_index "impressions", ["impressionable_type", "impressionable_id", "session_hash"], :name => "poly_session_index"
+  add_index "impressions", ["impressionable_type", "message", "impressionable_id"], :name => "impressionable_type_message_index"
+  add_index "impressions", ["user_id"], :name => "index_impressions_on_user_id"
+
   create_table "invite_codes", :force => true do |t|
     t.string   "code",       :limit => 20
     t.integer  "limit"
@@ -109,6 +168,7 @@ ActiveRecord::Schema.define(:version => 20130727172705) do
     t.integer  "user_id",          :default => 0, :null => false
     t.string   "profile_url"
     t.string   "twitter_username"
+    t.integer  "project_id"
   end
 
   add_index "invite_requests", ["user_id"], :name => "index_invite_requests_on_user_id"
@@ -121,6 +181,18 @@ ActiveRecord::Schema.define(:version => 20130727172705) do
     t.integer  "loggable_id"
     t.datetime "created_at",                  :null => false
     t.datetime "updated_at",                  :null => false
+  end
+
+  create_table "manufacturers", :force => true do |t|
+    t.string   "name"
+    t.string   "email_domain"
+    t.string   "website"
+    t.string   "qq"
+    t.string   "phone"
+    t.string   "alibaba"
+    t.string   "email"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
   end
 
   create_table "participant_invites", :force => true do |t|
@@ -177,13 +249,14 @@ ActiveRecord::Schema.define(:version => 20130727172705) do
     t.text     "description"
     t.date     "start_date"
     t.date     "end_date"
-    t.datetime "created_at",                        :null => false
-    t.datetime "updated_at",                        :null => false
+    t.datetime "created_at",                           :null => false
+    t.datetime "updated_at",                           :null => false
     t.string   "website"
-    t.boolean  "private",        :default => false, :null => false
+    t.boolean  "private",           :default => false, :null => false
     t.string   "workflow_state"
     t.string   "one_liner"
     t.boolean  "featured"
+    t.integer  "impressions_count", :default => 0
   end
 
   add_index "projects", ["private"], :name => "index_projects_on_private"
@@ -216,6 +289,14 @@ ActiveRecord::Schema.define(:version => 20130727172705) do
   end
 
   add_index "reputations", ["user_id"], :name => "index_reputations_on_user_id"
+
+  create_table "searches", :force => true do |t|
+    t.text     "params"
+    t.integer  "results"
+    t.integer  "user_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "stages", :force => true do |t|
     t.integer  "project_id",                         :null => false
@@ -297,6 +378,7 @@ ActiveRecord::Schema.define(:version => 20130727172705) do
     t.string   "invited_by_type"
     t.string   "type",                                  :default => "User", :null => false
     t.integer  "invite_code_id"
+    t.integer  "impressions_count",                     :default => 0
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

@@ -1,0 +1,11 @@
+%span.respect-button
+  - respects = project.respects_count
+  - respects = respects.zero? ? '' : " #{respects}"
+  - content = "#{content_tag(:i, '', class: 'fa fa-thumbs-o-up')}#{respects}".html_safe
+  - if user_signed_in?
+    - if current_user.respected? project
+      = link_to content, project_respects_path(project), data: { method: :delete, remote: true }, class: 'btn btn-mini btn-inverse', title: 'Respected! (click to undo)', rel: 'tooltip'
+    - else
+      = link_to content, project_respects_path(project), data: { method: :post, remote: true }, class: 'btn btn-mini', title: 'Respect!', rel: 'tooltip'
+  - else
+    = link_to content, new_user_session_path(redirect_to: project_path(project)), class: 'btn btn-mini', title: 'Respect!', rel: 'tooltip'
