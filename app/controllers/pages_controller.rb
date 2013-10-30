@@ -1,4 +1,5 @@
 class PagesController < ApplicationController
+  skip_before_filter :authenticate_user!, only: [:splash]
 
   def help
   end
@@ -14,5 +15,10 @@ class PagesController < ApplicationController
 #      @custom_projects_query = current_user.interest_tags.pluck(:name).join(' OR ')
 #      @custom_projects = @custom_projects_query.present? ? SearchRepository.new(query: @custom_projects_query, model: { project: 1 }, size: 4).search.results : []
 #    end
+  end
+
+  def splash
+    redirect_to home_path and return if user_signed_in?
+    render layout: 'splash'
   end
 end

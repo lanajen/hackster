@@ -1,14 +1,11 @@
 class ProjectsController < ApplicationController
-  before_filter :authenticate_user!, except: [:index, :show]
+  before_filter :authenticate_user!, except: [:show]
   load_and_authorize_resource
   skip_load_resource only: [:create]
   layout 'project', only: [:edit, :update, :show]
   respond_to :html
   respond_to :js, only: [:edit, :update]
   impressionist actions: [:show], unique: [:impressionable_type, :impressionable_id, :session_hash]
-
-  def index
-  end
 
   def show
     title @project.name

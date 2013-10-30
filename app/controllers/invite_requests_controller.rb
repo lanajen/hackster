@@ -1,5 +1,6 @@
 class InviteRequestsController < ApplicationController
   before_filter :require_no_authentication
+  skip_before_filter :authenticate_user!
 
   # GET /invite_requests/new
   def new

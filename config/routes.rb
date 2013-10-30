@@ -82,6 +82,7 @@ HackerIo::Application.routes.draw do
     get 'users/registration/complete_profile' => 'users#after_registration', as: :user_after_registration
     put 'users/registration/complete_profile' => 'users#after_registration_save'
 
+    get 'home' => 'pages#home'
     get 'help' => 'pages#help'
 
     get 'contact' => 'contact#new'
@@ -98,6 +99,7 @@ HackerIo::Application.routes.draw do
 #      post 'followers' => 'follow_relations#create'
 #      delete 'followers' => 'follow_relations#destroy'
     end
-    root to: 'pages#home'
+
+    root to: 'pages#splash'
   end
 end
