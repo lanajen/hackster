@@ -33,8 +33,12 @@
     margin-top: 20px;
     @include font-size(13);
   }
-  .mgt100 {
-    margin-top: 100px;
+  .page-centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -211px;
+    margin-top: -114px;
   }
 
   .form-inline {
