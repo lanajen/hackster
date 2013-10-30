@@ -1,9 +1,10 @@
 class InviteRequestsController < ApplicationController
-  before_filter :require_no_authentication
+  # before_filter :require_no_authentication
   skip_before_filter :authenticate_user!
   layout 'splash'
 
   def new
+    redirect_to home_url and return if user_signed_in?
     @invite_request = InviteRequest.new
   end
 
@@ -20,6 +21,7 @@ class InviteRequestsController < ApplicationController
   end
 
   def edit
+    redirect_to home_url and return if user_signed_in?
     @invite_request = InviteRequest.find params[:id]
     @invite_request.build_project unless @invite_request.project
     @invite_request.project.build_logo unless @invite_request.project.logo

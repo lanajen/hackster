@@ -15,3 +15,4 @@
 end
 
 User.where(invited_by_type: 'Account').update_all(invited_by_type: 'User')
+Attachment.where(attachable_type: 'Account').update_all(attachable_type: 'User')
