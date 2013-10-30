@@ -151,7 +151,7 @@ class ApplicationController < ActionController::Base
       if title
         @title = title
       else
-        @title ? "#{@title} - Hackster.io" : 'Hackster.io - Hackster.io is the place where hardware hackers showcase their projects.'
+        @title ? "#{@title} - Hackster.io" : 'Hackster.io - Hackster.io is the place where hardware hackers and makers showcase their projects.'
       end
     end
 

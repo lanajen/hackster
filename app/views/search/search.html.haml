@@ -33,7 +33,7 @@
     -# = render 'application/search_form'
 
     .well
-      - if params[:q]
+      - if params[:q].present?
         - if @results.any?
           .header
             %h5= pluralize @results.count, 'result'

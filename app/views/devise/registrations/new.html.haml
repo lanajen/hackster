@@ -21,14 +21,3 @@
   %p
     Need an invite?
     = link_to 'Request one.', root_url(subdomain: 'www'), onclick: "_gaq.push(['_trackEvent', 'Sign up form', 'Request an invite', '#{request.path}']);"
-
-- if params[:invitation_code] and params[:invitation_code] == 'modthat3ds'
-  .span3.pull-right
-    %h4 Welcome ModThat.com visitors!
-    %p Hackster.io is a community of hardware hackers and makers.
-    %p We've teamed up with ModThat.com to give you a venue to showcase your projects and participate in the contest to win an Nintendo 3DS.
-    %p
-      %b How does it work?
-      It's quite straight-forward really: just sign up on the left, then follow the instructions to create a project. Once you're done, don't forget to make your project public and then simply enter its URL on ModThat.com to enter the contest.
-    %p Participations close on August 31st!
-    %p Good luck to all.
