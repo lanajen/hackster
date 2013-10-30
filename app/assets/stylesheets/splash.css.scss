@@ -1,300 +1,84 @@
-.icon-twitter:before {
-content: "\f099";
-}
-.icon-facebook:before {
-content: "\f09a";
-}
-.icon-large:before {
-vertical-align: -10%;
-font-size: 1.33333em;
-}
-
-[class^="icon-"]:before, [class*=" icon-"]:before {
-text-decoration: inherit;
-display: inline-block;
-speak: none;
-}
-
-[class^="icon-"]:before, [class*=" icon-"]:before {
-text-decoration: inherit;
-display: inline-block;
-speak: none;
-}
-
-.link-icon:hover {
-  text-decoration: none;
-  color: #666;
-}
-
-@import 'font-awesome';
-
-/*
-	HTML5 Reset :: style.css
-	----------------------------------------------------------
-	We have learned much from/been inspired by/taken code where offered from:
-
-	Eric Meyer					:: http://ericmeyer.com
-	HTML5 Doctor				:: http://html5doctor.com
-	and the HTML5 Boilerplate	:: http://html5boilerplate.com
-
--------------------------------------------------------------------------------*/
-
-html, body, body div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, figure, footer, header, hgroup, menu, nav, section, time, mark, audio, video {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	outline: 0;
-	font-size: 100%;
-	vertical-align: baseline;
-	background: transparent;
-}
-
-article, aside, figure, footer, header, hgroup, nav, section {display: block;}
-
-/* Responsive images and other embedded objects
-   Note: keeping IMG here will cause problems if you're using foreground images as sprites.
-   If this default setting for images is causing issues, you might want to replace it with a .responsive class instead. */
-img,
-object,
-embed {max-width: 100%;}
-
-/* force a vertical scrollbar to prevent a jumpy page */
-/*html {overflow-y: scroll;}*/
-
-/* we use a lot of ULs that aren't bulleted.
-	don't forget to restore the bullets within content. */
-ul {list-style: none;}
-
-blockquote, q {quotes: none;}
-
-blockquote:before,
-blockquote:after,
-q:before,
-q:after {content: ''; content: none;}
-
-a {margin: 0; padding: 0; font-size: 100%; vertical-align: baseline; background: transparent;}
-
-del {text-decoration: line-through;}
-
-abbr[title], dfn[title] {border-bottom: 1px dotted #000; cursor: help;}
-
-/* tables still need cellspacing="0" in the markup */
-table {border-collapse: collapse; border-spacing: 0;}
-th {font-weight: bold; vertical-align: bottom;}
-td {font-weight: normal; vertical-align: top;}
-
-hr {display: block; height: 1px; border: 0; border-top: 1px solid #ccc; margin: 1em 0; padding: 0;}
-
-input, select {vertical-align: middle;}
-
-pre {
-	white-space: pre; /* CSS2 */
-	white-space: pre-wrap; /* CSS 2.1 */
-	white-space: pre-line; /* CSS 3 (and 2.1 as well, actually) */
-	word-wrap: break-word; /* IE */
-}
-
-input[type="radio"] {vertical-align: text-bottom;}
-input[type="checkbox"] {vertical-align: bottom; *vertical-align: baseline;}
-.ie6 input {vertical-align: text-bottom;}
-
-select, input, textarea {font: 99% sans-serif;}
-
-table {font-size: inherit; font: 100%;}
-
-/* Accessible focus treatment
-	people.opera.com/patrickl/experiments/keyboard/test */
-a:hover, a:active {outline: none;}
-
-small {font-size: 85%;}
-
-strong, th {font-weight: bold;}
-
-td, td img {vertical-align: top;}
-
-/* Make sure sup and sub don't screw with your line-heights
-	gist.github.com/413930 */
-sub, sup {font-size: 75%; line-height: 0; position: relative;}
-sup {top: -0.5em;}
-sub {bottom: -0.25em;}
-
-/* standardize any monospaced elements */
-pre, code, kbd, samp {font-family: monospace, sans-serif;}
-
-/* hand cursor on clickable elements */
-.clickable,
-label,
-input[type=button],
-input[type=submit],
-input[type='submit'] {cursor: pointer;}
-
-/* Webkit browsers add a 2px margin outside the chrome of form elements */
-input[type='submit'], input, select, textarea {margin: 0;}
-
-/* let's clear some floats */
-.group:before, .group:after { content: "\0020"; display: block; height: 0; overflow: hidden; }
-.group:after { clear: both; }
-.group { zoom: 1; }
-
-
+@import 'custom_mixins';
 
 /* Style
 -------------------------------------------------------------------------------*/
 
-body {
-  background: #fff;
-  color: #444;
-  text-shadow: #f2f2f2 -1px 1px 0px;
-  font: 12px/12px Helvetica, Arial;
-}
+#splash {
+  body {
+    background: #fff;
+    color: #444;
+    text-shadow: #f2f2f2 -1px 1px 0px;
+    font: 12px/12px Helvetica, Arial;
+  }
 
-#bg {
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-}
-#bg img {
-  width: 100%;
-}
-#middle-box {
-  position: absolute;
-  top: 40%;
-  left: 50%;
-  width: 500px;
-  height: 230px;
-  margin-left: -280px;
-  margin-top: -145px;
-  background: white;
-  padding: 30px;
-  text-align: center;
-  border-radius: 10px;
-  -moz-border-radius: 10px;
-  -webkit-border-radius: 10px;
-}
-#middle-box h1 {
-  text-transform: uppercase;
-  font-size: 3em;
-  line-height: 2em;
-  text-shadow: 1px 1px 1px #DDD;
-}
+  #bg {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    z-index: -1;
+  }
+  #bg img {
+    width: 100%;
+  }
+  #content {
+    padding-top: 100px;
+  }
+  h1 {
+    text-transform: uppercase;
+    @include font-size(30);
+  }
+  p.cta {
+    color: #555;
+    margin-top: 20px;
+    @include font-size(13);
+  }
+  .mgt100 {
+    margin-top: 100px;
+  }
 
-p {
-  font-family: 'helvetica neue', helvetica, arial;
-  font-size: 15px;
-  line-height: 20px;
-  font-weight: bold;
-  margin: 20px 0;
-}
-
-p.cta {
-  color: #555;
-  margin: 0;
-  margin-bottom: 10px;
-  font-size: 13px;
-}
-
-form {
-  margin-top: 30px;
-}
-
-.form-inline {
-  .control-group {
-    display: inline;
-    .controls {
+  .form-inline {
+    .control-group {
       display: inline;
+      .controls {
+        display: inline;
+      }
     }
   }
-}
+  form {
+    margin: 0 0 10px;
+  }
+  p.help-block {
+    margin-top: 10px;
+  }
 
-.control-group.error .help-inline {
-  color: #B94A48;
-}
+  footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 15px;
+    padding: 10px 0;
+    z-index: 10;
+  }
 
-.help-inline {
-  display: inline-block;
-  margin-bottom: 0;
-  vertical-align: middle;
-  padding-left: 5px;
-  color: #595959;
-}
+  footer ul {
+    padding: 0 20px;
+  }
 
-group.error .checkbox, .control-group.error .radio, .control-group.error input, .control-group.error select, .control-group.error textarea {
-  color: #B94A48;
-}
+  footer ul li {
+    display: inline;
+    margin-right: 10px;
+  }
 
-.control-group.error input, .control-group.error select, .control-group.error textarea {
-  border-color: #B94A48;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-}
+  footer a {
+    text-shadow: none;
+    color: #888;
+    font: 10px/10px Verdana, Helvetica, Arial;
+    text-decoration: none;
+  }
 
-input[type='email'] {
-  border: 1px solid #999;
-  border-radius: 3px;
-  box-shadow: #d8d8d8 -2px 2px 4px inset;
-  font-size: 14px;
-  padding: 8px;
-  width: 200px;
-}
-
-input::-webkit-input-placeholder {
-  color: #b6b6b6;
-  font-size: 12px;
-  font-style: italic;
-  padding-top: 2px;
-}
-
-input[type='submit'] {
-  cursor: pointer;
-  color: #f8f8f8;
-  font-size: 12px;
-  margin: 0 0 0 10px;
-  padding: 8px 12px;
-  position: relative;
-  top: 1px;
-  text-decoration: none;
-  border-radius: 3px;
-  box-shadow: 0px 1px 2px #666;
-  border: solid #000 1px;
-  background: -webkit-gradient(linear, 0 0, 0 100%, from(#333), to(#222));
-}
-
-input[type='submit']:hover {
-  color: #e3e3e3;
-}
-
-input[type='submit']:active, input[type='submit']:focus {
-  box-shadow: #942a00 -2px 2px 6px inset;
-}
-
-footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 15px;
-  padding: 10px 0;
-  z-index: 10;
-}
-
-footer ul {
-  padding: 0 20px;
-}
-
-footer ul li {
-  display: inline;
-  margin-right: 10px;
-}
-
-footer a {
-  text-shadow: none;
-  color: #888;
-  font: 10px/10px Verdana, Helvetica, Arial;
-  text-decoration: none;
-}
-
-footer a:hover {
-  text-decoration: underline;
+  footer a:hover {
+    text-decoration: underline;
+  }
 }

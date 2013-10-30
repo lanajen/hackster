@@ -25,7 +25,7 @@ class Attachment < ActiveRecord::Base
       unless disallow_blank_file?
         destroy
       else
-        errors.add :file, 'cannot be blank'
+        errors.add :file, "can't be blank"
       end if file.blank? and remote_file_url.blank?
     end
 end

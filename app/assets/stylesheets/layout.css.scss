@@ -277,7 +277,7 @@ table {
   }
 }
 
-.help-block {
+.help-block, .help-inline {
   @include font-size(12);
   color: #999;
 }

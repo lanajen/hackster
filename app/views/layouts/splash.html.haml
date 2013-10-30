@@ -7,21 +7,19 @@
     %meta{:content => "Hackster.io, Your Hacker Profile", :name => "title"}/
     -# %meta{:content => "Do you hack hardware? Build up your hacker identity all in one place and show the world what you're up to. Request an invite to be part of our early user group!", :name => "description"}/
     %meta{:content => "We're creating the toolbox that'll help you take your products from concept to production. Request an invite to be part of our early user group!", :name => "description"}/
+    = stylesheet_link_tag 'application'
     = stylesheet_link_tag 'splash'
     %link{:href => asset_path('favicon.ico'), :rel => "shortcut icon", :type => "image/vnd.microsoft.icon"}/
     - unless current_user and current_user.is? :admin
       = render partial: 'application/analytics', locals: { tracker: 'UA-11926897-15', domain: 'hackster.io' }
-  %body
+  %body#splash
     #bg
       = image_tag 'bg1920px.jpg'
     #wrapper
-      #middle-box
-        -#
-          %h1 Build products
-          %p We're creating the toolbox that'll help you take your products from concept to production.
-        %h1 Your hacker profile
-        %p Do you hack hardware? Build up your hacker identity all in one place and show the world what you're up to.
-        = yield
+      #main
+        .container
+          #content
+            = yield
     %footer
       %ul
         %li
@@ -29,6 +27,6 @@
         %li
           = link_to 'Jobs', "mailto:team@hackster.io?subject=I want to work with you guys!&body=Here are a few lines about me and samples of my work. Thanks!"
         %li
-          = link_to 'Sign in', new_user_session_url(subdomain: 'beta')
-        %li= link_to content_tag(:i, '', class: 'icon-twitter icon-large').html_safe, 'http://twitter.com/hacksterio', alt: 'Hackster.io on Twitter', class: 'link-icon'
-        %li= link_to content_tag(:i, '', class: 'icon-facebook icon-large').html_safe, 'http://www.facebook.com/hacksterio', alt: 'Hackster.io on Facebook', class: 'link-icon'
+          = link_to 'Sign in', new_user_session_path
+        %li= link_to content_tag(:i, '', class: 'fa fa-twitter fa-lg').html_safe, 'http://twitter.com/hacksterio', alt: 'Hackster.io on Twitter', class: 'link-icon'
+        %li= link_to content_tag(:i, '', class: 'fa fa-facebook fa-lg').html_safe, 'http://www.facebook.com/hacksterio', alt: 'Hackster.io on Facebook', class: 'link-icon'

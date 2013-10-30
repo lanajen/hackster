@@ -44,8 +44,8 @@ HackerIo::Application.routes.draw do
 #      resources :comments, only: [:create]
 #    end
     resources :comments, only: [:update, :destroy]
-    resources :invite_requests, only: [:create]
-    get 'request/an/invite' => 'invite_requests#new', as: :new_invite_request
+    resources :invite_requests, only: [:create, :update, :edit]
+    # get 'request/an/invite' => 'invite_requests#new', as: :new_invite_request
     resources :projects, except: [:index] do
       member do
 #        get 'followers' => 'project_followers#index', as: :followers
@@ -100,6 +100,7 @@ HackerIo::Application.routes.draw do
 #      delete 'followers' => 'follow_relations#destroy'
     end
 
-    root to: 'pages#splash'
+    get '' => 'invite_requests#new', as: :new_invite_request
+    root to: 'invite_requests#new'
   end
 end

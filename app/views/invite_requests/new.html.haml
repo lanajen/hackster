@@ -1,13 +1,9 @@
-.span5.offset3.wellified
-  %h2{ style: 'text-align: center;margin-bottom: 0' } Good to see you here
-  %p.text-center Request your invite for Hackster.io
-  = render 'form'
-
-  %p
-    Already have an account?
-    = link_to 'Sign in.', new_user_session_path
-
-.span3.pull-right
-  %h4 About invites
-  %p Hackster.io is a community of hardware hackers and makers.
-  %p We're invite-only because we want to ensure that everyone who joins will be able to contribute to the community by sharing their work and giving feedback to others.
+.span5.offset3.wellified.text-center.mgt100
+  = bootstrap_flash
+  %h1 Your hacker profile
+  %p Do you hack hardware? Build up your hacker identity all in one place and show the world what you're up to.
+  %p.cta Be the first to get in:
+  = simple_form_for @invite_request, html: { class: 'form-inline' } do |f|
+    = f.input :email, autofocus: true, required: false, placeholder: 'nikola@tesla.com', label: false
+    = f.button :submit, "I'm awesome", class: 'btn btn-inverse'
+    %p.help-block We'll send the invite to that address. No spam, promise.
