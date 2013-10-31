@@ -22,7 +22,19 @@ class InviteRequest < ActiveRecord::Base
     end
   end
 
+  def security_token
+    Digest::MD5.hexdigest(email)
+  end
+
   def send_invite!
     update_attribute(:whitelisted, true) if User.invite!(email: email)
+  end
+
+  def to_param
+    "#{id}-#{security_token}"
+  end
+
+  def security_token_valid? token
+    token.match(/[0-9]+\-(.*)/)[1] == security_token
   end
 end

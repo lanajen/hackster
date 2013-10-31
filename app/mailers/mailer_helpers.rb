@@ -80,16 +80,19 @@ module MailerHelpers
     end
 
     def get_value_for_token token
+      invite = @context[:invite] if @context.include? :invite
       issue = @context[:issue] if @context.include? :issue
-      user = @context[:user] if @context.include? :user
       project = @context[:project] if @context.include? :project
-#      log_line = @context[:error] if @context.include? :log_line
+      user = @context[:user] if @context.include? :user
+
       token = token.gsub(/\|/, '')
       case token.to_sym
       when :invite_friends_link
         url.new_user_invitation_url(host: default_host)
+      when :invite_edit_url
+        url.edit_invite_request_url(invite, host: default_host)
       when :invite_project_url
-        url.project_url(@context[:invite].project, host: default_host) if @context[:invite].project
+        url.project_url(invite.project, host: default_host) if invite.project
       when :invited_profile_link
         url.user_url(@context[:invited], host: default_host)
       when :inviter_name

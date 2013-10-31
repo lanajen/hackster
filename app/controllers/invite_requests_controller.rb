@@ -1,5 +1,6 @@
 class InviteRequestsController < ApplicationController
   # before_filter :require_no_authentication
+  before_filter :validate_security_token, only: [:edit, :update]
   skip_before_filter :authenticate_user!
   layout 'splash'
 
@@ -22,13 +23,11 @@ class InviteRequestsController < ApplicationController
 
   def edit
     redirect_to home_url and return if user_signed_in?
-    @invite_request = InviteRequest.find params[:id]
     @invite_request.build_project unless @invite_request.project
     @invite_request.project.build_logo unless @invite_request.project.logo
   end
 
   def update
-    @invite_request = InviteRequest.find(params[:id])
     @invite_request.assign_attributes(params[:invite_request])
 
     @invite_request.project.force_basic_validation!
@@ -36,9 +35,15 @@ class InviteRequestsController < ApplicationController
     @invite_request.project.private = true
 
     if @invite_request.save
-      redirect_to root_url, notice: "Thanks again! We'll be in touch soon."
+      redirect_to root_url, notice: "That project looks badass! We'll be in touch soon."
     else
       render action: "edit"
     end
   end
+
+  private
+    def validate_security_token
+      @invite_request = InviteRequest.find params[:id]
+      redirect_to root_url and return unless @invite_request.security_token_valid? params[:id]
+    end
 end
