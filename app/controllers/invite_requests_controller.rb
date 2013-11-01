@@ -13,6 +13,8 @@ class InviteRequestsController < ApplicationController
     @invite_request = InviteRequest.new(params[:invite_request])
 
     if @invite_request.save
+      mixpanel.set mp_distinct_id, { email: @invite_request.email, created: @invite_request.created_at }
+      mixpanel.track 'Requested an invite', { distinct_id: mp_distinct_id, email: @invite_request.email }
       BaseMailer.enqueue_email 'invite_request_notification', { context_type: :invite_request_notification, context_id: @invite_request.id }
       BaseMailer.enqueue_email 'invite_request_confirmation', { context_type: :invite_request, context_id: @invite_request.id }
       redirect_to edit_invite_request_path(@invite_request)
@@ -35,6 +37,7 @@ class InviteRequestsController < ApplicationController
     @invite_request.project.private = true
 
     if @invite_request.save
+      mixpanel.track 'Created invite req project', { distinct_id: mp_distinct_id, project_id: @invite_request.project.id, project_name: @invite_request.project.name }
       redirect_to root_url, notice: "That project looks badass! We'll be in touch soon."
     else
       render action: "edit"
@@ -42,6 +45,10 @@ class InviteRequestsController < ApplicationController
   end
 
   private
+    def mp_distinct_id
+      "invite_#{@invite_request.id}"
+    end
+
     def validate_security_token
       @invite_request = InviteRequest.find params[:id]
       redirect_to root_url and return unless @invite_request.security_token_valid? params[:id]

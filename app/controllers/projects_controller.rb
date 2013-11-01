@@ -8,6 +8,7 @@ class ProjectsController < ApplicationController
   impressionist actions: [:show], unique: [:impressionable_type, :impressionable_id, :session_hash]
 
   def show
+    mixpanel.track 'Viewed project', { distinct_id: current_user.try(:id), project_id: @project.id, project_name: @project.name }
     title @project.name
     meta_desc "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."
     @project = @project.decorate

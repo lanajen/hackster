@@ -94,6 +94,10 @@ class ApplicationController < ActionController::Base
       authorize! :update, @project
     end
 
+    def mixpanel
+      @mixpanel ||= MixpanelTracker.new { env: request.env }
+    end
+
     def require_no_authentication
       redirect_to root_path, alert: "You're already signed in." if current_user
     end
