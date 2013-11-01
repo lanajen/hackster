@@ -4,10 +4,10 @@ class Admin::UsersController < Admin::BaseController
       'created_at' => 'users.created_at',
       'last_sign_in' => 'users.last_sign_in_at',
       'email' => 'users.email',
-      'name' => 'users.name',
+      'name' => 'users.full_name',
       'screen_name' => 'users.screen_name',
     }
-    
+
     params[:sort_by] ||= 'last_sign_in'
 
     @users = filter_for User, @fields

@@ -1,7 +1,7 @@
 .row
   .span12.teaser
     .pull-left.avatar.main-avatar= image_tag @user.avatar(:medium), alt: @user.name
-    .pull-left
+    .pull-left.text-holder
       %h1= @user.name
 
       - if @user.mini_resume.present?

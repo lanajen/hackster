@@ -1,5 +1,12 @@
 %h1 Logs
 - model_class = LogLine.new.class
+
+= render 'admin/shared/search_form_tag'
+= render partial: 'admin/shared/search_form_select_field', locals: { field: 'source', options: LogLine.uniq(:source).pluck(:source).reject{ |c| c.nil? }.sort }
+= render partial: 'admin/shared/search_form_select_field', locals: { field: 'log_type', options: LogLine.where('log_lines.log_type IS NOT NULL').uniq(:log_type).pluck(:log_type).sort }
+= hidden_field_tag :page, 1
+= render 'admin/shared/search_form_sort_and_submit'
+
 %table.table.table-striped
   %thead
     %tr

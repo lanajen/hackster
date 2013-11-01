@@ -3,7 +3,7 @@ class LogLine < ActiveRecord::Base
 
   attr_accessible :log_type, :message, :source, :loggable_id, :loggable_type
 
-  self.per_page = 10
+  self.per_page = 20
 
   # marshaling objects
   [:message].each do |attribute|

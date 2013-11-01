@@ -8,7 +8,7 @@
     .pull-left
       .avatar.main-avatar= image_tag @project.logo(:medium), alt: @project.name
 
-    .pull-left
+    .pull-left.text-holder
       %h1
         = link_to @project.name, @project, class: 'hidden-link'
         %span.tags

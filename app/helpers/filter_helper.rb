@@ -11,7 +11,7 @@ module FilterHelper
       filters.each do |filter, value|
         field = fields[filter]
         next unless field and value.present?
-        if value.is_numeric?
+        if value.is_number?
           collection = collection.where("#{field} = ?", value)
         else
           collection = collection.where("#{field} ILIKE ?", "%#{value}%")

@@ -130,6 +130,10 @@ class User < ActiveRecord::Base
   end
   # end of search methods
 
+  def self.last_logged_in
+    order('last_sign_in_at DESC')
+  end
+
   def self.top
     joins(:reputation).order('reputations.points DESC')
   end
