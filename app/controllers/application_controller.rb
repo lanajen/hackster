@@ -95,7 +95,11 @@ class ApplicationController < ActionController::Base
     end
 
     def mixpanel
-      @mixpanel ||= MixpanelTracker.new { env: request.env }
+      @mixpanel ||= MixpanelTracker.new({ env: request.env })
+    end
+
+    def mp_distinct_id
+      current_user.try(:id)
     end
 
     def require_no_authentication

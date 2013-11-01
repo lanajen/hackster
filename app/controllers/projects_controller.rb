@@ -8,7 +8,7 @@ class ProjectsController < ApplicationController
   impressionist actions: [:show], unique: [:impressionable_type, :impressionable_id, :session_hash]
 
   def show
-    mixpanel.track 'Viewed project', { distinct_id: current_user.try(:id), project_id: @project.id, project_name: @project.name }
+    mixpanel.track 'Viewed project', mp_project_options
     title @project.name
     meta_desc "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."
     @project = @project.decorate
@@ -28,6 +28,7 @@ class ProjectsController < ApplicationController
     @project.private = true
 
     if @project.save
+      mixpanel.track 'Created project', mp_project_options
       @project.team_members.create(user_id: current_user.id)
       flash[:notice] = 'Project was successfully created.'
       respond_with @project
@@ -39,6 +40,7 @@ class ProjectsController < ApplicationController
 
   def update
     if @project.update_attributes(params[:project])
+      mixpanel.track 'Updated project', mp_project_options
       if @project.private_changed? and @project.private == false
         current_user.broadcast :new, @project.id, 'Project'
       elsif @project.private == false
@@ -68,5 +70,9 @@ class ProjectsController < ApplicationController
 #      @project.images.new# unless @project.images.any?
 #      @project.build_video unless @project.video
       @project.build_logo unless @project.logo
+    end
+
+    def mp_project_options
+      { distinct_id: mp_distinct_id, project_id: @project.id, project_name: @project.name }
     end
 end
