@@ -270,7 +270,7 @@ class User < ActiveRecord::Base
       interests_count: interest_tags_count,
       # invitations_count: invitations_count,
       is_admin: is?(:admin),
-      mini_resume_size: mini_resume.length,
+      mini_resume_size: mini_resume.try(:length) || 0,
       name: full_name,
       projects_count: projects_count,
       respects_count: respects_count,
