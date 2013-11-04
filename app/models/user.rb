@@ -173,7 +173,7 @@ class User < ActiveRecord::Base
     {
       comments: 'comments.count',
       interest_tags: 'interest_tags.count',
-      invitations_count: 'invitations.count',
+      invitations: 'invitations.count',
       live_projects: 'projects.where(private: false).count',
       projects: 'projects.count',
       respects: 'respects.count',
