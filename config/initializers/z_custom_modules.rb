@@ -8,3 +8,7 @@ require File.join(Rails.root, 'lib/taggable')
 require File.join(Rails.root, 'lib/privatable')
 # Broadcastable
 require File.join(Rails.root, 'lib/broadcast_observer')
+
+require File.join(Rails.root, 'lib/string_parser')
+
+require File.join(Rails.root, 'lib/counter')

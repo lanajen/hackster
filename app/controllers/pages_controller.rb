@@ -14,5 +14,7 @@ class PagesController < ApplicationController
 #      @custom_projects_query = current_user.interest_tags.pluck(:name).join(' OR ')
 #      @custom_projects = @custom_projects_query.present? ? SearchRepository.new(query: @custom_projects_query, model: { project: 1 }, size: 4).search.results : []
 #    end
+
+    track_event 'Visited home page'
   end
 end

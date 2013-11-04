@@ -12,6 +12,8 @@ class WidgetsController < ApplicationController
     authorize! :update, @project
     if @project.update_attributes(params[:project])
       redirect_to @project, notice: "Layout saved."
+
+      track_event 'Updated project', @project.to_tracker.merge({ type: 'layout update'})
     else
       render action: 'index'
     end
@@ -29,6 +31,8 @@ class WidgetsController < ApplicationController
 
     if @widget.save
       redirect_to edit_project_widget_path(@project, @widget)
+
+      track_event 'Updated project', @project.to_tracker.merge({ type: 'widget created' }).merge(@widget.to_tracker)
     else
       render 'new'
     end
@@ -42,6 +46,8 @@ class WidgetsController < ApplicationController
       flash[:notice] = 'Widget saved.'
       current_user.broadcast :update, @project.id, 'Project'
       respond_with @project
+
+      track_event 'Updated project', @project.to_tracker.merge({ type: 'widget update' }).merge(@widget.to_tracker)
     else
       render 'edit'
     end
@@ -52,6 +58,8 @@ class WidgetsController < ApplicationController
 
     flash[:notice] = 'Widget deleted.'
     respond_with @project
+
+    track_event 'Updated project', @project.to_tracker.merge({ type: 'widget deleted' }).merge(@widget.to_tracker)
   end
 
   private

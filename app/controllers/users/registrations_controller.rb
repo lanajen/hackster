@@ -7,6 +7,9 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   protected
     def after_sign_up_path_for(resource)
+      track_user @user.to_tracker_profile
+      track_event 'Signed up'
+
       user_after_registration_path
     end
 end

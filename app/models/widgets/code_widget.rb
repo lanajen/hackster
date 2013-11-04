@@ -40,6 +40,13 @@ class CodeWidget < Widget
     "Add a file."
   end
 
+  def to_tracker
+    super.merge({
+      code_length: raw_code.length,
+      language: language,
+    })
+  end
+
   private
     def check_changes
       if document and (document.file_changed? or raw_code.blank?)

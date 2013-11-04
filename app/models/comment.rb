@@ -11,6 +11,15 @@ class Comment < ActiveRecord::Base
   sanitize_text :body
   register_sanitizer :newlines_to_br, :before_save, :body
 
+  def to_tracker
+    {
+      comment_size: body.length,
+      comment_id: id,
+      commentable_id: commentable_id,
+      commentable_type: commentable_type,
+    }
+  end
+
   private
     def newlines_to_br text
       text.strip.gsub(/\r\n/, '<br>')

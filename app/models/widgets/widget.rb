@@ -8,10 +8,6 @@ class Widget < ActiveRecord::Base
   has_many :comments, as: :commentable, dependent: :destroy
   has_many :issues, as: :threadable, dependent: :destroy
 
-  def has_unresolved_issues?
-    issues.where(workflow_state: :unresolved).any?
-  end
-
   attr_accessible :properties, :stage_id, :type, :completion_rate,
     :completion_share, :name, :position
 
@@ -21,6 +17,10 @@ class Widget < ActiveRecord::Base
   validates :type, :name, presence: true
   before_create :set_position
 #  validate :total_completion_is_100_max
+
+  def has_unresolved_issues?
+    issues.where(workflow_state: :unresolved).any?
+  end
 
   class << self
     attr_accessor :custom_attributes
@@ -96,6 +96,13 @@ class Widget < ActiveRecord::Base
 
   def row
     position.match(/\.(.+)$/)[1].to_i
+  end
+
+  def to_tracker
+    {
+      widget_id: id,
+      widget_type: identifier,
+    }
   end
 
   protected

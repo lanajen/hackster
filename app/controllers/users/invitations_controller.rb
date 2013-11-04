@@ -26,6 +26,8 @@ class Users::InvitationsController < Devise::InvitationsController
 
       respond_with @friend_invite, :location => after_invite_path_for(@friend_invite)
 
+      track_event 'Sent invites', { count: @friend_invite.users.count }
+
     else
       unless @friend_invite.has_invites?
         @friend_invite.errors.clear
@@ -43,6 +45,8 @@ class Users::InvitationsController < Devise::InvitationsController
     if params[:invitation_token] && self.resource = resource_class.to_adapter.find_first( :invitation_token => params[:invitation_token] )
       @invitation_token = params[:invitation_token]
       render :edit
+
+      track_alias resource
     else
       set_flash_message(:alert, :invitation_token_invalid)
       redirect_to after_sign_out_path_for(resource_name)

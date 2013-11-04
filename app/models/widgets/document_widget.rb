@@ -1,9 +1,10 @@
 class DocumentWidget < Widget
+  define_attributes [:documents_count]
 
   def self.model_name
     Widget.model_name
   end
-  
+
   has_many :documents, as: :attachable
 
   attr_accessible :documents_attributes
@@ -11,5 +12,11 @@ class DocumentWidget < Widget
 
   def help_text
     "Add as many documents as you like."
+  end
+
+  def to_tracker
+    super.merge({
+      documents_count: documents_count,
+    })
   end
 end

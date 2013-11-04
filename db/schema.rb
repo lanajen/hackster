@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131030072542) do
+ActiveRecord::Schema.define(:version => 20131104054906) do
 
   create_table "access_group_members", :force => true do |t|
     t.integer  "access_group_id"
@@ -257,6 +257,7 @@ ActiveRecord::Schema.define(:version => 20131030072542) do
     t.string   "one_liner"
     t.boolean  "featured"
     t.integer  "impressions_count", :default => 0
+    t.text     "counters_cache"
   end
 
   add_index "projects", ["private"], :name => "index_projects_on_private"
@@ -379,6 +380,7 @@ ActiveRecord::Schema.define(:version => 20131030072542) do
     t.string   "type",                                  :default => "User", :null => false
     t.integer  "invite_code_id"
     t.integer  "impressions_count",                     :default => 0
+    t.text     "counters_cache"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

@@ -1,6 +1,10 @@
 class CronTask < BaseWorker
   @queue = :cron
 
+  def launch_cron
+    # do nothing, trick to execute tracker_queue tasks
+  end
+
 #  def update_mailchimp_list platform_id=nil
 #    platforms = platform_id ? [Platform.find(platform_id)] : Platform.all
 #

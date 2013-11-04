@@ -1,10 +1,8 @@
 class CommentsController < ApplicationController
-  before_filter :authenticate_user! #, except: [:create]
+  before_filter :authenticate_user!
   load_and_authorize_resource
   skip_load_resource only: [:create]
 
-  # POST /comments
-  # POST /comments.json
   def create
     @commentable = find_commentable
     @comment = @commentable.comments.build(params[:comment])
@@ -13,18 +11,16 @@ class CommentsController < ApplicationController
     respond_to do |format|
       if @comment.save
         format.html { redirect_to path_for_commentable(@commentable), notice: t('comment.create.success') }
-#        format.json { render json: @comment, status: :created, location: @comment }
         format.js { render js_view_for_commentable(@commentable) }
+
+        track_event 'Created comment', @comment.to_tracker
       else
         format.html { redirect_to path_for_commentable(@commentable), alert: t('comment.create.error') }
-#        format.json { render json: @comment.errors, status: :unprocessable_entity }
         format.js { render 'error' }
       end
     end
   end
 
-  # PUT /comments/1
-  # PUT /comments/1.json
   def update
     respond_to do |format|
       if @comment.update_attributes(params[:comment])
@@ -37,8 +33,6 @@ class CommentsController < ApplicationController
     end
   end
 
-  # DELETE /comments/1
-  # DELETE /comments/1.json
   def destroy
     @commentable = @comment.commentable
     @comment.destroy
@@ -47,6 +41,8 @@ class CommentsController < ApplicationController
       format.html { redirect_to path_for_commentable(@commentable), notice: t('comment.destroy.success') }
       format.js { render js_view_for_commentable(@commentable) }
     end
+
+    track_event 'Deleted comment', @comment.to_tracker
   end
 
   private

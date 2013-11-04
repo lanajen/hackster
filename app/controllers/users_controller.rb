@@ -9,6 +9,8 @@ class UsersController < ApplicationController
     meta_desc "#{@user.name} is on Hackster.io. Come join #{@user.name} and other hardware hackers and makers to showcase your projects."
     @user = @user.decorate
     @broadcasts = @user.broadcasts.where('broadcasts.created_at > ?', 1.day.ago).order('created_at DESC').limit(5).group_by { |b| [b.context_model_type, b.context_model_id, b.event] }.values.map{ |g| g.first }
+
+    track_event 'Viewed profile', @user.to_tracker.merge({ own: (current_user.try(:id) == @user.id) })
   end
 
   def edit
@@ -26,12 +28,13 @@ class UsersController < ApplicationController
         format.js do
           @user.avatar = nil unless @user.avatar.try(:file_url)
           @user = @user.decorate
-          logger.info old_user.interest_tags_string
-          logger.info @user.interest_tags_string
           if old_user.interest_tags_string != @user.interest_tags_string or old_user.skill_tags_string != @user.skill_tags_string
             @refresh = true
           end
         end
+
+        track_user @user.to_tracker_profile
+        track_event 'Updated profile'
       end
     else
       @user.build_avatar unless @user.avatar
@@ -51,6 +54,15 @@ class UsersController < ApplicationController
     @user = current_user
     if @user.update_attributes(params[:user])
       redirect_to new_project_path, notice: 'Profile info saved! Now how about creating your first project?'
+
+      track_user @user.to_tracker_profile
+      track_event 'Completed after registration update', {
+        completed_avatar: @user.avatar.present?,
+        completed_city: @user.city.present?,
+        completed_country: @user.country.present?,
+        completed_mini_resume: @user.mini_resume.present?,
+        completed_name: @user.full_name.present?,
+      }
     else
       render action: 'after_registration'
     end

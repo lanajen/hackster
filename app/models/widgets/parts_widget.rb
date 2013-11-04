@@ -6,7 +6,7 @@ class PartsWidget < Widget
 
   has_many :parts, as: :partable
 
-  define_attributes [:total_cost]
+  define_attributes [:parts_count, :total_cost]
 
   attr_accessible :parts_attributes
   accepts_nested_attributes_for :parts, allow_destroy: true
@@ -14,6 +14,13 @@ class PartsWidget < Widget
 
   def help_text
     "Add parts."
+  end
+
+  def to_tracker
+    super.merge({
+      parts_count: parts_count,
+      total_cost: total_cost,
+    })
   end
 
   private

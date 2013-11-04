@@ -94,12 +94,35 @@ class ApplicationController < ActionController::Base
       authorize! :update, @project
     end
 
-    def mixpanel
-      @mixpanel ||= MixpanelTracker.new({ env: request.env })
+    def track_alias user=nil
+      # tracker.alias_user (user || current_user)
+      tracker.enqueue 'alias_user', (user.try(:id) || current_user.try(:id))
     end
 
-    def mp_distinct_id
-      current_user.try(:id)
+    def track_event event_name, properties={}
+      # tracker.record_event event_name, current_user, properties
+      tracker.enqueue 'record_event', event_name, current_user.try(:id), properties
+    end
+
+    def track_user properties
+      # tracker.update_user current_user, properties.merge({ ip: request.ip })
+      tracker.enqueue 'update_user', current_user.try(:id), properties.merge({ ip: request.ip })
+    end
+
+    def tracker
+      @tracker ||= Tracker.new tracker_options
+    end
+
+    def tracker_options
+      {
+        # env: request.env,
+        env: {
+          'REMOTE_ADDR' => request.env['REMOTE_ADDR'],
+          'HTTP_X_FORWARDED_FOR' => request.env['HTTP_X_FORWARDED_FOR'],
+          'rack.session' => request.env['rack.session'],
+          'mixpanel_events' => request.env['mixpanel_events'],
+        }
+      }
     end
 
     def require_no_authentication

@@ -1,5 +1,7 @@
 class Project < ActiveRecord::Base
+  include Counter
   include Privatable
+  include StringParser
   include Taggable
 #  include Workflow
   is_impressionable counter_cache: true, unique: :session_hash
@@ -9,7 +11,7 @@ class Project < ActiveRecord::Base
   has_many :access_groups, dependent: :destroy
   has_many :access_group_members, through: :access_groups
   has_many :blog_posts, as: :threadable, dependent: :destroy
-  has_many :comments, as: :commentable #, through: :widgets
+  has_many :comments, as: :commentable, order: :created_at
   has_many :issues, as: :threadable, dependent: :destroy
   has_many :images, as: :attachable, dependent: :destroy
   has_many :participant_invites, dependent: :destroy
@@ -36,6 +38,10 @@ class Project < ActiveRecord::Base
   before_validation :ensure_website_protocol
 
   taggable :product_tags, :tech_tags
+
+  store :counters_cache, accessors: [:comments_count, :product_tags_count, :respects_count, :widgets_count]
+
+  parse_as_integers :counters_cache, :comments_count, :product_tags_count, :respects_count, :widgets_count
 
   self.per_page = 20
 
@@ -92,6 +98,15 @@ class Project < ActiveRecord::Base
     (issues + Issue.where(threadable_type: 'Widget').where('threadable_id IN (?)', widgets.pluck('widgets.id'))).sort_by{ |t| t.created_at }
   end
 
+  def counters
+    [
+      :comments,
+      :product_tags,
+      :respects,
+      :widgets,
+    ]
+  end
+
   def force_basic_validation!
     @force_basic_validation = true
   end
@@ -104,12 +119,23 @@ class Project < ActiveRecord::Base
     images.first
   end
 
-  def respects_count
-    respects.size
-  end
-
   def to_param
     "#{id}-#{name.gsub(/[^a-zA-Z0-9]/, '-').gsub(/(\-)+$/, '')}"
+  end
+
+  def to_tracker
+    {
+      comments_count: comments_count,
+      has_logo: logo.present?,
+      is_featured: featured,
+      is_public: public?,
+      project_id: id,
+      project_name: name,
+      product_tags_count: product_tags_count,
+      respects_count: respects_count,
+      views_count: impressions_count,
+      widgets_count: widgets_count,
+    }
   end
 
   def widgets_first_col

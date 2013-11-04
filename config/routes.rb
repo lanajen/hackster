@@ -82,17 +82,20 @@ HackerIo::Application.routes.draw do
     get 'users/registration/complete_profile' => 'users#after_registration', as: :user_after_registration
     put 'users/registration/complete_profile' => 'users#after_registration_save'
 
-    get 'home' => 'pages#home'
-    get 'help' => 'pages#help'
 
     get 'contact' => 'contact#new'
     post 'contact' => 'contact#create'
 
-    get 'search' => 'search#search'
+    get 'help' => 'pages#help'
+    get 'home' => 'pages#home'
+
+    get 'obscure/path/to/cron' => 'cron#run'
 
     get 'profile/edit' => 'users#edit'
     put 'profile' => 'users#update'
     get 'profile/first_login' => 'users#first_login'
+
+    get 'search' => 'search#search'
 
     get ':user_name' => 'users#show', as: :user, user_name: /[a-z0-9_]{3,}/, constraints: { format: /(html|json)/ }
     scope ':user_name', as: :user do

@@ -15,4 +15,10 @@ class TextWidget < Widget
   def help_text
     "You can use HTML tags in the content. Try <a> for links!"
   end
+
+  def to_tracker
+    super.merge({
+      content_size: content.length,
+    })
+  end
 end

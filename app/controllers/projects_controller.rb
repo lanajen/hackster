@@ -8,11 +8,12 @@ class ProjectsController < ApplicationController
   impressionist actions: [:show], unique: [:impressionable_type, :impressionable_id, :session_hash]
 
   def show
-    mixpanel.track 'Viewed project', mp_project_options
     title @project.name
     meta_desc "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."
     @project = @project.decorate
     @widgets = @project.widgets.order(:created_at)
+
+    track_event 'Viewed project', @project.to_tracker.merge({ own: current_user.try(:is_team_member?, @project) })
   end
 
   def new
@@ -28,10 +29,11 @@ class ProjectsController < ApplicationController
     @project.private = true
 
     if @project.save
-      mixpanel.track 'Created project', mp_project_options
       @project.team_members.create(user_id: current_user.id)
       flash[:notice] = 'Project was successfully created.'
       respond_with @project
+
+      track_event 'Created project', @project.to_tracker
     else
       initialize_project
       render action: "new"
@@ -40,9 +42,10 @@ class ProjectsController < ApplicationController
 
   def update
     if @project.update_attributes(params[:project])
-      mixpanel.track 'Updated project', mp_project_options
       if @project.private_changed? and @project.private == false
         current_user.broadcast :new, @project.id, 'Project'
+
+        track_event 'Made project public', @project.to_tracker
       elsif @project.private == false
         current_user.broadcast :update, @project.id, 'Project'
       end
@@ -53,6 +56,8 @@ class ProjectsController < ApplicationController
           redirect_to @project
         end
       end
+
+      track_event 'Updated project', @project.to_tracker.merge({ type: 'project update'})
     else
       initialize_project
       render action: "edit"
@@ -70,9 +75,5 @@ class ProjectsController < ApplicationController
 #      @project.images.new# unless @project.images.any?
 #      @project.build_video unless @project.video
       @project.build_logo unless @project.logo
-    end
-
-    def mp_project_options
-      { distinct_id: mp_distinct_id, project_id: @project.id, project_name: @project.name }
     end
 end

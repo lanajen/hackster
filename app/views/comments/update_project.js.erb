@@ -1,4 +1,4 @@
-$('.comments-button').replaceWith("<%= escape_javascript render(partial: 'widgets/comments_button', locals: { size: @commentable.comments.size }) %>");
+$('.comments-button').replaceWith("<%= escape_javascript render(partial: 'widgets/comments_button', locals: { size: @commentable.comments.size, tooltip_orientation: 'top' }) %>");
 
 $('#widget-comments .comments').remove();
 $("<%= escape_javascript render(partial: 'widgets/comments', locals: { comments: @commentable.comments, commentable: @commentable }) %>").appendTo('#widget-comments .content');

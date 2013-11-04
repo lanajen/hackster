@@ -1,4 +1,6 @@
 class User < ActiveRecord::Base
+  include Counter
+  include StringParser
   include Taggable
   is_impressionable counter_cache: true, unique: :session_hash
 
@@ -18,12 +20,12 @@ class User < ActiveRecord::Base
   has_many :blog_posts, dependent: :destroy
   has_many :comments, foreign_key: :user_id, dependent: :destroy
 #  has_many :interests, as: :taggable, dependent: :destroy, class_name: 'InterestTag'
-  has_many :respects, dependent: :destroy, class_name: 'Favorite'
-  has_many :respected_projects, through: :respects, source: :project
   has_many :invitations, class_name: self.to_s, as: :invited_by
   has_many :privacy_rules, as: :privatable_users
   has_many :projects, through: :team_members
   has_many :publications, dependent: :destroy
+  has_many :respects, dependent: :destroy, class_name: 'Favorite'
+  has_many :respected_projects, through: :respects, source: :project
 #  has_many :skills, as: :taggable, dependent: :destroy, class_name: 'SkillTag'
   has_many :team_members
   has_one :avatar, as: :attachable, dependent: :destroy
@@ -41,9 +43,7 @@ class User < ActiveRecord::Base
     :user_name, :full_name, :roles, :type
   accepts_nested_attributes_for :avatar, :projects, allow_destroy: true
 
-  store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link, :website_link,
-    :blog_link, :github_link
-  ]
+  store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link, :website_link, :blog_link, :github_link]
 
   validates :name, length: { in: 1..200 }, allow_blank: true
   validates :email, presence: true, uniqueness: true
@@ -75,6 +75,10 @@ class User < ActiveRecord::Base
     'Mechanical engineer',
     'Software developer',
   ]
+
+  store :counters_cache, accessors: [:comments_count, :interest_tags_count, :invitations_count, :projects_count, :respects_count, :skill_tags_count]
+
+  parse_as_integers :counters_cache, :comments_count, :interest_tags_count, :invitations_count, :projects_count, :respects_count, :skill_tags_count
 
   taggable :interest_tags, :skill_tags
 
@@ -149,10 +153,6 @@ class User < ActiveRecord::Base
     save
   end
 
-  def add_respect project
-    respected_projects << project
-  end
-
   def auth_key_authentified? project
     auth_key_authentified and participant_invite.try(:project_id) == project.id
   end
@@ -169,8 +169,18 @@ class User < ActiveRecord::Base
     CATEGORIES.reject { |r| ((categories_mask || 0) & 2**CATEGORIES.index(r)).zero? }
   end
 
-  def respected? project
-    project.in? respected_projects
+  def counters
+    [
+      :comments,
+      :interest_tags,
+      :projects,
+      :respects,
+      :skill_tags,
+    ]
+  end
+
+  def find_invite_request
+    InviteRequest.find_by_email email
   end
 
   def follow user
@@ -214,9 +224,13 @@ class User < ActiveRecord::Base
     @participant_invite ||= ParticipantInvite.find_by_id participant_invite_id
   end
 
-  def remove_respect project
-    respected_projects.delete project
+  def respected? project
+    project.id.in? respected_projects.map(&:id)
   end
+
+  # def respected_projects
+  #   respects.includes(:project).map{ |r| r.project }.reject{ |p| p.nil? }
+  # end
 
   def roles=(roles)
     self.roles_mask = (roles & ROLES).map { |r| 2**ROLES.index(r) }.sum
@@ -236,6 +250,34 @@ class User < ActiveRecord::Base
 
   def to_param
     user_name
+  end
+
+  def to_tracker
+    {
+      user_id: id,
+      user_name: user_name,
+    }
+  end
+
+  def to_tracker_profile
+    {
+      created_at: (invitation_accepted_at || created_at),
+      comments_count: comments_count,
+      email: email,
+      has_avatar: avatar.present?,
+      has_full_name: full_name.present?,
+      has_location: (country.present? || city.present?),
+      interests_count: interest_tags_count,
+      # invitations_count: invitations_count,
+      is_admin: is?(:admin),
+      mini_resume_size: mini_resume.length,
+      name: full_name,
+      projects_count: projects_count,
+      respects_count: respects_count,
+      skills_count: skill_tags_count,
+      username: user_name,
+      websites_count: websites.values.reject{|v|v.nil?}.count,
+    }
   end
 
   def unfollow user

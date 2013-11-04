@@ -8,4 +8,10 @@
     - else
       = link_to content, project_respects_path(project), data: { method: :post, remote: true }, class: 'btn btn-mini', title: 'Respect! this project', rel: 'tooltip'
   - else
-    = link_to content, new_user_session_path(redirect_to: project_path(project)), class: 'btn btn-mini', title: 'Respect!', rel: 'tooltip'
+    = link_to content, new_user_session_path(redirect_to: project_path(project)), class: 'btn btn-mini', title: 'Respect! this project', rel: 'tooltip'
+
+= content_for :js do
+  :javascript
+    $('.respect-button a').live('click', function(){
+      $(this).replaceWith("#{escape_javascript image_tag('loader.gif')}");
+    });
