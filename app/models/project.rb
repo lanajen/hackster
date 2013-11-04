@@ -99,12 +99,12 @@ class Project < ActiveRecord::Base
   end
 
   def counters
-    [
-      :comments,
-      :product_tags,
-      :respects,
-      :widgets,
-    ]
+    {
+      comments: 'comments.count',
+      product_tags: 'product_tags.count',
+      respects: 'respects.count',
+      widgets: 'widgets.count',
+    }
   end
 
   def force_basic_validation!

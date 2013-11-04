@@ -76,9 +76,9 @@ class User < ActiveRecord::Base
     'Software developer',
   ]
 
-  store :counters_cache, accessors: [:comments_count, :interest_tags_count, :invitations_count, :projects_count, :respects_count, :skill_tags_count]
+  store :counters_cache, accessors: [:comments_count, :interest_tags_count, :invitations_count, :projects_count, :respects_count, :skill_tags_count, :live_projects_count]
 
-  parse_as_integers :counters_cache, :comments_count, :interest_tags_count, :invitations_count, :projects_count, :respects_count, :skill_tags_count
+  parse_as_integers :counters_cache, :comments_count, :interest_tags_count, :invitations_count, :projects_count, :respects_count, :skill_tags_count, :live_projects_count
 
   taggable :interest_tags, :skill_tags
 
@@ -170,13 +170,15 @@ class User < ActiveRecord::Base
   end
 
   def counters
-    [
-      :comments,
-      :interest_tags,
-      :projects,
-      :respects,
-      :skill_tags,
-    ]
+    {
+      comments: 'comments.count',
+      interest_tags: 'interest_tags.count',
+      invitations_count: 'invitations.count',
+      live_projects: 'projects.where(private: false).count',
+      projects: 'projects.count',
+      respects: 'respects.count',
+      skill_tags: 'skill_tags.count',
+    }
   end
 
   def find_invite_request
@@ -268,8 +270,9 @@ class User < ActiveRecord::Base
       has_full_name: full_name.present?,
       has_location: (country.present? || city.present?),
       interests_count: interest_tags_count,
-      # invitations_count: invitations_count,
+      invitations_count: invitations_count,
       is_admin: is?(:admin),
+      live_projects_count: live_projects_count,
       mini_resume_size: mini_resume.try(:length) || 0,
       name: full_name,
       projects_count: projects_count,

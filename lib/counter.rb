@@ -4,8 +4,8 @@ module Counter
     counters.select!{ |k,v| k.in? options[:only] } if options[:only]
 
     use_counters = {}
-    counters.each do |counter|
-      use_counters[:"#{counter}_count"] = send(counter).send(:count)
+    counters.each do |counter, method|
+      use_counters[:"#{counter}_count"] = eval method
     end
     use_counters
   end
