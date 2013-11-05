@@ -33,7 +33,8 @@ class Tracker
   def record_event event_name, user_id=nil, user_class=nil, properties={}
     options = { test: Rails.env == 'development' }
     user = find_user user_id, user_class
-    properties.merge!({ distinct_id: distinct_id_for(user), mp_name_tag: user.try(:name) })
+    properties.merge!({ distinct_id: distinct_id_for(user) })
+    properties.merge!({ mp_name_tag: user.name }) if user and user.class == 'User'
     @tracker.track event_name, properties, options
   end
 end
