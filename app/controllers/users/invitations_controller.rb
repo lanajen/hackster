@@ -26,7 +26,10 @@ class Users::InvitationsController < Devise::InvitationsController
 
       respond_with @friend_invite, :location => after_invite_path_for(@friend_invite)
 
-      track_event 'Sent invites', { count: @friend_invite.users.count }
+      track_event 'Sent invites', { count: invited.size }
+      invited.each do |user|
+        track_event 'Invited', { by: current_user.id, is_admin: current_user.is?(:admin) }, user
+      end
 
     else
       unless @friend_invite.has_invites?
@@ -34,7 +37,6 @@ class Users::InvitationsController < Devise::InvitationsController
         flash[:alert] = "Uhoh, you didn't specify anyone?"
         respond_with @friend_invite, :location => new_user_invitation_path
       else
-        raise @friend_invite.errors.inspect
         @invite_limit = current_user.invitation_limit
         respond_with_navigational(@friend_invite) { render :new }
       end

@@ -60,6 +60,8 @@ class Admin::InviteRequestsController < Admin::BaseController
       flash[:alert] = "#{@invite_request.email} is already registered. Nothing sent."
     elsif @invite_request.send_invite!
       flash[:notice] = "#{@invite_request.email} has been sent an invite."
+
+      track_event 'Invited', { by: current_user.id, is_admin: current_user.is?(:admin) }, @invite_request
     else
       flash[:alert] = "Something went wrong while inviting #{@invite_request.email}."
     end

@@ -96,17 +96,19 @@ class ApplicationController < ActionController::Base
 
     def track_alias user=nil
       # tracker.alias_user (user || current_user)
-      tracker.enqueue 'alias_user', (user.try(:id) || current_user.try(:id)) if tracking_activated?
+      tracker.enqueue 'alias_user', (user.try(:id) || current_user.try(:id)), user.class.name if tracking_activated?
     end
 
-    def track_event event_name, properties={}
+    def track_event event_name, properties={}, user=nil
       # tracker.record_event event_name, current_user, properties
-      tracker.enqueue 'record_event', event_name, current_user.try(:id), properties if tracking_activated?
+      user ||= current_user
+      tracker.enqueue 'record_event', event_name, user.try(:id), user.class.name, properties if tracking_activated?
     end
 
-    def track_user properties
+    def track_user properties, user=nil
       # tracker.update_user current_user, properties.merge({ ip: request.ip })
-      tracker.enqueue 'update_user', current_user.try(:id), properties.merge({ ip: request.ip }) if tracking_activated?
+      user ||= current_user
+      tracker.enqueue 'update_user', user.try(:id), user.class.name, properties.merge({ ip: request.ip }) if tracking_activated?
     end
 
     def tracking_activated?

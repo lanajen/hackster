@@ -6,11 +6,11 @@ class FriendInvite < ActiveRecord::Base
 #  validate :has_invites?
 
   def has_invites?
-    !self.users.empty?
+    !users.empty?
   end
 
   def filter_blank_and_init!
-    self.users.select! do |user|
+    users.select! do |user|
       unless user.email.blank?
         user.new_invitation = true
         user.skip_confirmation!
@@ -19,7 +19,7 @@ class FriendInvite < ActiveRecord::Base
   end
 
   def invite_all! invited_by=nil
-    self.users.select do |user|
+    users.select do |user|
       unless user.email.blank?
         user.invite!(invited_by)
       end

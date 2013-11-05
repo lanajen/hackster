@@ -1,6 +1,6 @@
 require 'heroku-api'
 
-class TrackerQueue
+module HerokuAutoScaleDown
   # scaler extracted from heroku_auto_scale because we only want scaling down
   module Scaler
     class << self
@@ -21,7 +21,10 @@ class TrackerQueue
     # Nothing fancy, just shut everything down if we have no jobs
     Scaler.workers = 0 if Scaler.job_count.zero?
   end
+end
 
+class TrackerQueue
+  extend HerokuAutoScaleDown if Rails.env == 'production'
   @queue = :trackers
 
   def self.perform env, method_name, *args
