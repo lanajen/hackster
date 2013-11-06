@@ -225,7 +225,7 @@ class User < ActiveRecord::Base
   end
 
   def hide_notification! name
-    val = notifications << name
+    val = notifications || [] << name
     self.notifications = val
     save
   end
