@@ -1,4 +1,12 @@
 class ApplicationController < ActionController::Base
+  MOBILE_USER_AGENTS =
+    'palm|blackberry|nokia|phone|midp|mobi|symbian|chtml|ericsson|minimo|' +
+    'audiovox|motorola|samsung|telit|upg1|windows ce|ucweb|astel|plucker|' +
+    'x320|x240|j2me|sgh|portable|sprint|docomo|kddi|softbank|android|mmp|' +
+    'pdxgw|netfront|xiino|vodafone|portalmmm|sagem|mot-|sie-|ipod|up\\.b|' +
+    'webos|amoi|novarra|cdm|alcatel|pocket|ipad|iphone|mobileexplorer|' +
+    'mobile'
+
   protect_from_forgery
   before_filter :authenticate_user!
   before_filter :set_new_user_session
@@ -8,6 +16,8 @@ class ApplicationController < ActionController::Base
   helper_method :meta_desc
   helper_method :user_return_to
   helper_method :show_hello_world?
+  helper_method :show_profile_needs_care?
+  helper_method :is_mobile?
 
   unless Rails.application.config.consider_all_requests_local
     rescue_from Exception, with: :render_500
@@ -176,6 +186,10 @@ class ApplicationController < ActionController::Base
     end
 
   protected
+    def is_mobile?
+      request.user_agent.to_s.downcase =~ Regexp.new(MOBILE_USER_AGENTS)
+    end
+
     def meta_desc meta_desc=nil
       if meta_desc
         @meta_desc = meta_desc
@@ -196,5 +210,9 @@ class ApplicationController < ActionController::Base
       incoming = request.referer.present? ? URI(request.referer).host == APP_CONFIG['default_host'] : true
 
       incoming and !user_signed_in? and (params[:controller] == 'projects' or params[:controller] == 'users') and params[:action] == 'show'
+    end
+
+    def show_profile_needs_care?
+      user_signed_in? and current_user.profile_needs_care? and current_user.receive_notification?('1311complete_profile')
     end
 end

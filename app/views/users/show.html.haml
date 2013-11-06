@@ -8,15 +8,19 @@
     .container
       .row
         .span9
-          - if @user.projects.any?
+          - if @user.projects.indexable.any?
             %ul.thumbnails
               - @user.projects.indexable.each do |project|
                 = render partial: 'projects/project_thumb', locals: { project: project.decorate }
           - elsif user_is_current?
-            You have no projects.
-            = link_to 'Showcase a new project', new_project_path, class: 'btn btn-info btn-small'
+            %p
+              You have no public projects.
+              = link_to 'Showcase a project', new_project_path, class: 'btn btn-info btn-small'
+            %p.smaller.muted
+              %strong Tip:
+              Access private projects from the top right drop-down menu.
           - else
-            #{@user.name} has no projects yet.
+            #{@user.name} has no public projects.
 
           -# if @user.publications.any? or can? :create, Publication, @user
             .well

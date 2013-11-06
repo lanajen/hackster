@@ -25,13 +25,28 @@
 
   %body
     #wrapper
-      -# raise params[:controller].to_s + ' ' + params[:action].to_s
       - if show_hello_world?
         #hello-world.fade-in
           .container
             %button.close{ data: { close: '#hello-world' } } &times;
             Hackster.io is the place where hardware hackers and makers showcase their projects. Sounds cool?
             = link_to 'Request an invite.', new_invite_request_path, onclick: "_gaq.push(['_trackEvent', 'Hello world bar', 'Request an invite', '#{request.path}']);"
+      - elsif show_profile_needs_care?
+        - if params[:controller] == 'users' and params[:action] == 'show'
+          #hello-world.fade-in
+            .container
+              Yo! Looks like your profile needs a little love.
+              %strong Look out for clues on this page as to what can be improved.
+              = link_to "Don't remind me.", '/notifications?notif=1311complete_profile&close=%23hello-world', data: { remote: true }, method: :delete, class: 'btn-close-notif btn-close-notif-last'
+              = link_to "Got it.", '#', data: { close: '#hello-world' }, class: 'btn-close btn-close-notif'
+        - else
+          #hello-world.fade-in
+            .container
+              Yo! Looks like your profile needs a little love.
+              = link_to 'Give it love.', user_path(current_user)
+              = link_to "Don't remind me.", '/notifications?notif=1311complete_profile&close=%23hello-world', data: { remote: true }, method: :delete, class: 'btn-close-notif btn-close-notif-last'
+              = link_to "Got it.", '#', data: { close: '#hello-world' }, class: 'btn-close btn-close-notif'
+
       .navbar.navbar-static-top
         .navbar-inner
           .container{ style: 'position: relative;' }
@@ -98,23 +113,8 @@
           %li= link_to content_tag(:i, '', class: 'fa fa-facebook fa-lg').html_safe, 'http://www.facebook.com/hacksterio', alt: 'Hackster.io on Facebook', class: 'link-icon'
           %li Hackster.io 2013
 
-    -# = include_gon
     = javascript_include_tag "application"
     = content_for :js
-    = render 'feedback'
-    <!-- Begin Survey.io code for . -->
-    <script src="http://cdn.survey.io/embed/1.0/survey.js" type="text/javascript"></script>
-    <script type="text/javascript" charset="utf-8">
-    Surveyio.init({
-    survey_id: "e5dce",
-    token: "4fb826a3b818455ec715d0f7e3ce1984ea078273",
-    banner: {
-    x: "right",
-    y: "top",
-    color: "grey"
-    }
-    });
-    Surveyio.set("user_name", "#{current_user.try(:user_name)}");
-    Surveyio.set("user_id", "#{current_user.try(:id)}");
-    </script>
-    <!-- /End Survey.io code -->
+    - unless is_mobile?
+      = render 'feedback'
+      = render 'surveyio'

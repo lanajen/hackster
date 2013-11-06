@@ -82,6 +82,8 @@ class User < ActiveRecord::Base
 
   taggable :interest_tags, :skill_tags
 
+  serialize :notifications
+
   self.per_page = 20
 
   # broadcastable
@@ -222,17 +224,27 @@ class User < ActiveRecord::Base
     full_name.present? ? full_name : user_name
   end
 
+  def hide_notification! name
+    val = notifications << name
+    self.notifications = val
+    save
+  end
+
   def participant_invite
     @participant_invite ||= ParticipantInvite.find_by_id participant_invite_id
+  end
+
+  def profile_needs_care?
+    live_projects_count.zero? or (country.blank? and city.blank?) or mini_resume.blank? or interest_tags_count.zero? or skill_tags_count.zero? or websites.values.reject{|v|v.nil?}.count.zero?
   end
 
   def respected? project
     project.id.in? respected_projects.map(&:id)
   end
 
-  # def respected_projects
-  #   respects.includes(:project).map{ |r| r.project }.reject{ |p| p.nil? }
-  # end
+  def receive_notification? name
+    !(notifications and name.in? notifications)
+  end
 
   def roles=(roles)
     self.roles_mask = (roles & ROLES).map { |r| 2**ROLES.index(r) }.sum

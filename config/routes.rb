@@ -46,6 +46,7 @@ HackerIo::Application.routes.draw do
     resources :comments, only: [:update, :destroy]
     resources :invite_requests, only: [:create, :update, :edit]
     # get 'request/an/invite' => 'invite_requests#new', as: :new_invite_request
+    delete 'notifications' => 'notifications#destroy'
     resources :projects, except: [:index] do
       member do
 #        get 'followers' => 'project_followers#index', as: :followers

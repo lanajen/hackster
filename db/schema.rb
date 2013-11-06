@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131104054906) do
+ActiveRecord::Schema.define(:version => 20131106094203) do
 
   create_table "access_group_members", :force => true do |t|
     t.integer  "access_group_id"
@@ -69,40 +69,6 @@ ActiveRecord::Schema.define(:version => 20131104054906) do
 
   add_index "comments", ["commentable_id", "commentable_type"], :name => "index_comments_on_commentable_id_and_commentable_type"
   add_index "comments", ["user_id"], :name => "index_comments_on_user_id"
-
-  create_table "email_threads", :force => true do |t|
-    t.integer  "part_id"
-    t.integer  "quantity"
-    t.float    "unit_price"
-    t.string   "currency"
-    t.integer  "manufacturer_id"
-    t.integer  "lead_time_in_days"
-    t.text     "delivery_terms"
-    t.text     "payment_terms"
-    t.text     "custom_fields"
-    t.string   "thread_hash"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
-  end
-
-  add_index "email_threads", ["manufacturer_id"], :name => "index_email_threads_on_manufacturer_id"
-  add_index "email_threads", ["part_id"], :name => "index_email_threads_on_part_id"
-
-  create_table "emails", :force => true do |t|
-    t.integer  "email_thread_id"
-    t.string   "from"
-    t.text     "to"
-    t.text     "cc"
-    t.text     "body"
-    t.string   "subject"
-    t.text     "meta_data"
-    t.integer  "sender_id"
-    t.text     "raw_body"
-    t.datetime "created_at",      :null => false
-    t.datetime "updated_at",      :null => false
-  end
-
-  add_index "emails", ["email_thread_id"], :name => "index_emails_on_email_thread_id"
 
   create_table "favorites", :force => true do |t|
     t.integer  "user_id"
@@ -162,12 +128,10 @@ ActiveRecord::Schema.define(:version => 20131104054906) do
 
   create_table "invite_requests", :force => true do |t|
     t.string   "email"
-    t.datetime "created_at",                      :null => false
-    t.datetime "updated_at",                      :null => false
+    t.datetime "created_at",                 :null => false
+    t.datetime "updated_at",                 :null => false
     t.boolean  "whitelisted"
-    t.integer  "user_id",          :default => 0, :null => false
-    t.string   "profile_url"
-    t.string   "twitter_username"
+    t.integer  "user_id",     :default => 0, :null => false
     t.integer  "project_id"
   end
 
@@ -181,18 +145,6 @@ ActiveRecord::Schema.define(:version => 20131104054906) do
     t.integer  "loggable_id"
     t.datetime "created_at",                  :null => false
     t.datetime "updated_at",                  :null => false
-  end
-
-  create_table "manufacturers", :force => true do |t|
-    t.string   "name"
-    t.string   "email_domain"
-    t.string   "website"
-    t.string   "qq"
-    t.string   "phone"
-    t.string   "alibaba"
-    t.string   "email"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
   end
 
   create_table "participant_invites", :force => true do |t|
@@ -381,6 +333,7 @@ ActiveRecord::Schema.define(:version => 20131104054906) do
     t.integer  "invite_code_id"
     t.integer  "impressions_count",                     :default => 0
     t.text     "counters_cache"
+    t.text     "notifications"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

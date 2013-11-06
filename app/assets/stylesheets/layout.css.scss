@@ -323,6 +323,15 @@ input.placeholder, textarea.placeholder {
   }
 }
 
+.btn-close-notif {
+  float: right;
+  margin-right: 5px;
+  font-weight: normal;
+  &.btn-close-notif-last {
+    margin: 0;
+  }
+}
+
 a.hidden-link {
   color: #333;
 }
