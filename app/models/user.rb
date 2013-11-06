@@ -2,9 +2,17 @@ class User < ActiveRecord::Base
   include Counter
   include StringParser
   include Taggable
-  is_impressionable counter_cache: true, unique: :session_hash
 
   ROLES = %w(admin confirmed_user)
+
+  CATEGORIES = [
+    'Electrical engineer',
+    'Industrial designer',
+    'Investor',
+    'Manufacturer',
+    'Mechanical engineer',
+    'Software developer',
+  ]
 
   devise :database_authenticatable, :registerable, :invitable,
          :recoverable, :rememberable, :trackable, :validatable
@@ -46,10 +54,6 @@ class User < ActiveRecord::Base
   store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link, :website_link, :blog_link, :github_link]
 
   validates :name, length: { in: 1..200 }, allow_blank: true
-  validates :email, presence: true, uniqueness: true
-  validates :email, format: { with: /^\b[a-z0-9._%-\+]+@[a-z0-9.-]+\.[a-z]{2,4}(\.[a-z]{2,4})?\b$/, message: 'is not a valid email address'}
-#  validates :user_name, presence: true, length: { in: 3..100 }, uniqueness: true,
-#    format: { with: /^[a-z0-9_]+$/, message: "accepts only downcase letters, numbers and underscores '_'." }
   validates :city, :country, length: { maximum: 50 }, allow_blank: true
   validates :mini_resume, length: { maximum: 160 }, allow_blank: true
   validates :user_name, presence: true, length: { in: 3..100 }, uniqueness: true,
@@ -58,27 +62,23 @@ class User < ActiveRecord::Base
     on: :create do |user|
       user.validates :email_confirmation, presence: true
       user.validate :email_matches_confirmation
-#      user.validate :is_whitelisted?
       user.validate :used_valid_invite_code?
   end
+  validate :email_is_unique_for_registered_users, if: :being_invited?
+
   before_validation :ensure_website_protocol
 
   scope :with_category, lambda { |category| { conditions: "categories_mask & #{2**CATEGORIES.index(category.to_s)} > 0"} }
 
   scope :with_role, lambda { |role| { conditions: "roles_mask & #{2**ROLES.index(role.to_s)} > 0"} }
 
-  CATEGORIES = [
-    'Electrical engineer',
-    'Industrial designer',
-    'Investor',
-    'Manufacturer',
-    'Mechanical engineer',
-    'Software developer',
-  ]
-
   store :counters_cache, accessors: [:comments_count, :interest_tags_count, :invitations_count, :projects_count, :respects_count, :skill_tags_count, :live_projects_count]
 
   parse_as_integers :counters_cache, :comments_count, :interest_tags_count, :invitations_count, :projects_count, :respects_count, :skill_tags_count, :live_projects_count
+
+  delegate :can?, :cannot?, to: :ability
+
+  is_impressionable counter_cache: true, unique: :session_hash
 
   taggable :interest_tags, :skill_tags
 
@@ -144,8 +144,6 @@ class User < ActiveRecord::Base
     joins(:reputation).order('reputations.points DESC')
   end
 
-  delegate :can?, :cannot?, to: :ability
-
   def ability
     @ability ||= Ability.new(self)
   end
@@ -161,6 +159,11 @@ class User < ActiveRecord::Base
 
   def being_invited?
     new_invitation.present?
+  end
+
+  # small hack to allow single emails to be invited multiple times
+  def email_changed?
+    being_invited? ? false : super
   end
 
   def categories=(categories)
@@ -225,7 +228,7 @@ class User < ActiveRecord::Base
   end
 
   def hide_notification! name
-    val = notifications || [] << name
+    val = (notifications || []) << name
     self.notifications = val
     save
   end
@@ -304,6 +307,10 @@ class User < ActiveRecord::Base
   end
 
   private
+    def email_is_unique_for_registered_users
+      errors.add :email, 'is already a member' if self.class.where(email: email).where('users.invitation_token IS NULL').any?
+    end
+
     def email_matches_confirmation
       errors.add(:email, "doesn't match confirmation") unless email.blank? or email == email_confirmation
     end
