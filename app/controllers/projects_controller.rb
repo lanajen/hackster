@@ -27,9 +27,10 @@ class ProjectsController < ApplicationController
   def create
     @project = Project.new(params[:project])
     @project.private = true
+    @project.build_team
 
     if @project.save
-      @project.team_members.create(user_id: current_user.id)
+      @project.team.members.create(user_id: current_user.id)
       flash[:notice] = 'Project was successfully created.'
       respond_with @project
 

@@ -11,26 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131104054906) do
-
-  create_table "access_group_members", :force => true do |t|
-    t.integer  "access_group_id"
-    t.integer  "user_id"
-    t.datetime "created_at",      :null => false
-    t.datetime "updated_at",      :null => false
-  end
-
-  add_index "access_group_members", ["access_group_id"], :name => "index_access_group_members_on_access_group_id"
-  add_index "access_group_members", ["user_id"], :name => "index_access_group_members_on_user_id"
-
-  create_table "access_groups", :force => true do |t|
-    t.integer  "project_id"
-    t.string   "name"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
-  add_index "access_groups", ["project_id"], :name => "index_access_groups_on_project_id"
+ActiveRecord::Schema.define(:version => 20131105144112) do
 
   create_table "attachments", :force => true do |t|
     t.string   "file"
@@ -70,24 +51,6 @@ ActiveRecord::Schema.define(:version => 20131104054906) do
   add_index "comments", ["commentable_id", "commentable_type"], :name => "index_comments_on_commentable_id_and_commentable_type"
   add_index "comments", ["user_id"], :name => "index_comments_on_user_id"
 
-  create_table "email_threads", :force => true do |t|
-    t.integer  "part_id"
-    t.integer  "quantity"
-    t.float    "unit_price"
-    t.string   "currency"
-    t.integer  "manufacturer_id"
-    t.integer  "lead_time_in_days"
-    t.text     "delivery_terms"
-    t.text     "payment_terms"
-    t.text     "custom_fields"
-    t.string   "thread_hash"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
-  end
-
-  add_index "email_threads", ["manufacturer_id"], :name => "index_email_threads_on_manufacturer_id"
-  add_index "email_threads", ["part_id"], :name => "index_email_threads_on_part_id"
-
   create_table "emails", :force => true do |t|
     t.integer  "email_thread_id"
     t.string   "from"
@@ -126,6 +89,23 @@ ActiveRecord::Schema.define(:version => 20131104054906) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
+
+  create_table "groups", :force => true do |t|
+    t.string   "user_name",         :limit => 100
+    t.string   "city",              :limit => 50
+    t.string   "country",           :limit => 50
+    t.string   "mini_resume",       :limit => 160
+    t.string   "full_name"
+    t.string   "email"
+    t.text     "websites"
+    t.string   "type",              :limit => 15,  :default => "Group", :null => false
+    t.integer  "impressions_count",                :default => 0
+    t.text     "counters_cache"
+    t.datetime "created_at",                                            :null => false
+    t.datetime "updated_at",                                            :null => false
+  end
+
+  add_index "groups", ["type"], :name => "index_groups_on_type"
 
   create_table "impressions", :force => true do |t|
     t.string   "impressionable_type"
@@ -183,30 +163,18 @@ ActiveRecord::Schema.define(:version => 20131104054906) do
     t.datetime "updated_at",                  :null => false
   end
 
-  create_table "manufacturers", :force => true do |t|
-    t.string   "name"
-    t.string   "email_domain"
-    t.string   "website"
-    t.string   "qq"
-    t.string   "phone"
-    t.string   "alibaba"
-    t.string   "email"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+  create_table "members", :force => true do |t|
+    t.integer  "group_id",         :null => false
+    t.integer  "user_id",          :null => false
+    t.string   "title"
+    t.integer  "group_roles_mask"
+    t.string   "mini_resume"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
   end
 
-  create_table "participant_invites", :force => true do |t|
-    t.integer  "project_id",                    :null => false
-    t.integer  "user_id"
-    t.integer  "issue_id"
-    t.string   "email"
-    t.boolean  "accepted",   :default => false, :null => false
-    t.datetime "created_at",                    :null => false
-    t.datetime "updated_at",                    :null => false
-  end
-
-  add_index "participant_invites", ["accepted"], :name => "index_participant_invites_on_accepted"
-  add_index "participant_invites", ["project_id"], :name => "index_participant_invites_on_project_id"
+  add_index "members", ["group_id"], :name => "index_members_on_group_id"
+  add_index "members", ["user_id"], :name => "index_members_on_user_id"
 
   create_table "parts", :force => true do |t|
     t.integer  "quantity"
@@ -258,29 +226,11 @@ ActiveRecord::Schema.define(:version => 20131104054906) do
     t.boolean  "featured"
     t.integer  "impressions_count", :default => 0
     t.text     "counters_cache"
+    t.integer  "team_id",           :default => 0,     :null => false
   end
 
   add_index "projects", ["private"], :name => "index_projects_on_private"
-
-  create_table "publications", :force => true do |t|
-    t.string   "title"
-    t.text     "abstract"
-    t.string   "coauthors"
-    t.date     "published_on"
-    t.string   "journal"
-    t.string   "link"
-    t.integer  "user_id",      :null => false
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
-  end
-
-  add_index "publications", ["user_id"], :name => "index_publications_on_user_id"
-
-  create_table "quotes", :force => true do |t|
-    t.text     "properties"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
+  add_index "projects", ["team_id"], :name => "index_projects_on_team_id"
 
   create_table "reputations", :force => true do |t|
     t.integer  "points",     :default => 0
@@ -290,27 +240,6 @@ ActiveRecord::Schema.define(:version => 20131104054906) do
   end
 
   add_index "reputations", ["user_id"], :name => "index_reputations_on_user_id"
-
-  create_table "searches", :force => true do |t|
-    t.text     "params"
-    t.integer  "results"
-    t.integer  "user_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
-  create_table "stages", :force => true do |t|
-    t.integer  "project_id",                         :null => false
-    t.string   "name"
-    t.integer  "completion_rate", :default => 0
-    t.datetime "created_at",                         :null => false
-    t.datetime "updated_at",                         :null => false
-    t.boolean  "private",         :default => false, :null => false
-    t.string   "workflow_state"
-  end
-
-  add_index "stages", ["private"], :name => "index_stages_on_private"
-  add_index "stages", ["project_id"], :name => "index_stages_on_project_id"
 
   create_table "tags", :force => true do |t|
     t.integer  "taggable_id",   :null => false

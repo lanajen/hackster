@@ -1,0 +1,2 @@
+class Community < Group
+end

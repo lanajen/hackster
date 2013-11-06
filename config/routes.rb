@@ -29,21 +29,15 @@ HackerIo::Application.routes.draw do
         put 'send_invite' => 'invite_requests#send_invite', on: :member
       end
       resources :projects
-#      resources :quotes
       resources :users
 
       root to: 'pages#root'
     end
 
-#    get 'blog_posts/:id' => 'thread_posts#redirect_to_show', as: :blog_post
-#    resources :blog_posts, controller: :thread_posts, only: [] do
-#      resources :comments, only: [:create]
-#    end
-#    get 'issues/:id' => 'thread_posts#redirect_to_show', as: :issue
-#    resources :issues, controller: :thread_posts, only: [] do
-#      resources :comments, only: [:create]
-#    end
     resources :comments, only: [:update, :destroy]
+    resources :groups do
+      get 'qa'
+    end
     resources :invite_requests, only: [:create, :update, :edit]
     # get 'request/an/invite' => 'invite_requests#new', as: :new_invite_request
     resources :projects, except: [:index] do
@@ -58,26 +52,9 @@ HackerIo::Application.routes.draw do
       resources :respects, only: [:create] do
         delete '' => 'respects#destroy', on: :collection
       end
-#      resources :blog_posts, controller: :thread_posts
-#      resources :issues, controller: :thread_posts
-#      resources :participant_invites, only: [:index]
       resources :widgets
       put 'widgets' => 'widgets#save'
     end
-#    resources :publications, except: [:show]
-#    resources :stages, only: [] do
-#      put 'update_workflow', on: :member
-#    end
-    resources :widgets, only: [] do
-#      resources :issues, except: [:index], controller: :thread_posts
-    end
-
-#    get 'privacy/:type/:id/edit' => 'privacy_settings#edit', as: :edit_privacy_settings
-#    post 'privacy/:type/:id' => 'privacy_settings#create', as: :privacy_settings
-#    put 'privacy/:type/:id' => 'privacy_settings#update'
-#    delete 'privacy/:type/:id' => 'privacy_settings#destroy'
-#
-#    put 'issues/:id/update_workflow' => 'thread_posts#update_workflow', as: :issue_update_workflow
 
     get 'users/registration/complete_profile' => 'users#after_registration', as: :user_after_registration
     put 'users/registration/complete_profile' => 'users#after_registration_save'

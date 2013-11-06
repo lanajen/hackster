@@ -1,0 +1,2 @@
+class CommunityDecorator < GroupDecorator
+end
