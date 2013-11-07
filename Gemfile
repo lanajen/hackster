@@ -9,7 +9,7 @@ group :assets do
   gem 'coffee-rails', '~> 3.2.1'
   gem 'compass-rails', '1.0.3'
 #  gem 'execjs', '1.4.0'
-  gem 'font-awesome-rails', '4.0.1.0'
+  gem 'font-awesome-rails', '4.0.3.0'
 #  gem 'haml_coffee_assets', '1.11.1'
 #  gem 'marionette-rails', '1.0.1'
   gem 'sass-pygments-rails', '0.1'

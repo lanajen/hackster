@@ -8,6 +8,12 @@ $(document).ready(function(){
     e.stopPropagation();
     return false;
   });
+  $(document).on('click', '.btn-open', function(e){
+    target = $(this).data('open');
+    $(target).slideDown(100);
+    e.stopPropagation();
+    return false;
+  });
   $(document).on('click', '.btn-cancel', function(e){
     btn = $(this);
     $(btn.data('hide')).slideUp(function(){

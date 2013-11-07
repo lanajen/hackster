@@ -70,6 +70,13 @@ class ProjectsController < ApplicationController
     respond_with current_user
   end
 
+  def embed
+    title @project.name
+    meta_desc "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."
+    @project = @project.decorate
+    render layout: false
+  end
+
   private
     def initialize_project
 #      @project.images.new# unless @project.images.any?

@@ -52,6 +52,7 @@ HackerIo::Application.routes.draw do
 #        get 'followers' => 'project_followers#index', as: :followers
 #        post 'followers' => 'project_followers#create'
 #        delete 'followers' => 'project_followers#destroy'
+        get 'embed'
         get 'team_members' => 'team_members#edit', as: :edit_team_members
         put 'team_members' => 'team_members#update'
       end
