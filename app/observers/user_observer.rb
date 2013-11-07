@@ -6,6 +6,11 @@ class UserObserver < ActiveRecord::Observer
     end
   end
 
+  def after_invitation_accepted record
+    invite = record.find_invite_request
+    invite.project.team_members.create(user_id: record.id) if invite and invite.project
+  end
+
   def before_update record
     if record.invitation_accepted_at_changed?
       advertise_new_user record

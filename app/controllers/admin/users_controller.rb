@@ -8,7 +8,7 @@ class Admin::UsersController < Admin::BaseController
       'user_name' => 'users.user_name',
     }
 
-    params[:sort_by] ||= 'last_sign_in'
+    params[:sort_by] ||= 'created_at'
 
     @users = filter_for User, @fields
   end
