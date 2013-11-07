@@ -20,7 +20,7 @@ class FriendInvite < ActiveRecord::Base
   def invite_all! invited_by=nil
     existing_users = User.where('users.email IN (?)', users.map(&:email)).each{ |u| u.invite!(invited_by) }.map(&:email)
 
-    users.select! do |user|
+    users.select do |user|
       user.invite!(invited_by) unless user.email.blank? or user.email.in? existing_users
     end
   end

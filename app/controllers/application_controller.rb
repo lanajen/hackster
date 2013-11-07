@@ -213,6 +213,6 @@ class ApplicationController < ActionController::Base
     end
 
     def show_profile_needs_care?
-      user_signed_in? and current_user.profile_needs_care? and current_user.receive_notification?('1311complete_profile')
+      user_signed_in? and !(params[:controller] == 'users' and params[:action] == 'after_registration') and current_user.profile_needs_care? and current_user.receive_notification?('1311complete_profile')
     end
 end
