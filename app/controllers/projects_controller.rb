@@ -1,7 +1,8 @@
 class ProjectsController < ApplicationController
-  before_filter :authenticate_user!, except: [:show]
+  before_filter :authenticate_user!, except: [:show, :embed]
   load_and_authorize_resource
   skip_load_resource only: [:create]
+  skip_authorize_resource only: [:embed]
   layout 'project', only: [:edit, :update, :show]
   respond_to :html
   respond_to :js, only: [:edit, :update]
@@ -14,6 +15,13 @@ class ProjectsController < ApplicationController
     @widgets = @project.widgets.order(:created_at)
 
     track_event 'Viewed project', @project.to_tracker.merge({ own: current_user.try(:is_team_member?, @project) })
+  end
+
+  def embed
+    title @project.name
+    meta_desc "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."
+    @project = @project.decorate
+    render layout: false
   end
 
   def new
@@ -68,13 +76,6 @@ class ProjectsController < ApplicationController
     @project.destroy
 
     respond_with current_user
-  end
-
-  def embed
-    title @project.name
-    meta_desc "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."
-    @project = @project.decorate
-    render layout: false
   end
 
   private
