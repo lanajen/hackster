@@ -34,6 +34,13 @@ class InviteRequest < ActiveRecord::Base
     "#{id}-#{security_token}"
   end
 
+  def to_tracker
+    {
+      created: created_at,
+      email: email,
+    }
+  end
+
   def security_token_valid? token
     token.match(/[0-9]+\-(.*)/)[1] == security_token
   end
