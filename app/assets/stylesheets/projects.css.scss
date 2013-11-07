@@ -48,12 +48,17 @@
     }
   }
   .inner-thumb {
-    height: 120px;
+    height: 145px;
     padding: 10px;
     position: relative;
     h3 {
-      margin: 0 0 5px;
+      margin: 0;
       @include font-size(14);
+    }
+    h4 {
+      margin: 0 0 5px;
+      @include font-size(11);
+      font-weight: normal;
     }
     p {
       @include font-size(12);

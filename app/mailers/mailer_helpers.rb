@@ -107,6 +107,8 @@ module MailerHelpers
         url.project_url(project, host: default_host)
       when :project_new_link
         url.new_project_url(project, host: default_host)
+      when :slogan
+        SLOGAN
       when :user_profile_edit_link
         url.user_url(user, host: default_host)
       else

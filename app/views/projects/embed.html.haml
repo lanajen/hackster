@@ -23,23 +23,4 @@
       = render partial: 'application/analytics', locals: { tracker: 'UA-11926897-15', domain: 'hackster.io' }
 
   %body#project-embed
-    .span3.project-thumb
-      .thumb
-        .photo-thumb= link_to image_tag(@project.logo(:big), alt: @project.name), project_url(@project), target: '_blank'
-        .inner-thumb
-          %h3= link_to @project.name, project_url(@project), target: '_blank'
-          %p= truncate @project.one_liner, length: 140
-          .thumb-bottom
-            %hr
-            - if @project.public?
-              %span.counter
-                %i.fa.fa-eye
-                = @project.impressions_count
-              %span.counter
-                %i.fa.fa-thumbs-o-up
-                = @project.respects_count
-            - else
-              Private
-            %span.counter
-              %i.fa.fa-comments
-              = @project.comments_count
+    = render partial: 'project_embed_thumb', locals: { project: @project }

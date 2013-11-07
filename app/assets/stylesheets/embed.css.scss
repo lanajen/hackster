@@ -20,7 +20,7 @@
     left: 50%;
     position: fixed;
     margin-left: -280px;
-    margin-top: -180px;
+    margin-top: -192.5px;
   }
   .embed-popup-inner {
     border: 1px solid #dcdcdc;
@@ -31,7 +31,7 @@
     -o-border-radius: 5px;
     border-radius: 5px;
     width: 560px;
-    height: 360px;
+    height: 385px;
     position: relative;
     padding: 20px;
   }
@@ -60,6 +60,27 @@
       border-top: none;
       .thumb-bottom {
         width: 198px;
+        .counter {
+          margin-left: 15px;
+          margin-right: 0;
+          vertical-align: middle;
+          &.first {
+            margin-left: 5px;
+          }
+          &.logo {
+            width: 70px;
+            display: inline-block;
+            text-align: center;
+            a {
+              @include opacity(50);
+              color: #666;
+              &:hover {
+                @include opacity(100);
+                text-decoration: none;
+              }
+            }
+          }
+        }
       }
     }
   }
