@@ -1,9 +1,5 @@
 class ProjectObserver < ActiveRecord::Observer
   def after_create record
-#    %w(concept prototype pilot production).each do |name|
-#      record.stages.create(name: name)
-#    end
-#    record.stages.where(name: 'concept').update_all(workflow_state: :open)
     update_counters record, :projects
   end
 
@@ -19,8 +15,11 @@ class ProjectObserver < ActiveRecord::Observer
   end
 
   def after_save record
-    # record.update_counters only: [:product_tags]
     record.product_tags_count = record.product_tags_string.split(',').count
+  end
+
+  def before_create record
+    record.reset_counters assign_only: true
   end
 
   private

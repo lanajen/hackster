@@ -19,6 +19,10 @@ class UserObserver < ActiveRecord::Observer
     record.skill_tags_count = record.skill_tags_string.split(',').count
   end
 
+  def before_create record
+    record.reset_counters assign_only: true
+  end
+
   private
     def advertise_new_user record
       record.broadcast :new, record.id, 'User'
