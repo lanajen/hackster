@@ -87,6 +87,10 @@ class Project < ActiveRecord::Base
   end
 
   def self.indexable
+    live
+  end
+
+  def self.live
     where(private: false)
   end
 

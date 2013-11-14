@@ -10,7 +10,7 @@
       color: "grey"
     }
   });
-  Surveyio.set("user_name", "#{current_user.try(:user_name)}");
-  Surveyio.set("user_id", "#{current_user.try(:id)}");
+  Surveyio.set("user_name", "<%= current_user.try(:user_name) %>");
+  Surveyio.set("user_id", "<%= current_user.try(:id) %>");
 </script>
 <!-- /End Survey.io code -->

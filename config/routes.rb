@@ -22,6 +22,7 @@ HackerIo::Application.routes.draw do
 
     namespace :admin do
       mount ResqueAuthServer.new, at: "/resque"
+      get 'analytics' => 'pages#analytics'
       get 'logs' => 'pages#logs'
 
       resources :invite_codes, except: [:show]
