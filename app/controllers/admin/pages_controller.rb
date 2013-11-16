@@ -12,6 +12,8 @@ class Admin::PagesController < Admin::BaseController
       @top_users[u] = u.live_projects_count
     end
     @top_users = @top_users.reject!{ |k,v| v.nil? }.sort_by{ |k,v| -v }[0..9]
+    @new_invites = InviteRequest.group("DATE_TRUNC('week', created_at)").count.sort_by{|k,v| k}
+    # @new_users = User.where('invitation_accepted_at IS NOT NULL').group("DATE_TRUNC('week', invitation_accepted_at)").count.sort_by{|k,v| k}
   end
 
   def logs

@@ -118,4 +118,5 @@
     = content_for :js
     - unless is_mobile?
       = render 'feedback'
-      = render 'surveyio'
+      -if user_signed_in? and current_user.live_projects_count > 0
+        = render 'surveyio'

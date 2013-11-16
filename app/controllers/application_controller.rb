@@ -18,6 +18,7 @@ class ApplicationController < ActionController::Base
   helper_method :show_hello_world?
   helper_method :show_profile_needs_care?
   helper_method :is_mobile?
+  helper BootstrapFlashHelper
 
   unless Rails.application.config.consider_all_requests_local
     rescue_from Exception, with: :render_500
