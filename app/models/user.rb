@@ -42,7 +42,8 @@ class User < ActiveRecord::Base
 
   attr_accessor :email_confirmation, :skip_registration_confirmation,
     :participant_invite_id, :auth_key_authentified,
-    :friend_invite_id, :new_invitation, :invitation_code, :match_by
+    :friend_invite_id, :new_invitation, :invitation_code, :match_by,
+    :logging_in_socially
   attr_accessible :email_confirmation, :password, :password_confirmation,
     :remember_me, :avatar_attributes, :projects_attributes,
     :websites_attributes, :invitation_token,
@@ -359,6 +360,7 @@ class User < ActiveRecord::Base
     end
 #          logger.info 'auth: ' + self.authorizations.inspect
     self.password = Devise.friendly_token[0,20]
+    self.logging_in_socially = true
   end
 
   def find_invite_request

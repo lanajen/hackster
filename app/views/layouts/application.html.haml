@@ -32,7 +32,7 @@
             = SLOGAN
             Sounds cool?
             = link_to 'Request an invite.', new_invite_request_path, onclick: "_gaq.push(['_trackEvent', 'Hello world bar', 'Request an invite', '#{request.path}']);"
-      - elsif show_profile_needs_care?
+      -# elsif show_profile_needs_care?
         - if params[:controller] == 'users' and params[:action] == 'show'
           #hello-world.fade-in
             .container

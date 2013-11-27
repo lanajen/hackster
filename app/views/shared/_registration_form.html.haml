@@ -5,6 +5,6 @@
   = f.input :invitation_code, as: :string, label: false, placeholder: 'Invitation code'
 = f.input :email, label: false, placeholder: 'Email'
 = f.input :user_name, label: false, placeholder: 'Username'
-- unless resource.password.present?  # for social login
+- unless resource.logging_in_socially  # for social login
   = f.input :password, label: false, placeholder: 'Password'
 = f.submit 'Accept invitation', class: 'btn btn-block'
