@@ -53,7 +53,7 @@ class User < ActiveRecord::Base
     :user_name, :full_name, :roles, :type
   accepts_nested_attributes_for :avatar, :projects, allow_destroy: true
 
-  store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link, :website_link, :blog_link, :github_link]
+  store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link, :website_link, :blog_link, :github_link, :google_plus_link]
 
   validates :name, length: { in: 1..200 }, allow_blank: true
   validates :city, :country, length: { maximum: 50 }, allow_blank: true
@@ -248,7 +248,7 @@ class User < ActiveRecord::Base
     extra = data.extra
     info = data.info
     provider = session['devise.provider']
-   # logger.info data.to_yaml
+   logger.info data.to_yaml
    # logger.info provider.to_s
 #        logger.info 'user: ' + self.to_yaml
     if info and provider == 'Facebook'
@@ -270,7 +270,8 @@ class User < ActiveRecord::Base
         uid: data.uid,
         provider: 'Facebook',
         name: info.name.to_s,
-        link: info.urls['Facebook']
+        link: info.urls['Facebook'],
+        token: data.credentials.token
       )
 #          logger.info 'user: ' + self.inspect
 #          logger.info 'auth: ' + self.authorizations.inspect
@@ -287,10 +288,11 @@ class User < ActiveRecord::Base
         logger.error "Error: " + e.inspect
       end
       self.authorizations.build(
-        uid: session['devise.provider_info'].uid,
+        uid: data.uid,
         provider: 'Gitnub',
         name: info.name.to_s,
-        link: info.urls['GitHub']
+        link: info.urls['GitHub'],
+        token: data.credentials.token
       )
     elsif info and provider == 'Google+'
       self.user_name = info.email.match(/(.+)@/).try(:[], 1) if self.user_name.blank?
@@ -305,31 +307,12 @@ class User < ActiveRecord::Base
         logger.error "Error: " + e.inspect
       end
       self.authorizations.build(
-        uid: session['devise.provider_info'].uid,
-        provider: 'Gitnub',
+        uid: data.uid,
+        provider: 'Google+',
         name: info.name.to_s,
-        link: info.urls['GitHub']
+        link: info.urls['Google+'],
+        token: data.credentials.token
       )
-    elsif info and provider == 'Twitter'
-      self.user_name = info.nickname if self.user_name.blank?
-      self.full_name = info.name if self.full_name.blank?
-      self.mini_resume = info.description if self.mini_resume.nil?
-      self.interest_tags_string = info.description.scan(/\#([[:alpha:]]+)/i).join(',')
-      self.twitter_link = info.urls['Twitter']
-      begin
-        self.city = info.location.split(',')[0] if self.city.nil?
-        self.country = info.location.split(',')[1].strip if self.country.nil?
-        self.build_avatar(remote_file_url: info.image.gsub(/_normal/, '')) unless self.avatar
-      rescue => e
-        logger.error "Error: " + e.inspect
-      end
-      self.authorizations.build(
-        uid: session['devise.provider_info'].uid,
-        provider: 'Twitter',
-        name: info.name,
-        link: info.urls['Twitter']
-      )
-#          logger.info 'auth: ' + self.authorizations.inspect
     elsif info and provider == 'LinkedIn'
       # self.user_name = info.nickname if self.user_name.blank?
       self.full_name = info.first_name.to_s + ' ' + info.last_name.to_s if self.full_name.blank?
@@ -349,10 +332,32 @@ class User < ActiveRecord::Base
         uid: info.uid,
         provider: 'LinkedIn',
         name: info.first_name.to_s + ' ' + info.last_name.to_s,
-        link: info.urls['public_profile']
+        link: info.urls['public_profile'],
+        token: data.credentials.token
       )
-#          logger.info 'auth: ' + self.authorizations.inspect
+    elsif info and provider == 'Twitter'
+      self.user_name = info.nickname if self.user_name.blank?
+      self.full_name = info.name if self.full_name.blank?
+      self.mini_resume = info.description if self.mini_resume.nil?
+      self.interest_tags_string = info.description.scan(/\#([[:alpha:]]+)/i).join(',')
+      self.twitter_link = info.urls['Twitter']
+      begin
+        self.city = info.location.split(',')[0] if self.city.nil?
+        self.country = info.location.split(',')[1].strip if self.country.nil?
+        self.build_avatar(remote_file_url: info.image.gsub(/_normal/, '')) unless self.avatar
+      rescue => e
+        logger.error "Error: " + e.inspect
+      end
+      self.authorizations.build(
+        uid: session['devise.provider_info'].uid,
+        provider: 'Twitter',
+        name: info.name,
+        link: info.urls['Twitter'],
+        token: data.credentials.token,
+        secret: data.credentials.secret
+      )
     end
+#          logger.info 'auth: ' + self.authorizations.inspect
     self.password = Devise.friendly_token[0,20]
   end
 
