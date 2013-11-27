@@ -5,7 +5,7 @@
     = f.input :title
     .control-group
       .controls
-        = render 'wysihtml5_toolbar'
+        = render 'shared/wysihtml5_toolbar'
     = f.input :body, input_html: { id: 'wysihtml5-textarea', rows: 10 }
     = f.input :private, inline_label: 'Make it private', label: false
 

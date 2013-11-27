@@ -75,7 +75,7 @@ class Project < ActiveRecord::Base
       product_tags: product_tags_string,
 #      tech_tags: tech_tags_string,
       text_widgets: Widget.where(type: 'TextWidget').where('widgets.stage_id IN (?)', stages.pluck(:id)).map{ |w| w.content },
-      user_name: team_members.map{ |t| t.user.name },
+      user_name: team_members.map{ |t| t.user.try(:name) },
       private: private,
       created_at: created_at,
     }.to_json

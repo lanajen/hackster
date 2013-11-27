@@ -41,8 +41,8 @@ $(document).ready(function(){
   });
 
   //[data-remote="true"]
-  $('form')
-    .live("ajax:beforeSend", function(evt, xhr, settings){
+  $(document)
+    .on("ajax:beforeSend", 'form', function(evt, xhr, settings){
       var $submitButton = $(this).find('input[name="commit"]');
 
       // Update the text of the submit button to let the user know stuff is happening.
@@ -51,7 +51,7 @@ $(document).ready(function(){
       $submitButton.text( "Submitting..." );
 
     })
-    .live("ajax:success", function(evt, data, status, xhr){
+    .on("ajax:success", 'form', function(evt, data, status, xhr){
       var $form = $(this);
 
       // Reset fields and any validation errors, so form can be used again, but leave hidden_field values intact.
@@ -62,13 +62,13 @@ $(document).ready(function(){
       $('#comments').append(xhr.responseText);
 
     })
-    .live('ajax:complete', function(evt, xhr, status){
+    .on('ajax:complete', 'form', function(evt, xhr, status){
       var $submitButton = $(this).find('input[name="commit"]');
 
       // Restore the original submit button text
       $submitButton.text( $(this).data('origText') );
     })
-    .live("ajax:error", function(evt, xhr, status, error){
+    .on("ajax:error", 'form', function(evt, xhr, status, error){
       var $form = $(this),
           errors,
           errorText;

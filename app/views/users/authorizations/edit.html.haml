@@ -8,7 +8,7 @@
 
       -# = link_to 'Lost your password?', new_password_url(resource_name, host: return_platform.host)
 
-      = simple_form_for resource, as: resource_name, url: authorization_path, html: { data: { method: :put }, class: 'form-inline' } do |f|
+      = simple_form_for resource, as: resource_name, url: authorization_path, html: { data: { method: :patch }, class: 'form-inline' } do |f|
         = f.input :email, as: :hidden
         = f.input :password, wrapper: :append, label: false do
           = f.input :password, wrapper: :inline, label: false, placeholder: "Existing password", input_html: { class: 'input-medium' }

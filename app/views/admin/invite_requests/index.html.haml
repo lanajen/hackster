@@ -26,7 +26,7 @@
           = link_to t('.edit', :default => t("helpers.links.edit")), edit_admin_invite_request_path(invite_request), :class => 'btn btn-mini'
           = link_to t('.destroy', :default => t("helpers.links.destroy")), admin_invite_request_path(invite_request), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-mini btn-danger'
           - unless invite_request.whitelisted
-            = link_to 'Invite now', send_invite_admin_invite_request_path(invite_request), :class => 'btn btn-warning btn-mini', method: :put
+            = link_to 'Invite now', send_invite_admin_invite_request_path(invite_request), :class => 'btn btn-warning btn-mini', method: :patch
 
 = link_to t('.new', :default => t("helpers.links.new")), new_admin_invite_request_path, :class => 'btn btn-primary'
 

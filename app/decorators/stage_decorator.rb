@@ -16,7 +16,7 @@ class StageDecorator < ApplicationDecorator
       end
     else
       if model.open?
-        return h.link_to "Mark this stage as complete", h.update_workflow_stage_path(model, event: :complete), method: :put
+        return h.link_to "Mark this stage as complete", h.update_workflow_stage_path(model, event: :complete), method: :patch
       end
     end
     "Nothing to do"

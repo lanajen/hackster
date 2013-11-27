@@ -7,9 +7,9 @@
         - if can? :edit, issue
           = link_to 'Edit', url_for([:edit, issue.threadable, issue]), class: 'btn btn-link btn-small'
           - if issue.unresolved?
-            = link_to 'Mark resolved', issue_update_workflow_path(issue, event: :resolve, redirect_to: request.path), method: :put, class: 'btn btn-link btn-small'
+            = link_to 'Mark resolved', issue_update_workflow_path(issue, event: :resolve, redirect_to: request.path), method: :patch, class: 'btn btn-link btn-small'
           - else
-            = link_to 'Reopen', issue_update_workflow_path(issue, event: :reopen, redirect_to: request.path), method: :put, class: 'btn btn-link btn-small'
+            = link_to 'Reopen', issue_update_workflow_path(issue, event: :reopen, redirect_to: request.path), method: :patch, class: 'btn btn-link btn-small'
 
     .muted on #{issue.threadable.class} #{issue.threadable.name}
     -# .more

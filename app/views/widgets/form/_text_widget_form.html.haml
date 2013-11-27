@@ -1,5 +1,5 @@
 .control-group
   .controls
     %label Add text
-    = render 'wysihtml5_toolbar'
+    = render 'shared/wysihtml5_toolbar'
 = f.input :content, as: :text, input_html: { id: 'wysihtml5-textarea', rows: 10 }, label: false
