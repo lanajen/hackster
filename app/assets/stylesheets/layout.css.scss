@@ -237,6 +237,12 @@ form.full-size {
   }
 }
 
+form.form-compact {
+  .control-group {
+    margin-bottom: 0;
+  }
+}
+
 .control-group.hidden, .form-horizontal .fields .control-group.hidden {
   margin-bottom: 0;
 }

@@ -11,15 +11,15 @@ class Project < ActiveRecord::Base
   has_many :access_groups, dependent: :destroy
   has_many :access_group_members, through: :access_groups
   has_many :blog_posts, as: :threadable, dependent: :destroy
-  has_many :comments, as: :commentable, order: :created_at
+  has_many :comments, -> { order created_at: :asc }, as: :commentable
   has_many :issues, as: :threadable, dependent: :destroy
   has_many :images, as: :attachable, dependent: :destroy
   has_many :participant_invites, dependent: :destroy
   has_many :respects, dependent: :destroy, class_name: 'Favorite'
   has_many :stages, dependent: :destroy
-  has_many :team_members, include: :user
+  has_many :team_members#, -> { includes :user }
   has_many :users, through: :team_members
-  has_many :widgets, order: :position
+  has_many :widgets, -> { order position: :asc }
   has_one :logo, as: :attachable, class_name: 'Avatar'
   has_one :video, as: :recordable, dependent: :destroy
 

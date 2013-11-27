@@ -1,0 +1,10 @@
+= f.error_notification
+- if resource.invitation_token.present?
+  = f.input :invitation_token, as: :hidden
+- else
+  = f.input :invitation_code, as: :string, label: false, placeholder: 'Invitation code'
+= f.input :email, label: false, placeholder: 'Email'
+= f.input :user_name, label: false, placeholder: 'Username'
+- unless resource.password.present?  # for social login
+  = f.input :password, label: false, placeholder: 'Password'
+= f.submit 'Accept invitation', class: 'btn btn-block'

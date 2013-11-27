@@ -1,9 +1,15 @@
 .span3.offset4.wellified
-  %h2{ style: 'text-align: center' } Welcome to Hackster.io
-  %p{ style: 'text-align: center' }
+  %h2.text-center Welcome to Hackster.io
+  %p.text-center
     = SLOGAN
   - if resource.invited_by
-    %p{ style: 'text-align: center' }
+    %p.text-center
       You were invited by
       = link_to resource.invited_by.name, resource.invited_by
-  = render 'devise/shared/signup_form'
+  .text-center
+    %p
+      To accept your invitation, please select how you want to connect:
+    = render 'devise/sessions/omniauth'
+    %hr
+    %p Or use your email:
+    = render 'devise/shared/signup_form'

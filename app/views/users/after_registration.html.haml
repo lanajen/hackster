@@ -5,6 +5,7 @@
     = f.error_notification
     = f.input :full_name, label: 'Full name', autofocus: true
     = f.simple_fields_for :avatar do |f_avatar|
+      .controls= image_tag @user.decorate.avatar(:thumb)
       = f_avatar.input :file, as: :file, label: 'Profile picture'
       = f_avatar.input :file_cache, as: :hidden
     = f.input :mini_resume, as: :text, input_html: { rows: 4 },

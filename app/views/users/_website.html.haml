@@ -1,14 +1,14 @@
 - if url
   - case type
-  - when :facebook_link
+  - when 'facebook_link'
     = link_to content_tag(:i, '', class: 'fa fa-facebook-square'), url
-  - when :linked_in_link
+  - when 'linked_in_link'
     = link_to content_tag(:i, '', class: 'fa fa-linkedin-square'), url
-  - when :twitter_link
+  - when 'twitter_link'
     = link_to content_tag(:i, '', class: 'fa fa-twitter-square'), url
-  - when :website_link
+  - when 'website_link'
     = link_to content_tag(:i, '', class: 'fa fa-link'), url
-  - when :blog_link
+  - when 'blog_link'
     = link_to content_tag(:i, '', class: 'fa fa-rss'), url
-  - when :github_link
+  - when 'github_link'
     = link_to content_tag(:i, '', class: 'fa fa-github-square'), url

@@ -13,7 +13,7 @@
     = stylesheet_link_tag "application", :media => "all"
     <link href="#{ asset_path 'favicon.ico' }" rel="shortcut icon" type="image/vnd.microsoft.icon">
     - unless current_user and current_user.is? :admin
-      = render partial: 'application/analytics', locals: { tracker: 'UA-11926897-15', domain: 'hackster.io' }
+      = render partial: 'shared/analytics', locals: { tracker: 'UA-11926897-15', domain: 'hackster.io' }
     = content_for :header
 
   %body

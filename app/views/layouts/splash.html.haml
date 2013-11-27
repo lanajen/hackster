@@ -11,7 +11,7 @@
     = stylesheet_link_tag 'splash'
     %link{:href => asset_path('favicon.ico'), :rel => "shortcut icon", :type => "image/vnd.microsoft.icon"}/
     - unless current_user and current_user.is? :admin
-      = render partial: 'application/analytics', locals: { tracker: 'UA-11926897-15', domain: 'hackster.io' }
+      = render partial: 'shared/analytics', locals: { tracker: 'UA-11926897-15', domain: 'hackster.io' }
   %body#splash
     #bg
       = image_tag 'bg1920px.jpg'

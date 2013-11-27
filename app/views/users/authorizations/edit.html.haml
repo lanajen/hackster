@@ -1,0 +1,19 @@
+.span5.offset3.wellified
+  %h2.text-center Welcome back?
+  %p We've found an existing account with a similar #{@match_by_type} (#{@match_by_value}), there's two options:
+
+  %ol
+    %li
+      %p Link it with #{@provider} by confirming it's yours:
+
+      -# = link_to 'Lost your password?', new_password_url(resource_name, host: return_platform.host)
+
+      = simple_form_for resource, as: resource_name, url: authorization_path, html: { data: { method: :put }, class: 'form-inline' } do |f|
+        = f.input :email, as: :hidden
+        = f.input :password, wrapper: :append, label: false do
+          = f.input :password, wrapper: :inline, label: false, placeholder: "Existing password", input_html: { class: 'input-medium' }
+          = f.submit 'Link my two accounts', class: 'btn btn-primary'
+    %li
+      %p
+        Or
+        = link_to 'continue connecting and use a different email.', new_authorization_path(new_email: 1)

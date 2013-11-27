@@ -25,3 +25,13 @@
 @import 'widgets';
 @import 'ilightbox/ilightbox';
 @import 'embed';
+@import 'zocial';
+
+.zocial, a.zocial {
+  font: bold 90%/2.1 "Lucida Grande", Tahoma, sans-serif;
+  margin: 0 5px 5px 0;
+  &.zocial-block {
+    display: block;
+    margin-right: 0;
+  }
+}

@@ -4,6 +4,9 @@ Devise.setup do |config|
   # ==> Mailer Configuration
   # Configure the e-mail address which will be shown in Devise::Mailer,
   # note that it will be overwritten if you use your own mailer class with default "from" parameter.
+
+  config.secret_key = 'a5ae0afbe1ae6145dd226f4f5b13d0f3e7b5d377fee344a6a2afe39399da394b2961d6a94a6c936694da5caae6526f7ab83fce3cb537e1bdc758f1db5aed6fba'
+
   config.mailer_sender = "please-change-me-at-config-initializers-devise@example.com"
 
   # Configure the class responsible to send e-mails.
@@ -253,6 +256,16 @@ Devise.setup do |config|
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', :scope => 'user,public_repo'
+
+  if Rails.env == 'development'
+    config.omniauth :facebook, '365278140284312', 'cd136e1e867c39cf3a91bb524a5c7660', setup: true, scope: 'email,publish_actions,user_about_me,user_education_history,user_interests,user_location,user_work_history,user_website'
+  else
+    config.omniauth :facebook, '543757942384158', '17cd88cd421350f4cba3d00a87c71257', setup: true, scope: 'email,publish_actions,user_about_me,user_education_history,user_interests,user_location,user_work_history,user_website'
+  end
+  config.omniauth :github, 'b322eb2b4591c7101d72', '030d6c27463f4fde985033e4d050de2bebbd1d8b', scope: 'user:email', setup: true
+  config.omniauth :gplus, '194136473933-bh5c4avsnut4s8j4tt1hutvc5klohsak.apps.googleusercontent.com', '51d-2itWVP6yu3_auKinyAd5', scope: 'userinfo.email,plus.login', setup: true
+  config.omniauth :linkedin, '75zl0lfslm3m2z', 'gxqbyweSK444eEmN', setup: true, scope: 'r_fullprofile,r_emailaddress,rw_nus'
+  config.omniauth :twitter, 'M8s2TSIlY5kPtqoLuwmrQ', 'DFQrskOt9rMvcol6m9P7CJxX7CDH8vv0sFSYn4cq0U', setup: true
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
