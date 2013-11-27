@@ -349,7 +349,7 @@ class User < ActiveRecord::Base
         logger.error "Error: " + e.inspect
       end
       self.authorizations.build(
-        uid: session['devise.provider_info'].uid,
+        uid: data.uid,
         provider: 'Twitter',
         name: info.name,
         link: info.urls['Twitter'],

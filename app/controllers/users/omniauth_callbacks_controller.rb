@@ -39,7 +39,13 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     def oauthorize(kind)
       @user = User.find_for_oauth(kind, request.env['omniauth.auth'], current_user)
       # logger.info request.env['omniauth.auth'].to_yaml
-      omniauth_data = request.env['omniauth.auth']  #.except("extra") Ruby 2.0.0 has smaller cookie?
+
+      omniauth_data = case kind
+      when 'Twitter'
+        request.env['omniauth.auth'].except("extra")
+      else
+        request.env['omniauth.auth']
+      end
 
       if @user
         case @user.match_by
