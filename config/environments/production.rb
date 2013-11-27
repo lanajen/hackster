@@ -71,5 +71,5 @@ HackerIo::Application.configure do
 
   config.assets.initialize_on_precompile = false
 
-  config.middleware.use(Oink::Middleware, logger: Hodel3000CompliantLogger.new(STDOUT))
+  # config.middleware.use(Oink::Middleware, logger: Hodel3000CompliantLogger.new(STDOUT))
 end
