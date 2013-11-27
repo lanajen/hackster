@@ -7,7 +7,7 @@ class Email
     :recipients
 
   validates :name, :email, :subject, :body, presence: true
-  validates :email, format: { with: /^\b[a-z0-9._%-]+@[a-z0-9.-]+\.[a-z]{2,4}\b$/ }, allow_blank: true
+  validates :email, format: { with: /\A\b[a-z0-9._%-]+@[a-z0-9.-]+\.[a-z]{2,4}\b\z/ }, allow_blank: true
   validate :recipients_is_not_blank
 
   TEMPLATE_DIRECTORY = File.join(Rails.root, 'app', 'views', 'mailers')
