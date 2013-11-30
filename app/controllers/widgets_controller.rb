@@ -1,5 +1,6 @@
 class WidgetsController < ApplicationController
   before_filter :load_project
+  before_filter :authenticate_user!
   load_and_authorize_resource except: [:new, :create, :save]
   respond_to :html
   layout 'project'

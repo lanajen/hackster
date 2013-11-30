@@ -1,7 +1,7 @@
 class InviteRequestsController < ApplicationController
   # before_filter :require_no_authentication
   before_filter :validate_security_token, only: [:edit, :update]
-  skip_before_filter :authenticate_user!
+  # skip_before_filter :authenticate_user!
   layout 'splash'
 
   def new

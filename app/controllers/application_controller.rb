@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
     'mobile'
 
   protect_from_forgery
-  before_filter :authenticate_user!
+  # before_filter :authenticate_user!
   before_filter :set_new_user_session
   before_filter :store_location_before
   after_filter :store_location_after
