@@ -11,15 +11,21 @@
           No mini resume.
           = link_to 'Add one?', profile_edit_path, data: { remote: true }
 
-      - if @user.location
-        %p.user-categories
+      %p.user-categories
+        %span.category.first
           %i.fa.fa-map-marker
-          = @user.location
-      - elsif user_is_current?
-        %p.user-categories
-          %i.fa.fa-map-marker
-          No location.
-          = link_to 'Add one?', profile_edit_path, data: { remote: true }
+          - if @user.location
+            = @user.location
+          - elsif user_is_current?
+            No location.
+            = link_to 'Add one?', profile_edit_path, data: { remote: true }
+
+        %span.category
+          %i.fa.fa-eye
+          = @user.impressions_count
+        -# %span.category
+          %i.fa.fa-thumbs-o-up
+          = @user.respects_count
 
       - if @user.websites.any?
         %ul.websites

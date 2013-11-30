@@ -2,9 +2,9 @@ class UsersController < ApplicationController
   before_filter :authenticate_user!, except: [:show]
   before_filter :find_user, only: [:show]
   authorize_resource except: [:after_registration, :after_registration_save]
-  impressionist actions: [:show], unique: [:impressionable_type, :impressionable_id, :session_hash]
 
   def show
+    impressionist @user, "", unique: [:session_hash]  # no need to add :impressionable_type and :impressionable_id, they're already included with @user
     title @user.name
     meta_desc "#{@user.name} is on Hackster.io. Come join #{@user.name} and other hardware hackers and makers to showcase your projects."
     @user = @user.decorate

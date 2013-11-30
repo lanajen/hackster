@@ -92,8 +92,7 @@ class ApplicationController < ActionController::Base
     end
 
     def find_user
-      @user = User.find_by_user_name(params[:user_name])
-      raise ActiveRecord::RecordNotFound, 'Not found' unless @user
+      @user = User.find_by_user_name!(params[:user_name])
     end
 
     def load_project

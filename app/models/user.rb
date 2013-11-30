@@ -75,9 +75,9 @@ class User < ActiveRecord::Base
 
   scope :with_role, lambda { |role| { conditions: "roles_mask & #{2**ROLES.index(role.to_s)} > 0"} }
 
-  store :counters_cache, accessors: [:comments_count, :interest_tags_count, :invitations_count, :projects_count, :respects_count, :skill_tags_count, :live_projects_count]
+  store :counters_cache, accessors: [:comments_count, :interest_tags_count, :invitations_count, :projects_count, :respects_count, :skill_tags_count, :live_projects_count, :project_views_count]
 
-  parse_as_integers :counters_cache, :comments_count, :interest_tags_count, :invitations_count, :projects_count, :respects_count, :skill_tags_count, :live_projects_count
+  parse_as_integers :counters_cache, :comments_count, :interest_tags_count, :invitations_count, :projects_count, :respects_count, :skill_tags_count, :live_projects_count, :project_views_count
 
   delegate :can?, :cannot?, to: :ability
 
@@ -233,6 +233,7 @@ class User < ActiveRecord::Base
       invitations: 'invitations.count',
       live_projects: 'projects.where(private: false).count',
       projects: 'projects.count',
+      project_views: 'projects.sum(:impressions_count)',
       respects: 'respects.count',
       skill_tags: 'skill_tags.count',
     }
@@ -492,6 +493,7 @@ class User < ActiveRecord::Base
       mini_resume_size: mini_resume.try(:length) || 0,
       name: full_name,
       projects_count: projects_count,
+      project_views_count: project_views_count,
       respects_count: respects_count,
       skills_count: skill_tags_count,
       username: user_name,
