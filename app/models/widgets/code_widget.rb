@@ -42,7 +42,7 @@ class CodeWidget < Widget
 
   def to_tracker
     super.merge({
-      code_length: raw_code.length,
+      code_length: (raw_code.present? ? raw_code.length : 0),
       language: language,
     })
   end

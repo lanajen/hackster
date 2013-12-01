@@ -70,6 +70,7 @@ class User < ActiveRecord::Base
   validate :email_is_unique_for_registered_users, if: :being_invited?
 
   before_validation :ensure_website_protocol
+  after_invitation_accepted :invitation_accepted
 
   scope :with_category, lambda { |category| { conditions: "categories_mask & #{2**CATEGORIES.index(category.to_s)} > 0"} }
 
@@ -527,6 +528,10 @@ class User < ActiveRecord::Base
         end
         send "#{type}=", 'http://' + url unless url =~ /^http/
       end
+    end
+
+    def invitation_accepted
+      notify_observers(:after_invitation_accepted)
     end
 
     def is_whitelisted?

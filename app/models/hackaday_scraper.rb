@@ -2,16 +2,51 @@ require 'nokogiri'
 require 'open-uri'
 
 module ScraperUtils
-  def read_page file_name
+  ROOT_DIR = File.join(Rails.root, 'public', 'scraper')
+
+  def delete_file file_name
+    File.delete file_name if File.exists? file_name
+  end
+
+  def fetch_page page_url, file_name=nil
+    puts "Fetching page #{page_url}..."
+    open(page_url).read
+  end
+
+  def fetch_and_write_page page_url, file_name=nil
+    content = fetch_page page_url, file_name
+
+    file_name ||= get_file_name_from_url page_url
+
+    write_file file_name, content if file_name
+  end
+
+  def get_file_name_from_url url, date=Date.today.to_s
+    file_name = File.join(ROOT_DIR, date, "#{url.gsub(/http(s)?\:\/\//, '')}.html")
+    make_directories_for file_name
+    file_name
+  end
+
+  def make_directories_for file_name
+    current_dir = '/'
+    file_name.split('/')[1..-2].each do |dir|
+      current_dir = File.join(current_dir, dir)
+      Dir.mkdir current_dir unless Dir.exists? current_dir
+    end
+  end
+
+  def read_file file_name
     puts "Reading file #{file_name}..."
     File.open(file_name).read
   end
 
-  def write_file file_name, content
-    mode = (File.exists?(file_name) ? 'a' : 'w+')
+  def write_file file_name, content, header=nil, mode=nil
+    mode ||= (File.exists?(file_name) ? 'a' : 'w+')
+    content = header + content if header and mode == 'w+'
     File.open(file_name, mode) do |file|
       file.syswrite content
-      puts "Wrote #{file_name}"
+      output = (mode == 'w+' ? 'Wrote' : 'Appended')
+      puts "#{output} to #{file_name}"
     end
   end
 end
@@ -22,56 +57,40 @@ end
 class HackadayScraper
   include ScraperUtils
 
-  BASE_URL = 'http://hackaday.com/category/arduino-hacks'
+  # BASE_URL = 'http://hackaday.com/category/arduino-hacks'
   SLEEP_TIME = 1
 
-  def extract_pages to_page
-    (1..to_page).each do |page_number|
-      file_name = File.join(@html_dir, "#{page_number}.html")
-      content = read_page file_name
+  def extract_pages columns
+    (1..@to_page).each do |page_number|
+      file_name = get_file_name_from_url "#{@base_url}#{page_number}"
+      content = read_file file_name
       next if content.blank?
-      extract_to_csv content, page_number
+      extract_to_csv content, columns
     end
+    puts 'Done!'
   end
 
-  def extract_to_csv content, page_number
-    Document.new(content, @today_dir, page_number).to_csv
+  def document content=nil
+    Document.new(content)
   end
 
-  def fetch_page page_url
-    puts "Fetching page #{page_url}..."
-    page = open(page_url)
-    content = page.read
-
-    file_name = File.join(@html_dir, "#{page_number}.html")
-    write_file file_name, content
+  def extract_to_csv content, columns
+    document(content).to_csv columns
   end
 
-  def fetch_pages base_url, to_page
-    (1..to_page).each do |page_number|
-      page_url = "#{base_url}/page/#{page_number}"
-      fetch_page page_url
+  def fetch_pages
+    (1..@to_page).each do |page_number|
+      page_url = "#{@base_url}#{page_number}"
+      fetch_and_write_page page_url
 
       puts "Sleeping for #{SLEEP_TIME} second..."
       sleep SLEEP_TIME
     end
   end
 
-  def initialize
-    @root_dir = File.join(Rails.root, 'public', 'hackaday')
-    Dir.mkdir @root_dir unless Dir.exists? @root_dir
-
-    @today_dir = File.join(@root_dir, Date.today.to_s)
-    Dir.mkdir @today_dir unless Dir.exists? @today_dir
-
-    @html_dir = File.join(@today_dir, 'html')
-    Dir.mkdir @html_dir unless Dir.exists? @html_dir
-
-    csv_dir = File.join(@today_dir, 'csv')
-    Dir.mkdir csv_dir unless Dir.exists? csv_dir
-
-    mcsv_dir = File.join(@today_dir, 'mcsv')
-    Dir.mkdir mcsv_dir unless Dir.exists? mcsv_dir
+  def initialize base_url, to_page
+    @base_url = base_url
+    @to_page = to_page
   end
 
   class Document
@@ -79,18 +98,12 @@ class HackadayScraper
 
     attr_accessor :title, :title_link, :body, :date, :links, :links_count, :authors, :tags
 
-    def initialize content, base_dir, page_number
-      @base_dir = base_dir
+    def initialize content
       @parsed = Nokogiri::HTML(content)
-      @page_number = page_number
     end
 
-    def to_csv
-      header = "title,title_link,body,date,categories,authors,links_count,links\r\n"
-      out = header
-
-      header = "title,title_link,body_text,body_image_link\r\n"
-      mout = header
+    def to_csv columns
+      out = ''
 
       @parsed.css('#content .post').each do |post|
         title = post.at_css('h2 a').content
@@ -105,6 +118,7 @@ class HackadayScraper
           memo[a.content] = a.attributes['href'].try(:value)
           memo
         end.reject{|k,v| v.nil? or v.match(/hackaday[\.]?com/) }
+        first_link = links.values.first
         links_count = links.size
         links = links.map{|k,v| "#{k}: #{v}"}.join("\n")
 
@@ -112,32 +126,17 @@ class HackadayScraper
 
         authors = post.content.scan(/\[([^\s]+)\]/).flatten.uniq.join(',')
 
-        out << "\"#{title}\","
-        out << "\"#{title_link}\","
-        out << "\"#{full_body}\","
-        out << "\"#{date}\","
-        out << "\"#{categories}\","
-        out << "\"#{authors}\","
-        out << "\"#{links_count}\","
-        out << "\"#{links}\"\r\n"
-
-        if links_count <= 1
-          puts "Skipping article #{title} at #{title_link}"
-          next
+        columns.split(',').each do |column|
+          raise "Column #{column} doesn't exist" unless defined?(column)
+          out << "\"#{eval(column)}\""
+          out << (columns.split(',').last == column ? "\r\n" : ',')
         end
-
-        mout << "\"#{title}\","
-        mout << "\"#{title_link}\","
-        mout << "\"#{body_text}\","
-        mout << "\"#{body_image_link}\"\r\n"
       end
 
-      file_name = File.join(@base_dir, 'csv', "#{@page_number}.csv")
-      write_file file_name, out
+      header = "#{columns}\r\n"
+      file_name = File.join(ROOT_DIR, 'csv', "#{Date.today}.csv")
 
-      # file_name = File.join(@base_dir, 'mcsv', "#{@page_number}.csv")
-      file_name = File.join(@base_dir, 'mcsv', "1.csv")
-      write_file file_name, mout
+      write_file file_name, out, header
     end
   end
 end

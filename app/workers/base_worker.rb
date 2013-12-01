@@ -1,3 +1,5 @@
+require 'resque/errors'
+
 class BaseWorker
   extend HerokuResqueAutoScale if Rails.env == 'production'
 
@@ -6,6 +8,10 @@ class BaseWorker
       with_logging method do
         self.new.send(method, *args)
       end
+    rescue Resque::TermException
+      message = "Received Resque::TermException while working on #{method} with args #{args}"
+      logger.error message
+      log_line = LogLine.create(message: message, log_type: 'error', source: 'worker')
     end
 
     def with_logging(method, &block)
