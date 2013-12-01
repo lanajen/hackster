@@ -27,7 +27,7 @@ if ENV['RAILS_ENV'] == 'development'
 else
   worker_processes 3
 end
-timeout           30
+timeout           180
 preload_app       true
 
 #before_exec do |server|
