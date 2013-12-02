@@ -9,7 +9,7 @@ class FriendInvite < ActiveRecord::Base
   end
 
   def filter_blank_and_init!
-    users.select! do |user|
+    self.users = users.select do |user|
       unless user.email.blank?
         user.new_invitation = true
         user.skip_confirmation!

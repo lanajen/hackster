@@ -1,5 +1,6 @@
 class Attachment < ActiveRecord::Base
-  attr_accessible :type, :file, :file_cache, :remote_file_url, :caption, :title, :position
+  attr_accessible :type, :file, :file_cache, :remote_file_url, :caption,
+    :title, :position
 
   belongs_to :attachable, polymorphic: true
   validate :ensure_has_file, unless: proc { |a| a.skip_file_check? }
