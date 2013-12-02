@@ -1,0 +1,5 @@
+%li{ id: "widget-#{widget.id}" }
+  = f.simple_fields_for :widgets, widget do |f_widget|
+    = f_widget.input :position, as: :hidden, input_html: { class: 'position' }
+    = widget.name
+    = link_to '&times;'.html_safe, project_widget_path(project, widget), method: :delete, data: { confirm: "Are you sure you want to delete \"#{widget.name}\"? There's no coming back!", remote: true }, class: 'btn-delete-widget', title: 'Delete'

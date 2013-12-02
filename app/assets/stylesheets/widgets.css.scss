@@ -271,3 +271,17 @@
 #widget-comments {
   background: #f5f5f5;
 }
+
+.widget-reorder-form {
+  .btn-delete-widget {
+    display: none;
+    float: right;
+    font-weight: bold;
+    &:hover {
+      text-decoration: none;
+    }
+  }
+  li:hover .btn-delete-widget {
+    display: block;
+  }
+}
