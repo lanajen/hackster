@@ -49,12 +49,13 @@ class User < ActiveRecord::Base
     :websites_attributes, :invitation_token,
     :first_name, :last_name, :invitation_code,
     :facebook_link, :twitter_link, :linked_in_link, :website_link,
-    :blog_link, :categories, :participant_invite_id, :auth_key_authentified,
+    :blog_link, :github_link, :google_plus_link, :youtube_link, :categories,
+    :participant_invite_id, :auth_key_authentified,
     :github_link, :invitation_limit, :email, :mini_resume, :city, :country,
     :user_name, :full_name, :roles, :type
   accepts_nested_attributes_for :avatar, :projects, allow_destroy: true
 
-  store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link, :website_link, :blog_link, :github_link, :google_plus_link]
+  store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link, :website_link, :blog_link, :github_link, :google_plus_link, :youtube_link]
 
   validates :name, length: { in: 1..200 }, allow_blank: true
   validates :city, :country, length: { maximum: 50 }, allow_blank: true

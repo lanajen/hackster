@@ -89,6 +89,14 @@
   a {
     margin: 2px 0;
   }
+  #stlviewer {
+    display: table;
+    text-align: center;
+    .stl-play {
+      vertical-align: middle;
+      display: table-cell;
+    }
+  }
 }
 
 .widget-form {

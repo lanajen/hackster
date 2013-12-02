@@ -1,22 +1,24 @@
 - widget.parts.new if widget.parts.empty?
 %table#sortable.table.table-condensed
   %thead
-    %th Part #
     %th Short description
+    %th Vendor name
     %th Quantity
+    %th Unit price
     %th
   %tbody
     = f.simple_fields_for :parts, wrapper: false do |f_part|
       %tr.fields
         %td
           = f_part.input :id, as: :hidden
-          = f_part.input :mpn, label: false
-        %td= f_part.input :description, label: false
-        %td= f_part.input :quantity, label: false
-        %td= f_part.link_to_remove content_tag(:i, '', class: 'fa fa-trash'), class: 'btn btn-mini btn-danger'
+          = f_part.input :description, label: false
+        %td= f_part.input :vendor_name, label: false
+        %td= f_part.input :quantity, label: false, input_html: { min: 0 }
+        %td= f_part.input :unit_price, label: false, input_html: { min: 0 }
+        %td= f_part.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-mini btn-danger'
     %tr.sortable-disabled
       %td{ colspan: 8 }= f.link_to_add 'Add a part', :parts, class: 'btn btn-mini btn-success'
-%p.help-block
+-# %p.help-block
   You can find part #'s from
   = link_to 'Octopart.', 'http://www.octopart.com', target: '_blank'
   Prices will be automatically fetched from there.

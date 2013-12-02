@@ -1,6 +1,10 @@
+- stl_url = widget.documents.any? ? widget.documents.first.file_url : ''
+
 .stl-widget
   - if widget.documents.any?
     #stlviewer{ style: 'width:420px;height:315px' }
+      .stl-play
+        = link_to "#{content_tag(:i, '', class: 'fa fa-play')} Play renderings".html_safe, '#', data: { stlfile: stl_url }, class: 'loadstl btn btn-large'
     %ul
       - widget.documents.each do |document|
         %li
@@ -12,28 +16,28 @@
   - else
     %p No documents yet.
 
-  <script src="/js/thingiview/Three.js"></script>
-  <script src="/js/thingiview/plane.js"></script>
-  <script src="/js/thingiview/thingiview.js"></script>
-
-  - stl_url = widget.documents.any? ? widget.documents.first.file_url : ''
-
-  :javascript
-    window.onload = function() {
-      thingiurlbase = "/js/thingiview";
-      thingiview = new Thingiview("stlviewer");
-      thingiview.setRotation(false);
-      thingiview.setObjectColor('#C0D8F0');
-      thingiview.setBackgroundColor('#ffffff');
-      thingiview.initScene();
-      thingiview.loadSTL("#{stl_url}");
-    }
-
 = content_for :js do
-  :javascript
-    $('a.loadstl').click(function(e){
-      e.preventDefault();
-      file = $(this).data('stlfile');
-      thingiview.loadSTL(file);
-      return false;
-    });
+  - unless @stl_loaded
+    - @stl_loaded = true
+
+    <script src="/js/thingiview/Three.js"></script>
+    <script src="/js/thingiview/plane.js"></script>
+    <script src="/js/thingiview/thingiview.js"></script>
+
+    :javascript
+      function loadThingiview() {
+        thingiurlbase = "/js/thingiview";
+        thingiview = new Thingiview("stlviewer");
+        thingiview.initScene();
+        thingiview.setRotation(false);
+        thingiview.setObjectColor('#C0D8F0');
+        thingiview.setBackgroundColor('#ffffff');
+      }
+
+      $('#content.project').on('click', 'a.loadstl', function(e){
+        e.preventDefault();
+        if (typeof(thingiview) == 'undefined') loadThingiview();
+        file = $(this).data('stlfile');
+        thingiview.loadSTL(file);
+        return false;
+      });

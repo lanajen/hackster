@@ -30,7 +30,7 @@ class PartsWidget < Widget
     end
 
     def compute_total_cost
-      Octopart.match parts.select{ |p| p.changed? }  # only changed parts
+      # Octopart.match parts.select{ |p| p.changed? }  # only changed parts
       total = 0
       parts.each{ |p| total += p.total_cost || 0 }
       self.total_cost = total.round(4)

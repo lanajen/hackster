@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131127033607) do
+ActiveRecord::Schema.define(version: 20131202014004) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -179,17 +179,17 @@ ActiveRecord::Schema.define(version: 20131127033607) do
   add_index "participant_invites", ["project_id"], name: "index_participant_invites_on_project_id", using: :btree
 
   create_table "parts", force: true do |t|
-    t.integer  "quantity"
-    t.float    "unit_price"
-    t.float    "total_cost"
+    t.integer  "quantity",      default: 1
+    t.float    "unit_price",    default: 0.0
+    t.float    "total_cost",    default: 0.0
     t.string   "name"
     t.string   "vendor_name"
     t.string   "vendor_sku"
     t.string   "vendor_link"
-    t.string   "partable_type", null: false
-    t.integer  "partable_id",   null: false
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.string   "partable_type",               null: false
+    t.integer  "partable_id",                 null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
     t.string   "mpn"
     t.string   "description"
   end

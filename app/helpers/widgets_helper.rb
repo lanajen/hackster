@@ -17,6 +17,8 @@ module WidgetsHelper
     case widget
     when nil
       'span12'
+    when PartsWidget
+      'span8 offset2'
     else
       'span6 offset3'
     end

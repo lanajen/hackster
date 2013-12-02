@@ -281,7 +281,7 @@ table {
   tfoot {
     font-weight: bold;
   }
-  td.currency {
+  td.currency, th.currency {
     text-align: right;
   }
 }
