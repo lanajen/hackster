@@ -1,8 +1,9 @@
 - widget.images.new
-.form-fields
+.form-fields#sortable
   %label Add images
   - widget.images.each do |image|
     = f.simple_fields_for :images, image do |f_image|
+      = f_image.input :position, as: :hidden, input_html: { class: 'position' }
       -  if image.file_url
         .control-group
           .controls
@@ -15,6 +16,8 @@
         = f_image.input :title, label: 'Image title'
         -# = f_image.input :caption
       = f_image.link_to_remove 'Remove this image', class: 'btn btn-mini btn-danger'
+      %span.handle{ title: 'Drag to reoder' }
+        %i.fa.fa-arrows
   = f.link_to_add 'Add an image', :images, class: 'btn btn-mini btn-success', style: 'margin-bottom:10px;'
   .alert
     %strong Heads up!
@@ -26,5 +29,32 @@
       $(document).on('nested:fieldAdded', function(event){
         var field = event.field;
         field.addClass('new');
+        resetPositions();
+      });
+      $(document).on('nested:fieldRemoved', function(event){
+        var field = event.field;
+        field.addClass('deleted');
+        resetPositions();
       });
     });
+
+    $(function() {
+      resetPositions();
+
+      $('#sortable')
+        .sortable({
+          items: '.fields',
+          cursor: 'move',
+          handle: '.handle'
+        })
+        .bind('sortstop', function(event, ui) {
+          resetPositions();
+        });
+    });
+
+    function resetPositions(){
+      $('#sortable .fields:not(".deleted")').each(function(i){
+        $('.position', this).val(i+1);
+        console.log(i);
+      });
+    }
