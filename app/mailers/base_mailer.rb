@@ -2,7 +2,7 @@ class BaseMailer < ActionMailer::Base
   include MailerHelpers
   include SendGrid
 
-  def prepare_email type, context_type, context_id
+  def prepare_email type, context_type, context_id, opts={}
     raise 'Illegal arguments' unless context_type.kind_of? String and context_id.kind_of? Integer
     puts "Preparing email of type '#{type}' for @context '#{context_type}' of id #{context_id}."
     @context = get_context_for context_type, context_id
@@ -18,7 +18,7 @@ class BaseMailer < ActionMailer::Base
         send_bulk_email type
       end
     elsif @context.include? :user
-      send_single_email type
+      send_single_email type, opts
     else
       send_notification_email type
     end
@@ -28,6 +28,11 @@ class BaseMailer < ActionMailer::Base
   def enqueue_email type, options
     self.message.perform_deliveries = false
     Resque.enqueue(MailerQueue, 'message_with_context', type, options[:context_type], options[:context_id])
+  end
+
+  def enqueue_devise_email type, options, devise_opts
+    self.message.perform_deliveries = false
+    Resque.enqueue(MailerQueue, 'devise_message', type, options[:context_type], options[:context_id], devise_opts)
   end
 
   def enqueue_generic_email message

@@ -47,7 +47,7 @@ class ApplicationController < ActionController::Base
   def store_location cookie_name
 #    logger.info 'controller: ' + params[:controller].to_s
 #    logger.info 'action: ' + params[:action].to_s
-    session[cookie_name] = request.url unless params[:controller] == 'users/sessions' || params[:controller] == 'users/registrations' || params[:controller] == 'users/confirmations' || params[:controller] == 'users/omniauth_callbacks' || params[:controller] == 'users/facebook_connections' || params[:controller] == 'users/invitations' || params[:controller] == 'users/authorizations' || params[:action] == 'after_registration' || request.method_symbol != :get
+    session[cookie_name] = request.url unless params[:controller] == 'users/sessions' || params[:controller] == 'users/registrations' || params[:controller] == 'users/confirmations' || params[:controller] == 'users/omniauth_callbacks' || params[:controller] == 'users/facebook_connections' || params[:controller] == 'users/invitations' || params[:controller] == 'users/authorizations' || params[:controller] == 'devise/passwords' || params[:action] == 'after_registration' || request.method_symbol != :get
 #    logger.info 'stored location: ' + session[cookie_name].to_s
   end
 

@@ -10,12 +10,12 @@ module MailerHelpers
     send_email type
   end
 
-  def send_single_email type
+  def send_single_email type, opts={}
     @user = @context[:user]
     @headers = {
       to: @user.email,
     }
-    send_email type
+    send_email type, opts
   end
 
   def send_bulk_email type
@@ -26,7 +26,7 @@ module MailerHelpers
     send_email type
   end
 
-  def send_email type
+  def send_email type, opts={}
     email = Email.find_by_type(type)
     if email.nil?
       self.message.perform_deliveries = false
@@ -35,6 +35,7 @@ module MailerHelpers
         message: msg)
       return
     end
+    @context[:devise_token] = opts['token']
     premailer = Premailer.new(substitute_in(email.body), with_html_string: true,
       warn_level: Premailer::Warnings::SAFE)
 
@@ -102,7 +103,7 @@ module MailerHelpers
       when :issue_link
         url.issue_url(issue, host: default_host)
       when :password_reset_link
-        url.edit_user_password_url(reset_password_token: user.reset_password_token, host: default_host)
+        url.edit_user_password_url(reset_password_token: @context[:devise_token], host: default_host)
       when :project_link
         url.project_url(project, host: default_host)
       when :project_new_link

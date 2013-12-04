@@ -22,6 +22,8 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def setup
+    session.keys.grep(/^devise\./).each { |k| session.delete(k) }
+
     session['devise.invitation_token'] = params[:invitation_token] if params[:invitation_token]
 
     render text: 'Setup complete.', status: 404
