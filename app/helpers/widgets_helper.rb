@@ -2,7 +2,7 @@ module WidgetsHelper
   def lightbox_elements images
     images.map do |image|
       "{
-          URL: '#{image.file_url}',
+          URL: '#{image.file_url(:lightbox)}',
           caption: '#{image.title}',
           type: 'image'
       }"

@@ -22,6 +22,7 @@ class WidgetsController < ApplicationController
 
   def new
     @widget = @project.widgets.new(params[:widget])
+    title "Edit #{@project.name}"
     authorize! :create, @widget
   end
 
@@ -40,12 +41,13 @@ class WidgetsController < ApplicationController
   end
 
   def edit
+    title "Edit #{@project.name}"
   end
 
   def update
     if @widget.update_attributes params[:widget]
       flash[:notice] = 'Widget saved.'
-      current_user.broadcast :update, @project.id, 'Project'
+      current_user.broadcast :update, @project.id, 'Project' if @project.public?
       respond_with @project
 
       track_event 'Updated project', @project.to_tracker.merge({ type: 'widget update' }).merge(@widget.to_tracker)

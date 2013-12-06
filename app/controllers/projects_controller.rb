@@ -38,7 +38,7 @@ class ProjectsController < ApplicationController
 
     if @project.save
       @project.team_members.create(user_id: current_user.id)
-      flash[:notice] = 'Project was successfully created.'
+      flash[:notice] = "#{@project.name} was successfully created."
       respond_with @project
 
       track_event 'Created project', @project.to_tracker
@@ -60,7 +60,7 @@ class ProjectsController < ApplicationController
       @project = @project.decorate
       respond_with @project do |format|
         format.html do
-          flash[:notice] = 'Project was successfully updated.'
+          flash[:notice] = "#{@project.name} was successfully updated."
           redirect_to @project
         end
       end

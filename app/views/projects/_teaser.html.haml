@@ -1,7 +1,9 @@
 - if @project.private
   .row
     .span12
-      .alert This project is private so only you can see it. Change this by clicking the edit link below when you're ready to go public.
+      .alert
+        This project is private so only you can see it.
+        = link_to 'Make public', project_path(@project, project: { private: 0 }), method: :patch, class: 'btn btn-warning btn-small'
 
 .row
   .span12.teaser

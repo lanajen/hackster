@@ -1,5 +1,9 @@
 module Privatable
   module InstanceMethods
+    def private?
+      private == true
+    end
+
     def public?
       private == false
     end

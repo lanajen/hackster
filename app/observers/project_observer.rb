@@ -11,6 +11,9 @@ class ProjectObserver < ActiveRecord::Observer
   def after_update record
     if record.private_changed?
       update_counters record, :live_projects
+      if record.private?
+        Broadcast.where(context_model_id: record.id, context_model_type: 'Project').destroy_all
+      end
     end
   end
 
