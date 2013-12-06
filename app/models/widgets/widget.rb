@@ -7,6 +7,7 @@ class Widget < ActiveRecord::Base
   belongs_to :stage
   has_many :comments, as: :commentable, dependent: :destroy
   has_many :issues, as: :threadable, dependent: :destroy
+  validates :name, length: { maximum: 100 }
 
   attr_accessible :properties, :stage_id, :type, :completion_rate,
     :completion_share, :name, :position

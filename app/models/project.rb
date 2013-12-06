@@ -34,6 +34,7 @@ class Project < ActiveRecord::Base
 
   validates :name, presence: true
   validates :one_liner, :logo, presence: true, if: proc { |p| p.force_basic_validation? }
+  validates :one_liner, length: { maximum: 140 }
   before_validation :check_if_current
   before_validation :ensure_website_protocol
 
