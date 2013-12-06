@@ -1,7 +1,9 @@
 class Part < ActiveRecord::Base
   belongs_to :partable, polymorphic: true
+
   attr_accessible :name, :quantity, :unit_price, :vendor_link, :vendor_name,
-    :vendor_sku, :partable_id, :partable_type, :mpn, :description
+    :vendor_sku, :partable_id, :partable_type, :mpn, :description, :position
+
   validates :quantity, presence: true, numericality: { greater_than: 0 }
   validates :unit_price, numericality: { greater_than_or_equal_to: 0 }
   validates :description, length: { maximum: 255 }, allow_blank: true

@@ -10,8 +10,11 @@
       - widget.parts.each do |part|
         %tr.fields
           %td= part.description
-          -# %td= link_to('Visit', part.vendor_link, target: '_blank') if part.vendor_link
-          %td= part.vendor_name
+          %td
+            - if part.vendor_link.present?
+              = link_to part.vendor_name, part.vendor_link, target: '_blank', title: "Click to see part on #{part.vendor_name}"
+            - else
+              = part.vendor_name
           %td.currency= number_to_currency part.unit_price
           %td= part.quantity
           %td.currency= number_to_currency part.total_cost
