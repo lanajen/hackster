@@ -9,7 +9,7 @@ class Part < ActiveRecord::Base
   validates :description, length: { maximum: 255 }, allow_blank: true
   validate :mpn_or_description_is_present?
   register_sanitizer :strip_whitespace, :before_validation, :mpn, :description
-#  after_validation :compute_total_cost
+  after_validation :compute_total_cost
 
   def compute_total_cost
     return false if unit_price.blank? or quantity.blank?
