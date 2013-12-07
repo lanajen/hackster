@@ -10,3 +10,7 @@
     %ul.thumbnails
       - @projects.each do |project|
         = render partial: 'projects/project_thumb', locals: { project: project.decorate }
+
+.row
+  .span12.text-center
+    = link_to 'Browse all projects &rarr;'.html_safe, projects_path, class: 'btn'

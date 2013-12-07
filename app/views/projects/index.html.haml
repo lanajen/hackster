@@ -1,4 +1,13 @@
+= content_for :head do
+  %meta{ name: 'robots', content: 'noindex' }
+
 .content.projects
+  .row
+    .span12
+      %h1
+        Browse all projects
+        %span.smaller.muted page #{params[:page] || 1}
+
   .row
     .span12
       %ul.thumbnails

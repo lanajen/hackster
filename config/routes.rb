@@ -98,7 +98,7 @@ HackerIo::Application.routes.draw do
     post 'contact' => 'contact#create'
 
     get 'help' => 'pages#help'
-    get 'home' => 'projects#index'
+    get 'home' => 'pages#home'
 
     get 'obscure/path/to/cron' => 'cron#run'
 

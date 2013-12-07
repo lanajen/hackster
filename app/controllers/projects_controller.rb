@@ -10,6 +10,7 @@ class ProjectsController < ApplicationController
   after_action :allow_iframe, only: :embed
 
   def index
+    title "Browse all projects - Page #{params[:page] || 1}"
     @projects = Project.indexable.last_updated.paginate(page: params[:page])
   end
 
