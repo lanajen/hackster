@@ -110,6 +110,7 @@ class Widget < ActiveRecord::Base
     def self.all_types
       {
         'Bill of materials' => 'PartsWidget',
+        'Buy now' => 'BuyWidget',
         'Code' => 'CodeWidget',
         'Files and documents' => 'DocumentWidget',
         'Github repo' => 'GithubWidget',

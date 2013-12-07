@@ -7,6 +7,7 @@ class ProjectsController < ApplicationController
   respond_to :html
   respond_to :js, only: [:edit, :update]
   impressionist actions: [:show], unique: [:impressionable_type, :impressionable_id, :session_hash]
+  after_action :allow_iframe, only: :embed
 
   def show
     title @project.name
@@ -79,6 +80,10 @@ class ProjectsController < ApplicationController
   end
 
   private
+    def allow_iframe
+      response.headers.except! 'X-Frame-Options'
+    end
+
     def initialize_project
 #      @project.images.new# unless @project.images.any?
 #      @project.build_video unless @project.video
