@@ -115,6 +115,7 @@ class Widget < ActiveRecord::Base
         'Files and documents' => 'DocumentWidget',
         'Github repo' => 'GithubWidget',
         'Images' => 'ImageWidget',
+        'Press articles' => 'PressWidget',
         'STL renderings' => 'StlWidget',
         'Text' => 'TextWidget',
         'Upverter schematics' => 'UpverterWidget',
