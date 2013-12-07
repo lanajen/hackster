@@ -77,7 +77,6 @@ group :development, :test do
   gem 'launchy'
   gem 'quiet_assets'
   gem 'spork'
-  gem 'rb-inotify'
   gem 'rspec-cells'
   gem 'rspec-rails'
   gem 'sqlite3'

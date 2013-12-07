@@ -44,7 +44,7 @@ class Project < ActiveRecord::Base
 
   parse_as_integers :counters_cache, :comments_count, :product_tags_count, :respects_count, :widgets_count
 
-  self.per_page = 20
+  self.per_page = 12
 
   # beginning of search methods
   include Tire::Model::Search
@@ -93,6 +93,10 @@ class Project < ActiveRecord::Base
 
   def self.live
     where(private: false)
+  end
+
+  def self.last_updated
+    order(updated_at: :desc)
   end
 
   def self.most_viewed

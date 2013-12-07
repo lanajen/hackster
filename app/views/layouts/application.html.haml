@@ -60,6 +60,7 @@
               .pull-left= render 'shared/search_form'
               %ul.nav
                 %li= link_to 'Showcase a project', new_project_path
+                -# %li= link_to 'Browse all projects', projects_path
               %ul.nav.pull-right
                 - if user_signed_in?
                   .btn-group

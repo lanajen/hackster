@@ -9,6 +9,10 @@ class ProjectsController < ApplicationController
   impressionist actions: [:show], unique: [:impressionable_type, :impressionable_id, :session_hash]
   after_action :allow_iframe, only: :embed
 
+  def index
+    @projects = Project.indexable.last_updated.paginate(page: params[:page])
+  end
+
   def show
     title @project.name
     meta_desc "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."

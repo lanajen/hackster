@@ -56,7 +56,7 @@ HackerIo::Application.routes.draw do
     resources :invite_requests, only: [:create, :update, :edit]
     # get 'request/an/invite' => 'invite_requests#new', as: :new_invite_request
     delete 'notifications' => 'notifications#destroy'
-    resources :projects, except: [:index] do
+    resources :projects do
       member do
 #        get 'followers' => 'project_followers#index', as: :followers
 #        post 'followers' => 'project_followers#create'
@@ -98,7 +98,7 @@ HackerIo::Application.routes.draw do
     post 'contact' => 'contact#create'
 
     get 'help' => 'pages#help'
-    get 'home' => 'pages#home'
+    get 'home' => 'projects#index'
 
     get 'obscure/path/to/cron' => 'cron#run'
 

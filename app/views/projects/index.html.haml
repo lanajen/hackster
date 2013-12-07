@@ -1,25 +1,8 @@
-%h1 Listing projects
-
-%table
-  %tr
-    %th Name
-    %th Description
-    %th Start date
-    %th End date
-    %th
-    %th
-    %th
-
-  - @projects.each do |project|
-    %tr
-      %td= project.name
-      %td= project.description
-      %td= project.start_date
-      %td= project.end_date
-      %td= link_to 'Show', project
-      %td= link_to 'Edit', edit_project_path(project)
-      %td= link_to 'Destroy', project, method: :delete, data: { confirm: 'Are you sure?' }
-
-%br
-
-= link_to 'New Project', new_project_path
+.content.projects
+  .row
+    .span12
+      %ul.thumbnails
+        - @projects.each do |project|
+          = render partial: "projects/project_thumb", locals: { project: project.decorate }
+  .row
+    .span12.text-center= will_paginate @projects
