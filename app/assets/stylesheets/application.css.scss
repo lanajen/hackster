@@ -12,7 +12,8 @@
  *= require pygments/default
  */
 
-@import 'twitter/bootstrap-no-sprites';
+@import 'twitter/bootstrap';
+@import 'twitter/bootstrap/mixins';
 @import 'font-awesome';
 @import 'custom_mixins';
 @import 'layout';

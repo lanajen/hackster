@@ -11,8 +11,13 @@ body {
   background: #f2f2f2;
 }
 
+.container {
+  max-width: none !important;
+  width: 970px;
+}
+
 .navbar {
-  .brand {
+  .navbar-brand {
     padding: 6px 20px 10px;
   }
   .nav {
@@ -50,18 +55,9 @@ footer {
   height: 40px;
   a {
     color: #9b9b9b;
-  }
-  ul {
-    margin: 0;
-    float: left;
-    li {
-      display: inline;
-      margin-right: 20px;
+    &:hover {
+      color: #9b9b9b;
     }
-  }
-  p {
-    float: right;
-    margin: 0;
   }
 }
 
@@ -104,26 +100,41 @@ footer {
   @extend .box-white-bg;
 }
 
-.hero-unit {
+.jumbotron {
   @include border-radius(0);
 }
 
 #heading {
-  padding: 40px 0 30px;
-  background: #fafafa;
-  border-bottom: 1px solid #e2e2e2;
-}
-
-#heading .teaser {
-  h1 {
-    margin: 0 0 7px;
-    @include font-size(26);
-  }
-  p {
-    margin: 0 0 1px;
-  }
-  .text-holder {
-    max-width: 700px;
+  padding: 40px 0 0;
+  .teaser {
+    position: relative;
+    h1 {
+      margin: 0 0 7px;
+      @include font-size(26);
+      color: #fff;
+    }
+    p {
+      margin: 0 0 1px;
+    }
+    .text-holder {
+      padding: 100px 20px 30px;
+      background: #444;
+      color: #fff;
+      text-align: center;
+      height: 408px;
+    }
+    .actions {
+      position: absolute;
+      bottom: 20px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      a {
+        color: #fff;
+        margin-left: 10px;
+        @include font-size(16);
+      }
+    }
   }
 }
 
@@ -231,19 +242,19 @@ form.full-size {
   }
   .fields {
     margin-bottom: 20px;
-    .control-group {
+    .form-group {
       margin-bottom: 5px;
     }
   }
 }
 
 form.form-compact {
-  .control-group {
+  .form-group {
     margin-bottom: 0;
   }
 }
 
-.control-group.hidden, .form-horizontal .fields .control-group.hidden {
+.form-group.hidden, .form-horizontal .fields .form-group.hidden {
   margin-bottom: 0;
 }
 
@@ -266,7 +277,7 @@ hr.spacious {
 }
 
 table {
-  .control-group {
+  .form-group {
     margin-bottom: 0;
     .controls {
       margin-left: 0;
@@ -340,4 +351,7 @@ input.placeholder, textarea.placeholder {
 
 a.hidden-link {
   color: #333;
+  &.hidden-link-invert {
+    color: #fff;
+  }
 }

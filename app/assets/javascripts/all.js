@@ -55,8 +55,8 @@ $(document).ready(function(){
       var $form = $(this);
 
       // Reset fields and any validation errors, so form can be used again, but leave hidden_field values intact.
-      $('.control-group').find('.help-inline').remove();
-      $('.control-group').removeClass('error');
+      $('.form-group').find('.help-inline').remove();
+      $('.form-group').removeClass('has-error');
 
       // Insert response partial into page below the form.
       $('#comments').append(xhr.responseText);
@@ -83,11 +83,11 @@ $(document).ready(function(){
 
       // cleanup before adding new elements
       $('.error .help-inline').remove();
-      $('.control-group').removeClass('error');
+      $('.form-group').removeClass('has-error');
 
       for ( error in errors ) {
         input = $form.find('[name="user['+error+']"]');
-        input.parents('.control-group').addClass('error');
+        input.parents('.form-group').addClass('has-error');
         $('<span class="help-inline">' + errors[error] + '</span>').insertAfter(input);
       }
     });

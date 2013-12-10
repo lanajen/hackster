@@ -2,24 +2,24 @@
   = f.error_notification
 
   .row
-    .span12
+    .col-xs-12
       %h3
         Edit project
         .pull-right
-          = f.submit 'Update project', class: 'btn btn-primary btn-small'
-          = link_to 'Cancel', '', class: 'btn-cancel btn-link btn-small', data: { show: '.project .display', hide: '.project .edit' }
+          = f.submit 'Update project', class: 'btn btn-primary btn-sm'
+          = link_to 'Cancel', '', class: 'btn-cancel btn-link btn-sm', data: { show: '.project .display', hide: '.project .edit' }
       %hr
 
   .row
-    .span6
+    .col-xs-6
       = f.input :name
       = f.input :one_liner, as: :text, input_html: { rows: 4 },
         hint: 'Maximum 140 characters'
       = f.input :product_tags_string, as: :string, label: 'Tags', hint: 'Separate tags by commas. Used for finding your project more easily.'
 
-    .span6
+    .col-xs-6
       - if @project.logo and @project.logo.file_url(:thumb)
-        .control-group
+        .form-group
           .controls
             = image_tag @project.logo.file_url(:thumb)
       = f.simple_fields_for :logo do |f_logo|
@@ -29,7 +29,7 @@
       - if current_user.is? :admin
         = f.input :featured, inline_label: 'Feature this project', label: false
 
-      -# .control-group
+      -# .form-group
         .controls
           = render 'shared/wysihtml5_toolbar'
       -# = f.input :description, input_html: { id: 'wysihtml5-textarea', rows: 10 }, label: 'About'
@@ -49,16 +49,16 @@
       - @project.images.each do |image|
         = f.simple_fields_for :images, image do |f_image|
           -  if image.file_url
-            .control-group
+            .form-group
               .controls
                 = image_tag image.file_url(:thumb)
           - else
             = f_image.input :file, as: :file, label: false
             = f_image.input :file_cache, as: :hidden
-          .control-group
+          .form-group
             .controls
-              = f_image.link_to_remove 'Remove this image', class: 'btn btn-mini btn-danger'
-      -# = f.link_to_add 'Add an image', :images, class: 'btn btn-mini btn-success'
+              = f_image.link_to_remove 'Remove this image', class: 'btn btn-xs btn-danger'
+      -# = f.link_to_add 'Add an image', :images, class: 'btn btn-xs btn-success'
 
       -# = f.input :tech_tags_string, as: :string, label: 'Technologies used', hint: 'Separate technologies by commas'
 
@@ -66,14 +66,14 @@
         = f_group.input :name
         = f_group.simple_fields_for :access_group_members do |f_member|
           = f_member.input :user_id, collection: User.all
-          .control-group
+          .form-group
             .controls
-              = f_member.link_to_remove 'Remove this member', class: 'btn btn-danger btn-mini'
-        = f_group.link_to_add 'Add a group member', :access_group_members, class: 'btn btn-success btn-mini'
-        .control-group
+              = f_member.link_to_remove 'Remove this member', class: 'btn btn-danger btn-xs'
+        = f_group.link_to_add 'Add a group member', :access_group_members, class: 'btn btn-success btn-xs'
+        .form-group
           .controls
-            = f_group.link_to_remove 'Remove this group', class: 'btn btn-danger btn-mini'
-      -# = f.link_to_add 'Add an access group', :access_groups, class: 'btn btn-success btn-mini'
+            = f_group.link_to_remove 'Remove this group', class: 'btn btn-danger btn-xs'
+      -# = f.link_to_add 'Add an access group', :access_groups, class: 'btn btn-success btn-xs'
 
 = content_for :js do
   :javascript

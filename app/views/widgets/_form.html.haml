@@ -5,11 +5,11 @@
     = render partial: "widgets/form/#{@widget.identifier}_form", locals: { f: f, widget: @widget }
     .form-actions
       = f.submit 'Save changes', class: 'btn btn-primary'
-      = link_to 'Delete widget', project_widget_path(@project, @widget), class: 'btn btn-danger btn-small', method: :delete, data: { confirm: "Are you sure? There's no coming back!" }
-      = link_to 'Cancel', @project, class: 'btn btn-link btn-small'
+      = link_to 'Delete widget', project_widget_path(@project, @widget), class: 'btn btn-danger btn-sm', method: :delete, data: { confirm: "Are you sure? There's no coming back!" }
+      = link_to 'Cancel', @project, class: 'btn btn-link btn-sm'
   - else
     = f.input :type, collection: Widget.all_types, label: 'What kind of widget do you want to create?'
     = f.input :name, label: 'Give it a label'
     .form-actions
       = f.submit 'Save and continue', class: 'btn btn-primary'
-      = link_to 'Cancel', @project, class: 'btn btn-link btn-small'
+      = link_to 'Cancel', @project, class: 'btn btn-link btn-sm'

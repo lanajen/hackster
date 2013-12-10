@@ -71,7 +71,7 @@ ul.websites {
 
 .user-categories {
   @include font-size(12);
-  @extend .muted;
+  @extend .text-muted;
   .category {
     margin-left: 5px;
     margin-right: 15px;

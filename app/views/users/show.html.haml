@@ -7,7 +7,7 @@
   #content
     .container
       .row
-        .span9
+        .col-xs-9
           - if @user.projects.indexable.any?
             %ul.thumbnails
               - @user.projects.indexable.each do |project|
@@ -15,8 +15,8 @@
           - elsif user_is_current?
             %p
               You have no public projects.
-              = link_to 'Showcase a project', new_project_path, class: 'btn btn-info btn-small'
-            %p.smaller.muted
+              = link_to 'Showcase a project', new_project_path, class: 'btn btn-info btn-sm'
+            %p.smaller.text-muted
               %strong Tip:
               Access private projects from the top right drop-down menu.
           - else
@@ -28,7 +28,7 @@
                 %h3
                   Publications
                   - if can? :create, Publication, @user
-                    .pull-right= link_to 'Add a new publication', new_publication_path, class: 'btn btn-info btn-mini'
+                    .pull-right= link_to 'Add a new publication', new_publication_path, class: 'btn btn-info btn-xs'
               .content
                 - if @user.publications.any?
                   - @user.publications.each_with_fl do |publication, css|
@@ -54,7 +54,7 @@
                 - else
                   #{@user.name} has no publications yet.
 
-        .span3
+        .col-xs-3
           -# .well.sidebar-nav
             .header
               %h3 Following
@@ -83,7 +83,7 @@
                 %h4 Interests
               .content
                 - @user.interest_tags.pluck(:name).each do |tag|
-                  %span.label= tag
+                  %span.label.label-default= tag
           - elsif user_is_current?
             .transparent-well
               .header
@@ -98,7 +98,7 @@
                 %h4 Skills
               .content
                 - @user.skill_tags.pluck(:name).each do |tag|
-                  %span.label= tag
+                  %span.label.label-default= tag
           - elsif user_is_current?
             .transparent-well
               .header
@@ -117,5 +117,5 @@
                     %li
                       - broadcast = broadcast.decorate
                       = broadcast.message
-                      .muted
+                      .text-muted
                         = broadcast.created_at

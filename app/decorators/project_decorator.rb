@@ -8,7 +8,7 @@ class ProjectDecorator < ApplicationDecorator
     end
   end
 
-  def logo size=:thumb
+  def logo size=nil
     if model.logo and model.logo.file_url
       logo = model.logo.file_url(size)
     else
@@ -30,7 +30,7 @@ class ProjectDecorator < ApplicationDecorator
   end
 
   def logo_link size=:thumb
-    link_to_model h.image_tag(logo(size), alt: model.name)
+    link_to_model h.image_tag(logo(size), alt: model.name, class: 'img-responsive')
   end
 
   def image_link size=:thumb

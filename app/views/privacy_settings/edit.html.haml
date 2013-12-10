@@ -21,10 +21,10 @@
           %td
             = f_rule.input :privatable_user_id, collection: @access_groups, label: false
             = f_rule.input :privatable_user_type, as: :hidden, input_html: { value: 'AccessGroup' }
-          %td= f_rule.link_to_remove content_tag(:i, '', class: 'icon-trash'), class: 'btn'
+          %td= f_rule.link_to_remove content_tag(:i, '', class: 'icon-trash'), class: 'btn btn-default'
       %tr.sortable-disabled
-        %td{ colspan: 3 }= f.link_to_add 'Add a rule', :privacy_rules, class: 'btn btn-success btn-mini'
-  = f.submit class: 'btn'
+        %td{ colspan: 3 }= f.link_to_add 'Add a rule', :privacy_rules, class: 'btn btn-success btn-xs'
+  = f.submit class: 'btn btn-default'
   = link_to 'Cancel', params[:redirect_to], class: 'btn btn-link'
 
 = content_for :js do

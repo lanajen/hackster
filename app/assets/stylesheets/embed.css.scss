@@ -44,9 +44,10 @@
     height: 150px;
     width: 300px;
   }
-  .project-thumb.span3 {
+  .project-thumb {
     list-style: none;
     margin-right: 20px;
+    width: 212px;
   }
 }
 
@@ -55,6 +56,7 @@
   .project-thumb {
     @include box-shadow(none);
     margin: 0;
+    width: 212px;
     .inner-thumb {
       border: 1px solid #E2E2E2;
       border-top: none;

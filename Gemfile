@@ -5,9 +5,9 @@ gem 'rails', '4.0.1'
 
 #  assets
 gem 'asset_sync', '1.0.0'
-gem 'bootstrap-sass-rails', '2.3.2.1'
+gem 'bootstrap-sass-rails', '3.0.2.1'
 gem 'coffee-rails', '4.0.1'
-gem 'compass-rails', '2.0.alpha.0'
+gem 'compass-rails', '1.1.2'
 gem 'font-awesome-rails', '4.0.3.0'
 gem 'sass-pygments-rails', '0.1'
 gem 'sass-rails',   '4.0.1'

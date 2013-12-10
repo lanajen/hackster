@@ -1,4 +1,4 @@
-.control-group
+.form-group
   = label_tag :"filters[#{field}]", field.humanize
   .controls
     = check_box_tag :"filters[#{field}]", params[:filters].try(:[], :"#{field}")

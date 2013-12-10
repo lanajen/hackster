@@ -1,4 +1,4 @@
-.span3.offset4.wellified
+.col-xs-3.col-xs-offset-4.wellified
   %h2{ style: 'text-align:center;' } Create your Hackster.io account
   = simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f|
     = f.error_notification
@@ -13,7 +13,7 @@
     = f.input :email, label: false, placeholder: 'Email'
     = f.input :email_confirmation, label: false, placeholder: 'Confirm email'
     = f.input :password, label: false, placeholder: 'Password'
-    = f.button :submit, "Sign up", class: 'btn btn-block'
+    = f.button :submit, "Sign up", class: 'btn btn-default btn-block'
 
   %p
     Already have an account?

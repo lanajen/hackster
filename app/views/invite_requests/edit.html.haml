@@ -1,4 +1,4 @@
-.span5.offset3.wellified
+.col-xs-5.col-xs-offset-3.wellified
   %h2.text-center You're on the list!
   %p
     %strong Want to get in faster? Show us what you've built
@@ -7,10 +7,10 @@
       = f_project.input :name, label: 'What is it called?', required: false
       = f_project.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner description, Twitter-style.', required: false
       - if @invite_request.project.logo and @invite_request.project.logo.file_url(:thumb)
-        .control-group
+        .form-group
           .controls
             = image_tag @invite_request.project.logo.file_url(:thumb)
       = f_project.simple_fields_for :logo do |f_logo|
         = f_logo.input :file, as: :file, label: 'Main image or logo', required: false
         = f_logo.input :file_cache, as: :hidden
-    = f.button :submit, 'Get in faster', class: 'btn-block btn'
+    = f.button :submit, 'Get in faster', class: 'btn-block btn btn-default'

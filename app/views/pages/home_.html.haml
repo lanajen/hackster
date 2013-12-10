@@ -1,12 +1,12 @@
 .row
-  .span12
+  .col-xs-12
     .alert.alert-info.text-center
       Hackster.io is the place where hardware hackers showcase their projects.
       - unless user_signed_in?
-        = link_to 'Request an invite', new_invite_request_path, class: 'btn btn-info btn-small'
+        = link_to 'Request an invite', new_invite_request_path, class: 'btn btn-info btn-sm'
 
 .row
-  .span12
+  .col-xs-12
     .well
       .header.no-content
         %h2
@@ -17,7 +17,7 @@
         = render partial: 'projects/project_thumb', locals: { project: project.decorate }
 
 .row
-  .span12
+  .col-xs-12
     .well
       .header.no-content
         %h2
@@ -28,7 +28,7 @@
         = render partial: 'users/user_thumb', locals: { user: user.decorate }
 
 .row
-  .span12
+  .col-xs-12
     .well
       .header.no-content
         %h2
@@ -40,7 +40,7 @@
 
 -#
   .row
-    .span12
+    .col-xs-12
       .well
         .header.no-content
           %h2

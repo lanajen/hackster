@@ -4,16 +4,16 @@
   - widget.documents.each do |document|
     = f.simple_fields_for :documents, document do |f_document|
       -  if document.persisted?
-        .control-group.url
+        .form-group.url
           .controls
             = document.file_name
       - else
         = f_document.input :file, as: :file, label: false
         = f_document.input :file_cache, as: :hidden
-      .control-group
+      .form-group
         .controls
-          = f_document.link_to_remove 'Remove this file', class: 'btn btn-mini btn-danger'
-  = f.link_to_add 'Add a file', :documents, class: 'btn btn-mini btn-success'
+          = f_document.link_to_remove 'Remove this file', class: 'btn btn-xs btn-danger'
+  = f.link_to_add 'Add a file', :documents, class: 'btn btn-xs btn-success'
 
 = content_for :js do
   :javascript

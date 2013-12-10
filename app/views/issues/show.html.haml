@@ -1,5 +1,5 @@
 .row
-  .span8
+  .col-xs-8
     = render partial: 'issues/issue', locals: { threadable: @threadable, issue: @thread_post }
 
     .well
@@ -14,10 +14,10 @@
 
         = render partial: 'comments/form', locals: { comment: Comment.new, commentable: @thread_post }
 
-  .span4
+  .col-xs-4
     .well
       .header
         %h4 How to solve this issue
       .content
-        %p= link_to 'Invite people to participate', project_participant_invites_path(@project), class: 'btn btn-small btn-info'
-        %p= link_to 'Make this issue public', '', class: 'btn btn-small btn-info'
+        %p= link_to 'Invite people to participate', project_participant_invites_path(@project), class: 'btn btn-sm btn-info'
+        %p= link_to 'Make this issue public', '', class: 'btn btn-sm btn-info'

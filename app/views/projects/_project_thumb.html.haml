@@ -1,23 +1,24 @@
-%li.span3.project-thumb
-  .thumb
-    .photo-thumb= project.logo_link(:big)
-    .inner-thumb
-      %h3= link_to project.name, project
-      %h4
-        by
-        = project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
-      %p= truncate project.one_liner, length: 140
-      .thumb-bottom
-        %hr
-        - if project.public?
-          %span.counter.first
-            %i.fa.fa-eye
-            = project.impressions_count
+.col-xs-3
+  .project-thumb
+    .thumb
+      .photo-thumb= project.logo_link(:big)
+      .inner-thumb
+        %h3= link_to project.name, project
+        %h4
+          by
+          = project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
+        %p= truncate project.one_liner, length: 140
+        .thumb-bottom
+          %hr
+          - if project.public?
+            %span.counter.first
+              %i.fa.fa-eye
+              = project.impressions_count
+            %span.counter
+              %i.fa.fa-thumbs-o-up
+              = project.respects_count
+          - else
+            Private
           %span.counter
-            %i.fa.fa-thumbs-o-up
-            = project.respects_count
-        - else
-          Private
-        %span.counter
-          %i.fa.fa-comments
-          = project.comments_count
+            %i.fa.fa-comments
+            = project.comments_count

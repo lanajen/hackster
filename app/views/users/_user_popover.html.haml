@@ -4,5 +4,5 @@
     %h4
       = link_to user.name, user
       - if defined?(team_member)
-        %span.muted= team_member.user.role
+        %span.text-muted= team_member.user.role
     %p= user.mini_resume

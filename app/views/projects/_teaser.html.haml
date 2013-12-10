@@ -1,53 +1,66 @@
 - if @project.private
   .row
-    .span12
+    .col-xs-12
       .alert
         This project is private so only you can see it.
-        = link_to 'Make public', project_path(@project, project: { private: 0 }), method: :patch, class: 'btn btn-warning btn-small'
+        = link_to 'Make public', project_path(@project, project: { private: 0 }), method: :patch, class: 'btn btn-warning btn-sm'
 
 .row
-  .span12.teaser
-    .pull-left
-      .avatar.main-avatar= image_tag @project.logo(:medium), alt: @project.name
+  .col-xs-4{ style: 'padding-right: 0;'}
+    .teaser
+      .text-holder
+        %h1
+          = link_to @project.name, @project, class: 'hidden-link hidden-link-invert'
+        - if @project.one_liner.present?
+          = @project.one_liner
+        - elsif can? :edit, @project and @project.public?
+          No one liner yet.
+          = link_to 'Add one?', edit_project_path(@project), data: { remote: true }
+        %p.author
+          by
+          = @project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
 
-    .pull-left.text-holder
-      %h1
-        = link_to @project.name, @project, class: 'hidden-link'
-        %span.tags
+        .tags
           - if @project.product_tags.any?
             - @project.product_tags.pluck(:name).each do |tag|
               %span= link_to tag, "/search?query=#{CGI::escape(tag)}", class: 'hidden-link'
           - elsif can? :edit, @project and @project.public?
             No tags yet.
             = link_to 'Add some?', edit_project_path(@project), data: { remote: true }
-      - if @project.one_liner.present?
-        = @project.one_liner
-      - elsif can? :edit, @project and @project.public?
-        No one liner yet.
-        = link_to 'Add one?', edit_project_path(@project), data: { remote: true }
-      %p.author
-        by
-        = @project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
-      #share
+
+      .actions.text-center
         = render partial: 'widgets/comments_button', locals: { size: @project.comments_count, tooltip_orientation: 'top' }
         - if @project.public?
           = render 'projects/share'
           = render 'projects/project_embed_popup'
           = render partial: 'respects/button', locals: { project: @project }
-      -# %p.muted
+      -# %p.text-muted
         = l @project.start_date, format: :month
         \-
         = @project.end_date ? l(@project.end_date, format: :month) : 'Present'
-      -# %p.muted= link_to @project.website, @project.website if @project.website
+      -# %p.text-muted= link_to @project.website, @project.website if @project.website
 
-    - if can? :edit, @project
-      .btn-edit
-        -# = render partial: 'shared/locked_icon', locals: { record: @project, size: nil }
-        = link_to 'Edit', edit_project_path(@project), data: { remote: true }
-        = link_to 'Add a widget', new_project_widget_path(@project)
-        = link_to 'Reorder widgets', project_widgets_path(@project)
+      -# - if current_user.try(:is_following_project?, @project)
+        = link_to 'Following', followers_project_path(@project), method: :delete, class: 'btn-follow btn-inverse'
+      - else
+        = link_to 'Follow', followers_project_path(@project), method: :post, class: 'btn-follow'
 
-    -# - if current_user.try(:is_following_project?, @project)
-      = link_to 'Following', followers_project_path(@project), method: :delete, class: 'btn-follow btn-inverse'
-    - else
-      = link_to 'Follow', followers_project_path(@project), method: :post, class: 'btn-follow'
+  .col-xs-8{ style: 'padding-left: 0;'}
+    = image_tag @project.logo, alt: @project.name, class: 'img-responsive'
+
+.row
+  .col-xs-12
+    .navbar.navbar-default{ style: 'background: #fff;' }
+      %ul.nav.navbar-nav
+        %li
+          %a Home
+        - if can? :edit, @project
+          %li.dropdown
+            %a.dropdown-toggle{ data: { toggle: 'dropdown' }, href: '#' }
+              Edit
+              %b.caret
+            %ul.dropdown-menu
+              -# = render partial: 'shared/locked_icon', locals: { record: @project, size: nil }
+              %li= link_to 'Settings', edit_project_path(@project), data: { remote: true }
+              %li= link_to 'Add a widget', new_project_widget_path(@project)
+              %li= link_to 'Reorder widgets', project_widgets_path(@project)

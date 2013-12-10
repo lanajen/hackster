@@ -49,48 +49,49 @@
               = link_to "Don't remind me.", '/notifications?notif=1311complete_profile&close=%23hello-world', data: { remote: true }, method: :delete, class: 'btn-close-notif btn-close-notif-last'
               = link_to "Got it.", '#', data: { close: '#hello-world' }, class: 'btn-close btn-close-notif'
 
-      .navbar.navbar-static-top
-        .navbar-inner
-          .container{ style: 'position: relative;' }
-            %a.btn.btn-navbar(data-target=".nav-collapse" data-toggle="collapse")
+      .navbar.navbar-default.navbar-static-top
+        .container{ style: 'position:relative;' }
+          .navbar-header
+            %button.navbar-toggle(data-target=".navbar-collapse" data-toggle="collapse")
               %span.fa.fa-bar
               %span.fa.fa-bar
               %span.fa.fa-bar
-            = link_to image_tag('hackster_logo_20.png'), home_path, class: 'brand'
-            .container.nav-collapse
-              .pull-left= render 'shared/search_form'
-              %ul.nav
-                %li= link_to 'Explore', projects_path
-                %li= link_to 'Showcase', new_project_path
-              %ul.nav.pull-right
-                - if user_signed_in?
-                  .btn-group
-                    = link_to image_tag(current_user.decorate.avatar(:mini), style: 'width:30px'), current_user
-                    %button.btn.dropdown-toggle{"data-toggle" => "dropdown"}
-                      %span.caret
-                    %ul.dropdown-menu.pull-right
-                      %li= link_to current_user.name, current_user
-                      - if current_user.projects.any?
-                        %li.divider
-                        - current_user.projects.each do |project|
-                          %li= link_to project.name, project
+            = link_to image_tag('hackster_logo_20.png'), home_path, class: 'navbar-brand navbar-btn'
+
+          .collapse.navbar-collapse
+            .col-xs-4.navbar-left= render 'shared/search_form'
+            %ul.nav.navbar-nav
+              %li= link_to 'Explore', projects_path
+              %li= link_to 'Showcase', new_project_path
+            %ul.nav.navbar-nav.navbar-right
+              - if user_signed_in?
+                .btn-group.navbar-btn
+                  = link_to image_tag(current_user.decorate.avatar(:mini), style: 'width:32px;'), current_user, class: 'btn', style: 'padding:0;'
+                  %button.btn.btn-default.dropdown-toggle{"data-toggle" => "dropdown"}
+                    %span.caret{ style: 'border-bottom-color: #000;border-top-color: #000;' }
+                  %ul.dropdown-menu
+                    %li= link_to current_user.name, current_user
+                    - if current_user.projects.any?
                       %li.divider
-                      %li= link_to 'Invite friends', new_user_invitation_path
-                      %li.divider
-                      %li= link_to 'Log out', destroy_user_session_path, method: :delete
-                - else
-                  - unless request.path == root_path
-                    %li.with-button
-                      %span= link_to 'Request an invite', new_invite_request_path, class: 'btn btn-small btn-info', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Request an invite', '#{request.path}']);" #new_user_registration_path
-                  %li.dropdown
-                    %a#login.dropdown-toggle{"data-toggle" => "dropdown", href: '#' }
-                      Log in
-                      %strong.caret
-                    .dropdown-menu{:style => "padding: 15px; padding-bottom: 0px;"}
-                      = render 'devise/sessions/form'
-              - if user_signed_in? and current_user.is? :admin
-                %ul.nav.pull-right
-                  %li= link_to 'Admin', admin_users_path
+                      - current_user.projects.each do |project|
+                        %li= link_to project.name, project
+                    %li.divider
+                    %li= link_to 'Invite friends', new_user_invitation_path
+                    %li.divider
+                    %li= link_to 'Log out', destroy_user_session_path, method: :delete
+              - else
+                - unless request.path == root_path
+                  %li.with-button
+                    %span= link_to 'Request an invite', new_invite_request_path, class: 'btn btn-sm btn-info navbar-btn', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Request an invite', '#{request.path}']);" #new_user_registration_path
+                %li.dropdown
+                  %a#login.dropdown-toggle{"data-toggle" => "dropdown", href: '#' }
+                    Log in
+                    %strong.caret
+                  .dropdown-menu{:style => "padding: 15px; padding-bottom: 0px;"}
+                    = render 'devise/sessions/form'
+            - if user_signed_in? and current_user.is? :admin
+              %ul.nav.navbar-nav.navbar-right
+                %li= link_to 'Admin', admin_users_path
 
             .alert-flash= bootstrap_flash
 
@@ -106,12 +107,12 @@
 
     %footer
       .container
-        %ul
+        %ul.list-unstyled.list-inline.pull-left
           %li= link_to 'Help', 'mailto:team@hackster.io?subject=Help!'
           %li= link_to 'Feedback', 'mailto:team@hackster.io?subject=What%20I%20think%20about%20Hackster.io'
           %li= link_to 'Jobs', 'mailto:jobs@hackster.io?subject=I want to work with you guys!'
           %li
-        %ul.pull-right
+        %ul.list-unstyled.list-inline.pull-right
           %li= link_to content_tag(:i, '', class: 'fa fa-twitter fa-lg').html_safe, 'http://twitter.com/hacksterio', alt: 'Hackster.io on Twitter', class: 'link-icon'
           %li= link_to content_tag(:i, '', class: 'fa fa-facebook fa-lg').html_safe, 'http://www.facebook.com/hacksterio', alt: 'Hackster.io on Facebook', class: 'link-icon'
           %li Hackster.io 2013

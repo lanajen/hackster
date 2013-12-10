@@ -3,7 +3,7 @@
 
   .form-inputs
     = f.input :title
-    .control-group
+    .form-group
       .controls
         = render 'shared/wysihtml5_toolbar'
     = f.input :body, input_html: { id: 'wysihtml5-textarea', rows: 10 }

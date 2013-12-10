@@ -1,5 +1,5 @@
 .search-page.row
-  .span3
+  .col-xs-3
     %ul.nav.nav-tabs.nav-stacked
       %li{ class: "#{'active' if params[:type] == nil}" }= link_to 'All', search_path(q: params[:q], type: nil)
       %li{ class: "#{'active' if params[:type] == 'user'}" }= link_to 'People', search_path(q: params[:q], type: 'user')
@@ -8,14 +8,14 @@
     -# .well
       .content
         %form{ action: search_path, method: :get, id: 'full-search-form' }
-          .control-group
+          .form-group
             .controls
               %label
                 %strong Keywords
               = text_field_tag :q, params[:q], class: 'input-medium', placeholder: 'Search'
-          .control-group= submit_tag 'Update results', class: 'btn btn-mini'
+          .form-group= submit_tag 'Update results', class: 'btn btn-default btn-xs'
 
-          -# .control-group
+          -# .form-group
             .controls
               %label
                 %strong Tags
@@ -29,7 +29,7 @@
                 %label.checkbox
                   = check_box_tag "tech_tag[#{tag}]", 1, (params[:tech_tag] and params[:tech_tag][tag.to_sym])
                   = tag
-  .span9
+  .col-xs-9
     -# = render 'shared/search_form'
 
     .well

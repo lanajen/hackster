@@ -3,15 +3,13 @@
 
 .content.projects
   .row
-    .span12
+    .col-xs-12
       %h1
         Explore all projects
-        %span.smaller.muted page #{params[:page] || 1}
+        %small page #{params[:page] || 1}
 
   .row
-    .span12
-      %ul.thumbnails
-        - @projects.each do |project|
-          = render partial: "projects/project_thumb", locals: { project: project.decorate }
+    - @projects.each do |project|
+      = render partial: "projects/project_thumb", locals: { project: project.decorate }
   .row
-    .span12.text-center= will_paginate @projects
+    .col-xs-12.text-center= will_paginate @projects

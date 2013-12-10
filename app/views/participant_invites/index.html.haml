@@ -16,10 +16,10 @@
             = f_invite.input :user_id, input_html: { value: current_user.id }, as: :hidden
           %td= f_invite.association :issue, collection: @issues, label: false
           %td= f_invite.input :accepted, disabled: true, label: false, as: :select
-          %td= f_invite.link_to_remove content_tag(:i, '', class: 'icon-trash'), class: 'btn'
+          %td= f_invite.link_to_remove content_tag(:i, '', class: 'icon-trash'), class: 'btn btn-default'
       %tr.sortable-disabled
-        %td{ colspan: 2 }= f.link_to_add 'Add someone else', :participant_invites, class: 'btn btn-success btn-mini'
-  = f.submit class: 'btn'
+        %td{ colspan: 2 }= f.link_to_add 'Add someone else', :participant_invites, class: 'btn btn-success btn-xs'
+  = f.submit class: 'btn btn-default'
   = link_to 'Cancel', params[:redirect_to], class: 'btn btn-link'
 
 = content_for :js do

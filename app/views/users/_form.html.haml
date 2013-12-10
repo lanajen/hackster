@@ -2,23 +2,23 @@
   = f.error_notification
 
   .row
-    .span12
+    .col-xs-12
       %h3
         Edit profile
         .pull-right
-          = f.submit 'Update profile', class: 'btn btn-primary btn-small'
-          = link_to 'Cancel', '', class: 'btn-cancel btn-link btn-small', data: { show: '.user .display', hide: '.user .edit' }
+          = f.submit 'Update profile', class: 'btn btn-primary btn-sm'
+          = link_to 'Cancel', '', class: 'btn-cancel btn-link btn-sm', data: { show: '.user .display', hide: '.user .edit' }
       %hr
 
   .row
-    .span6
+    .col-xs-6
       = f.input :full_name
       = f.input :user_name
       = f.input :email
       = f.input :mini_resume, as: :text, input_html: { rows: 4 },
         hint: 'Maximum 140 characters'
 
-      .control-group
+      .form-group
         .controls= image_tag(@user.avatar.file_url(:thumb)) if @user.avatar.try(:file_url)
       = f.simple_fields_for :avatar do |f_avatar|
         = f_avatar.input :file, as: :file, label: 'Profile picture'
@@ -27,7 +27,7 @@
       = f.input :city
       = f.input :country
 
-    .span6
+    .col-xs-6
       -# = f.input :categories, as: :check_boxes, collection: User::CATEGORIES.sort
       = f.input :facebook_link
       = f.input :github_link

@@ -10,30 +10,30 @@
 
 #wysihtml5-toolbar.btn-toolbar{ style: 'display: none;' }
   .btn-group
-    %a.btn.wysihtml5-command{ data: { 'wysihtml5-command' => 'bold' }, rel: 'tooltip', title: 'bold' }
+    %a.btn.btn-default.wysihtml5-command{ data: { 'wysihtml5-command' => 'bold' }, rel: 'tooltip', title: 'bold' }
       %i.fa.fa-bold
-    %a.btn.wysihtml5-command{ data: { 'wysihtml5-command' => 'italic' }, rel: 'tooltip', title: 'italic' }
+    %a.btn.btn-default.wysihtml5-command{ data: { 'wysihtml5-command' => 'italic' }, rel: 'tooltip', title: 'italic' }
       %i.fa.fa-italic
-    %a.btn.wysihtml5-command{ data: { 'wysihtml5-command' => 'underline' }, rel: 'tooltip', title: 'underline' }
+    %a.btn.btn-default.wysihtml5-command{ data: { 'wysihtml5-command' => 'underline' }, rel: 'tooltip', title: 'underline' }
       %i.fa.fa-underline
 
   .btn-group
-    %a.btn.wysihtml5-command{ data: { 'wysihtml5-command' => 'formatBlock', 'wysihtml5-command-value' => 'h5' }, rel: 'tooltip', title: 'title' }
+    %a.btn.btn-default.wysihtml5-command{ data: { 'wysihtml5-command' => 'formatBlock', 'wysihtml5-command-value' => 'h5' }, rel: 'tooltip', title: 'title' }
       %i.fa.fa-font
 
   .btn-group
-    %a.btn.wysihtml5-command{ data: { 'wysihtml5-command' => 'insertUnorderedList' }, rel: 'tooltip', title: 'insert bullet points' }
+    %a.btn.btn-default.wysihtml5-command{ data: { 'wysihtml5-command' => 'insertUnorderedList' }, rel: 'tooltip', title: 'insert bullet points' }
       %i.fa.fa-list
 
   - if defined? activate_float and activate_float
     .btn-group
-      %a.btn.wysihtml5-command{ data: { 'wysihtml5-command' => 'justifyLeft' }, rel: 'tooltip', title: 'align left' }
+      %a.btn.btn-default.wysihtml5-command{ data: { 'wysihtml5-command' => 'justifyLeft' }, rel: 'tooltip', title: 'align left' }
         %i.fa.fa-align-left
-      %a.btn.wysihtml5-command{ data: { 'wysihtml5-command' => 'justifyRight' }, rel: 'tooltip', title: 'align right' }
+      %a.btn.btn-default.wysihtml5-command{ data: { 'wysihtml5-command' => 'justifyRight' }, rel: 'tooltip', title: 'align right' }
         %i.fa.fa-align-right
 
   .btn-group
-    %a.btn.wysihtml5-command{ data: { 'wysihtml5-command' => 'createLink' }, rel: 'tooltip', title: 'insert link' }
+    %a.btn.btn-default.wysihtml5-command{ data: { 'wysihtml5-command' => 'createLink' }, rel: 'tooltip', title: 'insert link' }
       %i.fa.fa-link
     .dialog{ data: { 'wysihtml5-dialog' => 'createLink' }, style: 'display: none;' }
       %label
@@ -42,7 +42,7 @@
       %a.btn{ data: { 'wysihtml5-dialog-action' => 'save' } } OK
       %a.btn{ data: { 'wysihtml5-dialog-action' => 'cancel' } } Cancel
 
-    %a.btn.wysihtml5-command{ data: { 'wysihtml5-command' => 'insertImage' }, rel: 'tooltip', title: 'insert image' }
+    %a.btn.btn-default.wysihtml5-command{ data: { 'wysihtml5-command' => 'insertImage' }, rel: 'tooltip', title: 'insert image' }
       %i.fa.fa-picture-o
     .dialog{ data: { 'wysihtml5-dialog' => 'insertImage' }, style: 'display: none;' }
       %label
@@ -51,4 +51,4 @@
       %a.btn{ data: { 'wysihtml5-dialog-action' => 'save' } } OK
       %a.btn{ data: { 'wysihtml5-dialog-action' => 'cancel' } } Cancel
 
-  %a.btn.btn-link.btn-small{ data: { 'wysihtml5-action' => 'change_view' } } Toggle HTML view
+  %a.btn.btn-link.btn-sm{ data: { 'wysihtml5-action' => 'change_view' } } Toggle HTML view

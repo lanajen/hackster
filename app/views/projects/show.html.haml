@@ -1,11 +1,11 @@
 -# .row
-  .span4
+  .col-xs-4
     .well.sidebar-nav
       .header
         %h3
           Team
           - if can? :update_team, @project
-            .pull-right= link_to 'Edit team members', edit_team_members_project_path(@project), class: 'btn btn-info btn-mini'
+            .pull-right= link_to 'Edit team members', edit_team_members_project_path(@project), class: 'btn btn-info btn-xs'
       .content
         %ul{ style: 'list-style: none;margin:0;' }
           - @team_size = @project.team_members.size
@@ -26,16 +26,16 @@
 
 .row
   - if @widgets.any?
-    #column1.span6
+    #column1.col-xs-6
       - @project.widgets_first_col.each do |widget|
         = render partial: 'widgets/widget', locals: { widget: widget }
-    #column2.span6
+    #column2.col-xs-6
       - @project.widgets_second_col.each do |widget|
         = render partial: 'widgets/widget', locals: { widget: widget }
       = render partial: 'widgets/comment_widget', locals: { comments: @project.comments, commentable: @project }
     #sidebar
   - else
-    .span6.offset3
+    .col-xs-6.col-xs-offset-3
       .well
         .content
           - if can? :edit, @project

@@ -1,4 +1,4 @@
-.span7.offset2.wellified
+.col-xs-7.col-xs-offset-2.wellified
   %h2{ style: 'text-align:center;' } Hi!
   %p{ style: 'text-align:center;' } Good to see you here. Before we get started, why don't you complete your profile?
   = simple_form_for @user, url: user_after_registration_path, html: { class: 'widget-form form-horizontal' } do |f|
@@ -14,4 +14,4 @@
     = f.input :country, label: 'Country'
     .form-actions
       = f.button :submit, "Done!", class: 'btn btn-primary'
-      = link_to "I'll do this later", user_return_to, class: 'btn btn-link btn-small'
+      = link_to "I'll do this later", user_return_to, class: 'btn btn-link btn-sm'

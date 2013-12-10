@@ -4,7 +4,7 @@
   .pull-left.comment-text
     = link_to comment.user.decorate.name_link
     = comment.body.html_safe
-    .muted.comment-date
+    .text-muted.comment-date
       = time_ago_in_words(comment.created_at)
       ago
   - if can? :destroy, comment

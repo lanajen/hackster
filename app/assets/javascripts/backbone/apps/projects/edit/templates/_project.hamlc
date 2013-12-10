@@ -1,9 +1,0 @@
-.project
-  .container
-    .row
-      .span8
-        #media
-        #description
-        #team
-      .span4
-        #followers

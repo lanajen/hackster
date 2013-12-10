@@ -4,14 +4,14 @@
   - if widget.documents.any?
     #stlviewer{ style: 'width:420px;height:315px' }
       .stl-play
-        = link_to "#{content_tag(:i, '', class: 'fa fa-play')} Play renderings".html_safe, '#', data: { stlfile: stl_url }, class: 'loadstl btn btn-large'
+        = link_to "#{content_tag(:i, '', class: 'fa fa-play')} Play renderings".html_safe, '#', data: { stlfile: stl_url }, class: 'loadstl btn btn-default btn-lg'
     %ul
       - widget.documents.each do |document|
         %li
           = document.file_name
           .btn-group
-            = link_to "#{content_tag(:i, '', class: 'fa fa-play')} Play".html_safe, '#', data: { stlfile: document.file_url }, class: 'loadstl btn btn-small'
-            = link_to "#{content_tag(:i, '', class: 'fa fa-download')} Download".html_safe, document.file_url, class: 'download btn btn-small btn-inverse'
+            = link_to "#{content_tag(:i, '', class: 'fa fa-play')} Play".html_safe, '#', data: { stlfile: document.file_url }, class: 'loadstl btn btn-default btn-sm'
+            = link_to "#{content_tag(:i, '', class: 'fa fa-download')} Download".html_safe, document.file_url, class: 'download btn btn-sm btn-primary'
 
   - else
     %p No documents yet.

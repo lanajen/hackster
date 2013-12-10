@@ -1,4 +1,4 @@
-.span3.offset4.wellified
+.col-xs-3.col-xs-offset-4.wellified
   %h2{ style: 'text-align:center;' } Change your password
   = simple_form_for(resource, :as => resource_name, :url => password_path(resource_name), :html => { :method => :patch }) do |f|
     = f.error_notification
@@ -8,7 +8,7 @@
     = f.input :password, placeholder: "New password", required: true, label: false
     = f.input :password_confirmation, placeholder: "Confirm your new password", required: true, label: false
 
-    = f.button :submit, "Change my password", class: 'btn btn-block'
+    = f.button :submit, "Change my password", class: 'btn btn-default btn-block'
 
   %p.text-center
     = link_to 'Cancel', root_path

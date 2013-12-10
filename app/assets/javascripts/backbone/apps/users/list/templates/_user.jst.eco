@@ -1,2 +1,0 @@
-<td><%= @full_name %></td>
-<td><%= @created_at_formatted %></td>

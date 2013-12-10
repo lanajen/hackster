@@ -38,6 +38,7 @@
 
 .project-thumb, .user-thumb {
   @extend .box-white-bg;
+  margin-bottom: 20px;
   .photo-thumb {
     a {
       display: block;
@@ -86,26 +87,27 @@
 
 #heading.project {
   .author {
-    @extend .muted;
+    @extend .text-muted;
     @include font-size(12);
     margin-bottom: 10px;
   }
-  h1 {
-    .tags {
-      @include font-size(10);
-      @extend .muted;
-      span {
-        margin: 0 3px 0 5px;
-      }
-      a.hidden-link {
-        color: #999;
-      }
+  .tags {
+    @include font-size(12);
+    @extend .text-muted;
+    span {
+      margin: 0 3px 0 5px;
     }
-  }
-}
+    a.hidden-link {
+      color: #999;
+    }
+  }}
 
 .projects {
   .pagination {
     margin: 10px 0;
   }
+}
+
+a.action-respected {
+  color: #FFD700 !important;
 }

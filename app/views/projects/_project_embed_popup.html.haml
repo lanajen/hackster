@@ -1,5 +1,5 @@
-= link_to "#{content_tag(:i, '', class: 'fa fa-code')} Embed".html_safe, '#', class: 'btn btn-mini', onclick: "openPopup('#embed-popup');"
--# #{content_tag(:i, '', class: 'fa fa-code')}
+= link_to content_tag(:i, '', class: 'fa fa-code'), '#', onclick: "openPopup('#embed-popup');", rel: 'tooltip', title: 'Embed'
+
 #embed-popup
   .embed-popup-outer
     .embed-popup-inner
