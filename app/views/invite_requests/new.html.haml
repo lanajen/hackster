@@ -1,9 +1,11 @@
-.col-xs-5.col-xs-offset-3.wellified.text-center.page-centered
-  = bootstrap_flash
-  %h1 Your hacker profile
-  %p Do you hack hardware? Build up your hacker identity all in one place and show the world what you're up to.
-  %p.cta Be the first to get in:
-  = simple_form_for @invite_request, html: { class: 'form-inline' } do |f|
-    = f.input :email, autofocus: true, required: false, placeholder: 'nikola@tesla.com', label: false
-    = f.button :submit, "I'm awesome", class: 'btn btn-inverse'
-    %p.help-block We'll send the invite to that address. No spam, promise.
+.col-xs-4.col-xs-offset-3.page-centered
+  .wellified.text-center
+    = bootstrap_flash
+    %h1 Your hacker profile
+    %p Do you hack hardware? Build up your hacker identity all in one place and show the world what you're up to.
+    %p.cta Be the first to get in:
+    = simple_form_for @invite_request, html: { class: 'form-inline' } do |f|
+      .row
+        = f.input :email, autofocus: true, required: false, placeholder: 'nikola@tesla.com', label: false, wrapper_html: { class: 'col-xs-9' }
+        = f.button :submit, "I'm awesome", class: 'btn btn-info col-xs-3'
+      %p.help-block We'll send the invite to that address. No spam, promise.

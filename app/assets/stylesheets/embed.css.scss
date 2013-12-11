@@ -20,8 +20,8 @@
     top: 50%;
     left: 50%;
     position: fixed;
-    margin-left: -290px;
-    margin-top: -175px;
+    margin-left: -300px;
+    margin-top: -180px;
   }
   .embed-popup-inner {
     border: 1px solid #dcdcdc;
@@ -31,8 +31,8 @@
     -ms-border-radius: 5px;
     -o-border-radius: 5px;
     border-radius: 5px;
-    width: 580px;
-    height: 350px;
+    width: 600px;
+    height: 360px;
     position: relative;
     padding: 20px;
   }
@@ -49,7 +49,6 @@
     .project-thumb {
       list-style: none;
       margin-right: 20px;
-      width: 212px;
       float: left;
     }
   }
@@ -60,12 +59,13 @@
   .project-thumb {
     @include box-shadow(none);
     margin: 0;
-    width: 212px;
+    width: 220px;
     .inner-thumb {
       border: 1px solid #E2E2E2;
       border-top: none;
+      height: 155px;
       .thumb-bottom {
-        width: 210px;
+        width: 218px;
         .counter {
           margin-left: 15px;
           margin-right: 0;
@@ -74,7 +74,7 @@
             margin-left: 5px;
           }
           &.logo {
-            width: 56px;
+            width: 60px;
             display: inline-block;
             text-align: center;
             img {

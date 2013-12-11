@@ -1,4 +1,4 @@
-- if url
+- if url.present?
   - case type
   - when 'facebook_link'
     = link_to content_tag(:i, '', class: 'fa fa-facebook-square'), url
