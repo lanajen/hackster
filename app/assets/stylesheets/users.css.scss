@@ -1,14 +1,8 @@
 .avatar {
-  display: inline-block;
-  @include border-radius(3px);
   &.main-avatar {
-    padding: 3px;
-    background: #f2f2f2;
-    border: 1px solid #e2e2e2;
-    margin: 0 20px 20px 0;
+    width: 120px;
   }
   &.mini-avatar {
-    @include border-radius(1px);
   }
 }
 
@@ -22,20 +16,6 @@
 
 .popover {
   display: none;
-}
-
-ul.websites {
-  list-style: none;
-  margin: 5px 0;
-  li {
-    float: left;
-    a {
-      margin-right: 5px;
-      &:hover {
-        text-decoration: none;
-      }
-    }
-  }
 }
 
 .user-popover {
@@ -62,23 +42,50 @@ ul.websites {
   margin: 0;
 }
 
-.user-mini-resume, .user-categories {
-  max-width: 800px;
-}
-
 .user-mini-resume {
 }
 
-.user-categories {
-  @include font-size(12);
-  @extend .text-muted;
-  .category {
-    margin-left: 5px;
-    margin-right: 15px;
-    // color: #888;
-    // @include font-size(11);
-    &.first {
-      margin-left: 0;
+#heading.user {
+  .teaser {
+    text-align: center;
+    .user-mini-resume, .user-categories {
+      width: 800px;
+      margin: 0 auto 5px;
+    }
+    .text-holder {
+      height: auto;
+      position: relative;
+      padding-top: 30px;
+      .btn-edit {
+        top: 10px;
+        right: 15px;
+      }
+      a {
+        color: #fff;
+      }
+    }
+    .user-categories {
+      @include font-size(12);
+      @extend .text-muted;
+      .category {
+        margin-left: 5px;
+        margin-right: 15px;
+        // color: #888;
+        // @include font-size(11);
+        &.first {
+          margin-left: 0;
+        }
+      }
+    }
+    ul.websites {
+      margin: 5px 0;
+      li {
+        a {
+          &:hover {
+            text-decoration: none;
+          }
+        }
+      }
     }
   }
 }

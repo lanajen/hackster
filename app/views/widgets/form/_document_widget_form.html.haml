@@ -14,7 +14,7 @@
         = f_document.input :title, label: 'Document title'
       = f_document.link_to_remove 'Remove this document', class: 'btn btn-xs btn-danger'
   = f.link_to_add 'Add a document', :documents, class: 'btn btn-xs btn-success', style: 'margin-bottom:10px;'
-  .alert
+  .alert.alert-info
     %strong Heads up!
     Please limit the number of files you upload at once to 4 or 5 or you might get upload errors.
 

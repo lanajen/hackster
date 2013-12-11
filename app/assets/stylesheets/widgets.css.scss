@@ -182,7 +182,7 @@
       color: #FFF;
       width: 120px;
       padding: 3px 5px;
-      @include opacity(80);
+      @include opacity(0.8);
       text-align: center;
       font-weight: bold;
     }
@@ -209,7 +209,7 @@
           font-size: 40px;
           color: #000;
           text-shadow: 0 0 10px #fff;
-          @include opacity(70);
+          @include opacity(0.7);
         }
         &:hover {
           text-decoration: none;
@@ -225,7 +225,7 @@
 }
 
 .expanded-footer {
-  margin: 20px -20px -30px;
+  margin: 20px -20px -10px;
   padding: 20px;
   background-color: #F5F5F5;
   border-top: 1px solid #E5E5E5;
@@ -233,11 +233,10 @@
 
 .comments {
   @include font-size(12);
-  display: none;
   textarea, input[type='text'], input[type='email'], input[type='password'] {
     @include border-radius(0);
     @include font-size(12);
-    height: 15px;
+    height: 25px;
     line-height: 17px;
     min-height: 15px;
     resize: none;
@@ -283,5 +282,13 @@
   }
   li:hover .btn-delete-widget {
     display: block;
+  }
+}
+
+.github-box.repo {
+  *, *:before, *:after {
+    -webkit-box-sizing: initial;
+    -moz-box-sizing: initial;
+    box-sizing: initial;
   }
 }

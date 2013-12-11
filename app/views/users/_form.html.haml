@@ -1,4 +1,4 @@
-= simple_nested_form_for @user, url: profile_path, html: { class: 'form-horizontal remote', data: { remote: true } } do |f|
+= simple_nested_form_for @user, url: profile_path, html: { class: 'form-horizontal remote', data: { remote: true } }, wrapper: :bootstrap3_horizontal do |f|
   = f.error_notification
 
   .row
@@ -19,7 +19,7 @@
         hint: 'Maximum 140 characters'
 
       .form-group
-        .controls= image_tag(@user.avatar.file_url(:thumb)) if @user.avatar.try(:file_url)
+        .col-xs-8.col-xs-offset-4= image_tag(@user.avatar.file_url(:thumb)) if @user.avatar.try(:file_url)
       = f.simple_fields_for :avatar do |f_avatar|
         = f_avatar.input :file, as: :file, label: 'Profile picture'
         = f_avatar.input :file_cache, as: :hidden
@@ -29,15 +29,16 @@
 
     .col-xs-6
       -# = f.input :categories, as: :check_boxes, collection: User::CATEGORIES.sort
-      = f.input :facebook_link
-      = f.input :github_link
-      = f.input :google_plus_link
-      = f.input :linked_in_link
-      = f.input :twitter_link
-      = f.input :youtube_link
-      = f.input :website_link
-      = f.input :blog_link
+      = f.input :facebook_link, label: 'Facebook link'
+      = f.input :github_link, label: 'Github link'
+      = f.input :google_plus_link, label: 'Google+ link'
+      = f.input :linked_in_link, label: 'LinkedIn link'
+      = f.input :twitter_link, label: 'Twitter link'
+      = f.input :youtube_link, label: 'Youtube link'
+      = f.input :website_link, label: 'Website link'
+      = f.input :blog_link, label: 'Blog link'
 
       = f.input :interest_tags_string, label: 'Interests', hint: 'Enter a list of tags separated by commas'
       = f.input :skill_tags_string, label: 'Skills'
 
+%hr

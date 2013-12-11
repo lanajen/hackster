@@ -9,7 +9,7 @@ class CodeWidget < Widget
     'C#' => 'csharp',
     'Console' => 'console',
     'HTML' => 'html',
-    'Java' => 'Java',
+    'Java' => 'java',
     'JavaScript' => 'js',
     'Python' => 'python',
     'Perl' => 'perl',

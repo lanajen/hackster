@@ -1,5 +1,4 @@
 class ProjectsController < ApplicationController
-  before_filter :authenticate_user!, except: [:show, :embed]
   load_and_authorize_resource
   skip_load_resource only: [:create]
   skip_authorize_resource only: [:embed]
@@ -93,5 +92,6 @@ class ProjectsController < ApplicationController
 #      @project.images.new# unless @project.images.any?
 #      @project.build_video unless @project.video
       @project.build_logo unless @project.logo
+      @project.build_cover_image unless @project.cover_image
     end
 end

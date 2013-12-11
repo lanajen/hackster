@@ -1,4 +1,4 @@
-.col-xs-3.col-xs-offset-4.wellified
+.col-xs-4.col-xs-offset-4.wellified
   %h2{ style: 'text-align: center' } New project
 
   = simple_nested_form_for @project do |f|
@@ -9,9 +9,9 @@
     - if @project.logo and @project.logo.file_url(:thumb)
       .form-group
         .controls
-          = image_tag @project.logo.file_url(:thumb)
-    = f.simple_fields_for :logo do |f_logo|
-      = f_logo.input :file, as: :file, label: 'Main image or logo'
+          = image_tag @project.cover_image.file_url(:cover_image_thumb)
+    = f.simple_fields_for :cover_image do |f_logo|
+      = f_logo.input :file, as: :file, label: 'Cover image'
       = f_logo.input :file_cache, as: :hidden
 
     = f.button :submit, 'Go!', class: 'btn-block btn btn-default'

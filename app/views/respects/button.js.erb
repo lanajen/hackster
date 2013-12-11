@@ -1,2 +1,3 @@
-$('.respect-button').replaceWith('<%= escape_javascript render(partial: 'button', locals: { project: @project }) %>');
-$('.respect-button a').tooltip();
+$('a.respect-button')
+  .replaceWith('<%= escape_javascript render(partial: 'button', locals: { project: @project }) %>')
+  .tooltip();

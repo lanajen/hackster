@@ -9,9 +9,9 @@
       .row
         .col-xs-9
           - if @user.projects.indexable.any?
-            %ul.thumbnails
+            .row
               - @user.projects.indexable.each do |project|
-                = render partial: 'projects/project_thumb', locals: { project: project.decorate }
+                = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '4' }
           - elsif user_is_current?
             %p
               You have no public projects.

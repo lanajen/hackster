@@ -21,16 +21,18 @@ class Project < ActiveRecord::Base
   has_many :users, through: :team_members
   has_many :widgets, -> { order position: :asc }
   has_one :logo, as: :attachable, class_name: 'Avatar'
+  has_one :cover_image, as: :attachable, class_name: 'CoverImage'
   has_one :video, as: :recordable, dependent: :destroy
 
   sanitize_text :description
   attr_accessible :description, :end_date, :name, :start_date, :images_attributes,
     :video_attributes, :current, :logo_attributes, :team_members_attributes,
     :website, :access_groups_attributes, :participant_invites_attributes,
-    :one_liner, :widgets_attributes, :featured
+    :one_liner, :widgets_attributes, :featured, :cover_image_attributes
   attr_accessor :current
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
-    :access_groups, :participant_invites, :widgets, allow_destroy: true
+    :access_groups, :participant_invites, :widgets, :cover_image,
+    allow_destroy: true
 
   validates :name, presence: true
   validates :one_liner, :logo, presence: true, if: proc { |p| p.force_basic_validation? }

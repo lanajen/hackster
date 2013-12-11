@@ -1,4 +1,4 @@
-= simple_nested_form_for @project, html: { class: 'form-horizontal remote', data: { remote: true } } do |f|
+= simple_nested_form_for @project, html: { class: 'form-horizontal remote', data: { remote: true } }, wrapper: :bootstrap3_horizontal do |f|
   = f.error_notification
 
   .row
@@ -20,11 +20,20 @@
     .col-xs-6
       - if @project.logo and @project.logo.file_url(:thumb)
         .form-group
-          .controls
+          .col-xs-8.col-xs-offset-4
             = image_tag @project.logo.file_url(:thumb)
       = f.simple_fields_for :logo do |f_logo|
-        = f_logo.input :file, as: :file, label: 'Main image', hint: "Should be squared, at least 200x200px for best results"
+        = f_logo.input :file, as: :file, label: 'Logo', hint: "Should be squared, at least 200x200px for best results"
         = f_logo.input :file_cache, as: :hidden
+
+      - if @project.cover_image and @project.cover_image.file_url(:cover_thumb)
+        .form-group
+          .col-xs-8.col-xs-offset-4
+            = image_tag @project.cover_image.file_url(:thumb)
+      = f.simple_fields_for :cover_image do |f_logo|
+        = f_logo.input :file, as: :file, label: 'Cover image', hint: "In 4:3 format, at least 600x450px for best results"
+        = f_logo.input :file_cache, as: :hidden
+
       = f.input :private, inline_label: 'Make this project private', label: false
       - if current_user.is? :admin
         = f.input :featured, inline_label: 'Feature this project', label: false
@@ -74,6 +83,8 @@
           .controls
             = f_group.link_to_remove 'Remove this group', class: 'btn btn-danger btn-xs'
       -# = f.link_to_add 'Add an access group', :access_groups, class: 'btn btn-success btn-xs'
+
+%hr
 
 = content_for :js do
   :javascript

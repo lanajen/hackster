@@ -1,4 +1,5 @@
 .row
-  .wellified{ class: widget_span_class(@widget) }
-    %h2{ style: 'text-align: center' } Editing widget
-    = render 'form'
+  %div{ class: widget_span_class(@widget) }
+    .wellified
+      %h2{ style: 'text-align: center' } Editing widget
+      = render 'form'

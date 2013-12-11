@@ -1,7 +1,7 @@
 - if @project.private
   .row
     .col-xs-12
-      .alert
+      .alert.alert-warning
         This project is private so only you can see it.
         = link_to 'Make public', project_path(@project, project: { private: 0 }), method: :patch, class: 'btn btn-warning btn-sm'
 
@@ -9,6 +9,7 @@
   .col-xs-4{ style: 'padding-right: 0;'}
     .teaser
       .text-holder
+        = @project.logo_or_placeholder
         %h1
           = link_to @project.name, @project, class: 'hidden-link hidden-link-invert'
         - if @project.one_liner.present?
@@ -34,6 +35,18 @@
           = render 'projects/share'
           = render 'projects/project_embed_popup'
           = render partial: 'respects/button', locals: { project: @project }
+        - if can? :edit, @project
+          %span.dropdown
+            %a.dropdown-toggle.action{ data: { toggle: 'dropdown' }, href: '#', title: 'Edit', rel: 'tooltip' }
+              %i.fa.fa-edit
+              %b.caret
+            %ul.dropdown-menu
+              -# = render partial: 'shared/locked_icon', locals: { record: @project, size: nil }
+              %li= link_to 'Settings', edit_project_path(@project), data: { remote: true }
+              %li= link_to 'Add a widget', new_project_widget_path(@project)
+              %li= link_to 'Reorder widgets', project_widgets_path(@project)
+
+
       -# %p.text-muted
         = l @project.start_date, format: :month
         \-
@@ -46,14 +59,16 @@
         = link_to 'Follow', followers_project_path(@project), method: :post, class: 'btn-follow'
 
   .col-xs-8{ style: 'padding-left: 0;'}
-    = image_tag @project.logo, alt: @project.name, class: 'img-responsive'
+    = image_tag @project.cover_image, alt: @project.name, class: 'cover-image'
 
-.row
+-#.row
   .col-xs-12
-    .navbar.navbar-default{ style: 'background: #fff;' }
+    .tabbable.tabs-left.navbar.navbar-default{ style: 'background: #fff;' }
       %ul.nav.navbar-nav
-        %li
-          %a Home
+        %li.active= link_to 'Home', '#tab-home', data: { toggle: 'tab' }
+        %li= link_to 'Design', '#tab-design', data: { toggle: 'tab' }
+        %li= link_to 'Code', '#tab-code', data: { toggle: 'tab' }
+        %li= link_to 'Comments', '#tab-comments', data: { toggle: 'tab' }
         - if can? :edit, @project
           %li.dropdown
             %a.dropdown-toggle{ data: { toggle: 'dropdown' }, href: '#' }

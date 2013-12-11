@@ -44,10 +44,14 @@ $(document).ready(function(){
     $target.toggleClass('collapsed');
     $target.slideToggle();
     if (!$target.hasClass('collapsed')) {
-      $('html, body').stop().animate({
-          'scrollTop': $target.offset().top
-      }, 500, 'swing', function () {});
+      scrollTo($target);
     }
+  });
+
+  $('body').on('click', 'a.scroll', function(e){
+    e.preventDefault();
+    target = $($(this).data('target'));
+    scrollTo(target);
   });
 
   $('.well').on({
@@ -58,3 +62,9 @@ $(document).ready(function(){
     }
   }, '.comment');
 });
+
+function scrollTo(target) {
+  $('html, body').stop().animate({
+    'scrollTop': target.offset().top
+  }, 500, 'swing', function () {});
+}
