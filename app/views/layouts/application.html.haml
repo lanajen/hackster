@@ -87,7 +87,7 @@
                   %a#login.dropdown-toggle{"data-toggle" => "dropdown", href: '#' }
                     Log in
                     %strong.caret
-                  .dropdown-menu{:style => "padding: 15px; padding-bottom: 0px;"}
+                  .dropdown-menu{:style => "padding: 15px; width: 250px;"}
                     = render 'devise/sessions/form'
             - if user_signed_in? and current_user.is? :admin
               %ul.nav.navbar-nav.navbar-right

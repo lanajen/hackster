@@ -25,8 +25,12 @@ class ImageUploader < BaseUploader
     process resize_to_fill: [600, 450]
   end
 
-  version :cover_thumb, if: :is_cover? do
+  version :cover_thumb, from_version: :cover, if: :is_cover? do
     process resize_to_fill: [213, 160]
+  end
+
+  version :cover_mini_thumb, if: :is_cover? do
+    process resize_to_fill: [60, 60]
   end
 
   # resize_and_pad that doesn't make pictures any bigger than what they already are
