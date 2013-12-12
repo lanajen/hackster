@@ -10,8 +10,8 @@
         - if @invite_request.project.logo and @invite_request.project.logo.file_url(:thumb)
           .form-group
             .controls
-              = image_tag @invite_request.project.logo.file_url(:thumb)
-        = f_project.simple_fields_for :logo do |f_logo|
-          = f_logo.input :file, as: :file, label: 'Main image or logo', required: false
+              = image_tag @invite_request.project.cover_image.file_url(:cover_thumb)
+        = f_project.simple_fields_for :cover_image do |f_logo|
+          = f_logo.input :file, as: :file, label: 'Cover image (i.e your nicest picture)', required: false
           = f_logo.input :file_cache, as: :hidden
       = f.button :submit, 'Get in faster', class: 'btn-block btn btn-default'

@@ -44,14 +44,14 @@ $(document).ready(function(){
     $target.toggleClass('collapsed');
     $target.slideToggle();
     if (!$target.hasClass('collapsed')) {
-      scrollTo($target);
+      scrollToTarget($target);
     }
   });
 
   $('body').on('click', 'a.scroll', function(e){
     e.preventDefault();
     target = $($(this).data('target'));
-    scrollTo(target);
+    scrollToTarget(target);
   });
 
   $('.well').on({
@@ -63,7 +63,7 @@ $(document).ready(function(){
   }, '.comment');
 });
 
-function scrollTo(target) {
+function scrollToTarget(target) {
   $('html, body').stop().animate({
     'scrollTop': target.offset().top
   }, 500, 'swing', function () {});
