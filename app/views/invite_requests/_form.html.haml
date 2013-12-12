@@ -1,4 +1,4 @@
-= simple_form_for @invite_request, html: { class: 'full-size' } do |f|
+= simple_form_for @invite_request do |f|
   = f.input :email, autofocus: true, required: false, placeholder: 'Your email ', label: false, hint: "We'll send the invite to that address. No spam, promise."
   %br
   %p

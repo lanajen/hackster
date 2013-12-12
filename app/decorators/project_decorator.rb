@@ -41,7 +41,7 @@ class ProjectDecorator < ApplicationDecorator
 
   def logo_or_placeholder
     if model.logo and model.logo.file
-      h.image_tag logo(:medium), class: 'img-circle'
+      h.image_tag logo(:big), class: 'img-circle project-logo'
     else
       h.content_tag(:div, '', class: 'logo-placeholder')
     end

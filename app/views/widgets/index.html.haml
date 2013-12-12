@@ -1,7 +1,7 @@
 .row
   .wellified{ class: 'col-xs-6 col-xs-offset-3' }
     %h2{ style: 'text-align: center' } Reorder widgets
-    = simple_nested_form_for @project, url: project_widgets_path(@project), html: { class: 'full-size widget-form widget-reorder-form' } do |f|
+    = simple_nested_form_for @project, url: project_widgets_path(@project), html: { class: 'widget-form widget-reorder-form' } do |f|
       = f.error_notification
       #sortable
         %ul.first

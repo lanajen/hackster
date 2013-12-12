@@ -3,7 +3,7 @@
     %h2.text-center You're on the list!
     %p
       %strong Want to get in faster? Show us what you've built
-    = simple_form_for @invite_request, html: { class: 'full-size' } do |f|
+    = simple_form_for @invite_request do |f|
       = f.simple_fields_for :project do |f_project|
         = f_project.input :name, label: 'What is it called?', required: false
         = f_project.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner description, Twitter-style.', required: false

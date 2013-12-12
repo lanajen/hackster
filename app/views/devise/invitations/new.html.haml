@@ -11,7 +11,7 @@
       - else
         %em You have #{pluralize(@invite_limit, 'invitation')} left.
     - if @invite_limit != 0
-      = simple_form_for @friend_invite, url: invitation_path(resource_name), html: { class: 'full-size' } do |f|
+      = simple_form_for @friend_invite, url: invitation_path(resource_name) do |f|
         = f.error_notification
         = f.simple_fields_for :users do |f_user|
           = f_user.input :email, :label => false, :placeholder => 'Email'

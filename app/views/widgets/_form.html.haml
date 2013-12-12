@@ -1,4 +1,4 @@
-= simple_nested_form_for [@project, @widget], url: widget_form_path(@project, @widget), html: { class: 'full-size widget-form' } do |f|
+= simple_nested_form_for [@project, @widget], url: widget_form_path(@project, @widget), html: { class: 'widget-form' } do |f|
   = f.error_notification
   - if @widget.persisted?
     = f.input :name, label: 'Give it a label'
