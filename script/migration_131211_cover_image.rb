@@ -1,5 +1,11 @@
 Avatar.where(attachable_type: 'Project').update_all(type: 'CoverImage')
-CoverImage.all.each do |i|
+CoverImage.order(:id).each do |i|
+  puts i.file_url
   i.skip_file_check!
-  i.file.recreate_versions!
+  begin
+    i.file.recreate_versions!
+  rescue => e
+    puts "error for #{i.file_url}"
+    puts e
+  end
 end

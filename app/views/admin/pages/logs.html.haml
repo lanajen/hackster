@@ -24,5 +24,5 @@
         %td= "#{log_line.loggable_type} #{log_line.loggable_id}"
         %td= log_line.created_at
 
-.pagination
+.pagination.col-xs-12.text-center
   = will_paginate @log_lines

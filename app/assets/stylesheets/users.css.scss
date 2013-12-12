@@ -1,6 +1,9 @@
 .avatar {
   &.main-avatar {
-    width: 120px;
+    img {
+      width: 120px;
+      height: 120px;
+    }
   }
   &.mini-avatar {
   }
