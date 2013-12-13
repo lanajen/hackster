@@ -1,23 +1,21 @@
-.col-xs-3.col-xs-offset-4.wellified
-  %h2{ style: 'text-align:center;' } Create your Hackster.io account
-  = simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f|
-    = f.error_notification
-    - if params[:invitation_code]
-      = f.input :invitation_code, as: :hidden
-      %p
-        Your invite code:
-        %b= params[:invitation_code]
-    - else
-      = f.input :invitation_code, label: false, placeholder: 'Invite code', autofocus: true
-    = f.input :user_name, label: false, placeholder: 'Username', autofocus: params[:invitation_code].present?
-    = f.input :email, label: false, placeholder: 'Email'
-    = f.input :email_confirmation, label: false, placeholder: 'Confirm email'
-    = f.input :password, label: false, placeholder: 'Password'
-    = f.button :submit, "Sign up", class: 'btn btn-default btn-block'
+.col-xs-4.col-xs-offset-4
+  .wellified
+    %h2{ style: 'text-align:center;' } Create your Hackster.io account
 
-  %p
-    Already have an account?
-    = link_to 'Sign in.', new_user_session_path
-  %p
-    Need an invite?
-    = link_to 'Request one.', root_url(subdomain: 'www'), onclick: "_gaq.push(['_trackEvent', 'Sign up form', 'Request an invite', '#{request.path}']);"
+    %p
+      Already have an account?
+      = link_to 'Sign in.', new_user_session_path
+
+    = simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f|
+      = f.error_notification
+
+      = f.input :user_name, label: false, placeholder: 'Username', autofocus: params[:invitation_code].present?
+      = f.input :email, label: false, placeholder: 'Email'
+      = f.input :email_confirmation, label: false, placeholder: 'Confirm email'
+      = f.input :password, label: false, placeholder: 'Password'
+      = f.button :submit, "Sign up", class: 'btn btn-default btn-block'
+
+    %hr
+
+    %p.text-center Or connect with your social account:
+    = render 'devise/shared/omniauth'

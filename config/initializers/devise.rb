@@ -94,28 +94,6 @@ Devise.setup do |config|
   # config.invite_for = 2.weeks
 
   # Number of invitations users can send.
-  # If invitation_limit is nil, users can send unlimited invitations.
-  # If invitation_limit is 0, users can't send invitations.
-  # If invitation_limit n > 0, users can send n invitations.
-  # Default: nil
-  config.invitation_limit = 0
-
-  # The key to be used to check existing users when sending an invitation
-  # and the regexp used to test it when validate_on_invite is not set.
-  # config.invite_key = {:email => /A[^@]+@[^@]+z/}
-  # config.invite_key = {:email => /A[^@]+@[^@]+z/, :username => nil}
-
-  # Flag that force a record to be valid before being actually invited
-  # Default: false
-  # config.validate_on_invite = true
-
-  # ==> Configuration for :invitable
-  # The period the generated invitation token is valid, after
-  # this period, the invited resource won't be able to accept the invitation.
-  # When invite_for is 0 (the default), the invitation won't expire.
-  # config.invite_for = 2.weeks
-
-  # Number of invitations users can send.
   # - If invitation_limit is nil, there is no limit for invitations, users can
   # send unlimited invitations, invitation_limit column is not used.
   # - If invitation_limit is 0, users can't send invitations by default.
@@ -123,7 +101,7 @@ Devise.setup do |config|
   # You can change invitation_limit column for some users so they can send more
   # or less invitations, even with global invitation_limit = 0
   # Default: nil
-  config.invitation_limit = 10
+  config.invitation_limit = nil
 
   # The key to be used to check existing users when sending an invitation
   # and the regexp used to test it when validate_on_invite is not set.

@@ -2,7 +2,7 @@
   .wellified
     %h2{ style: 'text-align: center' } Invite your friends
     %p{ style: 'text-align: center' } Know other hardware hackers? Pass it on!
-    %p{ style: 'text-align: center' }
+    -# %p{ style: 'text-align: center' }
       - if @invite_limit.nil?
         %em Lucky you, you can send as many invites as you want.
       - elsif @invite_limit == 0
@@ -10,6 +10,7 @@
         = link_to 'Want more?', 'mailto:team@hackster.io?subject=Can%20I%20get%20more%20invites%20please%3F'
       - else
         %em You have #{pluralize(@invite_limit, 'invitation')} left.
+
     - if @invite_limit != 0
       = simple_form_for @friend_invite, url: invitation_path(resource_name) do |f|
         = f.error_notification
@@ -18,10 +19,8 @@
         = f.submit "Spread happiness", class: 'btn btn-default btn-block'
 
 .col-xs-3.pull-right
-  %h4 How invites work
+  %h4 About invites
   %p Hackster.io is a community of hardware hackers and makers.
-  %p We're invite-only because we want to ensure that everyone who joins will be able to contribute to the community by sharing their work and giving feedback to others.
+  %p We're giving you the opportunity to invite friends and people in your network so you can shape our community and make it yours.
   %p
-    Every week we reward active members with invites to send to their friends.
-    %b So how can you get new invites?
-    Post quality projects that can benefit to others; help your fellow hackers by suggesting improvements to their designs or solving tough problems with them.
+    %strong You're just one step closer to making awesome hardware.

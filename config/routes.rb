@@ -98,7 +98,7 @@ HackerIo::Application.routes.draw do
     post 'contact' => 'contact#create'
 
     get 'help' => 'pages#help'
-    get 'home' => 'pages#home'
+    get 'home', to: redirect('/')
 
     get 'obscure/path/to/cron' => 'cron#run'
 
@@ -114,7 +114,6 @@ HackerIo::Application.routes.draw do
 #      delete 'followers' => 'follow_relations#destroy'
     end
 
-    get '' => 'invite_requests#new', as: :new_invite_request
-    root to: 'invite_requests#new'
+    root to: 'pages#home'
   end
 end

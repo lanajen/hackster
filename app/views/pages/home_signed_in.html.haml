@@ -2,8 +2,6 @@
   .col-xs-12
     .alert.alert-info.text-center
       = SLOGAN
-      - unless user_signed_in?
-        = link_to 'Request an invite', new_invite_request_path, class: 'alert-link'
 
 .row
   - @projects.each do |project|

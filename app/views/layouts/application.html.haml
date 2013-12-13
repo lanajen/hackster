@@ -32,7 +32,7 @@
             %button.close.btn-close{ data: { close: '#hello-world' } } &times;
             = SLOGAN
             Sounds cool?
-            = link_to 'Request an invite.', new_invite_request_path, onclick: "_gaq.push(['_trackEvent', 'Hello world bar', 'Request an invite', '#{request.path}']);"
+            = link_to 'Sign up.', new_user_registration_path, onclick: "_gaq.push(['_trackEvent', 'Hello world bar', 'Sign up', '#{request.path}']);"
       -# elsif show_profile_needs_care?
         - if params[:controller] == 'users' and params[:action] == 'show'
           #hello-world.fade-in
@@ -82,7 +82,7 @@
               - else
                 - unless request.path == root_path
                   %li.with-button
-                    %span= link_to 'Request an invite', new_invite_request_path, class: 'btn btn-sm btn-info navbar-btn', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Request an invite', '#{request.path}']);" #new_user_registration_path
+                    %span= link_to 'Sign up', new_user_registration_path, class: 'btn btn-sm btn-info navbar-btn', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '#{request.path}']);" #new_user_registration_path
                 %li.dropdown
                   %a#login.dropdown-toggle{"data-toggle" => "dropdown", href: '#' }
                     Log in

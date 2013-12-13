@@ -18,11 +18,11 @@ class FriendInvite < ActiveRecord::Base
   end
 
   def invite_all! invited_by=nil
-    existing_users = User.where('users.email IN (?)', users.map(&:email)).each{ |u| u.invite!(invited_by) }.map(&:email)
+    existing_users = User.where(invitation_token: nil).where('users.email IN (?)', users.map(&:email)).map(&:email)
 
-    users.select do |user|
-      user.invite!(invited_by) unless user.email.blank? or user.email.in? existing_users
-    end
+    users.map(&:email).uniq.select do |email|
+      User.invite!({ email: email }, invited_by) unless email.blank? or email.in? existing_users
+    end#.map { |u| User.invite!({ email: u.email }, invited_by) }
   end
 
   def persisted?

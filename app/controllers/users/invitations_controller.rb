@@ -18,12 +18,12 @@ class Users::InvitationsController < Devise::InvitationsController
     if @friend_invite.valid?
       invited = @friend_invite.invite_all!(current_inviter)
 
-      if current_inviter.invitation_limit != 0
-        remaining_msg = "You still have #{view_context.pluralize(current_inviter.invitation_limit, 'invitation')} left."
-      else
-        remaining_msg = "You've used all your invitations, good job!"
-      end
-      flash[:notice] = "Cool, you just invited #{view_context.pluralize(invited.size, 'friend')}! #{remaining_msg}"
+      # if current_inviter.invitation_limit != 0
+      #   remaining_msg = "You still have #{view_context.pluralize(current_inviter.invitation_limit, 'invitation')} left."
+      # else
+      #   remaining_msg = "You've used all your invitations, good job!"
+      # end
+      flash[:notice] = "Cool, you just invited #{view_context.pluralize(invited.size, 'friend')}!"
 
       respond_with @friend_invite, :location => after_invite_path_for(@friend_invite)
 

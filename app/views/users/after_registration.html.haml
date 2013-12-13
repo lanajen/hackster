@@ -1,19 +1,20 @@
-.col-xs-7.col-xs-offset-2
+.col-xs-6.col-xs-offset-3
   .wellified
     %h2{ style: 'text-align:center;' } Hi!
     %p{ style: 'text-align:center;' } Good to see you here. Before we get started, why don't you complete your profile?
     = simple_form_for @user, url: user_after_registration_path, html: { class: 'widget-form form-horizontal' }, wrapper: :bootstrap3_horizontal do |f|
       = f.error_notification
       = f.input :full_name, label: 'Full name', autofocus: true
-      .form-group
-        .col-xs-offset-4.col-xs-8= image_tag @user.decorate.avatar(:thumb)
       = f.simple_fields_for :avatar do |f_avatar|
         = f_avatar.input :file, as: :file, label: 'Profile picture'
         = f_avatar.input :file_cache, as: :hidden
+      .form-group
+        .col-xs-4.text-right Current
+        .col-xs-8= image_tag @user.decorate.avatar(:thumb)
       = f.input :mini_resume, as: :text, input_html: { rows: 4 },
         hint: 'Maximum 140 characters'
       = f.input :city, label: 'City'
-      = f.input :country, label: 'Country'
+      = f.input :country, label: 'Country', as: :select
       .form-actions
         = f.button :submit, "Done!", class: 'btn btn-primary'
         = link_to "I'll do this later", user_return_to, class: 'btn btn-link btn-sm'

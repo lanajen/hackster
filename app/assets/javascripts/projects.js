@@ -44,14 +44,14 @@ $(document).ready(function(){
     $target.toggleClass('collapsed');
     $target.slideToggle();
     if (!$target.hasClass('collapsed')) {
-      scrollToTarget($target);
+      smoothScrollTo($target);
     }
   });
 
   $('body').on('click', 'a.scroll', function(e){
     e.preventDefault();
     target = $($(this).data('target'));
-    scrollToTarget(target);
+    smoothScrollTo(target);
   });
 
   $('.well').on({
@@ -62,9 +62,3 @@ $(document).ready(function(){
     }
   }, '.comment');
 });
-
-function scrollToTarget(target) {
-  $('html, body').stop().animate({
-    'scrollTop': target.offset().top
-  }, 500, 'swing', function () {});
-}

@@ -189,8 +189,12 @@ class User < ActiveRecord::Base
     end
 
     def new_with_session(params, session)
-      super.tap do |user|
-        user.extract_from_social_profile params, session
+      if session['devise.provider_data']
+        super.tap do |user|
+          user.extract_from_social_profile params, session
+        end
+      else
+        super
       end
     end
   end
@@ -541,7 +545,8 @@ class User < ActiveRecord::Base
     end
 
     def used_valid_invite_code?
-      if invitation_code.present? and invite_code = InviteCode.authenticate(invitation_code)
+      return unless invitation_code.present?
+      if invite_code = InviteCode.authenticate(invitation_code)
         self.invite_code_id = invite_code.id
       else
         errors.add :invitation_code, 'is either invalid or expired'

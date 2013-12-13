@@ -6,8 +6,4 @@
     %hr
 
     %p.text-center Or connect with your social account:
-    = render 'omniauth'
-    %p
-      Need an invite?
-      = link_to 'Request one.', new_invite_request_path, onclick: "_gaq.push(['_trackEvent', 'Sign in form', 'Request an invite', '#{request.path}']);"
-      -# = link_to 'Sign up.', new_user_registration_path, onclick: "_gaq.push(['_trackEvent', 'Sign in form', 'Sign up', '#{request.path}']);"
+    = render 'devise/shared/omniauth'

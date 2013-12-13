@@ -1,12 +1,3 @@
-= simple_form_for @invite_request do |f|
-  = f.input :email, autofocus: true, required: false, placeholder: 'Your email ', label: false, hint: "We'll send the invite to that address. No spam, promise."
-  %br
-  %p
-    %strong Want to get in faster? Show us what you've built
-  = f.simple_fields_for :project do |f_project|
-    = f_project.input :name, label: 'What is it called?', required: false
-    = f_project.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner description, Twitter-style.', required: false
-    = f_project.simple_fields_for :logo do |f_logo|
-      = f_logo.input :file, as: :file, label: 'Main image or logo', required: false
-      = f_logo.input :file_cache, as: :hidden
-  = f.button :submit, 'Request my invite', class: 'btn-block btn btn-default'
+= simple_form_for @invite_request, html: { class: 'form-inline' } do |f|
+  = f.input :email, autofocus: true, required: false, placeholder: 'nikola@tesla.com', label: false, wrapper_html: { class: 'col-xs-9' }, input_html: { class: 'input-lg' }
+  = f.button :submit, "I'm awesome", class: 'btn btn-primary col-xs-3 btn-lg'

@@ -6,8 +6,8 @@
     = f.button :submit, "Reset my password", class: 'btn btn-default btn-block'
 
   %p
-    Already have an account?
+    Know your password?
     = link_to 'Sign in.', new_user_session_path
   %p
-    Need an invite?
-    = link_to 'Request one.', root_url(subdomain: 'www'), onclick: "_gaq.push(['_trackEvent', 'Sign up form', 'Request an invite', '#{request.path}']);"
+    Need an account?
+    = link_to 'Sign up.', new_user_registration_path

@@ -91,5 +91,12 @@ $(document).ready(function(){
         $('<span class="help-inline">' + errors[error] + '</span>').insertAfter(input);
       }
     });
-
 });
+
+
+function smoothScrollTo(target) {
+  if (typeof(target) == 'string') target = $(target);
+  $('html, body').stop().animate({
+    'scrollTop': target.offset().top
+  }, 500, 'swing', function () {});
+}

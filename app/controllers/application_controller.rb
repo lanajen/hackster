@@ -194,7 +194,7 @@ class ApplicationController < ActionController::Base
       if meta_desc
         @meta_desc = meta_desc
       else
-        @meta_desc || "Do you hack hardware? Build up your hacker identity all in one place and show the world what you're up to. Request an invite to be part of our early user group!"
+        @meta_desc || "Do you hack hardware? Show the world what you're up to and get inspiration from other makers. Come join the movement!"
       end
     end
 
