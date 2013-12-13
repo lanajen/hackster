@@ -7,7 +7,8 @@ class Users::InvitationsController < Devise::InvitationsController
   def new
     @invite_limit = current_user.invitation_limit
     @friend_invite = FriendInvite.new
-    [current_user.invitation_limit, 10].min.times { @friend_invite.users.build }
+    limit = current_user.invitation_limit || 100
+    [limit, 10].min.times { @friend_invite.users.build }
     super
   end
 

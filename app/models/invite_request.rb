@@ -17,7 +17,7 @@ class InviteRequest < ActiveRecord::Base
   end
 
   def self.send_invite_to_all!
-    self.where(whitelisted: false).each do |invite|
+    self.where(whitelisted: nil).each do |invite|
       invite.send_invite!
     end
   end
