@@ -53,6 +53,7 @@ HackerIo::Application.routes.draw do
 #      resources :comments, only: [:create]
 #    end
     resources :comments, only: [:update, :destroy]
+    resources :images, only: [:create, :destroy]
     resources :invite_requests, only: [:create, :update, :edit]
     # get 'request/an/invite' => 'invite_requests#new', as: :new_invite_request
     delete 'notifications' => 'notifications#destroy'
