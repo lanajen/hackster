@@ -146,7 +146,7 @@ class ApplicationController < ActionController::Base
     end
 
     def render_404(exception)
-      LogLine.create(log_type: 'not_found', source: 'controller', message: request.url)
+      LogLine.create(log_type: 'not_found', source: 'controller', message: request.url) unless request.url =~ /users\/auth\/[a-z]+\/callback/
       respond_to do |format|
         format.html { render template: 'errors/error_404', layout: 'layouts/application', status: 404 }
         format.all { render nothing: true, status: 404 }
