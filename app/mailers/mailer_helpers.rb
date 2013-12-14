@@ -88,6 +88,8 @@ module MailerHelpers
 
       token = token.gsub(/\|/, '')
       case token.to_sym
+      when :email_confirmation_link
+        url.user_confirmation_url(confirmation_token: @context[:devise_token], host: default_host)
       when :invite_friends_link
         url.new_user_invitation_url(host: default_host)
       when :invite_edit_url

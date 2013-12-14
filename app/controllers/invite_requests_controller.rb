@@ -5,7 +5,7 @@ class InviteRequestsController < ApplicationController
   layout 'splash'
 
   def new
-    redirect_to home_path and return if user_signed_in?
+    redirect_to root_path and return if user_signed_in?
     @invite_request = InviteRequest.new
   end
 

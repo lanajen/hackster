@@ -3,6 +3,7 @@ class UserObserver < ActiveRecord::Observer
     unless record.invited?
       advertise_new_user record
       record.create_reputation
+      record.send_confirmation_instructions unless record.invitation_accepted?
     end
   end
 

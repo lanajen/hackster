@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131206012513) do
+ActiveRecord::Schema.define(version: 20131214181629) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -50,13 +50,13 @@ ActiveRecord::Schema.define(version: 20131206012513) do
   add_index "attachments", ["attachable_id", "attachable_type", "type"], name: "index_attachments_on_attachable_id_and_attachable_type_and_type", using: :btree
 
   create_table "authorizations", force: true do |t|
-    t.string   "uid",                   null: false
-    t.string   "provider",   limit: 50, null: false
-    t.integer  "user_id",               null: false
+    t.string   "uid",        limit: 100, null: false
+    t.string   "provider",   limit: 50,  null: false
+    t.integer  "user_id",                null: false
     t.string   "name"
     t.string   "link"
-    t.datetime "created_at",            null: false
-    t.datetime "updated_at",            null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "token"
     t.string   "secret"
   end
@@ -355,8 +355,13 @@ ActiveRecord::Schema.define(version: 20131206012513) do
     t.text     "counters_cache"
     t.text     "notifications"
     t.datetime "invitation_created_at"
+    t.string   "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
+    t.string   "unconfirmed_email"
   end
 
+  add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["invitation_token"], name: "index_users_on_invitation_token", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree

@@ -15,7 +15,8 @@ class User < ActiveRecord::Base
   ]
 
   devise :database_authenticatable, :registerable, :invitable,
-         :recoverable, :rememberable, :trackable, :validatable, :omniauthable, omniauth_providers: [:facebook, :github, :gplus, :linkedin, :twitter]
+         :recoverable, :rememberable, :trackable, :validatable, :confirmable,
+         :omniauthable, omniauth_providers: [:facebook, :github, :gplus, :linkedin, :twitter]
 
   belongs_to :invite_code
   with_options class_name: 'User', join_table: :follow_relations do |u|
@@ -189,10 +190,15 @@ class User < ActiveRecord::Base
     end
 
     def new_with_session(params, session)
+      # extract social data for omniauth
       if session['devise.provider_data']
         super.tap do |user|
           user.extract_from_social_profile params, session
         end
+      # overwrite existing invites if any
+      elsif params[:email] and user = where(email: params[:email]).where('invitation_token IS NOT NULL').first
+        user.assign_attributes(params)
+        user
       else
         super
       end
@@ -554,6 +560,11 @@ class User < ActiveRecord::Base
     end
 
   protected
+    # overwrites devise
+    def confirmation_required?
+      false
+    end
+
     def password_required?
       (!persisted? || !password.nil? || !password_confirmation.nil?) && !being_invited?
     end
