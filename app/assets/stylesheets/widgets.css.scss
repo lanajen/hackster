@@ -124,6 +124,54 @@
   .handle {
     cursor: pointer;
   }
+  .img-holder {
+    position: relative;
+    margin-bottom: 5px;
+    width: 198px;
+    height: 148px;
+    .btn-delete-img {
+      position: absolute;
+      top: 0;
+      right: 8px;
+      display: none;
+      font-size: 20px;
+      color: #fff;
+      text-shadow: 0 0 5px #333;
+      &:hover {
+        text-decoration: none;
+        color: #ccc;
+      }
+    }
+    &:hover .btn-delete-img {
+      display: block;
+    }
+    .img-responsive {
+      max-height: 100%;
+    }
+  }
+  #image-drop {
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 100px;
+    text-align: center;
+    a {
+      cursor: pointer;
+    }
+    .uploads {
+      .progress {
+        margin-bottom: 0;
+      }
+    }
+  }
+  #sortable {
+    .fields-column {
+      float: left;
+      width: 232px;
+      height: 210px;
+      padding-left: 11px;
+      padding-right: 11px;
+    }
+  }
 }
 
 .text-widget {

@@ -11,6 +11,9 @@
 //= require all
 //= require ilightbox/jquery.mousewheel
 //= require ilightbox/ilightbox.packed
+//= require jquery.ui.widget
+//= require jquery.iframe-transport
+//= require jquery.fileupload
 
 // require js-routes
 // require underscore
