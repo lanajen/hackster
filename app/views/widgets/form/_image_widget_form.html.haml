@@ -1,4 +1,5 @@
-= f.association :images, collection: @widget.images, wrapper: false, input_html: { style: 'display:none;' }, label: false
+- file_type = 'image'
+= render partial: 'shared/uploader/file_association', locals: { file_type: file_type, f: f }
 .form-fields
   %label Add images
   #sortable
@@ -17,13 +18,7 @@
       .col-xs-12
         %p.help-block You can drag and drop images to sort them.
 
-  #file-drop
-    %strong Drop new images here
-    %br
-    or
-    %a{ data: { target: '#file_upload' } } browse your computer
-    %table.table
-      %tbody.uploads
+= render partial: 'shared/uploader/file_drop', locals: { file_type: file_type, human_file_type: file_type }
 
 = content_for :js do
   :javascript
@@ -61,78 +56,26 @@
       });
     }
 
-    formTpl = "<form action='/files' method='post' enctype='multipart/form-data' id='file_upload' style='display:none;'>";
-    formTpl += "<input name='utf8' type='hidden' value='✓'>";
-    formTpl += "<input name='authenticity_token' type='hidden' value=''>";
-    formTpl += "<input name='file_type' type='hidden' value=''>";
-    formTpl += "<input type='file' name='file' multiple>";
-    formTpl += "</div>";
-    formTpl += "</form>";
-
     inputTpl = '<div class="fields-column"><div class="fields">';
     inputTpl += '<div class="form-group hidden widget_images_position"><input class="hidden position" id="" name="[position]" type="hidden"></div>';
     inputTpl += '<div class="form-group hidden widget_images_id"><input class="hidden" id="" name="[id]" type="hidden"></div>';
     inputTpl += '<div class="img-holder btn-delete-holder">';
     inputTpl += '<img class="handle img-responsive" title="Click, hold and drag to reorder">';
-    inputTpl += '<input id="" name="[_destroy]" type="hidden" value="false"><a class="btn-delete remove_nested_fields" data-association="images" href="javascript:void(0)" title="Delete">×</a>';
+    inputTpl += '<input id="" name="[_destroy]" type="hidden" value="false"><a class="btn-delete remove_nested_fields" data-association="images" href="javascript:void(0)" title="Delete">&times;</a>';
     inputTpl += '</div>';
     inputTpl += '<div class="string optional widget_images_title"><input class="string optional form-control" id="" maxlength="255" name="[title]" placeholder="Image title" size="255" type="text"></div>';
     inputTpl += '</div></div>';
 
-    form = $('form.accept-file-upload');
-    $($(formTpl)).insertAfter(form);
-    $('#file_upload input[name="authenticity_token"]').val($('input[name="authenticity_token"]', form).val());
-    $('#file_upload input[name="file_type"]').val('image');
-    var iImg = 0;
+    #{ render partial: 'shared/uploader/form_template', locals: { file_type: file_type } }
 
-    $(function(){
-      $('#file-drop a').click(function(){
-        $($(this).data('target')).find('input[type=file]').click();
-      });
+    #{ render partial: 'shared/uploader/file_drop_click' }
 
-      // Initialize the jQuery File Upload plugin
-      $('#file_upload').fileupload({
-        dropZone: '#file-drop',
-        add: function(e, data) {
-          file = data.files[0];
-          tpl = $('<tr id="tmp-img-' + iImg + '"><td style="width:200px;"><i>' + file.name + '</i></td><td><div class="progress progress-striped active"><div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%;"></div></div></td></tr>');
-          tpl.appendTo($('#file-drop .uploads'));
-          data.context = 'tmp-img-' + iImg;
-          iImg++;
+    #{ render partial: 'shared/uploader/file_upload_functions', locals: { file_type: file_type } }
 
-          var jqXHR = data.submit();
-        },
+    #{file_type}Functions.fileuploadDoneTypeSpecific = function(data, file){
+      input.find('img').attr('src', file.url);
+      input.appendTo('#sortable .file-fields');
+      resetPositions();
+    }
 
-        fail: function(e, data){
-          $('#' + data.context + ' .progress').replaceWith('Error, please retry.')
-        },
-
-        progress: function(e, data) {
-          var progress = parseInt(data.loaded / data.total * 100, 10);
-          $('#' + data.context + ' .progress-bar').css('width', progress + '%');
-        },
-
-        done: function(e, data){
-          $('#' + data.context + ' .progress.active')
-            .removeClass('progress-striped')
-            .removeClass('active');
-          $('#' + data.context + ' .progress-bar').addClass('progress-bar-success');
-          $('#' + data.context).remove();
-          file = data.result.file;
-
-          input = $(inputTpl);
-          random = new Date().getTime();
-          $('input', input).each(function(i, el){
-            name = 'widget[images_attributes][' + random + ']' + $(el).attr('name');
-            $(el).attr('name', name);
-          });
-          id = data.result.id;
-          input.find('.widget_images_id input').val(id);
-          input.find('img').attr('src', file.url);
-          input.appendTo('#sortable .file-fields');
-          resetPositions();
-
-          $('<option selected="selected" value="' + id + '"></option>').appendTo('#widget_image_ids');
-        }
-      });
-    });
+    #{ render partial: 'shared/uploader/file_upload', locals: { file_type: file_type } }

@@ -1,0 +1,25 @@
+$(function(){
+  $('.file_upload.<%= file_type %>').fileupload({
+    dropZone: '.file-drop.<%= file_type %>',
+    add: function(e, data) {
+      file = data.files[0];
+      data = <%= file_type %>Functions.fileuploadAdd(data, file);
+      var jqXHR = data.submit();
+    },
+
+    fail: function(e, data){
+      target = <%= file_type %>Functions.fileuploadTargetForFail(data);
+      target.replaceWith('Error, please retry.')
+    },
+
+    progress: function(e, data) {
+      progress = parseInt(data.loaded / data.total * 100, 10);
+      target = <%= file_type %>Functions.fileuploadTargetForProgress(data);
+      target.css('width', progress + '%');
+    },
+
+    done: function(e, data){
+      <%= file_type %>Functions.fileuploadDone(data);
+    }
+  });
+});

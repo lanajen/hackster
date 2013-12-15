@@ -18,12 +18,7 @@
       = f.input :mini_resume, as: :text, input_html: { rows: 4 },
         hint: 'Maximum 140 characters'
 
-      #file-drop.form-group
-        .col-xs-4
-          %label.control-label Profile picture
-        .col-xs-8
-          %span#image-preview= image_tag(@user.avatar.file_url(:thumb)) if @user.avatar.try(:file_url)
-          %a.btn.btn-primary.btn-sm{ data: { target: '#file_upload' } } Change picture
+      = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Profile picture', image_link: @user.avatar.try(:file_url, :thumb), help_block: '', attribute_type: 'avatar', image_version: 'thumb', model: 'user' }
 
       = f.input :city
       = f.input :country, as: :select
@@ -43,64 +38,3 @@
       = f.input :skill_tags_string, label: 'Skills'
 
 %hr
-
-= content_for :js do
-  :javascript
-    formTpl = "<form action='/files' method='post' enctype='multipart/form-data' id='file_upload' style='display:none;'>";
-    formTpl += "<input name='utf8' type='hidden' value='✓'>";
-    formTpl += "<input name='authenticity_token' type='hidden' value=''>";
-    formTpl += "<input name='file_type' type='hidden' value=''>";
-    formTpl += "<input type='file' name='file' multiple>";
-    formTpl += "</div>";
-    formTpl += "</form>";
-
-    inputTpl = '<span><img>';
-    inputTpl += '<input type="hidden" name="user[avatar_id]"></span>';
-
-    form = $('form.accept-file-upload');
-    $($(formTpl)).insertAfter(form);
-    $('#file_upload input[name="authenticity_token"]').val($('input[name="authenticity_token"]', form).val());
-    $('#file_upload input[name="file_type"]').val('avatar');
-
-    $(function(){
-      $('.user .edit').on('click', '#file-drop a', function(){
-        $($(this).data('target')).find('input[type=file]').click();
-      });
-
-      // Initialize the jQuery File Upload plugin
-      $('#file_upload').fileupload({
-        dropZone: '#file-drop',
-        add: function(e, data) {
-          file = data.files[0];
-          tpl = $('<div><i>Uploading ' + file.name + '</i><div class="progress progress-striped active"><div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%;"></div></div></div>');
-          $('#image-preview').html(tpl);
-          data.context = tpl;
-
-          var jqXHR = data.submit();
-        },
-
-        fail: function(e, data){
-          $('.progress', data.context).replaceWith('Error, please retry.')
-        },
-
-        progress: function(e, data) {
-          var progress = parseInt(data.loaded / data.total * 100, 10);
-          $('.progress-bar', data.context).css('width', progress + '%');
-        },
-
-        done: function(e, data){
-          $('.progress.active', data.context)
-            .removeClass('progress-striped')
-            .removeClass('active');
-          $('.progress-bar', data.context).addClass('progress-bar-success');
-          $(data.context).remove();
-          file = data.result.file;
-
-          input = $(inputTpl);
-          id = data.result.id;
-          input.find('input').val(id);
-          input.find('img').attr('src', file.thumb.url);
-          $('#image-preview').html(input);
-        }
-      });
-    });

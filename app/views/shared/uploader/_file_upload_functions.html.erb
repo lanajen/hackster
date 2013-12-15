@@ -1,0 +1,41 @@
+var iFile = 0;
+
+var <%= file_type %>Functions = {
+  fileuploadDone: function(data){
+    $('#' + data.context + ' .progress.active')
+      .removeClass('progress-striped')
+      .removeClass('active');
+    $('#' + data.context + ' .progress-bar').addClass('progress-bar-success');
+    $('#' + data.context).remove();
+    file = data.result.file;
+
+    input = $(inputTpl);
+    random = new Date().getTime();
+    $('input', input).each(function(i, el){
+      name = 'widget[<%= file_type %>s_attributes][' + random + ']' + $(el).attr('name');
+      $(el).attr('name', name);
+    });
+    id = data.result.id;
+
+    input.find('.widget_<%= file_type %>s_id input').val(id);
+    <%= file_type %>Functions.fileuploadDoneTypeSpecific(data, file);
+
+    $('<option selected="selected" value="' + id + '"></option>').appendTo('#widget_<%= file_type %>_ids');
+  },
+
+  fileuploadTargetForProgress: function(data){
+    return $('#' + data.context + ' .progress-bar');
+  },
+
+  fileuploadTargetForFail: function(data){
+    return $('#' + data.context + ' .progress');
+  },
+
+  fileuploadAdd: function(data, file){
+    tpl = $('<tr id="tmp-img-' + iFile + '"><td style="width:200px;"><i>' + file.name + '</i></td><td><div class="progress progress-striped active"><div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%;"></div></div></td></tr>');
+    tpl.appendTo($('.file-drop.<%= file_type %> .uploads'));
+    data.context = 'tmp-img-' + iFile;
+    iFile++;
+    return data;
+  }
+}

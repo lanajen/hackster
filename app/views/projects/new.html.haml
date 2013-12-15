@@ -7,71 +7,12 @@
     = f.input :name, label: 'What is it called?'
     = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner description, Twitter-style.'
 
-    .cover-image.file-drop.form-group
+    .cover_image.file-drop.form-group
       %label.control-label Cover image
       %div
-        %span.cover-image.image-preview
-        %a.btn.btn-primary.btn-sm{ data: { target: '.file_upload.cover-image' } } Select picture
+        %span.cover_image.image-preview
+        %a.btn.btn-primary.btn-sm{ data: { target: '.file_upload.cover_image' } } Select picture
+
+    = render partial: 'shared/image_form_bare', locals: { file_type: 'cover_image', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
 
     = f.button :submit, 'Go!', class: 'btn-block btn btn-default'
-
-
-= content_for :js do
-  :javascript
-    formTpl = "<form action='/files' method='post' enctype='multipart/form-data' class='file_upload cover-image' style='display:none;'>";
-    formTpl += "<input name='utf8' type='hidden' value='✓'>";
-    formTpl += "<input name='authenticity_token' type='hidden' value=''>";
-    formTpl += "<input name='file_type' type='hidden' value=''>";
-    formTpl += "<input type='file' name='file' multiple>";
-    formTpl += "</div>";
-    formTpl += "</form>";
-
-    form = $('form.accept-file-upload');
-    $($(formTpl)).insertAfter(form);
-    $('.cover-image.file_upload input[name="authenticity_token"]').val($('input[name="authenticity_token"]', form).val());
-    $('.cover-image.file_upload input[name="file_type"]').val('cover_image');
-
-    $(function(){
-      $('body').on('click', '.file-drop a', function(){
-        $($(this).data('target')).find('input[type=file]').click();
-      });
-
-      // Initialize the jQuery File Upload plugin
-      $('.cover-image.file_upload').fileupload({
-        dropZone: '.cover-image.file-drop',
-        add: function(e, data) {
-          file = data.files[0];
-          tpl = $('<div><i>Uploading ' + file.name + '</i><div class="progress progress-striped active"><div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%;"></div></div></div>');
-          $('.cover-image.image-preview').html(tpl);
-          data.context = tpl;
-
-          var jqXHR = data.submit();
-        },
-
-        fail: function(e, data){
-          $('.progress', data.context).replaceWith('Error, please retry.')
-        },
-
-        progress: function(e, data) {
-          var progress = parseInt(data.loaded / data.total * 100, 10);
-          $('.progress-bar', data.context).css('width', progress + '%');
-        },
-
-        done: function(e, data){
-          $('.progress.active', data.context)
-            .removeClass('progress-striped')
-            .removeClass('active');
-          $('.progress-bar', data.context).addClass('progress-bar-success');
-          $(data.context).remove();
-          file = data.result.file;
-
-          inputTpl = '<span><img>';
-          inputTpl += '<input type="hidden" name="project[cover_image_id]"></span>';
-          input = $(inputTpl);
-          id = data.result.id;
-          input.find('input').val(id);
-          input.find('img').attr('src', file.cover_mini_thumb.url);
-          $('.cover-image.image-preview').html(input);
-        }
-      });
-    });

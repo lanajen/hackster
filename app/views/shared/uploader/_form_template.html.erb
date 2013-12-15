@@ -1,0 +1,12 @@
+formTpl = "<form action='/files' method='post' enctype='multipart/form-data' class='file_upload <%= file_type %>' style='display:none;'>";
+formTpl += "<input name='utf8' type='hidden' value='✓'>";
+formTpl += "<input name='authenticity_token' type='hidden' value=''>";
+formTpl += "<input name='file_type' type='hidden' value=''>";
+formTpl += "<input type='file' name='file' multiple>";
+formTpl += "</div>";
+formTpl += "</form>";
+
+form = $('form.accept-file-upload');
+$($(formTpl)).insertAfter(form);
+$('.file_upload.<%= file_type %> input[name="authenticity_token"]').val($('input[name="authenticity_token"]', form).val());
+$('.file_upload.<%= file_type %> input[name="file_type"]').val('<%= defined?(attribute_type) ? attribute_type : file_type %>');

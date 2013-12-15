@@ -105,14 +105,6 @@ class Project < ActiveRecord::Base
     order('impressions_count DESC')
   end
 
-  def cover_image_id=(val)
-    self.cover_image = CoverImage.find_by_id(val)
-  end
-
-  def logo_id=(val)
-    self.logo = Avatar.find_by_id(val)
-  end
-
   def all_issues
     (issues + Issue.where(threadable_type: 'Widget').where('threadable_id IN (?)', widgets.pluck('widgets.id'))).sort_by{ |t| t.created_at }
   end
@@ -126,6 +118,10 @@ class Project < ActiveRecord::Base
     }
   end
 
+  def cover_image_id=(val)
+    self.cover_image = CoverImage.find_by_id(val)
+  end
+
   def force_basic_validation!
     @force_basic_validation = true
   end
@@ -136,6 +132,10 @@ class Project < ActiveRecord::Base
 
   def image
     images.first
+  end
+
+  def logo_id=(val)
+    self.logo = Avatar.find_by_id(val)
   end
 
   def to_param
