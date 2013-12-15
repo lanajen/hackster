@@ -15,7 +15,7 @@ module WidgetsHelper
 
   def widget_span_class widget
     case widget
-    when ImageWidget
+    when ImageWidget, DocumentWidget, StlWidget
       'col-xs-12'
     when PartsWidget
       'col-xs-10 col-xs-offset-1'

@@ -1,4 +1,5 @@
 $('.user .edit').html("<%= escape_javascript render('form') %>");
+$("<%= escape_javascript content_for(:js) %>").appendTo($('.user .edit'));
 $('.user .display').slideUp(function(){
   $('.user .edit').slideDown();
 });

@@ -11,7 +11,9 @@ class WidgetsController < ApplicationController
 
   def save
     authorize! :update, @project
-    if @project.update_attributes(params[:project])
+    # so it doesn't block if there's validation errors on the project
+    @project.assign_attributes(params[:project])
+    if @project.save(validate: false)
       redirect_to @project, notice: "Layout saved."
 
       track_event 'Updated project', @project.to_tracker.merge({ type: 'layout update'})

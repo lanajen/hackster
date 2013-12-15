@@ -113,6 +113,11 @@
       margin-bottom: 10px;
       background: #fff;
     }
+    &.fields-condensed {
+      .fields {
+        padding: 1%;
+      }
+    }
   }
   &.form-horizontal {
     .form-actions {
@@ -125,31 +130,36 @@
     cursor: pointer;
   }
   .img-holder {
-    position: relative;
     margin-bottom: 5px;
     width: 198px;
     height: 148px;
-    .btn-delete-img {
-      position: absolute;
-      top: 0;
-      right: 8px;
-      display: none;
-      font-size: 20px;
-      color: #fff;
-      text-shadow: 0 0 5px #333;
-      &:hover {
-        text-decoration: none;
-        color: #ccc;
-      }
-    }
-    &:hover .btn-delete-img {
-      display: block;
-    }
     .img-responsive {
       max-height: 100%;
     }
   }
-  #image-drop {
+  .btn-delete-holder {
+    position: relative;
+    overflow: hidden;
+    .btn-delete {
+      position: absolute;
+      top: -5px;
+      right: 0;
+      display: none;
+      font-size: 20px;
+      color: #333;
+      background: #fff;
+      line-height: 1;
+      padding: 5px 6px;
+      &:hover {
+        text-decoration: none;
+        color: #999;
+      }
+    }
+    &:hover .btn-delete {
+      display: block;
+    }
+  }
+  #file-drop {
     background: #fff;
     border: 1px solid #ccc;
     padding: 100px;

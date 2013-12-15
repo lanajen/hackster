@@ -2,26 +2,26 @@
 .form-fields
   %label Add images
   #sortable
-    .row
+    .row.file-fields
       - widget.images.each do |image|
         = f.simple_fields_for :images, image, wrapper: false do |f_image|
           .fields-column
             .fields
               = f_image.input :position, as: :hidden, input_html: { class: 'position' }
               = f_image.input :id, as: :hidden
-              .img-holder
+              .img-holder.btn-delete-holder
                 = image_tag image.file_url(:thumb), class: 'handle img-responsive', title: 'Click, hold and drag to reorder'
-                = f_image.link_to_remove '&times;'.html_safe, class: 'btn-delete-img', title: 'Delete'
+                = f_image.link_to_remove '&times;'.html_safe, class: 'btn-delete', title: 'Delete'
               = f_image.input :title, placeholder: 'Image title', label: false, wrapper: false
     .row
       .col-xs-12
         %p.help-block You can drag and drop images to sort them.
 
-  #image-drop
+  #file-drop
     %strong Drop new images here
     %br
     or
-    %a{ data: { target: '#image_upload' } } browse your computer
+    %a{ data: { target: '#file_upload' } } browse your computer
     %table.table
       %tbody.uploads
 
@@ -61,9 +61,10 @@
       });
     }
 
-    formTpl = "<form action='/images' method='post' enctype='multipart/form-data' id='image_upload' style='display:none;'>";
+    formTpl = "<form action='/files' method='post' enctype='multipart/form-data' id='file_upload' style='display:none;'>";
     formTpl += "<input name='utf8' type='hidden' value='✓'>";
     formTpl += "<input name='authenticity_token' type='hidden' value=''>";
+    formTpl += "<input name='file_type' type='hidden' value=''>";
     formTpl += "<input type='file' name='file' multiple>";
     formTpl += "</div>";
     formTpl += "</form>";
@@ -71,30 +72,31 @@
     inputTpl = '<div class="fields-column"><div class="fields">';
     inputTpl += '<div class="form-group hidden widget_images_position"><input class="hidden position" id="" name="[position]" type="hidden"></div>';
     inputTpl += '<div class="form-group hidden widget_images_id"><input class="hidden" id="" name="[id]" type="hidden"></div>';
-    inputTpl += '<div class="img-holder">';
+    inputTpl += '<div class="img-holder btn-delete-holder">';
     inputTpl += '<img class="handle img-responsive" title="Click, hold and drag to reorder">';
-    inputTpl += '<input id="" name="[_destroy]" type="hidden" value="false"><a class="btn-delete-img remove_nested_fields" data-association="images" href="javascript:void(0)" title="Delete">×</a>';
+    inputTpl += '<input id="" name="[_destroy]" type="hidden" value="false"><a class="btn-delete remove_nested_fields" data-association="images" href="javascript:void(0)" title="Delete">×</a>';
     inputTpl += '</div>';
     inputTpl += '<div class="string optional widget_images_title"><input class="string optional form-control" id="" maxlength="255" name="[title]" placeholder="Image title" size="255" type="text"></div>';
     inputTpl += '</div></div>';
 
-    form = $('form');
+    form = $('form.accept-file-upload');
     $($(formTpl)).insertAfter(form);
-    $('#image_upload input[name="authenticity_token"]').val($('input[name="authenticity_token"]', form).val());
+    $('#file_upload input[name="authenticity_token"]').val($('input[name="authenticity_token"]', form).val());
+    $('#file_upload input[name="file_type"]').val('image');
     var iImg = 0;
 
     $(function(){
-      $('#image-drop a').click(function(){
+      $('#file-drop a').click(function(){
         $($(this).data('target')).find('input[type=file]').click();
       });
 
       // Initialize the jQuery File Upload plugin
-      $('#image_upload').fileupload({
-        dropZone: '#image-drop',
+      $('#file_upload').fileupload({
+        dropZone: '#file-drop',
         add: function(e, data) {
           file = data.files[0];
           tpl = $('<tr id="tmp-img-' + iImg + '"><td style="width:200px;"><i>' + file.name + '</i></td><td><div class="progress progress-striped active"><div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%;"></div></div></td></tr>');
-          tpl.appendTo($('#image-drop .uploads'));
+          tpl.appendTo($('#file-drop .uploads'));
           data.context = 'tmp-img-' + iImg;
           iImg++;
 
@@ -117,7 +119,6 @@
           $('#' + data.context + ' .progress-bar').addClass('progress-bar-success');
           $('#' + data.context).remove();
           file = data.result.file;
-          console.log(data);
 
           input = $(inputTpl);
           random = new Date().getTime();
@@ -128,7 +129,7 @@
           id = data.result.id;
           input.find('.widget_images_id input').val(id);
           input.find('img').attr('src', file.url);
-          input.appendTo('#sortable');
+          input.appendTo('#sortable .file-fields');
           resetPositions();
 
           $('<option selected="selected" value="' + id + '"></option>').appendTo('#widget_image_ids');

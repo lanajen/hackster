@@ -1,4 +1,4 @@
-= simple_nested_form_for @project, html: { class: 'form-horizontal remote', data: { remote: true } }, wrapper: :bootstrap3_horizontal do |f|
+= simple_nested_form_for @project, html: { class: 'form-horizontal remote accept-file-upload', data: { remote: true } }, wrapper: :bootstrap3_horizontal do |f|
   = f.error_notification
 
   .row
@@ -15,24 +15,25 @@
       = f.input :name
       = f.input :one_liner, as: :text, input_html: { rows: 4 },
         hint: 'Maximum 140 characters'
+      = f.input :website, label: 'Project website'
       = f.input :product_tags_string, as: :string, label: 'Tags', hint: 'Separate tags by commas. Used for finding your project more easily.'
 
     .col-xs-6
-      - if @project.logo and @project.logo.file_url(:thumb)
-        .form-group
-          .col-xs-8.col-xs-offset-4
-            = image_tag @project.logo.file_url(:thumb)
-      = f.simple_fields_for :logo do |f_logo|
-        = f_logo.input :file, as: :file, label: 'Logo', hint: "Optional, only if you have one. Should be squared, at least 200x200px for best results"
-        = f_logo.input :file_cache, as: :hidden
+      .logo.file-drop.form-group
+        .col-xs-4
+          %label.control-label Logo
+        .col-xs-8
+          %span.logo.image-preview= image_tag(@project.logo.file_url(:thumb)) if @project.logo.try(:file_url)
+          %a.btn.btn-primary.btn-sm{ data: { target: '.file_upload.logo' } } Change picture
+          %p.help-block Optional, only if you have one. Should be squared, at least 200x200px for best results
 
-      - if @project.cover_image and @project.cover_image.file_url(:cover_thumb)
-        .form-group
-          .col-xs-8.col-xs-offset-4
-            = image_tag @project.cover_image.file_url(:thumb)
-      = f.simple_fields_for :cover_image do |f_logo|
-        = f_logo.input :file, as: :file, label: 'Cover image', hint: "This should be your nicest picture for this project. In 4:3 format, at least 600x450px for best results"
-        = f_logo.input :file_cache, as: :hidden
+      .cover-image.file-drop.form-group
+        .col-xs-4
+          %label.control-label Cover image
+        .col-xs-8
+          %span.cover-image.image-preview= image_tag(@project.cover_image.file_url(:cover_mini_thumb)) if @project.cover_image.try(:file_url)
+          %a.btn.btn-primary.btn-sm{ data: { target: '.file_upload.cover-image' } } Change picture
+          %p.help-block This should be your nicest picture for this project. In 4:3 format, at least 600x450px for best results
 
       = f.input :private, inline_label: 'Make this project private', label: false
       - if current_user.is? :admin
@@ -42,7 +43,6 @@
         .controls
           = render 'shared/wysihtml5_toolbar'
       -# = f.input :description, input_html: { id: 'wysihtml5-textarea', rows: 10 }, label: 'About'
-      -# = f.input :website
       -# = f.input :start_date, order: [:year, :month],
         start_year: Date.today.year,
         end_year: Date.today.year - 50
@@ -50,24 +50,7 @@
         start_year: Date.today.year,
         end_year: Date.today.year - 50
       -# = f.input :current, as: :boolean, label: false, inline_label: 'Currently working on it'
-      -# = f.simple_fields_for :video do |f_video|
-        = f_video.input :link, label: 'Video link'
 
-    -# .form-fields
-      %label.control-label Images
-      - @project.images.each do |image|
-        = f.simple_fields_for :images, image do |f_image|
-          -  if image.file_url
-            .form-group
-              .controls
-                = image_tag image.file_url(:thumb)
-          - else
-            = f_image.input :file, as: :file, label: false
-            = f_image.input :file_cache, as: :hidden
-          .form-group
-            .controls
-              = f_image.link_to_remove 'Remove this image', class: 'btn btn-xs btn-danger'
-      -# = f.link_to_add 'Add an image', :images, class: 'btn btn-xs btn-success'
 
       -# = f.input :tech_tags_string, as: :string, label: 'Technologies used', hint: 'Separate technologies by commas'
 
@@ -88,9 +71,116 @@
 
 = content_for :js do
   :javascript
-    jQuery(function($) {
-      $(document).on('nested:fieldAdded', function(event){
-        var field = event.field;
-        field.addClass('new');
+    formTpl = "<form action='/files' method='post' enctype='multipart/form-data' class='file_upload logo' style='display:none;'>";
+    formTpl += "<input name='utf8' type='hidden' value='✓'>";
+    formTpl += "<input name='authenticity_token' type='hidden' value=''>";
+    formTpl += "<input name='file_type' type='hidden' value=''>";
+    formTpl += "<input type='file' name='file' multiple>";
+    formTpl += "</div>";
+    formTpl += "</form>";
+
+    form = $('form.accept-file-upload');
+    $($(formTpl)).insertAfter(form);
+    $('.logo.file_upload input[name="authenticity_token"]').val($('input[name="authenticity_token"]', form).val());
+    $('.logo.file_upload input[name="file_type"]').val('avatar');
+
+    $(function(){
+      $('.project .edit').on('click', '.file-drop a', function(){
+        $($(this).data('target')).find('input[type=file]').click();
+      });
+
+      // Initialize the jQuery File Upload plugin
+      $('.logo.file_upload').fileupload({
+        dropZone: '.logo.file-drop',
+        add: function(e, data) {
+          file = data.files[0];
+          tpl = $('<div><i>Uploading ' + file.name + '</i><div class="progress progress-striped active"><div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%;"></div></div></div>');
+          $('.logo.image-preview').html(tpl);
+          data.context = tpl;
+
+          var jqXHR = data.submit();
+        },
+
+        fail: function(e, data){
+          $('.progress', data.context).replaceWith('Error, please retry.')
+        },
+
+        progress: function(e, data) {
+          var progress = parseInt(data.loaded / data.total * 100, 10);
+          $('.progress-bar', data.context).css('width', progress + '%');
+        },
+
+        done: function(e, data){
+          $('.progress.active', data.context)
+            .removeClass('progress-striped')
+            .removeClass('active');
+          $('.progress-bar', data.context).addClass('progress-bar-success');
+          $(data.context).remove();
+          file = data.result.file;
+
+          inputTpl = '<span><img>';
+          inputTpl += '<input type="hidden" name="project[logo_id]"></span>';
+          input = $(inputTpl);
+          id = data.result.id;
+          input.find('input').val(id);
+          input.find('img').attr('src', file.thumb.url);
+          $('.logo.image-preview').html(input);
+        }
+      });
+    });
+
+
+    formTpl = "<form action='/files' method='post' enctype='multipart/form-data' class='file_upload cover-image' style='display:none;'>";
+    formTpl += "<input name='utf8' type='hidden' value='✓'>";
+    formTpl += "<input name='authenticity_token' type='hidden' value=''>";
+    formTpl += "<input name='file_type' type='hidden' value=''>";
+    formTpl += "<input type='file' name='file' multiple>";
+    formTpl += "</div>";
+    formTpl += "</form>";
+
+    form = $('form.accept-file-upload');
+    $($(formTpl)).insertAfter(form);
+    $('.cover-image.file_upload input[name="authenticity_token"]').val($('input[name="authenticity_token"]', form).val());
+    $('.cover-image.file_upload input[name="file_type"]').val('cover_image');
+
+    $(function(){
+
+      // Initialize the jQuery File Upload plugin
+      $('.cover-image.file_upload').fileupload({
+        dropZone: '.cover-image.file-drop',
+        add: function(e, data) {
+          file = data.files[0];
+          tpl = $('<div><i>Uploading ' + file.name + '</i><div class="progress progress-striped active"><div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%;"></div></div></div>');
+          $('.cover-image.image-preview').html(tpl);
+          data.context = tpl;
+
+          var jqXHR = data.submit();
+        },
+
+        fail: function(e, data){
+          $('.progress', data.context).replaceWith('Error, please retry.')
+        },
+
+        progress: function(e, data) {
+          var progress = parseInt(data.loaded / data.total * 100, 10);
+          $('.progress-bar', data.context).css('width', progress + '%');
+        },
+
+        done: function(e, data){
+          $('.progress.active', data.context)
+            .removeClass('progress-striped')
+            .removeClass('active');
+          $('.progress-bar', data.context).addClass('progress-bar-success');
+          $(data.context).remove();
+          file = data.result.file;
+
+          inputTpl = '<span><img>';
+          inputTpl += '<input type="hidden" name="project[cover_image_id]"></span>';
+          input = $(inputTpl);
+          id = data.result.id;
+          input.find('input').val(id);
+          input.find('img').attr('src', file.cover_mini_thumb.url);
+          $('.cover-image.image-preview').html(input);
+        }
       });
     });

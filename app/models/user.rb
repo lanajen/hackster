@@ -53,7 +53,7 @@ class User < ActiveRecord::Base
     :blog_link, :github_link, :google_plus_link, :youtube_link, :categories,
     :participant_invite_id, :auth_key_authentified,
     :github_link, :invitation_limit, :email, :mini_resume, :city, :country,
-    :user_name, :full_name, :roles, :type
+    :user_name, :full_name, :roles, :type, :avatar_id
   accepts_nested_attributes_for :avatar, :projects, allow_destroy: true
 
   store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link, :website_link, :blog_link, :github_link, :google_plus_link, :youtube_link]
@@ -224,6 +224,10 @@ class User < ActiveRecord::Base
 
   def auth_key_authentified? project
     auth_key_authentified and participant_invite.try(:project_id) == project.id
+  end
+
+  def avatar_id=(val)
+    self.avatar = Avatar.find_by_id(val)
   end
 
   def being_invited?

@@ -17,6 +17,7 @@ $(document).ready(function(){
   $(document).on('click', '.btn-cancel', function(e){
     btn = $(this);
     $(btn.data('hide')).slideUp(function(){
+      $(btn.data('hide')).off();
       $(btn.data('show')).slideDown();
     });
     e.stopPropagation();

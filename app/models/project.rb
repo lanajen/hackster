@@ -25,10 +25,10 @@ class Project < ActiveRecord::Base
   has_one :video, as: :recordable, dependent: :destroy
 
   sanitize_text :description
-  attr_accessible :description, :end_date, :name, :start_date, :images_attributes,
-    :video_attributes, :current, :logo_attributes, :team_members_attributes,
+  attr_accessible :description, :end_date, :name, :start_date,
+    :current, :team_members_attributes,
     :website, :access_groups_attributes, :participant_invites_attributes,
-    :one_liner, :widgets_attributes, :featured, :cover_image_attributes
+    :one_liner, :widgets_attributes, :featured, :cover_image_id, :logo_id
   attr_accessor :current
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
     :access_groups, :participant_invites, :widgets, :cover_image,
@@ -103,6 +103,14 @@ class Project < ActiveRecord::Base
 
   def self.most_viewed
     order('impressions_count DESC')
+  end
+
+  def cover_image_id=(val)
+    self.cover_image = CoverImage.find_by_id(val)
+  end
+
+  def logo_id=(val)
+    self.logo = Avatar.find_by_id(val)
   end
 
   def all_issues
