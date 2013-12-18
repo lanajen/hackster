@@ -11,7 +11,7 @@
       = f.input :mini_resume, as: :text, input_html: { rows: 4 },
         hint: 'Maximum 140 characters'
       = f.input :city, label: 'City'
-      = f.input :country, label: 'Country', as: :select
+      = f.input :country, label: 'Country', input_html: { class: 'form-control' }
       .form-actions
         = f.button :submit, "Done!", class: 'btn btn-primary'
         = link_to "I'll do this later", user_return_to, class: 'btn btn-link btn-sm'

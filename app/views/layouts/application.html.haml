@@ -89,6 +89,8 @@
                     %strong.caret
                   .dropdown-menu{:style => "padding: 15px; width: 250px;"}
                     = render 'devise/sessions/form'
+                    %hr
+                    = link_to 'Connect with your social account', new_user_session_path
             - if user_signed_in? and current_user.is? :admin
               %ul.nav.navbar-nav.navbar-right
                 %li= link_to 'Admin', admin_users_path

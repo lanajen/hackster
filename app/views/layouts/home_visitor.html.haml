@@ -44,6 +44,8 @@
                   %strong.caret
                 .dropdown-menu{:style => "padding: 15px; width: 250px;"}
                   = render 'devise/sessions/form'
+                  %hr
+                  = link_to 'Connect with your social account', new_user_session_path
 
             .alert-flash= bootstrap_flash
 

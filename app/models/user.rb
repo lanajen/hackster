@@ -307,7 +307,7 @@ class User < ActiveRecord::Base
       end
       self.authorizations.build(
         uid: data.uid,
-        provider: 'Gitnub',
+        provider: 'Github',
         name: info.name.to_s,
         link: info.urls['GitHub'],
         token: data.credentials.token
