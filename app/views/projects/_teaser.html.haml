@@ -4,6 +4,15 @@
       .alert.alert-warning
         This project is private so only you can see it.
         = link_to 'Make public', project_path(@project, project: { private: 0 }), method: :patch, class: 'btn btn-warning btn-sm'
+- elsif current_user.is_team_member? @project
+  .row
+    .col-xs-12
+      .alert.alert-info.alert-author-share
+        %strong Time to shine!
+        Share your project or
+        = link_to 'submit it to HackADay', "mailto:tips@hackaday.com?subject=#{@project.name}&body=#{@project.one_liner}%0D%0AProject page: #{project_url(@project)}", class: 'alert-link'
+        = link_to "&times;".html_safe, '#', data: { close: '.alert-author-share' }, class: 'btn-close btn-close-notif'
+        = render 'projects/share_by_author'
 
 .row
   .col-xs-4{ style: 'padding-right: 0;'}

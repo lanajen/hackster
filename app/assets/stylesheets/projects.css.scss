@@ -116,3 +116,13 @@
 a.action-respected {
   color: #FFD700 !important;
 }
+
+.alert-author-share {
+  position: relative;
+  .addthis_default_style {
+    width: 190px;
+    position: absolute;
+    top: 10px;
+    right: 30px;
+  }
+}
