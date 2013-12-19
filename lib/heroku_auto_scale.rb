@@ -30,10 +30,10 @@ module HerokuResqueAutoScale
       {
         :workers => 2,
         :job_count => 15
-      # },
-      # {
-      #   :workers => 3,
-      #   :job_count => 25
+      },
+      {
+        :workers => 3,
+        :job_count => 25
       # },
       # {
       #   :workers => 4,
