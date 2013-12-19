@@ -1,3 +1,8 @@
+= content_for :head do
+  %meta(property="og:title" content="#{@project_meta_desc}")
+  %meta(property="og:image" content="#{@project.cover_image(:cover_thumb)}")
+  %meta(property="og:url" content="#{project_url(@project)}")
+  %meta(property="og:site_name" content="Hackster.io")
 
 .tab-content.row
   #tab-home.tab-pane.active
