@@ -34,4 +34,8 @@ class PagesController < ApplicationController
 
     track_event event
   end
+
+  def ping
+    render text: 'pong!'
+  end
 end

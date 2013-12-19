@@ -22,10 +22,11 @@ class ApplicationController < ActionController::Base
 
   unless Rails.application.config.consider_all_requests_local
     rescue_from Exception, with: :render_500
-    rescue_from ActionController::RoutingError, with: :render_404
-    rescue_from ActionController::UnknownController, with: :render_404
-    rescue_from AbstractController::ActionNotFound, with: :render_404
-    rescue_from ActiveRecord::RecordNotFound, with: :render_404
+    rescue_from ActionController::RoutingError,
+      ActionController::UnknownController,
+      AbstractController::ActionNotFound,
+      ActiveRecord::RecordNotFound,
+      with: :render_404
   end
 
   rescue_from CanCan::AccessDenied do |exception|
@@ -92,7 +93,7 @@ class ApplicationController < ActionController::Base
     end
 
     def find_user
-      @user = User.find_by_user_name!(params[:user_name])
+      @user = User.find_by_user_name!(params[:user_name].downcase)
     end
 
     def load_project

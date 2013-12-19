@@ -101,15 +101,15 @@ HackerIo::Application.routes.draw do
     get 'help' => 'pages#help'
     get 'home', to: redirect('/')
 
+    get 'ping' => 'pages#ping'  # for availability monitoring
     get 'obscure/path/to/cron' => 'cron#run'
 
     get 'profile/edit' => 'users#edit'
     patch 'profile' => 'users#update'
-    get 'profile/first_login' => 'users#first_login'
 
     get 'search' => 'search#search'
 
-    get ':user_name' => 'users#show', as: :user, user_name: /[a-z0-9_]{3,}/, constraints: { format: /(html|json)/ }
+    get ':user_name' => 'users#show', as: :user, user_name: /[A-Za-z0-9_]{3,}/, constraints: { format: /(html|json)/ }
     scope ':user_name', as: :user do
 #      post 'followers' => 'follow_relations#create'
 #      delete 'followers' => 'follow_relations#destroy'
