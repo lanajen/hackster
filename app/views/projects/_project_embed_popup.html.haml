@@ -1,0 +1,26 @@
+= link_to content_tag(:i, '', class: 'fa fa-code'), '#', onclick: "openPopup('#embed-popup');", rel: 'tooltip', title: 'Embed'
+
+#embed-popup
+  .embed-popup-outer
+    .embed-popup-inner
+      %button.close{ onclick: "closePopup('#embed-popup');" } &times;
+      #project-embed= render partial: 'projects/project_embed_thumb', locals: { project: @project }
+      %p Add the following snippet to your HTML:
+      %textarea.embed-code
+        %iframe{frameborder: "0", height: "321", scrolling: "no", src: "#{embed_project_url(@project)}", width: "220"}
+
+= content_for :js do
+  :javascript
+    $('#embed-popup').click(function(){
+      $(this).fadeOut(200);
+    }).children().click(function() {
+      return false;
+    });
+    function openPopup(id) {
+      $(id).fadeIn(200);
+      return false;
+    }
+    function closePopup(id) {
+      $(id).fadeOut(200);
+      return false;
+    }

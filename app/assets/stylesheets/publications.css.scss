@@ -3,7 +3,7 @@
     position: relative;
   }
   .details {
-    @extend .muted;
+    @extend .text-muted;
     @extend .smaller;
     margin-bottom: 5px;
   }

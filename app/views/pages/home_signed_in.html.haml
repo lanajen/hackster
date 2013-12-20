@@ -1,0 +1,12 @@
+.row
+  .col-xs-12
+    .alert.alert-info.text-center
+      = SLOGAN
+
+.row
+  - @projects.each do |project|
+    = render partial: 'projects/project_thumb', locals: { project: project.decorate }
+
+.row
+  .col-xs-12.text-center
+    = link_to 'Browse all projects &rarr;'.html_safe, projects_path, class: 'btn btn-default'

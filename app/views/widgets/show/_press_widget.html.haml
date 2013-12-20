@@ -1,0 +1,6 @@
+%ul
+  - widget.press_articles.each do |article|
+    %li
+      = link_to article.title, article.link, target: '_blank'
+      by #{article.publication}
+      on #{l(article.date)}

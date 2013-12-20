@@ -2,7 +2,7 @@ module WidgetsHelper
   def lightbox_elements images
     images.map do |image|
       "{
-          URL: '#{image.file_url}',
+          URL: '#{image.file_url(:lightbox)}',
           caption: '#{image.title}',
           type: 'image'
       }"
@@ -15,10 +15,12 @@ module WidgetsHelper
 
   def widget_span_class widget
     case widget
-    when nil
-      'span12'
+    when ImageWidget, DocumentWidget, StlWidget
+      'col-xs-12'
+    when PartsWidget
+      'col-xs-10 col-xs-offset-1'
     else
-      'span6 offset3'
+      'col-xs-6 col-xs-offset-3'
     end
   end
 end

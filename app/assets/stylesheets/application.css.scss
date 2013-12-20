@@ -12,7 +12,8 @@
  *= require pygments/default
  */
 
-@import 'twitter/bootstrap-no-sprites';
+@import 'twitter/bootstrap';
+@import 'bootstrap_overrides';
 @import 'font-awesome';
 @import 'custom_mixins';
 @import 'layout';
@@ -24,3 +25,14 @@
 @import 'quotes';
 @import 'widgets';
 @import 'ilightbox/ilightbox';
+@import 'embed';
+@import 'zocial';
+
+.zocial, a.zocial {
+  font: bold 90%/2.1 "Lucida Grande", Tahoma, sans-serif;
+  margin: 0 5px 5px 0;
+  &.zocial-block {
+    display: block;
+    margin-right: 0;
+  }
+}

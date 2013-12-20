@@ -5,9 +5,9 @@ class ImageWidget < Widget
     Widget.model_name
   end
 
-  has_many :images, as: :attachable, dependent: :destroy
+  has_many :images, -> { order position: :asc }, as: :attachable, dependent: :destroy
   accepts_nested_attributes_for :images, allow_destroy: true
-  attr_accessible :images_attributes
+  attr_accessible :images_attributes, :image_ids
 
   def help_text
     "Add as many images as you like."

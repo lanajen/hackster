@@ -1,20 +1,24 @@
-%li.span3.project-thumb
-  .thumb
-    .photo-thumb= project.logo_link(:big)
-    .inner-thumb
-      %h3= link_to project.name, project
-      %p= truncate project.one_liner, length: 140
-      .thumb-bottom
-        %hr
-        - if project.public?
+%div{ class: "col-xs-#{ defined?(col) ? col : 3 }" }
+  .project-thumb
+    .thumb
+      .photo-thumb= link_to image_tag(project.cover_image(:cover_thumb), alt: project.name), project
+      .inner-thumb
+        %h3= link_to project.name, project
+        %h4
+          by
+          = project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
+        %p= truncate project.one_liner, length: 140
+        .thumb-bottom
+          %hr
+          - if project.public?
+            %span.counter.first
+              %i.fa.fa-eye
+              = project.impressions_count
+            %span.counter
+              %i.fa.fa-star
+              = project.respects_count
+          - else
+            Private
           %span.counter
-            %i.fa.fa-eye
-            = project.impressions_count
-          %span.counter
-            %i.fa.fa-thumbs-o-up
-            = project.respects_count
-        - else
-          Private
-        %span.counter
-          %i.fa.fa-comments
-          = project.comments.size
+            %i.fa.fa-comments
+            = project.comments_count

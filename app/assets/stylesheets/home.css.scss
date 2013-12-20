@@ -1,0 +1,151 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the top of the
+ * compiled file, but it's generally better to create a new file per style scope.
+ *
+ *= require_self
+ *= require pygments/default
+ */
+
+@import 'twitter/bootstrap';
+@import 'bootstrap_overrides';
+@import 'font-awesome';
+@import 'custom_mixins';
+@import 'layout';
+@import 'projects';
+
+#home {
+  font-family: 'Open Sans', Tahoma, sans-serif;
+  font-weight: 300;
+  h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    font-family: 'Open Sans', Tahoma, sans-serif;
+    font-weight: 600;
+  }
+  section {
+    padding: 60px 0;
+  }
+  .header {
+    margin-bottom: 30px;
+    h2 {
+      color: #424244;
+    font-weight: 300;
+    }
+    p.subtitle {
+      color: #c1c1c1;
+      font-size: 16px;
+    }
+  }
+  .btn {
+    @include border-radius(0);
+    font-weight: 400;
+  }
+  .btn-primary {
+    background: #0b67d6;
+    border-color: #0b67d6;
+    text-shadow: -1px -1px 0px #135FC0;
+  }
+  .btn-info {
+    background: #1c4d99;
+    border-color: #1b4d96;
+  }
+  .navbar-default {
+    background: #0e3e86;
+    border: none;
+    .navbar-nav {
+      & > li > a {
+        color: #fff;
+        &:hover {
+          color: #b9d3fa;
+        }
+      }
+      & > .open > a,
+      & > .open > a:hover,
+      & > .open > a:focus {
+        background-color: #4677bf;
+        color: #fff;
+      }
+    }
+  }
+  #teaser {
+    padding: 150px 0;
+    background: asset-url('home_visitor/header_bg.jpg') center center;
+    h1 {
+      color: #fff;
+      background: #073372;
+      margin-bottom: 40px;
+      padding: 10px 15px;
+    }
+    input[type="email"] {
+      @include border-radius(0);
+    }
+    .btn-primary {
+      background: #1777f0;
+      border-color: #0f4993;
+      @include box-shadow(0px 5px 1px #1155aa);
+    }
+  }
+  #pitch {
+    background: #fcfcfc;
+    .pitch-line {
+      margin: 50px 0;
+      .img {
+        text-align: center;
+      }
+      h3 {
+        color: #1f262c;
+        margin-top: 0;
+        font-size: 18px;
+      }
+      p {
+        color: #a8a8a8;
+        line-height: 1.6;
+      }
+    }
+  }
+  #featured {
+    background: #efefef;
+    .header {
+      p.subtitle {
+        color: #bebebe;
+      }
+    }
+    .row.project-thumbs {
+      margin-left: -31px;
+      margin-right: -31px;
+      margin-bottom: 30px;
+      .col-xs-3 {
+        width: 282px;
+        padding-left: 31px;
+        padding-right: 31px;
+      }
+    }
+  }
+  #wrapper {
+    margin-bottom: -60px;
+  }
+  #push {
+    height: 60px;
+  }
+  footer {
+    background: #0e3e86;
+    height: 60px;
+    padding: 20px 0;
+    a {
+      color: #76A1E4;
+    }
+    .social {
+      a {
+        color: #fff;
+      }
+    }
+    .copyright {
+      color: #dae3ea;
+      text-shadow: -1px -1px 0 #0c3577;
+    }
+  }
+}

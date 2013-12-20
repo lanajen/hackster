@@ -6,6 +6,7 @@ class Widget < ActiveRecord::Base
   belongs_to :project
   has_many :comments, as: :commentable, dependent: :destroy
   has_many :issues, as: :threadable, dependent: :destroy
+  validates :name, length: { maximum: 100 }
 
   attr_accessible :properties, :type, :completion_rate,
     :completion_share, :name, :position
@@ -100,10 +101,12 @@ class Widget < ActiveRecord::Base
     def self.all_types
       {
         'Bill of materials' => 'PartsWidget',
+        'Buy now' => 'BuyWidget',
         'Code' => 'CodeWidget',
         'Files and documents' => 'DocumentWidget',
         'Github repo' => 'GithubWidget',
         'Images' => 'ImageWidget',
+        'Press articles' => 'PressWidget',
         'STL renderings' => 'StlWidget',
         'Text' => 'TextWidget',
         'Upverter schematics' => 'UpverterWidget',

@@ -15,7 +15,7 @@
   width: 100%;
   height: 100%;
   background: #000;
-  @include opacity(50);
+  @include opacity(0.5);
   @include border-radius(4px);
   z-index: 2;
   text-align: center;
@@ -38,22 +38,28 @@
 
 .project-thumb, .user-thumb {
   @extend .box-white-bg;
+  margin-bottom: 20px;
   .photo-thumb {
     a {
       display: block;
     }
     img {
-      width: 220px;
-      height: 220px;
+      width: 221px;
+      height: 166px;
     }
   }
   .inner-thumb {
-    height: 120px;
+    height: 150px;
     padding: 10px;
     position: relative;
     h3 {
-      margin: 0 0 5px;
+      margin: 0;
       @include font-size(14);
+    }
+    h4 {
+      margin: 0 0 5px;
+      @include font-size(11);
+      font-weight: normal;
     }
     p {
       @include font-size(12);
@@ -63,7 +69,7 @@
       position: absolute;
       bottom: 0px;
       left: 0px;
-      width: 200px;
+      width: 220.5px;
       padding: 5px 10px 10px;
       background: #fff;
       hr {
@@ -81,20 +87,42 @@
 
 #heading.project {
   .author {
-    @extend .muted;
+    @extend .text-muted;
     @include font-size(12);
     margin-bottom: 10px;
   }
-  h1 {
-    .tags {
-      @include font-size(10);
-      @extend .muted;
-      span {
-        margin: 0 3px 0 5px;
-      }
-      a.hidden-link {
-        color: #999;
-      }
+  .tags {
+    @include font-size(12);
+    @extend .text-muted;
+    span {
+      margin: 0 3px 0 5px;
     }
+    a.hidden-link {
+      color: #999;
+    }
+  }
+  .project-logo {
+    width: 120px;
+    height: 120px;
+  }
+}
+
+.projects {
+  .pagination {
+    margin: 10px 0;
+  }
+}
+
+a.action-respected {
+  color: #FFD700 !important;
+}
+
+.alert-author-share {
+  position: relative;
+  .addthis_default_style {
+    width: 190px;
+    position: absolute;
+    top: 10px;
+    right: 30px;
   }
 }

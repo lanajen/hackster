@@ -2,13 +2,22 @@ $('input, textarea').placeholder();
 
 $(document).ready(function(){
   $('.fade-in').slideDown(500);
-  $(document).on('click', '.close', function(e){
+  $(document).on('click', '.btn-close', function(e){
     target = $(this).data('close');
     $(target).slideUp(100);
+    e.stopPropagation();
+    return false;
+  });
+  $(document).on('click', '.btn-open', function(e){
+    target = $(this).data('open');
+    $(target).slideDown(100);
+    e.stopPropagation();
+    return false;
   });
   $(document).on('click', '.btn-cancel', function(e){
     btn = $(this);
     $(btn.data('hide')).slideUp(function(){
+      $(btn.data('hide')).off();
       $(btn.data('show')).slideDown();
     });
     e.stopPropagation();
@@ -33,8 +42,8 @@ $(document).ready(function(){
   });
 
   //[data-remote="true"]
-  $('form')
-    .live("ajax:beforeSend", function(evt, xhr, settings){
+  $(document)
+    .on("ajax:beforeSend", 'form', function(evt, xhr, settings){
       var $submitButton = $(this).find('input[name="commit"]');
 
       // Update the text of the submit button to let the user know stuff is happening.
@@ -43,24 +52,24 @@ $(document).ready(function(){
       $submitButton.text( "Submitting..." );
 
     })
-    .live("ajax:success", function(evt, data, status, xhr){
+    .on("ajax:success", 'form', function(evt, data, status, xhr){
       var $form = $(this);
 
       // Reset fields and any validation errors, so form can be used again, but leave hidden_field values intact.
-      $('.control-group').find('.help-inline').remove();
-      $('.control-group').removeClass('error');
+      $('.form-group').find('.help-inline').remove();
+      $('.form-group').removeClass('has-error');
 
       // Insert response partial into page below the form.
       $('#comments').append(xhr.responseText);
 
     })
-    .live('ajax:complete', function(evt, xhr, status){
+    .on('ajax:complete', 'form', function(evt, xhr, status){
       var $submitButton = $(this).find('input[name="commit"]');
 
       // Restore the original submit button text
       $submitButton.text( $(this).data('origText') );
     })
-    .live("ajax:error", function(evt, xhr, status, error){
+    .on("ajax:error", 'form', function(evt, xhr, status, error){
       var $form = $(this),
           errors,
           errorText;
@@ -75,13 +84,20 @@ $(document).ready(function(){
 
       // cleanup before adding new elements
       $('.error .help-inline').remove();
-      $('.control-group').removeClass('error');
+      $('.form-group').removeClass('has-error');
 
       for ( error in errors ) {
         input = $form.find('[name="user['+error+']"]');
-        input.parents('.control-group').addClass('error');
+        input.parents('.form-group').addClass('has-error');
         $('<span class="help-inline">' + errors[error] + '</span>').insertAfter(input);
       }
     });
-
 });
+
+
+function smoothScrollTo(target) {
+  if (typeof(target) == 'string') target = $(target);
+  $('html, body').stop().animate({
+    'scrollTop': target.offset().top
+  }, 500, 'swing', function () {});
+}

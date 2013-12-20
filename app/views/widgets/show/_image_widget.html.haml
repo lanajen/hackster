@@ -4,9 +4,9 @@
       .headline-image-inner
         %a{ href: "javascript:openLightBox(#{widget.id},#{i});" }
           %i.fa.fa-fullscreen
-          = image_tag image.file_url(:headline_orig), class: "image-#{i}", style: "#{'display:none;' unless i==0}"
+          = image_tag image.file_url(:headline_orig), class: "image-#{i} img-responsive", style: "#{'display:none;' unless i==0}"
   - if widget.images.size > 1
-    %ul.image-thumbs
+    %ul.image-thumbs.list-unstyled
       - widget.images.each_with_index do |image, i|
         %li
           = image_tag image.file_url(:small_thumb), data: { target: "image-#{i}" }

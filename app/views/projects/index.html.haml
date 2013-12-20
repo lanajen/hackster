@@ -1,25 +1,15 @@
-%h1 Listing projects
+= content_for :head do
+  %meta{ name: 'robots', content: 'noindex' }
 
-%table
-  %tr
-    %th Name
-    %th Description
-    %th Start date
-    %th End date
-    %th
-    %th
-    %th
+.content.projects
+  .row
+    .col-xs-12
+      %h1
+        Explore all projects
+        %small page #{params[:page] || 1}
 
-  - @projects.each do |project|
-    %tr
-      %td= project.name
-      %td= project.description
-      %td= project.start_date
-      %td= project.end_date
-      %td= link_to 'Show', project
-      %td= link_to 'Edit', edit_project_path(project)
-      %td= link_to 'Destroy', project, method: :delete, data: { confirm: 'Are you sure?' }
-
-%br
-
-= link_to 'New Project', new_project_path
+  .row
+    - @projects.each do |project|
+      = render partial: "projects/project_thumb", locals: { project: project.decorate }
+  .row
+    .col-xs-12.text-center= will_paginate @projects

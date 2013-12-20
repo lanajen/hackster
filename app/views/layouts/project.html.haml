@@ -7,12 +7,11 @@
 
   -# #subnav
     .navbar.navbar-static-top
-      .navbar-inner
-        .container
-          %ul.nav
-            = active_li_link_to 'Project home', @project
-            -# = active_li_link_to 'Blog', project_blog_posts_path(@project), truncate: true
-            = active_li_link_to 'Issues', project_issues_path(@project), truncate: true
+      .container
+        %ul.nav
+          = active_li_link_to 'Project home', @project
+          -# = active_li_link_to 'Blog', project_blog_posts_path(@project), truncate: true
+          = active_li_link_to 'Issues', project_issues_path(@project), truncate: true
 
   #content.project
     .container

@@ -1,6 +1,11 @@
 class MailerQueue < BaseWorker
   @queue = :mailer
 
+  def devise_message type, context_type, context_id, opts
+    puts "#{Time.now.to_s} - Sending Devise email #{type} with context '#{context_type}' and id #{context_id.to_s}."
+    BaseMailer.prepare_email(type, context_type, context_id, opts).deliver!
+  end
+
   def message_with_context type, context_type, context_id
     puts "#{Time.now.to_s} - Sending email #{type} with context '#{context_type}' and id #{context_id.to_s}."
     BaseMailer.prepare_email(type, context_type, context_id).deliver!

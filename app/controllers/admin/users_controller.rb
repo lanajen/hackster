@@ -2,13 +2,13 @@ class Admin::UsersController < Admin::BaseController
   def index
     @fields = {
       'created_at' => 'users.created_at',
-      'last_sign_in' => 'users.last_sign_in_at',
       'email' => 'users.email',
+      'last_sign_in' => 'users.last_sign_in_at',
       'name' => 'users.full_name',
-      'screen_name' => 'users.screen_name',
+      'user_name' => 'users.user_name',
     }
 
-    params[:sort_by] ||= 'last_sign_in'
+    params[:sort_by] ||= 'created_at'
 
     @users = filter_for User, @fields
   end

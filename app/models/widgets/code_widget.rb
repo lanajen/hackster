@@ -9,7 +9,7 @@ class CodeWidget < Widget
     'C#' => 'csharp',
     'Console' => 'console',
     'HTML' => 'html',
-    'Java' => 'Java',
+    'Java' => 'java',
     'JavaScript' => 'js',
     'Python' => 'python',
     'Perl' => 'perl',
@@ -42,7 +42,7 @@ class CodeWidget < Widget
 
   def to_tracker
     super.merge({
-      code_length: raw_code.length,
+      code_length: (raw_code.present? ? raw_code.length : 0),
       language: language,
     })
   end

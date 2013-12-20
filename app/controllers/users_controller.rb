@@ -2,9 +2,9 @@ class UsersController < ApplicationController
   before_filter :authenticate_user!, except: [:show]
   before_filter :find_user, only: [:show]
   authorize_resource except: [:after_registration, :after_registration_save]
-  impressionist actions: [:show], unique: [:impressionable_type, :impressionable_id, :session_hash]
 
   def show
+    impressionist @user, "", unique: [:session_hash]  # no need to add :impressionable_type and :impressionable_id, they're already included with @user
     title @user.name
     meta_desc "#{@user.name} is on Hackster.io. Come join #{@user.name} and other hardware hackers and makers to showcase your projects."
     @user = @user.decorate
@@ -20,6 +20,10 @@ class UsersController < ApplicationController
 
   def update
     @user = current_user
+
+    # copy @user, computes tags_strings first so they're added to the copy
+    @user.interest_tags_string
+    @user.skill_tags_string
     old_user = @user.dup
 
     if @user.update_attributes(params[:user])
@@ -53,7 +57,11 @@ class UsersController < ApplicationController
   def after_registration_save
     @user = current_user
     if @user.update_attributes(params[:user])
-      redirect_to new_project_path, notice: 'Profile info saved! Now how about creating your first project?'
+      if @user.projects.any?
+        redirect_to @user.projects.first, notice: "Profile info saved! Now you can start working on your project."
+      else
+        redirect_to new_project_path, notice: 'Profile info saved! Now how about creating your first project?'
+      end
 
       track_user @user.to_tracker_profile
       track_event 'Completed after registration update', {

@@ -9,27 +9,28 @@ class Project < ActiveRecord::Base
   belongs_to :team
   has_and_belongs_to_many :followers, class_name: 'User', join_table: 'project_followers'
   has_many :blog_posts, as: :threadable, dependent: :destroy
-  has_many :comments, as: :commentable, order: :created_at
+  has_many :comments, -> { order created_at: :asc }, as: :commentable
   has_many :issues, as: :threadable, dependent: :destroy
   has_many :images, as: :attachable, dependent: :destroy
   has_many :respects, dependent: :destroy, class_name: 'Favorite'
-  has_many :team_members, through: :team, source: :members
+  has_many :team_members, through: :team, source: :members#, -> { includes :user }
   has_many :users, through: :team_members
-  has_many :widgets, order: :position
+  has_many :widgets, -> { order position: :asc }
   has_one :logo, as: :attachable, class_name: 'Avatar'
+  has_one :cover_image, as: :attachable, class_name: 'CoverImage'
   has_one :video, as: :recordable, dependent: :destroy
 
   sanitize_text :description
-  attr_accessible :description, :end_date, :name, :start_date,
-    :images_attributes,
-    :video_attributes, :current, :logo_attributes, :team_members_attributes,
-    :website, :one_liner, :widgets_attributes, :featured
+  attr_accessible :description, :end_date, :name, :start_date, :current,
+    :team_members_attributes, :website, :one_liner, :widgets_attributes,
+    :featured, :cover_image_id, :logo_id
   attr_accessor :current
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
-    :widgets, allow_destroy: true
+    :widgets, :cover_image, allow_destroy: true
 
   validates :name, presence: true
   validates :one_liner, :logo, presence: true, if: proc { |p| p.force_basic_validation? }
+  validates :one_liner, length: { maximum: 140 }
   before_validation :check_if_current
   before_validation :ensure_website_protocol
 
@@ -39,7 +40,7 @@ class Project < ActiveRecord::Base
 
   parse_as_integers :counters_cache, :comments_count, :product_tags_count, :respects_count, :widgets_count
 
-  self.per_page = 20
+  self.per_page = 12
 
   # beginning of search methods
   include Tire::Model::Search
@@ -71,7 +72,7 @@ class Project < ActiveRecord::Base
       product_tags: product_tags_string,
 #      tech_tags: tech_tags_string,
       text_widgets: TextWidget.where('widgets.project_id = ?', id).map{ |w| w.content },
-      user_name: team_members.map{ |t| t.user.name },
+      user_name: team_members.map{ |t| t.user.try(:name) },
       private: private,
       created_at: created_at,
     }.to_json
@@ -83,7 +84,15 @@ class Project < ActiveRecord::Base
   end
 
   def self.indexable
+    live
+  end
+
+  def self.live
     where(private: false)
+  end
+
+  def self.last_updated
+    order(updated_at: :desc)
   end
 
   def self.most_viewed
@@ -103,6 +112,10 @@ class Project < ActiveRecord::Base
     }
   end
 
+  def cover_image_id=(val)
+    self.cover_image = CoverImage.find_by_id(val)
+  end
+
   def force_basic_validation!
     @force_basic_validation = true
   end
@@ -113,6 +126,10 @@ class Project < ActiveRecord::Base
 
   def image
     images.first
+  end
+
+  def logo_id=(val)
+    self.logo = Avatar.find_by_id(val)
   end
 
   def to_param

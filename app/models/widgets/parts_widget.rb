@@ -4,7 +4,7 @@ class PartsWidget < Widget
     Widget.model_name
   end
 
-  has_many :parts, as: :partable
+  has_many :parts, -> { order position: :asc }, as: :partable
 
   define_attributes [:parts_count, :total_cost]
 
@@ -30,7 +30,7 @@ class PartsWidget < Widget
     end
 
     def compute_total_cost
-      Octopart.match parts.select{ |p| p.changed? }  # only changed parts
+      # Octopart.match parts.select{ |p| p.changed? }  # only changed parts
       total = 0
       parts.each{ |p| total += p.total_cost || 0 }
       self.total_cost = total.round(4)

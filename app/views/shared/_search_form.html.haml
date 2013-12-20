@@ -1,0 +1,6 @@
+%form{ action: search_path, class: 'navbar-form', method: :get }
+  .form-group
+    .input-group
+      %span.input-group-addon
+        %i.fa.fa-search
+      = text_field_tag :q, params[:q], class: 'form-control', placeholder: 'Search'

@@ -1,7 +1,8 @@
 class WidgetsController < ApplicationController
   before_filter :load_project
+  before_filter :authenticate_user!
   load_and_authorize_resource except: [:new, :create, :save]
-  respond_to :html
+  respond_to :html, :js
   layout 'project'
 
   def index
@@ -10,7 +11,9 @@ class WidgetsController < ApplicationController
 
   def save
     authorize! :update, @project
-    if @project.update_attributes(params[:project])
+    # so it doesn't block if there's validation errors on the project
+    @project.assign_attributes(params[:project])
+    if @project.save(validate: false)
       redirect_to @project, notice: "Layout saved."
 
       track_event 'Updated project', @project.to_tracker.merge({ type: 'layout update'})
@@ -21,6 +24,7 @@ class WidgetsController < ApplicationController
 
   def new
     @widget = @project.widgets.new(params[:widget])
+    title "Edit #{@project.name}"
     authorize! :create, @widget
   end
 
@@ -39,12 +43,13 @@ class WidgetsController < ApplicationController
   end
 
   def edit
+    title "Edit #{@project.name}"
   end
 
   def update
     if @widget.update_attributes params[:widget]
       flash[:notice] = 'Widget saved.'
-      current_user.broadcast :update, @project.id, 'Project'
+      current_user.broadcast :update, @project.id, 'Project' if @project.public?
       respond_with @project
 
       track_event 'Updated project', @project.to_tracker.merge({ type: 'widget update' }).merge(@widget.to_tracker)

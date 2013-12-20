@@ -4,6 +4,9 @@ Devise.setup do |config|
   # ==> Mailer Configuration
   # Configure the e-mail address which will be shown in Devise::Mailer,
   # note that it will be overwritten if you use your own mailer class with default "from" parameter.
+
+  config.secret_key = 'a5ae0afbe1ae6145dd226f4f5b13d0f3e7b5d377fee344a6a2afe39399da394b2961d6a94a6c936694da5caae6526f7ab83fce3cb537e1bdc758f1db5aed6fba'
+
   config.mailer_sender = "please-change-me-at-config-initializers-devise@example.com"
 
   # Configure the class responsible to send e-mails.
@@ -91,28 +94,6 @@ Devise.setup do |config|
   # config.invite_for = 2.weeks
 
   # Number of invitations users can send.
-  # If invitation_limit is nil, users can send unlimited invitations.
-  # If invitation_limit is 0, users can't send invitations.
-  # If invitation_limit n > 0, users can send n invitations.
-  # Default: nil
-  config.invitation_limit = 0
-
-  # The key to be used to check existing users when sending an invitation
-  # and the regexp used to test it when validate_on_invite is not set.
-  # config.invite_key = {:email => /A[^@]+@[^@]+z/}
-  # config.invite_key = {:email => /A[^@]+@[^@]+z/, :username => nil}
-
-  # Flag that force a record to be valid before being actually invited
-  # Default: false
-  # config.validate_on_invite = true
-
-  # ==> Configuration for :invitable
-  # The period the generated invitation token is valid, after
-  # this period, the invited resource won't be able to accept the invitation.
-  # When invite_for is 0 (the default), the invitation won't expire.
-  # config.invite_for = 2.weeks
-
-  # Number of invitations users can send.
   # - If invitation_limit is nil, there is no limit for invitations, users can
   # send unlimited invitations, invitation_limit column is not used.
   # - If invitation_limit is 0, users can't send invitations by default.
@@ -120,7 +101,7 @@ Devise.setup do |config|
   # You can change invitation_limit column for some users so they can send more
   # or less invitations, even with global invitation_limit = 0
   # Default: nil
-  config.invitation_limit = 10
+  config.invitation_limit = nil
 
   # The key to be used to check existing users when sending an invitation
   # and the regexp used to test it when validate_on_invite is not set.
@@ -137,7 +118,7 @@ Devise.setup do |config|
   # able to access the website for two days without confirming his account,
   # access will be blocked just in the third day. Default is 0.days, meaning
   # the user cannot access the website without confirming his account.
-  # config.allow_unconfirmed_access_for = 2.days
+  config.allow_unconfirmed_access_for = 365.days
 
   # If true, requires any email changes to be confirmed (exactly the same way as
   # initial account confirmation) to be applied. Requires additional unconfirmed_email
@@ -161,7 +142,7 @@ Devise.setup do |config|
 
   # ==> Configuration for :validatable
   # Range for password length. Default is 6..128.
-  # config.password_length = 6..128
+  config.password_length = 8..128
 
   # Email regex used to validate email formats. It simply asserts that
   # an one (and only one) @ exists in the given string. This is mainly
@@ -253,6 +234,17 @@ Devise.setup do |config|
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', :scope => 'user,public_repo'
+
+  if Rails.env == 'development'
+    config.omniauth :facebook, '365278140284312', 'cd136e1e867c39cf3a91bb524a5c7660', setup: true, scope: 'email,publish_actions,user_about_me,user_education_history,user_interests,user_location,user_work_history,user_website'
+    config.omniauth :github, 'ae60cb8e8821166815a8', '535dfb7accc01a19457311e2601b85c7447a84d9', scope: 'user:email', setup: true
+  else
+    config.omniauth :facebook, '543757942384158', '17cd88cd421350f4cba3d00a87c71257', setup: true, scope: 'email,publish_actions,user_about_me,user_education_history,user_interests,user_location,user_work_history,user_website'
+    config.omniauth :github, 'b322eb2b4591c7101d72', '030d6c27463f4fde985033e4d050de2bebbd1d8b', scope: 'user:email', setup: true
+  end
+  config.omniauth :gplus, '194136473933-bh5c4avsnut4s8j4tt1hutvc5klohsak.apps.googleusercontent.com', '51d-2itWVP6yu3_auKinyAd5', scope: 'userinfo.email,plus.login', setup: true
+  config.omniauth :linkedin, '75zl0lfslm3m2z', 'gxqbyweSK444eEmN', setup: true, scope: 'r_fullprofile,r_emailaddress,rw_nus'
+  config.omniauth :twitter, 'M8s2TSIlY5kPtqoLuwmrQ', 'DFQrskOt9rMvcol6m9P7CJxX7CDH8vv0sFSYn4cq0U', setup: true
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or

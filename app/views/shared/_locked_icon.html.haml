@@ -1,0 +1,13 @@
+.btn-group
+  %button.btn.btn-default.dropdown-toggle{"data-toggle" => "dropdown", class: size }
+    - if record.public?
+      %i.icon-unlock
+    - else
+      %i.icon-lock
+    %span.caret
+  %ul.dropdown-menu.pull-right
+    - if record.public?
+      %li= link_to 'Make private', privacy_settings_path(type: record.class.name.underscore, id: record.id, redirect_to: request.path), method: :delete
+    - else
+      %li= link_to 'Make public', privacy_settings_path(type: record.class.name.underscore, id: record.id, redirect_to: request.path), method: :post
+    %li= link_to 'Customize privacy settings', edit_privacy_settings_path(type: record.class.name.underscore, id: record.id, redirect_to: request.path)

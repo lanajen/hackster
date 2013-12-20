@@ -1,0 +1,10 @@
+= content_for :js do
+  :javascript
+
+    #{ render partial: 'shared/uploader/form_template', locals: { file_type: file_type } }
+
+    #{ render partial: 'shared/uploader/file_drop_click', locals: { file_type: file_type } }
+
+    #{ render partial: 'shared/uploader/file_upload_functions_has_one', locals: { file_type: file_type, attribute_type: attribute_type, image_version: image_version, model: model } }
+
+    #{ render partial: 'shared/uploader/file_upload', locals: { file_type: file_type } }

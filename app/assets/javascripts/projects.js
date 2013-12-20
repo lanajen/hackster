@@ -44,10 +44,14 @@ $(document).ready(function(){
     $target.toggleClass('collapsed');
     $target.slideToggle();
     if (!$target.hasClass('collapsed')) {
-      $('html, body').stop().animate({
-          'scrollTop': $target.offset().top
-      }, 500, 'swing', function () {});
+      smoothScrollTo($target);
     }
+  });
+
+  $('body').on('click', 'a.scroll', function(e){
+    e.preventDefault();
+    target = $($(this).data('target'));
+    smoothScrollTo(target);
   });
 
   $('.well').on({

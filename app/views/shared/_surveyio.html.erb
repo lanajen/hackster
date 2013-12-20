@@ -1,0 +1,16 @@
+<!-- Begin Survey.io code for . -->
+<script src="http://cdn.survey.io/embed/1.0/survey.js" type="text/javascript"></script>
+<script type="text/javascript" charset="utf-8">
+  Surveyio.init({
+    survey_id: "e5dce",
+    token: "4fb826a3b818455ec715d0f7e3ce1984ea078273",
+    banner: {
+      x: "right",
+      y: "top",
+      color: "grey"
+    }
+  });
+  Surveyio.set("user_name", "<%= current_user.try(:user_name) %>");
+  Surveyio.set("user_id", "<%= current_user.try(:id) %>");
+</script>
+<!-- /End Survey.io code -->

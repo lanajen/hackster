@@ -1,0 +1,2 @@
+class CoverImage < Image
+end

@@ -7,7 +7,7 @@ module ApplicationHelper
 
   def class_for_alert alert, notice
     if alert
-      return { class: 'alert-error' }
+      return { class: 'alert-danger' }
     elsif notice
       return { class: 'alert-success' }
     else

@@ -6,6 +6,6 @@
 = f.input :country
 = f.input :roles, collection: User::ROLES, as: :check_boxes
 = f.input :invitation_limit
-.form-actions
+.col-xs-offset-4.col-xs-8
   = f.button :submit, :class => 'btn-primary'
-  = link_to t('.cancel', :default => t("helpers.links.cancel")), admin_users_path, :class => 'btn'
+  = link_to t('.cancel', :default => t("helpers.links.cancel")), admin_users_path, :class => 'btn btn-default'

@@ -1,0 +1,5 @@
+$(function(){
+  $('.file-drop<%= ".#{file_type}" if defined?(file_type) %>').on('click', 'a', function(){
+    $($(this).data('target')).find('input[type=file]').click();
+  });
+});

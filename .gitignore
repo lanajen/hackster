@@ -17,3 +17,5 @@
 /public/uploads
 /dump.rdb
 .env
+/public/scraper
+.DS_Store

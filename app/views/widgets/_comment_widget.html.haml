@@ -2,7 +2,5 @@
   .header
     %h4{ style: 'position:relative;' }
       Comments
-      .btn-heading
-        = render partial: 'widgets/comments_button', locals: { size: comments.size, tooltip_orientation: 'left' }
   .content
     = render partial: 'widgets/comments', locals: { comments: comments, commentable: commentable }

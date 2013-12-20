@@ -51,7 +51,7 @@ class BroadcastDecorator < ApplicationDecorator
         when :new
           "joined Hackster.io"
         when :update
-          "updated his/her profile"
+          "updated their profile"
         end
       end
     end

@@ -4,3 +4,10 @@
   line-height: unquote("#{$size+$size*0.2}px");
   line-height: unquote("#{$size/10+$size*0.02}rem");
 }
+
+@mixin border-radius($radius) {
+  @include border-top-radius($radius);
+  @include border-right-radius($radius);
+  @include border-bottom-radius($radius);
+  @include border-left-radius($radius);
+}

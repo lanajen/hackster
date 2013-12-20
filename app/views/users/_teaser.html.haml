@@ -1,7 +1,7 @@
 .row
-  .span12.teaser
-    .pull-left.avatar.main-avatar= image_tag @user.avatar(:medium), alt: @user.name
-    .pull-left.text-holder
+  .col-xs-12.teaser
+    .text-holder
+      %span.avatar.main-avatar= image_tag @user.avatar(:big), alt: @user.name, class: 'img-circle'
       %h1= @user.name
 
       - if @user.mini_resume.present?
@@ -11,28 +11,34 @@
           No mini resume.
           = link_to 'Add one?', profile_edit_path, data: { remote: true }
 
-      - if @user.location
-        %p.user-categories
-          %i.fa.fa-map-marker
-          = @user.location
-      - elsif user_is_current?
-        %p.user-categories
-          %i.fa.fa-map-marker
+      %p.user-categories
+        - if @user.location
+          %span.category.first
+            %i.fa.fa-map-marker
+              = @user.location
+        - elsif user_is_current?
           No location.
           = link_to 'Add one?', profile_edit_path, data: { remote: true }
 
+        %span.category{ rel: 'tooltip', title: 'Profile views' }
+          %i.fa.fa-eye
+          = @user.impressions_count
+        -# %span.category
+          %i.fa.fa-thumbs-o-up
+          = @user.respects_count
+
       - if @user.websites.any?
-        %ul.websites
-          - @user.websites.each do |type, url|
+        %ul.websites.list-inline
+          - @user.websites.select{|t,u| u.present? }.each do |type, url|
             %li= render partial: 'website', locals: { type: type, url: url }
       - elsif user_is_current?
-        %ul.websites
+        %ul.websites.list-inline
           %li
             No websites.
             = link_to 'Add some?', profile_edit_path, data: { remote: true }
 
-    - if user_is_current?
-      = link_to 'Edit', profile_edit_path, class: 'btn-edit', data: { remote: true }
+      - if user_is_current?
+        = link_to 'Edit', profile_edit_path, class: 'btn-edit', data: { remote: true }
     -# if current_user.id != @user.id
       - if current_user.try(:is_following?, @user)
         = link_to 'Following', user_followers_path(@user), method: :delete, class: 'btn-inverse btn-follow'

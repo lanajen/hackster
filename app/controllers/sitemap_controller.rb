@@ -41,7 +41,7 @@ class SitemapController < ApplicationController
 
       User.find_each do |user|
         @sitemap_pages << {
-          loc: "#{user_url(user, host: APP_CONFIG['default_host'])}",
+          loc: "#{profile_url(user, host: APP_CONFIG['default_host'])}",
           changefreq: 'monthly',
           lastmod: user.updated_at.strftime("%F"),
         }

@@ -1,6 +1,6 @@
-= simple_form_for [:admin, @invite_request], :html => { :class => 'form-horizontal' } do |f|
+= simple_form_for [:admin, @invite_request], :html => { :class => 'form-horizontal' }, wrapper: :bootstrap3_horizontal do |f|
   = f.input :email
   = f.input :whitelisted
-  .form-actions
+  .col-xs-offset-4.col-xs-8
     = f.button :submit, :class => 'btn-primary'
-    = link_to t('.cancel', :default => t("helpers.links.cancel")), admin_invite_requests_path, :class => 'btn'
+    = link_to t('.cancel', :default => t("helpers.links.cancel")), admin_invite_requests_path, :class => 'btn btn-default'

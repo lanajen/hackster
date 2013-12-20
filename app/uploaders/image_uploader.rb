@@ -1,17 +1,36 @@
 # encoding: utf-8
 
 class ImageUploader < BaseUploader
-  version :headline do
+  version :lightbox, unless: :is_cover? do
+    process resize_to_limit: [1280, 960]
+  end
+
+  version :headline, unless: :is_cover? do
     process resize_to_fill: [580, 435]
   end
-  version :headline_orig do
+
+  version :headline_orig, unless: :is_cover? do
     process resize_to_limit_and_pad: [580, 435, :transparent, Magick::CenterGravity]
   end
-  version :thumb, from_version: :headline do
+
+  version :thumb, from_version: :headline, unless: :is_cover? do
     process resize_to_fill: [200, 150]
   end
-  version :small_thumb, from_version: :thumb do
+
+  version :small_thumb, from_version: :thumb, unless: :is_cover? do
     process resize_to_fill: [140, 105]
+  end
+
+  version :cover, if: :is_cover? do
+    process resize_to_fill: [600, 450]
+  end
+
+  version :cover_thumb, from_version: :cover, if: :is_cover? do
+    process resize_to_fill: [220, 165]
+  end
+
+  version :cover_mini_thumb, if: :is_cover? do
+    process resize_to_fill: [60, 60]
   end
 
   # resize_and_pad that doesn't make pictures any bigger than what they already are
@@ -37,4 +56,9 @@ class ImageUploader < BaseUploader
       filled
     end
   end
+
+  protected
+    def is_cover? picture
+      model.class == CoverImage
+    end
 end

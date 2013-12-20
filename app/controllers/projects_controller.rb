@@ -1,19 +1,33 @@
 class ProjectsController < ApplicationController
-  before_filter :authenticate_user!, except: [:show]
   load_and_authorize_resource
   skip_load_resource only: [:create]
+  skip_authorize_resource only: [:embed]
   layout 'project', only: [:edit, :update, :show]
   respond_to :html
   respond_to :js, only: [:edit, :update]
   impressionist actions: [:show], unique: [:impressionable_type, :impressionable_id, :session_hash]
+  after_action :allow_iframe, only: :embed
+
+  def index
+    title "Explore all projects - Page #{params[:page] || 1}"
+    @projects = Project.indexable.last_updated.paginate(page: params[:page])
+  end
 
   def show
     title @project.name
-    meta_desc "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."
+    @project_meta_desc = "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."
+    meta_desc @project_meta_desc
     @project = @project.decorate
     @widgets = @project.widgets.order(:created_at)
 
     track_event 'Viewed project', @project.to_tracker.merge({ own: current_user.try(:is_team_member?, @project) })
+  end
+
+  def embed
+    title @project.name
+    meta_desc "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."
+    @project = @project.decorate
+    render layout: false
   end
 
   def new
@@ -31,7 +45,7 @@ class ProjectsController < ApplicationController
 
     if @project.save
       @project.team.members.create(user_id: current_user.id)
-      flash[:notice] = 'Project was successfully created.'
+      flash[:notice] = "#{@project.name} was successfully created."
       respond_with @project
 
       track_event 'Created project', @project.to_tracker
@@ -53,7 +67,7 @@ class ProjectsController < ApplicationController
       @project = @project.decorate
       respond_with @project do |format|
         format.html do
-          flash[:notice] = 'Project was successfully updated.'
+          flash[:notice] = "#{@project.name} was successfully updated."
           redirect_to @project
         end
       end
@@ -72,9 +86,14 @@ class ProjectsController < ApplicationController
   end
 
   private
+    def allow_iframe
+      response.headers.except! 'X-Frame-Options'
+    end
+
     def initialize_project
 #      @project.images.new# unless @project.images.any?
 #      @project.build_video unless @project.video
       @project.build_logo unless @project.logo
+      @project.build_cover_image unless @project.cover_image
     end
 end

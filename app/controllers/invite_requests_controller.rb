@@ -1,11 +1,11 @@
 class InviteRequestsController < ApplicationController
   # before_filter :require_no_authentication
   before_filter :validate_security_token, only: [:edit, :update]
-  skip_before_filter :authenticate_user!
+  # skip_before_filter :authenticate_user!
   layout 'splash'
 
   def new
-    redirect_to home_url and return if user_signed_in?
+    redirect_to root_path and return if user_signed_in?
     @invite_request = InviteRequest.new
   end
 

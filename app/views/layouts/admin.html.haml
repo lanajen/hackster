@@ -14,27 +14,28 @@
 
 
   %body{ style: 'padding-top: 60px' }
-    .navbar.navbar-fixed-top
-      .navbar-inner
-        .container
-          %a.btn.btn-navbar(data-target=".nav-collapse" data-toggle="collapse")
+    .navbar.navbar-fixed-top.navbar-default
+      .container
+        .navbar-header
+          %button.navbar-toggle(data-target=".navbar-collapse" data-toggle="collapse")
             %span.icon-bar
             %span.icon-bar
             %span.icon-bar
-          %a.brand(href="/") Hackster.io
-          .container.nav-collapse
-            %ul.nav
-              %li= link_to 'Invite requests', admin_invite_requests_path
-              %li= link_to 'Log lines', admin_logs_path
-              %li= link_to 'Projects', admin_projects_path
-              %li= link_to 'Users', admin_users_path
-              %li= link_to 'Invite codes', admin_invite_codes_path
-              %li= link_to 'Resque', '/admin/resque'
+          %a.navbar-brand(href="/") Hackster.io
+
+        .container.navbar-collapse.collapse
+          %ul.nav.navbar-nav
+            %li= link_to 'Invite requests', admin_invite_requests_path
+            %li= link_to 'Log lines', admin_logs_path
+            %li= link_to 'Projects', admin_projects_path
+            %li= link_to 'Users', admin_users_path
+            %li= link_to 'Invite codes', admin_invite_codes_path
+            %li= link_to 'Resque', '/admin/resque'
 
     .container
 
       .row
-        .span12
+        .col-xs-12
           = bootstrap_flash
           = yield
 

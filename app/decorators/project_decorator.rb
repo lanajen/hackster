@@ -1,4 +1,11 @@
 class ProjectDecorator < ApplicationDecorator
+  def cover_image version=:cover
+    if model.cover_image and model.cover_image.file_url
+      model.cover_image.file_url(version)
+    else
+      "project_default_#{version}_image.png"
+    end
+  end
 
   def description
     if model.description.present?
@@ -8,9 +15,9 @@ class ProjectDecorator < ApplicationDecorator
     end
   end
 
-  def logo size=:thumb
+  def logo size=nil
     if model.logo and model.logo.file_url
-      logo = model.logo.file_url(size)
+      model.logo.file_url(size)
     else
       width = case size
       when :tiny
@@ -24,22 +31,19 @@ class ProjectDecorator < ApplicationDecorator
       when :big
         200
       end
-      logo = "project_default_logo_#{width}.png"
+      "project_default_logo_#{width}.png"
     end
-    logo
   end
 
   def logo_link size=:thumb
-    link_to_model h.image_tag(logo(size), alt: model.name)
+    link_to_model h.image_tag(logo(size), alt: model.name, class: 'img-responsive')
   end
 
-  def image_link size=:thumb
-    if model.image
-      image = model.image.file_url(size)
+  def logo_or_placeholder
+    if model.logo and model.logo.file
+      h.image_tag logo(:big), class: 'img-circle project-logo'
     else
-      image = 'project_default_headline.png'
+      h.content_tag(:div, '', class: 'logo-placeholder')
     end
-
-    link_to_model h.image_tag(image, alt: model.name)
   end
 end

@@ -2,21 +2,29 @@
   %table#sortable.table.table-condensed.table-hover
     %thead
       %th Description
-      %th Source
-      %th Unit price
+      %th Vendor
+      %th.currency Unit price
       %th Qty
-      %th Total cost
+      %th.currency Total cost
     %tbody
       - widget.parts.each do |part|
         %tr.fields
           %td= part.description
-          %td= link_to('Visit', part.vendor_link, target: '_blank') if part.vendor_link
+          %td
+            - if part.vendor_link.present?
+              = link_to part.vendor_name, part.vendor_link, target: '_blank', title: "Click to see part on #{part.vendor_name}"
+            - else
+              = part.vendor_name
           %td.currency= number_to_currency part.unit_price
           %td= part.quantity
           %td.currency= number_to_currency part.total_cost
     %tfoot
       %tr
         %td{ colspan: 4, style: 'text-align: right' } Total cost
-        %td.currency= number_to_currency widget.total_cost
+        %td.currency
+          - if widget.total_cost.nil? or widget.total_cost.zero?
+            N/A
+          - else
+            = number_to_currency widget.total_cost
 - else
   %p No parts yet.

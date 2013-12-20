@@ -2,11 +2,13 @@ class Users::InvitationsController < Devise::InvitationsController
   before_filter :authenticate_inviter!, only: []
   before_filter :require_authentication, only: [:new, :create]
   before_filter :require_no_authentication, only: [:edit, :update, :invite]
+  before_filter :configure_permitted_parameters, only: [:create, :update]
 
   def new
     @invite_limit = current_user.invitation_limit
     @friend_invite = FriendInvite.new
-    [current_user.invitation_limit, 10].min.times { @friend_invite.users.build }
+    limit = current_user.invitation_limit || 100
+    [limit, 10].min.times { @friend_invite.users.build }
     super
   end
 
@@ -17,12 +19,12 @@ class Users::InvitationsController < Devise::InvitationsController
     if @friend_invite.valid?
       invited = @friend_invite.invite_all!(current_inviter)
 
-      if current_inviter.invitation_limit != 0
-        remaining_msg = "You still have #{view_context.pluralize(current_inviter.invitation_limit, 'invitation')} left."
-      else
-        remaining_msg = "You've used all your invitations, good job!"
-      end
-      flash[:notice] = "Cool, you just invited #{view_context.pluralize(invited.size, 'friend')}! #{remaining_msg}"
+      # if current_inviter.invitation_limit != 0
+      #   remaining_msg = "You still have #{view_context.pluralize(current_inviter.invitation_limit, 'invitation')} left."
+      # else
+      #   remaining_msg = "You've used all your invitations, good job!"
+      # end
+      flash[:notice] = "Cool, you just invited #{view_context.pluralize(invited.size, 'friend')}!"
 
       respond_with @friend_invite, :location => after_invite_path_for(@friend_invite)
 
@@ -44,6 +46,12 @@ class Users::InvitationsController < Devise::InvitationsController
   end
 
   def edit
+    if session['devise.invitation_token']
+      params[:invitation_token] ||= session['devise.invitation_token']
+    else
+      session['devise.invitation_token'] = params[:invitation_token]
+    end
+
     if params[:invitation_token] && self.resource = resource_class.to_adapter.find_first( :invitation_token => params[:invitation_token] )
       @invitation_token = params[:invitation_token]
       render :edit
@@ -87,6 +95,15 @@ class Users::InvitationsController < Devise::InvitationsController
     end
 
   protected
+    def configure_permitted_parameters
+      devise_parameter_sanitizer.for(:invite) do |u|
+        u.permit(:email)
+      end
+      devise_parameter_sanitizer.for(:accept_invitation) do |u|
+        u.permit(:user_name, :email, :password, :invitation_code, :invitation_token)
+      end
+    end
+
     def after_invite_path_for(resource)
       new_user_invitation_path
     end

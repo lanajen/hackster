@@ -2,12 +2,21 @@ class User < ActiveRecord::Base
   include Counter
   include StringParser
   include Taggable
-  is_impressionable counter_cache: true, unique: :session_hash
 
   ROLES = %w(admin confirmed_user)
 
+  CATEGORIES = [
+    'Electrical engineer',
+    'Industrial designer',
+    'Investor',
+    'Manufacturer',
+    'Mechanical engineer',
+    'Software developer',
+  ]
+
   devise :database_authenticatable, :registerable, :invitable,
-         :recoverable, :rememberable, :trackable, :validatable
+         :recoverable, :rememberable, :trackable, :validatable, :confirmable,
+         :omniauthable, omniauth_providers: [:facebook, :github, :gplus, :linkedin, :twitter]
 
   belongs_to :invite_code
   with_options class_name: 'User', join_table: :follow_relations do |u|
@@ -16,6 +25,7 @@ class User < ActiveRecord::Base
   end
   has_and_belongs_to_many :followed_projects, class_name: 'Project',
     join_table: :project_followers
+  has_many :authorizations, dependent: :destroy
   has_many :blog_posts, dependent: :destroy
   has_many :comments, foreign_key: :user_id, dependent: :destroy
   has_many :group_ties, class_name: 'Member', dependent: :destroy
@@ -29,53 +39,51 @@ class User < ActiveRecord::Base
   has_one :reputation
 
   attr_accessor :email_confirmation, :skip_registration_confirmation,
-    :friend_invite_id, :new_invitation, :invitation_code
+    :friend_invite_id, :new_invitation, :invitation_code, :match_by,
+    :logging_in_socially
   attr_accessible :email_confirmation, :password, :password_confirmation,
-    :remember_me, :avatar_attributes, :projects_attributes, :invitation_code,
+    :remember_me, :avatar_attributes, :projects_attributes,
+    :websites_attributes, :invitation_token,
+    :first_name, :last_name, :invitation_code,
     :facebook_link, :twitter_link, :linked_in_link, :website_link,
-    :blog_link, :categories,
+    :blog_link, :github_link, :google_plus_link, :youtube_link, :categories,
     :github_link, :invitation_limit, :email, :mini_resume, :city, :country,
-    :user_name, :full_name, :roles
+    :user_name, :full_name, :roles, :type, :avatar_id
   accepts_nested_attributes_for :avatar, :projects, allow_destroy: true
 
-  store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link, :website_link, :blog_link, :github_link]
+  store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link, :website_link, :blog_link, :github_link, :google_plus_link, :youtube_link]
 
   validates :name, length: { in: 1..200 }, allow_blank: true
-  validates :email, presence: true, uniqueness: true
-  validates :email, format: { with: /^\b[a-z0-9._%-\+]+@[a-z0-9.-]+\.[a-z]{2,4}(\.[a-z]{2,4})?\b$/, message: 'is not a valid email address'}
-#  validates :user_name, presence: true, length: { in: 3..100 }, uniqueness: true,
-#    format: { with: /^[a-z0-9_]+$/, message: "accepts only downcase letters, numbers and underscores '_'." }
   validates :city, :country, length: { maximum: 50 }, allow_blank: true
   validates :mini_resume, length: { maximum: 160 }, allow_blank: true
   validates :user_name, presence: true, length: { in: 3..100 }, uniqueness: true,
-    format: { with: /^[a-z0-9_]+$/, message: "accepts only downcase letters, numbers and underscores '_'." }, unless: :being_invited?
+    format: { with: /\A[a-z0-9_]+\z/, message: "accepts only downcase letters, numbers and underscores '_'." }, unless: :being_invited?
   with_options unless: proc { |u| u.skip_registration_confirmation },
     on: :create do |user|
       user.validates :email_confirmation, presence: true
       user.validate :email_matches_confirmation
-#      user.validate :is_whitelisted?
       user.validate :used_valid_invite_code?
   end
+  validate :email_is_unique_for_registered_users, if: :being_invited?
+
   before_validation :ensure_website_protocol
+  after_invitation_accepted :invitation_accepted
 
   scope :with_category, lambda { |category| { conditions: "categories_mask & #{2**CATEGORIES.index(category.to_s)} > 0"} }
 
   scope :with_role, lambda { |role| { conditions: "roles_mask & #{2**ROLES.index(role.to_s)} > 0"} }
 
-  CATEGORIES = [
-    'Electrical engineer',
-    'Industrial designer',
-    'Investor',
-    'Manufacturer',
-    'Mechanical engineer',
-    'Software developer',
-  ]
+  store :counters_cache, accessors: [:comments_count, :interest_tags_count, :invitations_count, :projects_count, :respects_count, :skill_tags_count, :live_projects_count, :project_views_count]
 
-  store :counters_cache, accessors: [:comments_count, :interest_tags_count, :invitations_count, :projects_count, :respects_count, :skill_tags_count, :live_projects_count]
+  parse_as_integers :counters_cache, :comments_count, :interest_tags_count, :invitations_count, :projects_count, :respects_count, :skill_tags_count, :live_projects_count, :project_views_count
 
-  parse_as_integers :counters_cache, :comments_count, :interest_tags_count, :invitations_count, :projects_count, :respects_count, :skill_tags_count, :live_projects_count
+  delegate :can?, :cannot?, to: :ability
+
+  is_impressionable counter_cache: true, unique: :session_hash
 
   taggable :interest_tags, :skill_tags
+
+  serialize :notifications
 
   self.per_page = 20
 
@@ -127,6 +135,69 @@ class User < ActiveRecord::Base
   end
   # end of search methods
 
+  class << self
+    def find_for_oauth provider, auth, resource=nil
+#    Rails.logger.info 'auth: ' + auth.to_yaml
+      case provider
+      when 'Facebook'
+        uid = auth.uid
+        email = auth.info.email
+        name = auth.info.name
+      when 'Github'
+        uid = auth.uid
+        email = auth.info.email
+        name = auth.info.name
+      when 'Google+'
+        uid = auth.uid
+        email = auth.info.email
+        name = auth.info.name
+      when 'LinkedIn'
+        uid = auth.uid
+        email = auth.info.email
+        name = auth.info.name
+      when 'Twitter'
+        uid = auth.uid
+        name = auth.info.name
+      else
+        raise 'Provider #{provider} not handled'
+      end
+
+      if user = User.find_for_oauth_by_uid(provider, uid)
+        user.match_by = 'uid'
+        return user
+      end
+
+      if email and user = User.find_by_email(email)
+        user.match_by = 'email'
+        return user
+      end
+
+      # if name and user = User.find_by_full_name(name)
+      #   user.match_by = 'name'
+      #   return user
+      # end
+    end
+
+    def find_for_oauth_by_uid(provider, uid)
+      where('authorizations.uid = ? AND authorizations.provider = ?', uid.to_s, provider).joins(:authorizations).readonly(false).first
+    end
+
+    def new_with_session(params, session)
+      # extract social data for omniauth
+      if session['devise.provider_data']
+        super.tap do |user|
+          user.extract_from_social_profile params, session
+        end
+      # overwrite existing invites if any
+      elsif params[:email] and user = where(email: params[:email]).where('invitation_token IS NOT NULL').first
+        user.assign_attributes(params)
+        user
+      else
+        super
+      end
+    end
+  end
+
   def self.last_logged_in
     order('last_sign_in_at DESC')
   end
@@ -135,8 +206,6 @@ class User < ActiveRecord::Base
     joins(:reputation).order('reputations.points DESC')
   end
 
-  delegate :can?, :cannot?, to: :ability
-
   def ability
     @ability ||= Ability.new(self)
   end
@@ -144,6 +213,10 @@ class User < ActiveRecord::Base
   def add_confirmed_role
     self.roles = roles << 'confirmed_user'
     save
+  end
+
+  def avatar_id=(val)
+    self.avatar = Avatar.find_by_id(val)
   end
 
   def being_invited?
@@ -165,9 +238,135 @@ class User < ActiveRecord::Base
       invitations: 'invitations.count',
       live_projects: 'projects.where(private: false).count',
       projects: 'projects.count',
+      project_views: 'projects.sum(:impressions_count)',
       respects: 'respects.count',
       skill_tags: 'skill_tags.count',
     }
+  end
+
+  # small hack to allow single emails to be invited multiple times
+  def email_changed?
+    being_invited? ? false : super
+  end
+
+  require 'country_iso_translater'
+  def extract_from_social_profile params, session
+    data = session['devise.provider_data']
+    extra = data.extra
+    info = data.info
+    provider = session['devise.provider']
+   logger.info data.to_yaml
+   # logger.info provider.to_s
+#        logger.info 'user: ' + self.to_yaml
+    if info and provider == 'Facebook'
+      self.user_name = info.nickname if self.user_name.blank?
+      self.email = self.email_confirmation = info.email if self.email.blank?
+      self.full_name = info.name if self.full_name.blank?
+      self.facebook_link = info.urls['Facebook']
+      self.website_link = info.urls['Website']
+      begin
+        self.city = info['location']['name'].split(',')[0] if self.city.nil?
+        self.country = info['location']['name'].split(',')[1].strip if self.country.nil?
+        self.city = extra['raw_info']['hometown']['name'].split(',')[0] if self.city.nil?
+        self.country = extra['raw_info']['hometown']['name'].split(',')[1].strip if self.country.nil?
+        self.build_avatar(remote_file_url: "#{info.image.split('?')[0]}?type=large") unless self.avatar
+      rescue => e
+        logger.error "Error: " + e.inspect
+      end
+      self.authorizations.build(
+        uid: data.uid,
+        provider: 'Facebook',
+        name: info.name.to_s,
+        link: info.urls['Facebook'],
+        token: data.credentials.token
+      )
+#          logger.info 'user: ' + self.inspect
+#          logger.info 'auth: ' + self.authorizations.inspect
+    elsif info and provider == 'Github'
+      self.user_name = info.nickname if self.user_name.blank?
+      self.full_name = info.name if self.full_name.blank?
+      self.email = self.email_confirmation = info.email if self.email.blank?
+      self.github_link = info.urls['GitHub']
+      self.website_link = info.urls['Blog']
+      begin
+        self.city = info.location.split(',')[0] if self.city.nil?
+        self.country = info.location.split(',')[1].strip if self.country.nil?
+      rescue => e
+        logger.error "Error: " + e.inspect
+      end
+      self.authorizations.build(
+        uid: data.uid,
+        provider: 'Github',
+        name: info.name.to_s,
+        link: info.urls['GitHub'],
+        token: data.credentials.token
+      )
+    elsif info and provider == 'Google+'
+      self.user_name = info.email.match(/(.+)@/).try(:[], 1) if self.user_name.blank?
+      self.full_name = info.name if self.full_name.blank?
+      self.email = self.email_confirmation = info.email if self.email.blank?
+      self.google_plus_link = info.urls['Google+']
+      begin
+        # self.city = info.location.split(',')[0] if self.city.nil?
+        # self.country = info.location.split(',')[1].strip if self.country.nil?
+        self.build_avatar(remote_file_url: info.image) if info.image and not self.avatar
+      rescue => e
+        logger.error "Error: " + e.inspect
+      end
+      self.authorizations.build(
+        uid: data.uid,
+        provider: 'Google+',
+        name: info.name.to_s,
+        link: info.urls['Google+'],
+        token: data.credentials.token
+      )
+    elsif info and provider == 'LinkedIn'
+      # self.user_name = info.nickname if self.user_name.blank?
+      self.full_name = info.first_name.to_s + ' ' + info.last_name.to_s if self.full_name.blank?
+      self.email = self.email_confirmation = info.email if self.email.blank?
+      self.mini_resume = info.description if self.mini_resume.nil?
+      self.linked_in_link = info.urls['public_profile']
+      begin
+        self.city = info.location.name if self.city.nil?
+        self.country =
+          SunDawg::CountryIsoTranslater.translate_iso3166_alpha2_to_name(
+            info.location.country.code.upcase) if self.country.nil?
+        self.build_avatar(remote_file_url: info.image) if info.image and not self.avatar
+      rescue => e
+        logger.error "Error: " + e.inspect
+      end
+      self.authorizations.build(
+        uid: info.uid,
+        provider: 'LinkedIn',
+        name: info.first_name.to_s + ' ' + info.last_name.to_s,
+        link: info.urls['public_profile'],
+        token: data.credentials.token
+      )
+    elsif info and provider == 'Twitter'
+      self.user_name = info.nickname if self.user_name.blank?
+      self.full_name = info.name if self.full_name.blank?
+      self.mini_resume = info.description if self.mini_resume.nil?
+      self.interest_tags_string = info.description.scan(/\#([[:alpha:]]+)/i).join(',')
+      self.twitter_link = info.urls['Twitter']
+      begin
+        self.city = info.location.split(',')[0] if self.city.nil?
+        self.country = info.location.split(',')[1].strip if self.country.nil?
+        self.build_avatar(remote_file_url: info.image.gsub(/_normal/, '')) unless self.avatar
+      rescue => e
+        logger.error "Error: " + e.inspect
+      end
+      self.authorizations.build(
+        uid: data.uid,
+        provider: 'Twitter',
+        name: info.name,
+        link: info.urls['Twitter'],
+        token: data.credentials.token,
+        secret: data.credentials.secret
+      )
+    end
+#          logger.info 'auth: ' + self.authorizations.inspect
+    self.password = Devise.friendly_token[0,20]
+    self.logging_in_socially = true
   end
 
   def find_invite_request
@@ -182,9 +381,10 @@ class User < ActiveRecord::Base
     followed_projects << project unless project.in? followed_projects
   end
 
-  def has_access_group_permissions? record
-    id.in? record.privacy_rules.where(private: false, privatable_user_type: 'AccessGroup').joins('inner join access_groups on access_groups.id = privacy_rules.privatable_user_id').joins('inner join access_group_members on access_group_members.access_group_id = access_groups.id').select('access_group_members.user_id').pluck('access_group_members.user_id') or id.in? record.privacy_rules.where(private: false, privatable_user_type: 'User').pluck(:privatable_user_id)
-    #and not id.in? record.privacy_rules.where(private: true).joins('inner join access_groups on access_groups.id = privacy_rules.privatable_user_id').joins('inner join access_group_members on access_group_members.access_group_id = access_groups.id').select('access_group_members.user_id').pluck('access_group_members.user_id')
+  def hide_notification! name
+    val = (notifications || []) << name
+    self.notifications = val
+    save
   end
 
   def invited?
@@ -207,17 +407,45 @@ class User < ActiveRecord::Base
     id.in? project.team_members.pluck(:user_id)
   end
 
+  def link_to_provider provider, uid, data=nil
+    auth = {
+      provider: provider,
+      uid: uid,
+    }
+    if data
+      case provider
+      when 'Facebook'
+        data = data.extra.raw_info
+        auth.merge!({
+            name: data['first_name'].to_s + ' ' + data['last_name'].to_s,
+            link: data['link'],
+          })
+      when 'Twitter'
+        data = data.info
+        auth.merge!({
+            name: data.name,
+            link: data.urls['Twitter'],
+          })
+      end
+    end
+    authorizations.create(auth)
+  end
+
   def name
     full_name.present? ? full_name : user_name
+  end
+
+  def profile_needs_care?
+    live_projects_count.zero? or (country.blank? and city.blank?) or mini_resume.blank? or interest_tags_count.zero? or skill_tags_count.zero? or websites.values.reject{|v|v.nil?}.count.zero?
   end
 
   def respected? project
     project.id.in? respected_projects.map(&:id)
   end
 
-  # def respected_projects
-  #   respects.includes(:project).map{ |r| r.project }.reject{ |p| p.nil? }
-  # end
+  def receive_notification? name
+    !(notifications and name.in? notifications)
+  end
 
   def roles=(roles)
     self.roles_mask = (roles & ROLES).map { |r| 2**ROLES.index(r) }.sum
@@ -261,6 +489,7 @@ class User < ActiveRecord::Base
       mini_resume_size: mini_resume.try(:length) || 0,
       name: full_name,
       projects_count: projects_count,
+      project_views_count: project_views_count,
       respects_count: respects_count,
       skills_count: skill_tags_count,
       username: user_name,
@@ -277,6 +506,10 @@ class User < ActiveRecord::Base
   end
 
   private
+    def email_is_unique_for_registered_users
+      errors.add :email, 'is already a member' if self.class.where(email: email).where('users.invitation_token IS NULL').any?
+    end
+
     def email_matches_confirmation
       errors.add(:email, "doesn't match confirmation") unless email.blank? or email == email_confirmation
     end
@@ -292,13 +525,18 @@ class User < ActiveRecord::Base
       end
     end
 
+    def invitation_accepted
+      notify_observers(:after_invitation_accepted)
+    end
+
     def is_whitelisted?
       return unless email.present?
       errors.add :email, 'is not on our beta list' unless InviteRequest.email_whitelisted? email
     end
 
     def used_valid_invite_code?
-      if invitation_code.present? and invite_code = InviteCode.authenticate(invitation_code)
+      return unless invitation_code.present?
+      if invite_code = InviteCode.authenticate(invitation_code)
         self.invite_code_id = invite_code.id
       else
         errors.add :invitation_code, 'is either invalid or expired'
@@ -306,6 +544,11 @@ class User < ActiveRecord::Base
     end
 
   protected
+    # overwrites devise
+    def confirmation_required?
+      false
+    end
+
     def password_required?
       (!persisted? || !password.nil? || !password_confirmation.nil?) && !being_invited?
     end

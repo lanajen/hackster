@@ -1,24 +1,24 @@
-- widget.images.new
+- file_type = 'image'
+= render partial: 'shared/uploader/file_association', locals: { file_type: file_type, f: f }
 .form-fields
   %label Add images
-  - widget.images.each do |image|
-    = f.simple_fields_for :images, image do |f_image|
-      -  if image.file_url
-        .control-group
-          .controls
-            = image_tag image.file_url(:thumb)
-        = f_image.input :title, label: 'Image title'
-        -# = f_image.input :caption
-      - else
-        = f_image.input :file, as: :file, label: false
-        = f_image.input :file_cache, as: :hidden
-        = f_image.input :title, label: 'Image title'
-        -# = f_image.input :caption
-      = f_image.link_to_remove 'Remove this image', class: 'btn btn-mini btn-danger'
-  = f.link_to_add 'Add an image', :images, class: 'btn btn-mini btn-success', style: 'margin-bottom:10px;'
-  .alert
-    %strong Heads up!
-    Please limit the number of files you upload at once to 4 or 5 or you might get upload errors.
+  #sortable
+    .row.file-fields
+      - widget.images.each do |image|
+        = f.simple_fields_for :images, image, wrapper: false do |f_image|
+          .fields-column
+            .fields
+              = f_image.input :position, as: :hidden, input_html: { class: 'position' }
+              = f_image.input :id, as: :hidden
+              .img-holder.btn-delete-holder
+                = image_tag image.file_url(:thumb), class: 'handle img-responsive', title: 'Click, hold and drag to reorder'
+                = f_image.link_to_remove '&times;'.html_safe, class: 'btn-delete', title: 'Delete'
+              = f_image.input :title, placeholder: 'Image title', label: false, wrapper: false
+    .row
+      .col-xs-12
+        %p.help-block You can drag and drop images to sort them.
+
+= render partial: 'shared/uploader/file_drop', locals: { file_type: file_type, human_file_type: file_type }
 
 = content_for :js do
   :javascript
@@ -26,5 +26,56 @@
       $(document).on('nested:fieldAdded', function(event){
         var field = event.field;
         field.addClass('new');
+        resetPositions();
+      });
+      $(document).on('nested:fieldRemoved', function(event){
+        var field = event.field;
+        field.addClass('deleted');
+        field.parent().hide();
+        resetPositions();
       });
     });
+
+    $(function() {
+      resetPositions();
+
+      $('#sortable')
+        .sortable({
+          items: '.fields-column',
+          cursor: 'move',
+          handle: '.handle'
+        })
+        .bind('sortstop', function(event, ui) {
+          resetPositions();
+        });
+    });
+
+    function resetPositions(){
+      $('#sortable .fields:not(".deleted")').each(function(i){
+        $('.position', this).val(i+1);
+      });
+    }
+
+    inputTpl = '<div class="fields-column"><div class="fields">';
+    inputTpl += '<div class="form-group hidden widget_images_position"><input class="hidden position" id="" name="[position]" type="hidden"></div>';
+    inputTpl += '<div class="form-group hidden widget_images_id"><input class="hidden" id="" name="[id]" type="hidden"></div>';
+    inputTpl += '<div class="img-holder btn-delete-holder">';
+    inputTpl += '<img class="handle img-responsive" title="Click, hold and drag to reorder">';
+    inputTpl += '<input id="" name="[_destroy]" type="hidden" value="false"><a class="btn-delete remove_nested_fields" data-association="images" href="javascript:void(0)" title="Delete">&times;</a>';
+    inputTpl += '</div>';
+    inputTpl += '<div class="string optional widget_images_title"><input class="string optional form-control" id="" maxlength="255" name="[title]" placeholder="Image title" size="255" type="text"></div>';
+    inputTpl += '</div></div>';
+
+    #{ render partial: 'shared/uploader/form_template', locals: { file_type: file_type } }
+
+    #{ render partial: 'shared/uploader/file_drop_click' }
+
+    #{ render partial: 'shared/uploader/file_upload_functions', locals: { file_type: file_type } }
+
+    #{file_type}Functions.fileuploadDoneTypeSpecific = function(data, file){
+      input.find('img').attr('src', file.url);
+      input.appendTo('#sortable .file-fields');
+      resetPositions();
+    }
+
+    #{ render partial: 'shared/uploader/file_upload', locals: { file_type: file_type } }

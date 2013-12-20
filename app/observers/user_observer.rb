@@ -3,20 +3,30 @@ class UserObserver < ActiveRecord::Observer
     unless record.invited?
       advertise_new_user record
       record.create_reputation
+      record.send_confirmation_instructions unless record.invitation_accepted?
     end
   end
 
+  def after_invitation_accepted record
+    advertise_new_user record
+    BaseMailer.enqueue_email 'invite_request_accepted',
+      { context_type: :inviter, context_id: record.id }
+    record.build_reputation unless record.reputation
+
+    invite = record.find_invite_request
+    invite.project.team_members.create(user_id: record.id) if invite and invite.project
+  end
+
   def before_update record
-    if record.invitation_accepted_at_changed?
-      advertise_new_user record
-      BaseMailer.enqueue_email 'invite_request_accepted',
-        { context_type: :inviter, context_id: record.id }
-      record.build_reputation unless record.reputation
-    elsif record.accepted_or_not_invited? and (record.changed & %w(user_name mini_resume city country full_name)).any?
+    if record.accepted_or_not_invited? and (record.changed & %w(user_name mini_resume city country full_name)).any?
       record.broadcast :update, record.id, 'User'
     end
     record.interest_tags_count = record.interest_tags_string.split(',').count
     record.skill_tags_count = record.skill_tags_string.split(',').count
+  end
+
+  def before_create record
+    record.reset_counters assign_only: true
   end
 
   private

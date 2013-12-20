@@ -3,14 +3,13 @@ class FriendInvite < ActiveRecord::Base
   accepts_nested_attributes_for :users
   attr_accessible :users_attributes
   validates :users, presence: true
-#  validate :has_invites?
 
   def has_invites?
-    !users.empty?
+    users.any?
   end
 
   def filter_blank_and_init!
-    users.select! do |user|
+    self.users = users.select do |user|
       unless user.email.blank?
         user.new_invitation = true
         user.skip_confirmation!
@@ -19,11 +18,11 @@ class FriendInvite < ActiveRecord::Base
   end
 
   def invite_all! invited_by=nil
-    users.select do |user|
-      unless user.email.blank?
-        user.invite!(invited_by)
-      end
-    end
+    existing_users = User.where(invitation_token: nil).where('users.email IN (?)', users.map(&:email)).map(&:email)
+
+    users.map(&:email).uniq.select do |email|
+      User.invite!({ email: email }, invited_by) unless email.blank? or email.in? existing_users
+    end#.map { |u| User.invite!({ email: u.email }, invited_by) }
   end
 
   def persisted?

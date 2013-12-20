@@ -1,6 +1,14 @@
 class ApplicationController < ActionController::Base
+  MOBILE_USER_AGENTS =
+    'palm|blackberry|nokia|phone|midp|mobi|symbian|chtml|ericsson|minimo|' +
+    'audiovox|motorola|samsung|telit|upg1|windows ce|ucweb|astel|plucker|' +
+    'x320|x240|j2me|sgh|portable|sprint|docomo|kddi|softbank|android|mmp|' +
+    'pdxgw|netfront|xiino|vodafone|portalmmm|sagem|mot-|sie-|ipod|up\\.b|' +
+    'webos|amoi|novarra|cdm|alcatel|pocket|ipad|iphone|mobileexplorer|' +
+    'mobile'
+
   protect_from_forgery
-  before_filter :authenticate_user!
+  # before_filter :authenticate_user!
   before_filter :set_new_user_session
   before_filter :store_location_before
   after_filter :store_location_after
@@ -8,13 +16,17 @@ class ApplicationController < ActionController::Base
   helper_method :meta_desc
   helper_method :user_return_to
   helper_method :show_hello_world?
+  helper_method :show_profile_needs_care?
+  helper_method :is_mobile?
+  helper BootstrapFlashHelper
 
   unless Rails.application.config.consider_all_requests_local
     rescue_from Exception, with: :render_500
-    rescue_from ActionController::RoutingError, with: :render_404
-    rescue_from ActionController::UnknownController, with: :render_404
-    rescue_from AbstractController::ActionNotFound, with: :render_404
-    rescue_from ActiveRecord::RecordNotFound, with: :render_404
+    rescue_from ActionController::RoutingError,
+      ActionController::UnknownController,
+      AbstractController::ActionNotFound,
+      ActiveRecord::RecordNotFound,
+      with: :render_404
   end
 
   rescue_from CanCan::AccessDenied do |exception|
@@ -36,7 +48,7 @@ class ApplicationController < ActionController::Base
   def store_location cookie_name
 #    logger.info 'controller: ' + params[:controller].to_s
 #    logger.info 'action: ' + params[:action].to_s
-    session[cookie_name] = request.url unless params[:controller] == 'users/sessions' || params[:controller] == 'users/registrations' || params[:controller] == 'users/confirmations' || params[:controller] == 'users/omniauth_callbacks' || params[:controller] == 'users/facebook_connections' || params[:controller] == 'users/invitations' || params[:action] == 'after_registration' || request.method_symbol != :get
+    session[cookie_name] = request.url unless params[:controller] == 'users/sessions' || params[:controller] == 'users/registrations' || params[:controller] == 'users/confirmations' || params[:controller] == 'users/omniauth_callbacks' || params[:controller] == 'users/facebook_connections' || params[:controller] == 'users/invitations' || params[:controller] == 'users/authorizations' || params[:controller] == 'devise/passwords' || params[:action] == 'after_registration' || request.method_symbol != :get
 #    logger.info 'stored location: ' + session[cookie_name].to_s
   end
 
@@ -60,8 +72,7 @@ class ApplicationController < ActionController::Base
     end
 
     def find_user
-      @user = User.find_by_user_name(params[:user_name])
-      raise ActiveRecord::RecordNotFound, 'Not found' unless @user
+      @user = User.find_by_user_name!(params[:user_name].downcase)
     end
 
     def load_project
@@ -115,7 +126,7 @@ class ApplicationController < ActionController::Base
     end
 
     def render_404(exception)
-      LogLine.create(log_type: 'not_found', source: 'controller', message: request.url)
+      LogLine.create(log_type: 'not_found', source: 'controller', message: request.url) unless request.url =~ /users\/auth\/[a-z]+\/callback/
       respond_to do |format|
         format.html { render template: 'errors/error_404', layout: 'layouts/application', status: 404 }
         format.all { render nothing: true, status: 404 }
@@ -155,11 +166,15 @@ class ApplicationController < ActionController::Base
     end
 
   protected
+    def is_mobile?
+      request.user_agent.to_s.downcase =~ Regexp.new(MOBILE_USER_AGENTS)
+    end
+
     def meta_desc meta_desc=nil
       if meta_desc
         @meta_desc = meta_desc
       else
-        @meta_desc || "Do you hack hardware? Build up your hacker identity all in one place and show the world what you're up to. Request an invite to be part of our early user group!"
+        @meta_desc || "Do you hack hardware? Show the world what you're up to and get inspiration from other makers. Come join the movement!"
       end
     end
 
@@ -167,13 +182,17 @@ class ApplicationController < ActionController::Base
       if title
         @title = title
       else
-        @title ? "#{@title} - Hackster.io" : 'Hackster.io - Hackster.io is the place where hardware hackers and makers showcase their projects.'
+        @title ? "#{@title} - Hackster.io" : "Hackster.io - #{SLOGAN}"
       end
     end
 
     def show_hello_world?
-      incoming = request.referer.present? ? URI(request.referer).host == APP_CONFIG['default_host'] : true
+      incoming = request.referer.present? ? URI(request.referer).host != APP_CONFIG['default_host'] : true
 
       incoming and !user_signed_in? and (params[:controller] == 'projects' or params[:controller] == 'users') and params[:action] == 'show'
+    end
+
+    def show_profile_needs_care?
+      user_signed_in? and !(params[:controller] == 'users' and params[:action] == 'after_registration') and current_user.profile_needs_care? and current_user.receive_notification?('1311complete_profile')
     end
 end

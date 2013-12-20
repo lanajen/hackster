@@ -1,11 +1,9 @@
-.span3.offset4.wellified
-  %h2.text-center Log in to Hackster.io
-  = render 'form'
+.col-xs-4.col-xs-offset-4
+  .wellified
+    %h2.text-center Log in to Hackster.io
+    = render 'form'
 
-  %p
-    Forgot your password?
-    = link_to 'Reset it.', new_password_path(resource_name)
-  %p
-    Need an invite?
-    = link_to 'Request one.', new_invite_request_path, onclick: "_gaq.push(['_trackEvent', 'Sign in form', 'Request an invite', '#{request.path}']);"
-    -# = link_to 'Sign up.', new_user_registration_path, onclick: "_gaq.push(['_trackEvent', 'Sign in form', 'Sign up', '#{request.path}']);"
+    %hr
+
+    %p.text-center Or connect with your social account:
+    = render 'devise/shared/omniauth'

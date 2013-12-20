@@ -1,0 +1,9 @@
+= f.error_notification
+- if resource.invitation_token.present?
+  = f.input :invitation_token, as: :hidden
+= f.input :email, label: false, placeholder: 'Email'
+= f.input :email_confirmation, label: false, placeholder: 'Confirm email'
+= f.input :user_name, label: false, placeholder: 'Username'
+- unless resource.logging_in_socially  # for social login
+  = f.input :password, label: false, placeholder: 'Password'
+= f.submit 'Create my account', class: 'btn btn-default btn-block'

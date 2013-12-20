@@ -1,11 +1,11 @@
 - widget.build_document unless widget.document
 = f.input :language, as: :select, label: 'What programming language are you using?', collection: CodeWidget::LANGUAGES
-.control-group
+.form-group
   .controls
     %label Add the file that contains the code
 = f.simple_fields_for :document do |f_document|
   - if widget.document
-    .control-group.url
+    .form-group.url
       .controls
         = widget.document.file_name
   = f_document.input :file, as: :file, label: false

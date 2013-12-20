@@ -12,13 +12,15 @@ HackerIo::Application.configure do
   config.serve_static_assets = false
 
   # Compress JavaScripts and CSS
-  config.assets.compress = true
+  config.assets.js_compressor = :uglifier
 
   # Don't fallback to assets pipeline if a precompiled asset is missed
   config.assets.compile = false
 
   # Generate digests for assets URLs
   config.assets.digest = true
+
+  config.eager_load = true
 
   # Defaults to nil and saved in location specified by config.assets.prefix
   # config.assets.manifest = YOUR_PATH
@@ -46,7 +48,7 @@ HackerIo::Application.configure do
   # config.action_controller.asset_host = "http://assets.example.com"
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-  config.assets.precompile += %w( admin.css wysihtml5.css splash.css email.css wysihtml5/parser_rules.js jquery.githubRepoWidget.min.js )
+  config.assets.precompile += %w( admin.css wysihtml5.css splash.css email.css wysihtml5/parser_rules.js jquery.githubRepoWidget.min.js home.css )
 
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
@@ -69,5 +71,5 @@ HackerIo::Application.configure do
 
   config.assets.initialize_on_precompile = false
 
-  config.middleware.use(Oink::Middleware, logger: Hodel3000CompliantLogger.new(STDOUT))
+  # config.middleware.use(Oink::Middleware, logger: Hodel3000CompliantLogger.new(STDOUT))
 end

@@ -6,7 +6,7 @@ class UpverterWidget < Widget
 
   define_attributes [:code]
   attr_accessible :code
-  validates :code, presence: true
+  # validates :code, presence: true
   before_save :resize_iframe
 
   def help_text
@@ -15,6 +15,7 @@ class UpverterWidget < Widget
 
   private
     def resize_iframe
+      return unless code
       self.code = code.gsub(/width="[0-9]+"/, 'width="420"')
       self.code = code.gsub(/height="[0-9]+"/, 'height="315"')
     end

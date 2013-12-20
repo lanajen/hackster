@@ -1,5 +1,5 @@
 .row
-  .span8
+  .col-xs-8
     .row
       - if @thread_posts.any?
         - @thread_posts.each do |issue|
@@ -24,11 +24,11 @@
           .content
             There are no issues.
 
-  .span4
+  .col-xs-4
     - if can? :create, Issue, @threadable
       .well
         .content
-          = link_to 'Create a new issue', url_for([:new, @threadable, :issue]), class: 'btn btn-info btn-mini'
+          = link_to 'Create a new issue', url_for([:new, @threadable, :issue]), class: 'btn btn-info btn-xs'
           .div
             Issues for:
             %ul

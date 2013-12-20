@@ -1,9 +1,16 @@
-.span3.offset4.wellified
-  %h2{ style: 'text-align: center' } Welcome to Hackster.io
-  %p{ style: 'text-align: center' }
-    Hackster.io is the place where hardware hackers and makers showcase their projects.
-  - if resource.invited_by
-    %p{ style: 'text-align: center' }
-      You were invited by
-      = link_to resource.invited_by.name, resource.invited_by
-  = render 'devise/shared/signup_form'
+.col-xs-4.col-xs-offset-4
+  .wellified
+    %h2.text-center Welcome to Hackster.io
+    %p.text-center
+      = SLOGAN
+    - if resource.invited_by
+      %p.text-center
+        You were invited by
+        = link_to resource.invited_by.name, resource.invited_by
+    .text-center
+      %p
+        To accept your invitation, please select how you want to connect:
+      = render 'devise/shared/omniauth'
+      %hr
+      %p Or use your email:
+      = render 'devise/shared/signup_form'

@@ -89,6 +89,14 @@
   a {
     margin: 2px 0;
   }
+  #stlviewer {
+    display: table;
+    text-align: center;
+    .stl-play {
+      vertical-align: middle;
+      display: table-cell;
+    }
+  }
 }
 
 .widget-form {
@@ -105,12 +113,73 @@
       margin-bottom: 10px;
       background: #fff;
     }
+    &.fields-condensed {
+      .fields {
+        padding: 1%;
+      }
+    }
   }
   &.form-horizontal {
     .form-actions {
       input {
         margin-left: 180px;
       }
+    }
+  }
+  .handle {
+    cursor: pointer;
+  }
+  .img-holder {
+    margin-bottom: 5px;
+    width: 198px;
+    height: 148px;
+    .img-responsive {
+      max-height: 100%;
+    }
+  }
+  .btn-delete-holder {
+    position: relative;
+    overflow: hidden;
+    .btn-delete {
+      position: absolute;
+      top: -5px;
+      right: 0;
+      display: none;
+      font-size: 20px;
+      color: #333;
+      background: #fff;
+      line-height: 1;
+      padding: 5px 6px;
+      &:hover {
+        text-decoration: none;
+        color: #999;
+      }
+    }
+    &:hover .btn-delete {
+      display: block;
+    }
+  }
+  .file-drop.file-drop-styled {
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 80px;
+    text-align: center;
+    a {
+      cursor: pointer;
+    }
+    .uploads {
+      .progress {
+        margin-bottom: 0;
+      }
+    }
+  }
+  #sortable {
+    .fields-column {
+      float: left;
+      width: 232px;
+      height: 210px;
+      padding-left: 11px;
+      padding-right: 11px;
     }
   }
 }
@@ -169,9 +238,9 @@
       left: 0;
       background: #000;
       color: #FFF;
-      width: 120px;
+      width: 130px;
       padding: 3px 5px;
-      @include opacity(80);
+      @include opacity(0.8);
       text-align: center;
       font-weight: bold;
     }
@@ -198,7 +267,7 @@
           font-size: 40px;
           color: #000;
           text-shadow: 0 0 10px #fff;
-          @include opacity(70);
+          @include opacity(0.7);
         }
         &:hover {
           text-decoration: none;
@@ -214,7 +283,7 @@
 }
 
 .expanded-footer {
-  margin: 20px -20px -30px;
+  margin: 20px -20px -10px;
   padding: 20px;
   background-color: #F5F5F5;
   border-top: 1px solid #E5E5E5;
@@ -222,11 +291,10 @@
 
 .comments {
   @include font-size(12);
-  display: none;
   textarea, input[type='text'], input[type='email'], input[type='password'] {
     @include border-radius(0);
     @include font-size(12);
-    height: 15px;
+    height: 25px;
     line-height: 17px;
     min-height: 15px;
     resize: none;
@@ -259,4 +327,26 @@
 
 #widget-comments {
   background: #f5f5f5;
+}
+
+.widget-reorder-form {
+  .btn-delete-widget {
+    display: none;
+    float: right;
+    font-weight: bold;
+    &:hover {
+      text-decoration: none;
+    }
+  }
+  li:hover .btn-delete-widget {
+    display: block;
+  }
+}
+
+.github-box.repo {
+  *, *:before, *:after {
+    -webkit-box-sizing: initial;
+    -moz-box-sizing: initial;
+    box-sizing: initial;
+  }
 }

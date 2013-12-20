@@ -8,7 +8,7 @@ class InviteRequest < ActiveRecord::Base
 
   validates :email, presence: true
   validates :email, uniqueness: { message: 'has already requested an invite' }
-  validates :email, format: { with: /^\b[a-z0-9._%-\+]+@[a-z0-9.-]+\.[a-z]{2,4}(\.[a-z]{2,4})?\b$/, message: 'is not a valid email address'}
+  validates :email, format: { with: /\A\b[a-z0-9._%-\+]+@[a-z0-9.-]+\.[a-z]{2,4}(\.[a-z]{2,4})?\b\z/, message: 'is not a valid email address'}
 
   self.per_page = 20
 
@@ -17,7 +17,7 @@ class InviteRequest < ActiveRecord::Base
   end
 
   def self.send_invite_to_all!
-    self.where(whitelisted: false).each do |invite|
+    self.where(whitelisted: nil).each do |invite|
       invite.send_invite!
     end
   end

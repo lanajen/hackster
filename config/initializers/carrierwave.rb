@@ -1,3 +1,5 @@
+# ENV['TMP'] = File.join(Rails.root, 'tmp')
+
 CarrierWave.configure do |config|
   config.fog_credentials = {
     :provider               => ENV['FOG_PROVIDER'],       # required

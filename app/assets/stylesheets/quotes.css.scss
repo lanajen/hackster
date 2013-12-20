@@ -31,9 +31,9 @@
       @include font-size(16);
     }
     .help-block {
-      @extend .muted;
+      @extend .text-muted;
     }
-    .control-group.file {
+    .form-group.file {
       display: inline-block;
     }
     input[type='file'] {
@@ -43,7 +43,7 @@
     .field-group {
       margin-bottom: 20px;
     }
-    .btn-large {
+    .btn-lg {
       padding: 16px 27px;
       font-weight: bold;
     }

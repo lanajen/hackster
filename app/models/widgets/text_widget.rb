@@ -18,7 +18,7 @@ class TextWidget < Widget
 
   def to_tracker
     super.merge({
-      content_size: content.length,
+      content_size: (content.present? ? content.length : 0),
     })
   end
 end

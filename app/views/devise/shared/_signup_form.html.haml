@@ -1,10 +1,2 @@
-= simple_form_for resource, as: resource_name, url: invitation_path(resource_name), html: { method: :put } do |f|
-  = f.error_notification
-  - if @invitation_token.present?
-    = f.input :invitation_token, as: :hidden
-  - else
-    = f.input :invitation_code, as: :string
-  = f.input :email, label: false, placeholder: 'Email'
-  = f.input :user_name, label: false, placeholder: 'Username'
-  = f.input :password, label: false, placeholder: 'Password'
-  = f.submit 'Accept invitation', class: 'btn btn-block'
+= simple_form_for resource, as: resource_name, url: invitation_path(resource_name), html: { method: :patch } do |f|
+  = render partial: 'shared/registration_form', locals: { f: f, resource: resource }

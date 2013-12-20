@@ -1,4 +1,4 @@
-.comments.collapsed
+.comments
   -# { id: "widget-#{widget.id}-comments" }
   - if comments.any?
     - comments.each do |comment|
@@ -12,5 +12,5 @@
       Please
       = link_to 'log in', new_user_session_path(redirect_to: url_for(commentable))
       or
-      = link_to 'sign up', new_invite_request_path
+      = link_to 'sign up', new_user_registration_path
       to comment.

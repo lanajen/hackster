@@ -2,8 +2,7 @@
 
 class BaseUploader < CarrierWave::Uploader::Base
   include CarrierWave::RMagick
-  include Sprockets::Helpers::RailsHelper
-  include Sprockets::Helpers::IsolatedHelper
+  include Sprockets::Rails::Helper
 
   if Rails.env.in? %w(production staging)
     storage :fog
