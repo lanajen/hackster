@@ -11,13 +11,13 @@ class BroadcastDecorator < ApplicationDecorator
       case model.context_model_type
       when 'Comment'
         record = model.context_model.commentable
-        project = record.respond_to?(:project) ? record.project : record
+        project = record.respond_to?(:project) ? record.project : (record.respond_to?(:threadable) ? record.threadable : record)
         project_name = h.link_to project.name, project
 #        commentable_type = model.context_model.commentable.class.name.underscore.gsub(/_/, ' ')
-        commentable_title = model.context_model.commentable.name
+        commentable_title = model.context_model.commentable.respond_to?(:name) ? model.context_model.commentable.name : model.context_model.commentable.title
         case model.event.to_sym
         when :new
-          "commented on the widget #{commentable_title} on #{project_name}"
+          "commented on the #{model.context_model.commentable.class.name.humanize.downcase} #{commentable_title} on #{project_name}"
         end
       when 'BlogPost', 'Issue'
         project = model.context_model.threadable.respond_to?(:project) ? model.context_model.threadable.project : model.context_model.threadable

@@ -1,7 +1,5 @@
 class Issue < ThreadPost
   include Workflow
-  
-  has_many :participant_invites
 
   workflow do
     state :unresolved do

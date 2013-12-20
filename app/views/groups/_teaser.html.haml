@@ -1,0 +1,40 @@
+.row
+  .span12.teaser
+    .pull-left.avatar.main-avatar= image_tag @group.avatar(:medium), alt: @group.name
+    .pull-left.text-holder
+      %h1= @group.name
+
+      - if @group.mini_resume.present?
+        %p.user-mini-resume= @group.mini_resume
+      - elsif can? :edit, @group
+        %p.user-mini-resume
+          No mini resume.
+          = link_to 'Add one?', edit_group_path(@group), data: { remote: true }
+
+      - if @group.location
+        %p.user-categories
+          %i.fa.fa-map-marker
+          = @group.location
+      - elsif can? :edit, @group
+        %p.user-categories
+          %i.fa.fa-map-marker
+          No location.
+          = link_to 'Add one?', edit_group_path(@group), data: { remote: true }
+
+      - if @group.websites.any?
+        %ul.websites
+          - @group.websites.each do |type, url|
+            %li= render partial: 'website', locals: { type: type, url: url }
+      - elsif can? :edit, @group
+        %ul.websites
+          %li
+            No websites.
+            = link_to 'Add some?', edit_group_path(@group), data: { remote: true }
+
+    - if can? :edit, @group
+      = link_to 'Edit', edit_group_path(@group), class: 'btn-edit', data: { remote: true }
+    -#
+      - if current_user.try(:is_following?, @group)
+        = link_to 'Following', user_followers_path(@group), method: :delete, class: 'btn-inverse btn-follow'
+      - else
+        = link_to 'Follow', user_followers_path(@group), method: :post, class: 'btn-follow'

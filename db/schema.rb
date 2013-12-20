@@ -16,25 +16,6 @@ ActiveRecord::Schema.define(version: 20131214181629) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "access_group_members", force: true do |t|
-    t.integer  "access_group_id"
-    t.integer  "user_id"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
-  end
-
-  add_index "access_group_members", ["access_group_id"], name: "index_access_group_members_on_access_group_id", using: :btree
-  add_index "access_group_members", ["user_id"], name: "index_access_group_members_on_user_id", using: :btree
-
-  create_table "access_groups", force: true do |t|
-    t.integer  "project_id"
-    t.string   "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  add_index "access_groups", ["project_id"], name: "index_access_groups_on_project_id", using: :btree
-
   create_table "attachments", force: true do |t|
     t.string   "file"
     t.integer  "attachable_id"
@@ -112,6 +93,23 @@ ActiveRecord::Schema.define(version: 20131214181629) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "groups", force: true do |t|
+    t.string   "user_name",         limit: 100
+    t.string   "city",              limit: 50
+    t.string   "country",           limit: 50
+    t.string   "mini_resume",       limit: 160
+    t.string   "full_name"
+    t.string   "email"
+    t.text     "websites"
+    t.string   "type",              limit: 15,  default: "Group", null: false
+    t.integer  "impressions_count",             default: 0
+    t.text     "counters_cache"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "groups", ["type"], name: "index_groups_on_type", using: :btree
+
   create_table "impressions", force: true do |t|
     t.string   "impressionable_type"
     t.integer  "impressionable_id"
@@ -166,18 +164,18 @@ ActiveRecord::Schema.define(version: 20131214181629) do
     t.datetime "updated_at",               null: false
   end
 
-  create_table "participant_invites", force: true do |t|
-    t.integer  "project_id",                 null: false
-    t.integer  "user_id"
-    t.integer  "issue_id"
-    t.string   "email"
-    t.boolean  "accepted",   default: false, null: false
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+  create_table "members", force: true do |t|
+    t.integer  "group_id",         null: false
+    t.integer  "user_id",          null: false
+    t.string   "title"
+    t.integer  "group_roles_mask"
+    t.string   "mini_resume"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  add_index "participant_invites", ["accepted"], name: "index_participant_invites_on_accepted", using: :btree
-  add_index "participant_invites", ["project_id"], name: "index_participant_invites_on_project_id", using: :btree
+  add_index "members", ["group_id"], name: "index_members_on_group_id", using: :btree
+  add_index "members", ["user_id"], name: "index_members_on_user_id", using: :btree
 
   create_table "parts", force: true do |t|
     t.integer  "quantity",      default: 1
@@ -197,16 +195,6 @@ ActiveRecord::Schema.define(version: 20131214181629) do
   end
 
   add_index "parts", ["partable_id", "partable_type"], name: "partable_index", using: :btree
-
-  create_table "privacy_rules", force: true do |t|
-    t.boolean  "private"
-    t.integer  "privatable_id"
-    t.string   "privatable_type"
-    t.integer  "privatable_user_id"
-    t.string   "privatable_user_type"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
-  end
 
   create_table "project_followers", id: false, force: true do |t|
     t.integer "user_id",    null: false
@@ -230,29 +218,11 @@ ActiveRecord::Schema.define(version: 20131214181629) do
     t.boolean  "featured"
     t.integer  "impressions_count", default: 0
     t.text     "counters_cache"
+    t.integer  "team_id",           default: 0,     null: false
   end
 
   add_index "projects", ["private"], name: "index_projects_on_private", using: :btree
-
-  create_table "publications", force: true do |t|
-    t.string   "title"
-    t.text     "abstract"
-    t.string   "coauthors"
-    t.date     "published_on"
-    t.string   "journal"
-    t.string   "link"
-    t.integer  "user_id",      null: false
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
-  end
-
-  add_index "publications", ["user_id"], name: "index_publications_on_user_id", using: :btree
-
-  create_table "quotes", force: true do |t|
-    t.text     "properties"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
+  add_index "projects", ["team_id"], name: "index_projects_on_team_id", using: :btree
 
   create_table "reputations", force: true do |t|
     t.integer  "points",     default: 0
@@ -262,27 +232,6 @@ ActiveRecord::Schema.define(version: 20131214181629) do
   end
 
   add_index "reputations", ["user_id"], name: "index_reputations_on_user_id", using: :btree
-
-  create_table "searches", force: true do |t|
-    t.text     "params"
-    t.integer  "results"
-    t.integer  "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "stages", force: true do |t|
-    t.integer  "project_id",                      null: false
-    t.string   "name"
-    t.integer  "completion_rate", default: 0
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
-    t.boolean  "private",         default: false, null: false
-    t.string   "workflow_state"
-  end
-
-  add_index "stages", ["private"], name: "index_stages_on_private", using: :btree
-  add_index "stages", ["project_id"], name: "index_stages_on_project_id", using: :btree
 
   create_table "tags", force: true do |t|
     t.integer  "taggable_id",   null: false

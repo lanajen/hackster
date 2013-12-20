@@ -25,24 +25,20 @@ class User < ActiveRecord::Base
   end
   has_and_belongs_to_many :followed_projects, class_name: 'Project',
     join_table: :project_followers
-  has_many :access_group_members, dependent: :destroy
   has_many :authorizations, dependent: :destroy
   has_many :blog_posts, dependent: :destroy
   has_many :comments, foreign_key: :user_id, dependent: :destroy
-#  has_many :interests, as: :taggable, dependent: :destroy, class_name: 'InterestTag'
+  has_many :group_ties, class_name: 'Member', dependent: :destroy
+  has_many :groups, through: :group_ties
   has_many :invitations, class_name: self.to_s, as: :invited_by
-  has_many :privacy_rules, as: :privatable_users
-  has_many :projects, through: :team_members
-  has_many :publications, dependent: :destroy
+  has_many :projects, through: :teams
   has_many :respects, dependent: :destroy, class_name: 'Favorite'
   has_many :respected_projects, through: :respects, source: :project
-#  has_many :skills, as: :taggable, dependent: :destroy, class_name: 'SkillTag'
-  has_many :team_members
+  has_many :teams, through: :group_ties, source: :group, class_name: 'Team'
   has_one :avatar, as: :attachable, dependent: :destroy
   has_one :reputation
 
   attr_accessor :email_confirmation, :skip_registration_confirmation,
-    :participant_invite_id, :auth_key_authentified,
     :friend_invite_id, :new_invitation, :invitation_code, :match_by,
     :logging_in_socially
   attr_accessible :email_confirmation, :password, :password_confirmation,
@@ -51,7 +47,6 @@ class User < ActiveRecord::Base
     :first_name, :last_name, :invitation_code,
     :facebook_link, :twitter_link, :linked_in_link, :website_link,
     :blog_link, :github_link, :google_plus_link, :youtube_link, :categories,
-    :participant_invite_id, :auth_key_authentified,
     :github_link, :invitation_limit, :email, :mini_resume, :city, :country,
     :user_name, :full_name, :roles, :type, :avatar_id
   accepts_nested_attributes_for :avatar, :projects, allow_destroy: true
@@ -114,7 +109,6 @@ class User < ActiveRecord::Base
       indexes :interests,       analyzer: 'snowball'
       indexes :skills,          analyzer: 'snowball'
       indexes :mini_resume,     analyzer: 'snowball'
-      indexes :publications,    analyzer: 'snowball'
       indexes :country,         analyzer: 'snowball', type: 'string'
       indexes :city,            analyzer: 'snowball', type: 'string'
       indexes :private,         analyzer: 'keyword'
@@ -132,7 +126,6 @@ class User < ActiveRecord::Base
       city: city,
       country: country,
       mini_resume: mini_resume,
-      publications: publications.pluck(:title),
       interests: interest_tags_string,
       skills: skill_tags_string,
       created_at: created_at,
@@ -220,10 +213,6 @@ class User < ActiveRecord::Base
   def add_confirmed_role
     self.roles = roles << 'confirmed_user'
     save
-  end
-
-  def auth_key_authentified? project
-    auth_key_authentified and participant_invite.try(:project_id) == project.id
   end
 
   def avatar_id=(val)
@@ -392,9 +381,10 @@ class User < ActiveRecord::Base
     followed_projects << project unless project.in? followed_projects
   end
 
-  def has_access_group_permissions? record
-    id.in? record.privacy_rules.where(private: false, privatable_user_type: 'AccessGroup').joins('inner join access_groups on access_groups.id = privacy_rules.privatable_user_id').joins('inner join access_group_members on access_group_members.access_group_id = access_groups.id').select('access_group_members.user_id').pluck('access_group_members.user_id') or id.in? record.privacy_rules.where(private: false, privatable_user_type: 'User').pluck(:privatable_user_id)
-    #and not id.in? record.privacy_rules.where(private: true).joins('inner join access_groups on access_groups.id = privacy_rules.privatable_user_id').joins('inner join access_group_members on access_group_members.access_group_id = access_groups.id').select('access_group_members.user_id').pluck('access_group_members.user_id')
+  def hide_notification! name
+    val = (notifications || []) << name
+    self.notifications = val
+    save
   end
 
   def invited?
@@ -443,16 +433,6 @@ class User < ActiveRecord::Base
 
   def name
     full_name.present? ? full_name : user_name
-  end
-
-  def hide_notification! name
-    val = (notifications || []) << name
-    self.notifications = val
-    save
-  end
-
-  def participant_invite
-    @participant_invite ||= ParticipantInvite.find_by_id participant_invite_id
   end
 
   def profile_needs_care?

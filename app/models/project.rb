@@ -6,18 +6,14 @@ class Project < ActiveRecord::Base
 #  include Workflow
   is_impressionable counter_cache: true, unique: :session_hash
 
-  belongs_to :user
+  belongs_to :team
   has_and_belongs_to_many :followers, class_name: 'User', join_table: 'project_followers'
-  has_many :access_groups, dependent: :destroy
-  has_many :access_group_members, through: :access_groups
   has_many :blog_posts, as: :threadable, dependent: :destroy
   has_many :comments, -> { order created_at: :asc }, as: :commentable
   has_many :issues, as: :threadable, dependent: :destroy
   has_many :images, as: :attachable, dependent: :destroy
-  has_many :participant_invites, dependent: :destroy
   has_many :respects, dependent: :destroy, class_name: 'Favorite'
-  has_many :stages, dependent: :destroy
-  has_many :team_members#, -> { includes :user }
+  has_many :team_members, through: :team, source: :members#, -> { includes :user }
   has_many :users, through: :team_members
   has_many :widgets, -> { order position: :asc }
   has_one :logo, as: :attachable, class_name: 'Avatar'
@@ -25,14 +21,12 @@ class Project < ActiveRecord::Base
   has_one :video, as: :recordable, dependent: :destroy
 
   sanitize_text :description
-  attr_accessible :description, :end_date, :name, :start_date,
-    :current, :team_members_attributes,
-    :website, :access_groups_attributes, :participant_invites_attributes,
-    :one_liner, :widgets_attributes, :featured, :cover_image_id, :logo_id
+  attr_accessible :description, :end_date, :name, :start_date, :current,
+    :team_members_attributes, :website, :one_liner, :widgets_attributes,
+    :featured, :cover_image_id, :logo_id
   attr_accessor :current
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
-    :access_groups, :participant_invites, :widgets, :cover_image,
-    allow_destroy: true
+    :widgets, :cover_image, allow_destroy: true
 
   validates :name, presence: true
   validates :one_liner, :logo, presence: true, if: proc { |p| p.force_basic_validation? }
@@ -77,7 +71,7 @@ class Project < ActiveRecord::Base
 #      description: description,
       product_tags: product_tags_string,
 #      tech_tags: tech_tags_string,
-      text_widgets: Widget.where(type: 'TextWidget').where('widgets.stage_id IN (?)', stages.pluck(:id)).map{ |w| w.content },
+      text_widgets: TextWidget.where('widgets.project_id = ?', id).map{ |w| w.content },
       user_name: team_members.map{ |t| t.user.try(:name) },
       private: private,
       created_at: created_at,

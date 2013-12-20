@@ -67,27 +67,6 @@ class ApplicationController < ActionController::Base
   end
 
   private
-    def authenticate_user_with_key_or_login!
-      authenticate_user! unless authentify_with_auth_key!
-    end
-
-    def authentify_with_auth_key!
-      auth_key = params[:auth_key] || session[:auth_key]
-      return unless auth_key
-
-      if participant_invite = ParticipantInvite.find_by_auth_key(auth_key)
-        if user_signed_in?
-          participant_invite.update_attributes accepted: true
-          participant_invite.project.privacy_rules.create privatable_user_type: 'User',
-            privatable_user_id: current_user.id, private: false
-          session.delete(:auth_key)
-        else
-          @current_user = User.new participant_invite_id: participant_invite.id, auth_key_authentified: true
-          session[:auth_key] = auth_key
-        end
-      end
-    end
-
     def current_ability
       current_user ? current_user.ability : User.new.ability
     end

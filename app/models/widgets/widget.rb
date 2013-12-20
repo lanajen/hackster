@@ -4,20 +4,15 @@ class Widget < ActiveRecord::Base
   include Privatable
 
   belongs_to :project
-  belongs_to :stage
   has_many :comments, as: :commentable, dependent: :destroy
   has_many :issues, as: :threadable, dependent: :destroy
   validates :name, length: { maximum: 100 }
 
-  attr_accessible :properties, :stage_id, :type, :completion_rate,
+  attr_accessible :properties, :type, :completion_rate,
     :completion_share, :name, :position
 
-#  validates :completion_rate, :completion_share,
-#    numericality: { less_than_or_equal_to: 100, greater_than_or_equal_to: 0,
-#    only_integer: true }
   validates :type, :name, presence: true
   before_create :set_position
-#  validate :total_completion_is_100_max
 
   def has_unresolved_issues?
     issues.where(workflow_state: :unresolved).any?
@@ -76,10 +71,6 @@ class Widget < ActiveRecord::Base
   def help_text
     ''
   end
-
-#  def project
-#    stage.project
-#  end
 
   def properties
     val = read_attribute :properties
@@ -141,10 +132,5 @@ class Widget < ActiveRecord::Base
         column, row = 1, '01'
       end
       self.position = "#{column}.#{row}"
-    end
-
-    def total_completion_is_100_max
-      total_completion = stage.widgets.where('widgets.id <> ?', id).sum(:completion_share) + completion_share
-      errors.add :completion_share, "total completion share for the stage cannot be higher than 100. Current: #{total_completion}" if total_completion > 100
     end
 end

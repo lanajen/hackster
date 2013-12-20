@@ -10,7 +10,7 @@ module Privatable
 
     def visible_to? user
       project = respond_to?(:project) ? self.project : self
-      public? or user.has_access_group_permissions? self or user.is_team_member? project or user.auth_key_authentified? project
+      public? or user.is_team_member? project
     end
   end
 

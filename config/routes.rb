@@ -2,7 +2,6 @@ require File.join(Rails.root, 'lib/resque_auth_server.rb')
 
 HackerIo::Application.routes.draw do
 
-
   constraints subdomain: /beta/ do
     match '(*any)' => redirect { |params, request|
       URI.parse(request.url).tap { |uri| uri.host.sub!(/^beta\./i, 'www.') }.to_s
@@ -38,21 +37,15 @@ HackerIo::Application.routes.draw do
         patch 'send_invite' => 'invite_requests#send_invite', on: :member
       end
       resources :projects
-#      resources :quotes
       resources :users
 
       root to: 'pages#root'
     end
 
-#    get 'blog_posts/:id' => 'thread_posts#redirect_to_show', as: :blog_post
-#    resources :blog_posts, controller: :thread_posts, only: [] do
-#      resources :comments, only: [:create]
-#    end
-#    get 'issues/:id' => 'thread_posts#redirect_to_show', as: :issue
-#    resources :issues, controller: :thread_posts, only: [] do
-#      resources :comments, only: [:create]
-#    end
     resources :comments, only: [:update, :destroy]
+    # resources :groups do
+    #   get 'qa'
+    # end
     resources :files, only: [:create, :destroy]
     resources :invite_requests, only: [:create, :update, :edit]
     # get 'request/an/invite' => 'invite_requests#new', as: :new_invite_request
@@ -63,33 +56,17 @@ HackerIo::Application.routes.draw do
 #        post 'followers' => 'project_followers#create'
 #        delete 'followers' => 'project_followers#destroy'
         get 'embed'
-        get 'team_members' => 'team_members#edit', as: :edit_team_members
-        patch 'team_members' => 'team_members#update'
+        get 'team' => 'teams#edit', as: :edit_team
+        get 'team_members', to: redirect{ |params, req| "/projects/#{params[:id]}/team" }  # so that task rabitters don't get confused
+        patch 'team' => 'teams#update'
       end
       resources :comments, only: [:create]
       resources :respects, only: [:create] do
         delete '' => 'respects#destroy', on: :collection
       end
-#      resources :blog_posts, controller: :thread_posts
-#      resources :issues, controller: :thread_posts
-#      resources :participant_invites, only: [:index]
       resources :widgets
       patch 'widgets' => 'widgets#save'
     end
-#    resources :publications, except: [:show]
-#    resources :stages, only: [] do
-#      patch 'update_workflow', on: :member
-#    end
-    resources :widgets, only: [] do
-#      resources :issues, except: [:index], controller: :thread_posts
-    end
-
-#    get 'privacy/:type/:id/edit' => 'privacy_settings#edit', as: :edit_privacy_settings
-#    post 'privacy/:type/:id' => 'privacy_settings#create', as: :privacy_settings
-#    patch 'privacy/:type/:id' => 'privacy_settings#update'
-#    delete 'privacy/:type/:id' => 'privacy_settings#destroy'
-#
-#    patch 'issues/:id/update_workflow' => 'thread_posts#update_workflow', as: :issue_update_workflow
 
     get 'users/registration/complete_profile' => 'users#after_registration', as: :user_after_registration
     patch 'users/registration/complete_profile' => 'users#after_registration_save'

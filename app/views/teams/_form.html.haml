@@ -1,0 +1,10 @@
+= simple_nested_form_for @team, url: team_project_path(@project), html: { class: 'widget-form' } do |f|
+  = f.simple_fields_for :members do |f_member|
+    = f_member.input :user_id, collection: User.all
+    = f_member.input :title
+    .form-group
+      = f_member.link_to_remove 'Remove team member', class: 'btn btn-xs btn-danger'
+  = f.link_to_add 'Add a team member', :members, class: 'btn btn-xs btn-success'
+  .form-actions
+    = f.submit 'Save changes', class: 'btn btn-primary'
+    = link_to 'Cancel', @project, class: 'btn btn-link btn-sm'

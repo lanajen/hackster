@@ -3,11 +3,11 @@ class Ability
 
   def initialize(resource)
 
-    can :read, [Comment, Issue, Publication, User]
+    can :read, [Comment, Issue, User]
     can :read, [Project], private: false
 
     @user = resource
-    member if @user.persisted? or @user.auth_key_authentified
+    member if @user.persisted?
     @user.roles.each{ |role| send role }
   end
 
@@ -32,10 +32,9 @@ class Ability
       @user.can? :read, comment.commentable
     end
 
-    can :create, Publication
-    can [:update, :destroy], [Comment, Publication], user_id: @user.id
+    can [:update, :destroy], [Comment], user_id: @user.id
 
-    can :read, [Project, Stage, Widget] do |record|
+    can :read, [Project, Widget] do |record|
       record.visible_to? @user
     end
 
@@ -44,7 +43,7 @@ class Ability
       @user.is_team_member? project
     end
 
-    can [:create, :update, :destroy], [Stage, Widget] do |record|
+    can [:create, :update, :destroy], [Widget] do |record|
       @user.is_team_member? record.project
     end
 
