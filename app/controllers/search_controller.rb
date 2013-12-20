@@ -13,6 +13,7 @@ class SearchController < ApplicationController
     redirect_to projects_path and return unless params[:tag].present?
     params[:tag] = CGI::unescape params[:tag]
     params[:q] = params[:tag]
+    params[:type] = 'project'
     @results = SearchRepository.new(params).search.results
 
     track_event 'Searched projects by tag', { tag: params[:tag], result_count: @results.size, type: params[:type] }
