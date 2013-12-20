@@ -33,7 +33,7 @@
         .tags
           - if @project.product_tags.any?
             - @project.product_tags.pluck(:name).each do |tag|
-              %span= link_to tag, "/search?q=#{CGI::escape(tag)}", class: 'hidden-link'
+              %span= link_to tag, "/tags/#{CGI::escape(tag)}", class: 'hidden-link'
           - elsif can? :edit, @project and @project.public?
             No tags yet.
             = link_to 'Add some?', edit_project_path(@project), data: { remote: true }

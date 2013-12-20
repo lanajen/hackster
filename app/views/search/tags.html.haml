@@ -1,0 +1,21 @@
+.content.projects
+  .row
+    .col-xs-12
+      %h1{ style: 'margin-bottom: 30px; '}
+        Projects in
+        %span.label.label-primary #{params[:tag]}
+        - if params[:page]
+          %small page #{params[:page]}
+
+  - if params[:q].present?
+    - if @results.any?
+      .row
+        - @results.each do |project|
+          = render partial: "projects/project_thumb", locals: { project: project.decorate }
+      .row
+        .col-xs-12.text-center= will_paginate @results
+    - else
+      .row
+        .col-xs-12.text-center
+          .wellified
+            No projects match this tag. Use the search box above to modify your query.
