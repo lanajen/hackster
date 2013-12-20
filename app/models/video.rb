@@ -78,18 +78,18 @@ class Video < ActiveRecord::Base
 
     def get_id_from_link_for_youtube link
       case link
-      when /\?/
-        #http://www.youtube.com/watch?v=wf_IIbT8HGk
-        params = link.split('?')[1]
-        params.split('&').each do |param|
-          return param.split('=')[1] if param.split('=')[0] == 'v'
-        end
       when /embed\//
         #http://www.youtube.com/embed/wf_IIbT8HGk
         link.split('embed/')[1].split('?')[0]
       when /youtu.be\//
         #http://youtu.be/wf_IIbT8HGk
         link.split('youtu.be/')[1]
+      when /\?/
+        #http://www.youtube.com/watch?v=wf_IIbT8HGk
+        params = link.split('?')[1]
+        params.split('&').each do |param|
+          return param.split('=')[1] if param.split('=')[0] == 'v'
+        end
       end
     end
 end
