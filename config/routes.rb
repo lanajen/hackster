@@ -60,6 +60,9 @@ HackerIo::Application.routes.draw do
         get 'team_members', to: redirect{ |params, req| "/projects/#{params[:id]}/team" }  # so that task rabitters don't get confused
         patch 'team' => 'teams#update'
       end
+      collection do
+        resources :imports, only: [:new, :create], controller: :project_imports, as: :project_imports
+      end
       resources :comments, only: [:create]
       resources :respects, only: [:create] do
         delete '' => 'respects#destroy', on: :collection

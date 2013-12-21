@@ -3,9 +3,9 @@ class ProjectScraper
 
   def self.scrape page_url
     s = new
-    url = File.join(Rails.root, 'app/models/scrapers/maker.html')
-    content = s.read_file url
-    # content = s.fetch_page page_url
+    # url = File.join(Rails.root, 'app/models/scrapers/maker.html')
+    # content = s.read_file url
+    content = s.fetch_page page_url
 
     s.document(content).to_project
   end
@@ -95,6 +95,23 @@ class ProjectScraper
         count += 1
       end
 
+      depth = 1
+      project = extract_comments @parsed.at_css('#comments'), project
+
+      project
+    end
+
+    def extract_comments dom, project, depth=1, parent=nil
+      dom.css("li.depth-#{depth}").each do |comment|
+        body = comment.at_css('.comment-content').inner_html
+        name = comment.at_css('.comment-author .fn').text
+        created_at = DateTime.parse comment.at_css('time')['datetime']
+        c = project.comments.new body: body, guest_name: name
+        c.created_at = created_at
+        c.parent = parent
+        c.disable_notification!
+        project = extract_comments comment, project, depth+1, c
+      end
       project
     end
   end

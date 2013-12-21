@@ -6,7 +6,7 @@ class Comment < ActiveRecord::Base
   attr_accessor :children, :depth
   attr_accessible :body, :user_attributes, :parent_id, :guest_name
 
-  validates :body, :commentable_type, :commentable_id, presence: true
+  validates :body, presence: true
 
   accepts_nested_attributes_for :user
 
@@ -32,6 +32,14 @@ class Comment < ActiveRecord::Base
 
       sorted << child
     end
+  end
+
+  def disable_notification!
+    @disable_notification = true
+  end
+
+  def disable_notification?
+    @disable_notification
   end
 
   def to_tracker

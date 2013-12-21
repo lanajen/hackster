@@ -311,7 +311,7 @@
     position: relative;
     .comment-text {
       padding-top: 2px;
-      max-width: 380px;
+      max-width: 383px;
     }
     .comment-avatar {
       margin-right: 8px;
@@ -327,12 +327,21 @@
     }
     &.depth-1 {
       padding-left: 38px;
+      .comment-text {
+        max-width: 345px;
+      }
     }
     &.depth-2 {
       padding-left: 76px;
+      .comment-text {
+        max-width: 304px;
+      }
     }
     &.depth-3 {
       padding-left: 114px;
+      .comment-text {
+        max-width: 266px;
+      }
     }
   }
 }

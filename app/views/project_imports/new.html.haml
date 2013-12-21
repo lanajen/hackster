@@ -1,0 +1,10 @@
+.col-xs-4.col-xs-offset-4
+  .wellified
+    %h2.text-center Import projects
+    %p.text-center
+      %strong Do you have existing project logs somewhere on the web that you'd like to import to Hackster.io?
+      Simply submit the URL to the project page and we'll do the rest.
+    = form_tag project_imports_path, method: :post do
+      .form-group
+        = text_field_tag :url, params[:url], placeholder: 'Project log URL', class: 'form-control'
+      = submit_tag 'Import project', class: 'btn btn-primary btn-block'
