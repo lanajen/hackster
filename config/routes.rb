@@ -61,7 +61,9 @@ HackerIo::Application.routes.draw do
         patch 'team' => 'teams#update'
       end
       collection do
-        resources :imports, only: [:new, :create], controller: :project_imports, as: :project_imports
+        resources :imports, only: [:new, :create], controller: :project_imports, as: :project_imports do
+          post 'submit', on: :collection
+        end
       end
       resources :comments, only: [:create]
       resources :respects, only: [:create] do

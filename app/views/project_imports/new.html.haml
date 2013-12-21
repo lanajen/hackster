@@ -7,5 +7,5 @@
     = form_tag project_imports_path, method: :post do
       .form-group
         = text_area_tag :urls, params[:urls], placeholder: 'Project log URLs', class: 'form-control', rows: 5
-        %p.help-block Enter as many URLs as you like, separated by comas, spaces or new lines.
+        %p.help-block Enter as many URLs as you like, separated by commas, spaces or new lines.
       = submit_tag 'Import projects', class: 'btn btn-primary btn-block'
