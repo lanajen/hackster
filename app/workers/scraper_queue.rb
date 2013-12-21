@@ -32,4 +32,11 @@ class ScraperQueue < BaseWorker
   ensure
     BaseMailer.enqueue_generic_email(@message)
   end
+
+  def scrape_projects page_urls, user_id
+    urls = page_urls.gsub(/\r\n/, ',').gsub(/\n/, ',').gsub(/[ ]+/, ',').split(',').reject{ |l| l.blank? }
+    urls.each do |url|
+      Resque.enqueue self.class, 'scrape_project', url, user_id
+    end
+  end
 end

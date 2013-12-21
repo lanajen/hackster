@@ -2,21 +2,26 @@ class ProjectScraper
   include ScraperUtils
 
   def self.scrape page_url
-    s = new
+    s = new page_url
     # url = File.join(Rails.root, 'app/models/scrapers/maker.html')
     # content = s.read_file url
-    content = s.fetch_page page_url
 
-    s.document(content).to_project
+    project = s.document.to_project
+    project.website = page_url
+    project
   end
 
-  def document content=nil
-    Document.new(content)
+  def document
+    Document.new(@content || scrape)
   end
 
-  # def initialize page_url
-  #   @page_url = page_url
-  # end
+  def initialize page_url
+    @page_url = page_url
+  end
+
+  def scrape
+    @content = fetch_page @page_url
+  end
 
   class Document
     include ScraperUtils
