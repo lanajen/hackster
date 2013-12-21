@@ -12,6 +12,7 @@ class Comment < ActiveRecord::Base
 
   sanitize_text :body
   register_sanitizer :newlines_to_br, :before_save, :body
+  register_sanitizer :responsive_images, :before_save, :body
 
   def self.sort_from_hierarchy comments
     parents = {}
@@ -71,5 +72,14 @@ class Comment < ActiveRecord::Base
 
     def newlines_to_br text
       text.strip.gsub(/\r\n/, '<br>')
+    end
+
+    def responsive_images text
+      xml = Nokogiri::HTML text
+      xml = xml.at_css('body').children
+      xml.search('img').each do |img|
+        img['class'] = 'img-responsive'
+      end
+      xml.to_html
     end
 end

@@ -16,3 +16,12 @@
     = render partial: 'shared/image_form_bare', locals: { file_type: 'cover_image', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
 
     = f.button :submit, 'Go!', class: 'btn-block btn btn-default'
+
+  %hr
+  %p
+    %strong Is there an existing web page for this project?
+
+  = form_tag project_imports_path(single: true), method: :post do
+    .form-group
+      = text_field_tag :url, params[:url], placeholder: 'Project log URL', class: 'form-control'
+    = submit_tag 'Import project', class: 'btn btn-primary btn-block'

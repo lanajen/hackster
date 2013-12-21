@@ -82,6 +82,8 @@ class ProjectsController < ApplicationController
   def destroy
     @project.destroy
 
+    flash[:notice] = "Farewell #{@project.name}, we loved you."
+
     respond_with current_user
   end
 

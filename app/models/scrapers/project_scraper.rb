@@ -41,6 +41,8 @@ class ProjectScraper
     end
 
     def to_project
+      puts 'Converting to project...'
+
       project = Project.new private: true
       widgets = []
 

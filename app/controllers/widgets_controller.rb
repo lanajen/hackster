@@ -31,7 +31,6 @@ class WidgetsController < ApplicationController
   def create
     @widget = @project.widgets.new(params[:widget])
     authorize! :create, @widget
-    @widget.stage_id = 0
 
     if @widget.save
       redirect_to edit_project_widget_path(@project, @widget)
@@ -66,11 +65,4 @@ class WidgetsController < ApplicationController
 
     track_event 'Updated project', @project.to_tracker.merge({ type: 'widget deleted' }).merge(@widget.to_tracker)
   end
-
-  private
-#    def load_stage
-#      @stage = Stage.find params[:stage_id]
-#      @project = @stage.project
-#      authorize! :update_widgets, @project
-#    end
 end

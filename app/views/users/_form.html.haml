@@ -6,8 +6,9 @@
       %h3
         Edit profile
         .pull-right
-          = f.submit 'Update profile', class: 'btn btn-primary btn-sm'
-          = link_to 'Cancel', '', class: 'btn-cancel btn-link btn-sm', data: { show: '.user .display', hide: '.user .edit' }
+          %ul.list-unstyled.list-inline
+            %li= f.submit 'Update profile', class: 'btn btn-primary btn-sm'
+            %li= link_to 'Cancel', '', class: 'btn-cancel btn-link btn-sm', data: { show: '.user .display', hide: '.user .edit' }
       %hr
 
   .row

@@ -6,8 +6,9 @@
       %h3
         Edit project
         .pull-right
-          = f.submit 'Update project', class: 'btn btn-primary btn-sm'
-          = link_to 'Cancel', '', class: 'btn-cancel btn-link btn-sm', data: { show: '.project .display', hide: '.project .edit' }
+          %ul.list-unstyled.list-inline
+            %li= f.submit 'Update project', class: 'btn btn-primary btn-sm'
+            %li= link_to 'Cancel', '', class: 'btn-cancel btn-link btn-sm', data: { show: '.project .display', hide: '.project .edit' }
       %hr
 
   .row
@@ -27,6 +28,9 @@
       - if current_user.is? :admin
         = f.input :featured, inline_label: 'Feature this project', label: false
 
+      .form-group
+        .col-xs-8.col-xs-offset-4= link_to 'Delete project', project_path(@project), method: :delete, class: 'btn btn-danger btn-xs', data: { confirm: "Are you sure? There's no coming back!" }
+
       -# .form-group
         .controls
           = render 'shared/wysihtml5_toolbar'
@@ -39,20 +43,7 @@
         end_year: Date.today.year - 50
       -# = f.input :current, as: :boolean, label: false, inline_label: 'Currently working on it'
 
-
       -# = f.input :tech_tags_string, as: :string, label: 'Technologies used', hint: 'Separate technologies by commas'
 
-      -# = f.simple_fields_for :access_groups do |f_group|
-        = f_group.input :name
-        = f_group.simple_fields_for :access_group_members do |f_member|
-          = f_member.input :user_id, collection: User.all
-          .form-group
-            .controls
-              = f_member.link_to_remove 'Remove this member', class: 'btn btn-danger btn-xs'
-        = f_group.link_to_add 'Add a group member', :access_group_members, class: 'btn btn-success btn-xs'
-        .form-group
-          .controls
-            = f_group.link_to_remove 'Remove this group', class: 'btn btn-danger btn-xs'
-      -# = f.link_to_add 'Add an access group', :access_groups, class: 'btn btn-success btn-xs'
 
 %hr
