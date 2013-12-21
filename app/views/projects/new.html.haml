@@ -12,11 +12,11 @@
         %label.control-label Cover image
         %div
           %span.cover_image.image-preview
-          %a.btn.btn-primary.btn-sm{ data: { target: '.file_upload.cover_image' } } Select picture
+          %a.btn.btn-default.btn-sm{ data: { target: '.file_upload.cover_image' } } Select picture
 
       = render partial: 'shared/image_form_bare', locals: { file_type: 'cover_image', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
 
-      = f.button :submit, 'Go!', class: 'btn-block btn btn-default'
+      = f.button :submit, 'Go!', class: 'btn-block btn btn-primary'
 
 .col-xs-4.col-xs-offset-4
   %hr
@@ -30,4 +30,4 @@
     = form_tag submit_project_imports_path, method: :post do
       .form-group
         = text_field_tag :url, params[:url], placeholder: 'Project log URL', class: 'form-control'
-      = submit_tag 'Import project', class: 'btn btn-default btn-block'
+      = submit_tag 'Import project', class: 'btn btn-primary btn-block'

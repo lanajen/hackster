@@ -106,6 +106,12 @@
   .form-actions {
     @extend .expanded-footer
   }
+  &.form-horizontal {
+    .form-actions .form-actions-inner {
+      margin-left: 33.33%;
+      padding-left: 11px;
+    }
+  }
   .form-fields {
     .fields {
       border: 1px solid #ccc;
@@ -116,13 +122,6 @@
     &.fields-condensed {
       .fields {
         padding: 1%;
-      }
-    }
-  }
-  &.form-horizontal {
-    .form-actions {
-      input {
-        margin-left: 180px;
       }
     }
   }

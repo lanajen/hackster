@@ -6,5 +6,6 @@
     = f.input :body, input_html: { id: 'wysihtml5-textarea', rows: 10 }
 
   .form-actions
-    = f.button :submit
-    -# = link_to 'Cancel', project_issues_path(@project), class: 'btn btn-link'
+    .form-actions-inner
+      = f.button :submit
+      -# = link_to 'Cancel', project_issues_path(@project), class: 'btn btn-link'

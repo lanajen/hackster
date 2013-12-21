@@ -10,5 +10,6 @@
     = f.input :private, inline_label: 'Make it private', label: false
 
   .form-actions
-    = f.button :submit
-    = link_to 'Cancel', project_blog_posts_path(@project), class: 'btn btn-link'
+    .form-actions-inner
+      = f.button :submit
+      = link_to 'Cancel', project_blog_posts_path(@project), class: 'btn btn-link'
