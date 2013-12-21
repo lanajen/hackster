@@ -8,8 +8,7 @@ class Widget < ActiveRecord::Base
   has_many :issues, as: :threadable, dependent: :destroy
   validates :name, length: { maximum: 100 }
 
-  attr_accessible :properties, :type, :completion_rate,
-    :completion_share, :name, :position
+  attr_accessible :properties, :type, :name, :position
 
   validates :type, :name, presence: true
   before_create :set_position
@@ -58,10 +57,6 @@ class Widget < ActiveRecord::Base
 
   def column
     position.match(/^./)[0].to_i
-  end
-
-  def completion_absolute
-    completion_share * completion_rate / 100
   end
 
   def identifier

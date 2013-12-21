@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131214181629) do
+ActiveRecord::Schema.define(version: 20131221014005) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -59,12 +59,14 @@ ActiveRecord::Schema.define(version: 20131214181629) do
   add_index "broadcasts", ["context_model_type", "context_model_id"], name: "index_broadcasted", using: :btree
 
   create_table "comments", force: true do |t|
-    t.integer  "user_id",          null: false
-    t.integer  "commentable_id",   null: false
-    t.string   "commentable_type", null: false
+    t.integer  "user_id",          default: 0, null: false
+    t.integer  "commentable_id",               null: false
+    t.string   "commentable_type",             null: false
     t.text     "body"
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.integer  "parent_id"
+    t.string   "guest_name"
   end
 
   add_index "comments", ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type", using: :btree
@@ -333,22 +335,16 @@ ActiveRecord::Schema.define(version: 20131214181629) do
   add_index "videos", ["recordable_id", "recordable_type"], name: "recordable_index", using: :btree
 
   create_table "widgets", force: true do |t|
-    t.string   "type",                             null: false
-    t.integer  "stage_id",                         null: false
+    t.string   "type",                    null: false
     t.text     "properties"
-    t.integer  "completion_rate",  default: 0
-    t.integer  "completion_share", default: 0
     t.string   "name"
-    t.datetime "created_at",                       null: false
-    t.datetime "updated_at",                       null: false
-    t.boolean  "private",          default: false, null: false
-    t.integer  "project_id",       default: 0,     null: false
-    t.string   "position",         default: "",    null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.integer  "project_id", default: 0,  null: false
+    t.string   "position",   default: "", null: false
   end
 
   add_index "widgets", ["position"], name: "index_widgets_on_position", using: :btree
-  add_index "widgets", ["private"], name: "index_widgets_on_private", using: :btree
   add_index "widgets", ["project_id"], name: "index_widgets_on_project_id", using: :btree
-  add_index "widgets", ["stage_id"], name: "index_widgets_on_stage_id", using: :btree
 
 end

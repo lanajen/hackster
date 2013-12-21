@@ -1,8 +1,15 @@
-.comment
+.comment{ class: "depth-#{comment.depth}" }
   .pull-left.comment-avatar
-    = comment.user.decorate.avatar_link(:mini)
+    - if comment.user_id.zero?
+      = image_tag 'guest_default_100.png'
+    - else
+      = comment.user.decorate.avatar_link(:mini)
   .pull-left.comment-text
-    = link_to comment.user.decorate.name_link
+    %span.comment-author
+      - if comment.user_id.zero?
+        = comment.guest_name
+      - else
+        = link_to comment.user.decorate.name_link
     = comment.body.html_safe
     .text-muted.comment-date
       = time_ago_in_words(comment.created_at)

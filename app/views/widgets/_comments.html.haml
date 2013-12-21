@@ -1,7 +1,7 @@
 .comments
   -# { id: "widget-#{widget.id}-comments" }
   - if comments.any?
-    - comments.each do |comment|
+    - sort_comments(comments).each do |comment|
       = render partial: 'comments/comment', locals: { comment: comment }
   - else
     %p Be the first to comment!

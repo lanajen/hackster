@@ -1,23 +1,22 @@
-# use a CSV to store all the data
-# make interface to go through all articles and #1 find if I want them and #2 get the correct URL
-
 class ProjectScraper
   include ScraperUtils
+
+  def self.scrape page_url
+    s = new
+    url = File.join(Rails.root, 'app/models/scrapers/maker.html')
+    content = s.read_file url
+    # content = s.fetch_page page_url
+
+    s.document(content).to_project
+  end
 
   def document content=nil
     Document.new(content)
   end
 
-  def self.work
-    s = new('')
-    url = File.join(Rails.root, 'app/models/scrapers/maker.html')
-    content = s.read_file url
-    s.document(content).to_project
-  end
-
-  def initialize page_url
-    @page_url = page_url
-  end
+  # def initialize page_url
+  #   @page_url = page_url
+  # end
 
   class Document
     include ScraperUtils
@@ -37,10 +36,10 @@ class ProjectScraper
     end
 
     def to_project
-      project = Project.new
+      project = Project.new private: true
       widgets = []
 
-      article = @parsed.at_css('article') || @parsed
+      article = @parsed.at_css('article') || @parsed.at_css('.post') || @parsed
 
       {
         'a' => 'href',
@@ -58,23 +57,29 @@ class ProjectScraper
         end
       end
 
-      h1 = article.css('h1')
-      project.name = if h1.any?
-        h1.last.text
-      else
-        @parsed.title
-      end
+      project.name = article.at_css('.entry-title').try(:text) || article.css('h1').last.try(:text) || article.at_css('h2').try(:text) || @parsed.title
 
-      project.product_tags_string = article.css('[rel=category]').map{|a| a.text }.join(',')
+      tags = article.css('[rel=category]') + article.css('[rel=tag]') + article.css('[rel="category tag"]')
+      project.product_tags_string = tags.map{|a| a.text }.join(',')
 
-      image_widget = ImageWidget.new
-      article.css('img').each do |img|
-        image_widget.images.new(remote_file_url: img['src'], title: img['title'] || img['alt'], name: 'Photos')
+      image_widget = ImageWidget.new name: 'Photos'
+      article.css('img').each_with_index do |img, i|
+        image_widget.images.new(remote_file_url: img['src'], title: img['title'], position: i)
       end
       widgets << image_widget if image_widget.images.any?
 
-      text = article.css('p').map{|p| p.to_html }.join('')
-      widgets << TextWidget.new(content: Sanitize.clean(text, Sanitize::Config::BASIC), name: 'About')
+      if img = article.at_css('img')
+        project.build_cover_image remote_file_url: img['src']
+      end
+
+      # article.at_css('.entry-content').try(:inner_html) ||  # includes share tools
+      raw_text = article.css('p').map{|p| p.to_html }.join('')
+      sanitized_text = Sanitize.clean(raw_text, Sanitize::Config::BASIC)
+      text = Nokogiri::HTML(sanitized_text)
+      text.css('a').find_all.each{|el| el.remove if el.content.strip.blank? }
+      text.css('p').find_all.each{|el| el.remove if el.content.strip.blank? }
+      text = Sanitize.clean(text.to_html, Sanitize::Config::BASIC)
+      widgets << TextWidget.new(content: text, name: 'About')
 
       widget_col = 1
       widget_row = 1

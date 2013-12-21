@@ -1,4 +1,16 @@
 module WidgetsHelper
+  def display_comments comments, output=[]
+    comments.each do |comment|
+      output << comment
+      output = display_comments comment.children, output if comment.children
+    end
+    output
+  end
+
+  def sort_comments comments
+    display_comments Comment.sort_from_hierarchy(comments)
+  end
+
   def lightbox_elements images
     images.map do |image|
       "{
