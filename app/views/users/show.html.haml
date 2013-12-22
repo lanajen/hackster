@@ -67,7 +67,7 @@
                         .text-muted
                           = broadcast.created_at
 
-        - if user_signed_in? and @user == current_user or current_user.is? :admin
+        - if user_signed_in? and (@user == current_user or current_user.is? :admin)
           #tab-private.tab-pane.fade
             .col-xs-12
               - if @user.projects.private.any?
