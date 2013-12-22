@@ -39,9 +39,9 @@ class SitemapController < ApplicationController
         }
       end
 
-      User.find_each do |user|
+      User.invitation_accepted_or_not_invited.find_each do |user|
         @sitemap_pages << {
-          loc: "#{profile_url(user, host: APP_CONFIG['default_host'])}",
+          loc: "#{url_for(user)}",
           changefreq: 'monthly',
           lastmod: user.updated_at.strftime("%F"),
         }

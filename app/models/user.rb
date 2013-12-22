@@ -196,6 +196,10 @@ class User < ActiveRecord::Base
         super
       end
     end
+
+    def invitation_accepted_or_not_invited
+      where('users.invitation_token IS NULL')
+    end
   end
 
   def self.last_logged_in
