@@ -354,3 +354,38 @@ a.hidden-link {
 #image-preview {
   margin-right: 10px;
 }
+
+.navbar-tabs {
+  background: #fff !important;
+  @include font-size(12);
+  &.navbar-default {
+    .navbar-nav {
+      & > .active {
+        & > a, & > a:hover, & > a:focus {
+          color: #777;
+          background-color: #fff;
+          border-bottom: 3px solid #777;
+          font-weight: bold;
+        }
+      }
+      & > li {
+        & > a:hover, & > a:focus {
+          color: #777;
+          border-bottom: 3px solid #aaa;
+        }
+      }
+    }
+  }
+  &.navbar {
+    border-radius: 0;
+    border: 0;
+  }
+  .badge {
+    min-width: 15px;
+    padding: 2px 5px;
+    font-size: 9px;
+    background-color: #999999;
+    border-radius: 6px;
+    margin-left: 3px;
+  }
+}

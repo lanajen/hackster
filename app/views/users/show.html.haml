@@ -6,116 +6,108 @@
 
   #content
     .container
-      .row
-        .col-xs-9
-          - if @user.projects.indexable.any?
-            .row
-              - @user.projects.indexable.each do |project|
-                = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '4' }
-          - elsif user_is_current?
-            %p
-              You have no public projects.
-              = link_to 'Showcase a project', new_project_path, class: 'btn btn-info btn-sm'
-            %p.smaller.text-muted
-              %strong Tip:
-              Access private projects from the top right drop-down menu.
-          - else
-            #{@user.name} has no public projects.
+      .row.tab-content
+        #tab-public.tab-pane.active
+          .col-xs-9
+            - if @user.projects.indexable.any?
+              .row
+                - @user.projects.indexable.each do |project|
+                  = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '4' }
+            - elsif user_is_current?
+              %p
+                You have no public projects.
+                = link_to 'Showcase a project', new_project_path, class: 'btn btn-info btn-sm'
+              %p.smaller.text-muted
+                %strong Tip:
+                Access private projects from the next tab.
+            - else
+              #{@user.name} has no public projects.
 
-          -# if @user.publications.any? or can? :create, Publication, @user
-            .well
-              .header
-                %h3
-                  Publications
-                  - if can? :create, Publication, @user
-                    .pull-right= link_to 'Add a new publication', new_publication_path, class: 'btn btn-info btn-xs'
-              .content
-                - if @user.publications.any?
-                  - @user.publications.each_with_fl do |publication, css|
-                    .publication.preview{ class: css }
-                      %h4
-                        = publication.title
-                        .subtitle
-                          = l publication.published_on, format: :month
-                        - if can? :edit, publication
-                          = link_to 'Edit', edit_publication_path(publication), class: 'btn-edit'
-                      .details
-                        - if publication.journal.present?
-                          Published in
-                          = publication.journal
-                          ·
-                        - if publication.coauthors.present?
-                          In collaboration with
-                          = publication.coauthors
-                          ·
-                        - if publication.link.present?
-                          = link_to 'Read more', publication.link
-                      = publication.formatted_abstract.html_safe
-                - else
-                  #{@user.name} has no publications yet.
+          .col-xs-3
+            - if @user.interest_tags.any?
+              .transparent-well
+                .header
+                  %h4 Interests
+                .content
+                  - @user.interest_tags.pluck(:name).each do |tag|
+                    %span.label.label-default= tag
+            - elsif user_is_current?
+              .transparent-well
+                .header
+                  %h4 Interests
+                .content
+                  No interests.
+                  = link_to 'Add some?', profile_edit_path, data: { remote: true }
 
-        .col-xs-3
-          -# .well.sidebar-nav
-            .header
-              %h3 Following
-            .content
-              - if @user.followeds.any?
-                %ul.user-list
-                  - @user.followeds.each do |user|
-                    %li= render partial: 'user_thumb_mini', locals: { user: user.decorate }
-              - else
-                No one yet.
+            - if @user.skill_tags.any?
+              .transparent-well
+                .header
+                  %h4 Skills
+                .content
+                  - @user.skill_tags.pluck(:name).each do |tag|
+                    %span.label.label-default= tag
+            - elsif user_is_current?
+              .transparent-well
+                .header
+                  %h4 Skills
+                .content
+                  No skills.
+                  = link_to 'Add some?', profile_edit_path, data: { remote: true }
 
-          -# .well.sidebar-nav
-            .header
-              %h3 Followers
-            .content
-              - if @user.followers.any?
-                %ul.user-list
-                  - @user.followers.each do |user|
-                    %li= render partial: 'user_thumb_mini', locals: { user: user.decorate }
-              - else
-                No one yet.
+            - if @broadcasts.any?
+              .transparent-well
+                .header
+                  %h4 Recent activity
+                .content
+                  %ul
+                    - @broadcasts.each do |broadcast|
+                      %li
+                        - broadcast = broadcast.decorate
+                        = broadcast.message
+                        .text-muted
+                          = broadcast.created_at
 
-          - if @user.interest_tags.any?
-            .transparent-well
-              .header
-                %h4 Interests
-              .content
-                - @user.interest_tags.pluck(:name).each do |tag|
-                  %span.label.label-default= tag
-          - elsif user_is_current?
-            .transparent-well
-              .header
-                %h4 Interests
-              .content
-                No interests.
-                = link_to 'Add some?', profile_edit_path, data: { remote: true }
+        - if user_signed_in? and @user == current_user
+          #tab-private.tab-pane
+            .col-xs-12
+              - if @user.projects.private.any?
+                .row
+                  - @user.projects.private.each do |project|
+                    = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '3' }
+              - elsif user_is_current?
+                %p
+                  You have no private projects.
 
-          - if @user.skill_tags.any?
-            .transparent-well
-              .header
-                %h4 Skills
-              .content
-                - @user.skill_tags.pluck(:name).each do |tag|
-                  %span.label.label-default= tag
-          - elsif user_is_current?
-            .transparent-well
-              .header
-                %h4 Skills
-              .content
-                No skills.
-                = link_to 'Add some?', profile_edit_path, data: { remote: true }
+        #tab-respected.tab-pane
+          .col-xs-12
+            - if @user.respected_projects.indexable.any?
+              .row
+                - @user.respected_projects.indexable.each do |project|
+                  = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '3' }
+            - elsif user_is_current?
+              %p
+                You haven't respected any projects yet.
+                = link_to 'Browse around', projects_path
+                for cool projects!
+            - else
+              #{@user.name} hasn't respected any projects yet.
 
-          - if @broadcasts.any?
-            .transparent-well
-              .header
-                %h4 Recent activity
-              .content
-                %ul
-                  - @broadcasts.each do |broadcast|
-                    %li
-                      - broadcast = broadcast.decorate
-                      = broadcast.message
-                      .text-muted
-                        = broadcast.created_at
+        #tab-comments.tab-pane
+          .col-xs-12
+            - if @user.comments.where(commentable_type: 'Project').any?
+              %ul.list-unstyled
+                - @user.comments.where(commentable_type: 'Project').each do |comment|
+                  %li.comment
+                    %h5.comment-project
+                      = link_to comment.commentable.name, comment.commentable
+                      %small
+                        = time_ago_in_words(comment.created_at)
+                        ago
+                    .comment-text= comment.body.html_safe
+            - elsif user_is_current?
+              %p
+                You haven't commented on any projects yet.
+                = link_to 'Browse around', projects_path
+                for projects you can get involved in!
+            - else
+              #{@user.name} hasn't commented on any projects yet.

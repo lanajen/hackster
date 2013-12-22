@@ -1,4 +1,10 @@
 module Privatable
+  module ClassMethods
+    def private
+      where private: true
+    end
+  end
+
   module InstanceMethods
     def private?
       private == true
@@ -16,6 +22,7 @@ module Privatable
 
   def self.included base
     base.send :include, InstanceMethods
+    base.send :extend, ClassMethods
     base.send :attr_accessible, :private#, :privacy_rules_attributes
     # base.send :has_many, :privacy_rules, as: :privatable, dependent: :destroy
     # base.send :accepts_nested_attributes_for, :privacy_rules, allow_destroy: true

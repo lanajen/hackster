@@ -27,7 +27,7 @@ class User < ActiveRecord::Base
     join_table: :project_followers
   has_many :authorizations, dependent: :destroy
   has_many :blog_posts, dependent: :destroy
-  has_many :comments, foreign_key: :user_id, dependent: :destroy
+  has_many :comments, -> { order created_at: :desc }, foreign_key: :user_id, dependent: :destroy
   has_many :group_ties, class_name: 'Member', dependent: :destroy
   has_many :groups, through: :group_ties
   has_many :invitations, class_name: self.to_s, as: :invited_by
