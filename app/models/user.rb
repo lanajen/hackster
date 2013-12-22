@@ -255,7 +255,7 @@ class User < ActiveRecord::Base
     extra = data.extra
     info = data.info
     provider = session['devise.provider']
-   logger.info data.to_yaml
+   # logger.info data.to_yaml
    # logger.info provider.to_s
 #        logger.info 'user: ' + self.to_yaml
     if info and provider == 'Facebook'
@@ -280,8 +280,6 @@ class User < ActiveRecord::Base
         link: info.urls['Facebook'],
         token: data.credentials.token
       )
-#          logger.info 'user: ' + self.inspect
-#          logger.info 'auth: ' + self.authorizations.inspect
     elsif info and provider == 'Github'
       self.user_name = info.nickname if self.user_name.blank?
       self.full_name = info.name if self.full_name.blank?
@@ -302,7 +300,7 @@ class User < ActiveRecord::Base
         token: data.credentials.token
       )
     elsif info and provider == 'Google+'
-      self.user_name = info.email.match(/(.+)@/).try(:[], 1) if self.user_name.blank?
+      self.user_name = info.email.match(/(.+)@/).try(:[], 1).try(:gsub, /[^0-9a-z_]/, '') if self.user_name.blank?
       self.full_name = info.name if self.full_name.blank?
       self.email = self.email_confirmation = info.email if self.email.blank?
       self.google_plus_link = info.urls['Google+']
