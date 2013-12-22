@@ -90,7 +90,7 @@ HackerIo::Application.routes.draw do
     patch 'profile' => 'users#update'
 
     get 'search' => 'search#search'
-    get 'tags/:tag' => 'search#tags'
+    get 'tags/:tag' => 'search#tags', as: :tags
     get 'tags' => 'search#tags'
 
     get ':user_name' => 'users#show', as: :user, user_name: /[A-Za-z0-9_]{3,}/, constraints: { format: /(html|json)/ }

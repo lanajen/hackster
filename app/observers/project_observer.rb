@@ -20,6 +20,7 @@ class ProjectObserver < ActiveRecord::Observer
 
   def after_save record
     record.product_tags_count = record.product_tags_string.split(',').count
+    record.product_tags.each{|t| t.touch }
   end
 
   def before_create record

@@ -33,8 +33,8 @@ class SitemapController < ApplicationController
 
       Project.indexable.find_each do |project|
         @sitemap_pages << {
-          loc: "#{project_url(project, host: APP_CONFIG['default_host'])}",
-          changefreq: 'monthly',
+          loc: "#{url_for(project)}",
+          changefreq: 'weekly',
           lastmod: project.updated_at.strftime("%F"),
         }
       end
@@ -42,8 +42,16 @@ class SitemapController < ApplicationController
       User.invitation_accepted_or_not_invited.find_each do |user|
         @sitemap_pages << {
           loc: "#{url_for(user)}",
-          changefreq: 'monthly',
+          changefreq: 'weekly',
           lastmod: user.updated_at.strftime("%F"),
+        }
+      end
+
+      ProductTag.unique_names.each do |tag|
+        @sitemap_pages << {
+          loc: "#{tags_url(CGI::escape(tag.name))}",
+          changefreq: 'weekly',
+          lastmod: tag.updated_at.strftime("%F"),
         }
       end
     end
