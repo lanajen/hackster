@@ -6,6 +6,7 @@ class ProjectObserver < ActiveRecord::Observer
   def after_destroy record
     Broadcast.where(context_model_id: record.id, context_model_type: 'Project').destroy_all
     update_counters record, [:projects, :live_projects]
+    record.team.destroy
   end
 
   def after_update record
@@ -27,6 +28,6 @@ class ProjectObserver < ActiveRecord::Observer
 
   private
     def update_counters record, type
-      record.team_members.each{ |t| t.user.update_counters only: [type] }
+      record.users.each{ |u| puts "updating #{u.name}"; u.update_counters only: [type].flatten }
     end
 end
