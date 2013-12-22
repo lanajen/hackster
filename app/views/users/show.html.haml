@@ -7,7 +7,7 @@
   #content
     .container
       .row.tab-content
-        #tab-public.tab-pane.active
+        #tab-public.tab-pane.active.fade.in
           .col-xs-9
             - if @user.projects.indexable.any?
               .row
@@ -68,7 +68,7 @@
                           = broadcast.created_at
 
         - if user_signed_in? and @user == current_user
-          #tab-private.tab-pane
+          #tab-private.tab-pane.fade
             .col-xs-12
               - if @user.projects.private.any?
                 .row
@@ -78,7 +78,7 @@
                 %p
                   You have no private projects.
 
-        #tab-respected.tab-pane
+        #tab-respected.tab-pane.fade
           .col-xs-12
             - if @user.respected_projects.indexable.any?
               .row
@@ -92,7 +92,7 @@
             - else
               #{@user.name} hasn't respected any projects yet.
 
-        #tab-comments.tab-pane
+        #tab-comments.tab-pane.fade
           .col-xs-12
             - if @user.comments.where(commentable_type: 'Project').any?
               %ul.list-unstyled
