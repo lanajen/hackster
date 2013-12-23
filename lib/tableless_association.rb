@@ -21,6 +21,9 @@ module TablelessAssociation
       self.send :define_method, "#{association_name}_attributes=" do |val|
         set_association_attributes association_name, val
       end
+      self.send :define_method, "new_#{association_name.to_s.singularize}" do |val|
+        new_association association_name, association_model, val
+      end
       self.send :define_method, "validate_#{association_name}" do
         validate_association association_name
       end
@@ -30,7 +33,6 @@ module TablelessAssociation
   module InstanceMethods
     def get_association association_name, association_model
       association_instance = instance_variable_get "@#{association_name}"
-      puts association_instance.inspect
       return association_instance if association_instance
 
       val = properties[:"#{association_name}"]
@@ -44,6 +46,14 @@ module TablelessAssociation
         []
       end
       instance_variable_set "@#{association_name}", association_instance
+    end
+
+    def new_association association_name, association_model, attrs={}
+      records = send("#{association_name}")
+
+      records << association_model.new(attrs.merge(widget_id: id))
+
+      _set_association association_name, records
     end
 
     def set_association association_name, association_model, val
