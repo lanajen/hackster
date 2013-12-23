@@ -21,7 +21,7 @@ module TablelessAssociation
       self.send :define_method, "#{association_name}_attributes=" do |val|
         set_association_attributes association_name, val
       end
-      self.send :define_method, "new_#{association_name.to_s.singularize}" do |val|
+      self.send :define_method, "new_#{association_name.to_s.singularize}" do |val={}|
         new_association association_name, association_model, val
       end
       self.send :define_method, "validate_#{association_name}" do
