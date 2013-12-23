@@ -26,17 +26,23 @@
         - elsif can? :edit, @project and @project.public?
           No one liner yet.
           = link_to 'Add one?', edit_project_path(@project), data: { remote: true }
-        %p.author
+        %p.author.meta
           by
           = @project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
 
-        .tags
-          - if @project.product_tags.any?
+        - if @project.product_tags.any?
+          .tags.meta
             - @project.product_tags.pluck(:name).each do |tag|
               %span= link_to tag, "/tags/#{CGI::escape(tag)}", class: 'hidden-link'
-          - elsif can? :edit, @project and @project.public?
+        - elsif can? :edit, @project and @project.public?
+          .tags.meta
             No tags yet.
             = link_to 'Add some?', edit_project_path(@project), data: { remote: true }
+
+        - if @project.license
+          .license.meta
+            &copy;
+            = link_to @project.license.abbr, @project.license.url, target: '_blank', class: 'hidden-link'
 
       .actions.text-center
         = render partial: 'widgets/comments_button', locals: { size: @project.comments_count, tooltip_orientation: 'top' }

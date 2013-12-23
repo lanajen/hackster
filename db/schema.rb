@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131221014005) do
+ActiveRecord::Schema.define(version: 20131223183917) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -211,16 +211,17 @@ ActiveRecord::Schema.define(version: 20131221014005) do
     t.text     "description"
     t.date     "start_date"
     t.date     "end_date"
-    t.datetime "created_at",                        null: false
-    t.datetime "updated_at",                        null: false
+    t.datetime "created_at",                                   null: false
+    t.datetime "updated_at",                                   null: false
     t.string   "website"
-    t.boolean  "private",           default: false, null: false
+    t.boolean  "private",                      default: false, null: false
     t.string   "workflow_state"
     t.string   "one_liner"
     t.boolean  "featured"
-    t.integer  "impressions_count", default: 0
+    t.integer  "impressions_count",            default: 0
     t.text     "counters_cache"
-    t.integer  "team_id",           default: 0,     null: false
+    t.integer  "team_id",                      default: 0,     null: false
+    t.string   "license",           limit: 50
   end
 
   add_index "projects", ["private"], name: "index_projects_on_private", using: :btree

@@ -23,7 +23,7 @@ class Project < ActiveRecord::Base
   sanitize_text :description
   attr_accessible :description, :end_date, :name, :start_date, :current,
     :team_members_attributes, :website, :one_liner, :widgets_attributes,
-    :featured, :cover_image_id, :logo_id
+    :featured, :cover_image_id, :logo_id, :license
   attr_accessor :current
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
     :widgets, :cover_image, allow_destroy: true
@@ -126,6 +126,12 @@ class Project < ActiveRecord::Base
 
   def image
     images.first
+  end
+
+  def license
+    return @license if @license
+    val = read_attribute(:license)
+    @license = License.new val if val
   end
 
   def logo_id=(val)

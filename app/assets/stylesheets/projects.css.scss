@@ -86,19 +86,18 @@
 }
 
 #heading.project {
-  .author {
+  .meta {
     @extend .text-muted;
     @include font-size(12);
     margin-bottom: 10px;
-  }
-  .tags {
-    @include font-size(12);
-    @extend .text-muted;
-    span {
-      margin: 0 3px 0 5px;
-    }
     a.hidden-link {
       color: #999;
+    }
+  }
+  .tags {
+    margin-bottom: 20px !important;
+    span {
+      margin: 0 3px 0 5px;
     }
   }
   .project-logo {

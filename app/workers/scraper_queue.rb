@@ -11,6 +11,7 @@ class ScraperQueue < BaseWorker
     project.build_team
     project.team.members.new(user_id: user_id)
     project.save
+    project.update_counters
     @message.subject = "#{project.name} has been imported to your Hackster.io profile"
     @message.body = "<p>Hi</p><p>This is to let you know that <a href='http://#{APP_CONFIG['full_host']}/projects/#{project.to_param}'>#{project.name}</a> has been successfully imported.</p><p>You can update it and make it public at <a href='http://#{APP_CONFIG['full_host']}/projects/#{project.to_param}'>http://#{APP_CONFIG['full_host']}/projects/#{project.to_param}</a>.</p><p>Cheers<br/>The Hackster.io team</p>"
 

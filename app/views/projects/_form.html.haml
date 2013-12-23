@@ -18,6 +18,7 @@
         hint: 'Maximum 140 characters'
       -# = f.input :website, label: 'Project website'
       = f.input :product_tags_string, as: :string, label: 'Tags', hint: 'Separate tags by commas. Used for finding your project more easily.'
+      = f.input :license, collection: License::LICENSE_TYPES.invert, hint: 'Is your project open source? If so specify under which license here.'
 
     .col-xs-6
       = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Logo', image_link: @project.logo.try(:file_url, :thumb), help_block: 'Optional, only if you have one. Should be squared, at least 200x200px for best results', attribute_type: 'logo', image_version: 'thumb', model: 'project' }
