@@ -93,6 +93,10 @@ HackerIo::Application.routes.draw do
     get 'tags/:tag' => 'search#tags', as: :tags
     get 'tags' => 'search#tags'
 
+    get 'infrigement_policy' => 'pages#infrigement_policy'
+    get 'privacy' => 'pages#privacy'
+    get 'terms' => 'pages#terms'
+
     get ':user_name' => 'users#show', as: :user, user_name: /[A-Za-z0-9_]{3,}/, constraints: { format: /(html|json)/ }
     scope ':user_name', as: :user do
 #      post 'followers' => 'follow_relations#create'

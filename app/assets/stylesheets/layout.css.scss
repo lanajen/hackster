@@ -11,6 +11,12 @@ body {
   background: #f2f2f2;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  &.top {
+    margin-top: 0;
+  }
+}
+
 .navbar {
   margin-bottom: 0;
   .navbar-brand {
@@ -387,5 +393,14 @@ a.hidden-link {
     background-color: #999999;
     border-radius: 6px;
     margin-left: 3px;
+  }
+}
+
+.page {
+  p {
+    text-align: justify;
+  }
+  &.wellified {
+    padding: 20px 30px;
   }
 }
