@@ -131,7 +131,7 @@ class Project < ActiveRecord::Base
   def license
     return @license if @license
     val = read_attribute(:license)
-    @license = License.new val if val
+    @license = License.new val if val.present?
   end
 
   def logo_id=(val)
