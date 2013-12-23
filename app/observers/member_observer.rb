@@ -1,4 +1,4 @@
-class TeamObserver < ActiveRecord::Observer
+class MemberObserver < ActiveRecord::Observer
   def after_save record
     update_counters record
   end
@@ -9,6 +9,6 @@ class TeamObserver < ActiveRecord::Observer
 
   private
     def update_counters record
-      record.users.each{ |t| t.update_counters only: [:projects, :live_projects] }
+      record.user.update_counters only: [:projects, :live_projects]
     end
 end

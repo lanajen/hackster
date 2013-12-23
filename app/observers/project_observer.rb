@@ -29,6 +29,6 @@ class ProjectObserver < ActiveRecord::Observer
 
   private
     def update_counters record, type
-      record.users.each{ |u| puts "updating #{u.name}"; u.update_counters only: [type].flatten }
+      record.users.each{ |u| u.update_counters only: [type].flatten }
     end
 end
