@@ -12,3 +12,5 @@ require File.join(Rails.root, 'lib/broadcast_observer')
 require File.join(Rails.root, 'lib/string_parser')
 
 require File.join(Rails.root, 'lib/counter')
+
+require File.join(Rails.root, 'lib/tableless_association')

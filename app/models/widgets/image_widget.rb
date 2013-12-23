@@ -9,10 +9,6 @@ class ImageWidget < Widget
   accepts_nested_attributes_for :images, allow_destroy: true
   attr_accessible :images_attributes, :image_ids
 
-  def help_text
-    "Add as many images as you like."
-  end
-
   def to_tracker
     super.merge({
       images_count: images_count,

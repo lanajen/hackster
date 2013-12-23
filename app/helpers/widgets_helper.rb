@@ -7,10 +7,6 @@ module WidgetsHelper
     output
   end
 
-  def sort_comments comments
-    display_comments Comment.sort_from_hierarchy(comments)
-  end
-
   def lightbox_elements images
     images.map do |image|
       "{
@@ -19,6 +15,19 @@ module WidgetsHelper
           type: 'image'
       }"
     end.join(',')
+  end
+
+  def lightbox_elements_for_urls urls
+    urls.map do |url|
+      "{
+          URL: '#{url}',
+          type: 'image'
+      }"
+    end.join(',')
+  end
+
+  def sort_comments comments
+    display_comments Comment.sort_from_hierarchy(comments)
   end
 
   def widget_form_path project, widget

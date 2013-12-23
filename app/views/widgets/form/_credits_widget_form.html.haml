@@ -1,0 +1,19 @@
+-# widget.credit_lines.new
+.form-fields
+  .form-group
+    %label Credit contributors for their work
+  = f.simple_fields_for :credit_lines do |f_credit|
+    = f_credit.input :name, label: 'Contributor name'
+    = f_credit.input :work, label: 'What you credit them for'
+    = f_credit.input :link, label: 'Link (optional)'
+    = f_credit.link_to_remove 'Remove this contributor', class: 'btn btn-xs btn-danger'
+  = f.link_to_add 'Add a contributor', :credit_lines, class: 'btn btn-xs btn-success', style: 'margin-bottom:10px;'
+
+= content_for :js do
+  :javascript
+    jQuery(function($) {
+      $(document).on('nested:fieldAdded', function(event){
+        var field = event.field;
+        field.addClass('new');
+      });
+    });

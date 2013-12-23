@@ -12,10 +12,6 @@ class UpverterWidget < Widget
   before_save :resize_iframe
   before_save :generate_iframe_from_link
 
-  def help_text
-    ""
-  end
-
   private
     def generate_iframe_from_link
       return unless link

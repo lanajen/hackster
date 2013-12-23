@@ -36,10 +36,6 @@ class CodeWidget < Widget
     (document and document.file_name.present?) ? document.file_name : "#{name.downcase.gsub(/[^a-z0-9_]/, '_')}.#{language}"
   end
 
-  def help_text
-    "Add a file."
-  end
-
   def to_tracker
     super.merge({
       code_length: (raw_code.present? ? raw_code.length : 0),

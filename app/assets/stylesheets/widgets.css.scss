@@ -370,3 +370,13 @@
     box-sizing: initial;
   }
 }
+
+.oshpark-widget {
+  ul {
+    margin-top: 15px;
+  }
+  .credits {
+    text-align: right;
+    @include font-size(11);
+  }
+}

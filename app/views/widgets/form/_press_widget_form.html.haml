@@ -1,6 +1,7 @@
 -# widget.press_articles.new
 .form-fields
-  %label Add your press articles
+  .form-group
+    %label Add press articles
   = f.simple_fields_for :press_articles do |f_article|
     = f_article.input :title, label: 'Article title'
     = f_article.input :link, label: 'Article link'
