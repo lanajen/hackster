@@ -50,9 +50,10 @@ HackerIo::Application.routes.draw do
     resources :invite_requests, only: [:create, :update, :edit]
     # get 'request/an/invite' => 'invite_requests#new', as: :new_invite_request
     delete 'notifications' => 'notifications#destroy'
+
     resources :projects, except: [:show, :update, :destroy] do
       member do
-        get '' => 'projects#redirect_old_show_route', id: /[^(new)]+/
+        get '' => 'projects#redirect_old_show_route', constraints: lambda{|req| req.params[:id] != 'new' }
         get 'embed'
         get 'team' => 'teams#edit', as: :edit_team
         get 'team_members', to: redirect{ |params, req| "/projects/#{params[:id]}/team" }  # so that task rabitters don't get confused
@@ -97,17 +98,11 @@ HackerIo::Application.routes.draw do
 
     get ':user_name' => 'users#show', as: :user, user_name: /[A-Za-z0-9_]{3,}/, constraints: { format: /(html|json)/ }
 
-    # get ':user_name/:project_slug' => 'projects#show', as: :fancy_project, user_name: /[A-Za-z0-9_]{3,}/, project_slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|js)/ }
     scope ':user_name/:project_slug', as: :project, user_name: /[A-Za-z0-9_]{3,}/, project_slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|js)/ } do
       get '' => 'projects#show', as: ''
       delete '' => 'projects#destroy'
       patch '' => 'projects#update'
     end
-
-    # scope ':user_name', as: :user do
-#      post 'followers' => 'follow_relations#create'
-#      delete 'followers' => 'follow_relations#destroy'
-    # end
 
     root to: 'pages#home'
   end
