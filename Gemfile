@@ -22,7 +22,6 @@ gem 'dalli', '2.6.4'  # memcached
 gem 'devise', '3.2.2'
 gem 'devise_invitable', '1.3.0'
 gem 'draper', '1.3.0'
-gem 'feedzirra', '0.4.0'
 gem 'fog', '1.15.0'
 gem 'haml', '4.0.3'
 gem 'haml-rails', '0.4'

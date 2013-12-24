@@ -23,16 +23,22 @@ class Project < ActiveRecord::Base
   sanitize_text :description
   attr_accessible :description, :end_date, :name, :start_date, :current,
     :team_members_attributes, :website, :one_liner, :widgets_attributes,
-    :featured, :cover_image_id, :logo_id, :license
+    :featured, :cover_image_id, :logo_id, :license, :slug
   attr_accessor :current
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
     :widgets, :cover_image, allow_destroy: true
 
   validates :name, presence: true
+  validates :name, length: { in: 3..100 }
   validates :one_liner, :logo, presence: true, if: proc { |p| p.force_basic_validation? }
   validates :one_liner, length: { maximum: 140 }
+  validates :slug,
+    format: { with: /\A[a-z0-9_\-]+\z/, message: "accepts only downcase letters, numbers, dashes '-' and underscores '_'." }, length: { maximum: 105 }, allow_blank: true
+  validates :slug, presence: true, if: proc{ |p| p.persisted? }
+  validate :slug_is_unique
   before_validation :check_if_current
   before_validation :ensure_website_protocol
+  before_save :generate_slug, if: proc {|p| !p.persisted? or p.team_id_changed? }
 
   taggable :product_tags, :tech_tags
 
@@ -138,9 +144,9 @@ class Project < ActiveRecord::Base
     self.logo = Avatar.find_by_id(val)
   end
 
-  def to_param
-    "#{id}-#{name.gsub(/[^a-zA-Z0-9]/, '-').gsub(/(\-)+$/, '')}"
-  end
+  # def to_param
+    # "#{id}-#{name.gsub(/[^a-zA-Z0-9]/, '-').gsub(/(\-)+$/, '')}"
+  # end
 
   def to_tracker
     {
@@ -155,6 +161,19 @@ class Project < ActiveRecord::Base
       views_count: impressions_count,
       widgets_count: widgets_count,
     }
+  end
+
+  def update_slug
+    generate_slug unless slug.present? and slug_changed?
+  end
+
+  def update_slug!
+    update_slug
+    save validate: false
+  end
+
+  def user_name_for_url
+    team.try(:user_name).presence || 'non_attributed'
   end
 
   def widgets_first_col
@@ -173,5 +192,28 @@ class Project < ActiveRecord::Base
     def ensure_website_protocol
       return unless website_changed? and website.present?
       self.website = 'http://' + website unless website =~ /^http/
+    end
+
+    def generate_slug
+      slug = name.gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
+      parent = team ? self.class.includes(:team).where(groups: { user_name: team.user_name }) : self.class
+
+      # make sure it doesn't exist
+      if result = parent.where(projects: {slug: slug}).first
+        return if self == result
+        # if it exists add a 1 and increment it if necessary
+        slug += '1'
+        while parent.where(projects: {slug: slug}).first
+          slug.gsub!(/([0-9]+$)/, ($1.to_i + 1).to_s)
+        end
+      end
+      self.slug = slug
+    end
+
+    def slug_is_unique
+      return unless slug_changed?
+
+      parent = team ? self.class.includes(:team).where(groups: { user_name: team.user_name }) : self.class
+      errors.add :slug, 'has already been taken' if parent.where(projects: { slug: slug }).any?
     end
 end

@@ -1,6 +1,6 @@
 class FollowRelationsController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :find_user
+  before_filter :load_user
 
   def create
     current_user.follow @user

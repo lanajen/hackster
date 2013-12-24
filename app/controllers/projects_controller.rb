@@ -1,7 +1,8 @@
 class ProjectsController < ApplicationController
-  load_and_authorize_resource
-  skip_load_resource only: [:create]
-  skip_authorize_resource only: [:embed]
+  before_filter :load_project, except: [:index, :create, :new, :edit]
+  load_and_authorize_resource only: [:index, :create, :new, :edit]
+  # skip_load_resource except: [:index, :new, :create]
+  # skip_authorize_resource only: [:embed]
   layout 'project', only: [:edit, :update, :show]
   respond_to :html
   respond_to :js, only: [:edit, :update]
@@ -14,6 +15,8 @@ class ProjectsController < ApplicationController
   end
 
   def show
+    authorize! :read, @project
+
     title @project.name
     @project_meta_desc = "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."
     meta_desc @project_meta_desc
@@ -35,16 +38,17 @@ class ProjectsController < ApplicationController
   end
 
   def edit
+    authorize! :update, @project
+
     initialize_project
   end
 
   def create
-    @project = Project.new(params[:project])
     @project.private = true
     @project.build_team
+    @project.team.members.new(user_id: current_user.id)
 
     if @project.save
-      @project.team.members.create(user_id: current_user.id)
       flash[:notice] = "#{@project.name} was successfully created."
       respond_with @project
 
@@ -56,6 +60,8 @@ class ProjectsController < ApplicationController
   end
 
   def update
+    authorize! :update, @project
+
     if @project.update_attributes(params[:project])
       if @project.private_changed? and @project.private == false
         current_user.broadcast :new, @project.id, 'Project'
@@ -80,11 +86,17 @@ class ProjectsController < ApplicationController
   end
 
   def destroy
+    authorize! :destroy, @project
+
     @project.destroy
 
     flash[:notice] = "Farewell #{@project.name}, we loved you."
 
     respond_with current_user
+  end
+
+  def redirect_old_show_route
+    redirect_to url_for(@project)
   end
 
   private

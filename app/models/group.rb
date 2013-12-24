@@ -15,6 +15,15 @@ class Group < ActiveRecord::Base
 
   store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link, :website_link, :blog_link, :github_link]
   before_validation :ensure_website_protocol
+  before_save :generate_user_name
+
+  def generate_user_name
+    self.user_name = members.map{|m| m.user.user_name }.to_sentence.gsub(/[ ,]/, '_')
+  end
+
+  def is? group_type
+    self.class.name.underscore == group_type.to_s
+  end
 
   def name
     full_name

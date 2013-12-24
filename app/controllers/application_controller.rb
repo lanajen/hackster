@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::Base
+  include UrlHelper
+
   MOBILE_USER_AGENTS =
     'palm|blackberry|nokia|phone|midp|mobi|symbian|chtml|ericsson|minimo|' +
     'audiovox|motorola|samsung|telit|upg1|windows ce|ucweb|astel|plucker|' +
@@ -71,17 +73,29 @@ class ApplicationController < ActionController::Base
       current_user ? current_user.ability : User.new.ability
     end
 
-    def find_user
-      @user = User.find_by_user_name!(params[:user_name].downcase)
-    end
-
     def load_project
-      @project ||= Project.find params[:project_id] || params[:id]
+      return @project if @project
+      load_team if params[:project_slug] and params[:user_name] and params[:user_name] != 'non_attributed'
+
+      @project = if @team
+        Project.includes(:team).where(groups: { user_name: @team.user_name}).where(projects: { slug: params[:project_slug].downcase }).first!
+      elsif params[:project_slug]
+        Project.find_by_slug! params[:project_slug]
+      else
+        Project.find params[:project_id] || params[:id]
+      end
     end
 
-    def load_and_authorize_project
-      load_project
-      authorize! :update, @project
+    def load_team
+      @team = load_with_user_name Team
+    end
+
+    def load_user
+      @user = load_with_user_name User
+    end
+
+    def load_with_user_name model
+      model.find_by_user_name!(params[:user_name].downcase)
     end
 
     def track_alias user=nil

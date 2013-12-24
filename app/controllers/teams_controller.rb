@@ -10,10 +10,11 @@ class TeamsController < ApplicationController
   end
 
   def update
+    @team = @project.team
     authorize! :update, @team
 
-    @team = @project.team
     if @team.update_attributes(params[:team])
+      @project.team = @team
       flash[:notice] = 'Team saved.'
       current_user.broadcast :update, @project.id, 'Project'
       respond_with @project

@@ -1,6 +1,5 @@
 class SitemapController < ApplicationController
   PER_PAGE = 100
-#  skip_before_filter :set_locale
   skip_before_filter :store_location_before
   skip_after_filter :store_location_after
   skip_before_filter :authenticate_user!

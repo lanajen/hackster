@@ -1,4 +1,6 @@
 = simple_nested_form_for @team, url: team_project_path(@project), html: { class: 'widget-form' } do |f|
+  = f.input :full_name, label: 'Name'
+  = f.input :user_name, label: 'Pretty URL'
   = f.simple_fields_for :members do |f_member|
     = f_member.input :user_id, collection: User.all
     = f_member.input :title

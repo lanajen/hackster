@@ -13,7 +13,11 @@
 
   .row
     .col-xs-6
-      = f.input :name
+      = f.input :name, label: 'Title'
+      -# = f.input :slug, label: 'URL' do
+        .input-group
+          %span.input-group-addon www.hackster.io/#{@project.user_name_for_url}/
+          = f.input :slug, label: false, wrapper: false
       = f.input :one_liner, as: :text, input_html: { rows: 4 },
         hint: 'Maximum 140 characters'
       -# = f.input :website, label: 'Project website'
