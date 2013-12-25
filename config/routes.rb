@@ -92,7 +92,7 @@ HackerIo::Application.routes.draw do
     get 'tags/:tag' => 'search#tags', as: :tags
     get 'tags' => 'search#tags'
 
-    get 'infrigement_policy' => 'pages#infrigement_policy'
+    get 'infringement_policy' => 'pages#infringement_policy'
     get 'privacy' => 'pages#privacy'
     get 'terms' => 'pages#terms'
 
