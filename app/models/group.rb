@@ -14,7 +14,7 @@ class Group < ActiveRecord::Base
   accepts_nested_attributes_for :avatar, allow_destroy: true
 
   store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link, :website_link, :blog_link, :github_link]
-  validates :user_name, exclusion: { in: %w(projects terms privacy admin infrigement_policy search users) }
+  validates :user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users) }
   before_validation :ensure_website_protocol
   before_save :generate_user_name
 
