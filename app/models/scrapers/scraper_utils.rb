@@ -9,7 +9,7 @@ module ScraperUtils
   end
 
   def fetch_page page_url, file_name=nil
-    page_url = 'http://' + page_url unless page_url =~ /^http\:\/\//
+    page_url = 'http://' + page_url unless page_url =~ /^https?\:\/\//
     puts "Fetching page #{page_url}..."
     open(page_url).read
   end

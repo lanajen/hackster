@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 class BaseUploader < CarrierWave::Uploader::Base
-  include CarrierWave::RMagick
+  include CarrierWave::MiniMagick
   include Sprockets::Rails::Helper
 
   if Rails.env.in? %w(production staging)
