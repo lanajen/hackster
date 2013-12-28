@@ -25,8 +25,8 @@ module ScraperStrategies
       end
 
       project.name = parsed.at_css('h1 strong').text.strip
-      project.one_liner = parsed.at_css('.repository-description').text.strip
-      project.website = parsed.at_css('.repository-website').text.strip
+      project.one_liner = parsed.at_css('.repository-description').try(:text).try(:strip)
+      project.website = parsed.at_css('.repository-website').try(:text).try(:strip)
 
       github_link = "https://github.com#{parsed.at_css('h1 strong a')['href']}"
       widgets << GithubWidget.new(repo: github_link, name: 'Github repo')

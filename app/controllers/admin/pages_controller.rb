@@ -19,6 +19,8 @@ class Admin::PagesController < Admin::BaseController
   def logs
     redirect_to admin_logs_path(page: (LogLine.count.to_f / LogLine.per_page).ceil) unless params[:page]
 
+    title "Admin > Logs page #{params[:page]}"
+
     @fields = {
       'created_at' => 'log_lines.created_at',
       'log_type' => 'log_lines.log_type',
