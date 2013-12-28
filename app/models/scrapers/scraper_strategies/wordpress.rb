@@ -37,7 +37,7 @@ module ScraperStrategies
       text = Nokogiri::HTML(sanitized_text)
       text.css('a').find_all.each{|el| el.remove if el.content.strip.blank? }
       text.css('p').find_all.each{|el| el.remove if el.content.strip.blank? }
-      text = Sanitize.clean(text.to_html, Sanitize::Config::BASIC)
+      text = Sanitize.clean(text.to_html, Sanitize::Config::BASIC_BLANK)
       widgets << TextWidget.new(content: text, name: 'About')
 
       widget_col = 1

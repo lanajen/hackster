@@ -5,6 +5,7 @@ class Admin::InviteRequestsController < Admin::BaseController
   # GET /invite_requests
   # GET /invite_requests.json
   def index
+    title "Admin > Invites - #{params[:page]}"
     @invite_requests = InviteRequest.order('created_at DESC').paginate(page: params[:page])
 
     respond_to do |format|

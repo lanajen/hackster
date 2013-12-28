@@ -1,6 +1,6 @@
 class Admin::UsersController < Admin::BaseController
   def index
-    title "Admin > Projects page #{params[:page]}"
+    title "Admin > Users - #{params[:page]}"
     @fields = {
       'created_at' => 'users.created_at',
       'email' => 'users.email',

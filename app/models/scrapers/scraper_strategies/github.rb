@@ -42,9 +42,7 @@ module ScraperStrategies
         t.remove
         n.css('a').find_all.each{|el| el.remove if el.content.strip.blank? }
         n.css('p').find_all.each{|el| el.remove if el.content.strip.blank? }
-        p = Sanitize.clean(n.to_html, Sanitize::Config::BASIC.merge(add_attributes: {
-          'a' => {'rel' => 'nofollow', 'target' => '_blank'}
-        })).strip
+        p = Sanitize.clean(n.to_html, Sanitize::Config::BASIC_BLANK).strip
         [title, p]
       end.reject{|t| t[1].blank? }
       text_blocks.each do |t|

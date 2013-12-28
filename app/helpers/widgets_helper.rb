@@ -11,7 +11,7 @@ module WidgetsHelper
     images.map do |image|
       "{
           URL: '#{image.file_url(:lightbox)}',
-          caption: '#{image.title}',
+          caption: '#{escape_javascript image.title}',
           type: 'image'
       }"
     end.join(',')
