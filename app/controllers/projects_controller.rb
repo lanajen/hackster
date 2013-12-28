@@ -6,7 +6,7 @@ class ProjectsController < ApplicationController
   layout 'project', only: [:edit, :update, :show]
   respond_to :html
   respond_to :js, only: [:edit, :update]
-  impressionist actions: [:show], unique: [:impressionable_type, :impressionable_id, :session_hash]
+  # impressionist actions: [:show], unique: [:impressionable_type, :impressionable_id, :session_hash]
   after_action :allow_iframe, only: :embed
 
   def index
@@ -16,6 +16,7 @@ class ProjectsController < ApplicationController
 
   def show
     authorize! :read, @project
+    impressionist @project, "", unique: [:session_hash]  # no need to add :impressionable_type and :impressionable_id, they're already included with @project
 
     title @project.name
     @project_meta_desc = "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."

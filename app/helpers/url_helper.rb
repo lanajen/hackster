@@ -16,11 +16,7 @@ module UrlHelper
     when Project
       options = params_for_project options
     end
-    begin
     super options
-      rescue
-        raise options.inspect
-      end
   end
 
   def with_subdomain(subdomain='')
@@ -30,7 +26,6 @@ module UrlHelper
 
   private
     def params_for_project project
-      puts project.inspect
       {
         project_slug: project.slug,
         user_name: project.user_name_for_url,
