@@ -1,5 +1,7 @@
 class GithubWidget < Widget
   define_attributes [:repo]
+  validates :repo, format: { with: /github\.com\/[0-9a-z]+\/[0-9a-z]+\z/,
+    message: 'is not a valid Github repository' }, allow_blank: true
 
   def self.model_name
     Widget.model_name
