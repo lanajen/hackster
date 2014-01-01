@@ -50,6 +50,7 @@
         if (isNaN(previousPosition)) previousPosition = 0;
         positionField = field.find('input.position');
         positionField.val(parseInt(previousPosition) + 1);
+        $('.total-price', field).text('$0.00');
       })
 
       $('form').on('nested:fieldRemoved', function(event){
