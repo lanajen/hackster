@@ -10,7 +10,7 @@
       - widget.images.each_with_index do |image, i|
         %li
           = image_tag image.file_url(:small_thumb), data: { target: "image-#{i}" }
-          - if image.title.present?
+          -# if image.title.present?
             .overlay-title= image.title
 
 = content_for :js do
