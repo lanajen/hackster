@@ -9,7 +9,8 @@
     %ul.image-thumbs.list-unstyled
       - widget.images.each_with_index do |image, i|
         %li
-          = image_tag image.file_url(:small_thumb), data: { target: "image-#{i}" }
+          %a{ href: "javascript:openLightBox(#{widget.id},#{i});" }
+            = image_tag image.file_url(:small_thumb), data: { target: "image-#{i}" }
           -# if image.title.present?
             .overlay-title= image.title
 
