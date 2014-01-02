@@ -25,10 +25,10 @@
       = f.input :start_date, order: [:year, :month, :day], label: 'Date', hint: 'When did this project come to life?' do
         .row
           .col-xs-6
-            = select_month(@project.start_date || Date.today, {}, { class: 'form-control', name: 'project[start_date(2i)]' })
+            = select_month(@project.start_date, { prompt: '--Month--' }, { class: 'form-control', name: 'project[start_date(2i)]' })
             = hidden_field_tag 'project[start_date(3i)]', '1'
           .col-xs-6
-            = select_year(@project.start_date || Date.today, { start_year: Date.today.year, end_year: Date.today.year - 15 }, { class: 'form-control', name: 'project[start_date(1i)]' })
+            = select_year(@project.start_date, { prompt: '--Year--', start_year: Date.today.year, end_year: Date.today.year - 15 }, { class: 'form-control', name: 'project[start_date(1i)]' })
       = f.input :product_tags_string, as: :string, label: 'Tags', hint: 'Separate tags by commas. Used for finding your project more easily.'
       = f.input :license, collection: License.all, value_method: :url, hint: 'Is your project open source? If so specify under which license here.', selected: @project.license.try(:url), include_blank: true
 
