@@ -8,22 +8,21 @@ class PagesController < ApplicationController
 
     if user_signed_in?
       render_options = { template: 'pages/home_signed_in' }
-      limit_most_viewed = 4
-      limit_last = 8
+      featured_limit = 4
+
+      @most_popular_projects = Project.most_popular.limit 4
+      @active_projects = Project.last_updated.limit 4
+      @last_projects = Project.last.limit 4
+
       event = 'Visited home page as member'
     else
       render_options = { template: 'pages/home_visitor', layout: 'home_visitor' }
-      limit_most_viewed = 2
-      limit_last = 4
+      featured_limit = 6
       event = 'Visited home page as visitor'
     end
 
+    @featured_projects = Project.featured.limit featured_limit
 
-    # @featured_projects = Project.indexable.featured.limit 7
-    @most_viewed_projects = Project.indexable.most_viewed.limit limit_most_viewed
-    # @last_projects = Project.indexable.order('created_at DESC').limit(4)
-    @last_projects = Project.indexable.where("projects.id NOT IN(?)", @most_viewed_projects.map(&:id)).order('created_at DESC').limit limit_last
-    @projects = (@most_viewed_projects + @last_projects).uniq.shuffle
     # @top_users = User.top.limit(4)
 #    if user_signed_in?
 #      @custom_projects_query = current_user.interest_tags.pluck(:name).join(' OR ')

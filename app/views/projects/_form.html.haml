@@ -40,6 +40,7 @@
       = f.input :private, inline_label: 'Make this project private', label: false
       - if current_user.is? :admin
         = f.input :featured, inline_label: 'Feature this project', label: false
+        = f.input :featured_date, label: 'Feature date'
 
       .form-group
         .col-xs-8.col-xs-offset-4= link_to 'Delete project', project_path(@project), method: :delete, class: 'btn btn-danger btn-xs', data: { confirm: "Are you sure? There's no coming back!" }

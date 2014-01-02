@@ -4,9 +4,38 @@
       = SLOGAN
 
 .row
-  - @projects.each do |project|
-    = render partial: 'projects/project_thumb', locals: { project: project.decorate }
+  .col-xs-12
+    .well
+      .header.no-content
+        %h2
+          Featured projects
+          -# = link_to 'See more featured projects &rarr;'.html_safe, '/search', class: 'btn-edit'
+    .row
+      - @featured_projects.each do |project|
+        = render partial: 'projects/project_thumb', locals: { project: project.decorate }
+
+.row
+  .col-xs-12
+    .well
+      .header.no-content
+        %h2
+          Latest projects
+          -# = link_to 'See more recent projects &rarr;'.html_safe, '/search?model%5Bproject%5D=1', class: 'btn-edit'
+    .row
+      - @last_projects.each do |project|
+        = render partial: 'projects/project_thumb', locals: { project: project.decorate }
+
+.row
+  .col-xs-12
+    .well
+      .header.no-content
+        %h2
+          Most popular projects
+          -# = link_to 'See more popular projects &rarr;'.html_safe, '/search?model%5Bproject%5D=1', class: 'btn-edit'
+    .row
+      - @most_popular_projects.each do |project|
+        = render partial: 'projects/project_thumb', locals: { project: project.decorate }
 
 .row
   .col-xs-12.text-center
-    = link_to 'Browse all projects &rarr;'.html_safe, projects_path, class: 'btn btn-default'
+    = link_to 'Browse all projects &rarr;'.html_safe, projects_path, class: 'btn btn-primary btn-block'

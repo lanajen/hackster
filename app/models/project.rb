@@ -23,7 +23,7 @@ class Project < ActiveRecord::Base
   sanitize_text :description
   attr_accessible :description, :end_date, :name, :start_date, :current,
     :team_members_attributes, :website, :one_liner, :widgets_attributes,
-    :featured, :cover_image_id, :logo_id, :license, :slug
+    :featured, :featured_date, :cover_image_id, :logo_id, :license, :slug
   attr_accessor :current
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
     :widgets, :cover_image, allow_destroy: true
@@ -86,23 +86,27 @@ class Project < ActiveRecord::Base
   # end of search methods
 
   def self.featured
-    where(featured: true).order('created_at DESC')
+    indexable.where(featured: true).order(featured_date: :desc)
   end
 
   def self.indexable
-    live
-  end
-
-  def self.live
     where(private: false)
   end
 
-  def self.last_updated
-    order(updated_at: :desc)
+  def self.live
+    indexable
   end
 
-  def self.most_viewed
-    order('impressions_count DESC')
+  def self.last
+    indexable.order(created_at: :desc)
+  end
+
+  def self.last_updated
+    indexable.order(updated_at: :desc)
+  end
+
+  def self.most_popular
+    indexable.order(impressions_count: :desc)
   end
 
   def all_issues

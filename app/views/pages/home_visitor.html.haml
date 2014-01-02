@@ -52,7 +52,7 @@
     .row
       .col-xs-10.col-xs-offset-1
         .row.project-thumbs
-          - @projects.each do |project|
+          - @featured_projects.each do |project|
             = render partial: 'projects/project_thumb', locals: { project: project.decorate }
 
     .row
