@@ -1,4 +1,10 @@
 class GroupDecorator < UserDecorator
+  def avatar size=:thumb
+    if model.avatar and model.avatar.file_url
+      model.avatar.file_url(size)
+    end
+  end
+
   def gravatar size=:thumb
     width = case size
     when :tiny

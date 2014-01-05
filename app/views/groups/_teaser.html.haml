@@ -9,7 +9,8 @@
 .row
   .col-xs-12.teaser
     .text-holder
-      %span.avatar.main-avatar= image_tag @group.avatar(:big), alt: @group.name, class: 'img-circle'
+      - if @group.avatar
+        %span.avatar.main-avatar= image_tag @group.avatar(:big), alt: @group.name, class: 'img-circle'
       %h1= link_to @group.name, @group
 
       - if @group.mini_resume.present?

@@ -1,7 +1,6 @@
 class GroupsController < ApplicationController
   before_filter :authenticate_user!, except: [:show]
   before_filter :load_group, only: [:show, :update]
-  load_and_authorize_resource only: [:new]
   layout 'group', only: [:edit, :update, :show]
   respond_to :html
 
@@ -16,7 +15,9 @@ class GroupsController < ApplicationController
   end
 
   def new
-    @group.type = 'Community'
+    authorize! :create, Community
+    title "Create a new community"
+    @group = Group.new
   end
 
   def create
