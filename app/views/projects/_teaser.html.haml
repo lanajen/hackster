@@ -96,7 +96,7 @@
             %ul.dropdown-menu
               -# = render partial: 'shared/locked_icon', locals: { record: @project, size: nil }
               %li= link_to 'Settings', edit_project_path(@project), data: { remote: true }
-              - if can? :update, @project.team
+              - if is? :admin
                 %li= link_to 'Edit team', project_edit_team_path(@project)
               %li= link_to 'Add a widget', new_project_widget_path(@project)
               %li= link_to 'Reorder widgets', project_widgets_path(@project)
