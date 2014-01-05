@@ -58,7 +58,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
           session['devise.provider_data'] = omniauth_data
           session['devise.provider'] = kind
           session['devise.match_by'] = @user.match_by
-          redirect_to edit_authorization_url(@user)
+          redirect_to edit_authorization_url(@user.id)
         end
       else
         session['devise.provider_data'] = omniauth_data

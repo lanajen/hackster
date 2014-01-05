@@ -172,7 +172,7 @@ class User < ActiveRecord::Base
         return user
       end
 
-      if email and user = User.find_by_email(email)
+      if email and user = User.where(email: email, invitation_token: nil).first
         user.match_by = 'email'
         return user
       end
@@ -188,14 +188,20 @@ class User < ActiveRecord::Base
     end
 
     def new_with_session(params, session)
+      # overwrite existing invites if any
+      if params[:email] and user = where(email: params[:email]).where('invitation_token IS NOT NULL').first
+        user.assign_attributes(params)
+        user
       # extract social data for omniauth
-      if session['devise.provider_data']
-        super.tap do |user|
+      elsif session['devise.provider_data']
+        user = super.tap do |user|
           user.extract_from_social_profile params, session
         end
-      # overwrite existing invites if any
-      elsif params[:email] and user = where(email: params[:email]).where('invitation_token IS NOT NULL').first
-        user.assign_attributes(params)
+        if existing_user = where(email: user.email).where('invitation_token IS NOT NULL').first
+          attributes = user.attributes.select{|k,v| k.in? accessible_attributes }
+          existing_user.assign_attributes(attributes)
+          user = existing_user
+        end
         user
       else
         super
@@ -279,23 +285,25 @@ class User < ActiveRecord::Base
     extra = data.extra
     info = data.info
     provider = session['devise.provider']
-   # logger.info data.to_yaml
-   # logger.info provider.to_s
-#        logger.info 'user: ' + self.to_yaml
+    # logger.info data.to_yaml
+    # logger.info provider.to_s
+    # logger.info 'user: ' + self.to_yaml
     if info and provider == 'Facebook'
-      self.user_name = info.nickname if self.user_name.blank?
-      self.email = self.email_confirmation = info.email if self.email.blank?
-      self.full_name = info.name if self.full_name.blank?
+      self.user_name = info.nickname if user_name.blank?
+      self.email = self.email_confirmation = info.email if email.blank?
+      self.full_name = info.name if full_name.blank?
+      self.mini_resume = info.description if mini_resume.blank?
       self.facebook_link = info.urls['Facebook']
       self.website_link = info.urls['Website']
       begin
-        self.city = info['location']['name'].split(',')[0] if self.city.nil?
-        self.country = info['location']['name'].split(',')[1].strip if self.country.nil?
-        self.city = extra['raw_info']['hometown']['name'].split(',')[0] if self.city.nil?
-        self.country = extra['raw_info']['hometown']['name'].split(',')[1].strip if self.country.nil?
-        self.build_avatar(remote_file_url: "#{info.image.split('?')[0]}?type=large") unless self.avatar
+        if location = info['location'] || extra['raw_info']['hometown']
+          self.city = location['name'].split(',')[0] if city.nil?
+          self.country = location['name'].split(',')[1].strip if country.nil?
+        end
+        image_url = "http://graph.facebook.com/#{data.uid}/picture?height=200&width=200"
+        self.build_avatar(remote_file_url: image_url) if image_url and not avatar
       rescue => e
-        logger.error "Error: " + e.inspect
+        logger.error "Error in extract_from_social_profile (facebook): " + e.inspect
       end
       self.authorizations.build(
         uid: data.uid,
@@ -305,16 +313,16 @@ class User < ActiveRecord::Base
         token: data.credentials.token
       )
     elsif info and provider == 'Github'
-      self.user_name = info.nickname if self.user_name.blank?
-      self.full_name = info.name if self.full_name.blank?
-      self.email = self.email_confirmation = info.email if self.email.blank?
+      self.user_name = info.nickname if user_name.blank?
+      self.full_name = info.name if full_name.blank?
+      self.email = self.email_confirmation = info.email if email.blank?
       self.github_link = info.urls['GitHub']
       self.website_link = info.urls['Blog']
       begin
-        self.city = info.location.split(',')[0] if self.city.nil?
-        self.country = info.location.split(',')[1].strip if self.country.nil?
+        self.city = info.location.split(',')[0] if city.nil?
+        self.country = info.location.split(',')[1].strip if country.nil?
       rescue => e
-        logger.error "Error: " + e.inspect
+        logger.error "Error in extract_from_social_profile (github): " + e.inspect
       end
       self.authorizations.build(
         uid: data.uid,
@@ -324,16 +332,16 @@ class User < ActiveRecord::Base
         token: data.credentials.token
       )
     elsif info and provider == 'Google+'
-      self.user_name = info.email.match(/(.+)@/).try(:[], 1).try(:gsub, /[^0-9a-z_]/, '') if self.user_name.blank?
-      self.full_name = info.name if self.full_name.blank?
-      self.email = self.email_confirmation = info.email if self.email.blank?
+      self.user_name = info.email.match(/(.+)@/).try(:[], 1).try(:gsub, /[^0-9a-z_]/, '') if user_name.blank?
+      self.full_name = info.name if full_name.blank?
+      self.email = self.email_confirmation = info.email if email.blank?
       self.google_plus_link = info.urls['Google+']
       begin
-        # self.city = info.location.split(',')[0] if self.city.nil?
-        # self.country = info.location.split(',')[1].strip if self.country.nil?
-        self.build_avatar(remote_file_url: info.image) if info.image and not self.avatar
+        # self.city = info.location.split(',')[0] if city.nil?
+        # self.country = info.location.split(',')[1].strip if country.nil?
+        self.build_avatar(remote_file_url: info.image) if info.image and not avatar
       rescue => e
-        logger.error "Error: " + e.inspect
+        logger.error "Error in extract_from_social_profile (google+): " + e.inspect
       end
       self.authorizations.build(
         uid: data.uid,
@@ -343,19 +351,19 @@ class User < ActiveRecord::Base
         token: data.credentials.token
       )
     elsif info and provider == 'LinkedIn'
-      # self.user_name = info.nickname if self.user_name.blank?
-      self.full_name = info.first_name.to_s + ' ' + info.last_name.to_s if self.full_name.blank?
-      self.email = self.email_confirmation = info.email if self.email.blank?
-      self.mini_resume = info.description if self.mini_resume.nil?
+      # self.user_name = info.nickname if user_name.blank?
+      self.full_name = info.first_name.to_s + ' ' + info.last_name.to_s if full_name.blank?
+      self.email = self.email_confirmation = info.email if email.blank?
+      self.mini_resume = info.description if mini_resume.nil?
       self.linked_in_link = info.urls['public_profile']
       begin
-        self.city = info.location.name if self.city.nil?
+        self.city = info.location.name if city.nil?
         self.country =
           SunDawg::CountryIsoTranslater.translate_iso3166_alpha2_to_name(
-            info.location.country.code.upcase) if self.country.nil?
-        self.build_avatar(remote_file_url: info.image) if info.image and not self.avatar
+            info.location.country.code.upcase) if country.nil?
+        self.build_avatar(remote_file_url: info.image) if info.image and not avatar
       rescue => e
-        logger.error "Error: " + e.inspect
+        logger.error "Error in extract_from_social_profile (linkedin): " + e.inspect
       end
       self.authorizations.build(
         uid: info.uid,
@@ -365,17 +373,17 @@ class User < ActiveRecord::Base
         token: data.credentials.token
       )
     elsif info and provider == 'Twitter'
-      self.user_name = info.nickname if self.user_name.blank?
-      self.full_name = info.name if self.full_name.blank?
-      self.mini_resume = info.description if self.mini_resume.nil?
+      self.user_name = info.nickname if user_name.blank?
+      self.full_name = info.name if full_name.blank?
+      self.mini_resume = info.description if mini_resume.nil?
       self.interest_tags_string = info.description.scan(/\#([[:alpha:]]+)/i).join(',')
       self.twitter_link = info.urls['Twitter']
       begin
-        self.city = info.location.split(',')[0] if self.city.nil?
-        self.country = info.location.split(',')[1].strip if self.country.nil?
-        self.build_avatar(remote_file_url: info.image.gsub(/_normal/, '')) unless self.avatar
+        self.city = info.location.split(',')[0] if city.nil?
+        self.country = info.location.split(',')[1].strip if country.nil?
+        self.build_avatar(remote_file_url: info.image.gsub(/_normal/, '')) unless avatar
       rescue => e
-        logger.error "Error: " + e.inspect
+        logger.error "Error in extract_from_social_profile (twitter): " + e.inspect
       end
       self.authorizations.build(
         uid: data.uid,

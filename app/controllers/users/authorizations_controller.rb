@@ -7,7 +7,7 @@ class Users::AuthorizationsController < Users::RegistrationsController
 
   def new
     options = { invitation_token: session['devise.invitation_token'] }
-    resource = build_resource(options)
+    build_resource(options)
     resource.email = resource.email_confirmation = '' if params[:new_email]
     if params[:autosave] and resource.save
       resource.accept_invitation!
