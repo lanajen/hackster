@@ -1,7 +1,9 @@
 class GroupsController < ApplicationController
   before_filter :authenticate_user!, except: [:show]
-  before_filter :load_group, except: [:edit, :redirect_to_show]
-  layout 'group'
+  before_filter :load_group, only: [:show, :update]
+  load_and_authorize_resource only: [:new]
+  layout 'group', only: [:edit, :update, :show]
+  respond_to :html
 
   def show
     authorize! :read, @group
@@ -13,10 +15,24 @@ class GroupsController < ApplicationController
     @group = @group.decorate
   end
 
-  def qa
-    @group = Group.find params[:group_id]
-    @issue = @group.issues.first
-    @group = @group.decorate
+  def new
+    @group.type = 'Community'
+  end
+
+  def create
+    @group = Community.new(params[:group])
+    authorize! :create, @group
+
+    admin = @group.members.new(user_id: current_user.id)
+    @group.private = true
+
+    if @group.save
+      admin.update_attribute :permission_action, 'manage'
+      flash[:notice] = "Welcome to #{@group.name}!"
+      respond_with @group
+    else
+      render action: 'new'
+    end
   end
 
   def edit

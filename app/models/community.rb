@@ -4,6 +4,8 @@ class Community < Group
   has_many :projects, through: :permissions, source: :permissible,
     source_type: 'Project'
   validates :user_name, :full_name, presence: true
+  validates :user_name, uniqueness: true
+  before_validation :generate_user_name
 
   def self.model_name
     Group.model_name
@@ -24,5 +26,20 @@ class Community < Group
     end
     member = members.create user_id: user.id, invitation_sent_at: Time.now, invited_by: invited_by
     user.deliver_invitation_with member if member.persisted? and user.invited_to_sign_up?
+  end
+
+  def generate_user_name
+    slug = name.gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
+
+    # make sure it doesn't exist
+    if result = self.class.where(user_name: slug).first
+      return if self == result
+      # if it exists add a 1 and increment it if necessary
+      slug += '1'
+      while self.class.where(user_name: slug).first
+        slug.gsub!(/([0-9]+$)/, ($1.to_i + 1).to_s)
+      end
+    end
+    self.user_name = slug
   end
 end
