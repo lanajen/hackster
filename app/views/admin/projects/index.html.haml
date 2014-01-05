@@ -4,6 +4,12 @@
     =t '.title', :default => model_class.model_name.human.pluralize
     %small= link_to t('.new', :default => t("helpers.links.new")), new_project_path, :class => 'btn btn-primary btn-sm'
 
+= render 'admin/shared/search_form_tag'
+- (@fields.keys - %w(created_at private)).each do |field|
+  = render partial: 'admin/shared/search_form_text_field', locals: { field: field }
+= render partial: 'admin/shared/search_form_checkbox_field', locals: { field: 'private' }
+= render 'admin/shared/search_form_sort_and_submit'
+
 %table.table.table-striped
   %thead
     %tr

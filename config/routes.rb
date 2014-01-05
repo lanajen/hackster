@@ -36,6 +36,7 @@ HackerIo::Application.routes.draw do
       resources :invite_requests do
         patch 'send_invite' => 'invite_requests#send_invite', on: :member
       end
+      resources :groups, except: [:show]
       resources :projects, except: [:show]
       resources :users, except: [:show]
 

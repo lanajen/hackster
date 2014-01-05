@@ -1,0 +1,9 @@
+= f.input :user_name
+= f.input :full_name
+= f.input :email
+= f.input :mini_resume
+= f.input :city
+= f.input :country
+.col-xs-offset-4.col-xs-8
+  = f.button :submit, :class => 'btn-primary'
+  = link_to t('.cancel', :default => t("helpers.links.cancel")), admin_groups_path, :class => 'btn btn-default'

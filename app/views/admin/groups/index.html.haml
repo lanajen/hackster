@@ -1,0 +1,32 @@
+- model_class = Group
+.page-header
+  %h1
+    =t '.title', :default => model_class.model_name.human.pluralize
+    %small= link_to t('.new', :default => t("helpers.links.new")), new_admin_group_path, :class => 'btn btn-primary btn-sm'
+
+= render 'admin/shared/search_form_tag'
+- (@fields.keys - %w(created_at)).each do |field|
+  = render partial: 'admin/shared/search_form_text_field', locals: { field: field }
+= render 'admin/shared/search_form_sort_and_submit'
+
+%table.table.table-striped
+  %thead
+    %tr
+      %th= model_class.human_attribute_name(:name)
+      %th= model_class.human_attribute_name(:age)
+      %th= model_class.human_attribute_name(:members_count)
+      %th= model_class.human_attribute_name(:active_members_count)
+      %th=t '.actions', :default => t("helpers.actions")
+  %tbody
+    - @groups.each do |group|
+      %tr
+        %td= link_to group.name, group if group.name
+        %td= time_ago_in_words group.created_at
+        %td= group.members.size
+        %td= group.members.invitation_accepted_or_not_invited.size
+        %td
+          = link_to t('.edit', :default => t("helpers.links.edit")), edit_admin_group_path(group.id), :class => 'btn btn-default btn-xs'
+          = link_to t('.destroy', :default => t("helpers.links.destroy")), admin_group_path(group.id), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'
+
+.pagination.col-xs-12.text-center
+  = will_paginate @groups

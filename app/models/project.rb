@@ -39,6 +39,7 @@ class Project < ActiveRecord::Base
   validates :slug, presence: true, if: proc{ |p| p.persisted? }
   validate :slug_is_unique
   before_validation :check_if_current
+  before_validation :clean_permissions
   before_validation :ensure_website_protocol
   before_save :generate_slug, if: proc {|p| !p.persisted? or p.team_id_changed? }
 
@@ -197,6 +198,12 @@ class Project < ActiveRecord::Base
   private
     def check_if_current
       self.end_date = nil if current
+    end
+
+    def clean_permissions
+      permissions.each do |permission|
+        permissions.delete(permission) if permission.new_record? and permission.grantee.nil?
+      end
     end
 
     def ensure_website_protocol

@@ -1,6 +1,6 @@
 .form-group
-  = label_tag :'sort_by', 'Sort by'
+  = label_tag :'sort_by', 'Sort by', class: 'control-label'
   .controls
-    = select_tag :sort_by, options_for_array(@fields.keys, params[:sort_by])
-    = select_tag :sort_order, options_for_array(['ASC', 'DESC'], params[:sort_order])
+    = select_tag :sort_by, options_for_array(@fields.keys, params[:sort_by]), class: 'form-control'
+    = select_tag :sort_order, options_for_array(['ASC', 'DESC'], params[:sort_order]), class: 'form-control'
 = submit_tag 'Search', class: 'btn btn-default'

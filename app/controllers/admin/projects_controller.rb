@@ -1,7 +1,15 @@
 class Admin::ProjectsController < Admin::BaseController
   def index
     title "Admin > Projects - #{params[:page]}"
-    @projects = Project.order('created_at DESC').paginate(page: params[:page])
+    @fields = {
+      'name' => 'projects.name',
+      'private' => 'projects.private',
+      'created_at' => 'projects.created_at',
+    }
+
+    params[:sort_order] ||= 'DESC'
+
+    @projects = filter_for Project, @fields
   end
 
   def new

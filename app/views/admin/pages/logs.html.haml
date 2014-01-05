@@ -1,5 +1,6 @@
-%h1 Logs
-- model_class = LogLine.new.class
+.page-hader
+  %h1 Logs
+  - model_class = LogLine.new.class
 
 = render 'admin/shared/search_form_tag'
 = render partial: 'admin/shared/search_form_select_field', locals: { field: 'source', options: LogLine.uniq(:source).pluck(:source).reject{ |c| c.nil? }.sort }

@@ -30,7 +30,6 @@ class Admin::PagesController < Admin::BaseController
     params[:sort_order] ||= 'ASC'
 
     @log_lines = filter_for LogLine, @fields
-    @log_lines = LogLine.order(:created_at).paginate(page: params[:page])
   end
 
   def root
