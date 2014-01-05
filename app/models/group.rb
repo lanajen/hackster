@@ -11,7 +11,7 @@ class Group < ActiveRecord::Base
     :facebook_link, :twitter_link, :linked_in_link, :website_link,
     :blog_link, :github_link, :email, :mini_resume, :city, :country,
     :user_name, :full_name, :members_attributes, :avatar_id,
-    :permissions_attributes
+    :permissions_attributes, :google_plus_link, :youtube_link
 
   accepts_nested_attributes_for :avatar, :members, :permissions,
     allow_destroy: true
