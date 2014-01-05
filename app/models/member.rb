@@ -15,12 +15,10 @@ class Member < ActiveRecord::Base
 
   def initialize_permission save=false
     perm = permission || build_permission
-    puts "before: #{perm.inspect}"
     perm.grantee = user unless perm.grantee
     perm.permissible = group unless perm.permissible
     perm.action = group.class.default_permission if group and !perm.action
     perm.save if save
-    puts "after: #{perm.inspect}"
     self.permission = perm
   end
 
