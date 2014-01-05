@@ -4,15 +4,19 @@ class Ability
   def initialize(resource)
 
     can :read, [Comment, Issue, User]
-    can :read, [Project], private: false
+    can :read, [Project, Group], private: false
 
     @user = resource
     member if @user.persisted?
     @user.roles.each{ |role| send role }
+
+    @user.permissions.each do |permission|
+      can permission.action.to_sym, permission.permissible_type.constantize, id: permission.permissible_id
+    end
   end
 
   def admin
-    can :manage, :all
+    # can :manage, :all
   end
 
   def confirmed_user
@@ -39,12 +43,15 @@ class Ability
     end
 
     can :create, Project
-    can [:read, :update, :destroy, :update_team, :update_stages, :update_widgets], Project do |project|
-      @user.is_team_member? project
+    can :manage, Project do |project|
+      @user.can? :manage, project.team
+    end
+    can [:update_team, :update_widgets], Project do |project|
+      @user.can? :manage, project
     end
 
     can [:create, :update, :destroy], [Widget] do |record|
-      @user.is_team_member? record.project
+      @user.can? :manage, record.project
     end
 
     can :update, User, id: @user.id

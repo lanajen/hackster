@@ -28,9 +28,12 @@ class User < ActiveRecord::Base
   has_many :authorizations, dependent: :destroy
   has_many :blog_posts, dependent: :destroy
   has_many :comments, -> { order created_at: :desc }, foreign_key: :user_id, dependent: :destroy
+  has_many :communities, through: :group_ties, source: :group, class_name: 'Community'
+  has_many :group_permissions, through: :groups, source: :granted_permissions
   has_many :group_ties, class_name: 'Member', dependent: :destroy
   has_many :groups, through: :group_ties
   has_many :invitations, class_name: self.to_s, as: :invited_by
+  has_many :permissions, as: :grantee
   has_many :projects, through: :teams
   has_many :respects, dependent: :destroy, class_name: 'Favorite'
   has_many :respected_projects, through: :respects, source: :project
@@ -41,6 +44,7 @@ class User < ActiveRecord::Base
   attr_accessor :email_confirmation, :skip_registration_confirmation,
     :friend_invite_id, :new_invitation, :invitation_code, :match_by,
     :logging_in_socially
+  attr_writer :override_devise_notification, :override_devise_model
   attr_accessible :email_confirmation, :password, :password_confirmation,
     :remember_me, :avatar_attributes, :projects_attributes,
     :websites_attributes, :invitation_token,
@@ -220,6 +224,10 @@ class User < ActiveRecord::Base
     save
   end
 
+  def all_permissions
+    permissions + group_permissions
+  end
+
   def avatar_id=(val)
     self.avatar = Avatar.find_by_id(val)
   end
@@ -236,6 +244,10 @@ class User < ActiveRecord::Base
     CATEGORIES.reject { |r| ((categories_mask || 0) & 2**CATEGORIES.index(r)).zero? }
   end
 
+  def community_group_ties
+    group_ties.joins(:group).where(groups: { type: 'Community' }).includes(:group)
+  end
+
   def counters
     {
       comments: 'comments.count',
@@ -247,6 +259,13 @@ class User < ActiveRecord::Base
       respects: 'respects.count',
       skill_tags: 'skill_tags.count',
     }
+  end
+
+  # allows overriding the invitation email template and the model that's sent to the mailer
+  def deliver_invitation_with model
+    self.override_devise_notification = "invitation_instructions_with_#{model.class.model_name.to_s.underscore}"
+    self.override_devise_model = model
+    deliver_invitation
   end
 
   # small hack to allow single emails to be invited multiple times
@@ -384,14 +403,14 @@ class User < ActiveRecord::Base
     followed_projects << project unless project.in? followed_projects
   end
 
+  # def has_access? project
+  #   permissions.where(permissible_type: 'Project', permissible_id: project.id).any? or group_permissions.where(permissible_type: 'Project', permissible_id: project.id).any?
+  # end
+
   def hide_notification! name
     val = (notifications || []) << name
     self.notifications = val
     save
-  end
-
-  def invited?
-    invitation_sent_at.present?
   end
 
   def is? role
@@ -406,8 +425,12 @@ class User < ActiveRecord::Base
     followed_projects.where(id: project.id).any?
   end
 
+  def is_member? group
+    group.members.where(user_id: id).first
+  end
+
   def is_team_member? project
-    id.in? project.team_members.pluck(:user_id)
+    project.team_members.where(user_id: id).first
   end
 
   def link_to_provider provider, uid, data=nil
@@ -460,6 +483,13 @@ class User < ActiveRecord::Base
 
   def role_symbols
     roles.map(&:to_sym)
+  end
+
+  # allows overriding the email template and model that are sent to devise mailer
+  def send_devise_notification(notification, *args)
+    notification = @override_devise_notification if @override_devise_notification.present?
+    model = @override_devise_model || self
+    devise_mailer.send(notification, model, *args).deliver
   end
 
   def skip_confirmation!
@@ -554,5 +584,9 @@ class User < ActiveRecord::Base
 
     def password_required?
       (!persisted? || !password.nil? || !password_confirmation.nil?) && !being_invited?
+    end
+
+    def send_reset_password_instructions
+      super if invitation_token.nil?
     end
 end

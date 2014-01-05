@@ -1,6 +1,6 @@
 class UserObserver < ActiveRecord::Observer
   def after_create record
-    unless record.invited?
+    unless record.invited_to_sign_up?
       advertise_new_user record
       record.create_reputation
       record.send_confirmation_instructions unless record.invitation_accepted?
@@ -14,7 +14,10 @@ class UserObserver < ActiveRecord::Observer
     record.build_reputation unless record.reputation
 
     invite = record.find_invite_request
-    invite.project.team_members.create(user_id: record.id) if invite and invite.project
+    if invite and project = invite.project
+      project.create_team unless project.team
+      project.team.members.create(user_id: record.id)
+    end
   end
 
   def before_update record

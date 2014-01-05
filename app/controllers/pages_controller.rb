@@ -12,7 +12,7 @@ class PagesController < ApplicationController
 
       @most_popular_projects = Project.most_popular.limit 4
       @active_projects = Project.last_updated.limit 4
-      @last_projects = Project.last.limit 4
+      @last_projects = Project.last_public.limit 4
 
       event = 'Visited home page as member'
     else
@@ -34,7 +34,22 @@ class PagesController < ApplicationController
     track_event event
   end
 
+  def infringement_policy
+    meta_desc 'Read our infringement notice policy.'
+    title 'Infringement notice policy'
+  end
+
   def ping
     render text: 'pong!'
+  end
+
+  def privacy
+    meta_desc 'Read our privacy policy.'
+    title 'Privacy policy'
+  end
+
+  def terms
+    meta_desc 'Read our terms of service.'
+    title 'Terms of service'
   end
 end

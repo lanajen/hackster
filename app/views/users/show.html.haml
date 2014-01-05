@@ -86,6 +86,9 @@
                 %p
                   You have no private projects.
 
+            -# .row
+              %h4 Private projects you have access to
+
         #tab-respected.tab-pane.fade
           .col-xs-12
             - if @user.respected_projects.indexable.any?

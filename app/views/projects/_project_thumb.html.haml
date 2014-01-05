@@ -23,7 +23,9 @@
               %i.fa.fa-star
               = project.respects_count
           - else
-            Private
+            %span.counter
+              %i.fa.fa-lock
+              Private
           %span.counter
             %i.fa.fa-comments
             = project.comments_count

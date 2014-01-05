@@ -40,25 +40,35 @@ HackerIo::Application.routes.draw do
       resources :users, except: [:show]
 
       root to: 'pages#root'
-    end
+    end  # end admin
 
     resources :comments, only: [:update, :destroy]
-    # resources :groups do
-    #   get 'qa'
-    # end
+    resources :communities, except: [:show, :update, :destroy], controller: 'groups', as: :group do
+      get 'members/edit' => 'members#edit', as: :edit_members
+      patch 'members' => 'members#update'
+      get 'invitations/new' => 'group_invitations#new', as: :new_invitations
+      post 'invitations' => 'group_invitations#create'
+      get 'invitations/accept' => 'group_invitations#accept', as: :accept_invitation
+    end
+    scope 'c/:user_name', as: :group do
+      get '' => 'groups#show', as: ''
+      delete '' => 'groups#destroy'
+      patch '' => 'groups#update'
+    end
+
     resources :files, only: [:create, :destroy]
     resources :invite_requests, only: [:create, :update, :edit]
     # get 'request/an/invite' => 'invite_requests#new', as: :new_invite_request
     delete 'notifications' => 'notifications#destroy'
 
     resources :projects, except: [:show, :update, :destroy] do
-      member do
-        get '' => 'projects#redirect_old_show_route', constraints: lambda{|req| req.params[:id] != 'new' }
-        get 'embed'
-        get 'team' => 'teams#edit', as: :edit_team
-        get 'team_members', to: redirect{ |params, req| "/projects/#{params[:id]}/team" }  # so that task rabitters don't get confused
-        patch 'team' => 'teams#update'
-      end
+      get '' => 'projects#redirect_old_show_route', constraints: lambda{|req| req.params[:project_id] != 'new' }
+      get 'embed'
+      get 'permissions/edit' => 'permissions#edit', as: :edit_permissions
+      patch 'permissions' => 'permissions#update'
+      get 'team/edit' => 'members#edit', as: :edit_team
+      get 'team_members', to: redirect{ |params, req| "/projects/#{params[:id]}/team/edit" }  # so that task rabitters don't get confused
+      patch 'team' => 'members#update'
       collection do
         resources :imports, only: [:new, :create], controller: :project_imports, as: :project_imports do
           post 'submit', on: :collection

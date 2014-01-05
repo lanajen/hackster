@@ -1,0 +1,8 @@
+.col-xs-6.col-xs-offset-3
+  .wellified
+    %h2.text-center Invite users
+
+    = form_tag group_invitations_path, method: :post do
+      .form-group
+        = text_area_tag :emails, params[:emails], placeholder: 'User emails, separated by commas, spaces or new lines.', class: 'form-control', rows: 4
+      = submit_tag 'Invite users', class: 'btn btn-primary btn-block'

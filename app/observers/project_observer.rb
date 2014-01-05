@@ -27,6 +27,12 @@ class ProjectObserver < ActiveRecord::Observer
     record.reset_counters assign_only: true
   end
 
+  def before_save record
+    if record.private_changed? and record.public?
+      record.made_public_at = Time.now
+    end
+  end
+
   private
     def update_counters record, type
       record.users.each{ |u| u.update_counters only: [type].flatten }

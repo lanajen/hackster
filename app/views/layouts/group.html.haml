@@ -1,11 +1,11 @@
-- @project = @project.decorate
+- @group = GroupDecorator.decorate(@group)
 = content_for :no_container do
-  #heading.project
+  #heading.user
     .container
-      .display= render 'projects/teaser'
+      .display= render 'groups/teaser'
       .edit{ style: 'display:none;' }
 
-  #content.project
+  #content
     .container
       = yield
 

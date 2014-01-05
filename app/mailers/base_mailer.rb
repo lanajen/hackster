@@ -49,6 +49,9 @@ class BaseMailer < ActionMailer::Base
         project = context[:project] = comment.commentable
         author = context[:author] = comment.user
         context[:users] = project.users - [author]
+      when :invited
+        user = context[:user] = User.find(context_id)
+        context[:inviter] = user.invited_by if user.invited_by
       when :inviter
         invited = context[:invited] = User.find(context_id)
         context[:user] = invited.invited_by if invited.invited_by
@@ -58,6 +61,11 @@ class BaseMailer < ActionMailer::Base
         context[:invite] = InviteRequest.find(context_id)
       when :log_line
         context[:error] = LogLine.find(context_id)
+      when :membership
+        member = context[:member] = Member.find(context_id)
+        context[:group] = member.group
+        context[:user] = member.user
+        context[:inviter] = member.invited_by
       when :participant_invite
         context[:invite] = invite = ParticipantInvite.find(context_id)
         context[:user] = User.new email: invite.email

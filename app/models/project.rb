@@ -12,6 +12,7 @@ class Project < ActiveRecord::Base
   has_many :comments, -> { order created_at: :asc }, as: :commentable
   has_many :issues, as: :threadable, dependent: :destroy
   has_many :images, as: :attachable, dependent: :destroy
+  has_many :permissions, as: :permissible
   has_many :respects, dependent: :destroy, class_name: 'Favorite'
   has_many :team_members, through: :team, source: :members#, -> { includes :user }
   has_many :users, through: :team_members
@@ -23,10 +24,11 @@ class Project < ActiveRecord::Base
   sanitize_text :description
   attr_accessible :description, :end_date, :name, :start_date, :current,
     :team_members_attributes, :website, :one_liner, :widgets_attributes,
-    :featured, :featured_date, :cover_image_id, :logo_id, :license, :slug
+    :featured, :featured_date, :cover_image_id, :logo_id, :license, :slug,
+    :permissions_attributes
   attr_accessor :current
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
-    :widgets, :cover_image, allow_destroy: true
+    :widgets, :cover_image, :permissions, allow_destroy: true
 
   validates :name, presence: true
   validates :name, length: { in: 3..100 }
@@ -97,8 +99,12 @@ class Project < ActiveRecord::Base
     indexable
   end
 
-  def self.last
+  def self.last_created
     indexable.order(created_at: :desc)
+  end
+
+  def self.last_public
+    indexable.order(made_public_at: :desc)
   end
 
   def self.last_updated

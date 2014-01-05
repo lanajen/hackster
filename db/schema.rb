@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140102171939) do
+ActiveRecord::Schema.define(version: 20140105010215) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,7 +23,7 @@ ActiveRecord::Schema.define(version: 20140102171939) do
     t.string   "type"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
-    t.string   "caption"
+    t.text     "caption"
     t.string   "title"
     t.integer  "position"
   end
@@ -108,6 +108,7 @@ ActiveRecord::Schema.define(version: 20140102171939) do
     t.text     "counters_cache"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "private",                       default: false
   end
 
   add_index "groups", ["type"], name: "index_groups_on_type", using: :btree
@@ -167,16 +168,22 @@ ActiveRecord::Schema.define(version: 20140102171939) do
   end
 
   create_table "members", force: true do |t|
-    t.integer  "group_id",         null: false
-    t.integer  "user_id",          null: false
+    t.integer  "group_id",                           null: false
+    t.integer  "user_id",                            null: false
     t.string   "title"
     t.integer  "group_roles_mask"
     t.string   "mini_resume"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "invitation_accepted_at"
+    t.datetime "invitation_sent_at"
+    t.integer  "invited_by_id"
+    t.string   "invited_by_type"
+    t.integer  "permission_id",          default: 0, null: false
   end
 
   add_index "members", ["group_id"], name: "index_members_on_group_id", using: :btree
+  add_index "members", ["permission_id"], name: "index_members_on_permission_id", using: :btree
   add_index "members", ["user_id"], name: "index_members_on_user_id", using: :btree
 
   create_table "parts", force: true do |t|
@@ -197,6 +204,19 @@ ActiveRecord::Schema.define(version: 20140102171939) do
   end
 
   add_index "parts", ["partable_id", "partable_type"], name: "partable_index", using: :btree
+
+  create_table "permissions", force: true do |t|
+    t.string   "permissible_type", limit: 15, null: false
+    t.integer  "permissible_id",              null: false
+    t.string   "action",           limit: 20
+    t.string   "grantee_type",     limit: 15, null: false
+    t.integer  "grantee_id",                  null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "permissions", ["grantee_type", "grantee_id"], name: "index_permissions_on_grantee_type_and_grantee_id", using: :btree
+  add_index "permissions", ["permissible_id", "permissible_type"], name: "index_permissions_on_permissible_id_and_permissible_type", using: :btree
 
   create_table "project_followers", id: false, force: true do |t|
     t.integer "user_id",    null: false
@@ -224,6 +244,7 @@ ActiveRecord::Schema.define(version: 20140102171939) do
     t.string   "slug",              limit: 105
     t.boolean  "featured"
     t.datetime "featured_date"
+    t.datetime "made_public_at"
   end
 
   add_index "projects", ["private"], name: "index_projects_on_private", using: :btree

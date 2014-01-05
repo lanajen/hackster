@@ -85,11 +85,14 @@ module MailerHelpers
       issue = @context[:issue] if @context.include? :issue
       project = @context[:project] if @context.include? :project
       user = @context[:user] if @context.include? :user
+      group = @context[:group] if @context.include? :group
 
       token = token.gsub(/\|/, '')
       case token.to_sym
       when :email_confirmation_link
         url.user_confirmation_url(confirmation_token: @context[:devise_token], host: default_host)
+      when :group_invitation_link
+        url.group_accept_invitation_url(group, host: default_host)
       when :invite_friends_link
         url.new_user_invitation_url(host: default_host)
       when :invite_edit_url
@@ -98,8 +101,8 @@ module MailerHelpers
         url.project_url(invite.project, host: default_host) if invite.project
       when :invited_profile_link
         url.user_url(@context[:invited], host: default_host)
-      when :inviter_name
-        user.invited_by.name
+      # when :inviter_name
+      #   user.invited_by.name
       when :invitation_link
         url.accept_user_invitation_url(invitation_token: user.invitation_token, host: default_host)
       when :issue_link

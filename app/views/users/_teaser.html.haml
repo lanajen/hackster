@@ -37,8 +37,6 @@
             No websites.
             = link_to 'Add some?', profile_edit_path, data: { remote: true }
 
-      - if user_is_current?
-        = link_to 'Edit', profile_edit_path, class: 'btn-edit', data: { remote: true }
     -# if current_user.id != @user.id
       - if current_user.try(:is_following?, @user)
         = link_to 'Following', user_followers_path(@user), method: :delete, class: 'btn-inverse btn-follow'
@@ -52,6 +50,8 @@
       %ul.nav.navbar-nav
         %li.active= link_to "Public projects #{content_tag(:span, @user.live_projects_count, class: 'badge')}".html_safe, '#tab-public', data: { toggle: 'tab' }
         - if user_signed_in? and (@user == current_user or current_user.is? :admin)
-          %li= link_to "Private projects #{content_tag(:span, (@user.projects_count - @user.live_projects_count), class: 'badge')}".html_safe, '#tab-private', data: { toggle: 'tab' }
+          %li= link_to "#{content_tag(:i, '', class: 'fa fa-lock')} Private projects #{content_tag(:span, (@user.projects_count - @user.live_projects_count), class: 'badge')}".html_safe, '#tab-private', data: { toggle: 'tab' }
         %li= link_to "Respected projects #{content_tag(:span, @user.respects_count, class: 'badge')}".html_safe, '#tab-respected', data: { toggle: 'tab' }
         %li= link_to "Comments #{content_tag(:span, @user.comments_count, class: 'badge')}".html_safe, '#tab-comments', data: { toggle: 'tab' }
+        - if user_is_current?
+          %li= link_to "#{content_tag(:i, '', class: 'fa fa-cog')} Edit profile".html_safe, profile_edit_path, data: { remote: true }

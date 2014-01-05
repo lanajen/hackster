@@ -34,19 +34,25 @@ module ScraperStrategies
       project, widgets = parse_images(article, project, widgets)
 
       text_blocks = article.inner_html.split(/<h[1-2]>/).reject{|t| t.blank? }.map do |t|
-        '<' + t.match(/<\/(h[1-2])>/)[1] + '>' + t
+        if t.match(/<\/(h[1-2])>/)
+          '<' + $1 + '>' + t
+        else
+          t
+        end
       end.map do |t|
         n = Nokogiri::HTML(t)
-        t = n.at_css('h1') || n.at_css('h2')
-        title = t.text.strip
-        t.remove
+        if t = n.at_css('h1') || n.at_css('h2')
+          el = t
+          t = t.text.strip
+          el.remove
+        end
         n.css('a').find_all.each{|el| el.remove if el.content.strip.blank? }
         n.css('p').find_all.each{|el| el.remove if el.content.strip.blank? }
         p = Sanitize.clean(n.to_html, Sanitize::Config::BASIC_BLANK).strip
-        [title, p]
+        [t, p]
       end.reject{|t| t[1].blank? }
       text_blocks.each do |t|
-        widgets << TextWidget.new(content: t[1], name: t[0])
+        widgets << TextWidget.new(content: t[1], name: t[0] || 'About')
       end
 
       widget_col = 1

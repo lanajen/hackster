@@ -1,53 +1,34 @@
-= content_for :no_container do
-  #heading.user
-    .container
-      .display= render 'teaser'
-      .edit{ style: 'display:none;' }
+.row.tab-content
+  #tab-projects.tab-pane.active.fade.in
+    .col-xs-12
+      - if @projects.any?
+        .row
+          - @projects.each do |project|
+            = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '3' }
+      - else
+        All projects that members share with this group will appear here.
 
-  .navbar.navbar-static-top
-    .navbar-inner
-      .container
-        %ul.nav
-          %li.active
-            = link_to 'Home', group_path(@group)
+
+  #tab-activity.tab-pane.fade
+    .col-xs-12
+      %ul
+        - @broadcasts.each do |broadcast|
           %li
-            = link_to 'Q&A', group_qa_path(@group)
+            - broadcast = broadcast.decorate
+            = link_to broadcast.broadcastable.name, broadcast.broadcastable
+            = broadcast.message
+            .muted
+              = broadcast.created_at
 
-  #content
-    .container
-      .row
-        .span9
-          .transparent-well
-            .header
-              %h4 Recent activity from members
-            - if @broadcasts.any?
-              .content
-                %ul
-                  - @broadcasts.each do |broadcast|
-                    %li
-                      - broadcast = broadcast.decorate
-                      = link_to broadcast.broadcastable.name, broadcast.broadcastable
-                      = broadcast.message
-                      .muted
-                        = broadcast.created_at
+  #tab-members.tab-pane.fade
+    .col-xs-12
+      - if @users.any?
+        .row
+          - @users.each do |user|
+            .col-xs-2{ style: 'margin-bottom: 30px;' }
+              = link_to image_tag(user.decorate.avatar(:big), class: 'img-responsive'), user, title: user.name, rel: 'tooltip'
+      - else
+        This group has no members.
 
-        .span3
-          - if @group.users.any?
-            .transparent-well
-              .header
-                %h4 Members
-              .content
-                %ul.unstyled
-                  - @group.users.each do |user|
-                    %a{ href: url_for(user) }
-                      = image_tag user.decorate.avatar, style: 'width: 50px;'
-
-          - if @group.projects.any?
-            .transparent-well
-              .header
-                %h4 Member projects
-              .content
-                %ul.unstyled
-                  - @group.projects.indexable.each do |project|
-                    %a{ href: url_for(project) }
-                      = image_tag project.decorate.logo(:thumb), style: 'width: 50px;'
+  #tab-qa.tab-pane.fade
+    .col-xs-12

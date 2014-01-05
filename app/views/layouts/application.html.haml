@@ -71,6 +71,13 @@
                     %span.caret{ style: 'border-bottom-color: #000;border-top-color: #000;' }
                   %ul.dropdown-menu
                     %li= link_to current_user.name, current_user
+                    - if current_user.communities.any?
+                      %li.divider
+                      - current_user.community_group_ties.each do |group_tie|
+                        - community = group_tie.group
+                        - name = community.name
+                        - name += ' (invite pending)' if group_tie.invitation_pending?
+                        %li= link_to name, community
                     %li.divider
                     %li= link_to 'Invite friends', new_user_invitation_path
                     %li.divider

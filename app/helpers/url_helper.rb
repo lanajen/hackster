@@ -1,4 +1,12 @@
 module UrlHelper
+  def group_path group, opts={}
+    super params_for_group(group).merge(opts)
+  end
+
+  def group_url group, opts={}
+    super params_for_group(group).merge(opts)
+  end
+
   def project_path project, opts={}
     super params_for_project(project).merge(opts)
   end
@@ -13,6 +21,8 @@ module UrlHelper
       if options.has_key?(:subdomain)
         options[:host] = with_subdomain(options.delete(:subdomain))
       end
+    # when Group
+    #   options = params_for_group options
     when Project
       options = params_for_project options
     end
@@ -25,6 +35,13 @@ module UrlHelper
   end
 
   private
+    def params_for_group group
+      {
+        user_name: group.user_name,
+        use_route: 'group'
+      }
+    end
+
     def params_for_project project
       {
         project_slug: project.slug,

@@ -11,7 +11,7 @@ class ProjectsController < ApplicationController
 
   def index
     title "Explore all projects - Page #{params[:page] || 1}"
-    @projects = Project.last.paginate(page: params[:page])
+    @projects = Project.last_public.paginate(page: params[:page])
   end
 
   def show
