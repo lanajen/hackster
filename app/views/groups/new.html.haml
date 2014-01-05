@@ -7,11 +7,11 @@
 
       = f.input :full_name, label: 'Community name'
 
-      .cover_image.file-drop.form-group
+      .avatar.file-drop.form-group
         %label.control-label Profile image
         %div
-          %span.cover_image.image-preview
-          %a.btn.btn-default.btn-sm{ data: { target: '.file_upload.cover_image' } } Select picture
+          %span.avatar.image-preview
+          %a.btn.btn-default.btn-sm{ data: { target: '.file_upload.avatar' } } Select picture
 
       = render partial: 'shared/image_form_bare', locals: { file_type: 'avatar', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
 
