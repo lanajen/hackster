@@ -25,12 +25,15 @@
 
         .container.navbar-collapse.collapse
           %ul.nav.navbar-nav
-            %li= link_to 'Invite requests', admin_invite_requests_path
-            %li= link_to 'Log lines', admin_logs_path
+            -# %li= link_to 'Invite requests', admin_invite_requests_path
+            -# %li= link_to 'Invite codes', admin_invite_codes_path
             %li= link_to 'Projects', admin_projects_path
             %li= link_to 'Users', admin_users_path
             %li= link_to 'Groups', admin_groups_path
-            %li= link_to 'Invite codes', admin_invite_codes_path
+            %li
+              %a.divider-vertical= "|"
+            %li= link_to 'Logs', admin_logs_path
+            %li= link_to 'Analytics', admin_analytics_path
             %li= link_to 'Resque', '/admin/resque'
 
     .container

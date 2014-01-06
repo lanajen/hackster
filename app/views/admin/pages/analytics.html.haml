@@ -1,22 +1,27 @@
-%h2 Users with the most live projects
-%ul
-  - @top_users.each do |user, project_count|
-    %li
-      %b= link_to user.name, profile_path(user)
-      \:
-      = project_count
-
 %h2 Total number of live projects
 = @project_count
 
 %h2 Total number of users
 = @user_count
+(signed up or invite accepted)
+\/
+= @user_with_user_name_count
+(user_name set)
 
 %h2 Live projects per user ratio
 = (@project_count.to_f / @user_count.to_f* 100).ceil
 \%
 
-%h2 Users who come back
+%h2 Users with the most live projects
+%ul
+  - @top_users.each do |user|
+    %li
+      %b= link_to user.name, profile_path(user)
+      \:
+      = user.live_projects_count
+
+%h2 Users with at least one live project
+= @users_with_at_least_one_live_project
 
 %h2 Total comments
 = @comment_count
