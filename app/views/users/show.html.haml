@@ -10,13 +10,22 @@
         #tab-public.tab-pane.active.fade.in
           .col-xs-9
             - if @public_projects.any?
-              .row
-                - if @public_projects_sorted.size > 1
+              - if @public_projects_sorted.size > 1
+                .row
+                  .col-xs-12
+                    .btn-group.thumb-list-switch.pull-right
+                      %button.btn.btn-default{ data: { 'list-style' => 'vertical' }}
+                        %i.fa.fa-th-large
+                      %button.btn.btn-default.active{ data: { 'list-style' => 'horizontal' }}
+                        %i.fa.fa-th-list
+                .row.thumb-list.thumb-list-horizontal
                   - @public_projects_sorted.each do |year, projects|
+                    %h4.col-xs-12.thumb-horizontal= year
                     - projects.each_with_index do |project, i|
                       - show_year = (i > 0) ? false : true
-                      = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '4', show_year: show_year }
-                - else
+                      = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '4', show_year: show_year }
+              - else
+                .row
                   - @public_projects_sorted.each do |year, projects|
                     - projects.each do |project|
                       = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '4' }

@@ -15,7 +15,13 @@ module UrlHelper
     super params_for_project(project).merge(opts)
   end
 
+  def project_embed_url project, opts={}
+    force_params = { use_route: 'project_embed' }
+    super params_for_project(project, force_params).merge(opts)
+  end
+
   def url_for(options = nil)
+    puts options.to_s
     case options
     when Hash
       if options.has_key?(:subdomain)
@@ -42,11 +48,11 @@ module UrlHelper
       }
     end
 
-    def params_for_project project
+    def params_for_project project, force_params={}
       {
         project_slug: project.slug,
         user_name: project.user_name_for_url,
         use_route: 'project'
-      }
+      }.merge(force_params)
     end
 end

@@ -54,6 +54,17 @@ $(document).ready(function(){
     smoothScrollTo(target);
   });
 
+  $('.thumb-list-switch button').on('click', function(e){
+    switcher = $(this).parent();
+    $('button', switcher).removeClass('active');
+    $(this).addClass('active');
+    $('.thumb-list').removeClass(function (index, css) {
+      return (css.match(/\bthumb-list-\S+/g) || []).join(' ');
+    });
+    listType = 'thumb-list-' + $(this).data('list-style');
+    $('.thumb-list').addClass(listType);
+  });
+
   $('.well').on({
     mouseenter: function() {
       $('.btn-delete', this).show();

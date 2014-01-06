@@ -4,7 +4,7 @@ User-Agent: *
 Disallow: /users/sign_in
 Disallow: /users/sign_up
 Disallow: /users/password/new
-Disallow: /projects/*/embed
+Disallow: /*/*/embed
 Disallow: /search
 
 User-agent: Googlebot-Image

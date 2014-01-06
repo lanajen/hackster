@@ -64,7 +64,7 @@ HackerIo::Application.routes.draw do
 
     resources :projects, except: [:show, :update, :destroy] do
       get '' => 'projects#redirect_old_show_route', constraints: lambda{|req| req.params[:project_id] != 'new' }
-      get 'embed'
+      get 'embed', as: :old_embed
       get 'permissions/edit' => 'permissions#edit', as: :edit_permissions
       patch 'permissions' => 'permissions#update'
       get 'team/edit' => 'members#edit', as: :edit_team
@@ -113,6 +113,7 @@ HackerIo::Application.routes.draw do
       get '' => 'projects#show', as: ''
       delete '' => 'projects#destroy'
       patch '' => 'projects#update'
+      get 'embed' => 'projects#embed', as: :embed
     end
 
     root to: 'pages#home'
