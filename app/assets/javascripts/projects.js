@@ -63,6 +63,9 @@ $(document).ready(function(){
     });
     listType = 'thumb-list-' + $(this).data('list-style');
     $('.thumb-list').addClass(listType);
+    document.cookie = 'thumb-list-style=' + listType;
+    // $.cookie('thumb-list-style', listType);
+    // console.log($.cookie('thumb-list-style'));
   });
 
   $('.well').on({
