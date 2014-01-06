@@ -20,9 +20,11 @@ class Admin::PagesController < Admin::BaseController
 
     sql = "SELECT COUNT(*) as count FROM (SELECT COUNT(*) as live_projects_count FROM members INNER JOIN groups ON groups.id = members.group_id INNER JOIN projects ON projects.team_id = groups.id WHERE projects.private = 'f' GROUP BY user_id) as t1;"
 
-    records_array = ActiveRecord::Base.connection.exec_query(sql)
+    records_array = ActiveRecord::Base.connection.execute(sql)
 
-    @users_with_at_least_one_live_project = records_array.rows.flatten[0]
+    @users_with_at_least_one_live_project = records_array[0]['count']
+
+    # records_array = ActiveRecord::Base.connection.exec_query(sql)
 
     # rows = records_array.rows.map do |row|
     #   [row[0], row[1].to_i]
