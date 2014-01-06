@@ -16,7 +16,7 @@
               %td= member.user.name
             - else
               %td
-                = f_member.association :user, collection: User.invitation_accepted_or_not_invited.sort_by{|u| u.name }, label: false
+                = f_member.association :user, collection: User.where('user_name IS NOT NULL').sort_by{|u| u.name }, label: false
             = f_member.simple_fields_for :permission do |f_perm|
               %td= f_perm.input :action, collection: Permission::ACTIONS, label: false
             %td
