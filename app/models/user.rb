@@ -415,6 +415,10 @@ class User < ActiveRecord::Base
   #   permissions.where(permissible_type: 'Project', permissible_id: project.id).any? or group_permissions.where(permissible_type: 'Project', permissible_id: project.id).any?
   # end
 
+  def has_notifications?
+    notifications.any?
+  end
+
   def hide_notification! name
     val = (notifications || []) << name
     self.notifications = val
@@ -467,6 +471,19 @@ class User < ActiveRecord::Base
 
   def name
     full_name.present? ? full_name : user_name
+  end
+
+  def notifications
+    return @notifications if @notifications
+
+    @notifications = []
+    group_ties.each do |group_tie|
+      @notifications << {
+        message: "You have been invited to join #{group_tie.group.name}. Click to visit this group.",
+        link: group_tie.group,
+      } if group_tie.invitation_pending?
+    end
+    @notifications
   end
 
   def profile_needs_care?

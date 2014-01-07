@@ -11,7 +11,11 @@
     .text-holder
       - if @group.avatar
         %span.avatar.main-avatar= image_tag @group.avatar(:big), alt: @group.name, class: 'img-circle'
-      %h1= link_to @group.name, @group
+      %h1
+        - if @group.private?
+          %small
+            %i.fa.fa-lock.istooltip{ title: 'Private community' }
+        = link_to @group.name, @group
 
       - if @group.mini_resume.present?
         %p.user-mini-resume= @group.mini_resume

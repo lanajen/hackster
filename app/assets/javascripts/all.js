@@ -24,6 +24,12 @@ $(document).ready(function(){
     return false;
   });
 
+  // show notification tooltip if any
+  $('#notifications .istooltip').tooltip('show');
+  window.setTimeout(function(){
+    $('#notifications .istooltip').tooltip('destroy');
+  }, 5000);
+
   // collapse code widgets that are higher than 150px
   $.each($('.code-widget'), function(i, v){
     if ($('.highlight pre', v).height() > 150){

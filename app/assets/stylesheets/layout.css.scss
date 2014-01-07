@@ -110,6 +110,10 @@ footer {
   @include border-radius(0);
 }
 
+.light-blue {
+  color: #428bca;
+}
+
 #heading {
   margin-top: 40px;
   .teaser {

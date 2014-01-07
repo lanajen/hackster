@@ -63,9 +63,26 @@
             %ul.nav.navbar-nav
               %li= link_to 'Explore', projects_path
               %li= link_to 'Showcase', new_project_path
-            %ul.nav.navbar-nav.navbar-right
-              - if user_signed_in?
-                .btn-group.navbar-btn
+            - if user_signed_in?
+              %ul.nav.navbar-nav.navbar-right
+                - if current_user.has_notifications?
+                  %li#notifications
+                    %a.dropdown-toggle{"data-toggle" => "dropdown", href: '#'}
+                      - if current_user.has_notifications?
+                        %span.istooltip{ title: 'You have new notifications', data: { placement: 'bottom', container: 'body' } }
+                          %i.fa.fa-envelope
+                          %i.fa.fa-exclamation.light-blue
+                      - else
+                        %i.fa.fa-envelope.istooltip{ title: 'No new notifications', data: { placement: 'bottom', container: 'body' } }
+                    %ul.dropdown-menu
+                      - if current_user.has_notifications?
+                        - current_user.notifications.each do |notification|
+                          %li= link_to notification[:message], notification[:link]
+                      - else
+                        %li
+                          %a No notifications.
+
+                %li.btn-group.navbar-btn
                   = link_to image_tag(current_user.decorate.avatar(:mini), style: 'width:32px;'), current_user, class: 'btn', style: 'padding:0;'
                   %button.btn.btn-default.dropdown-toggle{"data-toggle" => "dropdown"}
                     %span.caret{ style: 'border-bottom-color: #000;border-top-color: #000;' }
@@ -82,7 +99,11 @@
                     %li= link_to 'Invite friends', new_user_invitation_path
                     %li.divider
                     %li= link_to 'Log out', destroy_user_session_path, method: :delete
-              - else
+              - if current_user.is? :admin
+                %ul.nav.navbar-nav.navbar-right
+                  %li= link_to 'Admin', admin_users_path
+            - else
+              %ul.nav.navbar-nav.navbar-right
                 - unless request.path == root_path
                   %li.with-button
                     %span= link_to 'Sign up', new_user_registration_path, class: 'btn btn-sm btn-info navbar-btn', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '#{request.path}']);" #new_user_registration_path
@@ -94,9 +115,8 @@
                     = render 'devise/sessions/form'
                     %hr
                     = link_to 'Connect with your social account', new_user_session_path
-            - if user_signed_in? and current_user.is? :admin
-              %ul.nav.navbar-nav.navbar-right
-                %li= link_to 'Admin', admin_users_path
+              - if current_user.communities.any?
+                %li.divider
 
             .alert-flash= bootstrap_flash
 
