@@ -97,6 +97,7 @@ class Widget < ActiveRecord::Base
       {
         'Bill of materials' => 'PartsWidget',
         'Buy now' => 'BuyWidget',
+        'Circuits.io schematics' => 'CircuitsioWidget',
         'Code' => 'CodeWidget',
         'Credits' => 'CreditsWidget',
         'Files and documents' => 'DocumentWidget',
