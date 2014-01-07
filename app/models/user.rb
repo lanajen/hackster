@@ -3,7 +3,7 @@ class User < ActiveRecord::Base
   include StringParser
   include Taggable
 
-  ROLES = %w(admin confirmed_user)
+  ROLES = %w(admin confirmed_user beta_tester)
 
   CATEGORIES = [
     'Electrical engineer',

@@ -19,6 +19,10 @@ class Ability
     can :manage, :all
   end
 
+  def beta_tester
+    can :debug, :all
+  end
+
   def confirmed_user
 
   end
