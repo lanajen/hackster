@@ -115,8 +115,6 @@
                     = render 'devise/sessions/form'
                     %hr
                     = link_to 'Connect with your social account', new_user_session_path
-              - if current_user.communities.any?
-                %li.divider
 
             .alert-flash= bootstrap_flash
 
