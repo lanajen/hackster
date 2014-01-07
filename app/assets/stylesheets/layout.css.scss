@@ -247,7 +247,7 @@ h1, h2, h3, h4 {
 
 form.form-compact {
   .form-group {
-    margin-bottom: 0;
+    margin-bottom: 5px;
   }
 }
 
@@ -326,6 +326,7 @@ input.placeholder, textarea.placeholder {
   background: #08C;
   color: white;
   font-weight: bold;
+  letter-spacing: 0.5px;
   text-shadow: 1px 1px 1px #036394;
   .close {
     @include font-size(12);

@@ -31,8 +31,8 @@
           .container
             %button.close.btn-close{ data: { close: '#hello-world' } } &times;
             = SLOGAN
-            Sounds cool?
-            = link_to 'Create your profile.', new_user_registration_path, onclick: "_gaq.push(['_trackEvent', 'Hello world bar', 'Sign up', '#{request.path}']);"
+            Wanna join the movement?
+            = link_to 'Create your own profile.', new_user_registration_path, onclick: "_gaq.push(['_trackEvent', 'Hello world bar', 'Sign up', '#{request.path}']);"
       -# elsif show_profile_needs_care?
         - if params[:controller] == 'users' and params[:action] == 'show'
           #hello-world.fade-in

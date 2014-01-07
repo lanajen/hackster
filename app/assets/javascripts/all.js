@@ -1,7 +1,7 @@
 $('input, textarea').placeholder();
 
 $(document).ready(function(){
-  $('.fade-in').slideDown(500);
+  $('.fade-in').delay(2000).slideDown(500);
   $(document).on('click', '.btn-close', function(e){
     target = $(this).data('close');
     $(target).slideUp(100);
