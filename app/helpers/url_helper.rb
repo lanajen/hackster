@@ -21,7 +21,6 @@ module UrlHelper
   end
 
   def url_for(options = nil)
-    puts options.to_s
     case options
     when Hash
       if options.has_key?(:subdomain)
