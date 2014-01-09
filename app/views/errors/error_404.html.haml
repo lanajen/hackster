@@ -1,4 +1,11 @@
-#error.col-xs-4.col-xs-offset-4{ style: 'margin-top: 200px;'}
-  .wellified
-    The page you're looking for doesn't exist!
-    = link_to 'Go back to the home page', root_path
+#error.col-xs-8.col-xs-offset-2{ style: 'margin-top: 150px;'}
+  .wellified.text-center
+    %h2 Bummer, we couldn't find that page
+    %p
+      All is not lost though:
+      %br
+      = link_to 'Go back to the previous page', :back
+      or
+      = link_to 'go to the home page', root_path
+    .row
+      .col-xs-8.col-xs-offset-2= render 'shared/search_form'
