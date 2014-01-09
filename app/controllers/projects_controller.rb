@@ -71,11 +71,16 @@ class ProjectsController < ApplicationController
       elsif @project.private == false
         current_user.broadcast :update, @project.id, 'Project'
       end
+      @refresh = @project.slug_was_changed?
       @project = @project.decorate
+      notice = "#{@project.name} was successfully updated."
       respond_with @project do |format|
         format.html do
-          flash[:notice] = "#{@project.name} was successfully updated."
+          flash[:notice] = notice
           redirect_to @project
+        end
+        format.js do
+          flash[:notice] = notice if @refresh
         end
       end
 

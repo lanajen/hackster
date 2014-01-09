@@ -14,3 +14,5 @@ require File.join(Rails.root, 'lib/string_parser')
 require File.join(Rails.root, 'lib/counter')
 
 require File.join(Rails.root, 'lib/tableless_association')
+# turn off asset messages in logger
+require File.join(Rails.root, 'lib/quiet_assets')

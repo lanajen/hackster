@@ -14,7 +14,7 @@ class Project < ActiveRecord::Base
   has_many :images, as: :attachable, dependent: :destroy
   has_many :permissions, as: :permissible
   has_many :respects, dependent: :destroy, class_name: 'Favorite'
-  has_many :slug_histories, dependent: :destroy
+  has_many :slug_histories, order: 'updated_at desc', dependent: :destroy
   has_many :team_members, through: :team, source: :members#, -> { includes :user }
   has_many :users, through: :team_members
   has_many :widgets, -> { order position: :asc }
@@ -26,19 +26,22 @@ class Project < ActiveRecord::Base
   attr_accessible :description, :end_date, :name, :start_date, :current,
     :team_members_attributes, :website, :one_liner, :widgets_attributes,
     :featured, :featured_date, :cover_image_id, :logo_id, :license, :slug,
-    :permissions_attributes
+    :permissions_attributes, :new_slug, :slug_histories_attributes
   attr_accessor :current
+  attr_writer :new_slug
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
-    :widgets, :cover_image, :permissions, allow_destroy: true
+    :widgets, :cover_image, :permissions, :slug_histories, allow_destroy: true
 
   validates :name, presence: true
   validates :name, length: { in: 3..100 }
   validates :one_liner, :logo, presence: true, if: proc { |p| p.force_basic_validation? }
   validates :one_liner, length: { maximum: 140 }
-  validates :slug,
-    format: { with: /\A[a-z0-9_\-]+\z/, message: "accepts only downcase letters, numbers, dashes '-' and underscores '_'." }, length: { maximum: 105 }, allow_blank: true
-  validates :slug, presence: true, if: proc{ |p| p.persisted? }
+  validates :new_slug,
+    format: { with: /\A[a-z0-9_\-]+\z/, message: "accepts only downcase letters, numbers, dashes '-' and underscores '_'." },
+    length: { maximum: 105 }, allow_blank: true
+  validates :new_slug, presence: true, if: proc{ |p| p.persisted? }
   validate :slug_is_unique
+  before_validation :assign_new_slug
   before_validation :check_if_current
   before_validation :clean_permissions
   before_validation :ensure_website_protocol
@@ -121,6 +124,11 @@ class Project < ActiveRecord::Base
     (issues + Issue.where(threadable_type: 'Widget').where('threadable_id IN (?)', widgets.pluck('widgets.id'))).sort_by{ |t| t.created_at }
   end
 
+  def assign_new_slug
+    @old_slug = slug
+    self.slug = new_slug
+  end
+
   def counters
     {
       comments: 'comments.count',
@@ -156,6 +164,14 @@ class Project < ActiveRecord::Base
     self.logo = Avatar.find_by_id(val)
   end
 
+  def new_slug
+    @new_slug ||= slug
+  end
+
+  def slug_was_changed?
+    @old_slug.present? and @old_slug != slug
+  end
+
   # def to_param
     # "#{id}-#{name.gsub(/[^a-zA-Z0-9]/, '-').gsub(/(\-)+$/, '')}"
   # end
@@ -176,7 +192,7 @@ class Project < ActiveRecord::Base
   end
 
   def update_slug
-    generate_slug unless slug.present? and slug_changed?
+    generate_slug unless slug_was_changed?
   end
 
   def update_slug!
@@ -235,7 +251,7 @@ class Project < ActiveRecord::Base
     def slug_is_unique
       return unless slug_changed?
 
-      parent = team ? self.class.includes(:team).where(groups: { user_name: team.user_name }) : self.class
-      errors.add :slug, 'has already been taken' if parent.where(projects: { slug: slug }).any?
+      parent = team ? self.class.joins(:team).where(groups: { user_name: team.user_name }) : self.class
+      errors.add :new_slug, 'has already been taken' if parent.where(projects: { slug: slug }).where.not(id: id).any?
     end
 end

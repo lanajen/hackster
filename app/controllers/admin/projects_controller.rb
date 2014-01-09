@@ -1,4 +1,5 @@
 class Admin::ProjectsController < Admin::BaseController
+  load_resource except: :index
   def index
     title "Admin > Projects - #{params[:page]}"
     @fields = {
@@ -13,12 +14,9 @@ class Admin::ProjectsController < Admin::BaseController
   end
 
   def new
-    @project = Project.new
   end
 
   def create
-    @project = Project.new(params[:project])
-
     if @project.save
       redirect_to admin_projects_path, :notice => 'New project created'
     else
@@ -27,12 +25,10 @@ class Admin::ProjectsController < Admin::BaseController
   end
 
   def edit
-    @project = Project.find(params[:id])
+    title "Admin > Projects > Edit #{@project.name}"
   end
 
   def update
-    @project = Project.find(params[:id])
-
     if @project.update_attributes(params[:project])
       redirect_to admin_projects_path, :notice => 'Project successfuly updated'
     else
@@ -41,7 +37,6 @@ class Admin::ProjectsController < Admin::BaseController
   end
 
   def destroy
-    @project = Project.find(params[:id])
     @project.destroy
     redirect_to admin_projects_path, :notice => 'Project successfuly deleted'
   end
