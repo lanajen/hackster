@@ -97,7 +97,7 @@ class ProjectsController < ApplicationController
   end
 
   def redirect_old_show_route
-    redirect_to url_for(@project)
+    redirect_to url_for(@project), status: 301
   end
 
   private

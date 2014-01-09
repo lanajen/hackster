@@ -1,7 +1,7 @@
 = simple_nested_form_for @group, url: project_team_path(@project), html: { class: 'widget-form' } do |f|
   = f.error_notification
   = f.input :full_name, label: 'Name'
-  = f.input :user_name, label: 'Pretty URL'
+  = f.input :new_user_name, label: 'Pretty URL'
   %table#sortable.table.table-condensed
     %thead
       %th User

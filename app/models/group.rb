@@ -19,6 +19,8 @@ class Group < ActiveRecord::Base
   store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link,
     :google_plus_link, :youtube_link, :website_link, :blog_link, :github_link]
   validates :user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users) }
+  validates :user_name, length: { in: 3..100 }, if: proc{|t| t.persisted?}
+  validate :website_format_is_valid
   before_validation :clean_members
   before_validation :ensure_website_protocol
 
@@ -30,8 +32,19 @@ class Group < ActiveRecord::Base
     self.avatar = Avatar.find_by_id(val)
   end
 
-  def generate_user_name
-    self.user_name = members.map{|m| m.user.user_name }.to_sentence.gsub(/[ ,]/, '_')
+  def generate_user_name exclude_destroyed=true
+    # raise members.reject{|m| m.marked_for_destruction? }.to_s
+    cached_members = members
+    cached_members = cached_members.reject{|m| m.marked_for_destruction? } if exclude_destroyed
+    self.user_name = cached_members.map{|m| m.user.user_name }.to_sentence.gsub(/,/, '').gsub(/[ ]/, '_')
+    # cached_members = members.to_a
+    # self.user_name = if cached_members.size > 1
+    #   cached_members.map{|m| m.user.user_name[0..1] }.join('')
+    # elsif cached_members.size == 0
+    #   ''
+    # else
+    #   cached_members.first.user.user_name
+    # end
   end
 
   def is? group_type
@@ -57,6 +70,13 @@ class Group < ActiveRecord::Base
           next
         end
         send "#{type}=", 'http://' + url unless url =~ /^http/
+      end
+    end
+
+    def website_format_is_valid
+      websites.each do |type, url|
+        next if url.blank?
+        errors.add type.to_sym, 'is not a valid URL' unless url.downcase =~ URL_REGEXP
       end
     end
 end

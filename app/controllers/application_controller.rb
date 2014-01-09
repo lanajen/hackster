@@ -74,23 +74,26 @@ class ApplicationController < ActionController::Base
 
     def load_project
       return @project if @project
-      load_team if params[:project_slug] and params[:user_name] and params[:user_name] != 'non_attributed'
+      user_name = params[:user_name] if params[:project_slug] and params[:user_name] and params[:user_name] != 'non_attributed'
 
-      @project = if @team
-        Project.includes(:team).where(groups: { user_name: @team.user_name}).where(projects: { slug: params[:project_slug].downcase }).first!
+      @project = if user_name
+        # finds by team or by user and throws a record not found if needed
+        Project.joins(:team).where(groups: { user_name: user_name}).where(projects: { slug: params[:project_slug].downcase }).first || if project = Project.joins(:users).where(users: { user_name: user_name}).where(projects: { slug: params[:project_slug].downcase }).first!
+            redirect_to(url_for(project), status: 301) and return
+          end
       elsif params[:project_slug]
-        Project.find_by_slug! params[:project_slug]
+        Project.joins(:team).where(groups: { user_name: ['', nil]}).where(projects: { slug: params[:project_slug].downcase }).first!
       else
         Project.find params[:project_id] || params[:id]
       end
     end
 
     def load_team
-      @team = load_with_user_name Team
+      @team ||= load_with_user_name Team
     end
 
     def load_user
-      @user = load_with_user_name User
+      @user ||= load_with_user_name User
     end
 
     def load_with_user_name model

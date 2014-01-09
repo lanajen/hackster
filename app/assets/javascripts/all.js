@@ -89,7 +89,7 @@ $(document).ready(function(){
       }
 
       // cleanup before adding new elements
-      $('.error .help-inline').remove();
+      $('.has-error .help-inline').remove();
       $('.form-group').removeClass('has-error');
 
       for ( error in errors ) {

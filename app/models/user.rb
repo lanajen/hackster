@@ -70,6 +70,7 @@ class User < ActiveRecord::Base
       user.validate :used_valid_invite_code?
   end
   validate :email_is_unique_for_registered_users, if: :being_invited?
+  validate :website_format_is_valid
 
   before_validation :ensure_website_protocol
   after_invitation_accepted :invitation_accepted
@@ -590,6 +591,13 @@ class User < ActiveRecord::Base
     def is_whitelisted?
       return unless email.present?
       errors.add :email, 'is not on our beta list' unless InviteRequest.email_whitelisted? email
+    end
+
+    def website_format_is_valid
+      websites.each do |type, url|
+        next if url.blank?
+        errors.add type.to_sym, 'is not a valid URL' unless url.downcase =~ URL_REGEXP
+      end
     end
 
     def used_valid_invite_code?

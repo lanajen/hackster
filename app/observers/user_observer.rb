@@ -15,8 +15,9 @@ class UserObserver < ActiveRecord::Observer
 
     invite = record.find_invite_request
     if invite and project = invite.project
-      project.create_team unless project.team
-      project.team.members.create(user_id: record.id)
+      team = project.team || project.build_team
+      team.members.new(user_id: record.id)
+      team.save
     end
   end
 

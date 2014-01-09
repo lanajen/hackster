@@ -14,7 +14,12 @@ class MembersController < ApplicationController
 
     if @group.update_attributes(params[@group.class.model_name.to_s.underscore.to_sym])
       flash[:notice] = 'Members saved.'
-      respond_with @project || @group
+      record = if @project
+        Project.find(params[:project_id])
+      else
+        @group
+      end
+      respond_with record
     else
       render action: 'edit', template: "members/#{@model_name.pluralize}/edit"
     end
