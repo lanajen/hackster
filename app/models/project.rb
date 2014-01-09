@@ -14,6 +14,7 @@ class Project < ActiveRecord::Base
   has_many :images, as: :attachable, dependent: :destroy
   has_many :permissions, as: :permissible
   has_many :respects, dependent: :destroy, class_name: 'Favorite'
+  has_many :slug_histories, dependent: :destroy
   has_many :team_members, through: :team, source: :members#, -> { includes :user }
   has_many :users, through: :team_members
   has_many :widgets, -> { order position: :asc }
@@ -181,6 +182,10 @@ class Project < ActiveRecord::Base
   def update_slug!
     update_slug
     save validate: false
+  end
+
+  def uri user_name=user_name_for_url
+    "#{user_name}/#{slug}"
   end
 
   def user_name_for_url

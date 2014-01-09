@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140105010215) do
+ActiveRecord::Schema.define(version: 20140109104840) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,7 +23,7 @@ ActiveRecord::Schema.define(version: 20140105010215) do
     t.string   "type"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
-    t.text     "caption"
+    t.string   "caption"
     t.string   "title"
     t.integer  "position"
   end
@@ -237,12 +237,12 @@ ActiveRecord::Schema.define(version: 20140105010215) do
     t.boolean  "private",                       default: false, null: false
     t.string   "workflow_state"
     t.string   "one_liner"
+    t.boolean  "featured"
     t.integer  "impressions_count",             default: 0
     t.text     "counters_cache"
     t.integer  "team_id",                       default: 0,     null: false
     t.string   "license",           limit: 50
     t.string   "slug",              limit: 105
-    t.boolean  "featured"
     t.datetime "featured_date"
     t.datetime "made_public_at"
   end
@@ -258,6 +258,16 @@ ActiveRecord::Schema.define(version: 20140105010215) do
   end
 
   add_index "reputations", ["user_id"], name: "index_reputations_on_user_id", using: :btree
+
+  create_table "slug_histories", force: true do |t|
+    t.string   "value",      null: false
+    t.integer  "project_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "slug_histories", ["project_id"], name: "index_slug_histories_on_project_id", using: :btree
+  add_index "slug_histories", ["value"], name: "index_slug_histories_on_value", using: :btree
 
   create_table "tags", force: true do |t|
     t.integer  "taggable_id",   null: false

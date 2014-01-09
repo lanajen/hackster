@@ -1,0 +1,30 @@
+class SlugHistory < ActiveRecord::Base
+  belongs_to :project
+  validates :value, presence: true
+  attr_accessible :value, :project_id
+
+  def self.update_history_for project
+    histories = project.slug_histories
+    uris = { project.uri => false }
+    project.users.each{ |u| uris[project.uri(u.user_name)] = false }
+
+    histories.each do |history|
+      # if a slug exists we mark it so it's last updated
+      if history.value.in? uris
+        history.touch
+        uris[history.value] = true
+      end
+    end
+
+    # if no slug could be found we create a new one
+    uris.select{|k,v| v == false}.each do |uri, presence|
+      create value: uri, project_id: project.id
+
+      if where(value: uri).count > 1
+        message = "A duplicate slug_history url has been created: project_id: #{project.id} // project_uri: #{project.uri}"
+        log_line = LogLine.create(message: message, log_type: 'error', source: 'slug_history')
+        BaseMailer.enqueue_email 'error_notification', { context_type: :log_line, context_id: log_line.id }
+      end
+    end
+  end
+end

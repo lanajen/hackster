@@ -77,10 +77,17 @@ class ApplicationController < ActionController::Base
       user_name = params[:user_name] if params[:project_slug] and params[:user_name] and params[:user_name] != 'non_attributed'
 
       @project = if user_name
+        # find by slug history and redirect to newer url if ever
+        project_slug = "#{params[:user_name]}/#{params[:project_slug]}"
+        project = Project.joins(:slug_histories).where(slug_histories: { value: project_slug }).first!
+        if project.uri != project_slug
+          redirect_to(url_for(project), status: 301) and return
+        end
+        project
         # finds by team or by user and throws a record not found if needed
-        Project.joins(:team).where(groups: { user_name: user_name}).where(projects: { slug: params[:project_slug].downcase }).first || if project = Project.joins(:users).where(users: { user_name: user_name}).where(projects: { slug: params[:project_slug].downcase }).first!
-            redirect_to(url_for(project), status: 301) and return
-          end
+        # Project.joins(:team).where(groups: { user_name: user_name}).where(projects: { slug: params[:project_slug].downcase }).first || if project = Project.joins(:users).where(users: { user_name: user_name}).where(projects: { slug: params[:project_slug].downcase }).first!
+        #     redirect_to(url_for(project), status: 301) and return
+        #   end
       elsif params[:project_slug]
         Project.joins(:team).where(groups: { user_name: ['', nil]}).where(projects: { slug: params[:project_slug].downcase }).first!
       else

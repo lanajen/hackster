@@ -13,10 +13,11 @@ class MembersController < ApplicationController
     authorize! :update, @group
 
     if @group.update_attributes(params[@group.class.model_name.to_s.underscore.to_sym])
-      flash[:notice] = 'Members saved.'
       record = if @project
+        flash[:notice] = 'Team saved.'
         Project.find(params[:project_id])
       else
+        flash[:notice] = 'Members saved.'
         @group
       end
       respond_with record
