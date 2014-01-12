@@ -56,7 +56,7 @@ class Users::InvitationsController < Devise::InvitationsController
       @invitation_token = params[:invitation_token]
       render :edit
 
-      track_alias resource
+      # track_alias resource
     else
       set_flash_message(:alert, :invitation_token_invalid)
       redirect_to after_sign_out_path_for(resource_name)

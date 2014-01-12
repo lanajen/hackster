@@ -14,6 +14,7 @@ class ApplicationController < ActionController::Base
   before_filter :set_new_user_session
   before_filter :store_location_before
   after_filter :store_location_after
+  after_filter :track_landing_page
   helper_method :title
   helper_method :meta_desc
   helper_method :user_return_to
@@ -109,19 +110,53 @@ class ApplicationController < ActionController::Base
 
     def track_alias user=nil
       # tracker.alias_user (user || current_user)
-      tracker.enqueue 'alias_user', (user.try(:id) || current_user.try(:id)), user.class.name if tracking_activated?
+      old_distinct_id = current_mixpanel_user
+      new_distinct_id = set_current_mixpanel_user(user)
+      # user ||= current_user
+      tracker.enqueue 'alias_user', new_distinct_id, old_distinct_id if tracking_activated?
     end
 
     def track_event event_name, properties={}, user=nil
+      # cookies.delete :mixpanel_user
       # tracker.record_event event_name, current_user, properties
-      user ||= current_user
-      tracker.enqueue 'record_event', event_name, user.try(:id), user.class.name, properties if tracking_activated?
+      # user ||= current_user
+      # class_name = user ? user.class.name : 'session'
+      # id = user ? user.id : request.session_options[:id]
+      tracker.enqueue 'record_event', event_name, current_mixpanel_user(user), properties if tracking_activated?
+      # tracker.enqueue 'record_event', event_name, user.try(:id), user.class.name, properties if tracking_activated?
+      # @mixpanel_tracker = {
+      #   event: event_name,
+      #   properties: properties.to_json,
+      # }
     end
 
     def track_user properties, user=nil
       # tracker.update_user current_user, properties.merge({ ip: request.ip })
-      user ||= current_user
-      tracker.enqueue 'update_user', user.try(:id), user.class.name, properties.merge({ ip: request.ip }) if tracking_activated?
+      # user = current_mixpanel_user(user || current_user)
+      # class_name = user ? user.class.name : 'session'
+      # id = user ? user.id : request.session_options[:id]
+      tracker.enqueue 'update_user', current_mixpanel_user(user), properties.merge({ ip: request.ip }) if tracking_activated?
+      # tracker.enqueue 'update_user', user.try(:id), user.class.name, properties.merge({ ip: request.ip }) if tracking_activated?
+      # @mixpanel_user = {
+      #   id: "#{user.class.name.underscore}_#{user.id}",
+      #   properties: properties.to_json,
+      # }
+    end
+
+    def distinct_id_for user=nil
+      user ? "user_#{user.id}" : "session_#{request.session_options[:id]}"
+    end
+
+    def current_mixpanel_user user=nil
+      cookies[:mixpanel_user] ||= set_current_mixpanel_user(user)
+    end
+
+    def set_current_mixpanel_user user=nil
+      cookies[:mixpanel_user] = distinct_id_for(user || current_user)
+    end
+
+    def reset_current_mixpanel_user
+      cookies[:mixpanel_user] = distinct_id_for nil
     end
 
     def tracking_activated?
@@ -142,6 +177,12 @@ class ApplicationController < ActionController::Base
           'mixpanel_events' => request.env['mixpanel_events'],
         }
       }
+    end
+
+    def track_landing_page
+      return if cookies[:landing_page]
+      cookies[:landing_page] = request.path
+      track_event 'First landed on site', { landing_page: request.path }
     end
 
     def require_no_authentication

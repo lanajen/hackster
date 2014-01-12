@@ -66,9 +66,9 @@ class Users::AuthorizationsController < Users::RegistrationsController
       super(resource)
     end
 
-    def after_sign_in_path_for(resource)
-      super(resource)
-    end
+    # def after_sign_in_path_for(resource)
+    #   super(resource)
+    # end
 
     def build_resource(hash = nil)
       hash ||= resource_params || {}
