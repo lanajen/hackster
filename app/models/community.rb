@@ -1,7 +1,8 @@
 class Community < Group
   include Privatable
 
-  has_many :projects, through: :permissions, source: :permissible,
+  has_many :granted_permissions, as: :grantee, class_name: 'Permission'
+  has_many :projects, through: :granted_permissions, source: :permissible,
     source_type: 'Project'
   validates :user_name, :full_name, presence: true
   validates :user_name, uniqueness: true
