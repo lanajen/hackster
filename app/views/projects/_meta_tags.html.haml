@@ -12,3 +12,5 @@
   %meta(property="twitter:creator" content="@#{handle}")
 %meta(property="twitter:image:src" content="#{@project.cover_image(:cover_thumb)}")
 %link(rel="canonical" href="#{project_url(@project)}")
+- if @project.product_tags.any?
+  %meta(name='keywords' content="#{@project.product_tags.pluck(:name).join(',')}")
