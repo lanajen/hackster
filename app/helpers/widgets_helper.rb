@@ -7,6 +7,31 @@ module WidgetsHelper
     output
   end
 
+  def icon_for_widget widget
+    case widget
+    when TextWidget
+      'fa-align-left'
+    when ImageWidget
+      'fa-picture-o'
+    when CodeWidget, GithubWidget
+      'fa-code'
+    when DocumentWidget
+      'fa-files-o'
+    when BuyWidget
+      'fa-shopping-cart'
+    when VideoWidget
+      'fa-film'
+    when UpverterWidget, CircuitsioWidget, OshparkWidget, StlWidget
+      'fa-gears'
+    when CreditsWidget
+      'fa-group'
+    when PartsWidget
+      'fa-puzzle-piece'
+    else
+      ''
+    end
+  end
+
   def lightbox_elements images
     images.map do |image|
       "{

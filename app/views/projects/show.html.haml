@@ -10,8 +10,12 @@
     .inner-container
       .list-group
         - @widgets.each do |widget|
-          %a.list-group-item{ href: "javascript:smoothScrollTo('#widget-#{widget.id}', -20)" }= widget.name
-        %a.list-group-item{ href: "javascript:smoothScrollTo('#widget-comments', -20)" } Comments
+          %a.list-group-item{ href: "javascript:smoothScrollTo('#widget-#{widget.id}', -20)" }
+            %i.fa{ class: icon_for_widget(widget) }
+            = widget.name
+        %a.list-group-item{ href: "javascript:smoothScrollTo('#widget-comments', -20)" }
+          %i.fa.fa-comments
+          Comments
 
 .tab-content.row
   #tab-home.tab-pane.active
