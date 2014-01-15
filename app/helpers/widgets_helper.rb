@@ -26,6 +26,15 @@ module WidgetsHelper
     end.join(',')
   end
 
+  def show_expand_for? widget
+    case widget
+    when TextWidget, CodeWidget, PartsWidget
+      true
+    else
+      false
+    end
+  end
+
   def sort_comments comments
     display_comments Comment.sort_from_hierarchy(comments)
   end

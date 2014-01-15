@@ -40,7 +40,7 @@ $(document).ready(function(){
     }
   });
 
-  $('.code-widget.collapsible a').click(function(e){
+  $('.collapsible a.toggle').click(function(e){
     e.preventDefault();
     $(this).parent().toggleClass('collapsed');
     $(this).parent().toggleClass('expanded');
@@ -101,9 +101,10 @@ $(document).ready(function(){
 });
 
 
-function smoothScrollTo(target) {
+function smoothScrollTo(target, offsetTop) {
+  offsetTop = offsetTop || 0;
   if (typeof(target) == 'string') target = $(target);
   $('html, body').stop().animate({
-    'scrollTop': target.offset().top
+    'scrollTop': target.offset().top + offsetTop
   }, 500, 'swing', function () {});
 }

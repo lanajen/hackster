@@ -75,4 +75,86 @@ $(document).ready(function(){
       $('.btn-delete', this).hide();
     }
   }, '.comment');
+
+  // make widgets full width
+  $('body').on('click', 'a.to-full-width', function(e){
+    e.preventDefault();
+
+    target = $($(this).data('target'));
+    copy = target.clone();
+    copy.attr('id', target.attr('id') + '-copy')
+    copy.css({
+      position: 'fixed',
+      top: target.offset().top - $(window).scrollTop(),
+      left: target.offset().left,
+      width: target.width(),
+      'z-index': 100
+    });
+    copy.addClass('widget full-width');
+    $('.btn-edit', copy).remove();
+    $('<a class="btn-edit to-compact" data-target="#' + target.attr('id') + '" data-copy="#' + copy.attr('id') + '" href="#" rel="tooltip" title="Close"><i class="fa fa-compress"></a>').appendTo($('.header h4', copy));
+    $('#full-width .background')
+      .data('target', '#' + target.attr('id'))
+      .data('copy', '#' + copy.attr('id'));
+    copy.appendTo($('#full-width .inner-container'));
+    $('#full-width').fadeIn(function(){
+      $('body').addClass('no-scroll');
+    });
+    copy.animate({
+      top: $('#full-width .inner-container').offset().top - $(window).scrollTop(),
+      left: $('#full-width .inner-container').offset().left + 11,
+      width: $('#full-width .inner-container').width()
+    }, function(){
+      copy.attr('style', '');
+    });
+
+    if ($('.collapsible', copy).length > 0) {
+      tmp = copy
+        .clone()
+        .css({
+          position: 'absolute',
+          left: '-100000px'
+        })
+        .appendTo('body');
+      $('.collapsible', tmp).removeClass('collapsed');
+      $('.collapsible', tmp).addClass('expanded');
+      height = $('.collapsible .highlight pre', tmp).height();
+      tmp.remove();
+      $('.collapsible', copy).addClass('expanded');
+      $('.collapsible .highlight pre', copy).animate({ 'max-height': height }, function(){
+        $('.collapsible', copy).removeClass('collapsed');
+      });
+    }
+  });
+
+  // make widgets normal size
+  $('body').on('click', '.to-compact', function(e){
+    e.preventDefault();
+
+    copy = $($(this).data('copy'));
+    target = $($(this).data('target'));
+    copy.css({
+      position: 'fixed',
+      top: copy.offset().top - $(window).scrollTop(),
+      left: copy.offset().left,
+      width: copy.outerWidth(),
+      'z-index': 100
+    });
+    if ($('.collapsible', copy).length > 0) {
+      $('.collapsible', copy).removeClass('expanded');
+      $('.collapsible .highlight pre', copy).animate({ 'max-height': '150px' }, function(){
+        $('.collapsible', copy).addClass('collapsed');
+      });
+    }
+    copy.animate({
+      top: target.offset().top - $(window).scrollTop(),
+      left: target.offset().left,
+      width: target.width(),
+    }, function(){
+      copy.remove();
+    });
+    $('#full-width').fadeOut(function(){
+      $('body').removeClass('no-scroll');
+    });
+  });
 });

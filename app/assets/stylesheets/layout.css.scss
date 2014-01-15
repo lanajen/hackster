@@ -67,6 +67,10 @@ footer {
   }
 }
 
+.no-scroll {
+  overflow: hidden;
+}
+
 .well, .transparent-well {
   padding: 0;
   overflow: hidden;
@@ -175,9 +179,11 @@ h1, h2, h3, h4 {
 }
 
 .btn-edit {
-  top: 0;
-  font-weight: bold;
+  // font-weight: bold;
   @include font-size(12);
+  // float: right;
+  margin-left: 10px;
+  @extend .close;
 }
 
 .btn-follow {
@@ -185,13 +191,9 @@ h1, h2, h3, h4 {
   @extend .btn;
 }
 
-.btn-edit, .btn-follow, .btn-heading {
+.btn-follow, .btn-heading {
   position: absolute;
   right: 0;
-}
-
-.btn-edit a {
-  margin-left: 10px;
 }
 
 .btn-heading {

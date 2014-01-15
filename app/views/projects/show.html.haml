@@ -1,6 +1,18 @@
 = content_for :head do
   = render 'meta_tags'
 
+- if @widgets.any?
+  #project-summary.collapsed.collapsible
+    %a.more.toggle{ rel: 'tooltip', title: 'Show table of contents', data: { container: 'body', placement: 'right' } }
+      %i.fa.fa-list-alt
+    %a.less.toggle{ rel: 'tooltip', title: 'Hide table of contents', data: { container: 'body', placement: 'right' } }
+      %i.fa.fa-arrow-left
+    .inner-container
+      .list-group
+        - @widgets.each do |widget|
+          %a.list-group-item{ href: "javascript:smoothScrollTo('#widget-#{widget.id}', -20)" }= widget.name
+        %a.list-group-item{ href: "javascript:smoothScrollTo('#widget-comments', -20)" } Comments
+
 .tab-content.row
   #tab-home.tab-pane.active
     -# .row
@@ -30,6 +42,11 @@
               No one yet.
 
     - if @widgets.any?
+      #full-width
+        .background.to-compact
+        .container
+          .row
+            .inner-container.col-xs-12
       #column1.col-xs-6
         - @project.widgets_first_col.each do |widget|
           = render partial: 'widgets/widget', locals: { widget: widget }
