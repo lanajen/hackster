@@ -104,6 +104,7 @@ class Widget < ActiveRecord::Base
         'Github repo' => 'GithubWidget',
         'Images' => 'ImageWidget',
         'OSH Park shared project' => 'OshparkWidget',
+        'PayPal Buy Now button' => 'PaypalWidget',
         'Press articles' => 'PressWidget',
         'STL renderings' => 'StlWidget',
         'Text' => 'TextWidget',

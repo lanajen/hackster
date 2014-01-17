@@ -23,6 +23,7 @@ class ProjectsController < ApplicationController
     meta_desc @project_meta_desc
     @project = @project.decorate
     @widgets = @project.widgets.order(:created_at)
+    @strip_code = true if params[:edited] == 'paypal_widget'
 
     track_event 'Viewed project', @project.to_tracker.merge({ own: current_user.try(:is_team_member?, @project) })
   end

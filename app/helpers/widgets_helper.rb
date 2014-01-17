@@ -17,7 +17,7 @@ module WidgetsHelper
       'fa-code'
     when DocumentWidget
       'fa-files-o'
-    when BuyWidget
+    when BuyWidget, PaypalWidget
       'fa-shopping-cart'
     when VideoWidget
       'fa-film'
