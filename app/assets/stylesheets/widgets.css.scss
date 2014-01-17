@@ -390,3 +390,21 @@
     @include font-size(11);
   }
 }
+
+.paypal-widget {
+  form {
+    text-align: center;
+    table {
+      width: 100%;
+    }
+    select {
+      @extend .form-control;
+      margin-bottom: 5px;
+    }
+  }
+  p {
+    font-size: 13px;
+    color: #666;
+    margin-top: 10px;
+  }
+}

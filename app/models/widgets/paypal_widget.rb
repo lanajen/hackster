@@ -1,5 +1,5 @@
 class PaypalWidget < Widget
-  define_attributes [:code]
+  define_attributes [:code, :caption]
   # attr_accessible :code
   before_save :sanitize_code
 

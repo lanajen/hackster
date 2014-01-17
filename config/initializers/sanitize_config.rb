@@ -20,9 +20,6 @@ class Sanitize
         'input' => {'src' => ['https']},
         'form' => {'action' => ['https']},
       },
-      add_attributes: {
-        'form' => {'id' => 'paypal-form'},
-      },
     }
   end
 end
