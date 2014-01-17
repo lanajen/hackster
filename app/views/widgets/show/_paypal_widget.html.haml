@@ -1,7 +1,7 @@
 .paypal-widget
   - if widget.code.present?
     -# weird behavior: when widget form is submitted and contains a form as parameter, if the page it's redirected to contains a form with the same action then the browser redirects to "data:,". Same thing with iframes and src.
-    - if @strip_code
+    - if session[:last_widget_edited] == 'paypal_widget'
       = widget.code.gsub(/action="https:\/\/www.paypal.com\/cgi-bin\/webscr"/, '').html_safe
       = content_for :js do
         :javascript

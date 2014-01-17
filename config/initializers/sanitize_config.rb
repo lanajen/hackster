@@ -20,6 +20,9 @@ class Sanitize
         'input' => {'src' => ['https']},
         'form' => {'action' => ['https']},
       },
+      add_attributes: {
+        'form' => {'target' => '_blank'},
+      }
     }
   end
 end

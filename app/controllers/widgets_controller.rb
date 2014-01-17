@@ -49,7 +49,8 @@ class WidgetsController < ApplicationController
     if @widget.update_attributes params[:widget]
       flash[:notice] = 'Widget saved.'
       current_user.broadcast :update, @project.id, 'Project' if @project.public?
-      respond_with @project, location: project_path(@project, edited: @widget.class.name.underscore)
+      session[:last_widget_edited] = @widget.class.name.underscore
+      respond_with @project
 
       track_event 'Updated project', @project.to_tracker.merge({ type: 'widget update' }).merge(@widget.to_tracker)
     else
