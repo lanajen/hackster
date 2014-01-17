@@ -32,12 +32,22 @@
       }
     }
   }
+  pre {
+    word-break: normal;
+    & > span {
+      display: block;
+      line-height: 14px;
+      font-size: 12px;
+      margin-bottom: -9px;
+    }
+  }
   &.expanded {
     .highlight {
       position: relative;
       border-left: 5.2ex solid #CCC;
       border-left: 5.2ex solid rgba(0, 0, 0, 0.15);
       pre {
+        padding: 9.5px 20px;
         counter-reset: linenumbers;
         @include border-radius(0 4px 4px 0);
         & > span:before {
