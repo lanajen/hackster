@@ -89,6 +89,6 @@
         = @project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
       .row
         - @other_projects.each do |project|
-          .col-xs-3
+          .col-xs-2
             = link_to image_tag(project.decorate.cover_image(:cover_thumb), class: 'img-responsive'), project
             %h5= link_to project.name, project
