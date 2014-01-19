@@ -2,7 +2,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   before_filter :configure_permitted_parameters, only: [:create, :update]
 
   def new
-    track_event 'Visited sign up page'
+    track_event 'Visited sign up page', { referrer: request.referrer }
 
     super
   end

@@ -122,6 +122,7 @@ class ApplicationController < ActionController::Base
       # user ||= current_user
       # class_name = user ? user.class.name : 'session'
       # id = user ? user.id : request.session_options[:id]
+      properties.merge! signed_in: !!user_signed_in?
       tracker.enqueue 'record_event', event_name, current_mixpanel_user(user), properties if tracking_activated?
       # tracker.enqueue 'record_event', event_name, user.try(:id), user.class.name, properties if tracking_activated?
       # @mixpanel_tracker = {

@@ -23,6 +23,7 @@ class ProjectsController < ApplicationController
     meta_desc @project_meta_desc
     @project = @project.decorate
     @widgets = @project.widgets.order(:created_at)
+    @other_projects = Project.indexable.includes(:team_members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).limit(4)
 
     track_event 'Viewed project', @project.to_tracker.merge({ own: current_user.try(:is_team_member?, @project) })
   end

@@ -79,3 +79,16 @@
 
   #tab-comments.tab-pane
     .col-xs-9
+
+- if @other_projects.any?
+  .row
+    .col-xs-12
+      %hr
+      %h4
+        Other projects by
+        = @project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
+      .row
+        - @other_projects.each do |project|
+          .col-xs-3
+            = link_to image_tag(project.decorate.cover_image(:cover_thumb), class: 'img-responsive'), project
+            %h5= link_to project.name, project
