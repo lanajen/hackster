@@ -1,7 +1,7 @@
 module ScraperStrategies
   class Base
     LINK_REGEXP = {
-      /github\.com/ => 'GithubWidget.new(repo:"|href|",name:"Github repo")',
+      /github\.com\/[0-9a-zA-Z_\-]+\/[0-9a-zA-Z_\-]+\z/ => 'GithubWidget.new(repo:"|href|",name:"Github repo")',
       # /oshpark\.com/ => 'GithubWidget',
       /upverter\.com/ => 'UpverterWidget.new(link:"|href|",name:"Schematics on Upverter")',
       /123d\.circuits\.io/ => 'CircuitsioWidget.new(link:"|href|",name:"Schematics on Circuits.io")',

@@ -4,6 +4,7 @@ class ProjectScraper
   DEFAULT_STRATEGY = :wordpress
   KNOWN_STRATEGIES = {
     'blogspot.fr' => :blogspot,
+    'blogspot.com' => :blogspot,
     'github.com' => :github,
     'wordpress.com' => :wordpress,
   }
