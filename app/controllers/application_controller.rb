@@ -90,7 +90,7 @@ class ApplicationController < ActionController::Base
         #     redirect_to(url_for(project), status: 301) and return
         #   end
       elsif params[:project_slug]
-        Project.joins(:team).where(groups: { user_name: ['', nil]}).where(projects: { slug: params[:project_slug].downcase }).first!
+        Project.where(projects: { slug: params[:project_slug].downcase }).first!
       else
         Project.find params[:project_id] || params[:id]
       end

@@ -1,79 +1,42 @@
 module ScraperStrategies
-  class Wordpress < Base
-    def to_project parsed
-      puts 'Converting to project...'
+  class Wordpress < Blog
+    def to_project
+      initialize_scrapping
 
-      project = Project.new private: true
-      widgets = []
-
-      article = parsed.at_css('article') || parsed.at_css('.post') || parsed
-
-      {
-        'a' => 'href',
-        'iframe' => 'src',
-      }.each do |el, attr|
-        article.css(el).each do |link|
-          LINK_REGEXP.each do |regexp, command|
-            if link[attr] =~ Regexp.new(regexp)
-              command.gsub!(/\|href\|/, link[attr])
-              widget = eval command
-              widgets << widget
-              break
-            end
-          end
-        end
-      end
-
-      project.name = article.at_css('.entry-title').try(:text) || article.css('h1').last.try(:text) || article.at_css('h2').try(:text) || parsed.title
-
-      tags = article.css('[rel=category]') + article.css('[rel=tag]') + article.css('[rel="category tag"]')
-      project.product_tags_string = tags.map{|a| a.text }.join(',')
-
-      project, widgets = parse_images(article, project, widgets)
-
-      # article.at_css('.entry-content').try(:inner_html) ||  # includes share tools
-      raw_text = article.css('p').map{|p| p.to_html }.join('')
+      # @article.at_css('.entry-content').try(:inner_html) ||  # includes share tools
+      raw_text = @article.css('p').map{|p| p.to_html }.join('')
       sanitized_text = Sanitize.clean(raw_text, Sanitize::Config::BASIC)
       text = Nokogiri::HTML(sanitized_text)
       text.css('a').find_all.each{|el| el.remove if el.content.strip.blank? }
       text.css('p').find_all.each{|el| el.remove if el.content.strip.blank? }
       text = Sanitize.clean(text.to_html, Sanitize::Config::BASIC_BLANK)
-      widgets << TextWidget.new(content: text, name: 'About')
+      @widgets << TextWidget.new(content: text, name: 'About')
 
-      widget_col = 1
-      widget_row = 1
-      count = 0
-      widgets.each do |widget|
-        project.widgets << widget
-        widget.position = "#{widget_col}.#{widget_row}"
-        if count.even?
-          widget_col += 1
-        else
-          widget_row += 1
+      distribute_widgets
+      parse_comments
+
+      @project
+    end
+
+    private
+      def extract_comments dom, depth=1, parent=nil
+        dom.css("li.depth-#{depth}").each do |comment|
+          body = comment.at_css('.comment-content').inner_html
+          name = comment.at_css('.comment-author .fn').text
+          created_at = DateTime.parse comment.at_css('time')['datetime']
+          c = @project.comments.new body: body, guest_name: name
+          c.created_at = created_at
+          c.parent = parent
+          c.disable_notification!
+          extract_comments comment, depth+1, c
         end
-        count += 1
       end
 
-      if comment_dom = parsed.at_css('#comments')
-        depth = 1
-        project = extract_comments comment_dom, project
+      def parse_comments
+        if comment_dom = @parsed.at_css('#comments')
+          depth = 1
+          extract_comments comment_dom
+        end
       end
-
-      project
-    end
-
-    def extract_comments dom, project, depth=1, parent=nil
-      dom.css("li.depth-#{depth}").each do |comment|
-        body = comment.at_css('.comment-content').inner_html
-        name = comment.at_css('.comment-author .fn').text
-        created_at = DateTime.parse comment.at_css('time')['datetime']
-        c = project.comments.new body: body, guest_name: name
-        c.created_at = created_at
-        c.parent = parent
-        c.disable_notification!
-        project = extract_comments comment, project, depth+1, c
-      end
-      project
-    end
   end
 end
