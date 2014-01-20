@@ -8,6 +8,8 @@ module HerokuResqueAutoScale
 
       def workers=(qty)
         @@heroku.post_ps_scale(ENV['HEROKU_APP'], 'worker', qty.to_s)
+      rescue => e
+        puts "Error scaling workers to #{qty}: #{e.message}"
       end
 
       def job_count
