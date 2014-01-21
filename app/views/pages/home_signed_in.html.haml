@@ -12,7 +12,7 @@
           -# = link_to 'See more featured projects &rarr;'.html_safe, '/search', class: 'btn-edit'
     .row
       - @featured_projects.each do |project|
-        = render partial: 'projects/project_thumb', locals: { project: project.decorate }
+        = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homefeat' }
 
 .row
   .col-xs-12
@@ -23,7 +23,7 @@
           -# = link_to 'See more recent projects &rarr;'.html_safe, '/search?model%5Bproject%5D=1', class: 'btn-edit'
     .row
       - @last_projects.each do |project|
-        = render partial: 'projects/project_thumb', locals: { project: project.decorate }
+        = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homelast' }
 
 .row
   .col-xs-12
@@ -34,7 +34,7 @@
           -# = link_to 'See more popular projects &rarr;'.html_safe, '/search?model%5Bproject%5D=1', class: 'btn-edit'
     .row
       - @most_popular_projects.each do |project|
-        = render partial: 'projects/project_thumb', locals: { project: project.decorate }
+        = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homepop' }
 
 .row
   .col-xs-12.text-center

@@ -24,13 +24,13 @@
                     %h4.col-xs-12.thumb-horizontal= year
                     - projects.each_with_index do |project, i|
                       - show_year = (i > 0) ? false : true
-                      = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '4', show_year: show_year }
+                      = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '4', show_year: show_year, ref: 'user' }
               - else
                 .row.thumb-list{ class: style }
                   %h4 &nbsp;
                   - @public_projects_sorted.each do |year, projects|
                     - projects.each do |project|
-                      = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '4' }
+                      = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '4', ref: 'user' }
 
             - elsif user_is_current?
               %p
@@ -92,7 +92,7 @@
               - if @user.projects.private.any?
                 .row
                   - @user.projects.private.each do |project|
-                    = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '3' }
+                    = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '3', ref: 'userprivate' }
               - elsif user_is_current?
                 %p
                   You have no private projects.
@@ -105,7 +105,7 @@
             - if @user.respected_projects.indexable.any?
               .row
                 - @user.respected_projects.indexable.each do |project|
-                  = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '3' }
+                  = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '3', ref: 'userrespected' }
             - elsif user_is_current?
               %p
                 You haven't respected any projects yet.
@@ -121,7 +121,7 @@
                 - @user.comments.where(commentable_type: 'Project').each do |comment|
                   %li.comment
                     %h5.comment-project
-                      = link_to comment.commentable.name, comment.commentable
+                      = link_to comment.commentable.name, project_path(comment.commentable, ref: 'usercomment')
                       %small
                         = time_ago_in_words(comment.created_at)
                         ago

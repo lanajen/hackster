@@ -10,6 +10,6 @@
 
   .row
     - @projects.each do |project|
-      = render partial: "projects/project_thumb", locals: { project: project.decorate }
+      = render partial: "projects/project_thumb", locals: { project: project.decorate, ref: 'explore' }
   .row
     .col-xs-12.text-center= will_paginate @projects
