@@ -14,6 +14,7 @@ class Project < ActiveRecord::Base
   has_many :images, as: :attachable, dependent: :destroy
   has_many :permissions, as: :permissible
   has_many :respects, dependent: :destroy, class_name: 'Favorite'
+  has_many :respecting_users, -> { order 'favorites.created_at ASC' }, through: :respects, source: :user
   has_many :slug_histories, -> { order updated_at: :desc }, dependent: :destroy
   has_many :team_members, through: :team, source: :members#, -> { includes :user }
   has_many :users, through: :team_members

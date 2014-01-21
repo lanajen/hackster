@@ -1,0 +1,9 @@
+.well{ id: "widget-respects" }
+  .header
+    %h4{ style: 'position:relative;' }
+      Users who respect this project
+  .content
+    .row
+      - users.each do |user|
+        .col-xs-2.respect-thumb
+          = link_to image_tag(user.decorate.avatar(:thumb), class: 'img-responsive'), user, data: { container: 'body' }, rel: 'tooltip', title: user.name
