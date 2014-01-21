@@ -1,8 +1,8 @@
 class CommentObserver < ActiveRecord::Observer
-  include BroadcastObserver
+  # include BroadcastObserver
 
   def after_create record
-    record.user.broadcast :new, record.id, observed_model if record.user.class == User
+    record.user.broadcast :new, record.id, 'Comment' if record.user.class == User
     BaseMailer.enqueue_email 'new_comment_notification',
         { context_type: 'comment', context_id: record.id } unless record.disable_notification?
     update_counters record
@@ -13,7 +13,7 @@ class CommentObserver < ActiveRecord::Observer
   end
 
   def after_destroy record
-  #    Broadcast.where(context_model_id: record.id, context_model_type: observed_model).destroy_all
+    Broadcast.where(context_model_id: record.id, context_model_type: 'Comment').destroy_all
     update_counters record
   end
 
