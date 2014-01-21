@@ -106,19 +106,19 @@ class Project < ActiveRecord::Base
   end
 
   def self.last_created
-    indexable.order(created_at: :desc)
+    indexable.order('projects.create_at DESC')
   end
 
   def self.last_public
-    indexable.order(made_public_at: :desc)
+    indexable.order('projects.made_public_at DESC')
   end
 
   def self.last_updated
-    indexable.order(updated_at: :desc)
+    indexable.order('projects.updated_at DESC')
   end
 
   def self.most_popular
-    indexable.order(impressions_count: :desc)
+    indexable.order('projects.impressions_count DESC')
   end
 
   def all_issues
