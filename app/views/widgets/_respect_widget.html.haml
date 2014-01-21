@@ -2,6 +2,7 @@
   .header
     %h4{ style: 'position:relative;' }
       Users who respect this project
+      = render partial: 'respects/button', locals: { project: @project }
   .content
     .row
       - users.each do |user|

@@ -1,3 +1,5 @@
 $('a.respect-button')
-  .replaceWith('<%= escape_javascript render(partial: 'button', locals: { project: @project }) %>')
+  .replaceWith('<%= escape_javascript render(partial: "button", locals: { project: @project }) %>')
   .tooltip();
+$('#widget-respects').replaceWith('<%= escape_javascript render(partial: "widgets/respect_widget", locals: { users: @project.respecting_users }) %>');
+$('#widget-respects a[rel=tooltip]').tooltip();

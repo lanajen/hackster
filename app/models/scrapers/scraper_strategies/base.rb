@@ -1,14 +1,14 @@
 module ScraperStrategies
   class Base
     LINK_REGEXP = {
-      /github\.com\/[0-9a-zA-Z_\-]+\/[0-9a-zA-Z_\-]+\z/ => 'GithubWidget.new(repo:"|href|",name:"Github repo")',
-      # /oshpark\.com/ => 'GithubWidget',
-      /upverter\.com/ => 'UpverterWidget.new(link:"|href|",name:"Schematics on Upverter")',
       /123d\.circuits\.io/ => 'CircuitsioWidget.new(link:"|href|",name:"Schematics on Circuits.io")',
+      /github\.com\/[0-9a-zA-Z_\-]+\/[0-9a-zA-Z_\-]+\z/ => 'GithubWidget.new(repo:"|href|",name:"Github repo")',
+      /oshpark\.com\/shared_projects/ => 'OshparkWidget.new(link:"|href|",name:"PCB on OSH Park")',
+      /tindie\.com/ => 'BuyWidget.new(link:"|href|",name:"Where to buy")',
+      /upverter\.com/ => 'UpverterWidget.new(link:"|href|",name:"Schematics on Upverter")',
+      /vimeo\.com/ => 'VideoWidget.new(video_attributes:{link:"|href|"},name:"Demo video")',
       /youtube\.com/ => 'VideoWidget.new(video_attributes:{link:"|href|"},name:"Demo video")',
       /youtu\.be/ => 'VideoWidget.new(video_attributes:{link:"|href|"},name:"Demo video")',
-      /vimeo\.com/ => 'VideoWidget.new(video_attributes:{link:"|href|"},name:"Demo video")',
-      /tindie\.com/ => 'BuyWidget.new(link:"|href|",name:"Where to buy")',
     }
 
     def initialize parsed
