@@ -30,16 +30,6 @@ $(document).ready(function(){
     $('#notifications .istooltip').tooltip('destroy');
   }, 5000);
 
-  // collapse code widgets that are higher than 150px
-  $.each($('.code-widget'), function(i, v){
-    if ($('.highlight pre', v).height() > 150){
-      $(this).addClass('collapsible');
-      $(this).addClass('collapsed');
-    } else {
-      $(this).addClass('expanded');
-    }
-  });
-
   $('.collapsible a.toggle').click(function(e){
     e.preventDefault();
     $(this).parent().toggleClass('collapsed');
