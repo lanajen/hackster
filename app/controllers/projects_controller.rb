@@ -23,7 +23,13 @@ class ProjectsController < ApplicationController
     meta_desc @project_meta_desc
     @project = @project.decorate
     @widgets = @project.widgets.order(:created_at)
-    @other_projects = Project.most_popular.includes(:team_members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).limit(6)
+    @other_projects_count = Project.most_popular.includes(:team_members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).size
+    if @other_projects_count > 6
+      @other_projects = Project.most_popular.includes(:team_members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).limit(3)
+      @last_projects = Project.last_public.includes(:team_members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: [@project.id] + @other_projects.map(&:id)).limit(3)
+    else
+      @other_projects = Project.most_popular.includes(:team_members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id)
+    end
 
     track_event 'Viewed project', @project.to_tracker.merge({ own: current_user.try(:is_team_member?, @project) })
   end
