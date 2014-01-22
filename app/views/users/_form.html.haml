@@ -17,7 +17,7 @@
       = f.input :user_name, hint: "Changing your user name will break the URLs of your existing projects!"
       = f.input :email
       = f.input :mini_resume, as: :text, input_html: { rows: 4 },
-        hint: 'Maximum 140 characters'
+        hint: 'Maximum 140 characters', label: 'About me'
 
       = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Profile picture', image_link: @user.avatar.try(:file_url, :thumb), help_block: '', attribute_type: 'avatar', image_version: 'thumb', model: 'user' }
 

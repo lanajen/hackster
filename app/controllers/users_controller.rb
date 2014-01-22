@@ -68,7 +68,7 @@ class UsersController < ApplicationController
       if @user.projects.any?
         redirect_to @user.projects.first, notice: "Profile info saved! Now you can start working on your project."
       else
-        redirect_to new_project_path, notice: 'Profile info saved! Now how about creating your first project?'
+        redirect_to root_path, notice: 'Profile info saved!'
       end
 
       track_user @user.to_tracker_profile
