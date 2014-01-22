@@ -74,13 +74,11 @@ footer {
 .well, .transparent-well {
   padding: 0;
   overflow: hidden;
-  h1, h2, h3, h4, h5 {
-    margin: 0;
-    font-family: 'Open Sans', Tahoma, sans-serif;
-    font-weight: normal;
-  }
   .content {
     padding: 13px 19px;
+  }
+  h1, h2, h3, h4, h5 {
+    margin: 0;
   }
   .header {
     padding: 16px 19px 0;
@@ -96,6 +94,13 @@ footer {
     &.no-content {
       padding: 13px 19px;
     }
+  }
+}
+
+.well, .transparent-well, .wellified, .wellified-transparent {
+  h1, h2, h3, h4, h5 {
+    font-family: 'Open Sans', Tahoma, sans-serif;
+    font-weight: normal;
   }
 }
 
@@ -276,11 +281,16 @@ hr.spacious {
   margin: 30px 0 50px;
 }
 
-.wellified {
+.wellified, .wellified-transparent {
   background: #fafafa;
   padding: 10px 20px;
   border: 1px solid #ddd;
   @include border-radius(4px);
+}
+
+.wellified-transparent {
+  background: none;
+  border-color: #f2f2f2;
 }
 
 table {
@@ -409,5 +419,19 @@ a.hidden-link {
   }
   &.wellified {
     padding: 20px 30px;
+  }
+}
+
+.login-forms {
+  h3 {
+    small {
+      @include font-size(13);
+    }
+  }
+  label.checkbox {
+    font-weight: normal;
+  }
+  .wellified {
+    padding-bottom: 30px;
   }
 }

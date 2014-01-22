@@ -1,0 +1,29 @@
+- highlight = defined?(highlight) ? highlight : nil
+
+.login-forms
+  .col-xs-12
+    .alert.alert-info.text-center= SLOGAN
+
+  .col-xs-4
+    .wellified{ class: "#{'wellified-transparent' unless highlight == 'login'}" }
+      %h3.text-center
+        Log in
+        %br
+        %small with your existing account:
+      = render 'devise/sessions/form'
+
+  .col-xs-4
+    .wellified{ class: "#{'wellified-transparent' unless highlight == 'signup'}" }
+      %h3.text-center
+        Sign up
+        %br
+        %small for a new account:
+      = render 'devise/registrations/form'
+
+  .col-xs-4
+    .wellified{ class: "#{'wellified-transparent' unless highlight == 'connect'}" }
+      %h3.text-center
+        Connect
+        %br
+        %small with your social account:
+      = render 'devise/shared/omniauth'

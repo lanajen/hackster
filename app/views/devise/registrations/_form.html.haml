@@ -1,0 +1,8 @@
+= simple_form_for resource, as: resource_name, url: registration_path(resource_name) do |f|
+  = f.error_notification
+
+  = f.input :user_name, label: false, placeholder: 'Username', autofocus: params[:invitation_code].present?
+  = f.input :email, label: false, placeholder: 'Email'
+  = f.input :email_confirmation, label: false, placeholder: 'Confirm email'
+  = f.input :password, label: false, placeholder: 'Password'
+  = f.button :submit, "Sign up", class: 'btn btn-primary btn-block'

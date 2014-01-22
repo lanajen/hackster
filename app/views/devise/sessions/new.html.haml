@@ -1,6 +1,11 @@
-.col-xs-4.col-xs-offset-4
+= render partial: 'devise/shared/login_forms', locals: { highlight: @action }
+
+-# .col-xs-4.col-xs-offset-4
   .wellified
     %h2.text-center Log in to Hackster.io
+    %p.text-center.smaller
+      Already have an account?
+      = link_to 'Sign in.', new_user_session_path
     = render 'form'
 
     %hr

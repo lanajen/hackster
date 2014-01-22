@@ -1,4 +1,6 @@
 class Users::SessionsController < Devise::SessionsController
+  before_filter :set_action, only: [:new, :create]
+
   protected
     def after_sign_in_path_for(resource)
       track_alias
@@ -15,5 +17,9 @@ class Users::SessionsController < Devise::SessionsController
       end
 
       super resource
+    end
+
+    def set_action
+      @action = params[:a] || 'login'
     end
 end
