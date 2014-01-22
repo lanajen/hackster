@@ -518,6 +518,10 @@ class User < ActiveRecord::Base
     devise_mailer.send(notification, model, *args).deliver
   end
 
+  def send_reset_password_instructions
+    super if invitation_token.nil?
+  end
+
   def skip_confirmation!
     self.skip_registration_confirmation = true
   end
@@ -617,9 +621,5 @@ class User < ActiveRecord::Base
 
     def password_required?
       (!persisted? || !password.nil? || !password_confirmation.nil?) && !being_invited?
-    end
-
-    def send_reset_password_instructions
-      super if invitation_token.nil?
     end
 end
