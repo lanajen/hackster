@@ -12,12 +12,12 @@ class ProjectScraper
   attr_accessor :content, :page_url
 
   def self.scrape page_url
-    # s = new page_url
+    s = new page_url
 
     # debug snippet
-    url = File.join(Rails.root, 'app/models/scrapers/maker.html')
-    s = new 'http://www.artbottoys.com', :base
-    s.content = s.read_file url
+    # url = File.join(Rails.root, 'app/models/scrapers/maker.html')
+    # s = new 'http://www.artbottoys.com', :base
+    # s.content = s.read_file url
     # end debug snippet
 
     project = s.document.to_project
