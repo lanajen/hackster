@@ -8,7 +8,7 @@ module GraphHelper
 
     data_table.add_rows rows
 
-    option = { width: 600, height: 350, title: title }
+    option = { width: '100%', height: 350, title: title }
     "GoogleVisualr::Interactive::#{chart_type}".constantize.new(data_table, option)
   end
 end

@@ -1,18 +1,14 @@
 class Admin::PagesController < Admin::BaseController
   include FilterHelper
-  # include GraphHelper
+  include GraphHelper
 
   def analytics
     @project_count = Project.live.count
     @comment_count = Comment.count
     @like_count = Favorite.count
     @user_count = User.invitation_accepted_or_not_invited.count
-    @user_with_user_name_count = User.where('user_name IS NOT NULL').count
 
-    # @new_invites = InviteRequest.group("DATE_TRUNC('week', created_at)").count.sort_by{|k,v| k}
-    # @new_users = User.where('invitation_accepted_at IS NOT NULL').group("DATE_TRUNC('week', invitation_accepted_at)").count.sort_by{|k,v| k}
-
-    sql = "SELECT users.* FROM (SELECT members.user_id as user_id, COUNT(*) as count FROM members INNER JOIN groups ON groups.id = members.group_id INNER JOIN projects ON projects.team_id = groups.id WHERE projects.private = 'f' GROUP BY user_id) AS t1 INNER JOIN users ON users.id = t1.user_id WHERE t1.count > 1 ORDER BY t1.count DESC;"
+    sql = "SELECT users.* FROM (SELECT members.user_id as user_id, COUNT(*) as count FROM members INNER JOIN groups ON groups.id = members.group_id INNER JOIN projects ON projects.team_id = groups.id WHERE projects.private = 'f' GROUP BY user_id) AS t1 INNER JOIN users ON users.id = t1.user_id WHERE t1.count > 1 ORDER BY t1.count DESC LIMIT 10;"
 
     # sql = "SELECT * FROM (SELECT *, substring(counters_cache FROM 'live_projects_count: ([0-9]+)') as live_projects_count from users) as t1 where t1.live_projects_count::integer > 1 ORDER BY live_projects_count DESC LIMIT 10;"
 
@@ -24,14 +20,49 @@ class Admin::PagesController < Admin::BaseController
 
     @users_with_at_least_one_live_project = records_array[0]['count']
 
-    # records_array = ActiveRecord::Base.connection.exec_query(sql)
 
-    # rows = records_array.rows.map do |row|
-    #   [row[0], row[1].to_i]
-    # end
+    sql = "SELECT to_char(made_public_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM projects WHERE private = 'f' AND date_part('days', now() - projects.made_public_at) < 30 GROUP BY date ORDER BY date;"
+    records_array = ActiveRecord::Base.connection.exec_query(sql)
 
-    # columns = [['string', 'Page'], ['number', 'Total']]
-    # @most_viewed_pages = graph rows, columns, 'Most viewed pages', 'PieChart'
+    rows = records_array.rows.map do |row|
+      [Date.parse("#{row[0]}"), row[1].to_i]
+    end
+
+    columns = [['date', 'Day'], ['number', 'Total']]
+    @new_projects = graph rows, columns, 'Projects made public', 'ColumnChart'
+
+
+    sql = "SELECT to_char(created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM users WHERE (users.invitation_sent_at IS NULL OR users.invitation_accepted_at IS NOT NULL) AND date_part('days', now() - users.created_at) < 30 GROUP BY date ORDER BY date;"
+    records_array = ActiveRecord::Base.connection.exec_query(sql)
+
+    rows = records_array.rows.map do |row|
+      [Date.parse("#{row[0]}"), row[1].to_i]
+    end
+
+    columns = [['date', 'Day'], ['number', 'Total']]
+    @new_users = graph rows, columns, 'New users', 'ColumnChart'
+
+
+    sql = "SELECT to_char(created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM comments WHERE date_part('days', now() - comments.created_at) < 30 GROUP BY date ORDER BY date;"
+    records_array = ActiveRecord::Base.connection.exec_query(sql)
+
+    rows = records_array.rows.map do |row|
+      [Date.parse("#{row[0]}"), row[1].to_i]
+    end
+
+    columns = [['date', 'Day'], ['number', 'Total']]
+    @new_comments = graph rows, columns, 'New comments', 'ColumnChart'
+
+
+    sql = "SELECT to_char(created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM favorites WHERE date_part('days', now() - favorites.created_at) < 30 GROUP BY date ORDER BY date;"
+    records_array = ActiveRecord::Base.connection.exec_query(sql)
+
+    rows = records_array.rows.map do |row|
+      [Date.parse("#{row[0]}"), row[1].to_i]
+    end
+
+    columns = [['date', 'Day'], ['number', 'Total']]
+    @new_respects = graph rows, columns, 'New respects', 'ColumnChart'
   end
 
   def comments

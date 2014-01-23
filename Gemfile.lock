@@ -121,6 +121,7 @@ GEM
       thor (>= 0.13.6)
     formatador (0.2.4)
     fssm (0.2.10)
+    google_visualr (2.2.0)
     guard (2.2.4)
       formatador (>= 0.2.4)
       listen (~> 2.1)
@@ -431,6 +432,7 @@ DEPENDENCIES
   fog (= 1.15.0)
   font-awesome-rails (= 4.0.3.0)
   foreman
+  google_visualr (= 2.2.0)
   guard-livereload
   guard-rspec
   guard-spork

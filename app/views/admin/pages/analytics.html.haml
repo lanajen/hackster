@@ -1,30 +1,70 @@
-%h2 Total number of live projects
-= @project_count
+= content_for :js do
+  = javascript_include_tag 'https://www.google.com/jsapi'
+  = render_chart(@new_projects, 'chart_new_projects')
+  = render_chart(@new_users, 'chart_new_users')
+  = render_chart(@new_comments, 'chart_new_commentss')
+  = render_chart(@new_respects, 'chart_new_respects')
 
-%h2 Total number of users
-= @user_count
-(signed up or invite accepted)
-\/
-= @user_with_user_name_count
-(user_name set)
+.page-header
+  %h1 Analytics
 
-%h2 Live projects per user ratio
-= (@project_count.to_f / @user_count.to_f* 100).ceil
-\%
+.row
+  .col-xs-4
+    .panel.panel-default.panel-dashboard
+      .panel-heading
+        %h3.panel-title Registered users
+      .panel-body= @user_count
 
-%h2 Users with the most live projects
-%ul
-  - @top_users.each do |user|
-    %li
-      %b= link_to user.name, user
-      \:
-      = user.live_projects_count
+  .col-xs-4
+    .panel.panel-default.panel-dashboard
+      .panel-heading
+        %h3.panel-title Live projects
+      .panel-body= @project_count
 
-%h2 Users with at least one live project
-= @users_with_at_least_one_live_project
+  .col-xs-4
+    .panel.panel-default.panel-dashboard
+      .panel-heading
+        %h3.panel-title Project / User ratio
+      .panel-body #{(@project_count.to_f / @user_count.to_f* 100).ceil}%
 
-%h2 Total comments
-= @comment_count
+  .col-xs-4
+    .panel.panel-default.panel-dashboard
+      .panel-heading
+        %h3.panel-title Comments
+      .panel-body= @comment_count
 
-%h2 Total likes
-= @like_count
+  .col-xs-4
+    .panel.panel-default.panel-dashboard
+      .panel-heading
+        %h3.panel-title Respects
+      .panel-body= @like_count
+
+  .col-xs-4
+    .panel.panel-default.panel-dashboard
+      .panel-heading
+        %h3.panel-title Users with at least one project
+      .panel-body= @users_with_at_least_one_live_project
+
+.row
+  .col-xs-4
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title Top users
+      .panel-body
+        %ul
+          - @top_users.each do |user|
+            %li
+              %b= link_to user.name, user
+              \:
+              = user.live_projects_count
+
+.row
+  .col-xs-6
+    #chart_new_projects= image_tag 'loader.gif'
+  .col-xs-6
+    #chart_new_users= image_tag 'loader.gif'
+
+  .col-xs-6
+    #chart_new_commentss= image_tag 'loader.gif'
+  .col-xs-6
+    #chart_new_respects= image_tag 'loader.gif'
