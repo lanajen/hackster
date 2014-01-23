@@ -1,7 +1,7 @@
 class ProjectScraper
   include ScraperUtils
 
-  DEFAULT_STRATEGY = :wordpress
+  DEFAULT_STRATEGY = :base
   KNOWN_STRATEGIES = {
     'blogspot.fr' => :blogspot,
     'blogspot.com' => :blogspot,
@@ -12,10 +12,13 @@ class ProjectScraper
   attr_accessor :content, :page_url
 
   def self.scrape page_url
-    s = new page_url#, :github
-    # url = File.join(Rails.root, 'app/models/scrapers/maker.html')
-    # s = new url, :blogspot
-    # s.content = s.read_file url
+    # s = new page_url
+
+    # debug snippet
+    url = File.join(Rails.root, 'app/models/scrapers/maker.html')
+    s = new 'http://www.artbottoys.com', :base
+    s.content = s.read_file url
+    # end debug snippet
 
     project = s.document.to_project
     project.website = page_url
@@ -23,11 +26,12 @@ class ProjectScraper
   end
 
   def document
-    Document.new (content || scrape), @strategy
+    Document.new (content || scrape), @strategy, @page_url
   end
 
   def initialize page_url, strategy=nil
     @page_url = page_url
+    @host = URI(page_url).host
     @strategy = strategy || find_strategy_for_page_url(page_url)
   end
 
@@ -37,9 +41,10 @@ class ProjectScraper
 
   private
     def find_strategy_for_page_url page_url
-      host = URI.parse(page_url).host
+      return DEFAULT_STRATEGY unless @host
+
       KNOWN_STRATEGIES.each do |k,v|
-        if k.in? host
+        if k.in? @host
           return v
         end
       end
@@ -48,9 +53,9 @@ class ProjectScraper
 
   class Document
     include ScraperUtils
-    def initialize content, strategy
+    def initialize content, strategy, page_url
       @parsed = Nokogiri::HTML(content)
-      @strategy = "::ScraperStrategies::#{strategy.to_s.classify}".constantize.new(@parsed)
+      @strategy = "::ScraperStrategies::#{strategy.to_s.classify}".constantize.new(@parsed, page_url)
     end
 
     def to_project

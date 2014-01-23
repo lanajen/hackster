@@ -7,7 +7,7 @@ module ScraperStrategies
 
       @article.css('.post-footer').find_all.each{|el| el.remove }
       raw_text = @article.inner_html
-      sanitized_text = Sanitize.clean(raw_text, Sanitize::Config::BASIC.merge(remove_contents: %w(script)))
+      sanitized_text = Sanitize.clean(raw_text, Sanitize::Config::BASIC)
       text = Nokogiri::HTML(sanitized_text)
       text.css('a').find_all.each{|el| el.remove if el.content.strip.blank? }
       text.css('div').find_all.each{|el| el.remove if el.content.strip.blank? }

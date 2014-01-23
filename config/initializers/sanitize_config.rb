@@ -1,5 +1,7 @@
 class Sanitize
   module Config
+    BASIC[:remove_contents] = %w(script style)
+
     BASIC_BLANK = BASIC.merge(add_attributes: {
       'a' => {'rel' => 'nofollow', 'target' => '_blank'}
     })

@@ -11,8 +11,40 @@ module ScraperStrategies
       /youtu\.be/ => 'VideoWidget.new(video_attributes:{link:"|href|"},name:"Demo video")',
     }
 
-    def initialize parsed
+    def initialize parsed, page_url=''
       @parsed = parsed
+      uri = URI(page_url)
+      @host = uri.host
+      @base_uri = "#{uri.path.split(/\//)[1..-2].join('/')}" if uri.path.present?
+      @base_uri = @base_uri.present? ? "/#{@base_uri}" : ''
+    end
+
+    def to_project
+      puts 'Converting to project...'
+
+      @project = Project.new private: true
+      @widgets = []
+
+      @article = @parsed
+
+      @project.name = @article.at_css('.entry-title').try(:remove).try(:text) || @article.css('h1').last.try(:remove).try(:text) || @parsed.title
+
+      yield if block_given?
+
+      parse_links
+      parse_images
+
+      raw_text = @article.css('p').map{|p| p.to_html }.join('')
+      sanitized_text = Sanitize.clean(raw_text, Sanitize::Config::BASIC)
+      text = Nokogiri::HTML(sanitized_text)
+      text.css('a').find_all.each{|el| el.remove if el.content.strip.blank? }
+      text.css('p').find_all.each{|el| el.remove if el.content.strip.blank? }
+      text = Sanitize.clean(text.to_html, Sanitize::Config::BASIC_BLANK)
+      @widgets << TextWidget.new(content: text, name: 'About')
+
+      distribute_widgets
+
+      @project
     end
 
     private
@@ -33,18 +65,26 @@ module ScraperStrategies
       end
 
       def normalize_image_link src
+        if !(src =~ /\Ahttp/) and @host
+          src = "#{@base_uri}/#{src}" unless src =~ /\A\//
+          src = "http://#{@host}#{src}"
+        end
         src
       end
 
       def parse_images
         image_widget = ImageWidget.new name: 'Photos'
         @article.css('img').each_with_index do |img, i|
-          image_widget.images.new(remote_file_url: normalize_image_link(img['src']), title: img['title'], position: i)
+          src = normalize_image_link(img['src'])
+          puts "Parsing image #{src}"
+          image_widget.images.new(remote_file_url: src, title: img['title'], position: i)
         end
         @widgets << image_widget if image_widget.images.any?
 
         if img = @article.at_css('img')
-          @project.build_cover_image remote_file_url: normalize_image_link(img['src'])
+          src = normalize_image_link(img['src'])
+          puts "Parsing image #{src}"
+          @project.build_cover_image remote_file_url: src
         end
       end
 
