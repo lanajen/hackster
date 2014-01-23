@@ -46,6 +46,8 @@ class Ability
       record.visible_to? @user
     end
 
+    can :join, Community
+
     can :create, [Project, Community]
     can :manage, Project do |project|
       @user.can? :manage, project.team

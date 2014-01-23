@@ -1,6 +1,7 @@
 class GroupInvitationsController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :load_and_authorize_invitable
+  before_filter :load_and_authorize_invitable, except: [:accept]
+  before_filter :load_invitable, only: [:accept]
   respond_to :html
   layout :set_layout
 
@@ -18,6 +19,7 @@ class GroupInvitationsController < ApplicationController
 
   def accept
     @group = Group.find(params[:group_id])
+    authorize! :join, @group
     if member = current_user.is_member?(@group)
       if member.invitation_pending?
         member.accept_invitation!
@@ -32,16 +34,20 @@ class GroupInvitationsController < ApplicationController
   end
 
   private
-    def load_and_authorize_invitable
+    def load_invitable
       params.each do |name, value|
         if name =~ /(.+)_id$/
           @invitable = $1.classify.constantize.find(value)
           @model_name = @invitable.class.model_name.to_s.underscore
           instance_variable_set "@#{@model_name}", @invitable
-          authorize! :manage, @invitable
           break
         end
       end
+    end
+
+    def load_and_authorize_invitable
+      load_invitable
+      authorize! :manage, @invitable if @invitable
     end
 
     def set_layout
