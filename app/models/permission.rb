@@ -11,6 +11,7 @@ class Permission < ActiveRecord::Base
 
   before_create :set_action
   validates :grantee_id, uniqueness: { scope: [:grantee_type, :permissible_id, :permissible_type] }
+  validates :grantee_id, :grantee_type, presence: true, if: proc{|p| p.persisted?}
 
   attr_accessible :grantee_type, :grantee_id, :action
 

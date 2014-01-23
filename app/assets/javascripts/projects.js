@@ -118,7 +118,7 @@ $(document).ready(function(){
         .appendTo('body');
       $('.collapsible', tmp).removeClass('collapsed');
       $('.collapsible', tmp).addClass('expanded');
-      height = $('.collapsible .highlight pre', tmp).height();
+      height = $('.collapsible .highlight pre', tmp).outerHeight();
       tmp.remove();
       $('.collapsible', copy).addClass('expanded');
       $('.collapsible .highlight pre', copy).animate({ 'max-height': height }, function(){
