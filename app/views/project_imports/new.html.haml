@@ -8,4 +8,7 @@
       .form-group
         = text_area_tag :urls, params[:urls], placeholder: 'Project log URLs', class: 'form-control', rows: 5
         %p.help-block Enter as many URLs as you like, separated by commas, spaces or new lines.
+      - if current_user.is? :admin
+        .form-group
+          = text_field_tag :user_id, params[:user_id], placeholder: 'User ID', class: 'form-control'
       = submit_tag 'Import projects', class: 'btn btn-primary btn-block'

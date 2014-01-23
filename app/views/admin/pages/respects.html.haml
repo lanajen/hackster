@@ -1,0 +1,27 @@
+- model_class = Favorite
+.page-header
+  %h1
+    =t '.title', :default => model_class.model_name.human.pluralize
+
+%table.table.table-striped
+  %thead
+    %tr
+      %th= model_class.human_attribute_name(:author)
+      %th= model_class.human_attribute_name(:project)
+      %th Own project?
+      %th= model_class.human_attribute_name(:created_at)
+  %tbody
+    - @respects.each do |respect|
+      %tr
+        %td= link_to respect.user.name, respect.user
+        %td= link_to respect.project.name, respect.project
+        - own = respect.user.in? respect.project.users
+        %td
+          - if own
+            %b Yes
+          - else
+            No
+        %td= time_ago_in_words respect.created_at
+
+.pagination.col-xs-12.text-center
+  = will_paginate @respects

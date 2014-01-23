@@ -12,7 +12,7 @@ class Admin::PagesController < Admin::BaseController
     # @new_invites = InviteRequest.group("DATE_TRUNC('week', created_at)").count.sort_by{|k,v| k}
     # @new_users = User.where('invitation_accepted_at IS NOT NULL').group("DATE_TRUNC('week', invitation_accepted_at)").count.sort_by{|k,v| k}
 
-    sql = "SELECT users.* FROM (SELECT members.user_id as user_id, COUNT(*) as count FROM members INNER JOIN groups ON groups.id = members.group_id INNER JOIN projects ON projects.team_id = groups.id WHERE projects.private = 'f' GROUP BY user_id) AS t1 INNER JOIN users ON users.id = t1.user_id WHERE t1.count > 1 ORDER BY t1.count DESC LIMIT 10;"
+    sql = "SELECT users.* FROM (SELECT members.user_id as user_id, COUNT(*) as count FROM members INNER JOIN groups ON groups.id = members.group_id INNER JOIN projects ON projects.team_id = groups.id WHERE projects.private = 'f' GROUP BY user_id) AS t1 INNER JOIN users ON users.id = t1.user_id WHERE t1.count > 1 ORDER BY t1.count DESC;"
 
     # sql = "SELECT * FROM (SELECT *, substring(counters_cache FROM 'live_projects_count: ([0-9]+)') as live_projects_count from users) as t1 where t1.live_projects_count::integer > 1 ORDER BY live_projects_count DESC LIMIT 10;"
 
@@ -34,6 +34,10 @@ class Admin::PagesController < Admin::BaseController
     # @most_viewed_pages = graph rows, columns, 'Most viewed pages', 'PieChart'
   end
 
+  def comments
+    @comments = Comment.order(created_at: :desc).paginate(page: params[:page])
+  end
+
   def logs
     redirect_to admin_logs_path(page: (LogLine.count.to_f / LogLine.per_page).ceil) unless params[:page]
 
@@ -48,6 +52,10 @@ class Admin::PagesController < Admin::BaseController
     params[:sort_order] ||= 'ASC'
 
     @log_lines = filter_for LogLine, @fields
+  end
+
+  def respects
+    @respects = Favorite.order(created_at: :desc).paginate(page: params[:page])
   end
 
   def root
