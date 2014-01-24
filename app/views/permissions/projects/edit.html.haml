@@ -13,7 +13,10 @@
             = f.simple_fields_for :permissions, permission, wrapper: false do |f_perm|
               %tr.fields
                 %td
-                  = f_perm.input :grantee_id, collection: current_user.communities, label: false
+                  - if current_user.is? :admin
+                    = f_perm.input :grantee_id, collection: Community.all, label: false
+                  - else
+                    = f_perm.input :grantee_id, collection: current_user.communities, label: false
                   = f_perm.input :grantee_type, as: :hidden, input_html: { value: 'Group' }
                 %td= f_perm.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-sm btn-danger'
           %tr.sortable-disabled

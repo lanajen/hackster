@@ -3,6 +3,8 @@ class Admin::PagesController < Admin::BaseController
   include GraphHelper
 
   def analytics
+    title "Admin > Analytics"
+
     @project_count = Project.live.count
     @comment_count = Comment.count
     @like_count = Favorite.count
@@ -66,6 +68,8 @@ class Admin::PagesController < Admin::BaseController
   end
 
   def comments
+    title "Admin > Comments - #{params[:page]}"
+
     @comments = Comment.order(created_at: :desc).paginate(page: params[:page])
   end
 
@@ -86,6 +90,8 @@ class Admin::PagesController < Admin::BaseController
   end
 
   def respects
+    title "Admin > Respects - #{params[:page]}"
+
     @respects = Favorite.order(created_at: :desc).paginate(page: params[:page])
   end
 

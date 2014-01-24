@@ -62,7 +62,7 @@
               %li= link_to 'Edit project', edit_project_path(@project), data: { remote: true }
               - if can? :debug, @project
                 %li= link_to 'Manage team', project_edit_team_path(@project)
-              - if current_user.communities.any?
+              - if current_user.communities.any? or current_user.is? :admin
                 %li= link_to 'Manage extra permissions', project_edit_permissions_path(@project)
               %li= link_to 'Add a widget', new_project_widget_path(@project)
               %li= link_to 'Reorder widgets', project_widgets_path(@project)

@@ -4,8 +4,6 @@ class PagesController < ApplicationController
   end
 
   def home
-    @invite_request = InviteRequest.new
-
     if user_signed_in?
       render_options = { template: 'pages/home_signed_in' }
       featured_limit = 4
