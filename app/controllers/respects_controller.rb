@@ -7,12 +7,21 @@ class RespectsController < ApplicationController
     @respect = Favorite.create_for current_user, @project
     @project = @respect.project  # otherwise @project isn't updated
 
-    respond_to do |format|
-      format.html { redirect_to @project, notice: "You respect #{@project.name}!" }
-      format.js { render 'button' }
+    if @respect.persisted?
+      respond_to do |format|
+        format.html { redirect_to @project, notice: "You respect #{@project.name}!" }
+        format.js { render 'button' }
+      end
+      event_name = 'Respected project'
+    else
+      respond_to do |format|
+        format.html { redirect_to @project, alert: "You can't respect your own project!" }
+        format.js { render text: 'alert("You can\'t respect your own project!")' }
+      end
+      event_name = 'Tried respecting own project'
     end
 
-    track_event 'Respected project', @project.to_tracker
+    track_event event_name, @project.to_tracker
   end
 
   def destroy
