@@ -39,6 +39,8 @@ class ProjectsController < ApplicationController
     meta_desc "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."
     @project = @project.decorate
     render layout: false
+
+    track_event 'Rendered embed thumbnail', @project.to_tracker
   end
 
   def new
