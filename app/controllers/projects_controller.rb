@@ -40,7 +40,7 @@ class ProjectsController < ApplicationController
     @project = @project.decorate
     render layout: false
 
-    track_event 'Rendered embed thumbnail', @project.to_tracker
+    track_event 'Rendered embed thumbnail', @project.to_tracker.merge({ referrer: request.referrer })
   end
 
   def new
