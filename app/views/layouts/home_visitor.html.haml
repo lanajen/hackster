@@ -25,7 +25,6 @@
     = render partial: 'shared/analytics', locals: { tracker: 'UA-11926897-15', domain: 'hackster.io' }
 
   %body#home
-    = request.session_options[:id].to_s
     #wrapper
       .navbar.navbar-default.navbar-static-top
         .container{ style: 'position:relative;' }
