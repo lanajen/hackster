@@ -3,13 +3,13 @@
     = link_to image_tag(widget.top_image_thumb), "javascript:openLightBox(#{widget.id},0);"
     = link_to image_tag(widget.bottom_image_thumb), "javascript:openLightBox(#{widget.id},1);"
     %ul.list-unstyled.list-inline
-      %li= link_to 'Order PCB', widget.order_link, target: '_blank', class: 'btn btn-default btn-sm'
-      %li= link_to 'Download BRD file', widget.download_link, class: 'btn btn-default btn-sm'
-      %li= link_to 'View project on OSH Park', widget.link, target: '_blank', class: 'btn btn-default btn-sm'
+      %li= link_to 'Order PCB', widget.order_link, target: '_blank', class: 'btn btn-default btn-sm', rel: 'nofollow'
+      %li= link_to 'Download BRD file', widget.download_link, class: 'btn btn-default btn-sm', rel: 'nofollow'
+      %li= link_to 'View project on OSH Park', widget.link, target: '_blank', class: 'btn btn-default btn-sm', rel: 'nofollow'
 
   .credits
     Via
-    = link_to 'OSH Park', 'http://www.oshpark.com', target: '_blank'
+    = link_to 'OSH Park', 'http://www.oshpark.com', target: '_blank', rel: 'nofollow'
 
 = content_for :js do
   :javascript

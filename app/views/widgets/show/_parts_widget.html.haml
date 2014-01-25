@@ -12,7 +12,7 @@
           %td= part.description
           %td
             - if part.vendor_link.present?
-              = link_to part.vendor_name, part.vendor_link, target: '_blank', title: "Click to see part on #{part.vendor_name}"
+              = link_to part.vendor_name, part.vendor_link, target: '_blank', title: "Click to see part on #{part.vendor_name}", rel: 'nofollow'
             - else
               = part.vendor_name
           %td.currency= number_to_currency part.unit_price
