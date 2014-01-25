@@ -30,7 +30,7 @@ class ProjectScraper
   end
 
   def initialize page_url, strategy=nil
-    @page_url = page_url
+    @page_url = page_url.chomp('/')
     @host = URI(page_url).host
     @strategy = strategy || find_strategy_for_page_url(page_url)
   end

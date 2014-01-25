@@ -146,7 +146,7 @@ class ApplicationController < ActionController::Base
     end
 
     def distinct_id_for user=nil
-      user ? "user_#{user.id}" : "session_#{request.session_options[:id]}"
+      user ? "user_#{user.id}" : (request.session_options[:id].present? ? "session_#{request.session_options[:id]}" : nil)
     end
 
     def current_mixpanel_user user=nil
