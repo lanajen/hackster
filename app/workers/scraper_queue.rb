@@ -7,11 +7,11 @@ class ScraperQueue < BaseWorker
       message_type: 'generic'
     )
 
-    project = ProjectScraper.scrape page_url
-    project.build_team
-    project.team.members.new(user_id: user_id)
-    project.save
-    project.update_counters
+    @project = ProjectScraper.scrape page_url
+    @project.build_team
+    @project.team.members.new(user_id: user_id)
+    @project.save
+    @project.update_counters
     @message.subject = "#{project.name} has been imported to your Hackster.io profile"
     @message.body = "<p>Hi</p><p>This is to let you know that <a href='http://#{APP_CONFIG['full_host']}/projects/#{project.to_param}'>#{project.name}</a> has been successfully imported.</p><p>You can update it and make it public at <a href='http://#{APP_CONFIG['full_host']}/projects/#{project.to_param}'>http://#{APP_CONFIG['full_host']}/projects/#{project.to_param}</a>.</p><p>Cheers<br/>The Hackster.io team</p>"
     BaseMailer.enqueue_generic_email(@message)
@@ -21,7 +21,7 @@ class ScraperQueue < BaseWorker
     @message.body = "<p>Hi</p><p>This is to let you know that we couldn't import your page: #{page_url}.</p><p>We've been notified and will try to fix it. We'll keep you updated.</p><p>Cheers<br/>The Hackster.io team</p>"
 
     clean_backtrace = Rails.backtrace_cleaner.clean(exception.backtrace)
-    message = "#{exception.inspect} // backtrace: #{clean_backtrace.join(' - ')} // page_url: #{page_url} // user_id: #{user_id}"
+    message = "#{exception.inspect} // backtrace: #{clean_backtrace.join(' - ')} // page_url: #{page_url} // user_id: #{user_id} // project_errors: #{@project.errors.messages}"
     log_line = LogLine.create(message: message, log_type: 'error', source: 'project_scraper')
     logger = Rails.logger
     logger.error ""
