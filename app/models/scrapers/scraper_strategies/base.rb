@@ -15,7 +15,11 @@ module ScraperStrategies
       @parsed = parsed
       uri = URI(page_url)
       @host = uri.host
-      @base_uri = "#{uri.path.split(/\//)[1..-2].join('/')}" if uri.path.present?
+      if uri.path.present?
+        path = uri.path.split(/\//)[1..-1]
+        path.pop if path.last =~ /.+\..+/
+        @base_uri = "#{path.join('/')}"
+      end
       @base_uri = @base_uri.present? ? "/#{@base_uri}" : ''
     end
 
@@ -35,7 +39,7 @@ module ScraperStrategies
       parse_images
 
       raw_text = @article.css('p').map{|p| p.to_html }.join('')
-      sanitized_text = Sanitize.clean(raw_text, Sanitize::Config::BASIC)
+      sanitized_text = Sanitize.clean(raw_text.try(:encode, "UTF-8"), Sanitize::Config::BASIC)
       text = Nokogiri::HTML(sanitized_text)
       text.css('a').find_all.each{|el| el.remove if el.content.strip.blank? }
       text.css('p').find_all.each{|el| el.remove if el.content.strip.blank? }
@@ -67,7 +71,15 @@ module ScraperStrategies
       def normalize_image_link src
         if !(src =~ /\Ahttp/) and @host
           src = "#{@base_uri}/#{src}" unless src =~ /\A\//
-          src = "http://#{@host}#{src}"
+          clean_path = []
+          src.split('/')[1..-1].each do |dir|
+            if dir == '..'
+              clean_path.pop
+            elsif !(dir == '.')
+              clean_path << dir
+            end
+          end
+          src = "http://#{@host}/#{clean_path.join('/')}"
         end
         src
       end

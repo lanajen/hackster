@@ -234,7 +234,7 @@ class Project < ActiveRecord::Base
     end
 
     def generate_slug
-      slug = name.gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
+      slug = I18n.transliterate(name).gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
       user_name = team ? team.user_name : ['', nil]
       parent = self.class.joins(:team).where(groups: { user_name: user_name }).where.not(id: id)
 
