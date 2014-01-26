@@ -24,35 +24,19 @@ class Admin::PagesController < Admin::BaseController
 
 
     sql = "SELECT to_char(made_public_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM projects WHERE private = 'f' AND date_part('days', now() - projects.made_public_at) < 30 GROUP BY date ORDER BY date;"
-    records_array = ActiveRecord::Base.connection.exec_query(sql)
-
-    rows = extract_date_and_int_from records_array
-    columns = [['date', 'Day'], ['number', 'Total']]
-    @new_projects = graph rows, columns, 'Projects made public', 'ColumnChart'
+    @new_projects = graph_with_dates_for sql, 'Projects made public', 'ColumnChart'
 
 
     sql = "SELECT to_char(created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM users WHERE (users.invitation_sent_at IS NULL OR users.invitation_accepted_at IS NOT NULL) AND date_part('days', now() - users.created_at) < 30 GROUP BY date ORDER BY date;"
-    records_array = ActiveRecord::Base.connection.exec_query(sql)
-
-    rows = extract_date_and_int_from records_array
-    columns = [['date', 'Day'], ['number', 'Total']]
-    @new_users = graph rows, columns, 'New users', 'ColumnChart'
+    @new_users = graph_with_dates_for sql, 'New users', 'ColumnChart'
 
 
     sql = "SELECT to_char(created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM comments WHERE date_part('days', now() - comments.created_at) < 30 GROUP BY date ORDER BY date;"
-    records_array = ActiveRecord::Base.connection.exec_query(sql)
-
-    rows = extract_date_and_int_from records_array
-    columns = [['date', 'Day'], ['number', 'Total']]
-    @new_comments = graph rows, columns, 'New comments', 'ColumnChart'
+    @new_comments = graph_with_dates_for sql, 'New comments', 'ColumnChart'
 
 
     sql = "SELECT to_char(created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM favorites WHERE date_part('days', now() - favorites.created_at) < 30 GROUP BY date ORDER BY date;"
-    records_array = ActiveRecord::Base.connection.exec_query(sql)
-
-    rows = extract_date_and_int_from records_array
-    columns = [['date', 'Day'], ['number', 'Total']]
-    @new_respects = graph rows, columns, 'New respects', 'ColumnChart'
+    @new_respects = graph_with_dates_for sql, 'New respects', 'ColumnChart'
   end
 
   def comments
