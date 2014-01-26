@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140109104840) do
+ActiveRecord::Schema.define(version: 20140126192619) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -354,16 +354,16 @@ ActiveRecord::Schema.define(version: 20140109104840) do
 
   create_table "videos", force: true do |t|
     t.string   "title"
-    t.string   "link",            limit: 100
+    t.string   "link"
     t.string   "provider"
     t.string   "id_for_provider"
-    t.integer  "recordable_id",                            null: false
+    t.integer  "recordable_id",                null: false
     t.string   "thumbnail_link"
     t.integer  "ratio_height"
     t.integer  "ratio_width"
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
-    t.string   "recordable_type",             default: "", null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.string   "recordable_type", default: "", null: false
   end
 
   add_index "videos", ["recordable_id", "recordable_type"], name: "recordable_index", using: :btree

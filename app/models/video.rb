@@ -6,7 +6,7 @@ class Video < ActiveRecord::Base
   before_validation :get_info_from_provider
   validate :exists
 #  validates :project_id, presence: true
-  validates :link, length: { maximum: 100 }
+  validates :link, length: { maximum: 255 }
 
   # height and width deprecated, now only storing ratio so that template can
   # decide on actual sizes

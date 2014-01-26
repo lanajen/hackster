@@ -86,17 +86,22 @@ module ScraperStrategies
 
       def parse_images
         image_widget = ImageWidget.new name: 'Photos'
-        @article.css('img').each_with_index do |img, i|
+        collection = {}
+        @article.css('img').each do |img|
           src = normalize_image_link(img['src'])
+          collection[src] = img['title']
+        end
+
+        i = 0
+        collection.each do |src, title|
           puts "Parsing image #{src}"
-          image_widget.images.new(remote_file_url: src, title: img['title'], position: i)
+          image_widget.images.new(remote_file_url: src, title: title, position: i)
+          i += 1
         end
         @widgets << image_widget if image_widget.images.any?
 
-        if img = @article.at_css('img')
-          src = normalize_image_link(img['src'])
-          puts "Parsing image #{src}"
-          @project.build_cover_image remote_file_url: src
+        if img = collection.first
+          @project.build_cover_image remote_file_url: img[0]
         end
       end
 
