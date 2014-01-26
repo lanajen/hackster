@@ -92,7 +92,7 @@ HackerIo::Application.routes.draw do
     get 'contact' => 'contact#new'
     post 'contact' => 'contact#create'
 
-    get 'help' => 'pages#help'
+    # get 'help' => 'pages#help'
     get 'home', to: redirect('/')
 
     get 'ping' => 'pages#ping'  # for availability monitoring

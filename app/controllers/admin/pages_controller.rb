@@ -26,10 +26,7 @@ class Admin::PagesController < Admin::BaseController
     sql = "SELECT to_char(made_public_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM projects WHERE private = 'f' AND date_part('days', now() - projects.made_public_at) < 30 GROUP BY date ORDER BY date;"
     records_array = ActiveRecord::Base.connection.exec_query(sql)
 
-    rows = records_array.rows.map do |row|
-      [Date.parse("#{row[0]}"), row[1].to_i]
-    end
-
+    rows = extract_date_and_int_from records_array
     columns = [['date', 'Day'], ['number', 'Total']]
     @new_projects = graph rows, columns, 'Projects made public', 'ColumnChart'
 
@@ -37,10 +34,7 @@ class Admin::PagesController < Admin::BaseController
     sql = "SELECT to_char(created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM users WHERE (users.invitation_sent_at IS NULL OR users.invitation_accepted_at IS NOT NULL) AND date_part('days', now() - users.created_at) < 30 GROUP BY date ORDER BY date;"
     records_array = ActiveRecord::Base.connection.exec_query(sql)
 
-    rows = records_array.rows.map do |row|
-      [Date.parse("#{row[0]}"), row[1].to_i]
-    end
-
+    rows = extract_date_and_int_from records_array
     columns = [['date', 'Day'], ['number', 'Total']]
     @new_users = graph rows, columns, 'New users', 'ColumnChart'
 
@@ -48,10 +42,7 @@ class Admin::PagesController < Admin::BaseController
     sql = "SELECT to_char(created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM comments WHERE date_part('days', now() - comments.created_at) < 30 GROUP BY date ORDER BY date;"
     records_array = ActiveRecord::Base.connection.exec_query(sql)
 
-    rows = records_array.rows.map do |row|
-      [Date.parse("#{row[0]}"), row[1].to_i]
-    end
-
+    rows = extract_date_and_int_from records_array
     columns = [['date', 'Day'], ['number', 'Total']]
     @new_comments = graph rows, columns, 'New comments', 'ColumnChart'
 
@@ -59,10 +50,7 @@ class Admin::PagesController < Admin::BaseController
     sql = "SELECT to_char(created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM favorites WHERE date_part('days', now() - favorites.created_at) < 30 GROUP BY date ORDER BY date;"
     records_array = ActiveRecord::Base.connection.exec_query(sql)
 
-    rows = records_array.rows.map do |row|
-      [Date.parse("#{row[0]}"), row[1].to_i]
-    end
-
+    rows = extract_date_and_int_from records_array
     columns = [['date', 'Day'], ['number', 'Total']]
     @new_respects = graph rows, columns, 'New respects', 'ColumnChart'
   end
