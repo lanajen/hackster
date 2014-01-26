@@ -107,7 +107,7 @@ module ScraperStrategies
         }.each do |el, attr|
           collection = []
           @article.css(el).each do |link|
-            collection << link['href']
+            collection << link[attr]
           end
           collection.uniq.each do |link|
             LINK_REGEXP.each do |regexp, command|
