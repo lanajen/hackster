@@ -6,7 +6,7 @@ class UsersController < ApplicationController
   def show
     impressionist @user, "", unique: [:session_hash]  # no need to add :impressionable_type and :impressionable_id, they're already included with @user
     title @user.name
-    meta_desc "#{@user.name} is on Hackster.io. Come join #{@user.name} and other hardware hackers and makers to showcase your projects."
+    meta_desc "#{@user.name} is on Hackster.io. Come share your hardware projects with #{@user.name} and other hardware hackers and makers."
     @user = @user.decorate
     @broadcasts = @user.broadcasts.where('broadcasts.created_at > ?', 1.day.ago).order('created_at DESC').limit(5).group_by { |b| [b.context_model_type, b.context_model_id, b.event] }.values.map{ |g| g.first }
     @public_projects = @user.projects.indexable.order(start_date: :desc, created_at: :desc)

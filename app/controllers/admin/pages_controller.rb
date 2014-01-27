@@ -16,11 +16,7 @@ class Admin::PagesController < Admin::BaseController
 
     @top_users = User.find_by_sql(sql)
 
-    sql = "SELECT COUNT(*) as count FROM (SELECT COUNT(*) as live_projects_count FROM members INNER JOIN groups ON groups.id = members.group_id INNER JOIN projects ON projects.team_id = groups.id WHERE projects.private = 'f' GROUP BY user_id) as t1;"
-
-    records_array = ActiveRecord::Base.connection.execute(sql)
-
-    @users_with_at_least_one_live_project = records_array[0]['count']
+    @users_with_at_least_one_live_project = User.invitation_accepted_or_not_invited.joins(:projects).distinct.where(projects: { private: false }).size
 
 
     sql = "SELECT to_char(made_public_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM projects WHERE private = 'f' AND date_part('days', now() - projects.made_public_at) < 30 GROUP BY date ORDER BY date;"

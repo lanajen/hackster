@@ -64,7 +64,7 @@
             .col-xs-4.navbar-left= render 'shared/search_form'
             %ul.nav.navbar-nav
               %li= link_to 'Explore', projects_path
-              %li= link_to 'Showcase', new_project_path
+              %li= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Showcase".html_safe, new_project_path
             - if user_signed_in?
               %ul.nav.navbar-nav.navbar-right
                 - if current_user.has_notifications?
@@ -103,7 +103,7 @@
                     %li= link_to 'Log out', destroy_user_session_path, method: :delete
               - if current_user.is? :admin
                 %ul.nav.navbar-nav.navbar-right
-                  %li= link_to 'Admin', admin_users_path
+                  %li= link_to 'Admin', admin_analytics_path
             - else
               %ul.nav.navbar-nav.navbar-right
                 - unless request.path == root_path

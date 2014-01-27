@@ -108,6 +108,7 @@ module ScraperStrategies
       def parse_links
         {
           'a' => 'href',
+          'embed' => 'src',
           'iframe' => 'src',
         }.each do |el, attr|
           collection = []

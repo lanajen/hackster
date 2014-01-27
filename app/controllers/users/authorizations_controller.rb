@@ -23,7 +23,7 @@ class Users::AuthorizationsController < Users::RegistrationsController
   end
 
   def edit
-    self.resource = resource_class.find_by_user_name(params[:id])
+    self.resource = resource_class.find(params[:id])
     resource.invitation_token = session['devise.invitation_token'] if session['devise.invitation_token']
     @match_by_type = session['devise.match_by']
     @match_by_value = case @match_by_type

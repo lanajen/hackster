@@ -84,6 +84,9 @@ class Video < ActiveRecord::Base
       when /youtu.be\//
         #http://youtu.be/wf_IIbT8HGk
         link.split('youtu.be/')[1]
+      when /\/v\//
+        # https://www.youtube.com/v/89mJJ2xoDwU
+        link.split('/v/')[1].split('?')[0]
       when /\?/
         #http://www.youtube.com/watch?v=wf_IIbT8HGk
         params = link.split('?')[1]
