@@ -11,7 +11,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
     def after_sign_up_path_for(resource)
       track_alias
       track_user resource.to_tracker_profile
-      track_event 'Signed up', { landing_page: cookies[:landing_page] }
+      track_event 'Signed up', { landing_page: cookies[:landing_page],
+        initial_referrer: cookies[:initial_referrer] }
 
       user_after_registration_path
     end

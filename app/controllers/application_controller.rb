@@ -182,9 +182,9 @@ class ApplicationController < ActionController::Base
     end
 
     def track_landing_page
-      return if cookies[:landing_page]
-      cookies[:landing_page] = request.path
-      # track_event 'First landed on site', { landing_page: request.path }
+      return if cookies[:landing_page] and cookies[:initial_referrer]
+      cookies[:landing_page] = request.path unless cookies[:landing_page]
+      cookies[:initial_referrer] = request.referrer || 'unknown' unless cookies[:initial_referrer]
     end
 
     def require_no_authentication
