@@ -9,7 +9,7 @@ class CommentObserver < ActiveRecord::Observer
   end
 
   def after_update record
-#    record.user.broadcast :update, record.id, observed_model
+    # update_counters record
   end
 
   def after_destroy record

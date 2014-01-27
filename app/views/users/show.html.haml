@@ -116,9 +116,9 @@
 
         #tab-comments.tab-pane.fade
           .col-xs-12
-            - if @user.comments.where(commentable_type: 'Project').any?
+            - if @user.live_comments.any?
               %ul.list-unstyled
-                - @user.comments.where(commentable_type: 'Project').each do |comment|
+                - @user.live_comments.each do |comment|
                   %li.comment
                     %h5.comment-project
                       = link_to comment.commentable.name, project_path(comment.commentable, ref: 'usercomment')

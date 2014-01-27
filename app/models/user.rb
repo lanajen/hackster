@@ -257,7 +257,7 @@ class User < ActiveRecord::Base
 
   def counters
     {
-      comments: 'comments.count',
+      comments: 'live_comments.count',
       interest_tags: 'interest_tags.count',
       invitations: 'invitations.count',
       live_projects: 'projects.where(private: false).count',
@@ -468,6 +468,10 @@ class User < ActiveRecord::Base
       end
     end
     authorizations.create(auth)
+  end
+
+  def live_comments
+    comments.by_commentable_type(Project).where("projects.private = 'f'")
   end
 
   def name

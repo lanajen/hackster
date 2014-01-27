@@ -14,6 +14,10 @@ class Comment < ActiveRecord::Base
   register_sanitizer :newlines_to_br, :before_save, :body
   register_sanitizer :responsive_images, :before_save, :body
 
+  def self.by_commentable_type type
+    joins("JOIN #{type.table_name} ON #{type.table_name}.id = #{self.table_name}.commentable_id AND #{self.table_name}.commentable_type = '#{type.to_s}'")
+  end
+
   def self.sort_from_hierarchy comments
     parents = {}
     comments.each do |comment|

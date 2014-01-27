@@ -10,7 +10,7 @@ class Project < ActiveRecord::Base
   has_and_belongs_to_many :followers, class_name: 'User', join_table: 'project_followers'
   has_many :blog_posts, as: :threadable, dependent: :destroy
   has_many :comments, -> { order created_at: :asc }, as: :commentable, dependent: :destroy
-  has_many :commenters, through: :comments, source: :user
+  has_many :commenters, -> { uniq true }, through: :comments, source: :user
   has_many :issues, as: :threadable, dependent: :destroy
   has_many :images, as: :attachable, dependent: :destroy
   has_many :permissions, as: :permissible
