@@ -48,7 +48,7 @@ class BaseMailer < ActionMailer::Base
         comment = context[:comment] = Comment.find(context_id)
         project = context[:project] = comment.commentable
         author = context[:author] = comment.user
-        context[:users] = project.users - [author]
+        context[:users] = project.users + project.commenters - [author]
       when :invited
         user = context[:user] = User.find(context_id)
         context[:inviter] = user.invited_by if user.invited_by

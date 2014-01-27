@@ -9,7 +9,8 @@ class Project < ActiveRecord::Base
   belongs_to :team
   has_and_belongs_to_many :followers, class_name: 'User', join_table: 'project_followers'
   has_many :blog_posts, as: :threadable, dependent: :destroy
-  has_many :comments, -> { order created_at: :asc }, as: :commentable
+  has_many :comments, -> { order created_at: :asc }, as: :commentable, dependent: :destroy
+  has_many :commenters, through: :comments, source: :user
   has_many :issues, as: :threadable, dependent: :destroy
   has_many :images, as: :attachable, dependent: :destroy
   has_many :permissions, as: :permissible
@@ -18,9 +19,9 @@ class Project < ActiveRecord::Base
   has_many :slug_histories, -> { order updated_at: :desc }, dependent: :destroy
   has_many :team_members, through: :team, source: :members#, -> { includes :user }
   has_many :users, through: :team_members
-  has_many :widgets, -> { order position: :asc }
-  has_one :logo, as: :attachable, class_name: 'Avatar'
-  has_one :cover_image, as: :attachable, class_name: 'CoverImage'
+  has_many :widgets, -> { order position: :asc }, dependent: :destroy
+  has_one :logo, as: :attachable, class_name: 'Avatar', dependent: :destroy
+  has_one :cover_image, as: :attachable, class_name: 'CoverImage', dependent: :destroy
   has_one :video, as: :recordable, dependent: :destroy
 
   sanitize_text :description
