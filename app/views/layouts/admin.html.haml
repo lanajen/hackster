@@ -39,6 +39,12 @@
             %li= link_to 'Resque', '/admin/resque'
 
     .container
+      - if Resque::Failure.count > 0
+        .row
+          .col-xs-12
+            .alert.alert-danger
+              #{Resque::Failure.count} failed jobs in
+              = link_to 'Resque', '/admin/resque', class: 'alert-link'
 
       .row
         .col-xs-12
@@ -46,6 +52,6 @@
           = yield
 
       %footer
-        %p &copy; Hackster.io 2013
+        %p &copy; Hackster.io 2014
     = javascript_include_tag "application"
     = content_for :js
