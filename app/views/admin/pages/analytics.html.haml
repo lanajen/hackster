@@ -13,13 +13,17 @@
     .panel.panel-default.panel-dashboard
       .panel-heading
         %h3.panel-title Registered users
-      .panel-body= @user_count
+      .panel-body
+        = @user_count
+        %small.text-muted +#{@new_users_count}
 
   .col-xs-4
     .panel.panel-default.panel-dashboard
       .panel-heading
         %h3.panel-title Live projects
-      .panel-body= @project_count
+      .panel-body
+        = @project_count
+        %small.text-muted +#{@new_projects_count}
 
   .col-xs-4
     .panel.panel-default.panel-dashboard
@@ -31,13 +35,17 @@
     .panel.panel-default.panel-dashboard
       .panel-heading
         %h3.panel-title Comments
-      .panel-body= @comment_count
+      .panel-body
+        = @comment_count
+        %small.text-muted +#{@new_comments_count}
 
   .col-xs-4
     .panel.panel-default.panel-dashboard
       .panel-heading
         %h3.panel-title Respects
-      .panel-body= @like_count
+      .panel-body
+        = @like_count
+        %small.text-muted +#{@new_likes_count}
 
   .col-xs-4
     .panel.panel-default.panel-dashboard

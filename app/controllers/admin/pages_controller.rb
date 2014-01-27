@@ -9,6 +9,10 @@ class Admin::PagesController < Admin::BaseController
     @comment_count = Comment.count
     @like_count = Favorite.count
     @user_count = User.invitation_accepted_or_not_invited.count
+    @new_projects_count = Project.live.where('projects.made_public_at > ?', 24.hours.ago).count
+    @new_comments_count = Comment.where('comments.created_at > ?', 24.hours.ago).count
+    @new_likes_count = Favorite.where('favorites.created_at > ?', 24.hours.ago).count
+    @new_users_count = User.invitation_accepted_or_not_invited.where('users.created_at > ?', 24.hours.ago).count
 
     sql = "SELECT users.* FROM (SELECT members.user_id as user_id, COUNT(*) as count FROM members INNER JOIN groups ON groups.id = members.group_id INNER JOIN projects ON projects.team_id = groups.id WHERE projects.private = 'f' GROUP BY user_id) AS t1 INNER JOIN users ON users.id = t1.user_id WHERE t1.count > 1 ORDER BY t1.count DESC LIMIT 10;"
 
