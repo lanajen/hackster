@@ -10,7 +10,7 @@
         Log in
         %br
         %small with your existing account:
-      = render 'devise/sessions/form'
+      = render partial: 'devise/sessions/form', locals: { autofocus: (highlight == 'login') }
 
   .col-xs-4
     .wellified{ class: "#{'wellified-transparent' unless highlight == 'signup'}" }
@@ -18,7 +18,7 @@
         Sign up
         %br
         %small for a new account:
-      = render 'devise/registrations/form'
+      = render partial: 'devise/registrations/form', locals: { autofocus: (highlight == 'signup') }
 
   .col-xs-4
     .wellified{ class: "#{'wellified-transparent' unless highlight == 'connect'}" }
@@ -26,4 +26,4 @@
         Connect
         %br
         %small with your social account:
-      = render 'devise/shared/omniauth'
+      = render partial: 'devise/shared/omniauth', locals: { autofocus: (highlight == 'connect') }
