@@ -10,7 +10,7 @@
   - else
     %p
       Please
-      = link_to 'log in', new_user_session_path(redirect_to: url_for(commentable))
+      = link_to 'log in', new_user_session_path(redirect_to: "#{url_for(commentable)}#widget-comments")
       or
-      = link_to 'sign up', new_user_registration_path
+      = link_to 'sign up', new_user_registration_path(redirect_to: "#{url_for(commentable)}#widget-comments")
       to comment.

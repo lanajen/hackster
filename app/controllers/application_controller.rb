@@ -85,10 +85,6 @@ class ApplicationController < ActionController::Base
           redirect_to(url_for(project), status: 301) and return
         end
         project
-        # finds by team or by user and throws a record not found if needed
-        # Project.joins(:team).where(groups: { user_name: user_name}).where(projects: { slug: params[:project_slug].downcase }).first || if project = Project.joins(:users).where(users: { user_name: user_name}).where(projects: { slug: params[:project_slug].downcase }).first!
-        #     redirect_to(url_for(project), status: 301) and return
-        #   end
       elsif params[:project_slug]
         Project.where(projects: { slug: params[:project_slug].downcase }).first!
       else
@@ -109,40 +105,19 @@ class ApplicationController < ActionController::Base
     end
 
     def track_alias user=nil
-      # tracker.alias_user (user || current_user)
       old_distinct_id = current_mixpanel_user
       new_distinct_id = set_current_mixpanel_user(user)
-      # user ||= current_user
       tracker.enqueue 'alias_user', new_distinct_id, old_distinct_id if tracking_activated?
     end
 
     def track_event event_name, properties={}, user=nil
-      # cookies.delete :mixpanel_user
-      # tracker.record_event event_name, current_user, properties
-      # user ||= current_user
-      # class_name = user ? user.class.name : 'session'
-      # id = user ? user.id : request.session_options[:id]
       properties.merge! signed_in: !!user_signed_in?
       properties.merge! ref: params[:ref] if params[:ref]
       tracker.enqueue 'record_event', event_name, current_mixpanel_user(user), properties if tracking_activated?
-      # tracker.enqueue 'record_event', event_name, user.try(:id), user.class.name, properties if tracking_activated?
-      # @mixpanel_tracker = {
-      #   event: event_name,
-      #   properties: properties.to_json,
-      # }
     end
 
     def track_user properties, user=nil
-      # tracker.update_user current_user, properties.merge({ ip: request.ip })
-      # user = current_mixpanel_user(user || current_user)
-      # class_name = user ? user.class.name : 'session'
-      # id = user ? user.id : request.session_options[:id]
       tracker.enqueue 'update_user', current_mixpanel_user(user), properties.merge({ ip: request.ip }) if tracking_activated?
-      # tracker.enqueue 'update_user', user.try(:id), user.class.name, properties.merge({ ip: request.ip }) if tracking_activated?
-      # @mixpanel_user = {
-      #   id: "#{user.class.name.underscore}_#{user.id}",
-      #   properties: properties.to_json,
-      # }
     end
 
     def distinct_id_for user=nil
@@ -184,7 +159,7 @@ class ApplicationController < ActionController::Base
     def track_landing_page
       return if cookies[:landing_page] and cookies[:initial_referrer]
       cookies[:landing_page] = request.path unless cookies[:landing_page]
-      cookies[:initial_referrer] = request.referrer || 'unknown' unless cookies[:initial_referrer]
+      cookies[:initial_referrer] = (request.referrer || 'unknown') unless cookies[:initial_referrer]
     end
 
     def require_no_authentication
