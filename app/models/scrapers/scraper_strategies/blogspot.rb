@@ -28,7 +28,7 @@ module ScraperStrategies
           footers = dom.css('.comment-footer');
 
           authors.each_with_index do |author, i|
-            name = author.text.strip.gsub(/said\.\.\./, '')
+            name = author.text.gsub(/said\.\.\./, '').strip
             body = bodies[i].inner_html
             created_at = DateTime.parse footers[i].text.strip
             c = @project.comments.new body: body, guest_name: name

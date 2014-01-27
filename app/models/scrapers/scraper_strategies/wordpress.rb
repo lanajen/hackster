@@ -22,7 +22,7 @@ module ScraperStrategies
       def extract_comments dom, depth=1, parent=nil
         dom.css("li.depth-#{depth}").each do |comment|
           body = comment.at_css('.comment-content').inner_html
-          name = comment.at_css('.comment-author .fn').text
+          name = comment.at_css('.comment-author .fn').text.try(:strip)
           created_at = DateTime.parse comment.at_css('time')['datetime']
           c = @project.comments.new body: body, guest_name: name
           c.created_at = created_at
