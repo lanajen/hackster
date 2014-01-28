@@ -1,3 +1,6 @@
+= content_for :head do
+  %meta{ name: 'robots', content: 'noindex' }
+
 .search-page.row
   .col-xs-3
     %ul.nav.nav-pills.nav-stacked
@@ -36,7 +39,7 @@
       - if params[:q].present?
         - if @results.any?
           .header
-            %h5= pluralize @results.count, 'result'
+            %b= pluralize @results.count, 'result'
           .content.search-results
             %ul.list-unstyled
               - @results.each_with_index do |result, i|
