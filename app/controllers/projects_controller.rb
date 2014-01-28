@@ -11,7 +11,20 @@ class ProjectsController < ApplicationController
 
   def index
     title "Explore all projects - Page #{params[:page] || 1}"
-    @projects = Project.last_public.paginate(page: params[:page])
+
+    params[:sort] ||= 'recent'
+    @by = params[:by] || 'all'
+
+    @projects = Project
+    if params[:sort] and params[:sort].in? Project::SORTING.keys
+      @projects = @projects.send(Project::SORTING[params[:sort]])
+    end
+
+    if params[:by] and params[:by].in? Project::FILTERS.keys
+      @projects = @projects.send(Project::FILTERS[params[:by]])
+    end
+
+    @projects = @projects.paginate(page: params[:page])
   end
 
   def show

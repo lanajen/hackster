@@ -4,6 +4,7 @@ require 'pygments'
 class CodeWidget < Widget
 
   LANGUAGES = {
+    'Assembly' => '',
     'C' => 'c',
     'C++' => 'cpp',
     'C#' => 'csharp',
@@ -11,9 +12,13 @@ class CodeWidget < Widget
     'HTML' => 'html',
     'Java' => 'java',
     'JavaScript' => 'js',
+    'Objective-C' => 'objective-c',
     'Python' => 'python',
     'Perl' => 'perl',
     'Ruby' => 'rb',
+    'Scala' => 'scala',
+    'Verilog' => 'verilog',
+    'VHDL' => 'vhdl',
     'XML' => 'xml',
   }
   ERROR_MESSAGE = "Error opening file."
@@ -31,6 +36,13 @@ class CodeWidget < Widget
   before_validation :guess_language_from_extension
   before_save :check_changes
   before_save :format_content
+
+  def extension_list
+    return @extension_list if @extension_list
+    @extension_list = {}
+    Pygments.lexers.each{|k,v| v[:filenames].each{|f| @extension_list[f] = k }}
+    @extension_list
+  end
 
   def file_name
     (document and document.file_name.present?) ? document.file_name : "#{name.downcase.gsub(/[^a-z0-9_]/, '_')}.#{language}"

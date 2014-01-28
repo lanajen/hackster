@@ -18,7 +18,7 @@ gem 'bootstrap-will_paginate', '0.0.10'
 gem 'cancan', '1.6.10'
 gem 'carrierwave', '0.9.0'
 gem 'country_select', '1.2.0'
-gem 'dalli', '2.6.4'  # memcached
+# gem 'dalli', '2.6.4'  # memcached
 gem 'devise', '3.2.2'
 gem 'devise_invitable', '1.3.0'
 gem 'draper', '1.3.0'
@@ -43,12 +43,12 @@ gem 'omniauth-gplus', '1.2.0'
 gem 'omniauth-linkedin-oauth2', '0.1.4'
 gem 'omniauth-oauth', '1.0.1'  # for omniauth-twitter
 gem 'omniauth-oauth2', '1.1.1'  # for omniauth-facebook, google, linkedin, github
-gem 'omniauth-openid', '1.0.0'
+# gem 'omniauth-openid', '1.0.0'
 gem 'omniauth-twitter', '1.0.1'
 gem 'pg', '0.17.0'
 gem 'premailer-rails', '1.6.0'
 gem 'protected_attributes', '1.0.5'
-gem 'pygments.rb', '0.5.0'
+gem 'pygments.rb', '0.5.4'
 gem 'rails_12factor', group: :production
 gem 'rails-observers', '0.1.2'
 gem 'redis', '3.0.6'
@@ -69,20 +69,20 @@ gem 'workflow', '1.0.0'
 gem 'wysihtml5-rails', '0.0.4'
 
 group :development, :test do
-  gem 'factory_girl_rails'
+  # gem 'factory_girl_rails'
   gem 'foreman'
-  gem 'guard-livereload'
-  gem 'guard-rspec'
-  gem 'guard-spork'
-  gem 'launchy'
+  # gem 'guard-livereload'
+  # gem 'guard-rspec'
+  # gem 'guard-spork'
+  # gem 'launchy'
   gem 'quiet_assets'
-  gem 'spork'
-  gem 'rspec-cells'
+  # gem 'spork'
+  # gem 'rspec-cells'
   gem 'rspec-rails'
-  gem 'sqlite3'
+  # gem 'sqlite3'
 end
 
-group :test do
-  gem 'database_cleaner'
-  gem 'faker'
-end
+# group :test do
+#   gem 'database_cleaner'
+#   gem 'faker'
+# end

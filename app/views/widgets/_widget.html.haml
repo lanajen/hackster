@@ -10,11 +10,8 @@
         - if can? :update, widget
           = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_project_widget_path(@project, widget), class: 'btn-edit', rel: 'tooltip', title: 'Edit content', data: { container: 'body' }
       -# .btn-heading
-        .btn-group
-          - if can? :update, widget
-            = link_to content_tag(:i, '', class: 'fa fa-edit'), edit_project_widget_path(@project, widget), class: 'btn btn-default btn-xs', title: 'Edit'
-            - size = comments.size
-            = render partial: 'widgets/comments_button', locals: { size: size, widget: widget }
+        - size = comments.size
+        = render partial: 'widgets/comments_button', locals: { size: size, widget: widget }
 
   .content
     = render partial: "widgets/show/#{widget.identifier}", locals: { widget: widget }

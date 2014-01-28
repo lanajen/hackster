@@ -1,4 +1,13 @@
 class Project < ActiveRecord::Base
+  FILTERS = {
+    'featured' => :featured,
+  }
+  SORTING = {
+    'popular' => :most_popular,
+    'recent' => :last_public,
+    'updated' => :last_updated,
+  }
+
   include Counter
   include Privatable
   include StringParser

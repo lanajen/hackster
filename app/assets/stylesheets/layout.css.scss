@@ -77,7 +77,7 @@ footer {
   .content {
     padding: 13px 19px;
   }
-  h1, h2, h3, h4, h5 {
+  h1, h2, h3, h4, h5, h6 {
     margin: 0;
   }
   .header {
@@ -93,14 +93,24 @@ footer {
     }
     &.no-content {
       padding: 13px 19px;
+      .btn-heading {
+        font-size: 12px;
+        font-weight: bold;
+      }
     }
   }
 }
 
 .well, .transparent-well, .wellified, .wellified-transparent {
-  h1, h2, h3, h4, h5 {
+  h1, h2, h3, h4 {
     font-family: 'Open Sans', Tahoma, sans-serif;
     font-weight: normal;
+  }
+  h5 {
+    font-size: 16px;
+  }
+  h6 {
+    font-size: 14px;
   }
 }
 
@@ -184,9 +194,7 @@ h1, h2, h3, h4 {
 }
 
 .btn-edit {
-  // font-weight: bold;
   @include font-size(12);
-  // float: right;
   margin-left: 10px;
   @extend .close;
 }

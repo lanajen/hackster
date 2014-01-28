@@ -5,11 +5,30 @@
   .row
     .col-xs-12
       %h1
-        Explore all projects
+        Explore #{@by} projects
         %small page #{params[:page] || 1}
 
-  .row
-    - @projects.each do |project|
-      = render partial: "projects/project_thumb", locals: { project: project.decorate, ref: 'explore' }
-  .row
-    .col-xs-12.text-center= will_paginate @projects
+        .btn-group.pull-right
+          .btn-group
+            %button.btn.btn-default.btn-sm.dropdown-toggle{ data: { toggle: 'dropdown' }}
+              Sort by
+              %span.caret
+            %ul.dropdown-menu.pull-right
+              %li{ class: "#{'active' if params[:sort] == 'updated'}" }= link_to 'Last updated', projects_path(sort: 'updated', by: params[:by])
+              %li{ class: "#{'active' if params[:sort] == 'popular'}" }= link_to 'Most popular', projects_path(sort: 'popular', by: params[:by])
+              %li{ class: "#{'active' if params[:sort] == 'recent'}" }= link_to 'Most recent', projects_path(sort: 'recent', by: params[:by])
+
+          .btn-group
+            %button.btn.btn-default.btn-sm.dropdown-toggle{ data: { toggle: 'dropdown' }}
+              Filter by
+              %span.caret
+            %ul.dropdown-menu.pull-right
+              %li{ class: "#{'active' if params[:by] == nil}" }= link_to 'All', projects_path(sort: params[:sort])
+              %li{ class: "#{'active' if params[:by] == 'featured'}" }= link_to 'Featured', projects_path(by: 'featured', sort: params[:sort])
+
+    .col-xs-12
+      .row
+        - @projects.each do |project|
+          = render partial: "projects/project_thumb", locals: { project: project.decorate, ref: 'explore' }
+      .row
+        .col-xs-12.text-center= will_paginate @projects

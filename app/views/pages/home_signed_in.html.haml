@@ -12,7 +12,7 @@
       .header.no-content
         %h2
           Featured projects
-          -# = link_to 'See more featured projects &rarr;'.html_safe, '/search', class: 'btn-edit'
+          = link_to 'See more featured projects &rarr;'.html_safe, projects_path(by: 'featured'), class: 'btn-heading'
     .row
       - @featured_projects.each do |project|
         = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homefeat' }
@@ -23,7 +23,7 @@
       .header.no-content
         %h2
           Latest projects
-          -# = link_to 'See more recent projects &rarr;'.html_safe, '/search?model%5Bproject%5D=1', class: 'btn-edit'
+          = link_to 'See more recent projects &rarr;'.html_safe, projects_path(sort: 'recent'), class: 'btn-heading'
     .row
       - @last_projects.each do |project|
         = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homelast' }
@@ -34,7 +34,7 @@
       .header.no-content
         %h2
           Most popular projects
-          -# = link_to 'See more popular projects &rarr;'.html_safe, '/search?model%5Bproject%5D=1', class: 'btn-edit'
+          = link_to 'See more popular projects &rarr;'.html_safe, projects_path(sort: 'popular'), class: 'btn-heading'
     .row
       - @most_popular_projects.each do |project|
         = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homepop' }
