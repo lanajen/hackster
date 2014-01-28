@@ -38,7 +38,7 @@ module ScraperStrategies
       parse_links
       parse_images
 
-      raw_text = @article.css('p').map{|p| p.to_html }.join('')
+      raw_text = @article.css('p, h2, h3, h4, h5, h6').map{|p| p.to_html }.join('')
       sanitized_text = Sanitize.clean(raw_text.try(:encode, "UTF-8"), Sanitize::Config::BASIC)
       text = Nokogiri::HTML(sanitized_text)
       text.css('a').find_all.each{|el| el.remove if el.content.strip.blank? }

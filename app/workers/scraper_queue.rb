@@ -21,7 +21,7 @@ class ScraperQueue < BaseWorker
     @message.body = "<p>Hi</p><p>This is to let you know that we couldn't import your page: #{page_url}.</p><p>We've been notified and will try to fix it. We'll keep you updated.</p><p>Cheers<br/>The Hackster.io team</p>"
 
     clean_backtrace = Rails.backtrace_cleaner.clean(exception.backtrace)
-    message = "#{exception.inspect} // backtrace: #{clean_backtrace.join(' - ')} // page_url: #{page_url} // user_id: #{user_id} // project_errors: #{@project.errors.messages}"
+    message = "#{exception.inspect} // backtrace: #{clean_backtrace.join(' - ')} // page_url: #{page_url} // user_id: #{user_id} // project_errors: #{@project.try(:errors).try(:messages)}"
     log_line = LogLine.create(message: message, log_type: 'error', source: 'project_scraper')
     logger = Rails.logger
     logger.error ""

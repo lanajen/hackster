@@ -11,7 +11,15 @@ module ScraperUtils
   def fetch_page page_url, file_name=nil
     page_url = 'http://' + page_url unless page_url =~ /^https?\:\/\//
     puts "Fetching page #{page_url}..."
-    open(page_url).read
+    5.times do
+      begin
+        return open(page_url).read
+      rescue
+        puts "Failed opening #{page_url}. Retrying in 1 second..."
+        sleep 1
+      end
+    end
+    raise "Failed opening page #{page_url} after 5 tries."
   end
 
   def fetch_and_write_page page_url, file_name=nil
