@@ -245,15 +245,14 @@ class Project < ActiveRecord::Base
 
     def generate_slug
       slug = I18n.transliterate(name).gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
-      user_name = team ? team.user_name : ['', nil]
-      parent = self.class.joins(:team).where(groups: { user_name: user_name }).where.not(id: id)
+      parent = team ? self.class.joins(:team).where(groups: { user_name: team.user_name }).where.not(id: id) : self.class.where(team_id: 0).where.not(id: id)
 
       # make sure it doesn't exist
       if result = parent.where(projects: {slug: slug}).any?
         # if it exists add a 1 and increment it if necessary
         slug += '1'
         while parent.where(projects: {slug: slug}).any?
-          slug.gsub!(/([0-9]+$)/, ($1.to_i + 1).to_s)
+          slug.succ!
         end
       end
       self.slug = slug

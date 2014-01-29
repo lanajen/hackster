@@ -2,15 +2,15 @@ module ScraperStrategies
   class Base
     LINK_REGEXP = {
       /123d\.circuits\.io/ => 'CircuitsioWidget.new(link:"|href|",name:"Schematics on Circuits.io")',
-      /bitbucket\.org\/[0-9a-zA-Z_\-]+\/[0-9a-zA-Z_\-]+\z/ => 'BitbucketWidget.new(repo:"|href|",name:"Bitbucket repo")',
-      /github\.com\/[0-9a-zA-Z_\-]+\/[0-9a-zA-Z_\-]+\z/ => 'GithubWidget.new(repo:"|href|",name:"Github repo")',
+      /bitbucket\.org/ => 'BitbucketWidget.new(repo:"|href|",name:"Bitbucket repo")',
+      /github\.com/ => 'GithubWidget.new(repo:"|href|",name:"Github repo")',
       /instagram\.com/ => 'VideoWidget.new(video_attributes:{link:"|href|"},name:"Demo video")',
       /oshpark\.com\/shared_projects/ => 'OshparkWidget.new(link:"|href|",name:"PCB on OSH Park")',
       /tindie\.com/ => 'BuyWidget.new(link:"|href|",name:"Where to buy")',
       /upverter\.com/ => 'UpverterWidget.new(link:"|href|",name:"Schematics on Upverter")',
       /ustream\.tv\/([a-z]+\/[0-9]+)/ => 'VideoWidget.new(video_attributes:{link:"|href|"},name:"Demo video")',
       /vimeo\.com/ => 'VideoWidget.new(video_attributes:{link:"|href|"},name:"Demo video")',
-      /vine\.com/ => 'VideoWidget.new(video_attributes:{link:"|href|"},name:"Demo video")',
+      /vine\.co/ => 'VideoWidget.new(video_attributes:{link:"|href|"},name:"Demo video")',
       /youtu(\.be|be\.com)/ => 'VideoWidget.new(video_attributes:{link:"|href|"},name:"Demo video")',
     }
 
@@ -34,20 +34,13 @@ module ScraperStrategies
 
       @article = @parsed
 
-      @project.name = @article.at_css('.entry-title').try(:remove).try(:text) || @article.css('h1').last.try(:remove).try(:text) || @parsed.title
+      @project.name = @article.at_css('.entry-title').try(:remove).try(:text) || @parsed.title
 
       yield if block_given?
 
       parse_links
       parse_images
-
-      raw_text = @article.css('p, h2, h3, h4, h5, h6').map{|p| p.to_html }.join('')
-      sanitized_text = Sanitize.clean(raw_text.try(:encode, "UTF-8"), Sanitize::Config::BASIC)
-      text = Nokogiri::HTML(sanitized_text)
-      text.css('a').find_all.each{|el| el.remove if el.content.strip.blank? }
-      text.css('p').find_all.each{|el| el.remove if el.content.strip.blank? }
-      text = Sanitize.clean(text.to_html, Sanitize::Config::BASIC_BLANK)
-      @widgets << TextWidget.new(content: text, name: 'About')
+      parse_text
 
       distribute_widgets
 
@@ -72,6 +65,7 @@ module ScraperStrategies
       end
 
       def normalize_image_link src
+        src = 'http:' + src if (src =~ /\A\/\//)
         if !(src =~ /\Ahttp/) and @host
           src = "#{@base_uri}/#{src}" unless src =~ /\A\//
           clean_path = []
@@ -98,7 +92,7 @@ module ScraperStrategies
         i = 0
         collection.each do |src, title|
           puts "Parsing image #{src}"
-          image_widget.images.new(remote_file_url: src, title: title, position: i)
+          image_widget.images.new(remote_file_url: src, title: title.try(:truncate, 255), position: i)
           i += 1
         end
         @widgets << image_widget if image_widget.images.any?
@@ -129,6 +123,34 @@ module ScraperStrategies
             end
           end
         end
+    end
+
+    def parse_text
+      # find the first level title tag (h), replaces by h5, and replaces further
+      # levels by h6
+      (2..4).each do |i|
+        if @article.css("h#{i}").any?
+          @article.css("h#{i}").each { |h| h.name = 'h5' }
+          (i+1..4).each do |j|
+            @article.css("h#{j}").each { |h| h.name = 'h6' }
+          end if i < 4
+          break
+        end
+      end
+      raw_text = @article.to_html
+      sanitized_text = Sanitize.clean(raw_text.try(:encode, "UTF-8"), Sanitize::Config::BASIC_BLANK)
+      text = Nokogiri::HTML::DocumentFragment.parse(sanitized_text)
+      text.css('a, p, h5, h6').find_all.each{|el| el.remove if el.content.strip.blank? }
+
+      # finds all main titles (h5), split and create a widget with the content
+      text.to_html.gsub(/\r?\n/, ' ').split(/<h5>/).each_with_index do |frag, i|
+        frag = '<h5>' + frag if i > 0
+        frag.match /<h5>([^<]+)<\/h5>/
+        if title = $1
+          frag.gsub! "<h5>#{title}</h5>", ''
+        end
+        @widgets << TextWidget.new(content: frag, name: title.try(:truncate, 100) || 'About')
+      end
     end
   end
 end

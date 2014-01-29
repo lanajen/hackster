@@ -1,5 +1,5 @@
 class ProjectsController < ApplicationController
-  before_filter :load_project, except: [:index, :create, :new, :edit]
+  before_filter :load_project, except: [:index, :create, :new, :edit, :redirect_to_last]
   load_and_authorize_resource only: [:index, :create, :new, :edit]
   # skip_load_resource except: [:index, :new, :create]
   # skip_authorize_resource only: [:embed]
@@ -125,6 +125,10 @@ class ProjectsController < ApplicationController
 
   def redirect_old_show_route
     redirect_to url_for(@project), status: 301
+  end
+
+  def redirect_to_last
+    redirect_to url_for(Project.last), status: 302
   end
 
   private

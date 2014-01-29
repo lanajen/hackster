@@ -65,6 +65,7 @@ HackerIo::Application.routes.draw do
     delete 'notifications' => 'notifications#destroy'
 
     resources :projects, except: [:show, :update, :destroy] do
+      get 'last' => 'projects#redirect_to_last', on: :collection
       get '' => 'projects#redirect_old_show_route', constraints: lambda{|req| req.params[:project_id] != 'new' }
       get 'embed', as: :old_embed
       get 'permissions/edit' => 'permissions#edit', as: :edit_permissions

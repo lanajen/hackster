@@ -1,5 +1,6 @@
 class Sanitize
   module Config
+    BASIC[:elements] += %w(h5 h6)
     BASIC[:remove_contents] = %w(script style)
 
     BASIC_BLANK = BASIC.merge(add_attributes: {

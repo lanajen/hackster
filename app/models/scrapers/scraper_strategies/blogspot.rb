@@ -6,13 +6,7 @@ module ScraperStrategies
       end
 
       @article.css('.post-footer').find_all.each{|el| el.remove }
-      raw_text = @article.inner_html
-      sanitized_text = Sanitize.clean(raw_text, Sanitize::Config::BASIC)
-      text = Nokogiri::HTML(sanitized_text)
-      text.css('a').find_all.each{|el| el.remove if el.content.strip.blank? }
-      text.css('div').find_all.each{|el| el.remove if el.content.strip.blank? }
-      text = Sanitize.clean(text.to_html, Sanitize::Config::BASIC_BLANK)
-      @widgets << TextWidget.new(content: text, name: 'About')
+      parse_text
 
       distribute_widgets
       parse_comments
