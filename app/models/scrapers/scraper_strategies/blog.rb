@@ -19,6 +19,7 @@ module ScraperStrategies
 
         parse_links
         parse_images
+        parse_files
       end
   end
 end

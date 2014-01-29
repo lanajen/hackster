@@ -1,5 +1,7 @@
 module ScraperStrategies
   class Base
+    include ScraperUtils
+
     LINK_REGEXP = {
       /123d\.circuits\.io/ => 'CircuitsioWidget.new(link:"|href|",name:"Schematics on Circuits.io")',
       /bitbucket\.org/ => 'BitbucketWidget.new(repo:"|href|",name:"Bitbucket repo")',
@@ -36,10 +38,9 @@ module ScraperStrategies
 
       @project.name = @article.at_css('.entry-title').try(:remove).try(:text) || @parsed.title
 
-      yield if block_given?
-
       parse_links
       parse_images
+      parse_files
       parse_text
 
       distribute_widgets
@@ -99,17 +100,51 @@ module ScraperStrategies
         src
       end
 
+      def parse_code
+        @article.css('pre, code, .code').each do |el|
+          next if el.parent.name == 'code' or el.parent.name == 'pre'
+          code = el.inner_html.gsub(/<br ?\/?>/, "\r\n")
+          @widgets << CodeWidget.new(raw_code: code, name: 'Code')
+        end
+
+        @article.css('pre, code, .code').each{|el| el.remove }
+      end
+
+      def parse_files
+        files = {}
+        @article.css('a').each do |el|
+          link = el['href']
+          if link.match /\/\/.+\/.+\.([a-z0-9]{,5})$/
+            next if $1.in? %w(html htm gif jpg jpeg php aspx asp js css)
+            next unless test_link(link)
+            files[link] = el.text
+          end
+        end
+
+        return if files.empty?
+
+        document_widget = DocumentWidget.new name: 'Files'
+
+        files.each do |link, content|
+          title = (content != link) ? content : ''
+          puts "Parsing file #{link}..."
+          document_widget.documents.new remote_file_url: link, title: title.truncate(255)
+        end
+        @widgets << document_widget
+      end
+
       def parse_images
         image_widget = ImageWidget.new name: 'Photos'
         collection = {}
         @article.css('img').each do |img|
           src = normalize_image_link get_src_for_img(img)
+          next unless test_link(src)
           collection[src] = img['title']
         end
 
         i = 0
         collection.each do |src, title|
-          puts "Parsing image #{src}"
+          puts "Parsing image #{src}..."
           image_widget.images.new(remote_file_url: src, title: title.try(:truncate, 255), position: i)
           i += 1
         end
@@ -144,6 +179,8 @@ module ScraperStrategies
     end
 
     def parse_text
+      parse_code
+
       # find the first level title tag (h), replaces by h5, and replaces further
       # levels by h6
       (2..4).each do |i|
@@ -158,7 +195,7 @@ module ScraperStrategies
       raw_text = @article.to_html
       sanitized_text = Sanitize.clean(raw_text.try(:encode, "UTF-8"), Sanitize::Config::BASIC_BLANK)
       text = Nokogiri::HTML::DocumentFragment.parse(sanitized_text)
-      text.css('a, p, h5, h6').find_all.each{|el| el.remove if el.content.strip.blank? }
+      text.css('a, p, h5, h6').each{|el| el.remove if el.content.strip.blank? }
 
       # finds all main titles (h5), split and create a widget with the content
       text.to_html.gsub(/\r?\n/, ' ').split(/<h5>/).each_with_index do |frag, i|
@@ -167,7 +204,7 @@ module ScraperStrategies
         if title = $1
           frag.gsub! "<h5>#{title}</h5>", ''
         end
-        frag.gsub! /(^(<br\/?>)+)?((<br\/?>)+$)?/, ''
+        frag.gsub! /(^(<br ?\/?>)+)?((<br ?\/?>)+$)?/, ''
         @widgets << TextWidget.new(content: frag, name: title.try(:truncate, 100) || 'About')
       end
     end

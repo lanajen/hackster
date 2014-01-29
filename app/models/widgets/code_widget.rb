@@ -23,10 +23,6 @@ class CodeWidget < Widget
   }
   ERROR_MESSAGE = "Error opening file."
 
-  def self.model_name
-    Widget.model_name
-  end
-
   define_attributes [:raw_code, :formatted_content, :language]
   has_one :document, as: :attachable
 
@@ -36,6 +32,10 @@ class CodeWidget < Widget
   before_validation :guess_language_from_extension
   before_save :check_changes
   before_save :format_content
+
+  def self.model_name
+    Widget.model_name
+  end
 
   def extension_list
     return @extension_list if @extension_list

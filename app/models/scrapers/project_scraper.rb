@@ -43,6 +43,7 @@ class ProjectScraper
     KNOWN_HOSTS = {
       'blogspot.fr' => :blogspot,
       'blogspot.com' => :blogspot,
+      'forum.arduino.cc' => :arduinocc,
       'github.com' => :github,
       'wordpress.com' => :wordpress,
     }
@@ -64,7 +65,7 @@ class ProjectScraper
           if k.in? @host
             return v
           end
-        end unless @host
+        end if @host
 
         if generator = @parsed.at("meta[@name='generator']").try(:[], :content).try(:downcase)
           KNOWN_GENERATORS.each do |k,v|

@@ -1,5 +1,7 @@
+require 'net/http'
 require 'nokogiri'
 require 'open-uri'
+require 'uri'
 
 module ScraperUtils
   ROOT_DIR = File.join(Rails.root, 'public', 'scraper')
@@ -47,6 +49,13 @@ module ScraperUtils
   def read_file file_name
     puts "Reading file #{file_name}..."
     File.open(file_name).read
+  end
+
+  def test_link link
+    u = URI.parse link
+    status_code = Net::HTTP.start(u.host,u.port){|http| http.head(u.request_uri).code }
+    puts "Testing link #{link}... #{status_code}"
+    status_code == '200'
   end
 
   def write_file file_name, content, header=nil, mode=nil
