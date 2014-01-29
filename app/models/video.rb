@@ -10,11 +10,14 @@ class Video < ActiveRecord::Base
 
   # height and width deprecated, now only storing ratio so that template can
   # decide on actual sizes
-  DEFAULT_HEIGHT = 480
-  DEFAULT_RATIO_HEIGHT = 3
-  DEFAULT_RATIO_WIDTH = 4
-  FIXED_WIDTH = 640
+  # DEFAULT_HEIGHT = 480
+  DEFAULT_RATIO_HEIGHT_YOUTUBE = 3
+  DEFAULT_RATIO_WIDTH_YOUTUBE = 4
+  DEFAULT_RATIO_HEIGHT_USTREAM = 77
+  DEFAULT_RATIO_WIDTH_USTREAM = 120
+  # FIXED_WIDTH = 640
   KNOWN_PROVIDERS = {
+    /ustream\.tv/ => :ustream,
     /vimeo.com/ => :vimeo,
     /youtube.com/ => :youtube,
     /youtu.be/ => :youtube,
@@ -25,6 +28,7 @@ class Video < ActiveRecord::Base
     return unless link_changed?  # only do this if there's a new link
 
     KNOWN_PROVIDERS.each do |regex, provider|
+      self.provider = provider
       return send("get_info_from_#{provider}") if link =~ regex
     end
 
@@ -39,13 +43,18 @@ class Video < ActiveRecord::Base
       errors[:base] << I18n.translate('activerecord.errors.models.video.not_found') if not_found
     end
 
-    def get_height_from_ratio height, width
-      (height * (FIXED_WIDTH.to_f / width.to_f)).to_i
+    # def get_height_from_ratio height, width
+    #   (height * (FIXED_WIDTH.to_f / width.to_f)).to_i
+    # end
+
+    def get_info_from_ustream
+      self.id_for_provider = link[/ustream\.tv\/(.+)/,1]
+      self.ratio_width = DEFAULT_RATIO_WIDTH_USTREAM
+      self.ratio_height = DEFAULT_RATIO_HEIGHT_USTREAM
     end
 
     def get_info_from_vimeo
-      self.provider = :vimeo
-      self.id_for_provider = link[/vimeo.com\/([0-9]+)/,1]
+      self.id_for_provider = link[/vimeo\.com\/([0-9]+)/,1]
       parsed_response = Vimeo::Simple::Video.info(id_for_provider).parsed_response
       unless parsed_response.kind_of? Array # if video doesn't exist
         self.not_found = true
@@ -65,10 +74,9 @@ class Video < ActiveRecord::Base
     end
 
     def get_info_from_youtube
-      self.provider = :youtube
       self.id_for_provider = get_id_from_link_for_youtube link
-      self.ratio_width = DEFAULT_RATIO_WIDTH
-      self.ratio_height = DEFAULT_RATIO_HEIGHT
+      self.ratio_width = DEFAULT_RATIO_WIDTH_YOUTUBE
+      self.ratio_height = DEFAULT_RATIO_HEIGHT_YOUTUBE
     end
 
     def get_ratio_from_dimensions width, height
