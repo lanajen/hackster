@@ -96,6 +96,7 @@ class Widget < ActiveRecord::Base
     def self.all_types
       {
         'Bill of materials' => 'PartsWidget',
+        'Bitbucket repo' => 'BitbucketWidget',
         'Buy now' => 'BuyWidget',
         'Circuits.io schematics' => 'CircuitsioWidget',
         'Code' => 'CodeWidget',

@@ -1,14 +1,12 @@
-class GithubWidget < Widget
-  define_attributes [:repo]
+class GithubWidget < RepoWidget
   validates :repo, format: { with: /github\.com\/[0-9a-zA-Z_\-]+\/[0-9a-zA-Z_\-]+\z/,
     message: 'is not a valid Github repository' }, allow_blank: true
 
-  def self.model_name
-    Widget.model_name
+  def provider
+    'github'
   end
 
-  def repo_name
-    return if repo.blank?
-    repo.match(/github.com\/(.+)/)[1]
+  def repo_regexp
+    /github\.com\/(.+)/
   end
 end

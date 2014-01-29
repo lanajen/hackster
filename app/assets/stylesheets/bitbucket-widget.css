@@ -1,0 +1,81 @@
+.bitbucket-widget {
+    border: 1px solid #bbb;
+    border-radius: 5px;
+    color: #666;
+}
+
+.bitbucket-widget a {
+    color: #229FCC;
+}
+
+.bitbucket-widget .repo-header,
+.bitbucket-widget .repo-body {
+    padding: 8px 15px;
+}
+
+.bitbucket-widget .repo-header {
+    background-color: #eee;
+    background-image: -webkit-linear-gradient(top, #f9f9f9 0%, #ddd 50%);
+    background-image: linear-gradient(to bottom, #fff 0%, #ddd 50%);
+
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom: 1px solid #bbb;
+    font-size: 11px;
+}
+
+.bitbucket-widget .repo-body {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.bitbucket-widget .repo-header .repo-name {
+    font-size: 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bitbucket-widget .repo-header .repo-name,
+.bitbucket-widget .repo-header .repo-logo {
+    margin-right: 10px;
+}
+
+.bitbucket-widget .repo-header .repo-name,
+.bitbucket-widget .repo-header .repo-last-update {
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.bitbucket-widget .repo-stats {
+    float: right;
+
+    border: 1px solid #bbb;
+    border-radius: 3px;
+    background-color: #fff;
+}
+
+.bitbucket-widget .repo-stats > * {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    padding: 5px;
+    width: 3em;
+    font-weight: bold;
+}
+.bitbucket-widget .repo-stats > :first-child {
+    border-right: 1px solid #bbb;
+}
+
+.bitbucket-widget .repo-body {
+    font-size: 12px;
+}
+
+.bitbucket-widget .repo-logo,
+.bitbucket-widget .repo-website {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.bitbucket-widget .repo-description {
+    margin-top: 10px;
+}
