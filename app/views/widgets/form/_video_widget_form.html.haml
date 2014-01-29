@@ -1,3 +1,10 @@
 - widget.build_video unless widget.video
 = f.simple_fields_for :video do |f_video|
-  = f_video.input :link, label: 'Paste the link to your video', hint: "Supported providers: #{Video::KNOWN_PROVIDERS.values.map{|v| v.capitalize}.uniq.to_sentence}"
+  = f_video.input :link, label: 'Paste the link to your video', hint: "Supported providers: #{Video::KNOWN_PROVIDERS.values.map{|v| v.capitalize}.to_sentence}", required: true
+
+- @wysihtml5_toolbar_style = 'simple'
+.form-group
+  .controls
+    %label Caption
+    = render 'shared/wysihtml5_toolbar'
+= f.input :caption, as: :text, input_html: { id: 'wysihtml5-textarea', rows: 5, style: 'height: 100px;' }, label: false, hint: 'If you need to give more details about this video'

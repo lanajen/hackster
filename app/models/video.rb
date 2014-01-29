@@ -11,16 +11,35 @@ class Video < ActiveRecord::Base
   # height and width deprecated, now only storing ratio so that template can
   # decide on actual sizes
   # DEFAULT_HEIGHT = 480
-  DEFAULT_RATIO_HEIGHT_YOUTUBE = 3
-  DEFAULT_RATIO_WIDTH_YOUTUBE = 4
-  DEFAULT_RATIO_HEIGHT_USTREAM = 77
-  DEFAULT_RATIO_WIDTH_USTREAM = 120
+  DEFAULT_RATIOS = {
+    instagram: {
+     width: 306,
+     height: 355,
+    },
+    ustream: {
+     width: 120,
+     height: 77,
+    },
+    vimeo: {
+     width: 16,
+     height: 9,
+    },
+    vine: {
+     width: 1,
+     height: 1,
+    },
+    youtube: {
+     width: 4,
+     height: 3,
+    },
+  }
   # FIXED_WIDTH = 640
   KNOWN_PROVIDERS = {
+    /instagram\.com/ => :instagram,
     /ustream\.tv/ => :ustream,
-    /vimeo.com/ => :vimeo,
-    /youtube.com/ => :youtube,
-    /youtu.be/ => :youtube,
+    /vimeo\.com/ => :vimeo,
+    /vine\.co/ => :vine,
+    /youtu(\.be|be\.com)/ => :youtube,
   }
 
   def get_info_from_provider
@@ -29,6 +48,8 @@ class Video < ActiveRecord::Base
 
     KNOWN_PROVIDERS.each do |regex, provider|
       self.provider = provider
+      self.ratio_width = DEFAULT_RATIOS[provider][:width]
+      self.ratio_height = DEFAULT_RATIOS[provider][:height]
       return send("get_info_from_#{provider}") if link =~ regex
     end
 
@@ -47,10 +68,12 @@ class Video < ActiveRecord::Base
     #   (height * (FIXED_WIDTH.to_f / width.to_f)).to_i
     # end
 
+    def get_info_from_instagram
+      self.id_for_provider = link[/instagram\.com\/p\/([a-zA-Z]+)/,1]
+    end
+
     def get_info_from_ustream
-      self.id_for_provider = link[/ustream\.tv\/(.+)/,1]
-      self.ratio_width = DEFAULT_RATIO_WIDTH_USTREAM
-      self.ratio_height = DEFAULT_RATIO_HEIGHT_USTREAM
+      self.id_for_provider = link[/ustream\.tv\/([a-z]+\/[0-9]+(\/[a-z]+\/[0-9]+)?)/,1]
     end
 
     def get_info_from_vimeo
@@ -73,10 +96,12 @@ class Video < ActiveRecord::Base
       end
     end
 
+    def get_info_from_vine
+      self.id_for_provider = link[/vine\.co\/v\/([a-zA-Z0-9]+)/,1]
+    end
+
     def get_info_from_youtube
       self.id_for_provider = get_id_from_link_for_youtube link
-      self.ratio_width = DEFAULT_RATIO_WIDTH_YOUTUBE
-      self.ratio_height = DEFAULT_RATIO_HEIGHT_YOUTUBE
     end
 
     def get_ratio_from_dimensions width, height

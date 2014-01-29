@@ -9,7 +9,7 @@
     - else
       = widget.code.html_safe
     - if widget.caption.present?
-      %p= widget.caption
+      %p.caption= widget.caption
   - else
     Please
     = link_to 'edit this widget', edit_project_widget_path(widget.project, widget)

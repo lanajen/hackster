@@ -415,9 +415,16 @@
       margin-bottom: 5px;
     }
   }
-  p {
-    font-size: 13px;
-    color: #666;
-    margin-top: 10px;
+}
+
+p.caption {
+  font-size: 13px;
+  color: #666;
+  margin-top: 10px;
+}
+
+.video-widget {
+  p.caption {
+    margin-bottom: 0;
   }
 }
