@@ -3,13 +3,13 @@ module ScraperStrategies
     include ScraperUtils
 
     LINK_REGEXP = {
-      /123d\.circuits\.io/ => 'CircuitsioWidget.new(link:"|href|",name:"Schematics on Circuits.io")',
-      /bitbucket\.org/ => 'BitbucketWidget.new(repo:"|href|",name:"Bitbucket repo")',
-      /github\.com/ => 'GithubWidget.new(repo:"|href|",name:"Github repo")',
+      /123d\.circuits\.io\/circuits\/([a-z0-9\-]+)/ => 'CircuitsioWidget.new(link:"|href|",name:"Schematics on Circuits.io")',
+      /bitbucket\.org\/([0-9a-zA-Z_\-]+\/[0-9a-zA-Z_\-]+)/ => 'BitbucketWidget.new(repo:"|href|",name:"Bitbucket repo")',
+      /github\.com\/([0-9a-zA-Z_\-]+\/[0-9a-zA-Z_\-]+)/ => 'GithubWidget.new(repo:"|href|",name:"Github repo")',
       /instagram\.com/ => 'VideoWidget.new(video_attributes:{link:"|href|"},name:"Demo video")',
       /oshpark\.com\/shared_projects/ => 'OshparkWidget.new(link:"|href|",name:"PCB on OSH Park")',
       /tindie\.com/ => 'BuyWidget.new(link:"|href|",name:"Where to buy")',
-      /upverter\.com/ => 'UpverterWidget.new(link:"|href|",name:"Schematics on Upverter")',
+      /upverter\.com\/[^\/]+\/([a-z0-9]+)\/([^\/]+)/ => 'UpverterWidget.new(link:"|href|",name:"Schematics on Upverter")',
       /ustream\.tv\/([a-z]+\/[0-9]+)/ => 'VideoWidget.new(video_attributes:{link:"|href|"},name:"Demo video")',
       /vimeo\.com/ => 'VideoWidget.new(video_attributes:{link:"|href|"},name:"Demo video")',
       /vine\.co/ => 'VideoWidget.new(video_attributes:{link:"|href|"},name:"Demo video")',
@@ -34,14 +34,18 @@ module ScraperStrategies
       @project = Project.new private: true
       @widgets = []
 
-      @article = @parsed
+      @article = select_article
+      @project.name = extract_title
 
-      @project.name = @article.at_css('.entry-title').try(:remove).try(:text) || @parsed.title
+      before_parse
 
       parse_links
       parse_images
       parse_files
+      parse_code
       parse_text
+
+      after_parse
 
       distribute_widgets
 
@@ -49,6 +53,12 @@ module ScraperStrategies
     end
 
     private
+      def after_parse
+      end
+
+      def before_parse
+      end
+
       def distribute_widgets
         widget_col = 1
         widget_row = 1
@@ -63,6 +73,10 @@ module ScraperStrategies
           end
           count += 1
         end
+      end
+
+      def extract_title
+        @article.at_css('.entry-title').try(:remove).try(:text) || @parsed.title
       end
 
       def get_src_for_img img
@@ -102,12 +116,16 @@ module ScraperStrategies
 
       def parse_code
         @article.css('pre, code, .code').each do |el|
-          next if el.parent.name == 'code' or el.parent.name == 'pre'
-          code = el.inner_html.gsub(/<br ?\/?>/, "\r\n")
-          @widgets << CodeWidget.new(raw_code: code, name: 'Code')
-        end
+          # if the node has children with code we skip it
+          catch :haschildren do
+            el.children.each{ |child| throw :haschildren if child.name.in? %w(pre code) }
+            code = el.inner_html.gsub(/<br ?\/?>/, "\r\n")
+            next if code.lines.count <= 5  # we leave snippets in place
 
-        @article.css('pre, code, .code').each{|el| el.remove }
+            @widgets << CodeWidget.new(raw_code: code, name: 'Code')
+            el.remove  # remove so it's not added to text later
+          end
+        end
       end
 
       def parse_files
@@ -179,8 +197,6 @@ module ScraperStrategies
     end
 
     def parse_text
-      parse_code
-
       # find the first level title tag (h), replaces by h5, and replaces further
       # levels by h6
       (2..4).each do |i|
@@ -207,6 +223,10 @@ module ScraperStrategies
         frag.gsub! /(^(<br ?\/?>)+)?((<br ?\/?>)+$)?/, ''
         @widgets << TextWidget.new(content: frag, name: title.try(:truncate, 100) || 'About')
       end
+    end
+
+    def select_article
+      @parsed
     end
   end
 end

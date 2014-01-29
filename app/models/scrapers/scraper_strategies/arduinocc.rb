@@ -1,23 +1,13 @@
 module ScraperStrategies
   class Arduinocc < Base
-    def to_project
-      puts 'Converting to project...'
 
-      @project = Project.new private: true
-      @widgets = []
+    private
+      def extract_title
+        @parsed.at_css('.postSubject').text.strip
+      end
 
-      @article = @parsed.at_css('.post')
-
-      @project.name = @parsed.at_css('.postSubject').text.strip
-
-      parse_links
-      parse_images
-      parse_files
-      parse_text
-
-      distribute_widgets
-
-      @project
-    end
+      def select_article
+        @parsed.at_css('.post')
+      end
   end
 end

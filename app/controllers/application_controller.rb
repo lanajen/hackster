@@ -75,7 +75,7 @@ class ApplicationController < ActionController::Base
 
     def load_project
       return @project if @project
-      user_name = params[:user_name] if params[:project_slug] and params[:user_name] and params[:user_name] != 'non_attributed'
+      user_name = params[:user_name] if params[:project_slug] and params[:user_name]
 
       @project = if user_name
         # find by slug history and redirect to newer url if ever

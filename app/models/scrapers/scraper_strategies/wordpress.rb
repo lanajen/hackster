@@ -1,15 +1,5 @@
 module ScraperStrategies
   class Wordpress < Blog
-    def to_project
-      initialize_scrapping
-
-      parse_text
-
-      distribute_widgets
-      parse_comments
-
-      @project
-    end
 
     private
       def extract_comments dom, depth=1, parent=nil
