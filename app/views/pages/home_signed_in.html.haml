@@ -22,22 +22,22 @@
     .well
       .header.no-content
         %h2
-          Latest projects
-          = link_to 'See more recent projects &rarr;'.html_safe, projects_path(sort: 'recent'), class: 'btn-heading'
+          Most popular projects
+          = link_to 'See more popular projects &rarr;'.html_safe, projects_path(sort: 'popular'), class: 'btn-heading'
     .row
-      - @last_projects.each do |project|
-        = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homelast' }
+      - @most_popular_projects.each do |project|
+        = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homepop' }
 
 .row
   .col-xs-12
     .well
       .header.no-content
         %h2
-          Most popular projects
-          = link_to 'See more popular projects &rarr;'.html_safe, projects_path(sort: 'popular'), class: 'btn-heading'
+          Latest projects
+          = link_to 'See more recent projects &rarr;'.html_safe, projects_path(sort: 'recent'), class: 'btn-heading'
     .row
-      - @most_popular_projects.each do |project|
-        = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homepop' }
+      - @last_projects.each do |project|
+        = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homelast' }
 
 .row
   .col-xs-12.text-center
