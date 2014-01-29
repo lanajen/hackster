@@ -63,7 +63,7 @@
           .collapse.navbar-collapse
             .col-xs-4.navbar-left= render 'shared/search_form'
             %ul.nav.navbar-nav
-              %li= link_to 'Explore', projects_path
+              %li= link_to 'Explore', projects_path(sort: 'popular')
               %li= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Showcase".html_safe, new_project_path
             - if user_signed_in?
               %ul.nav.navbar-nav.navbar-right
