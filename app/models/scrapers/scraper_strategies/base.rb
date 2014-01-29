@@ -64,6 +64,24 @@ module ScraperStrategies
         end
       end
 
+      def get_src_for_img img
+        src = img['src']
+
+        # if rel attr links to a bigger image get that one
+        if rel = img['rel']
+          return rel if rel =~ /\.(png|jpg|jpeg)$/
+        end
+
+        # if parent is a link to a bigger image get that link instead
+        parent = img.parent
+        if parent.name == 'a'
+          href = parent['href']
+          return href if href =~ /\.(png|jpg|jpeg)$/
+        end
+
+        src
+      end
+
       def normalize_image_link src
         src = 'http:' + src if (src =~ /\A\/\//)
         if !(src =~ /\Ahttp/) and @host
@@ -85,7 +103,7 @@ module ScraperStrategies
         image_widget = ImageWidget.new name: 'Photos'
         collection = {}
         @article.css('img').each do |img|
-          src = normalize_image_link(img['src'])
+          src = normalize_image_link get_src_for_img(img)
           collection[src] = img['title']
         end
 
@@ -149,6 +167,7 @@ module ScraperStrategies
         if title = $1
           frag.gsub! "<h5>#{title}</h5>", ''
         end
+        frag.gsub! /(^(<br\/?>)+)?((<br\/?>)+$)?/, ''
         @widgets << TextWidget.new(content: frag, name: title.try(:truncate, 100) || 'About')
       end
     end
