@@ -24,7 +24,7 @@ class SearchRepository
       filters = []
       filters << { terms: { model: models } } if models.present?
       Rails.logger.info "Searching for #{query} and model #{models.to_s}"
-      Tire.search BONSAI_INDEX_NAME, load: true, page: page, per_page: per_page do
+      Tire.search ELASTIC_SEARCH_INDEX_NAME, load: true, page: page, per_page: per_page do
         query { string query, default_operator: 'AND' } if query.present?
         filter :and, filters if filters.any?
         filter :term, private: false
