@@ -48,7 +48,7 @@ class BaseMailer < ActionMailer::Base
         comment = context[:comment] = Comment.find(context_id)
         project = context[:project] = comment.commentable
         author = context[:author] = comment.user
-        context[:users] = project.users + project.commenters - [author]
+        context[:users] = project.users.with_subscription('new_comment_own') + project.commenters.with_subscription('new_comment_commented') - [author]
       when :invited
         user = context[:user] = User.find(context_id)
         context[:inviter] = user.invited_by if user.invited_by
@@ -75,8 +75,11 @@ class BaseMailer < ActionMailer::Base
       when :project
         project = context[:project] = Project.find(context_id)
         context[:users] = project.users
-      when :quote
-        context[:quote] = Quote.find(context_id)
+      when :respect
+        respect = context[:respect] = Favorite.find(context_id)
+        project = context[:project] = respect.project
+        context[:author] = respect.user
+        context[:users] = project.users.with_subscription('new_respect_own')
       when :user
         user = context[:user] = User.find(context_id)
       else

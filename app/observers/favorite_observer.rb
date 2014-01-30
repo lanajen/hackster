@@ -1,6 +1,8 @@
 class FavoriteObserver < ActiveRecord::Observer
   def after_create record
     update_counters record
+    BaseMailer.enqueue_email 'new_respect_notification',
+        { context_type: 'respect', context_id: record.id }
   end
 
   def after_destroy record

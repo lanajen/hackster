@@ -4,6 +4,13 @@ class User < ActiveRecord::Base
   include Taggable
 
   ROLES = %w(admin confirmed_user beta_tester)
+  SUBSCRIPTIONS = {
+    'newsletter' => 'Newsletter',
+    'other' => 'Other mailings (announcements, tips, feedback...)',
+    'new_comment_own' => 'New comment on one of my projects',
+    'new_comment_commented' => "New comment on a project I commented on",
+    'new_respect_own' => 'Somebody respects one of my projects',
+  }
 
   CATEGORIES = [
     'Electrical engineer',
@@ -39,7 +46,7 @@ class User < ActiveRecord::Base
   has_many :respected_projects, through: :respects, source: :project
   has_many :teams, through: :group_ties, source: :group, class_name: 'Team'
   has_one :avatar, as: :attachable, dependent: :destroy
-  has_one :reputation
+  has_one :reputation, dependent: :destroy
 
   attr_accessor :email_confirmation, :skip_registration_confirmation,
     :friend_invite_id, :new_invitation, :invitation_code, :match_by,
@@ -52,7 +59,7 @@ class User < ActiveRecord::Base
     :facebook_link, :twitter_link, :linked_in_link, :website_link,
     :blog_link, :github_link, :google_plus_link, :youtube_link, :categories,
     :github_link, :invitation_limit, :email, :mini_resume, :city, :country,
-    :user_name, :full_name, :roles, :type, :avatar_id
+    :user_name, :full_name, :roles, :type, :avatar_id, :subscriptions
   accepts_nested_attributes_for :avatar, :projects, allow_destroy: true
 
   store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link, :website_link, :blog_link, :github_link, :google_plus_link, :youtube_link]
@@ -74,10 +81,10 @@ class User < ActiveRecord::Base
 
   before_validation :ensure_website_protocol
   after_invitation_accepted :invitation_accepted
+  before_save :ensure_authentication_token
 
-  scope :with_category, lambda { |category| { conditions: "categories_mask & #{2**CATEGORIES.index(category.to_s)} > 0"} }
-
-  scope :with_role, lambda { |role| { conditions: "roles_mask & #{2**ROLES.index(role.to_s)} > 0"} }
+  # scope :with_category, ->(category) { where("users.categories_mask & #{2**CATEGORIES.index(category.to_s)} > 0") }
+  scope :with_role, ->(role) { where("users.roles_mask & #{2**ROLES.index(role.to_s)} > 0") }
 
   store :counters_cache, accessors: [:comments_count, :interest_tags_count, :invitations_count, :projects_count, :respects_count, :skill_tags_count, :live_projects_count, :project_views_count]
 
@@ -222,6 +229,11 @@ class User < ActiveRecord::Base
     joins(:reputation).order('reputations.points DESC')
   end
 
+  def self.with_subscription subscription, invert=false
+    negate = invert ? 'NOT' : ''
+    where("#{negate}(users.subscriptions_mask & #{2**SUBSCRIPTIONS.keys.index(subscription.to_s)} > 0)")
+  end
+
   def ability
     @ability ||= Ability.new(self)
   end
@@ -278,6 +290,12 @@ class User < ActiveRecord::Base
   # small hack to allow single emails to be invited multiple times
   def email_changed?
     being_invited? ? false : super
+  end
+
+  def ensure_authentication_token
+    if authentication_token.blank?
+      self.authentication_token = generate_authentication_token
+    end
   end
 
   require 'country_iso_translater'
@@ -491,6 +509,14 @@ class User < ActiveRecord::Base
     @notifications
   end
 
+  # def add_notification message, link=nil
+  #   notifications << { message: message, link: link }
+  # end
+
+  # def delete_notification message
+  #   @notifications.delete message
+  # end
+
   def profile_needs_care?
     live_projects_count.zero? or (country.blank? and city.blank?) or mini_resume.blank? or interest_tags_count.zero? or skill_tags_count.zero? or websites.values.reject{|v|v.nil?}.count.zero?
   end
@@ -501,6 +527,11 @@ class User < ActiveRecord::Base
 
   def receive_notification? name
     !(notifications and name.in? notifications)
+  end
+
+  def reset_authentication_token
+    update_attribute(:authentication_token, nil)
+    # the new token is set automatically on save
   end
 
   def roles=(roles)
@@ -528,6 +559,18 @@ class User < ActiveRecord::Base
 
   def skip_confirmation!
     self.skip_registration_confirmation = true
+  end
+
+  def subscriptions=(subscriptions)
+    self.subscriptions_mask = (subscriptions & SUBSCRIPTIONS.keys).map { |r| 2**SUBSCRIPTIONS.keys.index(r) }.sum
+  end
+
+  def subscriptions
+    SUBSCRIPTIONS.keys.reject { |r| ((subscriptions_mask || 0) & 2**SUBSCRIPTIONS.keys.index(r)).zero? }
+  end
+
+  def subscription_symbols
+    subscriptions.map(&:to_sym)
   end
 
   def to_param
@@ -589,6 +632,13 @@ class User < ActiveRecord::Base
           next
         end
         send "#{type}=", 'http://' + url unless url =~ /^http/
+      end
+    end
+
+    def generate_authentication_token
+      loop do
+        token = Devise.friendly_token
+        break token unless User.where(authentication_token: token).first
       end
     end
 

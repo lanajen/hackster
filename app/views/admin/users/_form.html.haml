@@ -6,6 +6,7 @@
 = f.input :country
 = f.input :roles, collection: User::ROLES, as: :check_boxes
 = f.input :invitation_limit
+= f.input :subscriptions, collection: User::SUBSCRIPTIONS.invert, as: :check_boxes, label: 'Email subscriptions'
 .col-xs-offset-4.col-xs-8
   = f.button :submit, :class => 'btn-primary'
   = link_to t('.cancel', :default => t("helpers.links.cancel")), admin_users_path, :class => 'btn btn-default'

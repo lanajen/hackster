@@ -39,8 +39,9 @@
             = user.invited_by.email
             %br
           - if user.invitation_token.present?
-            %b On:
-            = l user.invitation_sent_at, format: :date
+            - if user.invitation_sent_at
+              %b On:
+              = l user.invitation_sent_at, format: :date
             %br
           = link_to 'link', accept_user_invitation_url(:invitation_token => user.invitation_token) if user.invitation_token
         %td

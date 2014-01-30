@@ -98,6 +98,7 @@
                         - name += ' (invite pending)' if group_tie.invitation_pending?
                         %li= link_to name, community
                     %li.divider
+                    %li= link_to 'Account settings', edit_user_registration_path
                     %li= link_to 'Invite friends', new_user_invitation_path
                     %li.divider
                     %li= link_to 'Log out', destroy_user_session_path, method: :delete

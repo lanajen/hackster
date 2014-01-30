@@ -7,6 +7,7 @@
         Edit profile
         .pull-right
           %ul.list-unstyled.list-inline
+            %li= link_to 'Go to account settings', edit_user_registration_path, class: 'btn btn-info btn-sm'
             %li= f.submit 'Update profile', class: 'btn btn-primary btn-sm'
             %li= link_to 'Cancel', '', class: 'btn-cancel btn-link btn-sm', data: { show: '.user .display', hide: '.user .edit' }
       %hr
@@ -15,7 +16,6 @@
     .col-xs-6
       = f.input :full_name
       = f.input :user_name, hint: "Changing your user name will break the URLs of your existing projects!"
-      = f.input :email
       = f.input :mini_resume, as: :text, input_html: { rows: 4 },
         hint: 'Maximum 140 characters', label: 'About me'
 
