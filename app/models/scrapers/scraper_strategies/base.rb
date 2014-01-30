@@ -131,7 +131,7 @@ module ScraperStrategies
       def parse_files
         files = {}
         @article.css('a').each do |el|
-          link = el['href']
+          next unless link = el['href']
           if link.match /\/\/.+\/.+\.([a-z0-9]{,5})$/
             next if $1.in? %w(html htm gif jpg jpeg php aspx asp js css)
             next unless test_link(link)
