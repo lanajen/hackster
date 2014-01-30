@@ -28,7 +28,9 @@ class SearchRepository
         query { string query, default_operator: 'AND' } if query.present?
         filter :and, filters if filters.any?
         filter :term, private: false
-        sort { by :created_at, 'desc' }
+        sort do
+          by :created_at, { order: :desc, ignore_unmapped: true }
+        end
         size per_page
         from per_page.to_i * (page.to_i-1)
       end
