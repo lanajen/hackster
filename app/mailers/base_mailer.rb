@@ -81,7 +81,7 @@ class BaseMailer < ActionMailer::Base
         context[:author] = respect.user
         context[:users] = project.users.with_subscription('new_respect_own')
       when :user
-        user = context[:user] = User.find(context_id)
+         context[:user] = User.find(context_id)
       else
         raise "Unknown context: #{context_type}"
       end

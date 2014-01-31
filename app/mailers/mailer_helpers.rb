@@ -88,7 +88,8 @@ module MailerHelpers
       invite = @context[:invite] if @context.include? :invite
       issue = @context[:issue] if @context.include? :issue
       project = @context[:project] if @context.include? :project
-      user = @context[:user] if @context.include? :user or opts.include? :user
+      user = @context[:user] if @context.include? :user
+      user = opts[:user] if opts.include? :user
       group = @context[:group] if @context.include? :group
 
       token = token.gsub(/\|/, '')
@@ -123,7 +124,7 @@ module MailerHelpers
         SLOGAN
       when :unsubscribe_link
         return false unless defined?(user) and user
-        url.edit_registration_url(user_email: user.email,
+        url.edit_user_registration_url(user_email: user.email,
           user_token: user.authentication_token, host: default_host)
       when :user_profile_edit_link
         url.user_url(user, host: default_host)
