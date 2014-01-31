@@ -82,6 +82,9 @@ class BaseMailer < ActionMailer::Base
         context[:users] = project.users.with_subscription('new_respect_own')
       when :user
          context[:user] = User.find(context_id)
+      when :user_informal
+         context[:user] = User.find(context_id)
+         context[:from_email] = 'Benjamin Larralde<ben@hackster.io>'
       else
         raise "Unknown context: #{context_type}"
       end

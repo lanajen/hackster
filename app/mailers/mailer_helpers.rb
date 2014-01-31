@@ -74,8 +74,8 @@ module MailerHelpers
   private
     def default_headers
       {
-        from: DEFAULT_EMAIL,
-        reply_to: DEFAULT_EMAIL,
+        from: @context[:from_email] || DEFAULT_EMAIL,
+        reply_to: @context[:from_email] || DEFAULT_EMAIL,
       }
     end
 

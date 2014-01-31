@@ -445,6 +445,10 @@ class User < ActiveRecord::Base
     save
   end
 
+  def informal_name
+    full_name.present? ? full_name.split(' ')[0] : user_name
+  end
+
   def is? role
     role_symbols.include? role
   end
