@@ -10,3 +10,12 @@ form = $('form.accept-file-upload');
 $($(formTpl)).insertAfter(form);
 $('.file_upload.<%= file_type %> input[name="authenticity_token"]').val($('input[name="authenticity_token"]', form).val());
 $('.file_upload.<%= file_type %> input[name="file_type"]').val('<%= defined?(attribute_type) ? attribute_type : file_type %>');
+
+<% validations = { 'max-file-size' => '2000000' } %>
+<% if file_type.in? %w(avatar image logo cover_image)
+   validations['file-type'] = 'gif,png,jpeg,jpg'
+  end %>
+
+<% validations.each do |attr, validation| %>
+  $('.file_upload.<%= file_type %> input[name="file"]').data('<%= attr %>', '<%= validation %>');
+<% end if defined?(validations) %>

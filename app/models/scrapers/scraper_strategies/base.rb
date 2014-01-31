@@ -133,7 +133,7 @@ module ScraperStrategies
         @article.css('a').each do |el|
           next unless link = el['href']
           if link.match /\/\/.+\/.+\.([a-z0-9]{,5})$/
-            next if $1.in? %w(html htm gif jpg jpeg php aspx asp js css)
+            next if $1.in? %w(html htm gif jpg jpeg png php aspx asp js css)
             next unless test_link(link)
             files[link] = el.text
           end
@@ -163,13 +163,15 @@ module ScraperStrategies
         i = 0
         collection.each do |src, title|
           puts "Parsing image #{src}..."
-          image_widget.images.new(remote_file_url: src, title: title.try(:truncate, 255), position: i)
+          image = image_widget.images.new(remote_file_url: src, title: title.try(:truncate, 255), position: i)
+          image.skip_file_check!
           i += 1
         end
         @widgets << image_widget if image_widget.images.any?
 
         if img = collection.first
-          @project.build_cover_image remote_file_url: img[0]
+          image = @project.build_cover_image remote_file_url: img[0]
+          image.skip_file_check!
         end
       end
 

@@ -59,6 +59,10 @@ class ImageUploader < BaseUploader
   #   end
   # end
 
+  def extension_white_list
+    %w(gif png jpg jpeg ico) unless model.skip_file_check?
+  end
+
   protected
     def is_cover? picture
       model.class == CoverImage
