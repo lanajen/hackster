@@ -12,6 +12,7 @@ class UserObserver < ActiveRecord::Observer
     BaseMailer.enqueue_email 'invite_request_accepted',
       { context_type: :inviter, context_id: record.id }
     record.build_reputation unless record.reputation
+    record.subscribe_to_all && record.save
 
     invite = record.find_invite_request
     if invite and project = invite.project

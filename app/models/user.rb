@@ -80,8 +80,9 @@ class User < ActiveRecord::Base
   validate :website_format_is_valid
 
   before_validation :ensure_website_protocol
-  after_invitation_accepted :invitation_accepted
+  before_create :subscribe_to_all, unless: proc{|u| u.invitation_token.present? }
   before_save :ensure_authentication_token
+  after_invitation_accepted :invitation_accepted
 
   # scope :with_category, ->(category) { where("users.categories_mask & #{2**CATEGORIES.index(category.to_s)} > 0") }
   scope :with_role, ->(role) { where("users.roles_mask & #{2**ROLES.index(role.to_s)} > 0") }
@@ -559,6 +560,10 @@ class User < ActiveRecord::Base
 
   def skip_confirmation!
     self.skip_registration_confirmation = true
+  end
+
+  def subscribe_to_all
+    self.subscriptions = SUBSCRIPTIONS.keys
   end
 
   def subscriptions=(subscriptions)
