@@ -51,8 +51,9 @@ function checkFileForErrors(file, validations) {
   }
   if (validations['fileType'] != undefined) {
     fileType = validations['fileType'];
-    regexp = new RegExp('(\.|\/)(' + fileType.split(',').join('|') + ')$');
-    if (!regexp.test(file.name)) {
+    regexp = new RegExp('(\.|\/)(' + fileType.split(',').join('|') + ')$', 'gi');
+    type = (file.type != '') ? file.type : file.name
+    if (!regexp.test(type)) {
       msg = fileType.split(',').join(', ');
       errors.push('Allowed file types are ' + msg);
     }
