@@ -36,7 +36,8 @@ module MailerHelpers
       return
     end
     @context[:devise_token] = opts['token']
-    premailer = Premailer.new(substitute_in(email.body), with_html_string: true,
+    body = render text: email.body, layout: 'email'
+    premailer = Premailer.new(substitute_in(body), with_html_string: true,
       warn_level: Premailer::Warnings::SAFE)
 
     headers = {
@@ -50,6 +51,8 @@ module MailerHelpers
         sendgrid_substitute token, substitutes
       end
     end
+
+    # raise premailer.to_inline_css.to_s
 
     output_email = mail(headers.merge(default_headers)) do |format|
       format.text { render text: premailer.to_plain_text }
@@ -80,15 +83,19 @@ module MailerHelpers
       APP_CONFIG['full_host']
     end
 
-    def get_value_for_token token
+    def get_value_for_token token, opts={}
+      author = @context[:author] if @context.include? :author
       invite = @context[:invite] if @context.include? :invite
       issue = @context[:issue] if @context.include? :issue
       project = @context[:project] if @context.include? :project
       user = @context[:user] if @context.include? :user
+      user = opts[:user] if opts.include? :user
       group = @context[:group] if @context.include? :group
 
       token = token.gsub(/\|/, '')
       case token.to_sym
+      when :author_link
+        url.user_url(author, host: default_host)
       when :email_confirmation_link
         url.user_confirmation_url(confirmation_token: @context[:devise_token], host: default_host)
       when :group_invitation_link
@@ -115,6 +122,10 @@ module MailerHelpers
         url.new_project_url(project, host: default_host)
       when :slogan
         SLOGAN
+      when :unsubscribe_link
+        return false unless defined?(user) and user
+        url.edit_user_registration_url(user_email: user.email,
+          user_token: user.authentication_token, host: default_host)
       when :user_profile_edit_link
         url.user_url(user, host: default_host)
       else
@@ -140,7 +151,7 @@ module MailerHelpers
     def substitute_in text
       text.scan(/\|[a-z_]*\|/).each do |token|
         if substitute = get_value_for_token(token)
-          text = text.gsub(token, substitute.to_s)
+          text = text.gsub(token, substitute.to_s) if substitute
         end
       end
       text

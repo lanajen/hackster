@@ -1,6 +1,6 @@
 .col-xs-4.col-xs-offset-4
   .wellified
-    %h2{ style: 'text-align: center' } New project
+    %h2.text-center New project
 
     = simple_nested_form_for @project, html: { class: 'accept-file-upload' } do |f|
       = f.error_notification
