@@ -73,6 +73,9 @@ HackerIo::Application.configure do
 
   # config.middleware.use(Oink::Middleware, logger: Hodel3000CompliantLogger.new(STDOUT))
 
-  require File.expand_path('../../lib/queue_time_logger', __FILE__)
+  require File.expand_path('../../../lib/queue_time_logger', __FILE__)
   config.middleware.use QueueTimeLogger
+
+  require File.expand_path('../../../lib/log_request_id', __FILE__)
+  config.middleware.use Rack::LogRequestID
 end
