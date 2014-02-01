@@ -59,7 +59,9 @@ HackerIo::Application.routes.draw do
       patch '' => 'groups#update'
     end
 
-    resources :files, only: [:create, :destroy]
+    resources :files, only: [:create, :show] do
+      get 'signed_url', on: :collection
+    end
     resources :invite_requests, only: [:create, :update, :edit]
     # get 'request/an/invite' => 'invite_requests#new', as: :new_invite_request
     delete 'notifications' => 'notifications#destroy'

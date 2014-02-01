@@ -3,6 +3,9 @@ ruby '1.9.3'
 
 gem 'rails', '4.0.1'
 
+# load early so that env variables are available to other gems
+gem 'dotenv-rails', :groups => [:development, :test]
+
 #  assets
 gem 'asset_sync', '1.0.0'
 gem 'bootstrap-sass-rails', '3.0.2.1'
@@ -14,6 +17,7 @@ gem 'sass-rails',   '4.0.1'
 gem 'uglifier', '2.3.1'
 gem 'zocial-rails', '1.0.2'
 
+gem 'aws-sdk', '1.33.0'
 gem 'bootstrap-will_paginate', '0.0.10'
 gem 'cancan', '1.6.10'
 gem 'carrierwave', '0.9.0'

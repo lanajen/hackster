@@ -17,4 +17,12 @@ class AvatarUploader < BaseUploader
   version :big do
     process :resize_to_fill => [180, 180]
   end
+
+  def extension_white_list
+    %w(gif png jpg jpeg ico bmp) unless model.skip_file_check?
+  end
+
+  def needs_processing?
+    true
+  end
 end

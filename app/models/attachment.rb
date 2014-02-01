@@ -1,10 +1,13 @@
 class Attachment < ActiveRecord::Base
+  MAX_FILE_SIZE = 20  # MB
+
   attr_accessible :type, :file, :file_cache, :remote_file_url, :caption,
-    :title, :position
+    :title, :position, :tmp_file
 
   belongs_to :attachable, polymorphic: true
-  validate :ensure_has_file, unless: proc { |a| a.skip_file_check? }
+  # validate :ensure_has_file, unless: proc { |a| a.skip_file_check? }
   # validate :file_size
+  after_save :queue_processing, unless: proc{|a| a.processed? }
 
   def disallow_blank_file?
     @disallow_blank_file
@@ -12,6 +15,36 @@ class Attachment < ActiveRecord::Base
 
   def disallow_blank_file!
     @disallow_blank_file = true
+  end
+
+  def needs_processing?
+    send(:_mounter, :file).uploader.needs_processing?
+  end
+
+  def process
+    return if processed?
+
+    s3 = AWS::S3.new
+
+    s3_tmp_file = URI.parse(tmp_file).path[1..-1]
+    s3_tmp_file = CGI.unescape s3_tmp_file  # in case file name contains spaces
+    file_name = s3_tmp_file.split('/').last
+    file_path = "uploads/#{self.class.name.underscore}/file/#{id}/#{file_name}"
+    s3.buckets[ENV['FOG_DIRECTORY']].objects[s3_tmp_file].move_to(file_path, acl: :public_read)
+
+    raw_write_attribute :file, file_name
+    file.recreate_versions! if needs_processing?  # only if has post processing
+
+    update_attributes file: file_name, tmp_file: nil
+  end
+
+  def processed?
+    tmp_file.blank?
+  end
+  alias_method :processed, :processed?  # so it can be used as json
+
+  def queue_processing
+    Resque.enqueue AttachmentQueue, 'process', id
   end
 
   def skip_file_check?
@@ -32,6 +65,6 @@ class Attachment < ActiveRecord::Base
     end
 
     def file_size
-      errors[:file] << "should be less than 2MB" if file.size > 2.megabytes
+      errors[:file] << "should be less than #{MAX_FILE_SIZE}MB" if file.size > MAX_FILE_SIZE.megabytes
     end
 end
