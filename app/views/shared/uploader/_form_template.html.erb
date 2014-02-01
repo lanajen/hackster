@@ -1,19 +1,23 @@
-formTpl = "<form action='/files' method='post' enctype='multipart/form-data' class='file_upload <%= file_type %>' style='display:none;'>";
-formTpl += "<input name='utf8' type='hidden' value='✓'>";
-formTpl += "<input name='authenticity_token' type='hidden' value=''>";
-formTpl += "<input name='file_type' type='hidden' value=''>";
+formTpl = "<form action='https://<%= ENV['FOG_DIRECTORY'] %>.s3.amazonaws.com' method='post' enctype='multipart/form-data' class='file_upload <%= file_type %>' style='display:none;'>";
+formTpl += "<input name='key' type='hidden'>";
+formTpl += "<input name='AWSAccessKeyId' type='hidden' value='<%= ENV['AWS_ACCESS_KEY_ID'] %>'>";
+formTpl += "<input name='acl' type='hidden' value='public-read'>";
+formTpl += "<input name='policy' type='hidden'>";
+formTpl += "<input name='signature' type='hidden'>";
+formTpl += "<input name='success_action_status' type='hidden' value='201'>";
+//formTpl += "<input name='file_type' type='hidden' value=''>";
 formTpl += "<input type='file' name='file' multiple>";
 formTpl += "</div>";
 formTpl += "</form>";
 
 form = $('form.accept-file-upload');
 $($(formTpl)).insertAfter(form);
-$('.file_upload.<%= file_type %> input[name="authenticity_token"]').val($('input[name="authenticity_token"]', form).val());
-$('.file_upload.<%= file_type %> input[name="file_type"]').val('<%= defined?(attribute_type) ? attribute_type : file_type %>');
+//$('.file_upload.<%= file_type %> input[name="authenticity_token"]').val($('input[name="authenticity_token"]', form).val());
+//$('.file_upload.<%= file_type %> input[name="file_type"]').val('<%= defined?(attribute_type) ? attribute_type : file_type %>');
 
-<% validations = { 'max-file-size' => '2000000' } %>
+<% validations = { 'max-file-size' => (Attachment::MAX_FILE_SIZE * 1000000) } %>
 <% if file_type.in? %w(avatar image logo cover_image)
-   validations['file-type'] = 'gif,png,jpeg,jpg'
+   validations['file-type'] = 'gif,png,jpeg,jpg,bmp'
   end %>
 
 <% validations.each do |attr, validation| %>

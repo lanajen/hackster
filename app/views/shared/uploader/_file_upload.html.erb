@@ -1,11 +1,10 @@
 $(function(){
   $('.file_upload.<%= file_type %>').fileupload({
+    dataType: 'xml', // This is really important as s3 gives us back the url of the file in a XML document
     limitMultiFileUploads: 1,
     sequentialUploads: true,
     limitConcurrentUploads: 1,
     dropZone: '.file-drop.<%= file_type %>',
-    //acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
-    //maxFileSize: 200000,  // 2MB
 
     add: function(e, data) {
       file = data.files[0];
@@ -22,23 +21,66 @@ $(function(){
         target = <%= file_type %>Functions.fileuploadTargetForFail(data);
         target.replaceWith('<div class="help-block has-error">Error: ' + errors.join(', ')+'</span>');
       } else {
-        var jqXHR = data.submit();
+        $formData = data;
+
+        $.ajax({
+          url: '/files/signed_url',
+          type: 'GET',
+          dataType: 'json',
+          data: {file: {name: file.name}},
+          async: false,
+          success: function(data) {
+            form = $('.file_upload.<%= file_type %>');
+            form.find('input[name=key]').val(data.key);
+            form.find('input[name=policy]').val(data.policy);
+            form.find('input[name=signature]').val(data.signature);
+
+            $formData.submit();
+          },
+          error: function(data) {
+            <%= file_type %>Functions.fail($formData);
+          }
+        });
       }
     },
 
     fail: function(e, data){
-      target = <%= file_type %>Functions.fileuploadTargetForFail(data);
-      target.replaceWith('Error, please retry. If the problem persists please email <a href="mailto:team@hackster.io?subject=My file won\'t upload&body=Debug info:%0D%0Atype: ' + data.files[0].type + '%0D%0Asize: ' + data.files[0].size + '%0D%0Abitrate: ' + data.bitrate + '">team@hackster.io</a>')
+      <%= file_type %>Functions.fail($formData);
     },
 
     progress: function(e, data) {
       progress = parseInt(data.loaded / data.total * 100, 10);
       target = <%= file_type %>Functions.fileuploadTargetForProgress(data);
       target.css('width', progress + '%');
+      if (progress == 100) {
+        target
+          .addClass('progress-bar-success')
+          .text('Processing...');
+      }
+    },
+
+    success: function(data) {
+      var url = $(data).find('Location').text(); // or Key for path
+      $url = url;  // pass it to 'done'
     },
 
     done: function(e, data){
-      <%= file_type %>Functions.fileuploadDone(data);
+      $formData = data;
+
+      $.ajax({
+        url: '/files',
+        type: 'POST',
+        dataType: 'json',
+        data: {file_url: $url, file_type: '<%= file_type %>'},
+        async: false,
+        success: function(data) {
+          id = data.id;
+          <%= file_type %>Functions.checkFileProcessed(id, $formData);
+        },
+          error: function(data) {
+            <%= file_type %>Functions.fail($formData);
+          }
+      });
     }
   });
 });
