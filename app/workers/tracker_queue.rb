@@ -24,7 +24,7 @@ require 'heroku-api'
 # end
 
 class TrackerQueue
-  extend HerokuAutoScaleDown if Rails.env == 'production'
+  # extend HerokuAutoScaleDown if Rails.env == 'production'
   @queue = :trackers
 
   def self.perform env, method_name, *args
