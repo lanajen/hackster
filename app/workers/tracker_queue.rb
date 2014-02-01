@@ -1,4 +1,4 @@
-require 'heroku-api'
+# require 'heroku-api'
 
 # module HerokuAutoScaleDown
 #   # scaler extracted from heroku_auto_scale because we only want scaling down
