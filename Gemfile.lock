@@ -210,6 +210,7 @@ GEM
       rack
     rack-test (0.6.2)
       rack (>= 1.0)
+    rack-timeout (0.0.4)
     rails (4.0.1)
       actionmailer (= 4.0.1)
       actionpack (= 4.0.1)
@@ -384,6 +385,7 @@ DEPENDENCIES
   protected_attributes (= 1.0.5)
   pygments.rb (= 0.5.4)
   quiet_assets
+  rack-timeout (= 0.0.4)
   rails (= 4.0.1)
   rails-observers (= 0.1.2)
   rails_12factor

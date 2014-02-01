@@ -50,6 +50,7 @@ gem 'pg', '0.17.0'
 gem 'premailer-rails', '1.6.0'
 gem 'protected_attributes', '1.0.5'
 gem 'pygments.rb', '0.5.4'
+gem 'rack-timeout', '0.0.4'
 gem 'rails_12factor', group: :production
 gem 'rails-observers', '0.1.2'
 gem 'redis', '3.0.6'
