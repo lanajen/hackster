@@ -45,6 +45,7 @@ class ProjectScraper
       'blogspot.com' => :blogspot,
       'forum.arduino.cc' => :arduinocc,
       'github.com' => :github,
+      'instructables.com' => :instructable,
       'wordpress.com' => :wordpress,
     }
 
