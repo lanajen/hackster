@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140131225132) do
+ActiveRecord::Schema.define(version: 20140210020047) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -246,6 +246,7 @@ ActiveRecord::Schema.define(version: 20140131225132) do
     t.string   "slug",              limit: 105
     t.datetime "featured_date"
     t.datetime "made_public_at"
+    t.boolean  "hide",                          default: false
   end
 
   add_index "projects", ["private"], name: "index_projects_on_private", using: :btree

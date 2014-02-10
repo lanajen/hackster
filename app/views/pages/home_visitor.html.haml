@@ -52,7 +52,7 @@
     .row
       .col-xs-10.col-xs-offset-1
         .row.project-thumbs
-          - @featured_projects.each do |project|
+          - @most_popular_projects.sort_by{|p| p.id }.each do |project|
             = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homevis' }
 
     .row
