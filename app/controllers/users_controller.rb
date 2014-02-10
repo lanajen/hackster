@@ -9,7 +9,7 @@ class UsersController < ApplicationController
     meta_desc "#{@user.name} is on Hackster.io. Come share your hardware projects with #{@user.name} and other hardware hackers and makers."
     @user = @user.decorate
     @broadcasts = @user.broadcasts.where('broadcasts.created_at > ?', 1.day.ago).order('created_at DESC').limit(5).group_by { |b| [b.context_model_type, b.context_model_id, b.event] }.values.map{ |g| g.first }
-    @public_projects = @user.projects.indexable.order(start_date: :desc, created_at: :desc)
+    @public_projects = @user.projects.live.order(start_date: :desc, created_at: :desc)
     @public_projects_sorted = @public_projects.group_by{ |p| p.start_date.try(:year) }
     if @public_projects_sorted[nil]
       val = @public_projects_sorted[nil]

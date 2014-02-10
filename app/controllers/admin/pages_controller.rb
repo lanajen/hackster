@@ -5,11 +5,11 @@ class Admin::PagesController < Admin::BaseController
   def analytics
     title "Admin > Analytics"
 
-    @project_count = Project.live.count
+    @project_count = Project.indexable.count
     @comment_count = Comment.count
     @like_count = Favorite.count
     @user_count = User.invitation_accepted_or_not_invited.count
-    @new_projects_count = Project.live.where('projects.made_public_at > ?', Date.today).count
+    @new_projects_count = Project.indexable.where('projects.made_public_at > ?', Date.today).count
     @new_comments_count = Comment.where('comments.created_at > ?', Date.today).count
     @new_likes_count = Favorite.where('favorites.created_at > ?', Date.today).count
     @new_users_count = User.invitation_accepted_or_not_invited.where('users.created_at > ?', Date.today).count
@@ -23,7 +23,7 @@ class Admin::PagesController < Admin::BaseController
     @users_with_at_least_one_live_project = User.invitation_accepted_or_not_invited.joins(:projects).distinct.where(projects: { private: false }).size
 
 
-    sql = "SELECT to_char(made_public_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM projects WHERE private = 'f' AND date_part('days', now() - projects.made_public_at) < 30 GROUP BY date ORDER BY date;"
+    sql = "SELECT to_char(made_public_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM projects WHERE private = 'f' AND hide = 'f' AND date_part('days', now() - projects.made_public_at) < 30 GROUP BY date ORDER BY date;"
     @new_projects = graph_with_dates_for sql, 'Projects made public', 'ColumnChart'
 
 

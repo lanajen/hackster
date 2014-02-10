@@ -108,11 +108,11 @@ class Project < ActiveRecord::Base
   end
 
   def self.indexable
-    where(private: false, hide: false)
+    live.where(hide: false)
   end
 
   def self.live
-    indexable
+    where(private: false)
   end
 
   def self.last_created
