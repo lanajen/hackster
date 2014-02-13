@@ -17,6 +17,9 @@ class Tracker
   # end
 
   def enqueue method_name, *args
+    # puts @tracker.instance_variable_get('@env').to_s
+    # puts method_name.to_s
+    # puts *args.to_s
     TrackerQueue.perform_async @tracker.instance_variable_get('@env'), method_name, *args
   end
 

@@ -149,7 +149,8 @@ class ApplicationController < ActionController::Base
     end
 
     def tracking_activated?
-      !(Rails.env == 'production' and current_user.try(:is?, :admin))
+      true
+      # !(Rails.env == 'production' and current_user.try(:is?, :admin))
     end
 
     def tracker
@@ -162,7 +163,7 @@ class ApplicationController < ActionController::Base
         env: {
           'REMOTE_ADDR' => request.env['REMOTE_ADDR'],
           'HTTP_X_FORWARDED_FOR' => request.env['HTTP_X_FORWARDED_FOR'],
-          'rack.session' => request.env['rack.session'],
+          # 'rack.session' => request.env['rack.session'],
           'mixpanel_events' => request.env['mixpanel_events'],
         }
       }
