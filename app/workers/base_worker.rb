@@ -10,7 +10,7 @@ class BaseWorker
       end
     rescue Resque::TermException
       message = "Received Resque::TermException while working on #{method} with args #{args}"
-      logger.error message
+      Rails.logger.error message
       log_line = LogLine.create(message: message, log_type: 'error', source: 'worker')
     end
 
