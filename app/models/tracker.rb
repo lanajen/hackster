@@ -28,6 +28,7 @@ class Tracker
 
   def initialize options={}
     @tracker = Mixpanel::Tracker.new MIXPANEL_API_TOKEN, options
+    @env = options[:env]
   end
 
   def update_user distinct_id, properties={}
