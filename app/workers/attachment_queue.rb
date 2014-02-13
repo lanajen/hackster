@@ -1,5 +1,5 @@
 class AttachmentQueue < BaseWorker
-  @queue = :attachments
+  sidekiq_options queue: :critical#, retry: false
 
   def process id
     Attachment.find(id).process

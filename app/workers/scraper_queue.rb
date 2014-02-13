@@ -1,5 +1,6 @@
 class ScraperQueue < BaseWorker
-  @queue = :scraper
+  # @queue = :scraper
+  sidekiq_options queue: :low, retry: false
 
   def scrape_project page_url, user_id
     @message = Message.new(
@@ -38,7 +39,7 @@ class ScraperQueue < BaseWorker
   def scrape_projects page_urls, user_id
     urls = page_urls.gsub(/\r\n/, ',').gsub(/\n/, ',').gsub(/[ ]+/, ',').split(',').reject{ |l| l.blank? }
     urls.each do |url|
-      Resque.enqueue self.class, 'scrape_project', url, user_id
+      self.class.perform_async 'scrape_project', url, user_id
     end
   end
 end

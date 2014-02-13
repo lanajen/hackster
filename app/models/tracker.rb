@@ -17,7 +17,7 @@ class Tracker
   # end
 
   def enqueue method_name, *args
-    Resque.enqueue TrackerQueue, @tracker.instance_variable_get('@env'), method_name, *args
+    TrackerQueue.perform_async @tracker.instance_variable_get('@env'), method_name, *args
   end
 
   # def find_user user_id, user_class

@@ -1,0 +1,1 @@
+AWS.eager_autoload!

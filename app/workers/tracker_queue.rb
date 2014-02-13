@@ -23,11 +23,12 @@
 #   end
 # end
 
-class TrackerQueue
+class TrackerQueue < BaseWorker
   # extend HerokuAutoScaleDown if Rails.env == 'production'
-  @queue = :trackers
+  # @queue = :trackers
+  sidekiq_options queue: :low
 
-  def self.perform env, method_name, *args
+  def perform env, method_name, *args
     Tracker.new({ env: env }).send method_name, *args
   end
 end
