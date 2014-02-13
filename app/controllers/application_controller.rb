@@ -149,8 +149,7 @@ class ApplicationController < ActionController::Base
     end
 
     def tracking_activated?
-      true
-      # !(Rails.env == 'production' and current_user.try(:is?, :admin))
+      !(Rails.env == 'production' and current_user.try(:is?, :admin))
     end
 
     def tracker

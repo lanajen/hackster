@@ -14,7 +14,7 @@
       %h1
         - if @group.private?
           %small
-            %i.fa.fa-lock.istooltip{ title: 'Private community' }
+            %i.fa.fa-lock.istooltip{ title: 'Private community', data: { container: 'body' } }
         = link_to @group.name, @group
 
       - if @group.mini_resume.present?

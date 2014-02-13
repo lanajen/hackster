@@ -493,6 +493,11 @@ class User < ActiveRecord::Base
     authorizations.create(auth)
   end
 
+  def linked_to_project_via_group? project
+    sql = "SELECT projects.* FROM groups INNER JOIN permissions ON permissions.grantee_id = groups.id AND permissions.permissible_type = 'Project' AND permissions.grantee_type = 'Group' INNER JOIN projects ON projects.id = permissions.permissible_id INNER JOIN members ON groups.id = members.group_id WHERE groups.type IN ('Community') AND members.user_id = #{id} AND projects.id = #{project.id};"
+    Project.find_by_sql(sql).any?
+  end
+
   def live_comments
     comments.by_commentable_type(Project).where("projects.private = 'f'")
   end
