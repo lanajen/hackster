@@ -6,10 +6,10 @@ class FilesController < ApplicationController
     @file = params[:file_type].classify.constantize.new params.select{|k,v| k.in? %w(file caption title remote_file_url) }
     @file.attachable_id = 0
     @file.attachable_type = 'Orphan'
-    @file.tmp_file = URI.unescape params[:file_url]
+    @file.tmp_file = CGI.unescape params[:file_url]
 
     if @file.save
-      render json: @file, status: :ok
+      render json: @file.attributes.merge(context: params[:context]), status: :ok
     else
       render json: @file.errors, status: :unprocessable_entity
     end
@@ -18,7 +18,7 @@ class FilesController < ApplicationController
   def show
     @file = Attachment.find params[:id]
 
-    render json: @file.to_json(methods: :processed), status: :ok
+    render json: @file.as_json(methods: :processed).to_hash.merge(context: params[:context]), status: :ok
   end
 
   def signed_url
@@ -26,7 +26,8 @@ class FilesController < ApplicationController
       policy: s3_upload_policy_document,
       signature: s3_upload_signature,
       key: "uploads/tmp/#{SecureRandom.uuid}/#{params[:file][:name]}",
-      success_action_redirect: "/"
+      success_action_redirect: "/",
+      context: params[:context],
     }
   end
 

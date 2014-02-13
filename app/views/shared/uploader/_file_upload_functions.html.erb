@@ -39,26 +39,28 @@ var <%= file_type %>Functions = {
     return data;
   },
 
-  checkFileProcessed: function(fileId, formData){
-    $fileId = fileId;
-    $formData = formData;
+  checkFileProcessed: function(fileId, context){
+    formData = $('#' + context).data('data');
 
     window.setTimeout(function() {
       $.ajax({
         url: '/files/' + fileId,
         type: 'GET',
         dataType: 'json',
+        data: { context: context },
         async: false,
         success: function(data) {
           processed = data.processed;
           if (!processed) {
-            <%= file_type %>Functions.checkFileProcessed($fileId, $formData);
+            <%= file_type %>Functions.checkFileProcessed(data.id, data.context);
           } else {
-            <%= file_type %>Functions.fileuploadDone($formData, data);
+            formData = $('#' + data.context).data('data');
+            <%= file_type %>Functions.fileuploadDone(formData, data);
           }
         },
         error: function(data) {
-          <%= file_type %>Functions.fail($formData);
+          context = decodeURIComponent($.urlParam(this.url, 'context'));
+          <%= file_type %>Functions.fail($('#' + context).data('data'));
         }
       });
     }, 1000);

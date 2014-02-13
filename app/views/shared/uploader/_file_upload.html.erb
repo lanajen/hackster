@@ -21,13 +21,13 @@ $(function(){
         target = <%= file_type %>Functions.fileuploadTargetForFail(data);
         target.replaceWith('<div class="help-block has-error">Error: ' + errors.join(', ')+'</span>');
       } else {
-        $formData = data;
+        $('#' + data.context).data('data', data);
 
         $.ajax({
           url: '/files/signed_url',
           type: 'GET',
           dataType: 'json',
-          data: {file: {name: file.name}},
+          data: {file: {name: file.name}, context: data.context},
           async: false,
           success: function(data) {
             form = $('.file_upload.<%= file_type %>');
@@ -35,17 +35,19 @@ $(function(){
             form.find('input[name=policy]').val(data.policy);
             form.find('input[name=signature]').val(data.signature);
 
-            $formData.submit();
+            $('#' + data.context).data('data').submit();
           },
           error: function(data) {
-            <%= file_type %>Functions.fail($formData);
+            context = decodeURIComponent($.urlParam(this.url, 'context'));
+            <%= file_type %>Functions.fail($('#' + context).data('data'));
           }
         });
       }
     },
 
     fail: function(e, data){
-      <%= file_type %>Functions.fail($formData);
+      form = $('.file_upload.<%= file_type %>');
+      <%= file_type %>Functions.fail(form.data('data'));
     },
 
     progress: function(e, data) {
@@ -61,24 +63,30 @@ $(function(){
 
     success: function(data) {
       var url = $(data).find('Location').text(); // or Key for path
-      $url = url;  // pass it to 'done'
+      form = $('.file_upload.<%= file_type %>');
+      form.data('url', url);  // pass it to 'done'
     },
 
     done: function(e, data){
-      $formData = data;
+      $('#' + data.context).data('data', data);
+
+      $(this).data('data', data);
+      url = $(this).data('url');
+      console.log(url);
 
       $.ajax({
         url: '/files',
         type: 'POST',
         dataType: 'json',
-        data: {file_url: $url, file_type: '<%= file_type %>'},
+        data: {file_url: url, file_type: '<%= file_type %>', context: data.context},
         async: false,
         success: function(data) {
           id = data.id;
-          <%= file_type %>Functions.checkFileProcessed(id, $formData);
+          <%= file_type %>Functions.checkFileProcessed(id, data.context);
         },
           error: function(data) {
-            <%= file_type %>Functions.fail($formData);
+            context = decodeURIComponent($.urlParam(this.url, 'context'));
+            <%= file_type %>Functions.fail($('#' + context).data('data'));
           }
       });
     }
@@ -101,4 +109,9 @@ function checkFileForErrors(file, validations) {
     }
   }
   return errors;
+}
+
+$.urlParam = function(url, name){
+  results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(url);
+  return results[1] || 0;
 }

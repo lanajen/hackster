@@ -26,8 +26,7 @@ class Attachment < ActiveRecord::Base
 
     s3 = AWS::S3.new
 
-    s3_tmp_file = URI.parse(tmp_file).path[1..-1]
-    s3_tmp_file = CGI.unescape s3_tmp_file  # in case file name contains spaces
+    s3_tmp_file = tmp_file.split('/')[3..-1].join('/')
     file_name = s3_tmp_file.split('/').last
     file_path = "uploads/#{self.class.name.underscore}/file/#{id}/#{file_name}"
     s3.buckets[ENV['FOG_DIRECTORY']].objects[s3_tmp_file].move_to(file_path, acl: :public_read)
