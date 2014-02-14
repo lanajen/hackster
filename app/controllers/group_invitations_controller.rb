@@ -6,8 +6,6 @@ class GroupInvitationsController < ApplicationController
   layout :set_layout
 
   def new
-    # raise @group.inspect
-    # raise self.instance_variable_names.to_s
   end
 
   def create

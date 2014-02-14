@@ -6,7 +6,7 @@ class Assignment < ActiveRecord::Base
   before_create :generate_id
 
   def to_label
-    "#{promotion.course.name} > #{promotion.name} > #{name}"
+    "#{promotion.course.name} @#{promotion.course.university.name} > #{promotion.name} > #{name}"
   end
 
   private
