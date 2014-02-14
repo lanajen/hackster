@@ -5,6 +5,8 @@ class GroupsController < ApplicationController
   respond_to :html
 
   def show
+    redirect_to course_path(@group) and return if @group.type == 'Course'
+
     authorize! :read, @group
     title @group.name
     meta_desc "Join the group #{@group.name} on Hackster.io!"
