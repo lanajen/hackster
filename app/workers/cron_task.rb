@@ -1,5 +1,6 @@
 class CronTask < BaseWorker
-  @queue = :cron
+  # @queue = :low
+  sidekiq_options queue: :low, retry: false
 
   def launch_cron
     update_mailchimp_list

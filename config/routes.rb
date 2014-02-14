@@ -1,4 +1,5 @@
-require File.join(Rails.root, 'lib/resque_auth_server.rb')
+# require File.join(Rails.root, 'lib/resque_auth_server.rb')
+require 'sidekiq/web'
 
 HackerIo::Application.routes.draw do
 
@@ -28,7 +29,10 @@ HackerIo::Application.routes.draw do
     end
 
     namespace :admin do
-      mount ResqueAuthServer.new, at: "/resque"
+      # mount ResqueAuthServer.new, at: "/resque"
+      authenticate :user, lambda { |u| u.is? :admin } do
+        mount Sidekiq::Web => '/sidekiq'
+      end
       get 'analytics' => 'pages#analytics'
       get 'comments' => 'pages#comments'
       get 'logs' => 'pages#logs'
@@ -64,6 +68,22 @@ HackerIo::Application.routes.draw do
       delete '' => 'teches#destroy'
       patch '' => 'teches#update'
     end
+    # resources :courses, except: [:show, :update, :destroy]
+    resources :promotions, except: [:show, :update, :destroy]
+    scope 'courses/:user_name', as: :course do
+      get '' => 'courses#show', as: ''
+      # delete '' => 'courses#destroy'
+      # patch '' => 'courses#update'
+
+      scope ':promotion_name', as: :promotion do
+        get '' => 'promotions#show', as: ''
+        delete '' => 'promotions#destroy'
+        patch '' => 'promotions#update'
+
+        resources :assignments, only: [:new, :create, :show]
+      end
+    end
+    resources :assignments, only: [:edit, :update, :destroy]
 
     resources :files, only: [:create, :show] do
       get 'signed_url', on: :collection

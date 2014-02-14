@@ -15,6 +15,7 @@ class Project < ActiveRecord::Base
 #  include Workflow
   is_impressionable counter_cache: true, unique: :session_hash
 
+  belongs_to :assignment
   belongs_to :team
   has_and_belongs_to_many :followers, class_name: 'User', join_table: 'project_followers'
   has_many :blog_posts, as: :threadable, dependent: :destroy
@@ -37,7 +38,8 @@ class Project < ActiveRecord::Base
   attr_accessible :description, :end_date, :name, :start_date, :current,
     :team_members_attributes, :website, :one_liner, :widgets_attributes,
     :featured, :featured_date, :cover_image_id, :logo_id, :license, :slug,
-    :permissions_attributes, :new_slug, :slug_histories_attributes
+    :permissions_attributes, :new_slug, :slug_histories_attributes, :hide,
+    :assignment_id
   attr_accessor :current
   attr_writer :new_slug
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
@@ -97,7 +99,7 @@ class Project < ActiveRecord::Base
 #      tech_tags: tech_tags_string,
       text_widgets: TextWidget.where('widgets.project_id = ?', id).map{ |w| w.content },
       user_name: team_members.map{ |t| t.user.try(:name) },
-      private: private,
+      private: (private || hide),
       created_at: created_at,
     }.to_json
   end
@@ -108,11 +110,11 @@ class Project < ActiveRecord::Base
   end
 
   def self.indexable
-    where(private: false)
+    live.where(hide: false)
   end
 
   def self.live
-    indexable
+    where(private: false)
   end
 
   def self.last_created
@@ -159,6 +161,10 @@ class Project < ActiveRecord::Base
 
   def force_basic_validation?
     @force_basic_validation
+  end
+
+  def hidden?
+    hide
   end
 
   def image

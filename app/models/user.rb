@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base
   include Counter
+  include Roles
   include StringParser
   include Taggable
 
@@ -32,16 +33,19 @@ class User < ActiveRecord::Base
   end
   has_and_belongs_to_many :followed_projects, class_name: 'Project',
     join_table: :project_followers
+  has_many :assignments, through: :promotions
   has_many :authorizations, dependent: :destroy
   has_many :blog_posts, dependent: :destroy
   has_many :comments, -> { order created_at: :desc }, foreign_key: :user_id, dependent: :destroy
   has_many :communities, through: :group_ties, source: :group, class_name: 'Community'
+  # has_many :courses, through: :promotions  # doesnt work
   has_many :group_permissions, through: :groups, source: :granted_permissions
   has_many :group_ties, class_name: 'Member', dependent: :destroy
   has_many :groups, through: :group_ties
   has_many :invitations, class_name: self.to_s, as: :invited_by
   has_many :permissions, as: :grantee
   has_many :projects, through: :teams
+  has_many :promotions, through: :group_ties, source: :group, class_name: 'Promotion'
   has_many :respects, dependent: :destroy, class_name: 'Favorite'
   has_many :respected_projects, through: :respects, source: :project
   has_many :teams, through: :group_ties, source: :group, class_name: 'Team'
@@ -59,7 +63,7 @@ class User < ActiveRecord::Base
     :facebook_link, :twitter_link, :linked_in_link, :website_link,
     :blog_link, :github_link, :google_plus_link, :youtube_link, :categories,
     :github_link, :invitation_limit, :email, :mini_resume, :city, :country,
-    :user_name, :full_name, :roles, :type, :avatar_id, :subscriptions
+    :user_name, :full_name, :type, :avatar_id, :subscriptions
   accepts_nested_attributes_for :avatar, :projects, allow_destroy: true
 
   store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link, :website_link, :blog_link, :github_link, :google_plus_link, :youtube_link]
@@ -84,8 +88,9 @@ class User < ActiveRecord::Base
   before_save :ensure_authentication_token
   after_invitation_accepted :invitation_accepted
 
+  set_roles :roles, ROLES
+
   # scope :with_category, ->(category) { where("users.categories_mask & #{2**CATEGORIES.index(category.to_s)} > 0") }
-  scope :with_role, ->(role) { where("users.roles_mask & #{2**ROLES.index(role.to_s)} > 0") }
 
   store :counters_cache, accessors: [:comments_count, :interest_tags_count, :invitations_count, :projects_count, :respects_count, :skill_tags_count, :live_projects_count, :project_views_count]
 
@@ -450,7 +455,7 @@ class User < ActiveRecord::Base
   end
 
   def is? role
-    role_symbols.include? role
+    roles_symbols.include? role
   end
 
   def is_following? user
@@ -491,6 +496,11 @@ class User < ActiveRecord::Base
       end
     end
     authorizations.create(auth)
+  end
+
+  def linked_to_project_via_group? project
+    sql = "SELECT projects.* FROM groups INNER JOIN permissions ON permissions.grantee_id = groups.id AND permissions.permissible_type = 'Project' AND permissions.grantee_type = 'Group' INNER JOIN projects ON projects.id = permissions.permissible_id INNER JOIN members ON groups.id = members.group_id WHERE members.user_id = #{id} AND projects.id = #{project.id};"
+    Project.find_by_sql(sql).any?
   end
 
   def live_comments
@@ -537,18 +547,6 @@ class User < ActiveRecord::Base
   def reset_authentication_token
     update_attribute(:authentication_token, nil)
     # the new token is set automatically on save
-  end
-
-  def roles=(roles)
-    self.roles_mask = (roles & ROLES).map { |r| 2**ROLES.index(r) }.sum
-  end
-
-  def roles
-    ROLES.reject { |r| ((roles_mask || 0) & 2**ROLES.index(r)).zero? }
-  end
-
-  def role_symbols
-    roles.map(&:to_sym)
   end
 
   # allows overriding the email template and model that are sent to devise mailer

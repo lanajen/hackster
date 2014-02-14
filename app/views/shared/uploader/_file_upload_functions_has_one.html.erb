@@ -14,42 +14,73 @@ var <%= file_type %>Functions = {
     input.find('input').val(id);
     input.find('img').attr('src', file.<%= image_version %>.url);
     $('.<%= file_type %>.image-preview').html(input);
+    $('form.file_upload.<%= file_type %>').removeClass('busy');
   },
 
   fileuploadTargetForProgress: function(data){
-    return $('.progress-bar', data.context);
+    return $('#' + data.context + ' .progress-bar');
   },
 
   fileuploadTargetForFail: function(data){
-    return $('.progress', data.context);
+    return $('#' + data.context + ' .progress');
   },
 
   fileuploadAdd: function(data, file){
-    tpl = $('<div><i>Uploading ' + file.name + '</i><div class="progress progress-striped active"><div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%;">Uploading...</div></div></div>');
+    tpl = $('<div id="<%= file_type %>-upload"><i>Uploading ' + file.name + '</i><div class="progress progress-striped active"><div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%;">Uploading...</div></div></div>');
     $('.<%= file_type %>.image-preview').html(tpl);
-    data.context = tpl;
+    data.context = '<%= file_type %>-upload';
+    <%= file_type %>Functions.disableForm();
     return data;
   },
 
-  checkFileProcessed: function(fileId, formData){
-    $fileId = fileId;
-    $formData = formData;
+  checkFileProcessed: function(fileId, context){
+    formData = $('#' + context).data('data');
 
     window.setTimeout(function() {
       $.ajax({
         url: '/files/' + fileId,
         type: 'GET',
         dataType: 'json',
+        data: { context: context },
         async: false,
         success: function(data) {
           processed = data.processed;
           if (!processed) {
-            <%= file_type %>Functions.checkFileProcessed($fileId, $formData);
+            <%= file_type %>Functions.checkFileProcessed(data.id, data.context);
           } else {
-            <%= file_type %>Functions.fileuploadDone($formData, data);
+            formData = $('#' + data.context).data('data');
+            <%= file_type %>Functions.fileuploadDone(formData, data);
           }
         }
       });
     }, 1000);
-  }
+  },
+
+  disableForm: function(){
+    $('form.file_upload.<%= file_type %>').addClass('busy');
+    btn = $('form.accept-file-upload input[name="commit"]');
+    if (btnVal == undefined) btnVal = btn.val();
+    btn
+      .prop('disabled', true)
+      .val('Upload in progress...');
+    if (!checkingFormsBusy) {
+      checkingFormsBusy = true;
+      checkFormsBusy();
+    }
+  },
+}
+
+var checkingFormsBusy = false;
+var btnVal;
+function checkFormsBusy(){
+  window.setTimeout(function(){
+    if ($('form.file_upload.busy').length == 0) {
+      $('form.accept-file-upload input[name="commit"]')
+        .val(btnVal)
+        .prop('disabled', false);
+      btnVal = undefined;
+    } else {
+      checkFormsBusy();
+    }
+  }, 100);
 }

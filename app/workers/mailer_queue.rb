@@ -1,5 +1,5 @@
 class MailerQueue < BaseWorker
-  @queue = :mailer
+  # @queue = :mailer
 
   def devise_message type, context_type, context_id, opts
     puts "#{Time.now.to_s} - Sending Devise email #{type} with context '#{context_type}' and id #{context_id.to_s}."

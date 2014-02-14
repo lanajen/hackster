@@ -3,8 +3,10 @@ class SlugHistory < ActiveRecord::Base
   validates :value, presence: true
   attr_accessible :value, :project_id
 
-  def self.update_history_for project
+  def self.update_history_for project_id
+    project = Project.find project_id
     histories = project.slug_histories
+    puts histories.map(&:value).to_s
     uris = { project.uri => false }
     project.users.each{ |u| uris[project.uri(u.user_name)] = false }
 
@@ -15,6 +17,8 @@ class SlugHistory < ActiveRecord::Base
         uris[history.value] = true
       end
     end
+
+    puts uris.to_s
 
     # if no slug could be found we create a new one
     uris.select{|k,v| v == false}.each do |uri, presence|

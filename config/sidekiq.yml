@@ -1,0 +1,5 @@
+concurrency: 3
+queues:
+  - [critical, 7]
+  - [default, 5]
+  - [low, 3]

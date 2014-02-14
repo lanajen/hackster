@@ -162,7 +162,7 @@ class ApplicationController < ActionController::Base
         env: {
           'REMOTE_ADDR' => request.env['REMOTE_ADDR'],
           'HTTP_X_FORWARDED_FOR' => request.env['HTTP_X_FORWARDED_FOR'],
-          'rack.session' => request.env['rack.session'],
+          # 'rack.session' => request.env['rack.session'],
           'mixpanel_events' => request.env['mixpanel_events'],
         }
       }

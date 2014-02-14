@@ -1,4 +1,7 @@
 class Member < ActiveRecord::Base
+  include Roles
+  set_roles :group_roles, %w(staff student)
+
   belongs_to :group
   belongs_to :invited_by, polymorphic: true
   belongs_to :permission, dependent: :destroy
@@ -37,15 +40,4 @@ class Member < ActiveRecord::Base
   def permission_action=(val)
     self.permission.action = val
   end
-
-  # attr_accessible :mini_resume, :group_roles, :title
-
-  # this somewhat fails when creating a new team member for a project
-  # def method_missing method_name, *args
-  #   if user
-  #     user.send method_name, *args
-  #   else
-  #     super *args
-  #   end
-  # end
 end

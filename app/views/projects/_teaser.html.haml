@@ -1,4 +1,4 @@
-- if @project.private
+- if @project.private and can? :edit, @project
   .row
     .col-xs-12
       .alert.alert-warning
@@ -21,6 +21,9 @@
       .text-holder
         = @project.logo_or_placeholder
         %h1
+          - if @project.private?
+            %small
+              %i.fa.fa-lock.istooltip{ title: 'Private project', data: { container: 'body' } }
           = link_to @project.name, @project, class: 'hidden-link hidden-link-invert'
         - if @project.one_liner.present?
           = @project.one_liner
@@ -30,6 +33,10 @@
         %p.author.meta
           by
           = @project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
+
+        - if @project.assignment_id
+          .tags.meta
+            %span= link_to @project.assignment.to_label, assignment_path(@project.assignment), class: 'hidden-link'
 
         - if @project.tech_tags.any?
           .tags.meta
@@ -71,7 +78,7 @@
               %li= link_to 'Edit project', edit_project_path(@project), data: { remote: true }
               - if can? :debug, @project
                 %li= link_to 'Manage team', project_edit_team_path(@project)
-              - if current_user.communities.any? or current_user.is? :admin
+              -# if current_user.communities.any? or current_user.is? :admin
                 %li= link_to 'Manage extra permissions', project_edit_permissions_path(@project)
               %li= link_to 'Add a widget', new_project_widget_path(@project)
               %li= link_to 'Reorder widgets', project_widgets_path(@project)
@@ -107,7 +114,7 @@
             %ul.dropdown-menu
               -# = render partial: 'shared/locked_icon', locals: { record: @project, size: nil }
               %li= link_to 'Settings', edit_project_path(@project), data: { remote: true }
-              - if can? :debug, @project
-                %li= link_to 'Manage team', project_edit_team_path(@project)
+              -# if can? :debug, @project
+              %li= link_to 'Manage team', project_edit_team_path(@project)
               %li= link_to 'Add a widget', new_project_widget_path(@project)
               %li= link_to 'Reorder widgets', project_widgets_path(@project)

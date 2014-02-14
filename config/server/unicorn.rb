@@ -40,9 +40,9 @@ before_fork do |server, worker|
     Rails.logger.info('Disconnected from ActiveRecord')
   end
 
-  if defined?(Resque)
-    ResqueRedis.disconnect
-  end
+  # if defined?(Resque)
+  #   ResqueRedis.disconnect
+  # end
 
   sleep 1
 end
@@ -53,8 +53,8 @@ after_fork do |server, worker|
     Rails.logger.info('Connected to ActiveRecord')
   end
 
-  if defined?(Resque)
-#    I18nRedisBackend.connect
-    ResqueRedis.connect
-  end
+#   if defined?(Resque)
+# #    I18nRedisBackend.connect
+#     ResqueRedis.connect
+#   end
 end

@@ -9,6 +9,7 @@ class Ability
     @user = resource
     member if @user.persisted?
     @user.roles.each{ |role| send role }
+    beta_tester if @user.is? :beta_tester
 
     @user.permissions.each do |permission|
       can permission.action.to_sym, permission.permissible_type.constantize, id: permission.permissible_id
@@ -52,6 +53,9 @@ class Ability
     can :manage, Project do |project|
       @user.can? :manage, project.team
     end
+    can :read, Project do |project|
+      project.private? and @user.linked_to_project_via_group? project
+    end
     can [:update_team, :update_widgets], Project do |project|
       @user.can? :manage, project
     end
@@ -61,5 +65,7 @@ class Ability
     end
 
     can :update, User, id: @user.id
+
+    cannot :debug, :all  # otherwise manage seems to include :debug
   end
 end

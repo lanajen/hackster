@@ -30,7 +30,7 @@
       - if @user.websites.any?
         %ul.websites.list-inline
           - @user.websites.select{|t,u| u.present? }.each do |type, url|
-            %li= render partial: 'website', locals: { type: type, url: url }
+            %li= render partial: 'shared/website', locals: { type: type, url: url }
       - elsif user_is_current?
         %ul.websites.list-inline
           %li

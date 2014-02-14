@@ -42,6 +42,28 @@
       = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @project.cover_image.try(:file_url, :cover_mini_thumb), help_block: 'This should be your nicest picture for this project. In 4:3 format, at least 600x450px for best results', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
 
       = f.input :private, inline_label: 'Make this project private', label: false
+
+      - if current_user.communities.any? or current_user.is? :admin
+        .form-group
+          .col-xs-4
+            %label.control-label Share with a group
+          .col-xs-8
+            - @project.permissions.new if @project.permissions.empty?
+            = f.simple_fields_for :permissions, wrapper: false do |f_perm|
+              - if current_user.is? :admin
+                = f_perm.input :grantee_id, collection: Community.where(type: 'Community').order(:full_name), label: false, wrapper: false
+              - else
+                = f_perm.input :grantee_id, collection: current_user.communities, label: false, wrapper: false
+              = f_perm.input :grantee_type, as: :hidden, input_html: { value: 'Group' }, wrapper: false
+            %p.help-block
+              All of the members of the groups you select will be able to access your project. They will not be able to edit it.
+
+      - if current_user.promotions.any? or current_user.is? :admin
+        - if current_user.is? :admin
+          = f.input :assignment_id, collection: Assignment.order(created_at: :desc)
+        - else
+          = f.input :assignment_id, collection: current_user.assignments.order(created_at: :desc)
+
       - if current_user.is? :admin
         = f.input :featured, inline_label: 'Feature this project', label: false
         = f.input :featured_date, label: 'Feature date'

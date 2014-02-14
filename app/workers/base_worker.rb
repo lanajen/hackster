@@ -1,17 +1,18 @@
-require 'resque/errors'
+# require 'resque/errors'
 
 class BaseWorker
-  extend HerokuResqueAutoScale if Rails.env == 'production'
+  # extend HerokuResqueAutoScale if Rails.env == 'production'
+  include Sidekiq::Worker
 
-  class << self
+  # class << self
     def perform method, *args
       with_logging method do
-        self.new.send(method, *args)
+        send(method, *args)
       end
-    rescue Resque::TermException
-      message = "Received Resque::TermException while working on #{method} with args #{args}"
-      logger.error message
-      log_line = LogLine.create(message: message, log_type: 'error', source: 'worker')
+    # rescue Resque::TermException
+    #   message = "Received Resque::TermException while working on #{method} with args #{args}"
+      # Rails.logger.error message
+    #   log_line = LogLine.create(message: message, log_type: 'error', source: 'worker')
     end
 
     def with_logging(method, &block)
@@ -25,12 +26,12 @@ class BaseWorker
     end
 
     def log(message, method = nil)
-      log_helper "%s#%s - #{message}" % [self.name, method]
+      log_helper "%s#%s - #{message}" % [self.class.name, method]
     end
 
     def log_helper(message)
       now = Time.now.strftime("%Y-%m-%d %H:%M:%S")
       puts "#{now} #{message}"
     end
-  end
+  # end
 end

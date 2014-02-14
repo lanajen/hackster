@@ -7,7 +7,7 @@ class Attachment < ActiveRecord::Base
   belongs_to :attachable, polymorphic: true
   # validate :ensure_has_file, unless: proc { |a| a.skip_file_check? }
   # validate :file_size
-  after_save :queue_processing, unless: proc{|a| a.processed? }
+  after_commit :queue_processing, unless: proc{|a| a.processed? }
 
   def disallow_blank_file?
     @disallow_blank_file
@@ -26,8 +26,7 @@ class Attachment < ActiveRecord::Base
 
     s3 = AWS::S3.new
 
-    s3_tmp_file = URI.parse(tmp_file).path[1..-1]
-    s3_tmp_file = CGI.unescape s3_tmp_file  # in case file name contains spaces
+    s3_tmp_file = tmp_file.split('/')[3..-1].join('/')
     file_name = s3_tmp_file.split('/').last
     file_path = "uploads/#{self.class.name.underscore}/file/#{id}/#{file_name}"
     s3.buckets[ENV['FOG_DIRECTORY']].objects[s3_tmp_file].move_to(file_path, acl: :public_read)
@@ -44,7 +43,8 @@ class Attachment < ActiveRecord::Base
   alias_method :processed, :processed?  # so it can be used as json
 
   def queue_processing
-    Resque.enqueue AttachmentQueue, 'process', id
+    # Resque.enqueue AttachmentQueue, 'process', id
+    AttachmentQueue.perform_async 'process', id
   end
 
   def skip_file_check?
