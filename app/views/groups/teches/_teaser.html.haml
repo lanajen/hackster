@@ -1,0 +1,57 @@
+.row
+  .col-xs-12.teaser
+    .text-holder
+      - if @tech.avatar
+        %span.avatar.main-avatar= image_tag @tech.avatar(:big), alt: @tech.name, class: 'img-circle'
+      %h1
+        = link_to @tech.name, tech_path(@tech)
+
+      - if @tech.mini_resume.present?
+        %p.user-mini-resume= @tech.mini_resume
+      - elsif can? :update, @tech
+        %p.user-mini-resume
+          No mini resume.
+          = link_to 'Add one?', edit_tech_path(@tech), data: { remote: true }
+
+      %p.user-categories
+        - if @tech.location
+          %span.category.first
+            %i.fa.fa-map-marker
+              = @tech.location
+        - elsif can? :update, @tech
+          No location.
+          = link_to 'Add one?', edit_tech_path(@tech), data: { remote: true }
+
+      - if @tech.websites.any?
+        %ul.websites.list-inline
+          - @tech.websites.select{|t,u| u.present? }.each do |type, url|
+            %li= render partial: "groups/#{@tech.identifier.pluralize}/website", locals: { type: type, url: url }
+      - elsif can? :update, @tech
+        %ul.websites.list-inline
+          %li
+            No websites.
+            = link_to 'Add some?', edit_tech_path(@tech), data: { remote: true }
+
+    -# if current_user.id != @tech.id
+      - if current_user.try(:is_following?, @tech)
+        = link_to 'Following', user_followers_path(@tech), method: :delete, class: 'btn-inverse btn-follow'
+      - else
+        = link_to 'Follow', user_followers_path(@tech), method: :post, class: 'btn-follow'
+
+.row
+  .col-xs-12
+    .tabbable.tabs-left.navbar.navbar-default.navbar-tabs{ style: 'background: #fff;' }
+      %ul.nav.navbar-nav
+        %li.active= link_to "Projects", '#tab-projects', data: { toggle: 'tab' }
+        -#
+          %li.active= link_to "Public projects #{content_tag(:span, 0, class: 'badge')}".html_safe, '#tab-projects', data: { toggle: 'tab' }
+          %li= link_to "Members #{content_tag(:span, 0, class: 'badge')}".html_safe, '#tab-members', data: { toggle: 'tab' }
+        -# %li= link_to "Q&A #{content_tag(:span, 0, class: 'badge')}".html_safe, '#tab-qa', data: { toggle: 'tab' }
+
+        - if can? :manage, @tech
+          %li.dropdown
+            %a.dropdown-toggle.action{ data: { toggle: 'dropdown' }, href: '#', title: 'Settings', rel: 'tooltip' }
+              %i.fa.fa-cog
+              %b.caret
+            %ul.dropdown-menu
+              %li= link_to 'Edit tech', edit_tech_path(@tech), data: { remote: true }

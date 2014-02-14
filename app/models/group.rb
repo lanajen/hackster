@@ -11,21 +11,28 @@ class Group < ActiveRecord::Base
     :facebook_link, :twitter_link, :linked_in_link, :website_link,
     :blog_link, :github_link, :email, :mini_resume, :city, :country,
     :user_name, :full_name, :members_attributes, :avatar_id,
-    :permissions_attributes, :google_plus_link, :youtube_link
+    :permissions_attributes, :google_plus_link, :youtube_link, :new_user_name
+  attr_writer :new_user_name
 
   accepts_nested_attributes_for :avatar, :members, :permissions,
     allow_destroy: true
 
   store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link,
     :google_plus_link, :youtube_link, :website_link, :blog_link, :github_link]
-  validates :user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users) }
-  validates :user_name, length: { in: 3..100 }, if: proc{|t| t.persisted?}
+  validates :user_name, :new_user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users) }
+  validates :user_name, :new_user_name, length: { in: 3..100 }, if: proc{|t| t.persisted?}
   validate :website_format_is_valid
+  before_validation :assign_new_user_name
   before_validation :clean_members
   before_validation :ensure_website_protocol
 
   def self.default_permission
     'read'
+  end
+
+  def assign_new_user_name
+    @old_user_name = user_name
+    self.user_name = new_user_name
   end
 
   def avatar_id=(val)
@@ -47,12 +54,21 @@ class Group < ActiveRecord::Base
     # end
   end
 
+  def identifier
+    self.class.name.to_s.underscore
+  end
+
   def is? group_type
     self.class.name.underscore == group_type.to_s
   end
 
   def name
     full_name || user_name
+  end
+
+  def new_user_name
+    # raise new_user_name.to_s
+    @new_user_name ||= user_name
   end
 
   private

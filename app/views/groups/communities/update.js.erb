@@ -1,7 +1,7 @@
 <%- if @refresh %>
   window.location = '<%= group_path(@group) %>';
 <% else %>
-  $('.user .display').html('<%= escape_javascript render('teaser') %>');
+  $('.user .display').html('<%= escape_javascript render("groups/#{@group.identifier.pluralize}/teaser") %>');
   $('.user .edit').slideUp(function(){
     $('.user .display').slideDown();
   });

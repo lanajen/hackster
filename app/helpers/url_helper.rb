@@ -20,6 +20,14 @@ module UrlHelper
     super params_for_project(project, force_params).merge(opts)
   end
 
+  def tech_path tech, opts={}
+    super params_for_group(tech, 'tech').merge(opts)
+  end
+
+  def tech_url tech, opts={}
+    super params_for_group(tech, 'tech').merge(opts)
+  end
+
   def url_for(options = nil)
     case options
     when Hash
@@ -40,10 +48,10 @@ module UrlHelper
   end
 
   private
-    def params_for_group group
+    def params_for_group group, route='group'
       {
         user_name: group.user_name,
-        use_route: 'group'
+        use_route: route
       }
     end
 

@@ -58,6 +58,12 @@ HackerIo::Application.routes.draw do
       delete '' => 'groups#destroy'
       patch '' => 'groups#update'
     end
+    resources :teches, except: [:show, :update, :destroy]
+    scope 'tech/:user_name', as: :tech do
+      get '' => 'teches#show', as: ''
+      delete '' => 'teches#destroy'
+      patch '' => 'teches#update'
+    end
 
     resources :files, only: [:create, :show] do
       get 'signed_url', on: :collection

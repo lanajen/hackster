@@ -1,0 +1,8 @@
+<%- if @refresh %>
+  window.location = '<%= tech_path(@tech) %>';
+<% else %>
+  $('.user .display').html('<%= escape_javascript render("groups/teches/teaser") %>');
+  $('.user .edit').slideUp(function(){
+    $('.user .display').slideDown();
+  });
+<% end %>

@@ -12,12 +12,16 @@ class GroupsController < ApplicationController
     @projects = @group.projects
     @users = @group.members.invitation_accepted_or_not_invited.map(&:user).select{|u| u.invitation_token.nil? }
     @group = @group.decorate
+
+    render "groups/#{@group.identifier.pluralize}/#{self.action_name}"
   end
 
   def new
     authorize! :create, Community
     title "Create a new community"
-    @group = Group.new
+    @group = Community.new
+
+    render "groups/#{@group.identifier.pluralize}/#{self.action_name}"
   end
 
   def create
@@ -32,7 +36,7 @@ class GroupsController < ApplicationController
       flash[:notice] = "Welcome to #{@group.name}!"
       respond_with @group
     else
-      render action: 'new'
+      render "groups/#{@group.identifier.pluralize}/new"
     end
   end
 
@@ -40,6 +44,8 @@ class GroupsController < ApplicationController
     @group = Community.find(params[:id])
     authorize! :update, @group
     @group.build_avatar unless @group.avatar
+
+    render "groups/#{@group.identifier.pluralize}/#{self.action_name}"
   end
 
   def update
@@ -55,6 +61,8 @@ class GroupsController < ApplicationController
           # if old_group.interest_tags_string != @group.interest_tags_string or old_group.skill_tags_string != @group.skill_tags_string
           #   @refresh = true
           # end
+
+          render "groups/#{@group.identifier.pluralize}/#{self.action_name}"
         end
 
         track_event 'Updated group'
@@ -70,6 +78,6 @@ class GroupsController < ApplicationController
 
   private
     def load_group
-      @group = load_with_user_name Community
+      @group = load_with_user_name Group
     end
 end
