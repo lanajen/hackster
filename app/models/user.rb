@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base
   include Counter
+  include Roles
   include StringParser
   include Taggable
 
@@ -59,7 +60,7 @@ class User < ActiveRecord::Base
     :facebook_link, :twitter_link, :linked_in_link, :website_link,
     :blog_link, :github_link, :google_plus_link, :youtube_link, :categories,
     :github_link, :invitation_limit, :email, :mini_resume, :city, :country,
-    :user_name, :full_name, :roles, :type, :avatar_id, :subscriptions
+    :user_name, :full_name, :type, :avatar_id, :subscriptions
   accepts_nested_attributes_for :avatar, :projects, allow_destroy: true
 
   store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link, :website_link, :blog_link, :github_link, :google_plus_link, :youtube_link]
@@ -84,8 +85,9 @@ class User < ActiveRecord::Base
   before_save :ensure_authentication_token
   after_invitation_accepted :invitation_accepted
 
+  set_roles :roles, ROLES
+
   # scope :with_category, ->(category) { where("users.categories_mask & #{2**CATEGORIES.index(category.to_s)} > 0") }
-  scope :with_role, ->(role) { where("users.roles_mask & #{2**ROLES.index(role.to_s)} > 0") }
 
   store :counters_cache, accessors: [:comments_count, :interest_tags_count, :invitations_count, :projects_count, :respects_count, :skill_tags_count, :live_projects_count, :project_views_count]
 
@@ -542,18 +544,6 @@ class User < ActiveRecord::Base
   def reset_authentication_token
     update_attribute(:authentication_token, nil)
     # the new token is set automatically on save
-  end
-
-  def roles=(roles)
-    self.roles_mask = (roles & ROLES).map { |r| 2**ROLES.index(r) }.sum
-  end
-
-  def roles
-    ROLES.reject { |r| ((roles_mask || 0) & 2**ROLES.index(r)).zero? }
-  end
-
-  def role_symbols
-    roles.map(&:to_sym)
   end
 
   # allows overriding the email template and model that are sent to devise mailer
