@@ -1,7 +1,7 @@
 class Assignment < ActiveRecord::Base
   belongs_to :promotion
   has_many :projects
-  validates :promotion_id, presence: true
+  validates :promotion_id, :name, presence: true
 
   before_create :generate_id
 

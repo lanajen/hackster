@@ -60,6 +60,15 @@ class Ability
       @user.can? :manage, project
     end
 
+    %w(read edit destroy manage).each do |perm|
+      can perm.to_sym, Assignment do |assignment|
+        @user.can? perm.to_sym, assignment.promotion
+      end
+    end
+    can :create, Assignment do |assignment|
+      @user.can? :manage, assignment.promotion
+    end
+
     can [:create, :update, :destroy], [Widget] do |record|
       @user.can? :manage, record.project
     end

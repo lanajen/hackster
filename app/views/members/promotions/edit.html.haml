@@ -1,4 +1,4 @@
-.col-xs-6.col-xs-offset-3
+.col-xs-8.col-xs-offset-2
   .wellified
     %h2.text-center Manage members
 
@@ -8,6 +8,7 @@
         %thead
           %th User
           %th Role
+          %th Permission
           %th Status
           %th
         %tbody
@@ -21,6 +22,8 @@
                     = f_member.input :grantee_id, collection: @group.members.invitation_accepted_or_not_invited.includes(:user).map(&:user).reject{|u| u.invited_to_sign_up? }.sort_by{|u| u.name }, label: false
                     = f_member.input :grantee_type, as: :hidden, input_html: { value: 'User' }
                 %td= f_member.input :group_roles_mask, collection: roles_with_mask(Member, :group_roles), as: :select, label: false
+                = f_member.simple_fields_for :permission do |f_perm|
+                  %td= f_perm.input :action, collection: Permission::ACTIONS, label: false
                 %td
                   - if member.persisted?
                     - if member.invitation_pending?

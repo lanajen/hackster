@@ -27,6 +27,10 @@ module UrlHelper
     super params_for_group(group).merge(opts)
   end
 
+  def new_assignment_path assignment, opts={}
+    new_course_promotion_assignment_path params_for_new_assignment(assignment).merge(opts)
+  end
+
   def project_path project, opts={}
     super params_for_project(project).merge(opts)
   end
@@ -82,6 +86,13 @@ module UrlHelper
         promotion_name: assignment.promotion.user_name,
         id: assignment.id_for_promotion,
         use_route: 'course_promotion_assignment',
+      }
+    end
+
+    def params_for_new_assignment assignment
+      {
+        user_name: assignment.promotion.course.user_name,
+        promotion_name: assignment.promotion.user_name,
       }
     end
 

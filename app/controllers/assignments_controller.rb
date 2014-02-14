@@ -1,10 +1,30 @@
 class AssignmentsController < ApplicationController
   before_filter :load_assignment, only: [:show]
+  before_filter :load_promotion, only: [:new, :create]
   load_and_authorize_resource only: [:edit, :update, :destroy]
   layout 'assignment'
 
   def show
+    authorize! :read, @assignment
     @projects = @assignment.projects
+  end
+
+  def new
+    @assignment = @promotion.assignments.new
+    authorize! :create, @assignment
+
+    render layout: 'promotion'
+  end
+
+  def create
+    @assignment = @promotion.assignments.new params[:assignment]
+    authorize! :create, @assignment
+
+    if @assignment.save
+      redirect_to assignment_path(@assignment), notice: "Assignment #{@assignment.name} was created."
+    else
+      render 'new', layout: 'promotion'
+    end
   end
 
   def edit
@@ -34,5 +54,9 @@ class AssignmentsController < ApplicationController
       @assignment = Assignment.find_by_sql([sql, params[:promotion_name], params[:user_name], params[:id]]).first
       raise ActiveRecord::RecordNotFound unless @assignment
       @promotion = @assignment.promotion
+    end
+
+    def load_promotion
+      @promotion = Promotion.joins(:course).where(groups: { user_name: params[:promotion_name] }, courses_groups: { user_name: params[:user_name] }).first!
     end
 end

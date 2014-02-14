@@ -44,7 +44,7 @@
       %ul.nav.navbar-nav
         %li.active= link_to "Projects", '#tab-projects', data: { toggle: 'tab' }
 
-        - if can? :manage, @promotion
+        - if can? :manage, @assignment
           %li.dropdown
             %a.dropdown-toggle.action{ data: { toggle: 'dropdown' }, href: '#', title: 'Settings', rel: 'tooltip' }
               %i.fa.fa-cog

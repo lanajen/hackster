@@ -53,6 +53,8 @@ HackerIo::Application.routes.draw do
     resources :communities, except: [:show, :update, :destroy], controller: 'groups', as: :groups do
       get 'members/edit' => 'members#edit', as: :edit_members
       patch 'members' => 'members#update'
+    end
+    resources :groups, only: [] do
       get 'invitations/new' => 'group_invitations#new', as: :new_invitations
       post 'invitations' => 'group_invitations#create'
       get 'invitations/accept' => 'group_invitations#accept', as: :accept_invitation

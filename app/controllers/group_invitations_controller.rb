@@ -6,6 +6,8 @@ class GroupInvitationsController < ApplicationController
   layout :set_layout
 
   def new
+    # raise @group.inspect
+    # raise self.instance_variable_names.to_s
   end
 
   def create
@@ -40,6 +42,7 @@ class GroupInvitationsController < ApplicationController
           @invitable = $1.classify.constantize.find(value)
           @model_name = @invitable.class.model_name.to_s.underscore
           instance_variable_set "@#{@model_name}", @invitable
+          instance_variable_set "@#{@invitable.class.name.to_s.underscore}", @invitable
           break
         end
       end

@@ -1,0 +1,9 @@
+.col-xs-4.col-xs-offset-4
+  .wellified
+    %h2.text-center New assignment
+
+    = simple_nested_form_for @assignment, url: course_promotion_assignments_path(@assignment.promotion.course.user_name, @assignment.promotion.user_name) do |f|
+      = f.error_notification
+
+      = f.input :name
+      = f.button :submit, 'Go!', class: 'btn-block btn btn-primary'

@@ -1,3 +1,5 @@
+- @promotion = GroupDecorator.decorate @promotion
+
 - if user_signed_in? and member = current_user.is_member?(@promotion) and member.invitation_pending?
   .row
     .col-xs-12
@@ -68,5 +70,5 @@
             %ul.dropdown-menu
               %li= link_to 'Edit promotion', edit_promotion_path(@promotion), data: { remote: true }
               %li= link_to 'Manage members', promotion_edit_members_path(@promotion)
-              -#
-                %li= link_to 'Invite members', promotion_new_invitations_path(@promotion)
+              %li= link_to 'Invite members', group_new_invitations_path(@promotion)
+              %li= link_to 'New assignment', new_course_promotion_assignment_path(@promotion.course.user_name, @promotion.user_name)
