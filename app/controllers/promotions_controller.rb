@@ -9,7 +9,7 @@ class PromotionsController < ApplicationController
     title "#{@promotion.course.name} #{@promotion.name}"
     meta_desc "Join the promotion #{@promotion.name} on Hackster.io!"
     # @broadcasts = @promotion.broadcasts.limit 20
-    @projects = @promotion.projects.group(:assignment_id)
+    @projects = @promotion.projects.order(assignment_id: :desc)
     @students = @promotion.members.invitation_accepted_or_not_invited.with_group_roles('student').map(&:user).select{|u| u.invitation_token.nil? }
     @staffs = @promotion.members.invitation_accepted_or_not_invited.with_group_roles('staff').map(&:user).select{|u| u.invitation_token.nil? }
     @assignments = @promotion.assignments
