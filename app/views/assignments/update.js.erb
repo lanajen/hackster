@@ -1,0 +1,8 @@
+<%- if @refresh %>
+  window.location = '<%= assignment_path(@assignment) %>';
+<% else %>
+  $('.user .display').html('<%= escape_javascript render("assignments/teaser") %>');
+  $('.user .edit').slideUp(function(){
+    $('.user .display').slideDown();
+  });
+<% end %>

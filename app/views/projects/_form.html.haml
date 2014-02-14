@@ -31,7 +31,9 @@
             = select_month(@project.start_date, { prompt: '--Month--' }, { class: 'form-control', name: 'project[start_date(2i)]' })
           .col-xs-6
             = select_year(@project.start_date, { prompt: '--Year--', start_year: Date.today.year, end_year: Date.today.year - 15 }, { class: 'form-control', name: 'project[start_date(1i)]' })
-      = f.input :product_tags_string, as: :string, label: 'Tags', hint: 'Separate tags by commas. Used for finding your project more easily.'
+      = f.input :tech_tags_string, as: :string, label: 'Technologies used', hint: 'Separate technologies by commas', placeholder: 'Eg: Arduino, ATmega, Attiny...'
+      = f.input :product_tags_string, as: :string, label: 'Tags', hint: 'Separate tags by commas. Used for finding your project more easily.', placeholder: 'Eg: home automation, drone, display...'
+
       = f.input :license, collection: License.all, value_method: :url, hint: 'Is your project open source? If so specify under which license here.', selected: @project.license.try(:url), include_blank: true
 
     .col-xs-6
@@ -41,19 +43,26 @@
 
       = f.input :private, inline_label: 'Make this project private', label: false
 
-      .form-group
-        .col-xs-4
-          %label.control-label Share with a group
-        .col-xs-8
-          - @project.permissions.new if @project.permissions.empty?
-          = f.simple_fields_for :permissions, wrapper: false do |f_perm|
-            - if current_user.is? :admin
-              = f_perm.input :grantee_id, collection: Community.all, label: false, wrapper: false
-            - else
-              = f_perm.input :grantee_id, collection: current_user.communities, label: false, wrapper: false
-            = f_perm.input :grantee_type, as: :hidden, input_html: { value: 'Group' }, wrapper: false
-          %p.help-block
-            All of the members of the groups you select will be able to access your project. They will not be able to edit it.
+      - if current_user.communities.any? or current_user.is? :admin
+        .form-group
+          .col-xs-4
+            %label.control-label Share with a group
+          .col-xs-8
+            - @project.permissions.new if @project.permissions.empty?
+            = f.simple_fields_for :permissions, wrapper: false do |f_perm|
+              - if current_user.is? :admin
+                = f_perm.input :grantee_id, collection: Community.where(type: 'Community').order(:full_name), label: false, wrapper: false
+              - else
+                = f_perm.input :grantee_id, collection: current_user.communities, label: false, wrapper: false
+              = f_perm.input :grantee_type, as: :hidden, input_html: { value: 'Group' }, wrapper: false
+            %p.help-block
+              All of the members of the groups you select will be able to access your project. They will not be able to edit it.
+
+      - if current_user.promotions.any? or current_user.is? :admin
+        - if current_user.is? :admin
+          = f.input :assignment_id, collection: Assignment.order(created_at: :desc)
+        - else
+          = f.input :assignment_id, collection: current_user.assignments.order(created_at: :desc)
 
       - if current_user.is? :admin
         = f.input :featured, inline_label: 'Feature this project', label: false
@@ -63,8 +72,6 @@
         .col-xs-8.col-xs-offset-4= link_to 'Delete project', project_path(@project), method: :delete, class: 'btn btn-danger btn-xs', data: { confirm: "Are you sure? There's no coming back!" }
 
       -# = f.input :current, as: :boolean, label: false, inline_label: 'Currently working on it'
-
-      -# = f.input :tech_tags_string, as: :string, label: 'Technologies used', hint: 'Separate technologies by commas'
 
 
 %hr

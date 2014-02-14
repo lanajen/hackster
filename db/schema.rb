@@ -11,10 +11,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20140214011637) do
+=======
+ActiveRecord::Schema.define(version: 20140214044415) do
+>>>>>>> courses_and_promotions
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "assignments", force: true do |t|
+    t.integer  "promotion_id",     null: false
+    t.integer  "id_for_promotion", null: false
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "assignments", ["id_for_promotion"], name: "index_assignments_on_id_for_promotion", using: :btree
+  add_index "assignments", ["promotion_id"], name: "index_assignments_on_promotion_id", using: :btree
 
   create_table "attachments", force: true do |t|
     t.string   "file"
@@ -248,6 +263,10 @@ ActiveRecord::Schema.define(version: 20140214011637) do
     t.datetime "featured_date"
     t.datetime "made_public_at"
     t.boolean  "hide",                          default: false
+<<<<<<< HEAD
+=======
+    t.integer  "assignment_id"
+>>>>>>> courses_and_promotions
   end
 
   add_index "projects", ["private"], name: "index_projects_on_private", using: :btree

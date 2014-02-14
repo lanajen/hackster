@@ -27,18 +27,31 @@
           = link_to @project.name, @project, class: 'hidden-link hidden-link-invert'
         - if @project.one_liner.present?
           = @project.one_liner
-        - elsif can? :edit, @project and @project.public?
+        - elsif can? :edit, @project
           No one liner yet.
           = link_to 'Add one?', edit_project_path(@project), data: { remote: true }
         %p.author.meta
           by
           = @project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
 
+        - if @project.assignment_id
+          .tags.meta
+            %span= link_to @project.assignment.to_label, assignment_path(@project.assignment), class: 'hidden-link'
+
+        - if @project.tech_tags.any?
+          .tags.meta
+            - @project.tech_tags.pluck(:name).each do |tag|
+              %span= link_to tag, "/tags/#{CGI::escape(tag)}", class: 'hidden-link'
+        - elsif can? :edit, @project
+          .tags.meta
+            No technologies yet.
+            = link_to 'Add some?', edit_project_path(@project), data: { remote: true }
+
         - if @project.product_tags.any?
           .tags.meta
             - @project.product_tags.pluck(:name).each do |tag|
               %span= link_to tag, "/tags/#{CGI::escape(tag)}", class: 'hidden-link'
-        - elsif can? :edit, @project and @project.public?
+        - elsif can? :edit, @project
           .tags.meta
             No tags yet.
             = link_to 'Add some?', edit_project_path(@project), data: { remote: true }

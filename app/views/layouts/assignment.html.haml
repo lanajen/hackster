@@ -1,8 +1,8 @@
-- @group = GroupDecorator.decorate(@group)
+- @promotion = GroupDecorator.decorate(@promotion)
 = content_for :no_container do
   #heading.user
     .container
-      .display= render "groups/#{@group.identifier.pluralize}/teaser"
+      .display= render "assignments/teaser"
       .edit{ style: 'display:none;' }
 
   #content

@@ -62,23 +62,28 @@ HackerIo::Application.routes.draw do
       delete '' => 'groups#destroy'
       patch '' => 'groups#update'
     end
-    # scope 'courses/:course_name', as: :course do
-    #   get '' => 'courses#show', as: ''
-    #   delete '' => 'courses#destroy'
-    #   patch '' => 'courses#update'
+    resources :teches, except: [:show, :update, :destroy]
+    scope 'tech/:user_name', as: :tech do
+      get '' => 'teches#show', as: ''
+      delete '' => 'teches#destroy'
+      patch '' => 'teches#update'
+    end
+    # resources :courses, except: [:show, :update, :destroy]
+    resources :promotions, except: [:show, :update, :destroy]
+    scope 'courses/:user_name', as: :course do
+      get '' => 'courses#show', as: ''
+      # delete '' => 'courses#destroy'
+      # patch '' => 'courses#update'
 
-    #   scope ':promotion_name', as: :promotion do
-    #     get '' => 'promotion#show', as: ''
-    #     delete '' => 'promotion#destroy'
-    #     patch '' => 'promotion#update'
+      scope ':promotion_name', as: :promotion do
+        get '' => 'promotions#show', as: ''
+        delete '' => 'promotions#destroy'
+        patch '' => 'promotions#update'
 
-    #     scope ':assignement_id', as: :assignment do
-    #       get '' => 'assignment#show', as: ''
-    #       delete '' => 'assignment#destroy'
-    #       patch '' => 'assignment#update'
-    #     end
-    #   end
-    # end
+        resources :assignments, only: [:new, :create, :show]
+      end
+    end
+    resources :assignments, only: [:edit, :update, :destroy]
 
     resources :files, only: [:create, :show] do
       get 'signed_url', on: :collection

@@ -2,22 +2,8 @@ class Team < Group
   has_many :projects
   before_save :update_user_name
 
-  attr_writer :new_user_name
-  attr_accessible :new_user_name
-
-  validates :new_user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users) }
-  validates :new_user_name, length: { in: 3..100 }, presence: true, if: proc{|t| t.persisted?}
-
   def self.default_permission
     'manage'
-  end
-
-  def assign_new_user_name
-    self.user_name = new_user_name
-  end
-
-  def new_user_name
-    @new_user_name ||= user_name
   end
 
   # How user_name generation works: a new user_name is generated automatically

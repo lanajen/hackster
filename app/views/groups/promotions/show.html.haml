@@ -1,0 +1,46 @@
+.row.tab-content
+  #tab-projects.tab-pane.active.fade.in
+    .col-xs-12
+      - if @projects.any?
+        .row
+          - assignment_id = nil
+          - @projects.each do |project|
+            - if project.assignment_id != assignment_id
+              .col-xs-12
+                %h4= link_to "Assignment: #{project.assignment.name}", assignment_path(project.assignment)
+              - assignment_id = project.assignment_id
+            = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '3' }
+      - else
+        All student projects will appear here.
+
+  #tab-students.tab-pane.fade
+    .col-xs-12
+      - if @students.any?
+        .row
+          - @students.each do |user|
+            .col-xs-2{ style: 'margin-bottom: 30px;' }
+              = link_to image_tag(user.decorate.avatar(:big), class: 'img-responsive'), user, title: user.name, rel: 'tooltip'
+      - else
+        This class has no students.
+
+  #tab-staffs.tab-pane.fade
+    .col-xs-12
+      - if @staffs.any?
+        .row
+          - @staffs.each do |user|
+            .col-xs-2{ style: 'margin-bottom: 30px;' }
+              = link_to image_tag(user.decorate.avatar(:big), class: 'img-responsive'), user, title: user.name, rel: 'tooltip'
+      - else
+        This class has no staffs.
+
+  #tab-assignments.tab-pane.fade
+    .col-xs-12
+      - if @assignments.any?
+        .row
+          - @assignments.each do |assignment|
+            .col-xs-12
+              %h5
+                = link_to assignment.name, assignment_path(assignment)
+                %small (#{pluralize(assignment.projects.count, 'project')})
+      - else
+        This class has no assignments.

@@ -1,0 +1,18 @@
+= simple_nested_form_for @assignment, html: { class: 'form-horizontal remote accept-file-upload', data: { remote: true } }, wrapper: :bootstrap3_horizontal do |f|
+  = f.error_notification
+
+  .row
+    .col-xs-12
+      %h3
+        Edit assignment
+        .pull-right
+          %ul.list-unstyled.list-inline
+            %li= f.submit 'Update assignment', class: 'btn btn-primary btn-sm'
+            %li= link_to 'Cancel', '', class: 'btn-cancel btn-link btn-sm', data: { show: '.user .display', hide: '.user .edit' }
+      %hr
+
+  .row
+    .col-xs-6
+      = f.input :name
+
+%hr
