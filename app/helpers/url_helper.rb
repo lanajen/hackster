@@ -3,6 +3,22 @@ module UrlHelper
     course_promotion_assignment_path params_for_assignment(assignment).merge(opts)
   end
 
+  def assignment_url assignment, opts={}
+    course_promotion_assignment_url params_for_assignment(assignment).merge(opts)
+  end
+
+  def community_path community, opts={}
+    super params_for_group(community, 'community').merge(opts)
+  end
+
+  def course_path course, opts={}
+    super params_for_group(course, 'course').merge(opts)
+  end
+
+  def course_url course, opts={}
+    super params_for_group(course, 'course').merge(opts)
+  end
+
   def group_path group, opts={}
     super params_for_group(group).merge(opts)
   end
@@ -24,12 +40,12 @@ module UrlHelper
     super params_for_project(project, force_params).merge(opts)
   end
 
-  def course_path course, opts={}
-    super params_for_group(course, 'course').merge(opts)
-  end
-
   def promotion_path promotion, opts={}
     course_promotion_path params_for_promotion(promotion).merge(opts)
+  end
+
+  def promotion_url promotion, opts={}
+    course_promotion_url params_for_promotion(promotion).merge(opts)
   end
 
   def tech_path tech, opts={}

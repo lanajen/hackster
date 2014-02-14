@@ -57,6 +57,8 @@ HackerIo::Application.routes.draw do
       post 'invitations' => 'group_invitations#create'
       get 'invitations/accept' => 'group_invitations#accept', as: :accept_invitation
     end
+    get 'groups/:id' => 'groups#show'
+    get 'c/:user_name' => 'groups#show', as: :community
     scope 'c/:user_name', as: :group do
       get '' => 'groups#show', as: ''
       delete '' => 'groups#destroy'
@@ -82,6 +84,10 @@ HackerIo::Application.routes.draw do
 
         resources :assignments, only: [:new, :create, :show]
       end
+    end
+    resources :promotions, only: [] do
+      get 'members/edit' => 'members#edit', as: :edit_members
+      patch 'members' => 'members#update'
     end
     resources :assignments, only: [:edit, :update, :destroy]
 

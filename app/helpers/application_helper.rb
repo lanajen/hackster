@@ -19,6 +19,16 @@ module ApplicationHelper
 #    super content, link, *args
 #  end
 
+  def roles_with_mask model_class, attribute
+    roles = {}
+    model_class.send("#{attribute}").each do |role|
+      roles[role] = eval "
+        ([role] & #{model_class.name}.#{attribute}).map { |r| 2**#{model_class.name}.#{attribute}.index(r) }.sum
+      "
+    end
+    roles
+  end
+
   def user_is_current?
     user_signed_in? and current_user.id == @user.try(:id)
   end

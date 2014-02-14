@@ -5,7 +5,11 @@ class GroupsController < ApplicationController
   respond_to :html
 
   def show
-    redirect_to course_path(@group) and return if @group.type == 'Course'
+    path = "#{@group.class.name.underscore}_path"
+    if defined?(path)
+      path = send(path, @group)
+      redirect_to path and return if path != request.path
+    end
 
     authorize! :read, @group
     title @group.name
@@ -80,6 +84,10 @@ class GroupsController < ApplicationController
 
   private
     def load_group
-      @group = load_with_user_name Group
+      @group = if params[:id]
+        Group.find(params[:id])
+      else
+        load_with_user_name Group
+      end
     end
 end

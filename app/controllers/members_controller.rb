@@ -13,14 +13,13 @@ class MembersController < ApplicationController
     authorize! :update, @group
 
     if @group.update_attributes(params[@group.class.model_name.to_s.underscore.to_sym])
-      record = if @project
+      if @project
         flash[:notice] = 'Team saved.'
-        Project.find(params[:project_id])
+        respond_with Project.find(params[:project_id])
       else
         flash[:notice] = 'Members saved.'
-        @group
+        redirect_to "/groups/#{@group.id}"
       end
-      respond_with record
     else
       render action: 'edit', template: "members/#{@model_name.pluralize}/edit"
     end
@@ -30,6 +29,8 @@ class MembersController < ApplicationController
     def load_group
       @group = if params[:group_id]
         Group.find(params[:group_id])
+      elsif params[:promotion_id]
+        @promotion = Promotion.find(params[:promotion_id])
       else
         @project = Project.find(params[:project_id])
         @project.try(:team)
@@ -39,6 +40,13 @@ class MembersController < ApplicationController
     end
 
     def set_layout
-      @group.is?(:team) ? 'project' : 'group'
+      case @group
+      when Team
+        'project'
+      when Promotion
+        'promotion'
+      else
+        'group'
+      end
     end
 end

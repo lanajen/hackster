@@ -67,6 +67,6 @@
               %b.caret
             %ul.dropdown-menu
               %li= link_to 'Edit promotion', edit_promotion_path(@promotion), data: { remote: true }
+              %li= link_to 'Manage members', promotion_edit_members_path(@promotion)
               -#
-                %li= link_to 'Manage members', promotion_edit_members_path(@promotion)
                 %li= link_to 'Invite members', promotion_new_invitations_path(@promotion)
