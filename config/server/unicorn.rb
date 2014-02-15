@@ -22,46 +22,46 @@ app_name          = 'hackerio'
 #stdout_path       "/log/unicorn.log"
 
 #listen            "/tmp/#{app_name}.unicorn.production.sock"
-if ENV['RAILS_ENV'] == 'development'
-  worker_processes 1
-else
-  worker_processes 3
-end
-timeout           29
-preload_app       true
+# if ENV['RAILS_ENV'] == 'development'
+#   worker_processes 1
+# else
+#   worker_processes 3
+# end
+# timeout           29
+# preload_app       true
 
-#before_exec do |server|
-#  ENV["BUNDLE_GEMFILE"] = "#{app_path}/Gemfile"
-#end
+# #before_exec do |server|
+# #  ENV["BUNDLE_GEMFILE"] = "#{app_path}/Gemfile"
+# #end
 
-before_fork do |server, worker|
-  if defined?(ActiveRecord::Base)
-    ActiveRecord::Base.connection.disconnect!
-    Rails.logger.info('Disconnected from ActiveRecord')
-  end
-
-  # if defined?(Resque)
-  #   ResqueRedis.disconnect
-  # end
-
-  sleep 1
-end
-
-after_fork do |server, worker|
-  if defined?(ActiveRecord::Base)
-    ActiveRecord::Base.establish_connection
-    Rails.logger.info('Connected to ActiveRecord')
-  end
-
-#   if defined?(Resque)
-# #    I18nRedisBackend.connect
-#     ResqueRedis.connect
+# before_fork do |server, worker|
+#   if defined?(ActiveRecord::Base)
+#     ActiveRecord::Base.connection.disconnect!
+#     Rails.logger.info('Disconnected from ActiveRecord')
 #   end
-end
+
+#   # if defined?(Resque)
+#   #   ResqueRedis.disconnect
+#   # end
+
+#   sleep 1
+# end
+
+# after_fork do |server, worker|
+#   if defined?(ActiveRecord::Base)
+#     ActiveRecord::Base.establish_connection
+#     Rails.logger.info('Connected to ActiveRecord')
+#   end
+
+# #   if defined?(Resque)
+# # #    I18nRedisBackend.connect
+# #     ResqueRedis.connect
+# #   end
+# end
 
 if ENV['RAILS_ENV'] == 'development'
   worker_processes 1
-  timeout 120
+  # timeout 120
 else
   worker_processes Integer(ENV["WEB_CONCURRENCY"] || 3)
   timeout 29

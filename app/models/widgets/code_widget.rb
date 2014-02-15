@@ -101,7 +101,7 @@ class CodeWidget < Widget
           end
         end
 
-        open(file_url).read
+        open(file_url).read.try(:force_encoding, "UTF-8")
       rescue
         ERROR_MESSAGE
       end
@@ -110,7 +110,7 @@ class CodeWidget < Widget
     def read_code_from_text
       build_document unless document
 
-      file = StringIO.new raw_code
+      file = StringIO.new raw_code.try(:force_encoding, "UTF-8")
       file.class_eval { attr_accessor :original_filename }
       file.original_filename = file_name
 
