@@ -5,6 +5,9 @@ class Ability
 
     can :read, [Comment, Issue, User]
     can :read, [Project, Group], private: false
+    can :read, Assignment do |assignment|
+      assignment.promotion.private == false
+    end
 
     @user = resource
     member if @user.persisted?

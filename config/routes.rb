@@ -74,7 +74,7 @@ HackerIo::Application.routes.draw do
     end
     # resources :courses, except: [:show, :update, :destroy]
     resources :promotions, except: [:show, :update, :destroy]
-    scope 'courses/:user_name', as: :course do
+    scope 'courses/:uni_name/:user_name', as: :course do
       get '' => 'courses#show', as: ''
       # delete '' => 'courses#destroy'
       # patch '' => 'courses#update'
@@ -84,14 +84,14 @@ HackerIo::Application.routes.draw do
         delete '' => 'promotions#destroy'
         patch '' => 'promotions#update'
 
-        resources :assignments, only: [:new, :create, :show]
+        resources :assignments, only: [:new, :create, :show, :update]
       end
     end
     resources :promotions, only: [] do
       get 'members/edit' => 'members#edit', as: :edit_members
       patch 'members' => 'members#update'
     end
-    resources :assignments, only: [:edit, :update, :destroy]
+    resources :assignments, only: [:edit, :destroy]
 
     resources :files, only: [:create, :show] do
       get 'signed_url', on: :collection

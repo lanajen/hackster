@@ -1,7 +1,7 @@
 <%- if @refresh %>
   window.location = '<%= promotion_path(@promotion) %>';
 <% else %>
-  $('.user .display').html('<%= escape_javascript render("groups/#{@group.identifier.pluralize}/teaser") %>');
+  $('.user .display').html('<%= escape_javascript render("groups/#{@promotion.identifier.pluralize}/teaser") %>');
   $('.user .edit').slideUp(function(){
     $('.user .display').slideDown();
   });

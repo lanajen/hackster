@@ -327,14 +327,6 @@ ActiveRecord::Schema.define(version: 20140214231437) do
   add_index "threads", ["threadable_id", "threadable_type"], name: "index_blog_posts_on_bloggable_id_and_bloggable_type", using: :btree
   add_index "threads", ["user_id"], name: "index_blog_posts_on_user_id", using: :btree
 
-  create_table "universities", force: true do |t|
-    t.string   "name"
-    t.string   "city"
-    t.string   "country"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "users", force: true do |t|
     t.string   "user_name",              limit: 100
     t.string   "mini_resume",            limit: 160

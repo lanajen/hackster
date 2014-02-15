@@ -1,4 +1,4 @@
-= simple_nested_form_for @promotion, url: group_path(@promotion), html: { class: 'form-horizontal remote accept-file-upload', data: { remote: true } }, wrapper: :bootstrap3_horizontal do |f|
+= simple_nested_form_for @promotion, url: promotion_path(@promotion), html: { class: 'form-horizontal remote accept-file-upload', data: { remote: true } }, wrapper: :bootstrap3_horizontal do |f|
   = f.error_notification
 
   .row

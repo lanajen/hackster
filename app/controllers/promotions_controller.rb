@@ -54,7 +54,7 @@ class PromotionsController < ApplicationController
     authorize! :update, @promotion
     old_promotion = @promotion.dup
 
-    if @promotion.update_attributes(params[:promotion])
+    if @promotion.update_attributes(params[:group])
       respond_to do |format|
         format.html { redirect_to @promotion, notice: 'Profile updated.' }
         format.js do
@@ -80,6 +80,6 @@ class PromotionsController < ApplicationController
 
   private
     def load_promotion
-      @promotion = Promotion.joins(:course).where(groups: { user_name: params[:promotion_name] }, courses_groups: { user_name: params[:user_name] }).first!
+      @promotion = Promotion.includes(:course).where(groups: { user_name: params[:promotion_name] }, courses_groups: { user_name: params[:user_name] }).first!
     end
 end

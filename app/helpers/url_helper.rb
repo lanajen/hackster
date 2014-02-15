@@ -82,6 +82,7 @@ module UrlHelper
   private
     def params_for_assignment assignment
       {
+        uni_name: assignment.promotion.course.university.user_name,
         user_name: assignment.promotion.course.user_name,
         promotion_name: assignment.promotion.user_name,
         id: assignment.id_for_promotion,
@@ -91,6 +92,7 @@ module UrlHelper
 
     def params_for_new_assignment assignment
       {
+        uni_name: assignment.promotion.course.university.user_name,
         user_name: assignment.promotion.course.user_name,
         promotion_name: assignment.promotion.user_name,
       }
@@ -98,6 +100,7 @@ module UrlHelper
 
     def params_for_promotion promotion
       {
+        uni_name: promotion.course.university.user_name,
         user_name: promotion.course.user_name,
         promotion_name: promotion.user_name,
         use_route: 'course_promotion',

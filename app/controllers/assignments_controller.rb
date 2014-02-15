@@ -1,4 +1,5 @@
 class AssignmentsController < ApplicationController
+  before_filter :authenticate_user!, except: [:show]
   before_filter :load_assignment, only: [:show]
   before_filter :load_promotion, only: [:new, :create]
   load_and_authorize_resource only: [:edit, :update, :destroy]
