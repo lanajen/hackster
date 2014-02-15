@@ -66,7 +66,7 @@
         .well
           .content
             - if can? :edit, @project
-              Tell the world more about your #{@project.name}, show us the code, schematics, bill of materials, or something else awesome about your project.
+              Tell the world more about #{@project.name}, show us the code, schematics, bill of materials, or something else awesome about your project.
               = link_to 'Add your first widget to get started!', new_project_widget_path(@project)
             - else
               Work in progress, check back later!
