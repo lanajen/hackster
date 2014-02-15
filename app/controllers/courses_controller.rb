@@ -5,7 +5,7 @@ class CoursesController < ApplicationController
   respond_to :html
 
   def show
-    redirect_to course_promotion_path(@course.user_name, @course.promotions.last.try(:user_name))
+    redirect_to promotion_path(@course.promotions.last)
   end
 
   # def show

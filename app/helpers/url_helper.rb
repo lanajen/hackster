@@ -12,11 +12,11 @@ module UrlHelper
   end
 
   def course_path course, opts={}
-    super params_for_group(course, 'course').merge(opts)
+    super params_for_course(course).merge(opts)
   end
 
   def course_url course, opts={}
-    super params_for_group(course, 'course').merge(opts)
+    super params_for_course(course).merge(opts)
   end
 
   def group_path group, opts={}
@@ -95,6 +95,13 @@ module UrlHelper
         uni_name: assignment.promotion.course.university.user_name,
         user_name: assignment.promotion.course.user_name,
         promotion_name: assignment.promotion.user_name,
+      }
+    end
+
+    def params_for_course course
+      {
+        uni_name: course.university.user_name,
+        user_name: course.user_name,
       }
     end
 
