@@ -171,6 +171,10 @@ class Project < ActiveRecord::Base
     images.first
   end
 
+  def is_assignment?
+    assignment_id.present?
+  end
+
   def license
     return @license if @license
     val = read_attribute(:license)

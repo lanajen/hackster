@@ -4,7 +4,7 @@
       .alert.alert-warning
         %i.fa.fa-lock
         This project is private so only you can see it.
-        = link_to 'Make public', project_path(@project, project: { private: 0 }), method: :patch, class: 'btn btn-warning btn-sm'
+        = link_to 'Publish publicly', project_path(@project, project: { private: 0 }), method: :patch, class: 'btn btn-warning btn-sm'
 - elsif user_signed_in? and current_user.is_team_member? @project
   .row
     .col-xs-12

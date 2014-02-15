@@ -27,7 +27,7 @@ if ENV['RAILS_ENV'] == 'development'
 else
   worker_processes 3
 end
-timeout           30
+timeout           29
 preload_app       true
 
 #before_exec do |server|
@@ -57,4 +57,66 @@ after_fork do |server, worker|
 # #    I18nRedisBackend.connect
 #     ResqueRedis.connect
 #   end
+end
+
+if ENV['RAILS_ENV'] == 'development'
+  worker_processes 1
+  timeout 120
+else
+  worker_processes Integer(ENV["WEB_CONCURRENCY"] || 3)
+  timeout 29
+end
+
+# The timeout mechanism in Unicorn is an extreme solution that should be avoided whenever possible.
+# It will help catch bugs in your application where and when your application forgets to use timeouts,
+# but it is expensive as it kills and respawns a worker process.
+# see http://unicorn.bogomips.org/Application_Timeouts.html
+
+# Heroku recommends a timeout of 15 seconds. With a 15 second timeout, the master process will send a
+# SIGKILL to the worker process if processing a request takes longer than 15 seconds. This will
+# generate a H13 error code and you’ll see it in your logs. Note, this will not generate any stacktraces
+# to assist in debugging. Using Rack::Timeout, we can get a stacktrace in the logs that can be used for
+# future debugging, so we set that value to something less than this one
+
+preload_app true # for new relic
+
+before_fork do |server, worker|
+  Signal.trap 'TERM' do
+    puts 'Unicorn master intercepting TERM and sending myself QUIT instead'
+    Process.kill 'QUIT', Process.pid
+  end
+
+  if defined?(ActiveRecord::Base)
+    ActiveRecord::Base.connection.disconnect!
+  end
+
+end
+
+after_fork do |server, worker|
+  Signal.trap 'TERM' do
+    puts 'Unicorn worker intercepting TERM and doing nothing. Wait for master to sent QUIT'
+  end
+
+  Rails.logger.info("Done forking unicorn processes")
+
+  #https://devcenter.heroku.com/articles/concurrency-and-database-connections
+  if defined?(ActiveRecord::Base)
+
+    db_pool_size = if ENV["DB_POOL"]
+      ENV["DB_POOL"]
+    else
+      ENV["WEB_CONCURRENCY"] || 3
+    end
+
+    config = Rails.application.config.database_configuration[Rails.env]
+    config['reaping_frequency'] = ENV['DB_REAP_FREQ'] || 10 # seconds
+    config['pool']              = ENV['DB_POOL'] || 3
+    ActiveRecord::Base.establish_connection(config)
+
+    # Turning synchronous_commit off can be a useful alternative when performance is more important than exact certainty about the durability of a transaction
+    # ActiveRecord::Base.connection.execute "update pg_settings set setting='off' where name = 'synchronous_commit';"
+
+    Rails.logger.info("Connection pool size for unicorn is now: #{ActiveRecord::Base.connection.pool.instance_variable_get('@size')}")
+  end
+
 end
