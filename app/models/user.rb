@@ -455,7 +455,7 @@ class User < ActiveRecord::Base
   end
 
   def is? role
-    roles_symbols.include? role
+    roles.map(&:to_sym).include? role
   end
 
   def is_following? user
