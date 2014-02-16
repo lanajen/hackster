@@ -23,6 +23,8 @@
         %strong
           Assignment:
           = @assignment.name
+        - if @assignment.document.present?
+          %span.instructions= link_to 'Instructions', @assignment.document.file_url, title: 'Download assignment instructions', rel: 'tooltip', target: '_blank'
 
       - if @promotion.mini_resume.present?
         %p.user-mini-resume= @promotion.mini_resume

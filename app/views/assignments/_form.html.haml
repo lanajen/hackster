@@ -1,3 +1,4 @@
+- @assignment.build_document unless @assignment.document.present?
 = simple_nested_form_for @assignment, html: { class: 'form-horizontal remote accept-file-upload', data: { remote: true } }, wrapper: :bootstrap3_horizontal do |f|
   = f.error_notification
 
@@ -15,4 +16,28 @@
     .col-xs-6
       = f.input :name
 
+    .col-xs-6
+      .file-drop.form-group{ class: 'document' }
+        .col-xs-4
+          %label.control-label Assignment instructions
+        .col-xs-8
+          %span.file-preview.preview{ class: 'document' }= @assignment.document.file_name if @assignment.document.file.present?
+          %a.btn.btn-default.btn-sm{ data: { target: ".file_upload.document" } }
+            - if @assignment.document.file.present?
+              Change file
+            - else
+              Select file
+          %p.help-block Upload the assignment instructions as a PDF.
+
 %hr
+
+= content_for :js do
+  :javascript
+
+    #{ render partial: 'shared/uploader/form_template', locals: { file_type: 'document' } }
+
+    #{ render partial: 'shared/uploader/file_drop_click', locals: { file_type: 'document' } }
+
+    #{ render partial: 'shared/uploader/file_upload_functions_has_one', locals: { file_type: 'document', attribute_type: 'document', image_version: 'none', model: 'assignment' } }
+
+    #{ render partial: 'shared/uploader/file_upload', locals: { file_type: 'document' } }

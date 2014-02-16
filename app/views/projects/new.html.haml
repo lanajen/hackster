@@ -13,7 +13,7 @@
           = hidden_field_tag :cover_image_id, @project.cover_image.id
         %label.control-label Cover image
         %div
-          %span.cover_image.image-preview
+          %span.cover_image.image-preview.preview
             - if @project.cover_image
               = image_tag @project.cover_image.file_url(:cover_mini_thumb)
           %a.btn.btn-default.btn-sm{ data: { target: '.file_upload.cover_image' } } Select picture

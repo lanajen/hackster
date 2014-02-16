@@ -10,7 +10,7 @@
       .avatar.file-drop.form-group
         %label.control-label Profile image
         %div
-          %span.avatar.image-preview
+          %span.avatar.image-preview.preview
           %a.btn.btn-default.btn-sm{ data: { target: '.file_upload.avatar' } } Select picture
 
       = render partial: 'shared/image_form_bare', locals: { file_type: 'avatar', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
