@@ -180,6 +180,7 @@ module ScraperStrategies
           'a' => 'href',
           'embed' => 'src',
           'iframe' => 'src',
+          'object' => 'data',
         }.each do |el, attr|
           collection = []
           @article.css(el).each do |link|
@@ -218,9 +219,10 @@ module ScraperStrategies
       # finds all main titles (h5), split and create a widget with the content
       text.to_html.gsub(/\r?\n/, ' ').split(/<h5>/).each_with_index do |frag, i|
         frag = '<h5>' + frag if i > 0
-        frag.match /<h5>([^<]+)<\/h5>/
+        frag.match /<h5>(.+)<\/h5>/
         if title = $1
           frag.gsub! "<h5>#{title}</h5>", ''
+          title = ActionView::Base.full_sanitizer.sanitize title
         end
         frag.gsub! /(^(<br ?\/?>)+)?((<br ?\/?>)+$)?/, ''
         @widgets << TextWidget.new(content: frag, name: title.try(:truncate, 100) || 'About')

@@ -53,8 +53,13 @@ module ScraperUtils
 
   def test_link link
     u = URI.parse link
-    status_code = Net::HTTP.start(u.host,u.port){|http| http.head(u.request_uri).code }
-    puts "Testing link #{link}... #{status_code}"
+    print "Testing link #{link}... "
+    begin
+      status_code = Net::HTTP.start(u.host,u.port){|http| http.head(u.request_uri).code }
+    rescue
+      status_code = "Error"
+    end
+    puts "#{status_code}"
     status_code == '200'
   end
 
