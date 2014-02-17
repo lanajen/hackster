@@ -28,7 +28,9 @@ class MembersController < ApplicationController
   private
     def load_group
       @group = if params[:group_id]
-        Group.find(params[:group_id])
+        group = Group.find(params[:group_id])
+        @promotion = group if group.type == 'Promotion'
+        group
       elsif params[:promotion_id]
         @promotion = Promotion.find(params[:promotion_id])
       else
