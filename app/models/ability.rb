@@ -59,8 +59,11 @@ class Ability
     can :read, Project do |project|
       project.private? and @user.linked_to_project_via_group? project
     end
-    can [:update_team, :update_widgets], Project do |project|
+    can [:update_team, :update_widgets, :comment], Project do |project|
       @user.can? :manage, project
+    end
+    can :comment_privately, Project do |project|
+      project.assignment_id.present? and @user.is_staff? project
     end
 
     %w(read edit destroy manage).each do |perm|

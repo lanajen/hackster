@@ -35,6 +35,14 @@ class ProjectObserver < ActiveRecord::Observer
     end
   end
 
+  def before_update record
+    if record.assignment_id_changed? and record.assignment_id.present? and record.issues.empty?
+      issue = record.issues.new title: 'Feedback'
+      issue.user_id = 0
+      issue.save
+    end
+  end
+
   private
     def update_counters record, type
       record.users.each{ |u| u.update_counters only: [type].flatten }

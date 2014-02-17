@@ -1,3 +1,3 @@
 class IssueObserver < ActiveRecord::Observer
-  include BroadcastObserver
+  # include BroadcastObserver
 end

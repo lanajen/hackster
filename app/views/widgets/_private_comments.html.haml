@@ -1,0 +1,9 @@
+.comments
+  -# { id: "widget-#{widget.id}-comments" }
+  - if comments.any?
+    - sort_comments(comments).each do |comment|
+      = render partial: 'comments/comment', locals: { comment: comment }
+  - else
+    %p No feedback yet.
+  - if user_signed_in?
+    = render partial: 'comments/signed_in_form', locals: { commentable: commentable }

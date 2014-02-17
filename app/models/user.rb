@@ -503,6 +503,10 @@ class User < ActiveRecord::Base
     Project.find_by_sql([sql, id, project.id]).any?
   end
 
+  def is_staff? project
+    project.try(:assignment).try(:promotion).try(:members).try(:with_group_roles, 'staff').try(:where, user_id: id).any?
+  end
+
   def live_comments
     comments.by_commentable_type(Project).where("projects.private = 'f'")
   end

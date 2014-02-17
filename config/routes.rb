@@ -122,6 +122,10 @@ HackerIo::Application.routes.draw do
       patch 'widgets' => 'widgets#save'
     end
 
+    resources :issues, only: [] do
+      resources :comments, only: [:create]
+    end
+
     get 'users/registration/complete_profile' => 'users#after_registration', as: :user_after_registration
     patch 'users/registration/complete_profile' => 'users#after_registration_save'
 

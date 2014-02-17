@@ -91,11 +91,14 @@ module MailerHelpers
       user = @context[:user] if @context.include? :user
       user = opts[:user] if opts.include? :user
       group = @context[:group] if @context.include? :group
+      comment = @context[:comment] if @context.include? :comment
 
       token = token.gsub(/\|/, '')
       case token.to_sym
       when :author_link
         url.user_url(author, host: default_host)
+      when :comment_body
+        ActionView::Base.full_sanitizer.sanitize comment.body
       when :email_confirmation_link
         url.user_confirmation_url(confirmation_token: @context[:devise_token], host: default_host)
       when :group_invitation_link

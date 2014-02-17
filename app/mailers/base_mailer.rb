@@ -46,9 +46,15 @@ class BaseMailer < ActionMailer::Base
       case context_type.to_sym
       when :comment
         comment = context[:comment] = Comment.find(context_id)
-        project = context[:project] = comment.commentable
+        commentable = comment.commentable
+        project = context[:project] = case commentable
+        when Issue
+          comment.commentable.threadable
+        when Project
+          comment.commentable
+        end
         author = context[:author] = comment.user
-        context[:users] = project.users.with_subscription('new_comment_own') + project.commenters.with_subscription('new_comment_commented') - [author]
+        context[:users] = project.users.with_subscription('new_comment_own') + comment.commentable.commenters.with_subscription('new_comment_commented') - [author]
       when :invited
         user = context[:user] = User.find(context_id)
         context[:inviter] = user.invited_by if user.invited_by

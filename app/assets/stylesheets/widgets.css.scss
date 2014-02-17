@@ -330,6 +330,9 @@
     .comment-text {
       padding-top: 2px;
       max-width: 383px;
+      p {
+        margin-bottom: 5px;
+      }
     }
     .comment-avatar {
       margin-right: 8px;
@@ -364,7 +367,7 @@
   }
 }
 
-#widget-comments, #widget-respects {
+#widget-comments, #widget-respects, #widget-private-comments {
   background: #f5f5f5;
 }
 

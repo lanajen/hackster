@@ -1,0 +1,8 @@
+.well{ id: "widget-private-comments" }
+  .header
+    %h4{ style: 'position:relative;' }
+      %small
+        %i.fa.fa-lock.istooltip{ title: 'Private', data: { container: 'body' } }
+      Feedback
+  .content
+    = render partial: 'widgets/private_comments', locals: { comments: comments, commentable: commentable.issues.first }
