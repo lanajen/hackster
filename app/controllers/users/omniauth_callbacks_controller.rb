@@ -43,7 +43,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       # logger.info request.env['omniauth.auth'].to_yaml
 
       omniauth_data = case kind
-      when 'Twitter'
+      when 'Facebook', 'Twitter'
         request.env['omniauth.auth'].except("extra")
       else
         request.env['omniauth.auth']
