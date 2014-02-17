@@ -321,7 +321,7 @@ class User < ActiveRecord::Base
       self.facebook_link = info.urls['Facebook']
       self.website_link = info.urls['Website']
       begin
-        if location = info['location'] || extra['raw_info']['hometown']
+        if location = info['location']# || extra['raw_info']['hometown']
           self.city = location['name'].split(',')[0] if city.nil?
           self.country = location['name'].split(',')[1].strip if country.nil?
         end
@@ -479,16 +479,24 @@ class User < ActiveRecord::Base
       provider: provider,
       uid: uid,
     }
-    if data
+    if data and data = data.info
       case provider
       when 'Facebook'
-        data = data.extra.raw_info
         auth.merge!({
-            name: data['first_name'].to_s + ' ' + data['last_name'].to_s,
-            link: data['link'],
+            name: data.name,
+            link: data.urls['Facebook'],
+          })
+      when 'Github'
+        auth.merge!({
+          name: data.name.to_s,
+          link: data.urls['GitHub'],
+          })
+      when 'Google+'
+        auth.merge!({
+          name: data.name.to_s,
+          link: data.urls['Google+'],
           })
       when 'Twitter'
-        data = data.info
         auth.merge!({
             name: data.name,
             link: data.urls['Twitter'],
