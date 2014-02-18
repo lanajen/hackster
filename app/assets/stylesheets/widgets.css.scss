@@ -284,18 +284,23 @@
     margin: 0;
     height: 315px;
     overflow: hidden;
-    width: 10000000px;
+    width: 100%;
     position: relative;
     .headline-image-inner {
-      height: 315px;
-      float: left;
-      padding-left: 5px;
+      top: 0;
+      left: 0;
+      position: absolute;
+      height: 100%;
+      width: 100%;
       a {
         position: relative;
         display: block;
         height: 100%;
+        width: 100%;
         img {
-          height: 100%;
+          max-height: 100%;
+          max-width: 100%;
+          margin: 0 auto;
         }
         .caption-holder {
           position: absolute;
@@ -315,6 +320,36 @@
           .caption-holder {
             @include opacity(0.9);
           }
+        }
+      }
+    }
+  }
+  .thumb-image {
+    margin: 10px 0 0;
+    height: 80px;
+    overflow: hidden;
+    width: 10000000px;
+    position: relative;
+    .thumb-image-inner {
+      height: 100%;
+      float: left;
+      padding-left: 3px;
+      &.first {
+        padding-left: 0;
+      }
+      a {
+        position: relative;
+        display: block;
+        height: 100%;
+        img {
+          height: 100%;
+          border: 2px solid #fff;
+          &.current {
+            border-color: #333;
+          }
+        }
+        &:hover {
+          text-decoration: none;
         }
       }
     }

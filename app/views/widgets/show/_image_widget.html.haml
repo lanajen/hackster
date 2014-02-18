@@ -1,19 +1,27 @@
 .image-widget
-  .scroll.scroll-left{ data: { direction: 'left' }}
-    .inner-scroll
-      %i.fa.fa-arrow-left
-  .scroller
-    .headline-image
-      - widget.images.each_with_index do |image, i|
-        .headline-image-inner
-          %a{ href: "javascript:openLightBox(#{widget.id},#{i});" }
-            = image_tag image.file_url(:headline), class: "image-#{i} img-responsive"
-            - if image.title.present?
-              .caption-holder
-                = image.title
-  .scroll.scroll-right{ data: { direction: 'right' }}
-    .inner-scroll
-      %i.fa.fa-arrow-right
+  .headline-image
+    - if widget.images.size > 1
+      .scroll.scroll-left{ data: { direction: 'left' }}
+        .inner-scroll
+          %i.fa.fa-arrow-left
+    - widget.images.each_with_index do |image, i|
+      .headline-image-inner{ class: "image-#{i} #{'first' if i == 0}", style: "#{'display:none;' unless i==0}", data: { target: "image-#{i}" } }
+        %a{ href: "javascript:openLightBox(#{widget.id},#{i});" }
+          = image_tag image.file_url(:headline), class: "image-#{i} img-responsive"
+          - if image.title.present?
+            .caption-holder
+              = image.title
+    - if widget.images.size > 1
+      .scroll.scroll-right{ data: { direction: 'right' }}
+        .inner-scroll
+          %i.fa.fa-arrow-right
+  - if widget.images.size > 1
+    .scroller
+      .thumb-image
+        - widget.images.each_with_index do |image, i|
+          .thumb-image-inner{ class: "#{'first' if i == 0}"}
+            %a{ href: "javascript:openLightBox(#{widget.id},#{i});" }
+              = image_tag image.file_url(:thumb), class: "image-#{i} img-responsive #{'current' if i==0}", data: { target: "image-#{i}" }
 
 = content_for :js do
   :javascript
