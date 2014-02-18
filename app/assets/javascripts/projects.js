@@ -155,45 +155,39 @@ $(document).ready(function(){
     if (!currentHeadline.hasClass(targetClass)) {
       currentHeadline.css('z-index', '999');
       target.show();
-      currentHeadline.fadeOut(150, function(){
-        $(this).css('z-index', '0');
-      });
+      currentHeadline
+        .hide()
+        .css('z-index', '0');
     }
   });
 
-  $('body').on('click', '.image-widget .scroll', function(e){
-    parent = $(this).parent().parent();
+  $('body').on('click', '.image-widget .nav', function(e){
+    parent = $(this).parent().parent().parent();
     crtImg = $('.headline-image-inner:visible', parent);
-    dir = $(this).data('direction');
-    if (dir == 'right') {
-      target = crtImg.next('.headline-image-inner');
-    } else {
-      target = crtImg.prev('.headline-image-inner');
-    }
+    nextClass = $(this).data('next');
+    next = $('.headline-image-inner.' + nextClass, parent);
 
-    if (typeof(target.html()) != 'undefined') {
-      crtImg.css('z-index', '999');
-      target.show();
-      $('.thumb-image img', parent).removeClass('current');
-      targetClass = target.data('target');
-      img = $('.thumb-image-inner img.' + targetClass, parent);
-      img.addClass('current');
-      scroller = $('.scroller', parent);
-      pos =  scroller.scrollLeft() + img.offset().left - scroller.offset().left;
-      scroller.scrollLeft(pos);
-      crtImg.fadeOut(150, function(){
-        $(this).css('z-index', '0');
-      });
-    }
+    crtImg.css('z-index', '999');
+    next.show();
+    crtImg
+      .hide()
+      .css('z-index', '0');
+    $('.thumb-image img', parent).removeClass('current');
+    img = $('.thumb-image-inner img.' + nextClass, parent);
+    img.addClass('current');
+    scroller = $('.scroller', parent);
+    pos =  scroller.scrollLeft() + img.offset().left - scroller.offset().left;
+    scroller.scrollLeft(pos);
   });
 });
 
 $(window).load(function(){
   $('.image-widget .thumb-image').each(function(i, el){
     total = 0;
-    $('.thumb-image-inner', el).each(function(j, inner){
+    $('.thumb-image-inner img', el).each(function(j, inner){
       total += $(inner).outerWidth();
     });
-    $(el).width(total);
+    parent = $(el).parent().width();
+    $(el).width(Math.max(total, parent));
   });
 });

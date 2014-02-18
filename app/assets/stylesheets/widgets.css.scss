@@ -237,13 +237,13 @@
 
 .image-widget {
   position: relative;
-  .scroll {
+  .nav {
     position: absolute;
     top: 0;
     height: 100%;
     width: 50px;
     z-index: 1000;
-    .inner-scroll {
+    .inner-nav {
       cursor: pointer;
       width: 100%;
       height: 100%;
@@ -261,19 +261,19 @@
         text-shadow: 0 0 5px #777;
       }
     }
-    &.scroll-left {
+    &.nav-left {
       left: 0;
       i {
         left: 5px;
       }
     }
-    &.scroll-right {
+    &.nav-right {
       right: 0;
       i {
         right: 5px;
       }
     }
-    &:hover .inner-scroll {
+    &:hover .inner-nav {
       background: #333;
     }
   }
@@ -328,15 +328,12 @@
     margin: 10px 0 0;
     height: 80px;
     overflow: hidden;
-    width: 10000000px;
+    width: 10000px;
+    min-width: 100%;
     position: relative;
     .thumb-image-inner {
       height: 100%;
       float: left;
-      padding-left: 3px;
-      &.first {
-        padding-left: 0;
-      }
       a {
         position: relative;
         display: block;

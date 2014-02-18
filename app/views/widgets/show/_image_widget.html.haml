@@ -1,21 +1,22 @@
+- size = widget.images.size
 .image-widget
   .headline-image
-    - if widget.images.size > 1
-      .scroll.scroll-left{ data: { direction: 'left' }}
-        .inner-scroll
-          %i.fa.fa-arrow-left
     - widget.images.each_with_index do |image, i|
-      .headline-image-inner{ class: "image-#{i} #{'first' if i == 0}", style: "#{'display:none;' unless i==0}", data: { target: "image-#{i}" } }
+      .headline-image-inner{ class: "image-#{i} #{'first' if i == 0}", style: "#{'display:none;' unless i==0}" }
+        - if size > 1 and i > 0
+          .nav.nav-left{ data: { next: "image-#{i-1}" }}
+            .inner-nav
+              %i.fa.fa-arrow-left
         %a{ href: "javascript:openLightBox(#{widget.id},#{i});" }
           = image_tag image.file_url(:headline), class: "image-#{i} img-responsive"
           - if image.title.present?
             .caption-holder
               = image.title
-    - if widget.images.size > 1
-      .scroll.scroll-right{ data: { direction: 'right' }}
-        .inner-scroll
-          %i.fa.fa-arrow-right
-  - if widget.images.size > 1
+        - if size > 1 and i+1 < size
+          .nav.nav-right{ data: { next: "image-#{i+1}" }}
+            .inner-nav
+              %i.fa.fa-arrow-right
+  - if size > 1
     .scroller
       .thumb-image
         - widget.images.each_with_index do |image, i|
