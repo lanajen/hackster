@@ -1,18 +1,19 @@
 .image-widget
-  .headline-image
-    - widget.images.each_with_index do |image, i|
-      .headline-image-inner
-        %a{ href: "javascript:openLightBox(#{widget.id},#{i});" }
-          %i.fa.fa-fullscreen
-          = image_tag image.file_url(:headline_orig), class: "image-#{i} img-responsive", style: "#{'display:none;' unless i==0}"
-  - if widget.images.size > 1
-    %ul.image-thumbs.list-unstyled
+  .scroll.scroll-left{ data: { direction: 'left' }}
+    .inner-scroll
+      %i.fa.fa-arrow-left
+  .scroller
+    .headline-image
       - widget.images.each_with_index do |image, i|
-        %li
+        .headline-image-inner
           %a{ href: "javascript:openLightBox(#{widget.id},#{i});" }
-            = image_tag image.file_url(:small_thumb), data: { target: "image-#{i}" }
-          -# if image.title.present?
-            .overlay-title= image.title
+            = image_tag image.file_url(:headline), class: "image-#{i} img-responsive"
+            - if image.title.present?
+              .caption-holder
+                = image.title
+  .scroll.scroll-right{ data: { direction: 'right' }}
+    .inner-scroll
+      %i.fa.fa-arrow-right
 
 = content_for :js do
   :javascript
@@ -27,6 +28,7 @@
         lightBoxImages[id],
         {
           skin: 'metro-black',
-          startFrom: start
+          startFrom: start,
+          path: 'horizontal'
         });
      }

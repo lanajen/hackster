@@ -1,18 +1,18 @@
 $(document).ready(function(){
-  $('.project').on('mouseenter', '.image-thumbs li', function(){
-    img = $('img', this);
-    targetClass = img.data('target');
-    parent = $(this).parent().parent();
-    target = $('.headline-image img.' + targetClass, parent);
-    currentHeadline = $('.headline-image img:visible', parent);
-    if (!currentHeadline.hasClass(targetClass)) {
-      currentHeadline.css('z-index', '999');
-      target.show();
-      currentHeadline.fadeOut(150, function(){
-        $(this).css('z-index', '0');
-      });
-    }
-  });
+  // $('.project').on('mouseenter', '.image-thumbs li', function(){
+  //   img = $('img', this);
+  //   targetClass = img.data('target');
+  //   parent = $(this).parent().parent();
+  //   target = $('.headline-image img.' + targetClass, parent);
+  //   currentHeadline = $('.headline-image img:visible', parent);
+  //   if (!currentHeadline.hasClass(targetClass)) {
+  //     currentHeadline.css('z-index', '999');
+  //     target.show();
+  //     currentHeadline.fadeOut(150, function(){
+  //       $(this).css('z-index', '0');
+  //     });
+  //   }
+  // });
 
   $('#project_current.boolean').click(function(e){
     if ($(this).is(':checked')) {
@@ -157,4 +157,35 @@ $(document).ready(function(){
       $('body').removeClass('no-scroll');
     });
   });
+
+  $('.image-widget .headline-image').each(function(i, el){
+    total = 0;
+    $('.headline-image-inner', el).each(function(j, img){
+      total += $(img).outerWidth();
+    });
+    $(el).width(total);
+  });
+
+  var timeout;
+  $('.image-widget .scroll').on({
+    mouseenter: function(){
+      scroller = $('.scroller', $(this).parent());
+      dir = $(this).data('direction');
+      timeout = setInterval(function(){
+        scrollHorizontally(scroller, dir)
+      }, 1);
+
+    },
+    mouseleave: function(){
+      window.clearInterval(timeout);
+    }
+  });
 });
+
+function scrollHorizontally(scroller, dir) {
+  if (dir == 'right') {
+    scroller.scrollLeft(scroller.scrollLeft() + 1);
+  } else {
+    scroller.scrollLeft(scroller.scrollLeft() - 1);
+  }
+}

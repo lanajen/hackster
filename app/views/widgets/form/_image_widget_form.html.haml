@@ -73,7 +73,7 @@
     #{ render partial: 'shared/uploader/file_upload_functions', locals: { file_type: file_type } }
 
     #{file_type}Functions.fileuploadDoneTypeSpecific = function(data, file){
-      input.find('img').attr('src', file.url);
+      input.find('img').attr('src', file.url.thumb);
       input.appendTo('#sortable .file-fields');
       resetPositions();
     }

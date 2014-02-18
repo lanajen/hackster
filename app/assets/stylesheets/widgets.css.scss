@@ -141,7 +141,10 @@
     margin-bottom: 5px;
     width: 198px;
     height: 148px;
+    vertical-align: middle;
+    text-align: center;
     .img-responsive {
+      display: inline-block;
       max-height: 100%;
     }
   }
@@ -233,62 +236,87 @@
 }
 
 .image-widget {
-  .image-thumbs {
-    margin: 10px 0 0;
-    li {
-      display: inline-block;
+  position: relative;
+  .scroll {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 50px;
+    z-index: 1000;
+    .inner-scroll {
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
       position: relative;
-      margin: 0 0 5px 0;
-    }
-    img {
-      width: 130px;
-    }
-    .overlay-title {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      background: #000;
-      color: #FFF;
-      width: 130px;
-      padding: 3px 5px;
+      color: #fff;
+      font-size: 20px;
+      background: none;
       @include opacity(0.8);
-      text-align: center;
-      font-weight: bold;
+      transition: background 200ms;
+      -webkit-transition: background 200ms;
+      display: block;
+      i {
+        position: absolute;
+        top: 140px;
+        text-shadow: 0 0 5px #777;
+      }
+    }
+    &.scroll-left {
+      left: 0;
+      i {
+        left: 5px;
+      }
+    }
+    &.scroll-right {
+      right: 0;
+      i {
+        right: 5px;
+      }
+    }
+    &:hover .inner-scroll {
+      background: #333;
     }
   }
+  .scroller {
+    overflow-x: scroll;
+  }
   .headline-image {
-    margin: 0 0 10px;
-    position: relative;
+    margin: 0;
     height: 315px;
+    overflow: hidden;
+    width: 10000000px;
+    position: relative;
     .headline-image-inner {
-      width: 420px;
-      position: absolute;
-      top: 0;
-      left: 0;
+      height: 315px;
+      float: left;
+      padding-left: 5px;
       a {
         position: relative;
         display: block;
-        i {
-          display: none;
+        height: 100%;
+        img {
+          height: 100%;
+        }
+        .caption-holder {
           position: absolute;
-          top: 50%;
-          left: 50%;
-          margin-left: -17px;
-          margin-top: -20px;
-          font-size: 40px;
-          color: #000;
-          text-shadow: 0 0 10px #fff;
-          @include opacity(0.7);
+          background: #333;
+          padding: 5px 10px;
+          z-index: 100;
+          bottom: 0;
+          width: 100%;
+          color: #fff;
+          text-align: center;
+          @include font-size(12);
+          @include opacity(0);
+          transition: opacity 150ms;
         }
         &:hover {
           text-decoration: none;
-          i {
-            display: block;
+          .caption-holder {
+            @include opacity(0.9);
           }
         }
       }
-    }
-    img {
     }
   }
 }
