@@ -53,7 +53,7 @@ module WidgetsHelper
 
   def show_expand_for? widget
     case widget
-    when TextWidget, CodeWidget, PartsWidget
+    when TextWidget, CodeWidget, PartsWidget, ImageWidget
       true
     else
       false
