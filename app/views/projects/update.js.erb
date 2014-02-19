@@ -1,7 +1,7 @@
 <%- if @refresh %>
   window.location.replace('<%= url_for(@project) %>');
 <% else %>
-  $('.project .display').html('<%= escape_javascript render('teaser') %>');
+  $('.project .display').html('<%= escape_javascript render('teaser_normal') %>');
   $('.project .edit').slideUp(function(){
     $('.project .display').slideDown(function(){
       $('#display-share-box').tooltip('show');
