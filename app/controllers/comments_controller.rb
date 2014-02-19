@@ -56,6 +56,8 @@ class CommentsController < ApplicationController
 
     def js_view_for_commentable commentable
       case commentable
+      when Feedback
+        'update_feedback'
       when Issue
         'update_issue'
       when Project
@@ -69,9 +71,10 @@ class CommentsController < ApplicationController
       case commentable
       when BlogPost
         project_blog_post_path(commentable.threadable, commentable)
-      when Issue
-        # issue_path(commentable)
+      when Feedback
         project_path(commentable.threadable)
+      when Issue
+        issue_path(commentable.threadable, commentable)
       when Project
         project_path(commentable)
       when Widget

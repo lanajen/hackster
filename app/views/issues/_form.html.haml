@@ -1,11 +1,14 @@
-= simple_form_for [@threadable, @thread_post], html: { class: 'form-horizontal' } do |f|
+= simple_form_for [@project, @issue], url: issue_form_path_for(@project, @issue), html: { class: 'widget-form' } do |f|
   = f.error_notification
 
-  .form-inputs
-    = f.input :title
-    = f.input :body, input_html: { id: 'wysihtml5-textarea', rows: 10 }
+  = f.input :title
+  .form-group
+    .controls
+      %label Describe the issue
+      = render 'shared/wysihtml5_toolbar'
+  = f.input :body, as: :text, input_html: { id: 'wysihtml5-textarea', rows: 10, style: 'height: 200px;' }, label: false
+  = f.input :assignee_id, collection: @project.users
 
   .form-actions
-    .form-actions-inner
-      = f.button :submit
-      -# = link_to 'Cancel', project_issues_path(@project), class: 'btn btn-link'
+    = f.submit class: 'btn btn-primary'
+    = link_to 'Cancel', project_issues_path(@project.user_name_for_url, @project.slug), class: 'btn btn-link btn-sm'

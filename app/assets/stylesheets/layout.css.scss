@@ -99,6 +99,24 @@ footer {
       }
     }
   }
+  &.well-list {
+    .list-item {
+      padding: 13px 19px;
+      border-bottom: 1px solid #e2e2e2;
+      h4 {
+        .label {
+          padding: .2em .3em .2em .4em;
+          font-size: 60%;
+          line-height: 0.8;
+          border-radius: .25em;
+          margin-right: 5px;
+        }
+      }
+      &:last-child {
+        border: none;
+      }
+    }
+  }
 }
 
 .well, .transparent-well, .wellified, .wellified-transparent {

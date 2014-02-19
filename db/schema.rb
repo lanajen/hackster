@@ -11,10 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140214231437) do
+ActiveRecord::Schema.define(version: 20140219043748) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "assignee_issues", force: true do |t|
+    t.integer  "assignee_id", null: false
+    t.integer  "issue_id",    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "assignee_issues", ["assignee_id"], name: "index_assignee_issues_on_assignee_id", using: :btree
+  add_index "assignee_issues", ["issue_id"], name: "index_assignee_issues_on_issue_id", using: :btree
 
   create_table "assignments", force: true do |t|
     t.integer  "promotion_id",     null: false
@@ -314,16 +324,18 @@ ActiveRecord::Schema.define(version: 20140214231437) do
   create_table "threads", force: true do |t|
     t.string   "title"
     t.text     "body"
-    t.integer  "threadable_id",              null: false
-    t.string   "threadable_type",            null: false
+    t.integer  "threadable_id",                          null: false
+    t.string   "threadable_type",                        null: false
     t.boolean  "private"
-    t.integer  "user_id",                    null: false
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.integer  "user_id",                                null: false
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
     t.string   "type",            limit: 20
     t.string   "workflow_state"
+    t.integer  "sub_id",                     default: 0, null: false
   end
 
+  add_index "threads", ["sub_id", "threadable_id", "threadable_type"], name: "threadable_sub_ids", using: :btree
   add_index "threads", ["threadable_id", "threadable_type"], name: "index_blog_posts_on_bloggable_id_and_bloggable_type", using: :btree
   add_index "threads", ["user_id"], name: "index_blog_posts_on_user_id", using: :btree
 

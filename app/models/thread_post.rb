@@ -8,5 +8,5 @@ class ThreadPost < ActiveRecord::Base
 
   attr_accessible :body, :private, :title
 
-  # validates :title, :body, presence: true
+  validates :title, presence: true
 end

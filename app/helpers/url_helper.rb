@@ -19,12 +19,32 @@ module UrlHelper
     super params_for_course(course).merge(opts)
   end
 
+  def feedback_comments_path issue, opts={}
+    issue_comments_path(issue, opts)
+  end
+
   def group_path group, opts={}
     super params_for_group(group).merge(opts)
   end
 
   def group_url group, opts={}
     super params_for_group(group).merge(opts)
+  end
+
+  def issue_path project, issue, opts={}
+    project_issue_path(project.user_name_for_url, project.slug, issue.sub_id, opts)
+  end
+
+  def issue_url project, issue, opts={}
+    project_issue_url(project.user_name_for_url, project.slug, issue.sub_id, opts)
+  end
+
+  def issue_form_path_for project, issue, opts={}
+    if issue.persisted?
+      project_issue_path(project.user_name_for_url, project.slug, issue.sub_id, opts)
+    else
+      project_issues_path(project.user_name_for_url, project.slug, opts)
+    end
   end
 
   def new_assignment_path assignment, opts={}

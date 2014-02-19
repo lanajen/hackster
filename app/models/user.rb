@@ -34,6 +34,8 @@ class User < ActiveRecord::Base
   has_and_belongs_to_many :followed_projects, class_name: 'Project',
     join_table: :project_followers
   has_many :assignments, through: :promotions
+  has_many :assignee_issues, foreign_key: :assignee_id
+  has_many :assigned_issues, through: :assignee_issues, source: :issue
   has_many :authorizations, dependent: :destroy
   has_many :blog_posts, dependent: :destroy
   has_many :comments, -> { order created_at: :desc }, foreign_key: :user_id, dependent: :destroy

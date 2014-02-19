@@ -1,0 +1,2 @@
+class Feedback < Issue
+end

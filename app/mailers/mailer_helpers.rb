@@ -116,7 +116,7 @@ module MailerHelpers
       when :invitation_link
         url.accept_user_invitation_url(invitation_token: user.invitation_token, host: default_host)
       when :issue_link
-        url.issue_url(issue, host: default_host)
+        url.issue_url(issue.threadable, issue, host: default_host)
       when :password_reset_link
         url.edit_user_password_url(reset_password_token: @context[:devise_token], host: default_host)
       when :project_link

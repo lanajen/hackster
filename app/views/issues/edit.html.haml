@@ -1,7 +1,4 @@
-%h1 Editing issue
-
-= render 'issues/form'
-
-= link_to 'Show', @thread_post
-\|
-= link_to 'Back', url_for([@threadable, :issues])
+.row
+  .col-xs-6.col-xs-offset-3.wellified
+    %h2{ style: 'text-align: center' } Editing issue
+    = render 'issues/form'

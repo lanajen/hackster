@@ -2,6 +2,8 @@
   .col-xs-12
     .teaser.teaser-short
       .text-holder
+        .meta
+          = link_to "&larr; Return to project".html_safe, @project, class: 'hidden-link'
         %h1
           - if @project.logo.present?
             = image_tag @project.logo(:mini), class: 'img-circle'
@@ -9,4 +11,3 @@
             %small
               %i.fa.fa-lock.istooltip{ title: 'Private project', data: { container: 'body' } }
           = link_to @project.name, @project, class: 'hidden-link hidden-link-invert'
-          %small Edit mode

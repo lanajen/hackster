@@ -1,19 +1,45 @@
 .row
-  .col-xs-8
-    = render partial: 'issues/issue', locals: { threadable: @threadable, issue: @thread_post }
+  .col-xs-12
+    .pull-left
+      = link_to "&larr; See all issues".html_safe, project_issues_path(@project.user_name_for_url, @project.slug), class: 'btn btn-link btn-sm'
+    - if can? :create, Issue, @project
+      .pull-right
+        = link_to 'Create a new issue', new_project_issue_path(@project.user_name_for_url, @project.slug), class: 'btn btn-primary btn-sm'
+    .clearfix
+    %hr
 
+.row.issue
+  .col-xs-9.issue-content
     .well
-      .header
-        %h3 Discuss
+      = render partial: 'issues/header', locals: { project: @project, issue: @issue }
       .content
-        - if @thread_post.comments.any?
-          - @thread_post.comments.each do |comment|
-            = render partial: 'comments/comment', locals: { comment: comment }
-        - else
-          There are no comments.
+        = render partial: 'comments/issues/comment', locals: { comment: @issue }
 
-        = render partial: 'comments/form', locals: { comment: Comment.new, commentable: @thread_post }
+        - @issue.comments.each do |comment|
+          = render partial: 'comments/issues/comment', locals: { comment: comment }
 
+        = render partial: 'comments/issues/form', locals: { comment: Comment.new, commentable: @issue }
+
+  .col-xs-3
+    - if @issue.assignee_issue
+      .transparent-well
+        .header
+          %h4 Assignee
+        .content
+          .row
+            .col-xs-3
+              - user = @issue.assignee
+              = link_to image_tag(user.decorate.avatar(:big), class: 'img-responsive'), user, title: user.name, rel: 'tooltip'
+
+    .transparent-well
+      .header
+        %h4 Participants
+      .content
+        .row
+          - @issue.participants.each do |user|
+            .col-xs-3{ style: 'margin-bottom: 10px;' }
+              = link_to image_tag(user.decorate.avatar(:big), class: 'img-responsive'), user, title: user.name, rel: 'tooltip'
+-#
   .col-xs-4
     .well
       .header

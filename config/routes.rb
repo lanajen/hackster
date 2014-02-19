@@ -107,7 +107,6 @@ HackerIo::Application.routes.draw do
       get 'permissions/edit' => 'permissions#edit', as: :edit_permissions
       patch 'permissions' => 'permissions#update'
       get 'team/edit' => 'members#edit', as: :edit_team
-      get 'team_members', to: redirect{ |params, req| "/projects/#{params[:id]}/team/edit" }  # so that task rabitters don't get confused
       patch 'team' => 'members#update'
       collection do
         resources :imports, only: [:new, :create], controller: :project_imports, as: :project_imports do
@@ -157,6 +156,9 @@ HackerIo::Application.routes.draw do
       delete '' => 'projects#destroy'
       patch '' => 'projects#update'
       get 'embed' => 'projects#embed', as: :embed
+      resources :issues do
+        patch 'update_workflow', on: :member
+      end
     end
 
     root to: 'pages#home'

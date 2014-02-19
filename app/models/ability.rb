@@ -32,12 +32,12 @@ class Ability
   end
 
   def member
-    can :read, [BlogPost, Issue] do |thread|
-      @user.can? :read, thread.threadable
-    end
+    # can :read, [Issue] do |thread|
+    #   @user.can? :read, thread.threadable
+    # end
 
-    can :manage, [BlogPost, Issue] do |thread|
-      @user.can? :update, thread.threadable
+    can :manage, [Issue] do |thread|
+      @user.can? :manage, thread.threadable or (thread.threadable.assignment_id.present? and @user.is_staff? thread.threadable)
     end
 
     can :create, Comment do |comment|

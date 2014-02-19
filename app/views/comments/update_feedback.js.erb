@@ -1,0 +1,5 @@
+$('#widget-private-comments .comments').remove();
+$("<%= escape_javascript render(partial: 'widgets/private_comments', locals: { comments: @commentable.comments, commentable: @commentable }) %>").appendTo('#widget-private-comments .content');
+$('#widget-private-comments .comments')
+  .removeClass('collapsed')
+  .show();

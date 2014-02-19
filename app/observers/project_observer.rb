@@ -38,6 +38,7 @@ class ProjectObserver < ActiveRecord::Observer
   def before_update record
     if record.assignment_id_changed? and record.assignment_id.present? and record.issues.empty?
       issue = record.issues.new title: 'Feedback'
+      issue.type = 'Feedback'
       issue.user_id = 0
       issue.save
     end

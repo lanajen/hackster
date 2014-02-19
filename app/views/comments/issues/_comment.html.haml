@@ -1,0 +1,12 @@
+.media.issue-comment
+  - user = comment.user.decorate
+  = link_to image_tag(user.avatar(:thumb), class: 'media-object user-avatar'), user, class: 'pull-left'
+  .media-body.panel.panel-default
+    .panel-heading
+      %small.text-muted
+        = user.name_link
+        commented
+        = time_ago_in_words comment.created_at
+        ago
+    .panel-body
+      = comment.body.html_safe

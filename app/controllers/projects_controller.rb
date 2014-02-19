@@ -43,7 +43,7 @@ class ProjectsController < ApplicationController
     else
       @other_projects = Project.most_popular.includes(:team_members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id)
     end
-    @issue = @project.issues.first if @project.assignment_id.present?
+    @issue = Feedback.where(threadable_type: 'Project', threadable_id: @project.id).first if @project.assignment_id.present?
 
     track_event 'Viewed project', @project.to_tracker.merge({ own: !!current_user.try(:is_team_member?, @project) })
   end

@@ -48,7 +48,8 @@ class BaseMailer < ActionMailer::Base
         comment = context[:comment] = Comment.find(context_id)
         commentable = comment.commentable
         project = context[:project] = case commentable
-        when Issue
+        when Feedback, Issue
+          context[:issue] = comment.commentable
           comment.commentable.threadable
         when Project
           comment.commentable
