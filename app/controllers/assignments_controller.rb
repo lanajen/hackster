@@ -1,13 +1,21 @@
 class AssignmentsController < ApplicationController
-  before_filter :authenticate_user!, except: [:show]
-  before_filter :load_assignment, only: [:show]
+  before_filter :authenticate_user!, except: [:show, :embed]
+  before_filter :load_assignment, only: [:show, :embed]
   before_filter :load_promotion, only: [:new, :create]
   load_and_authorize_resource only: [:edit, :update, :destroy]
+  after_action :allow_iframe, only: :embed
   layout 'assignment'
 
   def show
     authorize! :read, @assignment
     @projects = @assignment.projects
+  end
+
+  def embed
+    # @list_style = ([params[:list_style]] & ['', '_horizontal']).first || ''
+    @list_style = '_horizontal'
+    @projects = @assignment.projects
+    render layout: 'embed'
   end
 
   def new

@@ -84,7 +84,9 @@ HackerIo::Application.routes.draw do
         delete '' => 'promotions#destroy'
         patch '' => 'promotions#update'
 
-        resources :assignments, only: [:new, :create, :show, :update]
+        resources :assignments, only: [:new, :create, :show, :update] do
+          get 'embed', on: :member
+        end
       end
     end
     resources :promotions, only: [] do

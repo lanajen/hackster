@@ -13,7 +13,6 @@ class PromotionsController < ApplicationController
     @students = @promotion.members.invitation_accepted_or_not_invited.with_group_roles('student').map(&:user).select{|u| u.invitation_token.nil? }
     @staffs = @promotion.members.invitation_accepted_or_not_invited.with_group_roles('staff').map(&:user).select{|u| u.invitation_token.nil? }
     @assignments = @promotion.assignments
-    # @promotion = @promotion.decorate
 
     render "groups/promotions/#{self.action_name}"
   end

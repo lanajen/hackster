@@ -1,12 +1,9 @@
 class ProjectsController < ApplicationController
   before_filter :load_project, except: [:index, :create, :new, :edit, :redirect_to_last]
   load_and_authorize_resource only: [:index, :create, :new, :edit]
-  # skip_load_resource except: [:index, :new, :create]
-  # skip_authorize_resource only: [:embed]
   layout 'project', only: [:edit, :update, :show]
   respond_to :html
   respond_to :js, only: [:edit, :update]
-  # impressionist actions: [:show], unique: [:impressionable_type, :impressionable_id, :session_hash]
   after_action :allow_iframe, only: :embed
 
   def index
@@ -52,7 +49,7 @@ class ProjectsController < ApplicationController
     title @project.name
     meta_desc "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."
     @project = @project.decorate
-    render layout: false
+    render layout: 'embed'
 
     track_event 'Rendered embed thumbnail', @project.to_tracker.merge({ referrer: request.referrer })
   end
@@ -133,10 +130,6 @@ class ProjectsController < ApplicationController
   end
 
   private
-    def allow_iframe
-      response.headers.except! 'X-Frame-Options'
-    end
-
     def initialize_project
 #      @project.images.new# unless @project.images.any?
 #      @project.build_video unless @project.video
