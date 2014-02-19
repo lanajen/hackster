@@ -3,7 +3,7 @@ class Ability
 
   def initialize(resource)
 
-    can :read, [Comment, Issue, User]
+    can :read, [Comment, User]
     can :read, [Project, Group], private: false
     can :read, Assignment do |assignment|
       assignment.promotion.private == false

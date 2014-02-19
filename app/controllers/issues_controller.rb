@@ -8,6 +8,7 @@ class IssuesController < ApplicationController
   def index
     title "Issues for #{@project.name}"
     @issues = @project.issues.order(created_at: :desc).where(type: 'Issue')
+    authorize! :read, @project.issues.new
     params[:status] ||= 'open'
     @issues = @issues.where(workflow_state: params[:status]) if params[:status].in? %w(open closed)
   end
