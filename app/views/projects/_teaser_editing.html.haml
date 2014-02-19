@@ -1,0 +1,12 @@
+.row
+  .col-xs-12
+    .teaser.teaser-short
+      .text-holder
+        %h1
+          - if @project.logo.present?
+            = image_tag @project.logo(:mini), class: 'img-circle'
+          - if @project.private?
+            %small
+              %i.fa.fa-lock.istooltip{ title: 'Private project', data: { container: 'body' } }
+          = link_to @project.name, @project, class: 'hidden-link hidden-link-invert'
+          %small Edit mode

@@ -210,6 +210,10 @@ class ApplicationController < ActionController::Base
       flash[type] = message
     end
 
+    def set_project_mode
+      @mode = 'editing'
+    end
+
     def set_new_user_session
       @new_user_session = User.new unless user_signed_in?
     end

@@ -1,5 +1,6 @@
 class MembersController < ApplicationController
   before_filter :authenticate_user!
+  before_filter :set_project_mode
   before_filter :load_group
   respond_to :html
   layout :set_layout

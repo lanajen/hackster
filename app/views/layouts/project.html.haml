@@ -2,7 +2,8 @@
 = content_for :no_container do
   #heading.project
     .container
-      .display= render 'projects/teaser'
+      - @mode ||= 'normal'
+      .display= render "projects/teaser_#{@mode}"
       .edit{ style: 'display:none;' }
 
   #content.project

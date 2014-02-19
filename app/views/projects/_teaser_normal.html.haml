@@ -67,7 +67,9 @@
           = render 'projects/share'
           = render 'projects/project_embed_popup'
           = render partial: 'respects/button', locals: { project: @project }
-          = link_to content_tag(:i, '', class: 'fa fa-puzzle-piece'), new_project_path, title: 'Build my own', rel: 'tooltip'
+          -# = link_to content_tag(:i, '', class: 'fa fa-puzzle-piece'), new_project_path, title: 'Build my own', rel: 'tooltip'
+        - if @project.assignment_id.present?
+          = link_to content_tag(:i, '', class: 'fa fa-exclamation-circle'), '', rel: 'tooltip', title: 'Issues'
         - if can? :edit, @project
           %span.dropdown
             %a.dropdown-toggle.action{ data: { toggle: 'dropdown' }, href: '#', title: 'Settings', rel: 'tooltip' }

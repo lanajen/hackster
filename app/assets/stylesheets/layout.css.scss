@@ -168,6 +168,15 @@ footer {
         @include font-size(16);
       }
     }
+    &.teaser-short {
+      .text-holder {
+        padding: 30px 20px;
+        height: auto;
+        img {
+          height: 1em;
+        }
+      }
+    }
   }
   img.cover-image {
     width: 100%;
