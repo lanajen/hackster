@@ -26,9 +26,16 @@
               %li{ class: "#{'active' if params[:by] == nil}" }= link_to 'All', projects_path(sort: params[:sort])
               %li{ class: "#{'active' if params[:by] == 'featured'}" }= link_to 'Featured', projects_path(by: 'featured', sort: params[:sort])
 
+        - style = cookies['thumb-list-style'] || 'thumb-list-vertical'
+        .btn-group.thumb-list-switch.pull-right{ style: 'margin-right: 10px;' }
+          %button.btn.btn-default.btn-sm.istooltip{ class: "#{'active' if style == 'thumb-list-vertical'}", data: { 'list-style' => 'vertical', container: 'body' }, title: 'Display as tiles' }
+            %i.fa.fa-th-large
+          %button.btn.btn-default.btn-sm.istooltip{ class: "#{'active' if style == 'thumb-list-horizontal'}", data: { 'list-style' => 'horizontal', container: 'body' }, title: 'Display as list' }
+            %i.fa.fa-th-list
+
     .col-xs-12
-      .row
+      .row.thumb-list{ class: style }
         - @projects.each do |project|
-          = render partial: "projects/project_thumb", locals: { project: project.decorate, ref: 'explore' }
+          = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, ref: 'explore' }
       .row
         .col-xs-12.text-center= will_paginate @projects

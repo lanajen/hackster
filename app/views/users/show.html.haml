@@ -14,9 +14,9 @@
               .row
                 .col-xs-12
                   .btn-group.thumb-list-switch.pull-right
-                    %button.btn.btn-default.istooltip{ class: "#{'active' if style == 'thumb-list-vertical'}", data: { 'list-style' => 'vertical', container: 'body' }, title: 'Display as tiles' }
+                    %button.btn.btn-default.btn-sm.istooltip{ class: "#{'active' if style == 'thumb-list-vertical'}", data: { 'list-style' => 'vertical', container: 'body' }, title: 'Display as tiles' }
                       %i.fa.fa-th-large
-                    %button.btn.btn-default.istooltip{ class: "#{'active' if style == 'thumb-list-horizontal'}", data: { 'list-style' => 'horizontal', container: 'body' }, title: 'Display as list' }
+                    %button.btn.btn-default.btn-sm.istooltip{ class: "#{'active' if style == 'thumb-list-horizontal'}", data: { 'list-style' => 'horizontal', container: 'body' }, title: 'Display as list' }
                       %i.fa.fa-th-list
               - if @public_projects_sorted.size > 1
                 .row.thumb-list{ class: style }

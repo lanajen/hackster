@@ -1,8 +1,18 @@
 .row
   .col-xs-12
     - if @projects.any?
+      - style = cookies['thumb-list-style'] || 'thumb-list-vertical'
       .row
+        .col-xs-12
+          .btn-group.thumb-list-switch.pull-right{ style: 'margin-bottom: 20px' }
+            %button.btn.btn-default.btn-sm.istooltip{ class: "#{'active' if style == 'thumb-list-vertical'}", data: { 'list-style' => 'vertical', container: 'body' }, title: 'Display as tiles' }
+              %i.fa.fa-th-large
+            %button.btn.btn-default.btn-sm.istooltip{ class: "#{'active' if style == 'thumb-list-horizontal'}", data: { 'list-style' => 'horizontal', container: 'body' }, title: 'Display as list' }
+              %i.fa.fa-th-list
+      .row.thumb-list{ class: style }
         - @projects.each do |project|
-          = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '3' }
+          = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', ref: 'assignment' }
+
+
     - else
       All student projects will appear here.
