@@ -90,9 +90,17 @@
           #tab-private.tab-pane.fade
             .col-xs-12
               - if @user.projects.private.any?
+                - style = cookies['thumb-list-style'] || 'thumb-list-vertical'
                 .row
+                  .col-xs-12
+                    .btn-group.thumb-list-switch.pull-right{ style: 'margin-bottom: 20px' }
+                      %button.btn.btn-default.btn-sm.istooltip{ class: "#{'active' if style == 'thumb-list-vertical'}", data: { 'list-style' => 'vertical', container: 'body' }, title: 'Display as tiles' }
+                        %i.fa.fa-th-large
+                      %button.btn.btn-default.btn-sm.istooltip{ class: "#{'active' if style == 'thumb-list-horizontal'}", data: { 'list-style' => 'horizontal', container: 'body' }, title: 'Display as list' }
+                        %i.fa.fa-th-list
+                .row.thumb-list{ class: style }
                   - @user.projects.private.each do |project|
-                    = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '3', ref: 'userprivate' }
+                    = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', ref: 'userprivate' }
               - elsif user_is_current?
                 %p
                   You have no private projects.
@@ -103,9 +111,17 @@
         #tab-respected.tab-pane.fade
           .col-xs-12
             - if @user.respected_projects.indexable.any?
+              - style = cookies['thumb-list-style'] || 'thumb-list-vertical'
               .row
+                .col-xs-12
+                  .btn-group.thumb-list-switch.pull-right{ style: 'margin-bottom: 20px' }
+                    %button.btn.btn-default.btn-sm.istooltip{ class: "#{'active' if style == 'thumb-list-vertical'}", data: { 'list-style' => 'vertical', container: 'body' }, title: 'Display as tiles' }
+                      %i.fa.fa-th-large
+                    %button.btn.btn-default.btn-sm.istooltip{ class: "#{'active' if style == 'thumb-list-horizontal'}", data: { 'list-style' => 'horizontal', container: 'body' }, title: 'Display as list' }
+                      %i.fa.fa-th-list
+              .row.thumb-list{ class: style }
                 - @user.respected_projects.indexable.each do |project|
-                  = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '3', ref: 'userrespected' }
+                  = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', ref: 'userrespected' }
             - elsif user_is_current?
               %p
                 You haven't respected any projects yet.
