@@ -53,7 +53,7 @@ module WidgetsHelper
 
   def show_expand_for? widget
     case widget
-    when TextWidget, CodeWidget, PartsWidget, ImageWidget
+    when TextWidget, CodeWidget, PartsWidget, ImageWidget, StepByStepWidget
       true
     else
       false
@@ -70,7 +70,7 @@ module WidgetsHelper
 
   def widget_span_class widget
     case widget
-    when ImageWidget, DocumentWidget, StlWidget, TextWidget
+    when ImageWidget, DocumentWidget, StlWidget, TextWidget, StepByStepWidget
       'col-xs-12'
     when PartsWidget
       'col-xs-10 col-xs-offset-1'

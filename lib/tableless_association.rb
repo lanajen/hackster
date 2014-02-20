@@ -1,7 +1,11 @@
 module TablelessAssociation
   module ClassMethods
     def has_many_tableless association_name, opts={}
-      has_many :"#{association_name}"
+      if opts[:order]
+        has_many :"#{association_name}", -> { order(opts[:order]) }
+      else
+        has_many :"#{association_name}"
+      end
       attr_accessible :"#{association_name}_attributes"
       accepts_nested_attributes_for :"#{association_name}"
       before_validation :"validate_#{association_name}"

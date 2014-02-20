@@ -97,7 +97,7 @@ class Widget < ActiveRecord::Base
       {
         'Bill of materials' => 'PartsWidget',
         'Bitbucket repo' => 'BitbucketWidget',
-        'Build log' => 'BuildLog',
+        'Build log' => 'BuildLogWidget',
         'Buy now' => 'BuyWidget',
         'Circuits.io schematics' => 'CircuitsioWidget',
         'Code' => 'CodeWidget',
@@ -109,6 +109,7 @@ class Widget < ActiveRecord::Base
         'PayPal Buy Now button' => 'PaypalWidget',
         'Press articles' => 'PressWidget',
         'STL renderings' => 'StlWidget',
+        'Step by step guide' => 'StepByStepWidget',
         'Text' => 'TextWidget',
         'Upverter schematics' => 'UpverterWidget',
         'Video' => 'VideoWidget',

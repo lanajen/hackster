@@ -134,7 +134,7 @@
       }
     }
   }
-  .handle {
+  .handle, .move {
     cursor: pointer;
   }
   .img-holder {
@@ -499,5 +499,31 @@ p.caption {
 .video-widget {
   p.caption {
     margin-bottom: 0;
+  }
+}
+
+.steps-widget {
+  margin: -13px -19px;
+  .step {
+    padding: 13px 19px;
+    border-bottom: 1px solid #e2e2e2;
+    .step-badge {
+      @include border-radius(20px);
+      background: #888;
+      color: #fff;
+      font-weight: bold;
+      padding: 6px 10px;
+      display: inline-block;
+      margin-right: 1px;
+    }
+    &:last-child {
+      border: none;
+    }
+    .step-details {
+      margin-top: 5px;
+      padding-left: 35px;
+      padding-right: 10px;
+      text-align: justify;
+    }
   }
 }
