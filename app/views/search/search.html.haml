@@ -45,7 +45,7 @@
               - @results.each_with_index do |result, i|
                 %li{ class: "#{'last' if i == @results.size - 1}" }
                   - model = result.class.name.underscore
-                  = render partial: model, locals: { :"#{model}" => result.decorate, ref: 'search' }
+                  = render partial: model, locals: { :"#{model}" => result.decorate, ref: 'search', ref_id: params[:q], offset: i }
         - else
           .content.search-results
             No results for <i>#{params[:q]}</i>, please modify your query.

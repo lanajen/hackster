@@ -43,16 +43,26 @@ class ProjectsController < ApplicationController
     @issue = Feedback.where(threadable_type: 'Project', threadable_id: @project.id).first if @project.assignment_id.present?
 
     if params[:ref] and params[:ref_id] and params[:offset]
+      offset = params[:offset].to_i
       case params[:ref]
       when 'assignment'
         if @assignment = Assignment.find_by_id(params[:ref_id])
-          offset = params[:offset].to_i
           @next = @assignment.projects.order(:created_at).offset(offset + 1).first
           @prev = @assignment.projects.order(:created_at).offset(offset - 1).first unless offset.zero?
         end
+      when 'search'
+        params[:q] = params[:ref_id]
+        params[:type] = 'project'
+        params[:per_page] = 1
+        params[:offset] = offset + 1
+        @next = SearchRepository.new(params).search.results.first
+        unless offset.zero?
+          params[:offset] = offset - 1
+          @prev = SearchRepository.new(params).search.results.first
+        end
+        params[:offset] = offset
       when 'user'
         if @user = User.find_by_id(params[:ref_id])
-          offset = params[:offset].to_i
           @next = @user.projects.live.order(start_date: :desc, created_at: :desc).offset(offset + 1).first
           @prev = @user.projects.live.order(start_date: :desc, created_at: :desc).offset(offset - 1).first unless offset.zero?
         end
