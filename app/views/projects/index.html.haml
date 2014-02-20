@@ -35,7 +35,7 @@
 
     .col-xs-12
       .row.thumb-list{ class: style }
-        - @projects.each do |project|
-          = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, ref: 'explore' }
+        - @projects.each_with_index do |project, i|
+          = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, ref: 'explore', ref_id: "#{params[:sort]}_#{params[:by]}", offset: i }
       .row
         .col-xs-12.text-center= will_paginate @projects

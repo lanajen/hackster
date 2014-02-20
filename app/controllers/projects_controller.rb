@@ -50,6 +50,21 @@ class ProjectsController < ApplicationController
           @next = @assignment.projects.order(:created_at).offset(offset + 1).first
           @prev = @assignment.projects.order(:created_at).offset(offset - 1).first unless offset.zero?
         end
+      when 'explore'
+        sort, by = params[:ref_id].split(/_/)
+
+        @projects = Project
+        if sort.in? Project::SORTING.keys
+          @projects = @projects.send(Project::SORTING[sort])
+        end
+
+        if by.in? Project::FILTERS.keys
+          @projects = @projects.send(Project::FILTERS[by])
+        end
+
+        @next = @projects.offset(offset + 1).first
+        @prev = @projects.offset(offset - 1).first unless offset.zero?
+
       when 'search'
         params[:q] = params[:ref_id]
         params[:type] = 'project'
