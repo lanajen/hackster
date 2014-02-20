@@ -127,6 +127,10 @@ HackerIo::Application.routes.draw do
       resources :comments, only: [:create]
     end
 
+    resources :blog_posts, only: [] do
+      resources :comments, only: [:create]
+    end
+
     get 'users/registration/complete_profile' => 'users#after_registration', as: :user_after_registration
     patch 'users/registration/complete_profile' => 'users#after_registration_save'
 
@@ -161,6 +165,7 @@ HackerIo::Application.routes.draw do
       resources :issues do
         patch 'update_workflow', on: :member
       end
+      resources :logs, controller: :build_logs
     end
 
     root to: 'pages#home'

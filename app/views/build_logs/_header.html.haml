@@ -1,0 +1,16 @@
+.header
+  %h3
+    = log.title
+    %small.text-muted Build log ##{log.sub_id}
+
+    - if can? :edit, log
+      .btn-heading
+        = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_project_log_path(@project.user_name_for_url, @project.slug, log.sub_id), class: 'btn-edit', rel: 'tooltip', title: 'Edit content', data: { container: 'body' }
+
+  %small.text-muted
+    by
+    = link_to log.user.name, log.user
+    = time_ago_in_words log.created_at
+    ago
+    \-
+    = pluralize log.comments.size, 'comment'

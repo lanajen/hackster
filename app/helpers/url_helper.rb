@@ -47,6 +47,22 @@ module UrlHelper
     end
   end
 
+  def log_path project, log, opts={}
+    project_log_path(project.user_name_for_url, project.slug, log.sub_id, opts)
+  end
+
+  def log_url project, log, opts={}
+    project_log_url(project.user_name_for_url, project.slug, log.sub_id, opts)
+  end
+
+  def log_form_path_for project, log, opts={}
+    if log.persisted?
+      project_log_path(project.user_name_for_url, project.slug, log.sub_id, opts)
+    else
+      project_logs_path(project.user_name_for_url, project.slug, opts)
+    end
+  end
+
   def new_assignment_path assignment, opts={}
     new_course_promotion_assignment_path params_for_new_assignment(assignment).merge(opts)
   end

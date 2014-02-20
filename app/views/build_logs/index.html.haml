@@ -1,0 +1,29 @@
+- if can? :create, BlogPost, @project
+  .row
+    .col-xs-12
+      .pull-right
+        = link_to 'Post a new build log', new_project_log_path(@project.user_name_for_url, @project.slug), class: 'btn btn-primary btn-sm'
+      .clearfix
+      %hr
+
+.row
+  .col-xs-9
+    - if @logs.any?
+      .well.well-list
+        - @logs.each do |log|
+          .list-item
+            %h4
+              = link_to log.title, log_path(@project, log)
+              %small.text-muted.pull-right Build log ##{log.sub_id}
+            %small.text-muted
+              by
+              = link_to log.user.name, log.user
+              = time_ago_in_words log.created_at
+              ago
+              %i.fa.fa-comments
+              = link_to pluralize(log.comments.size, 'comment'), log_path(@project, log)
+
+    - else
+      .well
+        .content
+          There are no logs.

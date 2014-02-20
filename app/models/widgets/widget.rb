@@ -97,6 +97,7 @@ class Widget < ActiveRecord::Base
       {
         'Bill of materials' => 'PartsWidget',
         'Bitbucket repo' => 'BitbucketWidget',
+        'Build log' => 'BuildLog',
         'Buy now' => 'BuyWidget',
         'Circuits.io schematics' => 'CircuitsioWidget',
         'Code' => 'CodeWidget',

@@ -15,7 +15,7 @@
             %h4
               = render partial: 'issues/label', locals: { issue: issue }
               = link_to issue.title, issue_path(@project, issue)
-              %small.text-muted ##{issue.sub_id}
+              %small.text-muted.pull-right ##{issue.sub_id}
             %small.text-muted
               Opened by
               = link_to issue.user.name, issue.user

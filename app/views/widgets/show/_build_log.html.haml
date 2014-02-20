@@ -1,0 +1,11 @@
+- if @project.blog_posts.any?
+  - @project.blog_posts.each do |log|
+    %h6
+      = link_to log.title, log_path(@project, log)
+      %small.text-muted
+        by
+        = link_to log.user.name, log.user
+        = time_ago_in_words log.created_at
+        ago
+- else
+  %p No build logs yet.

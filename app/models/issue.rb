@@ -2,7 +2,6 @@ class Issue < ThreadPost
   include Workflow
   has_one :assignee_issue
   has_one :assignee, through: :assignee_issue
-  before_create :generate_sub_id
   attr_accessible :assignee_id
 
   workflow do
