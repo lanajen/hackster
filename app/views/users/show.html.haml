@@ -24,13 +24,13 @@
                     %h4.col-xs-12.thumb-horizontal= year
                     - projects.each_with_index do |project, i|
                       - show_year = (i > 0) ? false : true
-                      = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '4', show_year: show_year, ref: 'user' }
+                      = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '4', show_year: show_year, ref: 'user', ref_id: @user.id, offset: i }
               - else
                 .row.thumb-list{ class: style }
                   %h4 &nbsp;
                   - @public_projects_sorted.each do |year, projects|
-                    - projects.each do |project|
-                      = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '4', ref: 'user' }
+                    - projects.each_with_index do |project, i|
+                      = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '4', ref: 'user', ref_id: @user.id, offset: i }
 
             - elsif user_is_current?
               %p

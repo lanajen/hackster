@@ -1,6 +1,34 @@
 = content_for :head do
   = render 'meta_tags'
 
+- if @prev
+  .project-nav.project-nav-prev
+    .project-nav-inner
+      = image_tag @prev.decorate.cover_image(:cover_thumb), class: 'img-responsive'
+      %i.fa.fa-chevron-left
+      .project-nav-overlay.project-nav-overlay-bg
+      .project-nav-overlay
+        %h3.link-color= @prev.name
+        %h4
+          by
+          %span.link-color= @prev.users.map { |u| u.name }.to_sentence
+        %p= truncate @prev.one_liner, length: 140
+      %a.project-nav-overlay.project-nav-overlay-top{ href: project_path(@prev, ref: params[:ref], ref_id: params[:ref_id], offset: params[:offset].to_i - 1) }
+
+- if @next
+  .project-nav.project-nav-next
+    .project-nav-inner
+      = image_tag @next.decorate.cover_image(:cover_thumb), class: 'img-responsive'
+      %i.fa.fa-chevron-right
+      .project-nav-overlay.project-nav-overlay-bg
+      .project-nav-overlay
+        %h3.link-color= @next.name
+        %h4
+          by
+          %span.link-color= @next.users.map { |u| u.name }.to_sentence
+        %p= truncate @next.one_liner, length: 140
+      %a.project-nav-overlay.project-nav-overlay-top{ href: project_path(@next, ref: params[:ref], ref_id: params[:ref_id], offset: params[:offset].to_i + 1) }
+
 - if @widgets.any?
   #project-summary.collapsed.collapsible
     %a.more.toggle{ rel: 'tooltip', title: 'Show table of contents', data: { container: 'body', placement: 'right' } }

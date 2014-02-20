@@ -1,5 +1,7 @@
 .thumb-vertical{ class: "col-xs-#{ defined?(col) ? col : 3 }" }
   - ref = defined?(ref) ? ref : nil
+  - ref_id = defined?(ref_id) ? ref_id : nil
+  - offset = defined?(offset) ? offset : nil
   - if defined?(show_year)
     - if show_year
       %h4= project.start_date.try(:year) || 'Undated'
@@ -7,9 +9,9 @@
       .h4 &nbsp;
   .project-thumb
     .thumb
-      .photo-thumb= link_to image_tag(project.cover_image(:cover_thumb), alt: project.name), project_path(project, ref: ref)
+      .photo-thumb= link_to image_tag(project.cover_image(:cover_thumb), alt: project.name), project_path(project, ref: ref, ref_id: ref_id, offset: offset)
       .inner-thumb
-        %h3= link_to project.name, project_path(project, ref: ref)
+        %h3= link_to project.name, project_path(project, ref: ref, ref_id: ref_id, offset: offset)
         %h4
           by
           = project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
@@ -34,10 +36,10 @@
 .col-xs-12.thumb-horizontal
   .project-thumb-horizontal.project-thumb
     .thumb.media
-      = link_to image_tag(project.cover_image(:cover_thumb), alt: project.name, class: 'media-object'), project_path(project, ref: ref), class: 'pull-left photo-thumb'
+      = link_to image_tag(project.cover_image(:cover_thumb), alt: project.name, class: 'media-object'), project_path(project, ref: ref, ref_id: ref_id, offset: offset), class: 'pull-left photo-thumb'
       .inner-thumb.media-body
         %h3
-          = link_to project.name, project_path(project, ref: ref)
+          = link_to project.name, project_path(project, ref: ref, ref_id: ref_id, offset: offset)
           %small
             by
             = project.users.map { |u| link_to u.name, u }.to_sentence.html_safe

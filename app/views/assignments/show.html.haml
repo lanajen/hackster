@@ -10,8 +10,8 @@
             %button.btn.btn-default.btn-sm.istooltip{ class: "#{'active' if style == 'thumb-list-horizontal'}", data: { 'list-style' => 'horizontal', container: 'body' }, title: 'Display as list' }
               %i.fa.fa-th-list
       .row.thumb-list{ class: style }
-        - @projects.each do |project|
-          = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', ref: 'assignment' }
+        - @projects.each_with_index do |project, i|
+          = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', ref: 'assignment', ref_id: @assignment.id, offset: i }
 
     - else
       All student projects will appear here.

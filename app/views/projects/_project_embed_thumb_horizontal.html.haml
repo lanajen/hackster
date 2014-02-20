@@ -1,9 +1,12 @@
 .project-thumb-horizontal.project-thumb
+  - ref = defined?(ref) ? ref : nil
+  - ref_id = defined?(ref_id) ? ref_id : nil
+  - offset = defined?(offset) ? offset : nil
   .thumb.media
-    = link_to image_tag(project.cover_image(:cover_thumb), alt: project.name, class: 'media-object'), project_url(project), class: 'pull-left photo-thumb'
+    = link_to image_tag(project.cover_image(:cover_thumb), alt: project.name, class: 'media-object'), project_url(project, ref: ref, ref_id: ref_id, offset: offset), class: 'pull-left photo-thumb'
     .inner-thumb.media-body
       %h3
-        = link_to project.name, project_url(project)
+        = link_to project.name, project_url(project, ref: ref, ref_id: ref_id, offset: offset)
         %small
           by
           = project.users.map { |u| link_to u.name, user_url(u) }.to_sentence.html_safe

@@ -42,6 +42,23 @@ class ProjectsController < ApplicationController
     end
     @issue = Feedback.where(threadable_type: 'Project', threadable_id: @project.id).first if @project.assignment_id.present?
 
+    if params[:ref] and params[:ref_id] and params[:offset]
+      case params[:ref]
+      when 'assignment'
+        if @assignment = Assignment.find_by_id(params[:ref_id])
+          offset = params[:offset].to_i
+          @next = @assignment.projects.order(:created_at).offset(offset + 1).first
+          @prev = @assignment.projects.order(:created_at).offset(offset - 1).first unless offset.zero?
+        end
+      when 'user'
+        if @user = User.find_by_id(params[:ref_id])
+          offset = params[:offset].to_i
+          @next = @user.projects.live.order(start_date: :desc, created_at: :desc).offset(offset + 1).first
+          @prev = @user.projects.live.order(start_date: :desc, created_at: :desc).offset(offset - 1).first unless offset.zero?
+        end
+      end
+    end
+
     track_event 'Viewed project', @project.to_tracker.merge({ own: !!current_user.try(:is_team_member?, @project) })
   end
 

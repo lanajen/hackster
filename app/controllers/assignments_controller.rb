@@ -8,13 +8,13 @@ class AssignmentsController < ApplicationController
 
   def show
     authorize! :read, @assignment
-    @projects = @assignment.projects
+    @projects = @assignment.projects.order(:created_at)
   end
 
   def embed
     # @list_style = ([params[:list_style]] & ['', '_horizontal']).first || ''
     @list_style = '_horizontal'
-    @projects = @assignment.projects
+    @projects = @assignment.projects.order(:created_at)
     render layout: 'embed'
   end
 
