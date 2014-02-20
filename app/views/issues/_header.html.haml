@@ -7,9 +7,9 @@
       .btn-heading
         = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_project_issue_path(@project.user_name_for_url, @project.slug, issue.sub_id), class: 'btn-edit', rel: 'tooltip', title: 'Edit content', data: { container: 'body' }
         - if issue.open?
-          = link_to 'Close issue', update_workflow_project_issue_path(@project.user_name_for_url, @project.slug, issue.sub_id, event: 'close', redirect_to: request.path), method: :patch, class: 'btn btn-danger btn-xs'
+          = link_to 'Close issue', update_workflow_project_issue_path(@project.user_name_for_url, @project.slug, issue.sub_id, event: 'close', redirect_to: request.path), method: :patch, class: 'btn btn-danger btn-xs pull-right'
         - else
-          = link_to 'Reopen issue', update_workflow_project_issue_path(@project.user_name_for_url, @project.slug, issue.sub_id, event: 'reopen', redirect_to: request.path), method: :patch, class: 'btn btn-success btn-xs'
+          = link_to 'Reopen issue', update_workflow_project_issue_path(@project.user_name_for_url, @project.slug, issue.sub_id, event: 'reopen', redirect_to: request.path), method: :patch, class: 'btn btn-success btn-xs pull-right'
 
   = render partial: 'issues/label', locals: { issue: issue }
   %small.text-muted

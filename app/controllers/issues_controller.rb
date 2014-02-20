@@ -6,24 +6,27 @@ class IssuesController < ApplicationController
   layout 'project'
 
   def index
+    authorize! :read, @project.issues.new
     title "Issues for #{@project.name}"
     @issues = @project.issues.order(created_at: :desc).where(type: 'Issue')
-    authorize! :read, @project.issues.new
     params[:status] ||= 'open'
     @issues = @issues.where(workflow_state: params[:status]) if params[:status].in? %w(open closed)
   end
 
   def show
+    authorize! :read, @issue
     title "Issues > #{@issue.title} | #{@project.name}"
   end
 
   def new
+    authorize! :create, @project.issues.new
     title "New issue | #{@project.name}"
     @issue = @project.issues.new
   end
 
   def create
     @issue = @project.issues.new(params[:issue])
+    authorize! :create, @issue
     @issue.user = current_user
 
     if @issue.save
@@ -34,10 +37,12 @@ class IssuesController < ApplicationController
   end
 
   def edit
+    authorize! :edit, @issue
     title "Issues > Edit #{@issue.title} | #{@project.name}"
   end
 
   def update
+    authorize! :edit, @issue
     if @issue.update_attributes(params[:issue])
       redirect_to project_issue_path(@project.user_name_for_url, @project.slug, @issue.sub_id), notice: 'Issue updated.'
     else

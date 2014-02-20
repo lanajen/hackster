@@ -3,7 +3,7 @@ class Ability
 
   def initialize(resource)
 
-    can :read, [BlogPost, Comment, User]
+    can :read, [Comment, User]
     can :read, [Project, Group], private: false
     can :read, Assignment do |assignment|
       assignment.promotion.private == false
@@ -32,9 +32,9 @@ class Ability
   end
 
   def member
-    # can :read, [Issue] do |thread|
-    #   @user.can? :read, thread.threadable
-    # end
+    can :read, [BlogPost] do |thread|
+      @user.can? :read, thread.threadable
+    end
 
     can :manage, BlogPost do |thread|
       @user.can? :manage, thread.threadable
