@@ -1,4 +1,4 @@
-- content = content_tag(:i, '', class: 'fa fa-star')
+- content = content_tag(:i, '', class: 'fa fa-thumbs-o-up')
 - if user_signed_in?
   - if current_user.respected? project
     = link_to content, project_respects_path(project), data: { method: :delete, remote: true, container: 'body' }, class: 'action-respected respect-button', title: 'Respected! (click to undo)', rel: 'tooltip'

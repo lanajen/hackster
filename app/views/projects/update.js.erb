@@ -3,9 +3,6 @@
 <% else %>
   $('.project .display').html('<%= escape_javascript render('teaser_normal') %>');
   $('.project .edit').slideUp(function(){
-    $('.project .display').slideDown(function(){
-      $('#display-share-box').tooltip('show');
-      window.setTimeout(function(){ $('#display-share-box').tooltip('hide'); }, 10000);
-    });
+    $('.project .display').slideDown();
   });
 <% end %>

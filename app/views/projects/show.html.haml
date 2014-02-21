@@ -29,68 +29,34 @@
         %p= truncate @next.one_liner, length: 140
       %a.project-nav-overlay.project-nav-overlay-top{ href: project_path(@next, ref: params[:ref], ref_id: params[:ref_id], offset: params[:offset].to_i + 1) }
 
-- if @widgets.any?
-  #project-summary.collapsed.collapsible
-    %a.more.toggle{ rel: 'tooltip', title: 'Show table of contents', data: { container: 'body', placement: 'right' } }
-      %i.fa.fa-list-alt
-    %a.less.toggle{ rel: 'tooltip', title: 'Hide table of contents', data: { container: 'body', placement: 'right' } }
-      %i.fa.fa-arrow-left
-    .inner-container
-      .list-group
-        - @widgets.each do |widget|
-          %a.list-group-item{ href: "javascript:smoothScrollTo('#widget-#{widget.id}', -20)" }
-            %i.fa{ class: icon_for_widget(widget) }
-            = widget.name
-        %a.list-group-item{ href: "javascript:smoothScrollTo('#widget-comments', -20)" }
-          %i.fa.fa-comments
-          Comments
-
 .tab-content.row
-  #tab-home.tab-pane.active
-    -# .row
-      .col-xs-4
-        .well.sidebar-nav
-          .header
-            %h3
-              Team
-              - if can? :update_team, @project
-                .pull-right= link_to 'Edit team members', edit_team_members_project_path(@project), class: 'btn btn-info btn-xs'
-          .content
-            %ul{ style: 'list-style: none;margin:0;' }
-              - @team_size = @project.team_members.size
-              - @project.team_members.each do |team_member|
-                %li{ style: 'position:relative;margin-bottom:5px;' }
-                  = render partial: 'users/user_popover', locals: { team_member: team_member, user: team_member.user.decorate }
-
-        .well.sidebar-nav
-          .header
-            %h3 Followers
-          .content
-            - if @project.followers.any?
-              %ul.user-list
-                - @project.followers.each do |user|
-                  %li= render partial: 'users/user_thumb_mini', locals: { user: user.decorate }
-            - else
-              No one yet.
-
+  #tab-home.tab-pane.fade.in.active
     - if @widgets.any?
       #full-width
         .background.to-compact
         .container
           .row
             .inner-container.col-xs-12
-      #column1.col-xs-6
-        - @project.widgets_first_col.each do |widget|
+      #main-column.col-xs-9
+        - @project.widgets.each do |widget|
           = render partial: 'widgets/widget', locals: { widget: widget }
-      #column2.col-xs-6
-        - @project.widgets_second_col.each do |widget|
-          = render partial: 'widgets/widget', locals: { widget: widget }
+      #sidebar.col-xs-3
+        .well.stats-widget
+          .content
+            .tags.meta.counters
+              %span.istooltip{ data: { container: 'body' }, title: 'Views' }
+                %i.fa.fa-eye
+                = @project.impressions_count
+              %span.istooltip{ data: { container: 'body' }, title: 'Respects' }
+                %i.fa.fa-thumbs-o-up
+                = @project.respects_count
+              %span.istooltip{ data: { container: 'body' }, title: 'Comments' }
+                %i.fa.fa-comments
+                = @project.comments_count
+
         - unless @project.respects_count.zero?
           = render partial: 'widgets/respect_widget', locals: { users: @project.respecting_users }
-        = render partial: 'widgets/comment_widget', locals: { comments: @project.comments, commentable: @project }
-        - if @issue and can? :comment_privately, @project
-          = render partial: 'widgets/private_comment_widget', locals: { comments: @issue.comments, commentable: @project }
-      #sidebar
+
     - else
       .col-xs-6.col-xs-offset-3
         .well
@@ -101,16 +67,17 @@
             - else
               Work in progress, check back later!
 
-  #tab-design.tab-pane
+  #tab-log.tab-pane
     .col-xs-12
-      Design
 
-  #tab-code.tab-pane
+  #tab-issues.tab-pane
     .col-xs-12
-      Code
 
-  #tab-comments.tab-pane
-    .col-xs-9
+  #tab-comments.tab-pane.fade.in
+    .col-xs-12
+      = render partial: 'widgets/comment_widget', locals: { comments: @project.comments, commentable: @project }
+      - if @issue and can? :comment_privately, @project
+        = render partial: 'widgets/private_comment_widget', locals: { comments: @issue.comments, commentable: @project }
 
 - if @other_projects_count > 0
   #more-projects.row

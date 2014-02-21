@@ -51,6 +51,11 @@
 #heading.user {
   .teaser {
     text-align: center;
+    h1 {
+      margin: 7px 0;
+      @include font-size(26);
+      color: #fff;
+    }
     .user-mini-resume, .user-categories {
       width: 800px;
       margin: 0 auto 5px;
@@ -58,7 +63,9 @@
     .text-holder {
       height: auto;
       position: relative;
-      padding-top: 30px;
+      background: #444;
+      color: #fff;
+      text-align: center;
       .btn-edit {
         top: 10px;
         right: 15px;

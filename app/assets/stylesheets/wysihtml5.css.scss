@@ -1,4 +1,4 @@
-@import "twitter/bootstrap/mixins";
+@import "bootstrap/mixins";
 @import "custom_mixins";
 
 .dialog {
@@ -50,6 +50,10 @@
 
 .wysiwyg-text-align-left {
   text-align: left;
+}
+
+.wysiwyg-text-align-center {
+  text-align: center;
 }
 
 .wysihtml5-commands-disabled .btn.wysihtml5-command {

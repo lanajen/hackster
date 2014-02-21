@@ -8,7 +8,7 @@ gem 'dotenv-rails', :groups => [:development, :test]
 
 #  assets
 gem 'asset_sync', '1.0.0'
-gem 'bootstrap-sass-rails', '3.0.2.1'
+gem 'bootstrap-sass', '3.1.1.0'
 gem 'coffee-rails', '4.0.1'
 gem 'compass-rails', '1.1.2'
 gem 'font-awesome-rails', '4.0.3.0'

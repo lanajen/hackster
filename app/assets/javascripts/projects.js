@@ -179,6 +179,15 @@ $(document).ready(function(){
     pos =  scroller.scrollLeft() + img.offset().left - scroller.offset().left;
     scroller.scrollLeft(pos);
   });
+
+  $('#project-nav').on({
+    'affixed.bs.affix': function(e){
+      $('body').addClass('nav-affixed');
+    },
+    'affix-top.bs.affix': function(e){
+      $('body').removeClass('nav-affixed');
+    }
+  });
 });
 
 $(window).load(function(){

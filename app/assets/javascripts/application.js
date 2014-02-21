@@ -1,7 +1,7 @@
 //= require jquery
 //= require jquery_ujs
-//= require twitter/bootstrap
 //= require bootstrap
+//= require bootstrap_custom
 //= require jquery_nested_form
 //= require wysihtml5
 //= require parser_rules/advanced

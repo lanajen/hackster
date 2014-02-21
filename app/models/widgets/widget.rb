@@ -55,6 +55,16 @@ class Widget < ActiveRecord::Base
     where("widgets.position LIKE '#{col}.%'")
   end
 
+  def self.type_is type
+    classes = case type
+    when 'hardware'
+      %w(PartsWidget CircuitsioWidget OshparkWidget StlWidget UpverterWidget)
+    when 'software'
+      %w(CodeWidget GithubWidget BitbucketWidget)
+    end
+    where(type: classes)
+  end
+
   def column
     position.match(/^./)[0].to_i
   end

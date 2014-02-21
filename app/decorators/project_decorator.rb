@@ -15,10 +15,10 @@ class ProjectDecorator < ApplicationDecorator
     end
   end
 
-  def logo size=nil
+  def logo size=nil, use_default=true
     if model.logo and model.logo.file_url
       model.logo.file_url(size)
-    else
+    elsif use_default
       width = case size
       when :tiny
         20

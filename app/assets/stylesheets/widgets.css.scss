@@ -392,7 +392,7 @@
     position: relative;
     .comment-text {
       padding-top: 2px;
-      max-width: 383px;
+      max-width: 856px;
       p {
         margin-bottom: 5px;
       }
@@ -412,26 +412,22 @@
     &.depth-1 {
       padding-left: 38px;
       .comment-text {
-        max-width: 345px;
+        max-width: 818px;
       }
     }
     &.depth-2 {
       padding-left: 76px;
       .comment-text {
-        max-width: 304px;
+        max-width: 780px;
       }
     }
     &.depth-3 {
       padding-left: 114px;
       .comment-text {
-        max-width: 266px;
+        max-width: 742px;
       }
     }
   }
-}
-
-#widget-comments, #widget-respects, #widget-private-comments {
-  background: #f5f5f5;
 }
 
 .respect-thumb {
@@ -524,6 +520,32 @@ p.caption {
       padding-left: 35px;
       padding-right: 10px;
       text-align: justify;
+    }
+  }
+}
+
+.team-widget {
+  .user {
+    margin-bottom: 7px;
+    img {
+      width: 20px;
+    }
+    .user-name {
+      padding-top: 5px;
+    }
+  }
+}
+
+.stats-widget {
+  .counters {
+    color: #888;
+    text-align: center;
+    span {
+      margin-right: 10px;
+      cursor: default;
+      &:last-child {
+        margin-right: 0;
+      }
     }
   }
 }
