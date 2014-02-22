@@ -1,15 +1,13 @@
 class Tech < Group
   include Taggable
 
-  validates :user_name, :full_name, presence: true
-  validates :user_name, uniqueness: true
-  # before_validation :generate_user_name
-  before_save :update_user_name
-  before_validation :test
+  store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link,
+    :google_plus_link, :youtube_link, :website_link, :blog_link, :github_link,
+    :forums_link, :documentation_link]
 
-  def test
-    # raise new_user_name.to_s
-  end
+  validates :user_name, :full_name, presence: true
+  validates :user_name, uniqueness: { scope: [:type] }
+  before_validation :update_user_name
 
   taggable :tech_tags
 
