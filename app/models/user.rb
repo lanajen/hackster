@@ -510,7 +510,8 @@ class User < ActiveRecord::Base
 
   def linked_to_project_via_group? project
     sql = "SELECT projects.* FROM groups INNER JOIN permissions ON permissions.grantee_id = groups.id AND permissions.permissible_type = 'Project' AND permissions.grantee_type = 'Group' INNER JOIN projects ON projects.id = permissions.permissible_id INNER JOIN members ON groups.id = members.group_id WHERE members.user_id = ? AND projects.id = ?;"
-    Project.find_by_sql([sql, id, project.id]).any?
+    sql2 = "SELECT members.* FROM members INNER JOIN groups ON members.group_id = groups.id WHERE members.user_id = ? AND groups.type = 'Promotion' AND groups.id = (SELECT assignments.promotion_id FROM assignments WHERE assignments.id = ?)"
+    Project.find_by_sql([sql, id, project.id]).any? or Member.find_by_sql([sql2, id, project.assignment_id]).any?
   end
 
   def is_staff? project

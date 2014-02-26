@@ -6,7 +6,7 @@ class PromotionsController < ApplicationController
 
   def show
     authorize! :read, @promotion
-    title "#{@promotion.course.name} #{@promotion.name}"
+    title @promotion.name
     meta_desc "Join the promotion #{@promotion.name} on Hackster.io!"
     # @broadcasts = @promotion.broadcasts.limit 20
     @projects = @promotion.projects.order(assignment_id: :desc)

@@ -19,7 +19,7 @@
             %i.fa.fa-lock.istooltip{ title: 'Private group', data: { container: 'body' } }
         = link_to "#{@promotion.course.name} @#{@promotion.course.university.full_name}", course_path(@promotion.course)
         >
-        = link_to @promotion.name, promotion_path(@promotion)
+        = link_to @promotion.short_name, promotion_path(@promotion)
 
       - if @promotion.mini_resume.present?
         %p.user-mini-resume= @promotion.mini_resume
