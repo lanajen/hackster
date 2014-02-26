@@ -2,7 +2,7 @@ class MemberObserver < ActiveRecord::Observer
   def after_create record
     # only send invitation if group is a community and the membership has an
     # invitation pending and the user is not being invited
-    if record.group.is? :community and record.invitation_pending? and !
+    if (record.group.is? :community or record.group.is? :promotion) and record.invitation_pending? and !
       record.user.try(:invited_to_sign_up?)
       BaseMailer.enqueue_email 'new_community_invitation',
         { context_type: :membership, context_id: record.id }
