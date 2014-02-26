@@ -118,13 +118,13 @@
                         %li= link_to 'Issues', project_issues_path(@project.user_name_for_url, @project.slug)
                       -# %li= link_to "Comments #{content_tag(:span, @project.comments_count, class: 'badge')}".html_safe, "javascript:smoothScrollTo('#widget-comments', -20)"
                       %li= link_to "Comments", "javascript:smoothScrollTo('#widget-comments', -20)"
-                      - if @widgets.any?
+                      - if @project.widgets.any?
                         %li.dropdown
                           %a.dropdown-toggle{ data: { toggle: 'dropdown' }, href: '#' }
                             Table of contents
                             %b.caret
                           %ul.dropdown-menu
-                            - @widgets.each do |widget|
+                            - @project.widgets.each do |widget|
                               %li
                                 %a{ href: "javascript:smoothScrollTo('#widget-#{widget.id}', -70)" }
                                   %i.fa{ class: icon_for_widget(widget) }

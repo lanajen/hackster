@@ -20,7 +20,7 @@ class Ability
   end
 
   def admin
-    # can :manage, :all
+    can :manage, :all
   end
 
   def beta_tester
