@@ -20,7 +20,7 @@ class Ability
   end
 
   def admin
-    can :manage, :all
+    # can :manage, :all
   end
 
   def beta_tester
@@ -86,5 +86,9 @@ class Ability
     can :update, User, id: @user.id
 
     cannot :debug, :all  # otherwise manage seems to include :debug
+
+    can :debug, Project do |record|
+      @user.can? :manage, record or (record.assignment_id.present? and @user.is_staff? record)
+    end
   end
 end

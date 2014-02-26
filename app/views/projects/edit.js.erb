@@ -1,3 +1,4 @@
+smoothScrollTo('#heading', -40);
 $('.project .edit').html("<%= escape_javascript render('form') %>");
 $("<%= escape_javascript content_for(:js) %>").appendTo($('.project .edit'));
 $('.project .display').slideUp(function(){

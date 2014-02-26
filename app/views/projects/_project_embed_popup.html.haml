@@ -11,8 +11,10 @@
 
 = content_for :js do
   :javascript
-    $('#embed-popup').click(function(){
+    $('#embed-popup').click(function(e){
+      e.preventDefault();
       $(this).fadeOut(200);
+      return false;
     }).children().click(function() {
       return false;
     });

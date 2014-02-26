@@ -111,12 +111,13 @@
                 .col-xs-8{ style: 'padding-right: 0' }
                   .tabs-left.navbar.navbar-default.navbar-tabs
                     %ul.nav.navbar-nav
-                      %li.active= link_to 'Home', '#tab-home', data: { toggle: 'tab' }, id: 'tab-home-link'
-                      - if @project.blog_posts.any?
-                        %li= link_to 'Build log', '#tab-log', data: { toggle: 'tab' }
-                      - if @project.assignment_id.present?
-                        %li= link_to 'Issues', project_issues_path(@project.user_name_for_url, @project.slug), data: { toggle: 'tab' }
-                      %li= link_to "Comments #{content_tag(:span, @project.comments_count, class: 'badge')}".html_safe, '#tab-comments', data: { toggle: 'tab' }
+                      %li.active= link_to 'Home', @project
+                      - if (@project.assignment_id.present? or @project.blog_posts.any?) and can? :debug, @project
+                        %li= link_to 'Build logs', project_logs_path(@project.user_name_for_url, @project.slug)
+                      - if @project.assignment_id.present? and can? :debug, @project
+                        %li= link_to 'Issues', project_issues_path(@project.user_name_for_url, @project.slug)
+                      -# %li= link_to "Comments #{content_tag(:span, @project.comments_count, class: 'badge')}".html_safe, "javascript:smoothScrollTo('#widget-comments', -20)"
+                      %li= link_to "Comments", "javascript:smoothScrollTo('#widget-comments', -20)"
                       - if @widgets.any?
                         %li.dropdown
                           %a.dropdown-toggle{ data: { toggle: 'dropdown' }, href: '#' }
@@ -125,7 +126,7 @@
                           %ul.dropdown-menu
                             - @widgets.each do |widget|
                               %li
-                                %a{ href: "javascript:$('#tab-home-link').tab('show');smoothScrollTo('#widget-#{widget.id}', -20)" }
+                                %a{ href: "javascript:smoothScrollTo('#widget-#{widget.id}', -70)" }
                                   %i.fa{ class: icon_for_widget(widget) }
                                   = widget.name
                       - if can? :edit, @project

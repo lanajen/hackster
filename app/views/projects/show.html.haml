@@ -37,25 +37,18 @@
         .container
           .row
             .inner-container.col-xs-12
-      #main-column.col-xs-9
-        - @project.widgets.each do |widget|
+      #column1.col-xs-6
+        - @project.widgets.first_column.each do |widget|
           = render partial: 'widgets/widget', locals: { widget: widget }
-      #sidebar.col-xs-3
-        .well.stats-widget
-          .content
-            .tags.meta.counters
-              %span.istooltip{ data: { container: 'body' }, title: 'Views' }
-                %i.fa.fa-eye
-                = @project.impressions_count
-              %span.istooltip{ data: { container: 'body' }, title: 'Respects' }
-                %i.fa.fa-thumbs-o-up
-                = @project.respects_count
-              %span.istooltip{ data: { container: 'body' }, title: 'Comments' }
-                %i.fa.fa-comments
-                = @project.comments_count
-
+      #column2.col-xs-6
+        - @project.widgets.second_column.each do |widget|
+          = render partial: 'widgets/widget', locals: { widget: widget }
         - unless @project.respects_count.zero?
           = render partial: 'widgets/respect_widget', locals: { users: @project.respecting_users }
+        = render partial: 'widgets/comment_widget', locals: { comments: @project.comments, commentable: @project }
+        - if @issue and can? :comment_privately, @project
+          = render partial: 'widgets/private_comment_widget', locals: { comments: @issue.comments, commentable: @project }
+
 
     - else
       .col-xs-6.col-xs-offset-3
@@ -66,18 +59,6 @@
               = link_to 'Add your first widget to get started!', new_project_widget_path(@project)
             - else
               Work in progress, check back later!
-
-  #tab-log.tab-pane
-    .col-xs-12
-
-  #tab-issues.tab-pane
-    .col-xs-12
-
-  #tab-comments.tab-pane.fade.in
-    .col-xs-12
-      = render partial: 'widgets/comment_widget', locals: { comments: @project.comments, commentable: @project }
-      - if @issue and can? :comment_privately, @project
-        = render partial: 'widgets/private_comment_widget', locals: { comments: @issue.comments, commentable: @project }
 
 - if @other_projects_count > 0
   #more-projects.row
