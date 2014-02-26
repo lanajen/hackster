@@ -35,6 +35,7 @@ class TechesController < ApplicationController
           if old_tech.user_name != @tech.user_name
             @refresh = true
           end
+          @tech = GroupDecorator.decorate(@tech)
 
           render "groups/teches/#{self.action_name}"
         end

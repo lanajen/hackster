@@ -11,10 +11,17 @@ class GroupInvitationsController < ApplicationController
   def create
     if params[:emails].present?
       @invitable.invite_with_emails params[:emails], current_user
-      redirect_to @invitable, notice: "Your invitations are on their way!"
+      flash[:notice] = "Your invitations are on their way!"
     else
-      redirect_to @invitable, alert: "Please specify at least one email to invite."
+      flash[:alert] = "Please specify at least one email to invite."
     end
+    path = case @invitable
+    when Promotion
+      promotion_path(@invitable)
+    else
+      url_for @invitable
+    end
+    redirect_to path
   end
 
   def accept
