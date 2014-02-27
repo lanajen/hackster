@@ -2,7 +2,7 @@
   = render 'meta_tags'
 
 - if @prev
-  .project-nav.project-nav-prev
+  .project-nav.project-nav-prev.visible-md.visible-lg
     .project-nav-inner
       = image_tag @prev.decorate.cover_image(:cover_thumb), class: 'img-responsive'
       %i.fa.fa-chevron-left
@@ -16,7 +16,7 @@
       %a.project-nav-overlay.project-nav-overlay-top{ href: project_path(@prev, ref: params[:ref], ref_id: params[:ref_id], offset: params[:offset].to_i - 1) }
 
 - if @next
-  .project-nav.project-nav-next
+  .project-nav.project-nav-next.visible-md.visible-lg
     .project-nav-inner
       = image_tag @next.decorate.cover_image(:cover_thumb), class: 'img-responsive'
       %i.fa.fa-chevron-right
