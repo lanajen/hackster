@@ -33,6 +33,8 @@ class ProjectsController < ApplicationController
     meta_desc @project_meta_desc
     @project = @project.decorate
     @widgets = @project.widgets.order(:created_at)
+
+    # other projects by same author
     @other_projects_count = Project.most_popular.includes(:team_members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).size
     if @other_projects_count > 6
       @other_projects = Project.most_popular.includes(:team_members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).limit(3)
@@ -42,6 +44,7 @@ class ProjectsController < ApplicationController
     end
     @issue = Feedback.where(threadable_type: 'Project', threadable_id: @project.id).first if @project.assignment_id.present?
 
+    # next/previous project in search
     if params[:ref] and params[:ref_id] and params[:offset]
       offset = params[:offset].to_i
       case params[:ref]
@@ -135,6 +138,7 @@ class ProjectsController < ApplicationController
       end
       @refresh = @project.slug_was_changed?
       @project = @project.decorate
+      @widgets = @project.widgets.order(:created_at)
       notice = "#{@project.name} was successfully updated."
       respond_with @project do |format|
         format.html do

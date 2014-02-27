@@ -28,80 +28,81 @@
 .row.teaser
   .col-xs-12
     .well
-      .row
-        .col-xs-8{ style: 'padding-right: 0;'}
-          = image_tag @project.cover_image, alt: @project.name, class: 'cover-image'
+      - cache @project, @project.users do
+        .row
+          .col-xs-8{ style: 'padding-right: 0;'}
+            = image_tag @project.cover_image, alt: @project.name, class: 'cover-image'
 
-        .col-xs-4{ style: 'padding-left: 0;'}
-          .text-holder
-            .title= @project.name
-            - if @project.one_liner.present?
-              .one-liner= @project.one_liner
-            - elsif can? :edit, @project
-              .one-liner
-                No one liner yet.
-                = link_to 'Add one?', edit_project_path(@project), data: { remote: true }
+          .col-xs-4{ style: 'padding-left: 0;'}
+            .text-holder
+              .title= @project.name
+              - if @project.one_liner.present?
+                .one-liner= @project.one_liner
+              - elsif can? :edit, @project
+                .one-liner
+                  No one liner yet.
+                  = link_to 'Add one?', edit_project_path(@project), data: { remote: true }
 
-            - if @project.assignment_id
-              .tags.meta
-                .meta-title Assignment
-                = link_to @project.assignment.to_label, assignment_path(@project.assignment), class: 'hidden-link'
+              - if @project.assignment_id
+                .tags.meta
+                  .meta-title Assignment
+                  = link_to @project.assignment.to_label, assignment_path(@project.assignment), class: 'hidden-link'
 
-            .team-widget.meta
-              .meta-title
-                Team
-                - if can? :debug, @project and can? :edit, @project
-                  = link_to content_tag(:i, '', class: 'fa fa-pencil'), project_edit_team_path(@project), class: 'btn-edit no-float', rel: 'tooltip', title: 'Manage team', data: { container: 'body' }
-              - @project.users.each do |u|
-                .user
-                  = link_to image_tag(u.decorate.avatar(:mini), class: ' img-circle' ), u, class: ''
-                  %span.user-name= link_to u.name, u, class: 'hidden-link'
+              .team-widget.meta
+                .meta-title
+                  Team
+                  - if can? :debug, @project and can? :edit, @project
+                    = link_to content_tag(:i, '', class: 'fa fa-pencil'), project_edit_team_path(@project), class: 'btn-edit no-float', rel: 'tooltip', title: 'Manage team', data: { container: 'body' }
+                - @project.users.each do |u|
+                  .user
+                    = link_to image_tag(u.decorate.avatar(:mini), class: ' img-circle' ), u, class: ''
+                    %span.user-name= link_to u.name, u, class: 'hidden-link'
 
-            - if @project.tech_tags.any?
-              .tags.meta
-                .meta-title Technologies
-                - @project.tech_tags.pluck(:name).each do |tag|
-                  %span= link_to tag, "/tags/#{CGI::escape(tag)}", class: 'hidden-link'
-            - elsif can? :edit, @project
-              .tags.meta
-                .meta-title Technologies
-                No technologies yet.
-                = link_to 'Add some?', edit_project_path(@project), data: { remote: true }
+              - if @project.tech_tags.any?
+                .tags.meta
+                  .meta-title Technologies
+                  - @project.tech_tags.pluck(:name).each do |tag|
+                    %span= link_to tag, "/tags/#{CGI::escape(tag)}", class: 'hidden-link'
+              - elsif can? :edit, @project
+                .tags.meta
+                  .meta-title Technologies
+                  No technologies yet.
+                  = link_to 'Add some?', edit_project_path(@project), data: { remote: true }
 
-            - if @project.product_tags.any?
-              .tags.meta
-                .meta-title Tags
-                - @project.product_tags.pluck(:name).each do |tag|
-                  %span= link_to tag, "/tags/#{CGI::escape(tag)}", class: 'hidden-link'
-            - elsif can? :edit, @project
-              .tags.meta
-                .meta-title Tags
-                No tags yet.
-                = link_to 'Add some?', edit_project_path(@project), data: { remote: true }
+              - if @project.product_tags.any?
+                .tags.meta
+                  .meta-title Tags
+                  - @project.product_tags.pluck(:name).each do |tag|
+                    %span= link_to tag, "/tags/#{CGI::escape(tag)}", class: 'hidden-link'
+              - elsif can? :edit, @project
+                .tags.meta
+                  .meta-title Tags
+                  No tags yet.
+                  = link_to 'Add some?', edit_project_path(@project), data: { remote: true }
 
-            .meta
-              %strong Created on
-              = l @project.created_at, format: :date
-              -# if @project.created_at.to_date != @project.made_public_at.to_date
-                %br
-                %strong Published on
-                = l @project.made_public_at, format: :date
+              .meta
+                %strong Created on
+                = l @project.created_at, format: :date
+                -# if @project.created_at.to_date != @project.made_public_at.to_date
+                  %br
+                  %strong Published on
+                  = l @project.made_public_at, format: :date
 
-            - if @project.license
-              .license.meta
-                &copy;
-                = link_to @project.license.abbr, @project.license.url, target: '_blank', class: 'hidden-link'
+              - if @project.license
+                .license.meta
+                  &copy;
+                  = link_to @project.license.abbr, @project.license.url, target: '_blank', class: 'hidden-link'
 
-          -# .actions.text-center
-            - if @project.public?
-              = render 'projects/share'
-              = render 'projects/project_embed_popup'
-              = render partial: 'respects/button', locals: { project: @project }
+            -# .actions.text-center
+              - if @project.public?
+                = render 'projects/share'
+                = render 'projects/project_embed_popup'
+                = render partial: 'respects/button', locals: { project: @project }
 
-          -# %p.text-muted
-            = l @project.start_date, format: :month
-            \-
-            = @project.end_date ? l(@project.end_date, format: :month) : 'Present'
+            -# %p.text-muted
+              = l @project.start_date, format: :month
+              \-
+              = @project.end_date ? l(@project.end_date, format: :month) : 'Present'
 
       #project-nav
         .row{ data: { spy: 'affix', offset: { top: 682 } }}
@@ -118,13 +119,13 @@
                         %li= link_to 'Issues', project_issues_path(@project.user_name_for_url, @project.slug)
                       -# %li= link_to "Comments #{content_tag(:span, @project.comments_count, class: 'badge')}".html_safe, "javascript:smoothScrollTo('#widget-comments', -20)"
                       %li= link_to "Comments", "javascript:smoothScrollTo('#widget-comments', -20)"
-                      - if @project.widgets.any?
+                      - if @widgets.any?
                         %li.dropdown
                           %a.dropdown-toggle{ data: { toggle: 'dropdown' }, href: '#' }
                             Table of contents
                             %b.caret
                           %ul.dropdown-menu
-                            - @project.widgets.each do |widget|
+                            - @widgets.each do |widget|
                               %li
                                 %a{ href: "javascript:smoothScrollTo('#widget-#{widget.id}', -70)" }
                                   %i.fa{ class: icon_for_widget(widget) }

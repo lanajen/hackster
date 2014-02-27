@@ -38,17 +38,18 @@
           .row
             .inner-container.col-xs-12
       #column1.col-xs-6
-        - @project.widgets.first_column.each do |widget|
-          = render partial: 'widgets/widget', locals: { widget: widget }
+        - cache @project.widgets.first_column do
+          - @project.widgets.first_column.each do |widget|
+            = render partial: 'widgets/widget', locals: { widget: widget }
       #column2.col-xs-6
-        - @project.widgets.second_column.each do |widget|
-          = render partial: 'widgets/widget', locals: { widget: widget }
+        - cache @project.widgets.second_column do
+          - @project.widgets.second_column.each do |widget|
+            = render partial: 'widgets/widget', locals: { widget: widget }
         - unless @project.respects_count.zero?
           = render partial: 'widgets/respect_widget', locals: { users: @project.respecting_users }
         = render partial: 'widgets/comment_widget', locals: { comments: @project.comments, commentable: @project }
         - if @issue and can? :comment_privately, @project
           = render partial: 'widgets/private_comment_widget', locals: { comments: @issue.comments, commentable: @project }
-
 
     - else
       .col-xs-6.col-xs-offset-3
@@ -60,34 +61,35 @@
             - else
               Work in progress, check back later!
 
-- if @other_projects_count > 0
-  #more-projects.row
-    .col-xs-12
-      %hr
-      %h5
-        Other projects by
-        = @project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
-      - if @other_projects_count > 6
-        .row
-          .col-xs-6
-            %h6.subtitle Most popular
-            .row
-              - @other_projects.each do |project|
-                .col-xs-4
-                  = link_to image_tag(project.decorate.cover_image(:cover_thumb), class: 'img-responsive'), project_path(project, ref: 'more'), rel: 'tooltip', title: project.one_liner
-                  %h6= link_to project.name, project_path(project, ref: 'more')
+- cache @other_projects do
+  - if @other_projects_count > 0
+    #more-projects.row
+      .col-xs-12
+        %hr
+        %h5
+          Other projects by
+          = @project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
+        - if @other_projects_count > 6
+          .row
+            .col-xs-6
+              %h6.subtitle Most popular
+              .row
+                - @other_projects.each do |project|
+                  .col-xs-4
+                    = link_to image_tag(project.decorate.cover_image(:cover_thumb), class: 'img-responsive'), project_path(project, ref: 'more'), rel: 'tooltip', title: project.one_liner
+                    %h6= link_to project.name, project_path(project, ref: 'more')
 
-          .col-xs-6
-            %h6.subtitle Newest
-            .row
-              - @last_projects.each do |project|
-                .col-xs-4
-                  = link_to image_tag(project.decorate.cover_image(:cover_thumb), class: 'img-responsive'), project_path(project, ref: 'more'), rel: 'tooltip', title: project.one_liner
-                  %h6= link_to project.name, project_path(project, ref: 'more')
+            .col-xs-6
+              %h6.subtitle Newest
+              .row
+                - @last_projects.each do |project|
+                  .col-xs-4
+                    = link_to image_tag(project.decorate.cover_image(:cover_thumb), class: 'img-responsive'), project_path(project, ref: 'more'), rel: 'tooltip', title: project.one_liner
+                    %h6= link_to project.name, project_path(project, ref: 'more')
 
-      - else
-        .row
-          - @other_projects.each do |project|
-            .col-xs-2
-              = link_to image_tag(project.decorate.cover_image(:cover_thumb), class: 'img-responsive'), project_path(project, ref: 'more'), rel: 'tooltip', title: project.one_liner
-              %h6= link_to project.name, project_path(project, ref: 'more')
+        - else
+          .row
+            - @other_projects.each do |project|
+              .col-xs-2
+                = link_to image_tag(project.decorate.cover_image(:cover_thumb), class: 'img-responsive'), project_path(project, ref: 'more'), rel: 'tooltip', title: project.one_liner
+                %h6= link_to project.name, project_path(project, ref: 'more')
