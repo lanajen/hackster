@@ -4,16 +4,43 @@ class Promotion < Community
 
   alias_method :short_name, :name
 
+  # beginning of search methods
+  include Tire::Model::Search
+  include Tire::Model::Callbacks
+  index_name ELASTIC_SEARCH_INDEX_NAME
+
+  tire do
+    mapping do
+      indexes :id,              index: :not_analyzed
+      indexes :name,            analyzer: 'snowball', boost: 100
+      indexes :mini_resume,     analyzer: 'snowball'
+      indexes :private,         analyzer: 'keyword'
+      indexes :created_at
+    end
+  end
+
+  def to_indexed_json
+    {
+      _id: id,
+      name: name,
+      model: self.class.name,
+      mini_resume: mini_resume,
+      private: private,
+      created_at: created_at,
+    }.to_json
+  end
+  # end of search methods
+
   def generate_user_name
     slug = short_name.gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
     self.user_name = slug
   end
 
-  def projects
-    Project.where(assignment_id: Assignment.where(promotion_id: id))
-  end
-
   def name
     "#{course.name} #{super} @#{course.university.name}"
+  end
+
+  def projects
+    Project.where(assignment_id: Assignment.where(promotion_id: id))
   end
 end
