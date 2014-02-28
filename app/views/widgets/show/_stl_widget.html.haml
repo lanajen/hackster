@@ -16,28 +16,27 @@
   - else
     %p No documents yet.
 
-= content_for :js do
-  - unless @stl_loaded
-    - @stl_loaded = true
+- unless @stl_loaded
+  - @stl_loaded = true
 
-    <script src="/js/thingiview/Three.js"></script>
-    <script src="/js/thingiview/plane.js"></script>
-    <script src="/js/thingiview/thingiview.js"></script>
+  <script src="/js/thingiview/Three.js"></script>
+  <script src="/js/thingiview/plane.js"></script>
+  <script src="/js/thingiview/thingiview.js"></script>
 
-    :javascript
-      function loadThingiview() {
-        thingiurlbase = "/js/thingiview";
-        thingiview = new Thingiview("stlviewer");
-        thingiview.initScene();
-        thingiview.setRotation(false);
-        thingiview.setObjectColor('#C0D8F0');
-        thingiview.setBackgroundColor('#ffffff');
-      }
+  :javascript
+    function loadThingiview() {
+      thingiurlbase = "/js/thingiview";
+      thingiview = new Thingiview("stlviewer");
+      thingiview.initScene();
+      thingiview.setRotation(false);
+      thingiview.setObjectColor('#C0D8F0');
+      thingiview.setBackgroundColor('#ffffff');
+    }
 
-      $('#content.project').on('click', 'a.loadstl', function(e){
-        e.preventDefault();
-        if (typeof(thingiview) == 'undefined') loadThingiview();
-        file = $(this).data('stlfile');
-        thingiview.loadSTL(file);
-        return false;
-      });
+    $('#content.project').on('click', 'a.loadstl', function(e){
+      e.preventDefault();
+      if (typeof(thingiview) == 'undefined') loadThingiview();
+      file = $(this).data('stlfile');
+      thingiview.loadSTL(file);
+      return false;
+    });

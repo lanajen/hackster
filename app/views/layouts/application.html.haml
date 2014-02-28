@@ -25,6 +25,7 @@
     - unless current_user and current_user.is? :admin
       = render partial: 'shared/analytics', locals: { tracker: 'UA-11926897-15', domain: 'hackster.io' }
     -# = render 'shared/mixpanel'
+    = javascript_include_tag "application"
 
   %body
     #wrapper
@@ -146,7 +147,6 @@
           %li Hackster.io 2014
         = link_to image_tag('//cdn.mxpnl.com/site_media/images/partner/badge_light.png', alt: 'Mobile Analytics'), 'https://mixpanel.com/f/partner', class: 'pull-right', style: 'margin-top:-10px;margin-right:15px;', target: '_blank'
 
-    = javascript_include_tag "application"
     = content_for :js
     - unless is_mobile?
       = render 'shared/feedback'

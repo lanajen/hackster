@@ -11,19 +11,18 @@
     Via
     = link_to 'OSH Park', 'http://www.oshpark.com', target: '_blank', rel: 'nofollow'
 
-= content_for :js do
-  :javascript
-    if (typeof(lightBoxImages) == 'undefined') {
-      lightBoxImages = {};
-    }
-    lightBoxImages[#{widget.id}] = [#{lightbox_elements_for_urls [widget.top_image, widget.bottom_image]}];
+:javascript
+  if (typeof(lightBoxImages) == 'undefined') {
+    lightBoxImages = {};
+  }
+  lightBoxImages[#{widget.id}] = [#{lightbox_elements_for_urls [widget.top_image, widget.bottom_image]}];
 
-    function openLightBox(id, start) {
-      start = start || 0;
-      $.iLightBox(
-        lightBoxImages[id],
-        {
-          skin: 'metro-black',
-          startFrom: start
-        });
-     }
+  function openLightBox(id, start) {
+    start = start || 0;
+    $.iLightBox(
+      lightBoxImages[id],
+      {
+        skin: 'metro-black',
+        startFrom: start
+      });
+   }

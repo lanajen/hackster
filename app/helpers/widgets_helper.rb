@@ -13,7 +13,7 @@ module WidgetsHelper
       'fa-align-left'
     when ImageWidget
       'fa-picture-o'
-    when CodeWidget, GithubWidget
+    when CodeWidget, GithubWidget, BitbucketWidget
       'fa-code'
     when DocumentWidget
       'fa-files-o'

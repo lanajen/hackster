@@ -24,20 +24,19 @@
             %a{ href: "javascript:openLightBox(#{widget.id},#{i});" }
               = image_tag image.file_url(:thumb), class: "image-#{i} img-responsive #{'current' if i==0}", data: { target: "image-#{i}" }
 
-= content_for :js do
-  :javascript
-    if (typeof(lightBoxImages) == 'undefined') {
-      lightBoxImages = {};
-    }
-    lightBoxImages[#{widget.id}] = [#{lightbox_elements widget.images}];
+:javascript
+  if (typeof(lightBoxImages) == 'undefined') {
+    lightBoxImages = {};
+  }
+  lightBoxImages[#{widget.id}] = [#{lightbox_elements widget.images}];
 
-    function openLightBox(id, start) {
-      start = start || 0;
-      $.iLightBox(
-        lightBoxImages[id],
-        {
-          skin: 'metro-black',
-          startFrom: start,
-          path: 'horizontal'
-        });
-     }
+  function openLightBox(id, start) {
+    start = start || 0;
+    $.iLightBox(
+      lightBoxImages[id],
+      {
+        skin: 'metro-black',
+        startFrom: start,
+        path: 'horizontal'
+      });
+   }
