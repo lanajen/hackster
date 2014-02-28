@@ -28,6 +28,8 @@ class UserObserver < ActiveRecord::Observer
     end
     record.interest_tags_count = record.interest_tags_string.split(',').count
     record.skill_tags_count = record.skill_tags_string.split(',').count
+
+    expire record
   end
 
   def before_create record
@@ -39,5 +41,9 @@ class UserObserver < ActiveRecord::Observer
       record.broadcast :new, record.id, 'User'
       BaseMailer.enqueue_email 'registration_confirmation',
         { context_type: :user, context_id: record.id } unless record.skip_registration_confirmation
+    end
+
+    def expire record
+      Cashier.expire *record.projects.map{|p| "project-#{p.id}-teaser" }
     end
 end

@@ -20,9 +20,10 @@ gem 'zocial-rails', '1.0.2'
 gem 'aws-sdk', '1.33.0'
 gem 'bootstrap-will_paginate', '0.0.10'
 gem 'cancan', '1.6.10'
+gem 'cashier', '0.4.1'
 gem 'carrierwave', '0.9.0'
 gem 'country_select', '1.2.0'
-# gem 'dalli', '2.6.4'  # memcached
+gem 'dalli', '2.7.0'  # memcached
 gem 'devise', '3.2.2'
 gem 'devise_invitable', '1.3.0'
 gem 'draper', '1.3.0'

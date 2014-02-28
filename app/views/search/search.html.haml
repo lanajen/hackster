@@ -48,7 +48,7 @@
                   = render partial: model, locals: { :"#{model}" => result.decorate, ref: 'search', ref_id: params[:q], offset: i }
         - else
           .content.search-results
-            No results for <i>#{params[:q]}</i>, please modify your query.
+            No results for <i>#{params[:q]}</i>. <a href="/projects/new?project[name]=#{params[:q]}" class="btn btn-primary btn-sm">Add your own #{params[:q]} project</a>
       - else
         .content.search-results
           Go ahead, look something up!

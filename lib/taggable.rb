@@ -3,12 +3,27 @@ module Taggable
     def taggable *tags
       tags.each do |tag_type|
         attr_accessible :"#{tag_type}_string"
-        attr_accessor :"#{tag_type}_string"
         has_many tag_type, -> { order(name: :asc) }, as: :taggable, dependent: :destroy
         after_save :"save_#{tag_type}"
         self.send :define_method, "#{tag_type}_string" do
           eval "
             @#{tag_type}_string ||= #{tag_type}.order(:name).pluck(:name).join(', ')
+          "
+        end
+        self.send :define_method, "#{tag_type}_string=" do |val|
+          eval "
+            @#{tag_type}_string_was = #{tag_type}_string
+            @#{tag_type}_string = val
+          "
+        end
+        self.send :define_method, "#{tag_type}_string_was" do
+          eval "
+            @#{tag_type}_string_was ||= #{tag_type}_string
+          "
+        end
+        self.send :define_method, "#{tag_type}_string_changed?" do
+          eval "
+            #{tag_type}_string_was != #{tag_type}_string
           "
         end
         self.send :define_method, "save_#{tag_type}" do

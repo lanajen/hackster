@@ -78,4 +78,8 @@ HackerIo::Application.configure do
 
   require File.expand_path('../../../lib/log_request_id', __FILE__)
   config.middleware.use Rack::LogRequestID
+
+  if ENV["MEMCACHEDCLOUD_SERVERS"]
+    config.cache_store = :dalli_store, ENV["MEMCACHEDCLOUD_SERVERS"].split(','), { :username => ENV["MEMCACHEDCLOUD_USERNAME"], :password => ENV["MEMCACHEDCLOUD_PASSWORD"] }
+  end
 end
