@@ -38,11 +38,11 @@
           .row
             .inner-container.col-xs-12
       #column1.col-xs-6
-        - cache @project.widgets.first_column do
+        - cache [@project.widgets.first_column, can?(:edit, @project)], tag: "project-#{@project.id}-widgets" do
           - @project.widgets.first_column.each do |widget|
             = render partial: 'widgets/widget', locals: { widget: widget }
       #column2.col-xs-6
-        - cache @project.widgets.second_column do
+        - cache [@project.widgets.second_column, can?(:edit, @project)], tag: "project-#{@project.id}-widgets" do
           - @project.widgets.second_column.each do |widget|
             = render partial: 'widgets/widget', locals: { widget: widget }
         - unless @project.respects_count.zero?
@@ -61,7 +61,7 @@
             - else
               Work in progress, check back later!
 
-- cache @other_projects do
+- cache @other_projects, tag: "project-#{@project.id}-other" do
   - if @other_projects_count > 0
     #more-projects.row
       .col-xs-12

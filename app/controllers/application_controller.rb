@@ -227,6 +227,10 @@ class ApplicationController < ActionController::Base
     end
 
   protected
+    def impressionist_async obj, message, opts
+      ImpressionistQueue.perform_async 'count', { "action_dispatch.remote_ip" => request.remote_ip, "HTTP_REFERER" => request.referer, 'HTTP_USER_AGENT' => request.user_agent, session_hash: request.session_options[:id] }, action_name, controller_name, params, obj.id, obj.class.to_s, message, opts
+    end
+
     def is_mobile?
       request.user_agent.to_s.downcase =~ Regexp.new(MOBILE_USER_AGENTS)
     end

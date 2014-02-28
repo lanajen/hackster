@@ -28,7 +28,7 @@
 .row.teaser
   .col-xs-12
     .well
-      - cache @project, @project.users do
+      - cache [@project, 'teaser', can?(:edit, @project), can?(:debug, @project)], tag: (["project-#{@project.id}-teaser"] + @project.users.map{|u| "user-#{u.id}-thumb"}) do
         .row
           .col-xs-8{ style: 'padding-right: 0;'}
             = image_tag @project.cover_image, alt: @project.name, class: 'cover-image'
@@ -92,17 +92,6 @@
                 .license.meta
                   &copy;
                   = link_to @project.license.abbr, @project.license.url, target: '_blank', class: 'hidden-link'
-
-            -# .actions.text-center
-              - if @project.public?
-                = render 'projects/share'
-                = render 'projects/project_embed_popup'
-                = render partial: 'respects/button', locals: { project: @project }
-
-            -# %p.text-muted
-              = l @project.start_date, format: :month
-              \-
-              = @project.end_date ? l(@project.end_date, format: :month) : 'Present'
 
       #project-nav
         .row{ data: { spy: 'affix', offset: { top: 682 } }}

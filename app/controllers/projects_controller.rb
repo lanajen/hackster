@@ -26,7 +26,7 @@ class ProjectsController < ApplicationController
 
   def show
     authorize! :read, @project
-    impressionist @project, "", unique: [:session_hash]  # no need to add :impressionable_type and :impressionable_id, they're already included with @project
+    impressionist_async @project, '', unique: [:session_hash]
 
     title @project.name
     @project_meta_desc = "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."

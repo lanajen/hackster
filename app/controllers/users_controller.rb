@@ -4,7 +4,7 @@ class UsersController < ApplicationController
   authorize_resource except: [:after_registration, :after_registration_save]
 
   def show
-    impressionist @user, "", unique: [:session_hash]  # no need to add :impressionable_type and :impressionable_id, they're already included with @user
+    impressionist_async @user, "", unique: [:session_hash]  # no need to add :impressionable_type and :impressionable_id, they're already included with @user
     title @user.name
     meta_desc "#{@user.name} is on Hackster.io. Come share your hardware projects with #{@user.name} and other hardware hackers and makers."
     @user = @user.decorate
