@@ -549,3 +549,37 @@ p.caption {
     }
   }
 }
+
+.widget-categories {
+  input {
+    display: none;
+  }
+  .btn {
+    @extend .unselectable;
+    text-align: center;
+    padding: 20px 30px;
+    width: 120px;
+    margin-bottom: 10px;
+    margin-right: 10px;
+    &:last-child {
+      margin-right: 0;
+    }
+    i {
+      font-size: 40px;
+    }
+    small {
+      font-size: 10px;
+    }
+  }
+  &.widget-subcategories {
+    display: none;
+    .btn {
+      width: auto;
+      padding: 10px 20px;
+      background: #f9f9F9;
+      &:hover, &.active {
+        background: #ebebeb;
+      }
+    }
+  }
+}

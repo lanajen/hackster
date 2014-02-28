@@ -188,6 +188,36 @@ $(document).ready(function(){
       $('body').removeClass('nav-affixed');
     }
   });
+
+  $('.widget-form').on('click', '.btn[data-toggle="subcat"]', function(e){
+    e.preventDefault();
+  });
+
+  $('.widget-form').on('click', '.btn[data-toggle="subcat"]:not(.active)', function(e){
+    console.log(this);
+    $('.widget-form .btn').removeClass('active');
+    $(this).addClass('active');
+    $target = $($(this).data('target'));
+    if ($('.widget-subcategories:visible').length > 0) {
+      $('.widget-subcategories:visible').slideUp(function(){
+        $target.slideDown();
+      });
+    } else {
+      $target.slideDown();
+    }
+  });
+
+  $('.widget-form').on('click', '.btn.with-radio', function(e){
+    e.preventDefault();
+    $('input', $(this)).prop('checked', true);
+    $('.widget-form .btn.with-radio').removeClass('active');
+    $(this).addClass('active');
+  });
+
+  $('.widget-form .widget-categories:not(.widget-subcategories)').on('click', '.btn.with-radio', function(e){
+    $('.widget-form .btn:not(.with-radio)').removeClass('active');
+    $('.widget-subcategories:visible').slideUp();
+  });
 });
 
 $(window).load(function(){

@@ -1,5 +1,5 @@
 - size = widget.images.size
-.image-widget
+.image-widget.unselectable
   .headline-image
     - widget.images.each_with_index do |image, i|
       .headline-image-inner{ class: "image-#{i} #{'first' if i == 0}", style: "#{'display:none;' unless i==0}" }

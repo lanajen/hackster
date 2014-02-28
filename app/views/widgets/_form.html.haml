@@ -8,8 +8,139 @@
       = link_to 'Delete widget', project_widget_path(@project, @widget), class: 'btn btn-danger btn-sm', method: :delete, data: { confirm: "Are you sure? There's no coming back!" }
       = link_to 'Cancel', @project, class: 'btn btn-link btn-sm'
   - else
-    = f.input :type, collection: Widget.all_types, label: 'What kind of widget do you want to create?'
+    .form-group{ class: "#{'has-error' if @widget.errors.messages[:type].present?}" }
+      %label.control-label
+        %abbr{ title: 'required' } *
+        What type of content do you want to add?
+      .widget-categories
+        %a.btn.btn-default.with-radio
+          = radio_button("widget", "type", "TextWidget")
+          %i.fa.fa-align-left
+          %br
+          %small Text
+        %a.btn.btn-default.with-radio
+          = radio_button("widget", "type", "ImageWidget")
+          %i.fa.fa-picture-o
+          %br
+          %small Images
+        %a.btn.btn-default{ data: { target: '#cat-code', toggle: 'subcat' }}
+          %i.fa.fa-code
+          %br
+          %small Code
+        %a.btn.btn-default.with-radio
+          = radio_button("widget", "type", "VideoWidget")
+          %i.fa.fa-play-circle-o
+          %br
+          %small Video
+        %a.btn.btn-default{ data: { target: '#cat-schematics', toggle: 'subcat' }}
+          %i.fa.fa-cogs
+          %br
+          %small Schematics
+        %a.btn.btn-default{ data: { target: '#cat-sales', toggle: 'subcat' }}
+          %i.fa.fa-usd
+          %br
+          %small Sales tools
+        %a.btn.btn-default{ data: { target: '#cat-others', toggle: 'subcat' }}
+          %i.fa.fa-ellipsis-h
+          %br
+          %small Others
+      #cat-code.widget-categories.widget-subcategories
+        %a.btn.btn-default.with-radio
+          = radio_button("widget", "type", "DocumentWidget")
+          %i.fa.fa-archive
+          %br
+          %small Archived code files
+        %a.btn.btn-default.with-radio
+          = radio_button("widget", "type", "BitbucketWidget")
+          %i.fa.fa-bitbucket
+          %br
+          %small Bitbucket repo
+        %a.btn.btn-default.with-radio
+          = radio_button("widget", "type", "GithubWidget")
+          %i.fa.fa-github
+          %br
+          %small Github repo
+        %a.btn.btn-default.with-radio
+          = radio_button("widget", "type", "CodeWidget")
+          %i.fa.fa-code
+          %br
+          %small Single code file
+      #cat-schematics.widget-categories.widget-subcategories
+        %a.btn.btn-default.with-radio
+          = radio_button("widget", "type", "CircuitsioWidget")
+          %i.fa.fa-cogs
+          %br
+          %small Circuits.io schematics
+        %a.btn.btn-default.with-radio
+          = radio_button("widget", "type", "OshparkWidget")
+          %i.fa.fa-cogs
+          %br
+          %small OSH Park shared project
+        %a.btn.btn-default.with-radio
+          = radio_button("widget", "type", "UpverterWidget")
+          %i.fa.fa-cogs
+          %br
+          %small Upverter schematics
+      #cat-sales.widget-categories.widget-subcategories
+        %a.btn.btn-default.with-radio
+          = radio_button("widget", "type", "BuyWidget")
+          %i.fa.fa-usd
+          %br
+          %small Buy now link
+        %a.btn.btn-default.with-radio
+          = radio_button("widget", "type", "PaypalWidget")
+          %i.fa.fa-usd
+          %br
+          %small PayPal button
+      #cat-others.widget-categories.widget-subcategories
+        %a.btn.btn-default.with-radio
+          = radio_button("widget", "type", "PartsWidget")
+          %i.fa.fa-ellipsis-h
+          %br
+          %small Bill of materials
+        %a.btn.btn-default.with-radio
+          = radio_button("widget", "type", "BuildLogWidget")
+          %i.fa.fa-ellipsis-h
+          %br
+          %small Build log
+        %a.btn.btn-default.with-radio
+          = radio_button("widget", "type", "CreditsWidget")
+          %i.fa.fa-ellipsis-h
+          %br
+          %small Credits attribution
+        %a.btn.btn-default.with-radio
+          = radio_button("widget", "type", "DocumentWidget")
+          %i.fa.fa-ellipsis-h
+          %br
+          %small Files and documents
+        %a.btn.btn-default.with-radio
+          = radio_button("widget", "type", "PressWidget")
+          %i.fa.fa-ellipsis-h
+          %br
+          %small Press articles
+        %a.btn.btn-default.with-radio
+          = radio_button("widget", "type", "StepByStepWidget")
+          %i.fa.fa-ellipsis-h
+          %br
+          %small Step by step guide
+        %a.btn.btn-default.with-radio
+          = radio_button("widget", "type", "StlWidget")
+          %i.fa.fa-ellipsis-h
+          %br
+          %small STL renderings
+      - if @widget.errors.messages[:type].present?
+        %span.help-block.has-error= @widget.errors.messages[:type].to_sentence
+    -# = f.input :type, collection: Widget.all_types, label: 'What kind of widget do you want to create?'
     = f.input :name, label: 'Give it a label'
     .form-actions
       = f.submit 'Save and continue', class: 'btn btn-primary'
       = link_to 'Cancel', @project, class: 'btn btn-link btn-sm'
+
+:javascript
+  $('input[type="radio"]:checked').each(function(i, rad){
+    $(rad).parent().addClass('active');
+    if ($(rad).parent().parent().hasClass('widget-subcategories')) {
+      $(rad).parent().parent().show();
+      $('.btn[data-target="#' + $(rad).parent().parent().attr('id') + '"]').addClass('active');
+    }
+  });
