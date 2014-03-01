@@ -14,6 +14,19 @@ module Privatable
       private == false
     end
 
+    def public=(val)
+      self.private = case val
+      when String
+        val.to_i.zero? ? true : false
+      when TrueClass, FalseClass
+        !val
+      end
+    end
+
+    def public
+      !private
+    end
+
     def visible_to? user
       project = respond_to?(:project) ? self.project : self
       public? or user.is_team_member? project
@@ -23,7 +36,7 @@ module Privatable
   def self.included base
     base.send :include, InstanceMethods
     base.send :extend, ClassMethods
-    base.send :attr_accessible, :private#, :privacy_rules_attributes
+    base.send :attr_accessible, :private, :public#, :privacy_rules_attributes
     # base.send :has_many, :privacy_rules, as: :privatable, dependent: :destroy
     # base.send :accepts_nested_attributes_for, :privacy_rules, allow_destroy: true
   end

@@ -255,6 +255,10 @@ class Project < ActiveRecord::Base
       self.website = 'http://' + website unless website =~ /^http/
     end
 
+    def can_be_public?
+      widgets_count > 1 and cover_image.present?
+    end
+
     def generate_slug
       slug = I18n.transliterate(name).gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
       parent = team ? self.class.joins(:team).where(groups: { user_name: team.user_name }).where.not(id: id) : self.class.where(team_id: 0).where.not(id: id)
