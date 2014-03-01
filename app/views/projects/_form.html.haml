@@ -43,7 +43,7 @@
 
       = f.input :public, inline_label: "Make this project public #{content_tag(:i, '', class: 'fa fa-question-circle istooltip', title: 'You need to create at least one widget and add a cover image before you can make it public.')}".html_safe, label: false, disabled: !@project.can_be_public?, as: :boolean
 
-      - if current_user.communities.any? or current_user.is? :admin
+      - if current_user.communities.where(type: 'Community').any? or current_user.is? :admin
         .form-group
           .col-xs-4
             %label.control-label Share with a group
@@ -53,7 +53,7 @@
               - if current_user.is? :admin
                 = f_perm.input :grantee_id, collection: Community.where(type: 'Community').order(:full_name), label: false, wrapper: false
               - else
-                = f_perm.input :grantee_id, collection: current_user.communities, label: false, wrapper: false
+                = f_perm.input :grantee_id, collection: current_user.communities.where(type: 'Community'), label: false, wrapper: false
               = f_perm.input :grantee_type, as: :hidden, input_html: { value: 'Group' }, wrapper: false
             %p.help-block
               All of the members of the groups you select will be able to access your project. They will not be able to edit it.
