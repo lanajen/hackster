@@ -17,12 +17,15 @@
           = radio_button("widget", "type", "TextWidget")
           %i.fa.fa-align-left
           %br
-          %small Text
+          %small
+            Text
+          %i.fa.fa-check-circle-o.checkmark
         %a.btn.btn-default.with-radio
           = radio_button("widget", "type", "ImageWidget")
           %i.fa.fa-picture-o
           %br
           %small Images
+          %i.fa.fa-check-circle-o.checkmark
         %a.btn.btn-default{ data: { target: '#cat-code', toggle: 'subcat' }}
           %i.fa.fa-code
           %br
@@ -32,6 +35,7 @@
           %i.fa.fa-play-circle-o
           %br
           %small Video
+          %i.fa.fa-check-circle-o.checkmark
         %a.btn.btn-default{ data: { target: '#cat-schematics', toggle: 'subcat' }}
           %i.fa.fa-cogs
           %br
@@ -50,84 +54,100 @@
           %i.fa.fa-archive
           %br
           %small Archived code files
+          %i.fa.fa-check-circle-o.checkmark
         %a.btn.btn-default.with-radio
           = radio_button("widget", "type", "BitbucketWidget")
           %i.fa.fa-bitbucket
           %br
           %small Bitbucket repo
+          %i.fa.fa-check-circle-o.checkmark
         %a.btn.btn-default.with-radio
           = radio_button("widget", "type", "GithubWidget")
           %i.fa.fa-github
           %br
           %small Github repo
+          %i.fa.fa-check-circle-o.checkmark
         %a.btn.btn-default.with-radio
           = radio_button("widget", "type", "CodeWidget")
           %i.fa.fa-code
           %br
           %small Single code file
+          %i.fa.fa-check-circle-o.checkmark
       #cat-schematics.widget-categories.widget-subcategories
         %a.btn.btn-default.with-radio
           = radio_button("widget", "type", "CircuitsioWidget")
           %i.fa.fa-cogs
           %br
           %small Circuits.io schematics
+          %i.fa.fa-check-circle-o.checkmark
         %a.btn.btn-default.with-radio
           = radio_button("widget", "type", "OshparkWidget")
           %i.fa.fa-cogs
           %br
           %small OSH Park shared project
+          %i.fa.fa-check-circle-o.checkmark
         %a.btn.btn-default.with-radio
           = radio_button("widget", "type", "UpverterWidget")
           %i.fa.fa-cogs
           %br
           %small Upverter schematics
+          %i.fa.fa-check-circle-o.checkmark
       #cat-sales.widget-categories.widget-subcategories
         %a.btn.btn-default.with-radio
           = radio_button("widget", "type", "BuyWidget")
           %i.fa.fa-usd
           %br
           %small Buy now link
+          %i.fa.fa-check-circle-o.checkmark
         %a.btn.btn-default.with-radio
           = radio_button("widget", "type", "PaypalWidget")
           %i.fa.fa-usd
           %br
           %small PayPal button
+          %i.fa.fa-check-circle-o.checkmark
       #cat-others.widget-categories.widget-subcategories
         %a.btn.btn-default.with-radio
           = radio_button("widget", "type", "PartsWidget")
           %i.fa.fa-ellipsis-h
           %br
           %small Bill of materials
+          %i.fa.fa-check-circle-o.checkmark
         %a.btn.btn-default.with-radio
           = radio_button("widget", "type", "BuildLogWidget")
           %i.fa.fa-ellipsis-h
           %br
           %small Build log
+          %i.fa.fa-check-circle-o.checkmark
         %a.btn.btn-default.with-radio
           = radio_button("widget", "type", "CreditsWidget")
           %i.fa.fa-ellipsis-h
           %br
           %small Credits attribution
+          %i.fa.fa-check-circle-o.checkmark
         %a.btn.btn-default.with-radio
           = radio_button("widget", "type", "DocumentWidget")
           %i.fa.fa-ellipsis-h
           %br
           %small Files and documents
+          %i.fa.fa-check-circle-o.checkmark
         %a.btn.btn-default.with-radio
           = radio_button("widget", "type", "PressWidget")
           %i.fa.fa-ellipsis-h
           %br
           %small Press articles
+          %i.fa.fa-check-circle-o.checkmark
         %a.btn.btn-default.with-radio
           = radio_button("widget", "type", "StepByStepWidget")
           %i.fa.fa-ellipsis-h
           %br
           %small Step by step guide
+          %i.fa.fa-check-circle-o.checkmark
         %a.btn.btn-default.with-radio
           = radio_button("widget", "type", "StlWidget")
           %i.fa.fa-ellipsis-h
           %br
           %small STL renderings
+          %i.fa.fa-check-circle-o.checkmark
       - if @widget.errors.messages[:type].present?
         %span.help-block.has-error= @widget.errors.messages[:type].to_sentence
     -# = f.input :type, collection: Widget.all_types, label: 'What kind of widget do you want to create?'
@@ -139,6 +159,7 @@
 :javascript
   $('input[type="radio"]:checked').each(function(i, rad){
     $(rad).parent().addClass('active');
+    $('.checkmark', $(rad).parent()).show();
     if ($(rad).parent().parent().hasClass('widget-subcategories')) {
       $(rad).parent().parent().show();
       $('.btn[data-target="#' + $(rad).parent().parent().attr('id') + '"]').addClass('active');

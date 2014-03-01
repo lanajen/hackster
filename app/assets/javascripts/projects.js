@@ -197,6 +197,8 @@ $(document).ready(function(){
     console.log(this);
     $('.widget-form .btn').removeClass('active');
     $(this).addClass('active');
+    $('.widget-form .checkmark').hide();
+    $('.widget-form input[type="radio"]').prop('checked', false);
     $target = $($(this).data('target'));
     if ($('.widget-subcategories:visible').length > 0) {
       $('.widget-subcategories:visible').slideUp(function(){
@@ -210,12 +212,15 @@ $(document).ready(function(){
   $('.widget-form').on('click', '.btn.with-radio', function(e){
     e.preventDefault();
     $('input', $(this)).prop('checked', true);
+    $('.widget-form .checkmark').hide();
     $('.widget-form .btn.with-radio').removeClass('active');
+    $('.checkmark', $(this)).show();
     $(this).addClass('active');
   });
 
   $('.widget-form .widget-categories:not(.widget-subcategories)').on('click', '.btn.with-radio', function(e){
     $('.widget-form .btn:not(.with-radio)').removeClass('active');
+    $('.widget-form .checkmark').hide();
     $('.widget-subcategories:visible').slideUp();
   });
 });

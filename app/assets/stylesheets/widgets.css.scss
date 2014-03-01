@@ -566,6 +566,11 @@ p.caption {
     }
     i {
       font-size: 40px;
+      &.checkmark {
+        display: none;
+        font-size: 14px;
+        color: #468847;
+      }
     }
     small {
       font-size: 10px;
