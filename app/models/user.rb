@@ -97,7 +97,7 @@ class User < ActiveRecord::Base
 
   # scope :with_category, ->(category) { where("users.categories_mask & #{2**CATEGORIES.index(category.to_s)} > 0") }
 
-  store :counters_cache, accessors: [:comments_count, :interest_tags_count, :invitations_count, :projects_count, :respects_count, :skill_tags_count, :live_projects_count, :project_views_count]
+  store :counters_cache, accessors: [:comments_count, :interest_tags_count, :invitations_count, :projects_count, :respects_count, :skill_tags_count, :live_projects_count, :project_views_count, :followers_count]
 
   parse_as_integers :counters_cache, :comments_count, :interest_tags_count, :invitations_count, :projects_count, :respects_count, :skill_tags_count, :live_projects_count, :project_views_count
 

@@ -63,7 +63,7 @@ class Project < ActiveRecord::Base
 
   taggable :product_tags, :tech_tags
 
-  store :counters_cache, accessors: [:comments_count, :product_tags_count, :respects_count, :widgets_count]
+  store :counters_cache, accessors: [:comments_count, :product_tags_count, :respects_count, :widgets_count, :followers_count]
 
   parse_as_integers :counters_cache, :comments_count, :product_tags_count, :respects_count, :widgets_count
 
