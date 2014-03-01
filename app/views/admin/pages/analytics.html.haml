@@ -9,7 +9,7 @@
   %h1 Analytics
 
 .row
-  .col-xs-4
+  .col-xs-6
     .panel.panel-default.panel-dashboard
       .panel-heading
         %h3.panel-title Registered users
@@ -17,7 +17,7 @@
         = @user_count
         %small.text-muted +#{@new_users_count}
 
-  .col-xs-4
+  .col-xs-6
     .panel.panel-default.panel-dashboard
       .panel-heading
         %h3.panel-title Live projects
@@ -25,12 +25,7 @@
         = @project_count
         %small.text-muted +#{@new_projects_count}
 
-  .col-xs-4
-    .panel.panel-default.panel-dashboard
-      .panel-heading
-        %h3.panel-title Project / User ratio
-      .panel-body #{(@project_count.to_f / @user_count.to_f* 100).ceil}%
-
+.row
   .col-xs-4
     .panel.panel-default.panel-dashboard
       .panel-heading
@@ -50,8 +45,10 @@
   .col-xs-4
     .panel.panel-default.panel-dashboard
       .panel-heading
-        %h3.panel-title Users with at least one project
-      .panel-body= @users_with_at_least_one_live_project
+        %h3.panel-title Followers
+      .panel-body
+        = @follow_count
+        %small.text-muted +#{@new_follows_count}
 
 .row
   .col-xs-4
@@ -65,6 +62,19 @@
               %b= link_to user.name, user
               \:
               = user.live_projects_count
+
+  .col-xs-4
+    .panel.panel-default.panel-dashboard
+      .panel-heading
+        %h3.panel-title Project / User ratio
+      .panel-body #{(@project_count.to_f / @user_count.to_f* 100).ceil}%
+
+    .panel.panel-default.panel-dashboard
+      .panel-heading
+        %h3.panel-title Users with at least one project
+      .panel-body
+        = @users_with_at_least_one_live_project
+        %small.text-muted (#{(@users_with_at_least_one_live_project.to_f / @user_count * 100).ceil}%)
 
 .row
   .col-xs-6

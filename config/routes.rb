@@ -37,6 +37,7 @@ HackerIo::Application.routes.draw do
       get 'comments' => 'pages#comments'
       get 'logs' => 'pages#logs'
       get 'respects' => 'pages#respects'
+      get 'followers' => 'pages#followers'
 
       resources :invite_codes, except: [:show]
       resources :invite_requests do

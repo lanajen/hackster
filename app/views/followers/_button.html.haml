@@ -5,7 +5,7 @@
   - else
     = link_to content, followers_path(followable_type: followable.class.model_name, followable_id: followable.id), data: { method: :post, remote: true, container: 'body' }, title: "Follow #{followable.name}", rel: 'tooltip', class: 'follow-button'
 - else
-  = link_to content, new_user_session_path(redirect_to: followable), title: "Follow #{followable.name}", rel: 'tooltip', class: 'follow-button', data: { container: 'body' }
+  = link_to content, new_user_session_path(redirect_to: url_for(followable)), title: "Follow #{followable.name}", rel: 'tooltip', class: 'follow-button', data: { container: 'body' }
 
 = content_for :js do
   :javascript

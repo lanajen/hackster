@@ -1,0 +1,27 @@
+- model_class = FollowRelation
+.page-header
+  %h1
+    =t '.title', :default => model_class.model_name.human.pluralize
+
+%table.table.table-striped
+  %thead
+    %tr
+      %th= model_class.human_attribute_name(:author)
+      %th= model_class.human_attribute_name(:followable)
+      %th Own project?
+      %th= model_class.human_attribute_name(:created_at)
+  %tbody
+    - @follow_relations.each do |follow|
+      %tr
+        %td= link_to follow.user.name, follow.user
+        %td= link_to follow.followable.name, follow.followable
+        - own = (follow.followable_type == 'Project' and follow.user.in? follow.followable.users)
+        %td
+          - if own
+            %b Yes
+          - else
+            No
+        %td= time_ago_in_words follow.created_at
+
+.pagination.col-xs-12.text-center
+  = will_paginate @follow_relations
