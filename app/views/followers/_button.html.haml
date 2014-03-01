@@ -1,0 +1,16 @@
+- content = content_tag(:i, '', class: 'fa fa-signal')
+- if user_signed_in?
+  - if current_user.following? followable
+    = link_to content, followers_path(followable_type: followable.class.model_name, followable_id: followable.id), data: { method: :delete, remote: true, container: 'body' }, class: 'action-followed follow-button', title: 'Following (click to undo)', rel: 'tooltip'
+  - else
+    = link_to content, followers_path(followable_type: followable.class.model_name, followable_id: followable.id), data: { method: :post, remote: true, container: 'body' }, title: "Follow #{followable.name}", rel: 'tooltip', class: 'follow-button'
+- else
+  = link_to content, new_user_session_path(redirect_to: followable), title: "Follow #{followable.name}", rel: 'tooltip', class: 'follow-button', data: { container: 'body' }
+
+= content_for :js do
+  :javascript
+    $('body').on('click', 'a.follow-button', function(){
+      $(this).tooltip('destroy');
+      //when the response is faster the loader appears after the new icon
+      //$(this).replaceWith("#{escape_javascript image_tag('loader.gif')}");
+    });

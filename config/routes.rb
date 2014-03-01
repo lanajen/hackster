@@ -131,6 +131,10 @@ HackerIo::Application.routes.draw do
       resources :comments, only: [:create]
     end
 
+    resources :followers, only: [:create] do
+      delete '' => 'followers#destroy', on: :collection
+    end
+
     get 'users/registration/complete_profile' => 'users#after_registration', as: :user_after_registration
     patch 'users/registration/complete_profile' => 'users#after_registration_save'
 

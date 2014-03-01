@@ -56,6 +56,17 @@ class BaseMailer < ActionMailer::Base
         end
         author = context[:author] = comment.user
         context[:users] = project.users.with_subscription('new_comment_own') + comment.commentable.commenters.with_subscription('new_comment_commented') - [author]
+      when :follower
+        follow = context[:follow] = FollowRelation.find(context_id)
+        followable = follow.followable
+        context[:author] = follow.user
+        case followable
+        when Project
+          context[:project] = followable
+          context[:users] = followable.users.with_subscription('new_follow_project')
+        when User
+          context[:users] = [followable] if 'new_follow_me'.in? followable.subscriptions
+        end
       when :invited
         user = context[:user] = User.find(context_id)
         context[:inviter] = user.invited_by if user.invited_by

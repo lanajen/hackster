@@ -11,6 +11,10 @@ class User < ActiveRecord::Base
     'new_comment_own' => 'New comment on one of my projects',
     'new_comment_commented' => "New comment on a project I commented on",
     'new_respect_own' => 'Somebody respects one of my projects',
+    'new_follow_project' => 'Somebody starts following one of my projects',
+    'new_follow_me' => 'Somebody starts following me',
+    'follow_project_activity' => 'Activity for a project I follow',
+    'follow_user_activity' => 'Activity for a user I follow',
   }
 
   CATEGORIES = [
@@ -27,12 +31,6 @@ class User < ActiveRecord::Base
          :omniauthable, omniauth_providers: [:facebook, :github, :gplus, :linkedin, :twitter]
 
   belongs_to :invite_code
-  with_options class_name: 'User', join_table: :follow_relations do |u|
-    u.has_and_belongs_to_many :followers, foreign_key: :follower_id, association_foreign_key: :followed_id
-    u.has_and_belongs_to_many :followeds, foreign_key: :followed_id, association_foreign_key: :follower_id
-  end
-  has_and_belongs_to_many :followed_projects, class_name: 'Project',
-    join_table: :project_followers
   has_many :assignments, through: :promotions
   has_many :assignee_issues, foreign_key: :assignee_id
   has_many :assigned_issues, through: :assignee_issues, source: :issue
@@ -41,6 +39,11 @@ class User < ActiveRecord::Base
   has_many :comments, -> { order created_at: :desc }, foreign_key: :user_id, dependent: :destroy
   has_many :communities, through: :group_ties, source: :group, class_name: 'Community'
   # has_many :courses, through: :promotions  # doesnt work
+  has_many :follow_relations
+  has_many :followed_projects, source_type: 'Project', through: :follow_relations, source: :followable
+  has_many :followed_users, source_type: 'User', through: :follow_relations, source: :followable
+  has_many :invert_follow_relations, class_name: 'FollowRelation', as: :followable
+  has_many :followers, through: :invert_follow_relations, source: :user
   has_many :group_permissions, through: :groups, source: :granted_permissions
   has_many :group_ties, class_name: 'Member', dependent: :destroy
   has_many :groups, through: :group_ties
@@ -278,6 +281,7 @@ class User < ActiveRecord::Base
   def counters
     {
       comments: 'live_comments.count',
+      followers: 'followers.count',
       interest_tags: 'interest_tags.count',
       invitations: 'invitations.count',
       live_projects: 'projects.where(private: false).count',
@@ -430,14 +434,6 @@ class User < ActiveRecord::Base
     InviteRequest.find_by_email email
   end
 
-  def follow user
-    followeds << user unless user.in? followeds# or self == user
-  end
-
-  def follow_project project
-    followed_projects << project unless project.in? followed_projects
-  end
-
   # def has_access? project
   #   permissions.where(permissible_type: 'Project', permissible_id: project.id).any? or group_permissions.where(permissible_type: 'Project', permissible_id: project.id).any?
   # end
@@ -460,16 +456,21 @@ class User < ActiveRecord::Base
     roles.map(&:to_sym).include? role
   end
 
-  def is_following? user
-    user.in? followeds
-  end
-
-  def is_following_project? project
-    followed_projects.where(id: project.id).any?
+  def following? followable
+    case followable
+    when Project
+      followable.in? followed_projects
+    when User
+      followable.in? followed_users
+    end
   end
 
   def is_member? group
     group.members.where(user_id: id).first
+  end
+
+  def is_staff? project
+    project.try(:assignment).try(:promotion).try(:members).try(:with_group_roles, 'staff').try(:where, user_id: id).any?
   end
 
   def is_team_member? project
@@ -512,10 +513,6 @@ class User < ActiveRecord::Base
     sql = "SELECT projects.* FROM groups INNER JOIN permissions ON permissions.grantee_id = groups.id AND permissions.permissible_type = 'Project' AND permissions.grantee_type = 'Group' INNER JOIN projects ON projects.id = permissions.permissible_id INNER JOIN members ON groups.id = members.group_id WHERE members.user_id = ? AND projects.id = ?;"
     sql2 = "SELECT members.* FROM members INNER JOIN groups ON members.group_id = groups.id WHERE members.user_id = ? AND groups.type = 'Promotion' AND groups.id = (SELECT assignments.promotion_id FROM assignments WHERE assignments.id = ?)"
     Project.find_by_sql([sql, id, project.id]).any? or Member.find_by_sql([sql2, id, project.assignment_id]).any?
-  end
-
-  def is_staff? project
-    project.try(:assignment).try(:promotion).try(:members).try(:with_group_roles, 'staff').try(:where, user_id: id).any?
   end
 
   def live_comments
@@ -627,14 +624,6 @@ class User < ActiveRecord::Base
       username: user_name,
       websites_count: websites.values.reject{|v|v.nil?}.count,
     }
-  end
-
-  def unfollow user
-    followeds.delete user
-  end
-
-  def unfollow_project project
-    followed_projects.delete project
   end
 
   private

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140219043748) do
+ActiveRecord::Schema.define(version: 20140301002752) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -110,12 +110,15 @@ ActiveRecord::Schema.define(version: 20140219043748) do
   add_index "favorites", ["user_id"], name: "index_favorites_on_user_id", using: :btree
 
   create_table "follow_relations", force: true do |t|
-    t.integer "follower_id", null: false
-    t.integer "followed_id", null: false
+    t.integer  "user_id"
+    t.integer  "followable_id"
+    t.string   "followable_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  add_index "follow_relations", ["followed_id"], name: "index_follow_relations_on_followed_id", using: :btree
-  add_index "follow_relations", ["follower_id"], name: "index_follow_relations_on_follower_id", using: :btree
+  add_index "follow_relations", ["followable_id", "followable_type"], name: "index_follow_relations_on_followable_id_and_followable_type", using: :btree
+  add_index "follow_relations", ["user_id"], name: "index_follow_relations_on_user_id", using: :btree
 
   create_table "friend_invites", force: true do |t|
     t.datetime "created_at", null: false
@@ -245,14 +248,6 @@ ActiveRecord::Schema.define(version: 20140219043748) do
 
   add_index "permissions", ["grantee_type", "grantee_id"], name: "index_permissions_on_grantee_type_and_grantee_id", using: :btree
   add_index "permissions", ["permissible_id", "permissible_type"], name: "index_permissions_on_permissible_id_and_permissible_type", using: :btree
-
-  create_table "project_followers", id: false, force: true do |t|
-    t.integer "user_id",    null: false
-    t.integer "project_id", null: false
-  end
-
-  add_index "project_followers", ["project_id"], name: "index_project_followers_on_project_id", using: :btree
-  add_index "project_followers", ["user_id"], name: "index_project_followers_on_user_id", using: :btree
 
   create_table "projects", force: true do |t|
     t.string   "name"
