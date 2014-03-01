@@ -22,6 +22,12 @@ class ProjectsController < ApplicationController
     end
 
     @projects = @projects.paginate(page: params[:page])
+
+    respond_to do |format|
+      format.html
+      format.atom { render layout: false }
+      format.rss { redirect_to projects_path(params.merge(format: :atom)), status: :moved_permanently }
+    end
   end
 
   def show

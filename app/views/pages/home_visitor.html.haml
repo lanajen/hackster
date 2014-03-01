@@ -1,3 +1,7 @@
+= content_for :head do
+  = auto_discovery_link_tag :rss, projects_path(format: :rss), title: 'Most recent projects - Hackster.io'
+  = auto_discovery_link_tag :atom, projects_path(format: :atom), title: 'Most recent projects - Hackster.io'
+
 - cache 'home_visitor', expires_in: 24.hours do
   %section#teaser
     .container
