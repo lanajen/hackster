@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 ruby '1.9.3'
 
-gem 'rails', '4.0.1'
+gem 'rails', '4.0.3'
 
 # load early so that env variables are available to other gems
 gem 'dotenv-rails', :groups => [:development, :test]
