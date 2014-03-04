@@ -159,6 +159,7 @@ HackerIo::Application.routes.draw do
     get 'infringement_policy' => 'pages#infringement_policy'
     get 'privacy' => 'pages#privacy'
     get 'terms' => 'pages#terms'
+    get 'resources' => 'pages#resources'
 
     get ':user_name' => 'users#show', as: :user, user_name: /[A-Za-z0-9_]{3,}/, constraints: { format: /(html|json)/ }
 
