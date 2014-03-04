@@ -136,6 +136,8 @@ HackerIo::Application.routes.draw do
       delete '' => 'followers#destroy', on: :collection
     end
 
+    get 'activity' => 'broadcasts#index'
+
     get 'users/registration/complete_profile' => 'users#after_registration', as: :user_after_registration
     patch 'users/registration/complete_profile' => 'users#after_registration_save'
 

@@ -10,6 +10,7 @@ module BroadcastObserver
 
     def after_destroy record
       Broadcast.where(context_model_id: record.id, context_model_type: observed_model).destroy_all
+      Broadcast.where(broadcastable_id: record.id, broadcastable_type: observed_model).destroy_all
     end
 
     private

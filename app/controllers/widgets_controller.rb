@@ -49,7 +49,7 @@ class WidgetsController < ApplicationController
   def update
     if @widget.update_attributes params[:widget]
       flash[:notice] = 'Widget saved.'
-      current_user.broadcast :update, @project.id, 'Project' if @project.public?
+      current_user.broadcast :update, @project.id, 'Project', @project.id if @project.public?
       session[:last_widget_edited] = @widget.class.name.underscore
       respond_with @project
 

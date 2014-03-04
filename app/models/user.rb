@@ -114,9 +114,9 @@ class User < ActiveRecord::Base
   # broadcastable
   has_many :broadcasts, as: :broadcastable
 
-  def broadcast event, context_model_id, context_model_type
+  def broadcast event, context_model_id, context_model_type, project_id=nil
     broadcasts.create event: event, context_model_id: context_model_id,
-      context_model_type: context_model_type
+      context_model_type: context_model_type, user_id: id, project_id: project_id
   end
 
   # beginning of search methods
