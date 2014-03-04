@@ -65,7 +65,8 @@
             .col-xs-4.navbar-left= render 'shared/search_form'
             %ul.nav.navbar-nav
               %li= link_to 'Explore', projects_path(sort: 'popular')
-              %li= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path
+              %li.with-button
+                %span= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'btn btn-sm btn-warning navbar-btn'
               %li= link_to 'Resources', resources_path
             - if user_signed_in?
               %ul.nav.navbar-nav.navbar-right

@@ -15,9 +15,11 @@ module ApplicationHelper
     end
   end
 
-#  def redirecting_link_to content, link, *args
-#    super content, link, *args
-#  end
+  def next_meetup_for_group group_url
+    if event = Meetup.new.get_next_meetup(group_url)
+      "#{link_to(event['name'], event['event_url'])} on #{event['time'].to_date}".html_safe
+    end
+  end
 
   def roles_with_mask model_class, attribute
     roles = {}
