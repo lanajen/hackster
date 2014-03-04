@@ -115,6 +115,7 @@ class Widget < ActiveRecord::Base
         'Files and documents' => 'DocumentWidget',
         'Github repo' => 'GithubWidget',
         'Images' => 'ImageWidget',
+        'Issues' => 'IssuesWidget',
         'OSH Park shared project' => 'OshparkWidget',
         'PayPal Buy Now button' => 'PaypalWidget',
         'Press articles' => 'PressWidget',
