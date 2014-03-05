@@ -71,6 +71,12 @@ class IssuesController < ApplicationController
     redirect_to user_return_to, notice: "Update successful!"
   end
 
+  def destroy
+    @issue.destroy
+
+    redirect_to user_return_to, notice: 'Issue destroyed'
+  end
+
   private
     def load_issue
       @issue = @project.issues.where(sub_id: params[:id]).first!

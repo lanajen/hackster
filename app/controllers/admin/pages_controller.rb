@@ -41,16 +41,28 @@ class Admin::PagesController < Admin::BaseController
     @new_respects = graph_with_dates_for sql, 'New respects', 'ColumnChart'
   end
 
+  def build_logs
+    title "Admin > Build logs - #{params[:page]}"
+
+    @logs = BlogPost.order(created_at: :desc).paginate(page: params[:page])
+  end
+
   def comments
     title "Admin > Comments - #{params[:page]}"
 
-    @comments = Comment.order(created_at: :desc).paginate(page: params[:page])
+    @comments = Comment.where(commentable_type: 'Project').order(created_at: :desc).paginate(page: params[:page])
   end
 
   def followers
     title "Admin > Followers - #{params[:page]}"
 
     @follow_relations = FollowRelation.order(created_at: :desc).paginate(page: params[:page])
+  end
+
+  def issues
+    title "Admin > Issues - #{params[:page]}"
+
+    @issues = Issue.order(created_at: :desc).paginate(page: params[:page])
   end
 
   def logs

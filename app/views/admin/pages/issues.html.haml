@@ -1,0 +1,34 @@
+- model_class = Issue
+.page-header
+  %h1
+    =t '.title', :default => model_class.model_name.human.pluralize
+
+%table.table.table-striped
+  %thead
+    %tr
+      %th= model_class.human_attribute_name(:author)
+      %th= model_class.human_attribute_name(:project)
+      %th= model_class.human_attribute_name(:title)
+      %th= model_class.human_attribute_name(:body)
+      %th Own project?
+      %th= model_class.human_attribute_name(:created_at)
+      %th=t '.actions', :default => t("helpers.actions")
+  %tbody
+    - @issues.each do |issue|
+      %tr
+        %td= link_to issue.user.name, issue.user
+        %td= link_to issue.threadable.name, issue.threadable
+        %td= link_to issue.title, issue_path(issue.threadable, issue)
+        %td= strip_tags(issue.body).truncate 100
+        - own = issue.user.in? issue.threadable.users
+        %td
+          - if own
+            %b Yes
+          - else
+            No
+        %td= time_ago_in_words issue.created_at
+        %td
+          = link_to t('.destroy', :default => t("helpers.links.destroy")), issue_path(issue.threadable, issue), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'
+
+.pagination.col-xs-12.text-center
+  = will_paginate @issues

@@ -34,7 +34,9 @@ HackerIo::Application.routes.draw do
         mount Sidekiq::Web => '/sidekiq'
       end
       get 'analytics' => 'pages#analytics'
+      get 'build_logs' => 'pages#build_logs'
       get 'comments' => 'pages#comments'
+      get 'issues' => 'pages#issues'
       get 'logs' => 'pages#logs'
       get 'respects' => 'pages#respects'
       get 'followers' => 'pages#followers'
