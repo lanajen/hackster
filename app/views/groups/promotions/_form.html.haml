@@ -17,6 +17,7 @@
       = f.input :user_name, label: 'Pretty URL', wrapper: :addon do
         %span.input-group-addon www.hackster.io/courses/#{@promotion.course.user_name}/
         = f.input_field :user_name
+      = f.input :professor_id, collection: @promotion.members.with_group_roles(:staff), hint: 'You can select a professor from the list of staff members.', label_method: :label_method, label: 'Teaching professor'
       = f.input :email
       = f.input :mini_resume, as: :text, input_html: { rows: 4 },
         hint: 'Maximum 140 characters'

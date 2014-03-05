@@ -1,6 +1,6 @@
 class Member < ActiveRecord::Base
   include Roles
-  set_roles :group_roles, %w(staff student)
+  set_roles :group_roles, %w(staff student professor)
 
   belongs_to :group
   belongs_to :invited_by, polymorphic: true
@@ -35,6 +35,10 @@ class Member < ActiveRecord::Base
 
   def joined_at
     invitation_accepted_at || created_at
+  end
+
+  def label_method
+    user.name
   end
 
   def permission_action=(val)

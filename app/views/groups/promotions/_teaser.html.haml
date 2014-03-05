@@ -22,7 +22,11 @@
         = link_to @promotion.short_name, promotion_path(@promotion)
 
       - if @promotion.mini_resume.present?
-        %p.user-mini-resume= @promotion.mini_resume
+        %p.user-mini-resume
+          = @promotion.mini_resume
+          - if @promotion.professor
+            By
+            = link_to @promotion.professor.user.name, @promotion.professor.user, title: 'Teaching professor', rel: 'tooltip'
       - elsif can? :update, @promotion
         %p.user-mini-resume
           No mini resume.

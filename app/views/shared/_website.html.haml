@@ -1,18 +1,18 @@
 - if url.present?
   - case type
   - when 'facebook_link'
-    = link_to content_tag(:i, '', class: 'fa fa-facebook-square'), url
+    = link_to content_tag(:i, '', class: 'fa fa-facebook-square'), url, target: '_blank'
   - when 'github_link'
-    = link_to content_tag(:i, '', class: 'fa fa-github-square'), url
+    = link_to content_tag(:i, '', class: 'fa fa-github-square'), url, target: '_blank'
   - when 'google_plus_link'
-    = link_to content_tag(:i, '', class: 'fa fa-google-plus-square'), url
+    = link_to content_tag(:i, '', class: 'fa fa-google-plus-square'), url, target: '_blank'
   - when 'linked_in_link'
-    = link_to content_tag(:i, '', class: 'fa fa-linkedin-square'), url
+    = link_to content_tag(:i, '', class: 'fa fa-linkedin-square'), url, target: '_blank'
   - when 'twitter_link'
-    = link_to content_tag(:i, '', class: 'fa fa-twitter-square'), url
+    = link_to content_tag(:i, '', class: 'fa fa-twitter-square'), url, target: '_blank'
   - when 'youtube_link'
-    = link_to content_tag(:i, '', class: 'fa fa-youtube-square'), url
+    = link_to content_tag(:i, '', class: 'fa fa-youtube-square'), url, target: '_blank'
   - when 'website_link'
-    = link_to content_tag(:i, '', class: 'fa fa-link'), url
+    = link_to content_tag(:i, '', class: 'fa fa-link'), url, target: '_blank'
   - when 'blog_link'
-    = link_to content_tag(:i, '', class: 'fa fa-rss'), url
+    = link_to content_tag(:i, '', class: 'fa fa-rss'), url, target: '_blank'
