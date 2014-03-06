@@ -26,7 +26,7 @@
       = render partial: 'shared/analytics', locals: { tracker: 'UA-11926897-15', domain: 'hackster.io' }
     = javascript_include_tag "application"
 
-  %body
+  %body.whitelabel
     #wrapper
       .navbar.navbar-default.navbar-static-top
         .container{ style: 'position:relative;' }
@@ -35,7 +35,7 @@
               %span.fa.fa-bar
               %span.fa.fa-bar
               %span.fa.fa-bar
-            = link_to current_platform.name, root_path, class: 'navbar-brand navbar-btn no-override'
+            = link_to (current_platform.logo.present? ? image_tag(current_platform.logo.file_url) : current_platform.name), root_path, class: 'navbar-brand navbar-btn no-override'
 
           .collapse.navbar-collapse
             .col-xs-4.navbar-left= render 'shared/search_form'
@@ -109,7 +109,7 @@
           %li
         %ul.list-unstyled.list-inline.pull-right
           %li
-            = link_to 'Community site for hardware makers', ''
+            = link_to 'Hardware makers community site', ''
             by
             = link_to 'Hackster.io', ''
             &copy; 2014

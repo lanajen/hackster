@@ -8,8 +8,8 @@
     .col-xs-12.text-center
       %h1 Spark gives you the tools to connect everyday electronics to the internet over Wi-Fi.
       %ul.list-unstyled.list-inline
-        %li= link_to 'Documentation', 'http://spark.github.io', class: 'no-override'
-        %li= link_to 'Buy', 'http://spark.io', class: 'no-override'
+        %li= link_to "#{content_tag(:i, '', class: 'fa fa-github')} Documentation".html_safe, 'http://spark.github.io', class: 'no-override hidden-link'
+        %li= link_to "#{content_tag(:i, '', class: 'fa fa-shopping-cart')} Buy".html_safe, 'http://spark.io', class: 'no-override hidden-link'
 
     .col-xs-12
       .row.thumb-list

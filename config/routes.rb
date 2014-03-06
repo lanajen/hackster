@@ -181,11 +181,14 @@ HackerIo::Application.routes.draw do
 
   constraints(ClientSite) do
     scope module: :client, as: :client do
-      get ':user_name' => 'users#show', as: :user, user_name: /[A-Za-z0-9_]{3,}/, constraints: { format: /(html|json)/ }
 
-      scope ':user_name/:project_slug', as: :project, user_name: /[A-Za-z0-9_]{3,}/, project_slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|js)/ } do
-        get '' => 'projects#show', as: ''
-      end
+      get 'search' => 'search#search'
+
+      # get ':user_name' => 'users#show', as: :user, user_name: /[A-Za-z0-9_]{3,}/, constraints: { format: /(html|json)/ }
+
+      # scope ':user_name/:project_slug', as: :project, user_name: /[A-Za-z0-9_]{3,}/, project_slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|js)/ } do
+      #   get '' => 'projects#show', as: ''
+      # end
 
       root to: 'projects#index'
     end

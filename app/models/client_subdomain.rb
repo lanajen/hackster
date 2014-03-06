@@ -1,7 +1,7 @@
 class ClientSubdomain < Subdomain
   RESERVED_SUBDOMAINS = %w(www beta api admin)
 
-  has_one :logo, as: :attachable, class_name: 'Avatar'
+  has_one :logo, as: :attachable, class_name: 'Document'
 
   validates :subdomain, format: { with: /\A[a-z0-9\-]+\z/, message: 'is not a valid subdomain. Please use only lowercase letters, digits or dash (-).' }, allow_blank: true
   validates :subdomain, presence: true
