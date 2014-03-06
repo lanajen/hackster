@@ -1,12 +1,12 @@
 class IssuesController < ApplicationController
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, only: [:new, :create, :edit, :update]
   before_filter :load_project
   before_filter :load_issue, only: [:show, :edit, :update, :destroy, :update_workflow]
   before_filter :set_project_mode
   layout 'project'
 
   def index
-    authorize! :read, @project.issues.new
+    authorize! :read, Issue, @project
     title "Issues for #{@project.name}"
     @issues = @project.issues.order(created_at: :desc).where(type: 'Issue')
     params[:status] ||= 'open'
@@ -19,7 +19,7 @@ class IssuesController < ApplicationController
   end
 
   def new
-    authorize! :create, @project.issues.new
+    authorize! :create, Issue, @project
     title "New issue | #{@project.name}"
     @issue = @project.issues.new
   end
@@ -51,6 +51,7 @@ class IssuesController < ApplicationController
   end
 
   def update_workflow
+    authorize! :edit, @issue
     if params[:event].in? %w(reopen close)
       begin
         @issue.send "#{params[:event]}!"
@@ -72,6 +73,7 @@ class IssuesController < ApplicationController
   end
 
   def destroy
+    authorize! :destroy, @issue
     @issue.destroy
 
     redirect_to user_return_to, notice: 'Issue destroyed'
