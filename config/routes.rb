@@ -1,4 +1,4 @@
-# require File.join(Rails.root, 'lib/resque_auth_server.rb')
+require 'route_constraints'
 require 'sidekiq/web'
 
 HackerIo::Application.routes.draw do
@@ -9,7 +9,7 @@ HackerIo::Application.routes.draw do
     }, via: :get
   end
 
-  constraints subdomain: /www/ do
+  constraints(MainSite) do
     get 'sitemap_index.xml' => 'sitemap#index', as: 'sitemap_index', defaults: { format: 'xml' }
     get 'sitemap.xml' => 'sitemap#show', as: 'sitemap', defaults: { format: 'xml' }
 
@@ -177,5 +177,20 @@ HackerIo::Application.routes.draw do
     end
 
     root to: 'pages#home'
+  end
+
+  constraints(ClientSite) do
+    scope module: :client, as: :client do
+
+      get 'search' => 'search#search'
+
+      # get ':user_name' => 'users#show', as: :user, user_name: /[A-Za-z0-9_]{3,}/, constraints: { format: /(html|json)/ }
+
+      # scope ':user_name/:project_slug', as: :project, user_name: /[A-Za-z0-9_]{3,}/, project_slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|js)/ } do
+      #   get '' => 'projects#show', as: ''
+      # end
+
+      root to: 'projects#index'
+    end
   end
 end

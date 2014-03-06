@@ -1,0 +1,19 @@
+= content_for :head do
+  %meta{ name: 'robots', content: 'noindex' }
+  = auto_discovery_link_tag :rss, projects_path(format: :rss), title: 'Most recent projects - Hackster.io'
+  = auto_discovery_link_tag :atom, projects_path(format: :atom), title: 'Most recent projects - Hackster.io'
+
+.content.projects
+  .row
+    .col-xs-12.text-center
+      %h1 Spark gives you the tools to connect everyday electronics to the internet over Wi-Fi.
+      %ul.list-unstyled.list-inline
+        %li= link_to "#{content_tag(:i, '', class: 'fa fa-github')} Documentation".html_safe, 'http://spark.github.io', class: 'no-override hidden-link'
+        %li= link_to "#{content_tag(:i, '', class: 'fa fa-shopping-cart')} Buy".html_safe, 'http://spark.io', class: 'no-override hidden-link'
+
+    .col-xs-12
+      .row.thumb-list
+        - @projects.each do |project|
+          = render partial: 'projects/project_thumb', locals: { project: project.decorate }
+      .row
+        .col-xs-12.text-center= will_paginate @projects
