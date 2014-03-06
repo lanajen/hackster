@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140301002752) do
+ActiveRecord::Schema.define(version: 20140306000614) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -293,6 +293,13 @@ ActiveRecord::Schema.define(version: 20140301002752) do
 
   add_index "slug_histories", ["project_id"], name: "index_slug_histories_on_project_id", using: :btree
   add_index "slug_histories", ["value"], name: "index_slug_histories_on_value", using: :btree
+
+  create_table "subdomains", force: true do |t|
+    t.string   "subdomain"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "tags", force: true do |t|
     t.integer  "taggable_id",   null: false
