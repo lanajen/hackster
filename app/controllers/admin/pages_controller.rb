@@ -62,7 +62,7 @@ class Admin::PagesController < Admin::BaseController
   def issues
     title "Admin > Issues - #{params[:page]}"
 
-    @issues = Issue.order(created_at: :desc).paginate(page: params[:page])
+    @issues = Issue.where(type: 'Issue').order(created_at: :desc).paginate(page: params[:page])
   end
 
   def logs
