@@ -15,6 +15,16 @@ class ProjectObserver < ActiveRecord::Observer
     SlugHistory.update_history_for record.id
   end
 
+  def after_update record
+    if record.private_changed?
+      update_counters record, :live_projects
+      record.commenters.each{|u| u.update_counters only: [:comments] }
+      if record.private?
+        Broadcast.where(context_model_id: record.id, context_model_type: 'Project').destroy_all
+      end
+    end
+  end
+
   def before_create record
     record.reset_counters assign_only: true
   end
@@ -31,14 +41,6 @@ class ProjectObserver < ActiveRecord::Observer
       issue.type = 'Feedback'
       issue.user_id = 0
       issue.save
-    end
-
-    if record.private_changed?
-      update_counters record, :live_projects
-      record.commenters.each{|u| u.update_counters only: [:comments] }
-      if record.private?
-        Broadcast.where(context_model_id: record.id, context_model_type: 'Project').destroy_all
-      end
     end
 
     if (record.changed && %w(assignment_id name cover_image one_liner tech_tags product_tags made_public_at license)).any? or record.tech_tags_string_changed? or product_tags_string_changed?
