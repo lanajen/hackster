@@ -392,7 +392,7 @@
     position: relative;
     .comment-text {
       padding-top: 2px;
-      max-width: 856px;
+      max-width: 370px;
       p {
         margin-bottom: 5px;
       }
@@ -412,19 +412,19 @@
     &.depth-1 {
       padding-left: 38px;
       .comment-text {
-        max-width: 818px;
+        max-width: 332px;
       }
     }
     &.depth-2 {
       padding-left: 76px;
       .comment-text {
-        max-width: 780px;
+        max-width: 294px;
       }
     }
     &.depth-3 {
       padding-left: 114px;
       .comment-text {
-        max-width: 742px;
+        max-width: 256px;
       }
     }
   }
