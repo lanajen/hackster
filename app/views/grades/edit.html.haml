@@ -1,0 +1,46 @@
+= content_for :no_container do
+  #grader
+    .container
+      %h1
+        = link_to @assignment.promotion.name, promotion_path(@assignment.promotion), target: '_blank'
+        %small
+          Grading assignment
+          = link_to @assignment.name, assignment_path(@assignment), target: '_blank'
+      .row
+        .col-xs-12
+          %b Project:
+          = link_to @project.name, @project, target: '_blank'
+          \-
+          - case @gradable
+          - when User
+            %b Student:
+            = link_to image_tag(@gradable.decorate.avatar(:mini), style: 'width: 20px' ), @gradable
+            = link_to @gradable.name, @gradable, target: '_blank'
+            - member = Member.where(user_id: @gradable.id, group_id: @project.team_id).first
+            - if member.contribution.present?
+              \-
+              %strong Contribution:
+              = member.contribution
+          - when Team
+            %b Team:
+            - @gradable.members.includes(:user).each do |member|
+              - user = member.user
+              = link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
+              = link_to user.name, user, target: '_blank'
+              - if member.contribution.present?
+                %i.fa.fa-question-circle.istooltip{ title: "Contribution: #{member.contribution}" }
+                &nbsp;
+          %hr
+          = simple_form_for @grade, url: assignment_grade_path(@assignment), wrapper: :bootstrap3_horizontal, html: { class: 'form-horizontal' } do |f|
+            = f.input :gradable_type, as: :hidden
+            = f.input :gradable_id, as: :hidden
+            = f.input :project_id, as: :hidden
+            .row
+              .col-xs-8
+                = f.input :grade
+                = f.input :feedback, input_html: { rows: 4 }
+              .col-xs-4
+                = f.submit 'Save and next', class: 'btn btn-primary'
+                = link_to 'Cancel', assignment_grades_path(@assignment), class: 'btn btn-link btn-sm'
+
+    %iframe{ src: "#{url_for(@project)}?blank_frame=1", frameborder: "0" }

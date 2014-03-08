@@ -57,22 +57,23 @@
       - else
         = link_to 'Follow', user_followers_path(@promotion), method: :post, class: 'btn-follow'
 
-.row
-  .col-xs-12
-    .tabbable.tabs-left.navbar.navbar-default.navbar-tabs{ style: 'background: #fff;' }
-      %ul.nav.navbar-nav
-        %li.active= link_to "Projects", '#tab-projects', data: { toggle: 'tab' }
-        %li= link_to "Assignments", '#tab-assignments', data: { toggle: 'tab' }
-        %li= link_to "Students", '#tab-students', data: { toggle: 'tab' }
-        %li= link_to "Staff", '#tab-staffs', data: { toggle: 'tab' }
+- if can? :read, @promotion
+  .row
+    .col-xs-12
+      .tabbable.tabs-left.navbar.navbar-default.navbar-tabs{ style: 'background: #fff;' }
+        %ul.nav.navbar-nav
+          %li.active= link_to "Projects", '#tab-projects', data: { toggle: 'tab' }
+          %li= link_to "Assignments", '#tab-assignments', data: { toggle: 'tab' }
+          %li= link_to "Students", '#tab-students', data: { toggle: 'tab' }
+          %li= link_to "Staff", '#tab-staffs', data: { toggle: 'tab' }
 
-        - if can? :manage, @promotion
-          %li.dropdown
-            %a.dropdown-toggle.action{ data: { toggle: 'dropdown' }, href: '#', title: 'Settings', rel: 'tooltip' }
-              %i.fa.fa-cog
-              %b.caret
-            %ul.dropdown-menu
-              %li= link_to 'Edit promotion', edit_promotion_path(@promotion), data: { remote: true }
-              %li= link_to 'Manage members', promotion_edit_members_path(@promotion)
-              %li= link_to 'Invite members', group_new_invitations_path(@promotion)
-              %li= link_to 'New assignment', new_assignment_path(@promotion.assignments.new)
+          - if can? :manage, @promotion
+            %li.dropdown
+              %a.dropdown-toggle.action{ data: { toggle: 'dropdown' }, href: '#', title: 'Settings', rel: 'tooltip' }
+                %i.fa.fa-cog
+                %b.caret
+              %ul.dropdown-menu
+                %li= link_to 'Edit promotion', edit_promotion_path(@promotion), data: { remote: true }
+                %li= link_to 'Manage members', promotion_edit_members_path(@promotion)
+                %li= link_to 'Invite members', group_new_invitations_path(@promotion)
+                %li= link_to 'New assignment', new_assignment_path(@promotion.assignments.new)

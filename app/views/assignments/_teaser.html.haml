@@ -53,3 +53,4 @@
               %b.caret
             %ul.dropdown-menu
               %li= link_to 'Edit assignment', edit_assignment_path(@assignment), data: { remote: true }
+              %li= link_to 'Manage grades', assignment_grades_path(@assignment)

@@ -1,4 +1,10 @@
 class Group < ActiveRecord::Base
+  ACCESS_LEVELS = {
+    'Anyone without approval' => 'anyone',
+    'Anyone can request access' => 'request',
+    'Only people who are explicitely invited' => 'invite',
+  }
+
   has_many :broadcasts, through: :users
   has_many :granted_permissions, as: :grantee, class_name: 'Permission'
   has_many :issues, through: :projects
@@ -11,7 +17,8 @@ class Group < ActiveRecord::Base
     :facebook_link, :twitter_link, :linked_in_link, :website_link,
     :blog_link, :github_link, :email, :mini_resume, :city, :country,
     :user_name, :full_name, :members_attributes, :avatar_id,
-    :permissions_attributes, :google_plus_link, :youtube_link, :new_user_name
+    :permissions_attributes, :google_plus_link, :youtube_link, :new_user_name,
+    :access_levels
   attr_writer :new_user_name
 
   accepts_nested_attributes_for :avatar, :members, :permissions,
@@ -26,8 +33,16 @@ class Group < ActiveRecord::Base
   before_validation :clean_members
   before_validation :ensure_website_protocol
 
+  def self.default_access_level
+    'anyone'
+  end
+
   def self.default_permission
     'read'
+  end
+
+  def access_level
+    read_attribute(:access_level).presence || self.class.default_access_level
   end
 
   def assign_new_user_name
@@ -87,6 +102,10 @@ class Group < ActiveRecord::Base
         end
         send "#{type}=", 'http://' + url unless url =~ /^http/
       end
+    end
+
+    def ensure_invitation_token
+      self.invitation_token = SecureRandom.urlsafe_base64(nil, false) if invitation_token.nil?
     end
 
     def website_format_is_valid

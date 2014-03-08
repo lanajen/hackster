@@ -24,6 +24,7 @@ class Project < ActiveRecord::Base
   has_many :followers, through: :follow_relations, source: :user
   has_many :issues, as: :threadable, dependent: :destroy
   has_many :images, as: :attachable, dependent: :destroy
+  has_many :grades
   has_many :permissions, as: :permissible
   has_many :respects, dependent: :destroy, class_name: 'Favorite'
   has_many :respecting_users, -> { order 'favorites.created_at ASC' }, through: :respects, source: :user
@@ -40,7 +41,7 @@ class Project < ActiveRecord::Base
     :team_members_attributes, :website, :one_liner, :widgets_attributes,
     :featured, :featured_date, :cover_image_id, :logo_id, :license, :slug,
     :permissions_attributes, :new_slug, :slug_histories_attributes, :hide,
-    :assignment_id
+    :assignment_id, :graded
   attr_accessor :current
   attr_writer :new_slug
   accepts_nested_attributes_for :images, :video, :logo, :team_members,

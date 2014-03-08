@@ -1,4 +1,5 @@
 class Team < Group
+  has_many :grades, as: :gradable
   has_many :projects
   before_save :update_user_name
 
