@@ -31,7 +31,6 @@ class Ability
   end
 
   def confirmed_user
-
   end
 
   def member
@@ -72,6 +71,9 @@ class Ability
     end
     can :create, Assignment do |assignment|
       @user.can? :manage, assignment.promotion
+    end
+    can :manage, Grade do |grade|
+      @user.can? :manage, grade.assignment
     end
 
     can [:create, :update, :destroy], [Widget] do |record|
