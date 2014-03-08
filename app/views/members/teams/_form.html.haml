@@ -6,6 +6,7 @@
     %thead
       %th User
       %th Permission
+      %th Contribution
       %th Status
       %th
     %tbody
@@ -19,6 +20,7 @@
                 = f_member.association :user, collection: User.where('user_name IS NOT NULL').sort_by{|u| u.name }, label: false
             = f_member.simple_fields_for :permission do |f_perm|
               %td= f_perm.input :action, collection: Permission::ACTIONS, label: false
+            %td= f_member.input :mini_resume, as: :text, label: false
             %td
               - if member.persisted?
                 - if member.invitation_pending?

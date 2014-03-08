@@ -5,7 +5,6 @@ class PromotionsController < ApplicationController
   respond_to :html
 
   def show
-    authorize! :read, @promotion
     title @promotion.name
     meta_desc "Join the promotion #{@promotion.name} on Hackster.io!"
     # @broadcasts = @promotion.broadcasts.limit 20

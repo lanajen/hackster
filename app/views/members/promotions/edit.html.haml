@@ -2,6 +2,8 @@
   .wellified
     %h2.text-center Manage members
 
+    %p.help-block How can new members join? See #{link_to 'here', group_new_invitations_path(@group)}.
+
     = simple_nested_form_for @group, url: group_members_path(@group), html: { class: 'widget-form' } do |f|
       = f.error_notification
       %table#sortable.table.table-condensed

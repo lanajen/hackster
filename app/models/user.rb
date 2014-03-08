@@ -42,6 +42,7 @@ class User < ActiveRecord::Base
   has_many :follow_relations
   has_many :followed_projects, source_type: 'Project', through: :follow_relations, source: :followable
   has_many :followed_users, source_type: 'User', through: :follow_relations, source: :followable
+  has_many :grades, as: :gradable
   has_many :invert_follow_relations, class_name: 'FollowRelation', as: :followable
   has_many :followers, through: :invert_follow_relations, source: :user
   has_many :group_permissions, through: :groups, source: :granted_permissions
@@ -53,6 +54,7 @@ class User < ActiveRecord::Base
   has_many :promotions, through: :group_ties, source: :group, class_name: 'Promotion'
   has_many :respects, dependent: :destroy, class_name: 'Favorite'
   has_many :respected_projects, through: :respects, source: :project
+  has_many :team_grades, through: :teams, source: :grades
   has_many :teams, through: :group_ties, source: :group, class_name: 'Team'
   has_one :avatar, as: :attachable, dependent: :destroy
   has_one :reputation, dependent: :destroy
@@ -252,6 +254,10 @@ class User < ActiveRecord::Base
   def add_confirmed_role
     self.roles = roles << 'confirmed_user'
     save
+  end
+
+  def all_grades
+    grades + team_grades
   end
 
   def all_permissions

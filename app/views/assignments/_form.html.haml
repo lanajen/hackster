@@ -1,5 +1,5 @@
 - @assignment.build_document unless @assignment.document.present?
-= simple_nested_form_for @assignment, html: { class: 'form-horizontal remote accept-file-upload', data: { remote: true } }, wrapper: :bootstrap3_horizontal do |f|
+= simple_nested_form_for @assignment, url: "/assignments/#{@assignment.id}", html: { class: 'form-horizontal remote accept-file-upload', data: { remote: true } }, wrapper: :bootstrap3_horizontal do |f|
   = f.error_notification
 
   .row
@@ -15,6 +15,7 @@
   .row
     .col-xs-6
       = f.input :name
+      = f.input :grading_type, collection: Assignment::GRADING_TYPES
 
     .col-xs-6
       .file-drop.form-group{ class: 'document' }

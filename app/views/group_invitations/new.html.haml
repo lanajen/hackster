@@ -6,3 +6,7 @@
       .form-group
         = text_area_tag :emails, params[:emails], placeholder: 'User emails, separated by commas, spaces or new lines.', class: 'form-control', rows: 4
       = submit_tag 'Invite users', class: 'btn btn-primary btn-block'
+    %hr
+    %p
+      Anyone with the following link can join this group without being explicitely invited:
+      %textarea#group-link.form-control{ onclick: "this.select();" }= group_invitations_url(@group, token: @group.invitation_token)

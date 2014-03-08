@@ -11,6 +11,7 @@ class Member < ActiveRecord::Base
   accepts_nested_attributes_for :permission, allow_destroy: true
 
   validates :user_id, uniqueness: { scope: :group_id }
+  validates :mini_resume, length: { maximum: 250 }
 
   def self.invitation_accepted_or_not_invited
     where('members.invitation_sent_at IS NULL OR members.invitation_accepted_at IS NOT NULL')
@@ -18,6 +19,10 @@ class Member < ActiveRecord::Base
 
   def accept_invitation!
     update_attributes(invitation_accepted_at: Time.now) unless invitation_accepted_at.present?
+  end
+
+  def contribution
+    mini_resume
   end
 
   def initialize_permission save=false

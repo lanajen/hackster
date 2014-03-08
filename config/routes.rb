@@ -58,6 +58,7 @@ HackerIo::Application.routes.draw do
       patch 'members' => 'members#update'
     end
     resources :groups, only: [] do
+      get 'invitations' => 'group_invitations#index', as: :invitations
       get 'invitations/new' => 'group_invitations#new', as: :new_invitations
       post 'invitations' => 'group_invitations#create'
       get 'invitations/accept' => 'group_invitations#accept', as: :accept_invitation
@@ -87,7 +88,7 @@ HackerIo::Application.routes.draw do
         delete '' => 'promotions#destroy'
         patch '' => 'promotions#update'
 
-        resources :assignments, only: [:new, :create, :show, :update] do
+        resources :assignments, only: [:new, :create, :show] do
           get 'embed', on: :member
         end
       end
@@ -96,7 +97,7 @@ HackerIo::Application.routes.draw do
       get 'members/edit' => 'members#edit', as: :edit_members
       patch 'members' => 'members#update'
     end
-    resources :assignments, only: [:edit, :destroy]
+    resources :assignments, only: [:edit, :update, :destroy]
 
     resources :files, only: [:create, :show] do
       get 'signed_url', on: :collection
@@ -125,6 +126,14 @@ HackerIo::Application.routes.draw do
       resources :widgets
       patch 'widgets' => 'widgets#save'
     end
+
+    resources :assignments, only: [] do
+      get 'grades' => 'grades#index', as: :grades
+      get 'grades/edit(/:project_id(/:user_id))' => 'grades#edit', as: :edit_grade
+      post 'grades(/:project_id(/:user_id))' => 'grades#update', as: :grade
+      patch 'grades(/:project_id(/:user_id))' => 'grades#update'
+    end
+    resources :grades, only: [:index]
 
     resources :issues, only: [] do
       resources :comments, only: [:create]
