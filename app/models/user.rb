@@ -257,7 +257,7 @@ class User < ActiveRecord::Base
   end
 
   def all_grades
-    grades + team_grades
+    grades.includes(:assignment).where(assignments: { private_grades: false }) + team_grades.includes(:assignment).where(assignments: { private_grades: false })
   end
 
   def all_permissions
