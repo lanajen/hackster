@@ -257,7 +257,7 @@ class Project < ActiveRecord::Base
     end
 
     def can_be_public?
-      widgets_count > 1 and cover_image.present?
+      widgets_count >= 1 and cover_image.present?
     end
 
     def generate_slug
