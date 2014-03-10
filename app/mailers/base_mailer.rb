@@ -74,7 +74,7 @@ class BaseMailer < ActionMailer::Base
         when User
           context[:user] = grade.gradable
         when Team
-          context[:users] = grade.gradable.members
+          context[:users] = grade.gradable.users
         end
       when :invited
         user = context[:user] = User.find(context_id)
@@ -86,6 +86,11 @@ class BaseMailer < ActionMailer::Base
         context[:user] = context[:invite] = InviteRequest.find(context_id)
       when :invite_request_notification
         context[:invite] = InviteRequest.find(context_id)
+      when :issue
+        issue = context[:issue] = Issue.find(context_id)
+        project = context[:project] = issue.threadable
+        context[:author] = issue.user
+        context[:users] = project.team.users
       when :log_line
         context[:error] = LogLine.find(context_id)
       when :membership
