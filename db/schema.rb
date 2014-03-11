@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140303233748) do
+ActiveRecord::Schema.define(version: 20140311013224) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,11 +27,14 @@ ActiveRecord::Schema.define(version: 20140303233748) do
   add_index "assignee_issues", ["issue_id"], name: "index_assignee_issues_on_issue_id", using: :btree
 
   create_table "assignments", force: true do |t|
-    t.integer  "promotion_id",     null: false
-    t.integer  "id_for_promotion", null: false
+    t.integer  "promotion_id",                     null: false
+    t.integer  "id_for_promotion",                 null: false
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "grading_type"
+    t.boolean  "graded",           default: false
+    t.boolean  "private_grades",   default: true
   end
 
   add_index "assignments", ["id_for_promotion"], name: "index_assignments_on_id_for_promotion", using: :btree
@@ -127,6 +130,21 @@ ActiveRecord::Schema.define(version: 20140303233748) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "grades", force: true do |t|
+    t.integer  "gradable_id",             null: false
+    t.string   "gradable_type",           null: false
+    t.string   "grade",         limit: 3
+    t.text     "feedback"
+    t.integer  "project_id",              null: false
+    t.integer  "user_id",                 null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "grades", ["gradable_type", "gradable_id"], name: "index_grades_on_gradable_type_and_gradable_id", using: :btree
+  add_index "grades", ["project_id"], name: "index_grades_on_project_id", using: :btree
+  add_index "grades", ["user_id"], name: "index_grades_on_user_id", using: :btree
+
   create_table "groups", force: true do |t|
     t.string   "user_name",         limit: 100
     t.string   "city",              limit: 50
@@ -142,6 +160,8 @@ ActiveRecord::Schema.define(version: 20140303233748) do
     t.datetime "updated_at"
     t.boolean  "private",                       default: false
     t.integer  "parent_id"
+    t.string   "access_level"
+    t.string   "invitation_token",  limit: 30
   end
 
   add_index "groups", ["type"], name: "index_groups_on_type", using: :btree
@@ -272,6 +292,8 @@ ActiveRecord::Schema.define(version: 20140303233748) do
     t.datetime "made_public_at"
     t.boolean  "hide",                          default: false
     t.integer  "assignment_id"
+    t.boolean  "graded",                        default: false
+    t.boolean  "wip",                           default: false
   end
 
   add_index "projects", ["private"], name: "index_projects_on_private", using: :btree
@@ -295,6 +317,13 @@ ActiveRecord::Schema.define(version: 20140303233748) do
 
   add_index "slug_histories", ["project_id"], name: "index_slug_histories_on_project_id", using: :btree
   add_index "slug_histories", ["value"], name: "index_slug_histories_on_value", using: :btree
+
+  create_table "subdomains", force: true do |t|
+    t.string   "subdomain"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "tags", force: true do |t|
     t.integer  "taggable_id",   null: false

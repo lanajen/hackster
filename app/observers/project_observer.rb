@@ -5,6 +5,7 @@ class ProjectObserver < ActiveRecord::Observer
 
   def after_destroy record
     Broadcast.where(context_model_id: record.id, context_model_type: 'Project').destroy_all
+    Broadcast.where(project_id: record.id).destroy_all
     update_counters record, [:projects, :live_projects]
     record.team.destroy if record.team
   end
@@ -38,6 +39,9 @@ class ProjectObserver < ActiveRecord::Observer
       record.commenters.each{|u| u.update_counters only: [:comments] }
       if record.private?
         Broadcast.where(context_model_id: record.id, context_model_type: 'Project').destroy_all
+        Broadcast.where(project_id: record.id).destroy_all
+      else
+        record.users.each{|u| u.broadcast :new, record.id, 'Project', record.id }
       end
     end
 

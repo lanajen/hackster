@@ -1,11 +1,11 @@
 module BroadcastObserver
   module InstanceMethods
     def after_create record
-      record.user.broadcast :new, record.id, observed_model
+      record.user.broadcast :new, record.id, observed_model, project_id(record)
     end
 
     def after_update record
-      record.user.broadcast :update, record.id, observed_model
+      record.user.broadcast :update, record.id, observed_model, project_id(record)
     end
 
     def after_destroy record
@@ -14,6 +14,10 @@ module BroadcastObserver
     end
 
     private
+      def project_id record
+        nil
+      end
+
       def observed_model
         self.class.observed_class.name
       end

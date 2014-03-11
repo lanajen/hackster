@@ -112,11 +112,11 @@ class User < ActiveRecord::Base
   self.per_page = 20
 
   # broadcastable
-  has_many :broadcasts, as: :broadcastable
+  has_many :broadcasts
 
   def broadcast event, context_model_id, context_model_type, project_id=nil
     broadcasts.create event: event, context_model_id: context_model_id,
-      context_model_type: context_model_type, user_id: id, project_id: project_id
+      context_model_type: context_model_type, project_id: project_id
   end
 
   # beginning of search methods

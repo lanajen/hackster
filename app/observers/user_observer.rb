@@ -10,6 +10,7 @@ class UserObserver < ActiveRecord::Observer
   def after_destroy record
     Broadcast.where(context_model_id: record.id, context_model_type: 'User').destroy_all
     Broadcast.where(broadcastable_id: record.id, broadcastable_type: 'User').destroy_all
+    Broadcast.where(user_id: record.id).destroy_all
   end
 
   def after_invitation_accepted record

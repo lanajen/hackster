@@ -1,3 +1,2 @@
-class BlogPostObserver < ActiveRecord::Observer
-  include BroadcastObserver
+class BlogPostObserver < PostObserver
 end

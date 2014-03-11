@@ -7,6 +7,9 @@ class MemberObserver < ActiveRecord::Observer
       BaseMailer.enqueue_email 'new_community_invitation',
         { context_type: :membership, context_id: record.id }
     end
+    if record.group.is? :team
+      record.user.broadcast :new, record.id, 'Member', record.group.project.id
+    end
     unless record.permission
       record.initialize_permission(true)
       record.save
@@ -23,6 +26,7 @@ class MemberObserver < ActiveRecord::Observer
   end
 
   def after_destroy record
+    Broadcast.where(context_model_id: record.id, context_model_type: 'Member').destroy_all
     update_counters record
   end
 

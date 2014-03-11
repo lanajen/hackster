@@ -9,6 +9,6 @@ class Broadcast < ActiveRecord::Base
   end
 
   def fingerprint
-    "#{broadcastable_type}_#{broadcastable_id}_#{context_model_type}_#{context_model_id}"
+    "#{broadcastable_type}_#{broadcastable_id}_#{context_model_type}_#{context_model_id}_#{user_id}"
   end
 end
