@@ -2,6 +2,15 @@ class CronTask < BaseWorker
   # @queue = :low
   sidekiq_options queue: :low, retry: false
 
+  def compute_popularity
+    Project.all.each do |project|
+      project.update_counters
+      project.compute_popularity
+      project.save
+    end
+    self.class.perform_in 24.hours, 'compute_popularity'
+  end
+
   def launch_cron
     update_mailchimp_list
   end
