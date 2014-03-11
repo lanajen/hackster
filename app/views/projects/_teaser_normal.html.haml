@@ -41,7 +41,11 @@
 
           .col-xs-4{ style: 'padding-left: 0;'}
             .text-holder
-              .title= @project.name
+              .title
+                = @project.name
+                - if @project.wip?
+                  %small
+                    %i.fa.fa-bolt.istooltip{ title: 'Work in progress' }
               - if @project.one_liner.present?
                 .one-liner= @project.one_liner
               - elsif can? :edit, @project

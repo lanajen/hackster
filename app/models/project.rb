@@ -1,6 +1,7 @@
 class Project < ActiveRecord::Base
   FILTERS = {
     'featured' => :featured,
+    'wip' => :wip,
   }
   SORTING = {
     'popular' => :most_popular,
@@ -41,7 +42,7 @@ class Project < ActiveRecord::Base
     :team_members_attributes, :website, :one_liner, :widgets_attributes,
     :featured, :featured_date, :cover_image_id, :logo_id, :license, :slug,
     :permissions_attributes, :new_slug, :slug_histories_attributes, :hide,
-    :assignment_id, :graded
+    :assignment_id, :graded, :wip
   attr_accessor :current
   attr_writer :new_slug
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
@@ -120,7 +121,7 @@ class Project < ActiveRecord::Base
   end
 
   def self.last_created
-    indexable.order('projects.create_at DESC')
+    indexable.order('projects.created_at DESC')
   end
 
   def self.last_public
@@ -133,6 +134,10 @@ class Project < ActiveRecord::Base
 
   def self.most_popular
     indexable.order('projects.impressions_count DESC')
+  end
+
+  def self.wip
+    indexable.where(wip: true)
   end
 
   def all_issues
@@ -238,6 +243,10 @@ class Project < ActiveRecord::Base
 
   def widgets_second_col
     widgets.second_column
+  end
+
+  def wip?
+    wip
   end
 
   private
