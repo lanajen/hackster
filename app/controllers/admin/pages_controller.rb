@@ -6,12 +6,12 @@ class Admin::PagesController < Admin::BaseController
     title "Admin > Analytics"
 
     @project_count = Project.indexable.count
-    @comment_count = Comment.count
+    @comment_count = Comment.where(commentable_type: 'Project').count
     @like_count = Favorite.count
     @follow_count = FollowRelation.count
     @user_count = User.invitation_accepted_or_not_invited.count
     @new_projects_count = Project.indexable.where('projects.made_public_at > ?', Date.today).count
-    @new_comments_count = Comment.where('comments.created_at > ?', Date.today).count
+    @new_comments_count = Comment.where(commentable_type: 'Project').where('comments.created_at > ?', Date.today).count
     @new_likes_count = Favorite.where('favorites.created_at > ?', Date.today).count
     @new_follows_count = FollowRelation.where('follow_relations.created_at > ?', Date.today).count
     @new_users_count = User.invitation_accepted_or_not_invited.where('users.created_at > ?', Date.today).count
@@ -33,7 +33,7 @@ class Admin::PagesController < Admin::BaseController
     @new_users = graph_with_dates_for sql, 'New users', 'ColumnChart'
 
 
-    sql = "SELECT to_char(created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM comments WHERE date_part('days', now() - comments.created_at) < 30 GROUP BY date ORDER BY date;"
+    sql = "SELECT to_char(created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM comments WHERE date_part('days', now() - comments.created_at) < 30 AND comments.commentable_type = 'Project' GROUP BY date ORDER BY date;"
     @new_comments = graph_with_dates_for sql, 'New comments', 'ColumnChart'
 
 
