@@ -133,9 +133,12 @@ class ProjectsController < ApplicationController
 
   def update
     authorize! :update, @project
+    private_was = @project.private
 
     if @project.update_attributes(params[:project])
-      if @project.private_changed? and @project.private == false
+      if private_was != @project.private and @project.private == false
+        current_user.broadcast :new, @project.id, 'Project', @project.id
+
         track_event 'Made project public', @project.to_tracker
       elsif @project.private == false
         current_user.broadcast :update, @project.id, 'Project', @project.id

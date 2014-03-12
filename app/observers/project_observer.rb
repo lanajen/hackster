@@ -40,8 +40,6 @@ class ProjectObserver < ActiveRecord::Observer
       if record.private?
         Broadcast.where(context_model_id: record.id, context_model_type: 'Project').destroy_all
         Broadcast.where(project_id: record.id).destroy_all
-      else
-        record.users.each{|u| u.broadcast :new, record.id, 'Project', record.id }
       end
     end
 

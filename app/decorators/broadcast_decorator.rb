@@ -5,54 +5,63 @@ class BroadcastDecorator < ApplicationDecorator
 
   def message show_name=false
 #    puts model.inspect
-    message = case model.broadcastable_type
-    when 'User'
-      user_name = h.link_to model.broadcastable.name, model.broadcastable
-      case model.context_model_type
-      when 'Comment'
-        record = model.context_model.commentable
-        project = record.respond_to?(:project) ? record.project : (record.respond_to?(:threadable) ? record.threadable : record)
-        project_name = h.link_to project.name, project
-#        commentable_type = model.context_model.commentable.class.name.underscore.gsub(/_/, ' ')
-        commentable_title = model.context_model.commentable.respond_to?(:name) ? model.context_model.commentable.name : model.context_model.commentable.title
-        case model.event.to_sym
-        when :new
-          "commented on the #{model.context_model.commentable.class.name.humanize.downcase} #{commentable_title} on #{project_name}"
-        end
-      when 'BlogPost', 'Issue'
-        project = model.context_model.threadable.respond_to?(:project) ? model.context_model.threadable.project : model.context_model.threadable
-        project_name = h.link_to project.name, project
-        threadable_type = model.context_model.class.name.underscore.gsub(/_/, ' ')
-        threadable_title = h.link_to model.context_model.title, model.context_model
-        case model.event.to_sym
-        when :new
-          "added a new #{threadable_type} #{threadable_title} to #{project_name}"
-        when :update
-          "updated the #{threadable_type} #{threadable_title} for #{project_name}"
-        end
+    user_name = h.link_to model.broadcastable.name, model.broadcastable
+    project = model.project
+    project_name = h.link_to project.name, project if project
+    message = case model.context_model_type
+    when 'Comment'
+      commentable = model.context_model.commentable
+      case commentable
+      when Project
+        "commented on the project #{project_name}"
+      when Issue
+        commentable_title = h.link_to commentable.title, h.issue_path(project, commentable)
+        "commented on the issue #{commentable_title} on #{project_name}"
+      when BlogPost
+        commentable_title = h.link_to commentable.title, h.log_path(project, commentable)
+        "commented on the build log #{commentable_title} on #{project_name}"
+      end
+    when 'BlogPost', 'Issue'
+      case model.context_model
+      when Issue
+        threadable_type = 'issue'
+        threadable_title = h.link_to model.context_model.title, h.issue_path(project, model.context_model)
+      when BlogPost
+        threadable_type = 'build log'
+        threadable_title = h.link_to model.context_model.title, h.log_path(project, model.context_model)
+      end
+      case model.event.to_sym
+      when :new
+        "added a new #{threadable_type} #{threadable_title} to #{project_name}"
+      when :update
+        "updated the #{threadable_type} #{threadable_title} for #{project_name}"
+      end
+    when 'Favorite'
+      "respected #{project_name}"
+    when 'FollowRelation'
+      follow_name = case model.context_model.followable_type
       when 'Project'
-        project_name = h.link_to model.context_model.name, model.context_model
-        case model.event.to_sym
-        when :new
-          "created a new project #{project_name}"
-        when :update
-          "updated the project #{project_name}"
-        end
-      when 'Publication'
-        publication_title = model.context_model.title
-        case model.event.to_sym
-        when :new
-          "added a new publication #{publication_title}"
-        when :update
-          "updated the publication #{publication_title}"
-        end
+        project_name
       when 'User'
-        case model.event.to_sym
-        when :new
-          "joined Hackster.io"
-        when :update
-          "updated their profile"
-        end
+        user = model.context_model.followable
+        h.link_to user.name, user
+      end
+      "followed #{follow_name}"
+    when 'Project'
+      case model.event.to_sym
+      when :new
+        "published the project #{project_name}"
+      when :update
+        "updated the project #{project_name}"
+      end
+    when 'Member'
+      "joined the project #{project_name}"
+    when 'User'
+      case model.event.to_sym
+      when :new
+        "joined Hackster.io"
+      when :update
+        "updated their profile"
       end
     end
     message = "#{user_name} #{message}" if show_name

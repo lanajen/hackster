@@ -8,7 +8,8 @@ class MemberObserver < ActiveRecord::Observer
         { context_type: :membership, context_id: record.id }
     end
     if record.group.is? :team
-      record.user.broadcast :new, record.id, 'Member', record.group.project.id
+      project = record.group.projects.first
+      record.user.broadcast :new, record.id, 'Member', project.id if project and project.public?
     end
     unless record.permission
       record.initialize_permission(true)

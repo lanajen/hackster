@@ -116,7 +116,8 @@ class User < ActiveRecord::Base
 
   def broadcast event, context_model_id, context_model_type, project_id=nil
     broadcasts.create event: event, context_model_id: context_model_id,
-      context_model_type: context_model_type, project_id: project_id
+      context_model_type: context_model_type, project_id: project_id,
+      broadcastable_type: 'User', broadcastable_id: id
   end
 
   # beginning of search methods

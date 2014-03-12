@@ -3,7 +3,6 @@
     %h1 Recent activity on Hackster.io
     .well
       .content
-        %h4 Projects and users you follow
         %br
         - if @custom_broadcasts.any?
           %ul
@@ -18,21 +17,16 @@
                 .text-muted
                   = broadcast.created_at
         - else
-          - if user_signed_in? and current_user.follow_relations.empty?
-            Start following people or projects to see customized activity here!
+          %p Start following people or projects to see customized activity here! In the meantime, here's what's been happening across the site:
 
-          %hr
-
-        %h4 Sitewide activity
-        %br
-        %ul
-          - previous = nil
-          - @broadcasts.each do |broadcast|
-            - next if previous == broadcast.fingerprint
-            - previous = broadcast.fingerprint
-            %li
-              - broadcast = broadcast.decorate
-              = link_to broadcast.broadcastable.name, broadcast.broadcastable
-              = broadcast.message
-              .text-muted
-                = broadcast.created_at
+          %ul
+            - previous = nil
+            - @broadcasts.each do |broadcast|
+              - next if previous == broadcast.fingerprint
+              - previous = broadcast.fingerprint
+              %li
+                - broadcast = broadcast.decorate
+                = link_to broadcast.broadcastable.name, broadcast.broadcastable
+                = broadcast.message
+                .text-muted
+                  = broadcast.created_at
