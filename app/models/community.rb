@@ -6,7 +6,12 @@ class Community < Group
     source_type: 'Project'
   validates :user_name, :full_name, presence: true
   validates :user_name, uniqueness: { scope: [:type, :parent_id] }
-  before_create :generate_user_name
+  before_validation :generate_user_name, on: :create
+  before_save :ensure_invitation_token
+
+  def self.default_access_level
+    'request'
+  end
 
   def self.model_name
     Group.model_name

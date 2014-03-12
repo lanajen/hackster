@@ -17,16 +17,19 @@
         .thumb-bottom
           %hr
           - if project.public?
-            %span.counter.first
+            %span.counter.first.istooltip{ title: 'Views' }
               %i.fa.fa-eye
               = project.impressions_count
-            %span.counter
+            %span.counter.istooltip{ title: 'Respects' }
               %i.fa.fa-thumbs-o-up
               = project.respects_count
           - else
             %span.counter
               %i.fa.fa-lock
               Private
-          %span.counter
+          %span.counter.istooltip{ title: 'Comments' }
             %i.fa.fa-comments
             = project.comments_count
+          - if project.wip?
+            %span.counter.istooltip{ title: 'Work in progress' }
+              %i.fa.fa-bolt

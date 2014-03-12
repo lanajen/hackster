@@ -1,6 +1,7 @@
 class Promotion < Community
   belongs_to :course, foreign_key: :parent_id
   has_many :assignments, dependent: :destroy
+  attr_accessible :professor_id
 
   alias_method :short_name, :name
 
@@ -38,6 +39,22 @@ class Promotion < Community
 
   def name
     "#{course.name} #{super} @#{course.university.name}"
+  end
+
+  def professor
+    members.with_group_roles(:professor).includes(:user).first
+  end
+
+  def professor_id
+    professor.try(:id)
+  end
+
+  def professor_id=(val)
+    members.with_group_roles(:professor).update_all("group_roles_mask = group_roles_mask - 4")
+    if member = Member.find_by_id(val)
+      member.group_roles += %w(professor)
+      member.save
+    end
   end
 
   def projects

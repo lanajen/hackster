@@ -17,6 +17,7 @@
       = f.input :user_name, label: 'Pretty URL', wrapper: :addon do
         %span.input-group-addon www.hackster.io/courses/#{@promotion.course.user_name}/
         = f.input_field :user_name
+      = f.input :professor_id, collection: @promotion.members.with_group_roles(:staff), hint: 'You can select a professor from the list of staff members.', label_method: :label_method, label: 'Teaching professor'
       = f.input :email
       = f.input :mini_resume, as: :text, input_html: { rows: 4 },
         hint: 'Maximum 140 characters'
@@ -36,6 +37,7 @@
       = f.input :website_link, label: 'Website link'
       = f.input :blog_link, label: 'Blog link'
 
+      -# = f.input :access_level, label: 'Who can join this group?', collection: Group::ACCESS_LEVELS
       = f.input :private, inline_label: 'Make this group private', label: false, hint: "Private groups are only visible by their members and are invite only."
 
 %hr

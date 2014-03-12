@@ -1,9 +1,14 @@
 class GroupInvitationsController < ApplicationController
-  before_filter :authenticate_user!
-  before_filter :load_and_authorize_invitable, except: [:accept]
-  before_filter :load_invitable, only: [:accept]
+  before_filter :authenticate_user!, except: [:index]
+  before_filter :load_and_authorize_invitable, only: [:new, :create]
+  before_filter :load_invitable, except: [:new, :create]
   respond_to :html
   layout :set_layout
+
+  def index
+    redirect_to path_for_group(@group), alert: 'Invalid invitation token' and return unless token_valid?
+    redirect_to path_for_group(@group) and return if user_signed_in? and current_user.is_member?(@group)
+  end
 
   def new
   end
@@ -26,7 +31,7 @@ class GroupInvitationsController < ApplicationController
 
   def accept
     @group = Group.find(params[:group_id])
-    authorize! :join, @group
+    token_valid? or authorize! :join, @group
     if member = current_user.is_member?(@group)
       if member.invitation_pending?
         member.accept_invitation!
@@ -34,13 +39,19 @@ class GroupInvitationsController < ApplicationController
       else
         flash[:notice] = "You're already a member of this group."
       end
-      redirect_to @group
+      redirect_to path_for_group(@group)
     else
-      redirect_to root_path, alert: "We couldn't find an invitation for this group."
+      if token_valid?
+        @group.members.create user_id: current_user.id
+        redirect_to path_for_group(@group), notice: "Welcome to #{@group.name}!"
+      else
+        redirect_to root_path, alert: "We couldn't find an invitation for this group."
+      end
     end
   end
 
   private
+
     def load_invitable
       params.each do |name, value|
         if name =~ /(.+)_id$/
@@ -58,7 +69,20 @@ class GroupInvitationsController < ApplicationController
       authorize! :manage, @invitable if @invitable
     end
 
+    def path_for_group group
+      case group
+      when Promotion
+        promotion_path(group)
+      else
+        group
+      end
+    end
+
     def set_layout
       @model_name
+    end
+
+    def token_valid?
+      @group.invitation_token == params[:token]
     end
 end

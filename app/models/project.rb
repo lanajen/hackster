@@ -1,8 +1,10 @@
 class Project < ActiveRecord::Base
   FILTERS = {
     'featured' => :featured,
+    'wip' => :wip,
   }
   SORTING = {
+    'magic' => :magic_sort,
     'popular' => :most_popular,
     'recent' => :last_public,
     'updated' => :last_updated,
@@ -24,6 +26,7 @@ class Project < ActiveRecord::Base
   has_many :followers, through: :follow_relations, source: :user
   has_many :issues, as: :threadable, dependent: :destroy
   has_many :images, as: :attachable, dependent: :destroy
+  has_many :grades
   has_many :permissions, as: :permissible
   has_many :respects, dependent: :destroy, class_name: 'Favorite'
   has_many :respecting_users, -> { order 'favorites.created_at ASC' }, through: :respects, source: :user
@@ -40,7 +43,7 @@ class Project < ActiveRecord::Base
     :team_members_attributes, :website, :one_liner, :widgets_attributes,
     :featured, :featured_date, :cover_image_id, :logo_id, :license, :slug,
     :permissions_attributes, :new_slug, :slug_histories_attributes, :hide,
-    :assignment_id
+    :assignment_id, :graded, :wip
   attr_accessor :current
   attr_writer :new_slug
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
@@ -119,7 +122,7 @@ class Project < ActiveRecord::Base
   end
 
   def self.last_created
-    indexable.order('projects.create_at DESC')
+    indexable.order('projects.created_at DESC')
   end
 
   def self.last_public
@@ -130,8 +133,20 @@ class Project < ActiveRecord::Base
     indexable.order('projects.updated_at DESC')
   end
 
+  def self.magic_sort
+    indexable.order('projects.popularity_counter DESC')
+  end
+
   def self.most_popular
     indexable.order('projects.impressions_count DESC')
+  end
+
+  def self.wip
+    indexable.where(wip: true)
+  end
+
+  def age
+    (Time.now - created_at) / 86400
   end
 
   def all_issues
@@ -239,6 +254,10 @@ class Project < ActiveRecord::Base
     widgets.second_column
   end
 
+  def wip?
+    wip
+  end
+
   private
     def check_if_current
       self.end_date = nil if current
@@ -250,13 +269,17 @@ class Project < ActiveRecord::Base
       end
     end
 
+    def compute_popularity
+      self.popularity_counter = (respects_count * 2 + impressions_count * 0.1 + followers_count * 2 + comments_count * 5) * [[(1.to_f / Math.log10(age)), 10].min, 0.01].max
+    end
+
     def ensure_website_protocol
       return unless website_changed? and website.present?
       self.website = 'http://' + website unless website =~ /^http/
     end
 
     def can_be_public?
-      widgets_count > 1 and cover_image.present?
+      widgets_count >= 1 and cover_image.present?
     end
 
     def generate_slug

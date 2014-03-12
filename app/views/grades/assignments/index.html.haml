@@ -1,0 +1,74 @@
+- if @assignment.grades.any?
+  - if @assignment.private_grades
+    .row
+      .col-xs-12
+        .alert.alert-warning
+          %i.fa.fa-lock
+          Grades are currently only visible to staff.
+          - if @assignment.graded?
+            = link_to 'Release grades to students', "/assignments/#{@assignment.id}?assignment[private_grades]=0", class: 'btn btn-warning btn-sm', method: :patch
+          - else
+            You will be able to release them once the assignment is fully graded.
+
+  %p
+    %strong Grading status:
+    - if @assignment.graded?
+      %span.label.label-success
+        %i.fa.fa-check-circle
+        Complete
+      - unless @assignment.private_grades
+        &nbsp;-
+        %strong Released:
+        %span.label.label-success.istooltip{ title: 'Grades have been sent to students.' }
+          %i.fa.fa-check-circle
+          Yes
+    - else
+      %span.label.label-info In progress
+      = link_to 'Continue grading', assignment_edit_grade_path(@assignment), class: 'btn btn-primary btn-sm'
+
+  %table.table.table-striped
+    %thead
+      %tr
+        %th Project
+        %th
+          - if @assignment.grading_type == 'individual'
+            Student
+          - else
+            Team
+        %th Grade
+        %th Feedback
+        %th
+    %tbody
+      - @assignment.grades.each do |grade|
+        %tr
+          %td= link_to grade.project.name, grade.project
+          %td
+            - gradable = grade.gradable
+            - case gradable
+            - when User
+              = link_to image_tag(gradable.decorate.avatar(:mini), style: 'width: 20px' ), gradable
+              = link_to gradable.name, gradable, target: '_blank'
+            - when Team
+              - gradable.users.each do |user|
+                = link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
+                = link_to user.name, user, target: '_blank'
+                %br
+          %td= grade.grade
+          %td= grade.feedback.truncate 100
+          %td
+            - case grade.gradable
+            - when User
+              = link_to content_tag(:i, '', class: 'fa fa-pencil'), assignment_edit_grade_path(@assignment, grade.project, grade.gradable_id), class: 'btn btn-xs btn-default', rel: 'tooltip', title: 'Edit'
+            - when Team
+              = link_to content_tag(:i, '', class: 'fa fa-pencil'), assignment_edit_grade_path(@assignment, grade.project), class: 'btn btn-xs btn-default', rel: 'tooltip', title: 'Edit'
+
+- else
+  %p
+    %strong Grading status:
+    %span.label.label-info Not started
+  %p
+    There are no grades yet.
+    - if @assignment.projects.any?
+      = simple_form_for @assignment, url: assignment_grade_path(@assignment) do |f|
+        = f.input :grading_type, collection: Assignment::GRADING_TYPES, label: 'How is grading structured?'
+        = f.submit 'Start grading', class: 'btn btn-primary'

@@ -24,13 +24,6 @@
       = f.input :one_liner, as: :text, input_html: { rows: 4 },
         hint: 'Maximum 140 characters'
       -# = f.input :website, label: 'Project website'
-      = f.input :start_date, order: [:year, :month, :day], label: 'Date', hint: 'When did this project come to life?' do
-        .row
-          .col-xs-6
-            = hidden_field_tag 'project[start_date(3i)]', '1'
-            = select_month(@project.start_date, { prompt: '--Month--' }, { class: 'form-control', name: 'project[start_date(2i)]' })
-          .col-xs-6
-            = select_year(@project.start_date, { prompt: '--Year--', start_year: Date.today.year, end_year: Date.today.year - 15 }, { class: 'form-control', name: 'project[start_date(1i)]' })
       = f.input :tech_tags_string, as: :string, label: 'Technologies used', hint: 'Separate technologies by commas', placeholder: 'Eg: Arduino, ATmega, Attiny...'
       = f.input :product_tags_string, as: :string, label: 'Tags', hint: 'Separate tags by commas. Used for finding your project more easily.', placeholder: 'Eg: home automation, drone, display...'
 
@@ -40,6 +33,15 @@
       = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Logo', image_link: @project.logo.try(:file_url, :thumb), help_block: 'Optional, only if you have one. Should be squared, at least 200x200px for best results', attribute_type: 'logo', image_version: 'thumb', model: 'project' }
 
       = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @project.cover_image.try(:file_url, :cover_mini_thumb), help_block: 'This should be your nicest picture for this project. In 4:3 format, at least 600x450px for best results', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
+
+      = f.input :start_date, order: [:year, :month, :day], label: 'Date', hint: 'When did this project come to life?' do
+        .row
+          .col-xs-6
+            = hidden_field_tag 'project[start_date(3i)]', '1'
+            = select_month(@project.start_date, { prompt: '--Month--' }, { class: 'form-control', name: 'project[start_date(2i)]' })
+          .col-xs-6
+            = select_year(@project.start_date, { prompt: '--Year--', start_year: Date.today.year, end_year: Date.today.year - 15 }, { class: 'form-control', name: 'project[start_date(1i)]' })
+      = f.input :wip, inline_label: 'This is a work in progress', label: false
 
       = f.input :public, inline_label: "Make this project public #{content_tag(:i, '', class: 'fa fa-question-circle istooltip', title: 'You need to create at least one widget and add a cover image before you can make it public.')}".html_safe, label: false, disabled: !@project.can_be_public?, as: :boolean
 

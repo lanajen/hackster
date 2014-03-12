@@ -46,6 +46,7 @@ class ProjectScraper
       'forum.arduino.cc' => :arduinocc,
       'github.com' => :github,
       'instructables.com' => :instructable,
+      'kickstarter.com' => :kickstarter,
       'wordpress.com' => :wordpress,
     }
 

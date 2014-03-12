@@ -7,7 +7,7 @@ class AssignmentsController < ApplicationController
   layout 'assignment'
 
   def show
-    authorize! :read, @assignment
+    redirect_to promotion_path(@assignment.promotion) and return unless can? :read, @assignment
     @projects = @assignment.projects.order(:created_at)
   end
 

@@ -2,6 +2,15 @@ class CronTask < BaseWorker
   # @queue = :low
   sidekiq_options queue: :low, retry: false
 
+  def compute_popularity
+    Project.all.each do |project|
+      project.update_counters
+      project.compute_popularity
+      project.save
+    end
+    self.class.perform_in 24.hours, 'compute_popularity'
+  end
+
   def launch_cron
     update_mailchimp_list
   end
@@ -24,7 +33,7 @@ class CronTask < BaseWorker
       response = gb.lists.batch_subscribe({ id: list_id, batch: batch, double_optin: false, update_existing: true })
       failed_emails = response['errors'].map { |error| error['email']['email'] }
       successful_emails = get_email_from_users(users) - failed_emails
-      update_settings_for failed_emails, "users.subscription_mask = (users.subscription_mask - #{2**User::SUBSCRIPTIONS.keys.index('newsletter')})"
+      update_settings_for failed_emails, "users.subscriptions_mask = (users.subscriptions_mask - #{2**User::SUBSCRIPTIONS.keys.index('newsletter')})"
       update_settings_for successful_emails, { mailchimp_registered: true }
       puts "Results for adding: #{successful_emails.size} successes, #{failed_emails.size} failures."
     end

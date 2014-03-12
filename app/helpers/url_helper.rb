@@ -24,11 +24,33 @@ module UrlHelper
   end
 
   def group_path group, opts={}
-    super params_for_group(group).merge(opts)
+    case group.class.to_s
+    when 'Community'
+      super params_for_group(group, 'community').merge(opts)
+    when 'Course'
+      super params_for_course(group).merge(opts)
+    when 'Promotion'
+      promotion_path group, opts
+    when 'University'
+      super params_for_group(group).merge(opts)
+    else
+      super params_for_group(group).merge(opts)
+    end
   end
 
   def group_url group, opts={}
-    super params_for_group(group).merge(opts)
+    case group
+    when Community
+      super params_for_group(group, 'community').merge(opts)
+    when Course
+      super params_for_course(group).merge(opts)
+    when Promotion
+      promotion_path group, opts
+    when University
+      super params_for_group(group).merge(opts)
+    else
+      super params_for_group(group).merge(opts)
+    end
   end
 
   def issue_path project, issue, opts={}

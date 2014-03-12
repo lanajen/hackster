@@ -55,7 +55,9 @@ module ScraperUtils
     u = URI.parse link
     print "Testing link #{link}... "
     begin
-      status_code = Net::HTTP.start(u.host,u.port){|http| http.head(u.request_uri).code }
+      http = Net::HTTP.new(u.host, u.port)
+      http.use_ssl = true if u.scheme == 'https'
+      status_code = http.request_head(u.request_uri).code
     rescue
       status_code = "Error"
     end

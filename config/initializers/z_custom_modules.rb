@@ -18,3 +18,5 @@ require File.join(Rails.root, 'lib/tableless_association')
 require File.join(Rails.root, 'lib/quiet_assets')
 # roles
 require File.join(Rails.root, 'lib/roles')
+
+require File.join(Rails.root, 'lib/route_constraints')

@@ -199,10 +199,14 @@ module ScraperStrategies
         end
     end
 
+    def title_levels
+      2..4
+    end
+
     def parse_text
       # find the first level title tag (h), replaces by h5, and replaces further
       # levels by h6
-      (2..4).each do |i|
+      (title_levels).each do |i|
         if @article.css("h#{i}").any?
           @article.css("h#{i}").each { |h| h.name = 'h5' }
           (i+1..4).each do |j|

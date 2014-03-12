@@ -6,4 +6,5 @@
       = f.error_notification
 
       = f.input :name
+      = f.input :grading_type, collection: Assignment::GRADING_TYPES, label: 'How is grading structured?'
       = f.button :submit, 'Go!', class: 'btn-block btn btn-primary'

@@ -46,6 +46,11 @@ class PagesController < ApplicationController
     title 'Privacy policy'
   end
 
+  def resources
+    meta_desc 'Resources that can help hardware hackers on their journey to making stuff.'
+    title 'Resources'
+  end
+
   def terms
     meta_desc 'Read our terms of service.'
     title 'Terms of service'

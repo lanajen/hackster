@@ -1,4 +1,4 @@
-# require File.join(Rails.root, 'lib/resque_auth_server.rb')
+require 'route_constraints'
 require 'sidekiq/web'
 
 HackerIo::Application.routes.draw do
@@ -9,7 +9,7 @@ HackerIo::Application.routes.draw do
     }, via: :get
   end
 
-  constraints subdomain: /www/ do
+  constraints(MainSite) do
     get 'sitemap_index.xml' => 'sitemap#index', as: 'sitemap_index', defaults: { format: 'xml' }
     get 'sitemap.xml' => 'sitemap#show', as: 'sitemap', defaults: { format: 'xml' }
 
@@ -34,7 +34,9 @@ HackerIo::Application.routes.draw do
         mount Sidekiq::Web => '/sidekiq'
       end
       get 'analytics' => 'pages#analytics'
+      get 'build_logs' => 'pages#build_logs'
       get 'comments' => 'pages#comments'
+      get 'issues' => 'pages#issues'
       get 'logs' => 'pages#logs'
       get 'respects' => 'pages#respects'
       get 'followers' => 'pages#followers'
@@ -56,6 +58,7 @@ HackerIo::Application.routes.draw do
       patch 'members' => 'members#update'
     end
     resources :groups, only: [] do
+      get 'invitations' => 'group_invitations#index', as: :invitations
       get 'invitations/new' => 'group_invitations#new', as: :new_invitations
       post 'invitations' => 'group_invitations#create'
       get 'invitations/accept' => 'group_invitations#accept', as: :accept_invitation
@@ -85,7 +88,7 @@ HackerIo::Application.routes.draw do
         delete '' => 'promotions#destroy'
         patch '' => 'promotions#update'
 
-        resources :assignments, only: [:new, :create, :show, :update] do
+        resources :assignments, only: [:new, :create, :show] do
           get 'embed', on: :member
         end
       end
@@ -94,7 +97,7 @@ HackerIo::Application.routes.draw do
       get 'members/edit' => 'members#edit', as: :edit_members
       patch 'members' => 'members#update'
     end
-    resources :assignments, only: [:edit, :destroy]
+    resources :assignments, only: [:edit, :update, :destroy]
 
     resources :files, only: [:create, :show] do
       get 'signed_url', on: :collection
@@ -123,6 +126,14 @@ HackerIo::Application.routes.draw do
       resources :widgets
       patch 'widgets' => 'widgets#save'
     end
+
+    resources :assignments, only: [] do
+      get 'grades' => 'grades#index', as: :grades
+      get 'grades/edit(/:project_id(/:user_id))' => 'grades#edit', as: :edit_grade
+      post 'grades(/:project_id(/:user_id))' => 'grades#update', as: :grade
+      patch 'grades(/:project_id(/:user_id))' => 'grades#update'
+    end
+    resources :grades, only: [:index]
 
     resources :issues, only: [] do
       resources :comments, only: [:create]
@@ -161,6 +172,7 @@ HackerIo::Application.routes.draw do
     get 'infringement_policy' => 'pages#infringement_policy'
     get 'privacy' => 'pages#privacy'
     get 'terms' => 'pages#terms'
+    get 'resources' => 'pages#resources'
 
     get ':user_name' => 'users#show', as: :user, user_name: /[A-Za-z0-9_]{3,}/, constraints: { format: /(html|json)/ }
 
@@ -176,5 +188,20 @@ HackerIo::Application.routes.draw do
     end
 
     root to: 'pages#home'
+  end
+
+  constraints(ClientSite) do
+    scope module: :client, as: :client do
+
+      get 'search' => 'search#search'
+
+      # get ':user_name' => 'users#show', as: :user, user_name: /[A-Za-z0-9_]{3,}/, constraints: { format: /(html|json)/ }
+
+      # scope ':user_name/:project_slug', as: :project, user_name: /[A-Za-z0-9_]{3,}/, project_slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|js)/ } do
+      #   get '' => 'projects#show', as: ''
+      # end
+
+      root to: 'projects#index'
+    end
   end
 end

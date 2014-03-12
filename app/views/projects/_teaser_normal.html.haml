@@ -41,7 +41,11 @@
 
           .col-xs-4{ style: 'padding-left: 0;'}
             .text-holder
-              .title= @project.name
+              .title
+                = @project.name
+                - if @project.wip?
+                  %small
+                    %i.fa.fa-bolt.istooltip{ title: 'Work in progress' }
               - if @project.one_liner.present?
                 .one-liner= @project.one_liner
               - elsif can? :edit, @project
@@ -59,10 +63,14 @@
                   Team
                   - if can? :debug, @project and can? :edit, @project
                     = link_to content_tag(:i, '', class: 'fa fa-pencil'), project_edit_team_path(@project), class: 'btn-edit no-float', rel: 'tooltip', title: 'Manage team', data: { container: 'body' }
-                - @project.users.each do |u|
+                - @project.team.members.includes(:user).each do |member|
+                  - u = member.user
                   .user
                     = link_to image_tag(u.decorate.avatar(:mini), class: ' img-circle' ), u, class: ''
-                    %span.user-name= link_to u.name, u, class: 'hidden-link'
+                    %span.user-name
+                      = link_to u.name, u, class: 'hidden-link'
+                      - if member.contribution.present?
+                        %i.fa.fa-question-circle.istooltip{ title: "Contribution: #{member.contribution}" }
 
               - if @project.tech_tags.any?
                 .tags.meta

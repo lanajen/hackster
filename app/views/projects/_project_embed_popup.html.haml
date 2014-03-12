@@ -7,7 +7,7 @@
         %button.close{ onclick: "closePopup('#embed-popup');" } &times;
         #project-embed= render partial: 'projects/project_embed_thumb', locals: { project: @project }
         %p Add the following snippet to your HTML:
-        %textarea.embed-code
+        %textarea.embed-code{ onclick: "this.select();" }
           %iframe{frameborder: "0", height: "321", scrolling: "no", src: "#{project_embed_url(@project)}", width: "220"}
 
   :javascript

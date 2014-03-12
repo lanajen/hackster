@@ -8,6 +8,9 @@ class Ability
     can :read, Assignment do |assignment|
       assignment.promotion.private == false
     end
+    can :read, [BlogPost, Issue] do |thread|
+      @user.can? :read, thread.threadable
+    end
 
     @user = resource
     member if @user.persisted?
@@ -28,20 +31,11 @@ class Ability
   end
 
   def confirmed_user
-
   end
 
   def member
-    can :read, [BlogPost] do |thread|
-      @user.can? :read, thread.threadable
-    end
-
-    can :manage, BlogPost do |thread|
+    can :manage, [BlogPost, Issue] do |thread|
       @user.can? :manage, thread.threadable
-    end
-
-    can :manage, [Issue] do |thread|
-      @user.can? :manage, thread.threadable or (thread.threadable.assignment_id.present? and @user.is_staff? thread.threadable)
     end
 
     can :create, Comment do |comment|
@@ -77,6 +71,9 @@ class Ability
     end
     can :create, Assignment do |assignment|
       @user.can? :manage, assignment.promotion
+    end
+    can :manage, Grade do |grade|
+      @user.can? :manage, grade.assignment
     end
 
     can [:create, :update, :destroy], [Widget] do |record|
