@@ -11,11 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 20140311013224) do
-=======
 ActiveRecord::Schema.define(version: 20140311203251) do
->>>>>>> master
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -296,14 +292,9 @@ ActiveRecord::Schema.define(version: 20140311203251) do
     t.datetime "made_public_at"
     t.boolean  "hide",                           default: false
     t.integer  "assignment_id"
-<<<<<<< HEAD
-    t.boolean  "graded",                        default: false
-    t.boolean  "wip",                           default: false
-=======
     t.boolean  "graded",                         default: false
     t.boolean  "wip",                            default: false
     t.integer  "popularity_counter",             default: 0
->>>>>>> master
   end
 
   add_index "projects", ["private"], name: "index_projects_on_private", using: :btree
