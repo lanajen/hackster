@@ -9,7 +9,7 @@ class ProjectsController < ApplicationController
   def index
     title "Explore all projects - Page #{params[:page] || 1}"
 
-    params[:sort] ||= 'recent'
+    params[:sort] ||= 'magic'
     @by = params[:by] || 'all'
 
     @projects = Project
