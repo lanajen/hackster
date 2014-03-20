@@ -1,7 +1,7 @@
-class Promotion < Community
-  belongs_to :course, foreign_key: :parent_id
-  has_many :assignments, dependent: :destroy
-  has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'PromotionMember'
+class Event < Community
+  belongs_to :hackathon, foreign_key: :parent_id
+  has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'EventMember'
+  has_many :projects, foreign_key: :collection_id
 
   alias_method :short_name, :name
 
@@ -32,20 +32,7 @@ class Promotion < Community
   end
   # end of search methods
 
-  def generate_user_name
-    slug = short_name.gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
-    self.user_name = slug
-  end
-
   def name
-    "#{course.name} #{super} @#{course.university.name}"
-  end
-
-  def professor
-    members.with_group_roles(:professor).includes(:user).first
-  end
-
-  def projects
-    Project.where(collection_id: Assignment.where(promotion_id: id))
+    "#{hackathon.name} #{super}"
   end
 end

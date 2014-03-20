@@ -161,6 +161,9 @@ footer {
 
 #heading {
   margin-top: 40px;
+  &.with-top-container {
+    margin-top: 0;
+  }
   .teaser {
     position: relative;
     h1 {

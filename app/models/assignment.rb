@@ -6,7 +6,7 @@ class Assignment < ActiveRecord::Base
 
   belongs_to :promotion
   has_many :grades, through: :projects
-  has_many :projects
+  has_many :projects, foreign_key: :collection_id
   has_one :document, as: :attachable, dependent: :destroy
   validates :promotion_id, :name, presence: true
   attr_accessible :name, :document_id, :grading_type, :graded, :private_grades
@@ -22,7 +22,7 @@ class Assignment < ActiveRecord::Base
   end
 
   def to_label
-    "#{promotion.course.name} @#{promotion.course.university.full_name} > #{promotion.name} > #{name}"
+    "#{promotion.name} > #{name}"
   end
 
   private

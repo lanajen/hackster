@@ -19,6 +19,7 @@
       %th=t '.actions', :default => t("helpers.actions")
   %tbody
     - @groups.each do |group|
+      - logger.info group.id
       %tr
         %td= link_to group.name, group_path(group) if group.name
         %td= time_ago_in_words group.created_at

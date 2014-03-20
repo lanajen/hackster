@@ -10,7 +10,7 @@ class Course < Community
   end
 
   def projects
-    Project.where(assignment_id: Assignment.joins(:promotion).where(groups: { parent_id: id }))
+    Project.where(collection_id: Assignment.joins(:promotion).where(groups: { parent_id: id }))
   end
 
   private

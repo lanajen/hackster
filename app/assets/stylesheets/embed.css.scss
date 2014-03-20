@@ -59,12 +59,12 @@
   .project-thumb {
     @include box-shadow(none);
     margin: 0;
-    width: 220px;
+    width: 100%;
     .inner-thumb {
       border-top: none;
       height: 155px;
       .thumb-bottom {
-        width: 218px;
+        width: 99%;
         .counter {
           margin-left: 15px;
           margin-right: 0;
@@ -79,23 +79,28 @@
 }
 
 .project-thumb {
+  &:hover {
+    .inner-thumb {
+      .thumb-bottom {
+        &.featured-logo {
+          display: block;
+        }
+      }
+    }
+  }
   .inner-thumb {
     .thumb-bottom {
-      .counter {
-        &.featured-logo {
-          width: 60px;
-          display: inline-block;
-          text-align: center;
-          img {
-            max-width: 100%;
-          }
-          a {
-            @include opacity(0.5);
-            color: #666;
-            &:hover {
-              @include opacity(1);
-              text-decoration: none;
-            }
+      &.featured-logo {
+        display: none;
+        img {
+          max-width: 65px;
+          vertical-align: baseline;
+        }
+        a {
+          color: #666;
+          font-size: 12px;
+          &:hover {
+            text-decoration: none;
           }
         }
       }

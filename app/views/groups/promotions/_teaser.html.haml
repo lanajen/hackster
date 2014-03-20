@@ -51,12 +51,6 @@
             No websites.
             = link_to 'Add some?', edit_promotion_path(@promotion), data: { remote: true }
 
-    -# if current_user.id != @promotion.id
-      - if current_user.try(:is_following?, @promotion)
-        = link_to 'Following', user_followers_path(@promotion), method: :delete, class: 'btn-inverse btn-follow'
-      - else
-        = link_to 'Follow', user_followers_path(@promotion), method: :post, class: 'btn-follow'
-
 - if can? :read, @promotion
   .row
     .col-xs-12
@@ -74,6 +68,6 @@
                 %b.caret
               %ul.dropdown-menu
                 %li= link_to 'Edit promotion', edit_promotion_path(@promotion), data: { remote: true }
-                %li= link_to 'Manage members', promotion_edit_members_path(@promotion)
+                %li= link_to 'Manage members', group_edit_members_path(@promotion)
                 %li= link_to 'Invite members', group_new_invitations_path(@promotion)
                 %li= link_to 'New assignment', new_assignment_path(@promotion.assignments.new)

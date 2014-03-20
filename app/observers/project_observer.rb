@@ -1,12 +1,12 @@
 class ProjectObserver < ActiveRecord::Observer
   def after_create record
-    update_counters record, :projects
+    update_counters record, only: [:projects]
   end
 
   def after_destroy record
     Broadcast.where(context_model_id: record.id, context_model_type: 'Project').destroy_all
     Broadcast.where(project_id: record.id).destroy_all
-    update_counters record, [:projects, :live_projects]
+    update_counters record, only: [:projects, :live_projects]
     record.team.destroy if record.team
   end
 
@@ -18,7 +18,7 @@ class ProjectObserver < ActiveRecord::Observer
 
   def after_update record
     if record.private_changed?
-      update_counters record, :live_projects
+      update_counters record, only: [:live_projects]
       record.commenters.each{|u| u.update_counters only: [:comments] }
       if record.private?
         Broadcast.where(context_model_id: record.id, context_model_type: 'Project').destroy_all
@@ -37,7 +37,7 @@ class ProjectObserver < ActiveRecord::Observer
   end
 
   def before_update record
-    if record.assignment_id_changed? and record.assignment_id.present? and record.issues.empty?
+    if record.collection_id_changed? and record.assignment and record.issues.empty?
       issue = record.issues.new title: 'Feedback'
       issue.type = 'Feedback'
       issue.user_id = 0
@@ -45,7 +45,7 @@ class ProjectObserver < ActiveRecord::Observer
     end
 
     if record.private_changed?
-      update_counters record, :live_projects
+      update_counters record, only: [:live_projects]
       record.commenters.each{|u| u.update_counters only: [:comments] }
       if record.private?
         Broadcast.where(context_model_id: record.id, context_model_type: 'Project').destroy_all
@@ -53,7 +53,7 @@ class ProjectObserver < ActiveRecord::Observer
       end
     end
 
-    if (record.changed && %w(assignment_id name cover_image one_liner tech_tags product_tags made_public_at license)).any? or record.tech_tags_string_changed? or product_tags_string_changed?
+    if (record.changed && %w(collection_id name cover_image one_liner tech_tags product_tags made_public_at license)).any? or record.tech_tags_string_changed? or product_tags_string_changed?
       Cashier.expire "project-#{record.id}-teaser"
     end
   end

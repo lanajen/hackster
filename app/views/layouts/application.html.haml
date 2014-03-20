@@ -101,7 +101,7 @@
                           - name = community.name
                           - name += ' (invite pending)' if group_tie.invitation_pending?
                           %li= link_to name, community
-                        - if current_user.projects.where.not(assignment_id: nil).any?
+                        - if current_user.projects.where.not(collection_id: nil).any?
                           %li= link_to 'My grades', grades_path
                       %li.divider
                       %li= link_to 'Account settings', edit_user_registration_path

@@ -105,6 +105,7 @@
       width: 100%;
       padding: 5px 10px 10px;
       background: #fff;
+      text-align: center;
       hr {
         margin: 0 0 10px;
       }
@@ -389,4 +390,12 @@ a.action-respected, a.action-followed {
     width: 170px;
     height: 53px;
   }
+}
+
+#project-group {
+  border-bottom: 1px solid #e7e7e7;
+  color: #666;
+  background: #fff;
+  padding: 15px;
+  margin-bottom: 20px;
 }

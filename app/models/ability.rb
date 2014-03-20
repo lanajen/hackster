@@ -50,6 +50,10 @@ class Ability
 
     can :join, Community
 
+    can :read_members, Community do |community|
+      @user.is_member? community
+    end
+
     can :create, [Project, Community]
     can :manage, Project do |project|
       @user.can? :manage, project.team
@@ -61,7 +65,7 @@ class Ability
       @user.can? :manage, project
     end
     can :comment_privately, Project do |project|
-      project.assignment_id.present? and @user.is_staff? project
+      project.collection_id.present? and project.assignment.present? and @user.is_staff? project
     end
 
     %w(read edit destroy manage).each do |perm|
@@ -82,10 +86,14 @@ class Ability
 
     can :update, User, id: @user.id
 
+    can :join_team, Project do |project|
+      project.collection_id.present? and project.event.present? and @user.linked_to_project_via_group? project
+    end
+
     cannot :debug, :all  # otherwise manage seems to include :debug
 
     can :debug, Project do |record|
-      @user.can? :manage, record or (record.assignment_id.present? and @user.is_staff? record)
+      @user.can? :manage, record or (record.collection_id.present? and record.assignment.present? and @user.is_staff? record)
     end
   end
 end

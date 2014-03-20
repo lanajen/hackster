@@ -8,10 +8,12 @@ module Roles
         define_method "#{attribute}" do
           class_variable_get "@@#{attribute}"
         end
-        define_method "with_#{attribute}" do |role|
-          bit = eval("2**#{attribute}.index(role.to_s)")
+        define_method "with_#{attribute}" do |roles|
+          roles = [roles] unless roles.class == Array
+          bits = roles.map{|r| eval("2**#{attribute}.index(r.to_s)") }
+          conditions = bits.map{|b| "(#{self.table_name}.#{attribute}_mask & #{b} > 0)" }
           eval "
-            where('#{self.table_name}.#{attribute}_mask & #{bit} > 0')
+            where('#{conditions.join(' OR ')}')
           "
         end
       end
@@ -19,6 +21,7 @@ module Roles
       attr_accessible :"#{attribute}"
 
       self.send :define_method, "#{attribute}=" do |roles|
+        roles = [roles] unless roles.class == Array
         eval "
           self.#{attribute}_mask = (roles & self.class.#{attribute}).map { |r| 2**self.class.#{attribute}.index(r) }.sum
         "

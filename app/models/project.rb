@@ -17,7 +17,8 @@ class Project < ActiveRecord::Base
 #  include Workflow
   is_impressionable counter_cache: true, unique: :session_hash
 
-  belongs_to :assignment
+  belongs_to :assignment, foreign_key: :collection_id
+  belongs_to :event, foreign_key: :collection_id
   belongs_to :team
   has_many :blog_posts, as: :threadable, dependent: :destroy
   has_many :comments, -> { order created_at: :asc }, as: :commentable, dependent: :destroy
@@ -43,7 +44,7 @@ class Project < ActiveRecord::Base
     :team_members_attributes, :website, :one_liner, :widgets_attributes,
     :featured, :featured_date, :cover_image_id, :logo_id, :license, :slug,
     :permissions_attributes, :new_slug, :slug_histories_attributes, :hide,
-    :assignment_id, :graded, :wip
+    :collection_id, :graded, :wip
   attr_accessor :current
   attr_writer :new_slug
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
@@ -193,7 +194,7 @@ class Project < ActiveRecord::Base
   end
 
   def is_assignment?
-    assignment_id.present?
+    collection_id.present? and assignment.present?
   end
 
   def license

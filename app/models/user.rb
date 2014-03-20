@@ -39,6 +39,7 @@ class User < ActiveRecord::Base
   has_many :comments, -> { order created_at: :desc }, foreign_key: :user_id, dependent: :destroy
   has_many :communities, through: :group_ties, source: :group, class_name: 'Community'
   # has_many :courses, through: :promotions  # doesnt work
+  has_many :events, through: :hackathons
   has_many :follow_relations
   has_many :followed_projects, source_type: 'Project', through: :follow_relations, source: :followable
   has_many :followed_users, source_type: 'User', through: :follow_relations, source: :followable
@@ -48,6 +49,7 @@ class User < ActiveRecord::Base
   has_many :group_permissions, through: :groups, source: :granted_permissions
   has_many :group_ties, class_name: 'Member', dependent: :destroy
   has_many :groups, through: :group_ties
+  has_many :hackathons, through: :group_ties, source: :group, class_name: 'Hackathon'
   has_many :invitations, class_name: self.to_s, as: :invited_by
   has_many :permissions, as: :grantee
   has_many :projects, through: :teams
@@ -477,11 +479,13 @@ class User < ActiveRecord::Base
   end
 
   def is_staff? project
-    project.try(:assignment).try(:promotion).try(:members).try(:with_group_roles, 'staff').try(:where, user_id: id).any?
+    project.try(:assignment).try(:promotion).try(:members).try(:with_group_roles, %w(ta professor)).try(:where, user_id: id).any?
   end
 
-  def is_team_member? project
-    project.team_members.where(user_id: id).first
+  def is_team_member? project, all=true
+    members = project.team_members.where(user_id: id)
+    members = members.request_accepted_or_not_requested unless all
+    members.first
   end
 
   def link_to_provider provider, uid, data=nil
@@ -519,7 +523,8 @@ class User < ActiveRecord::Base
   def linked_to_project_via_group? project
     sql = "SELECT projects.* FROM groups INNER JOIN permissions ON permissions.grantee_id = groups.id AND permissions.permissible_type = 'Project' AND permissions.grantee_type = 'Group' INNER JOIN projects ON projects.id = permissions.permissible_id INNER JOIN members ON groups.id = members.group_id WHERE members.user_id = ? AND projects.id = ?;"
     sql2 = "SELECT members.* FROM members INNER JOIN groups ON members.group_id = groups.id WHERE members.user_id = ? AND groups.type = 'Promotion' AND groups.id = (SELECT assignments.promotion_id FROM assignments WHERE assignments.id = ?)"
-    Project.find_by_sql([sql, id, project.id]).any? or Member.find_by_sql([sql2, id, project.assignment_id]).any?
+    sql3 = "SELECT members.* FROM members INNER JOIN groups ON members.group_id = groups.id WHERE members.user_id = ? AND groups.type = 'Event' AND groups.id = ?"
+    Project.find_by_sql([sql, id, project.id]).any? or project.collection_id.present? and (Member.find_by_sql([sql2, id, project.collection_id]).any? or Member.find_by_sql([sql3, id, project.collection_id]).any?)
   end
 
   def live_comments

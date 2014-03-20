@@ -25,7 +25,7 @@ module Counter
 
       unless options[:assign_only]
         update_column :counters_cache, counters_cache.to_yaml
-        assign_attributes counters, without_protection: true  # assign twice so counters_cache loses it's yaml form
+        assign_attributes YAML.load(counters_cache), without_protection: true  # assign twice so that it loses its YAML form
       end
     end
 end

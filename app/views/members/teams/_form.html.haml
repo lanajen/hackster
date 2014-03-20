@@ -29,7 +29,16 @@
                   - else
                     Invitation pending
                 - else
-                  Member
+                  - if member.requested_to_join_at.present? and !member.approved_to_join
+                    - if member.approved_to_join.nil?
+                      Pending approval
+                      %div
+                        = link_to 'Approve', member_process_path(member, event: 'approve'), class: 'btn btn-sm btn-success', data: { method: :patch }
+                        = link_to 'Reject', member_process_path(member, event: 'reject'), class: 'btn btn-sm btn-danger', data: { method: :patch }
+                    - elsif !member.approved_to_join
+                      Rejected
+                  - else
+                    Member
               - else
                 Not saved
             %td= f_member.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-sm btn-danger'

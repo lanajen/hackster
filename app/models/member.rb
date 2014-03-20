@@ -1,12 +1,12 @@
 class Member < ActiveRecord::Base
   include Roles
-  set_roles :group_roles, %w(staff student professor)
 
   belongs_to :group
   belongs_to :invited_by, polymorphic: true
   belongs_to :permission, dependent: :destroy
   belongs_to :user
   attr_protected #none
+  before_create :set_default_role
 
   accepts_nested_attributes_for :permission, allow_destroy: true
 
@@ -17,6 +17,10 @@ class Member < ActiveRecord::Base
     where('members.invitation_sent_at IS NULL OR members.invitation_accepted_at IS NOT NULL')
   end
 
+  def self.request_accepted_or_not_requested
+    where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'")
+  end
+
   def accept_invitation!
     update_attributes(invitation_accepted_at: Time.now) unless invitation_accepted_at.present?
   end
@@ -25,11 +29,15 @@ class Member < ActiveRecord::Base
     mini_resume
   end
 
+  def default_roles
+    nil
+  end
+
   def initialize_permission save=false
     perm = permission || build_permission
     perm.grantee = user unless perm.grantee
     perm.permissible = group unless perm.permissible
-    perm.action = group.class.default_permission if group and !perm.action
+    perm.action = group.class.default_permission if !request_pending? and group and !perm.action
     perm.save if save
     self.permission = perm
   end
@@ -49,4 +57,13 @@ class Member < ActiveRecord::Base
   def permission_action=(val)
     self.permission.action = val
   end
+
+  def request_pending?
+    requested_to_join_at.present? and approved_to_join.nil?
+  end
+
+  private
+    def set_default_role
+      self.group_roles = default_roles if default_roles.present? and group_roles.empty?
+    end
 end

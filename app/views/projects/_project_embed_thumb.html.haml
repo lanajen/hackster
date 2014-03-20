@@ -21,5 +21,5 @@
         %span.counter
           %i.fa.fa-comments
           = project.comments_count
-        %span.counter.featured-logo
-          = link_to "featured on #{image_tag('hackster_logo_20.png', alt: 'Hackster.io', title: SLOGAN)}".html_safe, root_url, target: '_blank'
+      .thumb-bottom.featured-logo
+        = link_to "featured on #{image_tag('hackster_logo_20.png', alt: 'Hackster.io', title: SLOGAN)}".html_safe, root_url, target: '_blank'

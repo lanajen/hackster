@@ -1,8 +1,6 @@
-.col-xs-8.col-xs-offset-2
+.col-xs-6.col-xs-offset-3
   .wellified
     %h2.text-center Manage members
-
-    %p.help-block How can new members join? See #{link_to 'here', group_new_invitations_path(@group)}.
 
     = simple_nested_form_for @group, url: group_members_path(@group), html: { class: 'widget-form' } do |f|
       = f.error_notification
@@ -23,7 +21,7 @@
                   %td
                     = f_member.input :grantee_id, collection: @group.members.invitation_accepted_or_not_invited.includes(:user).map(&:user).reject{|u| u.invited_to_sign_up? }.sort_by{|u| u.name }, label: false
                     = f_member.input :grantee_type, as: :hidden, input_html: { value: 'User' }
-                %td= f_member.input :group_roles, collection: PromotionMember.group_roles, label: false
+                %td= f_member.input :group_roles, collection: EventMember.group_roles, label: false
                 = f_member.simple_fields_for :permission do |f_perm|
                   %td= f_perm.input :action, collection: Permission::ACTIONS, label: false
                 %td

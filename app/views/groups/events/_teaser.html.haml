@@ -1,0 +1,71 @@
+- @event = GroupDecorator.decorate @event
+
+- if user_signed_in? and member = current_user.is_member?(@event) and member.invitation_pending?
+  .row
+    .col-xs-12
+      .alert.alert-warning
+        You have been invited to join
+        %strong #{@event.hackathon.name} @#{@event.hackathon.university.full_name}, #{@event.name}.
+        = link_to 'Join event', group_accept_invitation_path(@event), class: 'btn btn-warning btn-sm'
+
+.row
+  .col-xs-12.teaser
+    .text-holder
+      - if @event.avatar
+        %span.avatar.main-avatar= image_tag @event.avatar(:big), alt: @event.name, class: 'img-circle'
+      %h1
+        - if @event.private?
+          %small
+            %i.fa.fa-lock.istooltip{ title: 'Private group', data: { container: 'body' } }
+        = link_to "#{@event.hackathon.name}", hackathon_path(@event.hackathon)
+        >
+        = link_to @event.short_name, event_path(@event)
+
+      - if @event.mini_resume.present?
+        %p.user-mini-resume
+          = @event.mini_resume
+          - if @event.professor
+            By
+            = link_to @event.professor.user.name, @event.professor.user, title: 'Teaching professor', rel: 'tooltip'
+      - elsif can? :update, @event
+        %p.user-mini-resume
+          No mini resume.
+          = link_to 'Add one?', edit_event_path(@event), data: { remote: true }
+
+      %p.user-categories
+        - if @event.location
+          %span.category.first
+            %i.fa.fa-map-marker
+              = @event.location
+        - elsif can? :update, @event
+          No location.
+          = link_to 'Add one?', edit_event_path(@event), data: { remote: true }
+
+      - if @event.websites.any?
+        %ul.websites.list-inline
+          - @event.websites.select{|t,u| u.present? }.each do |type, url|
+            %li= render partial: "shared/website", locals: { type: type, url: url }
+      - elsif can? :update, @event
+        %ul.websites.list-inline
+          %li
+            No websites.
+            = link_to 'Add some?', edit_event_path(@event), data: { remote: true }
+
+- if can? :read, @event
+  .row
+    .col-xs-12
+      .tabbable.tabs-left.navbar.navbar-default.navbar-tabs{ style: 'background: #fff;' }
+        %ul.nav.navbar-nav
+          %li.active= link_to "Projects", '#tab-projects', data: { toggle: 'tab' }
+          %li= link_to "Participants", '#tab-participants', data: { toggle: 'tab' }
+          %li= link_to "Organizers", '#tab-organizers', data: { toggle: 'tab' }
+
+          - if can? :manage, @event
+            %li.dropdown
+              %a.dropdown-toggle.action{ data: { toggle: 'dropdown' }, href: '#', title: 'Settings', rel: 'tooltip' }
+                %i.fa.fa-cog
+                %b.caret
+              %ul.dropdown-menu
+                %li= link_to 'Edit event', edit_event_path(@event), data: { remote: true }
+                %li= link_to 'Manage members', group_edit_members_path(@event)
+                %li= link_to 'Invite members', group_new_invitations_path(@event)

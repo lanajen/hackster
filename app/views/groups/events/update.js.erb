@@ -1,0 +1,8 @@
+<%- if @refresh %>
+  window.location = '<%= event_path(@event) %>';
+<% else %>
+  $('.user .display').html('<%= escape_javascript render("groups/#{@event.identifier.pluralize}/teaser") %>');
+  $('.user .edit').slideUp(function(){
+    $('.user .display').slideDown();
+  });
+<% end %>

@@ -18,7 +18,7 @@
       .hidden= @project.id
       = f.input :name, label: 'Title'
       = f.input :new_slug, label: 'URL', wrapper: :addon do
-        %span.input-group-addon www.hackster.io/#{@project.user_name_for_url}/
+        %span.input-group-addon hackster.io/#{@project.user_name_for_url.truncate(10)}/
         = f.input_field :new_slug
 
       = f.input :one_liner, as: :text, input_html: { rows: 4 },
@@ -60,11 +60,13 @@
             %p.help-block
               All of the members of the groups you select will be able to access your project. They will not be able to edit it.
 
-      - if current_user.promotions.any? or current_user.is? :admin
-        - if current_user.is? :admin
-          = f.input :assignment_id, collection: Assignment.order(created_at: :desc)
-        - else
-          = f.input :assignment_id, collection: current_user.assignments.order(created_at: :desc)
+      - if current_user.is? :admin
+        = f.input :collection_id, collection: Assignment.order(created_at: :desc), label: 'Assignment'
+        = f.input :collection_id, collection: Event.order(created_at: :desc), label: 'Event'
+      - if current_user.promotions.any?
+        = f.input :collection_id, collection: current_user.assignments.order(created_at: :desc), label: 'Assignment'
+      - if current_user.events.any?
+        = f.input :collection_id, collection: current_user.events.order(created_at: :desc), label: 'Event'
 
       - if current_user.is? :admin
         = f.input :featured, inline_label: 'Feature this project', label: false

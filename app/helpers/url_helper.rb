@@ -19,6 +19,14 @@ module UrlHelper
     super params_for_course(course).merge(opts)
   end
 
+  def event_path event, opts={}
+    hackathon_event_path params_for_event(event).merge(opts)
+  end
+
+  def event_url event, opts={}
+    hackathon_event_url params_for_event(event).merge(opts)
+  end
+
   def feedback_comments_path issue, opts={}
     issue_comments_path(issue, opts)
   end
@@ -33,6 +41,8 @@ module UrlHelper
       promotion_path group, opts
     when 'University'
       super params_for_group(group).merge(opts)
+    when 'Event'
+      event_path group, opts
     else
       super params_for_group(group).merge(opts)
     end
@@ -45,9 +55,11 @@ module UrlHelper
     when Course
       super params_for_course(group).merge(opts)
     when Promotion
-      promotion_path group, opts
+      promotion_url group, opts
     when University
       super params_for_group(group).merge(opts)
+    when Event
+      event_url group, opts
     else
       super params_for_group(group).merge(opts)
     end
@@ -160,6 +172,14 @@ module UrlHelper
       {
         uni_name: course.university.user_name,
         user_name: course.user_name,
+      }
+    end
+
+    def params_for_event event
+      {
+        user_name: event.hackathon.user_name,
+        event_name: event.user_name,
+        use_route: 'hackathon_event',
       }
     end
 

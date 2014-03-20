@@ -53,15 +53,18 @@ HackerIo::Application.routes.draw do
     end  # end admin
 
     resources :comments, only: [:update, :destroy]
-    resources :communities, except: [:show, :update, :destroy], controller: 'groups', as: :groups do
+    resources :communities, except: [:show, :update, :destroy], controller: 'groups', as: :groups
+    resources :groups, only: [] do
+      post 'members' => 'members#create', as: :members
       get 'members/edit' => 'members#edit', as: :edit_members
       patch 'members' => 'members#update'
-    end
-    resources :groups, only: [] do
       get 'invitations' => 'group_invitations#index', as: :invitations
       get 'invitations/new' => 'group_invitations#new', as: :new_invitations
       post 'invitations' => 'group_invitations#create'
       get 'invitations/accept' => 'group_invitations#accept', as: :accept_invitation
+    end
+    resources :members, only: [] do
+      patch 'process' => 'members#process_request'
     end
     get 'groups/:id' => 'groups#show'
     get 'c/:user_name' => 'groups#show', as: :community
@@ -93,11 +96,20 @@ HackerIo::Application.routes.draw do
         end
       end
     end
-    resources :promotions, only: [] do
-      get 'members/edit' => 'members#edit', as: :edit_members
-      patch 'members' => 'members#update'
-    end
     resources :assignments, only: [:edit, :update, :destroy]
+
+    resources :events, except: [:show, :update, :destroy]
+    scope 'hackathons/:user_name', as: :hackathon do
+      get '' => 'hackathons#show', as: ''
+      # delete '' => 'hackathons#destroy'
+      # patch '' => 'hackathons#update'
+
+      scope ':event_name', as: :event do
+        get '' => 'events#show', as: ''
+        delete '' => 'events#destroy'
+        patch '' => 'events#update'
+      end
+    end
 
     resources :files, only: [:create, :show] do
       get 'signed_url', on: :collection

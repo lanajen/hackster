@@ -1,4 +1,4 @@
-= simple_nested_form_for @promotion, url: promotion_path(@promotion), html: { class: 'form-horizontal remote accept-file-upload', data: { remote: true } }, wrapper: :bootstrap3_horizontal do |f|
+= simple_nested_form_for @event, url: event_path(@event), html: { class: 'form-horizontal remote accept-file-upload', data: { remote: true } }, wrapper: :bootstrap3_horizontal do |f|
   = f.error_notification
 
   .row
@@ -15,13 +15,13 @@
     .col-xs-6
       = f.input :full_name, label: 'Name'
       = f.input :user_name, label: 'Pretty URL', wrapper: :addon do
-        %span.input-group-addon www.hackster.io/courses/#{@promotion.course.user_name}/
+        %span.input-group-addon www.hackster.io/hackathons/#{@event.hackathon.user_name}/
         = f.input_field :user_name
       = f.input :email
       = f.input :mini_resume, as: :text, input_html: { rows: 4 },
         hint: 'Maximum 140 characters'
 
-      = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Profile picture', image_link: @promotion.avatar.try(:file_url, :thumb), help_block: '', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
+      = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Profile picture', image_link: @event.avatar.try(:file_url, :thumb), help_block: '', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
 
       = f.input :city
       = f.input :country, input_html: { class: 'form-control' }

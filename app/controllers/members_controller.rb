@@ -1,9 +1,28 @@
 class MembersController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :set_project_mode
-  before_filter :load_group
+  before_filter :set_project_mode, except: [:create, :process_request]
+  before_filter :load_group, except: [:process_request]
   respond_to :html
-  layout :set_layout
+  layout :set_layout, except: [:create, :process_request]
+
+  def create
+    authorize! :join_team, @project
+    @group.members.create user_id: current_user.id, requested_to_join_at: Time.now
+    redirect_to user_return_to, notice: "Your request to join this project was sent to the team."
+  end
+
+  def process_request
+    @member = Member.find params[:member_id]
+    case params[:event]
+    when 'approve'
+      @member.update_attribute :approved_to_join, true
+      flash[:notice] = "#{@member.user.name} is now a member of the team."
+    when 'reject'
+      @member.update_attribute :approved_to_join, false
+      flash[:notice] = "#{@member.user.name}'s request to join the team was rejected."
+    end
+    redirect_to user_return_to
+  end
 
   def edit
     authorize! :update, @group
@@ -31,6 +50,7 @@ class MembersController < ApplicationController
       @group = if params[:group_id]
         group = Group.find(params[:group_id])
         @promotion = group if group.type == 'Promotion'
+        @event = group if group.type == 'Event'
         group
       elsif params[:promotion_id]
         @promotion = Promotion.find(params[:promotion_id])
@@ -48,6 +68,8 @@ class MembersController < ApplicationController
         'project'
       when Promotion
         'promotion'
+      when Event
+        'event'
       else
         'group'
       end

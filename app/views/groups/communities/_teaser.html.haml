@@ -43,12 +43,6 @@
             No websites.
             = link_to 'Add some?', edit_group_path(@group), data: { remote: true }
 
-    -# if current_user.id != @group.id
-      - if current_user.try(:is_following?, @group)
-        = link_to 'Following', user_followers_path(@group), method: :delete, class: 'btn-inverse btn-follow'
-      - else
-        = link_to 'Follow', user_followers_path(@group), method: :post, class: 'btn-follow'
-
 .row
   .col-xs-12
     .tabbable.tabs-left.navbar.navbar-default.navbar-tabs{ style: 'background: #fff;' }

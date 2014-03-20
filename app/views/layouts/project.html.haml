@@ -1,10 +1,9 @@
 - @project = @project.decorate
 = content_for :no_container do
-  #heading.project
-    .container
-      - @mode ||= 'normal'
-      .display= render "projects/teaser_#{@mode}"
-      .edit{ style: 'display:none;' }
+  #heading.project{ class: "#{'with-top-container' if @show_part_of}" }
+    - @mode ||= 'normal'
+    .display= render "projects/teaser_#{@mode}"
+    .edit.container{ style: 'display:none;' }
 
   #content.project
     .container
