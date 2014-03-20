@@ -24,9 +24,6 @@
       - if @event.mini_resume.present?
         %p.user-mini-resume
           = @event.mini_resume
-          - if @event.professor
-            By
-            = link_to @event.professor.user.name, @event.professor.user, title: 'Teaching professor', rel: 'tooltip'
       - elsif can? :update, @event
         %p.user-mini-resume
           No mini resume.
