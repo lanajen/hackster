@@ -88,6 +88,11 @@
       }
     }
   }
+  .photo-thumb {
+    img {
+      height: auto;
+    }
+  }
   .inner-thumb {
     .thumb-bottom {
       &.featured-logo {

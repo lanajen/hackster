@@ -5,7 +5,7 @@
     .col-xs-12
       .alert.alert-warning
         You have been invited to join
-        %strong #{@event.hackathon.name} @#{@event.hackathon.university.full_name}, #{@event.name}.
+        %strong #{@event.hackathon.name}, #{@event.name}.
         = link_to 'Join event', group_accept_invitation_path(@event), class: 'btn btn-warning btn-sm'
 
 .row
