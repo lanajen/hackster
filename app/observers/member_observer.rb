@@ -24,7 +24,6 @@ class MemberObserver < ActiveRecord::Observer
 
   def after_update record
     if record.approved_to_join_changed? and record.approved_to_join
-      # raise 'yo!'
       team = record.group
       team.updated_at = Time.now
       team.save

@@ -69,6 +69,23 @@ class Group < ActiveRecord::Base
     # end
   end
 
+  # def generate_user_name exclude_destroyed=true
+  #   # raise members.reject{|m| m.marked_for_destruction? }.to_s
+  #   cached_members = members
+  #   cached_members = cached_members.reject{|m| m.marked_for_destruction? } if exclude_destroyed
+  #   # if cached_members.size == 1
+  #   #   self.user_name = cached_members.first.user.user_name
+  #   # end
+  #   cached_members = members.to_a
+  #   self.user_name = if cached_members.size > 1
+  #     id
+  #   elsif cached_members.size == 0
+  #     ''
+  #   else
+  #     cached_members.first.user.user_name
+  #   end
+  # end
+
   def identifier
     self.class.name.to_s.underscore
   end

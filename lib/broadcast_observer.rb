@@ -1,10 +1,10 @@
 class BroadcastObserver < ActiveRecord::Observer
   def after_create record
-    record.user.broadcast :new, record.id, observed_model, project_id(record)
+    record.user.broadcast :new, record.id, observed_model, project_id(record) if record.user
   end
 
   def after_update record
-    record.user.broadcast :update, record.id, observed_model, project_id(record)
+    record.user.broadcast :update, record.id, observed_model, project_id(record) if record.user
   end
 
   def after_destroy record

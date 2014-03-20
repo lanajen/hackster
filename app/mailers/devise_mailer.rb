@@ -8,6 +8,14 @@ class DeviseMailer < BaseMailer
     enqueue_devise_email type, { context_type: :invited, context_id: record.id }, opts.merge(token: token)
   end
 
+  def invitation_instructions_with_event_member(record, token, opts={})
+    invitation_instructions_with_member(record, token, opts={})
+  end
+
+  def invitation_instructions_with_promotion_member(record, token, opts={})
+    invitation_instructions_with_member(record, token, opts={})
+  end
+
   def invitation_instructions_with_member(record, token, opts={})
     enqueue_devise_email 'invitation_instructions_with_member',
       { context_type: :membership, context_id: record.id }, opts.merge(token: token)

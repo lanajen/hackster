@@ -115,6 +115,12 @@
         color: #888;
         @include font-size(11);
         cursor: default;
+        &:first-child {
+          margin-left: 0;
+        }
+        &:last-child {
+          margin-right: 0;
+        }
       }
     }
   }
