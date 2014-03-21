@@ -143,7 +143,7 @@ class Project < ActiveRecord::Base
   end
 
   def self.wip
-    indexable.where(wip: true)
+    indexable.where(wip: true).last_updated
   end
 
   def age

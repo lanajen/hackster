@@ -12,6 +12,7 @@ class PagesController < ApplicationController
       @last_projects = Project.last_public.limit limit
       # @active_projects = Project.last_updated.limit 4
       @featured_projects = Project.featured.limit 4
+      @wip_projects = Project.wip.limit 4
 
       event = 'Visited home page as member'
     else

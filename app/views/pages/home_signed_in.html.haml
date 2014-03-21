@@ -42,5 +42,18 @@
         = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homelast' }
 
 .row
+  .col-xs-12
+    .well
+      .header.no-content
+        %h2
+          Works in progress
+          %small
+            %i.fa.fa-bolt
+          = link_to 'See more recent works in progress &rarr;'.html_safe, projects_path(by: 'wip'), class: 'btn-heading'
+    .row
+      - @wip_projects.each do |project|
+        = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homelast' }
+
+.row
   .col-xs-12.text-center
     = link_to 'Browse all projects &rarr;'.html_safe, projects_path, class: 'btn btn-primary btn-block'
