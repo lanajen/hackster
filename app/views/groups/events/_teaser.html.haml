@@ -1,6 +1,6 @@
 - @event = GroupDecorator.decorate @event
 
-- if true#user_signed_in? and member = current_user.is_member?(@event) and member.invitation_pending?
+- if user_signed_in? and member = current_user.is_member?(@event) and member.invitation_pending?
   .row
     .col-xs-12
       .alert.alert-warning.alert-flat
