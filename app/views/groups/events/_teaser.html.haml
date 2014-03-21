@@ -1,5 +1,14 @@
 - @event = GroupDecorator.decorate @event
 
+- if true#user_signed_in? and member = current_user.is_member?(@event) and member.invitation_pending?
+  .row
+    .col-xs-12
+      .alert.alert-warning.alert-flat
+        .container
+          You have been invited to join
+          %strong #{@event.hackathon.name}, #{@event.name}.
+          = link_to 'Join event', group_accept_invitation_path(@event), class: 'btn btn-warning btn-sm'
+
 #content-header.with-nav
   .container
     .media
@@ -49,12 +58,3 @@
                     %li= link_to 'Edit event', edit_event_path(@event), data: { remote: true }
                     %li= link_to 'Manage members', group_edit_members_path(@event)
                     %li= link_to 'Invite members', group_new_invitations_path(@event)
-
-.container
-  - if user_signed_in? and member = current_user.is_member?(@event) and member.invitation_pending?
-    .row
-      .col-xs-12
-        .alert.alert-warning
-          You have been invited to join
-          %strong #{@event.hackathon.name}, #{@event.name}.
-          = link_to 'Join event', group_accept_invitation_path(@event), class: 'btn btn-warning btn-sm'
