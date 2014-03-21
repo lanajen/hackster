@@ -12,6 +12,23 @@
           -# = render 'invite_requests/form'
           = link_to 'Get started', new_user_registration_path, class: 'btn btn-primary btn-lg btn-block'
 
+  %section#featured
+    .container
+      .row.header
+        .col-xs-10.col-xs-offset-1.text-center
+          %h2 A community of makers
+          %p.subtitle Some very cool things are being worked on as we speak, here's a few:
+
+      .row
+        .col-xs-10.col-xs-offset-1
+          .row.project-thumbs
+            - @most_popular_projects.sort_by{|p| p.id }.each do |project|
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homevis' }
+
+      .row
+        .col-xs-10.col-xs-offset-1.text-center
+          = link_to 'Browse all projects'.html_safe, projects_path, class: 'btn btn-primary btn-lg btn-block'
+
   %section#pitch
     .container
       .row.header
@@ -46,20 +63,3 @@
       .row
         .col-xs-10.col-xs-offset-1
           = link_to 'Create your account', new_user_registration_path, class: 'btn btn-primary btn-lg btn-block'
-
-  %section#featured
-    .container
-      .row.header
-        .col-xs-10.col-xs-offset-1.text-center
-          %h2 A community of makers
-          %p.subtitle Some very cool things are being worked on as we speak, here's a few:
-
-      .row
-        .col-xs-10.col-xs-offset-1
-          .row.project-thumbs
-            - @most_popular_projects.sort_by{|p| p.id }.each do |project|
-              = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homevis' }
-
-      .row
-        .col-xs-10.col-xs-offset-1.text-center
-          = link_to 'Browse all projects'.html_safe, projects_path, class: 'btn btn-primary btn-lg btn-block'

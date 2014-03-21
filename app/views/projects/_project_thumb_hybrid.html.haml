@@ -33,7 +33,7 @@
             %i.fa.fa-comments
             = project.comments_count
           - if project.wip?
-            %span.counter.istooltip{ title: 'Work in progress' }
+            %span.counter.istooltip{ title: 'Work in progress', data: { container: 'body' } }
               %i.fa.fa-bolt
 
 .col-xs-12.thumb-horizontal
@@ -64,5 +64,5 @@
             %i.fa.fa-comments
             = project.comments_count
           - if project.wip?
-            %span.counter.istooltip{ title: 'Work in progress' }
+            %span.counter.istooltip{ title: 'Work in progress', data: { container: 'body' } }
               %i.fa.fa-bolt
