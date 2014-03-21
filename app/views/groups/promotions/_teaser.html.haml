@@ -14,7 +14,7 @@
     .media
       - if @promotion.avatar
         .pull-left
-          %span.avatar.medium-avatar= image_tag @promotion.avatar(:thumb), class: 'media-object'
+          %span.avatar.medium-avatar= image_tag @promotion.avatar(:medium), class: 'media-object'
       .media-body
         %h1
           - if @promotion.private?

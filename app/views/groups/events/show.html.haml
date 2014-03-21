@@ -6,6 +6,9 @@
           - style = cookies['thumb-list-style'] || 'thumb-list-vertical'
           .row
             .col-xs-12
+              - if user_signed_in? and current_user.is_member? @event
+                .pull-left
+                  = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, "#{event_path(@event)}/projects/new", class: 'btn btn-sm btn-warning'
               .btn-group.thumb-list-switch.pull-right{ style: 'margin-bottom: 20px'}
                 %button.btn.btn-default.btn-sm.istooltip{ class: "#{'active' if style == 'thumb-list-vertical'}", data: { 'list-style' => 'vertical', container: 'body' }, title: 'Display as tiles' }
                   %i.fa.fa-th-large

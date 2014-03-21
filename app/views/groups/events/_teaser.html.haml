@@ -14,7 +14,7 @@
     .media
       - if @event.avatar
         .pull-left
-          %span.avatar.medium-avatar= image_tag @event.avatar(:thumb), class: 'media-object'
+          %span.avatar.medium-avatar= image_tag @event.avatar(:medium), class: 'media-object'
       .media-body
         %h1
           - if @event.private?

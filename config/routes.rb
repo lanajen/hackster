@@ -108,6 +108,8 @@ HackerIo::Application.routes.draw do
         get '' => 'events#show', as: ''
         delete '' => 'events#destroy'
         patch '' => 'events#update'
+        resources :projects, only: [:new, :create], controller: 'groups/projects'
+        patch 'projects/link' => 'groups/projects#link'
       end
     end
 
