@@ -4,7 +4,12 @@ $(document).ready(function(){
   $('.fade-in').delay(2000).slideDown(500);
   $(document).on('click', '.btn-close', function(e){
     target = $(this).data('close');
-    $(target).slideUp(100);
+    effect = $(this).data('effect') || 'slide';
+    if (effect == 'fade') {
+      $(target).fadeOut(100);
+    } else {
+      $(target).slideUp(100);
+    }
     e.stopPropagation();
     return false;
   });
