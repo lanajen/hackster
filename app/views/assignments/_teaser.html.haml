@@ -1,56 +1,73 @@
+- @promotion = GroupDecorator.decorate @promotion
+
 - if user_signed_in? and member = current_user.is_member?(@promotion) and member.invitation_pending?
   .row
     .col-xs-12
-      .alert.alert-warning
-        You have been invited to join
-        %strong #{@promotion.course.name} #{@promotion.name}.
-        = link_to 'Join promotion', group_accept_invitation_path(@promotion), class: 'btn btn-warning btn-sm'
+      .alert.alert-warning.alert-flat
+        .container
+          You have been invited to join
+          %strong #{@promotion.name}.
+          = link_to 'Join promotion', group_accept_invitation_path(@promotion), class: 'btn btn-warning btn-sm'
 
-.row
-  .col-xs-12.teaser
-    .text-holder
+#content-header.with-nav
+  .container
+    .media
       - if @promotion.avatar
-        %span.avatar.main-avatar= image_tag @promotion.avatar(:big), alt: @promotion.name, class: 'img-circle'
-      %h1
-        - if @promotion.private?
-          %small
-            %i.fa.fa-lock.istooltip{ title: 'Private group', data: { container: 'body' } }
-        = link_to "#{@promotion.course.name} @#{@promotion.course.university.full_name}", course_path(@promotion.course)
-        >
-        = link_to @promotion.short_name, promotion_path(@promotion)
+        .pull-left
+          %span.avatar.medium-avatar= image_tag @promotion.avatar(:thumb), class: 'media-object'
+      .media-body
+        %h1
+          - if @promotion.private?
+            %small
+              %i.fa.fa-lock.istooltip{ title: 'Private group', data: { container: 'body' } }
+          = link_to "#{@promotion.course.name} @#{@promotion.course.university.full_name}", course_path(@promotion.course), class: 'hidden-link'
+          >
+          = link_to @promotion.short_name, promotion_path(@promotion), class: 'hidden-link'
+          >
+          = link_to @assignment.name, assignment_path(@assignment), class: 'hidden-link'
+          - if @assignment.document.present?
+            %small= link_to content_tag(:i, '', class: 'fa fa-question-circle'), @assignment.document.file_url, title: 'Download assignment instructions', rel: 'tooltip', target: '_blank'
+        %p
+          - if @promotion.mini_resume.present?
+            = @promotion.mini_resume
+          - elsif can? :update, @promotion
+            No mini resume.
+            = link_to 'Add one?', edit_promotion_path(@promotion), data: { remote: true }
 
-      %p.user-mini-resume
-        %strong
-          Assignment:
-          = @assignment.name
-        - if @assignment.document.present?
-          %span.instructions= link_to 'Instructions', @assignment.document.file_url, title: 'Download assignment instructions', rel: 'tooltip', target: '_blank'
+        %p{ style: 'font-size: 12px' }
+          %span{ style: 'margin-right: 10px'}
+            - if profs = @promotion.members.with_group_roles('professor') and profs.any?
+              %i.fa.fa-group.istooltip{ title: 'Professors', data: { container: 'body' } }
+              = profs.map{ |prof| link_to prof.user.name, prof.user }.to_sentence.html_safe
 
-      - if @promotion.mini_resume.present?
-        %p.user-mini-resume= @promotion.mini_resume
-
-      %p.user-categories
-        - if @promotion.location
-          %span.category.first
-            %i.fa.fa-map-marker
+          - if @promotion.location
+            %span.category.first
+              %i.fa.fa-map-marker
               = @promotion.location
+          - elsif can? :update, @promotion
+            No location.
+            = link_to 'Add one?', edit_promotion_path(@promotion), data: { remote: true }
 
-      - if @promotion.websites.any?
-        %ul.websites.list-inline
-          - @promotion.websites.select{|t,u| u.present? }.each do |type, url|
-            %li= render partial: "shared/website", locals: { type: type, url: url }
+          - if @promotion.websites.any?
+            %span.websites{ style: 'margin-left: 10px '}
+              - @promotion.websites.select{|t,u| u.present? }.each do |type, url|
+                = render partial: "shared/website", locals: { type: type, url: url }
+          - elsif can? :update, @promotion
+            %span.websites{ style: 'margin-left: 10px '}
+              No websites.
+              = link_to 'Add some?', edit_promotion_path(@promotion), data: { remote: true }
 
-.row
-  .col-xs-12
-    .tabbable.tabs-left.navbar.navbar-default.navbar-tabs{ style: 'background: #fff;' }
-      %ul.nav.navbar-nav
-        %li.active= link_to "Projects", '#tab-projects', data: { toggle: 'tab' }
+    .row
+      .col-xs-12
+        .tabbable.tabs-left.navbar.navbar-default.navbar-tabs{ style: 'background: #fff;' }
+          %ul.nav.navbar-nav
+            %li.active= link_to "Projects", '#tab-projects', data: { toggle: 'tab' }
 
-        - if can? :manage, @assignment
-          %li.dropdown
-            %a.dropdown-toggle.action{ data: { toggle: 'dropdown' }, href: '#', title: 'Settings', rel: 'tooltip' }
-              %i.fa.fa-cog
-              %b.caret
-            %ul.dropdown-menu
-              %li= link_to 'Edit assignment', edit_assignment_path(@assignment), data: { remote: true }
-              %li= link_to 'Manage grades', assignment_grades_path(@assignment)
+            - if can? :manage, @assignment
+              %li.dropdown
+                %a.dropdown-toggle.action{ data: { toggle: 'dropdown' }, href: '#', title: 'Settings', rel: 'tooltip' }
+                  %i.fa.fa-cog
+                  %b.caret
+                %ul.dropdown-menu
+                  %li= link_to 'Edit assignment', edit_assignment_path(@assignment), data: { remote: true }
+                  %li= link_to 'Manage grades', assignment_grades_path(@assignment)

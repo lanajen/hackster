@@ -65,8 +65,8 @@ class GradesController < ApplicationController
 
   private
     def load_assignment
-      if params[:collection_id]
-        @assignment = Assignment.find params[:collection_id]
+      if params[:assignment_id]
+        @assignment = Assignment.find params[:assignment_id]
         authorize! :manage, @assignment
       end
     end

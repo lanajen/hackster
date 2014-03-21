@@ -1,8 +1,8 @@
 - @group = GroupDecorator.decorate(@group)
 = content_for :no_container do
-  #heading.user
+  #heading.user.with-top-container
+    .display= render "groups/#{@group.identifier.pluralize}/teaser"
     .container
-      .display= render "groups/#{@group.identifier.pluralize}/teaser"
       .edit{ style: 'display:none;' }
 
   #content

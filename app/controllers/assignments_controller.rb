@@ -8,6 +8,7 @@ class AssignmentsController < ApplicationController
 
   def show
     redirect_to promotion_path(@assignment.promotion) and return unless can? :read, @assignment
+    title "#{@assignment.name} | #{@assignment.promotion.name}"
     @projects = @assignment.projects.order(:created_at)
   end
 

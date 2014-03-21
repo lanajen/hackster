@@ -1,8 +1,8 @@
 - @promotion = GroupDecorator.decorate(@promotion)
 = content_for :no_container do
-  #heading.user
+  #heading.user.with-top-container
+    .display= render "assignments/teaser"
     .container
-      .display= render "assignments/teaser"
       .edit{ style: 'display:none;' }
 
   #content

@@ -5,7 +5,11 @@
       height: 120px;
     }
   }
-  &.mini-avatar {
+  &.medium-avatar {
+    img {
+      width: 90px;
+      height: 90px;
+    }
   }
 }
 
