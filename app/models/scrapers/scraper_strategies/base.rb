@@ -8,7 +8,7 @@ module ScraperStrategies
       /github\.com\/([0-9a-zA-Z_\-]+\/[0-9a-zA-Z_\-]+)/ => 'GithubWidget.new(repo:"|href|",name:"Github repo")',
       /instagram\.com/ => 'VideoWidget.new(video_attributes:{link:"|href|"},name:"Demo video")',
       /oshpark\.com\/shared_projects/ => 'OshparkWidget.new(link:"|href|",name:"PCB on OSH Park")',
-      /sketchfab\.com\/models\/([a-z0-9]+)/ => 'SketchfabWidget.new(link:"|href|",name:"Renderings on Sketchfab")'
+      /sketchfab\.com\/models\/([a-z0-9]+)/ => 'SketchfabWidget.new(link:"|href|",name:"Renderings on Sketchfab")',
       /tindie\.com/ => 'BuyWidget.new(link:"|href|",name:"Where to buy")',
       /upverter\.com\/[^\/]+\/([a-z0-9]+)\/([^\/]+)/ => 'UpverterWidget.new(link:"|href|",name:"Schematics on Upverter")',
       /ustream\.tv\/([a-z]+\/[0-9]+)/ => 'VideoWidget.new(video_attributes:{link:"|href|"},name:"Demo video")',
