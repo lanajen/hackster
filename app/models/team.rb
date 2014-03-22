@@ -14,7 +14,11 @@ class Team < Group
   def generate_user_name exclude_destroyed=true
     cached_members = members
     cached_members = members.reject{|m| m.marked_for_destruction? } if exclude_destroyed
-    self.user_name = (cached_members.size == 1 ? cached_members.first.user.user_name : id)
+    self.user_name = if full_name.present?
+      super()
+    else
+      (cached_members.size == 1 ? cached_members.first.user.user_name : id)
+    end
   end
 
   # How user_name generation works: a new user_name is generated automatically
@@ -24,13 +28,13 @@ class Team < Group
   # user_name is kept.
   def update_user_name
     was_auto_generated = if members.find_index{|m| m.new_record? || m.marked_for_destruction?}
-      group = Group.new
-      group.members = members.reject{|m| m.new_record?}
-      user_name == group.generate_user_name(false)
+      team = Team.new
+      team.members = members.reject{|m| m.new_record?}
+      user_name == team.generate_user_name(false)
     end
     new_user_name_changed = (new_user_name != user_name)
 
-    generate_user_name if was_auto_generated or user_name.blank?
+    generate_user_name if user_name.blank? or was_auto_generated or full_name_changed?
     assign_new_user_name if new_user_name_changed
     user_name
   end
