@@ -2,6 +2,9 @@ class Team < Group
   has_many :active_members, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'") }, foreign_key: :group_id, class_name: 'Member'
   has_many :grades, as: :gradable
   has_many :projects
+
+  validates :user_name, :new_user_name, length: { in: 3..100 }, allow_blank: true, if: proc{|t| t.persisted?}
+
   before_save :update_user_name
 
   def self.default_permission
@@ -9,9 +12,9 @@ class Team < Group
   end
 
   def generate_user_name exclude_destroyed=true
-    cached_members = active_members
-    cached_members = cached_members.reject{|m| m.marked_for_destruction? } if exclude_destroyed
-    self.user_name = cached_members.map{|m| m.user.user_name }.to_sentence.gsub(/,/, '').gsub(/[ ]/, '_')
+    cached_members = members
+    cached_members = members.reject{|m| m.marked_for_destruction? } if exclude_destroyed
+    self.user_name = (cached_members.size == 1 ? cached_members.first.user.user_name : id)
   end
 
   # How user_name generation works: a new user_name is generated automatically
@@ -20,9 +23,9 @@ class Team < Group
   # different from the old user_name. If both conditions are false then the old
   # user_name is kept.
   def update_user_name
-    was_auto_generated = if active_members.find_index{|m| m.new_record? || m.marked_for_destruction?}
+    was_auto_generated = if members.find_index{|m| m.new_record? || m.marked_for_destruction?}
       group = Group.new
-      group.members = active_members.reject{|m| m.new_record?}
+      group.members = members.reject{|m| m.new_record?}
       user_name == group.generate_user_name(false)
     end
     new_user_name_changed = (new_user_name != user_name)

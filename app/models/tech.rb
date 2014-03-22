@@ -7,29 +7,13 @@ class Tech < Group
 
   validates :user_name, :full_name, presence: true
   validates :user_name, uniqueness: { scope: [:type] }
+  validates :user_name, :new_user_name, length: { in: 3..100 }, if: proc{|t| t.persisted?}
   before_validation :update_user_name
 
   taggable :tech_tags
 
   def self.model_name
     Group.model_name
-  end
-
-  def generate_user_name
-    return if full_name.blank?
-
-    slug = name.gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
-
-    # make sure it doesn't exist
-    if result = self.class.where(user_name: slug).first
-      return if self == result
-      # if it exists add a 1 and increment it if necessary
-      slug += '1'
-      while self.class.where(user_name: slug).first
-        slug.gsub!(/([0-9]+$)/, ($1.to_i + 1).to_s)
-      end
-    end
-    self.user_name = slug
   end
 
   def projects

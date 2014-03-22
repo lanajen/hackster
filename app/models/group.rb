@@ -27,7 +27,6 @@ class Group < ActiveRecord::Base
   store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link,
     :google_plus_link, :youtube_link, :website_link, :blog_link, :github_link]
   validates :user_name, :new_user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users) }
-  validates :user_name, :new_user_name, length: { in: 3..100 }, if: proc{|t| t.persisted?}
   validate :website_format_is_valid
   before_validation :assign_new_user_name
   before_validation :clean_members
@@ -54,37 +53,22 @@ class Group < ActiveRecord::Base
     self.avatar = Avatar.find_by_id(val)
   end
 
-  def generate_user_name exclude_destroyed=true
-    # raise members.reject{|m| m.marked_for_destruction? }.to_s
-    cached_members = members
-    cached_members = cached_members.reject{|m| m.marked_for_destruction? } if exclude_destroyed
-    self.user_name = cached_members.map{|m| m.user.user_name }.to_sentence.gsub(/,/, '').gsub(/[ ]/, '_')
-    # cached_members = members.to_a
-    # self.user_name = if cached_members.size > 1
-    #   cached_members.map{|m| m.user.user_name[0..1] }.join('')
-    # elsif cached_members.size == 0
-    #   ''
-    # else
-    #   cached_members.first.user.user_name
-    # end
-  end
+  def generate_user_name
+    return if full_name.blank?
 
-  # def generate_user_name exclude_destroyed=true
-  #   # raise members.reject{|m| m.marked_for_destruction? }.to_s
-  #   cached_members = members
-  #   cached_members = cached_members.reject{|m| m.marked_for_destruction? } if exclude_destroyed
-  #   # if cached_members.size == 1
-  #   #   self.user_name = cached_members.first.user.user_name
-  #   # end
-  #   cached_members = members.to_a
-  #   self.user_name = if cached_members.size > 1
-  #     id
-  #   elsif cached_members.size == 0
-  #     ''
-  #   else
-  #     cached_members.first.user.user_name
-  #   end
-  # end
+    slug = name.gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
+
+    # make sure it doesn't exist
+    if result = self.class.where(user_name: slug).first
+      return if self == result
+      # if it exists add a 1 and increment it if necessary
+      slug += '1'
+      while self.class.where(user_name: slug).first
+        slug.gsub!(/([0-9]+$)/, ($1.to_i + 1).to_s)
+      end
+    end
+    self.user_name = slug
+  end
 
   def identifier
     self.class.name.to_s.underscore
