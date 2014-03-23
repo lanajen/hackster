@@ -284,7 +284,7 @@ class User < ActiveRecord::Base
   end
 
   def community_group_ties
-    group_ties.joins(:group).where(groups: { type: 'Community' }).includes(:group)
+    group_ties.joins(:group).where(groups: { type: %w(Community Event Promotion) }).includes(:group)
   end
 
   def counters
