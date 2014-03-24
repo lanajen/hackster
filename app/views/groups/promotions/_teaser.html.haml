@@ -20,9 +20,12 @@
           - if @promotion.private?
             %small
               %i.fa.fa-lock.istooltip{ title: 'Private group', data: { container: 'body' } }
-          = link_to "#{@promotion.course.name} @#{@promotion.course.university.full_name}", course_path(@promotion.course), class: 'hidden-link'
-          >
-          = link_to @promotion.short_name, promotion_path(@promotion), class: 'hidden-link'
+          = link_to "#{@promotion.course.name}", course_path(@promotion.course)
+        %h2
+          - if profs = @promotion.members.with_group_roles('professor') and profs.any?
+            By #{profs.map{ |prof| link_to prof.user.name, prof.user }.to_sentence.html_safe},
+          #{link_to @promotion.short_name, promotion_path(@promotion)},
+          #{@promotion.course.university.full_name}
         %p
           - if @promotion.mini_resume.present?
             = @promotion.mini_resume
@@ -31,11 +34,6 @@
             = link_to 'Add one?', edit_promotion_path(@promotion), data: { remote: true }
 
         %p{ style: 'font-size: 12px' }
-          %span{ style: 'margin-right: 10px'}
-            - if profs = @promotion.members.with_group_roles('professor') and profs.any?
-              %i.fa.fa-group.istooltip{ title: 'Professors', data: { container: 'body' } }
-              = profs.map{ |prof| link_to prof.user.name, prof.user }.to_sentence.html_safe
-
           - if @promotion.location
             %span.category.first
               %i.fa.fa-map-marker

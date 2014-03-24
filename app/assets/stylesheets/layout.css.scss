@@ -159,6 +159,14 @@ footer {
   color: #428bca;
 }
 
+#content-header h1, #content-header h1 a {
+  color: #333;
+}
+
+#content-header h2, #content-header h2 a {
+  color: #666;
+}
+
 #content-header {
   border-bottom: 1px solid #e7e7e7;
   color: #666;
@@ -169,10 +177,23 @@ footer {
   }
   h1 {
     margin-top: 0;
+    margin-bottom: 0;
     font-size: 24px;
+    a {
+      color: #333;
+    }
+  }
+  h2 {
+    font-size: 14px;
+    margin-top: 0;
+    margin-bottom: 5px;
+    a {
+      color: #666;
+    }
   }
   p {
     font-size: 14px;
+    margin-bottom: 5px;
   }
   .websites {
     font-size: 12px;

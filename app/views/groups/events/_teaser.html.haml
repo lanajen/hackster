@@ -20,9 +20,9 @@
           - if @event.private?
             %small
               %i.fa.fa-lock.istooltip{ title: 'Private group', data: { container: 'body' } }
-          = link_to "#{@event.hackathon.name}", hackathon_path(@event.hackathon.user_name), class: 'hidden-link'
-          >
-          = link_to @event.short_name, event_path(@event), class: 'hidden-link'
+          = link_to "#{@event.hackathon.name}", hackathon_path(@event.hackathon.user_name)
+        %h2
+          = link_to @event.short_name, event_path(@event)
         %p
           - if @event.mini_resume.present?
             = @event.mini_resume
