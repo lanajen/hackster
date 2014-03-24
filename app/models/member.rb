@@ -13,6 +13,10 @@ class Member < ActiveRecord::Base
   validates :user_id, uniqueness: { scope: :group_id }
   validates :mini_resume, length: { maximum: 250 }
 
+  def self.invitation_not_accepted
+    where.not(invitation_sent_at: nil).where(invitation_accepted_at: nil)
+  end
+
   def self.invitation_accepted_or_not_invited
     where('members.invitation_sent_at IS NULL OR members.invitation_accepted_at IS NOT NULL')
   end

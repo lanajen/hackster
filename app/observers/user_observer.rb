@@ -26,6 +26,10 @@ class UserObserver < ActiveRecord::Observer
       team.members.new(user_id: record.id)
       team.save
     end
+
+    record.group_ties.invitation_not_accepted.each do |member|
+      member.accept_invitation!
+    end
   end
 
   def before_update record

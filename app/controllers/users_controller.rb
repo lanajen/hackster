@@ -60,6 +60,7 @@ class UsersController < ApplicationController
   def after_registration
     @user = current_user
     @user.build_avatar unless @user.avatar
+    session[:user_return_to] = group_path(@user.groups.first) if @user.groups.any?
   end
 
   def after_registration_save
