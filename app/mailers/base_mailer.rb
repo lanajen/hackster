@@ -95,9 +95,16 @@ class BaseMailer < ActionMailer::Base
         context[:error] = LogLine.find(context_id)
       when :membership
         member = context[:member] = Member.find(context_id)
-        context[:group] = member.group
+        context[:group] = group = member.group
+        context[:project] = group.projects.first
         context[:user] = member.user
         context[:inviter] = member.invited_by
+      when :membership_request
+        member = context[:member] = Member.find(context_id)
+        context[:team] = team = member.group
+        context[:project] = team.project
+        context[:users] = team.users.where('members.invitation_sent_at IS NULL OR members.invitation_accepted_at IS NOT NULL')
+        context[:requester] = member.user
       when :participant_invite
         context[:invite] = invite = ParticipantInvite.find(context_id)
         context[:user] = User.new email: invite.email

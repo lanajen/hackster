@@ -17,7 +17,12 @@
             - if member.request_pending?
               %span.label.label-default Request to join team pending
           - else
-            = link_to 'Join team', group_members_path(@project.team), class: 'btn btn-xs btn-warning', data: { method: :post }
+            = link_to 'Join team', group_members_path(@project.team), class: 'btn btn-xs btn-warning', data: { method: :post }, id: 'join-button'
+            = content_for :js do
+              :javascript
+                $(document).ready(function(){
+                  $('#join-button').clone().appendTo('.team-widget');
+                });
 
 .container
   - who = %w(you)

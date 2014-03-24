@@ -474,6 +474,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  def is_active_member? group
+    group.members.invitation_accepted_or_not_invited.where(user_id: id).first
+  end
+
   def is_member? group
     group.members.where(user_id: id).first
   end

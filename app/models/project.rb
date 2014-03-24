@@ -20,6 +20,7 @@ class Project < ActiveRecord::Base
   belongs_to :assignment, foreign_key: :collection_id
   belongs_to :event, foreign_key: :collection_id
   belongs_to :team
+  has_many :active_users, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'")}, through: :team_members, source: :user
   has_many :blog_posts, as: :threadable, dependent: :destroy
   has_many :comments, -> { order created_at: :asc }, as: :commentable, dependent: :destroy
   has_many :commenters, -> { uniq true }, through: :comments, source: :user

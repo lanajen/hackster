@@ -6,7 +6,7 @@
       .alert.alert-warning.alert-flat
         .container
           You have been invited to join
-          %strong #{@event.hackathon.name}, #{@event.name}.
+          %strong #{@event.name}.
           = link_to 'Join event', group_accept_invitation_path(@event), class: 'btn btn-warning btn-sm'
 
 #content-header.with-nav

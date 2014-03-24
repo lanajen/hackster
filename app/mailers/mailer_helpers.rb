@@ -92,6 +92,7 @@ module MailerHelpers
       user = opts[:user] if opts.include? :user
       group = @context[:group] if @context.include? :group
       comment = @context[:comment] if @context.include? :comment
+      Rails.logger.info @context.to_s
 
       token = token.gsub(/\|/, '')
       case token.to_sym
@@ -123,6 +124,8 @@ module MailerHelpers
         url.project_url(project, host: default_host)
       when :project_new_link
         url.new_project_url(project, host: default_host)
+      when :project_edit_team_link
+        url.project_edit_team_url(project, host: default_host)
       when :slogan
         SLOGAN
       when :unsubscribe_link

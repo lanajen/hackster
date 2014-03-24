@@ -9,7 +9,12 @@ class MemberObserver < ActiveRecord::Observer
     end
     if record.group.is? :team
       project = record.group.projects.first
-      record.user.broadcast :new, record.id, 'Member', project.id if project and project.public?
+      if record.request_pending?
+        BaseMailer.enqueue_email 'new_request_to_join_team',
+          { context_type: :membership_request, context_id: record.id }
+      else
+        record.user.broadcast :new, record.id, 'Member', project.id if project and project.public?
+      end
     end
     unless record.permission
       record.initialize_permission(true)
@@ -23,10 +28,15 @@ class MemberObserver < ActiveRecord::Observer
   end
 
   def after_update record
-    if record.approved_to_join_changed? and record.approved_to_join
-      team = record.group
-      team.updated_at = Time.now
-      team.save
+    if record.approved_to_join_changed?
+      if record.approved_to_join
+        record.group.touch
+        BaseMailer.enqueue_email 'request_to_join_team_accepted',
+          { context_type: :membership, context_id: record.id }
+      else
+        # BaseMailer.enqueue_email 'request_to_join_team_rejected',
+          # { context_type: :membership, context_id: record.id }
+      end
     end
   end
 

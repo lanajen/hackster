@@ -90,6 +90,10 @@ class Ability
       project.collection_id.present? and project.event.present? and @user.linked_to_project_via_group? project
     end
 
+    can :add_project, Event do |event|
+      @user.is_active_member? event
+    end
+
     cannot :debug, :all  # otherwise manage seems to include :debug
 
     can :debug, Project do |record|

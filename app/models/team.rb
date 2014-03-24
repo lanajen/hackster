@@ -21,6 +21,10 @@ class Team < Group
     end
   end
 
+  def project
+    projects.first
+  end
+
   # How user_name generation works: a new user_name is generated automatically
   # only when the old user_name was also automatically generated. A manually
   # entered user_name (new_user_name) is used only when the input version is
