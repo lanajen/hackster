@@ -68,9 +68,13 @@ class Project < ActiveRecord::Base
 
   taggable :product_tags, :tech_tags
 
-  store :counters_cache, accessors: [:comments_count, :product_tags_count, :respects_count, :widgets_count, :followers_count]
+  store :counters_cache, accessors: [:comments_count, :product_tags_count,
+    :respects_count, :widgets_count, :followers_count, :build_logs_count,
+    :issues_count]
 
-  parse_as_integers :counters_cache, :comments_count, :product_tags_count, :respects_count, :widgets_count
+  parse_as_integers :counters_cache, :comments_count, :product_tags_count,
+    :respects_count, :widgets_count, :followers_count, :build_logs_count,
+    :issues_count
 
   self.per_page = 12
 
@@ -166,8 +170,10 @@ class Project < ActiveRecord::Base
 
   def counters
     {
+      build_logs: 'blog_posts.count',
       comments: 'comments.count',
       followers: 'followers.count',
+      issues: 'issues.count',
       product_tags: 'product_tags.count',
       respects: 'respects.count',
       widgets: 'widgets.count',

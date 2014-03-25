@@ -5,7 +5,10 @@
 
     - if can? :edit, log
       .btn-heading
-        = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_project_log_path(@project.user_name_for_url, @project.slug, log.sub_id), class: 'btn-edit', rel: 'tooltip', title: 'Edit content', data: { container: 'body' }
+        .pull-right
+          = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_project_log_path(@project.user_name_for_url, @project.slug, log.sub_id), class: 'btn-edit', rel: 'tooltip', title: 'Edit content', data: { container: 'body' }
+        .pull-right
+          = link_to content_tag(:i, '', class: 'fa fa-trash-o'), blog_post_path(log), class: 'btn-edit', rel: 'tooltip', title: 'Delete log', data: { container: 'body', method: :delete, confirm: "Are you sure? There's no way back!" }
 
   %small.text-muted
     by

@@ -21,7 +21,7 @@
         %td= strip_tags(log.body).truncate 100
         %td= time_ago_in_words log.created_at
         %td
-          = link_to t('.destroy', :default => t("helpers.links.destroy")), log_path(log.threadable, log), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'
+          = link_to t('.destroy', :default => t("helpers.links.destroy")), blog_post_path(log), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'
 
 .pagination.col-xs-12.text-center
   = will_paginate @logs

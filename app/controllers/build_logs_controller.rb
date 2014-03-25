@@ -1,8 +1,8 @@
 class BuildLogsController < ApplicationController
   before_filter :authenticate_user!, except: [:index, :show]
-  before_filter :load_project
-  before_filter :load_log, only: [:show, :edit, :update, :destroy]
-  before_filter :set_project_mode
+  before_filter :load_project, except: [:destroy]
+  before_filter :load_log, only: [:show, :edit, :update]
+  before_filter :set_project_mode, except: [:destroy]
   layout 'project'
 
   def index
@@ -46,6 +46,15 @@ class BuildLogsController < ApplicationController
     else
       render 'edit'
     end
+  end
+
+  def destroy
+    @log = BlogPost.find params[:id]
+    authorize! :destroy, @log
+    @project = @log.threadable
+    @log.destroy
+
+    redirect_to project_logs_path(@project.user_name_for_url, @project.slug), notice: "\"#{@log.title}\" was deleted."
   end
 
   private

@@ -153,7 +153,7 @@ HackerIo::Application.routes.draw do
       resources :comments, only: [:create]
     end
 
-    resources :blog_posts, only: [] do
+    resources :blog_posts, only: [:destroy], controller: :build_logs do
       resources :comments, only: [:create]
     end
 
