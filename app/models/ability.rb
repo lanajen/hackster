@@ -13,9 +13,9 @@ class Ability
     end
 
     @user = resource
-    member if @user.persisted?
     @user.roles.each{ |role| send role }
     beta_tester if @user.is? :beta_tester
+    member if @user.persisted?
 
     @user.permissions.each do |permission|
       can permission.action.to_sym, permission.permissible_type.constantize, id: permission.permissible_id
@@ -24,6 +24,7 @@ class Ability
 
   def admin
     can :manage, :all
+    cannot [:join, :request_access], Group
   end
 
   def beta_tester
@@ -48,7 +49,28 @@ class Ability
       record.visible_to? @user
     end
 
-    can :join, Community
+    can :join, Group do |group|
+      case group.access_level
+      when 'anyone'
+        !@user.is_member?(group)
+      when 'request'
+        false
+      when 'invite'
+        member = @user.is_member?(group) and member.invitation_pending?
+      end
+    end
+
+    can :request_access, Group do |group|
+      group.access_level == 'request' and !@user.is_member?(group)
+    end
+    cannot :request_access, Team
+    can :request_access, Team do |team|
+      @user.can? :join_team, team.project
+    end
+
+    can :join_team, Project do |project|
+      project.collection_id.present? and project.event.present? and member = @user.linked_to_project_via_group?(project) and !(member.requested_to_join_at.present? and !member.approved_to_join)
+    end
 
     can :read_members, Community do |community|
       @user.is_member? community
@@ -85,10 +107,6 @@ class Ability
     end
 
     can :update, User, id: @user.id
-
-    can :join_team, Project do |project|
-      project.collection_id.present? and project.event.present? and @user.linked_to_project_via_group? project
-    end
 
     can :add_project, Event do |event|
       @user.is_active_member? event

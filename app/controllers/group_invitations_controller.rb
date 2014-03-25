@@ -41,7 +41,7 @@ class GroupInvitationsController < ApplicationController
       end
       redirect_to path_for_group(@group)
     else
-      if token_valid?
+      if token_valid? or @group.access_level == 'anyone'
         @group.members.create user_id: current_user.id
         redirect_to path_for_group(@group), notice: "Welcome to #{@group.name}!"
       else

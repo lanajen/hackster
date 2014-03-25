@@ -6,20 +6,21 @@ class MembersController < ApplicationController
   layout :set_layout, except: [:create, :process_request]
 
   def create
-    authorize! :join_team, @project
+    authorize! :request_access, @group
     @group.members.create user_id: current_user.id, requested_to_join_at: Time.now
-    redirect_to user_return_to, notice: "Your request to join this project was sent to the team."
+    redirect_to user_return_to, notice: "Your request to join was sent to the team. We'll notify you when they respond!"
   end
 
   def process_request
     @member = Member.find params[:member_id]
+    group_name = @member.group.class.name.humanize.downcase
     case params[:event]
     when 'approve'
       @member.update_attribute :approved_to_join, true
-      flash[:notice] = "#{@member.user.name} is now a member of the team."
+      flash[:notice] = "#{@member.user.name} is now a member of the #{group_name}."
     when 'reject'
       @member.update_attribute :approved_to_join, false
-      flash[:notice] = "#{@member.user.name}'s request to join the team was rejected."
+      flash[:notice] = "#{@member.user.name}'s request to join the #{group_name} was rejected."
     end
     redirect_to user_return_to
   end

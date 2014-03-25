@@ -5,6 +5,7 @@ class Group < ActiveRecord::Base
     'Only people who are explicitely invited' => 'invite',
   }
 
+  has_many :active_members, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'") }, foreign_key: :group_id, class_name: 'Member'
   has_many :broadcasts, through: :users
   has_many :granted_permissions, as: :grantee, class_name: 'Permission'
   has_many :issues, through: :projects
@@ -18,7 +19,7 @@ class Group < ActiveRecord::Base
     :blog_link, :github_link, :email, :mini_resume, :city, :country,
     :user_name, :full_name, :members_attributes, :avatar_id,
     :permissions_attributes, :google_plus_link, :youtube_link, :new_user_name,
-    :access_levels
+    :access_level
   attr_writer :new_user_name
 
   accepts_nested_attributes_for :avatar, :members, :permissions,

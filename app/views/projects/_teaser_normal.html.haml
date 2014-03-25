@@ -12,7 +12,7 @@
         - if @project.event.avatar
           = image_tag @project.event.avatar.file_url(:mini), class: 'img-circle'
         = link_to @project.event.name, event_path(@project.event)
-        - if can? :join_team, @project
+        - if can? :request_access, @project.team
           - if user_signed_in? and member = current_user.is_team_member?(@project)
             - if member.request_pending?
               %span.label.label-default Request to join team pending

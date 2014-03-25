@@ -1,11 +1,14 @@
 class Team < Group
-  has_many :active_members, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'") }, foreign_key: :group_id, class_name: 'Member'
   has_many :grades, as: :gradable
   has_many :projects
 
   validates :user_name, :new_user_name, length: { in: 3..100 }, allow_blank: true, if: proc{|t| t.persisted?}
 
   before_save :update_user_name
+
+  def self.default_access_level
+    'request'
+  end
 
   def self.default_permission
     'manage'

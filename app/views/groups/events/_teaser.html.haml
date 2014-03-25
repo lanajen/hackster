@@ -1,13 +1,29 @@
 - @event = GroupDecorator.decorate @event
 
-- if user_signed_in? and member = current_user.is_member?(@event) and member.invitation_pending?
+- if can? :join, @event
   .row
     .col-xs-12
       .alert.alert-warning.alert-flat
         .container
-          You have been invited to join
-          %strong #{@event.name}.
+          - case @event.access_level
+          - when 'anyone'
+            Registrations for
+            %strong #{@event.name}
+            are open.
+          - when 'invite'
+            You have been invited to join
+            %strong #{@event.name}.
           = link_to 'Join event', group_accept_invitation_path(@event), class: 'btn btn-warning btn-sm'
+
+- elsif can? :request_access, @event
+  .row
+    .col-xs-12
+      .alert.alert-warning.alert-flat
+        .container
+          Registrations for
+          %strong #{@event.name}
+          require approval.
+          = link_to 'Request to join event', group_members_path(@event), class: 'btn btn-sm btn-warning', data: { method: :post }
 
 #content-header.with-nav
   .container

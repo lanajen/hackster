@@ -34,6 +34,8 @@ class MemberObserver < ActiveRecord::Observer
         BaseMailer.enqueue_email 'request_to_join_team_accepted',
           { context_type: :membership, context_id: record.id }
       else
+        record.update_column :group_roles_mask, 0
+        record.permission.destroy
         # BaseMailer.enqueue_email 'request_to_join_team_rejected',
           # { context_type: :membership, context_id: record.id }
       end
