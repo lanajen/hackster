@@ -102,6 +102,10 @@ module MailerHelpers
         ActionView::Base.full_sanitizer.sanitize comment.body
       when :email_confirmation_link
         url.user_confirmation_url(confirmation_token: @context[:devise_token], host: default_host)
+      when :group_link
+        url.group_url(group, host: default_host)
+      when :group_manage_members_link
+        url.group_edit_members_url(group, host: default_host)
       when :group_invitation_link
         url.group_accept_invitation_url(group, host: default_host)
       when :invite_friends_link

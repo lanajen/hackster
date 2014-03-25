@@ -96,14 +96,23 @@ class BaseMailer < ActionMailer::Base
       when :membership
         member = context[:member] = Member.find(context_id)
         context[:group] = group = member.group
-        context[:project] = group.projects.first
+        context[:project] = group.project if group.is? :team
         context[:user] = member.user
         context[:inviter] = member.invited_by
       when :membership_request
         member = context[:member] = Member.find(context_id)
-        context[:team] = team = member.group
-        context[:project] = team.project
-        context[:users] = team.users.where('members.invitation_sent_at IS NULL OR members.invitation_accepted_at IS NOT NULL')
+        context[:group] = group = member.group
+        context[:project] = group.project if group.is? :team
+        context[:users] = case group
+        when Team
+          group.users.where('members.invitation_sent_at IS NULL OR members.invitation_accepted_at IS NOT NULL')
+        when Event
+          group.members.with_group_roles('organizer').map(&:user)
+        when Promotion
+          group.members.with_group_roles(%w(ta professor)).map(&:user)
+        else
+          []
+        end
         context[:requester] = member.user
       when :participant_invite
         context[:invite] = invite = ParticipantInvite.find(context_id)

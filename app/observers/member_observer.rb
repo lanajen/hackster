@@ -6,8 +6,7 @@ class MemberObserver < ActiveRecord::Observer
       record.user.try(:invited_to_sign_up?)
       BaseMailer.enqueue_email 'new_community_invitation',
         { context_type: :membership, context_id: record.id }
-    end
-    if record.group.is? :team
+    elsif record.group.is? :team
       project = record.group.projects.first
       if record.request_pending?
         BaseMailer.enqueue_email 'new_request_to_join_team',
@@ -15,7 +14,11 @@ class MemberObserver < ActiveRecord::Observer
       else
         record.user.broadcast :new, record.id, 'Member', project.id if project and project.public?
       end
+    elsif record.group.is? :event
+      BaseMailer.enqueue_email 'new_request_to_join_event',
+        { context_type: :membership_request, context_id: record.id }
     end
+
     unless record.permission
       record.initialize_permission(true)
       record.save
@@ -31,7 +34,7 @@ class MemberObserver < ActiveRecord::Observer
     if record.approved_to_join_changed?
       if record.approved_to_join
         record.group.touch
-        BaseMailer.enqueue_email 'request_to_join_team_accepted',
+        BaseMailer.enqueue_email "request_to_join_#{record.group.class.name.underscore}_accepted",
           { context_type: :membership, context_id: record.id }
       else
         record.update_column :group_roles_mask, 0

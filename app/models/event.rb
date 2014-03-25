@@ -33,6 +33,6 @@ class Event < Community
   # end of search methods
 
   def name
-    "#{hackathon.name} #{super}"
+    "#{hackathon.name} - #{super}"
   end
 end

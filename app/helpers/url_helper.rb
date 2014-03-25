@@ -49,16 +49,16 @@ module UrlHelper
   end
 
   def group_url group, opts={}
-    case group
-    when Community
+    case group.class.to_s
+    when 'Community'
       super params_for_group(group, 'community').merge(opts)
-    when Course
+    when 'Course'
       super params_for_course(group).merge(opts)
-    when Promotion
+    when 'Promotion'
       promotion_url group, opts
-    when University
+    when 'University'
       super params_for_group(group).merge(opts)
-    when Event
+    when 'Event'
       event_url group, opts
     else
       super params_for_group(group).merge(opts)
