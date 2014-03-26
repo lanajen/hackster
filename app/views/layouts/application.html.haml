@@ -155,5 +155,5 @@
     = content_for :js
     - unless is_mobile? or params[:blank_frame]
       = render 'shared/feedback'
-      -if user_signed_in? and current_user.live_projects_count > 0
+      -# if user_signed_in? and current_user.live_projects_count > 0
         = render 'shared/surveyio'
