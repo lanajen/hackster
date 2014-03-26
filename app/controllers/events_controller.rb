@@ -9,20 +9,21 @@ class EventsController < ApplicationController
     meta_desc "Join the event #{@event.name} on Hackster.io!"
     # @broadcasts = @event.broadcasts.limit 20
     @projects = @event.projects.order('projects.respects_count DESC')
-    @participants = @event.members.request_accepted_or_not_requested.invitation_accepted_or_not_invited.with_group_roles('participant').map(&:user).select{|u| u.invitation_token.nil? }
-    @organizers = @event.members.invitation_accepted_or_not_invited.with_group_roles('organizer').map(&:user).select{|u| u.invitation_token.nil? }
+    @participants = @event.members.request_accepted_or_not_requested.invitation_accepted_or_not_invited.with_group_roles('participant').map(&:user)
+    @organizers = @event.members.invitation_accepted_or_not_invited.with_group_roles('organizer').map(&:user)
+    @awards = @event.awards
 
     render "groups/events/#{self.action_name}"
   end
 
   def participants
-    @participants = @event.members.request_accepted_or_not_requested.invitation_accepted_or_not_invited.with_group_roles('participant').map(&:user).select{|u| u.invitation_token.nil? }
+    @participants = @event.members.request_accepted_or_not_requested.invitation_accepted_or_not_invited.with_group_roles('participant').map(&:user)
 
     render "groups/events/#{self.action_name}"
   end
 
   def organizers
-    @organizers = @event.members.invitation_accepted_or_not_invited.with_group_roles('organizer').map(&:user).select{|u| u.invitation_token.nil? }
+    @organizers = @event.members.invitation_accepted_or_not_invited.with_group_roles('organizer').map(&:user)
 
     render "groups/events/#{self.action_name}"
   end

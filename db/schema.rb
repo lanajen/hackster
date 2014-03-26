@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140326193747) do
+ActiveRecord::Schema.define(version: 20140326212731) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -131,18 +131,20 @@ ActiveRecord::Schema.define(version: 20140326193747) do
   end
 
   create_table "grades", force: true do |t|
-    t.integer  "gradable_id",             null: false
-    t.string   "gradable_type",           null: false
-    t.string   "grade",         limit: 3
+    t.integer  "gradable_id",                                null: false
+    t.string   "gradable_type",                              null: false
+    t.string   "grade"
     t.text     "feedback"
-    t.integer  "project_id",              null: false
-    t.integer  "user_id",                 null: false
+    t.integer  "project_id",                                 null: false
+    t.integer  "user_id",                                    null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "type",          limit: 20, default: "Grade", null: false
   end
 
   add_index "grades", ["gradable_type", "gradable_id"], name: "index_grades_on_gradable_type_and_gradable_id", using: :btree
   add_index "grades", ["project_id"], name: "index_grades_on_project_id", using: :btree
+  add_index "grades", ["type"], name: "index_grades_on_type", using: :btree
   add_index "grades", ["user_id"], name: "index_grades_on_user_id", using: :btree
 
   create_table "groups", force: true do |t|

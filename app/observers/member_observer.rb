@@ -14,7 +14,7 @@ class MemberObserver < ActiveRecord::Observer
       else
         record.user.broadcast :new, record.id, 'Member', project.id if project and project.public?
       end
-    elsif record.group.is? :event
+    elsif record.group.is? :event and record.request_pending?
       BaseMailer.enqueue_email 'new_request_to_join_event',
         { context_type: :membership_request, context_id: record.id }
     end

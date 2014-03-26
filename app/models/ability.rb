@@ -23,7 +23,7 @@ class Ability
   end
 
   def admin
-    can :manage, :all
+    # can :manage, :all
     cannot [:join, :request_access], Group
   end
 
@@ -35,7 +35,7 @@ class Ability
   end
 
   def member
-    can :manage, [BlogPost, Issue] do |thread|
+    can :manage, [BlogPost, Issue, Page] do |thread|
       @user.can? :manage, thread.threadable
     end
 

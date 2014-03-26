@@ -88,6 +88,9 @@
     h3 {
       margin: 0;
       @include font-size(14);
+      span.label {
+        margin-left: 3px;
+      }
     }
     h4 {
       margin: 0 0 5px;

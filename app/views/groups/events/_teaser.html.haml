@@ -77,3 +77,4 @@
                     %li= link_to 'Manage members', group_edit_members_path(@event)
                     %li= link_to 'Invite members', group_new_invitations_path(@event)
                     %li= link_to 'Add a new page', new_hackathon_event_page_path(@event.hackathon.user_name, @event.user_name)
+                    %li= link_to 'Manage awards', group_edit_awards_path(@event)

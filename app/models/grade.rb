@@ -4,7 +4,7 @@ class Grade < ActiveRecord::Base
   belongs_to :project
   belongs_to :user
 
-  validates :grade, presence: true, length: { in: 1..3 }
+  validates :grade, presence: true#, length: { in: 1..3 }
 
   def private?
     assignment.private_grades

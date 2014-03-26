@@ -1,6 +1,7 @@
 class GradesController < ApplicationController
   before_filter :authenticate_user!
   before_filter :load_assignment
+  before_filter :load_group, only: [:edit, :update]
   before_filter :load_project
   before_filter :load_user
 
@@ -15,28 +16,33 @@ class GradesController < ApplicationController
   end
 
   def edit
-    if @assignment.grading_type.present?
-      if @project.nil?
-        @project = @assignment.projects.where(graded: false).first
-        redirect_to assignment_edit_grade_path(@assignment, @project) and return if @project
-      end
-
-      if @project
-        case @assignment.grading_type
-        when 'individual'
-          if @gradable.nil?
-            @gradable = @project.users.includes(:grades).where(grades: { gradable_id: nil }).first
-            redirect_to assignment_edit_grade_path(@assignment, @project, @gradable.id) and return if @gradable
-          end
-        when 'group'
-          @gradable = @project.team if @project
+    if @assignment
+      if @assignment.grading_type.present?
+        if @project.nil?
+          @project = @assignment.projects.where(graded: false).first
+          redirect_to assignment_edit_grade_path(@assignment, @project) and return if @project
         end
-        @grade = Grade.where(gradable_id: @gradable.id, gradable_type: @gradable.type, project_id: @project.id).first_or_initialize if @gradable
-      end
 
-      redirect_to assignment_grades_path(@assignment) unless @grade
-    else
-      redirect_to assignment_grades_path(@assignment)
+        if @project
+          case @assignment.grading_type
+          when 'individual'
+            if @gradable.nil?
+              @gradable = @project.users.includes(:grades).where(grades: { gradable_id: nil }).first
+              redirect_to assignment_edit_grade_path(@assignment, @project, @gradable.id) and return if @gradable
+            end
+          when 'group'
+            @gradable = @project.team if @project
+          end
+          @grade = Grade.where(gradable_id: @gradable.id, gradable_type: @gradable.type, project_id: @project.id).first_or_initialize if @gradable
+        end
+
+        redirect_to assignment_grades_path(@assignment) unless @grade
+      else
+        redirect_to assignment_grades_path(@assignment)
+      end
+    elsif @group
+      @event = @group
+      render 'grades/events/edit', layout: 'event'
     end
   end
 
@@ -60,6 +66,14 @@ class GradesController < ApplicationController
         @gradable = @grade.gradable
         render 'edit'
       end
+    elsif @group
+      @group.assign_attributes params[:group]
+      @group.awards.each do |award|
+        award.gradable = award.project if award.gradable.nil?
+        award.user = current_user if award.user_id.blank?
+        award.save
+      end
+      redirect_to group_path(@group), notice: "Awards saved."
     end
   end
 
@@ -68,6 +82,13 @@ class GradesController < ApplicationController
       if params[:assignment_id]
         @assignment = Assignment.find params[:assignment_id]
         authorize! :manage, @assignment
+      end
+    end
+
+    def load_group
+      if params[:group_id]
+        @group = Group.find params[:group_id]
+        authorize! :manage, @group
       end
     end
 
