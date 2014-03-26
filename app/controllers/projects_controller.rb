@@ -76,6 +76,12 @@ class ProjectsController < ApplicationController
         @next = @projects.offset(offset + 1).first
         @prev = @projects.offset(offset - 1).first unless offset.zero?
 
+      when 'event'
+        if @event = Event.find_by_id(params[:ref_id])
+          @next = @event.projects.order('projects.created_at DESC').offset(offset + 1).first
+          @prev = @event.projects.order('projects.created_at DESC').offset(offset - 1).first unless offset.zero?
+        end
+
       when 'search'
         params[:q] = params[:ref_id]
         params[:type] = 'project'

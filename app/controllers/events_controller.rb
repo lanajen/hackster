@@ -8,7 +8,7 @@ class EventsController < ApplicationController
     title @event.name
     meta_desc "Join the event #{@event.name} on Hackster.io!"
     # @broadcasts = @event.broadcasts.limit 20
-    @projects = @event.projects.order(collection_id: :desc)
+    @projects = @event.projects.order('projects.created_at DESC')
     @participants = @event.members.request_accepted_or_not_requested.invitation_accepted_or_not_invited.with_group_roles('participant').map(&:user).select{|u| u.invitation_token.nil? }
     @organizers = @event.members.invitation_accepted_or_not_invited.with_group_roles('organizer').map(&:user).select{|u| u.invitation_token.nil? }
 

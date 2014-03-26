@@ -18,8 +18,8 @@
           .row.thumb-list{ class: style }
             .col-xs-12
               .row
-                - @projects.each do |project|
-                  = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', ref: 'event' }
+                - @projects.each_with_index do |project, i|
+                  = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', ref: 'event', ref_id: @event.id, offset: i }
         - else
           All projects will appear here.
 
