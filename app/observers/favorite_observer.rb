@@ -13,7 +13,7 @@ class FavoriteObserver < ActiveRecord::Observer
 
   private
     def update_counters record
-      record.project.update_counters only: [:respects]
+      record.project.update_counters only: [:respects], solo_counters: true
       record.user.update_counters only: [:respects]
     end
 end

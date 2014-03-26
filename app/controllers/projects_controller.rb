@@ -78,8 +78,8 @@ class ProjectsController < ApplicationController
 
       when 'event'
         if @event = Event.find_by_id(params[:ref_id])
-          @next = @event.projects.order('projects.created_at DESC').offset(offset + 1).first
-          @prev = @event.projects.order('projects.created_at DESC').offset(offset - 1).first unless offset.zero?
+          @next = @event.projects.order('projects.respects_count DESC').offset(offset + 1).first
+          @prev = @event.projects.order('projects.respects_count DESC').offset(offset - 1).first unless offset.zero?
         end
 
       when 'search'

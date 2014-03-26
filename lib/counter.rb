@@ -21,11 +21,15 @@ module Counter
 
   private
     def do_update_counters counters, options={}
-      assign_attributes counters, without_protection: true  # assign once to update counters_cache
+      if options[:solo_counters]
+        update_attributes counters, without_protection: true
+      else
+        assign_attributes counters, without_protection: true  # assign once to update counters_cache
 
-      unless options[:assign_only]
-        update_column :counters_cache, counters_cache.to_yaml
-        assign_attributes YAML.load(counters_cache), without_protection: true  # assign twice so that it loses its YAML form
+        unless options[:assign_only]
+          update_column :counters_cache, counters_cache.to_yaml
+          assign_attributes YAML.load(counters_cache), without_protection: true  # assign twice so that it loses its YAML form
+        end
       end
     end
 end
