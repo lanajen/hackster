@@ -23,7 +23,7 @@ class Ability
   end
 
   def admin
-    # can :manage, :all
+    can :manage, :all
     cannot [:join, :request_access], Group
   end
 
