@@ -89,6 +89,10 @@ class ApplicationController < ActionController::Base
       current_user ? current_user.ability : User.new.ability
     end
 
+    def load_event
+      @event = Event.includes(:hackathon).where(groups: { user_name: params[:event_name] }, hackathons_groups: { user_name: params[:user_name] }).first!
+    end
+
     def load_project
       return @project if @project
       user_name = params[:user_name] if params[:project_slug] and params[:user_name]

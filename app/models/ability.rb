@@ -8,7 +8,7 @@ class Ability
     can :read, Assignment do |assignment|
       assignment.promotion.private == false
     end
-    can :read, [BlogPost, Issue] do |thread|
+    can :read, [BlogPost, Issue, Page] do |thread|
       @user.can? :read, thread.threadable
     end
 

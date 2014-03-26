@@ -493,6 +493,9 @@ a.hidden-link {
         }
       }
       & > li {
+        & > a {
+          border-bottom: 3px solid #fff;
+        }
         & > a:hover, & > a:focus {
           color: #777;
           border-bottom: 3px solid #aaa;

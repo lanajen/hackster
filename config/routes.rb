@@ -110,6 +110,10 @@ HackerIo::Application.routes.draw do
         patch '' => 'events#update'
         resources :projects, only: [:new, :create], controller: 'groups/projects'
         patch 'projects/link' => 'groups/projects#link'
+        resources :pages, except: [:index, :show, :destroy], controller: 'wiki_pages'
+        get 'pages/:slug' => 'wiki_pages#show'
+        get 'participants' => 'events#participants'
+        get 'organizers' => 'events#organizers'
       end
     end
 
@@ -156,6 +160,7 @@ HackerIo::Application.routes.draw do
     resources :blog_posts, only: [:destroy], controller: :build_logs do
       resources :comments, only: [:create]
     end
+    resources :wiki_pages, only: [:destroy]
 
     resources :followers, only: [:create] do
       delete '' => 'followers#destroy', on: :collection

@@ -1,0 +1,35 @@
+- if can? :create, Page, @event
+  .row
+    .col-xs-12
+      .pull-right
+        = link_to 'Create a new page', new_event_page_path(@event.user_name_for_url, @event.slug), class: 'btn btn-primary btn-sm'
+      .clearfix
+      %hr
+
+.row
+  .col-xs-9
+    - if @pages.any?
+      .well.well-list
+        - @pages.each do |page|
+          .list-item
+            %h4
+              = render partial: 'pages/label', locals: { page: page }
+              = link_to page.title, page_path(@event, page)
+              %small.text-muted.pull-right ##{page.sub_id}
+            %small.text-muted
+              Opened by
+              = link_to page.user.name, page.user
+              = time_ago_in_words page.created_at
+              ago
+              %i.fa.fa-comments
+              = link_to pluralize(page.comments.size, 'comment'), page_path(@event, page)
+
+    - else
+      .well
+        .content
+          There are no #{params[:status]} pages.
+
+  .col-xs-3
+    .list-group
+      = link_to 'Open pages', event_pages_path(@event.user_name_for_url, @event.slug, status: 'open'), class: "list-group-item #{'active' if params[:status] == 'open'}"
+      = link_to 'Closed pages', event_pages_path(@event.user_name_for_url, @event.slug, status: 'closed'), class: "list-group-item #{'active' if params[:status] == 'closed'}"

@@ -1,4 +1,5 @@
 class ThreadPost < ActiveRecord::Base
+  include Privatable
   self.table_name = :threads
 
   belongs_to :threadable, polymorphic: true

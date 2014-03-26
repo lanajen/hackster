@@ -59,11 +59,13 @@
     - if can? :read, @event
       .row
         .col-xs-12
-          .tabbable.tabs-left.navbar.navbar-default.navbar-tabs{ style: 'background: #fff;' }
+          .tabs-left.navbar.navbar-default.navbar-tabs{ style: 'background: #fff;' }
             %ul.nav.navbar-nav
-              %li.active= link_to "Projects", '#tab-projects', data: { toggle: 'tab' }
-              %li= link_to "Participants", '#tab-participants', data: { toggle: 'tab' }
-              %li= link_to "Organizers", '#tab-organizers', data: { toggle: 'tab' }
+              = active_li_link_to "Projects", event_path(@event)
+              = active_li_link_to "Participants", "#{event_path(@event)}/participants"
+              = active_li_link_to "Organizers", "#{event_path(@event)}/organizers"
+              - @event.pages.public.each do |page|
+                = active_li_link_to page.title, "#{event_path(@event)}/pages/#{page.slug}"
 
               - if can? :manage, @event
                 %li.dropdown
@@ -74,3 +76,4 @@
                     %li= link_to 'Edit event', edit_event_path(@event), data: { remote: true }
                     %li= link_to 'Manage members', group_edit_members_path(@event)
                     %li= link_to 'Invite members', group_new_invitations_path(@event)
+                    %li= link_to 'Add a new page', new_hackathon_event_page_path(@event.hackathon.user_name, @event.user_name)

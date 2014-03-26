@@ -1,7 +1,7 @@
 class EventsController < ApplicationController
   before_filter :authenticate_user!, except: [:show]
-  before_filter :load_event, only: [:show, :update]
-  layout 'event', only: [:edit, :update, :show]
+  before_filter :load_event, only: [:show, :update, :participants, :organizers]
+  layout 'event', only: [:edit, :update, :show, :participants, :organizers]
   respond_to :html
 
   def show
@@ -10,6 +10,18 @@ class EventsController < ApplicationController
     # @broadcasts = @event.broadcasts.limit 20
     @projects = @event.projects.order(collection_id: :desc)
     @participants = @event.members.request_accepted_or_not_requested.invitation_accepted_or_not_invited.with_group_roles('participant').map(&:user).select{|u| u.invitation_token.nil? }
+    @organizers = @event.members.invitation_accepted_or_not_invited.with_group_roles('organizer').map(&:user).select{|u| u.invitation_token.nil? }
+
+    render "groups/events/#{self.action_name}"
+  end
+
+  def participants
+    @participants = @event.members.request_accepted_or_not_requested.invitation_accepted_or_not_invited.with_group_roles('participant').map(&:user).select{|u| u.invitation_token.nil? }
+
+    render "groups/events/#{self.action_name}"
+  end
+
+  def organizers
     @organizers = @event.members.invitation_accepted_or_not_invited.with_group_roles('organizer').map(&:user).select{|u| u.invitation_token.nil? }
 
     render "groups/events/#{self.action_name}"
@@ -74,9 +86,4 @@ class EventsController < ApplicationController
       end
     end
   end
-
-  private
-    def load_event
-      @event = Event.includes(:hackathon).where(groups: { user_name: params[:event_name] }, hackathons_groups: { user_name: params[:user_name] }).first!
-    end
 end

@@ -292,6 +292,7 @@ a.action-respected, a.action-followed {
   height: 150px;
   transition: all 200ms;
   -webkit-transition: all 200ms;
+  z-index: 100;
   &:hover {
     &.project-nav-next {
       right: 0;
@@ -393,7 +394,7 @@ a.action-respected, a.action-followed {
   }
   .no-float {
     margin: 0 auto;
-    width: 170px;
+    width: 175px;
     height: 53px;
   }
 }

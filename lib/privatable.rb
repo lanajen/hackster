@@ -3,6 +3,10 @@ module Privatable
     def private
       where private: true
     end
+
+    def public
+      where.not(private: true)
+    end
   end
 
   module InstanceMethods

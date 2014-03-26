@@ -144,6 +144,14 @@ module UrlHelper
     super options
   end
 
+  def url_for_wiki_page_form event, page
+    if page.persisted?
+      hackathon_event_page_path(event.hackathon.user_name, event.user_name, page.id)
+    else
+      hackathon_event_pages_path(event.hackathon.user_name, event.user_name)
+    end
+  end
+
   def with_subdomain(subdomain='')
     subdomain += "." unless subdomain.blank?
     [subdomain, request.domain].join

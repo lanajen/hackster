@@ -1,6 +1,7 @@
 class Event < Community
   belongs_to :hackathon, foreign_key: :parent_id
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'EventMember'
+  has_many :pages, as: :threadable
   has_many :projects, foreign_key: :collection_id
 
   alias_method :short_name, :name
