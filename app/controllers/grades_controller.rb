@@ -69,10 +69,10 @@ class GradesController < ApplicationController
     elsif @group
       @group.assign_attributes params[:group]
       @group.awards.each do |award|
-        award.gradable = award.project if award.gradable.nil?
+        award.gradable = @group if award.gradable.nil?
         award.user = current_user if award.user_id.blank?
-        award.save
       end
+      @group.save
       redirect_to group_path(@group), notice: "Awards saved."
     end
   end

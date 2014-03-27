@@ -1,5 +1,5 @@
 class EventsController < ApplicationController
-  before_filter :authenticate_user!, except: [:show]
+  before_filter :authenticate_user!, except: [:show, :participants, :organizers]
   before_filter :load_event, only: [:show, :update, :participants, :organizers]
   layout 'event', only: [:edit, :update, :show, :participants, :organizers]
   respond_to :html
