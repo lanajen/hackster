@@ -12,6 +12,7 @@ class MemberObserver < ActiveRecord::Observer
         BaseMailer.enqueue_email 'new_request_to_join_team',
           { context_type: :membership_request, context_id: record.id }
       else
+        expire_projects record
         record.user.broadcast :new, record.id, 'Member', project.id if project and project.public?
       end
     elsif record.group.is? :event and record.request_pending?
@@ -31,11 +32,12 @@ class MemberObserver < ActiveRecord::Observer
   end
 
   def after_update record
-    if record.approved_to_join_changed?
+    if record.group.is?(:team) and record.approved_to_join_changed?
       if record.approved_to_join
         record.group.touch
         BaseMailer.enqueue_email "request_to_join_#{record.group.class.name.underscore}_accepted",
           { context_type: :membership, context_id: record.id }
+        expire_projects record
       else
         record.update_column :group_roles_mask, 0
         record.permission.destroy
@@ -52,9 +54,14 @@ class MemberObserver < ActiveRecord::Observer
   def after_destroy record
     Broadcast.where(context_model_id: record.id, context_model_type: 'Member').destroy_all
     update_counters record
+    expire_projects record if record.group.is?(:team)
   end
 
   private
+    def expire_projects record
+      Cashier.expire record.group.projects.map{|p| "project-#{p.id}-teaser" }
+    end
+
     def update_counters record
       record.user.update_counters only: [:projects, :live_projects] if
         record.group and record.group.is? :team

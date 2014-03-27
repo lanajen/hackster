@@ -7,6 +7,7 @@ module Counter
     counters.each do |counter, method|
       use_counters[:"#{counter}_count"] = (options[:reset] ? 0 : eval(method))
     end
+    puts use_counters.to_s
     use_counters
   end
 

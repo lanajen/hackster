@@ -43,7 +43,7 @@
             = select_year(@project.start_date, { prompt: '--Year--', start_year: Date.today.year, end_year: Date.today.year - 15 }, { class: 'form-control', name: 'project[start_date(1i)]' })
       = f.input :wip, inline_label: 'This is a work in progress', label: false
 
-      = f.input :public, inline_label: "Make this project public #{content_tag(:i, '', class: 'fa fa-question-circle istooltip', title: 'You need to create at least one widget and add a cover image before you can make it public.')}".html_safe, label: false, disabled: !@project.can_be_public?, as: :boolean
+      = f.input :public, inline_label: "Make this project public #{content_tag(:i, '', class: 'fa fa-question-circle istooltip', title: 'You need to create at least one widget and add a cover image before you can make it public.')}".html_safe, label: false, disabled: (@project.private and !@project.can_be_public?), as: :boolean
 
       - if current_user.communities.where(type: 'Community').any? or current_user.is? :admin
         .form-group
