@@ -93,6 +93,18 @@ $(document).ready(function(){
         $('<span class="help-inline">' + errors[error] + '</span>').insertAfter(input);
       }
     });
+
+  // handle tabs navigation with URL
+  var hash = document.location.hash;
+  var prefix = "nav-";
+  if (hash) {
+      $('.navbar-tabs a[href='+hash.replace(prefix,"")+']').tab('show');
+  }
+
+  // Change hash for page-reload
+  $('.navbar-tabs a').on('shown.bs.tab', function (e) {
+      window.location.hash = e.target.hash.replace("#", "#" + prefix);
+  });
 });
 
 
