@@ -3,7 +3,7 @@ class Admin::PagesController < Admin::BaseController
   include GraphHelper
 
   def analytics
-    title "Admin > Analytics"
+    title "Admin / Analytics"
 
     @project_count = Project.indexable.count
     @comment_count = Comment.where(commentable_type: 'Project').count
@@ -42,25 +42,25 @@ class Admin::PagesController < Admin::BaseController
   end
 
   def build_logs
-    title "Admin > Build logs - #{params[:page]}"
+    title "Admin / Build logs - #{params[:page]}"
 
     @logs = BlogPost.order(created_at: :desc).paginate(page: params[:page])
   end
 
   def comments
-    title "Admin > Comments - #{params[:page]}"
+    title "Admin / Comments - #{params[:page]}"
 
     @comments = Comment.where(commentable_type: 'Project').order(created_at: :desc).paginate(page: params[:page])
   end
 
   def followers
-    title "Admin > Followers - #{params[:page]}"
+    title "Admin / Followers - #{params[:page]}"
 
     @follow_relations = FollowRelation.order(created_at: :desc).paginate(page: params[:page])
   end
 
   def issues
-    title "Admin > Issues - #{params[:page]}"
+    title "Admin / Issues - #{params[:page]}"
 
     @issues = Issue.where(type: 'Issue').order(created_at: :desc).paginate(page: params[:page])
   end
@@ -68,7 +68,7 @@ class Admin::PagesController < Admin::BaseController
   def logs
     redirect_to admin_logs_path(page: (LogLine.count.to_f / LogLine.per_page).ceil) unless params[:page]
 
-    title "Admin > Logs - #{params[:page]}"
+    title "Admin / Logs - #{params[:page]}"
 
     @fields = {
       'created_at' => 'log_lines.created_at',
@@ -82,7 +82,7 @@ class Admin::PagesController < Admin::BaseController
   end
 
   def respects
-    title "Admin > Respects - #{params[:page]}"
+    title "Admin / Respects - #{params[:page]}"
 
     @respects = Favorite.order(created_at: :desc).paginate(page: params[:page])
   end

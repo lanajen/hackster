@@ -13,7 +13,7 @@ class BuildLogsController < ApplicationController
 
   def show
     authorize! :read, @log
-    title "Logs > #{@log.title} | #{@project.name}"
+    title "Logs / #{@log.title} | #{@project.name}"
   end
 
   def new
@@ -36,7 +36,7 @@ class BuildLogsController < ApplicationController
 
   def edit
     authorize! :edit, @log
-    title "Logs > Edit #{@log.title} | #{@project.name}"
+    title "Logs / Edit #{@log.title} | #{@project.name}"
   end
 
   def update

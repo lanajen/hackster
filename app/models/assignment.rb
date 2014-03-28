@@ -22,7 +22,7 @@ class Assignment < ActiveRecord::Base
   end
 
   def to_label
-    "#{promotion.name} > #{name}"
+    "#{promotion.name} / #{name}"
   end
 
   private

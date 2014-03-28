@@ -15,7 +15,7 @@ class IssuesController < ApplicationController
 
   def show
     authorize! :read, @issue
-    title "Issues > #{@issue.title} | #{@project.name}"
+    title "Issues / #{@issue.title} | #{@project.name}"
   end
 
   def new
@@ -38,7 +38,7 @@ class IssuesController < ApplicationController
 
   def edit
     authorize! :edit, @issue
-    title "Issues > Edit #{@issue.title} | #{@project.name}"
+    title "Issues / Edit #{@issue.title} | #{@project.name}"
   end
 
   def update

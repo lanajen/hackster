@@ -37,11 +37,10 @@
         .container
           .row
             .inner-container.col-xs-12
-      #column1.col-xs-6
+      #column1.col-xs-9
         - cache [@project.widgets.first_column, can?(:edit, @project)], tag: "project-#{@project.id}-widgets" do
           - @project.widgets.first_column.each do |widget|
             = render partial: 'widgets/widget', locals: { widget: widget }
-      #column2.col-xs-6
         - cache [@project.widgets.second_column, can?(:edit, @project)], tag: "project-#{@project.id}-widgets" do
           - @project.widgets.second_column.each do |widget|
             = render partial: 'widgets/widget', locals: { widget: widget }
@@ -50,6 +49,13 @@
         = render partial: 'widgets/comment_widget', locals: { comments: @project.comments, commentable: @project }
         - if @issue and can? :comment_privately, @project
           = render partial: 'widgets/private_comment_widget', locals: { comments: @issue.comments, commentable: @project }
+      #sidebar.col-xs-3
+        - if @widgets.any?
+          .list-group{ data: { spy: 'affix', offset: { top: '100' } } }
+            - @widgets.each do |widget|
+              %a.list-group-item{ href: "javascript:smoothScrollTo('#widget-#{widget.id}', -70)" }
+                %i.fa{ class: icon_for_widget(widget) }
+                = widget.name
 
     - else
       .col-xs-6.col-xs-offset-3
