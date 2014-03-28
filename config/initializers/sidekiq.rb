@@ -1,6 +1,6 @@
 raise 'No config for Redis' unless $redis_config
 
-sidekiq_pool = ENV['SIDEKIQ_DB_POOL'] || 3
+sidekiq_pool = ENV['SIDEKIQ_DB_POOL'].to_i || 3
 
 Sidekiq.configure_server do |config|
   config.failures_default_mode = :exhausted
@@ -15,7 +15,7 @@ Sidekiq.configure_server do |config|
   if defined?(ActiveRecord::Base)
     Rails.logger.debug("Setting custom connection pool size of #{sidekiq_pool} for Sidekiq Server")
     config = Rails.application.config.database_configuration[Rails.env]
-    config['reaping_frequency'] = ENV['DB_REAP_FREQ'] || 10 # seconds
+    config['reaping_frequency'] = ENV['DB_REAP_FREQ'].to_i || 10 # seconds
     config['pool']              = sidekiq_pool + 2  # buffer
     ActiveRecord::Base.establish_connection(config)
 
