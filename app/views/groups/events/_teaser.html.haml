@@ -64,7 +64,7 @@
               = active_li_link_to "Projects", event_path(@event)
               = active_li_link_to "Participants", "#{event_path(@event)}/participants"
               = active_li_link_to "Organizers", "#{event_path(@event)}/organizers"
-              - @event.pages.public.each do |page|
+              - @event.pages.public.order(created_at: :asc).each do |page|
                 = active_li_link_to page.title, "#{event_path(@event)}/pages/#{page.slug}"
 
               - if can? :manage, @event
