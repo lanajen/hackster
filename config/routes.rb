@@ -116,6 +116,7 @@ HackerIo::Application.routes.draw do
         get 'pages/:slug' => 'wiki_pages#show'
         get 'participants' => 'events#participants'
         get 'organizers' => 'events#organizers'
+        get 'embed' => 'events#embed'
       end
     end
 
