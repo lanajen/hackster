@@ -7,7 +7,7 @@ class Event < Community
 
   attr_accessible :awards_attributes
 
-  accepts_nested_attributes_for :awards
+  accepts_nested_attributes_for :awards, allow_destroy: true
 
   alias_method :short_name, :name
 
