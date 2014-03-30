@@ -142,7 +142,7 @@
                         %li.active= link_to 'Home', @project
                         - if @project.build_logs_count.try(:>, 0) or can? :edit, @project
                           %li= link_to "Build logs #{content_tag(:span, @project.build_logs_count, class: 'badge')}".html_safe, project_logs_path(@project.user_name_for_url, @project.slug)
-                        - if @project.collection_id.present? and @project.assignment.present? and can? :debug, @project
+                        - if @project.collection_id.present?
                           %li= link_to "Issues #{content_tag(:span, @project.issues_count, class: 'badge')}".html_safe, project_issues_path(@project.user_name_for_url, @project.slug)
                         %li= link_to "Comments #{content_tag(:span, @project.comments_count, class: 'badge')}".html_safe, "javascript:smoothScrollTo('#widget-comments', -20)"
                         - if @widgets.any?
