@@ -24,6 +24,8 @@ class EventsController < ApplicationController
 
   def organizers
     @organizers = @event.members.invitation_accepted_or_not_invited.with_group_roles('organizer').map(&:user)
+    @judges = @event.members.invitation_accepted_or_not_invited.with_group_roles('judge').map(&:user)
+    @mentors = @event.members.invitation_accepted_or_not_invited.with_group_roles('mentor').map(&:user)
 
     render "groups/events/#{self.action_name}"
   end
