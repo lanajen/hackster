@@ -17,15 +17,16 @@
 
           .row.thumb-list{ class: style }
             .col-xs-12
-              .row
+              .row.project-list
                 - @projects.each_with_index do |project, i|
                   = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', ref: 'event', ref_id: @event.id, offset: i }
 
           - content_for :js do
             - @awards.each do |award|
               :javascript
-                text = '<span class="label label-success">#{award.grade}</span>';
-                $(text).appendTo('.project-thumb.project-#{award.project_id} h3');
+                $('.project-list').prepend($('.project-#{award.project_id}'));
+                text = '<div class="project-award"><i class="fa fa-trophy istooltip" title="#{award.grade}" data-container="body"></i></div>';
+                $(text).appendTo('.project-#{award.project_id} .photo-thumb');
 
         - else
           All projects will appear here.

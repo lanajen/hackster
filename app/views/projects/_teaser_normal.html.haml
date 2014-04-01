@@ -13,7 +13,8 @@
           = image_tag @project.event.avatar.file_url(:mini), class: 'img-circle'
         = link_to @project.event.name, event_path(@project.event)
         - if award = @project.awards.where(gradable_id: @project.collection_id, gradable_type: 'Group').first
-          %span.label.label-success= award.grade
+          %span.project-award
+            %i.fa.fa-trophy.istooltip{ title: award.grade, data: { container: 'body' } }
         - if can? :request_access, @project.team
           - if user_signed_in? and member = current_user.is_team_member?(@project)
             - if member.request_pending?
