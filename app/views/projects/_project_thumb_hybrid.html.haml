@@ -16,11 +16,11 @@
           %h4
             by
             - users = project.users
-            - if users.size > 2
+            - if users.size < 4
+              = project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
+            - else
               - more = content_tag(:a, "more #{content_tag(:i, '', class: 'fa fa-question-circle')}".html_safe, class: 'help', data: { container: 'body', toggle: 'popover', placement: 'bottom', content: project.users.map { |u| link_to u.name, u }.to_sentence, html: 'true', trigger: 'hover', delay: '100' }, rel: 'popover')
               = (project.users[0..2].map{ |u| link_to u.name, u } + [more]).to_sentence.html_safe
-            - else
-              = project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
           %p= truncate project.one_liner, length: 140
           .thumb-bottom
             %hr
