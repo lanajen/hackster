@@ -88,14 +88,19 @@
                     Team
                     - if can? :debug, @project and can? :edit, @project
                       = link_to content_tag(:i, '', class: 'fa fa-pencil'), project_edit_team_path(@project), class: 'btn-edit no-float', rel: 'tooltip', title: 'Manage team', data: { container: 'body' }
-                  - @project.team.active_members.includes(:user).each do |member|
-                    - u = member.user
-                    .user
-                      = link_to image_tag(u.decorate.avatar(:mini), class: ' img-circle' ), u, class: ''
-                      %span.user-name
-                        = link_to u.name, u, class: 'hidden-link'
-                        - if member.contribution.present?
-                          %i.fa.fa-question-circle.istooltip{ title: "Contribution: #{member.contribution}" }
+
+
+
+
+
+                  - users = @project.team.active_members.includes(:user)
+                  - if users.size < 5
+                    - users.each do |member|
+                      = render partial: 'users/line_thumb', locals: { member: member }
+                  - else
+                    - users[0..3].each do |member|
+                      = render partial: 'users/line_thumb', locals: { member: member }
+                    .user= content_tag(:a, "And more #{content_tag(:i, '', class: 'fa fa-question-circle')}".html_safe, class: 'hidden-link help', data: { container: 'body', toggle: 'popover', placement: 'bottom', content: users.map { |m| render partial: 'users/line_thumb', locals: { member: m } }.join(''), html: 'true', trigger: 'hover', delay: '100' }, rel: 'popover')
 
                 - if @project.tech_tags.any?
                   .tags.meta
