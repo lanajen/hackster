@@ -221,6 +221,7 @@ footer {
     .text-holder {
       padding: 30px 20px;
       height: 477px;
+      overflow: hidden;
       .logo-placeholder {
         width: 80px;
         height: 80px;
@@ -524,6 +525,10 @@ a.hidden-link {
   &.wellified {
     padding: 20px 30px;
   }
+}
+
+.help {
+  cursor: help;
 }
 
 .login-forms {

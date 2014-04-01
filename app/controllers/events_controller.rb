@@ -1,6 +1,6 @@
 class EventsController < ApplicationController
-  before_filter :authenticate_user!, except: [:show, :participants, :organizers]
-  before_filter :load_event, only: [:show, :update, :participants, :organizers]
+  before_filter :authenticate_user!, except: [:show, :participants, :organizers, :embed]
+  before_filter :load_event, only: [:show, :update, :participants, :organizers, :embed]
   layout 'event', only: [:edit, :update, :show, :participants, :organizers]
   respond_to :html
 
@@ -24,8 +24,17 @@ class EventsController < ApplicationController
 
   def organizers
     @organizers = @event.members.invitation_accepted_or_not_invited.with_group_roles('organizer').map(&:user)
+    @judges = @event.members.invitation_accepted_or_not_invited.with_group_roles('judge').map(&:user)
+    @mentors = @event.members.invitation_accepted_or_not_invited.with_group_roles('mentor').map(&:user)
 
     render "groups/events/#{self.action_name}"
+  end
+
+  def embed
+    @list_style = ([params[:list_style]] & ['', '_horizontal']).first || ''
+    # @list_style = '_horizontal'
+    @projects = @event.projects.public.order('projects.respects_count DESC')
+    render "groups/events/#{self.action_name}", layout: 'embed'
   end
 
   def new

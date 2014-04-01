@@ -67,7 +67,7 @@
             - else
               Work in progress, check back later!
 
-- cache @other_projects, tag: "project-#{@project.id}-other" do
+- cache [@project, 'other', @other_projects], tag: "project-#{@project.id}-other" do
   - if @other_projects_count > 0
     #more-projects.row
       .col-xs-12

@@ -13,7 +13,8 @@
           = image_tag @project.event.avatar.file_url(:mini), class: 'img-circle'
         = link_to @project.event.name, event_path(@project.event)
         - if award = @project.awards.where(gradable_id: @project.collection_id, gradable_type: 'Group').first
-          %span.label.label-success= award.grade
+          %span.project-award
+            %i.fa.fa-trophy.istooltip{ title: award.grade, data: { container: 'body' } }
         - if can? :request_access, @project.team
           - if user_signed_in? and member = current_user.is_team_member?(@project)
             - if member.request_pending?
@@ -87,14 +88,19 @@
                     Team
                     - if can? :debug, @project and can? :edit, @project
                       = link_to content_tag(:i, '', class: 'fa fa-pencil'), project_edit_team_path(@project), class: 'btn-edit no-float', rel: 'tooltip', title: 'Manage team', data: { container: 'body' }
-                  - @project.team.active_members.includes(:user).each do |member|
-                    - u = member.user
-                    .user
-                      = link_to image_tag(u.decorate.avatar(:mini), class: ' img-circle' ), u, class: ''
-                      %span.user-name
-                        = link_to u.name, u, class: 'hidden-link'
-                        - if member.contribution.present?
-                          %i.fa.fa-question-circle.istooltip{ title: "Contribution: #{member.contribution}" }
+
+
+
+
+
+                  - users = @project.team.active_members.includes(:user)
+                  - if users.size < 5
+                    - users.each do |member|
+                      = render partial: 'users/line_thumb', locals: { member: member }
+                  - else
+                    - users[0..3].each do |member|
+                      = render partial: 'users/line_thumb', locals: { member: member }
+                    .user= content_tag(:a, "And more #{content_tag(:i, '', class: 'fa fa-question-circle')}".html_safe, class: 'hidden-link help', data: { container: 'body', toggle: 'popover', placement: 'bottom', content: users.map { |m| render partial: 'users/line_thumb', locals: { member: m } }.join(''), html: 'true', trigger: 'hover', delay: '100' }, rel: 'popover')
 
                 - if @project.tech_tags.any?
                   .tags.meta
@@ -142,7 +148,7 @@
                         %li.active= link_to 'Home', @project
                         - if @project.build_logs_count.try(:>, 0) or can? :edit, @project
                           %li= link_to "Build logs #{content_tag(:span, @project.build_logs_count, class: 'badge')}".html_safe, project_logs_path(@project.user_name_for_url, @project.slug)
-                        - if @project.collection_id.present? and @project.assignment.present? and can? :debug, @project
+                        - if @project.collection_id.present? and (@project.issues_count.try(:>, 0) or can? :edit, @project)
                           %li= link_to "Issues #{content_tag(:span, @project.issues_count, class: 'badge')}".html_safe, project_issues_path(@project.user_name_for_url, @project.slug)
                         %li= link_to "Comments #{content_tag(:span, @project.comments_count, class: 'badge')}".html_safe, "javascript:smoothScrollTo('#widget-comments', -20)"
                         - if can? :edit, @project

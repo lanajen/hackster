@@ -59,7 +59,8 @@ class MemberObserver < ActiveRecord::Observer
 
   private
     def expire_projects record
-      Cashier.expire record.group.projects.map{|p| "project-#{p.id}-teaser" }
+      keys = record.group.projects.map{|p| "project-#{p.id}-teaser" }
+      Cashier.expire keys if keys and keys.any?
     end
 
     def update_counters record

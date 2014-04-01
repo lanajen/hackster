@@ -1,3 +1,17 @@
+- if @projects.any?
+  .col-xs-4.col-xs-offset-4
+    .wellified
+      %p.text-center
+        %strong Want to link an existing project to #{@event.name}?
+
+      = form_tag "#{event_path(@event)}/projects/link", method: :patch do
+        .form-group
+          = select_tag :project_id, options_from_collection_for_select(@projects, :id, :name), include_blank: true, class: 'form-control'
+        = submit_tag 'Link project', class: 'btn btn-primary btn-block'
+
+  .col-xs-4.col-xs-offset-4
+    %hr
+
 .col-xs-4.col-xs-offset-4
   .wellified
     %h2.text-center New project
@@ -21,17 +35,3 @@
       = render partial: 'shared/image_form_bare', locals: { file_type: 'cover_image', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
 
       = f.button :submit, 'Go!', class: 'btn-block btn btn-primary'
-
-- if @projects.any?
-  .col-xs-4.col-xs-offset-4
-    %hr
-
-  .col-xs-4.col-xs-offset-4
-    .wellified
-      %p.text-center
-        %strong Want to link an existing project to #{@event.name}?
-
-      = form_tag "#{event_path(@event)}/projects/link", method: :patch do
-        .form-group
-          = select_tag :project_id, options_from_collection_for_select(@projects, :id, :name), include_blank: true, class: 'form-control'
-        = submit_tag 'Link project', class: 'btn btn-primary btn-block'

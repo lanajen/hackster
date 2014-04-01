@@ -56,15 +56,11 @@
 
 #project-embed {
   background: #fff;
+  width: 220px;
   .project-thumb {
     @include box-shadow(none);
     margin: 0;
     width: 100%;
-    .photo-thumb {
-      img {
-        height: auto;
-      }
-    }
     .inner-thumb {
       border-top: none;
       height: 155px;

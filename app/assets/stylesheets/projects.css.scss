@@ -48,10 +48,16 @@
   }
 }
 
+.project-award {
+  color: #FFD700;
+  margin: 0 5px;
+}
+
 .project-thumb, .user-thumb {
   border: 1px solid #e2e2e2;
   @extend .box-white-bg;
   margin-bottom: 20px;
+  overflow: hidden;
   &.project-thumb-horizontal {
   .photo-thumb {
     img {
@@ -64,7 +70,7 @@
       padding-left: 0;
       h3 {
         margin-bottom: 5px;
-        @include font-size(17);
+        font-size: 17px;
       }
       .thumb-bottom {
         padding-left: 0;
@@ -73,12 +79,19 @@
     }
   }
   .photo-thumb {
+    position: relative;
     a {
       display: block;
     }
     img {
       width: 100%;
       height: 165px;
+    }
+    .project-award {
+      position: absolute;
+      top: 5px;
+      right: 10px;
+      font-size: 30px;
     }
   }
   .inner-thumb {

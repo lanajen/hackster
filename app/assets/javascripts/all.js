@@ -98,8 +98,19 @@ $(document).ready(function(){
   var hash = document.location.hash;
   var prefix = "nav-";
   if (hash) {
-      $('.navbar-tabs a[href='+hash.replace(prefix,"")+']').tab('show');
+    $('.navbar-tabs a[href='+hash.replace(prefix,"")+']').tab('show');
+    history.pushState(null, null, window.location.href);
   }
+  // navigate to a tab when the history changes
+  window.addEventListener("popstate", function(e) {
+    hash = document.location.hash;
+    var activeTab = $('[href=' + hash.replace(prefix,"") + ']');
+    if (activeTab.length) {
+      activeTab.tab('show');
+    } else {
+      $('.navbar-tabs a:first').tab('show');
+    }
+  });
 
   // Change hash for page-reload
   $('.navbar-tabs a').on('shown.bs.tab', function (e) {

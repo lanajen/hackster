@@ -39,7 +39,7 @@ class User < ActiveRecord::Base
   has_many :comments, -> { order created_at: :desc }, foreign_key: :user_id, dependent: :destroy
   has_many :communities, through: :group_ties, source: :group, class_name: 'Community'
   # has_many :courses, through: :promotions  # doesnt work
-  has_many :events, through: :hackathons
+  has_many :events, through: :group_ties, source: :group, class_name: 'Event'
   has_many :follow_relations
   has_many :followed_projects, source_type: 'Project', through: :follow_relations, source: :followable
   has_many :followed_users, source_type: 'User', through: :follow_relations, source: :followable
@@ -49,7 +49,7 @@ class User < ActiveRecord::Base
   has_many :group_permissions, through: :groups, source: :granted_permissions
   has_many :group_ties, class_name: 'Member', dependent: :destroy
   has_many :groups, through: :group_ties
-  has_many :hackathons, through: :group_ties, source: :group, class_name: 'Hackathon'
+  has_many :hackathons, through: :events
   has_many :invitations, class_name: self.to_s, as: :invited_by
   has_many :permissions, as: :grantee
   has_many :projects, through: :teams

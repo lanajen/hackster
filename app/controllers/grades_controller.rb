@@ -72,8 +72,12 @@ class GradesController < ApplicationController
         award.gradable = @group if award.gradable.nil?
         award.user = current_user if award.user_id.blank?
       end
-      @group.save
-      redirect_to group_path(@group), notice: "Awards saved."
+      if @group.save
+        redirect_to group_path(@group), notice: "Awards saved."
+      else
+        @event = @group
+        render 'grades/events/edit', layout: 'event'
+      end
     end
   end
 
