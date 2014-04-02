@@ -88,11 +88,6 @@
                     Team
                     - if can? :debug, @project and can? :edit, @project
                       = link_to content_tag(:i, '', class: 'fa fa-pencil'), project_edit_team_path(@project), class: 'btn-edit no-float', rel: 'tooltip', title: 'Manage team', data: { container: 'body' }
-
-
-
-
-
                   - users = @project.team.active_members.includes(:user)
                   - if users.size < 5
                     - users.each do |member|
@@ -137,7 +132,7 @@
                     &copy;
                     = link_to @project.license.abbr, @project.license.url, target: '_blank', class: 'hidden-link'
 
-        #project-nav.unselectable
+        -# #project-nav.unselectable
           .row{ data: { spy: 'affix', offset: { top: 682 } }}
             .col-xs-12
               #project-nav-inner

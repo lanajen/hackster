@@ -503,6 +503,42 @@ a.hidden-link {
         }
       }
     }
+    &.navbar-vertical {
+      &.affix {
+        width: 220px;
+        top: 20px;
+      }
+      .navbar-nav {
+        float: none;
+        width: 100%;
+        border: 1px solid #e2e2e2;
+        & > .active {
+          & > a, & > a:hover, & > a:focus {
+            border-right: 3px solid #777;
+            border-bottom: none;
+          }
+        }
+        & > li {
+          float: none;
+          display: block;
+          & > a {
+            border-right: 3px solid #fff;
+            border-bottom: none;
+          }
+          & > a:hover, & > a:focus {
+            border-right: 3px solid #aaa;
+            border-bottom: none;
+          }
+        }
+        .actions {
+          text-align: center;
+          a {
+            display: inline-block;
+            border-right: none !important;
+          }
+        }
+      }
+    }
   }
   &.navbar {
     border-radius: 0;
