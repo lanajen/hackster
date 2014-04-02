@@ -88,10 +88,13 @@
       height: 165px;
     }
     .project-award {
+      font-size: 30px;
+      float: right;
+    }
+    .award-container {
       position: absolute;
       top: 5px;
       right: 10px;
-      font-size: 30px;
     }
   }
   .inner-thumb {

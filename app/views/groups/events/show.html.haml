@@ -26,7 +26,7 @@
               :javascript
                 $('.project-list').prepend($('.project-#{award.project_id}'));
                 text = "<div class='project-award'><i class='fa fa-trophy istooltip' title='#{escape_javascript(award.grade).gsub(/'/, '&#x0027;')}' data-container='body'></i></div>";
-                $(text).appendTo('.project-#{award.project_id} .photo-thumb');
+                $(text).appendTo('.project-#{award.project_id} .award-container');
 
         - else
           All projects will appear here.

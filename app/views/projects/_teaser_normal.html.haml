@@ -12,7 +12,7 @@
         - if @project.event.avatar
           = image_tag @project.event.avatar.file_url(:mini), class: 'img-circle'
         = link_to @project.event.name, event_path(@project.event)
-        - if award = @project.awards.where(gradable_id: @project.collection_id, gradable_type: 'Group').first
+        - @project.awards.where(gradable_id: @project.collection_id, gradable_type: 'Group').each do |award|
           %span.project-award
             %i.fa.fa-trophy.istooltip{ title: award.grade, data: { container: 'body' } }
         - if can? :request_access, @project.team
