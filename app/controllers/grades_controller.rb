@@ -30,10 +30,12 @@ class GradesController < ApplicationController
               @gradable = @project.users.includes(:grades).where(grades: { gradable_id: nil }).first
               redirect_to assignment_edit_grade_path(@assignment, @project, @gradable.id) and return if @gradable
             end
+            type = 'User'
           when 'group'
             @gradable = @project.team if @project
+            type = 'Group'
           end
-          @grade = Grade.where(gradable_id: @gradable.id, gradable_type: @gradable.type, project_id: @project.id).first_or_initialize if @gradable
+          @grade = Grade.where(gradable_id: @gradable.id, gradable_type: type, project_id: @project.id).first_or_initialize if @gradable
         end
 
         redirect_to assignment_grades_path(@assignment) unless @grade
