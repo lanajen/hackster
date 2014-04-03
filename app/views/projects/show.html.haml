@@ -37,19 +37,7 @@
         .container
           .row
             .inner-container.col-xs-12
-      #column1.col-xs-6
-        - cache [@project.widgets.first_column, can?(:edit, @project)], tag: "project-#{@project.id}-widgets" do
-          - @project.widgets.first_column.each do |widget|
-            = render partial: 'widgets/widget', locals: { widget: widget }
-      #column2.col-xs-6
-        - cache [@project.widgets.second_column, can?(:edit, @project)], tag: "project-#{@project.id}-widgets" do
-          - @project.widgets.second_column.each do |widget|
-            = render partial: 'widgets/widget', locals: { widget: widget }
-        - unless @project.respects_count.zero?
-          = render partial: 'widgets/respect_widget', locals: { users: @project.respecting_users }
-        = render partial: 'widgets/comment_widget', locals: { comments: @project.comments, commentable: @project }
-        - if @issue and can? :comment_privately, @project
-          = render partial: 'widgets/private_comment_widget', locals: { comments: @issue.comments, commentable: @project }
+      = render partial_name_for_columns(@project)
 
     - else
       .col-xs-6.col-xs-offset-3

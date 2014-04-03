@@ -47,7 +47,7 @@ class Project < ActiveRecord::Base
     :team_members_attributes, :website, :one_liner, :widgets_attributes,
     :featured, :featured_date, :cover_image_id, :logo_id, :license, :slug,
     :permissions_attributes, :new_slug, :slug_histories_attributes, :hide,
-    :collection_id, :graded, :wip
+    :collection_id, :graded, :wip, :columns_count
   attr_accessor :current
   attr_writer :new_slug
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
@@ -91,7 +91,7 @@ class Project < ActiveRecord::Base
       indexes :name,            analyzer: 'snowball', boost: 100
       indexes :one_liner,       analyzer: 'snowball'
       indexes :product_tags,    analyzer: 'snowball', boost: 50
-#      indexes :tech_tags,       analyzer: 'snowball'
+      indexes :tech_tags,       analyzer: 'snowball', boost: 50
 #      indexes :description,     analyzer: 'snowball'
       indexes :text_widgets,    analyzer: 'snowball'
       indexes :user_names,      analyzer: 'snowball'
@@ -108,7 +108,7 @@ class Project < ActiveRecord::Base
       one_liner: one_liner,
 #      description: description,
       product_tags: product_tags_string,
-#      tech_tags: tech_tags_string,
+      tech_tags: tech_tags_string,
       text_widgets: TextWidget.where('widgets.project_id = ?', id).map{ |w| w.content },
       user_name: team_members.map{ |t| t.user.try(:name) },
       private: (private || hide),
@@ -172,6 +172,14 @@ class Project < ActiveRecord::Base
 
   def compute_popularity
     self.popularity_counter = ((respects_count * 2 + impressions_count * 0.1 + followers_count * 2 + comments_count * 5 + featured.to_i * 10) * [[(1.to_f / Math.log10(age)), 10].min, 0.01].max).round(4)
+  end
+
+  def columns_count
+    layout.to_i
+  end
+
+  def columns_count=(val)
+    self.layout = val
   end
 
   def counters

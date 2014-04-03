@@ -3,14 +3,30 @@
     %h2{ style: 'text-align: center' } Reorder widgets
     = simple_nested_form_for @project, url: project_widgets_path(@project), html: { class: 'widget-form widget-reorder-form' } do |f|
       = f.error_notification
-      #sortable
+      = f.input :columns_count, label: false, wrapper_html: { class: 'text-center' } do
+        .btn-group{ data: { toggle: 'buttons' }}
+          %label.btn.btn-default{ class: "#{'active' if @project.columns_count == 1}"}
+            = radio_button_tag 'project[columns_count]', '1', (@project.columns_count == 1)
+            One column
+          %label.btn.btn-default{ class: "#{'active' if @project.columns_count == 2}"}
+            = radio_button_tag 'project[columns_count]', '2', (@project.columns_count == 2)
+            Two columns
+
+      #sortable-1.sortable{ style: "#{'display:none' if @project.columns_count == 2}"}
+        %ul.single
+          - @project.widgets.each do |widget|
+            = render partial: 'field_reorder', locals: { f: f, widget: widget, project: @project }
+
+      #sortable-2.sortable{ style: "#{'display:none' if @project.columns_count == 1}"}
         %ul.first
           - @project.widgets_first_col.each do |widget|
             = render partial: 'field_reorder', locals: { f: f, widget: widget, project: @project }
         %ul.second
           - @project.widgets_second_col.each do |widget|
             = render partial: 'field_reorder', locals: { f: f, widget: widget, project: @project }
-      %p.help-block Just drag and drop widget tiles on the same column or from one column to the other.
+        .clearfix
+        %p.help-block Just drag and drop widget tiles on the same column or from one column to the other.
+
       %p.help-block Hover over a tile and click the cross to delete a widget.
       .form-actions
         = f.submit 'Save', class: 'btn btn-primary'
@@ -20,6 +36,15 @@
   :javascript
     $(function() {
       updatePlaceholders();
+
+      $('input[name="project[columns_count]"]').change(function(){
+        $('.sortable').hide()
+        $('#sortable-' + $(this).val()).show();
+      });
+
+      $('form').submit(function(){
+        $('.sortable:hidden').remove();
+      });
 
       $('ul')
         .sortable({
@@ -39,7 +64,7 @@
     });
 
     function resetPositions(){
-      $('#sortable ul').each(function(i){
+      $('.sortable:visible ul').each(function(i){
         $('.position', $(this)).each(function(j){
           col = i+1;
           row = j+1;
@@ -51,7 +76,7 @@
       });
     }
     function updatePlaceholders(){
-      $('#sortable ul').each(function(i){
+      $('.sortable ul').each(function(i){
         length = $(this).children('li:not(".placeholder")').length;
         if (length == 0) {
           plLength = $(this).children('li.placeholder').length;

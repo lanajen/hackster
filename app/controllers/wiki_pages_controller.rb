@@ -15,7 +15,7 @@ class WikiPagesController < ApplicationController
 
   def show
     authorize! :read, @page
-    title "Pages > #{@page.title} | #{@event.name}"
+    title "Pages / #{@page.title} | #{@event.name}"
   end
 
   def new
@@ -38,7 +38,7 @@ class WikiPagesController < ApplicationController
 
   def edit
     authorize! :edit, @page
-    title "Pages > Edit #{@page.title} | #{@event.name}"
+    title "Pages / Edit #{@page.title} | #{@event.name}"
   end
 
   def update
