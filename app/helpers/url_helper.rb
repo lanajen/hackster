@@ -43,6 +43,8 @@ module UrlHelper
       super params_for_group(group).merge(opts)
     when 'Event'
       event_path group, opts
+    when 'Tech'
+      tech_short_path group, opts
     else
       super params_for_group(group).merge(opts)
     end
@@ -60,6 +62,8 @@ module UrlHelper
       super params_for_group(group).merge(opts)
     when 'Event'
       event_url group, opts
+    when 'Tech'
+      tech_short_url group, opts
     else
       super params_for_group(group).merge(opts)
     end
@@ -122,12 +126,12 @@ module UrlHelper
     course_promotion_url params_for_promotion(promotion).merge(opts)
   end
 
-  def tech_path tech, opts={}
-    super params_for_group(tech, 'tech').merge(opts)
+  def tech_short_path tech, opts={}
+    super tech.user_name, opts
   end
 
-  def tech_url tech, opts={}
-    super params_for_group(tech, 'tech').merge(opts)
+  def tech_short_url tech, opts={}
+    super tech.user_name, opts
   end
 
   def url_for(options = nil)

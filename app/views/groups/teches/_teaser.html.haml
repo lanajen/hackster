@@ -9,7 +9,7 @@
           - if @tech.private?
             %small
               %i.fa.fa-lock.istooltip{ title: 'Private group', data: { container: 'body' } }
-          = link_to @tech.name, tech_path(@tech)
+          = link_to @tech.name, tech_short_path(@tech)
         %p
           - if @tech.mini_resume.present?
             = @tech.mini_resume

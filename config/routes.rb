@@ -75,12 +75,7 @@ HackerIo::Application.routes.draw do
       delete '' => 'groups#destroy'
       patch '' => 'groups#update'
     end
-    resources :teches, except: [:show, :update, :destroy]
-    scope 'tech/:user_name', as: :tech do
-      # get '' => 'teches#show', as: ''
-      delete '' => 'teches#destroy'
-      patch '' => 'teches#update'
-    end
+    resources :teches, except: [:show]
     # resources :courses, except: [:show, :update, :destroy]
     resources :promotions, except: [:show, :update, :destroy]
     scope 'courses/:uni_name/:user_name', as: :course do
@@ -205,6 +200,7 @@ HackerIo::Application.routes.draw do
       get ':slug' => 'users#show', slug: /[A-Za-z0-9_]{3,}/, constraints: { format: /(html|json)/ }
     end
     get ':user_name' => 'users#show', as: :user, user_name: /[A-Za-z0-9_]{3,}/, constraints: { format: /(html|json)/ }
+    get ':user_name' => 'teches#show', as: :tech_short, user_name: /[A-Za-z0-9_]{3,}/, constraints: { format: /(html|json)/ }
 
     scope ':user_name/:project_slug', as: :project, user_name: /[A-Za-z0-9_\-]{3,}/, project_slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|js)/ } do
       get '' => 'projects#show', as: ''

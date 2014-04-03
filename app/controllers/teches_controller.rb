@@ -1,10 +1,11 @@
 class TechesController < ApplicationController
   before_filter :authenticate_user!, except: [:show]
-  before_filter :load_tech, only: [:show, :update]
+  before_filter :load_tech, except: [:show]
   layout 'tech', only: [:edit, :update, :show]
   respond_to :html
 
   def show
+    @tech = load_with_slug
     authorize! :read, @tech
     title @tech.name
     meta_desc "People are hacking with #{@tech.name} on Hackster.io. Join them!"
@@ -15,7 +16,6 @@ class TechesController < ApplicationController
   end
 
   def edit
-    @tech = Tech.find(params[:id])
     authorize! :update, @tech
     @tech.build_avatar unless @tech.avatar
 
@@ -53,6 +53,6 @@ class TechesController < ApplicationController
 
   private
     def load_tech
-      @tech = params[:slug] ? load_with_slug : load_with_user_name(Tech)
+      @tech = Tech.find(params[:id])
     end
 end
