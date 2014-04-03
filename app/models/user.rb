@@ -82,7 +82,7 @@ class User < ActiveRecord::Base
   validates :city, :country, length: { maximum: 50 }, allow_blank: true
   validates :mini_resume, length: { maximum: 160 }, allow_blank: true
   validates :user_name, presence: true, length: { in: 3..100 }, uniqueness: true,
-    format: { with: /\A[a-z0-9_]+\z/, message: "accepts only downcase letters, numbers and underscores '_'." }, unless: :being_invited?
+    format: { with: /\A[a-z0-9_\-]+\z/, message: "accepts only downcase letters, numbers, underscores '_' and dashes '-'." }, unless: :being_invited?
   validates :user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users) }
   with_options unless: proc { |u| u.skip_registration_confirmation },
     on: :create do |user|
