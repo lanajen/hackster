@@ -3,14 +3,16 @@
     %h2{ style: 'text-align: center' } Reorder widgets
     = simple_nested_form_for @project, url: project_widgets_path(@project), html: { class: 'widget-form widget-reorder-form' } do |f|
       = f.error_notification
-      #sortable
-        %ul.first
-          - @project.widgets_first_col.each do |widget|
-            = render partial: 'field_reorder', locals: { f: f, widget: widget, project: @project }
-        %ul.second
-          - @project.widgets_second_col.each do |widget|
-            = render partial: 'field_reorder', locals: { f: f, widget: widget, project: @project }
-      %p.help-block Just drag and drop widget tiles on the same column or from one column to the other.
+      = f.input :columns_count, as: :radio_buttons, collection: %w(1 2)
+      - if @project.columns_count == 1
+        #sortable
+          %ul.first
+            - @project.widgets_first_col.each do |widget|
+              = render partial: 'field_reorder', locals: { f: f, widget: widget, project: @project }
+          %ul.second
+            - @project.widgets_second_col.each do |widget|
+              = render partial: 'field_reorder', locals: { f: f, widget: widget, project: @project }
+        %p.help-block Just drag and drop widget tiles on the same column or from one column to the other.
       %p.help-block Hover over a tile and click the cross to delete a widget.
       .form-actions
         = f.submit 'Save', class: 'btn btn-primary'

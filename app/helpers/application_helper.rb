@@ -9,6 +9,7 @@ module ApplicationHelper
     affix = 725
     affix += 53 if project.collection_id.present?
     affix += 52 if project.private and user and user.can? :edit, @project
+    affix += 52 if user and user.is_team_member? project, false
     affix
   end
 
@@ -20,6 +21,10 @@ module ApplicationHelper
     else
       return { style: 'display:none;' }
     end
+  end
+
+  def partial_name_for_columns project
+    project.columns_count == 1 ? 'one_column' : 'two_columns'
   end
 
   def next_meetup_for_group group_url
