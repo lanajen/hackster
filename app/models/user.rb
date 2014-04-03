@@ -60,6 +60,7 @@ class User < ActiveRecord::Base
   has_many :teams, through: :group_ties, source: :group, class_name: 'Team'
   has_one :avatar, as: :attachable, dependent: :destroy
   has_one :reputation, dependent: :destroy
+  has_one :slug, as: :sluggable, dependent: :destroy, class_name: 'SlugHistory'
 
   attr_accessor :email_confirmation, :skip_registration_confirmation,
     :friend_invite_id, :new_invitation, :invitation_code, :match_by,

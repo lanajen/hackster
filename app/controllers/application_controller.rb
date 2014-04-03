@@ -117,11 +117,16 @@ class ApplicationController < ActionController::Base
     end
 
     def load_user
-      @user ||= load_with_user_name User
+      @user ||= load_with_slug
     end
 
     def load_with_user_name model
       model.find_by_user_name!(params[:user_name].downcase)
+    end
+
+    def load_with_slug
+      slug = SlugHistory.find_by_value!(params[:slug])
+      slug.sluggable
     end
 
     def track_alias user=nil

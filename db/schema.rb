@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140402235749) do
+ActiveRecord::Schema.define(version: 20140403214203) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -318,13 +318,14 @@ ActiveRecord::Schema.define(version: 20140402235749) do
   add_index "reputations", ["user_id"], name: "index_reputations_on_user_id", using: :btree
 
   create_table "slug_histories", force: true do |t|
-    t.string   "value",      null: false
-    t.integer  "project_id", null: false
+    t.string   "value",                              null: false
+    t.integer  "sluggable_id",                       null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "sluggable_type", default: "Project", null: false
   end
 
-  add_index "slug_histories", ["project_id"], name: "index_slug_histories_on_project_id", using: :btree
+  add_index "slug_histories", ["sluggable_type", "sluggable_id"], name: "index_slug_histories_on_sluggable_type_and_sluggable_id", using: :btree
   add_index "slug_histories", ["value"], name: "index_slug_histories_on_value", using: :btree
 
   create_table "subdomains", force: true do |t|

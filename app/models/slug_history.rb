@@ -1,12 +1,11 @@
 class SlugHistory < ActiveRecord::Base
-  belongs_to :project
+  belongs_to :sluggable, polymorphic: true
   validates :value, presence: true
-  attr_accessible :value, :project_id
+  attr_accessible :value, :sluggable_id, :sluggable_type
 
   def self.update_history_for project_id
     project = Project.find project_id
     histories = project.slug_histories
-    puts histories.map(&:value).to_s
     uris = { project.uri => false }
     project.users.each{ |u| uris[project.uri(u.user_name)] = false }
 
@@ -18,11 +17,9 @@ class SlugHistory < ActiveRecord::Base
       end
     end
 
-    puts uris.to_s
-
     # if no slug could be found we create a new one
     uris.select{|k,v| v == false}.each do |uri, presence|
-      create value: uri, project_id: project.id
+      create value: uri, sluggable_id: project.id, sluggable_type: 'Project'
 
       if where(value: uri).count > 1
         message = "A duplicate slug_history url has been created: project_id: #{project.id} // project_uri: #{project.uri}"

@@ -1,6 +1,8 @@
 class Tech < Group
   include Taggable
 
+  has_one :slug, as: :sluggable, dependent: :destroy, class_name: 'SlugHistory'
+
   store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link,
     :google_plus_link, :youtube_link, :website_link, :blog_link, :github_link,
     :forums_link, :documentation_link]

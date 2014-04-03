@@ -77,7 +77,7 @@ HackerIo::Application.routes.draw do
     end
     resources :teches, except: [:show, :update, :destroy]
     scope 'tech/:user_name', as: :tech do
-      get '' => 'teches#show', as: ''
+      # get '' => 'teches#show', as: ''
       delete '' => 'teches#destroy'
       patch '' => 'teches#update'
     end
@@ -180,6 +180,7 @@ HackerIo::Application.routes.draw do
 
     # get 'help' => 'pages#help'
     get 'home', to: redirect('/')
+    # get 'me', to: 'users#me'
 
     get 'ping' => 'pages#ping'  # for availability monitoring
     get 'obscure/path/to/cron' => 'cron#run'
@@ -196,6 +197,13 @@ HackerIo::Application.routes.draw do
     get 'terms' => 'pages#terms'
     get 'resources' => 'pages#resources'
 
+    # get ':slug' => 'slugs#show', slug: /[A-Za-z0-9_]{3,}/, constraints: { format: /(html|json)/ }
+    constraints(TechPage) do
+      get ':slug' => 'teches#show', slug: /[A-Za-z0-9_]{3,}/, constraints: { format: /(html|json)/ }
+    end
+    constraints(UserPage) do
+      get ':slug' => 'users#show', slug: /[A-Za-z0-9_]{3,}/, constraints: { format: /(html|json)/ }
+    end
     get ':user_name' => 'users#show', as: :user, user_name: /[A-Za-z0-9_]{3,}/, constraints: { format: /(html|json)/ }
 
     scope ':user_name/:project_slug', as: :project, user_name: /[A-Za-z0-9_\-]{3,}/, project_slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|js)/ } do

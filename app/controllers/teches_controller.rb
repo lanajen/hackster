@@ -53,6 +53,6 @@ class TechesController < ApplicationController
 
   private
     def load_tech
-      @tech = load_with_user_name Tech
+      @tech = params[:slug] ? load_with_slug : load_with_user_name(Tech)
     end
 end
