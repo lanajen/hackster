@@ -180,15 +180,6 @@ $(document).ready(function(){
     scroller.scrollLeft(pos);
   });
 
-  $('#project-nav').on({
-    'affixed.bs.affix': function(e){
-      $('body').addClass('nav-affixed');
-    },
-    'affix-top.bs.affix': function(e){
-      $('body').removeClass('nav-affixed');
-    }
-  });
-
   $('.widget-form').on('click', '.btn[data-toggle="subcat"]', function(e){
     e.preventDefault();
   });
@@ -223,6 +214,40 @@ $(document).ready(function(){
     $('.widget-form .checkmark').hide();
     $('.widget-subcategories:visible').slideUp();
   });
+
+  // triggers event for class change
+  $.each(["addClass","removeClass"],function(i, methodname){
+    var oldmethod = $.fn[methodname];
+    $.fn[methodname] = function(){
+      oldmethod.apply(this, arguments);
+      this.trigger("classchange");
+      return this;
+    }
+  });
+
+  $('#project-nav .affixable').on('classchange',function(event){
+    if ($(this).hasClass('affix')) {
+      $('body').addClass('nav-affixed');
+    } else {
+      $('body').removeClass('nav-affixed');
+    }
+  });
+
+  // affixes .affixable
+  fixedEl = $('.affixable');
+  if (fixedEl.length > 0) {
+    var top = fixedEl.offset().top - (parseFloat(fixedEl.css('top')) || 0);
+    console.log(top);
+    $(window).scroll(function (event) {
+      var y = $(this).scrollTop();
+
+      if (y >= top) {
+        fixedEl.addClass('affix');
+      } else {
+        fixedEl.removeClass('affix');
+      }
+    });
+  }
 });
 
 $(window).load(function(){

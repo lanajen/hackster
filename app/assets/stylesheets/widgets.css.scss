@@ -184,7 +184,7 @@
       }
     }
   }
-  #sortable {
+  .sortable {
     .fields-column {
       float: left;
       width: 232px;
@@ -202,7 +202,7 @@
   }
 }
 
-#sortable {
+.sortable {
   overflow: hidden;
   margin-bottom: 10px;
   ul {
@@ -214,6 +214,10 @@
     background: #eee;
     padding: 5px;
     width: 210px;
+    &.single {
+      margin: 0 auto;
+      float: none;
+    }
   }
   li {
     margin: 5px;

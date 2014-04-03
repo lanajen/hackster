@@ -10,6 +10,7 @@ module ApplicationHelper
     affix += 53 if project.collection_id.present?
     affix += 52 if project.private and user and user.can? :edit, @project
     affix += 52 if user and user.is_team_member? project, false
+    affix += 53 if flash.any?
     affix
   end
 

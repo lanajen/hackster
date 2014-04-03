@@ -134,7 +134,7 @@
 
         - unless @project.columns_count == 1
           #project-nav.unselectable
-            .row{ data: { spy: 'affix', offset: { top: affix_top(@project, current_user) - 25 } }}
+            .row.affixable{ data: { offset: 53 }}
               .col-xs-12
                 #project-nav-inner
                   .row
@@ -155,7 +155,7 @@
                               %ul.dropdown-menu
                                 %li= link_to 'Settings', edit_project_path(@project), data: { remote: true }
                                 %li= link_to 'Add a widget', new_project_widget_path(@project)
-                                %li= link_to 'Reorder widgets', project_widgets_path(@project)
+                                %li= link_to 'Reorder widgets and edit columns', project_widgets_path(@project)
 
                     .col-xs-4{ style: 'padding-left: 0' }
                       .tabs-left.navbar.navbar-default.navbar-tabs

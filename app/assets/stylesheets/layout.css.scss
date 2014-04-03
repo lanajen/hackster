@@ -504,9 +504,9 @@ a.hidden-link {
       }
     }
     &.navbar-vertical {
+      top: 20px;
       &.affix {
         width: 220px;
-        top: 20px;
       }
       .navbar-nav {
         float: none;

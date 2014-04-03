@@ -1,9 +1,6 @@
 #column1.col-xs-9
-  - cache [@project.widgets.first_column, can?(:edit, @project)], tag: "project-#{@project.id}-widgets" do
-    - @project.widgets.first_column.each do |widget|
-      = render partial: 'widgets/widget', locals: { widget: widget }
-  - cache [@project.widgets.second_column, can?(:edit, @project)], tag: "project-#{@project.id}-widgets" do
-    - @project.widgets.second_column.each do |widget|
+  - cache [@project.widgets, can?(:edit, @project)], tag: "project-#{@project.id}-widgets" do
+    - @project.widgets.each do |widget|
       = render partial: 'widgets/widget', locals: { widget: widget }
   - unless @project.respects_count.zero?
     = render partial: 'widgets/respect_widget', locals: { users: @project.respecting_users }
@@ -11,7 +8,7 @@
   - if @issue and can? :comment_privately, @project
     = render partial: 'widgets/private_comment_widget', locals: { comments: @issue.comments, commentable: @project }
 #sidebar.col-xs-3
-  .navbar-tabs.navbar-default.navbar-vertical.unselectable{ data: { spy: 'affix', offset: { top: affix_top(@project, current_user) } }}
+  .navbar-tabs.navbar-default.navbar-vertical.unselectable.affixable
     %ul.navbar-nav.nav
       %li.actions
         - if @project.public?
@@ -38,4 +35,4 @@
           %ul.dropdown-menu
             %li= link_to 'Settings', edit_project_path(@project), data: { remote: true }
             %li= link_to 'Add a widget', new_project_widget_path(@project)
-            %li= link_to 'Reorder widgets', project_widgets_path(@project)
+            %li= link_to 'Reorder widgets and edit columns', project_widgets_path(@project)
