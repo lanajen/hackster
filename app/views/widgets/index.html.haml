@@ -8,11 +8,11 @@
           %label.btn.btn-default{ class: "#{'active' if @project.columns_count == 1}"}
             = radio_button_tag 'project[columns_count]', '1', (@project.columns_count == 1)
             One column
-          %label.btn.btn-default{ class: "#{'active' if @project.columns_count == 2}"}
-            = radio_button_tag 'project[columns_count]', '2', (@project.columns_count == 2)
+          %label.btn.btn-default{ class: "#{'active' unless @project.columns_count == 1}"}
+            = radio_button_tag 'project[columns_count]', '2', (@project.columns_count != 1)
             Two columns
 
-      #sortable-1.sortable{ style: "#{'display:none' if @project.columns_count == 2}"}
+      #sortable-1.sortable{ style: "#{'display:none' unless @project.columns_count == 1}"}
         %ul.single
           - @project.widgets.each do |widget|
             = render partial: 'field_reorder', locals: { f: f, widget: widget, project: @project }
