@@ -6,7 +6,12 @@
           - @projects.each do |project|
             = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '3' }
       - else
-        This technology isn't in use yet!
+        .row
+          .col-xs-12
+            %p
+              This technology isn't in use yet!
+              - if @tech.tech_tags.any?
+                = link_to "Create the first #{@tech.name} project", new_project_path(project: { tech_tags_string: @tech.tech_tags.first.name }), class: 'btn btn-primary btn-sm'
 
 
   #tab-activity.tab-pane.fade

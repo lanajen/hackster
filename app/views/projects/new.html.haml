@@ -7,6 +7,7 @@
 
       = f.input :name, label: 'What is it called?'
       = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner description, Twitter-style.'
+      = f.input :tech_tags_string, as: :hidden
 
       .cover_image.file-drop.form-group
         - if @project.cover_image
