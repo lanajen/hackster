@@ -81,7 +81,7 @@ class User < ActiveRecord::Base
   validates :name, length: { in: 1..200 }, allow_blank: true
   validates :city, :country, length: { maximum: 50 }, allow_blank: true
   validates :mini_resume, length: { maximum: 160 }, allow_blank: true
-  validates :user_name, presence: true, length: { in: 3..100 }, uniqueness: true,
+  validates :user_name, presence: true, length: { in: 3..100 },
     format: { with: /\A[a-z0-9_\-]+\z/, message: "accepts only downcase letters, numbers, underscores '_' and dashes '-'." }, unless: :being_invited?
   validates :user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users) }
   with_options unless: proc { |u| u.skip_registration_confirmation },
@@ -92,6 +92,7 @@ class User < ActiveRecord::Base
   end
   validate :email_is_unique_for_registered_users, if: :being_invited?
   validate :website_format_is_valid
+  validate :user_name_is_unique
 
   before_validation :ensure_website_protocol
   before_create :subscribe_to_all, unless: proc{|u| u.invitation_token.present? }
@@ -697,6 +698,13 @@ class User < ActiveRecord::Base
       else
         errors.add :invitation_code, 'is either invalid or expired'
       end
+    end
+
+    def user_name_is_unique
+      return unless user_name.present?
+
+      slug = SlugHistory.where(value: user_name).first
+      errors.add :user_name, 'is already taken' if slug and slug.sluggable != self
     end
 
   protected

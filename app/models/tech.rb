@@ -8,14 +8,31 @@ class Tech < Group
     :forums_link, :documentation_link]
 
   validates :user_name, :full_name, presence: true
-  validates :user_name, uniqueness: { scope: [:type] }
   validates :user_name, :new_user_name, length: { in: 3..100 }, if: proc{|t| t.persisted?}
+  validate :user_name_is_unique
   before_validation :update_user_name
 
   taggable :tech_tags
 
   def self.model_name
     Group.model_name
+  end
+
+  def generate_user_name
+    return if full_name.blank?
+
+    slug = name.gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
+
+    # make sure it doesn't exist
+    if result = SlugHistory.where(value: slug).first
+      return if self == result
+      # if it exists add a 1 and increment it if necessary
+      slug += '1'
+      while SlugHistory.where(value: slug).first
+        slug.gsub!(/([0-9]+$)/, ($1.to_i + 1).to_s)
+      end
+    end
+    self.user_name = slug
   end
 
   def projects
@@ -33,4 +50,12 @@ class Tech < Group
     generate_user_name if was_auto_generated or user_name.blank?
     assign_new_user_name if new_user_name_changed
   end
+
+  private
+    def user_name_is_unique
+      return unless new_user_name.present?
+
+      slug = SlugHistory.where(value: new_user_name).first
+      errors.add :new_user_name, 'is already taken' if slug and slug.sluggable != self
+    end
 end

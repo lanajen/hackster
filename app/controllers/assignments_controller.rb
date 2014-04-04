@@ -53,7 +53,7 @@ class AssignmentsController < ApplicationController
     else
       respond_to do |format|
         format.html { render action: 'edit' }
-        format.js { render json: @assignment.errors, status: :unprocessable_entity }
+        format.js { render json: { assignment: @assignment.errors }, status: :unprocessable_entity }
       end
     end
   end

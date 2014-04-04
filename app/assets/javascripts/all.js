@@ -84,13 +84,20 @@ $(document).ready(function(){
       }
 
       // cleanup before adding new elements
-      $('.has-error .help-inline').remove();
+      $('.has-error .help-block.error-message').remove();
       $('.form-group').removeClass('has-error');
 
-      for ( error in errors ) {
-        input = $form.find('[name="user['+error+']"]');
-        input.parents('.form-group').addClass('has-error');
-        $('<span class="help-inline">' + errors[error] + '</span>').insertAfter(input);
+      for (model in errors) {
+        for ( error in errors[model] ) {
+          input = $form.find('[name="' + model + '['+error+']"]');
+          input.parents('.form-group').addClass('has-error');
+          errorMsg = $('<span class="help-block error-message">' + errors[model][error] + '</span>');
+          if (input.parent().hasClass('input-group')) {
+            errorMsg.insertAfter(input.parent());
+          } else {
+            errorMsg.insertAfter(input);
+          }
+        }
       }
     });
 

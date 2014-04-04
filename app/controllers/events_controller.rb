@@ -92,7 +92,7 @@ class EventsController < ApplicationController
       @event.build_avatar unless @event.avatar
       respond_to do |format|
         format.html { render action: 'edit' }
-        format.js { render json: @event.errors, status: :unprocessable_entity }
+        format.js { render json: { group: @event.errors }, status: :unprocessable_entity }
       end
     end
   end

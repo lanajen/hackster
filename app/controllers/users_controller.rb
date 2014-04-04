@@ -52,7 +52,7 @@ class UsersController < ApplicationController
       @user.build_avatar unless @user.avatar
       respond_to do |format|
         format.html { render action: 'edit' }
-        format.js { render json: @user.errors, status: :unprocessable_entity }
+        format.js { render json: { user: @user.errors }, status: :unprocessable_entity }
       end
     end
   end

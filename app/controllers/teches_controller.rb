@@ -46,7 +46,7 @@ class TechesController < ApplicationController
       @tech.build_avatar unless @tech.avatar
       respond_to do |format|
         format.html { render action: 'edit' }
-        format.js { render json: @tech.errors, status: :unprocessable_entity }
+        format.js { render json: { group: @tech.errors }, status: :unprocessable_entity }
       end
     end
   end
