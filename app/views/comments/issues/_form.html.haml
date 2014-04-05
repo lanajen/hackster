@@ -9,9 +9,9 @@
         = simple_form_for [commentable, comment], html: { data: { remote: true } } do |f|
           = f.error_notification
           = f.input :body, as: :text, input_html: { rows: 5 }, label: false
-
           .pull-right
             = f.submit 'Comment', class: 'btn btn-primary btn-sm'
+
 - else
   %p
     Please

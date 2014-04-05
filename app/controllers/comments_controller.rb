@@ -21,14 +21,23 @@ class CommentsController < ApplicationController
     end
   end
 
+  def edit
+    @comment.body.gsub! /<br>/, "\r\n"
+    @comment.body.gsub! /<\/p>/, "\r\n"
+    @comment.body.gsub! /<p>/, ""
+  end
+
   def update
+    @commentable = @comment.commentable
     respond_to do |format|
       if @comment.update_attributes(params[:comment])
         format.html { redirect_to path_for_commentable(@commentable), notice: t('comment.update.success') }
-        format.json { head :ok }
+        format.js { render 'update_issue' }
+
+        track_event 'Edited comment', @comment.to_tracker
       else
-        format.html { render action: "edit" }
-        format.json { render json: @comment.errors, status: :unprocessable_entity }
+        format.html { redirect_to path_for_commentable(@commentable), alert: t('comment.update.error') }
+        format.js { render 'error' }
       end
     end
   end
@@ -39,7 +48,7 @@ class CommentsController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to path_for_commentable(@commentable), notice: t('comment.destroy.success') }
-      format.js { render js_view_for_commentable(@commentable) }
+      format.js { render js_view_for_destroy_commentable(@commentable) }
     end
 
     track_event 'Deleted comment', @comment.to_tracker
@@ -59,7 +68,20 @@ class CommentsController < ApplicationController
       when Feedback
         'update_feedback'
       when Issue, BlogPost
-        'update_issue'
+        'create_issue'
+      when Project
+        'update_project'
+      when Widget
+        'update_widget'
+      end
+    end
+
+    def js_view_for_destroy_commentable commentable
+      case commentable
+      when Feedback
+        'update_feedback'
+      when Issue, BlogPost
+        'destroy'
       when Project
         'update_project'
       when Widget

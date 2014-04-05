@@ -90,7 +90,7 @@ class BaseMailer < ActionMailer::Base
         issue = context[:issue] = Issue.find(context_id)
         project = context[:project] = issue.threadable
         context[:author] = issue.user
-        context[:users] = project.team.users
+        context[:users] = project.users
       when :log_line
         context[:error] = LogLine.find(context_id)
       when :membership

@@ -52,7 +52,7 @@ HackerIo::Application.routes.draw do
       root to: 'pages#root'
     end  # end admin
 
-    resources :comments, only: [:update, :destroy]
+    resources :comments, only: [:edit, :update, :destroy]
     resources :communities, except: [:show, :update, :destroy], controller: 'groups', as: :groups
     resources :groups, only: [] do
       post 'members' => 'members#create', as: :members

@@ -6,6 +6,7 @@
       = content_for :js do
         :javascript
           $('.paypal-widget form').attr('action', 'https://www.paypal.com/cgi-bin/webscr');
+      - session.delete(:last_widget_edited)
     - else
       = widget.code.html_safe
     - if widget.caption.present?

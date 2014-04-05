@@ -10,19 +10,6 @@ $(document).ready(function(){
     }
   });
 
-  $('.well').on('keypress', '#new_comment textarea',function(){
-    if (event.which == 13 && !event.shiftKey) {
-      event.preventDefault();
-      $(this).parents('form').submit();
-    }
-  });
-
-  // auto adjust the height of
-  $('.well').on('keyup keydown', '#new_comment textarea',function(){
-    var t=$(this);
-    t.height(15).height(t[0].scrollHeight);//where 15 is minimum height of textarea
-  });
-
   $('body').on('click', 'a.expand', function(e){
     e.preventDefault();
     target = $(this).data('target');

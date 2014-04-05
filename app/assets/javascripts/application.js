@@ -8,6 +8,7 @@
 //= require placeholders
 //= require jquery.ui.sortable
 //= require projects
+//= require comments
 //= require all
 //= require ilightbox/jquery.mousewheel
 //= require ilightbox/ilightbox.packed

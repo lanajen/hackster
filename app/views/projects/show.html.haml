@@ -1,83 +1,84 @@
 = content_for :head do
   = render 'meta_tags'
 
-- if @prev
-  .project-nav.project-nav-prev.visible-md.visible-lg
-    .project-nav-inner
-      = image_tag @prev.decorate.cover_image(:cover_thumb), class: 'img-responsive'
-      %i.fa.fa-chevron-left
-      .project-nav-overlay.project-nav-overlay-bg
-      .project-nav-overlay
-        %h3.link-color= @prev.name
-        %h4
-          by
-          %span.link-color= @prev.users.map { |u| u.name }.to_sentence
-        %p= truncate @prev.one_liner, length: 140
-      %a.project-nav-overlay.project-nav-overlay-top{ href: project_path(@prev, ref: params[:ref], ref_id: params[:ref_id], offset: params[:offset].to_i - 1) }
+.project-show
+  - if @prev
+    .project-nav.project-nav-prev.visible-md.visible-lg
+      .project-nav-inner
+        = image_tag @prev.decorate.cover_image(:cover_thumb), class: 'img-responsive'
+        %i.fa.fa-chevron-left
+        .project-nav-overlay.project-nav-overlay-bg
+        .project-nav-overlay
+          %h3.link-color= @prev.name
+          %h4
+            by
+            %span.link-color= @prev.users.map { |u| u.name }.to_sentence
+          %p= truncate @prev.one_liner, length: 140
+        %a.project-nav-overlay.project-nav-overlay-top{ href: project_path(@prev, ref: params[:ref], ref_id: params[:ref_id], offset: params[:offset].to_i - 1) }
 
-- if @next
-  .project-nav.project-nav-next.visible-md.visible-lg
-    .project-nav-inner
-      = image_tag @next.decorate.cover_image(:cover_thumb), class: 'img-responsive'
-      %i.fa.fa-chevron-right
-      .project-nav-overlay.project-nav-overlay-bg
-      .project-nav-overlay
-        %h3.link-color= @next.name
-        %h4
-          by
-          %span.link-color= @next.users.map { |u| u.name }.to_sentence
-        %p= truncate @next.one_liner, length: 140
-      %a.project-nav-overlay.project-nav-overlay-top{ href: project_path(@next, ref: params[:ref], ref_id: params[:ref_id], offset: params[:offset].to_i + 1) }
+  - if @next
+    .project-nav.project-nav-next.visible-md.visible-lg
+      .project-nav-inner
+        = image_tag @next.decorate.cover_image(:cover_thumb), class: 'img-responsive'
+        %i.fa.fa-chevron-right
+        .project-nav-overlay.project-nav-overlay-bg
+        .project-nav-overlay
+          %h3.link-color= @next.name
+          %h4
+            by
+            %span.link-color= @next.users.map { |u| u.name }.to_sentence
+          %p= truncate @next.one_liner, length: 140
+        %a.project-nav-overlay.project-nav-overlay-top{ href: project_path(@next, ref: params[:ref], ref_id: params[:ref_id], offset: params[:offset].to_i + 1) }
 
-.tab-content.row
-  #tab-home.tab-pane.fade.in.active
-    - if @widgets.any?
-      #full-width
-        .background.to-compact
-        .container
-          .row
-            .inner-container.col-xs-12
-      = render partial_name_for_columns(@project)
+  .tab-content.row
+    #tab-home.tab-pane.fade.in.active
+      - if @widgets.any?
+        #full-width
+          .background.to-compact
+          .container
+            .row
+              .inner-container.col-xs-12
+        = render partial_name_for_columns(@project)
 
-    - else
-      .col-xs-6.col-xs-offset-3
-        .well
-          .content
-            - if can? :edit, @project
-              Tell the world more about #{@project.name}, show us the code, schematics, bill of materials, or something else awesome about your project.
-              = link_to 'Add your first widget to get started!', new_project_widget_path(@project)
-            - else
-              Work in progress, check back later!
+      - else
+        .col-xs-6.col-xs-offset-3
+          .well
+            .content
+              - if can? :edit, @project
+                Tell the world more about #{@project.name}, show us the code, schematics, bill of materials, or something else awesome about your project.
+                = link_to 'Add your first widget to get started!', new_project_widget_path(@project)
+              - else
+                Work in progress, check back later!
 
-- cache [@project, 'other', @other_projects], tag: "project-#{@project.id}-other" do
-  - if @other_projects_count > 0
-    #more-projects.row
-      .col-xs-12
-        %hr
-        %h5
-          Other projects by
-          = @project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
-        - if @other_projects_count > 6
-          .row
-            .col-xs-6
-              %h6.subtitle Most popular
-              .row
-                - @other_projects.each do |project|
-                  .col-xs-4
-                    = link_to image_tag(project.decorate.cover_image(:cover_thumb), class: 'img-responsive'), project_path(project, ref: 'more'), rel: 'tooltip', title: project.one_liner
-                    %h6= link_to project.name, project_path(project, ref: 'more')
+  - cache [@project, 'other', @other_projects], tag: "project-#{@project.id}-other" do
+    - if @other_projects_count > 0
+      #more-projects.row
+        .col-xs-12
+          %hr
+          %h5
+            Other projects by
+            = @project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
+          - if @other_projects_count > 6
+            .row
+              .col-xs-6
+                %h6.subtitle Most popular
+                .row
+                  - @other_projects.each do |project|
+                    .col-xs-4
+                      = link_to image_tag(project.decorate.cover_image(:cover_thumb), class: 'img-responsive'), project_path(project, ref: 'more'), rel: 'tooltip', title: project.one_liner
+                      %h6= link_to project.name, project_path(project, ref: 'more')
 
-            .col-xs-6
-              %h6.subtitle Newest
-              .row
-                - @last_projects.each do |project|
-                  .col-xs-4
-                    = link_to image_tag(project.decorate.cover_image(:cover_thumb), class: 'img-responsive'), project_path(project, ref: 'more'), rel: 'tooltip', title: project.one_liner
-                    %h6= link_to project.name, project_path(project, ref: 'more')
+              .col-xs-6
+                %h6.subtitle Newest
+                .row
+                  - @last_projects.each do |project|
+                    .col-xs-4
+                      = link_to image_tag(project.decorate.cover_image(:cover_thumb), class: 'img-responsive'), project_path(project, ref: 'more'), rel: 'tooltip', title: project.one_liner
+                      %h6= link_to project.name, project_path(project, ref: 'more')
 
-        - else
-          .row
-            - @other_projects.each do |project|
-              .col-xs-2
-                = link_to image_tag(project.decorate.cover_image(:cover_thumb), class: 'img-responsive'), project_path(project, ref: 'more'), rel: 'tooltip', title: project.one_liner
-                %h6= link_to project.name, project_path(project, ref: 'more')
+          - else
+            .row
+              - @other_projects.each do |project|
+                .col-xs-2
+                  = link_to image_tag(project.decorate.cover_image(:cover_thumb), class: 'img-responsive'), project_path(project, ref: 'more'), rel: 'tooltip', title: project.one_liner
+                  %h6= link_to project.name, project_path(project, ref: 'more')

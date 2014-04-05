@@ -1,3 +1,1 @@
-$('.new-comment').remove();
-$("<%= escape_javascript render(partial: 'comments/issues/comment', locals: { comment: @comment }) %>").appendTo('.issue-content .content');
-$("<%= escape_javascript render(partial: 'comments/issues/form', locals: { comment: @commentable.comments.new, commentable: @commentable }) %>").appendTo('.issue-content .content');
+$('.comment-<%= @comment.id %>').replaceWith("<%= escape_javascript render(partial: 'comments/issues/comment', locals: { comment: @comment }) %>");
