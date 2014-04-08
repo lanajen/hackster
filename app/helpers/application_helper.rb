@@ -14,6 +14,16 @@ module ApplicationHelper
     affix
   end
 
+  def auto_link text
+    auto_html text do
+      image
+      youtube(:width => 400, :height => 250, :autoplay => false)
+      gist
+      simple_format
+      link(:target => 'blank')
+    end
+  end
+
   def class_for_alert alert, notice
     if alert
       return { class: 'alert-danger' }

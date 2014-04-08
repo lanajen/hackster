@@ -17,6 +17,7 @@ gem 'sass-rails',   '4.0.1'
 gem 'uglifier', '2.3.1'
 gem 'zocial-rails', '1.0.2'
 
+gem 'auto_html', '1.6.3'
 gem 'aws-sdk', '1.33.0'
 gem 'bootstrap-will_paginate', '0.0.10'
 gem 'cancan', '1.6.10'
