@@ -63,14 +63,14 @@
       - if current_user.is? :admin
         = f.input :collection_id, collection: Assignment.order(created_at: :desc), label: 'Assignment'
         = f.input :collection_id, collection: Event.order(created_at: :desc), label: 'Event'
-      - if current_user.promotions.any?
-        = f.input :collection_id, collection: current_user.assignments.order(created_at: :desc), label: 'Assignment'
-      - if current_user.events.any?
-        = f.input :collection_id, collection: current_user.events.order(created_at: :desc), label: 'Event'
 
-      - if current_user.is? :admin
         = f.input :featured, inline_label: 'Feature this project', label: false
         = f.input :featured_date, label: 'Feature date'
+      - else
+        - if current_user.promotions.any?
+          = f.input :collection_id, collection: current_user.assignments.order(created_at: :desc), label: 'Assignment'
+        - if current_user.events.any?
+          = f.input :collection_id, collection: current_user.events.order(created_at: :desc), label: 'Event'
 
       .form-group
         .col-xs-8.col-xs-offset-4= link_to 'Delete project', project_path(@project), method: :delete, class: 'btn btn-danger btn-xs', data: { confirm: "Are you sure? There's no coming back!" }

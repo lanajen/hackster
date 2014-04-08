@@ -1,4 +1,4 @@
-= link_to content_tag(:i, '', class: 'fa fa-code'), '#', onclick: "openPopup('#embed-popup');", rel: 'tooltip', title: 'Embed'
+= link_to content_tag(:i, '', class: 'fa fa-code'), '#', onclick: "openPopup('#embed-popup');return false;", rel: 'tooltip', title: 'Embed'
 
 = content_for :js do
   #embed-popup
