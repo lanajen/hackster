@@ -6,8 +6,8 @@ class GroupInvitationsController < ApplicationController
   layout :set_layout
 
   def index
-    redirect_to path_for_group(@group), alert: 'Invalid invitation token' and return unless token_valid?
-    redirect_to path_for_group(@group) and return if user_signed_in? and current_user.is_member?(@group)
+    redirect_to group_path(@group), alert: 'Invalid invitation token' and return unless token_valid?
+    redirect_to group_path(@group) and return if user_signed_in? and current_user.is_member?(@group)
   end
 
   def new
@@ -20,13 +20,7 @@ class GroupInvitationsController < ApplicationController
     else
       flash[:alert] = "Please specify at least one email to invite."
     end
-    path = case @invitable
-    when Promotion
-      promotion_path(@invitable)
-    else
-      url_for @invitable
-    end
-    redirect_to path
+    redirect_to group_path(@invitable)
   end
 
   def accept
@@ -39,11 +33,11 @@ class GroupInvitationsController < ApplicationController
       else
         flash[:notice] = "You're already a member of this group."
       end
-      redirect_to path_for_group(@group)
+      redirect_to group_path(@group)
     else
       if token_valid? or @group.access_level == 'anyone'
         @group.members.create user_id: current_user.id
-        redirect_to path_for_group(@group), notice: "Welcome to #{@group.name}!"
+        redirect_to group_path(@group), notice: "Welcome to #{@group.name}!"
       else
         redirect_to root_path, alert: "We couldn't find an invitation for this group."
       end
@@ -67,15 +61,6 @@ class GroupInvitationsController < ApplicationController
     def load_and_authorize_invitable
       load_invitable
       authorize! :manage, @invitable if @invitable
-    end
-
-    def path_for_group group
-      case group
-      when Promotion
-        promotion_path(group)
-      else
-        group
-      end
     end
 
     def set_layout

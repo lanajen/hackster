@@ -39,7 +39,7 @@ class MembersController < ApplicationController
         respond_with Project.find(params[:project_id])
       else
         flash[:notice] = 'Members saved.'
-        redirect_to "/groups/#{@group.id}"
+        redirect_to group_path(@group)
       end
     else
       render action: 'edit', template: "members/#{@model_name.pluralize}/edit"
@@ -52,6 +52,7 @@ class MembersController < ApplicationController
         group = Group.find(params[:group_id])
         @promotion = group if group.type == 'Promotion'
         @event = group if group.type == 'Event'
+        @tech = group if group.type == 'Tech'
         group
       elsif params[:promotion_id]
         @promotion = Promotion.find(params[:promotion_id])

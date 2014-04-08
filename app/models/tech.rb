@@ -1,6 +1,7 @@
 class Tech < Group
   include Taggable
 
+  has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'TechMember'
   has_one :slug, as: :sluggable, dependent: :destroy, class_name: 'SlugHistory'
 
   store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link,
@@ -13,6 +14,10 @@ class Tech < Group
   before_validation :update_user_name
 
   taggable :tech_tags
+
+  def self.default_permission
+    'manage'
+  end
 
   def self.model_name
     Group.model_name
