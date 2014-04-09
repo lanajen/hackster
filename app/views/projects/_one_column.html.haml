@@ -19,7 +19,7 @@
       %li.active= link_to 'Home', @project
       - @widgets.each do |widget|
         %li
-          %a{ href: "javascript:smoothScrollTo('#widget-#{widget.id}', -70)" }
+          %a{ href: "javascript:smoothScrollTo('#widget-#{widget.id}', -20)" }
             %i.fa{ class: icon_for_widget(widget) }
             = widget.name
       - if @project.build_logs_count.try(:>, 0) or can? :edit, @project

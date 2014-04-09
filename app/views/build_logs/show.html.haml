@@ -15,15 +15,16 @@
       .content
         = render partial: 'comments/issues/comment', locals: { comment: @log }
 
-        - @log.comments.each do |comment|
-          = render partial: 'comments/issues/comment', locals: { comment: comment }
+        #comments
+          - @log.comments.each do |comment|
+            = render partial: 'comments/issues/comment', locals: { comment: comment }
 
-        - if user_signed_in?
-          = render partial: 'comments/issues/form', locals: { comment: Comment.new, commentable: @log }
-        - else
-          %p
-            Please
-            = link_to 'log in', new_user_session_path
-            or
-            = link_to 'sign up', new_user_registration_path
-            to leave a comment.
+          - if user_signed_in?
+            = render partial: 'comments/issues/form', locals: { comment: Comment.new, commentable: @log }
+          - else
+            %p
+              Please
+              = link_to 'log in', new_user_session_path
+              or
+              = link_to 'sign up', new_user_registration_path
+              to leave a comment.

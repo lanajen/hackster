@@ -16,7 +16,7 @@ module ApplicationHelper
 
   def auto_link text
     auto_html text do
-      image
+      # image
       youtube(:width => 400, :height => 250, :autoplay => false)
       gist
       simple_format

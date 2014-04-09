@@ -8,7 +8,7 @@ class BuildLogsController < ApplicationController
   def index
     authorize! :read, @project.blog_posts.new
     title "Logs for #{@project.name}"
-    @logs = @project.blog_posts.order(created_at: :desc)
+    @logs = @project.blog_posts.order(created_at: :desc).paginate(page: params[:page])
   end
 
   def show

@@ -7,11 +7,11 @@
       %hr
 
 .row
-  .col-xs-9
+  .col-xs-12
     - if @logs.any?
-      .well.well-list
-        - @logs.each do |log|
-          .list-item
+      - @logs.each do |log|
+        .well
+          .header
             %h4
               = link_to log.title, log_path(@project, log)
               %small.text-muted.pull-right Build log ##{log.sub_id}
@@ -21,7 +21,12 @@
               = time_ago_in_words log.created_at
               ago
               %i.fa.fa-comments
-              = link_to pluralize(log.comments.size, 'comment'), log_path(@project, log)
+              = link_to pluralize(log.comments.size, 'comment'), log_path(@project, log, anchor: 'comments')
+          .content
+            = auto_link log.body
+            %p{ style: 'margin-top:10px' }= link_to 'Discuss this log', log_path(@project, log, anchor: 'comments'), class: 'btn btn-primary btn-sm'
+
+      .text-center= will_paginate @logs
 
     - else
       .well
