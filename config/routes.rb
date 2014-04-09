@@ -173,6 +173,7 @@ HackerIo::Application.routes.draw do
     get 'contact' => 'contact#new'
     post 'contact' => 'contact#create'
 
+    get 'about' => 'pages#about'
     # get 'help' => 'pages#help'
     get 'home', to: redirect('/')
     # get 'me', to: 'users#me'

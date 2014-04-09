@@ -1,25 +1,4 @@
-/*
- * This is a manifest file that'll be compiled into application.css, which will include all the files
- * listed below.
- *
- * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
- * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
- *
- * You're free to add application-wide styles to this file and they'll appear at the top of the
- * compiled file, but it's generally better to create a new file per style scope.
- *
- *= require_self
- *= require pygments/default
- */
-
-@import 'bootstrap';
-@import 'bootstrap_overrides';
-@import 'font-awesome';
-@import 'custom_mixins';
-@import 'layout';
-@import 'projects';
-
-#home {
+#about {
   font-family: 'Open Sans', Tahoma, sans-serif;
   font-weight: 300;
   h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {

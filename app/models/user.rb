@@ -81,9 +81,9 @@ class User < ActiveRecord::Base
   validates :name, length: { in: 1..200 }, allow_blank: true
   validates :city, :country, length: { maximum: 50 }, allow_blank: true
   validates :mini_resume, length: { maximum: 160 }, allow_blank: true
-  validates :user_name, presence: true, length: { in: 3..100 },
-    format: { with: /\A[a-z0-9_\-]+\z/, message: "accepts only downcase letters, numbers, underscores '_' and dashes '-'." }, unless: :being_invited?
-  validates :user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users) }
+  validates :user_name, length: { in: 3..100 },
+    format: { with: /\A[a-z0-9_\-]+\z/, message: "accepts only downcase letters, numbers, underscores '_' and dashes '-'." }, allow_blank: true
+  validates :user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users about) }
   with_options unless: proc { |u| u.skip_registration_confirmation },
     on: :create do |user|
       user.validates :email_confirmation, presence: true
@@ -452,6 +452,10 @@ class User < ActiveRecord::Base
   # def has_access? project
   #   permissions.where(permissible_type: 'Project', permissible_id: project.id).any? or group_permissions.where(permissible_type: 'Project', permissible_id: project.id).any?
   # end
+
+  def generate_user_name
+    self.user_name = "user#{id}"
+  end
 
   def has_notifications?
     notifications.any?

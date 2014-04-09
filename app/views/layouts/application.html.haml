@@ -55,75 +55,77 @@
 
         .navbar.navbar-default.navbar-static-top
           .container{ style: 'position:relative;' }
-            .navbar-header
-              %button.navbar-toggle(data-target=".navbar-collapse" data-toggle="collapse")
-                %span.fa.fa-bar
-                %span.fa.fa-bar
-                %span.fa.fa-bar
-              = link_to image_tag('hackster_logo_20.png'), root_path, class: 'navbar-brand navbar-btn'
+            .row
+              .col-xs-12
+                .navbar-header
+                  %button.navbar-toggle(data-target=".navbar-collapse" data-toggle="collapse")
+                    %span.fa.fa-bar
+                    %span.fa.fa-bar
+                    %span.fa.fa-bar
+                  = link_to image_tag('hackster_logo_20.png'), root_path, class: 'navbar-brand navbar-btn'
 
-            .collapse.navbar-collapse
-              .col-xs-4.navbar-left= render 'shared/search_form'
-              %ul.nav.navbar-nav
-                %li= link_to 'Explore', projects_path
-                %li.with-button
-                  %span= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'btn btn-sm btn-warning navbar-btn'
-                %li= link_to 'Resources', resources_path
-              - if user_signed_in?
-                %ul.nav.navbar-nav.navbar-right
-                  - if current_user.has_notifications?
-                    %li#notifications
-                      %a.dropdown-toggle{"data-toggle" => "dropdown", href: '#'}
-                        - if current_user.has_notifications?
-                          %span.istooltip{ title: 'You have new notifications', data: { placement: 'bottom', container: 'body' } }
-                            %i.fa.fa-envelope
-                            %i.fa.fa-exclamation.light-blue
-                        - else
-                          %i.fa.fa-envelope.istooltip{ title: 'No new notifications', data: { placement: 'bottom', container: 'body' } }
-                      %ul.dropdown-menu
-                        - if current_user.has_notifications?
-                          - current_user.notifications.each do |notification|
-                            %li= link_to notification[:message], notification[:link]
-                        - else
-                          %li
-                            %a No notifications.
-
-                  %li.btn-group.navbar-btn
-                    = link_to image_tag(current_user.decorate.avatar(:mini), style: 'width:32px;'), current_user, class: 'btn', style: 'padding:0;'
-                    %button.btn.btn-default.dropdown-toggle{"data-toggle" => "dropdown"}
-                      %span.caret{ style: 'border-bottom-color: #000;border-top-color: #000;' }
-                    %ul.dropdown-menu
-                      %li= link_to current_user.name, current_user
-                      - if current_user.communities.any?
-                        %li.divider
-                        - current_user.community_group_ties.each do |group_tie|
-                          - community = group_tie.group
-                          - name = community.name
-                          - name += ' (invite pending)' if group_tie.invitation_pending?
-                          %li= link_to name, community
-                        - if current_user.projects.where.not(collection_id: nil).any?
-                          %li= link_to 'My grades', grades_path
-                      %li.divider
-                      %li= link_to 'Account settings', edit_user_registration_path
-                      %li= link_to 'Invite friends', new_user_invitation_path
-                      %li.divider
-                      %li= link_to 'Log out', destroy_user_session_path, method: :delete
-                - if current_user.is? :admin
-                  %ul.nav.navbar-nav.navbar-right
-                    %li= link_to 'Admin', admin_analytics_path
-              - else
-                %ul.nav.navbar-nav.navbar-right
-                  - unless request.path == root_path
+                .collapse.navbar-collapse
+                  .col-xs-4.navbar-left= render 'shared/search_form'
+                  %ul.nav.navbar-nav
+                    %li= link_to 'Explore', projects_path
                     %li.with-button
-                      %span= link_to 'Sign up', new_user_registration_path, class: 'btn btn-sm btn-info navbar-btn', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '#{request.path}']);" #new_user_registration_path
-                  %li.dropdown
-                    %a#login.dropdown-toggle{"data-toggle" => "dropdown", href: '#' }
-                      Log in
-                      %strong.caret
-                    .dropdown-menu{:style => "padding: 15px; width: 250px;"}
-                      = render 'devise/sessions/form'
-                      %hr
-                      = link_to 'Connect with your social account', new_user_session_path(a: 'connect')
+                      %span= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'btn btn-sm btn-warning navbar-btn'
+                    %li= link_to 'Resources', resources_path
+                  - if user_signed_in?
+                    %ul.nav.navbar-nav.navbar-right
+                      - if current_user.has_notifications?
+                        %li#notifications
+                          %a.dropdown-toggle{"data-toggle" => "dropdown", href: '#'}
+                            - if current_user.has_notifications?
+                              %span.istooltip{ title: 'You have new notifications', data: { placement: 'bottom', container: 'body' } }
+                                %i.fa.fa-envelope
+                                %i.fa.fa-exclamation.light-blue
+                            - else
+                              %i.fa.fa-envelope.istooltip{ title: 'No new notifications', data: { placement: 'bottom', container: 'body' } }
+                          %ul.dropdown-menu
+                            - if current_user.has_notifications?
+                              - current_user.notifications.each do |notification|
+                                %li= link_to notification[:message], notification[:link]
+                            - else
+                              %li
+                                %a No notifications.
+
+                      %li.btn-group.navbar-btn
+                        = link_to image_tag(current_user.decorate.avatar(:mini), style: 'width:32px;'), current_user, class: 'btn', style: 'padding:0;'
+                        %button.btn.btn-default.dropdown-toggle{"data-toggle" => "dropdown"}
+                          %span.caret{ style: 'border-bottom-color: #000;border-top-color: #000;' }
+                        %ul.dropdown-menu
+                          %li= link_to current_user.name, current_user
+                          - if current_user.communities.any?
+                            %li.divider
+                            - current_user.community_group_ties.each do |group_tie|
+                              - community = group_tie.group
+                              - name = community.name
+                              - name += ' (invite pending)' if group_tie.invitation_pending?
+                              %li= link_to name, community
+                            - if current_user.projects.where.not(collection_id: nil).any?
+                              %li= link_to 'My grades', grades_path
+                          %li.divider
+                          %li= link_to 'Account settings', edit_user_registration_path
+                          %li= link_to 'Invite friends', new_user_invitation_path
+                          %li.divider
+                          %li= link_to 'Log out', destroy_user_session_path, method: :delete
+                    - if current_user.is? :admin
+                      %ul.nav.navbar-nav.navbar-right
+                        %li= link_to 'Admin', admin_analytics_path
+                  - else
+                    %ul.nav.navbar-nav.navbar-right
+                      - unless request.path == root_path
+                        %li.with-button
+                          %span= link_to 'Sign up', new_user_registration_path, class: 'btn btn-sm btn-info navbar-btn', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '#{request.path}']);" #new_user_registration_path
+                      %li.dropdown
+                        %a#login.dropdown-toggle{"data-toggle" => "dropdown", href: '#' }
+                          Log in
+                          %strong.caret
+                        .dropdown-menu{:style => "padding: 15px; width: 250px;"}
+                          = render 'devise/sessions/form'
+                          %hr
+                          = link_to 'Connect with your social account', new_user_session_path(a: 'connect')
 
       #main
         = bootstrap_flash
@@ -140,6 +142,7 @@
       %footer
         .container
           %ul.list-unstyled.list-inline.pull-left
+            %li= link_to 'About', about_path
             %li= link_to 'Help', 'mailto:team@hackster.io?subject=Help!'
             %li= link_to 'Feedback', 'mailto:team@hackster.io?subject=What%20I%20think%20about%20Hackster.io'
             %li= link_to 'Jobs', 'mailto:jobs@hackster.io?subject=I want to work with you guys!'

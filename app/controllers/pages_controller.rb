@@ -1,10 +1,17 @@
 class PagesController < ApplicationController
 
+  def about
+    meta_desc 'What is Hackster.io?'
+    title 'What is Hackster.io?'
+
+    @most_popular_projects = Project.magic_sort.limit 6
+  end
+
   def help
   end
 
   def home
-    if user_signed_in?
+    # if user_signed_in?
       render_options = { template: 'pages/home_signed_in' }
       limit = 4
 
@@ -15,12 +22,12 @@ class PagesController < ApplicationController
       @wip_projects = Project.wip.limit 4
 
       event = 'Visited home page as member'
-    else
-      render_options = { template: 'pages/home_visitor', layout: 'home_visitor' }
-      limit = 6
-      event = 'Visited home page as visitor'
-      @most_popular_projects = Project.magic_sort.limit limit
-    end
+    # else
+    #   render_options = { template: 'pages/home_visitor', layout: 'home_visitor' }
+    #   limit = 6
+    #   event = 'Visited home page as visitor'
+    #   @most_popular_projects = Project.magic_sort.limit limit
+    # end
 
 
     # @top_users = User.top.limit(4)

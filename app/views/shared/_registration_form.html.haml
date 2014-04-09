@@ -2,8 +2,8 @@
 - if resource.invitation_token.present?
   = f.input :invitation_token, as: :hidden
 = f.input :email, label: 'Email'
-= f.input :email_confirmation, label: 'Confirm email'
-= f.input :user_name, label: 'Username'
+- unless resource.invited_to_sign_up?
+  = f.input :email_confirmation, label: 'Confirm email'
 - unless resource.logging_in_socially  # for social login
   = f.input :password, label: 'Password'
 .form-group

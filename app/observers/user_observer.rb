@@ -4,6 +4,7 @@ class UserObserver < ActiveRecord::Observer
       advertise_new_user record
       record.create_reputation
       record.send_confirmation_instructions unless record.invitation_accepted?
+      record.update_column :user_name, record.generate_user_name
     end
   end
 
@@ -18,7 +19,7 @@ class UserObserver < ActiveRecord::Observer
     BaseMailer.enqueue_email 'invite_request_accepted',
       { context_type: :inviter, context_id: record.id }
     record.build_reputation unless record.reputation
-    record.subscribe_to_all && record.save
+    record.subscribe_to_all && record.generate_user_name && record.save
 
     invite = record.find_invite_request
     if invite and project = invite.project

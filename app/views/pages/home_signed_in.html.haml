@@ -7,6 +7,10 @@
   .col-xs-12
     .alert.alert-info.text-center
       = SLOGAN
+      - unless user_signed_in?
+        = link_to 'Join us', new_user_registration_path, class: 'btn btn-sm btn-info'
+        or
+        = link_to 'learn more.', about_path, class: 'alert-link'
 
 .row
   .col-xs-12
