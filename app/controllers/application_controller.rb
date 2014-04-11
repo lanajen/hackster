@@ -125,7 +125,7 @@ class ApplicationController < ActionController::Base
     end
 
     def load_with_slug
-      slug = SlugHistory.find_by_value!(params[:slug])
+      slug = SlugHistory.find_by_value!(params[:slug].downcase)
       slug.sluggable
     end
 

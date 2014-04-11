@@ -13,7 +13,7 @@ end
 
 class PageWithSlug
   def self.sluggable_is_model? model, request
-    return false unless slug = request.params['slug']
+    return false unless slug = request.params['slug'].try(:downcase)
     slug = SlugHistory.find_by_value(slug) and slug.sluggable.class.name == model
   end
 end

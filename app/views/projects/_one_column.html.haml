@@ -16,7 +16,7 @@
           = render 'projects/project_embed_popup'
           = render partial: 'respects/button', locals: { project: @project }
           = render partial: 'followers/button', locals: { followable: @project }
-      %li.active= link_to 'Home', @project
+      %li.active= link_to 'Home', "javascript:smoothScrollTo('#heading', -20)"
       - @widgets.each do |widget|
         %li
           %a{ href: "javascript:smoothScrollTo('#widget-#{widget.id}', -20)" }
