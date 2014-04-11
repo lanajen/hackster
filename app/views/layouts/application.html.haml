@@ -67,7 +67,57 @@
                 .collapse.navbar-collapse
                   .col-xs-4.navbar-left= render 'shared/search_form'
                   %ul.nav.navbar-nav
-                    %li= link_to 'Explore', projects_path
+                    %li.dropdown
+                      -# = link_to 'Explore', projects_path
+                      %a.dropdown-toggle{"data-toggle" => "dropdown", href: '#'}
+                        Explore
+                        %span.caret{ style: 'border-bottom-color: #000;border-top-color: #000;' }
+                      %ul.dropdown-menu{ style: 'padding: 20px;'}
+                        %li
+                          .row{style: 'width: 300px'}
+                            .col-xs-12.text-center{ style: 'margin-bottom: 10px' }= link_to 'Browse all projects', projects_path
+                            -# .col-xs-4{ style: 'border-right: 1px solid #ddd'}
+                              %ul.list-unstyled{ style: 'padding: 0 10px;'}
+                                %li
+                                  %h4 Categories
+                                %li= link_to 'Drones', '/tags/drone'
+                                %li= link_to 'Home automation', '/tags/home+automation'
+                                %li= link_to 'Outdoor', '/tags/outdoor'
+                                %li= link_to 'Wearables', '/tags/wearable'
+                                %li= link_to '', '/tags/'
+                                %li= link_to '', '/tags/'
+                            .col-xs-6{ style: 'border-right: 1px solid #ddd'}
+                              %ul.list-unstyled{ style: 'padding: 0 10px;'}
+                                %li
+                                  %h4 Tools
+                                %li= link_to 'Arduino', '/tags/arduino'
+                                %li= link_to 'ATTiny', '/tags/attiny'
+                                %li= link_to 'Atmega', '/tags/atmega'
+                                %li= link_to 'Electric Imp', '/electric-imp'
+                                %li= link_to 'MetaWear', '/metawear'
+                                %li= link_to 'MSP430', '/tags/msp430'
+                                %li= link_to 'Raspberry Pi', '/tags/raspberry+pi'
+                                %li= link_to 'Spark Core', '/spark'
+                            .col-xs-6
+                              %ul.list-unstyled{ style: 'padding: 0 10px;'}
+                                %li
+                                  %h4 Components
+                                %li= link_to 'AVR', '/tags/avr'
+                                %li= link_to 'Accelerometer', '/tags/accelerometer'
+                                %li= link_to 'Bluetooth', '/tags/bluetooth'
+                                %li= link_to 'GPS', '/tags/gps'
+                                %li= link_to 'Gyroscope', '/tags/gyroscope'
+                                %li= link_to 'IMU', '/tags/imu'
+                                %li= link_to 'LED', '/tags/led'
+                                %li= link_to 'Motion control', '/tags/motion+control'
+                                %li= link_to 'NFC', '/tags/nfc'
+                                %li= link_to 'OLED', '/tags/oled'
+                                %li= link_to 'Stepper Motor', '/tags/stepper+motor'
+                                %li= link_to 'Webcam', '/tags/webcam'
+                                %li= link_to 'Wireless', '/tags/wireless'
+
+
+
                     %li.with-button
                       %span= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'btn btn-sm btn-warning navbar-btn'
                     %li= link_to 'Resources', resources_path
