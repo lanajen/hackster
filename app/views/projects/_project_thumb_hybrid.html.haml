@@ -37,7 +37,7 @@
               %span.counter
                 %i.fa.fa-lock
                 Private
-            %span.counter.istooltip{ title: 'Comments' }
+            %span.counter.istooltip{ title: 'Comments', data: { container: 'body' } }
               %i.fa.fa-comments
               = project.comments_count
             - if project.wip?

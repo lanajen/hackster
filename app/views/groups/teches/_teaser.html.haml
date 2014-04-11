@@ -42,9 +42,10 @@
           %ul.nav.navbar-nav
             %li.active= link_to "Projects", '#tab-projects', data: { toggle: 'tab' }
             %li= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path(project: { tech_tags_string: @tech.tech_tags.first.name })
-            -#
-              %li.active= link_to "Public projects #{content_tag(:span, 0, class: 'badge')}".html_safe, '#tab-projects', data: { toggle: 'tab' }
-              %li= link_to "Members #{content_tag(:span, 0, class: 'badge')}".html_safe, '#tab-members', data: { toggle: 'tab' }
+            - if @tech.crowdfunding_link.present?
+              %li= link_to "Preorder #{@tech.name}", @tech.crowdfunding_link, target: '_blank'
+            - if @tech.buy_link.present?
+              %li= link_to "Buy #{@tech.name}", @tech.buy_link, target: '_blank'
             -# %li= link_to "Q&A #{content_tag(:span, 0, class: 'badge')}".html_safe, '#tab-qa', data: { toggle: 'tab' }
 
             - if can? :manage, @tech

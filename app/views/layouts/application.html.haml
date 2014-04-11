@@ -75,7 +75,7 @@
                       %ul.dropdown-menu{ style: 'padding: 20px;'}
                         %li
                           .row{style: 'width: 300px'}
-                            .col-xs-12.text-center{ style: 'margin-bottom: 10px' }= link_to 'Browse all projects', projects_path
+                            .col-xs-12.text-center{ style: 'margin-bottom: 10px' }= link_to 'Browse all projects', projects_path(ref: 'topnav')
                             -# .col-xs-4{ style: 'border-right: 1px solid #ddd'}
                               %ul.list-unstyled{ style: 'padding: 0 10px;'}
                                 %li
@@ -90,31 +90,31 @@
                               %ul.list-unstyled{ style: 'padding: 0 10px;'}
                                 %li
                                   %h4 Tools
-                                %li= link_to 'Arduino', '/tags/arduino'
-                                %li= link_to 'ATTiny', '/tags/attiny'
-                                %li= link_to 'Atmega', '/tags/atmega'
-                                %li= link_to 'Electric Imp', '/electric-imp'
-                                %li= link_to 'MetaWear', '/metawear'
-                                %li= link_to 'MSP430', '/tags/msp430'
-                                %li= link_to 'Raspberry Pi', '/tags/raspberry+pi'
-                                %li= link_to 'Spark Core', '/spark'
+                                %li= link_to 'Arduino', '/tags/arduino?ref=topnav'
+                                %li= link_to 'ATTiny', '/tags/attiny?ref=topnav'
+                                %li= link_to 'Atmega', '/tags/atmega?ref=topnav'
+                                %li= link_to 'Electric Imp', '/electric-imp?ref=topnav'
+                                %li= link_to 'MetaWear', '/metawear?ref=topnav'
+                                %li= link_to 'MSP430', '/tags/msp430?ref=topnav'
+                                %li= link_to 'Raspberry Pi', '/tags/raspberry+pi?ref=topnav'
+                                %li= link_to 'Spark Core', '/spark?ref=topnav'
                             .col-xs-6
                               %ul.list-unstyled{ style: 'padding: 0 10px;'}
                                 %li
                                   %h4 Components
-                                %li= link_to 'AVR', '/tags/avr'
-                                %li= link_to 'Accelerometer', '/tags/accelerometer'
-                                %li= link_to 'Bluetooth', '/tags/bluetooth'
-                                %li= link_to 'GPS', '/tags/gps'
-                                %li= link_to 'Gyroscope', '/tags/gyroscope'
-                                %li= link_to 'IMU', '/tags/imu'
-                                %li= link_to 'LED', '/tags/led'
-                                %li= link_to 'Motion control', '/tags/motion+control'
-                                %li= link_to 'NFC', '/tags/nfc'
-                                %li= link_to 'OLED', '/tags/oled'
-                                %li= link_to 'Stepper Motor', '/tags/stepper+motor'
-                                %li= link_to 'Webcam', '/tags/webcam'
-                                %li= link_to 'Wireless', '/tags/wireless'
+                                %li= link_to 'AVR', '/tags/avr?ref=topnav'
+                                %li= link_to 'Accelerometer', '/tags/accelerometer?ref=topnav'
+                                %li= link_to 'Bluetooth', '/tags/bluetooth?ref=topnav'
+                                %li= link_to 'GPS', '/tags/gps?ref=topnav'
+                                %li= link_to 'Gyroscope', '/tags/gyroscope?ref=topnav'
+                                %li= link_to 'IMU', '/tags/imu?ref=topnav'
+                                %li= link_to 'LED', '/tags/led?ref=topnav'
+                                %li= link_to 'Motion control', '/tags/motion+control?ref=topnav'
+                                %li= link_to 'NFC', '/tags/nfc?ref=topnav'
+                                %li= link_to 'OLED', '/tags/oled?ref=topnav'
+                                %li= link_to 'Stepper Motor', '/tags/stepper+motor?ref=topnav'
+                                %li= link_to 'Webcam', '/tags/webcam?ref=topnav'
+                                %li= link_to 'Wireless', '/tags/wireless?ref=topnav'
 
 
 

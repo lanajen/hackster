@@ -10,7 +10,7 @@
         - if params[:page]
           %small page #{params[:page]}
         .pull-right
-          = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add a project to #{@tag}".html_safe, new_project_path(project: { product_tags_string: @tag}), class: 'btn btn-warning btn-sm'
+          = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add a project to #{@tag}".html_safe, new_project_path(project: { product_tags_string: @tag.capitalize}), class: 'btn btn-warning btn-sm'
 
   - if params[:q].present?
     - if @results.any?
