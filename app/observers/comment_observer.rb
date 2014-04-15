@@ -30,7 +30,7 @@ class CommentObserver < ActiveRecord::Observer
     def update_counters record
       if record.commentable.class == Project
         record.commentable.update_counters only: [:comments]
-        record.user.update_counters only: [:comments] unless record.user
+        record.user.update_counters only: [:comments] if record.user
       end
     end
 end
