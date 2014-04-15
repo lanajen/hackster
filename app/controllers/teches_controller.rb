@@ -10,7 +10,7 @@ class TechesController < ApplicationController
     title @tech.name
     meta_desc "People are hacking with #{@tech.name} on Hackster.io. Join them!"
     @broadcasts = @tech.broadcasts.limit 20
-    @projects = @tech.projects
+    @projects = @tech.projects.magic_sort.paginate(page: params[:page])
 
     render "groups/teches/#{self.action_name}"
   end

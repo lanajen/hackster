@@ -64,10 +64,13 @@ img {
       font-size: 12px;
     }
   }
-  .nav > li > a {
-    padding: 6px 8px;
-    font-size: 13px;
-    color: #333;
+  .nav > li {
+    margin-top: 0;
+    & > a {
+      padding: 7px 8px;
+      font-size: 13px;
+      color: #333;
+    }
   }
 }
 
