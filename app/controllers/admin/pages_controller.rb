@@ -55,6 +55,11 @@ class Admin::PagesController < Admin::BaseController
     @comments = Comment.where(commentable_type: 'Project').order(created_at: :desc).paginate(page: params[:page])
   end
 
+  def clear_sidekiq_failures
+    Sidekiq.redis {|c| c.del('stat:failed') }
+    redirect_to user_return_to, notice: 'Sidekiq failures cleared.'
+  end
+
   def followers
     title "Admin / Followers - #{params[:page]}"
 

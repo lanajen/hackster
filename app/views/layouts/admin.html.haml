@@ -47,7 +47,8 @@
           .col-xs-12
             .alert.alert-danger
               #{Sidekiq::Stats.new.failed} failed jobs in
-              = link_to 'Sidekiq', '/admin/sidekiq', class: 'alert-link'
+              = link_to 'Sidekiq', '/admin/sidekiq/failures', class: 'alert-link'
+              = link_to 'Clear', '/admin/sidekiq/failures', class: 'btn btn-danger btn-sm', data: { method: :delete }
 
       .row
         .col-xs-12

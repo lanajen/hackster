@@ -40,6 +40,7 @@ HackerIo::Application.routes.draw do
       get 'logs' => 'pages#logs'
       get 'respects' => 'pages#respects'
       get 'followers' => 'pages#followers'
+      delete 'sidekiq/failures' => 'pages#clear_sidekiq_failures'
 
       resources :invite_codes, except: [:show]
       resources :invite_requests do

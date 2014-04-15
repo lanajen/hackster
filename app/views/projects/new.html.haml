@@ -24,16 +24,17 @@
 
       = f.button :submit, 'Go!', class: 'btn-block btn btn-primary'
 
-.col-xs-4.col-xs-offset-4
-  %hr
+- unless params[:project]
+  .col-xs-4.col-xs-offset-4
+    %hr
 
-.col-xs-4.col-xs-offset-4
-  .wellified
-    %p.text-center
-      %strong Is there an existing web page for this project?
-      Enter the URL below and we'll import it.
+  .col-xs-4.col-xs-offset-4
+    .wellified
+      %p.text-center
+        %strong Is there an existing web page for this project?
+        Enter the URL below and we'll import it.
 
-    = form_tag submit_project_imports_path, method: :post do
-      .form-group
-        = text_field_tag :url, params[:url], placeholder: 'Project log URL', class: 'form-control'
-      = submit_tag 'Import project', class: 'btn btn-primary btn-block'
+      = form_tag submit_project_imports_path, method: :post do
+        .form-group
+          = text_field_tag :url, params[:url], placeholder: 'Project log URL', class: 'form-control'
+        = submit_tag 'Import project', class: 'btn btn-primary btn-block'
