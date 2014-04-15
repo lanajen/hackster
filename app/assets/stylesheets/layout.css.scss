@@ -47,6 +47,30 @@ img {
   @include box-shadow(none);
 }
 
+#topnav {
+  padding: 20px;
+  .row {
+    width: 300px;
+  }
+  .col-xs-12 {
+    margin-bottom: 20px;
+  }
+  .nav {
+    height: 300px;
+    overflow-y: scroll;
+    h4 {
+      text-transform: uppercase;
+      color: #999;
+      font-size: 12px;
+    }
+  }
+  .nav > li > a {
+    padding: 6px 8px;
+    font-size: 13px;
+    color: #333;
+  }
+}
+
 #wrapper {
   min-height: 100%;
   height: auto !important;

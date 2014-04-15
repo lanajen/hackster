@@ -72,12 +72,12 @@
                       %a.dropdown-toggle{"data-toggle" => "dropdown", href: '#'}
                         Explore
                         %span.caret{ style: 'border-bottom-color: #000;border-top-color: #000;' }
-                      %ul.dropdown-menu{ style: 'padding: 20px;'}
+                      %ul#topnav.dropdown-menu
                         %li
-                          .row{style: 'width: 300px'}
-                            .col-xs-12.text-center{ style: 'margin-bottom: 10px' }= link_to 'Browse all projects', projects_path(ref: 'topnav')
+                          .row
+                            .col-xs-12.text-center= link_to 'Browse all projects', projects_path(ref: 'topnav'), class: 'btn btn-block btn-primary'
                             -# .col-xs-4{ style: 'border-right: 1px solid #ddd'}
-                              %ul.list-unstyled{ style: 'padding: 0 10px;'}
+                              %ul.nav.nav-pills.nav-stacked
                                 %li
                                   %h4 Categories
                                 %li= link_to 'Drones', '/tags/drone'
@@ -87,7 +87,7 @@
                                 %li= link_to '', '/tags/'
                                 %li= link_to '', '/tags/'
                             .col-xs-6{ style: 'border-right: 1px solid #ddd'}
-                              %ul.list-unstyled{ style: 'padding: 0 10px;'}
+                              %ul.nav.nav-pills.nav-stacked
                                 %li
                                   %h4 Tools
                                 %li= link_to 'Arduino', '/tags/arduino?ref=topnav'
@@ -99,7 +99,7 @@
                                 %li= link_to 'Raspberry Pi', '/tags/raspberry+pi?ref=topnav'
                                 %li= link_to 'Spark Core', '/spark?ref=topnav'
                             .col-xs-6
-                              %ul.list-unstyled{ style: 'padding: 0 10px;'}
+                              %ul.nav.nav-pills.nav-stacked
                                 %li
                                   %h4 Components
                                 %li= link_to 'AVR', '/tags/avr?ref=topnav'
