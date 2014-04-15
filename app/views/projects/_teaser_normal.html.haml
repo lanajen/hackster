@@ -101,7 +101,11 @@
                   .tags.meta
                     .meta-title Technologies
                     - @project.tech_tags.pluck(:name).each do |tag|
-                      %span= link_to tag, "/tags/#{CGI::escape(tag)}", class: 'hidden-link'
+                      - if tech = Tech.includes(:tech_tags).where("LOWER(tags.name) = ?", tag.downcase).first
+                        - tag_link = tech_short_path(tech)
+                      - else
+                        - tag_link = "/tags/#{CGI::escape(tag)}"
+                      %span= link_to tag, tag_link, class: 'hidden-link'
                 - elsif can? :edit, @project
                   .tags.meta
                     .meta-title Technologies
