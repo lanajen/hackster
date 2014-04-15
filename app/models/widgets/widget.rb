@@ -129,6 +129,7 @@ class Widget < ActiveRecord::Base
 
   private
     def set_position
+      columns_count = project.columns_count
       last_widget = nil
       biggest_row = 0
       project.widgets.each do |w|
@@ -138,7 +139,7 @@ class Widget < ActiveRecord::Base
         end
       end
       if last_widget
-        column = last_widget.column == 1 ? 2 : 1
+        column = columns_count == 1 ? 1 : (last_widget.column == 1 ? 2 : 1)
         row = project.widgets.column(column).try(:last).try(:row).to_i + 1
         row = "0#{row}" if row < 10
       else

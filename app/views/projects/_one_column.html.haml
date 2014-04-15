@@ -17,8 +17,10 @@
           = render partial: 'respects/button', locals: { project: @project }
           = render partial: 'followers/button', locals: { followable: @project }
       %li.active= link_to 'Home', "javascript:smoothScrollTo('#heading', -20)"
+      %li#table-of-contents-plus= link_to "Table of contents #{content_tag(:i, '', class: 'fa fa-plus-square')}".html_safe, 'javascript:$(".table-of-contents").slideDown();$("#table-of-contents-minus").show();$("#table-of-contents-plus").hide();'
+      %li#table-of-contents-minus{ style: 'display: none;'}= link_to "Table of contents #{content_tag(:i, '', class: 'fa fa-minus-square')}".html_safe, 'javascript:$(".table-of-contents").slideUp();$("#table-of-contents-minus").hide();$("#table-of-contents-plus").show();'
       - @widgets.each do |widget|
-        %li
+        %li.table-of-contents{ style: 'display: none;'}
           %a{ href: "javascript:smoothScrollTo('#widget-#{widget.id}', -20)" }
             %i.fa{ class: icon_for_widget(widget) }
             = widget.name

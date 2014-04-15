@@ -66,6 +66,7 @@ class Project < ActiveRecord::Base
   before_validation :check_if_current
   before_validation :clean_permissions
   before_validation :ensure_website_protocol
+  before_create :set_columns_count
   before_save :generate_slug, if: proc {|p| !p.persisted? or p.team_id_changed? }
 
   taggable :product_tags, :tech_tags
@@ -317,6 +318,10 @@ class Project < ActiveRecord::Base
         end
       end
       self.slug = slug
+    end
+
+    def set_columns_count
+      self.columns_count = 1
     end
 
     def slug_is_unique
