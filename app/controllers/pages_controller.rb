@@ -15,8 +15,8 @@ class PagesController < ApplicationController
       render_options = { template: 'pages/home_signed_in' }
       limit = 4
 
-      @most_popular_projects = Project.most_popular.limit limit
-      @last_projects = Project.last_public.limit limit
+      @most_popular_projects = Project.indexable.most_popular.limit limit
+      @last_projects = Project.indexable.last_public.limit limit
       # @active_projects = Project.last_updated.limit 4
       @featured_projects = Project.featured.limit 4
       @wip_projects = Project.wip.limit 4
