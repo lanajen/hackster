@@ -4,7 +4,7 @@ class PagesController < ApplicationController
     meta_desc 'What is Hackster.io?'
     title 'What is Hackster.io?'
 
-    @most_popular_projects = Project.magic_sort.limit 6
+    @most_popular_projects = Project.indexable.magic_sort.limit 6
   end
 
   def help
