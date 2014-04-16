@@ -1,6 +1,6 @@
 class Promotion < Community
   belongs_to :course, foreign_key: :parent_id
-  has_many :assignments, dependent: :destroy
+  has_many :assignments, -> { order(:id_for_promotion) }, dependent: :destroy
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'PromotionMember'
 
   alias_method :short_name, :name

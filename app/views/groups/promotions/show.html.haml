@@ -23,6 +23,8 @@
               - collection_id = project.collection_id
             = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', ref: 'promotion' }
           </div>
+          .row
+            .col-xs-12.text-center= will_paginate @projects
         - else
           All student projects will appear here.
 

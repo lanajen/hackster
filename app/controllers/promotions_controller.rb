@@ -8,7 +8,7 @@ class PromotionsController < ApplicationController
     title @promotion.name
     meta_desc "Join the promotion #{@promotion.name} on Hackster.io!"
     # @broadcasts = @promotion.broadcasts.limit 20
-    @projects = @promotion.projects.order(collection_id: :desc)
+    @projects = @promotion.projects.order(collection_id: :desc).paginate(page: params[:page], per_page: 16)
     @students = @promotion.members.invitation_accepted_or_not_invited.with_group_roles('student').map(&:user).select{|u| u.invitation_token.nil? }
     @staffs = @promotion.members.invitation_accepted_or_not_invited.with_group_roles(%w(ta professor)).map(&:user).select{|u| u.invitation_token.nil? }
     @assignments = @promotion.assignments
