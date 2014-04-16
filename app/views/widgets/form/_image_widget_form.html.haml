@@ -2,7 +2,7 @@
 = render partial: 'shared/uploader/file_association', locals: { file_type: file_type, f: f }
 .form-fields
   %label Add images
-  #sortable
+  #sortable.sortable
     .row.file-fields
       - widget.images.each do |image|
         = f.simple_fields_for :images, image, wrapper: false do |f_image|
