@@ -2,9 +2,9 @@
   .col-xs-4.col-xs-offset-4
     .wellified
       %p.text-center
-        %strong Want to link an existing project to #{@event.name}?
+        %strong Want to link an existing project to #{@group.name}?
 
-      = form_tag "#{event_path(@event)}/projects/link", method: :patch do
+      = form_tag "#{group_path(@group)}/projects/link", method: :patch do
         .form-group
           = select_tag :project_id, options_from_collection_for_select(@projects, :id, :name), include_blank: true, class: 'form-control'
         = submit_tag 'Link project', class: 'btn btn-primary btn-block'
@@ -16,7 +16,7 @@
   .wellified
     %h2.text-center New project
 
-    = simple_nested_form_for @project, url: "#{event_path(@event)}/projects", html: { class: 'accept-file-upload' } do |f|
+    = simple_nested_form_for @project, url: "#{group_path(@group)}/projects", html: { class: 'accept-file-upload' } do |f|
       = f.error_notification
 
       = f.input :name, label: 'What is it called?'

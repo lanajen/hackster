@@ -128,7 +128,7 @@ footer {
     }
     &.no-content {
       padding: 13px 19px;
-      .btn-heading {
+      .btn-bottom {
         font-size: 12px;
         font-weight: bold;
       }
@@ -164,6 +164,18 @@ footer {
   }
   h6 {
     font-size: 14px;
+  }
+}
+
+.transparent-well {
+  .header {
+    padding: 19px 0 0;
+    &.no-content {
+      padding: 13px 0 23px;
+    }
+  }
+  .content {
+    padding: 16px 0;
   }
 }
 
@@ -323,13 +335,17 @@ h1, h2, h3, h4 {
   @extend .btn;
 }
 
-.btn-follow, .btn-heading {
+.btn-follow, .btn-heading, .btn-bottom {
   position: absolute;
   right: 0;
 }
 
 .btn-heading {
   top: 0;
+}
+
+.btn-bottom {
+  bottom: 0;
 }
 
 .btn-delete {

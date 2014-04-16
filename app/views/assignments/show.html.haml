@@ -4,6 +4,9 @@
       - style = cookies['thumb-list-style'] || 'thumb-list-vertical'
       .row
         .col-xs-12
+          - if can? :add_project, @assignment
+            .pull-left
+              = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project to assignment".html_safe, "#{assignment_path(@assignment)}/projects/new", class: 'btn btn-sm btn-warning'
           .btn-group.thumb-list-switch.pull-right{ style: 'margin-bottom: 20px' }
             %button.btn.btn-default.btn-sm.istooltip{ class: "#{'active' if style == 'thumb-list-vertical'}", data: { 'list-style' => 'vertical', container: 'body' }, title: 'Display as tiles' }
               %i.fa.fa-th-large

@@ -90,33 +90,12 @@
                               %ul.nav.nav-pills.nav-stacked
                                 %li
                                   %h4 Tools
-                                %li= link_to 'Arduino', '/arduino?ref=topnav'
-                                %li= link_to 'ATTiny', '/tags/attiny?ref=topnav'
-                                %li= link_to 'Atmega', '/tags/atmega?ref=topnav'
-                                %li= link_to 'Electric Imp', '/electric-imp?ref=topnav'
-                                %li= link_to 'MetaWear', '/metawear?ref=topnav'
-                                %li= link_to 'MSP430', '/tags/msp430?ref=topnav'
-                                %li= link_to 'Raspberry Pi', '/raspberry-pi?ref=topnav'
-                                %li= link_to 'Spark Core', '/spark?ref=topnav'
+                                = render partial: 'shared/tools_list', locals: { ref: 'topnav' }
                             .col-xs-6
                               %ul.nav.nav-pills.nav-stacked
                                 %li
                                   %h4 Components
-                                %li= link_to 'AVR', '/tags/avr?ref=topnav'
-                                %li= link_to 'Accelerometer', '/tags/accelerometer?ref=topnav'
-                                %li= link_to 'Bluetooth', '/tags/bluetooth?ref=topnav'
-                                %li= link_to 'GPS', '/tags/gps?ref=topnav'
-                                %li= link_to 'Gyroscope', '/tags/gyroscope?ref=topnav'
-                                %li= link_to 'IMU', '/tags/imu?ref=topnav'
-                                %li= link_to 'LED', '/tags/led?ref=topnav'
-                                %li= link_to 'Motion control', '/tags/motion+control?ref=topnav'
-                                %li= link_to 'NFC', '/tags/nfc?ref=topnav'
-                                %li= link_to 'OLED', '/tags/oled?ref=topnav'
-                                %li= link_to 'Stepper Motor', '/tags/stepper+motor?ref=topnav'
-                                %li= link_to 'Webcam', '/tags/webcam?ref=topnav'
-                                %li= link_to 'Wireless', '/tags/wireless?ref=topnav'
-
-
+                                = render partial: 'shared/components_list', locals: { ref: 'topnav' }
 
                     %li.with-button
                       %span= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'btn btn-sm btn-warning navbar-btn'

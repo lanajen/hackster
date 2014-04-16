@@ -91,6 +91,8 @@ HackerIo::Application.routes.draw do
 
         resources :assignments, only: [:new, :create, :show] do
           get 'embed', on: :member
+          patch 'projects/link' => 'assignments#link'
+          resources :projects, only: [:new, :create], controller: 'groups/projects'
         end
       end
     end

@@ -1,6 +1,6 @@
 class AssignmentsController < ApplicationController
   before_filter :authenticate_user!, except: [:show, :embed]
-  before_filter :load_assignment, only: [:show, :embed]
+  before_filter :load_assignment, only: [:show, :embed, :link]
   before_filter :load_promotion, only: [:new, :create]
   load_and_authorize_resource only: [:edit, :update, :destroy]
   after_action :allow_iframe, only: :embed
@@ -58,14 +58,15 @@ class AssignmentsController < ApplicationController
     end
   end
 
-  private
-    def load_assignment
-      sql = "SELECT assignments.* FROM assignments INNER JOIN groups ON groups.id = assignments.promotion_id AND groups.type = 'Promotion' INNER JOIN groups courses_groups ON courses_groups.id = groups.parent_id AND courses_groups.type IN ('Course') WHERE groups.type IN ('Promotion') AND groups.user_name = ? AND courses_groups.user_name = ? AND assignments.id_for_promotion = ? ORDER BY assignments.id ASC LIMIT 1"
-      @assignment = Assignment.find_by_sql([sql, params[:promotion_name], params[:user_name], params[:id]]).first
-      raise ActiveRecord::RecordNotFound unless @assignment
-      @promotion = @assignment.promotion
-    end
+  def link
+    @project = Project.find params[:project_id]
+    @project.assignment = @assignment
+    @project.save
 
+    redirect_to assignment_path(@assignment), notice: "Your project has been added to #{@assignment.name}."
+  end
+
+  private
     def load_promotion
       @promotion = Promotion.joins(:course).where(groups: { user_name: params[:promotion_name] }, courses_groups: { user_name: params[:user_name] }).first!
     end

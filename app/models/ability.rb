@@ -112,6 +112,10 @@ class Ability
       @user.is_active_member? event
     end
 
+    can :add_project, Assignment do |assignment|
+      @user.is_active_member? assignment.promotion
+    end
+
     cannot :debug, :all  # otherwise manage seems to include :debug
 
     can :debug, Project do |record|

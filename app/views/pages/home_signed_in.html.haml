@@ -3,61 +3,84 @@
   = auto_discovery_link_tag :rss, projects_path(format: :rss), title: 'Most recent projects - Hackster.io'
   = auto_discovery_link_tag :atom, projects_path(format: :atom), title: 'Most recent projects - Hackster.io'
 
-.row
-  .col-xs-12
-    .alert.alert-info.text-center
-      = SLOGAN
-      - unless user_signed_in?
-        = link_to 'Join us', new_user_registration_path, class: 'btn btn-sm btn-info'
-        or
-        = link_to 'learn more.', about_path, class: 'alert-link'
+= content_for :no_container do
+  .row
+    .col-xs-12
+      .alert.alert-info.text-center.alert-flat
+        = SLOGAN
+        - unless user_signed_in?
+          = link_to 'Join us', new_user_registration_path, class: 'btn btn-sm btn-info'
+          or
+          = link_to 'learn more.', about_path, class: 'alert-link'
 
-.row
-  .col-xs-12
-    .well
-      .header.no-content
-        %h2
-          Featured projects
-          = link_to 'See more featured projects &rarr;'.html_safe, projects_path(by: 'featured'), class: 'btn-heading'
-    .row
-      - @featured_projects.each do |project|
-        = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homefeat' }
+  #content
+    .container
+      .row
+        .col-xs-12.text-center
+          .alert
+            Explore projects by
+            %span.dropdown.text-left
+              %button.btn.btn-default.dropdown-toggle{"data-toggle" => "dropdown", href: '#'}
+                Tools
+                %span.caret{ style: 'border-bottom-color: #000;border-top-color: #000;' }
+              %ul.dropdown-menu
+                = render partial: 'shared/tools_list', locals: { ref: 'homenav' }
+            or
+            %span.dropdown.text-left
+              %button.btn.btn-default.dropdown-toggle{"data-toggle" => "dropdown", href: '#'}
+                Components
+                %span.caret{ style: 'border-bottom-color: #000;border-top-color: #000;' }
+              %ul.dropdown-menu
+                = render partial: 'shared/components_list', locals: { ref: 'homenav' }
+            or
+            = link_to 'Browse all', projects_path(ref: 'homenav'), class: 'btn btn-primary'
 
-.row
-  .col-xs-12
-    .well
-      .header.no-content
-        %h2
-          Most popular projects
-          = link_to 'See more popular projects &rarr;'.html_safe, projects_path(sort: 'popular'), class: 'btn-heading'
-    .row
-      - @most_popular_projects.each do |project|
-        = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homepop' }
+      .row
+        .col-xs-12
+          .transparent-well
+            .header.no-content
+              %h2
+                Featured projects
+                = link_to 'See more featured projects &rarr;'.html_safe, projects_path(by: 'featured'), class: 'btn-bottom'
+          .row
+            - @featured_projects.each do |project|
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homefeat' }
 
-.row
-  .col-xs-12
-    .well
-      .header.no-content
-        %h2
-          Latest projects
-          = link_to 'See more recent projects &rarr;'.html_safe, projects_path(sort: 'recent'), class: 'btn-heading'
-    .row
-      - @last_projects.each do |project|
-        = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homelast' }
+      .row
+        .col-xs-12
+          .transparent-well
+            .header.no-content
+              %h2
+                Most popular projects
+                = link_to 'See more popular projects &rarr;'.html_safe, projects_path(sort: 'popular'), class: 'btn-bottom'
+          .row
+            - @most_popular_projects.each do |project|
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homepop' }
 
-.row
-  .col-xs-12
-    .well
-      .header.no-content
-        %h2
-          Works in progress
-          %small
-            %i.fa.fa-bolt
-          = link_to 'See more recent works in progress &rarr;'.html_safe, projects_path(by: 'wip'), class: 'btn-heading'
-    .row
-      - @wip_projects.each do |project|
-        = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homelast' }
+      .row
+        .col-xs-12
+          .transparent-well
+            .header.no-content
+              %h2
+                Latest projects
+                = link_to 'See more recent projects &rarr;'.html_safe, projects_path(sort: 'recent'), class: 'btn-bottom'
+          .row
+            - @last_projects.each do |project|
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homelast' }
 
-.row
-  .col-xs-12.text-center
-    = link_to 'Browse all projects &rarr;'.html_safe, projects_path, class: 'btn btn-primary btn-block'
+      .row
+        .col-xs-12
+          .transparent-well
+            .header.no-content
+              %h2
+                Works in progress
+                %small
+                  %i.fa.fa-bolt
+                = link_to 'See more recent works in progress &rarr;'.html_safe, projects_path(by: 'wip'), class: 'btn-bottom'
+          .row
+            - @wip_projects.each do |project|
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homelast' }
+
+      .row
+        .col-xs-12.text-center
+          = link_to 'Browse all projects &rarr;'.html_safe, projects_path, class: 'btn btn-primary btn-block'

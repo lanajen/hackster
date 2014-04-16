@@ -33,6 +33,8 @@ module UrlHelper
 
   def group_path group, opts={}
     case group.class.to_s
+    when 'Assignment'
+      assignment_path group, opts
     when 'Community'
       super params_for_group(group, 'community').merge(opts)
     when 'Course'
