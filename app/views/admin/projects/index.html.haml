@@ -2,7 +2,7 @@
 .page-header
   %h1
     =t '.title', :default => model_class.model_name.human.pluralize
-    %small= link_to t('.new', :default => t("helpers.links.new")), new_project_path, :class => 'btn btn-primary btn-sm'
+    %small= link_to t('.new', :default => t("helpers.links.new")), new_admin_project_path, :class => 'btn btn-primary btn-sm'
 
 = render 'admin/shared/search_form_tag'
 - (@fields.keys - %w(created_at private made_public_at)).each do |field|
@@ -21,8 +21,12 @@
   %tbody
     - @projects.each do |project|
       %tr
-        %td= link_to project.name, project
-        %td= project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
+        %td= link_to project.name, (project.external ? project.website : project)
+        %td
+          - if project.external
+            External
+          - else
+            = project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
         %td= project.private? ? '<b>Private</b>'.html_safe : (project.hidden? ? 'Hidden' : 'Public')
         %td=l project.updated_at
         %td
