@@ -65,20 +65,17 @@
                 .row
                   - @other_projects.each do |project|
                     .col-xs-4
-                      = link_to image_tag(project.decorate.cover_image(:cover_thumb), class: 'img-responsive'), project_path(project, ref: 'more'), rel: 'tooltip', title: project.one_liner
-                      %h6= link_to project.name, project_path(project, ref: 'more')
+                      = render partial: 'projects/project_mini_thumb', locals: { ref: 'more', project: project }
 
               .col-xs-6
                 %h6.subtitle Newest
                 .row
                   - @last_projects.each do |project|
                     .col-xs-4
-                      = link_to image_tag(project.decorate.cover_image(:cover_thumb), class: 'img-responsive'), project_path(project, ref: 'more'), rel: 'tooltip', title: project.one_liner
-                      %h6= link_to project.name, project_path(project, ref: 'more')
+                      = render partial: 'projects/project_mini_thumb', locals: { ref: 'more', project: project }
 
           - else
             .row
               - @other_projects.each do |project|
                 .col-xs-2
-                  = link_to image_tag(project.decorate.cover_image(:cover_thumb), class: 'img-responsive'), project_path(project, ref: 'more'), rel: 'tooltip', title: project.one_liner
-                  %h6= link_to project.name, project_path(project, ref: 'more')
+                  = render partial: 'projects/project_mini_thumb', locals: { ref: 'more', project: project }

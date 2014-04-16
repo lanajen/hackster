@@ -15,6 +15,7 @@ class Admin::ProjectsController < Admin::BaseController
   end
 
   def new
+    title "Admin / Projects / New"
   end
 
   def create

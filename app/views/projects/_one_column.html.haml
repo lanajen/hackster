@@ -1,40 +1,41 @@
-#column1.col-xs-9
-  - cache [@project.widgets, can?(:edit, @project)], tag: "project-#{@project.id}-widgets" do
-    - @project.widgets.each do |widget|
-      = render partial: 'widgets/widget', locals: { widget: widget }
-  - unless @project.respects_count.zero?
-    = render partial: 'widgets/respect_widget', locals: { users: @project.respecting_users }
-  = render partial: 'widgets/comment_widget', locals: { comments: @project.comments, commentable: @project }
-  - if @issue and can? :comment_privately, @project
-    = render partial: 'widgets/private_comment_widget', locals: { comments: @issue.comments, commentable: @project }
-#sidebar.col-xs-3
-  .navbar-tabs.navbar-default.navbar-vertical.unselectable.affixable
-    %ul.navbar-nav.nav
-      %li.actions
-        - if @project.public?
-          = render 'projects/share'
-          = render 'projects/project_embed_popup'
-          = render partial: 'respects/button', locals: { project: @project }
-          = render partial: 'followers/button', locals: { followable: @project }
-      %li.active= link_to 'Home', "javascript:smoothScrollTo('#heading', -20)"
-      %li#table-of-contents-plus= link_to "Table of contents #{content_tag(:i, '', class: 'fa fa-plus-square')}".html_safe, 'javascript:$(".table-of-contents").slideDown();$("#table-of-contents-minus").show();$("#table-of-contents-plus").hide();'
-      %li#table-of-contents-minus{ style: 'display: none;'}= link_to "Table of contents #{content_tag(:i, '', class: 'fa fa-minus-square')}".html_safe, 'javascript:$(".table-of-contents").slideUp();$("#table-of-contents-minus").hide();$("#table-of-contents-plus").show();'
-      - @widgets.each do |widget|
-        %li.table-of-contents{ style: 'display: none;'}
-          %a{ href: "javascript:smoothScrollTo('#widget-#{widget.id}', -20)" }
-            %i.fa{ class: icon_for_widget(widget) }
-            = widget.name
-      - if @project.build_logs_count.try(:>, 0) or can? :edit, @project
-        %li= link_to "Build logs #{content_tag(:span, @project.build_logs_count, class: 'badge')}".html_safe, project_logs_path(@project.user_name_for_url, @project.slug)
-      - if @project.collection_id.present? and (@project.issues_count.try(:>, 0) or can? :edit, @project)
-        %li= link_to "Issues #{content_tag(:span, @project.issues_count, class: 'badge')}".html_safe, project_issues_path(@project.user_name_for_url, @project.slug)
-      %li= link_to "Comments #{content_tag(:span, @project.comments_count, class: 'badge')}".html_safe, "javascript:smoothScrollTo('#widget-comments', -20)"
-      - if can? :edit, @project
-        %li.dropdown
-          %a.dropdown-toggle{ data: { toggle: 'dropdown' }, href: '#' }
-            Edit
-            %b.caret
-          %ul.dropdown-menu
-            %li= link_to 'Settings', edit_project_path(@project), data: { remote: true }
-            %li= link_to 'Add a widget', new_project_widget_path(@project)
-            %li= link_to 'Reorder widgets and edit columns', project_widgets_path(@project)
+#one-column
+  #column1.col-xs-9
+    - cache [@project.widgets, can?(:edit, @project)], tag: "project-#{@project.id}-widgets" do
+      - @project.widgets.each do |widget|
+        = render partial: 'widgets/widget', locals: { widget: widget }
+    - unless @project.respects_count.zero?
+      = render partial: 'widgets/respect_widget', locals: { users: @project.respecting_users }
+    = render partial: 'widgets/comment_widget', locals: { comments: @project.comments, commentable: @project }
+    - if @issue and can? :comment_privately, @project
+      = render partial: 'widgets/private_comment_widget', locals: { comments: @issue.comments, commentable: @project }
+  #sidebar.col-xs-3
+    .navbar-tabs.navbar-default.navbar-vertical.unselectable.affixable
+      %ul.navbar-nav.nav
+        %li.actions
+          - if @project.public?
+            = render 'projects/share'
+            = render 'projects/project_embed_popup'
+            = render partial: 'respects/button', locals: { project: @project }
+            = render partial: 'followers/button', locals: { followable: @project }
+        %li.active= link_to 'Home', "javascript:smoothScrollTo('#heading', -20)"
+        %li#table-of-contents-plus= link_to "Table of contents #{content_tag(:i, '', class: 'fa fa-plus-square')}".html_safe, 'javascript:$(".table-of-contents").slideDown();$("#table-of-contents-minus").show();$("#table-of-contents-plus").hide();'
+        %li#table-of-contents-minus{ style: 'display: none;'}= link_to "Table of contents #{content_tag(:i, '', class: 'fa fa-minus-square')}".html_safe, 'javascript:$(".table-of-contents").slideUp();$("#table-of-contents-minus").hide();$("#table-of-contents-plus").show();'
+        - @widgets.each do |widget|
+          %li.table-of-contents{ style: 'display: none;'}
+            %a{ href: "javascript:smoothScrollTo('#widget-#{widget.id}', -20)" }
+              %i.fa{ class: icon_for_widget(widget) }
+              = widget.name
+        - if @project.build_logs_count.try(:>, 0) or can? :edit, @project
+          %li= link_to "Build logs #{content_tag(:span, @project.build_logs_count, class: 'badge')}".html_safe, project_logs_path(@project.user_name_for_url, @project.slug)
+        - if @project.collection_id.present? and (@project.issues_count.try(:>, 0) or can? :edit, @project)
+          %li= link_to "Issues #{content_tag(:span, @project.issues_count, class: 'badge')}".html_safe, project_issues_path(@project.user_name_for_url, @project.slug)
+        %li= link_to "Comments #{content_tag(:span, @project.comments_count, class: 'badge')}".html_safe, "javascript:smoothScrollTo('#widget-comments', -20)"
+        - if can? :edit, @project
+          %li.dropdown
+            %a.dropdown-toggle{ data: { toggle: 'dropdown' }, href: '#' }
+              Edit
+              %b.caret
+            %ul.dropdown-menu
+              %li= link_to 'Settings', edit_project_path(@project), data: { remote: true }
+              %li= link_to 'Add a widget', new_project_widget_path(@project)
+              %li= link_to 'Reorder widgets and edit columns', project_widgets_path(@project)

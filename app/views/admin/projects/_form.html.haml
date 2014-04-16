@@ -28,7 +28,7 @@
 
         = f.input :one_liner, as: :text, input_html: { rows: 4 },
           hint: 'Maximum 140 characters'
-        -# = f.input :website, label: 'Project website'
+        = f.input :website, label: 'Project website'
         = f.input :start_date, order: [:year, :month, :day], label: 'Date', hint: 'When did this project come to life?' do
           .row
             .col-xs-6
@@ -46,9 +46,9 @@
 
         = f.input :private, inline_label: 'Make this project private', label: false
         = f.input :hide, inline_label: 'Hide this project from search', label: false
-        - if current_user.is? :admin
-          = f.input :featured, inline_label: 'Feature this project', label: false
-          = f.input :featured_date, label: 'Feature date'
+        = f.input :external, inline_label: 'Is this project hosted on another site?', label: false
+        = f.input :featured, inline_label: 'Feature this project', label: false
+        = f.input :featured_date, label: 'Feature date'
 
         -# = f.input :current, as: :boolean, label: false, inline_label: 'Currently working on it'
 
@@ -57,4 +57,5 @@
         .form-group
           .col-xs-offset-4.col-xs-8
             = f.submit "Save changes", class: 'btn btn-primary'
-            = link_to 'Delete project', project_path(@project), method: :delete, class: 'btn btn-danger btn-xs', data: { confirm: "Are you sure? There's no coming back!" }
+            - if @project.persisted?
+              = link_to 'Delete project', project_path(@project), method: :delete, class: 'btn btn-danger btn-xs', data: { confirm: "Are you sure? There's no coming back!" }

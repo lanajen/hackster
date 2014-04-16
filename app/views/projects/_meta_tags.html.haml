@@ -1,5 +1,6 @@
 %meta(property="og:title" content="#{@project.name}")
-%meta(property="og:description" content="#{@project.one_liner}")
+- if @project.one_liner.present?
+  %meta(property="og:description" content="By #{@project.users.map{|u| u.name }.to_sentence} \\n\\n#{@project.one_liner}")
 %meta(property="og:image" content="#{@project.cover_image(:cover_thumb)}")
 %meta(property="og:url" content="#{project_url(@project)}")
 %meta(property="og:site_name" content="Hackster.io")

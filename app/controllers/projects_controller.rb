@@ -12,7 +12,7 @@ class ProjectsController < ApplicationController
     params[:sort] ||= 'magic'
     @by = params[:by] || 'all'
 
-    @projects = Project
+    @projects = Project.indexable
     if params[:sort] and params[:sort].in? Project::SORTING.keys
       @projects = @projects.send(Project::SORTING[params[:sort]])
     end

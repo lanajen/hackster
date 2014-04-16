@@ -13,7 +13,11 @@ class ProjectObserver < ActiveRecord::Observer
   def after_save record
     record.product_tags_count = record.product_tags_string.split(',').count
     # record.product_tags.each{|t| t.touch }
-    SlugHistory.update_history_for record.id
+    if record.external
+      record.slug_histories.destroy_all
+    else
+      SlugHistory.update_history_for record.id
+    end
   end
 
   def after_update record

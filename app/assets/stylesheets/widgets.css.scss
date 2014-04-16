@@ -396,7 +396,6 @@
     position: relative;
     .comment-text {
       padding-top: 2px;
-      max-width: 370px;
       p {
         margin-bottom: 5px;
       }
@@ -415,20 +414,57 @@
     }
     &.depth-1 {
       padding-left: 38px;
+    }
+    &.depth-2 {
+      padding-left: 76px;
+    }
+    &.depth-3 {
+      padding-left: 114px;
+    }
+  }
+}
+
+#two-columns {
+  .comment {
+    .comment-text {
+      max-width: 370px;
+    }
+    &.depth-1 {
       .comment-text {
         max-width: 332px;
       }
     }
     &.depth-2 {
-      padding-left: 76px;
       .comment-text {
         max-width: 294px;
       }
     }
     &.depth-3 {
-      padding-left: 114px;
       .comment-text {
         max-width: 256px;
+      }
+    }
+  }
+}
+
+#one-column {
+  .comment {
+    .comment-text {
+      max-width: 613px;
+    }
+    &.depth-1 {
+      .comment-text {
+        max-width: 575px;
+      }
+    }
+    &.depth-2 {
+      .comment-text {
+        max-width: 537px;
+      }
+    }
+    &.depth-3 {
+      .comment-text {
+        max-width: 499px;
       }
     }
   }

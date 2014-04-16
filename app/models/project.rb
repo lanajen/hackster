@@ -47,7 +47,7 @@ class Project < ActiveRecord::Base
     :team_members_attributes, :website, :one_liner, :widgets_attributes,
     :featured, :featured_date, :cover_image_id, :logo_id, :license, :slug,
     :permissions_attributes, :new_slug, :slug_histories_attributes, :hide,
-    :collection_id, :graded, :wip, :columns_count
+    :collection_id, :graded, :wip, :columns_count, :external
   attr_accessor :current
   attr_writer :new_slug
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
@@ -61,6 +61,7 @@ class Project < ActiveRecord::Base
     format: { with: /\A[a-z0-9_\-]+\z/, message: "accepts only downcase letters, numbers, dashes '-' and underscores '_'." },
     length: { maximum: 105 }, allow_blank: true
   validates :new_slug, presence: true, if: proc{ |p| p.persisted? }
+  validates :website, presence: true, if: proc {|p| p.external }
   validate :slug_is_unique
   before_validation :assign_new_slug
   before_validation :check_if_current
@@ -68,6 +69,7 @@ class Project < ActiveRecord::Base
   before_validation :ensure_website_protocol
   before_create :set_columns_count
   before_save :generate_slug, if: proc {|p| !p.persisted? or p.team_id_changed? }
+  before_save :external_is_hidden, if: proc {|p| p.external }
 
   taggable :product_tags, :tech_tags
 
@@ -126,32 +128,36 @@ class Project < ActiveRecord::Base
     live.where(hide: false)
   end
 
+  def self.indexable_and_external
+    where("(projects.private = 'f' AND projects.hide = 'f') OR projects.external = 't'").magic_sort
+  end
+
   def self.live
     where(private: false)
   end
 
   def self.last_created
-    indexable.order('projects.created_at DESC')
+    order('projects.created_at DESC')
   end
 
   def self.last_public
-    indexable.order('projects.made_public_at DESC')
+    order('projects.made_public_at DESC')
   end
 
   def self.last_updated
-    indexable.order('projects.updated_at DESC')
+    order('projects.updated_at DESC')
   end
 
   def self.magic_sort
-    indexable.order('projects.popularity_counter DESC')
+    order('projects.popularity_counter DESC').order('projects.created_at DESC')
   end
 
   def self.most_popular
-    indexable.order('projects.impressions_count DESC')
+    order('projects.impressions_count DESC')
   end
 
   def self.most_respected
-    indexable.order('projects.respects_count DESC')
+    order('projects.respects_count DESC')
   end
 
   def self.wip
@@ -286,6 +292,10 @@ class Project < ActiveRecord::Base
   end
 
   private
+    def can_be_public?
+      widgets_count >= 1 and cover_image.try(:file).present?
+    end
+
     def check_if_current
       self.end_date = nil if current
     end
@@ -301,8 +311,8 @@ class Project < ActiveRecord::Base
       self.website = 'http://' + website unless website =~ /^http/
     end
 
-    def can_be_public?
-      widgets_count >= 1 and cover_image.try(:file).present?
+    def external_is_hidden
+      self.hide = true
     end
 
     def generate_slug
