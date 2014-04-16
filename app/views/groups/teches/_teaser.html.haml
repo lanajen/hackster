@@ -42,6 +42,10 @@
           %ul.nav.navbar-nav
             %li.active= link_to "Projects", '#tab-projects', data: { toggle: 'tab' }
             %li= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path(project: { tech_tags_string: @tech.tech_tags.first.name })
+            - if @tech.documentation_link.present?
+              %li= link_to "Documentation", @tech.documentation_link, target: '_blank'
+            - if @tech.forums_link.present?
+              %li= link_to "Forums", @tech.forums_link, target: '_blank'
             - if @tech.crowdfunding_link.present?
               %li= link_to "Preorder #{@tech.name}", @tech.crowdfunding_link, target: '_blank'
             - if @tech.buy_link.present?
