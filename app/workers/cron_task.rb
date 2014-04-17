@@ -8,6 +8,13 @@ class CronTask < BaseWorker
       project.compute_popularity
       project.save
     end
+    User.invitation_accepted_or_not_invited.each do |user|
+      user.update_counters
+      user.build_reputation unless user.reputation
+      reputation = user.reputation
+      reputation.compute
+      reputation.save
+    end
     self.class.perform_in 24.hours, 'compute_popularity'
   end
 

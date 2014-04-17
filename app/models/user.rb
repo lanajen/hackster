@@ -17,15 +17,6 @@ class User < ActiveRecord::Base
     'follow_user_activity' => 'Activity for a user I follow',
   }
 
-  CATEGORIES = [
-    'Electrical engineer',
-    'Industrial designer',
-    'Investor',
-    'Manufacturer',
-    'Mechanical engineer',
-    'Software developer',
-  ]
-
   devise :database_authenticatable, :registerable, :invitable,
          :recoverable, :rememberable, :trackable, :validatable, :confirmable,
          :omniauthable, omniauth_providers: [:facebook, :github, :gplus, :linkedin, :twitter]
@@ -105,11 +96,13 @@ class User < ActiveRecord::Base
 
   store :counters_cache, accessors: [:comments_count, :interest_tags_count,
     :invitations_count, :projects_count, :respects_count, :skill_tags_count,
-    :live_projects_count, :project_views_count, :followers_count]
+    :live_projects_count, :project_views_count, :followers_count,
+    :websites_count, :popularity_points_count]
 
   parse_as_integers :counters_cache, :comments_count, :interest_tags_count,
     :invitations_count, :projects_count, :respects_count, :skill_tags_count,
-    :live_projects_count, :project_views_count
+    :live_projects_count, :project_views_count, :websites_count,
+    :popularity_points_count
 
   delegate :can?, :cannot?, to: :ability
 
@@ -300,10 +293,12 @@ class User < ActiveRecord::Base
       interest_tags: 'interest_tags.count',
       invitations: 'invitations.count',
       live_projects: 'projects.where(private: false).count',
+      popularity_points: 'projects.map{|p| p.popularity_counter / p.team_members_count }.sum',
       projects: 'projects.count',
       project_views: 'projects.sum(:impressions_count)',
       respects: 'respects.count',
       skill_tags: 'skill_tags.count',
+      websites: 'websites.values.select{|v| v.present? }.size',
     }
   end
 

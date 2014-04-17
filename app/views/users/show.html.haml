@@ -49,7 +49,7 @@
                   %h4 Interests
                 .content
                   - @user.interest_tags.pluck(:name).each do |tag|
-                    %span.label.label-default= tag
+                    %span.label.label-default= link_to tag, "/tags/#{tag}"
             - elsif user_is_current?
               .transparent-well
                 .header
@@ -64,7 +64,7 @@
                   %h4 Skills
                 .content
                   - @user.skill_tags.pluck(:name).each do |tag|
-                    %span.label.label-default= tag
+                    %span.label.label-default= link_to tag, "/tags/#{tag}"
             - elsif user_is_current?
               .transparent-well
                 .header

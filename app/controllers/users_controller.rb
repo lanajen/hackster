@@ -3,6 +3,11 @@ class UsersController < ApplicationController
   before_filter :load_user, only: [:show]
   authorize_resource except: [:after_registration, :after_registration_save]
 
+  def index
+    title "Browse top hackers"
+    @users = User.invitation_accepted_or_not_invited.where.not(user_name: nil).where('reputations.points > 15').top.paginate(page: params[:page])
+  end
+
   def show
     impressionist_async @user, "", unique: [:session_hash]  # no need to add :impressionable_type and :impressionable_id, they're already included with @user
     title @user.name

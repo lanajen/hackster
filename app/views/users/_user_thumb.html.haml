@@ -1,5 +1,38 @@
-%li.col-xs-3.user-thumb
-  .thumbnail
-    = link_to user.avatar_link(:big)
-    .caption
-      %h3= link_to user.name, user
+- user = user.decorate
+.col-xs-12
+  .user-thumb-horizontal.user-thumb
+    .thumb.media
+      = link_to image_tag(user.avatar(:medium), alt: user.name, class: 'media-object'), user, class: 'pull-left photo-thumb'
+      .inner-thumb.media-body
+        %h3
+          = link_to user.name, user
+        %p= truncate user.mini_resume, length: 140
+        - if user.interest_tags.any? or user.skill_tags.any?
+          %p
+            - if user.interest_tags.any?
+              %span.counter.first.istooltip{ title: 'Interests', data: { container: 'body' } }
+                %i.fa.fa-heart
+              - user.interest_tags.pluck(:name).each do |tag|
+                %span.label.label-default= link_to tag, "/tags/#{tag}"
+            - if user.skill_tags.any?
+              %span.counter.first.istooltip{ title: 'Skills' }
+                %i.fa.fa-star
+              - user.skill_tags.pluck(:name).each do |tag|
+                %span.label.label-default= link_to tag, "/tags/#{tag}"
+        .thumb-bottom
+          %hr
+          %span.counter.first.istooltip{ title: 'Projects' }
+            %i.fa.fa-briefcase
+            = user.projects_count
+          %span.counter.istooltip{ title: 'Profile views' }
+            %i.fa.fa-eye
+            = user.impressions_count
+          %span.counter.istooltip{ title: 'Project views' }
+            %i.fa.fa-eye
+            = user.project_views_count
+          %span.counter.istooltip{ title: 'Respected projects' }
+            %i.fa.fa-thumbs-o-up
+            = user.respects_count
+          %span.counter.istooltip{ title: 'Comments', data: { container: 'body' } }
+            %i.fa.fa-comments
+            = user.comments_count

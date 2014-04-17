@@ -20,7 +20,7 @@
           No location.
           = link_to 'Add one?', profile_edit_path, data: { remote: true }
 
-        %span.category{ rel: 'tooltip', title: 'Profile views' }
+        %span.category.istooltip{ title: 'Profile views' }
           %i.fa.fa-eye
           = @user.impressions_count
         -# %span.category

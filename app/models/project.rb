@@ -75,11 +75,11 @@ class Project < ActiveRecord::Base
 
   store :counters_cache, accessors: [:comments_count, :product_tags_count,
     :widgets_count, :followers_count, :build_logs_count,
-    :issues_count]
+    :issues_count, :team_members_count]
 
   parse_as_integers :counters_cache, :comments_count, :product_tags_count,
     :widgets_count, :followers_count, :build_logs_count,
-    :issues_count
+    :issues_count, :team_members_count
 
   self.per_page = 12
 
@@ -178,7 +178,7 @@ class Project < ActiveRecord::Base
   end
 
   def compute_popularity
-    self.popularity_counter = ((respects_count * 2 + impressions_count * 0.1 + followers_count * 2 + comments_count * 5 + featured.to_i * 10) * [[(1.to_f / Math.log10(age)), 10].min, 0.01].max).round(4)
+    self.popularity_counter = ((respects_count * 2 + impressions_count * 0.1 + followers_count * 2 + comments_count * 5 + featured.to_i * 10) * [[(1.to_f / Math.log10(age)), 10].min, 0.01].max).round(4) * (public and !hide).to_i
   end
 
   def columns_count
@@ -197,6 +197,7 @@ class Project < ActiveRecord::Base
       issues: 'issues.count',
       product_tags: 'product_tags.count',
       respects: 'respects.count',
+      team_members: 'users.count',
       widgets: 'widgets.count',
     }
   end

@@ -109,3 +109,13 @@
     height: 256px;
   }
 }
+
+.user-thumb {
+  &.user-thumb-horizontal {
+    .photo-thumb {
+      img {
+        width: 110px !important;
+      }
+    }
+  }
+}

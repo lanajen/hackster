@@ -60,6 +60,7 @@ class UserObserver < ActiveRecord::Observer
       record.broadcast :new, record.id, 'User'
       BaseMailer.enqueue_email 'registration_confirmation',
         { context_type: :user, context_id: record.id } unless record.skip_registration_confirmation
+      record.create_reputation
     end
 
     def expire record

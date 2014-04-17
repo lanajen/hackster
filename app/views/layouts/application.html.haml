@@ -99,7 +99,7 @@
 
                     %li.with-button
                       %span= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'btn btn-sm btn-warning navbar-btn'
-                    %li= link_to 'Resources', resources_path
+                    %li= link_to 'Hackers', hackers_path
                   - if user_signed_in?
                     %ul.nav.navbar-nav.navbar-right
                       - if current_user.has_notifications?
@@ -174,6 +174,7 @@
             %li= link_to 'About', about_path
             %li= link_to 'Help', 'mailto:team@hackster.io?subject=Help!'
             %li= link_to 'Feedback', 'mailto:team@hackster.io?subject=What%20I%20think%20about%20Hackster.io'
+            %li= link_to 'Resources', resources_path
             %li= link_to 'Jobs', 'mailto:jobs@hackster.io?subject=I want to work with you guys!'
             %li= link_to 'Terms', '/terms'
             %li= link_to 'Privacy', '/privacy'
