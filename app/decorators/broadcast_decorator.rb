@@ -36,7 +36,7 @@ class BroadcastDecorator < ApplicationDecorator
       when :update
         "updated the #{threadable_type} #{threadable_title} for #{project_name}"
       end
-    when 'Favorite'
+    when 'Respect'
       "respected #{project_name}"
     when 'FollowRelation'
       follow_name = case model.context_model.followable_type

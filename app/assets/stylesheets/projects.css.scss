@@ -58,6 +58,11 @@
   @extend .box-white-bg;
   margin-bottom: 20px;
   overflow: hidden;
+  &:hover {
+    .project-feature {
+      display: block !important;
+    }
+  }
   &.project-thumb-horizontal, &.user-thumb-horizontal {
     .photo-thumb {
       img {
@@ -95,6 +100,29 @@
       position: absolute;
       top: 5px;
       right: 10px;
+    }
+    .thumb-top {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      .thumb-top-inner {
+        position: relative;
+      }
+    }
+    .project-featured {
+      position: absolute;
+      left: 10px;
+      background: #888;
+      padding: 1px 7px;
+      color: #fff;
+      font-size: 12px;
+    }
+    .project-feature {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      display: none;
     }
   }
   .counter {

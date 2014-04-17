@@ -22,7 +22,7 @@ module HackerIo
 
     # Activate observers that should always be running.
     config.active_record.observers = :project_observer, :widget_observer,
-      :user_observer, :comment_observer, :favorite_observer, :tag_observer,
+      :user_observer, :comment_observer, :respect_observer, :tag_observer,
       :member_observer, :team_observer, :follow_relation_observer,
       :issue_observer, :blog_post_observer, :assignment_observer, :tech_observer
 

@@ -124,7 +124,7 @@ class BaseMailer < ActionMailer::Base
         project = context[:project] = Project.find(context_id)
         context[:users] = project.users
       when :respect
-        respect = context[:respect] = Favorite.find(context_id)
+        respect = context[:respect] = Respect.find(context_id)
         project = context[:project] = respect.project
         context[:author] = respect.user
         context[:users] = project.users.with_subscription('new_respect_own')

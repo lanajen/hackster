@@ -13,6 +13,8 @@
         .photo-thumb
           = link_to image_tag(project.cover_image(:cover_thumb), alt: project.name), project_path(project, ref: ref, ref_id: ref_id, offset: offset)
           .award-container
+          .thumb-top
+            .thumb-top-inner
         .inner-thumb
           %h3= link_to project.name, project_path(project, ref: ref, ref_id: ref_id, offset: offset)
           %h4

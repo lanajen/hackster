@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140416005057) do
+ActiveRecord::Schema.define(version: 20140417010707) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -104,16 +104,6 @@ ActiveRecord::Schema.define(version: 20140416005057) do
     t.integer "university_id"
     t.integer "course_id"
   end
-
-  create_table "favorites", force: true do |t|
-    t.integer  "user_id"
-    t.integer  "project_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  add_index "favorites", ["project_id"], name: "index_favorites_on_project_id", using: :btree
-  add_index "favorites", ["user_id"], name: "index_favorites_on_user_id", using: :btree
 
   create_table "follow_relations", force: true do |t|
     t.integer  "user_id"
@@ -317,6 +307,17 @@ ActiveRecord::Schema.define(version: 20140416005057) do
   end
 
   add_index "reputations", ["user_id"], name: "index_reputations_on_user_id", using: :btree
+
+  create_table "respects", force: true do |t|
+    t.integer  "respecting_id"
+    t.integer  "project_id"
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
+    t.string   "respecting_type", default: "User", null: false
+  end
+
+  add_index "respects", ["project_id"], name: "index_respects_on_project_id", using: :btree
+  add_index "respects", ["respecting_id", "respecting_type"], name: "index_respects_on_respecting_id_and_respecting_type", using: :btree
 
   create_table "slug_histories", force: true do |t|
     t.string   "value",                              null: false

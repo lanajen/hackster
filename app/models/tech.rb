@@ -2,6 +2,8 @@ class Tech < Group
   include Taggable
 
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'TechMember'
+  has_many :respects, as: :respecting, dependent: :destroy, class_name: 'Respect'
+  has_many :respected_projects, through: :respects, source: :project
   has_one :slug, as: :sluggable, dependent: :destroy, class_name: 'SlugHistory'
 
   store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link,
@@ -18,10 +20,6 @@ class Tech < Group
 
   taggable :tech_tags
 
-  def self.default_permission
-    'manage'
-  end
-
   def self.model_name
     Group.model_name
   end
@@ -37,7 +35,7 @@ class Tech < Group
       # if it exists add a 1 and increment it if necessary
       slug += '1'
       while SlugHistory.where(value: slug).first
-        slug.gsub!(/([0-9]+$)/, ($1.to_i + 1).to_s)
+        slug.succ!
       end
     end
     self.user_name = slug

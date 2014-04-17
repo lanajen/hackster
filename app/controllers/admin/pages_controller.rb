@@ -7,12 +7,12 @@ class Admin::PagesController < Admin::BaseController
 
     @project_count = Project.indexable.count
     @comment_count = Comment.where(commentable_type: 'Project').count
-    @like_count = Favorite.count
+    @like_count = Respect.count
     @follow_count = FollowRelation.count
     @user_count = User.invitation_accepted_or_not_invited.count
     @new_projects_count = Project.indexable.where('projects.made_public_at > ?', Date.today).count
     @new_comments_count = Comment.where(commentable_type: 'Project').where('comments.created_at > ?', Date.today).count
-    @new_likes_count = Favorite.where('favorites.created_at > ?', Date.today).count
+    @new_likes_count = Respect.where('respects.created_at > ?', Date.today).count
     @new_follows_count = FollowRelation.where('follow_relations.created_at > ?', Date.today).count
     @new_users_count = User.invitation_accepted_or_not_invited.where('users.created_at > ?', Date.today).count
 
@@ -39,7 +39,7 @@ class Admin::PagesController < Admin::BaseController
     @new_comments = graph_with_dates_for sql, 'New comments', 'ColumnChart'
 
 
-    sql = "SELECT to_char(created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM favorites WHERE date_part('days', now() - favorites.created_at) < 30 GROUP BY date ORDER BY date;"
+    sql = "SELECT to_char(created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM respects WHERE date_part('days', now() - respects.created_at) < 30 GROUP BY date ORDER BY date;"
     @new_respects = graph_with_dates_for sql, 'New respects', 'ColumnChart'
   end
 
@@ -91,7 +91,7 @@ class Admin::PagesController < Admin::BaseController
   def respects
     title "Admin / Respects - #{params[:page]}"
 
-    @respects = Favorite.order(created_at: :desc).paginate(page: params[:page])
+    @respects = Respect.where(respecting_type: 'User').order(created_at: :desc).paginate(page: params[:page])
   end
 
   def root

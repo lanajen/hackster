@@ -16,6 +16,7 @@ class User < ActiveRecord::Base
     'follow_project_activity' => 'Activity for a project I follow',
     'follow_user_activity' => 'Activity for a user I follow',
   }
+  CATEGORIES = %w()
 
   devise :database_authenticatable, :registerable, :invitable,
          :recoverable, :rememberable, :trackable, :validatable, :confirmable,
@@ -45,7 +46,7 @@ class User < ActiveRecord::Base
   has_many :permissions, as: :grantee
   has_many :projects, through: :teams
   has_many :promotions, through: :group_ties, source: :group, class_name: 'Promotion'
-  has_many :respects, dependent: :destroy, class_name: 'Favorite'
+  has_many :respects, as: :respecting, dependent: :destroy, class_name: 'Respect'
   has_many :respected_projects, through: :respects, source: :project
   has_many :team_grades, through: :teams, source: :grades
   has_many :teams, through: :group_ties, source: :group, class_name: 'Team'

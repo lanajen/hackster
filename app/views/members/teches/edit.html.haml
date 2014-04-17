@@ -7,6 +7,8 @@
       %table#sortable.table.table-condensed
         %thead
           %th User
+          %th Role
+          %th Permission
           %th Status
           %th
         %tbody
@@ -19,6 +21,9 @@
                   %td
                     = f_member.input :grantee_id, collection: @group.members.invitation_accepted_or_not_invited.includes(:user).map(&:user).reject{|u| u.invited_to_sign_up? }.sort_by{|u| u.name }, label: false
                     = f_member.input :grantee_type, as: :hidden, input_html: { value: 'User' }
+                %td= f_member.input :group_roles, collection: TechMember.group_roles, label: false
+                = f_member.simple_fields_for :permission do |f_perm|
+                  %td= f_perm.input :action, collection: Permission::ACTIONS, label: false
                 - if member.requested_to_join_at.present? and member.approved_to_join == false
                   %td
                 %td
