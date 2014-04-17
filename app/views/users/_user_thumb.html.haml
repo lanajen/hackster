@@ -12,13 +12,11 @@
             - if user.interest_tags.any?
               %span.counter.first.istooltip{ title: 'Interests', data: { container: 'body' } }
                 %i.fa.fa-heart
-              - user.interest_tags.pluck(:name).each do |tag|
-                %span.label.label-default= link_to tag, "/tags/#{tag}"
+              = user.interest_tags.pluck(:name).map{ |tag| link_to tag, "/tags/#{tag}" }.join(' / ').html_safe
             - if user.skill_tags.any?
               %span.counter.first.istooltip{ title: 'Skills' }
                 %i.fa.fa-star
-              - user.skill_tags.pluck(:name).each do |tag|
-                %span.label.label-default= link_to tag, "/tags/#{tag}"
+              = user.skill_tags.pluck(:name).map{ |tag| link_to tag, "/tags/#{tag}" }.join(' / ').html_safe
         .thumb-bottom
           %hr
           %span.counter.first.istooltip{ title: 'Projects' }
