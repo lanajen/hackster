@@ -43,12 +43,12 @@ class ProjectsController < ApplicationController
     @widgets = @project.widgets.order(:created_at)
 
     # other projects by same author
-    @other_projects_count = Project.most_popular.includes(:team_members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).size
+    @other_projects_count = Project.public.most_popular.includes(:team_members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).size
     if @other_projects_count > 6
-      @other_projects = Project.most_popular.includes(:team_members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).limit(3)
-      @last_projects = Project.last_public.includes(:team_members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: [@project.id] + @other_projects.map(&:id)).limit(3)
+      @other_projects = Project.public.most_popular.includes(:team_members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).limit(3)
+      @last_projects = Project.public.last_public.includes(:team_members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: [@project.id] + @other_projects.map(&:id)).limit(3)
     else
-      @other_projects = Project.most_popular.includes(:team_members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id)
+      @other_projects = Project.public.most_popular.includes(:team_members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id)
     end
     @issue = Feedback.where(threadable_type: 'Project', threadable_id: @project.id).first if @project.collection_id.present? and @project.assignment.present?
 
