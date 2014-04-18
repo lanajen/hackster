@@ -98,12 +98,12 @@ class User < ActiveRecord::Base
   store :counters_cache, accessors: [:comments_count, :interest_tags_count,
     :invitations_count, :projects_count, :respects_count, :skill_tags_count,
     :live_projects_count, :project_views_count, :followers_count,
-    :websites_count, :popularity_points_count]
+    :websites_count, :popularity_points_count, :project_respects_count]
 
   parse_as_integers :counters_cache, :comments_count, :interest_tags_count,
     :invitations_count, :projects_count, :respects_count, :skill_tags_count,
     :live_projects_count, :project_views_count, :websites_count,
-    :popularity_points_count
+    :popularity_points_count, :project_respects_count
 
   delegate :can?, :cannot?, to: :ability
 
@@ -296,6 +296,7 @@ class User < ActiveRecord::Base
       live_projects: 'projects.where(private: false).count',
       popularity_points: 'projects.map{|p| p.popularity_counter / p.team_members_count }.sum',
       projects: 'projects.count',
+      project_respects: 'projects.includes(:respects).count(:respects)',
       project_views: 'projects.sum(:impressions_count)',
       respects: 'respects.count',
       skill_tags: 'skill_tags.count',
