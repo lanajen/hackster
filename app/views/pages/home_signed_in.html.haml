@@ -17,23 +17,23 @@
     .container
       .row
         .col-xs-12.text-center
-          .alert
+          .alert{ stylee: 'font-size: 30px;font-weight: 200;' }
             Explore projects by
             %span.dropdown.text-left
-              %button.btn.btn-default.dropdown-toggle{"data-toggle" => "dropdown", href: '#'}
+              %button.btn.btn-default.btn-lge.dropdown-toggle{"data-toggle" => "dropdown", href: '#'}
                 Tools
                 %span.caret{ style: 'border-bottom-color: #000;border-top-color: #000;' }
               %ul.dropdown-menu
                 = render partial: 'shared/tools_list', locals: { ref: 'homenav' }
             or
             %span.dropdown.text-left
-              %button.btn.btn-default.dropdown-toggle{"data-toggle" => "dropdown", href: '#'}
+              %button.btn.btn-default.btn-lge.dropdown-toggle{"data-toggle" => "dropdown", href: '#'}
                 Components
                 %span.caret{ style: 'border-bottom-color: #000;border-top-color: #000;' }
               %ul.dropdown-menu
                 = render partial: 'shared/components_list', locals: { ref: 'homenav' }
             or
-            = link_to 'Browse all', projects_path(ref: 'homenav'), class: 'btn btn-primary'
+            = link_to 'Browse all', projects_path(ref: 'homenav'), class: 'btn btn-primary btn-lge'
 
       .row
         .col-xs-12

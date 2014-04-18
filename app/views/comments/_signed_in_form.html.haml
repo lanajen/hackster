@@ -2,4 +2,4 @@
   .pull-left.comment-avatar= current_user.decorate.avatar_link(:mini)
   .pull-left
     = simple_form_for [commentable, Comment.new], html: { class: 'form-inline', data: { remote: true } } do |f|
-      = f.input :body, label: false, input_html: { rows: 1, placeholder: 'Write a comment', title: 'Press Enter to submit', data: { toggle: '', container: '#widget-comments .comments'} }
+      = f.input :body, label: false, input_html: { rows: 1, placeholder: 'Write a comment' }
