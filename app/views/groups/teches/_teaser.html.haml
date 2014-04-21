@@ -10,17 +10,6 @@
           %strong #{@tech.name}
           = link_to 'Rock the place', group_accept_invitation_path(@tech), class: 'btn btn-warning btn-sm'
 
-
-- if !user_signed_in? or can? :join, @tech
-  .row
-    .col-xs-12
-      .alert.alert-warning.alert-flat
-        .container
-          Love
-          = succeed '?' do
-            %strong= @tech.name
-          = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Join the community".html_safe, group_accept_invitation_path(@tech), class: 'btn btn-warning btn-sm'
-
 #content-header.with-nav
   .container
     .media
@@ -77,3 +66,13 @@
                   %li= link_to 'Edit tech', edit_tech_path(@tech), data: { remote: true }
                   %li= link_to 'Manage members', group_edit_members_path(@tech)
                   %li= link_to 'Invite members', group_new_invitations_path(@tech)
+
+- if !user_signed_in? or can? :join, @tech
+  .row
+    .col-xs-12
+      .alert.alert-info.alert-flat.text-center{ style: 'font-size:19px'}
+        .container
+          Love
+          = succeed '?' do
+            %strong= @tech.name
+          = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Join the community".html_safe, group_accept_invitation_path(@tech), class: 'btn btn-info'
