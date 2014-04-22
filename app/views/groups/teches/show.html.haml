@@ -9,11 +9,10 @@
       - if @projects.any?
         .row.project-list
           - @projects.each do |project|
-            - if can? :manage, @tech
-              = content_for :js do
-                :javascript
-                  text = "#{escape_javascript render(partial: 'respects/button_featured', locals: { project: project } )}"
-                  $(text).appendTo($('.project-#{project.id} .project-thumb .thumb-top-inner'));
+            = content_for :js do
+              :javascript
+                text = "#{escape_javascript render(partial: 'respects/button_featured', locals: { project: project } )}"
+                $(text).appendTo($('.project-#{project.id} .project-thumb .thumb-top-inner'));
 
             - if project.external
               = render partial: 'projects/project_thumb_external', locals: { project: project.decorate }

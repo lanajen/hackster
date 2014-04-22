@@ -1,5 +1,7 @@
 - if project.in? @tech.respected_projects
   %span.project-featured Featured
-  = link_to 'Unfeature this project', project_respects_path(project, respecting_type: 'Tech', respecting_id: @tech.id), data: { method: :delete, remote: true }, class: 'project-feature btn btn-default btn-xs'
+  - if can? :manage, @tech
+    = link_to 'Unfeature this project', project_respects_path(project, respecting_type: 'Tech', respecting_id: @tech.id), data: { method: :delete, remote: true }, class: 'project-feature btn btn-default btn-xs'
 - else
-  = link_to 'Feature this project', project_respects_path(project, respecting_type: 'Tech', respecting_id: @tech.id), data: { method: :post, remote: true }, class: 'project-feature btn btn-default btn-xs'
+  - if can? :manage, @tech
+    = link_to 'Feature this project', project_respects_path(project, respecting_type: 'Tech', respecting_id: @tech.id), data: { method: :post, remote: true }, class: 'project-feature btn btn-default btn-xs'
