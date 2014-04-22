@@ -201,6 +201,7 @@ HackerIo::Application.routes.draw do
     # get ':slug' => 'slugs#show', slug: /[A-Za-z0-9_]{3,}/, constraints: { format: /(html|json)/ }
     constraints(TechPage) do
       get ':slug' => 'teches#show', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
+      get ':slug/embed' => 'teches#embed', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
       get ':user_name' => 'teches#show', as: :tech_short, user_name: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
     end
     constraints(UserPage) do

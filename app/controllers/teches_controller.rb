@@ -1,6 +1,6 @@
 class TechesController < ApplicationController
-  before_filter :authenticate_user!, except: [:show]
-  before_filter :load_tech, except: [:show]
+  before_filter :authenticate_user!, except: [:show, :embed]
+  before_filter :load_tech, except: [:show, :embed]
   layout 'tech', only: [:edit, :update, :show]
   respond_to :html
 
@@ -28,6 +28,15 @@ class TechesController < ApplicationController
     end
 
     render "groups/teches/#{self.action_name}"
+  end
+
+  def embed
+    @tech = load_with_slug
+    title "Projects made with #{@tech.name}"
+    @list_style = ([params[:list_style]] & ['', '_horizontal']).first || ''
+    # @list_style = '_horizontal'
+    @projects = @tech.projects.indexable_and_external.paginate(page: params[:page])
+    render "groups/teches/#{self.action_name}", layout: 'embed'
   end
 
   def edit
