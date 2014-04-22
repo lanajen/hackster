@@ -11,6 +11,22 @@ class TechesController < ApplicationController
     meta_desc "People are hacking with #{@tech.name} on Hackster.io. Join them!"
     @broadcasts = @tech.broadcasts.limit 20
 
+    get_projects
+
+    render "groups/teches/#{self.action_name}"
+  end
+
+  def embed
+    @tech = load_with_slug
+    title "Projects made with #{@tech.name}"
+    @list_style = ([params[:list_style]] & ['', '_horizontal']).first || ''
+    # @list_style = '_horizontal'
+    get_projects
+    render "groups/teches/#{self.action_name}", layout: 'embed'
+  end
+
+  private
+  def get_projects
     # TODO: below is SUPER hacky. Would be great to just separate featured projects from the rest
     page = params[:page].try(:to_i) || 1
     per_page = Project.per_page
@@ -26,19 +42,9 @@ class TechesController < ApplicationController
     @projects = WillPaginate::Collection.create(page, per_page, total) do |pager|
       pager.replace(@projects.to_a)
     end
-
-    render "groups/teches/#{self.action_name}"
   end
 
-  def embed
-    @tech = load_with_slug
-    title "Projects made with #{@tech.name}"
-    @list_style = ([params[:list_style]] & ['', '_horizontal']).first || ''
-    # @list_style = '_horizontal'
-    @projects = @tech.projects.indexable_and_external.paginate(page: params[:page])
-    render "groups/teches/#{self.action_name}", layout: 'embed'
-  end
-
+  public
   def edit
     authorize! :update, @tech
     @tech.build_avatar unless @tech.avatar

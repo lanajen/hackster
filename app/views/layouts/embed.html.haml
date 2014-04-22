@@ -25,3 +25,6 @@
 
   %body#embed
     = yield
+    - if content_for? :js
+      = javascript_include_tag '//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js'
+      = content_for :js

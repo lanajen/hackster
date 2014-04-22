@@ -21,7 +21,10 @@ class ProjectImportsController < ApplicationController
         message_type: 'generic'
       )
       @message.subject = "New import request"
-      @message.body = "<p>Hi</p><p>Please import this project for me: <a href='#{params[:url]}'>#{params[:url]}</a>.</p><p>Thanks!<br><a href='#{url_for(current_user)}'>#{current_user.name}</a></p><p><a href='http://#{APP_CONFIG['full_host']}/projects/imports/new?user_id=#{current_user.id}&urls=#{params[:url]}'>Start importing</a></p>"
+      @message.body = "<p>Hi</p><p>Please import this project for me: <a href='#{params[:url]}'>#{params[:url]}</a>.</p>"
+      @message.body += "<p>Tech tag: #{params[:tech_tags_string]}</p>" if params[:tech_tags_string].present?
+      @message.body += "<p>Product tag: #{params[:product_tags_string]}</p>" if params[:product_tags_string].present?
+      @message.body += "<p>Thanks!<br><a href='#{url_for(current_user)}'>#{current_user.name}</a></p><p><a href='http://#{APP_CONFIG['full_host']}/projects/imports/new?user_id=#{current_user.id}&urls=#{params[:url]}'>Start importing</a></p>"
       BaseMailer.enqueue_generic_email(@message)
       redirect_to new_project_path, notice: "We will start importing your project soon. You'll receive an email when it's done."
     else

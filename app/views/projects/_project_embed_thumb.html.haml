@@ -1,7 +1,11 @@
-%div{ class: "#{ "col-xs-#{col}" if defined?(col) }" }
+%div{ class: "project-#{project.id} #{ "col-xs-#{col}" if defined?(col) }" }
   .project-thumb
     .thumb
-      .photo-thumb= link_to image_tag(project.cover_image(:cover_thumb), alt: project.name, class: 'img-responsive'), project_url(project), target: '_blank'
+      .photo-thumb
+        = link_to image_tag(project.cover_image(:cover_thumb), alt: project.name, class: 'img-responsive'), project_url(project), target: '_blank'
+        .award-container
+        .thumb-top
+          .thumb-top-inner
       .inner-thumb
         %h3= link_to project.name, project_url(project), target: '_blank'
         %h4

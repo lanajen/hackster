@@ -3,6 +3,11 @@
     .row
       .col-xs-12
         - @projects.each_with_index do |project, i|
+          = content_for :js do
+            :javascript
+              text = "#{escape_javascript render(partial: 'respects/button_featured', locals: { project: project } )}";
+              $(text).appendTo($('.project-#{project.id} .project-thumb .thumb-top-inner'));
+
           - if project.external
             = render partial: 'projects/project_thumb_external', locals: { project: project.decorate }
           - else

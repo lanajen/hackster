@@ -11,7 +11,7 @@
           - @projects.each do |project|
             = content_for :js do
               :javascript
-                text = "#{escape_javascript render(partial: 'respects/button_featured', locals: { project: project } )}"
+                text = "#{escape_javascript render(partial: 'respects/button_featured', locals: { project: project } )}";
                 $(text).appendTo($('.project-#{project.id} .project-thumb .thumb-top-inner'));
 
             - if project.external
