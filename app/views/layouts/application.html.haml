@@ -22,10 +22,10 @@
     = stylesheet_link_tag "application", :media => "all"
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
     <link href="#{ asset_path 'favicon.ico' }" rel="shortcut icon" type="image/vnd.microsoft.icon">
-    - unless current_user and current_user.is? :admin
-      = render partial: 'shared/analytics', locals: { tracker: 'UA-11926897-15', domain: 'hackster.io' }
-    -# = render 'shared/mixpanel'
     = javascript_include_tag "application"
+    - unless current_user and current_user.is? :admin
+      = render partial: 'shared/analytics', locals: { tracker: 'UA-11926897-15', domain: 'hackster.io', track_outbound: true }
+    -# = render 'shared/mixpanel'
 
   %body
     #wrapper

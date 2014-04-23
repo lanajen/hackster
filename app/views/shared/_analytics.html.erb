@@ -11,4 +11,22 @@
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
 
+  <%- if defined?(track_outbound) and track_outbound %>
+    $(function() {
+      $("body").on('click', 'a', function(e){
+        var url = $(this).attr("href");
+        if (e.currentTarget.host != window.location.host) {
+          _gaq.push(['_trackEvent', 'Outbound Links', e.currentTarget.href, url]);
+          if (e.metaKey || e.ctrlKey || this.target == "_blank") {
+            var newtab = true;
+          }
+          if (!newtab) {
+            e.preventDefault();
+            setTimeout('document.location = "' + url + '"', 100);
+          }
+        }
+      });
+    });
+  <% end %>
+
 </script>
