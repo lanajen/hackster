@@ -18,6 +18,8 @@ class MemberObserver < ActiveRecord::Observer
     elsif record.group.is? :event and record.request_pending?
       BaseMailer.enqueue_email 'new_request_to_join_event',
         { context_type: :membership_request, context_id: record.id }
+    elsif record.group.is? :tech
+      record.user.update_counters only: [:teches]
     end
 
     unless record.permission

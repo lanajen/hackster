@@ -50,6 +50,7 @@ class User < ActiveRecord::Base
   has_many :respected_projects, through: :respects, source: :project
   has_many :team_grades, through: :teams, source: :grades
   has_many :teams, through: :group_ties, source: :group, class_name: 'Team'
+  has_many :teches, -> { order('groups.full_name ASC') }, through: :group_ties, source: :group, class_name: 'Tech'
   has_one :avatar, as: :attachable, dependent: :destroy
   has_one :reputation, dependent: :destroy
   has_one :slug, as: :sluggable, dependent: :destroy, class_name: 'SlugHistory'
@@ -98,12 +99,13 @@ class User < ActiveRecord::Base
   store :counters_cache, accessors: [:comments_count, :interest_tags_count,
     :invitations_count, :projects_count, :respects_count, :skill_tags_count,
     :live_projects_count, :project_views_count, :followers_count,
-    :websites_count, :popularity_points_count, :project_respects_count]
+    :websites_count, :popularity_points_count, :project_respects_count,
+    :teches_count]
 
   parse_as_integers :counters_cache, :comments_count, :interest_tags_count,
     :invitations_count, :projects_count, :respects_count, :skill_tags_count,
     :live_projects_count, :project_views_count, :websites_count,
-    :popularity_points_count, :project_respects_count
+    :popularity_points_count, :project_respects_count, :teches_count
 
   delegate :can?, :cannot?, to: :ability
 
@@ -300,6 +302,7 @@ class User < ActiveRecord::Base
       project_views: 'projects.sum(:impressions_count)',
       respects: 'respects.count',
       skill_tags: 'skill_tags.count',
+      teches: 'teches.count',
       websites: 'websites.values.select{|v| v.present? }.size',
     }
   end

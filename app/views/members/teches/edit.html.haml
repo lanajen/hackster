@@ -16,7 +16,11 @@
             = f.simple_fields_for :members, member, wrapper: false do |f_member|
               %tr.fields
                 - if member.persisted?
-                  %td= member.user.name || member.user.email
+                  %td
+                    - if member.user.name.present?
+                      = link_to member.user.name, member.user
+                    - else
+                      = member.user.email
                 - else
                   %td
                     = f_member.input :grantee_id, collection: @group.members.invitation_accepted_or_not_invited.includes(:user).map(&:user).reject{|u| u.invited_to_sign_up? }.sort_by{|u| u.name }, label: false

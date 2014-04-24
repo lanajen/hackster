@@ -43,6 +43,17 @@
               #{@user.name} has no public projects.
 
           .col-xs-3
+            - if @user.teches.any?
+              .transparent-well.user-communities.team-widget
+                .header
+                  %h4 Communities
+                .content
+                  - @user.teches.each do |c|
+                    .community.user
+                      = link_to image_tag(c.decorate.avatar(:mini), class: ' img-circle' ), c, class: ''
+                      %span.user-name
+                        = link_to c.name, c, class: 'hidden-link'
+
             - if @user.interest_tags.any?
               .transparent-well
                 .header

@@ -14,7 +14,7 @@
         = f.simple_fields_for :members, member, wrapper: false do |f_member|
           %tr.fields
             - if member.persisted?
-              %td= member.user.name
+              %td= link_to member.user.name, member.user
             - else
               %td
                 = f_member.association :user, collection: User.where('user_name IS NOT NULL').sort_by{|u| u.name }, label: false
