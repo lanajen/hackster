@@ -20,6 +20,8 @@ class MemberObserver < ActiveRecord::Observer
         { context_type: :membership_request, context_id: record.id }
     elsif record.group.is? :tech
       record.user.update_counters only: [:teches]
+
+      record.user.broadcast :new, record.id, 'Member'
     end
 
     unless record.permission

@@ -55,7 +55,14 @@ class BroadcastDecorator < ApplicationDecorator
         "updated the project #{project_name}"
       end
     when 'Member'
-      "joined the project #{project_name}"
+      group = model.context_model.group
+      case group
+      when Team
+        "joined the project #{project_name}"
+      when Tech
+        tech_link = h.link_to group.name, h.group_path(group)
+        "joined the #{tech_link} community"
+      end
     when 'User'
       case model.event.to_sym
       when :new
