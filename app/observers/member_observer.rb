@@ -19,6 +19,8 @@ class MemberObserver < ActiveRecord::Observer
       BaseMailer.enqueue_email 'new_request_to_join_event',
         { context_type: :membership_request, context_id: record.id }
     elsif record.group.is? :tech
+      BaseMailer.enqueue_email 'new_community_member_notification',
+        { context_type: :new_membership, context_id: record.id } if record.group_roles == %w(member)
       record.user.update_counters only: [:teches]
 
       record.user.broadcast :new, record.id, 'Member'

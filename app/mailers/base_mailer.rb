@@ -114,6 +114,11 @@ class BaseMailer < ActionMailer::Base
           []
         end
         context[:requester] = member.user
+      when :new_membership
+        member = context[:member] = Member.find(context_id)
+        context[:group] = group = member.group
+        context[:user] = group
+        context[:author] = member.user
       when :participant_invite
         context[:invite] = invite = ParticipantInvite.find(context_id)
         context[:user] = User.new email: invite.email
