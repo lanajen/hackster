@@ -1,32 +1,39 @@
 - highlight = defined?(highlight) ? highlight : nil
 
-.login-forms
-  .col-xs-12
-    .alert.alert-info.text-center= SLOGAN
+= content_for :no_container do
+  .row
+    .col-xs-12
+      .alert.alert-info.alert-top.alert-flat.text-center= SLOGAN
 
-  .col-xs-4
-    .wellified{ class: "#{'wellified-transparent' unless highlight == 'login'}" }
-      %h3.text-center
-        Log in
-        %br
-        %small with your existing account:
-      = render partial: 'devise/sessions/form', locals: { autofocus: (highlight == 'login') }
+  .container
+    #content
+      .login-forms.row
+        .col-xs-12
+          .alert.alert-warning.text-center= get_reason(params)
 
-  .col-xs-4
-    .wellified{ class: "#{'wellified-transparent' unless highlight == 'signup'}" }
-      %h3.text-center
-        Sign up
-        %br
-        %small for a new account:
-      = render partial: 'devise/registrations/form', locals: { autofocus: (highlight == 'signup') }
+        .col-xs-4
+          .wellified{ class: "#{'wellified-transparent' unless highlight == 'login'}" }
+            %h3.text-center
+              Log in
+              %br
+              %small with your existing account:
+            = render partial: 'devise/sessions/form', locals: { autofocus: (highlight == 'login') }
 
-  .col-xs-4
-    .wellified{ class: "#{'wellified-transparent' unless highlight == 'connect'}" }
-      %h3.text-center
-        Connect
-        %br
-        %small with your social account:
-      = render partial: 'devise/shared/omniauth', locals: { autofocus: (highlight == 'connect') }
+        .col-xs-4
+          .wellified{ class: "#{'wellified-transparent' unless highlight == 'signup'}" }
+            %h3.text-center
+              Sign up
+              %br
+              %small for a new account:
+            = render partial: 'devise/registrations/form', locals: { autofocus: (highlight == 'signup') }
+
+        .col-xs-4
+          .wellified{ class: "#{'wellified-transparent' unless highlight == 'connect'}" }
+            %h3.text-center
+              Connect
+              %br
+              %small with your social account:
+            = render partial: 'devise/shared/omniauth', locals: { autofocus: (highlight == 'connect') }
 
 = content_for :js do
   :javascript

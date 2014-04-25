@@ -42,7 +42,7 @@ class ApplicationController < ActionController::Base
 #      end
       redirect_to session[:user_return_to_if_disallowed] || root_url
     else
-      redirect_to new_user_session_url, notice: 'The page you are trying to access is restricted to logged in users. Please log in to continue.'
+      redirect_to new_user_session_url
     end
   end
 

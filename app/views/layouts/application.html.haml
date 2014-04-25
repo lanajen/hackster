@@ -98,7 +98,8 @@
                                 = render partial: 'shared/components_list', locals: { ref: 'topnav' }
 
                     %li.with-button
-                      %span= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'btn btn-sm btn-warning navbar-btn'
+                      - link = user_signed_in? ? new_project_path : new_user_registration_path(redirect_to: new_project_path, reason: 'project')
+                      %span= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, link, class: 'btn btn-sm btn-warning navbar-btn'
                     %li= link_to 'Hackers', hackers_path
                   - if user_signed_in?
                     %ul.nav.navbar-nav.navbar-right

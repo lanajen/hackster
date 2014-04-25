@@ -46,7 +46,8 @@
         .tabbable.tabs-left.navbar.navbar-default.navbar-tabs{ style: 'background: #fff;' }
           %ul.nav.navbar-nav
             %li.active= link_to "Projects", '#tab-projects', data: { toggle: 'tab' }
-            %li= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path(project: { tech_tags_string: @tech.tech_tags.first.name })
+            - link = user_signed_in? ? new_project_path(project: { tech_tags_string: @tech.tech_tags.first.name }) : new_user_registration_path(redirect_to: new_project_path(project: { tech_tags_string: @tech.tech_tags.first.name }), reason: 'project', m: 'group', id: @tech.id)
+            %li= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, link
             - if @tech.documentation_link.present?
               %li= link_to "Documentation", @tech.documentation_link, target: '_blank'
             - if @tech.forums_link.present?
@@ -75,4 +76,5 @@
           Love
           = succeed '?' do
             %strong= @tech.name
-          = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Join the community".html_safe, group_accept_invitation_path(@tech), class: 'btn btn-info'
+          - link = user_signed_in? ? group_accept_invitation_path(@tech) : new_user_registration_path(redirect_to: group_accept_invitation_path(@tech), reason: 'join', m: 'group', id: @tech.id)
+          = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Join the community".html_safe, link, class: 'btn btn-info'
