@@ -6,7 +6,8 @@ class TechesController < ApplicationController
 
   def show
     @tech = load_with_slug
-    authorize! :read, @tech
+    impressionist_async @tech, "", unique: [:session_hash]
+    # authorize! :read, @tech
     title @tech.name
     meta_desc "People are hacking with #{@tech.name} on Hackster.io. Join them!"
     @broadcasts = @tech.broadcasts.limit 20
