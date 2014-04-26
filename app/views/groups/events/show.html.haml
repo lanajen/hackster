@@ -32,7 +32,8 @@
           .row
             .col-xs-12
               All projects will appear here.
-              = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project to event".html_safe, "#{event_path(@event)}/projects/new", class: 'btn btn-sm btn-warning'
+              - if can? :add_project, @event
+                = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project to event".html_safe, "#{event_path(@event)}/projects/new", class: 'btn btn-sm btn-warning'
 
     #tab-participants.tab-pane.fade
       .col-xs-12
