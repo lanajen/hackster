@@ -50,6 +50,19 @@
               - else
                 Work in progress, check back later!
 
+        - if @project.columns_count == 1 and can? :edit, @project
+          #sidebar.col-xs-3
+            .navbar-tabs.navbar-default.navbar-vertical.unselectable.affixable
+              %ul.navbar-nav.nav
+                %li.dropdown
+                  %a.dropdown-toggle{ data: { toggle: 'dropdown' }, href: '#' }
+                    Edit
+                    %b.caret
+                  %ul.dropdown-menu
+                    %li= link_to 'Settings', edit_project_path(@project), data: { remote: true }
+                    %li= link_to 'Add a widget', new_project_widget_path(@project)
+                    %li= link_to 'Reorder widgets and edit columns', project_widgets_path(@project)
+
   - cache [@project, 'other', @other_projects], tag: "project-#{@project.id}-other" do
     - if @other_projects_count > 0
       #more-projects.row
