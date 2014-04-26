@@ -9,7 +9,7 @@
               - if can? :add_project, @event
                 .pull-left
                   = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project to event".html_safe, "#{event_path(@event)}/projects/new", class: 'btn btn-sm btn-warning'
-              .btn-group.thumb-list-switch.pull-right{ style: 'margin-bottom: 20px'}
+              .btn-group.thumb-list-switch.pull-right.mg-20
                 %button.btn.btn-default.btn-sm.istooltip{ class: "#{'active' if style == 'thumb-list-vertical'}", data: { 'list-style' => 'vertical', container: 'body' }, title: 'Display as tiles' }
                   %i.fa.fa-th-large
                 %button.btn.btn-default.btn-sm.istooltip{ class: "#{'active' if style == 'thumb-list-horizontal'}", data: { 'list-style' => 'horizontal', container: 'body' }, title: 'Display as list' }
@@ -29,7 +29,10 @@
                 $(text).appendTo('.project-#{award.project_id} .award-container');
 
         - else
-          All projects will appear here.
+          .row
+            .col-xs-12
+              All projects will appear here.
+              = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project to event".html_safe, "#{event_path(@event)}/projects/new", class: 'btn btn-sm btn-warning'
 
     #tab-participants.tab-pane.fade
       .col-xs-12
