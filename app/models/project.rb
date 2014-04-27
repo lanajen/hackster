@@ -81,7 +81,7 @@ class Project < ActiveRecord::Base
     :widgets_count, :followers_count, :build_logs_count,
     :issues_count, :team_members_count
 
-  self.per_page = 12
+  self.per_page = 16
 
   # beginning of search methods
   include Tire::Model::Search

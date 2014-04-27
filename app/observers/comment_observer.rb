@@ -4,7 +4,7 @@ class CommentObserver < ActiveRecord::Observer
   def after_create record
     project_id = record.commentable_type == 'Project' ? record.commentable_id : record.commentable.threadable_id
     record.user.broadcast :new, record.id, 'Comment', project_id if record.user.class == User
-    type = case record.commentable.class.model_name
+    type = case record.commentable_type
     when 'Issue'
       'new_comment_issue_notification'
     when 'Project'
