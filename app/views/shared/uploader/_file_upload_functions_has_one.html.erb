@@ -13,7 +13,11 @@ var <%= file_type %>Functions = {
       inputTpl += '<input type="hidden" name="<%= model %>[<%= attribute_type %>_id]"></span>';
       input = $(inputTpl);
       input.find('input').val(id);
-      input.find('img').attr('src', file.<%= image_version %>.url);
+      <% if image_version %>
+        input.find('img').attr('src', file.<%= image_version %>.url);
+      <% else %>
+        input.find('img').attr('src', file.url);
+      <% end %>
       $('.<%= file_type %>.image-preview').html(input);
     } else {
       inputTpl = '<span><span class="filename"></span>';

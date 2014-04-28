@@ -12,7 +12,7 @@ class Tech < Group
     :forums_link, :documentation_link, :crowdfunding_link, :buy_link]
 
   attr_accessible :forums_link, :documentation_link, :crowdfunding_link,
-    :buy_link
+    :buy_link, :logo_id
 
   validates :user_name, :full_name, presence: true
   validates :user_name, :new_user_name, length: { in: 3..100 }, if: proc{|t| t.persisted?}
@@ -69,6 +69,10 @@ class Tech < Group
       end
     end
     self.user_name = slug
+  end
+
+  def logo_id=(val)
+    self.logo = Logo.find_by_id(val)
   end
 
   def projects

@@ -1,3 +1,3 @@
 class Logo < Attachment
-  mount_uploader :file, AvatarUploader
+  mount_uploader :file, DocumentUploader
 end
