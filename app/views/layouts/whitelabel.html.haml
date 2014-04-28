@@ -20,7 +20,7 @@
     /[if lt IE 9]
       = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.1/html5shiv.js"
     = stylesheet_link_tag "application", :media => "all"
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
+    -# <link href='http://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
     <link href="#{ asset_path 'favicon.ico' }" rel="shortcut icon" type="image/vnd.microsoft.icon">
     -# unless current_user and current_user.is? :admin
       = render partial: 'shared/analytics', locals: { tracker: 'UA-11926897-15', domain: 'hackster.io' }
@@ -35,13 +35,17 @@
               %span.fa.fa-bar
               %span.fa.fa-bar
               %span.fa.fa-bar
-            = link_to (current_platform.logo.present? ? image_tag(current_platform.logo.file_url) : current_platform.name), root_path, class: 'navbar-brand navbar-btn no-override'
+            %span.navbar-brand.navbar-btn
+              = link_to (current_tech.logo.present? ? image_tag(current_tech.logo.file_url) : current_platform.name), root_path, class: ''
+              %small{ style: 'font-size:11px;'}
+                powered by
+                = link_to image_tag('hackster_logo_20.png', style: 'height:11px;vertical-align:text-top;'), root_url(subdomain: 'www')
 
           .collapse.navbar-collapse
             .col-xs-4.navbar-left= render 'shared/search_form'
             %ul.nav.navbar-nav.pull-right
               %li.with-button
-                %span= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'btn btn-sm btn-warning navbar-btn'
+                %span= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_url(subdomain: 'www', project: { tech_tags_string: current_tech.tech_tags.first.name }), class: 'btn btn-sm btn-warning navbar-btn'
 
             -# if user_signed_in?
               %ul.nav.navbar-nav.navbar-right
@@ -104,18 +108,14 @@
         %ul.list-unstyled.list-inline.pull-left
           %li= link_to 'Help', 'mailto:team@hackster.io?subject=Help!'
           %li= link_to 'Feedback', 'mailto:team@hackster.io?subject=What%20I%20think%20about%20Hackster.io'
-          %li= link_to 'Terms', '/terms'
-          %li= link_to 'Privacy', '/privacy'
+          %li= link_to 'Terms', terms_url(subdomain: 'www')
+          %li= link_to 'Privacy', privacy_url(subdomain: 'www')
           %li
         %ul.list-unstyled.list-inline.pull-right
           %li
-            = link_to 'Hardware makers community site', ''
+            = link_to 'Hardware makers community site', root_url(subdomain: 'www')
             by
-            = link_to 'Hackster.io', ''
+            = link_to 'Hackster.io', root_url(subdomain: 'www')
             &copy; 2014
 
     = content_for :js
-    :javascript
-      $('a:not(.no-override)').each(function(i, el){
-        $(el).attr('href', 'http://www.hackster.io' + $(el).attr('href'));
-      });

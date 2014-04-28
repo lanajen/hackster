@@ -7,4 +7,24 @@ body.whitelabel {
       }
     }
   }
+  #subheading {
+    font-size: 12px;
+    margin-bottom: 20px;
+    ul {
+      li {
+        a {
+          color: #888;
+          text-transform: uppercase;
+          font-size: 10px;
+          &:hover {
+            text-decoration: none;
+            color: #444;
+          }
+        }
+        &:last-child {
+          padding-right: 0;
+        }
+      }
+    }
+  }
 }

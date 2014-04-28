@@ -1,38 +1,37 @@
 = content_for :head do
   %meta{ name: 'robots', content: 'noindex' }
 
-.search-page.row
-  .col-xs-3
-    %ul.nav.nav-pills.nav-stacked
-      %li{ class: "#{'active' if params[:type] == nil}" }= link_to 'All', search_path(q: params[:q], type: nil), class: 'no-override'
-      %li{ class: "#{'active' if params[:type] == 'user'}" }= link_to 'People', search_path(q: params[:q], type: 'user'), class: 'no-override'
-      %li{ class: "#{'active' if params[:type] == 'project'}" }= link_to 'Projects', search_path(q: params[:q], type: 'project'), class: 'no-override'
+.row
+  .col-xs-12
+    - if params[:q].present?
+      - if @results.any?
+        .header
+          - if @alternate_results
+            No results for #{current_platform.name}.
+            Showing
+            %b= pluralize @results.total_count, 'result'
+            for
+            %em= params[:q]
+            from hackster.io.
+          - else
+            %b= pluralize @results.total_count, 'result'
+            for
+            %em= params[:q]
+          %hr
 
-    -# .well
-      .content
-        %form{ action: search_path, method: :get, id: 'full-search-form' }
-          .form-group
-            .controls
-              %label
-                %strong Keywords
-              = text_field_tag :q, params[:q], class: 'input-medium', placeholder: 'Search'
-          .form-group= submit_tag 'Update results', class: 'btn btn-default btn-xs'
+        .row.thumb-list
+          - @results.each do |project|
+            - if project.external
+              = render partial: 'projects/project_thumb_external', locals: { project: project.decorate }
+            - else
+              = render partial: 'client/projects/project_thumb', locals: { project: project.decorate }
 
-  .col-xs-9
-    .well
-      - if params[:q].present?
-        - if @results.any?
-          .header
-            %b= pluralize @results.count, 'result'
-          .content.search-results
-            %ul.list-unstyled
-              - @results.each_with_index do |result, i|
-                %li{ class: "#{'last' if i == @results.size - 1}" }
-                  - model = result.class.name.underscore
-                  = render partial: model, locals: { :"#{model}" => result.decorate, ref: 'search', ref_id: params[:q], offset: i }
-        - else
-          .content.search-results
-            No results for <i>#{params[:q]}</i>.
+        .row
+          .col-xs-12.text-center= will_paginate @results
+
       - else
         .content.search-results
-          Go ahead, look something up!
+          No results for <i>#{params[:q]}</i>. <a href="http://www.hackster.io/projects/new?project[name]=#{params[:q]}&project[tech_tags_string]=#{current_tech.tech_tags.first.name}" class="btn btn-primary btn-sm">Add your own #{params[:q]} project</a>
+    - else
+      .content.search-results
+        Go ahead, look something up!

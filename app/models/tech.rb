@@ -4,6 +4,7 @@ class Tech < Group
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'TechMember'
   has_many :respects, as: :respecting, dependent: :destroy, class_name: 'Respect'
   has_many :respected_projects, through: :respects, source: :project
+  has_one :logo, as: :attachable, dependent: :destroy
   has_one :slug, as: :sluggable, dependent: :destroy, class_name: 'SlugHistory'
 
   store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link,

@@ -1,19 +1,29 @@
-= content_for :head do
+-# = content_for :head do
   %meta{ name: 'robots', content: 'noindex' }
   = auto_discovery_link_tag :rss, projects_path(format: :rss), title: 'Most recent projects - Hackster.io'
   = auto_discovery_link_tag :atom, projects_path(format: :atom), title: 'Most recent projects - Hackster.io'
 
 .content.projects
   .row
-    .col-xs-12.text-center
-      %h1 Spark gives you the tools to connect everyday electronics to the internet over Wi-Fi.
-      %ul.list-unstyled.list-inline
-        %li= link_to "#{content_tag(:i, '', class: 'fa fa-github')} Documentation".html_safe, 'http://spark.github.io', class: 'no-override hidden-link'
-        %li= link_to "#{content_tag(:i, '', class: 'fa fa-shopping-cart')} Buy".html_safe, 'http://spark.io', class: 'no-override hidden-link'
+    #subheading.col-xs-12
+      %p.pull-left= current_tech.mini_resume
+
+      %ul.list-inline.list-unstyled.pull-right
+        - if current_tech.documentation_link.present?
+          %li= link_to "Documentation", current_tech.documentation_link, target: '_blank'
+        - if current_tech.forums_link.present?
+          %li= link_to "Forums", current_tech.forums_link, target: '_blank'
+        - if current_tech.crowdfunding_link.present?
+          %li= link_to "Preorder #{current_tech.name}", current_tech.crowdfunding_link, target: '_blank'
+        - if current_tech.buy_link.present?
+          %li= link_to "Buy #{current_tech.name}", current_tech.buy_link, target: '_blank'
 
     .col-xs-12
       .row.thumb-list
         - @projects.each do |project|
-          = render partial: 'projects/project_thumb', locals: { project: project.decorate }
+          - if project.external
+            = render partial: 'projects/project_thumb_external', locals: { project: project.decorate }
+          - else
+            = render partial: 'client/projects/project_thumb', locals: { project: project.decorate }
       .row
         .col-xs-12.text-center= will_paginate @projects

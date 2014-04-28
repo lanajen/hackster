@@ -5,12 +5,21 @@ class Client::SearchController < Client::BaseController
 
     if params[:q].present?
       begin
-        params[:q] += ' spark'
-        # params[:type] = 'project'
-        @results = SearchRepository.new(params).search.results
-        params[:q].gsub! ' spark', ''
+        opts = params.dup
+        opts[:q] += ' spark'
+        opts[:type] = 'project'
+        opts[:include_external] = true
+        opts[:per_page] = Project.per_page
+        @results = SearchRepository.new(opts).search.results
 
-        track_event 'Searched projects', { query: params[:q], result_count: @results.size, type: params[:type] }
+        if @results.empty?
+          opts = params.dup
+          opts[:type] = 'project'
+          opts[:per_page] = Project.per_page
+          @results = @alternate_results = SearchRepository.new(opts).search.results
+        end
+
+        track_event 'Searched projects', { query: params[:q], result_count: @results.total_count, type: params[:type] }
       rescue
         @results = []
       end

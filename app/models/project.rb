@@ -99,6 +99,8 @@ class Project < ActiveRecord::Base
       indexes :text_widgets,    analyzer: 'snowball'
       indexes :user_names,      analyzer: 'snowball'
       indexes :private,         analyzer: 'keyword'
+      indexes :hide,            analyzer: 'keyword'
+      indexes :external,        analyzer: 'keyword'
       indexes :created_at
     end
   end
@@ -114,7 +116,9 @@ class Project < ActiveRecord::Base
       tech_tags: tech_tags_string,
       text_widgets: TextWidget.where('widgets.project_id = ?', id).map{ |w| w.content },
       user_name: team_members.map{ |t| t.user.try(:name) },
-      private: (private || hide),
+      private: private,
+      hide: hide,
+      external: external,
       created_at: created_at,
     }.to_json
   end
