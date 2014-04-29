@@ -1,4 +1,4 @@
 - if video.provider == 'vimeo'
-  %iframe{:allowfullscreen => "", :frameborder => "0", :height => "100%", :mozallowfullscreen => "", :src => "http://player.vimeo.com/video/#{video.id_for_provider}", :webkitallowfullscreen => "", :width => "100%"}
+  %iframe{:allowfullscreen => "", :frameborder => "0", :height => "100%", :mozallowfullscreen => "", :src => "//player.vimeo.com/video/#{video.id_for_provider}", :webkitallowfullscreen => "", :width => "100%"}
 - elsif video.provider == 'youtube'
-  %iframe{:allowfullscreen => "", :frameborder => "0", :height => "100%", :src => "http://www.youtube.com/embed/#{video.id_for_provider}?rel=0", :width => "100%"}
+  %iframe{:allowfullscreen => "", :frameborder => "0", :height => "100%", :src => "//www.youtube.com/embed/#{video.id_for_provider}?rel=0", :width => "100%"}

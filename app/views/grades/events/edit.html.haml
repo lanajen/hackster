@@ -20,10 +20,6 @@
                 %td= f_award.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-sm btn-danger'
           %tr.sortable-disabled
             %td{ colspan: 3 }= f.link_to_add 'Add an award', :awards, class: 'btn btn-sm btn-success'
-      -# %p.help-block
-        You can find award #'s from
-        = link_to 'Octoaward.', 'http://www.octoaward.com', target: '_blank'
-        Prices will be automatically fetched from there.
       = f.button :submit, 'Save changes', class: 'btn-block btn btn-primary'
 
 

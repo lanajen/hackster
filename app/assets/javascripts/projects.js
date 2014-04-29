@@ -224,7 +224,6 @@ $(document).ready(function(){
   fixedEl = $('.affixable');
   if (fixedEl.length > 0) {
     var top = fixedEl.offset().top - (parseFloat(fixedEl.css('top')) || 0);
-    console.log(top);
     $(window).scroll(function (event) {
       var y = $(this).scrollTop();
 

@@ -42,6 +42,8 @@
       = f.input :forums_link, label: 'Forums link'
       = f.input :crowdfunding_link, label: 'Crowdfunding campaign link'
       = f.input :buy_link, label: 'Store link'
+      - if current_user.is? :admin
+        = f.input :shoplocket_link, label: 'ShopLocket link'
 
       - if current_user.is? :admin
         = f.input :tech_tags_string, as: :string, label: 'Technology tags', hint: 'All the projects tagged with these tags will appear on this page. Separate technologies by commas'

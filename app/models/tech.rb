@@ -9,10 +9,11 @@ class Tech < Group
 
   store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link,
     :google_plus_link, :youtube_link, :website_link, :blog_link, :github_link,
-    :forums_link, :documentation_link, :crowdfunding_link, :buy_link]
+    :forums_link, :documentation_link, :crowdfunding_link, :buy_link,
+    :shoplocket_link]
 
   attr_accessible :forums_link, :documentation_link, :crowdfunding_link,
-    :buy_link, :logo_id
+    :buy_link, :logo_id, :shoplocket_link
 
   validates :user_name, :full_name, presence: true
   validates :user_name, :new_user_name, length: { in: 3..100 }, if: proc{|t| t.persisted?}
@@ -79,6 +80,12 @@ class Tech < Group
     # Project.includes(:tech_tags).where(tags: { name: tech_tags.pluck(:name) })
     Project.includes(:tech_tags).where('lower(tags.name) IN (?)', tech_tags.pluck(:name).map{|n| n.downcase })
     # SearchRepository.new(q: tech_tags_string).search.results
+  end
+
+  def shoplocket_token
+    return unless shoplocket_link.present?
+
+    shoplocket_link.split(/\//)[-1]
   end
 
   def update_user_name
