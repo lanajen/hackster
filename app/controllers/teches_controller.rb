@@ -2,6 +2,7 @@ class TechesController < ApplicationController
   before_filter :authenticate_user!, except: [:show, :embed]
   before_filter :load_tech, except: [:show, :embed]
   layout 'tech', only: [:edit, :update, :show]
+  after_action :allow_iframe, only: :embed
   respond_to :html
 
   def show

@@ -2,6 +2,7 @@ class EventsController < ApplicationController
   before_filter :authenticate_user!, except: [:show, :participants, :organizers, :embed]
   before_filter :load_event, only: [:show, :update, :participants, :organizers, :embed]
   layout 'event', only: [:edit, :update, :show, :participants, :organizers]
+  after_action :allow_iframe, only: :embed
   respond_to :html
 
   def show
