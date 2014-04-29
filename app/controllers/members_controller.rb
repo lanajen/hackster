@@ -46,6 +46,22 @@ class MembersController < ApplicationController
     end
   end
 
+  def update_guest_name
+    authorize! :update, @project
+
+    if @project.update_attributes(params[:project])
+      respond_with @project do |format|
+        format.html do
+          flash[:notice] = 'Team saved.'
+          respond_with Project.find(params[:project_id])
+        end
+      end
+
+    else
+      render action: "edit", template: "members/#{@model_name.pluralize}/edit"
+    end
+  end
+
   private
     def load_group
       @group = if params[:group_id]

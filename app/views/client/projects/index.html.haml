@@ -16,7 +16,7 @@
         - if current_tech.shoplocket_token.present?
           %li= link_to "Buy #{current_tech.name}", current_tech.buy_link, class: 'shoplocket-checkout', data: { 'shoplocket-product-token' => current_tech.shoplocket_token }
           = content_for :js do
-            = javascript_include_tag 'https://d1pocdzmde73mw.cloudfront.net/assets/widgets/embed.js'
+            = javascript_include_tag '//www.shoplocket.com/assets/widgets/embed.js'
         - else
           - if current_tech.crowdfunding_link.present?
             %li= link_to "Preorder #{current_tech.name}", current_tech.crowdfunding_link, target: '_blank'

@@ -88,14 +88,18 @@
                     Team
                     - if can? :debug, @project and can? :edit, @project
                       = link_to content_tag(:i, '', class: 'fa fa-pencil'), project_edit_team_path(@project), class: 'btn-edit no-float', rel: 'tooltip', title: 'Manage team', data: { container: 'body' }
-                  - users = @project.team.active_members.includes(:user)
-                  - if users.size < 5
-                    - users.each do |member|
-                      = render partial: 'users/line_thumb', locals: { member: member }
+                  - if @project.guest_name.present?
+                    .user
+                      = @project.guest_name
                   - else
-                    - users[0..3].each do |member|
-                      = render partial: 'users/line_thumb', locals: { member: member }
-                    .user= content_tag(:a, "And more #{content_tag(:i, '', class: 'fa fa-question-circle')}".html_safe, class: 'hidden-link help', data: { container: 'body', toggle: 'popover', placement: 'bottom', content: users.map { |m| render partial: 'users/line_thumb', locals: { member: m } }.join(''), html: 'true', trigger: 'hover', delay: '100' }, rel: 'popover')
+                    - users = @project.team.active_members.includes(:user)
+                    - if users.size < 5
+                      - users.each do |member|
+                        = render partial: 'users/line_thumb', locals: { member: member }
+                    - else
+                      - users[0..3].each do |member|
+                        = render partial: 'users/line_thumb', locals: { member: member }
+                      .user= content_tag(:a, "And more #{content_tag(:i, '', class: 'fa fa-question-circle')}".html_safe, class: 'hidden-link help', data: { container: 'body', toggle: 'popover', placement: 'bottom', content: users.map { |m| render partial: 'users/line_thumb', locals: { member: m } }.join(''), html: 'true', trigger: 'hover', delay: '100' }, rel: 'popover')
 
                 - if @project.tech_tags.any?
                   .tags.meta
@@ -130,6 +134,12 @@
                     %br
                     %strong Published on
                     = l @project.made_public_at, format: :date
+
+                - if @project.guest_name.present?
+                  .meta
+                    %strong Posted by
+                    - poster = @project.team.active_members.includes(:user).first.user
+                    = link_to poster.name, poster
 
                 - if @project.license
                   .license.meta

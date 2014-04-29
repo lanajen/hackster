@@ -47,7 +47,7 @@ class Project < ActiveRecord::Base
     :team_members_attributes, :website, :one_liner, :widgets_attributes,
     :featured, :featured_date, :cover_image_id, :logo_id, :license, :slug,
     :permissions_attributes, :new_slug, :slug_histories_attributes, :hide,
-    :collection_id, :graded, :wip, :columns_count, :external
+    :collection_id, :graded, :wip, :columns_count, :external, :guest_name
   attr_accessor :current
   attr_writer :new_slug
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
@@ -281,7 +281,13 @@ class Project < ActiveRecord::Base
   end
 
   def user_name_for_url
-    team.try(:user_name).presence || 'non_attributed'
+    user_name_from_guest_name.presence || team.try(:user_name).presence || 'non_attributed'
+  end
+
+  def user_name_from_guest_name
+    return unless guest_name
+
+    I18n.transliterate(guest_name).gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
   end
 
   def widgets_first_col

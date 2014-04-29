@@ -133,6 +133,7 @@ HackerIo::Application.routes.draw do
       patch 'permissions' => 'permissions#update'
       get 'team/edit' => 'members#edit', as: :edit_team
       patch 'team' => 'members#update'
+      patch 'guest_name' => 'members#update_guest_name'
       collection do
         resources :imports, only: [:new, :create], controller: :project_imports, as: :project_imports do
           post 'submit', on: :collection
