@@ -335,7 +335,7 @@ class User < ActiveRecord::Base
     # logger.info provider.to_s
     # logger.info 'user: ' + self.to_yaml
     if info and provider == 'Facebook'
-      self.user_name = info.nickname if user_name.blank?
+      self.user_name = clean_user_name(info.nickname) if user_name.blank?
       self.email = self.email_confirmation = info.email if email.blank?
       self.full_name = info.name if full_name.blank?
       self.mini_resume = info.description if mini_resume.blank?
@@ -359,7 +359,7 @@ class User < ActiveRecord::Base
         token: data.credentials.token
       )
     elsif info and provider == 'Github'
-      self.user_name = info.nickname if user_name.blank?
+      self.user_name = clean_user_name(info.nickname) if user_name.blank?
       self.full_name = info.name if full_name.blank?
       self.email = self.email_confirmation = info.email if email.blank?
       self.github_link = info.urls['GitHub']
@@ -378,7 +378,7 @@ class User < ActiveRecord::Base
         token: data.credentials.token
       )
     elsif info and provider == 'Google+'
-      self.user_name = info.email.match(/(.+)@/).try(:[], 1).try(:gsub, /[^0-9a-z_]/, '') if user_name.blank?
+      self.user_name = clean_user_name(info.nickname) if user_name.blank?
       self.full_name = info.name if full_name.blank?
       self.email = self.email_confirmation = info.email if email.blank?
       self.google_plus_link = info.urls['Google+']
@@ -397,7 +397,7 @@ class User < ActiveRecord::Base
         token: data.credentials.token
       )
     elsif info and provider == 'LinkedIn'
-      # self.user_name = info.nickname if user_name.blank?
+      # self.user_name = clean_user_name(info.nickname) if user_name.blank?
       self.full_name = info.first_name.to_s + ' ' + info.last_name.to_s if full_name.blank?
       self.email = self.email_confirmation = info.email if email.blank?
       self.mini_resume = info.description if mini_resume.nil?
@@ -419,7 +419,7 @@ class User < ActiveRecord::Base
         token: data.credentials.token
       )
     elsif info and provider == 'Twitter'
-      self.user_name = info.nickname if user_name.blank?
+      self.user_name = clean_user_name(info.nickname) if user_name.blank?
       self.full_name = info.name if full_name.blank?
       self.mini_resume = info.description if mini_resume.nil?
       self.interest_tags_string = info.description.scan(/\#([[:alpha:]]+)/i).join(',')
@@ -653,6 +653,10 @@ class User < ActiveRecord::Base
   end
 
   private
+    def clean_user_name user_name
+      user_name.try(:downcase).try(:gsub, /[^a-z0-9_\-]/, '')
+    end
+
     def email_is_unique_for_registered_users
       errors.add :email, 'is already a member' if self.class.where(email: email).where('users.invitation_token IS NULL').any?
     end
