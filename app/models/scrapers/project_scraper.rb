@@ -47,6 +47,7 @@ class ProjectScraper
       'github.com' => :github,
       'instructables.com' => :instructable,
       'kickstarter.com' => :kickstarter,
+      'community.spark.io' => :spark_forum,
       'wordpress.com' => :wordpress,
     }
 
