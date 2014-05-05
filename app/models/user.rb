@@ -346,10 +346,15 @@ class User < ActiveRecord::Base
           self.city = location['name'].split(',')[0] if city.nil?
           self.country = location['name'].split(',')[1].strip if country.nil?
         end
+
+      rescue => e
+        logger.error "Error in extract_from_social_profile (facebook location): " + e.inspect
+      end
+      begin
         image_url = "https://graph.facebook.com/#{data.uid}/picture?height=200&width=200"
         self.build_avatar(remote_file_url: image_url) if image_url and not avatar
       rescue => e
-        logger.error "Error in extract_from_social_profile (facebook): " + e.inspect
+        logger.error "Error in extract_from_social_profile (facebook avatar): " + e.inspect
       end
       self.authorizations.build(
         uid: data.uid,
