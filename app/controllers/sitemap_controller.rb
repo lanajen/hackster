@@ -53,5 +53,13 @@ class SitemapController < ApplicationController
           lastmod: tag.updated_at.strftime("%F"),
         }
       end
+
+      Tech.find_each do |tech|
+        @sitemap_pages << {
+          loc: "#{tech_short_url(tech)}",
+          changefreq: 'weekly',
+          lastmod: tech.updated_at.strftime("%F"),
+        }
+      end
     end
 end

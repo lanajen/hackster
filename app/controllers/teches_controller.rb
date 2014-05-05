@@ -9,7 +9,7 @@ class TechesController < ApplicationController
     @tech = load_with_slug
     impressionist_async @tech, "", unique: [:session_hash]
     # authorize! :read, @tech
-    title @tech.name
+    title "#{@tech.name} projects"
     meta_desc "People are hacking with #{@tech.name} on Hackster.io. Join them!"
     @broadcasts = @tech.broadcasts.limit 20
 
