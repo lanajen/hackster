@@ -29,6 +29,7 @@
         = f.input :one_liner, as: :text, input_html: { rows: 4 },
           hint: 'Maximum 140 characters'
         = f.input :website, label: 'Project website'
+        = f.input :guest_name, label: 'Author name'
         = f.input :start_date, order: [:year, :month, :day], label: 'Date', hint: 'When did this project come to life?' do
           .row
             .col-xs-6

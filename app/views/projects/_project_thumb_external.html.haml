@@ -8,6 +8,9 @@
       .inner-thumb
         %h3= link_to project.name, project.website, target: '_blank'
         %h4
+          - if project.guest_name.present?
+            by
+            = project.guest_name
           on
           = URI.parse(project.website).host.gsub(/^www\./, '')
         %p= truncate project.one_liner, length: 140
