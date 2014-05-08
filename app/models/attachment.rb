@@ -3,6 +3,7 @@ class Attachment < ActiveRecord::Base
 
   attr_accessible :type, :file, :file_cache, :remote_file_url, :caption,
     :title, :position, :tmp_file
+  # attr_accessor :skip_extension_check
 
   belongs_to :attachable, polymorphic: true
   # validate :ensure_has_file, unless: proc { |a| a.skip_file_check? }
@@ -47,6 +48,37 @@ class Attachment < ActiveRecord::Base
     AttachmentQueue.perform_async 'process', id
   end
 
+  # def remote_file_url=(url)
+  #   return if url.blank?
+
+  #   return super(url) if File.extname(URI.parse(url).path).present?
+
+  #   begin
+  #     self.skip_extension_check = true
+  #     file.download!(url)
+  #   ensure
+  #     self.skip_extension_check = false
+  #   end
+
+  #   path = file.path
+  #   ext = File.extname(path)
+
+  #   logger.debug "Downloaded file extension - #{ext}"
+
+  #   if ext.blank? && ext = detect_extension(path)
+  #     logger.debug "Detected extension for avatar - #{ext}"
+  #     path = path + ".#{ext}"
+  #     FileUtils.mv(file.path, path)
+  #     file.remove!
+  #     self.file = File.open(path)
+  #   end
+
+  #   file.send(:check_whitelist!, CarrierWave::SanitizedFile.new(File.open(path)))
+
+  #   save!
+  #   file.store!
+  # end
+
   def skip_file_check?
     @skip_file_check
   end
@@ -67,4 +99,19 @@ class Attachment < ActiveRecord::Base
     def file_size
       errors[:file] << "should be less than #{MAX_FILE_SIZE}MB" if file.size > MAX_FILE_SIZE.megabytes
     end
+
+  # protected
+  #   def detect_extension(file_name)
+  #     mime_type = %x(file --mime-type #{file_name}|cut -f2 -d' ').gsub("\n", "")
+  #     case mime_type
+  #     when 'image/jpeg'
+  #       'jpg'
+  #     when 'image/jpg'
+  #       'jpg'
+  #     when 'image/png'
+  #       'png'
+  #     when 'image/gif'
+  #       'gif'
+  #     end
+  #   end
 end

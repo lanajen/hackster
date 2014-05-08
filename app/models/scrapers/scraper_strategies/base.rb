@@ -164,15 +164,17 @@ module ScraperStrategies
         i = 0
         collection.each do |src, title|
           puts "Parsing image #{src}..."
-          image = image_widget.images.new(remote_file_url: src, title: title.try(:truncate, 255), position: i)
+          image = image_widget.images.new(title: title.try(:truncate, 255), position: i)
           image.skip_file_check!
+          image.remote_file_url = src
           i += 1
         end
         @widgets << image_widget if image_widget.images.any?
 
         if img = collection.first
-          image = @project.build_cover_image remote_file_url: img[0]
+          image = @project.build_cover_image
           image.skip_file_check!
+          image.remote_file_url = img[0]
         end
       end
 

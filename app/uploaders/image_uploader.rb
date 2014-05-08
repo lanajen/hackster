@@ -27,7 +27,7 @@ class ImageUploader < BaseUploader
   end
 
   def extension_white_list
-    %w(gif png jpg jpeg ico bmp) unless model.skip_file_check?
+    %w(gif png jpg jpeg ico bmp) unless model.skip_file_check?# or model.skip_extension_check
   end
 
   def needs_processing?
