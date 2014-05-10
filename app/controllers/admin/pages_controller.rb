@@ -96,4 +96,17 @@ class Admin::PagesController < Admin::BaseController
 
   def root
   end
+
+  def teches
+    title "Admin / Techs - #{params[:page]}"
+    @fields = {
+      'created_at' => 'groups.created_at',
+      'name' => 'groups.full_name',
+      'user_name' => 'groups.user_name',
+    }
+
+    params[:sort_by] ||= 'created_at'
+
+    @groups = filter_for Tech, @fields
+  end
 end

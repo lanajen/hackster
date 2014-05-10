@@ -10,7 +10,7 @@
         %h4
           - if project.guest_name.present?
             by
-            = project.guest_name
+            %span.fake-link= project.guest_name
           on
-          = URI.parse(project.website).host.gsub(/^www\./, '')
+          %span.fake-link= URI.parse(project.website).host.gsub(/^www\./, '')
         %p= truncate project.one_liner, length: 140

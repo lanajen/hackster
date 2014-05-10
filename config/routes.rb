@@ -39,6 +39,7 @@ HackerIo::Application.routes.draw do
       get 'issues' => 'pages#issues'
       get 'logs' => 'pages#logs'
       get 'respects' => 'pages#respects'
+      get 'teches' => 'pages#teches'
       get 'followers' => 'pages#followers'
       delete 'sidekiq/failures' => 'pages#clear_sidekiq_failures'
 

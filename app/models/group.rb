@@ -16,7 +16,7 @@ class Group < ActiveRecord::Base
   has_many :users, through: :members
   has_one :avatar, as: :attachable, dependent: :destroy
 
-  attr_accessible :avatar_attributes,
+  attr_accessible :avatar_attributes, :type,
     :facebook_link, :twitter_link, :linked_in_link, :website_link,
     :blog_link, :github_link, :email, :mini_resume, :city, :country,
     :user_name, :full_name, :members_attributes, :avatar_id,

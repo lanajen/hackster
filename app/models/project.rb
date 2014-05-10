@@ -124,6 +124,10 @@ class Project < ActiveRecord::Base
   end
   # end of search methods
 
+  def self.external
+    where(external: true)
+  end
+
   def self.featured
     indexable.where(featured: true).order(featured_date: :desc)
   end

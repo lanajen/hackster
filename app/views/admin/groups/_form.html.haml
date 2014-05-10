@@ -4,6 +4,18 @@
 = f.input :mini_resume
 = f.input :city
 = f.input :country
+= f.input :type, collection: %w(Course Event Hackathon Promotion Tech University)
+- case @group.type
+- when 'Course'
+  = f.association :university, collection: University.all
+- when 'Event'
+  = f.association :hackathon, collection: Hackathon.all
+- when 'Hackathon'
+- when 'Promotion'
+  = f.association :course, collection: Course.all
+- when 'Tech'
+  = f.input :tech_tags_string
+- when 'University'
 .col-xs-offset-4.col-xs-8
   = f.button :submit, :class => 'btn btn-primary'
   = link_to t('.cancel', :default => t("helpers.links.cancel")), admin_groups_path, :class => 'btn btn-default'
