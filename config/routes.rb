@@ -149,6 +149,7 @@ HackerIo::Application.routes.draw do
     end
 
     get 'projects/e/:user_name/:slug' => 'projects#show_external', as: :external_project
+    get 'get_xframe_options' => 'projects#get_xframe_options'
 
     resources :assignments, only: [] do
       get 'grades' => 'grades#index', as: :grades

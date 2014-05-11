@@ -22,10 +22,14 @@
                 = @project.guest_name
           %p= @project.one_liner
 
-  -# %iframe{ src: @project.website, width: '100%', frameborder: 0, height: '100%' }
   #iframe
     .container
-      %p{ style: 'padding-top:100px;'} Redirecting you to #{link_to @project.website, @project.website}...
+      %p{ style: 'padding-top:100px;'}
+        = image_tag 'loader.gif'
+        Loading...
+        %br
+        %br
+        Click this link if nothing happens: #{link_to @project.website, @project.website}
 
 = content_for :js do
   :javascript
@@ -33,6 +37,10 @@
       .height($(window).height())
       .css('padding-top', $('#iframe-header').outerHeight());
 
-    window.setTimeout(function(){
-      window.location.href = "#{@project.website}";
-    }, 5000);
+    $.get('/get_xframe_options', { url: "#{@project.website}" }, function(r){
+      if (r == 'true') {
+        $('#iframe').html('<iframe src="#{@project.website}" width="100%" height="100%" frameborder=0></iframe>');
+      } else {
+        window.location.href = "#{@project.website}";
+      }
+    });

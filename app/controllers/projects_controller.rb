@@ -1,5 +1,5 @@
 class ProjectsController < ApplicationController
-  before_filter :load_project, except: [:index, :create, :new, :edit, :redirect_to_last, :show_external]
+  before_filter :load_project, only: [:show, :embed, :update, :destroy, :redirect_old_show_route]
   load_and_authorize_resource only: [:index, :create, :new, :edit]
   layout 'project', only: [:edit, :update, :show]
   respond_to :html
@@ -107,7 +107,16 @@ class ProjectsController < ApplicationController
   def show_external
     @project = Project.external.find_by_slug(params[:slug]).decorate
     title @project.name
+    meta_desc @project.one_liner
     params[:blank_frame] = true
+  end
+
+  def get_xframe_options
+    embed = !get_xframe_options_for(params[:url]).in?(%w(SAMEORIGIN DENY))
+
+    respond_to do |format|
+      format.js { render json: embed.to_json }
+    end
   end
 
   def embed
@@ -197,6 +206,16 @@ class ProjectsController < ApplicationController
   end
 
   private
+    def get_xframe_options_for url
+      u = URI.parse(url)
+      http = Net::HTTP.new(u.host, u.port)
+      http.use_ssl = true if u.scheme == 'https'
+      # http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      res = http.request_head(u.request_uri)
+
+      res['X-Frame-Options']
+    end
+
     def initialize_project
 #      @project.images.new# unless @project.images.any?
 #      @project.build_video unless @project.video
