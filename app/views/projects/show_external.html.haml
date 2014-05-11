@@ -1,0 +1,30 @@
+= content_for :no_container do
+  #iframe-header
+
+    .container
+      - if request.referrer and URI(request.referer).host == APP_CONFIG['default_host']
+        = link_to "&larr; Return to project list on #{image_tag('hackster_logo_20.png', style: 'max-height: 11px;vertical-align: baseline;')}".html_safe, :back
+      - else
+        = link_to image_tag('hackster_logo_20.png'), root_path
+      .pull-right
+        %small= link_to 'Close', @project.website, rel: 'nofollow'
+      .clearfix
+
+      .media
+        .pull-left
+          .media-object= image_tag @project.cover_image(:cover_thumb), class: 'cover'
+        .media-body
+          %h1
+            = @project.name
+            %small
+              by
+              = @project.guest_name
+          %p= @project.one_liner
+
+  %iframe{ src: @project.website, width: '100%', frameborder: 0, height: '100%' }
+
+= content_for :js do
+  :javascript
+    $('iframe')
+      .height($(window).height())
+      .css('padding-top', $('#iframe-header').outerHeight());

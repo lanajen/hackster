@@ -148,6 +148,8 @@ HackerIo::Application.routes.draw do
       patch 'widgets' => 'widgets#save'
     end
 
+    get 'projects/e/:user_name/:slug' => 'projects#show_external', as: :external_project
+
     resources :assignments, only: [] do
       get 'grades' => 'grades#index', as: :grades
       get 'grades/edit(/:project_id(/:user_id))' => 'grades#edit', as: :edit_grade

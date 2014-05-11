@@ -285,7 +285,7 @@ class Project < ActiveRecord::Base
   end
 
   def user_name_for_url
-    user_name_from_guest_name.presence || team.try(:user_name).presence || 'non_attributed'
+    user_name_from_guest_name.presence || team.try(:user_name).presence || id
   end
 
   def user_name_from_guest_name

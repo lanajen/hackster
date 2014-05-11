@@ -2,11 +2,11 @@
   .project-thumb
     .thumb
       .photo-thumb
-        = link_to image_tag(project.cover_image(:cover_thumb), alt: project.name), external_project_path(project)
+        = link_to image_tag(project.cover_image(:cover_thumb), alt: project.name), external_project_url(project, subdomain: 'www')
         .thumb-top
           .thumb-top-inner
       .inner-thumb
-        %h3= link_to project.name, external_project_path(project)
+        %h3= link_to project.name, external_project_url(project, subdomain: 'www')
         %h4
           - if project.guest_name.present?
             by

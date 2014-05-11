@@ -20,7 +20,7 @@
     /[if lt IE 9]
       = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.1/html5shiv.js"
     = stylesheet_link_tag "application", :media => "all"
-    <link href='//fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
+    -# <link href='//fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
     <link href="#{ asset_path 'favicon.ico' }" rel="shortcut icon" type="image/vnd.microsoft.icon">
     = javascript_include_tag "application"
     - unless current_user and current_user.is? :admin

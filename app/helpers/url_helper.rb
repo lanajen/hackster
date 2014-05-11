@@ -27,6 +27,14 @@ module UrlHelper
     hackathon_event_url params_for_event(event).merge(opts)
   end
 
+  def external_project_path project, opts={}
+    super project.user_name_for_url, project.slug, opts
+  end
+
+  def external_project_url project, opts={}
+    super project.user_name_for_url, project.slug, opts
+  end
+
   def feedback_comments_path issue, opts={}
     issue_comments_path(issue, opts)
   end

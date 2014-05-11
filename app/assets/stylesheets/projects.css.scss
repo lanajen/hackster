@@ -28,14 +28,6 @@
   }
 }
 
-#stages {
-  background: image-url('line.png') center top repeat-y;
-  margin: 50px 0;
-  .stage {
-    margin-bottom: 50px;
-  }
-}
-
 .thumb-horizontal {
   display: none;
 }
@@ -458,4 +450,19 @@ a.action-respected, a.action-followed {
   background: #fff;
   padding: 15px;
   margin-bottom: 20px;
+}
+
+#iframe-header {
+  position:fixed;
+  width:100%;
+  background: #f2f2f2;
+  border-bottom: 2px solid #aaa;
+  padding: 10px 0;
+  h1 {
+    font-size: 20px;
+    margin: 0;
+  }
+  img.cover {
+    height: 40px;
+  }
 }

@@ -38,6 +38,14 @@ class SitemapController < ApplicationController
         }
       end
 
+      Project.external.find_each do |project|
+        @sitemap_pages << {
+          loc: "#{external_project_url(project)}",
+          changefreq: 'monthly',
+          lastmod: project.updated_at.strftime("%F"),
+        }
+      end
+
       User.invitation_accepted_or_not_invited.find_each do |user|
         @sitemap_pages << {
           loc: "#{url_for(user)}",

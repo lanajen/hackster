@@ -1,5 +1,5 @@
 class ProjectsController < ApplicationController
-  before_filter :load_project, except: [:index, :create, :new, :edit, :redirect_to_last]
+  before_filter :load_project, except: [:index, :create, :new, :edit, :redirect_to_last, :show_external]
   load_and_authorize_resource only: [:index, :create, :new, :edit]
   layout 'project', only: [:edit, :update, :show]
   respond_to :html
@@ -102,6 +102,12 @@ class ProjectsController < ApplicationController
     end
 
     track_event 'Viewed project', @project.to_tracker.merge({ own: !!current_user.try(:is_team_member?, @project) })
+  end
+
+  def show_external
+    @project = Project.external.find_by_slug(params[:slug]).decorate
+    title @project.name
+    params[:blank_frame] = true
   end
 
   def embed
