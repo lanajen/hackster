@@ -16,15 +16,23 @@
         .media-body
           %h1
             = @project.name
-            %small
-              by
-              = @project.guest_name
+            - if @project.guest_name.present?
+              %small
+                by
+                = @project.guest_name
           %p= @project.one_liner
 
-  %iframe{ src: @project.website, width: '100%', frameborder: 0, height: '100%' }
+  -# %iframe{ src: @project.website, width: '100%', frameborder: 0, height: '100%' }
+  #iframe
+    .container
+      %p{ style: 'padding-top:100px;'} Redirecting you to #{link_to @project.website, @project.website}...
 
 = content_for :js do
   :javascript
-    $('iframe')
+    $('#iframe')
       .height($(window).height())
       .css('padding-top', $('#iframe-header').outerHeight());
+
+    window.setTimeout(function(){
+      window.location.href = "#{@project.website}";
+    }, 5000);
