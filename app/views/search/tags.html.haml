@@ -16,7 +16,10 @@
     - if @results.any?
       .row
         - @results.each do |project|
-          = render partial: "projects/project_thumb", locals: { project: project.decorate, ref: 'tags' }
+          - if project.external
+            = render partial: "projects/project_thumb_external", locals: { project: project.decorate, ref: 'tags' }
+          - else
+            = render partial: "projects/project_thumb", locals: { project: project.decorate, ref: 'tags' }
       .row
         .col-xs-12.text-center= will_paginate @results
     - else

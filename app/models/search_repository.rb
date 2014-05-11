@@ -21,7 +21,7 @@ class SearchRepository
     def search_models query, models=nil, offset=nil, page=1, per_page=RESULTS_PER_PAGE, include_external
       per_page ||= RESULTS_PER_PAGE
       page ||= 1
-      include_external ||= false
+      include_external ||= true
       filters = []
       filters << { terms: { model: models } } if models.present?
       Rails.logger.info "Searching for #{query} and model #{models.to_s} (offset: #{offset}, page: #{page}, per_page: #{per_page})"

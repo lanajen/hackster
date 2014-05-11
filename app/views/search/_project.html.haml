@@ -1,3 +1,4 @@
-%a{ href: project_path(project, ref: ref, ref_id: ref_id, offset: offset) }
+- link = project.external? ? external_project_path(project) : project_path(project, ref: ref, ref_id: ref_id, offset: offset)
+%a{ href: link }
   = image_tag project.cover_image(:cover_mini_thumb)
   %b= project.name
