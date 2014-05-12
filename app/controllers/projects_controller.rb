@@ -214,6 +214,8 @@ class ProjectsController < ApplicationController
       res = http.request_head(u.request_uri)
 
       res['X-Frame-Options']
+    rescue
+      false
     end
 
     def initialize_project
