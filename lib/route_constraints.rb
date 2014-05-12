@@ -7,7 +7,7 @@ end
 class ClientSite
   def self.matches?(request)
     subdomain = request.subdomains[0]
-    subdomain != 'www' and ClientSubdomain.find_by_subdomain(subdomain)
+    !subdomain.in? %w(www beta)
   end
 end
 
