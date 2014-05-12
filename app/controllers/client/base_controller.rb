@@ -5,9 +5,7 @@ class Client::BaseController < ApplicationController
   layout 'whitelabel'
 
   def current_platform
-    return @current_site if @current_site
-
-    redirect_to root_url(subdomain: 'www') unless @current_site = ClientSubdomain.find_by_subdomain(request.subdomains[0])
+    @current_site ||= ClientSubdomain.find_by_subdomain(request.subdomains[0])
   end
 
   def current_tech
