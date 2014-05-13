@@ -34,10 +34,10 @@ class SearchRepository
           filter :term, private: false
           filter :term, hide: false
         end
-        sort do
-          by :external
-          by :created_at, { order: :desc, ignore_unmapped: true }
-        end
+        # sort do
+        #   by :external
+        #   by :created_at, { order: :desc, ignore_unmapped: true }
+        # end
         size per_page
         from (offset || (per_page.to_i * (page.to_i-1)))
       end

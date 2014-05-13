@@ -7,6 +7,7 @@
       %li{ class: "#{'active' if params[:type] == nil}" }= link_to 'All', search_path(q: params[:q], type: nil)
       %li{ class: "#{'active' if params[:type] == 'user'}" }= link_to 'People', search_path(q: params[:q], type: 'user')
       %li{ class: "#{'active' if params[:type] == 'project'}" }= link_to 'Projects', search_path(q: params[:q], type: 'project')
+      %li{ class: "#{'active' if params[:type] == 'tech'}" }= link_to 'Tools', search_path(q: params[:q], type: 'tech')
 
     -# .well
       .content

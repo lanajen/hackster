@@ -106,6 +106,7 @@ class ProjectsController < ApplicationController
 
   def show_external
     @project = Project.external.find_by_slug(params[:slug]).decorate
+    impressionist_async @project, '', unique: [:session_hash]
     title @project.name
     meta_desc @project.one_liner
     params[:blank_frame] = true
