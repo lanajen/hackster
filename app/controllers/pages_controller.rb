@@ -12,7 +12,7 @@ class PagesController < ApplicationController
 
   def home
     # if user_signed_in?
-      render_options = { template: 'pages/home_signed_in' }
+      # render_options = { template: 'pages/home_signed_in' }
       limit = 4
 
       @most_popular_projects = Project.indexable.most_popular.limit limit
@@ -20,6 +20,7 @@ class PagesController < ApplicationController
       # @active_projects = Project.last_updated.limit 4
       @featured_projects = Project.featured.limit 4
       @wip_projects = Project.wip.limit 4
+      @tools = Tech.where(user_name: %w(spark electric-imp arduino raspberry-pi beagleboard teensy)).order(:full_name)
 
       event = 'Visited home page as member'
     # else
@@ -36,7 +37,7 @@ class PagesController < ApplicationController
 #      @custom_projects = @custom_projects_query.present? ? SearchRepository.new(query: @custom_projects_query, model: { project: 1 }, size: 4).search.results : []
 #    end
 
-    render render_options
+    # render render_options
 
     track_event event
   end

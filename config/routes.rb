@@ -197,6 +197,7 @@ HackerIo::Application.routes.draw do
     get 'search' => 'search#search'
     get 'tags/:tag' => 'search#tags', as: :tags
     get 'tags' => 'search#tags'
+    get 'tools' => 'teches#index'
 
     get 'infringement_policy' => 'pages#infringement_policy'
     get 'privacy' => 'pages#privacy'

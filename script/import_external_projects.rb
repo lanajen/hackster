@@ -1,7 +1,7 @@
 require 'csv'
 
-tech = 'Digispark'
-csv_text = ""
+# csv_text = ""
+tech = 'Intel Galileo'
 
 csv = CSV.parse(csv_text, headers: true)
 csv.each do |row|
@@ -14,3 +14,5 @@ csv.each do |row|
   p.tech_tags_string = tech
   p.save
 end
+
+#website,name,one_liner,cover_image,guest_name
