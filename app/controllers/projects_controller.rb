@@ -115,9 +115,7 @@ class ProjectsController < ApplicationController
   def get_xframe_options
     embed = !get_xframe_options_for(params[:url]).in?(%w(SAMEORIGIN DENY))
 
-    respond_to do |format|
-      format.js { render json: embed.to_json }
-    end
+    render json: embed.to_json
   end
 
   def embed
@@ -215,8 +213,8 @@ class ProjectsController < ApplicationController
       res = http.request_head(u.request_uri)
 
       res['X-Frame-Options']
-    rescue
-      false
+    rescue => e
+      e.message
     end
 
     def initialize_project
