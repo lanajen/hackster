@@ -1,9 +1,15 @@
 class TechesController < ApplicationController
-  before_filter :authenticate_user!, except: [:show, :embed]
-  before_filter :load_tech, except: [:show, :embed]
+  before_filter :authenticate_user!, except: [:show, :embed, :index]
+  before_filter :load_tech, except: [:show, :embed, :index]
   layout 'tech', only: [:edit, :update, :show]
   after_action :allow_iframe, only: :embed
   respond_to :html
+
+  def index
+    @teches = Tech.public.order(:full_name)
+
+    render "groups/teches/#{self.action_name}"
+  end
 
   def show
     @tech = load_with_slug

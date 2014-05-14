@@ -1,0 +1,10 @@
+.content
+  .row
+    .col-xs-12
+      %h1
+        Explore tools
+      %hr
+
+  .row
+    - @teches.each do |tech|
+      = render partial: 'groups/teches/tech_thumb', locals: { tech: tech }

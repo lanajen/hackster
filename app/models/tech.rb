@@ -1,4 +1,5 @@
 class Tech < Group
+  include Privatable
   include Taggable
 
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'TechMember'

@@ -1,0 +1,6 @@
+.col-xs-2.tech-thumb
+  = link_to(image_tag(tech.avatar.file_url(:big), class: 'img-thumbnail'), tech_short_path(tech)) if tech.avatar
+  %h6.text-center
+    = link_to tech.name, tech_short_path(tech)
+    %span.badge.istooltip{ title: 'Projects', data: { container: 'body' } }= tech.projects.count
+  %p.text-center= tech.mini_resume

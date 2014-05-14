@@ -3,9 +3,10 @@
 
 require 'csv'
 
-tech = 'BeagleBoard'
+tech = 'TI Launchpad'
 
 csv = CSV.parse(csv_text, headers: true)
+projects=[]
 csv.each do |row|
   hash = {}
   row.to_hash.each{|k,v| hash[k] = v.try(:strip) }
@@ -16,5 +17,5 @@ csv.each do |row|
   p.cover_image = i
   p.external = true
   p.tech_tags_string = tech
-  p.save
+  projects << p unless p.save
 end
