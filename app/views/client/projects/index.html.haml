@@ -3,6 +3,22 @@
   = auto_discovery_link_tag :rss, projects_path(format: :rss), title: 'Most recent projects - Hackster.io'
   = auto_discovery_link_tag :atom, projects_path(format: :atom), title: 'Most recent projects - Hackster.io'
 
+- content_for :head do
+  %meta(property="og:title" content="#{current_tech.name} projects")
+  %meta(property="og:description" content="#{meta_desc}")
+  - if current_tech.logo
+    %meta(property="og:image" content="#{current_tech.logo.file_url}")
+    %meta(property="twitter:image:src" content="#{current_tech.logo.file_url}")
+  %meta(property="og:url" content="#{tech_short_url(current_tech)}")
+  %meta(property="og:site_name" content="#{current_tech.name} projects")
+  - if link = current_tech.twitter_link.presence and handle = link.match(/twitter.com\/(.+)/).try(:[], 1)
+    %meta(property="twitter:site" content="@#{handle}")
+  %meta(property="twitter:card" content="summary")
+  %meta(property="twitter:domain" content="#{current_tech.user_name}.hackster.io")
+  %meta(property="twitter:title" content="#{current_tech.name} projects")
+  %meta(property="twitter:description" content="#{meta_desc}")
+  %link(rel="canonical" href="#{tech_short_url(current_tech)}")
+
 .content.projects
   .row
     #subheading.col-xs-12

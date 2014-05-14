@@ -13,4 +13,13 @@ class Client::BaseController < ApplicationController
 
     redirect_to root_url(subdomain: 'www') unless @current_tech = Tech.find_by_user_name(request.subdomains[0])
   end
+
+  protected
+    def meta_desc meta_desc=nil
+      if meta_desc
+        @meta_desc = meta_desc
+      else
+        @meta_desc || "#{current_tech.mini_resume} Come explore #{current_tech.name} projects!"
+      end
+    end
 end
