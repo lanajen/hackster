@@ -2,7 +2,7 @@
 .page-header
   %h1
     Techs
-    %small= link_to t('.new', :default => t("helpers.links.new")), new_admin_group_path, :class => 'btn btn-primary btn-sm'
+    %small= link_to t('.new', :default => t("helpers.links.new")), new_admin_group_path(group: { type: 'Tech' }), :class => 'btn btn-primary btn-sm'
 
 = render 'admin/shared/search_form_tag'
 - (@fields.keys - %w(created_at)).each do |field|

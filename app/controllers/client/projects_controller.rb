@@ -7,7 +7,11 @@ class Client::ProjectsController < Client::BaseController
   after_action :allow_iframe, only: :embed
 
   def index
-    title "#{current_platform.name} projects - Page #{params[:page] || 1}"
+    title = "#{current_platform.name} projects"
+    title += " - Page #{params[:page]}" if params[:page]
+    title title
+
+    impressionist_async current_tech, "", unique: [:session_hash]
 
     # params[:sort] ||= 'recent'
     # @by = params[:by] || 'all'

@@ -3,7 +3,7 @@
 = f.input :email
 = f.input :mini_resume
 = f.input :city
-= f.input :country
+= f.input :country, as: :select
 = f.input :type, collection: %w(Course Event Hackathon Promotion Tech University)
 - case @group.type
 - when 'Course'

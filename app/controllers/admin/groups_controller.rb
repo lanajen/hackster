@@ -14,7 +14,7 @@ class Admin::GroupsController < Admin::BaseController
   end
 
   def new
-    @group = Group.new
+    @group = Group.new(params[:group])
   end
 
   def create
