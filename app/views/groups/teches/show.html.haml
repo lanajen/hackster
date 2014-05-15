@@ -45,7 +45,7 @@
                 = link_to "Create the first #{@tech.name} project", new_project_path(project: { tech_tags_string: @tech.tech_tags.first.name }), class: 'btn btn-primary btn-sm'
 
 
-  #tab-activity.tab-pane.fade
+  -# #tab-activity.tab-pane.fade
     .col-xs-12
       %ul
         - @broadcasts.each do |broadcast|

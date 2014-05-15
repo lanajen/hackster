@@ -1,13 +1,13 @@
 - @tech = GroupDecorator.decorate @tech
 
--# if can? :join, @tech and user_signed_in? and member = current_user.is_member?(@tech) and member.invitation_pending?
+- if can? :join, @tech and user_signed_in? and member = current_user.is_member?(@tech) and member.invitation_pending?
   .row
     .col-xs-12
       .alert.alert-warning.alert-flat
         .container
-          You have been invited to become an admin of
+          You have been invited to join
           = succeed '.' do
-          %strong #{@tech.name}
+            %strong #{@tech.name}
           = link_to 'Rock the place', group_accept_invitation_path(@tech), class: 'btn btn-warning btn-sm'
 
 #content-header.with-nav

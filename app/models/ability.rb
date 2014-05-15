@@ -50,13 +50,13 @@ class Ability
     end
 
     can :join, Group do |group|
-      case group.access_level
+      (member = @user.is_member?(group) and member.invitation_pending?) or case group.access_level
       when 'anyone'
         !@user.is_member?(group)
-      when 'request'
-        false
-      when 'invite'
-        member = @user.is_member?(group) and member.invitation_pending?
+      # when 'request'
+      #   false
+      # when 'invite'
+      #   member = @user.is_member?(group) and member.invitation_pending?
       end
     end
 
