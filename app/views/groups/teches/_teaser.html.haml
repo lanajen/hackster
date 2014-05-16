@@ -57,6 +57,7 @@
             - if @tech.buy_link.present?
               %li= link_to "Buy #{@tech.name}", @tech.buy_link, target: '_blank'
             -# %li= link_to "Q&A #{content_tag(:span, 0, class: 'badge')}".html_safe, '#tab-qa', data: { toggle: 'tab' }
+            %li= render partial: 'projects/share'
 
             - if can? :manage, @tech
               %li.dropdown
