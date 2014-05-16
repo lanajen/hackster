@@ -78,6 +78,12 @@ img {
   }
 }
 
+li.highlight-item {
+  a {
+    font-weight: bold;
+  }
+}
+
 #wrapper {
   min-height: 100%;
   height: auto !important;
