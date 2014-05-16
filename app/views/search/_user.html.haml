@@ -1,4 +1,6 @@
-%a{ href: url_for(user) }
-  = image_tag user.avatar
-  %b= user.name
-  %small.text-muted hacker
+.media
+  %a.pull-left{ href: url_for(user) }
+    = image_tag user.avatar, class: 'media-object'
+  .media-body
+    %b= link_to user.name, user
+    %small.text-muted hacker

@@ -16,10 +16,21 @@ class SearchController < ApplicationController
           meta_desc meta_desc
         end
 
+        @facets = terms = {}
+        @results.facets['type']['terms'].each do |term|
+          terms[term['term']] = term['count']
+        end
+        @people_label = 'People'
+        @people_label += " <span class='badge pull-right'>#{terms['user']}</span>" if terms['user']
+        @projects_label = 'Projects'
+        @projects_label += " <span class='badge pull-right'>#{terms['project']}</span>" if terms['project']
+        @tools_label = 'Tools'
+        @tools_label += " <span class='badge pull-right'>#{terms['tech']}</span>" if terms['tech']
+
         track_event 'Searched projects', { query: params[:q], result_count: @results.total_count, type: params[:type] }
-      rescue => e
-        logger.error "Error while searching for #{params[:q]}: #{e.message}"
-        @results = []
+      # rescue => e
+      #   logger.error "Error while searching for #{params[:q]}: #{e.message}"
+      #   @results = []
       end
     end
   end

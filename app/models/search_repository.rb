@@ -34,6 +34,7 @@ class SearchRepository
           filter :term, private: false
           filter :term, hide: false
         end
+        facet('type') { terms :model }
         # sort do
         #   by :external
         #   by :created_at, { order: :desc, ignore_unmapped: true }

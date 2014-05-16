@@ -2,9 +2,9 @@
   .col-xs-3
     %ul.nav.nav-pills.nav-stacked
       %li{ class: "#{'active' if params[:type] == nil}" }= link_to 'All', search_path(q: params[:q], type: nil)
-      %li{ class: "#{'active' if params[:type] == 'user'}" }= link_to 'People', search_path(q: params[:q], type: 'user')
-      %li{ class: "#{'active' if params[:type] == 'project'}" }= link_to 'Projects', search_path(q: params[:q], type: 'project')
-      %li{ class: "#{'active' if params[:type] == 'tech'}" }= link_to 'Tools', search_path(q: params[:q], type: 'tech')
+      %li{ class: "#{'active' if params[:type] == 'user'} #{'disabled' unless @facets['user']}" }= link_to @people_label.html_safe, search_path(q: params[:q], type: 'user')
+      %li{ class: "#{'active' if params[:type] == 'project'} #{'disabled' unless @facets['project']}" }= link_to @projects_label.html_safe, search_path(q: params[:q], type: 'project')
+      %li{ class: "#{'active' if params[:type] == 'tech'} #{'disabled' unless @facets['tech']}" }= link_to @tools_label.html_safe, search_path(q: params[:q], type: 'tech')
 
     -# .well
       .content
