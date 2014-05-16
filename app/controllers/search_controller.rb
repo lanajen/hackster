@@ -28,9 +28,9 @@ class SearchController < ApplicationController
         @tools_label += " <span class='badge pull-right'>#{terms['tech']}</span>" if terms['tech']
 
         track_event 'Searched projects', { query: params[:q], result_count: @results.total_count, type: params[:type] }
-      # rescue => e
-      #   logger.error "Error while searching for #{params[:q]}: #{e.message}"
-      #   @results = []
+      rescue => e
+        logger.error "Error while searching for #{params[:q]}: #{e.message}"
+        @results = []
       end
     end
   end
