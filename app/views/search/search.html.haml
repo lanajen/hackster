@@ -1,6 +1,3 @@
-= content_for :head do
-  %meta{ name: 'robots', content: 'noindex' }
-
 .search-page.row
   .col-xs-3
     %ul.nav.nav-pills.nav-stacked
@@ -34,8 +31,6 @@
                   = check_box_tag "tech_tag[#{tag}]", 1, (params[:tech_tag] and params[:tech_tag][tag.to_sym])
                   = tag
   .col-xs-9
-    -# = render 'shared/search_form'
-
     .well
       - if params[:q].present?
         - if @results.any?
@@ -43,6 +38,8 @@
             %b= pluralize @results.total_count, 'result'
             - if @results.total_count > @results.count
               (showing #{@offset} to #{@max})
+            - else
+              (showing all)
           .content.search-results
             %ul.list-unstyled
               - @results.each_with_index do |result, i|

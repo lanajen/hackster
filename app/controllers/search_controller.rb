@@ -3,11 +3,18 @@ class SearchController < ApplicationController
   def search
     if params[:q].present?
       title "Results for #{params[:q]}"
+      meta_desc "Browse results for #{params[:q]}. Find tools, projects and hackers on hackster.io."
       begin
         @results = SearchRepository.new(params).search.results
 
         @offset = @results.offset + 1
         @max = @results.offset + @results.size
+        unless @results.total_count.zero?
+          title "Results for #{params[:q]} - Showing #{@offset} to #{@max} out of #{@results.total_count}"
+          meta_desc = "Browse #{@results.total_count} results for #{params[:q]}. Find tools, projects and hackers on hackster.io."
+          meta_desc += " Page #{params[:page]}" if params[:page] and params[:page].to_i > 1
+          meta_desc meta_desc
+        end
 
         track_event 'Searched projects', { query: params[:q], result_count: @results.total_count, type: params[:type] }
       rescue => e
