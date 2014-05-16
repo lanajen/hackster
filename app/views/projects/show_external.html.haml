@@ -26,10 +26,11 @@
     .container
       %p{ style: 'padding-top:100px;'}
         = image_tag 'loader.gif'
-        Loading...
-        %br
-        %br
-        Click this link if nothing happens: #{link_to @project.website, @project.website}
+        %small#msg
+          Loading...
+          %br
+          %br
+          Click this link if nothing happens: #{link_to @project.website, @project.website}
 
 = content_for :js do
   :javascript
@@ -41,6 +42,9 @@
       if (r == 'true') {
         $('#iframe').html('<iframe src="#{@project.website}" width="100%" height="100%" frameborder=0></iframe>');
       } else {
-        window.location.replace("#{@project.website}");
+        $('#msg').html("You're now being redirected to <a href='#{@project.website}'>#{@project.website}</a>...");
+        window.setTimeout(function(){
+          window.location.replace("#{@project.website}");
+        }, 2000);
       }
     });

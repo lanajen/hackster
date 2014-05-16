@@ -3,7 +3,7 @@
 
 require 'csv'
 
-tech = 'TI Launchpad'
+tech = 'Espruino'
 
 csv = CSV.parse(csv_text, headers: true)
 projects=[]
