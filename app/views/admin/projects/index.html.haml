@@ -22,7 +22,7 @@
   %tbody
     - @projects.each do |project|
       %tr
-        %td= link_to project.name, (project.external ? project.website : project)
+        %td= link_to project.name, (project.external ? external_project_path(project) : project)
         %td
           - if project.external
             External

@@ -4,10 +4,13 @@
     margin: 0;
     li {
       margin-bottom: 20px;
+      .media-body {
+        padding-top: 20px ;
+      }
       img {
-        display: inline;
-        margin-right: 15px;
+        margin-right: 5px;
         width: 60px;
+        height: 60px;
       }
       h5 {
         display: inline;
@@ -16,5 +19,5 @@
         margin-bottom: 0;
       }
     }
- }
+  }
 }

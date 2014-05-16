@@ -2,11 +2,16 @@ class SearchController < ApplicationController
 
   def search
     if params[:q].present?
+      title "Results for #{params[:q]}"
       begin
         @results = SearchRepository.new(params).search.results
 
-        track_event 'Searched projects', { query: params[:q], result_count: @results.size, type: params[:type] }
-      rescue
+        @offset = @results.offset + 1
+        @max = @results.offset + @results.size
+
+        track_event 'Searched projects', { query: params[:q], result_count: @results.total_count, type: params[:type] }
+      rescue => e
+        logger.error "Error while searching for #{params[:q]}: #{e.message}"
         @results = []
       end
     end

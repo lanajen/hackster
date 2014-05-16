@@ -1,10 +1,13 @@
-- if project.external
-  %a{ href: external_project_path(project) }
-    = image_tag project.cover_image(:cover_mini_thumb)
-    %b= project.name
-  on
-  %small.fake-link= URI.parse(project.website).host.gsub(/^www\./, '')
-- else
-  %a{ href: project_path(project, ref: ref, ref_id: ref_id, offset: offset) }
-    = image_tag project.cover_image(:cover_mini_thumb)
-    %b= project.name
+.media
+  - if project.external
+    %a.pull-left{ href: external_project_path(project) }
+      = image_tag project.cover_image(:cover_mini_thumb), class: 'media-object'
+    .media-body
+      %b= link_to project.name, external_project_path(project)
+      %small.text-muted project on
+      %small.fake-link= URI.parse(project.website).host.gsub(/^www\./, '')
+  - else
+    %a{ href: project_path(project, ref: ref, ref_id: ref_id, offset: offset) }
+      = image_tag project.cover_image(:cover_mini_thumb)
+      %b= project.name
+    %small.text-muted project
