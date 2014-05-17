@@ -30,6 +30,12 @@ class SitemapController < ApplicationController
         lastmod: Time.now.strftime("%F"),
       }
 
+      @sitemap_pages << {
+        loc: tools_url,
+        changefreq: 'daily',
+        lastmod: Time.now.strftime("%F"),
+      }
+
       Project.indexable.find_each do |project|
         @sitemap_pages << {
           loc: "#{url_for(project)}",

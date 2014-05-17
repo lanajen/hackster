@@ -6,6 +6,8 @@ class TechesController < ApplicationController
   respond_to :html
 
   def index
+    title "Explore tools"
+    meta_desc "Find tools for your next hacks on Hackster.io."
     @teches = Tech.public.order(:full_name)
 
     render "groups/teches/#{self.action_name}"
