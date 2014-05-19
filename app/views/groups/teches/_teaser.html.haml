@@ -18,9 +18,6 @@
           %span.avatar.medium-avatar= image_tag @tech.avatar(:medium), class: 'media-object'
       .media-body
         %h1
-          - if @tech.private?
-            %small
-              %i.fa.fa-lock.istooltip{ title: 'Private group', data: { container: 'body' } }
           = link_to @tech.name, tech_short_path(@tech)
           - if user_signed_in? and member = current_user.is_active_member?(@tech)
             %span.badge You're a member
