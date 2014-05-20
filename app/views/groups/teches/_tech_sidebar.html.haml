@@ -1,0 +1,73 @@
+#sidebar-container
+  - @tech = GroupDecorator.decorate @tech
+  /
+    - if can? :join, @tech and user_signed_in? and member = current_user.is_member?(@tech) and member.invitation_pending?
+      .row
+        .col-xs-12
+          .alert.alert-warning.alert-flat
+            .container
+              You have been invited to join
+              = succeed '.' do
+                %strong #{@tech.name}
+              = link_to 'Rock the place', group_accept_invitation_path(@tech), class: 'btn btn-warning btn-sm'
+
+  %section#sidebar-container-in
+    - if @tech.avatar
+      .avatar#tech-avatar-image{:style=>"background-image:url('#{@tech.avatar(:big)}');"}
+    #tech-body
+      %h3
+        = link_to @tech.name, tech_short_path(@tech), id: 'tech-name'
+        - if user_signed_in? and member = current_user.is_active_member?(@tech)
+          %span.badge You're a member
+      %p
+        - if @tech.mini_resume.present?
+          = @tech.mini_resume
+        - elsif can? :update, @tech
+          No mini resume.
+          = link_to 'Add one?', edit_tech_path(@tech), data: { remote: true }
+      #tech-follow-div
+        - link = user_signed_in? ? group_accept_invitation_path(@tech) : new_user_registration_path(redirect_to: group_accept_invitation_path(@tech), reason: 'join', m: 'group', id: @tech.id)
+        = link_to "Follow #{@tech.name}".html_safe, link, class: 'btn btn-info'
+    .display
+      %ul#tech-links
+        - if @tech.documentation_link.present?
+          %li= link_to "Documentation", @tech.documentation_link, target: '_blank'
+        - if @tech.forums_link.present?
+          %li= link_to "Forums", @tech.forums_link, target: '_blank'
+        - if @tech.crowdfunding_link.present?
+          %li= link_to "Preorder #{@tech.name}", @tech.crowdfunding_link, target: '_blank'
+        - if @tech.buy_link.present?
+          %li= link_to "Buy #{@tech.name}", @tech.buy_link, target: '_blank', id: 'tech-buy-link'
+        -# %li= link_to "Q&A #{content_tag(:span, 0, class: 'badge')}".html_safe, '#tab-qa', data: { toggle: 'tab' }
+        /%li= render partial: 'projects/share'
+
+        - if can? :manage, @tech
+          %li.dropdown
+            %a.dropdown-toggle.action{ data: { toggle: 'dropdown' }, href: '#', title: 'Settings', rel: 'tooltip' }
+              %i.fa.fa-cog
+              %b.caret
+            %ul.dropdown-menu
+              %li= link_to 'Edit tech', edit_tech_path(@tech), data: { remote: true }
+              %li= link_to 'Manage members', group_edit_members_path(@tech)
+              %li= link_to 'Invite members', group_new_invitations_path(@tech)
+    .display
+      #tech-websites
+        - if @tech.websites.any?
+          %ul.websites.list-inline
+            - @tech.websites.select{|t,u| u.present? }.each do |type, url|
+              %li= render partial: "shared/website", locals: { type: type, url: url }
+        - elsif can? :update, @tech
+          %ul.websites.list-inline
+            %li
+              No websites.
+              = link_to 'Add some?', edit_tech_path(@tech), data: { remote: true }
+  /
+    - if !user_signed_in? or can? :join, @tech
+      .row
+        .col-xs-12
+          .alert.alert-info.alert-flat.text-center{ style: 'font-size:19px'}
+            Love
+            = succeed '?' do
+              %strong= @tech.name
+            - link = user_signed_in? ? group_accept_invitation_path(@tech) : new_user_registration_path(redirect_to: group_accept_invitation_path(@tech), reason: 'join', m: 'group', id: @tech.id)
+            = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Join the community".html_safe, link, class: 'btn btn-info'

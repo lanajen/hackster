@@ -21,6 +21,8 @@ class TechesController < ApplicationController
     meta_desc "People are hacking with #{@tech.name} on Hackster.io. Join them!"
     @broadcasts = @tech.broadcasts.limit 20
 
+    @bgimage =  'assets/rasberry-pi-placeholder.png'
+
     get_projects
 
     render "groups/teches/#{self.action_name}"

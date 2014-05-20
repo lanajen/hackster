@@ -31,3 +31,28 @@
 .form-horizontal .control-label {
   width: 100%;
 }
+
+a{
+  color: #3d8bc1;
+}
+
+.btn-info{
+  background: #3d8bc1;
+  border: 0;
+  @include box-shadow(inset 0 1px 0 rgba(255,255,255,.1));
+  @include disable-select;
+  &:hover,&:active{
+    color: white;
+    background-color: #4292C9;
+    border: none;
+  }
+}
+
+::selection, input::selection {
+  background: #7BC0FF;
+  color: #303030;
+}
+::-moz-selection {
+  background: #7BC0FF;
+  color: #303030;
+}

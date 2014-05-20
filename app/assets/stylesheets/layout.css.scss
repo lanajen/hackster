@@ -7,7 +7,7 @@ html, body {
 }
 
 body {
-  font-family: "Helvetica Neue", "HelveticaNeue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-family: 'Open Sans', "Helvetica Neue", "HelveticaNeue", Helvetica, Arial, "Lucida Grande", sans-serif;
   background: #f2f2f2;
   &.nav-affixed {
     padding-top: 40px;
@@ -35,14 +35,18 @@ img {
 .navbar {
   margin-bottom: 0;
   .navbar-brand {
-    padding: 6px 20px 10px;
-    margin-bottom: 0;
+    padding: 18px 20px 18px;
+    margin: 0;
+    height: 58px;
   }
   .nav {
     li.with-button {
       padding: 2px 5px 0;
     }
   }
+}
+#nav-non-logo{
+  padding-top: 4px;
 }
 
 .navbar-static-top .navbar-inner {
@@ -91,8 +95,17 @@ li.highlight-item {
   margin: 0 auto -40px;
 }
 
+#main {
+  position: relative;
+}
+
 #content {
   padding: 20px 0;
+}
+
+.wrapper{
+  max-width: 1000px;
+  margin: auto;
 }
 
 #push {
@@ -100,15 +113,20 @@ li.highlight-item {
 }
 
 footer {
-  color: #b6b6b6;
+  color: #ccc;
   font-size: 0.8em;
-  padding: 10px 0;
-  height: 40px;
+  padding: 19px 0 0;
+  height: 50px;
+  background: #444447;
   a {
-    color: #9b9b9b;
+    color: #ccc;
     &:hover {
-      color: #9b9b9b;
+      color: #eee;
+      text-decoration: none;
     }
+  }
+  ul{
+    margin-bottom: 0;
   }
 }
 

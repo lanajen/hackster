@@ -7,7 +7,10 @@
 //= require parser_rules/advanced
 //= require placeholders
 //= require jquery.ui.sortable
+//= require jquery.throttle
+
 //= require projects
+//= require groups
 //= require comments
 //= require all
 //= require ilightbox/jquery.mousewheel
@@ -15,9 +18,9 @@
 //= require jquery.ui.widget
 //= require jquery.iframe-transport
 //= require jquery.fileupload
+
 // require jquery.fileupload-process
 // require jquery.fileupload-validate
-
 // require js-routes
 // require underscore
 // require hamlcoffee

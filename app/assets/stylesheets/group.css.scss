@@ -10,3 +10,140 @@
     margin-bottom: 0;
   }
 }
+
+
+/******************************
+
+    Tech group-page styling
+
+******************************/
+#tech-page{
+  p{
+    font-weight: 200;
+    color:#636363;
+  }
+  .btn-info{
+    width: 100%;
+    padding: 10px;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+  }
+}
+#sidebar-container{
+  position: absolute;
+  z-index: 2;
+  width: 250px;
+  height: 100%;
+  background: #edeff0;
+  border-right:1px solid #d9d3d3;
+}
+#content-with-sidebar{
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding-left: 250px;
+  background: white;
+}
+
+/******************************
+
+    Sidebar styling
+
+******************************/
+#tech-avatar-image{
+  position: relative;
+  width: 80%;
+  width: -moz-calc(100% - 44px);
+  width: -webkit-calc(100% - 44px);
+  width: calc(100% - 44px);
+  height: 0;
+  padding-bottom: 80%;
+  padding-bottom: -moz-calc(100% - 44px);
+  padding-bottom: -webkit-calc(100% - 44px);
+  padding-bottom: calc(100% - 44px);
+  margin: 20px;
+  background: white 0 0 no-repeat;
+  @include background-size(contain);
+  overflow: hidden;
+  @include border-radius(8px);
+  @include box-shadow(4px 4px 0 rgba(0,0,0,.1));
+}
+#tech-body{
+  padding: 0 20px 20px;
+  border-bottom: 2px solid #ccc;
+  @include box-shadow(0 1px 1px rgba(255,255,255,.4));
+}
+#tech-name{
+  color: #434343;
+  text-decoration: none;
+}
+#tech-follow-div{
+  border-top: 1px dotted #d1d1d1;
+  padding-top: 20px;
+  margin-top: 18px;
+}
+#tech-links{
+  padding: 0;
+  margin: 20px;
+  @include border-radius(4px);
+  overflow: hidden;
+  border: 1px solid #ddd;
+  background: rgba(255,255,255,.3);
+  @include box-shadow(inset 0 1px 0 rgba(255,255,255,.1));
+  li{
+    list-style: none;
+  }
+  a{
+    display: block;
+    color: #888;
+    padding: 10px 10px;
+    font-size: 12px;
+    @include transition(all .2s ease);
+    font-weight: 200;
+    &#tech-buy-link{
+      font-weight: bold;
+    }
+    &:hover,&#tech-buy-link:hover{
+      color: #444447;
+      background: rgba(255,255,255,.5);
+      text-decoration: none;
+    }
+  }
+}
+#tech-websites{
+  margin: 0px 20px;
+}
+.websites{
+  margin: -5px -5px;
+}
+/******************************
+
+    Inner content styling
+
+******************************/
+
+#top-bg{
+  position: relative;
+  z-index: 1;
+  height: 400px;
+}
+#top-bg-image{
+  position: absolute;
+  left: 0;
+  top: -10%;
+  width: 100%;
+  height: 110%;
+  background: white 0 0 no-repeat;
+  @include background-size(cover);
+}
+#projects-list{
+  position: relative;
+  z-index: 2;
+  background: white;
+  padding: 40px;
+  @include box-shadow(0 -4px 0px rgba(0, 0, 0, 0.1), 0 -10px 10px rgba(0, 0, 0, 0.05));
+}
+#projects-list-in{
+
+}
