@@ -37,6 +37,8 @@
   height: 100%;
   background: #edeff0;
   border-right:1px solid #d9d3d3;
+  overflow-x: hidden;
+  overflow-y:scroll;
 }
 #content-with-sidebar{
   position: relative;
@@ -44,6 +46,7 @@
   width: 100%;
   padding-left: 250px;
   background: white;
+  min-height: 800px;
 }
 #main-content {
   padding: 30px 30px 20px;
@@ -98,7 +101,7 @@
     }
   }
   .websites{
-    margin: 0;
+    margin: -5px 0 0 -5px;
     height: 20px;
     a {
       color: #888;
@@ -136,9 +139,6 @@
       text-decoration: none;
     }
   }
-}
-#tech-websites{
-  // margin: 0px 20px;
 }
 /******************************
 
