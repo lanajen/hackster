@@ -7,7 +7,7 @@ html, body {
 }
 
 body {
-  font-family: 'Open Sans', "Helvetica Neue", "HelveticaNeue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-family: "Helvetica Neue", "HelveticaNeue", Helvetica, Arial, "Lucida Grande", sans-serif;
   background: #f2f2f2;
   &.nav-affixed {
     padding-top: 40px;
@@ -185,7 +185,7 @@ footer {
 .well, .transparent-well, .wellified, .wellified-transparent {
   h1, h2, h3, h4 {
     font-family: 'Open Sans', Tahoma, sans-serif;
-    font-weight: normal;
+    font-weight: 300;
   }
   h5 {
     font-size: 16px;
