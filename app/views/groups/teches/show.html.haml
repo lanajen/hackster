@@ -19,14 +19,16 @@
   - if link = @tech.twitter_link.presence and handle = link.match(/twitter.com\/(.+)/).try(:[], 1)
     %meta(property="twitter:creator" content="@#{handle}")
   %link(rel="canonical" href="#{tech_short_url(@tech)}")
+
 %section#top-bg
-  #top-bg-image{:style=>"background-image:url('#{@bgimage}');"}
+  #top-bg-image{:style=>"background-image:url('#{@tech.cover_image.try(:file_url)}');"}
+
 %section#projects-list
   .wrapper
     .project-list-actions.clearfix.mg-30
-      - if can? :add_project, @event
+      - if can? :add_project, @tech
         .pull-right
-          = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, "#{event_path(@event)}/projects/new", class: 'btn btn-outline'
+          = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path(project: { tech_tags_string: @tech.tech_tags.first.name }), class: 'btn btn-outline'
       - style = cookies['thumb-list-style'] || 'thumb-list-vertical'
       .btn-group.thumb-list-switch.pull-left
         %button.btn.btn-default.btn-sm{ class: "#{'active' if style == 'thumb-list-vertical'}", data: { 'list-style' => 'vertical', container: 'body' }, title: 'Display as tiles' }
@@ -53,16 +55,3 @@
             This technology isn't in use yet!
             - if @tech.tech_tags.any?
               = link_to "Create the first #{@tech.name} project", new_project_path(project: { tech_tags_string: @tech.tech_tags.first.name }), class: 'btn btn-primary btn-sm'
-
-
-      -# #tab-activity.tab-pane.fade
-      /
-        .col-xs-12
-          %ul
-            - @broadcasts.each do |broadcast|
-              %li
-                - broadcast = broadcast.decorate
-                = link_to broadcast.broadcastable.name, broadcast.broadcastable
-                = broadcast.message
-                .muted
-                  = broadcast.created_at

@@ -88,6 +88,8 @@ class MembersController < ApplicationController
         'promotion'
       when Event
         'event'
+      when Tech
+        'tech'
       else
         'group'
       end

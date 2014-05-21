@@ -5,6 +5,7 @@ class Tech < Group
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'TechMember'
   has_many :respects, as: :respecting, dependent: :destroy, class_name: 'Respect'
   has_many :respected_projects, through: :respects, source: :project
+  has_one :cover_image, as: :attachable, class_name: 'CoverImage', dependent: :destroy
   has_one :logo, as: :attachable, dependent: :destroy
   has_one :slug, as: :sluggable, dependent: :destroy, class_name: 'SlugHistory'
 
@@ -14,7 +15,7 @@ class Tech < Group
     :shoplocket_link]
 
   attr_accessible :forums_link, :documentation_link, :crowdfunding_link,
-    :buy_link, :logo_id, :shoplocket_link
+    :buy_link, :logo_id, :shoplocket_link, :cover_image_id
 
   validates :user_name, :full_name, presence: true
   validates :user_name, :new_user_name, length: { in: 3..100 }, if: proc{|t| t.persisted?}
@@ -54,6 +55,10 @@ class Tech < Group
 
   def self.model_name
     Group.model_name
+  end
+
+  def cover_image_id=(val)
+    self.cover_image = CoverImage.find_by_id(val)
   end
 
   def generate_user_name

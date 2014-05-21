@@ -45,6 +45,9 @@
   padding-left: 250px;
   background: white;
 }
+#main-content {
+  padding: 30px 30px 20px;
+}
 
 /******************************
 
@@ -83,9 +86,32 @@
   padding-top: 20px;
   margin-top: 18px;
 }
+#tech-page {
+  .display {
+    padding: 30px 20px 0 20px;
+    h4 {
+      margin-top: 0;
+      font-size: 12px;
+      text-transform: uppercase;
+      color: #999;
+      font-weight: bold;
+    }
+  }
+  .websites{
+    margin: 0;
+    height: 20px;
+    a {
+      color: #888;
+      @include transition(all .2s ease);
+      &:hover{
+        color: #444447;
+      }
+    }
+  }
+}
 #tech-links{
   padding: 0;
-  margin: 20px;
+  margin: 0;
   @include border-radius(4px);
   overflow: hidden;
   border: 1px solid #ddd;
@@ -104,7 +130,7 @@
     &#tech-buy-link{
       font-weight: bold;
     }
-    &:hover,&#tech-buy-link:hover{
+    &:hover{
       color: #444447;
       background: rgba(255,255,255,.5);
       text-decoration: none;
@@ -112,10 +138,7 @@
   }
 }
 #tech-websites{
-  margin: 0px 20px;
-}
-.websites{
-  margin: -5px -5px;
+  // margin: 0px 20px;
 }
 /******************************
 
