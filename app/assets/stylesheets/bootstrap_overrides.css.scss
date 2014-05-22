@@ -36,6 +36,66 @@ a{
   color: #3d8bc1;
 }
 
+.form-control{
+  color:#444447;
+  height: 40px;
+  padding: 9px 12px;
+  border: 1px solid #ddd;
+  @include border-radius(2px);
+  @include transition(all .2s ease);
+  &:focus, &:active{
+    outline: none;
+    border-color: #3d8bc1;
+    @include box-shadow(inset 0 2px 0 rgba(0,0,0,.08));
+  }
+}
+
+.btn, .btn:active, .btn:focus{
+  outline: none!important;
+}
+.btn-default{
+  border: 1px solid #ddd;
+  color: #444447;
+  background: rgb(245,245,245);
+  background: -moz-linear-gradient(top,  rgb(245,245,245) 0%, rgb(241,241,241) 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgb(245,245,245)), color-stop(100%,rgb(241,241,241)));
+  background: -webkit-linear-gradient(top,  rgb(245,245,245) 0%,rgb(241,241,241) 100%);
+  background: -o-linear-gradient(top,  rgb(245,245,245) 0%,rgb(241,241,241) 100%);
+  background: -ms-linear-gradient(top,  rgb(245,245,245) 0%,rgb(241,241,241) 100%);
+  background: linear-gradient(to bottom,  rgb(245,245,245) 0%,rgb(241,241,241) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f5f5f5', endColorstr='#f1f1f1',GradientType=0 );
+  &:hover,&:active{
+    border: 1px solid #ccc;
+    color:#333;
+    background: rgb(248,248,248);
+    background: -moz-linear-gradient(top,  rgb(248,248,248) 0%, rgb(244,244,244) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgb(248,248,248)), color-stop(100%,rgb(244,244,244)));
+    background: -webkit-linear-gradient(top,  rgb(248,248,248) 0%,rgb(244,244,244) 100%);
+    background: -o-linear-gradient(top,  rgb(248,248,248) 0%,rgb(244,244,244) 100%);
+    background: -ms-linear-gradient(top,  rgb(248,248,248) 0%,rgb(244,244,244) 100%);
+    background: linear-gradient(to bottom,  rgb(248,248,248) 0%,rgb(244,244,244) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f8f8', endColorstr='#f4f4f4',GradientType=0 );
+  }
+}
+.btn-black{
+  border: none;
+  color: white;
+  background: #444447;
+  &:hover,&:active{
+    background: #49494D;
+    color:white;
+  }
+}
+.btn-primary{
+  color:white;
+  background:#3d8bc1;
+  border: none;
+  &:hover,&:active{
+    background: #4292C9;
+    color:white;
+    border: none;
+  }
+}
 .btn-info{
   background: #3d8bc1;
   border: 0;
@@ -82,16 +142,17 @@ a{
   border-color: #3d8bc1;
 }
 
-.alert-success{
-  background-color: #6AA762;
-  border-color: #d6e9c6;
-  border: none;
-  color: white;
-  font-weight: 200;
-  font-size: 18px;
-  button.close, button.btn-edit{
-    position: relative;
-    top: 1px;
-    line-height: 1em;
-  }
-}
+// .alert-success{
+//   background-color: #6AA762;
+//   border-color: #d6e9c6;
+//   border: none;
+//   color: white;
+//   font-weight: 200;
+//   font-size: 18px;
+//   button.close, button.btn-edit{
+//     position: relative;
+//     top: 1px;
+//     line-height: 1em;
+//   }
+// }
+

@@ -437,10 +437,13 @@ a.action-respected, a.action-followed {
       margin: 0 -1px;
     }
   }
+  .navbar{
+    @include border-radius(0);
+  }
   .no-float {
     margin: 0 auto;
     width: 175px;
-    height: 53px;
+    height: 50px;
   }
 }
 
