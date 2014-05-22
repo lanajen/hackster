@@ -12,10 +12,11 @@
  *= require pygments/default
  */
 
+@import 'custom_mixins';
 @import 'bootstrap';
 @import 'bootstrap_overrides';
 @import 'font-awesome';
-@import 'custom_mixins';
+@import 'compass/css3';
 @import 'layout';
 @import 'projects';
 @import 'users';

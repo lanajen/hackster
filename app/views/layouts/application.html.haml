@@ -20,7 +20,7 @@
     /[if lt IE 9]
       = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.1/html5shiv.js"
     = stylesheet_link_tag "application", :media => "all"
-    <link href='//fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300,400,600' rel='stylesheet' type='text/css'>
     <link href="#{ asset_path 'favicon.ico' }" rel="shortcut icon" type="image/vnd.microsoft.icon">
     = javascript_include_tag "application"
     - unless current_user and current_user.is? :admin
@@ -64,7 +64,7 @@
                     %span.fa.fa-bar
                   = link_to image_tag('hackster_logo_20.png'), root_path, class: 'navbar-brand navbar-btn'
 
-                .collapse.navbar-collapse
+                .collapse.navbar-collapse#nav-non-logo
                   .col-xs-4.navbar-left= render 'shared/search_form'
                   %ul.nav.navbar-nav
                     %li.dropdown
@@ -185,7 +185,7 @@
             %li= link_to content_tag(:i, '', class: 'fa fa-twitter fa-lg').html_safe, 'http://twitter.com/hacksterio', alt: 'Hackster.io on Twitter', class: 'link-icon'
             %li= link_to content_tag(:i, '', class: 'fa fa-facebook fa-lg').html_safe, 'http://www.facebook.com/hacksterio', alt: 'Hackster.io on Facebook', class: 'link-icon'
             %li Hackster.io 2014
-          = link_to image_tag('//cdn.mxpnl.com/site_media/images/partner/badge_light.png', alt: 'Mobile Analytics'), 'https://mixpanel.com/f/partner', class: 'pull-right', style: 'margin-top:-10px;margin-right:15px;', target: '_blank'
+          /= link_to image_tag('//cdn.mxpnl.com/site_media/images/partner/badge_light.png', alt: 'Mobile Analytics'), 'https://mixpanel.com/f/partner', class: 'pull-right', style: 'margin-top:-10px;margin-right:15px;', target: '_blank'
 
     = content_for :js
     - unless is_mobile? or params[:blank_frame]

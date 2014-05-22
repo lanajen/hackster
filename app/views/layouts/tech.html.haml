@@ -1,12 +1,8 @@
 - @tech = GroupDecorator.decorate(@tech)
 = content_for :no_container do
-  #heading.user.with-top-container
-    .display= render "groups/teches/teaser"
-    .container
-      .edit{ style: 'display:none;' }
-
-  #content
-    .container
+  #tech-page.page-div
+    = render "groups/teches/tech_sidebar"
+    #content-with-sidebar
       = yield
 
 = render template: 'layouts/application'

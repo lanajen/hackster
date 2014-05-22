@@ -10,3 +10,188 @@
     margin-bottom: 0;
   }
 }
+
+
+/******************************
+
+    Tech group-page styling
+
+******************************/
+#tech-page{
+  p{
+    font-weight: 200;
+    color:#636363;
+  }
+  .btn-info{
+    width: 100%;
+    padding: 12px 12px 10px;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+  }
+}
+#sidebar-container{
+  position: absolute;
+  z-index: 2;
+  width: 250px;
+  height: 100%;
+  background: #edeff0;
+  border-right:1px solid #d9d3d3;
+  overflow-x: hidden;
+  overflow-y:scroll;
+}
+#content-with-sidebar{
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding-left: 250px;
+  background: white;
+  min-height: 800px;
+}
+#main-content {
+  padding: 30px 30px 20px;
+}
+#alert-section {
+  position: relative;
+  z-index: 2;
+}
+
+/******************************
+
+    Sidebar styling
+
+******************************/
+#tech-avatar-image{
+  position: relative;
+  width: 80%;
+  width: -moz-calc(100% - 44px);
+  width: -webkit-calc(100% - 44px);
+  width: calc(100% - 44px);
+  height: 0;
+  padding-bottom: 80%;
+  padding-bottom: -moz-calc(100% - 44px);
+  padding-bottom: -webkit-calc(100% - 44px);
+  padding-bottom: calc(100% - 44px);
+  margin: 20px;
+  background: white 0 0 no-repeat;
+  @include background-size(contain);
+  overflow: hidden;
+  @include border-radius(8px);
+  @include box-shadow(4px 4px 0 rgba(0,0,0,.1));
+}
+#tech-body{
+  padding: 0 20px 20px;
+  border-bottom: 2px solid #ccc;
+  @include box-shadow(0 1px 1px rgba(255,255,255,.4));
+}
+#tech-name{
+  color: #434343;
+  text-decoration: none;
+}
+#tech-follow-div{
+  border-top: 1px dotted #d1d1d1;
+  padding-top: 20px;
+  margin-top: 18px;
+}
+#tech-page {
+  .display {
+    padding: 30px 20px 0 20px;
+    h4 {
+      margin-top: 0;
+      font-size: 12px;
+      text-transform: uppercase;
+      color: #999;
+      font-weight: bold;
+    }
+  }
+  .websites{
+    margin: -5px 0 0 -5px;
+    height: 20px;
+    a {
+      color: #888;
+      @include transition(all .2s ease);
+      &:hover{
+        color: #444447;
+      }
+    }
+  }
+}
+#tech-links{
+  padding: 0;
+  margin: 0;
+  @include border-radius(4px);
+  overflow: hidden;
+  border: 1px solid #ddd;
+  background: rgba(255,255,255,.3);
+  @include box-shadow(inset 0 1px 0 rgba(255,255,255,.1));
+  li{
+    list-style: none;
+  }
+  a{
+    display: block;
+    color: #888;
+    padding: 10px 10px;
+    font-size: 12px;
+    @include transition(all .2s ease);
+    font-weight: 200;
+    &#tech-buy-link{
+      font-weight: bold;
+    }
+    &:hover{
+      color: #444447;
+      background: rgba(255,255,255,.5);
+      text-decoration: none;
+    }
+  }
+}
+/******************************
+
+    Inner content styling
+
+******************************/
+
+#top-bg{
+  position: relative;
+  z-index: 1;
+  height: 400px;
+  .alert{
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    .container{
+      width: 100%;
+    }
+  }
+}
+#top-bg-image{
+  position: absolute;
+  left: 0;
+  top: -10%;
+  width: 100%;
+  height: 110%;
+  z-index: 1;
+  background: white center center no-repeat;
+  @include background-size(cover);
+}
+#projects-list{
+  position: relative;
+  z-index: 2;
+  background: white;
+  padding: 30px 30px 20px;
+  @include box-shadow(0 -4px 0px rgba(0, 0, 0, 0.1), 0 -10px 10px rgba(0, 0, 0, 0.05));
+}
+.project-list-actions{
+  .btn-sm, .btn-group-sm > .btn, .btn-group-sm > .btn-follow{
+    padding: 12px 12px 10px;
+    font-size: 12px;
+    line-height: 1;
+    @include border-radius(3px);
+    color: #aaa;
+  }
+  .btn:active, .btn-follow:active, .btn.active, .active.btn-follow{
+    color:#444447;
+    @include box-shadow(inset 0 1px 0px rgba(0, 0, 0, 0.1), inset 0 18px 10px rgba(0,0,0,.05));
+  }
+}

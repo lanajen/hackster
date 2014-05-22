@@ -19,7 +19,7 @@ class TechesController < ApplicationController
     # authorize! :read, @tech
     title "#{@tech.name} projects"
     meta_desc "People are hacking with #{@tech.name} on Hackster.io. Join them!"
-    @broadcasts = @tech.broadcasts.limit 20
+    @bgimage = '/assets/rasberry-pi-placeholder.png'
 
     get_projects
 

@@ -64,7 +64,12 @@ class GroupInvitationsController < ApplicationController
     end
 
     def set_layout
-      @model_name
+      case @invitable
+      when Tech
+        'tech'
+      else
+        @model_name
+      end
     end
 
     def token_valid?

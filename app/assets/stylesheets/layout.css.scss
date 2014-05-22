@@ -35,14 +35,18 @@ img {
 .navbar {
   margin-bottom: 0;
   .navbar-brand {
-    padding: 6px 20px 10px;
-    margin-bottom: 0;
+    padding: 18px 20px 18px;
+    margin: 0;
+    height: 58px;
   }
   .nav {
     li.with-button {
       padding: 2px 5px 0;
     }
   }
+}
+#nav-non-logo{
+  padding-top: 4px;
 }
 
 .navbar-static-top .navbar-inner {
@@ -91,8 +95,17 @@ li.highlight-item {
   margin: 0 auto -40px;
 }
 
+#main {
+  position: relative;
+}
+
 #content {
   padding: 20px 0;
+}
+
+.wrapper{
+  width: 1000px;
+  margin: auto;
 }
 
 #push {
@@ -100,15 +113,20 @@ li.highlight-item {
 }
 
 footer {
-  color: #b6b6b6;
+  color: #ccc;
   font-size: 0.8em;
-  padding: 10px 0;
-  height: 40px;
+  padding: 19px 0 0;
+  height: 50px;
+  background: #444447;
   a {
-    color: #9b9b9b;
+    color: #ccc;
     &:hover {
-      color: #9b9b9b;
+      color: #eee;
+      text-decoration: none;
     }
+  }
+  ul{
+    margin-bottom: 0;
   }
 }
 
@@ -167,7 +185,7 @@ footer {
 .well, .transparent-well, .wellified, .wellified-transparent {
   h1, h2, h3, h4 {
     font-family: 'Open Sans', Tahoma, sans-serif;
-    font-weight: normal;
+    font-weight: 300;
   }
   h5 {
     font-size: 16px;
@@ -214,6 +232,9 @@ footer {
 
 .mg-20 {
   margin-bottom: 20px;
+}
+.mg-30{
+  margin-bottom: 30px;
 }
 
 #content-header h1, #content-header h1 a {
@@ -319,6 +340,8 @@ footer {
 }
 
 .alert {
+  z-index: 2;
+  position: relative;
   &.alert-flat {
     @include border-radius(0);
     margin-bottom: 0;
@@ -326,6 +349,7 @@ footer {
 }
 
 h1, h2, h3, h4 {
+  font-family: 'Open Sans', 'Helvetica Neue', 'Helvetica', sans-serif;
   .subtitle {
     display: inline;
     @include font-size(12);
@@ -336,6 +360,10 @@ h1, h2, h3, h4 {
 
 .teaser {
   position: relative;
+}
+
+.btn{
+  font-family: 'Open Sans', 'Helvetica Neue', 'Helvetica', sans-serif;
 }
 
 .btn-edit {
@@ -622,6 +650,11 @@ a.hidden-link {
   &.wellified {
     padding: 20px 30px;
   }
+}
+
+.page-div{
+  position: relative;
+  z-index: 1;
 }
 
 .help {
