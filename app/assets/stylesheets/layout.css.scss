@@ -104,7 +104,7 @@ li.highlight-item {
 }
 
 .wrapper{
-  max-width: 1000px;
+  width: 1000px;
   margin: auto;
 }
 
@@ -340,6 +340,8 @@ footer {
 }
 
 .alert {
+  z-index: 2;
+  position: relative;
   &.alert-flat {
     @include border-radius(0);
     margin-bottom: 0;
@@ -347,6 +349,7 @@ footer {
 }
 
 h1, h2, h3, h4 {
+  font-family: 'Open Sans', 'Helvetica Neue', 'Helvetica', sans-serif;
   .subtitle {
     display: inline;
     @include font-size(12);
@@ -357,6 +360,10 @@ h1, h2, h3, h4 {
 
 .teaser {
   position: relative;
+}
+
+.btn{
+  font-family: 'Open Sans', 'Helvetica Neue', 'Helvetica', sans-serif;
 }
 
 .btn-edit {
@@ -643,6 +650,11 @@ a.hidden-link {
   &.wellified {
     padding: 20px 30px;
   }
+}
+
+.page-div{
+  position: relative;
+  z-index: 1;
 }
 
 .help {
