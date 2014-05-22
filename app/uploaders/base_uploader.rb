@@ -4,11 +4,11 @@ class BaseUploader < CarrierWave::Uploader::Base
   include CarrierWave::MiniMagick
   include Sprockets::Rails::Helper
 
-  # if Rails.env.in? %w(production staging)
+  if Rails.env.in? %w(production staging)
     storage :fog
-  # else
-  #   storage :file
-  # end
+  else
+    storage :file
+  end
 
   def extension_white_list
     nil
