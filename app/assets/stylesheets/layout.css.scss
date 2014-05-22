@@ -226,19 +226,25 @@ img {
     color: #ccc;
     font-weight: 500;
   }
-  .user_remember_me{
-    .checkbox{
-      font-size: 12px;
-      cursor: pointer;
-      color:#aaa;
-      @include transition(all .3s ease);
-      &:hover{
-        color:#787878;
-      }
+}
+.user_remember_me{
+  .checkbox{
+    font-size: 12px;
+    cursor: pointer;
+    color:#aaa;
+    font-weight: 200;
+    padding: 5px 10px 5px 28px;
+    background: #f8f8f8;
+    @include border-radius(3px);
+    border: 1px solid #eee;
+    line-height: 1.5em;
+    @include transition(all .3s ease);
+    &:hover{
+      color:#787878;
     }
-    #user_remember_me{
+    .boolean{
       margin: 2px 0 0px -20px;
-      display: inline-block
+      display: inline-block;
     }
   }
 }
