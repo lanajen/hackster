@@ -226,6 +226,8 @@ HackerIo::Application.routes.draw do
       resources :logs, controller: :build_logs
     end
 
+    get ':not_found' => 'application#not_found'  # find a way to not need this
+
     root to: 'pages#home'
   end
 
