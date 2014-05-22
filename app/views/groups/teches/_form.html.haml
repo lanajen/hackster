@@ -25,7 +25,7 @@
 
       = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Profile picture', image_link: @tech.avatar.try(:file_url, :thumb), help_block: 'This picture needs to be squared, at least 200x200px for best quality.', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
 
-      = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @tech.cover_image.try(:file_url, :cover_mini_thumb), help_block: 'A high quality picture of your product, at least 1200px wide and 400px high.', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'group' }
+      = render partial: 'shared/image_form', locals: { file_type: 'logo', human_file_type: 'Cover image', image_link: @tech.cover_image.try(:file_url, :cover_mini_thumb), help_block: 'A high quality picture of your product, at least 1200px wide and 400px high.', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'group' }
 
       - if ClientSubdomain.find_by_subdomain(@tech.user_name).present?
         = render partial: 'shared/image_form', locals: { file_type: 'logo', human_file_type: 'Portal logo', image_link: @tech.logo.try(:file_url), help_block: '', attribute_type: 'logo', image_version: nil, model: 'group' }

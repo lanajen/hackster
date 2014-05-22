@@ -104,7 +104,7 @@ li.highlight-item {
 }
 
 .wrapper{
-  max-width: 1000px;
+  width: 1000px;
   margin: auto;
 }
 
@@ -185,7 +185,7 @@ footer {
 .well, .transparent-well, .wellified, .wellified-transparent {
   h1, h2, h3, h4 {
     font-family: 'Open Sans', Tahoma, sans-serif;
-    font-weight: normal;
+    font-weight: 300;
   }
   h5 {
     font-size: 16px;
