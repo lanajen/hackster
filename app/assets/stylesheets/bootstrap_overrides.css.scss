@@ -81,3 +81,17 @@ a{
   background-color: #3d8bc1;
   border-color: #3d8bc1;
 }
+
+.alert-success{
+  background-color: #6AA762;
+  border-color: #d6e9c6;
+  border: none;
+  color: white;
+  font-weight: 200;
+  font-size: 18px;
+  button.close, button.btn-edit{
+    position: relative;
+    top: 1px;
+    line-height: 1em;
+  }
+}
