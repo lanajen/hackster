@@ -134,7 +134,7 @@
     font-size: 12px;
     @include transition(all .2s ease);
     font-weight: 200;
-    &#tech-buy-link{
+    &.tech-buy-link{
       font-weight: bold;
     }
     &:hover{
