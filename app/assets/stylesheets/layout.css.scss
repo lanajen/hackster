@@ -227,7 +227,7 @@ img {
   float: right;
   display: inline-block;
   padding-left: 0;
-  border-left: 1px solid #333;
+  margin-bottom: 0;
   li{
     float: left;
     display: inline-block;
@@ -243,15 +243,15 @@ img {
     font-size: 12px;
     width: 100%;
   }
-  .forgot-pass{
-    width: 100%;
-    text-align: center;
-    display: block;
-    margin-top: 10px;
-    font-size: 10px;
-    color: #ccc;
-    font-weight: 500;
-  }
+}
+.forgot-pass{
+  width: 100%;
+  text-align: center;
+  display: block;
+  margin-top: 10px;
+  font-size: 10px;
+  color: #ccc;
+  font-weight: 500;
 }
 .user_remember_me{
   .checkbox{
@@ -276,29 +276,18 @@ img {
 }
 #navbar-right .login-link, .login-link:active{
   display: block;
-  padding: 20px 30px 20px 30px;
-  height: 60px;
-  margin: 0;
-  color: #ccc;
-  font-size: 14px;
-  outline: none;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
+  margin: 12px 6px;
+  font-size: 12px;
   font-weight: 200;
-  border-right: 1px solid #333;
-  border-left: 1px solid rgba(255,255,255,.08);
   font-family: 'Open Sans', 'Helvetica Neue', 'Helvetica', sans-serif;
-  text-decoration: none;
-  @include box-shadow(none);
+  padding: 10px 20px 9px;
   &#login{
-    border-right:none;
+    margin-right: 12px;
+    padding: 9px 20px 8px;
   }
 }
 #navbar-right .login-link:hover, #navbar-right .open > a, #navbar-right .open > a:hover, #navbar-right .open > a:focus{
   text-decoration: none;
-  background-color: #3d8bc1;
-  color: white;
 }
 #user-navigation-links{
   margin-right: 13px;
@@ -335,6 +324,21 @@ img {
     }
   }
 }
+
+#nav-user-menu{
+  padding: 0;
+  .divider{
+    margin: 0;
+  }
+  & > li > a{
+    padding: 10px 20px;
+    color: #676767;
+    &:hover{
+      color: #444447;
+    }
+  }
+}
+
 
 li.highlight-item {
   a {

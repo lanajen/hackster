@@ -80,7 +80,7 @@ a{
 .btn-black{
   border: none;
   color: white;
-  background: #444447;
+  background: #676767;
   &:hover,&:active{
     background: #49494D;
     color:white;
@@ -103,7 +103,7 @@ a{
   @include disable-select;
   &:hover,&:active{
     color: white;
-    background-color: #4292C9;
+    background: #5A5858;
     border: none;
   }
 }
@@ -160,5 +160,15 @@ a{
 //     top: 1px;
 //     line-height: 1em;
 //   }
+// }
+// .alert-danger {
+//   background-color: #E07676;
+//   border-color: #ebccd1;
+//   color: white;
+//   text-align: center;
+//   font-weight: bold;
+//   padding: 12px 12px 11px;
+//   font-size: 12px;
+//   border: 0;
 // }
 

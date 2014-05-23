@@ -116,7 +116,7 @@
                     = link_to image_tag(current_user.decorate.avatar(:mini), style: 'width:32px;'), current_user, class: 'btn',id: 'user-nav-face', style: 'padding:0;'
                     %button#user-dropdown-toggle.btn.btn-default.dropdown-toggle{"data-toggle" => "dropdown"}
                       %span.caret{ style: 'border-bottom-color: #000;border-top-color: #000;' }
-                    %ul.dropdown-menu
+                    %ul.dropdown-menu#nav-user-menu
                       %li= link_to current_user.name, current_user
                       - if current_user.communities.any?
                         %li.divider
@@ -139,9 +139,9 @@
                 %ul#navbar-right.clearfix
                   - unless request.path == root_path
                     %li
-                      %span= link_to 'Sign up', new_user_registration_path, class: 'login-link', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '#{request.path}']);" #new_user_registration_path
+                      %span= link_to 'Sign up', new_user_registration_path, class: 'btn btn-primary login-link', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '#{request.path}']);" #new_user_registration_path
                   %li.dropdown
-                    %a#login.login-link.dropdown-toggle{"data-toggle" => "dropdown", href: '#' }
+                    %a#login.btn.btn-default.login-link.dropdown-toggle{"data-toggle" => "dropdown", href: '#' }
                       Log in
                     .dropdown-menu{:style => "padding: 15px; width: 250px;"}
                       = render 'devise/sessions/form'
