@@ -20,8 +20,9 @@
     %meta(property="twitter:creator" content="@#{handle}")
   %link(rel="canonical" href="#{tech_short_url(@tech)}")
 
-%section#top-bg
-  #top-bg-image{:style=>"background-image:url('#{@tech.cover_image.try(:file_url)}');"}
+- if @tech.cover_image
+  %section#top-bg
+    #top-bg-image{:style=>"background-image:url('#{@tech.cover_image.try(:file_url)}');"}
 
 - if can? :join, @tech and user_signed_in? and member = current_user.is_member?(@tech) and member.invitation_pending?
   %section#alert-section

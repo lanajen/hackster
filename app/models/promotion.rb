@@ -5,6 +5,8 @@ class Promotion < Community
 
   alias_method :short_name, :name
 
+  attr_accessible :parent_id
+
   # beginning of search methods
   include Tire::Model::Search
   include Tire::Model::Callbacks

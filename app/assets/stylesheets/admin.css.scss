@@ -11,10 +11,10 @@
  *= require_self
  */
 
+@import 'custom_mixins';
 @import 'bootstrap';
 @import 'bootstrap_overrides';
 @import 'font-awesome';
-@import 'custom_mixins';
 
 .form-inline {
   .form-group {
