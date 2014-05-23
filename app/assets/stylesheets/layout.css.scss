@@ -340,6 +340,82 @@ img {
 }
 
 
+// sticky nav in projects page
+.navbar-tabs {
+  background: #fff !important;
+  @include font-size(12);
+
+  &.navbar-default {
+    .navbar-nav {
+      & > .active {
+        & > a, & > a:hover, & > a:focus {
+          color: #777;
+          background-color: #fff;
+          border-bottom: 3px solid #777;
+          font-weight: bold;
+        }
+      }
+      & > li {
+        & > a {
+          border-bottom: 3px solid #fff;
+        }
+        & > a:hover, & > a:focus {
+          color: #777;
+          border-bottom: 3px solid #aaa;
+        }
+      }
+    }
+    &.navbar-vertical {
+      top: 20px;
+      &.affix {
+        width: 220px;
+      }
+      .navbar-nav {
+        float: none;
+        width: 100%;
+        border: 1px solid #e2e2e2;
+        & > .active {
+          & > a, & > a:hover, & > a:focus {
+            border-right: 3px solid #777;
+            border-bottom: none;
+          }
+        }
+        & > li {
+          float: none;
+          display: block;
+          & > a {
+            border-right: 3px solid #fff;
+            border-bottom: none;
+          }
+          & > a:hover, & > a:focus {
+            border-right: 3px solid #aaa;
+            border-bottom: none;
+          }
+        }
+        .actions {
+          text-align: center;
+          a {
+            display: inline-block;
+            border-right: none !important;
+          }
+        }
+      }
+    }
+  }
+  &.navbar {
+    border-radius: 0;
+    border: 0;
+  }
+  .badge {
+    min-width: 15px;
+    padding: 2px 5px;
+    font-size: 9px;
+    background-color: #999999;
+    border-radius: 6px;
+    margin-left: 3px;
+  }
+}
+
 li.highlight-item {
   a {
     font-weight: bold;
@@ -358,7 +434,7 @@ li.highlight-item {
 }
 
 #content {
-  padding: 20px 0;
+  padding: 20px 0 60px;
 }
 
 .wrapper{
@@ -374,8 +450,8 @@ li.highlight-item {
 footer {
   color: #999;
   font-size: 0.8em;
-  padding: 20px 0 0;
-  height: 50px;
+  padding: 24px 0 0;
+  height: 60px;
   background: #444447;
   font-family: 'Open Sans', 'Helvetica Neue', 'Helvetica', sans-serif;
   a {
@@ -502,6 +578,9 @@ footer {
 }
 .mg-30{
   margin-bottom: 30px;
+}
+.mg-40{
+  margin-bottom: 40px;
 }
 
 #content-header h1, #content-header h1 a {
