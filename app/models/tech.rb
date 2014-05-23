@@ -5,7 +5,7 @@ class Tech < Group
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'TechMember'
   has_many :respects, as: :respecting, dependent: :destroy, class_name: 'Respect'
   has_many :respected_projects, through: :respects, source: :project
-  has_one :cover_image, as: :attachable, class_name: 'Logo', dependent: :destroy
+  has_one :cover_image, as: :attachable, class_name: 'Document', dependent: :destroy
   has_one :logo, as: :attachable, dependent: :destroy
   has_one :slug, as: :sluggable, dependent: :destroy, class_name: 'SlugHistory'
 
@@ -58,7 +58,7 @@ class Tech < Group
   end
 
   def cover_image_id=(val)
-    self.cover_image = CoverImage.find_by_id(val)
+    self.cover_image = Document.find_by_id(val)
   end
 
   def generate_user_name

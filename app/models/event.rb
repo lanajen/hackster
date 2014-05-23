@@ -5,7 +5,7 @@ class Event < Community
   has_many :pages, as: :threadable
   has_many :projects, foreign_key: :collection_id
 
-  attr_accessible :awards_attributes
+  attr_accessible :awards_attributes, :parent_id
 
   accepts_nested_attributes_for :awards, allow_destroy: true
 

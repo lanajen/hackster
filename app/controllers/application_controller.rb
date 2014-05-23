@@ -46,6 +46,10 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def not_found
+    render_404 ActiveRecord::RecordNotFound.new
+  end
+
   # Stores the user's current page to reuse when needed.
   # Excludes all pages that a user shouldn't be redirected to.
   def store_location cookie_name
