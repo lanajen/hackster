@@ -141,6 +141,12 @@ a{
   background-color: #3d8bc1;
   border-color: #3d8bc1;
 }
+.caret{
+  @include transition(all .5s ease);
+}
+.dropdown.open .caret{
+  @include transform(rotate(180deg));
+}
 
 // .alert-success{
 //   background-color: #6AA762;
