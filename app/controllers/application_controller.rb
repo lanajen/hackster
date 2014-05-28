@@ -276,6 +276,8 @@ class ApplicationController < ActionController::Base
       incoming = request.referer.present? ? URI(request.referer).host != APP_CONFIG['default_host'] : true
 
       incoming and !user_signed_in? and (params[:controller] == 'projects' or params[:controller] == 'users') and params[:action] == 'show'
+    rescue
+      false
     end
 
     def show_profile_needs_care?
