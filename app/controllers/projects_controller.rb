@@ -73,13 +73,13 @@ class ProjectsController < ApplicationController
           @projects = @projects.send(Project::FILTERS[by])
         end
 
-        @next = @projects.offset(offset + 1).first
-        @prev = @projects.offset(offset - 1).first unless offset.zero?
+        @next = @projects.indexable.offset(offset + 1).first
+        @prev = @projects.indexable.offset(offset - 1).first unless offset.zero?
 
       when 'event'
         if @event = Event.find_by_id(params[:ref_id])
-          @next = @event.projects.order('projects.respects_count DESC').offset(offset + 1).first
-          @prev = @event.projects.order('projects.respects_count DESC').offset(offset - 1).first unless offset.zero?
+          @next = @event.projects.live.order('projects.respects_count DESC').offset(offset + 1).first
+          @prev = @event.projects.live.order('projects.respects_count DESC').offset(offset - 1).first unless offset.zero?
         end
 
       when 'search'
@@ -87,12 +87,14 @@ class ProjectsController < ApplicationController
         params[:type] = 'project'
         params[:per_page] = 1
         params[:offset] = offset + 1
+        params[:include_external] = false
         @next = SearchRepository.new(params).search.results.first
         unless offset.zero?
           params[:offset] = offset - 1
           @prev = SearchRepository.new(params).search.results.first
         end
         params[:offset] = offset
+        params.delete(:include_external)
       when 'user'
         if @user = User.find_by_id(params[:ref_id])
           @next = @user.projects.live.order(start_date: :desc, created_at: :desc).offset(offset + 1).first

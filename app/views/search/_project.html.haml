@@ -10,5 +10,5 @@
     %a.pull-left{ href: project_path(project, ref: ref, ref_id: ref_id, offset: offset) }
       = image_tag project.cover_image(:cover_mini_thumb), class: 'media-object'
     .media-body
-      %b= link_to project.name, project
+      %b= link_to project.name, project_path(project, ref: ref, ref_id: ref_id, offset: offset)
       %small.text-muted project
