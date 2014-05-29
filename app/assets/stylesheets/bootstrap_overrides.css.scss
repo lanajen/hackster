@@ -13,6 +13,11 @@
   padding-right: 11px;
 }
 
+.container-fluid {
+  padding-left: 11px;
+  padding-right: 11px;
+}
+
 .container > .navbar-header, .container > .navbar-collapse {
   margin-right: -11px;
   margin-left: -11px;
@@ -103,7 +108,8 @@ a{
   @include disable-select;
   &:hover,&:active{
     color: white;
-    background: #5A5858;
+    // background: #5A5858;
+    background: #4292C9;
     border: none;
   }
 }

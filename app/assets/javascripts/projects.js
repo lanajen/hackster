@@ -1,5 +1,8 @@
 $(document).ready(function(){
 
+  //make scrollspy/sidebar navigation work
+  //$('body').scrollspy({ target: '#scroll-nav' });
+
   $('#project_current.boolean').click(function(e){
     if ($(this).is(':checked')) {
       $('#project_end_date_1i').prop('disabled', true);

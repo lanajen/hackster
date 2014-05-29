@@ -1,12 +1,12 @@
 - @project = @project.decorate
 = content_for :no_container do
-  #heading.project{ class: "#{'with-top-container' if @show_part_of}" }
-    - @mode ||= 'normal'
-    .display= render "projects/teaser_#{@mode}"
-    .edit.container{ style: 'display:none;' }
+  = render "projects/project_sidebar_nav"
 
-  #content.project
-    .container
-      = yield
+  #content.project#content-with-sidebar
+    .project-details{ class: "#{'with-top-container' if @show_part_of}" }
+      - @mode ||= 'normal'
+      .display= render "projects/teaser_#{@mode}"
+      .edit.container{ style: 'display:none;' }
+    = yield
 
 = render template: 'layouts/application'

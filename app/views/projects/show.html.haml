@@ -1,94 +1,90 @@
 = content_for :head do
   = render 'meta_tags'
-
 .project-show
-  - if @prev
-    .project-nav.project-nav-prev.visible-md.visible-lg
-      .project-nav-inner
-        = image_tag @prev.decorate.cover_image(:cover_thumb), class: 'img-responsive'
-        %i.fa.fa-chevron-left
-        .project-nav-overlay.project-nav-overlay-bg
-        .project-nav-overlay
-          %h3.link-color= @prev.name
-          %h4
-            by
-            %span.link-color= @prev.users.map { |u| u.name }.to_sentence
-          %p= truncate @prev.one_liner, length: 140
-        %a.project-nav-overlay.project-nav-overlay-top{ href: project_path(@prev, ref: params[:ref], ref_id: params[:ref_id], offset: params[:offset].to_i - 1) }
+  .wrapper700
+    .container-fluid
+      - if @prev
+        .project-nav.project-nav-prev.visible-md.visible-lg
+          .project-nav-inner
+            = image_tag @prev.decorate.cover_image(:cover_thumb), class: 'img-responsive'
+            %i.fa.fa-chevron-left
+            .project-nav-overlay.project-nav-overlay-bg
+            .project-nav-overlay
+              %h3.link-color= @prev.name
+              %h4
+                by
+                %span.link-color= @prev.users.map { |u| u.name }.to_sentence
+              %p= truncate @prev.one_liner, length: 140
+            %a.project-nav-overlay.project-nav-overlay-top{ href: project_path(@prev, ref: params[:ref], ref_id: params[:ref_id], offset: params[:offset].to_i - 1) }
 
-  - if @next
-    .project-nav.project-nav-next.visible-md.visible-lg
-      .project-nav-inner
-        = image_tag @next.decorate.cover_image(:cover_thumb), class: 'img-responsive'
-        %i.fa.fa-chevron-right
-        .project-nav-overlay.project-nav-overlay-bg
-        .project-nav-overlay
-          %h3.link-color= @next.name
-          %h4
-            by
-            %span.link-color= @next.users.map { |u| u.name }.to_sentence
-          %p= truncate @next.one_liner, length: 140
-        %a.project-nav-overlay.project-nav-overlay-top{ href: project_path(@next, ref: params[:ref], ref_id: params[:ref_id], offset: params[:offset].to_i + 1) }
+      - if @next
+        .project-nav.project-nav-next.visible-md.visible-lg
+          .project-nav-inner
+            = image_tag @next.decorate.cover_image(:cover_thumb), class: 'img-responsive'
+            %i.fa.fa-chevron-right
+            .project-nav-overlay.project-nav-overlay-bg
+            .project-nav-overlay
+              %h3.link-color= @next.name
+              %h4
+                by
+                %span.link-color= @next.users.map { |u| u.name }.to_sentence
+              %p= truncate @next.one_liner, length: 140
+            %a.project-nav-overlay.project-nav-overlay-top{ href: project_path(@next, ref: params[:ref], ref_id: params[:ref_id], offset: params[:offset].to_i + 1) }
 
-  .tab-content.row
-    #tab-home.tab-pane.fade.in.active
-      - if @widgets.any?
-        #full-width
-          .background.to-compact
-          .container
-            .row
-              .inner-container.col-xs-12
-        = render partial_name_for_columns(@project)
-
-      - else
-        .col-xs-6.col-xs-offset-3
-          .well
-            .content
-              - if can? :edit, @project
-                Tell the world more about #{@project.name}, show us the code, schematics, bill of materials, or something else awesome about your project.
-                = link_to 'Add your first widget to get started!', new_project_widget_path(@project)
-              - else
-                Work in progress, check back later!
-
-        - if @project.columns_count == 1 and can? :edit, @project
-          #sidebar.col-xs-3
-            .navbar-tabs.navbar-default.navbar-vertical.unselectable.affixable
-              %ul.navbar-nav.nav
-                %li.dropdown
-                  %a.dropdown-toggle{ data: { toggle: 'dropdown' }, href: '#' }
-                    Edit
-                    %b.caret
-                  %ul.dropdown-menu
-                    %li= link_to 'Settings', edit_project_path(@project), data: { remote: true }
-                    %li= link_to 'Add a widget', new_project_widget_path(@project)
-                    %li= link_to 'Reorder widgets and edit columns', project_widgets_path(@project)
-
-  - cache [@project, 'other', @other_projects], tag: "project-#{@project.id}-other" do
-    - if @other_projects_count > 0
-      #more-projects.row
-        .col-xs-12
-          %hr
-          %h5
-            Other projects by
-            = @project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
-          - if @other_projects_count > 6
-            .row
-              .col-xs-6
-                %h6.subtitle Most popular
-                .row
-                  - @other_projects.each do |project|
-                    .col-xs-4
-                      = render partial: 'projects/project_mini_thumb', locals: { ref: 'more', project: project }
-
-              .col-xs-6
-                %h6.subtitle Newest
-                .row
-                  - @last_projects.each do |project|
-                    .col-xs-4
-                      = render partial: 'projects/project_mini_thumb', locals: { ref: 'more', project: project }
+      .tab-content.row
+        #tab-home.tab-pane.fade.in.active
+          - if @widgets.any?
+            = render 'projects/large_column'
 
           - else
-            .row
-              - @other_projects.each do |project|
-                .col-xs-2
-                  = render partial: 'projects/project_mini_thumb', locals: { ref: 'more', project: project }
+            .col-xs-6.col-xs-offset-3
+              .well
+                .content
+                  - if can? :edit, @project
+                    Tell the world more about #{@project.name}, show us the code, schematics, bill of materials, or something else awesome about your project.
+                    = link_to 'Add your first widget to get started!', new_project_widget_path(@project)
+                  - else
+                    Work in progress, check back later!
+
+            - if @project.columns_count == 1 and can? :edit, @project
+              #sidebar.col-xs-3
+                .navbar-tabs.navbar-default.navbar-vertical.unselectable.affixable
+                  %ul.navbar-nav.nav
+                    %li.dropdown
+                      %a.dropdown-toggle{ data: { toggle: 'dropdown' }, href: '#' }
+                        Edit
+                        %b.caret
+                      %ul.dropdown-menu
+                        %li= link_to 'Settings', edit_project_path(@project), data: { remote: true }
+                        %li= link_to 'Add a widget', new_project_widget_path(@project)
+                        %li= link_to 'Reorder widgets and edit columns', project_widgets_path(@project)
+
+      - cache [@project, 'other', @other_projects], tag: "project-#{@project.id}-other" do
+        - if @other_projects_count > 0
+          #more-projects.row
+            .col-xs-12
+              %hr
+              %h5
+                Other projects by
+                = @project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
+              - if @other_projects_count > 6
+                .row
+                  .col-xs-6
+                    %h6.subtitle Most popular
+                    .row
+                      - @other_projects.each do |project|
+                        .col-xs-4
+                          = render partial: 'projects/project_mini_thumb', locals: { ref: 'more', project: project }
+
+                  .col-xs-6
+                    %h6.subtitle Newest
+                    .row
+                      - @last_projects.each do |project|
+                        .col-xs-4
+                          = render partial: 'projects/project_mini_thumb', locals: { ref: 'more', project: project }
+
+              - else
+                .row
+                  - @other_projects.each do |project|
+                    .col-xs-2
+                      = render partial: 'projects/project_mini_thumb', locals: { ref: 'more', project: project }

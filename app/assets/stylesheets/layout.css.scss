@@ -422,7 +422,9 @@ li.highlight-item {
   }
 }
 
-#wrapper {
+#outer-wrapper {
+  position: relative;
+  z-index: 1;
   min-height: 100%;
   height: auto !important;
   height: 100%;
@@ -442,12 +444,19 @@ li.highlight-item {
   width: 90%;
   margin: auto;
 }
+.wrapper700{
+  max-width: 700px;
+  width: 90%;
+  margin: auto;
+}
 
 #push {
   height: 40px;
 }
 
 footer {
+  position: relative;
+  z-index: 2;
   color: #999;
   font-size: 0.8em;
   padding: 24px 0 0;
@@ -957,4 +966,31 @@ a.hidden-link {
     text-decoration: none;
     color: #f2f2f2;
   }
+}
+
+#_atssh{
+  display: none;
+}
+
+
+/*****************************
+
+    RESPONSIVE VIDEO
+
+*****************************/
+.video {
+  position: relative;
+  padding-bottom: 67.5%;
+  height: 0;
+  overflow: hidden;
+}
+.video.widescreen { padding-bottom: 57.25%; }
+.video iframe,
+.video object,
+.video embed {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }

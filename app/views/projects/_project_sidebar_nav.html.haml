@@ -1,0 +1,15 @@
+#sidebar-container.project-pages-sidebar.affixable
+  %section#sidebar-container-in
+    #scroll-nav
+      = link_to 'Project Details', "javascript:smoothScrollTo('#heading', -20)", class: "scroll-nav-item active"
+      = link_to 'Overview', "javascript:smoothScrollTo('#heading', -20)", class: "scroll-nav-item"
+      = link_to 'Parts Needed', "javascript:smoothScrollTo('#heading', -20)", class: "scroll-nav-item"
+      = link_to 'Parts Needed', "javascript:smoothScrollTo('#heading', -20)", class: "scroll-nav-item"
+      = link_to 'Parts Needed', "javascript:smoothScrollTo('#heading', -20)", class: "scroll-nav-item"
+      = link_to 'Parts Needed', "javascript:smoothScrollTo('#heading', -20)", class: "scroll-nav-item"
+    #project-actions.clearfix
+      - if @project.public?
+        = render 'projects/share'
+        = render 'projects/project_embed_popup'
+        = render partial: 'respects/button', locals: { project: @project }
+        = render partial: 'followers/button', locals: { followable: @project }

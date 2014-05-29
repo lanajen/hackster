@@ -81,10 +81,6 @@ module ApplicationHelper
     msg.html_safe
   end
 
-  def partial_name_for_columns project
-    project.columns_count == 1 ? 'one_column' : 'two_columns'
-  end
-
   def next_meetup_for_group group_url
     if event = Meetup.new.get_next_meetup(group_url)
       "#{link_to(event['name'], event['event_url'])} on #{event['time'].to_date}".html_safe
