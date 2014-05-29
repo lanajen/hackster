@@ -35,7 +35,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
   protected
     def after_sign_up_path_for(resource)
       track_alias
-      track_user resource.to_tracker_profile
+      track_user resource.to_tracker_profile.merge({ landing_page: cookies[:landing_page],
+        initial_referrer: cookies[:initial_referrer] })
       track_event 'Signed up', { landing_page: cookies[:landing_page],
         initial_referrer: cookies[:initial_referrer] }
 
