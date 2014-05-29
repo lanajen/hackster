@@ -448,23 +448,23 @@ a.action-respected, a.action-followed {
       }
     }
   }
-  .meta {
-    @extend .text-muted;
-    @include font-size(12);
-    margin-bottom: 15px;
-    a.hidden-link {
-      color: #999;
-    }
-    .meta-title {
-      font-weight: bold;
-      margin-bottom: 4px;
-    }
-  }
-  .tags {
-    span {
-      margin: 0 8px 0 0;
-    }
-  }
+  // .meta {
+  //   @extend .text-muted;
+  //   @include font-size(12);
+  //   margin-bottom: 15px;
+  //   a.hidden-link {
+  //     color: #999;
+  //   }
+  //   .meta-title {
+  //     font-weight: bold;
+  //     margin-bottom: 4px;
+  //   }
+  // }
+  // .tags {
+  //   span {
+  //     margin: 0 8px 0 0;
+  //   }
+  // }
   #project-tit{
     margin-bottom: 40px;
   }
@@ -518,11 +518,61 @@ a.action-respected, a.action-followed {
   PROJECT SIDEBAR
 
 ***********************/
-#project-actions{
+#project-information{
   position: relative;
-  z-index: 2;
+  display: block;
+  padding: 20px 20px;
+  // background: #f8f8f8;
+  border-bottom: 2px solid #ccc;
+  text-align: left;
+  .meta{
+    font-size: 12px;
+    line-height: 1.4em;
+    margin-bottom: 15px;
+    color:#aaa;
+    a.hidden-link{
+      color: #aaa;
+    }
+    &:last-child{
+      margin-bottom: 0;
+    }
+  }
+  .meta-title{
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #aaa;
+  }
+  .team-widget .user{
+    display: block;
+    margin-bottom: 5px;
+    .user-name{
+      margin-left: 3px;
+    }
+  }
+  .tag-link{
+    display: inline-block;
+    padding: 2px 10px 1px;
+    background: transparent;
+    color: #aaa;
+    margin-right: 4px;
+    text-decoration: none;
+    border: 1px solid #aaa;
+    margin-bottom: 7px;
+    @include border-radius(20px);
+    &:hover{
+      color: #444447;
+      border-color:#444447;
+    }
+  }
+}
+#scrolling-project-section{
+  top:0;
+  left: 0;
+  width: 250px;
+}
+#project-actions{
   width: 100%;
-  text-align: right;
+  text-align: left;
   margin-top: 20px;
   & > a {
     padding: 10px 10px;
@@ -538,13 +588,17 @@ a.action-respected, a.action-followed {
       background: rgba(0,0,0,.02);
       color: #444447;
     }
-    &:last-child{
-      border-right: none;
-      padding-right: 20px;
+    &:first-child{
+      padding-left: 20px;
     }
   }
 }
 #scroll-nav{
+  margin: 20px;
+  background: rgba(255,255,255,0.3);
+  border: 1px solid #ddd;
+  @include border-radius(10px);
+  overflow: hidden;
   .scroll-nav-item{
     position: relative;
     display: block;
@@ -552,19 +606,18 @@ a.action-respected, a.action-followed {
     font-size: 14px;
     color: #aaa;
     font-weight: 200;
-    text-align: right;
+    text-align: left;
     margin: 0px;
     text-decoration: none;
-    border-right: 4px solid #f8f8f8;
     font-weight: bold;
     @include transition(all .2s ease);
     &:hover{
-      border-right: 4px solid #eee;
       color: #808080;
     }
     &.active{
-      color: #3d8bc1;
-      border-right: 4px solid #3d8bc1;
+      // color: #3d8bc1;
+      color: #444447;
+      background: rgba(255,255,255,0.5);
     }
   }
 }
