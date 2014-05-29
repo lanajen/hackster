@@ -552,6 +552,7 @@ a.action-respected, a.action-followed {
     font-weight: 200;
     text-align: right;
     margin: 0px;
+    font-weight: bold;
     text-decoration: none;
     @include transition(all .2s ease);
     .comment-count{
