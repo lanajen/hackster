@@ -53,31 +53,31 @@ img {
       display: block;
     }
   }
-}
 
-.navbar {
-  margin-bottom: 0;
-  .navbar-brand {
-    position: relative;
-    display: block;
-    padding: 18px 20px 18px;
-    margin: 0;
-    width: 250px;
-    border-right: 1px solid #eee;
-    text-align: center;
-    height: 60px;
-    @include transition(all .3s ease);
-    img{
-      max-width: 118px;
-      width: 80%;
+  &.navbar {
+    margin-bottom: 0;
+    .navbar-brand {
+      position: relative;
+      display: block;
+      padding: 18px 20px 18px;
+      margin: 0;
+      width: 250px;
+      border-right: 1px solid #eee;
+      text-align: center;
+      height: 60px;
+      @include transition(all .3s ease);
+      img{
+        max-width: 118px;
+        width: 80%;
+      }
+      &:hover{
+        background: #fcfcfc;
+      }
     }
-    &:hover{
-      background: #fcfcfc;
-    }
-  }
-  .nav {
-    li.with-button {
-      padding: 2px 5px 0;
+    .nav {
+      li.with-button {
+        padding: 2px 5px 0;
+      }
     }
   }
 }
