@@ -571,10 +571,13 @@ a.action-respected, a.action-followed {
   width: 250px;
 }
 #project-actions{
-  width: 100%;
-  text-align: left;
-  margin-top: 20px;
+  width: auto;
+  text-align: center;
+  margin: 30px 20px 0;
   & > a {
+    position: relative;
+    width: 25%;
+    float: left;
     padding: 10px 10px;
     display: inline-block;
     color: #aaa;
@@ -594,10 +597,11 @@ a.action-respected, a.action-followed {
   }
 }
 #scroll-nav{
-  margin: 20px;
-  background: rgba(255,255,255,0.3);
-  border: 1px solid #ddd;
-  @include border-radius(10px);
+  position: relative;
+  top:20px;
+  margin: 0 20px 20px;
+  background: white;
+  @include border-radius(4px);
   overflow: hidden;
   .scroll-nav-item{
     position: relative;
@@ -609,15 +613,13 @@ a.action-respected, a.action-followed {
     text-align: left;
     margin: 0px;
     text-decoration: none;
-    font-weight: bold;
     @include transition(all .2s ease);
     &:hover{
       color: #808080;
     }
     &.active{
       // color: #3d8bc1;
-      color: #444447;
-      background: rgba(255,255,255,0.5);
+      color: #2a6186;
     }
   }
 }
