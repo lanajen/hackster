@@ -287,9 +287,13 @@ img {
   font-weight: 200;
   font-family: 'Open Sans', 'Helvetica Neue', 'Helvetica', sans-serif;
   padding: 10px 20px 9px;
+  min-width: 82px;
+  padding: 9px 20px 8px;
+  border: 1px solid white;
   &#login{
     margin-right: 12px;
-    padding: 9px 20px 8px;
+    padding: 10px 20px 9px;
+    border: none;
   }
 }
 #navbar-right .login-link:hover, #navbar-right .open > a, #navbar-right .open > a:hover, #navbar-right .open > a:focus{
