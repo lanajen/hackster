@@ -59,7 +59,7 @@ img {
     width: 250px;
     text-align: center;
     height: 60px;
-    border-right:1px solid #444447;
+    border-right:1px solid #036394;
     @include transition(all .3s ease);
     @include box-shadow(1px 0 1px rgba(255,255,255,.15));
     img{
@@ -103,6 +103,7 @@ img {
     font-family: 'Open Sans', 'Helvetica Neue', 'Helvetica', sans-serif;
     font-size: 12px;
     font-weight: 600;
+    @include box-shadow(1px 0 0 rgba(255,255,255,.08));
     &.nav-add-project{
       font-weight: bold;
     }
@@ -206,6 +207,7 @@ img {
     color:#fff;
     width: 174px;
     @include transition(all .5s ease);
+    @include box-shadow(none);
     &:focus{
       outline: none;
       @include box-shadow(none);
@@ -324,7 +326,7 @@ img {
   padding-right: 12px;
   margin-left: -16px;
   height: 34px;
-  background: transparent;
+  background: #2A6186;
   border: 0;
   @include transition(all .5s ease);
   .caret{
