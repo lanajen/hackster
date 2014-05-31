@@ -16,7 +16,9 @@
             %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-comments", :data => { target: "#widget-comments", offset: '0'}}
               Comments
               %span.comment-count
+                (
                 = @project.comments_count
+                )
               %i.fa.fa-comment
       #project-actions.clearfix
         - if @project.public?
