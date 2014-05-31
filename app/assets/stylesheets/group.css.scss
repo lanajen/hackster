@@ -30,39 +30,6 @@
     white-space: nowrap;
   }
 }
-#sidebar-container{
-  position: absolute;
-  z-index: 2;
-  width: 250px;
-  height: 100%;
-  top:0;
-  left: 0;
-  background: #edeff0;
-  border-right:1px solid #d9d3d3;
-  overflow-x: hidden;
-  overflow-y:scroll;
-  &.affix{
-    position: fixed;
-  }
-  &.project-pages-sidebar{
-    padding-top: 60px;
-    background: #333;
-    border-right: 0;
-    #sidebar-container-in{
-      top: 0;
-      left: 0;
-      width: 250px;
-    }
-  }
-}
-#content-with-sidebar{
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  padding-left: 250px;
-  background: white;
-  min-height: 800px;
-}
 #main-content {
   padding: 30px 30px 20px;
 }

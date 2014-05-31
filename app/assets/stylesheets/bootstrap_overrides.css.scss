@@ -82,11 +82,20 @@ a{
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f8f8', endColorstr='#f4f4f4',GradientType=0 );
   }
 }
+.btn-dark{
+  border: none;
+  color: white;
+  background: #2A6186;
+  &:hover,&:active,&:focus{
+    background: #316C94;
+    color:white;
+  }
+}
 .btn-black{
   border: none;
   color: white;
   background: #676767;
-  &:hover,&:active{
+  &:hover,&:active,&:focus{
     background: #49494D;
     color:white;
   }

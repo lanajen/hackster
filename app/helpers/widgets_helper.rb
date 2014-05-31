@@ -28,7 +28,7 @@ module WidgetsHelper
     when PartsWidget
       'fa-puzzle-piece'
     else
-      ''
+      'fa-list-alt'
     end
   end
 

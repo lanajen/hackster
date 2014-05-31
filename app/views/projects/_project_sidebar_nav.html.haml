@@ -1,16 +1,26 @@
-#sidebar-container.project-pages-sidebar.affixable
+#sidebar-container.project-pages-sidebar
   %section#sidebar-container-in
-    #scroll-nav
-      = link_to 'Project Details', "javascript:smoothScrollTo('#heading', -20)", class: "scroll-nav-item active"
-      = link_to 'Overview', "javascript:smoothScrollTo('#heading', -20)", class: "scroll-nav-item"
-      = link_to 'Parts Needed', "javascript:smoothScrollTo('#heading', -20)", class: "scroll-nav-item"
-      = link_to 'Parts Needed', "javascript:smoothScrollTo('#heading', -20)", class: "scroll-nav-item"
-      = link_to 'Parts Needed', "javascript:smoothScrollTo('#heading', -20)", class: "scroll-nav-item"
-      = link_to 'Parts Needed', "javascript:smoothScrollTo('#heading', -20)", class: "scroll-nav-item"
-      = link_to "#{content_tag(:span, @project.comments_count, class: 'comment-count')} Comments".html_safe, "javascript:smoothScrollTo('#widget-comments', -20)", class: "scroll-nav-item"
-    #project-actions.clearfix
-      - if @project.public?
-        = render 'projects/share'
-        = render 'projects/project_embed_popup'
-        = render partial: 'respects/button', locals: { project: @project }
-        = render partial: 'followers/button', locals: { followable: @project }
+    #scrolling-project-section.affixable
+      #scroll-nav
+        %ul.nav
+          %li.active
+            %a.scroll-nav-item.scroll.clearfix{ :href => "#top-project-section", :data => { target: "#top-project-section", offset: '0'}}
+              = @project.name
+              %i.fa.fa-home
+          - @widgets.each do |widget|
+            %li
+              %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-#{widget.id}", :data => { target: "#widget-#{widget.id}", offset: '0'}}
+                %i.fa{ class: icon_for_widget(widget) }
+                = widget.name
+          %li
+            %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-comments", :data => { target: "#widget-comments", offset: '0'}}
+              Comments
+              %span.comment-count
+                = @project.comments_count
+              %i.fa.fa-comment
+      #project-actions.clearfix
+        - if @project.public?
+          = render 'projects/share'
+          = render 'projects/project_embed_popup'
+          = render partial: 'respects/button', locals: { project: @project }
+          = render partial: 'followers/button', locals: { followable: @project }
