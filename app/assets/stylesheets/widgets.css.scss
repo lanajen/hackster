@@ -199,6 +199,9 @@
   text-align: justify;
   img {
     width: 100%;
+    margin: 20px 0;
+    border: 5px solid white;
+    @include box-shadow(0 1px 14px rgba(0,0,0,.1), 0 1px 1px rgba(0,0,0,.3));
   }
 }
 
@@ -533,8 +536,13 @@ p.caption {
 }
 
 .video-widget {
+  border: 5px solid white;
+  @include box-shadow(0 1px 14px rgba(0,0,0,.1), 0 1px 1px rgba(0,0,0,.3));
   p.caption {
     margin-bottom: 0;
+    &:empty{
+      display: none;
+    }
   }
 }
 

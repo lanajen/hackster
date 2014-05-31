@@ -438,7 +438,7 @@ a.action-respected, a.action-followed {
   }
   h1 {
     text-align: left;
-    padding: 0 0 40px;
+    padding: 0 0 30px;
     margin: 0;
     font-size: 40px;
     font-weight: 600;
@@ -465,18 +465,30 @@ a.action-respected, a.action-followed {
     font-weight: 200;
   }
   .project-logo {
-    width: 60px;
-    height: 60px;
-  }
-  #project-top-image{
-    margin-bottom: 10px;
+    // position: absolute;
+    // margin-left: -80px;
+    // top: 54px;
+    // @include border-radius(5%);
+    // border: 2px solid white;
+    // @include box-shadow(0 1px 1px rgba(0,0,0,.4));
+    position: relative;
+    top: -2px;
+    margin-right: 5px;
+    width: 44px;
+    height: 44px;
   }
   #project-secondary-info{
   }
   #left-project-deets{
     margin-bottom: 15px;
   }
+  #project-top-image{
+    position: relative;
+    margin-bottom: 10px;
+  }
   .cover-image {
+    position: relative;
+    z-index: 1;
     width: 100%;
   }
   .counters {
@@ -594,40 +606,49 @@ a.action-respected, a.action-followed {
   li .scroll-nav-item{
     position: relative;
     display: block;
-    padding: 12px 45px 10px 15px;
+    padding: 15px 45px 13px 15px;
     font-size: 14px;
     color: #aaa;
-    font-weight: 500;
+    font-weight: 200;
     text-align: left;
     margin: 0px;
     text-decoration: none;
     border-left: 5px solid #D6D8D8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     @include text-shadow(0 1px 0 rgba(255,255,255,.1));
     @include transition(all .2s ease);
+    .comment-count{
+      position: relative;
+      font-size: 10px;
+      margin-left: 2px;
+      top: -1px;
+    }
     .fa{
       position: absolute;
       right: 15px;
-      top: 15px;
+      top: 19px;
     }
     &:hover{
       color: #808080;
     }
   }
   li.active .scroll-nav-item{
-    color: #3d8bc1;
-    border-left: 5px solid #3d8bc1;
-    background: rgba(0,0,0,.01);
+    color: #2A6186;
+    border-left: 5px solid #2A6186;
+    background: rgba(0,0,0,.02);
   }
 }
 #project-actions{
   width: auto;
   text-align: right;
-  margin-top: 20px;
+  margin-top: 10px;
   & > a {
     position: relative;
     padding: 10px 10px;
     display: inline-block;
-    color: #eee;
+    color: #aaa;
     @include transition(all .2s ease);
     &:hover{
       color: #fff;
@@ -637,7 +658,7 @@ a.action-respected, a.action-followed {
       outline: none;
     }
     &:last-child{
-      padding-right: 20px;
+      padding-right: 15px;
     }
   }
 }

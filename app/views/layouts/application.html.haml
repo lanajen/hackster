@@ -141,7 +141,7 @@
                   %li
                     %span= link_to 'Sign up', new_user_registration_path, class: 'btn btn-primary login-link', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '#{request.path}']);" #new_user_registration_path
                   %li.dropdown
-                    %a#login.btn.btn-dark.login-link.dropdown-toggle{"data-toggle" => "dropdown", href: '#' }
+                    %a#login.btn.btn-default.login-link.dropdown-toggle{"data-toggle" => "dropdown", href: '#' }
                       Log in
                     .dropdown-menu{:style => "padding: 15px; width: 250px;"}
                       = render 'devise/sessions/form'
