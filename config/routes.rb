@@ -28,8 +28,6 @@ HackerIo::Application.routes.draw do
       end
     end
 
-    mount Monologue::Engine, at: '/blog'
-
     namespace :admin do
       # mount ResqueAuthServer.new, at: "/resque"
       authenticate :user, lambda { |u| u.is? :admin } do
