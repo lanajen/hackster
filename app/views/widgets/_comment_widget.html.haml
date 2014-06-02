@@ -1,3 +1,6 @@
-.well{ id: "widget-comments" }
+.project-section{ id: "widget-comments" }
   .content
+    .header
+      %h4
+        Comments
     = render partial: 'widgets/comments', locals: { comments: comments, commentable: commentable }

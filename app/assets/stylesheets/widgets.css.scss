@@ -242,6 +242,18 @@
   }
 }
 
+.table.table-condensed{
+  .fields{
+    font-size: 14px;
+  }
+  thead{
+    font-size: 14px;
+  }
+  tfoot{
+    font-size: 14px;
+  }
+}
+
 .image-widget {
   position: relative;
   .nav {
@@ -377,6 +389,18 @@
   border-top: 1px solid #E5E5E5;
 }
 
+#widget-comments{
+  .sign-up-to-comment{
+    padding: 20px 0 16px;
+    background: #f8f8f8;
+    border-radius: 5px;
+    text-align: center;
+    margin-top: 20px;
+    font-weight: bold;
+    color: #808080;
+  }
+}
+
 .comments {
   @include font-size(12);
   textarea, input[type='text'], input[type='email'], input[type='password'] {
@@ -394,23 +418,37 @@
   }
   .comment {
     overflow: hidden;
-    padding: 6px 0;
+    padding: 10px 0;
     border-bottom: 1px solid #fff;
     position: relative;
     .comment-text {
       padding-top: 2px;
       p {
         margin-bottom: 5px;
+        font-size: 14px;
+        line-height: 1.4em;
       }
     }
     .comment-avatar {
-      margin-right: 8px;
+      margin-right: 15px;
+      @include border-radius(50%);
+      overflow: hidden;
       img {
         width: 32px;
       }
     }
     .comment-author {
-      font-weight: bold;
+      a{
+        position: relative;
+        font-size: 16px;
+        font-weight: 100;
+        margin-bottom: 20px;
+        display: block;
+        margin-top: 6px;
+        &:empty{
+          display: none;
+        }
+      }
     }
     .comment-date {
       margin-top: 3px;
@@ -423,6 +461,9 @@
     }
     &.depth-3 {
       padding-left: 114px;
+    }
+    &:first-child{
+      padding-top: 0;
     }
   }
 }
@@ -473,15 +514,24 @@
   }
 }
 
-.respect-thumb {
-  margin-bottom: 10px;
-  padding-left: 5px;
-  padding-right: 5px;
+.respect-thumbs {
+
 }
 
-#widget-respects .content {
-  padding-bottom: 3px;
-  margin: 0;
+#widget-respects {
+  padding-bottom: 30px;
+  .respect-button{
+    padding-left: 7px;
+  }
+  .respects-user-img{
+    float: left;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-bottom: 10px;
+    margin-right: 10px;
+  }
 }
 
 .widget-reorder-form {
@@ -554,20 +604,20 @@ p.caption {
     .step-badge {
       @include border-radius(20px);
       background: #888;
+      background: #2A6186;
       color: #fff;
       font-weight: bold;
       padding: 6px 10px;
       display: inline-block;
-      margin-right: 1px;
+      margin-right: 10px;
     }
     &:last-child {
       border: none;
     }
     .step-details {
       margin-top: 5px;
-      padding-left: 35px;
+      padding-left: 42px;
       padding-right: 10px;
-      text-align: justify;
     }
   }
 }
@@ -635,4 +685,9 @@ p.caption {
       }
     }
   }
+}
+
+#more-projects{
+  padding: 0px 0 100px;
+  border-top: 3px dotted #f1f1f1;
 }

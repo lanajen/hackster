@@ -1,6 +1,12 @@
 #sidebar-container.project-pages-sidebar
-  %section#sidebar-container-in
-    #scrolling-project-section.affixable
+  %section#sidebar-container-in.affixable
+    #project-actions.clearfix
+      - if @project.public?
+        = render 'projects/share'
+        = render 'projects/project_embed_popup'
+        = render partial: 'respects/button', locals: { project: @project }
+        = render partial: 'followers/button', locals: { followable: @project }
+    #scrolling-project-section
       #scroll-nav
         %ul.nav
           %li.active
@@ -20,9 +26,3 @@
                 = @project.comments_count
                 )
               %i.fa.fa-comment
-      #project-actions.clearfix
-        - if @project.public?
-          = render 'projects/share'
-          = render 'projects/project_embed_popup'
-          = render partial: 'respects/button', locals: { project: @project }
-          = render partial: 'followers/button', locals: { followable: @project }

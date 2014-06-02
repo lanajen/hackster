@@ -1013,6 +1013,11 @@ a.hidden-link {
   }
   &.project-pages-sidebar{
     //padding-top: 60px;
+    overflow-y: hidden;
+    #sidebar-container-in{
+      top: 0;
+      height: 100%;
+    }
   }
 }
 #content-with-sidebar{

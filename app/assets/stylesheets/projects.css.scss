@@ -442,6 +442,7 @@ a.action-respected, a.action-followed {
     margin: 0;
     font-size: 40px;
     font-weight: 600;
+    line-height: 1.3em;
     a {
       &:hover {
         text-decoration: none;
@@ -476,8 +477,12 @@ a.action-respected, a.action-followed {
     margin-right: 5px;
     width: 44px;
     height: 44px;
+    display: none;
   }
   #project-secondary-info{
+    width: 30%;
+    display: inline-block;
+    float: left;
   }
   #left-project-deets{
     margin-bottom: 15px;
@@ -485,11 +490,16 @@ a.action-respected, a.action-followed {
   #project-top-image{
     position: relative;
     margin-bottom: 10px;
+    width: 67%;
+    display: inline-block;
+    float: right;
   }
   .cover-image {
     position: relative;
     z-index: 1;
     width: 100%;
+    border: 5px solid white;
+    @include box-shadow(0 1px 14px rgba(0, 0, 0, 0.1), 0 1px 1px rgba(0, 0, 0, 0.3));
   }
   .counters {
     margin-bottom: 0;
@@ -573,6 +583,12 @@ a.action-respected, a.action-followed {
   .project-section{
     border-bottom: 3px dotted #f1f1f1;
     padding-bottom: 40px;
+    h4{
+      margin: 0;
+    }
+    &:last-child{
+      border-bottom: 0;
+    }
   }
   .header{
     padding: 30px 0 0;
@@ -600,23 +616,26 @@ a.action-respected, a.action-followed {
   top:0;
   left: 0;
   width: 250px;
+  height: 100%;
+  overflow-y: scroll;
+  padding-bottom: 90px;
 }
 #scroll-nav{
   position: relative;
   li .scroll-nav-item{
     position: relative;
     display: block;
-    padding: 15px 45px 13px 15px;
-    font-size: 14px;
+    padding: 15px 15px 13px 48px;
+    font-size: 13px;
     color: #aaa;
     font-weight: 200;
     text-align: left;
     margin: 0px;
     text-decoration: none;
-    border-left: 5px solid #D6D8D8;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-family: 'Open Sans', 'Helvetica Neue', 'Helvetica', sans-serif;
     @include text-shadow(0 1px 0 rgba(255,255,255,.1));
     @include transition(all .2s ease);
     .comment-count{
@@ -627,8 +646,14 @@ a.action-respected, a.action-followed {
     }
     .fa{
       position: absolute;
-      right: 15px;
-      top: 19px;
+      left: 0;
+      top: 0;
+      width: 44px;
+      text-align: center;
+      height: 100%;
+      padding-top: 18px;
+      // background: #eaeaea;
+      @include transition(all .2s ease);
     }
     &:hover{
       color: #808080;
@@ -636,29 +661,39 @@ a.action-respected, a.action-followed {
   }
   li.active .scroll-nav-item{
     color: #2A6186;
-    border-left: 5px solid #2A6186;
-    background: rgba(0,0,0,.02);
+    background: rgba(0, 0, 0, 0.04);
+    padding-left: 69px;
+    // border-right: 5px solid #2A6186;
+    .fa{
+      background: #2A6186;
+      color: white;
+      width: 54px;
+    }
   }
 }
 #project-actions{
-  width: auto;
-  text-align: right;
-  margin-top: 10px;
+  width: 100%;
+  text-align: center;
+  background: #f8f8f8;
+  @include box-shadow(0 1px 0 rgba(0,0,0,.1));
   & > a {
     position: relative;
-    padding: 10px 10px;
+    padding: 12px 10px 10px;
+    width: 25%;
+    float: left;
     display: inline-block;
-    color: #aaa;
+    color: #808080;
+    border-right: 1px solid rgba(0,0,0,.05);
     @include transition(all .2s ease);
     &:hover{
-      color: #fff;
+      color: #444447;
     }
     &:active{
       color: #fff;
       outline: none;
     }
     &:last-child{
-      padding-right: 15px;
+      border-right: 0;
     }
   }
 }

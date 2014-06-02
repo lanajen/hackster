@@ -62,29 +62,28 @@
       - cache [@project, 'other', @other_projects], tag: "project-#{@project.id}-other" do
         - if @other_projects_count > 0
           #more-projects.row
-            .col-xs-12
-              %hr
-              %h5
+            .header
+              %h4
                 Other projects by
                 = @project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
-              - if @other_projects_count > 6
-                .row
-                  .col-xs-6
-                    %h6.subtitle Most popular
-                    .row
-                      - @other_projects.each do |project|
-                        .col-xs-4
-                          = render partial: 'projects/project_mini_thumb', locals: { ref: 'more', project: project }
+            - if @other_projects_count > 6
+              .row
+                .col-xs-6
+                  %h6.subtitle Most popular
+                  .row
+                    - @other_projects.each do |project|
+                      .col-xs-4
+                        = render partial: 'projects/project_mini_thumb', locals: { ref: 'more', project: project }
 
-                  .col-xs-6
-                    %h6.subtitle Newest
-                    .row
-                      - @last_projects.each do |project|
-                        .col-xs-4
-                          = render partial: 'projects/project_mini_thumb', locals: { ref: 'more', project: project }
+                .col-xs-6
+                  %h6.subtitle Newest
+                  .row
+                    - @last_projects.each do |project|
+                      .col-xs-4
+                        = render partial: 'projects/project_mini_thumb', locals: { ref: 'more', project: project }
 
-              - else
-                .row
-                  - @other_projects.each do |project|
-                    .col-xs-2
-                      = render partial: 'projects/project_mini_thumb', locals: { ref: 'more', project: project }
+            - else
+              .row
+                - @other_projects.each do |project|
+                  .col-xs-2
+                    = render partial: 'projects/project_mini_thumb', locals: { ref: 'more', project: project }
