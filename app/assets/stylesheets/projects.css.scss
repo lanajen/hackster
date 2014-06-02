@@ -632,10 +632,10 @@ a.action-respected, a.action-followed {
     text-align: left;
     margin: 0px;
     text-decoration: none;
+    border-left: 5px solid #D6D8D8;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-family: 'Open Sans', 'Helvetica Neue', 'Helvetica', sans-serif;
     @include text-shadow(0 1px 0 rgba(255,255,255,.1));
     @include transition(all .2s ease);
     .comment-count{
@@ -661,14 +661,8 @@ a.action-respected, a.action-followed {
   }
   li.active .scroll-nav-item{
     color: #2A6186;
-    background: rgba(0, 0, 0, 0.04);
-    padding-left: 69px;
-    // border-right: 5px solid #2A6186;
-    .fa{
-      background: #2A6186;
-      color: white;
-      width: 54px;
-    }
+    border-left: 5px solid #2A6186;
+    background: rgba(0,0,0,.02);
   }
 }
 #project-actions{
