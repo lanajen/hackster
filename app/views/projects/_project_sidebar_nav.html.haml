@@ -13,7 +13,7 @@
             %a.scroll-nav-item.scroll.clearfix{ :href => "#top-project-section", :data => { target: "#top-project-section", offset: '0'}}
               = @project.name
               %i.fa.fa-home
-          - @widgets.each do |widget|
+          - @project.widgets.each do |widget|
             %li
               %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-#{widget.id}", :data => { target: "#widget-#{widget.id}", offset: '0'}}
                 %i.fa{ class: icon_for_widget(widget) }
