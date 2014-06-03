@@ -33,31 +33,38 @@
 
       .tab-content.row
         #tab-home.tab-pane.fade.in.active
+          = link_to 'Add a widget', new_project_widget_path(@project)
+          - if can? :edit, @project
+            .widget-form-div
+              .widget-label
+                About
+              .widget-div-in
+                dude
           - if @widgets.any?
             = render 'projects/large_column'
 
-          - else
-            .col-xs-6.col-xs-offset-3
-              .well
-                .content
-                  - if can? :edit, @project
-                    Tell the world more about #{@project.name}, show us the code, schematics, bill of materials, or something else awesome about your project.
-                    = link_to 'Add your first widget to get started!', new_project_widget_path(@project)
-                  - else
-                    Work in progress, check back later!
+          / - else
+          /   .col-xs-6.col-xs-offset-3
+          /     .well
+          /       .content
+          /         - if can? :edit, @project
+          /           Tell the world more about #{@project.name}, show us the code, schematics, bill of materials, or something else awesome about your project.
+          /           = link_to 'Add your first widget to get started!', new_project_widget_path(@project)
+          /         - else
+          /           Work in progress, check back later!
 
-            - if @project.columns_count == 1 and can? :edit, @project
-              #sidebar.col-xs-3
-                .navbar-tabs.navbar-default.navbar-vertical.unselectable.affixable
-                  %ul.navbar-nav.nav
-                    %li.dropdown
-                      %a.dropdown-toggle{ data: { toggle: 'dropdown' }, href: '#' }
-                        Edit
-                        %b.caret
-                      %ul.dropdown-menu
-                        %li= link_to 'Settings', edit_project_path(@project), data: { remote: true }
-                        %li= link_to 'Add a widget', new_project_widget_path(@project)
-                        %li= link_to 'Reorder widgets and edit columns', project_widgets_path(@project)
+          /   - if @project.columns_count == 1 and can? :edit, @project
+          /     #sidebar.col-xs-3
+          /       .navbar-tabs.navbar-default.navbar-vertical.unselectable.affixable
+          /         %ul.navbar-nav.nav
+          /           %li.dropdown
+          /             %a.dropdown-toggle{ data: { toggle: 'dropdown' }, href: '#' }
+          /               Edit
+          /               %b.caret
+          /             %ul.dropdown-menu
+          /               %li= link_to 'Settings', edit_project_path(@project), data: { remote: true }
+          /               %li= link_to 'Add a widget', new_project_widget_path(@project)
+          /               %li= link_to 'Reorder widgets and edit columns', project_widgets_path(@project)
 
       - cache [@project, 'other', @other_projects], tag: "project-#{@project.id}-other" do
         - if @other_projects_count > 0

@@ -184,9 +184,9 @@
       = link_to 'Hackers', hackers_path, class: 'mo-nav-link'
       = link_to "Add project".html_safe, link, class: 'mo-nav-link'
       - if user_signed_in?
-        = link_to 'Log out', destroy_user_session_path, method: :delete
+        = link_to 'Log out', destroy_user_session_path, method: :delete, class: 'mo-nav-link'
         - if current_user.is? :admin
-          = link_to 'Admin', admin_analytics_path
+          = link_to 'Admin', admin_analytics_path, class: 'mo-nav-link'
       - else
         = link_to 'Sign up / Login', new_user_registration_path, class: 'mo-nav-link', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '#{request.path}']);"
     = content_for :js
