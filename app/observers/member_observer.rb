@@ -20,7 +20,7 @@ class MemberObserver < ActiveRecord::Observer
     elsif record.group.is? :tech
       unless record.invitation_pending?
         BaseMailer.enqueue_email 'new_community_member_notification',
-          { context_type: :new_membership, context_id: record.id } if record.group_roles == %w(member)
+          { context_type: :new_membership, context_id: record.id } if record.group_roles == %w(member) and record.group.email.present?
 
         record.user.broadcast :new, record.id, 'Member'
       end
