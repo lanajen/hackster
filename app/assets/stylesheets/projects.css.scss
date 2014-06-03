@@ -440,7 +440,7 @@ a.action-respected, a.action-followed {
     text-align: left;
     padding: 0 0 30px;
     margin: 0;
-    font-size: 40px;
+    font-size: 28px;
     font-weight: 600;
     line-height: 1.3em;
     a {
@@ -460,7 +460,7 @@ a.action-respected, a.action-followed {
   .one-liner {
     margin-bottom: 20px;
     color: #aaa;
-    font-size: 20px;
+    font-size: 16px;
     line-height: 1.5;
     margin-top: -10px;
     font-weight: 200;
@@ -480,19 +480,13 @@ a.action-respected, a.action-followed {
     display: none;
   }
   #project-secondary-info{
-    width: 30%;
-    display: inline-block;
-    float: left;
+    display: block;
   }
   #left-project-deets{
     margin-bottom: 15px;
   }
   #project-top-image{
-    position: relative;
-    margin-bottom: 10px;
-    width: 67%;
-    display: inline-block;
-    float: right;
+    margin-bottom: 40px;
   }
   .cover-image {
     position: relative;
@@ -600,7 +594,7 @@ a.action-respected, a.action-followed {
     }
   }
   .content{
-    font-size: 20px;
+    font-size: 14px;
     font-weight: 200;
     line-height: 1.5;
     padding: 0;
@@ -618,7 +612,7 @@ a.action-respected, a.action-followed {
   width: 250px;
   height: 100%;
   overflow-y: scroll;
-  padding-bottom: 90px;
+  padding-bottom: 120px;
 }
 #scroll-nav{
   position: relative;

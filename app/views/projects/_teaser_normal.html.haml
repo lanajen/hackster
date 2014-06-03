@@ -64,6 +64,8 @@
               No one liner yet.
               = link_to 'Add one?', edit_project_path(@project), data: { remote: true }
 .wrapper700.clearfix
+  #project-top-image
+    = image_tag @project.cover_image, alt: @project.name, class: 'cover-image'
   #project-secondary-info
     #left-project-deets
       .team-widget.meta
@@ -136,8 +138,6 @@
             .meta-title Tags
           No tags yet.
           = link_to 'Add some?', edit_project_path(@project), data: { remote: true }
-  #project-top-image
-    = image_tag @project.cover_image, alt: @project.name, class: 'cover-image'
 / - unless @project.columns_count == 1
 /   #project-nav.unselectable
 /     .row.affixable{ data: { offset: 53 }}

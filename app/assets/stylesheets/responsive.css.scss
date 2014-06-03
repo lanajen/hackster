@@ -1,0 +1,79 @@
+/*******************
+    GLOBAL
+*******************/
+.show-on-desktop{
+  display: none!important;
+}
+
+/* ===============================
+  Media Queries
+=============================== */
+@media only screen and (min-width: 500px) {
+
+}
+
+@media only screen and (min-width: 900px) {
+  #sidebar-container{
+    display: block;
+  }
+  #content-with-sidebar{
+    padding-left: 250px;
+  }
+  .project-details{
+    h1{
+      font-size: 40px;
+    }
+    .one-liner {
+      font-size: 20px;
+    }
+    #project-secondary-info{
+      width: 30%;
+      display: inline-block;
+      float: left;
+    }
+    #project-top-image{
+      position: relative;
+      width: 67%;
+      display: inline-block;
+      float: right;
+      margin-bottom: 0;
+    }
+  }
+  .project-show{
+    .content{
+      font-size: 18px;
+    }
+  }
+}
+@media only screen and (min-width: 1150px) {
+  /*******************
+      GLOBAL
+  *******************/
+  .show-on-desktop{
+    display: block!important;
+  }
+  .hide-on-desktop{
+    display: none!important;
+  }
+  /*******************
+      NAVIGATION
+  *******************/
+  .navbar{
+    .navbar-header{
+      float: left;
+    }
+    .navbar-brand{
+      border-right: 1px solid #036394;
+      @include box-shadow(1px 0 1px rgba(255, 255, 255, 0.15));
+      &:hover{
+        background: #2A6186;
+      }
+    }
+  }
+
+  #nav-non-logo{
+    #nav-actions .nav-link, #nav-actions .nav-link:focus{
+      min-width: 130px;
+    }
+  }
+}
