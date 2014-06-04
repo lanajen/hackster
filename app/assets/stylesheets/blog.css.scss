@@ -1,3 +1,22 @@
+#outer-wrapper {
+  position: relative;
+  z-index: 1;
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  margin: 0 auto -40px;
+  @include transition(all .5s ease);
+  &.mobile-nav-open{
+    -webkit-filter: blur(1px);
+  }
+}
+
+.wrapper700{
+  max-width: 700px;
+  width: 90%;
+  margin: auto;
+}
+
 #blog {
   background: #fff;
   font-size: 18px;
