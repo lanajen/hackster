@@ -7,15 +7,16 @@
         Like what you see?
         %br
         %em Join Hackster.io!
-      %p.text-center Connect with your social account:
-      .text-center
+      %p.text-center Choose how you want to sign up:
+      .text-center{ style: 'font-size: 20px' }
         = link_to 'Facebook', user_omniauth_authorize_url(:facebook), class: 'zocial icon facebook'
         = link_to 'Github', user_omniauth_authorize_path(:github), class: 'zocial icon github'
         = link_to 'Google+', user_omniauth_authorize_path(:gplus), class: 'zocial icon googleplus'
         = link_to 'Twitter', user_omniauth_authorize_path(:twitter), class: 'zocial icon twitter'
-      %hr
-      %p.text-center Or use your email:
-      = simple_form_for User.new, url: user_registration_path, html: { class: 'form-compact' } do |f|
+        = link_to 'Email', 'javascript:$("#signup-popup-email").slideToggle();', class: 'zocial icon email'
+
+      = simple_form_for User.new, url: user_registration_path, html: { id: 'signup-popup-email', class: 'form-compact', style: 'display:none;' } do |f|
+        %hr
         = f.input :email, label: false, placeholder: 'Email', tabindex: 1
         = f.input :email_confirmation, label: false, placeholder: 'Confirm email'
         = f.input :password, label: false, placeholder: 'Password'
