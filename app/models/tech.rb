@@ -84,7 +84,7 @@ class Tech < Group
 
   def projects
     # Project.includes(:tech_tags).where(tags: { name: tech_tags.pluck(:name) })
-    Project.includes(:tech_tags).where('lower(tags.name) IN (?)', tech_tags.pluck(:name).map{|n| n.downcase })
+    Project.public.includes(:tech_tags).references(:tags).where('lower(tags.name) IN (?)', tech_tags.pluck(:name).map{|n| n.downcase })
     # SearchRepository.new(q: tech_tags_string).search.results
   end
 
