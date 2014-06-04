@@ -1,5 +1,6 @@
 class ProjectsController < ApplicationController
   before_filter :load_project, only: [:show, :embed, :update, :destroy, :redirect_old_show_route]
+  before_filter :track_visitor, only: [:show]
   load_and_authorize_resource only: [:index, :create, :new, :edit]
   layout 'project', only: [:edit, :update, :show]
   respond_to :html
@@ -224,5 +225,19 @@ class ProjectsController < ApplicationController
 #      @project.build_video unless @project.video
       @project.build_logo unless @project.logo
       @project.build_cover_image unless @project.cover_image
+    end
+
+    def track_visitor
+      if user_signed_in? or cookies[:member]
+        cookies[:member] = true
+        return
+      end
+      cookies[:projects_visited] = 0 unless cookies[:projects_visited].present?
+      cookies[:projects_visited] = cookies[:projects_visited].to_i + 1
+      cookies[:last_seen] = Time.now
+      if (cookies[:projects_visited] % 3) == 0 and (cookies[:last_shown_banner].nil? or cookies[:last_shown_banner].to_time < 10.seconds.ago)
+        @show_signup_popup = true
+        cookies[:last_shown_banner] = Time.now
+      end
     end
 end

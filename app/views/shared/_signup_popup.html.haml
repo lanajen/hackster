@@ -1,0 +1,38 @@
+#signup-popup
+  #signup-popup-outer
+    #signup-popup-inner
+      %button.close{ onclick: "closePopup('#signup-popup');" } &times;
+      %h2
+        Like what you see?
+        %br
+        %em Join Hackster.io!
+      %p.text-center Connect with your social account:
+      .text-center
+        = link_to 'Facebook', user_omniauth_authorize_url(:facebook), class: 'zocial icon facebook'
+        = link_to 'Github', user_omniauth_authorize_path(:github), class: 'zocial icon github'
+        = link_to 'Google+', user_omniauth_authorize_path(:gplus), class: 'zocial icon googleplus'
+        = link_to 'Twitter', user_omniauth_authorize_path(:twitter), class: 'zocial icon twitter'
+      %hr
+      %p.text-center Or use your email:
+      = simple_form_for User.new, url: user_registration_path, html: { class: 'form-compact' } do |f|
+        = f.input :email, label: false, placeholder: 'Email', tabindex: 1
+        = f.input :email_confirmation, label: false, placeholder: 'Confirm email'
+        = f.input :password, label: false, placeholder: 'Password'
+        = f.button :submit, "Sign up", class: 'btn btn-primary btn-block'
+
+= content_for :js do
+  :javascript
+    $(document).ready(function(){
+      window.setTimeout(function(){
+        $('#signup-popup').fadeIn(600);
+      }, 1000);
+    });
+    $('#signup-popup-outer').click(function(){
+      $('#signup-popup').fadeOut(200);
+    }).children().click(function() {
+      return false;
+    });
+    function closePopup(id) {
+      $(id).fadeOut(200);
+      return false;
+    }

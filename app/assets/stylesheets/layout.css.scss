@@ -964,3 +964,38 @@ a.hidden-link {
     color: #f2f2f2;
   }
 }
+
+#signup-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: #000;
+  background: rgba(0,0,0,0.8);
+  z-index: 100000000000;
+  display: none;
+  #signup-popup-outer {
+    position: relative;
+    height: 100%;
+    width: 100%;
+  }
+  #signup-popup-inner {
+    // height: 425px;
+    width: 400px;
+    margin-top: -212px;
+    margin-left: -200px;
+    top: 50%;
+    left: 50%;
+    background: #fff;
+    position: absolute;
+    padding: 20px;
+  }
+  h2 {
+    color: #333;
+    font-weight: 900;
+    font-size: 30px;
+    text-align: center;
+    margin-top: 0;
+  }
+}
