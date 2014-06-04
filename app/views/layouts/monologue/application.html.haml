@@ -35,7 +35,7 @@
             %ul#nav-actions
               %li= link_to 'Projects', '/projects', class: 'nav-link'
               %li= link_to 'Tools', '/tools', class: 'nav-link'
-              %li= link_to 'Blog', root_path, class: 'nav-link'
+              %li= link_to 'Blog', '/blog', class: 'nav-link'
 
             %ul#navbar-right.clearfix
               %li
@@ -49,12 +49,16 @@
               .flash-notice
                 = msg
             = yield
-      #push
+
     %footer
       .wrapper700
-        %ul.list-unstyled.list-inline.pull-right
-          %li= link_to content_tag(:i, '', class: 'fa fa-twitter fa-lg').html_safe, 'http://twitter.com/hacksterio', alt: 'Hackster.io on Twitter', class: 'link-icon'
-          %li= link_to content_tag(:i, '', class: 'fa fa-facebook fa-lg').html_safe, 'http://www.facebook.com/hacksterio', alt: 'Hackster.io on Facebook', class: 'link-icon'
-          %li Hackster.io 2014
+        %p
+          %strong
+            = SLOGAN
+            = link_to 'Learn more', '/about'
+        %p
+          = link_to content_tag(:i, '', class: 'fa fa-twitter fa-lg').html_safe, 'http://twitter.com/hacksterio', alt: 'Hackster.io on Twitter', class: 'link-icon'
+          = link_to content_tag(:i, '', class: 'fa fa-facebook fa-lg').html_safe, 'http://www.facebook.com/hacksterio', alt: 'Hackster.io on Facebook', class: 'link-icon'
+          = link_to content_tag(:i, '', class: 'fa fa-envelope-o fa-lg').html_safe, 'http://us7.campaign-archive2.com/home/?u=3fd72855783c7f1a97812d84e&id=6ff81e3e5b', target: '_blank'
     = render 'layouts/monologue/application/disqus'
     = render 'layouts/monologue/application/gauge_analytics'

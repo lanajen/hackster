@@ -4,7 +4,7 @@
   min-height: 100%;
   height: auto !important;
   height: 100%;
-  margin: 0 auto -40px;
+  margin: 0 auto;
   @include transition(all .5s ease);
   &.mobile-nav-open{
     -webkit-filter: blur(1px);
@@ -38,6 +38,22 @@
   #content {
     padding: 200px 0 60px;
   }
+  footer {
+    padding: 100px 0;
+    text-align: center;
+    background: #ddd;
+    color: #666;
+    font-size: 20px;
+    height: auto;
+    p:last-child {
+      margin-bottom: 0;
+    }
+    a {
+      &:hover {
+        color: #777;
+      }
+    }
+  }
   .content {
     background: #fff;
     padding: 0 20px;
@@ -46,6 +62,9 @@
   .post {
     padding: 40px 0;
     border-bottom: 1px solid #ddd;
+    &:last-child {
+      border-bottom: 0;
+    }
     .posted {
       font-size: 14px;
     }
