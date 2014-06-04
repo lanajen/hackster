@@ -1,0 +1,20 @@
+- content_for :title do
+  = @post.title
+- content_for :meta_description do
+  = truncate(strip_tags(@post.content), length: 155)
+
+%article.post
+  %header.post-header
+    %h1= link_to @post.title, @post.full_url
+    .posted.text-muted.text-center
+      %small{"data-monologue" => "time"}
+        %time{datetime: @post.published_at}= I18n.localize(@post.published_at.to_date, format: :long)
+
+  .content{"data-monologue" => "content"}
+    = raw @post.content
+  .tags.text-muted{"data-monologue" => "tags"}
+    = render @post.tags
+  = render "monologue/posts/social_sharing"
+  #disqus_thread
+    = render 'layouts/monologue/application/disqus_embed'
+  %noscript Please enable JavaScript to view the comments.

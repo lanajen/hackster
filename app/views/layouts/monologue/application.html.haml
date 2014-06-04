@@ -1,0 +1,60 @@
+!!!
+/[if lt IE 7 ] <html class="ie ie6" lang="en">
+/[if IE 7 ] <html class="ie ie7" lang="en">
+/[if IE 8 ] <html class="ie ie8" lang="en">
+/ [if (gte IE 9)|!(IE)]><!
+%html{lang: "en"}
+  / <![endif]
+  %head
+    = render "layouts/monologue/application/title"
+    %meta{charset: "utf-8"}/
+    = render "layouts/monologue/application/meta_description"
+    = render "layouts/monologue/application/fb_open_graph"
+    = render "layouts/monologue/application/twitter_cards"
+    %meta{content: Monologue::Config.meta_keyword, name: "keyword"}/
+    %meta{content: "text/html;charset=utf-8", "http-equiv" => "content-type"}/
+    %meta{content: "width=device-width, initial-scale=1, maximum-scale=1", name: "viewport"}/
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300,400,600' rel='stylesheet' type='text/css'>
+    = stylesheet_link_tag    "application"
+    = javascript_include_tag "monologue/blog/application"
+    /
+      Mobile Specific Metas
+      \==================================================
+    %meta{content: "width=device-width, initial-scale=1, maximum-scale=1", name: "viewport"}/
+    = rss_head_link
+    = render "layouts/monologue/application/google_analytics"
+
+  %body#blog
+    #outer-wrapper
+      .navbar.navbar-default.navbar-static-top#navigation
+        #nav-mobile-trigger.hide-on-desktop.fa.fa-bars
+        .navbar-in{ style: 'position:relative;' }
+          .navbar-header
+            = link_to image_tag('hackster_logo_40_white.png'), '/', class: 'navbar-brand navbar-btn'
+          #nav-non-logo.show-on-desktop
+            %ul#nav-actions
+              %li= link_to 'Projects', '/projects', class: 'nav-link'
+              %li= link_to 'Tools', '/tools', class: 'nav-link'
+              %li= link_to 'Blog', root_path, class: 'nav-link'
+
+            %ul#navbar-right.clearfix
+              %li
+                %span= link_to 'Visit Hackster.io', '/', class: 'btn btn-primary login-link'
+
+      #bg
+      #content
+        .wrapper700
+          .content
+            - flash.each do |name, msg|
+              .flash-notice
+                = msg
+            = yield
+      #push
+    %footer
+      .wrapper700
+        %ul.list-unstyled.list-inline.pull-right
+          %li= link_to content_tag(:i, '', class: 'fa fa-twitter fa-lg').html_safe, 'http://twitter.com/hacksterio', alt: 'Hackster.io on Twitter', class: 'link-icon'
+          %li= link_to content_tag(:i, '', class: 'fa fa-facebook fa-lg').html_safe, 'http://www.facebook.com/hacksterio', alt: 'Hackster.io on Facebook', class: 'link-icon'
+          %li Hackster.io 2014
+    = render 'layouts/monologue/application/disqus'
+    = render 'layouts/monologue/application/gauge_analytics'
