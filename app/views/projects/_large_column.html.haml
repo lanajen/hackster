@@ -1,13 +1,11 @@
-#one-column
-  #column1
-    - cache [@project.widgets, can?(:edit, @project)], tag: "project-#{@project.id}-widgets" do
-      - @project.widgets.each do |widget|
-        = render partial: 'widgets/widget', locals: { widget: widget }
-    - unless @project.respects_count.zero?
-      = render partial: 'widgets/respect_widget', locals: { users: @project.respecting_users }
-    = render partial: 'widgets/comment_widget', locals: { comments: @project.comments, commentable: @project }
-    - if @issue and can? :comment_privately, @project
-      = render partial: 'widgets/private_comment_widget', locals: { comments: @issue.comments, commentable: @project }
+- cache [@project.widgets, can?(:edit, @project)], tag: "project-#{@project.id}-widgets" do
+  - @project.widgets.each do |widget|
+    = render partial: 'widgets/widget', locals: { widget: widget }
+- unless @project.respects_count.zero?
+  = render partial: 'widgets/respect_widget', locals: { users: @project.respecting_users }
+= render partial: 'widgets/comment_widget', locals: { comments: @project.comments, commentable: @project }
+- if @issue and can? :comment_privately, @project
+  = render partial: 'widgets/private_comment_widget', locals: { comments: @issue.comments, commentable: @project }
   / #sidebar.col-xs-3
   /   .navbar-tabs.navbar-default.navbar-vertical.unselectable.affixable
   /     %ul.navbar-nav.nav

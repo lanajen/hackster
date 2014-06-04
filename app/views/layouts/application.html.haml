@@ -148,8 +148,8 @@
                       = link_to 'Connect with your social account', new_user_session_path(a: 'connect'), class: 'btn btn-default connect-social'
               #navbar-search
                 = render 'shared/search_form'
+      = bootstrap_flash
       #main
-        = bootstrap_flash
         - if content_for?(:no_container)
           = yield(:no_container)
         - else

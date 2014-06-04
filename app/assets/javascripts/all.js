@@ -2,6 +2,29 @@
   $('input, textarea').placeholder();
 
   $(function(){
+    // if($('#wysihtml5-textarea').length){
+    //   var editor = new wysihtml5.Editor('wysihtml5-textarea', { // id of textarea element
+    //     toolbar:      'wysihtml5-toolbar', // id of toolbar element
+    //     stylesheets:  "#{ stylesheet_path('wysihtml5') }", // optional, css to style the editor's content
+    //     parserRules:  wysihtml5CustomParserRules, // defined in parser rules set
+    //     allowObjectResizing:  true // Whether the composer should allow the user to manually resize images, tables etc.
+    //   });
+    // }
+    var $wysihtml5Inputs = $('.wysihtml5-textarea');
+    if($wysihtml5Inputs.length){
+      $wysihtml5Inputs.each(function(){
+        var id = $(this).attr('id'),
+            count = id.split('-')[2];
+        var editor = new wysihtml5.Editor(id, { // id of textarea element
+          toolbar:      'wysihtml5-toolbar-'+count, // id of toolbar element
+          stylesheets:  "#{ stylesheet_path('wysihtml5') }", // optional, css to style the editor's content
+          parserRules:  wysihtml5CustomParserRules, // defined in parser rules set
+          allowObjectResizing:  true // Whether the composer should allow the user to manually resize images, tables etc.
+        });
+      });
+    }
+
+
     //Fade in alerts/notices
     if($('.fade-in').length){
       //if there's a slide-in notification on top of the page, wait until it's down sliding down before affixing divs

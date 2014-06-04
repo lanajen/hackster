@@ -7,8 +7,8 @@
         .btn-heading
           - if show_expand_for? widget
             = link_to content_tag(:i, '', class: 'fa fa-expand'), '#', class: 'btn-edit to-full-width', data: { target: "#widget-#{widget.id}", container: 'body' }, rel: 'tooltip', title: 'See in full screen'
-          - if can? :update, widget
-            = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_project_widget_path(@project, widget), class: 'btn-edit', rel: 'tooltip', title: 'Edit content', data: { container: 'body' }
+          / - if can? :update, widget
+          /   = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_project_widget_path(@project, widget), class: 'btn-edit', rel: 'tooltip', title: 'Edit content', data: { container: 'body' }
         -# .btn-heading
           - size = comments.size
           = render partial: 'widgets/comments_button', locals: { size: size, widget: widget }

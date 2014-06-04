@@ -9,6 +9,7 @@ html, body {
 body {
   font-family: "Helvetica Neue", "HelveticaNeue", Helvetica, Arial, "Lucida Grande", sans-serif;
   background: #f2f2f2;
+  -webkit-font-smoothing: antialiased;
   &.nav-affixed {
     padding-top: 40px;
   }
@@ -1118,6 +1119,23 @@ a.hidden-link {
   width: 100%;
   background: white;
   min-height: 800px;
+}
+
+/*****************************
+
+    TEXT EDITOR (WYSIHTML5)
+
+*****************************/
+.wysihtml5-sandbox,.wysihtml5-textarea{
+  resize: vertical;
+}
+.wysihtml5-textarea{
+  font-size: 16px;
+  padding: 9px 12px;
+  width: 100%;
+  resize: vertical;
+  border: 1px solid #d8d8d8;
+  @include border-radius(3px);
 }
 
 

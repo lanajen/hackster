@@ -8,6 +8,7 @@
 //= require placeholders
 //= require jquery.ui.sortable
 //= require jquery.throttle
+//= require 'wysihtml5/parser_rules'
 
 //= require projects
 //= require groups

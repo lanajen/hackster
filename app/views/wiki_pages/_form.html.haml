@@ -11,7 +11,7 @@
     .controls
       %label Page content
       = render 'shared/wysihtml5_toolbar'
-  = f.input :body, as: :text, input_html: { id: 'wysihtml5-textarea', rows: 10, style: 'height: 200px;' }, label: false
+  = f.input :body, as: :text, input_html: { id: "text-widget-#{@wysihtml5_toolbar_increment}", class: "wysihtml5-textarea", rows: 10, style: 'height: 200px;' }, label: false
   = f.input :public, label: 'Show this page in the navigation bar', as: :boolean
 
   .form-actions
