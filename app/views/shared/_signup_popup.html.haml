@@ -1,4 +1,5 @@
 #signup-popup
+  #signup-popup-bg
   #signup-popup-outer
     #signup-popup-inner
       %button.close{ onclick: "closePopup('#signup-popup');" } &times;
@@ -27,10 +28,8 @@
         $('#signup-popup').fadeIn(600);
       }, 1000);
     });
-    $('#signup-popup-outer').click(function(){
+    $('#signup-popup-bg').click(function(){
       $('#signup-popup').fadeOut(200);
-    }).children().click(function() {
-      return false;
     });
     function closePopup(id) {
       $(id).fadeOut(200);

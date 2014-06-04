@@ -980,6 +980,14 @@ a.hidden-link {
     height: 100%;
     width: 100%;
   }
+  #signup-popup-bg {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 100000000001;
+  }
   #signup-popup-inner {
     // height: 425px;
     width: 400px;
@@ -990,6 +998,7 @@ a.hidden-link {
     background: #fff;
     position: absolute;
     padding: 20px;
+  z-index: 100000000002;
   }
   h2 {
     color: #333;

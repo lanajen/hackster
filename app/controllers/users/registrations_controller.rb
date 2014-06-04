@@ -37,8 +37,9 @@ class Users::RegistrationsController < Devise::RegistrationsController
       track_alias
       track_user resource.to_tracker_profile.merge({ landing_page: cookies[:landing_page],
         initial_referrer: cookies[:initial_referrer] })
+      time_since_shown_signup_popup = cookies[:last_shown_banner].present? ? (Time.now - cookies[:last_shown_banner].to_time) : nil
       track_event 'Signed up', { landing_page: cookies[:landing_page],
-        initial_referrer: cookies[:initial_referrer] }
+        initial_referrer: cookies[:initial_referrer], time_since_shown_signup_popup: time_since_shown_signup_popup }
 
       user_after_registration_path
     end
