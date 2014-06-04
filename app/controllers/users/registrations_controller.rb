@@ -39,7 +39,9 @@ class Users::RegistrationsController < Devise::RegistrationsController
         initial_referrer: cookies[:initial_referrer] })
       time_since_shown_signup_popup = cookies[:last_shown_banner].present? ? (Time.now - cookies[:last_shown_banner].to_time) : nil
       track_event 'Signed up', { landing_page: cookies[:landing_page],
-        initial_referrer: cookies[:initial_referrer], time_since_shown_signup_popup: time_since_shown_signup_popup }
+        initial_referrer: cookies[:initial_referrer], time_since_shown_signup_popup: time_since_shown_signup_popup, projects_visited: cookies[:projects_visited] }
+      cookies.delete(:projects_visited)
+      cookies.delete(:last_shown_banner)
 
       user_after_registration_path
     end

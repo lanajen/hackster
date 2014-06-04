@@ -234,7 +234,7 @@ class ProjectsController < ApplicationController
       end
       cookies[:projects_visited] = 0 unless cookies[:projects_visited].present?
       cookies[:projects_visited] = cookies[:projects_visited].to_i + 1
-      cookies[:last_seen] = Time.now
+      # cookies[:last_seen] = Time.now
       if (cookies[:projects_visited] % 3) == 0 and (cookies[:last_shown_banner].nil? or cookies[:last_shown_banner].to_time < 10.minutes.ago)
         @show_signup_popup = true
         cookies[:last_shown_banner] = Time.now
