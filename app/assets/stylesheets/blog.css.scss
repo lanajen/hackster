@@ -60,10 +60,20 @@
     @include border-radius(20px);
   }
   .post {
-    padding: 40px 0;
-    border-bottom: 2px solid #E7F0F7;
+    padding: 40px 0 0;
+    &:after {
+      font-family: FontAwesome;
+      display: block;
+      content: "\f078";
+      text-align: center;
+      padding-top: 50px;
+      color: #e7e7e7;
+    }
     &:last-child {
-      border-bottom: 0;
+      &:after {
+        content: "";
+        padding: 0;
+      }
     }
     .posted {
       font-size: 14px;
@@ -72,6 +82,13 @@
       margin-bottom: 20px;
       h1 {
         text-align: center;
+        a {
+          color: #333;
+          &:hover {
+            color: #666;
+            text-decoration: none;
+          }
+        }
       }
     }
     h2 {

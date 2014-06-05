@@ -10,7 +10,7 @@
       %small{"data-monologue" => "time"}
         %time{datetime: @post.published_at}= I18n.localize(@post.published_at.to_date, format: :long)
 
-  .content{"data-monologue" => "content"}
+  .post-content{"data-monologue" => "content"}
     = raw @post.content
     .tags.text-muted{"data-monologue" => "tags"}
       = render @post.tags

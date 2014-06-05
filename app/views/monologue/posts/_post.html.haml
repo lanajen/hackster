@@ -5,7 +5,7 @@
     .posted.text-muted.text-center
       %small{"data-monologue" => "time"}
         %time{datetime: post.published_at}= I18n.localize(post.published_at.to_date, format: :long)
-  .content{"data-monologue" => "content"}
+  .post-content{"data-monologue" => "content"}
     = truncate_at_token(post.content, '<!-- truncate -->')
   .text-muted
     .tags{"data-monologue" => "tags"}
