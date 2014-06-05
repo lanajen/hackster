@@ -7,8 +7,8 @@ Monologue.config do |config|
   config.site_subtitle = "my own place online"
   config.site_url = "http://www.hackster.io/blog"
 
-  config.meta_description = "This is my personal blog about Rails, Monologue, programming, etconfig..."
-  config.meta_keyword = "rails, programming, monologue, ruby"
+  config.meta_description = "Thoughts and resources about hardware hacking for makers."
+  config.meta_keyword = "hardware,hacks,makers,projects"
 
   config.admin_force_ssl = false
   config.posts_per_page = 10
@@ -24,7 +24,7 @@ Monologue.config do |config|
 
   # ANALYTICS
   # config.gauge_analytics_site_id = "YOUR COGE FROM GAUG.ES"
-  # config.google_analytics_id = "YOUR GA CODE"
+  config.google_analytics_id = "UA-11926897-15"
 
   config.sidebar = ["latest_posts", "latest_tweets", "categories", "tag_cloud"]
 
@@ -32,7 +32,7 @@ Monologue.config do |config|
   #SOCIAL
   config.twitter_username = "hacksterio"
   config.facebook_url = "https://www.facebook.com/hacksterio"
-  config.facebook_logo = 'logo.png'
+  # config.facebook_logo = 'logo.png'
   # config.google_plus_account_url = "https://plus.google.com/u/1/115273180419164295760/posts"
   # config.linkedin_url = "http://www.linkedin.com/in/jipiboily"
   # config.github_username = "jipiboily"
