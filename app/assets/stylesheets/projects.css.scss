@@ -439,6 +439,7 @@ a.action-respected, a.action-followed {
   }
   .navbar{
     @include border-radius(0);
+    margin-bottom: 0;
   }
   .no-float {
     margin: 0 auto;
