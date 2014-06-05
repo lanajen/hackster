@@ -275,7 +275,7 @@ class ApplicationController < ActionController::Base
     def show_hello_world?
       incoming = request.referer.present? ? URI(request.referer).host != APP_CONFIG['default_host'] : true
 
-      incoming and !user_signed_in? and (params[:controller] == 'projects' or params[:controller] == 'users') and params[:action] == 'show'
+      incoming and !user_signed_in? and (params[:controller].in? %w(projects users teches)) and params[:action] == 'show'
     rescue
       false
     end

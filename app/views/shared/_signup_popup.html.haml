@@ -4,9 +4,12 @@
     #signup-popup-inner
       %button.close{ onclick: "closePopup('#signup-popup');" } &times;
       %h2
-        Join Hackster.io's community of makers
-      %p.text-muted{ style: 'font-size: 17px' } to discover great projects and collaborate on building cool hardware
-      %p{ style: 'font-size: 12px' } Choose how you want to connect:
+        Hackster.io is a collaborative knowledge base
+        %br
+        for the hardware maker community.
+      %p
+        %strong Sign up to be a part of it.
+        Choose how to connect:
       %div{ style: 'font-size: 20px' }
         = link_to 'Facebook', user_omniauth_authorize_url(:facebook), class: 'zocial icon facebook'
         = link_to 'Github', user_omniauth_authorize_path(:github), class: 'zocial icon github'

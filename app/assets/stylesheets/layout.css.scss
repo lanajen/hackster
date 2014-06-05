@@ -990,10 +990,10 @@ a.hidden-link {
     z-index: 100000000001;
   }
   #signup-popup-inner {
-    // height: 244px;
-    width: 400px;
-    margin-top: -122px;
-    margin-left: -200px;
+    // height: 175px;
+    width: 450px;
+    margin-top: -88px;
+    margin-left: -225px;
     top: 50%;
     left: 50%;
     background: #fff;
@@ -1009,8 +1009,8 @@ a.hidden-link {
       transition: all 200ms;
     }
     &.expanded {
-      // height: 456px;
-      margin-top: -228px;
+      // height: 387px;
+      margin-top: -193px;
       #signup-popup-email {
         height: 212px;
       }
@@ -1018,8 +1018,11 @@ a.hidden-link {
   }
   h2 {
     color: #333;
-    font-weight: 900;
-    font-size: 30px;
-    margin: 0;
+    font-size: 18px;
+    margin: 0 0 20px;
+    font-weight: 200;
+  }
+  p {
+    font-size: 12px;
   }
 }
