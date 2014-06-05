@@ -975,6 +975,7 @@ a.hidden-link {
   background: rgba(0,0,0,0.8);
   z-index: 100000000000;
   display: none;
+  text-align: center;
   #signup-popup-outer {
     position: relative;
     height: 100%;
@@ -989,22 +990,36 @@ a.hidden-link {
     z-index: 100000000001;
   }
   #signup-popup-inner {
-    // height: 425px;
+    // height: 244px;
     width: 400px;
-    margin-top: -212px;
+    margin-top: -122px;
     margin-left: -200px;
     top: 50%;
     left: 50%;
     background: #fff;
     position: absolute;
     padding: 20px;
-  z-index: 100000000002;
+    z-index: 100000000002;
+    -webkit-transition: all 200ms;  /* For Safari 3.1 to 6.0 */
+    transition: all 200ms;
+    #signup-popup-email {
+      height: 0;
+      overflow: hidden;
+      -webkit-transition: all 200ms;  /* For Safari 3.1 to 6.0 */
+      transition: all 200ms;
+    }
+    &.expanded {
+      // height: 456px;
+      margin-top: -228px;
+      #signup-popup-email {
+        height: 212px;
+      }
+    }
   }
   h2 {
     color: #333;
     font-weight: 900;
     font-size: 30px;
-    text-align: center;
-    margin-top: 0;
+    margin: 0;
   }
 }
