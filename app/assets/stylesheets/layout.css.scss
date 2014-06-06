@@ -39,7 +39,7 @@ img {
   min-height: 100%;
   height: auto !important;
   height: 100%;
-  margin: 0 auto -40px;
+  margin: 0 auto 0;
   @include transition(all .5s ease);
   overflow-x:hidden;
   &.mobile-nav-open{
