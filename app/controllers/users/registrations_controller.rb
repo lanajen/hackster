@@ -34,13 +34,19 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   protected
     def after_sign_up_path_for(resource)
+      time_since_shown_signup_popup = cookies[:last_shown_banner].present? ? (Time.now - cookies[:last_shown_banner].to_time) : 'never'
+      data = {
+        first_seen: cookies[:first_seen],
+        initial_referrer: cookies[:initial_referrer],
+        landing_page: cookies[:landing_page],
+        visits_count_before_signup: cookies[:visits].size,
+      }
+
       track_alias
-      track_user resource.to_tracker_profile.merge({ landing_page: cookies[:landing_page],
-        initial_referrer: cookies[:initial_referrer] })
-      time_since_shown_signup_popup = cookies[:last_shown_banner].present? ? (Time.now - cookies[:last_shown_banner].to_time) : nil
-      track_event 'Signed up', { landing_page: cookies[:landing_page],
-        initial_referrer: cookies[:initial_referrer], time_since_shown_signup_popup: time_since_shown_signup_popup, projects_visited: cookies[:projects_visited] }
-      cookies.delete(:projects_visited)
+      track_user resource.to_tracker_profile.merge(data)
+      track_event 'Signed up', data.merge({ time_since_shown_signup_popup: time_since_shown_signup_popup })
+
+      cookies.delete(:first_seen)
       cookies.delete(:last_shown_banner)
 
       user_after_registration_path

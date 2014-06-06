@@ -51,7 +51,7 @@
                 = link_to 'Give it love.', user_path(current_user)
                 = link_to "Don't remind me.", '/notifications?notif=1311complete_profile&close=%23hello-world', data: { remote: true }, method: :delete, class: 'btn-close-notif btn-close-notif-last'
                 = link_to "Got it.", '#', data: { close: '#hello-world' }, class: 'btn-close btn-close-notif'
-        -# if @show_signup_popup
+        - if @show_signup_popup
           = render 'shared/signup_popup'
 
         .navbar.navbar-default.navbar-static-top#navigation

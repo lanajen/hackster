@@ -14,6 +14,7 @@ class ApplicationController < ActionController::Base
   # before_filter :authenticate_user!
   before_filter :set_new_user_session
   before_filter :store_location_before
+  before_filter :track_visitor
   after_filter :store_location_after
   after_filter :track_landing_page
   helper_method :title
@@ -197,6 +198,30 @@ class ApplicationController < ActionController::Base
       return if cookies[:landing_page] and cookies[:initial_referrer]
       cookies[:landing_page] = request.path unless cookies[:landing_page]
       cookies[:initial_referrer] = (request.referrer || 'unknown') unless cookies[:initial_referrer]
+    end
+
+    def track_visitor
+      cookies[:visits] = { value: {}.to_json, expires: 10.years.from_now } unless cookies[:visits].present?
+      visits = JSON.parse cookies[:visits]
+      if visits[Date.today.to_s].present?
+        visits[Date.today.to_s] = visits[Date.today.to_s].to_i + 1
+      else
+        visits[Date.today.to_s] = 1
+      end
+      cookies[:visits] = visits.to_json
+
+      if user_signed_in? or cookies[:member]
+        cookies[:member] = true
+        return
+      end
+
+      cookies[:first_seen] = { value: Time.now, expires: 10.years.from_now } unless cookies[:first_seen].present?
+
+      if cookies[:first_seen].to_time < 3.days.ago and (cookies[:last_shown_banner].nil? or cookies[:last_shown_banner].to_time < 3.days.ago)
+        @show_signup_popup = true
+        cookies[:last_shown_banner] = Time.now
+        track_event 'Shown signup popup'
+      end
     end
 
     def require_no_authentication
