@@ -1,6 +1,6 @@
 class ProjectsController < ApplicationController
   before_filter :load_project, only: [:show, :embed, :update, :destroy, :redirect_old_show_route]
-  before_filter :track_visitor, only: [:show]
+  # before_filter :track_visitor, only: [:show]
   load_and_authorize_resource only: [:index, :create, :new, :edit]
   layout 'project', only: [:edit, :update, :show]
   respond_to :html
