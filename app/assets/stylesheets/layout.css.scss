@@ -36,10 +36,10 @@ img {
 #outer-wrapper {
   position: relative;
   z-index: 1;
-  min-height: 100%;
-  height: auto !important;
-  height: 100%;
-  margin: 0 auto -40px;
+  // min-height: 100%;
+  // height: auto !important;
+  // height: 100%;
+  margin: 0 auto 0;
   @include transition(all .5s ease);
   overflow-x:hidden;
   &.mobile-nav-open{
