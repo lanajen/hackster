@@ -421,7 +421,11 @@
     border-bottom: 1px solid #fff;
     position: relative;
     .comment-text {
+      display: inline-block;
       padding-top: 2px;
+      max-width: -webkit-calc(100% - 47px);
+      max-width: -moz-calc(100% - 47px);
+      max-width: calc(100% - 47px);
       p {
         margin-bottom: 5px;
         font-size: 14px;
@@ -429,6 +433,7 @@
       }
     }
     .comment-avatar {
+      display: inline-block;
       margin-right: 15px;
       @include border-radius(50%);
       overflow: hidden;

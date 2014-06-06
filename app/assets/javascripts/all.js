@@ -179,27 +179,22 @@
   // affixes .affixable
   var $fixedEl;
   var affixDivs = function affixDivs(){
-    $fixedEl = $('.affixable');
+    $fixedEl      = $('.affixable');
+    var $window   = $(window);
     if ($fixedEl.length) {
       $.each($fixedEl, function(){
-        var top = parseInt($(this).offset().top - (parseFloat($(this).css('top')) || 0));
-        $(window).on('scroll.affix',function(){
-          var y = $(window).scrollTop();
+        var top   = parseInt($(this).offset().top - (parseFloat($(this).css('top')) || 0)),
+            $this = $(this);
+        $window.on('scroll.affix',function(){
+          var y = $window.scrollTop();
           if (y >= top) {
-            $(this).addClass('affix');
+            $this.hasClass('affix') ? '' : $this.addClass('affix');
           } else {
-            $(this).removeClass('affix');
+            $this.hasClass('affix') ? $this.removeClass('affix') : '';
           }
-        }.bind(this));
+        });
       });
     }
-    // $('#project-nav .affixable').on('classchange',function(event){
-    //   if ($(this).hasClass('affix')) {
-    //     $('body').addClass('nav-affixed');
-    //   } else {
-    //     $('body').removeClass('nav-affixed');
-    //   }
-    // });
   };
 
   var updatedScrollEventHandlers = function updatedScrollEventHandlers(){

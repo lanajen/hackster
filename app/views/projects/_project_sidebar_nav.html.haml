@@ -1,5 +1,5 @@
-#sidebar-container.project-pages-sidebar
-  %section#sidebar-container-in.affixable
+#sidebar-container.project-pages-sidebar.affixTranslate.affixable
+  %section#sidebar-container-in
     - if can? :edit, @project
       .edit-project-trigger
         %button.js-edit-project.btn.btn-black.edit-project-btn
@@ -10,7 +10,7 @@
           .inner-project-btn
             Save Project
           %span.fa.fa-check.inner-project-btn-icon
-    #project-actions.clearfix
+    #project-actions.clearfix.hidden
       - if @project.public?
         = render 'projects/share'
         = render 'projects/project_embed_popup'

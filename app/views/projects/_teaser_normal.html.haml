@@ -26,66 +26,72 @@
                 $(document).ready(function(){
                   $('#join-button').clone().appendTo('.team-widget');
                 });
-.wrapper700
-  #top-project-section
-    - who = %w(you)
-    - who += ['team members'] if @project.users.size > 1
-    - who += ["members of #{@project.assignment.promotion.name}"] if @project.collection_id.present? and @project.assignment.present?
-    - if @project.private and can? :edit, @project
-      .alert.alert-warning
-        %i.fa.fa-lock
-        This project is private so only #{who.to_sentence} can see it.
-        - if @project.can_be_public?
-          = link_to 'Publish publicly', project_path(@project, project: { private: 0 }), method: :patch, class: 'btn btn-warning btn-sm'
-        - else
-          = content_tag(:i, '', class: 'fa fa-question-circle istooltip', title: 'You need to create at least one widget and add a cover image before you can make it public.')
-    - elsif active_member
-      .alert.alert-info.alert-author-share
-        %strong Time to shine!
-        Share your project or
-        = link_to 'submit it to HackADay', "mailto:tips@hackaday.com?subject=#{@project.name}&body=#{@project.one_liner}%0D%0AProject page: #{project_url(@project)}", class: 'alert-link'
-        = link_to "&times;".html_safe, '#', data: { close: '.alert-author-share' }, class: 'btn-close btn-close-notif'
-        = render 'projects/share_by_author'
-
-    %h1
-      - if @project.logo(:thumb, false)
-        = image_tag @project.logo(:thumb), class: 'project-logo'
-      - if @project.private?
-        %small
-          %i.fa.fa-lock.istooltip{ title: 'Private project', data: { container: 'body' } }
-      = link_to @project.name, @project, class: 'hidden-link'
-    #project-information
-      - cache [@project, 'teaser', can?(:edit, @project), can?(:debug, @project)], tag: (["project-#{@project.id}-teaser"] + @project.users.map{|u| "user-#{u.id}-thumb"}) do
-        #project-tit
-          - if @project.one_liner.present?
-            .one-liner= @project.one_liner
+- who = %w(you)
+- who += ['team members'] if @project.users.size > 1
+- who += ["members of #{@project.assignment.promotion.name}"] if @project.collection_id.present? and @project.assignment.present?
+- if @project.private and can? :edit, @project
+  .alert.alert-warning
+    %i.fa.fa-lock
+    This project is private so only #{who.to_sentence} can see it.
+    - if @project.can_be_public?
+      = link_to 'Publish publicly', project_path(@project, project: { private: 0 }), method: :patch, class: 'btn btn-warning btn-sm'
+    - else
+      = content_tag(:i, '', class: 'fa fa-question-circle istooltip', title: 'You need to create at least one widget and add a cover image before you can make it public.')
+- elsif active_member
+  .alert.alert-info.alert-author-share
+    %strong Time to shine!
+    Share your project or
+    = link_to 'submit it to HackADay', "mailto:tips@hackaday.com?subject=#{@project.name}&body=#{@project.one_liner}%0D%0AProject page: #{project_url(@project)}", class: 'alert-link'
+    = link_to "&times;".html_safe, '#', data: { close: '.alert-author-share' }, class: 'btn-close btn-close-notif'
+    = render 'projects/share_by_author'
+#top-project-section
+  #project-top-image{style: "background-image: url('#{@project.cover_image}');"}
+  #top-project-section-deets
+    #project-header
+      .wrapper700
+        #project-header-in
+          %h1
+            - if @project.logo(:thumb, false)
+              = image_tag @project.logo(:thumb), class: 'project-logo'
+            - if @project.private?
+              %i.fa.fa-lock.private-project-icon.istooltip{ title: 'Private project', data: { container: 'body' } }
+            = link_to @project.name, @project, class: 'hidden-link'
+          #project-information
+            - cache [@project, 'teaser', can?(:edit, @project), can?(:debug, @project)], tag: (["project-#{@project.id}-teaser"] + @project.users.map{|u| "user-#{u.id}-thumb"}) do
+              - if @project.one_liner.present?
+                .one-liner= @project.one_liner
+              - elsif can? :edit, @project
+                .one-liner
+                  No one liner yet.
+                  = link_to 'Add one?', edit_project_path(@project), data: { remote: true }
+          - if @project.product_tags.any?
+            .tags.meta
+              - @project.product_tags.pluck(:name).each do |tag|
+                %span= link_to tag, "/tags/#{CGI::escape(tag)}", class: 'tag-link'
           - elsif can? :edit, @project
-            .one-liner
-              No one liner yet.
-              = link_to 'Add one?', edit_project_path(@project), data: { remote: true }
-.wrapper700.clearfix
-  #project-top-image
-    = image_tag @project.cover_image, alt: @project.name, class: 'cover-image'
-  #project-secondary-info
-    #left-project-deets
-      .team-widget.meta
-        .meta-title-wrap
-          .meta-title
-            Team
-            - if can? :debug, @project and can? :edit, @project
-              = link_to content_tag(:i, '', class: 'fa fa-pencil'), project_edit_team_path(@project), class: 'btn-edit no-float', rel: 'tooltip', title: 'Manage team', data: { container: 'body' }
+            .tags.meta
+              No tags yet.
+              = link_to 'Add some?', edit_project_path(@project), data: { remote: true }
+    %span.fa.fa-chevron-down.trigger-main-project-scroll.js-scroll-main-project
+    #project-team
+      .team-widget
+        - if can? :debug, @project and can? :edit, @project
+          = link_to content_tag(:i, '', class: 'fa fa-pencil'), project_edit_team_path(@project), class: 'btn-edit no-float', rel: 'tooltip', title: 'Manage team', data: { container: 'body' }
         - if @project.guest_name.present?
           .user
             = @project.guest_name
         - else
           - users = @project.team.active_members.includes(:user)
           - if users.size < 5
-            - users.each do |member|
+            - users.each_with_index do |member, i|
               = render partial: 'users/line_thumb', locals: { member: member }
           - else
             - users[0..3].each do |member|
               = render partial: 'users/line_thumb', locals: { member: member }
             .user= content_tag(:a, "And more #{content_tag(:i, '', class: 'fa fa-question-circle')}".html_safe, class: 'hidden-link help', data: { container: 'body', toggle: 'popover', placement: 'bottom', content: users.map { |m| render partial: 'users/line_thumb', locals: { member: m } }.join(''), html: 'true', trigger: 'hover', delay: '100' }, rel: 'popover')
+.wrapper700.clearfix.hidden
+  #project-secondary-info
+    #left-project-deets
       .meta
         %strong
           Created on 
@@ -124,19 +130,6 @@
           .meta-title-wrap
             .meta-title Technologies
           No technologies yet.
-          = link_to 'Add some?', edit_project_path(@project), data: { remote: true }
-
-      - if @project.product_tags.any?
-        .tags.meta
-          .meta-title-wrap
-            .meta-title Tags
-          - @project.product_tags.pluck(:name).each do |tag|
-            %span= link_to tag, "/tags/#{CGI::escape(tag)}", class: 'tag-link'
-      - elsif can? :edit, @project
-        .tags.meta
-          .meta-title-wrap
-            .meta-title Tags
-          No tags yet.
           = link_to 'Add some?', edit_project_path(@project), data: { remote: true }
 / - unless @project.columns_count == 1
 /   #project-nav.unselectable

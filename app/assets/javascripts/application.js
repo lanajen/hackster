@@ -6,6 +6,7 @@
 //= require wysihtml5
 //= require parser_rules/advanced
 //= require placeholders
+//= require jquery.parallax
 //= require jquery.ui.sortable
 //= require jquery.throttle
 //= require 'wysihtml5/parser_rules'

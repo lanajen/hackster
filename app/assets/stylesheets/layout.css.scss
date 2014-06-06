@@ -1098,6 +1098,7 @@ a.hidden-link {
   display: none;
   padding-bottom: 90px;
   background: #edeff0;
+  background: #f7f7f7;
   border-right:1px solid #d9d3d3;
   overflow-x: hidden;
   overflow-y:scroll;
@@ -1106,10 +1107,18 @@ a.hidden-link {
   }
   &.project-pages-sidebar{
     //padding-top: 60px;
-    overflow-y: hidden;
+    overflow-x: hidden;
+    overflow-y:scroll;
+    width: 60px;
+    @include transition(all .5s ease);
     #sidebar-container-in{
+      position: relative;
       top: 0;
       height: 100%;
+      z-index: 1;
+    }
+    &:hover{
+      width: 250px;
     }
   }
 }

@@ -403,7 +403,6 @@ a.action-respected, a.action-followed {
   color: #666;
   background: #fff;
   padding: 15px;
-  margin-bottom: 20px;
 }
 
 #iframe {
@@ -425,45 +424,124 @@ a.action-respected, a.action-followed {
   }
 }
 
-/*************************
 
-  PROJECT SHOW STYLING
+// PROJECT SHOW STYLING
 
-**************************/
+
 .project-details{
   #top-project-section{
     position: relative;
-    padding-top: 60px;
     margin-bottom: 40px;
+    min-height: 400px;
+    height: 800px;
+    width: 100%;
   }
-  h1 {
-    text-align: left;
-    padding: 0 0 30px;
-    margin: 0;
-    font-size: 28px;
-    font-weight: 600;
-    line-height: 1.3em;
-    a {
-      &:hover {
-        text-decoration: none;
+  #project-top-image{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background: black center center no-repeat;
+    @include background-size(cover);
+  }
+  #top-project-section-deets{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    overflow: hidden;
+    background: rgba(0,0,0,.5);
+    //background: rgba(205, 217, 226, 0.7);
+  }
+  #project-header{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    padding: 80px 0 150px;
+    z-index: 5;
+    // @include background-image(linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.71)));
+    background: transparent url('/assets/black-gradient.png') 0 0 repeat-x;
+    background-size: 1px 100%;
+    a{
+      color: white;
+    }
+    h1 {
+      position: relative;
+      text-align: left;
+      padding: 0 0 15px;
+      margin: 0;
+      font-size: 34px;
+      font-weight: 600;
+      line-height: 1.1em;
+      .private-project-icon{
+        position: absolute;
+        right: 102%;
+        top: 15px;
+        color: #eee;
+        @include opacity(.7);
+        font-size: .7em;
+      }
+      a {
+        color:#fff;
+        &:hover {
+          color:#fff;
+          text-decoration: none;
+        }
+      }
+    }
+    #project-information{
+      position: relative;
+      display: block;
+      text-align: left;
+    }
+    .one-liner {
+      color:#fff;
+      color:rgba(255,255,255,.8);
+      font-size: 20px;
+      line-height: 1.25;
+      font-weight: 200;
+    }
+    .tags{
+      margin-top: 20px;
+    }
+    .tag-link{
+      position: relative;
+      padding-left: 8px;
+      display: inline-block;
+      background: transparent;
+      color: #ccc;
+      margin-right: 10px;
+      text-decoration: none;
+      font-size: 13px;
+      &:before {
+        position: absolute;
+        content: '#';
+        left: 0;
+        top: 0;
+      }
+      &:hover{
+        color: #eee;
       }
     }
   }
-  #project-information{
-    position: relative;
-    display: block;
-    text-align: left;
-  }
-  #project-tit{
-    margin-bottom: 40px;
-  }
-  .one-liner {
-    margin-bottom: 20px;
-    color: #aaa;
-    font-size: 16px;
-    line-height: 1.5;
-    margin-top: -10px;
-    font-weight: 200;
+  .trigger-main-project-scroll{
+    position: absolute;
+    left: 24px;
+    bottom: 20px;
+    z-index: 9;
+    font-size: 30px;
+    color: white;
+    color: rgba(255,255,255,.7);
+    cursor: pointer;
+    @include transition(color .2s ease);
+    &:hover{
+      color: #fff;
+    }
   }
   .project-logo {
     // position: absolute;
@@ -484,16 +562,6 @@ a.action-respected, a.action-followed {
   }
   #left-project-deets{
     margin-bottom: 15px;
-  }
-  #project-top-image{
-    margin-bottom: 40px;
-  }
-  .cover-image {
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    border: 1px solid white;
-    @include box-shadow(0 1px 14px rgba(0, 0, 0, 0.02), 0 0 1px rgba(0, 0, 0, 0.26));
   }
   .counters {
     margin-bottom: 0;
@@ -533,44 +601,53 @@ a.action-respected, a.action-followed {
     background: white;
     padding-right: 10px;
   }
+  #project-team{
+    position: relative;
+    z-index: 6;
+    display: inline-block;
+  }
   .team-widget{
-    margin-bottom: 25px;
+    padding: 20px 30px 20px 20px;
     .user{
       display: block;
-      margin-bottom: 10px;
+      @include transition(all .3s ease);
+      background: transparent;
+      @include border-radius(30px);
+      overflow: hidden;
       img{
         width: 30px;
+        border: 1px solid #fff;
       }
       .user-name{
         position: relative;
-        top: 2px;
-        margin-left: 8px;
-        font-size: 16px;
-        font-weight: 100;
+        top: 1px;
+        margin-left: 4px;
+        padding-right: 12px;
+        font-size: 14px;
+        color: #fff;
+        @include transition(all .3s ease);
       }
-      a.hidden-link{
-        color: #808080;
+      a.hidden-link, a.hidden-link:hover{
+        color: #fff;
         &:hover{
-          color: #444447;
+          text-decoration: none;
         }
       }
     }
-  }
-  .tag-link{
-    display: inline-block;
-    padding: 2px 10px 1px;
-    background: transparent;
-    color: #bbb;
-    margin-right: 4px;
-    text-decoration: none;
-    border: 1px solid #eee;
-    margin-bottom: 7px;
-    @include border-radius(20px);
-    @include transition(all .2s ease);
-    &:hover{
-      color: #444447;
-      border-color:#444447;
+    .btn-edit{
+      position: absolute;
+      right: 6px;
+      top: 8px;
+      color: white;
+      @include opacity(1);
+      text-shadow: none;
+      font-size: 10px;
     }
+  }
+  .alert{
+    margin-bottom: 0;
+    border:none;
+    @include border-radius(0);
   }
 }
 .project-show{
@@ -601,19 +678,23 @@ a.action-respected, a.action-followed {
     color: #444447;
   }
 }
-/**********************
 
-  EDIT PROJECT
-
-***********************/
+//   EDIT PROJECT
+// .edit-project-trigger{
+//   position: fixed;
+//   bottom: 0;
+//   left: 0;
+//   width: 250px;
+//   z-index: 2;
+// }
 .edit-project-btn,.save-project-btn{
   position: relative;
   width: 100%;
   @include border-radius(0);
-  padding: 19px 20px 17px;
+  padding: 16px 20px 15px;
   font-weight: bold;
   overflow: hidden;
-  height: 56px;
+  height: 50px;
   @include transition(all .3s ease);
   .inner-project-btn{
     width: 100%;
@@ -638,12 +719,14 @@ a.action-respected, a.action-followed {
 .project-edit-item{
   display: none;
 }
-/**********************
 
-  PROJECT SIDEBAR
 
-***********************/
+// PROJECT SIDEBAR
+
+
 #scrolling-project-section{
+  position: relative;
+  z-index: 1;
   top:0;
   left: 0;
   width: 250px;
@@ -656,14 +739,13 @@ a.action-respected, a.action-followed {
   li .scroll-nav-item{
     position: relative;
     display: block;
-    padding: 15px 15px 13px 48px;
-    font-size: 13px;
-    color: #aaa;
-    font-weight: 200;
+    padding: 15px 26px 13px 60px;
+    font-size: 12px;
+    color: #ccc;
+    font-weight: 500;
     text-align: left;
     margin: 0px;
     text-decoration: none;
-    border-left: 5px solid #D6D8D8;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -677,14 +759,13 @@ a.action-respected, a.action-followed {
     }
     .fa{
       position: absolute;
-      left: 0;
+      left: 20px;
       top: 0;
-      width: 44px;
+      width: 20px;
       text-align: center;
       height: 100%;
-      padding-top: 18px;
-      // background: #eaeaea;
-      @include transition(all .2s ease);
+      padding-top: 16px;
+      font-size: 16px;
     }
     &:hover{
       color: #808080;
@@ -692,11 +773,12 @@ a.action-respected, a.action-followed {
   }
   li.active .scroll-nav-item{
     color: #2A6186;
-    border-left: 5px solid #2A6186;
     background: rgba(0,0,0,.02);
   }
 }
 #project-actions{
+  position: relative;
+  z-index: 1;
   width: 100%;
   text-align: center;
   background: #f8f8f8;
