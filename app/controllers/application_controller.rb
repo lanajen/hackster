@@ -56,7 +56,7 @@ class ApplicationController < ActionController::Base
   def store_location cookie_name
 #    logger.info 'controller: ' + params[:controller].to_s
 #    logger.info 'action: ' + params[:action].to_s
-    session[cookie_name] = request.url unless params[:controller] == 'users/sessions' || params[:controller] == 'users/registrations' || params[:controller] == 'users/confirmations' || params[:controller] == 'users/omniauth_callbacks' || params[:controller] == 'users/facebook_connections' || params[:controller] == 'users/invitations' || params[:controller] == 'users/authorizations' || params[:controller] == 'devise/passwords' || params[:action] == 'after_registration' || request.method_symbol != :get || request.format != 'text/html'
+    session[cookie_name] = request.url if is_trackable_page?
 #    logger.info 'stored location: ' + session[cookie_name].to_s
   end
 
@@ -92,6 +92,10 @@ class ApplicationController < ActionController::Base
 
     def current_ability
       current_user ? current_user.ability : User.new.ability
+    end
+
+    def is_trackable_page?
+      @is_trackable_page ||= !(params[:controller].in? %w(users/sessions users/registrations users/confirmations users/omniauth_callbacks users/facebook_connections users/invitations users/authorizations devise/passwords) || params[:action] == 'after_registration' || request.method_symbol != :get || request.format != 'text/html')
     end
 
     def load_assignment
@@ -217,6 +221,7 @@ class ApplicationController < ActionController::Base
 
       cookies[:first_seen] = { value: Time.now, expires: 10.years.from_now } unless cookies[:first_seen].present?
 
+      return unless is_trackable_page?
       if cookies[:first_seen].to_time < 3.days.ago and (cookies[:last_shown_banner].nil? or cookies[:last_shown_banner].to_time < 3.days.ago)
         @show_signup_popup = true
         cookies[:last_shown_banner] = Time.now
