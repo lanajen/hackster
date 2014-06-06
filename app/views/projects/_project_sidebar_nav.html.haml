@@ -1,4 +1,4 @@
-#sidebar-container.project-pages-sidebar.affixTranslate.affixable
+#sidebar-container.project-pages-sidebar.affixTranslate
   %section#sidebar-container-in
     - if can? :edit, @project
       .edit-project-trigger
@@ -10,12 +10,6 @@
           .inner-project-btn
             Save Project
           %span.fa.fa-check.inner-project-btn-icon
-    #project-actions.clearfix.hidden
-      - if @project.public?
-        = render 'projects/share'
-        = render 'projects/project_embed_popup'
-        = render partial: 'respects/button', locals: { project: @project }
-        = render partial: 'followers/button', locals: { followable: @project }
     #scrolling-project-section
       #scroll-nav
         %ul.nav
@@ -36,3 +30,11 @@
                 = @project.comments_count
                 )
               %i.fa.fa-comment
+    #project-actions.clearfix.hidden
+      - if @project.public?
+        /= render 'projects/share'
+        /= render 'projects/project_embed_popup'
+        %a.share-this-project{href: '#'}
+          Share Project
+        = render partial: 'respects/button', locals: { project: @project }
+        = render partial: 'followers/button', locals: { followable: @project }

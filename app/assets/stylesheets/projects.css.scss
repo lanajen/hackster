@@ -724,16 +724,14 @@ a.action-respected, a.action-followed {
 // PROJECT SIDEBAR
 
 
-#scrolling-project-section{
-  position: relative;
-  z-index: 1;
-  top:0;
-  left: 0;
-  width: 250px;
-  height: 100%;
-  overflow-y: scroll;
-  padding-bottom: 120px;
-}
+// #scrolling-project-section{
+//   position: relative;
+//   z-index: 1;
+//   top:0;
+//   left: 0;
+//   width: 250px;
+//   height: auto;
+// }
 #scroll-nav{
   position: relative;
   li .scroll-nav-item{
@@ -780,17 +778,11 @@ a.action-respected, a.action-followed {
   position: relative;
   z-index: 1;
   width: 100%;
-  text-align: center;
-  background: #f8f8f8;
-  @include box-shadow(0 1px 0 rgba(0,0,0,.1));
   & > a {
     position: relative;
     padding: 12px 10px 10px;
-    width: 25%;
-    float: left;
-    display: inline-block;
+    width: 250px;
     color: #808080;
-    border-right: 1px solid rgba(0,0,0,.05);
     @include transition(all .2s ease);
     &:hover{
       color: #444447;

@@ -19,8 +19,14 @@
   #content-with-sidebar{
     padding-left: 250px;
     &.project{
-      padding-left: 60px;
+      left: 60px;
+      padding-left: 0;
+      width: 100%;
+      width: calc(100% - 60px);
+      width: -webkit-calc(100% - 60px);
+      width: -moz-calc(100% - 60px);
       @include transition(all .5s ease);
+      border-left: 1px solid #d9d3d3;
       -webkit-backface-visibility: hidden;
       -webkit-perspective: 1000;
     }

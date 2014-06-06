@@ -41,6 +41,7 @@ img {
   height: 100%;
   margin: 0 auto -40px;
   @include transition(all .5s ease);
+  overflow-x:hidden;
   &.mobile-nav-open{
     -webkit-filter: blur(1px);
   }
@@ -1105,21 +1106,22 @@ a.hidden-link {
   &.affix{
     position: fixed;
   }
+  &.affixTranslate{
+    position: fixed;
+    @include transform(translateY(60px));
+  }
   &.project-pages-sidebar{
-    //padding-top: 60px;
-    overflow-x: hidden;
-    overflow-y:scroll;
-    width: 60px;
-    @include transition(all .5s ease);
-    #sidebar-container-in{
-      position: relative;
-      top: 0;
-      height: 100%;
-      z-index: 1;
-    }
-    &:hover{
-      width: 250px;
-    }
+    z-index: 0;
+    width: 250px;
+    min-height: 100%;
+    padding-bottom: 120px;
+    border:0;
+    // #sidebar-container-in{
+    //   position: relative;
+    //   top: 0;
+    //   height: 100%;
+    //   z-index: 1;
+    // }
   }
 }
 #content-with-sidebar{
