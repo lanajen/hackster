@@ -444,7 +444,7 @@
     .comment-author {
       position: relative;
       font-size: 16px;
-      font-weight: 100;
+      font-weight: 200;
       margin-bottom: 20px;
       display: block;
       margin-top: 6px;
@@ -527,6 +527,9 @@
   padding-bottom: 30px;
   .respect-button{
     padding-left: 7px;
+    .fa{
+      padding-left: 8px;
+    }
   }
   .respects-user-img{
     float: left;
