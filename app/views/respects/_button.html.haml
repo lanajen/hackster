@@ -1,16 +1,15 @@
-- content = content_tag(:i, '', class: 'fa fa-thumbs-o-up')
+- content = "Respect Project" + content_tag(:i, '', class: 'fa fa-thumbs-o-up')
 - if user_signed_in?
   - if current_user.respected? project
-    = link_to content, project_respects_path(project), data: { method: :delete, remote: true, container: 'body' }, class: 'action-respected respect-button', title: 'Respected! (click to undo)', rel: 'tooltip'
+    = link_to content.html_safe, project_respects_path(project), data: { method: :delete, remote: true, container: 'body' }, class: 'action-respected respect-button', title: 'Respected! (click to undo)'
   - else
-    = link_to content, project_respects_path(project), data: { method: :post, remote: true, container: 'body' }, title: 'Respect! this project', rel: 'tooltip', class: 'respect-button'
+    = link_to content.html_safe, project_respects_path(project), data: { method: :post, remote: true, container: 'body' }, title: 'Respect! this project', class: 'respect-button'
 - else
-  = link_to content, new_user_registration_path(redirect_to: project_path(project), reason: 'respect', m: 'project', id: project.id), title: 'Respect! this project', rel: 'tooltip', class: 'respect-button', data: { container: 'body' }
-
-= content_for :js do
-  :javascript
-    $('body').on('click', 'a.respect-button', function(){
-      $(this).tooltip('destroy');
-      //when the response is faster the loader appears after the new icon
-      //$(this).replaceWith("#{escape_javascript image_tag('loader.gif')}");
-    });
+  = link_to content.html_safe, new_user_registration_path(redirect_to: project_path(project), reason: 'respect', m: 'project', id: project.id), title: 'Respect! this project', class: 'respect-button', data: { container: 'body' }
+/ = content_for :js do
+/   :javascript
+/     $('body').on('click', 'a.respect-button', function(){
+/       $(this).tooltip('destroy');
+/       //when the response is faster the loader appears after the new icon
+/       //$(this).replaceWith("#{escape_javascript image_tag('loader.gif')}");
+/     });

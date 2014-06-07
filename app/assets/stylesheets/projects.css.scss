@@ -434,6 +434,7 @@ a.action-respected, a.action-followed {
     margin-bottom: 40px;
     min-height: 400px;
     height: 800px;
+    max-height: 800px;
     width: 100%;
   }
   #project-top-image{
@@ -767,11 +768,12 @@ a.action-respected, a.action-followed {
     }
     &:hover{
       color: #808080;
+      background: transparent;
     }
   }
   li.active .scroll-nav-item{
     color: #2A6186;
-    background: rgba(0,0,0,.02);
+    //background: rgba(0,0,0,.02);
   }
 }
 #project-actions{
@@ -780,19 +782,30 @@ a.action-respected, a.action-followed {
   width: 100%;
   & > a {
     position: relative;
-    padding: 12px 10px 10px;
-    width: 250px;
-    color: #808080;
+    display: block;
+    padding: 20px 26px 18px 60px;
+    font-size: 10px;
+    text-decoration: none;
+    background: #E4E4E4 url('/assets/grainy-bg.png') 0 0 repeat;
+    border-bottom: 1px solid #ddd;
+    @include box-shadow(0 1px 1px rgba(255,255,255,.4));
+    color: #bbb;
+    @include text-shadow(0 1px 0 rgba(255,255,255,.1));
     @include transition(all .2s ease);
+    text-transform: uppercase;
+    font-weight: 700;
+    .fa{
+      position: absolute;
+      left: 20px;
+      top: 0;
+      width: 20px;
+      text-align: center;
+      height: 100%;
+      padding-top: 21px;
+      font-size: 13px;
+    }
     &:hover{
-      color: #444447;
-    }
-    &:active{
-      color: #fff;
-      outline: none;
-    }
-    &:last-child{
-      border-right: 0;
+      color: #666;
     }
   }
 }
