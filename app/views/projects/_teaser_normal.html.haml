@@ -105,7 +105,7 @@
                   .tags.meta
                     .meta-title Technologies
                     - @project.tech_tags.pluck(:name).each do |tag|
-                      - if tech = Tech.includes(:tech_tags).where("LOWER(tags.name) = ?", tag.downcase).first
+                      - if tech = Tech.includes(:tech_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first
                         - tag_link = tech_short_path(tech)
                       - else
                         - tag_link = "/tags/#{CGI::escape(tag)}"
