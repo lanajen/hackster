@@ -117,7 +117,7 @@ class ApplicationController < ActionController::Base
       @project = if user_name
         # find by slug history and redirect to newer url if ever
         project_slug = "#{params[:user_name]}/#{params[:project_slug]}".downcase
-        project = Project.includes(:slug_histories).where(slug_histories: { value: project_slug }).first!
+        project = Project.includes(:slug_histories).references(:slug_histories).where(slug_histories: { value: project_slug }).first!
         if project.uri != project_slug
           redirect_to(url_for(project), status: 301) and return
         end

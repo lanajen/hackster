@@ -27,7 +27,7 @@ class GradesController < ApplicationController
           case @assignment.grading_type
           when 'individual'
             if @gradable.nil?
-              @gradable = @project.users.includes(:grades).where(grades: { gradable_id: nil }).first
+              @gradable = @project.users.includes(:grades).references(:grades).where(grades: { gradable_id: nil }).first
               redirect_to assignment_edit_grade_path(@assignment, @project, @gradable.id) and return if @gradable
             end
             type = 'User'
@@ -58,7 +58,7 @@ class GradesController < ApplicationController
       @grade.user = current_user
       if @grade.save
         @project = @grade.project
-        if (@assignment.grading_type == 'individual' and @project.users.includes(:grades).where(grades: { gradable_id: nil }).empty?) or @assignment.grading_type == 'group'
+        if (@assignment.grading_type == 'individual' and @project.users.includes(:grades).references(:grades).where(grades: { gradable_id: nil }).empty?) or @assignment.grading_type == 'group'
           @project.update_attribute :graded, true
           @assignment.update_attribute :graded, true if @assignment.projects.where(graded: false).empty?
         end
