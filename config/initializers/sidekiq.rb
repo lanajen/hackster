@@ -14,7 +14,8 @@ Sidekiq.configure_server do |config|
 
   if defined?(ActiveRecord::Base)
     Rails.logger.debug("Setting custom connection pool size of #{sidekiq_pool} for Sidekiq Server")
-    config = Rails.application.config.database_configuration[Rails.env]
+    config = ActiveRecord::Base.configurations[Rails.env] ||
+                Rails.application.config.database_configuration[Rails.env]
     config['reaping_frequency'] = (ENV['DB_REAP_FREQ'] || 10).to_i # seconds
     config['pool']              = sidekiq_pool + 2  # buffer
     ActiveRecord::Base.establish_connection(config)
