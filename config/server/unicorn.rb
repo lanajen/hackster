@@ -108,7 +108,8 @@ after_fork do |server, worker|
       ENV["WEB_CONCURRENCY"] || 3
     end
 
-    config = Rails.application.config.database_configuration[Rails.env]
+    config = ActiveRecord::Base.configurations[Rails.env] ||
+                Rails.application.config.database_configuration[Rails.env]
     config['reaping_frequency'] = ENV['DB_REAP_FREQ'] || 10 # seconds
     config['pool']              = ENV['DB_POOL'] || 3
     ActiveRecord::Base.establish_connection(config)
