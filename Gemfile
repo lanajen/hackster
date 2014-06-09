@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 ruby '1.9.3'
 
-gem 'rails', '4.0.3'
+gem 'rails', '4.1.1'
 
 # load early so that env variables are available to other gems
 gem 'dotenv-rails', :groups => [:development, :test]
@@ -13,7 +13,7 @@ gem 'coffee-rails', '4.0.1'
 gem 'compass-rails', '1.1.2'
 gem 'font-awesome-rails', '4.0.3.0'
 gem 'sass-pygments-rails', '0.1'
-gem 'sass-rails',   '4.0.1'
+gem 'sass-rails', '4.0.2'
 gem 'uglifier', '2.3.1'
 gem 'zocial-rails', '1.0.2'
 
@@ -32,7 +32,7 @@ gem 'fog', '1.15.0'
 gem 'gibbon', '1.1.1'
 gem 'google_visualr', '2.2.0'
 gem 'haml', '4.0.3'
-gem 'haml-rails', '0.4'
+gem 'haml-rails', '0.5.3'
 gem 'heroku-api', '0.3.15'
 gem 'heroku-forward', '0.4.0'
 gem 'hpricot', '0.8.6'
@@ -41,6 +41,7 @@ gem 'jquery-rails', '3.0.4'
 gem 'jquery-ui-rails', '4.1.0'
 gem 'mini_magick', '3.7.0'
 gem 'mixpanel', '4.0.8'
+gem 'monologue', '0.4.0', github: 'jipiboily/monologue'
 gem 'nested_form', '0.3.2'
 gem 'newrelic_rpm', '3.6.9.171'
 gem 'nokogiri', '1.6.0'
@@ -55,7 +56,7 @@ gem 'omniauth-oauth2', '1.1.1'  # for omniauth-facebook, google, linkedin, githu
 gem 'omniauth-twitter', '1.0.1'
 gem 'pg', '0.17.0'
 gem 'premailer-rails', '1.6.0'
-gem 'protected_attributes', '1.0.5'
+gem 'protected_attributes', '1.0.7'
 gem 'pygments.rb', '0.5.4'
 gem 'rack-timeout', '0.0.4'
 gem 'rails_12factor', group: :production
@@ -67,7 +68,7 @@ gem 'sanitize', '2.0.6'
 gem 'sendgrid', '1.2.0'
 gem 'sidekiq', '2.14.0'
 gem 'sidekiq-failures', '0.3.0'
-gem 'simple_form', '3.0.0'
+gem 'simple_form', '3.1.0.rc1'
 gem 'sinatra', '>= 1.3.0', require: nil
 gem 'sundawg_country_codes', '0.0.7'
 gem 'text_sanitizer', '0.1.0'
@@ -90,6 +91,7 @@ group :development, :test do
   # gem 'spork'
   # gem 'rspec-cells'
   gem 'rspec-rails'
+  gem 'spring'
   # gem 'sqlite3'
 end
 
