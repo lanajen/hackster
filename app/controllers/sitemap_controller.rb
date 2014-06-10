@@ -60,7 +60,7 @@ class SitemapController < ApplicationController
         }
       end
 
-      ProductTag.unique_names.each do |tag|
+      ProductTag.unique_names.find_each do |tag|
         @sitemap_pages << {
           loc: "#{tags_url(CGI::escape(tag.name))}",
           changefreq: 'weekly',
