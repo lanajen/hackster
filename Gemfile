@@ -49,7 +49,7 @@ gem 'omniauth-facebook', '1.5.1'
 gem 'omniauth-github', '1.0.0'
 # gem 'omniauth-google-oauth2', '0.2.1'  # deactivated in favor of G+
 gem 'omniauth-gplus', '1.2.0'
-gem 'omniauth-linkedin-oauth2', '0.1.4'
+# gem 'omniauth-linkedin-oauth2', '0.1.4'
 gem 'omniauth-oauth', '1.0.1'  # for omniauth-twitter
 gem 'omniauth-oauth2', '1.1.1'  # for omniauth-facebook, google, linkedin, github
 # gem 'omniauth-openid', '1.0.0'
