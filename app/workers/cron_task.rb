@@ -3,12 +3,12 @@ class CronTask < BaseWorker
   sidekiq_options queue: :low, retry: false
 
   def compute_popularity
-    Project.all.each do |project|
+    Project.find_each do |project|
       project.update_counters
       project.compute_popularity
       project.save
     end
-    User.invitation_accepted_or_not_invited.each do |user|
+    User.invitation_accepted_or_not_invited.find_each do |user|
       user.update_counters
       user.build_reputation unless user.reputation
       reputation = user.reputation
