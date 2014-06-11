@@ -10,7 +10,7 @@
             - if current_user.is? :admin
               %li= link_to 'Edit as admin', edit_admin_group_path(@tech), class: 'btn btn-sm btn-warning'
             %li= f.submit 'Update profile', class: 'btn btn-primary btn-sm'
-            %li= link_to 'Cancel', tech_short_path(@tech), class: 'btn-cancel btn-link btn-sm'
+            %li= link_to 'Cancel', tech_short_path(@tech), class: 'btn-link btn-sm'
       %hr
 
   .row
