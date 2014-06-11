@@ -242,6 +242,11 @@ class ApplicationController < ActionController::Base
     end
 
     def render_500(exception)
+      # hack because format.all doesn't work anymore
+      if exception.class == ActionController::UnknownFormat
+        render nothing: true, status: 404 and return
+      end
+
       begin
         clean_backtrace = Rails.backtrace_cleaner.clean(exception.backtrace)
         message = "#{exception.inspect} // backtrace: #{clean_backtrace.join(' - ')} // user: #{current_user.try(:user_name)} // request_url: #{request.url} // referrer: #{request.referrer} // request_params: #{request.params.to_s} // user_agent #{request.headers['HTTP_USER_AGENT']} // ip: #{request.remote_ip} // format: #{request.format} // HTTP_X_REQUESTED_WITH: #{request.headers['HTTP_X_REQUESTED_WITH']}"
