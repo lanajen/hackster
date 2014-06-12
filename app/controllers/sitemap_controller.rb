@@ -44,6 +44,22 @@ class SitemapController < ApplicationController
         }
       end
 
+      Tech.find_each do |tech|
+        @sitemap_pages << {
+          loc: "#{tech_short_url(tech)}",
+          changefreq: 'weekly',
+          lastmod: tech.updated_at.strftime("%F"),
+        }
+      end
+
+      Monologue::Post.published.find_each do |post|
+        @sitemap_pages << {
+          loc: "http://#{APP_CONFIG['full_host']}#{post.full_url}",
+          changefreq: 'monthly',
+          lastmod: post.updated_at.strftime("%F"),
+        }
+      end
+
       Project.external.find_each do |project|
         @sitemap_pages << {
           loc: "#{external_project_url(project)}",
@@ -65,14 +81,6 @@ class SitemapController < ApplicationController
           loc: "#{tags_url(CGI::escape(tag.name))}",
           changefreq: 'weekly',
           lastmod: tag.updated_at.strftime("%F"),
-        }
-      end
-
-      Tech.find_each do |tech|
-        @sitemap_pages << {
-          loc: "#{tech_short_url(tech)}",
-          changefreq: 'weekly',
-          lastmod: tech.updated_at.strftime("%F"),
         }
       end
     end
