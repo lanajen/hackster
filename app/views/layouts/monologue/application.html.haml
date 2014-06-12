@@ -22,7 +22,8 @@
       \==================================================
     %meta{content: "width=device-width, initial-scale=1, maximum-scale=1", name: "viewport"}/
     = rss_head_link
-    = render "layouts/monologue/application/google_analytics"
+    - unless Rails.env == 'development' or (user_signed_in? and current_user.is? :admin)
+      = render "layouts/monologue/application/google_analytics"
 
   %body#blog
     #outer-wrapper
