@@ -19,7 +19,7 @@
         Share this post on
         = link_to 'Facebook', "#", onclick: "window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),'facebook-share-dialog','width=626,height=436'); return false;", class: 'zocial facebook', target: '_blank'
         ,
-        = link_to 'Twitter', "https://twitter.com/intent/tweet?url=#{APP_CONFIG['full_host']}#{@post.full_url}&via=hacksterio&text=#{CGI.escape(@post.title)}&tw_p=tweetbutton", class: 'zocial twitter', target: '_blank'
+        = link_to 'Twitter', "https://twitter.com/intent/tweet?url=http://#{APP_CONFIG['full_host']}#{@post.full_url}&via=hacksterio&text=#{CGI.escape(@post.title)}&tw_p=tweetbutton", class: 'zocial twitter', target: '_blank'
         or
         = link_to 'Google+', "https://plus.google.com/share?url=#{APP_CONFIG['full_host']}#{@post.full_url}", class: 'zocial googleplus', target: '_blank', onclick: "javascript:window.open(this.href,'','menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"
     -# = render "monologue/posts/social_sharing"
