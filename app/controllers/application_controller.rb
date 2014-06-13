@@ -179,7 +179,7 @@ class ApplicationController < ActionController::Base
     end
 
     def tracking_activated?
-      !(Rails.env == 'production' and current_user.try(:is?, :admin))
+      Rails.env == 'production' and !current_user.try(:is?, :admin) and !'23.0.1271.97'.in?(request.user_agent)
     end
 
     def tracker
