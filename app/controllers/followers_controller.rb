@@ -28,7 +28,7 @@ class FollowersController < ApplicationController
   private
     def get_partial
       case @followable
-      when User
+      when Group, User
         'button_text'
       else
         'button'
@@ -36,7 +36,7 @@ class FollowersController < ApplicationController
     end
 
     def load_followable
-      render status: :unprocessable_entity and return unless params[:followable_type].in? %w(Project User)
+      render status: :unprocessable_entity and return unless params[:followable_type].in? %w(Group Project User)
 
       @followable = params[:followable_type].constantize.find params[:followable_id]
     end

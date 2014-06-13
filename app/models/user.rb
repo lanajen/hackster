@@ -33,6 +33,7 @@ class User < ActiveRecord::Base
   # has_many :courses, through: :promotions  # doesnt work
   has_many :events, through: :group_ties, source: :group, class_name: 'Event'
   has_many :follow_relations
+  has_many :followed_groups, -> { order('groups.full_name ASC') }, source_type: 'Group', through: :follow_relations, source: :followable
   has_many :followed_projects, source_type: 'Project', through: :follow_relations, source: :followable
   has_many :followed_users, source_type: 'User', through: :follow_relations, source: :followable
   has_many :grades, as: :gradable
@@ -302,7 +303,7 @@ class User < ActiveRecord::Base
       project_views: 'projects.sum(:impressions_count)',
       respects: 'respects.count',
       skill_tags: 'skill_tags.count',
-      teches: 'teches.count',
+      teches: 'followed_groups.count',
       websites: 'websites.values.select{|v| v.present? }.size',
     }
   end
@@ -483,6 +484,8 @@ class User < ActiveRecord::Base
 
   def following? followable
     case followable
+    when Group
+      followable.in? followed_groups
     when Project
       followable.in? followed_projects
     when User

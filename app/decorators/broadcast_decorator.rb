@@ -40,6 +40,9 @@ class BroadcastDecorator < ApplicationDecorator
       "respected #{project_name}"
     when 'FollowRelation'
       follow_name = case model.context_model.followable_type
+      when 'Group'
+        group = model.context_model.followable
+        h.link_to group.name, tech_short_path(group)
       when 'Project'
         project_name
       when 'User'

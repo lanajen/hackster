@@ -1,7 +1,12 @@
 class Tech < Group
+  include Counter
   include Privatable
+  include StringParser
   include Taggable
 
+  has_many :active_members, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'") }, foreign_key: :group_id, class_name: 'TechMember'
+  has_many :follow_relations, as: :followable
+  has_many :followers, through: :follow_relations, source: :user
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'TechMember'
   has_many :respects, as: :respecting, dependent: :destroy, class_name: 'Respect'
   has_many :respected_projects, through: :respects, source: :project
@@ -21,6 +26,12 @@ class Tech < Group
   validates :user_name, :new_user_name, length: { in: 3..100 }, if: proc{|t| t.persisted?}
   validate :user_name_is_unique
   before_validation :update_user_name
+
+  store :counters_cache, accessors: [:projects_count, :followers_count,
+    :external_projects_count, :private_projects_count]
+
+  parse_as_integers :counters_cache, :projects_count, :followers_count,
+    :external_projects_count, :private_projects_count
 
   taggable :tech_tags
 
@@ -53,8 +64,25 @@ class Tech < Group
   end
   # end of search methods
 
+  def self.default_access_level
+    'invite'
+  end
+
+  def self.default_permission
+    'manage'
+  end
+
   def self.model_name
     Group.model_name
+  end
+
+  def counters
+    {
+      external_projects: 'projects.external.count',
+      followers: 'followers.count',
+      private_projects: 'projects.private.count',
+      projects: 'projects.count',
+    }
   end
 
   def cover_image_id=(val)

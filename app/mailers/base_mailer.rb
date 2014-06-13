@@ -61,6 +61,9 @@ class BaseMailer < ActionMailer::Base
         followable = follow.followable
         context[:author] = follow.user
         case followable
+        when Group
+          context[:group] = followable
+          context[:user] = followable
         when Project
           context[:project] = followable
           context[:users] = followable.users.with_subscription('new_follow_project')

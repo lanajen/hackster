@@ -6,12 +6,21 @@ class FollowRelation < ActiveRecord::Base
 
   attr_accessible :user_id, :followable_id, :followable_type
 
-  def self.add user, followable
-    create user_id: user.id, followable_type: followable.class.name, followable_id: followable.id
+  def self.add user, followable, skip_notification=false
+    rel = new user_id: user.id, followable_type: followable.class.model_name.to_s, followable_id: followable.id
+    rel.skip_notification! if skip_notification
+    rel.save
   end
 
   def self.destroy user, followable
-    where(user_id: user.id, followable_type: followable.class.name, followable_id: followable.id).destroy_all
+    where(user_id: user.id, followable_type: followable.class.model_name.to_s, followable_id: followable.id).destroy_all
   end
 
+  def skip_notification!
+    @skip_notification = true
+  end
+
+  def skip_notification?
+    @skip_notification
+  end
 end

@@ -12,14 +12,15 @@
         - elsif can? :update, @tech
           No mini resume.
           = link_to 'Add one?', edit_tech_path(@tech)
+      - if can? :manage, @tech
+        %p
+          %i.fa.fa-lock.istooltip{ title: 'Only admins can see this', data: { container: 'body' } }
+          %strong= number_with_delimiter @tech.followers_count
+          = pluralize_without_count @tech.followers_count, 'follower'
+          %strong= number_with_delimiter @tech.impressions_count
+          = pluralize_without_count @tech.impressions_count, 'view'
       #tech-follow-div.text-center
-        - if user_signed_in? and member = current_user.is_active_member?(@tech)
-          %a.btn.btn-info
-            Following
-            %i.fa.fa-check
-        - else
-          - link = user_signed_in? ? group_accept_invitation_path(@tech) : new_user_registration_path(redirect_to: group_accept_invitation_path(@tech), reason: 'join', m: 'group', id: @tech.id)
-          = link_to "Follow #{@tech.name}".html_safe, link, class: 'btn btn-info'
+        = render partial: 'followers/button_text', locals: { followable: @tech }
 
     .display
       %h4 Resources
@@ -55,5 +56,5 @@
           Manage page
         %ul#tech-links
           %li= link_to 'Edit settings', edit_tech_path(@tech)
-          %li= link_to 'Manage members', group_edit_members_path(@tech)
-          %li= link_to 'Invite members', group_new_invitations_path(@tech)
+          %li= link_to 'Manage admins', group_edit_members_path(@tech)
+          %li= link_to 'Invite admins', group_new_invitations_path(@tech)

@@ -3,6 +3,6 @@ class TechMember < Member
   attr_protected #none
 
   def default_roles
-    %w(member)
+    %w(admin)
   end
 end

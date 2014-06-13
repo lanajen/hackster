@@ -3,9 +3,12 @@ class FollowRelationObserver < ActiveRecord::Observer
     update_counters record
     msg_type = "new_follower_notification_#{record.followable_type.underscore}"
     BaseMailer.enqueue_email msg_type,
-        { context_type: 'follower', context_id: record.id }
+        { context_type: 'follower', context_id: record.id } unless record.skip_notification? or (record.followable_type == 'Group' and record.followable.email.blank?)
     if record.followable_type == 'Project'
       record.user.broadcast :new, record.id, 'FollowRelation', record.followable_id
+    elsif record.followable_type == 'Group'
+      record.user.broadcast :new, record.id, 'FollowRelation', record.followable_id
+      record.user.update_counters only: [:teches]
     else
       Broadcast.create event: :new, user_id: record.user_id, context_model_id: record.id, context_model_type: 'FollowRelation', broadcastable_id: record.followable_id, broadcastable_type: 'User'
     end

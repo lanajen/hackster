@@ -15,6 +15,9 @@ class CronTask < BaseWorker
       reputation.compute
       reputation.save
     end
+    Tech.find_each do |tech|
+      tech.update_counters only: [:projects, :external_projects, :private_projects]
+    end
     self.class.perform_in 24.hours, 'compute_popularity'
   end
 

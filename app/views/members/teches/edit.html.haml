@@ -2,7 +2,7 @@
   .row
     .col-xs-8.col-xs-offset-2
       .wellified
-        %h2.text-center Manage members
+        %h2.text-center Manage admins
 
         = simple_nested_form_for @group, url: group_members_path(@group), html: { class: 'widget-form' } do |f|
           = f.error_notification

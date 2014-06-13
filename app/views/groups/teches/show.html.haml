@@ -27,7 +27,7 @@
 - if can? :join, @tech and user_signed_in? and member = current_user.is_member?(@tech) and member.invitation_pending?
   %section#alert-section
     .alert.alert-warning.alert-flat
-      You have been invited to join
+      You have been invited to manage
       = succeed '.' do
         %strong #{@tech.name}
       = link_to 'Rock the place', group_accept_invitation_path(@tech), class: 'btn btn-warning btn-sm'
