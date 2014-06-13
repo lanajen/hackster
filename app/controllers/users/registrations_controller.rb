@@ -39,6 +39,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
         first_seen: cookies[:first_seen],
         initial_referrer: cookies[:initial_referrer],
         landing_page: cookies[:landing_page],
+        shown_banner_count: cookies[:shown_banner_count],
         visits_count_before_signup: cookies[:visits].size,
       }
 
@@ -48,6 +49,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
       cookies.delete(:first_seen)
       cookies.delete(:last_shown_banner)
+      cookies.delete(:shown_banner_count)
 
       user_after_registration_path
     end

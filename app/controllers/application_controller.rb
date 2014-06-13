@@ -225,7 +225,19 @@ class ApplicationController < ActionController::Base
       if cookies[:first_seen].to_time < 3.days.ago and (cookies[:last_shown_banner].nil? or cookies[:last_shown_banner].to_time < 3.days.ago)
         @show_signup_popup = true
         cookies[:last_shown_banner] = Time.now
-        track_event 'Shown signup popup'
+        if cookies[:shown_banner_count].present?
+          cookies[:shown_banner_count] = cookies[:shown_banner_count].to_i + 1
+        else
+          cookies[:shown_banner_count] = 1
+        end
+        data = {
+          first_seen: cookies[:first_seen],
+          initial_referrer: cookies[:initial_referrer],
+          landing_page: cookies[:landing_page],
+          shown_banner_count: cookies[:shown_banner_count],
+          visits_count_before_signup: cookies[:visits].size,
+        }
+        track_event 'Shown signup popup', data
       end
     end
 

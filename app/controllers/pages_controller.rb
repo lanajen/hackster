@@ -22,7 +22,7 @@ class PagesController < ApplicationController
       @wip_projects = Project.wip.limit 4
       @tools = Tech.where(user_name: %w(spark electric-imp arduino raspberry-pi beagleboard teensy)).order(:full_name)
 
-      event = 'Visited home page as member'
+      event = 'Visited home page'
     # else
     #   render_options = { template: 'pages/home_visitor', layout: 'home_visitor' }
     #   limit = 6
