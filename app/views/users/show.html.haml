@@ -1,162 +1,141 @@
-= content_for :no_container do
-  #heading.user
-    .container
-      .display= render 'teaser'
-      .edit{ style: 'display:none;' }
 
-  #content
-    .container
-      .row.tab-content
-        #tab-public.tab-pane.active.fade.in
-          .col-xs-9
-            - if @public_projects.any?
-              - style = cookies['thumb-list-style'] || 'thumb-list-vertical'
-              .row
-                .col-xs-12
-                  .btn-group.thumb-list-switch.pull-right
-                    %button.btn.btn-default.btn-sm.istooltip{ class: "#{'active' if style == 'thumb-list-vertical'}", data: { 'list-style' => 'vertical', container: 'body' }, title: 'Display as tiles' }
-                      %i.fa.fa-th-large
-                    %button.btn.btn-default.btn-sm.istooltip{ class: "#{'active' if style == 'thumb-list-horizontal'}", data: { 'list-style' => 'horizontal', container: 'body' }, title: 'Display as list' }
-                      %i.fa.fa-th-list
-              - if @public_projects_sorted.size > 1
-                .row.thumb-list{ class: style }
-                  - @public_projects_sorted.each do |year, projects|
-                    %h4.col-xs-12.thumb-horizontal= year
-                    - projects.each_with_index do |project, i|
-                      - show_year = (i > 0) ? false : true
-                      = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '4', show_year: show_year, ref: 'user', ref_id: @user.id, offset: i }
-              - else
-                .row.thumb-list{ class: style }
-                  %h4 &nbsp;
-                  - @public_projects_sorted.each do |year, projects|
-                    - projects.each_with_index do |project, i|
-                      = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '4', ref: 'user', ref_id: @user.id, offset: i }
+%section#projects-list
+  .wrapper
+    .project-list-actions.clearfix.mg-30
+      - if user_is_current?
+        .pull-right
+          = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'btn btn-outline'
+      - style = cookies['thumb-list-style'] || 'thumb-list-vertical'
+      .btn-group.thumb-list-switch.pull-left
+        %button.btn.btn-default.btn-sm.istooltip{ class: "#{'active' if style == 'thumb-list-vertical'}", data: { 'list-style' => 'vertical', container: 'body' }, title: 'Display as tiles' }
+          %i.fa.fa-th-large
+        %button.btn.btn-default.btn-sm.istooltip{ class: "#{'active' if style == 'thumb-list-horizontal'}", data: { 'list-style' => 'horizontal', container: 'body' }, title: 'Display as list' }
+          %i.fa.fa-th-list
 
-            - elsif user_is_current?
-              %p
-                You have no public projects.
-                = link_to 'Showcase a project', new_project_path, class: 'btn btn-info btn-sm'
-              %p.smaller.text-muted
-                %strong Tip:
-                Access private projects from the next tab.
-            - else
-              #{@user.name} has no public projects.
+    %h2
+      Public projects
+      = content_tag(:span, @user.live_projects_count, class: 'badge')
+    - if @public_projects.any?
+      - if @public_projects_sorted.size > 1
+        .thumb-list{ class: style }
+          .row.project-list
+            - @public_projects_sorted.each do |year, projects|
+              %h4.col-xs-12.thumb-horizontal= year
+              - projects.each_with_index do |project, i|
+                - show_year = (i > 0) ? false : true
+                = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', show_year: show_year, ref: 'user', ref_id: @user.id, offset: i }
+      - else
+        .thumb-list{ class: style }
+          .row.project-list
+            / %h4 &nbsp;
+            - @public_projects_sorted.each do |year, projects|
+              - projects.each_with_index do |project, i|
+                = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', ref: 'user', ref_id: @user.id, offset: i }
 
-          .col-xs-3
-            - if @user.teches.any?
-              .transparent-well.user-communities.team-widget
-                .header
-                  %h4 Communities
-                .content
-                  - @user.teches.each do |c|
-                    .community.user
-                      = link_to image_tag(c.decorate.avatar(:mini), class: ' img-circle' ), c, class: ''
-                      %span.user-name
-                        = link_to c.name, c, class: 'hidden-link'
+    - elsif user_is_current?
+      %p
+        You have no public projects.
+        = link_to 'Showcase a project', new_project_path, class: 'btn btn-info btn-sm'
+      %p.smaller.text-muted
+        %strong Tip:
+        Access private projects below.
+    - else
+      #{@user.name} has no public projects.
 
-            - if @user.interest_tags.any?
-              .transparent-well
-                .header
-                  %h4 Interests
-                .content
-                  - @user.interest_tags.pluck(:name).each do |tag|
-                    %span.label.label-default= link_to tag, "/tags/#{tag}"
-            - elsif user_is_current?
-              .transparent-well
-                .header
-                  %h4 Interests
-                .content
-                  No interests.
-                  = link_to 'Add some?', profile_edit_path, data: { remote: true }
+    - if user_signed_in? and (@user == current_user or current_user.is? :admin)
+      %hr
+      %h2
+        Private projects
+        = content_tag(:span, @user.projects_count - @user.live_projects_count, class: 'badge')
+      - if @user.projects.private.any?
+        .thumb-list{ class: style }
+          .row.project-list
+            - @user.projects.private.each_with_index do |project, i|
+              = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', ref: 'userprivate', ref_id: @user.id, offset: i }
 
-            - if @user.skill_tags.any?
-              .transparent-well
-                .header
-                  %h4 Skills
-                .content
-                  - @user.skill_tags.pluck(:name).each do |tag|
-                    %span.label.label-default= link_to tag, "/tags/#{tag}"
-            - elsif user_is_current?
-              .transparent-well
-                .header
-                  %h4 Skills
-                .content
-                  No skills.
-                  = link_to 'Add some?', profile_edit_path, data: { remote: true }
+      - elsif user_is_current?
+        %p
+          You have no private projects.
+      - else
+        #{@user.name} has no private projects.
 
-            - if @broadcasts.any?
-              .transparent-well
-                .header
-                  %h4 Recent activity
-                .content
-                  %ul
-                    - @broadcasts.each do |broadcast|
-                      %li
-                        - broadcast = broadcast.decorate
-                        = broadcast.message
-                        .text-muted
-                          = broadcast.created_at
+    %hr
+    %h2
+      Respected projects
+      = content_tag(:span, @user.respects_count, class: 'badge')
+    - if @user.respected_projects.indexable.any?
+      .thumb-list{ class: style }
+        .row.project-list
+          - @user.respected_projects.indexable.each_with_index do |project, i|
+            = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', ref: 'userrespected', ref_id: @user.id, offset: i }
 
-        - if user_signed_in? and (@user == current_user or current_user.is? :admin)
-          #tab-private.tab-pane.fade
-            .col-xs-12
-              - if @user.projects.private.any?
-                - style = cookies['thumb-list-style'] || 'thumb-list-vertical'
-                .row
-                  .col-xs-12
-                    .btn-group.thumb-list-switch.pull-right{ style: 'margin-bottom: 20px' }
-                      %button.btn.btn-default.btn-sm.istooltip{ class: "#{'active' if style == 'thumb-list-vertical'}", data: { 'list-style' => 'vertical', container: 'body' }, title: 'Display as tiles' }
-                        %i.fa.fa-th-large
-                      %button.btn.btn-default.btn-sm.istooltip{ class: "#{'active' if style == 'thumb-list-horizontal'}", data: { 'list-style' => 'horizontal', container: 'body' }, title: 'Display as list' }
-                        %i.fa.fa-th-list
-                .row.thumb-list{ class: style }
-                  - @user.projects.private.each do |project|
-                    = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', ref: 'userprivate' }
-              - elsif user_is_current?
-                %p
-                  You have no private projects.
+    - elsif user_is_current?
+      %p
+        You haven't respected any projects yet.
+        = link_to 'Browse around', projects_path
+        for cool projects!
+    - else
+      #{@user.name} hasn't respected any projects yet.
 
-            -# .row
-              %h4 Private projects you have access to
 
-        #tab-respected.tab-pane.fade
-          .col-xs-12
-            - if @user.respected_projects.indexable.any?
-              - style = cookies['thumb-list-style'] || 'thumb-list-vertical'
-              .row
-                .col-xs-12
-                  .btn-group.thumb-list-switch.pull-right{ style: 'margin-bottom: 20px' }
-                    %button.btn.btn-default.btn-sm.istooltip{ class: "#{'active' if style == 'thumb-list-vertical'}", data: { 'list-style' => 'vertical', container: 'body' }, title: 'Display as tiles' }
-                      %i.fa.fa-th-large
-                    %button.btn.btn-default.btn-sm.istooltip{ class: "#{'active' if style == 'thumb-list-horizontal'}", data: { 'list-style' => 'horizontal', container: 'body' }, title: 'Display as list' }
-                      %i.fa.fa-th-list
-              .row.thumb-list{ class: style }
-                - @user.respected_projects.indexable.each do |project|
-                  = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', ref: 'userrespected' }
-            - elsif user_is_current?
-              %p
-                You haven't respected any projects yet.
-                = link_to 'Browse around', projects_path
-                for cool projects!
-            - else
-              #{@user.name} hasn't respected any projects yet.
+    %hr
+    %h2
+      Comments
+      = content_tag(:span, @user.comments_count, class: 'badge')
+    - if @user.live_comments.any?
+      %ul.list-unstyled.user-comments-list
+        - @user.live_comments.each do |comment|
+          %li.comment
+            %h5.comment-project
+              = link_to comment.commentable.name, project_path(comment.commentable, ref: 'usercomment')
+              %small
+                = time_ago_in_words(comment.created_at)
+                ago
+            .comment-text= comment.body.html_safe
+    - elsif user_is_current?
+      %p
+        You haven't commented on any projects yet.
+        = link_to 'Browse around', projects_path
+        for projects you can get involved in!
+    - else
+      #{@user.name} hasn't commented on any projects yet.
 
-        #tab-comments.tab-pane.fade
-          .col-xs-12
-            - if @user.live_comments.any?
-              %ul.list-unstyled
-                - @user.live_comments.each do |comment|
-                  %li.comment
-                    %h5.comment-project
-                      = link_to comment.commentable.name, project_path(comment.commentable, ref: 'usercomment')
-                      %small
-                        = time_ago_in_words(comment.created_at)
-                        ago
-                    .comment-text= comment.body.html_safe
-            - elsif user_is_current?
-              %p
-                You haven't commented on any projects yet.
-                = link_to 'Browse around', projects_path
-                for projects you can get involved in!
-            - else
-              #{@user.name} hasn't commented on any projects yet.
+
+
+-#
+        .col-xs-3
+
+          - if @broadcasts.any?
+            .transparent-well
+              .header
+                %h4 Recent activity
+              .content
+                %ul
+                  - @broadcasts.each do |broadcast|
+                    %li
+                      - broadcast = broadcast.decorate
+                      = broadcast.message
+                      .text-muted
+                        = broadcast.created_at
+
+
+
+      #tab-comments.tab-pane.fade
+        .col-xs-12
+          - if @user.live_comments.any?
+            %ul.list-unstyled
+              - @user.live_comments.each do |comment|
+                %li.comment
+                  %h5.comment-project
+                    = link_to comment.commentable.name, project_path(comment.commentable, ref: 'usercomment')
+                    %small
+                      = time_ago_in_words(comment.created_at)
+                      ago
+                  .comment-text= comment.body.html_safe
+          - elsif user_is_current?
+            %p
+              You haven't commented on any projects yet.
+              = link_to 'Browse around', projects_path
+              for projects you can get involved in!
+          - else
+            #{@user.name} hasn't commented on any projects yet.

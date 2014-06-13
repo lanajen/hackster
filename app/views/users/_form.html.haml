@@ -1,4 +1,4 @@
-= simple_nested_form_for @user, url: profile_path, html: { class: 'form-horizontal remote accept-file-upload', data: { remote: true } }, wrapper: :bootstrap3_horizontal do |f|
+= simple_nested_form_for @user, url: profile_path, html: { class: 'form-horizontal remote accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
   = f.error_notification
 
   .row
@@ -9,7 +9,8 @@
           %ul.list-unstyled.list-inline
             %li= link_to 'Go to account settings', edit_user_registration_path, class: 'btn btn-info btn-sm'
             %li= f.submit 'Update profile', class: 'btn btn-primary btn-sm'
-            %li= link_to 'Cancel', '', class: 'btn-cancel btn-link btn-sm', data: { show: '.user .display', hide: '.user .edit' }
+            %li= link_to 'Cancel', @user, class: 'btn-link btn-sm'
+        .clearfix
       %hr
 
   .row
@@ -37,5 +38,3 @@
 
       = f.input :interest_tags_string, label: 'Interests', hint: 'Enter a list of tags separated by commas'
       = f.input :skill_tags_string, label: 'Skills'
-
-%hr

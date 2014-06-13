@@ -12,10 +12,11 @@
         - elsif can? :update, @tech
           No mini resume.
           = link_to 'Add one?', edit_tech_path(@tech)
-      #tech-follow-div
+      #tech-follow-div.text-center
         - if user_signed_in? and member = current_user.is_active_member?(@tech)
-          .text-center
-            %span.badge You're a member
+          %a.btn.btn-info
+            Following
+            %i.fa.fa-check
         - else
           - link = user_signed_in? ? group_accept_invitation_path(@tech) : new_user_registration_path(redirect_to: group_accept_invitation_path(@tech), reason: 'join', m: 'group', id: @tech.id)
           = link_to "Follow #{@tech.name}".html_safe, link, class: 'btn btn-info'

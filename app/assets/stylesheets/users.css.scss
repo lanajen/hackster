@@ -125,3 +125,26 @@
     font-size: 12px;
   }
 }
+
+.user-comments-list {
+  .comment {
+    padding: 5px 0;
+    border-bottom: 1px solid #fafafa;
+    &:first-of-type {
+      padding-top: 0;
+    }
+    &:last-of-type {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+  }
+}
+
+.user {
+  #projects-list {
+    h2 {
+      font-size: 20px;
+      margin: 30px 0 15px;
+    }
+  }
+}
