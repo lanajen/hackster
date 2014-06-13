@@ -1,0 +1,84 @@
+#sidebar-container
+  %section#sidebar-container-in
+    - if @user.avatar
+      .avatar#tech-avatar-image{:style=>"background-image:url('#{@user.avatar(:big)}');"}
+    #tech-body
+      %h3= link_to @user.name, @user, id: 'tech-name'
+      %p
+        - if @user.mini_resume.present?
+          = @user.mini_resume
+        - elsif can? :update, @user
+          No mini resume.
+          = link_to 'Add one?', profile_edit_path(@user)
+      %p.user-categories
+        - if @user.location
+          %span.category.first
+            %i.fa.fa-map-marker
+              = @user.location
+        - elsif user_is_current?
+          No location.
+          = link_to 'Add one?', profile_edit_path
+
+      - if current_user.try(:id) != @user.id
+        #tech-follow-div.text-center
+          = render partial: 'followers/button_text', locals: { followable: @user }
+
+    .display
+      %h4 Social links
+      #tech-websites
+        - if @user.websites.any?
+          %ul.websites.list-inline
+            - @user.websites.select{|t,u| u.present? }.each do |type, url|
+              %li= render partial: "shared/website", locals: { type: type, url: url }
+        - elsif can? :update, @user
+          %ul.websites.list-inline
+            %li
+              No websites.
+              = link_to 'Add some?', profile_edit_path(@user)
+
+    - if @user.teches.any?
+      .display
+        %h4 Communities
+        .content.team-widget.user-communities
+          - @user.teches.each do |c|
+            .community.user
+              = link_to image_tag(c.decorate.avatar(:mini), class: ' img-circle' ), c, class: ''
+              %span.user-name
+                = link_to c.name, c
+
+    - if @user.interest_tags.any?
+      .display
+        %h4 Interests
+        .content
+          - @user.interest_tags.pluck(:name).each do |tag|
+            = link_to tag, "/tags/#{tag}", class: "label label-default"
+    - elsif user_is_current?
+      .display
+        %h4 Interests
+        .content
+          No interests.
+          = link_to 'Add some?', profile_edit_path
+
+    - if @user.skill_tags.any?
+      .display
+        %h4 Skills
+        .content
+          - @user.skill_tags.pluck(:name).each do |tag|
+            = link_to tag, "/tags/#{tag}", class: "label label-default"
+    - elsif user_is_current?
+      .display
+        %h4 Skills
+        .content
+          No skills.
+          = link_to 'Add some?', profile_edit_path
+
+    - if user_signed_in?
+      .display
+        %h4
+          %i.fa.fa-cog
+          Manage
+        %ul#tech-links
+          - if user_is_current?
+            %li= link_to "Edit profile", profile_edit_path
+          - elsif current_user.is? :admin
+            %li= link_to "Edit profile as admin", edit_admin_user_path(@user.id)
