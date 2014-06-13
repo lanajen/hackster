@@ -20,6 +20,10 @@ class OshparkWidget < Widget
     "#{BASE_UPLOADS_URL}/bottom_image/#{osh_id}/thumb_i.png"
   end
 
+  def default_label
+    'PCB renderings'
+  end
+
   def download_link
     "#{BASE_UPLOADS_URL}/design/#{osh_id}/design.brd"
   end

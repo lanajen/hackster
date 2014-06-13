@@ -2,7 +2,7 @@
   = render 'meta_tags'
 / Ben:  This needs updating.  If it's the user's first time editing this project, automatically put it in Edit mode.
 /       Perhaps we should create default widgets for them and put it into Edit mode.
-- if (!@widgets.any? && (can? :edit, @project)) 
+- if (!@widgets.any? && (can? :edit, @project))
   - editmode = true
 - else
   - editmode = false
@@ -42,37 +42,20 @@
           / - if can? :edit, @project
           /   = link_to 'Add a widget', new_project_widget_path(@project)
           - if @widgets.any?
-            - if can? :edit, @project
+            - if false#can? :edit, @project
               = simple_nested_form_for @project, url: project_path(@project), html: { class: 'update-project-form' } do |f|
                 = render 'projects/large_column', locals: { f: f}
             - else
               = render 'projects/large_column'
-          / - else
-          /   .col-xs-6.col-xs-offset-3
-          /     .well
-          /       .content
-          /         - if can? :edit, @project
-          /           Tell the world more about #{@project.name}, show us the code, schematics, bill of materials, or something else awesome about your project.
-          /           = link_to 'Add your first widget to get started!', new_project_widget_path(@project)
-          /         - else
-          /           Work in progress, check back later!
 
-          /   - if @project.columns_count == 1 and can? :edit, @project
-          /     #sidebar.col-xs-3
-          /       .navbar-tabs.navbar-default.navbar-vertical.unselectable.affixable
-          /         %ul.navbar-nav.nav
-          /           %li.dropdown
-          /             %a.dropdown-toggle{ data: { toggle: 'dropdown' }, href: '#' }
-          /               Edit
-          /               %b.caret
-          /             %ul.dropdown-menu
-          /               %li= link_to 'Settings', edit_project_path(@project), data: { remote: true }
-          /               %li= link_to 'Add a widget', new_project_widget_path(@project)
-          /               %li= link_to 'Reorder widgets and edit columns', project_widgets_path(@project)
 
-      - cache [@project, 'other', @other_projects], tag: "project-#{@project.id}-other" do
-        - if @other_projects_count > 0
-          #more-projects.row
+
+- cache [@project, 'other', @other_projects], tag: "project-#{@project.id}-other" do
+  - if @other_projects_count > 0
+    #more-projects
+      .wrapper700
+        .container-fluid
+          .row
             .header
               %h4
                 Other projects by

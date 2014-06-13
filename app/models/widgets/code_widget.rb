@@ -37,6 +37,10 @@ class CodeWidget < Widget
     Widget.model_name
   end
 
+  def default_label
+    'Code'
+  end
+
   def extension_list
     return @extension_list if @extension_list
     @extension_list = {}

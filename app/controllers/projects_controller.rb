@@ -40,7 +40,8 @@ class ProjectsController < ApplicationController
     @project_meta_desc = "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."
     meta_desc @project_meta_desc
     @project = @project.decorate
-    @widgets = @project.widgets.order(:created_at)
+    @widgets_by_section ={ 1=>[], 2=>[], 3=>[], 4=>[] }
+    @widgets = @project.widgets.order(:created_at).each{|w| @widgets_by_section[w.position[0].to_i] << w }
 
     # other projects by same author
     @other_projects_count = Project.public.most_popular.includes(:team_members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).size

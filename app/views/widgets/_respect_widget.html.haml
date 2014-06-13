@@ -1,9 +1,8 @@
-.project-section#widget-respects
-  .header
-    %h4{ style: 'position:relative;' }
+#widget-respects.meta
+  .meta-title-wrap
+    .meta-title
       Users who respect this project
       = render partial: 'respects/button', locals: { project: @project }
-  .content
-    .respect-thumbs.clearfix
-      - users.each do |user|
-        = link_to image_tag(user.decorate.avatar(:thumb), class: 'img-responsive respects-user-img'), user, data: { container: 'body' }, rel: 'tooltip', title: user.name
+  .respect-thumbs.clearfix
+    - users.each do |user|
+      = link_to image_tag(user.decorate.avatar(:thumb), class: 'img-responsive respects-user-img istooltip', data: { container: 'body' }, rel: 'tooltip', title: user.name), user

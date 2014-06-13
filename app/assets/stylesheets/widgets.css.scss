@@ -1,3 +1,7 @@
+.widget {
+  margin-bottom: 40px;
+}
+
 .code-widget {
   position: relative;
   a.more, a.less {
@@ -524,7 +528,9 @@
 }
 
 #widget-respects {
-  padding-bottom: 30px;
+  // padding-bottom: 30px;
+  margin-top: 10px;
+  clear: both;
   .respect-button{
     padding-left: 7px;
     .fa{
@@ -566,10 +572,12 @@
 
 .oshpark-widget {
   ul {
-    margin-top: 15px;
+    li {
+      margin-bottom: 10px;
+      text-align: right;
+    }
   }
   .credits {
-    text-align: right;
     @include font-size(11);
   }
 }
@@ -594,8 +602,8 @@ p.caption {
 }
 
 .video-widget {
-  border: 1px solid white;
-  @include box-shadow(0 1px 14px rgba(0, 0, 0, 0.02), 0 0 1px rgba(0, 0, 0, 0.26));
+  // border: 1px solid white;
+  // @include box-shadow(0 1px 14px rgba(0, 0, 0, 0.02), 0 0 1px rgba(0, 0, 0, 0.26));
   p.caption {
     margin-bottom: 0;
     &:empty{
@@ -693,9 +701,4 @@ p.caption {
       }
     }
   }
-}
-
-#more-projects{
-  padding: 0px 0 100px;
-  border-top: 3px dotted #f1f1f1;
 }
