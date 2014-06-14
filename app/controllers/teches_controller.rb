@@ -24,6 +24,8 @@ class TechesController < ApplicationController
     get_projects
 
     render "groups/teches/#{self.action_name}"
+
+    track_event 'Visited tech', @tech.to_tracker.merge({ page: params[:page] })
   end
 
   def embed

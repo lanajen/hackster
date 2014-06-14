@@ -12,6 +12,8 @@ class FollowersController < ApplicationController
         render 'button'
       end
     end
+
+    track_event "Followed #{@followable.class.name}", { id: @followable.id, name: @followable.name }
   end
 
   def destroy
@@ -23,6 +25,8 @@ class FollowersController < ApplicationController
         render 'button'
       end
     end
+
+    track_event "Unfollowed #{@followable.class.name}", { id: @followable.id, name: @followable.name }
   end
 
   private

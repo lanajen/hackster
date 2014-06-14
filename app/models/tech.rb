@@ -122,6 +122,15 @@ class Tech < Group
     shoplocket_link.split(/\//)[-1]
   end
 
+  def to_tracker
+    {
+      followers_count: followers_count,
+      projects_count: projects_count,
+      tech_id: id,
+      views_count: impressions_count,
+    }
+  end
+
   def update_user_name
     # raise "#{new_user_name}|#{user_name}|#{@old_user_name}"
     tech = Tech.new full_name: full_name_was
