@@ -131,6 +131,13 @@ class ProjectsController < ApplicationController
 
   def new
     initialize_project
+    event = if @project.external
+      'Attempted to submit a link'
+    else
+      'Attempted to create a project'
+    end
+
+    track_event event
   end
 
   def edit
@@ -140,9 +147,12 @@ class ProjectsController < ApplicationController
   end
 
   def create
-    unless @project.external
+    if @project.external
+      event = 'Submitted link'
+    else
       @project.approved = true
       @project.private = true
+      event = 'Created project'
     end
 
     if current_user
@@ -158,7 +168,7 @@ class ProjectsController < ApplicationController
         respond_with @project
       end
 
-      track_event 'Created project', @project.to_tracker
+      track_event event, @project.to_tracker
     else
       initialize_project
       render action: "new"

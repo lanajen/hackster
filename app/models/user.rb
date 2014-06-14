@@ -656,6 +656,7 @@ class User < ActiveRecord::Base
       project_views_count: project_views_count,
       respects_count: respects_count,
       skills_count: skill_tags_count,
+      social_provider: authorizations.first.try(:provider),
       username: user_name,
       websites_count: websites.values.reject{|v|v.nil?}.count,
     }
