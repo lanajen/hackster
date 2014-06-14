@@ -7,7 +7,7 @@
       %p
         - if @user.mini_resume.present?
           = @user.mini_resume
-        - elsif can? :update, @user
+        - elsif user_is_current?
           No mini resume.
           = link_to 'Add one?', profile_edit_path(@user)
       %p.user-categories
@@ -23,14 +23,17 @@
         #tech-follow-div.text-center
           = render partial: 'followers/button_text', locals: { followable: @user }
 
-    .display
-      %h4 Social links
-      #tech-websites
-        - if @user.websites.any?
+    - if @user.websites.any?
+      .display
+        %h4 Social links
+        #tech-websites
           %ul.websites.list-inline
             - @user.websites.select{|t,u| u.present? }.each do |type, url|
               %li= render partial: "shared/website", locals: { type: type, url: url }
-        - elsif can? :update, @user
+    - elsif user_is_current?
+      .display
+        %h4 Social links
+        #tech-websites
           %ul.websites.list-inline
             %li
               No websites.
