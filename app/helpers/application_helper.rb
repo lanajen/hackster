@@ -72,6 +72,8 @@ module ApplicationHelper
         msg = "Please log in or sign up to follow #{content_tag(:b, project.name)}."
       elsif user
         msg = "Please log in or sign up to follow #{content_tag(:b, user.name)}."
+      elsif group
+        msg = "Please log in or sign up to follow #{content_tag(:b, group.name)}."
       end
     when 'comment'
       if project
