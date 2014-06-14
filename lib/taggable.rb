@@ -31,7 +31,7 @@ module Taggable
             tags = #{tag_type}_string.split(',').map{ |s| s.strip }
             existing = #{tag_type}.pluck(:name)
             (tags - existing).each do |tag|
-              #{tag_type}.create name: tag
+              #{tag_type}.create(name: tag) if tag.present?
             end
             deleted = existing - tags
             #{tag_type}.where('tags.name IN (?)', deleted).destroy_all if deleted.any?

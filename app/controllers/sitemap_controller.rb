@@ -22,66 +22,68 @@ class SitemapController < ApplicationController
 
   private
     def get_sitemap_pages
-      @sitemap_pages = []
+      Rails.cache.fetch('sitemap', :expires_in => 1.hour) do
+        @sitemap_pages = []
 
-      @sitemap_pages << {
-        loc: root_url,
-        changefreq: 'daily',
-        lastmod: Time.now.strftime("%F"),
-      }
-
-      @sitemap_pages << {
-        loc: tools_url,
-        changefreq: 'daily',
-        lastmod: Time.now.strftime("%F"),
-      }
-
-      Project.indexable.find_each do |project|
         @sitemap_pages << {
-          loc: "#{url_for(project)}",
-          changefreq: 'weekly',
-          lastmod: project.updated_at.strftime("%F"),
+          loc: root_url,
+          changefreq: 'daily',
+          lastmod: Time.now.strftime("%F"),
         }
-      end
 
-      Tech.find_each do |tech|
         @sitemap_pages << {
-          loc: "#{tech_short_url(tech)}",
-          changefreq: 'weekly',
-          lastmod: tech.updated_at.strftime("%F"),
+          loc: tools_url,
+          changefreq: 'daily',
+          lastmod: Time.now.strftime("%F"),
         }
-      end
 
-      Monologue::Post.published.find_each do |post|
-        @sitemap_pages << {
-          loc: "http://#{APP_CONFIG['full_host']}#{post.full_url}",
-          changefreq: 'monthly',
-          lastmod: post.updated_at.strftime("%F"),
-        }
-      end
+        Project.indexable.find_each do |project|
+          @sitemap_pages << {
+            loc: "#{url_for(project)}",
+            changefreq: 'weekly',
+            lastmod: project.updated_at.strftime("%F"),
+          }
+        end
 
-      Project.external.find_each do |project|
-        @sitemap_pages << {
-          loc: "#{external_project_url(project)}",
-          changefreq: 'monthly',
-          lastmod: project.updated_at.strftime("%F"),
-        }
-      end
+        Tech.find_each do |tech|
+          @sitemap_pages << {
+            loc: "#{tech_short_url(tech)}",
+            changefreq: 'weekly',
+            lastmod: tech.updated_at.strftime("%F"),
+          }
+        end
 
-      User.invitation_accepted_or_not_invited.find_each do |user|
-        @sitemap_pages << {
-          loc: "#{url_for(user)}",
-          changefreq: 'weekly',
-          lastmod: user.updated_at.strftime("%F"),
-        }
-      end
+        Monologue::Post.published.find_each do |post|
+          @sitemap_pages << {
+            loc: "http://#{APP_CONFIG['full_host']}#{post.full_url}",
+            changefreq: 'monthly',
+            lastmod: post.updated_at.strftime("%F"),
+          }
+        end
 
-      ProductTag.unique_names.find_each do |tag|
-        @sitemap_pages << {
-          loc: "#{tags_url(CGI::escape(tag.name))}",
-          changefreq: 'weekly',
-          lastmod: tag.updated_at.strftime("%F"),
-        }
+        Project.external.find_each do |project|
+          @sitemap_pages << {
+            loc: "#{external_project_url(project)}",
+            changefreq: 'monthly',
+            lastmod: project.updated_at.strftime("%F"),
+          }
+        end
+
+        User.invitation_accepted_or_not_invited.find_each do |user|
+          @sitemap_pages << {
+            loc: "#{url_for(user)}",
+            changefreq: 'weekly',
+            lastmod: user.updated_at.strftime("%F"),
+          }
+        end
+
+        ProductTag.unique_names.find_each do |tag|
+          @sitemap_pages << {
+            loc: "#{tags_url(CGI::escape(tag.name))}",
+            changefreq: 'weekly',
+            lastmod: tag.updated_at.strftime("%F"),
+          }
+        end
       end
     end
 end
