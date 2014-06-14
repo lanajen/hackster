@@ -107,11 +107,15 @@ class ProjectsController < ApplicationController
   end
 
   def show_external
-    @project = Project.external.find_by_slug!(params[:slug]).decorate
+    @project = Project.external.find_by_id!(params[:id]).decorate
     impressionist_async @project, '', unique: [:session_hash]
     title @project.name
     meta_desc @project.one_liner
-    params[:blank_frame] = true
+  end
+
+  def redirect_external
+    @project = Project.external.find_by_slug!(params[:slug])
+    redirect_to external_project_path(@project), status: 301
   end
 
   def get_xframe_options

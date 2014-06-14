@@ -238,6 +238,10 @@ class Project < ActiveRecord::Base
     @force_basic_validation
   end
 
+  def guest_or_user_name
+    guest_name.presence || users.first.name
+  end
+
   def hidden?
     hide
   end

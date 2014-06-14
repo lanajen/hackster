@@ -28,11 +28,11 @@ module UrlHelper
   end
 
   def external_project_path project, opts={}
-    super project.user_name_for_url, project.slug, opts
+    super project.user_name_for_url, "#{project.id}-#{project.slug}", opts
   end
 
   def external_project_url project, opts={}
-    super project.user_name_for_url, project.slug, opts
+    super project.user_name_for_url, "#{project.id}-#{project.slug}", opts
   end
 
   def feedback_comments_path issue, opts={}

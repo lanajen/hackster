@@ -1,5 +1,8 @@
 %div{ class: "project-#{project.id}" }
   .thumb-vertical{ class: "col-xs-#{ defined?(col) ? col : 3 }" }
+    - ref = defined?(ref) ? ref : nil
+    - ref_id = defined?(ref_id) ? ref_id : nil
+    - offset = defined?(offset) ? offset : nil
     - if defined?(show_year)
       - if show_year
         %h4= project.start_date.try(:year) || 'Undated'

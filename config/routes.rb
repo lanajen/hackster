@@ -150,7 +150,8 @@ HackerIo::Application.routes.draw do
       patch 'widgets' => 'widgets#save'
     end
 
-    get 'projects/e/:user_name/:slug' => 'projects#show_external', as: :external_project
+    get 'projects/e/:user_name/:id' => 'projects#show_external', as: :external_project, id: /[0-9]+\-[A-Za-z0-9\-]+/
+    get 'projects/e/:user_name/:slug' => 'projects#redirect_external', as: :external_project_redirect  # legacy route (google has indexed them)
     get 'get_xframe_options' => 'projects#get_xframe_options'
 
     resources :assignments, only: [] do
