@@ -11,6 +11,9 @@
           - if project.guest_name.present?
             by
             %span.fake-link= project.guest_name
+          - elsif u = project.users.first
+            by
+            = link_to u.name, u
           on
           %span.fake-link= URI.parse(project.website).host.gsub(/^www\./, '')
         %p= truncate project.one_liner, length: 140

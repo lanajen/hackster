@@ -1026,3 +1026,10 @@ a.hidden-link {
     font-size: 12px;
   }
 }
+
+.has-error {
+  .btn {
+    border-color: #a94442;
+    color: #a94442;
+  }
+}

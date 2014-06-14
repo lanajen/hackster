@@ -49,21 +49,26 @@ class Project < ActiveRecord::Base
     :team_members_attributes, :website, :one_liner, :widgets_attributes,
     :featured, :featured_date, :cover_image_id, :logo_id, :license, :slug,
     :permissions_attributes, :new_slug, :slug_histories_attributes, :hide,
-    :collection_id, :graded, :wip, :columns_count, :external, :guest_name
+    :collection_id, :graded, :wip, :columns_count, :external, :guest_name,
+    :approved
   attr_accessor :current
   attr_writer :new_slug
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
     :widgets, :cover_image, :permissions, :slug_histories, allow_destroy: true
 
-  validates :name, presence: true
-  validates :name, length: { in: 3..100 }
+  validates :name, presence: true, length: { in: 3..100 }
   validates :one_liner, :logo, presence: true, if: proc { |p| p.force_basic_validation? }
   validates :one_liner, length: { maximum: 140 }
   validates :new_slug,
     format: { with: /\A[a-z0-9_\-]+\z/, message: "accepts only downcase letters, numbers, dashes '-' and underscores '_'." },
     length: { maximum: 105 }, allow_blank: true
   validates :new_slug, presence: true, if: proc{ |p| p.persisted? }
-  validates :website, presence: true, if: proc {|p| p.external }
+  with_options if: proc {|p| p.external } do |project|
+    project.validates :website, :one_liner, :cover_image, presence: true
+    project.before_save :external_is_hidden
+  end
+  validates :website, uniqueness: { message: 'has already been submitted' }
+  validates :guest_name, length: { minimum: 3 }, allow_blank: true
   validate :slug_is_unique
   before_validation :assign_new_slug
   before_validation :check_if_current
@@ -71,7 +76,6 @@ class Project < ActiveRecord::Base
   before_validation :ensure_website_protocol
   before_create :set_columns_count
   before_save :generate_slug, if: proc {|p| !p.persisted? or p.team_id_changed? }
-  before_save :external_is_hidden, if: proc {|p| p.external }
 
   taggable :product_tags, :tech_tags
 
@@ -103,6 +107,7 @@ class Project < ActiveRecord::Base
       indexes :private,         analyzer: 'keyword'
       indexes :hide,            analyzer: 'keyword'
       indexes :external,        analyzer: 'keyword'
+      indexes :approved,        analyzer: 'keyword'
       indexes :created_at
     end
   end
@@ -121,6 +126,7 @@ class Project < ActiveRecord::Base
       private: private,
       hide: hide,
       external: external,
+      approved: approved,
       created_at: created_at,
     }.to_json
   end
@@ -135,15 +141,15 @@ class Project < ActiveRecord::Base
   end
 
   def self.indexable
-    live.where(hide: false)
+    live.where(hide: false, approved: true)
   end
 
   def self.indexable_and_external
-    where("(projects.private = 'f' AND projects.hide = 'f') OR projects.external = 't'").magic_sort
+    where("(projects.private = 'f' AND projects.hide = 'f') OR (projects.external = 't' AND projects.approved = 't')").magic_sort
   end
 
   def self.live
-    where(private: false)
+    where(private: false, approved: true)
   end
 
   def self.last_created

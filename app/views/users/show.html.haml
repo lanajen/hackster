@@ -1,4 +1,3 @@
-
 %section#projects-list
   .wrapper
     .project-list-actions.clearfix.mg-30
@@ -23,14 +22,20 @@
               %h4.col-xs-12.thumb-horizontal= year
               - projects.each_with_index do |project, i|
                 - show_year = (i > 0) ? false : true
-                = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', show_year: show_year, ref: 'user', ref_id: @user.id, offset: i }
+                - if project.external
+                  = render partial: 'projects/project_thumb_external', locals: { project: project.decorate, col: '3', show_year: show_year, ref: 'user', ref_id: @user.id, offset: i }
+                - else
+                  = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', show_year: show_year, ref: 'user', ref_id: @user.id, offset: i }
       - else
         .thumb-list{ class: style }
           .row.project-list
             / %h4 &nbsp;
             - @public_projects_sorted.each do |year, projects|
               - projects.each_with_index do |project, i|
-                = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', ref: 'user', ref_id: @user.id, offset: i }
+                - if project.external
+                  = render partial: 'projects/project_thumb_external', locals: { project: project.decorate, col: '3', show_year: show_year, ref: 'user', ref_id: @user.id, offset: i }
+                - else
+                  = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', ref: 'user', ref_id: @user.id, offset: i }
 
     - elsif user_is_current?
       %p
@@ -51,7 +56,10 @@
         .thumb-list{ class: style }
           .row.project-list
             - @user.projects.private.each_with_index do |project, i|
-              = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', ref: 'userprivate', ref_id: @user.id, offset: i }
+              - if project.external
+                = render partial: 'projects/project_thumb_external', locals: { project: project.decorate, col: '3', show_year: show_year, ref: 'userprivate', ref_id: @user.id, offset: i }
+              - else
+                = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', ref: 'userprivate', ref_id: @user.id, offset: i }
 
       - elsif user_is_current?
         %p
@@ -67,7 +75,10 @@
       .thumb-list{ class: style }
         .row.project-list
           - @user.respected_projects.indexable.each_with_index do |project, i|
-            = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', ref: 'userrespected', ref_id: @user.id, offset: i }
+            - if project.external
+              = render partial: 'projects/project_thumb_external', locals: { project: project.decorate, col: '3', show_year: show_year, ref: 'userprivate', ref_id: @user.id, offset: i }
+            - else
+              = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', ref: 'userrespected', ref_id: @user.id, offset: i }
 
     - elsif user_is_current?
       %p

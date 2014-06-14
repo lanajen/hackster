@@ -140,13 +140,23 @@ class ProjectsController < ApplicationController
   end
 
   def create
-    @project.private = true
-    @project.build_team
-    @project.team.members.new(user_id: current_user.id)
+    unless @project.external
+      @project.approved = true
+      @project.private = true
+    end
+
+    if current_user
+      @project.build_team
+      @project.team.members.new(user_id: current_user.id)
+    end
 
     if @project.save
       flash[:notice] = "#{@project.name} was successfully created."
-      respond_with @project
+      if @project.external
+        redirect_to user_return_to, notice: "Thanks for your submission!"
+      else
+        respond_with @project
+      end
 
       track_event 'Created project', @project.to_tracker
     else

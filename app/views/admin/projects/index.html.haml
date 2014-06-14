@@ -29,7 +29,7 @@
             External
           - else
             = project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
-        %td= project.private? ? '<b>Private</b>'.html_safe : (project.hidden? ? 'Hidden' : 'Public')
+        %td= project.private? ? '<b>Private</b>'.html_safe : (project.hidden? ? (project.approved.nil? ? '<b>Needs approval</b>'.html_safe : 'Hidden') : 'Public')
         %td=l project.updated_at
         %td
           = link_to t('.edit', :default => t("helpers.links.edit")), edit_admin_project_path(project), :class => 'btn btn-default btn-xs'

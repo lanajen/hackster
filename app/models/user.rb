@@ -45,7 +45,7 @@ class User < ActiveRecord::Base
   has_many :hackathons, through: :events
   has_many :invitations, class_name: self.to_s, as: :invited_by
   has_many :permissions, as: :grantee
-  has_many :projects, through: :teams
+  has_many :projects, -> { where(guest_name: nil) }, through: :teams
   has_many :promotions, through: :group_ties, source: :group, class_name: 'Promotion'
   has_many :respects, as: :respecting, dependent: :destroy, class_name: 'Respect'
   has_many :respected_projects, through: :respects, source: :project

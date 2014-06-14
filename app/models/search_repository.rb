@@ -30,6 +30,7 @@ class SearchRepository
         filter :and, filters if filters.any?
         if include_external
           filter :or, [{ term: { private: false } }, { term: { external: true } }]
+          filter :term, approved: true
         else
           filter :term, private: false
           filter :term, hide: false

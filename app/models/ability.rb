@@ -11,6 +11,7 @@ class Ability
     can :read, [BlogPost, Issue, Page] do |thread|
       @user.can? :read, thread.threadable
     end
+    can :create, Project, external: true
 
     @user = resource
     @user.roles.each{ |role| send role }

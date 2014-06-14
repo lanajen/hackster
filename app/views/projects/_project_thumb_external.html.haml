@@ -1,16 +1,43 @@
-%div{ class: "project-#{project.id} col-xs-#{ defined?(col) ? col : 3 }" }
-  .project-thumb
-    .thumb
-      .photo-thumb
-        = link_to image_tag(project.cover_image(:cover_thumb), alt: project.name), external_project_path(project)
-        .thumb-top
-          .thumb-top-inner
-      .inner-thumb
-        %h3= link_to project.name, external_project_path(project)
-        %h4
-          - if project.guest_name.present?
-            by
-            %span.fake-link= project.guest_name
-          on
-          %span.fake-link= URI.parse(project.website).host.gsub(/^www\./, '')
-        %p= truncate project.one_liner, length: 140
+%div{ class: "project-#{project.id}" }
+  .thumb-vertical{ class: "col-xs-#{ defined?(col) ? col : 3 }" }
+    - if defined?(show_year)
+      - if show_year
+        %h4= project.start_date.try(:year) || 'Undated'
+      - else
+        .h4 &nbsp;
+    .project-thumb
+      .thumb
+        .photo-thumb
+          = link_to image_tag(project.cover_image(:cover_thumb), alt: project.name), external_project_path(project)
+          .thumb-top
+            .thumb-top-inner
+        .inner-thumb
+          %h3= link_to project.name, external_project_path(project)
+          %h4
+            - if project.guest_name.present?
+              by
+              %span.fake-link= project.guest_name
+            - elsif u = project.users.first
+              by
+              = link_to u.name, u
+            on
+            %span.fake-link= URI.parse(project.website).host.gsub(/^www\./, '')
+          %p= truncate project.one_liner, length: 140
+
+  .col-xs-12.thumb-horizontal
+    .project-thumb-horizontal.project-thumb
+      .thumb.media
+        = link_to image_tag(project.cover_image(:cover_thumb), alt: project.name, class: 'media-object'), external_project_path(project, ref: ref, ref_id: ref_id, offset: offset), class: 'pull-left photo-thumb'
+        .inner-thumb.media-body
+          %h3
+            = link_to project.name, external_project_path(project, ref: ref, ref_id: ref_id, offset: offset)
+            %small
+              - if project.guest_name.present?
+                by
+                %span.fake-link= project.guest_name
+              - elsif u = project.users.first
+                by
+                = link_to u.name, u
+              on
+              %span.fake-link= URI.parse(project.website).host.gsub(/^www\./, '')
+          %p= truncate project.one_liner, length: 140

@@ -95,7 +95,7 @@ class ApplicationController < ActionController::Base
     end
 
     def is_trackable_page?
-      @is_trackable_page ||= !(params[:controller].in? %w(users/sessions users/registrations users/confirmations users/omniauth_callbacks users/facebook_connections users/invitations users/authorizations devise/passwords) || params[:action] == 'after_registration' || request.method_symbol != :get || request.format != 'text/html')
+      @is_trackable_page ||= (!params[:controller].in?(%w(users/sessions users/registrations users/confirmations users/omniauth_callbacks users/facebook_connections users/invitations users/authorizations devise/passwords)) && params[:action] != 'after_registration' && request.method_symbol == :get && request.format == 'text/html')
     end
 
     def load_assignment

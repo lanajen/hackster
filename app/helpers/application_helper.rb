@@ -79,6 +79,11 @@ module ApplicationHelper
       if project
         msg = "Please log in or sign up to comment on #{content_tag(:b, project.name)}."
       end
+    when 'link'
+      msg = "Please log in or sign up to submit a link."
+      if group
+        msg = "Please log in or sign up to submit a link to #{content_tag(:b, group.name)}."
+      end
     end
     msg.html_safe
   end
