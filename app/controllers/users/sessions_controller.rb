@@ -1,6 +1,12 @@
 class Users::SessionsController < Devise::SessionsController
   before_filter :set_action, only: [:new, :create]
 
+  def new
+    track_event 'Visited log in page', { referrer: request.referrer }
+
+    super
+  end
+
   protected
     def after_sign_in_path_for(resource)
       track_alias

@@ -1,6 +1,12 @@
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   skip_before_filter :authenticate_user!
 
+  def passthru
+    track_event 'Connecting via social account', { referrer: request.referrer }
+
+    super
+  end
+
   def facebook
     oauthorize 'Facebook'
   end

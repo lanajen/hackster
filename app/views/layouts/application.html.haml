@@ -147,7 +147,15 @@
                     .dropdown-menu{:style => "padding: 15px; width: 250px;"}
                       = render 'devise/sessions/form'
                       %hr
-                      = link_to 'Connect with your social account', new_user_session_path(a: 'connect'), class: 'btn btn-black connect-social'
+                      -# = link_to 'Connect with your social account', new_user_session_path(a: 'connect'), class: 'btn btn-black connect-social'
+                      .social-icons.text-center
+                        %p.text-muted
+                          %small Or connect with your social account:
+                        = link_to 'Facebook', user_omniauth_authorize_url(:facebook), class: 'zocial icon facebook', tabindex: (defined?(autofocus) and autofocus ? 1 : nil)
+                        = link_to 'Github', user_omniauth_authorize_path(:github), class: 'zocial icon github'
+                        = link_to 'Google+', user_omniauth_authorize_path(:gplus), class: 'zocial icon googleplus'
+                        -# = link_to 'LinkedIn', user_omniauth_authorize_path(:linkedin), class: 'zocial icon linkedin'
+                        = link_to 'Twitter', user_omniauth_authorize_path(:twitter), class: 'zocial icon twitter'
               #navbar-search
                 = render 'shared/search_form'
 
