@@ -53,14 +53,15 @@
                         Read about this project on
                         = link_to URI.parse(@project.website).host.gsub(/^www\./, ''), @project.website, target: '_blank'
 
-                      .team-widget.meta
-                        .meta-title
-                          Hacker
-                        - if @project.guest_name.present?
-                          .user
-                            = @project.guest_name
-                        - else
-                          = render partial: 'users/line_thumb', locals: { member: @project.team.active_members.includes(:user).first }
+                      - if @project.guest_name.present? or member = @project.team.try(:active_members).try(:includes, :user).try(:first)
+                        .team-widget.meta
+                          .meta-title
+                            Hacker
+                          - if @project.guest_name.present?
+                            .user
+                              = @project.guest_name
+                          - elsif member
+                            = render partial: 'users/line_thumb', locals: { member: member }
 
                       - if @project.tech_tags.any?
                         .tags.meta

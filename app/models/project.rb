@@ -239,7 +239,7 @@ class Project < ActiveRecord::Base
   end
 
   def guest_or_user_name
-    guest_name.presence || users.first.name
+    guest_name.presence || users.first.try(:name)
   end
 
   def hidden?
