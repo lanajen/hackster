@@ -6,6 +6,8 @@ class Admin::PagesController < Admin::BaseController
     title "Admin / Analytics"
 
     @project_count = Project.indexable.count
+    @external_project_count = Project.external.approved.count
+    @waiting_for_approval_project_count = Project.external.approval_needed.count
     @comment_count = Comment.where(commentable_type: 'Project').count
     @like_count = Respect.count
     @follow_count = FollowRelation.count

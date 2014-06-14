@@ -24,13 +24,13 @@
             = user.live_projects_count
           %span.counter.istooltip{ title: 'Profile views' }
             %i.fa.fa-eye
-            = user.impressions_count
+            = number_with_delimiter user.impressions_count
           %span.counter.istooltip{ title: 'Project views' }
             %i.fa.fa-eye
-            = user.project_views_count
-          %span.counter.istooltip{ title: 'Respected projects' }
+            = number_with_delimiter user.project_views_count
+          %span.counter.istooltip{ title: 'Respects received', data: { container: 'body' } }
             %i.fa.fa-thumbs-o-up
-            = user.respects_count
-          %span.counter.istooltip{ title: 'Comments', data: { container: 'body' } }
+            = user.project_respects_count
+          -# %span.counter.istooltip{ title: 'Comments', data: { container: 'body' } }
             %i.fa.fa-comments
             = user.comments_count

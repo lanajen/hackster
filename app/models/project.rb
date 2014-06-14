@@ -132,6 +132,14 @@ class Project < ActiveRecord::Base
   end
   # end of search methods
 
+  def self.approved
+    where(approved: true)
+  end
+
+  def self.approval_needed
+    where(approved: nil)
+  end
+
   def self.external
     where(external: true)
   end
@@ -141,7 +149,7 @@ class Project < ActiveRecord::Base
   end
 
   def self.indexable
-    live.where(hide: false, approved: true)
+    live.where(hide: false)
   end
 
   def self.indexable_and_external

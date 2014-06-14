@@ -76,6 +76,17 @@
         = @users_with_at_least_one_live_project
         %small.text-muted (#{(@users_with_at_least_one_live_project.to_f / @user_count * 100).ceil}%)
 
+  .col-xs-4
+    .panel.panel-default.panel-dashboard
+      .panel-heading
+        %h3.panel-title Live external projects
+      .panel-body= @external_project_count
+
+    .panel.panel-default.panel-dashboard
+      .panel-heading
+        %h3.panel-title Projects waiting for approval
+      .panel-body= @waiting_for_approval_project_count
+
 .row
   .col-xs-6
     #chart_new_projects= image_tag 'loader.gif'
