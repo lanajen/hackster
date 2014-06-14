@@ -107,7 +107,7 @@ class Project < ActiveRecord::Base
       indexes :private,         analyzer: 'keyword'
       indexes :hide,            analyzer: 'keyword'
       indexes :external,        analyzer: 'keyword'
-      # indexes :approved,        analyzer: 'keyword'
+      indexes :approved,        analyzer: 'keyword'
       indexes :created_at
     end
   end
@@ -126,19 +126,19 @@ class Project < ActiveRecord::Base
       private: private,
       hide: hide,
       external: external,
-      # approved: approved,
+      approved: approved,
       created_at: created_at,
     }.to_json
   end
   # end of search methods
 
-  # def self.approved
-  #   where(approved: true)
-  # end
+  def self.approved
+    where(approved: true)
+  end
 
-  # def self.approval_needed
-  #   where(approved: nil)
-  # end
+  def self.approval_needed
+    where(approved: nil)
+  end
 
   def self.external
     where(external: true)
@@ -153,13 +153,11 @@ class Project < ActiveRecord::Base
   end
 
   def self.indexable_and_external
-    # where("(projects.private = 'f' AND projects.hide = 'f') OR (projects.external = 't' AND projects.approved = 't')").magic_sort
-    where("(projects.private = 'f' AND projects.hide = 'f') OR (projects.external = 't')").magic_sort
+    where("(projects.private = 'f' AND projects.hide = 'f') OR (projects.external = 't' AND projects.approved = 't')").magic_sort
   end
 
   def self.live
-    # where(private: false, approved: true)
-    where(private: false)
+    where(private: false, approved: true)
   end
 
   def self.last_created

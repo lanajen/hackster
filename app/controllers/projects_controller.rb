@@ -154,7 +154,7 @@ class ProjectsController < ApplicationController
     if @project.external
       event = 'Submitted link'
     else
-      # @project.approved = true
+      @project.approved = true
       @project.private = true
       event = 'Created project'
     end
