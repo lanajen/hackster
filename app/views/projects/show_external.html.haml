@@ -58,8 +58,13 @@
                           .meta-title
                             Hacker
                           - if @project.guest_name.present?
-                            .user
+                            .user.pull-left
                               = @project.guest_name
+                            .pull-right
+                              %small
+                                Is this you?
+                                = link_to 'Claim this project', claim_project_path(@project), data: { method: :post }
+                            .clearfix
                           - elsif member
                             = render partial: 'users/line_thumb', locals: { member: member }
 
@@ -106,5 +111,6 @@
                           %strong= number_with_delimiter @project.respects_count
                           = pluralize_without_count @project.respects_count, 'respect'
                         %ul.text-center.list-unstyled.list-inline
+                          -# "Don't forget to respect this project if you liked it!"
                           %li= render 'projects/share'
                           %li= render partial: 'respects/button', locals: { project: @project }

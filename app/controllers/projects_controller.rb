@@ -111,11 +111,24 @@ class ProjectsController < ApplicationController
     impressionist_async @project, '', unique: [:session_hash]
     title @project.name
     meta_desc @project.one_liner
+    track_event 'Viewed project', @project.to_tracker.merge({ own: !!current_user.try(:is_team_member?, @project) })
   end
 
   def redirect_external
     @project = Project.external.find_by_slug!(params[:slug])
     redirect_to external_project_path(@project), status: 301
+  end
+
+  def claim_external
+    @project = Project.external.find_by_id!(params[:id]).decorate
+
+    @project.build_team
+    @project.team.members.new(user_id: current_user.id)
+    # @project.guest_name = nil
+    @project.approved = nil
+    @project.save
+
+    redirect_to external_project_path(@project), notice: "You just claimed #{@project.name}. We'll let you know when it's approved!"
   end
 
   def get_xframe_options

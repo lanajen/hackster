@@ -279,6 +279,7 @@ class Project < ActiveRecord::Base
   def to_tracker
     {
       comments_count: comments_count,
+      external: external,
       has_logo: logo.present?,
       is_featured: featured,
       is_public: public?,
