@@ -63,7 +63,10 @@
                             .pull-right
                               %small
                                 Is this you?
-                                = link_to 'Claim this project', claim_project_path(@project), data: { method: :post }
+                                - if user_signed_in?
+                                  = link_to 'Claim this project', claim_project_path(@project), data: { method: :post }
+                                - else
+                                  = link_to 'Claim this project', new_user_registration_path(reason: 'claim', m: 'project', id: @project.id)
                             .clearfix
                           - elsif member
                             = render partial: 'users/line_thumb', locals: { member: member }

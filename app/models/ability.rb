@@ -50,6 +50,8 @@ class Ability
       record.visible_to? @user
     end
 
+    can :claim, Project
+
     can :join, Group do |group|
       (member = @user.is_member?(group) and member.invitation_pending?) or case group.access_level
       when 'anyone'

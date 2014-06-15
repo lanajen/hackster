@@ -121,6 +121,7 @@ class ProjectsController < ApplicationController
 
   def claim_external
     @project = Project.external.find_by_id!(params[:id]).decorate
+    authorize! :claim, @project
 
     @project.build_team
     @project.team.members.new(user_id: current_user.id)

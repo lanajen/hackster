@@ -84,6 +84,8 @@ module ApplicationHelper
       if group
         msg = "Please log in or sign up to submit a link to #{content_tag(:b, group.name)}."
       end
+    when 'claim'
+      msg = "Please log in or sign up to claim #{content_tag(:b, project.name)}."
     end
     msg.html_safe
   end
