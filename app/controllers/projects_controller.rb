@@ -1,6 +1,6 @@
 class ProjectsController < ApplicationController
   before_filter :load_project, only: [:show, :embed, :update, :destroy, :redirect_old_show_route]
-  load_and_authorize_resource only: [:index, :create, :new, :edit]
+  load_and_authorize_resource only: [:index, :edit]
   layout 'project', only: [:edit, :update, :show]
   respond_to :html
   respond_to :js, only: [:edit, :update]
@@ -148,6 +148,10 @@ class ProjectsController < ApplicationController
   end
 
   def new
+    # somehow load_and_authorize_resource loads a model with external = true
+    @project = Project.new params[:project]
+    authorize! :create, @project
+
     initialize_project
     event = if @project.external
       'Attempted to submit a link'
@@ -158,13 +162,11 @@ class ProjectsController < ApplicationController
     track_event event
   end
 
-  def edit
-    authorize! :update, @project
-
-    initialize_project
-  end
-
   def create
+    # somehow load_and_authorize_resource loads a model with external = true
+    @project = Project.new params[:project]
+    authorize! :create, @project
+
     if @project.external
       event = 'Submitted link'
     else
@@ -191,6 +193,10 @@ class ProjectsController < ApplicationController
       initialize_project
       render action: "new"
     end
+  end
+
+  def edit
+    initialize_project
   end
 
   def update
