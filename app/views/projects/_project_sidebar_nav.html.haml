@@ -1,15 +1,5 @@
 #sidebar-container.project-pages-sidebar.affixTranslate
   %section#sidebar-container-in
-    - if can? :edit, @project
-      .edit-project-trigger
-        %button.js-edit-project.btn.btn-black.edit-project-btn
-          .inner-project-btn
-            Edit Project
-          %span.fa.fa-edit.inner-project-btn-icon
-        %button.js-save-project.btn.btn-dark.save-project-btn
-          .inner-project-btn
-            Save Project
-          %span.fa.fa-check.inner-project-btn-icon
     #project-actions.clearfix
       - if @project.public?
         /= render 'projects/share'
@@ -27,11 +17,11 @@
               %i.fa.fa-home
           - @project.sections.each do |section|
             %li
-              %a.scroll-nav-item.scroll.clearfix{ :href => section.id, :data => { target: section.id, offset: '0'}}
+              %a.scroll-nav-item.scroll.clearfix{ :href => '#'+section.id, :data => { target: '#'+section.id, offset: '-20'}}
                 %i.fa{ class: section.icon }
                 = section.name
           %li
-            %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-comments", :data => { target: "#widget-comments", offset: '0'}}
+            %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-comments", :data => { target: "#widget-comments", offset: '-20'}}
               Comments
               %span.comment-count
                 (

@@ -69,6 +69,16 @@
             .tags.meta
               No tags yet.
               = link_to 'Add some?', edit_project_path(@project), data: { remote: true }
+          - if can? :edit, @project
+            .edit-project-trigger
+              %button.js-edit-project.btn.btn-black.edit-project-btn
+                .inner-project-btn
+                  Edit Project
+                %span.fa.fa-edit.inner-project-btn-icon
+              %button.js-save-project.btn.btn-dark.save-project-btn
+                .inner-project-btn
+                  Save Project
+                %span.fa.fa-check.inner-project-btn-icon
     %span.fa.fa-chevron-down.trigger-main-project-scroll.js-scroll-main-project
     #project-team
       .team-widget.pull-left
