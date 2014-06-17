@@ -4,12 +4,12 @@
       .header
         %h2= section.name
       - @widgets_by_section[section.index].each do |widget|
-        = render partial: 'widgets/widget', locals: { widget: widget }
+        = render 'widgets/widget', { widget: widget, f: f }
 
 #more-info.project-section
   .header
     %h2 Metadata
-    
+
   -# include respect and share button
 
   .clearfix.project-details

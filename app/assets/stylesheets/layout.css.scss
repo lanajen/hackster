@@ -1141,12 +1141,15 @@ a.hidden-link {
   resize: vertical;
 }
 .wysihtml5-textarea{
-  font-size: 16px;
+  font-size: 14px;
   padding: 9px 12px;
   width: 100%;
   resize: vertical;
   border: 1px solid #d8d8d8;
   @include border-radius(3px);
+}
+.wysihtml5-sandbox{
+  min-height: 400px;
 }
 
 
