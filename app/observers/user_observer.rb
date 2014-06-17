@@ -48,7 +48,14 @@ class UserObserver < ActiveRecord::Observer
     record.interest_tags_count = record.interest_tags_string.split(',').count
     record.skill_tags_count = record.skill_tags_string.split(',').count
 
-    expire record
+
+    if (record.changed && %w(full_name user_name avatar slug)).any?
+      Cashier.expire "user-#{record.id}-teaser"
+    end
+
+    if (record.changed & %w(full_name logo mini_resume slug user_name forums_link documentation_link crowdfunding_link buy_link twitter_link facebook_link linked_in_link blog_link github_link website_link youtube_link google_plus_link city country state)).any? or record.interest_tags_string_changed? or record.skill_tags_string_changed?
+      Cashier.expire "user-#{record.id}-sidebar"
+    end
   end
 
   def before_create record
@@ -64,6 +71,5 @@ class UserObserver < ActiveRecord::Observer
     end
 
     def expire record
-      Cashier.expire *record.projects.map{|p| "project-#{p.id}-teaser" }
     end
 end

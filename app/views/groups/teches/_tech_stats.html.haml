@@ -1,0 +1,6 @@
+%p
+  %i.fa.fa-lock.istooltip{ title: 'Only admins can see this', data: { container: 'body' } }
+  %strong= number_with_delimiter @tech.followers_count
+  = pluralize_without_count @tech.followers_count, 'follower'
+  %strong= number_with_delimiter @tech.impressions_count
+  = pluralize_without_count @tech.impressions_count, 'view'

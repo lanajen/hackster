@@ -11,35 +11,16 @@ class PagesController < ApplicationController
   end
 
   def home
-    # if user_signed_in?
-      # render_options = { template: 'pages/home_signed_in' }
-      limit = 4
+    limit = 4
 
-      @most_popular_projects = Project.indexable.most_popular.limit limit
-      @last_projects = Project.indexable.last_public.limit limit
-      # @active_projects = Project.last_updated.limit 4
-      @featured_projects = Project.featured.limit 4
-      @wip_projects = Project.wip.limit 4
-      @tools = Tech.where(user_name: %w(spark electric-imp arduino raspberry-pi beagleboard teensy)).order(:full_name)
+    @most_popular_projects = Project.indexable.most_popular.limit limit
+    @last_projects = Project.indexable.last_public.limit limit
+    # @active_projects = Project.last_updated.limit 4
+    @featured_projects = Project.featured.limit 4
+    # @wip_projects = Project.wip.limit 4
+    @tools = Tech.where(user_name: %w(spark electric-imp arduino raspberry-pi beagleboard teensy)).order(:full_name)
 
-      event = 'Visited home page'
-    # else
-    #   render_options = { template: 'pages/home_visitor', layout: 'home_visitor' }
-    #   limit = 6
-    #   event = 'Visited home page as visitor'
-    #   @most_popular_projects = Project.magic_sort.limit limit
-    # end
-
-
-    # @top_users = User.top.limit(4)
-#    if user_signed_in?
-#      @custom_projects_query = current_user.interest_tags.pluck(:name).join(' OR ')
-#      @custom_projects = @custom_projects_query.present? ? SearchRepository.new(query: @custom_projects_query, model: { project: 1 }, size: 4).search.results : []
-#    end
-
-    # render render_options
-
-    track_event event
+    track_event 'Visited home page'
   end
 
   def infringement_policy

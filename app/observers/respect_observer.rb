@@ -16,6 +16,7 @@ class RespectObserver < ActiveRecord::Observer
   private
     def update_counters record
       record.project.update_counters only: [:respects], solo_counters: true
+      Cashier.expire "project-#{record.project_id}-thumb"
       record.respecting.update_counters only: [:respects] if record.respecting.class == User
     end
 end
