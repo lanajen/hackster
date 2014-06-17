@@ -1,10 +1,10 @@
 #two-columns
   #column1.col-xs-6
-    - cache [@project.widgets.first_column, can?(:edit, @project)], tag: "project-#{@project.id}-widgets" do
+    - cache_if @project.public?, ["project-#{@project.id}-widgets", "two-columns-one", can?(:edit, @project)], tag: ["project-#{@project.id}-widgets"] do
       - @project.widgets.first_column.each do |widget|
         = render partial: 'widgets/widget', locals: { widget: widget }
   #column2.col-xs-6
-    - cache [@project.widgets.second_column, can?(:edit, @project)], tag: "project-#{@project.id}-widgets" do
+    - cache_if @project.public?, ["project-#{@project.id}-widgets", "two-columns-one", can?(:edit, @project)], tag: ["project-#{@project.id}-widgets"] do
       - @project.widgets.second_column.each do |widget|
         = render partial: 'widgets/widget', locals: { widget: widget }
     - unless @project.respects_count.zero?

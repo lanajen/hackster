@@ -1,7 +1,8 @@
 class RespectObserver < ActiveRecord::Observer
   def after_create record
     update_counters record
-    if record.respecting.class == User
+    case record.respecting
+    when User
       BaseMailer.enqueue_email 'new_respect_notification',
           { context_type: 'respect', context_id: record.id }
       record.respecting.broadcast :new, record.id, 'Respect', record.project_id
@@ -16,6 +17,10 @@ class RespectObserver < ActiveRecord::Observer
   private
     def update_counters record
       record.project.update_counters only: [:respects], solo_counters: true
-      record.respecting.update_counters only: [:respects] if record.respecting.class == User
+      case record.respecting
+      when User
+        Cashier.expire "project-#{record.project_id}-respects"
+        record.respecting.update_counters only: [:respects]
+      end
     end
 end

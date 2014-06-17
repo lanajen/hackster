@@ -1,6 +1,6 @@
 #one-column
   #column1.col-xs-9
-    - cache [@project.widgets, can?(:edit, @project)], tag: "project-#{@project.id}-widgets" do
+    - cache_if @project.public?, ["project-#{@project.id}-widgets", "one-column", can?(:edit, @project)], tag: ["project-#{@project.id}-widgets"] do
       - @project.widgets.each do |widget|
         = render partial: 'widgets/widget', locals: { widget: widget }
     - unless @project.respects_count.zero?

@@ -4,6 +4,8 @@
       Users who respect this project
       = render partial: 'respects/button', locals: { project: @project }
   .content.row
-    - users.each do |user|
-      .col-xs-2.respect-thumb
-        = link_to image_tag(user.decorate.avatar(:thumb), class: 'img-responsive'), user, data: { container: 'body' }, rel: 'tooltip', title: user.name
+    - cache ["project-#{@project.id}-respects", 'users'], tag: ["project-#{@project.id}-respects"] do
+      - users.each do |user|
+        - cache ["user-#{user.id}-thumb", 'respect'], tag: ["user-#{user.id}-thumb"] do
+          .col-xs-2.respect-thumb
+            = link_to image_tag(user.decorate.avatar(:thumb), class: 'img-responsive'), user, data: { container: 'body' }, rel: 'tooltip', title: user.name

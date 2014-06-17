@@ -20,7 +20,8 @@ class FollowRelationObserver < ActiveRecord::Observer
   def after_destroy record
     update_counters record
     Broadcast.where(context_model_id: record.id, context_model_type: 'FollowRelation').destroy_all
-    if record.followable_type == 'Group'
+    case record.followable_type
+    when 'Group'
       Cashier.expire "user-#{record.user_id}-sidebar"
     end
   end

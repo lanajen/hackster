@@ -54,11 +54,6 @@
       .thumb-list{ class: style }
         .row.project-list
           - @projects.each do |project|
-            = content_for :js do
-              :javascript
-                text = "#{escape_javascript render(partial: 'respects/button_featured', locals: { project: project } )}";
-                $(text).appendTo($('.project-#{project.id} .project-thumb .thumb-top-inner'));
-
             - if project.external
               = render partial: 'projects/project_thumb_external', locals: { project: project.decorate }
             - else
@@ -71,3 +66,10 @@
             This technology isn't in use yet!
             - if @tech.tech_tags.any?
               = link_to "Create the first #{@tech.name} project", new_project_path(project: { tech_tags_string: @tech.tech_tags.first.name }), class: 'btn btn-primary btn-sm'
+
+- if can? :manage, @tech
+  - @projects.each do |project|
+    = content_for :js do
+      :javascript
+        text = "#{escape_javascript render(partial: 'respects/button_featured', locals: { project: project } )}";
+        $(text).appendTo($('.project-#{project.id} .project-thumb .thumb-top-inner'));
