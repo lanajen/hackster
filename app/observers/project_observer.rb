@@ -61,7 +61,7 @@ class ProjectObserver < ActiveRecord::Observer
       Cashier.expire "project-#{record.id}-teaser"
     end
 
-    if (record.changed & %w(name guest_name cover_image one_liner private wip start_date slug)).any?
+    if (record.changed & %w(name guest_name cover_image one_liner private wip start_date slug respects_count comments_count)).any?
       Cashier.expire "project-#{record.id}-thumb"
     end
 

@@ -31,7 +31,6 @@ class CommentObserver < ActiveRecord::Observer
       if record.commentable.class == Project
         record.commentable.update_counters only: [:comments]
         record.user.update_counters only: [:comments] if record.user
-        Cashier.expire "project-#{record.commentable_id}-thumb"
       end
     end
 end

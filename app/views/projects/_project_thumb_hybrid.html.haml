@@ -1,4 +1,4 @@
-- cache "project-#{project.id}-thumb", tag: (["project-#{project.id}-thumb", "team-#{project.team_id}"] + project.users.map{|u| "user-#{u.id}-thumb"}), expires_in: 1.hour do
+- cache "project-#{project.id}-thumb", tag: ["project-#{project.id}-thumb", "team-#{project.team_id}", "team-#{project.team_id}-user-thumbs"], expires_in: 1.hour do
   %div{ class: "project-#{project.id}" }
     .thumb-vertical{ class: "col-xs-#{ defined?(col) ? col : 3 }" }
       - ref = defined?(ref) ? ref : nil

@@ -64,7 +64,7 @@
   .row.teaser
     .col-xs-12
       .well
-        - cache [@project, 'teaser', can?(:edit, @project), can?(:debug, @project)], tag: (["project-#{@project.id}-teaser", "team-#{@project.team_id}"] + @project.users.map{|u| "user-#{u.id}-thumb"}) do
+        - cache [@project, 'teaser', can?(:edit, @project), can?(:debug, @project)], tag: ["project-#{@project.id}-teaser", "team-#{@project.team_id}", "team-#{@project.team_id}-user-thumbs"] do
           .row
             .col-xs-8{ style: 'padding-right: 0;'}
               = image_tag @project.cover_image, alt: @project.name, class: 'cover-image'

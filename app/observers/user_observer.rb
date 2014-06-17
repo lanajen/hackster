@@ -50,7 +50,9 @@ class UserObserver < ActiveRecord::Observer
 
 
     if (record.changed && %w(full_name user_name avatar slug)).any?
-      Cashier.expire "user-#{record.id}-teaser"
+      keys = ["user-#{record.id}-teaser", "user-#{record.id}-thumb"]
+      record.teams.each{|t| keys << "team-#{t.id}-user-thumbs" }
+      Cashier.expire *keys
     end
 
     if (record.changed & %w(full_name logo mini_resume slug user_name forums_link documentation_link crowdfunding_link buy_link twitter_link facebook_link linked_in_link blog_link github_link website_link youtube_link google_plus_link city country state)).any? or record.interest_tags_string_changed? or record.skill_tags_string_changed?
