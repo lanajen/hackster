@@ -9,8 +9,10 @@ class TechObserver < ActiveRecord::Observer
 
   def before_save record
     if (record.changed & %w(full_name logo mini_resume slug private_projects_count projects_count user_name)).any?
-      Cashier.expire "tech-#{record.id}-thumb"
+      Cashier.expire "tech-#{record.id}-thumb", 'tech-index'
     end
+
+    expire_index if record.private_changed?
 
     if (record.changed & %w(cover_image)).any?
       Cashier.expire "tech-#{record.id}-cover"
@@ -25,4 +27,17 @@ class TechObserver < ActiveRecord::Observer
       Cashier.expire "tech-#{record.id}-sidebar"
     end
   end
+
+  def after_create record
+    expire_index
+  end
+
+  def after_destroy record
+    expire_index
+  end
+
+  private
+    def expire_index
+      Cashier.expire 'tech-index'
+    end
 end

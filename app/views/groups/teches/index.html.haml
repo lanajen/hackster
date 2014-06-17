@@ -1,10 +1,11 @@
-.content
-  .row
-    .col-xs-12
-      %h1
-        Explore tools
-      %hr
+- cache 'tech-index', tag: ['tech-index'], expires_in: 24.hours do
+  .content
+    .row
+      .col-xs-12
+        %h1
+          Explore tools
+        %hr
 
-  .row
-    - @teches.each do |tech|
-      = render partial: 'groups/teches/tech_thumb', locals: { tech: tech }
+    .row
+      - @teches.each do |tech|
+        = render partial: 'groups/teches/tech_thumb', locals: { tech: tech }
