@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_filter :authenticate_user!, except: [:show]
+  before_filter :authenticate_user!, except: [:show, :index]
   before_filter :load_user, only: [:show]
   authorize_resource except: [:after_registration, :after_registration_save]
   layout 'user', only: [:edit, :update, :show]
