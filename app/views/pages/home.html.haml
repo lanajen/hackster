@@ -4,14 +4,14 @@
   = auto_discovery_link_tag :atom, projects_path(format: :atom), title: 'Most recent projects - Hackster.io'
 
 = content_for :no_container do
-  - cache 'home', expires_in: 10.minutes do
-    .alert.alert-info.text-center.alert-flat
-      = SLOGAN
-      - unless user_signed_in?
-        = link_to 'Join us', new_user_registration_path, class: 'btn btn-sm btn-info'
-        or
-        = link_to 'learn more.', about_path, class: 'alert-link'
+  .alert.alert-info.text-center.alert-flat
+    = SLOGAN
+    - unless user_signed_in?
+      = link_to 'Join us', new_user_registration_path, class: 'btn btn-sm btn-info'
+      or
+      = link_to 'learn more.', about_path, class: 'alert-link'
 
+  - cache 'home', expires_in: 10.minutes do
     #content
       .container
         .row
