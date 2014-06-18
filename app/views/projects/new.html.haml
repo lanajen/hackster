@@ -94,9 +94,9 @@
         %strong Is there an existing web page for this project?
         Enter the URL below and we'll import it.
 
-      = form_tag submit_project_imports_path, method: :post do
+      = form_tag project_imports_path, method: :post do
         .form-group
-          = text_field_tag :url, params[:url], placeholder: 'Project log URL', class: 'form-control'
+          = text_field_tag :urls, params[:urls], placeholder: 'Project log URL', class: 'form-control'
           = hidden_field_tag :tech_tags_string, params[:project].try(:[], :tech_tags_string)
           = hidden_field_tag :product_tags_string, params[:project].try(:[], :product_tags_string)
         = submit_tag 'Import project', class: 'btn btn-primary btn-block'
