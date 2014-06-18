@@ -93,6 +93,7 @@
       %p.text-center
         %strong Is there an existing web page for this project?
         Enter the URL below and we'll import it.
+        %small= link_to 'More than one page?', new_project_import_path
 
       = form_tag project_imports_path, method: :post do
         .form-group
