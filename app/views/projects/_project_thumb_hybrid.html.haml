@@ -4,7 +4,7 @@
 - show_year = defined?(show_year) ? show_year : nil
 - show_year = show_year ? 'year' : 'placeholder' unless show_year.nil?
 
-.project-thumb-container{ data: { ref: ref, ref_id: ref_id, offset: offset, show_year: show_year }}
+.project-thumb-container{ data: { ref: ref, ref_id: ref_id, offset: offset, show_year: show_year }, class: "#{'has-data' if ref}"}
   - cache "project-#{project.id}-thumb", tag: ["project-#{project.id}-thumb", "team-#{project.team_id}", "team-#{project.team_id}-user-thumbs", 'project-thumb'], expires_in: 6.hours do
     %div{ class: "project-#{project.id}" }
       .thumb-vertical{ class: "col-xs-#{ defined?(col) ? col : 3 }" }

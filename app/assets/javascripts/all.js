@@ -125,7 +125,7 @@ $(document).ready(function(){
   });
 
   // update thumbnail links for projects
-  $(".project-thumb-container").each(function(i, project){
+  $(".project-thumb-container.has-data").each(function(i, project){
     project = $(project);
     ref = project.data('ref');
     refId = project.data('ref-id');
