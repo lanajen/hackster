@@ -5,4 +5,8 @@ Tech.find_each do |tech|
   end
 end
 
+Respect.where(respecting_type: 'Group').each do |respect|
+  GroupRelation.where(project_id: respect.project_id, group_id: respect.respecting_id).first.feature!
+end
+
 User.where.not(user_name: nil).invitation_accepted_or_not_invited.update_all("subscriptions_mask = (subscriptions_mask + #{2**User::SUBSCRIPTIONS.keys.index('follow_tech_activity')})")

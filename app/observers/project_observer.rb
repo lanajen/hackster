@@ -60,7 +60,7 @@ class ProjectObserver < ActiveRecord::Observer
       end
     end
 
-    if record.approved_changed and record.approved == false
+    if record.approved_changed? and record.approved == false
       GroupRelation.where(project_id: record.id).destroy_all
     end
 
