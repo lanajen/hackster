@@ -42,11 +42,13 @@
           / - if can? :edit, @project
           /   = link_to 'Add a widget', new_project_widget_path(@project)
           - if @widgets.any?
-            - if false#can? :edit, @project
+            - if can? :edit, @project
               = simple_nested_form_for @project, url: project_path(@project), html: { class: 'update-project-form' } do |f|
-                = render 'projects/large_column', locals: { f: f}
+                %div
+                  = render 'projects/large_column', { f: f }
             - else
-              = render 'projects/large_column'
+              %div
+                = render 'projects/large_column'
 
 
 

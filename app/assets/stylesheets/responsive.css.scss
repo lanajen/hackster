@@ -5,11 +5,11 @@
   display: none!important;
 }
 
-@media only screen and (min-width: 500px) {
-
-}
-
 @media only screen and (min-width: 900px) {
+  // Globals
+  .slick-prev, .slick-next{
+    display: none;
+  }
   #sidebar-container{
     display: block;
     &:hover ~ #content-with-sidebar.project{
@@ -31,6 +31,7 @@
       -webkit-perspective: 1000;
     }
   }
+  // Project Pages
   .project-details{
     #project-header{
       h1{

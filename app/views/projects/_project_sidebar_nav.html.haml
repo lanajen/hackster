@@ -1,5 +1,15 @@
 #sidebar-container.project-pages-sidebar.affixTranslate
   %section#sidebar-container-in
+    / - if can? :edit, @project
+    /   .edit-project-trigger
+    /     %button.js-edit-project.btn.btn-black.edit-project-btn
+    /       .inner-project-btn
+    /         Edit Project
+    /       %span.fa.fa-edit.inner-project-btn-icon
+    /     %button.js-save-project.btn.btn-dark.save-project-btn
+    /       .inner-project-btn
+    /         Save Project
+    /       %span.fa.fa-check.inner-project-btn-icon
     #project-actions.clearfix
       - if @project.public?
         /= render 'projects/share'

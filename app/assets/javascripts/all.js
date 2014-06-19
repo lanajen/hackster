@@ -2,14 +2,7 @@
   $('input, textarea').placeholder();
 
   $(function(){
-    // if($('#wysihtml5-textarea').length){
-    //   var editor = new wysihtml5.Editor('wysihtml5-textarea', { // id of textarea element
-    //     toolbar:      'wysihtml5-toolbar', // id of toolbar element
-    //     stylesheets:  "#{ stylesheet_path('wysihtml5') }", // optional, css to style the editor's content
-    //     parserRules:  wysihtml5CustomParserRules, // defined in parser rules set
-    //     allowObjectResizing:  true // Whether the composer should allow the user to manually resize images, tables etc.
-    //   });
-    // }
+    console.log('/assets/wysihtml5.css');
     var $wysihtml5Inputs = $('.wysihtml5-textarea');
     if($wysihtml5Inputs.length){
       $wysihtml5Inputs.each(function(){
@@ -17,7 +10,7 @@
             count = id.split('-')[2];
         var editor = new wysihtml5.Editor(id, { // id of textarea element
           toolbar:      'wysihtml5-toolbar-'+count, // id of toolbar element
-          stylesheets:  "#{ stylesheet_path('wysihtml5') }", // optional, css to style the editor's content
+          stylesheets:  "/assets/wysihtml5.css", // optional, css to style the editor's content
           parserRules:  wysihtml5CustomParserRules, // defined in parser rules set
           allowObjectResizing:  true // Whether the composer should allow the user to manually resize images, tables etc.
         });

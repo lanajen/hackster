@@ -1,29 +1,3 @@
-- size = widget.images.size
-.image-widget.unselectable
-  .headline-image
-    - widget.images.each_with_index do |image, i|
-      .headline-image-inner{ class: "image-#{i} #{'first' if i == 0}", style: "#{'display:none;' unless i==0}" }
-        - if size > 1 and i > 0
-          .nav.nav-left{ data: { next: "image-#{i-1}" }}
-            .inner-nav
-              %i.fa.fa-arrow-left
-        %a{ href: "javascript:openLightBox(#{widget.id},#{i});" }
-          = image_tag image.file_url(:headline), class: "image-#{i} img-responsive"
-          - if image.title.present?
-            .caption-holder
-              = image.title
-        - if size > 1 and i+1 < size
-          .nav.nav-right{ data: { next: "image-#{i+1}" }}
-            .inner-nav
-              %i.fa.fa-arrow-right
-  - if size > 1
-    .scroller
-      .thumb-image
-        - widget.images.each_with_index do |image, i|
-          .thumb-image-inner{ class: "#{'first' if i == 0}"}
-            %a{ href: "javascript:openLightBox(#{widget.id},#{i});" }
-              = image_tag image.file_url(:thumb), class: "image-#{i} img-responsive #{'current' if i==0}", data: { target: "image-#{i}" }
-
 :javascript
   if (typeof(lightBoxImages) == 'undefined') {
     lightBoxImages = {};
@@ -40,3 +14,98 @@
         path: 'horizontal'
       });
    }
+
+- size = widget.images.size
+.project-show-item
+  .image-widget.unselectable
+    .headline-image
+      - widget.images.each_with_index do |image, i|
+        .headline-image-inner{ class: "image-#{i} #{'first' if i == 0}", style: "" }
+          %a{ href: "javascript:openLightBox(#{widget.id},#{i});" }
+            .gallery-img-div
+              .gallery-img{class: "image-#{i}", style: "background-image: url('#{image.file_url(:headline)}')"}
+                - if image.title.present?
+                  .caption-holder
+                    = image.title
+- if can? :edit, @project
+  - file_type = 'image'
+  /= render partial: 'shared/uploader/file_association', locals: { file_type: file_type, f: f }
+  .project-edit-item
+    .form-fields.image-gallery-form
+      %h3
+        Image Gallery
+      #sortable.sortable
+        .file-fields
+          - widget.images.each do |image|
+            = f.simple_fields_for :images, image, wrapper: false do |f_image|
+              .fields-column
+                .fields.clearfix
+                  = f_image.input :position, as: :hidden, input_html: { class: 'position' }
+                  = f_image.input :id, as: :hidden
+                  .img-holder
+                    = image_tag image.file_url(:thumb), class: 'handle img-responsive', title: 'Click, hold and drag to reorder'
+                  .img-deets-holder
+                    = f_image.input :title, placeholder: 'Image title', label: false, wrapper: false
+                    = f_image.link_to_remove 'DELETE <span class="fa fa-times"></span>'.html_safe, class: 'btn-delete', title: 'Delete'
+
+    = render partial: 'shared/uploader/file_drop', locals: { file_type: file_type, human_file_type: file_type }
+
+  = content_for :js do
+    :javascript
+      jQuery(function($) {
+        $(document).on('nested:fieldAdded', function(event){
+          var field = event.field;
+          field.addClass('new');
+          resetPositions();
+        });
+        $(document).on('nested:fieldRemoved', function(event){
+          var field = event.field;
+          field.addClass('deleted');
+          field.parent().hide();
+          resetPositions();
+        });
+      });
+
+      $(function() {
+        resetPositions();
+
+        $('#sortable')
+          .sortable({
+            items: '.fields-column',
+            cursor: 'move',
+            handle: '.handle'
+          })
+          .bind('sortstop', function(event, ui) {
+            resetPositions();
+          });
+      });
+
+      function resetPositions(){
+        $('#sortable .fields:not(".deleted")').each(function(i){
+          $('.position', this).val(i+1);
+        });
+      }
+
+      inputTpl = '<div class="fields-column"><div class="fields">';
+      inputTpl += '<div class="form-group hidden widget_images_position"><input class="hidden position" id="" name="[position]" type="hidden"></div>';
+      inputTpl += '<div class="form-group hidden widget_images_id"><input class="hidden" id="" name="[id]" type="hidden"></div>';
+      inputTpl += '<div class="img-holder">';
+      inputTpl +=   '<img class="handle img-responsive" title="Click, hold and drag to reorder">';
+      inputTpl +=   '<input id="" name="[_destroy]" type="hidden" value="false">';
+      inputTpl += '</div>';
+      inputTpl += '<div class="img-deets-holder"><input class="string optional form-control" id="" maxlength="255" name="[title]" placeholder="Image title" size="255" type="text"><a class="btn-delete remove_nested_fields" data-association="images" href="javascript:void(0)" title="Delete">&times;</a>';
+      inputTpl += '</div></div>';
+
+      #{ render partial: 'shared/uploader/form_template', locals: { file_type: file_type } }
+
+      #{ render partial: 'shared/uploader/file_drop_click' }
+
+      #{ render partial: 'shared/uploader/file_upload_functions', locals: { file_type: file_type } }
+
+      #{file_type}Functions.fileuploadDoneTypeSpecific = function(data, file){
+        input.find('img').attr('src', file.url.thumb);
+        input.appendTo('#sortable .file-fields');
+        resetPositions();
+      }
+
+      #{ render partial: 'shared/uploader/file_upload', locals: { file_type: file_type } }

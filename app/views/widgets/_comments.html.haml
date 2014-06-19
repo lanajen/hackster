@@ -4,7 +4,8 @@
     - sort_comments(comments).each do |comment|
       = render partial: 'comments/comment', locals: { comment: comment }
   - else
-    %p Be the first to comment!
+    .first-to-comment
+      Be the first to comment!
   - if user_signed_in?
     = render partial: 'comments/signed_in_form', locals: { commentable: commentable }
   - else
