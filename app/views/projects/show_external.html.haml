@@ -29,7 +29,7 @@
               - if @project.private?
                 %small
                   %i.fa.fa-lock.istooltip{ title: 'Private project', data: { container: 'body' } }
-              = link_to @project.name, @project, class: 'hidden-link'
+              = link_to @project.name, external_project_path(@project), class: 'hidden-link'
 
         .row.teaser
           .col-xs-12
