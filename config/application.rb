@@ -74,5 +74,7 @@ module HackerIo
       :user_name => "fansnextdoor",
       :password => "mod3pa55"
     }
+
+    config.middleware.use Rack::Attack
   end
 end

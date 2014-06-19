@@ -47,6 +47,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  before_filter :test
+
+  def test
+    # raise request.user_agent.inspect
+  end
+
   def not_found
     render_404 ActiveRecord::RecordNotFound.new
   end
