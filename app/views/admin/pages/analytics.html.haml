@@ -3,7 +3,7 @@
   = render_chart(@new_projects, 'chart_new_projects')
   = render_chart(@new_users, 'chart_new_users')
   = render_chart(@new_comments, 'chart_new_comments')
-  = render_chart(@new_respects, 'chart_new_respects')
+  = render_chart(@new_follows, 'chart_new_follows')
 
 .page-header
   %h1 Analytics
@@ -45,10 +45,13 @@
   .col-xs-4
     .panel.panel-default.panel-dashboard
       .panel-heading
-        %h3.panel-title Followers
+        %h3.panel-title Followers (users/techs)
       .panel-body
-        = @follow_count
-        %small.text-muted +#{@new_follows_count}
+        = @follow_user_count
+        %small.text-muted +#{@new_user_follows_count}
+        \/
+        = @follow_tech_count
+        %small.text-muted +#{@new_tech_follows_count}
 
 .row
   .col-xs-4
@@ -82,7 +85,7 @@
         %h3.panel-title Live external projects
       .panel-body= @external_project_count
 
-    .panel.panel-default.panel-dashboard
+    .panel.panel-default.panel-dashboard{ class: "#{'panel-danger' unless @waiting_for_approval_project_count.zero? }"}
       .panel-heading
         %h3.panel-title= link_to 'Projects waiting for approval', admin_projects_path(approval_needed: true)
       .panel-body= @waiting_for_approval_project_count
@@ -96,4 +99,4 @@
   .col-xs-6
     #chart_new_comments= image_tag 'loader.gif'
   .col-xs-6
-    #chart_new_respects= image_tag 'loader.gif'
+    #chart_new_follows= image_tag 'loader.gif'

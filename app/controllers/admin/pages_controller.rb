@@ -10,12 +10,14 @@ class Admin::PagesController < Admin::BaseController
     @waiting_for_approval_project_count = Project.external.approval_needed.count
     @comment_count = Comment.where(commentable_type: 'Project').count
     @like_count = Respect.count
-    @follow_count = FollowRelation.count
+    @follow_user_count = FollowRelation.where(followable_type: 'User').count
+    @follow_tech_count = FollowRelation.where(followable_type: 'Group').count
     @user_count = User.invitation_accepted_or_not_invited.count
     @new_projects_count = Project.indexable.where('projects.made_public_at > ?', Date.today).count
     @new_comments_count = Comment.where(commentable_type: 'Project').where('comments.created_at > ?', Date.today).count
     @new_likes_count = Respect.where('respects.created_at > ?', Date.today).count
-    @new_follows_count = FollowRelation.where('follow_relations.created_at > ?', Date.today).count
+    @new_user_follows_count = FollowRelation.where(followable_type: 'User').where('follow_relations.created_at > ?', Date.today).count
+    @new_tech_follows_count = FollowRelation.where(followable_type: 'Group').where('follow_relations.created_at > ?', Date.today).count
     @new_users_count = User.invitation_accepted_or_not_invited.where('users.created_at > ?', Date.today).count
 
     sql = "SELECT users.* FROM (SELECT members.user_id as user_id, COUNT(*) as count FROM members INNER JOIN groups ON groups.id = members.group_id INNER JOIN projects ON projects.team_id = groups.id WHERE projects.private = 'f' GROUP BY user_id) AS t1 INNER JOIN users ON users.id = t1.user_id WHERE t1.count > 1 ORDER BY t1.count DESC LIMIT 10;"
@@ -41,8 +43,8 @@ class Admin::PagesController < Admin::BaseController
     @new_comments = graph_with_dates_for sql, 'New comments', 'ColumnChart'
 
 
-    sql = "SELECT to_char(created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM respects WHERE date_part('days', now() - respects.created_at) < 30 GROUP BY date ORDER BY date;"
-    @new_respects = graph_with_dates_for sql, 'New respects', 'ColumnChart'
+    sql = "SELECT to_char(created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM follow_relations WHERE date_part('days', now() - follow_relations.created_at) < 30 AND follow_relations.followable_type = 'Group' GROUP BY date ORDER BY date;"
+    @new_follows = graph_with_dates_for sql, 'New follows', 'ColumnChart'
   end
 
   def build_logs
