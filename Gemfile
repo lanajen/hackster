@@ -55,7 +55,7 @@ gem 'omniauth-oauth2', '1.1.1'  # for omniauth-facebook, google, linkedin, githu
 # gem 'omniauth-openid', '1.0.0'
 gem 'omniauth-twitter', '1.0.1'
 gem 'pg', '0.17.0'
-gem 'premailer-rails', '1.6.0'
+gem 'premailer-rails', '1.7.0'
 gem 'protected_attributes', '1.0.7'
 gem 'pygments.rb', '0.5.4'
 gem 'rack-timeout', '0.0.4'

@@ -194,21 +194,7 @@ class Client::ProjectsController < Client::BaseController
 #       @project.build_logo unless @project.logo
 #       @project.build_cover_image unless @project.cover_image
 #     end
-  def get_projects
-    # TODO: below is SUPER hacky. Would be great to just separate featured projects from the rest
-    page = params[:page].try(:to_i) || 1
-    per_page = Project.per_page
-    @projects = current_tech.projects.indexable_and_external.includes(:respects).where(respects: { respecting_id: current_tech.id, respecting_type: 'Group' }).offset((page - 1) * per_page).limit(per_page)
-    if @projects.to_a.size < per_page
-      all_featured = current_tech.projects.indexable_and_external.includes(:respects).where(respects: { respecting_id: current_tech.id, respecting_type: 'Group' }).pluck(:id)
-      offset = (page - 1) * per_page
-      offset -= all_featured.size if @projects.to_a.size == 0
-      @projects += current_tech.projects.indexable_and_external.where.not(id: all_featured).offset(offset).limit(per_page - @projects.to_a.size)
+    def get_projects
+      @projects = current_tech.projects.visible.indexable_and_external.order('group_relations.workflow_state DESC').magic_sort.paginate(page: params[:page])
     end
-    total = current_tech.projects.indexable_and_external.size
-
-    @projects = WillPaginate::Collection.create(page, per_page, total) do |pager|
-      pager.replace(@projects.to_a)
-    end
-  end
 end

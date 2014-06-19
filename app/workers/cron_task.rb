@@ -18,11 +18,23 @@ class CronTask < BaseWorker
     Tech.find_each do |tech|
       tech.update_counters only: [:projects, :external_projects, :private_projects]
     end
-    self.class.perform_in 24.hours, 'compute_popularity'
   end
 
   def launch_cron
     update_mailchimp_list
+  end
+
+  def launch_daily_cron
+    compute_popularity
+    send_daily_notifications
+    self.class.perform_in 24.hours, 'launch_daily_cron'
+  end
+
+  def send_daily_notifications
+    teches = Tech.joins(:group_relations).where('group_relations.created_at > ?', 24.hours.ago).where(group_relations: { workflow_state: GroupRelation::VALID_STATES }).distinct(:id)
+    teches.each do |tech|
+      BaseMailer.enqueue_email 'new_projects_in_tech_notification', { context_type: 'tech', context_id: tech.id }
+    end
   end
 
   def update_mailchimp_list
@@ -36,14 +48,14 @@ class CronTask < BaseWorker
     remove_subscribers(gb, list_id, cancellers) unless cancellers.empty?
   end
 
-  # private
+  private
     def add_subscribers gb, list_id, users
       puts "Adding #{users.count} subscribers to list #{list_id}."
       batch = batch_from_user_list users
       response = gb.lists.batch_subscribe({ id: list_id, batch: batch, double_optin: false, update_existing: true })
       failed_emails = response['errors'].map { |error| error['email']['email'] }
       successful_emails = get_email_from_users(users) - failed_emails
-      update_settings_for failed_emails, "users.subscriptions_mask = (users.subscriptions_mask - #{2**User::SUBSCRIPTIONS.keys.index('newsletter')})"
+      update_settings_for failed_emails, "subscriptions_mask = (subscriptions_mask - #{2**User::SUBSCRIPTIONS.keys.index('newsletter')})"
       update_settings_for successful_emails, { mailchimp_registered: true }
       puts "Results for adding: #{successful_emails.size} successes, #{failed_emails.size} failures."
     end

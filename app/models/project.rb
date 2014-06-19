@@ -30,6 +30,7 @@ class Project < ActiveRecord::Base
   has_many :commenters, -> { uniq true }, through: :comments_copy, source: :user
   has_many :follow_relations, as: :followable
   has_many :followers, through: :follow_relations, source: :user
+  has_many :group_relations, dependent: :destroy
   has_many :issues, as: :threadable, dependent: :destroy
   has_many :images, as: :attachable, dependent: :destroy
   has_many :grades
@@ -38,6 +39,8 @@ class Project < ActiveRecord::Base
   has_many :respecting_users, -> { order 'respects.created_at ASC' }, through: :respects, source: :respecting, source_type: User
   has_many :slug_histories, -> { order updated_at: :desc }, as: :sluggable, dependent: :destroy
   has_many :team_members, through: :team, source: :members#, -> { includes :user }
+  # has_many :groups, through: :group_relations
+  has_many :teches, -> { where ("groups.type = 'Tech'") }, through: :group_relations, source: :group
   has_many :users, through: :team_members
   has_many :widgets, -> { order position: :asc }, dependent: :destroy
   has_one :logo, as: :attachable, class_name: 'Avatar', dependent: :destroy
@@ -133,7 +136,7 @@ class Project < ActiveRecord::Base
   # end of search methods
 
   def self.approved
-    where(approved: true)
+    where.not(approved: false)
   end
 
   def self.approval_needed
@@ -153,7 +156,7 @@ class Project < ActiveRecord::Base
   end
 
   def self.indexable_and_external
-    where("(projects.private = 'f' AND projects.hide = 'f') OR (projects.external = 't' AND projects.approved = 't')").magic_sort
+    where("(projects.private = 'f' AND projects.hide = 'f') OR (projects.external = 't' AND projects.approved <> 'f')")#.magic_sort
   end
 
   def self.live

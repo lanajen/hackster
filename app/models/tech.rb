@@ -5,11 +5,10 @@ class Tech < Group
   include Taggable
 
   has_many :active_members, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'") }, foreign_key: :group_id, class_name: 'TechMember'
+  has_many :featured_projects, -> { where("group_relations.workflow_state = 'featured'") }, source: :project, through: :group_relations
   has_many :follow_relations, as: :followable
   has_many :followers, through: :follow_relations, source: :user
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'TechMember'
-  has_many :respects, as: :respecting, dependent: :destroy, class_name: 'Respect'
-  has_many :respected_projects, through: :respects, source: :project
   has_one :cover_image, as: :attachable, class_name: 'Document', dependent: :destroy
   has_one :logo, as: :attachable, dependent: :destroy
   has_one :slug, as: :sluggable, dependent: :destroy, class_name: 'SlugHistory'
@@ -110,11 +109,11 @@ class Tech < Group
     self.logo = Logo.find_by_id(val)
   end
 
-  def projects
-    # Project.includes(:tech_tags).where(tags: { name: tech_tags.pluck(:name) })
-    Project.public.includes(:tech_tags).references(:tags).where('lower(tags.name) IN (?)', tech_tags.pluck(:name).map{|n| n.downcase })
-    # SearchRepository.new(q: tech_tags_string).search.results
-  end
+  # def projects
+  #   # Project.includes(:tech_tags).where(tags: { name: tech_tags.pluck(:name) })
+  #   Project.public.includes(:tech_tags).references(:tags).where('lower(tags.name) IN (?)', tech_tags.pluck(:name).map{|n| n.downcase })
+  #   # SearchRepository.new(q: tech_tags_string).search.results
+  # end
 
   def shoplocket_token
     return unless shoplocket_link.present?

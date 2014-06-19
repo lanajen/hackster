@@ -67,6 +67,8 @@ HackerIo::Application.configure do
   # with SQLite, MySQL, and PostgreSQL)
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
 
+  config.action_mailer.default_url_options = { :host => 'www.hackster.io' }
+
   config.action_controller.asset_host = "//s3.amazonaws.com/#{ENV['FOG_DIRECTORY']}"
 
   config.assets.initialize_on_precompile = false

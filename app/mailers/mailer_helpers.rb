@@ -27,21 +27,15 @@ module MailerHelpers
   end
 
   def send_email type, opts={}
-    email = Email.find_by_type(type)
-    if email.nil?
-      self.message.perform_deliveries = false
-      msg = "Email was not sent because template '#{type}' doesn't exist."
-      LogLine.create(source: :mailer, log_type: :mail_delivery_failed,
-        message: msg)
-      return
-    end
     @context[:devise_token] = opts['token']
-    body = render text: email.body, layout: 'email'
+
+    subject = render template: "mailers/subjects/#{type}"
+    body = render template: "mailers/bodies/#{type}", layout: 'email'
     premailer = Premailer.new(substitute_in(body), with_html_string: true,
       warn_level: Premailer::Warnings::SAFE)
 
     headers = {
-      subject: substitute_in(email.subject),
+      subject: substitute_in(subject),
     }.merge(@headers)
 
     if @users.present?
@@ -62,12 +56,6 @@ module MailerHelpers
     LogLine.create(source: :mailer, log_type: :mail_sent,
       message: "Email sent of type: #{type}")
 
-    # Output any CSS warnings
-    premailer.warnings.each do |w|
-      msg = "#{w[:message]} (#{w[:level]}) may not render properly in #{w[:clients]}"
-      LogLine.create(source: :mailer, log_type: :mail_css_warning,
-        message: msg)
-    end
     output_email
   end
 

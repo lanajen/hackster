@@ -18,6 +18,8 @@ class ProjectObserver < ActiveRecord::Observer
     else
       SlugHistory.update_history_for record.id
     end
+
+    record.teches = Tech.joins(:tech_tags).references(:tags).where("LOWER(tags.name) IN (?)", record.tech_tags.map{|t| t.name.downcase }) if record.public? and !record.hide or (record.external and record.approved != false)
   end
 
   def after_update record
@@ -52,9 +54,14 @@ class ProjectObserver < ActiveRecord::Observer
       update_counters record, [:live_projects]
       record.commenters.each{|u| u.update_counters only: [:comments] }
       if record.private?
+        GroupRelation.where(project_id: record.id).destroy_all
         Broadcast.where(context_model_id: record.id, context_model_type: 'Project').destroy_all
         Broadcast.where(project_id: record.id).destroy_all
       end
+    end
+
+    if record.approved_changed and record.approved == false
+      GroupRelation.where(project_id: record.id).destroy_all
     end
 
     if (record.changed & %w(collection_id name cover_image one_liner tech_tags product_tags made_public_at license guest_name)).any? or record.tech_tags_string_changed? or record.product_tags_string_changed?

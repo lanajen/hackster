@@ -1,0 +1,23 @@
+<p>Hello there,</p>
+
+<p>There are new projects made with <a href="|group_link|">|group_name|</a>, a tool you follow on <a href="http://www.hackster.io">Hackster.io</a>:</p>
+
+<% @context[:projects].each do |project| %>
+  <% user = project.users.first %>
+
+  <p>
+    <a href="<%= universal_project_url(project)%>"><%= project.name %></a><% if user %> by <a href="<%= profile_url(user) %>"><%= user.name %></a><% end %>: <%= project.one_liner %>
+  </p>
+
+<% end %>
+
+<p>Cheers,<br> The Hackster.io team</p>
+<p>
+  <a href="http://www.facebook.com/hacksterio">Like us on Facebook</a>
+  |
+  <a href="http://twitter.com/hacksterio">Follow us on Twitter</a>
+</p>
+
+<p class="unsubscribe">
+  Don't want to receive this type of email? <a href="|unsubscribe_link|">Update your notification preferences</a>
+</p>

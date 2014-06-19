@@ -10,9 +10,16 @@ class Group < ActiveRecord::Base
   has_many :active_members, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'") }, foreign_key: :group_id, class_name: 'Member'
   has_many :broadcasts, through: :users
   has_many :granted_permissions, as: :grantee, class_name: 'Permission'
-  has_many :issues, through: :projects
+  # has_many :issues, through: :projects
+  has_many :group_relations, dependent: :destroy
   has_many :members, dependent: :destroy
   has_many :permissions, as: :permissible
+  has_many :projects, through: :group_relations do
+    # TOOD: see if this can be delegated to GroupRelation
+    def visible
+      where(group_relations: { workflow_state: GroupRelation::VALID_STATES })
+    end
+  end
   has_many :users, through: :members
   has_one :avatar, as: :attachable, dependent: :destroy
 

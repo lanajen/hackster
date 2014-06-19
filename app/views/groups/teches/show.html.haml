@@ -1,8 +1,3 @@
--# content_for :js do
-  - @tech.respects.each do |respect|
-    :javascript
-      $('.project-list').prepend($('.project-#{respect.project_id}'));
-
 - content_for :head do
   %meta(property="og:title" content="#{@tech.name} projects")
   %meta(property="og:description" content="People are hacking with #{@tech.name} on Hackster.io. Join them!")
@@ -35,12 +30,10 @@
 %section#projects-list
   .wrapper
     .project-list-actions.clearfix.mg-30
-      -# if can? :add_project, @tech
       .pull-right
         - link = user_signed_in? ? new_project_path(project: { tech_tags_string: @tech.tech_tags.first.name }) : new_user_registration_path(reason: 'project', m: 'group', id: @tech.id)
         = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add a project".html_safe, link, class: 'btn btn-outline'
         %small or
-        -# link = user_signed_in? ? new_project_path(project: { tech_tags_string: @tech.tech_tags.first.name, external: true }, redirect_to: request.path) : new_user_registration_path(reason: 'link', m: 'group', id: @tech.id)
         - link = new_project_path(project: { tech_tags_string: @tech.tech_tags.first.name, external: true }, redirect_to: request.path)
         = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Submit a link".html_safe, link, class: 'btn btn-outline'
 
@@ -71,5 +64,5 @@
   - @projects.each do |project|
     = content_for :js do
       :javascript
-        text = "#{escape_javascript render(partial: 'respects/button_featured', locals: { project: project } )}";
+        text = "#{escape_javascript render(partial: 'groups/teches/button_featured', locals: { project: project } )}";
         $(text).appendTo($('.project-#{project.id} .project-thumb .thumb-top-inner'));

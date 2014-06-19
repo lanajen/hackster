@@ -144,6 +144,10 @@ module UrlHelper
     super tech.user_name, opts
   end
 
+  def universal_project_url project, opts={}
+    project.external? ? external_project_url(project, opts) : project_url(project, opts)
+  end
+
   def url_for(options = nil)
     case options
     when Hash

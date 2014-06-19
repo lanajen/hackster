@@ -1,6 +1,7 @@
 class BaseMailer < ActionMailer::Base
   include MailerHelpers
   include SendGrid
+  add_template_helper UrlHelper
 
   def prepare_email type, context_type, context_id, opts={}
     raise 'Illegal arguments' unless context_type.kind_of? String and context_id.kind_of? Integer
@@ -136,6 +137,10 @@ class BaseMailer < ActionMailer::Base
         project = context[:project] = respect.project
         context[:author] = respect.user
         context[:users] = project.users.with_subscription('new_respect_own')
+      when :tech
+        context[:group] = tech = Tech.find context_id
+        context[:projects] = Project.joins(:group_relations).where('group_relations.created_at > ?', 24.hours.ago).where(group_relations: { group_id: tech.id })
+        context[:users] = tech.followers.with_subscription('follow_tech_activity')
       when :user
          context[:user] = User.find(context_id)
       when :user_informal

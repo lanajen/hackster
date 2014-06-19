@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140614033334) do
+ActiveRecord::Schema.define(version: 20140618233935) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -137,6 +137,17 @@ ActiveRecord::Schema.define(version: 20140614033334) do
   add_index "grades", ["project_id"], name: "index_grades_on_project_id", using: :btree
   add_index "grades", ["type"], name: "index_grades_on_type", using: :btree
   add_index "grades", ["user_id"], name: "index_grades_on_user_id", using: :btree
+
+  create_table "group_relations", force: true do |t|
+    t.integer  "project_id",     null: false
+    t.integer  "group_id",       null: false
+    t.string   "workflow_state"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "group_relations", ["group_id"], name: "index_group_relations_on_group_id", using: :btree
+  add_index "group_relations", ["project_id"], name: "index_group_relations_on_project_id", using: :btree
 
   create_table "groups", force: true do |t|
     t.string   "user_name",         limit: 100

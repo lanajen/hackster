@@ -1,6 +1,7 @@
 class TechesController < ApplicationController
   before_filter :authenticate_user!, except: [:show, :embed, :index]
-  before_filter :load_tech, except: [:show, :embed, :index]
+  before_filter :load_tech, except: [:show, :embed, :index]#, :feature_project, :unfeature_project]
+  before_filter :load_project, only: [:feature_project, :unfeature_project]
   layout 'tech', only: [:edit, :update, :show]
   after_action :allow_iframe, only: :embed
   respond_to :html
@@ -37,26 +38,6 @@ class TechesController < ApplicationController
     render "groups/teches/#{self.action_name}", layout: 'embed'
   end
 
-  private
-  def get_projects
-    # TODO: below is SUPER hacky. Would be great to just separate featured projects from the rest
-    page = params[:page].try(:to_i) || 1
-    per_page = Project.per_page
-    @projects = @tech.projects.indexable_and_external.includes(:respects).references(:respects).where(respects: { respecting_id: @tech.id, respecting_type: 'Group' }).offset((page - 1) * per_page).limit(per_page)
-    if @projects.to_a.size < per_page
-      all_featured = @tech.projects.indexable_and_external.includes(:respects).references(:respects).where(respects: { respecting_id: @tech.id, respecting_type: 'Group' }).pluck(:id)
-      offset = (page - 1) * per_page
-      offset -= all_featured.size if @projects.to_a.size == 0
-      @projects += @tech.projects.indexable_and_external.where.not(id: all_featured).offset(offset).limit(per_page - @projects.to_a.size)
-    end
-    total = @tech.projects.indexable_and_external.size
-
-    @projects = WillPaginate::Collection.create(page, per_page, total) do |pager|
-      pager.replace(@projects.to_a)
-    end
-  end
-
-  public
   def edit
     authorize! :update, @tech
     @tech.build_avatar unless @tech.avatar
@@ -93,8 +74,41 @@ class TechesController < ApplicationController
     end
   end
 
+  def feature_project
+    @group_rel = GroupRelation.where(project_id: params[:project_id], group_id: params[:tech_id]).first!
+
+    if @group_rel.feature!
+      respond_to do |format|
+        format.html { redirect_to @project, notice: "#{@project.name} has been featured." }
+        format.js { render 'groups/teches/button_featured' }
+      end
+      event_name = 'Respected project'
+    else
+      respond_to do |format|
+        format.html { redirect_to @project, alert: "Couldn\'t feature project!" }
+        format.js { render text: 'alert("Couldn\'t feature project!")' }
+      end
+      event_name = 'Tried respecting own project'
+    end
+  end
+
+  def unfeature_project
+    @group_rel = GroupRelation.where(project_id: params[:project_id], group_id: params[:tech_id]).first!
+
+    if @group_rel.unfeature!
+      respond_to do |format|
+        format.html { redirect_to @project, notice: "#{@project.name} was unfeatured." }
+        format.js { render 'groups/teches/button_featured' }
+      end
+    end
+  end
+
   private
+    def get_projects
+      @projects = @tech.projects.visible.indexable_and_external.order('group_relations.workflow_state DESC').magic_sort.paginate(page: params[:page])
+    end
+
     def load_tech
-      @tech = Tech.find(params[:id])
+      @tech = Tech.find(params[:tech_id] || params[:id])
     end
 end

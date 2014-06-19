@@ -79,7 +79,12 @@ HackerIo::Application.routes.draw do
       delete '' => 'groups#destroy'
       patch '' => 'groups#update'
     end
-    resources :teches, except: [:show]
+    resources :teches, except: [:show] do
+      resources :projects, only: [] do
+        post 'feature' => 'teches#feature_project'#, as: :tech_feature_project
+        delete 'feature' => 'teches#unfeature_project'
+      end
+    end
     # resources :courses, except: [:show, :update, :destroy]
     resources :promotions, except: [:show, :update, :destroy]
     scope 'courses/:uni_name/:user_name', as: :course do
