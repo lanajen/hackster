@@ -7,7 +7,7 @@ class TechObserver < ActiveRecord::Observer
     slug.save
   end
 
-  def before_save record
+  def before_update record
     if (record.changed & %w(full_name avatar mini_resume slug private_projects_count projects_count user_name)).any?
       Cashier.expire "tech-#{record.id}-thumb", 'tech-index'
     end

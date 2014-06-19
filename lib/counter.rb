@@ -24,11 +24,13 @@ module Counter
       if options[:solo_counters]
         update_attributes counters, without_protection: true
       else
-        assign_attributes counters, without_protection: true  # assign once to update counters_cache
+        counters.each do |counter, method|
+          attribute_will_change! counter
+        end
+        assign_attributes counters, without_protection: true  # assign to update counters_cache
 
         unless options[:assign_only]
-          update_column :counters_cache, counters_cache.to_yaml
-          assign_attributes YAML.load(counters_cache), without_protection: true  # assign twice so that it loses its YAML form
+          update_attributes({ counters_cache: counters_cache }, without_protection: true)
         end
       end
     end

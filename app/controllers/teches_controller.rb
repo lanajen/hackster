@@ -109,6 +109,6 @@ class TechesController < ApplicationController
     end
 
     def load_tech
-      @tech = Tech.find(params[:tech_id] || params[:id])
+      @tech = Tech.find(params[:tech_id] || params[:id])
     end
 end
