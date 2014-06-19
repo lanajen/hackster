@@ -9,6 +9,7 @@
 //= require jquery.parallax
 //= require jquery.ui.sortable
 //= require jquery.throttle
+//= require slick.min
 //= require 'wysihtml5/parser_rules'
 
 //= require projects

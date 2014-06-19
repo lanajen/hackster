@@ -3,8 +3,12 @@
     .project-section{ id: section.id }
       .header
         %h2= section.name
-      - @widgets_by_section[section.index].each do |widget|
-        = render 'widgets/widget', { widget: widget, f: f }
+      - if can? :edit, @project
+        - @widgets_by_section[section.index].each do |widget|
+          = render 'widgets/widget', { widget: widget, f: f }
+      - else
+        - @widgets_by_section[section.index].each do |widget|
+          = render 'widgets/widget', { widget: widget }
 
 #more-info.project-section
   .header

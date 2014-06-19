@@ -44,9 +44,11 @@
           - if @widgets.any?
             - if can? :edit, @project
               = simple_nested_form_for @project, url: project_path(@project), html: { class: 'update-project-form' } do |f|
-                = render 'projects/large_column', { f: f }
+                %div
+                  = render 'projects/large_column', { f: f }
             - else
-              = render 'projects/large_column', { f: f }
+              %div
+                = render 'projects/large_column'
 
 
 

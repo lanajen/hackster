@@ -3,4 +3,7 @@
     - if widget.default_label
       .header
         %h3= widget.default_label
-    = render partial: "widgets/show/#{widget.identifier}", locals: { widget: widget, f: f }
+    - if can? :edit, @project
+      = render partial: "widgets/show/#{widget.identifier}", locals: { widget: widget, f: f }
+    - else
+      = render partial: "widgets/show/#{widget.identifier}", locals: { widget: widget }
