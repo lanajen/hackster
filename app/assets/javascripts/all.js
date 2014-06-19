@@ -123,6 +123,18 @@ $(document).ready(function(){
   $('.navbar-tabs a').on('shown.bs.tab', function (e) {
       window.location.hash = e.target.hash.replace("#", "#" + prefix);
   });
+
+  // update thumbnail links for projects
+  $(".project-thumb-container").each(function(i, project){
+    project = $(project);
+    ref = project.data('ref');
+    refId = project.data('ref-id');
+    offset = project.data('offset');
+    $('a.project-link-with-ref', this).each(function(j, link) {
+      href = link.href;
+      link.href = href + "?ref=" + ref + "&ref_id=" + refId + "&offset=" + offset;
+    });
+  });
 });
 
 

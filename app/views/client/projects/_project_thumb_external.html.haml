@@ -1,4 +1,4 @@
-- cache "client-project-#{project.id}-thumb", tag: ["project-#{project.id}-thumb", "project-#{project.id}-thumb-external", "project-#{project.id}-thumb-external-client", "team-#{project.team_id}", "team-#{project.team_id}-user-thumbs"] do
+- cache "client-project-#{project.id}-thumb", tag: ["project-#{project.id}-thumb", "project-#{project.id}-thumb-external", "project-#{project.id}-thumb-external-client", "team-#{project.team_id}", "team-#{project.team_id}-user-thumbs", 'project-thumb', 'project-thumb-external', 'client-project-thumb'], expires_in: 6.hours do
   %div{ class: "project-#{project.id} col-xs-#{ defined?(col) ? col : 3 }" }
     .project-thumb
       .thumb
@@ -18,3 +18,11 @@
             on
             %span.fake-link= URI.parse(project.website).host.gsub(/^www\./, '')
           %p= truncate project.one_liner, length: 140
+          .thumb-bottom
+            %hr
+            %span.counter.first.istooltip{ title: 'Views' }
+              %i.fa.fa-eye
+              = number_with_delimiter project.impressions_count
+            %span.counter.istooltip{ title: 'Respects', data: { container: 'body' } }
+              %i.fa.fa-thumbs-o-up
+              = project.respects_count
