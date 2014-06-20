@@ -59,7 +59,7 @@ class Rack::Attack
 
   # Block logins from a bad user agent
   blacklist('block scraper access') do |req|
-    req.user_agent =~ /23\.0\.1271\.97/ or (range = IPCat.datacenter?(req.ip) and range.name == 'Amazon AWS')
+    req.user_agent =~ /23\.0\.1271\.97/ or (range = IPCat.datacenter?(req.ip) and range.name == 'Amazon AWS' and req.path != '/ping')
   end
   track('bad_scraper') do |req|
     req.user_agent =~ /23\.0\.1271\.97/
