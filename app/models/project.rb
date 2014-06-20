@@ -1,6 +1,7 @@
 class Project < ActiveRecord::Base
   FILTERS = {
     'featured' => :featured,
+    'featured_by_tech' => :featured_by_tech,
     'wip' => :wip,
   }
   SORTING = {
@@ -149,6 +150,11 @@ class Project < ActiveRecord::Base
 
   def self.featured
     indexable.where(featured: true).order(featured_date: :desc)
+  end
+
+  # assumes that the join with group_relations has already been done
+  def self.featured_by_tech
+    indexable.where(group_relations: { workflow_state: 'featured' }).order('group_relations.updated_at DESC')
   end
 
   def self.indexable

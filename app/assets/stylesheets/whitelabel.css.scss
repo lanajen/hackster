@@ -8,6 +8,11 @@ body.whitelabel {
         max-height: 100%;
       }
     }
+    .navbar-right {
+      .navbar-form {
+        padding: 0;
+      }
+    }
   }
   #subheading {
     font-size: 12px;
