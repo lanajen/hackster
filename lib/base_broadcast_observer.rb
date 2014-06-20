@@ -1,4 +1,4 @@
-class BroadcastObserver < ActiveRecord::Observer
+class BaseBroadcastObserver < ActiveRecord::Observer
   def after_create record
     record.user.broadcast :new, record.id, observed_model, project_id(record) if record.user
   end

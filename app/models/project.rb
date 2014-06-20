@@ -301,6 +301,58 @@ class Project < ActiveRecord::Base
     }
   end
 
+  def post_new_tweet!
+    prepend = "New project: "  # 13 characters
+    message = to_tweet(prepend)
+    TwitterQueue.perform_async 'update', message
+  end
+
+  def to_tweet prepend='', append=''
+    # we have 118 characters to play with
+
+    message = prepend
+
+    message << name.gsub(/\.$/, '')
+
+    if guest_name.present?
+      message << " by #{guest_name}"
+    else
+      user = users.first
+      if user
+        message << " by #{user.name}"
+        if link = user.twitter_link.presence and handle = link.match(/twitter.com\/([a-zA-Z0-9_]+)/).try(:[], 1)
+          message << " (@#{handle})"
+        end
+      end
+    end
+
+    tags = teches.map do |tech|
+      out = "##{tech.name.gsub(/\s+/, '')}"
+      if link = tech.twitter_link.presence and handle = link.match(/twitter.com\/([a-zA-Z0-9_]+)/).try(:[], 1)
+        out << " (@#{handle})"
+      end
+      out
+    end
+    message << " with #{tags.to_sentence}" if tags.any?
+
+    size = message.size + 22
+    message << " hackster.io/#{uri}"  # links are shortened to 22 characters
+
+    # we add tags until character limit is reached
+    tags = product_tags.map{|t| "##{t.name.gsub(/\s+/, '')}"}
+    if tags.any?
+      tags.each do |tag|
+        new_size = size + tag.size + 1
+        if new_size <= 140
+          message << " #{tag}"
+          size += " #{tag}".size
+        end
+      end
+    end
+    # "#{message} (#{size})"
+    message
+  end
+
   def update_slug
     generate_slug unless slug_was_changed?
   end
