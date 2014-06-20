@@ -213,6 +213,8 @@ HackerIo::Application.routes.draw do
     get 'terms' => 'pages#terms'
     get 'resources' => 'pages#resources'
 
+    get 'electric-imp', to: redirect('electricimp')
+
     # get ':slug' => 'slugs#show', slug: /[A-Za-z0-9_]{3,}/, constraints: { format: /(html|json)/ }
     constraints(TechPage) do
       get ':slug' => 'teches#show', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
