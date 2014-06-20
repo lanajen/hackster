@@ -1,4 +1,4 @@
-class PostObserver < BroadcastObserver
+class PostObserver < BaseBroadcastObserver
   def after_create record
     super record
     expire_widget record

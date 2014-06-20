@@ -38,6 +38,7 @@ class ProjectObserver < ActiveRecord::Observer
 
   def before_save record
     if record.private_changed? and record.public?
+      record.post_new_tweet! unless record.made_public_at.present?
       record.made_public_at = Time.now
     end
   end
