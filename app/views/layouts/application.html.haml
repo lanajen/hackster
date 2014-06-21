@@ -35,7 +35,7 @@
             .container
               %button.close.btn-close{ data: { close: '#hello-world' } } &times;
               = SLOGAN
-              = link_to 'Join the community to contribute', new_user_registration_path, onclick: "_gaq.push(['_trackEvent', 'Hello world bar', 'Sign up', '#{request.path}']);"
+              = link_to 'Claim your profile', new_user_registration_path, onclick: "_gaq.push(['_trackEvent', 'Hello world bar', 'Sign up', '#{request.path}']);"
         -# elsif show_profile_needs_care?
           - if params[:controller] == 'users' and params[:action] == 'show'
             #hello-world.fade-in
@@ -140,7 +140,7 @@
               - else
                 %ul#navbar-right.clearfix
                   %li
-                    %span= link_to 'Sign up', new_user_registration_path, class: 'btn btn-primary login-link', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '#{request.path}']);" #new_user_registration_path
+                    %span= link_to 'Claim my hacker profile', new_user_registration_path, class: 'btn btn-primary login-link', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '#{request.path}']);" #new_user_registration_path
                   %li.dropdown
                     %a#login.btn.btn-default.login-link.dropdown-toggle{"data-toggle" => "dropdown", href: '#' }
                       Log in
