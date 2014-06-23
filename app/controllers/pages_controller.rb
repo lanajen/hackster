@@ -18,7 +18,7 @@ class PagesController < ApplicationController
     # @active_projects = Project.last_updated.limit 4
     @featured_projects = Project.featured.limit 4
     # @wip_projects = Project.wip.limit 4
-    @tools = Tech.where(user_name: %w(spark electric-imp arduino raspberry-pi beagleboard teensy)).order(:full_name)
+    @tools = Tech.where(user_name: %w(spark electricimp arduino raspberry-pi beagleboard teensy)).order(:full_name)
 
     track_event 'Visited home page'
   end
