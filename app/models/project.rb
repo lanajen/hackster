@@ -166,7 +166,7 @@ class Project < ActiveRecord::Base
   end
 
   def self.live
-    where(private: false, approved: true)
+    where(private: false)
   end
 
   def self.last_created
@@ -305,6 +305,7 @@ class Project < ActiveRecord::Base
     prepend = "New project: "  # 13 characters
     message = to_tweet(prepend)
     TwitterQueue.perform_async 'update', message
+    puts message
   end
 
   def to_tweet prepend='', append=''
@@ -335,7 +336,7 @@ class Project < ActiveRecord::Base
     end
     message << " with #{tags.to_sentence}" if tags.any?
 
-    size = message.size + 22
+    size = message.size + 23
     message << " hackster.io/#{uri}"  # links are shortened to 22 characters
 
     # we add tags until character limit is reached
@@ -346,6 +347,8 @@ class Project < ActiveRecord::Base
         if new_size <= 140
           message << " #{tag}"
           size += " #{tag}".size
+        else
+          break
         end
       end
     end

@@ -154,8 +154,9 @@ module UrlHelper
       if options.has_key?(:subdomain)
         options[:host] = with_subdomain(options.delete(:subdomain))
       end
-    # when Group
-    #   options = params_for_group options
+    when Tech
+      options = params_for_group options
+      options[:use_route] = 'tech_short'
     when Project
       options = params_for_project options
     end

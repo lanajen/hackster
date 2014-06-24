@@ -18,8 +18,6 @@ class ProjectObserver < ActiveRecord::Observer
     else
       SlugHistory.update_history_for record.id
     end
-
-    record.teches = Tech.joins(:tech_tags).references(:tags).where("LOWER(tags.name) IN (?)", record.tech_tags.map{|t| t.name.downcase }) if record.public? and !record.hide or (record.external and record.approved != false)
   end
 
   def after_update record
@@ -38,6 +36,8 @@ class ProjectObserver < ActiveRecord::Observer
   end
 
   def before_save record
+    record.teches = Tech.joins(:tech_tags).references(:tags).where("LOWER(tags.name) IN (?)", record.tech_tags_string.split(',').map{|t| t.strip.downcase }) if record.public? and !record.hide or (record.external and record.approved != false)
+
     if record.private_changed? and record.public?
       record.post_new_tweet! unless record.made_public_at.present?
       record.made_public_at = Time.now
