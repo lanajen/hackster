@@ -1,6 +1,26 @@
 class ScraperQueue < BaseWorker
+  TECHES_TO_SCRAPE = ['Raspberry Pi', 'Arduino', 'Spark Core', 'Electric Imp', 'Teensy', 'Digispark', 'BeagleBoard', 'Intel Galileo', 'Pebble', 'pcDuino', 'TI Launchpad']
   # @queue = :scraper
   sidekiq_options queue: :low, retry: false
+
+  def scrape_instructables
+    @results = InstructablesScraper.scrape_in_bulk TECHES_TO_SCRAPE
+
+    @message = Message.new(
+      message_type: 'generic',
+    )
+    @message.subject = "Results for instructables.com import"
+    @message.body = "<p>#{@results.size} teches were imported:</p>"
+    @results.each do |tech, results|
+      @message.body += "<p><b>#{tech}: #{results[:errors].size} errors, #{results[:successes]} successes, #{results[:skips]} skips</p>"
+    end
+    BaseMailer.enqueue_generic_email(@message)
+
+  rescue => e
+    clean_backtrace = Rails.backtrace_cleaner.clean(e.backtrace)
+    message = "Scrape instructables.com error: #{e.inspect} // backtrace: #{clean_backtrace.join(' - ')} // Results: #{@results.inspect}"
+    log_error e, clean_backtrace, message
+  end
 
   def scrape_project page_url, user_id, tech_tags_string=nil
     @message = Message.new(
@@ -24,14 +44,7 @@ class ScraperQueue < BaseWorker
 
     clean_backtrace = Rails.backtrace_cleaner.clean(exception.backtrace)
     message = "Project import error: #{exception.inspect} // backtrace: #{clean_backtrace.join(' - ')} // page_url: #{page_url} // user_id: #{user_id} // project_errors: #{@project.try(:errors).try(:messages)}"
-    log_line = LogLine.create(message: message, log_type: 'error', source: 'project_scraper')
-    logger = Rails.logger
-    logger.error ""
-    logger.error "Exception: #{exception.inspect}"
-    logger.error ""
-    clean_backtrace.each { |line| logger.error "Backtrace: " + line }
-    logger.error ""
-    BaseMailer.enqueue_email 'error_notification', { context_type: :log_line, context_id: log_line.id }
+    log_error exception, clean_backtrace, message
 
   ensure
     BaseMailer.enqueue_generic_email(@message)
@@ -43,4 +56,16 @@ class ScraperQueue < BaseWorker
       self.class.perform_async 'scrape_project', url, user_id, tech_tags_string
     end
   end
+
+  private
+    def log_error exception, clean_backtrace, message
+      log_line = LogLine.create(message: message, log_type: 'error', source: 'scraper_queue')
+      logger = Rails.logger
+      logger.error ""
+      logger.error "Exception: #{exception.inspect}"
+      logger.error ""
+      clean_backtrace.each { |line| logger.error "Backtrace: " + line }
+      logger.error ""
+      BaseMailer.enqueue_email 'error_notification', { context_type: :log_line, context_id: log_line.id }
+    end
 end

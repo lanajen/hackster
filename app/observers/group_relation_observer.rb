@@ -4,7 +4,6 @@ class GroupRelationObserver < ActiveRecord::Observer
   end
 
   def after_destroy record
-    puts 'yeoeoeoeo'
     update_counters record
   end
 
