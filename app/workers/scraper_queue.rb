@@ -3,8 +3,8 @@ class ScraperQueue < BaseWorker
   # @queue = :scraper
   sidekiq_options queue: :low, retry: false
 
-  def scrape_instructables
-    @results = InstructablesScraper.scrape_in_bulk TECHES_TO_SCRAPE
+  def scrape_instructables teches=TECHES_TO_SCRAPE
+    @results = InstructablesScraper.scrape_in_bulk teches
 
     @message = Message.new(
       message_type: 'generic',
