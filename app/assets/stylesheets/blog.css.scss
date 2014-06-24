@@ -24,6 +24,9 @@
   font-weight: 200;
   word-spacing: 0;
   letter-spacing: 1px;
+  #navigation {
+    min-width: initial;
+  }
   #bg {
     background: #fff asset-url('bg1920px.jpg') top left no-repeat;
     position: absolute;
