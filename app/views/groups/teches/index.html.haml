@@ -1,11 +1,19 @@
-- cache 'tech-index', tag: ['tech-index'], expires_in: 24.hours do
-  .content
-    .row
-      .col-xs-12
-        %h1
-          Explore tools
-        %hr
+= content_for :no_container do
+  - cache 'tech-index', tag: ['tech-index'], expires_in: 24.hours do
+    .container
+      #content
+        .content
+          .row
+            .col-xs-12
+              %h1
+                Explore tools
+              %hr
 
-    .row
-      - @teches.each do |tech|
-        = render partial: 'groups/teches/tech_thumb', locals: { tech: tech }
+          .row
+            - @teches.each do |tech|
+              = render partial: 'groups/teches/tech_thumb', locals: { tech: tech }
+
+    #bottom-bar
+      .container.text-center
+        Want to feature your tool on this page?
+        = link_to 'Apply', 'mailto:tools@hackster.io?subject=Application%20to%20feature%20tool', class: 'btn btn-primary'
