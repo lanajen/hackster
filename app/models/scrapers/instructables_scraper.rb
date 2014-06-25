@@ -51,9 +51,9 @@ class InstructablesScraper
             else
               results[:errors] << link
             end
-          rescue => e
-            puts "Rescue error: #{e.inspect}"
           end
+        rescue => e
+          puts "[Scraper] Rescue error: #{e.inspect}"
         end
       end
       offset += 50
