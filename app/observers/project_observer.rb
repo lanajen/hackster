@@ -28,6 +28,10 @@ class ProjectObserver < ActiveRecord::Observer
         Broadcast.where(context_model_id: record.id, context_model_type: 'Project').destroy_all
       end
     end
+
+    # if record.approved_changed? and record.approved
+    #   record.group_relations.each{|g| g.approve! }
+    # end
   end
 
   def before_create record

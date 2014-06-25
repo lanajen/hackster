@@ -5,7 +5,7 @@ class GroupRelation < ActiveRecord::Base
 
   belongs_to :group
   belongs_to :project
-  after_create :update_workflow
+  after_create :update_workflow#, unless: proc {|g| g.project.external and g.project.approved.nil? }
 
   workflow do
     state :new do
