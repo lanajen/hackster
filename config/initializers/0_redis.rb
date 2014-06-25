@@ -4,8 +4,8 @@
 conf = YAML::load(File.open(File.join(Rails.root, 'config/server/redis.yml')))[Rails.env]
 
 $redis_config = if ENV['REDISTOGO_URL'].present?
-  { url: ENV['REDISTOGO_URL'], namespace: "sidekiq:hacksterio" }
+  { url: ENV['REDISTOGO_URL'] }
 else
   { host: conf['host'], port: conf['port'], login: conf['login'],
-    password: conf['password'], namespace: "sidekiq:hacksterio" }
+    password: conf['password'] }
 end

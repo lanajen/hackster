@@ -34,6 +34,7 @@ HackerIo::Application.routes.draw do
       # mount ResqueAuthServer.new, at: "/resque"
       authenticate :user, lambda { |u| u.is? :admin } do
         mount Sidekiq::Web => '/sidekiq'
+        mount Split::Dashboard, :at => 'split'
       end
       get 'analytics' => 'pages#analytics'
       get 'build_logs' => 'pages#build_logs'

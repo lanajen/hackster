@@ -46,6 +46,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
       track_alias
       track_user resource.to_tracker_profile.merge(data)
       track_event 'Signed up', data.merge({ time_since_shown_signup_popup: time_since_shown_signup_popup })
+      finished 'signup_button_global'
 
       cookies.delete(:first_seen)
       cookies.delete(:last_shown_banner)
