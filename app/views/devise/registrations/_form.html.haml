@@ -1,4 +1,4 @@
-= simple_form_for resource, as: resource_name, url: registration_path(resource_name) do |f|
+= simple_form_for resource, as: resource_name, url: registration_path(resource_name, experiment: params[:experiment]) do |f|
   = f.error_notification
 
   = f.input :email, label: false, placeholder: 'Email', autofocus: (defined?(autofocus) ? autofocus : true)

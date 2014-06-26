@@ -141,7 +141,40 @@
                 %ul#navbar-right.clearfix
                   %li
                     - ab_test 'signup_button_global', 'Sign up', 'Start hacking', 'Create an account', 'Claim my profile', 'Claim my hacker profile' do |link_text|
-                      %span= link_to link_text, new_user_registration_path, class: 'btn btn-primary login-link', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '#{request.path}']);" #new_user_registration_path
+                      %span= link_to link_text, validate_step_path(experiment: 'signup_button_global'), class: 'btn btn-primary login-link', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '#{request.path}']);", id: "signup-button"
+
+                    -#
+                      %span= link_to 'Sign up', new_user_registration_path, class: 'btn btn-primary login-link', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '#{request.path}']);", id: "signup-button"
+
+                      :javascript
+                        $(document).ready(function(){
+                          $.ajax({
+                            type: 'GET',
+                            url: '/ab_test',
+                            data: {
+                              experiment: 'signup_button_global',
+                              alternatives: ['Start hacking', 'Create an account', 'Claim my profile', 'Claim my hacker profile'],
+                              control: 'Sign up',
+                            },
+                            success: function(result){
+                              $('#signup-button').text(result['alternative']);
+                            }
+                          })
+
+                          $('#signup-button').on('click', function(e){
+                            e.preventDefault();
+                            $.ajax({
+                              type: 'POST',
+                              url: '/finished',
+                              data: { experiment: 'signup_button_global' },
+                              success: function(){
+                                window.location = "#{new_user_registration_path}";
+                              }
+                            });
+                            return false;
+                          });
+                        });
+
                   %li.dropdown
                     %a#login.btn.btn-default.login-link.dropdown-toggle{"data-toggle" => "dropdown", href: '#' }
                       Log in

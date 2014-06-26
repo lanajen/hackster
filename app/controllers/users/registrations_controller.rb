@@ -10,6 +10,14 @@ class Users::RegistrationsController < Devise::RegistrationsController
     super
   end
 
+  def create
+    if experiment = params[:experiment]
+      finished experiment
+    end
+
+    super
+  end
+
   def update
     @user = current_user
 
@@ -46,7 +54,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
       track_alias
       track_user resource.to_tracker_profile.merge(data)
       track_event 'Signed up', data.merge({ time_since_shown_signup_popup: time_since_shown_signup_popup })
-      finished 'signup_button_global'
+      # finished 'signup_button_global'
 
       cookies.delete(:first_seen)
       cookies.delete(:last_shown_banner)

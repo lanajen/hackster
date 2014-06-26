@@ -13,6 +13,12 @@ HackerIo::Application.routes.draw do
     get 'sitemap_index.xml' => 'sitemap#index', as: 'sitemap_index', defaults: { format: 'xml' }
     get 'sitemap.xml' => 'sitemap#show', as: 'sitemap', defaults: { format: 'xml' }
 
+    # api for split a/b testing gem
+    # get 'ab_test' => 'split#start_ab_test'
+    # post 'finished' => 'split#finished_test'
+    # get 'finish_and_redirect' => 'split#finish_and_redirect'
+    get 'validate_step' => 'split#validate_step'
+
     devise_for :users, controllers: {
       confirmations: 'users/confirmations',
       invitations: 'users/invitations',
