@@ -49,6 +49,7 @@ class InstructablesScraper
             if project.save
               results[:successes] += 1
             else
+              puts "[Scraper] Couldn't save #{link}: #{project.errors.inspect}"
               results[:errors] << link
             end
           end
