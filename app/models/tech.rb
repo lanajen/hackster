@@ -80,7 +80,7 @@ class Tech < Group
       external_projects: 'projects.external.count',
       followers: 'followers.count',
       private_projects: 'projects.private.count',
-      projects: 'projects.count',
+      projects: 'projects.visible.indexable_and_external.count',
     }
   end
 
