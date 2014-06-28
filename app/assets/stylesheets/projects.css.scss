@@ -732,37 +732,10 @@ a.action-respected, a.action-followed {
 //   z-index: 2;
 // }
 .edit-project-btn,.save-project-btn{
-  position: relative;
-  width: 100%;
   padding: 16px 20px 15px;
   font-weight: bold;
   overflow: hidden;
-  height: 50px;
   margin-top: 32px;
-  max-width: 240px;
-  @include transition(all .3s ease);
-  .inner-project-btn{
-    width: 100%;
-    display: block;
-    @include transition(all .3s ease);
-  }
-  .inner-project-btn-icon{
-    display: block;
-    text-align: center;
-    padding-top: 30px;
-    font-size: 20px;
-  }
-  &.done{
-    .inner-project-btn{
-      margin-top: -50px;
-    }
-  }
-}
-.save-project-btn{
-  display: none;
-}
-.project-edit-item{
-  display: none;
 }
 
 

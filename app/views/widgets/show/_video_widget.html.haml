@@ -17,8 +17,8 @@
         - elsif video.provider == 'ustream'
           <iframe width="100%" height="100%" src="//www.ustream.tv/embed/#{video.id_for_provider}?v=3&amp;wmode=direct" scrolling="no" frameborder="0" style="border: 0px none transparent;"></iframe>
 
-    
-- if can? :edit, @project
+
+-# if can? :edit, @project
   .project-edit-item
     .video-edit-div
       %h3

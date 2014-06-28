@@ -1,8 +1,9 @@
 - @project = @project.decorate
 = content_for :no_container do
-  = render "projects/project_sidebar_nav"
+  - if @show_sidebar
+    = render "projects/project_sidebar_nav"
 
-  #content.project#content-with-sidebar
+  .project{ id: "#{@show_sidebar ? 'content-with-sidebar' : 'content' }" }
     .project-details{ class: "#{'with-top-container' if @show_part_of}" }
       - @mode ||= 'normal'
       .display= render "projects/teaser_#{@mode}"

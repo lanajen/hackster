@@ -138,9 +138,9 @@
               - else
                 %ul#navbar-right.clearfix
                   %li
-                    %span= link_to 'Sign up', new_user_registration_path, class: 'btn btn-primary login-link', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '#{request.path}']);" #new_user_registration_path
+                    %span= link_to 'Sign up', new_user_registration_path, class: 'btn btn-default login-link', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '#{request.path}']);", id: 'login' #new_user_registration_path
                   %li.dropdown
-                    %a#login.btn.btn-default.login-link.dropdown-toggle{"data-toggle" => "dropdown", href: '#' }
+                    %a.btn.btn-primary.login-link.dropdown-toggle{"data-toggle" => "dropdown", href: '#' }
                       Log in
                     .dropdown-menu{:style => "padding: 15px; width: 250px;"}
                       = render 'devise/sessions/form'
@@ -156,26 +156,25 @@
           .container-fluid
             #content.wrapper
               = yield
-              #push
 
-      - unless params[:blank_frame]
+    - unless params[:blank_frame]
 
-        %footer
-          %ul.list-unstyled.list-inline.pull-left
-            %li= link_to 'About', about_path
-            %li= link_to 'Help', 'mailto:team@hackster.io?subject=Help!'
-            %li= link_to 'Feedback', 'mailto:team@hackster.io?subject=What%20I%20think%20about%20Hackster.io'
-            %li= link_to 'Resources', resources_path
-            %li= link_to 'Jobs', 'mailto:jobs@hackster.io?subject=I want to work with you guys!'
-            %li= link_to 'Terms', '/terms'
-            %li= link_to 'Privacy', '/privacy'
-            %li= link_to 'Newsletter', 'http://us7.campaign-archive2.com/home/?u=3fd72855783c7f1a97812d84e&id=6ff81e3e5b', target: '_blank'
-            %li
-          %ul.list-unstyled.list-inline.pull-right
-            %li= link_to content_tag(:i, '', class: 'fa fa-twitter fa-lg').html_safe, 'http://twitter.com/hacksterio', alt: 'Hackster.io on Twitter', class: 'link-icon'
-            %li= link_to content_tag(:i, '', class: 'fa fa-facebook fa-lg').html_safe, 'http://www.facebook.com/hacksterio', alt: 'Hackster.io on Facebook', class: 'link-icon'
-            %li Hackster.io 2014
-          /= link_to image_tag('//cdn.mxpnl.com/site_media/images/partner/badge_light.png', alt: 'Mobile Analytics'), 'https://mixpanel.com/f/partner', class: 'pull-right', style: 'margin-top:-10px;margin-right:15px;', target: '_blank'
+      %footer
+        %ul.list-unstyled.list-inline.pull-left
+          %li= link_to 'About', about_path
+          %li= link_to 'Help', 'mailto:team@hackster.io?subject=Help!'
+          %li= link_to 'Feedback', 'mailto:team@hackster.io?subject=What%20I%20think%20about%20Hackster.io'
+          %li= link_to 'Resources', resources_path
+          %li= link_to 'Jobs', 'mailto:jobs@hackster.io?subject=I want to work with you guys!'
+          %li= link_to 'Terms', '/terms'
+          %li= link_to 'Privacy', '/privacy'
+          %li= link_to 'Newsletter', 'http://us7.campaign-archive2.com/home/?u=3fd72855783c7f1a97812d84e&id=6ff81e3e5b', target: '_blank'
+          %li
+        %ul.list-unstyled.list-inline.pull-right
+          %li= link_to content_tag(:i, '', class: 'fa fa-twitter fa-lg').html_safe, 'http://twitter.com/hacksterio', alt: 'Hackster.io on Twitter', class: 'link-icon'
+          %li= link_to content_tag(:i, '', class: 'fa fa-facebook fa-lg').html_safe, 'http://www.facebook.com/hacksterio', alt: 'Hackster.io on Facebook', class: 'link-icon'
+          %li Hackster.io 2014
+        = link_to image_tag('//cdn.mxpnl.com/site_media/images/partner/badge_light.png', alt: 'Mobile Analytics'), 'https://mixpanel.com/f/partner', class: 'pull-right', style: 'margin-top:-10px;margin-right:15px;', target: '_blank'
     #mobile-nav-overlay.hide-on-desktop
       #mobile-nav-overlay-close.fa.fa-times
     #mobile-navigation.hide-on-desktop

@@ -27,7 +27,7 @@
                 - if image.title.present?
                   .caption-holder
                     = image.title
-- if can? :edit, @project
+-# if can? :edit, @project
   - file_type = 'image'
   /= render partial: 'shared/uploader/file_association', locals: { file_type: file_type, f: f }
   .project-edit-item

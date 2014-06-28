@@ -2,25 +2,24 @@
 
 - if @project.collection_id.present?
   #project-group
-    .container
-      This project is part of
-      - if @project.assignment.present?
-        - if @project.assignment.promotion.avatar
-          = image_tag @project.assignment.promotion.avatar.file_url(:mini), class: 'img-circle'
-        = link_to @project.assignment.to_label, assignment_path(@project.assignment)
-      - elsif @project.event.present?
-        - if @project.event.avatar
-          = image_tag @project.event.avatar.file_url(:mini), class: 'img-circle'
-        = link_to @project.event.name, event_path(@project.event)
-        - @project.awards.where(gradable_id: @project.collection_id, gradable_type: 'Group').each do |award|
-          %span.project-award
-            %i.fa.fa-trophy.istooltip{ title: award.grade, data: { container: 'body' } }
-        - if can? :request_access, @project.team
-          - if user_signed_in? and member = current_user.is_team_member?(@project)
-            - if member.request_pending?
-              %span.label.label-default Request to join team pending
-          - else
-            = link_to 'Join team', group_members_path(@project.team), class: 'btn btn-xs btn-warning', data: { method: :post }, id: 'join-button'
+    This project is part of
+    - if @project.assignment.present?
+      - if @project.assignment.promotion.avatar
+        = image_tag @project.assignment.promotion.avatar.file_url(:mini), class: 'img-circle'
+      = link_to @project.assignment.to_label, assignment_path(@project.assignment)
+    - elsif @project.event.present?
+      - if @project.event.avatar
+        = image_tag @project.event.avatar.file_url(:mini), class: 'img-circle'
+      = link_to @project.event.name, event_path(@project.event)
+      - @project.awards.where(gradable_id: @project.collection_id, gradable_type: 'Group').each do |award|
+        %span.project-award
+          %i.fa.fa-trophy.istooltip{ title: award.grade, data: { container: 'body' } }
+      -# if can? :request_access, @project.team
+        - if user_signed_in? and member = current_user.is_team_member?(@project)
+          - if member.request_pending?
+            %span.label.label-default Request to join team pending
+        - else
+          = link_to 'Join team', group_members_path(@project.team), class: 'btn btn-xs btn-warning', data: { method: :post }, id: 'join-button'
 
 - who = %w(you)
 - who += ['team members'] if @project.users.size > 1
@@ -70,15 +69,15 @@
               No tags yet.
               = link_to 'Add some?', edit_project_path(@project), data: { remote: true }
           - if can? :edit, @project
-            .edit-project-trigger
-              %button.js-edit-project.btn.btn-black.edit-project-btn
-                .inner-project-btn
-                  Edit Project
-                %span.fa.fa-edit.inner-project-btn-icon
-              %button.js-save-project.btn.btn-dark.save-project-btn
-                .inner-project-btn
-                  Save Project
-                %span.fa.fa-check.inner-project-btn-icon
+            %a.btn.btn-black.edit-project-btn{ href: edit_project_path(@project) }
+              %i.fa.fa-edit
+              Edit project settings
+            %a.btn.btn-black.edit-project-btn{ href: new_project_widget_path(@project) }
+              %i.fa.fa-plus
+              Add a widget
+            %a.btn.btn-black.edit-project-btn{ href: project_widgets_path(@project) }
+              %i.fa.fa-arrows
+              Reorder widgets
     %span.fa.fa-chevron-down.trigger-main-project-scroll.js-scroll-main-project
     #project-team
       .team-widget.pull-left

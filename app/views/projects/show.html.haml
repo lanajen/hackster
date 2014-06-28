@@ -1,12 +1,7 @@
 = content_for :head do
   = render 'meta_tags'
-/ Ben:  This needs updating.  If it's the user's first time editing this project, automatically put it in Edit mode.
-/       Perhaps we should create default widgets for them and put it into Edit mode.
-- if (!@widgets.any? && (can? :edit, @project))
-  - editmode = true
-- else
-  - editmode = false
-.project-show{data: {:editmode => "#{editmode}"}}
+
+.project-show
   .wrapper700
     .container-fluid
       - if @prev
@@ -42,13 +37,7 @@
           / - if can? :edit, @project
           /   = link_to 'Add a widget', new_project_widget_path(@project)
           - if @widgets.any?
-            - if can? :edit, @project
-              = simple_nested_form_for @project, url: project_path(@project), html: { class: 'update-project-form' } do |f|
-                %div
-                  = render 'projects/large_column', { f: f }
-            - else
-              %div
-                = render 'projects/large_column'
+            = render 'projects/large_column'
 
 
 

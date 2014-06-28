@@ -1,15 +1,5 @@
 #sidebar-container.project-pages-sidebar.affixTranslate
   %section#sidebar-container-in
-    / - if can? :edit, @project
-    /   .edit-project-trigger
-    /     %button.js-edit-project.btn.btn-black.edit-project-btn
-    /       .inner-project-btn
-    /         Edit Project
-    /       %span.fa.fa-edit.inner-project-btn-icon
-    /     %button.js-save-project.btn.btn-dark.save-project-btn
-    /       .inner-project-btn
-    /         Save Project
-    /       %span.fa.fa-check.inner-project-btn-icon
     #project-actions.clearfix
       - if @project.public?
         /= render 'projects/share'
@@ -25,11 +15,11 @@
             %a.scroll-nav-item.scroll.clearfix{ :href => "#top-project-section", :data => { target: "#top-project-section", offset: '0'}}
               = @project.name
               %i.fa.fa-home
-          - @project.sections.each do |section|
+          - @project.widgets.each do |widget|
             %li
-              %a.scroll-nav-item.scroll.clearfix{ :href => '#'+section.id, :data => { target: '#'+section.id, offset: '-20'}}
-                %i.fa{ class: section.icon }
-                = section.name
+              %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-#{widget.id}", :data => { target: "#widget-#{widget.id}", offset: '-20'}}
+                %i.fa{ class: icon_for_widget(widget) }
+                = widget.name
           %li
             %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-comments", :data => { target: "#widget-comments", offset: '-20'}}
               Comments

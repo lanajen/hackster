@@ -204,57 +204,7 @@
         return this;
       }
     });
-
-    /*******************
-        EDIT PROJECT
-    ********************/
-    $projectShowItems   = $('.project-show-item');
-    $projectEditItems   = $('.project-edit-item');
-    $editProjectBtn     = $('.js-edit-project');
-    $saveProjectBtn     = $('.js-save-project');
-    $editProjectBtn.on('click',function(e){
-      e.preventDefault();
-      e.stopPropagation();
-      editProject();
-    });
-    $saveProjectBtn.on('click',function(e){
-      e.preventDefault();
-      e.stopPropagation();
-      saveProject();
-    });
-    if($('.project-show').length){
-      if($('.project-show').data('editmode')){
-        editProject();
-      }
-    }
   });
-
-
-  /*******************
-      EDIT PROJECT
-  ********************/
-  var $projectShowItems,
-      $projectEditItems,
-      $editProjectBtn,
-      $saveProjectBtn;
-
-  function editProject(){
-    $projectShowItems.hide();
-    $projectEditItems.fadeIn();
-    $editProjectBtn.hide();
-    $saveProjectBtn.show();
-  }
-
-  function saveProject(){
-    //Enter JS to save project fields
-    //...
-    $projectEditItems.hide();
-    $projectShowItems.fadeIn();
-    $saveProjectBtn.hide();
-    $editProjectBtn.show();
-  }
-
-
 })(jQuery, window, document);
 
 $(window).load(function(){

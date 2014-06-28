@@ -1,9 +1,12 @@
 - cache [widget, can?(:update, widget)], tag: "widget-#{widget.id}" do
   .widget{ id: "widget-#{widget.id}" }
-    - if widget.default_label
+    -# if widget.default_label
       .header
         %h3= widget.default_label
-    - if can? :edit, @project
-      = render partial: "widgets/show/#{widget.identifier}", locals: { widget: widget, f: f }
-    - else
-      = render partial: "widgets/show/#{widget.identifier}", locals: { widget: widget }
+    .header
+      %h3{ style: 'position:relative;' }
+        = widget.name
+        .btn-heading
+          - if can? :update, widget
+            = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_project_widget_path(@project, widget), class: 'btn-edit', rel: 'tooltip', title: 'Edit content', data: { container: 'body' }
+    = render partial: "widgets/show/#{widget.identifier}", locals: { widget: widget }

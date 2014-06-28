@@ -1,14 +1,15 @@
 - cache [@project.widgets, can?(:edit, @project)], tag: "project-#{@project.id}-widgets" do
-  - @project.sections.each do |section|
+  .project-section{ id: "showcase" }
+    .header
+      %h2 Showcase
+  - @project.widgets.each do |widget|
+    = render 'widgets/widget', { widget: widget }
+  -# @project.sections.each do |section|
     .project-section{ id: section.id }
       .header
         %h2= section.name
-      - if can? :edit, @project
-        - @widgets_by_section[section.index].each do |widget|
-          = render 'widgets/widget', { widget: widget, f: f }
-      - else
-        - @widgets_by_section[section.index].each do |widget|
-          = render 'widgets/widget', { widget: widget }
+      - @widgets_by_section[section.index].each do |widget|
+        = render 'widgets/widget', { widget: widget }
 
 #more-info.project-section
   .header
@@ -70,7 +71,7 @@
             .meta-title-wrap
               .meta-title Technologies
             No technologies yet.
-            = link_to 'Add some?', edit_project_path(@project), data: { remote: true }
+            = link_to 'Add some?', edit_project_path(@project)
 
         - if @project.product_tags.any?
           .tags.meta
@@ -83,7 +84,7 @@
             .meta-title-wrap
               .meta-title Tags
             No tags yet.
-            = link_to 'Add some?', edit_project_path(@project), data: { remote: true }
+            = link_to 'Add some?', edit_project_path(@project)
 
       - unless @project.respects_count.zero?
         = render partial: 'widgets/respect_widget', locals: { users: @project.respecting_users }
@@ -121,6 +122,6 @@
             Edit
             %b.caret
           %ul.dropdown-menu
-            %li= link_to 'Settings', edit_project_path(@project), data: { remote: true }
+            %li= link_to 'Settings', edit_project_path(@project)
             %li= link_to 'Add a widget', new_project_widget_path(@project)
             %li= link_to 'Reorder widgets and edit columns', project_widgets_path(@project)
