@@ -19,6 +19,9 @@ HackerIo::Application.routes.draw do
     # get 'finish_and_redirect' => 'split#finish_and_redirect'
     get 'validate_step' => 'split#validate_step'
 
+    get 'experts' => 'expert_requests#new'
+    resources :expert_requests, only: [:create]
+
     devise_for :users, controllers: {
       confirmations: 'users/confirmations',
       invitations: 'users/invitations',
