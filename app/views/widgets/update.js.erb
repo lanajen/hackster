@@ -1,0 +1,5 @@
+$('#widget-<%= @widget.id %> .content').html('<%= escape_javascript render(partial: "widgets/show/#{@widget.identifier}", locals: { widget: @widget }) %>');
+$('#widget-<%= @widget.id %> .edit').fadeOut(function(){
+  $('#widget-<%= @widget.id %> .content').fadeIn();
+  smoothScrollTo('#widget-<%= @widget.id %>', -20);
+});

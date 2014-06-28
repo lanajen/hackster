@@ -1,14 +1,5 @@
-= content_for :js do
-  = javascript_include_tag 'wysihtml5/parser_rules'
-  :javascript
-    var editor = new wysihtml5.Editor('wysihtml5-textarea', { // id of textarea element
-      toolbar:      'wysihtml5-toolbar', // id of toolbar element
-      stylesheets:  "#{ stylesheet_path('wysihtml5') }", // optional, css to style the editor's content
-      parserRules:  wysihtml5CustomParserRules, // defined in parser rules set
-      allowObjectResizing:  true // Whether the composer should allow the user to manually resize images, tables etc.
-    });
-
-#wysihtml5-toolbar.btn-toolbar{ style: 'display: none;' }
+- @wysihtml5_toolbar_increment = @wysihtml5_toolbar_increment ? @wysihtml5_toolbar_increment += 1 : 0
+=content_tag :div, id: "wysihtml5-toolbar-#{@wysihtml5_toolbar_increment}", class: "wysihtml5-toolbar btn-toolbar", style: "display: none;" do
   .btn-group
     %a.btn.btn-default.wysihtml5-command{ data: { 'wysihtml5-command' => 'bold', container: 'body' }, rel: 'tooltip', title: 'bold' }
       %i.fa.fa-bold

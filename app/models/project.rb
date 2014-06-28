@@ -277,6 +277,44 @@ class Project < ActiveRecord::Base
     @new_slug ||= slug
   end
 
+  def sections
+    @sections ||= [
+      OpenStruct.new({
+        name: 'Showcase',
+        allow: %w(video text image),
+        editable: true,
+        index: 1,
+        id: 'showcase',
+        icon: 'fa-picture-o',
+      }),
+      OpenStruct.new({
+        name: 'Hardware design',
+        allow: %w(video text image parts),
+        defaults: %w(parts schematics),
+        editable: true,
+        index: 2,
+        id: 'hardware',
+        icon: 'fa-gears',
+      }),
+      OpenStruct.new({
+        name: 'Software design',
+        allow: %w(video text image code),
+        defaults: %w(code),
+        editable: true,
+        index: 3,
+        id: 'software',
+        icon: 'fa-code',
+      }),
+      # OpenStruct.new({
+      #   name: 'Collaborate',
+      #   allow: %w(),
+      #   editable: false,
+      #   index: 4,
+      #   id: 'collaborate',
+      # }),
+    ]
+  end
+
   def slug_was_changed?
     @old_slug.present? and @old_slug != slug
   end

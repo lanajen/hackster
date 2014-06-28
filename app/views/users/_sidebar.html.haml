@@ -1,8 +1,9 @@
 - cache ["user-#{@user.id}-sidebar", user_signed_in?, user_is_current?, (user_signed_in? and current_user.following?(@user)), (user_signed_in? and current_user.is?(:admin))], tag: ["user-#{@user.id}-sidebar"] do
-  #sidebar-container
+  #sidebar-container.affixable
     %section#sidebar-container-in
       - if @user.avatar
-        .avatar#tech-avatar-image{:style=>"background-image:url('#{@user.avatar(:big)}');"}
+        .avatar#tech-avatar-image-div
+          #tech-avatar-image{:style=>"background-image:url('#{@user.avatar(:big)}');"}
       #tech-body
         %h3= link_to @user.name, @user, id: 'tech-name'
         %p

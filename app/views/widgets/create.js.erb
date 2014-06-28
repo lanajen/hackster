@@ -1,0 +1,3 @@
+$('#showcase #widget-new').html('');
+$('#showcase .widget:last').after('<%= escape_javascript render(partial: "widget", locals: { widget: @widget }) %>');
+$('#widget-<%= @widget.id %> .content').html("<%= escape_javascript render(partial: 'form') %>");

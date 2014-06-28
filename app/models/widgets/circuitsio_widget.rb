@@ -1,6 +1,6 @@
 class CircuitsioWidget < IframeSchematicsWidget
   def iframe_template
-    "<iframe width='420' height='260'
+    "<iframe width='100%' height='100%'
     src='https://123d.circuits.io/circuits/|id|/embed' frameborder='0'
     marginwidth='0' marginheight='0' scrolling='no'></iframe>"
   end

@@ -6,7 +6,7 @@
     .form-group
       .controls
         = render 'shared/wysihtml5_toolbar'
-    = f.input :body, input_html: { id: 'wysihtml5-textarea', rows: 10 }
+    = f.input :body, input_html: { id: "text-widget-#{@wysihtml5_toolbar_increment}", class: "wysihtml5-textarea", rows: 10 }
     = f.input :private, inline_label: 'Make it private', label: false
 
   .form-actions

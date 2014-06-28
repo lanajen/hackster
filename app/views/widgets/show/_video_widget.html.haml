@@ -1,18 +1,34 @@
 - video = widget.video
-- width = 420
-.video-widget
-  - if video
-    .video{ style: "width:#{width}px;height:#{width*video.ratio_height/video.ratio_width}px" }
-      - if video.provider == 'youtube'
-        <iframe width="100%" height="100%" src="//www.youtube.com/embed/#{video.id_for_provider}?rel=0" frameborder="0" allowfullscreen></iframe>
-      - elsif video.provider == 'vimeo'
-        <iframe src="//player.vimeo.com/video/#{video.id_for_provider}" width="100%" height="100%" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
-      - elsif video.provider == 'instagram'
-        <iframe src="//instagram.com/p/#{video.id_for_provider}/embed/" width="100%" height="100%" frameborder="0" scrolling="no" allowtransparency="true"></iframe>
-      - elsif video.provider == 'vine'
-        <iframe class="vine-embed" src="//vine.co/v/#{video.id_for_provider}/embed/simple" width="100%" height="100%" frameborder="0"></iframe><script async src="//platform.vine.co/static/scripts/embed.js" charset="utf-8"></script>
-      - elsif video.provider == 'ustream'
-        <iframe width="100%" height="100%" src="//www.ustream.tv/embed/#{video.id_for_provider}?v=3&amp;wmode=direct" scrolling="no" frameborder="0" style="border: 0px none transparent;"></iframe>
+.project-show-item
+  .video-widget
+    - if widget.caption
+      .caption
+        = widget.caption.html_safe
+    - if video
+      .video.widescreen
+        - case video.provider.to_s
+        - when 'youtube'
+          <iframe width="100%" height="100%" src="//www.youtube.com/embed/#{video.id_for_provider}?rel=0" frameborder="0" allowfullscreen></iframe>
+        - when 'vimeo'
+          <iframe src="//player.vimeo.com/video/#{video.id_for_provider}" width="100%" height="100%" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+        - when 'instagram'
+          <iframe src="//instagram.com/p/#{video.id_for_provider}/embed/" width="100%" height="100%" frameborder="0" scrolling="no" allowtransparency="true"></iframe>
+        - when 'vine'
+          <iframe class="vine-embed" src="//vine.co/v/#{video.id_for_provider}/embed/simple" width="100%" height="100%" frameborder="0"></iframe><script async src="//platform.vine.co/static/scripts/embed.js" charset="utf-8"></script>
+        - when 'ustream'
+          <iframe width="100%" height="100%" src="//www.ustream.tv/embed/#{video.id_for_provider}?v=3&amp;wmode=direct" scrolling="no" frameborder="0" style="border: 0px none transparent;"></iframe>
 
-  - if widget.caption
-    %p.caption= widget.caption.html_safe
+
+-# if can? :edit, @project
+  .project-edit-item
+    .video-edit-div
+      %h3
+        Edit Video
+      /= f.simple_fields_for :video do |f_video|
+      = text_field(:widget, :link, value: video.link, label: 'Paste the link to your video', hint: "Supported providers: #{Video::KNOWN_PROVIDERS.values.map{|v| v.capitalize}.to_sentence}", class: "form-control",required: true)
+
+      - @wysihtml5_toolbar_style = 'simple'
+      .video-edit-caption
+        %label Caption
+        = render 'shared/wysihtml5_toolbar'
+      = text_field( :widget, :caption, value: widget.caption, id: "text-widget-#{@wysihtml5_toolbar_increment}", class: "wysihtml5-textarea", rows: 5, style: 'height: 100px;', label: false, hint: 'If you need to give more details about this video' )

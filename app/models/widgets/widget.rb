@@ -13,6 +13,10 @@ class Widget < ActiveRecord::Base
   validates :type, :name, presence: true
   before_create :set_position
 
+  def default_label
+    nil
+  end
+
   def has_unresolved_issues?
     issues.where(workflow_state: :unresolved).any?
   end

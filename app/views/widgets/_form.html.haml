@@ -1,12 +1,12 @@
-= simple_nested_form_for [@project, @widget], url: widget_form_path(@project, @widget), html: { class: 'widget-form accept-file-upload' } do |f|
+= simple_nested_form_for [@project, @widget], url: widget_form_path(@project, @widget), html: { class: 'widget-form accept-file-upload', data: { remote: true } } do |f|
   = f.error_notification
   - if @widget.persisted?
     = f.input :name, label: 'Give it a label'
     = render partial: "widgets/form/#{@widget.identifier}_form", locals: { f: f, widget: @widget }
     .form-actions
       = f.submit 'Save changes', class: 'btn btn-primary'
-      = link_to 'Delete widget', project_widget_path(@project, @widget), class: 'btn btn-danger btn-sm', method: :delete, data: { confirm: "Are you sure? There's no coming back!" }
-      = link_to 'Cancel', @project, class: 'btn btn-link btn-sm'
+      = link_to 'Delete widget', project_widget_path(@project, @widget), class: 'btn btn-danger btn-sm', method: :delete, data: { confirm: "Are you sure? There's no coming back!", remote: true }
+      = link_to 'Cancel', @project, class: 'btn btn-link btn-sm btn-cancel', data: { hide: "#widget-#{@widget.id} .edit", show: "#widget-#{@widget.id} .content" }
   - else
     .form-group{ class: "#{'has-error' if @widget.errors.messages[:type].present?}" }
       %label.control-label

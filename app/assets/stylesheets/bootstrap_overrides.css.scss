@@ -13,6 +13,11 @@
   padding-right: 11px;
 }
 
+.container-fluid {
+  padding-left: 11px;
+  padding-right: 11px;
+}
+
 .container > .navbar-header, .container > .navbar-collapse {
   margin-right: -11px;
   margin-left: -11px;
@@ -77,11 +82,20 @@ a{
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f8f8', endColorstr='#f4f4f4',GradientType=0 );
   }
 }
+.btn-dark{
+  border: none;
+  color: white;
+  background: #2A6186;
+  &:hover,&:active,&:focus{
+    background: #316C94;
+    color:white;
+  }
+}
 .btn-black{
   border: none;
   color: white;
-  background: #676767;
-  &:hover,&:active{
+  background: #555;
+  &:hover,&:active,&:focus{
     background: #49494D;
     color:white;
   }
@@ -103,7 +117,8 @@ a{
   @include disable-select;
   &:hover,&:active{
     color: white;
-    background: #5A5858;
+    // background: #5A5858;
+    background: #4292C9;
     border: none;
   }
 }

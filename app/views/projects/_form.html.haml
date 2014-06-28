@@ -1,4 +1,4 @@
-= simple_nested_form_for @project, html: { class: 'form-horizontal remote accept-file-upload', data: { remote: true } }, wrapper: :bootstrap3_horizontal do |f|
+= simple_nested_form_for @project, html: { class: 'form-horizontal remote accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
   = f.error_notification
 
   .row
@@ -10,7 +10,7 @@
             - if current_user.is? :admin
               %li= link_to 'Edit as admin', edit_admin_project_path(@project), class: 'btn btn-warning btn-sm'
             %li= f.submit 'Update project', class: 'btn btn-primary btn-sm'
-            %li= link_to 'Cancel', '', class: 'btn-cancel btn-link btn-sm', data: { show: '.project .display', hide: '.project .edit' }
+            %li= link_to 'Cancel', @project, class: 'btn-link btn-sm'
       %hr
 
   .row
@@ -76,5 +76,3 @@
         .col-xs-8.col-xs-offset-4= link_to 'Delete project', project_path(@project), method: :delete, class: 'btn btn-danger btn-xs', data: { confirm: "Are you sure? There's no coming back!" }
 
       -# = f.input :current, as: :boolean, label: false, inline_label: 'Currently working on it'
-
-%hr

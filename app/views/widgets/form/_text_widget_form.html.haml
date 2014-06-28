@@ -2,4 +2,4 @@
   .controls
     %label Add text
     = render 'shared/wysihtml5_toolbar'
-= f.input :content, as: :text, input_html: { id: 'wysihtml5-textarea', rows: 10, style: 'height: 400px;' }, label: false
+= f.input :content, as: :text, input_html: { id: "text-widget-#{@wysihtml5_toolbar_increment}", class: "wysihtml5-textarea", rows: 10, style: 'height: 400px;' }, label: false

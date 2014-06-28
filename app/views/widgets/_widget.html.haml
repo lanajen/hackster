@@ -1,18 +1,13 @@
 - cache [widget, can?(:update, widget)], tag: ["widget-#{widget.id}"] do
-  .well{ id: "widget-#{widget.id}" }
+  .widget{ id: "widget-#{widget.id}" }
+    -# if widget.default_label
+      .header
+        %h3= widget.default_label
     .header
-      %h4{ style: 'position:relative;' }
+      %h3{ style: 'position:relative;' }
         = widget.name
-
         .btn-heading
-          - if show_expand_for? widget
-            = link_to content_tag(:i, '', class: 'fa fa-expand'), '#', class: 'btn-edit to-full-width', data: { target: "#widget-#{widget.id}", container: 'body' }, rel: 'tooltip', title: 'See in full screen'
           - if can? :update, widget
-            = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_project_widget_path(@project, widget), class: 'btn-edit', rel: 'tooltip', title: 'Edit content', data: { container: 'body' }
-        -# .btn-heading
-          - size = comments.size
-          = render partial: 'widgets/comments_button', locals: { size: size, widget: widget }
-
-    .content
-      = render partial: "widgets/show/#{widget.identifier}", locals: { widget: widget }
-      -# = render partial: 'widgets/comments', locals: { widget: widget, comments: comments }
+            = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_project_widget_path(@project, widget), class: 'btn-edit', rel: 'tooltip', title: 'Edit content', data: { container: 'body', remote: true }
+    .content= render partial: "widgets/show/#{widget.identifier}", locals: { widget: widget }
+    .edit{ style: 'display:none;' }

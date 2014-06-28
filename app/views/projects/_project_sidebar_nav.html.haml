@@ -1,0 +1,30 @@
+#sidebar-container.project-pages-sidebar.affixable
+  %section#sidebar-container-in
+    #project-actions.clearfix
+      - if @project.public?
+        /= render 'projects/share'
+        /= render 'projects/project_embed_popup'
+        = render partial: 'respects/button', locals: { project: @project }
+        %a.share-this-project{href: '#'}
+          Share Project
+          %span.fa.fa-share-square-o
+    #scrolling-project-section
+      #scroll-nav
+        %ul.nav
+          %li.active
+            %a.scroll-nav-item.scroll.clearfix{ :href => "#top-project-section", :data => { target: "#top-project-section", offset: '0'}}
+              = @project.name
+              %i.fa.fa-home
+          - @project.widgets.each do |widget|
+            %li
+              %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-#{widget.id}", :data => { target: "#widget-#{widget.id}", offset: '-20'}}
+                %i.fa{ class: icon_for_widget(widget) }
+                = widget.name
+          %li
+            %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-comments", :data => { target: "#widget-comments", offset: '-20'}}
+              Comments
+              %span.comment-count
+                (
+                = @project.comments_count
+                )
+              %i.fa.fa-comment

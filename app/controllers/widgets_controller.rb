@@ -34,7 +34,10 @@ class WidgetsController < ApplicationController
     authorize! :create, @widget
 
     if @widget.save
-      redirect_to edit_project_widget_path(@project, @widget)
+      respond_to do |format|
+        format.html { redirect_to edit_project_widget_path(@project, @widget) }
+        format.js
+      end
 
       track_event 'Updated project', @project.to_tracker.merge({ type: 'widget created' }).merge(@widget.to_tracker)
     else
@@ -48,10 +51,15 @@ class WidgetsController < ApplicationController
 
   def update
     if @widget.update_attributes params[:widget]
-      flash[:notice] = 'Widget saved.'
       current_user.broadcast :update, @project.id, 'Project', @project.id if @project.public?
-      session[:last_widget_edited] = @widget.class.name.underscore
-      respond_with @project
+      respond_to do |format|
+        format.html do
+          flash[:notice] = 'Widget saved.'
+          session[:last_widget_edited] = @widget.class.name.underscore
+          respond_with @project
+        end
+        format.js
+      end
 
       track_event 'Updated project', @project.to_tracker.merge({ type: 'widget update' }).merge(@widget.to_tracker)
     else

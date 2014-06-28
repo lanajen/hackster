@@ -1,0 +1,6 @@
+$('#widget-<%= @widget.id %> .edit').html("<%= escape_javascript render(partial: 'form') %>");
+$("<%= escape_javascript content_for(:js) %>").appendTo($('#widget-<%= @widget.id %> .edit'));
+$('#widget-<%= @widget.id %> .content').fadeOut(function(){
+  $('#widget-<%= @widget.id %> .edit').fadeIn();
+});
+$('.istooltip').tooltip();

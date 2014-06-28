@@ -9,6 +9,10 @@ class IframeSchematicsWidget < Widget
   validates :link, format: { with: lambda { |w| w.link_regexp }, message: 'is not a valid project URL' }, allow_blank: true
   before_save :generate_iframe_from_link
 
+  def default_label
+    'Schematics'
+  end
+
   def identifier
     'iframe_schematics_widget'
   end

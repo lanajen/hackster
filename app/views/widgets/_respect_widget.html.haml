@@ -1,11 +1,11 @@
-.well{ id: "widget-respects" }
-  .header
-    %h4{ style: 'position:relative;' }
+#widget-respects.meta
+  .meta-title-wrap
+    .meta-title
       Users who respect this project
       = render partial: 'respects/button', locals: { project: @project }
-  .content.row
+  .content
     - cache ["project-#{@project.id}-respects", 'users'], tag: ["project-#{@project.id}-respects"] do
-      - users.each do |user|
-        - cache ["user-#{user.id}-thumb", 'respect'], tag: ["user-#{user.id}-thumb"] do
-          .col-xs-2.respect-thumb
-            = link_to image_tag(user.decorate.avatar(:thumb), class: 'img-responsive'), user, data: { container: 'body' }, rel: 'tooltip', title: user.name
+      .respect-thumbs.clearfix
+        - users.each do |user|
+          - cache ["user-#{user.id}-thumb", 'respect'], tag: ["user-#{user.id}-thumb"] do
+            = link_to image_tag(user.decorate.avatar(:thumb), class: 'img-responsive respects-user-img istooltip', data: { container: 'body' }, rel: 'tooltip', title: user.name), user

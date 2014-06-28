@@ -2,6 +2,7 @@ class ProjectsController < ApplicationController
   before_filter :load_project, only: [:show, :embed, :update, :destroy, :redirect_old_show_route]
   load_and_authorize_resource only: [:index, :edit]
   layout 'project', only: [:edit, :update, :show]
+  before_filter :set_project_mode, only: [:edit, :update]
   respond_to :html
   respond_to :js, only: [:edit, :update]
   after_action :allow_iframe, only: :embed
@@ -35,12 +36,14 @@ class ProjectsController < ApplicationController
     impressionist_async @project, '', unique: [:session_hash]
 
     @show_part_of = @project.collection_id.present? and @project.assignment.present?
+    @show_sidebar = true
 
     title @project.name
     @project_meta_desc = "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."
     meta_desc @project_meta_desc
     @project = @project.decorate
-    @widgets = @project.widgets.order(:created_at)
+    # @widgets_by_section ={ 1=>[], 2=>[], 3=>[], 4=>[] }
+    @widgets = @project.widgets.order(:created_at)#.each{|w| @widgets_by_section[w.position[0].to_i] << w }
 
     # other projects by same author
     @other_projects_count = Project.public.most_popular.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).size
