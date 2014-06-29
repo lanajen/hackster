@@ -153,12 +153,10 @@
       });
     });
 
-    $('.headline-image').slick({
-      accessibility: false,
-      speed: 500,
-      fade: true,
-      dots: true
+    $('.project').on('reload', '.widget', function(e){
+      loadSlickSlider();
     });
+    loadSlickSlider();
 
     $('.project').on('click', '.widget-form .btn[data-toggle="subcat"]', function(e){
       e.preventDefault();
@@ -217,3 +215,12 @@ $(window).load(function(){
     $(el).width(Math.max(total, parent));
   });
 });
+
+function loadSlickSlider(){
+  $('.headline-image').slick({
+    accessibility: false,
+    speed: 500,
+    fade: true,
+    dots: true
+  });
+}

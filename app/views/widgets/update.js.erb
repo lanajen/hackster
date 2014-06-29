@@ -1,5 +1,7 @@
 $('#widget-<%= @widget.id %> .content').html('<%= escape_javascript render(partial: "widgets/show/#{@widget.identifier}", locals: { widget: @widget }) %>');
 $('#widget-<%= @widget.id %> .edit').fadeOut(function(){
+  $(this).html('');
   $('#widget-<%= @widget.id %> .content').fadeIn();
+  $('#widget-<%= @widget.id %>').trigger('reload');
   smoothScrollTo('#widget-<%= @widget.id %>', -20);
 });

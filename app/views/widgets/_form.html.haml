@@ -166,14 +166,14 @@
     = f.input :name, label: 'Give it a label'
     .form-actions
       = f.submit 'Save and continue', class: 'btn btn-primary'
-      = link_to 'Cancel', @project, class: 'btn btn-link btn-sm'
+      = link_to 'Cancel', @project, class: 'btn btn-link btn-sm btn-cancel', data: { hide: "#widget-new", show: "" }
 
-:javascript
-  $('input[type="radio"]:checked').each(function(i, rad){
-    $(rad).parent().addClass('active');
-    $('.checkmark', $(rad).parent()).show();
-    if ($(rad).parent().parent().hasClass('widget-subcategories')) {
-      $(rad).parent().parent().show();
-      $('.btn[data-target="#' + $(rad).parent().parent().attr('id') + '"]').addClass('active');
-    }
-  });
+    :javascript
+      $('input[type="radio"]:checked').each(function(i, rad){
+        $(rad).parent().addClass('active');
+        $('.checkmark', $(rad).parent()).show();
+        if ($(rad).parent().parent().hasClass('widget-subcategories')) {
+          $(rad).parent().parent().show();
+          $('.btn[data-target="#' + $(rad).parent().parent().attr('id') + '"]').addClass('active');
+        }
+      });

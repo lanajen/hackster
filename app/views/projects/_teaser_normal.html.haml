@@ -68,16 +68,6 @@
             .tags.meta
               No tags yet.
               = link_to 'Add some?', edit_project_path(@project), data: { remote: true }
-          - if can? :edit, @project
-            %a.btn.btn-black.edit-project-btn{ href: edit_project_path(@project) }
-              %i.fa.fa-edit
-              Edit project settings
-            %a.btn.btn-black.edit-project-btn{ href: new_project_widget_path(@project), data: { remote: true } }
-              %i.fa.fa-plus
-              Add a widget
-            %a.btn.btn-black.edit-project-btn{ href: project_widgets_path(@project) }
-              %i.fa.fa-arrows
-              Reorder widgets
     %span.fa.fa-chevron-down.trigger-main-project-scroll.js-scroll-main-project
     #project-team
       .team-widget.pull-left

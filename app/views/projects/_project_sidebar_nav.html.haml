@@ -2,12 +2,21 @@
   %section#sidebar-container-in
     #project-actions.clearfix
       - if @project.public?
-        /= render 'projects/share'
-        /= render 'projects/project_embed_popup'
         = render partial: 'respects/button', locals: { project: @project }
-        %a.share-this-project{href: '#'}
-          Share Project
-          %span.fa.fa-share-square-o
+        = render 'projects/project_embed_popup'
+
+      - if can? :edit, @project
+        %a{ href: edit_project_path(@project) }
+          %i.fa.fa-edit
+          Edit project settings
+        %a{ href: new_project_widget_path(@project), data: { remote: true } }
+          %i.fa.fa-plus
+          Add a widget
+        %a{ href: project_widgets_path(@project) }
+          %i.fa.fa-arrows
+          Reorder widgets
+        = link_to "#{content_tag(:i, '', class: 'fa fa-group')} Manage team".html_safe, project_edit_team_path(@project)
+
     #scrolling-project-section
       #scroll-nav
         %ul.nav
