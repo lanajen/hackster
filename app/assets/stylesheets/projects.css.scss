@@ -449,6 +449,13 @@ a.action-respected, a.action-followed {
         font-weight: bold;
       }
     }
+    .actions {
+      margin-top: 10px;
+      a {
+        @extend .btn;
+        @extend .btn-default;
+      }
+    }
     a.hidden-link, a.hidden-link:hover{
       color: #fff;
       &:hover{
@@ -674,6 +681,9 @@ a.action-respected, a.action-followed {
         font-size: 14px;
         color: #fff;
         @include transition(all .3s ease);
+      }
+      &.guest-name {
+        padding-top: 5px;
       }
     }
     .btn-edit{

@@ -7,7 +7,6 @@
     .project-details{ class: "#{'with-top-container' if @show_part_of}" }
       - @mode ||= 'normal'
       .display= render "projects/teaser_#{@mode}"
-      .edit.container{ style: 'display:none;' }
     = yield
 
 = render template: 'layouts/application'

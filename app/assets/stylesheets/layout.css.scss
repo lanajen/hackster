@@ -797,18 +797,6 @@ footer {
         height: 80px;
       }
     }
-    .actions {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      text-align: center;
-      & > a, a.action {
-        color: #999;
-        margin-left: 10px;
-        @include font-size(16);
-      }
-    }
     &.teaser-short {
       .text-holder {
         padding: 30px 20px;
