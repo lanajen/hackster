@@ -193,6 +193,16 @@
       $('.widget-subcategories:visible').slideUp();
     });
 
+    $('.project').on('click', '.widget .btn-edit, .widget input[type=submit]', function(e){
+      parent = $(this).parent().parent().parent().parent();
+      $('.load-overlay', parent).show();
+    });
+
+    $('.project').on('click', '.widget .btn-cancel', function(e){
+      parent = $(this).parent().parent().parent().parent().parent();
+      parent.removeClass('edit-mode');
+    });
+
     // triggers event for class change
     $.each(["addClass","removeClass"],function(i, methodname){
       var oldmethod = $.fn[methodname];

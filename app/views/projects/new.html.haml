@@ -59,45 +59,59 @@
           Be cool and credit the hacker who built it if it's not you!
 
 - else
-  .col-xs-4.col-xs-offset-4
+  .col-xs-8.col-xs-offset-2
     .wellified
-      %h2.text-center New project
+      %h2.mg-20.text-center Start a new project
 
-      = simple_nested_form_for @project, html: { class: 'accept-file-upload' } do |f|
+      = simple_nested_form_for @project, html: { class: 'accept-file-upload form-horizontal' }, wrapper: :bootstrap3_horizontal do |f|
         = f.error_notification
 
+        = f.input :open_source, label: false do
+          <div class="switch">
+          <input id="cmn-toggle-1" class="cmn-toggle cmn-toggle-round" type="checkbox" name="project[open_source]">
+          <label for="cmn-toggle-1" class="option-unchecked option">Closed source</label>
+          <label class="switch-visual" for="cmn-toggle-1"></label>
+          <label for="cmn-toggle-1" class="option-checked option">Open source</label>
+          </div>
         = f.input :name, label: 'What is it called?'
         = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner description, Twitter-style.'
         = f.input :product_tags_string, as: :hidden
         = f.input :tech_tags_string, as: :hidden
 
-        .cover_image.file-drop.form-group
-          - if @project.cover_image
-            = hidden_field_tag :cover_image_id, @project.cover_image.id
-          %label.control-label Cover image
-          %div
-            %span.cover_image.image-preview.preview
+        .form-group
+          .col-xs-4
+            %label.control-label Cover image
+          .col-xs-8
+            .cover_image.file-drop
               - if @project.cover_image
-                = image_tag @project.cover_image.file_url(:cover_mini_thumb)
-            %a.btn.btn-default.btn-sm{ data: { target: '.file_upload.cover_image' } } Select picture
+                = hidden_field_tag :cover_image_id, @project.cover_image.id
+              %div
+                %span.cover_image.image-preview.preview
+                  - if @project.cover_image
+                    = image_tag @project.cover_image.file_url(:cover_mini_thumb)
+                %a.btn.btn-default.btn-sm{ data: { target: '.file_upload.cover_image' } } Select picture
 
         = render partial: 'shared/image_form_bare', locals: { file_type: 'cover_image', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
 
-        = f.button :submit, 'Go!', class: 'btn-block btn btn-primary'
-
-  .col-xs-4.col-xs-offset-4
-    %hr
-
-  .col-xs-4.col-xs-offset-4.mg-40
-    .wellified
-      %p.text-center
-        %strong Is there an existing web page for this project?
-        Enter the URL below and we'll import it.
-        %small= link_to 'More than one page?', new_project_import_path
-
-      = form_tag project_imports_path, method: :post do
         .form-group
-          = text_field_tag :urls, params[:urls], placeholder: 'Project log URL', class: 'form-control'
-          = hidden_field_tag :tech_tags_string, params[:project].try(:[], :tech_tags_string)
-          = hidden_field_tag :product_tags_string, params[:project].try(:[], :product_tags_string)
-        = submit_tag 'Import project', class: 'btn btn-primary btn-block'
+          .col-xs-8.col-xs-offset-4
+            = f.button :submit, 'Continue', class: 'btn-block btn-primary'
+
+  - if @project.open_source
+    .col-xs-6.col-xs-offset-3
+      %hr
+
+    .col-xs-8.col-xs-offset-2.mg-40
+      .wellified
+        %p.text-center
+          %strong Is there an existing web page for this project?
+          Enter the URL below and we'll import it.
+          %br
+          %small= link_to 'More than one page?', new_project_import_path
+
+        = form_tag project_imports_path, method: :post do
+          .form-group
+            = text_field_tag :urls, params[:urls], placeholder: 'Project log URL', class: 'form-control'
+            = hidden_field_tag :tech_tags_string, params[:project].try(:[], :tech_tags_string)
+            = hidden_field_tag :product_tags_string, params[:project].try(:[], :product_tags_string)
+          = submit_tag 'Import project', class: 'btn btn-primary btn-block'

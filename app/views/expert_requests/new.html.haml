@@ -1,23 +1,24 @@
-
 .row
   .col-xs-6.col-xs-offset-3
     .page.wellified
 
-      %h1 We help you turn your idea into a product
+      %h1.top.text-center.mg-20 We'll help you turn your idea into a product
       %p Making hardware products is a hazardous task. It requires experience and skills in many different areas, which makes it very daunting for first-timers.
-      %p Luckily, many people have done it before. You can now tap into their expertise and knowledge through Hackster. Skip the advancing in the dark, avoid all the common mistakes and get your product to market faster!
+      %p Luckily, many people have done it before. You can now tap into their expertise and knowledge through Hackster. Stop advancing in the dark, avoid all the common mistakes and get your product to market faster!
       %p Areas of expertise:
       %ul
         %li Mechanical and electronic engineering
+        %li Software engineering
         %li Industrial design
         %li Crowdfunding
         %li Business model and strategy
         %li Sourcing
         %li Manufacturing
         %li Distribution
+      .mg-40
 
       %p
-        %strong{ style: 'font-size:16px'} To get connected with an expert, first tell us what you need:
+        %strong{ style: 'font-size:16px'} To get connected with an expert, tell us what you need:
 
       = simple_form_for @expert_request, url: expert_requests_path, html: { class: 'form-vertical' }, wrapper: :bootstrap3 do |f|
         - if user_signed_in?

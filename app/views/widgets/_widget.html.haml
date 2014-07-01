@@ -9,5 +9,9 @@
         .btn-heading
           - if can? :update, widget
             = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_project_widget_path(@project, widget), class: 'btn-edit', rel: 'tooltip', title: 'Edit content', data: { container: 'body', remote: true }
-    .content= render partial: "widgets/show/#{widget.identifier}", locals: { widget: widget }
-    .edit{ style: 'display:none;' }
+    .widget-inner
+      .content= render partial: "widgets/show/#{widget.identifier}", locals: { widget: widget }
+      .edit{ style: 'display:none;' }
+      .load-overlay{ style: 'display:none' }
+        .center-align-wrapper
+          .center-align-inner= image_tag 'ajax-loader.gif'

@@ -10,6 +10,27 @@
     font-size: 20px;
     margin-bottom: 20px;
   }
+  &.edit-mode {
+    .btn-edit {
+      display: none;
+    }
+  }
+  .content {
+    min-height: 50px;
+  }
+  .widget-inner {
+    position: relative;
+  }
+  .load-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    background: #333;
+    background: rgba(51, 51, 51, 0.5);
+  }
 }
 
 .code-widget {
@@ -127,7 +148,7 @@
     font-weight: bold;
   }
   .form-actions {
-    @extend .expanded-footer
+    // @extend .expanded-footer
   }
   &.form-horizontal {
     .form-actions .form-actions-inner {

@@ -59,7 +59,7 @@
               - elsif can? :edit, @project
                 .one-liner
                   No one liner yet.
-                  = link_to 'Add one?', edit_project_path(@project), data: { remote: true }
+                  = link_to 'Add one?', edit_project_path(@project)
           - if @project.product_tags.any?
             .tags.meta
               - @project.product_tags.pluck(:name).each do |tag|
@@ -67,7 +67,7 @@
           - elsif can? :edit, @project
             .tags.meta
               No tags yet.
-              = link_to 'Add some?', edit_project_path(@project), data: { remote: true }
+              = link_to 'Add some?', edit_project_path(@project)
     %span.fa.fa-chevron-down.trigger-main-project-scroll.js-scroll-main-project
     #project-team
       .team-widget.pull-left

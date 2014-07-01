@@ -11,7 +11,7 @@
     %meta(charset="utf-8")
     %meta(http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1")
     %meta(property="fb:app_id" content="414718878625776")
-    -# %meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    %meta(name="viewport" content="width=device-width, initial-scale=1.0")
     %title= title
     %meta(name="description" content="#{meta_desc}")
     = content_for :head
@@ -91,7 +91,7 @@
                               %h4 Components
                             = render partial: 'shared/components_list', locals: { ref: 'topnav' }
                 %li= link_to 'Tools', tools_path, class: 'nav-link'
-                %li= link_to 'Hackers', hackers_path, class: 'nav-link'
+                %li= link_to 'Find an expert', experts_path, class: 'nav-link'
                 %li
                   - link = user_signed_in? ? new_project_path : new_user_registration_path(redirect_to: new_project_path, reason: 'project')
                   %span= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, link, class: 'nav-link nav-add-project'
@@ -171,14 +171,13 @@
               = yield
 
     - unless params[:blank_frame]
-
       %footer
         %ul.list-unstyled.list-inline.pull-left
           %li= link_to 'About', about_path
           %li= link_to 'Blog', '/blog'
-          %li= link_to 'Help', 'mailto:team@hackster.io?subject=Help!'
-          %li= link_to 'Feedback', 'mailto:team@hackster.io?subject=What%20I%20think%20about%20Hackster.io'
           %li= link_to 'Resources', resources_path
+          %li= link_to 'Hackers', hackers_path
+          %li= link_to 'Feedback and support', 'javascript:showClassicWidget();'
           %li= link_to 'Jobs', 'mailto:jobs@hackster.io?subject=I want to work with you guys!'
           %li= link_to 'Terms', '/terms'
           %li= link_to 'Privacy', '/privacy'

@@ -28,9 +28,11 @@
   padding-left: 11px;
 }
 
-.container {
-  max-width: none !important;
-  width: 970px;
+@media only screen and (min-width: 970px) {
+  .container {
+    max-width: none !important;
+    width: 970px;
+  }
 }
 
 .form-horizontal .control-label {

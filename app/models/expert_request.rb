@@ -34,7 +34,7 @@ class ExpertRequest
   validate :project_id_or_description_is_present?
 
   def expertise_area
-    @expertise_area.select{|v| v.present?}
+    @expertise_area.select{|v| v.present?} if @expertise_area
   end
 
   def initialize attributes={}

@@ -36,7 +36,7 @@
         .row.text-center
           .col-xs-6{ style: 'border-right:1px solid #ccc;padding-top:20px;padding-bottom:20px;'}
             %h2.top Professionals
-            = link_to 'Start building commercial products &rarr;'.html_safe, new_project_path, class: 'btn btn-primary btn-lg btn-block'
+            = link_to 'Start building a commercial product &rarr;'.html_safe, new_project_path(project: { open_source: false}), class: 'btn btn-primary btn-lg btn-block'
           .col-xs-6{ style: 'border-left:1px solid #fff;padding-top:20px;padding-bottom:20px;'}
             %h2.top Hobbyists
             = link_to 'Start building open hardware &rarr;'.html_safe, new_project_path, class: 'btn btn-primary btn-lg btn-block'

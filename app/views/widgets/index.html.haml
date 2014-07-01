@@ -1,6 +1,6 @@
 .row
   .wellified{ class: 'col-xs-6 col-xs-offset-3' }
-    %h2{ style: 'text-align: center' } Reorder widgets
+    %h2{ style: 'text-align: center' } Reorder content blocks
     = simple_nested_form_for @project, url: project_widgets_path(@project), html: { class: 'widget-form widget-reorder-form' } do |f|
       = f.error_notification
 
@@ -9,7 +9,7 @@
           - @project.widgets.each do |widget|
             = render partial: 'field_reorder', locals: { f: f, widget: widget, project: @project }
 
-      %p.help-block Hover over a tile and click the cross to delete a widget.
+      %p.help-block Hover over a tile and click the cross to delete a content block.
       .form-actions
         = f.submit 'Save', class: 'btn btn-primary'
         = link_to 'Cancel', @project, class: 'btn btn-link btn-sm'

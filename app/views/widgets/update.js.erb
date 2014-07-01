@@ -2,6 +2,8 @@ $('#widget-<%= @widget.id %> .content').html('<%= escape_javascript render(parti
 $('#widget-<%= @widget.id %> .edit').fadeOut(function(){
   $(this).html('');
   $('#widget-<%= @widget.id %> .content').fadeIn();
+  $('#widget-<%= @widget.id %>').removeClass('edit-mode');
+  $('#widget-<%= @widget.id %> .load-overlay').hide();
   $('#widget-<%= @widget.id %>').trigger('reload');
   smoothScrollTo('#widget-<%= @widget.id %>', -20);
 });

@@ -54,7 +54,7 @@ class Project < ActiveRecord::Base
     :featured, :featured_date, :cover_image_id, :logo_id, :license, :slug,
     :permissions_attributes, :new_slug, :slug_histories_attributes, :hide,
     :collection_id, :graded, :wip, :columns_count, :external, :guest_name,
-    :approved
+    :approved, :open_source
   attr_accessor :current
   attr_writer :new_slug
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
@@ -415,6 +415,12 @@ class Project < ActiveRecord::Base
     return unless guest_name
 
     I18n.transliterate(guest_name).gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
+  end
+
+  def website_host
+    URI.parse(website).host.gsub(/^www\./, '')
+  rescue
+    website
   end
 
   def widgets_first_col

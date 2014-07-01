@@ -36,7 +36,7 @@
                       %p.one-liner= @project.one_liner
                       .one-liner
                         Read about this project on
-                        = link_to URI.parse(@project.website).host.gsub(/^www\./, ''), @project.website, target: '_blank'
+                        = link_to @project.website_host, @project.website, target: '_blank'
 
                 - if @project.product_tags.any?
                   .tags.meta

@@ -16,6 +16,7 @@
 //= require groups
 //= require comments
 //= require all
+//= require mobile
 //= require ilightbox/jquery.mousewheel
 //= require ilightbox/ilightbox.packed
 //= require jquery.ui.widget

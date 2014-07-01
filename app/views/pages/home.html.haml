@@ -9,15 +9,22 @@
       .container
         .row
           .col-xs-10.col-xs-offset-1.text-center
-            %h1 Hackster.io gives you the resources you need to build hardware the easy way.
+            %h1 Hackster.io gives you the resources you need to build hardware, the easy way.
 
     %section
       .container.text-center
+        .row
+          .col-xs-12
+            .alert.alert-info.text-center
+              Are you looking for help making your hardware product?
+              = link_to 'Connect with an expert', experts_path, class: 'alert-link'
+              and learn from the best.
+
         .row.mg-20
-          .col-xs-6{ style: 'border-right:1px solid #ccc;padding-top:20px;padding-bottom:20px;'}
+          .col-xs-12.col-sm-6{ style: 'border-right:1px solid #ccc;padding-top:20px;padding-bottom:20px;'}
             %h2.top Professionals
-            = link_to 'Start building commercial products &rarr;'.html_safe, new_project_path, class: 'btn btn-primary btn-lg btn-block'
-          .col-xs-6{ style: 'border-left:1px solid #fff;padding-top:20px;padding-bottom:20px;'}
+            = link_to 'Start building a commercial product &rarr;'.html_safe, new_project_path(project: { open_source: false}), class: 'btn btn-primary btn-lg btn-block'
+          .col-xs-12.col-sm-6{ style: 'border-left:1px solid #fff;padding-top:20px;padding-bottom:20px;'}
             %h2.top Hobbyists
             = link_to 'Start building open hardware &rarr;'.html_safe, new_project_path, class: 'btn btn-primary btn-lg btn-block'
         .row
@@ -29,13 +36,6 @@
       .container
         .row
           .col-xs-12
-            .alert.alert-warning.text-center
-              Are you looking for help making your hardware product?
-              = link_to 'Connect with an expert', experts_path, class: 'alert-link'
-              and learn from the best.
-
-        .row
-          .col-xs-12
             .transparent-well
               .header.no-content
                 %h2
@@ -43,7 +43,7 @@
                   = link_to 'See all tools &rarr;'.html_safe, tools_path, class: 'btn-bottom'
             .row
               - @tools.each do |tech|
-                .col-xs-2
+                .col-xs-6.col-sm-4.col-md-2
                   = link_to(image_tag(tech.avatar.file_url(:big), class: 'img-thumbnail'), tech_short_path(tech, ref: 'homefeat')) if tech.avatar
                   %h6.text-center= link_to tech.name, tech_short_path(tech)
 

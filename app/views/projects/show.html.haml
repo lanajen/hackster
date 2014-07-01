@@ -34,41 +34,141 @@
 
       .tab-content.row
         #tab-home.tab-pane.fade.in.active
-          / - if can? :edit, @project
-          /   = link_to 'Add a widget', new_project_widget_path(@project)
-          - if @widgets.any?
-            = render 'projects/large_column'
+          - cache [@project.widgets, can?(:edit, @project)], tag: "project-#{@project.id}-widgets" do
+            .project-section{ id: "showcase" }
+              .header
+                %h2 Showcase
+              .content
+                - if @widgets.any?
+                  - @widgets.each do |widget|
+                    = render 'widgets/widget', { widget: widget }
+                  #widget-new
+                - elsif can? :edit, @project
+                  #widget-new
+                    %p
+                      Welcome to your new project!
+                      = link_to 'Add some content', new_project_widget_path(@project), data: { remote: true }, class: 'btn btn-primary'
+                      to get started.
+                - else
+                  %p This is still a work in progress, please check back later!
+            -# @project.sections.each do |section|
+              .project-section{ id: section.id }
+                .header
+                  %h2= section.name
+                - @widgets_by_section[section.index].each do |widget|
+                  = render 'widgets/widget', { widget: widget }
 
-
-
-- cache [@project, 'other', @other_projects], tag: "project-#{@project.id}-other" do
-  - if @other_projects_count > 0
-    #more-projects
-      .wrapper700
-        .container-fluid
-          .row
+          #more-info.project-section
             .header
-              %h4
-                Other projects by
-                = @project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
-            - if @other_projects_count > 6
-              .row
-                .col-xs-6
-                  %h6.subtitle Most popular
-                  .row
-                    - @other_projects.each do |project|
-                      .col-xs-4
-                        = render partial: 'projects/project_mini_thumb', locals: { ref: 'more', project: project }
+              %h2 Metadata
 
-                .col-xs-6
-                  %h6.subtitle Newest
-                  .row
-                    - @last_projects.each do |project|
-                      .col-xs-4
-                        = render partial: 'projects/project_mini_thumb', locals: { ref: 'more', project: project }
+            -# include respect and share button
 
-            - else
-              .row
-                - @other_projects.each do |project|
-                  .col-xs-2
-                    = render partial: 'projects/project_mini_thumb', locals: { ref: 'more', project: project }
+            .clearfix.project-details
+              #project-secondary-info
+                #left-project-deets
+                  #team-widget.team-widget.meta
+                    .meta-title-wrap
+                      .meta-title
+                        Team
+                        - if can? :debug, @project and can? :edit, @project
+                          = link_to content_tag(:i, '', class: 'fa fa-pencil'), project_edit_team_path(@project), class: 'btn-edit no-float', rel: 'tooltip', title: 'Manage team', data: { container: 'body' }
+                    - if @project.guest_name.present?
+                      .user
+                        = @project.guest_name
+                    - else
+                      - users = @project.team.active_members.includes(:user)
+                      - users.each do |member|
+                        = render partial: 'users/line_thumb', locals: { member: member }
+                  .meta
+                    %strong
+                      Created on
+                      = l @project.created_at, format: :date
+                      -# if @project.created_at.to_date != @project.made_public_at.to_date
+                        %br
+                        %strong Published on
+                        = l @project.made_public_at, format: :date
+
+                  - if @project.guest_name.present?
+                    .meta
+                      %strong
+                        Posted by
+                        - poster = @project.team.active_members.includes(:user).first.user
+                        = link_to poster.name, poster
+
+                  - if @project.license
+                    .license.meta
+                      %strong
+                        Copyright
+                        &copy;
+                        = link_to @project.license.abbr, @project.license.url, target: '_blank', class: 'hidden-link'
+                #right-project-deets
+                  - if @project.tech_tags.any?
+                    .tags.meta
+                      .meta-title-wrap
+                        .meta-title Technologies
+                      - @project.tech_tags.pluck(:name).each do |tag|
+                        - if tech = Tech.includes(:tech_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first
+                          - tag_link = tech_short_path(tech)
+                        - else
+                          - tag_link = "/tags/#{CGI::escape(tag)}"
+                        %span= link_to tag, tag_link, class: 'tag-link'
+                  - elsif can? :edit, @project
+                    .tags.meta
+                      .meta-title-wrap
+                        .meta-title Technologies
+                      No technologies yet.
+                      = link_to 'Add some?', edit_project_path(@project)
+
+                  - if @project.product_tags.any?
+                    .tags.meta
+                      .meta-title-wrap
+                        .meta-title Tags
+                      - @project.product_tags.pluck(:name).each do |tag|
+                        %span= link_to "##{tag}", "/tags/#{CGI::escape(tag)}", class: 'tag-link'
+                  - elsif can? :edit, @project
+                    .tags.meta
+                      .meta-title-wrap
+                        .meta-title Tags
+                      No tags yet.
+                      = link_to 'Add some?', edit_project_path(@project)
+
+                = render partial: 'widgets/respect_widget', locals: { users: @project.respecting_users }
+
+          = render partial: 'widgets/comment_widget', locals: { comments: @project.comments, commentable: @project }
+          - if @issue and can? :comment_privately, @project
+            = render partial: 'widgets/private_comment_widget', locals: { comments: @issue.comments, commentable: @project }
+
+
+- if @project.public?
+  - cache [@project, 'other', @other_projects], tag: "project-#{@project.id}-other" do
+    - if @other_projects_count > 0
+      #more-projects
+        .wrapper700
+          .container-fluid
+            .row
+              .header
+                %h4
+                  Other projects by
+                  = @project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
+              - if @other_projects_count > 6
+                .row
+                  .col-xs-6
+                    %h6.subtitle Most popular
+                    .row
+                      - @other_projects.each do |project|
+                        .col-xs-4
+                          = render partial: 'projects/project_mini_thumb', locals: { ref: 'more', project: project }
+
+                  .col-xs-6
+                    %h6.subtitle Newest
+                    .row
+                      - @last_projects.each do |project|
+                        .col-xs-4
+                          = render partial: 'projects/project_mini_thumb', locals: { ref: 'more', project: project }
+
+              - else
+                .row
+                  - @other_projects.each do |project|
+                    .col-xs-2
+                      = render partial: 'projects/project_mini_thumb', locals: { ref: 'more', project: project }
