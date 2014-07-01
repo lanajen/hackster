@@ -1,13 +1,5 @@
 = content_for :no_container do
   #about
-    %section#teaser
-      .container
-        .row
-          .col-xs-10.col-xs-offset-1.text-center
-            %h1= SLOGAN
-            -# = render 'invite_requests/form'
-            = link_to 'Share your own projects', new_project_path, class: 'btn btn-primary btn-lg btn-block'
-
     %section#pitch
       .container
         .row.header
@@ -26,7 +18,7 @@
         .row.pitch-line
           .col-xs-10.col-xs-offset-1
             .col-xs-6
-              %h3 Share and connect
+              %h3 Share, connect and collaborate
               %p Even the greatest minds need help to achieve the greatest goals. Share your work to inspire others and start snowball effects. Share your expertise and contribute to other hackers' projects. Find like-minded people and collaborate to build the next big thing!
             .col-xs-6.img
               = image_tag 'home_visitor/icon4.png'
@@ -36,26 +28,15 @@
             .col-xs-6.img
               = image_tag 'home_visitor/icon3.png'
             .col-xs-6
-              %h3 Open hardware
-              %p Open source has helped the software community progress tremendously. We believe it has the same power for hardware. Don't reinvent the wheel, focus on solving bigger and bigger problems by reusing existing technology and help society go forward faster. We support open hardware 100%!
+              %h3 Tools and resources
+              %p Why reinvent the wheel when a solution to your problem already exists? Discover tools to accelerate prototyping and save time, money and efforts. Find resources that will help you make faster, from cheap custom parts to PCB manufacturing.
 
-        .row
-          .col-xs-10.col-xs-offset-1
-            = link_to 'Create your account', new_user_registration_path, class: 'btn btn-primary btn-lg btn-block'
-
-    %section#featured
+    %section
       .container
-        .row.header
-          .col-xs-10.col-xs-offset-1.text-center
-            %h2 A community of makers
-            %p.subtitle Some very cool things are being worked on as we speak, here's a few:
-
-        .row
-          .col-xs-10.col-xs-offset-1
-            .row.project-thumbs
-              - @most_popular_projects.sort_by{|p| p.id }.each do |project|
-                = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homevis' }
-
-        .row
-          .col-xs-10.col-xs-offset-1.text-center
-            = link_to 'Browse all projects'.html_safe, projects_path, class: 'btn btn-primary btn-lg btn-block'
+        .row.text-center
+          .col-xs-6{ style: 'border-right:1px solid #ccc;padding-top:20px;padding-bottom:20px;'}
+            %h2.top Professionals
+            = link_to 'Start building commercial products &rarr;'.html_safe, new_project_path, class: 'btn btn-primary btn-lg btn-block'
+          .col-xs-6{ style: 'border-left:1px solid #fff;padding-top:20px;padding-bottom:20px;'}
+            %h2.top Hobbyists
+            = link_to 'Start building open hardware &rarr;'.html_safe, new_project_path, class: 'btn btn-primary btn-lg btn-block'

@@ -3,8 +3,15 @@ class PagesController < ApplicationController
   def about
     meta_desc 'What is Hackster.io?'
     title 'What is Hackster.io?'
-
+    limit = 4
     @most_popular_projects = Project.indexable.magic_sort.limit 6
+
+    @most_popular_projects = Project.indexable.most_popular.limit limit
+    @last_projects = Project.indexable.last_public.limit limit
+    # @active_projects = Project.last_updated.limit 4
+    @featured_projects = Project.featured.limit 4
+    # @wip_projects = Project.wip.limit 4
+    @tools = Tech.where(user_name: %w(spark electricimp arduino raspberry-pi beagleboard teensy)).order(:full_name)
   end
 
   def help

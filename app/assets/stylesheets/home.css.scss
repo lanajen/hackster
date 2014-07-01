@@ -7,12 +7,16 @@
   }
   section {
     padding: 60px 0;
+    background: #F2F2F2;
+    &:nth-child(odd) {
+      background: #fff;
+    }
   }
   .header {
     margin-bottom: 30px;
     h2 {
       color: #424244;
-    font-weight: 300;
+      font-weight: 300;
     }
     p.subtitle {
       color: #c1c1c1;
@@ -24,9 +28,15 @@
     font-weight: 400;
   }
   .btn-primary {
-    background: #0b67d6;
-    border-color: #0b67d6;
-    text-shadow: -1px -1px 0px #135FC0;
+    background: transparent;
+    border: 1px solid #3d8bc1;
+    // text-shadow: -1px -1px 0px #135FC0;
+    // font-weight: bold;
+    color: #3d8bc1;
+    &:hover {
+      background: #3d8bc1;
+      color: #fff;
+    }
   }
   .btn-info {
     background: #1c4d99;
@@ -52,10 +62,11 @@
   }
   #teaser {
     padding: 150px 0;
-    background: asset-url('home_visitor/header_bg.jpg') center center;
+    background: asset-url('home_visitor/header_bg_black.jpg') center center no-repeat;
+    background-size: cover;
     h1 {
-      color: #fff;
-      background: #073372;
+      color: #333;
+      background: #fafafa;
       margin-bottom: 40px;
       padding: 10px 15px;
     }
@@ -69,7 +80,7 @@
     }
   }
   #pitch {
-    background: #fcfcfc;
+    // background: #fcfcfc;
     .pitch-line {
       margin: 50px 0;
       .img {
@@ -81,7 +92,7 @@
         font-size: 18px;
       }
       p {
-        color: #a8a8a8;
+        color: #989898;
         line-height: 1.6;
       }
     }

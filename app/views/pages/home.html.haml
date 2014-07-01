@@ -4,36 +4,29 @@
   = auto_discovery_link_tag :atom, projects_path(format: :atom), title: 'Most recent projects - Hackster.io'
 
 = content_for :no_container do
-  .alert.alert-info.text-center.alert-flat
-    = SLOGAN
-    - unless user_signed_in?
-      = link_to 'Claim your profile', new_user_registration_path, class: 'btn btn-sm btn-info'
-      or
-      = link_to 'learn more.', about_path, class: 'alert-link'
-
-  - cache 'home', expires_in: 10.minutes do
-    #content
+  #about
+    %section#teaser
       .container
         .row
-          .col-xs-12.text-center
-            .alert{ stylee: 'font-size: 30px;font-weight: 200;' }
-              Explore projects by
-              %span.dropdown.text-left
-                %button.btn.btn-default.btn-lge.dropdown-toggle{"data-toggle" => "dropdown", href: '#'}
-                  Tools
-                  %span.caret{ style: 'border-bottom-color: #000;border-top-color: #000;' }
-                %ul.dropdown-menu
-                  = render partial: 'shared/tools_list', locals: { ref: 'homenav' }
-              or
-              %span.dropdown.text-left
-                %button.btn.btn-default.btn-lge.dropdown-toggle{"data-toggle" => "dropdown", href: '#'}
-                  Components
-                  %span.caret{ style: 'border-bottom-color: #000;border-top-color: #000;' }
-                %ul.dropdown-menu
-                  = render partial: 'shared/components_list', locals: { ref: 'homenav' }
-              or
-              = link_to 'Browse all', projects_path(ref: 'homenav'), class: 'btn btn-primary btn-lge'
+          .col-xs-10.col-xs-offset-1.text-center
+            %h1 Hackster.io gives you the resources you need to build hardware the easy way.
 
+    %section
+      .container.text-center
+        .row.mg-20
+          .col-xs-6{ style: 'border-right:1px solid #ccc;padding-top:20px;padding-bottom:20px;'}
+            %h2.top Professionals
+            = link_to 'Start building commercial products &rarr;'.html_safe, new_project_path, class: 'btn btn-primary btn-lg btn-block'
+          .col-xs-6{ style: 'border-left:1px solid #fff;padding-top:20px;padding-bottom:20px;'}
+            %h2.top Hobbyists
+            = link_to 'Start building open hardware &rarr;'.html_safe, new_project_path, class: 'btn btn-primary btn-lg btn-block'
+        .row
+          .col-xs-12
+            or
+            = link_to 'learn more', about_path
+
+    %section
+      .container
         .row
           .col-xs-12
             .transparent-well
@@ -47,17 +40,8 @@
                   = link_to(image_tag(tech.avatar.file_url(:big), class: 'img-thumbnail'), tech_short_path(tech, ref: 'homefeat')) if tech.avatar
                   %h6.text-center= link_to tech.name, tech_short_path(tech)
 
-        .row
-          .col-xs-12
-            .transparent-well
-              .header.no-content
-                %h2
-                  Featured projects
-                  = link_to 'See more featured projects &rarr;'.html_safe, projects_path(by: 'featured'), class: 'btn-bottom'
-            .row
-              - @featured_projects.each do |project|
-                = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, ref: 'homefeat' }
-
+    %section
+      .container
         .row
           .col-xs-12
             .transparent-well
@@ -69,6 +53,8 @@
               - @most_popular_projects.each do |project|
                 = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, ref: 'homepop' }
 
+    %section
+      .container
         .row
           .col-xs-12
             .transparent-well
@@ -80,19 +66,23 @@
               - @last_projects.each do |project|
                 = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, ref: 'homelast' }
 
-        -# .row
-          .col-xs-12
-            .transparent-well
-              .header.no-content
-                %h2
-                  Works in progress
-                  %small
-                    %i.fa.fa-bolt
-                  = link_to 'See more recent works in progress &rarr;'.html_safe, projects_path(by: 'wip'), class: 'btn-bottom'
-            .row
-              - @wip_projects.each do |project|
-                = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, ref: 'homelast' }
-
         .row
           .col-xs-12.text-center
-            = link_to 'Browse all projects &rarr;'.html_safe, projects_path, class: 'btn btn-primary btn-block'
+            = link_to 'Browse all projects &rarr;'.html_safe, projects_path, class: 'btn btn-primary btn-lg btn-block'
+
+    -# %section#featured
+      .container
+        .row.header
+          .col-xs-10.col-xs-offset-1.text-center
+            %h2 A community of makers
+            %p.subtitle Some very cool things are being worked on as we speak, here's a few:
+
+        .row
+          .col-xs-10.col-xs-offset-1
+            .row.project-thumbs
+              - @most_popular_projects.sort_by{|p| p.id }.each do |project|
+                = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homevis' }
+
+        .row
+          .col-xs-10.col-xs-offset-1.text-center
+            = link_to 'Browse all projects &rarr;'.html_safe, projects_path, class: 'btn btn-primary btn-lg btn-block'
