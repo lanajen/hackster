@@ -5,6 +5,16 @@
   display: none!important;
 }
 
+@media only screen and (max-width: 899px) {
+  #tech-page {
+    #sidebar-container {
+      display: block;
+      position: static;
+      width: auto;
+    }
+  }
+}
+
 @media only screen and (min-width: 900px) {
   // Globals
   .slick-prev, .slick-next{
