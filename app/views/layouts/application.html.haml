@@ -36,21 +36,6 @@
               %button.close.btn-close{ data: { close: '#hello-world' } } &times;
               = SLOGAN
               = link_to 'Claim your profile', new_user_registration_path, onclick: "_gaq.push(['_trackEvent', 'Hello world bar', 'Sign up', '#{request.path}']);"
-        -# elsif show_profile_needs_care?
-          - if params[:controller] == 'users' and params[:action] == 'show'
-            #hello-world.fade-in
-              .container
-                Yo! Looks like your profile needs a little love.
-                %strong Look out for clues on this page as to what can be improved.
-                = link_to "Don't remind me.", '/notifications?notif=1311complete_profile&close=%23hello-world', data: { remote: true }, method: :delete, class: 'btn-close-notif btn-close-notif-last'
-                = link_to "Got it.", '#', data: { close: '#hello-world' }, class: 'btn-close btn-close-notif'
-          - else
-            #hello-world.fade-in
-              .container
-                Yo! Looks like your profile needs a little love.
-                = link_to 'Give it love.', user_path(current_user)
-                = link_to "Don't remind me.", '/notifications?notif=1311complete_profile&close=%23hello-world', data: { remote: true }, method: :delete, class: 'btn-close-notif btn-close-notif-last'
-                = link_to "Got it.", '#', data: { close: '#hello-world' }, class: 'btn-close btn-close-notif'
         - if @show_signup_popup
           = render 'shared/signup_popup'
 
@@ -62,7 +47,6 @@
             #nav-non-logo.show-on-desktop
               %ul#nav-actions
                 %li.dropdown
-                  -# = link_to 'Explore', projects_path
                   %a.nav-link.dropdown-toggle{"data-toggle" => "dropdown", href: '#'}
                     Projects
                     %span.caret
@@ -70,16 +54,6 @@
                     %li
                       .row
                         .col-xs-12.text-center= link_to 'Browse all projects', projects_path(ref: 'topnav'), class: 'btn btn-block btn-primary'
-                        -# .col-xs-4{ style: 'border-right: 1px solid #ddd'}
-                          %ul.nav.nav-pills.nav-stacked
-                            %li
-                              %h4 Categories
-                            %li= link_to 'Drones', '/tags/drone'
-                            %li= link_to 'Home automation', '/tags/home+automation'
-                            %li= link_to 'Outdoor', '/tags/outdoor'
-                            %li= link_to 'Wearables', '/tags/wearable'
-                            %li= link_to '', '/tags/'
-                            %li= link_to '', '/tags/'
                         .col-xs-6{ style: 'border-right: 1px solid #ddd'}
                           %ul.nav.nav-pills.nav-stacked
                             %li
@@ -91,7 +65,7 @@
                               %h4 Components
                             = render partial: 'shared/components_list', locals: { ref: 'topnav' }
                 %li= link_to 'Tools', tools_path, class: 'nav-link'
-                %li= link_to 'Find an expert', experts_path, class: 'nav-link'
+                -# %li= link_to 'Find an expert', experts_path, class: 'nav-link'
                 %li
                   - link = user_signed_in? ? new_project_path : new_user_registration_path(redirect_to: new_project_path, reason: 'project')
                   %span= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, link, class: 'nav-link nav-add-project'
@@ -153,14 +127,13 @@
                       .social-icons.text-center
                         %p.text-muted
                           %small Or connect with your social account:
-                        = link_to 'Facebook', user_omniauth_authorize_url(:facebook), class: 'zocial icon facebook', tabindex: (defined?(autofocus) and autofocus ? 1 : nil)
+                        = link_to 'Facebook', user_omniauth_authorize_url(:facebook), class: 'zocial icon facebook'
                         = link_to 'Github', user_omniauth_authorize_path(:github), class: 'zocial icon github'
                         = link_to 'Google+', user_omniauth_authorize_path(:gplus), class: 'zocial icon googleplus'
-                        -# = link_to 'LinkedIn', user_omniauth_authorize_path(:linkedin), class: 'zocial icon linkedin'
                         = link_to 'Twitter', user_omniauth_authorize_path(:twitter), class: 'zocial icon twitter'
-
               #navbar-search
                 = render 'shared/search_form'
+
       = bootstrap_flash
       #main
         - if content_for?(:no_container)
@@ -201,6 +174,7 @@
           = link_to 'Admin', admin_analytics_path, class: 'mo-nav-link'
       - else
         = link_to 'Sign up / Login', new_user_registration_path, class: 'mo-nav-link', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '#{request.path}']);"
+
     = content_for :js
     - unless is_mobile? or params[:blank_frame]
       = render 'shared/feedback'
