@@ -35,7 +35,7 @@
             .container
               %button.close.btn-close{ data: { close: '#hello-world' } } &times;
               = SLOGAN
-              = link_to 'Claim your profile', new_user_registration_path, onclick: "_gaq.push(['_trackEvent', 'Hello world bar', 'Sign up', '#{request.path}']);"
+              = link_to 'Start building.', new_user_registration_path, onclick: "_gaq.push(['_trackEvent', 'Hello world bar', 'Sign up', '#{request.path}']);"
         - if @show_signup_popup
           = render 'shared/signup_popup'
 
