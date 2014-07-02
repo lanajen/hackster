@@ -54,7 +54,7 @@ class Project < ActiveRecord::Base
     :featured, :featured_date, :cover_image_id, :logo_id, :license, :slug,
     :permissions_attributes, :new_slug, :slug_histories_attributes, :hide,
     :collection_id, :graded, :wip, :columns_count, :external, :guest_name,
-    :approved
+    :approved, :open_source
   attr_accessor :current
   attr_writer :new_slug
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
@@ -277,6 +277,44 @@ class Project < ActiveRecord::Base
     @new_slug ||= slug
   end
 
+  def sections
+    @sections ||= [
+      OpenStruct.new({
+        name: 'Showcase',
+        allow: %w(video text image),
+        editable: true,
+        index: 1,
+        id: 'showcase',
+        icon: 'fa-picture-o',
+      }),
+      OpenStruct.new({
+        name: 'Hardware design',
+        allow: %w(video text image parts),
+        defaults: %w(parts schematics),
+        editable: true,
+        index: 2,
+        id: 'hardware',
+        icon: 'fa-gears',
+      }),
+      OpenStruct.new({
+        name: 'Software design',
+        allow: %w(video text image code),
+        defaults: %w(code),
+        editable: true,
+        index: 3,
+        id: 'software',
+        icon: 'fa-code',
+      }),
+      # OpenStruct.new({
+      #   name: 'Collaborate',
+      #   allow: %w(),
+      #   editable: false,
+      #   index: 4,
+      #   id: 'collaborate',
+      # }),
+    ]
+  end
+
   def slug_was_changed?
     @old_slug.present? and @old_slug != slug
   end
@@ -377,6 +415,12 @@ class Project < ActiveRecord::Base
     return unless guest_name
 
     I18n.transliterate(guest_name).gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
+  end
+
+  def website_host
+    URI.parse(website).host.gsub(/^www\./, '')
+  rescue
+    website
   end
 
   def widgets_first_col

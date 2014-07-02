@@ -1,0 +1,4 @@
+$('#showcase #widget-new').html('');
+$('#showcase #widget-new').before('<%= escape_javascript render(partial: "widget", locals: { widget: @widget }) %>');
+$('#widget-<%= @widget.id %> .content').html("<%= escape_javascript render(partial: 'form') %>");
+$('#widget-<%= @widget.id %>').addClass("edit-mode");

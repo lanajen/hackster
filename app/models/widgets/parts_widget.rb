@@ -12,6 +12,10 @@ class PartsWidget < Widget
   accepts_nested_attributes_for :parts, allow_destroy: true
   after_save :compute_total_cost, unless: :dont_compute_cost?
 
+  def default_label
+    'Bill of materials'
+  end
+
   def to_tracker
     super.merge({
       parts_count: parts_count,

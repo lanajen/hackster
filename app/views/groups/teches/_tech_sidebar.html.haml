@@ -1,15 +1,17 @@
+
 - if can? :manage, @tech
   = content_for :js do
     :javascript
       $("#{escape_javascript render('groups/teches/tech_stats')}").appendTo('#tech-body .stats');
 
 - cache ["tech-#{@tech.id}-sidebar", user_signed_in?, can?(:manage, @tech), (user_signed_in? and current_user.following?(@tech))], tag: ["tech-#{@tech.id}-sidebar"] do
-  #sidebar-container
+  #sidebar-container.affixable
     - @tech = GroupDecorator.decorate @tech
 
     %section#sidebar-container-in
       - if @tech.avatar
-        .avatar#tech-avatar-image{:style=>"background-image:url('#{@tech.avatar(:big)}');"}
+        .avatar#tech-avatar-image-div
+          #tech-avatar-image{:style=>"background-image:url('#{@tech.avatar(:big)}');"}
       #tech-body
         %h3= link_to @tech.name, tech_short_path(@tech), id: 'tech-name'
         %p

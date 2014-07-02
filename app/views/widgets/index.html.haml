@@ -1,33 +1,15 @@
 .row
   .wellified{ class: 'col-xs-6 col-xs-offset-3' }
-    %h2{ style: 'text-align: center' } Reorder widgets
+    %h2{ style: 'text-align: center' } Reorder content blocks
     = simple_nested_form_for @project, url: project_widgets_path(@project), html: { class: 'widget-form widget-reorder-form' } do |f|
       = f.error_notification
-      = f.input :columns_count, label: false, wrapper_html: { class: 'text-center' } do
-        .btn-group{ data: { toggle: 'buttons' }}
-          %label.btn.btn-default{ class: "#{'active' if @project.columns_count == 1}"}
-            = radio_button_tag 'project[columns_count]', '1', (@project.columns_count == 1)
-            One column
-          %label.btn.btn-default{ class: "#{'active' unless @project.columns_count == 1}"}
-            = radio_button_tag 'project[columns_count]', '2', (@project.columns_count != 1)
-            Two columns
 
-      #sortable-1.sortable{ style: "#{'display:none' unless @project.columns_count == 1}"}
+      #sortable-1.sortable
         %ul.single
           - @project.widgets.each do |widget|
             = render partial: 'field_reorder', locals: { f: f, widget: widget, project: @project }
 
-      #sortable-2.sortable{ style: "#{'display:none' if @project.columns_count == 1}"}
-        %ul.first
-          - @project.widgets_first_col.each do |widget|
-            = render partial: 'field_reorder', locals: { f: f, widget: widget, project: @project }
-        %ul.second
-          - @project.widgets_second_col.each do |widget|
-            = render partial: 'field_reorder', locals: { f: f, widget: widget, project: @project }
-        .clearfix
-        %p.help-block Just drag and drop widget tiles on the same column or from one column to the other.
-
-      %p.help-block Hover over a tile and click the cross to delete a widget.
+      %p.help-block Hover over a tile and click the cross to delete a content block.
       .form-actions
         = f.submit 'Save', class: 'btn btn-primary'
         = link_to 'Cancel', @project, class: 'btn btn-link btn-sm'
@@ -36,11 +18,6 @@
   :javascript
     $(function() {
       updatePlaceholders();
-
-      $('input[name="project[columns_count]"]').change(function(){
-        $('.sortable').hide()
-        $('#sortable-' + $(this).val()).show();
-      });
 
       $('form').submit(function(){
         $('.sortable:hidden').remove();

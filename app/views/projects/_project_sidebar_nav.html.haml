@@ -1,0 +1,39 @@
+#sidebar-container.project-pages-sidebar.affixable
+  %section#sidebar-container-in
+    #project-actions.clearfix
+      - if @project.public?
+        = render partial: 'respects/button', locals: { project: @project }
+        = render 'projects/project_embed_popup'
+
+      - if can? :edit, @project
+        %a{ href: edit_project_path(@project) }
+          %i.fa.fa-edit
+          Edit project settings
+        %a{ href: new_project_widget_path(@project), data: { remote: true } }
+          %i.fa.fa-plus
+          Add a content block
+        %a{ href: project_widgets_path(@project) }
+          %i.fa.fa-arrows
+          Reorder content blocks
+        = link_to "#{content_tag(:i, '', class: 'fa fa-group')} Manage team".html_safe, project_edit_team_path(@project)
+
+    #scrolling-project-section
+      #scroll-nav
+        %ul.nav
+          %li.active
+            %a.scroll-nav-item.scroll.clearfix{ :href => "#top-project-section", :data => { target: "#top-project-section", offset: '0'}}
+              = @project.name
+              %i.fa.fa-home
+          - @project.widgets.each do |widget|
+            %li
+              %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-#{widget.id}", :data => { target: "#widget-#{widget.id}", offset: '-20'}}
+                %i.fa{ class: icon_for_widget(widget) }
+                = widget.name
+          %li
+            %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-comments", :data => { target: "#widget-comments", offset: '-20'}}
+              Comments
+              %span.comment-count
+                (
+                = @project.comments_count
+                )
+              %i.fa.fa-comment

@@ -11,7 +11,7 @@
     %meta(charset="utf-8")
     %meta(http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1")
     %meta(property="fb:app_id" content="414718878625776")
-    -# %meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    %meta(name="viewport" content="width=device-width, initial-scale=1.0")
     %title= title
     %meta(name="description" content="#{meta_desc}")
     = content_for :head
@@ -20,7 +20,7 @@
     /[if lt IE 9]
       = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.1/html5shiv.js"
     = stylesheet_link_tag "application", :media => "all"
-    <link href='//fonts.googleapis.com/css?family=Open+Sans:300,400,600' rel='stylesheet' type='text/css'>
+    -# <link href='//fonts.googleapis.com/css?family=Open+Sans:300,400,600' rel='stylesheet' type='text/css'>
     <link href="#{ asset_path 'favicon.ico' }" rel="shortcut icon" type="image/vnd.microsoft.icon">
     = javascript_include_tag "application"
     - unless current_user and current_user.is? :admin
@@ -28,7 +28,7 @@
     -# = render 'shared/mixpanel'
 
   %body
-    #wrapper
+    #outer-wrapper
       - unless params[:blank_frame]
         - if show_hello_world?
           #hello-world.fade-in
@@ -36,33 +36,17 @@
               %button.close.btn-close{ data: { close: '#hello-world' } } &times;
               = SLOGAN
               = link_to 'Claim your profile', new_user_registration_path, onclick: "_gaq.push(['_trackEvent', 'Hello world bar', 'Sign up', '#{request.path}']);"
-        -# elsif show_profile_needs_care?
-          - if params[:controller] == 'users' and params[:action] == 'show'
-            #hello-world.fade-in
-              .container
-                Yo! Looks like your profile needs a little love.
-                %strong Look out for clues on this page as to what can be improved.
-                = link_to "Don't remind me.", '/notifications?notif=1311complete_profile&close=%23hello-world', data: { remote: true }, method: :delete, class: 'btn-close-notif btn-close-notif-last'
-                = link_to "Got it.", '#', data: { close: '#hello-world' }, class: 'btn-close btn-close-notif'
-          - else
-            #hello-world.fade-in
-              .container
-                Yo! Looks like your profile needs a little love.
-                = link_to 'Give it love.', user_path(current_user)
-                = link_to "Don't remind me.", '/notifications?notif=1311complete_profile&close=%23hello-world', data: { remote: true }, method: :delete, class: 'btn-close-notif btn-close-notif-last'
-                = link_to "Got it.", '#', data: { close: '#hello-world' }, class: 'btn-close btn-close-notif'
         - if @show_signup_popup
           = render 'shared/signup_popup'
 
         .navbar.navbar-default.navbar-static-top#navigation
+          #nav-mobile-trigger.hide-on-desktop.fa.fa-bars
           .navbar-in{ style: 'position:relative;' }
             .navbar-header
-              = link_to image_tag('hackster_logo_40.png'), root_path, class: 'navbar-brand navbar-btn'
-
-            #nav-non-logo
+              = link_to image_tag('hackster_logo_40_white.png'), root_path, class: 'navbar-brand navbar-btn'
+            #nav-non-logo.show-on-desktop
               %ul#nav-actions
                 %li.dropdown
-                  -# = link_to 'Explore', projects_path
                   %a.nav-link.dropdown-toggle{"data-toggle" => "dropdown", href: '#'}
                     Projects
                     %span.caret
@@ -70,16 +54,6 @@
                     %li
                       .row
                         .col-xs-12.text-center= link_to 'Browse all projects', projects_path(ref: 'topnav'), class: 'btn btn-block btn-primary'
-                        -# .col-xs-4{ style: 'border-right: 1px solid #ddd'}
-                          %ul.nav.nav-pills.nav-stacked
-                            %li
-                              %h4 Categories
-                            %li= link_to 'Drones', '/tags/drone'
-                            %li= link_to 'Home automation', '/tags/home+automation'
-                            %li= link_to 'Outdoor', '/tags/outdoor'
-                            %li= link_to 'Wearables', '/tags/wearable'
-                            %li= link_to '', '/tags/'
-                            %li= link_to '', '/tags/'
                         .col-xs-6{ style: 'border-right: 1px solid #ddd'}
                           %ul.nav.nav-pills.nav-stacked
                             %li
@@ -91,7 +65,7 @@
                               %h4 Components
                             = render partial: 'shared/components_list', locals: { ref: 'topnav' }
                 %li= link_to 'Tools', tools_path, class: 'nav-link'
-                %li= link_to 'Hackers', hackers_path, class: 'nav-link'
+                -# %li= link_to 'Find an expert', experts_path, class: 'nav-link'
                 %li
                   - link = user_signed_in? ? new_project_path : new_user_registration_path(redirect_to: new_project_path, reason: 'project')
                   %span= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, link, class: 'nav-link nav-add-project'
@@ -115,9 +89,9 @@
                             %a No notifications.
 
                   %li.btn-group.navbar-btn#user-navigation-links
-                    = link_to image_tag(current_user.decorate.avatar(:mini), style: 'width:32px;'), current_user, class: 'btn',id: 'user-nav-face', style: 'padding:0;'
+                    = link_to image_tag(current_user.decorate.avatar(:mini), style: 'width:30px;'), current_user, class: 'btn',id: 'user-nav-face', style: 'padding:0;'
                     %button#user-dropdown-toggle.btn.btn-default.dropdown-toggle{"data-toggle" => "dropdown"}
-                      %span.caret{ style: 'border-bottom-color: #000;border-top-color: #000;' }
+                      %span.caret
                     %ul.dropdown-menu#nav-user-menu
                       %li= link_to current_user.name, current_user
                       - if current_user.communities.any?
@@ -143,40 +117,8 @@
                     - ab_test 'signup_button_global', 'Sign up', 'Start hacking', 'Create an account', 'Claim my profile', 'Claim my hacker profile' do |link_text|
                       %span= link_to link_text, validate_step_path(experiment: 'signup_button_global'), class: 'btn btn-primary login-link', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '#{request.path}']);", id: "signup-button"
 
-                    -#
-                      %span= link_to 'Sign up', new_user_registration_path, class: 'btn btn-primary login-link', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '#{request.path}']);", id: "signup-button"
-
-                      :javascript
-                        $(document).ready(function(){
-                          $.ajax({
-                            type: 'GET',
-                            url: '/ab_test',
-                            data: {
-                              experiment: 'signup_button_global',
-                              alternatives: ['Start hacking', 'Create an account', 'Claim my profile', 'Claim my hacker profile'],
-                              control: 'Sign up',
-                            },
-                            success: function(result){
-                              $('#signup-button').text(result['alternative']);
-                            }
-                          })
-
-                          $('#signup-button').on('click', function(e){
-                            e.preventDefault();
-                            $.ajax({
-                              type: 'POST',
-                              url: '/finished',
-                              data: { experiment: 'signup_button_global' },
-                              success: function(){
-                                window.location = "#{new_user_registration_path}";
-                              }
-                            });
-                            return false;
-                          });
-                        });
-
                   %li.dropdown
-                    %a#login.btn.btn-default.login-link.dropdown-toggle{"data-toggle" => "dropdown", href: '#' }
+                    %a.btn.btn-primary.login-link.dropdown-toggle{"data-toggle" => "dropdown", href: '#' }
                       Log in
                     .dropdown-menu{:style => "padding: 15px; width: 250px;"}
                       = render 'devise/sessions/form'
@@ -185,33 +127,30 @@
                       .social-icons.text-center
                         %p.text-muted
                           %small Or connect with your social account:
-                        = link_to 'Facebook', user_omniauth_authorize_url(:facebook), class: 'zocial icon facebook', tabindex: (defined?(autofocus) and autofocus ? 1 : nil)
+                        = link_to 'Facebook', user_omniauth_authorize_url(:facebook), class: 'zocial icon facebook'
                         = link_to 'Github', user_omniauth_authorize_path(:github), class: 'zocial icon github'
                         = link_to 'Google+', user_omniauth_authorize_path(:gplus), class: 'zocial icon googleplus'
-                        -# = link_to 'LinkedIn', user_omniauth_authorize_path(:linkedin), class: 'zocial icon linkedin'
                         = link_to 'Twitter', user_omniauth_authorize_path(:twitter), class: 'zocial icon twitter'
               #navbar-search
                 = render 'shared/search_form'
 
+      = bootstrap_flash
       #main
-        = bootstrap_flash
         - if content_for?(:no_container)
           = yield(:no_container)
         - else
-          .container
-            #content
+          .container-fluid
+            #content.wrapper
               = yield
 
     - unless params[:blank_frame]
-      #push
-
       %footer
         %ul.list-unstyled.list-inline.pull-left
           %li= link_to 'About', about_path
           %li= link_to 'Blog', '/blog'
-          %li= link_to 'Help', 'mailto:team@hackster.io?subject=Help!'
-          %li= link_to 'Feedback', 'mailto:team@hackster.io?subject=What%20I%20think%20about%20Hackster.io'
           %li= link_to 'Resources', resources_path
+          %li= link_to 'Hackers', hackers_path
+          %li= link_to 'Feedback and support', 'javascript:showClassicWidget();'
           %li= link_to 'Jobs', 'mailto:jobs@hackster.io?subject=I want to work with you guys!'
           %li= link_to 'Terms', '/terms'
           %li= link_to 'Privacy', '/privacy'
@@ -221,7 +160,20 @@
           %li= link_to content_tag(:i, '', class: 'fa fa-twitter fa-lg').html_safe, 'http://twitter.com/hacksterio', alt: 'Hackster.io on Twitter', class: 'link-icon'
           %li= link_to content_tag(:i, '', class: 'fa fa-facebook fa-lg').html_safe, 'http://www.facebook.com/hacksterio', alt: 'Hackster.io on Facebook', class: 'link-icon'
           %li Hackster.io 2014
-        /= link_to image_tag('//cdn.mxpnl.com/site_media/images/partner/badge_light.png', alt: 'Mobile Analytics'), 'https://mixpanel.com/f/partner', class: 'pull-right', style: 'margin-top:-10px;margin-right:15px;', target: '_blank'
+        = link_to image_tag('//cdn.mxpnl.com/site_media/images/partner/badge_light.png', alt: 'Mobile Analytics'), 'https://mixpanel.com/f/partner', class: 'pull-right', style: 'margin-top:-10px;margin-right:15px;', target: '_blank'
+    #mobile-nav-overlay.hide-on-desktop
+      #mobile-nav-overlay-close.fa.fa-times
+    #mobile-navigation.hide-on-desktop
+      = link_to 'Projects', projects_path(ref: 'topnav'), class: 'mo-nav-link'
+      = link_to 'Tools', tools_path, class: 'mo-nav-link'
+      = link_to 'Hackers', hackers_path, class: 'mo-nav-link'
+      = link_to "Add project".html_safe, link, class: 'mo-nav-link'
+      - if user_signed_in?
+        = link_to 'Log out', destroy_user_session_path, method: :delete, class: 'mo-nav-link'
+        - if current_user.is? :admin
+          = link_to 'Admin', admin_analytics_path, class: 'mo-nav-link'
+      - else
+        = link_to 'Sign up / Login', new_user_registration_path, class: 'mo-nav-link', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '#{request.path}']);"
 
     = content_for :js
     - unless is_mobile? or params[:blank_frame]

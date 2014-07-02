@@ -5,6 +5,10 @@ class RepoWidget < Widget
     Widget.model_name
   end
 
+  def default_label
+    'Code repository'
+  end
+
   def identifier
     'repo_widget'
   end

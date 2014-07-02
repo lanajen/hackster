@@ -4,8 +4,15 @@ body.whitelabel {
       height: 60px;
       margin: 0;
       padding: 10px 20px;
+      width: auto;
+      border: 0;
       img {
         max-height: 100%;
+        max-width: auto;
+        width: auto;
+      }
+      &:hover {
+        background: initial;
       }
     }
     .navbar-right {

@@ -1,4 +1,5 @@
+//$('a.respect-button').tooltip('hide');
 $('a.respect-button').replaceWith('<%= escape_javascript render(partial: "button", locals: { project: @project }) %>');
-$('a.respect-button').tooltip();
+//$('a.respect-button').tooltip();
 $('#widget-respects').replaceWith('<%= escape_javascript render(partial: "widgets/respect_widget", locals: { users: @project.respecting_users }) %>');
-$('#widget-respects a[rel=tooltip]').tooltip();
+//$('#widget-respects a[rel=tooltip]').tooltip();

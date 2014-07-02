@@ -26,4 +26,14 @@ UserVoice.push(['addTrigger', { mode: 'contact', trigger_position: 'bottom-right
 
 // Autoprompt for Satisfaction and SmartVote (only displayed under certain conditions)
 UserVoice.push(['autoprompt', {}]);
+
+function showClassicWidget() {
+  UserVoice.push(['showLightbox', 'classic_widget', {
+    mode: 'full',
+    primary_color: '#cc6d00',
+    link_color: '#007dbf',
+    default_mode: 'support',
+    forum_id: 229281
+  }]);
+}
 </script>

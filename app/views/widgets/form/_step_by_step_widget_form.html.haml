@@ -32,7 +32,7 @@
         resetPositions();
       })
 
-      $('#sortable').on('click', '.move', function(e){
+      $('body').on('click', '#sortable .move', function(e){
         dir = $(this).data('direction');
         field = $(this).parent();
         clone = field.clone();

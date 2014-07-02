@@ -27,7 +27,7 @@
     = javascript_include_tag "application"
 
   %body.whitelabel
-    #wrapper
+    #outer-wrapper
       - cache "tech-#{current_tech.id}-client-nav", tag: ["tech-#{current_tech.id}-client-nav", "tech-client-nav"] do
         .navbar.navbar-default.navbar-static-top
           .container{ style: 'position:relative;' }

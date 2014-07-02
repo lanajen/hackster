@@ -1,1 +1,7 @@
-.text-widget= widget.content ? widget.content.html_safe : "Empty"
+.text-widget.project-show-item= widget.content ? widget.content.html_safe : "Empty"
+-# if can? :edit, @project
+  .text-widget-form.project-edit-item
+    .form-group
+      .controls
+        = render 'shared/wysihtml5_toolbar'
+    = text_area( :widget, :content, value: widget.content, id: "text-widget-#{@wysihtml5_toolbar_increment}", class: "wysihtml5-textarea", rows: 10, label: false)

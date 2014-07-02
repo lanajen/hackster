@@ -7,7 +7,7 @@
 .project-thumb-container{ data: { ref: ref, ref_id: ref_id, offset: offset, show_year: show_year }, class: "#{'has-data' if ref}"}
   - cache "project-#{project.id}-thumb", tag: ["project-#{project.id}-thumb", "team-#{project.team_id}", "team-#{project.team_id}-user-thumbs", 'project-thumb'], expires_in: 6.hours do
     %div{ class: "project-#{project.id}" }
-      .thumb-vertical{ class: "col-xs-#{ defined?(col) ? col : 3 }" }
+      .thumb-vertical{ class: "col-md-#{ defined?(col) ? col : 3 } col-xs-12 col-sm-6" }
         .year{ style: 'display:none;' }
           %h4= project.start_date.try(:year) || 'Undated'
         .year-placeholder{ style: 'display:none;' }
