@@ -3,7 +3,7 @@ class ProjectDecorator < ApplicationDecorator
     if model.cover_image and model.cover_image.file_url
       model.cover_image.file_url(version)
     else
-      "project_default_#{version}_image.png"
+      h.asset_url "project_default_#{version}_image.png"
     end
   end
 

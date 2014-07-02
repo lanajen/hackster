@@ -492,7 +492,7 @@ a.action-respected, a.action-followed {
     padding: 80px 0 120px;
     z-index: 5;
     // @include background-image(linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.71)));
-    background: transparent url('/assets/black-gradient.png') 0 0 repeat-x;
+    background: transparent asset-url('black-gradient.png') 0 0 repeat-x;
     background-size: 1px 100%;
     a{
       color: white;

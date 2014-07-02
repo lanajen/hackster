@@ -2,7 +2,7 @@
 
 // Default Variables
 
-$slick-font-path: "assets/" !default;
+// $slick-font-path: "assets/" !default;
 $slick-font-family: "slick" !default;
 $slick-loader-path: "./" !default;
 $slick-arrow-color: white !default;
@@ -22,7 +22,7 @@ $opacity-not-active: .25;
     @return image-url($url);
   }
   @else  {
-    @return url($slick-loader-path + $url);
+    @return asset-url($url);
   }
 }
 
@@ -31,7 +31,7 @@ $opacity-not-active: .25;
     @return font-url($url);
   }
   @else  {
-    @return url($slick-font-path + $url);
+    @return asset-url($url);
   }
 }
 
