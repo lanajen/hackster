@@ -62,7 +62,8 @@ module HackerIo
     config.assets.version = '1.0'
 
     config.assets.paths << Rails.root.join('vendor', 'assets', 'fonts')
-    config.assets.precompile += %w( .svg .eot .woff .ttf)
+    config.assets.paths << Rails.root.join('vendor', 'assets', 'images')
+    config.assets.precompile += %w(.svg .eot .woff .ttf)
 
     config.assets.initialize_on_precompile = true
 
