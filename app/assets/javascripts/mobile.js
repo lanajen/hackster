@@ -1,4 +1,4 @@
-$(){
+$(document).ready(function(){
   // Set up mobile nav menu/trigger
   var $outerWrapper = $('#outer-wrapper'),
       $moNavOverlay = $('#mobile-nav-overlay'),
@@ -19,4 +19,4 @@ $(){
       $moNavOverlay.hide();
     },500);
   });
-}
+});

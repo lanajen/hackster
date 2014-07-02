@@ -19,9 +19,7 @@
 - unless @stl_loaded
   - @stl_loaded = true
 
-  <script src="/js/thingiview/Three.js"></script>
-  <script src="/js/thingiview/plane.js"></script>
-  <script src="/js/thingiview/thingiview.js"></script>
+  = javascript_include_tag "thingiview"
 
   :javascript
     function loadThingiview() {
@@ -33,7 +31,7 @@
       thingiview.setBackgroundColor('#ffffff');
     }
 
-    $('#content.project').on('click', 'a.loadstl', function(e){
+    $('.project').on('click', 'a.loadstl', function(e){
       e.preventDefault();
       if (typeof(thingiview) == 'undefined') loadThingiview();
       file = $(this).data('stlfile');
