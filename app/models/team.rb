@@ -20,7 +20,7 @@ class Team < Group
     self.user_name = if full_name.present?
       super()
     else
-      (cached_members.size == 1 ? cached_members.first.user.user_name : id)
+      (cached_members.size == 1 ? cached_members.first.user.user_name : id.to_s)
     end
   end
 

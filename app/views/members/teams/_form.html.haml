@@ -22,6 +22,7 @@
 #team-form{ style: "#{'display:none;' if @project.guest_name.present?}"}
   = simple_nested_form_for @group, url: project_team_path(@project), html: { class: 'widget-form' } do |f|
     = f.error_notification
+
     = f.input :full_name, label: 'Team name'
     = f.input :new_user_name, label: 'Pretty URL'
     %table#sortable.table.table-condensed
