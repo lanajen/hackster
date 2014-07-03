@@ -1,6 +1,6 @@
 - if @project.tech_tags_string.present? and tech = Tech.includes(:tech_tags).references(:tags).where("LOWER(tags.name) = ?", @project.tech_tags_string.downcase).first
   - tech = GroupDecorator.decorate(tech)
-  .col-xs-4.col-xs-offset-4
+  .col-md-4.col-md-offset-4.col-xs-12
     .transparent-well
       .header.no-content.text-center
         %h2
@@ -8,7 +8,7 @@
           = link_to tech.name, tech_short_path(tech), class: 'hidden-link'
 
 - if @project.external
-  .col-xs-4.col-xs-offset-4
+  .col-md-4.col-md-offset-4.col-xs-12
     .wellified
       %h2.text-center Submit a link
 
@@ -44,7 +44,7 @@
 
         = f.button :submit, 'Submit', class: 'btn-block btn btn-primary'
 
-  .col-xs-3.col-xs-offset-1
+  .col-md-3.col-md-offset-1.col-xs-12
     .transparent-well
       .header
         %h4 What is this?
@@ -59,7 +59,7 @@
           Be cool and credit the hacker who built it if it's not you!
 
 - else
-  .col-xs-8.col-xs-offset-2
+  .col-md-8.col-md-offset-2.col-xs-12
     .wellified
       %h2.mg-20.text-center Start a new project
 
@@ -98,10 +98,10 @@
             = f.button :submit, 'Continue', class: 'btn-block btn-primary'
 
   - if @project.open_source
-    .col-xs-6.col-xs-offset-3
+    .col-md-6.col-md-offset-3.col-xs-12
       %hr
 
-    .col-xs-8.col-xs-offset-2.mg-40
+    .col-md-8.col-md-offset-2.col-xs-12.mg-40
       .wellified
         %p.text-center
           %strong Is there an existing web page for this project?

@@ -10,7 +10,7 @@
         .col-xs-12
           .alert.alert-warning.text-center= get_reason(params)
 
-        .col-xs-4
+        .col-xs-12.col-md-4
           .wellified{ class: "#{'wellified-transparent' unless highlight == 'login'}" }
             %h3.text-center
               Log in
@@ -18,7 +18,7 @@
               %small with your existing account:
             = render partial: 'devise/sessions/form', locals: { autofocus: (highlight == 'login') }
 
-        .col-xs-4
+        .col-xs-12.col-md-4
           .wellified{ class: "#{'wellified-transparent' unless highlight == 'signup'}" }
             %h3.text-center
               Sign up
@@ -26,7 +26,7 @@
               %small for a new account:
             = render partial: 'devise/registrations/form', locals: { autofocus: (highlight == 'signup') }
 
-        .col-xs-4
+        .col-xs-12.col-md-4
           .wellified{ class: "#{'wellified-transparent' unless highlight == 'connect'}" }
             %h3.text-center
               Connect

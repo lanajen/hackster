@@ -40,7 +40,7 @@ module ApplicationHelper
   end
 
   def get_reason params
-    msg = "Please log in or create an account to get full access to our maker resources and start hacking."
+    msg = "Please log in or create an account to get full access to our maker resources and start building."
     # group, project, user
 
     case params[:m]
