@@ -33,7 +33,7 @@ class User < ActiveRecord::Base
   has_many :communities, through: :group_ties, source: :group, class_name: 'Community'
   # has_many :courses, through: :promotions  # doesnt work
   has_many :events, through: :group_ties, source: :group, class_name: 'Event'
-  has_many :follow_relations
+  has_many :follow_relations, dependent: :destroy
   has_many :followed_groups, -> { order('groups.full_name ASC') }, source_type: 'Group', through: :follow_relations, source: :followable
   has_many :followed_projects, source_type: 'Project', through: :follow_relations, source: :followable
   has_many :followed_users, source_type: 'User', through: :follow_relations, source: :followable
