@@ -665,13 +665,13 @@ a.action-respected, a.action-followed {
       display: block;
       @include transition(all .3s ease);
       background: transparent;
-      @include border-radius(30px);
       overflow: hidden;
       img{
         width: 30px;
         border: 1px solid #fff;
         background: #fff;
         background: rgba(255,255,255,.7);
+        @include border-radius(30px);
       }
       .user-name{
         position: relative;
@@ -684,6 +684,9 @@ a.action-respected, a.action-followed {
       }
       &.guest-name {
         padding-top: 5px;
+        .user-name {
+          margin-left: 0;
+        }
       }
     }
     .btn-edit{
@@ -694,6 +697,13 @@ a.action-respected, a.action-followed {
       @include opacity(1);
       text-shadow: none;
       font-size: 10px;
+    }
+  }
+  .claim-link {
+    color: #fff;
+    a {
+      color: #fff;
+      font-weight: bold;
     }
   }
   .alert{

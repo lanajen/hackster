@@ -72,8 +72,8 @@
     #project-team
       .team-widget.pull-left
         - if @project.guest_name.present?
-          .user
-            = @project.guest_name
+          .user.guest-name
+            %span.user-name= @project.guest_name
         - else
           - users = @project.team.active_members.includes(:user)
           - u = users.first.user
