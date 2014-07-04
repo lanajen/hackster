@@ -20,3 +20,5 @@ require File.join(Rails.root, 'lib/quiet_assets')
 require File.join(Rails.root, 'lib/roles')
 
 require File.join(Rails.root, 'lib/route_constraints')
+# after_commit_callbacks
+require File.join(Rails.root, 'lib/after_commit_callbacks')

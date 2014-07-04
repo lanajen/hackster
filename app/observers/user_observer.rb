@@ -1,9 +1,14 @@
 class UserObserver < ActiveRecord::Observer
+  def after_commit_on_create record
+    unless record.invited_to_sign_up? or record.reputation  # this callback seems to be called twice somehow, which means two sets of emails are sent. Checking on reputation to see if the callback has already been called.
+      advertise_new_user record
+      record.send_confirmation_instructions unless record.invitation_accepted?
+    end
+  end
+
   def after_create record
     unless record.invited_to_sign_up?
-      advertise_new_user record
       record.create_reputation
-      record.send_confirmation_instructions unless record.invitation_accepted?
       record.update_column :user_name, record.generate_user_name
     end
   end

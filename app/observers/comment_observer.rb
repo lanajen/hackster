@@ -1,9 +1,7 @@
 class CommentObserver < ActiveRecord::Observer
   # include BroadcastObserver
 
-  def after_create record
-    project_id = record.commentable_type == 'Project' ? record.commentable_id : record.commentable.threadable_id
-    record.user.broadcast :new, record.id, 'Comment', project_id if record.user.class == User
+  def after_commit_on_create record
     type = case record.commentable_type
     when 'Issue'
       'new_comment_issue_notification'
@@ -14,6 +12,11 @@ class CommentObserver < ActiveRecord::Observer
     end
     BaseMailer.enqueue_email type,
         { context_type: 'comment', context_id: record.id } unless record.disable_notification?
+  end
+
+  def after_create record
+    project_id = record.commentable_type == 'Project' ? record.commentable_id : record.commentable.threadable_id
+    record.user.broadcast :new, record.id, 'Comment', project_id if record.user.class == User
     update_counters record
   end
 

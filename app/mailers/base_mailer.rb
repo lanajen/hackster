@@ -152,6 +152,7 @@ class BaseMailer < ActionMailer::Base
       end
       context
     rescue ActiveRecord::RecordNotFound
+      puts "Couldn't find context for record #{context_id} for #{context_type}; skipped email."
       false
     end
 end

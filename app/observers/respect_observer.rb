@@ -1,12 +1,15 @@
 class RespectObserver < ActiveRecord::Observer
-  def after_create record
-    update_counters record
+  def after_commit_on_create record
     case record.respecting
     when User
       BaseMailer.enqueue_email 'new_respect_notification',
           { context_type: 'respect', context_id: record.id }
       record.respecting.broadcast :new, record.id, 'Respect', record.project_id
     end
+  end
+
+  def after_create record
+    update_counters record
   end
 
   def after_destroy record
