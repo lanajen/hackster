@@ -1,53 +1,88 @@
-.row
-  .col-xs-6.col-xs-offset-3
-    .page.wellified
+= content_for :no_container do
+  #about.text-center
+    %section#teaser
+      .container
+        %h1.top.text-center.mg-20 We'll help you turn your idea into a product
+        %p Making hardware products is a hazardous task. It requires experience and skills in many different areas, which makes it very daunting for first-timers.
+        %p Luckily, many people have done it before. You can now tap into their expertise and knowledge through Hackster. Stop advancing in the dark, avoid all the common mistakes and get your product to market faster!
+    %section.hide
 
-      %h1.top.text-center.mg-20 We'll help you turn your idea into a product
-      %p Making hardware products is a hazardous task. It requires experience and skills in many different areas, which makes it very daunting for first-timers.
-      %p Luckily, many people have done it before. You can now tap into their expertise and knowledge through Hackster. Stop advancing in the dark, avoid all the common mistakes and get your product to market faster!
-      %p Areas of expertise:
-      %ul
-        %li Mechanical and electronic engineering
-        %li Software engineering
-        %li Industrial design
-        %li Crowdfunding
-        %li Business model and strategy
-        %li Sourcing
-        %li Manufacturing
-        %li Distribution
-      .mg-40
+    %section#areas-of-xp
+      .container
+        %h2.top Areas of expertise
+        .row
+          .col-xs-3
+            %i.fa.fa-wrench
+            Hardware engineering
+          .col-xs-3
+            %i.fa.fa-code
+            Software engineering
+          .col-xs-3
+            %i.fa.fa-pencil
+            Industrial design
+          .col-xs-3
+            %i.fa.fa-money
+            Crowdfunding
+        .row
+          .col-xs-3
+            %i.fa.fa-suitcase
+            Business strategy
+          .col-xs-3
+            %i.fa.fa-globe
+            Sourcing
+          .col-xs-3
+            %i.fa.fa-cogs
+            Manufacturing
+          .col-xs-3
+            %i.fa.fa-shopping-cart
+            Distribution
 
-      %p
-        %strong{ style: 'font-size:16px'} To get connected with an expert, tell us what you need:
+    %section#cta
+      .container
+        Ready?
+        %button.btn.btn-primary.btn-lg{"data-target" => "#myModal", "data-toggle" => "modal"}
+          Ask to be connected
 
-      = simple_form_for @expert_request, url: expert_requests_path, html: { class: 'form-vertical' }, wrapper: :bootstrap3 do |f|
-        - if user_signed_in?
-          - if current_user.projects_count > 0
-            = f.input :project_id, label: 'Link to a project on Hackster', collection: current_user.projects
+= content_for :js do
+  #myModal.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "myModalLabel", role: "dialog", tabindex: "-1"}
+    = simple_form_for @expert_request, url: expert_requests_path, html: { class: 'form-vertical modal-dialog' }, wrapper: :bootstrap3 do |f|
+      .modal-content
+        .modal-header
+          %button.close{"data-dismiss" => "modal", type: "button"}
+            %span{"aria-hidden" => "true"} ×
+            %span.sr-only Close
+          %h4#myModalLabel.modal-title To get connected with an expert, tell us what you need:
+        .modal-body
+          - if user_signed_in?
+            - if current_user.projects_count > 0
+              = f.input :project_id, label: 'Link to a project on Hackster', collection: current_user.projects
+            - else
+              .form-group
+                %label.control-label Link to a project on Hackster
+                %p
+                  = link_to 'Create a project', new_project_path
+                  (projects are private by default).
           - else
             .form-group
               %label.control-label Link to a project on Hackster
               %p
-                = link_to 'Create a project', new_project_path
-                (projects are private by default).
-        - else
-          .form-group
-            %label.control-label Link to a project on Hackster
-            %p
-              = link_to 'Log in', new_user_session_path
-              or
-              = link_to 'sign up', new_user_registration_path
-              to link to a project on Hackster.
-        = f.input :project_description, label: 'Alternatively describe your product here', as: :text, input_html: { rows: 10 }
-        = f.input :stage, label: 'What stage are you at?', collection: ExpertRequest::STAGES
-        = f.input :expertise_area, label: 'What do you need help with?', collection: ExpertRequest::AREAS_OF_EXPERTISE, as: :check_boxes
-        = f.input :request_description, label: "Please describe in more details what help you're looking to receive", as: :text, input_html: { rows: 5 }
-        = f.input :budget, label: 'What is your budget like?', collection: ExpertRequest::BUDGETS
-        = f.input :comments, label: "Anything you'd like to add?", as: :text, input_html: { rows: 5 }
+                = link_to 'Log in', new_user_session_path
+                or
+                = link_to 'sign up', new_user_registration_path
+                to link to a project on Hackster.
 
-        %p Last, tell us who you are and how we can reach you:
-        = f.input :name, label: 'Your full name'
-        = f.input :email, label: 'Your email'
-        = f.input :phone, label: 'Your phone'
-        = f.input :location, label: 'Your location', hint: 'City, State, Country'
-        = f.submit 'Get connected', class: 'btn btn-primary'
+          = f.input :project_description, label: 'Alternatively describe your product here', as: :text, input_html: { rows: 10 }
+          = f.input :stage, label: 'What stage are you at?', collection: ExpertRequest::STAGES
+          = f.input :expertise_area, label: 'What do you need help with?', collection: ExpertRequest::AREAS_OF_EXPERTISE, as: :check_boxes
+          = f.input :request_description, label: "Please describe in more details what help you're looking to receive", as: :text, input_html: { rows: 5 }
+          = f.input :budget, label: 'What is your budget like?', collection: ExpertRequest::BUDGETS
+          = f.input :comments, label: "Anything you'd like to add?", as: :text, input_html: { rows: 5 }
+
+          %p Last, tell us who you are and how we can reach you:
+          = f.input :name, label: 'Your full name'
+          = f.input :email, label: 'Your email'
+          = f.input :phone, label: 'Your phone'
+          = f.input :location, label: 'Your location', hint: 'City, State, Country'
+        .modal-footer
+          = f.submit 'Get connected', class: 'btn btn-primary'
+          %button.btn.btn-default{"data-dismiss" => "modal", type: "button"} Close

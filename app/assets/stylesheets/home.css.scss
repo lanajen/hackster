@@ -78,6 +78,10 @@
       border-color: #0f4993;
       @include box-shadow(0px 5px 1px #1155aa);
     }
+    p {
+      color: #fff;
+      font-size: 18px;
+    }
   }
   #pitch {
     // background: #fcfcfc;
@@ -115,6 +119,32 @@
       }
     }
   }
+  #areas-of-xp {
+    font-weight: bold;
+    font-size: 16px;
+    // background: #3d8bc1;
+    // color: #fff;
+    h2 {
+      margin-bottom: 40px;
+    }
+    .col-xs-3 {
+      border: 1px solid #fafafa;
+      background: #3d8bc1;
+      color: #fff;
+      padding-top: 20px;
+      padding-bottom: 20px;
+      &:hover {
+        background: #3881B4;
+      }
+      i {
+        display: block;
+        margin-bottom: 5px;
+      }
+    }
+  }
+  #cta {
+    font-size: 20px;
+  }
   #outer-wrapper {
     margin-bottom: -60px;
   }
@@ -137,5 +167,14 @@
       color: #dae3ea;
       text-shadow: -1px -1px 0 #0c3577;
     }
+  }
+}
+
+.alert.alert-bold {
+  border-color: #3d8bc1;
+  background: #3d8bc1;
+  color: #fff;
+  .alert-link {
+    color: #fafafa;
   }
 }
