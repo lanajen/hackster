@@ -8,7 +8,6 @@ class UserObserver < ActiveRecord::Observer
 
   def after_create record
     unless record.invited_to_sign_up?
-      record.create_reputation
       record.update_column :user_name, record.generate_user_name
     end
   end
