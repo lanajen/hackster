@@ -4,11 +4,11 @@
     #signup-popup-inner
       %button.close{ onclick: "closePopup('#signup-popup');" } &times;
       %h2
-        Hackster.io is a collaborative knowledge base
+        Hackster.io gives professionals and hobbyists
         %br
-        for the hardware maker community.
+        the resources they need to build hardware.
       %p
-        %strong Join the community and start hacking.
+        %strong Join the community and start building.
         Choose how to connect:
       %div{ style: 'font-size: 20px' }
         = link_to 'Facebook', user_omniauth_authorize_url(:facebook), class: 'zocial icon facebook'
@@ -22,7 +22,7 @@
         = f.input :email, label: false, placeholder: 'Email', tabindex: 1
         = f.input :email_confirmation, label: false, placeholder: 'Confirm email'
         = f.input :password, label: false, placeholder: 'Password'
-        = f.button :submit, "Start hacking", class: 'btn btn-primary btn-block'
+        = f.button :submit, "Start building", class: 'btn btn-primary btn-block'
 
 = content_for :js do
   :javascript

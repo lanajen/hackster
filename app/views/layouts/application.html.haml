@@ -114,7 +114,7 @@
               - else
                 %ul#navbar-right.clearfix
                   %li
-                    - ab_test 'signup_button_global', 'Sign up', 'Start hacking', 'Create an account', 'Claim my profile', 'Claim my hacker profile' do |link_text|
+                    - ab_test 'signup_button_global', 'Sign up', 'Start building', 'Create an account', 'Claim my profile', 'Claim my hacker profile' do |link_text|
                       %span= link_to link_text, validate_step_path(experiment: 'signup_button_global'), class: 'btn btn-primary login-link', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '#{request.path}']);", id: "signup-button"
 
                   %li.dropdown
