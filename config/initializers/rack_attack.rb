@@ -28,7 +28,9 @@ class Rack::Attack
   #
   # Key: "rack::attack:#{Time.now.to_i/:period}:req/ip:#{req.ip}"
   throttle('req/ip', :limit => 300, :period => 60.minutes) do |req|
-    req.ip
+    unless req.path =~ /\A\/admin/
+      req.ip
+    end
   end
 
   ### Prevent Brute-Force Login Attacks ###
