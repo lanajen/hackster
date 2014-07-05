@@ -97,7 +97,7 @@
       });
       copy.animate({
         top: $('#full-width .inner-container').offset().top - $(window).scrollTop(),
-        left: $('#full-width .inner-container').offset().left + 11,
+        // left: $('#full-width .inner-container').offset().left + 11,
         width: $('#full-width .inner-container').width()
       }, function(){
         copy.attr('style', '');
