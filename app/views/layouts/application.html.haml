@@ -65,7 +65,7 @@
                               %h4 Components
                             = render partial: 'shared/components_list', locals: { ref: 'topnav' }
                 %li= link_to 'Tools', tools_path, class: 'nav-link'
-                %li= link_to 'Find an expert', experts_path, class: 'nav-link'
+                %li= link_to 'Ask an expert', experts_path, class: 'nav-link'
                 %li
                   - link = user_signed_in? ? new_project_path : new_user_registration_path(redirect_to: new_project_path, reason: 'project')
                   %span= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, link, class: 'nav-link nav-add-project'
@@ -166,7 +166,7 @@
     #mobile-navigation.hide-on-desktop
       = link_to 'Projects', projects_path(ref: 'topnav'), class: 'mo-nav-link'
       = link_to 'Tools', tools_path, class: 'mo-nav-link'
-      = link_to 'Find an expert', experts_path, class: 'mo-nav-link'
+      = link_to 'Ask an expert', experts_path, class: 'mo-nav-link'
       = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, link, class: 'mo-nav-link'
       - if user_signed_in?
         = link_to 'Log out', destroy_user_session_path, method: :delete, class: 'mo-nav-link'

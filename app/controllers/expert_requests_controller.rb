@@ -1,6 +1,6 @@
 class ExpertRequestsController < ApplicationController
   def new
-    title "Find a hardware expert"
+    title "Ask an expert"
     @expert_request = ExpertRequest.new
   end
 
@@ -22,7 +22,7 @@ class ExpertRequestsController < ApplicationController
       @message.body += "<b>Stage: </b>#{@expert_request.stage}<br>"
       @message.body += "<b>Area of expertise: </b>#{@expert_request.expertise_area.to_sentence}<br>"
       @message.body += "<b>Request description: </b>#{@expert_request.request_description}<br>"
-      @message.body += "<b>Budget: </b>#{@expert_request.budget}<br>"
+      # @message.body += "<b>Budget: </b>#{@expert_request.budget}<br>"
       @message.body += "<b>Comments: </b>#{@expert_request.comments}<br>"
       @message.body += "<b>Name: </b>#{@expert_request.name}<br>"
       @message.body += "<b>Phone: </b>#{@expert_request.phone}<br>"

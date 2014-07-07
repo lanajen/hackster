@@ -37,6 +37,35 @@
             %i.fa.fa-shopping-cart
             Distribution
 
+    %section#experts
+      .container
+        %h2.top Meet some of our experts
+        .row
+          .col-xs-12.col-md-3
+            = image_tag 'experts/ben_bateman.jpg', class: 'img-circle img-responsive'
+            %h5
+              Ben Bateman
+              %br
+              %small Community Manager Design &amp; Technology at Indiegogo, Inc.
+          .col-xs-12.col-md-3
+            = image_tag 'experts/idan_beck.jpg', class: 'img-circle img-responsive'
+            %h5
+              Idan Beck
+              %br
+              %small Founder and CEO at Incident Technologies, Inc.
+          .col-xs-12.col-md-3
+            = image_tag 'experts/dave_merrill.jpg', class: 'img-circle img-responsive'
+            %h5
+              Dave Merrill
+              %br
+              %small President and Founder at Sifteo, Inc.
+          .col-xs-12.col-md-3
+            = image_tag 'experts/zach_supalla.jpg', class: 'img-circle img-responsive'
+            %h5
+              Zach Supalla
+              %br
+              %small Founder and CEO at Spark Labs, Inc.
+
     %section#cta
       .container
         Ready?
@@ -75,7 +104,7 @@
           = f.input :stage, label: 'What stage are you at?', collection: ExpertRequest::STAGES
           = f.input :expertise_area, label: 'What do you need help with?', collection: ExpertRequest::AREAS_OF_EXPERTISE, as: :check_boxes
           = f.input :request_description, label: "Please describe in more details what help you're looking to receive", as: :text, input_html: { rows: 5 }
-          = f.input :budget, label: 'What is your budget like?', collection: ExpertRequest::BUDGETS
+          -# = f.input :budget, label: 'What is your budget like?', collection: ExpertRequest::BUDGETS
           = f.input :comments, label: "Anything you'd like to add?", as: :text, input_html: { rows: 5 }
 
           %p Last, tell us who you are and how we can reach you:

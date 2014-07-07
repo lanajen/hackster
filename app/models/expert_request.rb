@@ -30,7 +30,7 @@ class ExpertRequest
   attr_accessor :project_id, :project_description, :stage, :expertise_area,
     :request_description, :budget, :comments, :name, :email, :phone, :location
 
-  validates :stage, :expertise_area, :request_description, :budget, presence: true
+  validates :stage, :expertise_area, :request_description, presence: true
   validate :project_id_or_description_is_present?
 
   def expertise_area
