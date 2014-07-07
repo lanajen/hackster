@@ -1,5 +1,5 @@
 class ProjectDecorator < ApplicationDecorator
-  def cover_image version=nil
+  def cover_image version=:cover
     if model.cover_image and model.cover_image.file_url
       model.cover_image.file_url(version)
     else

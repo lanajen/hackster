@@ -3,6 +3,9 @@ class Team < Group
   has_many :projects
 
   validates :user_name, :new_user_name, length: { in: 3..100 }, allow_blank: true, if: proc{|t| t.persisted?}
+  validates :prevent_save, absence: true
+
+  attr_accessor :prevent_save
 
   before_save :update_user_name
 
@@ -36,6 +39,7 @@ class Team < Group
   def update_user_name
     was_auto_generated = if members.find_index{|m| m.new_record? || m.marked_for_destruction?}
       team = Team.new
+      team.prevent_save = true  # otherwise this new group gets saved and the old members assigned to it
       team.members = members.reject{|m| m.new_record?}
       user_name == team.generate_user_name(false)
     end

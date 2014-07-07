@@ -15,7 +15,7 @@ class ImageUploader < BaseUploader
   end
 
   version :cover, if: :is_cover? do
-    process resize_to_fill: [600, 450]
+    process resize_to_limit: [1600, 1200]
   end
 
   version :cover_thumb, from_version: :cover, if: :is_cover? do

@@ -116,6 +116,7 @@ module UrlHelper
   end
 
   def project_path project, opts={}
+    # if there's a path not found error check that user_name.size >= 3
     super params_for_project(project).merge(opts)
   end
 
@@ -142,6 +143,10 @@ module UrlHelper
 
   def tech_short_url tech, opts={}
     super tech.user_name, opts
+  end
+
+  def universal_project_path project, opts={}
+    project.external? ? external_project_path(project, opts) : project_path(project, opts)
   end
 
   def universal_project_url project, opts={}
@@ -222,15 +227,23 @@ module UrlHelper
     def params_for_group group, route='group'
       {
         user_name: group.user_name,
-        use_route: route
+        use_route: route,
       }
     end
 
     def params_for_project project, force_params={}
-      {
-        project_slug: project.slug,
-        user_name: project.user_name_for_url,
-        use_route: 'project'
-      }.merge(force_params)
+      if project.external
+        {
+          id: "#{project.id}-#{project.slug}",
+          user_name: project.user_name_for_url,
+          use_route: 'external_project',
+        }.merge(force_params)
+      else
+        {
+          project_slug: project.slug,
+          user_name: project.user_name_for_url,
+          use_route: 'project',
+        }.merge(force_params)
+      end
     end
 end
