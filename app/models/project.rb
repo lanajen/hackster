@@ -227,7 +227,7 @@ class Project < ActiveRecord::Base
       build_logs: 'blog_posts.count',
       comments: 'comments.count',
       followers: 'followers.count',
-      issues: 'issues.count',
+      issues: 'issues.where(type: "Issue").count',
       product_tags: 'product_tags.count',
       respects: 'respects.count',
       team_members: 'users.count',
