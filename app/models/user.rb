@@ -616,6 +616,10 @@ class User < ActiveRecord::Base
     self.subscriptions = SUBSCRIPTIONS.keys
   end
 
+  def subscribed_to? subscription
+    subscription.in? subscriptions
+  end
+
   def subscriptions=(subscriptions)
     self.subscriptions_mask = (subscriptions & SUBSCRIPTIONS.keys).map { |r| 2**SUBSCRIPTIONS.keys.index(r) }.sum
   end

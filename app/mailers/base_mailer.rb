@@ -132,6 +132,11 @@ class BaseMailer < ActionMailer::Base
       when :project
         project = context[:project] = Project.find(context_id)
         context[:users] = project.users
+      when :project_user_informal
+        project = context[:project] = Project.find(context_id)
+        user = context[:user] = project.users.first
+        context[:from_email] = 'Benjamin Larralde<ben@hackster.io>'
+        return unless user.subscribed_to? 'other'
       when :respect
         respect = context[:respect] = Respect.find(context_id)
         project = context[:project] = respect.project
@@ -143,10 +148,10 @@ class BaseMailer < ActionMailer::Base
         context[:projects] = projects = tech.projects.visible.indexable_and_external.joins(:group_relations).where('group_relations.created_at > ?', 24.hours.ago)
         context[:users] = projects.any? ? tech.followers.with_subscription('follow_tech_activity') : []
       when :user
-         context[:user] = User.find(context_id)
+        context[:user] = User.find(context_id)
       when :user_informal
-         context[:user] = User.find(context_id)
-         context[:from_email] = 'Benjamin Larralde<ben@hackster.io>'
+        context[:user] = User.find(context_id)
+        context[:from_email] = 'Benjamin Larralde<ben@hackster.io>'
       else
         raise "Unknown context: #{context_type}"
       end
