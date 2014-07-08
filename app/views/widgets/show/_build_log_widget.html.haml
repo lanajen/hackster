@@ -2,7 +2,7 @@
   - @project.blog_posts.each do |log|
     %h6
       = link_to log.title, log_path(@project, log)
-      %small.text-muted
+      %span.text-muted
         by
         = link_to log.user.name, log.user
         = time_ago_in_words log.created_at

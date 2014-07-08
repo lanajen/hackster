@@ -29,6 +29,24 @@
               %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-#{widget.id}", :data => { target: "#widget-#{widget.id}", offset: '-20'}}
                 %i.fa{ class: icon_for_widget(widget) }
                 = widget.name
+          - if @project.build_logs_count > 0 or can? :edit, @project
+            %li
+              %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-comments", :data => { target: "#build-logs", offset: '-20'}}
+                Build Logs
+                %span.comment-count
+                  (
+                  = @project.build_logs_count
+                  )
+                %i.fa.fa-book
+          - if @project.issues_count > 0 or can? :edit, @project
+            %li
+              %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-comments", :data => { target: "#issues", offset: '-20'}}
+                Issues
+                %span.comment-count
+                  (
+                  = @project.issues_count
+                  )
+                %i.fa.fa-exclamation-circle
           %li
             %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-comments", :data => { target: "#widget-comments", offset: '-20'}}
               Comments
