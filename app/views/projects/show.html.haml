@@ -84,6 +84,9 @@
               - if @project.build_logs_count > 1
                 = link_to 'Read previous logs', project_logs_path, class: 'btn btn-outline btn-block'
 
+            - else
+              %p No build logs yet.
+
       - if @project.issues_count > 0 or can? :edit, @project
         #issues.project-section
           .header
@@ -92,18 +95,21 @@
               - if can? :edit, @project
                 .pull-right= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} New issue".html_safe, new_project_issue_path, class: 'btn btn-outline'
           .content
-            .widget
-              .content
-                - @project.issues.where(type: 'Issue').each do |issue|
-                  %h5
-                    = link_to issue.title, issue_path(@project, issue)
-                    %small.text-muted
-                      by
-                      = link_to issue.user.name, issue.user
-                      = time_ago_in_words issue.created_at
-                      ago
+            - if @project.issues.any?
+              .widget
+                .content
+                  - @project.issues.where(type: 'Issue').each do |issue|
+                    %h5
+                      = link_to issue.title, issue_path(@project, issue)
+                      %small.text-muted
+                        by
+                        = link_to issue.user.name, issue.user
+                        = time_ago_in_words issue.created_at
+                        ago
 
-            = link_to 'Read all issues', project_issues_path, class: 'btn btn-outline btn-block'
+              = link_to 'Read all issues', project_issues_path, class: 'btn btn-outline btn-block'
+            - else
+              %p No issues yet.
 
       #more-info.project-section
         .header
