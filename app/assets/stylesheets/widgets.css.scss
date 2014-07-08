@@ -558,6 +558,9 @@
     padding: 10px 0;
     border-bottom: 1px solid #fff;
     position: relative;
+    &:hover .btn-delete {
+      display: block;
+    }
     .comment-text {
       display: inline-block;
       padding-top: 2px;

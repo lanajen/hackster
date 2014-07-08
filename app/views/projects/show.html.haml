@@ -189,7 +189,7 @@
             = render partial: 'widgets/respect_widget', locals: { users: @project.respecting_users }
 
       = render partial: 'widgets/comment_widget', locals: { comments: @project.comments, commentable: @project }
-      -# if @issue and can? :comment_privately, @project
+      - if @issue and can? :comment_privately, @project
         = render partial: 'widgets/private_comment_widget', locals: { comments: @issue.comments, commentable: @project }
 
 

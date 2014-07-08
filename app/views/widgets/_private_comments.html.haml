@@ -4,6 +4,6 @@
     - sort_comments(comments).each do |comment|
       = render partial: 'comments/comment', locals: { comment: comment }
   - else
-    %p No feedback yet.
+    .first-to-comment No feedback yet.
   - if user_signed_in?
     = render partial: 'comments/signed_in_form', locals: { commentable: commentable }
