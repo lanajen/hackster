@@ -57,7 +57,7 @@
   }
   &.project-thumb-horizontal, &.user-thumb-horizontal {
     .photo-thumb {
-      img {
+      & > a, img {
         width: 147px;
         height: 110px;
       }
@@ -77,17 +77,13 @@
   }
   .photo-thumb {
     position: relative;
-    a {
+    & > a {
       display: block;
       width: 100%;
       height: 0;
       padding-bottom: 75%;
       background: #fff center center no-repeat;
       background-size: cover;
-    }
-    img {
-      width: 100%;
-      height: 165px;
     }
     .project-award {
       font-size: 30px;
