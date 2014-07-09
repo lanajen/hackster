@@ -21,7 +21,7 @@ class SplitController < ApplicationController
 
   def validate_step
     experiment = params[:experiment]
-    redirect_to get_redirect_url_for(experiment)
+    redirect_to get_redirect_url_for(experiment) || root_path
   end
 
   private
