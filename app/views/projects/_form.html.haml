@@ -41,6 +41,8 @@
             = select_month(@project.start_date, { prompt: '--Month--' }, { class: 'form-control', name: 'project[start_date(2i)]' })
           .col-xs-6
             = select_year(@project.start_date, { prompt: '--Year--', start_year: Date.today.year, end_year: Date.today.year - 15 }, { class: 'form-control', name: 'project[start_date(1i)]' })
+
+      = render partial: 'projects/open_source_switch', locals: { f: f }
       = f.input :wip, inline_label: 'This is a work in progress', label: false
 
       = f.input :public, inline_label: "Make this project public #{content_tag(:i, '', class: 'fa fa-question-circle istooltip', title: 'You need to create at least one widget and add a cover image before you can make it public.')}".html_safe, label: false, disabled: (@project.private and !@project.can_be_public?), as: :boolean

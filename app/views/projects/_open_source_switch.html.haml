@@ -1,0 +1,7 @@
+= f.input :open_source, label: false do
+  <div class="switch">
+  = content_tag :input, '', id: "cmn-toggle-1", class: "cmn-toggle cmn-toggle-round", type: "checkbox", name: "project[open_source]", checked: @project.open_source
+  <label for="cmn-toggle-1" class="option-unchecked option">Closed source</label>
+  <label class="switch-visual" for="cmn-toggle-1"></label>
+  <label for="cmn-toggle-1" class="option-checked option">Open source</label>
+  </div>
