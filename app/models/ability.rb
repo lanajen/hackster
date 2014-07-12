@@ -2,6 +2,7 @@ class Ability
   include CanCan::Ability
 
   def initialize(resource)
+    @user = resource
 
     can :read, [Comment, User]
     can :read, [Project, Group], private: false
@@ -12,8 +13,10 @@ class Ability
       @user.can? :read, thread.threadable
     end
     can :create, Project, external: true
+    can :join, Group do |group|
+      !@user.persisted? and group.access_level == 'anyone'
+    end
 
-    @user = resource
     @user.roles.each{ |role| send role }
     beta_tester if @user.is? :beta_tester
     member if @user.persisted?
