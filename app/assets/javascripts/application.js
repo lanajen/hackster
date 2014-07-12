@@ -11,6 +11,9 @@
 //= require jquery.throttle
 //= require slick.min
 //= require 'wysihtml5/parser_rules'
+//= require medium-editor
+// require medium-editor-insert-plugin/medium-editor-insert-plugin.all.min
+//= require medium-editor-ext
 
 //= require projects
 //= require groups
@@ -23,21 +26,6 @@
 //= require jquery.iframe-transport
 //= require jquery.fileupload
 
-// require jquery.fileupload-process
-// require jquery.fileupload-validate
-// require js-routes
-// require underscore
-// require hamlcoffee
-// require backbone
-// require backbone.marionette
-// require lib/underscore
-// require lib/backbone
-// require lib/marionette
-// require_tree ./backbone/config
-// require backbone/app
-// require_tree ./backbone/entities
-// require_tree ./backbone/views
-// require_tree ./backbone/apps
 
 (function($) {
 

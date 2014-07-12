@@ -1,4 +1,5 @@
 source 'http://rubygems.org'
+source 'https://rails-assets.org'
 ruby '2.0.0'
 
 gem 'rails', '4.1.1'
@@ -11,11 +12,16 @@ gem 'asset_sync', '1.0.0'
 gem 'bootstrap-sass', '3.1.1.0'
 gem 'coffee-rails', '4.0.1'
 gem 'compass-rails', '1.1.2'
-gem 'font-awesome-rails', '4.0.3.0'
+gem 'font-awesome-rails', '4.1.0.0'
+# gem 'medium-editor-rails'
 gem 'sass-pygments-rails', '0.1'
 gem 'sass-rails', '4.0.2'
 gem 'uglifier', '2.3.1'
 gem 'zocial-rails', '1.0.2'
+
+# bower
+gem 'rails-assets-medium-editor', '1.7.5'
+gem 'rails-assets-medium-editor-insert-plugin', '0.2.4'
 
 gem 'auto_html', '1.6.3'
 gem 'aws-sdk', '1.33.0'

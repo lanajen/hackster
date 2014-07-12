@@ -1,0 +1,29 @@
+.medium-editor
+  .media-menu
+    %a.add-media-btn.media-btn.fa-stack
+      %i.fa.fa-circle-o.fa-stack-2x
+      %i.fa.fa-plus.fa-stack-1x
+    .media-menu-btns
+      %a.add-media-btn.media-btn.media-btn-action.fa-stack{ data: { media: 'image' }}
+        %i.fa.fa-circle-o.fa-stack-2x
+        %i.fa.fa-camera.fa-stack-1x
+      %a.add-media-btn.media-btn.media-btn-action.fa-stack{ data: { media: 'video', 'default-text' => "Paste a YouTube, Vimeo or Vine link, and press Enter" }}
+        %i.fa.fa-play-circle-o.fa-2x
+      %a.add-media-btn.media-btn.media-btn-action.fa-stack{ data: { media: 'code', 'default-text' => "Paste a Bitbucket repo, a Gist or Github repo link, and press Enter" }}
+        %i.fa.fa-circle-o.fa-stack-2x
+        %i.fa.fa-code.fa-stack-1x
+      %a.add-media-btn.media-btn.media-btn-action.fa-stack{ data: { media: 'schematics', 'default-text' => "Paste a 123D Circuits, OSH Park or Upverter link, and press Enter" }}
+        %i.fa.fa-circle-o.fa-stack-2x
+        %i.fa.fa-gear.fa-stack-1x
+      %a.add-media-btn.media-btn.media-btn-action.fa-stack{ data: { media: 'files', 'default-text' => "Select files or drop them here" }}
+        %i.fa.fa-circle-o.fa-stack-2x
+        %i.fa.fa-files-o.fa-stack-1x
+  .medium-saved
+  .editable{ placeholder: 'Click to add a description' }= editable
+
+:javascript
+  var editor = new MediumEditor('.editable', {
+    buttonLabels: 'fontawesome',
+    cleanPastedHTML: true,
+    targetBlank: true
+  });

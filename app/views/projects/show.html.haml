@@ -37,6 +37,13 @@
           .header
             %h2 Showcase
           .content
+            .widget
+              .header
+                %h3 Description
+              .content
+                .text-widget.project-show-item
+                  = render partial: 'shared/medium_editor', locals: { editable: @project.description }
+
             - if @widgets.any?
               - @widgets.each do |widget|
                 = render 'widgets/widget', { widget: widget }

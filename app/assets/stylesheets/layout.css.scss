@@ -1246,19 +1246,20 @@ a.hidden-link {
 
 /*****************************
 
-    RESPONSIVE VIDEO
+    RESPONSIVE EMBED
 
 *****************************/
-.video {
+.embed {
   position: relative;
   padding-bottom: 67.5%;
   height: 0;
-  overflow: hidden;
+  // overflow: hidden;
 }
-.video.widescreen { padding-bottom: 57.25%; }
-.video iframe,
-.video object,
-.video embed {
+.embed.widescreen { padding-bottom: 57.25%; }
+.embed.four-by-three { padding-bottom: 75%; }
+.embed iframe,
+.embed object,
+.embed embed {
   position: absolute;
   top: 0;
   left: 0;

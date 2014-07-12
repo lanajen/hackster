@@ -9,9 +9,19 @@ HackerIo::Application.routes.draw do
     }, via: :get
   end
 
+  # constraints(ApiSite) do
+  # end
+
   constraints(MainSite) do
     get 'sitemap_index.xml' => 'sitemap#index', as: 'sitemap_index', defaults: { format: 'xml' }
     get 'sitemap.xml' => 'sitemap#show', as: 'sitemap', defaults: { format: 'xml' }
+
+    # API (see if can be moved to its own subdomain)
+    namespace :api do
+      get 'embeds' => 'embeds#show'
+      resources :projects#, as: :api_projects
+      match "*all" => "base#cors_preflight_check", via: :options
+    end
 
     # api for split a/b testing gem
     # get 'ab_test' => 'split#start_ab_test'

@@ -48,7 +48,7 @@ class Project < ActiveRecord::Base
   has_one :cover_image, as: :attachable, class_name: 'CoverImage', dependent: :destroy
   has_one :video, as: :recordable, dependent: :destroy
 
-  sanitize_text :description
+  # sanitize_text :description
   attr_accessible :description, :end_date, :name, :start_date, :current,
     :team_members_attributes, :website, :one_liner, :widgets_attributes,
     :featured, :featured_date, :cover_image_id, :logo_id, :license, :slug,

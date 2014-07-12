@@ -10,6 +10,9 @@
  *
  *= require_self
  *= require pygments/default
+ *= require medium-editor/medium-editor
+ *= require medium-editor/themes/bootstrap
+ * require medium-editor-insert-plugin/medium-editor-insert-plugin
  */
 @import 'custom_mixins';
 @import 'compass/css3';
@@ -33,6 +36,7 @@
 @import 'group';
 @import 'blog';
 @import 'responsive';
+@import 'medium-editor-ext';
 
 .zocial, a.zocial {
   font: bold 90%/2.1 "Lucida Grande", Tahoma, sans-serif;

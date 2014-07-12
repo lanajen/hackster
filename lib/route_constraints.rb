@@ -1,3 +1,9 @@
+class ApiSite
+  def self.matches?(request)
+    request.subdomains[0] == 'api'
+  end
+end
+
 class MainSite
   def self.matches?(request)
     request.subdomains[0] == 'www'
