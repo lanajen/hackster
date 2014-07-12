@@ -62,7 +62,7 @@ class Users::AuthorizationsController < Users::RegistrationsController
     end
 
     def after_sign_up_path_for(resource)
-      track_event 'Connected with social account', { provider: resource.authorizations.first.provider }
+      track_event 'Connected with social account', { provider: resource.authorizations.first.try(:provider) }
       super(resource)
     end
 
