@@ -146,7 +146,7 @@ HackerIo::Application.routes.draw do
       end
     end
 
-    resources :files, only: [:create, :show] do
+    resources :files, only: [:create, :show, :destroy] do
       get 'signed_url', on: :collection
     end
     resources :invite_requests, only: [:create, :update, :edit]

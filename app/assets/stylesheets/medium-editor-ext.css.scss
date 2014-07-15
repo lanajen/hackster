@@ -7,12 +7,6 @@
     content: attr(placeholder);
     color: #bababa;
   }
-  img {
-    width: 100%;
-    margin: 20px 0;
-    border: 1px solid white;
-    @include box-shadow(0 1px 14px rgba(0, 0, 0, 0.02), 0 0 1px rgba(0, 0, 0, 0.26));
-  }
   .medium-saved {
     position: absolute;
     left: -213px;
@@ -77,5 +71,62 @@
         }
       }
     }
+  }
+  .embed {
+    position: relative;
+    .embed-overlay {
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      top: 0;
+      left: 0;
+      background: #000;
+      background: rgba(0,0,0,0.8);
+      @include opacity(0);
+      @include transition(opacity .2s);
+      &.is-visible {
+        @include opacity(1);
+      }
+      .progress {
+        width: 70%;
+        margin: 0 auto;
+      }
+      .progress-legend {
+        color: #fff;
+      }
+    }
+    &:hover .embed-overlay {
+      @include opacity(1);
+    }
+  }
+}
+
+
+/*****************************
+
+    RESPONSIVE EMBED
+
+*****************************/
+.embed {
+  position: relative;
+  padding-bottom: 67.5%;
+  height: 0;
+  // overflow: hidden;
+  &.widescreen {
+    padding-bottom: 57.25%;
+  }
+  &.original {
+    padding-bottom: initial;
+    height: initial;
+  }
+  &.four-by-three {
+    padding-bottom: 75%;
+  }
+  & iframe, & object, & embed {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
   }
 }

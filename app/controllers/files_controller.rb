@@ -4,8 +4,8 @@ class FilesController < ApplicationController
     render text: 'bad', status: :unprocessable_entity and return unless params[:file_type] and params[:file_type].in? %w(avatar image cover_image document logo)
 
     @file = params[:file_type].classify.constantize.new params.select{|k,v| k.in? %w(file caption title remote_file_url) }
-    @file.attachable_id = 0
-    @file.attachable_type = 'Orphan'
+    @file.attachable_id = params[:attachable_id] || 0
+    @file.attachable_type = params[:attachable_type] || 'Orphan'
     @file.tmp_file = CGI.unescape params[:file_url]
 
     if @file.save
@@ -19,6 +19,13 @@ class FilesController < ApplicationController
     @file = Attachment.find params[:id]
 
     render json: @file.as_json(methods: :processed).to_hash.merge(context: params[:context]), status: :ok
+  end
+
+  def destroy
+    @file = Attachment.find params[:id]
+    @file.destroy
+
+    render json: @file
   end
 
   def signed_url
