@@ -49,6 +49,7 @@ class Project < ActiveRecord::Base
   has_one :video, as: :recordable, dependent: :destroy
 
   # sanitize_text :description
+  register_sanitizer :remove_whitespaces_from_html, :before_save, :description
   attr_accessible :description, :end_date, :name, :start_date, :current,
     :team_members_attributes, :website, :one_liner, :widgets_attributes,
     :featured, :featured_date, :cover_image_id, :logo_id, :license, :slug,
@@ -472,6 +473,10 @@ class Project < ActiveRecord::Base
         end
       end
       self.slug = slug
+    end
+
+    def remove_whitespaces_from_html text
+      text.gsub(/>\s*/, ">").gsub(/\s*</, "<")
     end
 
     def set_columns_count

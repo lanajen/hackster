@@ -22,7 +22,9 @@ class ProjectDecorator < ApplicationDecorator
         end
         next unless link
 
-        code = Embed.new(link).code
+        code = Embed.find_code_for_url(link, true)
+
+        next unless code
 
         puts link.inspect
         puts code.inspect

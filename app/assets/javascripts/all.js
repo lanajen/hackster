@@ -17,7 +17,6 @@
       });
     }
 
-
     //Fade in alerts/notices
     if($('.fade-in').length){
       //if there's a slide-in notification on top of the page, wait until it's down sliding down before affixing divs

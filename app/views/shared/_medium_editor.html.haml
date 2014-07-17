@@ -1,44 +1,33 @@
+= content_for :js do
+  .medium-status-bar.affixed{ style: 'display:none' }
+    .wrapper700
+      .container-fluid
+        = render partial: 'shared/medium_editor_status_bar', locals: { last_edit: last_edit }
+
+  .medium-error-bubble{ style: 'display:none' }
+    .medium-error.alert.alert-danger
+
 .medium-editor
+  .medium-status-bar.static
+    = render partial: 'shared/medium_editor_status_bar', locals: { last_edit: last_edit }
   .media-menu.unselectable
     %a.add-media-btn.media-btn.fa-stack
       %i.fa.fa-circle-o.fa-stack-2x
       %i.fa.fa-plus.fa-stack-1x
     .media-menu-btns
-      %a.add-media-btn.media-btn.media-btn-action.fa-stack{ data: { action: 'upload', media: 'image' }}
+      %a.add-media-btn.media-btn.media-btn-action.fa-stack{ data: { action: 'upload', media: 'image', container: 'body' }, rel: 'tooltip', title: 'Add images' }
         %i.fa.fa-circle-o.fa-stack-2x
         %i.fa.fa-camera.fa-stack-1x
-      %a.add-media-btn.media-btn.media-btn-action.fa-stack{ data: { action: 'insert', media: 'video', 'default-text' => "Paste a YouTube, Vimeo or Vine link, and press Enter" }}
+      %a.add-media-btn.media-btn.media-btn-action.fa-stack{ data: { action: 'insert', media: 'video', 'default-text' => "Paste a YouTube, Vimeo or Vine link, and press Enter", container: 'body' }, rel: 'tooltip', title: 'Add a video' }
         %i.fa.fa-play-circle-o.fa-2x
-      %a.add-media-btn.media-btn.media-btn-action.fa-stack{ data: { action: 'insert', media: 'code', 'default-text' => "Paste a Bitbucket repo, a Gist or Github repo link, and press Enter" }}
+      %a.add-media-btn.media-btn.media-btn-action.fa-stack{ data: { action: 'insert', media: 'code', 'default-text' => "Paste a Bitbucket repo, a Gist or Github repo link, and press Enter", container: 'body' }, rel: 'tooltip', title: 'Add code' }
         %i.fa.fa-circle-o.fa-stack-2x
         %i.fa.fa-code.fa-stack-1x
-      %a.add-media-btn.media-btn.media-btn-action.fa-stack{ data: { action: 'insert', media: 'schematics', 'default-text' => "Paste a 123D Circuits, OSH Park or Upverter link, and press Enter" }}
+      %a.add-media-btn.media-btn.media-btn-action.fa-stack{ data: { action: 'insert', media: 'schematics', 'default-text' => "Paste a 123D Circuits, OSH Park or Upverter link, and press Enter", container: 'body' }, rel: 'tooltip', title: 'Add schematics' }
         %i.fa.fa-circle-o.fa-stack-2x
         %i.fa.fa-gear.fa-stack-1x
-      %a.add-media-btn.media-btn.media-btn-action.fa-stack{ data: { action: 'upload', media: 'files', 'default-text' => "Select files or drop them here" }}
+      %a.add-media-btn.media-btn.media-btn-action.fa-stack{ data: { action: 'upload', media: 'files', 'default-text' => "Select files or drop them here", container: 'body' }, rel: 'tooltip', title: 'Add files' }
         %i.fa.fa-circle-o.fa-stack-2x
         %i.fa.fa-files-o.fa-stack-1x
   .medium-saved
-  .editable{ placeholder: 'Click to add a description' }= editable
-
-:javascript
-  var editor = new MediumEditor('.editable', {
-    buttonLabels: 'fontawesome',
-    cleanPastedHTML: true,
-    targetBlank: true
-  });
-
-  formTpl = "<form action='https://#{ENV['FOG_DIRECTORY']}.s3.amazonaws.com' method='post' enctype='multipart/form-data' class='medium-file-upload' style='display:none;'>";
-  formTpl += "<input name='key' type='hidden'>";
-  formTpl += "<input name='AWSAccessKeyId' type='hidden' value='#{ENV['AWS_ACCESS_KEY_ID']}'>";
-  formTpl += "<input name='acl' type='hidden' value='public-read'>";
-  formTpl += "<input name='policy' type='hidden'>";
-  formTpl += "<input name='signature' type='hidden'>";
-  formTpl += "<input name='success_action_status' type='hidden' value='201'>";
-  //formTpl += "<input name='file_type' type='hidden' value=''>";
-  formTpl += "<input type='file' name='file' multiple>";
-  formTpl += "</div>";
-  formTpl += "</form>";
-
-  form = $('.medium-editor');
-  $($(formTpl)).appendTo(form);
+  .editable{ 'data-default-text' => 'Click here to start describing your project' }= editable

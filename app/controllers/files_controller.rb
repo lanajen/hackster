@@ -1,4 +1,5 @@
 class FilesController < ApplicationController
+  before_filter :authenticate_user!
 
   def create
     render text: 'bad', status: :unprocessable_entity and return unless params[:file_type] and params[:file_type].in? %w(avatar image cover_image document logo)
@@ -29,6 +30,7 @@ class FilesController < ApplicationController
   end
 
   def signed_url
+    ee
     render json: {
       policy: s3_upload_policy_document,
       signature: s3_upload_signature,

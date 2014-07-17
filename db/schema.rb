@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140701182959) do
+ActiveRecord::Schema.define(version: 20140717210752) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -310,31 +310,32 @@ ActiveRecord::Schema.define(version: 20140701182959) do
     t.text     "description"
     t.date     "start_date"
     t.date     "end_date"
-    t.datetime "created_at",                                     null: false
-    t.datetime "updated_at",                                     null: false
+    t.datetime "created_at",                                        null: false
+    t.datetime "updated_at",                                        null: false
     t.string   "website"
-    t.boolean  "private",                        default: false, null: false
+    t.boolean  "private",                           default: false, null: false
     t.string   "workflow_state"
     t.string   "one_liner"
     t.boolean  "featured"
-    t.integer  "impressions_count",              default: 0
+    t.integer  "impressions_count",                 default: 0
     t.text     "counters_cache"
-    t.integer  "team_id",                        default: 0,     null: false
-    t.string   "license",            limit: 50
-    t.string   "slug",               limit: 105
+    t.integer  "team_id",                           default: 0,     null: false
+    t.string   "license",               limit: 50
+    t.string   "slug",                  limit: 105
     t.datetime "featured_date"
     t.datetime "made_public_at"
-    t.boolean  "hide",                           default: false
+    t.boolean  "hide",                              default: false
     t.integer  "collection_id"
-    t.boolean  "graded",                         default: false
-    t.boolean  "wip",                            default: false
-    t.float    "popularity_counter",             default: 0.0
-    t.integer  "respects_count",                 default: 0
+    t.boolean  "graded",                            default: false
+    t.boolean  "wip",                               default: false
+    t.float    "popularity_counter",                default: 0.0
+    t.integer  "respects_count",                    default: 0
     t.text     "layout"
-    t.boolean  "external",                       default: false
-    t.string   "guest_name",         limit: 128
+    t.boolean  "external",                          default: false
+    t.string   "guest_name",            limit: 128
     t.boolean  "approved"
-    t.boolean  "open_source",                    default: true
+    t.boolean  "open_source",                       default: true
+    t.datetime "description_edited_at"
   end
 
   add_index "projects", ["private"], name: "index_projects_on_private", using: :btree

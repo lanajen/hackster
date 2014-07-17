@@ -156,7 +156,7 @@
     $('.project').on('reload', '.widget', function(e){
       loadSlickSlider();
     });
-    loadSlickSlider();
+    // loadSlickSlider();
 
     $('.project').on('click', '.widget-form .btn[data-toggle="subcat"]', function(e){
       e.preventDefault();
@@ -212,6 +212,8 @@
         return this;
       }
     });
+
+    loadSlickSlider();
   });
 })(jQuery, window, document);
 
@@ -227,7 +229,7 @@ $(window).load(function(){
 });
 
 function loadSlickSlider(){
-  $('.headline-image').slick({
+  $('.headline-image, .image-gallery').slick({
     accessibility: false,
     speed: 500,
     fade: true,

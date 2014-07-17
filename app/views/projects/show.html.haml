@@ -38,11 +38,12 @@
             %h2 Showcase
           .content
             .widget
-              .header
-                %h3 Description
               .content
                 .text-widget.project-show-item
-                  = render partial: 'shared/medium_editor', locals: { editable: @project.description }
+                  - if can? :edit, @project
+                    = render partial: 'shared/medium_editor', locals: { editable: @project.description, last_edit: (@project.description_edited_at || @project.updated_at) }
+                  - else
+                    .medium-editor= @project.description
 
             - if @widgets.any?
               - @widgets.each do |widget|

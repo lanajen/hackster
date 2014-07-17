@@ -43,9 +43,11 @@ class ProjectObserver < ActiveRecord::Observer
     record.teches = Tech.joins(:tech_tags).references(:tags).where("LOWER(tags.name) IN (?)", record.tech_tags_string.split(',').map{|t| t.strip.downcase }) if record.public? and !record.hide or (record.external and record.approved != false)
 
     if record.private_changed? and record.public?
-      record.post_new_tweet! unless record.made_public_at.present?
+      record.post_new_tweet! unless record.made_public_at.present? or Rails.env != 'production'
       record.made_public_at = Time.now
     end
+
+    record.description_edited_at = Time.now if record.description_changed?
   end
 
   def before_update record

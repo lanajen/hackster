@@ -23,9 +23,9 @@
         .headline-image-inner{ class: "image-#{i} #{'first' if i == 0}", style: "" }
           %a{ href: "javascript:openLightBox(#{widget.id},#{i});" }
             .gallery-img-div
-              .gallery-img{class: "image-#{i}", style: "background-image: url('#{image.file_url(:headline)}')"}
+              %figure.gallery-img{class: "image-#{i}", style: "background-image: url('#{image.file_url(:headline)}')"}
                 - if image.title.present?
-                  .caption-holder
+                  %figcaption
                     = image.title
 
 -# if can? :edit, @project
