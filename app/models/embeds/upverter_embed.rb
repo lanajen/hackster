@@ -1,0 +1,2 @@
+class UpverterEmbed < BaseEmbed
+end

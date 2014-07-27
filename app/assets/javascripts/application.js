@@ -3,16 +3,17 @@
 //= require bootstrap
 //= require bootstrap_custom
 //= require jquery_nested_form
-//= require wysihtml5
+// require wysihtml5
 //= require parser_rules/advanced
 //= require placeholders
 //= require jquery.parallax
 //= require jquery.ui.sortable
 //= require jquery.throttle
 //= require slick.min
-//= require 'wysihtml5/parser_rules'
+// require 'wysihtml5/parser_rules'
+//= require rangy-core
+//= require rangy-cssclassapplier
 //= require medium-editor
-// require medium-editor-insert-plugin/medium-editor-insert-plugin.all.min
 //= require medium-editor-ext
 
 //= require projects

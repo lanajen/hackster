@@ -848,6 +848,9 @@ h1, h2, h3, h4 {
   &.btn-lg {
     padding: 10px 16px;
   }
+  &.btn-xs {
+    padding: 1px 5px;
+  }
 }
 
 .btn-edit {
@@ -1320,4 +1323,7 @@ input.cmn-toggle ~ .option-checked, input.cmn-toggle:checked ~ .option-unchecked
    display: table-cell;
    text-align: center;
    vertical-align: middle;
+}
+.handle {
+  cursor: pointer;
 }

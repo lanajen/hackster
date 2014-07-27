@@ -1,3 +1,4 @@
+require 'linguist'
 require 'open-uri'
 require 'pygments'
 
@@ -21,6 +22,118 @@ class CodeWidget < Widget
     'VHDL' => 'vhdl',
     'XML' => 'xml',
   }
+
+  ACE_LANGUAGES = {
+    'abap' => 'ABAP',
+    'actionscript' => 'ActionScript',
+    'ada' => 'ADA',
+    'apache_conf' => 'Apache Conf',
+    'asciidoc' => 'AsciiDoc',
+    'assembly_x86' => 'Assembly x86',
+    'autohotkey' => 'AutoHotKey',
+    'batchfile' => 'BatchFile',
+    'c9search' => 'C9Search',
+    'c_cpp' => 'C/C++',
+    'cirru' => 'Cirru',
+    'clojure' => 'Clojure',
+    'cobol' => 'Cobol',
+    'coffee' => 'CoffeeScript',
+    'coldfusion' => 'ColdFusion',
+    'csharp' => 'C#',
+    'css' => 'CSS',
+    'curly' => 'Curly',
+    'd' => 'D',
+    'dart' => 'Dart',
+    'diff' => 'Diff',
+    'dockerfile' => 'Dockerfile',
+    'dot' => 'Dot',
+    'erlang' => 'Erlang',
+    'ejs' => 'EJS',
+    'forth' => 'Forth',
+    'ftl' => 'FreeMarker',
+    'gherkin' => 'Gherkin',
+    'gitignore' => 'Gitignore',
+    'glsl' => 'Glsl',
+    'golang' => 'Go',
+    'groovy' => 'Groovy',
+    'haml' => 'HAML',
+    'handlebars' => 'Handlebars',
+    'haskell' => 'Haskell',
+    'haxe' => 'haXe',
+    'html' => 'HTML',
+    'html_ruby' => 'HTML (Ruby)',
+    'ini' => 'INI',
+    'jack' => 'Jack',
+    'jade' => 'Jade',
+    'java' => 'Java',
+    'javascript' => 'JavaScript',
+    'json' => 'JSON',
+    'jsoniq' => 'JSONiq',
+    'jsp' => 'JSP',
+    'jsx' => 'JSX',
+    'julia' => 'Julia',
+    'latex' => 'LaTeX',
+    'less' => 'LESS',
+    'liquid' => 'Liquid',
+    'lisp' => 'Lisp',
+    'livescript' => 'LiveScript',
+    'logiql' => 'LogiQL',
+    'lsl' => 'LSL',
+    'lua' => 'Lua',
+    'luapage' => 'LuaPage',
+    'lucene' => 'Lucene',
+    'makefile' => 'Makefile',
+    'matlab' => 'MATLAB',
+    'markdown' => 'Markdown',
+    'mel' => 'MEL',
+    'mysql' => 'MySQL',
+    'mushcode' => 'MUSHCode',
+    'nix' => 'Nix',
+    'objectivec' => 'Objective-C',
+    'ocaml' => 'OCaml',
+    'pascal' => 'Pascal',
+    'perl' => 'Perl',
+    'pgsql' => 'pgSQL',
+    'php' => 'PHP',
+    'powershell' => 'Powershell',
+    'prolog' => 'Prolog',
+    'properties' => 'Properties',
+    'protobuf' => 'Protobuf',
+    'python' => 'Python',
+    'r' => 'R',
+    'rdoc' => 'RDoc',
+    'rhtml' => 'RHTML',
+    'ruby' => 'Ruby',
+    'rust' => 'Rust',
+    'sass' => 'SASS',
+    'scad' => 'SCAD',
+    'scala' => 'Scala',
+    'smarty' => 'Smarty',
+    'scheme' => 'Scheme',
+    'scss' => 'SCSS',
+    'sh' => 'SH',
+    'sjs' => 'SJS',
+    'space' => 'Space',
+    'snippets' => 'snippets',
+    'soy_template' => 'Soy Template',
+    'sql' => 'SQL',
+    'stylus' => 'Stylus',
+    'svg' => 'SVG',
+    'tcl' => 'Tcl',
+    'tex' => 'Tex',
+    'text' => 'Text',
+    'textile' => 'Textile',
+    'toml' => 'Toml',
+    'twig' => 'Twig',
+    'typescript' => 'Typescript',
+    'vala' => 'Vala',
+    'vbscript' => 'VBScript',
+    'velocity' => 'Velocity',
+    'verilog' => 'Verilog',
+    'xml' => 'XML',
+    'xquery' => 'XQuery',
+    'yaml' => 'YAML',
+  }
   ERROR_MESSAGE = "Error opening file."
 
   define_attributes [:raw_code, :formatted_content, :language]
@@ -29,9 +142,9 @@ class CodeWidget < Widget
   attr_accessible :document_attributes
   accepts_nested_attributes_for :document, allow_destroy: true
   before_validation :disallow_blank_file
-  before_validation :guess_language_from_extension
+  before_validation :guess_language_from_document, if: proc{|w| w.language.nil? || w.document.try(:file_changed?) }
   before_save :check_changes
-  before_save :format_content
+  # before_save :format_content
 
   def self.model_name
     Widget.model_name
@@ -39,6 +152,13 @@ class CodeWidget < Widget
 
   def default_label
     'Code'
+  end
+
+  def extension
+    return @extension if @extension
+    @extension = Pygments.lexers[ACE_LANGUAGES[language]][:aliases].first
+  rescue
+    'txt'
   end
 
   def extension_list
@@ -49,7 +169,30 @@ class CodeWidget < Widget
   end
 
   def file_name
-    (document and document.file_name.present?) ? document.file_name : "#{name.downcase.gsub(/[^a-z0-9_]/, '_')}.#{language}"
+    (document and document.file_name.present?) ? document.file_name : "#{name.downcase.gsub(/[^a-z0-9_]/, '_')}.#{extension}"
+  end
+
+  def language
+    properties[:language] || 'text'
+  end
+
+  def name
+    @name || "file_#{id}"
+  end
+
+  def to_json
+    {
+      file_url: document.try(:file_url),
+      file_name: file_name,
+      id: id,
+      language: language,
+      name: name,
+      raw_code: raw_code,
+    }.to_json
+  end
+
+  def to_text
+    "<div contenteditable='false' class='embed-frame' data-type='widget' data-widget-id='#{id}' data-caption='#{name.presence || document.try(:file_name)}'></div>"
   end
 
   def to_tracker
@@ -78,7 +221,15 @@ class CodeWidget < Widget
       end
     end
 
-    def guess_language_from_extension
+    def guess_language_from_document
+      return unless document and document.file_url
+
+      if language = Linguist::FileBlob.new(document.real_file_url).language
+        self.language = Hash[ACE_LANGUAGES.to_a.collect(&:reverse)][language.name]
+      end
+    rescue => e
+      puts "rescued error while guessing language: #{e.message}"
+      self.language = nil
     end
 
     def format_content
@@ -98,11 +249,7 @@ class CodeWidget < Widget
         file_url = if document.file_changed?
           "http://#{APP_CONFIG['default_host']}:#{APP_CONFIG['default_port']}#{document.file_url}"
         else
-          if Rails.env == 'development'
-            File.join(Rails.root, 'public', document.file_url)
-          else
-            document.file_url
-          end
+          document.real_file_url
         end
 
         open(file_url).read.try(:force_encoding, "UTF-8")

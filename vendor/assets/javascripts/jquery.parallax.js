@@ -22,7 +22,7 @@
   parallaxScroll.prototype = {
     activate: function(){
       var $window = $(window);
-      if(this.opacity){
+      if(this.opacity > 0){
         $window.scroll(function() {
           $.throttle(this.scrollWithOpacity(), 100);
         }.bind(this));
@@ -48,16 +48,17 @@
           val     = yOffset*this.rate,
           opacity = 1 - (yOffset/this.opacitySpread),
           opacity = (opacity < 0) ? 0 : opacity;
-      this.$el.css({
-          '-webkit-transform':'translate3d(0,'+val+'px,0)',
-          '-moz-transform':'translate3d(0,'+val+'px,0)',
-          '-o-transform':'translate3d(0,'+val+'px,0)',
-          '-ms-transform':'translate3d(0,'+val+'px,0)',
-          'transform':'translate3d(0,'+val+'px,0)',
-          '-moz-opacity': opacity,
-          '-khtml-opacity': opacity,
-          'opacity': opacity
-      });
+      if (opacity != this.$el.css('opacity'))
+        this.$el.css({
+            '-webkit-transform':'translate3d(0,'+val+'px,0)',
+            '-moz-transform':'translate3d(0,'+val+'px,0)',
+            '-o-transform':'translate3d(0,'+val+'px,0)',
+            '-ms-transform':'translate3d(0,'+val+'px,0)',
+            'transform':'translate3d(0,'+val+'px,0)',
+            '-moz-opacity': opacity,
+            '-khtml-opacity': opacity,
+            'opacity': opacity
+        });
     }
   };
 })(jQuery, window, document);

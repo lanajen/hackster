@@ -1,0 +1,14 @@
+%tr.fields{ id: "part-#{part.id}" }
+  %td{ 'data-edit-only' => 'true' }
+    %i.fa.fa-arrows.handle
+    .widget-attribute{ 'data-attribute' => "[parts_attributes][#{i}][id]", 'data-value' => part.id }
+    .widget-attribute{ 'data-attribute' => "[parts_attributes][#{i}][_destroy]", 'data-value' => 'false' }
+    .widget-attribute.position{ 'data-attribute' => "[parts_attributes][#{i}][position]", 'data-value' => part.position }
+
+  %td.widget-attribute.widget-attribute-editable{ 'data-attribute' => "[parts_attributes][#{i}][description]", 'data-default-text' => 'Part description', data: { 'disable-toolbar' => 'true' }, 'data-value' => part.description, 'data-contenteditable' => 'true' }= part.description
+  %td{ 'data-disable-toolbar' => 'true' } &times;
+  %td.widget-attribute.widget-attribute-editable{ 'data-attribute' => "[parts_attributes][#{i}][quantity]", 'data-default-text' => 'Quantity', data: { 'disable-toolbar' => 'true' }, 'data-value' => part.quantity, 'data-contenteditable' => 'true' }= part.quantity
+
+  %td{ 'data-edit-only' => 'true' }
+    %button.btn.btn-danger.btn-xs{ data: { action: 'delete-part', target: "[data-attribute=\"[parts_attributes][#{i}][_destroy]\"]" } }
+      %i.fa.fa-trash-o

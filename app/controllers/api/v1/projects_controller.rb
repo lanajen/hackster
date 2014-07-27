@@ -1,4 +1,4 @@
-class Api::ProjectsController < Api::BaseController
+class Api::V1::ProjectsController < Api::V1::BaseController
   # before_filter :public_api_methods, only: [:index, :show]
 
   def index
@@ -28,7 +28,11 @@ class Api::ProjectsController < Api::BaseController
     if project.update_attributes params[:project]
       render json: project, status: :ok
     else
-      render json: project.errors, status: :unprocessable_entity
+      errors = project.errors.messages
+      widget_errors = {}
+      project.widgets.each{|w| widget_errors[w.id] = w.to_error if w.errors.any? }
+      errors['widgets'] = widget_errors
+      render json: errors, status: :bad_request
     end
   end
 

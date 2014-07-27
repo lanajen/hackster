@@ -46,8 +46,6 @@ class ProjectObserver < ActiveRecord::Observer
       record.post_new_tweet! unless record.made_public_at.present? or Rails.env != 'production'
       record.made_public_at = Time.now
     end
-
-    record.description_edited_at = Time.now if record.description_changed?
   end
 
   def before_update record

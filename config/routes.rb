@@ -18,9 +18,14 @@ HackerIo::Application.routes.draw do
 
     # API (see if can be moved to its own subdomain)
     namespace :api do
-      get 'embeds' => 'embeds#show'
-      resources :projects#, as: :api_projects
-      match "*all" => "base#cors_preflight_check", via: :options
+      namespace :v1 do
+        get 'embeds' => 'embeds#show'
+        post 'embeds' => 'embeds#create'
+        resources :projects#, as: :api_projects
+        resources :parts, only: [:create, :destroy]
+        resources :widgets, only: [:destroy, :update]
+        match "*all" => "base#cors_preflight_check", via: :options
+      end
     end
 
     # api for split a/b testing gem

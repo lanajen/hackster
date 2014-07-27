@@ -1,0 +1,2 @@
+class YoutubeEmbed < VideoEmbed
+end

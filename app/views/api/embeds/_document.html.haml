@@ -1,0 +1,6 @@
+.document-widget
+  .file
+    %i.fa.fa-file-o.fa-lg
+    %a{ href: embed.provider_id }
+      - uri = URI.parse(embed.provider_id)
+      = File.basename(uri.path)

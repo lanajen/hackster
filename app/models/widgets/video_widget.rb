@@ -9,4 +9,12 @@ class VideoWidget < Widget
   def self.model_name
     Widget.model_name
   end
+
+  def to_text
+    if video and video.link
+      "<div contenteditable='false' class='embed-frame' data-type='url' data-url='#{video.link}' data-caption='#{caption || name}'></div>"
+    else
+      ''
+    end
+  end
 end

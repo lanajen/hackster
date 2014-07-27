@@ -2,7 +2,7 @@ class FilesController < ApplicationController
   before_filter :authenticate_user!
 
   def create
-    render text: 'bad', status: :unprocessable_entity and return unless params[:file_type] and params[:file_type].in? %w(avatar image cover_image document logo)
+    render text: 'bad', status: :unprocessable_entity and return unless params[:file_url] and params[:file_type] and params[:file_type].in? %w(avatar image cover_image document logo)
 
     @file = params[:file_type].classify.constantize.new params.select{|k,v| k.in? %w(file caption title remote_file_url) }
     @file.attachable_id = params[:attachable_id] || 0
@@ -30,7 +30,6 @@ class FilesController < ApplicationController
   end
 
   def signed_url
-    ee
     render json: {
       policy: s3_upload_policy_document,
       signature: s3_upload_signature,

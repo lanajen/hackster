@@ -4,15 +4,15 @@
       //make top image height of the screen
       var $window     = $(window),
           $topSection   = $('#top-project-section'),
-          topHeight = $window.height() - 60;
+          topHeight = $window.height() - $topSection.offset().top;
       $topSection.css('height',topHeight);
       $window.resize(function(){
-        topHeight = $window.height() - 60;
+        topHeight = $window.height() - $topSection.offset().top;
         $topSection.css('height',topHeight);
       });
       //trigger to scroll page down
       $('.project-details').on('click','.js-scroll-main-project',function(){
-        $('html,body').animate({scrollTop: topHeight+60}, 800);
+        $('html,body').animate({scrollTop: $window.height()}, 800);
       });
       //parallax the header
       $('#project-header-in').parallaxScroll({ rate: .3, opacity: true, opacitySpread: 700});
@@ -236,3 +236,14 @@ function loadSlickSlider(){
     dots: true
   });
 }
+
+function openLightBox(id, start) {
+  start = start || 0;
+  $.iLightBox(
+    lightBoxImages[id],
+    {
+      skin: 'metro-black',
+      startFrom: start,
+      path: 'horizontal'
+    });
+ }

@@ -1,0 +1,2 @@
+class DocumentEmbed < FileEmbed
+end

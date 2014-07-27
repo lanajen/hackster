@@ -422,11 +422,30 @@
     right: -60px;
   }
   .slick-dots{
-    bottom: -30px;
+    bottom: -41px;
   }
 }
-.image-gallery {
-  margin-bottom: 40px;
+.image-gallery-container {
+  width: 100%;
+  height: 0;
+  padding-bottom: 75%;
+  position: relative;
+  .file-drop {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 0;
+    top: 0;
+    left: 0;
+    background: image-url('upload-bg.png') center center no-repeat;
+    border: 7px solid #f2f2f2;
+    .file-drop-inner {
+      position: absolute;
+      bottom: 20px;
+      text-align: center;
+      width: 100%;
+    }
+  }
   figcaption {
     position: absolute;
     bottom: 0;
@@ -867,4 +886,8 @@ p.caption {
       }
     }
   }
+}
+
+.widget-attribute:not(.widget-attribute-editable) {
+  display: none;
 }

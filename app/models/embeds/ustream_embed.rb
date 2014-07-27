@@ -1,0 +1,2 @@
+class UstreamEmbed < VideoEmbed
+end

@@ -1,0 +1,2 @@
+class GistEmbed < RepoEmbed
+end

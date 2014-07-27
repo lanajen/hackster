@@ -7,9 +7,9 @@ class Part < ActiveRecord::Base
   validates :quantity, presence: true, numericality: { greater_than: 0 }
   validates :unit_price, numericality: { greater_than_or_equal_to: 0 }
   validates :description, length: { maximum: 255 }, allow_blank: true
-  validate :mpn_or_description_is_present?
+  # validate :mpn_or_description_is_present?
   register_sanitizer :strip_whitespace, :before_validation, :mpn, :description
-  after_validation :compute_total_cost
+  # after_validation :compute_total_cost
 
   def compute_total_cost
     return false if unit_price.blank? or quantity.blank?

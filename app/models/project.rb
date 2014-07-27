@@ -55,7 +55,7 @@ class Project < ActiveRecord::Base
     :featured, :featured_date, :cover_image_id, :logo_id, :license, :slug,
     :permissions_attributes, :new_slug, :slug_histories_attributes, :hide,
     :collection_id, :graded, :wip, :columns_count, :external, :guest_name,
-    :approved, :open_source
+    :approved, :open_source, :description_edited_at, :buy_link
   attr_accessor :current
   attr_writer :new_slug
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
@@ -79,7 +79,7 @@ class Project < ActiveRecord::Base
   before_validation :check_if_current
   before_validation :clean_permissions
   before_validation :ensure_website_protocol
-  before_create :set_columns_count
+  # before_create :set_columns_count
   before_save :generate_slug, if: proc {|p| !p.persisted? or p.team_id_changed? }
 
   taggable :product_tags, :tech_tags
@@ -126,7 +126,7 @@ class Project < ActiveRecord::Base
 #      description: description,
       product_tags: product_tags_string,
       tech_tags: tech_tags_string,
-      text_widgets: TextWidget.where('widgets.project_id = ?', id).map{ |w| w.content },
+      text_widgets: widgets.where(type: 'TextWidget').map{ |w| w.content },
       user_name: team_members.map{ |t| t.user.try(:name) },
       private: private,
       hide: hide,
@@ -240,12 +240,32 @@ class Project < ActiveRecord::Base
     self.cover_image = CoverImage.find_by_id(val)
   end
 
+  def credit_lines
+    @credit_lines ||= credits_widget.try(:credit_lines)
+  end
+
+  def credits_widget
+    @credits_widget ||= CreditsWidget.where(project_id: id).first_or_create
+  end
+
   def force_basic_validation!
     @force_basic_validation = true
   end
 
   def force_basic_validation?
     @force_basic_validation
+  end
+
+  def generate_description_from_widgets
+    doc = Nokogiri::HTML::DocumentFragment.parse widgets_to_text
+
+    doc.css('.embed-frame').each do |node|
+      if node.next and node.next.attr('class') == 'embed-frame'
+        node.set_attribute 'class', "#{node.attr('class')} followed-by-embed-frame"
+      end
+    end
+
+    self.description = doc.to_html
   end
 
   def guest_or_user_name
@@ -438,7 +458,7 @@ class Project < ActiveRecord::Base
 
   private
     def can_be_public?
-      widgets_count >= 1 and cover_image.try(:file).present?
+      description.present? and cover_image.try(:file).present?
     end
 
     def check_if_current
@@ -488,5 +508,20 @@ class Project < ActiveRecord::Base
 
       parent = team ? self.class.joins(:team).where(groups: { user_name: team.user_name }) : self.class
       errors.add :new_slug, 'has already been taken' if parent.where(projects: { slug: slug }).where.not(id: id).any?
+    end
+
+    def widgets_to_text
+      output = ''
+      # last_widget = widgets.last
+
+      widgets.each do |widget|
+        widget_content = widget.to_text
+        if widget_content.present?
+          output << widget.to_text
+          # output << '<hr>' unless last_widget == widget
+        end
+      end
+
+      output
     end
 end

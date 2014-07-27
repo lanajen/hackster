@@ -2,20 +2,20 @@
   $('input, textarea').placeholder();
 
   $(function(){
-    console.log('/assets/wysihtml5.css');
-    var $wysihtml5Inputs = $('.wysihtml5-textarea');
-    if($wysihtml5Inputs.length){
-      $wysihtml5Inputs.each(function(){
-        var id = $(this).attr('id'),
-            count = id.split('-')[2];
-        var editor = new wysihtml5.Editor(id, { // id of textarea element
-          toolbar:      'wysihtml5-toolbar-'+count, // id of toolbar element
-          stylesheets:  "/assets/wysihtml5.css", // optional, css to style the editor's content
-          parserRules:  wysihtml5CustomParserRules, // defined in parser rules set
-          allowObjectResizing:  true // Whether the composer should allow the user to manually resize images, tables etc.
-        });
-      });
-    }
+    // console.log('/assets/wysihtml5.css');
+    // var $wysihtml5Inputs = $('.wysihtml5-textarea');
+    // if($wysihtml5Inputs.length){
+    //   $wysihtml5Inputs.each(function(){
+    //     var id = $(this).attr('id'),
+    //         count = id.split('-')[2];
+    //     var editor = new wysihtml5.Editor(id, { // id of textarea element
+    //       toolbar:      'wysihtml5-toolbar-'+count, // id of toolbar element
+    //       stylesheets:  "/assets/wysihtml5.css", // optional, css to style the editor's content
+    //       parserRules:  wysihtml5CustomParserRules, // defined in parser rules set
+    //       allowObjectResizing:  true // Whether the composer should allow the user to manually resize images, tables etc.
+    //     });
+    //   });
+    // }
 
     //Fade in alerts/notices
     if($('.fade-in').length){

@@ -1,9 +1,11 @@
-.pull-left
-  .medium-status
-    Last edit
-    = time_ago_in_words last_edit
-    ago
-.pull-right
-  = content_tag :button, 'Edit project', class: 'btn btn-primary medium-start-edit'
-  = content_tag :button, 'Finish editing', class: 'btn btn-success medium-stop-edit', style: 'display:none'
-.clearfix
+.medium-status-bar.static
+  = render partial: 'shared/medium_editor_status_bar_inner', locals: { last_edit: last_edit }
+
+= content_for :js do
+  .medium-status-bar.affixed{ style: 'display:none' }
+    .wrapper700
+      .container-fluid
+        = render partial: 'shared/medium_editor_status_bar_inner', locals: { last_edit: last_edit }
+
+  .medium-error-bubble{ style: 'display:none' }
+    .medium-error.alert.alert-danger

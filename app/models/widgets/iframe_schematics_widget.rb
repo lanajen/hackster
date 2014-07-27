@@ -29,6 +29,10 @@ class IframeSchematicsWidget < Widget
     raise NoMethodError
   end
 
+  def to_text
+    link.present? ? "<div contenteditable='false' class='embed-frame' data-type='url' data-url='#{link}' data-caption='#{name}'></div>" : ''
+  end
+
   private
     def generate_iframe_from_link
       return unless link.present?

@@ -6,8 +6,12 @@ class ImageWidget < Widget
   end
 
   has_many :images, -> { order position: :asc }, as: :attachable, dependent: :destroy
-  accepts_nested_attributes_for :images, allow_destroy: true
+  accepts_nested_attributes_for :images#, allow_destroy: true
   attr_accessible :images_attributes, :image_ids
+
+  def to_text
+    "<div contenteditable='false' class='embed-frame' data-type='widget' data-widget-id='#{id}' data-caption='#{name}'></div>"
+  end
 
   def to_tracker
     super.merge({

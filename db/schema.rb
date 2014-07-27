@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140717210752) do
+ActiveRecord::Schema.define(version: 20140726012155) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -320,7 +320,7 @@ ActiveRecord::Schema.define(version: 20140717210752) do
     t.integer  "impressions_count",                 default: 0
     t.text     "counters_cache"
     t.integer  "team_id",                           default: 0,     null: false
-    t.string   "license",               limit: 50
+    t.string   "license",               limit: 100
     t.string   "slug",                  limit: 105
     t.datetime "featured_date"
     t.datetime "made_public_at"
@@ -336,6 +336,7 @@ ActiveRecord::Schema.define(version: 20140717210752) do
     t.boolean  "approved"
     t.boolean  "open_source",                       default: true
     t.datetime "description_edited_at"
+    t.string   "buy_link"
   end
 
   add_index "projects", ["private"], name: "index_projects_on_private", using: :btree

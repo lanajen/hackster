@@ -21,4 +21,8 @@ class RepoWidget < Widget
     return if repo.blank?
     repo.match(repo_regexp)[1]
   end
+
+  def to_text
+    repo.present? ? "<div contenteditable='false' class='embed-frame' data-type='url' data-url='#{repo}' data-caption='#{name}'></div>" : ''
+  end
 end

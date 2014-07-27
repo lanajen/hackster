@@ -16,6 +16,20 @@ class PartsWidget < Widget
     'Bill of materials'
   end
 
+  def to_error
+    _errors = errors.messages
+    parts.each_with_index do |p, i|
+      p.errors.messages.each do |name, msg|
+        _errors["parts_attributes[#{i}][#{name}]"] = msg[0]
+      end if p.errors.any?
+    end
+    _errors
+  end
+
+  def to_text
+    "<div contenteditable='false' class='embed-frame' data-type='widget' data-widget-id='#{id}' data-caption=''></div>"
+  end
+
   def to_tracker
     super.merge({
       parts_count: parts_count,

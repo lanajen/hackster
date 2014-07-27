@@ -1,0 +1,13 @@
+.pull-left
+  .medium-status-left
+    %span.medium-status
+      Last edit
+      = time_ago_in_words last_edit
+      ago
+    %span.medium-stop-edit.medium-status-recording
+      %i.fa.fa-circle
+      Editing (auto-save is on)
+.pull-right
+  = content_tag :button, 'Edit project', class: 'btn btn-primary medium-start-edit'
+  = content_tag :button, 'Finish editing', class: 'btn btn-success medium-stop-edit', style: 'display:none'
+.clearfix

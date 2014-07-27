@@ -13,28 +13,36 @@ class ProjectDecorator < ApplicationDecorator
       parsed = Nokogiri::HTML::DocumentFragment.parse model.description
 
       parsed.css('.embed-frame').each do |el|
-        link = if el['data-embed']
-          el['data-embed']
-        elsif file_id = el['data-file-id']
-          if file = Attachment.find_by_id(file_id)
-            file.file_url
-          end
+        type = el['data-type']
+
+        embed = case type
+        when 'url'
+          link = el['data-url']
+          next unless link
+
+          Embed.new url: link, fallback_to_default: true
+        when 'file'
+          file_id = el['data-file-id']
+          next unless file_id
+
+          Embed.new file_id: file_id
+        when 'widget'
+          Embed.new widget_id: el['data-widget-id']
+        else
+          next
         end
-        next unless link
 
-        code = Embed.find_code_for_url(link, true)
-
+        code = h.render partial: "api/embeds/embed", locals: { embed: embed }
         next unless code
-
-        puts link.inspect
-        puts code.inspect
 
         if caption = el['data-caption']
           code = Nokogiri::HTML::DocumentFragment.parse code
-          figcaption = code.at_css('figcaption')
-          figcaption.content = caption
-          code = code.to_html
+          if figcaption = code.at_css('figcaption')
+            figcaption.content = caption
+            code = code.to_html
+          end
         end
+
         el.add_child code if code
       end
       parsed.to_html.html_safe

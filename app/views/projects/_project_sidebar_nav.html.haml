@@ -7,14 +7,8 @@
 
       - if can? :edit, @project
         %a{ href: edit_project_path(@project) }
-          %i.fa.fa-edit
+          %i.fa.fa-cog
           Edit project settings
-        %a{ href: new_project_widget_path(@project), data: { remote: true } }
-          %i.fa.fa-plus
-          Add a content block
-        %a{ href: project_widgets_path(@project) }
-          %i.fa.fa-arrows
-          Reorder content blocks
         = link_to "#{content_tag(:i, '', class: 'fa fa-group')} Manage team".html_safe, project_edit_team_path(@project)
 
     #scrolling-project-section

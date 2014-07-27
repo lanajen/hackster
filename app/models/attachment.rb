@@ -79,6 +79,14 @@ class Attachment < ActiveRecord::Base
   #   file.store!
   # end
 
+  def real_file_url
+    if Rails.env == 'development' and ENV['CARRIERWAVE_FORCE_FOG'] != 'true'
+      File.join(Rails.root, 'public', file_url)
+    else
+      file_url
+    end
+  end
+
   def skip_file_check?
     @skip_file_check
   end

@@ -1,0 +1,2 @@
+class VideoEmbed < BaseEmbed
+end

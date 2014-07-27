@@ -1,0 +1,2 @@
+class CircuitsioEmbed < BaseEmbed
+end

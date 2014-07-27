@@ -78,9 +78,11 @@
               .clearfix
             .claim-link
               %small
-                Is this you?
+                - q = @project.guest_name.present? ? "Are you #{@project.guest_name}?" : 'Are you the author of this project?'
+                - a = @project.guest_name.present? ? 'Claim this project' : 'Claim it'
+                = q
                 - if user_signed_in?
-                  = link_to 'Claim this project', claim_project_path(@project), data: { method: :post }
+                  = link_to a, claim_project_path(@project), data: { method: :post }
                 - else
-                  = link_to 'Claim this project', new_user_registration_path(reason: 'claim', m: 'project', id: @project.id)
+                  = link_to a, new_user_registration_path(reason: 'claim', m: 'project', id: @project.id)
           %a.fa.fa-question-circle.meta-data{ data: { container: 'body', toggle: 'popover', placement: 'left', content: render('projects/meta_data'), trigger: 'hover', html: 'true'}, rel: 'popover'}
