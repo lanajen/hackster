@@ -23,6 +23,7 @@ gem 'zocial-rails', '1.0.2'
 gem 'rails-assets-medium-editor', '1.8.14'
 # gem 'rails-assets-medium-editor-insert-plugin', '0.2.4'
 
+gem 'autoscaler', groups: :staging
 gem 'auto_html', '1.6.3'
 gem 'aws-sdk', '1.33.0'
 gem 'bootstrap-will_paginate', '0.0.10'
