@@ -1,7 +1,7 @@
 # Youtube API wrapper
 require File.join(Rails.root, 'lib/youtube/init')
 # Heroku Resque auto scaler
-require File.join(Rails.root, 'lib/sidekiq_autoscale.rb') if Rails.env == 'staging'
+require File.join(Rails.root, 'lib/sidekiq_autoscaler.rb') if Rails.env == 'staging'
 # Taggable
 require File.join(Rails.root, 'lib/taggable')
 # Privatable
