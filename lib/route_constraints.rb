@@ -6,14 +6,14 @@ end
 
 class MainSite
   def self.matches?(request)
-    request.subdomains[0] == 'www'
+    request.subdomains[0].in? %w(staging www)
   end
 end
 
 class ClientSite
   def self.matches?(request)
     subdomain = request.subdomains[0]
-    !subdomain.in? %w(www beta)
+    !subdomain.in? %w(www beta staging)
   end
 end
 

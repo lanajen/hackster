@@ -68,7 +68,7 @@ gem 'protected_attributes', '1.0.7'
 gem 'pygments.rb', '0.5.4'
 gem 'rack-attack', '4.1.0'
 gem 'rack-timeout', '0.0.4'
-gem 'rails_12factor', group: :production
+gem 'rails_12factor', group: [:production, :staging]
 gem 'rails-observers', '0.1.2'
 gem 'redis', '3.0.6'
 gem 'redis-namespace', '1.2.1'

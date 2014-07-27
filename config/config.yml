@@ -10,6 +10,12 @@ test:
   default_port: 80
   send_emails: false
 
+staging:
+  full_host: staging.hackster.io
+  default_host: staging.hackster.io
+  default_port: 80
+  send_emails: true
+
 production:
   full_host: www.hackster.io
   default_host: www.hackster.io
