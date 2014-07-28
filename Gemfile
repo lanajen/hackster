@@ -23,7 +23,7 @@ gem 'zocial-rails', '1.0.2'
 gem 'rails-assets-medium-editor', '1.8.14'
 # gem 'rails-assets-medium-editor-insert-plugin', '0.2.4'
 
-gem 'autoscaler', groups: :staging
+gem 'autoscaler', '0.9.0', groups: :staging
 gem 'auto_html', '1.6.3'
 gem 'aws-sdk', '1.33.0'
 gem 'bootstrap-will_paginate', '0.0.10'
@@ -72,13 +72,13 @@ gem 'rack-timeout', '0.0.4'
 gem 'rails_12factor', group: [:production, :staging]
 gem 'rails-observers', '0.1.2'
 gem 'redis', '3.0.6'
-gem 'redis-namespace', '1.2.1'
+gem 'redis-namespace', '1.5.0'
 # gem 'rest_in_place', '2.5.0'
 gem 'rest-client', '1.6.7'
 gem 'sanitize', '2.0.6'
 gem 'sendgrid', '1.2.0'
-gem 'sidekiq', '2.14.0'
-gem 'sidekiq-failures', '0.3.0'
+gem 'sidekiq', '3.0.0'
+gem 'sidekiq-failures'#, '0.3.0'
 gem 'simple_form', '3.1.0.rc1'
 gem 'sinatra', '>= 1.3.0', require: nil
 gem 'split', '0.7.2', :require => 'split/dashboard'
