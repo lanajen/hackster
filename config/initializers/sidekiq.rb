@@ -43,7 +43,7 @@ end
 Sidekiq.configure_client do |config|
   if heroku
     config.client_middleware do |chain|
-      chain.add Autoscaler::Sidekiq::Client, 'default' => heroku
+      chain.add Autoscaler::Sidekiq::Client, 'default' => heroku, 'critical' => heroku
     end
   end
 
