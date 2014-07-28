@@ -211,6 +211,12 @@ class Project < ActiveRecord::Base
     self.slug = new_slug
   end
 
+  def buy_link_host
+    URI.parse(buy_link).host.gsub(/^www\./, '')
+  rescue
+    buy_link
+  end
+
   def compute_popularity
     self.popularity_counter = ((respects_count * 2 + impressions_count * 0.1 + followers_count * 2 + comments_count * 5 + featured.to_i * 10) * [[(1.to_f / Math.log10(age)), 10].min, 0.01].max).round(4)
   end

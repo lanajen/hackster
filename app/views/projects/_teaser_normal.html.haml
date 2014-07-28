@@ -94,7 +94,7 @@
               - elsif @project.buy_link.present?
                 .tags.meta
                   Buy it from
-                  = link_to "#{URI.parse(@project.buy_link).host.gsub(/^www\./, '')}", @project.buy_link, target: '_blank', rel: 'nofollow'
+                  = link_to @project.buy_link_host, @project.buy_link, target: '_blank', rel: 'nofollow'
 
     %span.fa.fa-chevron-down.trigger-main-project-scroll.js-scroll-main-project
     #project-team

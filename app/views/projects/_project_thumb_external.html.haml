@@ -28,7 +28,7 @@
                   by
                   = link_to u.name, u
                 on
-                %span.fake-link= URI.parse(project.website).host.gsub(/^www\./, '')
+                %span.fake-link= project.website_host
               %p= truncate project.one_liner, length: 140
               .thumb-bottom
                 %hr
@@ -54,7 +54,7 @@
                     by
                     = link_to u.name, u
                   on
-                  %span.fake-link= URI.parse(project.website).host.gsub(/^www\./, '')
+                  %span.fake-link= project.website_host
               %p= truncate project.one_liner, length: 140
               .thumb-bottom
                 %hr
