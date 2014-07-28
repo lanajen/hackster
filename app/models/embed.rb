@@ -55,7 +55,7 @@ class Embed
       @widget = Widget.find_by_id @widget_id
       @provider_name = @widget.identifier
       @type = 'widget'
-      @format = 'original'
+      @format = @widget.embed_format || 'original'
     elsif file_id = options[:file_id]
       if file = Attachment.find_by_id(file_id)
         @url = file.file_url
@@ -65,14 +65,14 @@ class Embed
         @type = @provider.type
         @provider_name = @provider.identifier
       end
-    elsif type = options[:new_widget]
-      @widget = Widget.create type: type, project_id: options[:project_id]
-      if type == 'PartsWidget'
-        @widget.parts.create quantity: 1
-      end
-      @provider_name = @widget.identifier
-      @type = 'widget'
-      @format = 'original'
+    # elsif type = options[:new_widget]
+    #   @widget = Widget.create type: type, project_id: options[:project_id]
+    #   if type == 'PartsWidget'
+    #     @widget.parts.create quantity: 1
+    #   end
+    #   @provider_name = @widget.identifier
+    #   @type = 'widget'
+    #   @format = 'original'
     end
   end
 

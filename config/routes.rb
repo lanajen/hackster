@@ -20,10 +20,10 @@ HackerIo::Application.routes.draw do
     namespace :api do
       namespace :v1 do
         get 'embeds' => 'embeds#show'
-        post 'embeds' => 'embeds#create'
+        # post 'embeds' => 'embeds#create'
         resources :projects#, as: :api_projects
         resources :parts, only: [:create, :destroy]
-        resources :widgets, only: [:destroy, :update]
+        resources :widgets, only: [:destroy, :update, :create]
         match "*all" => "base#cors_preflight_check", via: :options
       end
     end

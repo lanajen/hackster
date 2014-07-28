@@ -17,6 +17,10 @@ class Widget < ActiveRecord::Base
     nil
   end
 
+  def embed_format
+    nil
+  end
+
   def has_unresolved_issues?
     issues.where(workflow_state: :unresolved).any?
   end

@@ -103,6 +103,7 @@
     display: none;
     position: absolute;
     left: -80px;
+    background: #fff;
     .media-btn {
       color: #aaa;
       cursor: pointer;
@@ -179,17 +180,25 @@
   }
 }
 
+.block-mouse {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 500;
+  content: '';
+}
 .editor-active {
+  .block-mouse-on-edit {
+    &:before {
+      @extend .block-mouse;
+    }
+  }
   [data-type="url"] {
     .embed {
       &:before {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 500;
-        content: '';
+        @extend .block-mouse;
       }
     }
   }
@@ -339,4 +348,24 @@ code.gist {
         -o-transform:translateX(100%);
         transform:translateX(100%);
     }
+}
+
+.stl-widget, .code-widget {
+  .download-link {
+    position: absolute;
+    top: 0;
+    right: -173px;
+    width: 150px;
+    font-size: 12px;
+    i {
+      margin-right: 5px;
+    }
+    &:before {
+      width: 25%;
+      border-top: 1px solid rgba(0, 0, 0, 0.15);
+      display: block;
+      content: "";
+      margin-bottom: 10px;
+    }
+  }
 }

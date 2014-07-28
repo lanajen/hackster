@@ -1,4 +1,3 @@
-// - upload stl to sketchfab
 // - generate description from widgets: missing stl
 
 // - add editor to build logs
@@ -58,6 +57,7 @@ $(function() {
         $('.image-gallery', $clone).removeClass('slick-initialized slick-slider');
 
         $clone.find('.default-text').remove();
+        $clone.find('.remove-on-save').remove();
         $inserts = $clone.find('.embed-frame');
 
         $inserts.filter('.is-selected').removeClass('is-selected');
@@ -582,9 +582,11 @@ $(function () {
         break;
 
       case 'add-slide':
-        $('#upload-placeholder').remove();
+        // $('#upload-placeholder').remove();
+        $('.upload-here').removeClass('upload-here');
         frame = $(this).closest('.embed-frame');
-        $('<div id="upload-placeholder" data-file-type="image"></div>').appendTo(frame.find('.slick-track'));
+        // $('<div id="upload-placeholder" data-file-type="image" class="remove-on-save"></div>').appendTo(frame.find('.slick-track'));
+        frame.find('.image-gallery').addClass('upload-here').attr('data-file-type', 'image');
         $('#medium-file-upload').find('input[type=file]').click();
         break;
 
@@ -767,6 +769,10 @@ $(function () {
             focusAtEndOfRange(node[0]);
           }
         }
+      } else if (e.keyCode == 8) {
+        if (!node.next().length && node.prev('.embed-frame').length) {
+          e.preventDefault();
+        }
       }
     }
   });
@@ -845,7 +851,7 @@ $(function () {
         break;
       case 'upload':
         $('#upload-placeholder').remove();
-        $(curNode).replaceWith('<div id="upload-placeholder" data-file-type="' +  btn.data('media') + '"></div>');
+        $(curNode).replaceWith('<div id="upload-placeholder" data-file-type="' +  btn.data('media') + '" class="remove-on-save"></div>');
         $('#medium-file-upload').find('input[type=file]').click();
         break;
       case 'widget':
@@ -853,7 +859,7 @@ $(function () {
         editor.triggerInput();
         break;
       case 'sketchfab':
-        $(curNode).replaceWith('<div id="sketchfab-placeholder"></div>');
+        $(curNode).replaceWith('<div id="sketchfab-placeholder" class="remove-on-save"></div>');
         $('#sketchfab-upload input:file').click();
         break;
     }
@@ -870,19 +876,19 @@ $(function () {
         reader.onload = function(e) {
           el = $('#' + data.context);
           img = '<div style="background-image:url(' + e.target.result + ')" class="embed-img"></div>';
-          $(img).appendTo(el);
+          $(img).appendTo(el.find('figure'));
 
           slider = el.closest('.slick-slider');
           if (slider.length > 0) {
             slider = $(slider[0]);
-            slider.slickAdd(el.parent());
-            slider.slickGoTo($('.slick-slide', slider).length - 1);
+            slider.slickAdd(el);
+            slider.slickGoTo(slider.find('.slick-slide').length - 1);
           }
         }
         reader.readAsDataURL(data.files[0]);
       },
       tpl: function(iFile) {
-        return $('<div><figure id="tmp-file-' + iFile + '" contenteditable="false">' + progressTpl + '</figure></div>');
+        return $('<div id="tmp-file-' + iFile + '"><figure contenteditable="false">' + progressTpl + '</figure></div>');
       }
     },
     document: {
@@ -897,12 +903,20 @@ $(function () {
   }
 
   $('.medium-editor').on('drop dragover', '.editable.editable-activated .file-drop', function(e) {
-    $('<div id="upload-placeholder"></div>').appendTo($(this).next('.image-gallery'));
+    $('<div id="upload-placeholder" data-file-type="image" class="remove-on-save"></div>').appendTo($(this).next('.image-gallery'));
+    // $('#upload-placeholder').remove();
+    $('.upload-here').removeClass('upload-here');
+    // frame = $(this).closest('.embed-frame');
+    // $('<div id="upload-placeholder" data-file-type="image" class="remove-on-save"></div>').appendTo(frame.find('.slick-track'));
+    $(this).next('.image-gallery').addClass('upload-here').attr('data-file-type', 'image');
+    // $('#medium-file-upload').find('input[type=file]').click();
   });
 
   $('.medium-editor').on('click', '.editable.editable-activated .file-drop a', function(e) {
     e.preventDefault();
-    $('<div id="upload-placeholder"></div>').appendTo($(this).closest('.file-drop').next('.image-gallery'));
+    // $('<div id="upload-placeholder" data-file-type="image" class="remove-on-save"></div>').appendTo($(this).closest('.file-drop').next('.image-gallery'));
+    $('.upload-here').removeClass('upload-here');
+    $(this).closest('.file-drop').next('.image-gallery').addClass('upload-here').attr('data-file-type', 'image');
     $('#medium-file-upload').find('input[type=file]').click();
   });
 
@@ -931,11 +945,18 @@ $(function () {
       if (plcHldr.length > 0) {
         fileType = plcHldr.data('file-type');
         tpl = fileuploadFunctions[fileType].tpl(editor.iFile);
-        tpl.data('file-type', fileType);
+        tpl.attr('data-file-type', fileType);
         tpl.insertBefore(plcHldr);
+      } else if ($('.image-gallery.upload-here').length) {
+        gallery = $('.image-gallery.upload-here');
+        fileType = gallery.data('file-type');
+        tpl = fileuploadFunctions[fileType].tpl(editor.iFile);
+        tpl.attr('data-file-type', fileType);
+        if (!gallery.hasClass('slick-initialized')) loadSlickSlider();
 
-        slider = tpl.closest('.image-gallery');
-        if (!slider.hasClass('slick-initialized')) loadSlickSlider();
+        tpl.appendTo(gallery.find('.slick-track'));
+
+        // slider = tpl.closest('.image-gallery');
       } else {
         console.log("couldn't find where to insert file");
         return;
@@ -985,7 +1006,7 @@ $(function () {
         el.find('.embed-overlay').replaceWith(embedOverlay.main);
         if (el.data('file-type') == 'image') {
           timestamp = new Date().getTime();
-          $("<figcaption class='widget-attribute widget-attribute-editable' data-attribute='[images_attributes][" + timestamp + "][title]' contenteditable='true' data-default-text='Type in a caption' data-disable-toolbar='true'></figcaption><div class='widget-attribute' data-attribute='[images_attributes][" + timestamp + "][id]' contenteditable='true' data-value='" + id + "'></div><div class='widget-attribute position' data-attribute='[images_attributes][" + timestamp + "][position]' contenteditable='true'></div>").appendTo(el);
+          $("<figcaption class='widget-attribute widget-attribute-editable' data-attribute='[images_attributes][" + timestamp + "][title]' contenteditable='true' data-default-text='Type in a caption' data-disable-toolbar='true'></figcaption><div class='widget-attribute' data-attribute='[images_attributes][" + timestamp + "][id]' contenteditable='true' data-value='" + id + "'></div><div class='widget-attribute position' data-attribute='[images_attributes][" + timestamp + "][position]' contenteditable='true'></div>").appendTo(el.find('figure'));
           el.closest('.image-gallery-container').find('select').append('<option selected="selected" value="' + id + '"></option>');
           resetPositions(el.closest('.image-gallery').find('.position'));
           $(embedOverlay.moveLeftBtn).appendTo(el.find('.embed-overlay-content'));
@@ -993,6 +1014,7 @@ $(function () {
         } else {
           $("<figcaption contenteditable='true' data-default-text='Type in a caption' data-disable-toolbar='true'></figcaption>").appendTo(el.find('figure'));
           insertBlankParagraphAfter(el);
+          stylizeEmbedFrames(editor.elements);
         }
         loadPlaceholder(el.find('figcaption'), true);
         editor.triggerInput();
@@ -1043,7 +1065,7 @@ $(function () {
     },
 
     fail: function(e, data){
-      form = $('#medium-file-upload');
+      form = $('#upload-cover-image');
       handleUploadErrors(form);
       var el = $('#project-top-image');
       el.css('background-image', 'url(' + el.data('old-bg-img') + ')');
@@ -1071,6 +1093,68 @@ $(function () {
             showErrorBubble('the new cover image');
           },
           formData);
+      });
+    }
+  });
+
+  $('#sketchfab-upload').fileupload({
+    dataType: 'xml', // This is really important as s3 gives us back the url of the file in a XML document
+    limitMultifileUploads: 1,
+    sequentialUploads: true,
+    limitConcurrentUploads: 1,
+    fileInput: $('#sketchfab-upload input:file'),
+    dropZone: '#sketchfab-upload',
+
+    add: function(e, data) {
+      file = data.files[0];
+      tpl = $('<div class="embed-frame remove-on-save" id="sketchfab-' + editor.iFile + '"><div class="embed">' + progressTpl + '</div></<div>');
+      tpl.insertBefore('#sketchfab-placeholder');
+      data.context = 'sketchfab-' + editor.iFile;
+      editor.iFile++;
+
+      editor.showLoadingBar();
+      uploadToS3(data, file, $(this));
+    },
+
+    fail: function(e, data){
+      form = $('#sketchfab-upload');
+      handleUploadErrors(form);
+      editor.hideLoadingBar();
+    },
+
+    progress: function(e, data) {
+      showUploadProgress(data);
+    },
+
+    progressall: function(e, data) {
+      progress = parseInt(data.loaded / data.total * 100, 10);
+      if (progress == 100) {
+        $('#sketchfab-placeholder').remove();
+      }
+    },
+
+    success: function(data) {
+      uploadAssignUrl(data);
+    },
+
+    done: function(e, data){
+      createFileOnServerAfterUpload(data, 'sketchfab_file', function(data){
+        var id = data.id;
+
+        checkSketfabProcessed(id, data.context, function(data){
+          var widgetData = {
+            widget: {
+              document_ids: [id],
+              sketchfab_uid: data.title
+            }
+          };
+          insertWidget('StlWidget', editor.projectId, $('#' + data.context), widgetData);
+          editor.hideLoadingBar();
+        }, function(data){
+          showErrorBubble('the 3D file');
+          $('#' + data.context).remove();
+          editor.hideLoadingBar();
+        });
       });
     }
   });
@@ -1212,6 +1296,7 @@ function getSelectionStart() {
 }
 
 function returnLastWord(text, caretPos) {
+  if (text == null) return;
   var index = text.indexOf(caretPos);
   var preText = text.substring(0, caretPos);
   var words = preText.split(/( |\s)/);
@@ -1276,9 +1361,9 @@ function insertEmbedTag(url, node) {
         $(embedToolbar.main).appendTo(div.find('.embed'));
         loadPlaceholder(div.find('[data-default-text]'), true);
         node.replaceWith(div);
+        insertBlankParagraphAfter(div);
         resizeToolBars();
         stylizeEmbedFrames(editor.elements);
-        insertBlankParagraphAfter(div);
       } else {
         link = '<a href="' + data.url + '">' + data.url + '</a>';
         node.html(link);
@@ -1291,11 +1376,15 @@ function insertEmbedTag(url, node) {
   });
 }
 
-function insertWidget(type, projectId, node) {
+function insertWidget(type, projectId, node, data) {
+  data = data || { widget: {} };
+  data['widget']['type'] = type;
+  data['widget']['project_id'] = projectId;
+
   editor.showLoadingBar();
-  $.ajax('/api/v1/embeds', {
+  $.ajax('/api/v1/widgets', {
     asynx: false,
-    data: { type: type, project_id: projectId },
+    data: data,
     success: function(data){
       if (data.code) {
         div = $('<div contenteditable="false" class="embed-frame" data-type="widget" data-widget-id="' + data.widget_id + '">' + data.code + '</div>');
@@ -1308,8 +1397,8 @@ function insertWidget(type, projectId, node) {
         $(div).find('[data-edit-only="true"]').show();
         $(div).find('[data-contenteditable="true"]').attr('contenteditable', 'true');
         loadPlaceholders(div);
-        // insertBlankParagraphAfter(div);
-        div.insertBefore(node);
+        node.replaceWith(div);
+        insertBlankParagraphAfter(div);
         resizeToolBars();
         activateSortable();
         stylizeEmbedFrames(editor.elements);
@@ -1547,126 +1636,24 @@ function createFileOnServerAfterUpload(data, fileType, successCallback) {
   });
 }
 
-      // formTpl = "<form id='sketchfab-upload' style='display:none;'>";
-      // formTpl += "<input name='token' type='hidden'>";
-      // formTpl += "<input type='file' name='modelFile'>";
-      // formTpl += "</form>";
-
-      // $($(formTpl)).appendTo($('.medium-editor'));
-
-$(function(){
-  $('#select-file').on('click', function(e){
-    e.preventDefault();
-    $('#sketchfab-upload input:file').click();
-  });
-
-  $('#upload').on('click', function(e){
-    e.preventDefault();
-    uploadToSketchFab();
-  });
-});
-
-var SKETCHFAB_TOKEN = 'f6f4db3865a945a38f0d09cae381efd6';
-
-function uploadToSketchFab() {
-  editor.showLoadingBar();
-  url = 'https://api.sketchfab.com/v2/models';
-  // private = 'True';
-  form = $('#sketchfab-upload');
-  var formData = new FormData(form[0]);
-  formData.append('token', SKETCHFAB_TOKEN);
-
-  $.ajax(url, {
-    data: formData,
-    processData: false,
-    contentType: false,
-    type: 'POST',
-    success: function(data){
-      console.log(data)
-      console.log('ok');
-      url = 'https://sketchfab.com/models/' + data.uid;
-      insertEmbedTag(url, $('#sketchfab-placeholder'));
-    },
-    error: function(data){
-      showErrorBubble();
-      switch(data.status) {
-        case 400:
-          console.log(data);
-          break;
+function checkSketfabProcessed(id, context, successCallback, failCallback) {
+  window.setTimeout(function(){
+    $.ajax({
+      url: '/files/' + id,
+      data: { context: context },
+      success: function(data){
+        switch(data.processed){
+          case 'upload_error':
+            failCallback(data);
+            break;
+          case 'done':
+            successCallback(data);
+            break;
+          default:
+            checkSketfabProcessed(id, context, successCallback, failCallback);
+            break;
+        }
       }
-    },
-    complete: function(){
-      editor.hideLoadingBar();
-    }
-  });
+    });
+  }, 1000);
 }
-
-$(function(){
-  // $("#sketchfab-upload").fileupload({
-  //     dataType: 'json',
-  //     limitMultifileUploads: 1,
-  //     sequentialUploads: true,
-  //     limitConcurrentUploads: 1,
-  //     beforeSend: function(xhr) {
-  //       xhr.setRequestHeader("Authorization", "Token " + SKETCHFAB_TOKEN);
-  //     },
-  //     xhrFields: {
-  //       "Authorization": "Token " + SKETCHFAB_TOKEN
-  //     },
-  //     requestHeaders: {
-  //       "Authorization": "Token " + SKETCHFAB_TOKEN
-  //     },
-
-  //     add: function(e, data) {
-  //       tpl = $('<div class="embed-frame" id="sketchfab-' + editor.iFile + '"><div class="embed"><div class="embed-overlay is-visible"><div class="center-align-wrapper"><div class="center-align-inner"><p class="progress-legend">Uploading...</p><div class="progress progress-striped active"><div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%;"></div></div></div></div></div></<div>');
-  //       tpl.insertBefore('#sketchfab-placeholder');
-  //       editor.iFile++;
-  //       data.context = tpl;
-  //       // $(this).find('[name="token"]').val(SKETCHFAB_TOKEN);
-  //       console.log($(this));
-  //       console.log(data);
-  //       data.submit();
-  //     },
-
-  //     submit: function(e, data) {
-  //       console.log(data);
-  //       data.formData = new FormData(data.form);
-  //       console.log(data.formData);
-  //       data.formData.append('token', SKETCHFAB_TOKEN);
-  //       console.log(data.formData);
-  //       console.log(data);
-  //     },
-
-  //     fail: function(e, data){
-  //       data.context.fadeOut(200, function(){
-  //         $(this).remove();
-  //       });
-  //       showErrorBubble(data.files[0].name);
-  //     },
-
-  //     progress: function(e, data) {
-  //       progress = parseInt(data.loaded / data.total * 100, 10);
-  //       target = data.context.find('.progress-bar');
-  //       target.css('width', progress + '%');
-  //       if (progress == 100) {
-  //         target.addClass('progress-bar-success');
-  //       }
-  //     },
-
-  //     progressall: function(e, data) {
-  //       progress = parseInt(data.loaded / data.total * 100, 10);
-  //       if (progress == 100) {
-  //         $('#sketchfab-placeholder').remove();
-  //       }
-  //     },
-
-  //     success: function(data) {
-  //       url = 'https://sketchfab.com/models/' + data.uid;
-  //       $(this).data('url') = url;
-  //     },
-
-  //     done: function(e, data){
-  //       insertEmbedTag(url, data.context);
-  //     }
-  //   });
-});

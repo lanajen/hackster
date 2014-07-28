@@ -9,9 +9,9 @@ class Api::V1::EmbedsController < Api::V1::BaseController
     end
   end
 
-  def create
-    embed = Embed.new new_widget: params[:type], project_id: params[:project_id]
-    code = render_to_string partial: "api/embeds/embed", locals: { embed: embed }
-    render json: embed.to_json.merge(code: code, widget_id: embed.widget.id, widget_type: embed.widget.type)
-  end
+  # def create
+  #   embed = Embed.new new_widget: params[:type], project_id: params[:project_id]
+  #   code = render_to_string partial: "api/embeds/embed", locals: { embed: embed }
+  #   render json: embed.to_json.merge(code: code, widget_id: embed.widget.id, widget_type: embed.widget.type)
+  # end
 end

@@ -11,7 +11,8 @@
 
   - if document = embed.widget.document
     .download-link{ contenteditable: 'false' }
-      = link_to "#{content_tag(:i, '', class: 'fa fa-download')} Download #{document.file_name}".html_safe, document.file_url, class: 'btn btn-default btn-xs', data: { 'disable-toolbar' => 'true' }
+      %i.fa.fa-file-o.fa-lg
+      %a{ href: document.file_url, data: { 'disable-toolbar' => 'true' } } Download
 
 :javascript
   $(function(){
