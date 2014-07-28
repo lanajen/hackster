@@ -44,7 +44,7 @@
               .content
                 .text-widget.project-show-item
                   - if @can_edit
-                    = render partial: 'shared/medium_editor', locals: { editable: @project.description, last_edit: (@project.description_edited_at || @project.updated_at) }
+                    = render partial: 'shared/medium_editor', locals: { editable: @project.description, last_edit: @project.updated_at }
                   - else
                     .medium-editor= @project.description
 
