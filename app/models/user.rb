@@ -298,7 +298,7 @@ class User < ActiveRecord::Base
       interest_tags: 'interest_tags.count',
       invitations: 'invitations.count',
       live_projects: 'projects.where(private: false).count',
-      popularity_points: 'projects.map{|p| p.popularity_counter / p.team_members_count }.sum',
+      popularity_points: 'projects.live.map{|p| p.popularity_counter / p.team_members_count }.sum',
       projects: 'projects.count',
       project_respects: 'projects.includes(:respects).count(:respects)',
       project_views: 'projects.sum(:impressions_count)',
