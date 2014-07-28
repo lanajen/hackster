@@ -31,9 +31,12 @@ Sidekiq.configure_server do |config|
   end
 
   if heroku
-    config.client_middleware do |chain|
-      chain.add Autoscaler::Sidekiq::Client, 'default' => heroku
+    config.server_middleware do |chain|
+      p "[Sidekiq] Running on Heroku in staging, autoscaler is used"
+      chain.add(Autoscaler::Sidekiq::Server, heroku, 60)  # 60 second timeout
     end
+  else
+    p "[Sidekiq] Autoscaler isn't used"
   end
 end
 
@@ -41,12 +44,9 @@ Sidekiq.configure_client do |config|
   config.redis = $redis_config.merge({ size: 1, namespace: "sidekiq:hacksterio" })
 
   if heroku
-    config.server_middleware do |chain|
-      p "[Sidekiq] Running on Heroku in staging, autoscaler is used"
-      chain.add(Autoscaler::Sidekiq::Server, Autoscaler::HerokuScaler.new, 60) # 60 second timeout
+    config.client_middleware do |chain|
+      chain.add Autoscaler::Sidekiq::Client, 'default' => heroku
     end
-  else
-    p "[Sidekiq] Autoscaler isn't used"
   end
 end
 
