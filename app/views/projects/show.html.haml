@@ -32,7 +32,7 @@
               %p= truncate @next.one_liner, length: 140
             %a.project-nav-overlay.project-nav-overlay-top{ href: project_path(@next, ref: params[:ref], ref_id: params[:ref_id], offset: params[:offset].to_i + 1) }
 
-      - cache [@project.widgets, can?(:edit, @project)], tag: "project-#{@project.id}-widgets" do
+      - cache [@project.widgets, can?(:edit, @project), "project-#{@project.id}"], tag: "project-#{@project.id}-widgets" do
         .project-section{ id: "showcase" }
           .header
             %h2 Showcase
