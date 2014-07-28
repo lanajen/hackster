@@ -55,7 +55,7 @@ class Project < ActiveRecord::Base
     :featured, :featured_date, :cover_image_id, :logo_id, :license, :slug,
     :permissions_attributes, :new_slug, :slug_histories_attributes, :hide,
     :collection_id, :graded, :wip, :columns_count, :external, :guest_name,
-    :approved, :open_source, :description_edited_at, :buy_link
+    :approved, :open_source, :buy_link
   attr_accessor :current
   attr_writer :new_slug
   accepts_nested_attributes_for :images, :video, :logo, :team_members,

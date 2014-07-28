@@ -21,7 +21,6 @@ class WidgetObserver < ActiveRecord::Observer
       @save = true
     end
 
-    record.project.update_attributes description_edited_at: Time.now
     record.update_column :properties, record.properties.to_yaml if @save
   end
 

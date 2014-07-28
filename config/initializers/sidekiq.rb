@@ -32,11 +32,11 @@ Sidekiq.configure_server do |config|
 
   if heroku
     config.server_middleware do |chain|
-      p "[Sidekiq] Running on Heroku in staging, autoscaler is used"
+      Rails.logger.info "[Sidekiq] Running on Heroku in staging, autoscaler is used"
       chain.add(Autoscaler::Sidekiq::Server, heroku, 60)  # 60 second timeout
     end
   else
-    p "[Sidekiq] Autoscaler isn't used"
+    Rails.logger.info "[Sidekiq] Autoscaler isn't used"
   end
 end
 
