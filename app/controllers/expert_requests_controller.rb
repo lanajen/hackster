@@ -9,7 +9,7 @@ class ExpertRequestsController < ApplicationController
 
     if @expert_request.valid?
       @message = Message.new(
-        from_email: current_user.email,
+        from_email: current_user.try(:email),
         message_type: 'generic'
       )
       @message.subject = "New expert request"

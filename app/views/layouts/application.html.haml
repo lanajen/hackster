@@ -36,13 +36,6 @@
               %button.close.btn-close{ data: { close: '#hello-world' } } &times;
               = SLOGAN
               = link_to 'Start building.', new_user_registration_path, onclick: "_gaq.push(['_trackEvent', 'Hello world bar', 'Sign up', '#{request.path}']);"
-        - else
-          #hello-world{ style: 'display:block;' }
-            .container
-              %button.close.btn-close{ data: { close: '#hello-world' } } &times;
-              = distance_of_time_in_words Time.now, '2014-07-28'.to_datetime
-              left to win a FLORA, a NeoPixel NeoMatrix 8x8, or a 5" Touchscreen LCD Display!
-              = link_to 'Click here for more info.', 'https://offers.visit.io/promo/t/c_1468f32bbe65dfbe2b019fa60b6ecfad19f737dc'
 
         - if @show_signup_popup
           = render 'shared/signup_popup'
