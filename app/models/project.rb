@@ -247,11 +247,11 @@ class Project < ActiveRecord::Base
   end
 
   def credit_lines
-    @credit_lines ||= credits_widget.try(:credit_lines)
+    @credit_lines ||= credits_widget.try(:credit_lines) || []
   end
 
   def credits_widget
-    @credits_widget ||= CreditsWidget.where(project_id: id).first_or_create
+    @credits_widget ||= CreditsWidget.where(project_id: id).first#_or_create
   end
 
   def force_basic_validation!
