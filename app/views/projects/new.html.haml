@@ -68,11 +68,11 @@
 
         = render partial: 'projects/open_source_switch', locals: { f: f }
         = f.input :name, label: 'What is it called?'
-        = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner description, Twitter-style.'
+        -# = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner description, Twitter-style.'
         = f.input :product_tags_string, as: :hidden
         = f.input :tech_tags_string, as: :hidden
 
-        .form-group
+        -# .form-group
           .col-xs-4
             %label.control-label Cover image
           .col-xs-8
@@ -91,7 +91,7 @@
           .col-xs-8.col-xs-offset-4
             = f.button :submit, 'Continue', class: 'btn-block btn-primary'
 
-  - if @project.open_source
+  -# if @project.open_source
     .col-md-6.col-md-offset-3.col-xs-12
       %hr
 
