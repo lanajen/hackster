@@ -78,7 +78,7 @@ gem 'rest-client', '1.6.7'
 gem 'sanitize', '2.0.6'
 gem 'sendgrid', '1.2.0'
 gem 'sidekiq', '3.0.0'
-gem 'sidekiq-failures'#, '0.3.0'
+gem 'sidekiq-failures', '0.4.3'
 gem 'simple_form', '3.1.0.rc1'
 gem 'sinatra', '>= 1.3.0', require: nil
 gem 'split', '0.7.2', :require => 'split/dashboard'
