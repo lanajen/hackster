@@ -51,6 +51,9 @@
   .medium-editor-placeholder:after {
     color: #bbb;
   }
+  .has-error {
+    color: #a94442;
+  }
   .embed-frame {
     margin: 40px 0;
     padding-bottom: 40px;
@@ -67,7 +70,8 @@
     }
     &.is-selected {
       .embed {
-        outline: 4px solid #3d8bc1;
+        // outline: 4px solid #3d8bc1;  // this fails in firefox because of absolute elements
+        @include box-shadow(0 0 0 4px #3d8bc1);
       }
     }
     .table {

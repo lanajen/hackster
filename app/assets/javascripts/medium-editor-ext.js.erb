@@ -1,4 +1,5 @@
 // - generate description from widgets: missing stl
+// - sidebar!
 
 // - add editor to build logs
 
@@ -27,7 +28,7 @@ var embedToolbar = {
 }
 
 $(function() {
-  var projectFormTpl = '<form id="project-form" style="display:none;"></form>';
+  // var projectFormTpl = '<form id="project-form" style="display:none;"></form>';
 
   /**
   * Extend MediumEditor functions if the editor exists
@@ -186,10 +187,10 @@ $(function() {
 
       $(embedToolbar.main).appendTo(_.elements.find('.embed'));
       toolBar = _.elements.find('.medium-editor-toolbar-actions');
-      $(embedToolbar.moveUpBtn).appendTo(toolBar);
-      $(embedToolbar.moveDownBtn).appendTo(toolBar);
+      $(embedToolbar.moveDownBtn).prependTo(toolBar);
+      $(embedToolbar.moveUpBtn).prependTo(toolBar);
       toolBar = _.elements.find('.image-gallery').closest('.embed-frame').find('.medium-editor-toolbar-actions');
-      $(embedToolbar.addSlideBtn).appendTo(toolBar);
+      $(embedToolbar.addSlideBtn).prependTo(toolBar);
 
       resizeToolBars();
 
@@ -206,6 +207,7 @@ $(function() {
       markEmptyParagraphs(_.elements);
       loadPlaceholders(_.elements.find('.embed-frame'));
       activateSortable();
+      updateFileUploadDragZone();
 
       $('.editable-attribute').attr('contenteditable', 'true');
       $('.editable-attribute').each(function(){
@@ -348,7 +350,7 @@ $(function() {
         $.each(errors, function(fieldName, msg){
           f = w.find('[data-attribute="' + fieldName + '"]');
           f.addClass('has-error');
-          $('<span class="help-block">' + msg + '</span>').appendTo(f);
+          $('<span class="default-text help-block">' + msg + '</span>').appendTo(f);
         });
       });
     },
@@ -519,7 +521,7 @@ $(function () {
     $(this).trigger('change');
   });
 
-  $('.model-editor').on('click dblClick', '.editable-attribute .default-text', function(e){
+  $('.model-editor').on('click dblClick', '.editable-attribute .is-default-text', function(e){
     e.preventDefault();
     focusAtBeginningOfRange($(this)[0], false);
   });
@@ -709,6 +711,12 @@ $(function () {
     }
   });
 
+  $('.medium-editor').on('paste', '.editable.editable-activated', function(e){
+    // replace spaces surrounding links by &nbsp;
+    // TODO: find a way to only target bit that got pasted
+    formatLinks(editor.elements);
+  });
+
   $('.medium-editor').on('blur focusout', '.editable.editable-activated .default-text-focused', function(e){
     $(this).remove();
   });
@@ -730,27 +738,39 @@ $(function () {
     }
   });
 
+  $('.medium-editor').on('keypress keydown', '.editable.editable-activated .is-default-text', function(e){
+    // console.log($(this));
+    node = $(this);
+
+    if (e.which !== 0 && e.charCode !== 0 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      node.find('.default-text').remove();
+      node.removeClass('is-default-text');
+    } else if (e.keyCode == 39) {
+      e.preventDefault();
+      focusAtBeginningOfRange(node[0]);
+    // prevent deleting element
+    } else if (e.keyCode == 8) {
+      e.preventDefault();
+    }
+  });
+
+  $('.medium-editor').on('keypress keydown', '.editable.editable-activated [data-default-text]', function(e){
+    // console.log($(this));
+    node = $(this);
+
+    if (e.keyCode == 8 && node.text().length == 1) {
+      e.preventDefault();
+      loadPlaceholder(node, true);
+      focusAtBeginningOfRange(node.find('.default-text')[0]);
+      editor.triggerInput();
+    }
+  });
+
   $('.medium-editor').on('keypress keydown', '.editable.editable-activated', function(e){
     var node = $(getSelectionStart());
+    // console.log(node);
 
-    if (node.is('.default-text')) {
-      if (e.which !== 0 && e.charCode !== 0 && !e.ctrlKey && !e.metaKey && !e.altKey) {
-        node.remove();
-      } else if (e.keyCode == 39) {
-        e.preventDefault();
-        focusAtBeginningOfRange(node[0]);
-      // prevent deleting element
-      } else if (e.keyCode == 8) {
-        e.preventDefault();
-      }
-    } else if (node.is('[data-default-text]')) {
-      if (e.keyCode == 8 && node.text().length == 1) {
-        e.preventDefault();
-        loadPlaceholder(node, true);
-        focusAtBeginningOfRange(node.find('.default-text')[0]);
-        editor.triggerInput();
-      }
-    } else if (node.is('p')) {
+    if (node.is('p')) {
       // replaces urls by links after space bar and enter
       if (e.which == 32 || e.which == 13) {
         var caretPos = retrieveSelection().extentOffset;
@@ -769,8 +789,9 @@ $(function () {
             focusAtEndOfRange(node[0]);
           }
         }
+      // prevent delete last paragraph
       } else if (e.keyCode == 8) {
-        if (!node.next().length && node.prev('.embed-frame').length) {
+        if (!node.next().length && node.prev('.embed-frame').length && node.text() == '') {
           e.preventDefault();
         }
       }
@@ -783,15 +804,11 @@ $(function () {
     }
   });
 
-  $('.medium-editor').on('keyup', '.editable.editable-activated', function(e){
-    var selection = retrieveSelection();
-    var node = $(selection.anchorNode);
-    var parent = node.parent();
-    if (node.is('[data-default-text]')) {
-      if (e.keyCode == 8 && node.text() == '') {
-        loadPlaceholder(parent, true);
-        focusAtBeginningOfRange(node.find('.default-text')[0]);
-      }
+  $('.medium-editor').on('keyup', '.editable.editable-activated [data-default-text]', function(e){
+    node = $(this);
+    if (e.keyCode == 8 && node.text() == '') {
+      loadPlaceholder(node, true);
+      focusAtBeginningOfRange(node.find('.default-text')[0]);
     }
   });
 
@@ -902,18 +919,39 @@ $(function () {
     }
   }
 
-  $('.medium-editor').on('drop dragover', '.editable.editable-activated .file-drop', function(e) {
-    $('<div id="upload-placeholder" data-file-type="image" class="remove-on-save"></div>').appendTo($(this).next('.image-gallery'));
+  $(document).on('dragover drop', function (e) {
+      e.preventDefault();
+  });
+
+  $('.medium-editor').on('dragover drop', '.editable.editable-activated .image-gallery .embed-overlay-content', function(e) {
+    $(this).closest('.image-gallery-container').find('.file-drop').trigger(e.type);
+  });
+
+  $('.medium-editor').on('dragover', '.editable.editable-activated .file-drop', function(e) {
+    $(this).addClass('dragover-active');
+    // $('<div id="upload-placeholder" data-file-type="image" class="remove-on-save"></div>').appendTo($(this).next('.image-gallery'));
     // $('#upload-placeholder').remove();
     $('.upload-here').removeClass('upload-here');
     // frame = $(this).closest('.embed-frame');
     // $('<div id="upload-placeholder" data-file-type="image" class="remove-on-save"></div>').appendTo(frame.find('.slick-track'));
     $(this).next('.image-gallery').addClass('upload-here').attr('data-file-type', 'image');
     // $('#medium-file-upload').find('input[type=file]').click();
+    e.preventDefault();
+  });
+
+  $('.medium-editor').on('drop dragleave', '.editable.editable-activated .file-drop', function(e) {
+    $(this).removeClass('dragover-active');
+  });
+
+  $('.medium-editor').on('drop', '.editable.editable-activated .file-drop', function(e) {
+    e.preventDefault();
+  });
+
+  $('.medium-editor').on('click', '.file-drop a', function(e) {
+    e.preventDefault();
   });
 
   $('.medium-editor').on('click', '.editable.editable-activated .file-drop a', function(e) {
-    e.preventDefault();
     // $('<div id="upload-placeholder" data-file-type="image" class="remove-on-save"></div>').appendTo($(this).closest('.file-drop').next('.image-gallery'));
     $('.upload-here').removeClass('upload-here');
     $(this).closest('.file-drop').next('.image-gallery').addClass('upload-here').attr('data-file-type', 'image');
@@ -926,7 +964,7 @@ $(function () {
     sequentialUploads: true,
     limitConcurrentUploads: 1,
     fileInput: $('#medium-file-upload input:file'),
-    dropZone: '.file-drop',
+    dropZone: $('.file-drop, .image-gallery .embed-overlay-content'),
 
     add: function(e, data) {
       file = data.files[0];
@@ -1004,6 +1042,7 @@ $(function () {
         el.attr('data-file-id', id);
         el.attr('data-type', 'file');
         el.find('.embed-overlay').replaceWith(embedOverlay.main);
+        updateFileUploadDragZone();
         if (el.data('file-type') == 'image') {
           timestamp = new Date().getTime();
           $("<figcaption class='widget-attribute widget-attribute-editable' data-attribute='[images_attributes][" + timestamp + "][title]' contenteditable='true' data-default-text='Type in a caption' data-disable-toolbar='true'></figcaption><div class='widget-attribute' data-attribute='[images_attributes][" + timestamp + "][id]' contenteditable='true' data-value='" + id + "'></div><div class='widget-attribute position' data-attribute='[images_attributes][" + timestamp + "][position]' contenteditable='true'></div>").appendTo(el.find('figure'));
@@ -1028,7 +1067,7 @@ $(function () {
     sequentialUploads: true,
     limitConcurrentUploads: 1,
     fileInput: $('#upload-cover-image form input:file'),
-    dropZone: '#top-project-section',
+    dropZone: $('#top-project-section'),
 
     add: function(e, data) {
       file = data.files[0];
@@ -1103,7 +1142,7 @@ $(function () {
     sequentialUploads: true,
     limitConcurrentUploads: 1,
     fileInput: $('#sketchfab-upload input:file'),
-    dropZone: '#sketchfab-upload',
+    dropZone: $('#sketchfab-upload'),
 
     add: function(e, data) {
       file = data.files[0];
@@ -1232,7 +1271,7 @@ function handleUploadErrors(dataContainer) {
   target = $('#' + data.context);
   file = data.files[0];
   showErrorBubble(file.name);
-  target.replaceWith('<p class="paragraph--empty"><br></p>');
+  target.replaceWith(emptyParagraph);
 }
 
 function showErrorBubble(fileName) {
@@ -1310,15 +1349,18 @@ function resetPos() {
 
 function showMediaButtons(node) {
   var top = node.offset().top;
-  w = node.closest('.medium-editor');
-  b = w.find('.media-menu');
+  // w = node.closest('.medium-editor');
+  w = $('.medium-editor');
+  // b = w.find('.media-menu');
+  b = $('.media-menu');
   b.css('top', top - w.offset().top);
   b.show();
 }
 
 function hideMediaButtons(node) {
-  w = node.closest('.medium-editor');
-  b = w.find('.media-menu');
+  // w = node.closest('.medium-editor');
+  // b = w.find('.media-menu');
+  b = $('.media-menu');
   b.hide();
   b.find('.media-menu-btns').removeClass('is-open');
 }
@@ -1353,7 +1395,7 @@ function focusAtEndOfRange(div, triggerClick) {
 function insertEmbedTag(url, node) {
   editor.showLoadingBar();
   $.ajax('/api/v1/embeds', {
-    asynx: false,
+    async: false,
     data: { url: url },
     success: function(data){
       if (data.code) {
@@ -1383,21 +1425,24 @@ function insertWidget(type, projectId, node, data) {
 
   editor.showLoadingBar();
   $.ajax('/api/v1/widgets', {
-    asynx: false,
+    async: false,
     data: data,
     success: function(data){
       if (data.code) {
         div = $('<div contenteditable="false" class="embed-frame" data-type="widget" data-widget-id="' + data.widget_id + '">' + data.code + '</div>');
         toolbar = $(embedToolbar.main);
         ul = toolbar.find('.medium-editor-toolbar-actions');
-        $(embedToolbar.moveUpBtn).appendTo(ul);
-        $(embedToolbar.moveDownBtn).appendTo(ul);
-        if (data.widget_type == 'ImageWidget') $(embedToolbar.addSlideBtn).appendTo(ul);
+        $(embedToolbar.moveDownBtn).prependTo(ul);
+        $(embedToolbar.moveUpBtn).prependTo(ul);
         toolbar.appendTo(div.find('.embed'));
         $(div).find('[data-edit-only="true"]').show();
         $(div).find('[data-contenteditable="true"]').attr('contenteditable', 'true');
         loadPlaceholders(div);
         node.replaceWith(div);
+        if (data.widget_type == 'ImageWidget') {
+          $(embedToolbar.addSlideBtn).prependTo(ul);
+          updateFileUploadDragZone();
+        }
         insertBlankParagraphAfter(div);
         resizeToolBars();
         activateSortable();
@@ -1455,7 +1500,7 @@ function stylizeEmbedFrames(parent) {
 function insertBlankParagraphAfter(node) {
   next = node.next();
   if (next.length == 0 || next.prop('tagName').toLowerCase() != 'p') {
-    next = $('<p class="paragraph--empty"><br></p>')
+    next = $(emptyParagraph);
     next.insertAfter(node);
   }
   focusAtBeginningOfRange(next[0]);
@@ -1475,6 +1520,7 @@ function loadPlaceholder(el, force) {
   captionText = $.trim(el.text());
   defaultText = el.data('default-text');
   if ((captionText == '' || force) && typeof(defaultText) != 'undefined') {
+    el.addClass('is-default-text');
     el.html('<span class="default-text">' + defaultText + '</span>');
   }
 }
@@ -1581,17 +1627,18 @@ function uploadToS3(data, file, form) {
     data: {file: {name: file.name}, context: data.context},
     async: false,
     success: function(data) {
+        console.log(data);
       form.find('input[name=key]').val(data.key);
       form.find('input[name=policy]').val(data.policy);
       form.find('input[name=signature]').val(data.signature);
-
-      $('#' + data.context).data('data').submit();
     },
     error: function(data) {
       context = decodeURIComponent($.urlParam(this.url, 'context'));
       handleUploadErrors($('#' + context));
     }
   });
+
+  data.submit();
 }
 
 function showUploadProgress(data) {
@@ -1656,4 +1703,24 @@ function checkSketfabProcessed(id, context, successCallback, failCallback) {
       }
     });
   }, 1000);
+}
+
+function formatLinks(node) {
+  var regex = /( ?)(<a[^>]+>[^<]+<\/a>)( ?)/g;
+  var replacer = function(match, p1, p2, p3, offset, string){
+    var out = '';
+    if (p1) out += '&nbsp;';
+    out += p2;
+    if (p3) out += '&nbsp;';
+    return out;
+  };
+  node.html(node.html().replace(regex, replacer));
+}
+
+function updateFileUploadDragZone(){
+  $('#medium-file-upload').fileupload(
+    'option',
+    'dropZone',
+    $('.file-drop, .image-gallery .embed-overlay-content')
+  );
 }

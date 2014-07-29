@@ -439,6 +439,9 @@
     left: 0;
     background: image-url('upload-bg.png') center center no-repeat;
     border: 7px solid #f2f2f2;
+    &.dragover-active {
+      border-color: #3d8bc1;
+    }
     .file-drop-inner {
       position: absolute;
       bottom: 20px;

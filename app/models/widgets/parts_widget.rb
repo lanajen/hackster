@@ -20,7 +20,7 @@ class PartsWidget < Widget
     _errors = errors.messages
     parts.each_with_index do |p, i|
       p.errors.messages.each do |name, msg|
-        _errors["parts_attributes[#{i}][#{name}]"] = msg[0]
+        _errors["[parts_attributes][#{i}][#{name}]"] = msg[0]
       end if p.errors.any?
     end
     _errors

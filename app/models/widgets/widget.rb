@@ -103,6 +103,10 @@ class Widget < ActiveRecord::Base
     position.match(/\.(.+)$/)[1].to_i
   end
 
+  def to_error
+    errors.messages
+  end
+
   def to_text
     ''
   end
