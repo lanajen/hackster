@@ -882,7 +882,7 @@ $(function () {
     }
 
     m = btn.closest('.media-menu')
-    m.hide()
+    // m.hide()
     m.find('.media-menu-btns').removeClass('is-open');
   });
 
@@ -1352,17 +1352,17 @@ function showMediaButtons(node) {
   // w = node.closest('.medium-editor');
   w = $('.medium-editor');
   // b = w.find('.media-menu');
-  b = $('.media-menu');
-  b.css('top', top - w.offset().top);
-  b.show();
+  $('.media-menu')
+    .css('top', top - w.offset().top)
+    .show();
 }
 
 function hideMediaButtons(node) {
   // w = node.closest('.medium-editor');
   // b = w.find('.media-menu');
-  b = $('.media-menu');
-  b.hide();
-  b.find('.media-menu-btns').removeClass('is-open');
+  $('.media-menu')
+    .hide()
+    .find('.media-menu-btns').removeClass('is-open');
 }
 
 function focusAtBeginningOrEndOfRange(div, beginning, triggerClick) {
@@ -1442,6 +1442,7 @@ function insertWidget(type, projectId, node, data) {
         if (data.widget_type == 'ImageWidget') {
           $(embedToolbar.addSlideBtn).prependTo(ul);
           updateFileUploadDragZone();
+          $(div).find('.embed-actions button[data-action="add-slide"]').click();
         }
         insertBlankParagraphAfter(div);
         resizeToolBars();
@@ -1590,6 +1591,7 @@ function heightUpdateFunction(div, cEditor) {
 }
 
 function extractHost(url) {
+  if (!/^http/.test(url)) url = 'http://' + url;
   var a = document.createElement('a');
   a.href = url;
   return a.hostname;

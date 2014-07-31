@@ -82,4 +82,8 @@ class ProjectDecorator < ApplicationDecorator
       h.content_tag(:div, '', class: 'logo-placeholder')
     end
   end
+
+  def name_not_default
+    model.name == Project::DEFAULT_NAME ? nil : model.name
+  end
 end

@@ -3,9 +3,7 @@
 
 = content_for :js do
   .medium-status-bar.affixed{ style: 'display:none' }
-    .wrapper700
-      .container-fluid
-        = render partial: 'shared/medium_editor_status_bar_inner', locals: { last_edit: last_edit }
+    = render partial: 'shared/medium_editor_status_bar_inner', locals: { last_edit: last_edit }
 
   .medium-error-bubble{ style: 'display:none' }
     .medium-error.alert.alert-danger

@@ -1,6 +1,6 @@
 .medium-status-bar {
   color: #888;
-  padding: 10px 0;
+  padding: 10px 20px;
   height: 60px;
   &.affixed {
     position: fixed;
@@ -106,19 +106,27 @@
   .media-menu {
     display: none;
     position: absolute;
-    left: -80px;
+    left: -120px;
     background: #fff;
     .media-btn {
       color: #aaa;
       cursor: pointer;
       display: inline-block;
+      border: 3px solid #aaa;
+      padding: 7px 10px;
+      @include border-radius(40px);
+      font-size: 12px;
+      min-width: 38px;
+      text-align: center;
       &:hover {
-        color: #666;
+        color: #777;
+        border-color: #777;
+        text-decoration: none;
       }
     }
     .media-menu-btns {
       display: none;
-      margin-left: 35px;
+      margin-left: 20px;
       .media-btn {
         @include transform(scale(0));
       }
@@ -244,7 +252,7 @@
   position: relative;
   padding-bottom: 67.5%;
   height: 0;
-  // overflow: hidden;
+  // overflow-y: hidden;
   &.widescreen {
     padding-bottom: 57.25%;
   }

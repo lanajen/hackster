@@ -45,7 +45,7 @@
                 .content
                   .text-widget.project-show-item
                     - if @can_edit
-                      = render partial: 'shared/medium_editor', locals: { editable: @project.description, last_edit: @project.updated_at }
+                      = render partial: 'shared/medium_editor', locals: { editable: @project.description }
                     - elsif @project.description.present?
                       .medium-editor= @project.description
                     - else
@@ -222,7 +222,8 @@
                   - @project.product_tags.pluck(:name).each do |tag|
                     %span= link_to "##{tag}", "/tags/#{CGI::escape(tag)}", class: 'tag-link'
 
-            = render partial: 'widgets/respect_widget', locals: { users: @project.respecting_users }
+            - unless @can_edit
+              = render partial: 'widgets/respect_widget', locals: { users: @project.respecting_users }
 
       = render partial: 'widgets/comment_widget', locals: { comments: @project.comments, commentable: @project }
       - if @issue and can? :comment_privately, @project

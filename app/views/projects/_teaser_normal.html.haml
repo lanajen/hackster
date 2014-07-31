@@ -41,8 +41,7 @@
     = render 'projects/share_by_author'
 
 - if @can_edit
-  %div{ style: 'padding: 0 20px;' }
-    = render partial: 'shared/medium_editor_status_bar', locals: { last_edit: @project.updated_at }
+  = render partial: 'shared/medium_editor_status_bar', locals: { last_edit: @project.last_edited_at }
 
 #top-project-section
   #project-top-image{style: "background-image: url('#{@project.cover_image}');"}
@@ -68,7 +67,7 @@
             - if @project.private?
               %i.fa.fa-lock.private-project-icon.istooltip{ title: 'Private project', data: { container: 'body' } }
             - if @can_edit
-              %span.editable-attribute{ 'data-model' => "project", 'data-attribute' => "name", "data-default-text" => "Project name", 'data-view-tpl' => "<a href='#' class='hidden-link'>*value*</a>", 'data-value' => @project.name }
+              %span.editable-attribute{ 'data-model' => "project", 'data-attribute' => "name", "data-default-text" => "Untitled", 'data-view-tpl' => "<a href='#' class='hidden-link'>*value*</a>", 'data-value' => @project.name_not_default }
             - else
               = link_to @project.name, @project, class: 'hidden-link'
 
@@ -90,7 +89,7 @@
               - if @can_edit
                 .tags.meta
                   Buy it from
-                  %span.editable-attribute{ 'data-model' => "project", 'data-attribute' => "buy_link", "data-default-text" => "Can this be purchased somewhere? If so enter the link here", 'data-view-tpl' => "<a href='*value*' target='_blank' rel='nofollow'>*extractHost(value)*</a>", 'data-value' => @project.buy_link }
+                  %span.editable-attribute{ 'data-model' => "project", 'data-attribute' => "buy_link", "data-default-text" => "Can this be purchased somewhere? If so enter the link here", 'data-view-tpl' => '*var f=function(url){ if (!/^http/.test(url)) url = "http://" + url; return "<a href=\"" + url + "\" target=\"_blank\" rel=\"nofollow\">" + extractHost(url) + "</a>" }; f(value);*', 'data-value' => @project.buy_link }
               - elsif @project.buy_link.present?
                 .tags.meta
                   Buy it from

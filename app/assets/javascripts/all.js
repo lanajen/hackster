@@ -22,11 +22,11 @@
       //if there's a slide-in notification on top of the page, wait until it's down sliding down before affixing divs
       $('.fade-in').delay(2000).slideDown(500,function(){
         affixDivs();
-        affixTranslate();
+        // affixTranslate();
       });
     } else{
       affixDivs();
-      affixTranslate();
+      // affixTranslate();
     }
     $(document).on('click', '.btn-close', function(e){
       target = $(this).data('close');
@@ -184,36 +184,36 @@
       });
     }
   };
-  //affixes project sidebar using translates instead of changing position:absolute -> position:fixed
-  var $fixedEl2;
-  var affixTranslate = function affixTranslate(){
-    $fixedEl2      = $('.affixTranslate');
-    var $window   = $(window);
-    if ($fixedEl2.length) {
-      $.each($fixedEl2, function(){
-        var $this = $(this);
-        var y;
-        var z;
-        $window.on('scroll.affixtranslate',function(){
-          y = $window.scrollTop();
-          if (y <= 0) {
-            z = 60;
-          } else if (y < 60){
-            z = 60 - y;
-          } else{
-            z = 0;
-          }
-          $this.css({
-            '-webkit-transform': 'translateY('+z+'px)',
-            '-moz-transform': 'translateY('+z+'px)',
-            '-o-transform': 'translateY('+z+'px)',
-            '-ms-transform': 'translateY('+z+'px)',
-            'transform': 'translateY('+z+'px)'
-          });
-        });
-      });
-    }
-  };
+  // //affixes project sidebar using translates instead of changing position:absolute -> position:fixed
+  // var $fixedEl2;
+  // var affixTranslate = function affixTranslate(){
+  //   $fixedEl2      = $('.affixTranslate');
+  //   var $window   = $(window);
+  //   if ($fixedEl2.length) {
+  //     $.each($fixedEl2, function(){
+  //       var $this = $(this);
+  //       var y;
+  //       var z;
+  //       $window.on('scroll.affixtranslate',function(){
+  //         y = $window.scrollTop();
+  //         if (y <= 0) {
+  //           z = 60;
+  //         } else if (y < 60){
+  //           z = 60 - y;
+  //         } else{
+  //           z = 0;
+  //         }
+  //         $this.css({
+  //           '-webkit-transform': 'translateY('+z+'px)',
+  //           '-moz-transform': 'translateY('+z+'px)',
+  //           '-o-transform': 'translateY('+z+'px)',
+  //           '-ms-transform': 'translateY('+z+'px)',
+  //           'transform': 'translateY('+z+'px)'
+  //         });
+  //       });
+  //     });
+  //   }
+  // };
 
   var updatedScrollEventHandlers = function updatedScrollEventHandlers(){
     if($('#scroll-nav').length){
@@ -223,10 +223,10 @@
       $(window).off('scroll.affix');
       affixDivs();
     }
-    if(fixedEl2.length){
-      $(window).off('scroll.affixtranslate');
-      affixTranslate();
-    }
+    // if($fixedEl2.length){
+    //   $(window).off('scroll.affixtranslate');
+    //   affixTranslate();
+    // }
   };
 })(jQuery, window, document);
 

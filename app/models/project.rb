@@ -1,4 +1,6 @@
 class Project < ActiveRecord::Base
+  DEFAULT_NAME = 'Untitled'
+
   FILTERS = {
     'featured' => :featured,
     'featured_by_tech' => :featured_by_tech,
@@ -61,7 +63,7 @@ class Project < ActiveRecord::Base
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
     :widgets, :cover_image, :permissions, :slug_histories, allow_destroy: true
 
-  validates :name, presence: true, length: { in: 3..100 }
+  validates :name, length: { in: 3..100 }, allow_blank: true
   validates :one_liner, :logo, presence: true, if: proc { |p| p.force_basic_validation? }
   validates :one_liner, length: { maximum: 140 }
   validates :new_slug,
@@ -79,6 +81,7 @@ class Project < ActiveRecord::Base
   before_validation :check_if_current
   before_validation :clean_permissions
   before_validation :ensure_website_protocol
+  before_update :update_slug, if: proc{|p| p.name_was == DEFAULT_NAME and p.name_changed? }
   # before_create :set_columns_count
   before_save :generate_slug, if: proc {|p| !p.persisted? or p.team_id_changed? }
 
@@ -300,6 +303,10 @@ class Project < ActiveRecord::Base
     self.logo = Avatar.find_by_id(val)
   end
 
+  def name
+    super.presence || DEFAULT_NAME
+  end
+
   def new_slug
     @new_slug ||= slug
   end
@@ -464,7 +471,7 @@ class Project < ActiveRecord::Base
 
   private
     def can_be_public?
-      description.present? and cover_image.try(:file).present?
+      name.present? and description.present? and cover_image.try(:file).present?
     end
 
     def check_if_current
@@ -478,8 +485,8 @@ class Project < ActiveRecord::Base
     end
 
     def ensure_website_protocol
-      return unless website_changed? and website.present?
-      self.website = 'http://' + website unless website =~ /^http/
+      self.website = 'http://' + website if website_changed? and website.present? and !(website =~ /^http/)
+      self.buy_link = 'http://' + buy_link if buy_link_changed? and buy_link.present? and !(buy_link =~ /^http/)
     end
 
     def external_is_hidden

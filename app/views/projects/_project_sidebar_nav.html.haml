@@ -1,15 +1,10 @@
 #sidebar-container.project-pages-sidebar.affixable
   %section#sidebar-container-in
-    #project-actions.clearfix
+    #project-actions
       - if @project.public?
-        = render partial: 'respects/button', locals: { project: @project }
+        - if !@can_edit or current_user.try(:is?, :admin)
+          = render partial: 'respects/button', locals: { project: @project }
         = render 'projects/project_embed_popup'
-
-      - if can? :edit, @project
-        %a{ href: edit_project_path(@project) }
-          %i.fa.fa-cog
-          Edit project settings
-        = link_to "#{content_tag(:i, '', class: 'fa fa-group')} Manage team".html_safe, project_edit_team_path(@project)
 
     #scrolling-project-section
       #scroll-nav
@@ -18,7 +13,7 @@
             %a.scroll-nav-item.scroll.clearfix{ :href => "#top-project-section", :data => { target: "#top-project-section", offset: '0'}}
               = @project.name
               %i.fa.fa-home
-          - @project.widgets.each do |widget|
+          -# @project.widgets.each do |widget|
             %li
               %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-#{widget.id}", :data => { target: "#widget-#{widget.id}", offset: '-20'}}
                 %i.fa{ class: icon_for_widget(widget) }

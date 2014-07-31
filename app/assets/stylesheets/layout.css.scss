@@ -1207,19 +1207,19 @@ a.hidden-link {
     position: fixed;
     @include transform(translateY(60px));
   }
-  &.project-pages-sidebar{
-    z-index: 0;
-    width: 250px;
-    min-height: 100%;
-    padding-bottom: 120px;
-    border:0;
-    // #sidebar-container-in{
-    //   position: relative;
-    //   top: 0;
-    //   height: 100%;
-    //   z-index: 1;
-    // }
-  }
+  // &.project-pages-sidebar{
+  //   z-index: 0;
+  //   width: 250px;
+  //   min-height: 100%;
+  //   padding-bottom: 120px;
+  //   border:0;
+  //   // #sidebar-container-in{
+  //   //   position: relative;
+  //   //   top: 0;
+  //   //   height: 100%;
+  //   //   z-index: 1;
+  //   // }
+  // }
 }
 #content-with-sidebar{
   position: relative;
@@ -1227,6 +1227,13 @@ a.hidden-link {
   width: 100%;
   background: white;
   min-height: 800px;
+}
+
+.btn-ellipsis{
+  padding: 12px 12px 10px;
+  overflow: hidden;
+  text-overflow:ellipsis;
+  white-space: nowrap;
 }
 
 /*****************************

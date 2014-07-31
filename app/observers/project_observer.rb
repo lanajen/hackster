@@ -70,7 +70,7 @@ class ProjectObserver < ActiveRecord::Observer
       delete_group_relations record
     end
 
-    if (record.changed & %w(collection_id name cover_image one_liner tech_tags product_tags made_public_at license guest_name)).any? or record.tech_tags_string_changed? or record.product_tags_string_changed?
+    if (record.changed & %w(collection_id name cover_image one_liner tech_tags product_tags made_public_at license guest_name buy_link)).any? or record.tech_tags_string_changed? or record.product_tags_string_changed?
       Cashier.expire "project-#{record.id}-teaser"
     end
 
@@ -80,6 +80,10 @@ class ProjectObserver < ActiveRecord::Observer
 
     if (record.changed & %w(website)).any?
       Cashier.expire "project-#{record.id}-thumb-external"
+    end
+
+    if (record.changed & %w(name cover_image one_liner private wip start_date made_public_at license buy_link description)).any? or record.tech_tags_string_changed? or record.product_tags_string_changed?
+      record.last_edited_at = Time.now
     end
   end
 

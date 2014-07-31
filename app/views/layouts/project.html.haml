@@ -1,21 +1,15 @@
 - @project = @project.decorate
 = content_for :no_container do
-  - if @show_sidebar
-    = render "projects/project_sidebar_nav"
-
-  .project.model-editor{ id: "#{@show_sidebar ? 'content-with-sidebar' : 'content' }", data: { "project-id" => @project.id } }
-    .project-details{ class: "#{'with-top-container' if @show_part_of}" }
-      - @mode ||= 'normal'
-      .display= render "projects/teaser_#{@mode}"
-    - if @mode == 'normal'
-      = yield
-    - else
-      .container= yield
-
-  #full-width
-    .wrapper700
-      .background.to-compact
-      .container-fluid
-        .inner-container
+  #project-page.page-div
+    - if @show_sidebar
+      = render "projects/project_sidebar_nav"
+    .project.model-editor{ id: "#{@show_sidebar ? 'content-with-sidebar' : 'content' }", data: { "project-id" => @project.id } }
+      .project-details{ class: "#{'with-top-container' if @show_part_of}" }
+        - @mode ||= 'normal'
+        .display= render "projects/teaser_#{@mode}"
+      - if @mode == 'normal'
+        = yield
+      - else
+        .container= yield
 
 = render template: 'layouts/application'
