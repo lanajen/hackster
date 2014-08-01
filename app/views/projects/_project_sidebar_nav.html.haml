@@ -46,9 +46,9 @@
                   )
                 %i.fa.fa-comment
 
-  #mobile-bottom-bar
-    .row
-      - if @project.public?
+  - if @project.public?
+    #mobile-bottom-bar
+      .row
         - if !@can_edit or current_user.try(:is?, :admin)
           .col-xs-6= render partial: 'respects/button', locals: { project: @project }
         - else
