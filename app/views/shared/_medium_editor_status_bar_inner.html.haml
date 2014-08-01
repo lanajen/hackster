@@ -8,8 +8,12 @@
       %i.fa.fa-circle
       Editing (auto-save is on)
 .pull-right
-  = content_tag :button, "#{content_tag(:i, '', class: 'fa fa-edit')} Edit project details".html_safe, class: 'btn btn-info btn-standout medium-edit-start medium-edit-hide'
-  = content_tag :button, "#{content_tag(:i, '', class: 'fa fa-check')} Finish editing".html_safe, class: 'btn btn-success medium-edit-stop medium-edit-show', style: 'display:none'
+  %span.hidden-sm.hidden-md.hidden-lg
+    = content_tag :button, content_tag(:i, '', class: 'fa fa-edit'), class: 'btn btn-info btn-standout medium-edit-start medium-edit-hide istooltip', data: { container: 'body', placement: 'bottom' }, title: 'Edit project details'
+    = content_tag :button, content_tag(:i, '', class: 'fa fa-check'), class: 'btn btn-success medium-edit-stop medium-edit-show istooltip', style: 'display:none', data: { container: 'body', placement: 'bottom' }, title: "Finish editing"
+  %span.hidden-xs
+    = content_tag :button, "#{content_tag(:i, '', class: 'fa fa-edit')} Edit project details".html_safe, class: 'btn btn-info btn-standout medium-edit-start medium-edit-hide'
+    = content_tag :button, "#{content_tag(:i, '', class: 'fa fa-check')} Finish editing".html_safe, class: 'btn btn-success medium-edit-stop medium-edit-show', style: 'display:none'
   .btn-group
     = link_to content_tag(:i, '', class: 'fa fa-cog'), edit_project_path(@project), class: 'btn btn-default', rel: 'tooltip', data: { container: 'body', placement: 'bottom' }, title: 'Edit settings'
     = link_to content_tag(:i, '', class: 'fa fa-group'), project_edit_team_path(@project), class: 'btn btn-default', rel: 'tooltip', data: { container: 'body', placement: 'bottom' }, title: 'Manage team'

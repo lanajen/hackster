@@ -170,6 +170,8 @@
       = link_to 'Ask an expert', experts_path, class: 'mo-nav-link'
       = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, link, class: 'mo-nav-link'
       - if user_signed_in?
+        = link_to 'Profile', current_user, class: 'mo-nav-link'
+        = link_to 'Account settings', edit_user_registration_path, class: 'mo-nav-link'
         = link_to 'Log out', destroy_user_session_path, method: :delete, class: 'mo-nav-link'
         - if current_user.is? :admin
           = link_to 'Admin', admin_analytics_path, class: 'mo-nav-link'
