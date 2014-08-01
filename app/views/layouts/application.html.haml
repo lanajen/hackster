@@ -138,6 +138,7 @@
       #main
         - if content_for?(:no_container)
           = yield(:no_container)
+          = yield(:in_main)
         - else
           .container-fluid
             #content.wrapper
@@ -160,7 +161,7 @@
           %li= link_to content_tag(:i, '', class: 'fa fa-twitter fa-lg').html_safe, 'http://twitter.com/hacksterio', alt: 'Hackster.io on Twitter', class: 'link-icon'
           %li= link_to content_tag(:i, '', class: 'fa fa-facebook fa-lg').html_safe, 'http://www.facebook.com/hacksterio', alt: 'Hackster.io on Facebook', class: 'link-icon'
           %li Hackster.io 2014
-        = link_to image_tag('//cdn.mxpnl.com/site_media/images/partner/badge_light.png', alt: 'Mobile Analytics'), 'https://mixpanel.com/f/partner', class: 'pull-right', style: 'margin-top:-10px;margin-right:15px;', target: '_blank'
+        .show-on-desktop= link_to image_tag('//cdn.mxpnl.com/site_media/images/partner/badge_light.png', alt: 'Mobile Analytics'), 'https://mixpanel.com/f/partner', class: 'pull-right', style: 'margin-top:-10px;margin-right:15px;', target: '_blank'
     #mobile-nav-overlay.hide-on-desktop
       #mobile-nav-overlay-close.fa.fa-times
     #mobile-navigation.hide-on-desktop

@@ -127,6 +127,30 @@ $(function() {
             }
         }
     };
+
+    MediumEditor.prototype.setPlaceholders = function () {
+        var i,
+            activatePlaceholder = function (el) {
+                if (!(el.querySelector('img')) &&
+                        !(el.querySelector('blockquote')) &&
+                        !(el.querySelector('.embed-frame')) &&
+                        el.textContent.replace(/^\s+|\s+$/g, '') === '') {
+                    el.classList.add('medium-editor-placeholder');
+                }
+            },
+            placeholderWrapper = function (e) {
+                this.classList.remove('medium-editor-placeholder');
+                if (e.type !== 'keypress') {
+                    activatePlaceholder(this);
+                }
+            };
+        for (i = 0; i < this.elements.length; i += 1) {
+            activatePlaceholder(this.elements[i]);
+            this.elements[i].addEventListener('blur', placeholderWrapper);
+            this.elements[i].addEventListener('keypress', placeholderWrapper);
+        }
+        return this;
+    };
   }
 
   rangy.init();
@@ -171,7 +195,7 @@ $(function() {
         buttonLabels: 'fontawesome',
         cleanPastedHTML: true,
         targetBlank: true,
-        placeholder: 'Start describing your project here',
+        placeholder: 'Start describing your project here. Enter text or add media by clicking the left button.',
         buttons: ['bold', 'italic', 'underline', 'anchor', 'insertCodeBlock', 'header1', 'header2', 'unorderedlist', 'orderedlist'],
         extensions: {
             'insertCodeBlock': new InsertCodeBlock()
@@ -539,18 +563,18 @@ $(function () {
     editor.triggerInput();
   });
 
-  $('.medium-status-bar').on('click', 'button.medium-start-edit', function(e){
+  $('.medium-status-bar').on('click', 'button.medium-edit-start', function(e){
     editor.activate(function() {
-      $('.medium-start-edit').hide();
-      $('.medium-stop-edit').show();
+      $('.medium-edit-hide').hide();
+      $('.medium-edit-show').show();
     });
     e.preventDefault();
   });
 
-  $('.medium-status-bar').on('click', 'button.medium-stop-edit', function(e){
+  $('.medium-status-bar').on('click', 'button.medium-edit-stop', function(e){
     editor.disable(function() {
-      $('.medium-stop-edit').hide();
-      $('.medium-start-edit').show();
+      $('.medium-edit-show').hide();
+      $('.medium-edit-hide').show();
     });
     e.preventDefault();
   });
@@ -881,6 +905,7 @@ $(function () {
         break;
     }
 
+    editor.elements.removeClass('medium-editor-placeholder');
     m = btn.closest('.media-menu')
     // m.hide()
     m.find('.media-menu-btns').removeClass('is-open');
@@ -1591,7 +1616,6 @@ function heightUpdateFunction(div, cEditor) {
 }
 
 function extractHost(url) {
-  if (!/^http/.test(url)) url = 'http://' + url;
   var a = document.createElement('a');
   a.href = url;
   return a.hostname;

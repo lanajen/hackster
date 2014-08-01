@@ -1,46 +1,56 @@
-#sidebar-container.project-pages-sidebar.affixable
-  %section#sidebar-container-in
-    #project-actions
+= content_for :in_main do
+  #sidebar-container.project-pages-sidebar.affixable
+    %section#sidebar-container-in
+      - if @project.public?
+        #project-actions
+          - if !@can_edit
+            = render partial: 'respects/button', locals: { project: @project }
+          = render 'projects/project_embed_popup'
+
+      #scrolling-project-section
+        #scroll-nav
+          %ul.nav
+            %li.active
+              %a.scroll-nav-item.scroll.clearfix{ :href => "#top-project-section", :data => { target: "#top-project-section", offset: '0'}}
+                = @project.name
+                %i.fa.fa-home
+            -# @project.widgets.each do |widget|
+              %li
+                %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-#{widget.id}", :data => { target: "#widget-#{widget.id}", offset: '-20'}}
+                  %i.fa{ class: icon_for_widget(widget) }
+                  = widget.name
+            - if @project.build_logs_count > 0 or can? :edit, @project
+              %li
+                %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-comments", :data => { target: "#build-logs", offset: '-20'}}
+                  Build Logs
+                  %span.comment-count
+                    (
+                    = @project.build_logs_count
+                    )
+                  %i.fa.fa-book
+            - if @project.issues_count > 0 or can? :edit, @project
+              %li
+                %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-comments", :data => { target: "#issues", offset: '-20'}}
+                  Issues
+                  %span.comment-count
+                    (
+                    = @project.issues_count
+                    )
+                  %i.fa.fa-exclamation-circle
+            %li
+              %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-comments", :data => { target: "#widget-comments", offset: '-20'}}
+                Comments
+                %span.comment-count
+                  (
+                  = @project.comments_count
+                  )
+                %i.fa.fa-comment
+
+  #mobile-bottom-bar
+    .row
       - if @project.public?
         - if !@can_edit or current_user.try(:is?, :admin)
-          = render partial: 'respects/button', locals: { project: @project }
-        = render 'projects/project_embed_popup'
-
-    #scrolling-project-section
-      #scroll-nav
-        %ul.nav
-          %li.active
-            %a.scroll-nav-item.scroll.clearfix{ :href => "#top-project-section", :data => { target: "#top-project-section", offset: '0'}}
-              = @project.name
-              %i.fa.fa-home
-          -# @project.widgets.each do |widget|
-            %li
-              %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-#{widget.id}", :data => { target: "#widget-#{widget.id}", offset: '-20'}}
-                %i.fa{ class: icon_for_widget(widget) }
-                = widget.name
-          - if @project.build_logs_count > 0 or can? :edit, @project
-            %li
-              %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-comments", :data => { target: "#build-logs", offset: '-20'}}
-                Build Logs
-                %span.comment-count
-                  (
-                  = @project.build_logs_count
-                  )
-                %i.fa.fa-book
-          - if @project.issues_count > 0 or can? :edit, @project
-            %li
-              %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-comments", :data => { target: "#issues", offset: '-20'}}
-                Issues
-                %span.comment-count
-                  (
-                  = @project.issues_count
-                  )
-                %i.fa.fa-exclamation-circle
-          %li
-            %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-comments", :data => { target: "#widget-comments", offset: '-20'}}
-              Comments
-              %span.comment-count
-                (
-                = @project.comments_count
-                )
-              %i.fa.fa-comment
+          .col-xs-6= render partial: 'respects/button', locals: { project: @project }
+        - else
+          .col-xs-3 &nbsp;
+        .col-xs-6= render 'projects/project_embed_popup'

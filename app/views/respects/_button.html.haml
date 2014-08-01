@@ -1,8 +1,8 @@
 - content = "Respect project " + content_tag(:i, '', class: 'fa fa-thumbs-o-up')
 - if user_signed_in?
   - if current_user.respected? project
-    = link_to ("Respected " + content_tag(:i, '', class: 'fa fa-check')).html_safe, project_respects_path(project), data: { method: :delete, remote: true, container: 'body' }, class: 'action-respected respect-button btn btn-block btn-ellipsis btn-info'
+    = link_to ("Respected " + content_tag(:i, '', class: 'fa fa-check')).html_safe, project_respects_path(project), data: { method: :delete, remote: true, container: 'body' }, class: 'action-respected respect-button btn btn-block btn-ellipsis btn-info btn-standout'
   - else
-    = link_to content.html_safe, project_respects_path(project), data: { method: :post, remote: true, container: 'body' }, class: 'respect-button btn btn-block btn-ellipsis btn-info'
+    = link_to content.html_safe, project_respects_path(project), data: { method: :post, remote: true, container: 'body' }, class: 'respect-button btn btn-block btn-ellipsis btn-info btn-standout'
 - else
-  = link_to content.html_safe, new_user_registration_path(redirect_to: project_path(project), reason: 'respect', m: 'project', id: project.id), class: 'respect-button btn btn-block btn-ellipsis btn-info', data: { container: 'body' }
+  = link_to content.html_safe, new_user_registration_path(redirect_to: project_path(project), reason: 'respect', m: 'project', id: project.id), class: 'respect-button btn btn-block btn-ellipsis btn-info btn-standout', data: { container: 'body' }

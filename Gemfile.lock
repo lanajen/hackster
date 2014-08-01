@@ -462,7 +462,6 @@ DEPENDENCIES
   google_visualr (= 2.2.0)
   haml (= 4.0.3)
   haml-rails (= 0.5.3)
-  heroku-api (= 0.3.15)
   heroku-forward (= 0.4.0)
   hpricot (= 0.8.6)
   impressionist (= 1.4.13)
