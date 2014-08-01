@@ -601,7 +601,10 @@ $(function () {
           });
         } else {
           frame.slideUp(function(){
+            anchor = $(this).next('p.paragraph--empty');
+            if (!anchor.length) anchor = $(this).prev('p.paragraph--empty');
             $(this).remove();
+            if (anchor.length) focusAtBeginningOfRange(anchor[0]);
             editor.triggerInput();
           });
         }
