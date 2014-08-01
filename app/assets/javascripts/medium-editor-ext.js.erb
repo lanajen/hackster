@@ -275,7 +275,7 @@ $(function() {
         _.elements.find('.embed-overlay').remove();
         _.elements.find('.medium-editor-toolbar-embed').remove();
         $('.paragraph--empty').removeClass('paragraph--empty');
-        $('.medium-editor .default-text').remove();
+        $('.default-text, .medium-editor-placeholder').remove();
         _.clearErrors();
 
         callback();
@@ -408,8 +408,7 @@ $(function () {
   $('.editable-attribute').each(function(e){
     var tpl = $(this).data('view-tpl');
     var value = $(this).data('value');
-    var placeholder = $(this).data('default-text');
-    loadTplForAttr($(this), tpl, value, placeholder);
+    loadTplForAttr($(this), tpl, value);
   });
 
   $('.model-editor').on('click', '.editable-attribute', function(e){
@@ -545,9 +544,18 @@ $(function () {
     $(this).trigger('change');
   });
 
-  $('.model-editor').on('click dblClick', '.editable-attribute .is-default-text', function(e){
+  $('.model-editor').on('click dblClick', '.editable-attribute .default-text', function(e){
+    var selection = retrieveSelection();
     e.preventDefault();
-    focusAtBeginningOfRange($(this)[0], false);
+    focusAtBeginningOfRange(selection.anchorNode, false);
+  });
+
+  $('.model-editor').on('keyup', '.editable-attribute[data-default-text]', function(e){
+    node = $(this);
+    if (e.keyCode == 8 && node.text() == '') {
+      loadPlaceholder(node, true);
+      focusAtBeginningOfRange(node.find('.default-text')[0]);
+    }
   });
 
 
@@ -563,7 +571,7 @@ $(function () {
     editor.triggerInput();
   });
 
-  $('.medium-status-bar').on('click', 'button.medium-edit-start', function(e){
+  $('.medium-edit-start').on('click', function(e){
     editor.activate(function() {
       $('.medium-edit-hide').hide();
       $('.medium-edit-show').show();
@@ -571,7 +579,7 @@ $(function () {
     e.preventDefault();
   });
 
-  $('.medium-status-bar').on('click', 'button.medium-edit-stop', function(e){
+  $('.medium-edit-stop').on('click', function(e){
     editor.disable(function() {
       $('.medium-edit-show').hide();
       $('.medium-edit-hide').show();
@@ -755,14 +763,10 @@ $(function () {
     e.stopPropagation();
   });
 
-  $('.medium-editor').on('click dblClick', '.editable.editable-activated', function(e){
+  $('.medium-editor').on('click dblClick', '.editable.editable-activated .default-text', function(e){
     var selection = retrieveSelection();
-    var node = $(selection.anchorNode);
-    var parent = node.parent();
-    if (parent.is('.default-text')) {
-      e.preventDefault();
-      focusAtBeginningOfRange(selection.anchorNode);
-    }
+    e.preventDefault();
+    focusAtBeginningOfRange(selection.anchorNode);
   });
 
   $('.medium-editor').on('keypress keydown', '.editable.editable-activated .is-default-text', function(e){
@@ -1228,13 +1232,13 @@ $(function () {
 
   // handles status bar
   if ($('.medium-status-bar.static').length > 0) {
-    var $mediumStickyTop = $('.medium-status-bar.static').offset().top;
     var $mediumAffixed = $('.medium-status-bar.affixed');
 
     function mediumToggleStatusBar() {
+      var mediumStickyTop = $('.medium-status-bar.static').offset().top;
       var windowTop = $(window).scrollTop();
 
-      if ($mediumStickyTop < windowTop) {
+      if (mediumStickyTop < windowTop) {
         if ($mediumAffixed.is(':hidden')) {
           $mediumAffixed.show();
         }

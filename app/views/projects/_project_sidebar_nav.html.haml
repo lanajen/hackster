@@ -6,11 +6,11 @@
           - if !@can_edit or current_user.try(:is?, :admin)
             = render partial: 'respects/button', locals: { project: @project }
           = render 'projects/project_embed_popup'
-      - elsif @project.private and @can_edit
+      - elsif @can_edit
         - who = %w(you)
         - who += ['team members'] if @project.users.size > 1
         - who += ["members of #{@project.assignment.promotion.name}"] if @project.collection_id.present? and @project.assignment.present?
-        .alert.alert-warning.alert-flat.mg-20.text-center
+        .alert.alert-warning.alert-flat.text-center
           %span
             %p
               %i.fa.fa-lock
@@ -19,6 +19,10 @@
             = link_to 'Publish publicly', project_path(@project, project: { private: 0 }), method: :patch, class: 'btn btn-warning btn-sm btn-block'
           - else
             = content_tag(:i, '', class: 'fa fa-info-circle istooltip', title: 'You need to add a description and a cover image before you can make it public.')
+      - if @can_edit
+        #project-actions.medium-status-bar
+          = render 'shared/medium_status_buttons'
+          = render 'shared/medium_status'
 
       #scrolling-project-section
         #scroll-nav
@@ -59,7 +63,21 @@
                   )
                 %i.fa.fa-comment
 
-  - if @project.public?
+  - if @can_edit
+    #mobile-bottom-bar
+      .row
+        .medium-edit-hide
+          - if @project.public?
+            .col-xs-6= render 'projects/project_embed_popup'
+          .pull-right.col-xs-6.medium-status-bar
+            .pull-right= render 'shared/medium_status_buttons'
+
+        .medium-edit-show{ style: 'display:none;' }
+          .col-xs-12.medium-status-bar
+            .pull-left= render 'shared/medium_status'
+            .pull-right= render 'shared/medium_status_buttons'
+
+  - elsif @project.public?
     #mobile-bottom-bar
       .row
         - if !@can_edit or current_user.try(:is?, :admin)

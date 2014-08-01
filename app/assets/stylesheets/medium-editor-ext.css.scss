@@ -1,27 +1,31 @@
+// .medium-status-bar {
+//   color: #888;
+//   padding: 10px 20px;
+//   height: 60px;
+//   &.affixed {
+//     position: fixed;
+//     top: 0;
+//     left: 0;
+//     width: 100%;
+//     background: #fff;
+//     background: rgba(255,255,255,0.95);
+//     border-left: 1px solid #d9d3d3;
+//     border-bottom: 1px solid #d9d3d3;
+//     z-index: 2;
+//   }
+// }
 .medium-status-bar {
-  color: #888;
-  padding: 10px 20px;
-  height: 60px;
-  &.affixed {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background: #fff;
-    background: rgba(255,255,255,0.95);
-    border-left: 1px solid #d9d3d3;
-    border-bottom: 1px solid #d9d3d3;
-    z-index: 2;
-  }
   .medium-status-left {
-    padding: 10px 0;
-    font-size: 14px;
+    margin-top: 10px;
+    font-size: 12px;
+    text-align: center;
+    color: #555;
   }
   .medium-status-recording {
     display:none;
     color:#D52323;
     font-size: 12px;
-    margin-left: 10px;
+    margin-right: 5px;
   }
 }
 

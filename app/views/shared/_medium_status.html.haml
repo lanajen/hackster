@@ -1,0 +1,7 @@
+.medium-status-left
+  %span.medium-edit-show.medium-status-recording{ style: 'display: none;'}
+    %i.fa.fa-circle.istooltip{ title: 'Editing (auto-save is on)' }
+  %span.medium-status
+    Last edit
+    = time_ago_in_words @project.last_edited_at
+    ago

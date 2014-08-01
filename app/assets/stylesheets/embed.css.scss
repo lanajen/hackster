@@ -20,8 +20,8 @@
     top: 50%;
     left: 50%;
     position: fixed;
-    margin-left: -300px;
-    margin-top: -245px;
+    // margin-left: -300px;
+    // margin-top: -245px;
   }
   .embed-popup-inner {
     border: 1px solid #dcdcdc;
@@ -31,10 +31,11 @@
     -ms-border-radius: 5px;
     -o-border-radius: 5px;
     border-radius: 5px;
-    width: 600px;
-    height: 490px;
+    // width: 600px;
+    // height: 490px;
     position: relative;
     padding: 20px;
+    // overflow: hidden;
   }
   .close {
     position: absolute;
@@ -42,8 +43,8 @@
     right: 10px;
   }
   .embed-code {
-    height: 150px;
-    width: 300px;
+    // height: 150px;
+    width: 100%;
   }
   #project-embed {
     .project-thumb {
@@ -56,11 +57,12 @@
 
 #project-embed {
   background: #fff;
-  width: 220px;
+  // width: 220px;
   .project-thumb {
     @include box-shadow(none);
     margin: 0;
-    width: 100%;
+    max-width: 220px;
+    // width: 100%;
     .inner-thumb {
       border-top: none;
       height: 155px;

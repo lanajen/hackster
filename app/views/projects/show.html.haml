@@ -182,9 +182,7 @@
             - if @can_edit
               .license.meta
                 %strong
-                  Copyright
-                  &copy;
-                  %span.editable-attribute{ 'data-model' => "project", 'data-attribute' => "license", "data-default-text" => "select a license", 'data-view-tpl' => "*var f=function(licenseUrl){ if (licenseUrl == '') return ''; licenses = #{License.all_with_abbr.to_s.gsub(/=>/, ': ')}; abbr = licenses[licenseUrl]; return \"<a href='\" + licenseUrl + \"' class='hidden-link'>\" + abbr + \"</a>\"; }; f(value);*", 'data-value' => @project.license.try(:url), 'data-edit-tpl' => "*var f=function(url){ var input=$(\"<select><option></option>#{License.all.map{|l| "<option value='#{l.url}'>#{l.name.gsub(/"/, '\"')}</option>" }.join('')}</select>\"); var option=input.children('option[value=\"' + url + '\"]'); option.attr('selected', 'selected'); return input[0].outerHTML; }; f(value);*" }
+                  %span.editable-attribute{ 'data-model' => "project", 'data-attribute' => "license", "data-default-text" => "Select a license", 'data-view-tpl' => "*var f=function(licenseUrl){ if (licenseUrl == '') return ''; licenses = #{License.all_with_abbr.to_s.gsub(/=>/, ': ')}; abbr = licenses[licenseUrl]; return \"Copyright &copy; <a href='\" + licenseUrl + \"' class='hidden-link'>\" + abbr + \"</a>\"; }; f(value);*", 'data-value' => @project.license.try(:url), 'data-edit-tpl' => "*var f=function(url){ var input=$(\"<select><option></option>#{License.all.map{|l| "<option value='#{l.url}'>#{l.name.gsub(/"/, '\"')}</option>" }.join('')}</select>\"); var option=input.children('option[value=\"' + url + '\"]'); option.attr('selected', 'selected'); return input[0].outerHTML; }; f(value);*" }
             - elsif @project.license
               .license.meta
                 %strong
@@ -195,9 +193,7 @@
           #right-project-deets
             - if @can_edit
               .tags.meta
-                .meta-title-wrap
-                  .meta-title Technologies
-                .editable-attribute{ 'data-model' => "project", 'data-attribute' => "tech_tags_string", "data-default-text" => "Add technologies you're using in this project, separated by commas. Eg: Arduino, ATmega, Attiny...", 'data-view-tpl' => "*var f=function(tagString){ var out = '', tags = []; tags = tagString.split(','); $.each(tags, function(i, tag){ tag = tag.trim(); tpl = \"<span><a class='tag-link' href='/tags/\" + encodeURIComponent(tag) + \"'>\" + tag + \"</a></span>\"; out += tpl; }); return out; }; f(value);*", 'data-value' => @project.tech_tags_string }
+                .editable-attribute{ 'data-model' => "project", 'data-attribute' => "tech_tags_string", "data-default-text" => "Add technologies you're using in this project, separated by commas. Eg: Arduino, ATmega, Attiny...", 'data-view-tpl' => "*var f=function(tagString){ var out = '<div class=\"meta-title-wrap\"><div class=\"meta-title\">Technologies</div></div>', tags = []; tags = tagString.split(','); $.each(tags, function(i, tag){ tag = tag.trim(); tpl = \"<span><a class='tag-link' href='/tags/\" + encodeURIComponent(tag) + \"'>\" + tag + \"</a></span>\"; out += tpl; }); return out; }; f(value);*", 'data-value' => @project.tech_tags_string }
             - elsif @project.tech_tags.any?
               .tags.meta
                 .meta-title-wrap
@@ -211,9 +207,7 @@
 
             - if @can_edit
               .tags.meta
-                .meta-title-wrap
-                  .meta-title Tags
-                .editable-attribute{ 'data-model' => "project", 'data-attribute' => "product_tags_string", "data-default-text" => "Add tags, separated by commas. Eg: home automation, drone, display...", 'data-view-tpl' => "*var f=function(tagString){ var out = '', tags = []; tags = tagString.split(','); $.each(tags, function(i, tag){ tag = tag.trim(); tpl = \"<span><a class='tag-link' href='/tags/\" + encodeURIComponent(tag) + \"'>#\" + tag + \"</a></span>\"; out += tpl; }); return out; }; f(value);*", 'data-value' => @project.product_tags_string }
+                .editable-attribute{ 'data-model' => "project", 'data-attribute' => "product_tags_string", "data-default-text" => "Add tags, separated by commas. Eg: home automation, drone, display...", 'data-view-tpl' => "*var f=function(tagString){ var out = '<div class=\"meta-title-wrap\"><div class=\"meta-title\">Tags</div></div>', tags = []; tags = tagString.split(','); $.each(tags, function(i, tag){ tag = tag.trim(); tpl = \"<span><a class='tag-link' href='/tags/\" + encodeURIComponent(tag) + \"'>#\" + tag + \"</a></span>\"; out += tpl; }); return out; }; f(value);*", 'data-value' => @project.product_tags_string }
             - elsif @project.product_tags.any?
               .tags.meta
                 .meta-title-wrap
@@ -221,7 +215,8 @@
                 - @project.product_tags.pluck(:name).each do |tag|
                   %span= link_to "##{tag}", "/tags/#{CGI::escape(tag)}", class: 'tag-link'
 
-          = render partial: 'widgets/respect_widget', locals: { users: @project.respecting_users }
+          - if @project.public?
+            = render partial: 'widgets/respect_widget', locals: { users: @project.respecting_users }
 
     = render partial: 'widgets/comment_widget', locals: { comments: @project.comments, commentable: @project }
     - if @issue and can? :comment_privately, @project

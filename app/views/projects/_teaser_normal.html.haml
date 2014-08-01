@@ -29,7 +29,7 @@
     = link_to "&times;".html_safe, '#', data: { close: '.alert-author-share' }, class: 'btn-close btn-close-notif'
     = render 'projects/share_by_author'
 
-- if @can_edit
+-# if @can_edit
   = render partial: 'shared/medium_editor_status_bar', locals: { last_edit: @project.last_edited_at }
 
 #top-project-section
@@ -77,8 +77,7 @@
 
               - if @can_edit
                 .tags.meta
-                  Buy it from
-                  %span.editable-attribute{ 'data-model' => "project", 'data-attribute' => "buy_link", "data-default-text" => "Can this be purchased somewhere? If so enter the link here", 'data-view-tpl' => '*var f=function(url){ if (!/^http/.test(url)) url = "http://" + url; return "<a href=\"" + url + "\" target=\"_blank\" rel=\"nofollow\">" + extractHost(url) + "</a>" }; f(value);*', 'data-value' => @project.buy_link }
+                  %span.editable-attribute{ 'data-model' => "project", 'data-attribute' => "buy_link", "data-default-text" => "Can this be purchased somewhere? If so enter the link here", 'data-view-tpl' => '*var f=function(url){ if (!/^http/.test(url)) url = "http://" + url; return "Buy it from <a href=\"" + url + "\" target=\"_blank\" rel=\"nofollow\">" + extractHost(url) + "</a>" }; f(value);*', 'data-value' => @project.buy_link }
               - elsif @project.buy_link.present?
                 .tags.meta
                   Buy it from
@@ -102,8 +101,7 @@
 
       - if @can_edit
         .tags.meta.pull-left
-          with
-          %span.editable-attribute{ 'data-model' => "project", 'data-attribute' => "tech_tags_string", "data-default-text" => "Add technologies you used in this project, separated by commas. Eg: Arduino, ATmega, Attiny...", 'data-view-tpl' => "*var f=function(tagString){ var out = [], tags = []; tags = tagString.split(','); $.each(tags, function(i, tag){ tag = tag.trim(); tpl = \"<span><a class='tag-link' href='/tags/\" + encodeURIComponent(tag) + \"'>\" + tag + \"</a></span>\"; out.push(tpl); }); return toSentenceArray(out); }; f(value);*", 'data-value' => @project.tech_tags_string }
+          %span.editable-attribute{ 'data-model' => "project", 'data-attribute' => "tech_tags_string", "data-default-text" => "Add technologies you used in this project, separated by commas. Eg: Arduino, ATmega, Attiny...", 'data-view-tpl' => "*var f=function(tagString){ var out = [], tags = []; tags = tagString.split(','); $.each(tags, function(i, tag){ tag = tag.trim(); tpl = \"<span><a class='tag-link' href='/tags/\" + encodeURIComponent(tag) + \"'>\" + tag + \"</a></span>\"; out.push(tpl); }); return 'with ' + toSentenceArray(out); }; f(value);*", 'data-value' => @project.tech_tags_string }
       - elsif @project.tech_tags.any?
         .tags.meta.pull-left
           with
