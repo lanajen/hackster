@@ -3,7 +3,7 @@
     %section#sidebar-container-in
       - if @project.public?
         #project-actions
-          - if !@can_edit
+          - if !@can_edit or current_user.try(:is?, :admin)
             = render partial: 'respects/button', locals: { project: @project }
           = render 'projects/project_embed_popup'
 
