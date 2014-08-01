@@ -6,6 +6,19 @@
           - if !@can_edit or current_user.try(:is?, :admin)
             = render partial: 'respects/button', locals: { project: @project }
           = render 'projects/project_embed_popup'
+      - elsif @project.private and @can_edit
+        - who = %w(you)
+        - who += ['team members'] if @project.users.size > 1
+        - who += ["members of #{@project.assignment.promotion.name}"] if @project.collection_id.present? and @project.assignment.present?
+        .alert.alert-warning.alert-flat.mg-20.text-center
+          %span
+            %p
+              %i.fa.fa-lock
+              This project is private so only #{who.to_sentence} can see it.
+          - if @project.can_be_public? or current_user.try(:is?, :admin)
+            = link_to 'Publish publicly', project_path(@project, project: { private: 0 }), method: :patch, class: 'btn btn-warning btn-sm btn-block'
+          - else
+            = content_tag(:i, '', class: 'fa fa-info-circle istooltip', title: 'You need to add a description and a cover image before you can make it public.')
 
       #scrolling-project-section
         #scroll-nav

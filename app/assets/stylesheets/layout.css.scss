@@ -719,16 +719,6 @@ footer {
   color: #428bca;
 }
 
-.mg-20 {
-  margin-bottom: 20px;
-}
-.mg-30{
-  margin-bottom: 30px;
-}
-.mg-40{
-  margin-bottom: 40px;
-}
-
 #content-header h1, #content-header h1 a {
   color: #333;
 }
@@ -1333,4 +1323,14 @@ input.cmn-toggle ~ .option-checked, input.cmn-toggle:checked ~ .option-unchecked
 }
 .handle {
   cursor: pointer;
+}
+
+.mg-20 {
+  margin-bottom: 20px !important;
+}
+.mg-30{
+  margin-bottom: 30px !important;
+}
+.mg-40{
+  margin-bottom: 40px !important;
 }
