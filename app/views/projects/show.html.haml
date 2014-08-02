@@ -4,6 +4,33 @@
 = javascript_include_tag '//cdnjs.cloudflare.com/ajax/libs/gist-embed/1.8/gist-embed.min.js'
 = javascript_include_tag '//cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js', charset: "utf-8"
 
+-# if @can_edit
+  #media-menu.affixable.medium-edit-show{ style: 'display:none'}
+    .media-menu-header
+      %i.fa.fa-plus
+      Add media
+    .media-item.media-btn-action{ data: { action: 'widget', 'widget-type' => 'ImageWidget', media: 'image', container: 'body' }, rel: 'tooltip', title: 'Add images' }
+      %i.fa.fa-camera
+      .media-item-name Add images
+    .media-item.media-btn-action{ data: { action: 'insert', media: 'video', 'default-text' => "Paste a YouTube, Vimeo or Vine link, and press Enter", container: 'body' }, rel: 'tooltip', title: 'Add a video' }
+      %i.fa.fa-play
+      .media-item-name Add a video
+    .media-item.media-btn-action{ data: { action: 'widget', 'widget-type' => 'CodeWidget', media: 'code', container: 'body' }, rel: 'tooltip', title: 'Add code or a code file' }
+      %i.fa.fa-code
+      .media-item-name Add code
+    .media-item.media-btn-action{ data: { action: 'insert', media: 'schematics', 'default-text' => "Paste a 123D Circuits, OSH Park or Upverter link, and press Enter", container: 'body' }, rel: 'tooltip', title: 'Add schematics' }
+      %i.fa.fa-gear
+      .media-item-name Add schematics
+    .media-item.media-btn-action{ data: { action: 'widget', 'widget-type' => 'PartsWidget', media: 'components', container: 'body' }, rel: 'tooltip', title: 'Add components' }
+      %i.fa.fa-cubes
+      .media-item-name Add components
+    .media-item.media-btn-action{ data: { action: 'sketchfab', media: '3d', container: 'body' }, rel: 'tooltip', title: 'Add 3D renderings (STL)' }
+      %i.fa.fa-cube
+      .media-item-name Add 3D renderings
+    .media-item.media-btn-action{ data: { action: 'upload', media: 'document', 'default-text' => "Select files or drop them here", container: 'body' }, rel: 'tooltip', title: 'Add files' }
+      %i.fa.fa-files-o
+      .media-item-name Add files
+
 .project-show
   .wrapper700
     - if @prev

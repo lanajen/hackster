@@ -3,7 +3,7 @@
     .meta-title
       Users who respect this project
   .content
-    - if !@can_edit or current_user.try(:is?, :admin)
+    - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
       = render partial: 'respects/button', locals: { project: @project }
     - cache ["project-#{@project.id}-respects", 'users'], tag: ["project-#{@project.id}-respects"] do
       .respect-thumbs.clearfix

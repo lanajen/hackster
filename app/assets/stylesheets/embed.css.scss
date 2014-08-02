@@ -20,8 +20,6 @@
     top: 50%;
     left: 50%;
     position: fixed;
-    // margin-left: -300px;
-    // margin-top: -245px;
   }
   .embed-popup-inner {
     border: 1px solid #dcdcdc;
@@ -31,11 +29,8 @@
     -ms-border-radius: 5px;
     -o-border-radius: 5px;
     border-radius: 5px;
-    // width: 600px;
-    // height: 490px;
     position: relative;
     padding: 20px;
-    // overflow: hidden;
   }
   .close {
     position: absolute;
@@ -43,8 +38,11 @@
     right: 10px;
   }
   .embed-code {
-    // height: 150px;
     width: 100%;
+    padding: 3px 4px;
+    color: #999;
+    font-family: monospace;
+    font-size: 12px;
   }
   #project-embed {
     .project-thumb {

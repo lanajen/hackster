@@ -1,5 +1,5 @@
 // - generate description from widgets: missing stl
-// - sidebar!
+// - auto focus description
 
 // - add editor to build logs
 
@@ -239,6 +239,7 @@ $(function() {
           $(this).html('<span class="default-text">' + $(this).data('default-text') + '</span>');
         }
       });
+      focusEditable();
 
       callback();
       console.log('editor activated');
@@ -275,7 +276,8 @@ $(function() {
         _.elements.find('.embed-overlay').remove();
         _.elements.find('.medium-editor-toolbar-embed').remove();
         $('.paragraph--empty').removeClass('paragraph--empty');
-        $('.default-text, .medium-editor-placeholder').remove();
+        $('.default-text').remove();
+        $('.medium-editor-placeholder').removeClass('medium-editor-placeholder');
         _.clearErrors();
 
         callback();
@@ -492,6 +494,7 @@ $(function () {
     }
 
     curFocus = null;
+    // focusEditable();
   });
 
   $('.model-editor').on('blur focusout', '.editable-attribute select', function(e){
@@ -517,6 +520,7 @@ $(function () {
     loadTplForAttr(parent, tpl, value, placeholder);
 
     curFocus = null;
+    // focusEditable();
   });
 
   $('.model-editor').on('keypress keydown', '.editable-attribute', function(e){
@@ -757,7 +761,7 @@ $(function () {
   });
 
   $('body').on('click', function(e){
-    hideMediaButtons($('.medium-editor'));
+    // hideMediaButtons($('.medium-editor'));
     resetPos();
   }).find('.medium-editor').on('click', function(e) {
     e.stopPropagation();
@@ -878,36 +882,44 @@ $(function () {
     }
   });
 
-  $('.medium-editor').on('click', 'a.add-media-btn', function(e){
+  $('.medium-editor').on('click', '.add-media-btn', function(e){
     $(this).next('.media-menu-btns').toggleClass('is-open');
   });
 
-  $('.medium-editor').on('click', 'a.media-btn-action', function(e){
+  $('.medium-editor').on('click', '.media-btn-action', function(e){
     e.preventDefault();
     btn = $(this);
+    var node;
+    if ($(curNode).length) {
+      node = $(curNode);
+    } else if ($('.editable.editable-activated').children().last().is('p.paragraph--empty')) {
+      node = $('.editable.editable-activated').children().last();
+    } else {
+      node = $(emptyParagraph).appendTo('.editable.editable-activated');
+    }
 
     switch(btn.data('action')) {
       case 'code':
         code = $('<pre><code><br></code></pre>');
-        $(curNode).replaceWith(code);
+        node.replaceWith(code);
         focusAtBeginningOfRange(code.find('code')[0]);
         break;
       case 'insert':
         span = '<span class="default-text-focused default-text">' + btn.data('default-text') + '</span>';
-        $(curNode).html(span);
-        focusAtBeginningOfRange($(curNode).find('.default-text')[0]);
+        node.html(span);
+        focusAtBeginningOfRange(node.find('.default-text')[0]);
         break;
       case 'upload':
         $('#upload-placeholder').remove();
-        $(curNode).replaceWith('<div id="upload-placeholder" data-file-type="' +  btn.data('media') + '" class="remove-on-save"></div>');
+        node.replaceWith('<div id="upload-placeholder" data-file-type="' +  btn.data('media') + '" class="remove-on-save"></div>');
         $('#medium-file-upload').find('input[type=file]').click();
         break;
       case 'widget':
-        insertWidget(btn.data('widget-type'), editor.projectId, $(curNode));
+        insertWidget(btn.data('widget-type'), editor.projectId, node);
         editor.triggerInput();
         break;
       case 'sketchfab':
-        $(curNode).replaceWith('<div id="sketchfab-placeholder" class="remove-on-save"></div>');
+        node.replaceWith('<div id="sketchfab-placeholder" class="remove-on-save"></div>');
         $('#sketchfab-upload input:file').click();
         break;
     }
@@ -1230,31 +1242,31 @@ $(function () {
     }
   });
 
-  // handles status bar
-  if ($('.medium-status-bar.static').length > 0) {
-    var $mediumAffixed = $('.medium-status-bar.affixed');
+  // // handles status bar
+  // if ($('.medium-status-bar.static').length > 0) {
+  //   var $mediumAffixed = $('.medium-status-bar.affixed');
 
-    function mediumToggleStatusBar() {
-      var mediumStickyTop = $('.medium-status-bar.static').offset().top;
-      var windowTop = $(window).scrollTop();
+  //   function mediumToggleStatusBar() {
+  //     var mediumStickyTop = $('.medium-status-bar.static').offset().top;
+  //     var windowTop = $(window).scrollTop();
 
-      if (mediumStickyTop < windowTop) {
-        if ($mediumAffixed.is(':hidden')) {
-          $mediumAffixed.show();
-        }
-      }
-      else {
-        if ($mediumAffixed.is(':visible')) {
-          $mediumAffixed.hide();
-        }
-      }
-    }
+  //     if (mediumStickyTop < windowTop) {
+  //       if ($mediumAffixed.is(':hidden')) {
+  //         $mediumAffixed.show();
+  //       }
+  //     }
+  //     else {
+  //       if ($mediumAffixed.is(':visible')) {
+  //         $mediumAffixed.hide();
+  //       }
+  //     }
+  //   }
 
-    mediumToggleStatusBar();
-    $(window).scroll(function(){ // scroll event
-      mediumToggleStatusBar();
-    });
-  }
+  //   mediumToggleStatusBar();
+  //   $(window).scroll(function(){ // scroll event
+  //     mediumToggleStatusBar();
+  //   });
+  // }
 
   // prevent leaving page with unsaved changes
   window.addEventListener("beforeunload", function (e) {
@@ -1756,4 +1768,8 @@ function updateFileUploadDragZone(){
     'dropZone',
     $('.file-drop, .image-gallery .embed-overlay-content')
   );
+}
+
+function focusEditable(){
+  focusAtEndOfRange($('.editable-activated.editable-activated')[0]);
 }
