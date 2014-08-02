@@ -485,6 +485,7 @@
     z-index: 2;
     overflow: hidden;
     background: rgba(0,0,0,.5);
+    transition: background-color .5s ease;
     // background: rgba(205, 217, 226, 0.7);
   }
   #project-header{

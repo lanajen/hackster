@@ -217,6 +217,9 @@
   content: '';
 }
 .editor-active {
+  .project-details #top-project-section-deets {
+    background: rgba(0, 0, 0, 0.7);
+  }
   .block-mouse-on-edit {
     &:before {
       @extend .block-mouse;
