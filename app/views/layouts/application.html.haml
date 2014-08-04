@@ -93,7 +93,7 @@
                     %button#user-dropdown-toggle.btn.btn-default.dropdown-toggle{"data-toggle" => "dropdown"}
                       %span.caret
                     %ul.dropdown-menu#nav-user-menu
-                      %li= link_to current_user.name, current_user
+                      %li= link_to 'My profile', current_user
                       - if current_user.communities.any?
                         %li.divider
                         - current_user.community_group_ties.each do |group_tie|

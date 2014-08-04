@@ -61,12 +61,12 @@
             %p= truncate @next.one_liner, length: 140
           %a.project-nav-overlay.project-nav-overlay-top{ href: project_path(@next, ref: params[:ref], ref_id: params[:ref_id], offset: params[:offset].to_i + 1) }
 
-    - cache [@project.widgets, @can_edit], tag: "project-#{@project.id}-widgets" do
+    - cache [@project, 'widgets', @can_edit], tag: "project-#{@project.id}-widgets" do
       .project-section{ id: "showcase" }
         .header
           %h2 Showcase
         .content
-          - if @project.description.present? or @widgets.size <= 1
+          - if @project.description.present?
             .widget
               .content
                 .text-widget.project-show-item
@@ -77,17 +77,6 @@
                   - else
                     .medium-editor
                       %p This is still a work in progress, please check back later!
-
-          - elsif @widgets.any?
-            - @widgets.each do |widget|
-              = render 'widgets/widget', { widget: widget }
-            #widget-new
-          - elsif @can_edit
-            #widget-new
-              %p
-                Welcome to your new project!
-                = link_to 'Add some content', new_project_widget_path(@project), data: { remote: true }, class: 'btn btn-primary'
-                to get started.
           - else
             %p This is still a work in progress, please check back later!
       -# @project.sections.each do |section|
@@ -152,98 +141,96 @@
           - else
             %p No issues yet.
 
-    #more-info.project-section
-      .header
-        %h2 Metadata
-
-      -# include respect and share button
-
-      .clearfix.project-details
-        #project-secondary-info
-          #left-project-deets
-            #team-widget.team-widget.meta
-              .meta-title-wrap
-                .meta-title
-                  Team
-                  - if can? :debug, @project and @can_edit
-                    = link_to content_tag(:i, '', class: 'fa fa-pencil'), project_edit_team_path(@project), class: 'btn-edit no-float', rel: 'tooltip', title: 'Manage team', data: { container: 'body' }
-              - if @project.guest_name.present?
-                .user
-                  = @project.guest_name
-              - else
-                - users = @project.team.active_members.includes(:user)
-                - users.each do |member|
-                  = render partial: 'users/line_thumb', locals: { member: member }
-
-              - if @project.credit_lines.any?
+    - cache ["project-#{@project.id}", 'metadata', @can_edit], tag: (["project-#{@project.id}-metadata", "team-#{@project.team_id}", "project-#{@project.id}-respects"] + @project.users.map{|u| "user-#{u.id}-thumb"}) do
+      #more-info.project-section
+        .header
+          %h2 Metadata
+        .clearfix.project-details
+          #project-secondary-info
+            #left-project-deets
+              #team-widget.team-widget.meta
                 .meta-title-wrap
                   .meta-title
-                    Additional contributors
-                - @project.credit_lines.each do |credit_line|
-                  - if credit_line.name.present?
-                    .user
-                      - if credit_line.work.present?
-                        = credit_line.work.try(:capitalize)
-                        by
-                      - if credit_line.link.present?
-                        = link_to credit_line.name, credit_line.link, target: '_blank', rel: 'nofollow'
-                      - else
-                        = credit_line.name
+                    Team
+                    - if can? :debug, @project and @can_edit
+                      = link_to content_tag(:i, '', class: 'fa fa-pencil'), project_edit_team_path(@project), class: 'btn-edit no-float', rel: 'tooltip', title: 'Manage team', data: { container: 'body' }
+                - if @project.guest_name.present?
+                  .user
+                    = @project.guest_name
+                - else
+                  - users = @project.team.active_members.includes(:user)
+                  - users.each do |member|
+                    = render partial: 'users/line_thumb', locals: { member: member }
 
-            .meta
-              %strong
-                Created on
-                = l @project.created_at, format: :date
-                -# if @project.created_at.to_date != @project.made_public_at.to_date
-                  %br
-                  %strong Published on
-                  = l @project.made_public_at, format: :date
+                - if @project.credit_lines.any?
+                  .meta-title-wrap
+                    .meta-title
+                      Additional contributors
+                  - @project.credit_lines.each do |credit_line|
+                    - if credit_line.name.present?
+                      .user
+                        - if credit_line.work.present?
+                          = credit_line.work.try(:capitalize)
+                          by
+                        - if credit_line.link.present?
+                          = link_to credit_line.name, credit_line.link, target: '_blank', rel: 'nofollow'
+                        - else
+                          = credit_line.name
 
-            - if @project.guest_name.present?
               .meta
                 %strong
-                  Posted by
-                  - poster = @project.team.active_members.includes(:user).first.user
-                  = link_to poster.name, poster
+                  Created on
+                  = l @project.created_at, format: :date
+                  -# if @project.created_at.to_date != @project.made_public_at.to_date
+                    %br
+                    %strong Published on
+                    = l @project.made_public_at, format: :date
 
-            - if @can_edit
-              .license.meta
-                %strong
-                  %span.editable-attribute{ 'data-model' => "project", 'data-attribute' => "license", "data-default-text" => "Select a license", 'data-view-tpl' => "*var f=function(licenseUrl){ if (licenseUrl == '') return ''; licenses = #{License.all_with_abbr.to_s.gsub(/=>/, ': ')}; abbr = licenses[licenseUrl]; return \"Copyright &copy; <a href='\" + licenseUrl + \"' class='hidden-link'>\" + abbr + \"</a>\"; }; f(value);*", 'data-value' => @project.license.try(:url), 'data-edit-tpl' => "*var f=function(url){ var input=$(\"<select><option></option>#{License.all.map{|l| "<option value='#{l.url}'>#{l.name.gsub(/"/, '\"')}</option>" }.join('')}</select>\"); var option=input.children('option[value=\"' + url + '\"]'); option.attr('selected', 'selected'); return input[0].outerHTML; }; f(value);*" }
-            - elsif @project.license
-              .license.meta
-                %strong
-                  Copyright
-                  &copy;
-                  = link_to @project.license.abbr, @project.license.url, target: '_blank', class: 'hidden-link'
+              - if @project.guest_name.present?
+                .meta
+                  %strong
+                    Posted by
+                    - poster = @project.team.active_members.includes(:user).first.user
+                    = link_to poster.name, poster
 
-          #right-project-deets
-            - if @can_edit
-              .tags.meta
-                .editable-attribute{ 'data-model' => "project", 'data-attribute' => "tech_tags_string", "data-default-text" => "Add technologies you're using in this project, separated by commas. Eg: Arduino, ATmega, Attiny...", 'data-view-tpl' => "*var f=function(tagString){ var out = '<div class=\"meta-title-wrap\"><div class=\"meta-title\">Technologies</div></div>', tags = []; tags = tagString.split(','); $.each(tags, function(i, tag){ tag = tag.trim(); tpl = \"<span><a class='tag-link' href='/tags/\" + encodeURIComponent(tag) + \"'>\" + tag + \"</a></span>\"; out += tpl; }); return out; }; f(value);*", 'data-value' => @project.tech_tags_string }
-            - elsif @project.tech_tags.any?
-              .tags.meta
-                .meta-title-wrap
-                  .meta-title Technologies
-                - @project.tech_tags.pluck(:name).each do |tag|
-                  - if tech = Tech.includes(:tech_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first
-                    - tag_link = tech_short_path(tech)
-                  - else
-                    - tag_link = "/tags/#{CGI::escape(tag)}"
-                  %span= link_to tag, tag_link, class: 'tag-link'
+              - if @can_edit
+                .license.meta
+                  %strong
+                    %span.editable-attribute{ 'data-model' => "project", 'data-attribute' => "license", "data-default-text" => "Select a license", 'data-view-tpl' => "*var f=function(licenseUrl){ if (licenseUrl == '') return ''; licenses = #{License.all_with_abbr.to_s.gsub(/=>/, ': ')}; abbr = licenses[licenseUrl]; return \"Copyright &copy; <a href='\" + licenseUrl + \"' class='hidden-link'>\" + abbr + \"</a>\"; }; f(value);*", 'data-value' => @project.license.try(:url), 'data-edit-tpl' => "*var f=function(url){ var input=$(\"<select><option></option>#{License.all.map{|l| "<option value='#{l.url}'>#{l.name.gsub(/"/, '\"')}</option>" }.join('')}</select>\"); var option=input.children('option[value=\"' + url + '\"]'); option.attr('selected', 'selected'); return input[0].outerHTML; }; f(value);*" }
+              - elsif @project.license
+                .license.meta
+                  %strong
+                    Copyright
+                    &copy;
+                    = link_to @project.license.abbr, @project.license.url, target: '_blank', class: 'hidden-link'
 
-            - if @can_edit
-              .tags.meta
-                .editable-attribute{ 'data-model' => "project", 'data-attribute' => "product_tags_string", "data-default-text" => "Add tags, separated by commas. Eg: home automation, drone, display...", 'data-view-tpl' => "*var f=function(tagString){ var out = '<div class=\"meta-title-wrap\"><div class=\"meta-title\">Tags</div></div>', tags = []; tags = tagString.split(','); $.each(tags, function(i, tag){ tag = tag.trim(); tpl = \"<span><a class='tag-link' href='/tags/\" + encodeURIComponent(tag) + \"'>#\" + tag + \"</a></span>\"; out += tpl; }); return out; }; f(value);*", 'data-value' => @project.product_tags_string }
-            - elsif @project.product_tags.any?
-              .tags.meta
-                .meta-title-wrap
-                  .meta-title Tags
-                - @project.product_tags.pluck(:name).each do |tag|
-                  %span= link_to "##{tag}", "/tags/#{CGI::escape(tag)}", class: 'tag-link'
+            #right-project-deets
+              - if @can_edit
+                .tags.meta
+                  .editable-attribute{ 'data-model' => "project", 'data-attribute' => "tech_tags_string", "data-default-text" => "Add technologies you're using in this project, separated by commas. Eg: Arduino, ATmega, Attiny...", 'data-view-tpl' => "*var f=function(tagString){ var out = '<div class=\"meta-title-wrap\"><div class=\"meta-title\">Technologies</div></div>', tags = []; tags = tagString.split(','); $.each(tags, function(i, tag){ tag = tag.trim(); tpl = \"<span><a class='tag-link' href='/tags/\" + encodeURIComponent(tag) + \"'>\" + tag + \"</a></span>\"; out += tpl; }); return out; }; f(value);*", 'data-value' => @project.tech_tags_string }
+              - elsif @project.tech_tags.any?
+                .tags.meta
+                  .meta-title-wrap
+                    .meta-title Technologies
+                  - @project.tech_tags.pluck(:name).each do |tag|
+                    - if tech = Tech.includes(:tech_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first
+                      - tag_link = tech_short_path(tech)
+                    - else
+                      - tag_link = "/tags/#{CGI::escape(tag)}"
+                    %span= link_to tag, tag_link, class: 'tag-link'
 
-          - if @project.public?
-            = render partial: 'widgets/respect_widget', locals: { users: @project.respecting_users }
+              - if @can_edit
+                .tags.meta
+                  .editable-attribute{ 'data-model' => "project", 'data-attribute' => "product_tags_string", "data-default-text" => "Add tags, separated by commas. Eg: home automation, drone, display...", 'data-view-tpl' => "*var f=function(tagString){ var out = '<div class=\"meta-title-wrap\"><div class=\"meta-title\">Tags</div></div>', tags = []; tags = tagString.split(','); $.each(tags, function(i, tag){ tag = tag.trim(); tpl = \"<span><a class='tag-link' href='/tags/\" + encodeURIComponent(tag) + \"'>#\" + tag + \"</a></span>\"; out += tpl; }); return out; }; f(value);*", 'data-value' => @project.product_tags_string }
+              - elsif @project.product_tags.any?
+                .tags.meta
+                  .meta-title-wrap
+                    .meta-title Tags
+                  - @project.product_tags.pluck(:name).each do |tag|
+                    %span= link_to "##{tag}", "/tags/#{CGI::escape(tag)}", class: 'tag-link'
+
+            - if @project.public?
+              = render partial: 'widgets/respect_widget', locals: { users: @project.respecting_users }
 
     = render partial: 'widgets/comment_widget', locals: { comments: @project.comments, commentable: @project }
     - if @issue and can? :comment_privately, @project

@@ -15,4 +15,10 @@ class StlWidget < Widget
   def embed_format
     'widescreen'
   end
+
+  def to_text
+    documents.map do |d|
+      "<div contenteditable='false' class='embed-frame' data-type='file' data-file-id='#{d.id}' data-caption='#{d.title || d.file_name}'></div>"
+    end.join('')
+  end
 end
