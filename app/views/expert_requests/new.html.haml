@@ -70,7 +70,7 @@
       .container
         Ready?
         %button.btn.btn-primary.btn-lg{"data-target" => "#myModal", "data-toggle" => "modal"}
-          Ask to be connected
+          Connect with us
 
 = content_for :js do
   #myModal.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "myModalLabel", role: "dialog", tabindex: "-1"}
@@ -80,7 +80,7 @@
           %button.close{"data-dismiss" => "modal", type: "button"}
             %span{"aria-hidden" => "true"} ×
             %span.sr-only Close
-          %h4#myModalLabel.modal-title To get connected with an expert, tell us what you need:
+          %h4#myModalLabel.modal-title Please tell us about you and your project:
         .modal-body
           - if user_signed_in?
             - if current_user.projects_count > 0
@@ -104,7 +104,7 @@
           = f.input :stage, label: 'What stage are you at?', collection: ExpertRequest::STAGES
           = f.input :expertise_area, label: 'What do you need help with?', collection: ExpertRequest::AREAS_OF_EXPERTISE, as: :check_boxes
           = f.input :request_description, label: "Please describe in more details what help you're looking to receive", as: :text, input_html: { rows: 5 }
-          -# = f.input :budget, label: 'What is your budget like?', collection: ExpertRequest::BUDGETS
+          = f.input :budget, label: 'What is your budget like?', collection: ExpertRequest::BUDGETS
           = f.input :comments, label: "Anything you'd like to add?", as: :text, input_html: { rows: 5 }
 
           %p Last, tell us who you are and how we can reach you:

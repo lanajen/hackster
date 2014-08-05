@@ -17,16 +17,16 @@
           .col-xs-12
             .alert.alert-bold.text-center
               Are you looking for help making your hardware product?
-              = link_to 'Connect with an expert', experts_path, class: 'alert-link'
+              = link_to 'Connect with us', build_path, class: 'alert-link'
               and learn from the best.
 
         .row.mg-20
           .col-xs-12.col-sm-6{ style: 'border-right:1px solid #ccc;padding-top:20px;padding-bottom:20px;'}
             %h2.top Professionals
-            = link_to 'Start building a commercial product &rarr;'.html_safe, new_project_path(project: { open_source: false}), class: 'btn btn-primary btn-lg btn-block'
+            = link_to 'Start building a commercial product &rarr;'.html_safe, new_project_path(project: { open_source: false}, t: 'pro'), class: 'btn btn-primary btn-lg btn-block'
           .col-xs-12.col-sm-6{ style: 'border-left:1px solid #fff;padding-top:20px;padding-bottom:20px;'}
             %h2.top Hobbyists
-            = link_to 'Start building open hardware &rarr;'.html_safe, new_project_path, class: 'btn btn-primary btn-lg btn-block'
+            = link_to 'Start building open hardware &rarr;'.html_safe, new_project_path(t: 'hob'), class: 'btn btn-primary btn-lg btn-block'
         .row
           .col-xs-12
             or

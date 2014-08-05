@@ -35,7 +35,8 @@ HackerIo::Application.routes.draw do
     # get 'finish_and_redirect' => 'split#finish_and_redirect'
     get 'validate_step' => 'split#validate_step'
 
-    get 'experts' => 'expert_requests#new'
+    get 'experts', to: redirect('/build')
+    get 'build' => 'expert_requests#new'
     resources :expert_requests, only: [:create]
 
     devise_for :users, controllers: {
