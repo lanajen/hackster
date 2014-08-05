@@ -21,6 +21,7 @@ HackerIo::Application.routes.draw do
       namespace :v1 do
         get 'embeds' => 'embeds#show'
         # post 'embeds' => 'embeds#create'
+        resources :build_logs
         resources :projects#, as: :api_projects
         resources :parts, only: [:create, :destroy]
         resources :widgets, only: [:destroy, :update, :create]
@@ -51,8 +52,6 @@ HackerIo::Application.routes.draw do
         match '/auth/:provider/setup' => 'omniauth_callbacks#setup', via: :get
       end
     end
-
-    mount Monologue::Engine, at: '/blog'
 
     namespace :admin do
       # mount ResqueAuthServer.new, at: "/resque"
@@ -198,6 +197,7 @@ HackerIo::Application.routes.draw do
     end
 
     resources :blog_posts, only: [:destroy], controller: :build_logs do
+      get '' => 'build_logs#show_redirect', on: :member
       resources :comments, only: [:create]
     end
     resources :wiki_pages, only: [:destroy]
@@ -263,6 +263,8 @@ HackerIo::Application.routes.draw do
     end
 
     get ':not_found' => 'application#not_found'  # find a way to not need this
+
+    mount Monologue::Engine, at: '/blog'
 
     root to: 'pages#home'
   end

@@ -425,6 +425,13 @@
     bottom: -41px;
   }
 }
+.editor.editor-active {
+  .image-gallery-container {
+    .file-drop {
+      visibility: visible;
+    }
+  }
+}
 .image-gallery-container {
   width: 100%;
   height: 0;
@@ -439,6 +446,7 @@
     left: 0;
     background: image-url('upload-bg.png') center center no-repeat;
     border: 7px solid #f2f2f2;
+    visibility: hidden;
     &.dragover-active {
       border-color: #3d8bc1;
     }

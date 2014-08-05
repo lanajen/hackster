@@ -1,15 +1,23 @@
+= content_for :head do
+  = javascript_include_tag '//cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js', charset: "utf-8"
+
 - @project = @project.decorate
 = content_for :no_container do
   #project-page.page-div
     - if @show_sidebar
       = render "projects/project_sidebar_nav"
-    .project.model-editor{ id: "#{@show_sidebar ? 'content-with-sidebar' : 'content' }", data: { "project-id" => @project.id } }
-      .project-details{ class: "#{'with-top-container' if @show_part_of}" }
-        - @mode ||= 'normal'
-        .display= render "projects/teaser_#{@mode}"
-      - if @mode == 'normal'
-        = yield
-      - else
+      .project.model-editor{ id: "content-with-sidebar", data: { "model-id" => @project.id, "model-type" => 'Project', 'model-placeholder' => 'Start describing your project here. Enter text or add media by clicking the left button.', 'model-url' => '/api/v1/projects' } }
+        .project-details{ class: "#{'with-top-container' if @show_part_of}" }
+          - @mode ||= 'normal'
+          .display= render "projects/teaser_#{@mode}"
+        - if @mode == 'normal'
+          = yield
+        - else
+          .container= yield
+    - else
+      .project{ id: "content" }
+        .project-details{ class: "#{'with-top-container' if @show_part_of}" }
+          .display= render "projects/teaser_#{@mode}"
         .container= yield
 
 = render template: 'layouts/application'

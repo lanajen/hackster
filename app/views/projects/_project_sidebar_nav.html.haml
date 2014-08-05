@@ -22,7 +22,7 @@
       - if @can_edit
         #project-actions.medium-status-bar
           = render 'shared/medium_status_buttons'
-          = render 'shared/medium_status'
+          = render partial: 'shared/medium_status', locals: { last_edit: @project.last_edited_at }
 
       #scrolling-project-section
         #scroll-nav
@@ -74,7 +74,7 @@
 
         .medium-edit-show{ style: 'display:none;' }
           .col-xs-12.medium-status-bar
-            .pull-left= render 'shared/medium_status'
+            .pull-left= render partial: 'shared/medium_status', locals: { last_edit: @project.last_edited_at }
             .pull-right= render 'shared/medium_status_buttons'
 
   - elsif @project.public?

@@ -3,12 +3,13 @@
 class Widget < ActiveRecord::Base
   include Privatable
 
-  belongs_to :project
+  belongs_to :widgetable, polymorphic: true
   has_many :comments, as: :commentable, dependent: :destroy
   has_many :issues, as: :threadable, dependent: :destroy
   validates :name, length: { maximum: 100 }
 
-  attr_accessible :properties, :type, :name, :position, :project_id
+  attr_accessible :properties, :type, :name, :position, :project_id, :widgetable_id,
+    :widgetable_type
 
   validates :type, :project_id, presence: true
   # before_create :set_position
@@ -83,6 +84,19 @@ class Widget < ActiveRecord::Base
 
   def help_text
     ''
+  end
+
+  # retro-compatibility
+  def project
+    widgetable
+  end
+
+  def project=(val)
+    self.widgetable = val
+  end
+
+  def project_id
+    widgetable_id
   end
 
   def properties

@@ -45,7 +45,7 @@ class Project < ActiveRecord::Base
   # has_many :groups, through: :group_relations
   has_many :teches, -> { where ("groups.type = 'Tech'") }, through: :group_relations, source: :group
   has_many :users, through: :team_members
-  has_many :widgets, -> { order position: :asc }, dependent: :destroy
+  has_many :widgets, -> { order position: :asc }, as: :widgetable, dependent: :destroy
   has_one :logo, as: :attachable, class_name: 'Avatar', dependent: :destroy
   has_one :cover_image, as: :attachable, class_name: 'CoverImage', dependent: :destroy
   has_one :video, as: :recordable, dependent: :destroy
@@ -254,7 +254,7 @@ class Project < ActiveRecord::Base
   end
 
   def credits_widget
-    @credits_widget ||= CreditsWidget.where(project_id: id).first#_or_create
+    @credits_widget ||= CreditsWidget.where(widgetable_id: id, widgetable_type: 'Project').first_or_create
   end
 
   def force_basic_validation!

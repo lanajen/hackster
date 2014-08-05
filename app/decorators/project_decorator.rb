@@ -47,7 +47,7 @@ class ProjectDecorator < ApplicationDecorator
       end
       parsed.to_html.html_safe
     else
-      ""
+      "<p class='paragraph--empty'><br></p>".html_safe
     end
   end
 

@@ -1,10 +1,10 @@
 ;(function ( $, window, document, undefined ) {
   $(function(){
-    if($('.project-details').length){
+    if($('#top-project-section').length){
       //make top image height of the screen
       var $window     = $(window),
-          $topSection   = $('#top-project-section'),
-          topHeight = $window.height() - $topSection.offset().top;
+          $topSection = $('#top-project-section'),
+          topHeight   = $window.height() - $topSection.offset().top;
       $topSection.css('height',topHeight);
       $window.resize(function(){
         topHeight = $window.height() - $topSection.offset().top;

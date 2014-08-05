@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140731203045) do
+ActiveRecord::Schema.define(version: 20140805021121) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -405,18 +405,20 @@ ActiveRecord::Schema.define(version: 20140731203045) do
   create_table "threads", force: true do |t|
     t.string   "title"
     t.text     "body"
-    t.integer  "threadable_id",                          null: false
-    t.string   "threadable_type",                        null: false
+    t.integer  "threadable_id",                              null: false
+    t.string   "threadable_type",                            null: false
     t.boolean  "private"
-    t.integer  "user_id",                                null: false
-    t.datetime "created_at",                             null: false
-    t.datetime "updated_at",                             null: false
+    t.integer  "user_id",                                    null: false
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
     t.string   "type",            limit: 20
     t.string   "workflow_state"
-    t.integer  "sub_id",                     default: 0, null: false
+    t.integer  "sub_id",                     default: 0,     null: false
     t.string   "slug"
+    t.boolean  "draft",                      default: false
   end
 
+  add_index "threads", ["draft"], name: "index_threads_on_draft", using: :btree
   add_index "threads", ["sub_id", "threadable_id", "threadable_type"], name: "threadable_sub_ids", using: :btree
   add_index "threads", ["threadable_id", "threadable_type"], name: "index_blog_posts_on_bloggable_id_and_bloggable_type", using: :btree
   add_index "threads", ["user_id"], name: "index_blog_posts_on_user_id", using: :btree
@@ -486,16 +488,17 @@ ActiveRecord::Schema.define(version: 20140731203045) do
   add_index "videos", ["recordable_id", "recordable_type"], name: "recordable_index", using: :btree
 
   create_table "widgets", force: true do |t|
-    t.string   "type",                    null: false
+    t.string   "type",                                null: false
     t.text     "properties"
     t.string   "name"
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
-    t.integer  "project_id", default: 0,  null: false
-    t.string   "position",   default: "", null: false
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+    t.integer  "widgetable_id",   default: 0,         null: false
+    t.string   "position",        default: "",        null: false
+    t.string   "widgetable_type", default: "Project"
   end
 
   add_index "widgets", ["position"], name: "index_widgets_on_position", using: :btree
-  add_index "widgets", ["project_id"], name: "index_widgets_on_project_id", using: :btree
+  add_index "widgets", ["widgetable_id"], name: "index_widgets_on_widgetable_id", using: :btree
 
 end

@@ -30,11 +30,13 @@ class WidgetObserver < ActiveRecord::Observer
 
   private
     def expire record
-      Cashier.expire "widget-#{record.id}", "project-#{record.project_id}-widgets"
+      Cashier.expire "widget-#{record.id}", "project-#{record.project_id}-widgets" if record.widgetable_type == 'Project'
     end
 
     def update_project_for record
-      record.project.touch
-      record.project.update_counters only: [:widgets]
+      if record.widgetable_type == 'Project'
+        record.project.touch
+        record.project.update_counters only: [:widgets]
+      end
     end
 end

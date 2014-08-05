@@ -4,7 +4,6 @@
 // - blog post to suggest default template
 // - announcement
 
-
 var editor;
 var codeEditor = {};
 var emptyParagraph = '<p class="paragraph--empty"><br></p>';
@@ -40,6 +39,7 @@ $(function() {
       for (i = 0; i < this.elements.length; i += 1) {
         elementid = (this.elements[i].id !== '') ? this.elements[i].id : 'element-' + i;
         content[elementid] = {};
+        elementName = $(this.elements[i]).data('attribute-name');
 
         $clone = $(this.elements[i]).clone();
 
@@ -82,7 +82,7 @@ $(function() {
         $inserts.children().remove();
 
         html = $clone.html().trim();
-        content[elementid]['description'] = html;
+        content[elementid][elementName] = html;
       }
       // console.log(content);
       return content;
@@ -177,7 +177,11 @@ $(function() {
     elements: $('.editable'),
     status: $('.medium-status'),
     error: $('.medium-error'),
-    projectId: $('.project').data('project-id'),
+    modelId: $('.model-editor').data('model-id'),
+    modelType: $('.model-editor').data('model-type'),
+    modelSymbol: $('.model-editor').data('model-symbol') || this.modelType,
+    placeholder: $('.model-editor').data('model-placeholder'),
+    modelUrl: $('.model-editor').data('model-url'),
     lastSaved: null,
     saveTimerOn: false,
     unsavedChanges: false,
@@ -191,7 +195,7 @@ $(function() {
         buttonLabels: 'fontawesome',
         cleanPastedHTML: true,
         targetBlank: true,
-        placeholder: 'Start describing your project here. Enter text or add media by clicking the left button.',
+        placeholder: _.placeholder,
         buttons: ['bold', 'italic', 'underline', 'anchor', 'insertCodeBlock', 'header1', 'header2', 'unorderedlist', 'orderedlist'],
         extensions: {
             'insertCodeBlock': new InsertCodeBlock()
@@ -249,7 +253,7 @@ $(function() {
       if (_.self) {
         // don't disable until changes have been saved
         if (_.unsavedChanges) {
-          _.saveProject(function(){
+          _.saveModel(function(){
             _.disable(callback);
           });
           return;
@@ -288,7 +292,7 @@ $(function() {
       _.elements.trigger('input');
     },
 
-    checkAndSaveProject: function() {
+    checkAndSaveModel: function() {
       var _ = this;
 
       if (!this.self.isActive) return;
@@ -301,22 +305,25 @@ $(function() {
       if (timeAgo < 5000) {
         window.setTimeout(function(){
           _.saveTimerOn = false;
-          _.checkAndSaveProject();
+          _.checkAndSaveModel();
         }, timeAgo);
         _.saveTimerOn = true;
         return;
       }
 
-      _.saveProject();
+      _.saveModel();
     },
 
-    saveProject: function(successCallback, failCallback, formData) {
+    saveModel: function(successCallback, failCallback, formData) {
       var _ = this;
       successCallback = successCallback || function(){};
       failCallback = failCallback || function(){};
 
-      var projectData = _.self.serialize()['element-0'];
-      var formData = formData || { project: projectData }
+      var modelData = _.self.serialize()['element-0'];
+      if (!formData) {
+        formData = {};
+        formData[_.modelSymbol] = modelData;
+      }
       formData.utf8 = '✓';
       // var form = $(projectFormTpl);
       // createInputFor('utf8', '✓', form);
@@ -329,7 +336,7 @@ $(function() {
       _.showLoadingBar();
       _.status.html('<i class="fa fa-refresh fa-spin"></i> Saving...');
 
-      $.ajax('/api/v1/projects/' + _.projectId, {
+      $.ajax(_.modelUrl + '/' + _.modelId, {
         data: formData,
         // processData: false,
         // contentType: false,
@@ -473,7 +480,7 @@ $(function () {
       data = {};
       data[model] = {};
       data[model][attr] = value;
-      editor.saveProject(null, null, data);
+      editor.saveModel(null, null, data);
     }
     curAttr = null;
 
@@ -506,7 +513,7 @@ $(function () {
       data = {};
       data[model] = {};
       data[model][attr] = value;
-      editor.saveProject(null, null, data);
+      editor.saveModel(null, null, data);
     }
     curAttr = null;
 
@@ -578,9 +585,14 @@ $(function () {
   });
 
   $('.medium-edit-stop').on('click', function(e){
+    $href = $(this).attr('href');
     editor.disable(function() {
-      $('.medium-edit-show').hide();
-      $('.medium-edit-hide').show();
+      if (typeof($href) != 'undefined' && $href != '') {
+        window.location.href = $href;
+      } else {
+        $('.medium-edit-show').hide();
+        $('.medium-edit-hide').show();
+      }
     });
     e.preventDefault();
   });
@@ -725,7 +737,7 @@ $(function () {
 
   $('.medium-editor').on('input', '.editable.editable-activated', function(e){
     editor.unsavedChanges = true;
-    editor.checkAndSaveProject();
+    editor.checkAndSaveModel();
   });
 
   $('.medium-editor').on('keyup', '.editable.editable-activated', function(e){
@@ -909,7 +921,7 @@ $(function () {
         $('#medium-file-upload').find('input[type=file]').click();
         break;
       case 'widget':
-        insertWidget(btn.data('widget-type'), editor.projectId, node);
+        insertWidget(btn.data('widget-type'), editor.modelId, editor.modelType, node);
         editor.triggerInput();
         break;
       case 'sketchfab':
@@ -1160,7 +1172,7 @@ $(function () {
       createFileOnServerAfterUpload(data, 'cover_image', function(data){
         var id = data.id;
         formData = { project: { cover_image_id: id }};
-        editor.saveProject(
+        editor.saveModel(
           function(){
             $('#project-top-image .embed-overlay').remove();
           }, function(){
@@ -1225,7 +1237,7 @@ $(function () {
               sketchfab_uid: data.title
             }
           };
-          insertWidget('StlWidget', editor.projectId, $('#' + data.context), widgetData);
+          insertWidget('StlWidget', editor.modelId, editor.modelType, $('#' + data.context), widgetData);
           editor.hideLoadingBar();
         }, function(data){
           showErrorBubble('the 3D file');
@@ -1456,10 +1468,11 @@ function insertEmbedTag(url, node) {
   });
 }
 
-function insertWidget(type, projectId, node, data) {
+function insertWidget(type, modelId, modelType, node, data) {
   data = data || { widget: {} };
   data['widget']['type'] = type;
-  data['widget']['project_id'] = projectId;
+  data['widget']['widgetable_id'] = modelId;
+  data['widget']['widgetable_type'] = modelType;
 
   editor.showLoadingBar();
   $.ajax('/api/v1/widgets', {
@@ -1710,8 +1723,8 @@ function createFileOnServerAfterUpload(data, fileType, successCallback) {
       file_url: url,
       file_type: fileType,
       context: data.context,
-      attachable_id: editor.projectId,
-      attachable_type: 'Project'
+      attachable_id: editor.modelId,
+      attachable_type: editor.modelType
     },
     async: false,
     success: function(data) { successCallback(data) },
@@ -1765,5 +1778,5 @@ function updateFileUploadDragZone(){
 }
 
 function focusEditable(){
-  focusAtEndOfRange($('.editable-activated.editable-activated')[0]);
+  focusAtEndOfRange($('.editable.editable-activated')[0]);
 }

@@ -15,6 +15,7 @@
 //= require rangy-cssclassapplier
 //= require medium-editor
 //= require medium-editor-ext
+//= require gist-embed
 
 //= require projects
 //= require groups

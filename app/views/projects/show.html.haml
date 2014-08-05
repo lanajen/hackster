@@ -1,9 +1,6 @@
 = content_for :head do
   = render 'meta_tags'
 
-= javascript_include_tag '//cdnjs.cloudflare.com/ajax/libs/gist-embed/1.8/gist-embed.min.js'
-= javascript_include_tag '//cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js', charset: "utf-8"
-
 -# if @can_edit
   #media-menu.affixable.medium-edit-show{ style: 'display:none'}
     .media-menu-header
@@ -66,19 +63,17 @@
         .header
           %h2 Showcase
         .content
-          - if @project.description.present?
-            .widget
-              .content
-                .text-widget.project-show-item
-                  - if @can_edit
-                    = render partial: 'shared/medium_editor', locals: { editable: @project.description }
-                  - elsif @project.description.present?
-                    .medium-editor= @project.description
-                  - else
-                    .medium-editor
-                      %p This is still a work in progress, please check back later!
-          - else
-            %p This is still a work in progress, please check back later!
+          .widget
+            .content
+              .text-widget.project-show-item
+                - if @can_edit
+                  = render partial: 'shared/medium_editor', locals: { editable: @project.description, attribute_name: 'description' }
+                - elsif @project.description.present?
+                  .medium-editor= @project.description
+                - else
+                  .medium-editor
+                    %p This is still a work in progress, please check back later!
+
       -# @project.sections.each do |section|
         .project-section{ id: section.id }
           .header
@@ -93,8 +88,8 @@
             Build logs
             - if @can_edit
               .pull-right= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} New build log".html_safe, new_project_log_path, class: 'btn btn-outline'
-        .content
-          - if log = @project.blog_posts.last
+        .content.medium-editor
+          - if log = @project.blog_posts.published.last.try(:decorate)
             .widget
               .header
                 %h4

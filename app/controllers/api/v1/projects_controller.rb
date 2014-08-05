@@ -12,7 +12,7 @@ class Api::V1::ProjectsController < Api::V1::BaseController
 
   def create
     project = Project.new params[:project]
-    authorize! :create, @project
+    authorize! :create, project
 
     if project.save
       render json: project, status: :ok
@@ -37,8 +37,9 @@ class Api::V1::ProjectsController < Api::V1::BaseController
   end
 
   def destroy
-    Project.find(params[:id]).destroy
-    authorize! :destroy, @project
+    project = Project.find(params[:id])
+    authorize! :destroy, project
+    project.destroy
 
     render json: 'Destroyed'
   end
