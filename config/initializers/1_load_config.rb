@@ -1,4 +1,20 @@
 APP_CONFIG = YAML.load_file("#{Rails.root}/config/config.yml")[Rails.env]
+POPULAR_TAGS = {
+  'Arduino' => '/arduino',
+  'ATTiny' => '/tags/attiny',
+  'AVR' => '/tags/avr',
+  'BeagleBoard' => '/beagleboard',
+  'Bluetooth' => '/tags/bluetooth',
+  'Drone' => '/tags/drone',
+  'Home automation' => '/tags/home+automation',
+  'MetaWear' => '/metawear',
+  'MSP430' => '/tags/msp430',
+  'Raspberry Pi' => '/raspberry-pi',
+  'Sensors' => '/tags/sensor',
+  'Spark' => '/spark',
+  'Teensy' => '/teensy',
+  'Wifi' => '/tags/wifi',
+}
 SLOGAN = 'Hackster.io gives professionals and hobbyists the resources they need to build hardware, the easy way.'
 URL_REGEXP = /^(((http|https):\/\/|)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}(:[0-9]{1,5})?(\/.*)?)$/ix
 

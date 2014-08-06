@@ -203,14 +203,10 @@ img {
   .row {
     width: 300px;
   }
-  .col-xs-12 {
-    margin-bottom: 20px;
-  }
   .btn{
     font-size: 12px;
   }
   .nav {
-    height: 300px;
     overflow-y: scroll;
     h4 {
       margin-top: 0;
@@ -222,7 +218,7 @@ img {
   }
   .nav > li {
     margin-top: 0;
-    display: block;
+    display: inline-block;
     float: none;
     & > a {
       padding: 10px 10px 8px;
@@ -236,6 +232,9 @@ img {
     }
     &.highlight-item > a{
       font-weight: bold;
+    }
+    &.title {
+      display: block;
     }
   }
 }

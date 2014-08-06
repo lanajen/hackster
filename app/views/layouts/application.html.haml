@@ -53,17 +53,13 @@
                   %ul#topnav.dropdown-menu
                     %li
                       .row
-                        .col-xs-12.text-center= link_to 'Browse all projects', projects_path(ref: 'topnav'), class: 'btn btn-block btn-primary'
-                        .col-xs-6{ style: 'border-right: 1px solid #ddd'}
+                        .col-xs-12.text-center.mg-20= link_to 'Browse all projects', projects_path(ref: 'topnav'), class: 'btn btn-block btn-primary'
+                        .col-xs-12
                           %ul.nav.nav-pills.nav-stacked
-                            %li
-                              %h4 Tools
-                            = render partial: 'shared/tools_list', locals: { ref: 'topnav' }
-                        .col-xs-6
-                          %ul.nav.nav-pills.nav-stacked
-                            %li
-                              %h4 Components
-                            = render partial: 'shared/components_list', locals: { ref: 'topnav' }
+                            %li.title
+                              %h4 Popular tags
+                            - POPULAR_TAGS.each do |tag, link|
+                              %li= link_to tag, link, ref: 'topnav'
                 %li= link_to 'Tools', tools_path, class: 'nav-link'
                 %li= link_to 'Manufacturing help', build_path, class: 'nav-link'
                 %li
