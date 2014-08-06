@@ -99,23 +99,29 @@ class Project < ActiveRecord::Base
 
   # beginning of search methods
   include Tire::Model::Search
-  include Tire::Model::Callbacks
+  # include Tire::Model::Callbacks
   index_name ELASTIC_SEARCH_INDEX_NAME
+
+  after_save do
+    if private or hide or !approved
+      self.index.remove self
+    else
+      self.index.store self
+    end
+  end
+  after_destroy do
+    self.index.remove self
+  end
 
   tire do
     mapping do
       indexes :id,              index: :not_analyzed
       indexes :name,            analyzer: 'snowball', boost: 100
-      indexes :one_liner,       analyzer: 'snowball'
       indexes :product_tags,    analyzer: 'snowball', boost: 50
       indexes :tech_tags,       analyzer: 'snowball', boost: 50
-#      indexes :description,     analyzer: 'snowball'
-      indexes :text_widgets,    analyzer: 'snowball'
+      indexes :description,     analyzer: 'snowball'
+      indexes :one_liner,       analyzer: 'snowball'
       indexes :user_names,      analyzer: 'snowball'
-      indexes :private,         analyzer: 'keyword'
-      indexes :hide,            analyzer: 'keyword'
-      indexes :external,        analyzer: 'keyword'
-      indexes :approved,        analyzer: 'keyword'
       indexes :created_at
     end
   end
@@ -124,19 +130,19 @@ class Project < ActiveRecord::Base
     {
       _id: id,
       name: name,
-      model: self.class.name,
+      model: self.class.name.underscore,
       one_liner: one_liner,
-#      description: description,
+      description: description,
       product_tags: product_tags_string,
       tech_tags: tech_tags_string,
-      text_widgets: widgets.where(type: 'TextWidget').map{ |w| w.content },
       user_name: team_members.map{ |t| t.user.try(:name) },
-      private: private,
-      hide: hide,
-      external: external,
-      approved: approved,
       created_at: created_at,
+      popularity: popularity_counter,
     }.to_json
+  end
+
+  def self.index_all
+    index.import approved.indexable_and_external
   end
   # end of search methods
 

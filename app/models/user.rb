@@ -130,13 +130,23 @@ class User < ActiveRecord::Base
 
   # beginning of search methods
   include Tire::Model::Search
-  include Tire::Model::Callbacks
+  # include Tire::Model::Callbacks
   index_name ELASTIC_SEARCH_INDEX_NAME
+
+  after_save do
+    if !accepted_or_not_invited?
+      self.index.remove self
+    else
+      self.index.store self
+    end
+  end
+  after_destroy do
+    self.index.remove self
+  end
 
   tire do
     mapping do
       indexes :id,              index: :not_analyzed
-      indexes :model,           analyzer: 'keyword', type: 'string'
       indexes :name,            analyzer: 'snowball', boost: 100, type: 'string'
       indexes :user_name,       analyzer: 'snowball', boost: 100, type: 'string'
       indexes :interests,       analyzer: 'snowball'
@@ -144,8 +154,6 @@ class User < ActiveRecord::Base
       indexes :mini_resume,     analyzer: 'snowball'
       indexes :country,         analyzer: 'snowball', type: 'string'
       indexes :city,            analyzer: 'snowball', type: 'string'
-      indexes :private,         analyzer: 'keyword'
-      indexes :categories,      analyzer: 'keyword'
       indexes :created_at
     end
   end
@@ -153,7 +161,7 @@ class User < ActiveRecord::Base
   def to_indexed_json
     {
       _id: id,
-      model: self.class.name,
+      model: self.class.name.underscore,
       name: name,
       user_name: user_name,
       city: city,
@@ -162,9 +170,12 @@ class User < ActiveRecord::Base
       interests: interest_tags_string,
       skills: skill_tags_string,
       created_at: created_at,
-      private: !accepted_or_not_invited?,
-      categories: categories,
+      popularity: reputation.try(:points),
     }.to_json
+  end
+
+  def self.index_all
+    index.import invitation_accepted_or_not_invited
   end
   # end of search methods
 

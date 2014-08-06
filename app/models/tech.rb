@@ -36,16 +36,26 @@ class Tech < Group
 
   # beginning of search methods
   include Tire::Model::Search
-  include Tire::Model::Callbacks
+  # include Tire::Model::Callbacks
   index_name ELASTIC_SEARCH_INDEX_NAME
+
+  after_save do
+    if private
+      self.index.remove self
+    else
+      self.index.store self
+    end
+  end
+  after_destroy do
+    self.index.remove self
+  end
 
   tire do
     mapping do
       indexes :id,              index: :not_analyzed
-      indexes :name,            analyzer: 'snowball', boost: 200
-      indexes :tech_tags,       analyzer: 'snowball', boost: 150
-      indexes :mini_resume,     analyzer: 'snowball'
-      indexes :private,         analyzer: 'keyword'
+      indexes :name,            analyzer: 'snowball', boost: 1000
+      indexes :tech_tags,       analyzer: 'snowball', boost: 500
+      indexes :mini_resume,     analyzer: 'snowball', boost: 100
       indexes :created_at
     end
   end
@@ -54,12 +64,16 @@ class Tech < Group
     {
       _id: id,
       name: name,
-      model: self.class.name,
+      model: self.class.name.underscore,
       mini_resume: mini_resume,
       tech_tags: tech_tags_string,
-      private: private,
       created_at: created_at,
+      popularity: 1000.0,
     }.to_json
+  end
+
+  def self.index_all
+    index.import public
   end
   # end of search methods
 
