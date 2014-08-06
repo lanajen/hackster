@@ -6,7 +6,7 @@
   #project-page.page-div
     - if @show_sidebar
       = render "projects/project_sidebar_nav"
-      .project.model-editor{ id: "content-with-sidebar", data: { "model-id" => @project.id, "model-type" => 'Project', 'model-placeholder' => 'Start describing your project here. Enter text or add media by clicking the left button.', 'model-url' => '/api/v1/projects' } }
+      .project.model-editor{ id: "content-with-sidebar", data: { "model-id" => @project.id, "model-type" => 'Project', 'model-symbol' => 'project', 'model-placeholder' => 'Start describing your project here. Enter text or add media by clicking the left button.', 'model-url' => '/api/v1/projects' } }
         .project-details{ class: "#{'with-top-container' if @show_part_of}" }
           - @mode ||= 'normal'
           .display= render "projects/teaser_#{@mode}"

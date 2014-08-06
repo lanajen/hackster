@@ -3,7 +3,7 @@
     .widget-attribute{ 'data-value' => embed.widget.language, 'data-attribute' => "language" }
     = select_tag 'languages', options_from_collection_for_select(CodeWidget::ACE_LANGUAGES, :first, :last, embed.widget.language), 'data-target' => embed.widget.id
     &nbsp;
-    %a.btn.btn-default.btn-xs{ href: "javascript:$('#widget-#{embed.widget.id}-form input').click();" } Upload code file
+    %a.btn.btn-default.btn-xs.upload-code{ 'data-target' => "#widget-#{embed.widget.id}-form input" } Upload code file
 
   .code-editor-container{ data: { 'disable-toolbar' => 'true' }}
     .code-editor{ id: "code-editor-#{embed.widget.id}" }<= embed.widget.raw_code.try(:split, /\n/).try(:join, "\r")  # to get rid of the extra whitespaces added by HAML in the final HTML

@@ -230,10 +230,19 @@
   };
 })(jQuery, window, document);
 
-function smoothScrollTo(target, offsetTop) {
+function smoothScrollToIfOutOfBounds(target, offsetTop, speed) {
+  if (typeof(target) == 'string') target = $(target);
+  var top = window.pageYOffset || document.documentElement.scrollTop,
+      bottom = top + $(window).height(),
+      targetPos = target.offset().top;
+  if ((targetPos + target.height() > bottom) || (targetPos + offsetTop < top))
+    smoothScrollTo(target, offsetTop, speed);
+}
+function smoothScrollTo(target, offsetTop, speed) {
   offsetTop = offsetTop || 0;
+  speed = speed || 500;
   if (typeof(target) == 'string') target = $(target);
   $('html, body').stop().animate({
     'scrollTop': target.offset().top + offsetTop
-  }, 500, 'swing', function () {});
+  }, speed, 'swing', function () {});
 }

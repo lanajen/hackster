@@ -17,14 +17,12 @@
       .inner {
         @extend .container;
       }
-      // color: #888;
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       background: #fff;
       background: rgba(255,255,255,0.95);
-      // border-left: 1px solid #d9d3d3;
       border-bottom: 1px solid #d9d3d3;
       z-index: 2;
     }
@@ -84,7 +82,7 @@
       border-top: 0;
       padding-top: 0;
     }
-    &.followed-by-embed-frame, &:last-child {
+    &.followed-by-embed-frame, &.followed-by-h3, &:last-child {
       border-bottom: 0;
       padding-bottom: 0;
     }
@@ -155,6 +153,7 @@
       }
     }
     .media-menu-btns {
+      background: #fff;
       display: none;
       margin-left: 16px;
       .media-btn {

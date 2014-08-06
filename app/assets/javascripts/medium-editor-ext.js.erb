@@ -1,4 +1,4 @@
-// - add editor to build logs
+// - always show add content button
 
 // - blog post or help page to explain of the editor works
 // - blog post to suggest default template
@@ -7,6 +7,7 @@
 var editor;
 var codeEditor = {};
 var emptyParagraph = '<p class="paragraph--empty"><br></p>';
+var elementTypes = 'p,h3,h4';
 
 var progressTpl = '<div class="embed-overlay is-visible"><div class="center-align-wrapper"><div class="center-align-inner"><p class="progress-legend">Uploading...</p><div class="progress progress-striped active"><div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%;"></div></div></div></div>';
 
@@ -147,6 +148,22 @@ $(function() {
         }
         return this;
     };
+
+    // MediumEditor.prototype.execAction = function (action, e) {
+    //     $(document).trigger('execCommand', action);
+    //     if (action.indexOf('append-') > -1) {
+    //         this.execFormatBlock(action.replace('append-', ''));
+    //         this.setToolbarPosition();
+    //         this.setToolbarButtonStates();
+    //     } else if (action === 'anchor') {
+    //         this.triggerAnchorAction(e);
+    //     } else if (action === 'image') {
+    //         document.execCommand('insertImage', false, window.getSelection());
+    //     } else {
+    //         document.execCommand(action, false, null);
+    //         this.setToolbarPosition();
+    //     }
+    // };
   }
 
   rangy.init();
@@ -401,6 +418,17 @@ $(function() {
 
 $(function () {
 
+  // $(document).on('execCommand', function(e, action){
+  //   if (action == 'append-h3') {
+  //     stylizeH3(editor.elements);
+  //   }
+  // });
+
+  $('.medium-editor').on('click', '.code-widget .upload-code', function(e){
+    e.preventDefault();
+    $($(this).data('target')).click();
+  });
+
   $('#upload-cover-image a').click(function(e){
     e.preventDefault();
     $('#upload-cover-image-form input:file').click();
@@ -642,6 +670,7 @@ $(function () {
         frame.insertBefore(frame.prev());
         stylizeEmbedFrames(editor.elements);
         editor.triggerInput();
+        smoothScrollToIfOutOfBounds(frame, -50, 100);
         break;
 
       case 'move-down':
@@ -649,6 +678,7 @@ $(function () {
         frame.insertAfter(frame.next());
         stylizeEmbedFrames(editor.elements);
         editor.triggerInput();
+        smoothScrollToIfOutOfBounds(frame, -50, 100);
         break;
     }
   });
@@ -830,10 +860,40 @@ $(function () {
             focusAtEndOfRange(node[0]);
           }
         }
-      // prevent delete last paragraph
-      } else if (e.keyCode == 8) {
-        if (!node.next().length && node.prev('.embed-frame').length && node.text() == '') {
+        return;
+      }
+    }
+
+    if (node.is(elementTypes)) {
+      // prevent delete action after embed-frame
+      if (node.prev('.embed-frame').length) {
+        if (e.keyCode == 8 && curPos == 0) {
           e.preventDefault();
+          if (node.next().length && node.text() == '') {
+            prev = node.prevAll('p').first();
+            if (prev.length) {
+              node.remove();
+              smoothScrollToIfOutOfBounds(prev, -50, 100);
+              focusAtEndOfRange(prev[0]);
+            }
+          }
+        // arrow up
+        } else if (e.keyCode == 38) {
+          goToPreviousP(node, e);
+          return;
+        // arrow left
+        } else if (e.keyCode == 37 && curPos == 0) {
+          goToPreviousP(node, e);
+          return;
+        }
+      }
+      if (node.next('.embed-frame').length) {
+        // arrow down
+        if (e.keyCode == 40) {
+          goToNextP(node, e);
+        // arrow right
+        } else if (e.keyCode == 39 && getPosition(node[0]).atEnd) {
+          goToNextP(node, e);
         }
       }
     }
@@ -864,8 +924,8 @@ $(function () {
         $('.medium-editor-toolbar-active').removeClass('medium-editor-toolbar-active');
       }
 
-      var node = $(selection.anchorNode);
-      if (node.is('p.paragraph--empty')) {
+      var node = $(getSelectionStart());
+      if (node && node.is(elementTypes) && !node.is('.default-text')) {
         showMediaButtons(node);
       } else {
         hideMediaButtons(node);
@@ -874,10 +934,14 @@ $(function () {
   });
 
   $('.medium-editor').on('click', '.editable.editable-activated .embed-frame', function(e){
-    $('.is-selected').removeClass('is-selected');
-    $('.medium-editor-toolbar-active').removeClass('medium-editor-toolbar-active');
-    $(this).addClass('is-selected');
-    $(this).find('.medium-editor-toolbar').addClass('medium-editor-toolbar-active');
+    if (!$(this).hasClass('is-selected')) {
+      hideMediaButtons();
+      $('.is-selected').removeClass('is-selected');
+      $('.medium-editor-toolbar-active').removeClass('medium-editor-toolbar-active');
+      $(this).addClass('is-selected');
+      $(this).find('.medium-editor-toolbar').addClass('medium-editor-toolbar-active');
+      smoothScrollToIfOutOfBounds($(this), -50, 100);
+    }
   });
 
   $('.medium-editor').on('blur focusout', '.editable.editable-activated .embed-frame', function(e){
@@ -898,6 +962,9 @@ $(function () {
     var node;
     if ($(curNode).length) {
       node = $(curNode);
+      if (!node.is('p.paragraph--empty')) {
+        node = $(emptyParagraph).insertAfter(node);
+      }
     } else if ($('.editable.editable-activated').children().last().is('p.paragraph--empty')) {
       node = $('.editable.editable-activated').children().last();
     } else {
@@ -1373,7 +1440,7 @@ function getNewSelection() {
   var oldPos = curPos;
   var oldNode = curNode;
   curPos = selection.extentOffset;
-  curNode = selection.focusNode;
+  curNode = (selection.focusNode && selection.focusNode.nodeType == 3 ? selection.focusNode.parentNode : selection.focusNode);
   if (oldPos == curPos && oldNode == curNode) return;
   return selection;
 }
@@ -1440,6 +1507,57 @@ function focusAtBeginningOfRange(div, triggerClick) {
 
 function focusAtEndOfRange(div, triggerClick) {
   focusAtBeginningOrEndOfRange(div, false, triggerClick);
+}
+
+function getPosition(el) {
+  var atStart = false, atEnd = false;
+  var selRange, testRange;
+  if (window.getSelection) {
+      var sel = window.getSelection();
+      if (sel.rangeCount) {
+          selRange = sel.getRangeAt(0);
+          testRange = selRange.cloneRange();
+
+          // testRange.selectNodeContents(el);
+          // testRange.setEnd(selRange.startContainer, selRange.startOffset);
+          // atStart = (testRange.toString() == "");
+
+          testRange.selectNodeContents(el);
+          testRange.setStart(selRange.endContainer, selRange.endOffset);
+          atEnd = (testRange.toString() == "");
+      }
+  } else if (document.selection && document.selection.type != "Control") {
+      selRange = document.selection.createRange();
+      testRange = selRange.duplicate();
+
+      // testRange.moveToElementText(el);
+      // testRange.setEndPoint("EndToStart", selRange);
+      // atStart = (testRange.text == "");
+
+      testRange.moveToElementText(el);
+      testRange.setEndPoint("StartToEnd", selRange);
+      atEnd = (testRange.text == "");
+  }
+
+  return { atStart: atStart, atEnd: atEnd };
+}
+
+function goToPreviousP(node, e){
+  e.preventDefault();
+  prev = node.prevAll('p').first();
+  if (prev.length) {
+    smoothScrollToIfOutOfBounds(prev, -50, 200);
+    focusAtEndOfRange(prev[0]);
+  }
+}
+
+function goToNextP(node, e){
+  e.preventDefault();
+  next = node.nextAll('p').first();
+  if (next.length) {
+    smoothScrollToIfOutOfBounds(next, -50, 200);
+    focusAtBeginningOfRange(next[0]);
+  }
 }
 
 function insertEmbedTag(url, node) {
@@ -1545,6 +1663,18 @@ function stylizeEmbedFrames(parent) {
     el = $(this);
     if (el.next('.embed-frame').length) {
       el.addClass('followed-by-embed-frame');
+    }
+  });
+  stylizeH3(parent);
+}
+
+function stylizeH3(parent) {
+  parent.find('.preceded-by-embed-frame').removeClass('preceded-by-embed-frame');
+
+  parent.find('.embed-frame').each(function(){
+    el = $(this);
+    if (el.prev('.embed-frame').length) {
+      el.addClass('preceded-by-embed-frame');
     }
   });
 }
@@ -1679,7 +1809,6 @@ function uploadToS3(data, file, form) {
     data: {file: {name: file.name}, context: data.context},
     async: false,
     success: function(data) {
-        console.log(data);
       form.find('input[name=key]').val(data.key);
       form.find('input[name=policy]').val(data.policy);
       form.find('input[name=signature]').val(data.signature);
