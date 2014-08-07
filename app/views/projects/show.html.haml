@@ -111,7 +111,7 @@
 
     - cache ["project-#{@project.id}", 'metadata', @can_edit], tag: (["project-#{@project.id}-metadata", "team-#{@project.team_id}", "project-#{@project.id}-respects"] + @project.users.map{|u| "user-#{u.id}-thumb"}) do
       #more-info.project-section
-        .header
+        .section-header
           %h2 Metadata
         .clearfix.project-details
           #project-secondary-info

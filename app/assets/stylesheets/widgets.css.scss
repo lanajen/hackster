@@ -83,8 +83,7 @@
     overflow: scroll;
     & > span {
       display: block;
-      line-height: 12px;
-      font-size: 14px;
+      @include font-size(14);
     }
   }
   .code-container {
