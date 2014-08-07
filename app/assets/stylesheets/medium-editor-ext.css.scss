@@ -177,7 +177,7 @@
       height: 0;
       padding-bottom: 75%;
       background: white center center no-repeat;
-      @include background-size(cover);
+      @include background-size(contain);
     }
   }
 
