@@ -85,7 +85,6 @@ gem 'unicorn', '4.7.0'
 gem 'vimeo', '1.5.3'
 gem 'will_paginate', '3.0.4'
 gem 'workflow', '1.0.0'
-gem 'wysihtml5-rails', '0.0.4'
 
 # heroku
 # gem 'heroku-api', '0.3.15'
