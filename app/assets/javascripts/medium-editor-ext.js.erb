@@ -762,9 +762,11 @@ $(function () {
         slide = $(this).closest('.slick-slide');
         frame = slide.closest('.embed-frame');
 
-        fileId = slide.find('figure').attr('data-file-id');
-        deleteFile(fileId);
-        frame.find('[data-attribute="image_ids"] option[value="' + fileId + '"]').remove();
+        fileId = slide.attr('data-file-id');
+        if (fileId) {
+          deleteFile(fileId);
+          frame.find('[data-attribute="image_ids"] option[value="' + fileId + '"]').remove();
+        }
 
         slide.fadeOut(function(){
           slider = $(this).closest('.slick-slider');

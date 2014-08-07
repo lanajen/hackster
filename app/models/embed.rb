@@ -5,7 +5,7 @@ class Embed
     /bitbucket\.org\/([0-9a-zA-Z_\-]+\/[0-9a-zA-Z_\-]+)/ => :bitbucket,
     /gist\.github\.com\/[0-9a-zA-Z_\-]+\/([0-9a-zA-Z_\-]+)/ => :gist,
     /github\.com\/([0-9a-zA-Z_\-]+\/[0-9a-zA-Z_\-]+)/ => :github,
-    /instagram\.com\/p\/([a-zA-Z]+)/ => :instragram,
+    /instagram\.com\/p\/([a-zA-Z]+)/ => :instagram,
     /oshpark\.com\/shared_projects\/([a-zA-Z]+)/ => :oshpark,
     /sketchfab\.com\/models\/([a-z0-9]+)/ => :sketchfab,
     # /tindie\.com/ => 'BuyWidget.new(link:"|href|",name:"Where to buy")',
