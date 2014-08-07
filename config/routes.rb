@@ -14,8 +14,6 @@ HackerIo::Application.routes.draw do
 
   constraints(MainSite) do
 
-    mount Monologue::Engine, at: '/blog'
-
     get 'sitemap_index.xml' => 'sitemap#index', as: 'sitemap_index', defaults: { format: 'xml' }
     get 'sitemap.xml' => 'sitemap#show', as: 'sitemap', defaults: { format: 'xml' }
 
@@ -243,6 +241,8 @@ HackerIo::Application.routes.draw do
     get 'resources' => 'pages#resources'
 
     get 'electric-imp', to: redirect('electricimp')
+
+    mount Monologue::Engine, at: '/blog'
 
     # get ':slug' => 'slugs#show', slug: /[A-Za-z0-9_]{3,}/, constraints: { format: /(html|json)/ }
     constraints(TechPage) do
