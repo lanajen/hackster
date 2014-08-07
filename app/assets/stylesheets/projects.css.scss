@@ -452,13 +452,13 @@
         font-weight: bold;
       }
     }
-    .actions {
-      margin-top: 10px;
-      a {
-        @extend .btn;
-        @extend .btn-default;
-      }
-    }
+    // .actions {
+    //   margin-top: 10px;
+    //   a {
+    //     @extend .btn;
+    //     @extend .btn-default;
+    //   }
+    // }
     a.hidden-link, a.hidden-link:hover{
       color: #fff;
       &:hover{
