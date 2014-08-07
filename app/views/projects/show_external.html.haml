@@ -52,6 +52,7 @@
           #project-team
             .team-widget.pull-left
               - if @project.guest_name.present? or member = @project.team.try(:active_members).try(:includes, :user).try(:first)
+                - @hide_claim = true
                 - if @project.guest_name.present?
                   .user.guest-name
                     %span.user-name= @project.guest_name
@@ -76,11 +77,12 @@
                 = tags.to_sentence.html_safe
 
               .clearfix
-            .claim-link
-              %small
-                Is this you?
-                - if user_signed_in?
-                  = link_to 'Claim this project', claim_project_path(@project), data: { method: :post }
-                - else
-                  = link_to 'Claim this project', new_user_registration_path(reason: 'claim', m: 'project', id: @project.id)
+            - unless @hide_claim
+              .claim-link
+                %small
+                  Is this you?
+                  - if user_signed_in?
+                    = link_to 'Claim this project', claim_project_path(@project), data: { method: :post }
+                  - else
+                    = link_to 'Claim this project', new_user_registration_path(reason: 'claim', m: 'project', id: @project.id)
           %a.fa.fa-question-circle.meta-data{ data: { container: 'body', toggle: 'popover', placement: 'left', content: render('projects/meta_data'), trigger: 'hover', html: 'true'}, rel: 'popover'}
