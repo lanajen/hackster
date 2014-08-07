@@ -9,7 +9,8 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require_self
- *= require pygments/default
+ *= require medium-editor/medium-editor
+ *= require medium-editor/themes/bootstrap
  */
 @import 'custom_mixins';
 @import 'compass/css3';
@@ -19,7 +20,6 @@
 @import 'layout';
 @import 'projects';
 @import 'users';
-@import 'wysihtml5';
 @import 'slick';
 @import 'search';
 @import 'widgets';
@@ -32,7 +32,9 @@
 @import 'home';
 @import 'group';
 @import 'blog';
+@import 'medium-editor-ext';
 @import 'responsive';
+@import 'pygments';
 
 .zocial, a.zocial {
   font: bold 90%/2.1 "Lucida Grande", Tahoma, sans-serif;

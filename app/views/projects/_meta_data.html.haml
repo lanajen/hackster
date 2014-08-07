@@ -15,10 +15,10 @@
 
 - if @project.license
   .license.meta
-    Copyright
-    &copy;
+    Copyright &copy;
     %strong
-      = link_to @project.license.abbr, @project.license.url, target: '_blank', class: 'hidden-link'
+      -# = link_to @project.license.abbr, @project.license.url, target: '_blank', class: 'hidden-link'
+      = @project.license.abbr
 
 .meta
   %strong= number_with_delimiter @project.impressions_count

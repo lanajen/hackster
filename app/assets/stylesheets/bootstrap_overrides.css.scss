@@ -113,7 +113,7 @@ a{
   }
 }
 .btn-info{
-  background: #3d8bc1;
+  background: #5FA2D2;
   border: 0;
   @include box-shadow(inset 0 1px 0 rgba(255,255,255,.1));
   @include disable-select;
@@ -122,6 +122,12 @@ a{
     // background: #5A5858;
     background: #4292C9;
     border: none;
+  }
+}
+.btn-standout {
+  background: #FF7745;
+  &:hover {
+    background: #FF5B1E;
   }
 }
 

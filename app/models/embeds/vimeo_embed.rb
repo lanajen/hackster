@@ -1,0 +1,2 @@
+class VimeoEmbed < VideoEmbed
+end

@@ -1,0 +1,2 @@
+class ImageEmbed < FileEmbed
+end

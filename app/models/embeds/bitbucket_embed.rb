@@ -1,0 +1,2 @@
+class BitbucketEmbed < RepoEmbed
+end

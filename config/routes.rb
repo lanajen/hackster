@@ -9,9 +9,25 @@ HackerIo::Application.routes.draw do
     }, via: :get
   end
 
+  # constraints(ApiSite) do
+  # end
+
   constraints(MainSite) do
     get 'sitemap_index.xml' => 'sitemap#index', as: 'sitemap_index', defaults: { format: 'xml' }
     get 'sitemap.xml' => 'sitemap#show', as: 'sitemap', defaults: { format: 'xml' }
+
+    # API (see if can be moved to its own subdomain)
+    namespace :api do
+      namespace :v1 do
+        get 'embeds' => 'embeds#show'
+        # post 'embeds' => 'embeds#create'
+        resources :build_logs
+        resources :projects#, as: :api_projects
+        resources :parts, only: [:create, :destroy]
+        resources :widgets, only: [:destroy, :update, :create]
+        match "*all" => "base#cors_preflight_check", via: :options
+      end
+    end
 
     # api for split a/b testing gem
     # get 'ab_test' => 'split#start_ab_test'
@@ -19,7 +35,8 @@ HackerIo::Application.routes.draw do
     # get 'finish_and_redirect' => 'split#finish_and_redirect'
     get 'validate_step' => 'split#validate_step'
 
-    get 'experts' => 'expert_requests#new'
+    get 'experts', to: redirect('/build')
+    get 'build' => 'expert_requests#new'
     resources :expert_requests, only: [:create]
 
     devise_for :users, controllers: {
@@ -36,8 +53,6 @@ HackerIo::Application.routes.draw do
         match '/auth/:provider/setup' => 'omniauth_callbacks#setup', via: :get
       end
     end
-
-    mount Monologue::Engine, at: '/blog'
 
     namespace :admin do
       # mount ResqueAuthServer.new, at: "/resque"
@@ -136,7 +151,7 @@ HackerIo::Application.routes.draw do
       end
     end
 
-    resources :files, only: [:create, :show] do
+    resources :files, only: [:create, :show, :destroy] do
       get 'signed_url', on: :collection
     end
     resources :invite_requests, only: [:create, :update, :edit]
@@ -183,6 +198,7 @@ HackerIo::Application.routes.draw do
     end
 
     resources :blog_posts, only: [:destroy], controller: :build_logs do
+      get '' => 'build_logs#show_redirect', on: :member
       resources :comments, only: [:create]
     end
     resources :wiki_pages, only: [:destroy]
@@ -248,6 +264,8 @@ HackerIo::Application.routes.draw do
     end
 
     get ':not_found' => 'application#not_found'  # find a way to not need this
+
+    mount Monologue::Engine, at: '/blog'
 
     root to: 'pages#home'
   end

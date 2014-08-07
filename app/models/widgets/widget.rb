@@ -3,17 +3,22 @@
 class Widget < ActiveRecord::Base
   include Privatable
 
-  belongs_to :project
+  belongs_to :widgetable, polymorphic: true
   has_many :comments, as: :commentable, dependent: :destroy
   has_many :issues, as: :threadable, dependent: :destroy
   validates :name, length: { maximum: 100 }
 
-  attr_accessible :properties, :type, :name, :position
+  attr_accessible :properties, :type, :name, :position, :project_id, :widgetable_id,
+    :widgetable_type
 
-  validates :type, :name, presence: true
-  before_create :set_position
+  validates :type, :project_id, presence: true
+  # before_create :set_position
 
   def default_label
+    nil
+  end
+
+  def embed_format
     nil
   end
 
@@ -81,6 +86,19 @@ class Widget < ActiveRecord::Base
     ''
   end
 
+  # retro-compatibility
+  def project
+    widgetable
+  end
+
+  def project=(val)
+    self.widgetable = val
+  end
+
+  def project_id
+    widgetable_id
+  end
+
   def properties
     val = read_attribute :properties
     val.present? ? YAML::load(val) : {}
@@ -99,6 +117,14 @@ class Widget < ActiveRecord::Base
     position.match(/\.(.+)$/)[1].to_i
   end
 
+  def to_error
+    errors.messages
+  end
+
+  def to_text
+    ''
+  end
+
   def to_tracker
     {
       widget_id: id,
@@ -110,24 +136,24 @@ class Widget < ActiveRecord::Base
     def self.all_types
       {
         'Bill of materials' => 'PartsWidget',
-        'Bitbucket repo' => 'BitbucketWidget',
-        'Build log' => 'BuildLogWidget',
-        'Buy now' => 'BuyWidget',
-        'Circuits.io schematics' => 'CircuitsioWidget',
+        # 'Bitbucket repo' => 'BitbucketWidget',
+        # 'Build log' => 'BuildLogWidget',
+        # 'Buy now' => 'BuyWidget',
+        # 'Circuits.io schematics' => 'CircuitsioWidget',
         'Code' => 'CodeWidget',
-        'Credits' => 'CreditsWidget',
-        'Files and documents' => 'DocumentWidget',
-        'Github repo' => 'GithubWidget',
-        'Images' => 'ImageWidget',
-        'Issues' => 'IssuesWidget',
-        'OSH Park shared project' => 'OshparkWidget',
-        'PayPal Buy Now button' => 'PaypalWidget',
-        'Press articles' => 'PressWidget',
-        'STL renderings' => 'StlWidget',
+        # 'Credits' => 'CreditsWidget',
+        # 'Files and documents' => 'DocumentWidget',
+        # 'Github repo' => 'GithubWidget',
+        # 'Images' => 'ImageWidget',
+        # 'Issues' => 'IssuesWidget',
+        # 'OSH Park shared project' => 'OshparkWidget',
+        # 'PayPal Buy Now button' => 'PaypalWidget',
+        # 'Press articles' => 'PressWidget',
+        # 'STL renderings' => 'StlWidget',
         'Step by step guide' => 'StepByStepWidget',
-        'Text' => 'TextWidget',
-        'Upverter schematics' => 'UpverterWidget',
-        'Video' => 'VideoWidget',
+        # 'Text' => 'TextWidget',
+        # 'Upverter schematics' => 'UpverterWidget',
+        # 'Video' => 'VideoWidget',
       }
     end
 

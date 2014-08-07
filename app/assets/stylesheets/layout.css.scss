@@ -34,7 +34,7 @@ img {
 }
 
 #outer-wrapper {
-  position: relative;
+  // position: relative;
   z-index: 1;
   // min-height: 100%;
   // height: auto !important;
@@ -203,14 +203,10 @@ img {
   .row {
     width: 300px;
   }
-  .col-xs-12 {
-    margin-bottom: 20px;
-  }
   .btn{
     font-size: 12px;
   }
   .nav {
-    height: 300px;
     overflow-y: scroll;
     h4 {
       margin-top: 0;
@@ -222,7 +218,7 @@ img {
   }
   .nav > li {
     margin-top: 0;
-    display: block;
+    display: inline-block;
     float: none;
     & > a {
       padding: 10px 10px 8px;
@@ -236,6 +232,9 @@ img {
     }
     &.highlight-item > a{
       font-weight: bold;
+    }
+    &.title {
+      display: block;
     }
   }
 }
@@ -625,7 +624,7 @@ footer {
 
 .well, .transparent-well {
   padding: 0;
-  overflow: hidden;
+  // overflow: hidden;
   .content {
     padding: 16px 25px;
   }
@@ -717,16 +716,6 @@ footer {
 
 .light-blue {
   color: #428bca;
-}
-
-.mg-20 {
-  margin-bottom: 20px;
-}
-.mg-30{
-  margin-bottom: 30px;
-}
-.mg-40{
-  margin-bottom: 40px;
 }
 
 #content-header h1, #content-header h1 a {
@@ -845,6 +834,12 @@ h1, h2, h3, h4 {
 .btn{
   font-family: 'Open Sans', 'Helvetica Neue', 'Helvetica', sans-serif;
   padding: 8px 12px 8px;
+  &.btn-lg {
+    padding: 10px 16px;
+  }
+  &.btn-xs {
+    padding: 1px 5px;
+  }
 }
 
 .btn-edit {
@@ -1201,19 +1196,19 @@ a.hidden-link {
     position: fixed;
     @include transform(translateY(60px));
   }
-  &.project-pages-sidebar{
-    z-index: 0;
-    width: 250px;
-    min-height: 100%;
-    padding-bottom: 120px;
-    border:0;
-    // #sidebar-container-in{
-    //   position: relative;
-    //   top: 0;
-    //   height: 100%;
-    //   z-index: 1;
-    // }
-  }
+  // &.project-pages-sidebar{
+  //   z-index: 0;
+  //   width: 250px;
+  //   min-height: 100%;
+  //   padding-bottom: 120px;
+  //   border:0;
+  //   // #sidebar-container-in{
+  //   //   position: relative;
+  //   //   top: 0;
+  //   //   height: 100%;
+  //   //   z-index: 1;
+  //   // }
+  // }
 }
 #content-with-sidebar{
   position: relative;
@@ -1221,6 +1216,13 @@ a.hidden-link {
   width: 100%;
   background: white;
   min-height: 800px;
+}
+
+.btn-ellipsis{
+  padding: 12px 12px 10px;
+  overflow: hidden;
+  text-overflow:ellipsis;
+  white-space: nowrap;
 }
 
 /*****************************
@@ -1241,29 +1243,6 @@ a.hidden-link {
 }
 .wysihtml5-sandbox{
   min-height: 400px;
-}
-
-
-/*****************************
-
-    RESPONSIVE VIDEO
-
-*****************************/
-.video {
-  position: relative;
-  padding-bottom: 67.5%;
-  height: 0;
-  overflow: hidden;
-}
-.video.widescreen { padding-bottom: 57.25%; }
-.video iframe,
-.video object,
-.video embed {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
 }
 
 
@@ -1340,4 +1319,17 @@ input.cmn-toggle ~ .option-checked, input.cmn-toggle:checked ~ .option-unchecked
    display: table-cell;
    text-align: center;
    vertical-align: middle;
+}
+.handle {
+  cursor: pointer;
+}
+
+.mg-20 {
+  margin-bottom: 20px !important;
+}
+.mg-30{
+  margin-bottom: 30px !important;
+}
+.mg-40{
+  margin-bottom: 40px !important;
 }

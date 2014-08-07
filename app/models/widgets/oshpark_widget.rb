@@ -28,6 +28,12 @@ class OshparkWidget < Widget
     "#{BASE_UPLOADS_URL}/design/#{osh_id}/design.brd"
   end
 
+  def link
+    return @link if @link
+    @link ||= "#{BASE_URL}/#{osh_id}" if osh_id.present?
+    @link
+  end
+
   def order_link
     "#{link}/order"
   end
@@ -40,10 +46,8 @@ class OshparkWidget < Widget
     "#{BASE_UPLOADS_URL}/top_image/#{osh_id}/thumb_i.png"
   end
 
-  def link
-    return @link if @link
-    @link ||= "#{BASE_URL}/#{osh_id}" if osh_id.present?
-    @link
+  def to_text
+    "<h3>#{name}</h3><div contenteditable='false' class='embed-frame' data-type='url' data-url='#{link}' data-caption=''></div>"
   end
 
   private

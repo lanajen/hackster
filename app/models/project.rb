@@ -1,4 +1,6 @@
 class Project < ActiveRecord::Base
+  DEFAULT_NAME = 'Untitled'
+
   FILTERS = {
     'featured' => :featured,
     'featured_by_tech' => :featured_by_tech,
@@ -43,24 +45,25 @@ class Project < ActiveRecord::Base
   # has_many :groups, through: :group_relations
   has_many :teches, -> { where ("groups.type = 'Tech'") }, through: :group_relations, source: :group
   has_many :users, through: :team_members
-  has_many :widgets, -> { order position: :asc }, dependent: :destroy
+  has_many :widgets, -> { order position: :asc }, as: :widgetable, dependent: :destroy
   has_one :logo, as: :attachable, class_name: 'Avatar', dependent: :destroy
   has_one :cover_image, as: :attachable, class_name: 'CoverImage', dependent: :destroy
   has_one :video, as: :recordable, dependent: :destroy
 
-  sanitize_text :description
+  # sanitize_text :description
+  register_sanitizer :remove_whitespaces_from_html, :before_save, :description
   attr_accessible :description, :end_date, :name, :start_date, :current,
     :team_members_attributes, :website, :one_liner, :widgets_attributes,
     :featured, :featured_date, :cover_image_id, :logo_id, :license, :slug,
     :permissions_attributes, :new_slug, :slug_histories_attributes, :hide,
     :collection_id, :graded, :wip, :columns_count, :external, :guest_name,
-    :approved, :open_source
+    :approved, :open_source, :buy_link
   attr_accessor :current
   attr_writer :new_slug
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
     :widgets, :cover_image, :permissions, :slug_histories, allow_destroy: true
 
-  validates :name, presence: true, length: { in: 3..100 }
+  validates :name, length: { in: 3..100 }, allow_blank: true
   validates :one_liner, :logo, presence: true, if: proc { |p| p.force_basic_validation? }
   validates :one_liner, length: { maximum: 140 }
   validates :new_slug,
@@ -78,7 +81,8 @@ class Project < ActiveRecord::Base
   before_validation :check_if_current
   before_validation :clean_permissions
   before_validation :ensure_website_protocol
-  before_create :set_columns_count
+  before_update :update_slug, if: proc{|p| p.name_was == DEFAULT_NAME and p.name_changed? }
+  # before_create :set_columns_count
   before_save :generate_slug, if: proc {|p| !p.persisted? or p.team_id_changed? }
 
   taggable :product_tags, :tech_tags
@@ -95,23 +99,29 @@ class Project < ActiveRecord::Base
 
   # beginning of search methods
   include Tire::Model::Search
-  include Tire::Model::Callbacks
+  # include Tire::Model::Callbacks
   index_name ELASTIC_SEARCH_INDEX_NAME
+
+  after_save do
+    if private or hide or !approved
+      self.index.remove self
+    else
+      self.index.store self
+    end
+  end
+  after_destroy do
+    self.index.remove self
+  end
 
   tire do
     mapping do
       indexes :id,              index: :not_analyzed
       indexes :name,            analyzer: 'snowball', boost: 100
-      indexes :one_liner,       analyzer: 'snowball'
       indexes :product_tags,    analyzer: 'snowball', boost: 50
       indexes :tech_tags,       analyzer: 'snowball', boost: 50
-#      indexes :description,     analyzer: 'snowball'
-      indexes :text_widgets,    analyzer: 'snowball'
+      indexes :description,     analyzer: 'snowball'
+      indexes :one_liner,       analyzer: 'snowball'
       indexes :user_names,      analyzer: 'snowball'
-      indexes :private,         analyzer: 'keyword'
-      indexes :hide,            analyzer: 'keyword'
-      indexes :external,        analyzer: 'keyword'
-      indexes :approved,        analyzer: 'keyword'
       indexes :created_at
     end
   end
@@ -120,19 +130,19 @@ class Project < ActiveRecord::Base
     {
       _id: id,
       name: name,
-      model: self.class.name,
+      model: self.class.name.underscore,
       one_liner: one_liner,
-#      description: description,
+      description: description,
       product_tags: product_tags_string,
       tech_tags: tech_tags_string,
-      text_widgets: TextWidget.where('widgets.project_id = ?', id).map{ |w| w.content },
       user_name: team_members.map{ |t| t.user.try(:name) },
-      private: private,
-      hide: hide,
-      external: external,
-      approved: approved,
       created_at: created_at,
+      popularity: popularity_counter,
     }.to_json
+  end
+
+  def self.index_all
+    index.import approved.indexable_and_external
   end
   # end of search methods
 
@@ -210,6 +220,12 @@ class Project < ActiveRecord::Base
     self.slug = new_slug
   end
 
+  def buy_link_host
+    URI.parse(buy_link).host.gsub(/^www\./, '')
+  rescue
+    buy_link
+  end
+
   def compute_popularity
     self.popularity_counter = ((respects_count * 2 + impressions_count * 0.1 + followers_count * 2 + comments_count * 5 + featured.to_i * 10) * [[(1.to_f / Math.log10(age)), 10].min, 0.01].max).round(4)
   end
@@ -239,12 +255,39 @@ class Project < ActiveRecord::Base
     self.cover_image = CoverImage.find_by_id(val)
   end
 
+  def credit_lines
+    @credit_lines ||= credits_widget.try(:credit_lines) || []
+  end
+
+  def credits_widget
+    @credits_widget ||= CreditsWidget.where(widgetable_id: id, widgetable_type: 'Project').first_or_create
+  end
+
   def force_basic_validation!
     @force_basic_validation = true
   end
 
   def force_basic_validation?
     @force_basic_validation
+  end
+
+  def generate_description_from_widgets
+    doc = Nokogiri::HTML::DocumentFragment.parse widgets_to_text
+
+    doc.css('.embed-frame').each do |node|
+      if node.next
+        if node.next.attr('class') == 'embed-frame'
+          node.set_attribute 'class', "#{node.attr('class')} followed-by-embed-frame"
+        elsif node.next.name == 'h3'
+          node.set_attribute 'class', "#{node.attr('class')} followed-by-h3"
+        end
+      end
+      if node.previous and node.previous.name == 'h3'
+        node.set_attribute 'class', "#{node.attr('class')} preceded-by-h3"
+      end
+    end
+
+    self.description = doc.to_html
   end
 
   def guest_or_user_name
@@ -271,6 +314,10 @@ class Project < ActiveRecord::Base
 
   def logo_id=(val)
     self.logo = Avatar.find_by_id(val)
+  end
+
+  def name
+    super.presence || DEFAULT_NAME
   end
 
   def new_slug
@@ -437,7 +484,7 @@ class Project < ActiveRecord::Base
 
   private
     def can_be_public?
-      widgets_count >= 1 and cover_image.try(:file).present?
+      name.present? and description.present? and cover_image.try(:file).present?
     end
 
     def check_if_current
@@ -451,8 +498,8 @@ class Project < ActiveRecord::Base
     end
 
     def ensure_website_protocol
-      return unless website_changed? and website.present?
-      self.website = 'http://' + website unless website =~ /^http/
+      self.website = 'http://' + website if website_changed? and website.present? and !(website =~ /^http/)
+      self.buy_link = 'http://' + buy_link if buy_link_changed? and buy_link.present? and !(buy_link =~ /^http/)
     end
 
     def external_is_hidden
@@ -474,6 +521,10 @@ class Project < ActiveRecord::Base
       self.slug = slug
     end
 
+    def remove_whitespaces_from_html text
+      text.gsub(/>\s{2,}/, "> ").gsub(/\s{2,}</, " <")
+    end
+
     def set_columns_count
       self.columns_count = 1
     end
@@ -483,5 +534,20 @@ class Project < ActiveRecord::Base
 
       parent = team ? self.class.joins(:team).where(groups: { user_name: team.user_name }) : self.class
       errors.add :new_slug, 'has already been taken' if parent.where(projects: { slug: slug }).where.not(id: id).any?
+    end
+
+    def widgets_to_text
+      output = ''
+      # last_widget = widgets.last
+
+      widgets.each do |widget|
+        widget_content = widget.to_text
+        if widget_content.present?
+          output << widget.to_text
+          # output << '<hr>' unless last_widget == widget
+        end
+      end
+
+      output
     end
 end

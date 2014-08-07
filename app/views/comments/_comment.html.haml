@@ -10,7 +10,7 @@
         = comment.guest_name
       - else
         = link_to comment.user.decorate.name_link
-    = comment.body.html_safe
+    = auto_html(comment.body) { link(:target => 'blank') }.html_safe
     .text-muted.comment-date
       = time_ago_in_words(comment.created_at)
       ago

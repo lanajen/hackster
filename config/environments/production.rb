@@ -69,6 +69,9 @@ HackerIo::Application.configure do
 
   config.action_mailer.default_url_options = { :host => 'www.hackster.io' }
 
+  # store assets in a 'folder' instead of bucket root
+  config.assets.prefix = "/assets/production"
+
   config.action_controller.asset_host = "//s3.amazonaws.com/#{ENV['FOG_DIRECTORY']}"
 
   config.assets.initialize_on_precompile = false

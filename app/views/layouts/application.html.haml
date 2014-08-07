@@ -20,7 +20,7 @@
     /[if lt IE 9]
       = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.1/html5shiv.js"
     = stylesheet_link_tag "application", :media => "all"
-    -# <link href='//fonts.googleapis.com/css?family=Open+Sans:300,400,600' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300,400,600' rel='stylesheet' type='text/css'>
     <link href="#{ asset_path 'favicon.ico' }" rel="shortcut icon" type="image/vnd.microsoft.icon">
     = javascript_include_tag "application"
     - unless current_user and current_user.is? :admin
@@ -54,19 +54,15 @@
                   %ul#topnav.dropdown-menu
                     %li
                       .row
-                        .col-xs-12.text-center= link_to 'Browse all projects', projects_path(ref: 'topnav'), class: 'btn btn-block btn-primary'
-                        .col-xs-6{ style: 'border-right: 1px solid #ddd'}
+                        .col-xs-12.text-center.mg-20= link_to 'Browse all projects', projects_path(ref: 'topnav'), class: 'btn btn-block btn-primary'
+                        .col-xs-12
                           %ul.nav.nav-pills.nav-stacked
-                            %li
-                              %h4 Tools
-                            = render partial: 'shared/tools_list', locals: { ref: 'topnav' }
-                        .col-xs-6
-                          %ul.nav.nav-pills.nav-stacked
-                            %li
-                              %h4 Components
-                            = render partial: 'shared/components_list', locals: { ref: 'topnav' }
+                            %li.title
+                              %h4 Popular tags
+                            - POPULAR_TAGS.each do |tag, link|
+                              %li= link_to tag, link, ref: 'topnav'
                 %li= link_to 'Tools', tools_path, class: 'nav-link'
-                %li= link_to 'Ask an expert', experts_path, class: 'nav-link'
+                %li= link_to 'Manufacturing help', build_path, class: 'nav-link'
                 %li
                   - link = user_signed_in? ? new_project_path : new_user_registration_path(redirect_to: new_project_path, reason: 'project')
                   %span= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, link, class: 'nav-link nav-add-project'
@@ -94,7 +90,7 @@
                     %button#user-dropdown-toggle.btn.btn-default.dropdown-toggle{"data-toggle" => "dropdown"}
                       %span.caret
                     %ul.dropdown-menu#nav-user-menu
-                      %li= link_to current_user.name, current_user
+                      %li= link_to 'My profile', current_user
                       - if current_user.communities.any?
                         %li.divider
                         - current_user.community_group_ties.each do |group_tie|
@@ -138,6 +134,7 @@
       #main
         - if content_for?(:no_container)
           = yield(:no_container)
+          = yield(:in_main)
         - else
           .container-fluid
             #content.wrapper
@@ -160,15 +157,17 @@
           %li= link_to content_tag(:i, '', class: 'fa fa-twitter fa-lg').html_safe, 'http://twitter.com/hacksterio', alt: 'Hackster.io on Twitter', class: 'link-icon'
           %li= link_to content_tag(:i, '', class: 'fa fa-facebook fa-lg').html_safe, 'http://www.facebook.com/hacksterio', alt: 'Hackster.io on Facebook', class: 'link-icon'
           %li Hackster.io 2014
-        = link_to image_tag('//cdn.mxpnl.com/site_media/images/partner/badge_light.png', alt: 'Mobile Analytics'), 'https://mixpanel.com/f/partner', class: 'pull-right', style: 'margin-top:-10px;margin-right:15px;', target: '_blank'
+        .show-on-desktop= link_to image_tag('//cdn.mxpnl.com/site_media/images/partner/badge_light.png', alt: 'Mobile Analytics'), 'https://mixpanel.com/f/partner', class: 'pull-right', style: 'margin-top:-10px;margin-right:15px;', target: '_blank'
     #mobile-nav-overlay.hide-on-desktop
       #mobile-nav-overlay-close.fa.fa-times
     #mobile-navigation.hide-on-desktop
       = link_to 'Projects', projects_path(ref: 'topnav'), class: 'mo-nav-link'
       = link_to 'Tools', tools_path, class: 'mo-nav-link'
-      = link_to 'Ask an expert', experts_path, class: 'mo-nav-link'
+      = link_to 'Manufacturing help', build_path, class: 'mo-nav-link'
       = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, link, class: 'mo-nav-link'
       - if user_signed_in?
+        = link_to 'Profile', current_user, class: 'mo-nav-link'
+        = link_to 'Account settings', edit_user_registration_path, class: 'mo-nav-link'
         = link_to 'Log out', destroy_user_session_path, method: :delete, class: 'mo-nav-link'
         - if current_user.is? :admin
           = link_to 'Admin', admin_analytics_path, class: 'mo-nav-link'

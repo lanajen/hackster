@@ -21,25 +21,22 @@ class SearchRepository
     def search_models query, models=nil, offset=nil, page=1, per_page=RESULTS_PER_PAGE, include_external
       per_page ||= RESULTS_PER_PAGE
       page ||= 1
-      include_external ||= true
+      include_external = true if include_external.nil?
       filters = []
       filters << { terms: { model: models } } if models.present?
       Rails.logger.info "Searching for #{query} and model #{models.to_s} (offset: #{offset}, page: #{page}, per_page: #{per_page})"
       Tire.search ELASTIC_SEARCH_INDEX_NAME, load: true, page: page, per_page: per_page do
-        query { string query, default_operator: 'AND' } if query.present?
-        filter :and, filters if filters.any?
-        if include_external
-          filter :or, [{ term: { private: false } }, { term: { external: true } }]
-          filter :term, approved: true
-        else
-          filter :term, private: false
-          filter :term, hide: false
+        query do
+          string query, default_operator: 'AND'
         end
-        facet('type') { terms :model }
-        # sort do
-        #   by :external
-        #   by :created_at, { order: :desc, ignore_unmapped: true }
-        # end
+        filter :and, filters if filters.any?
+        facet 'type' do
+          terms :model
+        end
+        sort do
+          by :popularity, { order: :desc, ignore_unmapped: true }
+          by "_score"
+        end
         size per_page
         from (offset || (per_page.to_i * (page.to_i-1)))
       end

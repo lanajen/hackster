@@ -70,6 +70,10 @@ class License
     end.sort_by{ |l| l.name }
   end
 
+  def self.all_with_abbr
+    LICENSE_TYPES.inject({}) { |h, (k, v)| h[k] = v[:abbr]; h }
+  end
+
   def initialize url
     @url = url
     @name = LICENSE_TYPES[url][:name]

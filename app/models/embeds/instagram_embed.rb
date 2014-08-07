@@ -1,0 +1,2 @@
+class InstagramEmbed < VideoEmbed
+end

@@ -6,6 +6,9 @@
 }
 
 @media only screen and (max-width: 899px) {
+  #mobile-bottom-bar {
+    display: block;
+  }
   #tech-page {
     #sidebar-container {
       display: block;
@@ -13,33 +16,42 @@
       width: auto;
     }
   }
+  // Globals
+  .slick-prev, .slick-next{
+    display: none !important;
+  }
+  .medium-editor .embed-frame figure figcaption {
+    &:before {
+      content: none;
+    }
+    position: static;
+    margin: 5px 0 10px;
+    text-align: center;
+    width: auto;
+  }
 }
 
 @media only screen and (min-width: 900px) {
-  // Globals
-  .slick-prev, .slick-next{
-    display: none;
-  }
   #sidebar-container{
     display: block;
-    &:hover ~ #content-with-sidebar.project{
-      @include transform(translate3d(189px,0,0));
-    }
+    // &:hover ~ #content-with-sidebar.project{
+    //   @include transform(translate3d(189px,0,0));
+    // }
   }
   #content-with-sidebar{
     padding-left: 250px;
-    &.project{
-      left: 60px;
-      padding-left: 0;
-      width: 100%;
-      width: calc(100% - 60px);
-      width: -webkit-calc(100% - 60px);
-      width: -moz-calc(100% - 60px);
-      @include transition(all .5s ease);
-      border-left: 1px solid #d9d3d3;
-      -webkit-backface-visibility: hidden;
-      -webkit-perspective: 1000;
-    }
+    // &.project{
+    //   left: 60px;
+    //   padding-left: 0;
+    //   width: 100%;
+    //   width: calc(100% - 60px);
+    //   width: -webkit-calc(100% - 60px);
+    //   width: -moz-calc(100% - 60px);
+    //   @include transition(all .5s ease);
+    //   border-left: 1px solid #d9d3d3;
+    //   -webkit-backface-visibility: hidden;
+    //   -webkit-perspective: 1000;
+    // }
   }
   // Project Pages
   .project-details{
@@ -61,6 +73,12 @@
     .content{
       font-size: 18px;
     }
+  }
+  .medium-status-bar.affixed {
+    left: 249px;
+    width: calc(100% - 249px);
+    width: -webkit-calc(100% - 249px);
+    width: -moz-calc(100% - 249px);
   }
 }
 @media only screen and (min-width: 1150px) {

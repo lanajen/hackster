@@ -1,0 +1,14 @@
+.medium-status-left
+  %span.medium-edit-show.medium-status-recording{ style: 'display: none;'}
+    %i.fa.fa-circle.istooltip{ title: 'Editing (auto-save is on)' }
+  %span.medium-status
+    - if last_edit
+      Last edit
+      = time_ago_in_words last_edit
+      ago
+    - else
+      Never saved
+
+= content_for :js do
+  .medium-error-bubble{ style: 'display:none' }
+    .medium-error.alert.alert-danger

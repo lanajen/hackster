@@ -1,57 +1,87 @@
-#sidebar-container.project-pages-sidebar.affixable
-  %section#sidebar-container-in
-    #project-actions.clearfix
+= content_for :in_main do
+  #sidebar-container.project-pages-sidebar.affixable
+    %section#sidebar-container-in
       - if @project.public?
-        = render partial: 'respects/button', locals: { project: @project }
-        = render 'projects/project_embed_popup'
+        #project-actions
+          - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
+            = render partial: 'respects/button', locals: { project: @project }
+          = render 'projects/project_embed_popup'
+      - elsif @can_edit
+        - who = %w(you)
+        - who += ['team members'] if @project.users.size > 1
+        - who += ["members of #{@project.assignment.promotion.name}"] if @project.collection_id.present? and @project.assignment.present?
+        .alert.alert-warning.alert-flat.text-center
+          %span
+            %p
+              %i.fa.fa-lock
+              This project is private so only #{who.to_sentence} can see it.
+          - if @project.can_be_public? or current_user.try(:is?, :admin)
+            = link_to 'Publish publicly', project_path(@project, project: { private: 0 }), method: :patch, class: 'btn btn-warning btn-sm btn-block'
+          - else
+            = content_tag(:i, '', class: 'fa fa-info-circle istooltip', title: 'You need to add a description and a cover image before you can make it public.')
+      - if @can_edit
+        #project-actions.medium-status-bar
+          = render 'shared/medium_status_buttons'
+          = render partial: 'shared/medium_status', locals: { last_edit: @project.last_edited_at }
 
-      - if can? :edit, @project
-        %a{ href: edit_project_path(@project) }
-          %i.fa.fa-edit
-          Edit project settings
-        %a{ href: new_project_widget_path(@project), data: { remote: true } }
-          %i.fa.fa-plus
-          Add a content block
-        %a{ href: project_widgets_path(@project) }
-          %i.fa.fa-arrows
-          Reorder content blocks
-        = link_to "#{content_tag(:i, '', class: 'fa fa-group')} Manage team".html_safe, project_edit_team_path(@project)
-
-    #scrolling-project-section
-      #scroll-nav
-        %ul.nav
-          %li.active
-            %a.scroll-nav-item.scroll.clearfix{ :href => "#top-project-section", :data => { target: "#top-project-section", offset: '0'}}
-              = @project.name
-              %i.fa.fa-home
-          - @project.widgets.each do |widget|
+      #scrolling-project-section
+        #scroll-nav
+          %ul.nav
+            %li.active
+              %a.scroll-nav-item.scroll.clearfix{ :href => "#top-project-section", :data => { target: "#top-project-section", offset: '0'}}
+                = @project.name
+                %i.fa.fa-home
+            -# @project.widgets.each do |widget|
+              %li
+                %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-#{widget.id}", :data => { target: "#widget-#{widget.id}", offset: '-20'}}
+                  %i.fa{ class: icon_for_widget(widget) }
+                  = widget.name
+            - if @project.build_logs_count > 0 or can? :edit, @project
+              %li
+                %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-comments", :data => { target: "#build-logs", offset: '-20'}}
+                  Build Logs
+                  %span.comment-count
+                    (
+                    = @project.build_logs_count
+                    )
+                  %i.fa.fa-book
+            - if @project.issues_count > 0 or can? :edit, @project
+              %li
+                %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-comments", :data => { target: "#issues", offset: '-20'}}
+                  Issues
+                  %span.comment-count
+                    (
+                    = @project.issues_count
+                    )
+                  %i.fa.fa-exclamation-circle
             %li
-              %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-#{widget.id}", :data => { target: "#widget-#{widget.id}", offset: '-20'}}
-                %i.fa{ class: icon_for_widget(widget) }
-                = widget.name
-          - if @project.build_logs_count > 0 or can? :edit, @project
-            %li
-              %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-comments", :data => { target: "#build-logs", offset: '-20'}}
-                Build Logs
+              %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-comments", :data => { target: "#widget-comments", offset: '-20'}}
+                Comments
                 %span.comment-count
                   (
-                  = @project.build_logs_count
+                  = @project.comments_count
                   )
-                %i.fa.fa-book
-          - if @project.issues_count > 0 or can? :edit, @project
-            %li
-              %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-comments", :data => { target: "#issues", offset: '-20'}}
-                Issues
-                %span.comment-count
-                  (
-                  = @project.issues_count
-                  )
-                %i.fa.fa-exclamation-circle
-          %li
-            %a.scroll-nav-item.scroll.clearfix{ :href => "#widget-comments", :data => { target: "#widget-comments", offset: '-20'}}
-              Comments
-              %span.comment-count
-                (
-                = @project.comments_count
-                )
-              %i.fa.fa-comment
+                %i.fa.fa-comment
+
+  - if @can_edit
+    #mobile-bottom-bar
+      .row
+        .medium-edit-hide
+          - if @project.public?
+            .col-xs-6= render 'projects/project_embed_popup'
+          .pull-right.col-xs-6.medium-status-bar
+            .pull-right= render 'shared/medium_status_buttons'
+
+        .medium-edit-show{ style: 'display:none;' }
+          .col-xs-12.medium-status-bar
+            .pull-left= render partial: 'shared/medium_status', locals: { last_edit: @project.last_edited_at }
+            .pull-right= render 'shared/medium_status_buttons'
+
+  - elsif @project.public?
+    #mobile-bottom-bar
+      .row
+        - if !@can_edit or current_user.try(:is?, :admin)
+          .col-xs-6= render partial: 'respects/button', locals: { project: @project }
+        - else
+          .col-xs-3 &nbsp;
+        .col-xs-6= render 'projects/project_embed_popup'

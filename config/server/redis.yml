@@ -3,6 +3,11 @@ development:
   port: 6379
   login:
   password:
+staging:
+  host: hoki.redistogo.com
+  port: 9133
+  login: redistogo
+  password: e94e0d33cc5c54f51c5471d9e96036dd
 production:
   host: cod.redistogo.com
   port: 9516

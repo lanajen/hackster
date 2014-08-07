@@ -70,8 +70,13 @@ class WidgetsController < ApplicationController
   def destroy
     @widget.destroy
 
-    flash[:notice] = 'Widget deleted.'
-    respond_with @project
+    respond_to do |format|
+      format.html do
+        flash[:notice] = 'Widget deleted.'
+        respond_with @project
+      end
+      format.js { render status: :ok }
+    end
 
     track_event 'Updated project', @project.to_tracker.merge({ type: 'widget deleted' }).merge(@widget.to_tracker)
   end

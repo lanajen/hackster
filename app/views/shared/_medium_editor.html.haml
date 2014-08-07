@@ -1,0 +1,43 @@
+.medium-editor
+  .editable{ 'data-attribute-name' => attribute_name }= editable
+
+  .media-menu.unselectable
+    %a.media-btn.add-media-btn
+      %i.fa.fa-plus
+      Add media
+    .media-menu-btns
+      %a.media-btn.media-btn-action{ data: { action: 'widget', 'widget-type' => 'ImageWidget', media: 'image', container: 'body' }, rel: 'tooltip', title: 'Add images' }
+        %i.fa.fa-camera
+      %a.media-btn.media-btn-action{ data: { action: 'insert', media: 'video', 'default-text' => "Paste a YouTube, Vimeo or Vine link, and press Enter", container: 'body' }, rel: 'tooltip', title: 'Add a video' }
+        %i.fa.fa-play
+      %a.media-btn.media-btn-action{ data: { action: 'widget', 'widget-type' => 'CodeWidget', media: 'code', container: 'body' }, rel: 'tooltip', title: 'Add code or a code file' }
+        %i.fa.fa-code
+      %a.media-btn.media-btn-action{ data: { action: 'insert', media: 'schematics', 'default-text' => "Paste a 123D Circuits, OSH Park or Upverter link, and press Enter", container: 'body' }, rel: 'tooltip', title: 'Add schematics' }
+        %i.fa.fa-gear
+      %a.media-btn.media-btn-action{ data: { action: 'widget', 'widget-type' => 'PartsWidget', media: 'components', container: 'body' }, rel: 'tooltip', title: 'Add components' }
+        %i.fa.fa-cubes
+      %a.media-btn.media-btn-action{ data: { action: 'sketchfab', media: '3d', container: 'body' }, rel: 'tooltip', title: 'Add 3D renderings (STL)' }
+        %i.fa.fa-cube
+      %a.media-btn.media-btn-action{ data: { action: 'upload', media: 'document', 'default-text' => "Select files or drop them here", container: 'body' }, rel: 'tooltip', title: 'Add files' }
+        %i.fa.fa-files-o
+
+  %form#medium-file-upload{action: "https://#{ENV['FOG_DIRECTORY']}.s3.amazonaws.com", enctype: "multipart/form-data", method: "post", style: "display:none;"}
+    %input{name: "key", type: "hidden"}
+    %input{name: "AWSAccessKeyId", type: "hidden", value: "#{ENV['AWS_ACCESS_KEY_ID']}"}
+    %input{name: "acl", type: "hidden", value: "public-read"}
+    %input{name: "policy", type: "hidden"}
+    %input{name: "signature", type: "hidden"}
+    %input{name: "success_action_status", type: "hidden", value: "201"}
+    %input{name: "file", type: "file", multiple: 'multiple'}
+
+  %form#sketchfab-upload{action: "https://#{ENV['FOG_DIRECTORY']}.s3.amazonaws.com", enctype: "multipart/form-data", method: "post", style: "display:none;"}
+    %input{name: "key", type: "hidden"}
+    %input{name: "AWSAccessKeyId", type: "hidden", value: "#{ENV['AWS_ACCESS_KEY_ID']}"}
+    %input{name: "acl", type: "hidden", value: "public-read"}
+    %input{name: "policy", type: "hidden"}
+    %input{name: "signature", type: "hidden"}
+    %input{name: "success_action_status", type: "hidden", value: "201"}
+    %input{name: "file", type: "file", multiple: 'multiple'}
+
+= content_for :js do
+  .loading-bar

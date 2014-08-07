@@ -1,0 +1,2 @@
+class SketchfabEmbed < BaseEmbed
+end

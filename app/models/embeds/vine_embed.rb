@@ -1,0 +1,2 @@
+class VineEmbed < VideoEmbed
+end

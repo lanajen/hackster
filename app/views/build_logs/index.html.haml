@@ -6,29 +6,45 @@
       .clearfix
       %hr
 
-.row
-  .col-xs-12
-    - if @logs.any?
+- if @logs.any?
+  .row.build-logs
+    .col-xs-12
       - @logs.each do |log|
-        .well
+        - log = log.decorate
+        .well.build-log
           .header
-            %h4
-              = link_to log.title, log_path(@project, log)
-              %small.text-muted.pull-right Build log ##{log.sub_id}
+            %h3
+              - if log.draft?
+                = log.title
+              - else
+                = link_to log.title, log_path(@project, log)
+              %small.text-muted.pull-right
+                - if log.draft?
+                  (draft)
+                - else
+                  Build log ##{log.sub_id}
             %small.text-muted
               by
               = link_to log.user.name, log.user
               = time_ago_in_words log.created_at
               ago
-              %i.fa.fa-comments
-              = link_to pluralize(log.comments.size, 'comment'), log_path(@project, log, anchor: 'comments')
-          .content
-            = auto_link log.body
-            %p{ style: 'margin-top:10px' }= link_to 'Discuss this log', log_path(@project, log, anchor: 'comments'), class: 'btn btn-primary btn-sm'
+              - unless log.draft?
+                %i.fa.fa-comments
+                = link_to pluralize(log.comments.size, 'comment'), log_path(@project, log, anchor: 'comments')
+          .content.medium-editor
+            = log.body
+            %p{ style: 'margin-top:10px' }
+              - if log.draft?
+                = link_to 'Edit this log', edit_project_log_path(@project.user_name_for_url, @project.slug, log.id), class: 'btn btn-warning btn-sm'
+              - else
+                = link_to 'Discuss this log', log_path(@project, log, anchor: 'comments'), class: 'btn btn-primary btn-sm'
 
+  .row
+    .col-xs-12
       .text-center= will_paginate @logs
 
-    - else
-      .well
-        .content
-          There are no logs.
+- else
+  .row
+    .col-xs-12
+      %p
+        There are no logs.

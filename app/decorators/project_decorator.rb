@@ -1,4 +1,6 @@
 class ProjectDecorator < ApplicationDecorator
+  include MediumEditorDecorator
+
   def cover_image version=:cover
     if model.cover_image and model.cover_image.file_url
       model.cover_image.file_url(version)
@@ -8,11 +10,7 @@ class ProjectDecorator < ApplicationDecorator
   end
 
   def description
-    if model.description.present?
-      model.description.html_safe
-    else
-      "No description has been entered yet."
-    end
+    parse_medium model.description
   end
 
   def logo size=nil, use_default=true
@@ -45,5 +43,9 @@ class ProjectDecorator < ApplicationDecorator
     else
       h.content_tag(:div, '', class: 'logo-placeholder')
     end
+  end
+
+  def name_not_default
+    model.name == Project::DEFAULT_NAME ? nil : model.name
   end
 end

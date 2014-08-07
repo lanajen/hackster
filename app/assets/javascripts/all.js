@@ -2,32 +2,31 @@
   $('input, textarea').placeholder();
 
   $(function(){
-    console.log('/assets/wysihtml5.css');
-    var $wysihtml5Inputs = $('.wysihtml5-textarea');
-    if($wysihtml5Inputs.length){
-      $wysihtml5Inputs.each(function(){
-        var id = $(this).attr('id'),
-            count = id.split('-')[2];
-        var editor = new wysihtml5.Editor(id, { // id of textarea element
-          toolbar:      'wysihtml5-toolbar-'+count, // id of toolbar element
-          stylesheets:  "/assets/wysihtml5.css", // optional, css to style the editor's content
-          parserRules:  wysihtml5CustomParserRules, // defined in parser rules set
-          allowObjectResizing:  true // Whether the composer should allow the user to manually resize images, tables etc.
-        });
-      });
-    }
-
+    // console.log('/assets/wysihtml5.css');
+    // var $wysihtml5Inputs = $('.wysihtml5-textarea');
+    // if($wysihtml5Inputs.length){
+    //   $wysihtml5Inputs.each(function(){
+    //     var id = $(this).attr('id'),
+    //         count = id.split('-')[2];
+    //     var editor = new wysihtml5.Editor(id, { // id of textarea element
+    //       toolbar:      'wysihtml5-toolbar-'+count, // id of toolbar element
+    //       stylesheets:  "/assets/wysihtml5.css", // optional, css to style the editor's content
+    //       parserRules:  wysihtml5CustomParserRules, // defined in parser rules set
+    //       allowObjectResizing:  true // Whether the composer should allow the user to manually resize images, tables etc.
+    //     });
+    //   });
+    // }
 
     //Fade in alerts/notices
     if($('.fade-in').length){
       //if there's a slide-in notification on top of the page, wait until it's down sliding down before affixing divs
       $('.fade-in').delay(2000).slideDown(500,function(){
         affixDivs();
-        affixTranslate();
+        // affixTranslate();
       });
     } else{
       affixDivs();
-      affixTranslate();
+      // affixTranslate();
     }
     $(document).on('click', '.btn-close', function(e){
       target = $(this).data('close');
@@ -168,53 +167,58 @@
   // affixes .affixable
   var $fixedEl;
   var affixDivs = function affixDivs(){
-    $fixedEl      = $('.affixable');
-    var $window   = $(window);
+    $fixedEl = $('.affixable');
+    var $window = $(window);
     if ($fixedEl.length) {
       $.each($fixedEl, function(){
-        var top   = parseInt($(this).offset().top - (parseFloat($(this).css('top')) || 0)),
+        var top = parseInt($(this).offset().top - (parseFloat($(this).css('top')) || 0)),
             $this = $(this);
+        updateAffix(top, $window, $this);
         $window.on('scroll.affix',function(){
-          var y = $window.scrollTop();
-          if (y >= top) {
-            $this.hasClass('affix') ? '' : $this.addClass('affix');
-          } else {
-            $this.hasClass('affix') ? $this.removeClass('affix') : '';
-          }
+          updateAffix(top, $window, $this);
         });
       });
     }
   };
-  //affixes project sidebar using translates instead of changing position:absolute -> position:fixed
-  var $fixedEl2;
-  var affixTranslate = function affixTranslate(){
-    $fixedEl2      = $('.affixTranslate');
-    var $window   = $(window);
-    if ($fixedEl2.length) {
-      $.each($fixedEl2, function(){
-        var $this = $(this);
-        var y;
-        var z;
-        $window.on('scroll.affixtranslate',function(){
-          y = $window.scrollTop();
-          if (y <= 0) {
-            z = 60;
-          } else if (y < 60){
-            z = 60 - y;
-          } else{
-            z = 0;
-          }
-          $this.css({
-            '-webkit-transform': 'translateY('+z+'px)',
-            '-moz-transform': 'translateY('+z+'px)',
-            '-o-transform': 'translateY('+z+'px)',
-            '-ms-transform': 'translateY('+z+'px)',
-            'transform': 'translateY('+z+'px)'
-          });
-        });
-      });
+
+  function updateAffix(top, w, el){
+    var y = w.scrollTop();
+    if (y >= top) {
+      el.hasClass('affix') ? '' : el.addClass('affix');
+    } else {
+      el.hasClass('affix') ? el.removeClass('affix') : '';
     }
-  };
+  }
+  // //affixes project sidebar using translates instead of changing position:absolute -> position:fixed
+  // var $fixedEl2;
+  // var affixTranslate = function affixTranslate(){
+  //   $fixedEl2      = $('.affixTranslate');
+  //   var $window   = $(window);
+  //   if ($fixedEl2.length) {
+  //     $.each($fixedEl2, function(){
+  //       var $this = $(this);
+  //       var y;
+  //       var z;
+  //       $window.on('scroll.affixtranslate',function(){
+  //         y = $window.scrollTop();
+  //         if (y <= 0) {
+  //           z = 60;
+  //         } else if (y < 60){
+  //           z = 60 - y;
+  //         } else{
+  //           z = 0;
+  //         }
+  //         $this.css({
+  //           '-webkit-transform': 'translateY('+z+'px)',
+  //           '-moz-transform': 'translateY('+z+'px)',
+  //           '-o-transform': 'translateY('+z+'px)',
+  //           '-ms-transform': 'translateY('+z+'px)',
+  //           'transform': 'translateY('+z+'px)'
+  //         });
+  //       });
+  //     });
+  //   }
+  // };
 
   var updatedScrollEventHandlers = function updatedScrollEventHandlers(){
     if($('#scroll-nav').length){
@@ -224,17 +228,27 @@
       $(window).off('scroll.affix');
       affixDivs();
     }
-    if(fixedEl2.length){
-      $(window).off('scroll.affixtranslate');
-      affixTranslate();
-    }
+    // if($fixedEl2.length){
+    //   $(window).off('scroll.affixtranslate');
+    //   affixTranslate();
+    // }
   };
 })(jQuery, window, document);
 
-function smoothScrollTo(target, offsetTop) {
+function smoothScrollToIfOutOfBounds(target, offsetTop, speed) {
+  if (typeof(target) == 'string') target = $(target);
+  var top = window.pageYOffset || document.documentElement.scrollTop,
+      bottom = top + $(window).height(),
+      targetPos = target.offset().top;
+  if ((targetPos + target.height() > bottom) || (targetPos + offsetTop < top))
+    smoothScrollTo(target, offsetTop, speed);
+}
+
+function smoothScrollTo(target, offsetTop, speed) {
   offsetTop = offsetTop || 0;
+  speed = speed || 500;
   if (typeof(target) == 'string') target = $(target);
   $('html, body').stop().animate({
     'scrollTop': target.offset().top + offsetTop
-  }, 500, 'swing', function () {});
+  }, speed, 'swing', function () {});
 }

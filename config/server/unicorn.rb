@@ -60,7 +60,7 @@ app_name          = 'hackerio'
 # end
 
 if ENV['RAILS_ENV'] == 'development'
-  worker_processes 1
+  worker_processes 2
   # timeout 120
 else
   worker_processes Integer(ENV["WEB_CONCURRENCY"] || 3)

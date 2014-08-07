@@ -1,0 +1,8 @@
+- stl_url = embed.widget.sketchfab_files.any? ? embed.widget.sketchfab_files.first.file_url : nil
+
+.stl-widget.block-mouse-on-edit
+  - if stl_url
+    <iframe width="100%" height="100%" frameborder="0" allowFullScreen webkitallowfullscreen mozallowfullscreen src="https://sketchfab.com/models/#{embed.widget.sketchfab_uid}/embed"></iframe>
+    .download-link{ contenteditable: 'false' }
+      %i.fa.fa-file-o.fa-lg
+      %a{ href: stl_url } Download

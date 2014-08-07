@@ -1,0 +1,1970 @@
+// - blog post or help page to explain of the editor works
+// - blog post to suggest default template
+// - announcement
+
+var editor;
+var codeEditor = {};
+var emptyParagraph = '<p class="paragraph--empty"><br></p>';
+var elementTypes = 'p,h3,h4,i,b,a';
+
+var progressTpl = '<div class="embed-overlay is-visible"><div class="center-align-wrapper"><div class="center-align-inner"><p class="progress-legend">Uploading...</p><div class="progress progress-striped active"><div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%;"></div></div></div></div>';
+
+var embedOverlay = {
+  main: '<div class="embed-overlay"><div class="center-align-wrapper"><div class="center-align-inner embed-overlay-content"><button class="btn btn-danger btn-lg" data-action="delete-slide"><i class="fa fa-trash-o"></button></div></div></div>',
+  moveLeftBtn: '<button class="btn btn-default btn-lg" data-action="move-left"><i class="fa fa-arrow-left"></button>',
+  moveRightBtn: '<button class="btn btn-default btn-lg" data-action="move-right"><i class="fa fa-arrow-right"></button>'
+}
+
+var embedToolbar = {
+  main: '<div class="medium-editor-toolbar medium-toolbar-arrow-under medium-editor-toolbar-embed embed-actions"><ul id="medium-editor-toolbar-actions" class="medium-editor-toolbar-actions clearfix"><li><button class="medium-editor-action" data-action="delete"><i class="fa fa-trash-o"></i></button></li></ul></div>',
+  moveUpBtn: '<li><button class="medium-editor-action" data-action="move-up"><i class="fa fa-arrow-up"></button></li>',
+  moveDownBtn: '<li><button class="medium-editor-action" data-action="move-down"><i class="fa fa-arrow-down"></button></li>',
+  addSlideBtn: '<li><button class="medium-editor-action" data-action="add-slide"><i class="fa fa-plus"></button></li>'
+}
+
+function CodeEditor(language, id) {
+  this.ace = null;
+  this.isActive = false;
+  this.language = language;
+  this.id = id;
+}
+
+CodeEditor.prototype.activate = function() {
+  this.ace = ace.edit("code-editor-"  + this.id);
+  this.ace.setTheme("ace/theme/idle_fingers");
+  this.ace.getSession().setMode("ace/mode/" + this.language);
+  this.ace.getSession().setUseSoftTabs(true);
+  this.ace.setShowPrintMargin(false);
+  this.ace.getSession().setTabSize(2);
+  this.ace.renderer.setPadding(10);
+  this.ace.renderer.setScrollMargin(10, 10, 0, 0);
+  this.ace.getSession().setUseWrapMode(true);
+
+  if (!(editor && editor.self && editor.self.isActive))
+    this.ace.setReadOnly(true);
+
+  // Set initial size to match initial content
+  heightUpdateFunction("#code-editor-" + this.id, this.ace);
+
+  // Whenever a change happens inside the ACE editor, update
+  // the size again
+  var _ = this;
+  this.ace.getSession().on('change', function(e){
+    heightUpdateFunction("#code-editor-" + _.id, _.ace);
+    $('#code-widget-' + _.id + ' .code-container').addClass('outdated');
+    editor.triggerInput();
+  });
+
+  this.isActive = true;
+}
+
+$(function() {
+
+  /**
+  * Extend MediumEditor functions if the editor exists
+  */
+  if (MediumEditor && typeof(MediumEditor) === "function") {
+
+    // method overloaded to adapt to clean up app-specific markup
+    MediumEditor.prototype.serialize = function () {
+      var i, j,
+          elementid,
+          content = {},
+          $clone, $inserts, html;
+      for (i = 0; i < this.elements.length; i += 1) {
+        elementid = (this.elements[i].id !== '') ? this.elements[i].id : 'element-' + i;
+        content[elementid] = {};
+        elementName = $(this.elements[i]).data('attribute-name');
+
+        $clone = $(this.elements[i]).clone();
+
+        // clearing slick markup because unslick() doesn't work as closed
+        $('.image-gallery .slick-dots', $clone).remove();
+        $('.image-gallery .slick-prev', $clone).remove();
+        $('.image-gallery .slick-next', $clone).remove();
+        $('.image-gallery .slick-slide', $clone)
+          .unwrap().unwrap()
+          .removeClass('slick-slide slick-active slick-visible')
+          .removeAttr('style');
+        $('.image-gallery', $clone).removeClass('slick-initialized slick-slider');
+
+        $clone.find('.default-text').remove();
+        $clone.find('.remove-on-save').remove();
+        $inserts = $clone.find('.embed-frame');
+
+        $inserts.filter('.is-selected').removeClass('is-selected');
+
+        $.each(codeEditor, function(id, cEditor){
+          if (cEditor.isActive) {
+            widget = $inserts.filter('[data-widget-id="' + id + '"]');
+            widget.find('[data-attribute="raw_code"]').attr('data-value', cEditor.ace.getValue());
+          }
+        });
+
+        content[elementid]['widgets_attributes'] = {};
+        $.each($inserts.filter('[data-type="widget"]'), function(i, el){
+          attrs = { id: $(el).data('widget-id') };
+          type = $(el).data('widget-type');
+          if (type) attrs['type'] = type;
+          $(el).find('[data-attribute]').each(function(){
+            attrs[$(this).data('attribute')] = $(this).hasClass('widget-attribute-editable') ? $(this).text() : ($(this).hasClass('widget-attribute-val') ? $(this).val() : $(this).attr('data-value'));
+          });
+          content[elementid]['widgets_attributes'][i] = attrs;
+        });
+
+        $inserts.find('figcaption').each(function(){
+          frame = $(this).closest('.embed-frame');
+          frame.attr('data-caption', $(this).text());
+        });
+        $inserts.children().remove();
+
+        html = $clone.html().trim();
+        content[elementid][elementName] = html;
+      }
+      // console.log(content);
+      return content;
+    };
+
+    // method overloaded to disable toolbar on specified elements
+    MediumEditor.prototype.checkSelectionElement = function (newSelection, selectionElement) {
+      var i;
+      this.selection = newSelection;
+      this.selectionRange = this.selection.getRangeAt(0);
+      // disable toolbar on specified elements
+      anchor = newSelection.anchorNode;
+      if (!anchor.parentNode.getAttribute('data-disable-toolbar')) {
+        for (i = 0; i < this.elements.length; i += 1) {
+            if (this.elements[i] === selectionElement) {
+                this.setToolbarButtonStates()
+                    .setToolbarPosition()
+                    .showToolbarActions();
+                return;
+            }
+        }
+      }
+      this.hideToolbarActions();
+    };
+
+    // overloading to add rel=nofollow
+    MediumEditor.prototype.setTargetBlank = function () {
+        var el = getSelectionStart(),
+            i;
+        if (el.tagName.toLowerCase() === 'a') {
+            el.target = '_blank';
+            el.rel = 'nofollow';
+        } else {
+            el = el.getElementsByTagName('a');
+            for (i = 0; i < el.length; i += 1) {
+                el[i].target = '_blank';
+                el[i].rel = 'nofollow';
+            }
+        }
+    };
+
+    MediumEditor.prototype.setPlaceholders = function () {
+        var i,
+            activatePlaceholder = function (el) {
+                if (!(el.querySelector('img')) &&
+                        !(el.querySelector('blockquote')) &&
+                        !(el.querySelector('.embed-frame')) &&
+                        el.textContent.replace(/^\s+|\s+$/g, '') === '') {
+                    el.classList.add('medium-editor-placeholder');
+                }
+            },
+            placeholderWrapper = function (e) {
+                this.classList.remove('medium-editor-placeholder');
+                if (e.type !== 'keypress') {
+                    activatePlaceholder(this);
+                }
+            };
+        for (i = 0; i < this.elements.length; i += 1) {
+            activatePlaceholder(this.elements[i]);
+            this.elements[i].addEventListener('blur', placeholderWrapper);
+            this.elements[i].addEventListener('keypress', placeholderWrapper);
+        }
+        return this;
+    };
+
+    // MediumEditor.prototype.execAction = function (action, e) {
+    //     $(document).trigger('execCommand', action);
+    //     if (action.indexOf('append-') > -1) {
+    //         this.execFormatBlock(action.replace('append-', ''));
+    //         this.setToolbarPosition();
+    //         this.setToolbarButtonStates();
+    //     } else if (action === 'anchor') {
+    //         this.triggerAnchorAction(e);
+    //     } else if (action === 'image') {
+    //         document.execCommand('insertImage', false, window.getSelection());
+    //     } else {
+    //         document.execCommand(action, false, null);
+    //         this.setToolbarPosition();
+    //     }
+    // };
+  }
+
+  rangy.init();
+  function InsertCodeBlock() {
+      this.button = document.createElement('button');
+      this.button.className = 'medium-editor-action';
+      this.button.innerHTML = '<i class="fa fa-code"></i>';
+      this.button.onclick = this.onClick.bind(this);
+      this.classApplier = rangy.createCssClassApplier("makeCode", {
+          elementTagName: 'code',
+          normalize: true
+      });
+  }
+  InsertCodeBlock.prototype.onClick = function() {
+      this.classApplier.toggleSelection();
+  };
+  InsertCodeBlock.prototype.getButton = function() {
+      return this.button;
+  };
+  InsertCodeBlock.prototype.checkState = function (node) {
+      if(node.tagName == 'CODE') {
+          this.button.classList.add('medium-editor-button-active');
+      }
+  };
+
+  editor = {
+    self: null,
+    elements: $('.editable'),
+    status: $('.medium-status'),
+    error: $('.medium-error'),
+    modelId: $('.model-editor').data('model-id'),
+    modelType: $('.model-editor').data('model-type'),
+    modelSymbol: $('.model-editor').data('model-symbol') || this.modelType,
+    placeholder: $('.model-editor').data('model-placeholder'),
+    modelUrl: $('.model-editor').data('model-url'),
+    lastSaved: null,
+    saveTimerOn: false,
+    unsavedChanges: false,
+    iFile: 0,
+
+    activate: function(callback){
+      var _ = this;
+      callback = callback || function(){};
+
+      _.self = new MediumEditor(_.elements, {
+        buttonLabels: 'fontawesome',
+        cleanPastedHTML: true,
+        targetBlank: true,
+        placeholder: _.placeholder,
+        buttons: ['bold', 'italic', 'underline', 'anchor', 'insertCodeBlock', 'header1', 'header2', 'unorderedlist', 'orderedlist'],
+        extensions: {
+            'insertCodeBlock': new InsertCodeBlock()
+        }
+      });
+
+      _.elements.addClass('editable-activated');
+      $('.medium-editor, .model-editor').addClass('editor-active');
+
+      $(embedOverlay.main).appendTo(_.elements.find('.image-gallery figure'));
+      $(embedOverlay.moveLeftBtn).appendTo(_.elements.find('.image-gallery.slick-slider .embed-overlay-content'));
+      $(embedOverlay.moveRightBtn).appendTo(_.elements.find('.image-gallery.slick-slider .embed-overlay-content'));
+
+      $(embedToolbar.main).appendTo(_.elements.find('.embed'));
+      toolBar = _.elements.find('.medium-editor-toolbar-actions');
+      $(embedToolbar.moveDownBtn).prependTo(toolBar);
+      $(embedToolbar.moveUpBtn).prependTo(toolBar);
+      toolBar = _.elements.find('.image-gallery').closest('.embed-frame').find('.medium-editor-toolbar-actions');
+      $(embedToolbar.addSlideBtn).prependTo(toolBar);
+
+      resizeToolBars();
+
+      $('figcaption').attr('contenteditable', true);
+
+      $('[data-edit-only="true"]').show();
+      $('[data-edit-hide="true"]').hide();
+      $('[data-contenteditable]').attr('contenteditable', 'true');
+      _.elements.find('input:disabled').prop('disabled', false);
+
+      $.each(codeEditor, function(id, cEditor){
+        if (!cEditor.isActive) cEditor.activate();
+        cEditor.ace.setReadOnly(false);
+      });
+
+      markEmptyParagraphs(_.elements);
+      loadPlaceholders(_.elements.find('.embed-frame'));
+      activateSortable();
+      updateFileUploadDragZone();
+
+      $('.editable-attribute').attr('contenteditable', 'true');
+      $('.editable-attribute').each(function(){
+        if ($(this).text() == ''){
+          $(this).html('<span class="default-text">' + $(this).data('default-text') + '</span>');
+        }
+      });
+      focusEditable();
+
+      callback();
+      console.log('editor activated');
+      return _.self;
+    },
+
+    disable: function(callback) {
+      var _ = this;
+      callback = callback || function(){};
+
+      if (_.self) {
+        // don't disable until changes have been saved
+        if (_.unsavedChanges) {
+          _.saveModel(function(){
+            _.disable(callback);
+          });
+          return;
+        }
+
+        _.self.deactivate();
+        $('[data-edit-only="true"]').hide();
+        $('[data-edit-hide="true"]').show();
+        $('[contenteditable]').attr('contenteditable', 'false');
+        $('figcaption').attr('contenteditable', false);
+        _.elements.removeClass('editable-activated');
+        $('.medium-editor, .model-editor').removeClass('editor-active');
+        $('.is-selected').removeClass('is-selected');
+        $('.medium-editor-toolbar-active').removeClass('medium-editor-toolbar-active');
+        _.elements.find('input').prop('disabled', true);
+
+        $.each(codeEditor, function(id, cEditor){
+          cEditor.ace.setReadOnly(true);
+        });
+
+        _.elements.find('.embed-overlay').remove();
+        _.elements.find('.medium-editor-toolbar-embed').remove();
+        $('.paragraph--empty').removeClass('paragraph--empty');
+        $('.default-text').remove();
+        $('.medium-editor-placeholder').removeClass('medium-editor-placeholder');
+        hideMediaButtons();
+        _.clearErrors();
+
+        callback();
+        console.log('editor disabled');
+      }
+      return _.self;
+    },
+
+    triggerInput: function() {
+      var _ = this;
+
+      _.elements.trigger('input');
+    },
+
+    checkAndSaveModel: function() {
+      var _ = this;
+
+      if (!this.self.isActive) return;
+
+      _.status.html('<i class="fa fa-refresh fa-spin"></i> Changes not saved...');
+      if (_.saveTimerOn) return;
+
+      now = $.now();
+      timeAgo = now - _.lastSaved;
+      if (timeAgo < 5000) {
+        window.setTimeout(function(){
+          _.saveTimerOn = false;
+          _.checkAndSaveModel();
+        }, timeAgo);
+        _.saveTimerOn = true;
+        return;
+      }
+
+      _.saveModel();
+    },
+
+    saveModel: function(successCallback, failCallback, formData) {
+      var _ = this;
+      successCallback = successCallback || function(){};
+      failCallback = failCallback || function(){};
+
+      var modelData = _.self.serialize()['element-0'];
+      if (!formData) {
+        formData = {};
+        formData[_.modelSymbol] = modelData;
+      }
+      formData.utf8 = '✓';
+      // var form = $(projectFormTpl);
+      // createInputFor('utf8', '✓', form);
+      // createInputFor('project[description]', projectData['description'], form);
+      // widgetAttrs = prepareForInputs(projectData['widgets_attributes']);
+      // $.each(widgetAttrs, function(key, val){
+      //   createInputFor('project[widgets_attributes]' + key, val, form);
+      // });
+      // var formData = new FormData(form[0]);
+      _.showLoadingBar();
+      _.status.html('<i class="fa fa-refresh fa-spin"></i> Saving...');
+
+      $.ajax(_.modelUrl + '/' + _.modelId, {
+        data: formData,
+        // processData: false,
+        // contentType: false,
+        type: 'PATCH',
+        xhr: function() {
+            return window.XMLHttpRequest == null || new window.XMLHttpRequest().addEventListener == null
+                ? new window.ActiveXObject("Microsoft.XMLHTTP")
+                : $.ajaxSettings.xhr();
+        },
+        success: function(data){
+          _.clearErrors();
+          _.status.html('<i class="fa fa-check" style="color:#5cb85c"></i> All changes saved');
+          _.unsavedChanges = false;
+          successCallback(data);
+        },
+        error: function(data){
+          switch(data.status) {
+            case 400:
+              _.status.html('<i class="fa fa-times" style="color:#d9534f"></i> Could not save! Please correct errors below. (Last saved at ' + getTimeInText(_.lastSaved) + ')');
+              if (_.elements.hasClass('editable-activated')) {
+                _.clearErrors();
+                _.showErrors(data.responseJSON);
+              }
+              break;
+            default:
+              _.status.html('<i class="fa fa-times" style="color:#d9534f"></i> Error saving! (Last saved at ' + getTimeInText(_.lastSaved) + ')');
+          }
+          failCallback(data);
+        },
+        complete: function(data){
+          _.hideLoadingBar();
+        }
+      });
+      _.lastSaved = new Date().getTime();
+    },
+
+    showErrors: function(data) {
+      $.each(data['widgets'], function(id, errors){
+        w = $('.embed-frame[data-widget-id="' + id + '"]');
+        $.each(errors, function(fieldName, msg){
+          f = w.find('[data-attribute="' + fieldName + '"]');
+          f.addClass('has-error');
+          $('<span class="default-text help-block">' + msg + '</span>').appendTo(f);
+        });
+      });
+    },
+
+    clearErrors: function() {
+      $('.has-error .help-block').remove();
+      $('.has-error').removeClass('has-error');
+    },
+
+    showLoadingBar: function() {
+      $('body').addClass('app-loading');
+    },
+
+    hideLoadingBar: function() {
+      $('body').removeClass('app-loading');
+    }
+  }
+});
+
+$(function () {
+
+  // $(document).on('execCommand', function(e, action){
+  //   if (action == 'append-h3') {
+  //     stylizeH3(editor.elements);
+  //   }
+  // });
+
+  $('.medium-editor').on('click', '.code-widget .upload-code', function(e){
+    e.preventDefault();
+    $($(this).data('target')).click();
+  });
+
+  $('#upload-cover-image a').click(function(e){
+    e.preventDefault();
+    $('#upload-cover-image-form input:file').click();
+  });
+
+  //
+  // .editable-attribute's
+  //
+
+  $('.editable-attribute').each(function(e){
+    var tpl = $(this).data('view-tpl');
+    var value = $(this).data('value');
+    loadTplForAttr($(this), tpl, value);
+  });
+
+  $('.model-editor').on('click', '.editable-attribute', function(e){
+    if ($(this).is(':focus')) e.preventDefault();
+  });
+
+  $('.model-editor').on('focus focusin', '.editable-attribute select', function(e){
+    e.stopPropagation();
+    var parent = $(this).closest('.editable-attribute');
+    curAttr = {
+      name: parent.attr('data-attribute'),
+      value: $(this).val()
+    };
+    curFocus = this;
+  });
+
+
+  var curAttr;
+  var curFocus;
+  $('.model-editor').on('focus focusin', '.editable-attribute', function(e){
+    if (curFocus == this) return;
+
+    var value = $(this).data('value');
+    var editTpl = $(this).data('edit-tpl');
+
+    if (editTpl) {
+      var newValue = editTpl.replace(/\*([^\*]+)\*/g, function(match, p1, offset, string){
+        return eval(p1);
+      });
+      $(this).html(newValue);
+    } else if (value && value !== '') {
+      $(this).html(value);
+      focusAtEndOfRange($(this)[0], false);
+    } else {
+      $(this).html('<span class="default-text">' + $(this).data('default-text') + '</span>');
+      focusAtBeginningOfRange($(this).children('.default-text')[0], false);
+    }
+
+    curAttr = {
+      name: $(this).attr('data-attribute'),
+      value: $(this).contents().filter(function(){ return this.nodeType == 3 }).text()
+    };
+    curFocus = this;
+  });
+
+  $('.model-editor').on('change', '.editable-attribute', function(e){
+    if (!curAttr) return;
+
+    var value = $(this).contents().filter(function(){ return this.nodeType == 3 }).text();
+    if (curAttr.value != value) {
+      editor.unsavedChanges = true;
+    }
+  });
+
+  $('.model-editor').on('blur focusout', '.editable-attribute', function(e){
+    if (curFocus != this) return;
+
+    var value = $(this).contents().filter(function(){ return this.nodeType == 3 }).text(),
+        model = $(this).data('model'),
+        attr = $(this).data('attribute');
+    $(this).data('value', value);
+
+    if (curAttr.value != value) {
+      data = {};
+      data[model] = {};
+      data[model][attr] = value;
+      editor.saveModel(null, null, data);
+    }
+    curAttr = null;
+
+    var tpl = $(this).data('view-tpl');
+    loadTplForAttr($(this), tpl, value);
+    otherInputs = $('[data-model="' + model + '"][data-attribute="' + attr + '"]').not($(this));
+    if (otherInputs.length) {
+      $.each(otherInputs, function(i, input){
+        var tpl = $(input).data('view-tpl');
+        var placeholder = $(input).data('default-text');
+        $(input).data('value', value);
+        loadTplForAttr($(input), tpl, value, placeholder);
+      });
+    }
+
+    curFocus = null;
+  });
+
+  $('.model-editor').on('blur focusout', '.editable-attribute select', function(e){
+    if (curFocus != this) return;
+
+    var value = $(this).val();
+    var parent = $(this).closest('.editable-attribute');
+    parent.data('value', value);
+
+    if (curAttr.value != value) {
+      editor.unsavedChanges = true;
+      model = parent.data('model');
+      attr = parent.data('attribute');
+      data = {};
+      data[model] = {};
+      data[model][attr] = value;
+      editor.saveModel(null, null, data);
+    }
+    curAttr = null;
+
+    var tpl = parent.data('view-tpl');
+    var placeholder = parent.data('default-text');
+    loadTplForAttr(parent, tpl, value, placeholder);
+
+    curFocus = null;
+  });
+
+  $('.model-editor').on('keypress keydown', '.editable-attribute', function(e){
+    var defaultNode = $(this).find('.default-text');
+
+    if (e.which === 13) {
+      e.preventDefault();
+      $(this).blur();
+    } else if (defaultNode.length) {
+      if (e.which !== 0 && e.charCode !== 0 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        defaultNode.remove();
+      } else if (e.keyCode == 39) {
+        e.preventDefault();
+        focusAtBeginningOfRange(node[0]);
+      } else if (e.keyCode == 8) {
+        e.preventDefault();
+      }
+    } else {
+      if (e.keyCode == 8 && $(this).text().length == 1) {
+        e.preventDefault();
+        loadPlaceholder($(this), true);
+        focusAtBeginningOfRange($(this).find('.default-text')[0]);
+      }
+    }
+    $(this).trigger('change');
+  });
+
+  $('.model-editor').on('click dblClick', '.editable-attribute .default-text', function(e){
+    var selection = retrieveSelection();
+    e.preventDefault();
+    focusAtBeginningOfRange(selection.anchorNode, false);
+  });
+
+  $('.model-editor').on('keyup', '.editable-attribute[data-default-text]', function(e){
+    node = $(this);
+    if (e.keyCode == 8 && node.text() == '') {
+      loadPlaceholder(node, true);
+      focusAtBeginningOfRange(node.find('.default-text')[0]);
+    }
+  });
+
+
+  //
+  // .editable text div
+  //
+
+  $('.medium-editor').on('keypress keydown', '.editable.editable-activated .widget-attribute-editable', function(e){
+    if (e.keyCode == 13) {
+      e.preventDefault();
+    }
+  });
+
+  $('.medium-editor').on('change', '.editable.editable-activated .language-selector select', function(e){
+    e.preventDefault();
+    cEditor = codeEditor[$(this).data('target')];
+    cEditor.ace.getSession().setMode("ace/mode/" + this.value);
+    $(this).prev('.widget-attribute').attr('data-value', this.value);
+    editor.triggerInput();
+  });
+
+  $('.medium-edit-start').on('click', function(e){
+    editor.activate(function() {
+      $('.medium-edit-hide').hide();
+      $('.medium-edit-show').show();
+    });
+    e.preventDefault();
+  });
+
+  $('.medium-edit-stop').on('click', function(e){
+    $href = $(this).attr('href');
+    editor.disable(function() {
+      if (typeof($href) != 'undefined' && $href != '') {
+        window.location.href = $href;
+      } else {
+        $('.medium-edit-show').hide();
+        $('.medium-edit-hide').show();
+      }
+    });
+    e.preventDefault();
+  });
+
+  $('.medium-editor').on('click', '.editable.editable-activated .embed-actions button', function(e){
+    hideMediaButtons($(this));
+    switch ($(this).data('action')) {
+      case 'delete':
+        frame = $(this).closest('.embed-frame');
+
+        widgetId = frame.attr('data-widget-id');
+        if (widgetId) deleteWidget(widgetId);
+
+        if (frame.hasClass('slick-slide')) {
+          frame.fadeOut(function(){
+            slider = $(this).closest('.slick-slider');
+            if (slider.find('.slick-slide').length > 1) {
+              slider.slickRemove(slider.slickCurrentSlide());
+              $(this).remove();
+            } else {
+              slider.remove();
+            }
+            editor.triggerInput();
+          });
+        } else {
+          frame.slideUp(function(){
+            anchor = $(this).next('p.paragraph--empty');
+            if (!anchor.length) anchor = $(this).prev('p.paragraph--empty');
+            $(this).remove();
+            if (anchor.length) focusAtBeginningOfRange(anchor[0]);
+            editor.triggerInput();
+          });
+        }
+        break;
+
+      case 'add-slide':
+        // $('#upload-placeholder').remove();
+        $('.upload-here').removeClass('upload-here');
+        frame = $(this).closest('.embed-frame');
+        // $('<div id="upload-placeholder" data-file-type="image" class="remove-on-save"></div>').appendTo(frame.find('.slick-track'));
+        frame.find('.image-gallery').addClass('upload-here').attr('data-file-type', 'image');
+        $('#medium-file-upload').find('input[type=file]').click();
+        break;
+
+      case 'move-up':
+        moveToDirection($(this), 'up');
+        break;
+
+      case 'move-down':
+        moveToDirection($(this), 'down');
+        break;
+    }
+  });
+
+  $('.medium-editor').on('click', '.editable.editable-activated .embed-frame[data-type="widget"] :not(.embed-actions) button', function(e){
+    var btn = $(this);
+    switch (btn.data('action')) {
+      case 'delete-part':
+        target = btn.closest('.fields');
+        id = target.find('[data-attribute$="[id]"]').data('value');
+        deletePart(id);
+        target.remove();
+        editor.triggerInput();
+        break;
+
+      case 'add-part':
+        $.ajax({
+          url: '/api/v1/parts',
+          data: {
+            part: {
+              partable_type: 'Widget',
+              partable_id: $(this).closest('.embed-frame').data('widget-id'),
+              quantity: 1
+            }
+          },
+          type: 'POST',
+          success: function(data){
+            tpl = btn.data('template');
+            i = btn.closest('.fields-container').find('.fields').length - 1;
+            tpl = tpl.replace(/replace_id/g, i);
+            tpl = $(tpl);
+            tpl.find('[data-attribute="[parts_attributes][' + i + '][id]"]').attr('data-value', data.id);
+            tpl.find('[data-edit-only="true"]').show();
+            tpl.find('[data-contenteditable="true"]').attr('contenteditable', 'true');
+            loadPlaceholders(tpl);
+            btn.closest('.fields').before(tpl);
+            tpl.trigger('nested:fieldAdded');
+          }
+        });
+        break;
+
+      case 'delete-slide':
+        slide = $(this).closest('.slick-slide');
+        frame = slide.closest('.embed-frame');
+
+        fileId = slide.find('figure').attr('data-file-id');
+        deleteFile(fileId);
+        frame.find('[data-attribute="image_ids"] option[value="' + fileId + '"]').remove();
+
+        slide.fadeOut(function(){
+          slider = $(this).closest('.slick-slider');
+          slider.slickRemove(slider.slickCurrentSlide());
+          $(this).remove();
+          resetPositions(slider.find('.position'));
+          editor.triggerInput();
+        });
+        break;
+
+      case 'move-left':
+        frame = $(this).closest('.slick-slide');
+        slider = frame.closest('.slick-slider');
+        i = slider.slickCurrentSlide();
+        if (i > 0) {
+          moveSlideTo(slider, i, i-1, i-1, frame, true);
+        }
+        break;
+
+      case 'move-right':
+        frame = $(this).closest('.slick-slide');
+        slider = frame.closest('.slick-slider');
+        i = slider.slickCurrentSlide();
+        if ((slider.find('.slick-slide').length - 1) > i) {
+          moveSlideTo(slider, i, i, i+1, frame);
+        }
+        break;
+    }
+  });
+
+  $('.medium-editor').on('nested:fieldAdded', '.editable.editable-activated .embed-frame', function(event){
+    var field = $(event.target);
+    previousPosition = field.prev().find('.position').attr('data-value');
+    if (isNaN(previousPosition)) previousPosition = 0;
+    positionField = field.find('.position');
+    positionField.attr('data-value', parseInt(previousPosition) + 1);
+  })
+
+  $('.medium-editor').on('input', '.editable.editable-activated', function(e){
+    editor.unsavedChanges = true;
+    editor.checkAndSaveModel();
+  });
+
+  $('.medium-editor').on('keyup', '.editable.editable-activated', function(e){
+    $(this).find('.default-text-focused').replaceWith('<br>');
+    $(this).find('p span').contents().unwrap();
+
+    markEmptyParagraphs($(this));
+    stylizeEmbedFrames($(this));
+    if (e.keyCode == 13) {
+      sel = retrieveSelection();
+      node = $(sel.anchorNode);
+      url = node.prev().text();
+      if (/^http/.test(url)) {
+        insertEmbedTag(url, node.prev());
+      }
+    }
+  });
+
+  $('.medium-editor').on('paste', '.editable.editable-activated', function(e){
+    // replace spaces surrounding links by &nbsp;
+    // TODO: find a way to only target bit that got pasted
+    // formatLinks(editor.elements.children(':not(.embed-frame)'));
+  });
+
+  $('.medium-editor').on('blur focusout', '.editable.editable-activated .default-text-focused', function(e){
+    $(this).remove();
+  });
+
+  $('body').on('click', function(e){
+    // hideMediaButtons($('.medium-editor'));
+    resetPos();
+  }).find('.medium-editor').on('click', function(e) {
+    e.stopPropagation();
+  });
+
+  $('.medium-editor').on('click dblClick', '.editable.editable-activated .default-text', function(e){
+    var selection = retrieveSelection();
+    e.preventDefault();
+    focusAtBeginningOfRange(selection.anchorNode);
+  });
+
+  $('.medium-editor').on('keypress keydown', '.editable.editable-activated .is-default-text', function(e){
+    // console.log($(this));
+    node = $(this);
+
+    if (e.which !== 0 && e.charCode !== 0 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      node.find('.default-text').remove();
+      node.removeClass('is-default-text');
+    } else if (e.keyCode == 39) {
+      e.preventDefault();
+      focusAtBeginningOfRange(node[0]);
+    // prevent deleting element
+    } else if (e.keyCode == 8) {
+      e.preventDefault();
+    }
+  });
+
+  $('.medium-editor').on('keypress keydown', '.editable.editable-activated [data-default-text]', function(e){
+    // console.log($(this));
+    node = $(this);
+
+    if (e.keyCode == 8 && node.text().length == 1) {
+      e.preventDefault();
+      loadPlaceholder(node, true);
+      focusAtBeginningOfRange(node.find('.default-text')[0]);
+      editor.triggerInput();
+    }
+  });
+
+  $('.medium-editor').on('keypress keydown', '.editable.editable-activated', function(e){
+    var node = $(getSelectionStart());
+    // console.log(node);
+
+    if (node.is('p')) {
+      // replaces urls by links after space bar and enter
+      if (e.which == 32 || e.which == 13) {
+        var caretPos = retrieveSelection().extentOffset;
+        var word = returnLastWord(retrieveSelection().anchorNode.nodeValue, caretPos);
+        if (word != null) {
+          if (/[-a-zA-Z0-9@:%_\+.~#?&\/\/=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)?/gi.test(word)) {
+            var url = /http\:\/\//.test(word) ? word : 'http://' + word;
+            var regex = new RegExp('( ?)' + word);  // normal whitespaces don't count before HTML tags, need to be replaced by &nbsp;
+            var replacer = function(match, p1, offset, string){
+              var out = '';
+              if (p1) out += '&nbsp;';
+              out += '<a href="' + url + '" rel="nofollow" target="_blank">' + word + '</a>';
+              return out;
+            };
+            node.html(node.html().replace(regex, replacer));
+            focusAtEndOfRange(node[0]);
+          }
+        }
+        return;
+      }
+    }
+
+    if (node.is(elementTypes)) {
+      // prevent delete action after embed-frame
+      if (node.prev('.embed-frame').length) {
+        if (e.keyCode == 8 && curPos == 0) {
+          e.preventDefault();
+          if (node.next().length && node.text() == '') {
+            prev = node.prevAll('p').first();
+            if (prev.length) {
+              node.remove();
+              smoothScrollToIfOutOfBounds(prev, -50, 100);
+              focusAtEndOfRange(prev[0]);
+            }
+          }
+        // arrow up
+        } else if (e.keyCode == 38) {
+          goToPreviousP(node, e);
+          return;
+        // arrow left
+        } else if (e.keyCode == 37 && curPos == 0) {
+          goToPreviousP(node, e);
+          return;
+        }
+      }
+      if (node.next('.embed-frame').length) {
+        // arrow down
+        if (e.keyCode == 40) {
+          goToNextP(node, e);
+        // arrow right
+        } else if (e.keyCode == 39 && getPosition(node[0]).atEnd) {
+          goToNextP(node, e);
+        }
+      }
+    }
+  });
+
+  $('.medium-editor').on('keypress keydown', '.editable.editable-activated [data-prevent-delete]', function(e){
+    if (e.keyCode == 8) {
+      e.preventDefault();
+    }
+  });
+
+  $('.medium-editor').on('keyup', '.editable.editable-activated [data-default-text]', function(e){
+    node = $(this);
+    if (e.keyCode == 8 && node.text() == '') {
+      loadPlaceholder(node, true);
+      focusAtBeginningOfRange(node.find('.default-text')[0]);
+    }
+  });
+
+  $('.medium-editor').on('click keyup', '.editable.editable-activated', function(e){
+    var selection = getNewSelection();
+    if (!selection) return;
+
+    if (selection.anchorNode) {
+      target = $(e.target);
+      if (!target.closest('.embed-frame').length) {
+        $('.is-selected').removeClass('is-selected');
+        $('.medium-editor-toolbar-active').removeClass('medium-editor-toolbar-active');
+      }
+
+      var node = $(getSelectionStart());
+      if (node && node.is(elementTypes) && !node.is('.default-text')) {
+        showMediaButtons(node);
+      } else {
+        hideMediaButtons(node);
+      }
+    }
+  });
+
+  $('.medium-editor').on('click', '.editable.editable-activated .embed-frame', function(e){
+    if (!$(this).hasClass('is-selected')) {
+      hideMediaButtons();
+      $('.is-selected').removeClass('is-selected');
+      $('.medium-editor-toolbar-active').removeClass('medium-editor-toolbar-active');
+      $(this).addClass('is-selected');
+      $(this).find('.medium-editor-toolbar').addClass('medium-editor-toolbar-active');
+      smoothScrollToIfOutOfBounds($(this), -50, 100);
+    }
+  });
+
+  $('.medium-editor').on('blur focusout', '.editable.editable-activated .embed-frame', function(e){
+    // make sure the focusout isn't caused by clicking on the toolbar
+    if ($(e.target).is(':not(button.medium-editor-action)') && $(e.relatedTarget).is(':not(button.medium-editor-action)')) {
+      $(this).removeClass('is-selected');
+      $('.medium-editor-toolbar-active').removeClass('medium-editor-toolbar-active');
+    }
+  });
+
+  $('.medium-editor').on('click', '.add-media-btn', function(e){
+    $(this).next('.media-menu-btns').toggleClass('is-open');
+  });
+
+  $('.medium-editor').on('click', '.media-btn-action', function(e){
+    e.preventDefault();
+    btn = $(this);
+    var node;
+    if ($(curNode).length) {
+      node = $(curNode);
+      if (!node.is('p.paragraph--empty')) {
+        node = $(emptyParagraph).insertAfter(node);
+      }
+    } else if ($('.editable.editable-activated').children().last().is('p.paragraph--empty')) {
+      node = $('.editable.editable-activated').children().last();
+    } else {
+      node = $(emptyParagraph).appendTo('.editable.editable-activated');
+    }
+
+    switch(btn.data('action')) {
+      case 'code':
+        code = $('<pre><code><br></code></pre>');
+        node.replaceWith(code);
+        focusAtBeginningOfRange(code.find('code')[0]);
+        break;
+      case 'insert':
+        span = '<span class="default-text-focused default-text">' + btn.data('default-text') + '</span>';
+        node.html(span);
+        focusAtBeginningOfRange(node.find('.default-text')[0]);
+        break;
+      case 'upload':
+        $('#upload-placeholder').remove();
+        node.replaceWith('<div id="upload-placeholder" data-file-type="' +  btn.data('media') + '" class="remove-on-save"></div>');
+        $('#medium-file-upload').find('input[type=file]').click();
+        break;
+      case 'widget':
+        insertWidget(btn.data('widget-type'), editor.modelId, editor.modelType, node);
+        editor.triggerInput();
+        break;
+      case 'sketchfab':
+        node.replaceWith('<div id="sketchfab-placeholder" class="remove-on-save"></div>');
+        $('#sketchfab-upload input:file').click();
+        break;
+    }
+
+    editor.elements.removeClass('medium-editor-placeholder');
+    m = btn.closest('.media-menu')
+    // m.hide()
+    m.find('.media-menu-btns').removeClass('is-open');
+  });
+
+  var fileuploadFunctions = {
+    image: {
+      addToTpl: function(data){
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          el = $('#' + data.context);
+          img = '<div style="background-image:url(' + e.target.result + ')" class="embed-img"></div>';
+          $(img).appendTo(el.find('figure'));
+
+          slider = el.closest('.slick-slider');
+          if (slider.length > 0) {
+            slider = $(slider[0]);
+            slider.slickAdd(el);
+            slider.slickGoTo(slider.find('.slick-slide').length - 1);
+          }
+        }
+        reader.readAsDataURL(data.files[0]);
+      },
+      tpl: function(iFile) {
+        return $('<div id="tmp-file-' + iFile + '"><figure contenteditable="false">' + progressTpl + '</figure></div>');
+      }
+    },
+    document: {
+      addToTpl: function(data){
+        fileTpl = '<div class="document-widget"><div class="file"><i class="fa fa-file-o fa-lg"></i><a>' + data.files[0].name + '</a></div></div>';
+        $(fileTpl).appendTo('#' + data.context + ' .embed');
+      },
+      tpl: function(iFile) {
+        return $('<div class="embed-frame" id="tmp-file-' + iFile + '" contenteditable="false"><figure class="embed original" contenteditable="false">' + progressTpl + '</figure></div>');
+      }
+    }
+  }
+
+  $(document).on('dragover drop', function (e) {
+      e.preventDefault();
+  });
+
+  $('.medium-editor').on('dragover drop', '.editable.editable-activated .image-gallery .embed-overlay-content', function(e) {
+    $(this).closest('.image-gallery-container').find('.file-drop').trigger(e.type);
+  });
+
+  $('.medium-editor').on('dragover', '.editable.editable-activated .file-drop', function(e) {
+    $(this).addClass('dragover-active');
+    // $('<div id="upload-placeholder" data-file-type="image" class="remove-on-save"></div>').appendTo($(this).next('.image-gallery'));
+    // $('#upload-placeholder').remove();
+    $('.upload-here').removeClass('upload-here');
+    // frame = $(this).closest('.embed-frame');
+    // $('<div id="upload-placeholder" data-file-type="image" class="remove-on-save"></div>').appendTo(frame.find('.slick-track'));
+    $(this).next('.image-gallery').addClass('upload-here').attr('data-file-type', 'image');
+    // $('#medium-file-upload').find('input[type=file]').click();
+    e.preventDefault();
+  });
+
+  $('.medium-editor').on('drop dragleave', '.editable.editable-activated .file-drop', function(e) {
+    $(this).removeClass('dragover-active');
+  });
+
+  $('.medium-editor').on('drop', '.editable.editable-activated .file-drop', function(e) {
+    e.preventDefault();
+  });
+
+  $('.medium-editor').on('click', '.file-drop a', function(e) {
+    e.preventDefault();
+  });
+
+  $('.medium-editor').on('click', '.editable.editable-activated .file-drop a', function(e) {
+    // $('<div id="upload-placeholder" data-file-type="image" class="remove-on-save"></div>').appendTo($(this).closest('.file-drop').next('.image-gallery'));
+    $('.upload-here').removeClass('upload-here');
+    $(this).closest('.file-drop').next('.image-gallery').addClass('upload-here').attr('data-file-type', 'image');
+    $('#medium-file-upload').find('input[type=file]').click();
+  });
+
+  $('#medium-file-upload').fileupload({
+    dataType: 'xml', // This is really important as s3 gives us back the url of the file in a XML document
+    limitMultifileUploads: 1,
+    sequentialUploads: true,
+    limitConcurrentUploads: 1,
+    fileInput: $('#medium-file-upload input:file'),
+    dropZone: $('.file-drop, .image-gallery .embed-overlay-content'),
+
+    add: function(e, data) {
+      file = data.files[0];
+
+      validations = {
+        maxFileSize: $('#medium-file-upload input[name="file"]').data('max-file-size')
+      }
+      dataFileTypes = $('#medium-file-upload input[name="file"]').data('file-type');
+      if (dataFileTypes != 'undefined') {
+        validations['fileType'] = dataFileTypes;
+      }
+      errors = checkFileForErrors(file, validations);
+      // fileType = detectFileType(file);
+
+      plcHldr = $('#upload-placeholder');
+      if (plcHldr.length > 0) {
+        fileType = plcHldr.data('file-type');
+        tpl = fileuploadFunctions[fileType].tpl(editor.iFile);
+        tpl.attr('data-file-type', fileType);
+        tpl.insertBefore(plcHldr);
+      } else if ($('.image-gallery.upload-here').length) {
+        gallery = $('.image-gallery.upload-here');
+        fileType = gallery.data('file-type');
+        tpl = fileuploadFunctions[fileType].tpl(editor.iFile);
+        tpl.attr('data-file-type', fileType);
+        if (!gallery.hasClass('slick-initialized')) loadSlickSlider();
+
+        tpl.appendTo(gallery.find('.slick-track'));
+
+        // slider = tpl.closest('.image-gallery');
+      } else {
+        console.log("couldn't find where to insert file");
+        return;
+      }
+
+      data.context = 'tmp-file-' + editor.iFile;
+      editor.iFile++;
+
+      if (errors.length > 0) {
+        $('#' + data.context).replaceWith("<div class='help-block has-error upload-error'>Couldn't upload " + file.name + ': ' + errors.join(', ')+'</span>');
+      } else {
+        fileuploadFunctions[fileType].addToTpl(data);
+
+        uploadToS3(data, file, $(this));
+      }
+    },
+
+    fail: function(e, data){
+      form = $('#medium-file-upload');
+      handleUploadErrors(form);
+    },
+
+    progress: function(e, data) {
+      showUploadProgress(data);
+    },
+
+    progressall: function(e, data) {
+      progress = parseInt(data.loaded / data.total * 100, 10);
+      if (progress == 100) {
+        $('#upload-placeholder').remove();
+      }
+    },
+
+    success: function(data) {
+      uploadAssignUrl(data);
+    },
+
+    done: function(e, data){
+      fileType = $('#' + data.context).data('file-type');
+
+      createFileOnServerAfterUpload(data, fileType, function(data){
+        id = data.id;
+        el = $('#' + data.context);
+        el.attr('id', '');
+        el.attr('data-file-id', id);
+        el.attr('data-type', 'file');
+        el.find('.embed-overlay').replaceWith(embedOverlay.main);
+        updateFileUploadDragZone();
+        if (el.data('file-type') == 'image') {
+          timestamp = new Date().getTime();
+          $("<figcaption class='widget-attribute widget-attribute-editable' data-attribute='[images_attributes][" + timestamp + "][title]' contenteditable='true' data-default-text='Type in a caption' data-disable-toolbar='true'></figcaption><div class='widget-attribute' data-attribute='[images_attributes][" + timestamp + "][id]' contenteditable='true' data-value='" + id + "'></div><div class='widget-attribute position' data-attribute='[images_attributes][" + timestamp + "][position]' contenteditable='true'></div>").appendTo(el.find('figure'));
+          el.closest('.image-gallery-container').find('select').append('<option selected="selected" value="' + id + '"></option>');
+          resetPositions(el.closest('.image-gallery').find('.position'));
+          $(embedOverlay.moveLeftBtn).appendTo(el.find('.embed-overlay-content'));
+          $(embedOverlay.moveRightBtn).appendTo(el.find('.embed-overlay-content'));
+        } else {
+          $("<figcaption contenteditable='true' data-default-text='Type in a caption' data-disable-toolbar='true'></figcaption>").appendTo(el.find('figure'));
+          insertBlankParagraphAfter(el);
+          stylizeEmbedFrames(editor.elements);
+        }
+        loadPlaceholder(el.find('figcaption'), true);
+        editor.triggerInput();
+      });
+    }
+  });
+
+  $('#upload-cover-image').fileupload({
+    dataType: 'xml', // This is really important as s3 gives us back the url of the file in a XML document
+    limitMultifileUploads: 1,
+    sequentialUploads: true,
+    limitConcurrentUploads: 1,
+    fileInput: $('#upload-cover-image form input:file'),
+    dropZone: $('#top-project-section'),
+
+    add: function(e, data) {
+      file = data.files[0];
+
+      validations = {
+        maxFileSize: $('#medium-file-upload input[name="file"]').data('max-file-size')
+      }
+      dataFileTypes = $('#medium-file-upload input[name="file"]').data('file-type');
+      if (dataFileTypes != 'undefined') {
+        validations['fileType'] = dataFileTypes;
+      }
+      errors = checkFileForErrors(file, validations);
+      fileType = detectFileType(file);
+
+      var el = $('#project-top-image');
+
+      data.context = 'project-top-image';
+
+      if (errors.length > 0) {
+        // $('#' + data.context).replaceWith("<div class='help-block has-error upload-error'>Couldn't upload " + file.name + ': ' + errors.join(', ')+'</span>');
+      } else {
+        $(progressTpl).appendTo(el);
+
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          el = $('#project-top-image');
+          el.data('old-bg-img', el.css('background-image'));
+          el.css('background-image', 'url(' + e.target.result + ')');
+        }
+        reader.readAsDataURL(file);
+
+        uploadToS3(data, file, $(this));
+      }
+    },
+
+    fail: function(e, data){
+      form = $('#upload-cover-image');
+      handleUploadErrors(form);
+      var el = $('#project-top-image');
+      el.css('background-image', 'url(' + el.data('old-bg-img') + ')');
+    },
+
+    progress: function(e, data) {
+      showUploadProgress(data);
+    },
+
+    success: function(data) {
+      uploadAssignUrl(data);
+    },
+
+    done: function(e, data){
+      createFileOnServerAfterUpload(data, 'cover_image', function(data){
+        var id = data.id;
+        formData = { project: { cover_image_id: id }};
+        editor.saveModel(
+          function(){
+            $('#project-top-image .embed-overlay').remove();
+          }, function(){
+            var el = $('#project-top-image');
+            el.css('background-image', 'url(' + el.data('old-bg-img') + ')');
+            $('#project-top-image .embed-overlay').remove();
+            showErrorBubble('the new cover image');
+          },
+          formData);
+      });
+    }
+  });
+
+  $('#sketchfab-upload').fileupload({
+    dataType: 'xml', // This is really important as s3 gives us back the url of the file in a XML document
+    limitMultifileUploads: 1,
+    sequentialUploads: true,
+    limitConcurrentUploads: 1,
+    fileInput: $('#sketchfab-upload input:file'),
+    dropZone: $('#sketchfab-upload'),
+
+    add: function(e, data) {
+      file = data.files[0];
+      tpl = $('<div class="embed-frame remove-on-save" id="sketchfab-' + editor.iFile + '"><div class="embed">' + progressTpl + '</div></<div>');
+      tpl.insertBefore('#sketchfab-placeholder');
+      data.context = 'sketchfab-' + editor.iFile;
+      editor.iFile++;
+
+      editor.showLoadingBar();
+      uploadToS3(data, file, $(this));
+    },
+
+    fail: function(e, data){
+      form = $('#sketchfab-upload');
+      handleUploadErrors(form);
+      editor.hideLoadingBar();
+    },
+
+    progress: function(e, data) {
+      showUploadProgress(data);
+    },
+
+    progressall: function(e, data) {
+      progress = parseInt(data.loaded / data.total * 100, 10);
+      if (progress == 100) {
+        $('#sketchfab-placeholder').remove();
+      }
+    },
+
+    success: function(data) {
+      uploadAssignUrl(data);
+    },
+
+    done: function(e, data){
+      createFileOnServerAfterUpload(data, 'sketchfab_file', function(data){
+        var id = data.id;
+
+        checkSketfabProcessed(id, data.context, function(data){
+          var widgetData = {
+            widget: {
+              document_ids: [id],
+              sketchfab_uid: data.title
+            }
+          };
+          insertWidget('StlWidget', editor.modelId, editor.modelType, $('#' + data.context), widgetData);
+          editor.hideLoadingBar();
+        }, function(data){
+          showErrorBubble('the 3D file');
+          $('#' + data.context).remove();
+          editor.hideLoadingBar();
+        });
+      });
+    }
+  });
+
+  // // handles status bar
+  // if ($('.medium-status-bar.static').length > 0) {
+  //   var $mediumAffixed = $('.medium-status-bar.affixed');
+
+  //   function mediumToggleStatusBar() {
+  //     var mediumStickyTop = $('.medium-status-bar.static').offset().top;
+  //     var windowTop = $(window).scrollTop();
+
+  //     if (mediumStickyTop < windowTop) {
+  //       if ($mediumAffixed.is(':hidden')) {
+  //         $mediumAffixed.show();
+  //       }
+  //     }
+  //     else {
+  //       if ($mediumAffixed.is(':visible')) {
+  //         $mediumAffixed.hide();
+  //       }
+  //     }
+  //   }
+
+  //   mediumToggleStatusBar();
+  //   $(window).scroll(function(){ // scroll event
+  //     mediumToggleStatusBar();
+  //   });
+  // }
+
+  // prevent leaving page with unsaved changes
+  window.addEventListener("beforeunload", function (e) {
+    if (editor.unsavedChanges) {
+      var message = "There are unsaved changes.";
+
+      (e || window.event).returnValue = message;
+      return message;
+    }
+  });
+});
+
+function prepareForInputs(hash, previousKey, out){
+  out = out || {};
+
+  $.each(hash, function(key, val){
+    if (/^[^\[]/.test(key)) key = '[' + key + ']';
+    if (typeof(val) == 'object') {
+      out = prepareForInputs(val, key, out);
+    } else {
+      nowKey = previousKey ? previousKey + key : key;
+      out[nowKey] = val;
+    }
+  });
+
+  return out;
+}
+
+function createInputFor(key, val, form) {
+  input = $('<input type="hidden">');
+  input.attr('name', key);
+  input.val(val);
+  input.appendTo(form);
+}
+
+function detectFileType(file) {
+  if (file.type == 'image/png' || file.type == 'image/jpeg' || file.type == 'image/gif') {
+    return 'image'
+  } else {
+    return 'document';
+  }
+}
+
+function handleUploadErrors(dataContainer) {
+  data = dataContainer.data('data');
+  target = $('#' + data.context);
+  file = data.files[0];
+  showErrorBubble(file.name);
+  target.replaceWith(emptyParagraph);
+}
+
+function showErrorBubble(fileName) {
+  editor.error.text('An error occurred while uploading ' + fileName + '. Please try again.');
+  $('.medium-error-bubble').fadeIn(function(){
+    $t = $(this);
+    window.setTimeout(function(){
+      $t.fadeOut();
+    }, 2500)
+  });
+}
+
+function checkFileForErrors(file, validations) {
+  errors = [];
+  maxFileSize = validations['maxFileSize'];
+  if (file.size > maxFileSize) {
+    errors.push('Maximum file size is ' + maxFileSize / 1000000 + 'MB');
+  }
+  if (validations['fileType'] != undefined) {
+    fileType = validations['fileType'];
+    regexp = new RegExp('(\.|\/)(' + fileType.split(',').join('|') + ')$', 'gi');
+    type = (file.type != '') ? file.type : file.name
+    if (!regexp.test(type)) {
+      msg = fileType.split(',').join(', ');
+      errors.push('Allowed file types are ' + msg);
+    }
+  }
+  return errors;
+}
+
+$.urlParam = function(url, name){
+  results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(url);
+  return results[1] || 0;
+}
+
+function retrieveSelection() {
+  var selection;
+  if (window.getSelection)
+    selection = window.getSelection();
+  else if (document.selection && document.selection.type != "Control")
+    selection = document.selection;
+  return selection;
+}
+
+var curPos;
+var curNode;
+function getNewSelection() {
+  var selection = retrieveSelection();
+  var oldPos = curPos;
+  var oldNode = curNode;
+  curPos = selection.extentOffset;
+  curNode = (selection.focusNode && selection.focusNode.nodeType == 3 ? selection.focusNode.parentNode : selection.focusNode);
+  if (oldPos == curPos && oldNode == curNode) return;
+  return selection;
+}
+
+function getSelectionStart() {
+  var node = document.getSelection().anchorNode,
+      startNode = (node && node.nodeType === 3 ? node.parentNode : node);
+  return startNode;
+}
+
+function returnLastWord(text, caretPos) {
+  if (text == null) return;
+  var index = text.indexOf(caretPos);
+  var preText = text.substring(0, caretPos);
+  var words = preText.split(/( |\s)/);
+  return words[words.length - 1];
+}
+
+function resetPos() {
+  curNode = null;
+  curPos = null;
+}
+
+function showMediaButtons(node) {
+  var top = node.offset().top + parseInt(node.css('margin-top')) || 0 + parseInt(node.css('padding-top')) || 0;
+  // w = node.closest('.medium-editor');
+  w = $('.medium-editor');
+  // b = w.find('.media-menu');
+  $('.media-menu')
+    .css('top', top - w.offset().top)
+    .show();
+}
+
+function hideMediaButtons(node) {
+  // w = node.closest('.medium-editor');
+  // b = w.find('.media-menu');
+  $('.media-menu')
+    .hide()
+    .find('.media-menu-btns').removeClass('is-open');
+}
+
+function focusAtBeginningOrEndOfRange(div, beginning, triggerClick) {
+  var sel, range;
+
+  if (window.getSelection && document.createRange) {
+    range = document.createRange();
+    range.selectNodeContents(div);
+    range.collapse(beginning);
+    sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  } else if (document.body.createTextRange) {
+    range = document.body.createTextRange();
+    range.moveToElementText(div);
+    range.collapse(beginning);
+    range.select();
+  }
+  if (triggerClick !== false) $(div).trigger('click');
+}
+
+function focusAtBeginningOfRange(div, triggerClick) {
+  focusAtBeginningOrEndOfRange(div, true, triggerClick);
+}
+
+function focusAtEndOfRange(div, triggerClick) {
+  focusAtBeginningOrEndOfRange(div, false, triggerClick);
+}
+
+function getPosition(el) {
+  var atStart = false, atEnd = false;
+  var selRange, testRange;
+  if (window.getSelection) {
+      var sel = window.getSelection();
+      if (sel.rangeCount) {
+          selRange = sel.getRangeAt(0);
+          testRange = selRange.cloneRange();
+
+          // testRange.selectNodeContents(el);
+          // testRange.setEnd(selRange.startContainer, selRange.startOffset);
+          // atStart = (testRange.toString() == "");
+
+          testRange.selectNodeContents(el);
+          testRange.setStart(selRange.endContainer, selRange.endOffset);
+          atEnd = (testRange.toString() == "");
+      }
+  } else if (document.selection && document.selection.type != "Control") {
+      selRange = document.selection.createRange();
+      testRange = selRange.duplicate();
+
+      // testRange.moveToElementText(el);
+      // testRange.setEndPoint("EndToStart", selRange);
+      // atStart = (testRange.text == "");
+
+      testRange.moveToElementText(el);
+      testRange.setEndPoint("StartToEnd", selRange);
+      atEnd = (testRange.text == "");
+  }
+
+  return { atStart: atStart, atEnd: atEnd };
+}
+
+function goToPreviousP(node, e){
+  e.preventDefault();
+  prev = node.prevAll(elementTypes).first();
+  if (prev.length) {
+    smoothScrollToIfOutOfBounds(prev, -50, 200);
+    focusAtEndOfRange(prev[0]);
+  }
+}
+
+function goToNextP(node, e){
+  e.preventDefault();
+  next = node.nextAll(elementTypes).first();
+  if (next.length) {
+    smoothScrollToIfOutOfBounds(next, -50, 200);
+    focusAtBeginningOfRange(next[0]);
+  }
+}
+
+function insertEmbedTag(url, node) {
+  editor.showLoadingBar();
+  $.ajax('/api/v1/embeds', {
+    async: false,
+    data: { url: url },
+    success: function(data){
+      if (data.code) {
+        div = $('<div contenteditable="false" class="embed-frame" data-type="url" data-url="' + data.url + '">' + data.code + '</div>');
+        $(embedToolbar.main).appendTo(div.find('.embed'));
+        loadPlaceholder(div.find('[data-default-text]'), true);
+        node.replaceWith(div);
+        insertBlankParagraphAfter(div);
+        resizeToolBars();
+        stylizeEmbedFrames(editor.elements);
+      } else {
+        link = '<a href="' + data.url + '">' + data.url + '</a>';
+        node.html(link);
+      }
+    },
+    complete: function(data){
+      editor.hideLoadingBar();
+    },
+    type: 'GET'
+  });
+}
+
+function insertWidget(type, modelId, modelType, node, data) {
+  data = data || { widget: {} };
+  data['widget']['type'] = type;
+  data['widget']['widgetable_id'] = modelId;
+  data['widget']['widgetable_type'] = modelType;
+
+  editor.showLoadingBar();
+  $.ajax('/api/v1/widgets', {
+    async: false,
+    data: data,
+    success: function(data){
+      if (data.code) {
+        div = $('<div contenteditable="false" class="embed-frame" data-type="widget" data-widget-id="' + data.widget_id + '">' + data.code + '</div>');
+        toolbar = $(embedToolbar.main);
+        ul = toolbar.find('.medium-editor-toolbar-actions');
+        $(embedToolbar.moveDownBtn).prependTo(ul);
+        $(embedToolbar.moveUpBtn).prependTo(ul);
+        toolbar.appendTo(div.find('.embed'));
+        $(div).find('[data-edit-only="true"]').show();
+        $(div).find('[data-contenteditable="true"]').attr('contenteditable', 'true');
+        loadPlaceholders(div);
+        node.replaceWith(div);
+        if (data.widget_type == 'ImageWidget') {
+          $(embedToolbar.addSlideBtn).prependTo(ul);
+          updateFileUploadDragZone();
+          $(div).find('.embed-actions button[data-action="add-slide"]').click();
+        } else if (data.widget_type == 'CodeWidget') {
+          codeEditor[data.widget_id].activate();
+        }
+        insertBlankParagraphAfter(div);
+        resizeToolBars();
+        activateSortable();
+        stylizeEmbedFrames(editor.elements);
+        editor.triggerInput();
+      }
+    },
+    complete: function(data){
+      editor.hideLoadingBar();
+    },
+    type: 'POST'
+  });
+}
+
+function getTimeInText(dt){
+  var dt = new Date();
+  var time = pad(dt.getHours()) + ":" + pad(dt.getMinutes()) + ":" + pad(dt.getSeconds());
+  return time;
+}
+
+function pad(n) {
+  return ('0' + n).slice(-2)
+}
+
+function resetPositions(selector){
+  selector.each(function(i){
+    $(this)
+      .attr('data-value', i+1)
+      .trigger('change');
+  });
+}
+
+function markEmptyParagraphs(parent) {
+  parent.find('p').each(function() {
+    el = $(this);
+    if (el.text() === '') {
+      el.addClass('paragraph--empty');
+    } else {
+      el.removeClass('paragraph--empty');
+    }
+  });
+}
+
+function stylizeEmbedFrames(parent) {
+  parent.find('.followed-by-embed-frame').removeClass('followed-by-embed-frame');
+
+  parent.find('.embed-frame').each(function(){
+    el = $(this);
+    if (el.next('.embed-frame').length) {
+      el.addClass('followed-by-embed-frame');
+    }
+  });
+  stylizeH3(parent);
+}
+
+function stylizeH3(parent) {
+  parent.find('.followed-by-h3, .preceded-by-h3').removeClass('followed-by-h3 preceded-by-h3');
+
+  parent.find('.embed-frame').each(function(){
+    el = $(this);
+    if (el.next('h3').length) {
+      el.addClass('followed-by-h3');
+    }
+    if (el.prev('h3').length) {
+      el.addClass('preceded-by-h3');
+    }
+  });
+}
+
+function insertBlankParagraphAfter(node) {
+  next = node.next();
+  if (next.length == 0 || next.prop('tagName').toLowerCase() != 'p') {
+    next = $(emptyParagraph);
+    next.insertAfter(node);
+  }
+  focusAtBeginningOfRange(next[0]);
+}
+
+function loadPlaceholders(elements) {
+  elements.each(function(){
+    $(this).find('[data-default-text]').each(function(){
+      loadPlaceholder($(this));
+    });
+  });
+}
+
+function loadPlaceholder(el, force) {
+  force = force || false;
+
+  captionText = $.trim(el.text());
+  defaultText = el.data('default-text');
+  if ((captionText == '' || force) && typeof(defaultText) != 'undefined') {
+    el.addClass('is-default-text');
+    el.html('<span class="default-text">' + defaultText + '</span>');
+  }
+}
+
+function deleteFile(id) {
+  $.ajax({
+    url: '/files/' + id,
+    type: 'DELETE'
+  })
+}
+
+function deleteWidget(id) {
+  $.ajax({
+    url: '/api/v1/widgets/' + id,
+    type: 'DELETE'
+  })
+}
+
+function deletePart(id) {
+  $.ajax({
+    url: '/api/v1/parts/' + id,
+    type: 'DELETE'
+  })
+}
+
+function resizeToolBars() {
+  $('.medium-editor-toolbar-embed:not(.medium-editor-toolbar-resized)').each(function(){
+    marginLeft = $(this).outerWidth() / 2;
+    $(this).css('margin-left', -marginLeft);
+    $(this).addClass('medium-editor-toolbar-resized');
+  });
+}
+
+function activateSortable() {
+  $('.sortable-table:not(.ui-sortable) > tbody').each(function(){
+    $(this)
+      .sortable({handle: ".handle", containment: $(this), items: 'tr.fields:not(.sortable-disabled)'})
+      .bind('sortupdate', function(event, ui) {
+        resetPositions($(this).find('tr.fields:not(.removed) .position'));
+        editor.triggerInput();
+      });
+  });
+}
+
+function moveSlideTo(slider, i, j, l, frame, insertBefore){
+  slider.slickRemove(i);
+  slider.slickAdd(frame, j, insertBefore);
+  slider.slickGoTo(l);
+  resetPositions(slider.find('.position'));
+  editor.triggerInput();
+}
+
+function heightUpdateFunction(div, cEditor) {
+    // http://stackoverflow.com/questions/11584061/
+    var newHeight =
+              cEditor.getSession().getScreenLength()
+              * cEditor.renderer.lineHeight
+              + cEditor.renderer.scrollBar.getWidth()
+              + 20;  // padding
+
+    $(div).height(newHeight);
+    $(div).parent('.code-editor-container').height(newHeight);
+
+    // This call is required for the editor to fix all of
+    // its inner structure for adapting to a change in size
+    cEditor.resize();
+}
+
+function extractHost(url) {
+  var a = document.createElement('a');
+  a.href = url;
+  return a.hostname;
+};
+
+function toSentenceArray(arr){
+  if (arr.length == 1) {
+    return arr[0];
+  } else {
+    return arr.slice(0, arr.length - 1).join(', ') + " and " + arr.slice(-1);
+  }
+}
+
+function loadTplForAttr(el, tpl, value, placeholder) {
+  var newValue;
+
+  if (tpl && value && value !== '') {
+    newValue = tpl.replace(/\*([^\*]+)\*/g, function(match, p1, offset, string){
+      return eval(p1);
+    });
+  } else if (placeholder) {
+    newValue = '<span class="default-text">' + placeholder + '</span>';
+  }
+
+  el.html(newValue);
+}
+
+function uploadToS3(data, file, form) {
+  $('#' + data.context).data('data', data);
+
+  $.ajax({
+    url: '/files/signed_url',
+    type: 'GET',
+    dataType: 'json',
+    data: {file: {name: file.name}, context: data.context},
+    async: false,
+    success: function(data) {
+      form.find('input[name=key]').val(data.key);
+      form.find('input[name=policy]').val(data.policy);
+      form.find('input[name=signature]').val(data.signature);
+    },
+    error: function(data) {
+      context = decodeURIComponent($.urlParam(this.url, 'context'));
+      handleUploadErrors($('#' + context));
+    }
+  });
+
+  data.submit();
+}
+
+function showUploadProgress(data) {
+  progress = parseInt(data.loaded / data.total * 100, 10);
+  target = $('#' + data.context + ' .progress-bar');
+  target.css('width', progress + '%');
+  if (progress == 100) {
+    target.addClass('progress-bar-success');
+  }
+}
+
+function uploadAssignUrl(data) {
+  var url = $(data).find('Location').text(); // or Key for path
+  form = $('#medium-file-upload');
+  form.attr('data-url', url);  // pass it to 'done'
+}
+
+function createFileOnServerAfterUpload(data, fileType, successCallback) {
+  $('#' + data.context).data('data', data);
+
+  form = $('#medium-file-upload');
+  form.data('data', data);
+  url = form.attr('data-url');
+
+  $.ajax({
+    url: '/files',
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      file_url: url,
+      file_type: fileType,
+      context: data.context,
+      attachable_id: editor.modelId,
+      attachable_type: editor.modelType
+    },
+    async: false,
+    success: function(data) { successCallback(data) },
+    error: function(data) {
+      context = decodeURIComponent($.urlParam(this.data, 'context'));
+      handleUploadErrors($('#' + context));
+    }
+  });
+}
+
+function checkSketfabProcessed(id, context, successCallback, failCallback) {
+  window.setTimeout(function(){
+    $.ajax({
+      url: '/files/' + id,
+      data: { context: context },
+      success: function(data){
+        switch(data.processed){
+          case 'upload_error':
+            failCallback(data);
+            break;
+          case 'done':
+            successCallback(data);
+            break;
+          default:
+            checkSketfabProcessed(id, context, successCallback, failCallback);
+            break;
+        }
+      }
+    });
+  }, 1000);
+}
+
+function formatLinks(nodes) {
+  var regex = /( ?)(<a[^>]+>[^<]+<\/a>)( ?)/g;
+  var replacer = function(match, p1, p2, p3, offset, string){
+    var out = '';
+    if (p1) out += '&nbsp;';
+    out += p2;
+    if (p3) out += '&nbsp;';
+    return out;
+  };
+  nodes.each(function(){
+    $(this).html($(this).html().replace(regex, replacer));
+  });
+}
+
+function moveToDirection(btn, direction) {
+  frame = btn.closest('.embed-frame');
+  frame.attr('id', 'target');
+  if (direction == 'up') {
+    frame.insertBefore(frame.prev());
+  } else if (direction == 'down') {
+    frame.insertAfter(frame.next());
+  }
+  stylizeEmbedFrames(editor.elements);
+  editor.triggerInput();
+  smoothScrollToIfOutOfBounds($('#target'), -50, 100);
+  $('#target').attr('id', '');
+}
+
+function updateFileUploadDragZone(){
+  $('#medium-file-upload').fileupload(
+    'option',
+    'dropZone',
+    $('.file-drop, .image-gallery .embed-overlay-content')
+  );
+}
+
+function focusEditable(){
+  focusAtEndOfRange($('.editable.editable-activated')[0]);
+}

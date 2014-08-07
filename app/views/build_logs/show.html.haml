@@ -8,12 +8,12 @@
     .clearfix
     %hr
 
-.row.issue
+.row.issue.build-log
   .col-xs-12.issue-content
     .well
       = render partial: 'build_logs/header', locals: { project: @project, log: @log }
-      .content
-        = render partial: 'comments/issues/comment', locals: { comment: @log }
+      .content.medium-editor
+        = @log.body.html_safe
 
         #comments
           - @log.comments.each do |comment|

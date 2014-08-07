@@ -15,6 +15,10 @@ class PaypalWidget < Widget
   #   self.encoded_code = Base64.encode64(Marshal.dump(val))
   # end
 
+  def to_text
+    "<h3>#{name}</h3><div class='paypal-widget'>#{code}<p class='caption'>#{caption}</p></div>"
+  end
+
   private
     def sanitize_code
       return unless code.present?

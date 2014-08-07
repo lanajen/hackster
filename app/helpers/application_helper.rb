@@ -39,6 +39,13 @@ module ApplicationHelper
     end
   end
 
+  def file_name_from_url url
+    uri = URI.parse(url)
+    File.basename(uri.path)
+  rescue
+    url
+  end
+
   def get_reason params
     msg = "Please log in or create an account to get full access to our maker resources and start building."
     # group, project, user

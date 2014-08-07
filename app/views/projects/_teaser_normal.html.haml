@@ -21,18 +21,7 @@
         - else
           = link_to 'Join team', group_members_path(@project.team), class: 'btn btn-xs btn-warning', data: { method: :post }, id: 'join-button'
 
-- who = %w(you)
-- who += ['team members'] if @project.users.size > 1
-- who += ["members of #{@project.assignment.promotion.name}"] if @project.collection_id.present? and @project.assignment.present?
-- if @project.private and can? :edit, @project
-  .alert.alert-warning
-    %i.fa.fa-lock
-    This project is private so only #{who.to_sentence} can see it.
-    - if @project.can_be_public?
-      = link_to 'Publish publicly', project_path(@project, project: { private: 0 }), method: :patch, class: 'btn btn-warning btn-sm'
-    - else
-      = content_tag(:i, '', class: 'fa fa-question-circle istooltip', title: 'You need to create at least one widget and add a cover image before you can make it public.')
-- elsif active_member
+-# elsif active_member
   .alert.alert-info.alert-author-share
     %strong Time to shine!
     Share your project or
@@ -40,60 +29,92 @@
     = link_to "&times;".html_safe, '#', data: { close: '.alert-author-share' }, class: 'btn-close btn-close-notif'
     = render 'projects/share_by_author'
 
-#top-project-section
-  #project-top-image{style: "background-image: url('#{@project.cover_image}');"}
-  #top-project-section-deets
-    #project-header
-      .wrapper700
-        #project-header-in
-          %h1
-            - if @project.logo(:thumb, false)
-              = image_tag @project.logo(:thumb), class: 'project-logo'
-            - if @project.private?
-              %i.fa.fa-lock.private-project-icon.istooltip{ title: 'Private project', data: { container: 'body' } }
-            = link_to @project.name, @project, class: 'hidden-link'
-          #project-information
-            - cache [@project, 'teaser', can?(:edit, @project), can?(:debug, @project)], tag: (["project-#{@project.id}-teaser"] + @project.users.map{|u| "user-#{u.id}-thumb"}) do
-              - if @project.one_liner.present?
+-# if @can_edit
+  = render partial: 'shared/medium_editor_status_bar', locals: { last_edit: @project.last_edited_at }
+
+- cache [@project, 'teaser', @can_edit], tag: (["project-#{@project.id}-teaser", "team-#{@project.team_id}"] + @project.users.map{|u| "user-#{u.id}-thumb"}) do
+  #top-project-section
+    #project-top-image{style: "background-image: url('#{@project.cover_image}');"}
+    #top-project-section-deets
+      #project-header
+        .wrapper700
+          #project-header-in
+            - if @can_edit
+              #upload-cover-image{ 'data-edit-only' => 'true' }
+                %a{ href: '', rel: 'tooltip', title: 'Change cover image' }
+                  %i.fa.fa-image
+                %form#upload-cover-image-form{action: "https://#{ENV['FOG_DIRECTORY']}.s3.amazonaws.com", enctype: "multipart/form-data", method: "post", style: "display:none;"}
+                  %input{name: "key", type: "hidden"}
+                  %input{name: "AWSAccessKeyId", type: "hidden", value: "#{ENV['AWS_ACCESS_KEY_ID']}"}
+                  %input{name: "acl", type: "hidden", value: "public-read"}
+                  %input{name: "policy", type: "hidden"}
+                  %input{name: "signature", type: "hidden"}
+                  %input{name: "success_action_status", type: "hidden", value: "201"}
+                  %input{name: "file", type: "file"}
+            %h1
+              - if @project.logo(:thumb, false)
+                = image_tag @project.logo(:thumb), class: 'project-logo'
+              - if @project.private?
+                %i.fa.fa-lock.private-project-icon.istooltip{ title: 'Private project', data: { container: 'body' } }
+              - if @can_edit
+                %span.editable-attribute{ 'data-model' => "project", 'data-attribute' => "name", "data-default-text" => "Untitled", 'data-view-tpl' => "<a href='#' class='hidden-link'>*value*</a>", 'data-value' => @project.name_not_default }
+              - else
+                = link_to @project.name, @project, class: 'hidden-link'
+
+            #project-information
+              - if @can_edit
+                .one-liner.editable-attribute{ 'data-model' => "project", 'data-attribute' => "one_liner", "data-default-text" => "Describe this project in a sentence (140 characters max)", 'data-value' => @project.one_liner, 'data-view-tpl' => '*value*' }
+              - elsif @project.one_liner.present?
                 .one-liner= @project.one_liner
-              - elsif can? :edit, @project
-                .one-liner
-                  No one liner yet.
-                  = link_to 'Add one?', edit_project_path(@project)
-          - if @project.product_tags.any?
-            .tags.meta
-              - @project.product_tags.pluck(:name).each do |tag|
-                %span= link_to tag, "/tags/#{CGI::escape(tag)}", class: 'tag-link'
-          - elsif can? :edit, @project
-            .tags.meta
-              No tags yet.
-              = link_to 'Add some?', edit_project_path(@project)
-    %span.fa.fa-chevron-down.trigger-main-project-scroll.js-scroll-main-project
-    #project-team
-      .team-widget.pull-left
-        - if @project.guest_name.present?
-          .user.guest-name
-            %span.user-name= @project.guest_name
-        - else
-          - users = @project.team.active_members.includes(:user)
-          - u = users.first.user
-          .user
-            = link_to image_tag(u.decorate.avatar(:mini), class: ' img-circle' ), u, class: ''
-            %span.user-name
-              = link_to u.name, u, class: 'hidden-link'
-              - if users.size > 1
-                = link_to "and #{pluralize (users.size - 1), 'other'}", 'javascript:smoothScrollTo("#team-widget", -20);', class: 'hidden-link'
 
-      - if @project.tech_tags.any?
-        .tags.meta.pull-left
-          with
-          - tags = @project.tech_tags.pluck(:name).map do |tag|
-            - if tech = Tech.includes(:tech_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first
-              - tag_link = tech_short_path(tech)
-            - else
-              - tag_link = "/tags/#{CGI::escape(tag)}"
-            - link_to tag, tag_link, class: 'tag-link'
-          = tags.to_sentence.html_safe
+              - if @can_edit
+                .tags.meta
+                  %span.editable-attribute{ 'data-model' => "project", 'data-attribute' => "product_tags_string", "data-default-text" => "Add tags, separated by commas. Eg: home automation, drone, display...", 'data-view-tpl' => "*var f=function(tagString){ var out = '', tags = []; tags = tagString.split(','); $.each(tags, function(i, tag){ tag = tag.trim(); tpl = \"<span><a class='tag-link' href='/tags/\" + encodeURIComponent(tag) + \"'>\" + tag + \"</a></span>\"; out += tpl; }); return out; }; f(value);*", 'data-value' => @project.product_tags_string }
+              - elsif @project.product_tags.any?
+                .tags.meta
+                  - @project.product_tags.pluck(:name).each do |tag|
+                    %span= link_to tag, "/tags/#{CGI::escape(tag)}", class: 'tag-link'
 
-        .clearfix
-    %a.fa.fa-question-circle.meta-data{ data: { container: 'body', toggle: 'popover', placement: 'left', content: render('projects/meta_data'), trigger: 'hover', html: 'true'}, rel: 'popover'}
+              - if @can_edit
+                .tags.meta
+                  %span.editable-attribute{ 'data-model' => "project", 'data-attribute' => "buy_link", "data-default-text" => "Can this be purchased somewhere? If so enter the link here", 'data-view-tpl' => '*var f=function(url){ if (!/^http/.test(url)) url = "http://" + url; return "Buy it from <a href=\"" + url + "\" target=\"_blank\" rel=\"nofollow\">" + extractHost(url) + "</a>" }; f(value);*', 'data-value' => @project.buy_link }
+              - elsif @project.buy_link.present?
+                .tags.meta
+                  Buy it from
+                  = link_to @project.buy_link_host, @project.buy_link, target: '_blank', rel: 'nofollow'
+
+      %span.fa.fa-chevron-down.trigger-main-project-scroll.js-scroll-main-project
+      #project-team
+        .team-widget.pull-left
+          - if @project.guest_name.present?
+            .user.guest-name
+              %span.user-name= @project.guest_name
+          - else
+            - users = @project.team.active_members.includes(:user)
+            - u = users.first.user
+            .user
+              = link_to image_tag(u.decorate.avatar(:mini), class: ' img-circle' ), u, class: ''
+              %span.user-name
+                = link_to u.name, u, class: 'hidden-link'
+                - if users.size > 1
+                  = link_to "and #{pluralize (users.size - 1), 'other'}", 'javascript:smoothScrollTo("#team-widget", -20);', class: 'hidden-link'
+
+        - if @can_edit
+          .tags.meta.pull-left
+            %span.editable-attribute{ 'data-model' => "project", 'data-attribute' => "tech_tags_string", "data-default-text" => "Add technologies you used in this project, separated by commas. Eg: Arduino, ATmega, Attiny...", 'data-view-tpl' => "*var f=function(tagString){ var out = [], tags = []; tags = tagString.split(','); $.each(tags, function(i, tag){ tag = tag.trim(); tpl = \"<span><a class='tag-link' href='/tags/\" + encodeURIComponent(tag) + \"'>\" + tag + \"</a></span>\"; out.push(tpl); }); return 'with ' + toSentenceArray(out); }; f(value);*", 'data-value' => @project.tech_tags_string }
+        - elsif @project.tech_tags.any?
+          .tags.meta.pull-left
+            with
+            - tags = @project.tech_tags.pluck(:name).map do |tag|
+              - if tech = Tech.includes(:tech_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first
+                - tag_link = tech_short_path(tech)
+              - else
+                - tag_link = "/tags/#{CGI::escape(tag)}"
+              - link_to tag, tag_link, class: 'tag-link'
+            = tags.to_sentence.html_safe
+
+          .clearfix
+      .meta-data-placeholder
+
+:javascript
+  $('.meta-data-placeholder').replaceWith('<a class="fa fa-info-circle meta-data" data-container="body" data-toggle="popover" data-placement="left" data-trigger="hover" data-content="#{escape_javascript render("projects/meta_data")}" data-html="true" rel="popover"></a>');
