@@ -52,10 +52,11 @@ class Embed
         @type = @provider.type
       end
     elsif @widget_id = options[:widget_id]
-      @widget = Widget.find_by_id @widget_id
-      @provider_name = @widget.identifier
-      @type = 'widget'
-      @format = @widget.embed_format || 'original'
+      if @widget = Widget.find_by_id(@widget_id)
+        @provider_name = @widget.identifier
+        @type = 'widget'
+        @format = @widget.embed_format || 'original'
+      end
     elsif file_id = options[:file_id]
       if file = Attachment.find_by_id(file_id)
         @url = file.file_url
