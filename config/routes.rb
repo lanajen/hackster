@@ -13,6 +13,9 @@ HackerIo::Application.routes.draw do
   # end
 
   constraints(MainSite) do
+
+    mount Monologue::Engine, at: '/blog'
+
     get 'sitemap_index.xml' => 'sitemap#index', as: 'sitemap_index', defaults: { format: 'xml' }
     get 'sitemap.xml' => 'sitemap#show', as: 'sitemap', defaults: { format: 'xml' }
 
@@ -264,8 +267,6 @@ HackerIo::Application.routes.draw do
     end
 
     get ':not_found' => 'application#not_found'  # find a way to not need this
-
-    mount Monologue::Engine, at: '/blog'
 
     root to: 'pages#home'
   end
