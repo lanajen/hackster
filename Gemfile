@@ -15,15 +15,12 @@ gem 'compass-rails', '1.1.2'
 gem 'font-awesome-rails', '4.1.0.0'
 gem 'jquery-rails', '3.0.4'
 gem 'jquery-ui-rails', '4.1.0'
-# gem 'medium-editor-rails'
-gem 'sass-pygments-rails', '0.1'
 gem 'sass-rails', '4.0.2'
 gem 'uglifier', '2.3.1'
 gem 'zocial-rails', '1.0.2'
 
 # bower
 gem 'rails-assets-medium-editor', '1.8.14'
-# gem 'rails-assets-medium-editor-insert-plugin', '0.2.4'
 
 gem 'autoscaler', '0.9.0', groups: :staging
 gem 'auto_html', '1.6.3'

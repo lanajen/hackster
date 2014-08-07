@@ -519,7 +519,7 @@ class Project < ActiveRecord::Base
     end
 
     def remove_whitespaces_from_html text
-      text.gsub(/>\s*/, ">").gsub(/\s*</, "<")
+      text.gsub(/>\s{2,}/, "> ").gsub(/\s{2,}</, " <")
     end
 
     def set_columns_count

@@ -23,53 +23,6 @@
 :javascript
   $(function(){
     codeEditor["#{embed.widget.id}"] = new CodeEditor("#{embed.widget.language}", "#{embed.widget.id}");
-    // codeEditor["#{embed.widget.id}"] = ace.edit("code-editor-#{embed.widget.id}");
-    // var cEditor = codeEditor
-    // codeEditor["#{embed.widget.id}"].setTheme("ace/theme/idle_fingers");
-    // codeEditor["#{embed.widget.id}"].getSession().setMode("ace/mode/#{embed.widget.language}");
-    // codeEditor["#{embed.widget.id}"].getSession().setUseSoftTabs(true);
-    // codeEditor["#{embed.widget.id}"].setShowPrintMargin(false);
-    // codeEditor["#{embed.widget.id}"].getSession().setTabSize(2);
-    // codeEditor["#{embed.widget.id}"].renderer.setPadding(10);
-    // codeEditor["#{embed.widget.id}"].renderer.setScrollMargin(10, 10, 0, 0);
-    // codeEditor["#{embed.widget.id}"].getSession().setUseWrapMode(true);
-    // setCodeEditor(codeEditor["#{embed.widget.id}"], "#{embed.widget.language}", "#{embed.widget.id}");
-    // codeEditor["#{embed.widget.id}"].setOption("maxLines", 30);
-
-    // function setCodeEditor(cEditor, language, id) {
-    //   cEditor.setTheme("ace/theme/idle_fingers");
-    //   cEditor.getSession().setMode("ace/mode/" + language);
-    //   cEditor.getSession().setUseSoftTabs(true);
-    //   cEditor.setShowPrintMargin(false);
-    //   cEditor.getSession().setTabSize(2);
-    //   cEditor.renderer.setPadding(10);
-    //   cEditor.renderer.setScrollMargin(10, 10, 0, 0);
-    //   cEditor.getSession().setUseWrapMode(true);
-
-    //   if (!(editor && editor.self && editor.self.isActive))
-    //     cEditor.setReadOnly(true);
-
-    //   // Set initial size to match initial content
-    //   heightUpdateFunction("#code-editor-" + id, cEditor);
-
-    //   // Whenever a change happens inside the ACE editor, update
-    //   // the size again
-    //   cEditor.getSession().on('change', function(e){
-    //     heightUpdateFunction("#code-editor-" + id, cEditor);
-    //     editor.triggerInput();
-    //   });
-    // }
-
-
-    // // Set initial size to match initial content
-    // heightUpdateFunction("#code-editor-#{embed.widget.id}", codeEditor["#{embed.widget.id}"]);
-
-    // // Whenever a change happens inside the ACE editor, update
-    // // the size again
-    // codeEditor["#{embed.widget.id}"].getSession().on('change', function(e){
-    //   heightUpdateFunction("#code-editor-#{embed.widget.id}", codeEditor["#{embed.widget.id}"]);
-    //   editor.triggerInput();
-    // });
 
     var widgetFormTpl = "<form id='widget-#{embed.widget.id}-form' class='code-widget-file-upload' action='/api/v1/widgets/#{embed.widget.id}' method='post' enctype='multipart/form-data' style='display:none;' data-widget-id='#{embed.widget.id}'>";
     widgetFormTpl += '<input type="hidden" name="_method" value="patch">';
