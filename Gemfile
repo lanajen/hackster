@@ -51,12 +51,9 @@ gem 'newrelic_rpm', '3.6.9.171'
 gem 'nokogiri', '1.6.0'
 gem 'omniauth-facebook', '1.5.1'
 gem 'omniauth-github', '1.0.0'
-# gem 'omniauth-google-oauth2', '0.2.1'  # deactivated in favor of G+
 gem 'omniauth-gplus', '1.2.0'
-# gem 'omniauth-linkedin-oauth2', '0.1.4'
 gem 'omniauth-oauth', '1.0.1'  # for omniauth-twitter
-gem 'omniauth-oauth2', '1.1.1'  # for omniauth-facebook, google, linkedin, github
-# gem 'omniauth-openid', '1.0.0'
+gem 'omniauth-oauth2', '1.1.1'  # for omniauth-facebook, google, github
 gem 'omniauth-twitter', '1.0.1'
 gem 'pg', '0.17.0'
 gem 'premailer-rails', '1.7.0'
@@ -67,7 +64,6 @@ gem 'rack-timeout', '0.0.4'
 gem 'rails-observers', '0.1.2'
 gem 'redis', '3.0.6'
 gem 'redis-namespace', '1.5.0'
-# gem 'rest_in_place', '2.5.0'
 gem 'rest-client', '1.6.7'
 gem 'sanitize', '2.0.6'
 gem 'sendgrid', '1.2.0'
