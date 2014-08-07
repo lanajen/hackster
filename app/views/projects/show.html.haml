@@ -33,9 +33,9 @@
 
     - cache [@project, 'widgets', @can_edit], tag: "project-#{@project.id}-widgets" do
       .project-section{ id: "showcase" }
-        .header
+        .section-header
           %h2 Showcase
-        .content
+        .section-content
           .widget
             .content
               .text-widget.project-show-item
@@ -56,16 +56,16 @@
 
     - if @project.build_logs_count > 0 or @can_edit
       #build-logs.project-section
-        .header
+        .section-header
           %h2
             Build logs
             - if @can_edit
               .pull-right= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} New build log".html_safe, new_project_log_path, class: 'btn btn-outline'
-        .content.medium-editor
+        .section-content.medium-editor
           - if log = @project.blog_posts.published.last.try(:decorate)
-            .widget
+            .transparent-well
               .header
-                %h4
+                %h4.h3
                   = link_to log.title, log_path(@project, log)
                   %small.text-muted.pull-right Build log ##{log.sub_id}
                 %small.text-muted
@@ -76,7 +76,7 @@
                   %i.fa.fa-comments
                   = link_to pluralize(log.comments.size, 'comment'), log_path(@project, log, anchor: 'comments')
               .content
-                = auto_link log.body
+                = log.body.html_safe
                 -#  %p{ style: 'margin-top:10px' }= link_to 'Discuss this log', log_path(@project, log, anchor: 'comments'), class: 'btn btn-primary btn-sm'
 
             - if @project.build_logs_count > 1
@@ -87,12 +87,12 @@
 
     - if @project.issues_count > 0 or @can_edit
       #issues.project-section
-        .header
+        .section-header
           %h2
             Issues
             - if @can_edit
               .pull-right= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} New issue".html_safe, new_project_issue_path, class: 'btn btn-outline'
-        .content
+        .section-content
           - if @project.issues.any?
             .widget
               .content

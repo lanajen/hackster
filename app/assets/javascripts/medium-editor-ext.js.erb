@@ -5,7 +5,7 @@
 var editor;
 var codeEditor = {};
 var emptyParagraph = '<p class="paragraph--empty"><br></p>';
-var elementTypes = 'p,h3,h4';
+var elementTypes = 'p,h3,h4,i,b,a';
 
 var progressTpl = '<div class="embed-overlay is-visible"><div class="center-align-wrapper"><div class="center-align-inner"><p class="progress-legend">Uploading...</p><div class="progress progress-striped active"><div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%;"></div></div></div></div>';
 
@@ -334,6 +334,7 @@ $(function() {
         $('.paragraph--empty').removeClass('paragraph--empty');
         $('.default-text').remove();
         $('.medium-editor-placeholder').removeClass('medium-editor-placeholder');
+        hideMediaButtons();
         _.clearErrors();
 
         callback();
@@ -1502,7 +1503,7 @@ function resetPos() {
 }
 
 function showMediaButtons(node) {
-  var top = node.offset().top;
+  var top = node.offset().top + parseInt(node.css('margin-top')) || 0 + parseInt(node.css('padding-top')) || 0;
   // w = node.closest('.medium-editor');
   w = $('.medium-editor');
   // b = w.find('.media-menu');
@@ -1708,12 +1709,15 @@ function stylizeEmbedFrames(parent) {
 }
 
 function stylizeH3(parent) {
-  parent.find('.followed-by-h3').removeClass('followed-by-h3');
+  parent.find('.followed-by-h3, .preceded-by-h3').removeClass('followed-by-h3 preceded-by-h3');
 
   parent.find('.embed-frame').each(function(){
     el = $(this);
     if (el.next('h3').length) {
       el.addClass('followed-by-h3');
+    }
+    if (el.prev('h3').length) {
+      el.addClass('preceded-by-h3');
     }
   });
 }
@@ -1963,9 +1967,4 @@ function updateFileUploadDragZone(){
 
 function focusEditable(){
   focusAtEndOfRange($('.editable.editable-activated')[0]);
-}
-
-
-function setCodeEditor(cEditor, language, id) {
-
 }

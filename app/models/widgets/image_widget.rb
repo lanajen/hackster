@@ -10,7 +10,7 @@ class ImageWidget < Widget
   attr_accessible :images_attributes, :image_ids
 
   def to_text
-    "<div contenteditable='false' class='embed-frame' data-type='widget' data-widget-id='#{id}' data-caption='#{name}'></div>"
+    "<h3>#{name}</h3><div contenteditable='false' class='embed-frame' data-type='widget' data-widget-id='#{id}' data-caption=''></div>"
   end
 
   def to_tracker

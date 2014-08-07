@@ -47,7 +47,7 @@ class OshparkWidget < Widget
   end
 
   def to_text
-    "<div contenteditable='false' class='embed-frame' data-type='url' data-url='#{link}' data-caption='#{name}'></div>"
+    "<h3>#{name}</h3><div contenteditable='false' class='embed-frame' data-type='url' data-url='#{link}' data-caption=''></div>"
   end
 
   private

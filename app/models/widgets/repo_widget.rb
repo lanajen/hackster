@@ -23,6 +23,6 @@ class RepoWidget < Widget
   end
 
   def to_text
-    repo.present? ? "<div contenteditable='false' class='embed-frame' data-type='url' data-url='#{repo}' data-caption='#{name}'></div>" : ''
+    repo.present? ? "<h3>#{name}</h3><div contenteditable='false' class='embed-frame' data-type='url' data-url='#{repo}' data-caption=''></div>" : ''
   end
 end

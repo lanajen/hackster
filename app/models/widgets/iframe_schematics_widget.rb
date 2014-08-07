@@ -30,7 +30,7 @@ class IframeSchematicsWidget < Widget
   end
 
   def to_text
-    link.present? ? "<div contenteditable='false' class='embed-frame' data-type='url' data-url='#{link}' data-caption='#{name}'></div>" : ''
+    link.present? ? "<h3>#{name}</h3><div contenteditable='false' class='embed-frame' data-type='url' data-url='#{link}' data-caption=''></div>" : ''
   end
 
   private

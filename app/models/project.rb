@@ -282,6 +282,9 @@ class Project < ActiveRecord::Base
           node.set_attribute 'class', "#{node.attr('class')} followed-by-h3"
         end
       end
+      if node.previous and node.previous.name == 'h3'
+        node.set_attribute 'class', "#{node.attr('class')} preceded-by-h3"
+      end
     end
 
     self.description = doc.to_html

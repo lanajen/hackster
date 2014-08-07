@@ -12,7 +12,8 @@ class VideoWidget < Widget
 
   def to_text
     if video and video.link
-      "<div contenteditable='false' class='embed-frame' data-type='url' data-url='#{video.link}' data-caption='#{caption.presence || name}'></div>"
+      caption_text = caption.present? ? "<p>#{caption}</p>" : ''
+      "<h3>#{name}</h3>#{caption_text}<div contenteditable='false' class='embed-frame' data-type='url' data-url='#{video.link}' data-caption=''></div>"
     else
       ''
     end

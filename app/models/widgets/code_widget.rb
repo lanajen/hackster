@@ -183,7 +183,7 @@ class CodeWidget < Widget
   end
 
   def name
-    @name || "file_#{id}"
+    super || "file_#{id}"
   end
 
   def to_json
@@ -198,7 +198,7 @@ class CodeWidget < Widget
   end
 
   def to_text
-    "<div contenteditable='false' class='embed-frame' data-type='widget' data-widget-id='#{id}' data-caption='#{name.presence || document.try(:file_name)}'></div>"
+    "<h3>#{name}</h3><div contenteditable='false' class='embed-frame' data-type='widget' data-widget-id='#{id}' data-caption='#{document.try(:file_name)}'></div>"
   end
 
   def to_tracker

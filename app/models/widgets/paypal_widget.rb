@@ -16,7 +16,7 @@ class PaypalWidget < Widget
   # end
 
   def to_text
-    "<div class='paypal-widget'>#{code}<p class='caption'>#{caption}</p></div>"
+    "<h3>#{name}</h3><div class='paypal-widget'>#{code}<p class='caption'>#{caption}</p></div>"
   end
 
   private

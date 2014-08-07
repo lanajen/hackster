@@ -17,8 +17,9 @@ class StlWidget < Widget
   end
 
   def to_text
-    documents.map do |d|
+    output = documents.map do |d|
       "<div contenteditable='false' class='embed-frame' data-type='file' data-file-id='#{d.id}' data-caption='#{d.title || d.file_name}'></div>"
     end.join('')
+    "<h3>#{name}</h3>#{output}"
   end
 end

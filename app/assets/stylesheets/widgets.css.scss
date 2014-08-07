@@ -79,9 +79,11 @@
   // }
   pre {
     word-break: normal;
+    word-wrap: normal;
+    overflow: scroll;
     & > span {
       display: block;
-      line-height: 14px;
+      line-height: 12px;
       font-size: 14px;
     }
   }
