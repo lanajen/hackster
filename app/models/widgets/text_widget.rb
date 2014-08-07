@@ -14,18 +14,18 @@ class TextWidget < Widget
   def to_text
     return '' unless content
 
-    doc = Nokogiri::HTML::DocumentFragment.parse content
+    # doc = Nokogiri::HTML::DocumentFragment.parse content
 
-    # Replace all doubled-up <BR> tags with <P> tags
-    doc.search('br').each do |n|
-      if (n.next and n.next.name == 'br')
-        n.next.remove
-        n.replace('</p><p>')
-      end
-    end
+    # # Replace all doubled-up <BR> tags with <P> tags
+    # doc.search('br').each do |n|
+    #   if (n.next and n.next.name == 'br')
+    #     n.next.remove
+    #     n.replace('</p><p>')
+    #   end
+    # end
 
-    output = doc.to_html
-    output = "<p>#{output}</p>" unless output.match /^<p>/
-    "<h3>#{name}</h3>#{output}"
+    # output = doc.to_html
+    # output = "<p>#{output}</p>" unless output.match /^<p>/
+    "<h3>#{name}</h3>#{content}"
   end
 end
