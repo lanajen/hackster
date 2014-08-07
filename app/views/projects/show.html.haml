@@ -1,36 +1,9 @@
 = content_for :head do
   = render 'meta_tags'
 
--# if @can_edit
-  #media-menu.affixable.medium-edit-show{ style: 'display:none'}
-    .media-menu-header
-      %i.fa.fa-plus
-      Add media
-    .media-item.media-btn-action{ data: { action: 'widget', 'widget-type' => 'ImageWidget', media: 'image', container: 'body' }, rel: 'tooltip', title: 'Add images' }
-      %i.fa.fa-camera
-      .media-item-name Add images
-    .media-item.media-btn-action{ data: { action: 'insert', media: 'video', 'default-text' => "Paste a YouTube, Vimeo or Vine link, and press Enter", container: 'body' }, rel: 'tooltip', title: 'Add a video' }
-      %i.fa.fa-play
-      .media-item-name Add a video
-    .media-item.media-btn-action{ data: { action: 'widget', 'widget-type' => 'CodeWidget', media: 'code', container: 'body' }, rel: 'tooltip', title: 'Add code or a code file' }
-      %i.fa.fa-code
-      .media-item-name Add code
-    .media-item.media-btn-action{ data: { action: 'insert', media: 'schematics', 'default-text' => "Paste a 123D Circuits, OSH Park or Upverter link, and press Enter", container: 'body' }, rel: 'tooltip', title: 'Add schematics' }
-      %i.fa.fa-gear
-      .media-item-name Add schematics
-    .media-item.media-btn-action{ data: { action: 'widget', 'widget-type' => 'PartsWidget', media: 'components', container: 'body' }, rel: 'tooltip', title: 'Add components' }
-      %i.fa.fa-cubes
-      .media-item-name Add components
-    .media-item.media-btn-action{ data: { action: 'sketchfab', media: '3d', container: 'body' }, rel: 'tooltip', title: 'Add 3D renderings (STL)' }
-      %i.fa.fa-cube
-      .media-item-name Add 3D renderings
-    .media-item.media-btn-action{ data: { action: 'upload', media: 'document', 'default-text' => "Select files or drop them here", container: 'body' }, rel: 'tooltip', title: 'Add files' }
-      %i.fa.fa-files-o
-      .media-item-name Add files
-
 .project-show
   .wrapper700
-    - if @prev
+    -# if @prev
       .project-nav.project-nav-prev.visible-md.visible-lg
         .project-nav-inner
           = image_tag @prev.decorate.cover_image(:cover_thumb), class: 'img-responsive'
@@ -44,7 +17,7 @@
             %p= truncate @prev.one_liner, length: 140
           %a.project-nav-overlay.project-nav-overlay-top{ href: project_path(@prev, ref: params[:ref], ref_id: params[:ref_id], offset: params[:offset].to_i - 1) }
 
-    - if @next
+    -# if @next
       .project-nav.project-nav-next.visible-md.visible-lg
         .project-nav-inner
           = image_tag @next.decorate.cover_image(:cover_thumb), class: 'img-responsive'

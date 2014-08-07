@@ -1,5 +1,3 @@
-// - always show add content button
-
 // - blog post or help page to explain of the editor works
 // - blog post to suggest default template
 // - announcement
@@ -22,6 +20,42 @@ var embedToolbar = {
   moveUpBtn: '<li><button class="medium-editor-action" data-action="move-up"><i class="fa fa-arrow-up"></button></li>',
   moveDownBtn: '<li><button class="medium-editor-action" data-action="move-down"><i class="fa fa-arrow-down"></button></li>',
   addSlideBtn: '<li><button class="medium-editor-action" data-action="add-slide"><i class="fa fa-plus"></button></li>'
+}
+
+function CodeEditor(language, id) {
+  this.ace = null;
+  this.isActive = false;
+  this.language = language;
+  this.id = id;
+}
+
+CodeEditor.prototype.activate = function() {
+  this.ace = ace.edit("code-editor-"  + this.id);
+  this.ace.setTheme("ace/theme/idle_fingers");
+  this.ace.getSession().setMode("ace/mode/" + this.language);
+  this.ace.getSession().setUseSoftTabs(true);
+  this.ace.setShowPrintMargin(false);
+  this.ace.getSession().setTabSize(2);
+  this.ace.renderer.setPadding(10);
+  this.ace.renderer.setScrollMargin(10, 10, 0, 0);
+  this.ace.getSession().setUseWrapMode(true);
+
+  if (!(editor && editor.self && editor.self.isActive))
+    this.ace.setReadOnly(true);
+
+  // Set initial size to match initial content
+  heightUpdateFunction("#code-editor-" + this.id, this.ace);
+
+  // Whenever a change happens inside the ACE editor, update
+  // the size again
+  var _ = this;
+  this.ace.getSession().on('change', function(e){
+    heightUpdateFunction("#code-editor-" + _.id, _.ace);
+    $('#code-widget-' + _.id + ' .code-container').addClass('outdated');
+    editor.triggerInput();
+  });
+
+  this.isActive = true;
 }
 
 $(function() {
@@ -61,8 +95,10 @@ $(function() {
         $inserts.filter('.is-selected').removeClass('is-selected');
 
         $.each(codeEditor, function(id, cEditor){
-          widget = $inserts.filter('[data-widget-id="' + id + '"]');
-          widget.find('[data-attribute="raw_code"]').attr('data-value', cEditor.getValue());
+          if (cEditor.isActive) {
+            widget = $inserts.filter('[data-widget-id="' + id + '"]');
+            widget.find('[data-attribute="raw_code"]').attr('data-value', cEditor.ace.getValue());
+          }
         });
 
         content[elementid]['widgets_attributes'] = {};
@@ -238,11 +274,13 @@ $(function() {
       $('figcaption').attr('contenteditable', true);
 
       $('[data-edit-only="true"]').show();
+      $('[data-edit-hide="true"]').hide();
       $('[data-contenteditable]').attr('contenteditable', 'true');
       _.elements.find('input:disabled').prop('disabled', false);
 
       $.each(codeEditor, function(id, cEditor){
-        cEditor.setReadOnly(false);
+        if (!cEditor.isActive) cEditor.activate();
+        cEditor.ace.setReadOnly(false);
       });
 
       markEmptyParagraphs(_.elements);
@@ -278,6 +316,7 @@ $(function() {
 
         _.self.deactivate();
         $('[data-edit-only="true"]').hide();
+        $('[data-edit-hide="true"]').show();
         $('[contenteditable]').attr('contenteditable', 'false');
         $('figcaption').attr('contenteditable', false);
         _.elements.removeClass('editable-activated');
@@ -287,7 +326,7 @@ $(function() {
         _.elements.find('input').prop('disabled', true);
 
         $.each(codeEditor, function(id, cEditor){
-          cEditor.setReadOnly(true);
+          cEditor.ace.setReadOnly(true);
         });
 
         _.elements.find('.embed-overlay').remove();
@@ -596,10 +635,16 @@ $(function () {
   // .editable text div
   //
 
+  $('.medium-editor').on('keypress keydown', '.editable.editable-activated .widget-attribute-editable', function(e){
+    if (e.keyCode == 13) {
+      e.preventDefault();
+    }
+  });
+
   $('.medium-editor').on('change', '.editable.editable-activated .language-selector select', function(e){
     e.preventDefault();
     cEditor = codeEditor[$(this).data('target')];
-    cEditor.getSession().setMode("ace/mode/" + this.value);
+    cEditor.ace.getSession().setMode("ace/mode/" + this.value);
     $(this).prev('.widget-attribute').attr('data-value', this.value);
     editor.triggerInput();
   });
@@ -666,19 +711,11 @@ $(function () {
         break;
 
       case 'move-up':
-        frame = $(this).closest('.embed-frame');
-        frame.insertBefore(frame.prev());
-        stylizeEmbedFrames(editor.elements);
-        editor.triggerInput();
-        smoothScrollToIfOutOfBounds(frame, -50, 100);
+        moveToDirection($(this), 'up');
         break;
 
       case 'move-down':
-        frame = $(this).closest('.embed-frame');
-        frame.insertAfter(frame.next());
-        stylizeEmbedFrames(editor.elements);
-        editor.triggerInput();
-        smoothScrollToIfOutOfBounds(frame, -50, 100);
+        moveToDirection($(this), 'down');
         break;
     }
   });
@@ -789,7 +826,7 @@ $(function () {
   $('.medium-editor').on('paste', '.editable.editable-activated', function(e){
     // replace spaces surrounding links by &nbsp;
     // TODO: find a way to only target bit that got pasted
-    formatLinks(editor.elements);
+    // formatLinks(editor.elements.children(':not(.embed-frame)'));
   });
 
   $('.medium-editor').on('blur focusout', '.editable.editable-activated .default-text-focused', function(e){
@@ -1544,7 +1581,7 @@ function getPosition(el) {
 
 function goToPreviousP(node, e){
   e.preventDefault();
-  prev = node.prevAll('p').first();
+  prev = node.prevAll(elementTypes).first();
   if (prev.length) {
     smoothScrollToIfOutOfBounds(prev, -50, 200);
     focusAtEndOfRange(prev[0]);
@@ -1553,7 +1590,7 @@ function goToPreviousP(node, e){
 
 function goToNextP(node, e){
   e.preventDefault();
-  next = node.nextAll('p').first();
+  next = node.nextAll(elementTypes).first();
   if (next.length) {
     smoothScrollToIfOutOfBounds(next, -50, 200);
     focusAtBeginningOfRange(next[0]);
@@ -1612,6 +1649,8 @@ function insertWidget(type, modelId, modelType, node, data) {
           $(embedToolbar.addSlideBtn).prependTo(ul);
           updateFileUploadDragZone();
           $(div).find('.embed-actions button[data-action="add-slide"]').click();
+        } else if (data.widget_type == 'CodeWidget') {
+          codeEditor[data.widget_id].activate();
         }
         insertBlankParagraphAfter(div);
         resizeToolBars();
@@ -1669,12 +1708,12 @@ function stylizeEmbedFrames(parent) {
 }
 
 function stylizeH3(parent) {
-  parent.find('.preceded-by-embed-frame').removeClass('preceded-by-embed-frame');
+  parent.find('.followed-by-h3').removeClass('followed-by-h3');
 
   parent.find('.embed-frame').each(function(){
     el = $(this);
-    if (el.prev('.embed-frame').length) {
-      el.addClass('preceded-by-embed-frame');
+    if (el.next('h3').length) {
+      el.addClass('followed-by-h3');
     }
   });
 }
@@ -1737,11 +1776,11 @@ function resizeToolBars() {
 }
 
 function activateSortable() {
-  $('.sortable-table:not(.ui-sortable) tbody').each(function(){
+  $('.sortable-table:not(.ui-sortable) > tbody').each(function(){
     $(this)
-      .sortable({handle: ".handle", containment: $(this), items: 'tr:not(.sortable-disabled)'})
+      .sortable({handle: ".handle", containment: $(this), items: 'tr.fields:not(.sortable-disabled)'})
       .bind('sortupdate', function(event, ui) {
-        resetPositions($(this).find('tr:not(.removed) .position'));
+        resetPositions($(this).find('tr.fields:not(.removed) .position'));
         editor.triggerInput();
       });
   });
@@ -1763,8 +1802,8 @@ function heightUpdateFunction(div, cEditor) {
               + cEditor.renderer.scrollBar.getWidth()
               + 20;  // padding
 
-    $(div).height(newHeight.toString() + "px");
-    $(div).parent('.code-editor-container').height(newHeight.toString() + "px");
+    $(div).height(newHeight);
+    $(div).parent('.code-editor-container').height(newHeight);
 
     // This call is required for the editor to fix all of
     // its inner structure for adapting to a change in size
@@ -1886,7 +1925,7 @@ function checkSketfabProcessed(id, context, successCallback, failCallback) {
   }, 1000);
 }
 
-function formatLinks(node) {
+function formatLinks(nodes) {
   var regex = /( ?)(<a[^>]+>[^<]+<\/a>)( ?)/g;
   var replacer = function(match, p1, p2, p3, offset, string){
     var out = '';
@@ -1895,7 +1934,23 @@ function formatLinks(node) {
     if (p3) out += '&nbsp;';
     return out;
   };
-  node.html(node.html().replace(regex, replacer));
+  nodes.each(function(){
+    $(this).html($(this).html().replace(regex, replacer));
+  });
+}
+
+function moveToDirection(btn, direction) {
+  frame = btn.closest('.embed-frame');
+  frame.attr('id', 'target');
+  if (direction == 'up') {
+    frame.insertBefore(frame.prev());
+  } else if (direction == 'down') {
+    frame.insertAfter(frame.next());
+  }
+  stylizeEmbedFrames(editor.elements);
+  editor.triggerInput();
+  smoothScrollToIfOutOfBounds($('#target'), -50, 100);
+  $('#target').attr('id', '');
 }
 
 function updateFileUploadDragZone(){
@@ -1908,4 +1963,9 @@ function updateFileUploadDragZone(){
 
 function focusEditable(){
   focusAtEndOfRange($('.editable.editable-activated')[0]);
+}
+
+
+function setCodeEditor(cEditor, language, id) {
+
 }

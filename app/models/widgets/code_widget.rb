@@ -23,6 +23,12 @@ class CodeWidget < Widget
     'XML' => 'xml',
   }
 
+  DEFAULT_LANGUAGE = 'bash'  # pygments format
+
+  ACE_PYGMENTS_TRANSLATIONS = {
+    'c_cpp' => 'cpp',
+  }
+
   ACE_LANGUAGES = {
     'abap' => 'ABAP',
     'actionscript' => 'ActionScript',
@@ -144,7 +150,7 @@ class CodeWidget < Widget
   before_validation :disallow_blank_file
   before_validation :guess_language_from_document, if: proc{|w| w.language.nil? || w.document.try(:file_changed?) }
   before_save :check_changes
-  # before_save :format_content
+  before_save :format_content
 
   def self.model_name
     Widget.model_name
@@ -238,7 +244,9 @@ class CodeWidget < Widget
       self.formatted_content = if raw_code == ERROR_MESSAGE
         ERROR_MESSAGE
       else
-        Pygments.highlight(raw_code, lexer: language, options: {linespans: 'line'})
+        translated_lang = ACE_PYGMENTS_TRANSLATIONS[language].presence || language
+        translated_lang = DEFAULT_LANGUAGE unless translated_lang.in? Pygments.lexers.map{|k,v| v[:aliases] }.flatten
+        Pygments.highlight(raw_code, lexer: translated_lang, options: {linespans: 'line'})
       end
     end
 

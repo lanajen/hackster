@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140805021121) do
+ActiveRecord::Schema.define(version: 20140807005720) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -288,6 +288,7 @@ ActiveRecord::Schema.define(version: 20140805021121) do
     t.string   "mpn"
     t.string   "description"
     t.integer  "position"
+    t.string   "comment"
   end
 
   add_index "parts", ["partable_id", "partable_type"], name: "partable_index", using: :btree

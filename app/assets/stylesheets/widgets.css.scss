@@ -45,19 +45,19 @@
 
 .code-widget {
   position: relative;
-  a.more, a.less {
-    display: none;
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    background: white;
-    padding: 4px 7px;
-    border: 1px solid #CCC;
-    @include font-size(11);
-    &:hover {
-      text-decoration: none;
-    }
-  }
+  // a.more, a.less {
+  //   display: none;
+  //   position: absolute;
+  //   bottom: 0;
+  //   right: 0;
+  //   background: white;
+  //   padding: 4px 7px;
+  //   border: 1px solid #CCC;
+  //   @include font-size(11);
+  //   &:hover {
+  //     text-decoration: none;
+  //   }
+  // }
   &.collapsible {
     a.less {
       display: block;
@@ -82,21 +82,29 @@
     & > span {
       display: block;
       line-height: 14px;
-      font-size: 12px;
+      font-size: 14px;
     }
   }
-  &.expanded {
+  .code-container {
+    max-height: 600px;
+    max-width: 100%;
+    overflow: scroll;
+    margin-bottom: 20px;
+  }
+  // &.expanded {
     .highlight {
       position: relative;
-      border-left: 5.2ex solid #CCC;
-      border-left: 5.2ex solid rgba(0, 0, 0, 0.15);
+      border-left: 5.2ex solid #292929;
+      // border-left: 5.2ex solid rgba(0, 0, 0, 0.15);
       pre {
+        border: 0;
+        border-left: 1px solid #222;
         padding: 9.5px 20px;
         counter-reset: linenumbers;
-        @include border-radius(0 4px 4px 0);
+        @include border-radius(0);
         & > span:before {
           font-size: .9em;
-          color: #777;
+          color: #bbb;
           content: counter(linenumbers);
           counter-increment: linenumbers;
           left: -5ex;
@@ -113,7 +121,7 @@
         }
       }
     }
-  }
+  // }
 }
 
 .document-widget {

@@ -181,7 +181,7 @@
     }
   }
 
-  .embed-overlay {
+  .embed-overlay, .code-overlay {
     position: absolute;
     height: 100%;
     width: 100%;
@@ -479,5 +479,17 @@ code.gist {
       font-size: 12px;
       margin-top: 3px;
     }
+  }
+}
+
+.code-overlay {
+  display: none;
+}
+.code-container.outdated {
+  position: relative;
+  .code-overlay {
+    display: block;
+    color: #f2f2f2;
+    font-weight: bold;
   }
 }

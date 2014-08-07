@@ -275,8 +275,12 @@ class Project < ActiveRecord::Base
     doc = Nokogiri::HTML::DocumentFragment.parse widgets_to_text
 
     doc.css('.embed-frame').each do |node|
-      if node.next and node.next.attr('class') == 'embed-frame'
-        node.set_attribute 'class', "#{node.attr('class')} followed-by-embed-frame"
+      if node.next
+        if node.next.attr('class') == 'embed-frame'
+          node.set_attribute 'class', "#{node.attr('class')} followed-by-embed-frame"
+        elsif node.next.name == 'h3'
+          node.set_attribute 'class', "#{node.attr('class')} followed-by-h3"
+        end
       end
     end
 

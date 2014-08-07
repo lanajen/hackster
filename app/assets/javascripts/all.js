@@ -167,23 +167,28 @@
   // affixes .affixable
   var $fixedEl;
   var affixDivs = function affixDivs(){
-    $fixedEl      = $('.affixable');
-    var $window   = $(window);
+    $fixedEl = $('.affixable');
+    var $window = $(window);
     if ($fixedEl.length) {
       $.each($fixedEl, function(){
-        var top   = parseInt($(this).offset().top - (parseFloat($(this).css('top')) || 0)),
+        var top = parseInt($(this).offset().top - (parseFloat($(this).css('top')) || 0)),
             $this = $(this);
+        updateAffix(top, $window, $this);
         $window.on('scroll.affix',function(){
-          var y = $window.scrollTop();
-          if (y >= top) {
-            $this.hasClass('affix') ? '' : $this.addClass('affix');
-          } else {
-            $this.hasClass('affix') ? $this.removeClass('affix') : '';
-          }
+          updateAffix(top, $window, $this);
         });
       });
     }
   };
+
+  function updateAffix(top, w, el){
+    var y = w.scrollTop();
+    if (y >= top) {
+      el.hasClass('affix') ? '' : el.addClass('affix');
+    } else {
+      el.hasClass('affix') ? el.removeClass('affix') : '';
+    }
+  }
   // //affixes project sidebar using translates instead of changing position:absolute -> position:fixed
   // var $fixedEl2;
   // var affixTranslate = function affixTranslate(){
@@ -238,6 +243,7 @@ function smoothScrollToIfOutOfBounds(target, offsetTop, speed) {
   if ((targetPos + target.height() > bottom) || (targetPos + offsetTop < top))
     smoothScrollTo(target, offsetTop, speed);
 }
+
 function smoothScrollTo(target, offsetTop, speed) {
   offsetTop = offsetTop || 0;
   speed = speed || 500;
