@@ -7,6 +7,20 @@
           = image_tag tech.avatar(:mini), class: 'img-circle'
           = link_to tech.name, tech_short_path(tech), class: 'hidden-link'
 
+  - if user_signed_in? and tech_projects = current_user.projects.where.not(id: current_user.projects.includes(:tech_tags).references(:tags).where('lower(tags.name) IN (?)', tech.tech_tags.pluck(:name).map{|n| n.downcase }).pluck(:id)) and tech_projects.any?
+    .col-md-8.col-md-offset-2.col-xs-12
+      .wellified
+        %p.text-center
+          %strong Want to link an existing project to #{tech.name}?
+
+        = form_tag "/groups/#{tech.id}/projects/link", method: :patch do
+          .form-group
+            = select_tag :project_id, options_from_collection_for_select(tech_projects, :id, :name), include_blank: true, class: 'form-control'
+          = submit_tag 'Link project', class: 'btn btn-primary btn-block'
+
+    .col-md-8.col-md-offset-2.col-xs-12
+      %hr
+
 - if @project.external
   .col-md-4.col-md-offset-4.col-xs-12
     .wellified

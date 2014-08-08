@@ -28,7 +28,12 @@ class Groups::ProjectsController < ApplicationController
 
   def link
     @project = Project.find params[:project_id]
-    @project.event = @event
+    case @group
+    when Event
+      @project.event = @event
+    when Tech
+      @project.tech_tags << TechTag.new(name: @group.tech_tags.first.name)
+    end
     @project.save
 
     redirect_to group_path(@group), notice: "Your project has been added to #{@group.name}."
@@ -40,6 +45,8 @@ class Groups::ProjectsController < ApplicationController
         @event = Event.includes(:hackathon).where(groups: { user_name: params[:event_name] }, hackathons_groups: { user_name: params[:user_name] }).first!
       elsif params[:promotion_name]
         load_assignment
+      else
+        @group = Group.find params[:group_id]
       end
     end
 
@@ -47,6 +54,8 @@ class Groups::ProjectsController < ApplicationController
       case @group
       when Event
         'event'
+      else
+        'application'
       end
     end
 end

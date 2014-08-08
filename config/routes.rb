@@ -94,6 +94,7 @@ HackerIo::Application.routes.draw do
       get 'invitations/accept' => 'group_invitations#accept', as: :accept_invitation
       get 'awards/edit' => 'grades#edit', as: :edit_awards
       patch 'awards' => 'grades#update'
+      patch 'projects/link' => 'groups/projects#link'
     end
     resources :members, only: [] do
       patch 'process' => 'members#process_request'
