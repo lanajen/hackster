@@ -2,7 +2,7 @@
   = javascript_include_tag 'https://www.google.com/jsapi'
   = render_chart(@new_projects, 'chart_new_projects')
   = render_chart(@new_users, 'chart_new_users')
-  = render_chart(@new_comments, 'chart_new_comments')
+  = render_chart(@new_respects, 'chart_new_respects')
   = render_chart(@new_follows, 'chart_new_follows')
 
 .page-header
@@ -97,6 +97,6 @@
     #chart_new_users= image_tag 'loader.gif'
 
   .col-xs-12.col-sm-6
-    #chart_new_comments= image_tag 'loader.gif'
+    #chart_new_respects= image_tag 'loader.gif'
   .col-xs-12.col-sm-6
     #chart_new_follows= image_tag 'loader.gif'

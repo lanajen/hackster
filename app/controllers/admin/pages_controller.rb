@@ -39,8 +39,8 @@ class Admin::PagesController < Admin::BaseController
     @new_users = graph_with_dates_for sql, 'New users', 'ColumnChart'
 
 
-    sql = "SELECT to_char(created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM comments WHERE date_part('days', now() - comments.created_at) < 30 AND comments.commentable_type = 'Project' GROUP BY date ORDER BY date;"
-    @new_comments = graph_with_dates_for sql, 'New comments', 'ColumnChart'
+    sql = "SELECT to_char(created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM respects WHERE date_part('days', now() - respects.created_at) < 30 GROUP BY date ORDER BY date;"
+    @new_respects = graph_with_dates_for sql, 'New respects', 'ColumnChart'
 
 
     sql = "SELECT to_char(created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM follow_relations WHERE date_part('days', now() - follow_relations.created_at) < 30 AND follow_relations.followable_type = 'Group' GROUP BY date ORDER BY date;"

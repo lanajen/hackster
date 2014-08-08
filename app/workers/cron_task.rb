@@ -16,7 +16,7 @@ class CronTask < BaseWorker
       reputation.save
     end
     Tech.find_each do |tech|
-      tech.update_counters only: [:projects, :external_projects, :private_projects]
+      tech.update_counters
     end
   end
 
