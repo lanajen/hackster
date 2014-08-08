@@ -1,4 +1,3 @@
-// - blog post or help page to explain of the editor works
 // - blog post to suggest default template
 // - announcement
 
@@ -1435,6 +1434,9 @@ function showErrorBubble(fileName) {
   editor.error.text('An error occurred while uploading ' + fileName + '. Please try again.');
   $('.medium-error-bubble').fadeIn(function(){
     $t = $(this);
+    $(this).bind('click', function(e){
+      $(this).fadeOut();
+    });
     window.setTimeout(function(){
       $t.fadeOut();
     }, 2500)
