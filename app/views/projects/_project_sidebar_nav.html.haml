@@ -21,6 +21,11 @@
             = content_tag(:i, '', class: 'fa fa-info-circle istooltip', title: 'You need to add a description and a cover image before you can make it public.')
       - if @can_edit
         #project-actions.medium-status-bar
+          %p
+            %small
+              Welcome to the new project editor. Read our
+              = link_to 'blog post', '/blog/introducing-the-new-project-editor', target: '_blank'
+              for more info.
           = render 'shared/medium_status_buttons'
           = render partial: 'shared/medium_status', locals: { last_edit: @project.last_edited_at }
 
