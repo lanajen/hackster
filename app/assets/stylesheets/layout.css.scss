@@ -91,7 +91,7 @@ img {
   //   @include transition(all .2s ease);
   // }
 
-  // #nav-actions {
+  // .top-menu-nav {
   //   .dropdown:hover .dropdown-menu {
   //     display: block;
 }
@@ -151,9 +151,11 @@ img {
   text-align: left;
 }
 
-#nav-actions{
-  display: inline-block;
+#nav-actions {
   float: left;
+}
+.top-menu-nav{
+  display: inline-block;
   margin:0;
   height: 60px;
   padding: 0;
@@ -186,12 +188,12 @@ img {
     }
   }
 }
-#nav-actions .nav-link:hover, #nav-actions .nav-link:active, #nav-actions .open > a, #nav-actions .open > a:hover, #nav-actions .open > a:focus{
+.top-menu-nav .nav-link:hover, .top-menu-nav .nav-link:active, .top-menu-nav .open > a, .top-menu-nav .open > a:hover, .top-menu-nav .open > a:focus{
   text-decoration: none;
   color:#fff;
 }
 
-// #nav-actions .open > a, #nav-actions .open > a:hover, #nav-actions .open > a:focus{
+// .top-menu-nav .open > a, .top-menu-nav .open > a:hover, .top-menu-nav .open > a:focus{
 //   background: #2A6186;
 // }
 

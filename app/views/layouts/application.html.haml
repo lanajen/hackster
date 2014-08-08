@@ -46,7 +46,7 @@
             .navbar-header
               = link_to image_tag('hackster_logo_40_white.png'), root_path, class: 'navbar-brand navbar-btn'
             #nav-non-logo.show-on-desktop
-              %ul#nav-actions
+              %ul#nav-actions.top-menu-nav
                 %li.dropdown
                   %a.nav-link.dropdown-toggle{"data-toggle" => "dropdown", href: '#'}
                     Projects
@@ -63,9 +63,6 @@
                               %li= link_to tag, link, ref: 'topnav'
                 %li= link_to 'Tools', tools_path, class: 'nav-link'
                 %li= link_to 'Manufacturing help', build_path, class: 'nav-link'
-                %li
-                  - link = user_signed_in? ? new_project_path : new_user_registration_path(redirect_to: new_project_path, reason: 'project')
-                  %span= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, link, class: 'nav-link nav-add-project'
               - if user_signed_in?
                 %ul.navbar-nav.navbar-right
                   -# if current_user.has_notifications?
@@ -105,9 +102,10 @@
                       %li= link_to 'Invite friends', new_user_invitation_path
                       %li.divider
                       %li= link_to 'Log out', destroy_user_session_path, method: :delete
-                - if current_user.is? :admin
-                  %ul.nav.navbar-nav.navbar-right
-                    %li= link_to 'Admin', admin_analytics_path
+                %ul.navbar-right.top-menu-nav
+                  - if current_user.is? :admin
+                    %li= link_to 'Admin', admin_analytics_path, class: 'nav-link'
+                  %li= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'nav-link nav-add-project'
               - else
                 %ul#navbar-right.clearfix
                   %li
@@ -127,6 +125,11 @@
                         = link_to 'Github', user_omniauth_authorize_path(:github), class: 'zocial icon github'
                         = link_to 'Google+', user_omniauth_authorize_path(:gplus), class: 'zocial icon googleplus'
                         = link_to 'Twitter', user_omniauth_authorize_path(:twitter), class: 'zocial icon twitter'
+
+                %ul.navbar-right.top-menu-nav
+                  %li
+                    = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_user_registration_path(redirect_to: new_project_path, reason: 'project'), class: 'nav-link nav-add-project'
+
               #navbar-search
                 = render 'shared/search_form'
 
@@ -164,7 +167,7 @@
       = link_to 'Projects', projects_path(ref: 'topnav'), class: 'mo-nav-link'
       = link_to 'Tools', tools_path, class: 'mo-nav-link'
       = link_to 'Manufacturing help', build_path, class: 'mo-nav-link'
-      = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, link, class: 'mo-nav-link'
+      = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'mo-nav-link'
       - if user_signed_in?
         = link_to 'Profile', current_user, class: 'mo-nav-link'
         = link_to 'Account settings', edit_user_registration_path, class: 'mo-nav-link'
