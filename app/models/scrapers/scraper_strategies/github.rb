@@ -3,11 +3,12 @@ module ScraperStrategies
 
     private
       def before_parse
-        @project.one_liner = @parsed.at_css('.repository-description').try(:text).try(:strip)
-        @project.website = @parsed.at_css('.repository-website').try(:text).try(:strip)
-
         github_link = "https://github.com#{@parsed.at_css('h1 strong a')['href']}"
-        @widgets << GithubWidget.new(repo: github_link, name: 'Github repo')
+
+        @project.one_liner = @parsed.at_css('.repository-description').try(:text).try(:strip)
+        @project.website = @parsed.at_css('.repository-website').try(:text).try(:strip) || github_link
+
+        @article.children.after "<iframe src='#{github_link}'></iframe>"
         super
       end
 
@@ -20,7 +21,7 @@ module ScraperStrategies
       end
 
       def select_article
-        @parsed.at_css('article') || @parsed
+        @parsed.at_css('article') || @parsed.at('body')
       end
   end
 end

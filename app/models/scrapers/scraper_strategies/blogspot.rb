@@ -2,16 +2,15 @@ module ScraperStrategies
   class Blogspot < Blog
 
     private
-      def before_parse
-        @article.css('.blogadmin, .postfooter').find_all.each{|el| el.remove }
-        super
+      def crap_list
+        super + %w(.blogadmin .postfooter .post-footer)
       end
 
       def parse_comments
-        if dom = @parsed.at_css('#comments')
-          authors = dom.css('.commentauthor');
-          bodies = dom.css('.commentbody');
-          footers = dom.css('.commentfooter');
+        if dom = extract_comments
+          authors = dom.css('.commentauthor, .comment-author');
+          bodies = dom.css('.commentbody, .comment-body');
+          footers = dom.css('.commentfooter, .comment-footer');
 
           authors.each_with_index do |author, i|
             name = author.text.gsub(/said\.\.\./, '').strip

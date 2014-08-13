@@ -12,7 +12,7 @@
   .col-xs-12.issue-content
     .well
       = render partial: 'build_logs/header', locals: { project: @project, log: @log }
-      .content.medium-editor
+      #medium-editor.content
         = @log.body.html_safe
 
         #comments

@@ -1,3 +1,5 @@
+!!! 5
+
 /
   Whatever your mind can conceive and can believe, it can achieve. ~Napoleon Hill
 
@@ -5,7 +7,6 @@
 
   Whether you think you can or can’t either way you are right. ~Henry Ford
 
-!!! 5
 %html(lang="en")
   %head
     %meta(charset="utf-8")
@@ -60,7 +61,7 @@
                             %li.title
                               %h4 Popular tags
                             - POPULAR_TAGS.each do |tag, link|
-                              %li= link_to tag, link, ref: 'topnav'
+                              %li= link_to tag, "#{link}?ref=topnav"
                 %li= link_to 'Tools', tools_path, class: 'nav-link'
                 %li= link_to 'Manufacturing help', build_path, class: 'nav-link'
               - if user_signed_in?

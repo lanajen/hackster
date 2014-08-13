@@ -31,7 +31,7 @@
               - unless log.draft?
                 %i.fa.fa-comments
                 = link_to pluralize(log.comments.size, 'comment'), log_path(@project, log, anchor: 'comments')
-          .content.medium-editor
+          #medium-editor.content
             = log.body
             %p{ style: 'margin-top:10px' }
               - if log.draft?

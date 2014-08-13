@@ -7,8 +7,8 @@ class ProjectScraper
     s = new page_url
 
     # debug snippet
-    # url = File.join(Rails.root, 'app/models/scrapers/maker.html')
-    # s = new 'http://www.artbottoys.com', :base
+    # url = File.join(Rails.root, 'app/models/scrapers/test.html')
+    # s = new 'https://community.spark.io/t/spark-controlled-halloween-costume/491'
     # s.content = s.read_file url
     # end debug snippet
 

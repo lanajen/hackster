@@ -74,7 +74,7 @@ class Project < ActiveRecord::Base
     project.validates :website, :one_liner, :cover_image, presence: true
     project.before_save :external_is_hidden
   end
-  validates :website, uniqueness: { message: 'has already been submitted' }, allow_blank: true
+  # validates :website, uniqueness: { message: 'has already been submitted' }, allow_blank: true
   validates :guest_name, length: { minimum: 3 }, allow_blank: true
   validate :slug_is_unique
   before_validation :assign_new_slug
@@ -272,16 +272,35 @@ class Project < ActiveRecord::Base
   end
 
   def generate_description_from_widgets
-    doc = Nokogiri::HTML::DocumentFragment.parse widgets_to_text
+    self.description = widgets_to_text
+
+    give_embed_style!
+  end
+
+  def give_embed_style!
+    doc = Nokogiri::HTML::DocumentFragment.parse description
 
     doc.css('.embed-frame').each do |node|
       if node.next
-        if node.next.attr('class') == 'embed-frame'
-          node.set_attribute 'class', "#{node.attr('class')} followed-by-embed-frame"
-        elsif node.next.name == 'h3'
-          node.set_attribute 'class', "#{node.attr('class')} followed-by-h3"
+        next_node = node.next
+
+        @continue = true
+        while @continue and next_node do
+          @continue = false
+
+          if next_node.attr('class') and next_node.attr('class').split(' ').include? 'embed-frame'
+            node.set_attribute 'class', "#{node.attr('class')} followed-by-embed-frame"
+          elsif next_node.name == 'h3'
+            node.set_attribute 'class', "#{node.attr('class')} followed-by-h3"
+          elsif next_node.content.strip.blank?
+            @continue = true
+            old_node = next_node
+            next_node = old_node.next
+            old_node.remove
+          end
         end
       end
+
       if node.previous and node.previous.name == 'h3'
         node.set_attribute 'class', "#{node.attr('class')} preceded-by-h3"
       end

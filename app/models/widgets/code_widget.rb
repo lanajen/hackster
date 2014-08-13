@@ -148,8 +148,8 @@ class CodeWidget < Widget
   attr_accessible :document_attributes
   accepts_nested_attributes_for :document, allow_destroy: true
   before_validation :disallow_blank_file
-  before_validation :guess_language_from_document, if: proc{|w| w.language.nil? || w.document.try(:file_changed?) }
   before_save :check_changes
+  before_save :guess_language_from_document, if: proc{|w| w.language.nil? || w.document.try(:file_changed?) }
   before_save :format_content
 
   def self.model_name

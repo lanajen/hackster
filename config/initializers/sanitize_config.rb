@@ -1,11 +1,15 @@
 class Sanitize
   module Config
-    BASIC[:elements] += %w(h5 h6)
-    BASIC[:remove_contents] = %w(script style)
-
-    BASIC_BLANK = BASIC.merge(add_attributes: {
-      'a' => {'rel' => 'nofollow', 'target' => '_blank'}
-    })
+    SCRAPER = {
+      add_attributes: {
+        'a' => {'rel' => 'nofollow', 'target' => '_blank'}
+      },
+      elements: %w(a br p i b ul ol li pre code div h2 h3 h4 h5 h6),
+      remove_contents: %w(script style),
+      attributes: BASIC[:attributes].merge(
+        'div' => %w(class data-url data-caption data-type data-file-id data-widget-id)),
+      protocols: BASIC[:protocols],
+    }
 
     PAYPAL_FORM = {
       elements: %w[

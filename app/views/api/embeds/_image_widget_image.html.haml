@@ -1,6 +1,6 @@
-%div
-  %figure{ data: { type: 'file', 'file-id' => image.id }, contenteditable: 'false' }
+.image
+  .figure{ data: { type: 'file', 'file-id' => image.id }, contenteditable: 'false' }
     %a.embed-img{ style: "background-image:url(#{image.file_url})", href: "javascript:openLightBox(#{widget.id},#{i});" }
-    %figcaption.widget-attribute.widget-attribute-editable{ 'data-attribute' => "[images_attributes][#{i}][title]", 'data-value' => image.title, 'data-default-text' => 'Type in a caption', 'data-disable-toolbar' => 'true' }= image.title
-    .widget-attribute{ 'data-attribute' => "[images_attributes][#{i}][id]", 'data-value' => image.id }
-    .widget-attribute.position{ 'data-attribute' => "[images_attributes][#{i}][position]", 'data-value' => image.position }
+    .figcaption.widget-attribute.widget-attribute-editable{ 'data-attribute' => "[images_attributes][#{i}][title]", 'data-value' => image.title, 'data-default-text' => 'Type in a caption', 'data-disable-toolbar' => 'true' }= image.title
+    %span.widget-attribute{ 'data-attribute' => "[images_attributes][#{i}][id]", 'data-value' => image.id }
+    %span.widget-attribute.position{ 'data-attribute' => "[images_attributes][#{i}][position]", 'data-value' => image.position }

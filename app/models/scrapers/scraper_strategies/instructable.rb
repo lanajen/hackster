@@ -10,6 +10,10 @@ module ScraperStrategies
         super
       end
 
+      def crap_list
+        super + %w(.inline-ads)
+      end
+
       def extract_title
         @parsed.at_css('h1').remove.text
       end

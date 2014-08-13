@@ -20,7 +20,7 @@
   .slick-prev, .slick-next{
     display: none !important;
   }
-  .medium-editor .embed-frame figure figcaption {
+  #medium-editor .embed-frame figure figcaption {
     &:before {
       content: none;
     }

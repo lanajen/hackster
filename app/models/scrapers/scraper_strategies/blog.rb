@@ -2,11 +2,10 @@ module ScraperStrategies
   class Blog < Base
 
     private
-      def after_parse
+      def before_parse
         tags = @article.css('[rel=category]') + @article.css('[rel=tag]') + @article.css('[rel="category tag"]')
         @project.product_tags_string = tags.map{|a| a.text }.join(',')
 
-        parse_comments
         super
       end
 
@@ -15,7 +14,7 @@ module ScraperStrategies
       end
 
       def select_article
-        @parsed.at_css('article') || @parsed.at_css('.post') || @parsed
+        @parsed.at_css('article') || @parsed.at_css('.post') || @parsed.at('body')
       end
   end
 end

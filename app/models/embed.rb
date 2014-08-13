@@ -11,15 +11,15 @@ class Embed
     # /tindie\.com/ => 'BuyWidget.new(link:"|href|",name:"Where to buy")',
     /upverter\.com\/[^\/]+\/([a-z0-9]+)\/[^\/]+/ => :upverter,
     /ustream\.tv\/([a-z]+\/[0-9]+(\/[a-z]+\/[0-9]+)?)/ => :ustream,
-    /vimeo\.com\/([0-9]+)/ => :vimeo,
+    /(?:player\.)?vimeo\.com\/(?:video\/)?([0-9]+)/ => :vimeo,
     /vine\.co\/v\/([a-zA-Z0-9]+)/ => :vine,
-    /(?:youtube\.com|youtu\.be)\/(?:watch\?v=|v\/)?([a-zA-Z0-9\-_]+)/ => :youtube,
+    /(?:youtube\.com|youtu\.be)\/(?:watch\?v=|v\/|embed\/)?([a-zA-Z0-9\-_]+)/ => :youtube,
     /(.+\.(?:jpg|jpeg|bmp|gif|png)(?:\?.*)?)$/i => :image,
     # /(.+\.(html|html|asp|aspx|php|js|css)(\?.*)?)$/ => nil,
     # /(.+\.[a-z]{3,4}(\?.*)?)$/ => { embed_class: 'original', code: '<div class="document-widget"><div class="file"><i class="fa fa-file-o fa-lg"></i><a href="|id|">|id|</a></div></div>',},
   }
 
-  attr_reader :provider_name, :provider_id, :provider, :widget, :type, :url
+  attr_reader :provider_name, :provider_id, :provider, :widget, :type, :url, :default_caption
 
   def self.find_provider_for_url url, fallback_to_default=false
     provider = nil
@@ -49,6 +49,7 @@ class Embed
         @format = @provider.format
         @provider_id = @provider.id
         @provider_name = @provider.identifier
+        @default_caption = @url
         @type = @provider.type
       end
     elsif @widget_id = options[:widget_id]
@@ -65,15 +66,8 @@ class Embed
         @provider_id = @provider.id
         @type = @provider.type
         @provider_name = @provider.identifier
+        @default_caption = file.title.presence || file.caption
       end
-    # elsif type = options[:new_widget]
-    #   @widget = Widget.create type: type, project_id: options[:project_id]
-    #   if type == 'PartsWidget'
-    #     @widget.parts.create quantity: 1
-    #   end
-    #   @provider_name = @widget.identifier
-    #   @type = 'widget'
-    #   @format = 'original'
     end
   end
 
