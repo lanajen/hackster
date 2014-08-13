@@ -234,6 +234,7 @@ $(function() {
     lastSaved: null,
     saveTimerOn: false,
     unsavedChanges: false,
+    saveTimer: null,
     iFile: 0,
 
     activate: function(callback){
@@ -269,8 +270,8 @@ $(function() {
 
       $('figcaption, .figcaption').attr('contenteditable', true);
 
-      $('[data-edit-only="true"]').show();
-      $('[data-edit-hide="true"]').hide();
+      $('[data-edit-only="true"]').slideDown();
+      $('[data-edit-hide="true"]').slideUp();
       $('[data-contenteditable]').attr('contenteditable', 'true');
       _.element.find('input:disabled').prop('disabled', false);
 
@@ -311,8 +312,8 @@ $(function() {
         }
 
         _.self.deactivate();
-        $('[data-edit-only="true"]').hide();
-        $('[data-edit-hide="true"]').show();
+        $('[data-edit-only="true"]').slideUp();
+        $('[data-edit-hide="true"]').slideDown();
         $('[contenteditable]').attr('contenteditable', 'false');
         $('figcaption, .figcaption').attr('contenteditable', false);
         _.element.removeClass('editable-activated');
@@ -328,7 +329,7 @@ $(function() {
         _.element.find('.embed-overlay').remove();
         _.element.find('.medium-editor-toolbar-embed').remove();
         $('.paragraph--empty').removeClass('paragraph--empty');
-        $('.default-text').remove();
+        $('.default-text').fadeOut(function(){ $(this).remove(); });
         $('.medium-editor-placeholder').removeClass('medium-editor-placeholder');
         hideMediaButtons();
         _.clearErrors();
@@ -355,10 +356,10 @@ $(function() {
       now = $.now();
       timeAgo = now - _.lastSaved;
       if (timeAgo < 5000) {
-        window.setTimeout(function(){
+        _.saveTimer = window.setTimeout(function(){
           _.saveTimerOn = false;
           _.checkAndSaveModel();
-        }, timeAgo);
+        }, 5000 - timeAgo);
         _.saveTimerOn = true;
         return;
       }
@@ -402,6 +403,7 @@ $(function() {
           _.clearErrors();
           _.status.html('<i class="fa fa-check" style="color:#5cb85c"></i> All changes saved');
           _.unsavedChanges = false;
+          _.clearTimer();
           successCallback(data);
         },
         error: function(data){
@@ -436,6 +438,15 @@ $(function() {
       });
     },
 
+    clearTimer: function() {
+      var _ = this;
+
+      if (_.saveTimerOn) {
+        window.clearTimeout(_.saveTimer);
+        _.saveTimerOn = false;
+      }
+    },
+
     clearErrors: function() {
       $('.has-error .help-block').remove();
       $('.has-error').removeClass('has-error');
@@ -467,6 +478,10 @@ $(function () {
   $('#upload-cover-image a').click(function(e){
     e.preventDefault();
     $('#upload-cover-image-form input:file').click();
+  });
+
+  $('#showcase-edit-placeholder a').click(function(e){
+    $('#showcase-edit-placeholder').hide();
   });
 
   //

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140807005720) do
+ActiveRecord::Schema.define(version: 20140813213510) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -338,6 +338,7 @@ ActiveRecord::Schema.define(version: 20140807005720) do
     t.boolean  "open_source",                    default: true
     t.string   "buy_link"
     t.datetime "last_edited_at"
+    t.text     "properties"
   end
 
   add_index "projects", ["private"], name: "index_projects_on_private", using: :btree
@@ -494,12 +495,13 @@ ActiveRecord::Schema.define(version: 20140807005720) do
     t.string   "name"
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false
-    t.integer  "widgetable_id",   default: 0,         null: false
+    t.integer  "project_id",      default: 0,         null: false
     t.string   "position",        default: "",        null: false
+    t.integer  "widgetable_id"
     t.string   "widgetable_type", default: "Project"
   end
 
   add_index "widgets", ["position"], name: "index_widgets_on_position", using: :btree
-  add_index "widgets", ["widgetable_id"], name: "index_widgets_on_widgetable_id", using: :btree
+  add_index "widgets", ["project_id"], name: "index_widgets_on_project_id", using: :btree
 
 end

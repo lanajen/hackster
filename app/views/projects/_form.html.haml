@@ -52,6 +52,9 @@
 
           = f.input :public, inline_label: "Make this project public #{content_tag(:i, '', class: 'fa fa-info-circle istooltip', title: 'You need to add a description and a cover image before you can make it public.')}".html_safe, label: false, disabled: (@project.private and !@project.can_be_public?), as: :boolean
 
+          = f.input :private_logs, inline_label: 'Private build logs', hint: "If your project is published, you can choose to keep build logs private by checking this box.", label: false, as: :boolean
+          = f.input :private_issues, inline_label: 'Private issues', hint: "If your project is published, you can choose to keep issues private by checking this box.", label: false, as: :boolean
+
       .panel.panel-default
         .panel-heading
           %h4

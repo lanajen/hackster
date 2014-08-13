@@ -57,7 +57,7 @@ class Project < ActiveRecord::Base
     :featured, :featured_date, :cover_image_id, :logo_id, :license, :slug,
     :permissions_attributes, :new_slug, :slug_histories_attributes, :hide,
     :collection_id, :graded, :wip, :columns_count, :external, :guest_name,
-    :approved, :open_source, :buy_link
+    :approved, :open_source, :buy_link, :private_logs, :private_issues
   attr_accessor :current
   attr_writer :new_slug
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
@@ -84,6 +84,7 @@ class Project < ActiveRecord::Base
   before_update :update_slug, if: proc{|p| p.name_was == DEFAULT_NAME and p.name_changed? }
   # before_create :set_columns_count
   before_save :generate_slug, if: proc {|p| !p.persisted? or p.team_id_changed? }
+  before_create :set_private_settings
 
   taggable :product_tags, :tech_tags
 
@@ -91,9 +92,13 @@ class Project < ActiveRecord::Base
     :widgets_count, :followers_count, :build_logs_count,
     :issues_count, :team_members_count]
 
+  store :properties, accessors: [:private_logs, :private_issues]
+
   parse_as_integers :counters_cache, :comments_count, :product_tags_count,
     :widgets_count, :followers_count, :build_logs_count,
     :issues_count, :team_members_count
+
+  parse_as_booleans :properties, :private_logs, :private_issues
 
   self.per_page = 16
 
@@ -240,7 +245,7 @@ class Project < ActiveRecord::Base
 
   def counters
     {
-      build_logs: 'blog_posts.count',
+      build_logs: 'blog_posts.published.count',
       comments: 'comments.count',
       followers: 'followers.count',
       issues: 'issues.where(type: "Issue").count',
@@ -546,6 +551,10 @@ class Project < ActiveRecord::Base
 
     def set_columns_count
       self.columns_count = 1
+    end
+
+    def set_private_settings
+      self.private_issues = self.private_logs = !!!self.open_source
     end
 
     def slug_is_unique

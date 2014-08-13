@@ -54,7 +54,7 @@
             %h1
               - if @project.logo(:thumb, false)
                 = image_tag @project.logo(:thumb), class: 'project-logo'
-              - if @project.private?
+              -# if @project.private?
                 %i.fa.fa-lock.private-project-icon.istooltip{ title: 'Private project', data: { container: 'body' } }
               - if @can_edit
                 %span.editable-attribute{ 'data-model' => "project", 'data-attribute' => "name", "data-default-text" => "Untitled", 'data-view-tpl' => "<a href='#' class='hidden-link'>*value*</a>", 'data-value' => @project.name_not_default }

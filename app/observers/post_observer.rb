@@ -1,7 +1,15 @@
 class PostObserver < BaseBroadcastObserver
+  def after_create record
+    update_counters record
+  end
+
+  def after_destroy record
+    update_counters record
+  end
 
   private
-    def project_id record
-      record.threadable_id
+    def update_counters record
+      record.threadable.update_counters only: [model_type]
+      # Cashier.expire "project-#{record.threadable_id}-teaser"
     end
 end

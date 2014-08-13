@@ -4,18 +4,8 @@ class IssueObserver < PostObserver
       { context_type: 'issue', context_id: record.id }
   end
 
-  def after_create record
-    super record
-    update_counters record
-  end
-
-  def after_destroy record
-    update_counters record
-  end
-
   private
-    def update_counters record
-      record.threadable.update_counters only: [:issues]
-      # Cashier.expire "project-#{record.threadable_id}-teaser"
+    def model_type
+      :issues
     end
 end

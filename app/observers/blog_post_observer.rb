@@ -1,16 +1,10 @@
 class BlogPostObserver < PostObserver
-  def after_create record
-    super record
-    update_counters record
-  end
-
-  def after_destroy record
-    update_counters record
+  def after_update record
+    update_counters record if record.draft_changed?
   end
 
   private
-    def update_counters record
-      record.threadable.update_counters only: [:build_logs]
-      # Cashier.expire "project-#{record.threadable_id}-teaser"
+    def model_type
+      :build_logs
     end
 end

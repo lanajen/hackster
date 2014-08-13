@@ -40,8 +40,17 @@
             .content
               .text-widget.project-show-item
                 - if @can_edit
+                  - if @project.model.description.blank?
+                    #showcase-edit-placeholder
+                      %p
+                        = link_to 'Start editing', '', class: 'btn btn-primary medium-edit-start'
+                        to describe your project using text, pictures, videos, schematics, code and more.
+                      %p
+                        %small
+                          %strong Tip:
+                          You can also use the orange button in the left sidebar called "Edit project details" to start editing.
                   = render partial: 'shared/medium_editor', locals: { editable: @project.description, attribute_name: 'description' }
-                - elsif @project.description.present?
+                - elsif @project.model.description.present?
                   #medium-editor= @project.description
                 - else
                   #medium-editor
@@ -54,14 +63,16 @@
           - @widgets_by_section[section.index].each do |widget|
             = render 'widgets/widget', { widget: widget }
 
-    - if @project.build_logs_count > 0 or @can_edit
-      #build-logs.project-section
+    - if (@project.build_logs_count > 0 and !@project.private_logs) or @can_edit
+      #build-logs.project-section{ 'data-edit-hide' => 'true' }
         .section-header
           %h2
+            - if @project.private_logs
+              %i.fa.fa-lock.istooltip{ title: 'Build logs are private', data: { container: 'body' } }
             Build logs
             - if @can_edit
               .pull-right= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} New build log".html_safe, new_project_log_path, class: 'btn btn-outline'
-        #medium-editor.section-content
+        .medium-editor.section-content
           - if log = @project.blog_posts.published.last.try(:decorate)
             .transparent-well
               .header
@@ -85,10 +96,12 @@
           - else
             %p No build logs yet.
 
-    - if @project.issues_count > 0 or @can_edit
-      #issues.project-section
+    - if (@project.issues_count > 0 and !@project.private_issues) or @can_edit
+      #issues.project-section{ 'data-edit-hide' => 'true' }
         .section-header
           %h2
+            - if @project.private_issues
+              %i.fa.fa-lock.istooltip{ title: 'Issues are private', data: { container: 'body' } }
             Issues
             - if @can_edit
               .pull-right= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} New issue".html_safe, new_project_issue_path, class: 'btn btn-outline'
@@ -200,7 +213,7 @@
             - if @project.public?
               = render partial: 'widgets/respect_widget', locals: { users: @project.respecting_users }
 
-    = render partial: 'widgets/comment_widget', locals: { comments: @project.comments, commentable: @project }
+    %div{ 'data-edit-hide' => 'true' }= render partial: 'widgets/comment_widget', locals: { comments: @project.comments, commentable: @project }
     - if @issue and can? :comment_privately, @project
       = render partial: 'widgets/private_comment_widget', locals: { comments: @issue.comments, commentable: @project }
 
