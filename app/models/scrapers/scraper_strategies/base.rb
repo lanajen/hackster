@@ -93,7 +93,7 @@ module ScraperStrategies
       end
 
       def extract_title
-        @article.at_css('.entry-title').try(:remove).try(:text) || @parsed.title
+        @article.at_css('.entry-title').try(:remove).try(:text).try(:strip) || @parsed.title
       end
 
       def find_caption_for img

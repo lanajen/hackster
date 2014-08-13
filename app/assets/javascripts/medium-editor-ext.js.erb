@@ -1624,7 +1624,7 @@ function insertEmbedTag(url, node) {
         resizeToolBars();
         stylizeEmbedFrames(editor.element);
       } else {
-        link = '<a href="' + data.url + '">' + data.url + '</a>';
+        link = '<a href="' + data.url + '" target="_blank" rel="nofollow">' + data.url + '</a>';
         node.html(link);
       }
     },

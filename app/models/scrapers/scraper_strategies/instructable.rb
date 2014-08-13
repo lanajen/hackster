@@ -15,7 +15,7 @@ module ScraperStrategies
       end
 
       def extract_title
-        @parsed.at_css('h1').remove.text
+        @parsed.at_css('h1').remove.text.strip
       end
 
       def select_article

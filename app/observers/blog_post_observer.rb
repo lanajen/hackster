@@ -11,10 +11,6 @@ class BlogPostObserver < PostObserver
   private
     def update_counters record
       record.threadable.update_counters only: [:build_logs]
-      Cashier.expire "project-#{record.threadable_id}-teaser"
-    end
-
-    def widget_type
-      'BuildLogWidget'
+      # Cashier.expire "project-#{record.threadable_id}-teaser"
     end
 end

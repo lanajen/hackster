@@ -16,10 +16,6 @@ class IssueObserver < PostObserver
   private
     def update_counters record
       record.threadable.update_counters only: [:issues]
-      Cashier.expire "project-#{record.threadable_id}-teaser"
-    end
-
-    def widget_type
-      'IssueWidget'
+      # Cashier.expire "project-#{record.threadable_id}-teaser"
     end
 end
