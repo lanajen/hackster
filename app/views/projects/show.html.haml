@@ -31,7 +31,7 @@
             %p= truncate @next.one_liner, length: 140
           %a.project-nav-overlay.project-nav-overlay-top{ href: project_path(@next, ref: params[:ref], ref_id: params[:ref_id], offset: params[:offset].to_i + 1) }
 
-    - cache [@project, 'widgets', @can_edit], tag: "project-#{@project.id}-widgets" do
+    - cache [@project, 'widgets', @can_edit], tag: ["project-#{@project.id}-widgets", 'project-widgets'] do
       .project-section{ id: "showcase" }
         .section-header
           %h2 Showcase
@@ -122,7 +122,7 @@
           - else
             %p No issues yet.
 
-    - cache ["project-#{@project.id}", 'metadata', @can_edit], tag: (["project-#{@project.id}-metadata", "team-#{@project.team_id}", "project-#{@project.id}-respects"] + @project.users.map{|u| "user-#{u.id}-thumb"}) do
+    - cache ["project-#{@project.id}", 'metadata', @can_edit], tag: (["project-#{@project.id}-metadata", "team-#{@project.team_id}", "project-#{@project.id}-respects", 'project-metadata'] + @project.users.map{|u| "user-#{u.id}-thumb"}) do
       #more-info.project-section
         .section-header
           %h2 Metadata
