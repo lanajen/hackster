@@ -24,7 +24,7 @@
 
           = link_to @assignment.name, assignment_path(@assignment), class: 'hidden-link'
           - if @assignment.document.present?
-            %small= link_to content_tag(:i, '', class: 'fa fa-question-circle'), @assignment.document.file_url, title: 'Download assignment instructions', rel: 'tooltip', target: '_blank'
+            %small= link_to content_tag(:i, '', class: 'fa fa-info-circle'), @assignment.document.file_url, title: 'Download assignment instructions', rel: 'tooltip', target: '_blank', data: { container: 'body' }
         %h2
           - if profs = @promotion.members.with_group_roles('professor') and profs.any?
             By #{profs.map{ |prof| link_to prof.user.name, prof.user }.to_sentence.html_safe},

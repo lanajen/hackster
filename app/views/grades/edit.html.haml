@@ -1,6 +1,6 @@
 = content_for :no_container do
   #grader
-    .container
+    #grader-main.container
       %h1
         = link_to @assignment.promotion.name, promotion_path(@assignment.promotion), target: '_blank'
         %small
@@ -42,5 +42,6 @@
               .col-xs-4
                 = f.submit 'Save and next', class: 'btn btn-primary'
                 = link_to 'Cancel', assignment_grades_path(@assignment), class: 'btn btn-link btn-sm'
-
-    %iframe{ src: "#{url_for(@project)}?blank_frame=1", frameborder: "0" }
+    #iframe-container
+      #dragbar
+      %iframe{ src: "#{url_for(@project)}?blank_frame=1", frameborder: "0" }

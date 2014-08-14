@@ -1,2 +1,2 @@
-= simple_form_for resource, as: resource_name, url: invitation_path(resource_name), wrapper: :bootstrap3_horizontal, html: { class: 'form-horizontal', method: :patch } do |f|
+= simple_form_for resource, as: resource_name, url: invitation_path(resource_name), wrapper: :bootstrap3_horizontal, html: { class: 'form-horizontal disable-on-submit', method: :patch } do |f|
   = render partial: 'shared/registration_form', locals: { f: f, resource: resource }

@@ -33,9 +33,3 @@
               %br
               %small with your social account:
             = render partial: 'devise/shared/omniauth', locals: { autofocus: (highlight == 'connect') }
-
-= content_for :js do
-  :javascript
-    $('form').submit(function(){
-      $(this).find('input[name="commit"]').prop('disabled', 'disabled');
-    });
