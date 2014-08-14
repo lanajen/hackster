@@ -9,8 +9,14 @@ class Ability
     can :read, Assignment do |assignment|
       assignment.promotion.private == false
     end
-    can :read, [BlogPost, Issue, Page] do |thread|
+    can :read, Page do |thread|
       @user.can? :read, thread.threadable
+    end
+    can :read, BlogPost do |thread|
+      @user.can? :read, thread.threadable and !thread.threadable.private_logs
+    end
+    can :read, Issue do |thread|
+      @user.can? :read, thread.threadable and !thread.threadable.private_issues
     end
     can :create, Project, external: true
     can :join, Group do |group|

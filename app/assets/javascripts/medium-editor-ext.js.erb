@@ -403,7 +403,7 @@ $(function() {
           _.clearErrors();
           _.status.html('<i class="fa fa-check" style="color:#5cb85c"></i> All changes saved');
           _.unsavedChanges = false;
-          _.clearTimer();
+          // _.clearTimer();
           successCallback(data);
         },
         error: function(data){
@@ -441,7 +441,7 @@ $(function() {
     clearTimer: function() {
       var _ = this;
 
-      if (_.saveTimerOn) {
+      if (_.saveTimerOn && !_.unsavedChanges) {
         window.clearTimeout(_.saveTimer);
         _.saveTimerOn = false;
       }
@@ -1083,7 +1083,7 @@ $(function () {
         reader.readAsDataURL(data.files[0]);
       },
       tpl: function(iFile) {
-        return $('<div class="image" id="tmp-file-' + iFile + '"><figure contenteditable="false">' + progressTpl + '</figure></div>');
+        return $('<div class="image" id="tmp-file-' + iFile + '"><div class="figure" contenteditable="false">' + progressTpl + '</div></div>');
       }
     },
     document: {
@@ -1092,7 +1092,7 @@ $(function () {
         $(fileTpl).appendTo('#' + data.context + ' .embed');
       },
       tpl: function(iFile) {
-        return $('<div class="embed-frame" id="tmp-file-' + iFile + '" contenteditable="false"><figure class="embed original" contenteditable="false">' + progressTpl + '</figure></div>');
+        return $('<div class="embed-frame" id="tmp-file-' + iFile + '" contenteditable="false"><div class="figure embed original" contenteditable="false">' + progressTpl + '</div></div>');
       }
     }
   }
@@ -1223,13 +1223,13 @@ $(function () {
         updateFileUploadDragZone();
         if (el.data('file-type') == 'image') {
           timestamp = new Date().getTime();
-          $("<figcaption class='widget-attribute widget-attribute-editable' data-attribute='[images_attributes][" + timestamp + "][title]' contenteditable='true' data-default-text='Type in a caption' data-disable-toolbar='true'></figcaption><span class='widget-attribute' data-attribute='[images_attributes][" + timestamp + "][id]' contenteditable='true' data-value='" + id + "'></span><span class='widget-attribute position' data-attribute='[images_attributes][" + timestamp + "][position]' contenteditable='true'></span>").appendTo(el.find('figure, .figure'));
+          $("<div class='figcaption widget-attribute widget-attribute-editable' data-attribute='[images_attributes][" + timestamp + "][title]' contenteditable='true' data-default-text='Type in a caption' data-disable-toolbar='true'></div><span class='widget-attribute' data-attribute='[images_attributes][" + timestamp + "][id]' contenteditable='true' data-value='" + id + "'></span><span class='widget-attribute position' data-attribute='[images_attributes][" + timestamp + "][position]' contenteditable='true'></span>").appendTo(el.find('figure, .figure'));
           el.closest('.image-gallery-container').find('select').append('<option selected="selected" value="' + id + '"></option>');
           resetPositions(el.closest('.image-gallery').find('.position'));
           $(embedOverlay.moveLeftBtn).appendTo(el.find('.embed-overlay-content'));
           $(embedOverlay.moveRightBtn).appendTo(el.find('.embed-overlay-content'));
         } else {
-          $("<figcaption contenteditable='true' data-default-text='Type in a caption' data-disable-toolbar='true'></figcaption>").appendTo(el.find('figure'));
+          $("<div class='figcaption' contenteditable='true' data-default-text='Type in a caption' data-disable-toolbar='true'></div>").appendTo(el.find('.figure'));
           insertBlankParagraphAfter(el);
           stylizeEmbedFrames(editor.element);
         }

@@ -31,7 +31,7 @@ module MediumEditorDecorator
 
             if caption = el['data-caption']
               code = Nokogiri::HTML::DocumentFragment.parse code
-              if figcaption = code.at_css('figcaption')
+              if figcaption = code.at_css('.embed-figcaption')
                 figcaption.content = caption
                 code = code.to_html
               end
