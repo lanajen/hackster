@@ -74,7 +74,7 @@ class Project < ActiveRecord::Base
     project.validates :website, :one_liner, :cover_image, presence: true
     project.before_save :external_is_hidden
   end
-  # validates :website, uniqueness: { message: 'has already been submitted' }, allow_blank: true
+  validates :website, uniqueness: { message: 'has already been submitted' }, allow_blank: true
   validates :guest_name, length: { minimum: 3 }, allow_blank: true
   validate :slug_is_unique
   before_validation :assign_new_slug
@@ -84,7 +84,6 @@ class Project < ActiveRecord::Base
   before_update :update_slug, if: proc{|p| p.name_was == DEFAULT_NAME and p.name_changed? }
   # before_create :set_columns_count
   before_save :generate_slug, if: proc {|p| !p.persisted? or p.team_id_changed? }
-  before_create :set_private_settings
 
   taggable :product_tags, :tech_tags
 
@@ -551,10 +550,6 @@ class Project < ActiveRecord::Base
 
     def set_columns_count
       self.columns_count = 1
-    end
-
-    def set_private_settings
-      self.private_issues = self.private_logs = !!!self.open_source
     end
 
     def slug_is_unique

@@ -36,6 +36,7 @@ class ProjectObserver < ActiveRecord::Observer
 
   def before_create record
     record.reset_counters assign_only: true
+    record.private_issues = record.private_logs = !!!record.open_source
     record.made_public_at = record.created_at if record.external
     record.last_edited_at = record.created_at
   end
