@@ -55,8 +55,10 @@
                   %ul#topnav.dropdown-menu
                     %li
                       .row
-                        .col-xs-12.text-center.mg-20= link_to 'Browse all projects', projects_path(ref: 'topnav'), class: 'btn btn-block btn-primary'
                         .col-xs-12
+                          .text-center.mg-20= link_to 'Browse all projects', projects_path(ref: 'topnav'), class: 'btn btn-block btn-primary'
+                          - if user_signed_in?
+                            .text-center.mg-20= link_to 'My projects', user_path(current_user, ref: 'topnav'), class: 'btn btn-block btn-default'
                           %ul.nav.nav-pills.nav-stacked
                             %li.title
                               %h4 Popular tags

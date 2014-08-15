@@ -116,7 +116,7 @@
         text-align: right;
         min-height: 13px;
         word-wrap: break-word;
-        word-break: break-all;
+        word-break: break-word;
         &:empty {
           display: none;
         }
