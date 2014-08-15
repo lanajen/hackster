@@ -38,16 +38,16 @@ class ScraperQueue < BaseWorker
     @message.body = "<p>Hi</p><p>This is to let you know that <a href='http://#{APP_CONFIG['full_host']}/projects/#{@project.to_param}'>#{@project.name}</a> has been successfully imported from <a href='#{page_url}'>#{page_url}</a>.</p><p>You can update it and make it public at <a href='http://#{APP_CONFIG['full_host']}/projects/#{@project.to_param}'>http://#{APP_CONFIG['full_host']}/projects/#{@project.to_param}</a>.</p><p><b>Please note:</b> our importer is an experimental feature, your project might need some additional editing before it's ready for prime!</p><p>Cheers<br/>The Hackster.io team</p>"
     BaseMailer.enqueue_generic_email(@message)
 
-  # rescue => exception
-  #   @message.subject = "Your project couldn't be imported"
-  #   @message.body = "<p>Hi</p><p>This is to let you know that we couldn't import your page: #{page_url}.</p><p>We've been notified and will try to fix it. We'll keep you updated.</p><p>Cheers<br/>The Hackster.io team</p>"
+  rescue => exception
+    @message.subject = "Your project couldn't be imported"
+    @message.body = "<p>Hi</p><p>This is to let you know that we couldn't import your page: #{page_url}.</p><p>We've been notified and will try to fix it. We'll keep you updated.</p><p>Cheers<br/>The Hackster.io team</p>"
 
-  #   clean_backtrace = Rails.backtrace_cleaner.clean(exception.backtrace)
-  #   message = "Project import error: #{exception.inspect} // backtrace: #{clean_backtrace.join(' - ')} // page_url: #{page_url} // user_id: #{user_id} // project_errors: #{@project.try(:errors).try(:messages)}"
-  #   log_error exception, clean_backtrace, message
+    clean_backtrace = Rails.backtrace_cleaner.clean(exception.backtrace)
+    message = "Project import error: #{exception.inspect} // backtrace: #{clean_backtrace.join(' - ')} // page_url: #{page_url} // user_id: #{user_id} // project_errors: #{@project.try(:errors).try(:messages)}"
+    log_error exception, clean_backtrace, message
 
-  # ensure
-  #   BaseMailer.enqueue_generic_email(@message)
+  ensure
+    BaseMailer.enqueue_generic_email(@message)
   end
 
   def scrape_projects page_urls, user_id, tech_tags_string=nil
