@@ -270,8 +270,8 @@ $(function() {
 
       $('figcaption, .figcaption').attr('contenteditable', true);
 
-      $('[data-edit-only="true"]').slideDown();
-      $('[data-edit-hide="true"]').slideUp();
+      $('[data-edit-only="true"]').show();
+      $('[data-edit-hide="true"]').hide();
       $('[data-contenteditable]').attr('contenteditable', 'true');
       _.element.find('input:disabled').prop('disabled', false);
 
@@ -312,8 +312,8 @@ $(function() {
         }
 
         _.self.deactivate();
-        $('[data-edit-only="true"]').slideUp();
-        $('[data-edit-hide="true"]').slideDown();
+        $('[data-edit-only="true"]').hide();
+        $('[data-edit-hide="true"]').show();
         $('[contenteditable]').attr('contenteditable', 'false');
         $('figcaption, .figcaption').attr('contenteditable', false);
         _.element.removeClass('editable-activated');
@@ -909,7 +909,7 @@ $(function () {
         var word = returnLastWord(retrieveSelection().anchorNode.nodeValue, caretPos);
         if (word != null) {
           if (/[-a-zA-Z0-9@:%_\+.~#?&\/\/=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)?/gi.test(word)) {
-            var url = /http\:\/\//.test(word) ? word : 'http://' + word;
+            var url = /https?\:\/\//.test(word) ? word : 'http://' + word;
             var regex = new RegExp('( ?)' + word);  // normal whitespaces don't count before HTML tags, need to be replaced by &nbsp;
             var replacer = function(match, p1, offset, string){
               var out = '';
