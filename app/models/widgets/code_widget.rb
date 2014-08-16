@@ -240,7 +240,7 @@ class CodeWidget < Widget
     end
 
     def force_encoding
-      self.raw_code = raw_code.force_encoding "UTF-8" if raw_code.present? and raw_code.changed?
+      self.raw_code = raw_code.force_encoding "UTF-8" if raw_code.present? and raw_code_changed?
     end
 
     def format_content
