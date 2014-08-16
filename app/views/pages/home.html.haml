@@ -54,8 +54,8 @@
             .transparent-well
               .header.no-content
                 %h2
-                  Most popular projects
-                  = link_to 'See more popular projects &rarr;'.html_safe, projects_path(sort: 'popular'), class: 'btn-bottom'
+                  Trending projects
+                  = link_to 'See more trending projects &rarr;'.html_safe, projects_path(sort: 'trending'), class: 'btn-bottom'
             .row
               - @most_popular_projects.each do |project|
                 = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, ref: 'homepop' }

@@ -8,6 +8,7 @@ class Project < ActiveRecord::Base
   }
   SORTING = {
     'magic' => :magic_sort,
+    'trending' => :magic_sort,
     'popular' => :most_popular,
     'recent' => :last_public,
     'updated' => :last_updated,
@@ -230,8 +231,8 @@ class Project < ActiveRecord::Base
     buy_link
   end
 
-  def compute_popularity
-    self.popularity_counter = ((respects_count * 2 + impressions_count * 0.1 + followers_count * 2 + comments_count * 5 + featured.to_i * 10) * [[(1.to_f / Math.log10(age)), 10].min, 0.01].max).round(4)
+  def compute_popularity time_period=365
+    self.popularity_counter = ((respects_count * 4 + impressions_count * 0.05 + comments_count * 2 + featured.to_i * 10) * [1 - [(Math.log(age, time_period)), 1].min, 0.001].max).round(4)
   end
 
   def columns_count

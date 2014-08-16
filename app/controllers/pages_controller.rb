@@ -20,10 +20,10 @@ class PagesController < ApplicationController
   def home
     limit = 4
 
-    @most_popular_projects = Project.indexable.most_popular.limit limit
+    @most_popular_projects = Project.indexable.magic_sort.limit limit
     @last_projects = Project.indexable.last_public.limit limit
     # @active_projects = Project.last_updated.limit 4
-    @featured_projects = Project.featured.limit 4
+    # @featured_projects = Project.featured.limit 4
     # @wip_projects = Project.wip.limit 4
     @tools = Tech.where(user_name: %w(spark electricimp arduino raspberry-pi beagleboard teensy)).order(:full_name)
 

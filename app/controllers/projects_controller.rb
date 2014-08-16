@@ -10,7 +10,7 @@ class ProjectsController < ApplicationController
   def index
     title "Explore all projects - Page #{params[:page] || 1}"
 
-    params[:sort] ||= 'magic'
+    params[:sort] ||= 'trending'
     @by = params[:by] || 'all'
 
     @projects = Project.indexable
