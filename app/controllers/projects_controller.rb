@@ -37,7 +37,7 @@ class ProjectsController < ApplicationController
 
     @show_part_of = @project.collection_id.present? and @project.assignment.present?
     @show_sidebar = true
-    @can_edit = user_signed_in? and current_user.can? :edit, @project
+    @can_edit = (user_signed_in? and current_user.can? :edit, @project)
 
     title @project.name
     @project_meta_desc = "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."

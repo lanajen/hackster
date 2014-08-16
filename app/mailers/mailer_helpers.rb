@@ -80,7 +80,6 @@ module MailerHelpers
       user = opts[:user] if opts.include? :user
       group = @context[:group] if @context.include? :group
       comment = @context[:comment] if @context.include? :comment
-      Rails.logger.info @context.to_s
 
       token = token.gsub(/\|/, '')
       case token.to_sym

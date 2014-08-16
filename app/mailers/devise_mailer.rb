@@ -1,6 +1,10 @@
 class DeviseMailer < BaseMailer
   def confirmation_instructions(record, token, opts={})
-    enqueue_devise_email 'confirmation_instructions', { context_type: :user, context_id: record.id }, opts.merge(token: token)
+    user_email 'confirmation_instructions', record, token, opts
+  end
+
+  def confirmation_instructions_simplified_signup(record, token, opts={})
+    user_email 'confirmation_instructions_simplified_signup', record, token, opts
   end
 
   def invitation_instructions(record, token, opts={})
@@ -26,6 +30,11 @@ class DeviseMailer < BaseMailer
   end
 
   def reset_password_instructions(record, token, opts={})
-    enqueue_devise_email 'password_lost', { context_type: :user, context_id: record.id }, opts.merge(token: token)
+    user_email 'password_lost', record, token, opts
   end
+
+  private
+    def user_email template, record, token, opts={}
+      enqueue_devise_email template, { context_type: :user, context_id: record.id }, opts.merge(token: token)
+    end
 end

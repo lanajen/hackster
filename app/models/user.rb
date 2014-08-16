@@ -59,7 +59,7 @@ class User < ActiveRecord::Base
 
   attr_accessor :email_confirmation, :skip_registration_confirmation,
     :friend_invite_id, :new_invitation, :invitation_code, :match_by,
-    :logging_in_socially
+    :logging_in_socially, :skip_password
   attr_writer :override_devise_notification, :override_devise_model
   attr_accessible :email_confirmation, :password, :password_confirmation,
     :remember_me, :avatar_attributes, :projects_attributes,
@@ -89,6 +89,7 @@ class User < ActiveRecord::Base
   validate :website_format_is_valid
   validate :user_name_is_unique
 
+  # before_validation :generate_password, if: proc{|u| u.skip_password }
   before_validation :ensure_website_protocol
   before_create :subscribe_to_all, unless: proc{|u| u.invitation_token.present? }
   before_save :ensure_authentication_token
@@ -320,6 +321,14 @@ class User < ActiveRecord::Base
     }
   end
 
+  def default_user_name
+    "user#{id}"
+  end
+
+  def default_user_name?
+    user_name == default_user_name
+  end
+
   # allows overriding the invitation email template and the model that's sent to the mailer
   def deliver_invitation_with model
     self.override_devise_notification = "invitation_instructions_with_#{model.class.model_name.to_s.underscore}"
@@ -472,8 +481,12 @@ class User < ActiveRecord::Base
   #   permissions.where(permissible_type: 'Project', permissible_id: project.id).any? or group_permissions.where(permissible_type: 'Project', permissible_id: project.id).any?
   # end
 
+  def generate_password
+    self.password = Devise.friendly_token.first(8)
+  end
+
   def generate_user_name
-    self.user_name = "user#{id}"
+    self.user_name = default_user_name
   end
 
   def has_notifications?
@@ -592,7 +605,8 @@ class User < ActiveRecord::Base
   # end
 
   def profile_needs_care?
-    live_projects_count.zero? or (country.blank? and city.blank?) or mini_resume.blank? or interest_tags_count.zero? or skill_tags_count.zero? or websites.values.reject{|v|v.nil?}.count.zero?
+    # live_projects_count.zero? or (country.blank? and city.blank?) or mini_resume.blank? or interest_tags_count.zero? or skill_tags_count.zero? or websites.values.reject{|v|v.nil?}.count.zero?
+    (country.blank? and city.blank?) or mini_resume.blank? or full_name.blank? or default_user_name? or avatar.nil?
   end
 
   def respected? project
@@ -619,8 +633,26 @@ class User < ActiveRecord::Base
     super if invitation_token.nil?
   end
 
+  def simplified_signup?
+    encrypted_password.blank? and confirmed_at.nil?
+  end
+
   def skip_confirmation!
     self.skip_registration_confirmation = true
+  end
+
+  def skip_password!
+    self.skip_password = true
+  end
+
+  def simplify_signup!
+    skip_confirmation!
+    skip_password!
+    @override_devise_notification = 'confirmation_instructions_simplified_signup'
+  end
+
+  def skip_password?
+    skip_password
   end
 
   def subscribe_to_all
@@ -748,6 +780,6 @@ class User < ActiveRecord::Base
     end
 
     def password_required?
-      (!persisted? || !password.nil? || !password_confirmation.nil?) && !being_invited?
+      (!persisted? || !password.nil? || !password_confirmation.nil?) && !being_invited? && !skip_password?
     end
 end

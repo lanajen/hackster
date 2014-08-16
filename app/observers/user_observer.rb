@@ -1,7 +1,8 @@
 class UserObserver < ActiveRecord::Observer
   def after_commit_on_create record
     unless record.invited_to_sign_up? or record.reputation  # this callback seems to be called twice somehow, which means two sets of emails are sent. Checking on reputation to see if the callback has already been called.
-      advertise_new_user record
+      record.create_reputation
+      advertise_new_user record unless record.simplified_signup?
       record.send_confirmation_instructions unless record.invitation_accepted?
     end
   end
@@ -74,7 +75,6 @@ class UserObserver < ActiveRecord::Observer
       record.broadcast :new, record.id, 'User'
       BaseMailer.enqueue_email 'registration_confirmation',
         { context_type: :user, context_id: record.id } unless record.skip_registration_confirmation
-      record.create_reputation
     end
 
     def expire record
