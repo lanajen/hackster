@@ -31,10 +31,10 @@ HackerIo::Application.routes.draw do
     end
 
     # api for split a/b testing gem
-    # get 'ab_test' => 'split#start_ab_test'
+    get 'ab_test' => 'split#start_ab_test'
     # post 'finished' => 'split#finished_test'
     # get 'finish_and_redirect' => 'split#finish_and_redirect'
-    get 'validate_step' => 'split#validate_step'
+    # get 'validate_step' => 'split#validate_step'
 
     get 'experts', to: redirect('/build')
     get 'build' => 'expert_requests#new'

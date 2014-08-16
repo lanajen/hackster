@@ -5,6 +5,32 @@ $(function () {
     $(this).find('input[name="commit"]').prop('disabled', 'disabled');
   });
 
+  // affixes .affixable
+  var $fixedEl;
+  var affixDivs = function affixDivs(){
+    $fixedEl = $('.affixable');
+    var $window = $(window);
+    if ($fixedEl.length) {
+      $.each($fixedEl, function(){
+        var top = parseInt($(this).offset().top - (parseFloat($(this).css('top')) || 0)),
+            $this = $(this);
+        updateAffix(top, $window, $this);
+        $window.on('scroll.affix',function(){
+          updateAffix(top, $window, $this);
+        });
+      });
+    }
+  };
+
+  function updateAffix(top, w, el){
+    var y = w.scrollTop();
+    if (y >= top) {
+      el.hasClass('affix') ? '' : el.addClass('affix');
+    } else {
+      el.hasClass('affix') ? el.removeClass('affix') : '';
+    }
+  }
+
   //Fade in alerts/notices
   if($('.fade-in').length){
     //if there's a slide-in notification on top of the page, wait until it's down sliding down before affixing divs
@@ -16,6 +42,7 @@ $(function () {
     affixDivs();
     // affixTranslate();
   }
+
   $(document).on('click', '.btn-close', function(e){
     target = $(this).data('close');
     effect = $(this).data('effect') || 'slide';
@@ -27,12 +54,14 @@ $(function () {
     e.stopPropagation();
     return false;
   });
+
   $(document).on('click', '.btn-open', function(e){
     target = $(this).data('open');
     $(target).slideDown(100);
     e.stopPropagation();
     return false;
   });
+
   $(document).on('click', '.btn-cancel', function(e){
     btn = $(this);
     $(btn.data('hide')).fadeOut(function(){
@@ -150,37 +179,11 @@ $(function () {
     });
   });
 
-  // affixes .affixable
-  var $fixedEl;
-  var affixDivs = function affixDivs(){
-    $fixedEl = $('.affixable');
-    var $window = $(window);
-    if ($fixedEl.length) {
-      $.each($fixedEl, function(){
-        var top = parseInt($(this).offset().top - (parseFloat($(this).css('top')) || 0)),
-            $this = $(this);
-        updateAffix(top, $window, $this);
-        $window.on('scroll.affix',function(){
-          updateAffix(top, $window, $this);
-        });
-      });
-    }
-  };
-
-  function updateAffix(top, w, el){
-    var y = w.scrollTop();
-    if (y >= top) {
-      el.hasClass('affix') ? '' : el.addClass('affix');
-    } else {
-      el.hasClass('affix') ? el.removeClass('affix') : '';
-    }
-  }
-
   var updatedScrollEventHandlers = function updatedScrollEventHandlers(){
-    if($('#scroll-nav').length){
+    if ($('#scroll-nav').length){
       $('body').scrollspy('refresh');
     }
-    if($fixedEl.length){
+    if ($fixedEl.length){
       $(window).off('scroll.affix');
       affixDivs();
     }
@@ -192,11 +195,11 @@ $(function () {
     });
   }
 
-  $('.trigger-quick-signup').click(function(e) {
-    e.preventDefault();
-    $('#simplified-signup-popup input[name="redirect_to"]').val($(this).attr('href'));
-    $('#simplified-signup-popup').fadeIn();
-  });
+  // $('.trigger-quick-signup').click(function(e) {
+  //   e.preventDefault();
+  //   $('#simplified-signup-popup input[name="redirect_to"]').val($(this).attr('href'));
+  //   $('#simplified-signup-popup').fadeIn();
+  // });
 });
 
 function smoothScrollToIfOutOfBounds(target, offsetTop, speed) {
