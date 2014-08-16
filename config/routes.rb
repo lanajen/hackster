@@ -50,8 +50,10 @@ HackerIo::Application.routes.draw do
 
     devise_scope :user do
       namespace :users, as: '' do
+        patch '/confirm' => 'confirmations#confirm'
         resources :authorizations
         match '/auth/:provider/setup' => 'omniauth_callbacks#setup', via: :get
+        resources :simplified_registrations, only: [:create]
       end
     end
 
@@ -177,6 +179,7 @@ HackerIo::Application.routes.draw do
       end
       resources :comments, only: [:create]
       resources :respects, only: [:create] do
+        get 'create' => 'respects#create', on: :collection, as: :create
         delete '' => 'respects#destroy', on: :collection
       end
       resources :widgets

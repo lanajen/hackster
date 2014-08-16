@@ -40,6 +40,8 @@
 
         - if @show_signup_popup
           = render 'shared/signup_popup'
+        - unless user_signed_in?
+          = render 'shared/simplified_signup_popup'
 
         .navbar.navbar-default.navbar-static-top#navigation
           #nav-mobile-trigger.hide-on-desktop.fa.fa-bars

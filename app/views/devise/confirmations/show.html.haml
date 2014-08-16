@@ -1,0 +1,9 @@
+.col-xs-12.col-md-4.col-md-offset-4
+  .wellified.text-center
+    %h2 You're almost done!
+    %p Now create a password to securely access your account.
+    = simple_form_for(resource, :as => resource_name, :url => confirm_path) do |form|
+      = form.error_notification
+      = form.input :password, :input_html => {:autofocus => true}, label: false, placeholder: 'Password'
+      = form.input :confirmation_token, :as => :hidden, :value => @original_token
+      = form.submit 'Confirm Account', class: 'btn btn-primary'
