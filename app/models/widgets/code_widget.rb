@@ -147,6 +147,7 @@ class CodeWidget < Widget
 
   attr_accessible :document_attributes
   accepts_nested_attributes_for :document, allow_destroy: true
+  before_validation :force_encoding
   before_validation :disallow_blank_file
   before_save :check_changes
   before_save :guess_language_from_document, if: proc{|w| w.language.nil? || w.document.try(:file_changed?) }
@@ -238,6 +239,10 @@ class CodeWidget < Widget
       self.language = nil
     end
 
+    def force_encoding
+      self.raw_code = raw_code.force_encoding "UTF-8" if raw_code.present? and raw_code.changed?
+    end
+
     def format_content
       return unless raw_code_changed? or language_changed?
 
@@ -248,6 +253,9 @@ class CodeWidget < Widget
         translated_lang = DEFAULT_LANGUAGE unless translated_lang.in? Pygments.lexers.map{|k,v| v[:aliases] }.flatten
         Pygments.highlight(raw_code, lexer: translated_lang, options: {linespans: 'line'})
       end
+
+    rescue
+      self.formatted_content = ERROR_MESSAGE
     end
 
     def read_code_from_file
