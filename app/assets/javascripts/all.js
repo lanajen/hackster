@@ -36,11 +36,9 @@ $(function () {
     //if there's a slide-in notification on top of the page, wait until it's down sliding down before affixing divs
     $('.fade-in').delay(2000).slideDown(500,function(){
       affixDivs();
-      // affixTranslate();
     });
   } else{
     affixDivs();
-    // affixTranslate();
   }
 
   $(document).on('click', '.btn-close', function(e){
@@ -194,12 +192,6 @@ $(function () {
       $('.popup-overlay').fadeOut(200);
     });
   }
-
-  // $('.trigger-quick-signup').click(function(e) {
-  //   e.preventDefault();
-  //   $('#simplified-signup-popup input[name="redirect_to"]').val($(this).attr('href'));
-  //   $('#simplified-signup-popup').fadeIn();
-  // });
 });
 
 function smoothScrollToIfOutOfBounds(target, offsetTop, speed) {

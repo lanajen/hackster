@@ -214,6 +214,26 @@ class ApplicationController < ActionController::Base
       cookies[:initial_referrer] = (request.referrer || 'unknown') unless cookies[:initial_referrer]
     end
 
+    def track_signup resource, simplified=false
+      time_since_shown_signup_popup = cookies[:last_shown_banner].present? ? (Time.now - cookies[:last_shown_banner].to_time) : 'never'
+      data = {
+        first_seen: cookies[:first_seen],
+        initial_referrer: cookies[:initial_referrer],
+        landing_page: cookies[:landing_page],
+        shown_banner_count: cookies[:shown_banner_count],
+        visits_count_before_signup: cookies[:visits].size,
+        simplified: simplified,
+      }
+
+      track_alias
+      track_user resource.to_tracker_profile.merge(data)
+      track_event 'Signed up', data.merge({ time_since_shown_signup_popup: time_since_shown_signup_popup })
+
+      cookies.delete(:first_seen)
+      cookies.delete(:last_shown_banner)
+      cookies.delete(:shown_banner_count)
+    end
+
     def track_visitor
       if params[:t] and params[:t].in? KNOWN_EVENTS.keys
         track_event KNOWN_EVENTS[params[:t]]

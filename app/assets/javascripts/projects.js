@@ -8,12 +8,12 @@
         control: 'normal_signup',
         alternatives: ['quick_signup']
       }, function(data){
-        if (data.alternative == 'quick_signup') {
+        // if (data.alternative == 'quick_signup') {
           $('#simplified-signup-popup input[name="redirect_to"]').val($that.data('redirect-to'));
           $('#simplified-signup-popup').fadeIn();
-        } else {
-          window.location = $that.attr('href');
-        }
+        // } else {
+        //   window.location = $that.attr('href');
+        // }
       })
     });
 
