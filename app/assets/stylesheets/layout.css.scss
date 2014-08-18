@@ -1147,13 +1147,15 @@ a.hidden-link {
   .popup-overlay-inner {
     // height: 175px;
     width: 450px;
-    margin-top: -88px;
+    // margin-top: -88px;
+    margin-top: -122px;
     margin-left: -225px;
     #signup-popup-email {
-      height: 0;
-      overflow: hidden;
-      -webkit-transition: all 200ms;  /* For Safari 3.1 to 6.0 */
-      transition: all 200ms;
+      // height: 0;
+      // overflow: hidden;
+      // -webkit-transition: all 200ms;  /* For Safari 3.1 to 6.0 */
+      // transition: all 200ms;
+      margin-bottom: 10px;
     }
     &.expanded {
       // height: 387px;
