@@ -1452,8 +1452,11 @@ function handleUploadErrors(dataContainer) {
   target.replaceWith(emptyParagraph);
 }
 
-function showErrorBubble(fileName) {
-  editor.error.text('An error occurred while uploading ' + fileName + '. Please try again.');
+function showErrorBubble(fileName, msg) {
+  if (fileName) {
+    msg = 'An error occurred while uploading ' + fileName + '. Please try again.';
+  }
+  editor.error.text(msg);
   $('.medium-error-bubble').fadeIn(function(){
     $t = $(this);
     $(this).bind('click', function(e){

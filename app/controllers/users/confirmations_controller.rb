@@ -20,7 +20,7 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
     if resource.errors.empty?
       track_event 'Confirmed their email address'
       set_flash_message(:notice, :confirmed) if is_navigational_format?
-      sign_in(resource_name, resource)
+      sign_in resource_name, resource, bypass: user_signed_in?
       respond_with_navigational(resource){ redirect_to after_confirmation_path_for(resource_name, resource) }
     else
       respond_with_navigational(resource.errors, :status => :unprocessable_entity){ render :new }
@@ -35,8 +35,10 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
     if resource.valid?
       self.resource.confirm!
       track_event 'Confirmed their email address'
+      BaseMailer.enqueue_email 'registration_confirmation',
+        { context_type: :user, context_id: resource.id }
       set_flash_message :notice, :confirmed
-      sign_in resource_name, resource
+      sign_in resource_name, resource, bypass: user_signed_in?
       redirect_to after_confirmation_path_for resource_name, resource
     else
       render :action => 'show'

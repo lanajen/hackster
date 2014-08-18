@@ -12,7 +12,7 @@
           $('#simplified-signup-popup input[name="redirect_to"]').val($that.data('redirect-to'));
           $('#simplified-signup-popup').fadeIn();
         } else {
-          window.location = $that.attr('href');
+          window.location.href = $that.attr('href');
         }
       })
     });
