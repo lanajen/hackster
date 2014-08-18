@@ -9,13 +9,16 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
 
     self.resource = resource_class.find_by_confirmation_token Devise.token_generator.
       digest(self, :confirmation_token, @original_token)
-    return if resource.nil? or resource.confirmed? or resource.simplified_signup?
+    if resource.nil? or resource.confirmed?
+      redirect_to root_path and return
+    elsif resource.simplified_signup?
+      return
+    end
 
     self.resource = resource_class.confirm_by_token(params[:confirmation_token])
 
     if resource.errors.empty?
-      # Add confirmed_user to the user's roles
-      resource.add_confirmed_role
+      track_event 'Confirmed their email address'
       set_flash_message(:notice, :confirmed) if is_navigational_format?
       sign_in(resource_name, resource)
       respond_with_navigational(resource){ redirect_to after_confirmation_path_for(resource_name, resource) }
@@ -31,6 +34,7 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
 
     if resource.valid?
       self.resource.confirm!
+      track_event 'Confirmed their email address'
       set_flash_message :notice, :confirmed
       sign_in resource_name, resource
       redirect_to after_confirmation_path_for resource_name, resource

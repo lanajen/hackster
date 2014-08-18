@@ -194,7 +194,7 @@ class CodeWidget < Widget
       id: id,
       language: language,
       name: name,
-      raw_code: raw_code,
+      raw_code: raw_code.try(:force_encoding, "UTF-8"),
     }.to_json
   end
 

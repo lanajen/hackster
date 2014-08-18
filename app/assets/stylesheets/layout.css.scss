@@ -817,6 +817,10 @@ footer {
     @include border-radius(0);
     margin-bottom: 0;
   }
+  &.alert-smaller {
+    padding: 10px;
+    font-size: 0.9em;
+  }
 }
 
 h1, h2, h3, h4 {

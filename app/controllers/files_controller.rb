@@ -30,6 +30,8 @@ class FilesController < ApplicationController
   end
 
   def signed_url
+    render nothing: true, status: :unprocessable_entity and return unless params[:file]
+
     render json: {
       policy: s3_upload_policy_document,
       signature: s3_upload_signature,

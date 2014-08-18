@@ -275,6 +275,10 @@ class User < ActiveRecord::Base
     save
   end
 
+  def after_confirmation
+    add_confirmed_role
+  end
+
   def all_grades
     grades.includes(:assignment).where(assignments: { private_grades: false }) + team_grades.includes(:assignment).where(assignments: { private_grades: false })
   end
