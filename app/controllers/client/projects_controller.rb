@@ -4,7 +4,7 @@ class Client::ProjectsController < Client::BaseController
 
   def index
     title = "#{current_platform.name} projects"
-    title += " - Page #{params[:page]}" if params[:page]
+    title += " - Page #{safe_page_params}" if safe_page_params
     title title
 
     impressionist_async current_tech, "", unique: [:session_hash]
@@ -21,7 +21,7 @@ class Client::ProjectsController < Client::BaseController
       @projects = @projects.send(Project::FILTERS[params[:by]])
     end
 
-    @projects = @projects.paginate(page: params[:page])
+    @projects = @projects.paginate(page: safe_page_params)
 
     respond_to do |format|
       format.html { render layout: 'whitelabel' }

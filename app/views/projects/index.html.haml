@@ -8,7 +8,7 @@
     .col-xs-12
       %h1
         Explore #{@by} projects
-        %small page #{params[:page] || 1}
+        %small page #{safe_page_params || 1}
 
         .btn-group.pull-right
           .btn-group

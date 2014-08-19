@@ -6,7 +6,7 @@
       .section-content
         .widget
           .content
-            #editable-description.text-widget.project-show-item.check-todo{ 'data-human-name' => 'Description', 'data-check-todo' => '*console.log(value.find(".editable").text()); value.find(".editable").text().trim() == ""*', 'data-target' => '#showcase' }
+            #editable-description.text-widget.project-show-item.check-todo{ 'data-human-name' => 'Description', 'data-check-todo' => '*value.find(".editable").text().trim() == ""*', 'data-target' => '#showcase' }
               = render partial: 'shared/medium_editor', locals: { editable: @project.decorate.description, attribute_name: 'description' }
 
     #more-info.project-section

@@ -47,6 +47,11 @@ module ApplicationHelper
   end
 
   def get_reason params
+    if flash_disabled?
+      f = bootstrap_flash ''
+      return f if f.present?
+    end
+
     msg = "Please log in or create an account to get full access to our maker resources and start building."
     # group, project, user
 
@@ -94,7 +99,7 @@ module ApplicationHelper
     when 'claim'
       msg = "Please log in or sign up to claim #{content_tag(:b, project.name)}."
     end
-    msg.html_safe
+    "<div class='alert alert-warning text-center'>#{msg}</div>".html_safe
   end
 
   def next_meetup_for_group group_url

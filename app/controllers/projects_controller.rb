@@ -8,7 +8,7 @@ class ProjectsController < ApplicationController
   after_action :allow_iframe, only: :embed
 
   def index
-    title "Explore all projects - Page #{params[:page] || 1}"
+    title "Explore all projects - Page #{safe_page_params || 1}"
 
     params[:sort] ||= 'trending'
     @by = params[:by] || 'all'
@@ -22,7 +22,7 @@ class ProjectsController < ApplicationController
       @projects = @projects.send(Project::FILTERS[params[:by]])
     end
 
-    @projects = @projects.paginate(page: params[:page])
+    @projects = @projects.paginate(page: safe_page_params)
 
     respond_to do |format|
       format.html

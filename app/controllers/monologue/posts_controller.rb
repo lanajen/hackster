@@ -1,6 +1,6 @@
 class Monologue::PostsController < Monologue::ApplicationController
   def index
-    @page = params[:page].nil? ? 1 : params[:page]
+    @page = safe_page_params.nil? ? 1 : safe_page_params
     @posts = Monologue::Post.published.page(@page)
     track_event 'Visited blog'
   end

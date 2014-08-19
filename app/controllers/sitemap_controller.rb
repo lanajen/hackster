@@ -13,7 +13,7 @@ class SitemapController < ApplicationController
   def show
     get_sitemap_pages
 
-    if page = params[:page]
+    if page = safe_page_params
       from = (page.to_i-1) * PER_PAGE
       to = from + 99
       @sitemap_pages = @sitemap_pages[from..to]

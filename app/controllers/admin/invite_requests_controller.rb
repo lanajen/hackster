@@ -5,8 +5,8 @@ class Admin::InviteRequestsController < Admin::BaseController
   # GET /invite_requests
   # GET /invite_requests.json
   def index
-    title "Admin / Invites - #{params[:page]}"
-    @invite_requests = InviteRequest.order('created_at DESC').paginate(page: params[:page])
+    title "Admin / Invites - #{safe_page_params}"
+    @invite_requests = InviteRequest.order('created_at DESC').paginate(page: safe_page_params)
 
     respond_to do |format|
       format.html # index.html.erb
@@ -50,7 +50,7 @@ class Admin::InviteRequestsController < Admin::BaseController
     @invite_request.destroy
 
     respond_to do |format|
-      format.html { redirect_to admin_invite_requests_url(:page => params[:page]) }
+      format.html { redirect_to admin_invite_requests_url(:page => safe_page_params) }
       format.json { head :no_content }
     end
   end
@@ -66,6 +66,6 @@ class Admin::InviteRequestsController < Admin::BaseController
     else
       flash[:alert] = "Something went wrong while inviting #{@invite_request.email}."
     end
-    redirect_to admin_invite_requests_url(:page => params[:page])
+    redirect_to admin_invite_requests_url(:page => safe_page_params)
   end
 end

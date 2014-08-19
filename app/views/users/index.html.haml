@@ -3,7 +3,7 @@
     .col-xs-12
       %h1
         Browse top hackers
-        %small page #{params[:page] || 1}
+        %small page #{safe_page_params || 1}
 
   .row
     - @users.each do |user|

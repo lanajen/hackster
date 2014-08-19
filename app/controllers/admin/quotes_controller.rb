@@ -3,7 +3,7 @@ class Admin::QuotesController < Admin::BaseController
   load_resource
 
   def index
-    @quotes = Quote.order(:id).paginate(:page => params[:page])
+    @quotes = Quote.order(:id).paginate(:page => safe_page_params)
   end
 
   def new

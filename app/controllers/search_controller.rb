@@ -17,7 +17,7 @@ class SearchController < ApplicationController
         unless @results.total_count.zero?
           title "Results for #{params[:q]} - Showing #{@offset} to #{@max} out of #{@results.total_count}"
           meta_desc = "Browse #{@results.total_count} results for #{params[:q]}. Find tools, projects and hackers on hackster.io."
-          meta_desc += " Page #{params[:page]}" if params[:page] and params[:page].to_i > 1
+          meta_desc += " Page #{safe_page_params}" if safe_page_params and safe_page_params.to_i > 1
           meta_desc meta_desc
         end
 

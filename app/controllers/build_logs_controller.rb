@@ -11,7 +11,7 @@ class BuildLogsController < ApplicationController
     title "Logs for #{@project.name}"
     @logs = @project.blog_posts
     @logs = @logs.published unless current_user.try(:can?, :create, BlogPost, @project)
-    @logs = @logs.order(created_at: :desc).paginate(page: params[:page])
+    @logs = @logs.order(created_at: :desc).paginate(page: safe_page_params)
   end
 
   def show

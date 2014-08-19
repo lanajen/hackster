@@ -144,7 +144,8 @@
               #navbar-search
                 = render 'shared/search_form'
 
-      = bootstrap_flash
+      - unless @no_flash
+        = bootstrap_flash
       #main
         - if content_for?(:no_container)
           = yield(:no_container)

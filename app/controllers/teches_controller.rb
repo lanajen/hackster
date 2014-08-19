@@ -26,7 +26,7 @@ class TechesController < ApplicationController
 
     render "groups/teches/#{self.action_name}"
 
-    track_event 'Visited tech', @tech.to_tracker.merge({ page: params[:page] })
+    track_event 'Visited tech', @tech.to_tracker.merge({ page: safe_page_params })
   end
 
   def embed
@@ -105,7 +105,7 @@ class TechesController < ApplicationController
 
   private
     def get_projects
-      @projects = @tech.projects.visible.indexable_and_external.order('group_relations.workflow_state DESC').magic_sort.paginate(page: params[:page])
+      @projects = @tech.projects.visible.indexable_and_external.order('group_relations.workflow_state DESC').magic_sort.paginate(page: safe_page_params)
     end
 
     def load_tech

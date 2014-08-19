@@ -8,7 +8,7 @@
     #content
       .login-forms.row
         .col-xs-12
-          .alert.alert-warning.text-center= get_reason(params)
+          = get_reason(params)
 
         .col-xs-12.col-md-4
           .wellified{ class: "#{'wellified-transparent' unless highlight == 'login'}" }

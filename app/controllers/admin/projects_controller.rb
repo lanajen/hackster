@@ -1,7 +1,7 @@
 class Admin::ProjectsController < Admin::BaseController
   load_resource except: :index
   def index
-    title "Admin / Projects - #{params[:page]}"
+    title "Admin / Projects - #{safe_page_params}"
     @fields = {
       'created_at' => 'projects.created_at',
       'made_public_at' => 'projects.made_public_at',

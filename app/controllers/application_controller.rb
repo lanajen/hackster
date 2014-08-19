@@ -21,6 +21,8 @@ class ApplicationController < ActionController::Base
   before_filter :track_visitor
   after_filter :store_location_after
   after_filter :track_landing_page
+  helper_method :flash_disabled?
+  helper_method :safe_page_params
   helper_method :title
   helper_method :meta_desc
   helper_method :user_return_to
@@ -40,21 +42,11 @@ class ApplicationController < ActionController::Base
 
   rescue_from CanCan::AccessDenied do |exception|
     if current_user
-#      unless current_user.confirmed?
-#        set_flash_message :alert, "You need to confirm your email address first. %s" % [eval_text{ link_to 'Resend the confirmation email.', new_user_confirmation_path }]
-#      else
-        set_flash_message :alert, exception.message
-#      end
+      set_flash_message :alert, exception.message
       redirect_to session[:user_return_to_if_disallowed] || root_url
     else
       redirect_to new_user_session_url
     end
-  end
-
-  before_filter :test
-
-  def test
-    # raise request.user_agent.inspect
   end
 
   def not_found
@@ -102,6 +94,14 @@ class ApplicationController < ActionController::Base
 
     def current_ability
       current_user ? current_user.ability : User.new.ability
+    end
+
+    def disable_flash
+      @no_flash = true
+    end
+
+    def flash_disabled?
+      !!@no_flash
     end
 
     def is_trackable_page?
@@ -365,6 +365,14 @@ class ApplicationController < ActionController::Base
       else
         @title ? "#{@title} - Hackster.io" : "Hackster.io - #{SLOGAN}"
       end
+    end
+
+    def safe_page_params
+      return nil unless params[:page]
+
+      Integer params[:page]
+    rescue
+      raise ActiveRecord::RecordNotFound
     end
 
     def show_hello_world?

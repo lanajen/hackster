@@ -48,15 +48,15 @@ class Admin::PagesController < Admin::BaseController
   end
 
   def build_logs
-    title "Admin / Build logs - #{params[:page]}"
+    title "Admin / Build logs - #{safe_page_params}"
 
-    @logs = BlogPost.order(created_at: :desc).paginate(page: params[:page])
+    @logs = BlogPost.order(created_at: :desc).paginate(page: safe_page_params)
   end
 
   def comments
-    title "Admin / Comments - #{params[:page]}"
+    title "Admin / Comments - #{safe_page_params}"
 
-    @comments = Comment.where(commentable_type: 'Project').order(created_at: :desc).paginate(page: params[:page])
+    @comments = Comment.where(commentable_type: 'Project').order(created_at: :desc).paginate(page: safe_page_params)
   end
 
   def clear_sidekiq_failures
@@ -65,21 +65,21 @@ class Admin::PagesController < Admin::BaseController
   end
 
   def followers
-    title "Admin / Followers - #{params[:page]}"
+    title "Admin / Followers - #{safe_page_params}"
 
-    @follow_relations = FollowRelation.order(created_at: :desc).paginate(page: params[:page])
+    @follow_relations = FollowRelation.order(created_at: :desc).paginate(page: safe_page_params)
   end
 
   def issues
-    title "Admin / Issues - #{params[:page]}"
+    title "Admin / Issues - #{safe_page_params}"
 
-    @issues = Issue.where(type: 'Issue').order(created_at: :desc).paginate(page: params[:page])
+    @issues = Issue.where(type: 'Issue').order(created_at: :desc).paginate(page: safe_page_params)
   end
 
   def logs
-    redirect_to admin_logs_path(page: (LogLine.count.to_f / LogLine.per_page).ceil) unless params[:page]
+    redirect_to admin_logs_path(page: (LogLine.count.to_f / LogLine.per_page).ceil) unless safe_page_params
 
-    title "Admin / Logs - #{params[:page]}"
+    title "Admin / Logs - #{safe_page_params}"
 
     @fields = {
       'created_at' => 'log_lines.created_at',
@@ -93,16 +93,16 @@ class Admin::PagesController < Admin::BaseController
   end
 
   def respects
-    title "Admin / Respects - #{params[:page]}"
+    title "Admin / Respects - #{safe_page_params}"
 
-    @respects = Respect.where(respecting_type: 'User').order(created_at: :desc).paginate(page: params[:page])
+    @respects = Respect.where(respecting_type: 'User').order(created_at: :desc).paginate(page: safe_page_params)
   end
 
   def root
   end
 
   def teches
-    title "Admin / Techs - #{params[:page]}"
+    title "Admin / Techs - #{safe_page_params}"
     @fields = {
       'created_at' => 'groups.created_at',
       'name' => 'groups.full_name',

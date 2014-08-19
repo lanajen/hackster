@@ -1,6 +1,6 @@
 class Admin::GroupsController < Admin::BaseController
   def index
-    title "Admin / Groups - #{params[:page]}"
+    title "Admin / Groups - #{safe_page_params}"
     @fields = {
       'created_at' => 'groups.created_at',
       'name' => 'groups.full_name',

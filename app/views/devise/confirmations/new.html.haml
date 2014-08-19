@@ -4,4 +4,4 @@
     = simple_form_for(resource, :as => resource_name, :url => confirmation_path(resource_name), :html => { :method => :post }) do |f|
       = f.error_notification
       = f.input :email, :required => true, placeholder: 'Email', label: false
-      = f.submit "Resend confirmation instructions", class: 'btn btn-primary'
+      = f.submit "Resend confirmation instructions", class: 'btn btn-primary btn-block'

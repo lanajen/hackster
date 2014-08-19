@@ -25,7 +25,7 @@ class WikiPagesController < ApplicationController
   end
 
   def create
-    @page = @event.pages.new(params[:page])
+    @page = @event.pages.new(safe_page_params)
     authorize! :create, @page
     @page.user = current_user
 
@@ -43,7 +43,7 @@ class WikiPagesController < ApplicationController
 
   def update
     authorize! :edit, @page
-    if @page.update_attributes(params[:page])
+    if @page.update_attributes(safe_page_params)
       redirect_to hackathon_event_page_path(@event.hackathon.user_name, @event.user_name, @page.slug), notice: 'Page updated.'
     else
       render 'edit'

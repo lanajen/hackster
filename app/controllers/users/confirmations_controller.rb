@@ -1,4 +1,8 @@
 class Users::ConfirmationsController < Devise::ConfirmationsController
+  def new
+    self.resource = resource_class.new permitted_params_for_new
+  end
+
   # GET /resource/confirmation?confirmation_token=abcdef
   def show
     if params[:confirmation_token].present?
@@ -30,7 +34,7 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
   def confirm
     @original_token = params[resource_name].try(:[], :confirmation_token)
     self.resource = resource_class.find_by_confirmation_token! @original_token
-    resource.assign_attributes(permitted_params)
+    resource.assign_attributes(permitted_params_for_confirm)
 
     if resource.valid?
       self.resource.confirm!
@@ -50,7 +54,11 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
       resource.profile_needs_care? ? user_after_registration_path : super(resource_name, resource)
     end
 
-    def permitted_params
+    def permitted_params_for_confirm
       params.require(resource_name).permit(:password)
+    end
+
+    def permitted_params_for_new
+      params.require(resource_name).permit(:email)
     end
 end
