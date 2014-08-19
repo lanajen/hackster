@@ -60,7 +60,7 @@
     - else
       #{@user.name} has no public projects.
 
-    - if user_signed_in? and (@user == current_user or current_user.is? :admin)
+    - if user_is_current_or_admin?
       %hr
       %h2
         Private projects

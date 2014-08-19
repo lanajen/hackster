@@ -6,4 +6,4 @@
       = form.error_notification
       = form.input :password, :input_html => {:autofocus => true}, label: false, placeholder: 'Password'
       = form.input :confirmation_token, :as => :hidden, :value => @original_token
-      = form.submit 'Confirm Account', class: 'btn btn-primary'
+      = form.submit 'Confirm account', class: 'btn btn-primary btn-block'

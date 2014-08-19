@@ -125,6 +125,10 @@ module ApplicationHelper
     user_signed_in? and current_user.id == @user.try(:id)
   end
 
+  def user_is_current_or_admin?
+    user_is_current? or current_user.try(:is?, :admin)
+  end
+
   def value_for_input param, val
     param.nil? or param == val ? true : false
   end
