@@ -21,13 +21,7 @@
             = content_tag(:i, '', class: 'fa fa-info-circle istooltip', title: 'You need to add a description and a cover image before you can make it public.')
       - if @can_edit
         #project-actions.medium-status-bar
-          %p
-            %small
-              Welcome to the new project editor. Read our
-              = link_to 'blog post', '/blog/introducing-the-new-project-editor', target: '_blank'
-              for more info.
-          = render 'shared/medium_status_buttons'
-          = render partial: 'shared/medium_status', locals: { last_edit: @project.last_edited_at }
+          = render partial: 'shared/medium_status_buttons', locals: { show_edit: true }
 
       #scrolling-project-section
         #scroll-nav
@@ -75,12 +69,12 @@
           - if @project.public?
             .col-xs-6= render 'projects/project_embed_popup'
           .pull-right.col-xs-6.medium-status-bar
-            .pull-right= render 'shared/medium_status_buttons'
+            .pull-right= render partial: 'shared/medium_status_buttons', locals: { show_edit: true }
 
         .medium-edit-show{ style: 'display:none;' }
           .col-xs-12.medium-status-bar
             .pull-left= render partial: 'shared/medium_status', locals: { last_edit: @project.last_edited_at }
-            .pull-right= render 'shared/medium_status_buttons'
+            .pull-right= render partial: 'shared/medium_status_buttons', locals: { show_edit: true }
 
   - elsif @project.public?
     #mobile-bottom-bar

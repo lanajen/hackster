@@ -862,6 +862,22 @@
   padding: 20px 14px;
 }
 
-// #content.project {
-//   background: #fff;
-// }
+#todos {
+  padding: 20px;
+  padding-left: 40px;
+  li {
+    font-size: 12px;
+    margin-bottom: 5px;
+    &.list-title {
+      margin-left: -20px;
+      list-style: none;
+      text-transform: uppercase;
+    }
+    &.todo-complete {
+      list-style: none;
+      i {
+        color: #5cb85c;
+      }
+    }
+  }
+}

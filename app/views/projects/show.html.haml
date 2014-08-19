@@ -43,7 +43,7 @@
                   - if @project.model.description.blank?
                     #showcase-edit-placeholder
                       %p
-                        = link_to 'Start editing', '', class: 'btn btn-primary medium-edit-start'
+                        = link_to 'Enter edit mode', edit_project_path(@project), class: 'btn btn-primary'
                         to describe your project using text, pictures, videos, schematics, code and more.
                       %p
                         %small
@@ -64,7 +64,7 @@
             = render 'widgets/widget', { widget: widget }
 
     - if (@project.build_logs_count > 0 and !@project.private_logs) or @can_edit
-      #build-logs.project-section{ 'data-edit-hide' => 'true' }
+      #build-logs.project-section
         .section-header
           %h2
             - if @project.private_logs
@@ -97,7 +97,7 @@
             %p No build logs yet.
 
     - if (@project.issues_count > 0 and !@project.private_issues) or @can_edit
-      #issues.project-section{ 'data-edit-hide' => 'true' }
+      #issues.project-section
         .section-header
           %h2
             - if @project.private_issues
@@ -174,11 +174,7 @@
                     - poster = @project.team.active_members.includes(:user).first.user
                     = link_to poster.name, poster
 
-              - if @can_edit
-                .license.meta
-                  %strong
-                    %span.editable-attribute{ 'data-model' => "project", 'data-attribute' => "license", "data-default-text" => "Select a license", 'data-view-tpl' => "*var f=function(licenseUrl){ if (licenseUrl == '') return ''; licenses = #{License.all_with_abbr.to_s.gsub(/=>/, ': ')}; abbr = licenses[licenseUrl]; return \"Copyright &copy; <a href='\" + licenseUrl + \"' class='hidden-link'>\" + abbr + \"</a>\"; }; f(value);*", 'data-value' => @project.license.try(:url), 'data-edit-tpl' => "*var f=function(url){ var input=$(\"<select><option></option>#{License.all.map{|l| "<option value='#{l.url}'>#{l.name.gsub(/"/, '\"')}</option>" }.join('')}</select>\"); var option=input.children('option[value=\"' + url + '\"]'); option.attr('selected', 'selected'); return input[0].outerHTML; }; f(value);*" }
-              - elsif @project.license
+              - if @project.license
                 .license.meta
                   %strong
                     Copyright
@@ -186,10 +182,7 @@
                     = link_to @project.license.abbr, @project.license.url, target: '_blank', class: 'hidden-link'
 
             #right-project-deets
-              - if @can_edit
-                .tags.meta
-                  .editable-attribute{ 'data-model' => "project", 'data-attribute' => "tech_tags_string", "data-default-text" => "Add technologies you're using in this project, separated by commas. Eg: Arduino, ATmega, Attiny...", 'data-view-tpl' => "*var f=function(tagString){ var out = '<div class=\"meta-title-wrap\"><div class=\"meta-title\">Technologies</div></div>', tags = []; tags = tagString.split(','); $.each(tags, function(i, tag){ tag = tag.trim(); tpl = \"<span><a class='tag-link' href='/tags/\" + encodeURIComponent(tag) + \"'>\" + tag + \"</a></span>\"; out += tpl; }); return out; }; f(value);*", 'data-value' => @project.tech_tags_string }
-              - elsif @project.tech_tags.any?
+              - if @project.tech_tags.any?
                 .tags.meta
                   .meta-title-wrap
                     .meta-title Technologies
@@ -200,10 +193,7 @@
                       - tag_link = "/tags/#{CGI::escape(tag)}"
                     %span= link_to tag, tag_link, class: 'tag-link'
 
-              - if @can_edit
-                .tags.meta
-                  .editable-attribute{ 'data-model' => "project", 'data-attribute' => "product_tags_string", "data-default-text" => "Add tags, separated by commas. Eg: home automation, drone, display...", 'data-view-tpl' => "*var f=function(tagString){ var out = '<div class=\"meta-title-wrap\"><div class=\"meta-title\">Tags</div></div>', tags = []; tags = tagString.split(','); $.each(tags, function(i, tag){ tag = tag.trim(); tpl = \"<span><a class='tag-link' href='/tags/\" + encodeURIComponent(tag) + \"'>#\" + tag + \"</a></span>\"; out += tpl; }); return out; }; f(value);*", 'data-value' => @project.product_tags_string }
-              - elsif @project.product_tags.any?
+              - if @project.product_tags.any?
                 .tags.meta
                   .meta-title-wrap
                     .meta-title Tags
@@ -213,7 +203,7 @@
             - if @project.public?
               = render partial: 'widgets/respect_widget', locals: { users: @project.respecting_users }
 
-    %div{ 'data-edit-hide' => 'true' }= render partial: 'widgets/comment_widget', locals: { comments: @project.comments, commentable: @project }
+    = render partial: 'widgets/comment_widget', locals: { comments: @project.comments, commentable: @project }
     - if @issue and can? :comment_privately, @project
       = render partial: 'widgets/private_comment_widget', locals: { comments: @issue.comments, commentable: @project }
 

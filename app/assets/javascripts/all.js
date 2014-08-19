@@ -203,6 +203,17 @@ function smoothScrollToIfOutOfBounds(target, offsetTop, speed) {
     smoothScrollTo(target, offsetTop, speed);
 }
 
+function smoothScrollToAndHighlight(target, offsetTop, hiliTarget) {
+  smoothScrollTo(target, offsetTop);
+  if (typeof(hiliTarget) == 'string') hiliTarget = $(hiliTarget);
+  $('.highlight').removeClass('highlight');
+  hiliTarget.addClass('highlight-transition');
+  hiliTarget.addClass('highlight');
+  window.setTimeout(function(){
+    hiliTarget.removeClass('highlight');
+  }, 3000);
+}
+
 function smoothScrollTo(target, offsetTop, speed) {
   offsetTop = offsetTop || 0;
   speed = speed || 500;
@@ -210,6 +221,7 @@ function smoothScrollTo(target, offsetTop, speed) {
   $('html, body').stop().animate({
     'scrollTop': target.offset().top + offsetTop
   }, speed, 'swing', function () {});
+  return target;
 }
 
 function closePopup(id) {

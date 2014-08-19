@@ -1,10 +1,10 @@
 class ProjectsController < ApplicationController
   before_filter :load_project, only: [:show, :embed, :update, :destroy, :redirect_old_show_route]
-  load_and_authorize_resource only: [:index, :edit]
+  load_and_authorize_resource only: [:index, :edit, :settings]
   layout 'project', only: [:edit, :update, :show]
-  before_filter :set_project_mode, only: [:edit, :update]
+  before_filter :set_project_mode, only: [:settings]
   respond_to :html
-  respond_to :js, only: [:edit, :update]
+  respond_to :js, only: [:edit, :update, :settings]
   after_action :allow_iframe, only: :embed
 
   def index
@@ -189,7 +189,7 @@ class ProjectsController < ApplicationController
       if @project.external
         redirect_to user_return_to, notice: "Thanks for your submission!"
       else
-        respond_with @project
+        respond_with @project, location: edit_project_path(@project)
       end
 
       track_event event, @project.to_tracker
@@ -200,10 +200,20 @@ class ProjectsController < ApplicationController
   end
 
   def edit
+    title 'Edit project'
+    @mode = 'edit_mode'
+    @show_sidebar = true
+    initialize_project
+  end
+
+  def settings
+    title 'Project settings'
     initialize_project
   end
 
   def update
+    @mode = 'edit_mode'
+    @show_sidebar = true
     authorize! :update, @project
     private_was = @project.private
 

@@ -1350,3 +1350,16 @@ input.cmn-toggle ~ .option-checked, input.cmn-toggle:checked ~ .option-unchecked
 .mg-40{
   margin-bottom: 40px !important;
 }
+.highlight {
+  background-color: yellow !important;
+  color: #363400 !important;
+}
+.highlight-transition {
+  @include transition(background-color ease-in-out .5s);
+}
+.highlight .default-text, .highlight a, .highlight *:after {
+  color: #363400 !important;
+}
+.highlight-transition .default-text, .highlight-transition a, .highlight-transition *:after {
+  @include transition(color ease-in-out .5s);
+}

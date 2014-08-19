@@ -291,6 +291,8 @@ $(function() {
           $(this).html('<span class="default-text">' + $(this).data('default-text') + '</span>');
         }
       });
+
+      checkTodos();
       focusEditable();
 
       callback();
@@ -404,6 +406,7 @@ $(function() {
           _.status.html('<i class="fa fa-check" style="color:#5cb85c"></i> All changes saved');
           _.unsavedChanges = false;
           // _.clearTimer();
+          checkTodos();
           successCallback(data);
         },
         error: function(data){
@@ -684,6 +687,7 @@ $(function () {
     editor.disable(function() {
       if (typeof($href) != 'undefined' && $href != '') {
         window.location.href = $href;
+        $('.medium-edit-stop').prop('disabled', true);
       } else {
         $('.medium-edit-show').hide();
         $('.medium-edit-hide').show();
@@ -1300,6 +1304,7 @@ $(function () {
       createFileOnServerAfterUpload(data, 'cover_image', function(data){
         var id = data.id;
         formData = { project: { cover_image_id: id }};
+        $('#upload-cover-image a').attr('data-value', id);
         editor.saveModel(
           function(){
             $('#project-top-image .embed-overlay').remove();
@@ -1996,4 +2001,35 @@ function updateFileUploadDragZone(){
 
 function focusEditable(){
   focusAtEndOfRange($('#medium-editor .editable.editable-activated')[0]);
+}
+
+function checkTodos(){
+  todos = [];
+  $('.check-todo').each(function(){
+    todo = checkTodo($(this));
+    if (String(todo) == 'true') todos.push($(this));
+  });
+
+  out = '<li class="list-title">Fields to complete:</li>';
+  $.each(todos, function(i, el){
+    elId = '#' + $(el).attr('id');
+    target = $(el).data('target') ? $(el).data('target') : elId;
+    out += '<li>';
+    out += '<a href="javascript:smoothScrollToAndHighlight(\'' + target + '\', -60, \'' + elId + '\');">';
+    out += $(el).data('human-name');
+    out += '</a></li>';
+  });
+  if (todos.length == 0) out += '<li class="todo-complete"><i class="fa fa-check"></i> All done</li>';
+  $('#todos').html(out);
+}
+
+function checkTodo(el){
+  if (el.data('check-todo')) {
+    value = el;
+    return el.data('check-todo').replace(/\*([^\*]+)\*/g, function(match, p1, offset, string){
+      return eval(p1);
+    });
+  } else {
+    if (el.data('value') == '' || el.data('value') == undefined || el.data('value') == undefined) return true;
+  }
 }

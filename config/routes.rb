@@ -163,6 +163,7 @@ HackerIo::Application.routes.draw do
     delete 'notifications' => 'notifications#destroy'
 
     resources :projects, except: [:show, :update, :destroy] do
+      get 'settings' => 'projects#settings', on: :member
       post 'claim' => 'projects#claim_external', on: :member
       get 'last' => 'projects#redirect_to_last', on: :collection
       get '' => 'projects#redirect_old_show_route', constraints: lambda{|req| req.params[:project_id] != 'new' }

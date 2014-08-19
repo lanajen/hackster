@@ -1,4 +1,4 @@
-- active_member = (user_signed_in? and current_user.is_team_member? @project, false)
+-# active_member = (user_signed_in? and current_user.is_team_member? @project, false)
 
 - if @project.collection_id.present?
   #project-group
@@ -29,9 +29,6 @@
     = link_to "&times;".html_safe, '#', data: { close: '.alert-author-share' }, class: 'btn-close btn-close-notif'
     = render 'projects/share_by_author'
 
--# if @can_edit
-  = render partial: 'shared/medium_editor_status_bar', locals: { last_edit: @project.last_edited_at }
-
 - cache [@project, 'teaser', @can_edit], tag: (["project-#{@project.id}-teaser", "team-#{@project.team_id}"] + @project.users.map{|u| "user-#{u.id}-thumb"}) do
   #top-project-section
     #project-top-image{style: "background-image: url('#{@project.cover_image}');"}
@@ -39,46 +36,22 @@
       #project-header
         .wrapper700
           #project-header-in
-            - if @can_edit
-              #upload-cover-image{ 'data-edit-only' => 'true' }
-                %a{ href: '', rel: 'tooltip', title: 'Change cover image' }
-                  %i.fa.fa-image
-                %form#upload-cover-image-form{action: "https://#{ENV['FOG_DIRECTORY']}.s3.amazonaws.com", enctype: "multipart/form-data", method: "post", style: "display:none;"}
-                  %input{name: "key", type: "hidden"}
-                  %input{name: "AWSAccessKeyId", type: "hidden", value: "#{ENV['AWS_ACCESS_KEY_ID']}"}
-                  %input{name: "acl", type: "hidden", value: "public-read"}
-                  %input{name: "policy", type: "hidden"}
-                  %input{name: "signature", type: "hidden"}
-                  %input{name: "success_action_status", type: "hidden", value: "201"}
-                  %input{name: "file", type: "file"}
             %h1
               - if @project.logo(:thumb, false)
                 = image_tag @project.logo(:thumb), class: 'project-logo'
               -# if @project.private?
                 %i.fa.fa-lock.private-project-icon.istooltip{ title: 'Private project', data: { container: 'body' } }
-              - if @can_edit
-                %span.editable-attribute{ 'data-model' => "project", 'data-attribute' => "name", "data-default-text" => "Untitled", 'data-view-tpl' => "<a href='#' class='hidden-link'>*value*</a>", 'data-value' => @project.name_not_default }
-              - else
-                = link_to @project.name, @project, class: 'hidden-link'
+              = link_to @project.name, @project, class: 'hidden-link'
 
             #project-information
-              - if @can_edit
-                .one-liner.editable-attribute{ 'data-model' => "project", 'data-attribute' => "one_liner", "data-default-text" => "Describe this project in a sentence (140 characters max)", 'data-value' => @project.one_liner, 'data-view-tpl' => '*value*' }
-              - elsif @project.one_liner.present?
-                .one-liner= @project.one_liner
+              .one-liner= @project.one_liner
 
-              - if @can_edit
-                .tags.meta
-                  %span.editable-attribute{ 'data-model' => "project", 'data-attribute' => "product_tags_string", "data-default-text" => "Add tags, separated by commas. Eg: home automation, drone, display...", 'data-view-tpl' => "*var f=function(tagString){ var out = '', tags = []; tags = tagString.split(','); $.each(tags, function(i, tag){ tag = tag.trim(); tpl = \"<span><a class='tag-link' href='/tags/\" + encodeURIComponent(tag) + \"'>\" + tag + \"</a></span>\"; out += tpl; }); return out; }; f(value);*", 'data-value' => @project.product_tags_string }
-              - elsif @project.product_tags.any?
+              - if @project.product_tags.any?
                 .tags.meta
                   - @project.product_tags.pluck(:name).each do |tag|
                     %span= link_to tag, "/tags/#{CGI::escape(tag)}", class: 'tag-link'
 
-              - if @can_edit
-                .tags.meta
-                  %span.editable-attribute{ 'data-model' => "project", 'data-attribute' => "buy_link", "data-default-text" => "Can this be purchased somewhere? If so enter the link here", 'data-view-tpl' => '*var f=function(url){ if (!/^http/.test(url)) url = "http://" + url; return "Buy it from <a href=\"" + url + "\" target=\"_blank\" rel=\"nofollow\">" + extractHost(url) + "</a>" }; f(value);*', 'data-value' => @project.buy_link }
-              - elsif @project.buy_link.present?
+              - if @project.buy_link.present?
                 .tags.meta
                   Buy it from
                   = link_to @project.buy_link_host, @project.buy_link, target: '_blank', rel: 'nofollow'
@@ -99,10 +72,7 @@
                 - if users.size > 1
                   = link_to "and #{pluralize (users.size - 1), 'other'}", 'javascript:smoothScrollTo("#team-widget", -20);', class: 'hidden-link'
 
-        - if @can_edit
-          .tags.meta.pull-left
-            %span.editable-attribute{ 'data-model' => "project", 'data-attribute' => "tech_tags_string", "data-default-text" => "Add technologies you used in this project, separated by commas. Eg: Arduino, ATmega, Attiny...", 'data-view-tpl' => "*var f=function(tagString){ var out = [], tags = []; tags = tagString.split(','); $.each(tags, function(i, tag){ tag = tag.trim(); tpl = \"<span><a class='tag-link' href='/tags/\" + encodeURIComponent(tag) + \"'>\" + tag + \"</a></span>\"; out.push(tpl); }); return 'with ' + toSentenceArray(out); }; f(value);*", 'data-value' => @project.tech_tags_string }
-        - elsif @project.tech_tags.any?
+        - if @project.tech_tags.any?
           .tags.meta.pull-left
             with
             - tags = @project.tech_tags.pluck(:name).map do |tag|
