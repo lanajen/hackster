@@ -1,11 +1,14 @@
 class Client::BaseController < ApplicationController
   helper_method :current_platform
   helper_method :current_tech
+  before_filter :current_platform
   before_filter :current_tech
   layout 'whitelabel'
 
   def current_platform
-    @current_site ||= ClientSubdomain.find_by_subdomain(request.subdomains[0])
+    return @current_site if @current_site
+
+    redirect_to root_url(subdomain: 'www') unless @current_site = ClientSubdomain.find_by_subdomain(request.subdomains[0])
   end
 
   def current_tech
