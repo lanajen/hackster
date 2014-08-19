@@ -221,7 +221,7 @@ class ApplicationController < ActionController::Base
         initial_referrer: cookies[:initial_referrer],
         landing_page: cookies[:landing_page],
         shown_banner_count: cookies[:shown_banner_count],
-        visits_count_before_signup: cookies[:visits].size,
+        visits_count_before_signup: JSON.parse(cookies[:visits]).size,
         simplified: simplified,
       }
 
@@ -232,6 +232,7 @@ class ApplicationController < ActionController::Base
       cookies.delete(:first_seen)
       cookies.delete(:last_shown_banner)
       cookies.delete(:shown_banner_count)
+      cookies.delete(:next_show_banner)
     end
 
     def track_visitor
@@ -249,27 +250,40 @@ class ApplicationController < ActionController::Base
       cookies[:visits] = visits.to_json
 
       if user_signed_in? or cookies[:member]
-        cookies[:member] = true
+        cookies[:member] = { value: true, expires: 10.years.from_now }
         return
+      end
+
+      unless cookies[:next_show_banner].present?
+        value = if cookies[:last_shown_banner].present?
+          cookies[:last_shown_banner].to_time + 3.days
+        elsif cookies[:first_seen].present?
+          cookies[:first_seen].to_time + 3.days
+        else
+          3.days.from_now
+        end
+        cookies[:next_show_banner] = { value: value, expires: 10.years.from_now }
       end
 
       cookies[:first_seen] = { value: Time.now, expires: 10.years.from_now } unless cookies[:first_seen].present?
 
       return unless is_trackable_page?
-      if cookies[:first_seen].to_time < 3.days.ago and (cookies[:last_shown_banner].nil? or cookies[:last_shown_banner].to_time < 3.days.ago)
+      if cookies[:next_show_banner].to_time < Time.now
+        # cookies[:first_seen].to_time < 3.days.ago and (cookies[:last_shown_banner].nil? or cookies[:last_shown_banner].to_time < 3.days.ago)
         @show_signup_popup = true
-        cookies[:last_shown_banner] = Time.now
+        cookies[:last_shown_banner] = { value: Time.now, expires: 10.years.from_now }
+        cookies[:next_show_banner] = 3.days.from_now
         if cookies[:shown_banner_count].present?
           cookies[:shown_banner_count] = cookies[:shown_banner_count].to_i + 1
         else
-          cookies[:shown_banner_count] = 1
+          cookies[:shown_banner_count] = { value: 1, expires: 10.years.from_now }
         end
         data = {
           first_seen: cookies[:first_seen],
           initial_referrer: cookies[:initial_referrer],
           landing_page: cookies[:landing_page],
           shown_banner_count: cookies[:shown_banner_count],
-          visits_count_before_signup: cookies[:visits].size,
+          visits_count_before_signup: JSON.parse(cookies[:visits]).size,
         }
         track_event 'Shown signup popup', data
       end
