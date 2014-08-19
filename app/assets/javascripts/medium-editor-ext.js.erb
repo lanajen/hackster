@@ -313,28 +313,28 @@ $(function() {
           return;
         }
 
-        _.self.deactivate();
-        $('[data-edit-only="true"]').hide();
-        $('[data-edit-hide="true"]').show();
-        $('[contenteditable]').attr('contenteditable', 'false');
-        $('figcaption, .figcaption').attr('contenteditable', false);
-        _.element.removeClass('editable-activated');
-        $('#medium-editor, #model-editor').removeClass('editor-active');
-        $('.is-selected').removeClass('is-selected');
-        $('.medium-editor-toolbar-active').removeClass('medium-editor-toolbar-active');
-        _.element.find('input').prop('disabled', true);
+        // _.self.deactivate();
+        // $('[data-edit-only="true"]').hide();
+        // $('[data-edit-hide="true"]').show();
+        // $('[contenteditable]').attr('contenteditable', 'false');
+        // $('figcaption, .figcaption').attr('contenteditable', false);
+        // _.element.removeClass('editable-activated');
+        // $('#medium-editor, #model-editor').removeClass('editor-active');
+        // $('.is-selected').removeClass('is-selected');
+        // $('.medium-editor-toolbar-active').removeClass('medium-editor-toolbar-active');
+        // _.element.find('input').prop('disabled', true);
 
-        $.each(codeEditor, function(id, cEditor){
-          cEditor.ace.setReadOnly(true);
-        });
+        // $.each(codeEditor, function(id, cEditor){
+        //   cEditor.ace.setReadOnly(true);
+        // });
 
-        _.element.find('.embed-overlay').remove();
-        _.element.find('.medium-editor-toolbar-embed').remove();
-        $('.paragraph--empty').removeClass('paragraph--empty');
-        $('.default-text').fadeOut(function(){ $(this).remove(); });
-        $('.medium-editor-placeholder').removeClass('medium-editor-placeholder');
-        hideMediaButtons();
-        _.clearErrors();
+        // _.element.find('.embed-overlay').remove();
+        // _.element.find('.medium-editor-toolbar-embed').remove();
+        // $('.paragraph--empty').removeClass('paragraph--empty');
+        // $('.default-text').fadeOut(function(){ $(this).remove(); });
+        // $('.medium-editor-placeholder').removeClass('medium-editor-placeholder');
+        // hideMediaButtons();
+        // _.clearErrors();
 
         callback();
         console.log('editor disabled');
