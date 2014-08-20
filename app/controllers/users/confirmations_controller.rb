@@ -59,6 +59,6 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
     end
 
     def permitted_params_for_new
-      params.require(resource_name).permit(:email)
+      params.permit(resource_name => [ :email ])
     end
 end
