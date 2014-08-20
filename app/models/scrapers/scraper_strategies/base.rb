@@ -8,7 +8,7 @@ module ScraperStrategies
       @host = uri.host
       if uri.path.present?
         path = uri.path.split(/\//)[1..-1]
-        path.pop if path.last =~ /.+\..+/
+        path.pop if path and path.last =~ /.+\..+/
         @base_uri = "#{path.join('/')}"
       end
       @base_uri = @base_uri.present? ? "/#{@base_uri}" : ''

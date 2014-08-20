@@ -8,19 +8,10 @@ class ProjectImportsController < ApplicationController
     if params[:urls].present?
       ScraperQueue.perform_async 'scrape_projects', params[:urls], params[:user_id].presence || current_user.id, params[:tech_tags_string]
       send_admin_message(true) unless current_user.is? :admin
-      redirect_to new_project_import_path, notice: "We will start importing your projects soon. You'll receive an email when it's done."
+      redirect_to root_path, notice: "We will start importing your projects soon. You'll receive an email when it's done."
     else
       flash.now[:alert] = "Please specify at least one page to import."
       render action: 'new'
-    end
-  end
-
-  def submit
-    if params[:urls].present?
-      send_admin_message
-      redirect_to new_project_path, notice: "We will start importing your project soon. You'll receive an email when it's done."
-    else
-      redirect_to new_project_path, alert: "Please specify a page to import."
     end
   end
 

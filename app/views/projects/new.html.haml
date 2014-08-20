@@ -13,7 +13,7 @@
         %p.text-center
           %strong Want to link an existing project to #{tech.name}?
 
-        = form_tag "/groups/#{tech.id}/projects/link", method: :patch do
+        = form_tag "/groups/#{tech.id}/projects/link", method: :patch, class: 'disable-on-submit' do
           .form-group
             = select_tag :project_id, options_from_collection_for_select(tech_projects, :id, :name), include_blank: true, class: 'form-control'
           = submit_tag 'Link project', class: 'btn btn-primary btn-block'
@@ -26,7 +26,7 @@
     .wellified
       %h2.text-center Submit a link
 
-      = simple_nested_form_for @project, url: projects_path(redirect_to: params[:redirect_to]), html: { class: 'accept-file-upload' } do |f|
+      = simple_nested_form_for @project, url: projects_path(redirect_to: params[:redirect_to]), html: { class: 'accept-file-upload disable-on-submit' } do |f|
         = f.error_notification
 
         = f.input :external, as: :hidden
@@ -77,7 +77,7 @@
     .wellified
       %h2.mg-20.text-center Start a new project
 
-      = simple_nested_form_for @project, html: { class: 'accept-file-upload form-horizontal' }, wrapper: :bootstrap3_horizontal do |f|
+      = simple_nested_form_for @project, html: { class: 'accept-file-upload form-horizontal disable-on-submit' }, wrapper: :bootstrap3_horizontal do |f|
         = f.error_notification
 
         = render partial: 'projects/open_source_switch', locals: { f: f }
@@ -117,7 +117,7 @@
           %br
           %small= link_to 'More than one page?', new_project_import_path
 
-        = form_tag project_imports_path, method: :post do
+        = form_tag project_imports_path, method: :post, class: 'disable-on-submit' do
           .form-group
             = text_field_tag :urls, params[:urls], placeholder: 'Project log URL', class: 'form-control'
             = hidden_field_tag :tech_tags_string, params[:project].try(:[], :tech_tags_string)

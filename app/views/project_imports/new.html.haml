@@ -6,7 +6,7 @@
       Simply submit the URLs to the project pages and we'll do the rest.
     = form_tag project_imports_path, method: :post do
       .form-group
-        = text_area_tag :urls, params[:urls], placeholder: 'Project log URLs', class: 'form-control', rows: 5
+        = text_area_tag :urls, params[:urls], placeholder: 'Project log URLs', class: 'form-control disable-on-submit', rows: 5
         %p.help-block Enter as many URLs as you like, separated by commas, spaces or new lines.
       - if current_user.is? :admin
         .form-group
