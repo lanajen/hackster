@@ -66,6 +66,9 @@ GEM
       will_paginate
     buftok (0.2.0)
     builder (3.2.2)
+    bullet (4.13.1)
+      activesupport (>= 3.0.0)
+      uniform_notifier (>= 1.6.0)
     cancan (1.6.10)
     carrierwave (0.9.0)
       activemodel (>= 3.2.0)
@@ -414,6 +417,7 @@ GEM
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
+    uniform_notifier (1.6.2)
     uuidtools (2.1.4)
     vimeo (1.5.3)
       httparty (>= 0.4.5)
@@ -439,6 +443,7 @@ DEPENDENCIES
   aws-sdk (= 1.33.0)
   bootstrap-sass (= 3.1.1.0)
   bootstrap-will_paginate (= 0.0.10)
+  bullet
   cancan (= 1.6.10)
   carrierwave (= 0.9.0)
   cashier (= 0.4.1)

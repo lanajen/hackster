@@ -34,13 +34,13 @@
                   - cache [@project, 'teaser', can?(:edit, @project), can?(:debug, @project)], tag: (["project-#{@project.id}-teaser"] + @project.users.map{|u| "user-#{u.id}-thumb"}) do
                     - if @project.one_liner.present?
                       %p.one-liner= @project.one_liner
-                      .one-liner
+                      %p.one-liner
                         Read about this project on
                         = link_to @project.website_host, @project.website, target: '_blank'
 
-                - if @project.product_tags.any?
+                - if @project.product_tags_cached.any?
                   .tags.meta
-                    - @project.product_tags.pluck(:name).each do |tag|
+                    - @project.product_tags_cached.each do |tag|
                       %span= link_to tag, "/tags/#{CGI::escape(tag)}", class: 'tag-link'
 
                 .actions
@@ -65,10 +65,10 @@
                     %span.user-name
                       = link_to u.name, u, class: 'hidden-link'
 
-            - if @project.tech_tags.any?
+            - if @project.tech_tags_cached.any?
               .tags.meta.pull-left
                 with
-                - tags = @project.tech_tags.pluck(:name).map do |tag|
+                - tags = @project.tech_tags_cached.map do |tag|
                   - if tech = Tech.includes(:tech_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first
                     - tag_link = tech_short_path(tech)
                   - else
@@ -85,7 +85,7 @@
                   - a = @project.guest_name.present? ? 'Claim this project' : 'Claim it'
                   = q
                   - if user_signed_in?
-                    = link_to a, claim_project_path(@project), data: { method: :post, confirm: "Are you really the author of this project?" }
+                    = link_to a, claim_project_path(@project), data: { method: :post, confirm: "Are you really the author of this project? Note that we'll have to approve it!" }
                   - else
                     = link_to a, new_user_registration_path(reason: 'claim', m: 'project', id: @project.id)
 

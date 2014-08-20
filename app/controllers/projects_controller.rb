@@ -13,7 +13,7 @@ class ProjectsController < ApplicationController
     params[:sort] ||= 'trending'
     @by = params[:by] || 'all'
 
-    @projects = Project.indexable
+    @projects = Project.indexable.for_thumb_display
     if params[:sort] and params[:sort].in? Project::SORTING.keys
       @projects = @projects.send(Project::SORTING[params[:sort]])
     end
@@ -49,63 +49,73 @@ class ProjectsController < ApplicationController
     # other projects by same author
     @other_projects_count = Project.public.most_popular.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).size
     if @other_projects_count > 6
-      @other_projects = Project.public.most_popular.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).limit(3)
-      @last_projects = Project.public.last_public.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: [@project.id] + @other_projects.map(&:id)).limit(3)
+      @other_projects = Project.public.most_popular.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).includes(:team).includes(:cover_image).limit(3)
+      @last_projects = Project.public.last_public.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: [@project.id] + @other_projects.map(&:id)).includes(:team).includes(:cover_image).limit(3)
     else
-      @other_projects = Project.public.most_popular.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id)
+      @other_projects = Project.public.most_popular.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).includes(:team).includes(:cover_image)
     end
-    @issue = Feedback.where(threadable_type: 'Project', threadable_id: @project.id).first if @project.collection_id.present? and @project.assignment.present?
 
     # next/previous project in search
-    if params[:ref] and params[:ref_id] and params[:offset]
-      offset = params[:offset].to_i
-      case params[:ref]
-      when 'assignment'
-        if @assignment = Assignment.find_by_id(params[:ref_id])
-          @next = @assignment.projects.order(:created_at).offset(offset + 1).first
-          @prev = @assignment.projects.order(:created_at).offset(offset - 1).first unless offset.zero?
-        end
-      when 'explore'
-        sort, by = params[:ref_id].split(/_/)
+    # if params[:ref] and params[:ref_id] and params[:offset]
+    #   offset = params[:offset].to_i
+    #   case params[:ref]
+    #   when 'assignment'
+    #     if @assignment = Assignment.find_by_id(params[:ref_id])
+    #       @next = @assignment.projects.order(:created_at).offset(offset + 1).first
+    #       @prev = @assignment.projects.order(:created_at).offset(offset - 1).first unless offset.zero?
+    #     end
+    #   when 'explore'
+    #     sort, by = params[:ref_id].split(/_/)
 
-        @projects = Project
-        if sort.in? Project::SORTING.keys
-          @projects = @projects.send(Project::SORTING[sort])
-        end
+    #     @projects = Project
+    #     if sort.in? Project::SORTING.keys
+    #       @projects = @projects.send(Project::SORTING[sort])
+    #     end
 
-        if by.in? Project::FILTERS.keys
-          @projects = @projects.send(Project::FILTERS[by])
-        end
+    #     if by.in? Project::FILTERS.keys
+    #       @projects = @projects.send(Project::FILTERS[by])
+    #     end
 
-        @next = @projects.indexable.offset(offset + 1).first
-        @prev = @projects.indexable.offset(offset - 1).first unless offset.zero?
+    #     @next = @projects.indexable.offset(offset + 1).first
+    #     @prev = @projects.indexable.offset(offset - 1).first unless offset.zero?
 
-      when 'event'
-        if @event = Event.find_by_id(params[:ref_id])
-          @next = @event.projects.live.order('projects.respects_count DESC').offset(offset + 1).first
-          @prev = @event.projects.live.order('projects.respects_count DESC').offset(offset - 1).first unless offset.zero?
-        end
+    #   when 'event'
+    #     if @event = Event.find_by_id(params[:ref_id])
+    #       @next = @event.projects.live.order('projects.respects_count DESC').offset(offset + 1).first
+    #       @prev = @event.projects.live.order('projects.respects_count DESC').offset(offset - 1).first unless offset.zero?
+    #     end
 
-      when 'search'
-        params[:q] = params[:ref_id]
-        params[:type] = 'project'
-        params[:per_page] = 1
-        params[:offset] = offset + 1
-        params[:include_external] = false
-        @next = SearchRepository.new(params).search.results.first
-        unless offset.zero?
-          params[:offset] = offset - 1
-          @prev = SearchRepository.new(params).search.results.first
-        end
-        params[:offset] = offset
-        params.delete(:include_external)
-      when 'user'
-        if @user = User.find_by_id(params[:ref_id])
-          @next = @user.projects.live.order(start_date: :desc, created_at: :desc).offset(offset + 1).first
-          @prev = @user.projects.live.order(start_date: :desc, created_at: :desc).offset(offset - 1).first unless offset.zero?
-        end
-      end
+    #   when 'search'
+    #     params[:q] = params[:ref_id]
+    #     params[:type] = 'project'
+    #     params[:per_page] = 1
+    #     params[:offset] = offset + 1
+    #     params[:include_external] = false
+    #     @next = SearchRepository.new(params).search.results.first
+    #     unless offset.zero?
+    #       params[:offset] = offset - 1
+    #       @prev = SearchRepository.new(params).search.results.first
+    #     end
+    #     params[:offset] = offset
+    #     params.delete(:include_external)
+    #   when 'user'
+    #     if @user = User.find_by_id(params[:ref_id])
+    #       @next = @user.projects.live.order(start_date: :desc, created_at: :desc).offset(offset + 1).first
+    #       @prev = @user.projects.live.order(start_date: :desc, created_at: :desc).offset(offset - 1).first unless offset.zero?
+    #     end
+    #   end
+    # end
+
+    @team_members = @project.team_members.includes(:user).includes(user: :avatar)
+
+    @comments = @project.comments.includes(:user).includes(user: :avatar).includes(:parent)
+
+    if @project.collection_id.present? and @project.assignment.present?
+      @issue = Feedback.where(threadable_type: 'Project', threadable_id: @project.id).first
+      @issue_comments = @issue.comments.includes(:user).includes(user: :avatar).includes(:parent)
     end
+
+    @respecting_users = @project.respecting_users.includes(:avatar) if @project.public?
 
     track_event 'Viewed project', @project.to_tracker.merge({ own: !!current_user.try(:is_team_member?, @project) })
   end

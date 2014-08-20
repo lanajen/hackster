@@ -72,6 +72,10 @@ class Tech < Group
     }.to_json
   end
 
+  def self.for_thumb_display
+    includes(:avatar)
+  end
+
   def self.index_all
     index.import public
   end

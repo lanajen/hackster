@@ -75,11 +75,11 @@ class Project < ActiveRecord::Base
     project.validates :website, :one_liner, :cover_image, presence: true
     project.before_save :external_is_hidden
   end
-  validates :website, uniqueness: { message: 'has already been submitted' }, allow_blank: true
+  validates :website, uniqueness: { message: 'has already been submitted' }, allow_blank: true, if: proc {|p| p.website_changed? }
   validates :guest_name, length: { minimum: 3 }, allow_blank: true
   validate :slug_is_unique
   before_validation :assign_new_slug
-  before_validation :check_if_current
+  # before_validation :check_if_current
   before_validation :clean_permissions
   before_validation :ensure_website_protocol
   before_update :update_slug, if: proc{|p| p.name_was == DEFAULT_NAME and p.name_changed? }
@@ -109,12 +109,15 @@ class Project < ActiveRecord::Base
 
   after_save do
     if private or hide or !approved
-      self.index.remove self
+      # self.index.remove self
+      IndexerQueue.perform_async :remove, Project, self.id
     else
-      self.index.store self
+      # self.index.store self
+      IndexerQueue.perform_async :store, Project, self.id
     end
   end
   after_destroy do
+    # IndexerQueue.perform_async :remove, Project, self.id
     self.index.remove self
   end
 
@@ -170,6 +173,10 @@ class Project < ActiveRecord::Base
   # assumes that the join with group_relations has already been done
   def self.featured_by_tech
     indexable.where(group_relations: { workflow_state: 'featured' }).order('group_relations.updated_at DESC')
+  end
+
+  def self.for_thumb_display
+    includes(:users).includes(:cover_image).includes(:team)
   end
 
   def self.indexable
@@ -249,9 +256,10 @@ class Project < ActiveRecord::Base
       comments: 'comments.count',
       followers: 'followers.count',
       issues: 'issues.where(type: "Issue").count',
-      product_tags: 'product_tags.count',
+      product_tags: 'product_tags_cached.count',
       respects: 'respects.count',
       team_members: 'users.count',
+      tech_tags: 'tech_tags_cached.count',
       widgets: 'widgets.count',
     }
   end
@@ -449,7 +457,7 @@ class Project < ActiveRecord::Base
     message << " hackster.io/#{uri}"  # links are shortened to 22 characters
 
     # we add tags until character limit is reached
-    tags = product_tags.map{|t| "##{t.name.gsub(/\s+/, '')}"}
+    tags = product_tags_cached.map{|t| "##{t.name.gsub(/\s+/, '')}"}
     if tags.any?
       tags.each do |tag|
         new_size = size + tag.size + 1

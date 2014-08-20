@@ -1,6 +1,8 @@
 class TechesController < ApplicationController
   before_filter :authenticate_user!, except: [:show, :embed, :index]
-  before_filter :load_tech, except: [:show, :embed, :index]#, :feature_project, :unfeature_project]
+  before_filter :load_tech, except: [:show, :embed, :index]
+  before_filter :load_tech_with_slug, only: [:show, :embed]
+  before_filter :load_projects, only: [:show, :embed]
   before_filter :load_project, only: [:feature_project, :unfeature_project]
   layout 'tech', only: [:edit, :update, :show]
   after_action :allow_iframe, only: :embed
@@ -9,20 +11,16 @@ class TechesController < ApplicationController
   def index
     title "Explore tools"
     meta_desc "Find tools for your next hacks on Hackster.io."
-    @teches = Tech.public.order(:full_name)
+    @teches = Tech.public.for_thumb_display.order(:full_name)
 
     render "groups/teches/#{self.action_name}"
   end
 
   def show
-    @tech = load_with_slug
     impressionist_async @tech, "", unique: [:session_hash]
     # authorize! :read, @tech
     title "#{@tech.name} projects"
     meta_desc "People are hacking with #{@tech.name} on Hackster.io. Join them!"
-    @bgimage = '/assets/rasberry-pi-placeholder.png'
-
-    get_projects
 
     render "groups/teches/#{self.action_name}"
 
@@ -30,11 +28,9 @@ class TechesController < ApplicationController
   end
 
   def embed
-    @tech = load_with_slug
     title "Projects made with #{@tech.name}"
     @list_style = ([params[:list_style]] & ['', '_horizontal']).first || ''
     # @list_style = '_horizontal'
-    get_projects
     render "groups/teches/#{self.action_name}", layout: 'embed'
   end
 
@@ -104,11 +100,15 @@ class TechesController < ApplicationController
   end
 
   private
-    def get_projects
-      @projects = @tech.projects.visible.indexable_and_external.order('group_relations.workflow_state DESC').magic_sort.paginate(page: safe_page_params)
+    def load_projects
+      @projects = @tech.projects.visible.indexable_and_external.order('group_relations.workflow_state DESC').magic_sort.for_thumb_display.paginate(page: safe_page_params)
     end
 
     def load_tech
       @tech = Tech.find(params[:tech_id] || params[:id])
+    end
+
+    def load_tech_with_slug
+      @tech = load_with_slug
     end
 end
