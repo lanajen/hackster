@@ -327,6 +327,7 @@ GEM
       rspec-support (~> 3.0.0)
     rspec-support (3.0.0)
     ruby-hmac (0.4.0)
+    ruby-prof (0.15.1)
     sanitize (2.0.6)
       nokogiri (>= 1.4.4)
     sass (3.2.19)
@@ -496,6 +497,7 @@ DEPENDENCIES
   redis-namespace (= 1.5.0)
   rest-client (= 1.6.7)
   rspec-rails
+  ruby-prof
   sanitize (= 2.0.6)
   sass-rails (= 4.0.2)
   sendgrid (= 1.2.0)

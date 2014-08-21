@@ -136,12 +136,13 @@ class User < ActiveRecord::Base
 
   after_save do
     if !accepted_or_not_invited?
-      self.index.remove self
+      IndexerQueue.perform_async :remove, self.class.name, self.id
     else
-      self.index.store self
+      IndexerQueue.perform_async :store, self.class.name, self.id
     end
   end
   after_destroy do
+    # tricky to move to background; by the time it's processed the model might not exist
     self.index.remove self
   end
 
