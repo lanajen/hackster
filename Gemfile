@@ -87,6 +87,9 @@ gem 'workflow', '1.0.0'
 gem 'heroku-forward', '0.4.0'
 gem 'rails_12factor', group: [:production, :staging]
 
+gem "bullet", :group => "development"
+gem 'ruby-prof', group: [:development, :profile]
+
 group :development, :test do
   # gem 'factory_girl_rails'
   gem 'foreman'

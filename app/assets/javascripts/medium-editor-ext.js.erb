@@ -928,7 +928,10 @@ $(function () {
         return;
       }
     }
+  });
 
+  $('#medium-editor').on('keydown', '.editable.editable-activated', function(e){
+    var node = $(getSelectionStart());
     if (node.is(elementTypes)) {
       // prevent delete action after embed-frame
       if (node.prev('.embed-frame').length) {

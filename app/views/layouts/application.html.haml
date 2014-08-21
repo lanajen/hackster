@@ -99,15 +99,17 @@
                       %span.caret
                     %ul.dropdown-menu#nav-user-menu
                       %li= link_to 'My profile', current_user
+
                       - if current_user.communities.any?
                         %li.divider
-                        - current_user.community_group_ties.each do |group_tie|
+                        - current_user.community_group_ties.includes(:group).each do |group_tie|
                           - community = group_tie.group
                           - name = community.name
                           - name += ' (invite pending)' if group_tie.invitation_pending?
                           %li= link_to name, community
-                        - if current_user.projects.where.not(collection_id: nil).any?
+                        - if current_user.promotions.any?
                           %li= link_to 'My grades', grades_path
+
                       %li.divider
                       %li= link_to 'Account settings', edit_user_registration_path
                       %li= link_to 'Invite friends', new_user_invitation_path

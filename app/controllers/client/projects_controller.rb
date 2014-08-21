@@ -12,7 +12,7 @@ class Client::ProjectsController < Client::BaseController
     params[:sort] ||= 'magic'
     @by = params[:by] || 'all'
 
-    @projects = current_tech.projects.visible.indexable_and_external
+    @projects = current_tech.projects.visible.indexable_and_external.for_thumb_display
     if params[:sort] and params[:sort].in? Project::SORTING.keys
       @projects = @projects.send(Project::SORTING[params[:sort]])
     end

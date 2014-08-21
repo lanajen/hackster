@@ -46,9 +46,9 @@
             #project-information
               .one-liner= @project.one_liner
 
-              - if @project.product_tags.any?
+              - if @project.product_tags_cached.any?
                 .tags.meta
-                  - @project.product_tags.pluck(:name).each do |tag|
+                  - @project.product_tags_cached.each do |tag|
                     %span= link_to tag, "/tags/#{CGI::escape(tag)}", class: 'tag-link'
 
               - if @project.buy_link.present?
@@ -63,19 +63,18 @@
             .user.guest-name
               %span.user-name= @project.guest_name
           - else
-            - users = @project.team.active_members.includes(:user)
-            - u = users.first.user
+            - u = @team_members.first.user
             .user
               = link_to image_tag(u.decorate.avatar(:mini), class: ' img-circle' ), u, class: ''
               %span.user-name
                 = link_to u.name, u, class: 'hidden-link'
-                - if users.size > 1
-                  = link_to "and #{pluralize (users.size - 1), 'other'}", 'javascript:smoothScrollTo("#team-widget", -20);', class: 'hidden-link'
+                - if @project.team_members_count > 1
+                  = link_to "and #{pluralize (@project.team_members_count - 1), 'other'}", 'javascript:smoothScrollTo("#team-widget", -20);', class: 'hidden-link'
 
-        - if @project.tech_tags.any?
+        - if @project.tech_tags_cached.any?
           .tags.meta.pull-left
             with
-            - tags = @project.tech_tags.pluck(:name).map do |tag|
+            - tags = @project.tech_tags_cached.map do |tag|
               - if tech = Tech.includes(:tech_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first
                 - tag_link = tech_short_path(tech)
               - else
