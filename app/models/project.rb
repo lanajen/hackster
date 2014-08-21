@@ -354,6 +354,10 @@ class Project < ActiveRecord::Base
     @new_slug ||= slug
   end
 
+  def security_token
+    Digest::MD5.hexdigest(id.to_s)
+  end
+
   def sections
     @sections ||= [
       OpenStruct.new({

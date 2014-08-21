@@ -1,5 +1,5 @@
 class ProjectsController < ApplicationController
-  before_filter :load_project, only: [:show, :embed, :update, :destroy, :redirect_old_show_route]
+  before_filter :load_project, only: [:show, :embed, :update, :destroy, :redirect_to_slug_route]
   load_and_authorize_resource only: [:index, :edit, :settings]
   layout 'project', only: [:edit, :update, :show]
   before_filter :set_project_mode, only: [:settings]
@@ -32,7 +32,8 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    authorize! :read, @project
+    authorize! :read, @project unless params[:auth_token] and params[:auth_token] == @project.security_token
+
     impressionist_async @project, '', unique: [:session_hash]
 
     @show_part_of = @project.collection_id.present? and @project.assignment.present?
@@ -266,8 +267,12 @@ class ProjectsController < ApplicationController
     respond_with current_user
   end
 
-  def redirect_old_show_route
-    redirect_to url_for(@project), status: 301
+  def redirect_to_slug_route
+    if @project.public?
+      redirect_to url_for(@project), status: 301
+    else
+      redirect_to polymorphic_path(@project, auth_token: params[:auth_token])
+    end
   end
 
   def redirect_to_last

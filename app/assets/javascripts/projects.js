@@ -2,19 +2,21 @@
   $(function(){
     $('.respect-button').click(function(e){
       e.preventDefault();
+      // $('#simplified-signup-popup input[name="redirect_to"]').val($(this).data('redirect-to'));
+      // $('#simplified-signup-popup').fadeIn();
       var $that = $(this);
       $.get('/ab_test', {
         experiment: 'respect_button',
         control: 'normal_signup',
         alternatives: ['quick_signup']
       }, function(data){
-        // if (data.alternative == 'quick_signup') {
+        if (data.alternative == 'quick_signup') {
           $('#simplified-signup-popup input[name="redirect_to"]').val($that.data('redirect-to'));
           $('#simplified-signup-popup').fadeIn();
-        // } else {
-        //   window.location.href = $that.attr('href');
-        // }
-      })
+        } else {
+          window.location.href = $that.attr('href');
+        }
+      });
     });
 
     if($('#top-project-section').length){
