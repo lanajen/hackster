@@ -108,11 +108,11 @@ class ProjectsController < ApplicationController
 
     @team_members = @project.team_members.includes(:user).includes(user: :avatar)
 
-    @comments = @project.comments.includes(:user).includes(user: :avatar).includes(:parent)
+    @comments = @project.comments.includes(:user).includes(:parent)#.includes(user: :avatar)
 
     if @project.collection_id.present? and @project.assignment.present?
       @issue = Feedback.where(threadable_type: 'Project', threadable_id: @project.id).first
-      @issue_comments = @issue.comments.includes(:user).includes(user: :avatar).includes(:parent)
+      @issue_comments = @issue.comments.includes(:user).includes(:parent) if @issue #.includes(user: :avatar)
     end
 
     @respecting_users = @project.respecting_users.includes(:avatar) if @project.public?

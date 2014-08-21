@@ -90,13 +90,13 @@ class Project < ActiveRecord::Base
 
   store :counters_cache, accessors: [:comments_count, :product_tags_count,
     :widgets_count, :followers_count, :build_logs_count,
-    :issues_count, :team_members_count]
+    :issues_count, :team_members_count, :tech_tags_count]
 
   store :properties, accessors: [:private_logs, :private_issues]
 
   parse_as_integers :counters_cache, :comments_count, :product_tags_count,
     :widgets_count, :followers_count, :build_logs_count,
-    :issues_count, :team_members_count
+    :issues_count, :team_members_count, :tech_tags_count
 
   parse_as_booleans :properties, :private_logs, :private_issues
 
