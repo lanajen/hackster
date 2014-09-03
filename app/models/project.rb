@@ -459,7 +459,7 @@ class Project < ActiveRecord::Base
     message << " hackster.io/#{uri}"  # links are shortened to 22 characters
 
     # we add tags until character limit is reached
-    tags = product_tags_cached.map{|t| "##{t.name.gsub(/\s+/, '')}"}
+    tags = product_tags_cached.map{|t| "##{t.gsub(/\s+/, '')}"}
     if tags.any?
       tags.each do |tag|
         new_size = size + tag.size + 1
