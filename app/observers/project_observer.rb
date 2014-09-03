@@ -14,7 +14,7 @@ class ProjectObserver < ActiveRecord::Observer
     if record.external
       record.slug_histories.destroy_all
     else
-      SlugHistory.update_history_for record.id if record.slug_changed?
+      SlugHistory.update_history_for record.id if record.slug_changed? or (record.guest_name.present? and record.guest_name_changed?)
     end
   end
 
