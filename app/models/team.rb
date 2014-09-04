@@ -2,7 +2,8 @@ class Team < Group
   has_many :grades, as: :gradable
   has_many :projects
 
-  validates :user_name, :new_user_name, length: { in: 3..100 }, allow_blank: true, if: proc{|t| t.persisted?}
+  validates :user_name, :new_user_name, length: { in: 3..100 },
+    format: { with: /\A[a-z0-9_\-]+\z/, message: "accepts only downcase letters, numbers, underscores '_' and dashes '-'." }, allow_blank: true, if: proc{|t| t.persisted?}
   validates :prevent_save, absence: true
 
   attr_accessor :prevent_save

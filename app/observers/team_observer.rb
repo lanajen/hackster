@@ -1,6 +1,9 @@
 class TeamObserver < ActiveRecord::Observer
   def after_update record
-    record.projects.each{ |p| p.update_slug! }
+    record.projects.each do |p|
+      SlugHistory.update_history_for p.id
+      p.update_slug!
+    end
 
     if record.full_name_changed?
       Cashier.expire "team-#{record.id}"
