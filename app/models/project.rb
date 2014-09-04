@@ -518,7 +518,7 @@ class Project < ActiveRecord::Base
 
   private
     def can_be_public?
-      name.present? and description.present? and cover_image.try(:file).present?
+      name.present? and description.present? and cover_image.try(:file_url).present?
     end
 
     def check_if_current

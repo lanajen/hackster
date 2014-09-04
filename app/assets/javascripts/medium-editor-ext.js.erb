@@ -613,7 +613,6 @@ $(function () {
       $(this).blur();
     } else if (defaultNode.length) {
       if (e.which !== 0 && e.charCode !== 0 && !e.ctrlKey && !e.metaKey && !e.altKey) {
-        console.log('byye');
         defaultNode.remove();
       } else if (e.keyCode == 39) {
         e.preventDefault();
@@ -838,6 +837,10 @@ $(function () {
 
   $('#medium-editor').on('keypress keydown', '.editable.editable-activated', function(e){
     $(this).find('.default-text-focused').replaceWith('<br>');
+
+    if ((e.ctrlKey || e.metaKey) && e.keyCode == 65) {
+      e.preventDefault();
+    }
   });
 
   $('#medium-editor').on('keyup', '.editable.editable-activated', function(e){
@@ -1648,6 +1651,7 @@ function insertEmbedTag(url, node) {
       if (data.code) {
         div = $('<div contenteditable="false" class="embed-frame" data-type="url" data-url="' + data.url + '">' + data.code + '</div>');
         $(embedToolbar.main).appendTo(div.find('.embed'));
+        $(div).find('[data-contenteditable="true"]').attr('contenteditable', 'true');
         loadPlaceholder(div.find('[data-default-text]'), true);
         node.replaceWith(div);
         insertBlankParagraphAfter(div);
@@ -1676,6 +1680,7 @@ function insertWidget(type, modelId, modelType, node, data) {
     async: false,
     data: data,
     success: function(data){
+      console.log(data);
       if (data.code) {
         div = $('<div contenteditable="false" class="embed-frame" data-type="widget" data-widget-id="' + data.widget_id + '">' + data.code + '</div>');
         toolbar = $(embedToolbar.main);
