@@ -24,7 +24,11 @@
     = f.error_notification
 
     = f.input :full_name, label: 'Team name'
-    = f.input :new_user_name, label: 'Pretty URL'
+    = f.input :new_user_name, label: 'Pretty URL' do
+      .input-group
+        %span.input-group-addon hackster.io/
+        = f.input_field :new_user_name
+        %span.input-group-addon /#{@project.slug}
     %table#sortable.table.table-condensed
       %thead
         %th User

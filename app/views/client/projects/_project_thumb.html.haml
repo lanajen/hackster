@@ -10,6 +10,8 @@
             by
             - if project.guest_name.present?
               = project.guest_name
+            - elsif project.team.full_name.present?
+              Team #{project.team.full_name}
             - else
               - users = project.users
               - if project.team_members_count < 4

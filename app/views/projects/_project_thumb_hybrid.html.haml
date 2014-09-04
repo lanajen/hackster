@@ -25,6 +25,8 @@
                 by
                 - if project.guest_name.present?
                   = project.guest_name
+                - elsif project.team.full_name.present?
+                  Team #{project.team.full_name}
                 - else
                   - users = project.users
                   - if project.team_members_count < 4
@@ -64,6 +66,8 @@
                   by
                   - if project.guest_name.present?
                     = project.guest_name
+                  - elsif project.team.full_name.present?
+                    Team #{project.team.full_name}
                   - else
                     = project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
               %p= truncate project.one_liner, length: 140
