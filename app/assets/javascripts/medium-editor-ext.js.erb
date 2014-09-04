@@ -613,6 +613,7 @@ $(function () {
       $(this).blur();
     } else if (defaultNode.length) {
       if (e.which !== 0 && e.charCode !== 0 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        console.log('byye');
         defaultNode.remove();
       } else if (e.keyCode == 39) {
         e.preventDefault();
@@ -624,7 +625,7 @@ $(function () {
       if (e.keyCode == 8 && $(this).text().length == 1) {
         e.preventDefault();
         loadPlaceholder($(this), true);
-        focusAtBeginningOfRange($(this).find('.default-text')[0]);
+        focusAtBeginningOfRange(defaultNode[0]);
       }
     }
     $(this).trigger('change');
@@ -650,7 +651,7 @@ $(function () {
   //
 
   $('#medium-editor').on('keypress keydown', '.editable.editable-activated .widget-attribute-editable', function(e){
-    console.log(e);
+    // console.log(e);
     if (e.keyCode == 13) {
       e.preventDefault();
     }
@@ -835,8 +836,11 @@ $(function () {
     editor.checkAndSaveModel();
   });
 
-  $('#medium-editor').on('keyup', '.editable.editable-activated', function(e){
+  $('#medium-editor').on('keypress keydown', '.editable.editable-activated', function(e){
     $(this).find('.default-text-focused').replaceWith('<br>');
+  });
+
+  $('#medium-editor').on('keyup', '.editable.editable-activated', function(e){
     $(this).find('p span').contents().unwrap();
 
     markEmptyParagraphs($(this));
