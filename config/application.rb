@@ -75,7 +75,7 @@ module HackerIo
       :port => 587,
       :domain => "hackster.io",
       :authentication => :plain,
-      :user_name => "fansnextdoor",
+      :user_name => "hacksterio",
       :password => "mod3pa55"
     }
 

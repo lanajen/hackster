@@ -44,7 +44,6 @@ class Attachment < ActiveRecord::Base
   alias_method :processed, :processed?  # so it can be used as json
 
   def queue_processing
-    # Resque.enqueue AttachmentQueue, 'process', id
     AttachmentQueue.perform_async 'process', id
   end
 

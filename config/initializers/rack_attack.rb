@@ -29,7 +29,7 @@ class Rack::Attack
   # Key: "rack::attack:#{Time.now.to_i/:period}:req/ip:#{req.ip}"
   throttle('req/ip', :limit => 300, :period => 60.minutes) do |req|
     # unless req.path =~ /\A\/admin/
-    unless req.path == '/admin/sidekiq/dashboard'
+    unless req.path == '/admin/sidekiq/dashboard/stats'
       req.ip
     end
   end
