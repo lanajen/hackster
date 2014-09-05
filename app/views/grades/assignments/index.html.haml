@@ -26,6 +26,8 @@
       %span.label.label-info In progress
       = link_to 'Continue grading', assignment_edit_grade_path(@assignment), class: 'btn btn-primary btn-sm'
 
+  %p= link_to 'Download grades', assignment_grades_path(@assignment, format: 'csv'), class: 'btn btn-sm btn-primary'
+
   %table.table.table-striped
     %thead
       %tr

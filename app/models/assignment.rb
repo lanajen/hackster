@@ -21,6 +21,15 @@ class Assignment < ActiveRecord::Base
     graded
   end
 
+  def to_csv
+    out = "project_name,project_url,grade,student_names,student_emails\r\n"
+
+    grades.each do |grade|
+      out << "\"#{grade.project.name}\",\"http://hackster.io/#{grade.project.uri}\",\"#{grade.grade}\",\"#{grade.project.users.map{|u| u.name}.join(',')}\",\"#{grade.project.users.map{|u| u.email}.join(',')}\"\r\n"
+    end
+    out
+  end
+
   def to_label
     "#{promotion.name} / #{name}"
   end
