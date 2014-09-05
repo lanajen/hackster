@@ -23,7 +23,7 @@
 }
 
 @media only screen and (max-width: 1320px) {
-  #medium-editor .embed-frame figure figcaption, #medium-editor .embed-frame .figure .figcaption {
+  #medium-editor .embed-frame .figure .embed-figcaption {
     &:before {
       content: none;
     }
@@ -33,6 +33,9 @@
     margin: 5px 0 10px;
     text-align: center;
     width: auto;
+  }
+  #medium-editor .embed-frame .figure.image_widget .embed-figcaption {
+    margin-top: 40px;
   }
 }
 
