@@ -1,4 +1,8 @@
 var <%= file_type %>Functions = {
+  fail: function(data) {
+    console.log('fail!');
+  },
+
   fileuploadDone: function(data, file){
     $('.progress.active', data.context)
       .removeClass('progress-striped')
@@ -6,18 +10,20 @@ var <%= file_type %>Functions = {
     $('.progress-bar', data.context).addClass('progress-bar-success');
     $(data.context).remove();
     id = file.id;
-    file = file.file || data.result.file;
+    //file = file.file || data.result.file;
 
     if ($('.<%= file_type %>.image-preview').length > 0) {
       inputTpl = '<span><img>';
       inputTpl += '<input type="hidden" name="<%= model %>[<%= attribute_type %>_id]"></span>';
       input = $(inputTpl);
       input.find('input').val(id);
-      <% if image_version %>
-        input.find('img').attr('src', file.<%= image_version %>.url);
-      <% else %>
-        input.find('img').attr('src', file.url);
-      <% end %>
+
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        el = $('#' + data.context);
+        input.find('img').attr('src', e.target.result);
+      }
+      reader.readAsDataURL(data.files[0]);
       $('.<%= file_type %>.image-preview').html(input);
     } else {
       inputTpl = '<span><span class="filename"></span>';
@@ -73,7 +79,7 @@ var <%= file_type %>Functions = {
   disableForm: function(){
     $('form.file_upload.<%= file_type %>').addClass('busy');
     btn = $('form.accept-file-upload input[name="commit"]');
-    if (btnVal == undefined) btnVal = btn.val();
+    if (btnVal == null) btnVal = btn.val();
     btn
       .prop('disabled', true)
       .val('Upload in progress...');
@@ -85,14 +91,15 @@ var <%= file_type %>Functions = {
 }
 
 var checkingFormsBusy = false;
-var btnVal;
+var btnVal = null;
 function checkFormsBusy(){
   window.setTimeout(function(){
     if ($('form.file_upload.busy').length == 0) {
       $('form.accept-file-upload input[name="commit"]')
         .val(btnVal)
         .prop('disabled', false);
-      btnVal = undefined;
+      btnVal = null;
+      checkingFormsBusy = false;
     } else {
       checkFormsBusy();
     }

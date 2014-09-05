@@ -80,8 +80,10 @@ $(function(){
         data: {file_url: url, file_type: '<%= file_type %>', context: data.context},
         async: false,
         success: function(data) {
-          id = data.id;
-          <%= file_type %>Functions.checkFileProcessed(id, data.context);
+          //id = data.id;
+          //<%= file_type %>Functions.checkFileProcessed(id, data.context);
+          formData = $('#' + data.context).data('data');
+          <%= file_type %>Functions.fileuploadDone(formData, data);
         },
           error: function(data) {
             context = decodeURIComponent($.urlParam(this.url, 'context'));

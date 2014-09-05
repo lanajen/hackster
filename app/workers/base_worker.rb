@@ -3,6 +3,7 @@
 class BaseWorker
   # extend HerokuResqueAutoScale if Rails.env == 'production'
   include Sidekiq::Worker
+  sidekiq_options queue: :default, retry: 5
 
   # class << self
     def perform method, *args
