@@ -1,6 +1,6 @@
 class CronTask < BaseWorker
   # @queue = :low
-  sidekiq_options queue: :low, retry: false
+  sidekiq_options queue: :low, retry: 0
 
   def compute_popularity
     Project.find_each do |project|
