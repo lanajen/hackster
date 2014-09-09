@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140820021212) do
+ActiveRecord::Schema.define(version: 20140909011743) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,6 +36,7 @@ ActiveRecord::Schema.define(version: 20140820021212) do
     t.string   "grading_type"
     t.boolean  "graded",           default: false
     t.boolean  "private_grades",   default: true
+    t.text     "properties"
   end
 
   add_index "assignments", ["id_for_promotion"], name: "index_assignments_on_id_for_promotion", using: :btree

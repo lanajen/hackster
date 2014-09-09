@@ -16,6 +16,9 @@
     .col-xs-6
       = f.input :name
       = f.input :grading_type, collection: Assignment::GRADING_TYPES
+      - if current_user.is? :admin
+        = f.input :hide_all, as: :boolean
+        = f.input :disable_tweeting, as: :boolean
 
     .col-xs-6
       .file-drop.form-group{ class: 'document' }

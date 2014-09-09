@@ -1,4 +1,5 @@
 class Assignment < ActiveRecord::Base
+  include StringParser
   GRADING_TYPES = {
     'One grade per student' => 'individual',
     'A single grade per team' => 'group',
@@ -9,7 +10,10 @@ class Assignment < ActiveRecord::Base
   has_many :projects, foreign_key: :collection_id
   has_one :document, as: :attachable, dependent: :destroy
   validates :promotion_id, :name, presence: true
-  attr_accessible :name, :document_id, :grading_type, :graded, :private_grades
+  attr_accessible :name, :document_id, :grading_type, :graded, :private_grades,
+    :disable_tweeting, :hide_all
+  store :properties, accessors: [:hide_all, :disable_tweeting]
+  parse_as_booleans :properties, :hide_all, :disable_tweeting
 
   before_create :generate_id
 

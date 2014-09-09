@@ -421,10 +421,11 @@ class Project < ActiveRecord::Base
   end
 
   def post_new_tweet!
+    return if assignment.try(:disable_tweeting)
+
     prepend = "New project: "  # 13 characters
     message = to_tweet(prepend)
     TwitterQueue.perform_async 'update', message
-    puts message
   end
 
   def to_tweet prepend='', append=''

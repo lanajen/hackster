@@ -49,11 +49,14 @@ class ProjectObserver < ActiveRecord::Observer
   end
 
   def before_update record
-    if record.collection_id_changed? and record.assignment and record.issues.empty?
-      issue = record.issues.new title: 'Feedback'
-      issue.type = 'Feedback'
-      issue.user_id = 0
-      issue.save
+    if record.collection_id_changed? and record.assignment
+      record.hide = true if record.assignment.hide_all
+      if record.issues.empty?
+        issue = record.issues.new title: 'Feedback'
+        issue.type = 'Feedback'
+        issue.user_id = 0
+        issue.save
+      end
     end
 
     if record.private_changed?
