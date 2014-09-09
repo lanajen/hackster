@@ -14,6 +14,10 @@ class BaseWorker
     #   message = "Received Resque::TermException while working on #{method} with args #{args}"
       # Rails.logger.error message
     #   log_line = LogLine.create(message: message, log_type: 'error', source: 'worker')
+    rescue ActiveRecord::RecordNotFound => e
+      message = "Error while working on '#{method}' in '#{self.class.name}' with args #{args}: \"#{e.message}\""
+      Rails.logger.error message
+      log_line = LogLine.create(message: message, log_type: 'error', source: 'worker')
     end
 
     def with_logging(method, &block)

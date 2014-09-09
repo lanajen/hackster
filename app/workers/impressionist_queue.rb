@@ -24,8 +24,8 @@ class ImpressionistQueue < BaseWorker
     @request = ActionDispatch::Request.new(env)
     opts = {}
     tmp_opts.each{|k,v| opts[:"#{k}"] = v }
-    obj = obj_type.constantize.find_by_id obj_id
-    impressionist obj, message, opts if obj
+    obj = obj_type.constantize.find obj_id
+    impressionist obj, message, opts
   end
 
   def controller_name
