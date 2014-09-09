@@ -274,12 +274,20 @@ class Project < ActiveRecord::Base
     @credits_widget ||= CreditsWidget.where(widgetable_id: id, widgetable_type: 'Project').first_or_create
   end
 
+  def disable_tweeting?
+    assignment.present?
+  end
+
   def force_basic_validation!
     @force_basic_validation = true
   end
 
   def force_basic_validation?
     @force_basic_validation
+  end
+
+  def force_hide?
+    assignment.try(:hide_all)
   end
 
   def generate_description_from_widgets
