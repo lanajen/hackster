@@ -87,7 +87,7 @@
 
     .panel.panel-default.panel-dashboard{ class: "#{'panel-danger' unless @waiting_for_approval_project_count.zero? }"}
       .panel-heading
-        %h3.panel-title= link_to 'Projects waiting for approval', admin_projects_path(approval_needed: true)
+        %h3.panel-title= link_to 'Projects waiting for approval', admin_projects_path(approval_needed: true, filters: { private: 'f' })
       .panel-body= @waiting_for_approval_project_count
 
 .row
