@@ -56,7 +56,7 @@ class GradesController < ApplicationController
   def update
     if params[:assignment]
       @assignment.update_attributes params[:assignment]
-      redirect_to assignment_edit_grade_path(@assignment)
+      redirect_to assignment_grades_path(@assignment)
     elsif params[:grade]
       @grade = Grade.where(gradable_id: params[:grade][:gradable_id], gradable_type: params[:grade][:gradable_type], project_id: params[:grade][:project_id]).first_or_initialize
       @grade.assign_attributes params[:grade]
