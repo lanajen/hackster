@@ -178,11 +178,11 @@ class Project < ActiveRecord::Base
   end
 
   def self.indexable
-    live.where(hide: false)
+    live.where(approved: true, hide: false)
   end
 
   def self.indexable_and_external
-    where("(projects.private = 'f' AND projects.hide = 'f') OR (projects.external = 't' AND projects.approved <> 'f')")#.magic_sort
+    where("(projects.approved = 't' AND projects.private = 'f' AND projects.hide = 'f') OR (projects.external = 't' AND projects.approved <> 'f')")#.magic_sort
   end
 
   def self.live
@@ -331,6 +331,10 @@ class Project < ActiveRecord::Base
   def guest_or_user_name
     guest_name.presence || users.first.try(:name)
   end
+
+  # def has_been_tweeted?
+  #   tweed_id.present?
+  # end
 
   def hidden?
     hide

@@ -43,7 +43,7 @@ class ProjectObserver < ActiveRecord::Observer
     record.teches = Tech.joins(:tech_tags).references(:tags).where("LOWER(tags.name) IN (?)", record.tech_tags_cached.map{|t| t.strip.downcase }) if record.public? and !record.hide or (record.external and record.approved != false)
 
     if record.private_changed? and record.public?
-      record.post_new_tweet! unless record.made_public_at.present? or record.disable_tweeting? or Rails.env != 'production'
+      # record.post_new_tweet! unless record.made_public_at.present? or record.disable_tweeting? or Rails.env != 'production'
       record.made_public_at = Time.now
     end
   end
@@ -71,8 +71,13 @@ class ProjectObserver < ActiveRecord::Observer
       end
     end
 
-    if record.approved_changed? and record.approved == false
-      delete_group_relations record
+    if record.approved_changed?
+      if record.approved == false
+        delete_group_relations record
+        record.hide = true
+      elsif record.approved == true
+        record.post_new_tweet! unless record.hidden? or Rails.env != 'production'
+      end
     end
 
     if (record.changed & %w(collection_id name cover_image one_liner tech_tags product_tags made_public_at license guest_name buy_link private)).any? or record.tech_tags_string_changed? or record.product_tags_string_changed?
