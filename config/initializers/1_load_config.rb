@@ -1,4 +1,5 @@
 APP_CONFIG = YAML.load_file("#{Rails.root}/config/config.yml")[Rails.env]
+PDT_TIME_ZONE = ActiveSupport::TimeZone.new('Pacific Time (US & Canada)')
 POPULAR_TAGS = {
   'Arduino' => '/arduino',
   'ATTiny' => '/tags/attiny',

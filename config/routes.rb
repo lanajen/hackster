@@ -163,6 +163,7 @@ HackerIo::Application.routes.draw do
     delete 'notifications' => 'notifications#destroy'
 
     resources :projects, except: [:show, :update, :destroy] do
+      patch 'submit' => 'projects#submit', on: :member
       get 'settings' => 'projects#settings', on: :member
       post 'claim' => 'projects#claim_external', on: :member
       get 'last' => 'projects#redirect_to_last', on: :collection

@@ -42,7 +42,7 @@ HackerIo::Application.configure do
     :enable_starttls_auto => true
   }
 
-  config.action_mailer.default_url_options = { :host => 'www.localhost:5000' }
+  config.action_mailer.default_url_options = { :host => 'www.localhost.local:5000' }
 
   config.action_controller.perform_caching = false
   config.cache_store = :dalli_store

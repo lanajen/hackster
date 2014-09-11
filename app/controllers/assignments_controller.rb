@@ -10,6 +10,18 @@ class AssignmentsController < ApplicationController
     redirect_to promotion_path(@assignment.promotion) and return unless can? :read, @assignment
     title "#{@assignment.name} | #{@assignment.promotion.name}"
     @projects = @assignment.projects.order(:created_at)
+    if user_signed_in? and @assignment.submit_by_date.present? and can? :submit_project, @assignment
+      @submit_date = @assignment.submit_by_date.in_time_zone(PDT_TIME_ZONE)
+      @submission_status = if current_user.created_project_for_assignment?(@assignment)
+        if current_user.submitted_project_to_assignment?(@assignment)
+          'submitted'
+        else
+          'created'
+        end
+      else
+        'none'
+      end
+    end
   end
 
   def embed
@@ -63,7 +75,7 @@ class AssignmentsController < ApplicationController
     @project.assignment = @assignment
     @project.save
 
-    redirect_to assignment_path(@assignment), notice: "Your project has been added to #{@assignment.name}."
+    redirect_to @project, notice: "Your project has been added to #{@assignment.name}. Don't forget to submit it!"
   end
 
   private

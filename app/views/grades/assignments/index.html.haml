@@ -56,6 +56,7 @@
             Student
           - else
             Team
+        %th Submission date
         %th Grade
         %th Feedback
         %th
@@ -74,6 +75,11 @@
                 = link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
                 = link_to user.name, user, target: '_blank'
                 %br
+          %td
+            - if grade.project.assignment_submitted_at.present?
+              = l grade.project.assignment_submitted_at.in_time_zone(PDT_TIME_ZONE)
+            - else
+              Not yet submitted
           %td= grade.grade
           %td= grade.feedback.truncate 100
           %td
@@ -91,6 +97,11 @@
               %td
                 = link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
                 = link_to user.name, user, target: '_blank'
+              %td
+                - if project.assignment_submitted_at.present?
+                  = l project.assignment_submitted_at.in_time_zone(PDT_TIME_ZONE)
+                - else
+                  Not yet submitted
               %td Pending
               %td
               %td
@@ -103,6 +114,11 @@
                 = link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
                 = link_to user.name, user, target: '_blank'
                 %br
+              %td
+                - if project.assignment_submitted_at.present?
+                  = l project.assignment_submitted_at.in_time_zone(PDT_TIME_ZONE)
+                - else
+                  Not yet submitted
             %td Pending
             %td
             %td

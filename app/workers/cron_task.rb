@@ -22,6 +22,7 @@ class CronTask < BaseWorker
 
   def launch_cron
     update_mailchimp_list
+    send_assignment_reminder
   end
 
   def launch_daily_cron
@@ -41,6 +42,17 @@ class CronTask < BaseWorker
     teches = Tech.joins(:group_relations).where('group_relations.created_at > ?', 24.hours.ago).where(group_relations: { workflow_state: GroupRelation::VALID_STATES }).distinct(:id)
     teches.each do |tech|
       BaseMailer.enqueue_email 'new_projects_in_tech_notification', { context_type: 'tech', context_id: tech.id }
+    end
+  end
+
+  def send_assignment_reminder
+    assignments = Assignment.where("assignments.submit_by_date < ? AND assignments.reminder_sent_at IS NULL", 24.hours.from_now)
+    assignments.each do |assignment|
+      assignment.promotion.members.with_group_roles('student').includes(:user).each do |member|
+        user = member.user
+        BaseMailer.enqueue_email 'assignment_due_reminder', { context_type: 'assignment', context_id: user.id } unless user.submitted_project_to_assignment?(assignment)
+      end
+      assignment.update_column :reminder_sent_at, Time.now
     end
   end
 

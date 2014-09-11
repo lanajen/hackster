@@ -10,6 +10,37 @@
         - who = %w(you)
         - who += ['team members'] if @project.users.size > 1
         - who += ["members of #{@project.assignment.promotion.name}"] if @project.collection_id.present? and @project.assignment.present?
+
+        - if @project.assignment.present?
+          - if @project.assignment_submitted_at.present?
+            .alert.alert-success.alert-flat.text-center
+              %p
+                Assignment submitted on
+                = l @project.assignment_submitted_at.in_time_zone(PDT_TIME_ZONE)
+          - else
+            .alert.alert-danger.alert-flat.text-center
+              %span
+                %p
+                  - if @project.assignment.submit_by_date.present?
+                    %i.fa.fa-exclamation-circle
+                    - if Time.now < @project.assignment.submit_by_date
+                      Assignment due in
+                      %b= distance_of_time_in_words Time.now, @project.assignment.submit_by_date
+                    - else
+                      %b Assignment submission is past due
+                      by
+                      = time_ago_in_words @project.assignment.submit_by_date
+                    (#{l @project.assignment.submit_by_date.in_time_zone(PDT_TIME_ZONE)})
+                  - else
+                    This assignment hasn't been submitted.
+                %p= link_to 'Submit assignment', submit_project_path(@project), method: :patch, class: 'btn btn-danger btn-sm btn-block'
+        - elsif (current_user.student_assignments.pluck(:id) - current_user.projects.pluck(:collection_id)).any?
+          .alert.alert-warning.alert-flat.text-center
+            %span
+              %p
+                It looks like you have due assignments
+              %p= link_to 'Link to an assignment', settings_project_path(@project, anchor: 'sharing'), class: 'btn btn-warning btn-sm btn-block'
+
         .alert.alert-warning.alert-flat.text-center
           %span
             %p

@@ -48,7 +48,7 @@ HackerIo::Application.configure do
   # config.action_controller.asset_host = "http://assets.example.com"
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-  config.assets.precompile += %w( admin.css wysihtml5.css email.css wysihtml5/parser_rules.js jquery.githubRepoWidget.min.js bitbucket-widget.min.css bitbucket-widget.min.js thingiview.js slick.eot slick.svg slick.ttf slick.woff )
+  config.assets.precompile += %w( admin.css jquery.githubRepoWidget.min.js bitbucket-widget.min.css bitbucket-widget.min.js slick.eot slick.svg slick.ttf slick.woff datepicker.js datepicker.css)
 
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false

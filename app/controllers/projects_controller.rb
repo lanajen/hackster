@@ -1,6 +1,6 @@
 class ProjectsController < ApplicationController
   before_filter :load_project, only: [:show, :embed, :update, :destroy, :redirect_to_slug_route]
-  load_and_authorize_resource only: [:index, :edit, :settings]
+  load_and_authorize_resource only: [:index, :edit, :settings, :submit]
   layout 'project', only: [:edit, :update, :show]
   before_filter :set_project_mode, only: [:settings]
   respond_to :html
@@ -218,6 +218,7 @@ class ProjectsController < ApplicationController
   end
 
   def settings
+    authorize! :edit, @project
     title 'Project settings'
     initialize_project
   end
@@ -277,6 +278,13 @@ class ProjectsController < ApplicationController
 
   def redirect_to_last
     redirect_to url_for(Project.last), status: 302
+  end
+
+  def submit
+    authorize! :edit, @project
+    @project.assignment_submitted_at = Time.now
+    @project.save
+    redirect_to @project, notice: 'Your assignment has been submitted.'
   end
 
   private

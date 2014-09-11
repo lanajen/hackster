@@ -82,7 +82,7 @@
               = f_cred.link_to_add 'Add another contributor', :credit_lines, class: 'btn btn-xs btn-success', style: 'margin:0 0 0 33.33333%;'
 
       - if current_user.communities.where(type: 'Community').any? or current_user.is? :admin or current_user.promotions.any? or current_user.events.any?
-        .panel.panel-default
+        .panel.panel-default#sharing
           .panel-heading
             %h4 Sharing
           .panel-body

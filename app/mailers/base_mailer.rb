@@ -45,6 +45,10 @@ class BaseMailer < ActionMailer::Base
     def get_context_for context_type, context_id
       context = {}
       case context_type.to_sym
+      when :assignment
+        user = context[:user] = User.find(context_id)
+        assignment = context[:assignment] = user.assignments.where("assignments.submit_by_date < ?", 24.hours.from_now).first
+        context[:project] = user.project_for_assignment(assignment).first
       when :comment
         comment = context[:comment] = Comment.find(context_id)
         commentable = comment.commentable

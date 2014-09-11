@@ -124,7 +124,7 @@ class Ability
       @user.is_active_member? event
     end
 
-    can :add_project, Assignment do |assignment|
+    can [:add_project, :submit_project], Assignment do |assignment|
       @user.is_active_member? assignment.promotion
     end
 

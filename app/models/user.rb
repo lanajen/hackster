@@ -48,6 +48,7 @@ class User < ActiveRecord::Base
   has_many :permissions, as: :grantee
   has_many :projects, -> { where("projects.guest_name IS NULL OR projects.guest_name = ''") }, through: :teams
   has_many :promotions, through: :group_ties, source: :group, class_name: 'Promotion'
+  has_many :promotion_group_ties, -> { where(type: 'PromotionMember') }, class_name: 'PromotionMember', dependent: :destroy
   has_many :respects, as: :respecting, dependent: :destroy, class_name: 'Respect'
   has_many :respected_projects, through: :respects, source: :project
   has_many :team_grades, through: :teams, source: :grades
@@ -678,6 +679,22 @@ class User < ActiveRecord::Base
 
   def subscription_symbols
     subscriptions.map(&:to_sym)
+  end
+
+  def project_for_assignment assignment
+    projects.where(collection_id: assignment.id)
+  end
+
+  def created_project_for_assignment? assignment
+    project_for_assignment(assignment).any?
+  end
+
+  def submitted_project_to_assignment? assignment
+    project_for_assignment(assignment).where("projects.assignment_submitted_at IS NOT NULL").any?
+  end
+
+  def student_assignments
+    Assignment.where(promotion_id: promotion_group_ties.with_group_roles('student').pluck(:group_id))
   end
 
   def to_param

@@ -12,12 +12,25 @@ class Assignment < ActiveRecord::Base
   has_one :document, as: :attachable, dependent: :destroy
   validates :promotion_id, :name, presence: true
   attr_accessible :name, :document_id, :grading_type, :graded, :private_grades,
-    :disable_tweeting, :hide_all
+    :disable_tweeting, :hide_all, :submit_by_date, :submit_by_date_dummy
+  attr_accessor :submit_by_date_dummy
 
   store :properties, accessors: [:hide_all, :disable_tweeting]
   parse_as_booleans :properties, :hide_all, :disable_tweeting
 
   before_create :generate_id
+
+  def submit_by_date=(val)
+    begin
+      date = val.to_datetime
+      write_attribute :submit_by_date, date
+    rescue
+    end
+  end
+
+  def submit_by_date_dummy
+    submit_by_date.strftime("%m/%d/%Y %l:%M %P") if submit_by_date
+  end
 
   def document_id=(val)
     self.document = Document.find_by_id(val)
