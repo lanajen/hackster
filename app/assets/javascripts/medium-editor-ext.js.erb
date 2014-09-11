@@ -439,6 +439,25 @@ $(function() {
           $('<span class="default-text help-block">' + msg + '</span>').appendTo(f);
         });
       });
+
+      delete data['widgets'];
+
+      out = '<li class="list-title">Errors:</li>';
+      $.each(data, function(attr, msg){
+        console.log(attr + ' gave an error: ' + msg);
+
+        // $.each(data, function(attr, msg){
+          el = $('[data-attribute="' + attr + '"]');
+          elId = '#' + el.attr('id');
+          target = $(el).data('target') ? $(el).data('target') : el;
+          out += '<li>';
+          out += '<a href="javascript:smoothScrollToAndHighlight(\'' + target + '\', -60, \'' + elId + '\');">';
+          out += $(el).data('human-name');
+          out += '</a> ' + msg + '</li>';
+        // });
+
+      });
+      $('#errors').html(out);
     },
 
     clearTimer: function() {
@@ -453,6 +472,7 @@ $(function() {
     clearErrors: function() {
       $('.has-error .help-block').remove();
       $('.has-error').removeClass('has-error');
+      $('#errors').html('');
     },
 
     showLoadingBar: function() {

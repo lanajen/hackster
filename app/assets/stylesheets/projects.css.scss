@@ -862,9 +862,13 @@
   padding: 20px 14px;
 }
 
-#todos {
+#todos, #errors {
+  &:empty {
+    display: none;
+  }
   padding: 20px;
   padding-left: 40px;
+  margin: 0;
   li {
     font-size: 12px;
     margin-bottom: 5px;
