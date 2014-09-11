@@ -3,6 +3,7 @@ class GroupRelation < ActiveRecord::Base
 
   VALID_STATES = %w(featured approved)
 
+  validates :project_id, uniqueness: { scope: :group_id }
   belongs_to :group
   belongs_to :project
   after_create :update_workflow#, unless: proc {|g| g.project.external and g.project.approved.nil? }

@@ -80,6 +80,9 @@
               = l grade.project.assignment_submitted_at.in_time_zone(PDT_TIME_ZONE)
             - else
               Not yet submitted
+            %br
+            Last edited:
+            = l grade.project.last_edited_at.in_time_zone(PDT_TIME_ZONE)
           %td= grade.grade
           %td= grade.feedback.truncate 100
           %td
@@ -102,6 +105,9 @@
                   = l project.assignment_submitted_at.in_time_zone(PDT_TIME_ZONE)
                 - else
                   Not yet submitted
+                %br
+                Last edited:
+                = l project.last_edited_at.in_time_zone(PDT_TIME_ZONE)
               %td Pending
               %td
               %td
@@ -119,6 +125,9 @@
                   = l project.assignment_submitted_at.in_time_zone(PDT_TIME_ZONE)
                 - else
                   Not yet submitted
+                %br
+                Last edited:
+                = l project.last_edited_at.in_time_zone(PDT_TIME_ZONE)
             %td Pending
             %td
             %td
