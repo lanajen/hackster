@@ -1,16 +1,7 @@
 = content_for :in_main do
   #sidebar-container.project-pages-sidebar.affixable
     %section#sidebar-container-in
-      - if @project.public?
-        #project-actions
-          - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
-            = render partial: 'respects/button', locals: { project: @project }
-          = render 'projects/project_embed_popup'
-      - elsif @can_edit
-        - who = %w(you)
-        - who += ['team members'] if @project.users.size > 1
-        - who += ["members of #{@project.assignment.promotion.name}"] if @project.collection_id.present? and @project.assignment.present?
-
+      - if @can_edit
         - if @project.assignment.present?
           - if @project.assignment_submitted_at.present?
             .alert.alert-success.alert-flat.text-center
@@ -40,6 +31,16 @@
               %p
                 It looks like you have due assignments
               %p= link_to 'Link to an assignment', settings_project_path(@project, anchor: 'sharing'), class: 'btn btn-warning btn-sm btn-block'
+
+      - if @project.public?
+        #project-actions
+          - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
+            = render partial: 'respects/button', locals: { project: @project }
+          = render 'projects/project_embed_popup'
+      - elsif @can_edit
+        - who = %w(you)
+        - who += ['team members'] if @project.users.size > 1
+        - who += ["members of #{@project.assignment.promotion.name}"] if @project.collection_id.present? and @project.assignment.present?
 
         .alert.alert-warning.alert-flat.text-center
           %span
