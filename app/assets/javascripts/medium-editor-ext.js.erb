@@ -1162,12 +1162,13 @@ $(function () {
       file = data.files[0];
 
       validations = {
-        maxFileSize: $('#medium-file-upload input[name="file"]').data('max-file-size')
+        maxFileSize: $('#medium-file-upload input[name="file"]').data('max-file-size'),
+        fileType: 'jpg,jpeg,png,gif,bmp'
       }
-      dataFileTypes = $('#medium-file-upload input[name="file"]').data('file-type');
-      if (dataFileTypes != 'undefined') {
-        validations['fileType'] = dataFileTypes;
-      }
+      // dataFileTypes = $('#medium-file-upload input[name="file"]').data('file-type');
+      // if (dataFileTypes != 'undefined') {
+      //   validations['fileType'] = dataFileTypes;
+      // }
       errors = checkFileForErrors(file, validations);
       // fileType = detectFileType(file);
 
@@ -1196,7 +1197,9 @@ $(function () {
       editor.iFile++;
 
       if (errors.length > 0) {
-        $('#' + data.context).replaceWith("<div class='help-block has-error upload-error'>Couldn't upload " + file.name + ': ' + errors.join(', ')+'</span>');
+        // $('#' + data.context).replaceWith("<div class='help-block has-error upload-error'>Couldn't upload " + file.name + ': ' + errors.join(', ')+'</span>');
+        $('#' + data.context).remove();
+        showErrorBubble("Couldn't upload " + file.name + ': ' + errors.join(', '));
       } else {
         fileuploadFunctions[fileType].addToTpl(data);
 
@@ -1265,14 +1268,15 @@ $(function () {
       file = data.files[0];
 
       validations = {
-        maxFileSize: $('#medium-file-upload input[name="file"]').data('max-file-size')
+        maxFileSize: $('#medium-file-upload input[name="file"]').data('max-file-size'),
+        fileType: 'jpg,jpeg,png,gif,bmp'
       }
-      dataFileTypes = $('#medium-file-upload input[name="file"]').data('file-type');
-      if (dataFileTypes != 'undefined') {
-        validations['fileType'] = dataFileTypes;
-      }
+      // dataFileTypes = $('#medium-file-upload input[name="file"]').data('file-type');
+      // if (dataFileTypes != 'undefined') {
+      //   validations['fileType'] = dataFileTypes;
+      // }
       errors = checkFileForErrors(file, validations);
-      fileType = detectFileType(file);
+      // fileType = detectFileType(file);
 
       var el = $('#project-top-image');
 
@@ -1280,6 +1284,8 @@ $(function () {
 
       if (errors.length > 0) {
         // $('#' + data.context).replaceWith("<div class='help-block has-error upload-error'>Couldn't upload " + file.name + ': ' + errors.join(', ')+'</span>');
+        $('#' + data.context).remove();
+        showErrorBubble("Couldn't upload " + file.name + ': ' + errors.join(', '));
       } else {
         $(progressTpl).appendTo(el);
 

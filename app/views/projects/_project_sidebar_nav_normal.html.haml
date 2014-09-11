@@ -25,7 +25,7 @@
                   - else
                     This assignment hasn't been submitted.
                 %p= link_to 'Submit assignment', submit_project_path(@project), method: :patch, class: 'btn btn-danger btn-sm btn-block'
-        - elsif (current_user.student_assignments.pluck(:id) - current_user.projects.pluck(:collection_id)).any?
+        - elsif @project.collection_id.blank? and (current_user.student_assignments.pluck(:id) - current_user.projects.pluck(:collection_id)).any? and current_user.is_team_member?(@project)
           .alert.alert-warning.alert-flat.text-center
             %span
               %p
