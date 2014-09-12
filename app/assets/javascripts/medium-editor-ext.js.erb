@@ -1518,7 +1518,7 @@ function checkFileForErrors(file, validations) {
     errors.push('Maximum file size is ' + maxFileSize / 1000000 + 'MB');
   }
   if (validations['fileType'] != undefined) {
-    fileType = validations['fileType'];
+    var fileType = validations['fileType'];
     regexp = new RegExp('(\.|\/)(' + fileType.split(',').join('|') + ')$', 'gi');
     type = (file.type != '') ? file.type : file.name
     if (!regexp.test(type)) {
