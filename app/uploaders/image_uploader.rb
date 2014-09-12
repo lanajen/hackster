@@ -2,6 +2,8 @@
 
 class ImageUploader < BaseUploader
 
+  process :fix_exif_rotation
+
   version :lightbox, unless: :is_cover? do
     process resize_to_limit: [1280, 960]
   end
@@ -35,6 +37,12 @@ class ImageUploader < BaseUploader
   end
 
   protected
+    def fix_exif_rotation #this is my attempted solution
+      manipulate! do |img|
+        img.tap(&:auto_orient)
+      end
+    end
+
     def is_cover? picture
       model.class == CoverImage
     end
