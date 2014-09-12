@@ -1183,13 +1183,11 @@ $(function () {
 
       validations = {
         maxFileSize: $('#medium-file-upload input[name="file"]').data('max-file-size'),
-        fileType: 'jpg,jpeg,png,gif,bmp'
       }
       // dataFileTypes = $('#medium-file-upload input[name="file"]').data('file-type');
       // if (dataFileTypes != 'undefined') {
       //   validations['fileType'] = dataFileTypes;
       // }
-      errors = checkFileForErrors(file, validations);
       // fileType = detectFileType(file);
 
       plcHldr = $('#upload-placeholder');
@@ -1212,6 +1210,10 @@ $(function () {
         console.log("couldn't find where to insert file");
         return;
       }
+
+      if (fileType == 'image') validations['fileType'] = 'jpg,jpeg,png,gif,bmp';
+
+      errors = checkFileForErrors(file, validations);
 
       data.context = 'tmp-file-' + editor.iFile;
       editor.iFile++;
