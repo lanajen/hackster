@@ -92,7 +92,7 @@
             - when Team
               = link_to content_tag(:i, '', class: 'fa fa-pencil'), assignment_edit_grade_path(@assignment, grade.project), class: 'btn btn-xs btn-default', rel: 'tooltip', title: 'Edit'
 
-      - @assignment.projects.where(graded: false).each do |project|
+      - @assignment.projects.where(graded: false).order(:assignment_submitted_at, :last_edited_at).each do |project|
         - if @assignment.grading_type == 'individual'
           - project.team.users.each do |user|
             %tr

@@ -189,7 +189,7 @@ module ScraperStrategies
 
       def normalize_link src
         src = 'http:' + src if (src =~ /\A\/\//)
-        if !(src =~ /\Ahttp/) and @host
+        if !(src =~ /\Ahttp/) and @host and src != '/'
           src = "#{@base_uri}/#{src}" unless src =~ /\A\//
           clean_path = []
           src.split('/')[1..-1].each do |dir|
