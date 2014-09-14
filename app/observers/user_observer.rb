@@ -61,7 +61,7 @@ class UserObserver < ActiveRecord::Observer
       Cashier.expire *keys
     end
 
-    if (record.changed & %w(full_name logo mini_resume slug user_name forums_link documentation_link crowdfunding_link buy_link twitter_link facebook_link linked_in_link blog_link github_link website_link youtube_link google_plus_link city country state)).any? or record.interest_tags_string_changed? or record.skill_tags_string_changed?
+    if (record.changed & %w(full_name avatar mini_resume slug user_name forums_link documentation_link crowdfunding_link buy_link twitter_link facebook_link linked_in_link blog_link github_link website_link youtube_link google_plus_link city country state)).any? or record.interest_tags_string_changed? or record.skill_tags_string_changed?
       Cashier.expire "user-#{record.id}-sidebar"
     end
   end

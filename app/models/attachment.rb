@@ -36,6 +36,8 @@ class Attachment < ActiveRecord::Base
     file.recreate_versions! if needs_processing?  # only if has post processing
 
     update_attributes file: file_name, tmp_file: nil
+
+    notify_observers :after_process
   end
 
   def processed?
