@@ -1,6 +1,6 @@
 class ExpertRequestsController < ApplicationController
   def new
-    title "Manufacture a hardware product"
+    title "Idea to market"
     @expert_request = ExpertRequest.new
   end
 

@@ -73,7 +73,7 @@
                             - POPULAR_TAGS.each do |tag, link|
                               %li= link_to tag, "#{link}?ref=topnav"
                 %li= link_to 'Tools', tools_path, class: 'nav-link'
-                %li= link_to 'Manufacturing help', build_path, class: 'nav-link'
+                %li= link_to 'Idea to market', build_path, class: 'nav-link'
               - if user_signed_in?
                 %ul.navbar-nav.navbar-right
                   -# if current_user.has_notifications?
