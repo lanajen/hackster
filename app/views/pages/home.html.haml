@@ -101,13 +101,11 @@
             .transparent-well
               .header.no-content
                 %h2
-                  Featured tools
-                  = link_to 'See all tools &rarr;'.html_safe, tools_path, class: 'btn-bottom'
+                  Trending projects
+                  = link_to 'See more trending projects &rarr;'.html_safe, projects_path(sort: 'trending'), class: 'btn-bottom'
             .row
-              - @tools.each do |tech|
-                .col-xs-6.col-sm-4.col-md-2
-                  = link_to(image_tag(tech.avatar.file_url(:big), class: 'img-thumbnail'), tech_short_path(tech, ref: 'homefeat')) if tech.avatar
-                  %h6.text-center= link_to tech.name, tech_short_path(tech)
+              - @most_popular_projects.each do |project|
+                = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, ref: 'homepop' }
 
     %section
       .container
@@ -116,11 +114,13 @@
             .transparent-well
               .header.no-content
                 %h2
-                  Trending projects
-                  = link_to 'See more trending projects &rarr;'.html_safe, projects_path(sort: 'trending'), class: 'btn-bottom'
+                  Featured tools
+                  = link_to 'See all tools &rarr;'.html_safe, tools_path, class: 'btn-bottom'
             .row
-              - @most_popular_projects.each do |project|
-                = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, ref: 'homepop' }
+              - @tools.each do |tech|
+                .col-xs-6.col-sm-4.col-md-2
+                  = link_to(image_tag(tech.avatar.file_url(:big), class: 'img-thumbnail'), tech_short_path(tech, ref: 'homefeat')) if tech.avatar
+                  %h6.text-center= link_to tech.name, tech_short_path(tech)
 
     %section
       .container
