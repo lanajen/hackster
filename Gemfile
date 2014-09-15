@@ -73,6 +73,7 @@ gem 'sidekiq', '3.0.0'
 gem 'sidekiq-failures', '0.4.3'
 gem 'simple_form', '3.1.0.rc1'
 gem 'sinatra', '>= 1.3.0', require: nil
+gem 'slick_rails', '1.3.7'
 gem 'split', '0.7.2', :require => 'split/dashboard'
 gem 'sundawg_country_codes', '0.0.7'
 gem 'text_sanitizer', '0.1.0'

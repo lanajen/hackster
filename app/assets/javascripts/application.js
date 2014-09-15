@@ -7,7 +7,7 @@
 //= require jquery.parallax
 //= require jquery.ui.sortable
 //= require jquery.throttle
-//= require slick.min
+//= require slick
 //= require rangy-core
 //= require rangy-cssclassapplier
 //= require medium-editor

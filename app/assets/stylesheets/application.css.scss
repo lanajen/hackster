@@ -11,6 +11,7 @@
  *= require_self
  *= require medium-editor/medium-editor
  *= require medium-editor/themes/bootstrap
+ *= require slick
  */
 @import 'custom_mixins';
 @import 'compass/css3';
@@ -20,7 +21,7 @@
 @import 'layout';
 @import 'projects';
 @import 'users';
-@import 'slick';
+// @import 'slick';
 @import 'search';
 @import 'widgets';
 @import 'ilightbox/ilightbox';
