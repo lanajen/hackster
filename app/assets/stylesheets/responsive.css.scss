@@ -5,6 +5,12 @@
   display: none!important;
 }
 
+@media only screen and (max-width: 767px) {
+  #about #teaser .slide {
+    padding-top: 100px;
+  }
+}
+
 @media only screen and (max-width: 899px) {
   #mobile-bottom-bar {
     display: block;
