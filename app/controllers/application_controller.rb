@@ -355,7 +355,7 @@ class ApplicationController < ActionController::Base
       if meta_desc
         @meta_desc = meta_desc
       else
-        @meta_desc || "Do you hack hardware? Show the world what you're up to and get inspiration from other makers. Come join the movement!"
+        @meta_desc || "#{SLOGAN} Share your projects and learn from other makers. Come build awesome hardware!"
       end
     end
 
@@ -363,7 +363,7 @@ class ApplicationController < ActionController::Base
       if title
         @title = title
       else
-        @title ? "#{@title} - Hackster.io" : "Hackster.io - #{SLOGAN}"
+        @title ? "#{@title} - Hackster.io" : "Hackster.io - #{SLOGAN_NO_BRAND}"
       end
     end
 

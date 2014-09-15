@@ -6,7 +6,7 @@ POPULAR_TAGS = {
   'AVR' => '/tags/avr',
   'BeagleBoard' => '/beagleboard',
   'Bluetooth' => '/tags/bluetooth',
-  'Drone' => '/tags/drone',
+  # 'Drone' => '/tags/drone',
   'Home automation' => '/tags/home+automation',
   'MetaWear' => '/metawear',
   'MSP430' => '/tags/msp430',
@@ -15,8 +15,10 @@ POPULAR_TAGS = {
   'Spark' => '/spark',
   'Teensy' => '/teensy',
   'Wifi' => '/tags/wifi',
+  'Wearable' => '/tags/wearable',
 }
-SLOGAN = 'Hackster.io gives professionals and hobbyists the resources they need to build hardware, the easy way.'
+SLOGAN = 'Hackster.io is a community of hardware hackers. Learn, build and share your projects.'
+SLOGAN_NO_BRAND = 'The hardware hacker community.'
 URL_REGEXP = /^(((http|https):\/\/|)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}(:[0-9]{1,5})?(\/.*)?)$/ix
 
 if Rails.env == 'development'

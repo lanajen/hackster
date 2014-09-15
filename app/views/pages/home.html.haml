@@ -1,17 +1,79 @@
 = content_for :head do
   %meta(name='robots' content='noindex')
-  = auto_discovery_link_tag :rss, projects_path(format: :rss), title: 'Most recent projects - Hackster.io'
-  = auto_discovery_link_tag :atom, projects_path(format: :atom), title: 'Most recent projects - Hackster.io'
+  = auto_discovery_link_tag :rss, projects_path(format: :rss), title: 'Trending projects - Hackster.io'
+  = auto_discovery_link_tag :atom, projects_path(format: :atom), title: 'Trending projects - Hackster.io'
+
+= content_for :js do
+  :javascript
+    $('#teaser').slick({
+      accessibility: false,
+      // autoplay: true,
+      autoplaySpeed: 5000,
+      speed: 500,
+      fade: true,
+      dots: true
+    });
 
 = content_for :no_container do
   #about
     %section#teaser
-      .container
-        .row
-          .col-xs-10.col-xs-offset-1.text-center
-            %h1 Hackster.io gives you the resources you need to build hardware, the easy way.
+      .slide.slide1
+        .container
+          .row
+            .col-xs-10.col-xs-offset-1.text-center
+              %h1
+                Welcome to the
+                %br
+                hardware hacker community.
+                %br
+                %small= link_to 'Learn more', about_path
+      .slide.slide2.slide-opaque
+        .container
+          .row
+            .col-xs-10.col-xs-offset-1.text-center
+              %h1
+                Because the world looks so much better in color:
+                %small
+                  = succeed ',' do
+                    %b= link_to 'LEDzep', '/heroes/ledzep'
+                  luminous flying BLE-controlled helium balloons.
+                  %br
+                  %small
+                    by
+                    .user
+                      = link_to image_tag('//gravatar.com/avatar/12246c082312edcde3c87c3677bdb813.png?d=identicon&s=30', class: 'img-circle'), '/lepanda'
+                      %span.user-name
+                        = link_to 'Thomas Rousseau', '/lepanda', class: 'hidden-link'
+                    and
+                    = link_to '3 others', '/heroes/ledzep#team-widget', class: 'hidden-link'
+      .slide.slide3.slide-opaque
+        .container
+          .row
+            .col-xs-10.col-xs-offset-1.text-center
+              %h1
+                Connect your world to the internets
+                %br
+                %small
+                  with
+                  = link_to 'Spark Core', '/spark'
+      .slide.slide4.slide-opaque
+        .container
+          .row
+            .col-xs-10.col-xs-offset-1.text-center
+              %h1
+                Your brain is the limit.
+                %small
+                  Decode brainwaves with the
+                  %b= link_to 'NeuroSky MindFlex Comfort Upgrade', '/glowascii/neurosky-mindflex-teardown-comfort-upgrade'
+                  %br
+                  %small
+                    by
+                    .user
+                      = link_to image_tag('//halckemy.s3.amazonaws.com/uploads/avatar/file/11885/mini_brainwavesss_cropped.jpeg', class: 'img-circle'), '/glowascii'
+                      %span.user-name
+                        = link_to 'Alex "Merlin" Glowaski', '/glowascii', class: 'hidden-link'
 
-    %section
+    -# %section
       .container.text-center
         .row
           .col-xs-12
