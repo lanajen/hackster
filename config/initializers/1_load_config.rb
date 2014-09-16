@@ -17,8 +17,8 @@ POPULAR_TAGS = {
   'Wifi' => '/tags/wifi',
   'Wearable' => '/tags/wearable',
 }
-SLOGAN = 'Hackster.io is a community of hardware hackers. Learn, build and share your projects.'
-SLOGAN_NO_BRAND = 'The hardware hacker community.'
+SLOGAN = 'Hackster.io is the community for hardware hackers. Learn, build and share your projects.'
+SLOGAN_NO_BRAND = 'The community for hardware hackers.'
 URL_REGEXP = /^(((http|https):\/\/|)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}(:[0-9]{1,5})?(\/.*)?)$/ix
 
 if Rails.env == 'development'
