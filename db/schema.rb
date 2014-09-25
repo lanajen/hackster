@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140910205414) do
+ActiveRecord::Schema.define(version: 20140925010834) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -73,6 +73,16 @@ ActiveRecord::Schema.define(version: 20140910205414) do
 
   add_index "authorizations", ["provider", "uid"], name: "index_authorizations_on_provider_and_uid", using: :btree
   add_index "authorizations", ["user_id"], name: "index_authorizations_on_user_id", using: :btree
+
+  create_table "badges", force: true do |t|
+    t.integer  "user_id"
+    t.string   "type"
+    t.integer  "level"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "badges", ["user_id"], name: "index_badges_on_user_id", using: :btree
 
   create_table "broadcasts", force: true do |t|
     t.string   "broadcastable_type", null: false
@@ -169,6 +179,10 @@ ActiveRecord::Schema.define(version: 20140910205414) do
     t.integer  "parent_id"
     t.string   "access_level"
     t.string   "invitation_token",  limit: 30
+    t.float    "latitude"
+    t.float    "longitude"
+    t.string   "address"
+    t.string   "state"
   end
 
   add_index "groups", ["type"], name: "index_groups_on_type", using: :btree
@@ -308,6 +322,14 @@ ActiveRecord::Schema.define(version: 20140910205414) do
 
   add_index "permissions", ["grantee_type", "grantee_id"], name: "index_permissions_on_grantee_type_and_grantee_id", using: :btree
   add_index "permissions", ["permissible_id", "permissible_type"], name: "index_permissions_on_permissible_id_and_permissible_type", using: :btree
+
+  create_table "project_collections", force: true do |t|
+    t.integer  "project_id"
+    t.integer  "collectable_id"
+    t.string   "collectable_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "projects", force: true do |t|
     t.string   "name"

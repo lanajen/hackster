@@ -21,6 +21,7 @@ gem 'zocial-rails', '1.0.2'
 
 # bower
 gem 'rails-assets-medium-editor', '1.8.14'
+gem 'rails-assets-underscore', '1.7.0'
 
 gem 'autoscaler', '0.9.0', groups: :staging
 gem 'auto_html', '1.6.3'
@@ -36,8 +37,10 @@ gem 'devise', '3.2.2'
 gem 'devise_invitable', '1.3.0'
 gem 'draper', '1.3.0'
 gem 'fog', '1.15.0'
+gem 'geocoder', '1.2.5'
 gem 'gibbon', '1.1.1'
 gem 'github-linguist', '2.11.5'
+gem 'gmaps4rails', '2.1.2'
 gem 'google_visualr', '2.2.0'
 gem 'haml', '4.0.3'
 gem 'haml-rails', '0.5.3'

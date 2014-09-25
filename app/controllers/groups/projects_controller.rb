@@ -31,6 +31,8 @@ class Groups::ProjectsController < ApplicationController
     case @group
     when Event
       @project.event = @event
+    when HackerSpace
+      @group.projects << @project unless @project.in? @group.projects
     when Tech
       @project.tech_tags << TechTag.new(name: @group.tech_tags.first.name)
     end
@@ -45,6 +47,8 @@ class Groups::ProjectsController < ApplicationController
         @event = Event.includes(:hackathon).where(groups: { user_name: params[:event_name] }, hackathons_groups: { user_name: params[:user_name] }).first!
       elsif params[:promotion_name]
         load_assignment
+      elsif params[:user_name]
+        @hacker_space = HackerSpace.find_by_user_name! params[:user_name]
       else
         @group = Group.find params[:group_id]
       end

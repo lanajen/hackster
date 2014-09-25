@@ -1,0 +1,56 @@
+class HackerSpace < Community
+  has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'HackerSpaceMember'
+  has_many :pages, as: :threadable
+  has_many :project_collections, as: :collectable
+  has_many :projects, through: :project_collections
+
+  store :websites, accessors: [:irc_link, :hackerspace_org_link, :wiki_link,
+    :mailing_list_link]
+
+  attr_accessible :irc_link, :hackerspace_org_link, :wiki_link, :mailing_list_link,
+    :latitude, :longitude
+
+  geocoded_by :full_street_address
+  after_validation :geocode, if: proc{|h| h.address_changed? or h.city_changed? or
+    h.state_changed? or h.country_changed? }
+
+  validates :address, length: { maximum: 255 }
+
+  attr_accessible :address, :state
+
+  # beginning of search methods
+  include Tire::Model::Search
+  include Tire::Model::Callbacks
+  index_name ELASTIC_SEARCH_INDEX_NAME
+
+  tire do
+    mapping do
+      indexes :id,              index: :not_analyzed
+      indexes :name,            analyzer: 'snowball', boost: 100
+      indexes :mini_resume,     analyzer: 'snowball'
+      indexes :private,         analyzer: 'keyword'
+      indexes :created_at
+    end
+  end
+
+  def to_indexed_json
+    {
+      _id: id,
+      name: name,
+      model: self.class.name,
+      mini_resume: mini_resume,
+      private: private,
+      created_at: created_at,
+    }.to_json
+  end
+  # end of search methods
+
+  def full_street_address
+    "#{address}, #{city}, #{state}, #{country}"
+  end
+
+  private
+    def skip_website_check
+      %w(irc_link mailing_list_link)
+    end
+end

@@ -66,9 +66,7 @@ class MembersController < ApplicationController
     def load_group
       @group = if params[:group_id]
         group = Group.find(params[:group_id])
-        @promotion = group if group.type == 'Promotion'
-        @event = group if group.type == 'Event'
-        @tech = group if group.type == 'Tech'
+        instance_variable_set "@#{group.type.underscore}", group
         group
       elsif params[:promotion_id]
         @promotion = Promotion.find(params[:promotion_id])
@@ -82,12 +80,14 @@ class MembersController < ApplicationController
 
     def set_layout
       case @group
-      when Team
-        'project'
-      when Promotion
-        'promotion'
       when Event
         'event'
+      when HackerSpace
+        'hacker_space'
+      when Promotion
+        'promotion'
+      when Team
+        'project'
       when Tech
         'tech'
       else

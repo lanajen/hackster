@@ -28,7 +28,7 @@
       = render partial: 'shared/analytics', locals: { tracker: 'UA-11926897-15', domain: 'hackster.io', track_outbound: true }
     -# = render 'shared/mixpanel'
 
-  %body
+  %body{ class: yield(:body_class) }
     #outer-wrapper
       - unless params[:blank_frame]
         - if show_hello_world?

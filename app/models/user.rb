@@ -578,7 +578,8 @@ class User < ActiveRecord::Base
     sql = "SELECT projects.* FROM groups INNER JOIN permissions ON permissions.grantee_id = groups.id AND permissions.permissible_type = 'Project' AND permissions.grantee_type = 'Group' INNER JOIN projects ON projects.id = permissions.permissible_id INNER JOIN members ON groups.id = members.group_id WHERE members.user_id = ? AND projects.id = ? LIMIT 1;"
     sql2 = "SELECT members.* FROM members INNER JOIN groups ON members.group_id = groups.id WHERE members.user_id = ? AND groups.type = 'Promotion' AND groups.id = (SELECT assignments.promotion_id FROM assignments WHERE assignments.id = ?) LIMIT 1"
     sql3 = "SELECT members.* FROM members INNER JOIN groups ON members.group_id = groups.id WHERE members.user_id = ? AND groups.type = 'Event' AND groups.id = ? LIMIT 1"
-    Project.find_by_sql([sql, id, project.id]).first or project.collection_id.present? and (Member.find_by_sql([sql2, id, project.collection_id]).first or Member.find_by_sql([sql3, id, project.collection_id]).first)
+    # sql4 = "SELECT members.* FROM members INNER JOIN groups ON members.group_id = groups.id INNER JOIN project_collections ON project_collections.collectable_id = groups.id WHERE members.user_id = ? AND project_collections.id = ? LIMIT 1"
+    Project.find_by_sql([sql, id, project.id]).first or project.collection_id.present? and (Member.find_by_sql([sql2, id, project.collection_id]).first or Member.find_by_sql([sql3, id, project.collection_id]).first)# or Member.find_by_sql([sql4, id, project.id]).first
   end
 
   def live_comments

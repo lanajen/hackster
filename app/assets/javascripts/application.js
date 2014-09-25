@@ -13,6 +13,8 @@
 //= require medium-editor
 //= require medium-editor-ext
 //= require gist-embed
+//= require underscore
+//= require gmaps/google
 
 //= require projects
 //= require groups

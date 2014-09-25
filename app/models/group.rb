@@ -37,6 +37,7 @@ class Group < ActiveRecord::Base
   store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link,
     :google_plus_link, :youtube_link, :website_link, :blog_link, :github_link]
   validates :user_name, :new_user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users) }
+  validates :email, length: { maximum: 255 }
   validate :website_format_is_valid
   before_validation :assign_new_user_name
   before_validation :clean_members
@@ -125,6 +126,7 @@ class Group < ActiveRecord::Base
     def ensure_website_protocol
       return unless websites_changed?
       websites.each do |type, url|
+        next if type.in? skip_website_check
         if url.blank?
           send "#{type}=", nil
           next
@@ -137,9 +139,13 @@ class Group < ActiveRecord::Base
       self.invitation_token = SecureRandom.urlsafe_base64(nil, false) if invitation_token.nil?
     end
 
+    def skip_website_check
+      []
+    end
+
     def website_format_is_valid
       websites.each do |type, url|
-        next if url.blank?
+        next if url.blank? or type.in? skip_website_check
         errors.add type.to_sym, 'is not a valid URL' unless url.downcase =~ URL_REGEXP
       end
     end

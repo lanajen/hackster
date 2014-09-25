@@ -98,6 +98,17 @@ HackerIo::Application.routes.draw do
       patch 'awards' => 'grades#update'
       patch 'projects/link' => 'groups/projects#link'
     end
+
+    # get 'hackerspaces/:user_name' => 'hacker_spaces#show', as: :hacker_space
+    get 'h/:user_name' => 'hacker_spaces#redirect_to_show'
+    resources :hacker_spaces, except: [:show, :update], path: 'hackerspaces'
+    scope 'hackerspaces/:user_name', as: :hacker_space do
+      get '' => 'hacker_spaces#show'
+      patch '' => 'hacker_spaces#update'
+      resources :projects, only: [:new, :create], controller: 'groups/projects'
+      patch 'projects/link' => 'groups/projects#link'
+    end
+
     resources :members, only: [] do
       patch 'process' => 'members#process_request'
     end
