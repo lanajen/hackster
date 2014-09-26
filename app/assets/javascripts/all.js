@@ -70,6 +70,15 @@ $(function () {
     return false;
   });
 
+  $(document).on('click', '.disable-link', function(e){
+    $(this).addClass('disabled-link');
+    $(this).html('<i class="fa fa-spinner fa-spin"></i>');
+    $(this).on('click', function(e){
+      e.preventDefault();
+      e.stopPropagation();
+    });
+  })
+
   // show notification tooltip if any
   $('#notifications .istooltip').tooltip('show');
   window.setTimeout(function(){

@@ -1366,3 +1366,8 @@ input.cmn-toggle ~ .option-checked, input.cmn-toggle:checked ~ .option-unchecked
 .highlight-flash-transition .default-text, .highlight-flash-transition a, .highlight-flash-transition *:after {
   @include transition(color ease-in-out .5s);
 }
+
+.disabled-link {
+  @include opacity(0.3);
+  cursor: default;
+}
