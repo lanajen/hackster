@@ -41,9 +41,9 @@ module ScraperStrategies
 
       @project.description = @article.children.to_s
 
-      @project.give_embed_style!
+      # puts @project.description
 
-      puts @project.description
+      @project.give_embed_style!
 
       @project
     end
@@ -77,7 +77,7 @@ module ScraperStrategies
       end
 
       def crap_list
-        %w(#sidebar #sidebar-right #sidebar-left .sidebar .sidebar-left .sidebar-right #head #header #hd .navbar .navbar-top header footer #ft #footer)
+        %w(#sidebar #sidebar-right #sidebar-left .sidebar .sidebar-left .sidebar-right #head #header #hd .navbar .navbar-top header footer #ft #footer .sharedaddy .ts-fab-wrapper .shareaholic-canvas .post-nav)
       end
 
       def extract_comments
@@ -120,7 +120,7 @@ module ScraperStrategies
       def find_parent node
         if node.parent and node.parent != @article
           # find_parent node.parent
-          node.parent.name.in?(%w(p a span)) ? find_parent(node.parent) : node.parent
+          node.parent.name.in?(%w(a span)) ? find_parent(node.parent) : node.parent
         else
           node
         end
@@ -214,12 +214,16 @@ module ScraperStrategies
       end
 
       def parse_code
-        @article.css('pre code').each do |node|
+        @article.css('pre code, .crayon-syntax .crayon-main, .syntaxhighlighter .code').each do |node|
           # if the node has children with code we skip it
           # catch :haschildren do
           #   node.children.each{ |child| throw :haschildren if child.name.in? %w(pre code) }
-            code = node.content.gsub(/<br ?\/?>/, "\r\n")
-            next if code.lines.count <= 5  # we leave snippets in place
+            if node.name == 'code'
+              code = node.content.gsub(/<br ?\/?>/, "\r\n")
+              next if code.lines.count <= 5  # we leave snippets in place
+            else
+              code = node.css('.crayon-line, .line').map{|l| l.content }.join("\r\n")
+            end
 
             widget = CodeWidget.new(raw_code: code, name: 'Code')
             widget.widgetable_id = 0
@@ -243,7 +247,8 @@ module ScraperStrategies
             embed = Embed.new url: node[attr]
             if embed.provider
               @embedded_urls[embed.provider_name] << embed.provider_id
-              node.after "<div class='embed-frame' data-url='#{embed.url}' data-type='url'></div>"
+              parent = find_parent node
+              parent.after "<div class='embed-frame' data-url='#{embed.url}' data-type='url'></div>"
             end
             node.remove
           end
@@ -278,7 +283,6 @@ module ScraperStrategies
             next unless test_link(link)
             content = node.text
             title = (content != link) ? content : ''
-            puts title.to_s
             puts "Parsing file #{link}..."
             document = Document.new remote_file_url: link, title: title.truncate(255)
             document.attachable_id = 0

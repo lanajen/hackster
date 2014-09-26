@@ -8,7 +8,7 @@ class ProjectScraper
 
     # debug snippet
     # url = File.join(Rails.root, 'app/models/scrapers/test.html')
-    # s = new 'https://community.spark.io/t/spark-controlled-halloween-costume/491'
+    # s = new 'http://tronixstuff.com/2014/09/24/tutorial-serial-pcf8574-backpacks-hd44780-compatible-lcd-modules-arduino/'
     # s.content = s.read_file url
     # end debug snippet
 
