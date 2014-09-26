@@ -206,11 +206,11 @@ function smoothScrollToIfOutOfBounds(target, offsetTop, speed) {
 function smoothScrollToAndHighlight(target, offsetTop, hiliTarget) {
   smoothScrollTo(target, offsetTop);
   if (typeof(hiliTarget) == 'string') hiliTarget = $(hiliTarget);
-  $('.highlight').removeClass('highlight');
-  hiliTarget.addClass('highlight-transition');
-  hiliTarget.addClass('highlight');
+  $('.highlight-flash').removeClass('highlight-flash');
+  hiliTarget.addClass('highlight-flash-transition');
+  hiliTarget.addClass('highlight-flash');
   window.setTimeout(function(){
-    hiliTarget.removeClass('highlight');
+    hiliTarget.removeClass('highlight-flash');
   }, 3000);
 }
 
