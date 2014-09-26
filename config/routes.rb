@@ -220,6 +220,7 @@ HackerIo::Application.routes.draw do
     resources :wiki_pages, only: [:destroy]
 
     resources :followers, only: [:create] do
+      get 'create' => 'followers#create', on: :collection, as: :create
       delete '' => 'followers#destroy', on: :collection
     end
 
