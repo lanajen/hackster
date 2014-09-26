@@ -5,6 +5,7 @@ module ScraperStrategies
       def before_parse
         tags = @article.css('[rel=category]') + @article.css('[rel=tag]') + @article.css('[rel="category tag"]')
         @project.product_tags_string = tags.map{|a| a.text }.join(',')
+        @article.css('.post-meta').each{|el| el.remove }
 
         super
       end
