@@ -30,7 +30,7 @@ class TechesController < ApplicationController
   def embed
     title "Projects made with #{@tech.name}"
     @list_style = ([params[:list_style]] & ['', '_horizontal']).first || ''
-    # @list_style = '_horizontal'
+    @list_style = '_vertical' if @list_style == ''
     render "groups/teches/#{self.action_name}", layout: 'embed'
   end
 

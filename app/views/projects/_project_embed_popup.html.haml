@@ -13,7 +13,7 @@
             %p
               Add the following snippet to your HTML:
               %input.embed-code{ type: 'text', onclick: "this.select();", value: "<iframe frameborder='0' height='321' scrolling='no' src='#{project_embed_url(@project)}' width='220'></iframe>" }
-            = render partial: 'projects/project_embed_thumb', locals: { project: @project }
+            = render partial: 'projects/project_embed_thumb_vertical', locals: { project: @project }
             .clearfix
 
     :javascript
