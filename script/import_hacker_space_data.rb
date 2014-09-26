@@ -8,8 +8,13 @@ spaces=[]
 csv.each do |row|
   hash = {}
   row.to_hash.each{|k,v| hash[k] = v.try(:strip) }
+  next if HackerSpace.find_by_user_name(hash['user_name'])
   h = HackerSpace.new(hash)
-  spaces << h unless h.save
+  begin
+    spaces << h unless h.save
+  rescue
+    spaces << h
+  end
 end
 
 
