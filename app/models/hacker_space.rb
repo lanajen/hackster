@@ -28,6 +28,9 @@ class HackerSpace < Community
       indexes :id,              index: :not_analyzed
       indexes :name,            analyzer: 'snowball', boost: 100
       indexes :mini_resume,     analyzer: 'snowball'
+      indexes :city,            analyzer: 'snowball'
+      indexes :country,         analyzer: 'snowball'
+      indexes :state,           analyzer: 'snowball'
       indexes :private,         analyzer: 'keyword'
       indexes :created_at
     end
@@ -38,12 +41,19 @@ class HackerSpace < Community
       _id: id,
       name: name,
       model: self.class.name,
+      city: city,
+      country: country,
+      state: state,
       mini_resume: mini_resume,
       private: private,
       created_at: created_at,
     }.to_json
   end
   # end of search methods
+
+  def self.default_access_level
+    'anyone'
+  end
 
   def full_street_address
     "#{address}, #{city}, #{state}, #{country}"

@@ -28,26 +28,29 @@
               - if can? :add_project, @hacker_space
                 = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project to hacker space".html_safe, "#{hacker_space_path(@hacker_space)}/projects/new", class: 'btn btn-sm btn-warning'
 
-    #tab-hackers.tab-pane.fade
+    #tab-members.tab-pane.fade
       .col-xs-12
-        - if @hackers.any?
+        - if @members.any?
           .row
-            - @hackers.each do |user|
+            - @members.each do |user|
               .col-xs-2{ style: 'margin-bottom: 30px;' }
                 = link_to image_tag(user.decorate.avatar(:big), class: 'img-responsive'), user, title: user.name, rel: 'tooltip'
         - else
           Do you hack from #{@hacker_space.name}?
           = link_to 'Join the group', group_accept_invitation_path(@hacker_space), class: 'btn btn-warning btn-sm'
 
-    -# #tab-organizers.tab-pane.fade
+    #tab-team.tab-pane.fade
       .col-xs-12
-        - if @organizers.any?
+        - if @team_members.any?
           .row
-            - @organizers.each do |user|
+            - @team_members.each do |user|
               .col-xs-2{ style: 'margin-bottom: 30px;' }
                 = link_to image_tag(user.decorate.avatar(:big), class: 'img-responsive'), user, title: user.name, rel: 'tooltip'
+        - elsif can? :join, @hacker_space
+          Are you part of the team at #{@hacker_space.name}?
+          = link_to 'Join the group', group_accept_invitation_path(@hacker_space), class: 'btn btn-warning btn-sm'
         - else
-          This hacker space has no organizers.
+          Looks like no team members have signed up. Let them know they should claim the page!
 
 - else
   .row

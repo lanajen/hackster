@@ -220,7 +220,8 @@ class ProjectsController < ApplicationController
   def settings
     authorize! :edit, @project
     title 'Project settings'
-    initialize_project
+    # initialize_project
+    @project.build_hacker_space_collection unless @project.hacker_space_collection
   end
 
   def update

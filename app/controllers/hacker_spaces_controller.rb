@@ -6,7 +6,7 @@ class HackerSpacesController < ApplicationController
 
   def index
     title 'Hacker spaces around the world'
-    @hacker_spaces = HackerSpaceDecorator.decorate_collection(HackerSpace.public.order(:full_name))
+    @hacker_spaces = HackerSpaceDecorator.decorate_collection(HackerSpace.public.includes(:avatar).order(:full_name))
     @hash = Gmaps4rails.build_markers(@hacker_spaces) do |space, marker|
       marker.lat space.latitude
       marker.lng space.longitude
@@ -21,8 +21,8 @@ class HackerSpacesController < ApplicationController
     meta_desc "Join the hacker space #{@hacker_space.name} on Hackster.io!"
     # @broadcasts = @hacker_space.broadcasts.limit 20
     @projects = @hacker_space.projects.public.order(collection_id: :desc).paginate(page: safe_page_params, per_page: 16)
-    @hackers = @hacker_space.members.invitation_accepted_or_not_invited.with_group_roles('hacker').map(&:user).select{|u| u.invitation_token.nil? }
-    # @staffs = @hacker_space.members.invitation_accepted_or_not_invited.with_group_roles(%w(ta professor)).map(&:user).select{|u| u.invitation_token.nil? }
+    @members = @hacker_space.members.invitation_accepted_or_not_invited.with_group_roles('member').map(&:user).select{|u| u.invitation_token.nil? }
+    @team_members = @hacker_space.members.invitation_accepted_or_not_invited.with_group_roles('team').map(&:user).select{|u| u.invitation_token.nil? }
     # @assignments = @hacker_space.assignments
 
     render "groups/hacker_spaces/#{self.action_name}"

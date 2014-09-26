@@ -7,9 +7,9 @@
         .container
           - case @hacker_space.access_level
           - when 'anyone'
-            Registrations for
-            %strong #{@hacker_space.name}
-            are open.
+            Are you a member of
+            = succeed '?' do
+              %strong #{@hacker_space.name}
           - when 'invite'
             You have been invited to join
             %strong #{@hacker_space.name}.
@@ -47,7 +47,7 @@
           - if @hacker_space.websites.any?
             %ul.websites.list-inline
               - @hacker_space.websites.select{|t,u| u.present? }.each do |type, url|
-                %li= render partial: "shared/website", locals: { type: type, url: url }
+                = render partial: "shared/website", locals: { type: type, url: url }
           - elsif can? :update, @hacker_space
             %ul.websites.list-inline
               %li
@@ -60,8 +60,8 @@
           .tabs-left.navbar.navbar-default.navbar-tabs{ style: 'background: #fff;' }
             %ul.nav.navbar-nav
               %li.active= link_to "Projects", '#tab-projects', data: { toggle: 'tab' }
-              %li= link_to "Hackers", "#tab-hackers", data: { toggle: 'tab' }
-              -# = active_li_link_to "Organizers", "#{hacker_space_path(@hacker_space)}/organizers"
+              %li= link_to "Members", "#tab-members", data: { toggle: 'tab' }
+              %li= link_to "Team", "#tab-team", data: { toggle: 'tab' }
               -# @hacker_space.pages.public.order(created_at: :asc).each do |page|
                 = active_li_link_to page.title, "#{hacker_space_path(@hacker_space)}/pages/#{page.slug}"
 

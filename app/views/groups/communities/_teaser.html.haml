@@ -36,7 +36,7 @@
       - if @group.websites.any?
         %ul.websites.list-inline
           - @group.websites.select{|t,u| u.present? }.each do |type, url|
-            %li= render partial: "shared/website", locals: { type: type, url: url }
+            = render partial: "shared/website", locals: { type: type, url: url }
       - elsif can? :update, @group
         %ul.websites.list-inline
           %li

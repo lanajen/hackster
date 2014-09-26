@@ -49,7 +49,7 @@
           - if @event.websites.any?
             %ul.websites.list-inline
               - @event.websites.select{|t,u| u.present? }.each do |type, url|
-                %li= render partial: "shared/website", locals: { type: type, url: url }
+                = render partial: "shared/website", locals: { type: type, url: url }
           - elsif can? :update, @event
             %ul.websites.list-inline
               %li

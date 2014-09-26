@@ -104,6 +104,7 @@
               = f.input :collection_id, collection: current_user.assignments.order(created_at: :desc), label: 'Assignment'
             - if current_user.events.any?
               = f.input :collection_id, collection: current_user.events.order(created_at: :desc), label: 'Event'
+            = f.input :hacker_space_id, collection: current_user.hacker_spaces.order(full_name: :asc), label: 'Where did you hack this from?', hint: "Select the hacker space you worked from. You'll need to join their group first. <a href='/hackerspaces'>See all the hacker spaces.</a>".html_safe
 
       - if current_user.is? :admin
         .panel.panel-default

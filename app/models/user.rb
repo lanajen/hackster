@@ -44,6 +44,8 @@ class User < ActiveRecord::Base
   has_many :group_ties, class_name: 'Member', dependent: :destroy
   has_many :groups, through: :group_ties
   has_many :hackathons, through: :events
+  has_many :hacker_spaces_group_ties, -> { where(type: 'HackerSpaceMember') }, class_name: 'HackerSpaceMember', dependent: :destroy
+  has_many :hacker_spaces, through: :hacker_spaces_group_ties, source: :group, class_name: 'HackerSpace'
   has_many :invitations, class_name: self.to_s, as: :invited_by
   has_many :permissions, as: :grantee
   has_many :projects, -> { where("projects.guest_name IS NULL OR projects.guest_name = ''") }, through: :teams

@@ -2,28 +2,36 @@
   white
 
 - content_for :no_container do
-  #content
-    .container
-      %h1.text-center{ style: 'margin-bottom:30px' } Find your local hacker space
+  - cache ['hackerspaces'], expires_in: 24.hours do
+    #content
+      .container
+        %h1.text-center{ style: 'margin-bottom:30px' } Find your local hacker space
 
-    .mg-40{ style: 'width:100%' }
-      #map{ style: 'width: 100%;height:500px;' }
+      .mg-40{ style: 'width:100%' }
+        #map{ style: 'width: 100%;height:500px;' }
 
-    .container
-      .row
-        .col-xs-12
-          %table.table
-            %thead
-              %th Hacker space
-              %th Location
-            %tbody
-              - @hacker_spaces.each do |space|
-                %tr
-                  %td
-                    - if space.avatar
-                      = image_tag space.avatar.file_url(:mini)
-                    = link_to space.name, space
-                  %td= space.short_location
+      .container
+        .row
+          .col-xs-12
+            .pull-right
+              = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} List your space".html_safe, 'mailto:team@hackster.io?subject=Add a hacker space to your list', class: 'btn btn-outline'
+          .col-xs-12
+            %table.table
+              %thead
+                %th Hacker space
+                %th Location
+              %tbody
+                - @hacker_spaces.each do |space|
+                  %tr
+                    %td
+                      - if space.avatar
+                        = image_tag space.avatar.file_url(:mini)
+                      = link_to space.name, space
+                    %td= space.short_location
+
+        .alert.alert-info.text-center
+          Can't find your space?
+          = link_to 'Let us know.', 'mailto:team@hackster.io?subject=Add a hacker space to your list', class: 'alert-link'
 
 - content_for :head do
   :css

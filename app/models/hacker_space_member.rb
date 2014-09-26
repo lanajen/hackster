@@ -1,8 +1,8 @@
 class HackerSpaceMember < Member
-  set_roles :group_roles, %w(hacker)
+  set_roles :group_roles, %w(member visitor team)
   attr_protected #none
 
   def default_roles
-    %w(hacker)
+    %w(member)
   end
 end

@@ -72,8 +72,16 @@
                               %h4 Popular tags
                             - POPULAR_TAGS.each do |tag, link|
                               %li= link_to tag, "#{link}?ref=topnav"
-                %li= link_to 'Tools', tools_path, class: 'nav-link'
-                %li= link_to 'Idea to market', build_path, class: 'nav-link'
+                %li.dropdown
+                  %a.nav-link.dropdown-toggle{"data-toggle" => "dropdown", href: '#'}
+                    Resources to help you build
+                    %span.caret
+                  %ul#topnav.dropdown-menu
+                    %li
+                      = link_to 'Tools', tools_path, class: 'btn btn-block btn-default'
+                      = link_to 'Hacker spaces', hacker_spaces_path, class: 'btn btn-block btn-default'
+                      = link_to 'All others', resources_path, class: 'btn btn-block btn-default'
+                      -# = link_to 'Idea to market', build_path, class: 'btn btn-block btn-default'
               - if user_signed_in?
                 %ul.navbar-nav.navbar-right
                   -# if current_user.has_notifications?
@@ -162,7 +170,6 @@
         %ul.list-unstyled.list-inline.pull-left
           %li= link_to 'About', about_path
           %li= link_to 'Blog', '/blog'
-          %li= link_to 'Resources', resources_path
           %li= link_to 'Hackers', hackers_path
           %li= link_to 'Feedback and support', 'javascript:showClassicWidget();'
           %li= link_to 'Jobs', 'mailto:jobs@hackster.io?subject=I want to work with you guys!'
@@ -180,7 +187,9 @@
     #mobile-navigation.hide-on-desktop
       = link_to 'Projects', projects_path(ref: 'topnav'), class: 'mo-nav-link'
       = link_to 'Tools', tools_path, class: 'mo-nav-link'
-      = link_to 'Manufacturing help', build_path, class: 'mo-nav-link'
+      = link_to 'Hacker spaces', hacker_spaces_path, class: 'mo-nav-link'
+      = link_to 'Resources', resources_path, class: 'mo-nav-link'
+      -# = link_to 'Manufacturing help', build_path, class: 'mo-nav-link'
       = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'mo-nav-link'
       - if user_signed_in?
         = link_to 'Profile', current_user, class: 'mo-nav-link'

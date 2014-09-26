@@ -48,7 +48,7 @@
             = link_to 'Add one?', edit_promotion_path(@promotion), data: { remote: true }
 
           - if @promotion.websites.any?
-            %span.websites{ style: 'margin-left: 10px '}
+            %ul.websites.list-inline
               - @promotion.websites.select{|t,u| u.present? }.each do |type, url|
                 = render partial: "shared/website", locals: { type: type, url: url }
           - elsif can? :update, @promotion

@@ -76,7 +76,7 @@
         height: 100%;
         position: absolute;
         top: 0;
-        opacity: 0.5;
+        opacity: 0.2;
       }
       &.slide1 {
         background-image: asset-url('home_visitor/header_bg_black.jpg');
@@ -97,15 +97,29 @@
           width: 30px;
         }
       }
+      small {
+        color: #ddd;
+        a:not(.hidden-link) {
+          color: #ddd;
+          padding-bottom: 2px;
+          border-bottom: 1px solid #ddd;
+          display: inline-block;
+          &:hover {
+            text-decoration: none;
+            color: #bbb;
+            border-color: #bbb;
+          }
+        }
+      }
       .hidden-link {
-        color: #999;
+        color: #ddd;
       }
       h1 {
         color: #fff;
         // background: #3d8bc1;
         margin-bottom: 40px;
         padding: 10px 15px;
-        text-shadow: #000 0 0 20px;
+        text-shadow: #000 0 0 5px;
       }
       input[type="email"] {
         @include border-radius(0);

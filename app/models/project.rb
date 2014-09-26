@@ -28,6 +28,10 @@ class Project < ActiveRecord::Base
   has_many :active_users, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'")}, through: :team_members, source: :user
   has_many :awards
   has_many :blog_posts, as: :threadable, dependent: :destroy
+  has_many :project_collections, dependent: :destroy
+  has_many :collections, through: :project_collections
+  has_one :hacker_space_collection, class_name: 'ProjectCollection'
+  has_one :hacker_space, through: :hacker_space_collection, source_type: 'Group', source: :collectable
   has_many :comments, -> { order created_at: :asc }, as: :commentable, dependent: :destroy
   # below is a hack because commenters try to add order by comments created_at and pgsql doesn't like it
   has_many :comments_copy, as: :commentable, dependent: :destroy, class_name: 'Comment'
@@ -58,7 +62,8 @@ class Project < ActiveRecord::Base
     :featured, :featured_date, :cover_image_id, :logo_id, :license, :slug,
     :permissions_attributes, :new_slug, :slug_histories_attributes, :hide,
     :collection_id, :graded, :wip, :columns_count, :external, :guest_name,
-    :approved, :open_source, :buy_link, :private_logs, :private_issues
+    :approved, :open_source, :buy_link, :private_logs, :private_issues,
+    :hacker_space_id
   attr_accessor :current
   attr_writer :new_slug
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
@@ -335,6 +340,21 @@ class Project < ActiveRecord::Base
   # def has_been_tweeted?
   #   tweed_id.present?
   # end
+
+  def hacker_space_id
+    hacker_space.try(:id)
+  end
+
+  def hacker_space_id=(val)
+    if val.present?
+      build_hacker_space_collection unless hacker_space_collection
+      hacker_space_collection.collectable_type = 'Group'
+      hacker_space_collection.collectable_id = val
+    else
+      hacker_space_collection.delete if hacker_space_collection
+    end
+    # self.hacker_space = HackerSpace.find_by_id val
+  end
 
   def hidden?
     hide
