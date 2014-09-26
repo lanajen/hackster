@@ -25,8 +25,8 @@ class AssignmentsController < ApplicationController
   end
 
   def embed
-    # @list_style = ([params[:list_style]] & ['', '_horizontal']).first || ''
-    @list_style = '_horizontal'
+    @list_style = ([params[:list_style]] & ['_vertical', '_horizontal']).first || '_horizontal'
+    # @list_style = '_horizontal'
     @projects = @assignment.projects.order(:created_at)
     render layout: 'embed'
   end

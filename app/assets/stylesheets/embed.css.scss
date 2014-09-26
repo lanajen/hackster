@@ -90,19 +90,19 @@
     }
   }
   .inner-thumb {
-    .thumb-bottom {
-      &.featured-logo {
+    .featured-logo {
+      &.thumb-bottom {
         display: none;
-        img {
-          max-width: 65px;
-          vertical-align: baseline;
-        }
-        a {
-          color: #666;
-          font-size: 12px;
-          &:hover {
-            text-decoration: none;
-          }
+      }
+      img {
+        max-width: 65px;
+        vertical-align: baseline;
+      }
+      a {
+        color: #666;
+        font-size: 12px;
+        &:hover {
+          text-decoration: none;
         }
       }
     }
