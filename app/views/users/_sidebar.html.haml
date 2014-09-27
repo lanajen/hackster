@@ -51,6 +51,16 @@
                 %span.user-name
                   = link_to c.name, c
 
+      - if @user.hacker_spaces.any?
+        .display
+          %h4 Hacker spaces
+          .content.team-widget.user-communities
+            - @user.hacker_spaces.each do |c|
+              .community.user
+                = link_to image_tag(c.decorate.avatar(:mini), class: ' img-circle' ), c, class: ''
+                %span.user-name
+                  = link_to c.name, hacker_space_path(c)
+
       - if @user.interest_tags.any?
         .display
           %h4 Interests

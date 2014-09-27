@@ -48,7 +48,7 @@
                 = link_to image_tag(user.decorate.avatar(:big), class: 'img-responsive'), user, title: user.name, rel: 'tooltip'
         - elsif can? :join, @hacker_space
           Are you part of the team at #{@hacker_space.name}?
-          = link_to 'Join the group', group_accept_invitation_path(@hacker_space), class: 'btn btn-warning btn-sm'
+          = link_to 'Join the group', group_accept_invitation_path(@hacker_space, role: 'team'), class: 'btn btn-warning btn-sm'
         - else
           Looks like no team members have signed up. Let them know they should claim the page!
 

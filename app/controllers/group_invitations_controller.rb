@@ -36,7 +36,11 @@ class GroupInvitationsController < ApplicationController
       redirect_to group_path(@group)
     else
       if token_valid? or @group.access_level == 'anyone'
-        @group.members.create user_id: current_user.id
+        m = @group.members.create user_id: current_user.id
+        if params[:role] and params[:role].in? m.class.group_roles
+          m.group_roles = [params[:role]]
+          m.save
+        end
         redirect_to group_path(@group), notice: "Welcome to #{@group.name}!"
       else
         redirect_to root_path, alert: "We couldn't find an invitation for this group."
