@@ -37,6 +37,10 @@
       = f.input :youtube_link, label: 'Youtube link'
       = f.input :website_link, label: 'Website link'
       = f.input :blog_link, label: 'Blog link'
+      = f.input :wiki_link, label: 'Wiki link'
+      = f.input :mailing_list_link, label: 'Mailing list link'
+      = f.input :hackerspace_org_link, label: 'Hackerspaces.org link'
+      = f.input :irc_link, label: 'IRC link'
 
       = f.input :access_level, label: 'Who can join this group?', collection: Group::ACCESS_LEVELS
       = f.input :private, inline_label: 'Make this group private', label: false, hint: "Private groups are only visible by their members and are invite only."

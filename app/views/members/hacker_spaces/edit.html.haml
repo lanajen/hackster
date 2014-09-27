@@ -27,7 +27,7 @@
                     = f_member.input :grantee_type, as: :hidden, input_html: { value: 'User' }
                 %td
                   - unless member.requested_to_join_at.present? and member.approved_to_join == false
-                    = f_member.input :group_roles, collection: EventMember.group_roles, label: false
+                    = f_member.input :group_roles, collection: HackerSpaceMember.group_roles, label: false
                 = f_member.simple_fields_for :permission do |f_perm|
                   %td= f_perm.input :action, collection: Permission::ACTIONS, label: false
                 - if member.requested_to_join_at.present? and member.approved_to_join == false
