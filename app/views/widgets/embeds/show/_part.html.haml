@@ -9,13 +9,21 @@
             .widget-attribute{ 'data-attribute' => "[parts_attributes][#{i}][_destroy]", 'data-value' => 'false' }
             .widget-attribute.position{ 'data-attribute' => "[parts_attributes][#{i}][position]", 'data-value' => part.position }
 
-          %td.widget-attribute.widget-attribute-editable{ 'data-attribute' => "[parts_attributes][#{i}][description]", 'data-default-text' => 'Part description', data: { 'disable-toolbar' => 'true' }, 'data-value' => part.description, 'data-contenteditable' => 'true', style: 'width:80%' }= part.description
-          %td{ 'data-disable-toolbar' => 'true', style: 'width:30px;text-align:center' } &times;
+          %td.widget-attribute.widget-attribute-editable{ 'data-attribute' => "[parts_attributes][#{i}][description]", 'data-default-text' => 'Part description', data: { 'disable-toolbar' => 'true' }, 'data-value' => part.description, 'data-contenteditable' => 'true', style: 'width:80%', 'data-edit-only' => 'true' }= part.description
+          %td{ style: 'width:80%', 'data-edit-hide' => 'true' }
+            - if part.vendor_link.present?
+              = link_to part.description, part.vendor_link
+            - else
+              = part.description
+          %td{ 'data-disable-toolbar' => 'true', style: 'width:30px;text-align:center' } x
           %td.widget-attribute.widget-attribute-editable{ 'data-attribute' => "[parts_attributes][#{i}][quantity]", 'data-default-text' => 'Quantity', data: { 'disable-toolbar' => 'true' }, 'data-value' => part.quantity, 'data-contenteditable' => 'true', style: 'width:10%;min-width:20px;' }= part.quantity
 
           %td{ 'data-edit-only' => 'true', style: 'width: 25px;' }
             %button.btn.btn-danger.btn-xs{ data: { action: 'delete-part', target: "[data-attribute=\"[parts_attributes][#{i}][_destroy]\"]" } }
               %i.fa.fa-trash-o
+        %tr
+          %td{ 'data-edit-only' => 'true' }
+          %td.widget-attribute.widget-attribute-editable{ colspan: 4, style: 'color: #888;font-size: 12px;', 'data-attribute' => "[parts_attributes][#{i}][vendor_link]", 'data-default-text' => 'Link to online store', data: { 'disable-toolbar' => 'true' }, 'data-value' => part.vendor_link, 'data-contenteditable' => 'true', 'data-edit-only' => 'true' }= part.vendor_link
         %tr
           %td{ 'data-edit-only' => 'true' }
           %td.widget-attribute.widget-attribute-editable{ colspan: 4, style: 'color: #888;font-size: 12px;', 'data-attribute' => "[parts_attributes][#{i}][comment]", 'data-default-text' => 'Comment', data: { 'disable-toolbar' => 'true' }, 'data-value' => part.comment, 'data-contenteditable' => 'true' }= part.comment

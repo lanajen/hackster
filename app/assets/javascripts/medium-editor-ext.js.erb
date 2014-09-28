@@ -918,7 +918,7 @@ $(function () {
   });
 
   $('#medium-editor').on('keypress keydown', '.editable.editable-activated [data-default-text]', function(e){
-    // console.log($(this));
+    console.log($(this));
     node = $(this);
 
     if (e.keyCode == 8 && node.text().length == 1) {
@@ -926,6 +926,20 @@ $(function () {
       loadPlaceholder(node, true);
       focusAtBeginningOfRange(node.find('.default-text')[0]);
       editor.triggerInput();
+    }
+  });
+
+  $('#medium-editor').on('paste', '.editable.editable-activated [data-default-text]', function(e){
+    // console.log($(this));
+    node = $(this);
+    defaultText = node.find('.default-text');
+
+    if (defaultText.length) {
+      text = defaultText.text();
+      text = text.replace($(this).data('default-text'), '');
+      node.removeClass('is-default-text');
+      defaultText.remove();
+      node.text(text);
     }
   });
 

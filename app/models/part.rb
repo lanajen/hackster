@@ -8,6 +8,7 @@ class Part < ActiveRecord::Base
   validates :quantity, numericality: { greater_than: 0 }
   validates :unit_price, numericality: { greater_than_or_equal_to: 0 }
   validates :description, length: { maximum: 255 }, allow_blank: true
+  before_validation :ensure_protocol_for_vendor_link
   # validate :mpn_or_description_is_present?
   register_sanitizer :strip_whitespace, :before_validation, :mpn, :description
   # after_validation :compute_total_cost
@@ -18,6 +19,12 @@ class Part < ActiveRecord::Base
   end
 
   private
+    def ensure_protocol_for_vendor_link
+      return if vendor_link.blank?
+
+      self.vendor_link = 'http://' + vendor_link unless vendor_link =~ /\Ahttp:/
+    end
+
     def mpn_or_description_is_present?
       errors.add :description, 'cannot be blank if part # is blank' if mpn.blank? and description.blank?
     end
