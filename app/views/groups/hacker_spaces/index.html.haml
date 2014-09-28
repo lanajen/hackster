@@ -24,7 +24,7 @@
                 - @hacker_spaces.each do |space|
                   %tr.hacker-space
                     %td
-                      .avatar
+                      %span.avatar
                         - if space.avatar(:tiny)
                           = image_tag space.avatar(:tiny), class: 'img-circle'
                       = link_to space.name, hacker_space_path(space)
