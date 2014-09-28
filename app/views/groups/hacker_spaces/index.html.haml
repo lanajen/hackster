@@ -25,7 +25,7 @@
                   %tr
                     %td
                       - if space.avatar
-                        = image_tag space.avatar.file_url(:mini)
+                        = image_tag space.avatar(:mini)
                       = link_to space.name, hacker_space_path(space)
                     %td= space.short_location
 
