@@ -22,10 +22,11 @@
                 %th Location
               %tbody
                 - @hacker_spaces.each do |space|
-                  %tr
+                  %tr.hacker-space
                     %td
-                      - if space.avatar
-                        = image_tag space.avatar(:mini)
+                      .avatar
+                        - if space.avatar(:tiny)
+                          = image_tag space.avatar(:tiny), class: 'img-circle'
                       = link_to space.name, hacker_space_path(space)
                     %td= space.short_location
 
