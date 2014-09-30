@@ -92,6 +92,10 @@ class Ability
     can :manage, Project do |project|
       @user.can? :manage, project.team
     end
+    cannot :update, Project
+    can :update, Project do |project|
+      project.unlocked? and @user.can? :manage, project
+    end
     can :read, Project do |project|
       project.private? and @user.linked_to_project_via_group? project
     end

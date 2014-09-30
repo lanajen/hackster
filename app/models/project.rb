@@ -63,7 +63,7 @@ class Project < ActiveRecord::Base
     :permissions_attributes, :new_slug, :slug_histories_attributes, :hide,
     :collection_id, :graded, :wip, :columns_count, :external, :guest_name,
     :approved, :open_source, :buy_link, :private_logs, :private_issues,
-    :hacker_space_id
+    :hacker_space_id, :locked
   attr_accessor :current
   attr_writer :new_slug
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
@@ -97,13 +97,13 @@ class Project < ActiveRecord::Base
     :widgets_count, :followers_count, :build_logs_count,
     :issues_count, :team_members_count, :tech_tags_count]
 
-  store :properties, accessors: [:private_logs, :private_issues]
+  store :properties, accessors: [:private_logs, :private_issues, :locked]
 
   parse_as_integers :counters_cache, :comments_count, :product_tags_count,
     :widgets_count, :followers_count, :build_logs_count,
     :issues_count, :team_members_count, :tech_tags_count
 
-  parse_as_booleans :properties, :private_logs, :private_issues
+  parse_as_booleans :properties, :private_logs, :private_issues, :locked
 
   self.per_page = 16
 
@@ -374,6 +374,10 @@ class Project < ActiveRecord::Base
     @license = License.new val if val.present?
   end
 
+  def locked?
+    locked
+  end
+
   def logo_id=(val)
     self.logo = Avatar.find_by_id(val)
   end
@@ -504,6 +508,10 @@ class Project < ActiveRecord::Base
     end
     # "#{message} (#{size})"
     message
+  end
+
+  def unlocked?
+    !locked?
   end
 
   def update_slug
