@@ -59,13 +59,14 @@
           %p
             %i.fa.fa-lock
             This project is private.
-      - if @can_update
-        #project-actions.medium-status-bar
-          = render partial: 'shared/medium_status_buttons', locals: { show_edit: true }
-      - else
-        #project-actions
-          %span
-            %p This project is locked for editing.
+      - if @can_edit
+        - if @can_update
+          #project-actions.medium-status-bar
+            = render partial: 'shared/medium_status_buttons', locals: { show_edit: true }
+        - else
+          #project-actions
+            %span
+              %p This project is locked for editing.
 
       #scrolling-project-section
         #scroll-nav
