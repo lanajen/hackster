@@ -37,6 +37,12 @@ class SitemapController < ApplicationController
           lastmod: Time.now.strftime("%F"),
         }
 
+        @sitemap_pages << {
+          loc: hacker_spaces_url,
+          changefreq: 'daily',
+          lastmod: Time.now.strftime("%F"),
+        }
+
         Project.indexable.find_each do |project|
           @sitemap_pages << {
             loc: "#{url_for(project)}",
@@ -82,6 +88,14 @@ class SitemapController < ApplicationController
             loc: "#{tags_url(CGI::escape(tag.name))}",
             changefreq: 'weekly',
             lastmod: tag.updated_at.strftime("%F"),
+          }
+        end
+
+        HackerSpace.public.find_each do |space|
+          @sitemap_pages << {
+            loc: "#{hacker_space_url(space)}",
+            changefreq: 'weekly',
+            lastmod: space.updated_at.strftime("%F"),
           }
         end
       end

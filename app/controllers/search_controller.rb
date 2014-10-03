@@ -2,6 +2,7 @@ class SearchController < ApplicationController
 
   def search
     @facets = terms = {}
+    @hacker_space_label = 'Hacker spaces'
     @people_label = 'People'
     @projects_label = 'Projects'
     @tools_label = 'Tools'
@@ -24,6 +25,7 @@ class SearchController < ApplicationController
         @results.facets['type']['terms'].each do |term|
           terms[term['term']] = term['count']
         end
+        @hacker_space_label += " <span class='badge pull-right'>#{terms['hackerspace']}</span>" if terms['hackerspace']
         @people_label += " <span class='badge pull-right'>#{terms['user']}</span>" if terms['user']
         @projects_label += " <span class='badge pull-right'>#{terms['project']}</span>" if terms['project']
         @tools_label += " <span class='badge pull-right'>#{terms['tech']}</span>" if terms['tech']
