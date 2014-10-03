@@ -6,7 +6,7 @@
   <% user = project.users.first %>
 
   <p>
-    <a href="<%= universal_project_url(project)%>"><%= project.name %></a><% if user %> by <a href="<%= user_url(user) %>"><%= user.name %></a><% end %>: <%= project.one_liner %>
+    <a href="<%= universal_project_url(project)%>"><%= project.name %></a><% if project.guest_name.present? %> by <%= project.guest_name %><% elsif user %> by <a href="<%= user_url(user) %>"><%= user.name %></a><% end %>: <%= project.one_liner %><% if project.guest_name.present? and user %> (posted by <a href="<%= user_url(user) %>"><%= user.name %></a>)<% end %>
   </p>
 
 <% end %>
