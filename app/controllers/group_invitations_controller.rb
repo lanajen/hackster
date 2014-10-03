@@ -37,10 +37,9 @@ class GroupInvitationsController < ApplicationController
     else
       if token_valid? or @group.access_level == 'anyone'
         m = @group.members.create user_id: current_user.id
-        if params[:role] and params[:role].in? m.class.group_roles
-          m.group_roles = [params[:role]]
-          m.save
-        end
+        m.group_roles = [params[:role]] if params[:role] and params[:role].in? m.class.group_roles
+        m.permission.action = params[:permission] if token_valid? and params[:permission] and params[:permission].in? Permission::ACTIONS.values
+        m.save if m.changed? or m.permission.changed?
         redirect_to group_path(@group), notice: "Welcome to #{@group.name}!"
       else
         redirect_to root_path, alert: "We couldn't find an invitation for this group."

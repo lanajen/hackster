@@ -3,7 +3,7 @@
 
 %h2.text-center Welcome to #{@group.name}.
 - if user_signed_in?
-  %p.text-center= link_to 'Join group', group_accept_invitation_path(@group, token: @group.invitation_token), class: 'btn btn-warning btn-sm'
+  %p.text-center= link_to 'Join group', group_accept_invitation_path(@group, token: @group.invitation_token, role: params[:role], permission: params[:permission]), class: 'btn btn-warning btn-sm'
 - else
   %p.text-center
     You need an account to join this group. Please
