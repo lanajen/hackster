@@ -94,18 +94,32 @@
             or
             = link_to 'learn more', about_path
 
-    %section
-      .container
-        .row
-          .col-xs-12
-            .transparent-well
-              .header.no-content
-                %h2
-                  Latest projects
-                  = link_to 'See more recent projects &rarr;'.html_safe, projects_path(sort: 'recent'), class: 'btn-bottom'
-            .row
-              - @last_projects.each do |project|
-                = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, ref: 'homelast' }
+    - if user_signed_in?
+      %section
+        .container
+          .row
+            .col-xs-12
+              .transparent-well
+                .header.no-content
+                  %h2
+                    Latest projects
+                    = link_to 'See more recent projects &rarr;'.html_safe, projects_path(sort: 'recent'), class: 'btn-bottom'
+              .row
+                - @last_projects.each do |project|
+                  = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, ref: 'homelast' }
+    - else
+      %section
+        .container
+          .row
+            .col-xs-12
+              .transparent-well
+                .header.no-content
+                  %h2
+                    Trending projects
+                    = link_to 'See more trending projects &rarr;'.html_safe, projects_path(sort: 'trending'), class: 'btn-bottom'
+              .row
+                - @most_popular_projects.each do |project|
+                  = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, ref: 'homepop' }
 
     %section
       .container
@@ -122,22 +136,40 @@
                   = link_to(image_tag(tech.avatar.file_url(:big), class: 'img-thumbnail'), tech_short_path(tech, ref: 'homefeat')) if tech.avatar
                   %h6.text-center= link_to tech.name, tech_short_path(tech)
 
-    %section
-      .container
-        .row
-          .col-xs-12
-            .transparent-well
-              .header.no-content
-                %h2
-                  Trending projects
-                  = link_to 'See more trending projects &rarr;'.html_safe, projects_path(sort: 'trending'), class: 'btn-bottom'
-            .row
-              - @most_popular_projects.each do |project|
-                = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, ref: 'homepop' }
+    - if !user_signed_in?
+      %section
+        .container
+          .row
+            .col-xs-12
+              .transparent-well
+                .header.no-content
+                  %h2
+                    Latest projects
+                    = link_to 'See more recent projects &rarr;'.html_safe, projects_path(sort: 'recent'), class: 'btn-bottom'
+              .row
+                - @last_projects.each do |project|
+                  = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, ref: 'homelast' }
 
-        .row
-          .col-xs-12.text-center
-            = link_to 'Browse all projects &rarr;'.html_safe, projects_path, class: 'btn btn-primary btn-lg btn-block'
+          .row
+            .col-xs-12.text-center
+              = link_to 'Browse all projects &rarr;'.html_safe, projects_path, class: 'btn btn-primary btn-lg btn-block'
+    - else
+      %section
+        .container
+          .row
+            .col-xs-12
+              .transparent-well
+                .header.no-content
+                  %h2
+                    Trending projects
+                    = link_to 'See more trending projects &rarr;'.html_safe, projects_path(sort: 'trending'), class: 'btn-bottom'
+              .row
+                - @most_popular_projects.each do |project|
+                  = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, ref: 'homepop' }
+
+          .row
+            .col-xs-12.text-center
+              = link_to 'Browse all projects &rarr;'.html_safe, projects_path, class: 'btn btn-primary btn-lg btn-block'
 
     -# %section#featured
       .container
