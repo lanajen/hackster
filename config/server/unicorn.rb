@@ -63,7 +63,7 @@ if ENV['RAILS_ENV'] == 'development'
   worker_processes 2
   # timeout 120
 else
-  worker_processes Integer(ENV["WEB_CONCURRENCY"] || 3)
+  worker_processes Integer(ENV["WEB_CONCURRENCY"] || 2)
   timeout 29
 end
 
@@ -105,13 +105,13 @@ after_fork do |server, worker|
     db_pool_size = if ENV["DB_POOL"]
       ENV["DB_POOL"]
     else
-      ENV["WEB_CONCURRENCY"] || 3
+      ENV["WEB_CONCURRENCY"] || 2
     end
 
     config = ActiveRecord::Base.configurations[Rails.env] ||
                 Rails.application.config.database_configuration[Rails.env]
     config['reaping_frequency'] = ENV['DB_REAP_FREQ'] || 10 # seconds
-    config['pool']              = ENV['DB_POOL'] || 3
+    config['pool']              = ENV['DB_POOL'] || 2
     ActiveRecord::Base.establish_connection(config)
 
     # Turning synchronous_commit off can be a useful alternative when performance is more important than exact certainty about the durability of a transaction
