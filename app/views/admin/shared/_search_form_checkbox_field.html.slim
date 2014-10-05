@@ -1,0 +1,6 @@
+.form-group
+  = label_tag :"filters[#{field}]", field.humanize, class: 'control-label'
+  .controls
+    - checked = params[:filters].try(:[], :"#{field}") == 't' ? true : false
+    = hidden_field_tag :"filters[#{field}]", 'f'
+    = check_box_tag :"filters[#{field}]", 't', checked

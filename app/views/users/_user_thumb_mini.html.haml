@@ -1,2 +1,0 @@
-.avatar.mini-avatar
-  = link_to image_tag(user.avatar(:tiny), alt: user.name), user, data: { toggle: 'popover', placement: 'top', content: render(partial: 'users/user_popover', locals: { user: user }).gsub(/"/, '\'').html_safe, trigger: 'hover', html: true }, rel: 'popover'

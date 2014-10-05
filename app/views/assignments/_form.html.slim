@@ -1,0 +1,70 @@
+- @assignment.build_document unless @assignment.document.present?
+= simple_nested_form_for @assignment, url: "/assignments/#{@assignment.id}", html: { class: 'form-horizontal remote accept-file-upload', data: { remote: true } }, wrapper: :bootstrap3_horizontal do |f|
+  = f.error_notification
+
+  .row
+    .col-xs-12
+      h3
+        | Edit assignment
+        .pull-right
+          ul.list-unstyled.list-inline
+            li= f.submit 'Update assignment', class: 'btn btn-primary btn-sm'
+            li= link_to 'Cancel', '', class: 'btn-cancel btn-link btn-sm', data:   show: '.user .display', hide: '.user .edit'  
+      hr
+
+  .row
+    .col-xs-6
+      = f.input :name
+      = f.input :grading_type, collection: Assignment::GRADING_TYPES
+
+      = f.input :submit_by_date_dummy, label: 'Submit by date', wrapper_html: { id: 'datetimepicker' }, hint: "The maximum date by which students can submit the assignment without penalty. Don't forget to specify the time." do
+        #datepicker.input-group
+          = f.input_field :submit_by_date_dummy, as: :string, label: false
+          span.input-group-addon
+            i.fa.fa-calendar
+      = f.input :submit_by_date, as: :hidden, input_html: { id: 'submit_by_date' }
+
+      - if current_user.is? :admin
+        = f.input :hide_all, as: :boolean
+        = f.input :disable_tweeting, as: :boolean
+
+    .col-xs-6
+      .file-drop.form-group  class: 'document'  
+        .col-xs-4
+          label.control-label Assignment instructions
+        .col-xs-8
+          span.file-preview.preview  class: 'document'  = @assignment.document.file_name if @assignment.document.file.present?
+          a.btn.btn-default.btn-sm  data: { target: ".file_upload.document" }  
+            - if @assignment.document.file.present?
+              | Change file
+            - else
+              | Select file
+          p.help-block Upload the assignment instructions as a PDF.
+
+hr
+
+= content_for :js do
+  = javascript_include_tag 'datepicker'
+
+  javascript:
+    | $('#datetimepicker').datetimepicker({
+      | icons: {
+          | time: "fa fa-clock-o",
+          | date: "fa fa-calendar",
+          | up: "fa fa-arrow-up",
+          | down: "fa fa-arrow-down"
+      | },
+      | sideBySide: true
+    | });
+
+    | $('#datetimepicker').on('change', function(){
+      | $('#submit_by_date').val($('#datetimepicker').data("DateTimePicker").getDate());
+    | });
+
+    #{ render partial: 'shared/uploader/form_template', locals: { file_type: 'document' } }
+
+    #{ render partial: 'shared/uploader/file_drop_click', locals: { file_type: 'document' } }
+
+    #{ render partial: 'shared/uploader/file_upload_functions_has_one', locals: { file_type: 'document', attribute_type: 'document', image_version: 'none', model: 'assignment' } }
+
+    #{ render partial: 'shared/uploader/file_upload', locals: { file_type: 'document' } }

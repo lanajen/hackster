@@ -1,0 +1,50 @@
+- if can? :create, BlogPost, @project
+  .row
+    .col-xs-12
+      .pull-right
+        = link_to 'Post a new build log', new_project_log_path(@project.user_name_for_url, @project.slug), class: 'btn btn-primary btn-sm'
+      .clearfix
+      hr
+
+- if @logs.any?
+  .row.build-logs
+    .col-xs-12
+      - @logs.each do |log|
+        - log = log.decorate
+        .well.build-log
+          .header
+            h3
+              - if log.draft?
+                = log.title
+              - else
+                = link_to log.title, log_path(@project, log)
+              small.text-muted.pull-right
+                - if log.draft?
+                  | (draft)
+                - else
+                  | Build log ##{log.sub_id}
+            small.text-muted
+              | by
+              = link_to log.user.name, log.user
+              = time_ago_in_words log.created_at
+              | ago
+              - unless log.draft?
+                i.fa.fa-comments
+                = link_to pluralize(log.comments.size, 'comment'), log_path(@project, log, anchor: 'comments')
+          #medium-editor.content
+            = log.body
+            p  style: 'margin-top:10px'  
+              - if log.draft?
+                = link_to 'Edit this log', edit_project_log_path(@project.user_name_for_url, @project.slug, log.id), class: 'btn btn-warning btn-sm'
+              - else
+                = link_to 'Discuss this log', log_path(@project, log, anchor: 'comments'), class: 'btn btn-primary btn-sm'
+
+  .row
+    .col-xs-12
+      .text-center= will_paginate @logs
+
+- else
+  .row
+    .col-xs-12
+      p
+        | There are no logs.

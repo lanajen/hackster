@@ -1,0 +1,53 @@
+= simple_nested_form_for @tech, url: tech_path(@tech), html: { class: 'form-horizontal remote accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
+  = f.error_notification
+
+  .row
+    .col-xs-12
+      h3
+        | Edit profile
+        .pull-right
+          ul.list-unstyled.list-inline
+            - if current_user.is? :admin
+              li= link_to 'Edit as admin', edit_admin_group_path(@tech), class: 'btn btn-sm btn-warning'
+            li= f.submit 'Update profile', class: 'btn btn-primary btn-sm'
+            li= link_to 'Cancel', tech_short_path(@tech), class: 'btn-link btn-sm'
+      hr
+
+  .row
+    .col-xs-6
+      = f.input :full_name, label: 'Name'
+      = f.input :new_user_name, label: 'Pretty URL', wrapper: :addon do
+        span.input-group-addon www.hackster.io/
+        = f.input_field :new_user_name
+      - if current_user.is? :admin
+        = f.input :email
+      = f.input :mini_resume, as: :text, label: 'Short description', input_html: { rows: 4 },
+        | hint: 'Maximum 140 characters'
+
+      = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Logo', image_link: @tech.avatar.try(:file_url, :thumb), help_block: 'This picture needs to be squared, at least 200x200px for best quality.', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
+
+      = render partial: 'shared/image_form', locals: { file_type: 'document', human_file_type: 'Cover image', image_link: @tech.cover_image.try(:file_url), help_block: 'A high quality picture of your product, at least 1200px wide and 400px high.', attribute_type: 'cover_image', image_version: nil, model: 'group' }
+
+      - if ClientSubdomain.find_by_subdomain(@tech.user_name).present?
+        = render partial: 'shared/image_form', locals: { file_type: 'logo', human_file_type: 'Portal logo', image_link: @tech.logo.try(:file_url), help_block: '', attribute_type: 'logo', image_version: nil, model: 'group' }
+
+      /
+        = f.input :city
+        = f.input :country, input_html: { class: 'form-control' }
+
+    .col-xs-6
+      = f.input :facebook_link, label: 'Facebook link'
+      = f.input :github_link, label: 'Github link'
+      = f.input :google_plus_link, label: 'Google+ link'
+      = f.input :linked_in_link, label: 'LinkedIn link'
+      = f.input :twitter_link, label: 'Twitter link'
+      = f.input :youtube_link, label: 'Youtube link'
+      = f.input :website_link, label: 'Website link'
+      = f.input :blog_link, label: 'Blog link'
+      = f.input :documentation_link, label: 'Documentation link'
+      = f.input :forums_link, label: 'Forums link'
+      = f.input :crowdfunding_link, label: 'Crowdfunding campaign or preorder link', hint: 'Fill in either your preorder or your store link depending on whether your product is available for sale or presale.'
+      = f.input :buy_link, label: 'Store link', hint: 'Fill in either your preorder or your store link depending on whether your product is available for sale or presale.'
+      - if current_user.is? :admin
+        = f.input :shoplocket_link, label: 'ShopLocket link'
+        = f.input :tech_tags_string, as: :string, label: 'Technology tags', hint: 'All the projects tagged with these tags will appear on this page. Separate technologies by commas'

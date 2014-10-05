@@ -1,0 +1,52 @@
+- content_for :body_class do
+  | white
+
+- content_for :no_container do
+  - cache ['hackerspaces'], expires_in: 24.hours do
+    #content
+      .container
+        h1.text-center  style: 'margin-bottom:30px'   Find your local hacker space
+
+      .mg-40  style: 'width:100%'  
+        #map  style: 'width: 100%;height:500px;'  
+
+      .container
+        .row
+          .col-xs-12
+            .pull-right
+              = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} List your space".html_safe, 'mailto:team@hackster.io?subject=Add a hacker space to your list', class: 'btn btn-outline'
+          .col-xs-12
+            table.table
+              thead
+                th Hacker space
+                th Location
+              tbody
+                - @hacker_spaces.each do |space|
+                  tr.hacker-space
+                    td
+                      span.avatar
+                        - if space.avatar(:tiny)
+                          = image_tag space.avatar(:tiny), class: 'img-circle'
+                      = link_to space.name, hacker_space_path(space)
+                    td= space.short_location
+
+        .alert.alert-info.text-center
+          | Can't find your space?
+          = link_to 'Let us know.', 'mailto:team@hackster.io?subject=Add a hacker space to your list', class: 'alert-link'
+
+- content_for :head do
+  css:
+    #map label   width: auto; display:inline;  
+    #map img   max-width: none;  
+
+- content_for :js do
+  = javascript_include_tag "//maps.google.com/maps/api/js?v=3.13&amp;sensor=false&amp;libraries=geometry"
+  = javascript_include_tag '//google-maps-utility-library-v3.googlecode.com/svn/tags/markerclustererplus/2.0.14/src/markerclusterer_packed.js'
+
+  javascript:
+    | handler = Gmaps.build('Google');
+    | handler.buildMap({ provider: { scrollwheel: false }, internal: {id: 'map'}}, function(){
+      | markers = handler.addMarkers(#{raw @hash.to_json});
+      | handler.bounds.extendWith(markers);
+      | handler.fitMapToBounds();
+    | });

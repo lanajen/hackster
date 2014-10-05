@@ -1,0 +1,28 @@
+.container
+  .row
+    .col-xs-12
+      .pull-left.mg-20= link_to "# content_tag(:i, '', class: 'fa fa-plus')} Add a project".html_safe, new_project_url(project: { tech_tags_string: @tech.tech_tags.first.name  ), class: 'btn btn-primary btn-sm'
+
+  - if @projects.any?
+    .row
+      .col-xs-12
+        .row
+          - @projects.each_with_index do |project, i|
+
+            - if project.external
+              = render partial: 'projects/project_thumb_external', locals: { project: project.decorate }
+            - else
+              = render partial: "projects/project_embed_thumb#{@list_style}", locals: { project: project.decorate, col: '3', ref: 'tech', ref_id: @tech.id }
+    .row
+      .col-xs-12.text-center= will_paginate(@projects)
+
+  - else
+    | All the projects made with #{@tech.name} will appear here.
+  .row
+    .col-xs-12
+      p.pull-right.text-muted
+        small
+          | Projects made with
+          = link_to @tech.name, tech_short_url(@tech), target: '_blank'
+          | on
+          = link_to 'Hackster.io', root_url, target: '_blank'

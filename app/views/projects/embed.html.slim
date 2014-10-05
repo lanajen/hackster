@@ -1,0 +1,5 @@
+= content_for :head do
+  = render partial: 'meta_tags', locals: { project: @project }
+
+#project-embed
+  = render partial: 'project_embed_thumb_vertical', locals: { project: @project }

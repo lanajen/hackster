@@ -1,0 +1,30 @@
+= f.error_notification
+
+= f.input :user_name
+= f.input :full_name
+= f.input :email
+= f.input :mini_resume
+= f.input :city
+= f.input :country, as: :select
+= f.input :private
+= f.input :type, collection: %w(Course Event Hackathon HackerSpace Promotion Tech University)
+= render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Profile picture', image_link: @group.avatar.try(:file_url, :thumb), help_block: 'This picture needs to be squared, at least 200x200px for best quality.', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
+
+- case @group.type
+- when 'Course'
+  = f.association :university, collection: University.all
+- when 'Event'
+  = f.association :hackathon, collection: Hackathon.all
+- when 'Hackathon'
+- when 'Promotion'
+  = f.association :course, collection: Course.all
+- when 'Tech'
+  = f.input :tech_tags_string
+  = render partial: 'shared/image_form', locals: { file_type: 'document', human_file_type: 'Cover image', image_link: @group.cover_image.try(:file_url), help_block: 'A high quality picture of your product, at least 1200px wide and 400px high.', attribute_type: 'cover_image', image_version: nil, model: 'group' }
+
+  - if ClientSubdomain.find_by_subdomain(@group.user_name).present?
+    = render partial: 'shared/image_form', locals: { file_type: 'logo', human_file_type: 'Portal logo', image_link: @group.logo.try(:file_url), help_block: '', attribute_type: 'logo', image_version: nil, model: 'group' }
+- when 'University'
+.col-xs-offset-4.col-xs-8
+  = f.button :submit, :class => 'btn btn-primary'
+  = link_to t('.cancel', :default => t("helpers.links.cancel")), admin_groups_path, :class => 'btn btn-default'

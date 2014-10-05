@@ -1,0 +1,4 @@
+- cache [widget, can?(:update, widget)], tag: ["widget-#{widget.id}"] do
+  .widget  id: "widget-#{widget.id}"  
+    .widget-inner
+      .content= render partial: "widgets/embeds/show/# widget.identifier}", locals: { widget: widget  

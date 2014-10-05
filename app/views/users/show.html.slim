@@ -1,0 +1,165 @@
+section#projects-list
+  .wrapper
+    .project-list-actions.clearfix.mg-30
+      - if user_is_current?
+        .pull-right
+          = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'btn btn-outline'
+      - style = cookies['thumb-list-style'] || 'thumb-list-vertical'
+      .btn-group.thumb-list-switch.pull-left
+        button.btn.btn-default.btn-sm.istooltip  class: "#{'active' if style == 'thumb-list-vertical'}", data: { 'list-style' => 'vertical', container: 'body' }, title: 'Display as tiles'  
+          i.fa.fa-th-large
+        button.btn.btn-default.btn-sm.istooltip  class: "#{'active' if style == 'thumb-list-horizontal'}", data: { 'list-style' => 'horizontal', container: 'body' }, title: 'Display as list'  
+          i.fa.fa-th-list
+
+    h2
+      | Public projects
+      = content_tag(:span, @user.live_projects_count, class: 'badge')
+    - if @public_projects.any?
+      - if @public_projects_sorted.size > 1
+        .thumb-list  class: style  
+          .row.project-list
+            - @public_projects_sorted.each do |year, projects|
+              h4.col-xs-12.thumb-horizontal= year
+              - projects.each_with_index do |project, i|
+                - show_year = (i > 0) ? false : true
+                - if project.external
+                  = render partial: 'projects/project_thumb_external', locals: { project: project.decorate, col: '3', show_year: show_year, ref: 'user', ref_id: @user.id, offset: i }
+                - else
+                  = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', show_year: show_year, ref: 'user', ref_id: @user.id, offset: i }
+      - else
+        .thumb-list  class: style  
+          .row.project-list
+            / @public_projects_sorted.each do |year, projects|
+            - @public_projects.each_with_index do |project, i|
+              - if project.external
+                = render partial: 'projects/project_thumb_external', locals: { project: project.decorate, col: '3', ref: 'user', ref_id: @user.id, offset: i }
+              - else
+                = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', ref: 'user', ref_id: @user.id, offset: i }
+
+      = content_for :js do
+        javascript:
+          | $(".project-thumb-container").each(function(i, project){
+            | project = $(project);
+            | showYear = project.data('show-year');
+            | if (showYear != undefined) {
+              | if (showYear == 'year') {
+                | $('.year', this).show();
+              | } else if (showYear == 'placeholder') {
+                | $('.year-placeholder', this).show();
+              | }
+            | }
+          | });
+
+    - elsif user_is_current?
+      p
+        | You have no public projects.
+        = link_to 'Showcase a project', new_project_path, class: 'btn btn-info btn-sm'
+      p.smaller.text-muted
+        strong Tip:
+        | Access private projects below.
+    - else
+      #{@user.name} has no public projects.
+
+    - if user_is_current_or_admin?
+      hr
+      h2
+        | Private projects
+        = content_tag(:span, @user.projects_count - @user.live_projects_count, class: 'badge')
+      - if @private_projects.any?
+        .thumb-list  class: style  
+          .row.project-list
+            - @private_projects.each_with_index do |project, i|
+              - if project.external
+                = render partial: 'projects/project_thumb_external', locals: { project: project.decorate, col: '3', ref: 'userprivate', ref_id: @user.id, offset: i }
+              - else
+                = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', ref: 'userprivate', ref_id: @user.id, offset: i }
+
+      - elsif user_is_current?
+        p
+          | You have no private projects.
+      - else
+        #{@user.name} has no private projects.
+
+    hr
+    h2
+      | Respected projects
+      = content_tag(:span, @user.respects_count, class: 'badge')
+    - if @respected_projects.any?
+      .thumb-list  class: style  
+        .row.project-list
+          - @respected_projects.each_with_index do |project, i|
+            - if project.external
+              = render partial: 'projects/project_thumb_external', locals: { project: project.decorate, col: '3', ref: 'userprivate', ref_id: @user.id, offset: i }
+            - else
+              = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', ref: 'userrespected', ref_id: @user.id, offset: i }
+
+    - elsif user_is_current?
+      p
+        | You haven't respected any projects yet.
+        = link_to 'Browse around', projects_path
+        | for cool projects!
+    - else
+      #{@user.name} hasn't respected any projects yet.
+
+
+    hr
+    h2
+      | Comments
+      = content_tag(:span, @user.comments_count, class: 'badge')
+    - if @comments.any?
+      ul.list-unstyled.user-comments-list
+        - @comments.each do |comment|
+          li.comment
+            h5.comment-project
+              = link_to comment.commentable.name, project_path(comment.commentable, ref: 'usercomment')
+              small
+                = time_ago_in_words(comment.created_at)
+                | ago
+            .comment-text= comment.body.html_safe
+    - elsif user_is_current?
+      p
+        | You haven't commented on any projects yet.
+        = link_to 'Browse around', projects_path
+        | for projects you can get involved in!
+    - else
+      #{@user.name} hasn't commented on any projects yet.
+
+
+
+/
+        .col-xs-3
+
+          - if @broadcasts.any?
+            .transparent-well
+              .header
+                h4 Recent activity
+              .content
+                ul
+                  - @broadcasts.each do |broadcast|
+                    li
+                      - broadcast = broadcast.decorate
+                      = broadcast.message
+                      .text-muted
+                        = broadcast.created_at
+
+
+
+      #tab-comments.tab-pane.fade
+        .col-xs-12
+          - if @comments.any?
+            ul.list-unstyled
+              - @comments.each do |comment|
+                li.comment
+                  h5.comment-project
+                    = link_to comment.commentable.name, project_path(comment.commentable, ref: 'usercomment')
+                    small
+                      = time_ago_in_words(comment.created_at)
+                      | ago
+                  .comment-text= comment.body.html_safe
+          - elsif user_is_current?
+            p
+              | You haven't commented on any projects yet.
+              = link_to 'Browse around', projects_path
+              | for projects you can get involved in!
+          - else
+            #{@user.name} hasn't commented on any projects yet.

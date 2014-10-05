@@ -1,0 +1,21 @@
+.col-xs-6.col-xs-offset-3
+  .wellified
+    h2.text-center Welcome back?
+    p We've found an existing account with a similar # @match_by_type} (#{@match_by_value ), there's two options:
+
+    ol
+      li
+        p Link it with # @provider  by confirming it's yours:
+
+        = simple_form_for resource, as: resource_name, url: authorization_path, html: { data: { method: :patch }, class: 'form-inline' } do |f|
+          = f.input :email, as: :hidden
+          .input-group
+            = f.input :password, wrapper: false, label: false, placeholder: "Existing password", input_html: { class: 'form-control' }
+            span.input-group-btn
+              = f.submit 'Link my two accounts', class: 'btn btn-primary'
+          = link_to 'Lost your password?', new_password_url(resource_name)
+
+      li
+        p
+          | Or
+          = link_to 'continue connecting and use a different email.', new_authorization_path(new_email: 1)

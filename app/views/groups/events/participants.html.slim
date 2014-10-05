@@ -1,0 +1,24 @@
+= content_for :head do
+  meta(name="robot" content="noindex nofollow")
+
+- if can? :read, @event
+  .row
+    #tab-participants
+      .col-xs-12
+        - if @participants.any?
+          .row
+            - @participants.each do |user|
+              .col-xs-2  style: 'margin-bottom: 30px;'  
+                = link_to image_tag(user.decorate.avatar(:big), class: 'img-responsive'), user, title: user.name, rel: 'tooltip'
+        - else
+          | This event has no participants.
+
+- else
+  .row
+    .col-xs-12
+      .alert.alert-warning
+        | The content of this group is only visible to members.
+        / if @event.access_level == 'anyone'
+          = link_to 'Join', '', class: 'btn btn-warning btn-sm'
+        / elsif @event.access_level == 'request'
+          = link_to 'Request access', '', class: 'btn btn-warning btn-sm'

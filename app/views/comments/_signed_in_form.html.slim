@@ -1,0 +1,7 @@
+.comment
+  .pull-left.comment-avatar= current_user.decorate.avatar_link(:mini)
+  .pull-left.comment-text
+    = simple_form_for [commentable, Comment.new], html: { class: 'form-inline', data: { remote: true } } do |f|
+      = f.input :body, label: false, input_html: { rows: 1, placeholder: 'Write a comment' }
+      .text-right
+        = f.button :submit, class: 'btn btn-primary comment-submit-btn', value: 'Post Comment'

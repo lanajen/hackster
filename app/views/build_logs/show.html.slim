@@ -1,0 +1,30 @@
+.row
+  .col-xs-12
+    .pull-left
+      = link_to "&larr; See all build logs".html_safe, project_logs_path(@project.user_name_for_url, @project.slug), class: 'btn btn-link btn-sm'
+    - if can? :create, BlogPost, @project
+      .pull-right
+        = link_to 'Post a new build log', new_project_log_path(@project.user_name_for_url, @project.slug), class: 'btn btn-primary btn-sm'
+    .clearfix
+    hr
+
+.row.issue.build-log
+  .col-xs-12.issue-content
+    .well
+      = render partial: 'build_logs/header', locals: { project: @project, log: @log }
+      #medium-editor.content
+        = @log.body.html_safe
+
+        #comments
+          - @log.comments.each do |comment|
+            = render partial: 'comments/issues/comment', locals: { comment: comment }
+
+          - if user_signed_in?
+            = render partial: 'comments/issues/form', locals: { comment: Comment.new, commentable: @log }
+          - else
+            p
+              | Please
+              = link_to 'log in', new_user_session_path
+              | or
+              = link_to 'sign up', new_user_registration_path
+              | to leave a comment.

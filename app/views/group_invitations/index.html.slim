@@ -1,0 +1,15 @@
+- if @invitable.class == Tech
+  = '<div id="main-content"><div class="row">'.html_safe
+
+h2.text-center Welcome to # @group.name .
+- if user_signed_in?
+  p.text-center= link_to 'Join group', group_accept_invitation_path(@group, token: @group.invitation_token, role: params[:role], permission: params[:permission]), class: 'btn btn-warning btn-sm'
+- else
+  p.text-center
+    | You need an account to join this group. Please
+    = link_to 'Sign in', new_user_session_path, class: 'btn btn-primary btn-sm'
+    | or
+    = link_to 'Create an account', new_user_registration_path, class: 'btn btn-primary btn-sm'
+
+- if @invitable.class == Tech
+  = '</div></div>'.html_safe

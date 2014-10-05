@@ -1,0 +1,9 @@
+.medium-status-bar.static.medium-edit-show  style: 'display:none'  
+  = render partial: 'shared/medium_editor_status_bar_inner', locals: { last_edit: last_edit }
+
+= content_for :js do
+  .medium-status-bar.affixed  style: 'display:none'  
+    = render partial: 'shared/medium_editor_status_bar_inner', locals: { last_edit: last_edit }
+
+  .medium-error-bubble  style: 'display:none'  
+    .medium-error.alert.alert-danger

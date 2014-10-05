@@ -1,0 +1,16 @@
+.header
+  h3
+    = page.title
+
+    - if can? :edit, page
+      .btn-heading
+        .pull-right
+          = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_hackathon_event_page_path(@event.hackathon.user_name, @event.user_name, page.id), class: 'btn-edit', rel: 'tooltip', title: 'Edit content', data: { container: 'body' }
+        .pull-right
+          = link_to content_tag(:i, '', class: 'fa fa-trash-o'), wiki_page_path(page), class: 'btn-edit', rel: 'tooltip', title: 'Delete page', data: { container: 'body', method: :delete, confirm: "Are you sure? There's no way back!" }
+
+  small.text-muted
+    | By
+    = link_to page.user.name, page.user
+    = time_ago_in_words page.created_at
+    | ago

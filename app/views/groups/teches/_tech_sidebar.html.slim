@@ -1,0 +1,61 @@
+- if can? :manage, @tech
+  = content_for :js do
+    javascript:
+      | $("#{escape_javascript render('groups/teches/tech_stats')}").appendTo('#tech-body .stats');
+
+- cache ["tech-#{@tech.id}-sidebar", user_signed_in?, can?(:manage, @tech), (user_signed_in? and current_user.following?(@tech))], tag: ["tech-#{@tech.id}-sidebar", 'tech-sidebar'] do
+  #sidebar-container.affixable
+    - @tech = GroupDecorator.decorate @tech
+
+    section#sidebar-container-in
+      - if @tech.avatar
+        .avatar#tech-avatar-image-div
+          #tech-avatar-image style="background-image:url('#{@tech.avatar(:big)}');" 
+      #tech-body
+        h3= link_to @tech.name, tech_short_path(@tech), id: 'tech-name'
+        p
+          - if @tech.mini_resume.present?
+            = @tech.mini_resume
+          - elsif can? :update, @tech
+            | No mini resume.
+            = link_to 'Add one?', edit_tech_path(@tech)
+        .stats
+        #tech-follow-div.text-center
+          = render partial: 'followers/button_text', locals: { followable: @tech }
+
+      .display
+        h4 Resources
+        ul#tech-links
+          - if @tech.documentation_link.present?
+            li= link_to "Documentation # content_tag(:i, '', class: 'fa-external-link fa') ".html_safe, @tech.documentation_link, target: '_blank'
+          - if @tech.forums_link.present?
+            li= link_to "Forums # content_tag(:i, '', class: 'fa-external-link fa') ".html_safe, @tech.forums_link, target: '_blank'
+          - if @tech.crowdfunding_link.present?
+            li= link_to "Preorder # @tech.name} #{content_tag(:i, '', class: 'fa-external-link fa') ".html_safe, @tech.crowdfunding_link, target: '_blank', class: 'tech-buy-link'
+          - if @tech.buy_link.present?
+            li= link_to "Buy # @tech.name} #{content_tag(:i, '', class: 'fa-external-link fa') ".html_safe, @tech.buy_link, target: '_blank', class: 'tech-buy-link'
+          / %li= link_to "Q&A #{content_tag(:span, 0, class: 'badge')}".html_safe, '#tab-qa', data: { toggle: 'tab' }
+          /!%li= render partial: 'projects/share'
+
+      .display
+        h4 Social links
+        #tech-websites
+          - if @tech.websites.any?
+            ul.websites.list-inline
+              - @tech.websites.select{|t,u| u.present? }.each do |type, url|
+                = render partial: "shared/website", locals: { type: type, url: url }
+          - elsif can? :update, @tech
+            ul.websites.list-inline
+              li
+                | No websites.
+                = link_to 'Add some?', edit_tech_path(@tech)
+
+      - if can? :manage, @tech
+        .display
+          h4
+            i.fa.fa-cog
+            | Manage page
+          ul#tech-links
+            li= link_to 'Edit settings', edit_tech_path(@tech)
+            li= link_to 'Manage admins', group_edit_members_path(@tech)
+            li= link_to 'Invite admins', group_new_invitations_path(@tech)

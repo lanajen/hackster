@@ -1,0 +1,3 @@
+= simple_form_for @invite_request, html: { class: 'form-inline' } do |f|
+  = f.input :email, autofocus: true, required: false, placeholder: 'nikola@tesla.com', label: false, wrapper_html: { class: 'col-xs-9' }, input_html: { class: 'input-lg' }
+  = f.button :submit, "I'm awesome", class: 'btn btn-primary col-xs-3 btn-lg'

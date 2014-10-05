@@ -1,0 +1,36 @@
+= content_for :head do
+  meta(name="robot" content="noindex nofollow")
+
+- if can? :read, @event
+  .row
+    #tab-organizers
+      .col-xs-12
+        - if @organizers.any?
+          .row
+            - if @judges.any? or @mentors.any?
+              h3.top.col-xs-12 Organizers
+            - @organizers.each do |user|
+              .col-xs-2  style: 'margin-bottom: 30px;'  
+                = link_to image_tag(user.decorate.avatar(:big), class: 'img-responsive'), user, title: user.name, rel: 'tooltip'
+        - else
+          | This event has no organizers.
+
+        - if @judges.any?
+          .row
+            h3.top.col-xs-12 Judges
+            - @judges.each do |user|
+              .col-xs-2  style: 'margin-bottom: 30px;'  
+                = link_to image_tag(user.decorate.avatar(:big), class: 'img-responsive'), user, title: user.name, rel: 'tooltip'
+
+        - if @mentors.any?
+          .row
+            h3.top.col-xs-12 Mentors
+            - @mentors.each do |user|
+              .col-xs-2  style: 'margin-bottom: 30px;'  
+                = link_to image_tag(user.decorate.avatar(:big), class: 'img-responsive'), user, title: user.name, rel: 'tooltip'
+
+- else
+  .row
+    .col-xs-12
+      .alert.alert-warning
+        | The content of this group is only visible to members.

@@ -1,0 +1,65 @@
+- if user_signed_in? and member = current_user.is_member?(@group) and member.invitation_pending?
+  .row
+    .col-xs-12
+      .alert.alert-warning
+        | You have been invited to join
+        strong # @group.name .
+        = link_to 'Join group', group_accept_invitation_path(@group), class: 'btn btn-warning btn-sm'
+
+.row
+  .col-xs-12.teaser
+    .text-holder
+      - if @group.avatar
+        span.avatar.main-avatar= image_tag @group.avatar(:big), alt: @group.name, class: 'img-circle'
+      h1
+        - if @group.private?
+          small
+            i.fa.fa-lock.istooltip  title: 'Private community', data: { container: 'body' }  
+        = link_to @group.name, @group
+
+      - if @group.mini_resume.present?
+        p.user-mini-resume= @group.mini_resume
+      - elsif can? :update, @group
+        p.user-mini-resume
+          | No mini resume.
+          = link_to 'Add one?', edit_group_path(@group), data: { remote: true }
+
+      p.user-categories
+        - if @group.location
+          span.category.first
+            i.fa.fa-map-marker
+              = @group.location
+        - elsif can? :update, @group
+          | No location.
+          = link_to 'Add one?', edit_group_path(@group), data: { remote: true }
+
+      - if @group.websites.any?
+        ul.websites.list-inline
+          - @group.websites.select{|t,u| u.present? }.each do |type, url|
+            = render partial: "shared/website", locals: { type: type, url: url }
+      - elsif can? :update, @group
+        ul.websites.list-inline
+          li
+            | No websites.
+            = link_to 'Add some?', edit_group_path(@group), data: { remote: true }
+
+.row
+  .col-xs-12
+    .tabbable.tabs-left.navbar.navbar-default.navbar-tabs  style: 'background: #fff;'  
+      ul.nav.navbar-nav
+        li.active= link_to "Public projects", '#tab-projects', data:   toggle: 'tab'  
+        li= link_to "Members", '#tab-members', data:   toggle: 'tab'  
+        /
+          li.active= link_to "Public projects # content_tag(:span, 0, class: 'badge')}".html_safe, '#tab-projects', data: { toggle: 'tab'  
+          li= link_to "Members # content_tag(:span, 0, class: 'badge')}".html_safe, '#tab-members', data: { toggle: 'tab'  
+        / %li= link_to "Q&A #{content_tag(:span, 0, class: 'badge')}".html_safe, '#tab-qa', data: { toggle: 'tab' }
+
+        - if can? :manage, @group
+          li.dropdown
+            a.dropdown-toggle.action  data: { toggle: 'dropdown' }, href: '#', title: 'Settings', rel: 'tooltip'  
+              i.fa.fa-cog
+              b.caret
+            ul.dropdown-menu
+              li= link_to 'Edit group', edit_group_path(@group), data:   remote: true  
+              li= link_to 'Manage members', group_edit_members_path(@group)
+              li= link_to 'Invite members', group_new_invitations_path(@group)

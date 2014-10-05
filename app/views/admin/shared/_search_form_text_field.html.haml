@@ -1,4 +1,0 @@
-.form-group
-  = label_tag :"filters[#{field}]", field.humanize, class: 'control-label'
-  .controls
-    = text_field_tag :"filters[#{field}]", params[:filters].try(:[], :"#{field}"), class: 'form-control'

@@ -1,0 +1,67 @@
+.row
+  .wellified  class: 'col-xs-6 col-xs-offset-3'  
+    h2  style: 'text-align: center'   Reorder content blocks
+    = simple_nested_form_for @project, url: project_widgets_path(@project), html: { class: 'widget-form widget-reorder-form' } do |f|
+      = f.error_notification
+
+      #sortable-1.sortable
+        ul.single
+          - @project.widgets.each do |widget|
+            = render partial: 'field_reorder', locals: { f: f, widget: widget, project: @project }
+
+      p.help-block Hover over a tile and click the cross to delete a content block.
+      .form-actions
+        = f.submit 'Save', class: 'btn btn-primary'
+        = link_to 'Cancel', @project, class: 'btn btn-link btn-sm'
+
+= content_for :js do
+  javascript:
+    | $(function() {
+      | updatePlaceholders();
+
+      | $('form').submit(function(){
+        | $('.sortable:hidden').remove();
+      | });
+
+      | $('ul')
+        .sortable({
+          | connectWith: 'ul',
+          | items: 'li:not(".placeholder")',
+          | over: function() {
+            | $(this).children('.placeholder').hide()
+          | },
+          | out: function(event, ui) {
+            | $(this).children('.placeholder').show();
+          | }
+        | })
+        .bind('sortstop', function(event, ui) {
+          | updatePlaceholders();
+          | resetPositions();
+        | });
+    | });
+
+    | function resetPositions(){
+      | $('.sortable:visible ul').each(function(i){
+        | $('.position', $(this)).each(function(j){
+          | col = i+1;
+          | row = j+1;
+          | if (row < 10) {
+            | row = '0' + row;
+          | }
+          | $(this).val(col + '.' + row);
+        | });
+      | });
+    | }
+    | function updatePlaceholders(){
+      | $('.sortable ul').each(function(i){
+        | length = $(this).children('li:not(".placeholder")').length;
+        | if (length == 0) {
+          | plLength = $(this).children('li.placeholder').length;
+          | if (plLength == 0) {
+            | $('<li class="placeholder">Empty</li>').appendTo($(this));
+          | }
+        | } else {
+          | $(this).children('.placeholder').remove();
+        | }
+      | });
+    | }

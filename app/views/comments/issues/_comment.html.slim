@@ -1,0 +1,19 @@
+.media.issue-comment  class: "comment-#{comment.id}"  
+  - user = comment.user.decorate
+  = link_to image_tag(user.avatar(:thumb), class: 'media-object user-avatar'), user, class: 'pull-left'
+  .media-body.panel.panel-default
+    .panel-heading
+      small.text-muted
+        = user.name_link
+        | commented
+        = time_ago_in_words comment.created_at
+        | ago
+      - if comment.class == Comment
+        - if can? :destroy, comment
+          .pull-right
+            = link_to content_tag(:i, '', class: 'fa fa-trash-o'), comment_path(comment), data: { remote: true, method: 'delete', confirm: "Are you sure? There's no way back!" }, class: 'btn-edit', title: 'Delete comment', rel: 'tooltip'
+        - if can? :edit, comment
+          .pull-right
+            = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_comment_path(comment), data: { remote: true }, class: 'btn-edit', title: 'Edit comment', rel: 'tooltip'
+    .panel-body
+      = auto_link comment.body

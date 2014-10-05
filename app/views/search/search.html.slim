@@ -1,0 +1,56 @@
+.search-page.row
+  .col-xs-3
+    ul.nav.nav-pills.nav-stacked
+      li  class: "#{'active' if params[:type] == nil}"  = link_to 'All', search_path(q: params[:q], type: nil)
+      li  class: "#{'active' if params[:type] == 'hackerspace'} #{'disabled' unless @facets['hackerspace']}"  = link_to @hacker_space_label.html_safe, search_path(q: params[:q], type: 'hackerspace')
+      li  class: "#{'active' if params[:type] == 'user'} #{'disabled' unless @facets['user']}"  = link_to @people_label.html_safe, search_path(q: params[:q], type: 'user')
+      li  class: "#{'active' if params[:type] == 'project'} #{'disabled' unless @facets['project']}"  = link_to @projects_label.html_safe, search_path(q: params[:q], type: 'project')
+      li  class: "#{'active' if params[:type] == 'tech'} #{'disabled' unless @facets['tech']}"  = link_to @tools_label.html_safe, search_path(q: params[:q], type: 'tech')
+
+    / .well
+      .content
+        form  action: search_path, method: :get, id: 'full-search-form'  
+          .form-group
+            .controls
+              label
+                strong Keywords
+              = text_field_tag :q, params[:q], class: 'input-medium', placeholder: 'Search'
+          .form-group= submit_tag 'Update results', class: 'btn btn-default btn-xs'
+
+          / .form-group
+            .controls
+              label
+                strong Tags
+              - ProductTag.limit(10).pluck(:name).uniq.each do |tag|
+                label.checkbox
+                  = check_box_tag "product_tag[#{tag}]", 1, (params[:product_tag] and params[:product_tag][tag.to_sym])
+                  = tag
+              label
+                strong Technology
+              - TechTag.limit(10).pluck(:name).uniq.each do |tag|
+                label.checkbox
+                  = check_box_tag "tech_tag[#{tag}]", 1, (params[:tech_tag] and params[:tech_tag][tag.to_sym])
+                  = tag
+  .col-xs-9
+    .well
+      - if params[:q].present?
+        - if @results.any?
+          .header
+            b= pluralize @results.total_count, 'result'
+            - if @results.total_count > @results.count
+              | (showing #{@offset} to #{@max})
+            - else
+              | (showing all)
+          .content.search-results
+            ul.list-unstyled
+              - @results.each_with_index do |result, i|
+                li  class: "#{'last' if i == @results.size - 1}"  
+                  - model = result.class.name.underscore
+                  = render partial: model, locals: { :"#{model}" => result.decorate, ref: 'search', ref_id: params[:q], offset: i }
+            .text-center= will_paginate @results
+        - else
+          .content.search-results
+            | No results for <i>#{params[:q]}</i>. <a href="/projects/new?project[name]=#{params[:q]}" class="btn btn-primary btn-sm">Add your own #{params[:q]} project</a
+      - else
+        .content.search-results
+          | Go ahead, look something up!

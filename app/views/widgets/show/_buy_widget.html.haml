@@ -1,6 +1,0 @@
-- if widget.link.present?
-  = link_to "Buy it from #{URI.parse(widget.link).host.gsub(/^www\./, '')}", widget.link, target: '_blank', class: 'btn btn-primary', rel: 'nofollow'
-- else
-  Please
-  = link_to 'edit this widget', edit_project_widget_path(widget.project, widget)
-  and specify a link.

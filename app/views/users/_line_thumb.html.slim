@@ -1,0 +1,7 @@
+- u = member.user
+.user
+  = link_to image_tag(u.decorate.avatar(:mini), class: ' img-circle' ), u, class: ''
+  span.user-name
+    = link_to u.name, u, class: 'hidden-link'
+    - if member.contribution.present?
+      i.fa.fa-question-circle.istooltip  title: "Contribution: #{member.contribution}"  

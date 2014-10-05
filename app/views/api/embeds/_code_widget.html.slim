@@ -1,0 +1,84 @@
+.code-widget  id: "code-widget-#{embed.widget.id}"  
+  .language-selector  'data-edit-only' => 'true'  
+    .widget-attribute  'data-value' => embed.widget.language, 'data-attribute' => "language"  
+    = select_tag 'languages', options_from_collection_for_select(CodeWidget::ACE_LANGUAGES, :first, :last, embed.widget.language), 'data-target' => embed.widget.id
+    | &nbsp;
+    a.btn.btn-default.btn-xs.upload-code  'data-target' => "#widget-#{embed.widget.id}-form input"   Upload code file
+
+  .code-container  'data-edit-hide' => 'true'  
+    = embed.widget.formatted_content.try(:html_safe)
+    .code-overlay.is-visible
+      .center-align-wrapper
+        .center-align-inner
+          | The updates you made will appear after you refresh the page.
+  .code-editor-container  data: { 'disable-toolbar' => 'true', 'edit-only' => 'true' } 
+    .code-editor  id: "code-editor-#{embed.widget.id}"  <= embed.widget.raw_code.try(:split, /\n/).try(:join, "\r")  # to get rid of the extra whitespaces added by HAML in the final HTML
+  .widget-attribute  'data-attribute' => "raw_code", 'data-value' => embed.widget.raw_code  
+
+  - if document = embed.widget.document
+    .download-link  contenteditable: 'false'  
+      i.fa.fa-file-o.fa-lg
+      a  href: document.file_url, data: { 'disable-toolbar' => 'true' }   Download
+
+javascript:
+  | $(function(){
+    | codeEditor["#{embed.widget.id}"] = new CodeEditor("#{embed.widget.language}", "#{embed.widget.id}");
+
+    | var widgetFormTpl = "<form id='widget-#{embed.widget.id}-form' class='code-widget-file-upload' action='/api/v1/widgets/#{embed.widget.id}' method='post' enctype='multipart/form-data' style='display:none;' data-widget-id='#{embed.widget.id}'>";
+    | widgetFormTpl += '<input type="hidden" name="_method" value="patch">';
+    | widgetFormTpl += '<input type="file" name="widget[document_attributes][file]">';
+    | widgetFormTpl += '</form>';
+    | $(widgetFormTpl).appendTo('body');
+
+    | $("#widget-#{embed.widget.id}-form").fileupload({
+      | dataType: 'json',
+      | limitMultifileUploads: 1,
+      | sequentialUploads: true,
+      | limitConcurrentUploads: 1,
+
+      | add: function(e, data) {
+        | fileName = data.files[0].name;
+        | ext = fileName.substr(fileName.lastIndexOf('.') + 1);
+        | if($.inArray(ext, ['gif','png','jpg','jpeg']) != -1) {
+          | showErrorBubble(null, "Images are not allowed. You can only upload files that contain code.");
+          | return;
+        | }
+        | tpl = $('<div class="embed-overlay is-visible"><div class="center-align-wrapper"><div class="center-align-inner"><p class="progress-legend">Uploading...</p><div class="progress progress-striped active"><div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%;"></div></div></div></div>');
+        | tpl.appendTo(".embed-frame[data-widget-id=\"#{embed.widget.id}\"] .embed");
+        | data.context = tpl;
+        | data.submit();
+      | },
+
+      | fail: function(e, data){
+        | data.context.fadeOut(200, function(){
+          | $(this).remove();
+        | });
+        | showErrorBubble(data.files[0].name);
+      | },
+
+      | progress: function(e, data) {
+        | progress = parseInt(data.loaded / data.total * 100, 10);
+        | target = data.context.find('.progress-bar');
+        | target.css('width', progress + '%');
+        | if (progress == 100) {
+          | target.addClass('progress-bar-success');
+        | }
+      | },
+
+      | success: function(data) {
+        | cEditor = codeEditor[data.id].ace;
+        | cEditor.setValue(data.raw_code);
+        | cEditor.selection.clearSelection();
+        | frame = $('[data-widget-id="' + data.id + '"]');
+        | frame.find('.language-selector select').val(data.language);
+        | frame.find('.download-link a').attr('href', data.file_url);
+        | frame.find('.download-link a').text('Download ' + data.file_name);
+      | },
+
+      | done: function(e, data){
+        | data.context.fadeOut(200, function(){
+          | $(this).remove();
+        | });
+      | }
+    | });
+  | });

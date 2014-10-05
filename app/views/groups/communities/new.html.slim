@@ -1,0 +1,18 @@
+.col-xs-4.col-xs-offset-4
+  .wellified
+    h2  style: 'text-align: center'   New community
+
+    = simple_nested_form_for @group, html: { class: 'accept-file-upload' } do |f|
+      = f.error_notification
+
+      = f.input :full_name, label: 'Community name'
+
+      .avatar.file-drop.form-group
+        label.control-label Profile image
+        div
+          span.avatar.image-preview.preview
+          a.btn.btn-default.btn-sm  data: { target: '.file_upload.avatar' }   Select picture
+
+      = render partial: 'shared/image_form_bare', locals: { file_type: 'avatar', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
+
+      = f.button :submit, 'Go!', class: 'btn-block btn btn-primary'

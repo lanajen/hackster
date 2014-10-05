@@ -1,0 +1,12 @@
+#widget-respects.meta
+  .meta-title-wrap
+    .meta-title
+      | Users who respect this project
+  .content
+    - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
+      = render partial: 'respects/button', locals: { project: @project }
+    - cache ["project-#{@project.id}-respects", 'users'], tag: ["project-#{@project.id}-respects"] do
+      .respect-thumbs.clearfix
+        - users.each do |user|
+          - cache ["user-#{user.id}-thumb", 'respect'], tag: ["user-#{user.id}-thumb"] do
+            = link_to image_tag(user.decorate.avatar(:thumb), class: 'img-responsive respects-user-img istooltip', data: { container: 'body' }, rel: 'tooltip', title: user.name), user

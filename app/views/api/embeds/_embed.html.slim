@@ -1,0 +1,4 @@
+.figure  class: embed.provider_name  
+  .embed  class: embed.format, contenteditable: "false"  
+    = render partial: "api/embeds/#{embed.provider_name}", locals: { embed: embed }
+  .figcaption.embed-figcaption  data-default-text=("Type in a caption") data-disable-toolbar="true", 'data-contenteditable' => 'true'  = embed.default_caption

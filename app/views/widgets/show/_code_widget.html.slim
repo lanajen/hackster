@@ -1,0 +1,6 @@
+- if widget.formatted_content.present?
+  .code-widget.collapsible.collapsed
+    = widget.formatted_content.html_safe
+    a.to-full-width.more  href: '#', data: { target: "#widget-#{widget.id}" }   + show more
+- if widget.document
+  = link_to "#{content_tag(:i, '', class: 'fa fa-download')} Download #{widget.document.file_name}".html_safe, widget.document.file_url, class: 'btn btn-default btn-xs'

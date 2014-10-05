@@ -1,0 +1,13 @@
+- widget.build_document unless widget.document
+= f.input :language, as: :select, label: 'What programming language are you using?', collection: CodeWidget::LANGUAGES
+.form-group
+  .controls
+    label Add the file that contains the code
+= f.simple_fields_for :document do |f_document|
+  - if widget.document
+    .form-group.url
+      .controls
+        = widget.document.file_name
+  = f_document.input :file, as: :file, label: false
+  = f_document.input :file_cache, as: :hidden
+= f.input :raw_code, as: :text, label: 'Or copy/paste directly here', input_html: { rows: 10 }

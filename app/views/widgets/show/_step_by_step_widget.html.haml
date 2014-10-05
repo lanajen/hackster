@@ -1,7 +1,0 @@
-.steps-widget
-  - widget.steps.each_with_index do |step, i|
-    .step
-      %h5
-        %span.step-badge= i+1
-        = step.title
-      .step-details= step.details.strip.split(/\r\n/).map { |p| p.present? ? "<p>#{p}</p>" : "<br>" }.join('').html_safe

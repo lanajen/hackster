@@ -1,0 +1,21 @@
+.col-md-6.col-md-offset-3.col-xs-12
+  .wellified
+    h2  style: 'text-align:center;'   Hi!
+    p  style: 'text-align:center;'   Good to see you here. Before we get started, why don't you complete your profile?
+    = simple_form_for @user, url: user_after_registration_path, html: { class: 'widget-form form-horizontal accept-file-upload disable-drop-styling' }, wrapper: :bootstrap3_horizontal do |f|
+      = f.error_notification
+      = f.input :full_name, label: 'Full name', autofocus: true
+      = f.input :user_name, label: 'Username', wrapper: :addon do
+        span.input-group-addon hackster.io/
+        = f.input_field :user_name
+
+      = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Profile picture', image_link: @user.avatar.try(:file_url, :thumb), help_block: '', attribute_type: 'avatar', image_version: 'thumb', model: 'user' }
+
+      = f.input :mini_resume, as: :text, input_html: { rows: 4 },
+        | hint: 'Maximum 140 characters', label: 'About me'
+      = f.input :city, label: 'City'
+      = f.input :country, label: 'Country', input_html: { class: 'form-control' }
+      .form-actions
+        .form-actions-inner
+          = f.button :submit, "Done!", class: 'btn btn-primary'
+          = link_to "I'll do this later", user_return_to, class: 'btn btn-link btn-sm'

@@ -1,0 +1,80 @@
+- @event = GroupDecorator.decorate @event
+
+- if can? :join, @event
+  .row
+    .col-xs-12
+      .alert.alert-warning.alert-flat
+        .container
+          - case @event.access_level
+          - when 'anyone'
+            | Registrations for
+            strong # @event.name 
+            | are open.
+          - when 'invite'
+            | You have been invited to join
+            strong # @event.name .
+          = link_to 'Join event', group_accept_invitation_path(@event), class: 'btn btn-warning btn-sm'
+
+- elsif can? :request_access, @event
+  .row
+    .col-xs-12
+      .alert.alert-warning.alert-flat
+        .container
+          | Registrations for
+          strong # @event.name 
+          | require approval.
+          = link_to 'Request to join event', group_members_path(@event), class: 'btn btn-sm btn-warning', data: { method: :post }
+
+#content-header.with-nav
+  .container
+    .media
+      - if @event.avatar
+        .pull-left
+          span.avatar.medium-avatar= image_tag @event.avatar(:medium), class: 'media-object'
+      .media-body
+        h1
+          - if @event.private?
+            small
+              i.fa.fa-lock.istooltip  title: 'Private group', data: { container: 'body' }  
+          = link_to "#{@event.hackathon.name}", hackathon_path(@event.hackathon.user_name)
+        h2
+          = link_to @event.short_name, event_path(@event)
+        p
+          - if @event.mini_resume.present?
+            = @event.mini_resume
+          - elsif can? :update, @event
+            | No mini resume.
+            = link_to 'Add one?', edit_event_path(@event), data: { remote: true }
+
+          - if @event.websites.any?
+            ul.websites.list-inline
+              - @event.websites.select{|t,u| u.present? }.each do |type, url|
+                = render partial: "shared/website", locals: { type: type, url: url }
+          - elsif can? :update, @event
+            ul.websites.list-inline
+              li
+                | No websites.
+                = link_to 'Add some?', edit_event_path(@event), data: { remote: true }
+
+    - if can? :read, @event
+      .row
+        .col-xs-12
+          .tabs-left.navbar.navbar-default.navbar-tabs  style: 'background: #fff;'  
+            ul.nav.navbar-nav
+              = active_li_link_to "Projects", event_path(@event)
+              = active_li_link_to "Participants", "#{event_path(@event)}/participants"
+              = active_li_link_to "Organizers", "#{event_path(@event)}/organizers"
+              - @event.pages.public.order(created_at: :asc).each do |page|
+                = active_li_link_to page.title, "#{event_path(@event)}/pages/#{page.slug}"
+
+              - if can? :manage, @event
+                li.dropdown
+                  a.dropdown-toggle.action  data: { toggle: 'dropdown' }, href: '#', title: 'Settings', rel: 'tooltip'  
+                    i.fa.fa-cog
+                    b.caret
+                  ul.dropdown-menu
+                    li= link_to 'Edit event', edit_event_path(@event), data:   remote: true  
+                    li= link_to 'Manage members', group_edit_members_path(@event)
+                    li= link_to 'Invite members', group_new_invitations_path(@event)
+                    li= link_to 'Add a new page', new_hackathon_event_page_path(@event.hackathon.user_name, @event.user_name)
+                    li= link_to 'Manage awards', group_edit_awards_path(@event)

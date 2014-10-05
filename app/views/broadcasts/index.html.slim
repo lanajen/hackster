@@ -1,0 +1,32 @@
+.row
+  .col-xs-12
+    h1 Recent activity on Hackster.io
+    .well
+      .content
+        br
+        - if @custom_broadcasts.any?
+          ul
+            - previous = nil
+            - @custom_broadcasts.each do |broadcast|
+              - next if previous == broadcast.fingerprint
+              - previous = broadcast.fingerprint
+              li
+                - broadcast = broadcast.decorate
+                = link_to broadcast.broadcastable.name, broadcast.broadcastable
+                = broadcast.message
+                .text-muted
+                  = broadcast.created_at
+        - else
+          p Start following people or projects to see customized activity here! In the meantime, here's what's been happening across the site:
+
+          ul
+            - previous = nil
+            - @broadcasts.each do |broadcast|
+              - next if previous == broadcast.fingerprint
+              - previous = broadcast.fingerprint
+              li
+                - broadcast = broadcast.decorate
+                = link_to broadcast.broadcastable.name, broadcast.broadcastable
+                = broadcast.message
+                .text-muted
+                  = broadcast.created_at

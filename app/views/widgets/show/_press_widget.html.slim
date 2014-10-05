@@ -1,0 +1,9 @@
+ul
+  - widget.press_articles.each do |article|
+    li
+      - if article.link.present?
+        = link_to article.title, article.link, target: '_blank', rel: 'nofollow'
+      - else
+        = article.title
+      | by #{article.publication}
+      | on #{l(article.date)}

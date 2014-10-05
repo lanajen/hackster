@@ -1,0 +1,134 @@
+- if @assignment.private_grades
+  .row
+    .col-xs-12
+      .alert.alert-warning
+        i.fa.fa-lock
+        | Grades are currently only visible to staff.
+        - if @assignment.graded?
+          = link_to 'Release grades to students', "/assignments/#{@assignment.id}?assignment[private_grades]=0", class: 'btn btn-warning btn-sm', method: :patch
+        - else
+          | You will be able to release them once the assignment is fully graded.
+
+p
+  strong Grading status:
+  - if @assignment.grades.any?
+    - if @assignment.graded?
+      span.label.label-success
+        i.fa.fa-check-circle
+        | Complete
+      - unless @assignment.private_grades
+        | &nbsp;-
+        strong Released:
+        span.label.label-success.istooltip  title: 'Grades have been sent to students.'  
+          i.fa.fa-check-circle
+          | Yes
+    - else
+      span.label.label-info In progress
+      = link_to 'Continue grading', assignment_edit_grade_path(@assignment), class: 'btn btn-primary btn-sm'
+  - else
+    span.label.label-info Not started
+
+- if @assignment.grades.any?
+  p= link_to 'Download grades', assignment_grades_path(@assignment, format: 'csv'), class: 'btn btn-sm btn-primary'
+- elsif @assignment.grading_type.present?
+  div  style: 'margin-bottom:10px;' 
+    b Grading format:
+    = Assignment::GRADING_TYPES.invert[@assignment.grading_type]
+
+    = simple_form_for @assignment, url: assignment_grade_path(@assignment), html: { style: 'display:inline-block'} do |f|
+      = f.input :grading_type, as: :hidden, input_html: { value: '' }
+      = f.submit 'Change', class: 'btn btn-link btn-xs'
+  p
+    = link_to 'Start grading all assignments', assignment_edit_grade_path(@assignment), class: 'btn btn-primary btn-sm'
+- else
+  - if @assignment.projects.any?
+    = simple_form_for @assignment, url: assignment_grade_path(@assignment) do |f|
+      = f.input :grading_type, collection: Assignment::GRADING_TYPES, label: 'How is grading structured?'
+      = f.submit 'Set grading format', class: 'btn btn-primary'
+
+- if @assignment.grading_type.present?
+  table.table.table-striped
+    thead
+      tr
+        th Project
+        th
+          - if @assignment.grading_type == 'individual'
+            | Student
+          - else
+            | Team
+        th Submission date
+        th Grade
+        th Feedback
+        th
+    tbody
+      - @assignment.grades.each do |grade|
+        tr
+          td= link_to grade.project.name, grade.project
+          td
+            - gradable = grade.gradable
+            - case gradable
+            - when User
+              = link_to image_tag(gradable.decorate.avatar(:mini), style: 'width: 20px' ), gradable
+              = link_to gradable.name, gradable, target: '_blank'
+            - when Team
+              - gradable.users.each do |user|
+                = link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
+                = link_to user.name, user, target: '_blank'
+                br
+          td
+            - if grade.project.assignment_submitted_at.present?
+              = l grade.project.assignment_submitted_at.in_time_zone(PDT_TIME_ZONE)
+            - else
+              | Not yet submitted
+            br
+            | Last edited:
+            = l grade.project.last_edited_at.in_time_zone(PDT_TIME_ZONE)
+          td= grade.grade
+          td= grade.feedback.truncate 100
+          td
+            - case grade.gradable
+            - when User
+              = link_to content_tag(:i, '', class: 'fa fa-pencil'), assignment_edit_grade_path(@assignment, grade.project, grade.gradable_id), class: 'btn btn-xs btn-default', rel: 'tooltip', title: 'Edit'
+            - when Team
+              = link_to content_tag(:i, '', class: 'fa fa-pencil'), assignment_edit_grade_path(@assignment, grade.project), class: 'btn btn-xs btn-default', rel: 'tooltip', title: 'Edit'
+
+      - @assignment.projects.where(graded: false).order(:assignment_submitted_at, :last_edited_at).each do |project|
+        - if @assignment.grading_type == 'individual'
+          - project.team.users.each do |user|
+            tr
+              td= link_to project.name, project
+              td
+                = link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
+                = link_to user.name, user, target: '_blank'
+              td
+                - if project.assignment_submitted_at.present?
+                  = l project.assignment_submitted_at.in_time_zone(PDT_TIME_ZONE)
+                - else
+                  | Not yet submitted
+                br
+                | Last edited:
+                = l project.last_edited_at.in_time_zone(PDT_TIME_ZONE)
+              td Pending
+              td
+              td
+                = link_to content_tag(:i, '', class: 'fa fa-pencil'), assignment_edit_grade_path(@assignment, project, user.id), class: 'btn btn-xs btn-default', rel: 'tooltip', title: 'Edit'
+        - else
+          tr
+            td= link_to project.name, project
+            td
+              - project.team.users.each do |user|
+                = link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
+                = link_to user.name, user, target: '_blank'
+                br
+              td
+                - if project.assignment_submitted_at.present?
+                  = l project.assignment_submitted_at.in_time_zone(PDT_TIME_ZONE)
+                - else
+                  | Not yet submitted
+                br
+                | Last edited:
+                = l project.last_edited_at.in_time_zone(PDT_TIME_ZONE)
+            td Pending
+            td
+            td
+              = link_to content_tag(:i, '', class: 'fa fa-pencil'), assignment_edit_grade_path(@assignment, project), class: 'btn btn-xs btn-default', rel: 'tooltip', title: 'Edit'

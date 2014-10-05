@@ -1,0 +1,13 @@
+.well.blog-post
+  .header
+    h3
+      = link_to blog_post.title, project_blog_post_path(project, blog_post)
+      .subtitle
+        - if blog_post.private
+          i.icon-lock  title: 'This blog post is private', rel: 'tooltip', class: 'istooltip'  
+        - else
+          i.icon-unlock  title: 'This blog post is public', rel: 'tooltip', class: 'istooltip'  
+      - if can? :edit, blog_post
+        = link_to 'Edit', edit_project_blog_post_path(project, blog_post), class: 'btn-edit'
+  .content
+    = blog_post.body.html_safe

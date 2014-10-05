@@ -1,0 +1,21 @@
+- if user_signed_in?
+  #new-comment.media.issue-comment.new-comment
+    - user = current_user.decorate
+    = link_to image_tag(user.avatar(:thumb), class: 'media-object user-avatar'), user, class: 'pull-left'
+    .media-body.panel.panel-default
+      .panel-heading
+        small.text-muted Write a comment
+      .panel-body
+        = simple_form_for [commentable, comment], html: { data: { remote: true } } do |f|
+          = f.error_notification
+          = f.input :body, as: :text, input_html: { rows: 5 }, label: false
+          .pull-right
+            = f.submit 'Comment', class: 'btn btn-primary btn-sm'
+
+- else
+  p
+    | Please
+    = link_to 'log in', new_user_session_path(redirect_to: "#{issue_path(commentable.threadable, commentable)}#new-comment")
+    | or
+    = link_to 'sign up', new_user_registration_path(redirect_to: "#{issue_path(commentable.threadable, commentable)}#new-comment")
+    | to comment.

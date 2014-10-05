@@ -1,0 +1,8 @@
+.project-section  id: "widget-private-comments"  
+  .section-header
+    h2
+      small
+        i.fa.fa-lock.istooltip  title: 'Private', data: { container: 'body' }  
+      | Assignment feedback
+  .section-content
+    = render partial: 'widgets/private_comments', locals: { comments: comments, commentable: commentable.issues.first }

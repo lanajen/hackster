@@ -1,0 +1,6 @@
+.media
+  a.pull-left  href: hacker_space_path(hacker_space)  
+    = image_tag hacker_space.avatar, class: 'media-object'
+  .media-body
+    b= link_to hacker_space.name, hacker_space_path(hacker_space)
+    small.text-muted hacker space
