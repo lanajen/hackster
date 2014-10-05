@@ -22,7 +22,7 @@ class SitemapController < ApplicationController
 
   private
     def get_sitemap_pages
-      Rails.cache.fetch('sitemap', :expires_in => 1.hour) do
+      Rails.cache.fetch('sitemap', :expires_in => 6.hours) do
         @sitemap_pages = []
 
         @sitemap_pages << {
