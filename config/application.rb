@@ -82,3 +82,5 @@ module HackerIo
     config.middleware.use Rack::Attack
   end
 end
+
+GC::Profiler.enable
