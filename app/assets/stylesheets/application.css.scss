@@ -11,8 +11,8 @@
  *= require_self
  *= require medium-editor/medium-editor
  *= require medium-editor/themes/bootstrap
- *= require bootstrap-wysihtml5
  *= require slick
+ * require bootstrap-wysihtml5
  */
 @import 'custom_mixins';
 @import 'compass/css3';

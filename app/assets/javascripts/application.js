@@ -15,7 +15,7 @@
 //= require gist-embed
 //= require underscore
 //= require gmaps/google
-//= require bootstrap-wysihtml5
+// require bootstrap-wysihtml5
 
 //= require projects
 //= require groups
