@@ -91,7 +91,6 @@ class Group < ActiveRecord::Base
   end
 
   def invite_with_emails emails, invited_by=nil
-    emails = emails.gsub(/\r\n/, ',').gsub(/\n/, ',').gsub(/[ ]+/, ',').split(',').reject{ |l| l.blank? }
     emails.each do |email|
       invite_with_email email, invited_by
     end

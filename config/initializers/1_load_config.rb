@@ -20,6 +20,7 @@ POPULAR_TAGS = {
 SLOGAN = 'Hackster.io is the community for hardware hackers. Learn, build and share your projects.'
 SLOGAN_NO_BRAND = 'The community for hardware hackers.'
 URL_REGEXP = /^(((http|https):\/\/|)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}(:[0-9]{1,5})?(\/.*)?)$/ix
+EMAIL_REGEXP = /^[a-zA-Z0-9_\.\+\-]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9\-\.]+$/
 
 if Rails.env == 'development'
   ENV['FOG_DIRECTORY'] = ENV['DEV_FOG_DIRECTORY'] if ENV['UPLOAD'] == 'dev'

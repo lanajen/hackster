@@ -15,8 +15,13 @@ class GroupInvitationsController < ApplicationController
 
   def create
     if params[:emails].present?
-      @invitable.invite_with_emails params[:emails], current_user
-      flash[:notice] = "Your invitations are on their way!"
+      emails = prepare_emails(params[:emails])
+      if emails.any?
+        @invitable.invite_with_emails emails, current_user
+        flash[:notice] = "Your invitations are on their way!"
+      else
+        flash[:alert] = "Uho, looks like the email format you entered was incorrect."
+      end
     else
       flash[:alert] = "Please specify at least one email to invite."
     end
@@ -64,6 +69,10 @@ class GroupInvitationsController < ApplicationController
     def load_and_authorize_invitable
       load_invitable
       authorize! :manage, @invitable if @invitable
+    end
+
+    def prepare_emails emails
+      emails.gsub(/\r\n/, ',').gsub(/\n/, ',').gsub(/[ ]+/, ',').split(',').reject{ |l| !(l =~ EMAIL_REGEXP )}
     end
 
     def set_layout
