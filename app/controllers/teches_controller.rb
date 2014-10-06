@@ -101,7 +101,8 @@ class TechesController < ApplicationController
 
   private
     def load_projects
-      @projects = @tech.projects.visible.indexable_and_external.order('group_relations.workflow_state DESC').magic_sort.for_thumb_display.paginate(page: safe_page_params)
+      per_page = params[:per_page] ? [Integer(params[:per_page]), Project.per_page].min : Project.per_page
+      @projects = @tech.projects.visible.indexable_and_external.order('group_relations.workflow_state DESC').magic_sort.for_thumb_display.paginate(page: safe_page_params, per_page: per_page)
     end
 
     def load_tech
