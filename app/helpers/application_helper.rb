@@ -56,8 +56,8 @@ module ApplicationHelper
     # group, project, user
 
     case params[:m]
-    when 'contest'
-      contest = Contest.find_by_id(params[:id])
+    when 'challenge'
+      challenge = Challenge.find_by_id(params[:id])
     when 'group'
       group = Group.find_by_id(params[:id])
     when 'project'
@@ -68,7 +68,7 @@ module ApplicationHelper
 
     case params[:reason]
     when 'enter'
-      msg = "Please log in or sign up to enter #{content_tag(:b, contest.name)}."
+      msg = "Please log in or sign up to enter #{content_tag(:b, challenge.name)}."
     when 'project'
       msg = "Please log in or sign up to create a project."
       if group

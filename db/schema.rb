@@ -112,6 +112,37 @@ ActiveRecord::Schema.define(version: 20140927015716) do
   add_index "broadcasts", ["broadcastable_type", "broadcastable_id"], name: "index_broadcastable", using: :btree
   add_index "broadcasts", ["context_model_type", "context_model_id"], name: "index_broadcasted", using: :btree
 
+  create_table "challenge_admins", force: true do |t|
+    t.integer "challenge_id"
+    t.integer "user_id"
+    t.integer "roles_mask"
+  end
+
+  create_table "challenge_projects", force: true do |t|
+    t.integer  "project_id"
+    t.integer  "challenge_id"
+    t.string   "workflow_state"
+    t.text     "submission_notes"
+    t.text     "judging_notes"
+    t.integer  "prize_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "challenges", force: true do |t|
+    t.integer  "duration"
+    t.text     "properties"
+    t.datetime "start_date"
+    t.string   "video_link"
+    t.text     "counters_cache"
+    t.integer  "tech_id"
+    t.string   "name"
+    t.string   "slug"
+    t.string   "workflow_state"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "comments", force: true do |t|
     t.integer  "user_id",          default: 0, null: false
     t.integer  "commentable_id",               null: false
@@ -125,37 +156,6 @@ ActiveRecord::Schema.define(version: 20140927015716) do
 
   add_index "comments", ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type", using: :btree
   add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
-
-  create_table "contest_admins", force: true do |t|
-    t.integer "contest_id"
-    t.integer "user_id"
-    t.integer "roles_mask"
-  end
-
-  create_table "contest_projects", force: true do |t|
-    t.integer  "project_id"
-    t.integer  "contest_id"
-    t.string   "workflow_state"
-    t.text     "submission_notes"
-    t.text     "judging_notes"
-    t.integer  "prize_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "contests", force: true do |t|
-    t.integer  "duration"
-    t.text     "properties"
-    t.datetime "start_date"
-    t.string   "video_link"
-    t.text     "counters_cache"
-    t.integer  "tech_id"
-    t.string   "name"
-    t.string   "slug"
-    t.string   "workflow_state"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "courses_universities", force: true do |t|
     t.integer "university_id"
@@ -368,7 +368,7 @@ ActiveRecord::Schema.define(version: 20140927015716) do
   add_index "permissions", ["permissible_id", "permissible_type"], name: "index_permissions_on_permissible_id_and_permissible_type", using: :btree
 
   create_table "prizes", force: true do |t|
-    t.integer "contest_id"
+    t.integer "challenge_id"
     t.string  "name"
     t.text    "description"
     t.integer "position"

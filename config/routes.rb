@@ -226,15 +226,15 @@ HackerIo::Application.routes.draw do
 
     resources :hackers, controller: :users, only: [:index]
 
-    scope 'contests/:slug', as: :contest do
-      get '' => 'contests#show'
-      get 'rules' => 'contests#rules'
-      patch '' => 'contests#update'
+    scope 'challenges/:slug', as: :challenge do
+      get '' => 'challenges#show'
+      get 'rules' => 'challenges#rules'
+      patch '' => 'challenges#update'
     end
-    # get 'contests/:slug' => 'contests#show', as: :contest
-    resources :contests, except: [:show, :update] do
-      post 'projects' => 'contests#enter', on: :member, as: :enter
-      put 'update_workflow' => 'contests#update_workflow', on: :member
+    # get 'challenges/:slug' => 'challenges#show', as: :challenge
+    resources :challenges, except: [:show, :update] do
+      post 'projects' => 'challenges#enter', on: :member, as: :enter
+      put 'update_workflow' => 'challenges#update_workflow', on: :member
     end
 
     get 'activity' => 'broadcasts#index'
