@@ -6,7 +6,7 @@
           - if @project.assignment_submitted_at.present?
             .alert.alert-success.alert-flat.text-center
               p
-                | Assignment submitted on
+                ' Assignment submitted on
                 = l @project.assignment_submitted_at.in_time_zone(PDT_TIME_ZONE)
           - else
             .alert.alert-danger.alert-flat.text-center
@@ -48,7 +48,7 @@
               i.fa.fa-lock
               | This project is private so only #{who.to_sentence} can see it.
           - if @project.can_be_public? or current_user.try(:is?, :admin)
-            p= link_to 'Publish publicly', project_path(@project, project:   private: 0  ), method: :patch, class: 'btn btn-warning btn-sm btn-block'
+            p= link_to 'Publish publicly', project_path(@project, project: {  private: 0 } ), method: :patch, class: 'btn btn-warning btn-sm btn-block'
           - else
             = content_tag(:i, '', class: 'fa fa-info-circle istooltip', title: 'You need to add a title, a description and a cover image before you can make it public.')
           p
@@ -72,17 +72,17 @@
         #scroll-nav
           ul.nav
             li.active
-              a.scroll-nav-item.scroll.clearfix  href="#top-project-section"  target: "#top-project-section", offset: '0' 
+              a.scroll-nav-item.scroll.clearfix  href="#top-project-section"  data-target="#top-project-section" data-offset='0'
                 = @project.name
                 i.fa.fa-home
             / @project.widgets.each do |widget|
               li
-                a.scroll-nav-item.scroll.clearfix  href="#widget-#{widget.id}"  target: "#widget-#{widget.id", offset: '-20'} 
-                  i.fa  class: icon_for_widget(widget)  
+                a.scroll-nav-item.scroll.clearfix  href="#widget-#{widget.id}"  data-target="#widget-#{widget.id}" data-offset='-20'
+                  i.fa  class=icon_for_widget(widget)
                   = widget.name
             - if (@project.build_logs_count > 0 and !@project.private_logs) or can? :edit, @project
               li
-                a.scroll-nav-item.scroll.clearfix  href="#widget-comments"  target: "#build-logs", offset: '-20' 
+                a.scroll-nav-item.scroll.clearfix  href="#widget-comments"  data-target="#build-logs" data-offset='-20'
                   | Build Logs
                   span.comment-count
                     | (
@@ -91,7 +91,7 @@
                   i.fa.fa-book
             - if (@project.issues_count > 0 and !@project.private_issues) or can? :edit, @project
               li
-                a.scroll-nav-item.scroll.clearfix  href="#widget-comments"  target: "#issues", offset: '-20' 
+                a.scroll-nav-item.scroll.clearfix  href="#widget-comments"  data-target="#issues" data-offset='-20'
                   | Issues
                   span.comment-count
                     | (
@@ -99,7 +99,7 @@
                     | )
                   i.fa.fa-exclamation-circle
             li
-              a.scroll-nav-item.scroll.clearfix  href="#widget-comments"  target: "#widget-comments", offset: '-20' 
+              a.scroll-nav-item.scroll.clearfix  href="#widget-comments"  data-target="#widget-comments" data-offset='-20'
                 | Comments
                 span.comment-count
                   | (
@@ -114,18 +114,18 @@
           - if @project.public?
             .col-xs-6= render 'projects/project_embed_popup'
           .pull-right.col-xs-6.medium-status-bar
-            .pull-right= render partial: 'shared/medium_status_buttons', locals:   show_edit: true  
+            .pull-right= render partial: 'shared/medium_status_buttons', locals: { show_edit: true }
 
-        .medium-edit-show  style: 'display:none;'  
+        .medium-edit-show  style='display:none;'
           .col-xs-12.medium-status-bar
-            .pull-left= render partial: 'shared/medium_status', locals:   last_edit: @project.last_edited_at  
-            .pull-right= render partial: 'shared/medium_status_buttons', locals:   show_edit: true  
+            .pull-left= render partial: 'shared/medium_status', locals: { last_edit: @project.last_edited_at }
+            .pull-right= render partial: 'shared/medium_status_buttons', locals: { show_edit: true }
 
   - elsif @project.public?
     #mobile-bottom-bar
       .row
         - if !@can_edit or current_user.try(:is?, :admin)
-          .col-xs-6= render partial: 'respects/button', locals:   project: @project  
+          .col-xs-6= render partial: 'respects/button', locals: { project: @project }
         - else
           .col-xs-3 &nbsp;
         .col-xs-6= render 'projects/project_embed_popup'

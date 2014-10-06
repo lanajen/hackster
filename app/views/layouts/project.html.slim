@@ -9,16 +9,16 @@
     - if @show_sidebar
       = render "projects/project_sidebar_nav_#{@mode}"
       #content-with-sidebar.project
-        #model-editor  data: { model-id=@project.id model-type='Project', 'model-symbol' => 'project', 'model-placeholder' => 'Start describing your project here. Enter text or add media by clicking the left button.', 'model-url' => '/api/v1/projects' }  
-          .project-details  class: "#{'with-top-container' if @show_part_of}"  
-            .display= render "projects/teaser_# @mode "
+        #model-editor   model-id=@project.id model-type='Project' data-model-symbol='project' data-model-placeholder='Start describing your project here. Enter text or add media by clicking the left button.' data-model-url='/api/v1/projects'
+          .project-details  class="#{'with-top-container' if @show_part_of}"
+            .display= render "projects/teaser_#{@mode}"
           - if @mode == 'normal'
             = yield
           - else
             .container= yield
     - else
-      .project  id: "content"  
-        .project-details  class: "#{'with-top-container' if @show_part_of}"  
+      .project  id="content"
+        .project-details  class="#{'with-top-container' if @show_part_of}"
           .display= render "projects/teaser_# @mode "
         .container= yield
 

@@ -13,7 +13,7 @@
       = link_to @project.event.name, event_path(@project.event)
       - @project.awards.where(gradable_id: @project.collection_id, gradable_type: 'Group').each do |award|
         span.project-award
-          i.fa.fa-trophy.istooltip  title: award.grade, data: { container: 'body' }  
+          i.fa.fa-trophy.istooltip  title=award.grade   data-container='body'
       / if can? :request_access, @project.team
         - if user_signed_in? and member = current_user.is_team_member?(@project)
           - if member.request_pending?
@@ -31,7 +31,7 @@
 
 - cache [@project, 'teaser', @can_edit], tag: (["project-#{@project.id}-teaser", "team-#{@project.team_id}"] + @project.users.map{|u| "user-#{u.id}-thumb"}) do
   #top-project-section
-    #project-top-image style: "background-image: url('#{@project.cover_image}');" 
+    #project-top-image style="background-image: url('#{@project.cover_image}');"
     #top-project-section-deets
       #project-header
         .wrapper700
@@ -40,7 +40,7 @@
               - if @project.logo(:thumb, false)
                 = image_tag @project.logo(:thumb), class: 'project-logo'
               / if @project.private?
-                i.fa.fa-lock.private-project-icon.istooltip  title: 'Private project', data: { container: 'body' }  
+                i.fa.fa-lock.private-project-icon.istooltip  title='Private project'   data-container='body'
               = link_to @project.name, @project, class: 'hidden-link'
 
             #project-information
@@ -49,7 +49,7 @@
               - if @project.product_tags_cached.any?
                 .tags.meta
                   - @project.product_tags_cached.each do |tag|
-                    span= link_to tag, "/tags/# CGI::escape(tag) ", class: 'tag-link'
+                    span= link_to tag, "/tags/#{CGI::escape(tag)}", class: 'tag-link'
 
               - if @project.buy_link.present?
                 .tags.meta
@@ -70,13 +70,14 @@
             .user
               = link_to image_tag(u.decorate.avatar(:mini), class: ' img-circle' ), u, class: ''
               span.user-name
-                = link_to u.name, u, class: 'hidden-link'
+                ==> link_to u.name, u, class: 'hidden-link'
                 - if @project.team_members_count > 1
-                  = link_to "and #{pluralize (@project.team_members_count - 1), 'other'}", 'javascript:smoothScrollTo("#team-widget", -20);', class: 'hidden-link'
+                  ' and
+                  = link_to "#{pluralize (@project.team_members_count - 1), 'other'}", 'javascript:smoothScrollTo("#team-widget", -20);', class: 'hidden-link'
 
         - if @project.tech_tags_cached.any?
           .tags.meta.pull-left
-            | with
+            ' with
             - tags = @project.tech_tags_cached.map do |tag|
               - if tech = Tech.includes(:tech_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first
                 - tag_link = tech_short_path(tech)

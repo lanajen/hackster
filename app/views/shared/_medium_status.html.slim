@@ -1,6 +1,6 @@
 .medium-status-left
-  span.medium-edit-show.medium-status-recording  style: 'display: none;' 
-    i.fa.fa-circle.istooltip  title: 'Editing (auto-save is on)'  
+  span.medium-edit-show.medium-status-recording  style='display: none;'
+    i.fa.fa-circle.istooltip  title='Editing (auto-save is on)'
   span.medium-status
     - if last_edit
       | Last edit
@@ -10,5 +10,5 @@
       | Never saved
 
 = content_for :js do
-  .medium-error-bubble  style: 'display:none'  
+  .medium-error-bubble  style='display:none'
     .medium-error.alert.alert-danger

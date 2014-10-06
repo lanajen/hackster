@@ -15,7 +15,7 @@
               | by
               span.link-color= @prev.users.map   |u| u.name  .to_sentence
             p= truncate @prev.one_liner, length: 140
-          a.project-nav-overlay.project-nav-overlay-top  href: project_path(@prev, ref: params[:ref], ref_id: params[:ref_id], offset: params[:offset].to_i - 1)  
+          a.project-nav-overlay.project-nav-overlay-top  href=project_path(@prev, ref: params[:ref], ref_id: params[:ref_id], offset: params[:offset].to_i - 1)
 
     / if @next
       .project-nav.project-nav-next.visible-md.visible-lg
@@ -29,10 +29,10 @@
               | by
               span.link-color= @next.users.map   |u| u.name  .to_sentence
             p= truncate @next.one_liner, length: 140
-          a.project-nav-overlay.project-nav-overlay-top  href: project_path(@next, ref: params[:ref], ref_id: params[:ref_id], offset: params[:offset].to_i + 1)  
+          a.project-nav-overlay.project-nav-overlay-top  href=project_path(@next, ref: params[:ref], ref_id: params[:ref_id], offset: params[:offset].to_i + 1)
 
     - cache [@project, 'widgets', @can_edit], tag: ["project-#{@project.id}-widgets", 'project-widgets'] do
-      .project-section  id: "showcase"  
+      .project-section  id="showcase"
         .section-header
           h2 Showcase
         .section-content
@@ -57,7 +57,7 @@
                     p This is still a work in progress, please check back later!
 
       / @project.sections.each do |section|
-        .project-section  id: section.id  
+        .project-section  id=section.id
           .header
             h2= section.name
           - @widgets_by_section[section.index].each do |widget|
@@ -68,17 +68,17 @@
         .section-header
           h2
             - if @project.private_logs
-              i.fa.fa-lock.istooltip  title: 'Build logs are private', data: { container: 'body' }  
+              i.fa.fa-lock.istooltip  title='Build logs are private', data-container='body'
             | Build logs
             - if @can_edit
-              .pull-right= link_to "# content_tag(:i, '', class: 'fa fa-plus')  New build log".html_safe, new_project_log_path, class: 'btn btn-outline'
+              .pull-right= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} New build log".html_safe, new_project_log_path, class: 'btn btn-outline'
         .medium-editor.section-content
           - if log = @project.blog_posts.published.last.try(:decorate)
             .transparent-well
               .header
                 h4.h3
                   = link_to log.title, log_path(@project, log)
-                  small.text-muted.pull-right Build log ## log.sub_id 
+                  small.text-muted.pull-right Build log ## log.sub_id
                 small.text-muted
                   | by
                   = link_to log.user.name, log.user
@@ -101,10 +101,10 @@
         .section-header
           h2
             - if @project.private_issues
-              i.fa.fa-lock.istooltip  title: 'Issues are private', data: { container: 'body' }  
+              i.fa.fa-lock.istooltip  title='Issues are private' data-container='body'
             | Issues
             - if @can_edit
-              .pull-right= link_to "# content_tag(:i, '', class: 'fa fa-plus')  New issue".html_safe, new_project_issue_path, class: 'btn btn-outline'
+              .pull-right= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} New issue".html_safe, new_project_issue_path, class: 'btn btn-outline'
         .section-content
           - if @project.issues.any?
             .widget
@@ -197,7 +197,7 @@
                   .meta-title-wrap
                     .meta-title Tags
                   - @project.product_tags_cached.each do |tag|
-                    span= link_to "## tag}", "/tags/#{CGI::escape(tag) ", class: 'tag-link'
+                    span= link_to "##{tag}", "/tags/#{CGI::escape(tag)}", class: 'tag-link'
 
             - if @project.public?
               = render partial: 'widgets/respect_widget', locals: { users: @respecting_users }

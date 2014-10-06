@@ -1,10 +1,10 @@
 .image-gallery-container
   - ids = embed.widget.images.pluck(:id)
-  select.widget-attribute.widget-attribute-val  'data-attribute' => 'image_ids', 'data-value' => ids, multiple: 'multiple', style: 'display:none;'  
+  select.widget-attribute.widget-attribute-val  data-attribute='image_ids' data-value=ids multiple='multiple' style='display:none;'
     - ids.each do |id|
-      option  value: id, selected: 'selected'  
+      option  value=id selected='selected'
   .file-drop
-    .file-drop-inner  'data-disable-toolbar' => 'true'  
+    .file-drop-inner  data-disable-toolbar='true'
       | Drag and drop images or
       = link_to 'click to select some from your file system', ''
   .image-gallery
