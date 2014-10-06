@@ -22,7 +22,7 @@ class ProjectScraper
   end
 
   def initialize page_url, strategy=nil
-    @page_url = page_url#.chomp('/')
+    @page_url = page_url.chomp('/')
     @strategy = strategy
   end
 
