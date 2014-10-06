@@ -515,8 +515,8 @@ class User < ActiveRecord::Base
     roles.map(&:to_sym).include? role
   end
 
-  def is_contest_entrant? contest
-    self.in? contest.entrants
+  def is_challenge_entrant? challenge
+    self.in? challenge.entrants
   end
 
   def following? followable
