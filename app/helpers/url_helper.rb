@@ -7,6 +7,22 @@ module UrlHelper
     course_promotion_assignment_url params_for_assignment(assignment).merge(opts)
   end
 
+  def challenge_path challenge, opts={}
+    super challenge.slug, opts
+  end
+
+  def challenge_url challenge, opts={}
+    super challenge.slug, opts
+  end
+
+  def challenge_rules_path challenge, opts={}
+    super challenge.slug, opts
+  end
+
+  def challenge_rules_url challenge, opts={}
+    super challenge.slug, opts
+  end
+
   def community_path community, opts={}
     super params_for_group(community, 'community').merge(opts)
   end

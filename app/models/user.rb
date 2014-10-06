@@ -515,6 +515,10 @@ class User < ActiveRecord::Base
     roles.map(&:to_sym).include? role
   end
 
+  def is_contest_entrant? contest
+    self.in? contest.entrants
+  end
+
   def following? followable
     case followable
     when Group

@@ -24,10 +24,11 @@ include ScraperUtils
 
 errors = []
 
-HackerSpace.where('id > 1974').order(:id).each do |space|
+HackerSpace.all.order(:id).each do |space|
 
-def extract_from_hackerspace_org space, url
-  # link = 'http://hackerspaces.org/wiki/' + CGI.escape(space.name.gsub(' ', '_'))
+# def extract_from_hackerspace_org space, url=nil
+  next if space.hackerspace_org_link.present?
+  url = 'http://hackerspaces.org/wiki/' + space.name.gsub(' ', '_')
   space.hackerspace_org_link = url
 
   begin
@@ -50,7 +51,7 @@ def extract_from_hackerspace_org space, url
   }
 
   doc = doc.at_css('#mw-content-text table')
-  return space unless doc
+  next unless doc
   labels.each do |label, attr|
     els = doc.search "[text()*='#{label}']"
     el = els.first
@@ -75,19 +76,70 @@ def extract_from_hackerspace_org space, url
     space.send "#{attr}=", val
   end
 
-  # if logo = doc.at_css('.image img').try(:[], 'src')
-  #   logo = 'http://hackerspaces.org' + logo
-  #   i = Avatar.new
-  #   i.skip_file_check!
-  #   i.remote_file_url = logo
-  #   puts i.remote_file_url
-  #   space.avatar = i
-  # end
+  if logo = doc.at_css('.image img').try(:[], 'src')
+    logo = 'http://hackerspaces.org' + logo
+    bigger = logo.gsub('150px', '300px')
+    if test_link bigger
+      logo = bigger
+    elsif !test_link(logo)
+      logo = nil
+    end
+    if logo
+      i = Avatar.new
+      i.skip_file_check!
+      i.remote_file_url = logo
+      puts i.remote_file_url
+      space.avatar = i
+    end
+  end
 
-  space.save
-  # errors << space unless space.save
+  # space.save
+  errors << space unless space.save
   # puts space.errors.inspect
   # break
+end
+
+errors = []
+
+HackerSpace.all.order(:id).each do |space|
+  begin
+    data = fetch_page space.hackerspace_org_link
+  rescue
+    errors << space
+  end
+
+  doc  = Nokogiri::HTML data
+
+  doc = doc.at_css('#mw-content-text table')
+  unless doc
+    errors << space
+    next
+  end
+
+  if logo = doc.at_css('.image img').try(:[], 'src')
+    logo = 'http://hackerspaces.org' + logo
+    bigger = logo.gsub('150px', '300px')
+    if test_link bigger
+      logo = bigger
+    elsif !test_link(logo)
+      errors << space
+      next
+    end
+    i = Avatar.new
+    i.skip_file_check!
+    i.remote_file_url = logo
+    puts i.remote_file_url
+    # space.avatar = i
+    i.attachable = space
+    errors << space unless i.save
+  end
+end
+
+HackerSpace.all.order(:id).each do |space|
+  if space.address =~ /of America/ or space.address =~ /,\s*,/
+    space.address = space.address.gsub('of America', '').gsub(/,\s*,/, ',').strip
+    space.save
+  end
 end
 
 out="user_name,city,country,full_name,email,latitude,longitude,address,state,twitter_link,facebook_link,wiki_link,website_link,mailing_list_link,hackerspace_org_link,irc_link\r\n"

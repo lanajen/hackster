@@ -1144,6 +1144,11 @@ a.hidden-link {
   p {
     font-size: 12px;
   }
+  &.normal-size {
+    p {
+      font-size: initial;
+    }
+  }
 }
 
 #signup-popup {

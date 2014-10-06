@@ -201,6 +201,14 @@ $(function () {
       $('.popup-overlay').fadeOut(200);
     });
   }
+
+  $('a.smooth-scroll').click(function(e){
+    target = '#' + this.hash.substring(1);
+    if ($(target).length) {
+      e.preventDefault();
+      smoothScrollTo(target);
+    }
+  });
 });
 
 function smoothScrollToIfOutOfBounds(target, offsetTop, speed) {

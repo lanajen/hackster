@@ -56,6 +56,8 @@ module ApplicationHelper
     # group, project, user
 
     case params[:m]
+    when 'challenge'
+      challenge = Challenge.find_by_id(params[:id])
     when 'group'
       group = Group.find_by_id(params[:id])
     when 'project'
@@ -65,6 +67,8 @@ module ApplicationHelper
     end
 
     case params[:reason]
+    when 'enter'
+      msg = "Please log in or sign up to enter #{content_tag(:b, challenge.name)}."
     when 'project'
       msg = "Please log in or sign up to create a project."
       if group
@@ -120,6 +124,23 @@ module ApplicationHelper
       "
     end
     roles
+  end
+
+  def time_diff_in_natural_language(from_time, to_time)
+    from_time = from_time.to_time if from_time.respond_to?(:to_time)
+    to_time = to_time.to_time if to_time.respond_to?(:to_time)
+    distance_in_seconds = (to_time - from_time).round
+
+    %w(day hour minute second).each do |interval|
+      # For each interval type, if the amount of time remaining is greater than
+      # one unit, calculate how many units fit into the remaining time.
+      if distance_in_seconds >= 1.send(interval)
+        delta = (distance_in_seconds / 1.send(interval)).floor
+#        distance_in_seconds -= delta.send(interval)
+        return I18n.t("datetime.distance_in_words.x_#{interval}s", count: [0, delta].max)
+      end
+    end
+    I18n.t('datetime.distance_in_words.x_seconds', count: 0)
   end
 
   def truncate_at_token text, token

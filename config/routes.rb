@@ -226,6 +226,17 @@ HackerIo::Application.routes.draw do
 
     resources :hackers, controller: :users, only: [:index]
 
+    scope 'challenges/:slug', as: :challenge do
+      get '' => 'challenges#show'
+      get 'rules' => 'challenges#rules'
+      patch '' => 'challenges#update'
+    end
+    # get 'challenges/:slug' => 'challenges#show', as: :challenge
+    resources :challenges, except: [:show, :update] do
+      post 'projects' => 'challenges#enter', on: :member, as: :enter
+      put 'update_workflow' => 'challenges#update_workflow', on: :member
+    end
+
     get 'activity' => 'broadcasts#index'
 
     get 'users/registration/complete_profile' => 'users#after_registration', as: :user_after_registration

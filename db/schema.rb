@@ -11,11 +11,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140925010834) do
+ActiveRecord::Schema.define(version: 20140927015716) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pg_stat_statements"
+
+  create_table "addresses", force: true do |t|
+    t.integer "addressable_id"
+    t.string  "addressable_type"
+    t.string  "full_name"
+    t.string  "address_line1"
+    t.string  "address_line2"
+    t.string  "city"
+    t.string  "state"
+    t.string  "country"
+    t.string  "zip"
+    t.string  "phone"
+  end
 
   create_table "assignee_issues", force: true do |t|
     t.integer  "assignee_id", null: false
@@ -98,6 +111,37 @@ ActiveRecord::Schema.define(version: 20140925010834) do
 
   add_index "broadcasts", ["broadcastable_type", "broadcastable_id"], name: "index_broadcastable", using: :btree
   add_index "broadcasts", ["context_model_type", "context_model_id"], name: "index_broadcasted", using: :btree
+
+  create_table "challenge_admins", force: true do |t|
+    t.integer "challenge_id"
+    t.integer "user_id"
+    t.integer "roles_mask"
+  end
+
+  create_table "challenge_projects", force: true do |t|
+    t.integer  "project_id"
+    t.integer  "challenge_id"
+    t.string   "workflow_state"
+    t.text     "submission_notes"
+    t.text     "judging_notes"
+    t.integer  "prize_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "challenges", force: true do |t|
+    t.integer  "duration"
+    t.text     "properties"
+    t.datetime "start_date"
+    t.string   "video_link"
+    t.text     "counters_cache"
+    t.integer  "tech_id"
+    t.string   "name"
+    t.string   "slug"
+    t.string   "workflow_state"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "comments", force: true do |t|
     t.integer  "user_id",          default: 0, null: false
@@ -322,6 +366,13 @@ ActiveRecord::Schema.define(version: 20140925010834) do
 
   add_index "permissions", ["grantee_type", "grantee_id"], name: "index_permissions_on_grantee_type_and_grantee_id", using: :btree
   add_index "permissions", ["permissible_id", "permissible_type"], name: "index_permissions_on_permissible_id_and_permissible_type", using: :btree
+
+  create_table "prizes", force: true do |t|
+    t.integer "challenge_id"
+    t.string  "name"
+    t.text    "description"
+    t.integer "position"
+  end
 
   create_table "project_collections", force: true do |t|
     t.integer  "project_id"

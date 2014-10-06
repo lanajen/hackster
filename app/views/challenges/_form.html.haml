@@ -1,0 +1,143 @@
+= simple_nested_form_for @challenge, html: { class: 'form-horizontal remote accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
+  = f.error_notification
+
+  .row
+    .col-xs-12
+      %h3
+        Challenge settings
+        .pull-right
+          %ul.list-unstyled.list-inline
+            -# if current_user.is? :admin
+              %li= link_to 'Edit as admin', edit_admin_challenge_path(@challenge), class: 'btn btn-warning btn-sm'
+            %li= f.submit 'Save changes', class: 'btn btn-primary btn-sm'
+            %li= link_to 'Cancel', @challenge, class: 'btn-link btn-sm'
+      %hr
+
+  .row
+    .col-xs-12
+      .panel.panel-default
+        .panel-heading
+          %h4 General settings
+        .panel-body
+          = f.input :name, label: 'Title'
+          = f.input :new_slug, label: 'Challenge URL', wrapper: :addon do
+            %span.input-group-addon hackster.io/challenges/
+            = f.input_field :new_slug
+          = f.input :duration, hint: 'In days', collection: %w(7 15 30 45 60)
+          = f.input :multiple_entries, inline_label: 'Allow more than one entry per person?', as: :boolean, label: false
+          = f.input :teaser, as: :text, input_html: { rows: 2 }, hint: 'Maximum 140 characters.'
+          = f.input :video_link, label: 'Video link'
+          = f.input :description, as: :text, input_html: { rows: 10, class: 'text-editor' }
+          = f.input :eligibility, as: :text, input_html: { rows: 10, class: 'text-editor' }
+          = f.input :requirements, as: :text, input_html: { rows: 10, class: 'text-editor' }
+          = f.input :judging_criteria, as: :text, input_html: { rows: 10, class: 'text-editor' }
+          = f.input :how_to_enter, as: :text, input_html: { rows: 10, class: 'text-editor' }
+          = f.input :rules, as: :text, input_html: { rows: 20, class: 'text-editor' }
+
+      .panel.panel-default
+        .panel-heading
+          %h4
+            Prizes
+        .panel-body
+          - @challenge.prizes.new if @challenge.prizes.empty?
+          %table#sortable.table.table-condensed
+            %thead
+              %th
+              %th Place
+              %th Name
+              %th Description
+              %th
+            %tbody
+              = f.simple_fields_for :prizes, wrapper: false do |f_prize|
+                %tr.fields
+                  %td
+                    %i.fa.fa-bars.handle
+                    = f_prize.input :id, as: :hidden
+                  %td= f_prize.input :position, as: :string, label: false, wrapper: false, input_html: { class: 'position' }
+                  %td{ style: 'width:40%' }= f_prize.input :name, label: false, wrapper: false
+                  %td{ style: 'width:50%' }= f_prize.input :description, label: false, wrapper: false
+                  %td= f_prize.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-xs btn-danger'
+              %tr.sortable-disabled
+                %td{ colspan: 5 }= f.link_to_add 'Add another prize', :prizes, class: 'btn btn-xs btn-success'
+
+      - if current_user.is? :admin
+        .panel.panel-default
+          .panel-heading
+            %h4 Admin stuff
+          .panel-body
+            = f.input :tech_id, label: 'Promoted tool', collection: Tech.order(:full_name)
+
+      .panel.panel-default
+        .panel-heading
+          %h4 Danger zone
+        .panel-body
+          .form-group
+            .col-xs-8.col-xs-offset-4
+              - case @challenge.workflow_state.to_sym
+              - when :new
+                = link_to 'Launch challenge', update_workflow_challenge_path(@challenge, event: 'launch'), method: :put, class: 'btn btn-success btn-sm', data: { confirm: "Let's do this. Sure?" }
+          .form-group
+            .col-xs-8.col-xs-offset-4= link_to 'Delete challenge', challenge_path(@challenge), method: :delete, class: 'btn btn-danger btn-sm', data: { confirm: "Are you sure? There's no coming back!" }
+
+  .row
+    .col-xs-12
+      %hr
+      .pull-right
+        %ul.list-unstyled.list-inline
+          -# if current_user.is? :admin
+            %li= link_to 'Edit as admin', edit_admin_challenge_path(@challenge), class: 'btn btn-warning btn-sm'
+          %li= f.submit 'Save changes', class: 'btn btn-primary btn-sm'
+          %li= link_to 'Cancel', @challenge, class: 'btn-link btn-sm'
+
+= content_for :js do
+  :javascript
+    jQuery(function($) {
+      window.NestedFormEvents.prototype.insertFields = function(content, assoc, link) {
+        var $tr = $(link).closest('tr');
+        content = content.replace(/^<div class="fields">/,"");
+        content = content.replace(/<\/div>$/,"");
+        return $(content).insertBefore($tr);
+      }
+
+      $('form').on('nested:fieldAdded', function(event){
+        var field = event.field;
+        previousPosition = field.prev().find('input.position').val();
+        if (isNaN(previousPosition)) previousPosition = 0;
+        positionField = field.find('input.position');
+        positionField.val(parseInt(previousPosition) + 1);
+      })
+
+      $('form').on('nested:fieldRemoved', function(event){
+        event.field.addClass('removed');
+        resetPositions();
+      })
+
+      $(function() {
+        $('#sortable tbody')
+          .sortable({handle: ".handle", containment: "#sortable", items: 'tr:not(.sortable-disabled)'})
+          .bind('sortupdate', function(event, ui) {
+            resetPositions();
+          });
+      });
+
+      function resetPositions(){
+        $('#sortable tbody tr:not(.removed) input.position').each(function(i){
+          $(this)
+            .val(i+1)
+            .trigger('change');
+        });
+      }
+
+      $('.text-editor').each(function(){
+        $(this).wysihtml5({
+          toolbar: {
+            "font-styles": false,
+            "fa": true
+          }
+        });
+      });
+    });
+
+= content_for :head do
+  :css
+    .text-editor {overflow:scroll; max-height:300px}
