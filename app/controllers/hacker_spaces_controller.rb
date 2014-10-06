@@ -1,5 +1,5 @@
 class HackerSpacesController < ApplicationController
-  before_filter :authenticate_user!, except: [:show, :index]
+  before_filter :authenticate_user!, except: [:show, :redirect_to_show, :index]
   before_filter :load_hacker_space, only: [:show, :redirect_to_show, :update]
   layout 'hacker_space', only: [:edit, :update, :show]
   respond_to :html
