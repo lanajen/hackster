@@ -1,4 +1,11 @@
-.container
-  #error.sixteen.columns
-    .inner
-      | Something went wrong, an admin was notified. Please try again later.
+#error.col-xs-8.col-xs-offset-2  style='margin-top: 150px;'
+  .wellified.text-center
+    h2 Ooops
+    p
+      | Something that shouldn't have happened did happen. We got notified though and are probably already working on fixing it!
+      br
+      = link_to 'Go back to the previous page', :back
+      | or
+      = link_to 'go to the home page', root_path
+    .row
+      .col-xs-8.col-xs-offset-2= render 'shared/search_form'
