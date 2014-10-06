@@ -8,6 +8,7 @@ class GroupInvitationsController < ApplicationController
   def index
     redirect_to group_path(@group), alert: 'Invalid invitation token' and return unless token_valid?
     redirect_to group_path(@group) and return if user_signed_in? and current_user.is_member?(@group)
+    @hide_top_join_prompt = true
   end
 
   def new

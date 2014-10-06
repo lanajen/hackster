@@ -1,6 +1,6 @@
 - @hacker_space = GroupDecorator.decorate @hacker_space
 
-- unless user_signed_in? and current_user.is_member? @hacker_space
+- unless @hide_top_join_prompt or (user_signed_in? and current_user.is_member? @hacker_space)
   - if can? :join, @hacker_space
     .row
       .col-xs-12
