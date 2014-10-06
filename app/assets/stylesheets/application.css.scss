@@ -11,6 +11,7 @@
  *= require_self
  *= require medium-editor/medium-editor
  *= require medium-editor/themes/bootstrap
+ *= require bootstrap-wysihtml5
  *= require slick
  */
 @import 'custom_mixins';
@@ -21,7 +22,6 @@
 @import 'layout';
 @import 'projects';
 @import 'users';
-// @import 'slick';
 @import 'search';
 @import 'widgets';
 @import 'ilightbox/ilightbox';
@@ -33,6 +33,7 @@
 @import 'home';
 @import 'group';
 @import 'blog';
+@import 'contest';
 @import 'medium-editor-ext';
 @import 'responsive';
 @import 'pygments';

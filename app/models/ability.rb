@@ -22,6 +22,7 @@ class Ability
     can :join, Group do |group|
       !@user.persisted? and group.access_level == 'anyone'
     end
+    can :read, Contest, workflow_state: Contest::VISIBLE_STATES
 
     @user.roles.each{ |role| send role }
     beta_tester if @user.is? :beta_tester
@@ -132,6 +133,10 @@ class Ability
 
     can :debug, Project do |record|
       @user.can? :manage, record or (record.collection_id.present? and record.assignment.present? and @user.is_staff? record)
+    end
+
+    can :admin, Contest do |contest|
+      ContestAdmin.where(contest_id: contest.id, user_id: @user.id).with_group_roles('admin').any?
     end
   end
 end
