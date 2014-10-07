@@ -1,13 +1,13 @@
-table.sortable-table.table.table-hover.fields-container  contenteditable: 'false'  
+table.sortable-table.table.table-hover.fields-container  contenteditable='false'
   thead
     tr
-      th.widget-attribute.widget-attribute-editable  colspan: 5, 'data-attribute' => 'name', 'data-default-text' => 'Components list label', 'data-disable-toolbar' => 'true', 'data-contenteditable' => 'true', 'data-value' => (embed.widget.name.presence || 'Components list')  = (embed.widget.name.presence || 'Components list')
+      th.widget-attribute.widget-attribute-editable*{ colspan: 5, 'data-attribute' => 'name', 'data-default-text' => 'Components list label', 'data-disable-toolbar' => 'true', 'data-contenteditable' => 'true', 'data-value' => (embed.widget.name.presence || 'Components list') } = (embed.widget.name.presence || 'Components list')
   tbody
     - embed.widget.parts.each_with_index do |part, i|
       = render partial: "widgets/embeds/show/part", locals: { part: part, i: i }
 
-    tr.fields  'data-edit-only' => 'true'  
-      td  colspan: 5  
-        button.btn.btn-success.btn-xs  data: { action: 'add-part', template: render(partial: "widgets/embeds/show/part", locals: { part: Part.new, i: 'replace_id' }) }  
-          i.fa.fa-plus
+    tr.fields data-edit-only='true'
+      td  colspan=5
+        button.btn.btn-success.btn-xs*{ data: { action: 'add-part', template: render(partial: "widgets/embeds/show/part", locals: { part: Part.new, i: 'replace_id' }) } }
+          i.fa.fa-plus>
           | Add another part

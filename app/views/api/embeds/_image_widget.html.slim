@@ -11,8 +11,9 @@
     - embed.widget.images.each_with_index do |image, i|
       = render partial: 'api/embeds/image_widget_image', locals: { image: image, i: i, widget: embed.widget }
 
-javascript:
-  | if (typeof(lightBoxImages) == 'undefined') {
-    | lightBoxImages = {};
-  | }
-  | lightBoxImages[#{embed.widget.id}] = [#{lightbox_elements embed.widget.images}];
+= content_for :js do
+  javascript:
+    if (typeof(lightBoxImages) == 'undefined') {
+      lightBoxImages = {};
+    }
+    lightBoxImages[#{embed.widget.id}] = [#{lightbox_elements(embed.widget.images).html_safe}];

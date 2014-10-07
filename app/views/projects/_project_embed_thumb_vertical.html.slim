@@ -9,7 +9,7 @@ div  class="project-#{project.id} #{ "col-xs-#{col}" if defined?(col) }"
       .inner-thumb
         h3= link_to project.name, project_url(project), target: '_blank'
         h4
-          | by
+          ' by
           - if project.guest_name.present?
             = project.guest_name
           - else
@@ -19,15 +19,15 @@ div  class="project-#{project.id} #{ "col-xs-#{col}" if defined?(col) }"
           hr
           - if project.public?
             span.counter.first
-              i.fa.fa-eye
+              i.fa.fa-eye>
               = project.impressions_count
             span.counter
-              i.fa.fa-thumbs-o-up
+              i.fa.fa-thumbs-o-up>
               = project.respects_count
           - else
             | Private
           span.counter
-            i.fa.fa-comments
+            i.fa.fa-comments>
             = project.comments_count
         .thumb-bottom.featured-logo
           = link_to "featured on #{image_tag('hackster_logo_20.png', alt: 'Hackster.io', title: SLOGAN)}".html_safe, root_url, target: '_blank'

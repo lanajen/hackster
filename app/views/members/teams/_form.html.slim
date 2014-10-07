@@ -1,16 +1,16 @@
 .form-group.boolean.optional
-  input name: "use_guest", type: "hidden", value: "0" 
+  input name="use_guest" type="hidden" value="0"
   label.checkbox
     = check_box_tag :use_guest, '1', @project.guest_name.present?
     | I'm posting this project on behalf of someone else
 
 = content_for :js do
   javascript:
-    | $('body').on('click', '#use_guest', function() {
-      | $('#project-form, #team-form').slideToggle();
-    | });
+    $('body').on('click', '#use_guest', function() {
+      $('#project-form, #team-form').slideToggle();
+    });
 
-#project-form  style: "#{'display:none;' unless @project.guest_name.present?}" 
+#project-form  style="#{'display:none;' unless @project.guest_name.present?}"
   = simple_form_for @project, url: project_guest_name_path(@project), html: { class: 'widget-form' } do |f|
     = f.error_notification
     = f.input :guest_name, label: 'Author name', hint: "Use this field if you're posting this project on behalf of somebody else. The project team will only consist of this author. Your name will show as \"Posted by\"."
@@ -19,7 +19,7 @@
       = f.submit 'Save changes', class: 'btn btn-primary'
       = link_to 'Cancel', @project, class: 'btn btn-link btn-sm'
 
-#team-form  style: "#{'display:none;' if @project.guest_name.present?}" 
+#team-form  style="#{'display:none;' if @project.guest_name.present?}"
   = simple_nested_form_for @group, url: project_team_path(@project), html: { class: 'widget-form' } do |f|
     = f.error_notification
 
@@ -28,7 +28,8 @@
       .input-group
         span.input-group-addon hackster.io/
         = f.input_field :new_user_name
-        span.input-group-addon /# @project.slug 
+        span.input-group-addon
+          | /#{@project.slug}
     table#sortable.table.table-condensed
       thead
         th User
@@ -70,7 +71,7 @@
                   | Not saved
               td= f_member.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-sm btn-danger'
         tr.sortable-disabled
-          td  colspan: 4  = f.link_to_add 'Add a member', :members, class: 'btn btn-xs btn-success'
+          td  colspan=4  = f.link_to_add 'Add a member', :members, class: 'btn btn-xs btn-success'
     / %p.help-block
       | Add users to manage your group.
 
@@ -81,11 +82,11 @@
 
   = content_for :js do
     javascript:
-      | jQuery(function($) {
-        | window.NestedFormEvents.prototype.insertFields = function(content, assoc, link) {
-          | var $tr = $(link).closest('tr');
-          | content = content.replace(/^<div class="fields">/,"");
-          | content = content.replace(/<\/div>$/,"");
-          | return $(content).insertBefore($tr);
-        | }
-      | });
+      jQuery(function($) {
+        window.NestedFormEvents.prototype.insertFields = function(content, assoc, link) {
+          var $tr = $(link).closest('tr');
+          content = content.replace(/^<div class="fields">/,"");
+          content = content.replace(/<\/div>$/,"");
+          return $(content).insertBefore($tr);
+        }
+      });

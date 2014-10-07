@@ -73,7 +73,7 @@ html(lang="en")
                             li.title
                               h4 Popular tags
                             - POPULAR_TAGS.each do |tag, link|
-                              li= link_to tag, "# link ?ref=topnav"
+                              li= link_to tag, "#{link}?ref=topnav"
                 li= link_to 'Tools', tools_path, class: 'nav-link'
                 li.dropdown
                   a.nav-link.dropdown-toggle data-toggle="dropdown" href='#'

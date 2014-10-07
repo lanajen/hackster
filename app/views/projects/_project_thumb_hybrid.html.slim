@@ -22,7 +22,7 @@
             .inner-thumb
               h3= link_to project.name, project_path(project), class: 'project-link-with-ref'
               h4
-                | by
+                ' by
                 - if project.guest_name.present?
                   = project.guest_name
                 - elsif project.team.full_name.present?
@@ -39,17 +39,17 @@
                 hr
                 - if project.public?
                   span.counter.first.istooltip  title='Views'
-                    i.fa.fa-eye
+                    i.fa.fa-eye>
                     = number_with_delimiter project.impressions_count
                   span.counter.istooltip  title='Respects'
-                    i.fa.fa-thumbs-o-up
+                    i.fa.fa-thumbs-o-up>
                     = project.respects_count
                 - else
                   span.counter
-                    i.fa.fa-lock
+                    i.fa.fa-lock>
                     | Private
                 span.counter.istooltip  title='Comments' data-container='body'
-                  i.fa.fa-comments
+                  i.fa.fa-comments>
                   = project.comments_count
                 - if project.wip?
                   span.counter.istooltip  title='Work in progress' data-container='body'
@@ -63,7 +63,7 @@
               h3
                 = link_to project.name, project_path(project), class: 'project-link-with-ref'
                 small
-                  | by
+                  ' by
                   - if project.guest_name.present?
                     = project.guest_name
                   - elsif project.team.full_name.present?
@@ -75,17 +75,17 @@
                 hr
                 - if project.public?
                   span.counter.first.istooltip  title='Views'
-                    i.fa.fa-eye
+                    i.fa.fa-eye>
                     = number_with_delimiter project.impressions_count
                   span.counter.istooltip  title='Respects'
-                    i.fa.fa-thumbs-o-up
+                    i.fa.fa-thumbs-o-up>
                     = project.respects_count
                 - else
                   span.counter
-                    i.fa.fa-lock
+                    i.fa.fa-lock>
                     | Private
                 span.counter.istooltip  title='Comments'
-                  i.fa.fa-comments
+                  i.fa.fa-comments>
                   = project.comments_count
                 - if project.wip?
                   span.counter.istooltip  title='Work in progress' data-container='body'

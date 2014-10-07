@@ -22,11 +22,11 @@
           .hidden= @project.id
           / = f.input :name, label: 'Title'
           = f.input :new_slug, label: 'Project URL', wrapper: :addon do
-            span.input-group-addon hackster.io/# @project.user_name_for_url.truncate(10) /
+            span.input-group-addon hackster.io/#{@project.user_name_for_url.truncate(10)}/
             = f.input_field :new_slug
 
           / = f.input :one_liner, as: :text, input_html: { rows: 4 },
-            | hint: 'Maximum 140 characters'
+            hint: 'Maximum 140 characters'
           / = f.input :website, label: 'Project website'
           / = f.input :tech_tags_string, as: :string, label: 'Technologies used', hint: 'Separate technologies by commas', placeholder: 'Eg: Arduino, ATmega, Attiny...'
           / = f.input :product_tags_string, as: :string, label: 'Tags', hint: 'Separate tags by commas. Used for finding your project more easily.', placeholder: 'Eg: home automation, drone, display...'
@@ -57,7 +57,7 @@
               .col-xs-4
                 label.control-label Private sharing link
               .col-xs-8
-                input.form-control  type: 'text', value: "http://#{APP_CONFIG['full_host']}/projects/#{@project.id}?auth_token=#{@project.security_token}", onclick: 'this.select();', style: 'color: #666;background:#ddd'  
+                input.form-control  type='text' value="http://#{APP_CONFIG['full_host']}/projects/#{@project.id}?auth_token=#{@project.security_token}", onclick: 'this.select();', style: 'color: #666;background:#ddd'
                 p.help-block Use this link if you want to share your project while keeping it private.
 
           = f.input :private_logs, inline_label: 'Private build logs', hint: "If your project is published, you can choose to keep build logs private by checking this box.", label: false, as: :boolean
@@ -122,7 +122,7 @@
           h4 Danger zone
         .panel-body
           .form-group
-            .col-xs-8.col-xs-offset-4= link_to 'Delete project', project_path(@project), method: :delete, class: 'btn btn-danger btn-sm', data:   confirm: "Are you sure? There's no coming back!"  
+            .col-xs-8.col-xs-offset-4= link_to 'Delete project', project_path(@project), method: :delete, class: 'btn btn-danger btn-sm', data: { confirm: "Are you sure? There's no coming back!" }
 
   .row
     .col-xs-12

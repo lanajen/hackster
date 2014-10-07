@@ -39,17 +39,15 @@
           .widget
             .content
               .text-widget.project-show-item
-                - if @can_edit
-                  - if @project.model.description.blank?
-                    #showcase-edit-placeholder
-                      p
-                        = link_to 'Enter edit mode', edit_project_path(@project), class: 'btn btn-primary'
-                        | to describe your project using text, pictures, videos, schematics, code and more.
-                      p
-                        small
-                          strong Tip:
-                          | You can also use the orange button in the left sidebar called "Edit project details" to start editing.
-                  = render partial: 'shared/medium_editor', locals: { editable: @project.description, attribute_name: 'description' }
+                - if @can_edit and @project.model.description.blank?
+                  #showcase-edit-placeholder
+                    p
+                      = link_to 'Enter edit mode', edit_project_path(@project), class: 'btn btn-primary'
+                      | to describe your project using text, pictures, videos, schematics, code and more.
+                    p
+                      small
+                        strong Tip:
+                        | You can also use the orange button in the left sidebar called "Edit project details" to start editing.
                 - elsif @project.model.description.present?
                   #medium-editor= @project.description
                 - else
@@ -78,13 +76,13 @@
               .header
                 h4.h3
                   = link_to log.title, log_path(@project, log)
-                  small.text-muted.pull-right Build log ## log.sub_id
+                  small.text-muted.pull-right Build log ##{log.sub_id}
                 small.text-muted
-                  | by
-                  = link_to log.user.name, log.user
-                  = time_ago_in_words log.created_at
-                  | ago
-                  i.fa.fa-comments
+                  ' by
+                  ==> link_to log.user.name, log.user
+                  ==> time_ago_in_words log.created_at
+                  ' ago
+                  i.fa.fa-comments>
                   = link_to pluralize(log.comments.size, 'comment'), log_path(@project, log, anchor: 'comments')
               .content
                 = log.body.html_safe

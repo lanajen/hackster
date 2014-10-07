@@ -24,16 +24,16 @@
                 - else
                   | Build log ##{log.sub_id}
             small.text-muted
-              | by
-              = link_to log.user.name, log.user
-              = time_ago_in_words log.created_at
-              | ago
+              ' by
+              ==> link_to log.user.name, log.user
+              ==> time_ago_in_words log.created_at
+              ' ago
               - unless log.draft?
-                i.fa.fa-comments
+                i.fa.fa-comments>
                 = link_to pluralize(log.comments.size, 'comment'), log_path(@project, log, anchor: 'comments')
           #medium-editor.content
             = log.body
-            p  style: 'margin-top:10px'  
+            p  style='margin-top:10px'
               - if log.draft?
                 = link_to 'Edit this log', edit_project_log_path(@project.user_name_for_url, @project.slug, log.id), class: 'btn btn-warning btn-sm'
               - else

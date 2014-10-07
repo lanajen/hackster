@@ -11,6 +11,6 @@ span.hidden-xs
   - else
     = content_tag :button, "#{content_tag(:i, '', class: 'fa fa-check')} Finish editing".html_safe, class: 'btn btn-success medium-edit-stop medium-edit-show btn-sm', href: project_path(@project)
 
-.btn-group
+.btn-group<
   = link_to content_tag(:i, '', class: 'fa fa-cog'), settings_project_path(@project), class: 'btn btn-default btn-sm', rel: 'tooltip', data: { container: 'body' }, title: 'Edit settings'
   = link_to content_tag(:i, '', class: 'fa fa-group'), project_edit_team_path(@project), class: 'btn btn-default btn-sm', rel: 'tooltip', data: { container: 'body' }, title: 'Manage team'

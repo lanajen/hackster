@@ -1722,7 +1722,6 @@ function insertWidget(type, modelId, modelType, node, data) {
     async: false,
     data: data,
     success: function(data){
-      console.log(data);
       if (data.code) {
         div = $('<div contenteditable="false" class="embed-frame" data-type="widget" data-widget-id="' + data.widget_id + '">' + data.code + '</div>');
         toolbar = $(embedToolbar.main);

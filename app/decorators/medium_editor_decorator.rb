@@ -5,7 +5,7 @@ module MediumEditorDecorator
         parsed = Nokogiri::HTML::DocumentFragment.parse model_attribute
 
         parsed.css('.embed-frame').each do |el|
-          begin
+          # begin
             type = el['data-type']
 
             embed = case type
@@ -28,6 +28,7 @@ module MediumEditorDecorator
             next unless embed.provider_name
             code = h.render partial: "api/embeds/embed", locals: { embed: embed }
             next unless code
+            code = code.try(:force_encoding, "UTF-8")  # somehow slim templates come out as ASCII
 
             if caption = el['data-caption']
               code = Nokogiri::HTML::DocumentFragment.parse code
@@ -40,7 +41,7 @@ module MediumEditorDecorator
             el.add_child code if code
           # rescue
           #   next
-          end
+          # end
         end
         parsed.to_html.html_safe
       else
