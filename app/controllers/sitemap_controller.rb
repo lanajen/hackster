@@ -1,103 +1,160 @@
 class SitemapController < ApplicationController
+  DYNAMIC_CATEGORIES = %w(blog projects external_projects teches users product_tags hacker_spaces)
+  ALL_CATEGORIES = DYNAMIC_CATEGORIES + %w(static)
   PER_PAGE = 100
   skip_before_filter :store_location_before
   skip_after_filter :store_location_after
   skip_before_filter :authenticate_user!
+  helper_method :get_pages
   respond_to :xml
 
   def index
-    get_sitemap_pages
-    @count = (@sitemap_pages.size.to_f / PER_PAGE).ceil
-  end
-
-  def show
-    get_sitemap_pages
-
-    if page = safe_page_params
-      from = (page.to_i-1) * PER_PAGE
-      to = from + 99
-      @sitemap_pages = @sitemap_pages[from..to]
+    @pages = { static: 1 }
+    DYNAMIC_CATEGORIES.each do |category|
+      count = (send("#{category}_query").count.to_f / PER_PAGE).ceil
+      @pages[category] = count
     end
   end
 
+  def show
+    @category = params[:category]
+    @page = (safe_page_params || 1) - 1
+
+    @ok = @category.in?(ALL_CATEGORIES)
+  end
+
   private
-    def get_sitemap_pages
-      Rails.cache.fetch('sitemap', :expires_in => 6.hours) do
-        @sitemap_pages = []
-
-        @sitemap_pages << {
-          loc: root_url,
-          changefreq: 'daily',
-          lastmod: Time.now.strftime("%F"),
-        }
-
-        @sitemap_pages << {
-          loc: tools_url,
-          changefreq: 'daily',
-          lastmod: Time.now.strftime("%F"),
-        }
-
-        @sitemap_pages << {
-          loc: hacker_spaces_url,
-          changefreq: 'daily',
-          lastmod: Time.now.strftime("%F"),
-        }
-
-        Project.indexable.find_each do |project|
-          @sitemap_pages << {
-            loc: "#{url_for(project)}",
-            changefreq: 'weekly',
-            lastmod: project.updated_at.strftime("%F"),
-          }
-        end
-
-        Tech.find_each do |tech|
-          @sitemap_pages << {
-            loc: "#{tech_short_url(tech)}",
-            changefreq: 'weekly',
-            lastmod: tech.updated_at.strftime("%F"),
-          }
-        end
-
-        Monologue::Post.published.find_each do |post|
-          @sitemap_pages << {
-            loc: "http://#{APP_CONFIG['full_host']}#{post.full_url}",
-            changefreq: 'monthly',
-            lastmod: post.updated_at.strftime("%F"),
-          }
-        end
-
-        Project.external.find_each do |project|
-          @sitemap_pages << {
-            loc: "#{external_project_url(project)}",
-            changefreq: 'monthly',
-            lastmod: project.updated_at.strftime("%F"),
-          }
-        end
-
-        User.invitation_accepted_or_not_invited.find_each do |user|
-          @sitemap_pages << {
-            loc: "#{url_for(user)}",
-            changefreq: 'weekly',
-            lastmod: user.updated_at.strftime("%F"),
-          }
-        end
-
-        ProductTag.unique_names.find_each do |tag|
-          @sitemap_pages << {
-            loc: "#{tags_url(CGI::escape(tag.name))}",
-            changefreq: 'weekly',
-            lastmod: tag.updated_at.strftime("%F"),
-          }
-        end
-
-        HackerSpace.public.find_each do |space|
-          @sitemap_pages << {
-            loc: "#{hacker_space_url(space)}",
-            changefreq: 'weekly',
-            lastmod: space.updated_at.strftime("%F"),
-          }
-        end
+    def get_pages category, page
+      if category == 'static'
+        static_pages
+      elsif category.in? DYNAMIC_CATEGORIES
+        send("#{category}_pages", page * PER_PAGE)
       end
+    end
+
+    def static_pages
+      pages = []
+
+      pages << {
+        loc: root_url,
+        changefreq: 'daily',
+        lastmod: Time.now.strftime("%F"),
+      }
+
+      pages << {
+        loc: tools_url,
+        changefreq: 'daily',
+        lastmod: Time.now.strftime("%F"),
+      }
+
+      pages << {
+        loc: hacker_spaces_url,
+        changefreq: 'daily',
+        lastmod: Time.now.strftime("%F"),
+      }
+
+      pages
+    end
+
+    def blog_query
+      Monologue::Post.published
+    end
+
+    def blog_pages offset=0
+      sitemap_scope(blog_query, offset).map do |post|
+        {
+          loc: "http://#{APP_CONFIG['full_host']}#{post.full_url}",
+          changefreq: 'monthly',
+          lastmod: post.updated_at.strftime("%F"),
+        }
+      end
+    end
+
+    def projects_query
+      Project.indexable
+    end
+
+    def projects_pages offset=0
+      sitemap_scope(projects_query.includes(:team), offset).map do |project|
+        {
+          loc: "#{url_for(project)}",
+          changefreq: 'weekly',
+          lastmod: project.updated_at.strftime("%F"),
+        }
+      end
+    end
+
+    def external_projects_query
+      Project.external.where(approved: true)
+    end
+
+    def external_projects_pages offset=0
+      sitemap_scope(external_projects_query, offset).map do |project|
+        {
+          loc: "#{external_project_url(project)}",
+          changefreq: 'monthly',
+          lastmod: project.updated_at.strftime("%F"),
+        }
+      end
+    end
+
+    def teches_query
+      Tech
+    end
+
+    def teches_pages offset=0
+      sitemap_scope(teches_query, offset).map do |tech|
+        {
+          loc: "#{tech_short_url(tech)}",
+          changefreq: 'weekly',
+          lastmod: tech.updated_at.strftime("%F"),
+        }
+      end
+    end
+
+    def users_query
+      User.invitation_accepted_or_not_invited
+    end
+
+    def users_pages offset=0
+      sitemap_scope(users_query, offset).map do |user|
+        {
+          loc: "#{url_for(user)}",
+          changefreq: 'weekly',
+          lastmod: user.updated_at.strftime("%F"),
+        }
+      end
+    end
+
+    def product_tags_query
+      ProductTag.unique_names
+    end
+
+    def product_tags_pages offset=0
+      sitemap_scope(product_tags_query, offset).map do |tag|
+        {
+          loc: "#{tags_url(CGI::escape(tag.name))}",
+          changefreq: 'weekly',
+          lastmod: tag.updated_at.strftime("%F"),
+        }
+      end
+    end
+
+    def hacker_spaces_query
+      HackerSpace.public
+    end
+
+    def hacker_spaces_pages offset=0
+      sitemap_scope(hacker_spaces_query, offset).map do |space|
+        {
+          loc: "#{hacker_space_url(space)}",
+          changefreq: 'weekly',
+          lastmod: space.updated_at.strftime("%F"),
+        }
+      end
+    end
+
+    def sitemap_scope query, offset
+      query.send(:order, :id).send(:offset, offset).send(:limit, PER_PAGE)
     end
 end
