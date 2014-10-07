@@ -58,7 +58,6 @@ HackerIo::Application.routes.draw do
     end
 
     namespace :admin do
-      # mount ResqueAuthServer.new, at: "/resque"
       authenticate :user, lambda { |u| u.is? :admin } do
         mount Sidekiq::Web => '/sidekiq'
         mount Split::Dashboard, :at => 'split'
@@ -73,10 +72,6 @@ HackerIo::Application.routes.draw do
       get 'followers' => 'pages#followers'
       delete 'sidekiq/failures' => 'pages#clear_sidekiq_failures'
 
-      resources :invite_codes, except: [:show]
-      resources :invite_requests do
-        patch 'send_invite' => 'invite_requests#send_invite', on: :member
-      end
       resources :groups, except: [:show]
       resources :projects, except: [:show]
       resources :users, except: [:show]
@@ -99,7 +94,6 @@ HackerIo::Application.routes.draw do
       patch 'projects/link' => 'groups/projects#link'
     end
 
-    # get 'hackerspaces/:user_name' => 'hacker_spaces#show', as: :hacker_space
     get 'h/:user_name' => 'hacker_spaces#redirect_to_show'
     resources :hacker_spaces, except: [:show, :update], path: 'hackerspaces'
     scope 'hackerspaces/:user_name', as: :hacker_space do
@@ -169,8 +163,6 @@ HackerIo::Application.routes.draw do
     resources :files, only: [:create, :show, :destroy] do
       get 'signed_url', on: :collection
     end
-    resources :invite_requests, only: [:create, :update, :edit]
-    # get 'request/an/invite' => 'invite_requests#new', as: :new_invite_request
     delete 'notifications' => 'notifications#destroy'
 
     resources :projects, except: [:show, :update, :destroy] do
@@ -193,13 +185,10 @@ HackerIo::Application.routes.draw do
         get 'create' => 'respects#create', on: :collection, as: :create
         delete '' => 'respects#destroy', on: :collection
       end
-      resources :widgets
-      patch 'widgets' => 'widgets#save'
     end
 
     get 'projects/e/:user_name/:id' => 'projects#show_external', as: :external_project, id: /[0-9]+\-[A-Za-z0-9\-]+/
     get 'projects/e/:user_name/:slug' => 'projects#redirect_external', as: :external_project_redirect  # legacy route (google has indexed them)
-    get 'get_xframe_options' => 'projects#get_xframe_options'
 
     resources :assignments, only: [] do
       get 'grades' => 'grades#index', as: :grades
@@ -226,19 +215,12 @@ HackerIo::Application.routes.draw do
 
     resources :hackers, controller: :users, only: [:index]
 
-    get 'activity' => 'broadcasts#index'
-
     get 'users/registration/complete_profile' => 'users#after_registration', as: :user_after_registration
     patch 'users/registration/complete_profile' => 'users#after_registration_save'
-
-
-    get 'contact' => 'contact#new'
-    post 'contact' => 'contact#create'
 
     get 'about' => 'pages#about'
     # get 'help' => 'pages#help'
     get 'home', to: redirect('/')
-    # get 'me', to: 'users#me'
 
     get 'ping' => 'pages#ping'  # for availability monitoring
     get 'obscure/path/to/cron' => 'cron#run'
@@ -260,7 +242,6 @@ HackerIo::Application.routes.draw do
 
     mount Monologue::Engine, at: '/blog'
 
-    # get ':slug' => 'slugs#show', slug: /[A-Za-z0-9_]{3,}/, constraints: { format: /(html|json)/ }
     constraints(TechPage) do
       get ':slug' => 'teches#show', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
       get ':slug/embed' => 'teches#embed', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
@@ -291,12 +272,6 @@ HackerIo::Application.routes.draw do
     scope module: :client, as: :client do
 
       get 'search' => 'search#search'
-
-      # get ':user_name' => 'users#show', as: :user, user_name: /[A-Za-z0-9_]{3,}/, constraints: { format: /(html|json)/ }
-
-      # scope ':user_name/:project_slug', as: :project, user_name: /[A-Za-z0-9_]{3,}/, project_slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|js)/ } do
-      #   get '' => 'projects#show', as: ''
-      # end
 
       root to: 'projects#index'
     end

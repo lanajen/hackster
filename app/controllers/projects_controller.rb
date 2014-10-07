@@ -148,12 +148,6 @@ class ProjectsController < ApplicationController
     redirect_to external_project_path(@project), notice: "You just claimed #{@project.name}. We'll let you know when it's approved!"
   end
 
-  def get_xframe_options
-    embed = !get_xframe_options_for(params[:url]).in?(%w(SAMEORIGIN DENY))
-
-    render json: embed.to_json
-  end
-
   def embed
     title @project.name
     meta_desc "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."
@@ -290,18 +284,6 @@ class ProjectsController < ApplicationController
   end
 
   private
-    def get_xframe_options_for url
-      u = URI.parse(url)
-      http = Net::HTTP.new(u.host, u.port)
-      http.use_ssl = true if u.scheme == 'https'
-      # http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      res = http.request_head(u.request_uri)
-
-      res['X-Frame-Options']
-    rescue => e
-      e.message
-    end
-
     def initialize_project
 #      @project.images.new# unless @project.images.any?
 #      @project.build_video unless @project.video
