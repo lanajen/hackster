@@ -1,8 +1,8 @@
 source 'http://rubygems.org'
 source 'https://rails-assets.org'
-ruby '2.0.0'
+ruby '2.1.3'
 
-gem 'rails', '4.1.1'
+gem 'rails', '4.1.6'
 
 # load early so that env variables are available to other gems
 gem 'dotenv-rails', :groups => [:development, :test]
