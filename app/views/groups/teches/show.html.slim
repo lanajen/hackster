@@ -2,9 +2,9 @@
   meta(property="og:title" content="#{@tech.name} projects")
   meta(property="og:description" content="People are hacking with #{@tech.name} on Hackster.io. Join them!")
   - if @tech.avatar
-    meta(property="og:image" content="#{@tech.avatar.file_url(:big)}")
-    meta(property="twitter:image:src" content="#{@tech.avatar.file_url(:big)}")
-  meta(property="og:url" content="# tech_short_url(@tech) ")
+    meta(property="og:image" content=@tech.avatar.file_url(:big))
+    meta(property="twitter:image:src" content=@tech.avatar.file_url(:big))
+  meta(property="og:url" content=tech_short_url(@tech))
   meta(property="og:site_name" content="Hackster.io")
   meta(property="twitter:card" content="summary")
   meta(property="twitter:site" content="@hacksterio")
@@ -13,7 +13,7 @@
   meta(property="twitter:description" content="#{@tech.mini_resume}")
   - if link = @tech.twitter_link.presence and handle = link.match(/twitter.com\/(.+)/).try(:[], 1)
     meta(property="twitter:creator" content="@#{handle}")
-  link(rel="canonical" href="#{tech_short_url(@tech)}")
+  link(rel="canonical" href=tech_short_url(@tech))
 
 - if @tech.cover_image
   section#top-bg.show-on-desktop
