@@ -37,7 +37,7 @@
         h1
           - if @hacker_space.private?
             small
-              i.fa.fa-lock.istooltip*{ title: 'Private group', data: { container: 'body' } }
+              i.fa.fa-lock.istooltip>*{ title: 'Private group', data: { container: 'body' } }
           = link_to @hacker_space.name, hacker_space_path(@hacker_space)
         p
           - if @hacker_space.mini_resume.present?

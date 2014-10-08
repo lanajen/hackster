@@ -70,6 +70,19 @@ class Admin::PagesController < Admin::BaseController
     @follow_relations = FollowRelation.order(created_at: :desc).paginate(page: safe_page_params)
   end
 
+  def hacker_spaces
+    title "Admin / Hacker Spaces - #{safe_page_params}"
+    @fields = {
+      'created_at' => 'groups.created_at',
+      'name' => 'groups.full_name',
+      'user_name' => 'groups.user_name',
+    }
+
+    params[:sort_by] ||= 'created_at'
+
+    @groups = filter_for HackerSpace, @fields
+  end
+
   def issues
     title "Admin / Issues - #{safe_page_params}"
 

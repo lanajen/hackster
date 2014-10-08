@@ -65,6 +65,7 @@ HackerIo::Application.routes.draw do
       get 'analytics' => 'pages#analytics'
       get 'build_logs' => 'pages#build_logs'
       get 'comments' => 'pages#comments'
+      get 'hacker_spaces' => 'pages#hacker_spaces'
       get 'issues' => 'pages#issues'
       get 'logs' => 'pages#logs'
       get 'respects' => 'pages#respects'
@@ -80,7 +81,8 @@ HackerIo::Application.routes.draw do
     end  # end admin
 
     resources :comments, only: [:edit, :update, :destroy]
-    resources :communities, except: [:show, :update, :destroy], controller: 'groups', as: :groups
+
+    # groups
     resources :groups, only: [] do
       post 'members' => 'members#create', as: :members
       get 'members/edit' => 'members#edit', as: :edit_members
@@ -106,19 +108,32 @@ HackerIo::Application.routes.draw do
     resources :members, only: [] do
       patch 'process' => 'members#process_request'
     end
-    get 'groups/:id' => 'groups#show'
-    get 'c/:user_name' => 'groups#show', as: :community
-    scope 'c/:user_name', as: :group do
-      get '' => 'groups#show', as: ''
-      delete '' => 'groups#destroy'
-      patch '' => 'groups#update'
+
+    get 'c/:user_name' => 'communities#redirect_to_show'
+    resources :communities, except: [:show, :update]
+    scope 'communities/:user_name', as: :communities do
+      get '' => 'communities#show'
+      patch '' => 'communities#update'
+      # resources :projects, only: [:new, :create], controller: 'groups/projects'
+      # patch 'projects/link' => 'groups/projects#link'
     end
+
+    # resources :communities, except: [:show, :update, :destroy], controller: 'groups', as: :groups
+    # get 'groups/:id' => 'groups#show'
+    # get 'c/:user_name' => 'groups#show', as: :community
+    # scope 'c/:user_name', as: :group do
+    #   get '' => 'groups#show', as: ''
+    #   delete '' => 'groups#destroy'
+    #   patch '' => 'groups#update'
+    # end
+
     resources :teches, except: [:show] do
       resources :projects, only: [] do
         post 'feature' => 'teches#feature_project'#, as: :tech_feature_project
         delete 'feature' => 'teches#unfeature_project'
       end
     end
+
     # resources :courses, except: [:show, :update, :destroy]
     resources :promotions, except: [:show, :update, :destroy]
     scope 'courses/:uni_name/:user_name', as: :course do
@@ -159,6 +174,8 @@ HackerIo::Application.routes.draw do
         get 'embed' => 'events#embed'
       end
     end
+
+    # end groups
 
     resources :files, only: [:create, :show, :destroy] do
       get 'signed_url', on: :collection

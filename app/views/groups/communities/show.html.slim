@@ -9,22 +9,11 @@
         | All projects that members share with this group will appear here.
 
 
-  #tab-activity.tab-pane.fade
-    .col-xs-12
-      ul
-        - @broadcasts.each do |broadcast|
-          li
-            - broadcast = broadcast.decorate
-            = link_to broadcast.broadcastable.name, broadcast.broadcastable
-            = broadcast.message
-            .muted
-              = broadcast.created_at
-
   #tab-members.tab-pane.fade
     .col-xs-12
-      - if @users.any?
+      - if @members.any?
         .row
-          - @users.each do |user|
+          - @members.each do |user|
             .col-xs-2  style='margin-bottom: 30px;'
               = link_to image_tag(user.decorate.avatar(:big), class: 'img-responsive'), user, title: user.name, rel: 'tooltip'
       - else

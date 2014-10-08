@@ -1,0 +1,50 @@
+- model_class = HackerSpace
+.page-header
+  h1
+    ' HackerSpaces
+    small= link_to t('.new', :default => t("helpers.links.new")), new_admin_group_path(group: { type: 'HackerSpace' } ), :class => 'btn btn-primary btn-sm'
+
+==> render 'admin/shared/search_form_tag'
+- (@fields.keys - %w(created_at)).each do |field|
+  ==> render partial: 'admin/shared/search_form_text_field', locals: { field: field }
+= render 'admin/shared/search_form_sort_and_submit'
+
+table.table.table-striped
+  thead
+    tr
+      th= model_class.human_attribute_name(:name)
+      th= model_class.human_attribute_name(:age)
+      th Views
+      th
+        ' Projects
+        small (external)
+      th
+        ' Members
+        small (active)
+      th Status
+      th=t '.actions', :default => t("helpers.actions")
+  tbody
+    - @groups.each do |group|
+      tr
+        td= link_to group.name, group_path(group) if group.name
+        td= time_ago_in_words group.created_at
+        td= group.impressions_count
+        td
+          ==> group.projects.count
+          small
+            | (#{group.projects.external.count})
+        td
+          ==> group.members.size
+          small
+            | (#{group.members.invitation_accepted_or_not_invited.size})
+        td
+          - if group.private?
+            b Private
+          - else
+            | Public
+        td
+          = link_to t('.edit', :default => t("helpers.links.edit")), edit_admin_group_path(group.id), :class => 'btn btn-default btn-xs'
+          = link_to t('.destroy', :default => t("helpers.links.destroy")), admin_group_path(group.id), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'
+
+.pagination.col-xs-12.text-center
+  = will_paginate @groups

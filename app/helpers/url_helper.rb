@@ -24,7 +24,11 @@ module UrlHelper
   end
 
   def community_path community, opts={}
-    super params_for_group(community, 'community').merge(opts)
+    super community.user_name, opts
+  end
+
+  def community_url community, opts={}
+    super community.user_name, opts
   end
 
   def course_path course, opts={}
@@ -60,7 +64,7 @@ module UrlHelper
     when 'Assignment'
       assignment_path group, opts
     when 'Community'
-      super params_for_group(group, 'community').merge(opts)
+      community_path group, opts
     when 'Course'
       super params_for_course(group).merge(opts)
     when 'HackerSpace'
@@ -81,7 +85,7 @@ module UrlHelper
   def group_url group, opts={}
     case group.class.to_s
     when 'Community'
-      super params_for_group(group, 'community').merge(opts)
+      community_url group, opts
     when 'Course'
       super params_for_course(group).merge(opts)
     when 'HackerSpace'
