@@ -29,6 +29,7 @@ class ApplicationController < ActionController::Base
   helper_method :show_hello_world?
   helper_method :show_profile_needs_care?
   helper_method :is_mobile?
+  helper_method :returning_user?
   helper BootstrapFlashHelper
 
   unless Rails.application.config.consider_all_requests_local
@@ -186,6 +187,10 @@ class ApplicationController < ActionController::Base
 
     def reset_current_mixpanel_user
       cookies[:mixpanel_user] = distinct_id_for nil
+    end
+
+    def returning_user?
+      cookies[:visits].present? and JSON.parse(cookies[:visits]).size > 1
     end
 
     def tracking_activated?

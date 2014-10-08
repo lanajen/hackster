@@ -93,7 +93,7 @@
             | or
             = link_to 'learn more', about_path
 
-    - if user_signed_in?
+    - if user_signed_in? or returning_user?
       section
         .container
           .row
@@ -135,7 +135,7 @@
                   = link_to(image_tag(tech.avatar.file_url(:big), class: 'img-thumbnail'), tech_short_path(tech, ref: 'homefeat')) if tech.avatar
                   h6.text-center= link_to tech.name, tech_short_path(tech)
 
-    - if !user_signed_in?
+    - if !user_signed_in? and !returning_user?
       section
         .container
           .row
