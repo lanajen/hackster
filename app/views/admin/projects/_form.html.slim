@@ -17,7 +17,7 @@
 
         - unless @project.external
           = f.input :slug, label: 'URL', wrapper: :addon do
-            span.input-group-addon www.hackster.io/# @project.user_name_for_url /
+            span.input-group-addon www.hackster.io/#{@project.user_name_for_url}/
             = f.input_field :slug
 
           .form-group

@@ -74,9 +74,9 @@ class CommunitiesController < ApplicationController
         format.js do
           @community.avatar = nil unless @community.avatar.try(:file_url)
           @community = @community.decorate
-          # if old_community.interest_tags_string != @community.interest_tags_string or old_community.skill_tags_string != @community.skill_tags_string
-          #   @refresh = true
-          # end
+          if old_community.user_name != @community.user_name
+            @refresh = true
+          end
 
           render "groups/communities/#{self.action_name}"
         end

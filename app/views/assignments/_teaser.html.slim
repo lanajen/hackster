@@ -5,8 +5,9 @@
     .col-xs-12
       .alert.alert-warning.alert-flat
         .container
-          | You have been invited to join
-          strong # @promotion.name .
+          ' You have been invited to join
+          strong = @promotion.name
+          ' .
           = link_to 'Join promotion', group_accept_invitation_path(@promotion), class: 'btn btn-warning btn-sm'
 
 #content-header.with-nav

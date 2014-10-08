@@ -58,9 +58,9 @@ class PromotionsController < ApplicationController
         format.js do
           @promotion.avatar = nil unless @promotion.avatar.try(:file_url)
           @promotion = @promotion.decorate
-          # if old_promotion.interest_tags_string != @promotion.interest_tags_string or old_promotion.skill_tags_string != @promotion.skill_tags_string
-          #   @refresh = true
-          # end
+          if old_community.user_name != @promotion.user_name
+            @refresh = true
+          end
 
           render "groups/promotions/#{self.action_name}"
         end

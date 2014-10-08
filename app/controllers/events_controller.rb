@@ -80,9 +80,9 @@ class EventsController < ApplicationController
         format.js do
           @event.avatar = nil unless @event.avatar.try(:file_url)
           @event = @event.decorate
-          # if old_event.interest_tags_string != @event.interest_tags_string or old_event.skill_tags_string != @event.skill_tags_string
-          #   @refresh = true
-          # end
+          if old_community.user_name != @event.user_name
+            @refresh = true
+          end
 
           render "groups/events/#{self.action_name}"
         end
