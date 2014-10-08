@@ -1,0 +1,8 @@
+.user-popover
+  .image= image_tag user.avatar(:mini), alt: user.name
+  .details
+    h4
+      = link_to user.name, user
+      - if defined?(team_member)
+        span.text-muted= team_member.user.role
+    p= user.mini_resume

@@ -1,6 +1,0 @@
-- if can? :manage, @tech and request.path !~ /embed/
-  - if project.in? @tech.featured_projects
-    %span.project-featured Featured
-    = link_to 'Unfeature this project', tech_project_feature_path(@tech, project), data: { method: :delete, remote: true }, class: 'project-feature btn btn-default btn-xs'
-  - else
-    = link_to 'Feature this project', tech_project_feature_path(@tech, project), data: { method: :post, remote: true }, class: 'project-feature btn btn-default btn-xs'

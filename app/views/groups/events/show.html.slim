@@ -1,0 +1,61 @@
+- if can? :read, @event
+  .row.tab-content
+    #tab-projects.tab-pane.active.fade.in
+      .col-xs-12
+        - if @projects.any?
+          .row
+            .col-xs-12
+              - if can? :add_project, @event
+                .pull-left
+                  = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project to event".html_safe, "#{event_path(@event)}/projects/new", class: 'btn btn-sm btn-warning'
+              .mg-20.pull-right= render 'shared/list_switch'
+
+          .row.thumb-list  class=@switch_style
+            .col-xs-12
+              .row.project-list
+                - @projects.each_with_index do |project, i|
+                  = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', ref: 'event', ref_id: @event.id, offset: i }
+
+          - content_for :js do
+            - @awards.each do |award|
+              javascript:
+                $('.project-list').prepend($('.project-#{award.project_id}'));
+                text = "<div class='project-award'><i class='fa fa-trophy istooltip' title='#{escape_javascript(award.grade).gsub(/'/, '&#x0027;')}' data-container='body'></i></div>";
+                $(text).appendTo('.project-#{award.project_id} .award-container');
+
+        - else
+          .row
+            .col-xs-12
+              ' All projects will appear here.
+              - if can? :add_project, @event
+                = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project to event".html_safe, "#{event_path(@event)}/projects/new", class: 'btn btn-sm btn-warning'
+
+    #tab-participants.tab-pane.fade
+      .col-xs-12
+        - if @participants.any?
+          .row
+            - @participants.each do |user|
+              .col-xs-2  style='margin-bottom: 30px;'
+                = link_to image_tag(user.decorate.avatar(:big), class: 'img-responsive'), user, title: user.name, rel: 'tooltip'
+        - else
+          | This event has no participants.
+
+    #tab-organizers.tab-pane.fade
+      .col-xs-12
+        - if @organizers.any?
+          .row
+            - @organizers.each do |user|
+              .col-xs-2  style='margin-bottom: 30px;'
+                = link_to image_tag(user.decorate.avatar(:big), class: 'img-responsive'), user, title: user.name, rel: 'tooltip'
+        - else
+          | This event has no organizers.
+
+- else
+  .row
+    .col-xs-12
+      .alert.alert-warning
+        | The content of this group is only visible to members.
+        / if @event.access_level == 'anyone'
+          = link_to 'Join', '', class: 'btn btn-warning btn-sm'
+        / elsif @event.access_level == 'request'
+          = link_to 'Request access', '', class: 'btn btn-warning btn-sm'

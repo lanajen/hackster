@@ -1,0 +1,13 @@
+- @group = GroupDecorator.decorate(@group)
+
+= content_for :no_container do
+  #heading.user.with-top-container
+    .display= render "groups/#{@group.identifier.pluralize}/teaser"
+    .container
+      .edit  style='display:none;'
+
+  #content
+    .container
+      = yield
+
+= render template: 'layouts/application'

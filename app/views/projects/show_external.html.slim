@@ -1,0 +1,92 @@
+= content_for :head do
+  meta(property="og:title" content=@project.name)
+  - if @project.one_liner.present?
+    meta(property="og:description" content="#{@project.one_liner} By #{@project.guest_or_user_name}.")
+  meta(property="og:image" content=@project.cover_image(:cover_thumb))
+  meta(property="og:url" content=external_project_url(@project))
+  meta(property="og:site_name" content="Hackster.io")
+  meta(property="twitter:card" content="summary")
+  meta(property="twitter:site" content="@hacksterio")
+  meta(property="twitter:domain" content="hackster.io")
+  meta(property="twitter:title" content=@project.name)
+  meta(property="twitter:description" content=@project.one_liner)
+  - if user = @project.users.first and link = user.twitter_link.presence and handle = link.match(/twitter.com\/(.+)/).try(:[], 1)
+    meta(property="twitter:creator" content="@#{handle}")
+  meta(property="twitter:image:src" content=@project.cover_image(:cover_thumb))
+  link(rel="canonical" href=external_project_url(@project))
+  - if @project.tech_tags_string.present?
+    meta(name='keywords' content=@project.tech_tags_string)
+
+= content_for :no_container do
+  .project
+    .project-details
+      #top-project-section
+        #project-top-image style="background-image: url('#{@project.cover_image}');"
+        #top-project-section-deets
+          #project-header
+            .wrapper700
+              #project-header-in
+                h1
+                  - if @project.logo(:thumb, false)
+                    = image_tag @project.logo(:thumb), class: 'project-logo'
+                  = link_to @project.name, external_project_path(@project), class: 'hidden-link'
+                #project-information
+                  - cache [@project, 'teaser', can?(:edit, @project), can?(:debug, @project)], tag: (["project-#{@project.id}-teaser"] + @project.users.map{|u| "user-#{u.id}-thumb"}) do
+                    - if @project.one_liner.present?
+                      p.one-liner= @project.one_liner
+                      p.one-liner
+                        ' Read about this project on
+                        = link_to @project.website_host, @project.website, target: '_blank'
+
+                - if @project.product_tags_cached.any?
+                  .tags.meta
+                    - @project.product_tags_cached.each do |tag|
+                      span= link_to tag, "/tags/# CGI::escape(tag) ", class: 'tag-link'
+
+                .actions
+                  ul.list-unstyled.list-inline
+                    / "Don't forget to respect this project if you liked it!"
+                    li= render 'projects/share'
+                    li= render partial: 'respects/button', locals: { project: @project }
+
+          #project-team
+            .team-widget.pull-left
+              - if @project.guest_name.present? or member = @project.team.try(:active_members).try(:includes, :user).try(:first)
+                - if @project.guest_name.present?
+                  .user.guest-name
+                    span.user-name= @project.guest_name
+                  .clearfix
+                - elsif member
+                  - @hide_claim = true
+                  - users = @project.team.active_members.includes(:user)
+                  - u = users.first.user
+                  .user
+                    ==> link_to image_tag(u.decorate.avatar(:mini), class: ' img-circle' ), u, class: ''
+                    span.user-name
+                      = link_to u.name, u, class: 'hidden-link'
+
+            - if @project.tech_tags_cached.any?
+              .tags.meta.pull-left
+                ' with
+                - tags = @project.tech_tags_cached.map do |tag|
+                  - if tech = Tech.includes(:tech_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first
+                    - tag_link = tech_short_path(tech)
+                  - else
+                    - tag_link = "/tags/#{CGI::escape(tag)}"
+                  - link_to tag, tag_link, class: 'tag-link'
+                = tags.to_sentence.html_safe
+
+              .clearfix
+
+            - unless @hide_claim
+              .claim-link
+                small
+                  - q = @project.guest_name.present? ? "Are you #{@project.guest_name}?" : 'Are you the author of this project?'
+                  - a = @project.guest_name.present? ? 'Claim this project' : 'Claim it'
+                  ==> q
+                  - if user_signed_in?
+                    = link_to a, claim_project_path(@project), data: { method: :post, confirm: "Are you really the author of this project? Note that we'll have to approve it!" }
+                  - else
+                    = link_to a, new_user_registration_path(reason: 'claim', m: 'project', id: @project.id)
+
+          a.fa.fa-question-circle.meta-data*{ data: { container: 'body', toggle: 'popover', placement: 'left', content: render('projects/meta_data'), trigger: 'hover', html: 'true'}, rel: 'popover' }

@@ -1,0 +1,37 @@
+= content_for :head do
+  meta  name='robots' content='noindex'
+
+.row
+  .col-xs-12
+    - if params[:q].present?
+      - if @results.any?
+        .header
+          - if @alternate_results
+            ' No results for #{current_platform.name}.
+            ' Showing
+            b>= pluralize @results.total_count, 'result'
+            ' for
+            em>= params[:q]
+            ' from hackster.io.
+          - else
+            b>= pluralize @results.total_count, 'result'
+            ' for
+            em= params[:q]
+          hr
+
+        .row.thumb-list
+          - @results.each do |project|
+            - if project.external
+              = render partial: 'projects/project_thumb_external', locals: { project: project.decorate }
+            - else
+              = render partial: 'client/projects/project_thumb', locals: { project: project.decorate }
+
+        .row
+          .col-xs-12.text-center= will_paginate @results
+
+      - else
+        .content.search-results
+          | No results for <i>#{params[:q]}</i>. <a href="//www.hackster.io/projects/new?project[name]=#{params[:q]}&project[tech_tags_string]=#{current_tech.tech_tags.first.name}" class="btn btn-primary btn-sm">Add your own #{params[:q]} project</a
+    - else
+      .content.search-results
+        | Go ahead, look something up!

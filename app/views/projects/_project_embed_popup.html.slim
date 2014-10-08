@@ -1,0 +1,47 @@
+= link_to "Share #{content_tag(:i, '', class: 'fa fa-share-square-o')}".html_safe, '#', onclick: "openPopup('#embed-popup');return false;", class: 'btn btn-block btn-info btn-ellipsis'
+
+- unless @embed_popup_shown
+  = content_for :js do
+    #embed-popup
+      .embed-popup-outer
+        .embed-popup-inner
+          button.close onclick="closePopup('#embed-popup');"  &times;
+          h3.top Share
+          = render 'projects/share_by_author'
+          h3 Embed the widget on your own site
+          #project-embed
+            p
+              | Add the following snippet to your HTML:
+              input.embed-code  type='text' onclick="this.select();" value="<iframe frameborder='0' height='321' scrolling='no' src='#{project_embed_url(@project)}' width='220'></iframe>"
+            = render partial: 'projects/project_embed_thumb_vertical', locals: { project: @project }
+            .clearfix
+
+    javascript:
+      $('#embed-popup').click(function(e){
+        e.preventDefault();
+        $(this).fadeOut(200);
+        return false;
+      }).children().click(function() {
+        return false;
+      });
+      function openPopup(id) {
+        width = window.innerWidth > 600 ? 600 : window.innerWidth;
+        p = $(id).children('.embed-popup-outer');
+        p
+          .css('width', width)
+          .css('margin-left', -width / 2)
+        $(id).fadeIn(200);
+        p.css('margin-top', -(p.height() / 2));
+        return false;
+      }
+      function closePopup(id) {
+        $(id).fadeOut(200);
+        return false;
+      }
+
+    <!-- AddThis Button BEGIN -->
+    <script type="text/javascript">var addthis_config = {"data_track_addressbar":false};</script>
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-51b26f5613fb83d2"></script>
+    <!-- AddThis Button END -->
+
+  - @embed_popup_shown = true

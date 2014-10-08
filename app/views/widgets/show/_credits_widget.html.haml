@@ -1,9 +1,0 @@
-%ul.list-unstyled
-  - widget.credit_lines.each do |credit_line|
-    %li
-      = credit_line.work.try(:capitalize)
-      by
-      - if credit_line.link.present?
-        = link_to credit_line.name, credit_line.link, target: '_blank', rel: 'nofollow'
-      - else
-        = credit_line.name

@@ -1,0 +1,19 @@
+.image-gallery-container
+  - ids = embed.widget.images.pluck(:id)
+  select.widget-attribute.widget-attribute-val  data-attribute='image_ids' data-value=ids multiple='multiple' style='display:none;'
+    - ids.each do |id|
+      option  value=id selected='selected'
+  .file-drop
+    .file-drop-inner  data-disable-toolbar='true'
+      | Drag and drop images or
+      = link_to 'click to select some from your file system', ''
+  .image-gallery
+    - embed.widget.images.each_with_index do |image, i|
+      = render partial: 'api/embeds/image_widget_image', locals: { image: image, i: i, widget: embed.widget }
+
+= content_for :js do
+  javascript:
+    if (typeof(lightBoxImages) == 'undefined') {
+      lightBoxImages = {};
+    }
+    lightBoxImages[#{embed.widget.id}] = [#{lightbox_elements(embed.widget.images).html_safe}];

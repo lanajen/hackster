@@ -1,0 +1,103 @@
+= content_for :js do
+  = javascript_include_tag 'https://www.google.com/jsapi'
+  = render_chart(@new_projects, 'chart_new_projects')
+  = render_chart(@new_users, 'chart_new_users')
+  = render_chart(@new_respects, 'chart_new_respects')
+  = render_chart(@new_follows, 'chart_new_follows')
+
+.page-header
+  h1 Analytics
+
+.row
+  .col-xs-12.col-sm-6
+    .panel.panel-default.panel-dashboard
+      .panel-heading
+        h3.panel-title= link_to 'Registered users', admin_users_path
+      .panel-body
+        ==> @user_count
+        small.text-muted +#{@new_users_count}
+
+  .col-xs-12.col-sm-6
+    .panel.panel-default.panel-dashboard
+      .panel-heading
+        h3.panel-title= link_to 'Live projects', admin_projects_path
+      .panel-body
+        ==> @project_count
+        small.text-muted +#{@new_projects_count}
+
+.row
+  .col-xs-12.col-sm-4
+    .panel.panel-default.panel-dashboard
+      .panel-heading
+        h3.panel-title= link_to 'Comments', admin_comments_path
+      .panel-body
+        ==> @comment_count
+        small.text-muted +#{@new_comments_count}
+
+  .col-xs-12.col-sm-4
+    .panel.panel-default.panel-dashboard
+      .panel-heading
+        h3.panel-title= link_to 'Respects', admin_respects_path
+      .panel-body
+        ==> @like_count
+        small.text-muted +#{@new_likes_count}
+
+  .col-xs-12.col-sm-4
+    .panel.panel-default.panel-dashboard
+      .panel-heading
+        h3.panel-title= link_to 'Followers (users/techs)', admin_followers_path
+      .panel-body
+        ==> @follow_user_count
+        small.text-muted> +#{@new_user_follows_count}
+        ' /
+        ==> @follow_tech_count
+        small.text-muted +#{@new_tech_follows_count}
+
+.row
+  .col-xs-12.col-sm-4
+    .panel.panel-default
+      .panel-heading
+        h3.panel-title Top users
+      .panel-body
+        ul
+          - @top_users.each do |user|
+            li
+              b= link_to user.name, user
+              ' :
+              = user.live_projects_count
+
+  .col-xs-12.col-sm-4
+    .panel.panel-default.panel-dashboard
+      .panel-heading
+        h3.panel-title Project / User ratio
+      .panel-body #{(@project_count.to_f / @user_count.to_f* 100).ceil}%
+
+    .panel.panel-default.panel-dashboard
+      .panel-heading
+        h3.panel-title Users with at least one project
+      .panel-body
+        ==> @users_with_at_least_one_live_project
+        small.text-muted
+          | (#{(@users_with_at_least_one_live_project.to_f / @user_count * 100).ceil}%)
+
+  .col-xs-12.col-sm-4
+    .panel.panel-default.panel-dashboard
+      .panel-heading
+        h3.panel-title Live external projects
+      .panel-body= @external_project_count
+
+    .panel.panel-default.panel-dashboard  class="#{'panel-danger' unless @waiting_for_approval_project_count.zero? }"
+      .panel-heading
+        h3.panel-title= link_to 'Projects waiting for approval', admin_projects_path(approval_needed: true, filters: { private: 'f' } )
+      .panel-body= @waiting_for_approval_project_count
+
+.row
+  .col-xs-12.col-sm-6
+    #chart_new_projects= image_tag 'loader.gif'
+  .col-xs-12.col-sm-6
+    #chart_new_users= image_tag 'loader.gif'
+
+  .col-xs-12.col-sm-6
+    #chart_new_respects= image_tag 'loader.gif'
+  .col-xs-12.col-sm-6
+    #chart_new_follows= image_tag 'loader.gif'

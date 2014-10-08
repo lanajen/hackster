@@ -1,0 +1,31 @@
+.row
+  .col-xs-12
+    .wellified
+      h2.text-center My grades
+      p.text-center
+        - if @grades.any?
+          table.table.table-striped
+            thead
+              tr
+                th Project
+                th Assignment
+                th Type
+                th Grade
+                th Feedback
+            tbody
+              - @grades.each do |grade|
+                tr
+                  td= link_to grade.project.name, grade.project
+                  td= link_to grade.assignment.name, assignment_path(grade.assignment)
+                  td
+                    - case grade.assignment.grading_type
+                    - when 'individual'
+                      | Individual
+                    - when 'group'
+                      | Group
+                  td= grade.grade
+                  td= grade.feedback
+
+        - else
+          p
+            | You haven't received any grades yet.

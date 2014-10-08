@@ -1,0 +1,6 @@
+.media
+  a.pull-left  href=promotion_path(promotion)
+    = image_tag promotion.avatar(:thumb), class: 'media-object'
+  .media-body
+    b>= link_to promotion.name, promotion_path(promotion)
+    small.text-muted course

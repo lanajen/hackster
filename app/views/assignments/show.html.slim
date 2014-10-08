@@ -1,0 +1,46 @@
+.row
+  .col-xs-12
+    - if @projects.any?
+      .row
+        .col-xs-12
+          - if @submission_status
+            .pull-left
+              - case @submission_status
+              - when 'submitted'
+                ' Assignment submitted
+                - if time = current_user.project_for_assignment(@assignment).first.assignment_submitted_at
+                  ' on
+                  ==> l time.in_time_zone(PDT_TIME_ZONE)
+              - when 'created'
+                - if @assignment.submit_by_date
+                  - if Time.now < @assignment.submit_by_date
+                    ' Assignment due in
+                    b>= distance_of_time_in_words Time.now, @assignment.submit_by_date
+                  - else
+                    b> Assignment submission is past due
+                    ' by
+                    ==> time_ago_in_words @assignment.submit_by_date
+                  ' (#{l @submit_date})
+                = link_to "Check project and submit", current_user.project_for_assignment(@assignment).first, class: 'btn btn-sm btn-warning'
+              - when 'none'
+                - if @assignment.submit_by_date
+                  - if Time.now < @assignment.submit_by_date
+                    ' Assignment due in
+                    b>= distance_of_time_in_words Time.now, @assignment.submit_by_date
+                  - else
+                    b> Assignment submission is past due
+                    ' by
+                    ==> time_ago_in_words @assignment.submit_by_date
+                  ' (#{l @submit_date})
+                = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project to assignment".html_safe, "#{assignment_path(@assignment)}/projects/new", class: 'btn btn-sm btn-warning'
+          - elsif can? :add_project, @assignment
+            = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project to assignment".html_safe, "#{assignment_path(@assignment)}/projects/new", class: 'btn btn-sm btn-warning'
+
+          .mg-20.pull-right= render 'shared/list_switch'
+
+      .row.thumb-list  class=@switch_style
+        - @projects.each_with_index do |project, i|
+          = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', ref: 'assignment', ref_id: @assignment.id, offset: i }
+
+    - else
+      | All student projects will appear here.

@@ -1,0 +1,58 @@
+- if can? :read, @hacker_space
+  .row.tab-content
+    #tab-projects.tab-pane.active.fade.in
+      .col-xs-12
+        - if @projects.any?
+          .row
+            .col-xs-12
+              - if can? :add_project, @hacker_space
+                .pull-left
+                  = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project to hacker space".html_safe, "#{hacker_space_path(@hacker_space)}/projects/new", class: 'btn btn-sm btn-warning'
+              .mg-20.pull-right= render 'shared/list_switch'
+
+          .row.thumb-list  class=@switch_style
+            .col-xs-12
+              .row.project-list
+                - @projects.each_with_index do |project, i|
+                  = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', ref: 'hacker_space', ref_id: @hacker_space.id, offset: i }
+
+        - else
+          .row
+            .col-xs-12
+              ' All public projects will appear here.
+              - if can? :add_project, @hacker_space
+                = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project to hacker space".html_safe, "#{hacker_space_path(@hacker_space)}/projects/new", class: 'btn btn-sm btn-warning'
+
+    #tab-members.tab-pane.fade
+      .col-xs-12
+        - if @members.any?
+          .row
+            - @members.each do |user|
+              .col-xs-2  style='margin-bottom: 30px;'
+                = link_to image_tag(user.decorate.avatar(:big), class: 'img-responsive'), user, title: user.name, rel: 'tooltip'
+        - else
+          ' Do you hack from #{@hacker_space.name}?
+          = link_to 'Join the group', group_accept_invitation_path(@hacker_space), class: 'btn btn-warning btn-sm'
+
+    #tab-team.tab-pane.fade
+      .col-xs-12
+        - if @team_members.any?
+          .row
+            - @team_members.each do |user|
+              .col-xs-2  style='margin-bottom: 30px;'
+                = link_to image_tag(user.decorate.avatar(:big), class: 'img-responsive'), user, title: user.name, rel: 'tooltip'
+        - elsif can? :join, @hacker_space
+          ' Are you part of the team at #{@hacker_space.name}?
+          = link_to 'Join the group', group_accept_invitation_path(@hacker_space, role: 'team'), class: 'btn btn-warning btn-sm'
+        - else
+          | Looks like no team members have signed up. Let them know they should claim the page!
+
+- else
+  .row
+    .col-xs-12
+      .alert.alert-warning
+        | The content of this group is only visible to members.
+        / if @hacker_space.access_level == 'anyone'
+          = link_to 'Join', '', class: 'btn btn-warning btn-sm'
+        / elsif @hacker_space.access_level == 'request'
+          = link_to 'Request access', '', class: 'btn btn-warning btn-sm'

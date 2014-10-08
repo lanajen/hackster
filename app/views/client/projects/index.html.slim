@@ -1,0 +1,78 @@
+/ = content_for :head do
+  meta  name='robots' content='noindex'
+  = auto_discovery_link_tag :rss, projects_path(format: :rss), title: 'Most recent projects - Hackster.io'
+  = auto_discovery_link_tag :atom, projects_path(format: :atom), title: 'Most recent projects - Hackster.io'
+
+- content_for :head do
+  meta(property="og:title" content="# current_tech.name  projects")
+  meta(property="og:description" content="# meta_desc ")
+  - if current_tech.logo
+    meta(property="og:image" content="# current_tech.logo.file_url ")
+    meta(property="twitter:image:src" content="# current_tech.logo.file_url ")
+  meta(property="og:url" content="# tech_short_url(current_tech) ")
+  meta(property="og:site_name" content="# current_tech.name  projects")
+  - if link = current_tech.twitter_link.presence and handle = link.match(/twitter.com\/(.+)/).try(:[], 1)
+    meta(property="twitter:site" content="@# handle ")
+  meta(property="twitter:card" content="summary")
+  meta(property="twitter:domain" content="# current_tech.user_name .hackster.io")
+  meta(property="twitter:title" content="# current_tech.name  projects")
+  meta(property="twitter:description" content="# meta_desc ")
+  link(rel="canonical" href="# tech_short_url(current_tech) ")
+
+.content.projects
+  .row
+    - cache "tech-#{current_tech.id}-client-subheading", tag: ["tech-#{current_tech.id}-sidebar", 'tech-sidebar'] do
+      #subheading.col-xs-12
+        p.pull-left= current_tech.mini_resume
+
+        ul.list-inline.list-unstyled.pull-right
+          - if current_tech.documentation_link.present?
+            li= link_to "Documentation", current_tech.documentation_link, target: '_blank'
+          - if current_tech.forums_link.present?
+            li= link_to "Forums", current_tech.forums_link, target: '_blank'
+          - if current_tech.shoplocket_token.present?
+            li= link_to "Buy #{current_tech.name}", current_tech.buy_link, class: 'shoplocket-checkout', data: { 'shoplocket-product-token' => current_tech.shoplocket_token }
+            = content_for :js do
+              = javascript_include_tag '//www.shoplocket.com/assets/widgets/embed.js'
+          - else
+            - if current_tech.crowdfunding_link.present?
+              li= link_to "Preorder #{current_tech.name}", current_tech.crowdfunding_link, target: '_blank'
+            - if current_tech.buy_link.present?
+              li= link_to "Buy #{current_tech.name}", current_tech.buy_link, target: '_blank'
+
+      .col-xs-12.mg-20
+        .pull-left= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_url(subdomain: 'www', project: { tech_tags_string: current_tech.tech_tags.first.name }), class: 'btn btn-sm btn-primary'
+        .btn-group.pull-right
+          .btn-group
+            button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
+              ' Sort by
+              span.caret
+            ul.dropdown-menu.pull-right
+              li*{ class: "#{'active' if params[:sort] == 'updated'}" } = link_to 'Last updated', root_path(sort: 'updated', by: params[:by])
+              li*{ class: "#{'active' if params[:sort] == 'magic'}" } = link_to 'Magic', root_path(sort: 'magic', by: params[:by])
+              li*{ class: "#{'active' if params[:sort] == 'popular'}" } = link_to 'Most popular', root_path(sort: 'popular', by: params[:by])
+              li*{ class: "#{'active' if params[:sort] == 'recent'}" } = link_to 'Most recent', root_path(sort: 'recent', by: params[:by])
+              li*{ class: "#{'active' if params[:sort] == 'respected'}" } = link_to 'Most respected', root_path(sort: 'respected', by: params[:by])
+
+          .btn-group
+            button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
+              ' Filter by
+              span.caret
+            ul.dropdown-menu.pull-right
+              li*{ class: "#{'active' if params[:by] == nil}" } = link_to 'All', root_path(sort: params[:sort])
+              li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to 'Featured', root_path(by: 'featured_by_tech', sort: params[:sort])
+              li*{ class: "#{'active' if params[:by] == 'wip'}" } = link_to 'Work in progress', root_path(by: 'wip', sort: params[:sort])
+
+    .col-xs-12
+      .row.thumb-list
+        - @tech = current_tech
+        - if @projects.any?
+          - @projects.each do |project|
+            - if project.external
+              = render partial: 'client/projects/project_thumb_external', locals: { project: project.decorate }
+            - else
+              = render partial: 'client/projects/project_thumb', locals: { project: project.decorate }
+        - else
+          p.col-xs-12 No projects match your criteria.
+      .row
+        .col-xs-12.text-center= will_paginate @projects

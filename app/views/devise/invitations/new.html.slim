@@ -1,0 +1,26 @@
+.col-xs-4.col-xs-offset-4
+  .wellified
+    h2  style='text-align: center'   Invite your friends
+    p  style='text-align: center'   Know other hardware hackers? Pass it on!
+    / %p{ style='text-align: center' }
+      - if @invite_limit.nil?
+        em Lucky you, you can send as many invites as you want.
+      - elsif @invite_limit == 0
+        em> Oops, looks like you have no invitations left!
+        = link_to 'Want more?', 'mailto:team@hackster.io?subject=Can%20I%20get%20more%20invites%20please%3F'
+      - else
+        em You have #{pluralize(@invite_limit, 'invitation')} left.
+
+    - if @invite_limit != 0
+      = simple_form_for @friend_invite, url: invitation_path(resource_name) do |f|
+        = f.error_notification
+        = f.simple_fields_for :users do |f_user|
+          = f_user.input :email, :label => false, :placeholder => 'Email'
+        = f.submit "Spread happiness", class: 'btn btn-primary btn-block'
+
+.col-xs-3.pull-right
+  h4 About invites
+  p Hackster.io is a community of hardware hackers and makers.
+  p We're giving you the opportunity to invite friends and people in your network so you can shape our community and make it yours.
+  p
+    strong You're just one step closer to making awesome hardware.

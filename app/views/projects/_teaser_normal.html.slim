@@ -1,0 +1,94 @@
+/ active_member = (user_signed_in? and current_user.is_team_member? @project, false)
+
+- if @project.collection_id.present?
+  #project-group
+    ' This project is part of
+    - if @project.assignment.present?
+      - if @project.assignment.promotion.avatar
+        ==> image_tag @project.assignment.promotion.avatar.file_url(:mini), class: 'img-circle'
+      = link_to @project.assignment.to_label, assignment_path(@project.assignment)
+    - elsif @project.event.present?
+      - if @project.event.avatar
+        ==> image_tag @project.event.avatar.file_url(:mini), class: 'img-circle'
+      = link_to @project.event.name, event_path(@project.event)
+      - @project.awards.where(gradable_id: @project.collection_id, gradable_type: 'Group').each do |award|
+        span.project-award<
+          i.fa.fa-trophy.istooltip  title=award.grade   data-container='body'
+      / if can? :request_access, @project.team
+        - if user_signed_in? and member = current_user.is_team_member?(@project)
+          - if member.request_pending?
+            span.label.label-default Request to join team pending
+        - else
+          = link_to 'Join team', group_members_path(@project.team), class: 'btn btn-xs btn-warning', data: { method: :post }, id: 'join-button'
+
+/ elsif active_member
+  .alert.alert-info.alert-author-share
+    strong Time to shine!
+    | Share your project or
+    = link_to 'submit it to HackADay', "mailto:tips@hackaday.com?subject=#{@project.name}&body=#{@project.one_liner}%0D%0AProject page: #{project_url(@project)}", class: 'alert-link'
+    = link_to "&times;".html_safe, '#', data: { close: '.alert-author-share' }, class: 'btn-close btn-close-notif'
+    = render 'projects/share_by_author'
+
+- cache [@project, 'teaser', @can_edit], tag: (["project-#{@project.id}-teaser", "team-#{@project.team_id}"] + @project.users.map{|u| "user-#{u.id}-thumb"}) do
+  #top-project-section
+    #project-top-image style="background-image: url('#{@project.cover_image}');"
+    #top-project-section-deets
+      #project-header
+        .wrapper700
+          #project-header-in
+            h1
+              - if @project.logo(:thumb, false)
+                = image_tag @project.logo(:thumb), class: 'project-logo'
+              / if @project.private?
+                i.fa.fa-lock.private-project-icon.istooltip  title='Private project'   data-container='body'
+              = link_to @project.name, @project, class: 'hidden-link'
+
+            #project-information
+              .one-liner= @project.one_liner
+
+              - if @project.product_tags_cached.any?
+                .tags.meta
+                  - @project.product_tags_cached.each do |tag|
+                    span= link_to tag, "/tags/#{CGI::escape(tag)}", class: 'tag-link'
+
+              - if @project.buy_link.present?
+                .tags.meta
+                  ' Buy it from
+                  = link_to @project.buy_link_host, @project.buy_link, target: '_blank', rel: 'nofollow'
+
+      span.fa.fa-chevron-down.trigger-main-project-scroll.js-scroll-main-project
+      #project-team
+        .team-widget.pull-left
+          - if @project.guest_name.present?
+            .user.guest-name
+              span.user-name= @project.guest_name
+          - elsif @project.team.full_name.present?
+            .user.guest-name
+              span.user-name= link_to "Team #{@project.team.full_name}", 'javascript:smoothScrollTo("#team-widget", -20);', class: 'hidden-link'
+          - else
+            - u = @team_members.first.user
+            .user
+              = link_to image_tag(u.decorate.avatar(:mini), class: ' img-circle' ), u, class: ''
+              span.user-name
+                ==> link_to u.name, u, class: 'hidden-link'
+                - if @project.team_members_count > 1
+                  ' and
+                  = link_to "#{pluralize (@project.team_members_count - 1), 'other'}", 'javascript:smoothScrollTo("#team-widget", -20);', class: 'hidden-link'
+
+        - if @project.tech_tags_cached.any?
+          .tags.meta.pull-left
+            ' with
+            - tags = @project.tech_tags_cached.map do |tag|
+              - if tech = Tech.includes(:tech_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first
+                - tag_link = tech_short_path(tech)
+              - else
+                - tag_link = "/tags/#{CGI::escape(tag)}"
+              - link_to tag, tag_link, class: 'tag-link'
+            = tags.to_sentence.html_safe
+
+          .clearfix
+      .meta-data-placeholder
+
+= content_for :js do
+  javascript:
+    $('.meta-data-placeholder').replaceWith('<a class="fa fa-info-circle meta-data" data-container="body" data-toggle="popover" data-placement="left" data-trigger="hover" data-content="#{escape_javascript render("projects/meta_data").gsub(/\\"/, "'")}" data-html="true" rel="popover"></a>');

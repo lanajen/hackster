@@ -1,6 +1,0 @@
-= simple_form_for comment, html: { data: { remote: true } } do |f|
-  = f.error_notification
-  = f.input :body, as: :text, input_html: { rows: 5 }, label: false
-  .pull-right
-    = f.submit 'Comment', class: 'btn btn-primary btn-sm'
-    = link_to 'Cancel', '#', class: 'btn btn-link btn-sm issue-comment-cancel', data: { target: ".comment-#{comment.id}", template: "#{render(partial: 'comments/issues/comment', locals: { comment: comment })}" }

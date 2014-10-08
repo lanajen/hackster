@@ -1,0 +1,118 @@
+= content_for :no_container do
+  #about.text-center
+    section#teaser
+      .slide.slide1
+        .container
+          h1.top.text-center.mg-20 We'll help you turn your idea into a product
+          p Making hardware products is a hazardous task. It requires experience and skills in many different areas, which makes it very daunting for first-timers.
+          p Luckily, many people have done it before. You can now tap into their expertise and knowledge through Hackster. Stop advancing in the dark, avoid all the common mistakes and get your product to market faster!
+    section.hide
+
+    section#areas-of-xp
+      .container
+        h2.top Areas of expertise
+        .row
+          .area.col-xs-12.col-sm-6.col-md-3
+            i.fa.fa-wrench
+            | Hardware engineering
+          .area.col-xs-12.col-sm-6.col-md-3
+            i.fa.fa-code
+            | Software engineering
+          .area.col-xs-12.col-sm-6.col-md-3
+            i.fa.fa-pencil
+            | Industrial design
+          .area.col-xs-12.col-sm-6.col-md-3
+            i.fa.fa-money
+            | Crowdfunding
+        .row
+          .area.col-xs-12.col-sm-6.col-md-3
+            i.fa.fa-suitcase
+            | Business strategy
+          .area.col-xs-12.col-sm-6.col-md-3
+            i.fa.fa-globe
+            | Sourcing
+          .area.col-xs-12.col-sm-6.col-md-3
+            i.fa.fa-cogs
+            | Manufacturing
+          .area.col-xs-12.col-sm-6.col-md-3
+            i.fa.fa-shopping-cart
+            | Distribution
+
+    section#experts
+      .container
+        h2.top Meet some of our experts
+        .row
+          .col-xs-12.col-md-3
+            = image_tag 'experts/ben_bateman.jpg', class: 'img-circle img-responsive'
+            h5
+              | Ben Bateman
+              br
+              small Community Manager Design &amp; Technology at Indiegogo, Inc.
+          .col-xs-12.col-md-3
+            = image_tag 'experts/idan_beck.jpg', class: 'img-circle img-responsive'
+            h5
+              | Idan Beck
+              br
+              small Founder and CEO at Incident Technologies, Inc.
+          .col-xs-12.col-md-3
+            = image_tag 'experts/dave_merrill.jpg', class: 'img-circle img-responsive'
+            h5
+              | Dave Merrill
+              br
+              small President and Founder at Sifteo, Inc.
+          .col-xs-12.col-md-3
+            = image_tag 'experts/zach_supalla.jpg', class: 'img-circle img-responsive'
+            h5
+              | Zach Supalla
+              br
+              small Founder and CEO at Spark Labs, Inc.
+
+    section#cta
+      .container
+        ' Ready?
+        button.btn.btn-primary.btn-lg data-target="#myModal" data-toggle="modal"
+          | Connect with us
+
+= content_for :js do
+  #myModal.modal.fade*{ 'aria-hidden' => "true", 'aria-labelledby' => "myModalLabel", role: "dialog", tabindex: "-1" }
+    = simple_form_for @expert_request, url: expert_requests_path, html: { class: 'form-vertical modal-dialog' }, wrapper: :bootstrap3 do |f|
+      .modal-content
+        .modal-header
+          button.close data-dismiss="modal" type="button"
+            span aria-hidden="true"  ×
+            span.sr-only Close
+          h4#myModalLabel.modal-title Please tell us about you and your project:
+        .modal-body
+          - if user_signed_in?
+            - if current_user.projects_count > 0
+              = f.input :project_id, label: 'Link to a project on Hackster', collection: current_user.projects
+            - else
+              .form-group
+                label.control-label Link to a project on Hackster
+                p
+                  = link_to 'Create a project', new_project_path
+                  | (projects are private by default).
+          - else
+            .form-group
+              label.control-label Link to a project on Hackster
+              p
+                = link_to 'Log in', new_user_session_path
+                | or
+                = link_to 'sign up', new_user_registration_path
+                | to link to a project on Hackster.
+
+          = f.input :project_description, label: 'Alternatively describe your product here', as: :text, input_html: { rows: 10 }
+          = f.input :stage, label: 'What stage are you at?', collection: ExpertRequest::STAGES
+          = f.input :expertise_area, label: 'What do you need help with?', collection: ExpertRequest::AREAS_OF_EXPERTISE, as: :check_boxes
+          = f.input :request_description, label: "Please describe in more details what help you're looking to receive", as: :text, input_html: { rows: 5 }
+          = f.input :budget, label: 'What is your budget like?', collection: ExpertRequest::BUDGETS
+          = f.input :comments, label: "Anything you'd like to add?", as: :text, input_html: { rows: 5 }
+
+          p Last, tell us who you are and how we can reach you:
+          = f.input :name, label: 'Your full name'
+          = f.input :email, label: 'Your email'
+          = f.input :phone, label: 'Your phone'
+          = f.input :location, label: 'Your location', hint: 'City, State, Country'
+        .modal-footer
+          = f.submit 'Get connected', class: 'btn btn-primary'
+          button.btn.btn-default data-dismiss="modal" type="button"  Close

@@ -180,9 +180,11 @@
 }
 
 .hacker-space {
-  .avatar {
+  .avatar, .avatar img {
     width: 20px;
     height: 20px;
+  }
+  .avatar {
     margin-right: 3px;
   }
 }

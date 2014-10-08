@@ -1,0 +1,16 @@
+.col-xs-6.col-xs-offset-3
+  .wellified
+    h2.text-center Welcome to Hackster.io
+    p.text-center
+      = SLOGAN
+    - if resource.invited_by
+      p.text-center
+        ' You were invited by
+        = link_to resource.invited_by.name, resource.invited_by
+    .text-center
+      p
+        | To accept your invitation, please select how you want to connect:
+      = render 'devise/shared/omniauth'
+      hr
+      p Or use your email:
+      = render 'devise/shared/signup_form'

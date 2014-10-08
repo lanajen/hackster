@@ -1,0 +1,79 @@
+- @hacker_space = GroupDecorator.decorate @hacker_space
+
+- unless @hide_top_join_prompt or (user_signed_in? and current_user.is_member? @hacker_space)
+  - if can? :join, @hacker_space
+    .row
+      .col-xs-12
+        .alert.alert-warning.alert-flat
+          .container
+            - case @hacker_space.access_level
+            - when 'anyone'
+              ' Are you a member of
+              strong = @hacker_space.name
+              ' ?
+            - when 'invite'
+              ' You have been invited to join
+              strong = @hacker_space.name
+              ' .
+            = link_to 'Join hacker space', group_accept_invitation_path(@hacker_space), class: 'btn btn-warning btn-sm'
+
+  - elsif can? :request_access, @hacker_space
+    .row
+      .col-xs-12
+        .alert.alert-warning.alert-flat
+          .container
+            ' Registrations for
+            strong> = @hacker_space.name
+            ' require approval.
+            = link_to 'Request to join hacker space', group_members_path(@hacker_space), class: 'btn btn-sm btn-warning', data: { method: :post }
+
+#content-header.with-nav
+  .container
+    .media
+      - if @hacker_space.avatar
+        .pull-left
+          span.avatar.medium-avatar= image_tag @hacker_space.avatar(:medium), class: 'media-object'
+      .media-body
+        h1
+          - if @hacker_space.private?
+            small
+              i.fa.fa-lock.istooltip*{ title: 'Private group', data: { container: 'body' } }
+          = link_to @hacker_space.name, hacker_space_path(@hacker_space)
+        p
+          - if @hacker_space.mini_resume.present?
+            = @hacker_space.mini_resume
+          - elsif can? :update, @hacker_space
+            ' No mini resume.
+            = link_to 'Add one?', edit_hacker_space_path(@hacker_space), data: { remote: true }
+
+          - if @hacker_space.websites.any?
+            ul.websites.list-inline
+              - @hacker_space.websites.select{|t,u| u.present? }.each do |type, url|
+                = render partial: "shared/website", locals: { type: type, url: url }
+          - elsif can? :update, @hacker_space
+            ul.websites.list-inline
+              li
+                ' No websites.
+                = link_to 'Add some?', edit_hacker_space_path(@hacker_space), data: { remote: true }
+
+    - if can? :read, @hacker_space
+      .row
+        .col-xs-12
+          .tabs-left.navbar.navbar-default.navbar-tabs  style='background: #fff;'
+            ul.nav.navbar-nav
+              li.active= link_to "Projects", '#tab-projects', data: { toggle: 'tab' }
+              li= link_to "Members", "#tab-members", data: { toggle: 'tab' }
+              li= link_to "Team", "#tab-team", data: { toggle: 'tab' }
+              / @hacker_space.pages.public.order(created_at: :asc).each do |page|
+                = active_li_link_to page.title, "#{hacker_space_path(@hacker_space)}/pages/#{page.slug}"
+
+              - if can? :manage, @hacker_space
+                li.dropdown
+                  a.dropdown-toggle.action*{ data: { toggle: 'dropdown' }, href: '#', title: 'Settings', rel: 'tooltip' }
+                    i.fa.fa-cog
+                    b.caret
+                  ul.dropdown-menu
+                    li= link_to 'Edit hacker space', edit_hacker_space_path(@hacker_space), data: { remote: true }
+                    li= link_to 'Manage members', group_edit_members_path(@hacker_space)
+                    li= link_to 'Invite members', group_new_invitations_path(@hacker_space)
+                    / %li= link_to 'Add a new page', new_hackathon_hacker_space_page_path(@hacker_space.hackathon.user_name, @hacker_space.user_name)

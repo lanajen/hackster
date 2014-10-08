@@ -1,0 +1,6 @@
+.media
+  a.pull-left  href=event_path(event)
+    = image_tag event.avatar(:thumb), class: 'media-object'
+  .media-body
+    b>= link_to event.name, event_path(event)
+    small.text-muted hackathon

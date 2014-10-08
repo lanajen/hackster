@@ -1,5 +1,0 @@
-- model_class = User
-.page-header
-  %h1=t '.title', :default => [:'helpers.titles.edit', 'Edit %{model}'], :model => model_class.model_name.human
-= simple_form_for [:admin, @user], url: admin_user_path(@user.id), html: { class: 'form-horizontal' }, wrapper: :bootstrap3_horizontal do |f|
-  = render partial: 'form', locals: { f: f }

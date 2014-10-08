@@ -1,0 +1,29 @@
+= content_for :head do
+  meta(name='keywords' content="#{@tag}")
+
+.content.projects
+  .row
+    .col-xs-12
+      h1  style='margin-bottom: 30px; '
+        ' Projects in
+        span.label.label-primary> #{@tag}
+        - if safe_page_params
+          small page #{safe_page_params}
+        .pull-right
+          = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add a project to #{@tag}".html_safe, new_project_path(project: { product_tags_string: @tag.capitalize}), class: 'btn btn-warning btn-sm'
+
+  - if params[:q].present?
+    - if @results.any?
+      .row
+        - @results.each do |project|
+          - if project.external
+            = render partial: "projects/project_thumb_external", locals: { project: project.decorate, ref: 'tags' }
+          - else
+            = render partial: "projects/project_thumb_hybrid", locals: { project: project.decorate, ref: 'tags' }
+      .row
+        .col-xs-12.text-center= will_paginate @results
+    - else
+      .row
+        .col-xs-12.text-center
+          .wellified
+            | No projects match this tag. Use the search box above to modify your query.

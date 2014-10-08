@@ -1,0 +1,29 @@
+.meta
+  | Created on
+  strong<
+    = l @project.created_at, format: :date
+    / if @project.created_at.to_date != @project.made_public_at.to_date
+      br
+      strong> Published on
+      = l @project.made_public_at, format: :date
+
+- if @project.guest_name.present? and poster = @project.team.try(:active_members).try(:includes, :user).try(:first).try(:user)
+  .meta
+    strong
+      | Posted by
+      = poster.name
+
+- if @project.license
+  .license.meta
+    | Copyright &copy;
+    strong<
+      / = link_to @project.license.abbr, @project.license.url, target: '_blank', class: 'hidden-link'
+      = @project.license.abbr
+
+.meta
+  strong>= number_with_delimiter @project.impressions_count
+  = pluralize_without_count @project.impressions_count, 'view'
+
+.meta
+  strong>= number_with_delimiter @project.respects_count
+  = pluralize_without_count @project.respects_count, 'respect'

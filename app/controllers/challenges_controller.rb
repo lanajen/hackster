@@ -5,6 +5,7 @@ class ChallengesController < ApplicationController
   layout :set_layout
 
   def show
+    title @challenge.name
     authorize! :read, @challenge
     @challenge = @challenge.decorate
     @projects = @challenge.projects.paginate(page: params[:page])

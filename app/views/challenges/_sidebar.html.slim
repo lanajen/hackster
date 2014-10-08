@@ -1,0 +1,44 @@
+#sidebar-container.affixable
+  #sidebar-container-in
+    - if @challenge.tech
+      - @tech = @challenge.tech.decorate
+      - if @tech.avatar
+        .avatar#tech-avatar-image-div
+          #tech-avatar-image style="background-image:url('#{@tech.avatar(:big)}');"
+    #tech-body
+      p
+        - if @challenge.teaser.present?
+          = @challenge.teaser
+      = link_to 'Read challenge rules', challenge_rules_path(@challenge), class: 'btn btn-primary btn-sm btn-block'
+
+    .display
+      h4 Enter and win:
+      ol
+        - @challenge.prizes.each do |prize|
+          li= prize.name
+
+    #tech-body
+      #tech-follow-div.text-center
+        - if @challenge.open_for_submissions?
+          p#status
+            ' Expires in:
+            strong= @challenge.time_left
+          - if user_signed_in? and current_user.is_challenge_entrant? @challenge
+            p
+              strong Your entry has been registered!
+            - if @challenge.allow_multiple_entries?
+              / %small Multiple entries are allowed.
+              = link_to 'Enter an additional project', '', class: 'follow-button btn btn-info btn-block btn-ellipsis btn-standout', id: 'enter-challenge'
+          - else
+            = link_to 'Enter challenge', '', class: 'follow-button btn btn-info btn-block btn-ellipsis btn-standout', id: 'enter-challenge'
+        - else
+          | Submissions are closed.
+
+    .display
+      h4 Navigation
+      ul#tech-links
+        li= link_to 'Challenge Home', challenge_path(@challenge, anchor: 'top-project-section'), class: 'smooth-scroll'
+        li= link_to 'Projects', challenge_path(@challenge, anchor: 'projects-list'), class: 'smooth-scroll'
+        li= link_to 'Rules', challenge_rules_path(@challenge)
+        - if can? :manage, @challenge
+          li= link_to "#{content_tag(:i, '', class: 'fa fa-cog')} Manage challenge".html_safe, edit_challenge_path(@challenge)

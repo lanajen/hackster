@@ -1,0 +1,70 @@
+.col-xs-8.col-xs-offset-2
+  .wellified
+    h2.text-center Event awards
+    - @group.awards.new if @group.awards.empty?
+    = simple_nested_form_for @group, url: group_awards_path(@group) do |f|
+      = f.error_notification
+      table#sortable.table.table-condensed
+        thead
+          th Award label
+          th Project
+          th
+        tbody
+          - @group.awards.each do |award|
+            = f.simple_fields_for :awards, award, wrapper: false do |f_award|
+              tr.fields
+                td
+                  = f_award.input :grade, label: false, input_html: { size: 20 }
+                  = f_award.input :id, as: :hidden
+                td= f_award.association :project, label: false, collection: @group.projects
+                td= f_award.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-sm btn-danger'
+          tr.sortable-disabled
+            td  colspan=3  = f.link_to_add 'Add an award', :awards, class: 'btn btn-sm btn-success'
+      = f.button :submit, 'Save changes', class: 'btn-block btn btn-primary'
+
+= content_for :js do
+  javascript:
+    jQuery(function($) {
+      window.NestedFormEvents.prototype.insertFields = function(content, assoc, link) {
+        var $tr = $(link).closest('tr');
+        content = content.replace(/^<div class="fields">/,"");
+        content = content.replace(/<\/div>$/,"");
+        return $(content).insertBefore($tr);
+      }
+
+      $('form').on('nested:fieldAdded', function(event){
+        var field = event.field;
+        previousPosition = field.prev().find('input.position').val();
+        if (isNaN(previousPosition)) previousPosition = 0;
+        positionField = field.find('input.position');
+        positionField.val(parseInt(previousPosition) + 1);
+        $('.total-price', field).text('$0.00');
+      })
+
+      $('form').on('nested:fieldRemoved', function(event){
+        event.field.addClass('removed');
+        resetPositions();
+      })
+
+      $(function() {
+        $('#sortable tbody')
+          .sortable({ handle: ".handle", containment: "#sortable", items: 'tr:not(.sortable-disabled)' })
+          .bind('sortupdate', function(event, ui) {
+            resetPositions();
+          });
+      });
+
+      function resetPositions(){
+        $('#sortable tbody tr:not(.removed) input.position').each(function(i){
+          $(this)
+            .val(i+1)
+            .trigger('change');
+        });
+      }
+
+      $('form').on('change keyup', 'input.quantity,input.unit-price', function(){
+        field = $(this).parents('.fields');
+        updateTotal(field);
+      });
+
+    });
