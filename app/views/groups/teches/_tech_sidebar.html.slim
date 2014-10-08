@@ -1,7 +1,7 @@
 - if can? :manage, @tech
   = content_for :js do
     javascript:
-      | $("#{escape_javascript render('groups/teches/tech_stats')}").appendTo('#tech-body .stats');
+      $("#{escape_javascript render('groups/teches/tech_stats')}").appendTo('#tech-body .stats');
 
 - cache ["tech-#{@tech.id}-sidebar", user_signed_in?, can?(:manage, @tech), (user_signed_in? and current_user.following?(@tech))], tag: ["tech-#{@tech.id}-sidebar", 'tech-sidebar'] do
   #sidebar-container.affixable
@@ -21,7 +21,9 @@
             = link_to 'Add one?', edit_tech_path(@tech)
         .stats
         #tech-follow-div.text-center
-          = render partial: 'followers/button_text', locals: { followable: @tech }
+          = render partial: 'followers/button_text', locals: { followable: @tech, why: "Follow #{@tech.name} to receive updates about new projects." }
+          / small style='margin-top:10px;display:block'
+            = link_to 'Why follow?', 'javascript:void();', style: 'color:#666', rel: 'tooltip', title: "Follow #{@tech.name} to receive updates about new projects.", data: { placement: 'bottom' }
 
       .display
         h4 Resources

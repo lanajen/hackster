@@ -9,8 +9,8 @@
 
 = content_for :js do
   javascript:
-    | $('body').on('click', 'a.follow-button', function(){
-      | $(this).tooltip('destroy');
-      /!/when the response is faster the loader appears after the new icon
-      /!/$(this).replaceWith("#{escape_javascript image_tag('loader.gif')}");
-    | });
+    $('body').on('click', 'a.follow-button', function(){
+      $(this).tooltip('destroy');
+      //when the response is faster the loader appears after the new icon
+      //$(this).replaceWith("#{escape_javascript image_tag('loader.gif')}");
+    });
