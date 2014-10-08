@@ -71,8 +71,6 @@ class CommentsController < ApplicationController
         'create_issue'
       when Project
         'update_project'
-      when Widget
-        'update_widget'
       end
     end
 
@@ -84,8 +82,6 @@ class CommentsController < ApplicationController
         'destroy'
       when Project
         'update_project'
-      when Widget
-        'update_widget'
       end
     end
 
@@ -99,8 +95,6 @@ class CommentsController < ApplicationController
         issue_path(commentable.threadable, commentable)
       when Project
         project_path(commentable)
-      when Widget
-        project_path(commentable.project)
       end
     end
 end
