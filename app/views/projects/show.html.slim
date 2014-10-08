@@ -13,7 +13,7 @@
             h3.link-color= @prev.name
             h4
               | by
-              span.link-color= @prev.users.map   |u| u.name  .to_sentence
+              span.link-color= @prev.users.map{ |u| u.name }.to_sentence
             p= truncate @prev.one_liner, length: 140
           a.project-nav-overlay.project-nav-overlay-top  href=project_path(@prev, ref: params[:ref], ref_id: params[:ref_id], offset: params[:offset].to_i - 1)
 
@@ -27,7 +27,7 @@
             h3.link-color= @next.name
             h4
               | by
-              span.link-color= @next.users.map   |u| u.name  .to_sentence
+              span.link-color= @next.users.map{ |u| u.name }.to_sentence
             p= truncate @next.one_liner, length: 140
           a.project-nav-overlay.project-nav-overlay-top  href=project_path(@next, ref: params[:ref], ref_id: params[:ref_id], offset: params[:offset].to_i + 1)
 
@@ -109,11 +109,11 @@
               .content
                 - @project.issues.where(type: 'Issue').each do |issue|
                   h5
-                    = link_to issue.title, issue_path(@project, issue)
+                    ==> link_to issue.title, issue_path(@project, issue)
                     small.text-muted
-                      | by
-                      = link_to issue.user.name, issue.user
-                      = time_ago_in_words issue.created_at
+                      ' by
+                      ==> link_to issue.user.name, issue.user
+                      ==> time_ago_in_words issue.created_at
                       | ago
 
             = link_to 'Read all issues', project_issues_path, class: 'btn btn-outline btn-block'

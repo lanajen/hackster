@@ -6,7 +6,7 @@
       .row
         = f.input :name, label: 'Title'
         = f.input :one_liner, as: :text, input_html: { rows: 4 },
-          | hint: 'Maximum 140 characters'
+          hint: 'Maximum 140 characters'
         = f.input :website, label: 'Project website'
         = f.input :guest_name, label: 'Author name'
         = f.input :tech_tags_string, as: :string, label: 'Technologies', hint: 'Separate tags by commas. Used for finding your project more easily.'
@@ -58,6 +58,6 @@
 
         .form-group
           .col-xs-offset-4.col-xs-8
-            = f.submit "Save changes", class: 'btn btn-primary'
+            ==> f.submit "Save changes", class: 'btn btn-primary'
             - if @project.persisted?
               = link_to 'Delete project', admin_project_path(@project), method: :delete, class: 'btn btn-danger btn-xs', data: { confirm: "Are you sure? There's no coming back!" }

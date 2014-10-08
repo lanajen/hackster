@@ -3,14 +3,14 @@
   h1
     =t '.title', :default => model_class.model_name.human.pluralize
     small
-      = link_to t('.new', :default => t("helpers.links.new")), new_admin_group_path, :class => 'btn btn-primary btn-sm'
-      = link_to 'New event', new_admin_group_path(group: { type: 'Event' }), :class => 'btn btn-primary btn-sm'
-      = link_to 'New course', new_admin_group_path(group: { type: 'Course' }), :class => 'btn btn-primary btn-sm'
+      ==> link_to t('.new', :default => t("helpers.links.new")), new_admin_group_path, :class => 'btn btn-primary btn-sm'
+      ==> link_to 'New event', new_admin_group_path(group: { type: 'Event' }), :class => 'btn btn-primary btn-sm'
+      ==> link_to 'New course', new_admin_group_path(group: { type: 'Course' }), :class => 'btn btn-primary btn-sm'
       = link_to 'New promotion', new_admin_group_path(group: { type: 'Promotion' }), :class => 'btn btn-primary btn-sm'
 
-= render 'admin/shared/search_form_tag'
+==> render 'admin/shared/search_form_tag'
 - (@fields.keys - %w(created_at)).each do |field|
-  = render partial: 'admin/shared/search_form_text_field', locals: { field: field }
+  ==> render partial: 'admin/shared/search_form_text_field', locals: { field: field }
 = render 'admin/shared/search_form_sort_and_submit'
 
 table.table.table-striped
@@ -29,7 +29,7 @@ table.table.table-striped
         td= group.members.size
         td= group.members.invitation_accepted_or_not_invited.size
         td
-          = link_to t('.edit', :default => t("helpers.links.edit")), edit_admin_group_path(group.id), :class => 'btn btn-default btn-xs'
+          ==> link_to t('.edit', :default => t("helpers.links.edit")), edit_admin_group_path(group.id), :class => 'btn btn-default btn-xs'
           = link_to t('.destroy', :default => t("helpers.links.destroy")), admin_group_path(group.id), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'
 
 .pagination.col-xs-12.text-center

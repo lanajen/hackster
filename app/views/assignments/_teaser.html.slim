@@ -18,18 +18,22 @@
       .media-body
         h1
           - if @promotion.private?
-            small
-              i.fa.fa-lock.istooltip  title: 'Private group', data: { container: 'body' }  
-          #{link_to "#{@promotion.course.name}", course_path(@promotion.course)} -
+            small>
+              i.fa.fa-lock.istooltip*{ title: 'Private group', data: { container: 'body' } }
+          ==> link_to "#{@promotion.course.name}", course_path(@promotion.course)
+          ' -
 
           = link_to @assignment.name, assignment_path(@assignment), class: 'hidden-link'
           - if @assignment.document.present?
-            small= link_to content_tag(:i, '', class: 'fa fa-info-circle'), @assignment.document.file_url, title: 'Download assignment instructions', rel: 'tooltip', target: '_blank', data:   container: 'body'  
+            small= link_to content_tag(:i, '', class: 'fa fa-info-circle'), @assignment.document.file_url, title: 'Download assignment instructions', rel: 'tooltip', target: '_blank', data: { container: 'body' }
         h2
           - if profs = @promotion.members.with_group_roles('professor') and profs.any?
-            | By #{profs.map{ |prof| link_to prof.user.name, prof.user }.to_sentence.html_safe},
-          #{link_to @promotion.short_name, promotion_path(@promotion)},
-          #{@promotion.course.university.full_name}
+            ' By
+            = profs.map{ |prof| link_to prof.user.name, prof.user }.to_sentence.html_safe
+            ' ,
+          = link_to @promotion.short_name, promotion_path(@promotion)
+          ' ,
+          = @promotion.course.university.full_name
 
         p
           - if @promotion.mini_resume.present?
@@ -38,10 +42,10 @@
             | No mini resume.
             = link_to 'Add one?', edit_promotion_path(@promotion), data: { remote: true }
 
-        p  style: 'font-size: 12px'  
+        p  style='font-size: 12px'
           - if @promotion.location
             span.category.first
-              i.fa.fa-map-marker
+              i.fa.fa-map-marker>
               = @promotion.location
           - elsif can? :update, @promotion
             | No location.
@@ -52,21 +56,21 @@
               - @promotion.websites.select{|t,u| u.present? }.each do |type, url|
                 = render partial: "shared/website", locals: { type: type, url: url }
           - elsif can? :update, @promotion
-            span.websites  style: 'margin-left: 10px ' 
+            span.websites  style='margin-left: 10px'
               | No websites.
               = link_to 'Add some?', edit_promotion_path(@promotion), data: { remote: true }
 
     .row
       .col-xs-12
-        .tabbable.tabs-left.navbar.navbar-default.navbar-tabs  style: 'background: #fff;'  
+        .tabbable.tabs-left.navbar.navbar-default.navbar-tabs  style='background: #fff;'
           ul.nav.navbar-nav
-            li.active= link_to "Projects", '#tab-projects', data:   toggle: 'tab'  
+            li.active= link_to "Projects", '#tab-projects', data: { toggle: 'tab' }
 
             - if can? :manage, @assignment
               li.dropdown
-                a.dropdown-toggle.action  data: { toggle: 'dropdown' }, href: '#', title: 'Settings', rel: 'tooltip'  
+                a.dropdown-toggle.action*{ data: { toggle: 'dropdown' }, href: '#', title: 'Settings', rel: 'tooltip' }
                   i.fa.fa-cog
                   b.caret
                 ul.dropdown-menu
-                  li= link_to 'Edit assignment', edit_assignment_path(@assignment), data:   remote: true  
+                  li= link_to 'Edit assignment', edit_assignment_path(@assignment), data: { remote: 'tab' }
                   li= link_to 'Manage grades', assignment_grades_path(@assignment)

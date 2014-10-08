@@ -17,14 +17,14 @@
 
 - if @tech.cover_image
   section#top-bg.show-on-desktop
-    #top-bg-image style="background-image:url('#{@tech.cover_image.try(:file_url)}');" 
+    #top-bg-image style="background-image:url('#{@tech.cover_image.try(:file_url)}');"
 
 - if can? :join, @tech and user_signed_in? and member = current_user.is_member?(@tech) and member.invitation_pending?
   section#alert-section
     .alert.alert-warning.alert-flat
-      | You have been invited to manage
-      = succeed '.' do
-        strong # @tech.name 
+      ' You have been invited to manage
+      strong = @tech.name
+      ' .
       = link_to 'Rock the place', group_accept_invitation_path(@tech), class: 'btn btn-warning btn-sm'
 
 section#projects-list
@@ -32,19 +32,15 @@ section#projects-list
     .project-list-actions.clearfix.mg-30
       .pull-right
         - link = user_signed_in? ? new_project_path(project: { tech_tags_string: @tech.tech_tags.first.name }) : new_user_registration_path(reason: 'project', m: 'group', id: @tech.id)
-        = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add a project".html_safe, link, class: 'btn btn-outline'
-        small or
+        ==> link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add a project".html_safe, link, class: 'btn btn-outline'
+        small> or
         - link = new_project_path(project: { tech_tags_string: @tech.tech_tags.first.name, external: true }, redirect_to: request.path)
         = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Submit a link".html_safe, link, class: 'btn btn-outline'
 
-      - style = cookies['thumb-list-style'] || 'thumb-list-vertical'
-      .btn-group.thumb-list-switch.pull-left
-        button.btn.btn-default.btn-sm  class: "#{'active' if style == 'thumb-list-vertical'}", data: { 'list-style' => 'vertical', container: 'body' }, title: 'Display as tiles'  
-          i.fa.fa-th-large
-        button.btn.btn-default.btn-sm  class: "#{'active' if style == 'thumb-list-horizontal'}", data: { 'list-style' => 'horizontal', container: 'body' }, title: 'Display as list'  
-          i.fa.fa-th-list
+      .pull-left= render 'shared/list_switch'
+
     - if @projects.any?
-      .thumb-list  class: style  
+      .thumb-list  class=@switch_style
         .row.project-list
           - @projects.each do |project|
             - if project.external
@@ -64,5 +60,5 @@ section#projects-list
   - @projects.each do |project|
     = content_for :js do
       javascript:
-        | text = "#{escape_javascript render(partial: 'groups/teches/button_featured', locals: { project: project } )}";
-        | $(text).appendTo($('.project-#{project.id} .project-thumb .thumb-top-inner'));
+        text = "#{escape_javascript render(partial: 'groups/teches/button_featured', locals: { project: project } )}";
+        $(text).appendTo($('.project-#{project.id} .project-thumb .thumb-top-inner'));

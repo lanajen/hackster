@@ -5,7 +5,7 @@
   .form-group
     = f.input :slug, label: 'URL', wrapper: false do
       .input-group
-        span.input-group-addon hackster.io/# @event.hackathon.user_name}/#{@event.user_name /pages/
+        span.input-group-addon hackster.io/#{@event.hackathon.user_name}/#{@event.user_name}/pages/
         = f.input_field :slug, hint: "Changing this value after the page was created will break links."
   .form-group
     .controls
@@ -21,9 +21,9 @@
 - unless @page.persisted?
   = content_for :js do
     javascript:
-      | $(document).ready(function(){
-        | $('#page_title').on('keypress keyup', function(){
-          | slug = $(this).val().toLowerCase().replace(new RegExp("[^a-z0-9]", "gm"), '-');
-          | $('#page_slug').val(slug);
-        | });
-      | });
+      $(document).ready(function(){
+        $('#page_title').on('keypress keyup', function(){
+          slug = $(this).val().toLowerCase().replace(new RegExp("[^a-z0-9]", "gm"), '-');
+          $('#page_slug').val(slug);
+        });
+      });

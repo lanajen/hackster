@@ -2,17 +2,17 @@
 
 - if @project.collection_id.present?
   #project-group
-    | This project is part of
+    ' This project is part of
     - if @project.assignment.present?
       - if @project.assignment.promotion.avatar
-        = image_tag @project.assignment.promotion.avatar.file_url(:mini), class: 'img-circle'
+        ==> image_tag @project.assignment.promotion.avatar.file_url(:mini), class: 'img-circle'
       = link_to @project.assignment.to_label, assignment_path(@project.assignment)
     - elsif @project.event.present?
       - if @project.event.avatar
-        = image_tag @project.event.avatar.file_url(:mini), class: 'img-circle'
+        ==> image_tag @project.event.avatar.file_url(:mini), class: 'img-circle'
       = link_to @project.event.name, event_path(@project.event)
       - @project.awards.where(gradable_id: @project.collection_id, gradable_type: 'Group').each do |award|
-        span.project-award
+        span.project-award<
           i.fa.fa-trophy.istooltip  title=award.grade   data-container='body'
       / if can? :request_access, @project.team
         - if user_signed_in? and member = current_user.is_team_member?(@project)
@@ -53,7 +53,7 @@
 
               - if @project.buy_link.present?
                 .tags.meta
-                  | Buy it from
+                  ' Buy it from
                   = link_to @project.buy_link_host, @project.buy_link, target: '_blank', rel: 'nofollow'
 
       span.fa.fa-chevron-down.trigger-main-project-scroll.js-scroll-main-project
@@ -64,7 +64,7 @@
               span.user-name= @project.guest_name
           - elsif @project.team.full_name.present?
             .user.guest-name
-              span.user-name= link_to "Team # @project.team.full_name ", 'javascript:smoothScrollTo("#team-widget", -20);', class: 'hidden-link'
+              span.user-name= link_to "Team #{@project.team.full_name}", 'javascript:smoothScrollTo("#team-widget", -20);', class: 'hidden-link'
           - else
             - u = @team_members.first.user
             .user

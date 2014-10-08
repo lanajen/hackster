@@ -19,5 +19,5 @@
 = f.input :interest_tags_string, label: 'Interests', hint: 'Enter a list of tags separated by commas'
 = f.input :skill_tags_string, label: 'Skills'
 .col-xs-offset-4.col-xs-8
-  = f.button :submit, :class => 'btn-primary'
+  ==> f.button :submit, :class => 'btn-primary'
   = link_to t('.cancel', :default => t("helpers.links.cancel")), admin_users_path, :class => 'btn btn-default'

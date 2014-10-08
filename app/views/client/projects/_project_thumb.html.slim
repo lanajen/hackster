@@ -1,5 +1,5 @@
 - cache "client-project-#{project.id}-thumb", tag: ["project-#{project.id}-thumb", "project-#{project.id}-thumb-client", "team-#{project.team_id}", "team-#{project.team_id}-user-thumbs", "project-thumb", 'client-project-thumb'], expires_in: 6.hours do
-  div  class: "col-md-#{ defined?(col) ? col : 3 } col-xs-12 col-sm-6"  
+  div  class="col-md-#{ defined?(col) ? col : 3 } col-xs-12 col-sm-6"
     - ref = defined?(ref) ? ref : nil
     .project-thumb
       .thumb
@@ -7,7 +7,7 @@
         .inner-thumb
           h3= link_to project.name, project_url(project, ref: ref, subdomain: 'www')
           h4
-            | by
+            ' by
             - if project.guest_name.present?
               = project.guest_name
             - elsif project.team.full_name.present?
@@ -23,19 +23,19 @@
           .thumb-bottom
             hr
             - if project.public?
-              span.counter.first.istooltip  title: 'Views'  
-                i.fa.fa-eye
+              span.counter.first.istooltip  title='Views'
+                i.fa.fa-eye>
                 = project.impressions_count
-              span.counter.istooltip  title: 'Respects'  
-                i.fa.fa-thumbs-o-up
+              span.counter.istooltip  title='Respects'
+                i.fa.fa-thumbs-o-up>
                 = project.respects_count
             - else
               span.counter
-                i.fa.fa-lock
+                i.fa.fa-lock>
                 | Private
-            span.counter.istooltip  title: 'Comments', data: { container: 'body' }  
-              i.fa.fa-comments
+            span.counter.istooltip*{ title: 'Comments', data: { container: 'body' } }
+              i.fa.fa-comments>
               = project.comments_count
             - if project.wip?
-              span.counter.istooltip  title: 'Work in progress', data: { container: 'body' }  
+              span.counter.istooltip*{ title: 'Work in progress', data: { container: 'body' } }
                 i.fa.fa-wrench

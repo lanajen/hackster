@@ -1,12 +1,12 @@
 - model_class = Tech
 .page-header
   h1
-    | Techs
-    small= link_to t('.new', :default => t("helpers.links.new")), new_admin_group_path(group:   type: 'Tech'  ), :class => 'btn btn-primary btn-sm'
+    ' Techs
+    small= link_to t('.new', :default => t("helpers.links.new")), new_admin_group_path(group: { type: 'Tech' } ), :class => 'btn btn-primary btn-sm'
 
-= render 'admin/shared/search_form_tag'
+==> render 'admin/shared/search_form_tag'
 - (@fields.keys - %w(created_at)).each do |field|
-  = render partial: 'admin/shared/search_form_text_field', locals: { field: field }
+  ==> render partial: 'admin/shared/search_form_text_field', locals: { field: field }
 = render 'admin/shared/search_form_sort_and_submit'
 
 table.table.table-striped
@@ -17,10 +17,10 @@ table.table.table-striped
       th Views
       th Followers
       th
-        | Projects
+        ' Projects
         small (external)
       th
-        | Members
+        ' Members
         small (active)
       th Status
       th=t '.actions', :default => t("helpers.actions")
@@ -33,10 +33,12 @@ table.table.table-striped
         td= group.followers_count
         td
           = group.projects_count
-          small (# group.external_projects_count )
+          small
+            | (#{group.external_projects_count})
         td
           = group.members.size
-          small (# group.members.invitation_accepted_or_not_invited.size )
+          small
+            | (#{group.members.invitation_accepted_or_not_invited.size})
         td
           - if group.private?
             b Private

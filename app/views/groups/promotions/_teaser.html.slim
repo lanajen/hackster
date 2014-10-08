@@ -5,8 +5,9 @@
     .col-xs-12
       .alert.alert-warning.alert-flat
         .container
-          | You have been invited to join
-          strong # @promotion.name .
+          ' You have been invited to join
+          strong = @promotion.name
+          ' .
           = link_to 'Join promotion', group_accept_invitation_path(@promotion), class: 'btn btn-warning btn-sm'
 
 #content-header.with-nav
@@ -18,28 +19,31 @@
       .media-body
         h1
           - if @promotion.private?
-            small
-              i.fa.fa-lock.istooltip  title: 'Private group', data: { container: 'body' }  
+            small>
+              i.fa.fa-lock.istooltip*{ title: 'Private group', data: { container: 'body' } }
           = link_to "#{@promotion.course.name}", course_path(@promotion.course)
         h2
           - if profs = @promotion.members.with_group_roles('professor') and profs.any?
-            | By #{profs.map{ |prof| link_to prof.user.name, prof.user }.to_sentence.html_safe},
-          #{link_to @promotion.short_name, promotion_path(@promotion)},
-          #{@promotion.course.university.full_name}
+            ' By
+            = profs.map{ |prof| link_to prof.user.name, prof.user }.to_sentence.html_safe
+            ' ,
+          = link_to @promotion.short_name, promotion_path(@promotion)
+          ' ,
+          = @promotion.course.university.full_name
         p
           - if @promotion.mini_resume.present?
             = @promotion.mini_resume
           - elsif can? :update, @promotion
-            | No mini resume.
+            ' No mini resume.
             = link_to 'Add one?', edit_promotion_path(@promotion), data: { remote: true }
 
-        p  style: 'font-size: 12px'  
+        p  style='font-size: 12px'
           - if @promotion.location
             span.category.first
-              i.fa.fa-map-marker
+              i.fa.fa-map-marker>
               = @promotion.location
           - elsif can? :update, @promotion
-            | No location.
+            ' No location.
             = link_to 'Add one?', edit_promotion_path(@promotion), data: { remote: true }
 
           - if @promotion.websites.any?
@@ -47,27 +51,27 @@
               - @promotion.websites.select{|t,u| u.present? }.each do |type, url|
                 = render partial: "shared/website", locals: { type: type, url: url }
           - elsif can? :update, @promotion
-            span.websites  style: 'margin-left: 10px ' 
-              | No websites.
+            span.websites  style='margin-left: 10px'
+              ' No websites.
               = link_to 'Add some?', edit_promotion_path(@promotion), data: { remote: true }
 
     - if can? :read, @promotion
       .row
         .col-xs-12
-          .tabbable.tabs-left.navbar.navbar-default.navbar-tabs  style: 'background: #fff;'  
+          .tabbable.tabs-left.navbar.navbar-default.navbar-tabs  style='background: #fff;'
             ul.nav.navbar-nav
-              li.active= link_to "Projects", '#tab-projects', data:   toggle: 'tab'  
-              li= link_to "Assignments", '#tab-assignments', data:   toggle: 'tab'  
-              li= link_to "Students", '#tab-students', data:   toggle: 'tab'  
-              li= link_to "Staff", '#tab-staffs', data:   toggle: 'tab'  
+              li.active= link_to "Projects", '#tab-projects', data: { toggle: 'tab' }
+              li= link_to "Assignments", '#tab-assignments', data: { toggle: 'tab' }
+              li= link_to "Students", '#tab-students', data: { toggle: 'tab' }
+              li= link_to "Staff", '#tab-staffs', data: { toggle: 'tab' }
 
               - if can? :manage, @promotion
                 li.dropdown
-                  a.dropdown-toggle.action  data: { toggle: 'dropdown' }, href: '#', title: 'Settings', rel: 'tooltip'  
+                  a.dropdown-toggle.action*{ data: { toggle: 'dropdown' }, href: '#', title: 'Settings', rel: 'tooltip' }
                     i.fa.fa-cog
                     b.caret
                   ul.dropdown-menu
-                    li= link_to 'Edit promotion', edit_promotion_path(@promotion), data:   remote: true  
+                    li= link_to 'Edit promotion', edit_promotion_path(@promotion), data: { remote: 'tab' }
                     li= link_to 'Manage members', group_edit_members_path(@promotion)
                     li= link_to 'Invite members', group_new_invitations_path(@promotion)
                     li= link_to 'New assignment', new_assignment_path(@promotion.assignments.new)

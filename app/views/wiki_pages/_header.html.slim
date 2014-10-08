@@ -10,7 +10,7 @@
           = link_to content_tag(:i, '', class: 'fa fa-trash-o'), wiki_page_path(page), class: 'btn-edit', rel: 'tooltip', title: 'Delete page', data: { container: 'body', method: :delete, confirm: "Are you sure? There's no way back!" }
 
   small.text-muted
-    | By
-    = link_to page.user.name, page.user
-    = time_ago_in_words page.created_at
+    ' By
+    ==> link_to page.user.name, page.user
+    ==> time_ago_in_words page.created_at
     | ago

@@ -8,7 +8,7 @@
         .pull-right
           ul.list-unstyled.list-inline
             li= f.submit 'Update profile', class: 'btn btn-primary btn-sm'
-            li= link_to 'Cancel', '', class: 'btn-cancel btn-link btn-sm', data:   show: '.user .display', hide: '.user .edit'  
+            li= link_to 'Cancel', '', class: 'btn-cancel btn-link btn-sm', data: { show: '.user .display', hide: '.user .edit' }
       hr
 
   .row
@@ -19,7 +19,7 @@
         = f.input_field :user_name
       = f.input :email
       = f.input :mini_resume, label: 'Short description', as: :text, input_html: { rows: 4 },
-        | hint: 'Maximum 140 characters'
+        hint: 'Maximum 140 characters'
 
       = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Profile picture', image_link: @hacker_space.avatar.try(:file_url, :thumb), help_block: '', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
 

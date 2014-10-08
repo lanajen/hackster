@@ -7,20 +7,20 @@ article.post
   header.post-header
     h1= link_to @post.title, @post.full_url
     .posted.text-muted.text-center
-      small data-monologue="time" 
-        time datetime: @post.published_at = I18n.localize(@post.published_at.to_date, format: :long)
+      small data-monologue="time"
+        time datetime=@post.published_at = I18n.localize(@post.published_at.to_date, format: :long)
 
-  .post-content data-monologue="content" 
+  .post-content data-monologue="content"
     = raw @post.content
-    .tags.text-muted data-monologue="tags" 
+    .tags.text-muted data-monologue="tags"
       = render @post.tags
     .monologue-social-sharing.post-footer
       p
-        | Share this post on
+        ' Share this post on
         = link_to 'Facebook', "#", onclick: "window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),'facebook-share-dialog','width=626,height=436'); return false;", class: 'zocial facebook', target: '_blank'
-        | ,
+        ' ,
         = link_to 'Twitter', "https://twitter.com/intent/tweet?url=http://#{APP_CONFIG['full_host']}#{@post.full_url}&via=hacksterio&text=#{CGI.escape(@post.title)}&tw_p=tweetbutton", class: 'zocial twitter', target: '_blank'
-        | or
+        ' or
         = link_to 'Google+', "https://plus.google.com/share?url=#{APP_CONFIG['full_host']}#{@post.full_url}", class: 'zocial googleplus', target: '_blank', onclick: "javascript:window.open(this.href,'','menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"
     / = render "monologue/posts/social_sharing"
     /

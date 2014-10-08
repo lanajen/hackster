@@ -9,7 +9,7 @@
         .pull-right
           ul.list-unstyled.list-inline
             li= f.submit 'Update assignment', class: 'btn btn-primary btn-sm'
-            li= link_to 'Cancel', '', class: 'btn-cancel btn-link btn-sm', data:   show: '.user .display', hide: '.user .edit'  
+            li= link_to 'Cancel', '', class: 'btn-cancel btn-link btn-sm', data: { show: '.user .display', hide: '.user .edit' }
       hr
 
   .row
@@ -29,12 +29,12 @@
         = f.input :disable_tweeting, as: :boolean
 
     .col-xs-6
-      .file-drop.form-group  class: 'document'  
+      .file-drop.form-group  class='document'
         .col-xs-4
           label.control-label Assignment instructions
         .col-xs-8
-          span.file-preview.preview  class: 'document'  = @assignment.document.file_name if @assignment.document.file.present?
-          a.btn.btn-default.btn-sm  data: { target: ".file_upload.document" }  
+          span.file-preview.preview  class='document'  = @assignment.document.file_name if @assignment.document.file.present?
+          a.btn.btn-default.btn-sm*{ data: { target: ".file_upload.document" } }
             - if @assignment.document.file.present?
               | Change file
             - else
@@ -47,19 +47,19 @@ hr
   = javascript_include_tag 'datepicker'
 
   javascript:
-    | $('#datetimepicker').datetimepicker({
-      | icons: {
-          | time: "fa fa-clock-o",
-          | date: "fa fa-calendar",
-          | up: "fa fa-arrow-up",
-          | down: "fa fa-arrow-down"
-      | },
-      | sideBySide: true
-    | });
+    $('#datetimepicker').datetimepicker({
+      icons: {
+          time: "fa fa-clock-o",
+          date: "fa fa-calendar",
+          up: "fa fa-arrow-up",
+          down: "fa fa-arrow-down"
+      },
+      sideBySide: true
+    });
 
-    | $('#datetimepicker').on('change', function(){
-      | $('#submit_by_date').val($('#datetimepicker').data("DateTimePicker").getDate());
-    | });
+    $('#datetimepicker').on('change', function(){
+      $('#submit_by_date').val($('#datetimepicker').data("DateTimePicker").getDate());
+    });
 
     #{ render partial: 'shared/uploader/form_template', locals: { file_type: 'document' } }
 

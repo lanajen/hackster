@@ -37,13 +37,13 @@ html(lang="en")
           #hello-world.fade-in
             .container
               button.close.btn-close  data-close='#hello-world' | &times;
-              = SLOGAN
+              ==> SLOGAN
               = link_to 'Start building.', new_user_registration_path, onclick: "_gaq.push(['_trackEvent', 'Hello world bar', 'Sign up', '#{request.path}']);"
         - elsif user_signed_in? and current_user.simplified_signup?
           .alert.alert-flat.alert-warning.alert-smaller
             .container
-              | Hi! Please confirm your email address by clicking the link in the email we've sent you.
-              | Haven't received such email?
+              ' Hi! Please confirm your email address by clicking the link in the email we've sent you.
+              ' Haven't received such email?
               = link_to 'Resend confirmation email', new_user_confirmation_path, class: 'alert-link'
 
         - if @show_signup_popup

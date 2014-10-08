@@ -3,23 +3,23 @@ doctype 5
 /![if IE 7 ] <html class="ie ie7" lang="en"
 /![if IE 8 ] <html class="ie ie8" lang="en"
 /! [if (gte IE 9)|!(IE)]><!
-html lang: "en" 
+html lang="en"
   /! <![endif]
   head
     = render "layouts/monologue/application/title"
-    meta charset: "utf-8" /
+    meta charset="utf-8"
     = render "layouts/monologue/application/meta_description"
     = render "layouts/monologue/application/fb_open_graph"
     = render "layouts/monologue/application/twitter_cards"
-    meta content: Monologue::Config.meta_keyword, name: "keyword" /
-    meta content: "text/html;charset=utf-8" http-equiv="content-type" /
-    | <link href='//fonts.googleapis.com/css?family=Open+Sans:300,400,600' rel='stylesheet' type='text/css'
+    meta content=Monologue::Config.meta_keyword name="keyword"
+    meta content="text/html;charset=utf-8" http-equiv="content-type"
+    | <link href='//fonts.googleapis.com/css?family=Open+Sans:300,400,600' rel='stylesheet' type='text/css'>
     = stylesheet_link_tag    "application"
     = javascript_include_tag "application"
     /!
       | Mobile Specific Metas
       | \==================================================
-    meta content: "width=device-width, initial-scale=1", name: "viewport" /
+    meta content="width=device-width, initial-scale=1" name="viewport"
     = rss_head_link
     - unless Rails.env == 'development' or (user_signed_in? and current_user.is? :admin)
       = render "layouts/monologue/application/google_analytics"
@@ -28,7 +28,7 @@ html lang: "en"
     #outer-wrapper
       .navbar.navbar-default.navbar-static-top#navigation
         #nav-mobile-trigger.hide-on-desktop.fa.fa-bars
-        .navbar-in  style: 'position:relative;'  
+        .navbar-in  style='position:relative;'
           .navbar-header
             = link_to image_tag('hackster_logo_40_white.png'), root_path, class: 'navbar-brand navbar-btn'
           #nav-non-logo.show-on-desktop
@@ -54,11 +54,11 @@ html lang: "en"
       .wrapper700
         p
           strong
-            = SLOGAN
+            ==> SLOGAN
             = link_to 'Learn more', '/about'
         p
-          = link_to content_tag(:i, '', class: 'fa fa-twitter fa-lg').html_safe, 'http://twitter.com/hacksterio', alt: 'Hackster.io on Twitter', class: 'link-icon'
-          = link_to content_tag(:i, '', class: 'fa fa-facebook fa-lg').html_safe, 'http://www.facebook.com/hacksterio', alt: 'Hackster.io on Facebook', class: 'link-icon'
+          ==> link_to content_tag(:i, '', class: 'fa fa-twitter fa-lg').html_safe, 'http://twitter.com/hacksterio', alt: 'Hackster.io on Twitter', class: 'link-icon'
+          ==> link_to content_tag(:i, '', class: 'fa fa-facebook fa-lg').html_safe, 'http://www.facebook.com/hacksterio', alt: 'Hackster.io on Facebook', class: 'link-icon'
           = link_to content_tag(:i, '', class: 'fa fa-envelope-o fa-lg').html_safe, 'http://us7.campaign-archive2.com/home/?u=3fd72855783c7f1a97812d84e&id=6ff81e3e5b', target: '_blank'
     / = render 'layouts/monologue/application/disqus'
 

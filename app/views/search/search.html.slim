@@ -1,15 +1,15 @@
 .search-page.row
   .col-xs-3
     ul.nav.nav-pills.nav-stacked
-      li  class: "#{'active' if params[:type] == nil}"  = link_to 'All', search_path(q: params[:q], type: nil)
-      li  class: "#{'active' if params[:type] == 'hackerspace'} #{'disabled' unless @facets['hackerspace']}"  = link_to @hacker_space_label.html_safe, search_path(q: params[:q], type: 'hackerspace')
-      li  class: "#{'active' if params[:type] == 'user'} #{'disabled' unless @facets['user']}"  = link_to @people_label.html_safe, search_path(q: params[:q], type: 'user')
-      li  class: "#{'active' if params[:type] == 'project'} #{'disabled' unless @facets['project']}"  = link_to @projects_label.html_safe, search_path(q: params[:q], type: 'project')
-      li  class: "#{'active' if params[:type] == 'tech'} #{'disabled' unless @facets['tech']}"  = link_to @tools_label.html_safe, search_path(q: params[:q], type: 'tech')
+      li  class="#{'active' if params[:type] == nil}"  = link_to 'All', search_path(q: params[:q], type: nil)
+      li  class="#{'active' if params[:type] == 'hackerspace'} #{'disabled' unless @facets['hackerspace']}"  = link_to @hacker_space_label.html_safe, search_path(q: params[:q], type: 'hackerspace')
+      li  class="#{'active' if params[:type] == 'user'} #{'disabled' unless @facets['user']}"  = link_to @people_label.html_safe, search_path(q: params[:q], type: 'user')
+      li  class="#{'active' if params[:type] == 'project'} #{'disabled' unless @facets['project']}"  = link_to @projects_label.html_safe, search_path(q: params[:q], type: 'project')
+      li  class="#{'active' if params[:type] == 'tech'} #{'disabled' unless @facets['tech']}"  = link_to @tools_label.html_safe, search_path(q: params[:q], type: 'tech')
 
     / .well
       .content
-        form  action: search_path, method: :get, id: 'full-search-form'  
+        form*{ action: search_path, method: :get, id: 'full-search-form' }
           .form-group
             .controls
               label
@@ -36,7 +36,7 @@
       - if params[:q].present?
         - if @results.any?
           .header
-            b= pluralize @results.total_count, 'result'
+            b>= pluralize @results.total_count, 'result'
             - if @results.total_count > @results.count
               | (showing #{@offset} to #{@max})
             - else
@@ -44,7 +44,7 @@
           .content.search-results
             ul.list-unstyled
               - @results.each_with_index do |result, i|
-                li  class: "#{'last' if i == @results.size - 1}"  
+                li  class="#{'last' if i == @results.size - 1}"
                   - model = result.class.name.underscore
                   = render partial: model, locals: { :"#{model}" => result.decorate, ref: 'search', ref_id: params[:q], offset: i }
             .text-center= will_paginate @results

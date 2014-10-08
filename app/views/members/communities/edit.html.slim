@@ -50,11 +50,11 @@
 
     = content_for :js do
       javascript:
-        | jQuery(function($) {
-          | window.NestedFormEvents.prototype.insertFields = function(content, assoc, link) {
-            | var $tr = $(link).closest('tr');
-            | content = content.replace(/^<div class="fields">/,"");
-            | content = content.replace(/<\/div>$/,"");
-            | return $(content).insertBefore($tr);
-          | }
-        | });
+        jQuery(function($) {
+          window.NestedFormEvents.prototype.insertFields = function(content, assoc, link) {
+            var $tr = $(link).closest('tr');
+            content = content.replace(/^<div class="fields">/,"");
+            content = content.replace(/<\/div>$/,"");
+            return $(content).insertBefore($tr);
+          }
+        });

@@ -3,26 +3,21 @@
     #tab-projects.tab-pane.active.fade.in
       .col-xs-12
         - if @projects.any?
-          - style = cookies['thumb-list-style'] || 'thumb-list-vertical'
           .row
             .col-xs-12
-              .btn-group.thumb-list-switch.pull-right
-                button.btn.btn-default.btn-sm.istooltip  class: "#{'active' if style == 'thumb-list-vertical'}", data: { 'list-style' => 'vertical', container: 'body' }, title: 'Display as tiles'  
-                  i.fa.fa-th-large
-                button.btn.btn-default.btn-sm.istooltip  class: "#{'active' if style == 'thumb-list-horizontal'}", data: { 'list-style' => 'horizontal', container: 'body' }, title: 'Display as list'  
-                  i.fa.fa-th-list
+              = render 'shared/list_switch'
 
           - collection_id = nil
           - @projects.each do |project|
             - if project.collection_id != collection_id
               - if collection_id != nil
-                | </div
-              | <div class="row thumb-list #{style}"
+                | </div>
+              | <div class="row thumb-list #{@switch_style}">
               .col-xs-12
-                h4= link_to "Assignment: # project.assignment.name ", assignment_path(project.assignment)
+                h4= link_to "Assignment: #{project.assignment.name}", assignment_path(project.assignment)
               - collection_id = project.collection_id
             = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', ref: 'promotion' }
-          | </div
+          | </div>
           .row
             .col-xs-12.text-center= will_paginate @projects
         - else
@@ -34,7 +29,7 @@
           - if @students.any?
             .row
               - @students.each do |user|
-                .col-xs-2  style: 'margin-bottom: 30px;'  
+                .col-xs-2  style='margin-bottom: 30px;'
                   = link_to image_tag(user.decorate.avatar(:big), class: 'img-responsive'), user, title: user.name, rel: 'tooltip'
           - else
             | This class has no students.
@@ -46,10 +41,10 @@
         - if @staffs.any?
           .row
             - @staffs.each do |user|
-              .col-xs-2  style: 'margin-bottom: 30px;'  
+              .col-xs-2  style='margin-bottom: 30px;'
                 = link_to image_tag(user.decorate.avatar(:big), class: 'img-responsive'), user, title: user.name, rel: 'tooltip'
         - else
-          | This class has no staffs.
+          | This class has no staff members.
 
     #tab-assignments.tab-pane.fade
       .col-xs-12
@@ -59,7 +54,8 @@
               .col-xs-12
                 h5
                   = link_to assignment.name, assignment_path(assignment)
-                  small (# pluralize(assignment.projects.count, 'project') )
+                  small
+                    | (#{pluralize(assignment.projects.count, 'project')})
         - else
           | This class has no assignments.
 

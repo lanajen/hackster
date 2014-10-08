@@ -2,7 +2,7 @@
   .col-xs-4.col-xs-offset-4
     .wellified
       p.text-center
-        strong Want to link an existing project to # @group.name ?
+        strong Want to link an existing project to #{@group.name}?
 
       = form_tag "#{group_path(@group)}/projects/link", method: :patch do
         .form-group
@@ -30,7 +30,7 @@
           span.cover_image.image-preview.preview
             - if @project.cover_image
               = image_tag @project.cover_image.file_url(:cover_mini_thumb)
-          a.btn.btn-default.btn-sm  data: { target: '.file_upload.cover_image' }   Select picture
+          a.btn.btn-default.btn-sm*{ data: { target: '.file_upload.cover_image' } }  Select picture
 
       = render partial: 'shared/image_form_bare', locals: { file_type: 'cover_image', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
 

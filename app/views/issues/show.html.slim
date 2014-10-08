@@ -11,7 +11,28 @@
 .row.issue
   .col-xs-9.issue-content
     .well
-      = render partial: 'issues/header', locals: { project: @project, issue: @issue }
+      .header
+        h3
+          ==> @issue.title
+          small.text-muted ##{@issue.sub_id}
+
+          - if can? :edit, @issue
+            .btn-heading
+              = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_project_issue_path(@project.user_name_for_url, @project.slug, @issue.sub_id), class: 'btn-edit', rel: 'tooltip', title: 'Edit content', data: { container: 'body' }
+              - if @issue.open?
+                = link_to 'Close issue', update_workflow_project_issue_path(@project.user_name_for_url, @project.slug, @issue.sub_id, event: 'close', redirect_to: request.path), method: :patch, class: 'btn btn-danger btn-xs pull-right'
+              - else
+                = link_to 'Reopen issue', update_workflow_project_issue_path(@project.user_name_for_url, @project.slug, @issue.sub_id, event: 'reopen', redirect_to: request.path), method: :patch, class: 'btn btn-success btn-xs pull-right'
+
+        = render partial: 'issues/label', locals: { issue: @issue }
+        small.text-muted
+          ' Opened by
+          ==> link_to @issue.user.name, @issue.user
+          ==> time_ago_in_words @issue.created_at
+          ' ago
+          ' -
+          = pluralize @issue.comments.size, 'comment'
+
       .content
         = render partial: 'comments/issues/comment', locals: { comment: @issue }
 
@@ -37,7 +58,7 @@
       .content
         .row
           - @issue.participants.each do |user|
-            .col-xs-3  style: 'margin-bottom: 10px;'  
+            .col-xs-3  style='margin-bottom: 10px;'
               = link_to image_tag(user.decorate.avatar(:big), class: 'img-responsive'), user, title: user.name, rel: 'tooltip'
 /
   .col-xs-4

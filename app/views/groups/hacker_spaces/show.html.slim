@@ -3,19 +3,14 @@
     #tab-projects.tab-pane.active.fade.in
       .col-xs-12
         - if @projects.any?
-          - style = cookies['thumb-list-style'] || 'thumb-list-vertical'
           .row
             .col-xs-12
               - if can? :add_project, @hacker_space
                 .pull-left
                   = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project to hacker space".html_safe, "#{hacker_space_path(@hacker_space)}/projects/new", class: 'btn btn-sm btn-warning'
-              .btn-group.thumb-list-switch.pull-right.mg-20
-                button.btn.btn-default.btn-sm.istooltip  class: "#{'active' if style == 'thumb-list-vertical'}", data: { 'list-style' => 'vertical', container: 'body' }, title: 'Display as tiles'  
-                  i.fa.fa-th-large
-                button.btn.btn-default.btn-sm.istooltip  class: "#{'active' if style == 'thumb-list-horizontal'}", data: { 'list-style' => 'horizontal', container: 'body' }, title: 'Display as list'  
-                  i.fa.fa-th-list
+              .mg-20.pull-right= render 'shared/list_switch'
 
-          .row.thumb-list  class: style  
+          .row.thumb-list  class=@switch_style
             .col-xs-12
               .row.project-list
                 - @projects.each_with_index do |project, i|
@@ -24,7 +19,7 @@
         - else
           .row
             .col-xs-12
-              | All public projects will appear here.
+              ' All public projects will appear here.
               - if can? :add_project, @hacker_space
                 = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project to hacker space".html_safe, "#{hacker_space_path(@hacker_space)}/projects/new", class: 'btn btn-sm btn-warning'
 
@@ -33,10 +28,10 @@
         - if @members.any?
           .row
             - @members.each do |user|
-              .col-xs-2  style: 'margin-bottom: 30px;'  
+              .col-xs-2  style='margin-bottom: 30px;'
                 = link_to image_tag(user.decorate.avatar(:big), class: 'img-responsive'), user, title: user.name, rel: 'tooltip'
         - else
-          | Do you hack from #{@hacker_space.name}?
+          ' Do you hack from #{@hacker_space.name}?
           = link_to 'Join the group', group_accept_invitation_path(@hacker_space), class: 'btn btn-warning btn-sm'
 
     #tab-team.tab-pane.fade
@@ -44,10 +39,10 @@
         - if @team_members.any?
           .row
             - @team_members.each do |user|
-              .col-xs-2  style: 'margin-bottom: 30px;'  
+              .col-xs-2  style='margin-bottom: 30px;'
                 = link_to image_tag(user.decorate.avatar(:big), class: 'img-responsive'), user, title: user.name, rel: 'tooltip'
         - elsif can? :join, @hacker_space
-          | Are you part of the team at #{@hacker_space.name}?
+          ' Are you part of the team at #{@hacker_space.name}?
           = link_to 'Join the group', group_accept_invitation_path(@hacker_space, role: 'team'), class: 'btn btn-warning btn-sm'
         - else
           | Looks like no team members have signed up. Let them know they should claim the page!

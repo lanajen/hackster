@@ -1,5 +1,5 @@
 = content_for :head do
-  meta  name: 'robots', content: 'noindex'  
+  meta  name='robots' content='noindex'
 
 .row
   .col-xs-12
@@ -7,15 +7,15 @@
       - if @results.any?
         .header
           - if @alternate_results
-            | No results for #{current_platform.name}.
-            | Showing
-            b= pluralize @results.total_count, 'result'
-            | for
-            em= params[:q]
-            | from hackster.io.
+            ' No results for #{current_platform.name}.
+            ' Showing
+            b>= pluralize @results.total_count, 'result'
+            ' for
+            em>= params[:q]
+            ' from hackster.io.
           - else
-            b= pluralize @results.total_count, 'result'
-            | for
+            b>= pluralize @results.total_count, 'result'
+            ' for
             em= params[:q]
           hr
 

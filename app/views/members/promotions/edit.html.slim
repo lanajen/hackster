@@ -2,7 +2,7 @@
   .wellified
     h2.text-center Manage members
 
-    p.help-block How can new members join? See # link_to 'here', group_new_invitations_path(@group) .
+    p.help-block How can new members join? See #{link_to 'here', group_new_invitations_path(@group)}.
 
     = simple_nested_form_for @group, url: group_members_path(@group), html: { class: 'widget-form' } do |f|
       = f.error_notification
@@ -52,13 +52,13 @@
         = link_to 'Cancel', @group, class: 'btn btn-link btn-sm'
 
 
-    = content_for :js do
-      javascript:
-        | jQuery(function($) {
-          | window.NestedFormEvents.prototype.insertFields = function(content, assoc, link) {
-            | var $tr = $(link).closest('tr');
-            | content = content.replace(/^<div class="fields">/,"");
-            | content = content.replace(/<\/div>$/,"");
-            | return $(content).insertBefore($tr);
-          | }
-        | });
+= content_for :js do
+  javascript:
+    jQuery(function($) {
+      window.NestedFormEvents.prototype.insertFields = function(content, assoc, link) {
+        var $tr = $(link).closest('tr');
+        content = content.replace(/^<div class="fields">/,"");
+        content = content.replace(/<\/div>$/,"");
+        return $(content).insertBefore($tr);
+      }
+    });

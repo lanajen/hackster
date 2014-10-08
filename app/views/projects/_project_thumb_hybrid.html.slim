@@ -62,7 +62,7 @@
             .inner-thumb.media-body
               h3
                 = link_to project.name, project_path(project), class: 'project-link-with-ref'
-                small
+                small<
                   ' by
                   - if project.guest_name.present?
                     = project.guest_name

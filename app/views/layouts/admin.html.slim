@@ -5,7 +5,7 @@ html(lang="en")
     meta(http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
     title= title
-    | <link href="#{ asset_path 'favicon.ico' }" rel="shortcut icon" type="image/vnd.microsoft.icon"
+    | <link href="#{ asset_path 'favicon.ico' }" rel="shortcut icon" type="image/vnd.microsoft.icon">
     = csrf_meta_tags
     /! Le HTML5 shim, for IE6-8 support of HTML elements
     /![if lt IE 9]
@@ -13,7 +13,7 @@ html(lang="en")
     = stylesheet_link_tag 'admin', media: "all"
 
 
-  body  style: 'padding-top: 60px'  
+  body  style='padding-top: 60px'
     .navbar.navbar-fixed-top.navbar-default
       .container
         .navbar-header
@@ -47,8 +47,8 @@ html(lang="en")
         .row
           .col-xs-12
             .alert.alert-danger
-              #{Sidekiq::Stats.new.failed} failed jobs in
-              = link_to 'Sidekiq', '/admin/sidekiq/failures', class: 'alert-link'
+              ' #{Sidekiq::Stats.new.failed} failed jobs in
+              ==> link_to 'Sidekiq', '/admin/sidekiq/failures', class: 'alert-link'
               = link_to 'Clear', '/admin/sidekiq/failures', class: 'btn btn-danger btn-sm', data: { method: :delete }
 
       .row

@@ -8,7 +8,7 @@
         - if @participants.any?
           .row
             - @participants.each do |user|
-              .col-xs-2  style: 'margin-bottom: 30px;'  
+              .col-xs-2  style='margin-bottom: 30px;'
                 = link_to image_tag(user.decorate.avatar(:big), class: 'img-responsive'), user, title: user.name, rel: 'tooltip'
         - else
           | This event has no participants.

@@ -2,28 +2,28 @@
   .row
     .col-xs-12
       .alert.alert-warning
-        i.fa.fa-lock
-        | Grades are currently only visible to staff.
+        i.fa.fa-lock>
+        ' Grades are currently only visible to staff.
         - if @assignment.graded?
           = link_to 'Release grades to students', "/assignments/#{@assignment.id}?assignment[private_grades]=0", class: 'btn btn-warning btn-sm', method: :patch
         - else
           | You will be able to release them once the assignment is fully graded.
 
 p
-  strong Grading status:
+  strong> Grading status:
   - if @assignment.grades.any?
     - if @assignment.graded?
       span.label.label-success
-        i.fa.fa-check-circle
-        | Complete
+        i.fa.fa-check-circle>
+        ' Complete
       - unless @assignment.private_grades
         | &nbsp;-
-        strong Released:
-        span.label.label-success.istooltip  title: 'Grades have been sent to students.'  
-          i.fa.fa-check-circle
+        strong> Released:
+        span.label.label-success.istooltip  title='Grades have been sent to students.'
+          i.fa.fa-check-circle>
           | Yes
     - else
-      span.label.label-info In progress
+      span.label.label-info> In progress
       = link_to 'Continue grading', assignment_edit_grade_path(@assignment), class: 'btn btn-primary btn-sm'
   - else
     span.label.label-info Not started
@@ -31,8 +31,8 @@ p
 - if @assignment.grades.any?
   p= link_to 'Download grades', assignment_grades_path(@assignment, format: 'csv'), class: 'btn btn-sm btn-primary'
 - elsif @assignment.grading_type.present?
-  div  style: 'margin-bottom:10px;' 
-    b Grading format:
+  div  style='margin-bottom:10px;'
+    b> Grading format:
     = Assignment::GRADING_TYPES.invert[@assignment.grading_type]
 
     = simple_form_for @assignment, url: assignment_grade_path(@assignment), html: { style: 'display:inline-block'} do |f|
@@ -68,20 +68,20 @@ p
             - gradable = grade.gradable
             - case gradable
             - when User
-              = link_to image_tag(gradable.decorate.avatar(:mini), style: 'width: 20px' ), gradable
+              ==> link_to image_tag(gradable.decorate.avatar(:mini), style: 'width: 20px' ), gradable
               = link_to gradable.name, gradable, target: '_blank'
             - when Team
               - gradable.users.each do |user|
-                = link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
+                ==> link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
                 = link_to user.name, user, target: '_blank'
                 br
           td
             - if grade.project.assignment_submitted_at.present?
               = l grade.project.assignment_submitted_at.in_time_zone(PDT_TIME_ZONE)
             - else
-              | Not yet submitted
+              ' Not yet submitted
             br
-            | Last edited:
+            ' Last edited:
             = l grade.project.last_edited_at.in_time_zone(PDT_TIME_ZONE)
           td= grade.grade
           td= grade.feedback.truncate 100
@@ -98,15 +98,15 @@ p
             tr
               td= link_to project.name, project
               td
-                = link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
+                ==> link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
                 = link_to user.name, user, target: '_blank'
               td
                 - if project.assignment_submitted_at.present?
                   = l project.assignment_submitted_at.in_time_zone(PDT_TIME_ZONE)
                 - else
-                  | Not yet submitted
+                  ' Not yet submitted
                 br
-                | Last edited:
+                ' Last edited:
                 = l project.last_edited_at.in_time_zone(PDT_TIME_ZONE)
               td Pending
               td
@@ -117,16 +117,16 @@ p
             td= link_to project.name, project
             td
               - project.team.users.each do |user|
-                = link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
+                ==> link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
                 = link_to user.name, user, target: '_blank'
                 br
               td
                 - if project.assignment_submitted_at.present?
                   = l project.assignment_submitted_at.in_time_zone(PDT_TIME_ZONE)
                 - else
-                  | Not yet submitted
+                  ' Not yet submitted
                 br
-                | Last edited:
+                ' Last edited:
                 = l project.last_edited_at.in_time_zone(PDT_TIME_ZONE)
             td Pending
             td

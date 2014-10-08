@@ -1,14 +1,14 @@
 = content_for :head do
-  meta(name='keywords' content="# @tag ")
+  meta(name='keywords' content="#{@tag}")
 
 .content.projects
   .row
     .col-xs-12
-      h1  style: 'margin-bottom: 30px; ' 
-        | Projects in
-        span.label.label-primary # @tag 
+      h1  style='margin-bottom: 30px; '
+        ' Projects in
+        span.label.label-primary> #{@tag}
         - if safe_page_params
-          small page # safe_page_params 
+          small page #{safe_page_params}
         .pull-right
           = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add a project to #{@tag}".html_safe, new_project_path(project: { product_tags_string: @tag.capitalize}), class: 'btn btn-warning btn-sm'
 

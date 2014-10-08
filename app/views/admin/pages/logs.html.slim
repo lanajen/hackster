@@ -2,9 +2,9 @@
   h1 Logs
   - model_class = LogLine.new.class
 
-= render 'admin/shared/search_form_tag'
-= render partial: 'admin/shared/search_form_select_field', locals: { field: 'source', options: LogLine.uniq(:source).pluck(:source).reject{ |c| c.nil? }.sort }
-= render partial: 'admin/shared/search_form_select_field', locals: { field: 'log_type', options: LogLine.where('log_lines.log_type IS NOT NULL').uniq(:log_type).pluck(:log_type).sort }
+==> render 'admin/shared/search_form_tag'
+==> render partial: 'admin/shared/search_form_select_field', locals: { field: 'source', options: LogLine.uniq(:source).pluck(:source).reject{ |c| c.nil? }.sort }
+==> render partial: 'admin/shared/search_form_select_field', locals: { field: 'log_type', options: LogLine.where('log_lines.log_type IS NOT NULL').uniq(:log_type).pluck(:log_type).sort }
 = hidden_field_tag :page, 1
 = render 'admin/shared/search_form_sort_and_submit'
 
@@ -22,7 +22,7 @@ table.table.table-striped
         td= log_line.log_type
         td= log_line.source
         td= log_line.message
-        td= "# log_line.loggable_type} #{log_line.loggable_id "
+        td= "#{log_line.loggable_type} #{log_line.loggable_id}"
         td= log_line.created_at
 
 .pagination.col-xs-12.text-center
