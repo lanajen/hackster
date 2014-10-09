@@ -58,7 +58,7 @@ class PromotionsController < ApplicationController
         format.js do
           @promotion.avatar = nil unless @promotion.avatar.try(:file_url)
           @promotion = @promotion.decorate
-          if old_community.user_name != @promotion.user_name
+          if old_promotion.user_name != @promotion.user_name
             @refresh = true
           end
 

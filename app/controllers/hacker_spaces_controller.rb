@@ -74,7 +74,7 @@ class HackerSpacesController < ApplicationController
         format.js do
           @hacker_space.avatar = nil unless @hacker_space.avatar.try(:file_url)
           @hacker_space = @hacker_space.decorate
-          if old_community.user_name != @hacker_space.user_name
+          if old_hacker_space.user_name != @hacker_space.user_name
             @refresh = true
           end
 

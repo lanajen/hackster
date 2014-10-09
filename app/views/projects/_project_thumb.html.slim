@@ -1,4 +1,4 @@
-div  class: "col-xs-#{ defined?(col) ? col : 3 }"  
+div  class="col-xs-#{ defined?(col) ? col : 3 }"
   - ref = defined?(ref) ? ref : nil
   - if defined?(show_year)
     - if show_year
@@ -11,7 +11,7 @@ div  class: "col-xs-#{ defined?(col) ? col : 3 }"
       .inner-thumb
         h3= link_to project.name, project_path(project, ref: ref)
         h4
-          | by
+          ' by
           - if project.guest_name.present?
             = project.guest_name
           - else
@@ -25,19 +25,19 @@ div  class: "col-xs-#{ defined?(col) ? col : 3 }"
         .thumb-bottom
           hr
           - if project.public?
-            span.counter.first.istooltip  title: 'Views'  
-              i.fa.fa-eye
+            span.counter.first.istooltip  title='Views'
+              i.fa.fa-eye>
               = project.impressions_count
-            span.counter.istooltip  title: 'Respects'  
-              i.fa.fa-thumbs-o-up
+            span.counter.istooltip  title='Respects'
+              i.fa.fa-thumbs-o-up>
               = project.respects_count
           - else
             span.counter
-              i.fa.fa-lock
+              i.fa.fa-lock>
               | Private
-          span.counter.istooltip  title: 'Comments', data: { container: 'body' }  
-            i.fa.fa-comments
+          span.counter.istooltip*{ title: 'Comments', data: { container: 'body' } }
+            i.fa.fa-comments>
             = project.comments_count
           - if project.wip?
-            span.counter.istooltip  title: 'Work in progress', data: { container: 'body' }  
+            span.counter.istooltip*{ title: 'Work in progress', data: { container: 'body' } }
               i.fa.fa-wrench

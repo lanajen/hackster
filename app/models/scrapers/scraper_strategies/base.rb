@@ -9,7 +9,7 @@ module ScraperStrategies
       if uri.path.present?
         path = uri.path.split(/\//)[1..-1]
         path.pop if path and path.last =~ /.+\..+/
-        @base_uri = "#{path.join('/')}"
+        @base_uri = "#{path.join('/')}" if path
       end
       @base_uri = @base_uri.present? ? "/#{@base_uri}" : ''
     end
