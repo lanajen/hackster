@@ -184,18 +184,18 @@
                   .meta-title-wrap
                     .meta-title Technologies
                   - @project.tech_tags_cached.each do |tag|
-                    - if tech = Tech.includes(:tech_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first
-                      - tag_link = tech_short_path(tech)
-                    - else
-                      - tag_link = "/tags/#{CGI::escape(tag)}"
-                    span= link_to tag, tag_link, class: 'tag-link'
+                    span
+                      - if tech = Tech.includes(:tech_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first
+                        = link_to "#{content_tag(:i, '', class: 'fa fa-star')} #{tag}".html_safe, tech_short_path(tech), class: 'tag-link tech-card-popover', data: { target: "#tech-card-#{tech.id}" }
+                      - else
+                        = link_to tag, tag_path(tag), class: 'tag-link'
 
               - if @project.product_tags_cached.any?
                 .tags.meta
                   .meta-title-wrap
                     .meta-title Tags
                   - @project.product_tags_cached.each do |tag|
-                    span= link_to "##{tag}", "/tags/#{CGI::escape(tag)}", class: 'tag-link'
+                    span= link_to "##{tag}", tag_path(tag), class: 'tag-link'
 
             - if @project.public?
               = render partial: 'widgets/respect_widget', locals: { users: @respecting_users }

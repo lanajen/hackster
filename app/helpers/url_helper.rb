@@ -169,6 +169,10 @@ module UrlHelper
     course_promotion_url params_for_promotion(promotion).merge(opts)
   end
 
+  def tag_path tag
+    "/tags/#{CGI::escape(tag)}"
+  end
+
   def tech_short_path tech, opts={}
     super tech.user_name, opts
   end

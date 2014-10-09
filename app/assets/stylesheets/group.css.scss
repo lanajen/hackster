@@ -179,6 +179,9 @@
   }
 }
 
+//
+// hackerspaces
+
 .hacker-space {
   .avatar, .avatar img {
     width: 20px;
@@ -186,5 +189,57 @@
   }
   .avatar {
     margin-right: 3px;
+  }
+}
+
+//
+// tech card
+
+.tech-card {
+  color: #fff;
+  margin: 0;
+  position: absolute;
+  display: none;
+  top: 0;
+  left: 0;
+  width: 500px;
+  height: 160px;
+  max-width: 90%;
+  max-height: 100%;
+  padding: 10px;
+  @include box-shadow(0 0 3px #666);
+  background: #333;
+  background-position: center center;
+  background-repeat: no-repeat;
+  @include background-size(cover);
+  z-index: 99999;
+  &:before {
+    content: "";
+    background: #000;
+    @include opacity(0.4);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    z-index: -1;
+  }
+  .tech-card-inner {
+    position: relative;
+    height: 140px;
+  }
+  img {
+    width: 140px;
+    height: 140px;
+  }
+  .tech-card-desc {
+    @include font-size(12);
+  }
+  a {
+    color: #fff;
+  }
+  .tech-card-links {
+    position: absolute;
+    bottom: 0;
+    left: 0
   }
 }

@@ -70,10 +70,11 @@
                 ' with
                 - tags = @project.tech_tags_cached.map do |tag|
                   - if tech = Tech.includes(:tech_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first
-                    - tag_link = tech_short_path(tech)
+                    = content_for :js do
+                      = render partial: 'groups/teches/tech_card', locals: { tech: tech }
+                    - link_to "#{content_tag(:i, '', class: 'fa fa-star')} #{tag}".html_safe, tech_short_path(tech), class: 'tag-link tech-card-popover', data: { target: "#tech-card-#{tech.id}" }
                   - else
-                    - tag_link = "/tags/#{CGI::escape(tag)}"
-                  - link_to tag, tag_link, class: 'tag-link'
+                    - link_to tag, tag_path(tag), class: 'tag-link'
                 = tags.to_sentence.html_safe
 
               .clearfix

@@ -1,0 +1,18 @@
+- cache "tech-#{tech.id}-card", tag: ["tech-#{tech.id}-card"], expires_in: 24.hours do
+  .tech-card.media id="tech-card-#{tech.id}" style="background-image:url(#{tech.cover_image.try(:file_url)})"
+    = link_to(image_tag(tech.avatar.file_url(:big), class: 'img-thumbnail media-object'), tech_short_path(tech), class: 'pull-left') if tech.avatar
+    .media-body
+      .tech-card-inner
+        .tech-card-name.media-heading
+          strong = link_to tech.name, tech_short_path(tech)
+        .tech-card-desc
+          p= tech.mini_resume
+          p
+            a href=tech_short_path(tech) class='hidden-link'
+              strong> = number_with_delimiter tech.projects_count
+              = pluralize_without_count tech.projects_count, 'project'
+        .tech-card-links
+          - link = user_signed_in? ? new_project_path(project: { tech_tags_string: tech.tech_tags.first.name }) : new_user_registration_path(reason: 'project', m: 'group', id: tech.id, redirect_to: new_project_path(project: { tech_tags_string: tech.tech_tags.first.name }))
+          ==> link_to "Start #{indefinite_articlerize tech.name} project", link, class: 'btn btn-info btn-sm btn-ellipsis'
+          - if link = (tech.buy_link.presence || tech.crowdfunding_link.presence)
+            = link_to "Get a #{indefinite_articlerize tech.name}", link, class: 'btn btn-warning btn-sm btn-ellipsis', target: '_blank'
