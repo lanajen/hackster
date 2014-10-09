@@ -67,7 +67,7 @@ class CommentsController < ApplicationController
       case commentable
       when Feedback
         'update_feedback'
-      when Issue, BlogPost
+      when Issue, BlogPost, Announcement
         'create_issue'
       when Project
         'update_project'
@@ -78,7 +78,7 @@ class CommentsController < ApplicationController
       case commentable
       when Feedback
         'update_feedback'
-      when Issue, BlogPost
+      when Issue, BlogPost, Announcement
         'destroy'
       when Project
         'update_project'
@@ -87,6 +87,8 @@ class CommentsController < ApplicationController
 
     def path_for_commentable commentable
       case commentable
+      when Announcement
+        announcement_path(commentable)
       when BlogPost
         log_path(commentable.threadable, commentable)
       when Feedback

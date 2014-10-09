@@ -55,9 +55,10 @@
       - if can? :manage, @tech
         .display
           h4
-            i.fa.fa-cog
+            i.fa.fa-cog>
             | Manage page
           ul#tech-links
+            / li= link_to 'Post a new announcement', new_tech_announcement_path(@tech.user_name)
             li= link_to 'Edit settings', edit_tech_path(@tech)
             li= link_to 'Manage admins', group_edit_members_path(@tech)
             li= link_to 'Invite admins', group_new_invitations_path(@tech)

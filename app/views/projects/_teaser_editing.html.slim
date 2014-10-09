@@ -8,5 +8,5 @@
           = image_tag @project.logo(:thumb), class: 'project-logo'
         - if @project.private?
           small
-            i.fa.fa-lock.istooltip  title: 'Private project', data: { container: 'body' }  
+            i.fa.fa-lock.istooltip>*{ title: 'Private project', data: { container: 'body' } }
         = link_to @project.name, @project, class: 'hidden-link'

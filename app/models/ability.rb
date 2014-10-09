@@ -12,8 +12,11 @@ class Ability
     can :read, Page do |thread|
       @user.can? :read, thread.threadable
     end
+    can :read, Announcement do |thread|
+      !thread.draft? and @user.can? :read, thread.threadable
+    end
     can :read, BlogPost do |thread|
-      @user.can? :read, thread.threadable and !thread.threadable.private_logs
+      thread.type == 'BlogPost' and @user.can? :read, thread.threadable and !thread.threadable.private_logs
     end
     can :read, Issue do |thread|
       @user.can? :read, thread.threadable and !thread.threadable.private_issues
@@ -46,7 +49,7 @@ class Ability
   end
 
   def member
-    can :manage, [BlogPost, Issue, Page] do |thread|
+    can :manage, [Announcement, BlogPost, Issue, Page] do |thread|
       @user.can? :manage, thread.threadable
     end
 

@@ -1,0 +1,44 @@
+section#content
+  .wrapper700
+    h3.pull-left.top #{@tech.name} announcements
+    - if can? :create, Announcement, @tech
+      .pull-right
+        = link_to 'Post a new announcement', new_tech_announcement_path(@tech.user_name), class: 'btn btn-primary btn-sm'
+      .clearfix
+      hr
+
+    - if @announcements.any?
+      .build-logs
+        - @announcements.each do |announcement|
+          - announcement = BlogPostDecorator.decorate(announcement)
+          .well.build-log
+            .header
+              h3
+                - if announcement.draft?
+                  = announcement.title
+                - else
+                  = link_to announcement.title, tech_announcement_path(announcement)
+                small.text-muted.pull-right
+                  - if announcement.draft?
+                    | (draft)
+              small.text-muted
+                ' by
+                ==> link_to announcement.user.name, announcement.user
+                ==> time_ago_in_words announcement.created_at
+                ' ago
+                - unless announcement.draft?
+                  i.fa.fa-comments>
+                  = link_to pluralize(announcement.comments.size, 'comment'), tech_announcement_path(announcement, anchor: 'comments')
+            #medium-editor.content
+              = announcement.body
+              p  style='margin-top:10px'
+                - if announcement.draft?
+                  = link_to 'Edit this announcement', edit_tech_announcement_path(@tech.user_name, announcement.id), class: 'btn btn-warning btn-sm'
+                - else
+                  = link_to 'Discuss this announcement', tech_announcement_path(announcement, anchor: 'comments'), class: 'btn btn-primary btn-sm'
+
+      .text-center= will_paginate @announcements
+
+    - else
+      p
+        | There are no announcements.

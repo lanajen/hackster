@@ -1,0 +1,13 @@
+section#content
+  .wrapper700
+    .pull-left
+      = link_to "&larr; See all announcements".html_safe, tech_announcements_path(@tech.user_name), class: 'btn btn-link btn-sm'
+    - if can? :create, Announcement, @tech
+      .pull-right
+        = link_to 'Post a new announcement', new_tech_announcement_path(@tech.user_name), class: 'btn btn-primary btn-sm'
+    .clearfix
+    hr
+
+    .well
+      .content
+        = render 'form'

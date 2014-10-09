@@ -1,0 +1,54 @@
+section#content
+  .wrapper700
+    .pull-left
+      = link_to "&larr; See all announcements".html_safe, tech_announcements_path(@tech.user_name), class: 'btn btn-link btn-sm'
+    - if can? :create, Announcement, @tech
+      .pull-right
+        = link_to 'Post a new announcement', new_tech_announcement_path(@tech.user_name), class: 'btn btn-primary btn-sm'
+    .clearfix
+    hr
+
+    .issue.build-log
+      .issue-content
+        .well
+          .header
+            h3
+              = @announcement.title
+              small.text-muted<
+                - if @announcement.draft?
+                  | (draft)
+
+              - if can? :edit, @announcement
+                .btn-heading
+                  .pull-right
+                    = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_tech_announcement_path(@tech.user_name, @announcement.id), class: 'btn-edit', rel: 'tooltip', title: 'Edit content', data: { container: 'body' }
+                  .pull-right
+                    = link_to content_tag(:i, '', class: 'fa fa-trash-o'), announcement_path(@announcement), class: 'btn-edit', rel: 'tooltip', title: 'Delete announcement', data: { container: 'body', method: :delete, confirm: "Are you sure? There's no way back!" }
+
+            small.text-muted
+              ' by
+              ==> link_to @announcement.user.name, @announcement.user
+              ==> time_ago_in_words @announcement.created_at
+              ' ago
+              ' -
+              ==> pluralize @announcement.comments.size, 'comment'
+              ' -
+              = render 'shared/share'
+
+          .content
+            #medium-editor.content
+              = @announcement.body.html_safe
+
+              #comments
+                - @announcement.comments.each do |comment|
+                  = render partial: 'comments/issues/comment', locals: { comment: comment }
+
+                - if user_signed_in?
+                  = render partial: 'comments/issues/form', locals: { comment: Comment.new, commentable: @announcement }
+                - else
+                  p
+                    | Please
+                    = link_to 'log in', new_user_session_path
+                    | or
+                    = link_to 'sign up', new_user_registration_path
+                    | to leave a comment.

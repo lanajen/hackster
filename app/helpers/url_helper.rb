@@ -1,4 +1,8 @@
 module UrlHelper
+  def tech_announcement_path announcement, opts={}
+    super(announcement.tech.user_name, announcement.sub_id, opts)
+  end
+
   def assignment_path assignment, opts={}
     course_promotion_assignment_path params_for_assignment(assignment).merge(opts)
   end

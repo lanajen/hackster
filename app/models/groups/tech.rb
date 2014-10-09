@@ -5,6 +5,7 @@ class Tech < Group
   include Taggable
 
   has_many :active_members, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'") }, foreign_key: :group_id, class_name: 'TechMember'
+  has_many :announcements, as: :threadable, dependent: :destroy
   has_many :featured_projects, -> { where("group_relations.workflow_state = 'featured'") }, source: :project, through: :group_relations
   has_many :follow_relations, as: :followable
   has_many :followers, through: :follow_relations, source: :user

@@ -22,6 +22,7 @@ HackerIo::Application.routes.draw do
       namespace :v1 do
         get 'embeds' => 'embeds#show'
         # post 'embeds' => 'embeds#create'
+        resources :announcements
         resources :build_logs
         resources :projects#, as: :api_projects
         resources :parts, only: [:create, :destroy]
@@ -225,6 +226,10 @@ HackerIo::Application.routes.draw do
     end
     resources :wiki_pages, only: [:destroy]
 
+    resources :announcements, only: [:destroy] do
+      resources :comments, only: [:create]
+    end
+
     resources :followers, only: [:create] do
       get 'create' => 'followers#create', on: :collection, as: :create
       delete '' => 'followers#destroy', on: :collection
@@ -274,6 +279,9 @@ HackerIo::Application.routes.draw do
       get ':slug' => 'teches#show', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
       get ':slug/embed' => 'teches#embed', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
       get ':user_name' => 'teches#show', as: :tech_short, user_name: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
+      scope ':slug', slug: /[A-Za-z0-9_\-]{3,}/, as: :tech, constraints: { format: /(html|json)/ } do
+        resources :announcements, except: [:create, :update, :destroy], path: :news
+      end
     end
     constraints(UserPage) do
       get ':slug' => 'users#show', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }

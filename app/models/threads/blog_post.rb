@@ -26,7 +26,7 @@ class BlogPost < ThreadPost
 
   private
     def generate_sub_id
-      self.sub_id = BlogPost.where(threadable_type: threadable_type, threadable_id: threadable_id).published.size + 1
+      self.sub_id = self.class.where(threadable_type: threadable_type, threadable_id: threadable_id).published.size + 1
     end
 
     def set_draft

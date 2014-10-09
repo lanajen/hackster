@@ -22,6 +22,8 @@ class TechesController < ApplicationController
     title "#{@tech.name} projects"
     meta_desc "People are hacking with #{@tech.name} on Hackster.io. Join them!"
 
+    @announcement = @tech.announcements.current
+
     render "groups/teches/#{self.action_name}"
 
     track_event 'Visited tech', @tech.to_tracker.merge({ page: safe_page_params })

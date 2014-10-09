@@ -57,7 +57,7 @@
               .col-xs-4
                 label.control-label Private sharing link
               .col-xs-8
-                input.form-control  type='text' value="http://#{APP_CONFIG['full_host']}/projects/#{@project.id}?auth_token=#{@project.security_token}", onclick: 'this.select();', style: 'color: #666;background:#ddd'
+                input.form-control  type='text' value="http://#{APP_CONFIG['full_host']}/projects/#{@project.id}?auth_token=#{@project.security_token}" onclick='this.select();' style='color: #666;background:#ddd'
                 p.help-block Use this link if you want to share your project while keeping it private.
 
           = f.input :private_logs, inline_label: 'Private build logs', hint: "If your project is published, you can choose to keep build logs private by checking this box.", label: false, as: :boolean

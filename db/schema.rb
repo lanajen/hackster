@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140927015716) do
+ActiveRecord::Schema.define(version: 20141009041539) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -86,16 +86,6 @@ ActiveRecord::Schema.define(version: 20140927015716) do
 
   add_index "authorizations", ["provider", "uid"], name: "index_authorizations_on_provider_and_uid", using: :btree
   add_index "authorizations", ["user_id"], name: "index_authorizations_on_user_id", using: :btree
-
-  create_table "badges", force: true do |t|
-    t.integer  "user_id"
-    t.string   "type"
-    t.integer  "level"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "badges", ["user_id"], name: "index_badges_on_user_id", using: :btree
 
   create_table "broadcasts", force: true do |t|
     t.string   "broadcastable_type", null: false
@@ -372,6 +362,7 @@ ActiveRecord::Schema.define(version: 20140927015716) do
     t.string  "name"
     t.text    "description"
     t.integer "position"
+    t.boolean "requires_shipping"
   end
 
   create_table "project_collections", force: true do |t|
@@ -497,6 +488,8 @@ ActiveRecord::Schema.define(version: 20140927015716) do
     t.integer  "sub_id",                     default: 0,     null: false
     t.string   "slug"
     t.boolean  "draft",                      default: false
+    t.datetime "published_at"
+    t.datetime "display_until"
   end
 
   add_index "threads", ["draft"], name: "index_threads_on_draft", using: :btree

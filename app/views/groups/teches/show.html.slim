@@ -27,6 +27,12 @@
       ' .
       = link_to 'Rock the place', group_accept_invitation_path(@tech), class: 'btn btn-warning btn-sm'
 
+- if @announcement
+  section#alert-section
+    .alert.alert-info.alert-flat.text-center
+      strong> Announcement:
+      = link_to @announcement.title, tech_announcement_path(@announcement), class: 'alert-link'
+
 section#projects-list
   .wrapper
     .project-list-actions.clearfix.mg-30
