@@ -186,7 +186,7 @@
                   - @project.tech_tags_cached.each do |tag|
                     span
                       - if tech = Tech.includes(:tech_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first
-                        = link_to "#{content_tag(:i, '', class: 'fa fa-star')} #{tag}".html_safe, tech_short_path(tech), class: 'tag-link tech-card-popover', data: { target: "#tech-card-#{tech.id}" }
+                        = link_to "#{content_tag(:i, '', class: 'fa fa-star')} #{tech.name}".html_safe, tech_short_path(tech), class: 'tag-link tech-card-popover', data: { target: "#tech-card-#{tech.id}" }
                       - else
                         = link_to tag, tag_path(tag), class: 'tag-link'
 

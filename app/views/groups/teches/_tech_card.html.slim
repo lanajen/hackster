@@ -15,4 +15,4 @@
           - link = user_signed_in? ? new_project_path(project: { tech_tags_string: tech.tech_tags.first.name }) : new_user_registration_path(reason: 'project', m: 'group', id: tech.id, redirect_to: new_project_path(project: { tech_tags_string: tech.tech_tags.first.name }))
           ==> link_to "Start #{indefinite_articlerize tech.name} project", link, class: 'btn btn-info btn-sm btn-ellipsis'
           - if link = (tech.buy_link.presence || tech.crowdfunding_link.presence)
-            = link_to "Get a #{indefinite_articlerize tech.name}", link, class: 'btn btn-warning btn-sm btn-ellipsis', target: '_blank'
+            = link_to "Get #{indefinite_articlerize tech.name}", link, class: 'btn btn-warning btn-sm btn-ellipsis', target: '_blank'
