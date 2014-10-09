@@ -4,7 +4,7 @@
     .transparent-well
       .header.no-content.text-center
         h2
-          = image_tag tech.avatar(:mini), class: 'img-circle'
+          ==> image_tag tech.avatar(:mini), class: 'img-circle'
           = link_to tech.name, tech_short_path(tech), class: 'hidden-link'
 
   - if !@project.external and user_signed_in? and tech_projects = current_user.projects.where.not(id: current_user.projects.includes(:tech_tags).references(:tags).where('lower(tags.name) IN (?)', tech.tech_tags.pluck(:name).map{|n| n.downcase }).pluck(:id)) and tech_projects.any?

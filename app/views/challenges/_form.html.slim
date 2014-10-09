@@ -46,6 +46,7 @@
               th Place
               th Name
               th Description
+              th Requires shipping
               th
             tbody
               = f.simple_fields_for :prizes, wrapper: false do |f_prize|
@@ -56,6 +57,7 @@
                   td= f_prize.input :position, as: :string, label: false, wrapper: false, input_html: { class: 'position' }
                   td  style='width:40%'  = f_prize.input :name, label: false, wrapper: false
                   td  style='width:50%'  = f_prize.input :description, label: false, wrapper: false
+                  td= f_prize.input :requires_shipping, label: false, wrapper: false
                   td= f_prize.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-xs btn-danger'
               tr.sortable-disabled
                 td  colspan=5  = f.link_to_add 'Add another prize', :prizes, class: 'btn btn-xs btn-success'
