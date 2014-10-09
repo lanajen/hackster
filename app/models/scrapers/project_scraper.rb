@@ -8,7 +8,7 @@ class ProjectScraper
 
     # debug snippet
     # url = File.join(Rails.root, 'app/models/scrapers/test.html')
-    # s = new 'http://tronixstuff.com/2014/09/24/tutorial-serial-pcf8574-backpacks-hd44780-compatible-lcd-modules-arduino/'
+    # s = new 'http://www.instructables.com/id/Getting-to-know-Raspberry-Pi/?ALLSTEPS'
     # s.content = s.read_file url
     # end debug snippet
 

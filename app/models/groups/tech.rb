@@ -19,7 +19,7 @@ class Tech < Group
   set_changes_for_stored_attributes :websites
 
   attr_accessible :forums_link, :documentation_link, :crowdfunding_link,
-    :buy_link, :logo_id, :shoplocket_link, :cover_image_id
+    :buy_link, :logo_id, :shoplocket_link, :cover_image_id, :accept_project_ideas
 
   validates :user_name, :full_name, presence: true
   validates :user_name, :new_user_name, length: { in: 3..100 }, if: proc{|t| t.persisted?}
@@ -28,9 +28,12 @@ class Tech < Group
 
   store :counters_cache, accessors: [:projects_count, :followers_count,
     :external_projects_count, :private_projects_count]
+  store :properties, accessors: [:accept_project_ideas]
 
   parse_as_integers :counters_cache, :projects_count, :followers_count,
     :external_projects_count, :private_projects_count
+
+  parse_as_booleans :properties, :accept_project_ideas
 
   taggable :tech_tags
 

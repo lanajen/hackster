@@ -34,7 +34,12 @@
     - cache [@project, 'widgets', @can_edit], tag: ["project-#{@project.id}-widgets", 'project-widgets'] do
       .project-section  id="showcase"
         .section-header
-          h2 Showcase
+          h2
+            - if @project.is_idea?
+              | What is my idea?
+            - else
+              | Showcase
+
         .section-content
           .widget
             .content
@@ -42,11 +47,11 @@
                 - if @can_edit and @project.model.description.blank?
                   #showcase-edit-placeholder
                     p
-                      = link_to 'Enter edit mode', edit_project_path(@project), class: 'btn btn-primary'
-                      | to describe your project using text, pictures, videos, schematics, code and more.
+                      ==> link_to 'Enter edit mode', edit_project_path(@project), class: 'btn btn-primary'
+                      | to describe your #{@project.is_idea? ? 'project idea' : 'project'} using text, pictures, videos, schematics, code and more.
                     p
                       small
-                        strong Tip:
+                        strong> Tip:
                         | You can also use the orange button in the left sidebar called "Edit project details" to start editing.
                 - elsif @project.model.description.present?
                   #medium-editor= @project.description

@@ -5,7 +5,10 @@
       .thumb
         .photo-thumb= link_to '', project_url(project, ref: ref, subdomain: 'www'), class: 'project-link-with-ref', style: "background-image:url(# project.cover_image(:cover_thumb) );"
         .inner-thumb
-          h3= link_to project.name, project_url(project, ref: ref, subdomain: 'www')
+          h3
+            - if project.is_idea?
+              i.fa.fa-lightbulb-o>
+            = link_to project.name, project_url(project, ref: ref, subdomain: 'www')
           h4
             ' by
             - if project.guest_name.present?

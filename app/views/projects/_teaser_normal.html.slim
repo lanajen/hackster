@@ -40,7 +40,9 @@
               - if @project.logo(:thumb, false)
                 = image_tag @project.logo(:thumb), class: 'project-logo'
               / if @project.private?
-                i.fa.fa-lock.private-project-icon.istooltip  title='Private project'   data-container='body'
+                i.fa.fa-lock.private-project-icon.istooltip>  title='Private project'   data-container='body'
+              - if @project.is_idea?
+                i.fa.fa-lightbulb-o.private-project-icon.istooltip>  title='This is a project idea. Help it happen by contributing in the comments!'   data-container='body'
               = link_to @project.name, @project, class: 'hidden-link'
 
             #project-information

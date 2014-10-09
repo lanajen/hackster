@@ -19,7 +19,7 @@ class Project < ActiveRecord::Base
   include Privatable
   include StringParser
   include Taggable
-#  include Workflow
+  # include Workflow
   is_impressionable counter_cache: true, unique: :session_hash
 
   belongs_to :assignment, foreign_key: :collection_id
@@ -63,7 +63,7 @@ class Project < ActiveRecord::Base
     :permissions_attributes, :new_slug, :slug_histories_attributes, :hide,
     :collection_id, :graded, :wip, :columns_count, :external, :guest_name,
     :approved, :open_source, :buy_link, :private_logs, :private_issues,
-    :hacker_space_id, :locked
+    :hacker_space_id, :locked, :workflow_state
   attr_accessor :current
   attr_writer :new_slug
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
@@ -106,6 +106,12 @@ class Project < ActiveRecord::Base
   parse_as_booleans :properties, :private_logs, :private_issues, :locked
 
   self.per_page = 16
+
+  # worlfow do
+  #   state :idea
+  #   state :prototype
+  #   state :finished_product
+  # end
 
   # beginning of search methods
   include Tire::Model::Search
@@ -358,6 +364,10 @@ class Project < ActiveRecord::Base
 
   def hidden?
     hide
+  end
+
+  def is_idea?
+    workflow_state == 'idea'
   end
 
   def image

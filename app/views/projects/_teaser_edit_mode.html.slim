@@ -24,13 +24,14 @@
             span#editable-name.editable-attribute.check-todo*{ 'data-model' => "project", 'data-attribute' => "name", 'data-default-text' => "Untitled", 'data-view-tpl' => "<a href='#' class='hidden-link'>*value*</a>", 'data-value' => @project.name_not_default, 'data-human-name' => 'Title', 'data-target' => '#top-project-section' }
 
           #project-information
-            #editable-one-liner.one-liner.editable-attribute.check-todo*{ 'data-model' => "project", 'data-attribute' => "one_liner", 'data-default-text' => "Describe this project in a sentence (140 characters max)", 'data-value' => @project.one_liner, 'data-view-tpl' => '*value*', 'data-human-name' => 'One liner', 'data-target' => '#top-project-section' }
+            #editable-one-liner.one-liner.editable-attribute.check-todo*{ 'data-model' => "project", 'data-attribute' => "one_liner", 'data-default-text' => "Describe this #{@project.is_idea? ? 'project idea' : 'project'} in a sentence (140 characters max)", 'data-value' => @project.one_liner, 'data-view-tpl' => '*value*', 'data-human-name' => 'One liner', 'data-target' => '#top-project-section' }
 
             .tags.meta
               span#editable-product-tags.editable-attribute.check-todo*{ 'data-model' => "project", 'data-attribute' => "product_tags_string", 'data-default-text' => "Add tags, separated by commas. Eg: home automation, drone, display...", 'data-view-tpl' => "*var f=function(tagString){ var out = '', tags = []; tags = tagString.split(','); $.each(tags, function(i, tag){ tag = tag.trim(); tpl = \"<span><a class='tag-link' href='/tags/\" + encodeURIComponent(tag) + \"'>\" + tag + \"</a></span>\"; out += tpl; }); return out; }; f(value);*", 'data-value' => @project.product_tags_string, 'data-human-name' => 'Tags', 'data-target' => '#top-project-section' }
 
-            .tags.meta
-              span#editable-buy-link.editable-attribute*{ 'data-model' => "project", 'data-attribute' => "buy_link", 'data-default-text' => "Can this be purchased somewhere? If so enter the link here", 'data-view-tpl' => '*var f=function(url){ if (!/^http/.test(url)) url = "http://" + url; return "Buy it from <a href=\"" + url + "\" target=\"_blank\" rel=\"nofollow\">" + extractHost(url) + "</a>" }; f(value);*', 'data-value' => @project.buy_link, 'data-human-name' => 'Buy link', 'data-target' => '#top-project-section' }
+            - unless @project.is_idea?
+              .tags.meta
+                span#editable-buy-link.editable-attribute*{ 'data-model' => "project", 'data-attribute' => "buy_link", 'data-default-text' => "Can this be purchased somewhere? If so enter the link here", 'data-view-tpl' => '*var f=function(url){ if (!/^http/.test(url)) url = "http://" + url; return "Buy it from <a href=\"" + url + "\" target=\"_blank\" rel=\"nofollow\">" + extractHost(url) + "</a>" }; f(value);*', 'data-value' => @project.buy_link, 'data-human-name' => 'Buy link', 'data-target' => '#top-project-section' }
 
     span.fa.fa-chevron-down.trigger-main-project-scroll.js-scroll-main-project
     #project-team

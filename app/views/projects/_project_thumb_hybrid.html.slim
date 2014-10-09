@@ -20,7 +20,10 @@
               .thumb-top
                 .thumb-top-inner
             .inner-thumb
-              h3= link_to project.name, project_path(project), class: 'project-link-with-ref'
+              h3
+                - if project.is_idea?
+                  i.fa.fa-lightbulb-o>
+                = link_to project.name, project_path(project), class: 'project-link-with-ref'
               h4
                 ' by
                 - if project.guest_name.present?
@@ -61,6 +64,8 @@
             = link_to image_tag(project.cover_image(:cover_thumb), alt: project.name, class: 'media-object'), project_path(project), class: 'pull-left photo-thumb project-link-with-ref'
             .inner-thumb.media-body
               h3
+                - if project.is_idea?
+                  i.fa.fa-lightbulb-o>
                 = link_to project.name, project_path(project), class: 'project-link-with-ref'
                 small<
                   ' by

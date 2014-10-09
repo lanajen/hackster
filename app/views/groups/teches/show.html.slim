@@ -37,7 +37,7 @@ section#projects-list
   .wrapper
     .project-list-actions.clearfix.mg-30
       .pull-right
-        - link = user_signed_in? ? new_project_path(project: { tech_tags_string: @tech.tech_tags.first.name }) : new_user_registration_path(reason: 'project', m: 'group', id: @tech.id)
+        - link = user_signed_in? ? new_project_path(project: { tech_tags_string: @tech.tech_tags.first.name }) : new_user_registration_path(reason: 'project', m: 'group', id: @tech.id, redirect_to: new_project_path(project: { tech_tags_string: @tech.tech_tags.first.name }))
         ==> link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add a project".html_safe, link, class: 'btn btn-outline'
         small> or
         - link = new_project_path(project: { tech_tags_string: @tech.tech_tags.first.name, external: true }, redirect_to: request.path)
@@ -48,6 +48,8 @@ section#projects-list
     - if @projects.any?
       .thumb-list  class=@switch_style
         .row.project-list
+          - if @tech.accept_project_ideas
+            = render partial: 'groups/teches/submit_idea', locals: { tech: @tech }
           - @projects.each do |project|
             - if project.external
               = render partial: 'projects/project_thumb_external', locals: { project: project.decorate }

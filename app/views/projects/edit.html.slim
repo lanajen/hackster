@@ -2,7 +2,11 @@
   .wrapper700
     .project-section  id="showcase"
       .section-header
-        h2 Showcase
+        h2
+          - if @project.is_idea?
+            | What is my idea?
+          - else
+            | Showcase
       .section-content
         .widget
           .content
@@ -46,17 +50,17 @@
 
             .meta
               strong
-                | Created on
+                ' Created on
                 = l @project.created_at, format: :date
                 / if @project.created_at.to_date != @project.made_public_at.to_date
                   br
-                  strong Published on
+                  strong> Published on
                   = l @project.made_public_at, format: :date
 
             - if @project.guest_name.present?
               .meta
                 strong
-                  | Posted by
+                  ' Posted by
                   - poster = @project.team.active_members.includes(:user).first.user
                   = link_to poster.name, poster
 
