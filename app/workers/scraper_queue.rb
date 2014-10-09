@@ -29,19 +29,24 @@ class ScraperQueue < BaseWorker
     )
 
     if page_url =~ /hackster\.io/
-    @message.subject = "A page couldn't be imported"
-    @message.body = "<p>Hi</p><p>This is to let you know that we couldn't import <a href='#{page_url}'>the page you asked us to</a> because it's part of our website. We invite you to try importing a page from an external website instead.</p><p>If you need any help please do not hesitate to reply to that email and ask us directly.</p><p>Cheers<br/>The Hackster.io team</p>"
+      @message.subject = "A page couldn't be imported"
+      @message.body = "<p>Hi</p><p>This is to let you know that we couldn't import <a href='#{page_url}'>the page you asked us to</a> because it's part of our website. We invite you to try importing a page from an external website instead.</p><p>If you need any help please do not hesitate to reply to that email and ask us directly.</p><p>Cheers<br/>The Hackster.io team</p>"
     else
       page_url += '?ALLSTEPS' if page_url =~ /instructables\.com/ and !(page_url =~ /\?ALLSTEPS\Z/)  # get all the steps from instructables.com
-      @project = ProjectScraper.scrape page_url
-      @project.build_team
-      @project.team.members.new(user_id: user_id)
-      @project.tech_tags_string = tech_tags_string if tech_tags_string.present?
-      messages = @project.errors.messages.map{|k,v| "#{k} #{v.to_sentence};" }
-      raise ScrapeError, "Couldn't save project because #{messages.to_sentence}" unless @project.save
-      @project.update_counters
-      @message.subject = "#{@project.name} has been imported to your Hackster.io profile"
-      @message.body = "<p>Hi</p><p>This is to let you know that <a href='http://#{APP_CONFIG['full_host']}/projects/#{@project.to_param}'>#{@project.name}</a> has been successfully imported from <a href='#{page_url}'>#{page_url}</a>.</p><p>You can update it and make it public at <a href='http://#{APP_CONFIG['full_host']}/projects/#{@project.to_param}'>http://#{APP_CONFIG['full_host']}/projects/#{@project.to_param}</a>.</p><p><b>Please note:</b> our importer is an experimental feature, your project might need some additional editing before it's ready for prime!</p><p>Cheers<br/>The Hackster.io team</p>"
+      if Project.where(website: page_url).empty?
+        @project = ProjectScraper.scrape page_url
+        @project.build_team
+        @project.team.members.new(user_id: user_id)
+        @project.tech_tags_string = tech_tags_string if tech_tags_string.present?
+        messages = @project.errors.messages.map{|k,v| "#{k} #{v.to_sentence};" }
+        raise ScrapeError, "Couldn't save project because #{messages.to_sentence}" unless @project.save
+        @project.update_counters
+        @message.subject = "#{@project.name} has been imported to your Hackster.io profile"
+        @message.body = "<p>Hi</p><p>This is to let you know that <a href='http://#{APP_CONFIG['full_host']}/projects/#{@project.to_param}'>#{@project.name}</a> has been successfully imported from <a href='#{page_url}'>#{page_url}</a>.</p><p>You can update it and make it public at <a href='http://#{APP_CONFIG['full_host']}/projects/#{@project.to_param}'>http://#{APP_CONFIG['full_host']}/projects/#{@project.to_param}</a>.</p><p><b>Please note:</b> our importer is an experimental feature, your project might need some additional editing before it's ready for prime!</p><p>Cheers<br/>The Hackster.io team</p>"
+      else
+        @message.subject = "Project already imported"
+        @message.body = "<p>Hi</p><p>This is to let you know that we didn't import <a href='#{page_url}'>the page you asked us to</a> because it has already been imported. We invite you to try importing a different page instead.</p><p>If you need any help please do not hesitate to reply to that email and ask us directly.</p><p>Cheers<br/>The Hackster.io team</p>"
+      end
     end
 
     BaseMailer.enqueue_generic_email(@message)
