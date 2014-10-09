@@ -1,6 +1,7 @@
 class User < ActiveRecord::Base
   include Counter
   include Roles
+  include SetChangesForStoredAttributes
   include StringParser
   include Taggable
 
@@ -75,6 +76,7 @@ class User < ActiveRecord::Base
   accepts_nested_attributes_for :avatar, :projects, allow_destroy: true
 
   store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link, :website_link, :blog_link, :github_link, :google_plus_link, :youtube_link]
+  set_changes_for_stored_attributes :websites
 
   validates :name, length: { in: 1..200 }, allow_blank: true
   validates :city, :country, length: { maximum: 50 }, allow_blank: true

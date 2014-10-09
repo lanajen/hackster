@@ -8,17 +8,19 @@ require File.join(Rails.root, 'lib/taggable')
 require File.join(Rails.root, 'lib/privatable')
 # Broadcastable
 require File.join(Rails.root, 'lib/base_broadcast_observer')
-
+# parse strings into int and bool
 require File.join(Rails.root, 'lib/string_parser')
-
+# cached counters
 require File.join(Rails.root, 'lib/counter')
-
+# virtual associations stored in a model's column
 require File.join(Rails.root, 'lib/tableless_association')
 # turn off asset messages in logger
 require File.join(Rails.root, 'lib/quiet_assets')
 # roles
 require File.join(Rails.root, 'lib/roles')
-
+# route constraints
 require File.join(Rails.root, 'lib/route_constraints')
 # after_commit_callbacks
 require File.join(Rails.root, 'lib/after_commit_callbacks')
+# make attr_was and attr_changed? work for attrs created using store method
+require File.join(Rails.root, 'lib/set_changes_for_stored_attributes')

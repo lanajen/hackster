@@ -5,6 +5,8 @@ class Group < ActiveRecord::Base
     'Only people who are explicitely invited' => 'invite',
   }
 
+  include SetChangesForStoredAttributes
+
   is_impressionable counter_cache: true, unique: :session_hash
 
   has_many :active_members, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'") }, foreign_key: :group_id, class_name: 'Member'
@@ -36,6 +38,8 @@ class Group < ActiveRecord::Base
 
   store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link,
     :google_plus_link, :youtube_link, :website_link, :blog_link, :github_link]
+  set_changes_for_stored_attributes :websites
+
   validates :user_name, :new_user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users) }
   validates :email, length: { maximum: 255 }
   validate :website_format_is_valid

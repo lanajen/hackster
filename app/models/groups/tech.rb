@@ -14,10 +14,9 @@ class Tech < Group
   has_one :logo, as: :attachable, dependent: :destroy
   has_one :slug, as: :sluggable, dependent: :destroy, class_name: 'SlugHistory'
 
-  store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link,
-    :google_plus_link, :youtube_link, :website_link, :blog_link, :github_link,
-    :forums_link, :documentation_link, :crowdfunding_link, :buy_link,
-    :shoplocket_link]
+  store_accessor :websites, :forums_link, :documentation_link, :crowdfunding_link, :buy_link,
+    :shoplocket_link
+  set_changes_for_stored_attributes :websites
 
   attr_accessible :forums_link, :documentation_link, :crowdfunding_link,
     :buy_link, :logo_id, :shoplocket_link, :cover_image_id

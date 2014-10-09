@@ -88,7 +88,7 @@ class CommentsController < ApplicationController
     def path_for_commentable commentable
       case commentable
       when Announcement
-        announcement_path(commentable)
+        tech_announcement_path(commentable)
       when BlogPost
         log_path(commentable.threadable, commentable)
       when Feedback

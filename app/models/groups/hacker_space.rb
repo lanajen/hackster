@@ -4,8 +4,8 @@ class HackerSpace < Community
   has_many :project_collections, as: :collectable
   has_many :projects, through: :project_collections
 
-  store :websites, accessors: [:irc_link, :hackerspace_org_link, :wiki_link,
-    :mailing_list_link]
+  store_accessor :websites, :irc_link, :hackerspace_org_link, :wiki_link,
+    :mailing_list_link
 
   attr_accessible :irc_link, :hackerspace_org_link, :wiki_link, :mailing_list_link,
     :latitude, :longitude
