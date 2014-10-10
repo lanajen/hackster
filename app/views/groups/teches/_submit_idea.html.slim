@@ -8,12 +8,12 @@
               h3= tech.project_ideas_phrasing
               p= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Post your project idea".html_safe, '', class: 'btn btn-primary btn-sm'
             .photo-thumb
-              = link_to '', '', style: "background-image:url(#{tech.cover_image.try(:file_url)});"
+              = link_to '', '', style: "background-image:url(#{tech.cover_image.try(:file_url) || tech.avatar.try(:file_url, :big)});"
 
       .col-xs-12.thumb-horizontal
         .project-thumb-horizontal.project-thumb
           .thumb.media
-            = link_to image_tag(tech.cover_image.try(:file_url), alt: tech.name, class: 'media-object'), '', class: 'pull-right photo-thumb'
+            = link_to image_tag(tech.cover_image.try(:file_url) || tech.avatar.try(:file_url, :big), alt: tech.name, class: 'media-object'), '', class: 'pull-right photo-thumb'
             .inner-thumb.media-body
               h3 No #{tech.name} yet?
               p= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Post your project idea".html_safe, '', class: 'btn btn-primary btn-sm'

@@ -1,4 +1,11 @@
 class TagObserver < ActiveRecord::Observer
+  def after_create record
+    if record.type == 'TechTag' and record.taggable_type == 'Project'
+      project = record.taggable
+      project.tech_tags_string_from_tags
+      project.save
+    end
+  end
   # def after_create record
   #   update_counters record
   # end
