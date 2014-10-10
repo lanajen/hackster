@@ -61,7 +61,7 @@ class Challenge < ActiveRecord::Base
   end
 
   def duration
-    @duration ||= DEFAULT_DURATION
+    @duration ||= read_attribute(:duration) || DEFAULT_DURATION
   end
 
   def end_date
