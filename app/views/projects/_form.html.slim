@@ -48,6 +48,7 @@
                 = select_year(@project.start_date, { prompt: '--Year--', start_year: Date.today.year, end_year: Date.today.year - 15 }, { class: 'form-control', name: 'project[start_date(1i)]' })
 
           = render partial: 'projects/open_source_switch', locals: { f: f }
+          = f.input :mark_as_idea, inline_label: 'This project is still in the idea phase (ask for feedback!)', label: false, as: :boolean
           = f.input :wip, inline_label: 'This is a work in progress', label: false
 
           = f.input :public, inline_label: "Make this project public #{content_tag(:i, '', class: 'fa fa-info-circle istooltip', title: 'You need to add a name, a description and a cover image before you can make it public.')}".html_safe, label: false, disabled: (@project.private and !@project.can_be_public?), as: :boolean

@@ -63,7 +63,7 @@ class Project < ActiveRecord::Base
     :permissions_attributes, :new_slug, :slug_histories_attributes, :hide,
     :collection_id, :graded, :wip, :columns_count, :external, :guest_name,
     :approved, :open_source, :buy_link, :private_logs, :private_issues,
-    :hacker_space_id, :locked, :workflow_state
+    :hacker_space_id, :locked, :mark_as_idea
   attr_accessor :current
   attr_writer :new_slug
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
@@ -390,6 +390,14 @@ class Project < ActiveRecord::Base
 
   def logo_id=(val)
     self.logo = Avatar.find_by_id(val)
+  end
+
+  def mark_as_idea
+    is_idea?
+  end
+
+  def mark_as_idea=(val)
+    self.workflow_state = (val ? 'idea' : nil)
   end
 
   def name

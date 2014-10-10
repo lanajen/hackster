@@ -18,6 +18,6 @@
               h3 No #{tech.name} yet?
               p= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Post your project idea".html_safe, '', class: 'btn btn-primary btn-sm'
 
-- link = user_signed_in? ? new_project_path(project: { tech_tags_string: @tech.tech_tags.first.name, workflow_state: 'idea' }) : new_user_registration_path(reason: 'project', m: 'group', id: @tech.id, redirect_to: new_project_path(project: { tech_tags_string: @tech.tech_tags.first.name, workflow_state: 'idea' }))
+- link = user_signed_in? ? new_project_path(project: { tech_tags_string: @tech.tech_tags.first.name, mark_as_idea: true }) : new_user_registration_path(reason: 'project', m: 'group', id: @tech.id, redirect_to: new_project_path(project: { tech_tags_string: @tech.tech_tags.first.name, mark_as_idea: true }))
 javascript:
   $('#submit-idea-thumb a').attr('href', '#{link.html_safe}');
