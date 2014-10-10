@@ -15,9 +15,6 @@ class Tech < Group
   has_one :logo, as: :attachable, dependent: :destroy
   has_one :slug, as: :sluggable, dependent: :destroy, class_name: 'SlugHistory'
 
-  store_accessor :websites, :forums_link, :documentation_link, :crowdfunding_link, :buy_link,
-    :shoplocket_link
-  set_changes_for_stored_attributes :websites
 
   attr_accessible :forums_link, :documentation_link, :crowdfunding_link,
     :buy_link, :logo_id, :shoplocket_link, :cover_image_id, :accept_project_ideas,
@@ -28,9 +25,13 @@ class Tech < Group
   validate :user_name_is_unique
   before_validation :update_user_name
 
+  store_accessor :websites, :forums_link, :documentation_link, :crowdfunding_link, :buy_link,
+    :shoplocket_link
+  set_changes_for_stored_attributes :websites
+  store :properties, accessors: [:accept_project_ideas, :project_ideas_phrasing]
   store :counters_cache, accessors: [:projects_count, :followers_count,
     :external_projects_count, :private_projects_count]
-  store :properties, accessors: [:accept_project_ideas, :project_ideas_phrasing]
+  set_changes_for_stored_attributes :properties
 
   parse_as_integers :counters_cache, :projects_count, :followers_count,
     :external_projects_count, :private_projects_count
