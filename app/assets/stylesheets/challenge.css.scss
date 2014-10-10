@@ -2,6 +2,15 @@
   section {
     padding: 10px 0;
   }
+  #top-bg {
+    h1 {
+      padding-top: 170px;
+      text-align: center;
+      color: #fff;
+      text-shadow: 0 0 11px #000;
+      @include font-size(50);
+    }
+  }
   #top-project-section, #teaser {
     padding: 100px 0;
     background-position: center center;

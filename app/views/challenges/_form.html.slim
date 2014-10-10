@@ -17,16 +17,22 @@
     .col-xs-12
       .panel.panel-default
         .panel-heading
-          h4 General settings
+          h4 Page settings
         .panel-body
           = f.input :name, label: 'Title'
           = f.input :new_slug, label: 'Challenge URL', wrapper: :addon do
             span.input-group-addon hackster.io/challenges/
             = f.input_field :new_slug
+          = render partial: 'shared/image_form', locals: { file_type: 'document', human_file_type: 'Cover image', image_link: @challenge.cover_image.try(:file_url), help_block: 'A high definition shot, at least 1600px wide and 430px high.', attribute_type: 'cover_image', image_version: nil, model: 'challenge' }
+          = f.input :video_link, label: 'Video link'
+          = f.input :teaser, as: :text, input_html: { rows: 2 }, hint: 'Maximum 140 characters.'
+
+      .panel.panel-default
+        .panel-heading
+          h4 Challenge settings
+        .panel-body
           = f.input :duration, hint: 'In days', collection: %w(7 15 30 45 60)
           = f.input :multiple_entries, inline_label: 'Allow more than one entry per person?', as: :boolean, label: false
-          = f.input :teaser, as: :text, input_html: { rows: 2 }, hint: 'Maximum 140 characters.'
-          = f.input :video_link, label: 'Video link'
           = f.input :description, as: :text, input_html: { rows: 10, class: 'text-editor' }
           = f.input :eligibility, as: :text, input_html: { rows: 10, class: 'text-editor' }
           = f.input :requirements, as: :text, input_html: { rows: 10, class: 'text-editor' }
@@ -130,14 +136,19 @@
         });
       }
 
-      $('.text-editor').each(function(){
+      $('.text-editor').ckeditor({
+        toolbar: [
+            [ 'Source', '-', 'Bold', 'Italic','Underline','-', 'NumberedList','BulletedList','Link','Unlink' ]
+        ]
+      });
+      // $('.text-editor').each(function(){
         // $(this).wysihtml5({
         //   toolbar: {
         //     "font-styles": false,
         //     "fa": true
         //   }
         // });
-      });
+      //});
     });
 
 = content_for :head do

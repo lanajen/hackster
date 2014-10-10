@@ -1,20 +1,20 @@
 class ChallengesController < ApplicationController
   before_filter :load_challenge, only: [:show, :rules, :update]
   before_filter :load_and_authorize_challenge, only: [:enter, :update_workflow]
-  load_and_authorize_resource except: [:show, :update]
+  load_and_authorize_resource except: [:show, :rules, :update]
   layout :set_layout
 
   def show
     title @challenge.name
     authorize! :read, @challenge
-    @challenge = @challenge.decorate
+    # @challenge = @challenge.decorate
     @projects = @challenge.projects.paginate(page: params[:page])
     @embed = Embed.new(url: @challenge.video_link)
   end
 
   def rules
     authorize! :read, @challenge
-    @challenge = @challenge.decorate
+    # @challenge = @challenge.decorate
   end
 
   def edit

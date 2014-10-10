@@ -2,8 +2,6 @@ class ChallengeDecorator < ApplicationDecorator
   def cover_image size=nil
     if model.cover_image and model.cover_image.file_url
       model.cover_image.file_url(size)
-    else
-      h.asset_url 'home_visitor/spark.jpg'
     end
   end
 

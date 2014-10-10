@@ -6,11 +6,13 @@ class Challenge < ActiveRecord::Base
   include Workflow
 
   belongs_to :tech
+  has_many :admins, through: :challenge_admins, source: :user
+  has_many :challenge_admins
   has_many :challenge_projects, dependent: :destroy
   has_many :entrants, through: :projects, source: :users
   has_many :prizes, -> { order(:position) }, dependent: :destroy
   has_many :projects, through: :challenge_projects
-  has_one :cover_image, as: :attachable, class_name: 'CoverImage', dependent: :destroy
+  has_one :cover_image, as: :attachable, class_name: 'Document', dependent: :destroy
   has_one :tile_image, as: :attachable, class_name: 'Image', dependent: :destroy
   validates :name, :slug, presence: true
   validates :teaser, length: { maximum: 140 }
@@ -19,7 +21,7 @@ class Challenge < ActiveRecord::Base
 
   attr_accessible :new_slug, :name, :prizes_attributes, :tech_id, :description,
     :rules, :teaser, :multiple_entries, :duration, :eligibility, :requirements,
-    :judging_criteria, :how_to_enter, :video_link
+    :judging_criteria, :how_to_enter, :video_link, :cover_image_id
   attr_accessor :new_slug
 
   store :properties, accessors: [:description, :rules, :teaser, :multiple_entries,
@@ -52,6 +54,10 @@ class Challenge < ActiveRecord::Base
   def assign_new_slug
     @old_slug = slug
     self.slug = new_slug
+  end
+
+  def cover_image_id=(val)
+    self.cover_image = Document.find_by_id(id)
   end
 
   def duration

@@ -1,14 +1,20 @@
-section#top-project-section  style="background-image: url(#{@challenge.cover_image})"
-  #teaser-container.wrapper700
-    h1= @challenge.name
+- if @embed.url.present?
+  section#top-project-section  style="background-image: url(#{@challenge.cover_image})"
+    #teaser-container.wrapper700
+      h1= @challenge.name
 
-    - if @embed.url
-      .embed.widescreen= render partial: "api/embeds/#{@embed.provider_name}", locals: { embed: @embed }
+      - if @embed.url
+        .embed.widescreen= render partial: "api/embeds/#{@embed.provider_name}", locals: { embed: @embed }
 
-    .clearfix
+      .clearfix
 
-  .project-details
-    span.fa.fa-chevron-down.trigger-main-project-scroll.js-scroll-main-project
+    .project-details
+      span.fa.fa-chevron-down.trigger-main-project-scroll.js-scroll-main-project
+
+- else
+  section#top-bg.show-on-desktop
+    #top-bg-image style="background-image:url('#{@challenge.cover_image}');"
+      h1= @challenge.name
 
 section#projects-list
   .wrapper
@@ -22,8 +28,7 @@ section#projects-list
       .row.text-center= will_paginate @projects
     - else
       .row
-        p
-          | Entries are not public yet, come back later!
+        p.text-center= link_to 'Enter challenge', '', class: 'follow-button btn btn-lg btn-info btn-block btn-ellipsis btn-standout enter-challenge'
 
 #enter-popup.popup-overlay.normal-size
   .popup-overlay-bg
@@ -53,7 +58,7 @@ section#projects-list
 = content_for :js do
   javascript:
     $(document).ready(function(){
-      $('#enter-challenge').click(function(e){
+      $('.enter-challenge').click(function(e){
         e.preventDefault();
         $('#enter-popup').fadeIn();
       });

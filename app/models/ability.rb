@@ -2,6 +2,8 @@ class Ability
   include CanCan::Ability
 
   def initialize(resource)
+    alias_action :read, :edit, :update, :to => :admin
+
     @user = resource
 
     can :read, [Comment, User]
@@ -37,8 +39,8 @@ class Ability
   end
 
   def admin
-    can :manage, :all
-    cannot [:join, :request_access], Group
+    # can :manage, :all
+    # cannot [:join, :request_access], Group
   end
 
   def beta_tester
@@ -143,7 +145,7 @@ class Ability
     end
 
     can :admin, Challenge do |challenge|
-      ChallengeAdmin.where(challenge_id: challenge.id, user_id: @user.id).with_group_roles('admin').any?
+      ChallengeAdmin.where(challenge_id: challenge.id, user_id: @user.id).with_roles('admin').any?
     end
   end
 end
