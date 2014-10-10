@@ -49,7 +49,7 @@ HackerIo::Application.configure do
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
   config.assets.precompile += %w( admin.css email.css jquery.githubRepoWidget.min.js bitbucket-widget.min.css bitbucket-widget.min.js slick.eot slick.svg slick.ttf slick.woff datepicker.js datepicker.css )
-  config.assets.precompile += ['ckeditor/*']
+  config.assets.precompile += Ckeditor.assets
 
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
