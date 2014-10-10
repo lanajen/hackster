@@ -12,7 +12,7 @@ class TechObserver < ActiveRecord::Observer
       Cashier.expire "tech-#{record.id}-thumb", "tech-#{record.id}-card", 'tech-index'
     end
 
-    if (record.changed? < %w(full_name project_ideas_phrasing cover_image)).any?
+    if (record.changed & %w(full_name project_ideas_phrasing cover_image)).any?
       Cashier.expire "tech-#{record.id}-submit-idea"
     end
 
