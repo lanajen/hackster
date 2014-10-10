@@ -6,7 +6,7 @@ class CommunitiesController < ApplicationController
 
   def index
     title 'Hacker communities'
-    @communities = CommunityDecorator.decorate_collection(Community.where(id: %w(2156 2158)))
+    @communities = Community.where(id: %w(2156 2158))
     @hackathons = Event.where(id: %w(346 353))
     @promotions = Promotion.where(id: %w(139 181))
 

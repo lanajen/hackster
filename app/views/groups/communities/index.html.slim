@@ -50,10 +50,11 @@
               h2 Local and online communities
               - @communities.each do |community|
                 = render partial: 'groups/communities/community_thumb', locals: { community: community }
-              - link = "mailto:team@hackster.io?subject=I want to create a page for my group"
-              h4.text-center
-                ==> link_to 'Create a community page', link
-              .community-avatar.community-new= link_to '', link
+              .col-xs-12.col-sm-6.col-md-4.community-thumb
+                - link = "mailto:team@hackster.io?subject=I want to create a page for my group"
+                h4.text-center
+                  ==> link_to 'Create a community page', link
+                .community-avatar.community-new= link_to '', link
               / Inside the blue
               / Not Just Arduino
               / + Create a page for your community
