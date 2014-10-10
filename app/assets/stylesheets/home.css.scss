@@ -69,27 +69,34 @@
       background-size: cover;
       background-position: center center;
       background-repeat: no-repeat;
-      &.slide-opaque:before {
-        content: "";
-        background: #000;
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        opacity: 0.2;
+      &.slide-opaque {
+        &:before {
+          content: "";
+          background: #000;
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          top: 0;
+          left: 0;
+        }
+        &.slide-opaque-light:before {
+          opacity: 0.2;
+        }
+        &.slide-opaque-dark:before {
+          opacity: 0.5;
+        }
       }
       &.slide1 {
         background-image: asset-url('home_visitor/header_bg_black.jpg');
       }
       &.slide2 {
-        background-image: asset-url('home_visitor/ledzep.jpg');
+        background-image: url('https://halckemy.s3.amazonaws.com/uploads/cover_image/file/4798/cover_IMG_20140506_143536.jpg');
       }
       &.slide3 {
         background-image: asset-url('home_visitor/spark.jpg');
       }
       &.slide4 {
-        background-image: asset-url('home_visitor/mindflex.jpg');
+        background-image: url('https://halckemy.s3.amazonaws.com/uploads/cover_image/file/467/cover_POV.JPG');
       }
       .user {
         display: inline;
