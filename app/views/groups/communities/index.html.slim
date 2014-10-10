@@ -1,0 +1,59 @@
+- content_for :body_class do
+  | white
+
+- content_for :no_container do
+  / # - cache ['hackerspaces'], expires_in: 24.hours do
+  #communities
+    #about
+      section#teaser
+        .slide.slide1
+          .container
+            h1.top.text-center.mg-20 What's cooking in your community?
+            p Create a page to share and showcase what your community is made of.
+
+      section
+        .container
+          .row
+            .col-xs-12
+              h2 Hackathons
+            - @hackathons.each do |hackathon|
+              = render partial: 'groups/communities/community_thumb', locals: { community: hackathon }
+            .col-xs-12.col-sm-6.col-md-4.community-thumb
+              - link = 'mailto:team@hackster.io?subject=I want to launch a hackathon using Hackster'
+              h4.text-center
+                ==> link_to 'Launch a hackathon', link
+              .community-avatar.community-new= link_to '', link
+              / + Launch a hackathon
+              / ? Assign awards to the winners
+
+      section
+        .container
+          .row
+            .col-xs-12
+              h2 Universities
+            - @promotions.each do |promotion|
+              = render partial: 'groups/communities/community_thumb', locals: { community: promotion }
+            .col-xs-12.col-sm-6.col-md-4.community-thumb
+              - link = "mailto:team@hackster.io?subject=I want to document my course's projects using Hackster"
+              h4.text-center
+                ==> link_to 'Create a course page', link
+              .community-avatar.community-new= link_to '', link
+              / Critical Making
+              / ROSE
+              / + Create a page for your class
+              / ? Specific functionalities: create multiple assignments with submission deadlines, grade them and release grades to students all at once from your dashboard.
+
+      section
+        .container
+          .row
+            .col-xs-12
+              h2 Local and online communities
+              - @communities.each do |community|
+                = render partial: 'groups/communities/community_thumb', locals: { community: community }
+              - link = "mailto:team@hackster.io?subject=I want to create a page for my group"
+              h4.text-center
+                ==> link_to 'Create a community page', link
+              .community-avatar.community-new= link_to '', link
+              / Inside the blue
+              / Not Just Arduino
+              / + Create a page for your community

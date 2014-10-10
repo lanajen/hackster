@@ -1,4 +1,5 @@
 class Tech < Group
+  PROJECT_IDEAS_PHRASING = ['"No #{name} yet?"', '"Have ideas on what to build with #{name}?"']
   include Counter
   include Privatable
   include StringParser
@@ -19,7 +20,8 @@ class Tech < Group
   set_changes_for_stored_attributes :websites
 
   attr_accessible :forums_link, :documentation_link, :crowdfunding_link,
-    :buy_link, :logo_id, :shoplocket_link, :cover_image_id, :accept_project_ideas
+    :buy_link, :logo_id, :shoplocket_link, :cover_image_id, :accept_project_ideas,
+    :project_ideas_phrasing
 
   validates :user_name, :full_name, presence: true
   validates :user_name, :new_user_name, length: { in: 3..100 }, if: proc{|t| t.persisted?}
@@ -28,7 +30,7 @@ class Tech < Group
 
   store :counters_cache, accessors: [:projects_count, :followers_count,
     :external_projects_count, :private_projects_count]
-  store :properties, accessors: [:accept_project_ideas]
+  store :properties, accessors: [:accept_project_ideas, :project_ideas_phrasing]
 
   parse_as_integers :counters_cache, :projects_count, :followers_count,
     :external_projects_count, :private_projects_count
@@ -129,6 +131,14 @@ class Tech < Group
 
   def logo_id=(val)
     self.logo = Logo.find_by_id(val)
+  end
+
+  def project_ideas_phrasing
+    super || project_ideas_phrasing_options[0]
+  end
+
+  def project_ideas_phrasing_options
+    PROJECT_IDEAS_PHRASING.map{|t| eval(t) }
   end
 
   # def projects

@@ -43,6 +43,10 @@ class Promotion < Community
     "#{course.name} #{super} @#{course.university.name}"
   end
 
+  def proper_name
+    course.name
+  end
+
   def professor
     members.with_group_roles(:professor).includes(:user).first
   end

@@ -244,3 +244,55 @@
     left: 0
   }
 }
+
+//
+// community thumb
+
+.community-thumb {
+  h4 {
+    margin: 30px 0 20px;
+    text-align: center;
+  }
+  .community-avatar {
+    border: 1px solid #ddd;
+    @include border-radius(4px);
+    padding: 4px;
+    background: #fff;
+    a {
+      height: 0;
+      padding-bottom: 100%;
+      display: block;
+      @include background-cover;
+    }
+  }
+  .community-new {
+    a {
+      background-image: asset-url('plus.png');
+      &:hover {
+        @include opacity(0.8);
+      }
+    }
+  }
+}
+
+#communities {
+  section {
+    padding: 60px 0 80px;
+  }
+  #teaser {
+    height: 400px;
+    h1 {
+      font-weight: 200;
+    }
+    p {
+      text-align: center;
+      color: #bbb;
+    }
+  }
+  h2 {
+    margin: 10px;
+    text-align: center;
+    font-size: 35px;
+    font-weight: 200;
+  }
+}

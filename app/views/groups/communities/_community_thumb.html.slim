@@ -1,0 +1,4 @@
+.col-xs-12.col-sm-6.col-md-4.community-thumb
+  h4.text-center
+    ==> link_to (community.respond_to?(:proper_name) ?  community.proper_name : community.name), group_path(community)
+  .community-avatar= link_to '', group_path(community), style: "background-image:url(#{community.avatar.file_url})"

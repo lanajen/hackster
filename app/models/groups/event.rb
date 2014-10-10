@@ -41,4 +41,8 @@ class Event < Community
   def name
     "#{hackathon.name} - #{super}"
   end
+
+  def proper_name
+    hackathon.name
+  end
 end

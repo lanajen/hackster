@@ -4,17 +4,14 @@ class CommunitiesController < ApplicationController
   layout 'community', only: [:edit, :update, :show]
   respond_to :html
 
-  # def index
-  #   title 'Hacker spaces around the world'
-  #   @communities = CommunityDecorator.decorate_collection(Community.public.includes(:avatar).order(:full_name))
-  #   @hash = Gmaps4rails.build_markers(@communities) do |space, marker|
-  #     marker.lat space.latitude
-  #     marker.lng space.longitude
-  #     marker.infowindow "<a href='#{community_path(space)}'>#{space.name}</a>"
-  #   end
+  def index
+    title 'Hacker communities'
+    @communities = CommunityDecorator.decorate_collection(Community.where(id: %w(2156 2158)))
+    @hackathons = Event.where(id: %w(346 353))
+    @promotions = Promotion.where(id: %w(139 181))
 
-  #   render "groups/communities/#{self.action_name}"
-  # end
+    render "groups/communities/#{self.action_name}"
+  end
 
   def show
     title @community.name
