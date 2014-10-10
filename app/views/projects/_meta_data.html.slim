@@ -10,7 +10,7 @@
 - if @project.guest_name.present? and poster = @project.team.try(:active_members).try(:includes, :user).try(:first).try(:user)
   .meta
     strong
-      | Posted by
+      ' Posted by
       = poster.name
 
 - if @project.license
