@@ -1,0 +1,67 @@
+module ScraperStrategies
+  class Udoo < Base
+    def to_project
+      puts 'Converting to project...'
+
+      @project = Project.new private: true
+      @widgets = []
+      @embedded_urls = {}
+      Embed::LINK_REGEXP.values.each{|provider| @embedded_urls[provider.to_s] = [] }
+
+      @article = select_article
+      # raise @article.to_s
+      @project.name = extract_title
+
+      before_parse
+
+      normalize_links
+      parse_cover_image
+      parse_comments
+      format_text
+      parse_images
+      parse_embeds
+      parse_files
+      parse_code
+      clean_up_formatting
+
+      after_parse
+
+      @project.description = @article.children.to_s
+
+      raise @project.description
+
+      @project.give_embed_style!
+
+      @project
+    end
+
+    private
+      def before_parse
+        @project.guest_name = @parsed.search("[text()*='Name:']").first.next_element.text.strip
+
+        super
+      end
+
+      def extract_title
+        @parsed.at_css('h1').text.strip
+      end
+
+      def select_article
+        els = []
+
+        els += @parsed.css('.slides img, .slides iframe')
+        els << @parsed.search("[text()*='Project URL:']").first.next_element
+
+        desc = @parsed.search("[text()*='Description:']").first
+        els << "<p>#{desc.next.text.strip}</p>"
+        if el = desc.parent.next_element
+          els << el
+          while el = el.next_element
+            els << el
+          end
+        end
+
+        Nokogiri::HTML::DocumentFragment.parse '<article>' + els.join('') + '</article>'
+      end
+  end
+end

@@ -7,9 +7,9 @@ class ProjectScraper
     s = new page_url
 
     # debug snippet
-    # url = File.join(Rails.root, 'app/models/scrapers/test.html')
-    # s = new 'http://www.instructables.com/id/Getting-to-know-Raspberry-Pi/?ALLSTEPS'
-    # s.content = s.read_file url
+    url = File.join(Rails.root, 'app/models/scrapers/test.html')
+    s = new 'http://www.udoo.org/ProjectsAndTutorials/internet-of-things-remote-sensing/?portfolioID=4028'
+    s.content = s.read_file url
     # end debug snippet
 
     project = s.document.to_project
@@ -49,6 +49,7 @@ class ProjectScraper
       'kickstarter.com' => :kickstarter,
       'medium.com' => :medium,
       'community.spark.io' => :spark_forum,
+      'udoo.org' => :udoo,
       'wordpress.com' => :wordpress,
     }
 
