@@ -7,20 +7,20 @@
       / #project-embed= render partial: 'projects/project_embed_thumb', locals: { project: @project }
       p Add the following snippet to your HTML:
       textarea.embed-code
-        iframe frameborder: "0", height: "800", scrolling: "no", src: "#{assignment_embed_url(@assignment)}", width: "100%" 
+        iframe frameborder: "0", height: "800", scrolling: "no", src: "#{assignment_embed_url(@assignment)}", width: "100%"
 
 = content_for :js do
   javascript:
-    | $('#embed-popup').click(function(){
-      | $(this).fadeOut(200);
-    | }).children().click(function() {
-      | return false;
-    | });
-    | function openPopup(id) {
-      | $(id).fadeIn(200);
-      | return false;
-    | }
-    | function closePopup(id) {
-      | $(id).fadeOut(200);
-      | return false;
-    | }
+    $('#embed-popup').click(function(){
+      $(this).fadeOut(200);
+    }).children().click(function() {
+      return false;
+    });
+    function openPopup(id) {
+      $(id).fadeIn(200);
+      return false;
+    }
+    function closePopup(id) {
+      $(id).fadeOut(200);
+      return false;
+    }
