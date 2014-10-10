@@ -8,7 +8,7 @@
               h3= tech.project_ideas_phrasing
               p= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Post your project idea".html_safe, '', class: 'btn btn-primary btn-sm'
             .photo-thumb
-              = link_to '', '', style: "background-image:url(#{tech.cover_image.file_url});"
+              = link_to '', '', style: "background-image:url(#{tech.cover_image.try(:file_url)});"
 
       .col-xs-12.thumb-horizontal
         .project-thumb-horizontal.project-thumb
