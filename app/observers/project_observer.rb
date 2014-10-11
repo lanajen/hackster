@@ -80,7 +80,7 @@ class ProjectObserver < ActiveRecord::Observer
       end
     end
 
-    if (record.changed & %w(collection_id name cover_image one_liner tech_tags product_tags made_public_at license guest_name buy_link private)).any? or record.tech_tags_string_changed? or record.product_tags_string_changed?
+    if (record.changed & %w(collection_id name cover_image one_liner tech_tags product_tags made_public_at license guest_name buy_link private workflow_state)).any? or record.tech_tags_string_changed? or record.product_tags_string_changed?
       Cashier.expire "project-#{record.id}-teaser"
     end
 
@@ -92,7 +92,7 @@ class ProjectObserver < ActiveRecord::Observer
       Cashier.expire "project-#{record.id}-widgets"
     end
 
-    if (record.changed & %w(name guest_name cover_image one_liner private wip start_date slug respects_count comments_count)).any?
+    if (record.changed & %w(name guest_name cover_image one_liner private wip start_date slug respects_count comments_count workflow_state)).any?
       Cashier.expire "project-#{record.id}-thumb"
     end
 
