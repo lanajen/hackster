@@ -27,7 +27,7 @@ module ScraperStrategies
 
       @project.description = @article.children.to_s
 
-      puts @project.description
+      # puts @project.description
 
       @project.give_embed_style!
 
@@ -38,7 +38,7 @@ module ScraperStrategies
       def before_parse
         @project.guest_name = @parsed.search("[text()*='Name:']").first.next.text.strip
         @project.tech_tags_string = 'Udoo'
-        @project.website = @parsed.search("[text()*='Project URL:']").first.next_element.text.strip
+        @project.website = @parsed.search("[text()*='Project URL:']").first.next_element.try(:text).try(:strip)
 
         super
       end
