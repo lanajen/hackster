@@ -23,7 +23,7 @@
           p#status
             ' Expires in:
             strong= @challenge.time_left
-          - if user_signed_in? and current_user.is_challenge_entrant? @challenge
+          - if @is_challenge_entrant
             p
               strong Your entry has been registered!
             - if @challenge.allow_multiple_entries?
@@ -42,3 +42,4 @@
         li= link_to 'Rules', challenge_rules_path(@challenge)
         - if can? :admin, @challenge
           li= link_to "#{content_tag(:i, '', class: 'fa fa-cog')} Manage challenge".html_safe, edit_challenge_path(@challenge)
+          li= link_to "#{content_tag(:i, '', class: 'fa fa-cog')} Entries dashboard".html_safe, challenge_entries_path(@challenge)

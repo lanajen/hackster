@@ -51,6 +51,10 @@ class Ability
   end
 
   def member
+    can :enter, Challenge do |challenge|
+      challenge.open_for_submissions? and @user.can? :read, challenge
+    end
+
     can :manage, [Announcement, BlogPost, Issue, Page] do |thread|
       @user.can? :manage, thread.threadable
     end
@@ -95,7 +99,7 @@ class Ability
     end
 
     can :create, [Project, Community]
-    can :manage, Project do |project|
+    can [:manage, :enter_in_challenge], Project do |project|
       @user.can? :manage, project.team
     end
     cannot :update, Project

@@ -15,9 +15,6 @@
 //= require gist-embed
 //= require underscore
 //= require gmaps/google
-//= require tinymce
-//= require tinymce/plugins/link/plugin.js
-//= require tinymce/plugins/paste/plugin.js
 // require bootstrap-wysihtml5
 
 //= require projects

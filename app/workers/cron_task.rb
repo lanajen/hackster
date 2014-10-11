@@ -3,11 +3,20 @@ class CronTask < BaseWorker
   sidekiq_options queue: :low, retry: 0
 
   def compute_popularity
+    CronTask.perform_async 'compute_popularity_for_projects'
+    CronTask.perform_async 'compute_popularity_for_users'
+    CronTask.perform_async 'compute_popularity_for_teches'
+  end
+
+  def compute_popularit_for_projects
     Project.find_each do |project|
       project.update_counters
       project.compute_popularity
       project.save
     end
+  end
+
+  def compute_popularity_for_users
     User.invitation_accepted_or_not_invited.find_each do |user|
       user.update_counters
       user.build_reputation unless user.reputation
@@ -15,14 +24,24 @@ class CronTask < BaseWorker
       reputation.compute
       reputation.save
     end
+  end
+
+  def compute_popularity_for_teches
     Tech.find_each do |tech|
       tech.update_counters
+    end
+  end
+
+  def expire_challenges
+    Challenge.where(workflow_state: :in_progress).where("(challenges.start_date + interval '1 day' * challenges.duration) < ?", Time.now).each do |challenge|
+      challenge.end!
     end
   end
 
   def launch_cron
     update_mailchimp_list
     send_assignment_reminder
+    expire_challenges
   end
 
   def launch_daily_cron

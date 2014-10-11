@@ -1,3 +1,8 @@
+# email winners
+# collect mailing address if necessary
+# display winners on contest page
+# show "has been awarded" label on project page
+
 class Challenge < ActiveRecord::Base
   DEFAULT_DURATION = 60
   VISIBLE_STATES = %w(in_progress ended paused canceled)
@@ -8,10 +13,10 @@ class Challenge < ActiveRecord::Base
   belongs_to :tech
   has_many :admins, through: :challenge_admins, source: :user
   has_many :challenge_admins
-  has_many :challenge_projects, dependent: :destroy
+  has_many :entries, -> { order(:created_at) }, dependent: :destroy, class_name: ChallengeEntry
   has_many :entrants, through: :projects, source: :users
   has_many :prizes, -> { order(:position) }, dependent: :destroy
-  has_many :projects, through: :challenge_projects
+  has_many :projects, through: :entries
   has_one :cover_image, as: :attachable, class_name: 'Document', dependent: :destroy
   has_one :tile_image, as: :attachable, class_name: 'Image', dependent: :destroy
   validates :name, :slug, presence: true
@@ -37,18 +42,25 @@ class Challenge < ActiveRecord::Base
     end
     state :in_progress do
       event :cancel, transitions_to: :canceled
-      event :end, transitions_to: :ended
+      event :end, transitions_to: :judging
       event :pause, transitions_to: :paused
     end
     state :canceled
-    state :ended
     state :paused do
       event :restart, transitions_to: :in_progress
     end
+    state :judging do
+      event :mark_as_judged, transitions_to: :judged
+    end
+    state :judged
   end
 
   def allow_multiple_entries?
     multiple_entries
+  end
+
+  def auto_approve?
+    true
   end
 
   def assign_new_slug
@@ -62,6 +74,10 @@ class Challenge < ActiveRecord::Base
 
   def duration
     @duration ||= read_attribute(:duration) || DEFAULT_DURATION
+  end
+
+  def end
+    notify_observers(:after_end)
   end
 
   def end_date
@@ -92,6 +108,10 @@ class Challenge < ActiveRecord::Base
     save
   end
 
+  def mark_as_judged
+    notify_observers(:after_judging)
+  end
+
   def new_slug
     # raise new_slug.to_s
     @new_slug ||= slug
@@ -99,5 +119,9 @@ class Challenge < ActiveRecord::Base
 
   def open_for_submissions?
     in_progress?
+  end
+
+  def ready_for_judging?
+    judging?
   end
 end

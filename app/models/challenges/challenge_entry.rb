@@ -1,4 +1,6 @@
-class ChallengeProject < ActiveRecord::Base
+class ChallengeEntry < ActiveRecord::Base
+  self.table_name = :challenge_projects
+
   AWARDED_STATES = %w(awarded fullfiled)
 
   include Workflow
@@ -6,8 +8,9 @@ class ChallengeProject < ActiveRecord::Base
   belongs_to :challenge
   belongs_to :prize
   belongs_to :project
+  belongs_to :user
+
   validates :challenge_id, uniqueness: { scope: :project_id }
-  # validates :challenge_id, uniqueness: { scope: :prize_id }
 
   workflow do
     state :new do
@@ -24,5 +27,17 @@ class ChallengeProject < ActiveRecord::Base
       event :mark_prize_shipped, transitions_to: :fullfiled
     end
     state :fullfiled
+  end
+
+  def approve
+    notify_observers(:after_approve)
+  end
+
+  def give_award
+    notify_observers(:after_award_given)
+  end
+
+  def give_no_award
+    notify_observers(:after_award_not_given)
   end
 end

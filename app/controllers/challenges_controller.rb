@@ -1,6 +1,7 @@
 class ChallengesController < ApplicationController
   before_filter :load_challenge, only: [:show, :rules, :update]
   before_filter :load_and_authorize_challenge, only: [:enter, :update_workflow]
+  before_filter :set_challenge_entrant, only: [:show, :rules]
   load_and_authorize_resource except: [:show, :rules, :update]
   layout :set_layout
 
@@ -8,7 +9,9 @@ class ChallengesController < ApplicationController
     title @challenge.name
     authorize! :read, @challenge
     # @challenge = @challenge.decorate
-    @projects = @challenge.projects.paginate(page: params[:page])
+    per_page = Challenge.per_page
+    per_page = per_page - 1 if @challenge.open_for_submissions? and @is_challenge_entrant
+    @projects = @challenge.projects.paginate(page: params[:page], per_page: per_page)
     @embed = Embed.new(url: @challenge.video_link)
   end
 
@@ -18,23 +21,6 @@ class ChallengesController < ApplicationController
   end
 
   def edit
-  end
-
-  def enter
-    @project = Project.find params[:project_id]
-    if tag = @challenge.tech.try(:tech_tags).try(:first).try(:name) and !tag.in? @project.tech_tags_cached
-      @project.tech_tags << TechTag.new(name: tag)
-    end
-    @project.private = false
-    @project.save
-    cp = @challenge.challenge_projects.new
-    cp.project_id = @project.id
-    if cp.save
-      flash[:notice] = "Thanks for entering #{@challenge.name}!"
-    else
-      flash[:alert] = "Your project couldn't be entered."
-    end
-    redirect_to @challenge
   end
 
   def update
@@ -65,6 +51,10 @@ class ChallengesController < ApplicationController
     def load_and_authorize_challenge
       @challenge = Challenge.find params[:id]
       authorize! self.action_name.to_sym, @challenge
+    end
+
+    def set_challenge_entrant
+      @is_challenge_entrant = (user_signed_in? and current_user.is_challenge_entrant? @challenge)
     end
 
     def set_layout

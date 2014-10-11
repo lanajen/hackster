@@ -11,8 +11,10 @@ class ChallengeDecorator < ApplicationDecorator
       'Ready to launch'
     when :in_progress
       "#{time_left} left to enter"
-    when :ended
-      'Submissions closed'
+    when :judging
+      'Submissions closed - Judging in progress'
+    when :judged
+      'Submissions closed - Prizes awarded'
     end
   end
 

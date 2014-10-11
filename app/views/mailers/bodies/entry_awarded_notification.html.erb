@@ -1,0 +1,24 @@
+<p>Hello there,</p>
+
+<p>This is to let you know that <a href="|project_link|">your entry</a> for <a href="<%= challenge_url(@context[:challenge]) %>">|challenge_name|</a> has won a prize!</p>
+
+<p>You have been awarded <strong><%= @context[:prize].position.ordinalize %> place</strong> and won <strong><%= @context[:prize].name %></strong>: <%= @context[:prize].description %>.</p>
+
+<% if @context[:prize].requires_shipping? %>
+
+  <p>To claim your prize, please fill out your mailing address at the following link: <a href="">link</a></p>
+
+<% else %>
+
+  <p>This is a virtual prize, and it will be emailed to you at this email address shortly.</p>
+
+<% end %>
+
+<p>Congratulations, keep it up!</p>
+
+<p>Cheers,<br> The Hackster.io team</p>
+<p>
+  <a href="http://www.facebook.com/hacksterio">Like us on Facebook</a>
+  |
+  <a href="http://twitter.com/hacksterio">Follow us on Twitter</a>
+</p>
