@@ -7,6 +7,7 @@ class Tech < Group
 
   has_many :active_members, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'") }, foreign_key: :group_id, class_name: 'TechMember'
   has_many :announcements, as: :threadable, dependent: :destroy
+  has_many :challenges
   has_many :featured_projects, -> { where("group_relations.workflow_state = 'featured'") }, source: :project, through: :group_relations
   has_many :follow_relations, as: :followable
   has_many :followers, through: :follow_relations, source: :user
@@ -28,7 +29,8 @@ class Tech < Group
   store_accessor :websites, :forums_link, :documentation_link, :crowdfunding_link, :buy_link,
     :shoplocket_link
   set_changes_for_stored_attributes :websites
-  store :properties, accessors: [:accept_project_ideas, :project_ideas_phrasing]
+  store :properties, accessors: [:accept_project_ideas, :project_ideas_phrasing,
+    :active_challenge]
   store :counters_cache, accessors: [:projects_count, :followers_count,
     :external_projects_count, :private_projects_count]
   set_changes_for_stored_attributes :properties
@@ -36,7 +38,7 @@ class Tech < Group
   parse_as_integers :counters_cache, :projects_count, :followers_count,
     :external_projects_count, :private_projects_count
 
-  parse_as_booleans :properties, :accept_project_ideas
+  parse_as_booleans :properties, :accept_project_ideas, :active_challenge
 
   taggable :tech_tags
 

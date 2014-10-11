@@ -2,9 +2,13 @@
   section#top-project-section  style="background-image: url(#{@challenge.cover_image})"
     #teaser-container.wrapper700
       h1= @challenge.name
+      - if @tech
+        p
+          ' by
+          = link_to @tech.name, tech_short_path(@tech)
 
       - if @embed.url
-        .embed.widescreen= render partial: "api/embeds/#{@embed.provider_name}", locals: { embed: @embed }
+        #video.embed.widescreen= render partial: "api/embeds/#{@embed.provider_name}", locals: { embed: @embed }
 
       .clearfix
 
@@ -15,6 +19,10 @@
   section#top-bg.show-on-desktop
     #top-bg-image style="background-image:url('#{@challenge.cover_image}');"
       h1= @challenge.name
+      - if @tech
+        p
+          ' by
+          = link_to @tech.name, tech_short_path(@tech)
 
 - if @challenge.judging? and can? :admin, @challenge
   section#alert-section

@@ -50,6 +50,10 @@ class Challenge < ActiveRecord::Base
     state :judged
   end
 
+  def self.active
+    where(workflow_state: :in_progress)
+  end
+
   def allow_multiple_entries?
     multiple_entries
   end
@@ -101,6 +105,7 @@ class Challenge < ActiveRecord::Base
   def launch
     self.start_date = Time.now
     save
+    notify_observers(:after_launch)
   end
 
   def mark_as_judged

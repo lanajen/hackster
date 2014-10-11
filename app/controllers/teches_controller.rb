@@ -23,6 +23,7 @@ class TechesController < ApplicationController
     meta_desc "People are hacking with #{@tech.name} on Hackster.io. Join them!"
 
     # @announcement = @tech.announcements.current
+    @challenge = @tech.active_challenge ? @tech.challenges.active.first : nil
 
     render "groups/teches/#{self.action_name}"
 

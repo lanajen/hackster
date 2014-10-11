@@ -1,7 +1,6 @@
 #sidebar-container.affixable
   #sidebar-container-in
-    - if @challenge.tech
-      - @tech = @challenge.tech.decorate
+    - if @tech
       - if @tech.avatar
         .avatar#tech-avatar-image-div
           #tech-avatar-image style="background-image:url('#{@tech.avatar(:big)}');"
@@ -41,6 +40,9 @@
         li= link_to 'Challenge Home', challenge_path(@challenge, anchor: @challenge.video_link.present? ? 'top-project-section' : 'top-bg'), class: 'smooth-scroll'
         li= link_to 'Projects', challenge_path(@challenge, anchor: 'projects-list'), class: 'smooth-scroll'
         li= link_to 'Rules', challenge_rules_path(@challenge)
+        - if @tech
+          li= link_to "#{@tech.name} projects", tech_short_path(@tech)
+
         - if can? :admin, @challenge
           li= link_to "#{content_tag(:i, '', class: 'fa fa-cog')} Manage challenge".html_safe, edit_challenge_path(@challenge)
           li= link_to "#{content_tag(:i, '', class: 'fa fa-cog')} Entries dashboard".html_safe, challenge_entries_path(@challenge)

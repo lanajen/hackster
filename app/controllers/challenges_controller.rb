@@ -1,6 +1,7 @@
 class ChallengesController < ApplicationController
   before_filter :authenticate_user!, except: [:show, :rules]
   before_filter :load_challenge, only: [:show, :rules, :update]
+  before_filter :load_tech, only: [:show, :rules]
   before_filter :load_and_authorize_challenge, only: [:enter, :update_workflow]
   before_filter :set_challenge_entrant, only: [:show, :rules]
   load_and_authorize_resource except: [:show, :rules, :update]
@@ -65,6 +66,10 @@ class ChallengesController < ApplicationController
     def load_and_authorize_challenge
       @challenge = Challenge.find params[:id]
       authorize! self.action_name.to_sym, @challenge
+    end
+
+    def load_tech
+      @tech = @challenge.tech.try(:decorate)
     end
 
     def set_challenge_entrant
