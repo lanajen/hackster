@@ -16,17 +16,22 @@ section#rules
             = prize.name
           p= prize.description
 
-    h2 Eligibility
-    = @challenge.eligibility.html_safe
+    - if @challenge.eligibility.present?
+      h2 Eligibility
+      = @challenge.eligibility.html_safe
 
-    h2 Requirements
-    = @challenge.requirements.html_safe
+    - if @challenge.requirements.present?
+      h2 Requirements
+      = @challenge.requirements.html_safe
 
-    h2 Judging criteria
-    = @challenge.judging_criteria.html_safe
+    - if @challenge.judging_criteria.present?
+      h2 Judging criteria
+      = @challenge.judging_criteria.html_safe
 
-    h2 How to enter
-    = @challenge.how_to_enter.html_safe
+    - if @challenge.how_to_enter.present?
+      h2 How to enter
+      = @challenge.how_to_enter.html_safe
 
-    h2 Full rules
-    = @challenge.rules.html_safe
+    - if @challenge.rules.present?
+      h2 Full rules
+      = @challenge.rules.html_safe
