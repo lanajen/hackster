@@ -53,6 +53,11 @@ module HackerIo
     # This will create an empty whitelist of attributes available for mass-assignment for all models
     # in your app. As such, your models will need to explicitly whitelist or blacklist accessible
     # parameters by using an attr_accessible or attr_protected declaration.
+
+
+    # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
+    config.assets.precompile += %w( admin.css email.css jquery.githubRepoWidget.min.js bitbucket-widget.min.css bitbucket-widget.min.js slick.eot slick.svg slick.ttf slick.woff datepicker.js datepicker.css tinymce.js tinymce/plugins/link/plugin.js tinymce/plugins/paste/plugin.js )
+
     config.active_record.whitelist_attributes = false
 
     # Enable the asset pipeline

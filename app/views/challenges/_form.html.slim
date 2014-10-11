@@ -98,6 +98,7 @@
           li= link_to 'Cancel', @challenge, class: 'btn-link btn-sm'
 
 = content_for :js do
+  = tinymce_assets
 
   javascript:
     jQuery(function($) {
@@ -137,6 +138,17 @@
         });
       }
 
+      tinyMCE.init({
+        selector: 'textarea.text-editor',
+        toolbar: "undo redo | bold italic underline | link unlink | bullist numlist",
+        menubar: false,
+        plugins: 'link paste'
+      });
+      // $('.text-editor').ckeditor({
+      //  toolbar: [
+      //      [ 'Source', '-', 'Bold', 'Italic', 'Underline', '-', 'NumberedList', 'BulletedList', '-', 'Link','Unlink' ]
+      //  ]
+      //});
       // $('.text-editor').each(function(){
         // $(this).wysihtml5({
         //   toolbar: {
