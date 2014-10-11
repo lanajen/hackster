@@ -475,13 +475,13 @@ class Project < ActiveRecord::Base
   end
 
   def post_new_tweet!
-    prepend = "New project: "  # 13 characters
+    prepend = "New project#{' idea' if is_idea?}: "  # 13-18 characters
     message = to_tweet(prepend)
     TwitterQueue.perform_async 'update', message
   end
 
   def to_tweet prepend='', append=''
-    # we have 118 characters to play with
+    # we have 113-118 characters to play with
 
     message = prepend
 
@@ -508,7 +508,7 @@ class Project < ActiveRecord::Base
     end
     message << " with #{tags.to_sentence}" if tags.any?
 
-    size = message.size + 23
+    size = message.size + (is_idea? ? 28 : 23)
     message << " hackster.io/#{uri}"  # links are shortened to 22 characters
 
     # we add tags until character limit is reached
