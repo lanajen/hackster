@@ -194,7 +194,7 @@
               - if @project.tech_tags_cached.any?
                 .tags.meta
                   .meta-title-wrap
-                    .meta-title Technologies
+                    .meta-title Built with
                   - @project.tech_tags_cached.each do |tag|
                     span
                       - if tech = Tech.includes(:tech_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first

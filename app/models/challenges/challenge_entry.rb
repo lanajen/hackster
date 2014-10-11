@@ -39,7 +39,7 @@ class ChallengeEntry < ActiveRecord::Base
   end
 
   def awarded?
-    prize_id.present?
+    workflow_state.in? AWARDED_STATES and prize_id.present?
   end
 
   def give_award
