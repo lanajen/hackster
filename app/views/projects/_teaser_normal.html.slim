@@ -1,35 +1,35 @@
-/ active_member = (user_signed_in? and current_user.is_team_member? @project, false)
-
-- if @project.collection_id.present?
-  #project-group
-    ' This project is part of
-    - if @project.assignment.present?
-      - if @project.assignment.promotion.avatar
-        ==> image_tag @project.assignment.promotion.avatar.file_url(:mini), class: 'img-circle'
-      = link_to @project.assignment.to_label, assignment_path(@project.assignment)
-    - elsif @project.event.present?
-      - if @project.event.avatar
-        ==> image_tag @project.event.avatar.file_url(:mini), class: 'img-circle'
-      = link_to @project.event.name, event_path(@project.event)
-      - @project.awards.where(gradable_id: @project.collection_id, gradable_type: 'Group').each do |award|
-        span.project-award<
-          i.fa.fa-trophy.istooltip  title=award.grade   data-container='body'
-      / if can? :request_access, @project.team
-        - if user_signed_in? and member = current_user.is_team_member?(@project)
-          - if member.request_pending?
-            span.label.label-default Request to join team pending
-        - else
-          = link_to 'Join team', group_members_path(@project.team), class: 'btn btn-xs btn-warning', data: { method: :post }, id: 'join-button'
-
-/ elsif active_member
-  .alert.alert-info.alert-author-share
-    strong Time to shine!
-    | Share your project or
-    = link_to 'submit it to HackADay', "mailto:tips@hackaday.com?subject=#{@project.name}&body=#{@project.one_liner}%0D%0AProject page: #{project_url(@project)}", class: 'alert-link'
-    = link_to "&times;".html_safe, '#', data: { close: '.alert-author-share' }, class: 'btn-close btn-close-notif'
-    = render 'projects/share_by_author'
-
 - cache [@project, 'teaser', @can_edit], tag: (["project-#{@project.id}-teaser", "team-#{@project.team_id}"] + @project.users.map{|u| "user-#{u.id}-thumb"}) do
+
+  - if @project.collection_id.present?
+    #project-group
+      ' This project is part of
+      - if @project.assignment.present?
+        - if @project.assignment.promotion.avatar
+          ==> image_tag @project.assignment.promotion.avatar.file_url(:mini), class: 'img-circle'
+        = link_to @project.assignment.to_label, assignment_path(@project.assignment)
+      - elsif @project.event.present?
+        - if @project.event.avatar
+          ==> image_tag @project.event.avatar.file_url(:mini), class: 'img-circle'
+        = link_to @project.event.name, event_path(@project.event)
+        - @project.awards.where(gradable_id: @project.collection_id, gradable_type: 'Group').each do |award|
+          span.project-award<
+            i.fa.fa-trophy.istooltip  title=award.grade   data-container='body'
+        / if can? :request_access, @project.team
+          - if user_signed_in? and member = current_user.is_team_member?(@project)
+            - if member.request_pending?
+              span.label.label-default Request to join team pending
+          - else
+            = link_to 'Join team', group_members_path(@project.team), class: 'btn btn-xs btn-warning', data: { method: :post }, id: 'join-button'
+
+  - if @winning_entry
+    #project-group
+      span.project-award>
+        i.fa.fa-trophy
+      ' This project won
+      ==> @winning_entry.prize.position.ordinalize
+      ' prize in
+      = link_to @winning_entry.challenge.name, @winning_entry.challenge
+
   #top-project-section
     #project-top-image style="background-image: url('#{@project.cover_image}');"
     #top-project-section-deets

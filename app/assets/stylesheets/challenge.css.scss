@@ -1,6 +1,9 @@
 #challenge{
   section {
     padding: 10px 0;
+    &#alert-section {
+      padding: 0;
+    }
   }
   #top-bg {
     h1 {
@@ -55,6 +58,27 @@
     h2 {
       font-size: 20px;
       margin-top: 30px;
+    }
+  }
+  .project-thumb {
+    .award-container {
+      top: 10px;
+      left: 0;
+      right: initial;
+      .project-award {
+        font-size: 18px;
+        background: #3d8bc1;
+        padding: 5px 10px;
+        margin: 0;
+        float: none;
+        color: #fff;
+        box-shadow: 1px 1px 1px #18364C;
+        text-shadow: 0 0 2px #18364C;
+        font-weight: bold;
+        i {
+          color: #FFD700;
+        }
+      }
     }
   }
 }

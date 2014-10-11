@@ -1,4 +1,5 @@
 class ChallengeEntriesController < ApplicationController
+  before_filter :authenticate_user!, only: [:edit, :update, :destroy]
   before_filter :load_challenge, only: [:index, :create]
   before_filter :load_and_authorize_entry, only: [:edit, :update, :destroy]
   layout :set_layout

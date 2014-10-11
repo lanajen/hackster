@@ -19,13 +19,40 @@ p
             ' x
             = quantity
       br
-      ==> link_to 'Start judging', edit_challenge_entry_path(@challenge, @entries.first), class: 'btn btn-sm btn-primary'
-      ' or
-      = link_to 'Mark challenge as judged', '', class: 'btn btn-sm btn-danger', data: { confirm: 'Are you sure? Not all prizes have been awarded. Continuing will close judging and send an email notification to all participants informing them of the outcome.' }
+      - if @entries.any?
+        ==> link_to 'Start judging', edit_challenge_entry_path(@challenge, @entries.first), class: 'btn btn-sm btn-primary'
+        ' or
+      = link_to 'Mark challenge as judged', update_workflow_challenge_path(@challenge, event: 'mark_as_judged'), method: :put, class: 'btn btn-sm btn-danger', data: { confirm: 'Are you sure? Not all prizes have been awarded. Continuing will close judging and send an email notification to all participants informing them of the outcome.' }
 
     - else
       ' All prizes have been awarded.
       ==> link_to 'Mark challenge as judged', '', class: 'btn btn-sm btn-warning', data: { confirm: 'Are you sure? Continuing will close judging and send an email notification to all participants informing them of the outcome.' }
+
+- if @challenge.judged?
+  table.table.table-striped
+    thead
+      tr
+        th Prize
+        th Entrant
+        th Delivery Method
+        th Address
+        th
+    tbody
+      - if @entries.winning.any?
+        - @entries.winning.each do |entry|
+          tr
+            td= entry.prize.name
+            td
+              - user = entry.user
+              ==> link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
+              = link_to user.name, user
+            td= entry.prize.requires_shipping? ? 'Snail Mail' : 'Email'
+            td= entry.prize.requires_shipping? ? entry.address.try(:decorate).try(:full) || 'Not entered yet' : entry.user.email
+            td
+              - if @challenge.judging?
+                = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_challenge_entry_path(@challenge, entry), class: 'btn btn-xs btn-default', rel: 'tooltip', title: 'Edit'
+      - else
+        td.text-center colspan=7 No entries have been awarded prizes
 
 table.table.table-striped
   thead

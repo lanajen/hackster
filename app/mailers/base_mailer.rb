@@ -53,7 +53,7 @@ class BaseMailer < ActionMailer::Base
         challenge = context[:challenge] = Challenge.find context_id
         context[:users] = challenge.admins
       when :challenge_entry
-        entry = ChallengeEntry.find context_id
+        entry = context[:entry] = ChallengeEntry.find context_id
         context[:challenge] = entry.challenge
         context[:project] = entry.project
         context[:user] = entry.user

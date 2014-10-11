@@ -51,6 +51,10 @@ class Ability
   end
 
   def member
+    can :admin, Address do |address|
+      address.addressable_type == 'ChallengeEntry' and address.addressable.user_id == @user.id
+    end
+
     can :enter, Challenge do |challenge|
       challenge.open_for_submissions? and @user.can? :read, challenge
     end

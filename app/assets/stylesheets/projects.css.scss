@@ -84,6 +84,9 @@
       padding-bottom: 75%;
       background: #fff center center no-repeat;
       background-size: cover;
+      &:hover {
+        @include opacity(0.6);
+      }
     }
     .project-award {
       font-size: 30px;

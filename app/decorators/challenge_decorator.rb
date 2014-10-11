@@ -12,9 +12,9 @@ class ChallengeDecorator < ApplicationDecorator
     when :in_progress
       "#{time_left} left to enter"
     when :judging
-      'Submissions closed - Judging in progress'
+      'Judging in progress'
     when :judged
-      'Submissions closed - Prizes awarded'
+      'Prizes awarded'
     end
   end
 

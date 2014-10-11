@@ -89,6 +89,7 @@ module TablelessAssociation
 
     private
       def _set_association association_name, records
+        records = records.delete_if{|r| r.marked_for_destruction? }
         instance_variable_set "@#{association_name}", records
 
         props = properties

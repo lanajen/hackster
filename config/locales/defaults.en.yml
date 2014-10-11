@@ -192,7 +192,7 @@ en:
   time:
     am: am
     formats:
-      default: ! '%m/%d/%Y at %H:%M'
+      default: ! '%m/%d/%Y at %I:%M %p'
       long: ! '%B %d, %Y %H:%M'
       short: ! '%d %b %H:%M'
       date: ! '%Y-%m-%d'

@@ -32,12 +32,13 @@
           - else
             = link_to 'Enter challenge', '', class: 'follow-button btn btn-info btn-block btn-ellipsis btn-standout enter-challenge'
         - else
-          | Submissions are closed.
+          p#status
+            strong= @challenge.status
 
     .display
       h4 Navigation
       ul#tech-links
-        li= link_to 'Challenge Home', challenge_path(@challenge, anchor: 'top-project-section'), class: 'smooth-scroll'
+        li= link_to 'Challenge Home', challenge_path(@challenge, anchor: @challenge.video_link.present? ? 'top-project-section' : 'top-bg'), class: 'smooth-scroll'
         li= link_to 'Projects', challenge_path(@challenge, anchor: 'projects-list'), class: 'smooth-scroll'
         li= link_to 'Rules', challenge_rules_path(@challenge)
         - if can? :admin, @challenge

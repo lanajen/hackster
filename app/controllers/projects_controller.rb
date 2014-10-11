@@ -41,6 +41,10 @@ class ProjectsController < ApplicationController
     @can_edit = (user_signed_in? and current_user.can? :edit, @project)
     @can_update = (@can_edit and current_user.can? :update, @project)
 
+    @collections = @project.project_collections.includes(:collection)
+    @challenge_entries = @project.challenge_entries.includes(:challenge).includes(:prize)
+    @winning_entry = @challenge_entries.select{|e| e.awarded? }.first
+
     title @project.name
     @project_meta_desc = "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."
     meta_desc @project_meta_desc

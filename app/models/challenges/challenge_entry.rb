@@ -9,6 +9,7 @@ class ChallengeEntry < ActiveRecord::Base
   belongs_to :prize
   belongs_to :project
   belongs_to :user
+  has_one :address, as: :addressable
 
   validates :challenge_id, uniqueness: { scope: :project_id }
 
@@ -29,8 +30,16 @@ class ChallengeEntry < ActiveRecord::Base
     state :fullfiled
   end
 
+  def self.winning
+    where("challenge_projects.prize_id IS NOT NULL")
+  end
+
   def approve
     notify_observers(:after_approve)
+  end
+
+  def awarded?
+    prize_id.present?
   end
 
   def give_award

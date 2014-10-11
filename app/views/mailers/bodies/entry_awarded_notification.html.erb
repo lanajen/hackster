@@ -6,7 +6,7 @@
 
 <% if @context[:prize].requires_shipping? %>
 
-  <p>To claim your prize, please fill out your mailing address at the following link: <a href="">link</a></p>
+  <p>To claim your prize, <strong>please fill out your mailing address</strong> at the following link: <a href="<%= edit_address_challenge_entry_url(@context[:challenge], @context[:entry]) %>"><%= edit_address_challenge_entry_url(@context[:challenge], @context[:entry]) %></a></p>
 
 <% else %>
 

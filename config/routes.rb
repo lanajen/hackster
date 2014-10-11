@@ -244,7 +244,10 @@ HackerIo::Application.routes.draw do
     end
     # get 'challenges/:slug' => 'challenges#show', as: :challenge
     resources :challenges, except: [:show, :update] do
-      resources :entries, controller: :challenge_entries
+      resources :entries, controller: :challenge_entries do
+        get 'address/edit' => 'addresses#edit', on: :member, as: :edit_address
+        patch 'address' => 'addresses#update', on: :member
+      end
       post 'projects' => 'challenges#enter', on: :member, as: :enter
       put 'update_workflow' => 'challenges#update_workflow', on: :member
     end

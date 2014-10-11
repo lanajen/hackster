@@ -8,7 +8,7 @@ class CronTask < BaseWorker
     CronTask.perform_async 'compute_popularity_for_teches'
   end
 
-  def compute_popularit_for_projects
+  def compute_popularity_for_projects
     Project.find_each do |project|
       project.update_counters
       project.compute_popularity

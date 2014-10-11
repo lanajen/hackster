@@ -1,4 +1,5 @@
 class ChallengesController < ApplicationController
+  before_filter :authenticate_user!, except: [:show, :rules]
   before_filter :load_challenge, only: [:show, :rules, :update]
   before_filter :load_and_authorize_challenge, only: [:enter, :update_workflow]
   before_filter :set_challenge_entrant, only: [:show, :rules]
@@ -6,18 +7,22 @@ class ChallengesController < ApplicationController
   layout :set_layout
 
   def show
-    title @challenge.name
     authorize! :read, @challenge
-    # @challenge = @challenge.decorate
+    title @challenge.name
     per_page = Challenge.per_page
     per_page = per_page - 1 if @challenge.open_for_submissions? and @is_challenge_entrant
-    @projects = @challenge.projects.paginate(page: params[:page], per_page: per_page)
+    if @challenge.judged?
+      @winning_entries = @challenge.entries.winning.includes(:project)
+      @other_projects = @challenge.projects.references(:challenge_entries).where("challenge_projects.prize_id IS NULL")
+    else
+      @projects = @challenge.projects.paginate(page: params[:page], per_page: per_page)
+    end
     @embed = Embed.new(url: @challenge.video_link)
   end
 
   def rules
     authorize! :read, @challenge
-    # @challenge = @challenge.decorate
+    title "#{@challenge.name} rules"
   end
 
   def edit
@@ -35,14 +40,23 @@ class ChallengesController < ApplicationController
   def update_workflow
     begin
       @challenge.send "#{params[:event]}!"
-      flash[:notice] = "Challenge #{params[:event]}ed"
+      flash[:notice] = "Challenge #{event_to_human(params[:event])}."
     rescue
-      flash[:error] = "Couldn't #{params[:event]} challenge, please try again or contact an admin."
+      flash[:error] = "Couldn't #{params[:event].gsub(/_/, ' ')} challenge, please try again or contact an admin."
     end
     redirect_to @challenge
   end
 
   private
+    def event_to_human event
+      case event
+      when 'mark_as_judged'
+        'marked as judged'
+      else
+        "#{event}ed"
+      end
+    end
+
     def load_challenge
       @challenge = Challenge.find_by_slug! params[:slug]
       @challenge = @challenge.decorate

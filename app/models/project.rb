@@ -28,7 +28,7 @@ class Project < ActiveRecord::Base
   has_many :active_users, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'")}, through: :team_members, source: :user
   has_many :awards
   has_many :blog_posts, as: :threadable, dependent: :destroy
-  has_many :project_collections, dependent: :destroy
+  has_many :challenge_entries
   has_many :collections, through: :project_collections
   has_one :hacker_space_collection, class_name: 'ProjectCollection'
   has_one :hacker_space, through: :hacker_space_collection, source_type: 'Group', source: :collectable
@@ -43,6 +43,7 @@ class Project < ActiveRecord::Base
   has_many :images, as: :attachable, dependent: :destroy
   has_many :grades
   has_many :permissions, as: :permissible
+  has_many :project_collections, dependent: :destroy
   has_many :respects, dependent: :destroy, class_name: 'Respect'
   has_many :respecting_users, -> { order 'respects.created_at ASC' }, through: :respects, source: :respecting, source_type: User
   has_many :slug_histories, -> { order updated_at: :desc }, as: :sluggable, dependent: :destroy

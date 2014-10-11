@@ -160,6 +160,13 @@
                         - else
                           = credit_line.name
 
+              - if hacker_space = @project.hacker_space
+                .meta
+                  .meta-title-wrap
+                    .meta-title Hacker Space
+                  ' Made at
+                  = link_to hacker_space.name, hacker_space_path(hacker_space)
+
               .meta
                 strong
                   ' Created on
@@ -201,6 +208,19 @@
                     .meta-title Tags
                   - @project.product_tags_cached.each do |tag|
                     span= link_to "##{tag}", tag_path(tag), class: 'tag-link'
+
+              - if @challenge_entries.any?
+                .tags.meta
+                  .meta-title-wrap
+                    .meta-title Challenges
+                  - @challenge_entries.each do |entry|
+                    - if entry.awarded?
+                      ' Won
+                      ==> entry.prize.position.ordinalize
+                      ' prize in
+                    - else
+                      ' Participated in
+                    = link_to entry.challenge.name, entry.challenge
 
             - if @project.public?
               = render partial: 'widgets/respect_widget', locals: { users: @respecting_users }

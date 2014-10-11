@@ -1,8 +1,3 @@
-# email winners
-# collect mailing address if necessary
-# display winners on contest page
-# show "has been awarded" label on project page
-
 class Challenge < ActiveRecord::Base
   DEFAULT_DURATION = 60
   VISIBLE_STATES = %w(in_progress ended paused canceled)

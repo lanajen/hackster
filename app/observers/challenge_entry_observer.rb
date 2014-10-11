@@ -7,6 +7,8 @@ class ChallengeEntryObserver < ActiveRecord::Observer
   def after_award_given record
     BaseMailer.enqueue_email 'entry_awarded_notification',
       { context_type: 'challenge_entry', context_id: record.id }
+
+    Cashier.expire "project-#{record.project_id}-teaser"
   end
 
   # def after_award_not_given record
