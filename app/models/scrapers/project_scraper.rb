@@ -13,7 +13,7 @@ class ProjectScraper
     # end debug snippet
 
     project = s.document.to_project
-    project.website = page_url
+    project.website ||= page_url
     project
   end
 

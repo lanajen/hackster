@@ -80,7 +80,7 @@ class Project < ActiveRecord::Base
     project.validates :website, :one_liner, :cover_image, presence: true
     project.before_save :external_is_hidden
   end
-  validates :website, uniqueness: { message: 'has already been submitted' }, allow_blank: true, if: proc {|p| p.website_changed? }
+  # validates :website, uniqueness: { message: 'has already been submitted' }, allow_blank: true, if: proc {|p| p.website_changed? }
   validates :guest_name, length: { minimum: 3 }, allow_blank: true
   validate :slug_is_unique
   before_validation :assign_new_slug

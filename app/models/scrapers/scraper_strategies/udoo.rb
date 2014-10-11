@@ -9,7 +9,6 @@ module ScraperStrategies
       Embed::LINK_REGEXP.values.each{|provider| @embedded_urls[provider.to_s] = [] }
 
       @article = select_article
-      # raise @article.to_s
       @project.name = extract_title
 
       before_parse
@@ -28,7 +27,7 @@ module ScraperStrategies
 
       @project.description = @article.children.to_s
 
-      raise @project.description
+      puts @project.description
 
       @project.give_embed_style!
 
@@ -37,7 +36,9 @@ module ScraperStrategies
 
     private
       def before_parse
-        @project.guest_name = @parsed.search("[text()*='Name:']").first.next_element.text.strip
+        @project.guest_name = @parsed.search("[text()*='Name:']").first.next.text.strip
+        @project.tech_tags_string = 'Udoo'
+        @project.website = @parsed.search("[text()*='Project URL:']").first.next_element.text.strip
 
         super
       end
@@ -49,19 +50,18 @@ module ScraperStrategies
       def select_article
         els = []
 
-        els += @parsed.css('.slides img, .slides iframe')
-        els << @parsed.search("[text()*='Project URL:']").first.next_element
+        els += @parsed.css('.slides img, .slides iframe').map{|el| el.to_s }
 
         desc = @parsed.search("[text()*='Description:']").first
         els << "<p>#{desc.next.text.strip}</p>"
         if el = desc.parent.next_element
-          els << el
+          els << el.to_s
           while el = el.next_element
-            els << el
+            els << el.to_s if el.to_s.present?
           end
         end
 
-        Nokogiri::HTML::DocumentFragment.parse '<article>' + els.join('') + '</article>'
+        Nokogiri::HTML::DocumentFragment.parse els.join('')
       end
   end
 end
