@@ -84,18 +84,28 @@
       padding-bottom: 75%;
       background: #fff center center no-repeat;
       background-size: cover;
+      @include transition(opacity 100ms linear);
       &:hover {
-        @include opacity(0.6);
+        @include opacity(0.8);
       }
     }
     .project-award {
-      font-size: 30px;
-      float: right;
+      font-size: 15px;
+      background: #3d8bc1;
+      padding: 5px 10px;
+      margin: 0;
+      color: #fff;
+      box-shadow: 1px 1px 1px #18364C;
+      text-shadow: 0 0 2px #18364C;
+      font-weight: bold;
+      i {
+        color: #FFD700;
+      }
     }
     .award-container {
       position: absolute;
-      top: 5px;
-      right: 10px;
+      top: 10px;
+      left: 0;
     }
     .thumb-top {
       position: absolute;

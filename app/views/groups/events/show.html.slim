@@ -20,8 +20,8 @@
             - @awards.each do |award|
               javascript:
                 $('.project-list').prepend($('.project-#{award.project_id}'));
-                text = "<div class='project-award'><i class='fa fa-trophy istooltip' title='#{escape_javascript(award.grade).gsub(/'/, '&#x0027;')}' data-container='body'></i></div>";
-                $(text).appendTo('.project-#{award.project_id} .award-container');
+                text = "<div class='project-award'><i class='fa fa-trophy'></i> #{escape_javascript(award.grade).gsub(/'/, '&#x0027;')}</div>";
+                $('.project-#{award.project_id} .award-container').html(text);
 
         - else
           .row
