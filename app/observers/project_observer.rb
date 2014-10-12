@@ -84,6 +84,10 @@ class ProjectObserver < ActiveRecord::Observer
       Cashier.expire "project-#{record.id}-teaser"
     end
 
+    if (record.changed & %w(name cover_image one_liner tech_tags product_tags guest_name )).any? or record.tech_tags_string_changed? or record.product_tags_string_changed?
+      Cashier.expire "project-#{record.id}-meta-tags"
+    end
+
     if (record.changed & %w(tech_tags product_tags made_public_at license guest_name)).any? or record.tech_tags_string_changed? or record.product_tags_string_changed?
       Cashier.expire "project-#{record.id}-metadata"
     end

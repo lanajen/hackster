@@ -111,7 +111,7 @@ class Group < ActiveRecord::Base
   end
 
   def name
-    full_name || user_name
+    full_name.presence || user_name
   end
 
   def new_user_name
