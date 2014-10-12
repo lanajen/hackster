@@ -287,8 +287,6 @@ class ProjectsController < ApplicationController
 
   private
     def initialize_project
-#      @project.images.new# unless @project.images.any?
-#      @project.build_video unless @project.video
       @project.build_logo unless @project.logo
       @project.build_cover_image unless @project.cover_image
     end

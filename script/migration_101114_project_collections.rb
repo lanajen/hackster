@@ -26,3 +26,8 @@ Event.pluck(:id).each do |id|
     p.save
   end
 end
+
+# next steps:
+# - remove collection_id from projects
+# - move assignment_submitted_at from projects to project_collections
+# - remove group_relations table
