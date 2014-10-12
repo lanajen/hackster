@@ -286,7 +286,7 @@ class User < ActiveRecord::Base
   end
 
   def all_grades
-    grades.includes(:assignment).where(assignments: { private_grades: false }) + team_grades.includes(:assignment).where(assignments: { private_grades: false })
+    grades.joins('INNER JOIN project_collections ON grades.project_id = project_collections.project_id INNER JOIN assignments ON project_collections.collectable_id = assignments.id').where("project_collections.collectable_type = 'Assignment'").where(assignments: { private_grades: false }) + team_grades.joins('INNER JOIN project_collections ON grades.project_id = project_collections.project_id INNER JOIN assignments ON project_collections.collectable_id = assignments.id').where("project_collections.collectable_type = 'Assignment'").where(assignments: { private_grades: false })
   end
 
   def all_permissions
