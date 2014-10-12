@@ -8,7 +8,8 @@ class Assignment < ActiveRecord::Base
 
   belongs_to :promotion
   has_many :grades, through: :projects
-  has_many :projects, foreign_key: :collection_id
+  has_many :project_collections, as: :collectable
+  has_many :projects, through: :project_collections
   has_one :document, as: :attachable, dependent: :destroy
   validates :promotion_id, :name, presence: true
   attr_accessible :name, :document_id, :grading_type, :graded, :private_grades,

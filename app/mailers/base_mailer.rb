@@ -157,8 +157,8 @@ class BaseMailer < ActionMailer::Base
         context[:users] = project.users.with_subscription('new_respect_own')
       when :tech
         context[:group] = tech = Tech.find context_id
-        # context[:projects] = Project.joins(:group_relations).where('group_relations.created_at > ?', 24.hours.ago).where(group_relations: { group_id: tech.id, workflow_state: GroupRelation::VALID_STATES })
-        context[:projects] = projects = tech.projects.visible.indexable_and_external.joins(:group_relations).where('group_relations.created_at > ?', 24.hours.ago).where('projects.made_public_at > ?', 24.hours.ago).distinct(:id)
+        # context[:projects] = Project.joins(:project_collections).where('project_collections.created_at > ?', 24.hours.ago).where(project_collections: { group_id: tech.id, workflow_state: ProjectCollection::VALID_STATES })
+        context[:projects] = projects = tech.projects.visible.indexable_and_external.joins(:project_collections).where('project_collections.created_at > ?', 24.hours.ago).where('projects.made_public_at > ?', 24.hours.ago).distinct(:id)
         context[:users] = projects.any? ? tech.followers.with_subscription('follow_tech_activity') : []
       when :user
         context[:user] = User.find(context_id)

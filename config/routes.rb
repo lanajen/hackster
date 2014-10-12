@@ -115,8 +115,8 @@ HackerIo::Application.routes.draw do
     scope 'communities/:user_name', as: :communities do
       get '' => 'communities#show'
       patch '' => 'communities#update'
-      # resources :projects, only: [:new, :create], controller: 'groups/projects'
-      # patch 'projects/link' => 'groups/projects#link'
+      resources :projects, only: [:new, :create], controller: 'groups/projects'
+      patch 'projects/link' => 'groups/projects#link'
     end
 
     # resources :communities, except: [:show, :update, :destroy], controller: 'groups', as: :groups

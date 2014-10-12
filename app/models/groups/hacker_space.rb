@@ -1,8 +1,6 @@
 class HackerSpace < Community
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'HackerSpaceMember'
   has_many :pages, as: :threadable
-  has_many :project_collections, as: :collectable
-  has_many :projects, through: :project_collections
 
   store_accessor :websites, :irc_link, :hackerspace_org_link, :wiki_link,
     :mailing_list_link

@@ -9,16 +9,21 @@ class Client::ProjectsController < Client::BaseController
 
     impressionist_async current_tech, "", unique: [:session_hash]
 
-    params[:sort] ||= 'magic'
+    sort = params[:sort] || 'magic'
     @by = params[:by] || 'all'
 
     @projects = current_tech.projects.visible.indexable_and_external.for_thumb_display
-    if params[:sort] and params[:sort].in? Project::SORTING.keys
-      @projects = @projects.send(Project::SORTING[params[:sort]])
+    if sort and sort.in? Project::SORTING.keys
+      @projects = @projects.send(Project::SORTING[sort])
     end
 
-    if params[:by] and params[:by].in? Project::FILTERS.keys
-      @projects = @projects.send(Project::FILTERS[params[:by]])
+    if @by and @by.in? Project::FILTERS.keys
+      @projects = if @by == 'featured'
+        @by = 'gfeatured'
+        @projects.send(Project::FILTERS[@by], 'Group', current_tech.id)
+      else
+        @projects.send(Project::FILTERS[@by])
+      end
     end
 
     @projects = @projects.paginate(page: safe_page_params)

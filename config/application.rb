@@ -25,7 +25,7 @@ module HackerIo
       :user_observer, :comment_observer, :respect_observer, :tag_observer,
       :member_observer, :team_observer, :follow_relation_observer,
       :issue_observer, :blog_post_observer, :assignment_observer, :tech_observer,
-      :group_relation_observer, :attachment_observer, :challenge_entry_observer,
+      :project_collection_observer, :attachment_observer, :challenge_entry_observer,
       :challenge_observer
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.

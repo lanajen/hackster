@@ -74,7 +74,7 @@ class TechesController < ApplicationController
   end
 
   def feature_project
-    @group_rel = GroupRelation.where(project_id: params[:project_id], group_id: params[:tech_id]).first!
+    @group_rel = ProjectCollection.where(project_id: params[:project_id], group_id: params[:tech_id]).first!
 
     if @group_rel.feature!
       respond_to do |format|
@@ -92,7 +92,7 @@ class TechesController < ApplicationController
   end
 
   def unfeature_project
-    @group_rel = GroupRelation.where(project_id: params[:project_id], group_id: params[:tech_id]).first!
+    @group_rel = ProjectCollection.where(project_id: params[:project_id], group_id: params[:tech_id]).first!
 
     if @group_rel.unfeature!
       respond_to do |format|
@@ -106,7 +106,7 @@ class TechesController < ApplicationController
     def load_projects
       per_page = params[:per_page] ? [Integer(params[:per_page]), Project.per_page].min : Project.per_page
       per_page = per_page - 1 if @tech.accept_project_ideas
-      @projects = @tech.projects.visible.indexable_and_external.order('group_relations.workflow_state DESC').magic_sort.for_thumb_display.paginate(page: safe_page_params, per_page: per_page)
+      @projects = @tech.projects.visible.indexable_and_external.order('project_collections.workflow_state DESC').magic_sort.for_thumb_display.paginate(page: safe_page_params, per_page: per_page)
     end
 
     def load_tech

@@ -58,7 +58,7 @@ class CronTask < BaseWorker
   end
 
   def send_daily_notifications
-    teches = Tech.joins(:group_relations).where('group_relations.created_at > ?', 24.hours.ago).where(group_relations: { workflow_state: GroupRelation::VALID_STATES }).distinct(:id)
+    teches = Tech.joins(:project_collections).where('project_collections.created_at > ?', 24.hours.ago).where(project_collections: { workflow_state: ProjectCollection::VALID_STATES }).distinct(:id)
     teches.each do |tech|
       BaseMailer.enqueue_email 'new_projects_in_tech_notification', { context_type: 'tech', context_id: tech.id }
     end

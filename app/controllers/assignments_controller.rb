@@ -9,7 +9,7 @@ class AssignmentsController < ApplicationController
   def show
     redirect_to promotion_path(@assignment.promotion) and return unless can? :read, @assignment
     title "#{@assignment.name} | #{@assignment.promotion.name}"
-    @projects = @assignment.projects.order(:created_at)
+    @projects = @assignment.projects.for_thumb_display.order(:created_at)
     if user_signed_in? and @assignment.submit_by_date.present? and can? :submit_project, @assignment
       @submit_date = @assignment.submit_by_date.in_time_zone(PDT_TIME_ZONE)
       @submission_status = if current_user.created_project_for_assignment?(@assignment)

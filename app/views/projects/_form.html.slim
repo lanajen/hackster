@@ -82,11 +82,22 @@
                   .col-xs-offset-4.col-xs-8= f_credit.link_to_remove 'Remove this contributor', class: 'btn btn-xs btn-danger'
               = f_cred.link_to_add 'Add another contributor', :credit_lines, class: 'btn btn-xs btn-success', style: 'margin:0 0 0 33.33333%;'
 
-      - if current_user.communities.where(type: 'Community').any? or current_user.is? :admin or current_user.promotions.any? or current_user.events.any?
-        .panel.panel-default#sharing
-          .panel-heading
-            h4 Sharing
-          .panel-body
+      .panel.panel-default#sharing
+        .panel-heading
+          h4 Sharing
+        .panel-body
+          - communities = current_user.is?(:admin) ? Community.where(type: 'Community').order(:full_name) : current_user.communities.where(type: 'Community')
+          - if communities.any?
+            = f.association :communities, collection: communities, as: :check_boxes
+          - assignments = current_user.is?(:admin) ? Assignment.order(created_at: :desc) : current_user.assignments.order(created_at: :desc)
+          - if assignments.any?
+            = f.input :assignment_id, collection: assignments, label: 'Assignment'
+          - events = current_user.is?(:admin) ? Event.order(created_at: :desc) : current_user.events.order(created_at: :desc)
+          - if current_user.events.any?
+            = f.input :event_id, collection: events, label: 'Event'
+          - hacker_spaces = current_user.is?(:admin) ? HackerSpace.order(created_at: :desc) : current_user.hacker_spaces.order(full_name: :asc)
+          = f.input :hacker_space_id, collection: hacker_spaces, label: 'Where did you hack this from?', hint: "Select the hacker space you worked from. You'll need to join their group first. <a href='/hackerspaces'>See all the hacker spaces.</a>".html_safe
+          /
             .form-group
               .col-xs-4
                 label.control-label Share with a group
@@ -94,27 +105,18 @@
                 - @project.permissions.new if @project.permissions.empty?
                 = f.simple_fields_for :permissions, wrapper: false do |f_perm|
                   - if current_user.is? :admin
-                    = f_perm.input :grantee_id, collection: Community.where(type: 'Community').order(:full_name), label: false, wrapper: false
+                    = f_perm.input :grantee_id, collection: communities, label: false, wrapper: false
                   - else
-                    = f_perm.input :grantee_id, collection: current_user.communities.where(type: 'Community'), label: false, wrapper: false
+                    = f_perm.input :grantee_id, collection: communities, label: false, wrapper: false
                   = f_perm.input :grantee_type, as: :hidden, input_html: { value: 'Group' }, wrapper: false
-                p.help-block
-                  | All of the members of the groups you select will be able to access your project. They will not be able to edit it.
-
-            - if current_user.promotions.any?
-              = f.input :collection_id, collection: current_user.assignments.order(created_at: :desc), label: 'Assignment'
-            - if current_user.events.any?
-              = f.input :collection_id, collection: current_user.events.order(created_at: :desc), label: 'Event'
-            = f.input :hacker_space_id, collection: current_user.hacker_spaces.order(full_name: :asc), label: 'Where did you hack this from?', hint: "Select the hacker space you worked from. You'll need to join their group first. <a href='/hackerspaces'>See all the hacker spaces.</a>".html_safe
+              p.help-block
+                | All of the members of the groups you select will be able to access your project. They will not be able to edit it.
 
       - if current_user.is? :admin
         .panel.panel-default
           .panel-heading
             h4 Admin stuff
           .panel-body
-            = f.input :collection_id, collection: Assignment.order(created_at: :desc), label: 'Assignment'
-            = f.input :collection_id, collection: Event.order(created_at: :desc), label: 'Event'
-
             = f.input :featured, inline_label: 'Feature this project', label: false
             = f.input :featured_date, label: 'Feature date'
 

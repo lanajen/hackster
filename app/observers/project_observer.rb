@@ -28,7 +28,7 @@ class ProjectObserver < ActiveRecord::Observer
     end
 
     # if record.approved_changed? and record.approved
-    #   record.group_relations.each{|g| g.approve! }
+    #   record.project_collections.each{|g| g.approve! }
     # end
   end
 
@@ -63,7 +63,7 @@ class ProjectObserver < ActiveRecord::Observer
       update_counters record, [:live_projects]
       record.commenters.each{|u| u.update_counters only: [:comments] }
       if record.private?
-        delete_group_relations record
+        delete_tech_relations record
         Broadcast.where(context_model_id: record.id, context_model_type: 'Project').destroy_all
         Broadcast.where(project_id: record.id).destroy_all
       else
@@ -73,7 +73,7 @@ class ProjectObserver < ActiveRecord::Observer
 
     if record.approved_changed?
       if record.approved == false
-        delete_group_relations record
+        delete_tech_relations record
         record.hide = true
       elsif record.approved == true
         record.post_new_tweet! unless record.hidden? or Rails.env != 'production'
@@ -110,8 +110,8 @@ class ProjectObserver < ActiveRecord::Observer
   end
 
   private
-    def delete_group_relations record
-      GroupRelation.where(project_id: record.id).destroy_all
+    def delete_tech_relations record
+      record.teches.delete_all
     end
 
     def update_counters record, type

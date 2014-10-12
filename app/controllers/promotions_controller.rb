@@ -8,9 +8,9 @@ class PromotionsController < ApplicationController
     title @promotion.name
     meta_desc "Join the promotion #{@promotion.name} on Hackster.io!"
     # @broadcasts = @promotion.broadcasts.limit 20
-    @projects = @promotion.projects.order(collection_id: :desc).paginate(page: safe_page_params, per_page: 16)
-    @students = @promotion.members.invitation_accepted_or_not_invited.with_group_roles('student').map(&:user).select{|u| u.invitation_token.nil? }
-    @staffs = @promotion.members.invitation_accepted_or_not_invited.with_group_roles(%w(ta professor)).map(&:user).select{|u| u.invitation_token.nil? }
+    @projects = @promotion.projects.for_thumb_display.order(collection_id: :desc).paginate(page: safe_page_params, per_page: 16)
+    @students = @promotion.members.includes(:user).includes(user: :avatar).invitation_accepted_or_not_invited.with_group_roles('student').map(&:user).select{|u| u.invitation_token.nil? }
+    @staffs = @promotion.members.includes(:user).includes(user: :avatar).invitation_accepted_or_not_invited.with_group_roles(%w(ta professor)).map(&:user).select{|u| u.invitation_token.nil? }
     @assignments = @promotion.assignments
 
     render "groups/promotions/#{self.action_name}"

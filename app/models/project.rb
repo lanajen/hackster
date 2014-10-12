@@ -3,7 +3,7 @@ class Project < ActiveRecord::Base
 
   FILTERS = {
     'featured' => :featured,
-    'featured_by_tech' => :featured_by_tech,
+    'gfeatured' => :featured_by_collection,
     'wip' => :wip,
   }
   SORTING = {
@@ -22,23 +22,22 @@ class Project < ActiveRecord::Base
   # include Workflow
   is_impressionable counter_cache: true, unique: :session_hash
 
-  belongs_to :assignment, foreign_key: :collection_id
-  belongs_to :event, foreign_key: :collection_id
   belongs_to :team
   has_many :active_users, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'")}, through: :team_members, source: :user
+  has_many :assignments, through: :project_collections, source: :collectable, source_type: 'Assignment'
   has_many :awards
   has_many :blog_posts, as: :threadable, dependent: :destroy
   has_many :challenge_entries
-  has_many :collections, through: :project_collections
-  has_one :hacker_space_collection, class_name: 'ProjectCollection'
-  has_one :hacker_space, through: :hacker_space_collection, source_type: 'Group', source: :collectable
   has_many :comments, -> { order created_at: :asc }, as: :commentable, dependent: :destroy
   # below is a hack because commenters try to add order by comments created_at and pgsql doesn't like it
   has_many :comments_copy, as: :commentable, dependent: :destroy, class_name: 'Comment'
   has_many :commenters, -> { uniq true }, through: :comments_copy, source: :user
+  has_many :communities, -> { where("groups.type = 'Community'") }, through: :project_collections, source_type: 'Group', source: :collectable
+  has_many :events, -> { where("groups.type = 'Event'") }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :follow_relations, as: :followable
   has_many :followers, through: :follow_relations, source: :user
-  has_many :group_relations, dependent: :destroy
+  has_many :hacker_spaces, -> { where("groups.type = 'HackerSpace'") }, through: :project_collections, source_type: 'Group', source: :collectable
+  has_many :project_collections, dependent: :destroy
   has_many :issues, as: :threadable, dependent: :destroy
   has_many :images, as: :attachable, dependent: :destroy
   has_many :grades
@@ -48,12 +47,12 @@ class Project < ActiveRecord::Base
   has_many :respecting_users, -> { order 'respects.created_at ASC' }, through: :respects, source: :respecting, source_type: User
   has_many :slug_histories, -> { order updated_at: :desc }, as: :sluggable, dependent: :destroy
   has_many :team_members, through: :team, source: :members#, -> { includes :user }
-  # has_many :groups, through: :group_relations
-  has_many :teches, -> { where ("groups.type = 'Tech'") }, through: :group_relations, source: :group
+  has_many :teches, -> { where("groups.type = 'Tech'") }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :users, through: :team_members
   has_many :widgets, -> { order position: :asc }, as: :widgetable, dependent: :destroy
-  has_one :logo, as: :attachable, class_name: 'Avatar', dependent: :destroy
   has_one :cover_image, as: :attachable, class_name: 'CoverImage', dependent: :destroy
+  has_one :logo, as: :attachable, class_name: 'Avatar', dependent: :destroy
+  has_one :project_collection, class_name: 'ProjectCollection'
   has_one :video, as: :recordable, dependent: :destroy
 
   # sanitize_text :description
@@ -64,7 +63,8 @@ class Project < ActiveRecord::Base
     :permissions_attributes, :new_slug, :slug_histories_attributes, :hide,
     :collection_id, :graded, :wip, :columns_count, :external, :guest_name,
     :approved, :open_source, :buy_link, :private_logs, :private_issues,
-    :hacker_space_id, :locked, :mark_as_idea
+    :hacker_space_id, :locked, :mark_as_idea, :event_id, :assignment_id,
+    :community_ids
   attr_accessor :current
   attr_writer :new_slug
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
@@ -180,9 +180,8 @@ class Project < ActiveRecord::Base
     indexable.where(featured: true).order(featured_date: :desc)
   end
 
-  # assumes that the join with group_relations has already been done
-  def self.featured_by_tech
-    indexable.where(group_relations: { workflow_state: 'featured' }).order('group_relations.updated_at DESC')
+  def self.featured_by_collection collection_type, collection_id
+    indexable.joins(:project_collections).where(project_collections: { collectable_id: collection_id, collectable_type: collection_type, workflow_state: 'featured' }).order('project_collections.updated_at DESC')
   end
 
   def self.for_thumb_display
@@ -348,19 +347,41 @@ class Project < ActiveRecord::Base
   #   tweed_id.present?
   # end
 
-  def hacker_space_id
-    hacker_space.try(:id)
+  # the following methods make has_many relations work has_one style
+  def get_collection collection_type
+    send("#{collection_type}s").first
   end
 
-  def hacker_space_id=(val)
-    if val.present?
-      build_hacker_space_collection unless hacker_space_collection
-      hacker_space_collection.collectable_type = 'Group'
-      hacker_space_collection.collectable_id = val
-    else
-      hacker_space_collection.delete if hacker_space_collection
+  def get_collection_id collection_type
+    get_collection(collection_type).try(:id)
+  end
+
+  def set_collection_id id, collection_type
+    self.send("#{collection_type}s").delete_all
+    self.send("#{collection_type}s") << collection_type.camelize.constantize.find_by_id(id) if id.to_i != 0
+  end
+
+  def set_collection collection, collection_type
+    self.send("#{collection_type}s").delete_all
+    self.send("#{collection_type}s") << collection if collection
+  end
+
+  %w(assignment event hacker_space).each do |type|
+    define_method type do
+      get_collection type
     end
-    # self.hacker_space = HackerSpace.find_by_id val
+
+    define_method "#{type}=" do |val|
+      set_collection val, type
+    end
+
+    define_method "#{type}_id" do
+      get_collection_id type
+    end
+
+    define_method "#{type}_id=" do |val|
+      set_collection_id val, type
+    end
   end
 
   def hidden?

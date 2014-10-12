@@ -29,14 +29,12 @@ class Groups::ProjectsController < ApplicationController
   def link
     @project = Project.find params[:project_id]
     case @group
-    when Event
-      @project.event = @event
-    when HackerSpace
-      @group.projects << @project unless @project.in? @group.projects
     when Tech
       @project.tech_tags << TechTag.new(name: @group.tech_tags.first.name)
+    else
+      @group.projects << @project unless ProjectCollection.exists? @project.id, 'Group', @group.id
     end
-    @project.save
+    # @project.save
 
     redirect_to group_path(@group), notice: "Your project has been added to #{@group.name}."
   end
@@ -48,7 +46,12 @@ class Groups::ProjectsController < ApplicationController
       elsif params[:promotion_name]
         load_assignment
       elsif params[:user_name]
-        @hacker_space = HackerSpace.find_by_user_name! params[:user_name]
+        case request.path.split('/')[1]
+        when 'communities'
+          @community = Community.where(type: 'Community').find_by_user_name! params[:user_name]
+        when 'hackerspaces'
+          @hacker_space = HackerSpace.find_by_user_name! params[:user_name]
+        end
       else
         @group = Group.find params[:group_id]
       end

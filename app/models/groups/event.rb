@@ -3,7 +3,6 @@ class Event < Community
   has_many :awards, as: :gradable
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'EventMember'
   has_many :pages, as: :threadable
-  has_many :projects, foreign_key: :collection_id
 
   attr_accessible :awards_attributes, :parent_id
 

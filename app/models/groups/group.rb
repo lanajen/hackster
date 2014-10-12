@@ -11,15 +11,15 @@ class Group < ActiveRecord::Base
 
   has_many :active_members, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'") }, foreign_key: :group_id, class_name: 'Member'
   has_many :broadcasts, through: :users
+  has_many :featured_projects, -> { where("project_collections.workflow_state = 'featured'") }, source: :project, through: :project_collections
   has_many :granted_permissions, as: :grantee, class_name: 'Permission'
-  # has_many :issues, through: :projects
-  has_many :group_relations, dependent: :destroy
   has_many :members, dependent: :destroy
   has_many :permissions, as: :permissible
-  has_many :projects, through: :group_relations do
-    # TOOD: see if this can be delegated to GroupRelation
+  has_many :project_collections, dependent: :destroy, as: :collectable
+  has_many :projects, through: :project_collections do
+    # TOOD: see if this can be delegated to ProjectCollection
     def visible
-      where(group_relations: { workflow_state: GroupRelation::VALID_STATES })
+      where(project_collections: { workflow_state: ProjectCollection::VALID_STATES })
     end
   end
   has_many :users, through: :members
