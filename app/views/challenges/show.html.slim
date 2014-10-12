@@ -42,7 +42,7 @@ section#projects-list
           - @winning_entries.each do |entry|
             = render partial: 'projects/project_thumb_hybrid', locals: { project: entry.project.decorate, col: '4' }
             javascript:
-              $(".project-#{entry.project_id} .award-container").html("<span class='project-award'><i class='fa fa-trophy'></i> #{entry.prize.position.ordinalize} prize</span>");
+              $(".project-#{entry.project_id} .award-container").html("<div class='project-award'><i class='fa fa-trophy'></i> #{entry.prize.position.ordinalize} prize</div>");
 
       h2.text-center Other entries
       .thumb-list  class=@switch_style

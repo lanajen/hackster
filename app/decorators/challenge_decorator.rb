@@ -1,8 +1,6 @@
 class ChallengeDecorator < ApplicationDecorator
-  def cover_image size=nil
-    if model.cover_image and model.cover_image.file_url
-      model.cover_image.file_url(size)
-    end
+  def cover_image
+    model.cover_image.try(:file_url)
   end
 
   def status

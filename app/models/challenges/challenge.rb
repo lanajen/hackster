@@ -68,7 +68,7 @@ class Challenge < ActiveRecord::Base
   end
 
   def cover_image_id=(val)
-    self.cover_image = Document.find_by_id(id)
+    self.cover_image = Document.find_by_id(val)
   end
 
   def duration
