@@ -5,12 +5,28 @@
     font-family: 'Open Sans', Tahoma, sans-serif;
     font-weight: 600;
   }
-  section {
+  section:not(.section-short) {
     padding: 60px 0;
     background: #F2F2F2;
     &:nth-child(odd) {
       background: #fff;
     }
+  }
+  section#section-newsletter {
+    padding: 10px 0;
+    text-align: center;
+    border-top: 2px solid #3d8bc1;
+    border-bottom: 4px solid #3d8bc1;
+    background: #fff;
+    p, form {
+      display: inline-block;
+    }
+    form {
+      margin-left: 10px;
+    }
+  }
+  .slick-slider {
+    margin: 0;
   }
   .header {
     margin-bottom: 30px;

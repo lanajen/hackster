@@ -1,6 +1,6 @@
 - if user_signed_in?
   - if current_user.following? followable
-    = link_to "Following #{content_tag(:i, '', class: 'fa fa-check')}".html_safe, followers_path(followable_type: followable.class.model_name, followable_id: followable.id), data: { method: :delete, remote: true, container: 'body' }, class: 'follow-button btn btn-info btn-block btn-ellipsis btn-standout disable-link', title: 'Following (click to undo)', rel: 'tooltip'
+    = link_to "#{content_tag(:i, '', class: 'fa fa-check')} Following".html_safe, followers_path(followable_type: followable.class.model_name, followable_id: followable.id), data: { method: :delete, remote: true, container: 'body' }, class: 'follow-button btn btn-info btn-block btn-ellipsis btn-standout disable-link', title: 'Following (click to undo)', rel: 'tooltip'
   - else
     = link_to "Follow #{followable.name}", followers_path(followable_type: followable.class.model_name, followable_id: followable.id), data: { method: :post, remote: true }, class: 'follow-button btn btn-info btn-block btn-ellipsis btn-standout disable-link', rel: 'tooltip', title: (defined?(why) ? why : nil)
 - else

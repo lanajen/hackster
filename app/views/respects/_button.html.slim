@@ -1,7 +1,7 @@
-- content = "Respect project " + content_tag(:i, '', class: 'fa fa-thumbs-o-up')
+- content = content_tag(:i, '', class: 'fa fa-thumbs-o-up') + " Respect project"
 - if user_signed_in?
   - if current_user.respected? project
-    = link_to ("Respected " + content_tag(:i, '', class: 'fa fa-check')).html_safe, project_respects_path(project), data: { method: :delete, remote: true, container: 'body' }, class: 'action-respected respect-button btn btn-block btn-ellipsis btn-info btn-standout disable-link'
+    = link_to (content_tag(:i, '', class: 'fa fa-check') + " Respected").html_safe, project_respects_path(project), data: { method: :delete, remote: true, container: 'body' }, class: 'action-respected respect-button btn btn-block btn-ellipsis btn-info btn-standout disable-link'
   - else
     = link_to content.html_safe, project_respects_path(project), data: { method: :post, remote: true, container: 'body' }, class: 'respect-button btn btn-block btn-ellipsis btn-info btn-standout disable-link'
 - else

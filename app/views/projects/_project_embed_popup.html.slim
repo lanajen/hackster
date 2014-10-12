@@ -1,4 +1,4 @@
-= link_to "Share #{content_tag(:i, '', class: 'fa fa-share-square-o')}".html_safe, '#', onclick: "openPopup('#embed-popup');return false;", class: 'btn btn-block btn-info btn-ellipsis'
+= link_to "#{content_tag(:i, '', class: 'fa fa-share-square-o')} Share".html_safe, '#', onclick: "openPopup('#embed-popup');return false;", class: 'btn btn-block btn-info btn-ellipsis'
 
 - unless @embed_popup_shown
   = content_for :js do
