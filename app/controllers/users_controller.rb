@@ -47,7 +47,6 @@ class UsersController < ApplicationController
       respond_to do |format|
         format.html { redirect_to @user, notice: 'Profile updated.' }
         format.js do
-          @user.avatar = nil unless @user.avatar.try(:file_url)
           @user = @user.decorate
           if old_user.interest_tags_string != @user.interest_tags_string or old_user.skill_tags_string != @user.skill_tags_string or old_user.user_name != @user.user_name
             @refresh = true

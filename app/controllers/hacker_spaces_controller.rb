@@ -72,7 +72,6 @@ class HackerSpacesController < ApplicationController
       respond_to do |format|
         format.html { redirect_to @hacker_space, notice: 'Profile updated.' }
         format.js do
-          @hacker_space.avatar = nil unless @hacker_space.avatar.try(:file_url)
           @hacker_space = @hacker_space.decorate
           if old_hacker_space.user_name != @hacker_space.user_name
             @refresh = true

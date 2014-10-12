@@ -97,13 +97,13 @@ class Attachment < ActiveRecord::Base
   end
 
   private
-    def ensure_has_file
-      unless disallow_blank_file?
-        destroy
-      else
-        errors.add :file, "can't be blank"
-      end if file.blank? and file_url.blank? and remote_file_url.blank?
-    end
+    # def ensure_has_file
+    #   unless disallow_blank_file?
+    #     destroy
+    #   else
+    #     errors.add :file, "can't be blank"
+    #   end if file.blank? and file_url.blank? and remote_file_url.blank?
+    # end
 
     def file_size
       errors[:file] << "should be less than #{MAX_FILE_SIZE}MB" if file.size > MAX_FILE_SIZE.megabytes

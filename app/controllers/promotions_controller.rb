@@ -56,7 +56,6 @@ class PromotionsController < ApplicationController
       respond_to do |format|
         format.html { redirect_to @promotion, notice: 'Profile updated.' }
         format.js do
-          @promotion.avatar = nil unless @promotion.avatar.try(:file_url)
           @promotion = @promotion.decorate
           if old_promotion.user_name != @promotion.user_name
             @refresh = true

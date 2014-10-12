@@ -62,7 +62,6 @@ class GroupsController < ApplicationController
       respond_to do |format|
         format.html { redirect_to @group, notice: 'Profile updated.' }
         format.js do
-          @group.avatar = nil unless @group.avatar.try(:file_url)
           @group = @group.decorate
           # if old_group.interest_tags_string != @group.interest_tags_string or old_group.skill_tags_string != @group.skill_tags_string
           #   @refresh = true

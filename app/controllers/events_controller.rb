@@ -78,7 +78,6 @@ class EventsController < ApplicationController
       respond_to do |format|
         format.html { redirect_to @event, notice: 'Profile updated.' }
         format.js do
-          @event.avatar = nil unless @event.avatar.try(:file_url)
           @event = @event.decorate
           if old_event.user_name != @event.user_name
             @refresh = true

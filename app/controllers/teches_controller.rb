@@ -52,7 +52,6 @@ class TechesController < ApplicationController
       respond_to do |format|
         format.html { redirect_to @tech, notice: 'Profile updated.' }
         format.js do
-          @tech.avatar = nil unless @tech.avatar.try(:file_url)
           # if old_group.interest_tags_string != @tech.interest_tags_string or old_group.skill_tags_string != @tech.skill_tags_string
           if old_tech.user_name != @tech.user_name
             @refresh = true

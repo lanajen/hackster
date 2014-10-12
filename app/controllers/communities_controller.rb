@@ -69,7 +69,6 @@ class CommunitiesController < ApplicationController
       respond_to do |format|
         format.html { redirect_to @community, notice: 'Profile updated.' }
         format.js do
-          @community.avatar = nil unless @community.avatar.try(:file_url)
           @community = @community.decorate
           if old_community.user_name != @community.user_name
             @refresh = true
