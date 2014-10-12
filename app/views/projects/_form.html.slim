@@ -95,7 +95,7 @@
           - events = current_user.is?(:admin) ? Event.order(created_at: :desc) : current_user.events.order(created_at: :desc)
           - if current_user.events.any?
             = f.input :event_id, collection: events, label: 'Event'
-          - hacker_spaces = current_user.is?(:admin) ? HackerSpace.order(created_at: :desc) : current_user.hacker_spaces.order(full_name: :asc)
+          - hacker_spaces = current_user.is?(:admin) ? HackerSpace.order(full_name: :asc) : current_user.hacker_spaces.order(full_name: :asc)
           = f.input :hacker_space_id, collection: hacker_spaces, label: 'Where did you hack this from?', hint: "Select the hacker space you worked from. You'll need to join their group first. <a href='/hackerspaces'>See all the hacker spaces.</a>".html_safe
           /
             .form-group

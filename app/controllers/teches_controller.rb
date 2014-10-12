@@ -73,7 +73,7 @@ class TechesController < ApplicationController
   end
 
   def feature_project
-    @group_rel = ProjectCollection.where(project_id: params[:project_id], group_id: params[:tech_id]).first!
+    @group_rel = ProjectCollection.where(project_id: params[:project_id], collectable_id: params[:tech_id], collectable_type: 'Group').first!
 
     if @group_rel.feature!
       respond_to do |format|
@@ -91,7 +91,7 @@ class TechesController < ApplicationController
   end
 
   def unfeature_project
-    @group_rel = ProjectCollection.where(project_id: params[:project_id], group_id: params[:tech_id]).first!
+    @group_rel = ProjectCollection.where(project_id: params[:project_id], collectable_id: params[:tech_id], collectable_type: 'Group').first!
 
     if @group_rel.unfeature!
       respond_to do |format|
