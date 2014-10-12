@@ -90,6 +90,6 @@ class CommunitiesController < ApplicationController
 
   private
     def load_community
-      @group = @community = Community.find_by_user_name! params[:user_name]
+      @group = @community = Community.where(type: 'Community').find_by_user_name! params[:user_name]
     end
 end
