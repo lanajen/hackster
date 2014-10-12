@@ -18,7 +18,7 @@
   - if user = @project.users.first and link = user.twitter_link.presence and handle = link.match(/twitter.com\/(.+)/).try(:[], 1)
     meta(property="twitter:creator" content="@#{handle}")
   meta(property="twitter:data1" content=(@project.guest_name.presence || @project.users.map{|u| u.name }.to_sentence))
-  meta(property="twitter:label1" content="HACKER")
+  meta(property="twitter:label1" content="MADE BY")
   meta(property="twitter:image:src" content=@project.cover_image(:cover_thumb))
   meta(property="twitter:image:width" content='400')
   meta(property="twitter:image:height" content='300')
