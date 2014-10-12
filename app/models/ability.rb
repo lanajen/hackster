@@ -94,10 +94,6 @@ class Ability
       @user.can? :join_team, team.project
     end
 
-    can :join_team, Project do |project|
-      project.collection_id.present? and project.event.present? and member = @user.linked_to_project_via_group?(project) and !(member.requested_to_join_at.present? and !member.approved_to_join)
-    end
-
     can :read_members, Community do |community|
       @user.is_member? community
     end
@@ -117,7 +113,7 @@ class Ability
       @user.can? :manage, project
     end
     can :comment_privately, Project do |project|
-      project.collection_id.present? and project.assignment.present? and @user.is_staff? project
+      project.assignment.present? and @user.is_staff? project
     end
 
     %w(read edit destroy manage).each do |perm|
@@ -144,12 +140,6 @@ class Ability
 
     can [:add_project, :submit_project], Assignment do |assignment|
       @user.is_active_member? assignment.promotion
-    end
-
-    cannot :debug, :all  # otherwise manage seems to include :debug
-
-    can :debug, Project do |record|
-      @user.can? :manage, record or (record.collection_id.present? and record.assignment.present? and @user.is_staff? record)
     end
 
     can :admin, Challenge do |challenge|

@@ -54,4 +54,8 @@ class Promotion < Community
   def projects
     Project.joins(:project_collections).where(project_collections: { collectable_type: 'Assignment', collectable_id: Assignment.where(promotion_id: id) })
   end
+
+  def project_collections
+    ProjectCollection.where(project_collections: { collectable_type: 'Assignment', collectable_id: Assignment.where(promotion_id: id) })
+  end
 end

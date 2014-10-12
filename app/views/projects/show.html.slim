@@ -135,8 +135,8 @@
               #team-widget.team-widget.meta
                 .meta-title-wrap
                   .meta-title
-                    | Team #{@project.team.full_name}
-                    - if can? :debug, @project and @can_edit
+                    ' Team #{@project.team.full_name}
+                    - if @can_edit
                       = link_to content_tag(:i, '', class: 'fa fa-pencil'), project_edit_team_path(@project), class: 'btn-edit no-float', rel: 'tooltip', title: 'Manage team', data: { container: 'body' }
                 - if @project.guest_name.present?
                   .user

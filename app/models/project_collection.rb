@@ -31,6 +31,10 @@ class ProjectCollection < ActiveRecord::Base
     end
   end
 
+  def self.assignment_or_event_for_project? project_id
+    where(project_id: project_id, collectable_type: %w(Event Assignment)).any?
+  end
+
   def self.exists? project_id, collectable_type, collectable_id
     where(project_id: project_id, collectable_type: collectable_type, collectable_id: collectable_id).any?
   end

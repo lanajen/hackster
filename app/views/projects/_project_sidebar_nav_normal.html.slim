@@ -13,7 +13,7 @@
               span
                 p
                   - if @project.assignment.submit_by_date.present?
-                    i.fa.fa-exclamation-circle
+                    i.fa.fa-exclamation-circle>
                     - if Time.now < @project.assignment.submit_by_date
                       ' Assignment due in
                       b==> distance_of_time_in_words Time.now, @project.assignment.submit_by_date
@@ -25,7 +25,7 @@
                   - else
                     | This assignment hasn't been submitted.
                 p= link_to 'Submit assignment', submit_project_path(@project), method: :patch, class: 'btn btn-danger btn-sm btn-block'
-        - elsif @project.collection_id.blank? and (current_user.student_assignments.pluck(:id) - current_user.projects.pluck(:collection_id)).any? and current_user.is_team_member?(@project)
+        - elsif @project.has_no_assignment? and (current_user.student_assignments.pluck(:id) - current_user.projects.joins(:project_collections).where(project_collections: { collectable_type: 'Assignment' }).pluck("project_collections.id")).any? and current_user.is_team_member?(@project)
           .alert.alert-warning.alert-flat.text-center
             span
               p
@@ -40,7 +40,7 @@
       - elsif @can_edit
         - who = %w(you)
         - who += ['team members'] if @project.users.size > 1
-        - who += ["members of #{@project.assignment.promotion.name}"] if @project.collection_id.present? and @project.assignment.present?
+        - who += ["members of #{@project.assignment.promotion.name}"] if @project.has_assignment?
 
         .alert.alert-warning.alert-flat.text-center
           span

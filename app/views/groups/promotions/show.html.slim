@@ -2,24 +2,25 @@
   .row.tab-content
     #tab-projects.tab-pane.active.fade.in
       .col-xs-12
-        - if @projects.any?
+        - if @project_collections.any?
           .row
             .col-xs-12
               = render 'shared/list_switch'
 
           - collection_id = nil
-          - @projects.each do |project|
-            - if project.collection_id != collection_id
+          - @project_collections.each do |collection|
+            - project = collection.project
+            - if collection.collectable_id != collection_id
               - if collection_id != nil
                 | </div>
               | <div class="row thumb-list #{@switch_style}">
               .col-xs-12
                 h4= link_to "Assignment: #{project.assignment.name}", assignment_path(project.assignment)
-              - collection_id = project.collection_id
+              - collection_id = collection.collectable_id
             = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', ref: 'promotion' }
           | </div>
           .row
-            .col-xs-12.text-center= will_paginate @projects
+            .col-xs-12.text-center= will_paginate @project_collections
         - else
           | All student projects will appear here.
 

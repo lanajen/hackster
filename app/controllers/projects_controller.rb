@@ -36,7 +36,7 @@ class ProjectsController < ApplicationController
 
     impressionist_async @project, '', unique: [:session_hash]
 
-    @show_part_of = @project.collection_id.present? and @project.assignment.present?
+    @show_part_of = ProjectCollection.assignment_or_event_for_project? @project.id
     @show_sidebar = true
     @can_edit = (user_signed_in? and current_user.can? :edit, @project)
     @can_update = (@can_edit and current_user.can? :update, @project)
@@ -116,7 +116,7 @@ class ProjectsController < ApplicationController
 
     @comments = @project.comments.includes(:user).includes(:parent)#.includes(user: :avatar)
 
-    if @project.collection_id.present? and @project.assignment.present?
+    if @project.has_assignment?
       @issue = Feedback.where(threadable_type: 'Project', threadable_id: @project.id).first
       @issue_comments = @issue.comments.includes(:user).includes(:parent) if @issue #.includes(user: :avatar)
     end

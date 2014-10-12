@@ -61,7 +61,7 @@ class Project < ActiveRecord::Base
     :team_members_attributes, :website, :one_liner, :widgets_attributes,
     :featured, :featured_date, :cover_image_id, :logo_id, :license, :slug,
     :permissions_attributes, :new_slug, :slug_histories_attributes, :hide,
-    :collection_id, :graded, :wip, :columns_count, :external, :guest_name,
+    :graded, :wip, :columns_count, :external, :guest_name,
     :approved, :open_source, :buy_link, :private_logs, :private_issues,
     :hacker_space_id, :locked, :mark_as_idea, :event_id, :assignment_id,
     :community_ids
@@ -180,8 +180,8 @@ class Project < ActiveRecord::Base
     indexable.where(featured: true).order(featured_date: :desc)
   end
 
-  def self.featured_by_collection collection_type, collection_id
-    indexable.joins(:project_collections).where(project_collections: { collectable_id: collection_id, collectable_type: collection_type, workflow_state: 'featured' }).order('project_collections.updated_at DESC')
+  def self.featured_by_collection collectable_type, collectable_id
+    indexable.joins(:project_collections).where(project_collections: { collectable_id: collectable_id, collectable_type: collectable_type, workflow_state: 'featured' }).order('project_collections.updated_at DESC')
   end
 
   def self.for_thumb_display
@@ -384,6 +384,14 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def has_assignment?
+    assignment.present?
+  end
+
+  def has_no_assignment?
+    assignment.nil?
+  end
+
   def hidden?
     hide
   end
@@ -394,10 +402,6 @@ class Project < ActiveRecord::Base
 
   def image
     images.first
-  end
-
-  def is_assignment?
-    collection_id.present? and assignment.present?
   end
 
   def license

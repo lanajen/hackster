@@ -695,7 +695,7 @@ class User < ActiveRecord::Base
   end
 
   def project_for_assignment assignment
-    projects.where(collection_id: assignment.id)
+    projects.joins(:project_collections).where(project_collections: { collectable_id: assignment.id, collectable_type: 'Assignment' })
   end
 
   def created_project_for_assignment? assignment

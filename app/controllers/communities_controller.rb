@@ -17,7 +17,7 @@ class CommunitiesController < ApplicationController
     title @community.name
     meta_desc "Join the community #{@community.name} on Hackster.io!"
     # @broadcasts = @community.broadcasts.limit 20
-    @projects = @community.projects.public.order(collection_id: :desc).paginate(page: safe_page_params, per_page: 16)
+    @projects = @community.projects.public.order(created_at: :desc).paginate(page: safe_page_params, per_page: 16)
     @members = @community.members.invitation_accepted_or_not_invited.with_group_roles('member').map(&:user).select{|u| u.invitation_token.nil? }
     # @team_members = @community.members.invitation_accepted_or_not_invited.with_group_roles('team').map(&:user).select{|u| u.invitation_token.nil? }
     # @assignments = @community.assignments

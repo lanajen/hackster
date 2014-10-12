@@ -1,6 +1,6 @@
 - cache [@project, 'teaser', @can_edit], tag: (["project-#{@project.id}-teaser", "team-#{@project.team_id}"] + @project.users.map{|u| "user-#{u.id}-thumb"}) do
 
-  - if @project.collection_id.present?
+  - if ProjectCollection.assignment_or_event_for_project?(@project.id)
     #project-group
       ' This project is part of
       - if @project.assignment.present?
@@ -11,7 +11,7 @@
         - if @project.event.avatar
           ==> image_tag @project.event.avatar.file_url(:mini), class: 'img-circle'
         = link_to @project.event.name, event_path(@project.event)
-        - @project.awards.where(gradable_id: @project.collection_id, gradable_type: 'Group').each do |award|
+        / - @project.awards.where(gradable_id: @project.collection_id, gradable_type: 'Group').each do |award|
           span.project-award<
             i.fa.fa-trophy.istooltip  title=award.grade   data-container='body'
         / if can? :request_access, @project.team

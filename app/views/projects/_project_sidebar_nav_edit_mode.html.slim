@@ -4,7 +4,7 @@
       - unless @project.public?
         - who = %w(you)
         - who += ['team members'] if @project.users.size > 1
-        - who += ["members of #{@project.assignment.promotion.name}"] if @project.collection_id.present? and @project.assignment.present?
+        - who += ["members of #{@project.assignment.promotion.name}"] if @project.has_assignment?
         .alert.alert-warning.alert-flat.text-center
           span
             p

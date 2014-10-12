@@ -49,16 +49,6 @@ class ProjectObserver < ActiveRecord::Observer
   end
 
   def before_update record
-    if record.collection_id_changed? and record.assignment
-      record.hide = true if record.assignment.hide_all
-      if record.issues.empty?
-        issue = record.issues.new title: 'Feedback'
-        issue.type = 'Feedback'
-        issue.user_id = 0
-        issue.save
-      end
-    end
-
     if record.private_changed?
       update_counters record, [:live_projects]
       record.commenters.each{|u| u.update_counters only: [:comments] }
@@ -80,7 +70,7 @@ class ProjectObserver < ActiveRecord::Observer
       end
     end
 
-    if (record.changed & %w(collection_id name cover_image one_liner tech_tags product_tags made_public_at license guest_name buy_link private workflow_state)).any? or record.tech_tags_string_changed? or record.product_tags_string_changed?
+    if (record.changed & %w(name cover_image one_liner tech_tags product_tags made_public_at license guest_name buy_link private workflow_state)).any? or record.tech_tags_string_changed? or record.product_tags_string_changed?
       Cashier.expire "project-#{record.id}-teaser"
     end
 

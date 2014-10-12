@@ -13,7 +13,11 @@ class Course < Community
   end
 
   def projects
-    Project.where(collection_id: Assignment.joins(:promotion).where(groups: { parent_id: id }))
+    Project.joins(:project_collections).where(project_collections: { collectable_type: 'Assignment', collectable_id: Assignment.joins(:promotion).where(groups: { parent_id: id }) })
+  end
+
+  def project_collections
+    ProjectCollection.where(project_collections: { collectable_type: 'Assignment', collectable_id: Assignment.joins(:promotion).where(groups: { parent_id: id }) })
   end
 
   private
