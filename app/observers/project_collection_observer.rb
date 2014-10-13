@@ -20,13 +20,12 @@ class ProjectCollectionObserver < ActiveRecord::Observer
     def update_project project
       Cashier.expire "project-#{project.id}-teaser"
 
-      project.hide = true if project.assignment.try(:hide_all)
+      project.update_attribute :hide, true if project.assignment.try(:hide_all)
       if project.issues.empty?
         issue = project.issues.new title: 'Feedback'
         issue.type = 'Feedback'
         issue.user_id = 0
         issue.save
       end
-      project.save
     end
 end
