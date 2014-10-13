@@ -5,7 +5,7 @@ module MediumEditorDecorator
         parsed = Nokogiri::HTML::DocumentFragment.parse model_attribute
 
         parsed.css('.embed-frame').each do |el|
-          # begin
+          begin
             type = el['data-type']
 
             embed = case type
@@ -39,9 +39,11 @@ module MediumEditorDecorator
             end
 
             el.add_child code if code
-          # rescue
-          #   next
-          # end
+          rescue
+            # el.add_child "<p>Something should be showing up here but an error occurred. Send this info to team@hackster.io: data-type: #{el['data-type']}, data-url: #{el['data-url']}, data-widget-id: #{el['data-widget-id']}. Thanks!</p>"
+            el.remove
+            next
+          end
         end
         parsed.to_html.html_safe
       else

@@ -38,6 +38,8 @@ class Attachment < ActiveRecord::Base
     update_attributes file: file_name, tmp_file: nil
 
     notify_observers :after_process
+
+    # TODO: capture errors and figure out a way to send feedback to user
   end
 
   def processed?
