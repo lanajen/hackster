@@ -1,2 +1,13 @@
-$('a.follow-button').replaceWith('<%= escape_javascript render(partial: @partial, locals: { followable: @followable }) %>');
-$('a.follow-button').tooltip();
+var followLabel = 'follow-<%= @followable.class.model_name.to_s.underscore %>-<%= @followable.id %>';
+var followBtn = $('a.' + followLabel);
+followBtn.tooltip('destroy');
+if ($('a.after-' + followLabel).length > 0) {
+  followBtn.remove();
+  $('a.after-' + followLabel).show();
+  window.setTimeout(function(){
+    $('a.after-' + followLabel + ' .inner-btn').animate({ top: '-38px' }, 500);
+  }, 1000);
+} else {
+  followBtn.replaceWith('<%= escape_javascript render(partial: @partial, locals: { followable: @followable }) %>');
+}
+followBtn.tooltip();

@@ -135,21 +135,8 @@ class User < ActiveRecord::Base
   end
 
   # beginning of search methods
-  include Tire::Model::Search
-  # include Tire::Model::Callbacks
-  index_name ELASTIC_SEARCH_INDEX_NAME
-
-  after_save do
-    if !accepted_or_not_invited?
-      IndexerQueue.perform_async :remove, self.class.name, self.id
-    else
-      IndexerQueue.perform_async :store, self.class.name, self.id
-    end
-  end
-  after_destroy do
-    # tricky to move to background; by the time it's processed the model might not exist
-    self.index.remove self
-  end
+  include TireInitialization
+  has_tire_index '!accepted_or_not_invited?'
 
   tire do
     mapping do

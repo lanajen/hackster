@@ -1,7 +1,7 @@
 .container
   .row
     .col-xs-12
-      .pull-left.mg-20= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add a project".html_safe, new_project_url(project: { tech_tags_string: @tech.tech_tags.first.name }), class: 'btn btn-primary btn-sm'
+      .pull-left.mg-20= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add a project".html_safe, new_project_url(project: { tech_tags_string: @tech.name }), class: 'btn btn-primary btn-sm'
 
   - if @projects.any?
     .row

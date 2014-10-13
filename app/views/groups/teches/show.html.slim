@@ -54,10 +54,10 @@ section#projects-list
   .wrapper
     .project-list-actions.clearfix.mg-30
       .pull-right
-        - link = user_signed_in? ? new_project_path(project: { tech_tags_string: @tech.tech_tags.first.name }) : new_user_registration_path(reason: 'project', m: 'group', id: @tech.id, redirect_to: new_project_path(project: { tech_tags_string: @tech.tech_tags.first.name }))
+        - link = user_signed_in? ? new_project_path(project: { tech_tags_string: @tech.name }) : new_user_registration_path(reason: 'project', m: 'group', id: @tech.id, redirect_to: new_project_path(project: { tech_tags_string: @tech.name }))
         ==> link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add a project".html_safe, link, class: 'btn btn-outline'
         small> or
-        - link = new_project_path(project: { tech_tags_string: @tech.tech_tags.first.name, external: true }, redirect_to: request.path)
+        - link = new_project_path(project: { tech_tags_string: @tech.name, external: true }, redirect_to: request.path)
         = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Submit a link".html_safe, link, class: 'btn btn-outline'
 
       .pull-left= render 'shared/list_switch'
@@ -79,7 +79,7 @@ section#projects-list
           p
             ' This technology isn't in use yet!
             - if @tech.tech_tags.any?
-              = link_to "Create the first #{@tech.name} project", new_project_path(project: { tech_tags_string: @tech.tech_tags.first.name }), class: 'btn btn-primary btn-sm'
+              = link_to "Create the first #{@tech.name} project", new_project_path(project: { tech_tags_string: @tech.name }), class: 'btn btn-primary btn-sm'
 
 - if can? :manage, @tech
   - @projects.each do |project|

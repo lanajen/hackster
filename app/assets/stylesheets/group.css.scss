@@ -197,6 +197,7 @@
 
 .tech-card {
   color: #fff;
+  text-shadow: 0 0 1px #000;
   margin: 0;
   position: absolute;
   display: none;
@@ -216,7 +217,7 @@
   &:before {
     content: "";
     background: #000;
-    @include opacity(0.8);
+    @include opacity(0.5);
     width: 100%;
     height: 100%;
     position: absolute;
@@ -237,6 +238,23 @@
   }
   a {
     color: #fff;
+  }
+  .btn {
+    font-weight: bold;
+    text-shadow: none;
+    .inner-btn-container {
+      position: relative;
+    }
+    .inner-btn {
+      position: absolute;
+      top: 0;
+      .btn-text {
+        margin-top: 20px;
+      }
+    }
+    .btn-hidden-text {
+      visibility: hidden
+    }
   }
   .tech-card-links {
     position: absolute;

@@ -48,6 +48,11 @@ class Group < ActiveRecord::Base
   before_validation :ensure_website_protocol
   before_save :ensure_invitation_token
 
+  # beginning of shared search methods
+  include TireInitialization
+  has_tire_index 'private'
+  # end of search methods
+
   def self.default_access_level
     'anyone'
   end

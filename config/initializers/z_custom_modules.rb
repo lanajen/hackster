@@ -24,3 +24,5 @@ require File.join(Rails.root, 'lib/route_constraints')
 require File.join(Rails.root, 'lib/after_commit_callbacks')
 # make attr_was and attr_changed? work for attrs created using store method
 require File.join(Rails.root, 'lib/set_changes_for_stored_attributes')
+
+require File.join(Rails.root, 'lib/tire_initialization')

@@ -17,10 +17,6 @@ class HackerSpace < Community
   attr_accessible :address, :state
 
   # beginning of search methods
-  include Tire::Model::Search
-  include Tire::Model::Callbacks
-  index_name ELASTIC_SEARCH_INDEX_NAME
-
   tire do
     mapping do
       indexes :id,              index: :not_analyzed
