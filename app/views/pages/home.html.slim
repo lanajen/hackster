@@ -15,7 +15,7 @@
     });
 
 = content_for :no_container do
-  - cache ['home', user_signed_in?, returning_user?], expires_in: 1.hour do
+  - cache ['home', user_signed_in?, returning_user?], tag: ['home'], expires_in: 1.hour do
     #about
       section#teaser
         .slide.slide1
