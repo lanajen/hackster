@@ -85,6 +85,6 @@ module HackerIo
       :password => "mod3pa55"
     }
 
-    config.middleware.use Rack::Attack
+    # config.middleware.use Rack::Attack
   end
 end
