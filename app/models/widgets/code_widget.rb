@@ -284,7 +284,8 @@ class CodeWidget < Widget
     def read_code_from_text
       build_document unless document
 
-      file = StringIO.new raw_code.try(:force_encoding, "UTF-8")
+      text = raw_code.try(:force_encoding, "UTF-8") || ''
+      file = StringIO.new text
       file.class_eval { attr_accessor :original_filename }
       file.original_filename = file_name
 
