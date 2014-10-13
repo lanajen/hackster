@@ -9,7 +9,7 @@
       = link_to 'click to select some from your file system', ''
   .image-gallery
     - embed.widget.images.each_with_index do |image, i|
-      = render partial: 'api/embeds/image_widget_image', locals: { image: image, i: i, widget: embed.widget }
+      = render partial: 'api/embeds/image_widget_image', locals: { image: image.decorate, i: i, widget: embed.widget }
 
 = content_for :js do
   javascript:

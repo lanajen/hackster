@@ -2,8 +2,12 @@ class ProjectDecorator < ApplicationDecorator
   include MediumEditorDecorator
 
   def cover_image version=:cover
-    if model.cover_image and model.cover_image.file_url
-      model.cover_image.file_url(version)
+    if model.cover_image
+      if model.cover_image.file_url
+        model.cover_image.file_url(version)
+      elsif model.cover_image.tmp_file.present?
+        h.asset_url "project_#{version}_image_processing.png"
+      end
     else
       h.asset_url "project_default_#{version}_image.png"
     end
