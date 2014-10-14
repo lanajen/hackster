@@ -284,6 +284,7 @@ HackerIo::Application.routes.draw do
       get ':slug/embed' => 'teches#embed', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
       get ':user_name' => 'teches#show', as: :tech_short, user_name: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
       scope ':slug', slug: /[A-Za-z0-9_\-]{3,}/, as: :tech, constraints: { format: /(html|json)/ } do
+        get 'analytics' => 'teches#analytics'
         resources :announcements, except: [:create, :update, :destroy], path: :news
       end
     end

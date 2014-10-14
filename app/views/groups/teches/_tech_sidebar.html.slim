@@ -1,8 +1,3 @@
-- if can? :manage, @tech
-  = content_for :js do
-    javascript:
-      $("#{escape_javascript render('groups/teches/tech_stats')}").appendTo('#tech-body .stats');
-
 - cache ["tech-#{@tech.id}-sidebar", user_signed_in?, can?(:manage, @tech), (user_signed_in? and current_user.following?(@tech))], tag: ["tech-#{@tech.id}-sidebar", 'tech-sidebar'] do
   #sidebar-container.affixable
     - @tech = GroupDecorator.decorate @tech
@@ -20,6 +15,12 @@
             | No mini resume.
             = link_to 'Add one?', edit_tech_path(@tech)
         .stats
+          p
+            strong>= number_with_delimiter @tech.projects_count
+            ==> pluralize_without_count @tech.impressions_count, 'project'
+            strong>= number_with_delimiter @tech.followers_count
+            = pluralize_without_count @tech.followers_count, 'follower'
+
         #tech-follow-div.text-center
           = render partial: 'followers/button_text', locals: { followable: @tech, why: "Follow #{@tech.name} to receive updates about new projects." }
           / small style='margin-top:10px;display:block'
@@ -36,8 +37,6 @@
             li= link_to "Preorder #{indefinite_articlerize @tech.name} #{content_tag(:i, '', class: 'fa-external-link fa')}".html_safe, @tech.crowdfunding_link, target: '_blank', class: 'tech-buy-link'
           - if @tech.buy_link.present?
             li= link_to "Buy #{indefinite_articlerize @tech.name} #{content_tag(:i, '', class: 'fa-external-link fa')}".html_safe, @tech.buy_link, target: '_blank', class: 'tech-buy-link'
-          / %li= link_to "Q&A #{content_tag(:span, 0, class: 'badge')}".html_safe, '#tab-qa', data: { toggle: 'tab' }
-          /!%li= render partial: 'projects/share'
 
       .display
         h4 Social links

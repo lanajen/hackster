@@ -43,7 +43,7 @@
 
       - if @user.followed_groups.any?
         .display
-          h4 Communities
+          h4 Tools
           .content.team-widget.user-communities
             - @user.followed_groups.each do |c|
               .community.user
@@ -90,7 +90,7 @@
       - if user_signed_in?
         .display
           h4
-            i.fa.fa-cog
+            i.fa.fa-cog>
             | Manage
           ul#tech-links
             - if user_is_current?

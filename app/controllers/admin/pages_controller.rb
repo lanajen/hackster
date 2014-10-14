@@ -20,16 +20,18 @@ class Admin::PagesController < Admin::BaseController
     @new_tech_follows_count = FollowRelation.where(followable_type: 'Group').where('follow_relations.created_at > ?', Date.today).count
     @new_users_count = User.invitation_accepted_or_not_invited.where('users.created_at > ?', Date.today).count
 
-    sql = "SELECT users.* FROM (SELECT members.user_id as user_id, COUNT(*) as count FROM members INNER JOIN groups ON groups.id = members.group_id INNER JOIN projects ON projects.team_id = groups.id WHERE projects.private = 'f' GROUP BY user_id) AS t1 INNER JOIN users ON users.id = t1.user_id WHERE t1.count > 1 ORDER BY t1.count DESC LIMIT 10;"
+    sql = "SELECT users.*, t1.count FROM (SELECT members.user_id as user_id, COUNT(*) as count FROM members INNER JOIN groups AS team ON team.id = members.group_id INNER JOIN projects ON projects.team_id = team.id WHERE projects.private = 'f' AND projects.hide = 'f' AND projects.approved = 't' AND (projects.guest_name = '' OR projects.guest_name IS NULL) GROUP BY user_id) AS t1 INNER JOIN users ON users.id = t1.user_id WHERE t1.count > 1 AND (NOT (users.roles_mask & ? > 0) OR users.roles_mask IS NULL) ORDER BY t1.count DESC LIMIT 10;"
+    @heroes = User.find_by_sql([sql, 2**User::ROLES.index('admin')])
 
+    sql = "SELECT users.*, t1.count FROM (SELECT respects.respecting_id as user_id, COUNT(*) as count FROM respects INNER JOIN projects ON projects.id = respects.project_id WHERE projects.private = 'f' AND projects.hide = 'f' AND projects.approved = 't' AND (projects.guest_name = '' OR projects.guest_name IS NULL) GROUP BY user_id) AS t1 INNER JOIN users ON users.id = t1.user_id WHERE t1.count > 1 AND (NOT (users.roles_mask & ? > 0) OR users.roles_mask IS NULL) ORDER BY t1.count DESC LIMIT 10;"
+    @fans = User.find_by_sql([sql, 2**User::ROLES.index('admin')])
+
+    # keep this here for reference = how to sort by cached counters
     # sql = "SELECT * FROM (SELECT *, substring(counters_cache FROM 'live_projects_count: ([0-9]+)')::integer as live_projects_count from users) as t1 where t1.live_projects_count::integer > 1 ORDER BY live_projects_count DESC LIMIT 10;"
 
     # sql = "SELECT * FROM (SELECT *, substring(counters_cache FROM 'project_views_count: ([0-9]+)')::integer as project_views_count from users) as t1 where t1.project_views_count::integer > 1 ORDER BY project_views_count DESC LIMIT 10;"
 
-    @top_users = User.find_by_sql(sql)
-
-    @users_with_at_least_one_live_project = User.invitation_accepted_or_not_invited.joins(:projects).distinct.where(projects: { private: false }).size
-
+    @users_with_at_least_one_live_project = User.invitation_accepted_or_not_invited.distinct.joins(:projects).where(projects: { private: false, hide: false, approved: true }).where("projects.guest_name = '' OR projects.guest_name IS NULL").size
 
     sql = "SELECT to_char(made_public_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM projects WHERE private = 'f' AND hide = 'f' AND date_part('days', now() - projects.made_public_at) < 30 GROUP BY date ORDER BY date;"
     @new_projects = graph_with_dates_for sql, 'Projects made public', 'ColumnChart'

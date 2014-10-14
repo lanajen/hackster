@@ -1,0 +1,104 @@
+= content_for :js do
+  = javascript_include_tag 'https://www.google.com/jsapi'
+  = render_chart(@new_projects, 'chart_new_projects')
+  = render_chart(@new_views, 'chart_new_views')
+  = render_chart(@new_respects, 'chart_new_respects')
+  = render_chart(@new_follows, 'chart_new_follows')
+
+section#projects-list
+  .wrapper
+    .page-header
+      h1 Analytics dashboard
+
+    .row
+      .col-xs-12.col-sm-4
+        .panel.panel-default.panel-dashboard
+          .panel-heading
+            h3.panel-title Views
+          .panel-body
+            span.istooltip title='Total all time' rel='tooltip' data-container='body' ==> number_with_delimiter @views_count
+            small.text-muted.istooltip title='New today' rel='tooltip' data-container='body' +#{@new_views_count}
+
+      .col-xs-12.col-sm-4
+        .panel.panel-default.panel-dashboard
+          .panel-heading
+            h3.panel-title Followers
+          .panel-body
+            span.istooltip title='Total all time' rel='tooltip' data-container='body' ==> number_with_delimiter @follow_count
+            small.text-muted.istooltip title='New today' rel='tooltip' data-container='body' +#{@new_follows_count}
+
+      .col-xs-12.col-sm-4
+        .panel.panel-default.panel-dashboard
+          .panel-heading
+            h3.panel-title Live projects (linked)
+          .panel-body
+            span.istooltip title='Total all time' rel='tooltip' data-container='body' ==> number_with_delimiter @project_count
+            small.text-muted.istooltip> title='New today' rel='tooltip' data-container='body' +#{@new_projects_count}
+            | (
+            span.istooltip title='Total all time' rel='tooltip' data-container='body' = number_with_delimiter @external_project_count
+            | )
+
+    .row
+      .col-xs-12.col-sm-4
+        .panel.panel-default.panel-dashboard
+          .panel-heading
+            h3.panel-title Project views
+          .panel-body
+            span.istooltip title='Total all time' rel='tooltip' data-container='body' ==> number_with_delimiter @project_views_count
+            small.text-muted.istooltip title='New today' rel='tooltip' data-container='body' +#{@new_project_views_count}
+
+      .col-xs-12.col-sm-4
+        .panel.panel-default.panel-dashboard
+          .panel-heading
+            h3.panel-title Project respects
+          .panel-body
+            span.istooltip title='Total all time' rel='tooltip' data-container='body' ==> number_with_delimiter @like_count
+            small.text-muted.istooltip title='New today' rel='tooltip' data-container='body' +#{@new_likes_count}
+
+      .col-xs-12.col-sm-4
+        .panel.panel-default.panel-dashboard
+          .panel-heading
+            h3.panel-title Project comments
+          .panel-body
+            span.istooltip title='Total all time' rel='tooltip' data-container='body' ==> number_with_delimiter @comment_count
+            small.text-muted.istooltip title='New today' rel='tooltip' data-container='body' +#{@new_comments_count}
+
+    .row
+      .col-xs-12.col-sm-4
+        .panel.panel-default
+          .panel-heading
+            h3.panel-title
+              ' Heroes
+              small Users with most #{@tech.name} projects
+          .panel-body
+            ul
+              - @heroes.each do |user|
+                li
+                  b= link_to user.name, user
+                  ' :
+                  = user.count
+
+      .col-xs-12.col-sm-4
+        .panel.panel-default
+          .panel-heading
+            h3.panel-title
+              ' Fans
+              small Users that most respect #{@tech.name} projects
+          .panel-body
+            ul
+              - @fans.each do |user|
+                li
+                  b= link_to user.name, user
+                  ' :
+                  = user.count
+
+    .row
+      .col-xs-12.col-sm-6
+        #chart_new_projects= image_tag 'loader.gif'
+      .col-xs-12.col-sm-6
+        #chart_new_views= image_tag 'loader.gif'
+
+      .col-xs-12.col-sm-6
+        #chart_new_respects= image_tag 'loader.gif'
+      .col-xs-12.col-sm-6
+        #chart_new_follows= image_tag 'loader.gif'

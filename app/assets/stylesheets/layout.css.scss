@@ -1376,3 +1376,10 @@ input.cmn-toggle ~ .option-checked, input.cmn-toggle:checked ~ .option-unchecked
   @include opacity(0.3);
   cursor: default;
 }
+
+.panel-dashboard {
+  text-align: center;
+  .panel-body {
+    font-size: 30px;
+  }
+}
