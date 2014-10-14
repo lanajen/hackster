@@ -1,3 +1,29 @@
-// Place all the styles related to the blog_posts controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
+.is-draft {
+  .show-when-published {
+    display: none;
+  }
+}
+
+.is-published {
+  .show-when-draft {
+    display: none;
+  }
+}
+
+.tech-news {
+  .widget {
+    h2 {
+      color: #555;
+      margin-bottom: 5px;
+      position: relative;
+      a {
+        color: #555;
+      }
+    }
+    .h2-subtitle {
+      color: #999;
+      margin-bottom: 20px;
+      font-size: 80%;
+    }
+  }
+}

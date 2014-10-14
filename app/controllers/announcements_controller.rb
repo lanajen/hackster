@@ -7,7 +7,7 @@ class AnnouncementsController < ApplicationController
 
   def index
     authorize! :read, Announcement
-    title "Announcements for #{@tech.name}"
+    title "#{@tech.name} - Announcements"
     @announcements = @tech.announcements
     @announcements = @announcements.published unless current_user.try(:can?, :create, Announcement, @tech)
     @announcements = @announcements.order(created_at: :desc).paginate(page: safe_page_params)
@@ -26,7 +26,6 @@ class AnnouncementsController < ApplicationController
 
   def new
     authorize! :create, Announcement, @tech
-    title "New announcement | #{@tech.name}"
     @announcement = @tech.announcements.new
     @announcement.user_id = current_user.id
     @announcement.save validate: false

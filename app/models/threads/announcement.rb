@@ -12,4 +12,18 @@ class Announcement < BlogPost
   def tech
     threadable
   end
+
+  def to_json
+    {
+      id: id,
+      title: title,
+      body: body,
+      draft: draft,
+      published_at: published_at,
+      display_until: display_until,
+      created_at: created_at,
+      updated_at: updated_at,
+      uri: "/#{threadable.user_name}/news/#{sub_id}",
+    }.to_json
+  end
 end

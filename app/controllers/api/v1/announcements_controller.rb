@@ -26,7 +26,7 @@ class Api::V1::AnnouncementsController < Api::V1::BaseController
     authorize! :update, announcement
 
     if announcement.update_attributes params[:announcement]
-      render json: announcement, status: :ok
+      render json: announcement.to_json, status: :ok
     else
       errors = announcement.errors.messages
       widget_errors = {}

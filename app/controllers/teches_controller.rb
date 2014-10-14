@@ -41,6 +41,7 @@ class TechesController < ApplicationController
   end
 
   def analytics
+    authorize! :admin, @tech
     title "#{@tech.name} projects - Analytics dashboard"
 
     @project_count = @tech.projects_count

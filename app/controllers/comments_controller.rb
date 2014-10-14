@@ -64,23 +64,23 @@ class CommentsController < ApplicationController
     end
 
     def js_view_for_commentable commentable
-      case commentable
-      when Feedback
+      case commentable.class.name
+      when 'Feedback'
         'update_feedback'
-      when Issue, BlogPost, Announcement
+      when 'Issue', 'BlogPost'
         'create_issue'
-      when Project
+      when 'Project', 'Announcement'
         'update_project'
       end
     end
 
     def js_view_for_destroy_commentable commentable
-      case commentable
-      when Feedback
+      case commentable.class.name
+      when 'Feedback'
         'update_feedback'
-      when Issue, BlogPost, Announcement
+      when 'Issue', 'BlogPost'
         'destroy'
-      when Project
+      when 'Project', 'Announcement'
         'update_project'
       end
     end

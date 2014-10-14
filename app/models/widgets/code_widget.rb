@@ -187,12 +187,12 @@ class CodeWidget < Widget
     super || "file_#{id}"
   end
 
-  def raw_code
-    val = read_attribute :raw_code
-    val.try(:force_encoding, "UTF-8")
-  rescue
-    ERROR_MESSAGE
-  end
+  # def raw_code
+  #   val = read_attribute :raw_code
+  #   val.try(:force_encoding, "UTF-8")
+  # rescue
+  #   ERROR_MESSAGE
+  # end
 
   def to_json
     {
