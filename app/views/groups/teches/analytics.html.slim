@@ -64,7 +64,7 @@ section#projects-list
             small.text-muted.istooltip title='New today' rel='tooltip' data-container='body' +#{@new_comments_count}
 
     .row
-      .col-xs-12.col-sm-4
+      .col-xs-12.col-sm-6
         .panel.panel-default
           .panel-heading
             h3.panel-title
@@ -78,7 +78,7 @@ section#projects-list
                   ' :
                   = user.count
 
-      .col-xs-12.col-sm-4
+      .col-xs-12.col-sm-6
         .panel.panel-default
           .panel-heading
             h3.panel-title
@@ -91,6 +91,78 @@ section#projects-list
                   b= link_to user.name, user
                   ' :
                   = user.count
+
+    .row
+      .col-xs-12.col-sm-6
+        .panel.panel-default
+          .panel-heading
+            h3.panel-title
+              ' Most respected projects
+          .panel-body
+            ul
+              - @most_respected_projects.each do |project|
+                li
+                  b= link_to project.name, project
+                  ' :
+                  = project.count
+
+      .col-xs-12.col-sm-6
+        .panel.panel-default
+          .panel-heading
+            h3.panel-title
+              ' Most viewed projects
+          .panel-body
+            ul
+              - @most_viewed_projects.each do |project|
+                li
+                  b= link_to project.name, project
+                  ' :
+                  = number_with_delimiter project.impressions_count
+
+    .row
+      .col-xs-12.col-sm-6
+        .panel.panel-default
+          .panel-heading
+            h3.panel-title
+              ' Most recent projects
+          .panel-body
+            ul
+              - @most_recent_projects.each do |project|
+                li
+                  b>= link_to project.name, project
+                  ' by
+                  ==> project.users.map{|u| link_to u.name, u }.to_sentence.html_safe
+                  ' on
+                  = l project.created_at
+
+        .panel.panel-default
+          .panel-heading
+            h3.panel-title
+              ' Most recent followers
+          .panel-body
+            ul
+              - @most_recent_followers.each do |follow|
+                li
+                  b>= link_to follow.user.name, follow.user
+                  ' on
+                  = l follow.created_at
+
+      .col-xs-12.col-sm-6
+        .panel.panel-default
+          .panel-heading
+            h3.panel-title
+              ' Most recent comments
+          .panel-body
+            ul
+              - @most_recent_comments.each do |comment|
+                li
+                  ==> link_to comment.user.name, comment.user
+                  ' commented on
+                  ==> link_to comment.commentable.name, comment.commentable
+                  ' on
+                  ==> l comment.created_at
+                  ' and said:
+                  ==> comment.body.html_safe
 
     .row
       .col-xs-12.col-sm-6
