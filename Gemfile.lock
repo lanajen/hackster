@@ -459,7 +459,7 @@ DEPENDENCIES
   cancan (= 1.6.10)
   carrierwave (= 0.9.0)
   cashier (= 0.4.1)
-  chart-js-rails
+  chart-js-rails (= 0.0.7)
   coffee-rails (= 4.0.1)
   compass-rails (= 1.1.2)
   country_select (= 1.1.3)
