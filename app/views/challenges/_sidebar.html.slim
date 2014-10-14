@@ -14,7 +14,9 @@
       h4 Enter and win:
       ol
         - @challenge.prizes.each do |prize|
-          li= prize.name
+          li
+            ==> prize.name
+            | (#{prize.quantity})
 
     #tech-body
       #tech-follow-div.text-center

@@ -5,7 +5,7 @@ module ScraperStrategies
       def before_parse
         github_link = "https://github.com#{@parsed.at_css('h1 strong a')['href']}"
 
-        @project.one_liner = @parsed.at_css('.repository-description').try(:text).try(:strip)
+        @project.one_liner = @parsed.at_css('.repository-description').try(:text).try(:strip).try(:truncate, 140)
         @project.website = @parsed.at_css('.repository-website').try(:text).try(:strip) || github_link
 
         @article.children.after "<iframe src='#{github_link}'></iframe>"

@@ -14,7 +14,7 @@
 //= require medium-editor-ext
 //= require gist-embed
 //= require underscore
-//= require gmaps/google
+// require gmaps/google
 // require bootstrap-wysihtml5
 
 //= require projects

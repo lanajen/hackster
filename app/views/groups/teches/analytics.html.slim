@@ -1,4 +1,5 @@
 = content_for :js do
+  = javascript_include_tag 'Chart.js'
   = javascript_include_tag 'https://www.google.com/jsapi'
   = render_chart(@new_projects, 'chart_new_projects')
   = render_chart(@new_views, 'chart_new_views')
