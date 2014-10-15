@@ -17,7 +17,7 @@
         .stats
           p
             strong>= number_with_delimiter @tech.projects_count
-            ==> pluralize_without_count @tech.impressions_count, 'project'
+            ==> pluralize_without_count @tech.projects_count, 'project'
             strong>= number_with_delimiter @tech.followers_count
             = pluralize_without_count @tech.followers_count, 'follower'
 

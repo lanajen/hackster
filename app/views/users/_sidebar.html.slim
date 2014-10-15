@@ -20,6 +20,12 @@
           - elsif user_is_current?
             ' No location.
             = link_to 'Add one?', profile_edit_path
+        .stats
+          p
+            strong>= number_with_delimiter @user.live_projects_count
+            ==> pluralize_without_count @user.live_projects_count, 'project'
+            strong>= number_with_delimiter @user.followers_count
+            = pluralize_without_count @user.followers_count, 'follower'
 
         - if current_user.try(:id) != @user.id
           #tech-follow-div.text-center
