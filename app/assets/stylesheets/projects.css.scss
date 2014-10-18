@@ -523,8 +523,9 @@
     height: 100%;
     z-index: 2;
     overflow: hidden;
-    background: rgba(0,0,0,.5);
+    background: rgba(0,0,0,.2);
     transition: background-color .5s ease;
+    text-shadow: 0 0 6px #000;
     // background: rgba(205, 217, 226, 0.7);
   }
   #project-header{

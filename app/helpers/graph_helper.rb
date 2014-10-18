@@ -24,7 +24,7 @@ module GraphHelper
 
       data_table.add_rows rows
 
-      option = { width: '100%', height: 350, title: title }
+      option = { width: '100%', height: 350, title: title, hAxis: { textStyle: { color: '#666' }, gridlines: { color: '#eee' } }, color: '#08C', lineWidth: 2, areaOpacity: 0.2, pointSize: 4, chartArea: { backgroundColor: '#fdfdfd' }, legend: { position: 'none' } }
       "GoogleVisualr::Interactive::#{chart_type}".constantize.new(data_table, option)
     end
 

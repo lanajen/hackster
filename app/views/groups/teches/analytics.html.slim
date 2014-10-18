@@ -1,5 +1,4 @@
 = content_for :js do
-  = javascript_include_tag 'Chart.js'
   = javascript_include_tag 'https://www.google.com/jsapi'
   = render_chart(@new_projects, 'chart_new_projects')
   = render_chart(@new_views, 'chart_new_views')
@@ -167,11 +166,11 @@ section#projects-list
 
     .row
       .col-xs-12.col-sm-6
-        #chart_new_projects= image_tag 'loader.gif'
+        #chart_new_projects = image_tag 'loader.gif'
       .col-xs-12.col-sm-6
-        #chart_new_views= image_tag 'loader.gif'
+        #chart_new_views = image_tag 'loader.gif'
 
       .col-xs-12.col-sm-6
-        #chart_new_respects= image_tag 'loader.gif'
+        #chart_new_respects = image_tag 'loader.gif'
       .col-xs-12.col-sm-6
-        #chart_new_follows= image_tag 'loader.gif'
+        #chart_new_follows = image_tag 'loader.gif'

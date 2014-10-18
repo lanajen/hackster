@@ -99,7 +99,7 @@
           opacity: 0.2;
         }
         &.slide-opaque-dark:before {
-          opacity: 0.5;
+          opacity: 0.4;
         }
       }
       &.slide1 {
@@ -109,7 +109,7 @@
         background-image: url('https://halckemy.s3.amazonaws.com/uploads/cover_image/file/4798/cover_IMG_20140506_143536.jpg');
       }
       &.slide3 {
-        background-image: asset-url('home_visitor/spark.jpg');
+        background-image: asset-url('home_visitor/halloween_contest.jpg');
       }
       &.slide4 {
         background-image: url('https://halckemy.s3.amazonaws.com/uploads/cover_image/file/467/cover_POV.JPG');
@@ -122,28 +122,39 @@
         }
       }
       small {
-        color: #ddd;
-        a:not(.hidden-link) {
-          color: #ddd;
-          padding-bottom: 2px;
-          border-bottom: 1px solid #ddd;
-          display: inline-block;
-          &:hover {
-            text-decoration: none;
-            color: #bbb;
-            border-color: #bbb;
-          }
-        }
+        color: #fff;
+        // a:not(.hidden-link) {
+        //   color: #eee;
+        //   padding-bottom: 2px;
+        //   border-bottom: 1px solid #eee;
+        //   display: inline-block;
+        //   &:hover {
+        //     text-decoration: none;
+        //     color: #ddd;
+        //     border-color: #ddd;
+        //   }
+        // }
       }
       .hidden-link {
-        color: #ddd;
+        color: #fff;
       }
       h1 {
         color: #fff;
         // background: #3d8bc1;
         margin-bottom: 40px;
         padding: 10px 15px;
-        text-shadow: #000 0 0 5px;
+        text-shadow: #000 0 0 8px;
+        a:not(.hidden-link) {
+          color: #fff;
+          padding-bottom: 2px;
+          border-bottom: 1px solid #fff;
+          display: inline-block;
+          &:hover {
+            text-decoration: none;
+            color: #eee;
+            border-color: #eee;
+          }
+        }
       }
       input[type="email"] {
         @include border-radius(0);

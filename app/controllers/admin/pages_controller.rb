@@ -34,19 +34,19 @@ class Admin::PagesController < Admin::BaseController
     @users_with_at_least_one_live_project = User.invitation_accepted_or_not_invited.distinct.joins(:projects).where(projects: { private: false, hide: false, approved: true }).where("projects.guest_name = '' OR projects.guest_name IS NULL").size
 
     sql = "SELECT to_char(made_public_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM projects WHERE private = 'f' AND hide = 'f' AND date_part('days', now() - projects.made_public_at) < 30 GROUP BY date ORDER BY date;"
-    @new_projects = graph_with_dates_for sql, 'Projects made public', 'ColumnChart'
+    @new_projects = graph_with_dates_for sql, 'Projects made public', 'AreaChart'
 
 
     sql = "SELECT to_char(created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM users WHERE (users.invitation_sent_at IS NULL OR users.invitation_accepted_at IS NOT NULL) AND date_part('days', now() - users.created_at) < 30 GROUP BY date ORDER BY date;"
-    @new_users = graph_with_dates_for sql, 'New users', 'ColumnChart'
+    @new_users = graph_with_dates_for sql, 'New users', 'AreaChart'
 
 
     sql = "SELECT to_char(created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM respects WHERE date_part('days', now() - respects.created_at) < 30 GROUP BY date ORDER BY date;"
-    @new_respects = graph_with_dates_for sql, 'New respects', 'ColumnChart'
+    @new_respects = graph_with_dates_for sql, 'New respects', 'AreaChart'
 
 
     sql = "SELECT to_char(created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM follow_relations WHERE date_part('days', now() - follow_relations.created_at) < 30 AND follow_relations.followable_type = 'Group' GROUP BY date ORDER BY date;"
-    @new_follows = graph_with_dates_for sql, 'New follows', 'ColumnChart'
+    @new_follows = graph_with_dates_for sql, 'New follows', 'AreaChart'
   end
 
   def build_logs

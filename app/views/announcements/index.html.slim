@@ -20,10 +20,13 @@ section#projects-list
                     h2
                       - if announcement.draft?
                         ==> announcement.title
-                        small.text-muted.pull-right
+                        small.text-muted
                           | (draft)
                       - else
                         = link_to announcement.title, tech_announcement_path(announcement)
+                        - unless announcement.published?
+                          small.text-muted
+                            | (publishes on #{l announcement.published_at})
                     .h2-subtitle
                       ' Posted by
                       ==> link_to announcement.user.name, announcement.user
@@ -32,7 +35,7 @@ section#projects-list
                       - unless announcement.draft?
                         ' -
                         = link_to pluralize(announcement.comments.size, 'comment'), tech_announcement_path(announcement, anchor: 'comments')
-                    .medium-editor= announcement.body
+                    .medium-editor.mg-20= announcement.body
                     - if announcement.draft?
                       = link_to 'Edit this announcement &rarr;'.html_safe, edit_tech_announcement_path(@tech.user_name, announcement.id), class: 'btn btn-outline btn-block'
                     - else

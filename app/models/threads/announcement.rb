@@ -9,6 +9,10 @@ class Announcement < BlogPost
     where(draft: false).where('threads.published_at IS NULL OR threads.published_at < ?', Time.now)
   end
 
+  def published?
+    published_at.nil? or (published_at and published_at < Time.now)
+  end
+
   def tech
     threadable
   end

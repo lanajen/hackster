@@ -23,21 +23,27 @@
         span.show-when-published
           | (published)
 
-    = render partial: 'shared/medium_editor', locals: { editable: @announcement.body, attribute_name: 'body' }
-
-    .datetimepicker.form-group*{ 'data-model' => "announcement", 'data-attribute' => "display_until", 'data-value' => @announcement.display_until }
-      label.control-label Display until
-      .datepicker.input-group
-        input.form-control
-        span.input-group-addon
-          i.fa.fa-calendar
+    .mg-20= render partial: 'shared/medium_editor', locals: { editable: @announcement.body, attribute_name: 'body' }
 
     .datetimepicker.form-group*{ 'data-model' => "announcement", 'data-attribute' => "published_at", 'data-value' => @announcement.published_at }
-      label.control-label Publish on
-      .datepicker.input-group
-        input.form-control
-        span.input-group-addon
-          i.fa.fa-calendar
+      .row
+        .col-xs-12.col-sm-4
+          label.control-label Publish on
+        .col-xs-12.col-sm-8
+          .datepicker.input-group
+            input.form-control
+            span.input-group-addon
+              i.fa.fa-calendar
+
+    .datetimepicker.form-group*{ 'data-model' => "announcement", 'data-attribute' => "display_until", 'data-value' => @announcement.display_until }
+      .row
+        .col-xs-12.col-sm-4
+          label.control-label Display on main page until
+        .col-xs-12.col-sm-8
+          .datepicker.input-group
+            input.form-control
+            span.input-group-addon
+              i.fa.fa-calendar
 
 = content_for :head do
   = stylesheet_link_tag 'datepicker'
