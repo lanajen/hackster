@@ -1,9 +1,17 @@
 = content_for :js do
   = javascript_include_tag 'https://www.google.com/jsapi'
   = render_chart(@new_projects, 'chart_new_projects')
+  = render_chart(@new_project_views, 'chart_new_project_views')
   = render_chart(@new_views, 'chart_new_views')
   = render_chart(@new_respects, 'chart_new_respects')
   = render_chart(@new_follows, 'chart_new_follows')
+  javascript:
+    $(document).ready(function() {
+      $(window).resize(function(e){
+        console.log('resize');
+        draw_chart_new_project_views();
+      });
+    });
 
 section#projects-list
   .wrapper
@@ -11,166 +19,187 @@ section#projects-list
       h1 Analytics dashboard
 
     .row
-      .col-xs-12.col-sm-4
-        .panel.panel-default.panel-dashboard
-          .panel-heading
-            h3.panel-title Views
-          .panel-body
-            span.istooltip title='Total all time' rel='tooltip' data-container='body' ==> number_with_delimiter @views_count
-            small.text-muted.istooltip title='New today' rel='tooltip' data-container='body' +#{@new_views_count}
+      .col-xs-12
+        ul.nav.nav-tabs role='tablist'
+          li.active
+            a href='#home' role='tab' data-toggle='tab' iews
+          li
+            a href='#projects' role='tab' data-toggle='tab' Projects
+          li
+            a href='#followers' role='tab' data-toggle='tab' Followers
 
-      .col-xs-12.col-sm-4
-        .panel.panel-default.panel-dashboard
-          .panel-heading
-            h3.panel-title Followers
-          .panel-body
-            span.istooltip title='Total all time' rel='tooltip' data-container='body' ==> number_with_delimiter @follow_count
-            small.text-muted.istooltip title='New today' rel='tooltip' data-container='body' +#{@new_follows_count}
+    .tab-content
+      #home.tab-pane.active.fade.in
+        .row
+          .col-xs-12.col-sm-6
+            .panel.panel-default.panel-dashboard
+              .panel-heading
+                h3.panel-title Page views
+              .panel-body
+                span.istooltip title='Total all time' rel='tooltip' data-container='body' ==> number_with_delimiter @views_count
+                small.text-muted.istooltip title='New today' rel='tooltip' data-container='body' +#{@new_views_count}
 
-      .col-xs-12.col-sm-4
-        .panel.panel-default.panel-dashboard
-          .panel-heading
-            h3.panel-title Live projects (linked)
-          .panel-body
-            span.istooltip title='Total all time' rel='tooltip' data-container='body' ==> number_with_delimiter @project_count
-            small.text-muted.istooltip> title='New today' rel='tooltip' data-container='body' +#{@new_projects_count}
-            | (
-            span.istooltip title='Total all time' rel='tooltip' data-container='body' = number_with_delimiter @external_project_count
-            | )
+          .col-xs-12.col-sm-6
+            .panel.panel-default.panel-dashboard
+              .panel-heading
+                h3.panel-title Project views
+              .panel-body
+                span.istooltip title='Total all time' rel='tooltip' data-container='body' ==> number_with_delimiter @project_views_count
+                small.text-muted.istooltip title='New today' rel='tooltip' data-container='body' +#{@new_project_views_count}
+        .row
+          .col-xs-12
+            #chart_new_views = image_tag 'loader.gif'
+          .col-xs-12
+            #chart_new_project_views = image_tag 'loader.gif'
 
-    .row
-      .col-xs-12.col-sm-4
-        .panel.panel-default.panel-dashboard
-          .panel-heading
-            h3.panel-title Project views
-          .panel-body
-            span.istooltip title='Total all time' rel='tooltip' data-container='body' ==> number_with_delimiter @project_views_count
-            small.text-muted.istooltip title='New today' rel='tooltip' data-container='body' +#{@new_project_views_count}
+      #projects.tab-pane.fade.in
+        .row
+          .col-xs-12.col-sm-4
+            .panel.panel-default.panel-dashboard
+              .panel-heading
+                h3.panel-title Live projects (linked)
+              .panel-body
+                span.istooltip title='Total all time' rel='tooltip' data-container='body' ==> number_with_delimiter @project_count
+                small.text-muted.istooltip> title='New today' rel='tooltip' data-container='body' +#{@new_projects_count}
+                | (
+                span.istooltip title='Total all time' rel='tooltip' data-container='body' = number_with_delimiter @external_project_count
+                | )
 
-      .col-xs-12.col-sm-4
-        .panel.panel-default.panel-dashboard
-          .panel-heading
-            h3.panel-title Project respects
-          .panel-body
-            span.istooltip title='Total all time' rel='tooltip' data-container='body' ==> number_with_delimiter @like_count
-            small.text-muted.istooltip title='New today' rel='tooltip' data-container='body' +#{@new_likes_count}
+          .col-xs-12.col-sm-4
+            .panel.panel-default.panel-dashboard
+              .panel-heading
+                h3.panel-title Project respects
+              .panel-body
+                span.istooltip title='Total all time' rel='tooltip' data-container='body' ==> number_with_delimiter @like_count
+                small.text-muted.istooltip title='New today' rel='tooltip' data-container='body' +#{@new_likes_count}
 
-      .col-xs-12.col-sm-4
-        .panel.panel-default.panel-dashboard
-          .panel-heading
-            h3.panel-title Project comments
-          .panel-body
-            span.istooltip title='Total all time' rel='tooltip' data-container='body' ==> number_with_delimiter @comment_count
-            small.text-muted.istooltip title='New today' rel='tooltip' data-container='body' +#{@new_comments_count}
+          .col-xs-12.col-sm-4
+            .panel.panel-default.panel-dashboard
+              .panel-heading
+                h3.panel-title Project comments
+              .panel-body
+                span.istooltip title='Total all time' rel='tooltip' data-container='body' ==> number_with_delimiter @comment_count
+                small.text-muted.istooltip title='New today' rel='tooltip' data-container='body' +#{@new_comments_count}
 
-    .row
-      .col-xs-12.col-sm-6
-        .panel.panel-default
-          .panel-heading
-            h3.panel-title
-              ' Heroes
-              small Users with most #{@tech.name} projects
-          .panel-body
-            ul
-              - @heroes.each do |user|
-                li
-                  b= link_to user.name, user
-                  ' :
-                  = user.count
+        .row
+          .col-xs-12.col-sm-6
+            .panel.panel-default
+              .panel-heading
+                h3.panel-title
+                  ' Most respected projects
+              .panel-body
+                ul
+                  - @most_respected_projects.each do |project|
+                    li
+                      b= link_to project.name, project
+                      ' :
+                      = project.count
 
-      .col-xs-12.col-sm-6
-        .panel.panel-default
-          .panel-heading
-            h3.panel-title
-              ' Fans
-              small Users that most respect #{@tech.name} projects
-          .panel-body
-            ul
-              - @fans.each do |user|
-                li
-                  b= link_to user.name, user
-                  ' :
-                  = user.count
+          .col-xs-12.col-sm-6
+            .panel.panel-default
+              .panel-heading
+                h3.panel-title
+                  ' Most viewed projects
+              .panel-body
+                ul
+                  - @most_viewed_projects.each do |project|
+                    li
+                      b= link_to project.name, project
+                      ' :
+                      = number_with_delimiter project.impressions_count
 
-    .row
-      .col-xs-12.col-sm-6
-        .panel.panel-default
-          .panel-heading
-            h3.panel-title
-              ' Most respected projects
-          .panel-body
-            ul
-              - @most_respected_projects.each do |project|
-                li
-                  b= link_to project.name, project
-                  ' :
-                  = project.count
+        .row
+          .col-xs-12.col-sm-6
+            .panel.panel-default
+              .panel-heading
+                h3.panel-title
+                  ' Most recent projects
+              .panel-body
+                ul
+                  - @most_recent_projects.each do |project|
+                    li
+                      b>= link_to project.name, project
+                      ' by
+                      ==> project.users.map{|u| link_to u.name, u }.to_sentence.html_safe
+                      ' on
+                      = l project.created_at
 
-      .col-xs-12.col-sm-6
-        .panel.panel-default
-          .panel-heading
-            h3.panel-title
-              ' Most viewed projects
-          .panel-body
-            ul
-              - @most_viewed_projects.each do |project|
-                li
-                  b= link_to project.name, project
-                  ' :
-                  = number_with_delimiter project.impressions_count
+          .col-xs-12.col-sm-6
+            .panel.panel-default
+              .panel-heading
+                h3.panel-title
+                  ' Most recent comments
+              .panel-body
+                ul
+                  - @most_recent_comments.each do |comment|
+                    li
+                      ==> link_to comment.user.name, comment.user
+                      ' commented on
+                      ==> link_to comment.commentable.name, comment.commentable
+                      ' on
+                      ==> l comment.created_at
+                      ' and said:
+                      ==> comment.body.html_safe
 
-    .row
-      .col-xs-12.col-sm-6
-        .panel.panel-default
-          .panel-heading
-            h3.panel-title
-              ' Most recent projects
-          .panel-body
-            ul
-              - @most_recent_projects.each do |project|
-                li
-                  b>= link_to project.name, project
-                  ' by
-                  ==> project.users.map{|u| link_to u.name, u }.to_sentence.html_safe
-                  ' on
-                  = l project.created_at
+        .row
+          .col-xs-12
+            #chart_new_projects = image_tag 'loader.gif'
+          .col-xs-12
+            #chart_new_respects = image_tag 'loader.gif'
 
-        .panel.panel-default
-          .panel-heading
-            h3.panel-title
-              ' Most recent followers
-          .panel-body
-            ul
-              - @most_recent_followers.each do |follow|
-                li
-                  b>= link_to follow.user.name, follow.user
-                  ' on
-                  = l follow.created_at
+      #followers.tab-pane.fade.in
+        .row
+          .col-xs-12
+            .panel.panel-default.panel-dashboard
+              .panel-heading
+                h3.panel-title Followers
+              .panel-body
+                span.istooltip title='Total all time' rel='tooltip' data-container='body' ==> number_with_delimiter @follow_count
+                small.text-muted.istooltip title='New today' rel='tooltip' data-container='body' +#{@new_follows_count}
 
-      .col-xs-12.col-sm-6
-        .panel.panel-default
-          .panel-heading
-            h3.panel-title
-              ' Most recent comments
-          .panel-body
-            ul
-              - @most_recent_comments.each do |comment|
-                li
-                  ==> link_to comment.user.name, comment.user
-                  ' commented on
-                  ==> link_to comment.commentable.name, comment.commentable
-                  ' on
-                  ==> l comment.created_at
-                  ' and said:
-                  ==> comment.body.html_safe
+        .row
+          .col-xs-12.col-sm-6
+            .panel.panel-default
+              .panel-heading
+                h3.panel-title
+                  ' Heroes
+                  small Users with most #{@tech.name} projects
+              .panel-body
+                ul
+                  - @heroes.each do |user|
+                    li
+                      b= link_to user.name, user
+                      ' :
+                      = user.count
 
-    .row
-      .col-xs-12.col-sm-6
-        #chart_new_projects = image_tag 'loader.gif'
-      .col-xs-12.col-sm-6
-        #chart_new_views = image_tag 'loader.gif'
+          .col-xs-12.col-sm-6
+            .panel.panel-default
+              .panel-heading
+                h3.panel-title
+                  ' Fans
+                  small Users that most respect #{@tech.name} projects
+              .panel-body
+                ul
+                  - @fans.each do |user|
+                    li
+                      b= link_to user.name, user
+                      ' :
+                      = user.count
 
-      .col-xs-12.col-sm-6
-        #chart_new_respects = image_tag 'loader.gif'
-      .col-xs-12.col-sm-6
-        #chart_new_follows = image_tag 'loader.gif'
+        .row
+          .col-xs-12.col-sm-6
+            .panel.panel-default
+              .panel-heading
+                h3.panel-title
+                  ' Most recent followers
+              .panel-body
+                ul
+                  - @most_recent_followers.each do |follow|
+                    li
+                      b>= link_to follow.user.name, follow.user
+                      ' on
+                      = l follow.created_at
+
+        .row
+          .col-xs-12
+            #chart_new_follows = image_tag 'loader.gif'

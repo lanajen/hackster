@@ -25,23 +25,35 @@
 
     .mg-20= render partial: 'shared/medium_editor', locals: { editable: @announcement.body, attribute_name: 'body' }
 
-    .datetimepicker.form-group*{ 'data-model' => "announcement", 'data-attribute' => "published_at", 'data-value' => @announcement.published_at }
+    .form-group
       .row
-        .col-xs-12.col-sm-4
-          label.control-label Publish on
-        .col-xs-12.col-sm-8
-          .datepicker.input-group
-            input.form-control
+        .col-xs-12.col-sm-6
+          label.control-label
+            | Publish on
+            br
+            small Leave blank to publish immediately
+        .col-xs-12.col-sm-6
+          .input-group
+            span.input-group-addon
+              a.datetimepicker-erase data-target='#published_at' href='#'
+                i.fa.fa-times-circle-o
+            input#published_at.form-control.datetimepicker*{ 'data-model' => "announcement", 'data-attribute' => "published_at", 'data-value' => (@announcement.published_at || '') }
             span.input-group-addon
               i.fa.fa-calendar
 
-    .datetimepicker.form-group*{ 'data-model' => "announcement", 'data-attribute' => "display_until", 'data-value' => @announcement.display_until }
+    .form-group
       .row
-        .col-xs-12.col-sm-4
-          label.control-label Display on main page until
-        .col-xs-12.col-sm-8
-          .datepicker.input-group
-            input.form-control
+        .col-xs-12.col-sm-6
+          label.control-label
+            | Display on main page until
+            br
+            small Leave blank to display until the next announcement is posted
+        .col-xs-12.col-sm-6
+          .input-group
+            span.input-group-addon
+              a.datetimepicker-erase data-target='#display_until' href='#'
+                i.fa.fa-times-circle-o
+            input#display_until.form-control.datetimepicker*{ 'data-model' => "announcement", 'data-attribute' => "display_until", 'data-value' => (@announcement.display_until || '') }
             span.input-group-addon
               i.fa.fa-calendar
 
@@ -66,17 +78,30 @@
       });
 
       $('.datetimepicker').on('change', function(){
-        var value = $(this).data("DateTimePicker").getDate().toString();
+        var value = $(this).data("DateTimePicker").getDate();
+        value = value == null ? '' : value.toString();
         var model = $(this).data('model');
         var attr = $(this).data('attribute');
-        $(this).data('value', value);
+        var curVal = $(this).attr('data-value');
 
-        //if (curAttr.value != value) {
+        if (curVal != value) {
+          $(this).attr('data-value', value);
           var data = {};
           data[model] = {};
           data[model][attr] = value;
           editor.saveModel(null, null, data);
-        //}
+        }
+      });
+      $('input.datetimepicker').on('keydown keyup keypress', function(e){
+        e.preventDefault();
+      });
+      $('.datetimepicker-erase').on('click', function(e){
+        e.preventDefault();
+        var target = $($(this).data('target'));
+        var value = target.data("DateTimePicker").getDate();
+
+        target.attr('value', '');
+        target.data('DateTimePicker').setDate(null);
       });
 
       $('#publish').click(function(e){

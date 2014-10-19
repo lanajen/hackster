@@ -37,9 +37,13 @@ class Attachment < ActiveRecord::Base
 
     update_attributes file: file_name, tmp_file: nil
 
-    notify_observers :after_process
+    # notify_observers :after_process
 
     # TODO: capture errors and figure out a way to send feedback to user
+  rescue AWS::S3::Errors::NoSuchKey
+    update_attributes tmp_file: nil
+  ensure
+    notify_observers :after_process
   end
 
   def processed?

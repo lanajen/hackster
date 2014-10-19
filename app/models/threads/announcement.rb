@@ -10,7 +10,7 @@ class Announcement < BlogPost
   end
 
   def published?
-    published_at.nil? or (published_at and published_at < Time.now)
+    published_at.blank? or (published_at and published_at < Time.now)
   end
 
   def tech
