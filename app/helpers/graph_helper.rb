@@ -12,7 +12,7 @@ module GraphHelper
       records_array.rows.map do |row|
         rows[row[0]] = row[1].to_i
       end
-      complete_dates rows, Date.today-30, Date.today
+      complete_dates rows, Date.today-31, Date.today-1
     end
 
     def graph rows, columns, title, chart_type
