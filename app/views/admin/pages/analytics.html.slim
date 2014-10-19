@@ -6,7 +6,11 @@
   = render_chart(@new_follows, 'chart_new_follows')
 
 .page-header
-  h1 Analytics
+  h1
+    | Analytics
+    small.pull-right style='font-size:14px'
+      ' Server time:
+      = l Time.now, format: :long
 
 .row
   .col-xs-12.col-sm-6

@@ -21,7 +21,7 @@ class UserObserver < ActiveRecord::Observer
 
   def after_invitation_accepted record
     advertise_new_user record
-    BaseMailer.enqueue_email 'invite_request_accepted',
+    BaseMailer.enqueue_email 'invitation_accepted',
       { context_type: :inviter, context_id: record.id }
     record.build_reputation unless record.reputation
     record.subscribe_to_all && record.generate_user_name && record.save
