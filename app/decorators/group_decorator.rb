@@ -18,7 +18,7 @@ class GroupDecorator < UserDecorator
     when :big
       200
     end
-    model.email ||= 'team@hackster.io'  # TODO: find a better way
+    model.email ||= 'hi@hackster.io'  # TODO: find a better way
     gravatar_id = Digest::MD5::hexdigest(model.email).downcase
     "//gravatar.com/avatar/#{gravatar_id}.png?d=identicon&s=#{width}"
   end

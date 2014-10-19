@@ -1,7 +1,7 @@
 module MailerHelpers
   extend ActionView::Helpers::UrlHelper
 
-  DEFAULT_EMAIL = 'Hackster.io<team@hackster.io>'
+  DEFAULT_EMAIL = 'Hackster.io<hi@hackster.io>'
 
   def send_notification_email type
     @headers = {

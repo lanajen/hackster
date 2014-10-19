@@ -19,7 +19,7 @@
             - @hackathons.each do |hackathon|
               = render partial: 'groups/communities/community_thumb', locals: { community: hackathon }
             .col-xs-12.col-sm-6.col-md-4.community-thumb
-              - link = 'mailto:team@hackster.io?subject=I want to launch a hackathon using Hackster'
+              - link = 'mailto:hi@hackster.io?subject=I want to launch a hackathon using Hackster'
               h4.text-center
                 ==> link_to 'Launch a hackathon', link
               .community-avatar.community-new= link_to '', link
@@ -34,7 +34,7 @@
             - @promotions.each do |promotion|
               = render partial: 'groups/communities/community_thumb', locals: { community: promotion }
             .col-xs-12.col-sm-6.col-md-4.community-thumb
-              - link = "mailto:team@hackster.io?subject=I want to document my course's projects using Hackster"
+              - link = "mailto:hi@hackster.io?subject=I want to document my course's projects using Hackster"
               h4.text-center
                 ==> link_to 'Create a course page', link
               .community-avatar.community-new= link_to '', link
@@ -51,7 +51,7 @@
               - @communities.each do |community|
                 = render partial: 'groups/communities/community_thumb', locals: { community: community }
               .col-xs-12.col-sm-6.col-md-4.community-thumb
-                - link = "mailto:team@hackster.io?subject=I want to create a page for my group"
+                - link = "mailto:hi@hackster.io?subject=I want to create a page for my group"
                 h4.text-center
                   ==> link_to 'Create a community page', link
                 .community-avatar.community-new= link_to '', link

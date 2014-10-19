@@ -40,7 +40,7 @@ module MediumEditorDecorator
 
             el.add_child code if code
           rescue
-            # el.add_child "<p>Something should be showing up here but an error occurred. Send this info to team@hackster.io: data-type: #{el['data-type']}, data-url: #{el['data-url']}, data-widget-id: #{el['data-widget-id']}. Thanks!</p>"
+            # el.add_child "<p>Something should be showing up here but an error occurred. Send this info to hi@hackster.io: data-type: #{el['data-type']}, data-url: #{el['data-url']}, data-widget-id: #{el['data-widget-id']}. Thanks!</p>"
             el.remove
             next
           end

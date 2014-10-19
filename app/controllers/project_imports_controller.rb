@@ -37,7 +37,7 @@ class ProjectImportsController < ApplicationController
         urls = urls.gsub(/\r\n/, ',').gsub(/\n/, ',').gsub(/[ ]+/, ',').split(',').reject{ |l| l.blank? }
         urls.each do |url|
           if url =~ /hackster\.io/
-            @errors << "Looks like you're trying to import a page from Hackster? If you need help doing something please send us your query through the help widget in the bottom right corner of your screen (the question mark) or email us at team@hackster.io."
+            @errors << "Looks like you're trying to import a page from Hackster? If you need help doing something please send us your query through the help widget in the bottom right corner of your screen (the question mark) or email us at hi@hackster.io."
             break
           end
         end
