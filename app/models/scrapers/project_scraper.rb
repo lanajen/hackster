@@ -4,12 +4,12 @@ class ProjectScraper
   attr_accessor :content, :page_url
 
   def self.scrape page_url
-    s = new page_url
+    # s = new page_url
 
     # debug snippet
-    # url = File.join(Rails.root, 'app/models/scrapers/test.html')
-    # s = new 'http://www.udoo.org/ProjectsAndTutorials/internet-of-things-remote-sensing/?portfolioID=4028'
-    # s.content = s.read_file url
+    url = File.join(Rails.root, 'app/models/scrapers/test.html')
+    s = new 'http://hackaday.io/project/1998-Portable-Chaos-Monkey'
+    s.content = s.read_file url
     # end debug snippet
 
     project = s.document.to_project
@@ -45,6 +45,7 @@ class ProjectScraper
       'blogspot.com' => :blogspot,
       'forum.arduino.cc' => :arduinocc,
       'github.com' => :github,
+      'hackaday.io' => :hackadayio,
       'instructables.com' => :instructable,
       'kickstarter.com' => :kickstarter,
       'medium.com' => :medium,

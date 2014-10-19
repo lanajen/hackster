@@ -28,10 +28,10 @@ module ScraperStrategies
       before_parse
 
       normalize_links
-      parse_cover_image
       parse_comments
       format_text
       parse_images
+      parse_cover_image
       parse_embeds
       parse_files
       parse_code
@@ -90,6 +90,21 @@ module ScraperStrategies
           return img if test_link src
         end
         nil
+      end
+
+      def extract_images
+        @article.css('img').each do |img|
+          src = get_src_for_img(img)
+          if test_link(src)
+            img['src'] = src
+            caption = find_caption_for img
+            img['title'] = caption if caption.present?
+            parent = find_parent img
+            parent.after img unless parent == img
+          else
+            img.remove
+          end
+        end
       end
 
       def extract_title
@@ -160,6 +175,11 @@ module ScraperStrategies
         # if rel attr links to a bigger image get that one
         if rel = img['rel']
           return rel if rel =~ /\.(png|jpg|jpeg|bmp|gif)$/
+        end
+
+        if img.name == 'a'
+          img.name = 'span'  # so that it's not parsed as an embed later on
+          return img['href']
         end
 
         # if parent is a link to a bigger image get that link instead
@@ -296,18 +316,19 @@ module ScraperStrategies
       end
 
       def parse_images
-        @article.css('img').each do |img|
-          src = get_src_for_img(img)
-          if test_link(src)
-            img['src'] = src
-            caption = find_caption_for img
-            img['title'] = caption if caption.present?
-            parent = find_parent img
-            parent.after img unless parent == img
-          else
-            img.remove
-          end
-        end
+        # extract_images.each do |img|
+        #   src = get_src_for_img(img)
+        #   if test_link(src)
+        #     img['src'] = src
+        #     caption = find_caption_for img
+        #     img['title'] = caption if caption.present?
+        #     parent = find_parent img
+        #     parent.after img unless parent == img
+        #   else
+        #     img.remove
+        #   end
+        # end
+        extract_images
 
         imgs = @article.css('img')
         length = imgs.size
