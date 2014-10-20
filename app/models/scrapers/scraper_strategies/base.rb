@@ -328,7 +328,12 @@ module ScraperStrategies
         #     img.remove
         #   end
         # end
-        extract_images base, super_base
+
+        if super_base.nil?
+          extract_images base
+        else
+          extract_images base, super_base
+        end
 
         imgs = base.css('img')
         length = imgs.size

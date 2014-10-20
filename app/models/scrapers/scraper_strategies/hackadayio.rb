@@ -40,7 +40,7 @@ module ScraperStrategies
           post.title = log.at_css('h2').text.strip
           post.body = log.at_css('[id^="post-body"]')
           @log = post.body
-          parse_images @log
+          parse_images @log, false
           parse_embeds @log
           parse_files @log
           parse_code @log
@@ -100,8 +100,6 @@ module ScraperStrategies
         else
           super base
         end
-
-        # raise base.to_s
       end
 
       def extract_title
