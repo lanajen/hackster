@@ -23,7 +23,7 @@ gem 'zocial-rails', '1.0.2'
 gem 'rails-assets-medium-editor', '1.8.14'
 gem 'rails-assets-underscore', '1.7.0'
 
-gem 'autoscaler', '0.9.0', groups: :staging
+# gem 'autoscaler', '0.9.0', groups: :staging
 gem 'auto_html', '1.6.3'
 gem 'aws-sdk', '1.33.0'
 gem 'bootstrap3-datetimepicker-rails', '3.1.3'
@@ -71,7 +71,7 @@ gem 'redis-namespace', '1.5.0'
 gem 'rest-client', '1.6.7'
 gem 'sanitize', '2.0.6'
 gem 'sendgrid', '1.2.0'
-gem 'sidekiq', '3.0.0'
+# gem 'sidekiq', '3.2.5'
 gem 'sidekiq-failures', '0.4.3'
 gem 'simple_form', '3.1.0.rc1'
 gem 'sinatra', '>= 1.3.0', require: nil
