@@ -11,7 +11,7 @@ html(lang="en")
     meta(charset="utf-8")
     meta(http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1")
     meta(property="fb:app_id" content="414718878625776")
-    / %meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
     title= title
     meta(name="description" content=meta_desc)
     = content_for :head
@@ -20,8 +20,8 @@ html(lang="en")
     /![if lt IE 9]
       = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.1/html5shiv.js"
     = stylesheet_link_tag "application", :media => "all"
-    / <link href='//fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'
-    | <link href="#{ asset_path 'favicon.ico' }" rel="shortcut icon" type="image/vnd.microsoft.icon">
+    link href='//fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'
+    link href="#{ asset_path 'favicon.ico' }" rel="shortcut icon" type="image/vnd.microsoft.icon"
     - unless current_user and current_user.is? :admin
       = render partial: 'shared/analytics', locals: { tracker: 'UA-11926897-17', domain: 'hackster.io' }
     = javascript_include_tag "application"

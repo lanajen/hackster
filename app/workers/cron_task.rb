@@ -1,6 +1,6 @@
 class CronTask < BaseWorker
   # @queue = :low
-  sidekiq_options queue: :low, retry: 0
+  sidekiq_options queue: :cron, retry: 0
 
   def compute_popularity
     CronTask.perform_async 'compute_popularity_for_projects'
@@ -9,21 +9,31 @@ class CronTask < BaseWorker
   end
 
   def compute_popularity_for_projects
-    Project.find_each do |project|
-      project.update_counters
-      project.compute_popularity
-      project.save
+    Project.indexable_or_external.pluck(:id).find_each do |project_id|
+      CronTask.perform_async 'compute_popularity_for_project', project_id
     end
   end
 
+  def compute_popularity_for_project project_id
+    project = Project.find project_id
+    project.update_counters
+    project.compute_popularity
+    project.save
+  end
+
   def compute_popularity_for_users
-    User.invitation_accepted_or_not_invited.find_each do |user|
-      user.update_counters
-      user.build_reputation unless user.reputation
-      reputation = user.reputation
-      reputation.compute
-      reputation.save
+    User.invitation_accepted_or_not_invited.pluck(:id).find_each do |user_id|
+      CronTask.perform_async 'compute_popularity_for_user', user_id
     end
+  end
+
+  def compute_popularity_for_user user_id
+    user = User.find user_id
+    user.update_counters
+    user.build_reputation unless user.reputation
+    reputation = user.reputation
+    reputation.compute
+    reputation.save
   end
 
   def compute_popularity_for_teches
