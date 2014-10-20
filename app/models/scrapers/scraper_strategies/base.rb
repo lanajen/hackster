@@ -66,14 +66,14 @@ module ScraperStrategies
         end
       end
 
-      def clean_up_formatting
+      def clean_up_formatting base=@article
         # @article.search('//text()').each{|el| el.remove if el.content.strip.blank? }
-        @article.css('a, p, h3, h4').each{|el| el.remove if el.content.strip.blank? }
+        base.css('a, p, h3, h4').each{|el| el.remove if el.content.strip.blank? }
 
-        sanitized_text = Sanitize.clean(@article.to_s.try(:encode, "UTF-8"), Sanitize::Config::SCRAPER)
-        @article = Nokogiri::HTML::DocumentFragment.parse(sanitized_text)
+        sanitized_text = Sanitize.clean(base.to_s.try(:encode, "UTF-8"), Sanitize::Config::SCRAPER)
+        base = Nokogiri::HTML::DocumentFragment.parse(sanitized_text)
 
-        clean_divs @article
+        clean_divs base
       end
 
       def crap_list
@@ -92,14 +92,14 @@ module ScraperStrategies
         nil
       end
 
-      def extract_images
-        @article.css('img').each do |img|
-          src = get_src_for_img(img)
+      def extract_images base=@article, super_base=nil
+        base.css('img').each do |img|
+          src = get_src_for_img(img, base)
           if test_link(src)
             img['src'] = src
-            caption = find_caption_for img
+            caption = find_caption_for img, base
             img['title'] = caption if caption.present?
-            parent = find_parent img
+            parent = find_parent img, base
             parent.after img unless parent == img
           else
             img.remove
@@ -111,15 +111,15 @@ module ScraperStrategies
         @article.at_css('.entry-title').try(:remove).try(:text).try(:strip) || @parsed.title
       end
 
-      def find_caption_for img
-        if img.parent and img.parent != @article
+      def find_caption_for img, base_parent=@article
+        if img.parent and img.parent != base_parent
           if img.parent.name == 'figure' or (img.parent['class'] and (img.parent['class'].split(' ') & image_caption_container_classes).any?)
             node = img.parent.css(image_caption_elements.join(','))
             text = node.text
             node.remove
             text
           else
-            find_caption_for img.parent
+            find_caption_for img.parent, base_parent
           end
         end
       end
@@ -132,34 +132,34 @@ module ScraperStrategies
         %w(figcaption)
       end
 
-      def find_parent node
-        if node.parent and node.parent != @article
+      def find_parent node, base_parent=@article
+        if node.parent and node.parent != base_parent
           # find_parent node.parent
-          node.parent.name.in?(%w(a span)) ? find_parent(node.parent) : node.parent
+          node.parent.name.in?(%w(a span)) ? find_parent(node.parent, base_parent) : node.parent
         else
           node
         end
         # node.parent and node.parent != @article ? node.parent : node
       end
 
-      def format_text
-        @article.css('strong').each do |node|
+      def format_text base=@article
+        base.css('strong').each do |node|
           node.name = 'b'
         end
-        @article.css('em').each do |node|
+        base.css('em').each do |node|
           node.name = 'i'
         end
 
         # find the first level title tag (h), replaces by h3, and replaces next
         # level by h4, and further levels by b
         (title_levels).each do |i|
-          if @article.css("h#{i}").any?
-            @article.css("h#{i}").each { |h| h.name = 'h3' }
+          if base.css("h#{i}").any?
+            base.css("h#{i}").each { |h| h.name = 'h3' }
             (i+1..4).each do |j|
-              if @article.css("h#{j}").any?
-                @article.css("h#{j}").each { |h| h.name = 'h4' }
+              if base.css("h#{j}").any?
+                base.css("h#{j}").each { |h| h.name = 'h4' }
                 (j+1..3).each do |l|
-                  @article.css("h#{l}").each { |h| h.name = 'b' }
+                  base.css("h#{l}").each { |h| h.name = 'b' }
                 end
                 break
               end
@@ -169,7 +169,7 @@ module ScraperStrategies
         end
       end
 
-      def get_src_for_img img
+      def get_src_for_img img, base_parent=@article
         src = img['src']
 
         # if rel attr links to a bigger image get that one
@@ -184,7 +184,7 @@ module ScraperStrategies
 
         # if parent is a link to a bigger image get that link instead
         parent = img
-        while parent = parent.parent and parent != @article do
+        while parent = parent.parent and parent != base_parent do
           if parent.name == 'a'
             href = parent['href'] || parent['data-fancybox-href']
             parent.name = 'span'  # so that it's not parsed as an embed later on
@@ -196,12 +196,12 @@ module ScraperStrategies
         src
       end
 
-      def normalize_links
+      def normalize_links base=@article
         {
           'a' => 'href',
           'img' => 'src',
         }.each do |name, attr|
-          @article.css(name).each do |node|
+          base.css(name).each do |node|
             node[attr] = normalize_link(node[attr]) if node[attr]
           end
         end
@@ -233,8 +233,8 @@ module ScraperStrategies
         end
       end
 
-      def parse_code
-        @article.css('pre code, .crayon-syntax .crayon-main, .syntaxhighlighter .code').each do |node|
+      def parse_code base=@article
+        base.css('pre code, .crayon-syntax .crayon-main, .syntaxhighlighter .code').each do |node|
           # if the node has children with code we skip it
           # catch :haschildren do
           #   node.children.each{ |child| throw :haschildren if child.name.in? %w(pre code) }
@@ -256,14 +256,14 @@ module ScraperStrategies
         end
       end
 
-      def parse_embeds
+      def parse_embeds base=@article
         {
           # 'a' => 'href',
           'embed' => 'src',
           'iframe' => 'src',
           'object' => 'data',
         }.each do |el, attr|
-          @article.css(el).each do |node|
+          base.css(el).each do |node|
             embed = Embed.new url: node[attr]
             if embed.provider
               @embedded_urls[embed.provider_name] << embed.provider_id
@@ -275,7 +275,7 @@ module ScraperStrategies
         end
 
         collection = []
-        @article.css('a').each do |node|
+        base.css('a').each do |node|
           collection << node
         end
         collection.uniq.each do |node|
@@ -294,9 +294,9 @@ module ScraperStrategies
         extract_comments.remove if extract_comments
       end
 
-      def parse_files
+      def parse_files base=@article, attachable=@project
         files = {}
-        @article.css('a').each do |node|
+        base.css('a').each do |node|
           next unless link = node['href']
           if link.match /\/\/.+\/.+\.([a-z0-9]{,5})$/
             next if $1.in? %w(html htm gif jpg jpeg png bmp php aspx asp js css)
@@ -308,14 +308,14 @@ module ScraperStrategies
             document.attachable_id = 0
             document.attachable_type = 'Orphan'
             document.save
-            document.attachable = @project
+            document.attachable = attachable
             parent = find_parent node
             parent.after "<div class='embed-frame' data-file-id='#{document.id}' data-type='file'></div>"
           end
         end
       end
 
-      def parse_images
+      def parse_images base=@article, super_base=nil
         # extract_images.each do |img|
         #   src = get_src_for_img(img)
         #   if test_link(src)
@@ -328,9 +328,9 @@ module ScraperStrategies
         #     img.remove
         #   end
         # end
-        extract_images
+        extract_images base, super_base
 
-        imgs = @article.css('img')
+        imgs = base.css('img')
         length = imgs.size
         i = 0
         while (i < length) do

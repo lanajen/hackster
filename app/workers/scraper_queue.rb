@@ -37,9 +37,11 @@ class ScraperQueue < BaseWorker
         @project = ProjectScraper.scrape page_url
         @project.build_team
         @project.team.members.new(user_id: user_id)
+        @project.blog_posts.each{|p| p.user_id = user_id }
         @project.tech_tags_string = tech_tags_string if tech_tags_string.present?
         messages = @project.errors.messages.map{|k,v| "#{k} #{v.to_sentence};" }
         raise ScrapeError, "Couldn't save project because #{messages.to_sentence}" unless @project.save
+        @project.blog_posts.each{|p| p.draft = false; p.save }
         @project.update_counters
         @message.subject = "#{@project.name} has been imported to your Hackster.io profile"
         @message.body = "<p>Hi</p><p>This is to let you know that <a href='http://#{APP_CONFIG['full_host']}/projects/#{@project.to_param}'>#{@project.name}</a> has been successfully imported from <a href='#{page_url}'>#{page_url}</a>.</p><p>You can update it and make it public at <a href='http://#{APP_CONFIG['full_host']}/projects/#{@project.to_param}'>http://#{APP_CONFIG['full_host']}/projects/#{@project.to_param}</a>.</p><p><b>Please note:</b> our importer is an experimental feature, your project might need some additional editing before it's ready for prime!</p><p>Cheers<br/>The Hackster.io team</p>"

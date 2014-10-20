@@ -109,7 +109,7 @@
             - if @can_edit
               .pull-right= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} New issue".html_safe, new_project_issue_path, class: 'btn btn-outline'
         .section-content
-          - if @project.issues.any?
+          - if @project.issues.where(type: 'Issue').any?
             .widget
               .content
                 - @project.issues.where(type: 'Issue').each do |issue|
