@@ -26,8 +26,14 @@ table.table.table-striped
         td= link_to project.name, (project.external ? external_project_path(project) : project)
         td
           - if project.external
-            | External
+            - if project.guest_name.present?
+              ==> project.guest_name
+            | (external)
           - else
+            - if project.guest_name.present?
+              ==> project.guest_name
+              - if project.users.any?
+                ' - posted by:
             = project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
         td= project.private? ? '<b>Private</b>'.html_safe : (project.hidden? ? (project.approved.nil? ? '<b>Needs approval</b>'.html_safe : 'Hidden') : 'Public')
         td= l project.created_at
