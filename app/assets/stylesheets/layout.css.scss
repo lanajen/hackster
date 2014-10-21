@@ -1361,6 +1361,7 @@ input.cmn-toggle ~ .option-checked, input.cmn-toggle:checked ~ .option-unchecked
 .highlight-flash {
   background-color: yellow !important;
   color: #363400 !important;
+  text-shadow: none;
 }
 .highlight-flash-transition {
   @include transition(background-color ease-in-out .5s);

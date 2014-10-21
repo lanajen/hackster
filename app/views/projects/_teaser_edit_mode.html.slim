@@ -48,8 +48,8 @@
             = link_to image_tag(u.decorate.avatar(:mini), class: ' img-circle' ), u, class: ''
             span.user-name
               ==> link_to u.name, u, class: 'hidden-link'
-              ' and
               - if users.size > 1
+                ' and
                 = link_to "#{pluralize (users.size - 1), 'other'}", 'javascript:smoothScrollTo("#team-widget", -20);', class: 'hidden-link'
 
       .tags.meta.pull-left

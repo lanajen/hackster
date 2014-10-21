@@ -98,8 +98,12 @@
         h4 What is this?
       .content
         p
-          ' Do you know of an existing project page hosted on an external website that you would like to list under
-          strong = @project.tech_tags_string
+          ' Do you know of an existing project page hosted on an external website that you would like to list
+          - if @project.tech_tags_string.present?
+            ' under
+            strong = @project.tech_tags_string
+          - else
+            | on your profile
           | ?
         p Submit it to Hackster.io by filling in this form. We'll give it a quick review and post it to the list.
         / %p

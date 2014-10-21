@@ -41,12 +41,12 @@
                       p.one-liner= @project.one_liner
                       p.one-liner
                         ' Read about this project on
-                        = link_to @project.website_host, @project.website, target: '_blank'
+                        ==> link_to "#{@project.website_host} #{content_tag(:i, '', class: 'fa fa-external-link')}".html_safe, @project.website, target: '_blank'
 
                 - if @project.product_tags_cached.any?
                   .tags.meta
                     - @project.product_tags_cached.each do |tag|
-                      span= link_to tag, "/tags/# CGI::escape(tag) ", class: 'tag-link'
+                      span= link_to tag, "/tags/#{CGI::escape(tag)}", class: 'tag-link'
 
                 .actions
                   ul.list-unstyled.list-inline
