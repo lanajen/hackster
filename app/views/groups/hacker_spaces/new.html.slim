@@ -1,11 +1,11 @@
 .col-xs-12.col-md-offset-2.col-md-8
   .wellified
-    h2  style='text-align: center'   Create a new community
+    h2  style='text-align: center'   List a hacker space
 
-    = simple_nested_form_for @community, url: communities_path, html: { class: 'form-horizontal disable-on-submit accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
+    = simple_nested_form_for @hacker_space, url: hacker_spaces_path, html: { class: 'form-horizontal disable-on-submit accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
       = f.error_notification
 
-      = f.input :full_name, label: 'Community name'
+      = f.input :full_name, label: 'Name'
 
       .form-group
         .col-xs-4

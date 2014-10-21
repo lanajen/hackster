@@ -29,29 +29,29 @@ class CommunitiesController < ApplicationController
     redirect_to community_path(@community)
   end
 
-  # def new
-  #   authorize! :create, Community
-  #   title "Create a new community"
-  #   @community = Community.new
+  def new
+    authorize! :create, Community
+    title "Create a new community"
+    @community = Community.new
 
-  #   render "groups/communities/#{self.action_name}"
-  # end
+    render "groups/communities/#{self.action_name}"
+  end
 
-  # def create
-  #   @community = Community.new(params[:community])
-  #   authorize! :create, @community
+  def create
+    @community = Community.new(params[:group])
+    authorize! :create, @community
 
-  #   admin = @community.members.new(user_id: current_user.id)
-  #   @community.private = true
+    admin = @community.members.new(user_id: current_user.id)
+    @community.private = true
 
-  #   if @community.save
-  #     admin.update_attribute :permission_action, 'manage'
-  #     flash[:notice] = "Welcome to #{@community.class.name} #{@community.name}!"
-  #     respond_with @community
-  #   else
-  #     render "groups/communities/new"
-  #   end
-  # end
+    if @community.save
+      admin.update_attribute :permission_action, 'manage'
+      flash[:notice] = "Welcome to #{@community.class.name} #{@community.name}!"
+      respond_with @community
+    else
+      render "groups/communities/new"
+    end
+  end
 
   def edit
     @community = Community.find(params[:id])

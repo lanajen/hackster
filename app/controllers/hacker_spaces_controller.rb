@@ -41,10 +41,10 @@ class HackerSpacesController < ApplicationController
   end
 
   def create
-    @hacker_space = HackerSpace.new(params[:hacker_space])
+    @hacker_space = HackerSpace.new(params[:group])
     authorize! :create, @hacker_space
 
-    admin = @hacker_space.members.new(user_id: current_user.id)
+    admin = @hacker_space.members.new(user_id: current_user.id, group_roles: ['team'])
     @hacker_space.private = true
 
     if @hacker_space.save

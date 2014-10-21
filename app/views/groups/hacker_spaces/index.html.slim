@@ -14,7 +14,7 @@
         .row
           .col-xs-12
             .pull-right
-              = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} List your space".html_safe, 'mailto:hi@hackster.io?subject=Add a hacker space to your list', class: 'btn btn-outline'
+              = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} List your space".html_safe, new_hacker_space_path, class: 'btn btn-outline'
           .col-xs-12
             table.table
               thead
@@ -32,7 +32,7 @@
 
         .alert.alert-info.text-center
           ' Can't find your space?
-          = link_to 'Let us know.', 'mailto:hi@hackster.io?subject=Add a hacker space to your list', class: 'alert-link'
+          = link_to 'Add it to the list.', new_hacker_space_path, class: 'alert-link'
 
 = content_for :head do
   css:

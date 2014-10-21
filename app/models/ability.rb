@@ -51,6 +51,8 @@ class Ability
   end
 
   def member
+    can :create, [HackerSpace, Community]
+
     can :admin, Address do |address|
       address.addressable_type == 'ChallengeEntry' and address.addressable.user_id == @user.id
     end
