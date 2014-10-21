@@ -589,7 +589,7 @@ class User < ActiveRecord::Base
   end
 
   def live_visible_projects_count
-    live_projects - (live_hidden_projects || 0)
+    live_projects_count - (live_hidden_projects_count || 0)
   end
 
   def name
