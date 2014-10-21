@@ -235,7 +235,7 @@ HackerIo::Application.routes.draw do
         get 'create' => 'followers#create', as: :create
         delete '' => 'followers#destroy'
         get 'tools/:id' => 'followers#standalone_button', as: :tool
-        post 'tools/:id' => 'followers#create'
+        post 'tools/:id' => 'followers#create_from_button'
       end
     end
 

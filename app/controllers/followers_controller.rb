@@ -35,7 +35,7 @@ class FollowersController < ApplicationController
     render layout: 'follow_iframe'
   end
 
-  def create
+  def create_from_button
     @followable = Tech.find params[:id]
 
     FollowRelation.add current_user, @followable
