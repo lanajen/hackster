@@ -389,8 +389,8 @@ class User < ActiveRecord::Base
       self.github_link = info.urls['GitHub']
       self.website_link = info.urls['Blog']
       begin
-        self.city = info.location.split(',')[0] if city.nil?
-        self.country = info.location.split(',')[1].strip if country.nil?
+        self.city = info.location.try(:split, ',').try(:[], 0) if city.nil?
+        self.country = info.location.try(:split, ',').try(:[], 1).try(:strip) if country.nil?
       rescue => e
         logger.error "Error in extract_from_social_profile (github): " + e.inspect
       end

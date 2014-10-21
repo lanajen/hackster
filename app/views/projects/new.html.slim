@@ -65,7 +65,7 @@
 
         = f.input :external, as: :hidden
         = f.input :website, label: 'Link to the project', required: true
-        = f.input :name, label: 'What is the project called?'
+        = f.input :name, label: 'What is the project called?', required: true
         = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner description, Twitter-style.', required: true
         - if user_signed_in?
           = f.input :guest_name, label: 'Who should be credited for this hack?', hint: "Leave this blank if you're the author of this hack."

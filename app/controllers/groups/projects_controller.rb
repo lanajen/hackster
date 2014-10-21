@@ -5,7 +5,7 @@ class Groups::ProjectsController < ApplicationController
   layout :set_layout
 
   def new
-    @project = @group.projects.new
+    @project = @group.projects.new params[:project]
     @projects = current_user.projects
   end
 

@@ -64,7 +64,7 @@ class Project < ActiveRecord::Base
     :graded, :wip, :columns_count, :external, :guest_name,
     :approved, :open_source, :buy_link, :private_logs, :private_issues,
     :hacker_space_id, :locked, :mark_as_idea, :event_id, :assignment_id,
-    :community_ids
+    :community_ids, :new_group_id
   attr_accessor :current
   attr_writer :new_slug
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
@@ -78,7 +78,7 @@ class Project < ActiveRecord::Base
     length: { maximum: 105 }, allow_blank: true
   validates :new_slug, presence: true, if: proc{ |p| p.persisted? }
   with_options if: proc {|p| p.external } do |project|
-    project.validates :website, :one_liner, :cover_image, presence: true
+    project.validates :name, :website, :one_liner, :cover_image, presence: true
     project.before_save :external_is_hidden
   end
   # validates :website, uniqueness: { message: 'has already been submitted' }, allow_blank: true, if: proc {|p| p.website_changed? }
@@ -415,6 +415,10 @@ class Project < ActiveRecord::Base
 
   def name
     super.presence || DEFAULT_NAME
+  end
+
+  def new_group_id=(val)
+    project_collections.new collectable_type: 'Group', collectable_id: val
   end
 
   def new_slug

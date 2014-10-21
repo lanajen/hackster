@@ -1,7 +1,8 @@
 class FollowersController < ApplicationController
-  before_filter :authenticate_user!
-  before_filter :load_followable
+  before_filter :authenticate_user!, except: [:standalone_button]
+  before_filter :load_followable, only: [:create, :destroy]
   respond_to :js, :html
+  after_action :allow_iframe, only: :standalone_button
 
   def create
     FollowRelation.add current_user, @followable
@@ -27,6 +28,25 @@ class FollowersController < ApplicationController
     end
 
     track_event "Unfollowed #{@followable.class.name}", { id: @followable.id, name: @followable.name }
+  end
+
+  def standalone_button
+    @followable = Tech.find params[:id]
+    render layout: 'follow_iframe'
+  end
+
+  def create
+    @followable = Tech.find params[:id]
+
+    FollowRelation.add current_user, @followable
+    respond_to do |format|
+      format.html { redirect_to @followable, notice: "You are now following #{@followable.name}" }
+      format.js do
+        render 'standalone_button'
+      end
+    end
+
+    track_event "Followed #{@followable.class.name}", { id: @followable.id, name: @followable.name }
   end
 
   private

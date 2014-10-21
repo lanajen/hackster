@@ -1,0 +1,2 @@
+var followBtn = $('a.follow-button');
+followBtn.replaceWith('<%= escape_javascript render(partial: "standalone_button", locals: { followable: @followable }) %>');

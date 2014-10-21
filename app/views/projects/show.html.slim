@@ -167,6 +167,14 @@
                   ' Made at
                   = link_to hacker_space.name, hacker_space_path(hacker_space)
 
+              - if @project.communities.any?
+                .meta
+                  .meta-title-wrap
+                    .meta-title Communities
+                  - @project.communities.each do |community|
+                    ' Part of
+                    = link_to community.name, community_path(community)
+
               .meta
                 strong
                   ' Created on

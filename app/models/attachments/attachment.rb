@@ -41,7 +41,7 @@ class Attachment < ActiveRecord::Base
 
     # TODO: capture errors and figure out a way to send feedback to user
   rescue AWS::S3::Errors::NoSuchKey
-    update_attributes tmp_file: nil
+    destroy
   ensure
     notify_observers :after_process
   end

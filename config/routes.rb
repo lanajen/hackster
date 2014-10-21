@@ -231,8 +231,12 @@ HackerIo::Application.routes.draw do
     end
 
     resources :followers, only: [:create] do
-      get 'create' => 'followers#create', on: :collection, as: :create
-      delete '' => 'followers#destroy', on: :collection
+      collection do
+        get 'create' => 'followers#create', as: :create
+        delete '' => 'followers#destroy'
+        get 'tools/:id' => 'followers#standalone_button', as: :tool
+        post 'tools/:id' => 'followers#create'
+      end
     end
 
     resources :hackers, controller: :users, only: [:index]

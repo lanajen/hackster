@@ -8,7 +8,7 @@ class TechesController < ApplicationController
   before_filter :load_projects, only: [:show, :embed]
   before_filter :load_project, only: [:feature_project, :unfeature_project]
   layout 'tech', only: [:edit, :update, :show, :analytics]
-  after_action :allow_iframe, only: :embed
+  after_action :allow_iframe, only: [:embed]
   respond_to :html
 
   def index
