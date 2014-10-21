@@ -9,7 +9,7 @@ class CronTask < BaseWorker
   end
 
   def compute_popularity_for_projects
-    Project.indexable_or_external.pluck(:id).find_each do |project_id|
+    Project.indexable_and_external.pluck(:id).each do |project_id|
       CronTask.perform_async 'compute_popularity_for_project', project_id
     end
   end
@@ -22,7 +22,7 @@ class CronTask < BaseWorker
   end
 
   def compute_popularity_for_users
-    User.invitation_accepted_or_not_invited.pluck(:id).find_each do |user_id|
+    User.invitation_accepted_or_not_invited.pluck(:id).each do |user_id|
       CronTask.perform_async 'compute_popularity_for_user', user_id
     end
   end
