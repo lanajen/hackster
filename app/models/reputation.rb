@@ -16,6 +16,6 @@ class Reputation < ActiveRecord::Base
   validates :points, :user_id, presence: true
 
   def compute
-    self.points = (user.popularity_points_count * 0.1) + user.live_projects_count * 10 + user.impressions_count * 0.01 + (user.name.present?.to_i + user.avatar.present?.to_i + user.mini_resume.present?.to_i + (user.city.present? or user.country.present?).to_i) * 2 + user.websites_count + user.interest_tags_count + user.skill_tags_count + user.comments_count * 3
+    self.points = (user.popularity_points_count * 0.1) + user.live_visible_projects_count * 10 + user.impressions_count * 0.01 + (user.name.present?.to_i + user.avatar.present?.to_i + user.mini_resume.present?.to_i + (user.city.present? or user.country.present?).to_i) * 2 + user.websites_count + user.interest_tags_count + user.skill_tags_count + user.comments_count * 3
   end
 end
