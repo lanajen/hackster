@@ -14,7 +14,7 @@
             .col-xs-12
               .row.project-list
                 - @projects.each_with_index do |project, i|
-                  = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', ref: 'hacker_space', ref_id: @hacker_space.id, offset: i }
+                  = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '3', ref: 'hacker_space', ref_id: @hacker_space.id, offset: i }
 
         - else
           .row

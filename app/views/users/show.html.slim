@@ -19,13 +19,13 @@ section#projects-list
               h4.col-xs-12.thumb-horizontal= year
               - projects.each_with_index do |project, i|
                 - show_year = (i > 0) ? false : true
-                = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', show_year: show_year, ref: 'user', ref_id: @user.id, offset: i }
+                = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '3', show_year: show_year, ref: 'user', ref_id: @user.id, offset: i }
       - else
         .thumb-list  class=@switch_style
           .row.project-list
             / @public_projects_sorted.each do |year, projects|
             - @public_projects.each_with_index do |project, i|
-              = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', ref: 'user', ref_id: @user.id, offset: i }
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '3', ref: 'user', ref_id: @user.id, offset: i }
 
       = content_for :js do
         javascript:
@@ -60,7 +60,7 @@ section#projects-list
         .thumb-list  class=@switch_style
           .row.project-list
             - @private_projects.each_with_index do |project, i|
-              = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', ref: 'userprivate', ref_id: @user.id, offset: i }
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '3', ref: 'userprivate', ref_id: @user.id, offset: i }
 
       - elsif user_is_current?
         p
@@ -76,7 +76,7 @@ section#projects-list
       .thumb-list  class=@switch_style
         .row.project-list
           - @respected_projects.each_with_index do |project, i|
-            = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, col: '3', ref: 'userrespected', ref_id: @user.id, offset: i }
+            = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '3', ref: 'userrespected', ref_id: @user.id, offset: i }
 
     - elsif user_is_current?
       p

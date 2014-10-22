@@ -93,7 +93,7 @@
                       = link_to 'See more recent projects &rarr;'.html_safe, projects_path(sort: 'recent'), class: 'btn-bottom'
                 .row
                   - @last_projects.each do |project|
-                    = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, ref: 'homelast' }
+                    = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homelast' }
       - else
         section
           .container
@@ -106,7 +106,7 @@
                       = link_to 'See more trending projects &rarr;'.html_safe, projects_path(sort: 'trending'), class: 'btn-bottom'
                 .row
                   - @most_popular_projects.each do |project|
-                    = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, ref: 'homepop' }
+                    = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homepop' }
 
       section
         .container
@@ -135,7 +135,7 @@
                       = link_to 'See more recent projects &rarr;'.html_safe, projects_path(sort: 'recent'), class: 'btn-bottom'
                 .row
                   - @last_projects.each do |project|
-                    = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, ref: 'homelast' }
+                    = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homelast' }
 
             .row
               .col-xs-12.text-center
@@ -152,7 +152,7 @@
                       = link_to 'See more trending projects &rarr;'.html_safe, projects_path(sort: 'trending'), class: 'btn-bottom'
                 .row
                   - @most_popular_projects.each do |project|
-                    = render partial: 'projects/project_thumb_hybrid', locals: { project: project.decorate, ref: 'homepop' }
+                    = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homepop' }
 
             .row
               .col-xs-12.text-center
