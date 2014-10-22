@@ -13,7 +13,7 @@
           | The updates you made will appear after you refresh the page.
   .code-editor-container*{ data: { 'disable-toolbar' => 'true', 'edit-only' => 'true' } }
     .code-editor  id="code-editor-#{embed.widget.id}"
-      ==< embed.widget.raw_code.try(:split, /\n/).try(:join, "\r")
+      = embed.widget.raw_code.try(:split, /\n/).try(:join, "\r")
       / to get rid of the extra whitespaces added by HAML in the final HTML
   .widget-attribute*{ 'data-attribute' => "raw_code", 'data-value' => embed.widget.raw_code }
 
