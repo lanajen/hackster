@@ -14,7 +14,7 @@ class Embed
     /(?:player\.)?vimeo\.com\/(?:video\/)?([0-9]+)/ => :vimeo,
     /vine\.co\/v\/([a-zA-Z0-9]+)/ => :vine,
     /(?:youtube\.com|youtu\.be)\/(?:watch\?v=|v\/|embed\/)?([a-zA-Z0-9\-_]+)/ => :youtube,
-    /youmagine\.com\/designs\/([a-zA-Z0-9]+)/ => :youmagine,
+    /youmagine\.com\/designs\/([a-zA-Z0-9\-]+)/ => :youmagine,
     /(.+\.(?:jpg|jpeg|bmp|gif|png)(?:\?.*)?)$/i => :image,
     # /(.+\.(html|html|asp|aspx|php|js|css)(\?.*)?)$/ => nil,
     # /(.+\.[a-z]{3,4}(\?.*)?)$/ => { embed_class: 'original', code: '<div class="document-widget"><div class="file"><i class="fa fa-file-o fa-lg"></i><a href="|id|">|id|</a></div></div>',},
