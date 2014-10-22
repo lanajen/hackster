@@ -25,18 +25,28 @@
                   i.fa.fa-lightbulb-o>
                 = link_to project.name, project_path(project), class: 'project-link-with-ref'
               h4
-                ' by
-                - if project.guest_name.present?
-                  = project.guest_name
-                - elsif project.team.full_name.present?
-                  | Team #{project.team.full_name}
+                - if project.external
+                  - if project.guest_name.present?
+                    ' by
+                    span.fake-link>= project.guest_name
+                  - elsif u = project.users.first
+                    ' by
+                    ==> link_to u.name, u
+                  ' on
+                  span.fake-link= project.website_host
                 - else
-                  - users = project.users
-                  - if project.team_members_count < 4
-                    = project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
+                  ' by
+                  - if project.guest_name.present?
+                    = project.guest_name
+                  - elsif project.team.full_name.present?
+                    | Team #{project.team.full_name}
                   - else
-                    - more = content_tag(:a, "more #{content_tag(:i, '', class: 'fa fa-question-circle')}".html_safe, class: 'help', data: { container: 'body', toggle: 'popover', placement: 'bottom', content: project.users.map { |u| link_to u.name, u }.to_sentence, html: 'true', trigger: 'hover', delay: '100' }, rel: 'popover')
-                    = (project.users[0..2].map{ |u| link_to u.name, u } + [more]).to_sentence.html_safe
+                    - users = project.users
+                    - if project.team_members_count < 4
+                      = project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
+                    - else
+                      - more = content_tag(:a, "more #{content_tag(:i, '', class: 'fa fa-question-circle')}".html_safe, class: 'help', data: { container: 'body', toggle: 'popover', placement: 'bottom', content: project.users.map { |u| link_to u.name, u }.to_sentence, html: 'true', trigger: 'hover', delay: '100' }, rel: 'popover')
+                      = (project.users[0..2].map{ |u| link_to u.name, u } + [more]).to_sentence.html_safe
               p= truncate project.one_liner, length: 140
               .thumb-bottom
                 hr
@@ -57,6 +67,9 @@
                 - if project.wip?
                   span.counter.istooltip  title='Work in progress' data-container='body'
                     i.fa.fa-wrench
+                - if project.external
+                  span.counter.istooltip  title='This project is hosted on an external website' data-container='body'
+                    i.fa.fa-external-link
 
       .col-xs-12.thumb-horizontal
         .project-thumb-horizontal.project-thumb
@@ -66,15 +79,25 @@
               h3
                 - if project.is_idea?
                   i.fa.fa-lightbulb-o>
-                = link_to project.name, project_path(project), class: 'project-link-with-ref'
-                small<
-                  ' by
-                  - if project.guest_name.present?
-                    = project.guest_name
-                  - elsif project.team.full_name.present?
-                    | Team #{project.team.full_name}
+                ==> link_to project.name, project_path(project), class: 'project-link-with-ref'
+                small
+                  - if project.external
+                    - if project.guest_name.present?
+                      ' by
+                      span.fake-link>= project.guest_name
+                    - elsif u = project.users.first
+                      ' by
+                      ==> link_to u.name, u
+                    ' on
+                    span.fake-link= project.website_host
                   - else
-                    = project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
+                    ' by
+                    - if project.guest_name.present?
+                      = project.guest_name
+                    - elsif project.team.full_name.present?
+                      | Team #{project.team.full_name}
+                    - else
+                      = project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
               p= truncate project.one_liner, length: 140
               .thumb-bottom
                 hr
@@ -95,3 +118,6 @@
                 - if project.wip?
                   span.counter.istooltip  title='Work in progress' data-container='body'
                     i.fa.fa-wrench
+                - if project.external
+                  span.counter.istooltip  title='This project is hosted on an external website' data-container='body'
+                    i.fa.fa-external-link

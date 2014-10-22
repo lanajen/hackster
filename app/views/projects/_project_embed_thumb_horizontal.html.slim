@@ -8,11 +8,21 @@
       h3
         ==> link_to project.name, project_url(project, ref: ref, ref_id: ref_id, offset: offset)
         small
-          ' by
-          - if project.guest_name.present?
-            = project.guest_name
+          - if project.external
+            - if project.guest_name.present?
+              ' by
+              span.fake-link>= project.guest_name
+            - elsif u = project.users.first
+              ' by
+              ==> link_to u.name, u
+            ' on
+            span.fake-link= project.website_host
           - else
-            = project.users.map { |u| link_to u.name, user_url(u) }.to_sentence.html_safe
+            ' by
+            - if project.guest_name.present?
+              = project.guest_name
+            - else
+              = project.users.map { |u| link_to u.name, user_url(u) }.to_sentence.html_safe
       p= truncate project.one_liner, length: 140
       .thumb-bottom
         hr

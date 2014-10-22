@@ -6,6 +6,7 @@ class Embed
     /gist\.github\.com\/[0-9a-zA-Z_\-]+\/([0-9a-zA-Z_\-]+)/ => :gist,
     /github\.com\/([0-9a-zA-Z_\-]+\/[0-9a-zA-Z_\-]+)/ => :github,
     /instagram\.com\/p\/([a-zA-Z]+)/ => :instagram,
+    /kickstarter\.com\/projects\/([0-9a-z\-]+\/[0-9a-z\-]+)/ => :kickstarter,
     /oshpark\.com\/shared_projects\/([a-zA-Z0-9]+)/ => :oshpark,
     /sketchfab\.com\/models\/([a-z0-9]+)/ => :sketchfab,
     # /tindie\.com/ => 'BuyWidget.new(link:"|href|",name:"Where to buy")',

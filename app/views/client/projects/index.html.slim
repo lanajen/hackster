@@ -68,10 +68,7 @@
         - @tech = current_tech
         - if @projects.any?
           - @projects.each do |project|
-            - if project.external
-              = render partial: 'client/projects/project_thumb_external', locals: { project: project.decorate }
-            - else
-              = render partial: 'client/projects/project_thumb', locals: { project: project.decorate }
+            = render partial: 'client/projects/project_thumb', locals: { project: project.decorate }
         - else
           p.col-xs-12 No projects match your criteria.
       .row

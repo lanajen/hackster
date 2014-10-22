@@ -21,10 +21,7 @@
 
         .row.thumb-list
           - @results.each do |project|
-            - if project.external
-              = render partial: 'projects/project_thumb_external', locals: { project: project.decorate }
-            - else
-              = render partial: 'client/projects/project_thumb', locals: { project: project.decorate }
+            = render partial: 'client/projects/project_thumb', locals: { project: project.decorate }
 
         .row
           .col-xs-12.text-center= will_paginate @results
