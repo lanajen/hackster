@@ -20,7 +20,7 @@
         ' All projects that members share with this group will appear here.
         - if can? :add_project, @community
           ==> link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project to community".html_safe, "#{community_path(@community)}/projects/new", class: 'btn btn-sm btn-warning'
-          ' or
+          small> or
           = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Submit a link".html_safe, "#{community_path(@community)}/projects/new?project[external]=true&redirect_to=#{community_path(@community)}", class: 'btn btn-sm btn-warning'
 
 
