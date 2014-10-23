@@ -4,7 +4,7 @@ class Embed
     /123d\.circuits\.io\/circuits\/([a-z0-9\-]+)/ => :circuitsio,
     /bitbucket\.org\/([0-9a-zA-Z_\-]+\/[0-9a-zA-Z_\-]+)/ => :bitbucket,
     /gist\.github\.com\/[0-9a-zA-Z_\-]+\/([0-9a-zA-Z_\-]+)/ => :gist,
-    /github\.com\/(?:downloads\/)([0-9a-zA-Z_\-]+\/[0-9a-zA-Z_\-]+)/ => :github,
+    /github\.com\/(?:downloads\/)?([0-9a-zA-Z_\-]+\/[0-9a-zA-Z_\-]+)/ => :github,
     /instagram\.com\/p\/([a-zA-Z]+)/ => :instagram,
     /kickstarter\.com\/projects\/([0-9a-z\-]+\/[0-9a-z\-]+)/ => :kickstarter,
     /oshpark\.com\/shared_projects\/([a-zA-Z0-9]+)/ => :oshpark,
