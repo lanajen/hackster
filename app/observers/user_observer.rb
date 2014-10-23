@@ -42,8 +42,20 @@ class UserObserver < ActiveRecord::Observer
     return unless record.user_name.present?
     record.build_slug unless record.slug
     slug = record.slug
-    slug.value = record.user_name
+    slug.value = record.user_name.downcase
     slug.save
+  end
+
+  def after_update record
+    if record.user_name_changed?
+      record.teams.each do |team|
+        team.update_attribute :user_name, record.user_name if team.user_name == record.user_name_was
+      end
+    end
+
+    # team user name needs to update if it was based on user's user_name
+    # + project slug history needs to be added in any case
+    # + project slug might need to be changed?
   end
 
   def before_update record

@@ -20,9 +20,8 @@ class Tech < Group
     :project_ideas_phrasing
 
   validates :user_name, :full_name, presence: true
-  validates :user_name, :new_user_name, length: { in: 3..100 }, if: proc{|t| t.persisted?}
   validate :user_name_is_unique
-  before_validation :update_user_name
+  # before_save :update_user_name
 
   store_accessor :websites, :forums_link, :documentation_link, :crowdfunding_link, :buy_link,
     :shoplocket_link
@@ -161,7 +160,7 @@ class Tech < Group
     def user_name_is_unique
       return unless new_user_name.present?
 
-      slug = SlugHistory.where(value: new_user_name).first
+      slug = SlugHistory.where("LOWER(slug_histories.value) = ?", new_user_name.downcase).first
       errors.add :new_user_name, 'is already taken' if slug and slug.sluggable != self
     end
 end

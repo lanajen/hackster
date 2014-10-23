@@ -93,6 +93,6 @@ class HackerSpacesController < ApplicationController
 
   private
     def load_hacker_space
-      @group = @hacker_space = HackerSpace.find_by_user_name! params[:user_name]
+      @group = @hacker_space = HackerSpace.find_by_user_name! params[:user_name].downcase
     end
 end

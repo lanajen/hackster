@@ -5,7 +5,10 @@ class Group < ActiveRecord::Base
     'Only people who are explicitely invited' => 'invite',
   }
 
+  include EditableSlug
   include SetChangesForStoredAttributes
+
+  editable_slug :user_name
 
   is_impressionable counter_cache: true, unique: :session_hash
 
@@ -29,9 +32,7 @@ class Group < ActiveRecord::Base
     :facebook_link, :twitter_link, :linked_in_link, :website_link,
     :blog_link, :github_link, :email, :mini_resume, :city, :country,
     :user_name, :full_name, :members_attributes, :avatar_id,
-    :permissions_attributes, :google_plus_link, :youtube_link, :new_user_name,
-    :access_level
-  attr_writer :new_user_name
+    :permissions_attributes, :google_plus_link, :youtube_link, :access_level
 
   accepts_nested_attributes_for :avatar, :members, :permissions,
     allow_destroy: true
@@ -40,10 +41,11 @@ class Group < ActiveRecord::Base
     :google_plus_link, :youtube_link, :website_link, :blog_link, :github_link]
   set_changes_for_stored_attributes :websites
 
-  validates :user_name, :new_user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users) }
+  validates :user_name, :new_user_name, length: { in: 3..100 },
+    format: { with: /\A[a-zA-Z0-9_\-]+\z/, message: "accepts only letters, numbers, underscores '_' and dashes '-'." }, allow_blank: true, if: proc{|t| t.persisted?}
+  validates :user_name, :new_user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users communities hackerspaces hackers) }
   validates :email, length: { maximum: 255 }
   validate :website_format_is_valid
-  before_validation :assign_new_user_name
   before_validation :clean_members
   before_validation :ensure_website_protocol
   before_save :ensure_invitation_token
@@ -63,11 +65,6 @@ class Group < ActiveRecord::Base
 
   def access_level
     read_attribute(:access_level).presence || self.class.default_access_level
-  end
-
-  def assign_new_user_name
-    @old_user_name = user_name
-    self.user_name = new_user_name
   end
 
   def avatar_id=(val)
@@ -117,11 +114,6 @@ class Group < ActiveRecord::Base
 
   def name
     full_name.presence || user_name
-  end
-
-  def new_user_name
-    # raise new_user_name.to_s
-    @new_user_name ||= user_name
   end
 
   def twitter_handle

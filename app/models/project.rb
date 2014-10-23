@@ -16,10 +16,14 @@ class Project < ActiveRecord::Base
   }
 
   include Counter
+  include EditableSlug
   include Privatable
   include StringParser
   include Taggable
   # include Workflow
+
+  editable_slug :slug
+
   is_impressionable counter_cache: true, unique: :session_hash
 
   belongs_to :team
@@ -60,13 +64,12 @@ class Project < ActiveRecord::Base
   attr_accessible :description, :end_date, :name, :start_date, :current,
     :team_members_attributes, :website, :one_liner, :widgets_attributes,
     :featured, :featured_date, :cover_image_id, :logo_id, :license, :slug,
-    :permissions_attributes, :new_slug, :slug_histories_attributes, :hide,
+    :permissions_attributes, :slug_histories_attributes, :hide,
     :graded, :wip, :columns_count, :external, :guest_name,
     :approved, :open_source, :buy_link, :private_logs, :private_issues,
     :hacker_space_id, :locked, :mark_as_idea, :event_id, :assignment_id,
     :community_ids, :new_group_id
   attr_accessor :current
-  attr_writer :new_slug
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
     :widgets, :cover_image, :permissions, :slug_histories, allow_destroy: true
 
@@ -84,7 +87,6 @@ class Project < ActiveRecord::Base
   # validates :website, uniqueness: { message: 'has already been submitted' }, allow_blank: true, if: proc {|p| p.website_changed? }
   validates :guest_name, length: { minimum: 3 }, allow_blank: true
   validate :slug_is_unique
-  before_validation :assign_new_slug
   # before_validation :check_if_current
   before_validation :clean_permissions
   before_validation :ensure_website_protocol
@@ -221,11 +223,6 @@ class Project < ActiveRecord::Base
 
   def all_issues
     (issues + Issue.where(threadable_type: 'Widget').where('threadable_id IN (?)', widgets.pluck('widgets.id'))).sort_by{ |t| t.created_at }
-  end
-
-  def assign_new_slug
-    @old_slug = slug
-    self.slug = new_slug
   end
 
   def buy_link_host
@@ -423,10 +420,6 @@ class Project < ActiveRecord::Base
 
   def new_group_id=(val)
     project_collections.new collectable_type: 'Group', collectable_id: val
-  end
-
-  def new_slug
-    @new_slug ||= slug
   end
 
   def security_token
@@ -645,7 +638,7 @@ class Project < ActiveRecord::Base
       return unless slug_changed?
 
       parent = team ? self.class.joins(:team).where(groups: { user_name: team.user_name }) : self.class
-      errors.add :new_slug, 'has already been taken' if parent.where(projects: { slug: slug }).where.not(id: id).any?
+      errors.add :new_slug, 'has already been taken' if parent.where("LOWER(projects.slug) = ?", slug.downcase).where.not(id: id).any?
     end
 
     def widgets_to_text

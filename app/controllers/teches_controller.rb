@@ -126,7 +126,7 @@ class TechesController < ApplicationController
     else
       @tech.build_avatar unless @tech.avatar
       respond_to do |format|
-        format.html { render action: 'edit' }
+        format.html { render template: 'groups/teches/edit' }
         format.js { render json: { group: @tech.errors }, status: :unprocessable_entity }
       end
     end

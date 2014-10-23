@@ -16,7 +16,7 @@
   .row
     .col-xs-6
       = f.input :full_name
-      = f.input :user_name, hint: "Changing your user name will break the URLs of your existing projects!"
+      = f.input :new_user_name, label: 'User name'
       = f.input :mini_resume, as: :text, input_html: { rows: 4 },
         hint: 'Maximum 140 characters', label: 'About me'
 

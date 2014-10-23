@@ -3,7 +3,7 @@ class TechObserver < ActiveRecord::Observer
     return unless record.user_name.present?
     record.build_slug unless record.slug
     slug = record.slug
-    slug.value = record.user_name
+    slug.value = record.user_name.downcase
     slug.save
   end
 

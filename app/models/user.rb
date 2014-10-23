@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base
   include Counter
+  include EditableSlug
   include Roles
   include SetChangesForStoredAttributes
   include StringParser
@@ -19,6 +20,8 @@ class User < ActiveRecord::Base
     'follow_tech_activity' => 'Activity for a tool I follow',
   }
   CATEGORIES = %w()
+
+  editable_slug :user_name
 
   devise :database_authenticatable, :registerable, :invitable,
          :recoverable, :rememberable, :trackable, :validatable, :confirmable,
@@ -81,9 +84,9 @@ class User < ActiveRecord::Base
   validates :name, length: { in: 1..200 }, allow_blank: true
   validates :city, :country, length: { maximum: 50 }, allow_blank: true
   validates :mini_resume, length: { maximum: 160 }, allow_blank: true
-  validates :user_name, length: { in: 3..100 },
-    format: { with: /\A[a-z0-9_\-]+\z/, message: "accepts only downcase letters, numbers, underscores '_' and dashes '-'." }, allow_blank: true
-  validates :user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users about) }
+  validates :user_name, :new_user_name, length: { in: 3..100 },
+    format: { with: /\A[a-zA-Z0-9_\-]+\z/, message: "accepts only letters, numbers, underscores '_' and dashes '-'." }, allow_blank: true
+  validates :user_name, :new_user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users communities hackerspaces hackers) }
   with_options unless: proc { |u| u.skip_registration_confirmation },
     on: :create do |user|
       user.validates :email_confirmation, presence: true
@@ -805,7 +808,7 @@ class User < ActiveRecord::Base
     def user_name_is_unique
       return unless user_name.present?
 
-      slug = SlugHistory.where(value: user_name).first
+      slug = SlugHistory.where("LOWER(slug_histories.value) = ?", new_user_name.downcase).first
       errors.add :user_name, 'is already taken' if slug and slug.sluggable != self
     end
 

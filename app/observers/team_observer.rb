@@ -3,7 +3,7 @@ class TeamObserver < ActiveRecord::Observer
     record.projects.each do |p|
       SlugHistory.update_history_for p.id
       p.update_slug!
-    end
+    end if record.user_name_changed?
 
     if record.full_name_changed?
       Cashier.expire "team-#{record.id}"
