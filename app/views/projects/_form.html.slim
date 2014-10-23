@@ -13,74 +13,94 @@
             li= link_to 'Cancel', @project, class: 'btn-link btn-sm'
       hr
 
+
   .row
     .col-xs-12
-      .panel.panel-default
-        .panel-heading
-          h4 General settings
-        .panel-body
-          .hidden= @project.id
-          / = f.input :name, label: 'Title'
-          = f.input :new_slug, label: 'Project URL', wrapper: :addon do
-            span.input-group-addon hackster.io/#{@project.user_name_for_url.truncate(10)}/
-            = f.input_field :new_slug
+      - if @project.external
+        .panel.panel-default
+          .panel-heading
+            h4 General settings
+          .panel-body
+            = f.input :name, label: 'Project name'
+            = f.input :tech_tags_string, as: :string, label: 'Built with', hint: 'Separate technologies by commas', placeholder: 'Eg: Arduino, ATmega, Attiny...'
+            = f.input :website, label: 'Project website'
+            = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @project.cover_image.try(:file_url, :cover_mini_thumb), help_block: 'This should be your nicest picture for this project. Give us some high def for best results!', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
 
-          / = f.input :one_liner, as: :text, input_html: { rows: 4 },
-            hint: 'Maximum 140 characters'
-          / = f.input :website, label: 'Project website'
-          / = f.input :tech_tags_string, as: :string, label: 'Technologies used', hint: 'Separate technologies by commas', placeholder: 'Eg: Arduino, ATmega, Attiny...'
-          / = f.input :product_tags_string, as: :string, label: 'Tags', hint: 'Separate tags by commas. Used for finding your project more easily.', placeholder: 'Eg: home automation, drone, display...'
+            = f.input :start_date, order: [:year, :month, :day], label: 'Date', hint: 'When did this project come to life?' do
+              .row
+                .col-xs-6
+                  = hidden_field_tag 'project[start_date(3i)]', '1'
+                  = select_month(@project.start_date, { prompt: '--Month--' }, { class: 'form-control', name: 'project[start_date(2i)]' })
+                .col-xs-6
+                  = select_year(@project.start_date, { prompt: '--Year--', start_year: Date.today.year, end_year: Date.today.year - 15 }, { class: 'form-control', name: 'project[start_date(1i)]' })
 
-          / = f.input :license, collection: License.all, value_method: :url, hint: 'Is your project open source? If so specify under which license here.', selected: @project.license.try(:url), include_blank: true
+      - else
+        .panel.panel-default
+          .panel-heading
+            h4 General settings
+          .panel-body
+            .hidden= @project.id
+            / = f.input :name, label: 'Title'
+            = f.input :new_slug, label: 'Project URL', wrapper: :addon do
+              span.input-group-addon hackster.io/#{@project.user_name_for_url.truncate(10)}/
+              = f.input_field :new_slug
 
-          / = f.input :buy_link, hint: 'Are you selling this project as a product or kit somewhere? Add the link here.'
+            / = f.input :one_liner, as: :text, input_html: { rows: 4 },
+              hint: 'Maximum 140 characters'
+            / = f.input :website, label: 'Project website'
+            / = f.input :tech_tags_string, as: :string, label: 'Technologies used', hint: 'Separate technologies by commas', placeholder: 'Eg: Arduino, ATmega, Attiny...'
+            / = f.input :product_tags_string, as: :string, label: 'Tags', hint: 'Separate tags by commas. Used for finding your project more easily.', placeholder: 'Eg: home automation, drone, display...'
 
-          / = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Logo', image_link: @project.logo.try(:file_url, :thumb), help_block: 'Optional, only if you have one. Should be squared, at least 200x200px for best results', attribute_type: 'logo', image_version: 'thumb', model: 'project' }
+            / = f.input :license, collection: License.all, value_method: :url, hint: 'Is your project open source? If so specify under which license here.', selected: @project.license.try(:url), include_blank: true
 
-          / = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @project.cover_image.try(:file_url, :cover_mini_thumb), help_block: 'This should be your nicest picture for this project. Give us some high def for best results!', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
+            / = f.input :buy_link, hint: 'Are you selling this project as a product or kit somewhere? Add the link here.'
 
-          = f.input :start_date, order: [:year, :month, :day], label: 'Date', hint: 'When did this project come to life?' do
-            .row
-              .col-xs-6
-                = hidden_field_tag 'project[start_date(3i)]', '1'
-                = select_month(@project.start_date, { prompt: '--Month--' }, { class: 'form-control', name: 'project[start_date(2i)]' })
-              .col-xs-6
-                = select_year(@project.start_date, { prompt: '--Year--', start_year: Date.today.year, end_year: Date.today.year - 15 }, { class: 'form-control', name: 'project[start_date(1i)]' })
+            / = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Logo', image_link: @project.logo.try(:file_url, :thumb), help_block: 'Optional, only if you have one. Should be squared, at least 200x200px for best results', attribute_type: 'logo', image_version: 'thumb', model: 'project' }
 
-          = render partial: 'projects/open_source_switch', locals: { f: f }
-          = f.input :mark_as_idea, inline_label: 'This project is still in the idea phase (ask for feedback!)', label: false, as: :boolean
-          = f.input :wip, inline_label: 'This is a work in progress', label: false
+            / = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @project.cover_image.try(:file_url, :cover_mini_thumb), help_block: 'This should be your nicest picture for this project. Give us some high def for best results!', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
 
-          = f.input :public, inline_label: "Make this project public #{content_tag(:i, '', class: 'fa fa-info-circle istooltip', title: 'You need to add a name, a description and a cover image before you can make it public.')}".html_safe, label: false, disabled: (@project.private and !@project.can_be_public?), as: :boolean
+            = f.input :start_date, order: [:year, :month, :day], label: 'Date', hint: 'When did this project come to life?' do
+              .row
+                .col-xs-6
+                  = hidden_field_tag 'project[start_date(3i)]', '1'
+                  = select_month(@project.start_date, { prompt: '--Month--' }, { class: 'form-control', name: 'project[start_date(2i)]' })
+                .col-xs-6
+                  = select_year(@project.start_date, { prompt: '--Year--', start_year: Date.today.year, end_year: Date.today.year - 15 }, { class: 'form-control', name: 'project[start_date(1i)]' })
 
-          - if @project.private?
-            .form-group
-              .col-xs-4
-                label.control-label Private sharing link
-              .col-xs-8
-                input.form-control  type='text' value="http://#{APP_CONFIG['full_host']}/projects/#{@project.id}?auth_token=#{@project.security_token}" onclick='this.select();' style='color: #666;background:#ddd'
-                p.help-block Use this link if you want to share your project while keeping it private.
+            = render partial: 'projects/open_source_switch', locals: { f: f }
+            = f.input :mark_as_idea, inline_label: 'This project is still in the idea phase (ask for feedback!)', label: false, as: :boolean
+            = f.input :wip, inline_label: 'This is a work in progress', label: false
 
-          = f.input :private_logs, inline_label: 'Private build logs', hint: "If your project is published, you can choose to keep build logs private by checking this box.", label: false, as: :boolean
-          = f.input :private_issues, inline_label: 'Private issues', hint: "If your project is published, you can choose to keep issues private by checking this box.", label: false, as: :boolean
+            = f.input :public, inline_label: "Make this project public #{content_tag(:i, '', class: 'fa fa-info-circle istooltip', title: 'You need to add a name, a description and a cover image before you can make it public.')}".html_safe, label: false, disabled: (@project.private and !@project.can_be_public?), as: :boolean
 
-      .panel.panel-default
-        .panel-heading
-          h4
-            ' Work attribution
-            small If you're using other people's work, give a shout for them here
-        .panel-body
-          - widget = @project.credits_widget
-          = f.simple_fields_for :widgets, widget do |f_cred|
-            - widget.new_credit_line if widget.credit_lines.empty?
-            .form-fields
-              = f_cred.simple_fields_for :credit_lines do |f_credit|
-                = f_credit.input :name, label: 'Contributor name'
-                = f_credit.input :work, label: 'What you credit them for'
-                = f_credit.input :link, label: 'Link (optional)'
-                .row
-                  .col-xs-offset-4.col-xs-8= f_credit.link_to_remove 'Remove this contributor', class: 'btn btn-xs btn-danger'
-              = f_cred.link_to_add 'Add another contributor', :credit_lines, class: 'btn btn-xs btn-success', style: 'margin:0 0 0 33.33333%;'
+            - if @project.private?
+              .form-group
+                .col-xs-4
+                  label.control-label Private sharing link
+                .col-xs-8
+                  input.form-control  type='text' value="http://#{APP_CONFIG['full_host']}/projects/#{@project.id}?auth_token=#{@project.security_token}" onclick='this.select();' style='color: #666;background:#ddd'
+                  p.help-block Use this link if you want to share your project while keeping it private.
+
+            = f.input :private_logs, inline_label: 'Private build logs', hint: "If your project is published, you can choose to keep build logs private by checking this box.", label: false, as: :boolean
+            = f.input :private_issues, inline_label: 'Private issues', hint: "If your project is published, you can choose to keep issues private by checking this box.", label: false, as: :boolean
+
+        .panel.panel-default
+          .panel-heading
+            h4
+              ' Work attribution
+              small If you're using other people's work, give a shout for them here
+          .panel-body
+            - widget = @project.credits_widget
+            = f.simple_fields_for :widgets, widget do |f_cred|
+              - widget.new_credit_line if widget.credit_lines.empty?
+              .form-fields
+                = f_cred.simple_fields_for :credit_lines do |f_credit|
+                  = f_credit.input :name, label: 'Contributor name'
+                  = f_credit.input :work, label: 'What you credit them for'
+                  = f_credit.input :link, label: 'Link (optional)'
+                  .row
+                    .col-xs-offset-4.col-xs-8= f_credit.link_to_remove 'Remove this contributor', class: 'btn btn-xs btn-danger'
+                = f_cred.link_to_add 'Add another contributor', :credit_lines, class: 'btn btn-xs btn-success', style: 'margin:0 0 0 33.33333%;'
 
       .panel.panel-default#sharing
         .panel-heading
