@@ -3,6 +3,8 @@
     .expanded-header
       h2.text-center Account settings
 
+    p.text-center.mg-20= link_to 'Trying to edit your profile?', profile_edit_path, class: 'btn btn-link'
+
     = simple_form_for resource, as: resource_name, url: registration_path(resource_name), html: { method: :patch, class: 'form-horizontal widget-form', autocomplete: "off" }, wrapper: :bootstrap3_horizontal do |f|
       = f.error_notification
       = f.input :email, :required => true, :autofocus => true, autocomplete: "off"

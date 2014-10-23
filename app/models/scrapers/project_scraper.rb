@@ -17,6 +17,13 @@ class ProjectScraper
     project
   end
 
+  def self.scrape_and_save page_url, user_id=1
+    project = scrape page_url
+    project.build_team
+    project.team.members.new user_id: user_id
+    project.save
+  end
+
   def document
     Document.new (content || scrape), @page_url, @strategy
   end
@@ -41,15 +48,16 @@ class ProjectScraper
       'wordpress' => :wordpress,
     }
     KNOWN_HOSTS = {
-      'blogspot.fr' => :blogspot,
       'blogspot.com' => :blogspot,
+      'blogspot.fr' => :blogspot,
+      'community.spark.io' => :spark_forum,
+      'developer.mbed.org' => :mbed,
       'forum.arduino.cc' => :arduinocc,
       'github.com' => :github,
       'hackaday.io' => :hackadayio,
       'instructables.com' => :instructable,
       'kickstarter.com' => :kickstarter,
       'medium.com' => :medium,
-      'community.spark.io' => :spark_forum,
       'udoo.org' => :udoo,
       'wordpress.com' => :wordpress,
     }

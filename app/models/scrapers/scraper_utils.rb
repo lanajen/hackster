@@ -62,7 +62,7 @@ module ScraperUtils
       status_code = "Error"
     end
     puts "#{status_code}"
-    status_code == '200'
+    status_code.in? %w(200 301 302)
   end
 
   def write_file file_name, content, header=nil, mode=nil

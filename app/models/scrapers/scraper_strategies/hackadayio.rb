@@ -44,7 +44,7 @@ module ScraperStrategies
           parse_embeds @log
           parse_files @log
           parse_code @log
-          clean_up_formatting @log
+          clean_up_formatting '@log'
           post.body = @log.children.to_s
         end
       end

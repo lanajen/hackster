@@ -30,8 +30,8 @@ module ScraperStrategies
       normalize_links
       parse_comments
       format_text
-      parse_images
       parse_cover_image
+      parse_images
       parse_embeds
       parse_files
       parse_code
@@ -66,18 +66,32 @@ module ScraperStrategies
         end
       end
 
-      def clean_up_formatting base=@article
+      def clean_up_formatting base_name='@article'
+        base = instance_variable_get base_name
         # @article.search('//text()').each{|el| el.remove if el.content.strip.blank? }
         base.css('a, p, h3, h4').each{|el| el.remove if el.content.strip.blank? }
 
         sanitized_text = Sanitize.clean(base.to_s.try(:encode, "UTF-8"), Sanitize::Config::SCRAPER)
-        base = Nokogiri::HTML::DocumentFragment.parse(sanitized_text)
+        instance_variable_set base_name, Nokogiri::HTML::DocumentFragment.parse(sanitized_text)
 
-        clean_divs base
+        clean_divs instance_variable_get(base_name)
       end
 
       def crap_list
         %w(#sidebar #sidebar-right #sidebar-left .sidebar .sidebar-left .sidebar-right #head #header #hd .navbar .navbar-top header footer #ft #footer .sharedaddy .ts-fab-wrapper .shareaholic-canvas .post-nav .navigation .post-data)
+      end
+
+      def extract_code_blocks base=@article
+        base.css('pre code, .crayon-syntax .crayon-main, .syntaxhighlighter .code')
+      end
+
+      def extract_code_lines node
+        if node.name == 'code'
+          code = node.content.gsub(/<br ?\/?>/, "\r\n")
+          code.lines.count <= 5 ? nil : code  # we leave snippets in place
+        else
+          node.css('.crayon-line, .line').map{|l| l.content }.join("\r\n")
+        end
       end
 
       def extract_comments
@@ -152,14 +166,18 @@ module ScraperStrategies
 
         # find the first level title tag (h), replaces by h3, and replaces next
         # level by h4, and further levels by b
+        h = {}
         (title_levels).each do |i|
-          if base.css("h#{i}").any?
-            base.css("h#{i}").each { |h| h.name = 'h3' }
+          h[i] = base.css("h#{i}")
+        end
+        (title_levels).each do |i|
+          if h[i].any?
+            h[i].each { |h| h.name = 'h3' }
             (i+1..4).each do |j|
-              if base.css("h#{j}").any?
-                base.css("h#{j}").each { |h| h.name = 'h4' }
+              if h[j].any?
+                h[j].each { |h| h.name = 'h4' }
                 (j+1..3).each do |l|
-                  base.css("h#{l}").each { |h| h.name = 'b' }
+                  h[l].each { |h| h.name = 'b' }
                 end
                 break
               end
@@ -234,25 +252,16 @@ module ScraperStrategies
       end
 
       def parse_code base=@article
-        base.css('pre code, .crayon-syntax .crayon-main, .syntaxhighlighter .code').each do |node|
-          # if the node has children with code we skip it
-          # catch :haschildren do
-          #   node.children.each{ |child| throw :haschildren if child.name.in? %w(pre code) }
-            if node.name == 'code'
-              code = node.content.gsub(/<br ?\/?>/, "\r\n")
-              next if code.lines.count <= 5  # we leave snippets in place
-            else
-              code = node.css('.crayon-line, .line').map{|l| l.content }.join("\r\n")
-            end
+        extract_code_blocks(base).each do |node|
+          next unless code = extract_code_lines(node)
 
-            widget = CodeWidget.new(raw_code: code, name: 'Code')
-            widget.widgetable_id = 0
-            widget.save
-            parent = find_parent node
-            parent.after "<div class='embed-frame' data-widget-id='#{widget.id}' data-type='widget'></div>"
-            @widgets << widget
-            node.parent.remove  # remove so it's not added to text later
-          # end
+          widget = CodeWidget.new(raw_code: code, name: 'Code')
+          widget.widgetable_id = 0
+          widget.save
+          parent = find_parent node
+          parent.after "<div class='embed-frame' data-widget-id='#{widget.id}' data-type='widget'></div>"
+          @widgets << widget
+          node.parent.remove  # remove so it's not added to text later
         end
       end
 
