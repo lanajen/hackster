@@ -1,3 +1,12 @@
+= content_for :js do
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-51b26f5613fb83d2" async="async"></script>
+  javascript:
+    var addthis_share = {
+      "data_track_addressbar":false,
+       url: "#{tech_short_url(@tech)}",
+       title: "Discover hacks made with #{@tech.name}#{' (' + @tech.twitter_handle + ')' if @tech.twitter_handle}."
+    }
+
 - cache ["tech-#{@tech.id}-sidebar", user_signed_in?, can?(:manage, @tech), (user_signed_in? and current_user.following?(@tech))], tag: ["tech-#{@tech.id}-sidebar", 'tech-sidebar'] do
   #sidebar-container.affixable
     - @tech = GroupDecorator.decorate @tech
@@ -25,6 +34,8 @@
           = render partial: 'followers/button_text', locals: { followable: @tech, why: "Follow #{@tech.name} to receive updates about new projects." }
           / small style='margin-top:10px;display:block'
             = link_to 'Why follow?', 'javascript:void();', style: 'color:#666', rel: 'tooltip', title: "Follow #{@tech.name} to receive updates about new projects.", data: { placement: 'bottom' }
+
+          .addthis_sharing_toolbox
 
       .display
         h4 Resources

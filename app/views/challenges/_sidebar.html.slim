@@ -9,6 +9,16 @@
         - if @challenge.teaser.present?
           = @challenge.teaser
       = link_to 'Read challenge rules', challenge_rules_path(@challenge), class: 'btn btn-primary btn-sm btn-block'
+      .addthis_sharing_toolbox
+
+      = content_for :js do
+        <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-51b26f5613fb83d2" async="async"></script>
+        javascript:
+          var addthis_share = {
+            "data_track_addressbar":false,
+             url: "#{challenge_url(@challenge)}",
+             title: "Submit your project to #{@challenge.name} and win #{indefinite_articlerize @challenge.prizes.first.name}."
+          }
 
     .display
       h4 Enter and win:

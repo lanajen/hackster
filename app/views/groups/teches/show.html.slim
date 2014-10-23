@@ -15,8 +15,8 @@
   meta(property="twitter:domain" content="hackster.io")
   meta(property="twitter:title" content="#{@tech.name} projects")
   meta(property="twitter:description" content="#{@tech.mini_resume}")
-  - if link = @tech.twitter_link.presence and handle = link.match(/twitter.com\/(.+)/).try(:[], 1)
-    meta(property="twitter:creator" content="@#{handle}")
+  - if handle = @tech.twitter_handle
+    meta(property="twitter:creator" content=handle)
   link(rel="canonical" href=tech_short_url(@tech))
 
 - if @tech.cover_image

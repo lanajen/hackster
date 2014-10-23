@@ -15,8 +15,8 @@
   - if teches = Tech.joins(:tech_tags).references(:tags).where("LOWER(tags.name) IN (?)", @project.tech_tags_cached.map{|t| t.downcase }) and teches.any?
     meta(property="twitter:data2" content=teches.map(&:name).to_sentence)
     meta(property="twitter:label2" content="BUILT WITH")
-  - if user = @project.users.first and link = user.twitter_link.presence and handle = link.match(/twitter.com\/(.+)/).try(:[], 1)
-    meta(property="twitter:creator" content="@#{handle}")
+  - if user = @project.users.first and handle = user.twitter_handle
+    meta(property="twitter:creator" content=handle)
   meta(property="twitter:data1" content=(@project.guest_name.presence || @project.users.map{|u| u.name }.to_sentence))
   meta(property="twitter:label1" content="MADE BY")
   meta(property="twitter:image:src" content=@project.cover_image(:cover_thumb))

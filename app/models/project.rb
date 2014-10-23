@@ -371,6 +371,10 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def known_teches
+    Tech.includes(:tech_tags).references(:tags).where("LOWER(tags.name) IN (?)", tech_tags_cached.map{|t| t.downcase })
+  end
+
   def has_assignment?
     assignment.present?
   end

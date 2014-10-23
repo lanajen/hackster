@@ -739,6 +739,13 @@ class User < ActiveRecord::Base
     }
   end
 
+  def twitter_handle
+    return unless twitter_link.present?
+
+    handle = twitter_link.match(/twitter.com\/(.+)/).try(:[], 1)
+    handle.present? ? "@#{handle}" : nil
+  end
+
   private
     def clean_user_name user_name
       user_name.try(:downcase).try(:gsub, /[^a-z0-9_\-]/, '')
