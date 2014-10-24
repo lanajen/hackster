@@ -285,7 +285,7 @@ $(function() {
       activateSortable();
       updateFileUploadDragZone();
 
-      $('.editable-attribute').attr('contenteditable', 'true');
+      $('.editable-attribute:not(.is-not-editable)').attr('contenteditable', 'true');
       $('.editable-attribute').each(function(){
         if ($(this).text() == ''){
           $(this).html('<span class="default-text">' + $(this).data('default-text') + '</span>');

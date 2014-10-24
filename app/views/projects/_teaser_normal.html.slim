@@ -51,7 +51,7 @@
               - if @project.product_tags_cached.any?
                 .tags.meta
                   - @project.product_tags_cached.each do |tag|
-                    span= link_to tag, tag_path(tag), class: 'tag-link'
+                    = link_to tag, tag_path(tag), class: 'tag-link'
 
               - if @project.buy_link.present?
                 .tags.meta

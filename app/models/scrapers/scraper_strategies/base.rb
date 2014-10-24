@@ -146,10 +146,10 @@ module ScraperStrategies
         %w(figcaption)
       end
 
-      def find_parent node, base_parent=@article
+      def find_parent node, base_parent=@article, additional_tags=%w()
         if node.parent and node.parent != base_parent
           # find_parent node.parent
-          node.parent.name.in?(%w(a span)) ? find_parent(node.parent, base_parent) : node.parent
+          node.parent.name.in?(%w(a span) + additional_tags) ? find_parent(node.parent, base_parent) : node.parent
         else
           node
         end
@@ -258,7 +258,7 @@ module ScraperStrategies
           widget = CodeWidget.new(raw_code: code, name: 'Code')
           widget.widgetable_id = 0
           widget.save
-          parent = find_parent node
+          parent = find_parent node, base
           parent.after "<div class='embed-frame' data-widget-id='#{widget.id}' data-type='widget'></div>"
           @widgets << widget
           node.parent.remove  # remove so it's not added to text later
@@ -276,7 +276,7 @@ module ScraperStrategies
             embed = Embed.new url: node[attr]
             if embed.provider
               @embedded_urls[embed.provider_name] << embed.provider_id
-              parent = find_parent node
+              parent = find_parent node, base
               parent.after "<div class='embed-frame' data-url='#{embed.url}' data-type='url'></div>"
             end
             node.remove
@@ -292,7 +292,7 @@ module ScraperStrategies
           if embed.provider
             unless embed.provider_id.in? @embedded_urls[embed.provider_name]
               @embedded_urls[embed.provider_name] << embed.provider_id
-              parent = find_parent node
+              parent = find_parent node, base
               parent.after "<div class='embed-frame' data-url='#{embed.url}' data-type='url'></div>"
             end
           end
@@ -318,7 +318,7 @@ module ScraperStrategies
             document.attachable_type = 'Orphan'
             document.save
             document.attachable = attachable
-            parent = find_parent node
+            parent = find_parent node, base, %w(li ol ul)
             parent.after "<div class='embed-frame' data-file-id='#{document.id}' data-type='file'></div>"
           end
         end

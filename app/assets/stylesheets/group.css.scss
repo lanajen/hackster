@@ -93,9 +93,16 @@
     margin: -5px 0 0 -5px;
     height: 20px;
   }
-  .addthis_sharing_toolbox {
+  .addthis_sharing_toolbox, .addthis_toolbox {
     margin-top: 10px;
     text-align: center;
+    label {
+      float: left;
+      text-transform: uppercase;
+      margin-right: 5px;
+      font-size: 12px;
+      color: #666;
+    }
   }
 }
 #tech-links{
