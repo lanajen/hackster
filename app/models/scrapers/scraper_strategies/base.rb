@@ -204,7 +204,7 @@ module ScraperStrategies
         parent = img
         while parent = parent.parent and parent != base_parent do
           if parent.name == 'a'
-            href = parent['href'] || parent['data-fancybox-href']
+            href = parent['data-fancybox-href'] || parent['href']
             parent.name = 'span'  # so that it's not parsed as an embed later on
             src = href if href =~ /\.(png|jpg|jpeg|bmp|gif)$/
             break
