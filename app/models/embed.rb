@@ -9,6 +9,7 @@ class Embed
     /kickstarter\.com\/projects\/([0-9a-z\-]+\/[0-9a-z\-]+)/ => :kickstarter,
     /oshpark\.com\/shared_projects\/([a-zA-Z0-9]+)/ => :oshpark,
     /sketchfab\.com\/models\/([a-z0-9]+)/ => :sketchfab,
+    /snip2code\.com\/Snippet\/([0-9]+\/[0-9a-zA-Z]+)/ => :snip2code,
     # /tindie\.com/ => 'BuyWidget.new(link:"|href|",name:"Where to buy")',
     /upverter\.com\/[^\/]+\/(?:embed\/)?(?:\#designId\=)?([a-z0-9]+)(?:\/)?(?:[^\/])*/ => :upverter,
     /ustream\.tv\/([a-z]+\/[0-9]+(\/[a-z]+\/[0-9]+)?)/ => :ustream,

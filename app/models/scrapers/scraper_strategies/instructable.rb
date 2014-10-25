@@ -14,17 +14,21 @@ module ScraperStrategies
         @article.css('.lazyphoto').each{|n| n.remove }
         @article.css('.photoset-photo').each do |img|
           while img.parent.name != 'a'
-            img.parent = img.parent.parent
-          end
-        end
-
-        @article.css('.photoset-link').each do |img|
-          until img.parent['class'] == 'photoset'
-            img.parent = img.parent.parent
+            img.parent.parent.add_child img
           end
         end
 
         super
+      end
+
+      def extract_images base=@article, super_base=nil
+        base.css('.photoset-link').reverse.each do |img|
+          until img.parent['class'] == 'photoset'
+            img.parent.parent.add_child img
+          end
+        end
+
+        super base, super_base
       end
 
       def crap_list
