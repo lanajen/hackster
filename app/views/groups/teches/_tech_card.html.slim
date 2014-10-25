@@ -11,6 +11,8 @@
             a href=tech_short_path(tech) class='hidden-link'
               strong> = number_with_delimiter tech.projects_count
               = pluralize_without_count tech.projects_count, 'project'
+              strong>= number_with_delimiter tech.followers_count
+              = pluralize_without_count tech.followers_count, 'follower'
         .tech-card-links
           .tech-btn-placeholder
           - if link = (tech.buy_link.presence || tech.crowdfunding_link.presence)
