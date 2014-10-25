@@ -45,6 +45,12 @@
                 i.fa.fa-lightbulb-o.private-project-icon.istooltip>  title='This is a project idea. Help it happen by contributing in the comments!'   data-container='body'
               = link_to @project.name, @project, class: 'hidden-link'
 
+              - if @project.featured
+                .award-container
+                  .project-award
+                    i.fa.fa-star>
+                    span Featured on #{l @project.featured_date, format: :long_date}
+
             #project-information
               .one-liner= @project.one_liner
 

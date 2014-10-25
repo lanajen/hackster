@@ -194,6 +194,7 @@ en:
     formats:
       default: ! '%m/%d/%Y at %I:%M %p'
       long: ! '%B %d, %Y %H:%M'
+      long_date: ! '%B %d, %Y'
       short: ! '%d %b %H:%M'
       date: ! '%Y-%m-%d'
     pm: pm
