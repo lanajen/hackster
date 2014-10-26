@@ -5,7 +5,7 @@ end
 Monologue.config do |config|
   config.site_name = "Hackster.io's blog"
   config.site_subtitle = "my own place online"
-  config.site_url = "http://www.hackster.io/blog"
+  config.site_url = "http://www.hackster.io"
 
   config.meta_description = "Thoughts and resources about hardware hacking for makers."
   config.meta_keyword = "hardware,hacks,makers,projects"
