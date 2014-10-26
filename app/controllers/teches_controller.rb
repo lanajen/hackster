@@ -13,7 +13,7 @@ class TechesController < ApplicationController
 
   def index
     title "Explore tools"
-    meta_desc "Find tools for your next hacks on Hackster.io."
+    meta_desc "Find hardware and software tools to help you build your next hacks."
     @teches = Tech.public.for_thumb_display.order(:full_name)
 
     render "groups/teches/#{self.action_name}"
@@ -22,8 +22,8 @@ class TechesController < ApplicationController
   def show
     impressionist_async @tech, "", unique: [:session_hash]
     # authorize! :read, @tech
-    title "#{@tech.name} projects"
-    meta_desc "People are hacking with #{@tech.name} on Hackster.io. Join them!"
+    title "#{@tech.name} hacks and projects"
+    meta_desc "Discover hacks and projects built with #{@tech.name}, and share your own!"
 
     @announcement = @tech.announcements.current
     @challenge = @tech.active_challenge ? @tech.challenges.active.first : nil
@@ -34,7 +34,7 @@ class TechesController < ApplicationController
   end
 
   def embed
-    title "Projects made with #{@tech.name}"
+    title "Projects built with #{@tech.name}"
     @list_style = ([params[:list_style]] & ['', '_horizontal']).first || ''
     @list_style = '_vertical' if @list_style == ''
     render "groups/teches/#{self.action_name}", layout: 'embed'
