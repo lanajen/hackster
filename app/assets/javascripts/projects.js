@@ -120,7 +120,7 @@
 })(jQuery, window, document);
 
 function loadSlickSlider(){
-  $('.headline-image, .image-gallery').slick({
+  $('.image-gallery').slick({
     accessibility: false,
     speed: 500,
     fade: true,

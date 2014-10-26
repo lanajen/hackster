@@ -521,6 +521,15 @@ $(function () {
     if ($(this).is(':focus')) e.preventDefault();
   });
 
+  $('#model-editor').on('click', '.editable-attribute.is-not-editable a', function(e){
+    e.preventDefault();
+  });
+
+  $('#model-editor').on('click', '.editable-attribute.is-not-editable:not(.is-active)', function(e){
+    $(this).addClass('is-active');
+    $(this).focusin().focus();
+  });
+
   $('#model-editor').on('focus focusin', '.editable-attribute select', function(e){
     e.stopPropagation();
     var parent = $(this).closest('.editable-attribute');
@@ -531,6 +540,9 @@ $(function () {
     curFocus = this;
   });
 
+  $('#model-editor').on('blur focusout', '.editable-attribute select', function(e){
+    $(this).parent().removeClass('is-active');
+  });
 
   var curAttr;
   var curFocus;
@@ -558,6 +570,11 @@ $(function () {
       value: $(this).contents().filter(function(){ return this.nodeType == 3 }).text()
     };
     curFocus = this;
+  });
+
+  $('#model-editor').on('focus focusin', '.editable-attribute.has-select', function(e){
+    var select = $(this).find('select');
+    if (select.length) select.focusin().focus();
   });
 
   $('#model-editor').on('change', '.editable-attribute', function(e){
@@ -918,7 +935,7 @@ $(function () {
   });
 
   $('#medium-editor').on('keypress keydown', '.editable.editable-activated [data-default-text]', function(e){
-    console.log($(this));
+    // console.log($(this));
     node = $(this);
 
     if (e.keyCode == 8 && node.text().length == 1) {
