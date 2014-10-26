@@ -6,6 +6,7 @@ Disallow: /users/sign_up
 Disallow: /users/password/new
 Disallow: /*/*/embed
 Disallow: /projects/*
+Disallow: /api/*
 Allow: /projects/e/*
 
 User-agent: Googlebot-Image

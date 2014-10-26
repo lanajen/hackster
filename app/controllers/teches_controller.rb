@@ -22,7 +22,7 @@ class TechesController < ApplicationController
   def show
     impressionist_async @tech, "", unique: [:session_hash]
     # authorize! :read, @tech
-    title "#{@tech.name} hacks and projects"
+    title "#{@tech.name} projects and hacks"
     meta_desc "Discover hacks and projects built with #{@tech.name}, and share your own!"
 
     @announcement = @tech.announcements.current
