@@ -74,6 +74,7 @@ class BaseMailer < ActionMailer::Base
         user = User.find context_id
         relations = {}
 
+        # get projects newly attached to followed tech
         tech_projects = user.subscribed_to?('follow_tech_activity') ? Project.select('projects.*, follow_relations.followable_id').joins(:teches).where('project_collections.created_at > ?', 24.hours.ago).where(project_collections: { workflow_state: ProjectCollection::VALID_STATES }).joins("INNER JOIN follow_relations ON follow_relations.followable_id = groups.id AND follow_relations.followable_type = 'Group'").where(follow_relations: { user_id: user.id }) : []
         tech_projects.each do |project|
           tech = Tech.find(project.followable_id)
@@ -81,6 +82,7 @@ class BaseMailer < ActionMailer::Base
           relations[tech][project.id] = project
         end
 
+        # get projects newly made public by followed users
         user_projects = user.subscribed_to?('follow_user_activity') ? Project.select('projects.*, follow_relations.followable_id').joins(:users).where('projects.made_public_at > ?', 24.hours.ago).joins("INNER JOIN follow_relations ON follow_relations.followable_id = users.id AND follow_relations.followable_type = 'User'").where(follow_relations: { user_id: user.id }) : []
         user_projects.each do |project|
           _user = User.find(project.followable_id)
@@ -88,6 +90,7 @@ class BaseMailer < ActionMailer::Base
           relations[_user][project.id] = project
         end
 
+        # arrange projects so that we know how they're related to followables
         projects = {}
         relations.each do |followable, followed_projects|
           followed_projects.each do |project_id, project|
@@ -96,16 +99,16 @@ class BaseMailer < ActionMailer::Base
           end
         end
 
+        # arrange once more to group project by followables
         relations = {}
         projects.each do |project_id, data|
           relations[data[:followables]] = [] unless data[:followables].in? relations.keys
           relations[data[:followables]] << data[:project]
         end
 
+        context[:followables] = relations.keys.flatten.uniq
         context[:projects] = relations
         context[:user] = user if context[:projects].any?
-        # TODO: show "because you follow X and Y:" for each project (ie, find a way to extract the followed entity when querying projects)
-
       when :follower
         follow = context[:follow] = FollowRelation.find(context_id)
         followable = follow.followable
