@@ -68,9 +68,19 @@ class CronTask < BaseWorker
   end
 
   def send_daily_notifications
-    teches = Tech.joins(:project_collections).where('project_collections.created_at > ?', 24.hours.ago).where(project_collections: { workflow_state: ProjectCollection::VALID_STATES }).distinct(:id)
-    teches.each do |tech|
-      BaseMailer.enqueue_email 'new_projects_in_tech_notification', { context_type: 'tech', context_id: tech.id }
+    projects = ProjectCollection.where('project_collections.created_at > ?', 24.hours.ago).where(project_collections: { workflow_state: ProjectCollection::VALID_STATES }).distinct(:project_id).pluck(:project_id)
+    projects += Project.where('projects.made_public_at > ?', 24.hours.ago).pluck(:id)
+
+    users = []
+    projects.each do |project_id|
+      users += Tech.joins(:projects).where(projects: { id: project_id }).map{|t| t.followers.with_subscription('follow_tech_activity').pluck(:id) }.flatten
+      users += User.joins(:projects).where(projects: { id: project_id }).map{|t| t.followers.with_subscription('follow_user_activity').pluck(:id) }.flatten
+    end
+
+    users.uniq!
+
+    users.each do |user_id|
+      BaseMailer.enqueue_email 'new_projects_notification', { context_type: 'daily_notification', context_id: user_id }
     end
   end
 

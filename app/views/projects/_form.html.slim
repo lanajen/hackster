@@ -1,4 +1,4 @@
-= simple_nested_form_for @project, html: { class: 'form-horizontal remote accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
+= simple_nested_form_for @project, url: project_path(@project), html: { class: 'form-horizontal remote accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
   = f.error_notification
 
   .row

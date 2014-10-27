@@ -70,6 +70,42 @@ class BaseMailer < ActionMailer::Base
         end
         author = context[:author] = comment.user
         context[:users] = project.users.with_subscription('new_comment_own') + comment.commentable.commenters.with_subscription('new_comment_commented') - [author]
+      when :daily_notification
+        user = User.find context_id
+        relations = {}
+
+        tech_projects = user.subscribed_to?('follow_tech_activity') ? Project.select('projects.*, follow_relations.followable_id').joins(:teches).where('project_collections.created_at > ?', 24.hours.ago).where(project_collections: { workflow_state: ProjectCollection::VALID_STATES }).joins("INNER JOIN follow_relations ON follow_relations.followable_id = groups.id AND follow_relations.followable_type = 'Group'").where(follow_relations: { user_id: user.id }) : []
+        tech_projects.each do |project|
+          tech = Tech.find(project.followable_id)
+          relations[tech] = {} unless tech.in? relations.keys
+          relations[tech][project.id] = project
+        end
+
+        user_projects = user.subscribed_to?('follow_user_activity') ? Project.select('projects.*, follow_relations.followable_id').joins(:users).where('projects.made_public_at > ?', 24.hours.ago).joins("INNER JOIN follow_relations ON follow_relations.followable_id = users.id AND follow_relations.followable_type = 'User'").where(follow_relations: { user_id: user.id }) : []
+        user_projects.each do |project|
+          _user = User.find(project.followable_id)
+          relations[_user] = {} unless _user.in? relations.keys
+          relations[_user][project.id] = project
+        end
+
+        projects = {}
+        relations.each do |followable, followed_projects|
+          followed_projects.each do |project_id, project|
+            projects[project_id] = { followables: [], project: project } unless project_id.in? projects.keys
+            projects[project_id][:followables] << followable unless followable.in? projects[project_id][:followables]
+          end
+        end
+
+        relations = {}
+        projects.each do |project_id, data|
+          relations[data[:followables]] = [] unless data[:followables].in? relations.keys
+          relations[data[:followables]] << data[:project]
+        end
+
+        context[:projects] = relations
+        context[:user] = user if context[:projects].any?
+        # TODO: show "because you follow X and Y:" for each project (ie, find a way to extract the followed entity when querying projects)
+
       when :follower
         follow = context[:follow] = FollowRelation.find(context_id)
         followable = follow.followable
@@ -155,11 +191,6 @@ class BaseMailer < ActionMailer::Base
         project = context[:project] = respect.project
         context[:author] = respect.user
         context[:users] = project.users.with_subscription('new_respect_own')
-      when :tech
-        context[:group] = tech = Tech.find context_id
-        # context[:projects] = Project.joins(:project_collections).where('project_collections.created_at > ?', 24.hours.ago).where(project_collections: { group_id: tech.id, workflow_state: ProjectCollection::VALID_STATES })
-        context[:projects] = projects = tech.projects.visible.indexable_and_external.joins(:project_collections).where('project_collections.created_at > ?', 24.hours.ago).where('projects.made_public_at > ?', 24.hours.ago).distinct(:id)
-        context[:users] = projects.any? ? tech.followers.with_subscription('follow_tech_activity') : []
       when :user
         context[:user] = User.find(context_id)
       when :user_informal
