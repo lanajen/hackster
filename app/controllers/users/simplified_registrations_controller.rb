@@ -3,7 +3,6 @@ class Users::SimplifiedRegistrationsController < Devise::RegistrationsController
     build_resource(sign_up_params)
     resource.simplify_signup!
 
-      raise params[:source].to_s
     resource_saved = resource.save
     yield resource if block_given?
     if resource_saved
