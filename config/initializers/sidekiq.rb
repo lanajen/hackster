@@ -3,11 +3,11 @@ raise 'No config for Redis' unless $redis_config
 sidekiq_pool = (ENV['SIDEKIQ_DB_POOL'] || 3).to_i
 
 heroku = nil
-if ENV['HEROKU_APP'] and Rails.env == 'staging'
-  require 'autoscaler/sidekiq'
-  require 'autoscaler/heroku_scaler'
-  heroku = Autoscaler::HerokuScaler.new
-end
+# if ENV['HEROKU_APP'] and Rails.env == 'staging'
+#   require 'autoscaler/sidekiq'
+#   require 'autoscaler/heroku_scaler'
+#   heroku = Autoscaler::HerokuScaler.new
+# end
 
 Sidekiq.configure_server do |config|
   if heroku
