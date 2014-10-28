@@ -28,8 +28,11 @@
 
       = render partial: 'shared/image_form', locals: { file_type: 'document', human_file_type: 'Cover image', image_link: @tech.cover_image.try(:file_url), help_block: 'A high quality picture of your product, at least 1200px wide and 400px high.', attribute_type: 'cover_image', image_version: nil, model: 'group' }
 
-      - if ClientSubdomain.find_by_subdomain(@tech.user_name).present?
+      - if client = @tech.client_subdomain
         = render partial: 'shared/image_form', locals: { file_type: 'logo', human_file_type: 'Portal logo', image_link: @tech.logo.try(:file_url), help_block: '', attribute_type: 'logo', image_version: nil, model: 'group' }
+        = f.simple_fields_for :subdomain, client do |f_client|
+          = f_client.input :domain, hint: "If you want to personalize the domain name of your dedicated portal, enter it. You will then need to add a CNAME pointing from this domain to #{client.subdomain}.hackster.io.", label: 'Portal custom domain'
+        p Want to use your own design? Send us the HTML and CSS to portals@hackster.io.
 
       /
         = f.input :city

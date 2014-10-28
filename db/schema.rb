@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141012011417) do
+ActiveRecord::Schema.define(version: 20141027225703) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -454,7 +454,12 @@ ActiveRecord::Schema.define(version: 20141012011417) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "domain"
+    t.integer  "tech_id"
   end
+
+  add_index "subdomains", ["domain"], name: "index_subdomains_on_domain", using: :btree
+  add_index "subdomains", ["tech_id"], name: "index_subdomains_on_tech_id", using: :btree
 
   create_table "tags", force: true do |t|
     t.integer  "taggable_id",   null: false

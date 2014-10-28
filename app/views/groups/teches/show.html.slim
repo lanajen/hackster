@@ -1,6 +1,6 @@
 - content_for :head do
   meta(property="og:title" content="#{@tech.name} projects")
-  meta(property="og:description" content="People are hacking with #{@tech.name} on Hackster.io. Join them!")
+  meta(property="og:description" content="Discover hacks and projects built with #{@tech.name}, and share your own!")
   - if @tech.avatar
     meta(property="og:image" content=@tech.avatar.file_url(:big))
     meta(property="twitter:image:src" content=@tech.avatar.file_url(:big))
@@ -18,6 +18,7 @@
   - if handle = @tech.twitter_handle
     meta(property="twitter:creator" content=handle)
   link(rel="canonical" href=tech_short_url(@tech))
+  meta(property="keywords" content="#{@tech.name} projects, #{@tech.name} hacks")
 
 - if @tech.cover_image
   section#top-bg.show-on-desktop

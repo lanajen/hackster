@@ -58,8 +58,9 @@
   padding: 0 20px 20px;
   border-bottom: 2px solid #ccc;
   @include box-shadow(0 1px 1px rgba(255,255,255,.4));
-  h3{
+  h1{
     margin-top: 0;
+    font-size: 24px;
   }
 }
 #tech-name{

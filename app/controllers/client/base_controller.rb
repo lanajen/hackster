@@ -8,13 +8,17 @@ class Client::BaseController < ApplicationController
   def current_platform
     return @current_site if @current_site
 
-    redirect_to root_url(subdomain: 'www') unless @current_site = ClientSubdomain.find_by_subdomain(request.subdomains[0])
+    redirect_to root_url(subdomain: 'www') unless @current_site = if request.domain == APP_CONFIG['default_domain']
+      ClientSubdomain.find_by_subdomain(request.subdomains[0])
+    else
+      ClientSubdomain.find_by_domain(request.host)
+    end
   end
 
   def current_tech
     return @current_tech if @current_tech
 
-    redirect_to root_url(subdomain: 'www') unless @current_tech = Tech.find_by_user_name(request.subdomains[0])
+    redirect_to root_url(subdomain: 'www') unless @current_tech = current_platform.tech
   end
 
   protected

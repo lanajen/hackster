@@ -1,19 +1,23 @@
 class ApiSite
   def self.matches?(request)
-    request.subdomains[0] == 'api'
+    request.subdomains[0] == 'api' and request.domain == APP_CONFIG['default_domain']
   end
 end
 
 class MainSite
   def self.matches?(request)
-    request.subdomains[0].in? %w(staging www)
+    request.subdomains[0].in? %w(staging www) and request.domain == APP_CONFIG['default_domain']
   end
 end
 
 class ClientSite
   def self.matches?(request)
-    subdomain = request.subdomains[0]
-    !subdomain.in? %w(www beta staging)
+    if request.domain == APP_CONFIG['default_domain']
+      subdomain = request.subdomains[0]
+      !subdomain.in? %w(www beta staging)
+    else
+      ClientSubdomain.find_by_domain(request.host).present?
+    end
   end
 end
 

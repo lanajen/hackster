@@ -28,3 +28,5 @@ require File.join(Rails.root, 'lib/set_changes_for_stored_attributes')
 require File.join(Rails.root, 'lib/tire_initialization')
 # editable slug/user_name
 require File.join(Rails.root, 'lib/editable_slug')
+# heroku domains
+require File.join(Rails.root, 'lib/heroku_domains')

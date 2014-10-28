@@ -11,13 +11,16 @@ class Tech < Group
   has_many :follow_relations, as: :followable
   has_many :followers, through: :follow_relations, source: :user
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'TechMember'
+  has_one :client_subdomain
   has_one :cover_image, as: :attachable, class_name: 'Document', dependent: :destroy
   has_one :logo, as: :attachable, dependent: :destroy
   has_one :slug, as: :sluggable, dependent: :destroy, class_name: 'SlugHistory'
 
   attr_accessible :forums_link, :documentation_link, :crowdfunding_link,
     :buy_link, :logo_id, :shoplocket_link, :cover_image_id, :accept_project_ideas,
-    :project_ideas_phrasing
+    :project_ideas_phrasing, :client_subdomain_attributes
+
+  accepts_nested_attributes_for :client_subdomain
 
   validates :user_name, :full_name, presence: true
   validate :user_name_is_unique

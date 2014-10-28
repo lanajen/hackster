@@ -5,7 +5,7 @@
         .avatar#tech-avatar-image-div
           #tech-avatar-image style="background-image:url('#{@user.avatar(:big)}');"
       #tech-body
-        h3= link_to @user.name, @user, id: 'tech-name'
+        h1= link_to @user.name, @user, id: 'tech-name'
         p
           - if @user.mini_resume.present?
             = @user.mini_resume

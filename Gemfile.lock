@@ -161,6 +161,8 @@ GEM
     google_visualr (2.4.0)
     hashie (2.1.2)
     hashr (0.0.22)
+    heroku-api (0.3.15)
+      excon (~> 0.25.1)
     heroku-forward (0.4.0)
       em-proxy (>= 0.1.8)
       ffi
@@ -467,6 +469,7 @@ DEPENDENCIES
   github-linguist (= 2.11.5)
   gmaps4rails (= 2.1.2)
   google_visualr (= 2.4.0)
+  heroku-api (= 0.3.15)
   heroku-forward (= 0.4.0)
   hpricot (= 0.8.6)
   impressionist (= 1.4.13)
