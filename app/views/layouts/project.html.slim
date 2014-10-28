@@ -8,7 +8,7 @@
 = content_for :before_main do
   #about style='position: relative;z-index: 1000;background: #F2F2F2;'
     - if !user_signed_in?
-      = render partial: 'shared/signup_top', locals: { message: "Think this is a cool project? Join to receive news about it and hundreds of others: "}
+      = render partial: 'shared/signup_top', locals: { message: "Think this is a cool project? Join to receive news about it and hundreds of others: ", source: 'project' }
 
 = content_for :no_container do
   #project-page.page-div

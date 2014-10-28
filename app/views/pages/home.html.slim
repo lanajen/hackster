@@ -34,7 +34,7 @@
               strong community for hardware hackers
               ' .
               = link_to 'Learn more.', about_path(ref: 'homeabout')
-        = render partial: 'shared/signup_top', locals: { redirect_to: user_after_registration_path }
+        = render partial: 'shared/signup_top', locals: { redirect_to: user_after_registration_path, source: 'home' }
 
         / section#section-newsletter.section-short
           .container

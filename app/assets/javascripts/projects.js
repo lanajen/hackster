@@ -3,6 +3,7 @@
     $('.show-simplified-signup').click(function(e){
       e.preventDefault();
       $('#simplified-signup-popup input[name="redirect_to"]').val($(this).data('redirect-to'));
+      $('#simplified-signup-popup input[name="source"]').val($(this).data('source'));
       $('#simplified-signup-popup').fadeIn();
     });
 
