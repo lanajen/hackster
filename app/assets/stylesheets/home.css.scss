@@ -12,17 +12,24 @@
       background: #fff;
     }
   }
-  section#section-newsletter {
+  section#section-newsletter, section#section-signup {
     padding: 10px 0;
     text-align: center;
     border-top: 2px solid #3d8bc1;
     border-bottom: 4px solid #3d8bc1;
-    background: #fff;
+    // background: #fff;
     p, form {
       display: inline-block;
+    margin: 0;
     }
     form {
       margin-left: 10px;
+    }
+    input[type="submit"] {
+      margin-left: 5px;
+    }
+    .zocial {
+      vertical-align: middle;
     }
   }
   .slick-slider {
@@ -290,4 +297,8 @@
   .alert-link {
     color: #fafafa;
   }
+}
+
+.mobile-breakpoint {
+  display: inline;
 }

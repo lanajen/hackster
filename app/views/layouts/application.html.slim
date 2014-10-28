@@ -54,7 +54,8 @@ html(lang="en")
             .container
               button.close.btn-close  data-close='#hello-world'  &times;
               ==> SLOGAN
-              = link_to 'Start building.', new_user_registration_path, onclick: "_gaq.push(['_trackEvent', 'Hello world bar', 'Sign up', '#{request.path}']);"
+              = link_to 'Learn more.', about_path
+              / = link_to 'Start building.', new_user_registration_path, onclick: "_gaq.push(['_trackEvent', 'Hello world bar', 'Sign up', '#{request.path}']);"
         - elsif user_signed_in? and current_user.simplified_signup?
           .alert.alert-flat.alert-warning.alert-smaller
             .container
@@ -66,6 +67,9 @@ html(lang="en")
           = render 'shared/signup_popup'
         - unless user_signed_in?
           = render 'shared/simplified_signup_popup'
+
+        - unless @no_flash
+          = bootstrap_flash
 
         .navbar.navbar-default.navbar-static-top#navigation
           #nav-mobile-trigger.hide-on-desktop.fa.fa-bars
@@ -172,8 +176,7 @@ html(lang="en")
               #navbar-search
                 = render 'shared/search_form'
 
-      - unless @no_flash
-        = bootstrap_flash
+      = yield(:before_main)
       #main
         - if content_for?(:no_container)
           = yield(:no_container)

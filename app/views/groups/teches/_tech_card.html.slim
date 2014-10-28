@@ -10,7 +10,7 @@
           p
             a href=tech_short_path(tech) class='hidden-link'
               strong> = number_with_delimiter tech.projects_count
-              = pluralize_without_count tech.projects_count, 'project'
+              ==> pluralize_without_count tech.projects_count, 'project'
               strong>= number_with_delimiter tech.followers_count
               = pluralize_without_count tech.followers_count, 'follower'
         .tech-card-links
@@ -27,7 +27,7 @@
       ==> link_to "Follow #{tech.name}", followers_path(followable_type: 'Group', followable_id: tech.id), data: { method: :post, remote: true, container: 'body', placement: 'bottom' }, class: "follow-group-#{tech.id} follow-button btn btn-info btn-sm btn-ellipsis disable-link", rel: 'tooltip', title: "Follow #{tech.name} to be notified when new projects are posted."
       ==> link_to "<div class=\\'inner-btn-container\\'><div class=\\'inner-btn\\'><i class=\\'fa fa-check\\'></i><div class=\\'btn-text\\'>Start #{indefinite_articlerize tech.name} project</div></div></div><div class=\\'btn-hidden-text\\'>Start #{indefinite_articlerize tech.name} project</div>".html_safe, link, class: "after-follow-group-#{tech.id} btn btn-info btn-sm btn-ellipsis new-tech-project-link", style: 'display:none'
   - else
-    ==> link_to "Follow #{tech.name}", new_user_registration_path(redirect_to: create_followers_path(followable_type: 'Group', followable_id: tech.id), reason: 'follow', m: 'Group'.to_s.underscore, id: tech.id), class: 'follow-button btn btn-info btn-block btn-ellipsis btn-standout show-simplified-signup', data: { container: 'body', redirect_to: create_followers_path(followable_type: 'Group', followable_id: tech.id) }, rel: 'tooltip', title: "Follow #{tech.name} to be notified when new projects are posted."
+    ==> link_to "Follow #{tech.name}", new_user_registration_path(redirect_to: create_followers_path(followable_type: 'Group', followable_id: tech.id), reason: 'follow', m: 'Group'.to_s.underscore, id: tech.id), class: 'follow-button btn btn-info btn-sm btn-ellipsis show-simplified-signup', data: { container: 'body', redirect_to: create_followers_path(followable_type: 'Group', followable_id: tech.id) }, rel: 'tooltip', title: "Follow #{tech.name} to be notified when new projects are posted."
 
 javascript:
   $('#tech-card-#{tech.id} .tech-btn-placeholder').replaceWith('#{content_for(:link)}');

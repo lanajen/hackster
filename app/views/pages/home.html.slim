@@ -17,18 +17,32 @@
 
 = content_for :no_container do
   - cache ['home', user_signed_in?, returning_user?], tag: ['home'], expires_in: 1.hour do
+    / - unless user_signed_in?
+      .alert.alert-info.alert-flat.alert-top.text-center
+        .container
+          ' Welcome to Hackster, the
+          strong community for hardware hackers
+          ' .
+          = link_to 'Learn more.', about_path(ref: 'homeabout'), class: 'alert-link'
+
     #about
-      section#teaser
-        .slide.slide1 style="background-image: url(#{asset_url 'home_visitor/header_bg_black.jpg' });"
+      - if !user_signed_in?
+        section.section-short style='padding:20px 0 10px;background:#fff;'
+          .container.text-center
+            p
+              ' Welcome to Hackster, the
+              strong community for hardware hackers
+              ' .
+              = link_to 'Learn more.', about_path(ref: 'homeabout')
+        = render partial: 'shared/signup_top', locals: { redirect_to: user_after_registration_path }
+
+        / section#section-newsletter.section-short
           .container
-            .row
-              .col-xs-10.col-xs-offset-1.text-center
-                h1
-                  | Welcome to Hackster.
-                  br
-                  | The community for hardware hackers.
-                  br
-                  small= link_to 'Learn more', about_path(ref: 'slider')
+            p
+              strong Cool hardware projects and tools in your inbox every Friday:
+            = render 'shared/mailchimp_form'
+
+      section#teaser
         - if Time.now < '2014-11-01'.to_datetime
           .slide.slide3.slide-opaque.slide-opaque-light style="background-image: url(#{asset_url 'home_visitor/halloween_contest.jpg' });"
             .container
@@ -85,8 +99,7 @@
             .row
               .col-xs-10.col-xs-offset-1.text-center
                 h1
-                  b= link_to 'The Matrix Clock', '/funnypolynomial/matrixclock?ref=slider'
-                  | :
+                  b= link_to 'The Matrix Clock:', '/funnypolynomial/matrixclock?ref=slider'
                   br
                   small
                     | is a clever enigma in a sleek, buttonless bamboo capsule
@@ -97,14 +110,6 @@
                         ==> link_to image_tag('http://gravatar.com/avatar/912f78cbd304ae359d7f46458c50dc14.png?d=identicon&s=30', class: 'img-circle'), '/funnypolynomial?ref=slider', class: 'hidden-link'
                         span.user-name
                           = link_to 'Mark', '/funnypolynomial?ref=slider', class: 'hidden-link'
-
-      - if !user_signed_in?
-        section.hidden
-        section#section-newsletter.section-short
-          .container
-            p
-              strong Cool hardware projects and tools in your inbox every Friday:
-            = render 'shared/mailchimp_form'
 
       - if user_signed_in? or returning_user?
         section

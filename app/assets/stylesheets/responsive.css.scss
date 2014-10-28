@@ -9,6 +9,10 @@
   #about #teaser .slide {
     padding-top: 100px;
   }
+  .mobile-breakpoint {
+    display: block !important;
+    margin-bottom: 5px !important;
+  }
 }
 
 @media only screen and (max-width: 899px) {

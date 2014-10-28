@@ -1,0 +1,15 @@
+section#section-signup.section-short.text-center
+  p
+    span.mobile-breakpoint
+      ==> defined?(message) ? message: 'Start hacking by joining with'
+    span.mobile-breakpoint
+      = link_to 'Facebook', user_omniauth_authorize_url(:facebook), class: 'zocial icon facebook'
+      = link_to 'Github', user_omniauth_authorize_path(:github), class: 'zocial icon github'
+      = link_to 'Google+', user_omniauth_authorize_path(:gplus), class: 'zocial icon googleplus'
+      ==> link_to 'Twitter', user_omniauth_authorize_path(:twitter), class: 'zocial icon twitter'
+      small or
+  = simple_form_for User.new, url: simplified_registrations_path, html: { class: 'form-inline disable-on-submit mobile-breakpoint' } do |f|
+    - if defined?(redirect_to)
+      input name='redirect_to' value=redirect_to type='hidden'
+    = f.input :email, label: false, placeholder: 'nikola.tesla@hackster.io', tabindex: 1, input_html: { size: nil, style: 'display: inline-block;width: auto;vertical-align: middle;' }, wrapper_html: { style: 'display: inline-block;margin-bottom: 0;vertical-align: middle;' }
+    = f.button :submit, "BOOM", class: 'btn btn-primary btn-sm'
