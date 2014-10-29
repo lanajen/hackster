@@ -17,6 +17,7 @@ module ScraperStrategies
             img.parent.parent.add_child img
           end
         end
+        @article.css('br').each{|el| el.remove }
 
         super
       end

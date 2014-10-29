@@ -5,11 +5,26 @@
   = render_chart(@new_views, 'chart_new_views')
   = render_chart(@new_respects, 'chart_new_respects')
   = render_chart(@new_follows, 'chart_new_follows')
+
   javascript:
     $(document).ready(function() {
-      $(window).resize(function(e){
-        console.log('resize');
-        draw_chart_new_project_views();
+      $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        var target = $(e.target);
+        switch(target.attr('href')) {
+          case '#projects':
+            if (target.hasClass('needs-refresh')) {
+              draw_chart_new_projects();
+              draw_chart_new_respects();
+              target.removeClass('needs-refresh');
+            }
+            break;
+          case '#followers':
+            if (target.hasClass('needs-refresh')) {
+              draw_chart_new_follows();
+              target.removeClass('needs-refresh');
+            }
+            break;
+        }
       });
     });
 
@@ -18,15 +33,15 @@ section#projects-list
     .page-header
       h1 Analytics dashboard
 
-    .row
+    .row.mg-20
       .col-xs-12
         ul.nav.nav-tabs role='tablist'
           li.active
-            a href='#home' role='tab' data-toggle='tab' iews
+            a href='#home' role='tab' data-toggle='tab' Views
           li
-            a href='#projects' role='tab' data-toggle='tab' Projects
+            a.needs-refresh href='#projects' role='tab' data-toggle='tab' Projects
           li
-            a href='#followers' role='tab' data-toggle='tab' Followers
+            a.needs-refresh href='#followers' role='tab' data-toggle='tab' Followers
 
     .tab-content
       #home.tab-pane.active.fade.in
