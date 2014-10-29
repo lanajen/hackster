@@ -1,12 +1,20 @@
 <p>Welcome!</p>
-<p>We're thrilled to have you onboard.</p>
-<p>What now?</p>
+
+<p>We're so excited to have you onboard :)</p>
+
+<p>By simply joining you've bumped to <a href="http://30.media.tumblr.com/tumblr_ln9521omMb1qeh1a7o1_r1_400.gif">the next level of hackerness</a>.</p>
+
+<p>What now? Here are a few tips to help you make the best out of Hackster:</p>
+
 <ul>
-  <li><a href="|user_profile_edit_link|?ref=confemail">Complete your profile</a></li>
-  <li><a href="|project_new_link|?ref=confemail">Create your first project</a></li>
-  <li><a href="|invite_friends_link|?ref=confemail">Invite friends</a></li>
+  <li><a href="<%= hacker_url(@context[:user].id) %>?ref=confemail">Complete your profile</a> so other hackers know who you are</li>
+  <li><a href="<%= new_project_url %>?ref=confemail">Start adding projects</a> to your portfolio</li>
+  <li><a href="<%= projects_url %>?ref=confemail">Browse hacks</a>, respect the ones you like and follow their authors</li>
+  <li><a href="<%= tools_url %>?ref=confemail">Discover and follow tools</a> to be alerted when new projects are posted</li>
+  <li><a href="<%= hacker_spaces_url %>?ref=confemail">Find local hacker spaces</a> and join the ones you're already part of</li>
 </ul>
-<p>Any feedback or questions on how to use the site? Just reply to this email directly.</p>
+
+<p>Any questions? Just reply to this email and help will be on its way.</p>
 
 <p>Cheers,<br>The Hackster.io team</p>
 <p>

@@ -240,7 +240,8 @@ HackerIo::Application.routes.draw do
       end
     end
 
-    resources :hackers, controller: :users, only: [:index]
+    get 'hackers' => 'users#index', as: :hackers
+    get 'hackers/:id' => 'users#redirect_to_show', as: :hacker
 
     scope 'challenges/:slug', as: :challenge do
       get '' => 'challenges#show'

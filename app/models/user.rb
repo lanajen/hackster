@@ -111,13 +111,14 @@ class User < ActiveRecord::Base
     :invitations_count, :projects_count, :respects_count, :skill_tags_count,
     :live_projects_count, :project_views_count, :followers_count,
     :websites_count, :popularity_points_count, :project_respects_count,
-    :teches_count, :live_hidden_projects_count]
+    :teches_count, :live_hidden_projects_count, :followed_users_count,
+    :hacker_spaces_count]
 
   parse_as_integers :counters_cache, :comments_count, :interest_tags_count,
     :invitations_count, :projects_count, :respects_count, :skill_tags_count,
     :live_projects_count, :project_views_count, :websites_count,
     :popularity_points_count, :project_respects_count, :teches_count,
-    :live_hidden_projects_count
+    :live_hidden_projects_count, :followed_users_count, :hacker_spaces_count
 
   delegate :can?, :cannot?, to: :ability
 
@@ -307,7 +308,9 @@ class User < ActiveRecord::Base
   def counters
     {
       comments: 'live_comments.count',
+      followed_users: 'followed_users.count',
       followers: 'followers.count',
+      hacker_spaces: 'hacker_spaces.count',
       interest_tags: 'interest_tags.count',
       invitations: 'invitations.count',
       # live_approved_projects: 'projects.where(private: false, approved: true).count',

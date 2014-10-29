@@ -30,6 +30,11 @@ class UsersController < ApplicationController
     track_event 'Viewed profile', @user.to_tracker.merge({ own: (current_user.try(:id) == @user.id) })
   end
 
+  def redirect_to_show
+    @user = User.find params[:id]
+    redirect_to user_path(@user, ref: params[:ref]), status: 301
+  end
+
   def edit
     @user = current_user
     @user.build_avatar unless @user.avatar

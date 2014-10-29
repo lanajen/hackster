@@ -16,9 +16,9 @@ table.table.table-striped
       th= model_class.human_attribute_name(:name)
       th= model_class.human_attribute_name(:age)
       th= model_class.human_attribute_name(:last_login)
-      th= model_class.human_attribute_name(:login_count)
       th= model_class.human_attribute_name(:projects_count)
       th= model_class.human_attribute_name(:teches_count)
+      th= model_class.human_attribute_name(:respects_count)
       th= model_class.human_attribute_name(:comments_count)
       th= model_class.human_attribute_name(:invitation_status)
       th=t '.actions', :default => t("helpers.actions")
@@ -29,9 +29,9 @@ table.table.table-striped
         td= link_to user.name, user if user.name
         td= time_ago_in_words user.created_at
         td= time_ago_in_words user.last_sign_in_at if user.last_sign_in_at
-        td= user.sign_in_count
         td= user.projects_count
         td= user.teches_count
+        td= user.respects_count
         td= user.comments_count
         td
           - if user.invited_by
