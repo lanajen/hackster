@@ -27,7 +27,7 @@ class PagesController < ApplicationController
     # @wip_projects = Project.wip.limit 4
     @platforms = Tech.where(user_name: %w(spark electricimp arduino raspberry-pi beagleboard tinyavr)).for_thumb_display.order(:full_name)
 
-    track_event 'Visited home page'
+    # track_event 'Visited home page'
   end
 
   def infringement_policy
