@@ -123,7 +123,7 @@ class ProjectsController < ApplicationController
 
     @respecting_users = @project.respecting_users.includes(:avatar) if @project.public?
 
-    track_event 'Viewed project', @project.to_tracker.merge({ own: !!current_user.try(:is_team_member?, @project) })
+    # track_event 'Viewed project', @project.to_tracker.merge({ own: !!current_user.try(:is_team_member?, @project) })
   end
 
   def show_external
