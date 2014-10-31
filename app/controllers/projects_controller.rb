@@ -131,7 +131,7 @@ class ProjectsController < ApplicationController
     impressionist_async @project, '', unique: [:session_hash]
     title @project.name
     meta_desc @project.one_liner
-    track_event 'Viewed project', @project.to_tracker.merge({ own: !!current_user.try(:is_team_member?, @project) })
+    # track_event 'Viewed project', @project.to_tracker.merge({ own: !!current_user.try(:is_team_member?, @project) })
   end
 
   def redirect_external
@@ -158,7 +158,7 @@ class ProjectsController < ApplicationController
     @project = @project.decorate
     render layout: 'embed'
 
-    track_event 'Rendered embed thumbnail', @project.to_tracker.merge({ referrer: request.referrer })
+    # track_event 'Rendered embed thumbnail', @project.to_tracker.merge({ referrer: request.referrer })
   end
 
   def new

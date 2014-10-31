@@ -24,6 +24,8 @@ class MemberObserver < ActiveRecord::Observer
         expire_projects record
         record.user.broadcast :new, record.id, 'Member', project.id if project and project.public?
       end
+    elsif record.group.is? :tech
+      Cashier.expire "user-#{record.user_id}-sidebar", "user-#{record.user_id}-thumb", "tech-#{record.group_id}-sidebar"
     end
 
     unless record.permission

@@ -79,6 +79,13 @@
               = link_to image_tag(u.decorate.avatar(:mini), class: ' img-circle' ), u, class: ''
               span.user-name
                 ==> link_to u.name, u, class: 'hidden-link'
+                - if members = TechMember.where(user_id: u.id).includes(:group) and members.any?
+                  - members.each do |member|
+                    - tech = member.group
+                    span.badge
+                      ' Team
+                      ==> link_to tech.name, tech, class: 'hidden-link'
+                      i.fa.fa-check-circle.istooltip title="Verified" style="color:#66C866" data-container='body'
                 - if @project.team_members_count > 1
                   ' and
                   = link_to "#{pluralize (@project.team_members_count - 1), 'other'}", 'javascript:smoothScrollTo("#team-widget", -20);', class: 'hidden-link'

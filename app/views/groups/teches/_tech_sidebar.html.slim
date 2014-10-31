@@ -69,6 +69,17 @@
                 | No websites.
                 = link_to 'Add some?', edit_tech_path(@tech)
 
+      - if @tech.active_members.joins(:user).where(users: { invitation_token: nil }).any?
+        .display
+          h4 Team
+          .content.team-widget.user-communities
+            - @tech.active_members.includes(:user).references(:users).where(users: { invitation_token: nil }).order('LOWER(users.full_name) ASC').each do |m|
+              - u = m.user
+              .community.user
+                ==> link_to image_tag(u.decorate.avatar(:mini), class: ' img-circle' ), u, class: ''
+                span.user-name
+                  = link_to u.name, u
+
       - if can? :manage, @tech
         .display
           h4

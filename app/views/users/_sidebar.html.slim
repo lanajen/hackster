@@ -20,6 +20,16 @@
           - elsif user_is_current?
             ' No location.
             = link_to 'Add one?', profile_edit_path
+        - if members = TechMember.where(user_id: @user.id).includes(:group) and members.any?
+          - members.each do |member|
+            p.team-widget.user-communities
+              - tech = member.group
+              span.user
+                ==> link_to image_tag(tech.decorate.avatar(:mini), class: ' img-circle' ), tech, class: ''
+                ' Team
+                ==> link_to tech.name, tech
+                i.fa.fa-check-circle.istooltip title="Verified" style="color:#66C866"
+
         .stats
           p
             strong>= number_with_delimiter @user.live_projects_count

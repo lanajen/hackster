@@ -32,6 +32,7 @@ class TechObserver < ActiveRecord::Observer
 
     if (record.changed & %w(avatar full_name slug user_name)).any?
       keys = record.followers.map{|u| "user-#{u.id}-sidebar" }
+      keys += record.members.map{|u| "user-#{u.id}-sidebar" }
       Cashier.expire *keys if keys.any?
     end
 

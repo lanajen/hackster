@@ -546,6 +546,10 @@ class User < ActiveRecord::Base
     members.first
   end
 
+  def is_tech_member? tech
+    TechMember.where(group_id: tech.id, user_id: id).any?
+  end
+
   def link_to_provider provider, uid, data=nil
     auth = {
       provider: provider,
