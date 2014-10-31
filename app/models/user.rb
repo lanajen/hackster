@@ -17,7 +17,7 @@ class User < ActiveRecord::Base
     'new_follow_me' => 'Somebody starts following me',
     'follow_project_activity' => 'Activity for a project I follow',
     'follow_user_activity' => 'Activity for a user I follow',
-    'follow_tech_activity' => 'Activity for a tool I follow',
+    'follow_tech_activity' => 'Activity for a platform I follow',
   }
   CATEGORIES = %w()
 

@@ -94,7 +94,7 @@ html(lang="en")
                               h4 Popular tags
                             - POPULAR_TAGS.each do |tag, link|
                               li= link_to tag, "#{link}?ref=topnav"
-                li= link_to 'Tools', tools_path, class: 'nav-link'
+                li= link_to 'Platforms', platforms_path, class: 'nav-link'
                 li.dropdown
                   a.nav-link.dropdown-toggle data-toggle="dropdown" href='#'
                     | Resources
@@ -207,7 +207,7 @@ html(lang="en")
       #mobile-nav-overlay-close.fa.fa-times
     #mobile-navigation.hide-on-desktop
       = link_to 'Projects', projects_path(ref: 'topnav'), class: 'mo-nav-link'
-      = link_to 'Tools', tools_path, class: 'mo-nav-link'
+      = link_to 'Platforms', platforms_path, class: 'mo-nav-link'
       = link_to 'Hacker spaces', hacker_spaces_path, class: 'mo-nav-link'
       = link_to 'Resources', resources_path, class: 'mo-nav-link'
       / = link_to 'Manufacturing help', build_path, class: 'mo-nav-link'

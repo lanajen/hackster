@@ -12,8 +12,8 @@ class TechesController < ApplicationController
   respond_to :html
 
   def index
-    title "Explore tools"
-    meta_desc "Find hardware and software tools to help you build your next hacks."
+    title "Explore platforms"
+    meta_desc "Find hardware and software platforms to help you build your next hacks."
     @teches = Tech.public.for_thumb_display.order(:full_name)
 
     render "groups/teches/#{self.action_name}"

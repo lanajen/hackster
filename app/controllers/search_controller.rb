@@ -5,11 +5,11 @@ class SearchController < ApplicationController
     @hacker_space_label = 'Hacker spaces'
     @people_label = 'People'
     @projects_label = 'Projects'
-    @tools_label = 'Tools'
+    @platforms_label = 'Platforms'
 
     if params[:q].present?
       title "Results for #{params[:q]}"
-      meta_desc "Browse results for #{params[:q]}. Find tools, projects and hackers on hackster.io."
+      meta_desc "Browse results for #{params[:q]}. Find platforms, projects and hackers on hackster.io."
       begin
         @results = SearchRepository.new(params).search.results
 
@@ -17,7 +17,7 @@ class SearchController < ApplicationController
         @max = @results.offset + @results.size
         unless @results.total_count.zero?
           title "Results for #{params[:q]} - Showing #{@offset} to #{@max} out of #{@results.total_count}"
-          meta_desc = "Browse #{@results.total_count} results for #{params[:q]}. Find tools, projects and hackers on hackster.io."
+          meta_desc = "Browse #{@results.total_count} results for #{params[:q]}. Find platforms, projects and hackers on hackster.io."
           meta_desc += " Page #{safe_page_params}" if safe_page_params and safe_page_params.to_i > 1
           meta_desc meta_desc
         end
@@ -28,7 +28,7 @@ class SearchController < ApplicationController
         @hacker_space_label += " <span class='badge pull-right'>#{terms['hackerspace']}</span>" if terms['hackerspace']
         @people_label += " <span class='badge pull-right'>#{terms['user']}</span>" if terms['user']
         @projects_label += " <span class='badge pull-right'>#{terms['project']}</span>" if terms['project']
-        @tools_label += " <span class='badge pull-right'>#{terms['tech']}</span>" if terms['tech']
+        @platforms_label += " <span class='badge pull-right'>#{terms['tech']}</span>" if terms['tech']
 
         track_event 'Searched projects', { query: params[:q], result_count: @results.total_count, type: params[:type] }
       rescue => e

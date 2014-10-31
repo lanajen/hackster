@@ -42,7 +42,7 @@ class SitemapController < ApplicationController
       }
 
       pages << {
-        loc: tools_url,
+        loc: platforms_url,
         changefreq: 'daily',
         lastmod: Time.now.strftime("%F"),
       }

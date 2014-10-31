@@ -237,6 +237,8 @@ HackerIo::Application.routes.draw do
         delete '' => 'followers#destroy'
         get 'tools/:id' => 'followers#standalone_button', as: :tool
         post 'tools/:id' => 'followers#create_from_button'
+        get 'platforms/:id' => 'followers#standalone_button', as: :platform
+        post 'platforms/:id' => 'followers#create_from_button'
       end
     end
 
@@ -274,7 +276,8 @@ HackerIo::Application.routes.draw do
     get 'search' => 'search#search'
     get 'tags/:tag' => 'search#tags', as: :tags
     get 'tags' => 'search#tags'
-    get 'tools' => 'teches#index'
+    get 'tools', to: redirect('platforms')
+    get 'platforms' => 'teches#index'
 
     get 'infringement_policy' => 'pages#infringement_policy'
     get 'privacy' => 'pages#privacy'
