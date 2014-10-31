@@ -1,13 +1,13 @@
 <p>Hello there,</p>
 
-<p>There are new projects built by hackers or with tools you follow on <a href="http://www.hackster.io">Hackster.io</a>:</p>
+<p>There are new projects built by hackers or with tools you follow on <a href="http://www.hackster.io?ref=emailnotif">Hackster.io</a>:</p>
 
 <% @context[:projects].each do |followables, projects| %>
   Because you follow
   <%= followables.map do |f|
     out = ''
     out += "<img src='#{f.avatar.file_url(:tiny)}' style='width:20px;height:20px;vertical-align:middle;'> " if f.avatar
-    out += "<strong><a href='http://#{APP_CONFIG['full_host']}#{url_for(f)}'>#{f.name}</a></strong>"
+    out += "<strong><a href='http://#{APP_CONFIG['full_host']}#{url_for(f)}?ref=emailnotif'>#{f.name}</a></strong>"
     out
   end.to_sentence.html_safe %>:
 
@@ -16,7 +16,7 @@
     <% user = project.users.first %>
 
     <p>
-      <strong><a href="<%= project_url(project)%>"><%= project.name %></a></strong><% if project.guest_name.present? %> by <%= project.guest_name %><% elsif user %> by <a href="<%= user_url(user) %>"><%= user.name %></a><% end %>: <%= project.one_liner %><% if project.guest_name.present? and user %> (posted by <a href="<%= user_url(user) %>"><%= user.name %></a>)<% end %>
+      <strong><a href="<%= project_url(project)%>?ref=emailnotif"><%= project.name %></a></strong><% if project.guest_name.present? %> by <%= project.guest_name %><% elsif user %> by <a href="<%= user_url(user) %>?ref=emailnotif"><%= user.name %></a><% end %>: <%= project.one_liner %><% if project.guest_name.present? and user %> (posted by <a href="<%= user_url(user) %>?ref=emailnotif"><%= user.name %></a>)<% end %>
     </p>
 
   <% end %>
@@ -32,5 +32,5 @@
 </p>
 
 <p class="unsubscribe">
-  Don't want to receive this type of email? <a href="|unsubscribe_link|">Update your notification preferences</a>
+  Don't want to receive this type of email? <a href="|unsubscribe_link|?ref=emailnotif">Update your notification preferences</a>
 </p>

@@ -38,6 +38,10 @@ class TechObserver < ActiveRecord::Observer
     if (record.changed & %w(full_name avatar mini_resume slug user_name forums_link documentation_link crowdfunding_link buy_link twitter_link facebook_link linked_in_link blog_link github_link website_link youtube_link google_plus_link logo projects_count followers_count)).any?
       Cashier.expire "tech-#{record.id}-sidebar"
     end
+
+    if (record.changed & %w(logo)).any?
+      Cashier.expire "tech-#{record.id}-client-nav"
+    end
   end
 
   def after_create record

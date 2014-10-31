@@ -70,7 +70,7 @@
           - if @project.guest_name.present?
             .user.guest-name
               span.user-name= @project.guest_name
-          - elsif @project.team.full_name.present?
+          - elsif @project.team.try(:full_name).present?
             .user.guest-name
               span.user-name= link_to "Team #{@project.team.full_name}", 'javascript:smoothScrollTo("#team-widget", -20);', class: 'hidden-link'
           - else
