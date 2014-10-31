@@ -27,7 +27,7 @@ class UsersController < ApplicationController
     @respected_projects = @user.respected_projects.indexable.for_thumb_display
     @comments = @user.live_comments.includes(:commentable)
 
-    track_event 'Viewed profile', @user.to_tracker.merge({ own: (current_user.try(:id) == @user.id) })
+    # track_event 'Viewed profile', @user.to_tracker.merge({ own: (current_user.try(:id) == @user.id) })
   end
 
   def redirect_to_show

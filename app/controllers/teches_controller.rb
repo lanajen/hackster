@@ -30,7 +30,7 @@ class TechesController < ApplicationController
 
     render "groups/teches/#{self.action_name}"
 
-    track_event 'Visited tech', @tech.to_tracker.merge({ page: safe_page_params })
+    # track_event 'Visited tech', @tech.to_tracker.merge({ page: safe_page_params })
   end
 
   def embed
