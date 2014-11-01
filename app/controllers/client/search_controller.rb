@@ -6,7 +6,7 @@ class Client::SearchController < Client::BaseController
     if params[:q].present?
       begin
         opts = params.dup
-        opts[:q] += ' spark'
+        opts[:q] += " #{current_platform.subdomain}"
         opts[:type] = 'project'
         opts[:include_external] = true
         opts[:per_page] = Project.per_page
