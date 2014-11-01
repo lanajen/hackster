@@ -281,8 +281,9 @@ class ProjectsController < ApplicationController
   def submit
     authorize! :edit, @project
     @project.assignment_submitted_at = Time.now
+    @project.locked = true
     @project.save
-    redirect_to @project, notice: 'Your assignment has been submitted.'
+    redirect_to @project, notice: 'Your assignment has been submitted. The project will be locked for modifications until grades are sent out.'
   end
 
   private
