@@ -36,7 +36,7 @@ module ScraperStrategies
 
     private
       def before_parse
-        @project.guest_name = @parsed.search("[text()*='Name:']").first.next.text.strip
+        @project.guest_name = @parsed.search("[text()*='Name:']").first.try(:next).try(:text).try(:strip)
         @project.tech_tags_string = 'Udoo'
         @project.website = @parsed.search("[text()*='Project URL:']").first.try(:next_element).try(:text).try(:strip)
 
@@ -52,13 +52,16 @@ module ScraperStrategies
 
         els += @parsed.css('.slides img, .slides iframe').map{|el| el.to_s }
 
-        desc = @parsed.search("[text()*='Description:']").first
-        els << "<p>#{desc.next.text.strip}</p>"
-        if el = desc.parent.next_element
-          els << el.to_s
-          while el = el.next_element
-            els << el.to_s if el.to_s.present?
+        if desc = @parsed.search("[text()*='Description:']").first
+          els << "<p>#{desc.next.text.strip}</p>"
+          if el = desc.parent.next_element
+            els << el.to_s
+            while el = el.next_element
+              els << el.to_s if el.to_s.present?
+            end
           end
+        else
+          els += @parsed.css('.project-description').map{|el| el.to_s }
         end
 
         Nokogiri::HTML::DocumentFragment.parse els.join('')
