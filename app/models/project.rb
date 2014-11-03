@@ -68,7 +68,7 @@ class Project < ActiveRecord::Base
     :graded, :wip, :columns_count, :external, :guest_name,
     :approved, :open_source, :buy_link, :private_logs, :private_issues,
     :hacker_space_id, :locked, :mark_as_idea, :event_id, :assignment_id,
-    :community_ids, :new_group_id, :guest_twitter_handle
+    :community_ids, :new_group_id, :guest_twitter_handle, :celery_id
   attr_accessor :current
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
     :widgets, :cover_image, :permissions, :slug_histories, allow_destroy: true
@@ -101,7 +101,7 @@ class Project < ActiveRecord::Base
     :issues_count, :team_members_count, :tech_tags_count]
 
   store :properties, accessors: [:private_logs, :private_issues, :locked,
-    :guest_twitter_handle]
+    :guest_twitter_handle, :celery_id]
 
   parse_as_integers :counters_cache, :comments_count, :product_tags_count,
     :widgets_count, :followers_count, :build_logs_count,

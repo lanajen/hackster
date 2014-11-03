@@ -37,6 +37,8 @@
           - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
             = render partial: 'respects/button', locals: { project: @project }
           = render 'projects/project_embed_popup'
+          - if @project.celery_id.present?
+            = link_to "#{content_tag(:i, '', class: 'fa fa-shopping-cart')} Buy it".html_safe, '#', 'data-celery' => @project.celery_id, 'data-celery-version' => 'v2', class: 'btn btn-warning btn-ellipsis btn-block'
       - elsif @can_edit
         - who = %w(you)
         - who += ['team members'] if @project.users.size > 1

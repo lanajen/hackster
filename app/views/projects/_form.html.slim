@@ -139,6 +139,7 @@
           .panel-heading
             h4 Admin stuff
           .panel-body
+            = f.input :celery_id, label: 'Celery ID'
             = f.input :featured, inline_label: 'Feature this project', label: false
             = f.input :featured_date, label: 'Feature date'
 

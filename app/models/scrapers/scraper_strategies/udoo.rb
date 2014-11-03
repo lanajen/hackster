@@ -1,5 +1,10 @@
 module ScraperStrategies
   class Udoo < Base
+
+    def crap_list
+      super + %w(.flare-horizontal)
+    end
+
     def to_project
       puts 'Converting to project...'
 

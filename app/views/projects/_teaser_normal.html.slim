@@ -59,7 +59,11 @@
                   - @project.product_tags_cached.each do |tag|
                     = link_to tag, tag_path(tag), class: 'tag-link'
 
-              - if @project.buy_link.present?
+              - if @project.celery_id.present?
+                = javascript_include_tag 'https://www.trycelery.com/js/celery.js'
+                .tags.meta
+                  = button_to 'Buy it', '#', 'data-celery' => @project.celery_id, 'data-celery-version' => 'v2', class: 'btn btn-sm buy-btn'
+              - elsif @project.buy_link.present?
                 .tags.meta
                   ' Buy it from
                   = link_to @project.buy_link_host, @project.buy_link, target: '_blank', rel: 'nofollow'

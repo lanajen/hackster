@@ -956,3 +956,14 @@
     }
   }
 }
+
+.buy-btn {
+  @include border-radius(3px);
+  color: #fff;
+  background: transparent;
+  border: 2px solid #fff;
+  &:hover,&:active {
+    background: #fff;
+    color: #333;
+  }
+}
