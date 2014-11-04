@@ -1,12 +1,11 @@
 Sitemap: http://www.hackster.io/sitemap_index.xml
 
 User-Agent: *
-Disallow: /users/sign_in
-Disallow: /users/sign_up
-Disallow: /users/password/new
+Disallow: /users/*
 Disallow: /*/*/embed
 Disallow: /projects/*
 Disallow: /api/*
+Disallow: /groups/*
 Allow: /projects/e/*
 
 User-agent: Googlebot-Image
