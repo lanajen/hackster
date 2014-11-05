@@ -187,7 +187,7 @@ HackerIo::Application.routes.draw do
       patch 'submit' => 'projects#submit', on: :member
       get 'settings' => 'projects#settings', on: :member
       patch 'settings' => 'projects#update', on: :member
-      post 'claim' => 'projects#claim_external', on: :member
+      post 'claim' => 'projects#claim', on: :member
       get 'last' => 'projects#redirect_to_last', on: :collection
       get '' => 'projects#redirect_to_slug_route', constraints: lambda{|req| req.params[:project_id] != 'new' }
       get 'embed', as: :old_embed

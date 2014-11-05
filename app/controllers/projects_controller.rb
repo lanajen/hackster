@@ -139,17 +139,23 @@ class ProjectsController < ApplicationController
     redirect_to external_project_path(@project), status: 301
   end
 
-  def claim_external
-    @project = Project.external.find_by_id!(params[:id]).decorate
+  def claim
+    @project = Project.find_by_id!(params[:id]).decorate
     authorize! :claim, @project
 
-    @project.build_team
-    @project.team.members.new(user_id: current_user.id)
+    @project.build_team unless @project.team
+    if @project.external
+      @project.team.members.new(user_id: current_user.id)
+    else
+      m = @project.team.members.new(user_id: current_user.id)
+      m.permission_action = 'read'
+      m.save
+    end
     # @project.guest_name = nil
     @project.approved = nil
     @project.save
 
-    redirect_to external_project_path(@project), notice: "You just claimed #{@project.name}. We'll let you know when it's approved!"
+    redirect_to project_path(@project), notice: "You just claimed #{@project.name}. We'll let you know when it's approved!"
   end
 
   def embed
