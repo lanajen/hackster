@@ -42,10 +42,10 @@ class ProjectObserver < ActiveRecord::Observer
   def before_save record
     record.teches = Tech.joins(:tech_tags).references(:tags).where("LOWER(tags.name) IN (?)", record.tech_tags_cached.map{|t| t.strip.downcase }) if record.public? and !record.hide or (record.external and record.approved != false)
 
-    if record.private_changed? and record.public?
+    # if record.private_changed? and record.public?
       # record.post_new_tweet! unless record.made_public_at.present? or record.disable_tweeting? or Rails.env != 'production'
-      record.made_public_at = Time.now
-    end
+      # record.made_public_at = Time.now
+    # end
   end
 
   def before_update record
@@ -65,8 +65,9 @@ class ProjectObserver < ActiveRecord::Observer
       if record.approved == false
         delete_tech_relations record
         record.hide = true
-      elsif record.approved == true
+      elsif record.approved == true and record.made_public_at.nil?
         record.post_new_tweet! unless record.hidden? or Rails.env != 'production'
+        record.made_public_at = Time.now
       end
     end
 

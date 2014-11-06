@@ -182,9 +182,10 @@
                   ' Created on
                   = l @project.created_at, format: :date
                   / if @project.created_at.to_date != @project.made_public_at.to_date
-                    br
-                    strong> Published on
-                    = l @project.made_public_at, format: :date
+                    - if @project.made_public_at
+                      br
+                      strong> Published on
+                      = l @project.made_public_at, format: :date
 
               - if @project.guest_name.present?
                 .meta
