@@ -153,8 +153,8 @@
                     - if credit_line.name.present?
                       .user
                         - if credit_line.work.present?
-                          = credit_line.work.try(:capitalize)
-                          | by
+                          ==> credit_line.work.try(:capitalize)
+                          ' by
                         - if credit_line.link.present?
                           = link_to credit_line.name, credit_line.link, target: '_blank', rel: 'nofollow'
                         - else
