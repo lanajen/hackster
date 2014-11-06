@@ -84,7 +84,7 @@ class ChallengeEntriesController < ApplicationController
 
     def load_and_authorize_entry
       @entry = ChallengeEntry.find params[:id]
-      authorize! self.action_name, @entry
+      authorize! self.action_name.to_sym, @entry
       @challenge = @entry.challenge
     end
 

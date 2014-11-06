@@ -2,7 +2,7 @@ class Ability
   include CanCan::Ability
 
   def initialize(resource)
-    alias_action :read, :edit, :update, :to => :admin
+    alias_action :read, :edit, :update, to: :admin
 
     @user = resource
 
@@ -147,6 +147,10 @@ class Ability
 
     can [:add_project, :submit_project], Assignment do |assignment|
       @user.is_active_member? assignment.promotion
+    end
+
+    can :admin, ChallengeEntry do |entry|
+      ChallengeAdmin.where(challenge_id: entry.challenge_id, user_id: @user.id).with_roles(%w(admin judge)).any?
     end
 
     can :admin, Challenge do |challenge|

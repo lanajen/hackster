@@ -1,6 +1,6 @@
 class Challenge < ActiveRecord::Base
   DEFAULT_DURATION = 60
-  VISIBLE_STATES = %w(in_progress ended paused canceled)
+  VISIBLE_STATES = %w(in_progress ended paused canceled judging judged)
 
   include StringParser
   include Workflow
