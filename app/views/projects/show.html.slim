@@ -93,7 +93,9 @@
                 = log.body.html_safe
                 /  %p{ style: 'margin-top:10px' }= link_to 'Discuss this log', log_path(@project, log, anchor: 'comments'), class: 'btn btn-primary btn-sm'
 
-            - if @project.build_logs_count > 1
+            - if @can_edit
+              = link_to 'See and manage all logs (including drafts)', project_logs_path, class: 'btn btn-outline btn-block'
+            - elsif @project.build_logs_count > 1
               = link_to 'Read previous logs', project_logs_path, class: 'btn btn-outline btn-block'
 
           - else
