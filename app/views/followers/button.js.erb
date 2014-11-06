@@ -8,6 +8,6 @@ if ($('a.after-' + followLabel).length > 0) {
     $('a.after-' + followLabel + ' .inner-btn').animate({ top: '-38px' }, 500);
   }, 1000);
 } else {
-  followBtn.replaceWith('<%= escape_javascript render(partial: @partial, locals: { followable: @followable }) %>');
+  followBtn.replaceWith('<%= escape_javascript render(partial: "followers/button_text", locals: { followable: @followable }) %>');
 }
 followBtn.tooltip();
