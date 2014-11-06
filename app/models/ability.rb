@@ -2,7 +2,7 @@ class Ability
   include CanCan::Ability
 
   def initialize(resource)
-    alias_action :read, :edit, :update, to: :admin
+    alias_action :read, :edit, :update, :update_workflow, to: :admin
 
     @user = resource
 
