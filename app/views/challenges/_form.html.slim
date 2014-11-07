@@ -31,7 +31,8 @@
         .panel-heading
           h4 Challenge settings
         .panel-body
-          = f.input :duration, hint: 'In days', collection: %w(7 15 30 45 60)
+          = f.input :duration, hint: 'In days', collection: %w(7 10 15 30 45 60)
+          = f.input :project_ideas, as: :boolean, inline_label: 'Accept project ideas instead of finished projects'
           = f.input :multiple_entries, inline_label: 'Allow more than one entry per person?', as: :boolean, label: false
           = f.input :description, as: :text, input_html: { rows: 10, class: 'text-editor' }
           = f.input :eligibility, as: :text, input_html: { rows: 10, class: 'text-editor' }

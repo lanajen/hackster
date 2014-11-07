@@ -5,7 +5,7 @@
       .project-thumb
         .thumb
           .inner-thumb
-            h3 Have a project of your own?
+            h3 Have a project #{'idea ' if challenge.project_ideas}of your own?
             p= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Enter the challenge".html_safe, '', class: 'btn btn-primary btn-sm enter-challenge'
           .photo-thumb
             = link_to '', '', style: "background-image:url(#{challenge.cover_image.try(:file_url) || challenge.try(:tech).try(:avatar).try(:file_url, :big)});", class: 'enter-challenge'

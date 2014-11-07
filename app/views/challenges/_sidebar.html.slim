@@ -18,14 +18,15 @@
       <a class="addthis_button_compact"></a>
       </div>
 
-      = content_for :js do
-        <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-51b26f5613fb83d2" async="async"></script>
-        javascript:
-          var addthis_share = {
-            "data_track_addressbar":false,
-             url: "#{challenge_url(@challenge)}",
-             title: "Submit your project to #{@challenge.name} and win #{indefinite_articlerize @challenge.prizes.first.name}."
-          }
+      - if @challenge.prizes.any?
+        = content_for :js do
+          <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-51b26f5613fb83d2" async="async"></script>
+          javascript:
+            var addthis_share = {
+              "data_track_addressbar":false,
+               url: "#{challenge_url(@challenge)}",
+               title: "Submit your project to #{@challenge.name} and win #{indefinite_articlerize @challenge.prizes.first.name}."
+            }
 
     .display
       h4 Enter and win:
