@@ -22,10 +22,6 @@ class ChallengeEntriesController < ApplicationController
         @prizes[prize] = quantity unless quantity.zero?
       end
     end
-
-    @user_projects = current_user.projects.where(external: false)
-    @user_projects.select!{|p| p.is_idea? } if @challenge.project_ideas
-    raise @user_projects.to_s
   end
 
   def create
