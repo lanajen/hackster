@@ -3,11 +3,12 @@
 - offset = defined?(offset) ? offset : nil
 - show_year = defined?(show_year) ? show_year : nil
 - show_year = show_year ? 'year' : 'placeholder' unless show_year.nil?
+- col = defined?(col) ? col : 3
 
 .project-thumb-container data-ref=ref data-ref-id=ref_id data-offset=offset data-show-year=show_year class="#{'has-data' if ref and ref_id}"
-  - cache "project-#{project.id}-thumb", tag: ["project-#{project.id}-thumb", "team-#{project.team_id}", "team-#{project.team_id}-user-thumbs", 'project-thumb'], expires_in: 6.hours do
+  - cache ["project-#{project.id}-thumb", col], tag: ["project-#{project.id}-thumb", "team-#{project.team_id}", "team-#{project.team_id}-user-thumbs", 'project-thumb'], expires_in: 6.hours do
     div  class="project-#{project.id}"
-      .thumb-vertical  class="col-md-#{ defined?(col) ? col : 3 } col-xs-12 col-sm-6"
+      .thumb-vertical  class="col-md-#{col} col-xs-12 col-sm-6"
         .year  style='display:none;'
           h4= project.start_date.try(:year) || 'Undated'
         .year-placeholder  style='display:none;'
