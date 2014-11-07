@@ -43,73 +43,77 @@
             = render 'shared/mailchimp_form'
 
       section#teaser
-        - if Time.now < '2014-11-01'.to_datetime
-          .slide.slide3.slide-opaque.slide-opaque-light style="background-image: url(#{asset_url 'home_visitor/halloween_contest.jpg' });"
-            .container
-              .row
-                .col-xs-10.col-xs-offset-1.text-center
-                  h1
-                    small
-                      | Enter your Scary Connected Hacks into the
-                    br
-                    = link_to 'Electric Imp Halloween Contest', '/challenges/imp-halloween?ref=slider'
-        .slide.slide2.slide-opaque.slide-opaque-light style="background-image: url(https://halckemy.s3.amazonaws.com/uploads/cover_image/file/20286/cover_goat-8.jpg)"
+        .slide.slide-opaque.slide-opaque-light style="background-image: url(#{asset_url 'home/wallpaperUDOO2.jpg'})"
           .container
             .row
               .col-xs-10.col-xs-offset-1.text-center
                 h1
-                  b= link_to 'Evil LED Goat', '/simsalapim/evil-led-goat?ref=slider'
+                  b= link_to 'What will UDOO?', '/challenges/what-will-udoo?ref=slider'
+                  br
+                  small
+                    | Win a UDOO board by submitting your project idea
+
+        .slide.slide-opaque.slide-opaque-dark style="background-image: url(https://halckemy.s3.amazonaws.com/uploads/cover_image/file/20535/cover_IMG_1129-1024x682.jpg)"
+          .container
+            .row
+              .col-xs-10.col-xs-offset-1.text-center
+                h1
+                  b= link_to 'Carmadillo', '/mikelangeloz/carmadillo-android-controlled-udoo-rover?ref=slider'
                   | :
                   br
                   small
-                    | Can a plushie truly be evil, or is it only a simulation? If only Turing were still around...
+                    | Build a rover and control it with your Android phone
                     br
                     small
                       ' by
                       .user>
-                        ==> link_to image_tag('https://halckemy.s3.amazonaws.com/uploads/avatar/file/17054/mini_10296386_10154132421980570_7885147228332876326_o.jpg', class: 'img-circle'), '/simsalapim?ref=slider', class: 'hidden-link'
+                        ==> link_to image_tag('https://halckemy.s3.amazonaws.com/uploads/avatar/file/19396/mini_michelangelon2.jpg', class: 'img-circle'), '/mikelangeloz?ref=slider', class: 'hidden-link'
                         span.user-name
-                          = link_to 'Simone', '/simsalapim?ref=slider', class: 'hidden-link'
-        .slide.slide4.slide-opaque.slide-opaque-dark style="background-image: url(https://halckemy.s3.amazonaws.com/uploads/cover_image/file/454/cover_project_pic.jpg);"
+                          = link_to 'Michelangelo Guarise', '/mikelangeloz?ref=slider', class: 'hidden-link'
+
+        .slide.slide-opaque.slide-opaque-light style="background-image: url(https://halckemy.s3.amazonaws.com/uploads/cover_image/file/20463/cover_ar-in-education.png)"
           .container
             .row
               .col-xs-10.col-xs-offset-1.text-center
                 h1
-                  ' This adaptable breathing sensor could just save your life.
+                  b= link_to 'Augmented Reality in Education', '/G_Pehlivanides/augmented-reality-in-education-developing-discovery-based-learning-applications?ref=slider'
+                  | :
                   br
                   small
-                    ' Learn how:
-                    b= link_to 'Thermistor Respiratory Monitor', '/maneesh_and_hana/thermistor-respiratory-monitor?ref=slider'
+                    | Developing discovery-based learning applications
                     br
                     small
                       ' by
                       .user>
-                        ==> link_to image_tag('http://gravatar.com/avatar/56e0c13c0381771220371ce0b2757dd2.png?d=identicon&s=30', class: 'img-circle'), '/maneesh?ref=slider', class: 'hidden-link'
+                        ==> link_to image_tag('http://gravatar.com/avatar/f4c885b61de50288840cd449bf8cb738.png?d=identicon&s=30', class: 'img-circle'), '/G_Pehlivanides?ref=slider', class: 'hidden-link'
                         span.user-name
-                          = link_to 'Maneesh Gupta', '/maneesh?ref=slider', class: 'hidden-link'
-                      ' and
+                          = link_to 'George Pehlivanides', '/G_Pehlivanides?ref=slider', class: 'hidden-link'
+
+        .slide.slide-opaque.slide-opaque-dark style="background-image: url(https://halckemy.s3.amazonaws.com/uploads/cover_image/file/17886/cover_WP_20140725_19_37_08_Pro-cropped.jpg)"
+          .container
+            .row
+              .col-xs-10.col-xs-offset-1.text-center
+                h1
+                  b= link_to 'X-EMS', '/oskar/x-ems?ref=slider'
+                  | :
+                  br
+                  small
+                    | The world's first eXpandable, eXtendable, and 100% open electronic management platform
+                    br
+                    small
+                      ' by
                       .user>
-                        ==> link_to image_tag('http://gravatar.com/avatar/ace142ea3f67acfc34a5f59fd4059dd7.png?d=identicon&s=30', class: 'img-circle'), '/hana?ref=slider', class: 'hidden-link'
+                        ==> link_to image_tag('http://gravatar.com/avatar/001cbc6fc29a47b7d64fca7483b5a75e.png?d=identicon&s=30', class: 'img-circle'), '/oskar?ref=slider', class: 'hidden-link'
                         span.user-name
-                          = link_to 'Hana Qudsi', '/hana?ref=slider', class: 'hidden-link'
+                          = link_to 'Oskar Elmgren', '/oskar?ref=slider', class: 'hidden-link'
+
+                      / ' and
+                      / .user>
+                        / ==> link_to image_tag('http://gravatar.com/avatar/ace142ea3f67acfc34a5f59fd4059dd7.png?d=identicon&s=30', class: 'img-circle'), '/hana?ref=slider', class: 'hidden-link'
+                        / span.user-name
+                          # = link_to 'Hana Qudsi', '/hana?ref=slider', class: 'hidden-link'
                       / ' and
                       / = link_to '1 other', '/maneesh_and_hana/thermistor-respiratory-monitor#team-widget?ref=slider', class: 'hidden-link'
-        .slide.slide2.slide-opaque.slide-opaque-light style="background-image: url(https://halckemy.s3.amazonaws.com/uploads/cover_image/file/592/cover_7762845146_0e75907f04_h.jpg)"
-          .container
-            .row
-              .col-xs-10.col-xs-offset-1.text-center
-                h1
-                  b= link_to 'The Matrix Clock:', '/funnypolynomial/matrixclock?ref=slider'
-                  br
-                  small
-                    | a clever enigma in a sleek, buttonless bamboo capsule
-                    br
-                    small
-                      ' by
-                      .user>
-                        ==> link_to image_tag('http://gravatar.com/avatar/912f78cbd304ae359d7f46458c50dc14.png?d=identicon&s=30', class: 'img-circle'), '/funnypolynomial?ref=slider', class: 'hidden-link'
-                        span.user-name
-                          = link_to 'Mark', '/funnypolynomial?ref=slider', class: 'hidden-link'
 
       - if user_signed_in? or returning_user?
         section

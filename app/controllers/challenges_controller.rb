@@ -20,8 +20,12 @@ class ChallengesController < ApplicationController
     end
     @embed = Embed.new(url: @challenge.video_link)
 
-    @user_projects = current_user.projects.where(external: false)
-    @user_projects = @user_projects.select{|p| p.is_idea? } if @challenge.project_ideas
+    if user_signed_in?
+      @user_projects = current_user.projects.where(external: false)
+      @user_projects = @user_projects.select{|p| p.is_idea? } if @challenge.project_ideas
+    else
+      @user_projects = []
+    end
   end
 
   def rules
