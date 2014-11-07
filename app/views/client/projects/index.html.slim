@@ -41,7 +41,10 @@
               li= link_to "Buy #{current_tech.name}", current_tech.buy_link, target: '_blank'
 
       .col-xs-12.mg-20
-        .pull-left= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_url(subdomain: 'www', project: { tech_tags_string: current_tech.name }), class: 'btn btn-sm btn-primary'
+        .pull-left
+          iframe src="http://#{APP_CONFIG['full_host']}/followers/platforms/#{current_tech.id}?style=text" height=34 width=160 frameborder=0 scrolling='no' style='margin-right:10px'
+        .pull-left
+          = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_url(subdomain: 'www', project: { tech_tags_string: current_tech.name }), class: 'btn btn-sm btn-primary'
         .btn-group.pull-right
           .btn-group
             button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
