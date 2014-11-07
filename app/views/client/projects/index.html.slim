@@ -66,6 +66,14 @@
               li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to 'Featured', root_path(by: 'featured', sort: params[:sort])
               li*{ class: "#{'active' if params[:by] == 'wip'}" } = link_to 'Work in progress', root_path(by: 'wip', sort: params[:sort])
 
+    - if @challenge
+      .col-xs-12
+        .alert.alert-info.text-center
+          strong> #{current_tech.name} is having a challenge!
+          ' Join the
+          ==> link_to @challenge.name, "http://www.hackster.io/challenges/#{@challenge.slug}", class: 'alert-link'
+          | on Hackster.io
+
     .col-xs-12
       .row.thumb-list
         - @tech = current_tech
