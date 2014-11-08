@@ -548,6 +548,9 @@
     transition: background-color .5s ease;
     text-shadow: 0 0 6px #000;
     // background: rgba(205, 217, 226, 0.7);
+    .actions {
+      text-shadow: none;
+    }
   }
   #project-header{
     position: absolute;

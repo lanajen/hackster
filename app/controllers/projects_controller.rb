@@ -3,6 +3,7 @@ class ProjectsController < ApplicationController
   load_and_authorize_resource only: [:index, :edit, :settings, :submit]
   layout 'project', only: [:edit, :update, :show]
   before_filter :set_project_mode, only: [:settings]
+  before_filter :load_lists, only: [:show, :show_external]
   respond_to :html
   respond_to :js, only: [:edit, :update, :settings]
   after_action :allow_iframe, only: :embed
@@ -44,14 +45,6 @@ class ProjectsController < ApplicationController
     @collections = @project.project_collections.includes(:collection)
     @challenge_entries = @project.challenge_entries.includes(:challenge).includes(:prize)
     @winning_entry = @challenge_entries.select{|e| e.awarded? }.first
-
-    @lists = if user_signed_in?
-      if current_user.is? :admin
-        List.where(type: 'List').order(:full_name)
-      else
-        current_user.lists.order(:full_name)
-      end
-    end
 
     title @project.name
     @project_meta_desc = "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."
@@ -304,5 +297,15 @@ class ProjectsController < ApplicationController
     def initialize_project
       @project.build_logo unless @project.logo
       @project.build_cover_image unless @project.cover_image
+    end
+
+    def load_lists
+      @lists = if user_signed_in?
+        if current_user.is? :admin
+          List.where(type: 'List').order(:full_name)
+        else
+          current_user.lists.order(:full_name)
+        end
+      end
     end
 end

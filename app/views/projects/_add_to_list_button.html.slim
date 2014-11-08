@@ -1,0 +1,47 @@
+- if user_signed_in? and @lists and @lists.any?
+  = content_for :js do
+    - lists = @lists.map{|list| "<li class='list-#{list.id}'><label><input type='checkbox' name='lists' data-list-user-name='#{list.user_name}' value='#{list.id}' #{'checked' if list.project_collections.where(project_id: @project.id).any? }>#{list.name}</label><i class='fa fa-check status-ok' style='display:none'></i><i class='fa fa-spinner fa-spin status-in-progress' style='display:none'></i></li>" }.join('').html_safe
+    javascript:
+      $(document).ready(function(){
+        var btn = $('<a href="" class="btn btn-block btn-info btn-ellipsis toggle-lists-btn"><i class="fa fa-bookmark-o"></i> Add to my lists</a>');
+        var list = $("<ul class='lists'>#{lists}</ul>");
+        btn.insertBefore('.add-to-list');
+        list.appendTo('.add-to-list');
+
+        $('.toggle-lists-btn').on('click', function(e){
+          e.preventDefault();
+          $(this).next('.add-to-list').find('.lists').toggle();
+        });
+
+        function updateList(list, updateType) {
+          $('.list-' + list.val() + ' .status-in-progress').show();
+          var $list = list;
+          $.ajax({
+            url: '/lists/' + list.data('list-user-name') + '/projects/link',
+            data: {
+              project_id: "#{@project.id}"
+            },
+            type: updateType,
+            dataType: 'json',
+            success: function(data){
+              $('.list-' + data.id + ' .status-in-progress').hide();
+              $('.list-' + data.id + ' input[type="checkbox"]').prop('checked', $list.is(':checked'));
+              var checkmark = $('.list-' + data.id + ' .status-ok');
+              checkmark.fadeIn(200, function(){
+                var $this = $(this);
+                window.setTimeout(function(){
+                  $this.fadeOut(200);
+                }, 2000);
+              });
+            }
+          });
+        }
+
+        $('.add-to-list .lists input[type="checkbox"]').on('change', function(e){
+          if ($(this).is(':checked')) {
+            updateList($(this), 'POST');
+          } else {
+            updateList($(this), 'DELETE');
+          }
+        });
+      });
