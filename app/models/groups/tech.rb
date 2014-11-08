@@ -20,11 +20,13 @@ class Tech < List
   store_accessor :websites, :forums_link, :documentation_link, :crowdfunding_link, :buy_link,
     :shoplocket_link
   set_changes_for_stored_attributes :websites
+
   store :properties, accessors: [:accept_project_ideas, :project_ideas_phrasing,
     :active_challenge]
+  set_changes_for_stored_attributes :properties
+
   store :counters_cache, accessors: [:projects_count, :followers_count,
     :external_projects_count, :private_projects_count]
-  set_changes_for_stored_attributes :properties
 
   parse_as_booleans :properties, :accept_project_ideas, :active_challenge
 
