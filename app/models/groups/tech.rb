@@ -6,11 +6,12 @@ class Tech < List
   has_many :challenges
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'TechMember'
   has_one :client_subdomain
+  has_one :logo, as: :attachable, dependent: :destroy
   has_one :slug, as: :sluggable, dependent: :destroy, class_name: 'SlugHistory'
 
   attr_accessible :forums_link, :documentation_link, :crowdfunding_link,
     :buy_link, :shoplocket_link, :cover_image_id, :accept_project_ideas,
-    :project_ideas_phrasing, :client_subdomain_attributes
+    :project_ideas_phrasing, :client_subdomain_attributes, :logo_id
 
   accepts_nested_attributes_for :client_subdomain
 
@@ -86,6 +87,10 @@ class Tech < List
   #   Project.public.includes(:tech_tags).references(:tags).where('lower(tags.name) IN (?)', tech_tags.pluck(:name).map{|n| n.downcase })
   #   # SearchRepository.new(q: tech_tags_string).search.results
   # end
+
+  def logo_id=(val)
+    self.logo = Logo.find_by_id(val)
+  end
 
   def shoplocket_token
     return unless shoplocket_link.present?

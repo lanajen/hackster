@@ -13,8 +13,8 @@
 
     section#sidebar-container-in
       - if @list.avatar
-        .avatar#list-avatar-image-div
-          #list-avatar-image style="background-image:url('#{@list.avatar(:big)}');"
+        .avatar#tech-avatar-image-div
+          #tech-avatar-image style="background-image:url('#{@list.avatar(:big)}');"
       #tech-body
         h1= link_to @list.name, list_path(@list), id: 'tech-name'
         p
