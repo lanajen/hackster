@@ -20,7 +20,7 @@ class ListsController < ApplicationController
     impressionist_async @list, "", unique: [:session_hash]
     # authorize! :read, @list
     title "#{@list.name} projects and hacks"
-    meta_desc "Discover hacks and projects built with #{@list.name}, and share your own!"
+    meta_desc "Discover curated hardware projects and hacks for #{@list.name}."
 
     render "groups/lists/#{self.action_name}"
 

@@ -1,6 +1,6 @@
 - content_for :head do
   meta(property="og:title" content="#{@list.name} projects")
-  meta(property="og:description" content="Discover hacks and projects built with #{@list.name}, and share your own!")
+  meta(property="og:description" content="Discover curated hardware projects and hacks for #{@list.name}.")
   - if @list.avatar
     meta(property="og:image" content=@list.avatar.file_url(:big))
     meta(property="twitter:image:src" content=@list.avatar.file_url(:big))
