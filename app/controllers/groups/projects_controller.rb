@@ -48,7 +48,7 @@ class Groups::ProjectsController < ApplicationController
     when Tech
       # @project.tech_tags << TechTag.new(name: @group.tech_tags.first.name)
     else
-      @group.projects.delete(@project)
+      @group.projects.destroy @project
     end
 
     respond_to do |format|
