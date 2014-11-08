@@ -37,7 +37,7 @@
           - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
             = render partial: 'respects/button', locals: { project: @project }
           = render 'projects/project_embed_popup'
-          .add-to-list
+          / .add-to-list
           - if @project.celery_id.present?
             = link_to "#{content_tag(:i, '', class: 'fa fa-shopping-cart')} Buy it".html_safe, '#', 'data-celery' => @project.celery_id, 'data-celery-version' => 'v2', class: 'btn btn-warning btn-ellipsis btn-block'
       - elsif @can_edit
@@ -135,7 +135,7 @@
 
 - if user_signed_in? and @lists and @lists.any?
   = content_for :js do
-    - lists = @lists.map{|list| "<li class='list-#{list.id}'><label><input type='checkbox' data-list-user-name='#{list.user_name}' value='#{list.id}' #{'checked' if list.project_collections.where(project_id: @project.id).any? }>#{list.name}</label><i class='fa fa-check status-ok' style='display:none'></i><i class='fa fa-spinner fa-spin status-in-progress' style='display:none'></i></li>" }.join('').html_safe
+    - lists = @lists.map{|list| "<li class='list-#{list.id}'><label><input type='checkbox' name='lists' data-list-user-name='#{list.user_name}' value='#{list.id}' #{'checked' if list.project_collections.where(project_id: @project.id).any? }>#{list.name}</label><i class='fa fa-check status-ok' style='display:none'></i><i class='fa fa-spinner fa-spin status-in-progress' style='display:none'></i></li>" }.join('').html_safe
     javascript:
       $(document).ready(function(){
         var btn = $('<a href="" class="btn btn-block btn-info btn-ellipsis toggle-lists-btn"><i class="fa fa-bookmark-o"></i> Add to my lists</a>');
@@ -150,15 +150,17 @@
 
         function updateList(list, updateType) {
           $('.list-' + list.val() + ' .status-in-progress').show();
+          var $list = list;
           $.ajax({
             url: '/lists/' + list.data('list-user-name') + '/projects/link',
             data: {
               project_id: "#{@project.id}"
             },
-            type: 'POST',
+            type: updateType,
             dataType: 'json',
             success: function(data){
               $('.list-' + data.id + ' .status-in-progress').hide();
+              $('.list-' + data.id + ' input[type="checkbox"]').prop('checked', $list.is(':checked'));
               var checkmark = $('.list-' + data.id + ' .status-ok');
               checkmark.fadeIn(200, function(){
                 var $this = $(this);
@@ -171,6 +173,7 @@
         }
 
         $('.add-to-list .lists input[type="checkbox"]').on('change', function(e){
+        console.log($(this).is(':checked'));
           if ($(this).is(':checked')) {
             updateList($(this), 'POST');
           } else {

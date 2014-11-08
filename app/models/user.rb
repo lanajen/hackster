@@ -54,7 +54,7 @@ class User < ActiveRecord::Base
   has_many :hacker_spaces, through: :hacker_spaces_group_ties, source: :group, class_name: 'HackerSpace'
   has_many :invitations, class_name: self.to_s, as: :invited_by
   has_many :lists_group_ties, -> { where(type: 'ListMember') }, class_name: 'ListMember', dependent: :destroy
-  has_many :lists, through: :lists, source: :group, class_name: 'List'
+  has_many :lists, through: :lists_group_ties, source: :group, class_name: 'List'
   has_many :permissions, as: :grantee
   has_many :projects, -> { where("projects.guest_name IS NULL OR projects.guest_name = ''") }, through: :teams
   has_many :promotions, through: :group_ties, source: :group, class_name: 'Promotion'
