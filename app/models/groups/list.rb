@@ -9,8 +9,9 @@ class List < Group
   has_many :followers, through: :follow_relations, source: :user
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'ListMember'
   has_one :cover_image, as: :attachable, class_name: 'Document', dependent: :destroy
+  has_one :logo, as: :attachable, dependent: :destroy
 
-  attr_accessible :cover_image_id
+  attr_accessible :cover_image_id, :logo_id
 
   validates :user_name, :full_name, presence: true
   validate :user_name_is_unique
@@ -71,6 +72,10 @@ class List < Group
 
   def cover_image_id=(val)
     self.cover_image = Document.find_by_id(val)
+  end
+
+  def logo_id=(val)
+    self.logo = Logo.find_by_id(val)
   end
 
   def to_tracker

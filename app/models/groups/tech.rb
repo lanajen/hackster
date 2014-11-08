@@ -6,11 +6,10 @@ class Tech < List
   has_many :challenges
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'TechMember'
   has_one :client_subdomain
-  has_one :logo, as: :attachable, dependent: :destroy
   has_one :slug, as: :sluggable, dependent: :destroy, class_name: 'SlugHistory'
 
   attr_accessible :forums_link, :documentation_link, :crowdfunding_link,
-    :buy_link, :logo_id, :shoplocket_link, :cover_image_id, :accept_project_ideas,
+    :buy_link, :shoplocket_link, :cover_image_id, :accept_project_ideas,
     :project_ideas_phrasing, :client_subdomain_attributes
 
   accepts_nested_attributes_for :client_subdomain
@@ -72,10 +71,6 @@ class Tech < List
       end
     end
     self.user_name = slug
-  end
-
-  def logo_id=(val)
-    self.logo = Logo.find_by_id(val)
   end
 
   def project_ideas_phrasing
