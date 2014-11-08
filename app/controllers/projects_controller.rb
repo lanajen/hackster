@@ -45,6 +45,14 @@ class ProjectsController < ApplicationController
     @challenge_entries = @project.challenge_entries.includes(:challenge).includes(:prize)
     @winning_entry = @challenge_entries.select{|e| e.awarded? }.first
 
+    @lists = if user_signed_in?
+      if current_user.is? :admin
+        List.where(type: 'List').order(:full_name)
+      else
+        current_user.lists.order(:full_name)
+      end
+    end
+
     title @project.name
     @project_meta_desc = "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."
     meta_desc @project_meta_desc

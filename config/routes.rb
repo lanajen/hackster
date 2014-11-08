@@ -119,14 +119,19 @@ HackerIo::Application.routes.draw do
       patch 'projects/link' => 'groups/projects#link'
     end
 
-    # resources :communities, except: [:show, :update, :destroy], controller: 'groups', as: :groups
-    # get 'groups/:id' => 'groups#show'
-    # get 'c/:user_name' => 'groups#show', as: :community
-    # scope 'c/:user_name', as: :group do
-    #   get '' => 'groups#show', as: ''
-    #   delete '' => 'groups#destroy'
-    #   patch '' => 'groups#update'
-    # end
+    get 'lists/:user_name' => 'lists#show', as: :list
+    scope 'lists/:user_name', as: :lists do
+      get '' => 'lists#show'
+      patch '' => 'lists#update'
+      post 'projects/link' => 'groups/projects#link'
+      delete 'projects/link' => 'groups/projects#unlink'
+    end
+    resources :lists, except: [:show, :update] do
+      resources :projects, only: [] do
+        post 'feature' => 'lists#feature_project'#, as: :tech_feature_project
+        delete 'feature' => 'lists#unfeature_project'
+      end
+    end
 
     resources :teches, except: [:show] do
       resources :projects, only: [] do

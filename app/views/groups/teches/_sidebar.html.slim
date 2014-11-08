@@ -21,7 +21,7 @@
           - if @tech.mini_resume.present?
             = @tech.mini_resume
           - elsif can? :update, @tech
-            | No mini resume.
+            ' No mini resume.
             = link_to 'Add one?', edit_tech_path(@tech)
         .stats
           p
@@ -59,14 +59,14 @@
       .display
         h4 Social links
         #tech-websites
-          - if @tech.websites.any?
+          - if @tech..has_websites?
             ul.websites.list-inline
               - @tech.websites.select{|t,u| u.present? }.each do |type, url|
                 = render partial: "shared/website", locals: { type: type, url: url }
           - elsif can? :update, @tech
             ul.websites.list-inline
               li
-                | No websites.
+                ' No websites.
                 = link_to 'Add some?', edit_tech_path(@tech)
 
       - if @tech.active_members.joins(:user).where(users: { invitation_token: nil }).any?

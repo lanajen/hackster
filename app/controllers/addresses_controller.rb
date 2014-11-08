@@ -17,7 +17,7 @@ class AddressesController < ApplicationController
     def load_and_authorize_entry
       @entry = ChallengeEntry.find params[:id]
       @address = @entry.address || (a=@entry.build_address; a.save(validate: false);a)
-      authorize! self.action_name, @address
+      authorize! self.action_name.to_sym, @address
       @challenge = @entry.challenge
     end
 end

@@ -36,7 +36,25 @@ class Groups::ProjectsController < ApplicationController
     end
     # @project.save
 
-    redirect_to group_path(@group), notice: "Your project has been added to #{@group.name}."
+    respond_to do |format|
+      format.html { redirect_to group_path(@group), notice: "Your project has been added to #{@group.name}." }
+      format.js { render status: :created, json: @group.to_json }
+    end
+  end
+
+  def unlink
+    @project = Project.find params[:project_id]
+    case @group
+    when Tech
+      # @project.tech_tags << TechTag.new(name: @group.tech_tags.first.name)
+    else
+      @group.projects.delete(@project)
+    end
+
+    respond_to do |format|
+      format.html { redirect_to group_path(@group), notice: "Your project has been removed from #{@group.name}." }
+      format.js { render status: :ok, json: @group.to_json }
+    end
   end
 
   private
@@ -51,6 +69,8 @@ class Groups::ProjectsController < ApplicationController
           @community = Community.where(type: 'Community').find_by_user_name! params[:user_name]
         when 'hackerspaces'
           @hacker_space = HackerSpace.find_by_user_name! params[:user_name]
+        when 'lists'
+          @list = List.where(type: 'List').find_by_user_name! params[:user_name]
         end
       else
         @group = Group.find params[:group_id]
