@@ -40,11 +40,12 @@ class Project < ActiveRecord::Base
   has_many :events, -> { where("groups.type = 'Event'") }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :follow_relations, as: :followable
   has_many :followers, through: :follow_relations, source: :user
+  has_many :grades
   has_many :hacker_spaces, -> { where("groups.type = 'HackerSpace'") }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :project_collections, dependent: :destroy
   has_many :issues, as: :threadable, dependent: :destroy
   has_many :images, as: :attachable, dependent: :destroy
-  has_many :grades
+  has_many :lists, -> { where("groups.type = 'List'") }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :permissions, as: :permissible
   has_many :project_collections, dependent: :destroy
   has_many :respects, dependent: :destroy, class_name: 'Respect'

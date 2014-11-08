@@ -74,6 +74,9 @@ class CronTask < BaseWorker
     users += Tech.joins(:projects).distinct('groups.id').where(projects: { id: project_ids }).map{|t| t.followers.with_subscription('follow_tech_activity').pluck(:id) }.flatten
     users += User.joins(:projects).distinct('users.id').where(projects: { id: project_ids }).map{|u| u.followers.with_subscription('follow_user_activity').pluck(:id) }.flatten
 
+    lists = List.joins(:project_collections).where('project_collections.created_at > ?', 24.hours.ago).where(groups: { type: 'List' }).distinct(:id)
+    users += lists.map{|l| l.followers.with_subscription('follow_list_activity').pluck(:id) }.flatten
+
     users.uniq!
 
     users.each do |user_id|
