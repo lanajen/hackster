@@ -38,6 +38,7 @@ class ApplicationController < ActionController::Base
       ActionController::UnknownController,
       AbstractController::ActionNotFound,
       ActiveRecord::RecordNotFound,
+      ActionView::MissingTemplate,
       with: :render_404
   end
 

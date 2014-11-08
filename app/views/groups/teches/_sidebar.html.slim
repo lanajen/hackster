@@ -59,7 +59,7 @@
       .display
         h4 Social links
         #tech-websites
-          - if @tech..has_websites?
+          - if @tech.has_websites?
             ul.websites.list-inline
               - @tech.websites.select{|t,u| u.present? }.each do |type, url|
                 = render partial: "shared/website", locals: { type: type, url: url }
