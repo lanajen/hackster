@@ -2,7 +2,7 @@ class Ability
   include CanCan::Ability
 
   def initialize(resource)
-    alias_action :read, :edit, :update, :to => :admin
+    alias_action :read, :edit, :update, :update_workflow, to: :admin
 
     @user = resource
 
@@ -78,7 +78,9 @@ class Ability
       record.visible_to? @user
     end
 
-    can :claim, Project
+    can :claim, Project do |project|
+      project.external or project.guest_name.present?
+    end
 
     can :join, Group do |group|
       (member = @user.is_member?(group) and member.invitation_pending?) or case group.access_level
@@ -145,6 +147,10 @@ class Ability
 
     can [:add_project, :submit_project], Assignment do |assignment|
       @user.is_active_member? assignment.promotion
+    end
+
+    can :admin, ChallengeEntry do |entry|
+      ChallengeAdmin.where(challenge_id: entry.challenge_id, user_id: @user.id).with_roles(%w(admin judge)).any?
     end
 
     can :admin, Challenge do |challenge|

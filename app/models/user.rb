@@ -20,6 +20,7 @@ class User < ActiveRecord::Base
     'follow_project_activity' => 'Activity for a project I follow',
     'follow_user_activity' => 'Activity for a user I follow',
     'follow_tech_activity' => 'Activity for a platform I follow',
+    'follow_list_activity' => 'Activity for a list I follow',
   }
   CATEGORIES = %w()
 
@@ -41,8 +42,10 @@ class User < ActiveRecord::Base
   has_many :events, through: :group_ties, source: :group, class_name: 'Event'
   has_many :follow_relations, dependent: :destroy
   has_many :followed_groups, -> { order('groups.full_name ASC') }, source_type: 'Group', through: :follow_relations, source: :followable
+  has_many :followed_lists, -> { order('groups.full_name ASC').where("groups.type = 'List'") }, source_type: 'Group', through: :follow_relations, source: :followable
   has_many :followed_projects, source_type: 'Project', through: :follow_relations, source: :followable
   has_many :followed_users, source_type: 'User', through: :follow_relations, source: :followable
+  has_many :followed_teches, -> { order('groups.full_name ASC').where("groups.type = 'Tech'") }, source_type: 'Group', through: :follow_relations, source: :followable
   has_many :grades, as: :gradable
   has_many :invert_follow_relations, class_name: 'FollowRelation', as: :followable
   has_many :followers, through: :invert_follow_relations, source: :user
@@ -53,6 +56,8 @@ class User < ActiveRecord::Base
   has_many :hacker_spaces_group_ties, -> { where(type: 'HackerSpaceMember') }, class_name: 'HackerSpaceMember', dependent: :destroy
   has_many :hacker_spaces, through: :hacker_spaces_group_ties, source: :group, class_name: 'HackerSpace'
   has_many :invitations, class_name: self.to_s, as: :invited_by
+  has_many :lists_group_ties, -> { where(type: 'ListMember') }, class_name: 'ListMember', dependent: :destroy
+  has_many :lists, through: :lists_group_ties, source: :group, class_name: 'List'
   has_many :permissions, as: :grantee
   has_many :projects, -> { where("projects.guest_name IS NULL OR projects.guest_name = ''") }, through: :teams
   has_many :promotions, through: :group_ties, source: :group, class_name: 'Promotion'
@@ -88,7 +93,7 @@ class User < ActiveRecord::Base
   validates :mini_resume, length: { maximum: 160 }, allow_blank: true
   validates :user_name, :new_user_name, length: { in: 3..100 },
     format: { with: /\A[a-zA-Z0-9_\-]+\z/, message: "accepts only letters, numbers, underscores '_' and dashes '-'." }, allow_blank: true
-  validates :user_name, :new_user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users communities hackerspaces hackers) }
+  validates :user_name, :new_user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users communities hackerspaces hackers lists) }
   with_options unless: proc { |u| u.skip_registration_confirmation },
     on: :create do |user|
       user.validates :email_confirmation, presence: true
@@ -326,7 +331,7 @@ class User < ActiveRecord::Base
       project_views: 'projects.sum(:impressions_count)',
       respects: 'respects.count',
       skill_tags: 'skill_tags.count',
-      teches: 'followed_groups.count',
+      teches: 'followed_teches.count',
       websites: 'websites.values.select{|v| v.present? }.size',
     }
   end

@@ -8,6 +8,7 @@
           button.close onclick="closePopup('#embed-popup');"  &times;
           h3.top Share
           = render 'projects/share_by_author'
+          .add-to-list
           h3 Embed the widget on your own site
           #project-embed
             p
@@ -20,9 +21,8 @@
       $('#embed-popup').click(function(e){
         e.preventDefault();
         $(this).fadeOut(200);
-        return false;
-      }).children().click(function() {
-        return false;
+      }).children(':not(input)').click(function(e) {
+        e.stopPropagation();
       });
       function openPopup(id) {
         width = window.innerWidth > 600 ? 600 : window.innerWidth;

@@ -1,13 +1,13 @@
 - @tech = GroupDecorator.decorate(@tech)
 
 = content_for :before_main do
-  #about style='position: relative;z-index: 1000;background: #F2F2F2;'
+  #about style='position: relative;z-index: 999;background: #F2F2F2;'
     - if !user_signed_in?
       = render partial: 'shared/signup_top', locals: { message: "Dig #{@tech.name}? Join and receive updates about new projects: ", redirect_to: create_followers_path(followable_type: 'Group', followable_id: @tech.id), source: 'tech' }
 
 = content_for :no_container do
   #tech-page.page-div
-    = render "groups/teches/tech_sidebar"
+    = render "groups/teches/sidebar"
     #content-with-sidebar
       = yield
 

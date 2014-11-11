@@ -1,0 +1,77 @@
+- content_for :head do
+  meta(property="og:title" content="#{@list.name} projects")
+  meta(property="og:description" content="Discover curated hardware projects and hacks for #{@list.name}.")
+  - if @list.avatar
+    meta(property="og:image" content=@list.avatar.file_url(:big))
+    meta(property="twitter:image:src" content=@list.avatar.file_url(:big))
+    meta(property="og:image:width" content='200')
+    meta(property="og:image:height" content='200')
+    meta(property="twitter:image:width" content='200')
+    meta(property="twitter:image:height" content='200')
+  meta(property="og:url" content=list_url(@list))
+  meta(property="og:site_name" content="Hackster.io")
+  meta(property="twitter:card" content="summary")
+  meta(property="twitter:site" content="@hacksterio")
+  meta(property="twitter:domain" content="hackster.io")
+  meta(property="twitter:title" content="#{@list.name} projects")
+  meta(property="twitter:description" content="#{@list.mini_resume}")
+  - if handle = @list.twitter_handle
+    meta(property="twitter:creator" content=handle)
+  link(rel="canonical" href=list_url(@list))
+  meta(property="keywords" content="#{@list.name} projects, #{@list.name} hacks")
+
+- if @list.cover_image
+  section#top-bg.show-on-desktop
+    #top-bg-image style="background-image:url('#{@list.cover_image.try(:file_url)}');"
+
+- if can? :join, @list and user_signed_in? and member = current_user.is_member?(@list) and member.invitation_pending?
+  section#alert-section
+    .alert.alert-warning.alert-flat
+      ' You have been invited to manage
+      strong = @list.name
+      ' .
+      = link_to 'Rock the place', group_accept_invitation_path(@list), class: 'btn btn-warning btn-sm'
+
+- if @announcement
+  section#alert-section
+    .alert.alert-info.alert-flat.text-center
+      strong> News:
+      = link_to @announcement.title, list_announcement_path(@announcement), class: 'alert-link'
+
+- elsif @challenge
+  section#alert-section
+    .alert.alert-info.alert-flat.text-center
+      strong> #{@list.name} is having a challenge!
+      ' Join the
+      = link_to @challenge.name, @challenge, class: 'alert-link'
+
+- elsif !user_signed_in?
+  section#alert-section.follow-section
+    .alert.alert-info.alert-flat.text-center
+      ==> link_to "Follow #{@list.name}", new_user_registration_path(redirect_to: create_followers_path(followable_type: 'Group', followable_id: @list.id), reason: 'follow', m: 'group', id: @list.id), class: 'follow-button alert-link show-simplified-signup', data: { container: 'body', redirect_to: create_followers_path(followable_type: 'Group', followable_id: @list.id) }, rel: 'tooltip'
+      ' to be notified when new projects are posted.
+
+section#projects-list
+  .wrapper
+    .project-list-actions.clearfix.mg-30
+
+      .pull-left= render 'shared/list_switch'
+
+    - if @projects.any?
+      .thumb-list  class=@switch_style
+        .row.project-list
+          - @projects.each do |project|
+            = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '3' }
+      .row.text-center= will_paginate @projects
+    - else
+      .row
+        .col-xs-12
+          p
+            ' This list is still empty!
+
+/ - if can? :manage, @list
+  - @projects.each do |project|
+    = content_for :js do
+      javascript:
+        text = "#{escape_javascript render(partial: 'groups/lists/button_featured', locals: { project: project } )}";
+        $(text).appendTo($('.project-#{project.id} .project-thumb .award-container'));

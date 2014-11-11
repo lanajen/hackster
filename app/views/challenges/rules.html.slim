@@ -13,7 +13,8 @@ section#rules
         .col-xs-12.col-md-6
           strong
             i.fa.fa-gift>
-            = prize.name
+            ==> prize.name
+            | (#{prize.quantity})
           p= prize.description
 
     - if @challenge.eligibility.present?

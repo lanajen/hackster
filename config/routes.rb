@@ -74,6 +74,8 @@ HackerIo::Application.routes.draw do
       get 'followers' => 'pages#followers'
       delete 'sidekiq/failures' => 'pages#clear_sidekiq_failures'
 
+      resources :awarded_badges, only: [:create], controller: 'badges'
+      resources :badges, except: [:show, :create]
       resources :groups, except: [:show]
       resources :projects, except: [:show]
       resources :users, except: [:show]
@@ -119,14 +121,19 @@ HackerIo::Application.routes.draw do
       patch 'projects/link' => 'groups/projects#link'
     end
 
-    # resources :communities, except: [:show, :update, :destroy], controller: 'groups', as: :groups
-    # get 'groups/:id' => 'groups#show'
-    # get 'c/:user_name' => 'groups#show', as: :community
-    # scope 'c/:user_name', as: :group do
-    #   get '' => 'groups#show', as: ''
-    #   delete '' => 'groups#destroy'
-    #   patch '' => 'groups#update'
-    # end
+    get 'lists/:user_name' => 'lists#show', as: :list
+    scope 'lists/:user_name', as: :lists do
+      get '' => 'lists#show'
+      patch '' => 'lists#update'
+      post 'projects/link' => 'groups/projects#link'
+      delete 'projects/link' => 'groups/projects#unlink'
+    end
+    resources :lists, except: [:show, :update] do
+      resources :projects, only: [] do
+        post 'feature' => 'lists#feature_project'#, as: :tech_feature_project
+        delete 'feature' => 'lists#unfeature_project'
+      end
+    end
 
     resources :teches, except: [:show] do
       resources :projects, only: [] do
@@ -187,7 +194,7 @@ HackerIo::Application.routes.draw do
       patch 'submit' => 'projects#submit', on: :member
       get 'settings' => 'projects#settings', on: :member
       patch 'settings' => 'projects#update', on: :member
-      post 'claim' => 'projects#claim_external', on: :member
+      post 'claim' => 'projects#claim', on: :member
       get 'last' => 'projects#redirect_to_last', on: :collection
       get '' => 'projects#redirect_to_slug_route', constraints: lambda{|req| req.params[:project_id] != 'new' }
       get 'embed', as: :old_embed

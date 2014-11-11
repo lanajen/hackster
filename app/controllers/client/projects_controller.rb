@@ -27,6 +27,7 @@ class Client::ProjectsController < Client::BaseController
     end
 
     @projects = @projects.paginate(page: safe_page_params)
+    @challenge = current_tech.active_challenge ? current_tech.challenges.active.first : nil
 
     respond_to do |format|
       format.html { render layout: 'whitelabel' }

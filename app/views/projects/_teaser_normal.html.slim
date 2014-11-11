@@ -104,6 +104,16 @@
                 - link_to tag, tag_path(tag), class: 'tag-link'
             = tags.to_sentence.html_safe
 
+        - if @project.guest_name.present?
+          .clearfix
+          .claim-link
+            small
+              ==> "Are you #{@project.guest_name}?"
+              - if user_signed_in?
+                = link_to 'Claim this project', claim_project_path(@project), data: { method: :post, confirm: "Are you really the author of this project? Note that we'll have to approve it!" }
+              - else
+                = link_to 'Claim this project', new_user_registration_path(reason: 'claim', m: 'project', id: @project.id)
+
           .clearfix
       .meta-data-placeholder
 

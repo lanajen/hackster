@@ -29,5 +29,9 @@ module Rewardino
         find_key code.to_sym
       end
     end
+
+    def get_image
+      attributes['image'].presence || Rewardino.default_image
+    end
   end
 end

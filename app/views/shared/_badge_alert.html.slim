@@ -1,0 +1,9 @@
+#badge-alert
+  #badge-alert-inner
+    button.close &times;
+    .media
+      .pull-left
+        = image_tag badge.get_image
+      .media-body
+        h4.media-heading You've earned a new badge!
+        p= badge.description

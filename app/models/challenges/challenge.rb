@@ -1,6 +1,6 @@
 class Challenge < ActiveRecord::Base
   DEFAULT_DURATION = 60
-  VISIBLE_STATES = %w(in_progress ended paused canceled)
+  VISIBLE_STATES = %w(in_progress ended paused canceled judging judged)
 
   include StringParser
   include Workflow
@@ -21,11 +21,11 @@ class Challenge < ActiveRecord::Base
 
   attr_accessible :new_slug, :name, :prizes_attributes, :tech_id, :description,
     :rules, :teaser, :multiple_entries, :duration, :eligibility, :requirements,
-    :judging_criteria, :how_to_enter, :video_link, :cover_image_id
+    :judging_criteria, :how_to_enter, :video_link, :cover_image_id, :project_ideas
   attr_accessor :new_slug
 
   store :properties, accessors: [:description, :rules, :teaser, :multiple_entries,
-    :eligibility, :requirements, :judging_criteria, :how_to_enter]
+    :eligibility, :requirements, :judging_criteria, :how_to_enter, :project_ideas]
 
   accepts_nested_attributes_for :prizes, allow_destroy: true
 

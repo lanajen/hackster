@@ -163,7 +163,7 @@ class TechesController < ApplicationController
 
   private
     def load_projects
-      per_page = params[:per_page] ? [Integer(params[:per_page]), Project.per_page].min : Project.per_page
+      per_page = begin; [Integer(params[:per_page]), Project.per_page].min; rescue; Project.per_page end;  # catches both no and invalid params
       per_page = per_page - 1 if @tech.accept_project_ideas
       @projects = @tech.projects.visible.indexable_and_external.order('project_collections.workflow_state DESC').magic_sort.for_thumb_display.paginate(page: safe_page_params, per_page: per_page)
     end

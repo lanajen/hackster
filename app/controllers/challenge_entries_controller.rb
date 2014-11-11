@@ -34,6 +34,7 @@ class ChallengeEntriesController < ApplicationController
       @project.tech_tags << TechTag.new(name: tag)
     end
     @project.private = false
+    @project.workflow_state = 'idea' if @challenge.project_ideas
     @project.save
     entry = @challenge.entries.new
     entry.user_id = current_user.id
@@ -84,7 +85,7 @@ class ChallengeEntriesController < ApplicationController
 
     def load_and_authorize_entry
       @entry = ChallengeEntry.find params[:id]
-      authorize! self.action_name, @entry
+      authorize! self.action_name.to_sym, @entry
       @challenge = @entry.challenge
     end
 

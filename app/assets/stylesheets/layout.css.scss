@@ -1384,3 +1384,35 @@ input.cmn-toggle ~ .option-checked, input.cmn-toggle:checked ~ .option-unchecked
     font-size: 30px;
   }
 }
+
+#badge-alert {
+  position: fixed;
+  // top: 0;
+  top: -100px;
+  right: 5%;
+  max-width: 90%;
+  border: 1px solid #ddd;
+  border-top: 0;
+  background: #fafafa;
+  z-index: 3000;
+  #badge-alert-inner {
+    position: relative;
+    .close {
+      float: none;
+      top: 1%;
+      right: 3%;
+      position: absolute;
+    }
+  }
+  .media {
+    padding: 20px 25px 15px;
+    margin: 0;
+  }
+  @include box-shadow(0 0 5px #000);
+  img {
+    width: 50px;
+  }
+  h4 {
+
+  }
+}

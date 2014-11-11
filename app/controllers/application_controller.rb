@@ -22,6 +22,7 @@ class ApplicationController < ActionController::Base
   before_filter :store_location_before
   before_filter :track_visitor
   before_filter :check_new_badge
+  prepend_after_filter :show_badge
   after_filter :store_location_after
   after_filter :track_landing_page
   helper_method :flash_disabled?
@@ -41,6 +42,7 @@ class ApplicationController < ActionController::Base
       ActionController::UnknownController,
       AbstractController::ActionNotFound,
       ActiveRecord::RecordNotFound,
+      ActionView::MissingTemplate,
       with: :render_404
   end
 
@@ -101,6 +103,13 @@ class ApplicationController < ActionController::Base
         @new_badge = Rewardino::Badge.find session[:new_badge]
         session.delete :new_badge
       end
+    end
+
+    def show_badge
+      return unless request.xhr?
+
+      check_new_badge
+      response.headers['X-New-Badge'] = render_to_string(partial: 'shared/badge_alert', locals: { badge: @new_badge }) if @new_badge
     end
 
     def current_ability

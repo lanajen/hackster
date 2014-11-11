@@ -44,11 +44,12 @@ section#projects-list
             javascript:
               $(".project-#{entry.project_id} .award-container").html("<div class='project-award'><i class='fa fa-trophy'></i> #{entry.prize.position.ordinalize} prize</div>");
 
-      h2.text-center Other entries
-      .thumb-list  class=@switch_style
-        .row.project-list
-          - @other_projects.each do |project|
-            = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '3' }
+      - if @other_projects.any?
+        h2.text-center Other entries
+        .thumb-list  class=@switch_style
+          .row.project-list
+            - @other_projects.each do |project|
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '3' }
 
     - else
       - if @projects.any?
@@ -73,23 +74,29 @@ section#projects-list
   .popup-overlay-outer
     .popup-overlay-inner
       button.close  onclick="closePopup('.popup-overlay');"   &times;
+      - link_params = @challenge.project_ideas ? { project: { mark_as_idea: true, tech_tags_string: @tech.name } } : { project: {tech_tags_string: @tech.name } }
       - if user_signed_in?
-        - if current_user.projects.where(external: false).any?
+        - if @user_projects.any?
           p Which project do you want to use to enter the challenge?
           = form_tag challenge_entries_path(@challenge), method: :post do
-            = select_tag :project_id, options_from_collection_for_select(current_user.projects.where(external: false), :id, :name), class: 'form-control'
+            = select_tag :project_id, options_from_collection_for_select(@user_projects, :id, :name), class: 'form-control'
             p
               small
                 ' By entering you agree to the
                 = link_to 'challenge rules', challenge_rules_path(@challenge)
-            = submit_tag 'Enter my project into the challenge', class: 'btn btn-primary'
+            = submit_tag "Enter my project #{'idea ' if @challenge.project_ideas}into the challenge", class: 'btn btn-primary'
+          p
+            small
+              ' or
+              = link_to "create a new project#{' idea' if @challenge.project_ideas}", new_project_path(link_params)
+
         - else
-          p You need a project to enter!
-          p= link_to 'Create a new project', new_project_path
+          p You need a project #{'idea ' if @challenge.project_ideas}to enter!
+          p= link_to "Create a new project#{' idea' if @challenge.project_ideas}", new_project_path(link_params)
       - else
-        p You need a project to enter!
+        p You need a project to #{'idea ' if @challenge.project_ideas}enter!
         p
-          ==> link_to 'Create a new project', new_user_registration_path(reason: 'project', redirect_to: new_project_path)
+          ==> link_to "Create a new project#{' idea' if @challenge.project_ideas}", new_user_registration_path(reason: 'project', redirect_to: new_project_path(link_params))
           ' or
           = link_to 'log in to use one of your existing projects', new_user_session_path(m: 'challenge', id: @challenge.id, reason: 'enter', redirect_to: challenge_path(@challenge, enter: 't'))
 

@@ -81,6 +81,8 @@ module UrlHelper
       event_path group, opts
     when 'Tech'
       tech_short_path group, opts
+    when 'List'
+      list_path group, opts
     else
       super params_for_group(group).merge(opts)
     end
@@ -102,6 +104,8 @@ module UrlHelper
       event_url group, opts
     when 'Tech'
       tech_short_url group, opts
+    when 'List'
+      list_url group, opts
     else
       super params_for_group(group).merge(opts)
     end
@@ -129,6 +133,14 @@ module UrlHelper
     else
       project_issues_path(project.user_name_for_url, project.slug, opts)
     end
+  end
+
+  def list_path list, opts={}
+    super list.user_name, opts
+  end
+
+  def list_url list, opts={}
+    super list.user_name, opts
   end
 
   def log_path project, log, opts={}

@@ -9,7 +9,6 @@ class FollowersController < ApplicationController
     respond_to do |format|
       format.html { redirect_to @followable, notice: "You are now following #{@followable.name}" }
       format.js do
-        @partial = get_partial
         render 'button'
       end
     end
@@ -22,7 +21,6 @@ class FollowersController < ApplicationController
     respond_to do |format|
       format.html { redirect_to @followable, notice: "You stopped following #{@followable.name}" }
       format.js do
-        @partial = get_partial
         render 'button'
       end
     end
@@ -50,15 +48,6 @@ class FollowersController < ApplicationController
   end
 
   private
-    def get_partial
-      case @followable
-      when Group, User
-        'button_text'
-      else
-        'button'
-      end
-    end
-
     def load_followable
       render status: :unprocessable_entity and return unless params[:followable_type].in? %w(Group Project User)
 

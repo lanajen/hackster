@@ -5,19 +5,20 @@ module Rewardino
   module ControllerExtension
     def self.included(base)
       # puts 'included!'
-      base.after_filter do |controller|
+      base.append_after_filter do |controller|
 
         # puts 'triggers: ' + matching_triggers.to_s
         matching_triggers.each do |trigger|
           # puts 'trigger: ' + trigger.inspect
+          next if trigger.condition.present? and !trigger.condition.call(controller)
+
           user_method = Rewardino.current_user_method(trigger)
           users = Array.wrap(if user_method[0] == '@'
-            self.instance_variable_get user_method
+            controller.instance_variable_get user_method
           else
             send user_method
           end).compact
           next unless users.any?
-
 
           users.each do |user|
             # puts 'user: ' + user.inspect
@@ -26,12 +27,12 @@ module Rewardino
                 # RewardinoQueue.perform_async 'evaluate_badge', user.id, trigger.badge_code
                 User.delay.evaluate_badge user.id, trigger.badge_code
               else
-                status = user.evaluate_badge trigger.badge_code, self
+                status = user.evaluate_badge trigger.badge_code
                 # puts 'status: ' + status.inspect
                 if status.class == Rewardino::StatusAwarded
                   session[:new_badge] = status.badge
                 elsif status.class == Rewardino::StatusTakenAway
-                  session[:lost_badge] = status.badge
+                  session[:new_badge] = status.badge
                 end
               end
             end

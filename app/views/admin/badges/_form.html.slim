@@ -1,0 +1,8 @@
+= f.error_notification
+= f.association :awardee, collection: User.where.not(user_name: nil).order(:full_name, :user_name)
+= f.input :badge_code, collection: Rewardino::Badge.all.keys.sort
+.col-xs-offset-4.col-xs-8
+  ==> f.button :submit, :class => 'btn-primary'
+  ==> link_to t('.cancel', :default => t("helpers.links.cancel")), admin_badges_path, :class => 'btn btn-default'
+  - if @badge.persisted?
+    = link_to t('.destroy', :default => t("helpers.links.destroy")), admin_badge_path(@badge), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'

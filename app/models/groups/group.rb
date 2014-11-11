@@ -43,7 +43,7 @@ class Group < ActiveRecord::Base
 
   validates :user_name, :new_user_name, length: { in: 3..100 },
     format: { with: /\A[a-zA-Z0-9_\-]+\z/, message: "accepts only letters, numbers, underscores '_' and dashes '-'." }, allow_blank: true, if: proc{|t| t.persisted?}
-  validates :user_name, :new_user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users communities hackerspaces hackers) }
+  validates :user_name, :new_user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users communities hackerspaces hackers lists) }
   validates :email, length: { maximum: 255 }
   validate :website_format_is_valid
   before_validation :clean_members
@@ -110,6 +110,10 @@ class Group < ActiveRecord::Base
     end
     member = members.create user_id: user.id, invitation_sent_at: Time.now, invited_by: invited_by
     user.deliver_invitation_with member if member.persisted? and user.invited_to_sign_up?
+  end
+
+  def has_websites?
+    websites.select{|k,v| v.present? }.any?
   end
 
   def name

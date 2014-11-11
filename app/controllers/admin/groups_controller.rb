@@ -9,7 +9,7 @@ class Admin::GroupsController < Admin::BaseController
 
     params[:sort_by] ||= 'created_at'
 
-    collection = Group.where(type: %w(Community Promotion Event))
+    collection = Group.where(type: %w(Community Promotion Event List))
     @groups = filter_for collection, @fields
   end
 

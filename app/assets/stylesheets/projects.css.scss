@@ -548,6 +548,9 @@
     transition: background-color .5s ease;
     text-shadow: 0 0 6px #000;
     // background: rgba(205, 217, 226, 0.7);
+    .actions {
+      text-shadow: none;
+    }
   }
   #project-header{
     position: absolute;
@@ -761,7 +764,7 @@
         @include transition(all .3s ease);
       }
       &.guest-name {
-        padding-top: 5px;
+        padding-top: 4px;
         .user-name {
           margin-left: 0;
         }
@@ -933,13 +936,15 @@
   padding: 20px 14px;
 }
 
-#todos, #errors {
+#todos, #errors, #checklist {
   &:empty {
     display: none;
   }
   padding: 20px;
   padding-left: 40px;
   margin: 0;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
   li {
     font-size: 12px;
     margin-bottom: 5px;
@@ -947,12 +952,33 @@
       margin-left: -20px;
       list-style: none;
       text-transform: uppercase;
+      font-weight: bold;
     }
     &.todo-complete {
       list-style: none;
       i {
         color: #5cb85c;
       }
+    }
+    .item-title {
+      text-decoration: underline;
+    }
+    .item-description {
+      .hint {
+        font-style: italic;
+      }
+    }
+  }
+}
+
+#checklist {
+  list-style: none;
+  li {
+    position: relative;
+    input[type="checkbox"] {
+      position: absolute;
+      top: -2px;
+      left: -18px;
     }
   }
 }

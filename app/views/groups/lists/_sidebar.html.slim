@@ -1,0 +1,73 @@
+= content_for :js do
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-51b26f5613fb83d2" async="async"></script>
+  javascript:
+    var addthis_share = {
+      "data_track_addressbar":false,
+       url: "#{list_url(@list)}",
+       title: "Discover hacks made with #{@list.name}#{' (' + @list.twitter_handle + ')' if @list.twitter_handle}."
+    }
+
+- cache ["list-#{@list.id}-sidebar", user_signed_in?, can?(:manage, @list), (user_signed_in? and current_user.following?(@list))], tag: ["list-#{@list.id}-sidebar", 'list-sidebar'] do
+  #sidebar-container.affixable
+    - @list = GroupDecorator.decorate @list
+
+    section#sidebar-container-in
+      - if @list.avatar
+        .avatar#tech-avatar-image-div
+          #tech-avatar-image style="background-image:url('#{@list.avatar(:big)}');"
+      #tech-body
+        h1= link_to @list.name, list_path(@list), id: 'tech-name'
+        p
+          - if @list.mini_resume.present?
+            = @list.mini_resume
+          - elsif can? :update, @list
+            ' No mini resume.
+            = link_to 'Add one?', edit_list_path(@list)
+        .stats
+          p
+            strong>= number_with_delimiter @list.projects_count
+            ==> pluralize_without_count @list.projects_count, 'project'
+            strong>= number_with_delimiter @list.followers_count
+            = pluralize_without_count @list.followers_count, 'follower'
+
+        #list-follow-div.text-center
+          = render partial: 'followers/button_text', locals: { followable: @list, why: "Follow #{@list.name} to receive updates about new projects." }
+
+          <div class="addthis_toolbox addthis_default_style addthis_16x16_style">
+          <label>Share:</label>
+          <a class="addthis_button_preferred_1"></a>
+          <a class="addthis_button_preferred_2"></a>
+          <a class="addthis_button_preferred_3"></a>
+          <a class="addthis_button_preferred_4"></a>
+          <a class="addthis_button_compact"></a>
+          </div>
+
+      - if @list.has_websites?
+        .display
+          h4 Social links
+          #tech-websites
+            ul.websites.list-inline
+              - @list.websites.select{|t,u| u.present? }.each do |type, url|
+                = render partial: "shared/website", locals: { type: type, url: url }
+
+      - if @list.active_members.joins(:user).where(users: { invitation_token: nil }).any?
+        .display
+          h4 Team
+          .content.team-widget.user-communities
+            - @list.active_members.includes(:user).references(:users).where(users: { invitation_token: nil }).order('LOWER(users.full_name) ASC').each do |m|
+              - u = m.user
+              .community.user
+                ==> link_to image_tag(u.decorate.avatar(:mini), class: ' img-circle' ), u, class: ''
+                span.user-name
+                  = link_to u.name, u
+
+      - if can? :manage, @list
+        .display
+          h4
+            i.fa.fa-cog>
+            | Manage page
+          ul#tech-links
+            / li= link_to 'Post fresh news', new_list_announcement_path(@list.user_name)
+            li= link_to 'Edit settings', edit_list_path(@list)
+            li= link_to 'Manage admins', group_edit_members_path(@list)
+            li= link_to 'Invite admins', group_new_invitations_path(@list)

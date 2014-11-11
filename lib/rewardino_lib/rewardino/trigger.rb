@@ -1,6 +1,7 @@
 module Rewardino
   class Trigger
-    attr_accessor :event, :action, :badge_code, :nominee_variable, :background
+    attr_accessor :event, :action, :badge_code, :nominee_variable, :background,
+      :condition
 
     class << self
       # all defined triggers
@@ -17,7 +18,7 @@ module Rewardino
         options = args.extract_options!
 
         trigger = Trigger.new
-        %w(badge_code nominee_variable action background).each do |opt|
+        %w(badge_code nominee_variable action background condition).each do |opt|
           trigger.send "#{opt}=", options[opt.to_sym]
         end
 

@@ -1,42 +1,32 @@
-class Tech < Group
+class Tech < List
   PROJECT_IDEAS_PHRASING = ['"No #{name} yet?"', '"Have ideas on what to build with #{name}?"']
-  include Counter
-  include Privatable
-  include StringParser
-  include Taggable
 
   has_many :active_members, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'") }, foreign_key: :group_id, class_name: 'TechMember'
   has_many :announcements, as: :threadable, dependent: :destroy
   has_many :challenges
-  has_many :follow_relations, as: :followable
-  has_many :followers, through: :follow_relations, source: :user
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'TechMember'
   has_one :client_subdomain
-  has_one :cover_image, as: :attachable, class_name: 'Document', dependent: :destroy
   has_one :logo, as: :attachable, dependent: :destroy
   has_one :slug, as: :sluggable, dependent: :destroy, class_name: 'SlugHistory'
 
   attr_accessible :forums_link, :documentation_link, :crowdfunding_link,
-    :buy_link, :logo_id, :shoplocket_link, :cover_image_id, :accept_project_ideas,
-    :project_ideas_phrasing, :client_subdomain_attributes
+    :buy_link, :shoplocket_link, :cover_image_id, :accept_project_ideas,
+    :project_ideas_phrasing, :client_subdomain_attributes, :logo_id
 
   accepts_nested_attributes_for :client_subdomain
 
-  validates :user_name, :full_name, presence: true
-  validate :user_name_is_unique
   # before_save :update_user_name
 
   store_accessor :websites, :forums_link, :documentation_link, :crowdfunding_link, :buy_link,
     :shoplocket_link
   set_changes_for_stored_attributes :websites
+
   store :properties, accessors: [:accept_project_ideas, :project_ideas_phrasing,
     :active_challenge]
-  store :counters_cache, accessors: [:projects_count, :followers_count,
-    :external_projects_count, :private_projects_count]
   set_changes_for_stored_attributes :properties
 
-  parse_as_integers :counters_cache, :projects_count, :followers_count,
-    :external_projects_count, :private_projects_count
+  store :counters_cache, accessors: [:projects_count, :followers_count,
+    :external_projects_count, :private_projects_count]
 
   parse_as_booleans :properties, :accept_project_ideas, :active_challenge
 
@@ -69,36 +59,6 @@ class Tech < Group
     includes(:avatar)
   end
 
-  def self.index_all
-    index.import public
-  end
-  # end of search methods
-
-  def self.default_access_level
-    'invite'
-  end
-
-  def self.default_permission
-    'manage'
-  end
-
-  def self.model_name
-    Group.model_name
-  end
-
-  def counters
-    {
-      external_projects: 'projects.external.count',
-      followers: 'followers.count',
-      private_projects: 'projects.private.count',
-      projects: 'projects.visible.indexable_and_external.count',
-    }
-  end
-
-  def cover_image_id=(val)
-    self.cover_image = Document.find_by_id(val)
-  end
-
   def generate_user_name
     return if full_name.blank?
 
@@ -116,10 +76,6 @@ class Tech < Group
     self.user_name = slug
   end
 
-  def logo_id=(val)
-    self.logo = Logo.find_by_id(val)
-  end
-
   def project_ideas_phrasing
     super || project_ideas_phrasing_options[0]
   end
@@ -134,29 +90,14 @@ class Tech < Group
   #   # SearchRepository.new(q: tech_tags_string).search.results
   # end
 
+  def logo_id=(val)
+    self.logo = Logo.find_by_id(val)
+  end
+
   def shoplocket_token
     return unless shoplocket_link.present?
 
     shoplocket_link.split(/\//)[-1]
-  end
-
-  def to_tracker
-    {
-      followers_count: followers_count,
-      projects_count: projects_count,
-      tech_id: id,
-      views_count: impressions_count,
-    }
-  end
-
-  def update_user_name
-    # raise "#{new_user_name}|#{user_name}|#{@old_user_name}"
-    tech = Tech.new full_name: full_name_was
-    was_auto_generated = (@old_user_name == tech.generate_user_name)
-    new_user_name_changed = (new_user_name != @old_user_name)
-
-    generate_user_name if was_auto_generated or user_name.blank?
-    assign_new_user_name if new_user_name_changed
   end
 
   private

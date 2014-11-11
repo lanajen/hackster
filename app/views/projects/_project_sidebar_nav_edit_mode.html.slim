@@ -25,6 +25,33 @@
 
       ul#errors
       ul#todos
+      ul#checklist
+        li.list-title Project checklist:
+        li
+          input type='checkbox'
+          .item-title Story and demo:
+          .item-description What does your project do? How did you come up with the idea? Any interesting learnings or fun anecdotes?
+        li
+          input type='checkbox'
+          .item-title Bill of materials:
+          .item-description What are the components necessary to make this project?
+        li
+          input type='checkbox'
+          .item-title Schematics:
+          .item-description
+            ' What is the blueprint to assemble the components?
+            .hint
+              ' Check
+              ==> link_to 'Fritzing.org', 'http://fritzing.org', target: '_blank'
+              | if you're not sure how to do it.
+        li
+          input type='checkbox'
+          .item-title Code:
+          .item-description What are the code files or snippets necessary to make it work?
+        li
+          input type='checkbox'
+          .item-title Build instructions:
+          .item-description Optional if the previous items are well documented, but useful to help others get started.
 
   #mobile-bottom-bar
     .row

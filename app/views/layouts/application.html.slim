@@ -47,8 +47,6 @@ html(lang="en")
     / = render 'shared/mixpanel'
 
   body  class=yield(:body_class)
-    - if @new_badge
-      | yeaaah, you won #{@new_badge.name}!
     #outer-wrapper
       - unless params[:blank_frame]
         - if show_hello_world?
@@ -222,6 +220,9 @@ html(lang="en")
           = link_to 'Admin', admin_analytics_path, class: 'mo-nav-link'
       - else
         = link_to 'Sign up / Login', new_user_registration_path, class: 'mo-nav-link', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '#{request.path}']);"
+
+    - if @new_badge
+      = render partial: 'shared/badge_alert', locals: { badge: @new_badge }
 
     = content_for :js
     - unless is_mobile? or params[:blank_frame]

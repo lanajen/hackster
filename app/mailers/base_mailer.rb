@@ -75,7 +75,7 @@ class BaseMailer < ActionMailer::Base
         relations = {}
 
         # get projects newly attached to followed tech
-        tech_projects = user.subscribed_to?('follow_tech_activity') ? Project.select('projects.*, follow_relations.followable_id').joins(:teches).where('project_collections.created_at > ?', 24.hours.ago).where(project_collections: { workflow_state: ProjectCollection::VALID_STATES }).joins("INNER JOIN follow_relations ON follow_relations.followable_id = groups.id AND follow_relations.followable_type = 'Group'").where(follow_relations: { user_id: user.id }) : []
+        tech_projects = user.subscribed_to?('follow_tech_activity') ? Project.select('projects.*, follow_relations.followable_id').joins(:teches).where('projects.made_public_at > ?', 24.hours.ago).where(projects: { approved: true }).joins("INNER JOIN follow_relations ON follow_relations.followable_id = groups.id AND follow_relations.followable_type = 'Group'").where(follow_relations: { user_id: user.id }) : []
         tech_projects.each do |project|
           tech = Tech.find(project.followable_id)
           relations[tech] = {} unless tech.in? relations.keys
@@ -83,11 +83,19 @@ class BaseMailer < ActionMailer::Base
         end
 
         # get projects newly made public by followed users
-        user_projects = user.subscribed_to?('follow_user_activity') ? Project.select('projects.*, follow_relations.followable_id').joins(:users).where('projects.made_public_at > ?', 24.hours.ago).joins("INNER JOIN follow_relations ON follow_relations.followable_id = users.id AND follow_relations.followable_type = 'User'").where(follow_relations: { user_id: user.id }) : []
+        user_projects = user.subscribed_to?('follow_user_activity') ? Project.select('projects.*, follow_relations.followable_id').joins(:users).where('projects.made_public_at > ?', 24.hours.ago).where(projects: { approved: true }).joins("INNER JOIN follow_relations ON follow_relations.followable_id = users.id AND follow_relations.followable_type = 'User'").where(follow_relations: { user_id: user.id }) : []
         user_projects.each do |project|
           _user = User.find(project.followable_id)
           relations[_user] = {} unless _user.in? relations.keys
           relations[_user][project.id] = project
+        end
+
+        # get projects newly added to lists
+        list_projects = user.subscribed_to?('follow_list_activity') ? Project.select('projects.*, follow_relations.followable_id').joins(:lists).where('project_collections.created_at > ?', 24.hours.ago).joins("INNER JOIN follow_relations ON follow_relations.followable_id = groups.id AND follow_relations.followable_type = 'Group'").where(follow_relations: { user_id: user.id }) : []
+        list_projects.each do |project|
+          list = List.find(project.followable_id)
+          relations[list] = {} unless list.in? relations.keys
+          relations[list][project.id] = project
         end
 
         # arrange projects so that we know how they're related to followables
@@ -108,7 +116,11 @@ class BaseMailer < ActionMailer::Base
 
         context[:followables] = relations.keys.flatten.uniq
         context[:projects] = relations
-        context[:user] = user if context[:projects].any?
+        if context[:projects].any?
+          context[:user] = user
+        else
+          context[:users] = []  # hack to send no email
+        end
       when :follower
         follow = context[:follow] = FollowRelation.find(context_id)
         followable = follow.followable

@@ -7,7 +7,7 @@
 = f.input :city
 = f.input :country, as: :select
 = f.input :private
-= f.input :type, collection: %w(Community Course Event Hackathon HackerSpace Promotion Tech University)
+= f.input :type, collection: %w(Community Course Event Hackathon HackerSpace List Promotion Tech University)
 = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Profile picture', image_link: @group.avatar.try(:file_url, :thumb), help_block: 'This picture needs to be squared, at least 200x200px for best quality.', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
 
 - case @group.type

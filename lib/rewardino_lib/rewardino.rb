@@ -10,7 +10,17 @@ module Rewardino
     yield @config if block_given?
   end
 
-  # # Define ORM
+  # Define current_user_method
+  def self.current_user_method trigger=nil
+    trigger.try(:nominee_variable) || @config.current_user_method ||
+      "current_#{@config.user_model_name.downcase}".to_sym
+  end
+
+  def self.default_image
+    @config.default_image
+  end
+
+  # Define ORM
   def self.orm
     @config.orm
   end
@@ -20,14 +30,8 @@ module Rewardino
     @config.user_model_name.constantize
   end
 
-  # Define current_user_method
-  def self.current_user_method trigger=nil
-    trigger.try(:nominee_variable) || @config.current_user_method ||
-      "current_#{@config.user_model_name.downcase}".to_sym
-  end
-
   class Configuration
-    attr_accessor :orm, :user_model_name, :current_user_method
+    attr_accessor :current_user_method, :default_image, :orm, :user_model_name
 
     def initialize
       @orm = :active_record

@@ -19,6 +19,13 @@ class ChallengesController < ApplicationController
       @projects = @challenge.projects.paginate(page: params[:page], per_page: per_page)
     end
     @embed = Embed.new(url: @challenge.video_link)
+
+    if user_signed_in?
+      @user_projects = current_user.projects.where(external: false)
+      @user_projects = @user_projects.select{|p| p.is_idea? } if @challenge.project_ideas
+    else
+      @user_projects = []
+    end
   end
 
   def rules
