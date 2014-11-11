@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141027225703) do
+ActiveRecord::Schema.define(version: 20141107003551) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -86,6 +86,16 @@ ActiveRecord::Schema.define(version: 20141027225703) do
 
   add_index "authorizations", ["provider", "uid"], name: "index_authorizations_on_provider_and_uid", using: :btree
   add_index "authorizations", ["user_id"], name: "index_authorizations_on_user_id", using: :btree
+
+  create_table "awarded_badges", force: true do |t|
+    t.integer  "awardee_id"
+    t.string   "awardee_type"
+    t.string   "badge_code"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "awarded_badges", ["awardee_id", "awardee_type", "badge_code"], name: "awarded_badges_awardee_badge_index", unique: true, using: :btree
 
   create_table "broadcasts", force: true do |t|
     t.string   "broadcastable_type", null: false

@@ -47,6 +47,8 @@ html(lang="en")
     / = render 'shared/mixpanel'
 
   body  class=yield(:body_class)
+    - if @new_badge
+      | yeaaah, you won #{@new_badge.name}!
     #outer-wrapper
       - unless params[:blank_frame]
         - if show_hello_world?

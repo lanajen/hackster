@@ -5,7 +5,7 @@
       option  value=id selected='selected'
   .file-drop
     .file-drop-inner  data-disable-toolbar='true'
-      | Drag and drop images or
+      ' Drag and drop images or
       = link_to 'click to select some from your file system', ''
   .image-gallery
     - embed.widget.images.each_with_index do |image, i|
