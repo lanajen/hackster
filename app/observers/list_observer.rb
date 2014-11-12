@@ -1,4 +1,9 @@
 class ListObserver < ActiveRecord::Observer
+
+  def before_create record
+    record.update_counters assign_only: true
+  end
+
   def before_update record
     if (record.changed & %w(cover_image)).any?
       Cashier.expire "list-#{record.id}-cover"

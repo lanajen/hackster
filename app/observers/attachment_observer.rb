@@ -8,6 +8,11 @@ class AttachmentObserver < ActiveRecord::Observer
       when 'Image'
         Cashier.expire "project-#{record.attachable_id}-widgets"
       end
+    elsif record.attachable_type.in? %w(Tech)
+      case record.type
+      when 'Avatar'
+        Cashier.expire "tech-#{record.attachable_id}-sidebar"
+      end
     # elsif record.attachable_type == 'User'
     #   keys = ["user-#{record.attachable_id}-teaser", "user-#{record.attachable_id}-thumb", "user-#{record.attachable_id}-sidebar"]
     #   user = record.attachable

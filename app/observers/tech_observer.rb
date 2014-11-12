@@ -45,6 +45,10 @@ class TechObserver < ActiveRecord::Observer
     end
   end
 
+  def before_create record
+    record.update_counters assign_only: true
+  end
+
   def after_create record
     expire_index
   end
