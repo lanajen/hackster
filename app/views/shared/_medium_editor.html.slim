@@ -32,6 +32,10 @@
     input name="success_action_status" type="hidden" value="201"
     input name="file" type="file" multiple='multiple'
 
+  form#remote-file-upload class='form-inline'
+    input name='file_url' type='text' class='form-control' size=60
+    input type='submit' value='Upload' class='btn btn-default'
+
   form#sketchfab-upload action="https://#{ENV['FOG_DIRECTORY']}.s3.amazonaws.com" enctype="multipart/form-data" method="post" style="display:none;"
     input name="key" type="hidden"
     input name="AWSAccessKeyId" type="hidden" value="#{ENV['AWS_ACCESS_KEY_ID']}"

@@ -1,3 +1,6 @@
+require 'sidekiq'
+require 'sidekiq-status'
+
 raise 'No config for Redis' unless $redis_config
 
 sidekiq_pool = (ENV['SIDEKIQ_DB_POOL'] || 3).to_i
@@ -28,6 +31,13 @@ Sidekiq.configure_server do |config|
   #   ActiveRecord::Base.establish_connection
   # end
 
+  config.server_middleware do |chain|
+    chain.add Sidekiq::Status::ServerMiddleware, expiration: 30.minutes # default
+  end
+  config.client_middleware do |chain|
+    chain.add Sidekiq::Status::ClientMiddleware
+  end
+
   if defined?(ActiveRecord::Base)
     Rails.logger.debug("Setting custom connection pool size of #{sidekiq_pool} for Sidekiq Server")
     config = ActiveRecord::Base.configurations[Rails.env] ||
@@ -45,6 +55,10 @@ Sidekiq.configure_client do |config|
     config.client_middleware do |chain|
       chain.add Autoscaler::Sidekiq::Client, 'critical' => heroku
     end
+  end
+
+  config.client_middleware do |chain|
+    chain.add Sidekiq::Status::ClientMiddleware
   end
 
   config.redis = $redis_config.merge({ size: 1, namespace: "sidekiq:hacksterio" })

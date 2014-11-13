@@ -56,6 +56,7 @@ class Assignment < ActiveRecord::Base
 
   private
     def generate_id
-      self.id_for_promotion = promotion.assignments.size + 1
+      last_id = promotion.assignments.order(:created_at).last.try(:id_for_promotion) || 0
+      self.id_for_promotion = last_id + 1
     end
 end

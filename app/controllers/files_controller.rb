@@ -1,5 +1,5 @@
 class FilesController < ApplicationController
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, except: [:remote_upload, :check_remote_upload]
 
   def create
     render text: 'bad', status: :unprocessable_entity and return unless params[:file_url] and params[:file_type] and params[:file_type].in? %w(avatar image cover_image document sketchfab_file logo)
@@ -27,6 +27,26 @@ class FilesController < ApplicationController
     @file.destroy
 
     render json: @file
+  end
+
+  def remote_upload
+    render text: 'bad', status: :unprocessable_entity and return unless params[:file_url] and params[:file_type] and params[:file_type].in? %w(avatar image cover_image document sketchfab_file logo)
+
+    @file = params[:file_type].classify.constantize.new params.select{|k,v| k.in? %w(file caption title remote_file_url) }
+    @file.attachable_id = params[:attachable_id] || 0
+    @file.attachable_type = params[:attachable_type] || 'Orphan'
+
+    if @file.save
+      job_id = AttachmentQueue.perform_async 'remote_upload', @file.id, params[:file_url]
+      render json: @file.attributes.merge(context: params[:context], job_id: job_id), status: :ok
+    else
+      render json: @file.errors, status: :unprocessable_entity
+    end
+  end
+
+  def check_remote_upload
+    job_id = params[:job_id]
+    render json: { status: Sidekiq::Status::status(job_id) }
   end
 
   def signed_url

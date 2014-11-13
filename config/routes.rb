@@ -184,6 +184,8 @@ HackerIo::Application.routes.draw do
     # end groups
 
     resources :files, only: [:create, :show, :destroy] do
+      get 'remote_upload' => 'files#check_remote_upload', on: :collection
+      post 'remote_upload', on: :collection
       get 'signed_url', on: :collection
     end
     delete 'notifications' => 'notifications#destroy'

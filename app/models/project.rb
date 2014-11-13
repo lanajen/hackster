@@ -413,7 +413,7 @@ class Project < ActiveRecord::Base
   end
 
   def mark_as_idea=(val)
-    self.workflow_state = ((val or val.in?([1, '1', 't'])) ? 'idea' : nil)
+    self.workflow_state = (val.in?([1, '1', 't']) ? 'idea' : nil)
   end
 
   def name
