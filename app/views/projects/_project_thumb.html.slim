@@ -54,7 +54,7 @@
                 - if project.public?
                   span.counter.first.istooltip  title='Views'
                     i.fa.fa-eye>
-                    = number_with_delimiter project.impressions_count
+                    = number_to_human project.impressions_count
                   span.counter.istooltip  title='Respects'
                     i.fa.fa-thumbs-o-up>
                     = project.respects_count
@@ -105,7 +105,7 @@
                 - if project.public?
                   span.counter.first.istooltip  title='Views'
                     i.fa.fa-eye>
-                    = number_with_delimiter project.impressions_count
+                    = number_to_human project.impressions_count
                   span.counter.istooltip  title='Respects'
                     i.fa.fa-thumbs-o-up>
                     = project.respects_count

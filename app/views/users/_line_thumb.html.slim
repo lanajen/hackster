@@ -4,4 +4,4 @@
   span.user-name
     = link_to u.name, u, class: 'hidden-link'
     - if member.contribution.present?
-      i.fa.fa-question-circle.istooltip  title="Contribution: #{member.contribution}"
+      i.fa.fa-question-circle.istooltip  title="Contribution: #{member.contribution}" data-container='body'
