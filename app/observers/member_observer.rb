@@ -73,7 +73,9 @@ class MemberObserver < ActiveRecord::Observer
     end
 
     def update_counters record
-      record.user.update_counters only: [:projects, :live_projects] if
-        record.group and record.group.is? :team
+      if record.group and record.group.is? :team
+        record.user.update_counters only: [:projects, :live_projects]
+        record.group.projects.each{|p| p.update_counters only: [:team_members] }
+      end
     end
 end
