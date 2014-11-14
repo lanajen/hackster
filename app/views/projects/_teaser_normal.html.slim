@@ -90,9 +90,9 @@
                       ' Team
                       ==> link_to tech.name, tech, class: 'hidden-link'
                       i.fa.fa-check-circle.istooltip title="Verified" style="color:#66C866" data-container='body'
-                - if @team_members.count > 1
+                - if @project.team_members_count > 1
                   ' and
-                  = link_to "#{pluralize (@team_members.count - 1), 'other'}", 'javascript:smoothScrollTo("#team-widget", -20);', class: 'hidden-link'
+                  = link_to "#{pluralize (@project.team_members_count - 1), 'other'}", 'javascript:smoothScrollTo("#team-widget", -20);', class: 'hidden-link'
 
         - if @project.tech_tags_cached.any?
           .tags.meta.pull-left

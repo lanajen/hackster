@@ -18,6 +18,8 @@ class MemberObserver < ActiveRecord::Observer
   end
 
   def after_create record
+    update_counters record
+
     if record.group.is? :team
       project = record.group.projects.first
       unless record.request_pending?
@@ -53,10 +55,6 @@ class MemberObserver < ActiveRecord::Observer
           # { context_type: :membership, context_id: record.id }
       end
     end
-  end
-
-  def after_save record
-    update_counters record
   end
 
   def after_destroy record
