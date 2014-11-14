@@ -78,11 +78,12 @@ class Group < ActiveRecord::Base
 
     # make sure it doesn't exist
     if result = self.class.where(user_name: slug).first
-      return if self == result
-      # if it exists add a 1 and increment it if necessary
-      slug += '1'
-      while self.class.where(user_name: slug).first
-        slug.gsub!(/([0-9]+$)/, ($1.to_i + 1).to_s)
+      unless self == result
+        # if it exists add a 1 and increment it if necessary
+        slug += '1'
+        while self.class.where(user_name: slug).first
+          slug.gsub!(/([0-9]+$)/, ($1.to_i + 1).to_s)
+        end
       end
     end
     self.user_name = slug

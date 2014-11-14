@@ -793,6 +793,13 @@
     @include border-radius(0);
   }
 }
+#team-widget {
+  .user {
+    .user-name {
+      color: #aaa;
+    }
+  }
+}
 .project-show{
   padding-bottom: 100px;
   .project-section{

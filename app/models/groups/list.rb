@@ -14,7 +14,7 @@ class List < Group
 
   validates :user_name, :full_name, presence: true
   validate :user_name_is_unique
-  # before_save :update_user_name
+  before_validation :update_user_name, on: :create
 
   store :counters_cache, accessors: [:projects_count, :followers_count,
     :external_projects_count, :private_projects_count, :list_type]
@@ -87,13 +87,13 @@ class List < Group
   end
 
   def update_user_name
-    # raise "#{new_user_name}|#{user_name}|#{@old_user_name}"
     obj = self.class.new full_name: full_name_was
     was_auto_generated = (@old_user_name == obj.generate_user_name)
     new_user_name_changed = (new_user_name != @old_user_name)
 
     generate_user_name if was_auto_generated or user_name.blank?
-    assign_new_user_name if new_user_name_changed
+    assign_new_user_name if new_user_name.present? and new_user_name_changed
+    user_name
   end
 
   private
