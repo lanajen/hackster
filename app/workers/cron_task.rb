@@ -51,6 +51,7 @@ class CronTask < BaseWorker
   def launch_cron
     update_mailchimp_list
     send_assignment_reminder
+    lock_assignment
     expire_challenges
   end
 
@@ -64,6 +65,15 @@ class CronTask < BaseWorker
       self.class.perform_in 24.hours, 'launch_daily_cron'
     ensure
       # self.class.perform_in 24.hours, 'launch_daily_cron'
+    end
+  end
+
+  def lock_assignment
+    Assignment.where("assignments.submit_by_date < ?", Time.now).each do |assignment|
+      assignment.projects.each do |project|
+        project.locked = true
+        project.save
+      end
     end
   end
 
