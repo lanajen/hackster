@@ -90,6 +90,72 @@ var <%= file_type %>Functions = {
   },
 }
 
+$(function(){
+  var iFile = iFile || 0;
+
+  $('body').on('submit', '.remote_file_upload.<%= file_type %>', function(e) {
+    e.preventDefault();
+    $(this).hide();
+
+    var input = $(this).find('input[name="file_url"]');
+    var fileUrl = input.val();
+    var fileName = fileUrl.substring(fileUrl.lastIndexOf('/')+1);
+    input.val('');
+
+    if (fileUrl != '') {
+      $.ajax({
+        url: '/files/remote_upload',
+        type: 'POST',
+        data: {
+          file_type: "<%= file_type %>",
+          file_url: fileUrl
+        },
+        success: function(data){
+          iFile++;
+
+          var tpl = $('<div id="<%= file_type %>-upload"><i>Uploading ' + fileName + '</i><div class="progress progress-striped active"><div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%;">Uploading...</div></div></div>');
+          $('.<%= file_type %>.preview').html(tpl);
+
+          <%= file_type %>Functions.checkRemoteFileProcessed(data.job_id, tpl, fileUrl, data.id);
+        },
+        error: function(data) {
+          $('.<%= file_type %>.preview').html('<div class="help-block has-error">Error processing ' + fileName + '. Please try again.</span>');
+        }
+      });
+    }
+  });
+});
+
+<%= file_type %>Functions.checkRemoteFileProcessed = function(jobId, el, fileUrl, id) {
+  window.setTimeout(function(){
+    $.ajax({
+      url: '/files/remote_upload',
+      data: { job_id: jobId },
+      success: function(data){
+        switch (data.status){
+          case 'complete':
+            // if ($('.<%= file_type %>.image-preview').length > 0) {
+              inputTpl = '<span><img>';
+              inputTpl += '<input type="hidden" name="<%= model %>[<%= attribute_type %>_id]"></span>';
+              input = $(inputTpl);
+              input.find('input').val(id);
+              input.find('img').attr('src', fileUrl);
+              $('.<%= file_type %>.image-preview').html(input);
+            // }
+
+            break;
+          case 'failed':
+            el.replaceWith('<div class="help-block has-error">Error processing the file. Please try again.</span>');
+            break;
+          default:
+            <%= file_type %>Functions.checkRemoteFileProcessed(jobId, el, fileUrl, id);
+            break;
+        }
+      }
+    });
+  }, 100);
+}
+
 var checkingFormsBusy = false;
 var btnVal = null;
 function checkFormsBusy(){

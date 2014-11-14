@@ -7,7 +7,11 @@ formTpl += "<input name='signature' type='hidden'>";
 formTpl += "<input name='success_action_status' type='hidden' value='201'>";
 //formTpl += "<input name='file_type' type='hidden' value=''>";
 formTpl += "<input type='file' name='file' multiple>";
-formTpl += "</div>";
+formTpl += "</form>";
+formTpl += "<form class='remote_file_upload <%= file_type %> form-inline'>";
+formTpl += "<input name='file_url' type='text' class='form-control'>";
+formTpl += "<input value='Upload' type='submit' class='btn btn-default'>";
+formTpl += "<a href='' class='btn btn-link btn-close btn-sm' data-close='.remote_file_upload' data-effect='fade'>Cancel</a>";
 formTpl += "</form>";
 
 form = $('form.accept-file-upload');

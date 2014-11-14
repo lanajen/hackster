@@ -3,11 +3,14 @@
     label.control-label= human_file_type
   .col-xs-8
     span.image-preview.preview>  class=file_type  = image_tag image_link if image_link
-    a.btn.btn-default.btn-sm*{ data: { target: ".file_upload.#{file_type}" } }
-      - if image_link.present?
-        | Change picture
-      - else
-        | Select picture
+    .btn-group
+      a.btn.btn-default.btn-sm.browse*{ data: { target: ".file_upload.#{file_type}" } }
+        - if image_link.present?
+          | Change picture
+        - else
+          | Select picture
+      a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.#{file_type}" } }
+        i.fa.fa-link
     p.help-block= help_block
 
 = render partial: 'shared/image_form_bare', locals: { file_type: file_type, attribute_type: attribute_type, image_version: image_version, model: model }

@@ -1,6 +1,6 @@
 class ProjectsController < ApplicationController
   before_filter :load_project, only: [:show, :embed, :update, :destroy, :redirect_to_slug_route]
-  load_and_authorize_resource only: [:index, :edit, :settings, :submit]
+  load_and_authorize_resource only: [:index, :new, :edit, :settings, :submit]
   layout 'project', only: [:edit, :update, :show]
   before_filter :set_project_mode, only: [:settings]
   before_filter :load_lists, only: [:show, :show_external]

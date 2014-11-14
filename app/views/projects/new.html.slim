@@ -32,7 +32,10 @@
                   span.cover_image.image-preview.preview
                     - if @project.cover_image
                       = image_tag @project.cover_image.file_url(:cover_mini_thumb)
-                  a.btn.btn-default.btn-sm*{ data: { target: '.file_upload.cover_image' } }  Select picture
+                  .btn-group
+                    a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.cover_image' } }  Select picture
+                    a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.cover_image" } }
+                      i.fa.fa-link
 
           = render partial: 'shared/image_form_bare', locals: { file_type: 'cover_image', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
 
@@ -84,7 +87,10 @@
             span.cover_image.image-preview.preview
               - if @project.cover_image
                 = image_tag @project.cover_image.file_url(:cover_mini_thumb)
-            a.btn.btn-default.btn-sm*{ data: { target: '.file_upload.cover_image' } }  Select picture
+            .btn-group
+              a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.cover_image' } }  Select picture
+              a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.cover_image" } }
+                i.fa.fa-link
             - if @project.errors[:cover_image]
               span.help-block.has-error= @project.errors[:cover_image].to_sentence
 
@@ -135,7 +141,10 @@
                 span.cover_image.image-preview.preview
                   - if @project.cover_image
                     = image_tag @project.cover_image.file_url(:cover_mini_thumb)
-                a.btn.btn-default.btn-sm*{ data: { target: '.file_upload.cover_image' } }  Select picture
+                .btn-group
+                  a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.cover_image' } }  Select picture
+                  a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.cover_image" } }
+                    i.fa.fa-link
 
         = render partial: 'shared/image_form_bare', locals: { file_type: 'cover_image', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
 
