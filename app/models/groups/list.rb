@@ -10,14 +10,14 @@ class List < Group
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'ListMember'
   has_one :cover_image, as: :attachable, class_name: 'Document', dependent: :destroy
 
-  attr_accessible :cover_image_id
+  attr_accessible :cover_image_id, :list_type
 
   validates :user_name, :full_name, presence: true
   validate :user_name_is_unique
   # before_save :update_user_name
 
   store :counters_cache, accessors: [:projects_count, :followers_count,
-    :external_projects_count, :private_projects_count]
+    :external_projects_count, :private_projects_count, :list_type]
 
   parse_as_integers :counters_cache, :projects_count, :followers_count,
     :external_projects_count, :private_projects_count
@@ -58,6 +58,10 @@ class List < Group
 
   def self.model_name
     Group.model_name
+  end
+
+  def category?
+    list_type == 'category'
   end
 
   def counters

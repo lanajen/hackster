@@ -1,6 +1,6 @@
 - content_for :head do
-  meta(property="og:title" content="#{@list.name} projects")
-  meta(property="og:description" content="Discover curated hardware projects and hacks for #{@list.name}.")
+  meta(property="og:title" content=@list.facebook_title)
+  meta(property="og:description" content=@list.facebook_description)
   - if @list.avatar
     meta(property="og:image" content=@list.avatar.file_url(:big))
     meta(property="twitter:image:src" content=@list.avatar.file_url(:big))
@@ -13,8 +13,8 @@
   meta(property="twitter:card" content="summary")
   meta(property="twitter:site" content="@hacksterio")
   meta(property="twitter:domain" content="hackster.io")
-  meta(property="twitter:title" content="#{@list.name} projects")
-  meta(property="twitter:description" content="#{@list.mini_resume}")
+  meta(property="twitter:title" content=@list.twitter_title)
+  meta(property="twitter:description" content=@list.twitter_description)
   - if handle = @list.twitter_handle
     meta(property="twitter:creator" content=handle)
   link(rel="canonical" href=list_url(@list))
