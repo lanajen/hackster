@@ -251,7 +251,7 @@ class ApplicationController < ActionController::Base
       if visits[Date.today.to_s].present?
         visits[Date.today.to_s] = visits[Date.today.to_s].to_i + 1
       else
-        track_event 'Visited', { logged_in: user_signed_in? } if user_signed_in? or cookies[:member]
+        track_event 'Registered user visited', { logged_in: user_signed_in? } if user_signed_in? or cookies[:member]
         visits[Date.today.to_s] = 1
       end
       cookies[:visits] = visits.to_json
