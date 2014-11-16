@@ -25,7 +25,7 @@ class Client::ProjectsController < Client::BaseController
       end
     end
 
-    @projects = @projects.paginate(page: safe_page_params)
+    @projects = @projects.paginate(page: safe_page_params, per_page: Project.per_page)
     @challenge = current_tech.active_challenge ? current_tech.challenges.active.first : nil
 
     respond_to do |format|
