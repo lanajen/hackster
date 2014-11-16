@@ -202,7 +202,7 @@ module ScraperStrategies
 
         # if parent is a link to a bigger image get that link instead
         parent = img
-        while parent = parent.parent and parent != base_parent do
+        while parent.respond_to?(:parent) and parent = parent.parent and parent != base_parent do
           if parent.name == 'a'
             href = parent['data-fancybox-href'] || parent['href']
             parent.name = 'span'  # so that it's not parsed as an embed later on
@@ -405,6 +405,13 @@ module ScraperStrategies
             child = child.next_sibling
           end
         end
+      end
+
+      def unwrap node
+        node.children.each do |child|
+          node.parent << child
+        end
+        node.remove
       end
   end
 end

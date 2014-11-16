@@ -22,6 +22,7 @@ class ProjectScraper
     project.build_team
     project.team.members.new user_id: user_id
     project.save
+    project
   end
 
   def document
@@ -48,6 +49,7 @@ class ProjectScraper
       'wordpress' => :wordpress,
     }
     KNOWN_HOSTS = {
+      '1sheeld.com' => :onesheeld,
       'blogspot.com' => :blogspot,
       'blogspot.fr' => :blogspot,
       'community.spark.io' => :spark_forum,
