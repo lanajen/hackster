@@ -165,7 +165,24 @@ class TechesController < ApplicationController
     def load_projects
       per_page = begin; [Integer(params[:per_page]), Project.per_page].min; rescue; Project.per_page end;  # catches both no and invalid params
       per_page = per_page - 1 if @tech.accept_project_ideas
-      @projects = @tech.projects.visible.indexable_and_external.order('project_collections.workflow_state DESC').magic_sort.for_thumb_display.paginate(page: safe_page_params, per_page: per_page)
+
+      sort = params[:sort] ||= 'magic'
+      @by = params[:by] || 'all'
+
+      @projects = @tech.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.indexable_and_external.for_thumb_display_in_collection)
+      if sort and sort.in? Project::SORTING.keys
+        @projects = @projects.merge(Project.send(Project::SORTING[sort]))
+      end
+
+      if @by and @by.in? Project::FILTERS.keys
+        @projects = if @by == 'featured'
+          @projects.featured
+        else
+          @projects.merge(Project.send(Project::FILTERS[@by]))
+        end
+      end
+
+      @projects = @projects.paginate(page: safe_page_params, per_page: per_page)
     end
 
     def load_tech

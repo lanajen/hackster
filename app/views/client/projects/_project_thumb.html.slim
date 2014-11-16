@@ -1,9 +1,11 @@
 - cache "client-project-#{project.id}-thumb", tag: ["project-#{project.id}-thumb", "project-#{project.id}-thumb-client", "team-#{project.team_id}", "team-#{project.team_id}-user-thumbs", "project-thumb", 'client-project-thumb'], expires_in: 6.hours do
-  div  class="col-md-#{ defined?(col) ? col : 3 } col-xs-12 col-sm-6"
+  div  class="col-md-#{ defined?(col) ? col : 3 } col-xs-12 col-sm-6 project-#{project.id}"
     - ref = defined?(ref) ? ref : nil
     .project-thumb
       .thumb
-        .photo-thumb= link_to '', project_url(project, ref: ref, subdomain: 'www'), class: 'project-link-with-ref', style: "background-image:url(#{project.cover_image(:cover_thumb)});"
+        .photo-thumb
+          = link_to '', project_url(project, ref: ref, subdomain: 'www'), class: 'project-link-with-ref', style: "background-image:url(#{project.cover_image(:cover_thumb)});"
+          .award-container
         .inner-thumb
           h3
             - if project.is_idea?

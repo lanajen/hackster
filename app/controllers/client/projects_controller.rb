@@ -9,20 +9,19 @@ class Client::ProjectsController < Client::BaseController
 
     impressionist_async current_tech, "", unique: [:session_hash]
 
-    sort = params[:sort] || 'magic'
+    sort = params[:sort] ||= 'magic'
     @by = params[:by] || 'all'
 
-    @projects = current_tech.projects.visible.indexable_and_external.for_thumb_display
+    @projects = current_tech.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.indexable_and_external.for_thumb_display_in_collection)
     if sort and sort.in? Project::SORTING.keys
-      @projects = @projects.send(Project::SORTING[sort])
+      @projects = @projects.merge(Project.send(Project::SORTING[sort]))
     end
 
     if @by and @by.in? Project::FILTERS.keys
       @projects = if @by == 'featured'
-        @by = 'gfeatured'
-        @projects.send(Project::FILTERS[@by], 'Group', current_tech.id)
+        @projects.featured
       else
-        @projects.send(Project::FILTERS[@by])
+        @projects.merge(Project.send(Project::FILTERS[@by]))
       end
     end
 

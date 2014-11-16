@@ -4,8 +4,6 @@
       .photo-thumb
         = link_to image_tag(project.cover_image(:cover_thumb), alt: project.name, class: 'img-responsive'), project_url(project), target: '_blank'
         .award-container
-        .thumb-top
-          .thumb-top-inner
       .inner-thumb
         h3= link_to project.name, project_url(project), target: '_blank'
         h4

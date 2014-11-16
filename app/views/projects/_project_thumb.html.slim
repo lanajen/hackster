@@ -18,8 +18,6 @@
             .photo-thumb
               = link_to '', project_path(project), class: 'project-link-with-ref', style: "background-image:url(#{project.cover_image(:cover_thumb)});"
               .award-container
-              .thumb-top
-                .thumb-top-inner
             .inner-thumb
               h3
                 - if project.is_idea?

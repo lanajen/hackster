@@ -172,11 +172,16 @@ class Project < ActiveRecord::Base
   end
 
   def self.featured_by_collection collectable_type, collectable_id
-    indexable.joins(:project_collections).where(project_collections: { collectable_id: collectable_id, collectable_type: collectable_type, workflow_state: 'featured' }).order('project_collections.updated_at DESC')
+    indexable_and_external.joins(:project_collections).where(project_collections: { collectable_id: collectable_id, collectable_type: collectable_type, workflow_state: 'featured' }).order('project_collections.updated_at DESC')
+    # where(project_collections: { workflow_state: 'featured' })
   end
 
   def self.for_thumb_display
     includes(:users).includes(:cover_image).includes(:team)
+  end
+
+  def self.for_thumb_display_in_collection
+    includes(project: :users).includes(project: :cover_image).includes(project: :team)
   end
 
   def self.indexable

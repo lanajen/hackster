@@ -35,6 +35,10 @@ class ProjectCollection < ActiveRecord::Base
     where(project_id: project_id, collectable_type: %w(Event Assignment)).any?
   end
 
+  def self.featured
+    where(workflow_state: 'featured')
+  end
+
   def self.exists? project_id, collectable_type, collectable_id
     where(project_id: project_id, collectable_type: collectable_type, collectable_id: collectable_id).any?
   end

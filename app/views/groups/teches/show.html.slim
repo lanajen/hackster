@@ -61,15 +61,37 @@ section#projects-list
         - link = new_project_path(project: { tech_tags_string: @tech.name, external: true }, redirect_to: request.path)
         = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Submit a link".html_safe, link, class: 'btn btn-outline'
 
-      .pull-left= render 'shared/list_switch'
+      .pull-left style='margin-right:5px' = render 'shared/list_switch'
+      .btn-group.pull-left
+        .btn-group
+          button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
+            ' Sort by
+            span.caret
+          ul.dropdown-menu.pull-right
+            li*{ class: "#{'active' if params[:sort] == 'updated'}" } = link_to 'Last updated', tech_short_path(@tech, sort: 'updated', by: params[:by])
+            li*{ class: "#{'active' if params[:sort] == 'magic'}" } = link_to 'Magic', tech_short_path(@tech, sort: 'magic', by: params[:by])
+            li*{ class: "#{'active' if params[:sort] == 'popular'}" } = link_to 'Most popular', tech_short_path(@tech, sort: 'popular', by: params[:by])
+            li*{ class: "#{'active' if params[:sort] == 'recent'}" } = link_to 'Most recent', tech_short_path(@tech, sort: 'recent', by: params[:by])
+            li*{ class: "#{'active' if params[:sort] == 'respected'}" } = link_to 'Most respected', tech_short_path(@tech, sort: 'respected', by: params[:by])
+
+        .btn-group
+          button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
+            ' Filter by
+            span.caret
+          ul.dropdown-menu.pull-right
+            li*{ class: "#{'active' if params[:by] == nil}" } = link_to 'All', tech_short_path(@tech, sort: params[:sort])
+            li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to 'Featured', tech_short_path(@tech, by: 'featured', sort: params[:sort])
+            li*{ class: "#{'active' if params[:by] == 'wip'}" } = link_to 'Work in progress', tech_short_path(@tech, by: 'wip', sort: params[:sort])
+
 
     - if @projects.any?
       .thumb-list  class=@switch_style
         .row.project-list
           - if @tech.accept_project_ideas
             = render partial: 'groups/teches/submit_idea', locals: { tech: @tech }
-          - @projects.each do |project|
-            = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '3' }
+          - @projects.each do |project_collection|
+            = render partial: 'projects/project_thumb', locals: { project: project_collection.project.decorate, col: '3' }
+
       .row.text-center= will_paginate @projects
     - else
       .row
@@ -79,9 +101,15 @@ section#projects-list
             - if @tech.tech_tags.any?
               = link_to "Create the first #{@tech.name} project", new_project_path(project: { tech_tags_string: @tech.name }), class: 'btn btn-primary btn-sm'
 
-- if can? :manage, @tech
-  - @projects.each do |project|
-    = content_for :js do
+= content_for :js do
+  - if can? :manage, @tech
+    - @projects.each do |project_collection|
       javascript:
-        text = "#{escape_javascript render(partial: 'groups/teches/button_featured', locals: { project: project } )}";
-        $(text).appendTo($('.project-#{project.id} .project-thumb .award-container'));
+        text = "#{escape_javascript render(partial: 'groups/teches/button_featured', locals: { project_collection: project_collection } )}";
+        $(text).appendTo($('.project-#{project_collection.project_id} .project-thumb .award-container'));
+  - else
+    - @projects.each do |project_collection|
+      - if project_collection.featured?
+        javascript:
+          text = "#{escape_javascript render(partial: 'groups/teches/featured' )}";
+          $(text).appendTo($('.project-#{project_collection.project_id} .project-thumb .award-container'));
