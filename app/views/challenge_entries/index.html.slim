@@ -26,7 +26,7 @@ p
 
     - else
       ' All prizes have been awarded.
-      ==> link_to 'Mark challenge as judged', '', class: 'btn btn-sm btn-warning', data: { confirm: 'Are you sure? Continuing will close judging and send an email notification to all participants informing them of the outcome.' }
+      = link_to 'Mark challenge as judged', update_workflow_challenge_path(@challenge, event: 'mark_as_judged'), method: :put, class: 'btn btn-sm btn-warning', data: { confirm: 'Are you sure? Continuing will close judging and send an email notification to all participants informing them of the outcome.' }
 
 - if @challenge.judged?
   table.table.table-striped

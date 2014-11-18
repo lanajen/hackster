@@ -10,7 +10,7 @@ Rewardino::Badge.create!({
   description: 'Registered on Hackster.',
   explanation: "registering on Hackster.",
   image: '',
-  level: :getting_started,
+  level: :green,
 })
 Rewardino::Trigger.set ['users/registrations#create',
   'users/simplified_registrations#create'], action: :set_badge,
@@ -25,7 +25,7 @@ Rewardino::Badge.create!({
     nominee.profile_complete?
   },
   image: '',
-  level: :getting_started,
+  level: :green,
 })
 # Rewardino::Trigger.set 'users#after_registration_save', action: :set_badge,
 #   badge_code: :profile_completed
@@ -42,7 +42,7 @@ Rewardino::Badge.create!({
   },
   revokable: true,
   image: '',
-  level: :getting_started,
+  level: :green,
 })
 Rewardino::Trigger.set ['respects#create', 'respects#destroy'],
   action: :set_badge, badge_code: :respected_project
@@ -57,7 +57,7 @@ Rewardino::Badge.create!({
   },
   revokable: true,
   image: '',
-  level: :getting_started,
+  level: :green,
 })
 Rewardino::Trigger.set ['followers#create', 'followers#destroy'], {
   action: :set_badge,
@@ -77,7 +77,7 @@ Rewardino::Badge.create!({
   },
   revokable: true,
   image: '',
-  level: :getting_started,
+  level: :green,
 })
 Rewardino::Trigger.set ['followers#create', 'followers#destroy'], {
   action: :set_badge,
@@ -97,7 +97,7 @@ Rewardino::Badge.create!({
   },
   revokable: true,
   image: '',
-  level: :getting_started,
+  level: :green,
 })
 Rewardino::Trigger.set ['comments#create', 'comments#destroy'], {
   action: :set_badge,
@@ -117,7 +117,7 @@ Rewardino::Badge.create!({
   },
   revokable: true,
   image: '',
-  level: :getting_started,
+  level: :green,
 })
 Rewardino::Trigger.set 'group_invitations#accept', {
   action: :set_badge,
@@ -135,7 +135,7 @@ Rewardino::Trigger.set 'group_invitations#accept', {
 #     # finished transaction with no error?
 #   },
 #   image: '',
-#   level: :getting_started,
+#   level: :green,
 # })
 # Rewardino::Trigger.set 'project_imports#create', action: :set_badge,
 #   badge_code: :imported_project
@@ -148,7 +148,7 @@ Rewardino::Trigger.set 'group_invitations#accept', {
 #     context.external == true
 #   },
 #   image: '',
-#   level: :getting_started,
+#   level: :green,
 # })
 # Rewardino::Trigger.set :manual, action: :set_badge,
 #   badge_code: :linked_project
@@ -159,7 +159,7 @@ Rewardino::Badge.create!({
   description: "Created and published their first project.",
   explanation: "Publishing your first project.",
   image: '',
-  level: :getting_started,
+  level: :green,
 })
 Rewardino::Trigger.set :manual, action: :set_badge,
   badge_code: :created_project
@@ -219,7 +219,7 @@ Rewardino::Badge.create!({
   explanation: "having one of your projects respected for the first time.",
   image: '',
   condition: -> (nominee) {
-    nominee.project_respects_count >= 1
+    nominee.active_profile? and nominee.project_respects_count >= 1
   },
   level: :silver,
 })
@@ -237,7 +237,7 @@ Rewardino::Badge.create!({
   explanation: "having your profile followed by another hacker.",
   image: '',
   condition: -> (nominee) {
-    nominee.class == User and nominee.followers_count >= 1
+    nominee.class == User and nominee.active_profile? and nominee.followers_count >= 1
   },
   level: :silver,
 })

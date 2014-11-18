@@ -7,9 +7,7 @@ module Rewardino
       # puts 'included!'
       base.append_after_filter do |controller|
 
-        # puts 'triggers: ' + matching_triggers.to_s
         matching_triggers.each do |trigger|
-          # puts 'trigger: ' + trigger.inspect
           next if trigger.condition.present? and !trigger.condition.call(controller)
 
           user_method = Rewardino.current_user_method(trigger)
@@ -21,14 +19,11 @@ module Rewardino
           next unless users.any?
 
           users.each do |user|
-            # puts 'user: ' + user.inspect
             if trigger.action == :set_badge
               if trigger.background
-                # RewardinoQueue.perform_async 'evaluate_badge', user.id, trigger.badge_code
                 User.delay.evaluate_badge user.id, trigger.badge_code
               else
                 status = user.evaluate_badge trigger.badge_code
-                # puts 'status: ' + status.inspect
                 if status.class == Rewardino::StatusAwarded
                   session[:new_badge] = status.badge
                 elsif status.class == Rewardino::StatusTakenAway

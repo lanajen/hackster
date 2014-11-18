@@ -276,6 +276,10 @@ class User < ActiveRecord::Base
     @ability ||= Ability.new(self)
   end
 
+  def active_profile?
+    user_name.present? and invitation_token.nil?
+  end
+
   def add_confirmed_role
     self.roles = roles << 'confirmed_user'
     save
