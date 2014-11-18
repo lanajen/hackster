@@ -4,12 +4,12 @@ module Rewardino
     def self.included base
       base.class_eval {
         has_many :awarded_badges, as: :awardee
-      }
-    end
 
-    def self.evaluate_badge id, *args
-      nominee = self.class.find id
-      nominee.evaluate_badge *args
+        def self.evaluate_badge id, *args
+          nominee = find id
+          nominee.evaluate_badge *args
+        end
+      }
     end
 
     def badges level=nil
