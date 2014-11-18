@@ -1,9 +1,19 @@
-#badge-alert
-  #badge-alert-inner
-    button.close &times;
-    .media
-      .pull-left
-        = image_tag badge.get_image
-      .media-body
-        h4.media-heading You've earned a new badge!
-        p= badge.description
+#badge-alert.popup-overlay
+  .popup-overlay-bg
+  .popup-overlay-outer
+    .popup-overlay-inner.transparent
+      button.close.btn-close.unselectable data-close='#badge-alert' data-effect='fade' &times;
+      .media
+        .media-left.media-middle
+          = image_tag badge.get_image
+        .media-body
+          h3.media-heading Hooray!
+          p
+            ' You've just earned a new badge for
+            b= badge.explanation
+          p
+            ' You now have
+            b= pluralize current_user.badges.count, 'badge'
+            | . Keep it up!
+          / p
+            small= link_to 'Learn more about badges', ''

@@ -7,7 +7,7 @@ module Rewardino
     extend Ambry::ActiveModel
 
     field :code, :name, :description, :condition, :disabled, :level, :image,
-      :revokable, :custom_fields
+      :revokable, :custom_fields, :explanation
 
     validates_presence_of :code
     validates_uniqueness_of :code

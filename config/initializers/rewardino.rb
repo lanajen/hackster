@@ -8,6 +8,7 @@ Rewardino::Badge.create!({
   code: :registered,
   name: 'Registered',
   description: 'Registered on Hackster.',
+  explanation: "registering on Hackster.",
   image: '',
   level: :getting_started,
 })
@@ -19,6 +20,7 @@ Rewardino::Badge.create!({
   code: :profile_completed,
   name: 'Profile completed',
   description: "Completed their profile.",
+  explanation: "completing your profile.",
   condition: -> (nominee) {
     nominee.profile_complete?
   },
@@ -34,6 +36,7 @@ Rewardino::Badge.create!({
   code: :respected_project,
   name: 'First project respected',
   description: "Respected a project.",
+  explanation: "respecting your first project.",
   condition: -> (nominee) {
     nominee.respects_count >= 1
   },
@@ -48,6 +51,7 @@ Rewardino::Badge.create!({
   code: :followed_platform,
   name: 'First platform followed',
   description: "Followed a platform.",
+  explanation: "following your first platform.",
   condition: -> (nominee) {
     nominee.teches_count >= 1
   },
@@ -65,8 +69,9 @@ Rewardino::Trigger.set ['followers#create', 'followers#destroy'], {
 
 Rewardino::Badge.create!({
   code: :followed_user,
-  name: 'First user followed',
-  description: "Followed a user.",
+  name: 'First hacker followed',
+  description: "Followed a hacker.",
+  explanation: "following your first hacker.",
   condition: -> (nominee) {
     nominee.followed_users_count >= 1
   },
@@ -86,6 +91,7 @@ Rewardino::Badge.create!({
   code: :commented_on_project,
   name: 'First comment on a project',
   description: "Commented on a project.",
+  explanation: "commenting on a project for the first time.",
   condition: -> (nominee) {
     nominee.comments_count >= 1
   },
@@ -105,6 +111,7 @@ Rewardino::Badge.create!({
   code: :joined_hacker_space,
   name: 'First hacker space joined',
   description: "Joined a hacker space.",
+  explanation: "joining your first hacker space.",
   condition: -> (nominee) {
     nominee.hacker_spaces.count >= 1
   },
@@ -150,6 +157,7 @@ Rewardino::Badge.create!({
   code: :created_project,
   name: 'First project published',
   description: "Created and published their first project.",
+  explanation: "Publishing your first project.",
   image: '',
   level: :getting_started,
 })
@@ -161,7 +169,8 @@ Rewardino::Trigger.set :manual, action: :set_badge,
 Rewardino::Badge.create!({
   code: :useful_feedback,
   name: 'Useful feedback',
-  description: "Gave useful feedback to sombebody else's project.",
+  description: "Gave useful feedback on sombebody else's project.",
+  explanation: "giving useful feedback on somebody else's project.",
   image: '',
   level: :silver,
 })
@@ -172,6 +181,7 @@ Rewardino::Badge.create!({
   code: :detailed_project,
   name: 'Detailed project',
   description: "Created a detailed and well formatted project, with code, bill of material, schematics and instructions.",
+  explanation: "creating a detailed and well formatted project.",
   image: '',
   level: :silver,
 })
@@ -182,6 +192,7 @@ Rewardino::Badge.create!({
   code: :helped_a_hacker,
   name: 'Helped a hacker',
   description: "Answered a question that was asked on their own project.",
+  explanation: "answering a question that was asked in the comments section of your own project.",
   image: '',
   level: :silver,
 })
@@ -192,6 +203,7 @@ Rewardino::Badge.create!({
   code: :altruist,
   name: 'Altruist',
   description: "Answered a question that was asked on sombebody else's project.",
+  explanation: "answering a question that was asked in the comments of somebody else's project.",
   image: 'badges/altruist.png',
   level: :silver,
 })
@@ -204,6 +216,7 @@ Rewardino::Badge.create!({
   code: :project_respected,
   name: 'Received a respect',
   description: "Received a respect on their own project.",
+  explanation: "having one of your projects respected for the first time.",
   image: '',
   condition: -> (nominee) {
     nominee.project_respects_count >= 1
@@ -221,6 +234,7 @@ Rewardino::Badge.create!({
   code: :profile_followed,
   name: 'Profile followed',
   description: "Had their profile followed by another hacker.",
+  explanation: "having your profile followed by another hacker.",
   image: '',
   condition: -> (nominee) {
     nominee.class == User and nominee.followers_count >= 1
@@ -237,7 +251,8 @@ Rewardino::Trigger.set ['followers#create', 'followers#destroy'], {
 Rewardino::Badge.create!({
   code: :project_viewed,
   name: '1,000 views on a project',
-  description: "Hit 1,000 on one of their projects.",
+  description: "Hit 1,000 views on one of their projects.",
+  explanation: "hitting 1,000 views on one of your projects.",
   image: '',
   condition: -> (nominee) {
     nominee.projects.each do |project|

@@ -31,49 +31,6 @@ $(function () {
     }
   }
 
-  var badgeTimer;
-  if ($('#badge-alert').length) {
-    window.setTimeout(function(){
-      showBadgeAlert();
-    }, 2000);
-
-  }
-
-  $('body').on('click', '#badge-alert .close', function(e){
-    window.clearTimeout(badgeTimer);
-    $('#badge-alert').animate({ top: '-100px' }, 300, function(){
-      $(this).remove();
-    });
-  });
-
-  $(document).ajaxComplete(function(event, request) {
-    var badgeHtml = request.getResponseHeader('X-New-Badge');
-
-    if (typeof(badgeHtml) != undefined) {
-      window.clearTimeout(badgeTimer);
-      if ($('#badge-alert').length){
-        $badgeHtml = badgeHtml;
-        $('#badge-alert').animate({ top: '-100px' }, 300, function(){
-          $(this).remove();
-          showBadgeAlert($badgeHtml);
-        });
-      } else {
-        showBadgeAlert(badgeHtml);
-      }
-    }
-  });
-
-  function showBadgeAlert(badgeHtml) {
-    if (typeof(badgeHtml) != undefined) $(badgeHtml).appendTo('body');
-
-    $('#badge-alert').animate({ top: 0 }, 300, function(){
-      $this = $(this);
-      badgeTimer = window.setTimeout(function(){
-        $this.animate({ top: '-100px' }, 300);
-      }, 10000);
-    });
-  }
-
   //Fade in alerts/notices
   if($('.fade-in').length){
     //if there's a slide-in notification on top of the page, wait until it's down sliding down before affixing divs

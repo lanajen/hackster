@@ -18,6 +18,7 @@
 //= require projects
 //= require groups
 //= require comments
+//= require badges
 //= require all
 //= require mobile
 //= require ilightbox/jquery.mousewheel

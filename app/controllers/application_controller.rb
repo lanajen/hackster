@@ -103,6 +103,7 @@ class ApplicationController < ActionController::Base
         @new_badge = Rewardino::Badge.find session[:new_badge]
         session.delete :new_badge
       end
+      # @new_badge = Rewardino::Badge.all.first
     end
 
     def show_badge
