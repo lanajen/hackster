@@ -36,8 +36,6 @@
             ==> pluralize_without_count @user.live_projects_count, 'project'
             strong>= number_with_delimiter @user.followers_count
             ==> pluralize_without_count @user.followers_count, 'follower'
-            strong>= number_with_delimiter @user.badges_count
-            = pluralize_without_count @user.badges_count, 'badge'
 
         - if current_user.try(:id) != @user.id
           #tech-follow-div.text-center
@@ -59,11 +57,17 @@
                 ' No websites.
                 = link_to 'Add some?', profile_edit_path(@user)
 
-      - if @user.badges(:silver).any?
+      - if @user.badges_silver_count > 0 or @user.badges_green_count > 0
         .display
           h4 Achievements
           .content.badges
-            - @user.badges(:silver).each do |badge|
+            - if @user.badges_green_count > 0
+              a.fa.fa-certificate> style='color:green' data-container='body'  data-toggle="popover" data-placement="right" data-trigger="hover" data-content="<div><strong>Green badges</strong></div>#{@user.badges(:green).map{|b| "<div>#{b.name}</div>"}.join('')}" data-html="true" rel="popover"
+              strong>= number_with_delimiter @user.badges_green_count
+            - if @user.badges_silver_count > 0
+              a.fa.fa-certificate> style='color:silver' data-container='body'  data-toggle="popover" data-placement="right" data-trigger="hover" data-content="<div><strong>Silver badges</strong></div>#{@user.badges(:silver).map{|b| "<div>#{b.name}</div>"}.join('')}" data-html="true" rel="popover"
+              strong>= number_with_delimiter @user.badges_silver_count
+            / - @user.badges(:silver).each do |badge|
               = image_tag(asset_url(badge.get_image), class: 'img-circle istooltip', title: badge.name)
 
       - if @user.followed_teches.any?

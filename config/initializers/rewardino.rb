@@ -4,17 +4,17 @@ Rewardino.setup do |config|
   config.default_image = 'badges/default.png'
 end
 
-Rewardino::Badge.create!({
-  code: :registered,
-  name: 'Registered',
-  description: 'Registered on Hackster.',
-  explanation: "registering on Hackster.",
-  image: '',
-  level: :green,
-})
-Rewardino::Trigger.set ['users/registrations#create',
-  'users/simplified_registrations#create'], action: :set_badge,
-  badge_code: :registered
+# Rewardino::Badge.create!({
+#   code: :registered,
+#   name: 'Registered',
+#   description: 'Registered on Hackster.',
+#   explanation: "registering on Hackster.",
+#   image: '',
+#   level: :green,
+# })
+# Rewardino::Trigger.set ['users/registrations#create',
+#   'users/simplified_registrations#create'], action: :set_badge,
+#   badge_code: :registered
 
 Rewardino::Badge.create!({
   code: :profile_completed,
@@ -214,7 +214,7 @@ Rewardino::Trigger.set :manual, action: :set_badge,
 # recognition
 Rewardino::Badge.create!({
   code: :project_respected,
-  name: 'Received a respect',
+  name: 'Project respected',
   description: "Received a respect on their own project.",
   explanation: "having one of your projects respected for the first time.",
   image: '',

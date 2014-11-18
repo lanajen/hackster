@@ -77,7 +77,7 @@ gem 'sendgrid', '1.2.0'
 gem 'sidekiq', '3.2.5'
 gem 'sidekiq-status', '0.5.1'
 gem 'sidekiq-failures', '0.4.3'
-gem 'simple_form', '3.1.0.rc1'
+gem 'simple_form', '3.0.2'
 gem 'sinatra', '>= 1.3.0', require: nil
 gem 'slick_rails', '1.3.7'
 gem 'slim-rails', '2.1.5'

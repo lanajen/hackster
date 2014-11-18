@@ -203,7 +203,7 @@ GEM
     mini_magick (3.7.0)
       subexec (~> 0.2.1)
     mini_portile (0.5.3)
-    minitest (5.4.2)
+    minitest (5.4.3)
     mixpanel (4.0.8)
       escape
       json
@@ -348,7 +348,7 @@ GEM
     sidekiq-status (0.5.1)
       sidekiq (>= 2.7, < 3.4)
     simple-random (0.10.0)
-    simple_form (3.1.0.rc1)
+    simple_form (3.0.2)
       actionpack (~> 4.0)
       activemodel (~> 4.0)
     simple_oauth (0.2.0)
@@ -516,7 +516,7 @@ DEPENDENCIES
   sidekiq (= 3.2.5)
   sidekiq-failures (= 0.4.3)
   sidekiq-status (= 0.5.1)
-  simple_form (= 3.1.0.rc1)
+  simple_form (= 3.0.2)
   sinatra (>= 1.3.0)
   slick_rails (= 1.3.7)
   slim-rails (= 2.1.5)
