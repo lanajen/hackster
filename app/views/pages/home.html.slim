@@ -25,123 +25,383 @@
           ' .
           = link_to 'Learn more.', about_path(ref: 'homeabout'), class: 'alert-link'
 
-    #about
-      - if !user_signed_in?
-        section.section-short style='padding:20px 0 10px;background:#fff;'
-          .container.text-center
-            p
-              ' Welcome to Hackster, the
-              strong community for hardware hackers
-              ' .
-              = link_to 'Learn more.', about_path(ref: 'homeabout')
-        = render partial: 'shared/signup_top', locals: { redirect_to: user_after_registration_path, source: 'home' }
+    - if !user_signed_in?
+      section.section-short style='padding:20px 0 40px;background:#fff;'
+        .container.text-center
+          = image_tag 'logo.png', width:"100"
+          h1 Community for hardware hackers.
+          p.text-muted Get inspried, find the right tools for the job and chat with experts.
 
-        / section#section-newsletter.section-short
-          .container
-            p
-              strong Cool hardware projects and platforms in your inbox every Friday:
-            = render 'shared/mailchimp_form'
-
-      section#teaser
-        .slide.slide-opaque.slide-opaque-light style="background-image: url(#{asset_url 'home/wallpaperUDOO2.jpg'})"
-          .container
-            .row
-              .col-xs-10.col-xs-offset-1.text-center
-                h1
-                  b= link_to 'What will UDOO?', '/challenges/what-will-udoo?ref=slider'
-                  br
-                  small
-                    | Win a UDOO board by submitting your project idea
-
-        .slide.slide-opaque.slide-opaque-dark style="background-image: url(https://halckemy.s3.amazonaws.com/uploads/cover_image/file/20535/cover_IMG_1129-1024x682.jpg)"
-          .container
-            .row
-              .col-xs-10.col-xs-offset-1.text-center
-                h1
-                  b= link_to 'Carmadillo', '/mikelangeloz/carmadillo-android-controlled-udoo-rover?ref=slider'
-                  | :
-                  br
-                  small
-                    | Build a rover and control it with your Android phone
-                    br
-                    small
-                      ' by
-                      .user>
-                        ==> link_to image_tag('https://halckemy.s3.amazonaws.com/uploads/avatar/file/19396/mini_michelangelon2.jpg', class: 'img-circle'), '/mikelangeloz?ref=slider', class: 'hidden-link'
-                        span.user-name
-                          = link_to 'Michelangelo Guarise', '/mikelangeloz?ref=slider', class: 'hidden-link'
-
-        .slide.slide-opaque.slide-opaque-light style="background-image: url(https://halckemy.s3.amazonaws.com/uploads/cover_image/file/20463/cover_ar-in-education.png)"
-          .container
-            .row
-              .col-xs-10.col-xs-offset-1.text-center
-                h1
-                  b= link_to 'Augmented Reality in Education', '/G_Pehlivanides/augmented-reality-in-education-developing-discovery-based-learning-applications?ref=slider'
-                  | :
-                  br
-                  small
-                    | Developing discovery-based learning applications
-                    br
-                    small
-                      ' by
-                      .user>
-                        ==> link_to image_tag('http://gravatar.com/avatar/f4c885b61de50288840cd449bf8cb738.png?d=identicon&s=30', class: 'img-circle'), '/G_Pehlivanides?ref=slider', class: 'hidden-link'
-                        span.user-name
-                          = link_to 'George Pehlivanides', '/G_Pehlivanides?ref=slider', class: 'hidden-link'
-
-        .slide.slide-opaque.slide-opaque-dark style="background-image: url(https://halckemy.s3.amazonaws.com/uploads/cover_image/file/17886/cover_WP_20140725_19_37_08_Pro-cropped.jpg)"
-          .container
-            .row
-              .col-xs-10.col-xs-offset-1.text-center
-                h1
-                  b= link_to 'X-EMS', '/oskar/x-ems?ref=slider'
-                  | :
-                  br
-                  small
-                    | The world's first eXpandable, eXtendable, and 100% open electronic management platform
-                    br
-                    small
-                      ' by
-                      .user>
-                        ==> link_to image_tag('http://gravatar.com/avatar/001cbc6fc29a47b7d64fca7483b5a75e.png?d=identicon&s=30', class: 'img-circle'), '/oskar?ref=slider', class: 'hidden-link'
-                        span.user-name
-                          = link_to 'Oskar Elmgren', '/oskar?ref=slider', class: 'hidden-link'
-
-                      / ' and
-                      / .user>
-                        / ==> link_to image_tag('http://gravatar.com/avatar/ace142ea3f67acfc34a5f59fd4059dd7.png?d=identicon&s=30', class: 'img-circle'), '/hana?ref=slider', class: 'hidden-link'
-                        / span.user-name
-                          # = link_to 'Hana Qudsi', '/hana?ref=slider', class: 'hidden-link'
-                      / ' and
-                      / = link_to '1 other', '/maneesh_and_hana/thermistor-respiratory-monitor#team-widget?ref=slider', class: 'hidden-link'
-
-      - if user_signed_in? or returning_user?
-        section
-          .container
-            .row
+      .container
+        .row.home-banner
+          .col-sm-6.banner-left
+            .img-content
+              .img-info
+                div
+                  span
+                    h3 Building a WiFi Outlet
+                    'by
+                    strong Daniel Nordness
+              = image_tag 'home/image-1.png'
+          .col-sm-6.banner-right
+            .img-content
+              .img-info
+                div
+                  span
+                    h3 Building a WiFi Outlet
+                    'by
+                    strong Daniel Nordness
+              = image_tag 'home/image-2.png'
+            .img-content
+              .img-info
+                div
+                  span
+                    h3 Building a WiFi Outlet
+                    'by
+                    strong Daniel Nordness
+              = image_tag 'home/image-3.png'
+        .view-all-section.clearfix
+          h4.pull-left Start your project and get valuable feedback from the community.
+          = link_to 'View All Projects', '#', class: 'btn btn-default btn-sm pull-right'
+        .row.project-container
+          .col-sm-4
+            .single-project.clearfix
+              .product-img-content
+                .product-tag
+                  div
+                    span
+                      ul.list-inline
+                        li
+                          span.label.label-default WiFi Outlet
+                        li
+                          span.label.label-default Sensors
+                        li
+                          span.label.label-default Lorem Ipsum
+                = image_tag 'home/img-1.png'
               .col-xs-12
-                .transparent-well
-                  .header.no-content
-                    h2
-                      | Latest projects
-                      = link_to 'See more recent projects &rarr;'.html_safe, projects_path(sort: 'recent'), class: 'btn-bottom'
-                .row
-                  - @last_projects.each do |project|
-                    = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homelast' }
-      - else
-        section
-          .container
-            .row
+                h4 Building a WiFi Outlet
+                p.text-muted
+                  'by
+                  strong Daniel Nordness
+                ul.list-unstyled.row.product-info
+                  li
+                    small.text-muted
+                      span.glyphicon.glyphicon-eye-open aria-hidden="true"
+                      ' 52k views
+                  li
+                    small.text-muted
+                      span.glyphicon.glyphicon-comment aria-hidden="true"
+                      ' 1.5k comments
+                  li
+                    small.text-muted
+                      span.glyphicon.glyphicon-star aria-hidden="true"
+                      ' 521 respect
+                    
+          .col-sm-4
+            .single-project.clearfix
+              .product-img-content
+                .product-tag
+                  div
+                    span
+                      ul.list-inline
+                        li
+                          span.label.label-default WiFi Outlet
+                        li
+                          span.label.label-default Sensors
+                        li
+                          span.label.label-default Lorem Ipsum
+                = image_tag 'home/img-2.png'
               .col-xs-12
-                .transparent-well
-                  .header.no-content
-                    h2
-                      | Trending projects
-                      = link_to 'See more trending projects &rarr;'.html_safe, projects_path(sort: 'trending'), class: 'btn-bottom'
-                .row
-                  - @most_popular_projects.each do |project|
-                    = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homepop' }
+                h4 Building a WiFi Outlet
+                p.text-muted
+                  'by
+                  strong Daniel Nordness
+                ul.list-unstyled.row.product-info
+                  li
+                    small.text-muted
+                      span.glyphicon.glyphicon-eye-open aria-hidden="true"
+                      ' 52k views
+                  li
+                    small.text-muted
+                      span.glyphicon.glyphicon-comment aria-hidden="true"
+                      ' 1.5k comments
+                  li
+                    small.text-muted
+                      span.glyphicon.glyphicon-star aria-hidden="true"
+                      ' 521 respect
+          .col-sm-4
+            .single-project.clearfix
+              .product-img-content
+                .product-tag
+                  div
+                    span
+                      ul.list-inline
+                        li
+                          span.label.label-default WiFi Outlet
+                        li
+                          span.label.label-default Sensors
+                        li
+                          span.label.label-default Lorem Ipsum
+                = image_tag 'home/img-3.png'
+              .col-xs-12
+                h4 Building a WiFi Outlet
+                p.text-muted
+                  'by
+                  strong Daniel Nordness
+                ul.list-unstyled.row.product-info
+                  li
+                    small.text-muted
+                      span.glyphicon.glyphicon-eye-open aria-hidden="true"
+                      ' 52k views
+                  li
+                    small.text-muted
+                      span.glyphicon.glyphicon-comment aria-hidden="true"
+                      ' 1.5k comments
+                  li
+                    small.text-muted
+                      span.glyphicon.glyphicon-star aria-hidden="true"
+                      ' 521 respect
+          .col-sm-4
+            .single-project.clearfix
+              .product-img-content
+                .product-tag
+                  div
+                    span
+                      ul.list-inline
+                        li
+                          span.label.label-default WiFi Outlet
+                        li
+                          span.label.label-default Sensors
+                        li
+                          span.label.label-default Lorem Ipsum
+                = image_tag 'home/img-1.png'
+              .col-xs-12
+                h4 Building a WiFi Outlet
+                p.text-muted
+                  'by
+                  strong Daniel Nordness
+                ul.list-unstyled.row.product-info
+                  li
+                    small.text-muted
+                      span.glyphicon.glyphicon-eye-open aria-hidden="true"
+                      ' 52k views
+                  li
+                    small.text-muted
+                      span.glyphicon.glyphicon-comment aria-hidden="true"
+                      ' 1.5k comments
+                  li
+                    small.text-muted
+                      span.glyphicon.glyphicon-star aria-hidden="true"
+                      ' 521 respect
+          .col-sm-4
+            .single-project.clearfix
+              .product-img-content
+                .product-tag
+                  div
+                    span
+                      ul.list-inline
+                        li
+                          span.label.label-default WiFi Outlet
+                        li
+                          span.label.label-default Sensors
+                        li
+                          span.label.label-default Lorem Ipsum
+                = image_tag 'home/img-2.png'
+              .col-xs-12
+                h4 Building a WiFi Outlet
+                p.text-muted
+                  'by
+                  strong Daniel Nordness
+                ul.list-unstyled.row.product-info
+                  li
+                    small.text-muted
+                      span.glyphicon.glyphicon-eye-open aria-hidden="true"
+                      ' 52k views
+                  li
+                    small.text-muted
+                      span.glyphicon.glyphicon-comment aria-hidden="true"
+                      ' 1.5k comments
+                  li
+                    small.text-muted
+                      span.glyphicon.glyphicon-star aria-hidden="true"
+                      ' 521 respect
+          .col-sm-4
+              .single-project.clearfix
+                .product-img-content
+                  .product-tag
+                    div
+                      span
+                        ul.list-inline
+                          li
+                            span.label.label-default WiFi Outlet
+                          li
+                            span.label.label-default Sensors
+                          li
+                            span.label.label-default Lorem Ipsum
+                  = image_tag 'home/img-3.png'
+                .col-xs-12
+                  h4 Building a WiFi Outlet
+                  p.text-muted
+                    'by
+                    strong Daniel Nordness
+                  ul.list-unstyled.row.product-info
+                    li
+                      small.text-muted
+                        span.glyphicon.glyphicon-eye-open aria-hidden="true"
+                        ' 52k views
+                    li
+                      small.text-muted
+                        span.glyphicon.glyphicon-comment aria-hidden="true"
+                        ' 1.5k comments
+                    li
+                      small.text-muted
+                        span.glyphicon.glyphicon-star aria-hidden="true"
+                        ' 521 respect
+      .subscribe-block.clearfix
+        .container
+          = image_tag 'home/envelope.png', width:"22"
+          'Get weekly inspiration of new challenges, useful tools and cool projects.
+          form.form-inline.pull-right
+            .form-group
+              label.sr-only 'Email address'
+              input type="text" class="form-control input-sm" placeholder="Enter your email address"
+            input type="submit" class="btn btn-primary btn-sm" value='Subscribe'
+      .view-all-section.clearfix
+        .container
+          h4.pull-left You can join any challenge for free.
+          = link_to 'View All Challenges', '#', class: 'btn btn-default btn-sm pull-right'
+      .container
+        .row
+          .col-sm-4
+            .single-challenge.clearfix
+              .col-sm-12
+                h4 Hidden garage
+                p
+                  small.text-muted Price: $5000
+              = image_tag 'home/img-2.png'
+              ul.list-unstyled.thumb
+                li
+                  = image_tag 'home/thumb-1.png'
+                li
+                  = image_tag 'home/thumb-2.png'
+                li
+                  = image_tag 'home/thumb-1.png'
+                li
+                  = image_tag 'home/thumb-2.png'
+          .col-sm-4
+            .single-challenge.clearfix
+              .col-sm-12
+                h4 Hidden garage
+                p
+                  small.text-muted Price: $5000
+              = image_tag 'home/img-2.png'
+              ul.list-unstyled.thumb
+                li
+                  = image_tag 'home/thumb-1.png'
+                li
+                  = image_tag 'home/thumb-2.png'
+                li
+                  = image_tag 'home/thumb-1.png'
+                li
+                  = image_tag 'home/thumb-2.png'
+          .col-sm-4
+            .single-challenge.clearfix
+              .col-sm-12
+                h4 Hidden garage
+                p
+                  small.text-muted Price: $5000
+              = image_tag 'home/img-2.png'
+              ul.list-unstyled.thumb
+                li
+                  = image_tag 'home/thumb-1.png'
+                li
+                  = image_tag 'home/thumb-2.png'
+                li
+                  = image_tag 'home/thumb-1.png'
+                li
+                  = image_tag 'home/thumb-2.png'
+          
 
+      / section#section-newsletter.section-short
+        .container
+          p
+            strong Cool hardware projects and platforms in your inbox every Friday:
+          = render 'shared/mailchimp_form'
+
+    section#teaser
+      .slide.slide-opaque.slide-opaque-light style="background-image: url(#{asset_url 'home/wallpaperUDOO2.jpg'})"
+        .container
+          .row
+            .col-xs-10.col-xs-offset-1.text-center
+              h1
+                b= link_to 'What will UDOO?', '/challenges/what-will-udoo?ref=slider'
+                br
+                small
+                  | Win a UDOO board by submitting your project idea
+
+      .slide.slide-opaque.slide-opaque-dark style="background-image: url(https://halckemy.s3.amazonaws.com/uploads/cover_image/file/20535/cover_IMG_1129-1024x682.jpg)"
+        .container
+          .row
+            .col-xs-10.col-xs-offset-1.text-center
+              h1
+                b= link_to 'Carmadillo', '/mikelangeloz/carmadillo-android-controlled-udoo-rover?ref=slider'
+                | :
+                br
+                small
+                  | Build a rover and control it with your Android phone
+                  br
+                  small
+                    ' by
+                    .user>
+                      ==> link_to image_tag('https://halckemy.s3.amazonaws.com/uploads/avatar/file/19396/mini_michelangelon2.jpg', class: 'img-circle'), '/mikelangeloz?ref=slider', class: 'hidden-link'
+                      span.user-name
+                        = link_to 'Michelangelo Guarise', '/mikelangeloz?ref=slider', class: 'hidden-link'
+
+      .slide.slide-opaque.slide-opaque-light style="background-image: url(https://halckemy.s3.amazonaws.com/uploads/cover_image/file/20463/cover_ar-in-education.png)"
+        .container
+          .row
+            .col-xs-10.col-xs-offset-1.text-center
+              h1
+                b= link_to 'Augmented Reality in Education', '/G_Pehlivanides/augmented-reality-in-education-developing-discovery-based-learning-applications?ref=slider'
+                | :
+                br
+                small
+                  | Developing discovery-based learning applications
+                  br
+                  small
+                    ' by
+                    .user>
+                      ==> link_to image_tag('http://gravatar.com/avatar/f4c885b61de50288840cd449bf8cb738.png?d=identicon&s=30', class: 'img-circle'), '/G_Pehlivanides?ref=slider', class: 'hidden-link'
+                      span.user-name
+                        = link_to 'George Pehlivanides', '/G_Pehlivanides?ref=slider', class: 'hidden-link'
+
+      .slide.slide-opaque.slide-opaque-dark style="background-image: url(https://halckemy.s3.amazonaws.com/uploads/cover_image/file/17886/cover_WP_20140725_19_37_08_Pro-cropped.jpg)"
+        .container
+          .row
+            .col-xs-10.col-xs-offset-1.text-center
+              h1
+                b= link_to 'X-EMS', '/oskar/x-ems?ref=slider'
+                | :
+                br
+                small
+                  | The world's first eXpandable, eXtendable, and 100% open electronic management platform
+                  br
+                  small
+                    ' by
+                    .user>
+                      ==> link_to image_tag('http://gravatar.com/avatar/001cbc6fc29a47b7d64fca7483b5a75e.png?d=identicon&s=30', class: 'img-circle'), '/oskar?ref=slider', class: 'hidden-link'
+                      span.user-name
+                        = link_to 'Oskar Elmgren', '/oskar?ref=slider', class: 'hidden-link'
+
+                    / ' and
+                    / .user>
+                      / ==> link_to image_tag('http://gravatar.com/avatar/ace142ea3f67acfc34a5f59fd4059dd7.png?d=identicon&s=30', class: 'img-circle'), '/hana?ref=slider', class: 'hidden-link'
+                      / span.user-name
+                        # = link_to 'Hana Qudsi', '/hana?ref=slider', class: 'hidden-link'
+                    / ' and
+                    / = link_to '1 other', '/maneesh_and_hana/thermistor-respiratory-monitor#team-widget?ref=slider', class: 'hidden-link'
+
+    - if user_signed_in? or returning_user?
       section
         .container
           .row
@@ -149,45 +409,71 @@
               .transparent-well
                 .header.no-content
                   h2
-                    | Featured platforms
-                    = link_to 'See all platforms &rarr;'.html_safe, platforms_path, class: 'btn-bottom'
+                    | Latest projects
+                    = link_to 'See more recent projects &rarr;'.html_safe, projects_path(sort: 'recent'), class: 'btn-bottom'
               .row
-                - @platforms.each do |tech|
-                  .col-xs-6.col-sm-4.col-md-2
-                    = link_to(image_tag(tech.avatar.file_url(:big), class: 'img-thumbnail'), tech_short_path(tech, ref: 'homefeat')) if tech.avatar
-                    h6.text-center= link_to tech.name, tech_short_path(tech)
+                - @last_projects.each do |project|
+                  = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homelast' }
+    - else
+      section
+        .container
+          .row
+            .col-xs-12
+              .transparent-well
+                .header.no-content
+                  h2
+                    | Trending projects
+                    = link_to 'See more trending projects &rarr;'.html_safe, projects_path(sort: 'trending'), class: 'btn-bottom'
+              .row
+                - @most_popular_projects.each do |project|
+                  = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homepop' }
 
-      - if !user_signed_in? and !returning_user?
-        section
-          .container
+    section
+      .container
+        .row
+          .col-xs-12
+            .transparent-well
+              .header.no-content
+                h2
+                  | Featured platforms
+                  = link_to 'See all platforms &rarr;'.html_safe, platforms_path, class: 'btn-bottom'
             .row
-              .col-xs-12
-                .transparent-well
-                  .header.no-content
-                    h2
-                      | Latest projects
-                      = link_to 'See more recent projects &rarr;'.html_safe, projects_path(sort: 'recent'), class: 'btn-bottom'
-                .row
-                  - @last_projects.each do |project|
-                    = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homelast' }
+              - @platforms.each do |tech|
+                .col-xs-6.col-sm-4.col-md-2
+                  = link_to(image_tag(tech.avatar.file_url(:big), class: 'img-thumbnail'), tech_short_path(tech, ref: 'homefeat')) if tech.avatar
+                  h6.text-center= link_to tech.name, tech_short_path(tech)
 
-            .row
-              .col-xs-12.text-center
-                = link_to 'Browse all projects &rarr;'.html_safe, projects_path, class: 'btn btn-primary btn-lg btn-block'
-      - else
-        section
-          .container
-            .row
-              .col-xs-12
-                .transparent-well
-                  .header.no-content
-                    h2
-                      | Trending projects
-                      = link_to 'See more trending projects &rarr;'.html_safe, projects_path(sort: 'trending'), class: 'btn-bottom'
-                .row
-                  - @most_popular_projects.each do |project|
-                    = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homepop' }
+    - if !user_signed_in? and !returning_user?
+      section
+        .container
+          .row
+            .col-xs-12
+              .transparent-well
+                .header.no-content
+                  h2
+                    | Latest projects
+                    = link_to 'See more recent projects &rarr;'.html_safe, projects_path(sort: 'recent'), class: 'btn-bottom'
+              .row
+                - @last_projects.each do |project|
+                  = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homelast' }
 
-            .row
-              .col-xs-12.text-center
-                = link_to 'Browse all projects &rarr;'.html_safe, projects_path, class: 'btn btn-primary btn-lg btn-block'
+          .row
+            .col-xs-12.text-center
+              = link_to 'Browse all projects &rarr;'.html_safe, projects_path, class: 'btn btn-primary btn-lg btn-block'
+    - else
+      section
+        .container
+          .row
+            .col-xs-12
+              .transparent-well
+                .header.no-content
+                  h2
+                    | Trending projects
+                    = link_to 'See more trending projects &rarr;'.html_safe, projects_path(sort: 'trending'), class: 'btn-bottom'
+              .row
+                - @most_popular_projects.each do |project|
+                  = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homepop' }
+
+          .row
+            .col-xs-12.text-center
+              = link_to 'Browse all projects &rarr;'.html_safe, projects_path, class: 'btn btn-primary btn-lg btn-block'

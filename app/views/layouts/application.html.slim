@@ -71,110 +71,18 @@ html(lang="en")
         - unless @no_flash
           = bootstrap_flash
 
-        .navbar.navbar-default.navbar-static-top#navigation
-          #nav-mobile-trigger.hide-on-desktop.fa.fa-bars
-          .navbar-in  style='position:relative;'
-            .navbar-header
-              = link_to image_tag('hackster_logo_40_white.png'), root_path, class: 'navbar-brand navbar-btn'
-            #nav-non-logo.show-on-desktop
-              ul#nav-actions.top-menu-nav
-                li.dropdown
-                  a.nav-link.dropdown-toggle data-toggle="dropdown" href='#'
-                    | Projects
-                    span.caret
-                  ul#topnav.dropdown-menu
-                    li
-                      .row
-                        .col-xs-12
-                          .text-center.mg-20= link_to 'Browse all projects', projects_path(ref: 'topnav'), class: 'btn btn-block btn-primary'
-                          - if user_signed_in?
-                            .text-center.mg-20= link_to 'My projects', user_path(current_user, ref: 'topnav'), class: 'btn btn-block btn-default'
-                          ul.nav.nav-pills.nav-stacked
-                            li.title
-                              h4 Popular tags
-                            - POPULAR_TAGS.each do |tag, link|
-                              li= link_to tag, "#{link}?ref=topnav"
-                li= link_to 'Platforms', platforms_path, class: 'nav-link'
-                li.dropdown
-                  a.nav-link.dropdown-toggle data-toggle="dropdown" href='#'
-                    | Resources
-                    span.caret
-                  ul#topnav.dropdown-menu
-                    li
-                      = link_to 'Hacker spaces', hacker_spaces_path, class: 'btn btn-block btn-default'
-                      = link_to 'More resources', resources_path, class: 'btn btn-block btn-default'
-                      / = link_to 'Idea to market', build_path, class: 'btn btn-block btn-default'
-              - if user_signed_in?
-                ul.navbar-nav.navbar-right
-                  / if current_user.has_notifications?
-                    li#notifications
-                      a.dropdown-toggle data-toggle="dropdown" href='#'
-                        - if current_user.has_notifications?
-                          span.istooltip  title='You have new notifications' data-placement='bottom' data-container='body'
-                            i.fa.fa-envelope
-                            i.fa.fa-exclamation.light-blue
-                        - else
-                          i.fa.fa-envelope.istooltip  title='No new notifications' data-placement='bottom' data-container='body'
-                      ul.dropdown-menu
-                        - if current_user.has_notifications?
-                          - current_user.notifications.each do |notification|
-                            li= link_to notification[:message], notification[:link]
-                        - else
-                          li
-                            a No notifications.
-
-                  li.btn-group.navbar-btn#user-navigation-links
-                    = link_to image_tag(current_user.decorate.avatar(:mini), style: 'width:30px;'), current_user, class: 'btn',id: 'user-nav-face', style: 'padding:0;'
-                    button#user-dropdown-toggle.btn.btn-default.dropdown-toggle data-toggle="dropdown"
-                      span.caret
-                    ul.dropdown-menu#nav-user-menu
-                      li= link_to 'My profile', current_user
-
-                      - if current_user.communities.any?
-                        li.divider
-                        - current_user.community_group_ties.includes(:group).each do |group_tie|
-                          - community = group_tie.group
-                          - name = community.name
-                          - name += ' (invite pending)' if group_tie.invitation_pending?
-                          li= link_to name, community
-                        - if current_user.promotions.any?
-                          li= link_to 'My grades', grades_path
-
-                      li.divider
-                      li= link_to 'Account settings', edit_user_registration_path
-                      li= link_to 'Invite friends', new_user_invitation_path
-                      li.divider
-                      li= link_to 'Log out', destroy_user_session_path, method: :delete
-                ul.navbar-right.top-menu-nav
-                  - if current_user.is? :admin
-                    li= link_to 'Admin', admin_analytics_path, class: 'nav-link'
-                  li= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'nav-link nav-add-project'
-              - else
-                ul#navbar-right.clearfix
-                  li
-                    span= link_to 'Sign up', new_user_registration_path, class: 'btn btn-primary login-link', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '# request.path ']);", id: "signup-button"
-
-                  li.dropdown
-                    a.btn.btn-primary.login-link.dropdown-toggle data-toggle="dropdown" href='#'
-                      | Log in
-                    .dropdown-menu style=("padding: 15px; width: 250px;")
-                      = render 'devise/sessions/form'
-                      hr
-                      / = link_to 'Connect with your social account', new_user_session_path(a: 'connect'), class: 'btn btn-black connect-social'
-                      .social-icons.text-center
-                        p.text-muted
-                          small Or connect with your social account:
-                        = link_to 'Facebook', user_omniauth_authorize_url(:facebook), class: 'zocial icon facebook'
-                        = link_to 'Github', user_omniauth_authorize_path(:github), class: 'zocial icon github'
-                        = link_to 'Google+', user_omniauth_authorize_path(:gplus), class: 'zocial icon googleplus'
-                        = link_to 'Twitter', user_omniauth_authorize_path(:twitter), class: 'zocial icon twitter'
-
-                ul.navbar-right.top-menu-nav
-                  li
-                    = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_user_registration_path(redirect_to: new_project_path, reason: 'project'), class: 'nav-link nav-add-project'
-
-              #navbar-search
-                = render 'shared/search_form'
+          .row
+            .navbar-collapse.collapse#navbar
+              ul.nav.navbar-nav
+                li.active= link_to 'Inspiration', "#"
+                li= link_to 'Tools', "#"
+                li= link_to 'Community', "#"
+                li= link_to 'Your Project', "#"
+              form.navbar-form.pull-left
+                .form-group
+                  span.glyphicon.glyphicon-search
+                  input type="text" class="form-control" placeholder="Search for projects, tools, resources.."
+              = link_to 'Sign in', "#", class: 'btn btn-link pull-right btn-signup'
 
       = yield(:before_main)
       #main
