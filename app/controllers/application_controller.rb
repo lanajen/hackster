@@ -1,6 +1,8 @@
 class ApplicationController < ActionController::Base
   include UrlHelper
 
+  include Rewardino::ControllerExtension
+
   KNOWN_EVENTS = {
     'hob' => 'Identified as hobbyist',
     'pro' => 'Identified as professional',
@@ -19,6 +21,8 @@ class ApplicationController < ActionController::Base
   before_filter :set_new_user_session
   before_filter :store_location_before
   before_filter :track_visitor
+  before_filter :check_new_badge
+  prepend_after_filter :show_badge
   after_filter :store_location_after
   after_filter :track_landing_page
   helper_method :flash_disabled?
@@ -92,6 +96,21 @@ class ApplicationController < ActionController::Base
         flash.keep
         redirect_to request.path and return
       end
+    end
+
+    def check_new_badge
+      if session[:new_badge]
+        @new_badge = Rewardino::Badge.find session[:new_badge]
+        session.delete :new_badge
+      end
+      # @new_badge = Rewardino::Badge.all.first
+    end
+
+    def show_badge
+      return unless request.xhr?
+
+      check_new_badge
+      response.headers['X-New-Badge'] = render_to_string(partial: 'shared/badge_alert', locals: { badge: @new_badge }) if @new_badge
     end
 
     def current_ability

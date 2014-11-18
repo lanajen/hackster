@@ -377,7 +377,7 @@ img {
   text-decoration: none;
 }
 #user-navigation-links{
-  margin-right: 13px;
+  margin-right: 28px;
   margin-top: 13px;
 }
 
@@ -1134,6 +1134,10 @@ a.hidden-link {
     z-index: 100000000002;
     -webkit-transition: all 200ms;  /* For Safari 3.1 to 6.0 */
     transition: all 200ms;
+    &.transparent {
+      background: transparent;
+      color: #fff;
+    }
   }
   h2 {
     color: #333;

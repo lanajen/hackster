@@ -74,6 +74,8 @@ HackerIo::Application.routes.draw do
       get 'followers' => 'pages#followers'
       delete 'sidekiq/failures' => 'pages#clear_sidekiq_failures'
 
+      resources :awarded_badges, only: [:create], controller: 'badges'
+      resources :badges, except: [:show, :create]
       resources :groups, except: [:show]
       resources :projects, except: [:show]
       resources :users, except: [:show]

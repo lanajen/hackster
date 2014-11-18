@@ -9,7 +9,7 @@ gem 'dotenv-rails', :groups => [:development, :test]
 
 #  assets
 gem 'asset_sync', '1.0.0'
-gem 'bootstrap-sass', '3.1.1.0'
+gem 'bootstrap-sass', '3.3.1'
 gem 'coffee-rails', '4.0.1'
 gem 'compass-rails', '1.1.2'
 gem 'font-awesome-rails', '4.1.0.0'
@@ -70,6 +70,8 @@ gem 'rails-observers', '0.1.2'
 gem 'redis', '3.0.6'
 gem 'redis-namespace', '1.5.0'
 gem 'rest-client', '1.6.7'
+# gem 'rewardino', '0.0.1'
+gem 'ambry', '~> 0.3.0'
 gem 'sanitize', '2.0.6'
 gem 'sendgrid', '1.2.0'
 gem 'sidekiq', '3.2.5'
