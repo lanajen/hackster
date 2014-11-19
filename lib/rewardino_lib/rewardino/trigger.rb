@@ -1,6 +1,6 @@
 module Rewardino
   class Trigger
-    attr_accessor :event, :action, :badge_codes, :nominee_variable, :background,
+    attr_accessor :event, :action, :badge_code, :nominee_variable, :background,
       :condition
 
     class << self
@@ -18,11 +18,9 @@ module Rewardino
         options = args.extract_options!
 
         trigger = Trigger.new
-        %w(badge_codes nominee_variable action background condition).each do |opt|
+        %w(badge_code nominee_variable action background condition).each do |opt|
           trigger.send "#{opt}=", options[opt.to_sym]
         end
-
-        trigger.badge_codes = Array.wrap trigger.badge_codes
 
         Array.wrap(events).each do |event|
           all[event] ||= []
@@ -32,8 +30,8 @@ module Rewardino
     end
 
     # Get rule's related Badge.
-    def badges
-      @badges ||= badge_codes.map{|bade_code| Rewardino::Badge.find(badge_code) }
+    def badge
+      @badge ||= Rewardino::Badge.find(badge_code)
     end
   end
 end

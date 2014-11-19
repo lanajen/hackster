@@ -1,6 +1,7 @@
 = simple_form_for resource, as: resource_name, url: registration_path(resource_name, experiment: params[:experiment]), class: 'disable-on-submit' do |f|
   = f.error_notification
 
+  input name='source' value=params[:source] type='hidden'
   = f.input :email, label: false, placeholder: 'Email', autofocus: (defined?(autofocus) ? autofocus : true)
   = f.input :email_confirmation, label: false, placeholder: 'Confirm email'
   = f.input :password, label: false, placeholder: 'Password'

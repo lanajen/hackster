@@ -1,5 +1,5 @@
 class AwardedBadgeObserver < ActiveRecord::Observer
-  def after_create record
+  def after_save record
     update_counters record
   end
 
@@ -9,8 +9,11 @@ class AwardedBadgeObserver < ActiveRecord::Observer
 
   private
     def update_counters record
-      record.awardee.update_counters only: [:badges, :badges_green, :badges_bronze,
-        :badges_silver, :badges_gold]
+      user = record.awardee
+      user.with_lock do
+        user.update_counters only: [:badges_green, :badges_bronze, :badges_silver,
+          :badges_gold]
+      end
       Cashier.expire "user-#{record.awardee_id}-sidebar"
     end
 end

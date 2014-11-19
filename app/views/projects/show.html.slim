@@ -249,7 +249,7 @@
             .row
               .header
                 h4
-                  | Other projects by
+                  ' Other projects by
                   = @project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
               - if @other_projects_count > 6
                 .row

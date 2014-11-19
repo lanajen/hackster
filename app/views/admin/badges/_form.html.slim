@@ -1,6 +1,7 @@
 = f.error_notification
 = f.association :awardee, collection: User.where.not(user_name: nil).order(:full_name, :user_name)
 = f.input :badge_code, collection: Rewardino::Badge.all.keys.sort
+= f.input :level, collection: Rewardino::Badge::LEVELS, hint: "Caution: this won't validate whether the level exists for this badge, so please make sure you select the right level."
 .col-xs-offset-4.col-xs-8
   ==> f.button :submit, :class => 'btn-primary'
   ==> link_to t('.cancel', :default => t("helpers.links.cancel")), admin_badges_path, :class => 'btn btn-default'

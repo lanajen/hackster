@@ -248,6 +248,7 @@ class ApplicationController < ActionController::Base
         shown_banner_count: cookies[:shown_banner_count],
         visits_count_before_signup: JSON.parse(cookies[:visits]).size,
         simplified: simplified,
+        source: params[:source],
       }
 
       track_alias

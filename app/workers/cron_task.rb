@@ -42,6 +42,19 @@ class CronTask < BaseWorker
     end
   end
 
+  def evaluate_badges
+    triggers = Rewardino::Trigger.find_all :cron
+    badges = triggers.map{|t| t.badges }.flatten
+    User.invitation_accepted_or_not_invited.each do |user|
+      catch :not_awarded do
+        badges.each do |badge|
+          status = user.evaluate_badge badge
+          throw :not_awarded if status == Rewardino::StatusNotAwarded
+        end
+      end
+    end
+  end
+
   def expire_challenges
     Challenge.where(workflow_state: :in_progress).where("(challenges.start_date + interval '1 day' * challenges.duration) < ?", Time.now).each do |challenge|
       challenge.end!
@@ -53,6 +66,7 @@ class CronTask < BaseWorker
     send_assignment_reminder
     lock_assignment
     expire_challenges
+    evaluate_badges
   end
 
   def launch_daily_cron

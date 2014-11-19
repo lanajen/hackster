@@ -9,6 +9,7 @@ module Rewardino
           nominee = find id
           status = nominee.evaluate_badge *args
 
+          puts status.inspect
           BaseMailer.enqueue_email 'new_badge_notification', { context_type: 'badge',
             context_id: status.awarded_badge.id } if status.class == Rewardino::StatusAwarded  # would look better in an observer but how do we know if it was awarded asyncronously? (syncronous badges are shown straight away)
         end
@@ -16,8 +17,9 @@ module Rewardino
     end
 
     def badges level=nil
-      user_badges = awarded_badges.map(&:badge)
-      user_badges = user_badges.select{|b| b.level == level } if level
+      user_badges = awarded_badges
+      user_badges = user_badges.where(level: level) if level
+      user_badges = user_badges.map(&:badge)
       user_badges
     end
 
@@ -31,21 +33,33 @@ module Rewardino
 
       revokable = badge.respond_to?(:revokable) and badge.revokable
 
-      if evaluation_badge_condition(badge)
-        if has_badge? badge.code
-          Rewardino::StatusAlreadyAwarded.new
+      # if there's an existing badge...
+      if existing_badge = has_badge?(badge.code)
+        # if the badge can be taken away
+        if revokable
+          threshold = badge.threshold_for_level(existing_badge.level)
+          # if the condition doesn't evaluate anymore
+          unless evaluate_badge_condition(badge, threshold)
+            # if there's a previous level go back to it
+            if previous_level = badge.previous_level(existing_badge.level)
+              existing_badge.update_column :level, previous_level
+            # otherwise just destroy it
+            else
+              existing_badge.destroy
+            end
+            return Rewardino::StatusTakenAway.new existing_badge
+          end
+        end
+
+        # if there's a next level evaluate it
+        if next_level = existing_badge.badge.next_level(existing_badge.level)
+          evaluate_badge_levels badge, existing_badge, next_level
+        # otherwise we're good
         else
-          awarded_badge = AwardedBadge.create!(awardee_type: self.class.name,
-            awardee_id: id, badge_code: badge.code)
-          Rewardino::StatusAwarded.new awarded_badge
+          Rewardino::StatusAlreadyAwarded.new existing_badge
         end
       else
-        if revokable and lost_badge = has_badge?(badge.code)
-          lost_badge.destroy
-          Rewardino::StatusTakenAway.new lost_badge
-        else
-          Rewardino::StatusNotAwarded.new
-        end
+        evaluate_badge_levels badge
       end
     end
 
@@ -61,15 +75,56 @@ module Rewardino
     end
 
     private
-      def evaluation_badge_condition badge
+      def evaluate_badge_condition badge, threshold
         if badge.respond_to?(:condition) and badge.condition.present?
-          badge.condition.call self
+          begin
+            badge.condition.call self, threshold
+          rescue => e
+            ::Rewardino::StatusError.new
+            puts "Error evaluating badge #{badge.inspect} at #{threshold}: " + e.inspect
+            false
+          end
         else
-          true
+          false
         end
       end
 
-      def normalize_badge badge_or_code
+      def evaluate_badge_levels badge, existing_badge=nil, start_level=nil
+        levels = if start_level
+          # get the levels starting from start_level
+          i = badge.levels.keys.index(start_level)
+          Hash[badge.levels.to_a[i..-1]]
+        else
+          badge.levels
+        end
+
+        top_level = nil
+        # evaluate all levels; keep going until one doesn't evaluate
+        levels.each do |level, _threshold|
+          puts _threshold.inspect
+          threshold = _threshold.kind_of?(Hash) ? _threshold[:threshold] : _threshold
+          if evaluate_badge_condition(badge, threshold)
+            top_level = level
+          else
+            break
+          end
+        end
+
+        # if a level did evaluate
+        if top_level
+          # update the badge if it exists, otherwise create it
+          awarded_badge = if existing_badge
+            existing_badge.update_column :level, top_level
+            existing_badge
+          else
+            AwardedBadge.create!(awardee_type: self.class.name,
+              awardee_id: id, badge_code: badge.code, level: top_level)
+          end
+          return Rewardino::StatusAwarded.new awarded_badge
+        end
+
+        # if nothing evaluates
+        Rewardino::StatusNotAwarded
       end
   end
 end
