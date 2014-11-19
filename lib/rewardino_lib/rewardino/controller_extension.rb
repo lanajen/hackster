@@ -4,7 +4,6 @@ module Rewardino
   # 'controller_path#action_name'
   module ControllerExtension
     def self.included(base)
-      # puts 'included!'
       base.append_after_filter do |controller|
 
         matching_triggers.each do |trigger|
@@ -21,7 +20,9 @@ module Rewardino
           users.each do |user|
             if trigger.action == :set_badge
               if trigger.background
-                User.delay.evaluate_badge user.id, trigger.badge_code
+                trigger.badge_codes.each do |badge_code|
+                  User.delay.evaluate_badge user.id, badge_code
+                end
               else
                 status = user.evaluate_badge trigger.badge_code
                 if status.class == Rewardino::StatusAwarded
