@@ -5,6 +5,44 @@
   display: none!important;
 }
 
+@media only screen and (max-width: 992px) {
+  .navbar-nav {
+    float: none;
+    border-bottom: 1px solid #ddd;
+  }
+  .navbar-form {
+    width: auto;
+    margin-right: 100px;
+    float: none !important;
+  }
+  .btn-signup {
+    top: 0;
+    right: 0;
+    position: absolute;
+  }
+  #signup-block {
+    top: 57px;
+  }
+  footer {
+    ul.list-inline > li {
+      padding-left: 17px;
+    }
+  }
+  .footer-nav > ul {
+    float: none !important;
+    text-align: center;
+
+    &:first-child {
+      margin-bottom: 10px;
+
+      > li {
+        padding-left: 7px;
+        padding-right: 7px;
+      }
+    }
+  }
+}
+
 @media only screen and (max-width: 767px) {
   #about #teaser .slide {
     padding-top: 100px;
@@ -12,6 +50,50 @@
   .mobile-breakpoint {
     display: block !important;
     margin-bottom: 5px !important;
+  }
+  #navbar {
+    border-color: #dddddd;
+    .navbar-nav {
+      border-bottom: 0;
+      > li > ul {
+        position: static;
+      }
+    }
+  }
+  .navbar-form {
+    margin: 0;
+    border-top: 1px solid #dddddd;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-right: 0;
+
+    .form-group {
+      margin-bottom: 0;
+    }
+
+    input[type="text"].form-control {
+      background: transparent;
+    }
+  }
+  h1.large-title, .h1.large-title {
+    font-size: 30px
+  }
+  .home-banner {
+    .banner-left, .banner-right {
+      > .img-content > .img-info h3 {
+        font-size: 22px;
+      }
+    }
+  }
+  .single-project .product-img-content > img, .single-challenge > img, ul.thumb-row img {
+    width: 100%;
+  }
+  .subscribe-block {
+    text-align: center;
+    form.form-inline {
+      margin-top: 15px;
+      float: none !important;
+    }
   }
 }
 

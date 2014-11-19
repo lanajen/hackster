@@ -29,7 +29,7 @@
       section.section-short style='padding:20px 0 40px;background:#fff;'
         .container.text-center
           = image_tag 'logo.png', width:"100"
-          h1 Community for hardware hackers.
+          h1.large-title Community for hardware hackers.
           p.text-muted Get inspried, find the right tools for the job and chat with experts.
 
       .container
@@ -279,7 +279,7 @@
                 p
                   small.text-muted Price: $5000
               = image_tag 'home/img-2.png'
-              ul.list-unstyled.thumb
+              ul.list-unstyled.thumb-row
                 li
                   = image_tag 'home/thumb-1.png'
                 li
@@ -295,7 +295,7 @@
                 p
                   small.text-muted Price: $5000
               = image_tag 'home/img-2.png'
-              ul.list-unstyled.thumb
+              ul.list-unstyled.thumb-row
                 li
                   = image_tag 'home/thumb-1.png'
                 li
@@ -311,7 +311,7 @@
                 p
                   small.text-muted Price: $5000
               = image_tag 'home/img-2.png'
-              ul.list-unstyled.thumb
+              ul.list-unstyled.thumb-row
                 li
                   = image_tag 'home/thumb-1.png'
                 li
@@ -320,160 +320,142 @@
                   = image_tag 'home/thumb-1.png'
                 li
                   = image_tag 'home/thumb-2.png'
-          
-
-      / section#section-newsletter.section-short
-        .container
-          p
-            strong Cool hardware projects and platforms in your inbox every Friday:
-          = render 'shared/mailchimp_form'
-
-    section#teaser
-      .slide.slide-opaque.slide-opaque-light style="background-image: url(#{asset_url 'home/wallpaperUDOO2.jpg'})"
+      .tools-container
+        .view-all-section.clearfix
+          .container
+            h4.pull-left What tools are people using?
+            = link_to 'View All Tools', '#', class: 'btn btn-default btn-sm pull-right'
         .container
           .row
-            .col-xs-10.col-xs-offset-1.text-center
-              h1
-                b= link_to 'What will UDOO?', '/challenges/what-will-udoo?ref=slider'
-                br
-                small
-                  | Win a UDOO board by submitting your project idea
-
-      .slide.slide-opaque.slide-opaque-dark style="background-image: url(https://halckemy.s3.amazonaws.com/uploads/cover_image/file/20535/cover_IMG_1129-1024x682.jpg)"
+            .col-sm-4.col-xs-12.single-tool
+              .col-xs-12.green
+                .media
+                  = link_to image_tag('home/blank.png', width: '45'), '#', class: 'pull-left media-top'
+                  .media-body
+                    h4.media-heading Arduino
+                    p Open-source electronics prototyping platform based on flexible. easy-to-use hardware and software.
+              .col-xs-12.tool-content
+                h4 What can I make with it?
+                p 
+                  span.label.label-default Lorem Ipsum
+                  span.label.label-default Robots
+                  span.label.label-default WiFi Outlet
+                  span.label.label-default Sensors
+                  span.label.label-default Amet
+                  span.label.label-default Dolor
+                  span.label.label-default WiFi Outlet
+              ul.list-unstyled.thumb-row
+                li
+                  = image_tag 'home/tool-thumb-1.png'
+                li
+                  = image_tag 'home/tool-thumb-2.png'
+                li
+                  = image_tag 'home/tool-thumb-3.png'
+                li
+                  = image_tag 'home/tool-thumb-4.png'
+            .col-sm-4.col-xs-12.single-tool
+              .col-xs-12.light-green
+                .media
+                  = link_to image_tag('home/blank.png', width: '45'), '#', class: 'pull-left media-top'
+                  .media-body
+                    h4.media-heading Arduino
+                    p Open-source electronics prototyping platform based on flexible. easy-to-use hardware and software.
+              .col-xs-12.tool-content
+                h4 What can I make with it?
+                p 
+                  span.label.label-default Lorem Ipsum
+                  span.label.label-default Robots
+                  span.label.label-default WiFi Outlet
+                  span.label.label-default Sensors
+                  span.label.label-default Amet
+                  span.label.label-default Dolor
+                  span.label.label-default WiFi Outlet
+              ul.list-unstyled.thumb-row
+                li
+                  = image_tag 'home/tool-thumb-1.png'
+                li
+                  = image_tag 'home/tool-thumb-2.png'
+                li
+                  = image_tag 'home/tool-thumb-3.png'
+                li
+                  = image_tag 'home/tool-thumb-4.png'
+            .col-sm-4.col-xs-12.single-tool
+              .col-xs-12.pink
+                .media
+                  = link_to image_tag('home/blank.png', width: '45'), '#', class: 'pull-left media-top'
+                  .media-body
+                    h4.media-heading Arduino
+                    p Open-source electronics prototyping platform based on flexible. easy-to-use hardware and software.
+              .col-xs-12.tool-content
+                h4 What can I make with it?
+                p 
+                  span.label.label-default Lorem Ipsum
+                  span.label.label-default Robots
+                  span.label.label-default WiFi Outlet
+                  span.label.label-default Sensors
+                  span.label.label-default Amet
+                  span.label.label-default Dolor
+                  span.label.label-default WiFi Outlet
+              ul.list-unstyled.thumb-row
+                li
+                  = image_tag 'home/tool-thumb-1.png'
+                li
+                  = image_tag 'home/tool-thumb-2.png'
+                li
+                  = image_tag 'home/tool-thumb-3.png'
+                li
+                  = image_tag 'home/tool-thumb-4.png'
+      .view-all-section.clearfix
         .container
-          .row
-            .col-xs-10.col-xs-offset-1.text-center
-              h1
-                b= link_to 'Carmadillo', '/mikelangeloz/carmadillo-android-controlled-udoo-rover?ref=slider'
-                | :
-                br
-                small
-                  | Build a rover and control it with your Android phone
-                  br
-                  small
-                    ' by
-                    .user>
-                      ==> link_to image_tag('https://halckemy.s3.amazonaws.com/uploads/avatar/file/19396/mini_michelangelon2.jpg', class: 'img-circle'), '/mikelangeloz?ref=slider', class: 'hidden-link'
-                      span.user-name
-                        = link_to 'Michelangelo Guarise', '/mikelangeloz?ref=slider', class: 'hidden-link'
-
-      .slide.slide-opaque.slide-opaque-light style="background-image: url(https://halckemy.s3.amazonaws.com/uploads/cover_image/file/20463/cover_ar-in-education.png)"
-        .container
-          .row
-            .col-xs-10.col-xs-offset-1.text-center
-              h1
-                b= link_to 'Augmented Reality in Education', '/G_Pehlivanides/augmented-reality-in-education-developing-discovery-based-learning-applications?ref=slider'
-                | :
-                br
-                small
-                  | Developing discovery-based learning applications
-                  br
-                  small
-                    ' by
-                    .user>
-                      ==> link_to image_tag('http://gravatar.com/avatar/f4c885b61de50288840cd449bf8cb738.png?d=identicon&s=30', class: 'img-circle'), '/G_Pehlivanides?ref=slider', class: 'hidden-link'
-                      span.user-name
-                        = link_to 'George Pehlivanides', '/G_Pehlivanides?ref=slider', class: 'hidden-link'
-
-      .slide.slide-opaque.slide-opaque-dark style="background-image: url(https://halckemy.s3.amazonaws.com/uploads/cover_image/file/17886/cover_WP_20140725_19_37_08_Pro-cropped.jpg)"
-        .container
-          .row
-            .col-xs-10.col-xs-offset-1.text-center
-              h1
-                b= link_to 'X-EMS', '/oskar/x-ems?ref=slider'
-                | :
-                br
-                small
-                  | The world's first eXpandable, eXtendable, and 100% open electronic management platform
-                  br
-                  small
-                    ' by
-                    .user>
-                      ==> link_to image_tag('http://gravatar.com/avatar/001cbc6fc29a47b7d64fca7483b5a75e.png?d=identicon&s=30', class: 'img-circle'), '/oskar?ref=slider', class: 'hidden-link'
-                      span.user-name
-                        = link_to 'Oskar Elmgren', '/oskar?ref=slider', class: 'hidden-link'
-
-                    / ' and
-                    / .user>
-                      / ==> link_to image_tag('http://gravatar.com/avatar/ace142ea3f67acfc34a5f59fd4059dd7.png?d=identicon&s=30', class: 'img-circle'), '/hana?ref=slider', class: 'hidden-link'
-                      / span.user-name
-                        # = link_to 'Hana Qudsi', '/hana?ref=slider', class: 'hidden-link'
-                    / ' and
-                    / = link_to '1 other', '/maneesh_and_hana/thermistor-respiratory-monitor#team-widget?ref=slider', class: 'hidden-link'
-
-    - if user_signed_in? or returning_user?
-      section
-        .container
-          .row
-            .col-xs-12
-              .transparent-well
-                .header.no-content
-                  h2
-                    | Latest projects
-                    = link_to 'See more recent projects &rarr;'.html_safe, projects_path(sort: 'recent'), class: 'btn-bottom'
-              .row
-                - @last_projects.each do |project|
-                  = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homelast' }
-    - else
-      section
-        .container
-          .row
-            .col-xs-12
-              .transparent-well
-                .header.no-content
-                  h2
-                    | Trending projects
-                    = link_to 'See more trending projects &rarr;'.html_safe, projects_path(sort: 'trending'), class: 'btn-bottom'
-              .row
-                - @most_popular_projects.each do |project|
-                  = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homepop' }
-
-    section
+          h4.pull-left Recent community discussions
+          = link_to 'View Community', '#', class: 'btn btn-default btn-sm pull-right'
       .container
         .row
-          .col-xs-12
-            .transparent-well
-              .header.no-content
-                h2
-                  | Featured platforms
-                  = link_to 'See all platforms &rarr;'.html_safe, platforms_path, class: 'btn-bottom'
-            .row
-              - @platforms.each do |tech|
-                .col-xs-6.col-sm-4.col-md-2
-                  = link_to(image_tag(tech.avatar.file_url(:big), class: 'img-thumbnail'), tech_short_path(tech, ref: 'homefeat')) if tech.avatar
-                  h6.text-center= link_to tech.name, tech_short_path(tech)
-
-    - if !user_signed_in? and !returning_user?
-      section
-        .container
-          .row
-            .col-xs-12
-              .transparent-well
-                .header.no-content
-                  h2
-                    | Latest projects
-                    = link_to 'See more recent projects &rarr;'.html_safe, projects_path(sort: 'recent'), class: 'btn-bottom'
+          .col-sm-4
+            .col-sm-12.single-community
+              .media
+                = link_to 'Media', '#', class: 'pull-left media-thumb'
+                .media-body
+                  h4.media-heading Greg Monwizcky
+                  p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
               .row
-                - @last_projects.each do |project|
-                  = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homelast' }
-
-          .row
-            .col-xs-12.text-center
-              = link_to 'Browse all projects &rarr;'.html_safe, projects_path, class: 'btn btn-primary btn-lg btn-block'
-    - else
-      section
-        .container
-          .row
-            .col-xs-12
-              .transparent-well
-                .header.no-content
-                  h2
-                    | Trending projects
-                    = link_to 'See more trending projects &rarr;'.html_safe, projects_path(sort: 'trending'), class: 'btn-bottom'
+                .community-info.clearfix
+                  = image_tag 'home/discussion-thumb.png', class: 'pull-left', width: '75'
+                  .media-body
+                    h5.media-heading An e-paper WiFi keypad
+                    p.text-muted
+                      small
+                        'by
+                        strong Luka Birsa
+          .col-sm-4
+            .col-sm-12.single-community
+              .media
+                = link_to 'Media', '#', class: 'pull-left media-thumb'
+                .media-body
+                  h4.media-heading Greg Monwizcky
+                  p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
               .row
-                - @most_popular_projects.each do |project|
-                  = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'homepop' }
-
-          .row
-            .col-xs-12.text-center
-              = link_to 'Browse all projects &rarr;'.html_safe, projects_path, class: 'btn btn-primary btn-lg btn-block'
+                .community-info.clearfix
+                  = image_tag 'home/discussion-thumb-1.png', class: 'pull-left', width: '75'
+                  .media-body
+                    h5.media-heading An e-paper WiFi keypad
+                    p.text-muted
+                      small
+                        'by
+                        strong Luka Birsa
+          .col-sm-4
+            .col-sm-12.single-community
+              .media
+                = link_to 'Media', '#', class: 'pull-left media-thumb'
+                .media-body
+                  h4.media-heading Greg Monwizcky
+                  p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+              .row
+                .community-info.clearfix
+                  = image_tag 'home/discussion-thumb.png', class: 'pull-left', width: '75'
+                  .media-body
+                    h5.media-heading An e-paper WiFi keypad
+                    p.text-muted
+                      small
+                        'by
+                        strong Luka Birsa
