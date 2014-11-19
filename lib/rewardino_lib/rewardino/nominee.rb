@@ -2,7 +2,7 @@ module Rewardino
   module Nominee
 
     def self.included base
-      base.class_eval {
+      base.class_eval do
         has_many :awarded_badges, as: :awardee
 
         def self.evaluate_badge id, *args
@@ -10,9 +10,9 @@ module Rewardino
           status = nominee.evaluate_badge *args
 
           BaseMailer.enqueue_email 'new_badge_notification', { context_type: 'badge',
-            status.awarded_badge.id } if status.class == Rewardino::StatusAwarded  # would look better in an observer but how do we know if it was awarded asyncronously? (syncronous badges are shown straight away)
+            context_id: status.awarded_badge.id } if status.class == Rewardino::StatusAwarded  # would look better in an observer but how do we know if it was awarded asyncronously? (syncronous badges are shown straight away)
         end
-      }
+      end
     end
 
     def badges level=nil

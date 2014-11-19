@@ -219,7 +219,7 @@ Rewardino::Badge.create!({
   explanation: "having one of your projects respected for the first time.",
   image: '',
   condition: -> (nominee) {
-    nominee.active_profile? and nominee.project_respects_count >= 1
+    nominee.active_profile? and nominee.projects.includes(:respects).count(:respects) >= 1
   },
   level: :silver,
 })

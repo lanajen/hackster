@@ -1,6 +1,6 @@
 module Rewardino
   class Status
-    attr_reader :badge
+    attr_reader :awarded_badge, :badge
 
     def initialize awarded_badge=nil
       @awarded_badge = awarded_badge

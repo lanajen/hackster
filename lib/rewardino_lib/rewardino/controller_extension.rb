@@ -25,9 +25,9 @@ module Rewardino
               else
                 status = user.evaluate_badge trigger.badge_code
                 if status.class == Rewardino::StatusAwarded
-                  session[:new_badge] = status.badge
+                  session[:new_badge] = status.badge.code
                 elsif status.class == Rewardino::StatusTakenAway
-                  session[:new_badge] = status.badge
+                  session[:new_badge] = status.badge.code
                 end
               end
             end
