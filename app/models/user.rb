@@ -21,6 +21,7 @@ class User < ActiveRecord::Base
     'follow_user_activity' => 'Activity for a user I follow',
     'follow_tech_activity' => 'Activity for a platform I follow',
     'follow_list_activity' => 'Activity for a list I follow',
+    'new_badge' => 'I receive a new badge',
   }
   CATEGORIES = %w()
 

@@ -2,8 +2,9 @@ module Rewardino
   class Status
     attr_reader :badge
 
-    def initialize badge=nil
-      @badge = badge
+    def initialize awarded_badge=nil
+      @awarded_badge = awarded_badge
+      @badge = awarded_badge.try(:badge)
     end
   end
 

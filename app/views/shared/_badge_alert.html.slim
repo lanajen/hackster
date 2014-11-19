@@ -15,5 +15,5 @@
             ' You now have
             b= pluralize current_user.badges.count, 'badge'
             | . Keep it up!
-          / p
-            small= link_to 'Learn more about badges', ''
+          p
+            small= link_to 'Learn more about badges', achievements_path

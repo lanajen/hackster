@@ -274,6 +274,7 @@ HackerIo::Application.routes.draw do
 
     get 'about' => 'pages#about'
     # get 'help' => 'pages#help'
+    get 'achievements' => 'pages#achievements'
     get 'home', to: redirect('/')
 
     get 'ping' => 'pages#ping'  # for availability monitoring

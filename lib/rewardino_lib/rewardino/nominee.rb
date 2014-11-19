@@ -7,7 +7,10 @@ module Rewardino
 
         def self.evaluate_badge id, *args
           nominee = find id
-          nominee.evaluate_badge *args
+          status = nominee.evaluate_badge *args
+
+          BaseMailer.enqueue_email 'new_badge_notification', { context_type: 'badge',
+            status.awarded_badge.id } if status.class == Rewardino::StatusAwarded  # would look better in an observer but how do we know if it was awarded asyncronously? (syncronous badges are shown straight away)
         end
       }
     end
@@ -34,12 +37,12 @@ module Rewardino
         else
           awarded_badge = AwardedBadge.create!(awardee_type: self.class.name,
             awardee_id: id, badge_code: badge.code)
-          Rewardino::StatusAwarded.new badge.code
+          Rewardino::StatusAwarded.new awarded_badge
         end
       else
         if revokable and lost_badge = has_badge?(badge.code)
           lost_badge.destroy
-          Rewardino::StatusTakenAway.new badge.code
+          Rewardino::StatusTakenAway.new lost_badge
         else
           Rewardino::StatusNotAwarded.new
         end

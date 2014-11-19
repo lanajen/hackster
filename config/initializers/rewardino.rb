@@ -214,7 +214,7 @@ Rewardino::Trigger.set :manual, action: :set_badge,
 # recognition
 Rewardino::Badge.create!({
   code: :project_respected,
-  name: 'Project respected',
+  name: 'Own project respected',
   description: "Received a respect on their own project.",
   explanation: "having one of your projects respected for the first time.",
   image: '',
