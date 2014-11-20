@@ -103,6 +103,7 @@ class ApplicationController < ActionController::Base
         @new_badge = Rewardino::Badge.find session[:new_badge]
         @badge_level = session[:badge_level]
         session.delete :new_badge
+        session.delete :badge_level
       end
       # @new_badge = Rewardino::Badge.all.first
       # @badge_level = :bronze
