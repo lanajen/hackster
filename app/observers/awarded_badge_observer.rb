@@ -1,6 +1,9 @@
 class AwardedBadgeObserver < ActiveRecord::Observer
   def after_save record
     update_counters record
+
+    # BaseMailer.enqueue_email 'new_badge_notification', { context_type: 'badge',
+      context_id: record.id } if record.send_notification
   end
 
   def after_destroy record

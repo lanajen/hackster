@@ -10,7 +10,7 @@
           h3.media-heading Hooray!
           p
             ' You've just earned a new badge for
-            b= badge.explanation
+            b= badge.explanation level
           p
             ' You now have
             b= pluralize current_user.badges.count, 'badge'

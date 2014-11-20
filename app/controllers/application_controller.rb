@@ -101,16 +101,18 @@ class ApplicationController < ActionController::Base
     def check_new_badge
       if session[:new_badge]
         @new_badge = Rewardino::Badge.find session[:new_badge]
+        @badge_level = session[:badge_level]
         session.delete :new_badge
       end
       # @new_badge = Rewardino::Badge.all.first
+      # @badge_level = :bronze
     end
 
     def show_badge
       return unless request.xhr?
 
       check_new_badge
-      response.headers['X-New-Badge'] = render_to_string(partial: 'shared/badge_alert', locals: { badge: @new_badge }) if @new_badge
+      response.headers['X-New-Badge'] = render_to_string(partial: 'shared/badge_alert', locals: { badge: @new_badge, level: @badge_level }) if @new_badge and @badge_level
     end
 
     def current_ability
