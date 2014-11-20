@@ -10,6 +10,10 @@ module Rewardino
     yield @config if block_given?
   end
 
+  def self.activated?
+    @config.activate.nil? ? true : @config.activate
+  end
+
   # Define current_user_method
   def self.current_user_method trigger=nil
     trigger.try(:nominee_variable) || @config.current_user_method ||
@@ -31,9 +35,11 @@ module Rewardino
   end
 
   class Configuration
-    attr_accessor :current_user_method, :default_image, :orm, :user_model_name
+    attr_accessor :current_user_method, :default_image, :orm, :user_model_name,
+      :activate
 
     def initialize
+      @activate = true
       @orm = :active_record
       @user_model_name = 'User'
     end

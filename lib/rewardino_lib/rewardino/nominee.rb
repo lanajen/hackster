@@ -9,7 +9,6 @@ module Rewardino
           nominee = find id
           status = nominee.evaluate_badge *args
 
-          puts status.inspect
           BaseMailer.enqueue_email 'new_badge_notification', { context_type: 'badge',
             context_id: status.awarded_badge.id } if status.class == Rewardino::StatusAwarded  # would look better in an observer but how do we know if it was awarded asyncronously? (syncronous badges are shown straight away)
         end
@@ -101,7 +100,6 @@ module Rewardino
         top_level = nil
         # evaluate all levels; keep going until one doesn't evaluate
         levels.each do |level, _threshold|
-          puts _threshold.inspect
           threshold = _threshold.kind_of?(Hash) ? _threshold[:threshold] : _threshold
           if evaluate_badge_condition(badge, threshold)
             top_level = level
