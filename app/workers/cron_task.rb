@@ -43,8 +43,10 @@ class CronTask < BaseWorker
   end
 
   def evaluate_badges
+    return unless Rewardino.activated?
+
     triggers = Rewardino::Trigger.find_all :cron
-    badges = triggers.map{|t| t.badges }.flatten
+    badges = triggers.map{|t| t.badge }
     User.invitation_accepted_or_not_invited.each do |user|
       badges.each do |badge|
         User.delay.evaluate_badge user.id, badge.code
