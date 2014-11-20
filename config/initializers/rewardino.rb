@@ -169,26 +169,26 @@ Rewardino::Trigger.set :manual, action: :set_badge,
   badge_code: :detailed_project
 
 Rewardino::Badge.create!({
-  code: :helped_a_hacker,
-  name_: 'Helped a hacker',
+  code: :answered_question_own,
+  name_: 'Answered a question on own project',
   description_: "Answered a question that was asked on their own project.",
   explanation_: "answering a question that was asked in the comments section of your own project.",
   image: '',
   levels: { bronze: 1 },
 })
 Rewardino::Trigger.set :manual, action: :set_badge,
-  badge_code: :helped_a_hacker
+  badge_code: :answered_question_own
 
 Rewardino::Badge.create!({
-  code: :altruist,
-  name_: 'Altruist',
+  code: :answered_question_other,
+  name_: "Answered a question on someone else's project",
   description_: "Answered a question that was asked on sombebody else's project.",
   explanation_: "answering a question that was asked in the comments of somebody else's project.",
   image: '',
   levels: { bronze: 1 },
 })
 Rewardino::Trigger.set :manual, action: :set_badge,
-  badge_code: :altruist
+  badge_code: :answered_question_other
 
 Rewardino::Badge.create!({
   code: :project_respected,
