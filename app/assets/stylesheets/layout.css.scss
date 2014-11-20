@@ -1378,6 +1378,10 @@ input.cmn-toggle ~ .option-checked, input.cmn-toggle:checked ~ .option-unchecked
 
 /* Customization */
 
+body {
+  font-family: 'Proxima Nova', sans-serif;
+}
+
 ::-moz-selection { /* Code for Firefox */
     color: #ffffff;
     background: #5CAAE0;
@@ -1401,6 +1405,10 @@ input.cmn-toggle ~ .option-checked, input.cmn-toggle:checked ~ .option-unchecked
     background: #19D2A0;
     border-color: #19D2A0;
   }
+}
+.btn-default {
+  background: transparent;
+  color: #ffffff;
 }
 
 h1 {
@@ -1742,11 +1750,6 @@ ul.thumb-row {
     width: 100%;
   }
 
-  .btn-default {
-    background: transparent;
-    color: #ffffff;
-  }
-
   .forgot-pwd {
     padding: 10px 20px 15px 20px;
   }
@@ -1781,6 +1784,216 @@ ul.thumb-row {
           }
         }
       }
+    }
+  }
+}
+
+/* Project page */
+#content.project-page {
+  background: url(project-page-bg.png) no-repeat;
+  background-size: 100% auto;
+}
+
+.content-left {
+  background: #ffffff;
+
+  h3.title {
+    color: #aaa9af;
+  }
+}
+
+.project-image {
+  position: relative;
+
+  > img {
+    display: block;
+  }
+
+  .project-detail {
+    position: absolute;
+    top:0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    @include background-image(linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.7) 100%));
+    > div {
+      display: table;
+      height: 100%;
+      width: 100%;
+      padding: 40px 50px;
+      .detail-content {
+        display: table-cell;
+        vertical-align: bottom;
+        color: #ffffff;
+
+        ul.list-inline {
+          display: inline-block;
+          margin-left: 20px;
+
+          span.glyphicon{
+            margin-right: 3px;
+          }
+        }
+
+        .btn + .btn {
+          margin-left: 5px;
+        }
+
+        > h4 {
+          font-weight: 300;
+          line-height: 27px;
+        }
+      }
+    }
+  }
+}
+
+.project-avatar {
+  background: #aaa9af;
+  padding: 15px 45px;
+
+  .project-tag {
+    margin-top: 7px;
+    margin-bottom: 0;
+    > li {
+      padding-left: 0;
+      h4 {
+        margin: 0;
+      }
+      span.label {
+        background: #000000;
+      }
+    }
+  }
+
+  .avatar-list {
+    margin-bottom: 0;
+    margin-left: 0;
+    float: left;
+    li {
+      vertical-align: top;
+      > i {
+        display: inline-block;
+        background: #ffffff;
+        border-radius: 50%;
+        -webkit-border-radius: 50%;
+        -moz-border-radius: 50%;
+        width: 35px;
+        height: 35px;
+      }
+      > span {
+        display: inline-block;
+        border: 1px solid #ffffff;
+        border-radius: 50%;
+        -webkit-border-radius: 50%;
+        -moz-border-radius: 50%;
+        width: 35px;
+        height: 35px;
+        text-align: center;
+        line-height: 34px;
+        color: #ffffff;
+      }
+    }
+  }
+}
+
+#sidebar {
+  h4.title {
+    color: #cccccc;
+  }
+  .single-tool {
+    background: #ffffff;
+    margin-bottom: 15px;
+    h4 {
+      font-weight: bold;
+      margin-bottom: 0;
+    }
+    .media-body {
+      padding: 10px;
+    }
+  }
+}
+
+.single-similar-projects {
+  position: relative;
+  margin-bottom: 15px;
+
+  > img {
+    display: block;
+  }
+
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+
+    >div {
+      display: table;
+      width: 100%;
+      height: 100%;
+
+      .similar-projects-detail {
+        display: table-cell;
+        vertical-align: middle;
+        color: #ffffff;
+        padding-left: 15px;
+        padding-right                                                              : 15px;
+
+        > h4 {
+          margin: 0;
+        }
+      }
+    }
+  }
+}
+
+.sidebar-nav {
+  text-align: center;
+  background: #ffffff;
+  margin-bottom: 15px;
+  li {
+    border-top: 1px solid #ddd;
+    padding: 15px 0;
+    .badge {
+      margin-left: 3px;
+    }
+
+    a {
+      color: #000000;
+
+      &:hover {
+        color: #208edb;
+        text-decoration: none;
+      }
+    }
+
+    &:first-child {
+      border-top: 0;
+    }
+  }
+}
+
+.single-prompt {
+  background: #ffffff;
+  margin-bottom: 15px;
+
+  .media-body {
+    padding: 10px;
+
+    > p {
+      margin: 0 0 25px;
+    }
+
+    h4 {
+      font-weight: bold;
+      margin-bottom: 0;
+    }
+
+    .btn + .btn {
+      margin-left: 7px;
     }
   }
 }

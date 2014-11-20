@@ -3,40 +3,119 @@
   = auto_discovery_link_tag :rss, projects_path(format: :rss), title: 'Trending projects - Hackster.io'
   = auto_discovery_link_tag :atom, projects_path(format: :atom), title: 'Trending projects - Hackster.io'
 
-.content.projects
-  .row
-    .col-xs-12
-      h1
-        ' Explore #{@by} projects
-        small page #{safe_page_params || 1}
+= content_for :in_main do
+  #project-page-bg
 
-        .btn-group.pull-right style='margin-left:10px'
-          .btn-group
-            button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
-              ' Sort by
-              span.caret
-            ul.dropdown-menu.pull-right
-              li*{ class: "#{'active' if params[:sort] == 'updated'}" } = link_to 'Last updated', projects_path(sort: 'updated', by: params[:by])
-              li*{ class: "#{'active' if params[:sort] == 'popular'}" } = link_to 'Most popular', projects_path(sort: 'popular', by: params[:by])
-              li*{ class: "#{'active' if params[:sort] == 'recent'}" } = link_to 'Most recent', projects_path(sort: 'recent', by: params[:by])
-              li*{ class: "#{'active' if params[:sort] == 'respected'}" } = link_to 'Most respected', projects_path(sort: 'respected', by: params[:by])
-              li*{ class: "#{'active' if params[:sort] == 'trending'}" } = link_to 'Trending', projects_path(sort: 'trending', by: params[:by])
-
-          .btn-group
-            button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
-              ' Filter by
-              span.caret
-            ul.dropdown-menu.pull-right
-              li*{ class: "#{'active' if params[:by] == nil}" } = link_to 'All', projects_path(sort: params[:sort])
-              li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to 'Featured', projects_path(by: 'featured', sort: params[:sort])
-              li*{ class: "#{'active' if params[:by] == 'wip'}" } = link_to 'Work in progress', projects_path(by: 'wip', sort: params[:sort])
-
-        = render 'shared/list_switch'
-        .clearfix
-
-    .col-xs-12
-      .row.thumb-list  class=@switch_style
-        - @projects.each_with_index do |project, i|
-          = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'explore', ref_id: "#{params[:sort]}_#{params[:by]}", offset: i }
+= content_for :no_container do
+  #content.project-page
+    .container
       .row
-        .col-xs-12.text-center= will_paginate @projects
+        .col-sm-4.pull-right#sidebar
+          ul.list-unstyled.sidebar-nav
+            li
+              a href="#" What I built
+            li
+              a href="#" Build Logs
+              span.badge 2
+            li
+              a href="#" Components
+            li
+              a href="#" How I Did It
+            li
+              a href="#" Community Talk
+              span.badge 5
+          .single-prompt.clearfix
+            = image_tag 'blank-avatar.png', width:'130', class:'pull-left'
+            .media-body
+              h4 Daniel Nordness
+              p
+                span.text-muted San Francisco
+              a.btn.btn-primary href="#" Follow
+              a.btn.btn-success href="#" Talk
+          .single-prompt.clearfix
+            = image_tag 'blank-avatar.png', width:'130', class:'pull-left'
+            .media-body
+              h4 Daniel Nordness
+              p
+                span.text-muted San Francisco
+              a.btn.btn-primary href="#" Follow
+              a.btn.btn-success href="#" Talk
+          h4.title Tools used in this project:
+          .single-tool.clearfix
+            = image_tag 'blank-avatar.png', width:'85', class:'pull-left'
+            .media-body
+              h4 Daniel Nordness
+              span.text-muted View tool page
+          .single-tool.clearfix
+            = image_tag 'blank-avatar.png', width:'85', class:'pull-left'
+            .media-body
+              h4 Daniel Nordness
+              span.text-muted View tool page
+          h4.title Similar projects you might like:
+          .single-similar-projects
+            .overlay
+              div
+                .similar-projects-detail
+                  h4 Building a WiFi Outlet
+                  'by
+                  strong Daniel Nordness
+            = image_tag 'similar-project-1.png'
+          .single-similar-projects
+            .overlay
+              div
+                .similar-projects-detail
+                  h4 Building a WiFi Outlet
+                  'by
+                  strong Daniel Nordness
+            = image_tag 'similar-project-1.png'
+
+        .col-sm-8
+          .content-left
+            .project-image
+              .project-detail
+                div
+                  .detail-content
+                    h2 Invisible garage
+                    h4 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.
+                    a.btn.btn-primary.btn-sm href="#" Respect it!
+                    a.btn.btn-default.btn-sm href="#" Share it
+                    ul.list-inline
+                      li
+                        small.text-muted
+                          span.glyphicon.glyphicon-eye-open aria-hidden="true"
+                          ' 52k views
+                      li
+                        small.text-muted
+                          span.glyphicon.glyphicon-comment aria-hidden="true"
+                          ' 1.5k comments
+                      li
+                        small.text-muted
+                          span.glyphicon.glyphicon-star aria-hidden="true"
+                          ' 521 respect
+              = image_tag 'project-banner-1.png'
+            .project-avatar.clearfix
+              ul.list-inline.avatar-list
+                li
+                  i
+                li
+                  i
+                li
+                  i
+                li
+                  i
+                li
+                  span 35
+              ul.list-inline.pull-right.project-tag
+                li
+                  h4
+                    span.label.label-default Robots
+                li
+                  h4
+                    span.label.label-default WiFi Outlet
+                li
+                  h4
+                    span.label.label-default Sensors
+                li
+                  h4
+                    span.label.label-default Lorem Ipsum
+            h3.title How it started
