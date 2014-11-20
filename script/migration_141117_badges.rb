@@ -4,8 +4,9 @@ User.where.not(user_name: nil).where(invitation_token: nil).order(:id).each do |
     Rewardino::Badge.all.each do |badge|
       user.evaluate_badge badge
     end
-  rescue
-    puts 'failed ' + user.id.to_s
+  # rescue => e
+  #   raise e.message
+  #   puts 'failed ' + user.id.to_s
   end
   user.update_counters only: [:badges_green, :badges_bronze,
     :badges_silver, :badges_gold]

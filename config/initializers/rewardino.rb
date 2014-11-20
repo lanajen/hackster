@@ -210,7 +210,7 @@ Rewardino::Badge.create!({
       explanation_: "having one of your projects respected for the first time.",
     },
     bronze: 10,
-    silver: 100,
+    silver: 50,
   }
 })
 Rewardino::Trigger.set ['respects#create', 'respects#destroy'], {
