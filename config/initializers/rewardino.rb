@@ -1,7 +1,7 @@
 require File.join(Rails.root, 'lib/rewardino_lib/rewardino')
 
 Rewardino.setup do |config|
-  config.activate = false
+  # config.activate = false
   config.default_image = 'badges/default.png'
 end
 
