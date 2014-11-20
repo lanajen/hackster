@@ -49,7 +49,7 @@ class CronTask < BaseWorker
     badges = triggers.map{|t| t.badge }
     User.invitation_accepted_or_not_invited.each do |user|
       badges.each do |badge|
-        User.delay.evaluate_badge user.id, badge.code
+        User.delay.evaluate_badge user.id, badge.code, send_notification: true
       end
     end
   end

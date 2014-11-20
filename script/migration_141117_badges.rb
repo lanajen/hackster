@@ -1,4 +1,4 @@
-User.where.not(user_name: nil).where(invitation_token: nil).order(:id).each do |user|
+User.where.not(user_name: nil).order(:id).each do |user|
   puts user.id.to_s
   begin
     Rewardino::Badge.all.each do |badge|

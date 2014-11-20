@@ -1,6 +1,6 @@
 <p>Hello there,</p>
 
-<p>You must be awesome because you were just awarded a new badge for <strong>|badge_explanation|</strong></p>
+<p>You must be awesome because you were just awarded a new badge for <strong><%= @context[:badge].explanation(@context[:awarded_badge].level) %></strong></p>
 
 <p>You now have a total of <%= pluralize @context[:user].badges_count, 'badge' %>. Keep it up!</p>
 

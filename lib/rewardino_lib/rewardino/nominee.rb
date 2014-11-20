@@ -7,10 +7,7 @@ module Rewardino
 
         def self.evaluate_badge id, *args
           nominee = find id
-          status = nominee.evaluate_badge *args
-
-          BaseMailer.enqueue_email 'new_badge_notification', { context_type: 'badge',
-            context_id: status.awarded_badge.id } if status.class == Rewardino::StatusAwarded  # would look better in an observer but how do we know if it was awarded asyncronously? (syncronous badges are shown straight away)
+          nominee.evaluate_badge *args
         end
       end
     end
@@ -22,7 +19,9 @@ module Rewardino
       user_badges
     end
 
-    def evaluate_badge badge_or_code
+    def evaluate_badge badge_or_code, opts={}
+      send_notification = opts[:send_notification]
+
       badge = case badge_or_code
       when Rewardino::Badge
         badge_or_code
@@ -52,13 +51,13 @@ module Rewardino
 
         # if there's a next level evaluate it
         if next_level = existing_badge.badge.next_level(existing_badge.level)
-          evaluate_badge_levels badge, existing_badge, next_level
+          evaluate_badge_levels badge, existing_badge, next_level, send_notification
         # otherwise we're good
         else
           Rewardino::StatusAlreadyAwarded.new existing_badge
         end
       else
-        evaluate_badge_levels badge
+        evaluate_badge_levels badge, nil, nil, send_notification
       end
     end
 
@@ -88,7 +87,7 @@ module Rewardino
         end
       end
 
-      def evaluate_badge_levels badge, existing_badge=nil, start_level=nil
+      def evaluate_badge_levels badge, existing_badge=nil, start_level=nil, send_notification=false
         levels = if start_level
           # get the levels starting from start_level
           i = badge.levels.keys.index(start_level)
@@ -113,10 +112,12 @@ module Rewardino
           # update the badge if it exists, otherwise create it
           awarded_badge = if existing_badge
             existing_badge.update_column :level, top_level
+            existing_badge.send_notification = send_notification
             existing_badge
           else
             AwardedBadge.create!(awardee_type: self.class.name,
-              awardee_id: id, badge_code: badge.code, level: top_level)
+              awardee_id: id, badge_code: badge.code, level: top_level,
+              send_notification: send_notification)
           end
           return Rewardino::StatusAwarded.new awarded_badge
         end

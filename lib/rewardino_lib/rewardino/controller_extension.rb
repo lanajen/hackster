@@ -20,7 +20,7 @@ module Rewardino
             users.each do |user|
               if trigger.action == :set_badge
                 if trigger.background
-                  User.delay.evaluate_badge user.id, trigger.badge_code
+                  User.delay.evaluate_badge user.id, trigger.badge_code, send_notification: true
                 else
                   status = user.evaluate_badge trigger.badge_code
                   if status.class == Rewardino::StatusAwarded
