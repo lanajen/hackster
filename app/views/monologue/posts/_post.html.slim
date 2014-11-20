@@ -1,4 +1,4 @@
-.post
+article.post
   .post-header
     h1
       = link_to post.title, post.full_url
@@ -10,4 +10,6 @@
     p= link_to "Continue reading &rarr;".html_safe, post.full_url
   .text-muted
     .tags data-monologue="tags"
-      = render post.tags
+      - post.tags.each do |tag|
+        span.tag.label.label-default
+          = link_to tag.name, tag_url(tag)

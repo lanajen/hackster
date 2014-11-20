@@ -221,8 +221,8 @@ html(lang="en")
       - else
         = link_to 'Sign up / Login', new_user_registration_path, class: 'mo-nav-link', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '#{request.path}']);"
 
-    - if @new_badge
-      = render partial: 'shared/badge_alert', locals: { badge: @new_badge }
+    - if @new_badge and @badge_level
+      = render partial: 'shared/badge_alert', locals: { badge: @new_badge, level: @badge_level }
 
     = content_for :js
     - unless is_mobile? or params[:blank_frame]
