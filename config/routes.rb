@@ -85,7 +85,7 @@ HackerIo::Application.routes.draw do
 
     scope '/blog', module: :hackster_blog do
       get '' => 'posts#index', as: :blog_index
-      get ':slug' => 'posts#show', as: :blog_post
+      get '*slug' => 'posts#show', as: :blog_post, slug: /[a-zA-Z0-9\-\/]+/
       get 'tags/:tag' => 'posts#index', as: :blog_tag
     end
 

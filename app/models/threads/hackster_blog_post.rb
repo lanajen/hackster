@@ -1,7 +1,7 @@
 class HacksterBlogPost < ThreadPost
   include Taggable
 
-  validates :slug, presence: true, uniqueness: { scope: :type }, format: { with: /\A[a-z0-9\-]+\z/, message: "only accepts lower case letters, digits and the symbol -." }
+  validates :slug, presence: true, uniqueness: { scope: :type }, format: { with: /\A[a-zA-Z0-9\-\/]+\z/, message: "only accepts lower case letters, digits and the symbols - and /." }
   attr_accessible :slug, :published_at, :images_attributes
   before_validation :generate_slug, if: proc{|p| p.slug.blank? }
   before_create :set_threadable
@@ -14,13 +14,13 @@ class HacksterBlogPost < ThreadPost
   taggable :blog_tags
 
   default_scope do
-    order(published_at: :desc, created_at: :desc)
+    order(published_at: :desc)
   end
 
   self.per_page = 10
 
   def self.published
-    where(private: false).where("threads.published_at < ?", Time.now)
+    where(private: false).where("threads.published_at < ? OR threads.published_at IS NULL", Time.now)
   end
 
   def excerpt
@@ -33,6 +33,10 @@ class HacksterBlogPost < ThreadPost
 
   def tags
     blog_tags
+  end
+
+  def to_param
+    slug
   end
 
   private

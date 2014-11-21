@@ -1,14 +1,14 @@
 article.post
   .post-header
     h1
-      = link_to post.title, blog_post_path(post.slug)
+      = link_to post.title, blog_post_path(post)
     .posted.text-muted.text-center
       small data-monologue="time"
         time datetime=post.published_at = I18n.localize(post.published_at.to_date, format: :long)
   .post-content data-monologue="content"
     = raw post.excerpt
     - if post.has_more?
-      p= link_to "Continue reading &rarr;".html_safe, blog_post_path(post.slug)
+      p= link_to "Continue reading &rarr;".html_safe, blog_post_path(post)
   .text-muted
     .tags data-monologue="tags"
       - post.tags.each do |tag|
