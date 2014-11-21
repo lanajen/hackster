@@ -7,7 +7,7 @@
        title: "Discover hacks made with #{@tech.name}#{' (' + @tech.twitter_handle + ')' if @tech.twitter_handle}."
     }
 
-- cache ["tech-#{@tech.id}-sidebar", user_signed_in?, can?(:manage, @tech), (user_signed_in? and current_user.following?(@tech))], tag: ["tech-#{@tech.id}-sidebar", 'tech-sidebar'] do
+- cache ["tech-#{@tech.id}-sidebar", can?(:manage, @tech), (user_signed_in? and current_user.following?(@tech))], tag: ["tech-#{@tech.id}-sidebar", 'tech-sidebar'] do
   #sidebar-container.affixable
     - @tech = GroupDecorator.decorate @tech
 
