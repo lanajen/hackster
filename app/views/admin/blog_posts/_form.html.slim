@@ -14,14 +14,13 @@
     - if image and image.file_url
       .form-group
         .col-xs-8.col-xs-offset-4= image_tag image.file_url, class: 'img-responsive'
-    = f_image.input :file
+    = f_image.input :file, label: 'Image'
     .col-xs-offset-4.col-xs-8= f_image.link_to_remove 'Delete', class: 'btn btn-sm btn-danger'
-.form-group
-  .col-xs-8.col-xs-offset-4
-    = f.link_to_add 'Add an image', :images, class: 'btn btn-xs btn-success'
+= f.link_to_add 'Add an image', :images, class: 'btn btn-xs btn-success', style: 'margin-left:34%'
 
 .col-xs-offset-4.col-xs-8
   ==> f.button :submit, :class => 'btn-primary'
+  input> type="submit" name="preview" class="btn btn-default" value="Save and preview"
   ==> link_to t('.cancel', :default => t("helpers.links.cancel")), admin_blog_posts_path, :class => 'btn btn-default'
   - if @post.persisted?
     = link_to t('.destroy', :default => t("helpers.links.destroy")), admin_blog_post_path(@post), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'
@@ -31,11 +30,10 @@
   javascript:
     tinyMCE.init({
       selector: 'textarea.text-editor',
-      toolbar1: "undo redo | bold italic underline | link unlink | bullist numlist | image",
-      toolbar2: "code | preview | fullscreen",
-      image_list: #{@post.images.each_with_index.map{|i, j| { title: i.title || "image #{j+1}", value: i.file_url } }.to_json.html_safe},
+      toolbar1: "undo redo | bold italic underline | link unlink | bullist numlist | image | code",
+      image_list: #{@post.images.select{|i| i.persisted? }.each_with_index.map{|i, j| { title: i.title || "image #{j+1}", value: i.file_url } }.to_json.html_safe},
       menubar: false,
-      plugins: 'link paste code preview fullscreen image',
+      plugins: 'link paste code image',
       height: 600
     });
 
