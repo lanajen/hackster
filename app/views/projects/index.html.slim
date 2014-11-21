@@ -44,13 +44,17 @@
           .single-tool.clearfix
             = image_tag 'blank-avatar.png', width:'85', class:'pull-left'
             .media-body
-              h4 Daniel Nordness
-              span.text-muted View tool page
+              h4 
+               = link_to 'Arduino', '#'
+              span.text-muted
+                = link_to 'View tool page', '#'
           .single-tool.clearfix
             = image_tag 'blank-avatar.png', width:'85', class:'pull-left'
             .media-body
-              h4 Daniel Nordness
-              span.text-muted View tool page
+              h4
+                = link_to 'Arduino', '#'
+              span.text-muted
+                = link_to 'View tool page', '#'
           h4.title Similar projects you might like:
           .single-similar-projects
             .overlay
@@ -58,7 +62,8 @@
                 .similar-projects-detail
                   h4 Building a WiFi Outlet
                   'by
-                  strong Daniel Nordness
+                  strong 
+                    = link_to 'Daniel Nordness', '#'
             = image_tag 'similar-project-1.png'
           .single-similar-projects
             .overlay
@@ -66,7 +71,8 @@
                 .similar-projects-detail
                   h4 Building a WiFi Outlet
                   'by
-                  strong Daniel Nordness
+                  strong
+                    = link_to 'Daniel Nordness', '#'
             = image_tag 'similar-project-1.png'
 
         .col-sm-8
@@ -76,7 +82,7 @@
                 div
                   .detail-content
                     h2 Invisible garage
-                    h4 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.
+                    p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.
                     a.btn.btn-primary.btn-sm href="#" Respect it!
                     a.btn.btn-default.btn-sm href="#" Share it
                     ul.list-inline
@@ -108,14 +114,152 @@
               ul.list-inline.pull-right.project-tag
                 li
                   h4
-                    span.label.label-default Robots
+                    span.label.label-default
+                      = link_to 'Robots', '#'
                 li
                   h4
-                    span.label.label-default WiFi Outlet
+                    span.label.label-default
+                      = link_to 'WiFi Outlet', '#'
                 li
                   h4
-                    span.label.label-default Sensors
+                    span.label.label-default
+                      = link_to 'Sensors', '#'
                 li
                   h4
-                    span.label.label-default Lorem Ipsum
-            h3.title How it started
+                    span.label.label-default
+                      = link_to 'Lorem Ipsum', '#'
+            .content-container
+              h3.title How it started
+              p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+              #carousel.carousel.slide data-ride="carousel"
+                .carousel-inner role="listbox"
+                  .item.active
+                    .clearfix.multi-image
+                      .col-xs-6
+                        = image_tag 'slide-1.png'
+                      .col-xs-6
+                        = image_tag 'slide-2.png'
+                  .item
+                    .clearfix.multi-image
+                      .col-xs-6
+                        = image_tag 'slide-1.png'
+                      .col-xs-6
+                        = image_tag 'slide-2.png'
+                a.left.carousel-control href="#carousel" role="button" data-slide="prev"
+                  span.glyphicon.glyphicon-chevron-left aria-hidden="true"
+                a.right.carousel-control href="#carousel" role="button" data-slide="next"
+                  span.glyphicon.glyphicon-chevron-right aria-hidden="true"
+
+              h3.title How it started
+
+              .embed-responsive.embed-responsive-16by9
+                iframe.embed-responsive-item src="//www.youtube.com/embed/dU1xS07N-FA?controls=0&amp;showinfo=0" frameborder="0" width="100%" height="300"
+
+              hr
+
+              h3 Build Logs
+
+              .jumbotron.single-blog
+                h4 Log Title
+                p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+
+              h5.blog-info 5/3/2014 for Build 1.0.01
+
+              .jumbotron.single-blog
+                h4 Log Title
+                = image_tag 'slide-1.png'
+
+                p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+
+              h5.blog-info 5/3/2014 for Build 1.0.0
+              button.btn.btn-default.btn-sm View All Logs
+              hr
+              h3 Components
+              ul.component-list.list-unstyled
+                li.list-group-item
+                  h5 Item1
+                  span.text-muted This is item description or link
+                  span.count X5
+                li.list-group-item
+                  h5 Item2
+                  span.text-muted This is item description or link
+                  span.count X1
+                li.list-group-item
+                  h5 Item3
+                  span.text-muted This is item description or link
+                  span.count X1
+                li.list-group-item
+                  h5 Item4
+                  span.text-muted This is item description or link
+                  span.count X3
+              hr
+              h3 Code
+              .jumbotron.code
+                code
+                  'else if sender.state == UIGestureRecognizerState.Changed {
+                  br
+                  'attachmentBehavior.anchorPoint = location
+                  br
+                  '//povecaj collectButton
+                  br
+                  'let translation = sender.translationInView(view)
+                  br
+                  'if translation.y >= 50 {
+                  br
+                  'spring(0.5, {
+                  br
+                  'self.collectButton.transform = CGAffineTransformMakeScale(1.5, 1.5)
+                  br
+                  'self.bottomButtonsView.transform = CGAffineTransformMakeScale(0.8, 0.8)
+                  br
+                  'self.bottomButtonsView.alpha = 0
+                  br
+                  '})
+              
+              .button-content
+                button.btn.btn-default.btn-md
+                  'Copy to clipboard
+                button.btn.btn-primary.btn-md
+                  'Download
+              hr
+              h2 Assembly Instructions
+              h3.title Step1
+              p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+
+              h3.title Step2
+              p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+              h3.title Step3
+              = image_tag 'circuit.png', width:"250px", height:"250px"
+              hr
+              h2 Comments
+              .comment-area
+                .textarea-content
+                  textarea.form-control rows="3"
+                .button-area
+                  button.btn.btn-primary Add Comment
+              .media
+                .single-comment
+                  .media-body
+                    .media-title.clearfix
+                      .avatar
+                        = image_tag 'circuit.png', width:"30px", height:"30px" 
+                      .profile-name
+                        h4
+                           strong Greg Monwizcky
+                        span.text-muted 5min 
+                      .reply-comment
+                          button.btn.btn-default Reply to This
+                    p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+              .media
+                .single-comment
+                  .media-body
+                    .media-title.clearfix
+                      .avatar
+                        = image_tag 'circuit.png', width:"30px", height:"30px" 
+                      .profile-name
+                        h4
+                           strong Greg Monwizcky
+                        span.text-muted 5min 
+                      .reply-comment
+                          button.btn.btn-default Reply to This
+                    p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
