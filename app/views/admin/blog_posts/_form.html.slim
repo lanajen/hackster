@@ -1,0 +1,46 @@
+= f.error_notification
+= f.input :title
+= f.input :body, input_html: { class: 'text-editor' }
+= f.input :slug, label: 'Post URL', wrapper: :addon do
+  span.input-group-addon hackster.io/blog/
+  = f.input_field :slug
+= f.input :published_at, hint: 'Time is UTC'
+= f.input :public, label: 'Published', as: :boolean
+= f.input :blog_tags_string, label: 'Tags', hint: 'Enter a list of tags separated by commas'
+
+- @post.images.new if @post.images.empty?
+- @post.images.each do |image|
+  = f.simple_fields_for :images, image do |f_image|
+    - if image and image.file_url
+      .form-group
+        .col-xs-8.col-xs-offset-4= image_tag image.file_url, class: 'img-responsive'
+    = f_image.input :file
+    .col-xs-offset-4.col-xs-8= f_image.link_to_remove 'Delete', class: 'btn btn-sm btn-danger'
+.form-group
+  .col-xs-8.col-xs-offset-4
+    = f.link_to_add 'Add an image', :images, class: 'btn btn-xs btn-success'
+
+.col-xs-offset-4.col-xs-8
+  ==> f.button :submit, :class => 'btn-primary'
+  ==> link_to t('.cancel', :default => t("helpers.links.cancel")), admin_blog_posts_path, :class => 'btn btn-default'
+  - if @post.persisted?
+    = link_to t('.destroy', :default => t("helpers.links.destroy")), admin_blog_post_path(@post), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'
+
+= content_for :js do
+  = tinymce_assets
+  javascript:
+    tinyMCE.init({
+      selector: 'textarea.text-editor',
+      toolbar1: "undo redo | bold italic underline | link unlink | bullist numlist | image",
+      toolbar2: "code | preview | fullscreen",
+      image_list: #{@post.images.each_with_index.map{|i, j| { title: i.title || "image #{j+1}", value: i.file_url } }.to_json.html_safe},
+      menubar: false,
+      plugins: 'link paste code preview fullscreen image',
+      height: 600
+    });
+
+= content_for :head do
+  css:
+    div.mce-fullscreen {
+      top: 50px !important;
+    }

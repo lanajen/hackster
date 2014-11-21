@@ -1,0 +1,35 @@
+- content_for :head do
+  meta(property="og:title" content=title)
+  meta(property="og:description" content=meta_desc)
+  meta(property="og:type" content='article')
+  meta(property="og:url" content=blog_post_url(@post.slug))
+  meta(property="og:site_name" content="Hackster.io's blog")
+  meta(property="twitter:card" content="article")
+  meta(property="twitter:site" content="@hacksterio")
+  meta(property="twitter:domain" content="hackster.io")
+  meta(property="twitter:title" content=title)
+  meta(property="twitter:description" content=meta_desc)
+  link(rel="canonical" href=blog_post_url(@post.slug))
+  meta(name='keywords' content="#{@post.tags.join(',')}")
+
+article.post
+  header.post-header
+    h1= link_to @post.title, blog_post_path(@post.slug)
+    .posted.text-muted.text-center
+      small data-monologue="time"
+        time datetime=@post.published_at = I18n.localize(@post.published_at.to_date, format: :long)
+
+  .post-content data-monologue="content"
+    = raw @post.body
+    .tags.text-muted data-monologue="tags"
+      - @post.tags.each do |tag|
+        span.tag.label.label-default>
+          = link_to tag.name, blog_tag_path(tag.name)
+    .monologue-social-sharing.post-footer
+      p
+        ' Share this post on
+        = link_to 'Facebook', "#", onclick: "window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),'facebook-share-dialog','width=626,height=436'); return false;", class: 'zocial facebook', target: '_blank'
+        ' ,
+        = link_to 'Twitter', "https://twitter.com/intent/tweet?url=#{blog_post_url(@post.slug)}&via=hacksterio&text=#{CGI.escape(@post.title)}&tw_p=tweetbutton", class: 'zocial twitter', target: '_blank'
+        ' or
+        = link_to 'Google+', "https://plus.google.com/share?url=#{blog_post_url(@post.slug)}", class: 'zocial googleplus', target: '_blank', onclick: "javascript:window.open(this.href,'','menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"

@@ -11,6 +11,7 @@ html(lang="en")
     /![if lt IE 9]
       = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.1/html5shiv.js"
     = stylesheet_link_tag 'admin', media: "all"
+    = content_for :head
 
 
   body  style='padding-top: 60px'

@@ -57,7 +57,7 @@ module HackerIo
 
 
     # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-    config.assets.precompile += %w( admin.css email.css jquery.githubRepoWidget.min.js bitbucket-widget.min.css bitbucket-widget.min.js slick.eot slick.svg slick.ttf slick.woff datepicker.js datepicker.css tinymce.js tinymce/plugins/link/plugin.js tinymce/plugins/paste/plugin.js gmaps/google.js follow_iframe.css follow_iframe.js )
+    config.assets.precompile += %w( admin.css email.css jquery.githubRepoWidget.min.js bitbucket-widget.min.css bitbucket-widget.min.js slick.eot slick.svg slick.ttf slick.woff datepicker.js datepicker.css tinymce.js tinymce/plugins/link/plugin.js tinymce/plugins/paste/plugin.js tinymce/plugins/code/plugin.js tinymce/plugins/preview/plugin.js tinymce/plugins/fullscreen/plugin.js gmaps/google.js follow_iframe.css follow_iframe.js )
 
     config.active_record.whitelist_attributes = false
 

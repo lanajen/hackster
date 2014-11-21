@@ -1,0 +1,10 @@
+- if params[:tag]
+  p
+    ' Showing posts with label
+    span.label.label-default>= params[:tag]
+    = link_to 'Show all posts', blog_index_path
+
+- @posts.each do |post|
+  = render partial: 'hackster_blog/posts/post', locals: { post: post }
+
+= will_paginate @posts
