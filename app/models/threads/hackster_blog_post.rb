@@ -35,10 +35,6 @@ class HacksterBlogPost < ThreadPost
     blog_tags
   end
 
-  def to_param
-    slug
-  end
-
   private
     def generate_slug
       return if title.blank?
