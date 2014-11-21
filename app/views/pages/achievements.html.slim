@@ -77,12 +77,12 @@
         ' You answered a question from another hacker that was posted on your own project
         strong
           small
-            | (#{AwardedBadge.where(level: :bronze, badge_code: :helped_a_hacker).count})
+            | (#{AwardedBadge.where(level: :bronze, badge_code: :answered_question_own).count})
       li
         ' You answered a question from another hacker that was posted on somebody else's project
         strong
           small
-            | (#{AwardedBadge.where(level: :bronze, badge_code: :altruist).count})
+            | (#{AwardedBadge.where(level: :bronze, badge_code: :answered_question_other).count})
       li
         ' 10+ hackers followed your profile
         strong
