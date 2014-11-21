@@ -1,7 +1,7 @@
 class HacksterBlogPost < ThreadPost
   include Taggable
 
-  validates :slug, presence: true, uniqueness: { scope: :type }, format: { with: /\A[a-zA-Z0-9\-\/]+\z/, message: "only accepts lower case letters, digits and the symbols - and /." }
+  validates :slug, presence: true, uniqueness: { scope: :type }, format: { with: /\A[a-zA-Z0-9\-\/]+\z/, message: "only accepts letters, digits and the symbols - and /." }
   attr_accessible :slug, :published_at, :images_attributes
   before_validation :generate_slug, if: proc{|p| p.slug.blank? }
   before_create :set_threadable
