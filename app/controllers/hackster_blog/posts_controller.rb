@@ -8,6 +8,13 @@ class HacksterBlog::PostsController < ApplicationController
       @posts = @posts.joins(:blog_tags).where(tags: { name: params[:tag] })
     end
     @posts = @posts.paginate(page: @page)
+
+    respond_to do |format|
+      format.html
+      format.atom { render layout: false }
+      format.rss { redirect_to blog_index_path(params.merge(format: :atom)), status: :moved_permanently }
+    end
+
     track_event 'Visited blog'
   end
 
