@@ -69,7 +69,7 @@ module ScraperStrategies
       def clean_up_formatting base_name='@article'
         base = instance_variable_get base_name
         # @article.search('//text()').each{|el| el.remove if el.content.strip.blank? }
-        base.css('a, p, h3, h4').each{|el| el.remove if el.content.strip.blank? }
+        base.css('a, p, h3, h4, pre').each{|el| el.remove if el.content.strip.blank? }
 
         sanitized_text = Sanitize.clean(base.to_s.try(:encode, "UTF-8"), Sanitize::Config::SCRAPER)
         instance_variable_set base_name, Nokogiri::HTML::DocumentFragment.parse(sanitized_text)
@@ -82,11 +82,11 @@ module ScraperStrategies
       end
 
       def extract_code_blocks base=@article
-        base.css('pre code, .crayon-syntax .crayon-main, .syntaxhighlighter .code')
+        base.css('pre code, .crayon-syntax .crayon-main, .syntaxhighlighter .code, pre')
       end
 
       def extract_code_lines node
-        if node.name == 'code'
+        if node.name.in? %w(code pre)
           code = node.content.gsub(/<br ?\/?>/, "\r\n")
           code.lines.count <= 5 ? nil : code  # we leave snippets in place
         else
@@ -261,7 +261,7 @@ module ScraperStrategies
           parent = find_parent node, base
           parent.after "<div class='embed-frame' data-widget-id='#{widget.id}' data-type='widget'></div>"
           @widgets << widget
-          node.parent.remove  # remove so it's not added to text later
+          node.remove  # remove so it's not added to text later
         end
       end
 

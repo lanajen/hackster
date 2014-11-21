@@ -2,7 +2,7 @@ module ScraperStrategies
   class Wordpress < Blog
 
     def crap_list
-      super + %w(.share-post)
+      super + %w(.share-post .wpcnt .post-info)
     end
 
     def extract_cover_image
