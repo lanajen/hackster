@@ -93,7 +93,7 @@ $(function () {
   });
 
   $(document).on('click', '.btn-signup', function(e){
-    $('#signup-block').fadeToggle();
+    $('#signup-block').slideToggle(200);
     $(this).toggleClass('active');
     e.preventDefault();
   });

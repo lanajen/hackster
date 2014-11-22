@@ -25,473 +25,448 @@
           ' .
           = link_to 'Learn more.', about_path(ref: 'homeabout'), class: 'alert-link'
 
-    - if !user_signed_in?
+    - if true
       section.section-short style='padding:20px 0 40px;background:#fff;'
         .container.text-center
-          = image_tag 'logo.png', width:"100", class:"hidden-xs"
+          = image_tag 'logo.png', width: "100", class: "hidden-xs"
           h1.large-title Community for hardware hackers.
           p.text-muted Get inspried, find the right tools for the job and chat with experts.
 
-      .container
+      section#featured
         .row.home-banner
           .col-sm-6.banner-left
-            .img-content
-              .img-info
-                div
-                  span
-                    h3
-                      = link_to 'Building a WiFi Outlet', '#'
-                    'by
-                    strong
-                      = link_to 'Daniel Nordness', '#'
-              = image_tag 'home/image-1.png'
+            .banner-img style="background-image:url(#{ asset_url 'home/image-1.png' })"
+              .banner-img-inner
+                h3
+                  = link_to 'Building a WiFi Outlet', '#'
+                'by
+                strong
+                  = link_to 'Daniel Nordness', '#'
+
           .col-sm-6.banner-right
-            .img-content
-              .img-info
-                div
-                  span
-                    h3
-                      = link_to 'Building a WiFi Outlet', '#'
-                    'by
-                    strong
-                      = link_to 'Daniel Nordness', '#'
-              = image_tag 'home/image-2.png'
-            .img-content
-              .img-info
-                div
-                  span
-                    h3
-                      = link_to 'Building a WiFi Outlet', '#'
-                    'by
-                    strong
-                      = link_to 'Daniel Nordness', '#'
-              = image_tag 'home/image-3.png'
-        .view-all-section.clearfix
+            .banner-img style="background-image:url(#{ asset_url 'home/image-2.png' })"
+              .banner-img-inner
+                h3
+                  = link_to 'Building a WiFi Outlet', '#'
+                'by
+                strong
+                  = link_to 'Daniel Nordness', '#'
+
+            .banner-img style="background-image:url(#{ asset_url 'home/image-3.png' })"
+              .banner-img-inner
+                h3
+                  = link_to 'Building a WiFi Outlet', '#'
+                'by
+                strong
+                  = link_to 'Daniel Nordness', '#'
+
+      section#projects.container.showcase-section
+        .view-all-header.clearfix
           h4.pull-left Start your project and get valuable feedback from the community.
           = link_to 'View All Projects', '#', class: 'btn btn-default btn-sm pull-right'
-        .row.project-container
+
+        .row
           .col-sm-4
-            .single-project.clearfix
-              .product-img-content
-                .product-tag
-                  div
-                    span
+            .thumb
+              .project-thumb
+                .thumb-image style="background-image:url(#{ asset_url 'home/img-1.png' })"
+                  .thumb-image-inner
+                    .project-tags
                       ul.list-inline
                         li
-                          = link_to 'WiFi Outlet', '#', class:"label label-default"
+                          = link_to 'WiFi Outlet', '#', class: "label label-default"
                         li
-                          = link_to 'Sensors', '#', class:"label label-default"
+                          = link_to 'Sensors', '#', class: "label label-default"
                         li
-                          = link_to 'Lorem Ipsum', '#', class:"label label-default"
-                = image_tag 'home/img-1.png'
-              .col-xs-12
-                h4
-                  = link_to 'Building a WiFi Outlet', '#'
-                p.text-muted
-                  'by
-                  strong
-                    = link_to 'Daniel Nordness', '#', class:'text-muted profile-name'
-                ul.list-unstyled.row.product-info
-                  li
-                    small.text-muted
-                      span.glyphicon.glyphicon-eye-open aria-hidden="true"
+                          = link_to 'Lorem Ipsum', '#', class: "label label-default"
+                .thumb-description
+                  h4
+                    = link_to 'Building a WiFi Outlet', '#'
+                  p.text-muted
+                    'by
+                    strong
+                      = link_to 'Daniel Nordness', '#', class: 'text-muted profile-name'
+                  ul.list-unstyled.project-stats.small.text-muted
+                    li
+                      i.fa.fa-eye
                       ' 52k views
-                  li
-                    small.text-muted
-                      span.glyphicon.glyphicon-comment aria-hidden="true"
+                    li
+                      i.fa.fa-comment
                       ' 1.5k comments
-                  li
-                    small.text-muted
-                      span.glyphicon.glyphicon-star aria-hidden="true"
-                      ' 521 respect
-                    
+                    li
+                      i.fa.fa-thumbs-up
+                      ' 521 respects
+
           .col-sm-4
-            .single-project.clearfix
-              .product-img-content
-                .product-tag
-                  div
-                    span
+            .thumb
+              .project-thumb
+                .thumb-image style="background-image:url(#{ asset_url 'home/img-1.png' })"
+                  .thumb-image-inner
+                    .project-tags
                       ul.list-inline
                         li
-                          = link_to 'WiFi Outlet', '#', class:"label label-default"
+                          = link_to 'WiFi Outlet', '#', class: "label label-default"
                         li
-                          
-                          = link_to 'Sensors', '#', class:"label label-default"
+                          = link_to 'Sensors', '#', class: "label label-default"
                         li
-                          = link_to 'Lorem Ipsum', '#', class:"label label-default"
-                = image_tag 'home/img-2.png'
-              .col-xs-12
-                h4
-                  = link_to 'Building a WiFi Outlet', '#'
-                p.text-muted
-                  'by
-                  strong
-                    = link_to 'Daniel Nordness', '#', class:'text-muted profile-name'
-                ul.list-unstyled.row.product-info
-                  li
-                    small.text-muted
-                      span.glyphicon.glyphicon-eye-open aria-hidden="true"
+                          = link_to 'Lorem Ipsum', '#', class: "label label-default"
+                .thumb-description
+                  h4
+                    = link_to 'Building a WiFi Outlet', '#'
+                  p.text-muted
+                    'by
+                    strong
+                      = link_to 'Daniel Nordness', '#', class: 'text-muted profile-name'
+                  ul.list-unstyled.project-stats.small.text-muted
+                    li
+                      i.fa.fa-eye
                       ' 52k views
-                  li
-                    small.text-muted
-                      span.glyphicon.glyphicon-comment aria-hidden="true"
+                    li
+                      i.fa.fa-comment
                       ' 1.5k comments
-                  li
-                    small.text-muted
-                      span.glyphicon.glyphicon-star aria-hidden="true"
-                      ' 521 respect
+                    li
+                      i.fa.fa-thumbs-up
+                      ' 521 respects
+
           .col-sm-4
-            .single-project.clearfix
-              .product-img-content
-                .product-tag
-                  div
-                    span
+            .thumb
+              .project-thumb
+                .thumb-image style="background-image:url(#{ asset_url 'home/img-1.png' })"
+                  .thumb-image-inner
+                    .project-tags
                       ul.list-inline
                         li
-                          = link_to 'WiFi Outlet', '#', class:"label label-default"
+                          = link_to 'WiFi Outlet', '#', class: "label label-default"
                         li
-                          = link_to 'Sensors', '#', class:"label label-default"
+                          = link_to 'Sensors', '#', class: "label label-default"
                         li
-                          = link_to 'Lorem Ipsum', '#', class:"label label-default"
-                = image_tag 'home/img-3.png'
-              .col-xs-12
-                h4
-                  =link_to 'Building a WiFi Outlet', '#'
-                p.text-muted
-                  'by
-                  strong
-                    = link_to 'Daniel Nordness', '#', class:'text-muted profile-name'
-                ul.list-unstyled.row.product-info
-                  li
-                    small.text-muted
-                      span.glyphicon.glyphicon-eye-open aria-hidden="true"
+                          = link_to 'Lorem Ipsum', '#', class: "label label-default"
+                .thumb-description
+                  h4
+                    = link_to 'Building a WiFi Outlet', '#'
+                  p.text-muted
+                    'by
+                    strong
+                      = link_to 'Daniel Nordness', '#', class: 'text-muted profile-name'
+                  ul.list-unstyled.project-stats.small.text-muted
+                    li
+                      i.fa.fa-eye
                       ' 52k views
-                  li
-                    small.text-muted
-                      span.glyphicon.glyphicon-comment aria-hidden="true"
+                    li
+                      i.fa.fa-comment
                       ' 1.5k comments
-                  li
-                    small.text-muted
-                      span.glyphicon.glyphicon-star aria-hidden="true"
-                      ' 521 respect
+                    li
+                      i.fa.fa-thumbs-up
+                      ' 521 respects
+
           .col-sm-4
-            .single-project.clearfix
-              .product-img-content
-                .product-tag
-                  div
-                    span
+            .thumb
+              .project-thumb
+                .thumb-image style="background-image:url(#{ asset_url 'home/img-1.png' })"
+                  .thumb-image-inner
+                    .project-tags
                       ul.list-inline
                         li
-                          = link_to 'WiFi Outlet', '#', class:"label label-default"
+                          = link_to 'WiFi Outlet', '#', class: "label label-default"
                         li
-                          = link_to 'Sensors', '#', class:"label label-default"
+                          = link_to 'Sensors', '#', class: "label label-default"
                         li
-                          = link_to 'Lorem Ipsum', '#', class:"label label-default"
-                = image_tag 'home/img-1.png'
-              .col-xs-12
-                h4
-                  = link_to 'Building a WiFi Outlet', '#'
-                p.text-muted
-                  'by
-                  strong
-                    = link_to 'Daniel Nordness', '#', class:'text-muted profile-name'
-                ul.list-unstyled.row.product-info
-                  li
-                    small.text-muted
-                      span.glyphicon.glyphicon-eye-open aria-hidden="true"
+                          = link_to 'Lorem Ipsum', '#', class: "label label-default"
+                .thumb-description
+                  h4
+                    = link_to 'Building a WiFi Outlet', '#'
+                  p.text-muted
+                    'by
+                    strong
+                      = link_to 'Daniel Nordness', '#', class: 'text-muted profile-name'
+                  ul.list-unstyled.project-stats.small.text-muted
+                    li
+                      i.fa.fa-eye
                       ' 52k views
-                  li
-                    small.text-muted
-                      span.glyphicon.glyphicon-comment aria-hidden="true"
+                    li
+                      i.fa.fa-comment
                       ' 1.5k comments
-                  li
-                    small.text-muted
-                      span.glyphicon.glyphicon-star aria-hidden="true"
-                      ' 521 respect
-                    
+                    li
+                      i.fa.fa-thumbs-up
+                      ' 521 respects
+
           .col-sm-4
-            .single-project.clearfix
-              .product-img-content
-                .product-tag
-                  div
-                    span
+            .thumb
+              .project-thumb
+                .thumb-image style="background-image:url(#{ asset_url 'home/img-1.png' })"
+                  .thumb-image-inner
+                    .project-tags
                       ul.list-inline
                         li
-                          = link_to 'WiFi Outlet', '#', class:"label label-default"
+                          = link_to 'WiFi Outlet', '#', class: "label label-default"
                         li
-                          
-                          = link_to 'Sensors', '#', class:"label label-default"
+                          = link_to 'Sensors', '#', class: "label label-default"
                         li
-                          = link_to 'Lorem Ipsum', '#', class:"label label-default"
-                = image_tag 'home/img-2.png'
-              .col-xs-12
-                h4
-                  = link_to 'Building a WiFi Outlet', '#'
-                p.text-muted
-                  'by
-                  strong
-                    = link_to 'Daniel Nordness', '#', class:'text-muted profile-name'
-                ul.list-unstyled.row.product-info
-                  li
-                    small.text-muted
-                      span.glyphicon.glyphicon-eye-open aria-hidden="true"
+                          = link_to 'Lorem Ipsum', '#', class: "label label-default"
+                .thumb-description
+                  h4
+                    = link_to 'Building a WiFi Outlet', '#'
+                  p.text-muted
+                    'by
+                    strong
+                      = link_to 'Daniel Nordness', '#', class: 'text-muted profile-name'
+                  ul.list-unstyled.project-stats.small.text-muted
+                    li
+                      i.fa.fa-eye
                       ' 52k views
-                  li
-                    small.text-muted
-                      span.glyphicon.glyphicon-comment aria-hidden="true"
+                    li
+                      i.fa.fa-comment
                       ' 1.5k comments
-                  li
-                    small.text-muted
-                      span.glyphicon.glyphicon-star aria-hidden="true"
-                      ' 521 respect
+                    li
+                      i.fa.fa-thumbs-up
+                      ' 521 respects
+
           .col-sm-4
-            .single-project.clearfix
-              .product-img-content
-                .product-tag
-                  div
-                    span
+            .thumb
+              .project-thumb
+                .thumb-image style="background-image:url(#{ asset_url 'home/img-1.png' })"
+                  .thumb-image-inner
+                    .project-tags
                       ul.list-inline
                         li
-                          = link_to 'WiFi Outlet', '#', class:"label label-default"
+                          = link_to 'WiFi Outlet', '#', class: "label label-default"
                         li
-                          = link_to 'Sensors', '#', class:"label label-default"
+                          = link_to 'Sensors', '#', class: "label label-default"
                         li
-                          = link_to 'Lorem Ipsum', '#', class:"label label-default"
-                = image_tag 'home/img-3.png'
-              .col-xs-12
-                h4
-                  =link_to 'Building a WiFi Outlet', '#'
-                p.text-muted
-                  'by
-                  strong
-                    = link_to 'Daniel Nordness', '#', class:'text-muted profile-name'
-                ul.list-unstyled.row.product-info
-                  li
-                    small.text-muted
-                      span.glyphicon.glyphicon-eye-open aria-hidden="true"
+                          = link_to 'Lorem Ipsum', '#', class: "label label-default"
+                .thumb-description
+                  h4
+                    = link_to 'Building a WiFi Outlet', '#'
+                  p.text-muted
+                    'by
+                    strong
+                      = link_to 'Daniel Nordness', '#', class: 'text-muted profile-name'
+                  ul.list-unstyled.project-stats.small.text-muted
+                    li
+                      i.fa.fa-eye
                       ' 52k views
-                  li
-                    small.text-muted
-                      span.glyphicon.glyphicon-comment aria-hidden="true"
+                    li
+                      i.fa.fa-comment
                       ' 1.5k comments
-                  li
-                    small.text-muted
-                      span.glyphicon.glyphicon-star aria-hidden="true"
-                      ' 521 respect
-      .subscribe-block.clearfix
+                    li
+                      i.fa.fa-thumbs-up
+                      ' 521 respects
+
+      section.subscribe-block.clearfix
         .container
-          = image_tag 'home/envelope.png', width:"22"
+          = image_tag 'home/envelope.png', width: "22"
           'Get weekly inspiration of new challenges, useful tools and cool projects.
           form.form-inline.pull-right
             .form-group
               label.sr-only 'Email address'
               input type="text" class="form-control input-sm" placeholder="Enter your email address"
             input type="submit" class="btn btn-primary btn-sm" value='Subscribe'
-      .view-all-section.clearfix
+
+      section#challenges.showcase-section
+        .view-all-header.clearfix
+          .container
+            h4.pull-left You can join any challenge for free.
+            = link_to 'View All Challenges', '#', class: 'btn btn-default btn-sm pull-right'
+
         .container
-          h4.pull-left You can join any challenge for free.
-          = link_to 'View All Challenges', '#', class: 'btn btn-default btn-sm pull-right'
-      .container
-        .row
-          .col-sm-4
-            .single-challenge.clearfix
-              .col-sm-12
-                h4
-                  = link_to 'Hidden garage', '#'
-                p
-                  small.text-muted Price: $5000
-              = link_to image_tag('home/img-2.png'), '#'
-              ul.list-unstyled.thumb-row
-                li
-                  = link_to image_tag('home/thumb-1.png'), '#'
-                li
-                  = link_to image_tag('home/thumb-2.png'), '#'
-                li
-                  = link_to image_tag('home/thumb-1.png'), '#'
-                li
-                  = link_to image_tag('home/thumb-2.png'), '#'
-          .col-sm-4
-            .single-challenge.clearfix
-              .col-sm-12
-                h4
-                  = link_to 'Hidden garage', '#'
-                p
-                  small.text-muted Price: $5000
-              = link_to image_tag('home/img-2.png'), '#'
-              ul.list-unstyled.thumb-row
-                li
-                  = link_to image_tag('home/thumb-1.png'), '#'
-                li
-                  = link_to image_tag('home/thumb-2.png'), '#'
-                li
-                  = link_to image_tag('home/thumb-1.png'), '#'
-                li
-                  = link_to image_tag('home/thumb-2.png'), '#'
-          .col-sm-4
-            .single-challenge.clearfix
-              .col-sm-12
-                h4
-                  = link_to 'Hidden garage', '#'
-                p
-                  small.text-muted Price: $5000
-              = link_to image_tag('home/img-2.png'), '#'
-              ul.list-unstyled.thumb-row
-                li
-                  = link_to image_tag('home/thumb-1.png'), '#'
-                li
-                  = link_to image_tag('home/thumb-2.png'), '#'
-                li
-                  = link_to image_tag('home/thumb-1.png'), '#'
-                li
-                  = link_to image_tag('home/thumb-2.png'), '#'
-      .tools-container
-        .view-all-section.clearfix
+          .row
+            .col-sm-4
+              .thumb
+                .challenge-thumb.clearfix
+                  .thumb-description
+                    h4
+                      = link_to 'Hidden garage', '#'
+                    p
+                      small.text-muted Price: $5000
+                  a.thumb-image style="background-image:url(#{ asset_url 'home/img-2.png' })" href=''
+                  .collection-project-thumbs
+                    a.collection-project-thumb style="background-image:url(#{ asset_url 'home/thumb-1.png' })" href=''
+                    a.collection-project-thumb style="background-image:url(#{ asset_url 'home/thumb-2.png' })" href=''
+                    a.collection-project-thumb style="background-image:url(#{ asset_url 'home/thumb-1.png' })" href=''
+                    a.collection-project-thumb style="background-image:url(#{ asset_url 'home/thumb-2.png' })" href=''
+
+            .col-sm-4
+              .thumb
+                .challenge-thumb.clearfix
+                  .thumb-description
+                    h4
+                      = link_to 'Hidden garage', '#'
+                    p
+                      small.text-muted Price: $5000
+                  a.thumb-image style="background-image:url(#{ asset_url 'home/img-2.png' })" href=''
+                  .collection-project-thumbs
+                    a.collection-project-thumb style="background-image:url(#{ asset_url 'home/thumb-1.png' })" href=''
+                    a.collection-project-thumb style="background-image:url(#{ asset_url 'home/thumb-2.png' })" href=''
+                    a.collection-project-thumb style="background-image:url(#{ asset_url 'home/thumb-1.png' })" href=''
+                    a.collection-project-thumb style="background-image:url(#{ asset_url 'home/thumb-2.png' })" href=''
+
+            .col-sm-4
+              .thumb
+                .challenge-thumb.clearfix
+                  .thumb-description
+                    h4
+                      = link_to 'Hidden garage', '#'
+                    p
+                      small.text-muted Price: $5000
+                  a.thumb-image style="background-image:url(#{ asset_url 'home/img-2.png' })" href=''
+                  .collection-project-thumbs
+                    a.collection-project-thumb style="background-image:url(#{ asset_url 'home/thumb-1.png' })" href=''
+                    a.collection-project-thumb style="background-image:url(#{ asset_url 'home/thumb-2.png' })" href=''
+                    a.collection-project-thumb style="background-image:url(#{ asset_url 'home/thumb-1.png' })" href=''
+                    a.collection-project-thumb style="background-image:url(#{ asset_url 'home/thumb-2.png' })" href=''
+
+      section#platforms.middle-section.showcase-section
+        .view-all-header.clearfix
           .container
             h4.pull-left What tools are people using?
             = link_to 'View All Tools', '#', class: 'btn btn-default btn-sm pull-right'
+
         .container
           .row
-            .col-sm-4.col-xs-12.single-tool
-              .col-xs-12.green
-                .media
-                  = link_to image_tag('home/blank.png', width: '45'), '#', class: 'pull-left media-top'
-                  .media-body
-                    h4.media-heading
-                      = link_to 'Arduino', '#'
-                    p Open-source electronics prototyping platform based on flexible. easy-to-use hardware and software.
-              .col-xs-12.tool-content
-                h4 What can I make with it?
-                p 
-                  = link_to 'Lorem Ipsum', '#', class:'label label-default'
-                  = link_to 'Robots', '#', class:'label label-default'
-                  = link_to 'WiFi Outlet', '#', class:'label label-default'
-                  = link_to 'Sensors', '#', class:'label label-default'
-                  = link_to 'Amet', '#', class:'label label-default'
-                  = link_to 'Dolor', '#', class:'label label-default'
-                  = link_to 'WiFi Outlet', '#', class:'label label-default'
-              ul.list-unstyled.thumb-row
-                li
-                  = link_to image_tag('home/tool-thumb-1.png')
-                li
-                  = link_to image_tag('home/tool-thumb-2.png')
-                li
-                  = link_to image_tag('home/tool-thumb-3.png')
-                li
-                  = link_to image_tag('home/tool-thumb-4.png')
-            .col-sm-4.col-xs-12.single-tool
-              .col-xs-12.light-green
-                .media
-                  = link_to image_tag('home/blank.png', width: '45'), '#', class: 'pull-left media-top'
-                  .media-body
-                    h4.media-heading
-                      = link_to 'Arduino', '#'
-                    p Open-source electronics prototyping platform based on flexible. easy-to-use hardware and software.
-              .col-xs-12.tool-content
-                h4 What can I make with it?
-                p 
-                  = link_to 'Lorem Ipsum', '#', class:'label label-default'
-                  = link_to 'Robots', '#', class:'label label-default'
-                  = link_to 'WiFi Outlet', '#', class:'label label-default'
-                  = link_to 'Sensors', '#', class:'label label-default'
-                  = link_to 'Amet', '#', class:'label label-default'
-                  = link_to 'Dolor', '#', class:'label label-default'
-                  = link_to 'WiFi Outlet', '#', class:'label label-default'
-              ul.list-unstyled.thumb-row
-                li
-                  = link_to image_tag('home/tool-thumb-1.png')
-                li
-                  = link_to image_tag('home/tool-thumb-2.png')
-                li
-                  = link_to image_tag('home/tool-thumb-3.png')
-                li
-                  = link_to image_tag('home/tool-thumb-4.png')
-            .col-sm-4.col-xs-12.single-tool
-              .col-xs-12.pink
-                .media
-                  = link_to image_tag('home/blank.png', width: '45'), '#', class: 'pull-left media-top'
-                  .media-body
-                    h4.media-heading
-                      = link_to 'Arduino', '#'
-                    p Open-source electronics prototyping platform based on flexible. easy-to-use hardware and software.
-              .col-xs-12.tool-content
-                h4 What can I make with it?
-                p 
-                  = link_to 'Lorem Ipsum', '#', class:'label label-default'
-                  = link_to 'Robots', '#', class:'label label-default'
-                  = link_to 'WiFi Outlet', '#', class:'label label-default'
-                  = link_to 'Sensors', '#', class:'label label-default'
-                  = link_to 'Amet', '#', class:'label label-default'
-                  = link_to 'Dolor', '#', class:'label label-default'
-                  = link_to 'WiFi Outlet', '#', class:'label label-default'
-              ul.list-unstyled.thumb-row
-                li
-                  = link_to image_tag('home/tool-thumb-1.png')
-                li
-                  = link_to image_tag('home/tool-thumb-2.png')
-                li
-                  = link_to image_tag('home/tool-thumb-3.png')
-                li
-                  = link_to image_tag('home/tool-thumb-4.png')
-      .view-all-section.clearfix
+            .col-sm-4
+              .thumb
+                .platform-thumb.clearfix
+                  .platform-thumb-image style="background-image:url(#{ asset_url 'home/thumb-2.png' })"
+                    .platform-thumb-image-inner
+                      .media
+                        = link_to image_tag('home/blank.png'), '#', class: 'media-left'
+                        .media-body
+                          h4.media-heading
+                            = link_to 'Arduino', '#'
+                          p Open-source electronics prototyping platform based on flexible. easy-to-use hardware and software.
+                  .platform-description
+                    h4 What can I make with it?
+                    p
+                      = link_to 'Lorem Ipsum', '#', class: 'label label-default'
+                      = link_to 'Robots', '#', class: 'label label-default'
+                      = link_to 'WiFi Outlet', '#', class: 'label label-default'
+                      = link_to 'Sensors', '#', class: 'label label-default'
+                      = link_to 'Amet', '#', class: 'label label-default'
+                      = link_to 'Dolor', '#', class: 'label label-default'
+                      = link_to 'WiFi Outlet', '#', class: 'label label-default'
+                  .collection-project-thumbs
+                    a.collection-project-thumb style="background-image:url(#{ asset_url 'home/tool-thumb-1.png' })" href=''
+                    a.collection-project-thumb style="background-image:url(#{ asset_url 'home/tool-thumb-2.png' })" href=''
+                    a.collection-project-thumb style="background-image:url(#{ asset_url 'home/tool-thumb-3.png' })" href=''
+                    a.collection-project-thumb style="background-image:url(#{ asset_url 'home/tool-thumb-4.png' })" href=''
+
+            .col-sm-4
+              .thumb
+                .platform-thumb.clearfix
+                  .platform-thumb-image style="background-image:url(#{ asset_url 'home/thumb-2.png' })"
+                    .platform-thumb-image-inner
+                      .media
+                        = link_to image_tag('home/blank.png'), '#', class: 'media-left'
+                        .media-body
+                          h4.media-heading
+                            = link_to 'Arduino', '#'
+                          p Open-source electronics prototyping platform based on flexible. easy-to-use hardware and software.
+                  .platform-description
+                    h4 What can I make with it?
+                    p
+                      = link_to 'Lorem Ipsum', '#', class: 'label label-default'
+                      = link_to 'Robots', '#', class: 'label label-default'
+                      = link_to 'WiFi Outlet', '#', class: 'label label-default'
+                      = link_to 'Sensors', '#', class: 'label label-default'
+                      = link_to 'Amet', '#', class: 'label label-default'
+                      = link_to 'Dolor', '#', class: 'label label-default'
+                      = link_to 'WiFi Outlet', '#', class: 'label label-default'
+                  .collection-project-thumbs
+                    a.collection-project-thumb style="background-image:url(#{ asset_url 'home/tool-thumb-1.png' })" href=''
+                    a.collection-project-thumb style="background-image:url(#{ asset_url 'home/tool-thumb-2.png' })" href=''
+                    a.collection-project-thumb style="background-image:url(#{ asset_url 'home/tool-thumb-3.png' })" href=''
+                    a.collection-project-thumb style="background-image:url(#{ asset_url 'home/tool-thumb-4.png' })" href=''
+
+            .col-sm-4
+              .thumb
+                .platform-thumb.clearfix
+                  .platform-thumb-image style="background-image:url(#{ asset_url 'home/thumb-2.png' })"
+                    .platform-thumb-image-inner
+                      .media
+                        = link_to image_tag('home/blank.png'), '#', class: 'media-left'
+                        .media-body
+                          h4.media-heading
+                            = link_to 'Arduino', '#'
+                          p Open-source electronics prototyping platform based on flexible. easy-to-use hardware and software.
+                  .platform-description
+                    h4 What can I make with it?
+                    p
+                      = link_to 'Lorem Ipsum', '#', class: 'label label-default'
+                      = link_to 'Robots', '#', class: 'label label-default'
+                      = link_to 'WiFi Outlet', '#', class: 'label label-default'
+                      = link_to 'Sensors', '#', class: 'label label-default'
+                      = link_to 'Amet', '#', class: 'label label-default'
+                      = link_to 'Dolor', '#', class: 'label label-default'
+                      = link_to 'WiFi Outlet', '#', class: 'label label-default'
+                  .collection-project-thumbs
+                    a.collection-project-thumb style="background-image:url(#{ asset_url 'home/tool-thumb-1.png' })" href=''
+                    a.collection-project-thumb style="background-image:url(#{ asset_url 'home/tool-thumb-2.png' })" href=''
+                    a.collection-project-thumb style="background-image:url(#{ asset_url 'home/tool-thumb-3.png' })" href=''
+                    a.collection-project-thumb style="background-image:url(#{ asset_url 'home/tool-thumb-4.png' })" href=''
+
+      section#comments.showcase-section
+        .view-all-header.clearfix
+          .container
+            h4.pull-left Recent community discussions
+            = link_to 'View Community', '#', class: 'btn btn-default btn-sm pull-right'
+
         .container
-          h4.pull-left Recent community discussions
-          = link_to 'View Community', '#', class: 'btn btn-default btn-sm pull-right'
-      .container
-        .row
-          .col-sm-4
-            .col-sm-12.single-community
-              .media
-                = link_to 'Media', '#', class: 'pull-left media-thumb'
-                .media-body
-                  h4.media-heading 
-                    = link_to 'Greg Monwizcky', '#'
-                  p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-              .row
-                .community-info.clearfix
-                  = link_to image_tag('home/discussion-thumb.png', class: 'pull-left', width: '75'), '#'
-                  .media-body
-                    h5.media-heading 
-                      = link_to 'An e-paper WiFi keypad', '#'
-                    p.text-muted
-                      small
-                        'by
-                        strong
-                         = link_to 'Luka Birsa', '#', class: 'profile-name'
-          .col-sm-4
-            .col-sm-12.single-community
-              .media
-                = link_to 'Media', '#', class: 'pull-left media-thumb'
-                .media-body
-                  h4.media-heading
-                    = link_to 'Greg Monwizcky', '#'
-                  p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-              .row
-                .community-info.clearfix
-                  = link_to image_tag('home/discussion-thumb-1.png', class: 'pull-left', width: '75'), '#'
-                  .media-body
-                    h5.media-heading
-                      = link_to 'An e-paper WiFi keypad', '#'
-                    p.text-muted
-                      small
-                        'by
-                        strong
-                          = link_to 'Luka Birsa', '#', class: 'profile-name'
-          .col-sm-4
-            .col-sm-12.single-community
-              .media
-                = link_to 'Media', '#', class: 'pull-left media-thumb'
-                .media-body
-                  h4.media-heading
-                    = link_to 'Greg Monwizcky', '#'
-                  p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-              .row
-                .community-info.clearfix
-                  = link_to image_tag('home/discussion-thumb.png', class: 'pull-left', width: '75'), '#'
-                  .media-body
-                    h5.media-heading
-                      = link_to 'An e-paper WiFi keypad', '#'
-                    p.text-muted
-                      small
-                        'by
-                        strong
-                          = link_to 'Luka Birsa', '#', class: 'profile-name'
+          .row
+            .col-sm-4
+              .thumb
+                .comment-thumb.clearfix
+                  .comment-description.media
+                    = link_to image_tag('home/tool-thumb-4.png', class: 'img-circle'), '#', class: 'media-left'
+                    .media-body
+                      h4.media-heading
+                        = link_to 'Greg Monwizcky', '#'
+                      p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                  .comment-project-thumb
+                    a.thumb-image style="background-image:url(#{ asset_url('home/discussion-thumb.png') });" href=''
+                    .comment-project-thumb-description
+                      h5
+                        = link_to 'An e-paper WiFi keypad', '#'
+                      p.text-muted
+                        small
+                          'by
+                          strong
+                           = link_to 'Luka Birsa', '#', class: 'profile-name text-muted'
+            .col-sm-4
+              .thumb
+                .comment-thumb.clearfix
+                  .comment-description.media
+                    = link_to image_tag('home/tool-thumb-4.png', class: 'img-circle'), '#', class: 'media-left'
+                    .media-body
+                      h4.media-heading
+                        = link_to 'Greg Monwizcky', '#'
+                      p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                  .comment-project-thumb
+                    a.thumb-image style="background-image:url(#{ asset_url('home/discussion-thumb.png') });" href=''
+                    .comment-project-thumb-description
+                      h5
+                        = link_to 'An e-paper WiFi keypad', '#'
+                      p.text-muted
+                        small
+                          'by
+                          strong
+                           = link_to 'Luka Birsa', '#', class: 'profile-name text-muted'
+            .col-sm-4
+              .thumb
+                .comment-thumb.clearfix
+                  .comment-description.media
+                    = link_to image_tag('home/tool-thumb-4.png', class: 'img-circle'), '#', class: 'media-left'
+                    .media-body
+                      h4.media-heading
+                        = link_to 'Greg Monwizcky', '#'
+                      p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                  .comment-project-thumb
+                    a.thumb-image style="background-image:url(#{ asset_url('home/discussion-thumb.png') });" href=''
+                    .comment-project-thumb-description
+                      h5
+                        = link_to 'An e-paper WiFi keypad', '#'
+                      p.text-muted
+                        small
+                          'by
+                          strong
+                           = link_to 'Luka Birsa', '#', class: 'profile-name text-muted'
+
