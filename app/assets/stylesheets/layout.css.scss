@@ -1900,6 +1900,7 @@ ul.thumb-row {
     border: 1px solid #c8dff1;
     padding: 20px !important;
     margin-bottom: 20px;
+    overflow: auto;
     code {
       color: #000000;
       background-color: transparent !important;
@@ -2197,7 +2198,7 @@ ul.thumb-row {
         vertical-align: middle;
         color: #ffffff;
         padding-left: 15px;
-        padding-right                                                              : 15px;
+        padding-right: 15px;
 
         > h4 {
           margin: 0;
@@ -2258,6 +2259,129 @@ ul.thumb-row {
 
     .btn + .btn {
       margin-left: 7px;
+    }
+  }
+}
+
+/* Autodesk2 Page */
+.autodesk2-page {
+  background: #eeedf2;
+  padding-top: 0px !important;
+  .autodesk2-img {
+    background: url(autodesk2_background.jpg) no-repeat;
+    width: 100%;
+    background-size: contain;
+  }
+  .banner {
+    margin-bottom: 20px;
+    .banner-left {
+      margin-top: 400px;
+      h1 {
+        color: #000000;
+        font-weight: bold;
+      }
+    }
+    .banner-right {
+      margin-top: 400px;
+      width: 100%;
+      .prize {
+        background: #000000;
+        padding-top: 3px;
+        padding-bottom: 3px;
+        p {
+          color: #ffffff;
+          margin-bottom: 0px;
+        }
+      }
+      .product {
+        background: #f6911f;
+        padding: 17px;
+        p {
+          color: #ffffff;
+          padding: 0px;
+        }
+      }
+      .block-1 {
+        >.item:first-child {
+          border-right: 1px solid #eeedf2;
+          float: left;
+          width: 50%;
+          padding: 20px;
+        }
+        .item + .item {
+          padding: 20px;
+          float: right;
+        }
+        .item {
+          width: 50%;
+          background: #ffffff;
+          .title {
+            color: #aaa9af;
+            margin-bottom: 0px;
+          }
+          .value {
+            font-size: 24px; 
+          }
+        }
+      }
+    }
+  }
+  .button-inline {
+    margin-top: 20px;
+    button {
+      margin-right: 15px;
+      font-weight: bold;
+    }
+    .btn-yellow{
+      background: #f6911f;
+      color: #ffffff;
+    }
+    .btn-transparent {
+      background: #eeedf2;
+      border: 1px solid #aaa9af;
+      border-radius: 5px;
+      color: #aaa9af;
+    }
+  }
+
+  .content {
+    .content-left {
+      background: #ffffff;
+      width: 100%;
+      padding: 30px;
+      margin-top: 55px;
+    }
+    .img-block {
+      margin-bottom: 15px;
+      img {
+        width: 49.9%;
+      }
+    }
+  }
+
+  .single-tool {
+    background: #ffffff;
+    margin-bottom: 15px;
+    h4 {
+      font-weight: bold;
+      margin-bottom: 0;
+      a {
+        color: #000000;
+        &:hover {
+          text-decoration: none;
+        }
+      }
+    }
+    .media-body {
+      padding: 10px;
+      .text-muted {
+        a {
+          color: #999999;
+          &:hover {
+            text-decoration: none;
+          }
+        }
+      }
     }
   }
 }

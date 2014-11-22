@@ -270,6 +270,7 @@ HackerIo::Application.routes.draw do
 
     get 'about' => 'pages#about'
     # get 'help' => 'pages#help'
+    get 'test' => 'pages#test'
     get 'home', to: redirect('/')
 
     get 'ping' => 'pages#ping'  # for availability monitoring
@@ -288,7 +289,7 @@ HackerIo::Application.routes.draw do
     get 'privacy' => 'pages#privacy'
     get 'terms' => 'pages#terms'
     get 'resources' => 'pages#resources'
-
+    get 'autodesk' => 'pages#autodesk'
     get 'electric-imp', to: redirect('electricimp')
 
     mount Monologue::Engine, at: '/blog'
