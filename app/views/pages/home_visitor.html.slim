@@ -1,0 +1,110 @@
+= content_for :head do
+  meta(name='robots' content='noindex')
+  = auto_discovery_link_tag :rss, projects_path(format: :rss), title: 'Trending projects - Hackster.io'
+  = auto_discovery_link_tag :atom, projects_path(format: :atom), title: 'Trending projects - Hackster.io'
+
+= content_for :no_container do
+  - cache ['home-visitor'], tag: ['home', 'home-visitor'], expires_in: 1.hour do
+    section#hello-hackster
+      .container.text-center
+        h1 The community for hardware hackers.
+        p
+          ' Learn, share, and connect to build better hardware.
+          = link_to 'Learn more.', about_path(ref: 'homeabout'), class: 'alert-link'
+
+    section#projects.showcase-section
+      .container
+        .view-all-header.clearfix
+          h4.pull-left Trending projects
+          = link_to 'View All Projects', '#', class: 'btn btn-default btn-sm pull-right'
+
+        .row
+          .mobile-scroll-row
+            - 6.times do
+              .col-sm-4.mobile-scroll-row-item
+                .thumb.project-thumb
+                  .thumb-image style="background-image:url(#{ asset_url 'home/img-1.png' })"
+                    .thumb-image-inner
+                      h4
+                        = link_to 'Building a WiFi Outlet', '#'
+                      p
+                        'by
+                        strong
+                          = link_to 'Daniel Nordness', '#', class: 'profile-name'
+                      ul.list-unstyled.project-stats
+                        li
+                          span.stat-figure> 52k
+                          ' views
+                        li
+                          span.stat-figure> 1.5k
+                          ' comments
+                        li
+                          span.stat-figure> 521
+                          ' respects
+
+    section.subscribe-block.clearfix
+      .container
+        .pull-left
+          = image_tag 'home/envelope.png'
+          ' Want fresh news and projects in your inbox every Friday?
+        form.form-inline.pull-right
+          .form-group
+            label.sr-only 'Email address'
+            input type="text" class="form-control input-sm" placeholder="nikola@tesla.com" name='email'
+          input type="submit" class="btn btn-primary btn-sm" value='HELL YEAH'
+
+    section#platforms.middle-section.showcase-section
+      .container
+        .view-all-header.clearfix
+          h4.pull-left Featured communities
+          = link_to 'View All Communities', '#', class: 'btn btn-default btn-sm pull-right'
+
+        .row
+          .mobile-scroll-row
+            - 3.times do
+              .col-sm-4.mobile-scroll-row-item
+                .thumb.platform-thumb
+                  .thumb-image style="background-image:url(#{ asset_url 'home/arduino.jpg' })"
+                    / a.thumb-image-link href =''
+                    .thumb-image-inner
+                      h4
+                        = link_to 'Arduino', '#'
+                      ul.list-inline
+                        / li.list-label Good for
+                        li
+                          a.tag href='' Beginners
+                        li
+                          a.tag href='' Wearables
+                        li
+                          a.tag href='' Wifi
+                      ul.list-unstyled.project-stats
+                        li
+                          span.stat-figure> 120
+                          ' projects
+                        li
+                        li
+                          span.stat-figure> 21
+                          ' followers
+
+    section#categories.showcase-section.last
+      .container
+        .view-all-header.clearfix
+          h4.pull-left Top categories
+          = link_to 'View All Categories', '#', class: 'btn btn-default btn-sm pull-right'
+
+        .row
+          - 2.times do
+            .col-sm-6.category-row
+              - 3 .times do
+                .category-col
+                  .thumb.category-thumb
+                    .thumb-image style="background-image:url(#{ asset_url 'home/img-1.png' })"
+                      .thumb-image-inner
+                        h4
+                          = link_to 'Wifi', '#'
+
+    section#signup-now-pretty-please
+      .container.text-center
+        h1 Become better hardware hacker!
+        p Get inspired by top projects, enter challenges and earn amazing prizes. You will get access to the list of the latest tools and you will be able to participate in the conversations with other hardware experts.
+        p= link_to 'Create free account', '#', class: 'btn btn-primary btn-sm'

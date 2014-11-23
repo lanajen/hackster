@@ -23,7 +23,7 @@ html(lang="en")
     /![if lt IE 9]
       = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.1/html5shiv.js"
     = stylesheet_link_tag "application", :media => "all"
-    link href='//fonts.googleapis.com/css?family=Open+Sans:300,400,600' rel='stylesheet' type='text/css'
+    / link href='//fonts.googleapis.com/css?family=Open+Sans:300,400,600' rel='stylesheet' type='text/css'
     link rel="apple-touch-icon" sizes="57x57" href="#{ asset_path 'favicons/apple-touch-icon-57x57.png' }"
     link rel="apple-touch-icon" sizes="114x114" href="#{ asset_path 'favicons/apple-touch-icon-114x114.png' }"
     link rel="apple-touch-icon" sizes="72x72" href="#{ asset_path 'favicons/apple-touch-icon-72x72.png' }"
@@ -71,77 +71,89 @@ html(lang="en")
         - unless @no_flash
           = bootstrap_flash
 
-          .row
-            nav.navbar.navbar-inverse
-              .navbar-header
-                button.navbar-toggle.collapsed type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"
-                  span.sr-only Toggle navigation
-                  span.icon-bar
-                  span.icon-bar
-                  span.icon-bar
-              = link_to image_tag('logo.png', width: '100'), '#', class: 'visible-xs logo-mobile'
-              .navbar-collapse.collapse#navbar
-                ul.nav.navbar-nav
-                  li.active.type-1
-                    a href='#'
-                      | Inspiration
-                    ul.list-unstyled
-                      li
-                        h4
-                          a href="javascript: void(0)"
-                            | Projects
-                      li
-                        = link_to 'Home', "#"
-                      li
-                        = link_to 'Entertainment', "#"
-                      li
-                        = link_to 'Sport', "#"
-                      li
-                        = link_to 'Sound', "#"
-                      li
-                        = link_to 'Roots', "#"
-                      li
-                        = link_to 'Video', "#"
-                      li
-                        = link_to 'Electronics', "#"
-                      li.title
-                        h4
-                         = link_to 'Challenges', "#"
-                      li.title
-                        h4
-                         = link_to 'Featured', "#"
-                  li.type-2
-                    a href='#'
-                      | Tools
-                  li.type-3
-                    a href='#'
-                      | Community
-                  li.type-4
-                    a href='#'
-                      | Your Project
-                form.navbar-form.pull-left.hidden-xs
-                  .form-group
-                    span.glyphicon.glyphicon-search
-                    input type="text" class="form-control" placeholder="Search for projects, tools, resources.."
-                = link_to 'Sign in', "#", class: 'btn btn-link pull-right btn-signup hidden-xs'
-              #signup-block
-                form
-                  .form-group
-                    input type="text" class="form-control input-sm" placeholder="Username"
-                  .form-group
-                    input type="password" class="form-control input-sm" placeholder="Password"
-                  button class='btn btn-primary btn-sm' type='submit'
-                    | Submit
-                .forgot-pwd
-                  p
-                    a.btn.btn-success.btn-sm Create new account
-                  p
-                    a.btn.btn-default.btn-sm Forgot password?
-          form.navbar-form.pull-left.visible-xs
-            .form-group
-              span.glyphicon.glyphicon-search
-              input type="text" class="form-control" placeholder="Search for projects, tools, resources.."
-          = link_to 'Sign in', "#", class: 'btn btn-link pull-right btn-signup visible-xs'
+        .navbar.navbar-default.navbar-static-top#navigation
+          #nav-mobile-trigger.hide-on-desktop.fa.fa-bars
+          .navbar-in  style='position:relative;'
+            .navbar-header
+              = link_to image_tag('hackster_logo_40.png'), root_path, class: 'navbar-brand navbar-btn'
+            #nav-non-logo.show-on-desktop
+              ul#nav-actions.top-menu-nav
+                li.dropdown
+                  a.nav-link.dropdown-toggle data-toggle="dropdown" href='#'
+                    | Projects
+                    span.caret
+                  ul#topnav.dropdown-menu
+                    li
+                      .row
+                        .col-xs-12
+                          .text-center.mg-20= link_to 'Browse all projects', projects_path(ref: 'topnav'), class: 'btn btn-block btn-primary'
+                          - if user_signed_in?
+                            .text-center.mg-20= link_to 'My projects', user_path(current_user, ref: 'topnav'), class: 'btn btn-block btn-default'
+                          ul.nav.nav-pills.nav-stacked
+                            li.title
+                              h4 Popular tags
+                            - POPULAR_TAGS.each do |tag, link|
+                              li= link_to tag, "#{link}?ref=topnav"
+                li= link_to 'Communities', platforms_path, class: 'nav-link'
+                / li.dropdown
+                  a.nav-link.dropdown-toggle data-toggle="dropdown" href='#'
+                    | Resources
+                    span.caret
+                  ul#topnav.dropdown-menu
+                    li
+                      = link_to 'Hacker spaces', hacker_spaces_path, class: 'btn btn-block btn-default'
+                      = link_to 'More resources', resources_path, class: 'btn btn-block btn-default'
+              - if user_signed_in?
+                ul.navbar-nav.navbar-right
+                  li.btn-group.navbar-btn#user-navigation-links
+                    = link_to image_tag(current_user.decorate.avatar(:mini), style: 'width:30px;'), current_user, class: 'btn',id: 'user-nav-face', style: 'padding:0;'
+                    button#user-dropdown-toggle.btn.btn-default.dropdown-toggle data-toggle="dropdown"
+                      span.caret
+                    ul.dropdown-menu#nav-user-menu
+                      li= link_to 'My profile', current_user
+
+                      - if current_user.communities.any?
+                        li.divider
+                        - current_user.community_group_ties.includes(:group).each do |group_tie|
+                          - community = group_tie.group
+                          - name = community.name
+                          - name += ' (invite pending)' if group_tie.invitation_pending?
+                          li= link_to name, community
+                        - if current_user.promotions.any?
+                          li= link_to 'My grades', grades_path
+
+                      li.divider
+                      li= link_to 'Account settings', edit_user_registration_path
+                      li= link_to 'Invite friends', new_user_invitation_path
+                      li.divider
+                      li= link_to 'Log out', destroy_user_session_path, method: :delete
+                ul.navbar-right.top-menu-nav
+                  - if current_user.is? :admin
+                    li= link_to 'Admin', admin_analytics_path, class: 'nav-link'
+                  li= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'nav-link'
+
+              - else
+                ul#navbar-right.clearfix
+                  li
+                    = link_to 'Sign up', new_user_registration_path(source: 'nav'), class: 'login-link', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '# request.path ']);"
+
+                  li.dropdown
+                    a.btn.btn-primary.login-link.dropdown-toggle data-toggle="dropdown" href='#'
+                      | Log in
+                    .dropdown-menu style=("padding: 15px; width: 250px;")
+                      = render 'devise/sessions/form'
+                      hr
+                      / = link_to 'Connect with your social account', new_user_session_path(a: 'connect'), class: 'btn btn-black connect-social'
+                      .social-icons.text-center
+                        p.text-muted
+                          small Or connect with your social account:
+                        = link_to 'Facebook', user_omniauth_authorize_url(:facebook), class: 'zocial icon facebook'
+                        = link_to 'Github', user_omniauth_authorize_path(:github), class: 'zocial icon github'
+                        = link_to 'Google+', user_omniauth_authorize_path(:gplus), class: 'zocial icon googleplus'
+                        = link_to 'Twitter', user_omniauth_authorize_path(:twitter), class: 'zocial icon twitter'
+
+              #navbar-search
+                = render 'shared/search_form'
 
       = yield(:before_main)
       #main
@@ -155,12 +167,6 @@ html(lang="en")
 
     - unless params[:blank_frame]
       footer.clearfix
-        .footer-content
-          .container
-            h1.text-center.large-title Become better hardware hacker!
-            p.text-center.footer-text Get inspired by top projects, enter challenges and earn amazing prizes. You will get access to the list of the latest tools and you will be able to participate in the conversations with other hardware experts.
-            p.text-center
-              = link_to 'Create free account', '#', class: 'btn btn-primary btn-sm'
         .footer-nav.clearfix
           ul.list-unstyled.list-inline.pull-left
             li= link_to 'About', about_path
@@ -174,14 +180,15 @@ html(lang="en")
             li
           ul.list-unstyled.list-inline.pull-right
             li Hackster 2014
+
     #mobile-nav-overlay.hide-on-desktop
       #mobile-nav-overlay-close.fa.fa-times
     #mobile-navigation.hide-on-desktop
+      = render 'shared/search_form'
       = link_to 'Projects', projects_path(ref: 'topnav'), class: 'mo-nav-link'
       = link_to 'Platforms', platforms_path, class: 'mo-nav-link'
       = link_to 'Hacker spaces', hacker_spaces_path, class: 'mo-nav-link'
       = link_to 'Resources', resources_path, class: 'mo-nav-link'
-      / = link_to 'Manufacturing help', build_path, class: 'mo-nav-link'
       = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'mo-nav-link'
       - if user_signed_in?
         = link_to 'Profile', current_user, class: 'mo-nav-link'

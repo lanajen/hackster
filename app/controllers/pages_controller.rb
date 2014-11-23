@@ -27,6 +27,8 @@ class PagesController < ApplicationController
     # @wip_projects = Project.wip.limit 4
     @platforms = Tech.where(user_name: %w(spark electricimp arduino raspberry-pi beagleboard tinyavr)).for_thumb_display.order(:full_name)
 
+    render (user_signed_in? ? 'home_member' : 'home_visitor')
+
     # track_event 'Visited home page'
   end
 

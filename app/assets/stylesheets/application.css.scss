@@ -14,31 +14,31 @@
  *= require slick
  * require bootstrap-wysihtml5
  */
-@import url(http://fonts.googleapis.com/css?family=Lato:300,400,700);
+@import url(http://fonts.googleapis.com/css?family=Lato:300,400,700,900);
 @import 'custom_mixins';
 @import 'compass/css3';
 @import 'bootstrap';
 
 @import 'font-awesome';
 @import 'new';
-// @import 'layout';
-// @import 'projects';
-// @import 'users';
-// @import 'search';
-// @import 'widgets';
-// @import 'ilightbox/ilightbox';
-// @import 'embed';
-// @import 'zocial';
-// @import 'assignment';
-// @import 'issue';
-// @import 'whitelabel';
-// @import 'home';
-// @import 'group';
-// @import 'blog';
-// @import 'challenge';
-// @import 'blog_posts';
-// @import 'medium-editor-ext';
-// @import 'responsive';
+@import 'layout';
+@import 'projects';
+@import 'users';
+@import 'search';
+@import 'widgets';
+@import 'ilightbox/ilightbox';
+@import 'embed';
+@import 'zocial';
+@import 'assignment';
+@import 'issue';
+@import 'whitelabel';
+@import 'home';
+@import 'group';
+@import 'blog';
+@import 'challenge';
+@import 'blog_posts';
+@import 'medium-editor-ext';
+@import 'responsive';
 @import 'pygments';
 
 .zocial, a.zocial {

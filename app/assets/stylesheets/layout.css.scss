@@ -7,9 +7,10 @@ html, body {
 }
 
 body {
-  font-family: "Helvetica Neue", "HelveticaNeue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  // font-family: "Helvetica Neue", "HelveticaNeue", Helvetica, Arial, "Lucida Grande", sans-serif;
   background: #f2f2f2;
   -webkit-font-smoothing: antialiased;
+  font-size: 16px;
   &.white {
     background: #fff;
   }
@@ -85,18 +86,22 @@ img {
 
 #navigation{
   height: 60px;
-  background: #3d8bc1;
-  color: #787878;
-  border-bottom: none;
+  background: #fff;
+  color: #777;
   text-align: center;
-  // @include box-shadow(0 1px 0 rgba(0,0,0,.2));
-  // a{
-  //   @include transition(all .2s ease);
-  // }
-
-  // .top-menu-nav {
-  //   .dropdown:hover .dropdown-menu {
-  //     display: block;
+  li > a {
+    display: block;
+    color: #777;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 21px 36px 19px;
+    text-align: center;
+    &:hover, &:focus {
+      text-decoration: none;
+      color: #999;
+    }
+  }
 }
 
 .navbar {
@@ -121,36 +126,9 @@ img {
     img{
       max-width: 118px;
       width: 80%;
+      display: inline;
     }
   }
-
-  &.navbar {
-    margin-bottom: 0;
-    .navbar-brand {
-      position: relative;
-      display: block;
-      padding: 18px 20px 18px;
-      margin: 0;
-      width: 250px;
-      text-align: center;
-      height: 60px;
-      @include transition(all .3s ease);
-      img{
-        max-width: 118px;
-        width: 80%;
-      }
-    }
-    .nav {
-      li.with-button {
-        padding: 2px 5px 0;
-      }
-    }
-  }
-}
-
-#nav-non-logo{
-  position: relative;
-  text-align: left;
 }
 
 #nav-actions {
@@ -165,39 +143,21 @@ img {
     float: left;
     display: inline-block;
   }
-  .nav-link,.nav-link:focus{
-    padding: 4px 36px 3px;
-    margin: 18px 0;
-    text-align: center;
-    display: block;
-    border-right: 1px solid rgba(0,0,0,.2);
-    color: #fff;
-    text-decoration: none;
-    font-family: 'Open Sans', 'Helvetica Neue', 'Helvetica', sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    @include box-shadow(1px 0 0 rgba(255,255,255,.08));
-    &.nav-add-project{
-      font-weight: bold;
-    }
+  .nav-link {
     .caret{
       position: relative;
       margin-left: 5px;
       margin-right: -5px;
       top: -1px;
-      border-bottom-color: #fff;
-      border-top-color: #fff;
+      border-bottom-color: #777;
+      border-top-color: #777;
     }
   }
 }
-.top-menu-nav .nav-link:hover, .top-menu-nav .nav-link:active, .top-menu-nav .open > a, .top-menu-nav .open > a:hover, .top-menu-nav .open > a:focus{
-  text-decoration: none;
-  color:#fff;
+#nav-non-logo{
+  position: relative;
+  text-align: left;
 }
-
-// .top-menu-nav .open > a, .top-menu-nav .open > a:hover, .top-menu-nav .open > a:focus{
-//   background: #2A6186;
-// }
 
 // Explore dropdown in navigation
 #topnav {
@@ -263,7 +223,7 @@ img {
     top: 22px;
     background: none;
     border: 0;
-    color: #fff;
+    color: #777;
     padding: 0;
     display: block;
   }
@@ -272,11 +232,10 @@ img {
     border: 0;
     outline: none;
     height: 60px;
-    padding: 22px 12px 21px 48px;
-    font-size: 12px;
+    padding: 21px 12px 20px 48px;
+    font-size: 14px;
     font-weight: 200;
-    font-family: 'Open Sans', 'Helvetica Neue', 'Helvetica', sans-serif;
-    color:#fff;
+    color:#777;
     width: 174px;
     @include transition(all .5s ease);
     @include box-shadow(none);
@@ -285,22 +244,10 @@ img {
       @include box-shadow(none);
       border-color: #ccc;
     }
-  }
-  ::-webkit-input-placeholder {
-     color: white;
+    @include input-placeholder {
+     color: #777;
      font-weight: bold;
-  }
-  :-moz-placeholder {
-     color: white;
-     font-weight: bold;
-  }
-  ::-moz-placeholder {
-     color: white;
-     font-weight: bold;
-  }
-  :-ms-input-placeholder {
-     color: white;
-     font-weight: bold;
+    }
   }
 }
 #navbar-right{
@@ -308,6 +255,7 @@ img {
   display: inline-block;
   padding-left: 0;
   margin-bottom: 0;
+  padding-right: 6px;
   li{
     float: left;
     display: inline-block;
@@ -319,7 +267,7 @@ img {
     margin: 0;
     @include border-radius(0 0 3px 3px);
   }
-  .connect-social{
+  .connect-social {
     font-size: 12px;
     width: 100%;
   }
@@ -355,28 +303,18 @@ img {
   }
 }
 #navbar-right .login-link, .login-link:active{
-  display: block;
-  margin: 12px 6px;
-  font-size: 12px;
-  font-weight: 200;
-  font-family: 'Open Sans', 'Helvetica Neue', 'Helvetica', sans-serif;
-  padding: 10px 20px 9px;
   min-width: 82px;
-  padding: 9px 20px 8px;
-  border: 1px solid white;
-  &#signup-button{
-    margin-right: 12px;
-    padding: 10px 20px 9px;
-    border: none;
-    background: white;
-    color:#444447;
+  &.btn-primary {
+    padding: 9px 20px 8px;
+    margin-top: 12px;
+    color: #fff;
   }
 }
 #navbar-right .login-link:hover, #navbar-right .open > a, #navbar-right .open > a:hover, #navbar-right .open > a:focus{
   text-decoration: none;
 }
 #user-navigation-links{
-  margin-right: 13px;
+  margin-right: 28px;
   margin-top: 13px;
 }
 
@@ -512,14 +450,14 @@ img {
   top: 0;
   width: 60px;
   height: 100%;
-  color: white;
+  color: #777;
   z-index: 2;
   text-align: center;
   padding-top: 20px;
   font-size: 22px;
   font-weight: 500;
   cursor: pointer;
-  border-right: 1px solid #2A6186;
+  border-right: 1px solid #D8D8D8;
   @include box-shadow(1px 0 0 rgba(255,255,255,.08));
 }
 #mobile-nav-overlay{
@@ -579,11 +517,9 @@ img {
     display: block;
     padding: 15px 20px;
     color: #444447;
-    border-bottom: 1px solid #d8d8d8;
     text-decoration: none;
     font-size: 20px;
-    font-weight: 200;
-    @include box-shadow(0 1px 1px rgba(255,255,255,.3));
+    font-weight: bold;
   }
 }
 
@@ -597,10 +533,11 @@ li.highlight-item {
 footer {
   position: relative;
   z-index: 2;
-  padding: 24px 0 0;
-  height: 60px;
+  // padding: 24px 0 0;
+  // height: 60px;
   background: #444447;
-  font-family: 'Open Sans', 'Helvetica Neue', 'Helvetica', sans-serif;
+  // font-family: 'Open Sans', 'Helvetica Neue', 'Helvetica', sans-serif;
+  font-size: 87.5%;
   a {
     color: #ffffff;
     &:hover {
@@ -638,7 +575,7 @@ footer {
     h1, h2, h3, h4 {
       position: relative;
       a {
-        font-family: "Helvetica Neue", "HelveticaNeue", Helvetica, Arial, "Lucida Grande", sans-serif;
+        // font-family: "Helvetica Neue", "HelveticaNeue", Helvetica, Arial, "Lucida Grande", sans-serif;
       }
     }
     h4 {
@@ -824,7 +761,7 @@ footer {
 }
 
 h1, h2, h3, h4 {
-  font-family: 'Open Sans', 'Helvetica Neue', 'Helvetica', sans-serif;
+  // font-family: 'Open Sans', 'Helvetica Neue', 'Helvetica', sans-serif;
   .subtitle {
     display: inline;
     @include font-size(12);
@@ -838,7 +775,7 @@ h1, h2, h3, h4 {
 }
 
 .btn{
-  font-family: 'Open Sans', 'Helvetica Neue', 'Helvetica', sans-serif;
+  // font-family: 'Open Sans', 'Helvetica Neue', 'Helvetica', sans-serif;
 }
 
 .btn-edit {
