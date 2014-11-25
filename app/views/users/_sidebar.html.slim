@@ -2,10 +2,10 @@
   #sidebar-container.affixable
     section#sidebar-container-in
       - if @user.avatar
-        .avatar#tech-avatar-image-div
-          #tech-avatar-image style="background-image:url('#{@user.avatar(:big)}');"
-      #tech-body
-        h1= link_to @user.name, @user, id: 'tech-name'
+        .avatar#platform-avatar-image-div
+          #platform-avatar-image style="background-image:url('#{@user.avatar(:big)}');"
+      #platform-body
+        h1= link_to @user.name, @user, id: 'platform-name'
         p
           - if @user.mini_resume.present?
             = @user.mini_resume
@@ -20,14 +20,14 @@
           - elsif user_is_current?
             ' No location.
             = link_to 'Add one?', profile_edit_path
-        - if members = TechMember.where(user_id: @user.id).includes(:group) and members.any?
+        - if members = PlatformMember.where(user_id: @user.id).includes(:group) and members.any?
           - members.each do |member|
             p.team-widget.user-communities
-              - tech = member.group
+              - platform = member.group
               span.user
-                ==> link_to image_tag(tech.decorate.avatar(:mini), class: ' img-circle' ), tech, class: ''
+                ==> link_to image_tag(platform.decorate.avatar(:mini), class: ' img-circle' ), platform, class: ''
                 ' Team
-                ==> link_to tech.name, tech
+                ==> link_to platform.name, platform
                 i.fa.fa-check-circle.istooltip title="Verified" style="color:#66C866"
 
         .stats
@@ -38,30 +38,30 @@
             = pluralize_without_count @user.followers_count, 'follower'
 
         - if current_user.try(:id) != @user.id
-          #tech-follow-div.text-center
+          #platform-follow-div.text-center
             = render partial: 'followers/button_text', locals: { followable: @user }
 
       - if @user.websites.any?
         .display
           h4 Social links
-          #tech-websites
+          #platform-websites
             ul.websites.list-inline
               - @user.websites.select{|t,u| u.present? }.each do |type, url|
                 = render partial: "shared/website", locals: { type: type, url: url }
       - elsif user_is_current?
         .display
           h4 Social links
-          #tech-websites
+          #platform-websites
             ul.websites.list-inline
               li
                 ' No websites.
                 = link_to 'Add some?', profile_edit_path(@user)
 
-      - if @user.followed_teches.any?
+      - if @user.followed_platforms.any?
         .display
           h4 Platforms
           .content.team-widget.user-communities
-            - @user.followed_teches.each do |c|
+            - @user.followed_platforms.each do |c|
               .community.user
                 ==> link_to image_tag(c.decorate.avatar(:mini), class: ' img-circle' ), c, class: ''
                 span.user-name
@@ -108,7 +108,7 @@
           h4
             i.fa.fa-cog>
             | Manage
-          ul#tech-links
+          ul#platform-links
             - if user_is_current?
               li= link_to "Edit profile", profile_edit_path
             - elsif current_user.is? :admin

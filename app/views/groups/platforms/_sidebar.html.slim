@@ -1,0 +1,92 @@
+= content_for :js do
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-51b26f5613fb83d2" async="async"></script>
+  javascript:
+    var addthis_share = {
+      "data_track_addressbar":false,
+       url: "#{platform_short_url(@platform)}",
+       title: "Discover hacks made with #{@platform.name}#{' (' + @platform.twitter_handle + ')' if @platform.twitter_handle}."
+    }
+
+- cache ["platform-#{@platform.id}-sidebar", user_signed_in?, can?(:manage, @platform), (user_signed_in? and current_user.following?(@platform))], tag: ["platform-#{@platform.id}-sidebar", 'platform-sidebar'] do
+  #sidebar-container.affixable
+    - @platform = GroupDecorator.decorate @platform
+
+    section#sidebar-container-in
+      - if @platform.avatar
+        .avatar#platform-avatar-image-div
+          #platform-avatar-image style="background-image:url('#{@platform.avatar(:big)}');"
+      #platform-body
+        h1= link_to @platform.name, platform_short_path(@platform), id: 'platform-name'
+        p
+          - if @platform.mini_resume.present?
+            = @platform.mini_resume
+          - elsif can? :update, @platform
+            ' No mini resume.
+            = link_to 'Add one?', edit_platform_path(@platform)
+        .stats
+          p
+            strong>= number_with_delimiter @platform.projects_count
+            ==> pluralize_without_count @platform.projects_count, 'project'
+            strong>= number_with_delimiter @platform.followers_count
+            = pluralize_without_count @platform.followers_count, 'follower'
+
+        #platform-follow-div.text-center
+          = render partial: 'followers/button_text', locals: { followable: @platform, why: "Follow #{@platform.name} to receive updates about new projects." }
+          / small style='margin-top:10px;display:block'
+            = link_to 'Why follow?', 'javascript:void();', style: 'color:#666', rel: 'tooltip', title: "Follow #{@platform.name} to receive updates about new projects.", data: { placement: 'bottom' }
+
+          <div class="addthis_toolbox addthis_default_style addthis_16x16_style">
+          <label>Share:</label>
+          <a class="addthis_button_preferred_1"></a>
+          <a class="addthis_button_preferred_2"></a>
+          <a class="addthis_button_preferred_3"></a>
+          <a class="addthis_button_preferred_4"></a>
+          <a class="addthis_button_compact"></a>
+          </div>
+
+      .display
+        h4 Resources
+        ul#platform-links
+          - if @platform.documentation_link.present?
+            li= link_to "Documentation #{content_tag(:i, '', class: 'fa-external-link fa')}".html_safe, @platform.documentation_link, target: '_blank'
+          - if @platform.forums_link.present?
+            li= link_to "Forums #{content_tag(:i, '', class: 'fa-external-link fa')}".html_safe, @platform.forums_link, target: '_blank'
+          - if @platform.crowdfunding_link.present?
+            li= link_to "Preorder #{indefinite_articlerize @platform.name} #{content_tag(:i, '', class: 'fa-external-link fa')}".html_safe, @platform.crowdfunding_link, target: '_blank', class: 'platform-buy-link'
+          - if @platform.buy_link.present?
+            li= link_to "Buy #{indefinite_articlerize @platform.name} #{content_tag(:i, '', class: 'fa-external-link fa')}".html_safe, @platform.buy_link, target: '_blank', class: 'platform-buy-link'
+
+      .display
+        h4 Social links
+        #platform-websites
+          - if @platform.has_websites?
+            ul.websites.list-inline
+              - @platform.websites.select{|t,u| u.present? }.each do |type, url|
+                = render partial: "shared/website", locals: { type: type, url: url }
+          - elsif can? :update, @platform
+            ul.websites.list-inline
+              li
+                ' No websites.
+                = link_to 'Add some?', edit_platform_path(@platform)
+
+      - if @platform.active_members.joins(:user).where(users: { invitation_token: nil }).any?
+        .display
+          h4 Team
+          .content.team-widget.user-communities
+            - @platform.active_members.includes(:user).references(:users).where(users: { invitation_token: nil }).order('LOWER(users.full_name) ASC').each do |m|
+              - u = m.user
+              .community.user
+                ==> link_to image_tag(u.decorate.avatar(:mini), class: ' img-circle' ), u, class: ''
+                span.user-name
+                  = link_to u.name, u
+
+      - if can? :manage, @platform
+        .display
+          h4
+            i.fa.fa-cog>
+            | Manage page
+          ul#platform-links
+            / li= link_to 'Post fresh news', new_platform_announcement_path(@platform.user_name)
+            li= link_to 'Edit settings', edit_platform_path(@platform)
+            li= link_to 'Manage admins', group_edit_members_path(@platform)
+            li= link_to 'Invite admins', group_new_invitations_path(@platform)

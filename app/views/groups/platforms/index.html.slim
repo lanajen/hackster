@@ -1,0 +1,23 @@
+= content_for :head do
+  meta(name='keywords' content='hardware platforms,software platforms,diy machines')
+
+= content_for :no_container do
+  - cache 'platform-index', tag: ['platform-index'], expires_in: 24.hours do
+    .container
+      #content
+        .content
+          .row
+            .col-xs-12
+              h1
+                | Explore platforms
+              p Development and prototyping platforms are the foundation of modern hardware projects. By packing up common functions, they help both professionals and hobbyists focus on the real use case of their product and make functional prototypes faster.
+              hr
+
+          .row
+            - @platforms.each do |platform|
+              = render partial: 'groups/platforms/platform_thumb', locals: { platform: platform }
+
+    #bottom-bar
+      .container.text-center
+        ' Want to feature your platform on this page?
+        = link_to 'Apply', 'mailto:platforms@hackster.io?subject=Application%20to%20feature%20platform', class: 'btn btn-primary'

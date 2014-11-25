@@ -12,7 +12,7 @@ class FollowRelationObserver < ActiveRecord::Observer
       record.user.broadcast :new, record.id, 'FollowRelation', record.followable_id
     when 'Group'
       record.user.broadcast :new, record.id, 'FollowRelation', record.followable_id
-      record.user.update_counters only: [:teches]
+      record.user.update_counters only: [:platforms]
       Cashier.expire "user-#{record.user_id}-sidebar"
     # when 'User'
     else

@@ -1,6 +1,6 @@
 module UrlHelper
-  def tech_announcement_path announcement, opts={}
-    super(announcement.tech.user_name, announcement.sub_id, opts)
+  def platform_announcement_path announcement, opts={}
+    super(announcement.platform.user_name, announcement.sub_id, opts)
   end
 
   def assignment_path assignment, opts={}
@@ -79,8 +79,8 @@ module UrlHelper
       super params_for_group(group).merge(opts)
     when 'Event'
       event_path group, opts
-    when 'Tech'
-      tech_short_path group, opts
+    when 'Platform'
+      platform_short_path group, opts
     when 'List'
       list_path group, opts
     else
@@ -102,8 +102,8 @@ module UrlHelper
       super params_for_group(group).merge(opts)
     when 'Event'
       event_url group, opts
-    when 'Tech'
-      tech_short_url group, opts
+    when 'Platform'
+      platform_short_url group, opts
     when 'List'
       list_url group, opts
     else
@@ -189,12 +189,12 @@ module UrlHelper
     "/tags/#{CGI::escape(tag)}"
   end
 
-  def tech_short_path tech, opts={}
-    super tech.user_name, opts
+  def platform_short_path platform, opts={}
+    super platform.user_name, opts
   end
 
-  def tech_short_url tech, opts={}
-    super tech.user_name, opts
+  def platform_short_url platform, opts={}
+    super platform.user_name, opts
   end
 
   def universal_project_path project, opts={}
@@ -211,9 +211,9 @@ module UrlHelper
       if options.has_key?(:subdomain)
         options[:host] = with_subdomain(options.delete(:subdomain))
       end
-    when Tech
+    when Platform
       options = params_for_group options
-      options[:use_route] = 'tech_short'
+      options[:use_route] = 'platform_short'
     when Project
       options = params_for_project options
     end

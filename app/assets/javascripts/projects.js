@@ -25,6 +25,35 @@
       $('#project-header-in').parallaxScroll({ rate: .3, opacity: true, opacitySpread: 700});
     }
 
+    // if($('.project-banner-container').length){
+    //   //make top image height of the screen
+    //   var $window     = $(window),
+    //       $topSection = $('.project-banner-container'),
+    //       topHeight   = $window.height() - $topSection.offset().top;
+    //   $topSection.css('height',topHeight);
+    //   $window.resize(function(){
+    //     topHeight = $window.height() - $topSection.offset().top;
+    //     $topSection.css('height',topHeight);
+    //   });
+    // }
+
+    $('.show-extra-actions').on('click', function(e){
+      e.preventDefault();
+      var left;
+      if ($(this).hasClass('fa-chevron-right')) {
+        left = '-100%';
+      } else {
+        left = '0';
+      }
+      $(this).parent().parent().css('left', left);
+    })
+
+    $('.section-title').on('click', function(e){
+      e.preventDefault();
+      $(this).next().slideToggle(150);
+      $(this).parent().toggleClass('section-expanded');
+    })
+
     //make scrollspy/sidebar navigation work
     $('body').scrollspy({ target: '#scroll-nav'});
 
@@ -81,7 +110,7 @@
         setTimeoutConstIn = {},
         setTimeoutConstOut = {};
 
-    $('.tech-card-popover').hover(function(e){
+    $('.platform-card-popover').hover(function(e){
       clearTimeout(setTimeoutConstOut[$(this).data('target')]);
       var that = this;
       setTimeoutConstIn[$(this).data('target')] = setTimeout(function(){
@@ -97,7 +126,7 @@
         }
         target.css('top', y + 'px');
         target.css('left', x + 'px');
-        $('.tech-card').hide();
+        $('.platform-card').hide();
         target.fadeIn(100);
       }, delayIn);
     }, function(e){
@@ -107,7 +136,7 @@
         target.fadeOut(100);
       }, delayOut);
     });
-    $('.tech-card').hover(function(e){
+    $('.platform-card').hover(function(e){
       clearTimeout(setTimeoutConstOut['#' + $(this).attr('id')]);
     }, function(e){
       var that = this;

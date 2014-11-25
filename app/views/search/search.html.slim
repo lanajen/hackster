@@ -5,7 +5,7 @@
       li  class="#{'active' if params[:type] == 'hackerspace'} #{'disabled' unless @facets['hackerspace']}"  = link_to @hacker_space_label.html_safe, search_path(q: params[:q], type: 'hackerspace')
       li  class="#{'active' if params[:type] == 'user'} #{'disabled' unless @facets['user']}"  = link_to @people_label.html_safe, search_path(q: params[:q], type: 'user')
       li  class="#{'active' if params[:type] == 'project'} #{'disabled' unless @facets['project']}"  = link_to @projects_label.html_safe, search_path(q: params[:q], type: 'project')
-      li  class="#{'active' if params[:type] == 'tech'} #{'disabled' unless @facets['tech']}"  = link_to @platforms_label.html_safe, search_path(q: params[:q], type: 'tech')
+      li  class="#{'active' if params[:type] == 'platform'} #{'disabled' unless @facets['platform']}"  = link_to @platforms_label.html_safe, search_path(q: params[:q], type: 'platform')
 
   .col-xs-9
     .well

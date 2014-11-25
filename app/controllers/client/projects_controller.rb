@@ -7,12 +7,12 @@ class Client::ProjectsController < Client::BaseController
     title += " - Page #{safe_page_params}" if safe_page_params
     title title
 
-    impressionist_async current_tech, "", unique: [:session_hash]
+    impressionist_async current_platform, "", unique: [:session_hash]
 
     sort = params[:sort] || 'magic'
     @by = params[:by] || 'all'
 
-    @projects = current_tech.projects.visible.indexable_and_external.for_thumb_display
+    @projects = current_platform.projects.visible.indexable_and_external.for_thumb_display
     if sort and sort.in? Project::SORTING.keys
       @projects = @projects.send(Project::SORTING[sort])
     end
@@ -20,14 +20,14 @@ class Client::ProjectsController < Client::BaseController
     if @by and @by.in? Project::FILTERS.keys
       @projects = if @by == 'featured'
         @by = 'gfeatured'
-        @projects.send(Project::FILTERS[@by], 'Group', current_tech.id)
+        @projects.send(Project::FILTERS[@by], 'Group', current_platform.id)
       else
         @projects.send(Project::FILTERS[@by])
       end
     end
 
     @projects = @projects.paginate(page: safe_page_params)
-    @challenge = current_tech.active_challenge ? current_tech.challenges.active.first : nil
+    @challenge = current_platform.active_challenge ? current_platform.challenges.active.first : nil
 
     respond_to do |format|
       format.html { render layout: 'whitelabel' }

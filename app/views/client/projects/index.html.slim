@@ -4,55 +4,55 @@
   = auto_discovery_link_tag :atom, projects_path(format: :atom), title: 'Most recent projects - Hackster.io'
 
 - content_for :head do
-  meta(property="og:title" content="#{current_tech.name} projects")
+  meta(property="og:title" content="#{current_platform.name} projects")
   meta(property="og:description" content=meta_desc)
-  - if current_tech.logo
-    meta(property="og:image" content=current_tech.logo.file_url)
-    meta(property="twitter:image:src" content=current_tech.logo.file_url)
-  meta(property="og:url" content="http://#{current_tech.user_name}.hackster.io")
-  meta(property="og:site_name" content="#{current_tech.name} projects")
-  - if link = current_tech.twitter_link.presence and handle = link.match(/twitter.com\/(.+)/).try(:[], 1)
+  - if current_platform.logo
+    meta(property="og:image" content=current_platform.logo.file_url)
+    meta(property="twitter:image:src" content=current_platform.logo.file_url)
+  meta(property="og:url" content="http://#{current_platform.user_name}.hackster.io")
+  meta(property="og:site_name" content="#{current_platform.name} projects")
+  - if link = current_platform.twitter_link.presence and handle = link.match(/twitter.com\/(.+)/).try(:[], 1)
     meta(property="twitter:site" content="@#{handle}")
   meta(property="twitter:card" content="summary")
-  meta(property="twitter:domain" content="#{current_tech.user_name}.hackster.io")
-  meta(property="twitter:title" content="#{current_tech.name} projects")
+  meta(property="twitter:domain" content="#{current_platform.user_name}.hackster.io")
+  meta(property="twitter:title" content="#{current_platform.name} projects")
   meta(property="twitter:description" content=meta_desc)
-  link(rel="canonical" href="http://www.hackster.io/#{current_tech.user_name}")
+  link(rel="canonical" href="http://www.hackster.io/#{current_platform.user_name}")
 
 .content.projects
   .row
     - if @challenge
       .col-xs-12
         .alert.alert-info.text-center
-          strong> #{current_tech.name} is having a challenge!
+          strong> #{current_platform.name} is having a challenge!
           ' Join the
           ==> link_to @challenge.name, "http://www.hackster.io/challenges/#{@challenge.slug}", class: 'alert-link'
           | on Hackster.io
 
-    - cache "tech-#{current_tech.id}-client-subheading", tag: ["tech-#{current_tech.id}-sidebar", 'tech-sidebar'] do
+    - cache "platform-#{current_platform.id}-client-subheading", tag: ["platform-#{current_platform.id}-sidebar", 'platform-sidebar'] do
       #subheading.col-xs-12
-        p.pull-left= current_tech.mini_resume
+        p.pull-left= current_platform.mini_resume
 
         ul.list-inline.list-unstyled.pull-right
-          - if current_tech.documentation_link.present?
-            li= link_to "Documentation", current_tech.documentation_link, target: '_blank'
-          - if current_tech.forums_link.present?
-            li= link_to "Forums", current_tech.forums_link, target: '_blank'
-          - if current_tech.shoplocket_token.present?
-            li= link_to "Buy #{current_tech.name}", current_tech.buy_link, class: 'shoplocket-checkout', data: { 'shoplocket-product-token' => current_tech.shoplocket_token }
+          - if current_platform.documentation_link.present?
+            li= link_to "Documentation", current_platform.documentation_link, target: '_blank'
+          - if current_platform.forums_link.present?
+            li= link_to "Forums", current_platform.forums_link, target: '_blank'
+          - if current_platform.shoplocket_token.present?
+            li= link_to "Buy #{current_platform.name}", current_platform.buy_link, class: 'shoplocket-checkout', data: { 'shoplocket-product-token' => current_platform.shoplocket_token }
             = content_for :js do
               = javascript_include_tag '//www.shoplocket.com/assets/widgets/embed.js'
           - else
-            - if current_tech.crowdfunding_link.present?
-              li= link_to "Preorder #{current_tech.name}", current_tech.crowdfunding_link, target: '_blank'
-            - if current_tech.buy_link.present?
-              li= link_to "Buy #{current_tech.name}", current_tech.buy_link, target: '_blank'
+            - if current_platform.crowdfunding_link.present?
+              li= link_to "Preorder #{current_platform.name}", current_platform.crowdfunding_link, target: '_blank'
+            - if current_platform.buy_link.present?
+              li= link_to "Buy #{current_platform.name}", current_platform.buy_link, target: '_blank'
 
       .col-xs-12.mg-20
         .pull-left
-          iframe src="http://#{APP_CONFIG['full_host']}/followers/platforms/#{current_tech.id}?style=text" height=34 width=160 frameborder=0 scrolling='no' style='margin-right:10px'
+          iframe src="http://#{APP_CONFIG['full_host']}/followers/platforms/#{current_platform.id}?style=text" height=34 width=160 frameborder=0 scrolling='no' style='margin-right:10px'
         .pull-left
-          = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_url(subdomain: 'www', project: { tech_tags_string: current_tech.name }), class: 'btn btn-sm btn-primary'
+          = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_url(subdomain: 'www', project: { platform_tags_string: current_platform.name }), class: 'btn btn-sm btn-primary'
         .btn-group.pull-right
           .btn-group
             button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
@@ -76,7 +76,7 @@
 
     .col-xs-12
       .row.thumb-list
-        - @tech = current_tech
+        - @platform = current_platform
         - if @projects.any?
           - @projects.each do |project|
             = render partial: 'client/projects/project_thumb', locals: { project: project.decorate }

@@ -2,7 +2,7 @@ class ClientSubdomain < Subdomain
   include HerokuDomains
   RESERVED_SUBDOMAINS = %w(www beta api admin)
 
-  belongs_to :tech
+  belongs_to :platform
   has_one :logo, as: :attachable, class_name: 'Document'
 
   validates :domain, length: { in: 3..100 }, allow_blank: true

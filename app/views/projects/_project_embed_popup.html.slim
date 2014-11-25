@@ -40,13 +40,13 @@
       }
 
     <!-- AddThis Button BEGIN -->
-    - teches = @project.known_teches
+    - platforms = @project.known_platforms
     - sentences = ['I love this', 'Check this out', 'Cool stuff', 'Awesome project', 'Nice hack']
     javascript:
       var addthis_share = {
         "data_track_addressbar":false,
         url: "#{project_url(@project)}",
-        title: "#{sentences.sample}: #{@project.name} by #{@project.guest_name.presence || @project.users.map{|u| u.twitter_handle || u.name }.to_sentence}#{ ' with ' + teches.map{|t| t.twitter_handle.presence || t.name }.to_sentence if teches.any? }"
+        title: "#{sentences.sample}: #{@project.name} by #{@project.guest_name.presence || @project.users.map{|u| u.twitter_handle || u.name }.to_sentence}#{ ' with ' + platforms.map{|t| t.twitter_handle.presence || t.name }.to_sentence if platforms.any? }"
       };
     <!-- AddThis Button END -->
     <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-51b26f5613fb83d2" async="async"></script>

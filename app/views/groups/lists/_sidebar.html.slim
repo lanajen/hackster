@@ -13,10 +13,10 @@
 
     section#sidebar-container-in
       - if @list.avatar
-        .avatar#tech-avatar-image-div
-          #tech-avatar-image style="background-image:url('#{@list.avatar(:big)}');"
-      #tech-body
-        h1= link_to @list.name, list_path(@list), id: 'tech-name'
+        .avatar#platform-avatar-image-div
+          #platform-avatar-image style="background-image:url('#{@list.avatar(:big)}');"
+      #platform-body
+        h1= link_to @list.name, list_path(@list), id: 'platform-name'
         p
           - if @list.mini_resume.present?
             = @list.mini_resume
@@ -45,7 +45,7 @@
       - if @list.has_websites?
         .display
           h4 Social links
-          #tech-websites
+          #platform-websites
             ul.websites.list-inline
               - @list.websites.select{|t,u| u.present? }.each do |type, url|
                 = render partial: "shared/website", locals: { type: type, url: url }
@@ -66,7 +66,7 @@
           h4
             i.fa.fa-cog>
             | Manage page
-          ul#tech-links
+          ul#platform-links
             / li= link_to 'Post fresh news', new_list_announcement_path(@list.user_name)
             li= link_to 'Edit settings', edit_list_path(@list)
             li= link_to 'Manage admins', group_edit_members_path(@list)

@@ -570,104 +570,104 @@
   }
 }
 
-.comments {
-  @include font-size(12);
-  textarea, input[type='text'], input[type='email'], input[type='password'] {
-    @include border-radius(0);
-    @include font-size(12);
-    height: 25px;
-    line-height: 17px;
-    min-height: 15px;
-    resize: none;
-    overflow: hidden;
-  }
-  textarea {
-    padding: 4px 4px !important;
-    width: 370px !important;
-  }
-  .first-to-comment{
-    margin-bottom: 30px;
-    text-align: center;
-    font-size: 18px;
-    font-weight: 200;
-    @include border-radius(5px);
-  }
-  .comment {
-    overflow: hidden;
-    padding: 10px 0;
-    border-bottom: 1px solid #fff;
-    position: relative;
-    &:hover .btn-delete {
-      display: block;
-    }
-    .comment-text {
-      display: inline-block;
-      padding-top: 2px;
-      width: -webkit-calc(100% - 47px);
-      width: -moz-calc(100% - 47px);
-      width: calc(100% - 47px);
-      p {
-        margin-bottom: 5px;
-        font-size: 14px;
-        line-height: 1.4em;
-      }
-      .comment_body{
-        width: 100%;
-      }
-      #comment_body{
-        width: 100% !important;
-        height: 114px;
-        resize: vertical;
-        margin-top: 0px;
-        margin-bottom: 0px;
-        padding: 10px!important;
-        font-size: 14px;
-        @include border-radius(3px);
-      }
-      .comment-submit-btn{
-        margin-top: 15px;
-      }
-    }
-    .comment-avatar {
-      display: inline-block;
-      margin-right: 15px;
-      @include border-radius(50%);
-      overflow: hidden;
-      img {
-        width: 32px;
-      }
-    }
-    .comment-author {
-      position: relative;
-      font-size: 16px;
-      font-weight: 200;
-      margin-bottom: 20px;
-      display: block;
-      margin-top: 6px;
-      color: #bbb;
-      a{
-        &:empty{
-          display: none;
-        }
-      }
-    }
-    .comment-date {
-      margin-top: 3px;
-    }
-    &.depth-1 {
-      padding-left: 38px;
-    }
-    &.depth-2 {
-      padding-left: 76px;
-    }
-    &.depth-3 {
-      padding-left: 114px;
-    }
-    &:first-child{
-      padding-top: 0;
-    }
-  }
-}
+// .comments {
+//   @include font-size(12);
+//   textarea, input[type='text'], input[type='email'], input[type='password'] {
+//     @include border-radius(0);
+//     @include font-size(12);
+//     height: 25px;
+//     line-height: 17px;
+//     min-height: 15px;
+//     resize: none;
+//     overflow: hidden;
+//   }
+//   textarea {
+//     padding: 4px 4px !important;
+//     width: 370px !important;
+//   }
+//   .first-to-comment{
+//     margin-bottom: 30px;
+//     text-align: center;
+//     font-size: 18px;
+//     font-weight: 200;
+//     @include border-radius(5px);
+//   }
+//   .comment {
+//     overflow: hidden;
+//     padding: 10px 0;
+//     border-bottom: 1px solid #fff;
+//     position: relative;
+//     &:hover .btn-delete {
+//       display: block;
+//     }
+//     .comment-text {
+//       display: inline-block;
+//       padding-top: 2px;
+//       width: -webkit-calc(100% - 47px);
+//       width: -moz-calc(100% - 47px);
+//       width: calc(100% - 47px);
+//       p {
+//         margin-bottom: 5px;
+//         font-size: 14px;
+//         line-height: 1.4em;
+//       }
+//       .comment_body{
+//         width: 100%;
+//       }
+//       #comment_body{
+//         width: 100% !important;
+//         height: 114px;
+//         resize: vertical;
+//         margin-top: 0px;
+//         margin-bottom: 0px;
+//         padding: 10px!important;
+//         font-size: 14px;
+//         @include border-radius(3px);
+//       }
+//       .comment-submit-btn{
+//         margin-top: 15px;
+//       }
+//     }
+//     .comment-avatar {
+//       display: inline-block;
+//       margin-right: 15px;
+//       @include border-radius(50%);
+//       overflow: hidden;
+//       img {
+//         width: 32px;
+//       }
+//     }
+//     .comment-author {
+//       position: relative;
+//       font-size: 16px;
+//       font-weight: 200;
+//       margin-bottom: 20px;
+//       display: block;
+//       margin-top: 6px;
+//       color: #bbb;
+//       a{
+//         &:empty{
+//           display: none;
+//         }
+//       }
+//     }
+//     .comment-date {
+//       margin-top: 3px;
+//     }
+//     &.depth-1 {
+//       padding-left: 38px;
+//     }
+//     &.depth-2 {
+//       padding-left: 76px;
+//     }
+//     &.depth-3 {
+//       padding-left: 114px;
+//     }
+//     &:first-child{
+//       padding-top: 0;
+//     }
+//   }
+// }
 
 #two-columns {
   .comment {

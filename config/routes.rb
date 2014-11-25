@@ -71,7 +71,7 @@ HackerIo::Application.routes.draw do
       get 'issues' => 'pages#issues'
       get 'logs' => 'pages#logs'
       get 'respects' => 'pages#respects'
-      get 'teches' => 'pages#teches'
+      get 'platforms' => 'pages#platforms'
       get 'followers' => 'pages#followers'
       delete 'sidekiq/failures' => 'pages#clear_sidekiq_failures'
 
@@ -129,15 +129,15 @@ HackerIo::Application.routes.draw do
     end
     resources :lists, except: [:show, :update] do
       resources :projects, only: [] do
-        post 'feature' => 'lists#feature_project'#, as: :tech_feature_project
+        post 'feature' => 'lists#feature_project'#, as: :platform_feature_project
         delete 'feature' => 'lists#unfeature_project'
       end
     end
 
-    resources :teches, except: [:show] do
+    resources :platforms, except: [:show] do
       resources :projects, only: [] do
-        post 'feature' => 'teches#feature_project'#, as: :tech_feature_project
-        delete 'feature' => 'teches#unfeature_project'
+        post 'feature' => 'platforms#feature_project'#, as: :platform_feature_project
+        delete 'feature' => 'platforms#unfeature_project'
       end
     end
 
@@ -271,6 +271,7 @@ HackerIo::Application.routes.draw do
 
     get 'about' => 'pages#about'
     # get 'help' => 'pages#help'
+    get 'test' => 'pages#test'
     get 'home', to: redirect('/')
 
     get 'ping' => 'pages#ping'  # for availability monitoring
@@ -283,23 +284,23 @@ HackerIo::Application.routes.draw do
     get 'tags/:tag' => 'search#tags', as: :tags
     get 'tags' => 'search#tags'
     get 'tools', to: redirect('platforms')
-    get 'platforms' => 'teches#index'
+    get 'platforms' => 'platforms#index'
 
     get 'infringement_policy' => 'pages#infringement_policy'
     get 'privacy' => 'pages#privacy'
     get 'terms' => 'pages#terms'
     get 'resources' => 'pages#resources'
-
+    get 'autodesk' => 'pages#autodesk'
     get 'electric-imp', to: redirect('electricimp')
 
     mount Monologue::Engine, at: '/blog'
 
-    constraints(TechPage) do
-      get ':slug' => 'teches#show', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
-      get ':slug/embed' => 'teches#embed', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
-      get ':user_name' => 'teches#show', as: :tech_short, user_name: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
-      scope ':slug', slug: /[A-Za-z0-9_\-]{3,}/, as: :tech, constraints: { format: /(html|json)/ } do
-        get 'analytics' => 'teches#analytics'
+    constraints(PlatformPage) do
+      get ':slug' => 'platforms#show', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
+      get ':slug/embed' => 'platforms#embed', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
+      get ':user_name' => 'platforms#show', as: :platform_short, user_name: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
+      scope ':slug', slug: /[A-Za-z0-9_\-]{3,}/, as: :platform, constraints: { format: /(html|json)/ } do
+        get 'analytics' => 'platforms#analytics'
         resources :announcements, except: [:create, :update, :destroy], path: :news
       end
     end

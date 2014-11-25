@@ -7,118 +7,51 @@
 
 .project-thumb-container data-ref=ref data-ref-id=ref_id data-offset=offset data-show-year=show_year class="#{'has-data' if ref and ref_id}"
   - cache ["project-#{project.id}-thumb", col], tag: ["project-#{project.id}-thumb", "team-#{project.team_id}", "team-#{project.team_id}-user-thumbs", 'project-thumb'], expires_in: 6.hours do
-    div  class="project-#{project.id}"
-      .thumb-vertical  class="col-md-#{col} col-xs-12 col-sm-6"
-        .year  style='display:none;'
-          h4= project.start_date.try(:year) || 'Undated'
-        .year-placeholder  style='display:none;'
-          .h4 &nbsp;
-        .project-thumb
-          .thumb
-            .photo-thumb
-              = link_to '', project_path(project), class: 'project-link-with-ref', style: "background-image:url(#{project.cover_image(:cover_thumb)});"
+    - project = project.decorate
+    div class="project-#{project.id}"
+      .col-sm-4.mobile-scroll-row-item
+        .thumb.project-thumb
+          .thumb-image style="background-image:url(#{project.cover_image(:cover_thumb)})"
+            = link_to '', project, class: 'link-overlay'
+            .thumb-image-inner
               .award-container
-              .thumb-top
-                .thumb-top-inner
-            .inner-thumb
-              h3
+              h4
                 - if project.is_idea?
                   i.fa.fa-lightbulb-o>
-                = link_to project.name, project_path(project), class: 'project-link-with-ref'
-              h4
+                ==> link_to project.name, project, class: 'project-link-with-ref'
+                - if project.external
+                  i.fa.fa-external-link.istooltip  title='This project is hosted on an external website' data-container='body'
+              p.show-on-hover
                 - if project.external
                   - if project.guest_name.present?
                     ' by
-                    span.fake-link>= project.guest_name
+                    strong>= project.guest_name
                   - elsif u = project.users.first
                     ' by
-                    ==> link_to u.name, u
+                    strong==> link_to u.name, u
                   ' on
                   span.fake-link= project.website_host
                 - else
                   ' by
                   - if project.guest_name.present?
-                    = project.guest_name
+                    strong= project.guest_name
                   - elsif project.team.full_name.present?
-                    | Team #{project.team.full_name}
+                    strong Team #{project.team.full_name}
                   - else
                     - users = project.users
                     - if project.team_members_count < 4
-                      = project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
+                      = project.users.map { |u| content_tag(:strong, link_to(u.name, u)) }.to_sentence.html_safe
                     - else
                       - more = content_tag(:a, "more #{content_tag(:i, '', class: 'fa fa-question-circle')}".html_safe, class: 'help', data: { container: 'body', toggle: 'popover', placement: 'bottom', content: project.users.map { |u| link_to u.name, u }.to_sentence, html: 'true', trigger: 'hover', delay: '100' }, rel: 'popover')
-                      = (project.users[0..2].map{ |u| link_to u.name, u } + [more]).to_sentence.html_safe
-              p= truncate project.one_liner, length: 140
-              .thumb-bottom
-                hr
-                - if project.public?
-                  span.counter.first.istooltip  title='Views'
-                    i.fa.fa-eye>
-                    = number_with_delimiter project.impressions_count
-                  span.counter.istooltip  title='Respects'
-                    i.fa.fa-thumbs-o-up>
-                    = project.respects_count
-                - else
-                  span.counter
-                    i.fa.fa-lock>
-                    | Private
-                span.counter.istooltip  title='Comments' data-container='body'
-                  i.fa.fa-comments>
-                  = project.comments_count
-                - if project.wip?
-                  span.counter.istooltip  title='Work in progress' data-container='body'
-                    i.fa.fa-wrench
-                - if project.external
-                  span.counter.istooltip  title='This project is hosted on an external website' data-container='body'
-                    i.fa.fa-external-link
+                      = (project.users[0..2].map{ |u| content_tag(:strong, link_to(u.name, u)) } + [more]).to_sentence.html_safe
 
-      .col-xs-12.thumb-horizontal
-        .project-thumb-horizontal.project-thumb
-          .thumb.media
-            = link_to image_tag(project.cover_image(:cover_thumb), alt: project.name, class: 'media-object'), project_path(project), class: 'pull-left photo-thumb project-link-with-ref'
-            .inner-thumb.media-body
-              h3
-                - if project.is_idea?
-                  i.fa.fa-lightbulb-o>
-                ==> link_to project.name, project_path(project), class: 'project-link-with-ref'
-                small
-                  - if project.external
-                    - if project.guest_name.present?
-                      ' by
-                      span.fake-link>= project.guest_name
-                    - elsif u = project.users.first
-                      ' by
-                      ==> link_to u.name, u
-                    ' on
-                    span.fake-link= project.website_host
-                  - else
-                    ' by
-                    - if project.guest_name.present?
-                      = project.guest_name
-                    - elsif project.team.full_name.present?
-                      | Team #{project.team.full_name}
-                    - else
-                      = project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
-              p= truncate project.one_liner, length: 140
-              .thumb-bottom
-                hr
-                - if project.public?
-                  span.counter.first.istooltip  title='Views'
-                    i.fa.fa-eye>
-                    = number_with_delimiter project.impressions_count
-                  span.counter.istooltip  title='Respects'
-                    i.fa.fa-thumbs-o-up>
-                    = project.respects_count
-                - else
-                  span.counter
-                    i.fa.fa-lock>
-                    | Private
-                span.counter.istooltip  title='Comments'
-                  i.fa.fa-comments>
-                  = project.comments_count
-                - if project.wip?
-                  span.counter.istooltip  title='Work in progress' data-container='body'
-                    i.fa.fa-wrench
-                - if project.external
-                  span.counter.istooltip  title='This project is hosted on an external website' data-container='body'
-                    i.fa.fa-external-link
+              ul.list-inline.project-stats.show-on-hover
+                li
+                  span.stat-figure> = number_with_delimiter project.impressions_count
+                  = pluralize_without_count project.impressions_count, 'view'
+                li
+                  span.stat-figure> = number_with_delimiter project.comments_count
+                  = pluralize_without_count project.comments_count, 'comment'
+                li
+                  span.stat-figure> = number_with_delimiter project.respects_count
+                  = pluralize_without_count project.respects_count, 'respect'

@@ -1,0 +1,6 @@
+.media
+  a.pull-left  href=platform_short_path(platform)
+    = image_tag platform.avatar(:thumb), class: 'media-object'
+  .media-body
+    b>= link_to platform.name, platform_short_path(platform)
+    small.text-muted platform

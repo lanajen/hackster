@@ -1,5 +1,56 @@
+/* Font-Face */
+@font-face {
+  font-family: "Proxima Nova";
+  src: asset-url('proximanova-regular.eot');
+  src: asset-url('proximanova-regular.eot?iefix') format('eot'),asset-url('proximanova-regular.woff') format('woff'),asset-url('proximanova-regular.otf') format('opentype'),asset-url('proximanova-regular.svg#webfont2rpW2ohz') format('svg');
+}
+@font-face {
+  font-family: "Proxima Nova";
+  font-style: italic;
+  src: asset-url('proximanova-regitalic.eot');
+  src: asset-url('proximanova-regitalic.eot?iefix') format('eot'),asset-url('proximanova-regitalic.woff') format('woff'),asset-url('proximanova-regitalic.otf') format('opentype'),asset-url('proximanova-regitalic.svg#webfont2rpW2ohz') format('svg');
+}
+@font-face {
+  font-family: "Proxima Nova";
+  font-weight: 300;
+  src: asset-url('proximanova-light.eot');
+  src: asset-url('proximanova-light.eot?iefix') format('eot'),asset-url('proximanova-light.woff') format('woff'),asset-url('proximanova-light.otf') format('opentype'),asset-url('proximanova-light.svg#webfont2rpW2ohz') format('svg');
+}
+@font-face {
+  font-family: "Proxima Nova";
+  font-weight: 600;
+  src: asset-url('proximanova-semibold.eot');
+  src: asset-url('proximanova-semibold.eot?iefix') format('eot'),asset-url('proximanova-semibold.woff') format('woff'),asset-url('proximanova-semibold.otf') format('opentype'),asset-url('proximanova-semibold.svg#webfont2rpW2ohz') format('svg');
+}
+@font-face {
+  font-family: "Proxima Nova";
+  font-weight: 600;
+  font-style: italic;
+  src: asset-url('proximanova-semibolditalic.eot');
+  src: asset-url('proximanova-semibolditalic.eot?iefix') format('eot'),asset-url('proximanova-semibolditalic.woff') format('woff'),asset-url('proximanova-semibolditalic.otf') format('opentype'),asset-url('proximanova-semibolditalic.svg#webfont2rpW2ohz') format('svg');
+}
+@font-face {
+  font-family: "Proxima Nova";
+  font-weight: bold;
+  src: asset-url('proximanova-bold.eot');
+  src: asset-url('proximanova-bold.eot?iefix') format('eot'),asset-url('proximanova-bold.woff') format('woff'),asset-url('proximanova-bold.otf') format('opentype'),asset-url('proximanova-bold.svg#webfont2rpW2ohz') format('svg');
+}
+@font-face {
+  font-family: "Proxima Nova";
+  font-weight: bold;
+  font-style: italic;
+  src: asset-url('proximanova-boldit.eot');
+  src: asset-url('proximanova-boldit.eot?iefix') format('eot'),asset-url('proximanova-boldit.woff') format('woff'),asset-url('proximanova-boldit.otf') format('opentype'),asset-url('proximanova-boldit.svg#webfont2rpW2ohz') format('svg');
+}
+@font-face {
+  font-family: "Proxima Nova";
+  font-weight: 900;
+  src: asset-url('proximanova-extrabold.eot');
+  src: asset-url('proximanova-extrabold.eot?iefix') format('eot'),asset-url('proximanova-extrabold.woff') format('woff'),asset-url('proximanova-extrabold.otf') format('opentype'),asset-url('proximanova-extrabold.svg#webfont2rpW2ohz') format('svg');
+}
+
 html {
-  font-size: 62.5%;
+  // font-size: 62.5%;
 }
 
 html, body {
@@ -7,10 +58,10 @@ html, body {
 }
 
 body {
-  // font-family: "Helvetica Neue", "HelveticaNeue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-family: "Proxima Nova", "HelveticaNeue", Helvetica, Arial, "Lucida Grande", sans-serif;
   background: #f2f2f2;
   -webkit-font-smoothing: antialiased;
-  font-size: 16px;
+  font-size: 18px;
   &.white {
     background: #fff;
   }
@@ -31,6 +82,11 @@ h1, h2, h3, h4, h5, h6 {
 
 img {
   max-width: 100%;
+}
+.media {
+  img {
+    max-width: none;
+  }
 }
 
 .fake-link {
@@ -93,9 +149,9 @@ img {
     display: block;
     color: #777;
     text-decoration: none;
-    font-size: 14px;
+    font-size: 0.9em;
     font-weight: 600;
-    padding: 21px 36px 19px;
+    padding: 19px 36px;
     text-align: center;
     &:hover, &:focus {
       text-decoration: none;
@@ -117,7 +173,7 @@ img {
   .navbar-brand {
     position: relative;
     display: block;
-    padding: 19px 20px 17px;
+    padding: 18px 20px;
     margin: 0;
     width: 250px;
     text-align: center;
@@ -306,7 +362,7 @@ img {
   min-width: 82px;
   &.btn-primary {
     padding: 9px 20px 8px;
-    margin-top: 12px;
+    margin-top: 10px;
     color: #fff;
   }
 }
@@ -537,7 +593,7 @@ footer {
   // height: 60px;
   background: #444447;
   // font-family: 'Open Sans', 'Helvetica Neue', 'Helvetica', sans-serif;
-  font-size: 87.5%;
+  font-size: 0.8em;
   a {
     color: #ffffff;
     &:hover {

@@ -5,7 +5,7 @@ class Challenge < ActiveRecord::Base
   include StringParser
   include Workflow
 
-  belongs_to :tech
+  belongs_to :platform, foreign_key: :tech_id
   has_many :admins, through: :challenge_admins, source: :user
   has_many :challenge_admins
   has_many :entries, -> { order(:created_at) }, dependent: :destroy, class_name: ChallengeEntry

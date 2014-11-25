@@ -8,4 +8,4 @@ Widget.update_all("widgetable_id = project_id")
 User.index.delete
 User.index_all
 Project.index_all
-Tech.index_all
+Platform.index_all

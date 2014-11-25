@@ -28,7 +28,7 @@ class SearchController < ApplicationController
         @hacker_space_label += " <span class='badge pull-right'>#{terms['hackerspace']}</span>" if terms['hackerspace']
         @people_label += " <span class='badge pull-right'>#{terms['user']}</span>" if terms['user']
         @projects_label += " <span class='badge pull-right'>#{terms['project']}</span>" if terms['project']
-        @platforms_label += " <span class='badge pull-right'>#{terms['tech']}</span>" if terms['tech']
+        @platforms_label += " <span class='badge pull-right'>#{terms['platform']}</span>" if terms['platform']
 
         track_event 'Searched projects', { query: params[:q], result_count: @results.total_count, type: params[:type] }
       rescue => e

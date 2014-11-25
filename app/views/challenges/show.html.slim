@@ -2,10 +2,10 @@
   section#top-project-section  style="background-image: url(#{@challenge.cover_image})"
     #teaser-container.wrapper700
       h1= @challenge.name
-      - if @tech
+      - if @platform
         p
           ' by
-          = link_to @tech.name, tech_short_path(@tech)
+          = link_to @platform.name, platform_short_path(@platform)
 
       - if @embed.url
         #video.embed.widescreen= render partial: "api/embeds/#{@embed.provider_name}", locals: { embed: @embed }
@@ -19,10 +19,10 @@
   section#top-bg.show-on-desktop
     #top-bg-image style="background-image:url('#{@challenge.cover_image}');"
       h1= @challenge.name
-      - if @tech
+      - if @platform
         p
           ' by
-          = link_to @tech.name, tech_short_path(@tech)
+          = link_to @platform.name, platform_short_path(@platform)
 
 - if @challenge.judging? and can? :admin, @challenge
   section#alert-section
@@ -74,7 +74,7 @@ section#projects-list
   .popup-overlay-outer
     .popup-overlay-inner
       button.close  onclick="closePopup('.popup-overlay');"   &times;
-      - link_params = @challenge.project_ideas ? { project: { mark_as_idea: true, tech_tags_string: @tech.name } } : { project: {tech_tags_string: @tech.name } }
+      - link_params = @challenge.project_ideas ? { project: { mark_as_idea: true, platform_tags_string: @platform.name } } : { project: {platform_tags_string: @platform.name } }
       - if user_signed_in?
         - if @user_projects.any?
           p Which project do you want to use to enter the challenge?

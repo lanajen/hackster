@@ -72,7 +72,7 @@
             .tags.meta
               .meta-title-wrap
                 .meta-title Built with
-              .editable-attribute*{ 'data-model' => 'project', 'data-attribute' => 'tech_tags_string', 'data-default-text' => "Add technologies you're using in this project, separated by commas. Eg: Arduino, ATmega, Attiny...", 'data-view-tpl' => "*var f=function(tagString){ var out = '', tags = []; tags = tagString.split(','); $.each(tags, function(i, tag){ tag = tag.trim(); tpl = \"<a class='tag-link' href='/tags/\" + encodeURIComponent(tag) + \"'>\" + tag + \"</a>\"; out += tpl; }); return out; }; f(value);*", 'data-value' => @project.tech_tags_string, 'data-human-name' => 'Technologies', 'data-target' => '#more-info' }
+              .editable-attribute*{ 'data-model' => 'project', 'data-attribute' => 'platform_tags_string', 'data-default-text' => "Add technologies you're using in this project, separated by commas. Eg: Arduino, ATmega, Attiny...", 'data-view-tpl' => "*var f=function(tagString){ var out = '', tags = []; tags = tagString.split(','); $.each(tags, function(i, tag){ tag = tag.trim(); tpl = \"<a class='tag-link' href='/tags/\" + encodeURIComponent(tag) + \"'>\" + tag + \"</a>\"; out += tpl; }); return out; }; f(value);*", 'data-value' => @project.platform_tags_string, 'data-human-name' => 'Platforms', 'data-target' => '#more-info' }
 
             .tags.meta
               .meta-title-wrap

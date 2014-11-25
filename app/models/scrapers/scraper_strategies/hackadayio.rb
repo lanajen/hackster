@@ -14,10 +14,10 @@ module ScraperStrategies
         @project.one_liner = @parsed.at_css('.headline .description').try(:text).try(:strip).try(:truncate, 140)
         @project.product_tags_string = @parsed.css('.section-tags .tag:not(.tag-completed)').map{|a| a.text }.join(',')
         tags = @project.product_tags_string.split(',').map{|t| t.downcase }
-        teches = Tech.joins(:tech_tags).where("LOWER(tags.name) IN (?)", tags).distinct(:id)
-        if teches.any?
-          @project.teches = teches
-          @project.tech_tags_string = teches.map{|t| t.name }.join(',')
+        platforms = Platform.joins(:platform_tags).where("LOWER(tags.name) IN (?)", tags).distinct(:id)
+        if platforms.any?
+          @project.platforms = platforms
+          @project.platform_tags_string = platforms.map{|t| t.name }.join(',')
         end
 
         super

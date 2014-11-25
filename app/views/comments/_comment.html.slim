@@ -10,12 +10,12 @@
         = comment.guest_name
       - else
         ==> comment.user.decorate.name_link
-        - if members = TechMember.where(user_id: comment.user_id).includes(:group) and members.any?
+        - if members = PlatformMember.where(user_id: comment.user_id).includes(:group) and members.any?
           - members.each do |member|
-            - tech = member.group
+            - platform = member.group
             span.badge
               ' Team
-              ==> link_to tech.name, tech, class: 'hidden-link'
+              ==> link_to platform.name, platform, class: 'hidden-link'
               i.fa.fa-check-circle.istooltip title="Verified" style="color:#66C866" data-container='body'
 
     = auto_html(comment.body) { link(:target => 'blank') }.html_safe

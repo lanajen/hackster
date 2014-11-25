@@ -92,12 +92,6 @@ $(function () {
     return false;
   });
 
-  $(document).on('click', '.btn-signup', function(e){
-    $('#signup-block').slideToggle(200);
-    $(this).toggleClass('active');
-    e.preventDefault();
-  });
-
   //[data-remote="true"]
   $(document)
     .on("ajax:beforeSend", 'form', function(evt, xhr, settings){

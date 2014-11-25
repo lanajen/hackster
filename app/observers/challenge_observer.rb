@@ -1,17 +1,17 @@
 class ChallengeObserver < ActiveRecord::Observer
   def after_launch record
-    if tech = record.tech
-      tech.active_challenge = true
-      tech.save
+    if platform = record.platform
+      platform.active_challenge = true
+      platform.save
     end
   end
 
   def after_end record
     BaseMailer.enqueue_email 'challenge_ended_notification',
       { context_type: 'challenge', context_id: record.id }
-    if tech = record.tech
-      tech.active_challenge = false
-      tech.save
+    if platform = record.platform
+      platform.active_challenge = false
+      platform.save
     end
   end
 

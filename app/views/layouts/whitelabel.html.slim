@@ -44,7 +44,7 @@ html(lang="en")
 
   body.whitelabel
     #outer-wrapper
-      - cache "tech-#{current_tech.id}-client-nav", tag: ["tech-#{current_tech.id}-client-nav", "tech-client-nav"] do
+      - cache "platform-#{current_platform.id}-client-nav", tag: ["platform-#{current_platform.id}-client-nav", "platform-client-nav"] do
         .navbar.navbar-default.navbar-static-top
           .container  style='position:relative;'
             .navbar-header
@@ -53,7 +53,7 @@ html(lang="en")
                 span.fa.fa-bar
                 span.fa.fa-bar
               span.navbar-brand.navbar-btn
-                ==> link_to (current_tech.logo.present? ? image_tag(current_tech.logo.file_url) : current_platform.name), root_path, class: ''
+                ==> link_to (current_platform.logo.present? ? image_tag(current_platform.logo.file_url) : current_platform.name), root_path, class: ''
                 small  style='font-size:11px;'
                   ' powered by
                   = link_to image_tag('hackster_logo_20.png', style: 'height:11px;vertical-align:text-top;'), root_url(subdomain: 'www')

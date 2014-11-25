@@ -14,13 +14,13 @@
     meta(property="twitter:creator" content="@#{handle}")
   meta(property="twitter:image:src" content=@project.cover_image(:cover_thumb))
   link(rel="canonical" href=external_project_url(@project))
-  - if @project.tech_tags_string.present?
-    meta(name='keywords' content=@project.tech_tags_string)
+  - if @project.platform_tags_string.present?
+    meta(name='keywords' content=@project.platform_tags_string)
 
-- @project.tech_tags_cached.map do |tag|
-  - if tech = Tech.includes(:tech_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first
+- @project.platform_tags_cached.map do |tag|
+  - if platform = Platform.includes(:platform_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first
     = content_for :js do
-      = render partial: 'groups/teches/tech_card', locals: { tech: tech }
+      = render partial: 'groups/platforms/platform_card', locals: { platform: platform }
 
 = content_for :no_container do
   .project
@@ -72,12 +72,12 @@
                       span.user-name
                         = link_to u.name, u, class: 'hidden-link'
 
-              - if @project.tech_tags_cached.any?
+              - if @project.platform_tags_cached.any?
                 .tags.meta.pull-left
                   ' with
-                  - tags = @project.tech_tags_cached.map do |tag|
-                    - if tech = Tech.includes(:tech_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first
-                      - link_to "#{content_tag(:i, '', class: 'fa fa-star')} #{tech.name}".html_safe, tech_short_path(tech), class: 'tag-link tech-card-popover', data: { target: "#tech-card-#{tech.id}" }
+                  - tags = @project.platform_tags_cached.map do |tag|
+                    - if platform = Platform.includes(:platform_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first
+                      - link_to "#{content_tag(:i, '', class: 'fa fa-star')} #{platform.name}".html_safe, platform_short_path(platform), class: 'tag-link platform-card-popover', data: { target: "#platform-card-#{platform.id}" }
                     - else
                       - link_to tag, tag_path(tag), class: 'tag-link'
                   = tags.to_sentence.html_safe

@@ -8,12 +8,12 @@
             h3 Have a project #{'idea ' if challenge.project_ideas}of your own?
             p= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Enter the challenge".html_safe, '', class: 'btn btn-primary btn-sm enter-challenge'
           .photo-thumb
-            = link_to '', '', style: "background-image:url(#{challenge.cover_image.try(:file_url) || challenge.try(:tech).try(:avatar).try(:file_url, :big)});", class: 'enter-challenge'
+            = link_to '', '', style: "background-image:url(#{challenge.cover_image.try(:file_url) || challenge.try(:platform).try(:avatar).try(:file_url, :big)});", class: 'enter-challenge'
 
     .col-xs-12.thumb-horizontal
       .project-thumb-horizontal.project-thumb
         .thumb.media
-          = link_to image_tag(challenge.cover_image.try(:file_url) || challenge.try(:tech).try(:avatar).try(:file_url, :big), alt: challenge.name, class: 'media-object'), '', class: 'pull-right photo-thumb enter-challenge'
+          = link_to image_tag(challenge.cover_image.try(:file_url) || challenge.try(:platform).try(:avatar).try(:file_url, :big), alt: challenge.name, class: 'media-object'), '', class: 'pull-right photo-thumb enter-challenge'
           .inner-thumb.media-body
             h3 Have a project of your own?
             p= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Enter the challenge".html_safe, '', class: 'btn btn-primary btn-sm enter-challenge'

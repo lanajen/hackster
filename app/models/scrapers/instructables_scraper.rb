@@ -1,28 +1,28 @@
 class InstructablesScraper
-  attr_accessor :tech
+  attr_accessor :platform
 
-  def self.scrape_in_bulk teches
-    # teches = ['Raspberry Pi', 'Arduino', 'Spark Core', 'Electric Imp', 'Teensy', 'Digispark', 'BeagleBoard', 'Intel Galileo', 'Pebble', 'pcDuino', 'TI Launchpad']
+  def self.scrape_in_bulk platforms
+    # platforms = ['Raspberry Pi', 'Arduino', 'Spark Core', 'Electric Imp', 'Teensy', 'Digispark', 'BeagleBoard', 'Intel Galileo', 'Pebble', 'pcDuino', 'TI Launchpad']
     results = {}
 
-    teches.each do |tech|
-      results[tech] = new(tech).scrape
+    platforms.each do |platform|
+      results[platform] = new(platform).scrape
     end
 
     results
   end
 
-  def initialize tech
-    @tech = tech
+  def initialize platform
+    @platform = platform
   end
 
   def scrape
-    puts "[Scraper] Scraping instructables.com for #{tech}"
+    puts "[Scraper] Scraping instructables.com for #{platform}"
     offset = 0
     results = { errors: [], successes: 0, skips: 0 }
 
     while true do
-      p=ProjectScraper.new "http://www.instructables.com/tag/type-id/category-technology/?sort=none&partial=true&q=#{CGI.escape(tech)}&count=50&offset=#{offset}&page=1&sort=RECENT"
+      p=ProjectScraper.new "http://www.instructables.com/tag/type-id/category-technology/?sort=none&partial=true&q=#{CGI.escape(platform)}&count=50&offset=#{offset}&page=1&sort=RECENT"
       parsed = Nokogiri::HTML p.scrape
       lis = parsed.css('li')
       break if lis.empty?
@@ -35,14 +35,14 @@ class InstructablesScraper
           if project = Project.find_by_website(link)
             puts "[Scraper] Found existing project on instructables.com: #{link}"
             if project.external and project.approved.nil?
-              project.tech_tags_string += ",#{tech}" unless project.tech_tags_string =~ Regexp.new(tech)
+              project.platform_tags_string += ",#{platform}" unless project.platform_tags_string =~ Regexp.new(platform)
               project.save
             end
             results[:skips] += 1
           else
-            puts "[Scraper] Scraping project in #{tech}: #{name} at #{link}"
+            puts "[Scraper] Scraping project in #{platform}: #{name} at #{link}"
             image = li.at_css('img')['src'].gsub(/RECTANGLE1/, 'LARGE')
-            project = Project.new name: name, guest_name: author, website: link, one_liner: name, tech_tags_string: tech
+            project = Project.new name: name, guest_name: author, website: link, one_liner: name, platform_tags_string: platform
             project.build_cover_image
             project.cover_image.remote_file_url = image
             project.external = true

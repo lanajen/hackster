@@ -3,16 +3,16 @@ class ScraperQueue < BaseWorker
   # @queue = :scraper
   sidekiq_options queue: :low, retry: false
 
-  def scrape_instructables teches=TECHES_TO_SCRAPE
-    @results = InstructablesScraper.scrape_in_bulk teches
+  def scrape_instructables platforms=TECHES_TO_SCRAPE
+    @results = InstructablesScraper.scrape_in_bulk platforms
 
     @message = Message.new(
       message_type: 'generic',
     )
     @message.subject = "Results for instructables.com import"
-    @message.body = "<p>#{@results.size} teches were imported:</p>"
-    @results.each do |tech, results|
-      @message.body += "<p><b>#{tech}: #{results[:errors].size} errors, #{results[:successes]} successes, #{results[:skips]} skips</p>"
+    @message.body = "<p>#{@results.size} platforms were imported:</p>"
+    @results.each do |platform, results|
+      @message.body += "<p><b>#{platform}: #{results[:errors].size} errors, #{results[:successes]} successes, #{results[:skips]} skips</p>"
     end
     BaseMailer.enqueue_generic_email(@message)
 
@@ -22,7 +22,7 @@ class ScraperQueue < BaseWorker
     log_error e, clean_backtrace, message
   end
 
-  def scrape_project page_url, user_id, tech_tags_string=nil
+  def scrape_project page_url, user_id, platform_tags_string=nil
     @message = Message.new(
       to_email: User.find(user_id).email,
       message_type: 'generic'
@@ -38,7 +38,7 @@ class ScraperQueue < BaseWorker
         @project.build_team
         @project.team.members.new(user_id: user_id)
         @project.blog_posts.each{|p| p.user_id = user_id }
-        @project.tech_tags_string = tech_tags_string if tech_tags_string.present?
+        @project.platform_tags_string = platform_tags_string if platform_tags_string.present?
         messages = @project.errors.messages.map{|k,v| "#{k} #{v.to_sentence};" }
         raise ScrapeError, "Couldn't save project because #{messages.to_sentence}" unless @project.save
         @project.blog_posts.each{|p| p.draft = false; p.save }
@@ -65,10 +65,10 @@ class ScraperQueue < BaseWorker
     BaseMailer.enqueue_generic_email(@message)
   end
 
-  def scrape_projects page_urls, user_id, tech_tags_string=nil
+  def scrape_projects page_urls, user_id, platform_tags_string=nil
     urls = page_urls.gsub(/\r\n/, ',').gsub(/\n/, ',').gsub(/[ ]+/, ',').split(',').reject{ |l| l.blank? }
     urls.each do |url|
-      self.class.perform_async 'scrape_project', url, user_id, tech_tags_string
+      self.class.perform_async 'scrape_project', url, user_id, platform_tags_string
     end
   end
 

@@ -17,7 +17,7 @@ class User < ActiveRecord::Base
     'new_follow_me' => 'Somebody starts following me',
     'follow_project_activity' => 'Activity for a project I follow',
     'follow_user_activity' => 'Activity for a user I follow',
-    'follow_tech_activity' => 'Activity for a platform I follow',
+    'follow_platform_activity' => 'Activity for a platform I follow',
     'follow_list_activity' => 'Activity for a list I follow',
   }
   CATEGORIES = %w()
@@ -43,7 +43,7 @@ class User < ActiveRecord::Base
   has_many :followed_lists, -> { order('groups.full_name ASC').where("groups.type = 'List'") }, source_type: 'Group', through: :follow_relations, source: :followable
   has_many :followed_projects, source_type: 'Project', through: :follow_relations, source: :followable
   has_many :followed_users, source_type: 'User', through: :follow_relations, source: :followable
-  has_many :followed_teches, -> { order('groups.full_name ASC').where("groups.type = 'Tech'") }, source_type: 'Group', through: :follow_relations, source: :followable
+  has_many :followed_platforms, -> { order('groups.full_name ASC').where("groups.type = 'Platform'") }, source_type: 'Group', through: :follow_relations, source: :followable
   has_many :grades, as: :gradable
   has_many :invert_follow_relations, class_name: 'FollowRelation', as: :followable
   has_many :followers, through: :invert_follow_relations, source: :user
@@ -64,7 +64,7 @@ class User < ActiveRecord::Base
   has_many :respected_projects, through: :respects, source: :project
   has_many :team_grades, through: :teams, source: :grades
   has_many :teams, through: :group_ties, source: :group, class_name: 'Team'
-  has_many :teches, -> { order('groups.full_name ASC') }, through: :group_ties, source: :group, class_name: 'Tech'
+  has_many :platforms, -> { order('groups.full_name ASC') }, through: :group_ties, source: :group, class_name: 'Platform'
   has_one :avatar, as: :attachable, dependent: :destroy
   has_one :reputation, dependent: :destroy
   has_one :slug, as: :sluggable, dependent: :destroy, class_name: 'SlugHistory'
@@ -116,13 +116,13 @@ class User < ActiveRecord::Base
     :invitations_count, :projects_count, :respects_count, :skill_tags_count,
     :live_projects_count, :project_views_count, :followers_count,
     :websites_count, :popularity_points_count, :project_respects_count,
-    :teches_count, :live_hidden_projects_count, :followed_users_count,
+    :platforms_count, :live_hidden_projects_count, :followed_users_count,
     :hacker_spaces_count]
 
   parse_as_integers :counters_cache, :comments_count, :interest_tags_count,
     :invitations_count, :projects_count, :respects_count, :skill_tags_count,
     :live_projects_count, :project_views_count, :websites_count,
-    :popularity_points_count, :project_respects_count, :teches_count,
+    :popularity_points_count, :project_respects_count, :platforms_count,
     :live_hidden_projects_count, :followed_users_count, :hacker_spaces_count
 
   delegate :can?, :cannot?, to: :ability
@@ -327,7 +327,7 @@ class User < ActiveRecord::Base
       project_views: 'projects.sum(:impressions_count)',
       respects: 'respects.count',
       skill_tags: 'skill_tags.count',
-      teches: 'followed_teches.count',
+      platforms: 'followed_platforms.count',
       websites: 'websites.values.select{|v| v.present? }.size',
     }
   end
@@ -551,8 +551,8 @@ class User < ActiveRecord::Base
     members.first
   end
 
-  def is_tech_member? tech
-    TechMember.where(group_id: tech.id, user_id: id).any?
+  def is_platform_member? platform
+    PlatformMember.where(group_id: platform.id, user_id: id).any?
   end
 
   def link_to_provider provider, uid, data=nil

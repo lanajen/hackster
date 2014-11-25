@@ -23,6 +23,31 @@
   #signup-block {
     top: 57px;
   }
+  /* Project Page */
+  .single-prompt {
+    > img {
+      width: 100%;
+      float: none !important;
+    }
+  }
+  /* Autodesk2 */
+  .autodesk2-page {
+    .banner {
+      .banner-right .block-1 .item .value {
+        font-size: 20px;
+      }
+      .banner-left, .banner-right {
+        margin-top: 265px;
+      }
+    }
+  }
+  .autodesk2-page .single-tool h4 {
+    font-size: 15px;
+    a{
+      margin-top: 0;
+    }
+  }
+
   footer {
     ul.list-inline > li {
       padding-left: 17px;
@@ -44,6 +69,116 @@
 }
 
 @media only screen and (max-width: 768px) {
+  /* Autodesk2 */
+  .autodesk2-page .banner {
+    margin-bottom: 0px;
+    .banner-left {
+      margin-top: 35%;
+    }
+    .banner-right {
+      margin-top: 20px;
+    }
+  }
+  /* Project */
+  .content-left h3.title {
+    color: #000000;
+  }
+  #sidebar {
+    float: none !important;
+  }
+  .single-prompt {
+    > img {
+      width: 130px;
+      float: left !important;
+    }
+  }
+  #content.project-page {
+    .carousel-control {
+      display: none;
+    }
+    .content-container {
+      padding: 10px 15px;
+    }
+  }
+  .content-left {
+    .media + .media {
+      margin-left: 50px;
+      &:before {
+        margin-right: 30px;
+      }
+      &:after {
+        width: 30px;
+      }
+    }
+    .comment-area {
+      border: 0;
+      .textarea-content {
+        display: block;
+        width: 100%;
+      }
+      .button-area {
+        display: block;
+        text-align: right;
+        margin-top: 10px;
+        padding: 0;
+      }
+    }
+  }
+  .project-avatar .project-tag {
+    float: none !important;
+    clear: both;
+    padding-top: 15px;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  /* Autodesk2 */
+  .autodesk2-page {
+    .banner {
+      .banner-right {
+        margin-top: 15px;
+      }
+      .banner-left h1 {
+        font-size: 25px;
+      }
+    }
+    .content .img-block img {
+      width: 100%;
+      margin-bottom: 1px;
+    }
+  }
+  /* Project */
+  .content-left .single-comment .media-body .media-title .reply-comment {
+    float: none;
+    clear: both;
+    padding-top: 15px;
+  }
+  .project-image .project-detail {
+    position: static;
+    background: #333333 !important;
+    > div {
+      padding: 0 15px 10px 15px;
+      .detail-content ul.list-inline {
+        margin-left: 0;
+        margin-top: 10px;
+      }
+    }
+  }
+  .project-avatar {
+    padding: 15px;
+    .project-tag > li span.label {
+      display: inline-block;
+      margin-bottom: 5px;
+    }
+  }
+  #sidebar {
+    h4.title{
+      color: #000000;
+    }
+  }
+}
+
+@media only screen and (max-width: 767px) {
   #about #teaser .slide {
     padding-top: 100px;
   }
@@ -103,7 +238,7 @@
   #mobile-bottom-bar {
     display: block;
   }
-  #tech-page {
+  #platform-page {
     #sidebar-container {
       display: block;
       position: static;

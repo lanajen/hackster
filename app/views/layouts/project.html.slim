@@ -14,9 +14,9 @@
   #project-page.page-div
     - if @show_sidebar
       - if @mode == 'normal'
-        - @project.known_teches.each do |tech|
+        - @project.known_platforms.each do |platform|
           = content_for :js do
-            = render partial: 'groups/teches/tech_card', locals: { tech: tech }
+            = render partial: 'groups/platforms/platform_card', locals: { platform: platform }
 
       = render "projects/project_sidebar_nav_#{@mode}"
       #content-with-sidebar.project

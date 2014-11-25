@@ -1,5 +1,5 @@
 class SitemapController < ApplicationController
-  DYNAMIC_CATEGORIES = %w(blog projects external_projects teches users product_tags hacker_spaces)
+  DYNAMIC_CATEGORIES = %w(blog projects external_projects platforms users product_tags hacker_spaces)
   ALL_CATEGORIES = DYNAMIC_CATEGORIES + %w(static)
   PER_PAGE = 100
   skip_before_filter :store_location_before
@@ -98,16 +98,16 @@ class SitemapController < ApplicationController
       end
     end
 
-    def teches_query
-      Tech
+    def platforms_query
+      Platform
     end
 
-    def teches_pages offset=0
-      sitemap_scope(teches_query, offset).map do |tech|
+    def platforms_pages offset=0
+      sitemap_scope(platforms_query, offset).map do |platform|
         {
-          loc: "#{tech_short_url(tech)}",
+          loc: "#{platform_short_url(platform)}",
           changefreq: 'weekly',
-          lastmod: tech.updated_at.strftime("%F"),
+          lastmod: platform.updated_at.strftime("%F"),
         }
       end
     end

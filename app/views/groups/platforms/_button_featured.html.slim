@@ -1,0 +1,8 @@
+- if can? :manage, @platform and request.path !~ /embed/
+  - if project.in? @platform.featured_projects
+    .project-award
+      i.fa.fa-star>
+      | Featured
+    = link_to 'Unfeature this project', platform_project_feature_path(@platform, project), data: { method: :delete, remote: true }, class: 'project-feature btn btn-default btn-xs'
+  - else
+    = link_to 'Feature this project', platform_project_feature_path(@platform, project), data: { method: :post, remote: true }, class: 'project-feature btn btn-default btn-xs'
