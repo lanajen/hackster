@@ -131,6 +131,7 @@
         @include border-radius(50%);
         overflow: hidden;
         margin-right: 10px;
+        width: 30px;
       }
       .profile-name {
         float: left;
@@ -288,7 +289,7 @@
 
 .section-collapsible {
   background: #fff;
-  padding: 10px 20px;
+  padding: 10px 40px;
   border-bottom: 1px solid #ddd;
   &:last-of-type {
     border-bottom: 0;
@@ -378,5 +379,12 @@
   }
   a {
     color: #fff;
+  }
+}
+
+.user-name {
+  font-weight: bold;
+  a {
+
   }
 }

@@ -13,7 +13,6 @@ HackerIo::Application.routes.draw do
   # end
 
   constraints(MainSite) do
-
     get 'sitemap_index.xml' => 'sitemap#index', as: 'sitemap_index', defaults: { format: 'xml' }
     get 'sitemap.xml' => 'sitemap#show', as: 'sitemap', defaults: { format: 'xml' }
 
@@ -75,12 +74,21 @@ HackerIo::Application.routes.draw do
       get 'followers' => 'pages#followers'
       delete 'sidekiq/failures' => 'pages#clear_sidekiq_failures'
 
+      resources :awarded_badges, only: [:create], controller: 'badges'
+      resources :badges, except: [:show, :create]
+      resources :blog_posts, except: [:show]
       resources :groups, except: [:show]
       resources :projects, except: [:show]
       resources :users, except: [:show]
 
       root to: 'pages#root'
     end  # end admin
+
+    scope '/blog', module: :hackster_blog do
+      get '' => 'posts#index', as: :blog_index
+      get 'tags/:tag' => 'posts#index', as: :blog_tag
+      get '*slug' => 'posts#show', as: :blog_post, slug: /[a-zA-Z0-9\-\/]+/
+    end
 
     resources :comments, only: [:edit, :update, :destroy]
 
@@ -185,6 +193,8 @@ HackerIo::Application.routes.draw do
     # end groups
 
     resources :files, only: [:create, :show, :destroy] do
+      get 'remote_upload' => 'files#check_remote_upload', on: :collection
+      post 'remote_upload', on: :collection
       get 'signed_url', on: :collection
     end
     delete 'notifications' => 'notifications#destroy'
@@ -271,7 +281,7 @@ HackerIo::Application.routes.draw do
 
     get 'about' => 'pages#about'
     # get 'help' => 'pages#help'
-    get 'test' => 'pages#test'
+    get 'achievements' => 'pages#achievements'
     get 'home', to: redirect('/')
 
     get 'ping' => 'pages#ping'  # for availability monitoring
@@ -292,8 +302,6 @@ HackerIo::Application.routes.draw do
     get 'resources' => 'pages#resources'
     get 'autodesk' => 'pages#autodesk'
     get 'electric-imp', to: redirect('electricimp')
-
-    mount Monologue::Engine, at: '/blog'
 
     constraints(PlatformPage) do
       get ':slug' => 'platforms#show', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }

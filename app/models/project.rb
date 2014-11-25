@@ -99,14 +99,15 @@ class Project < ActiveRecord::Base
 
   store :counters_cache, accessors: [:comments_count, :product_tags_count,
     :widgets_count, :followers_count, :build_logs_count,
-    :issues_count, :team_members_count, :platform_tags_count]
+    :issues_count, :team_members_count, :platform_tags_count, :communities_count]
 
   store :properties, accessors: [:private_logs, :private_issues, :locked,
     :guest_twitter_handle, :celery_id]
 
   parse_as_integers :counters_cache, :comments_count, :product_tags_count,
     :widgets_count, :followers_count, :build_logs_count,
-    :issues_count, :team_members_count, :platform_tags_count
+    :issues_count, :team_members_count, :platform_tags_count,
+    :communities_count
 
   parse_as_booleans :properties, :private_logs, :private_issues, :locked
 
@@ -172,11 +173,16 @@ class Project < ActiveRecord::Base
   end
 
   def self.featured_by_collection collectable_type, collectable_id
-    indexable.joins(:project_collections).where(project_collections: { collectable_id: collectable_id, collectable_type: collectable_type, workflow_state: 'featured' }).order('project_collections.updated_at DESC')
+    indexable_and_external.joins(:project_collections).where(project_collections: { collectable_id: collectable_id, collectable_type: collectable_type, workflow_state: 'featured' }).order('project_collections.updated_at DESC')
+    # where(project_collections: { workflow_state: 'featured' })
   end
 
   def self.for_thumb_display
     includes(:users).includes(:cover_image).includes(:team)
+  end
+
+  def self.for_thumb_display_in_collection
+    includes(project: :users).includes(project: :cover_image).includes(project: :team)
   end
 
   def self.indexable
@@ -227,6 +233,10 @@ class Project < ActiveRecord::Base
     (issues + Issue.where(threadable_type: 'Widget').where('threadable_id IN (?)', widgets.pluck('widgets.id'))).sort_by{ |t| t.created_at }
   end
 
+  def build_logs
+    blog_posts
+  end
+
   def buy_link_host
     URI.parse(buy_link).host.gsub(/^www\./, '')
   rescue
@@ -249,6 +259,7 @@ class Project < ActiveRecord::Base
     {
       build_logs: 'blog_posts.published.count',
       comments: 'comments.count',
+      communities: 'platforms.count',
       followers: 'followers.count',
       issues: 'issues.where(type: "Issue").count',
       product_tags: 'product_tags_cached.count',
@@ -413,7 +424,7 @@ class Project < ActiveRecord::Base
   end
 
   def mark_as_idea=(val)
-    self.workflow_state = ((val or val.in?([1, '1', 't'])) ? 'idea' : nil)
+    self.workflow_state = (val.in?([1, '1', 't']) ? 'idea' : nil)
   end
 
   def name

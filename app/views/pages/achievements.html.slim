@@ -1,0 +1,129 @@
+- cache ['achievements'], tag: ['achievements'], expires_in: 24.hours do
+  .page.wellified
+    h1.top What are achievements?
+    p
+      | Hackster is a community, and it's its members that make it a great place. Given this, we wanted to celebrate the hackers that put time and effort into making Hackster a great place to share and learn. Now, every time you do something that helps the greater community, you get rewarded.
+
+    h2 Green badges
+    p
+     | Green badges reward the first time an action was taken on the site. It's an encouragement to try out all the ways to get involved in the community.
+     ul
+      li
+        ' Hacker profile completed
+        strong
+          small
+            | (#{AwardedBadge.where(level: :green, badge_code: :profile_completed).count})
+      li
+        ' First respect given
+        strong
+          small
+            | (#{AwardedBadge.where(level: :green, badge_code: :respected_project).count})
+      li
+        ' First hacker followed
+        strong
+          small
+            | (#{AwardedBadge.where(level: :green, badge_code: :followed_user).count})
+      li
+        ' First platform followed
+        strong
+          small
+            | (#{AwardedBadge.where(level: :green, badge_code: :followed_platform).count})
+      li
+        ' First hacker space joined
+        strong
+          small
+            | (#{AwardedBadge.where(level: :green, badge_code: :joined_hacker_space).count})
+      li
+        ' First project published
+        strong
+          small
+            | (#{AwardedBadge.where(level: :green, badge_code: :created_project).count})
+      li
+        ' First comment posted
+        strong
+          small
+            | (#{AwardedBadge.where(level: :green, badge_code: :commented_on_project).count})
+      li
+        ' First respect received a project
+        strong
+          small
+            | (#{AwardedBadge.where(level: :green, badge_code: :project_respected).count})
+      li
+        ' First follower on your profile
+        strong
+          small
+            | (#{AwardedBadge.where(level: :green, badge_code: :profile_followed).count})
+      li
+        ' One of your projects hit 100 views
+        strong
+          small
+            | (#{AwardedBadge.where(level: :green, badge_code: :project_viewed).count})
+
+    h2 Bronze badges
+    p
+      | Bronze badges reward special actions or events that show that your contribution was helpful.
+    ul
+      li
+        ' You commented on a project and left useful feedback
+        strong
+          small
+            | (#{AwardedBadge.where(level: :bronze, badge_code: :useful_feedback).count})
+      / li
+        ' You published a detailed and well formatted project that other hackers can take a replicate easily
+        strong
+          small
+            | (#{AwardedBadge.where(level: :bronze, badge_code: :detailed_project).count})
+      li
+        ' You answered a question from another hacker that was posted on your own project
+        strong
+          small
+            | (#{AwardedBadge.where(level: :bronze, badge_code: :answered_question_own).count})
+      li
+        ' You answered a question from another hacker that was posted on somebody else's project
+        strong
+          small
+            | (#{AwardedBadge.where(level: :bronze, badge_code: :answered_question_other).count})
+      li
+        ' 10+ hackers followed your profile
+        strong
+          small
+            | (#{AwardedBadge.where(level: :bronze, badge_code: :profile_followed).count})
+      li
+        '  You published 5+ projects
+        strong
+          small
+            | (#{AwardedBadge.where(level: :bronze, badge_code: :created_project).count})
+      li
+        ' One of your projects received 10+ respects
+        strong
+          small
+            | (#{AwardedBadge.where(level: :bronze, badge_code: :project_respected).count})
+      li
+        ' One of your projects hit 1,000 views
+        strong
+          small
+            | (#{AwardedBadge.where(level: :bronze, badge_code: :project_viewed).count})
+
+    h2 Silver badges
+    p
+      | Silver badges reward special actions or events that show that your contribution was <i>really</i> helpful.
+    ul
+      li
+        ' You published 20+ projects
+        strong
+          small
+            | (#{AwardedBadge.where(level: :silver, badge_code: :created_project).count})
+      li
+        ' One of your projects received 50+ respects
+        strong
+          small
+            | (#{AwardedBadge.where(level: :silver, badge_code: :project_respected).count})
+      li
+        ' One of your projects hit 10,000 views
+        strong
+          small
+            | (#{AwardedBadge.where(level: :silver, badge_code: :project_viewed).count})
+
+    h2 What else?
+    p
+      | We'll keep coming up with new badges that recognize great contributions. If you have suggestions on how to do so, let us know via hi@hackster.io.

@@ -23,7 +23,7 @@ class Ability
     can :read, Issue do |thread|
       @user.can? :read, thread.threadable and !thread.threadable.private_issues
     end
-    can :create, Project, external: true
+    # can :create, Project, external: true
     can :join, Group do |group|
       !@user.persisted? and group.access_level == 'anyone'
     end

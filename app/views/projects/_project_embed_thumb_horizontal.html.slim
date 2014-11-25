@@ -29,7 +29,7 @@
         - if project.public?
           span.counter.first
             i.fa.fa-eye>
-            = project.impressions_count
+            = number_to_human project.impressions_count
           span.counter
             i.fa.fa-thumbs-o-up>
             = project.respects_count

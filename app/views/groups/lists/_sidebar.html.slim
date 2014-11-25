@@ -9,7 +9,6 @@
 
 - cache ["list-#{@list.id}-sidebar", user_signed_in?, can?(:manage, @list), (user_signed_in? and current_user.following?(@list))], tag: ["list-#{@list.id}-sidebar", 'list-sidebar'] do
   #sidebar-container.affixable
-    - @list = GroupDecorator.decorate @list
 
     section#sidebar-container-in
       - if @list.avatar

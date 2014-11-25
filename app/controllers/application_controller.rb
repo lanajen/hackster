@@ -1,6 +1,8 @@
 class ApplicationController < ActionController::Base
   include UrlHelper
 
+  include Rewardino::ControllerExtension
+
   KNOWN_EVENTS = {
     'hob' => 'Identified as hobbyist',
     'pro' => 'Identified as professional',
@@ -19,6 +21,8 @@ class ApplicationController < ActionController::Base
   before_filter :set_new_user_session
   before_filter :store_location_before
   before_filter :track_visitor
+  before_filter :check_new_badge
+  prepend_after_filter :show_badge
   after_filter :store_location_after
   after_filter :track_landing_page
   helper_method :flash_disabled?
@@ -92,6 +96,24 @@ class ApplicationController < ActionController::Base
         flash.keep
         redirect_to request.path and return
       end
+    end
+
+    def check_new_badge
+      if session[:new_badge]
+        @new_badge = Rewardino::Badge.find session[:new_badge]
+        @badge_level = session[:badge_level]
+        session.delete :new_badge
+        session.delete :badge_level
+      end
+      # @new_badge = Rewardino::Badge.all.first
+      # @badge_level = :bronze
+    end
+
+    def show_badge
+      return unless request.xhr?
+
+      check_new_badge
+      response.headers['X-New-Badge'] = render_to_string(partial: 'shared/badge_alert', locals: { badge: @new_badge, level: @badge_level }) if @new_badge and @badge_level
     end
 
     def current_ability
@@ -229,6 +251,7 @@ class ApplicationController < ActionController::Base
         shown_banner_count: cookies[:shown_banner_count],
         visits_count_before_signup: JSON.parse(cookies[:visits]).size,
         simplified: simplified,
+        source: params[:source],
       }
 
       track_alias
@@ -251,6 +274,7 @@ class ApplicationController < ActionController::Base
       if visits[Date.today.to_s].present?
         visits[Date.today.to_s] = visits[Date.today.to_s].to_i + 1
       else
+        track_event 'Registered user visited', { logged_in: user_signed_in? } if user_signed_in? or cookies[:member]
         visits[Date.today.to_s] = 1
       end
       cookies[:visits] = visits.to_json

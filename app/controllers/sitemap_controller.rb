@@ -57,13 +57,13 @@ class SitemapController < ApplicationController
     end
 
     def blog_query
-      Monologue::Post.published
+      HacksterBlogPost.published
     end
 
     def blog_pages offset=0
       sitemap_scope(blog_query, offset).map do |post|
         {
-          loc: "http://#{APP_CONFIG['full_host']}#{post.full_url}",
+          loc: blog_post_url(post.slug),
           changefreq: 'monthly',
           lastmod: post.updated_at.strftime("%F"),
         }

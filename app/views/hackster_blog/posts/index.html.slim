@@ -1,0 +1,14 @@
+= content_for :head do
+  = auto_discovery_link_tag :rss, blog_index_path(format: :rss), title: 'Last posts - Hackster.io'
+  = auto_discovery_link_tag :atom, blog_index_path(format: :atom), title: 'Last posts - Hackster.io'
+
+- if params[:tag]
+  p
+    ' Showing posts with label
+    span.label.label-default>= params[:tag]
+    = link_to 'Show all posts', blog_index_path
+
+- @posts.each do |post|
+  = render partial: 'hackster_blog/posts/post', locals: { post: post }
+
+.text-center= will_paginate @posts

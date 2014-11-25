@@ -764,13 +764,16 @@ $(function () {
         }
         break;
 
-      case 'add-slide':
-        // $('#upload-placeholder').remove();
+      case 'add-slide-upload':
         $('.upload-here').removeClass('upload-here');
         frame = $(this).closest('.embed-frame');
-        // $('<div id="upload-placeholder" data-file-type="image" class="remove-on-save"></div>').appendTo(frame.find('.slick-track'));
         frame.find('.image-gallery').addClass('upload-here').attr('data-file-type', 'image');
         $('#medium-file-upload').find('input[type=file]').click();
+        break;
+
+      case 'add-slide':
+        frame = $(this).closest('.embed-frame');
+        frame.find('.file-drop').addClass('over');
         break;
 
       case 'move-up':
@@ -1184,22 +1187,132 @@ $(function () {
 
   $('#medium-editor').on('drop dragleave', '.editable.editable-activated .file-drop', function(e) {
     $(this).removeClass('dragover-active');
+    $('.file-drop.over').removeClass('over');
   });
 
   $('#medium-editor').on('drop', '.editable.editable-activated .file-drop', function(e) {
     e.preventDefault();
   });
 
-  $('#medium-editor').on('click', '.file-drop a', function(e) {
+  $('#medium-editor').on('click', '.file-drop a.browse', function(e) {
     e.preventDefault();
   });
 
-  $('#medium-editor').on('click', '.editable.editable-activated .file-drop a', function(e) {
+  $('#medium-editor').on('click', '.file-drop a.url', function(e) {
+    e.preventDefault();
+  });
+
+  $('#medium-editor').on('click', '.editable.editable-activated .file-drop a.browse', function(e) {
     // $('<div id="upload-placeholder" data-file-type="image" class="remove-on-save"></div>').appendTo($(this).closest('.file-drop').next('.image-gallery'));
     $('.upload-here').removeClass('upload-here');
     $(this).closest('.file-drop').next('.image-gallery').addClass('upload-here').attr('data-file-type', 'image');
     $('#medium-file-upload').find('input[type=file]').click();
+    $('.file-drop.over').removeClass('over');
   });
+
+  $('#medium-editor').on('click', '.editable.editable-activated .file-drop a.url', function(e) {
+    $('.upload-here').removeClass('upload-here');
+    $(this).closest('.file-drop').next('.image-gallery').addClass('upload-here').attr('data-file-type', 'image');
+    $('#remote-file-upload').show().find('input[name="file_url"]').focus();
+    $('.file-drop.over').removeClass('over');
+  });
+
+  $('#medium-editor').on('click', '.editable.editable-activated .file-drop .close', function(e){
+    $('.file-drop.over').removeClass('over');
+  });
+
+  $('#remote-file-upload').on('submit', function(e) {
+    e.preventDefault();
+    $(this).hide();
+
+    var gallery = $('.image-gallery.upload-here');
+    var fileType = gallery.data('file-type');
+    var input = $(this).find('input[name="file_url"]');
+    var fileUrl = input.val();
+    input.val('');
+
+    if (fileUrl != '') {
+      $.ajax({
+        url: '/files/remote_upload',
+        type: 'POST',
+        data: {
+          file_type: fileType,
+          file_url: fileUrl,
+          attachable_id: editor.modelId,
+          attachable_type: editor.modelType
+        },
+        success: function(data){
+          editor.iFile++;
+          tpl = $('<div class="image" id="tmp-file-' + editor.iFile + '"><div class="figure" contenteditable="false">' + progressTpl + '</div></div>');
+          img = '<div style="background-image:url(' + fileUrl + ')" class="embed-img"></div>';
+          $(img).appendTo(tpl.find('.figure'));
+          prgrss = tpl.find('.progress-bar');
+          prgrss.css('width:100%');
+          prgrss.addClass('progress-bar-success');
+
+          if (!gallery.hasClass('slick-initialized')) loadSlickSlider();
+          tpl.appendTo(gallery.find('.slick-track'));
+
+          tpl.data('file-type', fileType);
+          tpl.attr('data-file-id', data.id);
+          tpl.attr('data-type', 'file');
+
+          slider = tpl.closest('.slick-slider');
+          if (slider.length > 0) {
+            slider = $(slider[0]);
+            slider.slickAdd(tpl);
+            slider.slickGoTo(slider.find('.slick-slide').length - 1);
+          }
+
+          checkRemoteFileProcessed(data.job_id, tpl);
+        },
+        error: function(data) {
+          showErrorBubble('the file');
+        }
+      });
+    }
+  });
+
+  function checkRemoteFileProcessed(jobId, el) {
+    window.setTimeout(function(){
+      $.ajax({
+        url: '/files/remote_upload',
+        data: { job_id: jobId },
+        success: function(data){
+          switch (data.status){
+            case 'complete':
+              el.attr('id', '');
+              el.find('.embed-overlay').replaceWith(embedOverlay.main);
+              updateFileUploadDragZone();
+              id = el.attr('data-file-id');
+              if (el.data('file-type') == 'image') {
+                timestamp = new Date().getTime();
+                $("<div class='figcaption widget-attribute widget-attribute-editable' data-attribute='[images_attributes][" + timestamp + "][title]' contenteditable='true' data-default-text='Type in a caption' data-disable-toolbar='true'></div><span class='widget-attribute' data-attribute='[images_attributes][" + timestamp + "][id]' contenteditable='true' data-value='" + id + "'></span><span class='widget-attribute position' data-attribute='[images_attributes][" + timestamp + "][position]' contenteditable='true'></span>").appendTo(el.find('figure, .figure'));
+                el.closest('.image-gallery-container').find('select').append('<option selected="selected" value="' + id + '"></option>');
+                resetPositions(el.closest('.image-gallery').find('.position'));
+                $(embedOverlay.moveLeftBtn).appendTo(el.find('.embed-overlay-content'));
+                $(embedOverlay.moveRightBtn).appendTo(el.find('.embed-overlay-content'));
+              } else {
+                $("<div class='figcaption' contenteditable='true' data-default-text='Type in a caption' data-disable-toolbar='true'></div>").appendTo(el.find('.figure'));
+                insertBlankParagraphAfter(el);
+                stylizeEmbedFrames(editor.element);
+              }
+              loadPlaceholder(el.find('figcaption, .figcaption'), true);
+              editor.triggerInput();
+
+              break;
+            case 'failed':
+              showErrorBubble('the file');
+              context.replaceWith(emptyParagraph);
+              break;
+            default:
+              checkRemoteFileProcessed(jobId, el);
+              break;
+          }
+        }
+      });
+    }, 100);
+  }
 
   $('#medium-file-upload').fileupload({
     dataType: 'xml', // This is really important as s3 gives us back the url of the file in a XML document
@@ -1753,7 +1866,11 @@ function insertWidget(type, modelId, modelType, node, data) {
         if (data.widget_type == 'ImageWidget') {
           $(embedToolbar.addSlideBtn).prependTo(ul);
           updateFileUploadDragZone();
-          $(div).find('.embed-actions button[data-action="add-slide"]').click();
+          // $(div).find('.embed-actions button[data-action="add-slide-upload"]').click();
+
+          $('.upload-here').removeClass('upload-here');
+          $(div).find('.image-gallery').addClass('upload-here').attr('data-file-type', 'image');
+          $('#medium-file-upload').find('input[type=file]').click();
         } else if (data.widget_type == 'CodeWidget') {
           codeEditor[data.widget_id].activate();
         }

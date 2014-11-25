@@ -34,6 +34,7 @@ class Admin::ProjectsController < Admin::BaseController
 
   def update
     if @project.update_attributes(params[:project])
+      @team_members = @project.users
       redirect_to admin_projects_path, :notice => 'Project successfuly updated'
     else
       render :edit

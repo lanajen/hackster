@@ -28,6 +28,10 @@
   padding-left: 11px;
 }
 
+.navbar-brand > img {
+  display: inline;
+}
+
 @media only screen and (min-width: 970px) {
   .container {
     max-width: none !important;
@@ -171,6 +175,16 @@ a{
   @include transform(rotate(180deg));
 }
 
+.checkbox input[type="checkbox"]  {
+  position: static;
+  margin-left: 0;
+  margin-right: 5px;
+}
+
+// .form-horizontal .checkbox input[type="checkbox"] {
+//   position: absolute;
+//   margin-left: -20px;
+// }
 
 // .alert-success{
 //   background-color: #6AA762;

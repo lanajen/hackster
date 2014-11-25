@@ -8,7 +8,7 @@
               h1.project-title
                 ==> @project.name
                 - if @project.license
-                  a.copyright href=@project.license.url &copy; #{@project.license.abbr}
+                  a.copyright href=@project.license.url &copy; #{@project.license.abbr} target='_blank'
               p.project-one-liner= @project.one_liner
 
               - if @project.product_tags_count > 0
@@ -37,31 +37,33 @@
                 i.fa.fa-chevron-down
                 i.fa.fa-chevron-up
             .section-content
-              h3 How it started
-              p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
-              #carousel.carousel.slide data-ride="carousel"
-                .carousel-inner role="listbox"
-                  .item.active
-                    .clearfix.multi-image
-                      .col-xs-6
-                        = image_tag 'slide-1.png'
-                      .col-xs-6
-                        = image_tag 'slide-2.png'
-                  .item
-                    .clearfix.multi-image
-                      .col-xs-6
-                        = image_tag 'slide-1.png'
-                      .col-xs-6
-                        = image_tag 'slide-2.png'
-                a.left.carousel-control href="#carousel" role="button" data-slide="prev"
-                  span.glyphicon.glyphicon-chevron-left aria-hidden="true"
-                a.right.carousel-control href="#carousel" role="button" data-slide="next"
-                  span.glyphicon.glyphicon-chevron-right aria-hidden="true"
+              #medium-editor= @project.description
+              /
+                h3 How it started
+                p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+                #carousel.carousel.slide data-ride="carousel"
+                  .carousel-inner role="listbox"
+                    .item.active
+                      .clearfix.multi-image
+                        .col-xs-6
+                          = image_tag 'slide-1.png'
+                        .col-xs-6
+                          = image_tag 'slide-2.png'
+                    .item
+                      .clearfix.multi-image
+                        .col-xs-6
+                          = image_tag 'slide-1.png'
+                        .col-xs-6
+                          = image_tag 'slide-2.png'
+                  a.left.carousel-control href="#carousel" role="button" data-slide="prev"
+                    span.glyphicon.glyphicon-chevron-left aria-hidden="true"
+                  a.right.carousel-control href="#carousel" role="button" data-slide="next"
+                    span.glyphicon.glyphicon-chevron-right aria-hidden="true"
 
-              h3.title How it started
+                h3.title How it started
 
-              .embed-responsive.embed-responsive-16by9
-                iframe.embed-responsive-item src="//www.youtube.com/embed/dU1xS07N-FA?controls=0&amp;showinfo=0" frameborder="0" width="100%" height="300"
+                .embed-responsive.embed-responsive-16by9
+                  iframe.embed-responsive-item src="//www.youtube.com/embed/dU1xS07N-FA?controls=0&amp;showinfo=0" frameborder="0" width="100%" height="300"
 
           section#logs.section-collapsible
             h2.section-title
@@ -70,45 +72,49 @@
                 i.fa.fa-chevron-down
                 i.fa.fa-chevron-up
             .section-content
-              .jumbotron.single-blog
-                h4 Log Title
-                p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+              - if log = @project.blog_posts.published.last.try(:decorate)
+                h5.blog-info
+                  ' Build log ##{log.sub_id} -
+                  ==> time_ago_in_words log.created_at
+                  ' ago
 
-              h5.blog-info 5/3/2014 for Build 1.0.01
+                .jumbotron.single-blog
+                  h4= link_to log.title, log_path(@project, log)
+                  = log.body.html_safe
 
-              .jumbotron.single-blog
-                h4 Log Title
-                = image_tag 'slide-1.png'
+              - if @can_edit
+                = link_to 'See and manage all logs (including drafts)', project_logs_path, class: 'btn btn-default btn-sm'
+              - elsif @project.build_logs_count > 1
+                = link_to 'Read previous logs', project_logs_path, class: 'btn btn-default btn-sm btn-block'
 
-                p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+          - if components_widget = @project.widgets.where(type: 'PartsWidget').first
+            section#components.section-collapsible
+              h2.section-title
+                a href=''
+                  ' Components
+                  i.fa.fa-chevron-down
+                  i.fa.fa-chevron-up
+              .section-content
+                ul.component-list.list-unstyled
+                  - components_widget.parts.each do |part|
+                    li.list-group-item
+                      h5
+                        - if part.vendor_link.present?
+                          = link_to part.description, part.vendor_link
+                        - else
+                          = part.description
+                      span.text-muted= part.comment
+                      span.count
+                        'x
+                        = part.quantity
 
-              h5.blog-info 5/3/2014 for Build 1.0.0
-              button.btn.btn-default.btn-sm View All Logs
-
-          section#components.section-collapsible
+          section#code.section-collapsible
             h2.section-title
               a href=''
-                ' Components
+                ' Schematics
                 i.fa.fa-chevron-down
                 i.fa.fa-chevron-up
             .section-content
-              ul.component-list.list-unstyled
-                li.list-group-item
-                  h5 Item1
-                  span.text-muted This is item description or link
-                  span.count x 5
-                li.list-group-item
-                  h5 Item2
-                  span.text-muted This is item description or link
-                  span.count x 1
-                li.list-group-item
-                  h5 Item3
-                  span.text-muted This is item description or link
-                  span.count x 1
-                li.list-group-item
-                  h5 Item4
-                  span.text-muted This is item description or link
-                  span.count x 3
 
           section#code.section-collapsible
             h2.section-title
@@ -117,33 +123,23 @@
                 i.fa.fa-chevron-down
                 i.fa.fa-chevron-up
             .section-content
-              .jumbotron.code
-                code
-                  'else if sender.state == UIGestureRecognizerState.Changed {
-                  br
-                  'attachmentBehavior.anchorPoint = location
-                  br
-                  '//povecaj collectButton
-                  br
-                  'let translation = sender.translationInView(view)
-                  br
-                  'if translation.y >= 50 {
-                  br
-                  'spring(0.5, {
-                  br
-                  'self.collectButton.transform = CGAffineTransformMakeScale(1.5, 1.5)
-                  br
-                  'self.bottomButtonsView.transform = CGAffineTransformMakeScale(0.8, 0.8)
-                  br
-                  'self.bottomButtonsView.alpha = 0
-                  br
-                  '})
+              - @project.widgets.where(type: 'CodeWidget').pluck(:id).each do |widget_id|
+                - embed = Embed.new widget_id: widget_id
+                = render partial: 'api/embeds/embed', locals: { embed: embed }
 
-              .button-content
-                button.btn.btn-default.btn-md
-                  'Copy to clipboard
-                button.btn.btn-primary.btn-md
-                  'Download
+                .button-content
+                  button.btn.btn-default.btn-md
+                    'Copy to clipboard
+                  button.btn.btn-primary.btn-md
+                    'Download
+
+          section#code.section-collapsible
+            h2.section-title
+              a href=''
+                ' CAD files
+                i.fa.fa-chevron-down
+                i.fa.fa-chevron-up
+            .section-content
 
           section#instructions.section-collapsible
             h2.section-title
@@ -174,45 +170,41 @@
                     textarea.form-control rows="3"
                   .button-area
                     button.btn.btn-primary Post comment
-                - 7.times do |i|
-                  .single-comment class="comment-depth-#{i}"
-                    .single-comment-inner
-                      .comment-title.clearfix
-                        .avatar
-                          = image_tag 'home/avatar.jpg', width:"30px", height:"30px"
-                        .profile-name
-                          h4
-                            strong= link_to 'Greg Monwizcky', ''
-                          span.text-muted #{i*7} minutes ago
-                        .reply-comment
-                            button.btn.btn-default Reply
-                      p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+                - sort_comments(@project.comments).each do |comment|
+                  = render partial: 'comments/comment', locals: { comment: comment }
 
         .col-md-4.right-column
           section.section-thumbs
-            h4 Team members
+            h4
+              - if @project.team_members_count > 1
+                | Budding team members
+              - else
+                | Glorious solo hacker
             .row.mobile-scroll-row.desktop-tighter-margins
               - @project.users.each do |user|
-                - user = user.decorate
-                .col-xs-6.col-md-4.mobile-scroll-row-item
-                  .mini-thumb.thumb
-                    .mini-thumb-image.thumb-image style="background-image: url(#{user.avatar(:big)});"
-                      .mini-thumb-image-inner.thumb-image-inner
-                        h5= link_to user.name, user
-                        a.btn.btn-primary.btn-sm.btn-block.show-on-hover href='' Follow
+                .mobile-scroll-row-item
+                  - user = user.decorate
+                  .col-xs-6.col-md-4
+                    .mini-thumb.thumb
+                      .mini-thumb-image.thumb-image style="background-image: url(#{user.avatar(:big)});"
+                        .mini-thumb-image-inner.thumb-image-inner
+                          h5= link_to user.name, user
+                          a.btn.btn-primary.btn-sm.btn-block.show-on-hover href='' Follow
 
-          section.section-thumbs
-            h4 Communities this project belongs to
-            .row.mobile-scroll-row.desktop-tighter-margins
-              - @project.platforms.each do |platform|
-                .col-xs-6.col-md-4.mobile-scroll-row-item
-                  .mini-thumb.thumb
-                    .mini-thumb-image.thumb-image style="background-image: url(#{platform.avatar.try(:file_url, :big)});"
-                      .mini-thumb-image-inner.thumb-image-inner
-                        h5
-                          = link_to platform.name, platform
-                          span.platform-type Platform
-                        a.btn.btn-primary.btn-sm.btn-block.show-on-hover href='' Follow
+          - if @project.communities_count > 0
+            section.section-thumbs
+              h4 Communities this project belongs to
+              .row.mobile-scroll-row.desktop-tighter-margins
+                - @project.platforms.each do |platform|
+                  .mobile-scroll-row-item
+                    .col-xs-6.col-md-4
+                      .mini-thumb.thumb
+                        .mini-thumb-image.thumb-image style="background-image: url(#{platform.avatar.try(:file_url, :big)});"
+                          .mini-thumb-image-inner.thumb-image-inner
+                            h5
+                              = link_to platform.name, platform
+                              span.platform-type Platform
+                            a.btn.btn-primary.btn-sm.btn-block.show-on-hover href='' Follow
 
           - if @other_projects_count > 0
             section.section-thumbs
@@ -221,6 +213,4 @@
                 .project-thumb-mini style="background-image: url(#{project.cover_image.try(:file_url, :cover_thumb)})"
                   .project-thumb-mini-inner
                     h4= link_to project.name, project
-                    p
-                      ' by
-                      = project.users.map{|u| content_tag(:strong, link_to(u.name, u)) }.to_sentence.html_safe
+                    p= render partial: 'projects/by_team', locals: { project: project }

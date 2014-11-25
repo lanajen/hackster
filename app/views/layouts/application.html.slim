@@ -126,8 +126,7 @@ html(lang="en")
 
               - else
                 ul#navbar-right.clearfix
-                  li
-                    = link_to 'Sign up', new_user_registration_path(source: 'nav'), class: 'login-link', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '# request.path ']);"
+                  li= link_to 'Sign up', new_user_registration_path(source: 'nav'), class: 'login-link'
 
                   li.dropdown
                     a.btn.btn-primary.login-link.dropdown-toggle data-toggle="dropdown" href='#'
@@ -190,6 +189,9 @@ html(lang="en")
           = link_to 'Admin', admin_analytics_path, class: 'mo-nav-link'
       - else
         = link_to 'Sign up / Login', new_user_registration_path, class: 'mo-nav-link', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '#{request.path}']);"
+
+    - if @new_badge and @badge_level
+      = render partial: 'shared/badge_alert', locals: { badge: @new_badge, level: @badge_level }
 
     = content_for :js
     - unless is_mobile? or params[:blank_frame]

@@ -10,14 +10,14 @@ class List < Group
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'ListMember'
   has_one :cover_image, as: :attachable, class_name: 'Document', dependent: :destroy
 
-  attr_accessible :cover_image_id
+  attr_accessible :cover_image_id, :list_type
 
   validates :user_name, :full_name, presence: true
   validate :user_name_is_unique
-  # before_save :update_user_name
+  before_validation :update_user_name, on: :create
 
   store :counters_cache, accessors: [:projects_count, :followers_count,
-    :external_projects_count, :private_projects_count]
+    :external_projects_count, :private_projects_count, :list_type]
 
   parse_as_integers :counters_cache, :projects_count, :followers_count,
     :external_projects_count, :private_projects_count
@@ -60,6 +60,10 @@ class List < Group
     Group.model_name
   end
 
+  def category?
+    list_type == 'category'
+  end
+
   def counters
     {
       external_projects: 'projects.external.count',
@@ -83,13 +87,13 @@ class List < Group
   end
 
   def update_user_name
-    # raise "#{new_user_name}|#{user_name}|#{@old_user_name}"
     obj = self.class.new full_name: full_name_was
     was_auto_generated = (@old_user_name == obj.generate_user_name)
     new_user_name_changed = (new_user_name != @old_user_name)
 
     generate_user_name if was_auto_generated or user_name.blank?
-    assign_new_user_name if new_user_name_changed
+    assign_new_user_name if new_user_name.present? and new_user_name_changed
+    user_name
   end
 
   private

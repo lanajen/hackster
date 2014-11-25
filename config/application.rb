@@ -26,7 +26,7 @@ module HackerIo
       :member_observer, :team_observer, :follow_relation_observer,
       :issue_observer, :blog_post_observer, :assignment_observer, :platform_observer,
       :project_collection_observer, :attachment_observer, :challenge_entry_observer,
-      :challenge_observer, :list_observer
+      :challenge_observer, :awarded_badge_observer, :list_observer
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
@@ -57,7 +57,7 @@ module HackerIo
 
 
     # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-    config.assets.precompile += %w( admin.css email.css jquery.githubRepoWidget.min.js bitbucket-widget.min.css bitbucket-widget.min.js slick.eot slick.svg slick.ttf slick.woff datepicker.js datepicker.css tinymce.js tinymce/plugins/link/plugin.js tinymce/plugins/paste/plugin.js gmaps/google.js follow_iframe.css follow_iframe.js )
+    config.assets.precompile += %w( admin.css email.css jquery.githubRepoWidget.min.js bitbucket-widget.min.css bitbucket-widget.min.js slick.eot slick.svg slick.ttf slick.woff datepicker.js datepicker.css tinymce.js tinymce/plugins/link/plugin.js tinymce/plugins/paste/plugin.js tinymce/plugins/code/plugin.js gmaps/google.js follow_iframe.css follow_iframe.js )
 
     config.active_record.whitelist_attributes = false
 

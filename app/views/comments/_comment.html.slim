@@ -1,26 +1,25 @@
-.comment  class="depth-#{comment.depth}"
-  .pull-left.comment-avatar
-    - if comment.user_id.zero?
-      = image_tag 'guest_default_100.png'
-    - else
-      = comment.user.decorate.avatar_link(:mini)
-  .pull-left.comment-text
-    span.comment-author
-      - if comment.user_id.zero?
-        = comment.guest_name
-      - else
-        ==> comment.user.decorate.name_link
-        - if members = PlatformMember.where(user_id: comment.user_id).includes(:group) and members.any?
-          - members.each do |member|
-            - platform = member.group
-            span.badge
-              ' Team
-              ==> link_to platform.name, platform, class: 'hidden-link'
-              i.fa.fa-check-circle.istooltip title="Verified" style="color:#66C866" data-container='body'
+.single-comment class="comment-depth-#{comment.depth}"
+  .single-comment-inner
+    .comment-title.clearfix
+      .avatar
+        - if comment.user_id.zero?
+          = image_tag 'guest_default_100.png'
+        - else
+          = comment.user.decorate.avatar_link(:mini)
+      .profile-name
+        h4
+          strong
+            - if comment.user_id.zero?
+              = comment.guest_name
+            - else
+              ==> comment.user.decorate.name_link
 
+          - if can? :destroy, comment
+            = link_to 'Delete', comment_path(comment), method: :delete, data: { remote: true, confirm: 'Are you sure you want to delete this comment?', hover: '.comment' }, class: 'btn-heading btn-delete default-hidden btn-heading-small'
+
+        span.text-muted
+          ==> time_ago_in_words(comment.created_at)
+          | ago
+      .reply-comment
+          button.btn.btn-default Reply
     = auto_html(comment.body) { link(:target => 'blank') }.html_safe
-    .text-muted.comment-date
-      ==> time_ago_in_words(comment.created_at)
-      | ago
-  - if can? :destroy, comment
-    = link_to 'Delete', comment_path(comment), method: :delete, data: { remote: true, confirm: 'Are you sure you want to delete this comment?', hover: '.comment' }, class: 'btn-heading btn-delete default-hidden btn-heading-small'

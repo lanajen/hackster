@@ -4,8 +4,6 @@
       .photo-thumb
         = link_to image_tag(project.cover_image(:cover_thumb), alt: project.name, class: 'img-responsive'), project_url(project), target: '_blank'
         .award-container
-        .thumb-top
-          .thumb-top-inner
       .inner-thumb
         h3= link_to project.name, project_url(project), target: '_blank'
         h4
@@ -30,7 +28,7 @@
           - if project.public?
             span.counter.first
               i.fa.fa-eye>
-              = project.impressions_count
+              = number_to_human project.impressions_count
             span.counter
               i.fa.fa-thumbs-o-up>
               = project.respects_count

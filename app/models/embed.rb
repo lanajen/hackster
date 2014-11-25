@@ -3,6 +3,7 @@ class Embed
   LINK_REGEXP = {
     /123d\.circuits\.io\/circuits\/([a-z0-9\-]+)/ => :circuitsio,
     /bitbucket\.org\/([0-9a-zA-Z_\-]+\/[0-9a-zA-Z_\-]+)/ => :bitbucket,
+    /codebender\.cc\/sketch:([0-9]+)/ => :codebender,
     /gist\.github\.com\/[0-9a-zA-Z_\-]+\/([0-9a-zA-Z_\-]+)/ => :gist,
     /github\.com\/(?:downloads\/)?([0-9a-zA-Z_\-]+\/[0-9a-zA-Z_\-]+)/ => :github,
     /instagram\.com\/p\/([a-zA-Z]+)/ => :instagram,

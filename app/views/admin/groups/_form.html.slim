@@ -16,6 +16,8 @@
 - when 'Event'
   = f.association :hackathon, collection: Hackathon.all
 - when 'Hackathon'
+- when 'List'
+  = f.input :list_type, collection: %w(category organization)
 - when 'Promotion'
   = f.association :course, collection: Course.all
 - when 'Platform'

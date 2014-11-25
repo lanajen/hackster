@@ -6,6 +6,8 @@ class User < ActiveRecord::Base
   include StringParser
   include Taggable
 
+  include Rewardino::Nominee
+
   ROLES = %w(admin confirmed_user beta_tester)
   SUBSCRIPTIONS = {
     'newsletter' => 'Newsletter',
@@ -19,6 +21,7 @@ class User < ActiveRecord::Base
     'follow_user_activity' => 'Activity for a user I follow',
     'follow_platform_activity' => 'Activity for a platform I follow',
     'follow_list_activity' => 'Activity for a list I follow',
+    'new_badge' => 'I receive a new badge',
   }
   CATEGORIES = %w()
 
@@ -117,13 +120,16 @@ class User < ActiveRecord::Base
     :live_projects_count, :project_views_count, :followers_count,
     :websites_count, :popularity_points_count, :project_respects_count,
     :platforms_count, :live_hidden_projects_count, :followed_users_count,
-    :hacker_spaces_count]
+    :hacker_spaces_count, :badges_green_count,
+    :badges_bronze_count, :badges_silver_count, :badges_gold_count]
 
   parse_as_integers :counters_cache, :comments_count, :interest_tags_count,
     :invitations_count, :projects_count, :respects_count, :skill_tags_count,
     :live_projects_count, :project_views_count, :websites_count,
     :popularity_points_count, :project_respects_count, :platforms_count,
-    :live_hidden_projects_count, :followed_users_count, :hacker_spaces_count
+    :live_hidden_projects_count, :followed_users_count, :hacker_spaces_count,
+    :badges_green_count, :badges_bronze_count,
+    :badges_silver_count, :badges_gold_count
 
   delegate :can?, :cannot?, to: :ability
 
@@ -273,6 +279,10 @@ class User < ActiveRecord::Base
     @ability ||= Ability.new(self)
   end
 
+  def active_profile?
+    user_name.present? and invitation_token.nil?
+  end
+
   def add_confirmed_role
     self.roles = roles << 'confirmed_user'
     save
@@ -294,6 +304,10 @@ class User < ActiveRecord::Base
     self.avatar = Avatar.find_by_id(val)
   end
 
+  def badges_count
+    badges_green_count + badges_bronze_count + badges_silver_count + badges_gold_count
+  end
+
   def being_invited?
     new_invitation.present?
   end
@@ -312,6 +326,11 @@ class User < ActiveRecord::Base
 
   def counters
     {
+      # badges: 'badges.count',
+      badges_green: 'badges(:green).count',
+      badges_bronze: 'badges(:bronze).count',
+      badges_silver: 'badges(:silver).count',
+      badges_gold: 'badges(:gold).count',
       comments: 'live_comments.count',
       followed_users: 'followed_users.count',
       followers: 'followers.count',
@@ -635,6 +654,10 @@ class User < ActiveRecord::Base
   def profile_needs_care?
     # live_projects_count.zero? or (country.blank? and city.blank?) or mini_resume.blank? or interest_tags_count.zero? or skill_tags_count.zero? or websites.values.reject{|v|v.nil?}.count.zero?
     (country.blank? and city.blank?) or mini_resume.blank? or full_name.blank? or default_user_name? or avatar.nil?
+  end
+
+  def profile_complete?
+    country.present? and city.present? and mini_resume.present? and (full_name.present? or !default_user_name?) and avatar.present? and interest_tags_count > 0 and skill_tags_count > 0 and websites.values.reject{|v|v.nil?}.count > 0
   end
 
   def respected? project

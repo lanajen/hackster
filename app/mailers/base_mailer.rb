@@ -49,6 +49,11 @@ class BaseMailer < ActionMailer::Base
         user = context[:user] = User.find(context_id)
         assignment = context[:assignment] = user.assignments.where("assignments.submit_by_date < ?", 24.hours.from_now).first
         context[:project] = user.project_for_assignment(assignment).first
+      when :badge
+        awarded_badge = context[:awarded_badge] = AwardedBadge.find context_id
+        context[:badge] = awarded_badge.badge
+        user = awarded_badge.awardee
+        user.subscribed_to?('new_badge') ? context[:user] = user : context[:users] = []
       when :challenge
         challenge = context[:challenge] = Challenge.find context_id
         context[:users] = challenge.admins

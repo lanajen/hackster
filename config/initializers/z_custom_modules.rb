@@ -30,3 +30,5 @@ require File.join(Rails.root, 'lib/tire_initialization')
 require File.join(Rails.root, 'lib/editable_slug')
 # heroku domains
 require File.join(Rails.root, 'lib/heroku_domains')
+# progress tracking for remote file upload
+# require File.join(Rails.root, 'lib/carrierwave_uploader_download')

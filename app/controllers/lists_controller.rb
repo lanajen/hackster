@@ -17,10 +17,11 @@ class ListsController < ApplicationController
   # end
 
   def show
+    @list = ListDecorator.decorate(@list)
     impressionist_async @list, "", unique: [:session_hash]
     # authorize! :read, @list
-    title "#{@list.name} projects and hacks"
-    meta_desc "Discover curated hardware projects and hacks for #{@list.name}."
+    title (@list.category? ? "#{@list.name} projects and hacks" : "#{@list.name}'s favorite hardware projects and hacks")
+    meta_desc (@list.category? ? "Discover #{@list.name} hardware projects and hacks." : "Discover hardware projects and hacks curated by #{@list.name}.")
 
     render "groups/lists/#{self.action_name}"
 

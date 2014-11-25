@@ -61,21 +61,32 @@ section#projects-list
         - link = new_project_path(project: { platform_tags_string: @platform.name, external: true }, redirect_to: request.path)
         = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Submit a link".html_safe, link, class: 'btn btn-outline'
 
-      .pull-left= render 'shared/list_switch'
+      .btn-group.pull-left
+        .btn-group
+          button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
+            ' Sort by
+            span.caret
+          ul.dropdown-menu.pull-right
+            li*{ class: "#{'active' if params[:sort] == 'updated'}" } = link_to 'Last updated', platform_short_path(@platform, sort: 'updated', by: params[:by])
+            li*{ class: "#{'active' if params[:sort] == 'magic'}" } = link_to 'Magic', platform_short_path(@platform, sort: 'magic', by: params[:by])
+            li*{ class: "#{'active' if params[:sort] == 'popular'}" } = link_to 'Most popular', platform_short_path(@platform, sort: 'popular', by: params[:by])
+            li*{ class: "#{'active' if params[:sort] == 'recent'}" } = link_to 'Most recent', platform_short_path(@platform, sort: 'recent', by: params[:by])
+            li*{ class: "#{'active' if params[:sort] == 'respected'}" } = link_to 'Most respected', platform_short_path(@platform, sort: 'respected', by: params[:by])
+
 
     - if @projects.any?
       .thumb-list  class=@switch_style
         .row.project-list
           - if @platform.accept_project_ideas
             = render partial: 'groups/platforms/submit_idea', locals: { platform: @platform }
-          - @projects.each do |project|
-            = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '3' }
+          - @projects.each do |collection|
+            = render partial: 'projects/project_thumb', locals: { project: collection.project, col: '3' }
       .row.text-center= will_paginate @projects
     - else
       .row
         .col-xs-12
           p
-            ' This technology isn't in use yet!
+            ' This platform isn't in use yet!
             - if @platform.platform_tags.any?
               = link_to "Create the first #{@platform.name} project", new_project_path(project: { platform_tags_string: @platform.name }), class: 'btn btn-primary btn-sm'
 

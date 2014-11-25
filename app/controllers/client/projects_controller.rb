@@ -9,24 +9,23 @@ class Client::ProjectsController < Client::BaseController
 
     impressionist_async current_platform, "", unique: [:session_hash]
 
-    sort = params[:sort] || 'magic'
+    sort = params[:sort] ||= 'magic'
     @by = params[:by] || 'all'
 
-    @projects = current_platform.projects.visible.indexable_and_external.for_thumb_display
+    @projects = current_platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.indexable_and_external.for_thumb_display_in_collection)
     if sort and sort.in? Project::SORTING.keys
-      @projects = @projects.send(Project::SORTING[sort])
+      @projects = @projects.merge(Project.send(Project::SORTING[sort]))
     end
 
     if @by and @by.in? Project::FILTERS.keys
       @projects = if @by == 'featured'
-        @by = 'gfeatured'
-        @projects.send(Project::FILTERS[@by], 'Group', current_platform.id)
+        @projects.featured
       else
-        @projects.send(Project::FILTERS[@by])
+        @projects.merge(Project.send(Project::FILTERS[@by]))
       end
     end
 
-    @projects = @projects.paginate(page: safe_page_params)
+    @projects = @projects.paginate(page: safe_page_params, per_page: Project.per_page)
     @challenge = current_platform.active_challenge ? current_platform.challenges.active.first : nil
 
     respond_to do |format|

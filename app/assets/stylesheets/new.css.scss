@@ -128,9 +128,13 @@ h1 {
       bottom: 0;
     }
   }
+  &.has-link-overlay {
+    .thumb-image-inner {
+      pointer-events: none;
+    }
+  }
 }
 .thumb-image-inner {
-  pointer-events: none;
   @extend .block-overlay-content;
   @include transition(bottom 200ms linear);
   bottom: -55px;

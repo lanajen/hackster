@@ -13,10 +13,11 @@
 
   <% projects.each do |project| %>
 
+    <% users = project.users %>
     <% user = project.users.first %>
 
     <p>
-      <strong><a href="<%= project_url(project)%>?ref=emailnotif"><%= project.name %></a></strong><% if project.guest_name.present? %> by <%= project.guest_name %><% elsif user %> by <a href="<%= user_url(user) %>?ref=emailnotif"><%= user.name %></a><% end %>: <%= project.one_liner %><% if project.guest_name.present? and user %> (posted by <a href="<%= user_url(user) %>?ref=emailnotif"><%= user.name %></a>)<% end %>
+      <strong><a href="<%= project_url(project)%>?ref=emailnotif"><%= project.name %></a></strong><% if project.guest_name.present? %> by <%= project.guest_name %><% elsif team_name = project.team.full_name.presence %> by Team <%= team_name %><% elsif users.any? %> by <%= users.map{ |user| "<a href='#{user_url(user)}?ref=emailnotif'>#{user.name}</a>" }.to_sentence.html_safe %><% end %>: <%= project.one_liner %><% if project.guest_name.present? and user %> (posted by <a href="<%= user_url(user) %>?ref=emailnotif"><%= user.name %></a>)<% end %>
     </p>
 
   <% end %>

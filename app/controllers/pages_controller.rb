@@ -14,6 +14,11 @@ class PagesController < ApplicationController
     # @tools = Platform.where(user_name: %w(spark electricimp arduino raspberry-pi beagleboard teensy)).order(:full_name)
   end
 
+  def achievements
+    title 'What are achievements?'
+    meta_desc 'What are achievements?'
+  end
+
   def help
   end
 

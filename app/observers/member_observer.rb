@@ -18,6 +18,8 @@ class MemberObserver < ActiveRecord::Observer
   end
 
   def after_create record
+    update_counters record
+
     if record.group.is? :team
       project = record.group.projects.first
       unless record.request_pending?
@@ -55,10 +57,6 @@ class MemberObserver < ActiveRecord::Observer
     end
   end
 
-  def after_save record
-    update_counters record
-  end
-
   def after_destroy record
     Broadcast.where(context_model_id: record.id, context_model_type: 'Member').destroy_all
     update_counters record
@@ -73,7 +71,9 @@ class MemberObserver < ActiveRecord::Observer
     end
 
     def update_counters record
-      record.user.update_counters only: [:projects, :live_projects] if
-        record.group and record.group.is? :team
+      if record.group and record.group.is? :team
+        record.user.update_counters only: [:projects, :live_projects]
+        record.group.projects.each{|p| p.update_counters only: [:team_members] }
+      end
     end
 end

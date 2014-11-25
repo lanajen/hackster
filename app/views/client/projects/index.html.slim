@@ -78,8 +78,14 @@
       .row.thumb-list
         - @platform = current_platform
         - if @projects.any?
-          - @projects.each do |project|
-            = render partial: 'client/projects/project_thumb', locals: { project: project.decorate }
+          - @projects.each do |project_collection|
+            = render partial: 'client/projects/project_thumb', locals: { project: project_collection.project.decorate }
+            = content_for :js do
+              - if project_collection.featured?
+                javascript:
+                  text = "#{escape_javascript render(partial: 'groups/teches/featured' )}";
+                  $(text).appendTo($('.project-#{project_collection.project_id} .project-thumb .award-container'));
+
         - else
           p.col-xs-12 No projects match your criteria.
       .row

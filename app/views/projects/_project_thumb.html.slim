@@ -11,7 +11,7 @@
     div class="project-#{project.id}"
       .col-sm-4.mobile-scroll-row-item
         .thumb.project-thumb
-          .thumb-image style="background-image:url(#{project.cover_image(:cover_thumb)})"
+          .thumb-image.has-link-overlay style="background-image:url(#{project.cover_image(:cover_thumb)})"
             = link_to '', project, class: 'link-overlay'
             .thumb-image-inner
               .award-container
@@ -25,25 +25,14 @@
                 - if project.external
                   - if project.guest_name.present?
                     ' by
-                    strong>= project.guest_name
+                    span.user-name>= project.guest_name
                   - elsif u = project.users.first
                     ' by
-                    strong==> link_to u.name, u
+                    span.user-name==> link_to u.name, u
                   ' on
-                  span.fake-link= project.website_host
+                  strong= project.website_host
                 - else
-                  ' by
-                  - if project.guest_name.present?
-                    strong= project.guest_name
-                  - elsif project.team.full_name.present?
-                    strong Team #{project.team.full_name}
-                  - else
-                    - users = project.users
-                    - if project.team_members_count < 4
-                      = project.users.map { |u| content_tag(:strong, link_to(u.name, u)) }.to_sentence.html_safe
-                    - else
-                      - more = content_tag(:a, "more #{content_tag(:i, '', class: 'fa fa-question-circle')}".html_safe, class: 'help', data: { container: 'body', toggle: 'popover', placement: 'bottom', content: project.users.map { |u| link_to u.name, u }.to_sentence, html: 'true', trigger: 'hover', delay: '100' }, rel: 'popover')
-                      = (project.users[0..2].map{ |u| content_tag(:strong, link_to(u.name, u)) } + [more]).to_sentence.html_safe
+                  = render partial: 'projects/by_team', locals: { project: project }
 
               ul.list-inline.project-stats.show-on-hover
                 li

@@ -4,16 +4,18 @@
     - ids.each do |id|
       option  value=id selected='selected'
   .file-drop
+    button.close &times;
     .file-drop-inner  data-disable-toolbar='true'
-      | Drag and drop images or
-      = link_to 'click to select some from your file system', ''
+      ' Drag and drop images,
+      ==> link_to 'click to select some from your file system', '', class: 'browse'
+      ' or
+      = link_to 'enter the URL of an image on the web', '', class: 'url'
   .image-gallery
     - embed.widget.images.each_with_index do |image, i|
       = render partial: 'api/embeds/image_widget_image', locals: { image: image.decorate, i: i, widget: embed.widget }
 
-= content_for :js do
-  javascript:
-    if (typeof(lightBoxImages) == 'undefined') {
-      lightBoxImages = {};
-    }
-    lightBoxImages[#{embed.widget.id}] = [#{lightbox_elements(embed.widget.images).html_safe}];
+javascript:
+  if (typeof(lightBoxImages) == 'undefined') {
+    lightBoxImages = {};
+  }
+  lightBoxImages[#{embed.widget.id}] = [#{lightbox_elements(embed.widget.images).html_safe}];

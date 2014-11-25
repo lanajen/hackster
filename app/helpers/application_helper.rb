@@ -143,10 +143,6 @@ module ApplicationHelper
     I18n.t('datetime.distance_in_words.x_seconds', count: 0)
   end
 
-  def truncate_at_token text, token
-    text.split(token)[0].html_safe
-  end
-
   def user_is_current?
     user_signed_in? and current_user.id == @user.try(:id)
   end

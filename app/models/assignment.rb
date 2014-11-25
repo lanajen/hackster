@@ -41,6 +41,10 @@ class Assignment < ActiveRecord::Base
     graded
   end
 
+  def past_due?
+    submit_by_date and submit_by_date < Time.now
+  end
+
   def to_csv
     out = "project_name,project_url,grade,student_names,student_emails\r\n"
 
@@ -56,6 +60,7 @@ class Assignment < ActiveRecord::Base
 
   private
     def generate_id
-      self.id_for_promotion = promotion.assignments.size + 1
+      last_id = promotion.assignments.order(:created_at).last.try(:id_for_promotion) || 0
+      self.id_for_promotion = last_id + 1
     end
 end

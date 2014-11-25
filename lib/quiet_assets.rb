@@ -5,7 +5,7 @@
 
 class DisableAssetsLogger
   def initialize(app)
-    unless ENV[ 'LOG_ASSETS' ]
+    unless ENV['LOG_ASSETS']
       puts "Deactivating asset logging."
       puts "To see asset requests in log, start with LOG_ASSETS=true env variable."
     end
@@ -16,7 +16,7 @@ class DisableAssetsLogger
 
   def call(env)
     previous_level = Rails.logger.level
-    Rails.logger.level = Logger::ERROR if env['PATH_INFO'].starts_with?("/assets/") or env['PATH_INFO'].starts_with?("/uploads/") && ! ENV[ 'LOG_ASSETS' ]
+    Rails.logger.level = Logger::ERROR if env['PATH_INFO'].starts_with?("/assets/") or env['PATH_INFO'].starts_with?("/uploads/") && ! ENV['LOG_ASSETS']
     @app.call(env)
   ensure
     Rails.logger.level = previous_level
