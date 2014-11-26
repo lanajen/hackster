@@ -119,7 +119,7 @@ img {
 }
 
 #content {
-  padding: 20px 0 60px;
+  padding: 40px 0 60px;
 }
 
 .wrapper{
@@ -903,10 +903,10 @@ h1, h2, h3, h4 {
 }
 
 .form-horizontal {
-  .add_nested_fields {
-    margin-left: 180px;
-    margin-bottom: 20px;
-  }
+  // .add_nested_fields {
+  //   margin-left: 180px;
+  //   margin-bottom: 20px;
+  // }
   .fields {
     margin-bottom: 20px;
     .form-group {
@@ -1370,5 +1370,14 @@ input.cmn-toggle ~ .option-checked, input.cmn-toggle:checked ~ .option-unchecked
   text-align: center;
   .panel-body {
     font-size: 30px;
+  }
+}
+
+.header {
+  ul {
+    margin-bottom: 0;
+  }
+  h3 {
+    margin: 0;
   }
 }

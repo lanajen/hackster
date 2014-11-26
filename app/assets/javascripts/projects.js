@@ -37,21 +37,10 @@
     //   });
     // }
 
-    $('.show-extra-actions').on('click', function(e){
-      e.preventDefault();
-      var left;
-      if ($(this).hasClass('fa-chevron-right')) {
-        left = '-100%';
-      } else {
-        left = '0';
-      }
-      $(this).parent().parent().css('left', left);
-    })
-
     $('.section-title').on('click', function(e){
       e.preventDefault();
       $(this).next().slideToggle(150);
-      $(this).parent().toggleClass('section-expanded');
+      $(this).parent().toggleClass('section-expanded').toggleClass('section-toggled');
     })
 
     //make scrollspy/sidebar navigation work

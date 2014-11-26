@@ -6,6 +6,17 @@
     margin-left: 0;
     margin-right: 0;
   }
+  .container-mobile {
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-top: 40px;
+  }
+}
+// temp
+.right-column {
+  .affix {
+    width: 345px;
+  }
 }
 #content.project-page {
   padding: 40px 0 60px;
@@ -20,7 +31,7 @@
     bottom: auto;
     height: 35px;
     width: 20px;
-    background: url(arrows.png) 0 0 no-repeat;
+    background: asset-url('arrows.png') 0 0 no-repeat;
     background-size: 40px;
     span {
       display: none;
@@ -97,9 +108,12 @@
   .new-comment {
     border: 1px solid #eeedf2;
     @include border-radius(3px);
-    margin: 50px 0 70px 0;
+    margin-bottom: 70px;
     display: table;
     width: 100%;
+    .form-group {
+      margin: 0;
+    }
     .textarea-content{
       display: table-cell;
       width: 100%;
@@ -122,10 +136,19 @@
     h4 {
       color: #333333;
     }
+    &:hover {
+      .btn-delete {
+        display: block;
+      }
+    }
     .comment-title {
       border-bottom: 1px solid #dddddd;
       padding: 20px 20px 15px;
       margin-bottom: 15px;
+      position: relative;
+      .btn-delete {
+        right: 10px;
+      }
       .avatar {
         float: left;
         @include border-radius(50%);
@@ -152,11 +175,13 @@
     border: 1px solid #a9aaaf;
     @include border-radius(5px);
   }
+}
+@media (min-width: 768px) {
   .comment-depth-1,
   .comment-depth-2,
   .comment-depth-3,
   .comment-depth-4,
-  .comment-depth-5, {
+  .comment-depth-5 {
     margin-top: 0;
     padding-top: 20px;
     position: relative;
@@ -289,7 +314,6 @@
 
 .section-collapsible {
   background: #fff;
-  padding: 10px 40px;
   border-bottom: 1px solid #ddd;
   &:last-of-type {
     border-bottom: 0;
@@ -301,7 +325,7 @@
     font-weight: bold;
     a {
       display: block;
-      padding: 15px 0;
+      padding: 25px 40px;
       position: relative;
       color: #666;
       &:hover {
@@ -310,16 +334,14 @@
       }
       i {
         font-size: 50%;
-        right: 0;
-        top: 23px;
-        position: absolute;
+        float: right;
       }
     }
   }
   .fa-chevron-up {
     display: none;
   }
-  &.section-expanded {
+  &.section-toggled {
     .fa-chevron-up {
       display: block;
     }
@@ -329,7 +351,32 @@
   }
   .section-content {
     display: none;
-    padding-bottom: 20px;
+    padding: 10px 40px 20px;
+    &:last-of-type {
+      padding-bottom: 40px;
+    }
+  }
+}
+@media (min-width: 0px) {
+  // move back to 768px
+  .section-collapsible {
+    .fa-chevron-up {
+      display: block;
+    }
+    .fa-chevron-down {
+      display: none;
+    }
+    &.section-toggled {
+      .fa-chevron-up {
+        display: none;
+      }
+      .fa-chevron-down {
+        display: block;
+      }
+    }
+    .section-content {
+      display: block;
+    }
   }
 }
 

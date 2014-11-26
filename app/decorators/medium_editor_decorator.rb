@@ -20,7 +20,12 @@ module MediumEditorDecorator
 
               Embed.new file_id: file_id
             when 'widget'
-              Embed.new widget_id: el['data-widget-id']
+              embed = Embed.new widget_id: el['data-widget-id']
+              # unless embed.widget.type == 'ImageWidget'
+              #   el.remove
+              #   next
+              # end
+              embed
             else
               next
             end

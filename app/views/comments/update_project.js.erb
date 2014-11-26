@@ -1,5 +1,1 @@
-$('#widget-comments .comments').remove();
-$("<%= escape_javascript render(partial: 'widgets/comments', locals: { comments: @commentable.comments, commentable: @commentable }) %>").appendTo('#widget-comments .section-content');
-$('#widget-comments .comments')
-  .removeClass('collapsed')
-  .show();
+$('.comments').replaceWith("<%= escape_javascript render(partial: 'widgets/comments', locals: { comments: @commentable.comments, commentable: @commentable }) %>");

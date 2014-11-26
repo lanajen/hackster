@@ -3,8 +3,9 @@
 
   .row
     .col-xs-12
-      h3
-        | Project settings
+      .header.clearfix
+        h3.pull-left
+          | Project settings
         .pull-right
           ul.list-unstyled.list-inline
             - if current_user.is? :admin
@@ -50,7 +51,7 @@
             / = f.input :one_liner, as: :text, input_html: { rows: 4 },
               hint: 'Maximum 140 characters'
             / = f.input :website, label: 'Project website'
-            / = f.input :platform_tags_string, as: :string, label: 'Platforms used', hint: 'Separate technologies by commas', placeholder: 'Eg: Arduino, ATmega, Attiny...'
+            = f.input :platform_tags_string, as: :string, label: 'Platforms used', hint: 'Both hardware and software platforms, separated by commas', placeholder: 'Eg: Arduino, ATmega, Attiny...'
             / = f.input :product_tags_string, as: :string, label: 'Tags', hint: 'Separate tags by commas. Used for finding your project more easily.', placeholder: 'Eg: home automation, drone, display...'
 
             / = f.input :license, collection: License.all, value_method: :url, hint: 'Is your project open source? If so specify under which license here.', selected: @project.license.try(:url), include_blank: true
@@ -61,6 +62,7 @@
 
             / = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @project.cover_image.try(:file_url, :cover_mini_thumb), help_block: 'This should be your nicest picture for this project. Give us some high def for best results!', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
 
+            = f.input :buy_link, label: 'Where to buy', hint: "Are you making this project available for sale as a kit or assembled? Enter the link to the store page here."
             = f.input :start_date, order: [:year, :month, :day], label: 'Date', hint: 'When did this project come to life?' do
               .row
                 .col-xs-6

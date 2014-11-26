@@ -73,6 +73,10 @@
     color: #a94442;
   }
   .embed-frame {
+    // margin: 20px 0;
+    &:last-child {
+      margin-bottom: 0;
+    }
     margin: 40px 0;
     padding-bottom: 40px;
     padding-top: 40px;
@@ -87,10 +91,7 @@
       padding-bottom: 0;
     }
     &.is-selected {
-      .embed {
-        // outline: 4px solid #3d8bc1;  // this fails in firefox because of absolute elements
-        @include box-shadow(0 0 0 4px #3d8bc1);
-      }
+      @include box-shadow(0 0 0 4px #3d8bc1);
     }
     .table {
       margin: 0;
@@ -103,25 +104,27 @@
         }
       }
       figcaption, .embed-figcaption {
-        &:before {
-          width: 25%;
-          margin-left: 75%;
-          border-top: 1px solid rgba(0,0,0,0.15);
-          display: block;
-          content: "";
-          margin-bottom: 10px;
-        }
-        position: absolute;
-        width: 150px;
-        top: 0;
-        left: -173px;
+        // &:before {
+        //   width: 25%;
+        //   margin-left: 75%;
+        //   border-top: 1px solid rgba(0,0,0,0.15);
+        //   display: block;
+        //   content: "";
+        //   margin-bottom: 10px;
+        // }
+        // position: absolute;
+        // width: 150px;
+        // top: 0;
+        // left: -173px;
         color: #888;
-        font-style: italic;
-        font-size: 13px;
-        text-align: right;
-        min-height: 13px;
-        word-wrap: break-word;
-        word-break: break-word;
+        // font-style: italic;
+        // font-size: 13px;
+        // text-align: right;
+        // min-height: 13px;
+        // word-wrap: break-word;
+        // word-break: break-word;
+        font-size: 0.9em;
+        margin-bottom: 5px;
       }
     }
   }

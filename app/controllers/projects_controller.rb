@@ -221,6 +221,7 @@ class ProjectsController < ApplicationController
     @mode = 'edit_mode'
     @show_sidebar = true
     initialize_project
+    @project = @project.decorate
   end
 
   def settings

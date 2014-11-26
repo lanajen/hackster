@@ -1,0 +1,87 @@
+.project-show
+  .wrapper700
+    .project-section  id="showcase"
+      .section-header
+        h2
+          - if @project.is_idea?
+            | What is my idea?
+          - else
+            | Showcase
+      .section-content
+        .widget
+          .content
+            #editable-description.text-widget.project-show-item.check-todo*{ 'data-human-name' => 'Description', 'data-check-todo' => '*value.find(".editable").text().trim() == ""*', 'data-target' => '#showcase' }
+              = render partial: 'shared/medium_editor', locals: { editable: @project.decorate.description, attribute_name: 'description' }
+
+    #more-info.project-section
+      .section-header
+        h2 Metadata
+      .clearfix.project-details
+        #project-secondary-info
+          #left-project-deets
+            #team-widget.team-widget.meta
+              .meta-title-wrap
+                .meta-title
+                  ' Team #{@project.team.full_name}
+                  - if @can_edit
+                    = link_to content_tag(:i, '', class: 'fa fa-pencil'), project_edit_team_path(@project), class: 'btn-edit no-float', rel: 'tooltip', title: 'Manage team', data: { container: 'body' }
+              - if @project.guest_name.present?
+                .user
+                  = @project.guest_name
+              - else
+                - users = @project.team.active_members.includes(:user)
+                - users.each do |member|
+                  = render partial: 'users/line_thumb', locals: { member: member }
+
+              - if @project.credit_lines.any?
+                .meta-title-wrap
+                  .meta-title
+                    | Additional contributors
+                - @project.credit_lines.each do |credit_line|
+                  - if credit_line.name.present?
+                    .user
+                      - if credit_line.work.present?
+                        = credit_line.work.try(:capitalize)
+                        | by
+                      - if credit_line.link.present?
+                        = link_to credit_line.name, credit_line.link, target: '_blank', rel: 'nofollow'
+                      - else
+                        = credit_line.name
+
+            .meta
+              strong
+                ' Created on
+                = l @project.created_at, format: :date
+                / if @project.created_at.to_date != @project.made_public_at.to_date
+                  br
+                  strong> Published on
+                  = l @project.made_public_at, format: :date
+
+            - if @project.guest_name.present?
+              .meta
+                strong
+                  ' Posted by
+                  - poster = @project.team.active_members.includes(:user).first.user
+                  = link_to poster.name, poster
+
+            .license.meta
+              strong
+                span#editable-license.editable-attribute.is-not-editable.has-select*{ 'data-model' => "project", 'data-attribute' => "license", 'data-default-text' => "Select a license", 'data-view-tpl' => "*var f=function(licenseUrl){ if (licenseUrl == '') return ''; licenses = #{License.all_with_abbr.to_s.gsub(/=>/, ': ')}; abbr = licenses[licenseUrl]; return \"Copyright &copy; <a href='\" + licenseUrl + \"' class='hidden-link'>\" + abbr + \"</a>\"; }; f(value);*", 'data-value' => @project.license.try(:url), 'data-edit-tpl' => "*var f=function(url){ var input=$(\"<select><option></option>#{License.all.map{|l| "<option value='#{l.url}'>#{l.name.gsub(/"/, '\"')}</option>" }.join('')}</select>\"); var option=input.children('option[value=\"' + url + '\"]'); option.attr('selected', 'selected'); return input[0].outerHTML; }; f(value);*", 'data-human-name' => 'License', 'data-target' => '#more-info' }
+
+          #right-project-deets
+            .tags.meta
+              .meta-title-wrap
+                .meta-title Built with
+              .editable-attribute*{ 'data-model' => 'project', 'data-attribute' => 'platform_tags_string', 'data-default-text' => "Add technologies you're using in this project, separated by commas. Eg: Arduino, ATmega, Attiny...", 'data-view-tpl' => "*var f=function(tagString){ var out = '', tags = []; tags = tagString.split(','); $.each(tags, function(i, tag){ tag = tag.trim(); tpl = \"<a class='tag-link' href='/tags/\" + encodeURIComponent(tag) + \"'>\" + tag + \"</a>\"; out += tpl; }); return out; }; f(value);*", 'data-value' => @project.platform_tags_string, 'data-human-name' => 'Platforms', 'data-target' => '#more-info' }
+
+            .tags.meta
+              .meta-title-wrap
+                .meta-title Tags
+              .editable-attribute*{ 'data-model' => "project", 'data-attribute' => "product_tags_string", 'data-default-text' => "Add tags, separated by commas. Eg: home automation, drone, display...", 'data-view-tpl' => "*var f=function(tagString){ var out = '', tags = []; tags = tagString.split(','); $.each(tags, function(i, tag){ tag = tag.trim(); tpl = \"<a class='tag-link' href='/tags/\" + encodeURIComponent(tag) + \"'>#\" + tag + \"</a>\"; out += tpl; }); return out; }; f(value);*", 'data-value' => @project.product_tags_string, 'data-human-name' => 'Tags', 'data-target' => '#more-info' }
+
+
+= content_for :js do
+  javascript:
+    $(function(){
+      editor.activate();
+    });

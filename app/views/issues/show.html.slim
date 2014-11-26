@@ -33,7 +33,7 @@
           ' -
           = pluralize @issue.comments.size, 'comment'
 
-      .content
+      .content#comments
         = render partial: 'comments/issues/comment', locals: { comment: @issue }
 
         - @issue.comments.each do |comment|

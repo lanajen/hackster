@@ -1,6 +1,6 @@
 - if can? :create, BlogPost, @project
   .row
-    .col-xs-12
+    .col-xs-8.col-xs-offset-2
       .pull-right
         = link_to 'Post a new build log', new_project_log_path(@project.user_name_for_url, @project.slug), class: 'btn btn-primary btn-sm'
       .clearfix
@@ -8,7 +8,7 @@
 
 - if @logs.any?
   .row.build-logs
-    .col-xs-12
+    .col-xs-8.col-xs-offset-2
       - @logs.each do |log|
         - log = log.decorate
         .well.build-log

@@ -6,15 +6,20 @@
           .project-banner style="background-image: url(#{@project.cover_image})"
             .project-banner-inner
               h1.project-title
+                - if @project.is_idea?
+                  i.fa.fa-lightbulb-o.private-project-icon>
                 ==> @project.name
                 - if @project.license
-                  a.copyright href=@project.license.url &copy; #{@project.license.abbr} target='_blank'
+                  a.copyright target='_blank' href=@project.license.url &copy; #{@project.license.abbr}
               p.project-one-liner= @project.one_liner
 
-              - if @project.product_tags_count > 0
+              - if @project.product_tags_count > 0 or @project.platform_tags_cached.any?
                 ul.list-inline
-                  - @project.product_tags_cached.each do |tag|
-                    li= link_to tag, "/tags/#{tag}", class: 'tag'
+                  - unknown_platforms = @project.platform_tags_cached.select do |tag|
+                    - Platform.includes(:platform_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first.nil?
+
+                  - (@project.product_tags_cached  + unknown_platforms).map{|t| t.downcase }.uniq.each do |tag|
+                    li= link_to tag, tag_path(tag), class: 'tag'
 
               / a.btn.btn-primary.btn-sm href="#" Respect it!
               / a.btn.btn-default.btn-sm href="#" Share it
@@ -30,7 +35,7 @@
                   span.stat-figure> = number_with_delimiter @project.respects_count
                   = pluralize_without_count @project.respects_count, 'respect'
 
-          section#about.section-collapsible
+          section#about-project.section-collapsible
             h2.section-title
               a href=''
                 ' About this project
@@ -65,29 +70,30 @@
                 .embed-responsive.embed-responsive-16by9
                   iframe.embed-responsive-item src="//www.youtube.com/embed/dU1xS07N-FA?controls=0&amp;showinfo=0" frameborder="0" width="100%" height="300"
 
-          section#logs.section-collapsible
-            h2.section-title
-              a href=''
-                ' Build logs
-                i.fa.fa-chevron-down
-                i.fa.fa-chevron-up
-            .section-content
-              - if log = @project.blog_posts.published.last.try(:decorate)
-                h5.blog-info
-                  ' Build log ##{log.sub_id} -
-                  ==> time_ago_in_words log.created_at
-                  ' ago
+          - if @project.build_logs_count > 0 or @can_edit
+            section#logs.section-collapsible
+              h2.section-title
+                a href=''
+                  ' Build logs
+                  i.fa.fa-chevron-down
+                  i.fa.fa-chevron-up
+              .section-content
+                - if log = @project.blog_posts.published.last.try(:decorate)
+                  h5.blog-info
+                    ' Build log ##{log.sub_id} -
+                    ==> time_ago_in_words log.created_at
+                    ' ago
 
-                .jumbotron.single-blog
-                  h4= link_to log.title, log_path(@project, log)
-                  = log.body.html_safe
+                  .jumbotron.single-blog
+                    h4= link_to log.title, log_path(@project, log)
+                    = log.body.html_safe
 
-              - if @can_edit
-                = link_to 'See and manage all logs (including drafts)', project_logs_path, class: 'btn btn-default btn-sm'
-              - elsif @project.build_logs_count > 1
-                = link_to 'Read previous logs', project_logs_path, class: 'btn btn-default btn-sm btn-block'
+                - if @can_edit
+                  = link_to 'See and manage all logs (including drafts)', project_logs_path, class: 'btn btn-default btn-sm'
+                - elsif @project.build_logs_count > 1
+                  = link_to 'Read previous logs', project_logs_path, class: 'btn btn-default btn-sm btn-block'
 
-          - if components_widget = @project.widgets.where(type: 'PartsWidget').first
+          / # - if widget_ids = @project.widgets.where(type: 'PartsWidget').pluck(:id) and widget_ids.any?
             section#components.section-collapsible
               h2.section-title
                 a href=''
@@ -95,28 +101,20 @@
                   i.fa.fa-chevron-down
                   i.fa.fa-chevron-up
               .section-content
-                ul.component-list.list-unstyled
-                  - components_widget.parts.each do |part|
-                    li.list-group-item
-                      h5
-                        - if part.vendor_link.present?
-                          = link_to part.description, part.vendor_link
-                        - else
-                          = part.description
-                      span.text-muted= part.comment
-                      span.count
-                        'x
-                        = part.quantity
+                - widget_ids.each do |widget_id|
+                  - embed = Embed.new widget_id: widget_id
+                  = render partial: 'api/embeds/embed', locals: { embed: embed }
 
-          section#code.section-collapsible
+          / section#code.section-collapsible
             h2.section-title
               a href=''
                 ' Schematics
                 i.fa.fa-chevron-down
                 i.fa.fa-chevron-up
             .section-content
+              = image_tag 'circuit.png'
 
-          section#code.section-collapsible
+          / section#code.section-collapsible
             h2.section-title
               a href=''
                 ' Code
@@ -127,13 +125,7 @@
                 - embed = Embed.new widget_id: widget_id
                 = render partial: 'api/embeds/embed', locals: { embed: embed }
 
-                .button-content
-                  button.btn.btn-default.btn-md
-                    'Copy to clipboard
-                  button.btn.btn-primary.btn-md
-                    'Download
-
-          section#code.section-collapsible
+          / section#code.section-collapsible
             h2.section-title
               a href=''
                 ' CAD files
@@ -141,21 +133,20 @@
                 i.fa.fa-chevron-up
             .section-content
 
-          section#instructions.section-collapsible
+          / section#instructions.section-collapsible
             h2.section-title
               a href=''
                 ' Assembly Instructions
                 i.fa.fa-chevron-down
                 i.fa.fa-chevron-up
             .section-content
-              h3.title Step1
+              h3.title Step 1: hardware
               p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
 
-              h3.title Step2
+              h3.title Step 2: code
               p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
-              h3.title Step3
-              = image_tag 'circuit.png', width:"250px", height:"250px"
-              hr
+
+              h3.title Step 3: be happy!
 
           section#comments.section-collapsible
             h2.section-title
@@ -164,53 +155,52 @@
                 i.fa.fa-chevron-down
                 i.fa.fa-chevron-up
             .section-content
-              .comments
-                .new-comment
-                  .textarea-content
-                    textarea.form-control rows="3"
-                  .button-area
-                    button.btn.btn-primary Post comment
-                - sort_comments(@project.comments).each do |comment|
-                  = render partial: 'comments/comment', locals: { comment: comment }
+              = render partial: 'widgets/comments', locals: { comments: @project.comments, commentable: @project }
 
         .col-md-4.right-column
-          section.section-thumbs
-            h4
-              - if @project.team_members_count > 1
-                | Budding team members
-              - else
-                | Glorious solo hacker
-            .row.mobile-scroll-row.desktop-tighter-margins
-              - @project.users.each do |user|
-                .mobile-scroll-row-item
-                  - user = user.decorate
-                  .col-xs-6.col-md-4
-                    .mini-thumb.thumb
+          .container-mobile
+            - if @can_edit
+              section.section-thumbs
+                h4 Manage this project
+                ==> link_to 'Edit project details', edit_project_path(@project), class: 'btn btn-default'
+                = link_to 'Settings', settings_project_path(@project), class: 'btn btn-default'
+
+            section.section-thumbs
+              h4
+                | Team members
+                = link_to content_tag(:i, '', class: 'fa fa-pencil'), project_edit_team_path(@project), class: 'btn-edit'
+
+              .row.mobile-scroll-row.desktop-tighter-margins
+                - @project.team_members.each do |member|
+                  - user = member.user.decorate
+                  .col-xs-6.col-md-4.mobile-scroll-row-item
+                    .mini-thumb.thumb*{ data: { title: 'Contribution', content: member.contribution, container: 'body', placement: 'top', trigger: 'hover' }} class="#{'ispopover' if member.contribution.present?}"
                       .mini-thumb-image.thumb-image style="background-image: url(#{user.avatar(:big)});"
                         .mini-thumb-image-inner.thumb-image-inner
                           h5= link_to user.name, user
                           a.btn.btn-primary.btn-sm.btn-block.show-on-hover href='' Follow
 
-          - if @project.communities_count > 0
-            section.section-thumbs
-              h4 Communities this project belongs to
-              .row.mobile-scroll-row.desktop-tighter-margins
-                - @project.platforms.each do |platform|
-                  .mobile-scroll-row-item
-                    .col-xs-6.col-md-4
+            - if @project.communities_count > 0
+              section.section-thumbs
+                h4
+                  | Communities this project belongs to
+                  /   = link_to content_tag(:i, '', class: 'fa fa-pencil'), '', class: 'btn-edit'
+                .row.mobile-scroll-row.desktop-tighter-margins
+                  - @project.platforms.each do |platform|
+                    .col-xs-6.col-md-4.mobile-scroll-row-item
                       .mini-thumb.thumb
                         .mini-thumb-image.thumb-image style="background-image: url(#{platform.avatar.try(:file_url, :big)});"
                           .mini-thumb-image-inner.thumb-image-inner
                             h5
                               = link_to platform.name, platform
-                              span.platform-type Platform
+                              / span.platform-type Platform
                             a.btn.btn-primary.btn-sm.btn-block.show-on-hover href='' Follow
 
-          - if @other_projects_count > 0
-            section.section-thumbs
-              h4 Other projects by the same authors
-              - @other_projects.each do |project|
-                .project-thumb-mini style="background-image: url(#{project.cover_image.try(:file_url, :cover_thumb)})"
-                  .project-thumb-mini-inner
-                    h4= link_to project.name, project
-                    p= render partial: 'projects/by_team', locals: { project: project }
+            - if @other_projects_count > 0
+              section.section-thumbs
+                h4 Other projects by the same authors
+                - @other_projects.each do |project|
+                  .project-thumb-mini style="background-image: url(#{project.cover_image.try(:file_url, :cover_thumb)})"
+                    .project-thumb-mini-inner
+                      h4= link_to project.name, project
+                      p= render partial: 'projects/by_team', locals: { project: project }

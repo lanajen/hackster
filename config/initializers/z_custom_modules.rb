@@ -32,3 +32,5 @@ require File.join(Rails.root, 'lib/editable_slug')
 require File.join(Rails.root, 'lib/heroku_domains')
 # progress tracking for remote file upload
 # require File.join(Rails.root, 'lib/carrierwave_uploader_download')
+# markdown converter
+require File.join(Rails.root, 'lib/markdown_filter')

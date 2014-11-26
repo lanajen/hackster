@@ -1,6 +1,6 @@
 .media.issue-comment  class="comment-#{comment.id}"
   - user = comment.user.decorate
-  = link_to image_tag(user.avatar(:thumb), class: 'media-object user-avatar'), user, class: 'pull-left'
+  = link_to image_tag(user.avatar(:thumb), class: 'media-object user-avatar'), user, class: 'media-left'
   .media-body.panel.panel-default
     .panel-heading
       small.text-muted

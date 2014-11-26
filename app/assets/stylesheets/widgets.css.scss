@@ -434,10 +434,10 @@
     }
   }
   .slick-prev{
-    left: -60px;
+    left: -65px;
   }
   .slick-next{
-    right: -60px;
+    right: -65px;
   }
   .slick-dots{
     bottom: -41px;
@@ -455,6 +455,7 @@
   height: 0;
   padding-bottom: 75%;
   position: relative;
+  margin-bottom: 50px;
   .file-drop {
     position: absolute;
     z-index: 0;

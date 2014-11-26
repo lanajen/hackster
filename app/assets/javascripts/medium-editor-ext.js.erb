@@ -1994,8 +1994,12 @@ function deletePart(id) {
 
 function resizeToolBars() {
   $('.medium-editor-toolbar-embed:not(.medium-editor-toolbar-resized)').each(function(){
-    marginLeft = $(this).outerWidth() / 2;
+    var marginLeft = $(this).outerWidth() / 2;
+    var parent = $(this).parent();
+    var frame = parent.parent().parent();
+    var top = 74 - frame.offset().top + parent.offset().top;
     $(this).css('margin-left', -marginLeft);
+    $(this).css('top', -top);
     $(this).addClass('medium-editor-toolbar-resized');
   });
 }
