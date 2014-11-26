@@ -667,7 +667,7 @@ footer {
 
 .well, .transparent-well, .wellified, .wellified-transparent {
   h1, h2, h3, h4 {
-    font-family: 'Open Sans', Tahoma, sans-serif;
+    // font-family: 'Open Sans', Tahoma, sans-serif;
     font-weight: 300;
   }
   h5 {
@@ -941,9 +941,9 @@ hr.spacious {
 }
 
 .wellified, .wellified-transparent {
-  background: #fafafa;
+  background: #fff;
   padding: 10px 20px;
-  border: 1px solid #ddd;
+  border: 2px solid #ddd;
   @include border-radius(4px);
 }
 

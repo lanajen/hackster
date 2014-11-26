@@ -1,5 +1,6 @@
-.col-xs-3.col-xs-offset-4.wellified
-  h2  style='text-align:center;'   Change your password
+.col-xs-4.col-xs-offset-4.wellified
+  .expanded-header
+    h2  style='text-align:center;'   Change your password
   = simple_form_for(resource, :as => resource_name, :url => password_path(resource_name), :html => { :method => :patch }) do |f|
     = f.error_notification
     = f.input :reset_password_token, as: :hidden

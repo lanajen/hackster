@@ -119,7 +119,8 @@
 - elsif !@project.is_idea?
   .col-md-8.col-md-offset-2.col-xs-12
     .wellified
-      h2.mg-20.text-center Start a new project
+      .expanded-header
+        h2.mg-20.text-center Start a new project
 
       = simple_nested_form_for @project, html: { class: 'accept-file-upload form-horizontal disable-on-submit' }, wrapper: :bootstrap3_horizontal do |f|
         = f.error_notification

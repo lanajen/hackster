@@ -152,9 +152,7 @@ html(lang="en")
           = yield(:no_container)
           = yield(:in_main)
         - else
-          .container-fluid
-            #content.wrapper
-              = yield
+          #content.container= yield
 
     - unless params[:blank_frame]
       footer.clearfix
