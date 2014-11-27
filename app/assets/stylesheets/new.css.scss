@@ -87,10 +87,10 @@ h1 {
   left: 0;
 }
 
-// .show-on-hover {
-//   @include opacity(0);
-//   @include transition(opacity 200ms linear);
-// }
+.show-on-hover {
+  @include opacity(0);
+  @include transition(opacity 200ms linear);
+}
 .thumb-image {
   @extend .block-image;
   &:before {
@@ -98,7 +98,7 @@ h1 {
     @include transition(background 200ms linear);
   }
   &:hover:before {
-    background: rgba(0,0,0,0.2);
+    background: rgba(0,0,0,0.4);
   }
   &:hover {
     .show-on-hover {
@@ -246,6 +246,13 @@ h1 {
     .thumb-image-inner {
       display: block;
     }
+  }
+  .one-liner {
+    position: absolute;
+    top: 0;
+    padding: 20px 15px;
+    color: #fff;
+    pointer-events: none;
   }
   p {
     font-size: 87.5%;

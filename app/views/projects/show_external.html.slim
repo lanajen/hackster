@@ -1,109 +1,124 @@
-= content_for :head do
-  meta(property="og:title" content=@project.name)
-  - if @project.one_liner.present?
-    meta(property="og:description" content="#{@project.one_liner} By #{@project.guest_or_user_name}.")
-  meta(property="og:image" content=@project.cover_image(:cover_thumb))
-  meta(property="og:url" content=external_project_url(@project))
-  meta(property="og:site_name" content="Hackster.io")
-  meta(property="twitter:card" content="summary")
-  meta(property="twitter:site" content="@hacksterio")
-  meta(property="twitter:domain" content="hackster.io")
-  meta(property="twitter:title" content=@project.name)
-  meta(property="twitter:description" content=@project.one_liner)
-  - if user = @project.users.first and link = user.twitter_link.presence and handle = link.match(/twitter.com\/(.+)/).try(:[], 1)
-    meta(property="twitter:creator" content="@#{handle}")
-  meta(property="twitter:image:src" content=@project.cover_image(:cover_thumb))
-  link(rel="canonical" href=external_project_url(@project))
-  - if @project.platform_tags_string.present?
-    meta(name='keywords' content=@project.platform_tags_string)
-
-- @project.platform_tags_cached.map do |tag|
-  - if platform = Platform.includes(:platform_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first
-    = content_for :js do
-      = render partial: 'groups/platforms/platform_card', locals: { platform: platform }
+/ - @project.known_platforms.each do |platform|
+  = content_for :js do
+    = render partial: 'groups/platforms/platform_card', locals: { platform: platform }
 
 = content_for :no_container do
-  .project
-    .project-details
-      #top-project-section
-        - cache [@project, 'teaser', user_signed_in?, can?(:edit, @project)], tag: (["project-#{@project.id}-teaser", 'project-teaser', 'project-teaser-external'] + @project.users.map{|u| "user-#{u.id}-thumb"}) do
-          #project-top-image style="background-image: url('#{@project.cover_image}');"
-          #top-project-section-deets
-            #project-header
-              .wrapper700
-                #project-header-in
-                  h1
-                    - if @project.logo(:thumb, false)
-                      = image_tag @project.logo(:thumb), class: 'project-logo'
-                    = link_to @project.name, external_project_path(@project), class: 'hidden-link'
-                  #project-information
-                    - if @project.one_liner.present?
-                      p.one-liner= @project.one_liner
-                    p.one-liner
-                      ' Read about this project on
-                      ==> link_to "#{@project.website_host} #{content_tag(:i, '', class: 'fa fa-external-link')}".html_safe, @project.website, target: '_blank'
+  #content.project-page
+    .container-desktop.container
+      .row
+        .col-md-8.left-column
+          .project-banner style="background-image: url(#{@project.cover_image})"
+            .project-banner-inner
+              h1.project-title
+                - if @project.is_idea?
+                  i.fa.fa-lightbulb-o.private-project-icon>
+                ==> @project.name
+                - if @project.license
+                  a.copyright target='_blank' href=@project.license.url &copy; #{@project.license.abbr}
+              p.project-one-liner= @project.one_liner
 
-                  - if @project.product_tags_cached.any?
-                    .tags.meta
-                      - @project.product_tags_cached.each do |tag|
-                        span= link_to tag, "/tags/#{CGI::escape(tag)}", class: 'tag-link'
+              - if @project.product_tags_count > 0 or @project.platform_tags_cached.any?
+                ul.list-inline
+                  - unknown_platforms = @project.platform_tags_cached.select do |tag|
+                    - Platform.includes(:platform_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first.nil?
 
-                  .actions
-                    ul.list-unstyled.list-inline
-                      / "Don't forget to respect this project if you liked it!"
-                      li= render 'projects/share'
-                      li= render partial: 'respects/button', locals: { project: @project }
-                      li
-                        .add-to-list
+                  - (@project.product_tags_cached  + unknown_platforms).map{|t| t.downcase }.uniq.each do |tag|
+                    li= link_to tag, tag_path(tag), class: 'tag'
 
-            #project-team
-              .team-widget.pull-left
-                - if @project.guest_name.present? or member = @project.team.try(:active_members).try(:includes, :user).try(:first)
-                  - if @project.guest_name.present?
-                    .user.guest-name
-                      span.user-name= @project.guest_name
-                    .clearfix
-                  - elsif member
-                    - @hide_claim = true
-                    - users = @project.team.active_members.includes(:user)
-                    - u = users.first.user
-                    .user
-                      ==> link_to image_tag(u.decorate.avatar(:mini), class: ' img-circle' ), u, class: ''
-                      span.user-name
-                        = link_to u.name, u, class: 'hidden-link'
+              ul.list-inline.project-stats
+                li
+                  span.stat-figure> = number_with_delimiter @project.impressions_count
+                  = pluralize_without_count @project.impressions_count, 'view'
+                li
+                  span.stat-figure> = number_with_delimiter @project.comments_count
+                  = pluralize_without_count @project.comments_count, 'comment'
+                li
+                  span.stat-figure> = number_with_delimiter @project.respects_count
+                  = pluralize_without_count @project.respects_count, 'respect'
 
-              - if @project.platform_tags_cached.any?
-                .tags.meta.pull-left
-                  ' with
-                  - tags = @project.platform_tags_cached.map do |tag|
-                    - if platform = Platform.includes(:platform_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first
-                      - link_to "#{content_tag(:i, '', class: 'fa fa-star')} #{platform.name}".html_safe, platform_short_path(platform), class: 'tag-link platform-card-popover', data: { target: "#platform-card-#{platform.id}" }
-                    - else
-                      - link_to tag, tag_path(tag), class: 'tag-link'
-                  = tags.to_sentence.html_safe
+          section.project-external
+            p
+              ' This is an external project
+              - if @project.guest_name.present? or member = @project.team.try(:active_members).try(:includes, :user).try(:first)
+                ' made by
+                - if @project.guest_name.present?
+                  span.user-name>= @project.guest_name
+                - elsif member
+                  - @hide_claim = true
+                  - users = @project.team.active_members.includes(:user)
+                  - u = users.first.user
+                  span.user-name>= link_to u.name, u
+              ' on
+              ==> link_to "#{@project.website_host} #{content_tag(:i, '', class: 'fa fa-external-link')}".html_safe, @project.website, target: '_blank'
+            ==> link_to 'View project', @project.website, target: '_blank', class: 'btn btn-primary'
 
-                .clearfix
+          section#comments.section-container.section-collapsible
+            h2.section-title
+              a.title.title-toggle href=''
+                ' Comments
+                i.fa.fa-chevron-down
+                i.fa.fa-chevron-up
+            .section-content
+              = render partial: 'widgets/comments', locals: { comments: @project.comments, commentable: @project }
 
-              - unless @hide_claim
-                .claim-link
-                  small
-                    - if can?(:edit, @project)
-                      a.istooltip>*{ title: 'Project settings', data: { container: 'body', placement: 'right' }} href=settings_project_path(@project)
-                        i.fa.fa-cog
+        .col-md-4.right-column
+          .container-mobile
+            section.section-thumbs
+              h4 Do something awesome
+              - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
+                = render partial: 'respects/button', locals: { project: @project }
+              / = render 'projects/project_embed_popup'
+              .add-to-list
+              = render partial: 'add_to_list_button'
 
-                    - q = @project.guest_name.present? ? "Are you #{@project.guest_name}?" : 'Are you the author of this project?'
-                    - a = @project.guest_name.present? ? 'Claim this project' : 'Claim it'
-                    ==> q
-                    - if user_signed_in?
-                      = link_to a, claim_project_path(@project), data: { method: :post, confirm: "Are you really the author of this project? Note that we'll have to approve it!" }
-                    - else
-                      = link_to a, new_user_registration_path(reason: 'claim', m: 'project', id: @project.id)
+            - if @can_edit
+              section.section-thumbs
+                h4 Manage this project
+                .btn-group<
+                  = link_to content_tag(:i, '', class: 'fa fa-cog'), settings_project_path(@project), class: 'btn btn-default btn-sm', rel: 'tooltip', data: { container: 'body' }, title: 'Edit settings'
+                  = link_to content_tag(:i, '', class: 'fa fa-group'), project_edit_team_path(@project), class: 'btn btn-default btn-sm', rel: 'tooltip', data: { container: 'body' }, title: 'Manage team'
 
-            a.fa.fa-info-circle.meta-data*{ data: { container: 'body', toggle: 'popover', placement: 'left', content: render('projects/meta_data'), trigger: 'hover', html: 'true'}, rel: 'popover' }
+            section.section-thumbs
+              h4
+                | Team members
+                - if @can_edit
+                  = link_to content_tag(:i, '', class: 'fa fa-pencil'), project_edit_team_path(@project), class: 'btn-edit'
 
+              - if @hide_claim
+                .row.mobile-scroll-row.desktop-tighter-margins
+                  - @project.team_members.each do |member|
+                    = render partial: 'users/member_thumb_mini', locals: { member: member }
 
-    .project-show
-      .wrapper700
-        = render partial: 'widgets/comment_widget', locals: { comments: @project.comments, commentable: @project }
+              - else
+                - q = @project.guest_name.present? ? "Are you #{content_tag(:span, @project.guest_name, class: 'user-name')}?".html_safe : 'Are you the author of this project?'
+                - a = @project.guest_name.present? ? 'Claim this project and add it to your profile' : 'Claim it and add it to your profile'
+                p= q
+                p.text-muted= a
+                - if user_signed_in?
+                  = link_to 'This is mine', claim_project_path(@project), data: { method: :post, confirm: "Are you really the author of this project? Note that we'll have to approve it!" }, class: 'btn btn-primary btn-sm'
+                - else
+                  = link_to 'This is mine', new_user_registration_path(reason: 'claim', m: 'project', id: @project.id), class: 'btn btn-primary btn-sm'
 
-= render partial: 'add_to_list_button'
+            - if @project.guest_name.present? and poster = @project.team.try(:active_members).try(:includes, :user).try(:first).try(:user)
+              section.section-thumbs
+                h4
+                  | Posted by
+                .row= render partial: 'users/user_thumb_mini', locals: { user: poster }
+
+            - if @project.communities_count > 0
+              section.section-thumbs
+                h4
+                  | Communities this project belongs to
+                  /   = link_to content_tag(:i, '', class: 'fa fa-pencil'), '', class: 'btn-edit'
+                .row.mobile-scroll-row.desktop-tighter-margins
+                  - @project.platforms.each do |platform|
+                    = render partial: 'groups/platforms/platform_thumb_mini', locals: { platform: platform }
+
+            / - if @other_projects_count > 0
+              section.section-thumbs
+                h4 Other projects by the same authors
+                - @other_projects.each do |project|
+                  .project-thumb-mini style="background-image: url(#{project.cover_image.try(:file_url, :cover_thumb)})"
+                    .project-thumb-mini-inner
+                      h4= link_to project.name, project
+                      p= render partial: 'projects/by_team', locals: { project: project }

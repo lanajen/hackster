@@ -1,0 +1,9 @@
+.col-xs-6.col-md-4.mobile-scroll-row-item
+  .mini-thumb.thumb
+    .mini-thumb-image.thumb-image.has-link-overlay style="background-image: url(#{platform.avatar.try(:file_url, :big)});"
+      = link_to '', platform, class: 'link-overlay'
+      .mini-thumb-image-inner.thumb-image-inner
+        h5
+          = link_to platform.name, platform
+          / span.platform-type Platform
+    = render partial: 'followers/button_short', locals: { followable: platform }

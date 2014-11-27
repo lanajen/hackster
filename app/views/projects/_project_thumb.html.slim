@@ -3,16 +3,17 @@
 - offset = defined?(offset) ? offset : nil
 - show_year = defined?(show_year) ? show_year : nil
 - show_year = show_year ? 'year' : 'placeholder' unless show_year.nil?
-- col = (defined?(col) and col.present? ? col : 3)
 
 .col-sm-6.col-md-4.mobile-scroll-row-item
   .project-thumb-container data-ref=ref data-ref-id=ref_id data-offset=offset data-show-year=show_year class="#{'has-data' if ref and ref_id}"
-    - cache ["project-#{project.id}-thumb", col], tag: ["project-#{project.id}-thumb", "team-#{project.team_id}", "team-#{project.team_id}-user-thumbs", 'project-thumb'], expires_in: 6.hours do
+    - cache ["project-#{project.id}-thumb"], tag: ["project-#{project.id}-thumb", "team-#{project.team_id}", "team-#{project.team_id}-user-thumbs", 'project-thumb'], expires_in: 6.hours do
       - project = project.decorate
       div class="project-#{project.id}"
         .thumb.project-thumb
           .thumb-image.has-link-overlay style="background-image:url(#{project.cover_image(:cover_thumb)})"
             = link_to '', project, class: 'link-overlay'
+            p.one-liner.show-on-hover
+              = project.one_liner
             .thumb-image-inner
               .award-container
               h4
@@ -21,7 +22,7 @@
                 ==> link_to project.name, project, class: 'project-link-with-ref'
                 - if project.external
                   i.fa.fa-external-link.istooltip  title='This project is hosted on an external website' data-container='body'
-              p.show-on-hover
+              p
                 - if project.external
                   - if project.guest_name.present?
                     ' by
@@ -34,7 +35,7 @@
                 - else
                   = render partial: 'projects/by_team', locals: { project: project }
 
-              ul.list-inline.project-stats.show-on-hover
+              ul.list-inline.project-stats
                 li
                   span.stat-figure> = number_with_delimiter project.impressions_count
                   = pluralize_without_count project.impressions_count, 'view'

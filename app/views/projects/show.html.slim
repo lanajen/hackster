@@ -194,22 +194,8 @@
             .section-content
               = render partial: 'widgets/comments', locals: { comments: @project.comments, commentable: @project }
 
-
-
-
-
-
-
-
-
-
-
-
-
         .col-md-4.right-column
           .container-mobile
-
-
             - if @can_edit
               - if @project.assignment.present?
                 section.section-thumbs
@@ -234,7 +220,7 @@
                             | (#{l @project.assignment.submit_by_date.in_time_zone(PDT_TIME_ZONE)})
                           - else
                             | This assignment hasn't been submitted.
-                        p= link_to 'Submit assignment', submit_project_path(@project), method: :patch, class: 'btn btn-danger btn-sm btn-block', data: { confirm: "Are you sure you're ready to submit? You have until #{l @project.assignment.submit_by_date.in_time_zone(PDT_TIME_ZONE)} to make edits." }
+                        p= link_to 'Submit assignment', submit_project_path(@project), method: :patch, class: 'btn btn-danger btn-sm btn-block', data: { confirm: "Are you sure you're ready to submit? #{"You have until #{l @project.assignment.submit_by_date.in_time_zone(PDT_TIME_ZONE)} to make edits." if @project.assignment.submit_by_date.present? }" }
               - elsif @project.has_no_assignment? and (current_user.student_assignments.pluck(:id) - current_user.projects.joins(:project_collections).where(project_collections: { collectable_type: 'Assignment' }).pluck("project_collections.id")).any? and current_user.is_team_member?(@project)
                 section.section-thumbs
                   h4 Assignment
@@ -244,33 +230,50 @@
                         | It looks like you have due assignments
                       p= link_to 'Link to an assignment', settings_project_path(@project, anchor: 'sharing'), class: 'btn btn-warning btn-sm btn-block'
 
+            - if @project.public?
+              section.section-thumbs
+                h4 Do something awesome
+                - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
+                  = render partial: 'respects/button', locals: { project: @project }
+                = render 'projects/project_embed_popup'
+                .add-to-list
+                - if @project.celery_id.present?
+                  = link_to "#{content_tag(:i, '', class: 'fa fa-shopping-cart')} Buy it".html_safe, '#', 'data-celery' => @project.celery_id, 'data-celery-version' => 'v2', class: 'btn btn-warning btn-ellipsis btn-block'
+                = render partial: 'add_to_list_button'
 
+            - elsif @can_edit
+              - who = %w(you)
+              - who += ['team members'] if @project.users.size > 1
+              - who += ["members of #{@project.assignment.promotion.name}"] if @project.has_assignment?
 
-
-
-
-
-
-
-
-
-
-
-            section.section-thumbs
-              h4 Do something awesome
-              - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
-                = render partial: 'respects/button', locals: { project: @project }
-              = render 'projects/project_embed_popup'
-              .add-to-list
-              - if @project.celery_id.present?
-                = link_to "#{content_tag(:i, '', class: 'fa fa-shopping-cart')} Buy it".html_safe, '#', 'data-celery' => @project.celery_id, 'data-celery-version' => 'v2', class: 'btn btn-warning btn-ellipsis btn-block'
-              = render partial: 'add_to_list_button'
+              .alert.alert-warning.text-center
+                span
+                  p
+                    i.fa.fa-lock>
+                    | This project is private so only #{who.to_sentence} can see it.
+                - if @project.can_be_public? or current_user.try(:is?, :admin)
+                  p= link_to 'Publish publicly', project_path(@project, project: {  private: 0 } ), method: :patch, class: 'btn btn-warning btn-sm btn-block'
+                - else
+                  = content_tag(:i, '', class: 'fa fa-info-circle istooltip', title: 'You need to add a title, a description and a cover image before you can make it public.')
+                p
+                  small
+                    = link_to 'Need to privately share?', settings_project_path(@project), class: 'alert-link'
+            - else
+              .alert.alert-warning.text-center
+                p
+                  i.fa.fa-lock>
+                  | This project is private.
 
             - if @can_edit
               section.section-thumbs
                 h4 Manage this project
-                ==> link_to 'Edit project details', edit_project_path(@project), class: 'btn btn-default'
-                = link_to 'Settings', settings_project_path(@project), class: 'btn btn-default'
+                - if @can_update
+                    ==> link_to 'Edit project details', edit_project_path(@project), class: 'btn btn-default'
+                    .btn-group<
+                      = link_to content_tag(:i, '', class: 'fa fa-cog'), settings_project_path(@project), class: 'btn btn-default', rel: 'tooltip', data: { container: 'body' }, title: 'Edit settings'
+                      = link_to content_tag(:i, '', class: 'fa fa-group'), project_edit_team_path(@project), class: 'btn btn-default', rel: 'tooltip', data: { container: 'body' }, title: 'Manage team'
+                - else
+                  p This project is locked for editing.
 
             section.section-thumbs
               h4
@@ -280,13 +283,7 @@
 
               .row.mobile-scroll-row.desktop-tighter-margins
                 - @project.team_members.each do |member|
-                  - user = member.user.decorate
-                  .col-xs-6.col-md-4.mobile-scroll-row-item
-                    .mini-thumb.thumb*{ data: { title: 'Contribution', content: member.contribution, container: 'body', placement: 'top', trigger: 'hover' }} class="#{'ispopover' if member.contribution.present?}"
-                      .mini-thumb-image.thumb-image style="background-image: url(#{user.avatar(:big)});"
-                        .mini-thumb-image-inner.thumb-image-inner
-                          h5= link_to user.name, user
-                          a.btn.btn-primary.btn-sm.btn-block.show-on-hover href='' Follow
+                  = render partial: 'users/member_thumb_mini', locals: { member: member }
 
             - if @project.communities_count > 0
               section.section-thumbs
@@ -295,14 +292,7 @@
                   /   = link_to content_tag(:i, '', class: 'fa fa-pencil'), '', class: 'btn-edit'
                 .row.mobile-scroll-row.desktop-tighter-margins
                   - @project.platforms.each do |platform|
-                    .col-xs-6.col-md-4.mobile-scroll-row-item
-                      .mini-thumb.thumb
-                        .mini-thumb-image.thumb-image style="background-image: url(#{platform.avatar.try(:file_url, :big)});"
-                          .mini-thumb-image-inner.thumb-image-inner
-                            h5
-                              = link_to platform.name, platform
-                              / span.platform-type Platform
-                            a.btn.btn-primary.btn-sm.btn-block.show-on-hover href='' Follow
+                    = render partial: 'groups/platforms/platform_thumb_mini', locals: { platform: platform }
 
             - if @other_projects_count > 0
               section.section-thumbs
@@ -312,3 +302,35 @@
                     .project-thumb-mini-inner
                       h4= link_to project.name, project
                       p= render partial: 'projects/by_team', locals: { project: project }
+
+            section.section-thumbs
+              h4
+                | Table of contents
+              #scroll-nav.section-container.affixable
+                ul.nav
+                  li.active
+                    a.smooth-scroll href="#about-project" data-target="#about-project" data-offset='0'
+                      = @project.name
+                  - if (@project.build_logs_count > 0 and !@project.private_logs) or can? :edit, @project
+                    li
+                      a.smooth-scroll href="#logs"  data-target="#logs" data-offset='-20'
+                        | Build Logs
+                        span.nav-count
+                          | (
+                          = @project.build_logs_count
+                          | )
+                  - if (@project.issues_count > 0 and !@project.private_issues) or can? :edit, @project
+                    li
+                      a.smooth-scroll href="#issues"  data-target="#issues" data-offset='-20'
+                        | Issues
+                        span.nav-count
+                          | (
+                          = @project.issues_count
+                          | )
+                  li
+                    a.smooth-scroll href="#comments"  data-target="#comments" data-offset='-20'
+                      | Comments
+                      span.nav-count
+                        | (
+                        = @project.comments_count
+                        | )

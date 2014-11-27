@@ -17,6 +17,7 @@
 .right-column {
   .affix {
     width: 345px;
+    top: 20px;
   }
 }
 #content.project-page {
@@ -263,6 +264,19 @@
   }
 }
 
+.project-external {
+  padding: 20px 40px;
+  margin-top: -40px;
+  border-top: 1px solid #fff;
+  background: #333;
+  margin-bottom: 40px;
+  color: #fff;
+  a {
+    font-weight: bold;
+    color: #fff;
+  }
+}
+
 .mini-thumb {
   margin-bottom: 10px;
 }
@@ -271,7 +285,7 @@
 }
 .mini-thumb-image-inner {
   @include background-image(linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 20%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0.8) 100%));
-  bottom: -45px;
+  // bottom: -45px;
   white-space: initial;
   h5 {
     margin-top: 0;
@@ -430,6 +444,19 @@
     .section-content {
       display: block;
     }
+  }
+}
+
+#scroll-nav {
+  a {
+    color: #666;
+  }
+  li.active > a {
+    font-weight: bold;
+  }
+  .nav-count {
+    margin-left: 5px;
+    font-size: 0.75em;
   }
 }
 

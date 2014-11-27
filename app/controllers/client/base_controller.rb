@@ -1,11 +1,11 @@
 class Client::BaseController < ApplicationController
+  helper_method :current_site
   helper_method :current_platform
-  helper_method :current_platform
-  before_filter :current_platform
+  before_filter :current_site
   before_filter :current_platform
   layout 'whitelabel'
 
-  def current_platform
+  def current_site
     return @current_site if @current_site
 
     redirect_to root_url(subdomain: 'www') unless @current_site = if request.domain == APP_CONFIG['default_domain']
@@ -18,7 +18,7 @@ class Client::BaseController < ApplicationController
   def current_platform
     return @current_platform if @current_platform
 
-    redirect_to root_url(subdomain: 'www') unless @current_platform = current_platform.platform
+    redirect_to root_url(subdomain: 'www') unless @current_platform = current_site.platform
   end
 
   protected

@@ -46,10 +46,17 @@ h6, .h6 {
 .btn-success {
   background: #20daa8;
   border: 1px solid #20daa8;
-
   &:hover {
     background: #19D2A0;
     border-color: #19D2A0;
+  }
+}
+.btn-append {
+  @include border-top-left-radius(0);
+  @include border-top-right-radius(0);
+  border-top: 2px solid #333;
+  &.btn-primary {
+    border-color: #204d74;
   }
 }
 .popover {

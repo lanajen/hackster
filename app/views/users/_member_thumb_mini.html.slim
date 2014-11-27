@@ -1,6 +1,6 @@
-- user = user.decorate
+- user = member.user.decorate
 .col-xs-6.col-md-4.mobile-scroll-row-item
-  .mini-thumb.thumb
+  .mini-thumb.thumb*{ data: { title: 'Contribution', content: member.contribution, container: 'body', placement: 'top', trigger: 'hover' }} class="#{'ispopover' if member.contribution.present?}"
     .mini-thumb-image.thumb-image.has-link-overlay style="background-image: url(#{user.avatar(:big)});"
       = link_to '', user, class: 'link-overlay'
       .mini-thumb-image-inner.thumb-image-inner

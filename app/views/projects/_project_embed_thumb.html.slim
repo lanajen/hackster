@@ -16,7 +16,7 @@
                 ==> link_to project.name, project_url(project)
                 - if project.external
                   i.fa.fa-external-link.istooltip  title='This project is hosted on an external website' data-container='body'
-              p.show-on-hover
+              p
                 - if project.external
                   - if project.guest_name.present?
                     ' by
@@ -29,7 +29,7 @@
                 - else
                   = render partial: 'projects/by_team', locals: { project: project }
 
-              ul.list-inline.project-stats.show-on-hover
+              ul.list-inline.project-stats
                 li
                   span.stat-figure> = number_with_delimiter project.impressions_count
                   = pluralize_without_count project.impressions_count, 'view'

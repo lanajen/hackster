@@ -6,7 +6,7 @@
         h4
           = link_to platform.name, platform
           span.platform-type Platform
-        / ul.list-inline.show-on-hover
+        / ul.list-inline
           / li.list-label Good for
           li
             a.tag href='' Beginners
@@ -14,7 +14,7 @@
             a.tag href='' Wearables
           li
             a.tag href='' Wifi
-        ul.list-unstyled.project-stats.show-on-hover
+        ul.list-unstyled.project-stats
           li
             span.stat-figure> = number_with_delimiter platform.projects_count
             = pluralize_without_count platform.projects_count, 'project'
