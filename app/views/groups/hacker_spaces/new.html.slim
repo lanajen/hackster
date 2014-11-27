@@ -1,23 +1,26 @@
-.col-xs-12.col-md-offset-2.col-md-8
-  .wellified
-    h2  style='text-align: center'   List a hacker space
+.row
+  .col-xs-12.col-md-offset-2.col-md-8
+    .box
+      .box-title
+        h2 List a hacker space
 
-    = simple_nested_form_for @hacker_space, url: hacker_spaces_path, html: { class: 'form-horizontal disable-on-submit accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
-      = f.error_notification
+      .box-content
+        = simple_nested_form_for @hacker_space, url: hacker_spaces_path, html: { class: 'form-horizontal disable-on-submit accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
+          = f.error_notification
 
-      = f.input :full_name, label: 'Name'
+          = f.input :full_name, label: 'Name'
 
-      .form-group
-        .col-xs-4
-          label.control-label Add a logo
-        .col-xs-8
-          .avatar.file-drop
-            div
-              span.avatar.image-preview.preview
-              a.btn.btn-default.btn-sm*{ data: { target: '.file_upload.avatar' } }  Select picture
+          .form-group
+            .col-xs-4
+              label.control-label Add a logo
+            .col-xs-8
+              .avatar.file-drop
+                div
+                  span.avatar.image-preview.preview
+                  a.btn.btn-default.btn-sm*{ data: { target: '.file_upload.avatar' } }  Select picture
 
-      = render partial: 'shared/image_form_bare', locals: { file_type: 'avatar', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
+          = render partial: 'shared/image_form_bare', locals: { file_type: 'avatar', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
 
-      .form-group
-        .col-xs-8.col-xs-offset-4
-          = f.button :submit, 'Go!', class: 'btn-block btn btn-primary'
+          .form-group
+            .col-xs-8.col-xs-offset-4
+              = f.button :submit, 'Go!', class: 'btn-block btn btn-primary'

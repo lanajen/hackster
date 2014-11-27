@@ -11,25 +11,25 @@
           = get_reason(params)
 
         .col-xs-12.col-md-4
-          .wellified  class="#{'wellified-transparent' unless highlight == 'login'}"
-            h3.text-center
-              | Log in
-              br
-              small with your existing account:
-            = render partial: 'devise/sessions/form', locals: { autofocus: (highlight == 'login') }
+          .box  class="#{'box-transparent' unless highlight == 'login'}"
+            .box-title
+              h3.text-center
+                | Log in
+              .subheading with your existing account:
+            .box-content= render partial: 'devise/sessions/form', locals: { autofocus: (highlight == 'login') }
 
         .col-xs-12.col-md-4
-          .wellified  class="#{'wellified-transparent' unless highlight == 'signup'}"
-            h3.text-center
-              | Sign up
-              br
-              small for a new account:
-            = render partial: 'devise/registrations/form', locals: { autofocus: (highlight == 'signup') }
+          .box  class="#{'box-transparent' unless highlight == 'signup'}"
+            .box-title
+              h3.text-center
+                | Sign up
+              .subheading for a new account:
+            .box-content= render partial: 'devise/registrations/form', locals: { autofocus: (highlight == 'signup') }
 
         .col-xs-12.col-md-4
-          .wellified  class="#{'wellified-transparent' unless highlight == 'connect'}"
-            h3.text-center
-              | Connect
-              br
-              small with your social account:
-            = render partial: 'devise/shared/omniauth', locals: { autofocus: (highlight == 'connect') }
+          .box  class="#{'box-transparent' unless highlight == 'connect'}"
+            .box-title
+              h3.text-center
+                | Connect
+              .subheading with your social account:
+            .box-content= render partial: 'devise/shared/omniauth', locals: { autofocus: (highlight == 'connect') }

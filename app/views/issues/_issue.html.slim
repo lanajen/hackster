@@ -1,0 +1,16 @@
+section.section-container
+  .section-title
+    h3.title
+      = link_to issue.title, issue_path(issue.threadable, issue)
+      .annotation
+        | Issue ##{issue.sub_id}
+
+      .subtitle
+        ==> time_ago_in_words issue.created_at
+        ' ago -
+        ==> link_to pluralize(issue.comments.size, 'comment'), issue_path(@project, issue, anchor: 'comments')
+        ' -
+        = render partial: 'issues/label', locals: { issue: issue }
+
+  .section-content.medium-editor
+    = raw issue.body

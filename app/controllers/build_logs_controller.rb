@@ -7,10 +7,10 @@ class BuildLogsController < ApplicationController
   layout 'project'
 
   def index
-    authorize! :read, @project.blog_posts.new
+    authorize! :read, @project.build_logs.new
     title "Logs for #{@project.name}"
-    @logs = @project.blog_posts
-    @logs = @logs.published unless current_user.try(:can?, :create, BlogPost, @project)
+    @logs = @project.build_logs
+    @logs = @logs.published unless current_user.try(:can?, :create, @project.build_logs.new)
     @logs = @logs.order(created_at: :desc).paginate(page: safe_page_params)
   end
 
@@ -21,22 +21,22 @@ class BuildLogsController < ApplicationController
   end
 
   def show_redirect
-    @log = BlogPost.find params[:id]
+    @log = BuildLog.find params[:id]
     redirect_to log_path @log.threadable, @log
   end
 
   def new
-    authorize! :create, BlogPost, @project
+    authorize! :create, @project.build_logs.new
     title "New log | #{@project.name}"
-    @log = @project.blog_posts.new
+    @log = @project.build_logs.new
     @log.user_id = current_user.id
     @log.save validate: false
     redirect_to edit_project_log_path(@project.user_name_for_url, @project.slug, @log.id)
   end
 
   def create
-    authorize! :create, BlogPost, @project
-    @log = @project.blog_posts.new(params[:blog_post])
+    authorize! :create, @project.build_logs.new
+    @log = @project.build_logs.new(params[:build_log])
     @log.user = current_user
 
     if @log.save
@@ -52,7 +52,7 @@ class BuildLogsController < ApplicationController
   end
 
   def update
-    if @log.update_attributes(params[:blog_post])
+    if @log.update_attributes(params[:build_log])
       redirect_to project_log_path(@project.user_name_for_url, @project.slug, @log.sub_id), notice: 'Log updated.'
     else
       render 'edit'
@@ -68,11 +68,11 @@ class BuildLogsController < ApplicationController
 
   private
     def load_log
-      @log = @project.blog_posts.where(sub_id: params[:id]).first!
+      @log = @project.build_logs.where(sub_id: params[:id]).first!
     end
 
     def load_and_authorize_resource
-      @log = BlogPost.find params[:id]
+      @log = BuildLog.find params[:id]
       authorize! self.action_name.to_sym, @log
     end
 end

@@ -8,7 +8,7 @@
       .col-xs-12
         .row
           - @projects.each_with_index do |project_collection, i|
-            = render partial: "projects/project_embed_thumb#{@list_style}", locals: { project: project_collection.project.decorate, col: '3', ref: 'platform', ref_id: @platform.id }
+            = render partial: "projects/project_embed_thumb", locals: { project: project_collection.project.decorate, col: '3', ref: 'platform', ref_id: @platform.id }
     .row
       .col-xs-12.text-center= will_paginate(@projects)
 

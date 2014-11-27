@@ -1,9 +1,9 @@
-class HacksterBlog::PostsController < ApplicationController
+class Blog::PostsController < ApplicationController
   layout 'blog'
 
   def index
     @page = safe_page_params.nil? ? 1 : safe_page_params
-    @posts = HacksterBlogPost.published
+    @posts = BlogPost.published
     if params[:tag]
       @posts = @posts.joins(:blog_tags).where(tags: { name: params[:tag] })
     end
@@ -20,9 +20,9 @@ class HacksterBlog::PostsController < ApplicationController
 
   def show
     if user_signed_in? and current_user.is? :admin
-      @post = HacksterBlogPost.find_by_slug! params[:slug]
+      @post = BlogPost.find_by_slug! params[:slug]
     else
-      @post = HacksterBlogPost.published.find_by_slug! params[:slug]
+      @post = BlogPost.published.find_by_slug! params[:slug]
     end
 
     meta_desc ActionController::Base.helpers.strip_tags(@post.body).truncate 155
@@ -32,7 +32,7 @@ class HacksterBlog::PostsController < ApplicationController
   end
 
   def feed
-    @posts = HacksterBlogPost.published.limit(25)
+    @posts = BlogPost.published.limit(25)
   end
 
   private

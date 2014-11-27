@@ -15,7 +15,7 @@ class AnnouncementsController < ApplicationController
 
   def show
     authorize! :read, @announcement
-    @announcement = BlogPostDecorator.decorate(@announcement)
+    @announcement = BuildLogDecorator.decorate(@announcement)
     title "Announcements / #{@announcement.title} | #{@platform.name}"
   end
 
@@ -45,7 +45,7 @@ class AnnouncementsController < ApplicationController
   end
 
   def edit
-    @announcement = BlogPostDecorator.decorate(@announcement)
+    @announcement = BuildLogDecorator.decorate(@announcement)
     title "Announcements / Edit #{@announcement.title} | #{@platform.name}"
   end
 

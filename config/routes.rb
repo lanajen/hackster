@@ -76,7 +76,7 @@ HackerIo::Application.routes.draw do
 
       resources :awarded_badges, only: [:create], controller: 'badges'
       resources :badges, except: [:show, :create]
-      resources :blog_posts, except: [:show]
+      resources :build_logs, except: [:show]
       resources :groups, except: [:show]
       resources :projects, except: [:show]
       resources :users, except: [:show]
@@ -84,7 +84,7 @@ HackerIo::Application.routes.draw do
       root to: 'pages#root'
     end  # end admin
 
-    scope '/blog', module: :hackster_blog do
+    scope '/blog', module: :blog do
       get '' => 'posts#index', as: :blog_index
       get 'tags/:tag' => 'posts#index', as: :blog_tag
       get '*slug' => 'posts#show', as: :blog_post, slug: /[a-zA-Z0-9\-\/]+/
@@ -237,7 +237,7 @@ HackerIo::Application.routes.draw do
       resources :comments, only: [:create]
     end
 
-    resources :blog_posts, only: [:destroy], controller: :build_logs do
+    resources :build_logs, only: [:destroy] do
       get '' => 'build_logs#show_redirect', on: :member
       resources :comments, only: [:create]
     end

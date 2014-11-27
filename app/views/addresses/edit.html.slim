@@ -1,27 +1,30 @@
-.col-md-8.col-md-offset-2.col-xs-12
-  .wellified
-    h2.text-center
-      | Fill out your address
-      br
-      | so you can receive your prize
-    p.text-center.mg-20
-      ' You won
-      b==> @entry.prize.name
-      ' with
-      = link_to @challenge.name, @challenge
+.row
+  .col-md-8.col-md-offset-2.col-xs-12
+    .box
+      .box-title
+        h2
+          | Fill out your address
+        p.subheading
+          | so you can receive your prize
+      .box-content
+        p.text-center
+          ' You won
+          b==> @entry.prize.name
+          ' with
+          = link_to @challenge.name, @challenge
 
-    = simple_nested_form_for @address, url: address_challenge_entry_path(@challenge, @entry), html: { class: 'form-horizontal disable-on-submit' }, wrapper: :bootstrap3_horizontal do |f|
-      = f.error_notification
+        = simple_nested_form_for @address, url: address_challenge_entry_path(@challenge, @entry), html: { class: 'form-horizontal disable-on-submit' }, wrapper: :bootstrap3_horizontal do |f|
+          = f.error_notification
 
-      = f.input :full_name
-      = f.input :address_line1, label: 'Address line 1'
-      = f.input :address_line2, label: 'Address line 2'
-      = f.input :zip
-      = f.input :state
-      = f.input :city
-      = f.input :country, input_html: { class: 'form-control' }
-      = f.input :phone, hint: 'So the shipping company can call you if they have a problem.'
+          = f.input :full_name
+          = f.input :address_line1, label: 'Address line 1'
+          = f.input :address_line2, label: 'Address line 2'
+          = f.input :zip
+          = f.input :state
+          = f.input :city
+          = f.input :country, input_html: { class: 'form-control' }
+          = f.input :phone, hint: 'So the shipping company can call you if they have a problem.'
 
-      .form-group
-        .col-xs-8.col-xs-offset-4
-          = f.button :submit, 'Save address', class: 'btn-block btn-primary'
+          .form-group
+            .col-xs-8.col-xs-offset-4
+              = f.button :submit, 'Save address', class: 'btn-block btn-primary'

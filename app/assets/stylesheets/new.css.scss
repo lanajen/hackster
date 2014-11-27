@@ -75,7 +75,6 @@ h1 {
 .thumb {
   background: #ffffff;
   margin-bottom: 30px;
-  // border: 1px solid #ddd;
   overflow: hidden;
 }
 
@@ -88,10 +87,10 @@ h1 {
   left: 0;
 }
 
-.show-on-hover {
-  @include opacity(0);
-  @include transition(opacity 200ms linear);
-}
+// .show-on-hover {
+//   @include opacity(0);
+//   @include transition(opacity 200ms linear);
+// }
 .thumb-image {
   @extend .block-image;
   &:before {
@@ -118,7 +117,8 @@ h1 {
 .thumb-image-inner {
   @extend .block-overlay-content;
   @include transition(bottom 200ms linear);
-  bottom: -55px;
+  // bottom: -55px;
+  bottom: 0;
   @include background-image(linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.1) 20%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0.8) 100%));
   padding: 20% 15px 10px;
   color: #fff;
@@ -276,7 +276,7 @@ h1 {
 
 .platform-thumb {
   .thumb-image {
-    @include background-size(90%);
+    // @include background-size(90%);
   }
 }
 .platform-type {

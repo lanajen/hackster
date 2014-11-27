@@ -77,8 +77,7 @@
               - u = m.user
               .community.user
                 ==> link_to image_tag(u.decorate.avatar(:mini), class: ' img-circle' ), u, class: ''
-                span.user-name
-                  = link_to u.name, u
+                = link_to u.name, u
 
       - if can? :manage, @platform
         .display

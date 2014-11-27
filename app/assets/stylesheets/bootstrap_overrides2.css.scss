@@ -41,6 +41,7 @@ h6, .h6 {
 }
 .btn-primary {
   background: #208edb;
+  border: 0;
 }
 .btn-success {
   background: #20daa8;
@@ -83,3 +84,6 @@ h6, .h6 {
     display: block;
   }
 }
+// .btn + .btn {
+//   margin-left: 10px;
+// }

@@ -35,7 +35,7 @@ module ScraperStrategies
         return unless logs.any?
 
         logs.each do |log|
-          post = @project.blog_posts.new
+          post = @project.build_logs.new
           post.user_id = 0
           post.title = log.at_css('h2').text.strip
           post.body = log.at_css('[id^="post-body"]')

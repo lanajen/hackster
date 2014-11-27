@@ -67,10 +67,8 @@ class CommentsController < ApplicationController
       case commentable.class.name
       when 'Feedback'
         'update_feedback'
-      when 'Issue', 'BlogPost'
-        'create_issue'
-      when 'Project', 'Announcement'
-        'update_project'
+      else
+        'update'
       end
     end
 
@@ -78,10 +76,8 @@ class CommentsController < ApplicationController
       case commentable.class.name
       when 'Feedback'
         'update_feedback'
-      when 'Issue', 'BlogPost'
-        'destroy'
-      when 'Project', 'Announcement'
-        'update_project'
+      else
+        'update'
       end
     end
 
@@ -89,7 +85,7 @@ class CommentsController < ApplicationController
       case commentable
       when Announcement
         platform_announcement_path(commentable)
-      when BlogPost
+      when BuildLog
         log_path(commentable.threadable, commentable)
       when Feedback
         project_path(commentable.threadable)

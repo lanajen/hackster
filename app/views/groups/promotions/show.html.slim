@@ -3,10 +3,6 @@
     #tab-projects.tab-pane.active.fade.in
       .col-xs-12
         - if @project_collections.any?
-          .row
-            .col-xs-12
-              = render 'shared/list_switch'
-
           - collection_id = nil
           - @project_collections.each do |collection|
             - project = collection.project

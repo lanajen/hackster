@@ -3,10 +3,9 @@ section#projects-list
     .project-list-actions.clearfix.mg-30
       - if user_is_current?
         .pull-right
-          ==> link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'btn btn-outline'
+          ==> link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'btn btn-default'
           small> or
-          = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Submit a link".html_safe, new_project_path(project: { external: true }), class: 'btn btn-outline'
-      .pull-left= render 'shared/list_switch'
+          = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Submit a link".html_safe, new_project_path(project: { external: true }), class: 'btn btn-default'
 
     h2
       ' Public projects

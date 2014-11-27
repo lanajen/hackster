@@ -2,4 +2,4 @@
   = simple_form_for [commentable, Comment.new], html: { data: { remote: true } } do |f|
     .textarea-content= f.input :body, label: false, input_html: { rows: 3, placeholder: 'Write a comment' }
     .button-area
-      = f.button :submit, value: 'Post Comment'
+      = f.button :submit, value: 'Post comment'

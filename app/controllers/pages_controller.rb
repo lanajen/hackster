@@ -26,7 +26,7 @@ class PagesController < ApplicationController
     limit = 6
 
     @trending_projects = Project.indexable.magic_sort.for_thumb_display.limit limit
-    @last_projects = Project.indexable.last_public.for_thumb_display.limit limit
+    @latest_projects = Project.indexable.last_public.for_thumb_display.limit limit
     # @active_projects = Project.last_updated.limit 4
     # @featured_projects = Project.featured.limit 4
     # @wip_projects = Project.wip.limit 4

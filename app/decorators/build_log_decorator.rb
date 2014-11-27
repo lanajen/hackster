@@ -1,4 +1,4 @@
-class BlogPostDecorator < ApplicationDecorator
+class BuildLogDecorator < ApplicationDecorator
   include MediumEditorDecorator
   delegate :current_page, :total_pages, :limit_value
 
@@ -7,6 +7,6 @@ class BlogPostDecorator < ApplicationDecorator
   end
 
   def title_not_default
-    model.title == BlogPost::DEFAULT_TITLE ? nil : model.title
+    model.title == BuildLog::DEFAULT_TITLE ? nil : model.title
   end
 end

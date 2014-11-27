@@ -1,14 +1,16 @@
-.col-xs-4.col-xs-offset-4
-  .wellified
-    h2.text-center Import projects
-    p.text-center
-      strong> Do you have existing project logs somewhere on the web that you'd like to import to Hackster.io?
-      | Simply submit the URLs to the project pages and we'll do the rest.
-    = form_tag project_imports_path, method: :post do
-      .form-group
-        = text_area_tag :urls, params[:urls], placeholder: 'Project log URLs', class: 'form-control disable-on-submit', rows: 5
-        p.help-block Enter as many URLs as you like, separated by commas, spaces or new lines.
-      - if current_user.is? :admin
+.col-xs-6.col-xs-offset-3
+  .box
+    .box-title
+      h2 Import projects
+      p.subheading
+        strong> Do you have existing project logs somewhere on the web that you'd like to import to Hackster.io?
+        | Simply submit the URLs to the project pages and we'll do the rest.
+    .box-content
+      = form_tag project_imports_path, method: :post do
         .form-group
-          = text_field_tag :user_id, params[:user_id], placeholder: 'User ID', class: 'form-control'
-      = submit_tag 'Import projects', class: 'btn btn-primary btn-block'
+          = text_area_tag :urls, params[:urls], placeholder: 'Project log URLs', class: 'form-control disable-on-submit', rows: 5
+          p.help-block Enter as many URLs as you like, separated by commas, spaces or new lines.
+        - if current_user.is? :admin
+          .form-group
+            = text_field_tag :user_id, params[:user_id], placeholder: 'User ID', class: 'form-control'
+        = submit_tag 'Import projects', class: 'btn btn-primary btn-block'

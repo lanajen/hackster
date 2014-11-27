@@ -1,88 +1,90 @@
 - if @project.external
   .col-md-4.col-md-offset-4.col-xs-12
-    .wellified
-      h2.text-center Submit a link
+    .box
+      .box-title
+        h2 Submit a link
 
-      = simple_nested_form_for @project, url: projects_path(redirect_to: params[:redirect_to]), html: { class: 'accept-file-upload disable-on-submit' } do |f|
-        = f.error_notification
+      .box-content
+        = simple_nested_form_for @project, url: projects_path(redirect_to: params[:redirect_to]), html: { class: 'accept-file-upload disable-on-submit' } do |f|
+          = f.error_notification
 
-        = f.input :external, as: :hidden
-        = f.input :website, label: 'Link to the project', required: true
-        = f.input :name, label: 'What is the project called?', required: true
-        = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner description, Twitter-style.', required: true
-        - if user_signed_in?
-          = f.input :guest_name, label: 'Who should be credited for this hack?', hint: "Leave this blank if you're the author of this hack."
-        - else
-          = f.input :guest_name, label: 'Who should be credited for this hack?'
+          = f.input :external, as: :hidden
+          = f.input :website, label: 'Link to the project', required: true
+          = f.input :name, label: 'What is the project called?', required: true
+          = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner description, Twitter-style.', required: true
+          - if user_signed_in?
+            = f.input :guest_name, label: 'Who should be credited for this hack?', hint: "Leave this blank if you're the author of this hack."
+          - else
+            = f.input :guest_name, label: 'Who should be credited for this hack?'
 
-        .cover_image.file-drop.form-group  class="#{'has-error' if @project.errors[:cover_image].present?}"
-          - if @project.cover_image
-            = hidden_field_tag :cover_image_id, @project.cover_image.id
-          label.control-label
-            abbr>  title='required'  *
-            | Cover image
-          div
-            span.cover_image.image-preview.preview
-              - if @project.cover_image
-                = image_tag @project.cover_image.file_url(:cover_mini_thumb)
-            a.btn.btn-default.btn-sm*{ data: { target: '.file_upload.cover_image' } }  Select picture
-            - if @project.errors[:cover_image]
-              span.help-block.has-error= @project.errors[:cover_image].to_sentence
-        = f.input :new_group_id, as: :hidden, input_html: { value: @group.id }
+          .cover_image.file-drop.form-group  class="#{'has-error' if @project.errors[:cover_image].present?}"
+            - if @project.cover_image
+              = hidden_field_tag :cover_image_id, @project.cover_image.id
+            label.control-label
+              abbr>  title='required'  *
+              | Cover image
+            div
+              span.cover_image.image-preview.preview
+                - if @project.cover_image
+                  = image_tag @project.cover_image.file_url(:cover_mini_thumb)
+              a.btn.btn-default.btn-sm*{ data: { target: '.file_upload.cover_image' } }  Select picture
+              - if @project.errors[:cover_image]
+                span.help-block.has-error= @project.errors[:cover_image].to_sentence
+          = f.input :new_group_id, as: :hidden, input_html: { value: @group.id }
 
-        = render partial: 'shared/image_form_bare', locals: { file_type: 'cover_image', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
+          = render partial: 'shared/image_form_bare', locals: { file_type: 'cover_image', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
 
-        = f.button :submit, 'Submit', class: 'btn-block btn btn-primary'
+          = f.button :submit, 'Submit', class: 'btn-block btn btn-primary'
 
   .col-md-3.col-md-offset-1.col-xs-12
-    .transparent-well
-      .header
-        h4 What is this?
-      .content
-        p
-          ' Do you know of an existing project page hosted on an external website that you would like to list under
-          strong = @group.name
-          | ?
-        p Submit it to Hackster.io by filling in this form. We'll give it a quick review and post it to the list.
-        / %p
-          strong PS:
-          | Be cool and credit the hacker who built it if it's not you!
+    h4 What is this?
+    p
+      ' Do you know of an existing project page hosted on an external website that you would like to list under
+      strong = @group.name
+      | ?
+    p Submit it to Hackster.io by filling in this form. We'll give it a quick review and post it to the list.
+    / %p
+      strong PS:
+      | Be cool and credit the hacker who built it if it's not you!
 
 - else
   - if @projects.any?
     .col-xs-4.col-xs-offset-4
-      .wellified
-        p.text-center
-          strong Want to link an existing project to #{@group.name}?
+      .box
+        .box-content
+          p.text-center
+            strong Want to link an existing project to #{@group.name}?
 
-        = form_tag "#{group_path(@group)}/projects/link", method: :patch do
-          .form-group
-            = select_tag :project_id, options_from_collection_for_select(@projects, :id, :name), include_blank: true, class: 'form-control'
-          = submit_tag 'Link project', class: 'btn btn-primary btn-block'
+          = form_tag "#{group_path(@group)}/projects/link", method: :patch do
+            .form-group
+              = select_tag :project_id, options_from_collection_for_select(@projects, :id, :name), include_blank: true, class: 'form-control'
+            = submit_tag 'Link project', class: 'btn btn-primary btn-block'
 
     .col-xs-4.col-xs-offset-4
       hr
 
   .col-xs-4.col-xs-offset-4
-    .wellified
-      h2.text-center New project
+    .box
+      .box-title
+        h2 New project
 
-      = simple_nested_form_for @project, url: "#{group_path(@group)}/projects", html: { class: 'accept-file-upload' } do |f|
-        = f.error_notification
+      .box-content
+        = simple_nested_form_for @project, url: "#{group_path(@group)}/projects", html: { class: 'accept-file-upload' } do |f|
+          = f.error_notification
 
-        = f.input :name, label: 'What is it called?'
-        = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner description, Twitter-style.'
+          = f.input :name, label: 'What is it called?'
+          = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner description, Twitter-style.'
 
-        .cover_image.file-drop.form-group
-          - if @project.cover_image
-            = hidden_field_tag :cover_image_id, @project.cover_image.id
-          label.control-label Cover image
-          div
-            span.cover_image.image-preview.preview
-              - if @project.cover_image
-                = image_tag @project.cover_image.file_url(:cover_mini_thumb)
-            a.btn.btn-default.btn-sm*{ data: { target: '.file_upload.cover_image' } }  Select picture
+          .cover_image.file-drop.form-group
+            - if @project.cover_image
+              = hidden_field_tag :cover_image_id, @project.cover_image.id
+            label.control-label Cover image
+            div
+              span.cover_image.image-preview.preview
+                - if @project.cover_image
+                  = image_tag @project.cover_image.file_url(:cover_mini_thumb)
+              a.btn.btn-default.btn-sm*{ data: { target: '.file_upload.cover_image' } }  Select picture
 
-        = render partial: 'shared/image_form_bare', locals: { file_type: 'cover_image', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
+          = render partial: 'shared/image_form_bare', locals: { file_type: 'cover_image', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
 
-        = f.button :submit, 'Go!', class: 'btn-block btn btn-primary'
+          = f.button :submit, 'Go!', class: 'btn-block btn btn-primary'

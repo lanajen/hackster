@@ -56,10 +56,10 @@ section#projects-list
     .project-list-actions.clearfix.mg-30
       .pull-right
         - link = user_signed_in? ? new_project_path(project: { platform_tags_string: @platform.name }) : new_user_registration_path(reason: 'project', m: 'group', id: @platform.id, redirect_to: new_project_path(project: { platform_tags_string: @platform.name }))
-        ==> link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add a project".html_safe, link, class: 'btn btn-outline'
+        ==> link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add a project".html_safe, link, class: 'btn btn-default'
         small> or
         - link = new_project_path(project: { platform_tags_string: @platform.name, external: true }, redirect_to: request.path)
-        = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Submit a link".html_safe, link, class: 'btn btn-outline'
+        = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Submit a link".html_safe, link, class: 'btn btn-default'
 
       .btn-group.pull-left
         .btn-group
@@ -72,6 +72,15 @@ section#projects-list
             li*{ class: "#{'active' if params[:sort] == 'popular'}" } = link_to 'Most popular', platform_short_path(@platform, sort: 'popular', by: params[:by])
             li*{ class: "#{'active' if params[:sort] == 'recent'}" } = link_to 'Most recent', platform_short_path(@platform, sort: 'recent', by: params[:by])
             li*{ class: "#{'active' if params[:sort] == 'respected'}" } = link_to 'Most respected', platform_short_path(@platform, sort: 'respected', by: params[:by])
+
+        .btn-group
+          button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
+            ' Filter by
+            span.caret
+          ul.dropdown-menu.pull-right
+            li*{ class: "#{'active' if params[:by] == nil}" } = link_to 'All', platform_short_path(@platform, sort: params[:sort])
+            li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to 'Featured', platform_short_path(@platform, by: 'featured', sort: params[:sort])
+            li*{ class: "#{'active' if params[:by] == 'wip'}" } = link_to 'Work in progress', platform_short_path(@platform, by: 'wip', sort: params[:sort])
 
 
     - if @projects.any?

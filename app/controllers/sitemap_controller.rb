@@ -57,7 +57,7 @@ class SitemapController < ApplicationController
     end
 
     def blog_query
-      HacksterBlogPost.published
+      BlogPost.published
     end
 
     def blog_pages offset=0

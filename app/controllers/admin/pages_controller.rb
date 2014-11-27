@@ -51,7 +51,7 @@ class Admin::PagesController < Admin::BaseController
   def build_logs
     title "Admin / Build logs - #{safe_page_params}"
 
-    @logs = BlogPost.order(created_at: :desc).paginate(page: safe_page_params)
+    @logs = BuildLog.order(created_at: :desc).paginate(page: safe_page_params)
   end
 
   def comments

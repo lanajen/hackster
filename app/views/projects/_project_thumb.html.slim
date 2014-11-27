@@ -5,7 +5,7 @@
 - show_year = show_year ? 'year' : 'placeholder' unless show_year.nil?
 - col = (defined?(col) and col.present? ? col : 3)
 
-.col-sm-4.mobile-scroll-row-item
+.col-sm-6.col-md-4.mobile-scroll-row-item
   .project-thumb-container data-ref=ref data-ref-id=ref_id data-offset=offset data-show-year=show_year class="#{'has-data' if ref and ref_id}"
     - cache ["project-#{project.id}-thumb", col], tag: ["project-#{project.id}-thumb", "team-#{project.team_id}", "team-#{project.team_id}-user-thumbs", 'project-thumb'], expires_in: 6.hours do
       - project = project.decorate

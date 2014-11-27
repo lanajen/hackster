@@ -13,7 +13,7 @@ section#projects-list
         .section-content
           - if @announcements.any?
             - @announcements.each do |announcement|
-              - announcement = BlogPostDecorator.decorate(announcement)
+              - announcement = BuildLogDecorator.decorate(announcement)
               .widget
                 .content
                   .text-widget

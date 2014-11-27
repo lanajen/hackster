@@ -17,16 +17,16 @@ class BroadcastDecorator < ApplicationDecorator
       when Issue
         commentable_title = h.link_to commentable.title, h.issue_path(project, commentable)
         "commented on the issue #{commentable_title} on #{project_name}"
-      when BlogPost
+      when BuildLog
         commentable_title = h.link_to commentable.title, h.log_path(project, commentable)
         "commented on the build log #{commentable_title} on #{project_name}"
       end
-    when 'BlogPost', 'Issue'
+    when 'BuildLog', 'Issue'
       case model.context_model
       when Issue
         threadable_type = 'issue'
         threadable_title = h.link_to model.context_model.title, h.issue_path(project, model.context_model)
-      when BlogPost
+      when BuildLog
         threadable_type = 'build log'
         threadable_title = h.link_to model.context_model.title, h.log_path(project, model.context_model)
       end

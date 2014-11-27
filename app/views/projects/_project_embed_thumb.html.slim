@@ -1,0 +1,41 @@
+.col-sm-6.col-md-4.project-embed-thumb
+  .project-thumb-container
+    - cache ["project-#{project.id}-thumb-external"], tag: ["project-#{project.id}-thumb", "project-#{project.id}-thumb-external", "team-#{project.team_id}", "team-#{project.team_id}-user-thumbs", 'project-thumb', 'project-thumb-external'], expires_in: 24.hours do
+      - project = project.decorate
+      div class="project-#{project.id}"
+        .thumb.project-thumb
+          .thumb-image.has-link-overlay style="background-image:url(#{project.cover_image(:cover_thumb)})"
+            = link_to '', project_url(project), class: 'link-overlay'
+            .featured-logo
+              = link_to "featured on #{image_tag('hackster_logo_20_white.png', alt: 'Hackster.io', title: SLOGAN)}".html_safe, root_url, target: '_blank'
+            .thumb-image-inner
+              .award-container
+              h4
+                - if project.is_idea?
+                  i.fa.fa-lightbulb-o>
+                ==> link_to project.name, project_url(project)
+                - if project.external
+                  i.fa.fa-external-link.istooltip  title='This project is hosted on an external website' data-container='body'
+              p.show-on-hover
+                - if project.external
+                  - if project.guest_name.present?
+                    ' by
+                    span.user-name>= project.guest_name
+                  - elsif u = project.users.first
+                    ' by
+                    span.user-name==> link_to u.name, user_url(u)
+                  ' on
+                  strong= project.website_host
+                - else
+                  = render partial: 'projects/by_team', locals: { project: project }
+
+              ul.list-inline.project-stats.show-on-hover
+                li
+                  span.stat-figure> = number_with_delimiter project.impressions_count
+                  = pluralize_without_count project.impressions_count, 'view'
+                li
+                  span.stat-figure> = number_with_delimiter project.comments_count
+                  = pluralize_without_count project.comments_count, 'comment'
+                li
+                  span.stat-figure> = number_with_delimiter project.respects_count
+                  = pluralize_without_count project.respects_count, 'respect'

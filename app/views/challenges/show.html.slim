@@ -33,9 +33,6 @@
 section#projects-list
   .wrapper
     - if @challenge.judged?
-      .project-list-actions.clearfix.mg-30
-        .pull-left= render 'shared/list_switch'
-
       h2.text-center Winning entries
       .thumb-list  class=@switch_style
         .row.project-list
@@ -53,8 +50,6 @@ section#projects-list
 
     - else
       - if @projects.any?
-        .project-list-actions.clearfix.mg-30
-          .pull-left= render 'shared/list_switch'
         .thumb-list  class=@switch_style
           .row.project-list
             - if @challenge.open_for_submissions? and !@is_challenge_entrant

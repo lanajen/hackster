@@ -1,14 +1,17 @@
 .platform-thumb-old {
-  height: 300px;
+  height: 400px;
   margin-bottom: 20px;
   overflow: hidden;
   .badge {
     font-size: 9px;
   }
   p {
-    font-size: 12px;
+    font-size: 0.85em;
     margin-bottom: 0;
   }
+}
+.stats {
+  font-size: 0.85em;
 }
 
 
@@ -66,6 +69,7 @@
 #platform-name{
   color: #434343;
   text-decoration: none;
+  font-weight: 600;
 }
 #platform-follow-div{
   border-top: 1px dotted #d1d1d1;
@@ -77,7 +81,7 @@
     padding: 30px 20px 0 20px;
     h4 {
       margin-top: 0;
-      font-size: 12px;
+      font-size: 0.85em;
       text-transform: uppercase;
       color: #999;
       font-weight: bold;
@@ -101,7 +105,7 @@
       float: left;
       text-transform: uppercase;
       margin-right: 5px;
-      font-size: 12px;
+      font-size: 0.85em;
       color: #666;
     }
   }
@@ -126,7 +130,7 @@
     display: block;
     color: #888;
     padding: 10px 10px;
-    font-size: 12px;
+    font-size: 0.85em;
     @include transition(all .2s ease);
     font-weight: 200;
     &.platform-buy-link{
@@ -180,7 +184,7 @@
 .project-list-actions{
   .btn-sm, .btn-group-sm > .btn, .btn-group-sm > .btn-follow{
     padding: 12px 12px 10px;
-    font-size: 12px;
+    font-size: 0.85em;
     line-height: 1;
     @include border-radius(3px);
     color: #aaa;

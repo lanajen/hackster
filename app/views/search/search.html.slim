@@ -8,16 +8,16 @@
       li  class="#{'active' if params[:type] == 'platform'} #{'disabled' unless @facets['platform']}"  = link_to @platforms_label.html_safe, search_path(q: params[:q], type: 'platform')
 
   .col-xs-9
-    .well
+    .box
       - if params[:q].present?
         - if @results.any?
-          .header
+          .box-title
             b>= pluralize @results.total_count, 'result'
             - if @results.total_count > @results.count
               | (showing #{@offset} to #{@max})
             - else
               | (showing all)
-          .content.search-results
+          .box-content.search-results
             ul.list-unstyled
               - @results.each_with_index do |result, i|
                 li  class="#{'last' if i == @results.size - 1}"
@@ -25,8 +25,8 @@
                   = render partial: model, locals: { :"#{model}" => result.decorate, ref: 'search', ref_id: params[:q], offset: i }
             .text-center= will_paginate @results
         - else
-          .content.search-results
+          .box-content.search-results
             | No results for <i>#{params[:q]}</i>. <a href="/projects/new?project[name]=#{params[:q]}" class="btn btn-primary btn-sm">Add your own #{params[:q]} project</a
       - else
-        .content.search-results
+        .box-content.search-results
           | Go ahead, look something up!

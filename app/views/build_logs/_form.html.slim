@@ -1,20 +1,42 @@
-.medium-status-bar.affixable
+.row
+  .col-md-4.col-md-push-8
+    .medium-status-bar.affixable data-spy='affix'
+      = render partial: 'shared/medium_status', locals: { last_edit: @log.updated_at }
+      ==> content_tag :a, "#{content_tag(:i, '', class: 'fa fa-check')} Finish editing".html_safe, class: 'btn btn-success medium-edit-stop btn-sm btn-block', href: build_log_path(@log)
+      ==> link_to "Publish", '', class: 'btn btn-warning btn-sm is-draft btn-block', id: 'publish', style: "#{'display:none;' unless @log.draft? }"
+      ==> link_to "Unpublish", '', class: 'btn btn-warning btn-sm is-published btn-block', id: 'unpublish', style: "#{'display:none;' if @log.draft? }"
+      ==> link_to 'Delete', build_log_path(@log), class: 'btn btn-danger btn-sm btn-block', data: { method: :delete, confirm: "Are you sure? There's no way back!" }
+      ==> link_to 'Cancel', project_logs_path(@project.user_name_for_url, @project.slug), class: 'btn btn-link btn-sm btn-block'
+
+  .col-md-8.col-md-pull-4
+    .section-container
+      .section-content
+        #model-editor*{ data: { 'model-id' => @log.id, 'model-type' => 'ThreadPost', 'model-symbol' => 'build_log', 'model-placeholder' => 'What have you been up to? Enter text or add media by clicking the left button.', 'model-url' => '/api/v1/build_logs' } }
+
+          h3.mg-20
+            span.editable-attribute*{ 'data-model' => "build_log", 'data-attribute' => "title", 'data-default-text' => "Untitled", 'data-view-tpl' => "*value*", 'data-value' => @log.title_not_default }
+            small
+              span.is-draft  style="#{'display:none;' unless @log.draft? }"  (draft)
+              span.is-published  style="#{'display:none;' if @log.draft? }"  (published)
+          = render partial: 'shared/medium_editor', locals: { editable: @log.body, attribute_name: 'body' }
+
+/ .medium-status-bar.affixable
   .static
   .affixed
     .inner
       .pull-left= render partial: 'shared/medium_status', locals: { last_edit: @log.updated_at }
       .pull-right
-        ==> content_tag :a, "#{content_tag(:i, '', class: 'fa fa-check')} Finish editing".html_safe, class: 'btn btn-success medium-edit-stop btn-sm', href: blog_post_path(@log)
+        ==> content_tag :a, "#{content_tag(:i, '', class: 'fa fa-check')} Finish editing".html_safe, class: 'btn btn-success medium-edit-stop btn-sm', href: build_log_path(@log)
         ==> link_to "Publish", '', class: 'btn btn-warning btn-sm is-draft', id: 'publish', style: "#{'display:none;' unless @log.draft? }"
         ==> link_to "Unpublish", '', class: 'btn btn-warning btn-sm is-published', id: 'unpublish', style: "#{'display:none;' if @log.draft? }"
-        ==> link_to 'Delete', blog_post_path(@log), class: 'btn btn-danger btn-sm', data: { method: :delete, confirm: "Are you sure? There's no way back!" }
+        ==> link_to 'Delete', build_log_path(@log), class: 'btn btn-danger btn-sm', data: { method: :delete, confirm: "Are you sure? There's no way back!" }
         ==> link_to 'Cancel', project_logs_path(@project.user_name_for_url, @project.slug), class: 'btn btn-link btn-sm'
       .clearfix
 
-#model-editor*{ data: { 'model-id' => @log.id, 'model-type' => 'ThreadPost', 'model-symbol' => 'blog_post', 'model-placeholder' => 'What have you been up to? Enter text or add media by clicking the left button.', 'model-url' => '/api/v1/build_logs' } }
+/ #model-editor*{ data: { 'model-id' => @log.id, 'model-type' => 'ThreadPost', 'model-symbol' => 'build_log', 'model-placeholder' => 'What have you been up to? Enter text or add media by clicking the left button.', 'model-url' => '/api/v1/build_logs' } }
 
   h3.mg-20
-    span.editable-attribute*{ 'data-model' => "blog_post", 'data-attribute' => "title", 'data-default-text' => "Untitled", 'data-view-tpl' => "*value*", 'data-value' => @log.title_not_default }
+    span.editable-attribute*{ 'data-model' => "build_log", 'data-attribute' => "title", 'data-default-text' => "Untitled", 'data-view-tpl' => "*value*", 'data-value' => @log.title_not_default }
     small
       span.is-draft  style="#{'display:none;' unless @log.draft? }"  (draft)
       span.is-published  style="#{'display:none;' if @log.draft? }"  (published)
@@ -36,7 +58,7 @@
       });
 
       function setBlogPostDraftMode(mode) {
-        data = { blog_post: { draft: mode } };
+        data = { build_log: { draft: mode } };
         editor.saveModel(function(){
           $('.is-draft, .is-published').toggle();
         }, null, data);

@@ -3,14 +3,11 @@
     #tab-projects.tab-pane.active.fade.in
       .col-xs-12
         - if @projects.any?
-          .row
-            .col-xs-12
-              - if can? :add_project, @event
-                .pull-left
-                  = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project to event".html_safe, "#{event_path(@event)}/projects/new", class: 'btn btn-sm btn-warning'
-              .mg-20.pull-right= render 'shared/list_switch'
+          - if can? :add_project, @event
+            .mg-20
+              = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project to event".html_safe, "#{event_path(@event)}/projects/new", class: 'btn btn-sm btn-warning'
 
-          .row.thumb-list  class=@switch_style
+          .row.thumb-list
             .col-xs-12
               .row.project-list
                 - @projects.each_with_index do |project, i|

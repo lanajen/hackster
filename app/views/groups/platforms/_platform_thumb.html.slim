@@ -1,7 +1,24 @@
-- cache "platform-#{platform.id}-thumb", tag: ["platform-#{platform.id}-thumb"], expires_in: 24.hours do
-  .col-xs-6.col-sm-3.col-md-2.platform-thumb-old
-    = link_to(image_tag(platform.avatar.file_url(:big), class: 'img-thumbnail'), platform_short_path(platform)) if platform.avatar
-    h6.text-center
-      ==> link_to platform.name, platform_short_path(platform)
-      span.badge.istooltip*{ title: 'Projects', data: { container: 'body' } } = platform.projects_count
-    p.text-center= platform.mini_resume
+.col-sm-4.mobile-scroll-row-item
+  .thumb.platform-thumb
+    .thumb-image.has-link-overlay style="background-image:url(#{platform.cover_image.try(:file_url)})"
+      = link_to '', platform, class: 'link-overlay'
+      .thumb-image-inner
+        h4
+          = link_to platform.name, platform
+          span.platform-type Platform
+        / ul.list-inline.show-on-hover
+          / li.list-label Good for
+          li
+            a.tag href='' Beginners
+          li
+            a.tag href='' Wearables
+          li
+            a.tag href='' Wifi
+        ul.list-unstyled.project-stats.show-on-hover
+          li
+            span.stat-figure> = number_with_delimiter platform.projects_count
+            = pluralize_without_count platform.projects_count, 'project'
+          li
+          li
+            span.stat-figure> = number_with_delimiter platform.followers_count
+            = pluralize_without_count platform.followers_count, 'follower'

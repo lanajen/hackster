@@ -51,7 +51,7 @@
                     span.stat-figure> = number_with_delimiter @project.respects_count
                     = pluralize_without_count @project.respects_count, 'respect'
 
-            section#about-project.section-collapsible
+            section#about-project.section-container.section-collapsible
               h2.section-title
                 a href=''
                   ' About this project
@@ -82,7 +82,7 @@
                     a.right.carousel-control href="#carousel" role="button" data-slide="next"
                       span.glyphicon.glyphicon-chevron-right aria-hidden="true"
 
-            / section#components.section-collapsible
+            / section#components.section-container.section-collapsible
               h2.section-title
                 a href=''
                   ' Components
@@ -92,7 +92,7 @@
                 - @project.widgets.where(type: 'PartsWidget').each do |widget|
                   = render partial: 'widgets/embeds/form/parts_widget', locals: { widget: widget, f: f }
 
-            / section#code.section-collapsible
+            / section#code.section-container.section-collapsible
               h2.section-title
                 a href=''
                   ' Schematics
@@ -101,7 +101,7 @@
               .section-content
                 = image_tag 'circuit.png'
 
-            / section#code.section-collapsible
+            / section#code.section-container.section-collapsible
               h2.section-title
                 a href=''
                   ' Code
@@ -112,7 +112,7 @@
                   - embed = Embed.new widget_id: widget_id
                   = render partial: 'api/embeds/embed', locals: { embed: embed }
 
-            / section#code.section-collapsible
+            / section#code.section-container.section-collapsible
               h2.section-title
                 a href=''
                   ' CAD files
@@ -120,7 +120,7 @@
                   i.fa.fa-chevron-up
               .section-content
 
-            / section#instructions.section-collapsible
+            / section#instructions.section-container.section-collapsible
               h2.section-title
                 a href=''
                   ' Assembly Instructions
@@ -135,7 +135,7 @@
 
                 h3.title Step 3: be happy!
 
-            / section.section-collapsible
+            / section.section-container.section-collapsible
               h2.section-title Test Vue
               .section-content
                 #editor

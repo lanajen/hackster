@@ -10,7 +10,7 @@ class IssuesController < ApplicationController
     title "Issues for #{@project.name}"
     @issues = @project.issues.order(created_at: :desc).where(type: 'Issue')
     params[:status] ||= 'open'
-    @issues = @issues.where(workflow_state: params[:status]) if params[:status].in? %w(open closed)
+    @issues = @issues.where(workflow_state: params[:status]).paginate(page: params[:page]) if params[:status].in? %w(open closed)
   end
 
   def show
@@ -19,7 +19,7 @@ class IssuesController < ApplicationController
   end
 
   def new
-    authorize! :create, Issue, @project
+    authorize! :create, @project.issues.new
     title "New issue | #{@project.name}"
     @issue = @project.issues.new
   end

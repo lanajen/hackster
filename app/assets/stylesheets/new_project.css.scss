@@ -5,6 +5,7 @@
     padding-left: 0;
     margin-left: 0;
     margin-right: 0;
+    max-width: 100%;
   }
   .container-mobile {
     padding-right: 15px;
@@ -312,32 +313,88 @@
   }
 }
 
-.section-collapsible {
-  background: #fff;
-  border-bottom: 1px solid #ddd;
-  &:last-of-type {
-    border-bottom: 0;
-  }
-  .section-title {
-    font-size: 1em;
-    margin: 0;
-    text-transform: uppercase;
-    font-weight: bold;
-    a {
-      display: block;
-      padding: 25px 40px;
-      position: relative;
-      color: #666;
-      &:hover {
-        text-decoration: none;
-        color: #999;
-      }
-      i {
-        font-size: 50%;
-        float: right;
+.section-container {
+  &:first-of-type {
+    .section-title {
+      .title {
+        padding-top: 40px;
       }
     }
   }
+  word-wrap: break-word;
+  word-break: break-word;
+  background: #fff;
+  & + .section-container {
+    border-top: 1px solid #ddd;
+  }
+  h1, h2, h3, h4 {
+    font-weight: normal;
+    color: #666;
+  }
+}
+.section-title {
+  font-size: 1em;
+  margin: 0;
+  .title {
+    display: block;
+    padding: 25px 40px;
+    position: relative;
+    color: #666;
+    text-decoration: none;
+    margin: 0;
+    a {
+      color: #666;
+    }
+  }
+  .title-toggle {
+    font-weight: bold;
+    text-transform: uppercase;
+    &:hover {
+      text-decoration: none;
+      color: #999;
+    }
+    i {
+      font-size: 50%;
+      float: right;
+    }
+  }
+  .subtitle {
+    color: #777;
+    font-weight: normal;
+    display: block;
+    font-size: 0.5em;
+    margin-top: 10px;
+    a {
+      font-weight: bold;
+    }
+  }
+  .annotation {
+    position: absolute;
+    right: 40px;
+    top: 20px;
+    font-size: 0.4em;
+    color: #999;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+}
+.section-content {
+  padding: 10px 40px 20px;
+  &:last-of-type {
+    padding-bottom: 40px;
+  }
+}
+.section-interlude {
+  text-align: center;
+  margin: 10px 0 40px;
+}
+.section-inset {
+  border: 2px solid #ddd;
+  @include border-radius(4px);
+  background: #fcfcfc;
+  margin-bottom: 20px;
+}
+.section-collapsible {
   .fa-chevron-up {
     display: none;
   }
@@ -351,10 +408,6 @@
   }
   .section-content {
     display: none;
-    padding: 10px 40px 20px;
-    &:last-of-type {
-      padding-bottom: 40px;
-    }
   }
 }
 @media (min-width: 0px) {

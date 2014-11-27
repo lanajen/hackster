@@ -39,7 +39,7 @@
           = render 'projects/project_embed_popup'
           .add-to-list
           - if @project.celery_id.present?
-            = link_to "#{content_tag(:i, '', class: 'fa fa-shopping-cart')} Buy it".html_safe, '#', 'data-celery' => @project.celery_id, 'data-celery-version' => 'v2', class: 'btn btn-warning btn-ellipsis btn-block'
+            = link_to "#{content_tag(:i, '', class: 'fa fa-shopping-cart')} Buy it".html_safe, '#', 'data-celery' => @project.celery_id, 'data-celery-version' => 'v2', class: 'btn btn-primary btn-block'
       - elsif @can_edit
         - who = %w(you)
         - who += ['team members'] if @project.users.size > 1

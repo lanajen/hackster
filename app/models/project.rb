@@ -30,7 +30,7 @@ class Project < ActiveRecord::Base
   has_many :active_users, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'")}, through: :team_members, source: :user
   has_many :assignments, through: :project_collections, source: :collectable, source_type: 'Assignment'
   has_many :awards
-  has_many :blog_posts, as: :threadable, dependent: :destroy
+  has_many :build_logs, as: :threadable, dependent: :destroy
   has_many :challenge_entries
   has_many :comments, -> { order created_at: :asc }, as: :commentable, dependent: :destroy
   # below is a hack because commenters try to add order by comments created_at and pgsql doesn't like it
@@ -233,10 +233,6 @@ class Project < ActiveRecord::Base
     (issues + Issue.where(threadable_type: 'Widget').where('threadable_id IN (?)', widgets.pluck('widgets.id'))).sort_by{ |t| t.created_at }
   end
 
-  def build_logs
-    blog_posts
-  end
-
   def buy_link_host
     URI.parse(buy_link).host.gsub(/^www\./, '')
   rescue
@@ -257,7 +253,7 @@ class Project < ActiveRecord::Base
 
   def counters
     {
-      build_logs: 'blog_posts.published.count',
+      build_logs: 'build_logs.published.count',
       comments: 'comments.count',
       communities: 'platforms.count',
       followers: 'followers.count',
