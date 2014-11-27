@@ -52,7 +52,7 @@
         .pull-left
           iframe src="http://#{APP_CONFIG['full_host']}/followers/platforms/#{current_platform.id}?style=text" height=34 width=160 frameborder=0 scrolling='no' style='margin-right:10px'
         .pull-left
-          = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_url(subdomain: 'www', project: { platform_tags_string: current_platform.name }), class: 'btn btn-sm btn-primary'
+          = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_url(subdomain: 'www', project: { platform_tags_string: current_platform.name }), class: 'btn btn-sm btn-primary', style: 'font-size: 14px;padding: 6px 17px 7px;'
         .btn-group.pull-right
           .btn-group
             button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }

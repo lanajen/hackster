@@ -1,7 +1,6 @@
 - if params[:style] == 'text'
   - follow_text = "Follow #{followable.name}"
   - unfollow_text = "&#x2713; Following #{followable.name}"
-  link href='//fonts.googleapis.com/css?family=Open+Sans:300,400,600' rel='stylesheet' type='text/css'
 - else
   - params[:style] = 'branded'
   - follow_text = "#{image_tag('hackster_logo_mini_black_36.png')} Follow #{followable.name} projects"

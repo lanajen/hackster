@@ -17,7 +17,9 @@ html(lang="en")
     /![if lt IE 9]
       = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.1/html5shiv.js"
     = stylesheet_link_tag "application", :media => "all"
-    link href='//fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'
+    = javascript_include_tag "//use.typekit.net/okr0yzp.js"
+    javascript:
+      try{Typekit.load();}catch(e){}
     link href="#{ asset_path 'favicon.ico' }" rel="shortcut icon" type="image/vnd.microsoft.icon"
     = stylesheet_link_tag params[:custom_style] if params[:custom_style].present?
     - unless user_signed_in? and current_user.is? :admin

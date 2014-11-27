@@ -20,7 +20,9 @@ html(lang="en")
     /![if lt IE 9]
       = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.1/html5shiv.js"
     = stylesheet_link_tag "application", :media => "all"
-    link href='//fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'
+    = javascript_include_tag "//use.typekit.net/okr0yzp.js"
+    javascript:
+      try{Typekit.load();}catch(e){}
     link rel="apple-touch-icon" sizes="57x57" href="#{ asset_path 'favicons/apple-touch-icon-57x57.png' }"
     link rel="apple-touch-icon" sizes="114x114" href="#{ asset_path 'favicons/apple-touch-icon-114x114.png' }"
     link rel="apple-touch-icon" sizes="72x72" href="#{ asset_path 'favicons/apple-touch-icon-72x72.png' }"
@@ -70,10 +72,8 @@ html(lang="en")
             #content
               = yield
 
-      #push
-
-    footer
-      .container
+    footer.clearfix
+      .footer-nav.clearfix
         ul.list-unstyled.list-inline.pull-left
           li= link_to 'Feedback and support', 'javascript:showClassicWidget();'
           li= link_to 'Terms', terms_url(subdomain: 'www')

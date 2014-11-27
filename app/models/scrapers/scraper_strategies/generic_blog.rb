@@ -1,5 +1,5 @@
 module ScraperStrategies
-  class Blog < Base
+  class GenericBlog < Base
 
     private
       def before_parse

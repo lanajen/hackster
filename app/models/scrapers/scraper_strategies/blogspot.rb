@@ -1,5 +1,5 @@
 module ScraperStrategies
-  class Blogspot < Blog
+  class Blogspot < GenericBlog
 
     private
       def crap_list

@@ -1,5 +1,5 @@
 module ScraperStrategies
-  class Wordpress < Blog
+  class Wordpress < GenericBlog
 
     def crap_list
       super + %w(.share-post .wpcnt .post-info)
