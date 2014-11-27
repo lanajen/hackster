@@ -204,9 +204,10 @@ $(function () {
 
   $('a.smooth-scroll').click(function(e){
     target = '#' + this.hash.substring(1);
+    offset = $(this).data('offset') || 0;
     if ($(target).length) {
       e.preventDefault();
-      smoothScrollTo(target);
+      smoothScrollTo(target, offset);
     }
   });
 });

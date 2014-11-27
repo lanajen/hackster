@@ -37,7 +37,7 @@
 
       .row.thumb-list  class=@switch_style
         - @projects.each_with_index do |project, i|
-          = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '3', ref: 'assignment', ref_id: @assignment.id, offset: i }
+          = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'assignment', ref_id: @assignment.id, offset: i }
 
     - else
       | All student projects will appear here.

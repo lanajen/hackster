@@ -89,7 +89,7 @@ section#projects-list
           - if @platform.accept_project_ideas
             = render partial: 'groups/platforms/submit_idea', locals: { platform: @platform }
           - @projects.each do |collection|
-            = render partial: 'projects/project_thumb', locals: { project: collection.project, col: '3' }
+            = render partial: 'projects/project_thumb', locals: { project: collection.project }
       .row.text-center= will_paginate @projects
     - else
       .row

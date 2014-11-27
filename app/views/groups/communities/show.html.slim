@@ -12,7 +12,7 @@
           .col-xs-12
             .row.project-list
               - @projects.each_with_index do |project, i|
-                = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '3', ref: 'community', ref_id: @community.id, offset: i }
+                = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'community', ref_id: @community.id, offset: i }
       - else
         ' All projects that members share with this group will appear here.
         - if can? :add_project, @community

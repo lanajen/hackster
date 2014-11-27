@@ -98,7 +98,7 @@ h1 {
     @include transition(background 200ms linear);
   }
   &:hover:before {
-    background: rgba(0,0,0,0.4);
+    background: rgba(0,0,0,0.8);
   }
   &:hover {
     .show-on-hover {
@@ -114,12 +114,19 @@ h1 {
     }
   }
 }
+.thumb-image-inner-top {
+  position: absolute;
+  top: 0;
+  padding: 12px 15px;
+  color: #fff;
+  pointer-events: none;
+}
 .thumb-image-inner {
   @extend .block-overlay-content;
   @include transition(bottom 200ms linear);
   // bottom: -55px;
   bottom: 0;
-  @include background-image(linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.1) 20%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0.8) 100%));
+  @include background-image(linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.1) 20%, rgba(0, 0, 0, 0.6) 50%, rgba(0, 0, 0, 0.8) 100%));
   padding: 20% 15px 10px;
   color: #fff;
   a {
@@ -247,13 +254,6 @@ h1 {
       display: block;
     }
   }
-  .one-liner {
-    position: absolute;
-    top: 0;
-    padding: 20px 15px;
-    color: #fff;
-    pointer-events: none;
-  }
   p {
     font-size: 87.5%;
   }
@@ -295,6 +295,12 @@ h1 {
   text-transform: uppercase;
 }
 
+.tags {
+  margin-bottom: 5px;
+  li {
+    padding-bottom: 5px;
+  }
+}
 .tag {
   color: #fff;
   border: 1px solid #fff;

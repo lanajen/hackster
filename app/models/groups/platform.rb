@@ -55,6 +55,11 @@ class Platform < List
     }.to_json
   end
 
+  def self.index_all
+    index.import public
+  end
+  # end of search methods
+
   def self.for_thumb_display
     includes(:avatar)
   end

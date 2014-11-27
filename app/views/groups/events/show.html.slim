@@ -11,7 +11,7 @@
             .col-xs-12
               .row.project-list
                 - @projects.each_with_index do |project, i|
-                  = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '3', ref: 'event', ref_id: @event.id, offset: i }
+                  = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'event', ref_id: @event.id, offset: i }
 
           - content_for :js do
             - @awards.each do |award|

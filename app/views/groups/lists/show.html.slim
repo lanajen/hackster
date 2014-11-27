@@ -59,7 +59,7 @@ section#projects-list
       .thumb-list
         .row.project-list
           - @projects.each do |project|
-            = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '3' }
+            = render partial: 'projects/project_thumb', locals: { project: project.decorate }
       .row.text-center= will_paginate @projects
     - else
       .row

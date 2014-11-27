@@ -5,7 +5,7 @@
       div class="project-#{project.id}"
         .thumb.project-thumb
           .thumb-image.has-link-overlay style="background-image:url(#{project.cover_image(:cover_thumb)})"
-            = link_to '', project_url(project), class: 'link-overlay'
+            = link_to '', project_url(project), class: 'link-overlay', target: '_blank'
             .featured-logo
               = link_to "featured on #{image_tag('hackster_logo_20_white.png', alt: 'Hackster.io', title: SLOGAN)}".html_safe, root_url, target: '_blank'
             .thumb-image-inner
@@ -13,7 +13,7 @@
               h4
                 - if project.is_idea?
                   i.fa.fa-lightbulb-o>
-                ==> link_to project.name, project_url(project)
+                ==> link_to project.name, project_url(project), target: '_blank'
                 - if project.external
                   i.fa.fa-external-link.istooltip  title='This project is hosted on an external website' data-container='body'
               p
@@ -23,7 +23,7 @@
                     span.user-name>= project.guest_name
                   - elsif u = project.users.first
                     ' by
-                    span.user-name==> link_to u.name, user_url(u)
+                    span.user-name==> link_to u.name, user_url(u), target: '_blank'
                   ' on
                   strong= project.website_host
                 - else

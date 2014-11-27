@@ -13,7 +13,7 @@
               .col-xs-12
                 h4= link_to "Assignment: #{project.assignment.name}", assignment_path(project.assignment)
               - collection_id = collection.collectable_id
-            = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '3', ref: 'promotion' }
+            = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'promotion' }
           | </div>
           .row
             .col-xs-12.text-center= will_paginate @project_collections

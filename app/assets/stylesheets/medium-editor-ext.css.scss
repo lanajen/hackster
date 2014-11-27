@@ -257,7 +257,7 @@
   }
 }
 
-#model-editor, #medium-editor {
+#model-editor, #medium-editor, .medium-editor {
   &.editor-active {
     .editable-attribute {
       border-bottom: 3px solid #3d8bc1;

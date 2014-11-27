@@ -7,7 +7,7 @@
     .container-desktop.container
       .row
         .col-md-8.left-column
-          .project-banner style="background-image: url(#{@project.cover_image})"
+          #home.project-banner style="background-image: url(#{@project.cover_image})"
             .project-banner-inner
               h1.project-title
                 - if @project.is_idea?
@@ -18,7 +18,7 @@
               p.project-one-liner= @project.one_liner
 
               - if @project.product_tags_count > 0 or @project.platform_tags_cached.any?
-                ul.list-inline
+                ul.list-inline.tags
                   - unknown_platforms = @project.platform_tags_cached.select do |tag|
                     - Platform.includes(:platform_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first.nil?
 
@@ -309,11 +309,14 @@
               #scroll-nav.section-container.affixable
                 ul.nav
                   li.active
-                    a.smooth-scroll href="#about-project" data-target="#about-project" data-offset='0'
+                    a.smooth-scroll href="#home" data-target="#home" data-offset='-40'
                       = @project.name
+                  li
+                    a.smooth-scroll href="#about-project" data-target="#about-project"
+                      | About this project
                   - if (@project.build_logs_count > 0 and !@project.private_logs) or can? :edit, @project
                     li
-                      a.smooth-scroll href="#logs"  data-target="#logs" data-offset='-20'
+                      a.smooth-scroll href="#logs"  data-target="#logs"
                         | Build Logs
                         span.nav-count
                           | (
@@ -321,14 +324,14 @@
                           | )
                   - if (@project.issues_count > 0 and !@project.private_issues) or can? :edit, @project
                     li
-                      a.smooth-scroll href="#issues"  data-target="#issues" data-offset='-20'
+                      a.smooth-scroll href="#issues"  data-target="#issues"
                         | Issues
                         span.nav-count
                           | (
                           = @project.issues_count
                           | )
                   li
-                    a.smooth-scroll href="#comments"  data-target="#comments" data-offset='-20'
+                    a.smooth-scroll href="#comments"  data-target="#comments"
                       | Comments
                       span.nav-count
                         | (
