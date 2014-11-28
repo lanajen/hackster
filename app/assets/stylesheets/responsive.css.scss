@@ -146,12 +146,8 @@
   //     background: transparent;
   //   }
   }
-  .subscribe-block {
+  .text-center-mobile {
     text-align: center;
-    form.form-inline {
-      margin-top: 15px;
-      float: none !important;
-    }
   }
 }
 
@@ -228,6 +224,9 @@
   }
   .hide-on-desktop{
     display: none!important;
+  }
+  .pull-right-desktop {
+    float: right !important;
   }
 
   // NAVIGATION

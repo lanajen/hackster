@@ -17,7 +17,8 @@
         .container
           .view-all-header.clearfix
             h4.pull-left Trending projects
-            = link_to 'View all popular projects', projects_path, class: 'btn btn-default btn-sm pull-right'
+            = link_to 'View more popular projects', projects_path, class: 'btn btn-default btn-sm pull-right hidden-xs'
+            = link_to 'View more', projects_path, class: 'btn btn-default btn-sm pull-right visible-xs-block'
 
           .row.mobile-scroll-row
             - @trending_projects.each do |project|
@@ -27,25 +28,27 @@
         .container
           .view-all-header.clearfix
             h4.pull-left Latest projects
-            = link_to 'View all recent projects', projects_path(sort: 'recent'), class: 'btn btn-default btn-sm pull-right'
+            = link_to 'View more recent projects', projects_path(sort: 'recent'), class: 'btn btn-default btn-sm pull-right hidden-xs'
+            = link_to 'View more', projects_path(sort: 'recent'), class: 'btn btn-default btn-sm pull-right visible-xs-block'
 
           .row.mobile-scroll-row
             - @latest_projects.each do |project|
               = render partial: 'projects/project_thumb', locals: { project: project }
 
-    section.subscribe-block.clearfix
+    section.subscribe-block.clearfix.text-center-mobile
       .container
         .col-md-7 style='margin-top:3px'
           = image_tag 'home/envelope.png'
           ' Want fresh news and projects in your inbox every Friday?
         .col-md-4.col-md-offset-1
-          .pull-right= render 'shared/mailchimp_form'
+          .pull-right-desktop= render 'shared/mailchimp_form'
 
     section#platforms.middle-section.showcase-section
       .container
         .view-all-header.clearfix
           h4.pull-left Featured platforms
-          = link_to 'View all platforms', platforms_path, class: 'btn btn-default btn-sm pull-right'
+          = link_to 'View more platforms', platforms_path, class: 'btn btn-default btn-sm pull-right hidden-xs'
+          = link_to 'View more', platforms_path, class: 'btn btn-default btn-sm pull-right visible-xs-block'
 
         .row.mobile-scroll-row
           - @platforms.each do |platform|
@@ -56,7 +59,8 @@
         .container
           .view-all-header.clearfix
             h4.pull-left Trending projects
-            = link_to 'View all popular projects', projects_path, class: 'btn btn-default btn-sm pull-right'
+            = link_to 'View more popular projects', projects_path, class: 'btn btn-default btn-sm pull-right hidden-xs'
+            = link_to 'View more', projects_path, class: 'btn btn-default btn-sm pull-right visible-xs-block'
 
           .row.mobile-scroll-row
             - @trending_projects.each do |project|
@@ -66,7 +70,8 @@
         .container
           .view-all-header.clearfix
             h4.pull-left Latest projects
-            = link_to 'View all recent projects', projects_path(sort: 'recent'), class: 'btn btn-default btn-sm pull-right'
+            = link_to 'View more recent projects', projects_path(sort: 'recent'), class: 'btn btn-default btn-sm pull-right hidden-xs'
+            = link_to 'View more', projects_path(sort: 'recent'), class: 'btn btn-default btn-sm pull-right visible-xs-block'
 
           .row.mobile-scroll-row
             - @latest_projects.each do |project|
@@ -76,7 +81,7 @@
       .container
         .view-all-header.clearfix
           h4.pull-left Top categories
-          / # = link_to 'View All Categories', '#', class: 'btn btn-default btn-sm pull-right'
+          / # = link_to 'View more Categories', '#', class: 'btn btn-default btn-sm pull-right'
 
         .row
           - [['Home automation', 'Flying', 'Bluetooth'], ['Wearables', 'Pets', 'Wifi']].each do |categories|
