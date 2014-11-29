@@ -8,7 +8,7 @@
       .container-desktop.container
         .row
           .col-md-8.left-column
-            .project-banner style="background-image: url(#{@project.cover_image})"
+            .project-banner style="background-image: url('#{@project.cover_image}')"
               .project-banner-inner
                 #upload-cover-image
                   a.check-todo#editabl-cover*{ href: '', rel: 'tooltip', title: 'Change cover image', 'data-human-name' => 'Cover image', 'data-value' => @project.model.cover_image.try(:id), 'data-target' => '#top-project-section' }

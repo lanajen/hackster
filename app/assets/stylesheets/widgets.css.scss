@@ -438,14 +438,13 @@
   }
 }
 
-.respect-thumbs {
-
-}
-
 #widget-respects {
   // padding-bottom: 30px;
   margin-top: 10px;
   clear: both;
+  .respect-thumbs {
+    margin: 0 -5px;
+  }
   .respect-button{
     padding-left: 7px;
     .fa{
@@ -458,8 +457,7 @@
     height: 30px;
     border-radius: 50%;
     display: inline-block;
-    margin-bottom: 10px;
-    margin-right: 10px;
+    margin: 0 5px 10px;
   }
 }
 

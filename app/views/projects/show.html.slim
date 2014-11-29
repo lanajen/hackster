@@ -8,7 +8,7 @@
       .row
         .col-md-8.left-column
           - cache [@project, 'teaser'], tag: ["project-#{@project.id}-teaser"], expires_in: 6.hours do
-            #home.project-banner style="background-image: url(#{@project.cover_image})"
+            #home.project-banner style="background-image: url('#{@project.cover_image}')"
               .project-banner-inner
                 h1.project-title
                   - if @project.is_idea?
@@ -297,12 +297,24 @@
                     - @project.platforms.each do |platform|
                       = render partial: 'groups/platforms/platform_thumb_mini', locals: { platform: platform }
 
+            - if @project.respects_count > 0
+              section.section-thumbs#widget-respects
+                h4 Hackers who respect this project
+                / - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
+                  = render partial: 'respects/button', locals: { project: @project }
+                - cache ["project-#{@project.id}-respects", 'users'], tag: ["project-#{@project.id}-respects"] do
+                  - users = @respecting_users
+                  .respect-thumbs.clearfix
+                    - users.each do |user|
+                      - cache ["user-#{user.id}-thumb", 'respect'], tag: ["user-#{user.id}-thumb"] do
+                        = link_to image_tag(user.decorate.avatar(:thumb), class: 'img-responsive respects-user-img istooltip', data: { container: 'body' }, rel: 'tooltip', title: user.name), user
+
             - cache [@project, 'other', @other_projects], tag: "project-#{@project.id}-other" do
               - if @other_projects_count > 0
                 section.section-thumbs
-                  h4 Other projects by the same authors
+                  h4 Other projects by the same #{pluralize @project.team_members_count, 'author'}
                   - @other_projects.each do |project|
-                    .project-thumb-mini.has-link-overlay style="background-image: url(#{project.cover_image.try(:file_url, :cover_thumb)})"
+                    .project-thumb-mini.has-link-overlay style="background-image: url('#{project.cover_image.try(:file_url, :cover_thumb)}')"
                       = link_to '', project, class: 'link-overlay'
                       .project-thumb-mini-inner
                         h4= link_to project.name, project
