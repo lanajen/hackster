@@ -71,17 +71,17 @@ class ProjectObserver < ActiveRecord::Observer
       end
     end
 
-    if (record.changed & %w(name cover_image one_liner platform_tags product_tags made_public_at license guest_name buy_link private workflow_state featured featured_date celery_id)).any? or record.platform_tags_string_changed? or record.product_tags_string_changed?
+    if (record.changed & %w(name cover_image one_liner platform_tags product_tags made_public_at license private workflow_state featured featured_date respects_count comments_count)).any? or record.platform_tags_string_changed? or record.product_tags_string_changed?
       Cashier.expire "project-#{record.id}-teaser"
     end
 
-    if (record.changed & %w(name cover_image one_liner platform_tags product_tags guest_name )).any? or record.platform_tags_string_changed? or record.product_tags_string_changed?
-      Cashier.expire "project-#{record.id}-meta-tags"
-    end
+    # if (record.changed & %w(name cover_image one_liner platform_tags product_tags guest_name )).any? or record.platform_tags_string_changed? or record.product_tags_string_changed?
+    #   Cashier.expire "project-#{record.id}-meta-tags"
+    # end
 
-    if (record.changed & %w(platform_tags product_tags made_public_at license guest_name)).any? or record.platform_tags_string_changed? or record.product_tags_string_changed?
-      Cashier.expire "project-#{record.id}-metadata"
-    end
+    # if (record.changed & %w(platform_tags product_tags made_public_at license guest_name)).any? or record.platform_tags_string_changed? or record.product_tags_string_changed?
+    #   Cashier.expire "project-#{record.id}-metadata"
+    # end
 
     if record.description_changed?
       Cashier.expire "project-#{record.id}-widgets"

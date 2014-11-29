@@ -7,62 +7,64 @@
     .container-desktop.container
       .row
         .col-md-8.left-column
-          #home.project-banner style="background-image: url(#{@project.cover_image})"
-            .project-banner-inner
-              h1.project-title
-                - if @project.is_idea?
-                  i.fa.fa-lightbulb-o.private-project-icon>
-                ==> @project.name
-                - if @project.license
-                  a.copyright target='_blank' href=@project.license.url &copy; #{@project.license.abbr}
-              p.project-one-liner= @project.one_liner
+          - cache [@project, 'teaser'], tag: (["project-#{@project.id}-teaser"], expires_in: 6.hours do
+            #home.project-banner style="background-image: url(#{@project.cover_image})"
+              .project-banner-inner
+                h1.project-title
+                  - if @project.is_idea?
+                    i.fa.fa-lightbulb-o.private-project-icon>
+                  ==> @project.name
+                  - if @project.license
+                    a.copyright target='_blank' href=@project.license.url &copy; #{@project.license.abbr}
+                p.project-one-liner= @project.one_liner
 
-              - if @project.product_tags_count > 0 or @project.platform_tags_cached.any?
-                ul.list-inline.tags
-                  - unknown_platforms = @project.platform_tags_cached.select do |tag|
-                    - Platform.includes(:platform_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first.nil?
+                - if @project.product_tags_count > 0 or @project.platform_tags_cached.any?
+                  ul.list-inline.tags
+                    - unknown_platforms = @project.platform_tags_cached.select do |tag|
+                      - Platform.includes(:platform_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first.nil?
 
-                  - (@project.product_tags_cached  + unknown_platforms).map{|t| t.downcase }.uniq.each do |tag|
-                    li= link_to tag, tag_path(tag), class: 'tag'
+                    - (@project.product_tags_cached  + unknown_platforms).map{|t| t.downcase }.uniq.each do |tag|
+                      li= link_to tag, tag_path(tag), class: 'tag'
 
-              ul.list-inline.project-stats
-                li
-                  span.stat-figure> = number_with_delimiter @project.impressions_count
-                  = pluralize_without_count @project.impressions_count, 'view'
-                li
-                  span.stat-figure> = number_with_delimiter @project.comments_count
-                  = pluralize_without_count @project.comments_count, 'comment'
-                li
-                  span.stat-figure> = number_with_delimiter @project.respects_count
-                  = pluralize_without_count @project.respects_count, 'respect'
+                ul.list-inline.project-stats
+                  li
+                    span.stat-figure> = number_with_delimiter @project.impressions_count
+                    = pluralize_without_count @project.impressions_count, 'view'
+                  li
+                    span.stat-figure> = number_with_delimiter @project.comments_count
+                    = pluralize_without_count @project.comments_count, 'comment'
+                  li
+                    span.stat-figure> = number_with_delimiter @project.respects_count
+                    = pluralize_without_count @project.respects_count, 'respect'
 
-          section#about-project.section-container.section-collapsible
-            h2.section-title
-              a.title.title-toggle href=''
-                ' About this project
-                i.fa.fa-chevron-down
-                i.fa.fa-chevron-up
-            .section-content
-              .medium-editor= @project.description
-              /
-                #carousel.carousel.slide data-ride="carousel"
-                  .carousel-inner role="listbox"
-                    .item.active
-                      .clearfix.multi-image
-                        .col-xs-6
-                          = image_tag 'slide-1.png'
-                        .col-xs-6
-                          = image_tag 'slide-2.png'
-                    .item
-                      .clearfix.multi-image
-                        .col-xs-6
-                          = image_tag 'slide-1.png'
-                        .col-xs-6
-                          = image_tag 'slide-2.png'
-                  a.left.carousel-control href="#carousel" role="button" data-slide="prev"
-                    span.glyphicon.glyphicon-chevron-left aria-hidden="true"
-                  a.right.carousel-control href="#carousel" role="button" data-slide="next"
-                    span.glyphicon.glyphicon-chevron-right aria-hidden="true"
+          - cache [@project, 'widgets'], tag: ["project-#{@project.id}-widgets", 'project-widgets'] do
+            section#about-project.section-container.section-collapsible
+              h2.section-title
+                a.title.title-toggle href=''
+                  ' About this project
+                  i.fa.fa-chevron-down
+                  i.fa.fa-chevron-up
+              .section-content
+                .medium-editor= @project.description
+                /
+                  #carousel.carousel.slide data-ride="carousel"
+                    .carousel-inner role="listbox"
+                      .item.active
+                        .clearfix.multi-image
+                          .col-xs-6
+                            = image_tag 'slide-1.png'
+                          .col-xs-6
+                            = image_tag 'slide-2.png'
+                      .item
+                        .clearfix.multi-image
+                          .col-xs-6
+                            = image_tag 'slide-1.png'
+                          .col-xs-6
+                            = image_tag 'slide-2.png'
+                    a.left.carousel-control href="#carousel" role="button" data-slide="prev"
+                      span.glyphicon.glyphicon-chevron-left aria-hidden="true"
+                    a.right.carousel-control href="#carousel" role="button" data-slide="next"
+                      span.glyphicon.glyphicon-chevron-right aria-hidden="true"
 
           - if (@project.build_logs_count > 0 and !@project.private_logs) or @can_edit
             section#logs.section-container.section-collapsible
@@ -275,34 +277,36 @@
                 - else
                   p This project is locked for editing.
 
-            section.section-thumbs
-              h4
-                | Team members
-                - if @can_edit
-                  = link_to content_tag(:i, '', class: 'fa fa-pencil'), project_edit_team_path(@project), class: 'btn-edit'
-
-              .row.mobile-scroll-row.desktop-tighter-margins
-                - @project.team_members.each do |member|
-                  = render partial: 'users/member_thumb_mini', locals: { member: member }
-
-            - if @project.communities_count > 0
+            - cache ["project-#{@project.id}-team-n-communities", @can_edit, @project.communities_count], tag: (["project-#{@project.id}-team-n-communities", "team-#{@project.team_id}"] + @project.users.map{|u| "user-#{u.id}-thumb"}) do
               section.section-thumbs
                 h4
-                  | Communities this project belongs to
-                  /   = link_to content_tag(:i, '', class: 'fa fa-pencil'), '', class: 'btn-edit'
-                .row.mobile-scroll-row.desktop-tighter-margins
-                  - @project.platforms.each do |platform|
-                    = render partial: 'groups/platforms/platform_thumb_mini', locals: { platform: platform }
+                  | Team members
+                  - if @can_edit
+                    = link_to content_tag(:i, '', class: 'fa fa-pencil'), project_edit_team_path(@project), class: 'btn-edit'
 
-            - if @other_projects_count > 0
-              section.section-thumbs
-                h4 Other projects by the same authors
-                - @other_projects.each do |project|
-                  .project-thumb-mini.has-link-overlay style="background-image: url(#{project.cover_image.try(:file_url, :cover_thumb)})"
-                    = link_to '', project, class: 'link-overlay'
-                    .project-thumb-mini-inner
-                      h4= link_to project.name, project
-                      / # p= render partial: 'projects/by_team', locals: { project: project }
+                .row.mobile-scroll-row.desktop-tighter-margins
+                  - @project.team_members.each do |member|
+                    = render partial: 'users/member_thumb_mini', locals: { member: member }
+
+              - if @project.communities_count > 0
+                section.section-thumbs
+                  h4
+                    | Communities this project belongs to
+                    /   = link_to content_tag(:i, '', class: 'fa fa-pencil'), '', class: 'btn-edit'
+                  .row.mobile-scroll-row.desktop-tighter-margins
+                    - @project.platforms.each do |platform|
+                      = render partial: 'groups/platforms/platform_thumb_mini', locals: { platform: platform }
+
+            - cache [@project, 'other', @other_projects], tag: "project-#{@project.id}-other" do
+              - if @other_projects_count > 0
+                section.section-thumbs
+                  h4 Other projects by the same authors
+                  - @other_projects.each do |project|
+                    .project-thumb-mini.has-link-overlay style="background-image: url(#{project.cover_image.try(:file_url, :cover_thumb)})"
+                      = link_to '', project, class: 'link-overlay'
+                      .project-thumb-mini-inner
+                        h4= link_to project.name, project
+                        / # p= render partial: 'projects/by_team', locals: { project: project }
 
             section.section-thumbs
               h4
