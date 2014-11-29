@@ -106,13 +106,13 @@
                   | Posted by
                 .row= render partial: 'users/user_thumb_mini', locals: { user: poster }
 
-            - if @project.communities_count > 0
+            - if platforms = @project.platforms and platforms.any? #@project.communities_count > 0
               section.section-thumbs
                 h4
                   | Communities this project belongs to
                   /   = link_to content_tag(:i, '', class: 'fa fa-pencil'), '', class: 'btn-edit'
                 .row.mobile-scroll-row.desktop-tighter-margins
-                  - @project.platforms.each do |platform|
+                  - platforms.each do |platform|
                     = render partial: 'groups/shared/community_thumb_mini', locals: { community: platform }
 
             / - if @other_projects_count > 0
