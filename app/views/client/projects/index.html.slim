@@ -83,7 +83,7 @@
             = content_for :js do
               - if project_collection.featured?
                 javascript:
-                  text = "#{escape_javascript render(partial: 'groups/teches/featured' )}";
+                  text = "#{escape_javascript render(partial: 'groups/platforms/featured' )}";
                   $(text).appendTo($('.project-#{project_collection.project_id} .project-thumb .award-container'));
 
         - else
