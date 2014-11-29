@@ -76,40 +76,40 @@
   padding-top: 20px;
   margin-top: 18px;
 }
-#platform-page {
-  .display {
-    padding: 30px 20px 0 20px;
-    h4 {
-      margin-top: 0;
-      font-size: 0.85em;
-      text-transform: uppercase;
-      color: #999;
-      font-weight: bold;
-    }
-    a:not(.label) {
-      color: #888;
-      @include transition(all .2s ease);
-      &:hover{
-        color: #444447;
-      }
-    }
-  }
-  .websites{
-    margin: -5px 0 0 -5px;
-    height: 20px;
-  }
-  .addthis_sharing_toolbox, .addthis_toolbox {
-    margin-top: 10px;
-    text-align: center;
-    label {
-      float: left;
-      text-transform: uppercase;
-      margin-right: 5px;
-      font-size: 0.85em;
-      color: #666;
-    }
-  }
-}
+// #platform-page {
+//   .display {
+//     padding: 30px 20px 0 20px;
+//     h4 {
+//       margin-top: 0;
+//       font-size: 0.85em;
+//       text-transform: uppercase;
+//       color: #999;
+//       font-weight: bold;
+//     }
+//     a:not(.label) {
+//       color: #888;
+//       @include transition(all .2s ease);
+//       &:hover{
+//         color: #444447;
+//       }
+//     }
+//   }
+//   .websites{
+//     margin: -5px 0 0 -5px;
+//     height: 20px;
+//   }
+//   .addthis_sharing_toolbox, .addthis_toolbox {
+//     margin-top: 10px;
+//     text-align: center;
+//     label {
+//       float: left;
+//       text-transform: uppercase;
+//       margin-right: 5px;
+//       font-size: 0.85em;
+//       color: #666;
+//     }
+//   }
+// }
 #platform-links{
   padding: 0;
   margin: 0;
@@ -149,7 +149,7 @@
 
 ******************************/
 
-#top-bg{
+.top-banner {
   position: relative;
   z-index: 1;
   height: 400px;
@@ -164,7 +164,7 @@
     }
   }
 }
-#top-bg-image{
+.top-banner-image {
   position: absolute;
   left: 0;
   top: -7.5%;
@@ -173,6 +173,63 @@
   z-index: 1;
   background: #fff center center no-repeat;
   @include background-size(cover);
+}
+.top-banner-image-inner {
+  background: rgba(0,0,0,0.4);
+  padding: 120px 0;
+  color: #fff;
+  height: 100%;
+  position: relative;
+  .media {
+    .media-left {
+      padding-right: 40px;
+      img {
+        padding: 10px;
+        border: 0;
+      }
+    }
+    .media-body {
+
+    }
+  }
+  h1 {
+    margin: 0;
+  }
+  .tags {
+    margin-left: 10px;
+    margin-bottom: 0;
+    padding: 0;
+    margin-top: 14px;
+  }
+}
+.top-banner-image-inner-corner {
+  color: #999;
+  position: absolute;
+  font-weight: bold;
+  &.text {
+    text-transform: uppercase;
+    font-size: 0.7em;
+  }
+  a {
+    color: #999;
+    &:hover {
+      color: #bbb;
+    }
+  }
+  &.top-right {
+    top: 45px;
+    right: 15px;
+  }
+  &.bottom-right {
+    bottom: 45px;
+    right: 15px;
+  }
+  .websites {
+    margin: 0 -7px;
+    li {
+      padding: 0 7px;
+    }
+  }
 }
 #projects-list{
   position: relative;

@@ -21,8 +21,37 @@
   meta(property="keywords" content="#{@platform.name} projects, #{@platform.name} hacks")
 
 - if @platform.cover_image
-  section#top-bg.show-on-desktop
-    #top-bg-image style="background-image:url('#{@platform.cover_image.try(:file_url)}');"
+  section.top-banner.show-on-desktop
+    .top-banner-image style="background-image:url('#{@platform.cover_image.try(:file_url)}');"
+      .top-banner-image-inner
+        .top-banner-image-inner-corner.top-right.text
+          | Platform
+        .top-banner-image-inner-corner.bottom-right
+          ul.websites.list-inline
+            - @platform.websites.select{|t,u| u.present? }.each do |type, url|
+              = render partial: "shared/website", locals: { type: type, url: url }
+
+        .container
+          .media
+            .media-left
+              = image_tag @platform.avatar.try(:file_url, :big), class: 'img-thumbnail'
+            .media-body
+              p.text-muted By Spark
+              .clearfix
+                h1.pull-left= @platform.name
+                ul.list-inline.tags.pull-left
+                  li
+                    a.tag href='' Beginners
+                  li
+                    a.tag href='' Wearables
+                  li
+                    a.tag href='' Wifi
+              p= @platform.mini_resume
+              .button-content
+                button.btn.btn-primary Follow
+                button.btn.btn-default Documentation
+                button.btn.btn-default Forums
+                button.btn.btn-default Buy a Spark Core
 
 - if can? :join, @platform and user_signed_in? and member = current_user.is_member?(@platform) and member.invitation_pending?
   section#alert-section
@@ -52,7 +81,7 @@
       ' to be notified when new projects are posted.
 
 section#projects-list
-  .wrapper
+  .container
     .project-list-actions.clearfix.mg-30
       .pull-right
         - link = user_signed_in? ? new_project_path(project: { platform_tags_string: @platform.name }) : new_user_registration_path(reason: 'project', m: 'group', id: @platform.id, redirect_to: new_project_path(project: { platform_tags_string: @platform.name }))
