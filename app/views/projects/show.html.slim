@@ -10,6 +10,7 @@
           - cache [@project, 'teaser'], tag: ["project-#{@project.id}-teaser"], expires_in: 6.hours do
             - if ProjectCollection.assignment_or_event_for_project?(@project.id)
               .project-group
+                i.fa.fa-graduation-cap>
                 ' This project is part of
                 - if @project.assignment.present?
                   - if @project.assignment.promotion.avatar
@@ -364,14 +365,24 @@
               - if @other_projects_count > 0
                 section.section-thumbs
                   h4 Other projects by the same #{pluralize_without_count @project.team_members_count, 'author'}
+                  - if @last_projects.present?
+                    .subtitle Most popular
                   - @other_projects.each do |project|
                     .project-thumb-mini.has-link-overlay style="background-image: url('#{project.cover_image.try(:file_url, :cover_thumb)}')"
                       = link_to '', project, class: 'link-overlay'
                       .project-thumb-mini-inner
                         h4= link_to project.name, project
                         / # p= render partial: 'projects/by_team', locals: { project: project }
+                  - if @last_projects.present?
+                    .subtitle Most recent
+                    - @last_projects.each do |project|
+                      .project-thumb-mini.has-link-overlay style="background-image: url('#{project.cover_image.try(:file_url, :cover_thumb)}')"
+                        = link_to '', project, class: 'link-overlay'
+                        .project-thumb-mini-inner
+                          h4= link_to project.name, project
+                          / # p= render partial: 'projects/by_team', locals: { project: project }
 
-            section.section-thumbs
+            section.section-thumbs.hidden-xs.hidden-sm
               h4
                 | Table of contents
               .affixable style='top:20px'

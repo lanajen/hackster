@@ -91,8 +91,8 @@ class ProjectObserver < ActiveRecord::Observer
       Cashier.expire "project-#{record.id}-thumb"
     end
 
-    if (record.changed & %w(website)).any?
-      Cashier.expire "project-#{record.id}-thumb-external"
+    if record.external and (record.changed & %w(website)).any?
+      Cashier.expire "project-#{record.id}-thumb"
     end
 
     if (record.changed & %w(name cover_image one_liner private wip start_date made_public_at license buy_link description)).any? or record.platform_tags_string_changed? or record.product_tags_string_changed?

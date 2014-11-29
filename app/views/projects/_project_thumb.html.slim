@@ -19,7 +19,9 @@
                 = project.one_liner
             .thumb-image-inner
               h4
-                - if project.is_idea?
+                - if project.private?
+                  i.fa.fa-lock>
+                - elsif project.is_idea?
                   i.fa.fa-lightbulb-o>
                 ==> link_to project.name, project, class: 'project-link-with-ref'
                 - if project.external

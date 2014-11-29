@@ -6,12 +6,6 @@
 }
 
 @media only screen and (max-width: 992px) {
-  .right-column {
-    .affix {
-      position: static !important;
-      width: 100% !important;
-    }
-  }
   .navbar-nav {
     float: none;
     border-bottom: 1px solid #ddd;
@@ -228,10 +222,10 @@
   // GLOBAL
 
   .show-on-desktop{
-    display: block!important;
+    display: block !important;
   }
   .hide-on-desktop{
-    display: none!important;
+    display: none !important;
   }
 
   // NAVIGATION
