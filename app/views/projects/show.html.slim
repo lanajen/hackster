@@ -7,7 +7,7 @@
     .container-desktop.container
       .row
         .col-md-8.left-column
-          - cache [@project, 'teaser'], tag: (["project-#{@project.id}-teaser"], expires_in: 6.hours do
+          - cache [@project, 'teaser'], tag: ["project-#{@project.id}-teaser"], expires_in: 6.hours do
             #home.project-banner style="background-image: url(#{@project.cover_image})"
               .project-banner-inner
                 h1.project-title
