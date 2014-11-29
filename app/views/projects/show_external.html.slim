@@ -113,7 +113,7 @@
                   /   = link_to content_tag(:i, '', class: 'fa fa-pencil'), '', class: 'btn-edit'
                 .row.mobile-scroll-row.desktop-tighter-margins
                   - @project.platforms.each do |platform|
-                    = render partial: 'groups/platforms/platform_thumb_mini', locals: { platform: platform }
+                    = render partial: 'groups/shared/community_thumb_mini', locals: { community: platform }
 
             / - if @other_projects_count > 0
               section.section-thumbs
