@@ -61,7 +61,8 @@ html(lang="en")
                   = link_to image_tag('hackster_logo_20.png', style: 'height:11px;vertical-align:text-top;'), root_url(subdomain: 'www')
 
             .collapse.navbar-collapse
-              .col-xs-4.navbar-right= render 'shared/search_form'
+              .col-xs-4.navbar-right
+                .pull-right= render 'shared/search_form'
 
       #main
         = bootstrap_flash
