@@ -310,7 +310,10 @@
             - cache ["project-#{@project.id}", 'metadata', @can_edit], tag: (["project-#{@project.id}-metadata", "team-#{@project.team_id}", "project-#{@project.id}-respects", 'project-metadata'] + @project.users.map{|u| "user-#{u.id}-thumb"}) do
               section.section-thumbs
                 h4
-                  | Team members
+                  - if @project.project.team.full_name.present?
+                    | Team #{@project.team.full_name}
+                  - else
+                    | Team members
                   - if @can_edit
                     = link_to content_tag(:i, '', class: 'fa fa-pencil'), project_edit_team_path(@project), class: 'btn-edit'
 
