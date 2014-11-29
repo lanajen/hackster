@@ -8,6 +8,36 @@
       .row
         .col-md-8.left-column
           - cache [@project, 'teaser'], tag: ["project-#{@project.id}-teaser"], expires_in: 6.hours do
+            - if ProjectCollection.assignment_or_event_for_project?(@project.id)
+              .project-group
+                ' This project is part of
+                - if @project.assignment.present?
+                  - if @project.assignment.promotion.avatar
+                    ==> image_tag @project.assignment.promotion.avatar.file_url(:mini), class: 'img-circle'
+                  = link_to @project.assignment.to_label, assignment_path(@project.assignment)
+                - elsif @project.event.present?
+                  - if @project.event.avatar
+                    ==> image_tag @project.event.avatar.file_url(:mini), class: 'img-circle'
+                  = link_to @project.event.name, event_path(@project.event)
+                  / - @project.awards.where(gradable_id: @project.collection_id, gradable_type: 'Group').each do |award|
+                    span.project-award<
+                      i.fa.fa-trophy.istooltip  title=award.grade   data-container='body'
+                  / if can? :request_access, @project.team
+                    - if user_signed_in? and member = current_user.is_team_member?(@project)
+                      - if member.request_pending?
+                        span.label.label-default Request to join team pending
+                    - else
+                      = link_to 'Join team', group_members_path(@project.team), class: 'btn btn-xs btn-warning', data: { method: :post }, id: 'join-button'
+
+            - if @winning_entry
+              .project-group
+                span.project-award>
+                  i.fa.fa-trophy
+                ' This project won
+                ==> @winning_entry.prize.position.ordinalize
+                ' prize in
+                = link_to @winning_entry.challenge.name, @winning_entry.challenge
+
             #home.project-banner style="background-image: url('#{@project.cover_image}')"
               .project-banner-inner
                 h1.project-title
@@ -277,7 +307,7 @@
                 - else
                   p This project is locked for editing.
 
-            - cache ["project-#{@project.id}-team-n-communities", @can_edit, @project.communities_count], tag: (["project-#{@project.id}-team-n-communities", "team-#{@project.team_id}"] + @project.users.map{|u| "user-#{u.id}-thumb"}) do
+            - cache ["project-#{@project.id}", 'metadata', @can_edit], tag: (["project-#{@project.id}-metadata", "team-#{@project.team_id}", "project-#{@project.id}-respects", 'project-metadata'] + @project.users.map{|u| "user-#{u.id}-thumb"}) do
               section.section-thumbs
                 h4
                   | Team members
@@ -288,26 +318,44 @@
                   - @project.team_members.each do |member|
                     = render partial: 'users/member_thumb_mini', locals: { member: member }
 
-              - if @project.communities_count > 0
+              - if communities = (@project.platforms + [@project.hacker_space] + @project.communities).compact and communities.any? #@project.communities_count > 0
                 section.section-thumbs
                   h4
-                    | Communities this project belongs to
+                    | Communities this project is part of
                     /   = link_to content_tag(:i, '', class: 'fa fa-pencil'), '', class: 'btn-edit'
                   .row.mobile-scroll-row.desktop-tighter-margins
-                    - @project.platforms.each do |platform|
-                      = render partial: 'groups/platforms/platform_thumb_mini', locals: { platform: platform }
+                    - communities.each do |community|
+                      = render partial: 'groups/shared/community_thumb_mini', locals: { community: community }
 
-            - if @project.respects_count > 0
-              section.section-thumbs#widget-respects
-                h4 Hackers who respect this project
-                / - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
-                  = render partial: 'respects/button', locals: { project: @project }
-                - cache ["project-#{@project.id}-respects", 'users'], tag: ["project-#{@project.id}-respects"] do
-                  - users = @respecting_users
-                  .respect-thumbs.clearfix
-                    - users.each do |user|
-                      - cache ["user-#{user.id}-thumb", 'respect'], tag: ["user-#{user.id}-thumb"] do
-                        = link_to image_tag(user.decorate.avatar(:thumb), class: 'img-responsive respects-user-img istooltip', data: { container: 'body' }, rel: 'tooltip', title: user.name), user
+              - if @project.respects_count > 0
+                section.section-thumbs
+                  h4 Hackers who respect this project
+                  #widget-respects= render partial: 'widgets/respect_widget', locals: { users: @respecting_users }
+
+              / # - if hacker_space = @project.hacker_space
+                section.section-thumbs
+                  h4 Made at
+                  = link_to hacker_space.name, hacker_space_path(hacker_space)
+
+              / # - if @project.communities.any?
+                section.section-thumbs
+                  h4 Communities this project is part of
+                  - @project.communities.each do |community|
+                    ' Part of
+                    = link_to community.name, community_path(community)
+
+              - if @challenge_entries.any?
+                .tags.meta
+                  .meta-title-wrap
+                    .meta-title Challenges
+                  - @challenge_entries.each do |entry|
+                    - if entry.awarded?
+                      ' Won
+                      ==> entry.prize.position.ordinalize
+                      ' prize in
+                    - else
+                      ' Participated in
+                    = link_to entry.challenge.name, entry.challenge
 
             - cache [@project, 'other', @other_projects], tag: "project-#{@project.id}-other" do
               - if @other_projects_count > 0

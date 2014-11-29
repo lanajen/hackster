@@ -31,6 +31,6 @@ class FollowRelationObserver < ActiveRecord::Observer
 
   private
     def update_counters record
-      record.followable.update_counters only: [:followers]
+      record.followable.update_counters only: [:followers] if record.followable.class.name.in? %w(User Platform)
     end
 end
