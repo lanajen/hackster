@@ -25,21 +25,40 @@
     .top-banner-image style="background-image:url('#{@platform.cover_image.try(:file_url)}');"
       .top-banner-image-inner
         .top-banner-image-inner-corner.top-right.text
-          | Platform
+          = @platform.class.name
         .top-banner-image-inner-corner.bottom-right
           ul.websites.list-inline
             - @platform.websites.select{|t,u| u.present? }.each do |type, url|
               = render partial: "shared/website", locals: { type: type, url: url }
+        .top-banner-image-inner-corner.bottom-left
+          ul.list-unstyled.list-inline.project-stats
+            li
+              span.stat-figure> = number_with_delimiter @platform.projects_count
+              = pluralize_without_count @platform.projects_count, 'project'
+            li
+              span.stat-figure> = number_with_delimiter @platform.followers_count
+              = pluralize_without_count @platform.followers_count, 'follower'
+
+        .top-banner-image-inner-corner.top-left
+          - if can? :manage, @platform
+            .btn-group
+              = link_to 'Edit settings', edit_platform_path(@platform), class: 'btn btn-default btn-sm'
+              button.btn.btn-default.btn-sm.dropdown-toggle data-toggle="dropdown" aria-expanded="false"
+                span.caret
+              ul.dropdown-menu role="menu"
+                / li= link_to 'Post fresh news', new_platform_announcement_path(@platform.user_name)
+                li= link_to 'Manage admins', group_edit_members_path(@platform)
+                li= link_to 'Invite admins', group_new_invitations_path(@platform)
 
         .container
           .media
             .media-left
               = image_tag @platform.avatar.try(:file_url, :big), class: 'img-thumbnail'
             .media-body
-              p.text-muted By Spark
+              / p.text-muted By Spark
               .clearfix
                 h1.pull-left= @platform.name
-                ul.list-inline.tags.pull-left
+                / ul.list-inline.tags.pull-left
                   li
                     a.tag href='' Beginners
                   li
@@ -48,10 +67,15 @@
                     a.tag href='' Wifi
               p= @platform.mini_resume
               .button-content
-                button.btn.btn-primary Follow
-                button.btn.btn-default Documentation
-                button.btn.btn-default Forums
-                button.btn.btn-default Buy a Spark Core
+                = render partial: 'followers/button_text', locals: { followable: @platform }
+                - if @platform.documentation_link.present?
+                  = link_to "Documentation #{content_tag(:i, '', class: 'fa-external-link fa')}".html_safe, @platform.documentation_link, target: '_blank', class: 'btn btn-link'
+                - if @platform.forums_link.present?
+                  = link_to "Forums #{content_tag(:i, '', class: 'fa-external-link fa')}".html_safe, @platform.forums_link, target: '_blank', class: 'btn btn-link'
+                - if @platform.crowdfunding_link.present?
+                  = link_to "Preorder #{indefinite_articlerize @platform.name} #{content_tag(:i, '', class: 'fa-external-link fa')}".html_safe, @platform.crowdfunding_link, target: '_blank', class: 'btn btn-link btn-link-accent'
+                - if @platform.buy_link.present?
+                  = link_to "Buy #{indefinite_articlerize @platform.name} #{content_tag(:i, '', class: 'fa-external-link fa')}".html_safe, @platform.buy_link, target: '_blank', class: 'btn btn-link btn-link-accent'
 
 - if can? :join, @platform and user_signed_in? and member = current_user.is_member?(@platform) and member.invitation_pending?
   section#alert-section

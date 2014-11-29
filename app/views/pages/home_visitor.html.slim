@@ -4,7 +4,7 @@
   = auto_discovery_link_tag :atom, projects_path(format: :atom), title: 'Trending projects - Hackster.io'
 
 = content_for :no_container do
-  - cache ['home-visitor'], tag: ['home', 'home-visitor'], expires_in: 1.hour do
+  - cache ['home-visitor', user_signed_in?], tag: ['home', 'home-visitor'], expires_in: 1.hour do
     section#hello-hackster
       .container.text-center
         h1 The community for hardware hackers.

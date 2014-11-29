@@ -1,16 +1,13 @@
-.container
+- if @projects.any?
   .row
-    .col-xs-12
-      - if @projects.any?
-        - @projects.each_with_index do |project, i|
-          = render partial: "projects/project_embed_thumb", locals: { project: project.decorate, ref: 'event', ref_id: @event.id, offset: i }
-      - else
-        | All the projects of the event will appear here.
-  .row
-    .col-xs-12
-      p.pull-right.text-muted
-        small
-          | Projects in
-          = link_to @event.name, event_url(@event), target: '_blank'
-          | on
-          = link_to 'Hackster.io', root_url, target: '_blank'
+    - @projects.each_with_index do |project, i|
+      = render partial: "projects/project_embed_thumb", locals: { project: project.decorate, ref: 'event', ref_id: @event.id, offset: i }
+- else
+  | All the projects of the event will appear here.
+.clearfix
+  p.pull-right.text-muted
+    small
+      ' Projects in
+      ==> link_to @event.name, event_url(@event), target: '_blank'
+      ' on
+      = link_to 'Hackster.io', root_url, target: '_blank'

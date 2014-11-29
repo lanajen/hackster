@@ -6,10 +6,11 @@
         .thumb.project-thumb
           .thumb-image.has-link-overlay style="background-image:url(#{project.cover_image(:cover_thumb)})"
             = link_to '', project_url(project, subdomain: 'www'), class: 'link-overlay'
-            p.one-liner.show-on-hover
-              = project.one_liner
-            .thumb-image-inner
+            .thumb-image-inner-top
               .award-container
+              p.one-liner.show-on-hover
+                = project.one_liner
+            .thumb-image-inner
               h4
                 - if project.is_idea?
                   i.fa.fa-lightbulb-o>

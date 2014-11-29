@@ -7,34 +7,35 @@
     .container-desktop.container
       .row
         .col-md-8.left-column
-          .project-banner style="background-image: url(#{@project.cover_image})"
-            .project-banner-inner
-              h1.project-title
-                - if @project.is_idea?
-                  i.fa.fa-lightbulb-o.private-project-icon>
-                ==> @project.name
-                - if @project.license
-                  a.copyright target='_blank' href=@project.license.url &copy; #{@project.license.abbr}
-              p.project-one-liner= @project.one_liner
+          - cache [@project, 'teaser'], tag: ["project-#{@project.id}-teaser"], expires_in: 6.hours do
+            .project-banner style="background-image: url(#{@project.cover_image})"
+              .project-banner-inner
+                h1.project-title
+                  - if @project.is_idea?
+                    i.fa.fa-lightbulb-o.private-project-icon>
+                  ==> @project.name
+                  - if @project.license
+                    a.copyright target='_blank' href=@project.license.url &copy; #{@project.license.abbr}
+                p.project-one-liner= @project.one_liner
 
-              - if @project.product_tags_count > 0 or @project.platform_tags_cached.any?
-                ul.list-inline
-                  - unknown_platforms = @project.platform_tags_cached.select do |tag|
-                    - Platform.includes(:platform_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first.nil?
+                - if @project.product_tags_count > 0 or @project.platform_tags_cached.any?
+                  ul.list-inline
+                    - unknown_platforms = @project.platform_tags_cached.select do |tag|
+                      - Platform.includes(:platform_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first.nil?
 
-                  - (@project.product_tags_cached  + unknown_platforms).map{|t| t.downcase }.uniq.each do |tag|
-                    li= link_to tag, tag_path(tag), class: 'tag'
+                    - (@project.product_tags_cached  + unknown_platforms).map{|t| t.downcase }.uniq.each do |tag|
+                      li= link_to tag, tag_path(tag), class: 'tag'
 
-              ul.list-inline.project-stats
-                li
-                  span.stat-figure> = number_with_delimiter @project.impressions_count
-                  = pluralize_without_count @project.impressions_count, 'view'
-                li
-                  span.stat-figure> = number_with_delimiter @project.comments_count
-                  = pluralize_without_count @project.comments_count, 'comment'
-                li
-                  span.stat-figure> = number_with_delimiter @project.respects_count
-                  = pluralize_without_count @project.respects_count, 'respect'
+                ul.list-inline.project-stats
+                  li
+                    span.stat-figure> = number_with_delimiter @project.impressions_count
+                    = pluralize_without_count @project.impressions_count, 'view'
+                  li
+                    span.stat-figure> = number_with_delimiter @project.comments_count
+                    = pluralize_without_count @project.comments_count, 'comment'
+                  li
+                    span.stat-figure> = number_with_delimiter @project.respects_count
+                    = pluralize_without_count @project.respects_count, 'respect'
 
           section.project-external
             p
@@ -105,14 +106,14 @@
                   | Posted by
                 .row= render partial: 'users/user_thumb_mini', locals: { user: poster }
 
-            - if @project.communities_count > 0
+            - if platforms = @project.platforms and platforms.any? #@project.communities_count > 0
               section.section-thumbs
                 h4
                   | Communities this project belongs to
                   /   = link_to content_tag(:i, '', class: 'fa fa-pencil'), '', class: 'btn-edit'
                 .row.mobile-scroll-row.desktop-tighter-margins
-                  - @project.platforms.each do |platform|
-                    = render partial: 'groups/platforms/platform_thumb_mini', locals: { platform: platform }
+                  - platforms.each do |platform|
+                    = render partial: 'groups/shared/community_thumb_mini', locals: { community: platform }
 
             / - if @other_projects_count > 0
               section.section-thumbs

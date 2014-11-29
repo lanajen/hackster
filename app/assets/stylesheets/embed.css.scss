@@ -56,28 +56,28 @@
 
 #project-embed {
   background: #fff;
-  .project-thumb {
-    .featured-logo {
-      @include opacity(0);
-      @include transition(opacity 200ms linear);
-      position: absolute;
-      top: 3px;
-      right: 13px;
-      a {
-        color: #fff;
-        font-size: 0.8em;
-        &:hover {
-          text-decoration: none;
-        }
-      }
-      img {
-        max-width: 65px;
-        vertical-align: baseline;
+}
+.project-embed-thumb {
+  .featured-logo {
+    @include opacity(0);
+    @include transition(opacity 200ms linear);
+    position: absolute;
+    top: 3px;
+    right: 13px;
+    a {
+      color: #fff;
+      font-size: 0.8em;
+      &:hover {
+        text-decoration: none;
       }
     }
-    &:hover .featured-logo {
-      @include opacity(1);
+    img {
+      max-width: 65px;
+      vertical-align: baseline;
     }
+  }
+  &:hover .featured-logo {
+    @include opacity(1);
   }
 }
 

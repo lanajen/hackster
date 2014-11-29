@@ -1,6 +1,7 @@
 - if @projects.any?
   h4= link_to @assignment.name, assignment_url(@assignment)
-  - @projects.each_with_index do |project, i|
-    = render partial: "projects/project_embed_thumb", locals: { project: project.decorate, ref: 'assignment', ref_id: @assignment.id, offset: i }
+  .row
+    - @projects.each_with_index do |project, i|
+      = render partial: "projects/project_embed_thumb", locals: { project: project.decorate, ref: 'assignment', ref_id: @assignment.id, offset: i }
 - else
   | All student projects will appear here.

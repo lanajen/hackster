@@ -221,6 +221,20 @@
     margin-left: 250px;
   }
 }
+@media (max-width: 768px) {
+  .comments {
+    .new-comment {
+      display: block;
+      .textarea-content{
+        display: block;
+      }
+      .button-area {
+        display: block;
+        padding: 10px;
+      }
+    }
+  }
+}
 
 .project-banner {
   @include background-cover;
@@ -277,8 +291,22 @@
   }
 }
 
+.affixable {
+  .show-on-affix {
+    @include opacity(0);
+    @include transition(opacity 200ms ease-in-out);
+  }
+  &.affix {
+    .show-on-affix {
+      @include opacity(1);
+    }
+  }
+}
+
 .mini-thumb {
   margin-bottom: 10px;
+  @include border-top-left-radius(3px);
+  @include border-top-right-radius(3px);
 }
 .mini-thumb-image {
   padding-top: 100%;
@@ -294,7 +322,7 @@
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 992px) {
   .desktop-tighter-margins {
     margin-right: -5px;
     margin-left: -5px;
@@ -310,6 +338,11 @@
     padding-left: 30px;
   }
 }
+@media (max-width: 992px) {
+  .left-column {
+    margin-bottom: 40px;
+  }
+}
 
 .section-thumbs {
   margin: 30px 0 20px;
@@ -323,6 +356,12 @@
     font-weight: 600;
     padding-bottom: 3px;
     border-bottom: 1px solid #ccc;
+    color: #888;
+  }
+  & > .subtitle {
+    font-size: 0.7em;
+    text-transform: uppercase;
+    font-weight: 600;
     color: #888;
   }
 }
@@ -424,6 +463,22 @@
     display: none;
   }
 }
+@media (max-width: 768px) {
+  .section-title {
+    .title {
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+  }
+  .section-content {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  .section-inset {
+    margin-left: -10px;
+    margin-right: -10px;
+  }
+}
 @media (min-width: 0px) {
   // move back to 768px
   .section-collapsible {
@@ -488,16 +543,17 @@
   margin-bottom: 15px;
   @extend .block-image;
   padding-top: 25%;
-  &:before {
-    @extend .before-overlay;
-    background: rgba(0,0,0,0.6);
-  }
+  // &:before {
+  //   @extend .before-overlay;
+  //   background: rgba(0,0,0,0.6);
+  // }
   overflow: hidden;
 }
 .project-thumb-mini-inner {
   @extend .block-overlay-content;
+  @include background-image(linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.1) 20%, rgba(0, 0, 0, 0.6) 50%, rgba(0, 0, 0, 0.8) 100%));
   color: #fff;
-  padding: 10px 15px;
+  padding: 20% 15px 10px;
   h4 {
     font-weight: bold;
     margin: 0 0 3px;

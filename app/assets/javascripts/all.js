@@ -1,9 +1,15 @@
-$(function () {
-  $('input, textarea').placeholder();
-
-  $('form.disable-on-submit').submit(function(){
-    $(this).find('input[name="commit"]').prop('disabled', 'disabled');
-  });
+// document.ready initializes too early and it messes the dimensions used in the following functions
+$(window).load(function(){
+  function updateAffix(top, w, el){
+    var y = w.scrollTop();
+        console.log(top);
+        console.log(y);
+    if (y >= top) {
+      el.hasClass('affix') ? '' : el.addClass('affix');
+    } else {
+      el.hasClass('affix') ? el.removeClass('affix') : '';
+    }
+  }
 
   // affixes .affixable
   var $fixedEl;
@@ -12,8 +18,10 @@ $(function () {
     var $window = $(window);
     if ($fixedEl.length) {
       $.each($fixedEl, function(){
+        console.log($(this));
         var top = parseInt($(this).offset().top - (parseFloat($(this).css('top')) || 0)),
             $this = $(this);
+        console.log($(this).offset().top);
         updateAffix(top, $window, $this);
         $window.on('scroll.affix',function(){
           updateAffix(top, $window, $this);
@@ -22,14 +30,15 @@ $(function () {
     }
   };
 
-  function updateAffix(top, w, el){
-    var y = w.scrollTop();
-    if (y >= top) {
-      el.hasClass('affix') ? '' : el.addClass('affix');
-    } else {
-      el.hasClass('affix') ? el.removeClass('affix') : '';
+  var updatedScrollEventHandlers = function updatedScrollEventHandlers(){
+    if ($('#scroll-nav').length){
+      $('body').scrollspy('refresh');
     }
-  }
+    if ($fixedEl.length){
+      $(window).off('scroll.affix');
+      affixDivs();
+    }
+  };
 
   //Fade in alerts/notices
   if($('.fade-in').length){
@@ -40,6 +49,14 @@ $(function () {
   } else{
     affixDivs();
   }
+})
+
+$(function () {
+  $('input, textarea').placeholder();
+
+  $('form.disable-on-submit').submit(function(){
+    $(this).find('input[name="commit"]').prop('disabled', 'disabled');
+  });
 
   $(document).on('click', '.btn-close', function(e){
     target = $(this).data('close');
@@ -185,16 +202,6 @@ $(function () {
       link.href = href + "?ref=" + ref + "&ref_id=" + refId + "&offset=" + offset;
     });
   });
-
-  var updatedScrollEventHandlers = function updatedScrollEventHandlers(){
-    if ($('#scroll-nav').length){
-      $('body').scrollspy('refresh');
-    }
-    if ($fixedEl.length){
-      $(window).off('scroll.affix');
-      affixDivs();
-    }
-  };
 
   if ($('.popup-overlay').length) {
     $('.popup-overlay-bg').click(function(){

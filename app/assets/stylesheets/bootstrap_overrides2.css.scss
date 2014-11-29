@@ -35,9 +35,14 @@ h6, .h6 {
 .btn-default {
   background: transparent;
   color: #666;
-  &:hover {
-    background: transparent;
-  }
+}
+.btn-default:hover,
+.btn-default:focus,
+.btn-default.focus,
+.btn-default:active,
+.btn-default.active,
+.open > .btn-default.dropdown-toggle {
+  background: transparent;
 }
 .btn-primary {
   background: #208edb;

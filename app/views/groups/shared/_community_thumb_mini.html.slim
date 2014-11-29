@@ -1,0 +1,8 @@
+.col-xs-6.col-md-4.mobile-scroll-row-item
+  .mini-thumb.thumb
+    .mini-thumb-image.thumb-image.has-link-overlay style="background-image: url(#{community.avatar.try(:file_url, :big)});"
+      = link_to '', community, class: 'link-overlay'
+      .mini-thumb-image-inner.thumb-image-inner
+        h5
+          = link_to community.name, community
+    = render partial: 'followers/button_short', locals: { followable: community }

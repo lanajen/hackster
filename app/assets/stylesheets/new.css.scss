@@ -1,5 +1,5 @@
 .button-content {
-  .btn + .btn {
+  & > .btn:not(.btn-link) + .btn {
     margin-left: 10px;
   }
 }
@@ -98,20 +98,20 @@ h1 {
     @extend .before-overlay;
     @include transition(background 200ms linear);
   }
-  &:hover:before {
-    background: rgba(0,0,0,0.8);
-  }
-  &:hover {
-    .show-on-hover {
-      @include opacity(1);
+}
+@media (min-width: 768px) {
+  // disable hover effects on mobile (should be for all touch devices)
+  .thumb-image {
+    &:hover:before {
+      background: rgba(0,0,0,0.8);
     }
-    .thumb-image-inner {
-      bottom: 0;
-    }
-  }
-  &.has-link-overlay {
-    .thumb-image-inner {
-      pointer-events: none;
+    &:hover {
+      .show-on-hover {
+        @include opacity(1);
+      }
+      .thumb-image-inner {
+        bottom: 0;
+      }
     }
   }
 }
@@ -120,7 +120,6 @@ h1 {
   top: 0;
   padding: 12px 15px;
   color: #fff;
-  pointer-events: none;
   width: 100%;
 }
 .thumb-image-inner {
@@ -138,6 +137,10 @@ h1 {
     margin: 0 0 5px;
     font-weight: bold;
     font-size: 1.2em;
+    i {
+      color: #aaa;
+      font-size: 75%;
+    }
   }
   li {
     font-weight: bold;
@@ -194,6 +197,7 @@ h1 {
   left: 0;
   right: 0;
   bottom: 0;
+  z-index: 1;
 }
 
 @media (max-width: 768px) {

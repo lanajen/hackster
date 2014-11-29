@@ -7,3 +7,5 @@ ThreadPost.where(type: 'HacksterBlogPost').update_all(type: 'BlogPost')
 # don't forget to reindex
 Platform.index_all
 Project.index_all
+
+Project.where(external: true).each{|p| p.update_counters solo_counter: true, only: [:communities]}

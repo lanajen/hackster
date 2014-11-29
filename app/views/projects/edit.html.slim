@@ -8,7 +8,7 @@
       .container-desktop.container
         .row
           .col-md-8.left-column
-            .project-banner style="background-image: url(#{@project.cover_image})"
+            .project-banner style="background-image: url('#{@project.cover_image}')"
               .project-banner-inner
                 #upload-cover-image
                   a.check-todo#editabl-cover*{ href: '', rel: 'tooltip', title: 'Change cover image', 'data-human-name' => 'Cover image', 'data-value' => @project.model.cover_image.try(:id), 'data-target' => '#top-project-section' }
@@ -53,7 +53,7 @@
 
             section#about-project.section-container.section-collapsible
               h2.section-title
-                a href=''
+                a.title.title-toggle href=''
                   ' About this project
                   i.fa.fa-chevron-down
                   i.fa.fa-chevron-up
@@ -148,7 +148,7 @@
               ==> f.button :submit, value: 'Save'
               = link_to 'Cancel', project_path(@project), class: 'btn btn-link btn-sm'
 
-            section data-spy='affix'
+            section.affixable
               - unless @project.public?
                 - who = %w(you)
                 - who += ['team members'] if @project.users.size > 1
