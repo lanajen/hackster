@@ -279,6 +279,8 @@
 
 .mini-thumb {
   margin-bottom: 10px;
+  @include border-top-left-radius(3px);
+  @include border-top-right-radius(3px);
 }
 .mini-thumb-image {
   padding-top: 100%;
@@ -294,7 +296,7 @@
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 992px) {
   .desktop-tighter-margins {
     margin-right: -5px;
     margin-left: -5px;
@@ -308,6 +310,11 @@
   }
   .right-column {
     padding-left: 30px;
+  }
+}
+@media (max-width: 992px) {
+  .left-column {
+    margin-bottom: 40px;
   }
 }
 

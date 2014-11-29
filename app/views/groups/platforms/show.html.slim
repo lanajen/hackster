@@ -23,6 +23,10 @@
 - if @platform.cover_image
   section#top-bg.show-on-desktop
     #top-bg-image style="background-image:url('#{@platform.cover_image.try(:file_url)}');"
+      - if @platform.crappy_overlay_text.present?
+        #top-bg-image-inner
+          = @platform.crappy_overlay_text
+          a.btn.btn-primary.btn-large style='bottom:50px;right:20px;position:absolute' href='' Enter our Fusion 360 challenge!
 
 - if can? :join, @platform and user_signed_in? and member = current_user.is_member?(@platform) and member.invitation_pending?
   section#alert-section

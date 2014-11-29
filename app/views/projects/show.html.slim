@@ -298,15 +298,16 @@
               section.section-thumbs
                 h4 Other projects by the same authors
                 - @other_projects.each do |project|
-                  .project-thumb-mini style="background-image: url(#{project.cover_image.try(:file_url, :cover_thumb)})"
+                  .project-thumb-mini.has-link-overlay style="background-image: url(#{project.cover_image.try(:file_url, :cover_thumb)})"
+                    = link_to '', project, class: 'link-overlay'
                     .project-thumb-mini-inner
                       h4= link_to project.name, project
-                      p= render partial: 'projects/by_team', locals: { project: project }
+                      / # p= render partial: 'projects/by_team', locals: { project: project }
 
             section.section-thumbs
               h4
                 | Table of contents
-              #scroll-nav.section-container.affixable
+              #scroll-nav.section-container.affixable style='top:20px'
                 ul.nav
                   li.active
                     a.smooth-scroll href="#home" data-target="#home" data-offset='-40'

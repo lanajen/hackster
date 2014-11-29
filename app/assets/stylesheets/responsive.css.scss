@@ -215,7 +215,15 @@
   }
 }
 
-@media only screen and (min-width: 769px) {
+@media only screen and (min-width: 768px) {
+  .pull-right-desktop {
+    float: right !important;
+  }
+  .navbar-header{
+    float: none;
+  }
+}
+@media only screen and (min-width: 1000px) {
 
   // GLOBAL
 
@@ -224,9 +232,6 @@
   }
   .hide-on-desktop{
     display: none!important;
-  }
-  .pull-right-desktop {
-    float: right !important;
   }
 
   // NAVIGATION
