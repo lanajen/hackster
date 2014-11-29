@@ -23,7 +23,9 @@ html(lang="en")
     /![if lt IE 9]
       = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.1/html5shiv.js"
     = stylesheet_link_tag "application", :media => "all"
-    link href='//fonts.googleapis.com/css?family=Open+Sans:300,400,600' rel='stylesheet' type='text/css'
+    = javascript_include_tag "//use.typekit.net/okr0yzp.js"
+    javascript:
+      try{Typekit.load();}catch(e){}
     link rel="apple-touch-icon" sizes="57x57" href="#{ asset_path 'favicons/apple-touch-icon-57x57.png' }"
     link rel="apple-touch-icon" sizes="114x114" href="#{ asset_path 'favicons/apple-touch-icon-114x114.png' }"
     link rel="apple-touch-icon" sizes="72x72" href="#{ asset_path 'favicons/apple-touch-icon-72x72.png' }"
@@ -75,7 +77,7 @@ html(lang="en")
           #nav-mobile-trigger.hide-on-desktop.fa.fa-bars
           .navbar-in  style='position:relative;'
             .navbar-header
-              = link_to image_tag('hackster_logo_40_white.png'), root_path, class: 'navbar-brand navbar-btn'
+              = link_to image_tag('hackster_logo_40.png'), root_path, class: 'navbar-brand navbar-btn'
             #nav-non-logo.show-on-desktop
               ul#nav-actions.top-menu-nav
                 li.dropdown
@@ -94,35 +96,9 @@ html(lang="en")
                               h4 Popular tags
                             - POPULAR_TAGS.each do |tag, link|
                               li= link_to tag, "#{link}?ref=topnav"
-                li= link_to 'Platforms', platforms_path, class: 'nav-link'
-                li.dropdown
-                  a.nav-link.dropdown-toggle data-toggle="dropdown" href='#'
-                    | Resources
-                    span.caret
-                  ul#topnav.dropdown-menu
-                    li
-                      = link_to 'Hacker spaces', hacker_spaces_path, class: 'btn btn-block btn-default'
-                      = link_to 'More resources', resources_path, class: 'btn btn-block btn-default'
-                      / = link_to 'Idea to market', build_path, class: 'btn btn-block btn-default'
+                li= link_to 'Communities', platforms_path, class: 'nav-link'
               - if user_signed_in?
                 ul.navbar-nav.navbar-right
-                  / if current_user.has_notifications?
-                    li#notifications
-                      a.dropdown-toggle data-toggle="dropdown" href='#'
-                        - if current_user.has_notifications?
-                          span.istooltip  title='You have new notifications' data-placement='bottom' data-container='body'
-                            i.fa.fa-envelope
-                            i.fa.fa-exclamation.light-blue
-                        - else
-                          i.fa.fa-envelope.istooltip  title='No new notifications' data-placement='bottom' data-container='body'
-                      ul.dropdown-menu
-                        - if current_user.has_notifications?
-                          - current_user.notifications.each do |notification|
-                            li= link_to notification[:message], notification[:link]
-                        - else
-                          li
-                            a No notifications.
-
                   li.btn-group.navbar-btn#user-navigation-links
                     = link_to image_tag(current_user.decorate.avatar(:mini), style: 'width:30px;'), current_user, class: 'btn',id: 'user-nav-face', style: 'padding:0;'
                     button#user-dropdown-toggle.btn.btn-default.dropdown-toggle data-toggle="dropdown"
@@ -148,11 +124,11 @@ html(lang="en")
                 ul.navbar-right.top-menu-nav
                   - if current_user.is? :admin
                     li= link_to 'Admin', admin_analytics_path, class: 'nav-link'
-                  li= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'nav-link nav-add-project'
+                  li= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'nav-link'
+
               - else
                 ul#navbar-right.clearfix
-                  li
-                    span= link_to 'Sign up', new_user_registration_path(source: 'nav'), class: 'btn btn-primary login-link', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '# request.path ']);", id: "signup-button"
+                  li= link_to 'Sign up', new_user_registration_path(source: 'nav'), class: 'login-link'
 
                   li.dropdown
                     a.btn.btn-primary.login-link.dropdown-toggle data-toggle="dropdown" href='#'
@@ -169,10 +145,6 @@ html(lang="en")
                         = link_to 'Google+', user_omniauth_authorize_path(:gplus), class: 'zocial icon googleplus'
                         = link_to 'Twitter', user_omniauth_authorize_path(:twitter), class: 'zocial icon twitter'
 
-                ul.navbar-right.top-menu-nav
-                  li
-                    = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_user_registration_path(redirect_to: new_project_path, reason: 'project'), class: 'nav-link nav-add-project'
-
               #navbar-search
                 = render 'shared/search_form'
 
@@ -182,35 +154,33 @@ html(lang="en")
           = yield(:no_container)
           = yield(:in_main)
         - else
-          .container-fluid
-            #content.wrapper
-              = yield
+          #content
+            .container= yield
 
     - unless params[:blank_frame]
-      footer
-        ul.list-unstyled.list-inline.pull-left
-          li= link_to 'About', about_path
-          li= link_to 'Blog', '/blog'
-          li= link_to 'Hackers', hackers_path
-          li= link_to 'Feedback and support', 'javascript:showClassicWidget();'
-          li= link_to 'Jobs', 'mailto:jobs@hackster.io?subject=I want to work with you guys!'
-          li= link_to 'Terms', '/terms'
-          li= link_to 'Privacy', '/privacy'
-          li= link_to 'Newsletter', 'http://us7.campaign-archive2.com/home/?u=3fd72855783c7f1a97812d84e&id=6ff81e3e5b', target: '_blank'
-          li
-        ul.list-unstyled.list-inline.pull-right
-          li= link_to content_tag(:i, '', class: 'fa fa-twitter fa-lg').html_safe, 'http://twitter.com/hacksterio', alt: 'Hackster.io on Twitter', class: 'link-icon'
-          li= link_to content_tag(:i, '', class: 'fa fa-facebook fa-lg').html_safe, 'http://www.facebook.com/hacksterio', alt: 'Hackster.io on Facebook', class: 'link-icon'
-          li Hackster.io 2014
-        .show-on-desktop= link_to image_tag('//cdn.mxpnl.com/site_media/images/partner/badge_light.png', alt: 'Mobile Analytics'), 'https://mixpanel.com/f/partner', class: 'pull-right', style: 'margin-top:-10px;margin-right:15px;', target: '_blank'
+      footer.clearfix
+        .footer-nav.clearfix
+          ul.list-unstyled.list-inline.pull-left
+            li= link_to 'About', about_path
+            li= link_to 'Blog', '/blog'
+            li= link_to 'Hackers', hackers_path
+            li= link_to 'Feedback & support', 'javascript:showClassicWidget();'
+            li= link_to 'Jobs', 'mailto:jobs@hackster.io?subject=I want to work with you guys!'
+            li= link_to 'Terms', '/terms'
+            li= link_to 'Privacy', '/privacy'
+            li= link_to 'Newsletter', 'http://us7.campaign-archive2.com/home/?u=3fd72855783c7f1a97812d84e&id=6ff81e3e5b', target: '_blank'
+            li
+          ul.list-unstyled.list-inline.pull-right
+            li Hackster 2014
+
     #mobile-nav-overlay.hide-on-desktop
       #mobile-nav-overlay-close.fa.fa-times
     #mobile-navigation.hide-on-desktop
+      = render 'shared/search_form'
       = link_to 'Projects', projects_path(ref: 'topnav'), class: 'mo-nav-link'
       = link_to 'Platforms', platforms_path, class: 'mo-nav-link'
       = link_to 'Hacker spaces', hacker_spaces_path, class: 'mo-nav-link'
       = link_to 'Resources', resources_path, class: 'mo-nav-link'
-      / = link_to 'Manufacturing help', build_path, class: 'mo-nav-link'
       = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'mo-nav-link'
       - if user_signed_in?
         = link_to 'Profile', current_user, class: 'mo-nav-link'

@@ -23,6 +23,11 @@ gem 'zocial-rails', '1.0.2'
 gem 'rails-assets-medium-editor', '1.8.14'
 gem 'rails-assets-underscore', '1.7.0'
 
+# gem 'github-markdown'
+# gem 'rinku'
+# gem 'html-pipeline'
+# gem 'reverse_markdown'
+
 # gem 'autoscaler', '0.9.0', groups: :staging
 gem 'auto_html', '1.6.3'
 gem 'aws-sdk', '1.33.0'

@@ -1,4 +1,4 @@
-class Announcement < BlogPost
+class Announcement < BuildLog
   attr_accessible :published_at, :display_until
 
   def self.current
@@ -13,7 +13,7 @@ class Announcement < BlogPost
     published_at.blank? or (published_at and published_at < Time.now)
   end
 
-  def tech
+  def platform
     threadable
   end
 

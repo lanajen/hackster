@@ -3,7 +3,7 @@
 
 require 'csv'
 
-tech = 'Espruino'
+platform = 'Espruino'
 
 csv = CSV.parse(csv_text, headers: true)
 projects=[]
@@ -16,6 +16,6 @@ csv.each do |row|
   i.remote_file_url = hash['cover_image']
   p.cover_image = i
   p.external = true
-  p.tech_tags_string = tech
+  p.platform_tags_string = platform
   projects << p unless p.save
 end

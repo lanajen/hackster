@@ -1,10 +1,10 @@
 #sidebar-container.affixable
   #sidebar-container-in
-    - if @tech
-      - if @tech.avatar
-        .avatar#tech-avatar-image-div
-          #tech-avatar-image style="background-image:url('#{@tech.avatar(:big)}');"
-    #tech-body
+    - if @platform
+      - if @platform.avatar
+        .avatar#platform-avatar-image-div
+          #platform-avatar-image style="background-image:url('#{@platform.avatar(:big)}');"
+    #platform-body
       p
         - if @challenge.teaser.present?
           = @challenge.teaser
@@ -36,8 +36,8 @@
             ==> prize.name
             | (#{prize.quantity})
 
-    #tech-body
-      #tech-follow-div.text-center
+    #platform-body
+      #platform-follow-div.text-center
         - if @challenge.open_for_submissions?
           p#status
             ' Expires in:
@@ -56,12 +56,12 @@
 
     .display
       h4 Navigation
-      ul#tech-links
+      ul#platform-links
         li= link_to 'Challenge Home', challenge_path(@challenge, anchor: @challenge.video_link.present? ? 'top-project-section' : 'top-bg'), class: 'smooth-scroll'
         li= link_to 'Projects', challenge_path(@challenge, anchor: 'projects-list'), class: 'smooth-scroll'
         li= link_to 'Rules', challenge_rules_path(@challenge)
-        - if @tech
-          li= link_to "#{@tech.name} projects", tech_short_path(@tech)
+        - if @platform
+          li= link_to "#{@platform.name} projects", platform_short_path(@platform)
 
         - if can? :admin, @challenge
           li= link_to "#{content_tag(:i, '', class: 'fa fa-cog')} Manage challenge".html_safe, edit_challenge_path(@challenge)

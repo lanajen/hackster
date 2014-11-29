@@ -1,19 +1,13 @@
-.project-thumb-container#submit-idea-thumb
-  / # - cache "challenge-#{challenge.id}-submit-idea", tag: ["challenge-#{challenge.id}-submit-idea", 'challenge-submit-idea'], expires_in: 24.hours do
-  div  class="submit-idea"
-    .thumb-vertical  class="col-md-#{ defined?(col) ? col : 3 } col-xs-12 col-sm-6"
-      .project-thumb
-        .thumb
-          .inner-thumb
-            h3 Have a project #{'idea ' if challenge.project_ideas}of your own?
-            p= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Enter the challenge".html_safe, '', class: 'btn btn-primary btn-sm enter-challenge'
-          .photo-thumb
-            = link_to '', '', style: "background-image:url(#{challenge.cover_image.try(:file_url) || challenge.try(:tech).try(:avatar).try(:file_url, :big)});", class: 'enter-challenge'
+- col = (defined?(col) and col) ? col : 4
 
-    .col-xs-12.thumb-horizontal
-      .project-thumb-horizontal.project-thumb
-        .thumb.media
-          = link_to image_tag(challenge.cover_image.try(:file_url) || challenge.try(:tech).try(:avatar).try(:file_url, :big), alt: challenge.name, class: 'media-object'), '', class: 'pull-right photo-thumb enter-challenge'
-          .inner-thumb.media-body
-            h3 Have a project of your own?
+.col-sm-6.mobile-scroll-row-item class="col-md-#{col}"
+  .project-thumb-container
+    / # - cache "challenge-#{challenge.id}-submit-idea", tag: ["challenge-#{challenge.id}-submit-idea", 'challenge-submit-idea'], expires_in: 24.hours do
+    div class="submit-idea"
+      .thumb.project-thumb
+        .thumb-image.has-link-overlay style="background-image:url(#{challenge.cover_image.try(:file_url) || challenge.try(:platform).try(:avatar).try(:file_url, :big)});"
+          = link_to '', '', class: 'link-overlay enter-challenge'
+          .thumb-image-inner-top
+          .thumb-image-inner
+            h4 Have a project #{'idea ' if challenge.project_ideas}of your own?
             p= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Enter the challenge".html_safe, '', class: 'btn btn-primary btn-sm enter-challenge'

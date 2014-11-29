@@ -29,8 +29,8 @@ class Groups::ProjectsController < ApplicationController
   def link
     @project = Project.find params[:project_id]
     case @group
-    when Tech
-      @project.tech_tags << TechTag.new(name: @group.tech_tags.first.name)
+    when Platform
+      @project.platform_tags << PlatformTag.new(name: @group.platform_tags.first.name)
     else
       @group.projects << @project unless ProjectCollection.exists? @project.id, 'Group', @group.id
     end
@@ -45,8 +45,8 @@ class Groups::ProjectsController < ApplicationController
   def unlink
     @project = Project.find params[:project_id]
     case @group
-    when Tech
-      # @project.tech_tags << TechTag.new(name: @group.tech_tags.first.name)
+    when Platform
+      # @project.platform_tags << PlatformTag.new(name: @group.platform_tags.first.name)
     else
       @group.projects.destroy @project
     end

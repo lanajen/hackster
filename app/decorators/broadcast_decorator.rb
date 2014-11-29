@@ -17,16 +17,16 @@ class BroadcastDecorator < ApplicationDecorator
       when Issue
         commentable_title = h.link_to commentable.title, h.issue_path(project, commentable)
         "commented on the issue #{commentable_title} on #{project_name}"
-      when BlogPost
+      when BuildLog
         commentable_title = h.link_to commentable.title, h.log_path(project, commentable)
         "commented on the build log #{commentable_title} on #{project_name}"
       end
-    when 'BlogPost', 'Issue'
+    when 'BuildLog', 'Issue'
       case model.context_model
       when Issue
         threadable_type = 'issue'
         threadable_title = h.link_to model.context_model.title, h.issue_path(project, model.context_model)
-      when BlogPost
+      when BuildLog
         threadable_type = 'build log'
         threadable_title = h.link_to model.context_model.title, h.log_path(project, model.context_model)
       end
@@ -42,7 +42,7 @@ class BroadcastDecorator < ApplicationDecorator
       follow_name = case model.context_model.followable_type
       when 'Group'
         group = model.context_model.followable
-        h.link_to group.name, tech_short_path(group)
+        h.link_to group.name, platform_short_path(group)
       when 'Project'
         project_name
       when 'User'
@@ -62,9 +62,9 @@ class BroadcastDecorator < ApplicationDecorator
       case group
       when Team
         "joined the project #{project_name}"
-      when Tech
-        tech_link = h.link_to group.name, h.group_path(group)
-        "joined the #{tech_link} community"
+      when Platform
+        platform_link = h.link_to group.name, h.group_path(group)
+        "joined the #{platform_link} community"
       end
     when 'User'
       case model.event.to_sym

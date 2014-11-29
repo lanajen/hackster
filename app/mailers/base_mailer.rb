@@ -79,12 +79,12 @@ class BaseMailer < ActionMailer::Base
         user = User.find context_id
         relations = {}
 
-        # get projects newly attached to followed tech
-        tech_projects = user.subscribed_to?('follow_tech_activity') ? Project.select('projects.*, follow_relations.followable_id').joins(:teches).where('projects.made_public_at > ?', 24.hours.ago).where(projects: { approved: true }).joins("INNER JOIN follow_relations ON follow_relations.followable_id = groups.id AND follow_relations.followable_type = 'Group'").where(follow_relations: { user_id: user.id }).joins(:users).where.not(users: { id: user.id }) : []
-        tech_projects.each do |project|
-          tech = Tech.find(project.followable_id)
-          relations[tech] = {} unless tech.in? relations.keys
-          relations[tech][project.id] = project
+        # get projects newly attached to followed platform
+        platform_projects = user.subscribed_to?('follow_platform_activity') ? Project.select('projects.*, follow_relations.followable_id').joins(:platforms).where('projects.made_public_at > ?', 24.hours.ago).where(projects: { approved: true }).joins("INNER JOIN follow_relations ON follow_relations.followable_id = groups.id AND follow_relations.followable_type = 'Group'").where(follow_relations: { user_id: user.id }) : []
+        platform_projects.each do |project|
+          platform = Platform.find(project.followable_id)
+          relations[platform] = {} unless platform.in? relations.keys
+          relations[platform][project.id] = project
         end
 
         # get projects newly made public by followed users

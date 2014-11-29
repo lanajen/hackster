@@ -42,7 +42,7 @@ module ScraperStrategies
     private
       def before_parse
         @project.guest_name = @parsed.search("[text()*='Name:']").first.try(:next).try(:text).try(:strip)
-        @project.tech_tags_string = 'Udoo'
+        @project.platform_tags_string = 'Udoo'
         @project.website = @parsed.search("[text()*='Project URL:']").first.try(:next_element).try(:text).try(:strip)
 
         super

@@ -1,0 +1,18 @@
+tr.fields
+  td
+    table style='width:100%'
+      tbody
+        tr
+          td
+            i.fa.fa-bars.handle
+            = f.input :id, as: :hidden
+            = f.input :position, as: :hidden, input_html: { class: 'position' }
+          td style='text-align:right' = f.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-danger btn-xs'
+        tr
+          td style='width:80%'= f.input :description, placeholder: 'Part name', label: false
+          td style='width:10%;min-width:20px;'
+            = f.input :quantity, label: false, placeholder: 'Quantity'
+        tr
+          td colspan=4 = f.input :comment, label: false, placeholder: 'Comment'
+        tr
+          td colspan=4 = f.input :vendor_link, placeholder: 'Where can this be purchased?', label: false

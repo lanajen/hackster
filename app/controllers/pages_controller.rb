@@ -11,7 +11,7 @@ class PagesController < ApplicationController
     # @active_projects = Project.last_updated.limit 4
     # @featured_projects = Project.featured.limit 4
     # @wip_projects = Project.wip.limit 4
-    # @tools = Tech.where(user_name: %w(spark electricimp arduino raspberry-pi beagleboard teensy)).order(:full_name)
+    # @tools = Platform.where(user_name: %w(spark electricimp arduino raspberry-pi beagleboard teensy)).order(:full_name)
   end
 
   def achievements
@@ -23,14 +23,17 @@ class PagesController < ApplicationController
   end
 
   def home
-    limit = 4
+    limit = 6
 
-    @most_popular_projects = Project.indexable.magic_sort.for_thumb_display.limit limit
-    @last_projects = Project.indexable.last_public.for_thumb_display.limit limit
+    @trending_projects = Project.indexable.magic_sort.for_thumb_display.limit limit
+    @latest_projects = Project.indexable.last_public.for_thumb_display.limit limit
     # @active_projects = Project.last_updated.limit 4
     # @featured_projects = Project.featured.limit 4
     # @wip_projects = Project.wip.limit 4
-    @platforms = Tech.where(user_name: %w(spark electricimp arduino raspberry-pi beagleboard tinyavr)).for_thumb_display.order(:full_name)
+    @platforms = Platform.where(user_name: %w(spark electricimp arduino raspberry-pi beagleboard tinyavr)).for_thumb_display.order(:full_name)
+
+    # render (user_signed_in? ? 'home_member' : 'home_visitor')
+    render 'home_visitor'
 
     # track_event 'Visited home page'
   end

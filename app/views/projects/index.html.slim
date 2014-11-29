@@ -6,9 +6,10 @@
 .content.projects
   .row
     .col-xs-12
-      h1
-        ' Explore #{@by} projects
-        small page #{safe_page_params || 1}
+      .header.clearfix
+        h1.pull-left
+          ' Explore #{@by} projects
+          small page #{safe_page_params || 1}
 
         .btn-group.pull-right style='margin-left:10px'
           .btn-group
@@ -30,8 +31,7 @@
               li*{ class: "#{'active' if params[:by] == nil}" } = link_to 'All', projects_path(sort: params[:sort])
               li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to 'Featured', projects_path(by: 'featured', sort: params[:sort])
               li*{ class: "#{'active' if params[:by] == 'wip'}" } = link_to 'Work in progress', projects_path(by: 'wip', sort: params[:sort])
-
-        = render 'shared/list_switch'
+      hr
         .clearfix
 
     .col-xs-12

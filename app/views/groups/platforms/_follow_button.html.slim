@@ -1,0 +1,4 @@
+a href=platform_short_url(@platform) class='hackster-follow-button' Follow #{@platform.name}
+= javascript_include_tag 'follow_button'
+
+iframe src=tool_followers_url(@platform.id) scrolling='no' frameborder=0 height=24 width=200

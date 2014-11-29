@@ -1,4 +1,4 @@
-- if @invitable.class == Tech
+- if @invitable.class == Platform
   = '<div id="main-content"><div class="row">'.html_safe
 
 h2.text-center Welcome to #{@group.name}.
@@ -11,5 +11,5 @@ h2.text-center Welcome to #{@group.name}.
     ' or
     = link_to 'Create an account', new_user_registration_path, class: 'btn btn-primary btn-sm'
 
-- if @invitable.class == Tech
+- if @invitable.class == Platform
   = '</div></div>'.html_safe

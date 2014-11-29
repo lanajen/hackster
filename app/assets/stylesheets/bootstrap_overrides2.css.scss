@@ -1,0 +1,96 @@
+h1, .h1 {
+  font-size: 2.57em;
+}
+h2, .h2 {
+  font-size: 2.14em;
+}
+h3, .h3 {
+  font-size: 1.7em;
+}
+h4, .h4 {
+  font-size: 1.28em;
+}
+h5, .h5 {
+  font-size: 1em;
+}
+h6, .h6 {
+  font-size: 0.85em;
+}
+
+.btn {
+  font-size: 1em;
+}
+.btn-sm, .btn-group-sm > .btn, .btn-group-sm > .btn-follow {
+  font-size: 0.85em;
+}
+.btn-xs {
+  font-size: 0.7em;
+}
+.input-sm, .input-group-sm > .form-control, .paypal-widget form .input-group-sm > select, .input-group-sm > .input-group-addon, .input-group-sm > .input-group-btn > .btn, .input-group-sm > .input-group-btn > .btn-follow, .form-group-sm .form-control {
+  font-size: 0.85em;
+}
+.table > tbody > tr:first-child > td {
+  border: 0;
+}
+.btn-default {
+  background: transparent;
+  color: #666;
+  &:hover {
+    background: transparent;
+  }
+}
+.btn-primary {
+  background: #208edb;
+  border: 0;
+}
+.btn-success {
+  background: #20daa8;
+  border: 1px solid #20daa8;
+  &:hover {
+    background: #19D2A0;
+    border-color: #19D2A0;
+  }
+}
+.btn-append {
+  @include border-top-left-radius(0);
+  @include border-top-right-radius(0);
+  border-top: 2px solid #333;
+  &.btn-primary {
+    border-color: #204d74;
+  }
+}
+.popover {
+  border: 0;
+  @include border-radius(0);
+  padding: 0;
+}
+.popover-title {
+  border-bottom-width: 3px;
+  @include border-radius(0);
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 0.8em;
+  color: #666;
+}
+.form-horizontal {
+  table {
+    .form-group {
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+}
+.checkbox input[type="checkbox"],
+.checkbox-inline input[type="checkbox"] {
+  position: static;
+  margin-left: 0;
+  margin-right: 5px;
+}
+@media (min-width: 768px) {
+  .form-horizontal .control-label {
+    display: block;
+  }
+}
+// .btn + .btn {
+//   margin-left: 10px;
+// }

@@ -30,8 +30,8 @@ class ChallengeEntriesController < ApplicationController
     @project = Project.find params[:project_id]
     authorize! :enter_in_challenge, @project
 
-    if tag = @challenge.tech.try(:tech_tags).try(:first).try(:name) and !tag.in? @project.tech_tags_cached
-      @project.tech_tags << TechTag.new(name: tag)
+    if tag = @challenge.platform.try(:platform_tags).try(:first).try(:name) and !tag.in? @project.platform_tags_cached
+      @project.platform_tags << PlatformTag.new(name: tag)
     end
     @project.private = false
     @project.workflow_state = 'idea' if @challenge.project_ideas

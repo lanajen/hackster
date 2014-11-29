@@ -1,36 +1,16 @@
-- if @mode == 'edit_mode'
-  = content_for :head do
-    = javascript_include_tag '//cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js', charset: "utf-8"
-
 - @project = @project.decorate
 - @mode ||= 'normal'
-
-= content_for :before_main do
-  #about style='position: relative;z-index: 999;background: #F2F2F2;'
-    - if !user_signed_in?
-      = render partial: 'shared/signup_top', locals: { message: "Think this is a cool project? Join to receive news about it and hundreds of others: ", source: 'project' }
-
 = content_for :no_container do
   #project-page.page-div
-    - if @show_sidebar
-      - if @mode == 'normal'
-        - @project.known_teches.each do |tech|
-          = content_for :js do
-            = render partial: 'groups/teches/tech_card', locals: { tech: tech }
+    .project  id="content"
+      .project-details  class="#{'with-top-container' if @show_part_of}"
+        .display
+          .container
+            .row.teaser.teaser-short
+              .col-xs-12
+                p= link_to "&larr; Return to project".html_safe, @project, class: 'hidden-link'
+                h2.mg-20= link_to @project.name, @project, class: 'hidden-link'
 
-      = render "projects/project_sidebar_nav_#{@mode}"
-      #content-with-sidebar.project
-        #model-editor   data-model-id=@project.id data-model-type='Project' data-model-symbol='project' data-model-placeholder="Start describing your #{@project.is_idea? ? 'project idea' : 'project'} here. Enter text or add media by clicking the left button." data-model-url='/api/v1/projects'
-          .project-details  class="#{'with-top-container' if @show_part_of}"
-            .display= render "projects/teaser_#{@mode}"
-          - if @mode == 'normal'
-            = yield
-          - else
-            .container= yield
-    - else
-      .project  id="content"
-        .project-details  class="#{'with-top-container' if @show_part_of}"
-          .display= render "projects/teaser_#{@mode}"
-        .container= yield
+      .container= yield
 
 = render template: 'layouts/application'

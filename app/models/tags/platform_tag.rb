@@ -1,0 +1,2 @@
+class PlatformTag < Tag
+end

@@ -1,0 +1,24 @@
+.col-sm-4.mobile-scroll-row-item
+  .thumb.platform-thumb
+    .thumb-image.has-link-overlay style="background-image:url(#{platform.cover_image.try(:file_url)})"
+      = link_to '', platform, class: 'link-overlay'
+      .thumb-image-inner
+        h4
+          = link_to platform.name, platform
+          / span.platform-type Platform
+        / ul.list-inline
+          / li.list-label Good for
+          li
+            a.tag href='' Beginners
+          li
+            a.tag href='' Wearables
+          li
+            a.tag href='' Wifi
+        ul.list-unstyled.project-stats
+          li
+            span.stat-figure> = number_with_delimiter platform.projects_count
+            = pluralize_without_count platform.projects_count, 'project'
+          li
+          li
+            span.stat-figure> = number_with_delimiter platform.followers_count
+            = pluralize_without_count platform.followers_count, 'follower'

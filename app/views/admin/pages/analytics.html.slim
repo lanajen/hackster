@@ -49,13 +49,13 @@
   .col-xs-12.col-sm-4
     .panel.panel-default.panel-dashboard
       .panel-heading
-        h3.panel-title= link_to 'Followers (users/techs)', admin_followers_path
+        h3.panel-title= link_to 'Followers (users/platforms)', admin_followers_path
       .panel-body
         ==> number_with_delimiter @follow_user_count
         small.text-muted> +#{@new_user_follows_count}
         ' /
-        ==> number_with_delimiter @follow_tech_count
-        small.text-muted +#{@new_tech_follows_count}
+        ==> number_with_delimiter @follow_platform_count
+        small.text-muted +#{@new_platform_follows_count}
 
 .row
   .col-xs-12.col-sm-4

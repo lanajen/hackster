@@ -1,0 +1,17 @@
+- col = (defined?(col) and col) ? col : 4
+
+.col-sm-6.mobile-scroll-row-item class="col-md-#{col}"
+  .project-thumb-container
+    - cache "platform-#{platform.id}-submit-idea", tag: ["platform-#{platform.id}-submit-idea", 'platform-submit-idea'], expires_in: 24.hours do
+      div class="submit-idea"
+        .thumb.project-thumb
+          .thumb-image.has-link-overlay style="background-image:url(#{platform.cover_image.try(:file_url) || platform.avatar.try(:file_url, :big)});"
+            = link_to '', '', class: 'link-overlay'
+            .thumb-image-inner-top
+            .thumb-image-inner
+              h4= platform.project_ideas_phrasing
+              p= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Post your project idea".html_safe, '', class: 'btn btn-primary btn-sm'
+
+- link = user_signed_in? ? new_project_path(project: { platform_tags_string: @platform.name, mark_as_idea: true }) : new_user_registration_path(reason: 'project', m: 'group', id: @platform.id, redirect_to: new_project_path(project: { platform_tags_string: @platform.name, mark_as_idea: true }))
+javascript:
+  $('#submit-idea-thumb a').attr('href', '#{link.html_safe}');

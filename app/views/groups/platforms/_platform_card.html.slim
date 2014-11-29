@@ -1,0 +1,33 @@
+- cache "platform-#{platform.id}-card", tag: ["platform-#{platform.id}-card"], expires_in: 24.hours do
+  .platform-card.media id="platform-card-#{platform.id}" style="background-image:url(#{platform.cover_image.try(:file_url)})"
+    = link_to(image_tag(platform.avatar.file_url(:big), class: 'img-thumbnail media-object'), platform_short_path(platform), class: 'pull-left') if platform.avatar
+    .media-body
+      .platform-card-inner
+        .platform-card-name.media-heading
+          strong = link_to platform.name, platform_short_path(platform)
+        .platform-card-desc
+          p= platform.mini_resume
+          p
+            a href=platform_short_path(platform) class='hidden-link'
+              strong> = number_with_delimiter platform.projects_count
+              ==> pluralize_without_count platform.projects_count, 'project'
+              strong>= number_with_delimiter platform.followers_count
+              = pluralize_without_count platform.followers_count, 'follower'
+        .platform-card-links
+          .platform-btn-placeholder
+          - if link = (platform.buy_link.presence || platform.crowdfunding_link.presence)
+            = link_to "Get #{indefinite_articlerize platform.name}", link, class: 'btn btn-warning btn-sm btn-ellipsis', target: '_blank'
+
+= content_for :link, flush: true do
+  - if user_signed_in?
+    - link = user_signed_in? ? new_project_path(project: { platform_tags_string: platform.name }) : new_user_registration_path(reason: 'project', m: 'group', id: platform.id, redirect_to: new_project_path(project: { platform_tags_string: platform.name }))
+    - if current_user.following? platform
+      ==> link_to "Start #{indefinite_articlerize platform.name} project", link, class: 'btn btn-info btn-sm btn-ellipsis new-platform-project-link'
+    - else
+      ==> link_to "Follow #{platform.name}", followers_path(followable_type: 'Group', followable_id: platform.id), data: { method: :post, remote: true, container: 'body', placement: 'bottom' }, class: "follow-group-#{platform.id} follow-button btn btn-info btn-sm btn-ellipsis disable-link", rel: 'tooltip', title: "Follow #{platform.name} to be notified when new projects are posted."
+      ==> link_to "<div class=\\'inner-btn-container\\'><div class=\\'inner-btn\\'><i class=\\'fa fa-check\\'></i><div class=\\'btn-text\\'>Start #{indefinite_articlerize platform.name} project</div></div></div><div class=\\'btn-hidden-text\\'>Start #{indefinite_articlerize platform.name} project</div>".html_safe, link, class: "after-follow-group-#{platform.id} btn btn-info btn-sm btn-ellipsis new-platform-project-link", style: 'display:none'
+  - else
+    ==> link_to "Follow #{platform.name}", new_user_registration_path(redirect_to: create_followers_path(followable_type: 'Group', followable_id: platform.id), reason: 'follow', m: 'Group'.to_s.underscore, id: platform.id), class: 'follow-button btn btn-info btn-sm btn-ellipsis show-simplified-signup', data: { container: 'body', redirect_to: create_followers_path(followable_type: 'Group', followable_id: platform.id), source: 'platform_card' }, rel: 'tooltip', title: "Follow #{platform.name} to be notified when new projects are posted."
+
+javascript:
+  $('#platform-card-#{platform.id} .platform-btn-placeholder').replaceWith('#{content_for(:link)}');

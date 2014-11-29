@@ -3,7 +3,7 @@
     - lists = @lists.map{|list| "<li class='list-#{list.id}'><label><input type='checkbox' name='lists' data-list-user-name='#{list.user_name}' value='#{list.id}' #{'checked' if list.project_collections.where(project_id: @project.id).any? }>#{list.name}</label><i class='fa fa-check status-ok' style='display:none'></i><i class='fa fa-spinner fa-spin status-in-progress' style='display:none'></i></li>" }.join('').html_safe
     javascript:
       $(document).ready(function(){
-        var btn = $('<a href="" class="btn btn-block btn-info btn-ellipsis toggle-lists-btn"><i class="fa fa-bookmark-o"></i> Add to my lists</a>');
+        var btn = $('<a href="" class="btn btn-block btn-default btn-ellipsis toggle-lists-btn"><i class="fa fa-bookmark-o"></i> Add to my lists</a>');
         var list = $("<ul class='lists'>#{lists}</ul>");
         btn.insertBefore('.add-to-list');
         list.appendTo('.add-to-list');

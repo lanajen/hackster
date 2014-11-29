@@ -13,6 +13,14 @@ class Issue < ThreadPost
     end
   end
 
+  def self.closed
+    where(workflow_state: :closed)
+  end
+
+  def self.open
+    where(workflow_state: :open)
+  end
+
   def assignee_id
     assignee_issue.try(:assignee_id)
   end

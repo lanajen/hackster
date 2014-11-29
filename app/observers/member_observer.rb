@@ -2,7 +2,7 @@ class MemberObserver < ActiveRecord::Observer
   def after_commit_on_create record
     # only send invitation if group is a community and the membership has an
     # invitation pending and the user is not being invited
-    if (record.group.is? :community or record.group.is? :promotion or record.group.is? :event or record.group.is? :tech) and record.invitation_pending? and !record.user.try(:invited_to_sign_up?)
+    if (record.group.is? :community or record.group.is? :promotion or record.group.is? :event or record.group.is? :platform) and record.invitation_pending? and !record.user.try(:invited_to_sign_up?)
       BaseMailer.enqueue_email 'new_community_invitation',
         { context_type: :membership, context_id: record.id }
     elsif record.group.is? :team
@@ -26,8 +26,8 @@ class MemberObserver < ActiveRecord::Observer
         expire_projects record
         record.user.broadcast :new, record.id, 'Member', project.id if project and project.public?
       end
-    elsif record.group.is? :tech
-      Cashier.expire "user-#{record.user_id}-sidebar", "user-#{record.user_id}-thumb", "tech-#{record.group_id}-sidebar"
+    elsif record.group.is? :platform
+      Cashier.expire "user-#{record.user_id}-sidebar", "user-#{record.user_id}-thumb", "platform-#{record.group_id}-sidebar"
     end
 
     unless record.permission

@@ -28,9 +28,9 @@ class PageWithSlug
   end
 end
 
-class TechPage < PageWithSlug
+class PlatformPage < PageWithSlug
   def self.matches?(request)
-    sluggable_is_model? 'Tech', request
+    sluggable_is_model? 'Platform', request
   end
 end
 

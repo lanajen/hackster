@@ -6,7 +6,7 @@ class ProjectImportsController < ApplicationController
 
   def create
     if urls_valid?(params[:urls])
-      ScraperQueue.perform_async 'scrape_projects', params[:urls], params[:user_id].presence || current_user.id, params[:tech_tags_string]
+      ScraperQueue.perform_async 'scrape_projects', params[:urls], params[:user_id].presence || current_user.id, params[:platform_tags_string]
       send_admin_message(true) unless current_user.is? :admin
       redirect_to current_user, notice: "Our robot spiders are analyzing your page and getting ready to import it. They'll send you an email when they're done."
     else
@@ -24,7 +24,7 @@ class ProjectImportsController < ApplicationController
       @message.subject = "New import request"
       @message.subject = "[Notification] " + @message.subject if notif
       @message.body = "<p>Hi</p><p>Please import this project for me: <a href='#{params[:urls]}'>#{params[:urls]}</a>.</p>"
-      @message.body += "<p>Tech tag: #{params[:tech_tags_string]}</p>" if params[:tech_tags_string].present?
+      @message.body += "<p>Platform tag: #{params[:platform_tags_string]}</p>" if params[:platform_tags_string].present?
       @message.body += "<p>Product tag: #{params[:product_tags_string]}</p>" if params[:product_tags_string].present?
       @message.body += "<p>Thanks!<br><a href='#{url_for(current_user)}'>#{current_user.name}</a></p><p><a href='http://#{APP_CONFIG['full_host']}/projects/imports/new?user_id=#{current_user.id}&urls=#{params[:urls]}'>Start importing</a></p>"
       BaseMailer.enqueue_generic_email(@message)

@@ -1,0 +1,103 @@
+= content_for :head do
+  meta(name='robots' content='noindex')
+  = auto_discovery_link_tag :rss, projects_path(format: :rss), title: 'Trending projects - Hackster.io'
+  = auto_discovery_link_tag :atom, projects_path(format: :atom), title: 'Trending projects - Hackster.io'
+
+= content_for :no_container do
+  - cache ['home-visitor'], tag: ['home', 'home-visitor'], expires_in: 1.hour do
+    section#hello-hackster
+      .container.text-center
+        h1 The community for hardware hackers.
+        p
+          ' Learn, share, and connect to build better hardware.
+          = link_to 'Learn more.', about_path(ref: 'homeabout'), class: 'alert-link'
+
+    - if !user_signed_in?
+      section#projects.showcase-section
+        .container
+          .view-all-header.clearfix
+            h4.pull-left Trending projects
+            = link_to 'View more popular projects', projects_path, class: 'btn btn-default btn-sm pull-right hidden-xs'
+            = link_to 'View more', projects_path, class: 'btn btn-default btn-sm pull-right visible-xs-block'
+
+          .row.mobile-scroll-row
+            - @trending_projects.each do |project|
+              = render partial: 'projects/project_thumb', locals: { project: project }
+    - else
+      section#categories.showcase-section.last
+        .container
+          .view-all-header.clearfix
+            h4.pull-left Latest projects
+            = link_to 'View more recent projects', projects_path(sort: 'recent'), class: 'btn btn-default btn-sm pull-right hidden-xs'
+            = link_to 'View more', projects_path(sort: 'recent'), class: 'btn btn-default btn-sm pull-right visible-xs-block'
+
+          .row.mobile-scroll-row
+            - @latest_projects.each do |project|
+              = render partial: 'projects/project_thumb', locals: { project: project }
+
+    section.subscribe-block.clearfix.text-center-mobile
+      .container
+        .col-md-7 style='margin-top:3px'
+          = image_tag 'home/envelope.png'
+          ' Want fresh news and projects in your inbox every Friday?
+        .col-md-4.col-md-offset-1
+          .pull-right-desktop= render 'shared/mailchimp_form'
+
+    section#platforms.middle-section.showcase-section
+      .container
+        .view-all-header.clearfix
+          h4.pull-left Featured platforms
+          = link_to 'View more platforms', platforms_path, class: 'btn btn-default btn-sm pull-right hidden-xs'
+          = link_to 'View more', platforms_path, class: 'btn btn-default btn-sm pull-right visible-xs-block'
+
+        .row.mobile-scroll-row
+          - @platforms.each do |platform|
+            = render partial: 'groups/platforms/platform_thumb', locals: { platform: platform }
+
+    - if user_signed_in?
+      section#projects.showcase-section
+        .container
+          .view-all-header.clearfix
+            h4.pull-left Trending projects
+            = link_to 'View more popular projects', projects_path, class: 'btn btn-default btn-sm pull-right hidden-xs'
+            = link_to 'View more', projects_path, class: 'btn btn-default btn-sm pull-right visible-xs-block'
+
+          .row.mobile-scroll-row
+            - @trending_projects.each do |project|
+              = render partial: 'projects/project_thumb', locals: { project: project }
+    - else
+      section#categories.showcase-section.last
+        .container
+          .view-all-header.clearfix
+            h4.pull-left Latest projects
+            = link_to 'View more recent projects', projects_path(sort: 'recent'), class: 'btn btn-default btn-sm pull-right hidden-xs'
+            = link_to 'View more', projects_path(sort: 'recent'), class: 'btn btn-default btn-sm pull-right visible-xs-block'
+
+          .row.mobile-scroll-row
+            - @latest_projects.each do |project|
+              = render partial: 'projects/project_thumb', locals: { project: project }
+
+    / section#categories.showcase-section.last
+      .container
+        .view-all-header.clearfix
+          h4.pull-left Top categories
+          / # = link_to 'View more Categories', '#', class: 'btn btn-default btn-sm pull-right'
+
+        .row
+          - [['Home automation', 'Flying', 'Bluetooth'], ['Wearables', 'Pets', 'Wifi']].each do |categories|
+            .col-sm-6.category-row
+              - categories.each do |category|
+                .category-col
+                  .thumb.category-thumb
+                    .thumb-image.has-link-overlay style="background-image:url(#{ asset_url 'home/img-1.png' })"
+                      = link_to '', category, class: 'link-overlay'
+                      .thumb-image-inner
+                        h4
+                          = link_to category, '#'
+
+    - if !user_signed_in?
+      section#signup-now-pretty-please
+        .container.text-center
+          h1 Become a better hardware hacker!
+          p Get inspired, learn new skills and contribute back to the community by sharing your own projects.
+          p= link_to 'Join the community', new_user_registration_path, class: 'btn btn-primary btn-sm'

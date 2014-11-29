@@ -141,7 +141,7 @@ a{
   color: #3d8bc1;
   @include border-radius(30px);
   padding: 12px 20px 10px;
-  font-size: 12px;
+  font-size: 0.85em;
   line-height: 1em;
   .fa{
     margin-right: 4px;
@@ -206,6 +206,6 @@ a{
 //   text-align: center;
 //   font-weight: bold;
 //   padding: 12px 12px 11px;
-//   font-size: 12px;
+//   font-size: 0.85em;
 //   border: 0;
 // }

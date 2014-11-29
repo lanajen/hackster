@@ -11,7 +11,7 @@ class SearchRepository
     query = params[:q] ? CGI::unescape(params[:q].to_s) : nil
     models = params[:type] ? [params[:type]] : nil
 #    query += ' ' + params[:product_tag].keys.join(' ') if params[:product_tag]
-#    query += ' ' + params[:tech_tag].keys.join(' ') if params[:tech_tag]
+#    query += ' ' + params[:platform_tag].keys.join(' ') if params[:platform_tag]
     results = self.search_models query, models, params[:offset], params[:page], params[:per_page], params[:include_external]
 #    Search.create(user_id: user_id, results_count: results.count, query: query) unless params[:page]
     results

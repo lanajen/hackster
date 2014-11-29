@@ -25,6 +25,12 @@
       $('#project-header-in').parallaxScroll({ rate: .3, opacity: true, opacitySpread: 700});
     }
 
+    $('.title-toggle').on('click', function(e){
+      e.preventDefault();
+      $(this).parent().next().slideToggle(150);
+      $(this).parent().toggleClass('section-expanded').toggleClass('section-toggled');
+    })
+
     //make scrollspy/sidebar navigation work
     $('body').scrollspy({ target: '#scroll-nav'});
 
@@ -81,7 +87,7 @@
         setTimeoutConstIn = {},
         setTimeoutConstOut = {};
 
-    $('.tech-card-popover').hover(function(e){
+    $('.platform-card-popover').hover(function(e){
       clearTimeout(setTimeoutConstOut[$(this).data('target')]);
       var that = this;
       setTimeoutConstIn[$(this).data('target')] = setTimeout(function(){
@@ -97,7 +103,7 @@
         }
         target.css('top', y + 'px');
         target.css('left', x + 'px');
-        $('.tech-card').hide();
+        $('.platform-card').hide();
         target.fadeIn(100);
       }, delayIn);
     }, function(e){
@@ -107,7 +113,7 @@
         target.fadeOut(100);
       }, delayOut);
     });
-    $('.tech-card').hover(function(e){
+    $('.platform-card').hover(function(e){
       clearTimeout(setTimeoutConstOut['#' + $(this).attr('id')]);
     }, function(e){
       var that = this;

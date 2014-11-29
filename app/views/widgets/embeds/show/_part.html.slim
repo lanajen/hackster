@@ -1,3 +1,17 @@
+/ tr.fields  id="part-#{part.id}"
+  td style='width:80%'
+    table  style='width:100%'
+      tbody
+        tr
+          td= part.description
+        tr
+          td colspan=4 style='color: #888;font-size:75%;' = part.comment
+  td style='width:30px;text-align:center;vertical-align:middle' x
+  td style='width:10%;min-width:20px;text-align:center;vertical-align:middle' = part.quantity
+  td style='vertical-align:middle'
+    - if part.vendor_link.present?
+      = link_to content_tag(:i, '', class: 'fa fa-shopping-cart'), part.vendor_link, target: '_blank', style: 'color:#333'
+
 tr.fields  id="part-#{part.id}"
   td
     table  style='width:100%'
@@ -23,7 +37,7 @@ tr.fields  id="part-#{part.id}"
               i.fa.fa-trash-o
         tr
           td*{ 'data-edit-only' => 'true' }
-          td.widget-attribute.widget-attribute-editable*{ colspan: 4, style: 'color: #888;font-size: 12px;', 'data-attribute' => "[parts_attributes][#{i}][vendor_link]", 'data-default-text' => 'Link to online store', data: { 'disable-toolbar' => 'true' }, 'data-value' => part.vendor_link, 'data-contenteditable' => 'true', 'data-edit-only' => 'true' } = part.vendor_link
+          td.widget-attribute.widget-attribute-editable*{ colspan: 4, style: 'color: #888;font-size: 0.85em;', 'data-attribute' => "[parts_attributes][#{i}][vendor_link]", 'data-default-text' => 'Link to online store', data: { 'disable-toolbar' => 'true' }, 'data-value' => part.vendor_link, 'data-contenteditable' => 'true', 'data-edit-only' => 'true' } = part.vendor_link
         tr
           td*{ 'data-edit-only' => 'true' }
-          td.widget-attribute.widget-attribute-editable*{ colspan: 4, style: 'color: #888;font-size: 12px;', 'data-attribute' => "[parts_attributes][#{i}][comment]", 'data-default-text' => 'Comment', data: { 'disable-toolbar' => 'true' }, 'data-value' => part.comment, 'data-contenteditable' => 'true' } = part.comment
+          td.widget-attribute.widget-attribute-editable*{ colspan: 4, style: 'color: #888;font-size: 0.85em;', 'data-attribute' => "[parts_attributes][#{i}][comment]", 'data-default-text' => 'Comment', data: { 'disable-toolbar' => 'true' }, 'data-value' => part.comment, 'data-contenteditable' => 'true' } = part.comment

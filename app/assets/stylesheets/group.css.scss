@@ -1,23 +1,26 @@
-.tech-thumb {
-  height: 300px;
+.platform-thumb-old {
+  height: 400px;
   margin-bottom: 20px;
   overflow: hidden;
   .badge {
     font-size: 9px;
   }
   p {
-    font-size: 12px;
+    font-size: 0.85em;
     margin-bottom: 0;
   }
+}
+.stats {
+  font-size: 0.85em;
 }
 
 
 /******************************
 
-    Tech group-page styling
+    Platform group-page styling
 
 ******************************/
-#tech-page #sidebar-container{
+#platform-page #sidebar-container{
   p, li {
     font-weight: 200;
     color:#636363;
@@ -36,13 +39,13 @@
     Sidebar styling
 
 ******************************/
-#tech-avatar-image-div{
+#platform-avatar-image-div{
   position: relative;
   width: 100%;
   height: 0;
   padding-bottom: 100%;
 }
-#tech-avatar-image{
+#platform-avatar-image{
   position: absolute;
   left: 20px;
   bottom: 20px;
@@ -54,7 +57,7 @@
   @include border-radius(8px);
   border: 1px solid #d8d8d8;
 }
-#tech-body{
+#platform-body{
   padding: 0 20px 20px;
   border-bottom: 2px solid #ccc;
   @include box-shadow(0 1px 1px rgba(255,255,255,.4));
@@ -63,21 +66,22 @@
     font-size: 24px;
   }
 }
-#tech-name{
+#platform-name{
   color: #434343;
   text-decoration: none;
+  font-weight: 600;
 }
-#tech-follow-div{
+#platform-follow-div{
   border-top: 1px dotted #d1d1d1;
   padding-top: 20px;
   margin-top: 18px;
 }
-#tech-page {
+#platform-page {
   .display {
     padding: 30px 20px 0 20px;
     h4 {
       margin-top: 0;
-      font-size: 12px;
+      font-size: 0.85em;
       text-transform: uppercase;
       color: #999;
       font-weight: bold;
@@ -101,12 +105,12 @@
       float: left;
       text-transform: uppercase;
       margin-right: 5px;
-      font-size: 12px;
+      font-size: 0.85em;
       color: #666;
     }
   }
 }
-#tech-links{
+#platform-links{
   padding: 0;
   margin: 0;
   @include border-radius(4px);
@@ -126,10 +130,10 @@
     display: block;
     color: #888;
     padding: 10px 10px;
-    font-size: 12px;
+    font-size: 0.85em;
     @include transition(all .2s ease);
     font-weight: 200;
-    &.tech-buy-link{
+    &.platform-buy-link{
       font-weight: bold;
     }
     &:hover{
@@ -180,7 +184,7 @@
 .project-list-actions{
   .btn-sm, .btn-group-sm > .btn, .btn-group-sm > .btn-follow{
     padding: 12px 12px 10px;
-    font-size: 12px;
+    font-size: 0.85em;
     line-height: 1;
     @include border-radius(3px);
     color: #aaa;
@@ -205,9 +209,9 @@
 }
 
 //
-// tech card
+// platform card
 
-.tech-card {
+.platform-card {
   color: #fff;
   text-shadow: 0 0 1px #000;
   margin: 0;
@@ -237,7 +241,7 @@
     left: 0;
     z-index: -1;
   }
-  .tech-card-inner {
+  .platform-card-inner {
     position: relative;
     height: 140px;
   }
@@ -245,7 +249,7 @@
     width: 140px;
     height: 140px;
   }
-  .tech-card-desc {
+  .platform-card-desc {
     @include font-size(12);
   }
   a {
@@ -268,7 +272,7 @@
       visibility: hidden
     }
   }
-  .tech-card-links {
+  .platform-card-links {
     position: absolute;
     bottom: 0;
     left: 0

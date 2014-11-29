@@ -5,12 +5,12 @@
       .inner
         .pull-left= render partial: 'shared/medium_status', locals: { last_edit: @announcement.updated_at }
         .pull-right
-          ==> content_tag :a, "#{content_tag(:i, '', class: 'fa fa-check')} Finish editing".html_safe, class: 'btn btn-success medium-edit-stop btn-sm show-when-draft', href: tech_announcements_path(@tech.user_name)
-          ==> content_tag :a, "#{content_tag(:i, '', class: 'fa fa-check')} Finish editing".html_safe, class: 'btn btn-success medium-edit-stop btn-sm show-when-published', href: tech_announcement_path(@announcement)
+          ==> content_tag :a, "#{content_tag(:i, '', class: 'fa fa-check')} Finish editing".html_safe, class: 'btn btn-success medium-edit-stop btn-sm show-when-draft', href: platform_announcements_path(@platform.user_name)
+          ==> content_tag :a, "#{content_tag(:i, '', class: 'fa fa-check')} Finish editing".html_safe, class: 'btn btn-success medium-edit-stop btn-sm show-when-published', href: platform_announcement_path(@announcement)
           ==> link_to "Publish", '', class: 'btn btn-warning btn-sm show-when-draft', id: 'publish'
           ==> link_to "Unpublish", '', class: 'btn btn-warning btn-sm show-when-published', id: 'unpublish'
           ==> link_to 'Delete', announcement_path(@announcement), class: 'btn btn-danger btn-sm', data: { method: :delete, confirm: "Are you sure? There's no way back!" }
-          ==> link_to 'Cancel', tech_announcements_path(@tech.user_name), class: 'btn btn-link btn-sm'
+          ==> link_to 'Cancel', platform_announcements_path(@platform.user_name), class: 'btn btn-link btn-sm'
         .clearfix
 
   #model-editor*{ data: { 'model-id' => @announcement.id, 'model-type' => 'ThreadPost', 'model-symbol' => 'announcement', 'model-placeholder' => 'What have you been up to? Enter text or add media by clicking the left button.', 'model-url' => '/api/v1/announcements' } }

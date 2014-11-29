@@ -1,7 +1,7 @@
 class ProjectsController < ApplicationController
   before_filter :load_project, only: [:show, :embed, :update, :destroy, :redirect_to_slug_route]
   load_and_authorize_resource only: [:index, :new, :edit, :settings, :submit]
-  layout 'project', only: [:edit, :update, :show]
+  # layout 'project', only: [:edit, :update, :show]
   before_filter :set_project_mode, only: [:settings]
   before_filter :load_lists, only: [:show, :show_external]
   respond_to :html
@@ -221,6 +221,7 @@ class ProjectsController < ApplicationController
     @mode = 'edit_mode'
     @show_sidebar = true
     initialize_project
+    @project = @project.decorate
   end
 
   def settings

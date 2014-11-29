@@ -29,12 +29,12 @@ class FollowersController < ApplicationController
   end
 
   def standalone_button
-    @followable = Tech.find params[:id]
+    @followable = Platform.find params[:id]
     render layout: 'follow_iframe'
   end
 
   def create_from_button
-    @followable = Tech.find params[:id]
+    @followable = Platform.find params[:id]
 
     FollowRelation.add current_user, @followable
     respond_to do |format|

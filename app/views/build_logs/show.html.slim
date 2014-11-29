@@ -1,30 +1,29 @@
 .row
-  .col-xs-12
-    .pull-left
-      = link_to "&larr; See all build logs".html_safe, project_logs_path(@project.user_name_for_url, @project.slug), class: 'btn btn-link btn-sm'
-    - if can? :create, BlogPost, @project
-      .pull-right
-        = link_to 'Post a new build log', new_project_log_path(@project.user_name_for_url, @project.slug), class: 'btn btn-primary btn-sm'
-    .clearfix
-    hr
+    .col-md-4.col-md-push-8
+      = link_to "&larr; See all build logs".html_safe, project_logs_path(@project.user_name_for_url, @project.slug), class: 'btn btn-link btn-sm btn-block mg-20 hidden-link'
 
-.row.issue.build-log
-  .col-xs-12.issue-content
-    .well
-      = render partial: 'build_logs/header', locals: { project: @project, log: @log }
-      #medium-editor.content
-        = @log.body.html_safe
+      - if can? :edit, @log
+        section.section-thumbs
+          h4 Admin actions
+          ==> link_to 'Edit', edit_project_log_path(@project.user_name_for_url, @project.slug, @log.id), class: 'btn btn-sm btn-warning'
+          = link_to 'Delete', build_log_path(@log), class: 'btn btn-sm btn-danger', data: { method: :delete, confirm: "Are you sure? There's no way back!" }
 
-        #comments
-          - @log.comments.each do |comment|
-            = render partial: 'comments/issues/comment', locals: { comment: comment }
+      section.section-thumbs
+        h4 Posted by
+        .row.desktop-tighter-margins= render partial: 'users/user_thumb_mini', locals: { user: @log.user }
 
-          - if user_signed_in?
-            = render partial: 'comments/issues/form', locals: { comment: Comment.new, commentable: @log }
-          - else
-            p
-              | Please
-              = link_to 'log in', new_user_session_path
-              | or
-              = link_to 'sign up', new_user_registration_path
-              | to leave a comment.
+      section.section-thumbs
+        h4 Share
+        = render 'shared/share_buttons'
+
+    .col-md-8.col-md-pull-4
+      = render partial: @log, locals: { log: @log }
+
+      section#comments.section-container.section-collapsible
+        h2.section-title
+          a.title.title-toggle href=''
+            ' Comments
+            i.fa.fa-chevron-down
+            i.fa.fa-chevron-up
+        .section-content
+          = render partial: 'widgets/comments', locals: { comments: @log.comments, commentable: @log }

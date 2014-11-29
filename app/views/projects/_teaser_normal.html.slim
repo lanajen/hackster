@@ -83,23 +83,23 @@
               = link_to image_tag(u.decorate.avatar(:mini), class: ' img-circle' ), u, class: ''
               span.user-name
                 ==> link_to u.name, u, class: 'hidden-link'
-                - if members = TechMember.where(user_id: u.id).includes(:group) and members.any?
+                - if members = PlatformMember.where(user_id: u.id).includes(:group) and members.any?
                   - members.each do |member|
-                    - tech = member.group
+                    - platform = member.group
                     span.badge
                       ' Team
-                      ==> link_to tech.name, tech, class: 'hidden-link'
+                      ==> link_to platform.name, platform, class: 'hidden-link'
                       i.fa.fa-check-circle.istooltip title="Verified" style="color:#66C866" data-container='body'
                 - if @project.team_members_count > 1
                   ' and
                   = link_to "#{pluralize (@project.team_members_count - 1), 'other'}", 'javascript:smoothScrollTo("#team-widget", -20);', class: 'hidden-link'
 
-        - if @project.tech_tags_cached.any?
+        - if @project.platform_tags_cached.any?
           .tags.meta.pull-left
             ' with
-            - tags = @project.tech_tags_cached.map do |tag|
-              - if tech = Tech.includes(:tech_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first
-                - link_to "#{content_tag(:i, '', class: 'fa fa-star')} #{tech.name}".html_safe, tech_short_path(tech), class: 'tag-link tech-card-popover', data: { target: "#tech-card-#{tech.id}" }
+            - tags = @project.platform_tags_cached.map do |tag|
+              - if platform = Platform.includes(:platform_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first
+                - link_to "#{content_tag(:i, '', class: 'fa fa-star')} #{platform.name}".html_safe, platform_short_path(platform), class: 'tag-link platform-card-popover', data: { target: "#platform-card-#{platform.id}" }
               - else
                 - link_to tag, tag_path(tag), class: 'tag-link'
             = tags.to_sentence.html_safe

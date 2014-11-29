@@ -55,13 +55,11 @@ section#projects-list
   .wrapper
     .project-list-actions.clearfix.mg-30
 
-      .pull-left= render 'shared/list_switch'
-
     - if @projects.any?
-      .thumb-list  class=@switch_style
+      .thumb-list
         .row.project-list
           - @projects.each do |project|
-            = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '3' }
+            = render partial: 'projects/project_thumb', locals: { project: project.decorate }
       .row.text-center= will_paginate @projects
     - else
       .row

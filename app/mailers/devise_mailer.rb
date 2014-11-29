@@ -24,7 +24,7 @@ class DeviseMailer < BaseMailer
     invitation_instructions_with_member(record, token, opts={})
   end
 
-  def invitation_instructions_with_tech_member(record, token, opts={})
+  def invitation_instructions_with_platform_member(record, token, opts={})
     invitation_instructions_with_member(record, token, opts={})
   end
 

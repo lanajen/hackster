@@ -12,8 +12,8 @@
   meta(property="twitter:domain" content="hackster.io")
   meta(property="twitter:title" content=@project.name)
   meta(property="twitter:description" content=@project.one_liner)
-  - if teches = Tech.joins(:tech_tags).references(:tags).where("LOWER(tags.name) IN (?)", @project.tech_tags_cached.map{|t| t.downcase }) and teches.any?
-    meta(property="twitter:data2" content=teches.map(&:name).to_sentence)
+  - if platforms = Platform.joins(:platform_tags).references(:tags).where("LOWER(tags.name) IN (?)", @project.platform_tags_cached.map{|t| t.downcase }) and platforms.any?
+    meta(property="twitter:data2" content=platforms.map(&:name).to_sentence)
     meta(property="twitter:label2" content="BUILT WITH")
   - if user = @project.users.first and handle = user.twitter_handle
     meta(property="twitter:creator" content=handle)
@@ -23,5 +23,5 @@
   meta(property="twitter:image:width" content='400')
   meta(property="twitter:image:height" content='300')
   link(rel="canonical" href=project_url(@project))
-  - if @project.product_tags_string.present? or @project.tech_tags_string.present?
-    meta(name='keywords' content="#{(@project.product_tags_cached + @project.tech_tags_cached).join(',')}")
+  - if @project.product_tags_string.present? or @project.platform_tags_string.present?
+    meta(name='keywords' content="#{(@project.product_tags_cached + @project.platform_tags_cached).join(',')}")

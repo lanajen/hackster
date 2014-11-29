@@ -2,44 +2,44 @@ class Api::V1::BuildLogsController < Api::V1::BaseController
   # before_filter :public_api_methods, only: [:index, :show]
 
   def index
-    render json: BlogPost.order(created_at: :desc).limit(10)
+    render json: BuildLog.order(created_at: :desc).limit(10)
   end
 
   def show
-    blog_post = BlogPost.find params[:id]
-    render json: blog_post
+    build_log = BuildLog.find params[:id]
+    render json: build_log
   end
 
   def create
-    blog_post = BlogPost.new params[:blog_post]
-    authorize! :create, blog_post
+    build_log = BuildLog.new params[:build_log]
+    authorize! :create, build_log
 
-    if blog_post.save
-      render json: blog_post, status: :ok
+    if build_log.save
+      render json: build_log, status: :ok
     else
-      render json: blog_post.errors, status: :unprocessable_entity
+      render json: build_log.errors, status: :unprocessable_entity
     end
   end
 
   def update
-    blog_post = BlogPost.find params[:id]
-    authorize! :update, blog_post
+    build_log = BuildLog.find params[:id]
+    authorize! :update, build_log
 
-    if blog_post.update_attributes params[:blog_post]
-      render json: blog_post, status: :ok
+    if build_log.update_attributes params[:build_log]
+      render json: build_log, status: :ok
     else
-      errors = blog_post.errors.messages
+      errors = build_log.errors.messages
       widget_errors = {}
-      blog_post.widgets.each{|w| widget_errors[w.id] = w.to_error if w.errors.any? }
+      build_log.widgets.each{|w| widget_errors[w.id] = w.to_error if w.errors.any? }
       errors['widgets'] = widget_errors
       render json: errors, status: :bad_request
     end
   end
 
   def destroy
-    blog_post = BlogPost.find(params[:id])
-    authorize! :destroy, blog_post
-    blog_post.destroy
+    build_log = BuildLog.find(params[:id])
+    authorize! :destroy, build_log
+    build_log.destroy
 
     render json: 'Destroyed'
   end

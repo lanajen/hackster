@@ -40,7 +40,7 @@ class ProjectObserver < ActiveRecord::Observer
   end
 
   def before_save record
-    record.teches = Tech.joins(:tech_tags).references(:tags).where("LOWER(tags.name) IN (?)", record.tech_tags_cached.map{|t| t.strip.downcase }) if record.public? and !record.hide or (record.external and record.approved != false)
+    record.platforms = Platform.joins(:platform_tags).references(:tags).where("LOWER(tags.name) IN (?)", record.platform_tags_cached.map{|t| t.strip.downcase }) if record.public? and !record.hide or (record.external and record.approved != false)
 
     # if record.private_changed? and record.public?
       # record.post_new_tweet! unless record.made_public_at.present? or record.disable_tweeting? or Rails.env != 'production'
@@ -53,7 +53,7 @@ class ProjectObserver < ActiveRecord::Observer
       update_counters record, [:live_projects]
       record.commenters.each{|u| u.update_counters only: [:comments] }
       if record.private?
-        delete_tech_relations record
+        delete_platform_relations record
         Broadcast.where(context_model_id: record.id, context_model_type: 'Project').destroy_all
         Broadcast.where(project_id: record.id).destroy_all
       else
@@ -63,7 +63,7 @@ class ProjectObserver < ActiveRecord::Observer
 
     if record.approved_changed?
       if record.approved == false
-        delete_tech_relations record
+        delete_platform_relations record
         record.hide = true
       elsif record.approved == true and record.made_public_at.nil?
         record.post_new_tweet! unless record.hidden? or Rails.env != 'production'
@@ -71,15 +71,15 @@ class ProjectObserver < ActiveRecord::Observer
       end
     end
 
-    if (record.changed & %w(name cover_image one_liner tech_tags product_tags made_public_at license guest_name buy_link private workflow_state featured featured_date celery_id)).any? or record.tech_tags_string_changed? or record.product_tags_string_changed?
+    if (record.changed & %w(name cover_image one_liner platform_tags product_tags made_public_at license guest_name buy_link private workflow_state featured featured_date celery_id)).any? or record.platform_tags_string_changed? or record.product_tags_string_changed?
       Cashier.expire "project-#{record.id}-teaser"
     end
 
-    if (record.changed & %w(name cover_image one_liner tech_tags product_tags guest_name )).any? or record.tech_tags_string_changed? or record.product_tags_string_changed?
+    if (record.changed & %w(name cover_image one_liner platform_tags product_tags guest_name )).any? or record.platform_tags_string_changed? or record.product_tags_string_changed?
       Cashier.expire "project-#{record.id}-meta-tags"
     end
 
-    if (record.changed & %w(tech_tags product_tags made_public_at license guest_name)).any? or record.tech_tags_string_changed? or record.product_tags_string_changed?
+    if (record.changed & %w(platform_tags product_tags made_public_at license guest_name)).any? or record.platform_tags_string_changed? or record.product_tags_string_changed?
       Cashier.expire "project-#{record.id}-metadata"
     end
 
@@ -95,14 +95,14 @@ class ProjectObserver < ActiveRecord::Observer
       Cashier.expire "project-#{record.id}-thumb-external"
     end
 
-    if (record.changed & %w(name cover_image one_liner private wip start_date made_public_at license buy_link description)).any? or record.tech_tags_string_changed? or record.product_tags_string_changed?
+    if (record.changed & %w(name cover_image one_liner private wip start_date made_public_at license buy_link description)).any? or record.platform_tags_string_changed? or record.product_tags_string_changed?
       record.last_edited_at = Time.now
     end
   end
 
   private
-    def delete_tech_relations record
-      record.teches.delete_all
+    def delete_platform_relations record
+      record.platforms.delete_all
     end
 
     def update_counters record, type

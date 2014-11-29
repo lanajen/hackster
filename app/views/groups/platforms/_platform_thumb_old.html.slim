@@ -1,0 +1,7 @@
+- cache "platform-#{platform.id}-thumb", tag: ["platform-#{platform.id}-thumb"], expires_in: 24.hours do
+  .col-xs-6.col-sm-3.col-md-2.platform-thumb-old
+    = link_to(image_tag(platform.avatar.file_url(:big), class: 'img-thumbnail'), platform_short_path(platform)) if platform.avatar
+    h6.text-center
+      ==> link_to platform.name, platform_short_path(platform)
+      span.badge.istooltip*{ title: 'Projects', data: { container: 'body' } } = platform.projects_count
+    p.text-center= platform.mini_resume

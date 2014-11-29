@@ -17,8 +17,8 @@ class Ability
     can :read, Announcement do |thread|
       !thread.draft? and @user.can? :read, thread.threadable
     end
-    can :read, BlogPost do |thread|
-      thread.type == 'BlogPost' and @user.can? :read, thread.threadable and !thread.threadable.private_logs
+    can :read, BuildLog do |thread|
+      thread.type == 'BuildLog' and @user.can? :read, thread.threadable and !thread.threadable.private_logs
     end
     can :read, Issue do |thread|
       @user.can? :read, thread.threadable and !thread.threadable.private_issues
@@ -64,7 +64,7 @@ class Ability
       challenge.open_for_submissions? and @user.can? :read, challenge
     end
 
-    can :manage, [Announcement, BlogPost, Issue, Page] do |thread|
+    can :manage, [Announcement, BuildLog, Issue, Page] do |thread|
       @user.can? :manage, thread.threadable
     end
 

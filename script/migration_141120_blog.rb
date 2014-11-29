@@ -1,5 +1,5 @@
 Monologue::Post.all.each do |post|
-  t = HacksterBlogPost.new
+  t = BlogPost.new
   t.body = post.content
   t.title = post.title
   t.public = post.published

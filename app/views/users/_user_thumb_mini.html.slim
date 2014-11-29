@@ -1,2 +1,8 @@
-.avatar.mini-avatar
-  = link_to image_tag(user.avatar(:tiny), alt: user.name), user, data: { toggle: 'popover', placement: 'top', content: render(partial: 'users/user_popover', locals: { user: user }).gsub(/"/, '\'').html_safe, trigger: 'hover', html: true }, rel: 'popover'
+- user = user.decorate
+.col-xs-6.col-md-4.mobile-scroll-row-item
+  .mini-thumb.thumb
+    .mini-thumb-image.thumb-image.has-link-overlay style="background-image: url(#{user.avatar(:big)});"
+      = link_to '', user, class: 'link-overlay'
+      .mini-thumb-image-inner.thumb-image-inner
+        h5= link_to user.name, user
+    = render partial: 'followers/button_short', locals: { followable: user }

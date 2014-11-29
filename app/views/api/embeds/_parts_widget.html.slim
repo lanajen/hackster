@@ -1,3 +1,8 @@
+/ table.sortable-table.table.table-hover.fields-container
+  tbody
+    - embed.widget.parts.each_with_index do |part, i|
+      = render partial: "widgets/embeds/show/part", locals: { part: part, i: i }
+
 table.sortable-table.table.table-hover.fields-container  contenteditable='false'
   thead
     tr

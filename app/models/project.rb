@@ -30,7 +30,7 @@ class Project < ActiveRecord::Base
   has_many :active_users, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'")}, through: :team_members, source: :user
   has_many :assignments, through: :project_collections, source: :collectable, source_type: 'Assignment'
   has_many :awards
-  has_many :blog_posts, as: :threadable, dependent: :destroy
+  has_many :build_logs, as: :threadable, dependent: :destroy
   has_many :challenge_entries
   has_many :comments, -> { order created_at: :asc }, as: :commentable, dependent: :destroy
   # below is a hack because commenters try to add order by comments created_at and pgsql doesn't like it
@@ -52,7 +52,7 @@ class Project < ActiveRecord::Base
   has_many :respecting_users, -> { order 'respects.created_at ASC' }, through: :respects, source: :respecting, source_type: User
   has_many :slug_histories, -> { order updated_at: :desc }, as: :sluggable, dependent: :destroy
   has_many :team_members, through: :team, source: :members#, -> { includes :user }
-  has_many :teches, -> { where("groups.type = 'Tech'") }, through: :project_collections, source_type: 'Group', source: :collectable
+  has_many :platforms, -> { where("groups.type = 'Platform'") }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :users, through: :team_members
   has_many :widgets, -> { order position: :asc }, as: :widgetable, dependent: :destroy
   has_one :cover_image, as: :attachable, class_name: 'CoverImage', dependent: :destroy
@@ -74,7 +74,7 @@ class Project < ActiveRecord::Base
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
     :widgets, :cover_image, :permissions, :slug_histories, allow_destroy: true
 
-  validates :name, length: { in: 3..100 }, allow_blank: true
+  validates :name, length: { in: 3..60 }, allow_blank: true
   validates :one_liner, :logo, presence: true, if: proc { |p| p.force_basic_validation? }
   validates :one_liner, length: { maximum: 140 }
   validates :new_slug,
@@ -95,22 +95,23 @@ class Project < ActiveRecord::Base
   # before_create :set_columns_count
   before_save :generate_slug, if: proc {|p| !p.persisted? or p.team_id_changed? }
 
-  taggable :product_tags, :tech_tags
+  taggable :product_tags, :platform_tags
 
   store :counters_cache, accessors: [:comments_count, :product_tags_count,
     :widgets_count, :followers_count, :build_logs_count,
-    :issues_count, :team_members_count, :tech_tags_count]
+    :issues_count, :team_members_count, :platform_tags_count, :communities_count]
 
   store :properties, accessors: [:private_logs, :private_issues, :locked,
     :guest_twitter_handle, :celery_id]
 
   parse_as_integers :counters_cache, :comments_count, :product_tags_count,
     :widgets_count, :followers_count, :build_logs_count,
-    :issues_count, :team_members_count, :tech_tags_count
+    :issues_count, :team_members_count, :platform_tags_count,
+    :communities_count
 
   parse_as_booleans :properties, :private_logs, :private_issues, :locked
 
-  self.per_page = 16
+  self.per_page = 18
 
   # worlfow do
   #   state :idea
@@ -127,7 +128,7 @@ class Project < ActiveRecord::Base
       indexes :id,              index: :not_analyzed
       indexes :name,            analyzer: 'snowball', boost: 100
       indexes :product_tags,    analyzer: 'snowball', boost: 50
-      indexes :tech_tags,       analyzer: 'snowball', boost: 50
+      indexes :platform_tags,       analyzer: 'snowball', boost: 50
       indexes :description,     analyzer: 'snowball'
       indexes :one_liner,       analyzer: 'snowball'
       indexes :user_names,      analyzer: 'snowball'
@@ -143,7 +144,7 @@ class Project < ActiveRecord::Base
       one_liner: one_liner,
       description: description,
       product_tags: product_tags_string,
-      tech_tags: tech_tags_string,
+      platform_tags: platform_tags_string,
       user_name: team_members.map{ |t| t.user.try(:name) },
       created_at: created_at,
       popularity: popularity_counter,
@@ -252,14 +253,15 @@ class Project < ActiveRecord::Base
 
   def counters
     {
-      build_logs: 'blog_posts.published.count',
+      build_logs: 'build_logs.published.count',
       comments: 'comments.count',
+      communities: 'platforms.count',
       followers: 'followers.count',
       issues: 'issues.where(type: "Issue").count',
       product_tags: 'product_tags_cached.count',
       respects: 'respects.count',
       team_members: 'users.count',
-      tech_tags: 'tech_tags_cached.count',
+      platform_tags: 'platform_tags_cached.count',
       widgets: 'widgets.count',
     }
   end
@@ -375,8 +377,8 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def known_teches
-    Tech.includes(:tech_tags).references(:tags).where("LOWER(tags.name) IN (?)", tech_tags_cached.map{|t| t.downcase })
+  def known_platforms
+    Platform.includes(:platform_tags).references(:tags).where("LOWER(tags.name) IN (?)", platform_tags_cached.map{|t| t.downcase })
   end
 
   def has_assignment?
@@ -520,9 +522,9 @@ class Project < ActiveRecord::Base
       end
     end
 
-    tags = teches.map do |tech|
-      out = "##{tech.name.gsub(/\s+/, '')}"
-      if link = tech.twitter_link.presence and handle = link.match(/twitter.com\/([a-zA-Z0-9_]+)/).try(:[], 1)
+    tags = platforms.map do |platform|
+      out = "##{platform.name.gsub(/\s+/, '')}"
+      if link = platform.twitter_link.presence and handle = link.match(/twitter.com\/([a-zA-Z0-9_]+)/).try(:[], 1)
         out << " (@#{handle})"
       end
       out

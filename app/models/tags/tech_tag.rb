@@ -1,2 +1,0 @@
-class TechTag < Tag
-end

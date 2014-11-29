@@ -15,7 +15,7 @@ module ScraperStrategies
 
     private
       def after_parse
-        @project.tech_tags_string = 'Spark Core'
+        @project.platform_tags_string = 'Spark Core'
         super
       end
 

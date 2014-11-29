@@ -7,12 +7,12 @@ class Client::ProjectsController < Client::BaseController
     title += " - Page #{safe_page_params}" if safe_page_params
     title title
 
-    impressionist_async current_tech, "", unique: [:session_hash]
+    impressionist_async current_platform, "", unique: [:session_hash]
 
     sort = params[:sort] ||= 'magic'
     @by = params[:by] || 'all'
 
-    @projects = current_tech.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.indexable_and_external.for_thumb_display_in_collection)
+    @projects = current_platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.indexable_and_external.for_thumb_display_in_collection)
     if sort and sort.in? Project::SORTING.keys
       @projects = @projects.merge(Project.send(Project::SORTING[sort]))
     end
@@ -26,7 +26,7 @@ class Client::ProjectsController < Client::BaseController
     end
 
     @projects = @projects.paginate(page: safe_page_params, per_page: Project.per_page)
-    @challenge = current_tech.active_challenge ? current_tech.challenges.active.first : nil
+    @challenge = current_platform.active_challenge ? current_platform.challenges.active.first : nil
 
     respond_to do |format|
       format.html { render layout: 'whitelabel' }

@@ -1,65 +1,47 @@
 .row
-  .col-xs-12
-    .pull-left
-      = link_to "&larr; See all issues".html_safe, project_issues_path(@project.user_name_for_url, @project.slug), class: 'btn btn-link btn-sm'
-    - if can? :create, Issue, @project
-      .pull-right
-        = link_to 'Create a new issue', new_project_issue_path(@project.user_name_for_url, @project.slug), class: 'btn btn-primary btn-sm'
-    .clearfix
-    hr
+    .col-md-4.col-md-push-8
+      = link_to "&larr; See all issues".html_safe, project_issues_path(@project.user_name_for_url, @project.slug), class: 'btn btn-link btn-sm btn-block mg-20 hidden-link'
 
-.row.issue
-  .col-xs-9.issue-content
-    .well
-      .header
-        h3
-          ==> @issue.title
-          small.text-muted ##{@issue.sub_id}
+      - if can? :edit, @issue
+        section.section-thumbs
+          h4 Admin actions
+          ==> link_to 'Edit', edit_project_issue_path(@project.user_name_for_url, @project.slug, @issue.sub_id), class: 'btn btn-sm btn-warning'
+          - if @issue.open?
+            = link_to 'Close issue', update_workflow_project_issue_path(@project.user_name_for_url, @project.slug, @issue.sub_id, event: 'close', redirect_to: request.path), method: :patch, class: 'btn btn-danger btn-sm'
+          - else
+            = link_to 'Reopen issue', update_workflow_project_issue_path(@project.user_name_for_url, @project.slug, @issue.sub_id, event: 'reopen', redirect_to: request.path), method: :patch, class: 'btn btn-success btn-sm'
 
-          - if can? :edit, @issue
-            .btn-heading
-              = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_project_issue_path(@project.user_name_for_url, @project.slug, @issue.sub_id), class: 'btn-edit', rel: 'tooltip', title: 'Edit content', data: { container: 'body' }
-              - if @issue.open?
-                = link_to 'Close issue', update_workflow_project_issue_path(@project.user_name_for_url, @project.slug, @issue.sub_id, event: 'close', redirect_to: request.path), method: :patch, class: 'btn btn-danger btn-xs pull-right'
-              - else
-                = link_to 'Reopen issue', update_workflow_project_issue_path(@project.user_name_for_url, @project.slug, @issue.sub_id, event: 'reopen', redirect_to: request.path), method: :patch, class: 'btn btn-success btn-xs pull-right'
+      section.section-thumbs
+        h4 Opened by
+        .row.desktop-tighter-margins= render partial: 'users/user_thumb_mini', locals: { user: @issue.user }
 
-        = render partial: 'issues/label', locals: { issue: @issue }
-        small.text-muted
-          ' Opened by
-          ==> link_to @issue.user.name, @issue.user
-          ==> time_ago_in_words @issue.created_at
-          ' ago
-          ' -
-          = pluralize @issue.comments.size, 'comment'
-
-      .content
-        = render partial: 'comments/issues/comment', locals: { comment: @issue }
-
-        - @issue.comments.each do |comment|
-          = render partial: 'comments/issues/comment', locals: { comment: comment }
-
-        = render partial: 'comments/issues/form', locals: { comment: Comment.new, commentable: @issue }
-
-  .col-xs-3
-    - if @issue.assignee_issue
-      .transparent-well
-        .header
-          h4 Assignee
-        .content
-          .row
-            .col-xs-3
-              - user = @issue.assignee
-              = link_to image_tag(user.decorate.avatar(:big), class: 'img-responsive'), user, title: user.name, rel: 'tooltip'
-
-    .transparent-well
-      .header
+      section.section-thumbs
         h4 Participants
-      .content
-        .row
+        .row.mobile-scroll-row.desktop-tighter-margins
           - @issue.participants.each do |user|
-            .col-xs-3  style='margin-bottom: 10px;'
-              = link_to image_tag(user.decorate.avatar(:big), class: 'img-responsive'), user, title: user.name, rel: 'tooltip'
+            = render partial: 'users/user_thumb_mini', locals: { user: user }
+
+      - if @issue.assignee_issue
+        section.section-thumbs
+          h4 Assignee
+          .row.desktop-tighter-margins= render partial: 'users/user_thumb_mini', locals: { user: @issue.assignee }
+
+      section.section-thumbs
+        h4 Share
+        = render 'shared/share_buttons'
+
+    .col-md-8.col-md-pull-4
+      = render partial: @issue, locals: { issue: @issue }
+
+      section#comments.section-container.section-collapsible
+        h2.section-title
+          a.title.title-toggle href=''
+            ' Comments
+            i.fa.fa-chevron-down
+            i.fa.fa-chevron-up
+        .section-content
+          = render partial: 'widgets/comments', locals: { comments: @issue.comments, commentable: @issue }
+
 /
   .col-xs-4
     .well

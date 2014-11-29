@@ -11,13 +11,13 @@ class Admin::PagesController < Admin::BaseController
     @comment_count = Comment.where(commentable_type: 'Project').count
     @like_count = Respect.count
     @follow_user_count = FollowRelation.where(followable_type: 'User').count
-    @follow_tech_count = FollowRelation.where(followable_type: 'Group').count
+    @follow_platform_count = FollowRelation.where(followable_type: 'Group').count
     @user_count = User.invitation_accepted_or_not_invited.count
     @new_projects_count = Project.indexable.where('projects.made_public_at > ?', Date.today).count
     @new_comments_count = Comment.where(commentable_type: 'Project').where('comments.created_at > ?', Date.today).count
     @new_likes_count = Respect.where('respects.created_at > ?', Date.today).count
     @new_user_follows_count = FollowRelation.where(followable_type: 'User').where('follow_relations.created_at > ?', Date.today).count
-    @new_tech_follows_count = FollowRelation.where(followable_type: 'Group').where('follow_relations.created_at > ?', Date.today).count
+    @new_platform_follows_count = FollowRelation.where(followable_type: 'Group').where('follow_relations.created_at > ?', Date.today).count
     @new_users_count = User.invitation_accepted_or_not_invited.where('users.created_at > ?', Date.today).count
 
     sql = "SELECT users.*, t1.count FROM (SELECT members.user_id as user_id, COUNT(*) as count FROM members INNER JOIN groups AS team ON team.id = members.group_id INNER JOIN projects ON projects.team_id = team.id WHERE projects.private = 'f' AND projects.hide = 'f' AND projects.approved = 't' AND (projects.guest_name = '' OR projects.guest_name IS NULL) GROUP BY user_id) AS t1 INNER JOIN users ON users.id = t1.user_id WHERE t1.count > 1 AND (NOT (users.roles_mask & ? > 0) OR users.roles_mask IS NULL) ORDER BY t1.count DESC LIMIT 10;"
@@ -51,7 +51,7 @@ class Admin::PagesController < Admin::BaseController
   def build_logs
     title "Admin / Build logs - #{safe_page_params}"
 
-    @logs = BlogPost.order(created_at: :desc).paginate(page: safe_page_params)
+    @logs = BuildLog.order(created_at: :desc).paginate(page: safe_page_params)
   end
 
   def comments
@@ -115,8 +115,8 @@ class Admin::PagesController < Admin::BaseController
   def root
   end
 
-  def teches
-    title "Admin / Techs - #{safe_page_params}"
+  def platforms
+    title "Admin / Platforms - #{safe_page_params}"
     @fields = {
       'created_at' => 'groups.created_at',
       'name' => 'groups.full_name',
@@ -125,6 +125,6 @@ class Admin::PagesController < Admin::BaseController
 
     params[:sort_by] ||= 'created_at'
 
-    @groups = filter_for Tech, @fields
+    @groups = filter_for Platform, @fields
   end
 end

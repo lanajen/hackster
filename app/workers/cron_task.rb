@@ -5,7 +5,7 @@ class CronTask < BaseWorker
   def compute_popularity
     CronTask.perform_async 'compute_popularity_for_projects'
     CronTask.perform_async 'compute_popularity_for_users'
-    CronTask.perform_async 'compute_popularity_for_teches'
+    CronTask.perform_async 'compute_popularity_for_platforms'
   end
 
   def compute_popularity_for_projects
@@ -36,9 +36,9 @@ class CronTask < BaseWorker
     reputation.save
   end
 
-  def compute_popularity_for_teches
-    Tech.find_each do |tech|
-      tech.update_counters
+  def compute_popularity_for_platforms
+    Platform.find_each do |platform|
+      platform.update_counters
     end
   end
 
@@ -94,7 +94,7 @@ class CronTask < BaseWorker
     project_ids = Project.where('projects.made_public_at > ?', 24.hours.ago).where(approved: true).pluck(:id)
 
     users = []
-    users += Tech.joins(:projects).distinct('groups.id').where(projects: { id: project_ids }).map{|t| t.followers.with_subscription('follow_tech_activity').pluck(:id) }.flatten
+    users += Platform.joins(:projects).distinct('groups.id').where(projects: { id: project_ids }).map{|t| t.followers.with_subscription('follow_platform_activity').pluck(:id) }.flatten
     users += User.joins(:projects).distinct('users.id').where(projects: { id: project_ids }).map{|u| u.followers.with_subscription('follow_user_activity').pluck(:id) }.flatten
 
     lists = List.joins(:project_collections).where('project_collections.created_at > ?', 24.hours.ago).where(groups: { type: 'List' }).distinct(:id)

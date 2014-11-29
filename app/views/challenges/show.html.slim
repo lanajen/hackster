@@ -2,10 +2,10 @@
   section#top-project-section  style="background-image: url(#{@challenge.cover_image})"
     #teaser-container.wrapper700
       h1= @challenge.name
-      - if @tech
+      - if @platform
         p
           ' by
-          = link_to @tech.name, tech_short_path(@tech)
+          = link_to @platform.name, platform_short_path(@platform)
 
       - if @embed.url
         #video.embed.widescreen= render partial: "api/embeds/#{@embed.provider_name}", locals: { embed: @embed }
@@ -19,10 +19,10 @@
   section#top-bg.show-on-desktop
     #top-bg-image style="background-image:url('#{@challenge.cover_image}');"
       h1= @challenge.name
-      - if @tech
+      - if @platform
         p
           ' by
-          = link_to @tech.name, tech_short_path(@tech)
+          = link_to @platform.name, platform_short_path(@platform)
 
 - if @challenge.judging? and can? :admin, @challenge
   section#alert-section
@@ -33,14 +33,11 @@
 section#projects-list
   .wrapper
     - if @challenge.judged?
-      .project-list-actions.clearfix.mg-30
-        .pull-left= render 'shared/list_switch'
-
       h2.text-center Winning entries
       .thumb-list  class=@switch_style
         .row.project-list
           - @winning_entries.each do |entry|
-            = render partial: 'projects/project_thumb', locals: { project: entry.project.decorate, col: '4' }
+            = render partial: 'projects/project_thumb', locals: { project: entry.project.decorate, col: 6 }
             javascript:
               $(".project-#{entry.project_id} .award-container").html("<div class='project-award'><i class='fa fa-trophy'></i> #{entry.prize.position.ordinalize} prize</div>");
 
@@ -49,18 +46,16 @@ section#projects-list
         .thumb-list  class=@switch_style
           .row.project-list
             - @other_projects.each do |project|
-              = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '3' }
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: 4 }
 
     - else
       - if @projects.any?
-        .project-list-actions.clearfix.mg-30
-          .pull-left= render 'shared/list_switch'
         .thumb-list  class=@switch_style
           .row.project-list
             - if @challenge.open_for_submissions? and !@is_challenge_entrant
               = render partial: 'enter_thumb', locals: { challenge: @challenge }
             - @projects.each do |project|
-              = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: '3' }
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: 4 }
         .row.text-center= will_paginate @projects
       - else
         .row
@@ -74,7 +69,7 @@ section#projects-list
   .popup-overlay-outer
     .popup-overlay-inner
       button.close  onclick="closePopup('.popup-overlay');"   &times;
-      - link_params = @challenge.project_ideas ? { project: { mark_as_idea: true, tech_tags_string: @tech.name } } : { project: {tech_tags_string: @tech.name } }
+      - link_params = @challenge.project_ideas ? { project: { mark_as_idea: true, platform_tags_string: @platform.name } } : { project: {platform_tags_string: @platform.name } }
       - if user_signed_in?
         - if @user_projects.any?
           p Which project do you want to use to enter the challenge?

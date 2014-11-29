@@ -29,6 +29,8 @@ class Comment < ActiveRecord::Base
     end
 
     sorted = []
+    return sorted unless parents[nil]
+
     parents[nil].each do |child|
       child.depth = 0
       if child.in? parents.keys
