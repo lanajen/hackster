@@ -6,10 +6,13 @@
         .thumb.project-thumb
           .thumb-image.has-link-overlay style="background-image:url(#{project.cover_image(:cover_thumb)})"
             = link_to '', project_url(project), class: 'link-overlay', target: '_blank'
-            .featured-logo
-              = link_to "featured on #{image_tag('hackster_logo_20_white.png', alt: 'Hackster.io', title: SLOGAN)}".html_safe, root_url, target: '_blank'
-            .thumb-image-inner
+            .thumb-image-inner-top
               .award-container
+              p.description.show-on-hover
+                = project.one_liner
+              .featured-logo.show-on-hover
+                = link_to "featured on #{image_tag('hackster_logo_20_white.png', alt: 'Hackster.io', title: SLOGAN)}".html_safe, root_url, target: '_blank'
+            .thumb-image-inner
               h4
                 - if project.is_idea?
                   i.fa.fa-lightbulb-o>

@@ -20,25 +20,16 @@
     Platform group-page styling
 
 ******************************/
-#platform-page #sidebar-container{
-  p, li {
-    font-weight: 200;
-    color:#636363;
-  }
-}
+
 #main-content {
   padding: 30px 30px 20px;
 }
-#alert-section {
-  position: relative;
-  z-index: 2;
-}
 
-/******************************
+// /******************************
 
-    Sidebar styling
+//     Sidebar styling
 
-******************************/
+// ******************************/
 #platform-avatar-image-div{
   position: relative;
   width: 100%;
@@ -76,40 +67,40 @@
   padding-top: 20px;
   margin-top: 18px;
 }
-// #platform-page {
-//   .display {
-//     padding: 30px 20px 0 20px;
-//     h4 {
-//       margin-top: 0;
-//       font-size: 0.85em;
-//       text-transform: uppercase;
-//       color: #999;
-//       font-weight: bold;
-//     }
-//     a:not(.label) {
-//       color: #888;
-//       @include transition(all .2s ease);
-//       &:hover{
-//         color: #444447;
-//       }
-//     }
-//   }
-//   .websites{
-//     margin: -5px 0 0 -5px;
-//     height: 20px;
-//   }
-//   .addthis_sharing_toolbox, .addthis_toolbox {
-//     margin-top: 10px;
-//     text-align: center;
-//     label {
-//       float: left;
-//       text-transform: uppercase;
-//       margin-right: 5px;
-//       font-size: 0.85em;
-//       color: #666;
-//     }
-//   }
-// }
+#platform-page {
+  .display {
+    padding: 30px 20px 0 20px;
+    h4 {
+      margin-top: 0;
+      font-size: 0.85em;
+      text-transform: uppercase;
+      color: #999;
+      font-weight: bold;
+    }
+    a:not(.label) {
+      color: #888;
+      @include transition(all .2s ease);
+      &:hover{
+        color: #444447;
+      }
+    }
+  }
+  .websites{
+    margin: -5px 0 0 -5px;
+    height: 20px;
+  }
+  .addthis_sharing_toolbox, .addthis_toolbox {
+    margin-top: 10px;
+    text-align: center;
+    label {
+      float: left;
+      text-transform: uppercase;
+      margin-right: 5px;
+      font-size: 0.85em;
+      color: #666;
+    }
+  }
+}
 #platform-links{
   padding: 0;
   margin: 0;
@@ -175,24 +166,26 @@
   @include background-size(cover);
 }
 .top-banner-image-inner {
-  background: rgba(0,0,0,0.4);
-  padding: 130px 0;
+  background: rgba(0,0,0,0.6);
   color: #fff;
   height: 100%;
   position: relative;
   .media {
-    .media-left {
-      padding-right: 40px;
-      img {
-        padding: 10px;
-        border: 0;
-        width: 180px;
-        height: 180px;
-      }
+    padding: 130px 0;
+    height: 100%;
+  }
+  .media-left {
+    padding-right: 40px;
+    img {
+      padding: 10px;
+      border: 0;
+      width: 180px;
+      height: 180px;
     }
-    .media-body {
-      position: relative;
-    }
+  }
+  .media-body {
+    position: relative;
+    width: 100%;
   }
   h1 {
     margin: 0;
@@ -232,9 +225,20 @@
     color: #bbb;
     border-color: #bbb;
   }
+  .visible-xs {
+    padding: 100px 20px 0;
+    text-align: center;
+    img {
+      width: 80px;
+      height: 80px;
+      padding: 5px;
+      border: 0;
+      margin-bottom: 10px;
+    }
+  }
 }
 .top-banner-image-inner-corner {
-  color: #999;
+  color: #bbb;
   position: absolute;
   font-weight: bold;
   &.text {
@@ -242,9 +246,9 @@
     font-size: 0.7em;
   }
   a {
-    color: #999;
+    color: #bbb;
     &:hover {
-      color: #bbb;
+      color: #ddd;
     }
   }
   &.top-left {
@@ -271,12 +275,25 @@
     }
   }
 }
+@media (max-width: 768px) {
+  .top-banner-image-inner-corner.bottom-center-mobile {
+    left: 0;
+    width: 100%;
+    text-align: center;
+  }
+}
 #projects-list{
   position: relative;
   z-index: 2;
-  background: white;
+  background: #fff;
   padding: 30px 0 20px;
   @include box-shadow(0 -10px 10px rgba(0, 0, 0, 0.05));
+}
+.projects-list{
+  position: relative;
+  z-index: 2;
+  background: #f2f2f2;
+  padding: 30px 0 20px;
 }
 .project-list-actions{
   .btn-sm, .btn-group-sm > .btn, .btn-group-sm > .btn-follow{
@@ -291,6 +308,70 @@
     @include box-shadow(inset 0 1px 0px rgba(0, 0, 0, 0.1), inset 0 18px 10px rgba(0,0,0,.05));
   }
 }
+.group-nav {
+  position: relative;
+  z-index: 3;
+  background: #fff;
+  padding-top: 10px;
+  border-top: 2px solid #999;
+  border-bottom: 1px solid #ddd;
+  &.affix {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 3;
+    & + #projects-list {
+      padding-top: 90px;
+    }
+  }
+  .nav-tabs {
+    border: 0;
+    & > li {
+      margin-left: 10px;
+      & > a {
+        color: #666;
+        border: 0;
+        border-bottom: 4px solid transparent;
+        background: none;
+        &:hover {
+          border-bottom-color: #999;
+          color: #999;
+        }
+        small {
+          font-size: 80%;
+          margin-left: 8px;
+          color: #999;
+        }
+      }
+      &.active {
+        & > a {
+          border-bottom-color: #666;
+          font-weight: bold;
+          &:hover {
+            background: inherit;
+            border: 0;
+            border-bottom: 4px solid #666;
+          }
+        }
+      }
+    }
+  }
+}
+// .nav-label {
+//   display: block;
+//   text-align: center;
+//   text-transform: uppercase;
+//   font-size: 0.7em;
+//   font-weight: 600;
+//   color: #777;
+// }
+// .nav-count {
+//   display: block;
+//   text-align: center;
+//   font-size: 1.1em;
+//   color: #555;
+// }
 
 //
 // hackerspaces

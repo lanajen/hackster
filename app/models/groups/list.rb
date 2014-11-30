@@ -8,7 +8,7 @@ class List < Group
   has_many :follow_relations, as: :followable
   has_many :followers, through: :follow_relations, source: :user
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'ListMember'
-  has_one :cover_image, as: :attachable, class_name: 'Document', dependent: :destroy
+  has_one :cover_image, as: :attachable, dependent: :destroy
 
   attr_accessible :cover_image_id, :list_type
 

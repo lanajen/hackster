@@ -253,6 +253,9 @@ h1 {
       }
     }
   }
+  p {
+    font-size: 87.5%;
+  }
 }
 
 .project-thumb {
@@ -260,9 +263,6 @@ h1 {
     .thumb-image-inner {
       display: block;
     }
-  }
-  p {
-    font-size: 87.5%;
   }
 }
 .project-tags {

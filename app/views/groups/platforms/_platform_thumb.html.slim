@@ -1,7 +1,10 @@
 .col-sm-4.mobile-scroll-row-item
   .thumb.platform-thumb
-    .thumb-image.has-link-overlay style="background-image:url('#{platform.cover_image.try(:file_url)}')"
+    .thumb-image.has-link-overlay style="background-image:url('#{platform.cover_image.try(:file_url, :cover_thumb)}')"
       = link_to '', platform, class: 'link-overlay'
+      .thumb-image-inner-top
+        p.description.show-on-hover
+          = platform.mini_resume
       .thumb-image-inner
         h4
           = link_to platform.name, platform

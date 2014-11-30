@@ -59,11 +59,11 @@
 }
 .project-embed-thumb {
   .featured-logo {
-    @include opacity(0);
-    @include transition(opacity 200ms linear);
-    position: absolute;
-    top: 3px;
-    right: 13px;
+    // @include opacity(0);
+    // @include transition(opacity 200ms linear);
+    // position: absolute;
+    // top: 3px;
+    // right: 13px;
     a {
       color: #fff;
       font-size: 0.8em;
@@ -76,9 +76,9 @@
       vertical-align: baseline;
     }
   }
-  &:hover .featured-logo {
-    @include opacity(1);
-  }
+  // &:hover .featured-logo {
+  //   @include opacity(1);
+  // }
 }
 
 body#embed {

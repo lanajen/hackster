@@ -128,14 +128,17 @@ HackerIo::Application.routes.draw do
       patch 'projects/link' => 'groups/projects#link'
     end
 
-    get 'lists/:user_name' => 'lists#show', as: :list
-    scope 'lists/:user_name', as: :lists do
+    get 'l/:user_name' => 'lists#show', as: :list
+    match 'lists/:user_name' => redirect { |params, request|
+      URI.parse(request.url).tap { |uri| uri.path.sub!(/lists/i, 'l') }.to_s
+    }, via: :get
+    scope 'l/:user_name', as: :lists do
       get '' => 'lists#show'
       patch '' => 'lists#update'
       post 'projects/link' => 'groups/projects#link'
       delete 'projects/link' => 'groups/projects#unlink'
     end
-    resources :lists, except: [:show, :update] do
+    resources :lists, except: [:show, :update], path: 'l' do
       resources :projects, only: [] do
         post 'feature' => 'lists#feature_project'#, as: :platform_feature_project
         delete 'feature' => 'lists#unfeature_project'

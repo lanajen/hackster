@@ -20,62 +20,96 @@
   link(rel="canonical" href=platform_short_url(@platform))
   meta(property="keywords" content="#{@platform.name} projects, #{@platform.name} hacks")
 
-- if @platform.cover_image
-  section.top-banner.show-on-desktop
-    .top-banner-image style="background-image:url('#{@platform.cover_image.try(:file_url)}');"
-      .top-banner-image-inner
-        .top-banner-image-inner-corner.top-right.text
-          = @platform.class.name
-        .top-banner-image-inner-corner.bottom-right
-          ul.websites.list-inline
-            - @platform.websites.select{|t,u| u.present? }.each do |type, url|
-              = render partial: "shared/website", locals: { type: type, url: url }
-        .top-banner-image-inner-corner.bottom-left
-          ul.list-unstyled.list-inline.project-stats
-            li
-              span.stat-figure> = number_with_delimiter @platform.projects_count
-              = pluralize_without_count @platform.projects_count, 'project'
-            li
-              span.stat-figure> = number_with_delimiter @platform.followers_count
-              = pluralize_without_count @platform.followers_count, 'follower'
+section.top-banner
+  .top-banner-image style="background-image:url('#{@platform.cover_image.try(:file_url, :cover)}');"
+    .top-banner-image-inner
+      / .top-banner-image-inner-corner.top-right.text.hidden-xs
+        = @platform.class.name
+      .top-banner-image-inner-corner.bottom-right.hidden-xs
+        ul.websites.list-inline
+          - @platform.websites.select{|t,u| u.present? }.each do |type, url|
+            = render partial: "shared/website", locals: { type: type, url: url }
+      .top-banner-image-inner-corner.bottom-left.bottom-center-mobile
+        ul.list-unstyled.list-inline.project-stats
+          li
+            span.stat-figure> = number_with_delimiter @platform.projects_count
+            = pluralize_without_count @platform.projects_count, 'project'
+          li
+            span.stat-figure> = number_with_delimiter @platform.followers_count
+            = pluralize_without_count @platform.followers_count, 'follower'
 
-        .top-banner-image-inner-corner.top-left
-          - if can? :manage, @platform
-            .btn-group
-              = link_to 'Edit settings', edit_platform_path(@platform), class: 'btn btn-default btn-sm'
-              button.btn.btn-default.btn-sm.dropdown-toggle data-toggle="dropdown" aria-expanded="false"
-                span.caret
-              ul.dropdown-menu role="menu"
-                / li= link_to 'Post fresh news', new_platform_announcement_path(@platform.user_name)
-                li= link_to 'Manage admins', group_edit_members_path(@platform)
-                li= link_to 'Invite admins', group_new_invitations_path(@platform)
+      .container.hidden-xs
+        .media
+          .media-left
+            = image_tag @platform.avatar.try(:file_url, :big), class: 'img-thumbnail'
+          .media-body
+            / p.text-muted By Spark
+            .clearfix
+              h1.pull-left= @platform.name
+              / ul.list-inline.tags.pull-left
+                li
+                  a.tag href='' Beginners
+                li
+                  a.tag href='' Wearables
+                li
+                  a.tag href='' Wifi
+            p= @platform.mini_resume
+            .button-content
+              = render partial: 'followers/button_text', locals: { followable: @platform }
+              - if @platform.documentation_link.present?
+                = link_to "Documentation #{content_tag(:i, '', class: 'fa-external-link fa')}".html_safe, @platform.documentation_link, target: '_blank', class: 'btn btn-link'
+              - if @platform.forums_link.present?
+                = link_to "Forums #{content_tag(:i, '', class: 'fa-external-link fa')}".html_safe, @platform.forums_link, target: '_blank', class: 'btn btn-link'
+              - if @platform.crowdfunding_link.present?
+                = link_to "Preorder #{indefinite_articlerize @platform.name} #{content_tag(:i, '', class: 'fa-external-link fa')}".html_safe, @platform.crowdfunding_link, target: '_blank', class: 'btn btn-link btn-link-accent'
+              - if @platform.buy_link.present?
+                = link_to "Buy #{indefinite_articlerize @platform.name} #{content_tag(:i, '', class: 'fa-external-link fa')}".html_safe, @platform.buy_link, target: '_blank', class: 'btn btn-link btn-link-accent'
+              - if can? :manage, @platform
+                span.dropdown role='presentation'
+                  a.btn.btn-link.dropdown-toggle data-toggle="dropdown" aria-expanded="false"
+                    i.fa.fa-cog
+                  ul.dropdown-menu role="menu"
+                    li= link_to 'Edit settings', edit_platform_path(@platform)
+                    li.divider
+                    / li= link_to 'Post fresh news', new_platform_announcement_path(@platform.user_name)
+                    li= link_to 'Manage admins', group_edit_members_path(@platform)
+                    li= link_to 'Invite admins', group_new_invitations_path(@platform)
+      .container.visible-xs
+        = image_tag @platform.avatar.try(:file_url, :big), class: 'img-thumbnail'
+        h1= @platform.name
+        p= @platform.mini_resume
+        p= render partial: 'followers/button_text', locals: { followable: @platform }
 
-        .container
-          .media
-            .media-left
-              = image_tag @platform.avatar.try(:file_url, :big), class: 'img-thumbnail'
-            .media-body
-              / p.text-muted By Spark
-              .clearfix
-                h1.pull-left= @platform.name
-                / ul.list-inline.tags.pull-left
-                  li
-                    a.tag href='' Beginners
-                  li
-                    a.tag href='' Wearables
-                  li
-                    a.tag href='' Wifi
-              p= @platform.mini_resume
-              .button-content
-                = render partial: 'followers/button_text', locals: { followable: @platform }
-                - if @platform.documentation_link.present?
-                  = link_to "Documentation #{content_tag(:i, '', class: 'fa-external-link fa')}".html_safe, @platform.documentation_link, target: '_blank', class: 'btn btn-link'
-                - if @platform.forums_link.present?
-                  = link_to "Forums #{content_tag(:i, '', class: 'fa-external-link fa')}".html_safe, @platform.forums_link, target: '_blank', class: 'btn btn-link'
-                - if @platform.crowdfunding_link.present?
-                  = link_to "Preorder #{indefinite_articlerize @platform.name} #{content_tag(:i, '', class: 'fa-external-link fa')}".html_safe, @platform.crowdfunding_link, target: '_blank', class: 'btn btn-link btn-link-accent'
-                - if @platform.buy_link.present?
-                  = link_to "Buy #{indefinite_articlerize @platform.name} #{content_tag(:i, '', class: 'fa-external-link fa')}".html_safe, @platform.buy_link, target: '_blank', class: 'btn btn-link btn-link-accent'
+/ section.group-nav.affixable
+  .container
+    ul.nav.nav-tabs.pull-left
+      li.active role='presentation'
+        a href=url_for(@platform)
+          | Projects
+          small 79
+      li role='presentation'
+        a href=''
+          | Followers
+          small 121
+      li role='presentation'
+        a href=''
+          | Resources
+
+    .pull-right
+      ul.list-inline
+        - if can? :manage, @platform
+          li.dropdown role='presentation'
+            a.btn.btn-default.dropdown-toggle data-toggle="dropdown" aria-expanded="false"
+              ' Manage this page
+              span.caret
+            ul.dropdown-menu role="menu"
+              li= link_to 'Edit settings', edit_platform_path(@platform)
+              li.divider
+              / li= link_to 'Post fresh news', new_platform_announcement_path(@platform.user_name)
+              li= link_to 'Manage admins', group_edit_members_path(@platform)
+              li= link_to 'Invite admins', group_new_invitations_path(@platform)
+        - if !(can? :manage, @platform) or (user_signed_in? and current_user.is? :admin)
+          li= render partial: 'followers/button_text', locals: { followable: @platform }
 
 - if can? :join, @platform and user_signed_in? and member = current_user.is_member?(@platform) and member.invitation_pending?
   section#alert-section
@@ -104,15 +138,15 @@
       ==> link_to "Follow #{@platform.name}", new_user_registration_path(redirect_to: create_followers_path(followable_type: 'Group', followable_id: @platform.id), reason: 'follow', m: 'group', id: @platform.id), class: 'follow-button alert-link show-simplified-signup', data: { container: 'body', redirect_to: create_followers_path(followable_type: 'Group', followable_id: @platform.id) }, rel: 'tooltip'
       ' to be notified when new projects are posted.
 
-section#projects-list
+section.projects-list
   .container
     .project-list-actions.clearfix.mg-30
       .pull-right
         - link = user_signed_in? ? new_project_path(project: { platform_tags_string: @platform.name }) : new_user_registration_path(reason: 'project', m: 'group', id: @platform.id, redirect_to: new_project_path(project: { platform_tags_string: @platform.name }))
         ==> link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add a project".html_safe, link, class: 'btn btn-default'
-        small> or
-        - link = new_project_path(project: { platform_tags_string: @platform.name, external: true }, redirect_to: request.path)
-        = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Submit a link".html_safe, link, class: 'btn btn-default'
+        / small> or
+        / # - link = new_project_path(project: { platform_tags_string: @platform.name, external: true }, redirect_to: request.path)
+        / # = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Submit a link".html_safe, link, class: 'btn btn-default'
 
       .btn-group.pull-left
         .btn-group
