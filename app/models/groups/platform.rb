@@ -12,14 +12,14 @@ class Platform < List
   attr_accessible :forums_link, :documentation_link, :crowdfunding_link,
     :buy_link, :shoplocket_link, :cover_image_id, :accept_project_ideas,
     :project_ideas_phrasing, :client_subdomain_attributes, :logo_id,
-    :crappy_overlay_text
+    :crappy_overlay_text, :download_link
 
   accepts_nested_attributes_for :client_subdomain
 
   # before_save :update_user_name
 
   store_accessor :websites, :forums_link, :documentation_link, :crowdfunding_link, :buy_link,
-    :shoplocket_link
+    :shoplocket_link, :download_link
   set_changes_for_stored_attributes :websites
 
   store :properties, accessors: [:accept_project_ideas, :project_ideas_phrasing,

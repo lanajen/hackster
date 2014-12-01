@@ -64,6 +64,8 @@ section.top-banner
                 = link_to "Preorder #{indefinite_articlerize @platform.name} #{content_tag(:i, '', class: 'fa-external-link fa')}".html_safe, @platform.crowdfunding_link, target: '_blank', class: 'btn btn-link btn-link-accent'
               - if @platform.buy_link.present?
                 = link_to "Buy #{indefinite_articlerize @platform.name} #{content_tag(:i, '', class: 'fa-external-link fa')}".html_safe, @platform.buy_link, target: '_blank', class: 'btn btn-link btn-link-accent'
+              - if @platform.download_link.present?
+                = link_to "Download #{@platform.name} #{content_tag(:i, '', class: 'fa-external-link fa')}".html_safe, @platform.download_link, target: '_blank', class: 'btn btn-link btn-link-accent'
               - if can? :manage, @platform
                 span.dropdown role='presentation'
                   a.btn.btn-link.dropdown-toggle data-toggle="dropdown" aria-expanded="false"

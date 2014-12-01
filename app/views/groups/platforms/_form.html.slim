@@ -56,5 +56,6 @@
       = f.input :crowdfunding_link, label: 'Crowdfunding campaign or preorder link', hint: 'Fill in either your preorder or your store link depending on whether your product is available for sale or presale.'
       = f.input :buy_link, label: 'Store link', hint: 'Fill in either your preorder or your store link depending on whether your product is available for sale or presale.'
       - if current_user.is? :admin
+        = f.input :download_link, label: 'Download link', hint: 'If your product is a piece of software use this instead.'
         = f.input :shoplocket_link, label: 'ShopLocket link'
         = f.input :platform_tags_string, as: :string, label: 'Platform tags', hint: 'All the projects tagged with these tags will appear on this page. Separate technologies by commas'

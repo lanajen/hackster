@@ -74,7 +74,7 @@ class List < Group
   end
 
   def cover_image_id=(val)
-    self.cover_image = Document.find_by_id(val)
+    self.cover_image = CoverImage.find_by_id(val)
   end
 
   def to_tracker
