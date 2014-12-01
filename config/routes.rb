@@ -303,7 +303,7 @@ HackerIo::Application.routes.draw do
     get 'privacy' => 'pages#privacy'
     get 'terms' => 'pages#terms'
     get 'resources' => 'pages#resources'
-    get 'autodesk' => 'pages#autodesk'
+    # get 'autodesk' => 'pages#autodesk'
     get 'electric-imp', to: redirect('electricimp')
 
     constraints(PlatformPage) do
