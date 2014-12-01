@@ -1428,7 +1428,7 @@ $(function () {
     sequentialUploads: true,
     limitConcurrentUploads: 1,
     fileInput: $('#upload-cover-image form input:file'),
-    dropZone: $('#top-project-section'),
+    dropZone: $('.project-banner'),
 
     add: function(e, data) {
       file = data.files[0];
@@ -1444,9 +1444,9 @@ $(function () {
       errors = checkFileForErrors(file, validations);
       // fileType = detectFileType(file);
 
-      var el = $('#project-top-image');
+      var el = $('.project-banner');
 
-      data.context = 'project-top-image';
+      data.context = 'home';
 
       if (errors.length > 0) {
         // $('#' + data.context).replaceWith("<div class='help-block has-error upload-error'>Couldn't upload " + file.name + ': ' + errors.join(', ')+'</span>');
@@ -1454,10 +1454,9 @@ $(function () {
         showErrorBubble("Couldn't upload " + file.name + ': ' + errors.join(', '));
       } else {
         $(progressTpl).appendTo(el);
-
         var reader = new FileReader();
         reader.onload = function(e) {
-          el = $('#project-top-image');
+          el = $('.project-banner');
           el.data('old-bg-img', el.css('background-image'));
           el.css('background-image', 'url(' + e.target.result + ')');
         }
@@ -1470,7 +1469,7 @@ $(function () {
     fail: function(e, data){
       form = $('#upload-cover-image');
       handleUploadErrors(form);
-      var el = $('#project-top-image');
+      var el = $('.project-banner');
       el.css('background-image', 'url(' + el.data('old-bg-img') + ')');
     },
 
@@ -1489,11 +1488,11 @@ $(function () {
         $('#upload-cover-image a').attr('data-value', id);
         editor.saveModel(
           function(){
-            $('#project-top-image .embed-overlay').remove();
+            $('.project-banner .embed-overlay').remove();
           }, function(){
-            var el = $('#project-top-image');
+            var el = $('.project-banner');
             el.css('background-image', 'url(' + el.data('old-bg-img') + ')');
-            $('#project-top-image .embed-overlay').remove();
+            $('.project-banner .embed-overlay').remove();
             showErrorBubble('the new cover image');
           },
           formData);

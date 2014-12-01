@@ -2,8 +2,6 @@
 $(window).load(function(){
   function updateAffix(top, w, el){
     var y = w.scrollTop();
-        console.log(top);
-        console.log(y);
     if (y >= top) {
       el.hasClass('affix') ? '' : el.addClass('affix');
     } else {
@@ -18,10 +16,8 @@ $(window).load(function(){
     var $window = $(window);
     if ($fixedEl.length) {
       $.each($fixedEl, function(){
-        console.log($(this));
         var top = parseInt($(this).offset().top - (parseFloat($(this).css('top')) || 0)),
             $this = $(this);
-        console.log($(this).offset().top);
         updateAffix(top, $window, $this);
         $window.on('scroll.affix',function(){
           updateAffix(top, $window, $this);

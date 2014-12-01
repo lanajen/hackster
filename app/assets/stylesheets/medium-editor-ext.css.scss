@@ -188,35 +188,6 @@
     }
   }
 
-  .embed-overlay, .code-overlay {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    top: 0;
-    left: 0;
-    background: #000;
-    background: rgba(0,0,0,0.8);
-    @include opacity(0);
-    @include transition(opacity .2s);
-    z-index: 1000;
-    &.is-visible {
-      @include opacity(1);
-    }
-    .progress {
-      width: 70%;
-      margin: 0 auto;
-    }
-    .progress-legend {
-      color: #fff;
-    }
-    button {
-      margin-right: 5px;
-    }
-    &:hover {
-      @include opacity(1);
-    }
-  }
-
   .editable.editable-activated {
     border-bottom: 3px solid #3d8bc1;
     padding-bottom: 2px;
@@ -227,6 +198,35 @@
         }
       }
     }
+  }
+}
+
+.embed-overlay, .code-overlay {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background: #000;
+  background: rgba(0,0,0,0.8);
+  @include opacity(0);
+  @include transition(opacity .2s);
+  z-index: 1000;
+  &.is-visible {
+    @include opacity(1);
+  }
+  .progress {
+    width: 70%;
+    margin: 0 auto;
+  }
+  .progress-legend {
+    color: #fff;
+  }
+  button {
+    margin-right: 5px;
+  }
+  &:hover {
+    @include opacity(1);
   }
 }
 
@@ -358,8 +358,9 @@ code.gist {
     }
   }
 }
-#project-top-image {
+#project-top-image, .project-banner {
   .embed-overlay {
+    z-index: 0;
     width: 100%;
     height: 100%;
     padding: 50px;
