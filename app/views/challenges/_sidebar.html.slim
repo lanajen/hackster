@@ -42,6 +42,8 @@
           p#status
             ' Expires in:
             strong= @challenge.time_left
+          p style="font-size:11px"
+            ' Ends on #{l @challenge.end_date.in_time_zone(PDT_TIME_ZONE)} PST
           - if @is_challenge_entrant
             p
               strong Your entry has been registered!

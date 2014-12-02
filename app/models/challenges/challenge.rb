@@ -13,15 +13,17 @@ class Challenge < ActiveRecord::Base
   has_many :projects, through: :entries
   has_one :cover_image, as: :attachable, class_name: 'Document', dependent: :destroy
   has_one :tile_image, as: :attachable, class_name: 'Image', dependent: :destroy
-  validates :name, :slug, presence: true
+  validates :name, :slug, :end_date, presence: true
   validates :teaser, length: { maximum: 140 }
+  validate :end_date_is_valid
   before_validation :assign_new_slug
   before_validation :generate_slug, if: proc{ |c| c.slug.blank? }
 
-  attr_accessible :new_slug, :name, :prizes_attributes, :tech_id, :description,
+  attr_accessible :new_slug, :name, :prizes_attributes, :platform_id, :description,
     :rules, :teaser, :multiple_entries, :duration, :eligibility, :requirements,
-    :judging_criteria, :how_to_enter, :video_link, :cover_image_id, :project_ideas
-  attr_accessor :new_slug
+    :judging_criteria, :how_to_enter, :video_link, :cover_image_id, :project_ideas,
+    :end_date, :end_date_dummy
+  attr_accessor :new_slug, :end_date_dummy
 
   store :properties, accessors: [:description, :rules, :teaser, :multiple_entries,
     :eligibility, :requirements, :judging_criteria, :how_to_enter, :project_ideas]
@@ -78,11 +80,23 @@ class Challenge < ActiveRecord::Base
     notify_observers(:after_end)
   end
 
-  def end_date
-    return unless start_date.present?
-
-    start_date + duration.days
+  def end_date=(val)
+    begin
+      date = val.to_datetime
+      write_attribute :end_date, date
+    rescue
+    end
   end
+
+  def end_date_dummy
+    end_date.strftime("%m/%d/%Y %l:%M %P") if end_date
+  end
+
+  # def end_date
+  #   return unless start_date.present?
+
+  #   start_date + duration.days
+  # end
 
   def generate_slug
     return if name.blank?
@@ -123,4 +137,10 @@ class Challenge < ActiveRecord::Base
   def ready_for_judging?
     judging?
   end
+
+  private
+    def end_date_is_valid
+      errors.add :end_date_dummy, 'is required' and return unless end_date
+      errors.add :end_date_dummy, 'must be at least 5 days in the future' if end_date < 5.days.from_now
+    end
 end

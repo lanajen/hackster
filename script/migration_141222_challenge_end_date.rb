@@ -1,0 +1,1 @@
+Challenge.where(end_date: nil).update_all("end_date = start_date + interval '1 day' * duration")

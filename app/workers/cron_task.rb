@@ -55,7 +55,7 @@ class CronTask < BaseWorker
   end
 
   def expire_challenges
-    Challenge.where(workflow_state: :in_progress).where("(challenges.start_date + interval '1 day' * challenges.duration) < ?", Time.now).each do |challenge|
+    Challenge.where(workflow_state: :in_progress).where("challenges.end_date < ?", Time.now).each do |challenge|
       challenge.end!
     end
   end

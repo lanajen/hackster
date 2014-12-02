@@ -9,6 +9,15 @@ module StringParser
       end
     end
 
+    # make these methods return floats instead of strings
+    def parse_as_floats store_attr, *attrs
+      attrs.each do |float|
+        define_method float do
+          send(store_attr)[float] ? send(store_attr)[float].to_f : nil
+        end
+      end
+    end
+
     # make these methods return integers instead of strings
     def parse_as_integers store_attr, *attrs
       attrs.each do |integer|
@@ -18,11 +27,11 @@ module StringParser
       end
     end
 
-    # make these methods return floats instead of strings
-    def parse_as_floats store_attr, *attrs
-      attrs.each do |float|
-        define_method float do
-          send(store_attr)[float] ? send(store_attr)[float].to_f : nil
+    # make these methods return times instead of strings
+    def parse_as_times store_attr, *attrs
+      attrs.each do |time|
+        define_method time do
+          send(store_attr)[time] ? send(store_attr)[time].to_time : nil
         end
       end
     end

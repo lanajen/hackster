@@ -3,8 +3,9 @@
 
   .row
     .col-xs-12
-      h3
-        | Challenge settings
+      .header.clearfix
+        h3.pull-left
+          | Challenge settings
         .pull-right
           ul.list-unstyled.list-inline
             / if current_user.is? :admin
@@ -31,7 +32,13 @@
         .panel-heading
           h4 Challenge settings
         .panel-body
-          = f.input :duration, hint: 'In days', collection: %w(7 10 15 30 45 60)
+          = f.input :end_date_dummy, label: 'Entry deadline', wrapper_html: { id: 'datetimepicker' }, hint: "The maximum date by which hackers can submit entries to the challenge. All times are PST." do
+            #datepicker.input-group
+              = f.input_field :end_date_dummy, as: :string, label: false
+              span.input-group-addon
+                i.fa.fa-calendar
+          = f.input :end_date, as: :hidden, input_html: { id: 'end_date' }
+          / = f.input :duration, hint: 'In days', collection: %w(7 10 15 30 45 60)
           = f.input :project_ideas, as: :boolean, inline_label: 'Accept project ideas instead of finished projects'
           = f.input :multiple_entries, inline_label: 'Allow more than one entry per person?', as: :boolean, label: false
           = f.input :description, as: :text, input_html: { rows: 10, class: 'text-editor' }
@@ -100,10 +107,28 @@
           li= f.submit 'Save changes', class: 'btn btn-primary btn-sm'
           li= link_to 'Cancel', @challenge, class: 'btn-link btn-sm'
 
+= content_for :head do
+  = stylesheet_link_tag 'datepicker'
+
 = content_for :js do
   = tinymce_assets
+  = javascript_include_tag 'datepicker'
 
   javascript:
+    $('#datetimepicker').datetimepicker({
+      icons: {
+          time: "fa fa-clock-o",
+          date: "fa fa-calendar",
+          up: "fa fa-arrow-up",
+          down: "fa fa-arrow-down"
+      },
+      sideBySide: true
+    });
+
+    $('#datetimepicker').on('change', function(){
+      $('#end_date').val($('#datetimepicker').data("DateTimePicker").getDate());
+    });
+
     jQuery(function($) {
       window.NestedFormEvents.prototype.insertFields = function(content, assoc, link) {
         var $tr = $(link).closest('tr');
