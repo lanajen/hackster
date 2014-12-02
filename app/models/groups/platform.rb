@@ -23,7 +23,7 @@ class Platform < List
   set_changes_for_stored_attributes :websites
 
   store :properties, accessors: [:accept_project_ideas, :project_ideas_phrasing,
-    :active_challengen, :crappy_overlay_text]
+    :active_challenge, :crappy_overlay_text]
   set_changes_for_stored_attributes :properties
 
   store :counters_cache, accessors: [:projects_count, :followers_count,
