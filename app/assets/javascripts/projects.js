@@ -70,6 +70,11 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
       target.slideToggle();
     });
 
+    $('body').on('click', '.new-comment input[type="submit"]', function(e){
+      $(this).parent().parent().submit();
+      $(this).replaceWith('<i class="fa fa-spin fa-spinner"></i>');
+    });
+
     checkIfCommentsHaveSameDepthYoungerSiblings();
 
     // $('.thumb-list-switch button').on('click', function(e){
