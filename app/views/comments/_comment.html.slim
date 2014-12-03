@@ -1,8 +1,6 @@
 .single-comment class="comment-depth-#{comment.depth}"
   .single-comment-inner
-    .comment-title.clearfix style='position:relative'
-      - if can? :destroy, comment
-        = link_to 'Delete', comment_path(comment), method: :delete, data: { remote: true, confirm: 'Are you sure you want to delete this comment?', hover: '.comment' }, class: 'btn-heading btn-delete default-hidden btn-heading-small'
+    .comment-title.clearfix
       .avatar
         - if comment.user_id.zero?
           = image_tag 'guest_default_100.png'
@@ -19,6 +17,11 @@
         span.text-muted
           ==> time_ago_in_words(comment.created_at)
           | ago
-      / .reply-comment
-          button.btn.btn-default Reply
+      .reply-comment
+        a.btn.btn-default.btn-sm.comment-reply href='' data-target="#comment-reply-#{comment.id}" Reply
+        - if can? :destroy, comment
+          = link_to 'Delete', comment_path(comment), method: :delete, data: { remote: true, confirm: 'Are you sure you want to delete this comment?', hover: '.comment' }, class: 'btn-delete default-hidden btn btn-link btn-sm pull-left'
     = auto_html(comment.body) { link(:target => 'blank') }.html_safe
+
+  .new-comment-reply id="comment-reply-#{comment.id}"
+    = render partial: 'comments/signed_in_form', locals: { commentable: comment.commentable, comment: Comment.new(parent_id: comment.id) }

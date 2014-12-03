@@ -1,5 +1,6 @@
 .new-comment
-  = simple_form_for [commentable, Comment.new], html: { data: { remote: true } } do |f|
+  = simple_form_for [commentable, comment], html: { data: { remote: true } } do |f|
     .textarea-content= f.input :body, label: false, input_html: { rows: 3, placeholder: 'Write a comment' }
+    = f.input :parent_id, as: :hidden
     .button-area
       = f.button :submit, value: 'Post comment'

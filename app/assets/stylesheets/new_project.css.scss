@@ -133,6 +133,22 @@
       padding: 0 10px;
     }
   }
+  .new-comment-reply {
+    .new-comment {
+      margin-bottom: 0;
+    }
+    position: relative;
+    margin-top: 20px;
+    display: none;
+    &:after {
+      content: "";
+      border-left: 1px solid #ddd;
+      position: absolute;
+      left: 50%;
+      top: -20px;
+      height: 20px;
+    }
+  }
   .single-comment {
     margin-top: 20px;
     h4 {
@@ -184,7 +200,7 @@
   .comment-depth-3,
   .comment-depth-4,
   .comment-depth-5 {
-    margin-top: 0;
+    margin-top: 0 !important;
     padding-top: 20px;
     position: relative;
     &:after {
@@ -203,6 +219,11 @@
       right: 100%;
       top: 0;
       margin-right: 25px;
+    }
+    &.has-same-depth-younger-sibling {
+      &:before {
+        height: 100%;
+      }
     }
   }
   .comment-depth-1 {

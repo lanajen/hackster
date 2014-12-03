@@ -1,3 +1,15 @@
+function checkIfCommentsHaveSameDepthYoungerSiblings() {
+  var previousCommentClass;
+  var els = [];
+  $.each($('.single-comment').get().reverse(), function(i, el){
+    if (previousCommentClass == el.className) els.push(el);
+    previousCommentClass = el.className;
+  });
+  $.each(els, function(i, el){
+    $(el).addClass('has-same-depth-younger-sibling');
+  });
+}
+
 ;(function ( $, window, document, undefined ) {
   $(function(){
     $('.show-simplified-signup').click(function(e){
@@ -51,6 +63,14 @@
       offsetTop = $(this).data('offset') || 0;
       smoothScrollTo(target,offsetTop);
     });
+
+    $('body').on('click', '.comment-reply', function(e){
+      e.preventDefault();
+      target = $($(this).data('target'));
+      target.slideToggle();
+    });
+
+    checkIfCommentsHaveSameDepthYoungerSiblings();
 
     // $('.thumb-list-switch button').on('click', function(e){
     //   switcher = $(this).parent();

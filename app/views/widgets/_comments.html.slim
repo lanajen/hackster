@@ -1,6 +1,6 @@
 .comments
   - if user_signed_in?
-    = render partial: 'comments/signed_in_form', locals: { commentable: commentable }
+    = render partial: 'comments/signed_in_form', locals: { commentable: commentable, comment: Comment.new }
   - else
     p.sign-up-to-comment
       ' Please
