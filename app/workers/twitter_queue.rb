@@ -1,5 +1,5 @@
 class TwitterQueue < BaseWorker
-  sidekiq_options queue: :default, retry: false
+  sidekiq_options queue: :default, retry: 0
 
   def update message
     begin

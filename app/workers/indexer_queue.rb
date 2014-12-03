@@ -1,5 +1,5 @@
 class IndexerQueue < BaseWorker
-  sidekiq_options queue: :default
+  sidekiq_options queue: :default, retry: false
 
   def store model, id
     model.constantize.index.store model.constantize.find(id)

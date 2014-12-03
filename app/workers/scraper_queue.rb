@@ -1,7 +1,7 @@
 class ScraperQueue < BaseWorker
   TECHES_TO_SCRAPE = ['Raspberry Pi', 'Arduino', 'Spark Core', 'Electric Imp', 'Teensy', 'Digispark', 'BeagleBoard', 'Intel Galileo', 'Pebble', 'pcDuino', 'TI Launchpad']
   # @queue = :scraper
-  sidekiq_options queue: :low, retry: false
+  sidekiq_options queue: :low, retry: 0
 
   def scrape_instructables platforms=TECHES_TO_SCRAPE
     @results = InstructablesScraper.scrape_in_bulk platforms

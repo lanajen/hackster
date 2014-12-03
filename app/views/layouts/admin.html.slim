@@ -51,13 +51,13 @@ html(lang="en")
             li= link_to 'Sidekiq', '/admin/sidekiq'
 
     .container
-      - if Sidekiq::Stats.new.failed > 0
+      - if Sidekiq::Stats.new.dead_size > 0
         .row
           .col-xs-12
             .alert.alert-danger
-              ' #{Sidekiq::Stats.new.failed} failed jobs in
-              ==> link_to 'Sidekiq', '/admin/sidekiq/failures', class: 'alert-link'
-              = link_to 'Clear', '/admin/sidekiq/failures', class: 'btn btn-danger btn-sm', data: { method: :delete }
+              ' #{Sidekiq::Stats.new.dead_size} dead jobs in
+              ==> link_to 'Sidekiq', '/admin/sidekiq/morgue', class: 'alert-link'
+              = link_to 'Clear', '/admin/sidekiq/morgue', class: 'btn btn-danger btn-sm', data: { method: :delete }
 
       .row
         .col-xs-12

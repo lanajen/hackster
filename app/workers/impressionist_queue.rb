@@ -5,7 +5,7 @@ end
 
 class ImpressionistQueue < BaseWorker
   include ImpressionistController::InstanceMethods
-  sidekiq_options queue: :low
+  sidekiq_options queue: :low, retry: false
 
   def action_name
     @action_name
