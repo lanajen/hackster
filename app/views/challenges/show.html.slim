@@ -68,8 +68,8 @@ section#projects-list
   .popup-overlay-bg
   .popup-overlay-outer
     .popup-overlay-inner
-      button.close  onclick="closePopup('.popup-overlay');"   &times;
-      - link_params = @challenge.project_ideas ? { project: { mark_as_idea: true, platform_tags_string: @platform.name } } : { project: {platform_tags_string: @platform.name } }
+      button.close onclick="closePopup('.popup-overlay');" &times;
+      - link_params = @challenge.project_ideas ? { project: { mark_as_idea: true, platform_tags_string: @platform.try(:name) } } : { project: {platform_tags_string: @platform.try(:name) } }
       - if user_signed_in?
         - if @user_projects.any?
           p Which project do you want to use to enter the challenge?

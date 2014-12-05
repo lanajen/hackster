@@ -11,18 +11,19 @@ class Challenge < ActiveRecord::Base
   has_many :entrants, through: :projects, source: :users
   has_many :prizes, -> { order(:position) }, dependent: :destroy
   has_many :projects, through: :entries
+  has_one :avatar, as: :attachable, dependent: :destroy
   has_one :cover_image, as: :attachable, class_name: 'Document', dependent: :destroy
   has_one :tile_image, as: :attachable, class_name: 'Image', dependent: :destroy
   validates :name, :slug, :end_date, presence: true
   validates :teaser, length: { maximum: 140 }
-  validate :end_date_is_valid
+  validate :end_date_is_valid, if: proc{ |c| c.persisted? }
   before_validation :assign_new_slug
   before_validation :generate_slug, if: proc{ |c| c.slug.blank? }
 
   attr_accessible :new_slug, :name, :prizes_attributes, :platform_id, :description,
     :rules, :teaser, :multiple_entries, :duration, :eligibility, :requirements,
     :judging_criteria, :how_to_enter, :video_link, :cover_image_id, :project_ideas,
-    :end_date, :end_date_dummy
+    :end_date, :end_date_dummy, :avatar_id
   attr_accessor :new_slug, :end_date_dummy
 
   store :properties, accessors: [:description, :rules, :teaser, :multiple_entries,
@@ -66,6 +67,10 @@ class Challenge < ActiveRecord::Base
   def assign_new_slug
     @old_slug = slug
     self.slug = new_slug
+  end
+
+  def avatar_id=(val)
+    self.avatar = Avatar.find_by_id(val)
   end
 
   def cover_image_id=(val)

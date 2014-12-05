@@ -5,7 +5,7 @@ section#teaser  style="background-image: url(#{@challenge.cover_image})"
 section#rules
   .wrapper
     h2 Challenge description
-    = @challenge.description.html_safe
+    = raw @challenge.description
 
     h2 Prizes
     .row
@@ -19,20 +19,20 @@ section#rules
 
     - if @challenge.eligibility.present?
       h2 Eligibility
-      = @challenge.eligibility.html_safe
+      = raw @challenge.eligibility
 
     - if @challenge.requirements.present?
       h2 Requirements
-      = @challenge.requirements.html_safe
+      = raw @challenge.requirements
 
     - if @challenge.judging_criteria.present?
       h2 Judging criteria
-      = @challenge.judging_criteria.html_safe
+      = raw @challenge.judging_criteria
 
     - if @challenge.how_to_enter.present?
       h2 How to enter
-      = @challenge.how_to_enter.html_safe
+      = raw @challenge.how_to_enter
 
     - if @challenge.rules.present?
       h2 Full rules
-      = @challenge.rules.html_safe
+      = raw @challenge.rules

@@ -4,6 +4,9 @@
       - if @platform.avatar
         .avatar#platform-avatar-image-div
           #platform-avatar-image style="background-image:url('#{@platform.avatar(:big)}');"
+    - elsif @challenge.avatar
+      .avatar#platform-avatar-image-div
+        #platform-avatar-image style="background-image:url('#{@challenge.avatar.file_url(:big)}');"
     #platform-body
       p
         - if @challenge.teaser.present?
@@ -18,7 +21,7 @@
       <a class="addthis_button_compact"></a>
       </div>
 
-      - if @challenge.prizes.any?
+      - if @challenge.prizes.any? and @challenge.prizes.first.name.present?
         = content_for :js do
           <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-51b26f5613fb83d2" async="async"></script>
           javascript:
