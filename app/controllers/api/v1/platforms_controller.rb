@@ -8,7 +8,7 @@ class Api::V1::PlatformsController < Api::V1::BaseController
   end
 
   def show
-    render json: { platform: { name: @platform.name, url: platform_short_url(@platform) }, projects: @projects.map{|c| { name: c.project.name, url: project_url(c.project) } } }
+    render json: { platform: { name: @platform.name, url: platform_short_url(@platform) }, projects: @projects.map{|c| { name: c.project.name, url: project_url(c.project), embed_url: project_embed_url(c.project) } } }
   end
 
   private
