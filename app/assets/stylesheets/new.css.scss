@@ -278,7 +278,7 @@ h1 {
   }
 }
 .project-stats {
-  margin: 0;
+  margin: 0 -5px;
   font-size: 0.55em;
   text-transform: uppercase;
   color: #ddd;
@@ -305,7 +305,7 @@ h1 {
 .tags {
   margin-bottom: 5px;
   li {
-    padding-bottom: 5px;
+    margin-bottom: 10px;
   }
 }
 .tag {
@@ -328,6 +328,7 @@ h1 {
   background-color: #333;
   padding: 70px 0;
   color: #ffffff;
+  border-bottom: 1px solid #666;
   p {
     max-width: 670px;
   }
@@ -340,7 +341,6 @@ footer {
 }
 .footer-nav {
   background: #333;
-  border-top: 1px solid #ffffff;
   padding-top: 20px;
   padding-bottom: 20px;
 }

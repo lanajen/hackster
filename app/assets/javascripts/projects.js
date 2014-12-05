@@ -40,7 +40,7 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
     $('.title-toggle').on('click', function(e){
       e.preventDefault();
       $(this).parent().next().slideToggle(150);
-      $(this).parent().toggleClass('section-expanded').toggleClass('section-toggled');
+      $(this).closest('.section-collapsible').toggleClass('section-expanded').toggleClass('section-toggled');
     })
 
     //make scrollspy/sidebar navigation work

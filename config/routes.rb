@@ -25,6 +25,7 @@ HackerIo::Application.routes.draw do
         resources :build_logs
         resources :projects#, as: :api_projects
         resources :parts, only: [:create, :destroy]
+        resources :platforms, only: [:show]
         resources :widgets, only: [:destroy, :update, :create]
         match "*all" => "base#cors_preflight_check", via: :options
       end

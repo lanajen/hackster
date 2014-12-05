@@ -227,17 +227,15 @@ img {
     padding: 21px 12px 20px 48px;
     font-size: 14px;
     font-weight: 200;
-    color:#777;
     width: 174px;
     @include transition(all .5s ease);
     @include box-shadow(none);
     &:focus{
       outline: none;
       @include box-shadow(none);
-      border-color: #ccc;
     }
     @include input-placeholder {
-     color: #777;
+     color: #999;
      font-weight: bold;
     }
   }
