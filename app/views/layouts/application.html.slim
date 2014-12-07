@@ -97,6 +97,7 @@ html(lang="en")
                             - POPULAR_TAGS.each do |tag, link|
                               li= link_to tag, "#{link}?ref=topnav"
                 li= link_to 'Platforms', platforms_path, class: 'nav-link'
+                li= link_to 'Challenges', '/challenges/wunderbar-holiday', class: 'nav-link'
               - if user_signed_in?
                 ul.navbar-nav.navbar-right
                   li.btn-group.navbar-btn#user-navigation-links
