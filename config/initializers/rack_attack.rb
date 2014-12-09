@@ -73,6 +73,7 @@ class Rack::Attack
   end
   track('bad_scraper') do |req|
     req.user_agent =~ /23\.0\.1271\.97/
+    req.user_agent =~ /54\.80\.73\.50/
   end
 
   ### Custom Throttle Response ###
