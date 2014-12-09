@@ -283,6 +283,11 @@ HackerIo::Application.routes.draw do
     get 'users/registration/complete_profile' => 'users#after_registration', as: :user_after_registration
     patch 'users/registration/complete_profile' => 'users#after_registration_save'
 
+    # dragon
+    get 'dragon' => 'dragon_queries#index'
+    get 'dragon/leads/new' => 'dragon_queries#new'
+    post 'dragon/leads' => 'dragon_queries#create'
+
     get 'about' => 'pages#about'
     # get 'help' => 'pages#help'
     get 'achievements' => 'pages#achievements'
