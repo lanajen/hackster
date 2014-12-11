@@ -4,6 +4,7 @@ class ChallengesController < ApplicationController
   before_filter :load_platform, only: [:show, :rules]
   before_filter :load_and_authorize_challenge, only: [:enter, :update_workflow]
   before_filter :set_challenge_entrant, only: [:show, :rules]
+  before_filter :load_user_projects, only: [:show, :rules]
   load_and_authorize_resource except: [:show, :rules, :update]
   layout :set_layout
 
@@ -20,12 +21,6 @@ class ChallengesController < ApplicationController
     end
     @embed = Embed.new(url: @challenge.video_link)
 
-    if user_signed_in?
-      @user_projects = current_user.projects.where(external: false)
-      @user_projects = @user_projects.select{|p| p.is_idea? } if @challenge.project_ideas
-    else
-      @user_projects = []
-    end
   end
 
   def rules
@@ -77,6 +72,15 @@ class ChallengesController < ApplicationController
 
     def load_platform
       @platform = @challenge.platform.try(:decorate)
+    end
+
+    def load_user_projects
+      if user_signed_in?
+        @user_projects = current_user.projects.where(external: false)
+        @user_projects = @user_projects.select{|p| p.is_idea? } if @challenge.project_ideas
+      else
+        @user_projects = []
+      end
     end
 
     def set_challenge_entrant

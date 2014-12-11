@@ -71,3 +71,49 @@
         - if can? :admin, @challenge
           li= link_to "#{content_tag(:i, '', class: 'fa fa-cog')} Manage challenge".html_safe, edit_challenge_path(@challenge)
           li= link_to "#{content_tag(:i, '', class: 'fa fa-cog')} Entries dashboard".html_safe, challenge_entries_path(@challenge)
+
+#enter-popup.popup-overlay.normal-size
+  .popup-overlay-bg
+  .popup-overlay-outer
+    .popup-overlay-inner
+      button.close onclick="closePopup('.popup-overlay');" &times;
+      - link_params = @challenge.project_ideas ? { project: { mark_as_idea: true, platform_tags_string: @platform.try(:name) } } : { project: {platform_tags_string: @platform.try(:name) } }
+      - if user_signed_in?
+        - if @user_projects.any?
+          p Which project do you want to use to enter the challenge?
+          = form_tag challenge_entries_path(@challenge), method: :post do
+            = select_tag :project_id, options_from_collection_for_select(@user_projects, :id, :name), class: 'form-control'
+            p
+              small
+                ' By entering you agree to the
+                = link_to 'challenge rules', challenge_rules_path(@challenge)
+            = submit_tag "Enter my project #{'idea ' if @challenge.project_ideas}into the challenge", class: 'btn btn-primary'
+          p
+            small
+              ' or
+              = link_to "create a new project#{' idea' if @challenge.project_ideas}", new_project_path(link_params)
+
+        - else
+          p You need a project #{'idea ' if @challenge.project_ideas}to enter!
+          p= link_to "Create a new project#{' idea' if @challenge.project_ideas}", new_project_path(link_params)
+      - else
+        p You need a project to #{'idea ' if @challenge.project_ideas}enter!
+        p
+          ==> link_to "Create a new project#{' idea' if @challenge.project_ideas}", new_user_registration_path(reason: 'project', redirect_to: new_project_path(link_params))
+          ' or
+          = link_to 'log in to use one of your existing projects', new_user_session_path(m: 'challenge', id: @challenge.id, reason: 'enter', redirect_to: challenge_path(@challenge, enter: 't'))
+
+= content_for :js do
+  javascript:
+    $(document).ready(function(){
+      $('.enter-challenge').click(function(e){
+        e.preventDefault();
+        $('#enter-popup').fadeIn();
+      });
+    });
+
+  - if params[:enter]
+    javascript:
+      $(document).ready(function(){
+        $('#enter-popup').fadeIn();
+      });

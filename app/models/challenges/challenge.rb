@@ -31,7 +31,7 @@ class Challenge < ActiveRecord::Base
 
   accepts_nested_attributes_for :prizes, allow_destroy: true
 
-  parse_as_booleans :properties, :multiple_entries
+  parse_as_booleans :properties, :multiple_entries, :project_ideas
 
   workflow do
     state :new do
