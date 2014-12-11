@@ -108,7 +108,7 @@ $(function() {
           content[elementid]['widgets_attributes'][i] = attrs;
         });
 
-        $inserts.find('figcaption, .figcaption').each(function(){
+        $inserts.find('.embed-figcaption').each(function(){
           frame = $(this).closest('.embed-frame');
           frame.attr('data-caption', $(this).text());
         });
