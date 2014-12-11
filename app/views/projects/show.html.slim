@@ -272,9 +272,11 @@
                 - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
                   = render partial: 'respects/button', locals: { project: @project }
                 = render 'projects/project_embed_popup'
-                .add-to-list
                 - if @project.celery_id.present?
                   = link_to "#{content_tag(:i, '', class: 'fa fa-shopping-cart')} Buy it".html_safe, '#', 'data-celery' => @project.celery_id, 'data-celery-version' => 'v2', class: 'btn btn-warning btn-ellipsis btn-block'
+                - if @project.buy_link.present?
+                  = link_to "#{content_tag(:i, '', class: 'fa fa-shopping-cart')} Buy it".html_safe, @project.buy_link, class: 'btn btn-block btn-warning btn-lg', target: '_blank', rel: 'nofollow'
+                .add-to-list
                 = render partial: 'add_to_list_button'
 
             - elsif @can_edit
@@ -323,6 +325,22 @@
               .row.mobile-scroll-row.desktop-tighter-margins
                 - @project.team_members.each do |member|
                   = render partial: 'users/member_thumb_mini', locals: { member: member }
+
+
+            - if @project.credit_lines.any?
+              section.section-thumbs
+                h4 Additional contributors
+                ul
+                  - @project.credit_lines.each do |credit_line|
+                    li
+                      - if credit_line.name.present?
+                        - if credit_line.work.present?
+                          ==> credit_line.work.try(:capitalize)
+                          ' by
+                        - if credit_line.link.present?
+                          = link_to credit_line.name, credit_line.link, target: '_blank', rel: 'nofollow'
+                        - else
+                          span.user-name= credit_line.name
 
             - if communities = (@project.platforms + [@project.hacker_space] + @project.communities).compact and communities.any? #@project.communities_count > 0
               section.section-thumbs
