@@ -142,7 +142,9 @@ class CodeWidget < Widget
   }
   ERROR_MESSAGE = "Error opening file."
 
-  define_attributes [:raw_code, :formatted_content, :language]
+  # device only supports "Spark Core", compiles needs to be set to true
+  define_attributes [:raw_code, :formatted_content, :language, :device,
+    :compiles]
   has_one :document, as: :attachable
 
   attr_accessible :document_attributes

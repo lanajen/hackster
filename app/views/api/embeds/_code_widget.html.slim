@@ -24,6 +24,8 @@
       - if document = embed.widget.document and document.file_url.present?
         a.btn.btn-primary.btn-md data-edit-hide='true' href=document.file_url target='_blank'
           ' Download
+      - if embed.widget.device == 'Spark Core' and embed.widget.compiles
+        a.btn.btn-primary.btn-md data-edit-hide='true' href='' data-target="#raw-code-#{embed.widget.id}" Upload to Spark Core
 
   .language-selector data-edit-only='true' style='display:none'
     .widget-attribute*{ 'data-value' => embed.widget.language, 'data-attribute' => "language" }
@@ -33,6 +35,7 @@
 
   .code-container*{ 'data-edit-hide' => 'true' }
     = embed.widget.formatted_content.try(:html_safe)
+    textarea id="raw-code-#{embed.widget.id}" style='display:none' = embed.widget.raw_content
     .code-overlay.is-visible
       .center-align-wrapper
         .center-align-inner
