@@ -72,7 +72,7 @@
               .add-to-list
               = render partial: 'add_to_list_button'
 
-            - if @can_edit
+            - if can? :edit, @project
               section.section-thumbs
                 h4 Manage this project
                 .btn-group<
