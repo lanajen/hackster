@@ -11,7 +11,7 @@ section#projects-list
       ' Public projects
       = content_tag(:span, @user.live_projects_count, class: 'badge')
     - if @public_projects.any?
-      - if @public_projects_sorted.size > 1
+      /- if @public_projects_sorted.size > 1
         .thumb-list  class=@switch_style
           .row.project-list
             - @public_projects_sorted.each do |year, projects|
@@ -19,12 +19,12 @@ section#projects-list
               - projects.each_with_index do |project, i|
                 - show_year = (i > 0) ? false : true
                 = render partial: 'projects/project_thumb', locals: { project: project.decorate, show_year: show_year, ref: 'user', ref_id: @user.id, offset: i }
-      - else
-        .thumb-list  class=@switch_style
-          .row.project-list
-            / @public_projects_sorted.each do |year, projects|
-            - @public_projects.each_with_index do |project, i|
-              = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'user', ref_id: @user.id, offset: i }
+      /- else
+      .thumb-list  class=@switch_style
+        .row.project-list
+          / @public_projects_sorted.each do |year, projects|
+          - @public_projects.each_with_index do |project, i|
+            = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'user', ref_id: @user.id, offset: i }
 
       = content_for :js do
         javascript:
