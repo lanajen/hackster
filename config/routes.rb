@@ -85,6 +85,14 @@ HackerIo::Application.routes.draw do
       root to: 'pages#root'
     end  # end admin
 
+    namespace :spark do
+      resources :authorizations, except: [:show, :edit, :update] do
+        get 'current' => 'authorizations#show', on: :collection
+        delete '' => 'authorizations#destroy', on: :collection
+      end
+      resources :uploads, only: [:new]
+    end
+
     scope '/blog', module: :blog do
       get '' => 'posts#index', as: :blog_index
       get 'tags/:tag' => 'posts#index', as: :blog_tag

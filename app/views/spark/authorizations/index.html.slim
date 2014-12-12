@@ -1,0 +1,20 @@
+.row
+  .col-md-6.col-md-offset-3
+    .box
+      .box-title
+        h2 Access tokens for Spark
+      .box-content
+        - if @token
+          table.table
+            thead
+              th Token
+              th
+            tbody
+              tr
+                td= @token
+                td
+                  = link_to 'Disconnect', spark_authorizations_path(token: @token), class: 'btn btn-danger btn-sm', data: { method: :delete }
+        - else
+          ' Please
+          = link_to 'connect your account to Spark', new_spark_authorization_path
+          | .

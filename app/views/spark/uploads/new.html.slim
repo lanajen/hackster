@@ -1,0 +1,38 @@
+.row
+  .col-md-6.col-md-offset-3
+    .box
+      .box-title
+        h2 Upload a sketch to your Spark Core
+      .box-content
+        pre
+          code
+            | void setup() {
+            br
+            |
+            br
+            | }
+            br
+            |
+            br
+            | void loop() {
+            br
+            |
+            br
+            | }
+        form#spark-upload style='display:nonee'
+          select#devices name='deviceId'
+            option
+          textarea name='code' style='display:none'
+            = "void setup() {\n\n}\n\nvoid loop() {\n\n}"
+          input type='submit' value='Upload this sketch' class='btn btn-primary btn-block'
+
+= content_for :head do
+  meta name="spark_access_token" content=@token
+
+= content_for :js do
+  = javascript_include_tag 'spark'
+
+  javascript:
+    $(function(){
+      getDevices();
+    });
