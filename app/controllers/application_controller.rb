@@ -368,6 +368,10 @@ class ApplicationController < ActionController::Base
       @new_user_session = User.new unless user_signed_in?
     end
 
+    def ssl_configured?
+      Rails.env == 'production'
+    end
+
     def user_signed_in?
       current_user and current_user.id
     end

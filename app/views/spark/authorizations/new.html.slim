@@ -1,0 +1,44 @@
+.row
+  .col-md-6.col-md-offset-3
+    .box
+      .box-title
+        h2 Connect your Spark account
+      .box-content
+        = form_tag '', id: 'spark-auth', authenticity_token: false do
+          .form-group
+            = label_tag :username, 'Spark user name'
+            = text_field_tag :username, params[:username], class: 'form-control'
+          .form-group
+            = label_tag :password, 'Password'
+            = password_field_tag :password, nil, class: 'form-control'
+          = submit_tag 'Connect', class: 'btn btn-primary'
+
+= content_for :js do
+  = javascript_include_tag 'spark'
+
+  javascript:
+    $(function(){
+      fetchAccessToken();
+
+      $('#spark-auth').on('submit', function(e){
+        e.preventDefault();
+
+        var data = $(this).serializeArray();
+        data.push({ name: 'grant_type', value: 'password' });
+
+        $.ajax({
+          url: 'https://api.spark.io/oauth/token',
+          type: 'POST',
+          data: data,
+          headers: { 'Authorization': "Basic " + btoa('hackster:spark') },
+          success: function(data){
+            console.log(data);
+            var token = data.access_token;
+            addSparkAccessToken(token);
+          },
+          error: function(data){
+            console.log(data);
+          }
+        })
+      });
+    });
