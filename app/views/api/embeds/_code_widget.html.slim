@@ -35,7 +35,7 @@
 
   .code-container*{ 'data-edit-hide' => 'true' }
     = embed.widget.formatted_content.try(:html_safe)
-    textarea id="raw-code-#{embed.widget.id}" style='display:none' = embed.widget.raw_content
+    textarea id="raw-code-#{embed.widget.id}" style='display:none' = embed.widget.raw_code
     .code-overlay.is-visible
       .center-align-wrapper
         .center-align-inner
