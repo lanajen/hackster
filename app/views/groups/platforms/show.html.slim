@@ -169,6 +169,7 @@ section.projects-list
           ul.dropdown-menu.pull-right
             li*{ class: "#{'active' if params[:by] == nil}" } = link_to 'All', platform_short_path(@platform, sort: params[:sort])
             li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to 'Featured', platform_short_path(@platform, by: 'featured', sort: params[:sort])
+            li*{ class: "#{'active' if params[:by] == 'on_hackster'}" } = link_to 'On Hackster', platform_short_path(@platform, by: 'on_hackster', sort: params[:sort])
             li*{ class: "#{'active' if params[:by] == 'wip'}" } = link_to 'Work in progress', platform_short_path(@platform, by: 'wip', sort: params[:sort])
 
 

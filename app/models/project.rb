@@ -4,15 +4,16 @@ class Project < ActiveRecord::Base
   FILTERS = {
     'featured' => :featured,
     'gfeatured' => :featured_by_collection,
+    'on_hackster' => :self_hosted,
     'wip' => :wip,
   }
   SORTING = {
     'magic' => :magic_sort,
-    'trending' => :magic_sort,
     'popular' => :most_popular,
     'recent' => :last_public,
-    'updated' => :last_updated,
     'respected' => :most_respected,
+    'trending' => :magic_sort,
+    'updated' => :last_updated,
   }
 
   include Counter
@@ -219,6 +220,10 @@ class Project < ActiveRecord::Base
 
   def self.most_respected
     order('projects.respects_count DESC')
+  end
+
+  def self.self_hosted
+    where(external: false)
   end
 
   def self.wip
