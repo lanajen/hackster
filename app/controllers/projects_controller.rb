@@ -260,6 +260,7 @@ class ProjectsController < ApplicationController
       track_event 'Updated project', @project.to_tracker.merge({ type: 'project update'})
     else
       initialize_project
+      @project = @project.decorate
       render action: "edit"
     end
   end
@@ -296,7 +297,6 @@ class ProjectsController < ApplicationController
 
   private
     def initialize_project
-      @project = @project.decorate
       @project.build_logo unless @project.logo
       @project.build_cover_image unless @project.cover_image
     end

@@ -137,12 +137,12 @@
                 label.control-label Cover image
               .col-xs-8
                 .cover_image.file-drop
-                  - if @project.model.cover_image
-                    = hidden_field_tag :cover_image_id, @project.model.cover_image.id
+                  - if @project.cover_image
+                    = hidden_field_tag :cover_image_id, @project.cover_image.id
                   div
                     span.cover_image.image-preview.preview
-                      - if @project.model.cover_image
-                        = image_tag @project.model.cover_image.file_url(:cover_mini_thumb)
+                      - if @project.cover_image
+                        = image_tag @project.cover_image.file_url(:cover_mini_thumb)
                     .btn-group
                       a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.cover_image' } }  Select picture
                       a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.cover_image" } }
