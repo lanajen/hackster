@@ -98,7 +98,7 @@ function flashSparkCore(authToken, deviceId, code) {
       success: function(data){
         if (data.length > 0) {
           $.each(data, function(i, value){
-            $('<option value="' + value + '">' + value + '</option>').appendTo('#devices');
+            $('<option value="' + value.id + '">' + value.name + '</option>').appendTo('#devices');
             $('#spark-upload').show();
           });
         } else {

@@ -14,6 +14,7 @@ class ProjectScraper
 
     project = s.document.to_project
     project.website ||= page_url
+    project.name = project.name[0..59]
     project
   end
 
