@@ -11,16 +11,16 @@ class ProjectsController < ApplicationController
   def index
     title "Explore all projects - Page #{safe_page_params || 1}"
 
-    params[:sort] ||= 'trending'
-    @by = params[:by] || 'all'
+    params[:sort] = (params[:sort].in?(Project::SORTING.keys) ? params[:sort] : 'trending')
+    @by = (params[:by].in?(Project::FILTERS.keys) ? params[:by] : 'all')
 
     @projects = Project.indexable.for_thumb_display
-    if params[:sort] and params[:sort].in? Project::SORTING.keys
+    if params[:sort]
       @projects = @projects.send(Project::SORTING[params[:sort]])
     end
 
-    if params[:by] and params[:by].in? Project::FILTERS.keys
-      @projects = @projects.send(Project::FILTERS[params[:by]])
+    if @by and @by.in? Project::FILTERS.keys
+      @projects = @projects.send(Project::FILTERS[@by])
     end
 
     @projects = @projects.paginate(page: safe_page_params)

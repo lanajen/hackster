@@ -48,31 +48,31 @@
             - if current_platform.buy_link.present?
               li= link_to "Buy #{current_platform.name}", current_platform.buy_link, target: '_blank'
 
-      .col-xs-12.mg-20
-        .pull-left
-          iframe src="http://#{APP_CONFIG['full_host']}/followers/platforms/#{current_platform.id}?style=text" height=34 width=160 frameborder=0 scrolling='no' style='margin-right:10px'
-        .pull-left
-          = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_url(subdomain: 'www', project: { platform_tags_string: current_platform.name }), class: 'btn btn-sm btn-primary', style: 'font-size: 14px;padding: 6px 17px 7px;'
-        .btn-group.pull-right
-          .btn-group
-            button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
-              ' Sort by
-              span.caret
-            ul.dropdown-menu.pull-right
-              li*{ class: "#{'active' if params[:sort] == 'updated'}" } = link_to 'Last updated', root_path(sort: 'updated', by: params[:by])
-              li*{ class: "#{'active' if params[:sort] == 'magic'}" } = link_to 'Magic', root_path(sort: 'magic', by: params[:by])
-              li*{ class: "#{'active' if params[:sort] == 'popular'}" } = link_to 'Most popular', root_path(sort: 'popular', by: params[:by])
-              li*{ class: "#{'active' if params[:sort] == 'recent'}" } = link_to 'Most recent', root_path(sort: 'recent', by: params[:by])
-              li*{ class: "#{'active' if params[:sort] == 'respected'}" } = link_to 'Most respected', root_path(sort: 'respected', by: params[:by])
+    .col-xs-12.mg-20
+      .pull-left
+        iframe src="http://#{APP_CONFIG['full_host']}/followers/platforms/#{current_platform.id}?style=text" height=34 width=160 frameborder=0 scrolling='no' style='margin-right:10px'
+      .pull-left
+        = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_url(subdomain: 'www', project: { platform_tags_string: current_platform.name }), class: 'btn btn-sm btn-primary', style: 'font-size: 14px;padding: 6px 17px 7px;'
+      .btn-group.pull-right
+        .btn-group
+          button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
+            ' Sort by
+            span.caret
+          ul.dropdown-menu.pull-right
+            li*{ class: "#{'active' if params[:sort] == 'updated'}" } = link_to 'Last updated', root_path(sort: 'updated', by: params[:by])
+            li*{ class: "#{'active' if params[:sort] == 'popular'}" } = link_to 'Most popular', root_path(sort: 'popular', by: params[:by])
+            li*{ class: "#{'active' if params[:sort] == 'recent'}" } = link_to 'Most recent', root_path(sort: 'recent', by: params[:by])
+            li*{ class: "#{'active' if params[:sort] == 'respected'}" } = link_to 'Most respected', root_path(sort: 'respected', by: params[:by])
+            li*{ class: "#{'active' if params[:sort] == 'trending'}" } = link_to 'Trending', root_path(sort: 'trending', by: params[:by])
 
-          .btn-group
-            button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
-              ' Filter by
-              span.caret
-            ul.dropdown-menu.pull-right
-              li*{ class: "#{'active' if params[:by] == nil}" } = link_to 'All', root_path(sort: params[:sort])
-              li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to 'Featured', root_path(by: 'featured', sort: params[:sort])
-              li*{ class: "#{'active' if params[:by] == 'wip'}" } = link_to 'Work in progress', root_path(by: 'wip', sort: params[:sort])
+        .btn-group
+          button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
+            ' Filter by
+            span.caret
+          ul.dropdown-menu.pull-right
+            li*{ class: "#{'active' if params[:by] == nil}" } = link_to 'All', root_path(sort: params[:sort])
+            li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to 'Featured', root_path(by: 'featured', sort: params[:sort])
+            li*{ class: "#{'active' if params[:by] == 'wip'}" } = link_to 'Work in progress', root_path(by: 'wip', sort: params[:sort])
 
     .col-xs-12
       .row.thumb-list
