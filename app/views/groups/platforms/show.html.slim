@@ -45,7 +45,10 @@ section.top-banner
           .media-body
             / p.text-muted By Spark
             .clearfix
-              h1.pull-left= @platform.name
+              h1.pull-left
+                - if @platform.company_logo
+                  = image_tag @platform.company_logo.try(:file_url), class: 'company-logo'
+                = @platform.name
               / ul.list-inline.tags.pull-left
                 li
                   a.tag href='' Beginners

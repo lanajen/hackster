@@ -6,6 +6,7 @@ class Platform < List
   has_many :challenges
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'PlatformMember'
   has_one :client_subdomain
+  has_one :company_logo, as: :attachable, dependent: :destroy
   has_one :logo, as: :attachable, dependent: :destroy
   has_one :slug, as: :sluggable, dependent: :destroy, class_name: 'SlugHistory'
 
