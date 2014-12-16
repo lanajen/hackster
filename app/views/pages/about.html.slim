@@ -3,9 +3,10 @@
     section#pitch
       .container
         .row.header
-          .col-xs-12.text-center
+          .col-md-10.col-md-offset-1.text-center
             h2 Build awesome hardware
             p.subtitle Our members are already trying to break the limits of hardware. Come join them!
+            p Hackster is the fastest growing, online community for creating hardware. From beginners to the advanced, Hackster empowers people everywhere to learn, build and sell their creations without the traditional overhead of manufacturing, retail and venture capital. Founded by hardware and software entrepreneurs, Hackster’s mission is to help makers succeed in their own right.
 
         .row.pitch-line
           .col-xs-10.col-xs-offset-1
@@ -28,15 +29,12 @@
             .col-xs-6.img
               = image_tag 'home/icon3.png'
             .col-xs-6
-              h3 platforms and resources
+              h3 Platforms and resources
               p Why reinvent the wheel when a solution to your problem already exists? Discover platforms to accelerate prototyping and save time, money and efforts. Find resources that will help you make faster, from cheap custom parts to PCB manufacturing.
 
-    section
-      .container
-        .row.text-center
-          .col-xs-6  style='border-right:1px solid #ccc;padding-top:20px;padding-bottom:20px;'
-            h2.top Professionals
-            = link_to 'Start building a commercial product &rarr;'.html_safe, new_project_path(project: { open_source: false}, t: 'pro'), class: 'btn btn-primary btn-lg btn-block'
-          .col-xs-6  style='border-left:1px solid #fff;padding-top:20px;padding-bottom:20px;'
-            h2.top Hobbyists
-            = link_to 'Start building open hardware &rarr;'.html_safe, new_project_path(t: 'hob'), class: 'btn btn-primary btn-lg btn-block'
+    - if !user_signed_in?
+      section#signup-now-pretty-please
+        .container.text-center
+          h1 Are you ready to jump?
+          p Get inspired, learn new skills and contribute back to the community by sharing your own projects.
+          p= link_to 'Join the community', new_user_registration_path, class: 'btn btn-primary btn-sm'
