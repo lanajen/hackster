@@ -105,18 +105,9 @@
 }
 
 .user-thumb {
-  .thumbnail {
-    height: 256px;
-  }
-}
-
-.user-thumb {
-  &.user-thumb-horizontal {
-    .photo-thumb {
-      img {
-        width: 110px !important;
-      }
-    }
+  margin-bottom: 20px;
+  .project-stats {
+    color: #666;
   }
 }
 
