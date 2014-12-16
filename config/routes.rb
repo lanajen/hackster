@@ -292,7 +292,7 @@ HackerIo::Application.routes.draw do
     patch 'users/registration/complete_profile' => 'users#after_registration_save'
 
     # dragon
-    get 'dragon' => 'dragon_queries#index'
+    get 'partners' => 'partners#index'
     get 'dragon/leads/new' => 'dragon_queries#new'
     post 'dragon/leads' => 'dragon_queries#create'
 

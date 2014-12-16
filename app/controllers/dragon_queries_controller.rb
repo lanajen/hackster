@@ -1,7 +1,7 @@
 class DragonQueriesController < ApplicationController
-  def index
-    title "Get help manufacturing products"
-  end
+  # def index
+  #   title "Get help manufacturing products"
+  # end
 
   def new
     title "Start working with Dragon Innovation"
