@@ -5,9 +5,8 @@
         ' Browse top hackers
         small page #{safe_page_params || 1 }
 
-  .row
-    - @users.each do |user|
-      = render partial: 'users/user_thumb', locals: { user: user }
+  - @users.each do |user|
+    = render partial: 'users/user_thumb', locals: { user: user }
 
   .row
     .col-xs-12.text-center= will_paginate @users
