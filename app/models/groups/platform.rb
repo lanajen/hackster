@@ -13,7 +13,7 @@ class Platform < List
   attr_accessible :forums_link, :documentation_link, :crowdfunding_link,
     :buy_link, :shoplocket_link, :cover_image_id, :accept_project_ideas,
     :project_ideas_phrasing, :client_subdomain_attributes, :logo_id,
-    :crappy_overlay_text, :download_link
+    :crappy_overlay_text, :download_link, :company_logo_id
 
   accepts_nested_attributes_for :client_subdomain
 
@@ -64,6 +64,10 @@ class Platform < List
 
   def self.for_thumb_display
     includes(:avatar)
+  end
+
+  def company_logo_id=(val)
+    self.company_logo = CompanyLogo.find_by_id(val)
   end
 
   def generate_user_name
