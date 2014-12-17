@@ -69,7 +69,7 @@ class Groups::ProjectsController < ApplicationController
           @community = Community.where(type: 'Community').find_by_user_name! params[:user_name]
         when 'hackerspaces'
           @hacker_space = HackerSpace.find_by_user_name! params[:user_name]
-        when 'lists'
+        when 'l'
           @list = List.where(type: 'List').find_by_user_name! params[:user_name]
         end
       else
