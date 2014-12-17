@@ -17,7 +17,7 @@
           $('.list-' + list.val() + ' .status-in-progress').show();
           var $list = list;
           $.ajax({
-            url: '/lists/' + list.data('list-user-name') + '/projects/link',
+            url: '/l/' + list.data('list-user-name') + '/projects/link',
             data: {
               project_id: "#{@project.id}"
             },
