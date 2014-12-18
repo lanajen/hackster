@@ -16,15 +16,57 @@ h1 {
   font-weight: 300;
 }
 
-#hello-hackster {
+#home-banner {
+  .slick-slider {
+    margin: 0;
+  }
+  .slick-prev {
+      left: 20px;
+  }
+  .slick-next {
+    right: 20px;
+  }
+  .slick-dots {
+    bottom: 0;
+    li {
+      button {
+        &:before {
+          color: white;
+          text-shadow: black 0 0 20px;
+          font-size: 10px;
+        }
+      }
+      &.slick-active {
+        button {
+          &:before {
+            color: white;
+          }
+        }
+      }
+    }
+  }
+}
+.home-slide {
   @include background-cover;
-  background-image: asset-url('home/banner.jpg');
   padding: 20px 0 40px;
   color: #fff;
   a {
     color: #fff;
     text-decoration: underline;
   }
+  .container {
+    height: 130px;
+  }
+}
+@media (max-width: 768px) {
+  .home-slide {
+    .container {
+      height: 230px;
+    }
+  }
+}
+#hello-hackster {
+  background-image: asset-url('home/banner.jpg');
 }
 .block-image {
   @include background-cover;

@@ -22,7 +22,7 @@
         = f.input_field :new_user_name
       - if current_user.is? :admin
         = f.input :email
-        = f.input :crappy_overlay_text, as: :text, label: 'Overlay text'
+        = f.input :is_new, as: :boolean, inline_label: 'Show as new', label: false
       = f.input :mini_resume, as: :text, label: 'Short description', input_html: { rows: 4 },
         hint: 'Maximum 140 characters'
 

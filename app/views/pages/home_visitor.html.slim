@@ -3,14 +3,34 @@
   = auto_discovery_link_tag :rss, projects_path(format: :rss), title: 'Trending projects - Hackster.io'
   = auto_discovery_link_tag :atom, projects_path(format: :atom), title: 'Trending projects - Hackster.io'
 
+= content_for :js do
+  javascript:
+    $('#home-banner').slick({
+      accessibility: false,
+      autoplay: true,
+      autoplaySpeed: 5000,
+      speed: 500,
+      fade: true,
+      dots: true,
+      pauseOnHover: true
+    });
+
 = content_for :no_container do
   - cache ['home-visitor', user_signed_in?], tag: ['home', 'home-visitor'], expires_in: 1.hour do
-    section#hello-hackster
-      .container.text-center
-        h1 The community for hardware hackers.
-        p
-          ' Learn, share, and connect to build better hardware.
-          = link_to 'Learn more.', about_path(ref: 'homeabout'), class: 'alert-link'
+    section#home-banner
+      .home-slide#hello-hackster
+        .container.text-center
+          h1 The community for hardware hackers.
+          p
+            ' Learn, share, and connect to build better hardware.
+            = link_to 'Learn more.', about_path(ref: 'homeabout'), class: 'alert-link'
+      .home-slide style="background-image: url('#{asset_url 'home/autodesk_banner.jpg'}')"
+        .container.text-center
+          h1
+            ' Give your hardware a home
+            br
+            ' with
+            = link_to 'Autodesk Fusion 360', '/autodesk?ref=homeabout', class: 'alert-link'
 
     - if !user_signed_in?
       section#projects.showcase-section
