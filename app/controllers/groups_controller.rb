@@ -1,7 +1,7 @@
 class GroupsController < ApplicationController
   before_filter :authenticate_user!, except: [:show]
   before_filter :load_group, only: [:show, :update]
-  layout 'group', only: [:edit, :update, :show]
+  # layout 'group', only: [:edit, :update, :show]
   respond_to :html
 
   def show
@@ -47,8 +47,9 @@ class GroupsController < ApplicationController
   end
 
   def edit
-    @group = Community.find(params[:id])
+    @group = Group.find(params[:id])
     authorize! :update, @group
+    instance_variable_set "@#{@group.identifier}", @group
     @group.build_avatar unless @group.avatar
 
     render "groups/#{@group.identifier.pluralize}/#{self.action_name}"
@@ -66,6 +67,10 @@ class GroupsController < ApplicationController
           # if old_group.interest_tags_string != @group.interest_tags_string or old_group.skill_tags_string != @group.skill_tags_string
           #   @refresh = true
           # end
+          if old_group.user_name != @group.user_name
+            @refresh = true
+          end
+          @group = GroupDecorator.decorate(@group)
 
           render "groups/#{@group.identifier.pluralize}/#{self.action_name}"
         end

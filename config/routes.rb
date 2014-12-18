@@ -103,7 +103,7 @@ HackerIo::Application.routes.draw do
     resources :comments, only: [:edit, :update, :destroy]
 
     # groups
-    resources :groups, only: [] do
+    resources :groups, only: [:edit, :update] do
       post 'members' => 'members#create', as: :members
       get 'members/edit' => 'members#edit', as: :edit_members
       patch 'members' => 'members#update'

@@ -188,7 +188,7 @@ section.projects-list
       .row
         .col-xs-12
           p
-            ' This platform isn't in use yet!
+            ' No projects here yet!
             - if @platform.platform_tags.any?
               = link_to "Create the first #{@platform.name} project", new_project_path(project: { platform_tags_string: @platform.name }), class: 'btn btn-primary btn-sm'
 

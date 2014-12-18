@@ -4,7 +4,7 @@ class ListsController < ApplicationController
   before_filter :load_list, only: [:show, :update]
   before_filter :load_projects, only: [:show, :embed]
   before_filter :load_project, only: [:feature_project, :unfeature_project]
-  layout 'list', only: [:edit, :update, :show]
+  layout 'group', only: [:edit, :update, :show]
   after_action :allow_iframe, only: [:embed]
   respond_to :html
 
@@ -23,7 +23,7 @@ class ListsController < ApplicationController
     title (@list.category? ? "#{@list.name} projects and hacks" : "#{@list.name}'s favorite hardware projects and hacks")
     meta_desc (@list.category? ? "Discover #{@list.name} hardware projects and hacks." : "Discover hardware projects and hacks curated by #{@list.name}.")
 
-    render "groups/lists/#{self.action_name}"
+    render "groups/shared/#{self.action_name}"
 
     # track_event 'Visited list', @list.to_tracker.merge({ page: safe_page_params })
   end
@@ -104,6 +104,6 @@ class ListsController < ApplicationController
     end
 
     def load_list
-      @list = List.where(type: 'List').where("LOWER(groups.user_name) = ?", params[:user_name].downcase).first!
+      @group = @list = List.where(type: 'List').where("LOWER(groups.user_name) = ?", params[:user_name].downcase).first!
     end
 end

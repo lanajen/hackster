@@ -1,13 +1,11 @@
 - @group = GroupDecorator.decorate(@group)
 
-= content_for :no_container do
-  #heading.user.with-top-container
-    .display= render "groups/#{@group.identifier.pluralize}/teaser"
-    .container
-      .edit  style='display:none;'
+/ = content_for :before_main do
+  #about style='position: relative;z-index: 999;background: #F2F2F2;'
+    - if !user_signed_in?
+      = render partial: 'shared/signup_top', locals: { message: "Dig #{@group.name}? Join and receive updates about new projects: ", redirect_to: create_followers_path(followable_type: 'Group', followable_id: @group.id), source: 'group' }
 
-  #content
-    .container
-      = yield
+= content_for :no_container do
+  = yield
 
 = render template: 'layouts/application'

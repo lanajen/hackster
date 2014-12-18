@@ -7,7 +7,7 @@ class PlatformsController < ApplicationController
   before_filter :load_platform_with_slug, only: [:show, :embed, :analytics]
   before_filter :load_projects, only: [:show, :embed]
   before_filter :load_project, only: [:feature_project, :unfeature_project]
-  layout 'platform', only: [:edit, :update, :show, :analytics]
+  layout 'group', only: [:edit, :update, :show, :analytics]
   after_action :allow_iframe, only: [:embed]
   respond_to :html
 
@@ -28,7 +28,7 @@ class PlatformsController < ApplicationController
     @announcement = @platform.announcements.current
     @challenge = @platform.active_challenge ? @platform.challenges.active.first : nil
 
-    render "groups/platforms/#{self.action_name}"
+    render "groups/shared/#{self.action_name}"
 
     # track_event 'Visited platform', @platform.to_tracker.merge({ page: safe_page_params })
   end
@@ -187,10 +187,10 @@ class PlatformsController < ApplicationController
     end
 
     def load_platform
-      @platform = Platform.find(params[:platform_id] || params[:id])
+      @group = @platform = Platform.find(params[:platform_id] || params[:id])
     end
 
     def load_platform_with_slug
-      @platform = load_with_slug
+      @group = @platform = load_with_slug
     end
 end
