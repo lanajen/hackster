@@ -39,8 +39,8 @@ class Ability
   end
 
   def admin
-    can :manage, :all
-    cannot [:join, :request_access], Group
+    # can :manage, :all
+    # cannot [:join, :request_access], Group
   end
 
   def beta_tester
@@ -57,8 +57,9 @@ class Ability
       address.addressable_type == 'ChallengeEntry' and address.addressable.user_id == @user.id
     end
 
-    # can :admin, Group do |group|
-    # end
+    can :admin, Conversation do |conversation|
+      @user.in? conversation.participants
+    end
 
     can :enter, Challenge do |challenge|
       challenge.open_for_submissions? and @user.can? :read, challenge

@@ -63,7 +63,19 @@ h6, .h6 {
   &.btn-primary {
     border-color: #204d74;
   }
+  &.btn-default {
+    border-color: #aaa;
+  }
 }
+.btn-append-sandwich {
+  .btn-append:first-of-type {
+    @include border-radius(0);
+  }
+  .btn-block {
+    margin: 0 !important;
+  }
+}
+
 .popover {
   border: 0;
   @include border-radius(0);

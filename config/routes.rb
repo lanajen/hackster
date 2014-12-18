@@ -288,6 +288,8 @@ HackerIo::Application.routes.draw do
       put 'update_workflow' => 'challenges#update_workflow', on: :member
     end
 
+    resources :messages, as: :conversations, controller: :conversations
+
     get 'users/registration/complete_profile' => 'users#after_registration', as: :user_after_registration
     patch 'users/registration/complete_profile' => 'users#after_registration_save'
 

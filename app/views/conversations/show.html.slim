@@ -1,0 +1,22 @@
+section#conversation.section-container
+  - conversation = @conversation
+  .section-title
+    h3.title
+      ==> link_to "Messages", conversations_path
+      ' /
+      = conversation.subject
+  .section-content
+    .btn-group.pull-right
+      / # = link_to 'Reply', conversation_path(conversation, :location => 'conversation', :box => @box), data: { :confirm => "Are you sure you want to delete this conversation?", :method => :delete, :remote => true }, class: 'btn btn-default'
+      = link_to 'Delete', conversation_path(conversation), data: { :confirm => "Are you sure you want to delete this conversation?", :method => :delete }, class: 'btn btn-default'
+    .clearfix
+
+    .comments
+      - @conversation.receipts.where(receipts: { user_id: current_user.id }).each do |receipt|
+        = render partial: 'messages/message', locals: { receipt: receipt }
+      .new-comment-reply style='display:block'
+        .new-comment
+          = simple_form_for @conversation do |f|
+            .textarea-content= f.input :body, as: :text, label: false, input_html: { rows: 3, placeholder: 'Write your message' }
+            .button-area
+              = f.button :submit, value: 'Send reply'

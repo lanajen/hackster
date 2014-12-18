@@ -1,0 +1,36 @@
+section#conversations.section-container
+  .section-title
+    .title.clearfix
+      h3.pull-left
+        ' Messages
+      .btn-group.pull-left
+        button.btn.btn-default.dropdown-toggle aria-expanded="false" data-toggle="dropdown" type="button"
+          ==> @box.capitalize
+          span.caret
+        ul.dropdown-menu role="menu"
+          li
+            a href=conversations_path(box: 'inbox')  Inbox
+          li
+            a href=conversations_path(box: 'sent')  Sent
+
+
+  .section-content
+    .list-group.conversations
+      - if @conversations.any?
+        - @conversations.each do |conversation|
+          a.list-group-item href=conversation_path(conversation) class=(conversation.has_unread?(current_user) ? 'unread' : '')
+            .media
+              span.media-left
+                = image_tag conversation.last_message(current_user, @box).user.decorate.avatar(:thumb), class: 'img-rounded'
+              .media-body
+                h5.media-heading.clearfix
+                  strong= conversation.last_message(current_user, @box).user.name
+                  .small.text-muted
+                    ==> time_diff_in_natural_language conversation.last_message(current_user, @box).updated_at, Time.now
+                    | ago
+                p
+                  strong==> conversation.subject
+                  = strip_tags(conversation.last_message(current_user, @box).body).truncate 200
+      - else
+        p You don't have any active conversations.
+    = will_paginate @conversations

@@ -24,9 +24,10 @@ module HackerIo
     config.active_record.observers = :project_observer, :widget_observer,
       :user_observer, :comment_observer, :respect_observer, :tag_observer,
       :member_observer, :team_observer, :follow_relation_observer,
-      :issue_observer, :build_log_observer, :assignment_observer, :platform_observer,
-      :project_collection_observer, :attachment_observer, :challenge_entry_observer,
-      :challenge_observer, :awarded_badge_observer, :list_observer
+      :issue_observer, :build_log_observer, :assignment_observer,
+      :platform_observer, :project_collection_observer, :attachment_observer,
+      :challenge_entry_observer, :challenge_observer, :awarded_badge_observer,
+      :list_observer, :receipt_observer
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.

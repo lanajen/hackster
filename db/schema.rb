@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141202190254) do
+ActiveRecord::Schema.define(version: 20141218013646) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -159,6 +159,12 @@ ActiveRecord::Schema.define(version: 20141202190254) do
 
   add_index "comments", ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type", using: :btree
   add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
+
+  create_table "conversations", force: true do |t|
+    t.string   "subject"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "courses_universities", force: true do |t|
     t.integer "university_id"
@@ -425,10 +431,25 @@ ActiveRecord::Schema.define(version: 20141202190254) do
     t.string   "platform_tags_string"
     t.string   "product_tags_string"
     t.datetime "assignment_submitted_at"
+    t.text     "md_description"
   end
 
   add_index "projects", ["private"], name: "index_projects_on_private", using: :btree
   add_index "projects", ["team_id"], name: "index_projects_on_team_id", using: :btree
+
+  create_table "receipts", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "message_id"
+    t.integer  "conversation_id"
+    t.boolean  "read",            default: false
+    t.boolean  "deleted",         default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "receipts", ["conversation_id"], name: "index_receipts_on_conversation_id", using: :btree
+  add_index "receipts", ["message_id"], name: "index_receipts_on_message_id", using: :btree
+  add_index "receipts", ["user_id"], name: "index_receipts_on_user_id", using: :btree
 
   create_table "reputations", force: true do |t|
     t.integer  "points",     default: 0
@@ -460,6 +481,16 @@ ActiveRecord::Schema.define(version: 20141202190254) do
 
   add_index "slug_histories", ["sluggable_type", "sluggable_id"], name: "index_slug_histories_on_sluggable_type_and_sluggable_id", using: :btree
   add_index "slug_histories", ["value"], name: "index_slug_histories_on_value", using: :btree
+
+  create_table "steps", force: true do |t|
+    t.text    "description"
+    t.text    "md_description"
+    t.string  "title"
+    t.integer "project_id"
+    t.integer "position"
+  end
+
+  add_index "steps", ["project_id"], name: "index_steps_on_project_id", using: :btree
 
   create_table "subdomains", force: true do |t|
     t.string   "subdomain"
