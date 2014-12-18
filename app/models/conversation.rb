@@ -1,6 +1,6 @@
 class Conversation < ActiveRecord::Base
-  has_many :messages, -> { order(created_at: :asc) }, as: :commentable, class_name: 'Comment'
-  has_many :receipts
+  has_many :messages, -> { order(created_at: :asc) }, as: :commentable, class_name: 'Comment', dependent: :destroy
+  has_many :receipts, dependent: :destroy
 
   validates :subject, :body, :sender_id, :recipient_id, presence: true,
     on: :create

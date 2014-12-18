@@ -70,6 +70,7 @@ HackerIo::Application.routes.draw do
       get 'hacker_spaces' => 'pages#hacker_spaces'
       get 'issues' => 'pages#issues'
       get 'logs' => 'pages#logs'
+      get 'messages' => 'pages#messages'
       get 'respects' => 'pages#respects'
       get 'platforms' => 'pages#platforms'
       get 'followers' => 'pages#followers'
