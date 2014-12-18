@@ -14,7 +14,7 @@
               hr
 
           .row
-            = render partial: 'groups/platforms/platform_thumb', locals: { platform: Platform.find_by_user_name('spark') }
+            = render partial: 'groups/platforms/platform_thumb', locals: { platform: Platform.find_by_user_name('autodesk') }
             - @platforms.each do |platform|
               = render partial: 'groups/platforms/platform_thumb', locals: { platform: platform }
 
