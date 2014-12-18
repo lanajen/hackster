@@ -316,8 +316,8 @@ HackerIo::Application.routes.draw do
     get 'infringement_policy' => 'pages#infringement_policy'
     get 'privacy' => 'pages#privacy'
     get 'terms' => 'pages#terms'
+    get 'press' => 'pages#press'
     get 'resources' => 'pages#resources'
-    # get 'autodesk' => 'pages#autodesk'
     get 'electric-imp', to: redirect('electricimp')
 
     constraints(PlatformPage) do
