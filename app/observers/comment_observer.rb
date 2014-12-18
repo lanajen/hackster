@@ -15,9 +15,11 @@ class CommentObserver < ActiveRecord::Observer
   end
 
   def after_create record
-    project_id = record.commentable_type == 'Project' ? record.commentable_id : record.commentable.threadable_id
-    record.user.broadcast :new, record.id, 'Comment', project_id if record.user.class == User
-    update_counters record
+    if record.commentable_type == 'Project'
+      project_id = record.commentable_id
+      record.user.broadcast :new, record.id, 'Comment', project_id if record.user.class == User
+      update_counters record
+    end
   end
 
   def after_update record

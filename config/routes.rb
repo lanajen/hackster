@@ -70,6 +70,7 @@ HackerIo::Application.routes.draw do
       get 'hacker_spaces' => 'pages#hacker_spaces'
       get 'issues' => 'pages#issues'
       get 'logs' => 'pages#logs'
+      get 'messages' => 'pages#messages'
       get 'respects' => 'pages#respects'
       get 'platforms' => 'pages#platforms'
       get 'followers' => 'pages#followers'
@@ -287,6 +288,8 @@ HackerIo::Application.routes.draw do
       post 'projects' => 'challenges#enter', on: :member, as: :enter
       put 'update_workflow' => 'challenges#update_workflow', on: :member
     end
+
+    resources :messages, as: :conversations, controller: :conversations
 
     get 'users/registration/complete_profile' => 'users#after_registration', as: :user_after_registration
     patch 'users/registration/complete_profile' => 'users#after_registration_save'

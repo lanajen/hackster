@@ -30,7 +30,7 @@
             = pluralize_without_count @list.followers_count, 'follower'
 
         #list-follow-div.text-center
-          = render partial: 'followers/button_text', locals: { followable: @list, why: "Follow #{@list.name} to receive updates about new projects." }
+          = render partial: 'followers/button_text_wide', locals: { followable: @list, why: "Follow #{@list.name} to receive updates about new projects." }
 
           <div class="addthis_toolbox addthis_default_style addthis_16x16_style">
           <label>Share:</label>

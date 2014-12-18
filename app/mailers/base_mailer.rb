@@ -187,6 +187,12 @@ class BaseMailer < ActionMailer::Base
           []
         end
         context[:requester] = member.user
+      when :message
+        receipt = Receipt.find context_id
+        message = context[:comment] = receipt.message
+        context[:conversation] = receipt.conversation
+        context[:author] = message.user
+        context[:user] = receipt.user
       when :new_membership
         member = context[:member] = Member.find(context_id)
         context[:group] = group = member.group

@@ -113,6 +113,14 @@
         small.text-muted
           | (#{(@users_with_at_least_one_live_project.to_f / @user_count * 100).ceil}%)
 
+  .col-xs-12.col-sm-4
+    .panel.panel-default.panel-dashboard
+      .panel-heading
+        h3.panel-title= link_to 'Private messages', admin_messages_path
+      .panel-body
+        = number_with_delimiter @messages_count
+        small.text-muted +#{@new_messages_count}
+
 .row
   .col-xs-12.col-sm-6
     #chart_new_projects= image_tag 'loader.gif'

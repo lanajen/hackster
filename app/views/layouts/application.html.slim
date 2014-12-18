@@ -135,6 +135,8 @@ html(lang="en")
                       span.caret
                     ul.dropdown-menu#nav-user-menu
                       li= link_to 'My profile', current_user
+                      li.divider
+                      li= link_to 'Messages', conversations_path
 
                       - if current_user.communities.any?
                         li.divider
@@ -216,6 +218,7 @@ html(lang="en")
       = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'mo-nav-link'
       - if user_signed_in?
         = link_to 'Profile', current_user, class: 'mo-nav-link'
+        = link_to 'Messages', conversations_path, class: 'mo-nav-link'
         = link_to 'Account settings', edit_user_registration_path, class: 'mo-nav-link'
         = link_to 'Log out', destroy_user_session_path, method: :delete, class: 'mo-nav-link'
         - if current_user.is? :admin

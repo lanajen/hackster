@@ -22,6 +22,7 @@ class User < ActiveRecord::Base
     'follow_platform_activity' => 'Activity for a platform I follow',
     'follow_list_activity' => 'Activity for a list I follow',
     'new_badge' => 'I receive a new badge',
+    'new_message' => 'I receive a new private message',
   }
   CATEGORIES = %w()
 
@@ -39,6 +40,8 @@ class User < ActiveRecord::Base
   has_many :blog_posts, dependent: :destroy
   has_many :comments, -> { order created_at: :desc }, foreign_key: :user_id, dependent: :destroy
   has_many :communities, through: :group_ties, source: :group, class_name: 'Community'
+  has_many :conversations, through: :conversation_receipts, dependent: :destroy
+  has_many :conversation_receipts, class_name: 'Receipt', dependent: :destroy
   # has_many :courses, through: :promotions  # doesnt work
   has_many :events, through: :group_ties, source: :group, class_name: 'Event'
   has_many :follow_relations, dependent: :destroy

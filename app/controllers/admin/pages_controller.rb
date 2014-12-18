@@ -13,6 +13,8 @@ class Admin::PagesController < Admin::BaseController
     @follow_user_count = FollowRelation.where(followable_type: 'User').count
     @follow_platform_count = FollowRelation.where(followable_type: 'Group').count
     @user_count = User.invitation_accepted_or_not_invited.count
+    @messages_count = Comment.where(commentable_type: 'Conversation').count
+    @new_messages_count = Comment.where(commentable_type: 'Conversation').where('comments.created_at > ?', Date.today).count
     @new_projects_count = Project.indexable.where('projects.made_public_at > ?', Date.today).count
     @new_comments_count = Comment.where(commentable_type: 'Project').where('comments.created_at > ?', Date.today).count
     @new_likes_count = Respect.where('respects.created_at > ?', Date.today).count
@@ -104,6 +106,12 @@ class Admin::PagesController < Admin::BaseController
     params[:sort_order] ||= 'ASC'
 
     @log_lines = filter_for LogLine, @fields
+  end
+
+  def messages
+    title "Admin / Messages - #{safe_page_params}"
+
+    @comments = Comment.where(commentable_type: 'Conversation').order(created_at: :desc).paginate(page: safe_page_params)
   end
 
   def respects

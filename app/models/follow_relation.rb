@@ -3,6 +3,7 @@ class FollowRelation < ActiveRecord::Base
   belongs_to :user
 
   validates :user_id, uniqueness: { scope: [:followable_id, :followable_type] }
+  validate :following_someone_else
 
   attr_accessible :user_id, :followable_id, :followable_type
 
@@ -23,4 +24,9 @@ class FollowRelation < ActiveRecord::Base
   def skip_notification?
     @skip_notification
   end
+
+  private
+    def following_someone_else
+      errors.add :user_id, "cannot follow yourself" if user_id == followable_id and followable_type == 'User'
+    end
 end
