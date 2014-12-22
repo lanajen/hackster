@@ -6,6 +6,7 @@ class Challenge < ActiveRecord::Base
   include Workflow
 
   belongs_to :platform
+  has_many :admins, through: :challenge_admins, source: :user
   has_many :challenge_admins
   has_many :entries, -> { order(:created_at) }, dependent: :destroy, class_name: ChallengeEntry
   has_many :entrants, through: :projects, source: :users
