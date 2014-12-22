@@ -104,8 +104,8 @@ html(lang="en")
                     span.caret
                   ul#challenge-nav.dropdown-menu
                     li
-                      .row
-                        .col-md-6
+                      .row style="width:300px"
+                        .col-md-12 style="padding-left:5px;padding-right:5px"
                           .thumb
                             .thumb-image.has-link-overlay style="background-image:url('https://halckemy.s3.amazonaws.com/uploads/document/file/23653/my-ugly-christmas-sweater-light-up-the-party%20(1).jpg')"
                               = link_to '', '/challenges/ugly-christmas-sweater-contest', class: 'link-overlay'
@@ -115,7 +115,7 @@ html(lang="en")
                                 p
                                   strong>= time_diff_in_natural_language(Time.now, '2014-12-31 23:59:00-0800'.to_datetime)
                                   | left to enter
-                        .col-md-6
+                        / .col-md-6
                           .thumb
                             .thumb-image.has-link-overlay style="background-image:url('https://halckemy.s3.amazonaws.com/uploads/document/file/23503/DSC_0369.JPG')"
                               = link_to '', '/challenges/wunderbar-holiday', class: 'link-overlay'

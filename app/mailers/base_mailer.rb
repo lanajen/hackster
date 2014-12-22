@@ -56,7 +56,7 @@ class BaseMailer < ActionMailer::Base
         user.subscribed_to?('new_badge') ? context[:user] = user : context[:users] = []
       when :challenge
         challenge = context[:challenge] = Challenge.find context_id
-        context[:users] = challenge.admins
+        context[:users] = challenge.challenge_admins
       when :challenge_entry
         entry = context[:entry] = ChallengeEntry.find context_id
         context[:challenge] = entry.challenge
