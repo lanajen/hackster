@@ -48,7 +48,7 @@ module ScraperStrategies
       @project
     end
 
-    private
+    # private
       def after_parse
         @widgets.each{|w| @project.widgets << w }
       end
@@ -239,7 +239,7 @@ module ScraperStrategies
           end
           src = "http://#{@host}/#{clean_path.join('/')}"
         end
-        src
+        src.gsub! /\s/, '%20'
       end
 
       def parse_cover_image

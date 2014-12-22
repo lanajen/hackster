@@ -313,19 +313,29 @@
                 - else
                   p This project is locked for editing.
 
-            section.section-thumbs
-              h4
-                - if @project.project.team.full_name.present?
-                  | Team #{@project.team.full_name}
-                - else
-                  | Team members
-                - if @can_edit
-                  = link_to content_tag(:i, '', class: 'fa fa-pencil'), project_edit_team_path(@project), class: 'btn-edit'
+            - if @project.guest_name.present?
+              section.section-thumbs
+                h4 Created by
+                .user-name= @project.guest_name
 
-              .row.mobile-scroll-row.desktop-tighter-margins
-                - @project.team_members.each do |member|
-                  = render partial: 'users/member_thumb_mini', locals: { member: member }
+              - if poster = @project.team.try(:active_members).try(:includes, :user).try(:first).try(:user)
+                section.section-thumbs
+                  h4 Posted by
+                  .row= render partial: 'users/user_thumb_mini', locals: { user: poster }
 
+            - else
+              section.section-thumbs
+                h4
+                  - if @project.project.team.full_name.present?
+                    | Team #{@project.team.full_name}
+                  - else
+                    | Team members
+                  - if @can_edit
+                    = link_to content_tag(:i, '', class: 'fa fa-pencil'), project_edit_team_path(@project), class: 'btn-edit'
+
+                .row.mobile-scroll-row.desktop-tighter-margins
+                  - @project.team_members.each do |member|
+                    = render partial: 'users/member_thumb_mini', locals: { member: member }
 
             - if @project.credit_lines.any?
               section.section-thumbs
