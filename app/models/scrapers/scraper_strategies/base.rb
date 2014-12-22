@@ -239,7 +239,7 @@ module ScraperStrategies
           end
           src = "http://#{@host}/#{clean_path.join('/')}"
         end
-        src.gsub! /\s/, '%20'
+        src.gsub /\s/, '%20'
       end
 
       def parse_cover_image
