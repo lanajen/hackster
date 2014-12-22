@@ -370,9 +370,8 @@
                     = link_to community.name, community_path(community)
 
               - if @challenge_entries.any?
-                .tags.meta
-                  .meta-title-wrap
-                    .meta-title Challenges
+                section.section-thumbs
+                  h4 Challenges
                   - @challenge_entries.each do |entry|
                     - if entry.awarded?
                       ' Won
