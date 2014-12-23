@@ -27,9 +27,6 @@ class Platform < List
     :active_challenge]
   set_changes_for_stored_attributes :properties
 
-  store :counters_cache, accessors: [:projects_count, :followers_count,
-    :external_projects_count, :private_projects_count]
-
   parse_as_booleans :properties, :accept_project_ideas, :active_challenge
 
   taggable :platform_tags

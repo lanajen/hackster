@@ -14,7 +14,13 @@ class PlatformsController < ApplicationController
   def index
     title "Explore platforms"
     meta_desc "Find hardware and software platforms to help you build your next hacks."
-    @platforms = Platform.public.for_thumb_display.order(:full_name)
+
+    params[:sort] = (params[:sort].in?(Group::SORTING.keys) ? params[:sort] : 'name')
+
+    @platforms = Platform.public.for_thumb_display
+    if params[:sort]
+      @platforms = @platforms.send(Group::SORTING[params[:sort]])
+    end
 
     render "groups/platforms/#{self.action_name}"
   end

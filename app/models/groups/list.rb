@@ -16,11 +16,11 @@ class List < Group
   validate :user_name_is_unique
   before_validation :update_user_name, on: :create
 
-  store :counters_cache, accessors: [:projects_count, :followers_count,
-    :external_projects_count, :private_projects_count, :list_type, :is_new]
+  store :counters_cache, accessors: [:external_projects_count,
+    :private_projects_count, :list_type, :is_new]
 
-  parse_as_integers :counters_cache, :projects_count, :followers_count,
-    :external_projects_count, :private_projects_count
+  parse_as_integers :counters_cache, :external_projects_count,
+    :private_projects_count
 
   parse_as_booleans :counters_cache, :is_new
 
@@ -69,7 +69,7 @@ class List < Group
   def counters
     {
       external_projects: 'projects.external.count',
-      followers: 'followers.count',
+      members: 'followers.count',
       private_projects: 'projects.private.count',
       projects: 'projects.visible.indexable_and_external.count',
     }
@@ -77,6 +77,14 @@ class List < Group
 
   def cover_image_id=(val)
     self.cover_image = CoverImage.find_by_id(val)
+  end
+
+  def followers_count=(val)
+    self.members_count = val
+  end
+
+  def followers_count
+    members_count
   end
 
   def to_tracker

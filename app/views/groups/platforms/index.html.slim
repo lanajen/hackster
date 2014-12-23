@@ -14,6 +14,18 @@
               hr
 
           .row
+            .col-xs-12.project-list-actions.mg-20
+              .btn-group
+                .btn-group
+                  button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
+                    ' Sort by
+                    span.caret
+                  ul.dropdown-menu.pull-right
+                    li*{ class: "#{'active' if params[:sort] == 'name'}" } = link_to 'Alphabetically', platforms_path(sort: 'name')
+                    li*{ class: "#{'active' if params[:sort] == 'followers'}" } = link_to 'Most followers', platforms_path(sort: 'followers')
+                    li*{ class: "#{'active' if params[:sort] == 'projects'}" } = link_to 'Most projects', platforms_path(sort: 'projects')
+
+          .row
             = render partial: 'groups/platforms/platform_thumb', locals: { platform: Platform.find_by_user_name('autodesk') }
             - @platforms.each do |platform|
               = render partial: 'groups/platforms/platform_thumb', locals: { platform: platform }

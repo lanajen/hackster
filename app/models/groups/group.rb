@@ -4,6 +4,12 @@ class Group < ActiveRecord::Base
     'Anyone can request access' => 'request',
     'Only people who are explicitely invited' => 'invite',
   }
+  SORTING = {
+    'followers' => :most_members,
+    'members' => :most_members,
+    'name' => :alphabetical_sorting,
+    'projects' => :most_projects,
+  }
 
   include EditableSlug
   include SetChangesForStoredAttributes
@@ -61,6 +67,18 @@ class Group < ActiveRecord::Base
 
   def self.default_permission
     'read'
+  end
+
+  def self.alphabetical_sorting
+    order full_name: :asc
+  end
+
+  def self.most_members
+    order members_count: :desc
+  end
+
+  def self.most_projects
+    order projects_count: :desc
   end
 
   def access_level
