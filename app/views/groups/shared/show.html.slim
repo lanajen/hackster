@@ -6,7 +6,7 @@
   javascript:
     var addthis_share = {
       "data_track_addressbar":false,
-       url: "#{url_for([@group])}",
+       url: "#{url_for [@group, only_path: false]}",
        title: "#{@group.twitter_share}"
     }
 
