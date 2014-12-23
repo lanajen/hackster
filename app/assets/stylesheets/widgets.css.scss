@@ -80,7 +80,7 @@
   pre {
     word-break: normal;
     word-wrap: normal;
-    overflow: hidden;
+    overflow-y: hidden;
     & > span {
       display: block;
       @include font-size(14);

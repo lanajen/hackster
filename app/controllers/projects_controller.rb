@@ -236,17 +236,19 @@ class ProjectsController < ApplicationController
     private_was = @project.private
 
     if @project.update_attributes(params[:project])
+      notice = "#{@project.name} was successfully updated."
       if private_was != @project.private and @project.private == false
         current_user.broadcast :new, @project.id, 'Project', @project.id
+        notice = "#{@project.name} is now published. Somebody from the Hackster team still needs to approve it before it shows on the site. Seat tight!"
 
         track_event 'Made project public', @project.to_tracker
       elsif @project.private == false
         current_user.broadcast :update, @project.id, 'Project', @project.id
+        notice = "#{@project.name} is now private again."
       end
       @refresh = @project.slug_was_changed?
       @project = @project.decorate
       @widgets = @project.widgets.order(:created_at)
-      notice = "#{@project.name} was successfully updated."
       respond_with @project do |format|
         format.html do
           flash[:notice] = notice
