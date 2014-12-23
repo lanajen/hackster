@@ -1,10 +1,10 @@
 - if @platform.documentation_link.present?
-  = link_to "Documentation #{content_tag(:i, '', class: 'fa-external-link fa')}".html_safe, @platform.documentation_link, target: '_blank', class: 'btn btn-link'
+  = link_to "Documentation".html_safe, @platform.documentation_link, target: '_blank', class: 'btn btn-link'
 - if @platform.forums_link.present?
-  = link_to "Forums #{content_tag(:i, '', class: 'fa-external-link fa')}".html_safe, @platform.forums_link, target: '_blank', class: 'btn btn-link'
+  = link_to "Forums".html_safe, @platform.forums_link, target: '_blank', class: 'btn btn-link'
 - if @platform.crowdfunding_link.present?
-  = link_to "Preorder #{indefinite_articlerize @platform.name} #{content_tag(:i, '', class: 'fa-external-link fa')}".html_safe, @platform.crowdfunding_link, target: '_blank', class: 'btn btn-link btn-link-accent'
+  = link_to "Preorder #{indefinite_articlerize @platform.name}".html_safe, @platform.crowdfunding_link, target: '_blank', class: 'btn btn-link btn-link-accent'
 - if @platform.buy_link.present?
-  = link_to "Buy #{indefinite_articlerize @platform.name} #{content_tag(:i, '', class: 'fa-external-link fa')}".html_safe, @platform.buy_link, target: '_blank', class: 'btn btn-link btn-link-accent'
+  = link_to "Buy #{indefinite_articlerize @platform.name}".html_safe, @platform.buy_link, target: '_blank', class: 'btn btn-link btn-link-accent'
 - if @platform.download_link.present?
-  = link_to "Download #{@platform.name} #{content_tag(:i, '', class: 'fa-external-link fa')}".html_safe, @platform.download_link, target: '_blank', class: 'btn btn-link btn-link-accent'
+  = link_to "Download #{@platform.name}".html_safe, @platform.download_link, target: '_blank', class: 'btn btn-link btn-link-accent'

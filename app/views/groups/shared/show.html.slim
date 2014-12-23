@@ -1,6 +1,15 @@
 - content_for :head do
   = render partial: "groups/#{@group.identifier.pluralize}/meta_tags"
 
+= content_for :js do
+  script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-51b26f5613fb83d2" async="async"
+  javascript:
+    var addthis_share = {
+      "data_track_addressbar":false,
+       url: "#{url_for([@group])}",
+       title: "#{@group.twitter_share}"
+    }
+
 section.top-banner
   .top-banner-image style="background-image:url('#{@group.cover_image.try(:file_url, :cover)}');"
     .top-banner-image-inner
@@ -41,6 +50,9 @@ section.top-banner
             .button-content
               = render partial: 'followers/button_text', locals: { followable: @group }
               = render partial: "groups/#{@group.identifier.pluralize}/additional_links"
+              a.btn.btn-link.addthis_button_compact
+                i.fa.fa-share-square-o
+
               - if can? :manage, @group
                 span.dropdown role='presentation'
                   a.btn.btn-link.dropdown-toggle data-toggle="dropdown" aria-expanded="false"

@@ -64,7 +64,7 @@ module UrlHelper
   end
 
   def group_path group, opts={}
-    case group.class.to_s
+    case group.type
     when 'Assignment'
       assignment_path group, opts
     when 'Community'
@@ -89,7 +89,7 @@ module UrlHelper
   end
 
   def group_url group, opts={}
-    case group.class.to_s
+    case group.type
     when 'Community'
       community_url group, opts
     when 'Course'

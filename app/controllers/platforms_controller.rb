@@ -191,6 +191,6 @@ class PlatformsController < ApplicationController
     end
 
     def load_platform_with_slug
-      @group = @platform = load_with_slug
+      @group = @platform = load_with_slug.try(:decorate)
     end
 end

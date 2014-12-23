@@ -17,7 +17,7 @@ class ListsController < ApplicationController
   # end
 
   def show
-    @list = ListDecorator.decorate(@list)
+    @group = @list = ListDecorator.decorate(@list)
     impressionist_async @list, "", unique: [:session_hash]
     # authorize! :read, @list
     title (@list.category? ? "#{@list.name} projects and hacks" : "#{@list.name}'s favorite hardware projects and hacks")
