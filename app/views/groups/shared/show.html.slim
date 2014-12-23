@@ -36,8 +36,7 @@ section.top-banner
             / p.text-muted By Spark
             .clearfix
               h1.pull-left
-                / - raise @group.respond_to?(:company_logo).to_s
-                - if @group.respond_to?(:company_logo) and @group.company_logo
+                - if @group.model.respond_to?(:company_logo) and @group.company_logo
                   = image_tag @group.company_logo.try(:file_url), class: 'company-logo'
                 = @group.name
               / ul.list-inline.tags.pull-left
