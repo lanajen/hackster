@@ -22,7 +22,7 @@ class Part < ActiveRecord::Base
     def ensure_protocol_for_vendor_link
       return if vendor_link.blank?
 
-      self.vendor_link = 'http://' + vendor_link unless vendor_link =~ /\Ahttp:/
+      self.vendor_link = 'http://' + vendor_link unless vendor_link =~ /\Ahttps?:/
     end
 
     def mpn_or_description_is_present?
