@@ -60,7 +60,7 @@ class Platform < List
   # end of search methods
 
   def self.for_thumb_display
-    includes(:avatar)
+    includes(:avatar).includes(:cover_image)
   end
 
   def company_logo_id=(val)

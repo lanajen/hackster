@@ -12,7 +12,7 @@ class PlatformObserver < ActiveRecord::Observer
       Cashier.expire "platform-#{record.id}-thumb", "platform-#{record.id}-card", 'platform-index'
     end
 
-    if (record.changed & %w(followers_count)).any?
+    if (record.changed & %w(members_count)).any?
       Cashier.expire "platform-#{record.id}-card"
     end
 
@@ -36,7 +36,7 @@ class PlatformObserver < ActiveRecord::Observer
       Cashier.expire *keys if keys.any?
     end
 
-    if (record.changed & %w(full_name avatar mini_resume slug user_name forums_link documentation_link crowdfunding_link buy_link twitter_link facebook_link linked_in_link blog_link github_link website_link youtube_link google_plus_link logo projects_count followers_count)).any?
+    if (record.changed & %w(full_name avatar mini_resume slug user_name forums_link documentation_link crowdfunding_link buy_link twitter_link facebook_link linked_in_link blog_link github_link website_link youtube_link google_plus_link logo projects_count members_count)).any?
       Cashier.expire "platform-#{record.id}-sidebar"
     end
 
