@@ -16,7 +16,7 @@ class DisableAssetsLogger
 
   def call(env)
     previous_level = Rails.logger.level
-    Rails.logger.level = Logger::ERROR if env['PATH_INFO'].starts_with?("/assets/") or env['PATH_INFO'].starts_with?("/uploads/") && ! ENV['LOG_ASSETS']
+    Rails.logger.level = Logger::ERROR if (env['PATH_INFO'].starts_with?("/assets/") or env['PATH_INFO'].starts_with?("/uploads/")) && ! ENV['LOG_ASSETS']
     @app.call(env)
   ensure
     Rails.logger.level = previous_level
