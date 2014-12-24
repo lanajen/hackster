@@ -63,12 +63,12 @@ section.top-banner
                     li= link_to 'Manage admins', url_for([@group, :edit, :members])
                     li= link_to 'Invite admins', url_for([@group, :new, :invitations])
       .container.visible-xs
-        = image_tag @group.avatar.try(:file_url, :big), class: 'img-thumbnail'
+        = image_tag @group.avatar(:big), class: 'img-thumbnail'
         h1= @group.name
         p= @group.mini_resume
         p= render partial: 'followers/button_text', locals: { followable: @group }
 
-/ section.group-nav.affixable
+/ section.group-nav
   .container
     ul.nav.nav-tabs.pull-left
       li.active role='presentation'
