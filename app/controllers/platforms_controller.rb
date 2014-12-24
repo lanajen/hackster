@@ -15,7 +15,7 @@ class PlatformsController < ApplicationController
     title "Explore platforms"
     meta_desc "Find hardware and software platforms to help you build your next hacks."
 
-    params[:sort] = (params[:sort].in?(Group::SORTING.keys) ? params[:sort] : 'name')
+    params[:sort] = (params[:sort].in?(Group::SORTING.keys) ? params[:sort] : 'followers')
 
     @platforms = Platform.public.for_thumb_display
     if params[:sort]
