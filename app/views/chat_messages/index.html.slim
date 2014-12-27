@@ -1,0 +1,13 @@
+= content_for :head do
+  meta name='channel_id' content=@group.id
+
+= content_for :before_main do
+  .chat-container
+    #chat
+      .chat-inner
+        ul.messages.list-unstyled
+          - @chat_messages.each do |chat_message|
+            = render chat_message
+
+      = simple_form_for ChatMessage.new, url: chat_messages_path(@group.id), html: { data: { remote: true } } do |f|
+        = f.input :body, label: false, input_html: { rows: 1 }, wrapper: false, placeholder: 'Type here, press Enter to send...'

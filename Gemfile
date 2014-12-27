@@ -43,6 +43,8 @@ gem 'dalli', '2.7.0'  # memcached
 gem 'devise', '3.2.2'
 gem 'devise_invitable', '1.3.0'
 gem 'draper', '1.3.0'
+gem 'faye-rails', '2.0.0'
+gem 'faye-redis', '0.2.0'
 gem 'fog', '1.15.0'
 gem 'geocoder', '1.2.5'
 gem 'gibbon', '1.1.1'
@@ -102,11 +104,11 @@ gem 'workflow', '1.0.0'
 
 # heroku
 # gem 'heroku-api', '0.3.15'
-gem 'heroku-forward', '0.4.0'
+# gem 'heroku-forward', '0.4.0'
 gem 'rails_12factor', group: [:production, :staging]
 
-gem "bullet", :group => "development"
-gem 'ruby-prof', group: [:development, :profile]
+# gem "bullet", :group => "development"
+# gem 'ruby-prof', group: [:development, :profile]
 
 group :development, :test do
   # gem 'factory_girl_rails'

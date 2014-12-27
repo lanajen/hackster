@@ -1,0 +1,11 @@
+publisher = client.publish('/chats/<%= @message.group_id %>', {
+  tpl: '<%= j render @message %>'
+});
+
+publisher.callback(function() {
+  $('textarea[name="chat_message[body]"]').val('').css('height', 36);
+});
+
+publisher.errback(function() {
+  alert('There was an error while posting your comment.');
+});

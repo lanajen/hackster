@@ -143,6 +143,15 @@ module ApplicationHelper
     I18n.t('datetime.distance_in_words.x_seconds', count: 0)
   end
 
+  def time_for_chat time
+    now = Time.now
+    if time.to_date == now.to_date
+      time.strftime('%H:%M')
+    else
+      time.strftime('%m/%d %H:%M')
+    end
+  end
+
   def user_is_current?
     user_signed_in? and current_user.id == @user.try(:id)
   end

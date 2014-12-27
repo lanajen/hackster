@@ -1,5 +1,6 @@
-- content_for :head do
+= content_for :head do
   = render partial: "groups/#{@group.identifier.pluralize}/meta_tags"
+  meta name='group_id' content=@group.id
 
 = content_for :js do
   script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-51b26f5613fb83d2" async="async"

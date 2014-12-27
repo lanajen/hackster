@@ -323,12 +323,15 @@ HackerIo::Application.routes.draw do
     get 'resources' => 'pages#resources'
     get 'electric-imp', to: redirect('electricimp')
 
+    post 'chats/:group_id' => 'chat_messages#create', as: :chat_messages
+
     constraints(PlatformPage) do
       get ':slug' => 'platforms#show', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
       get ':slug/embed' => 'platforms#embed', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
       get ':user_name' => 'platforms#show', as: :platform_short, user_name: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
       scope ':slug', slug: /[A-Za-z0-9_\-]{3,}/, as: :platform, constraints: { format: /(html|json)/ } do
         get 'analytics' => 'platforms#analytics'
+        get 'chat' => 'chat_messages#index'
         resources :announcements, except: [:create, :update, :destroy], path: :news
       end
     end
