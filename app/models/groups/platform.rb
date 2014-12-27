@@ -27,8 +27,7 @@ class Platform < List
     :active_challenge
   set_changes_for_stored_attributes :properties
 
-  parse_as_booleans :properties, :accept_project_ideas, :active_challenge,
-    :hidden
+  parse_as_booleans :properties, :accept_project_ideas, :active_challenge
 
   taggable :platform_tags
 
