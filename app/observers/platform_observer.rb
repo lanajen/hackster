@@ -8,6 +8,10 @@ class PlatformObserver < ActiveRecord::Observer
   end
 
   def before_update record
+    if (record.changed & %w(private hidden)).any?
+      Cashier.expire 'platform-index'
+    end
+
     if (record.changed & %w(full_name avatar mini_resume slug private_projects_count projects_count user_name)).any?
       Cashier.expire "platform-#{record.id}-thumb", "platform-#{record.id}-card", 'platform-index'
     end
