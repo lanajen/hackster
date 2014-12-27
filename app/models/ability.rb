@@ -7,6 +7,7 @@ class Ability
     @user = resource
 
     can :read, [Comment, User]
+    cannot :read, [Project, Group]
     can :read, [Project, Group], private: false
     can :read, Assignment do |assignment|
       assignment.promotion.private == false

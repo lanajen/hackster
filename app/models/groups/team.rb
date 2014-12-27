@@ -3,7 +3,7 @@ class Team < Group
   has_many :projects
   # validates :prevent_save, absence: true
 
-  store :properties, accessors: [:generated_user_name]
+  store_accessor :properties, :generated_user_name
 
   # attr_accessor :prevent_save
 

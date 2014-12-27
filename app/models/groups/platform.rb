@@ -19,15 +19,16 @@ class Platform < List
 
   # before_save :update_user_name
 
-  store_accessor :websites, :forums_link, :documentation_link, :crowdfunding_link, :buy_link,
-    :shoplocket_link, :download_link
+  store_accessor :websites, :forums_link, :documentation_link,
+    :crowdfunding_link, :buy_link, :shoplocket_link, :download_link
   set_changes_for_stored_attributes :websites
 
-  store :properties, accessors: [:accept_project_ideas, :project_ideas_phrasing,
-    :active_challenge]
+  store_accessor :properties, :accept_project_ideas, :project_ideas_phrasing,
+    :active_challenge
   set_changes_for_stored_attributes :properties
 
-  parse_as_booleans :properties, :accept_project_ideas, :active_challenge
+  parse_as_booleans :properties, :accept_project_ideas, :active_challenge,
+    :hidden
 
   taggable :platform_tags
 
