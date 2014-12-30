@@ -42,6 +42,8 @@ table.table.table-striped
         td
           - if group.private?
             b Private
+          - elsif group.hidden
+            b Hidden
           - else
             | Public
         td

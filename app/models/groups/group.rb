@@ -13,6 +13,7 @@ class Group < ActiveRecord::Base
 
   include EditableSlug
   include SetChangesForStoredAttributes
+  include StringParser
 
   editable_slug :user_name
 
@@ -38,7 +39,8 @@ class Group < ActiveRecord::Base
     :facebook_link, :twitter_link, :linked_in_link, :website_link,
     :blog_link, :github_link, :email, :mini_resume, :city, :country,
     :user_name, :full_name, :members_attributes, :avatar_id,
-    :permissions_attributes, :google_plus_link, :youtube_link, :access_level
+    :permissions_attributes, :google_plus_link, :youtube_link, :access_level,
+    :hidden
 
   accepts_nested_attributes_for :avatar, :members, :permissions,
     allow_destroy: true
@@ -46,6 +48,11 @@ class Group < ActiveRecord::Base
   store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link,
     :google_plus_link, :youtube_link, :website_link, :blog_link, :github_link]
   set_changes_for_stored_attributes :websites
+
+  store :properties, accessors: [:hidden]
+  set_changes_for_stored_attributes :properties
+
+  parse_as_booleans :properties, :hidden
 
   validates :user_name, :new_user_name, length: { in: 3..100 },
     format: { with: /\A[a-zA-Z0-9_\-]+\z/, message: "accepts only letters, numbers, underscores '_' and dashes '-'." }, allow_blank: true, if: proc{|t| t.persisted?}

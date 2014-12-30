@@ -99,7 +99,7 @@ class SitemapController < ApplicationController
     end
 
     def platforms_query
-      Platform
+      Platform.public
     end
 
     def platforms_pages offset=0

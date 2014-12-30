@@ -77,11 +77,11 @@
             / - @user.badges(:silver).each do |badge|
               = image_tag(asset_url(badge.get_image), class: 'img-circle istooltip', title: badge.name)
 
-      - if @user.followed_platforms.any?
+      - if @user.followed_platforms.where(groups: { private: false }).any?
         .display
           h4 Platforms
           .content.team-widget.user-communities
-            - @user.followed_platforms.each do |c|
+            - @user.followed_platforms.where(groups: { private: false }).each do |c|
               .community.user
                 ==> link_to image_tag(c.decorate.avatar(:mini), class: 'img-circle' ), c, class: ''
                 = link_to c.name, c
