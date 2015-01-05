@@ -29,7 +29,7 @@ module Faye
         # puts message.inspect
         puts e.inspect
         puts "failed auth"
-        message['error'] = '401::Access denied'
+        # message['error'] = '401::Access denied'
       end
 
       callback.call(message)
