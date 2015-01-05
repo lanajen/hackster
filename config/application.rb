@@ -3,8 +3,10 @@ require File.expand_path('../boot', __FILE__)
 require 'rails/all'
 require 'faye'
 require 'faye/redis'
+require File.expand_path('../initializers/0_redis', __FILE__)
 require File.expand_path('../../lib/faye_extensions/csrf_protection', __FILE__)
 require File.expand_path('../../lib/faye_extensions/authentication', __FILE__)
+require File.expand_path('../../lib/faye_extensions/client_event', __FILE__)
 
 if defined?(Bundler)
   Bundler.require(:default, Rails.env)
@@ -93,23 +95,24 @@ module HackerIo
     config.middleware.use Rack::Attack
 
 
-    redis_conf = YAML::load(File.open(File.join(Rails.root, 'config/server/redis.yml')))[Rails.env]
+    # redis_conf = YAML::load(File.open(File.join(Rails.root, 'config/server/redis.yml')))[Rails.env]
 
-    redis_config = if ENV['REDISTOGO_URL'].present?
-      { url: ENV['REDISTOGO_URL'] }
-    else
-      { host: redis_conf['host'], port: redis_conf['port'], login: redis_conf['login'],
-        password: redis_conf['password'] }
-    end
+    # redis_config = if ENV['REDISTOGO_URL'].present?
+    #   { url: ENV['REDISTOGO_URL'] }
+    # else
+    #   { host: redis_conf['host'], port: redis_conf['port'], login: redis_conf['login'],
+    #     password: redis_conf['password'] }
+    # end
     config.middleware.delete Rack::Lock
     config.middleware.use FayeRails::Middleware,
       mount: '/faye',
-      engine: { type: Faye::Redis, namespace: 'faye' }.merge(redis_config),
+      engine: { type: Faye::Redis, namespace: 'faye' }.merge($redis_config),
       timeout: 25,
       server: 'puma',
       extensions: [
         Faye::Authentication.new,
         Faye::CsrfProtection.new,
+        Faye::ClientEvent.new,
         ] do
       map '/chats/*' => Faye::ChatsController
       map default: :block

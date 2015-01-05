@@ -4,6 +4,16 @@ scrollToLastMessage = ->
   $('.chat-inner').scrollTop($('.chat-inner ul').height())
 
 jQuery ->
+  client.on 'transport:down', ->
+    # the client is offline
+    console.log("we're offline, please wait while we try to reconnect...")
+    $('textarea[name="chat_message[body]"]').prop('disabled', true)
+
+  client.on 'transport:up', ->
+    # the client is online
+    console.log("we're online")
+    $('textarea[name="chat_message[body]"]').prop('disabled', false)
+
   channelId = $('meta[name=channel_id]').attr('content')
   client.addExtension {
     outgoing: (message, callback) ->
@@ -17,27 +27,60 @@ jQuery ->
   catch
     console?.log "Can't unsubscribe." # print a message only if console is defined
 
-  client.subscribe '/chats/' + channelId, (payload) ->
+  sub = client.subscribe '/chats/' + channelId, (payload) ->
     console.log(payload)
-    $('#chat .messages').append(payload.tpl) if payload.tpl
-    scrollToLastMessage()
+    if payload.tpl
+      $.each payload.tpl, (i, tpl) ->
+        $(tpl.target).append(tpl.content)
+        scrollToLastMessage()
+
+    # if payload.subscribed
+      # increment user count
+
+    # if payload.disconnected
+    #   userThumb = $("#participant-#{payload.disconnected}")
+    #   userName = userThumb.data('user-name')
+    #   $('#chat .messages').append("<li>#{userName} left.</li>")
+    #   scrollToLastMessage()
+    #   userThumb.remove()
+    #   # decrement user count
+
+  # sub.then ->
+  #   client.publish '/chats/' + channelId,
+  #     subscribed: current_user_details.id
+  #     tpl:
+  #       [
+  #         {
+  #           content: "<li>#{current_user_details.name} joined.</li>"
+  #           target: "#chat .messages"
+  #         }
+  #         {
+  #           content: current_user_thumb
+  #           target: ".chat-participants ul"
+  #         }
+  #       ]
 
   $(document).ready ->
     scrollToLastMessage()
 
     $('#new_chat_message textarea').on 'keypress', (event) ->
       if event.which == 13 && !event.shiftKey
-        event.preventDefault();
-        $(this).parents('form').submit();
+        event.preventDefault()
+        $(this).parents('form').submit()
+        $(this).prop('disabled', true)
 
     # auto adjust the height of
     $('#new_chat_message textarea').on 'keyup keydown', ->
       t = $(this);
-      console.log t[0].scrollHeight
+      # console.log t[0].scrollHeight
       if t[0].scrollHeight > 36
         t.css('height', t[0].scrollHeight)
       else
         t.css('height', 36)
+
+    window.addEventListener "beforeunload", ((e) ->
+      sub.cancel()
+    ), false
 
   #   $('form').submit (event) ->
   #     event.preventDefault()

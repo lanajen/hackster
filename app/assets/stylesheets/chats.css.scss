@@ -1,6 +1,6 @@
 .chat-container {
   position: absolute;
-  top: 60px;  // header
+  top: 105px;  // header nav + chat header
   left: 0;
   right: 0;
   bottom: 60px;  // footer
@@ -8,7 +8,7 @@
 #chat {
   height: 100%;
   position: relative;
-  overflow-y: none;
+  overflow-y: hidden;
   textarea {
     border: 2px solid #ddd;
     resize: none;
@@ -33,4 +33,20 @@
   overflow-y: scroll;
   position: absolute;
   height: 100%;
+}
+.chat-participants {
+}
+.chat-header {
+  position: absolute;
+  top: 60px;
+  background: white;
+  z-index: 2;
+  right: 0;
+  left: 0;
+  padding: 10px 20px;
+  h1 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+  }
 }

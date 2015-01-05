@@ -1,9 +1,12 @@
 publisher = client.publish('/chats/<%= @message.group_id %>', {
-  tpl: '<%= j render @message %>'
+  tpl: [{
+    content: '<%= j render @message %>',
+    target: '#chat .messages'
+  }]
 });
 
 publisher.callback(function() {
-  $('textarea[name="chat_message[body]"]').val('').css('height', 36);
+  $('textarea[name="chat_message[body]"]').val('').css('height', 36).prop('disabled', false);
 });
 
 publisher.errback(function() {

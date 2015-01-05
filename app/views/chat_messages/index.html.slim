@@ -1,13 +1,38 @@
 = content_for :head do
   meta name='channel_id' content=@group.id
+  javascript:
+    var current_user_details = {
+      name: "#{current_user.name}",
+      avatar: "#{current_user.decorate.avatar(:thumb)}",
+      url: "#{url_for(current_user)}",
+      id: "#{current_user.id}",
+    };
+    var current_user_thumb = "#{j render(partial: 'chat_messages/participant', locals: { participant: current_user })}";
 
-= content_for :before_main do
-  .chat-container
+= content_for :no_main do
+  section.chat-header
+    h1.pull-left
+      ==> link_to @group.name, @group
+      | chat
+
+    / .chat-participants.pull-right
+      a
+        i.fa.fa-user>
+        = @participants.size
+      ul.list-unstyled style='display:none'
+        - @participants.each do |participant|
+          = render partial: 'chat_messages/participant', locals: { participant: participant }
+
+    .clearfix
+
+  section.chat-container
     #chat
       .chat-inner
+        noscript
+          p Please enable Javascript to activate the chat.
         ul.messages.list-unstyled
           - @chat_messages.each do |chat_message|
             = render chat_message
 
       = simple_form_for ChatMessage.new, url: chat_messages_path(@group.id), html: { data: { remote: true } } do |f|
-        = f.input :body, label: false, input_html: { rows: 1 }, wrapper: false, placeholder: 'Type here, press Enter to send...'
+        = f.input :body, label: false, input_html: { rows: 1, disabled: 'disabled' }, wrapper: false, placeholder: 'Type here, press Enter to send...'
