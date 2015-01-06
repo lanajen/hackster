@@ -1,76 +1,77 @@
-client = new Pusher('<%= PUSHER_API_KEY %>')
+if (typeof(Pusher) == 'function')
+  client = new Pusher('<%= PUSHER_API_KEY %>')
 
-<% unless Rails.env == 'production' %>
-Pusher.log = (message) ->
-  if (window.console && window.console.log)
-    window.console.log(message)
-<% end %>
+  <% unless Rails.env == 'production' %>
+  Pusher.log = (message) ->
+    if (window.console && window.console.log)
+      window.console.log(message)
+  <% end %>
 
-scrollToLastMessage = ->
-  $('.chat-inner').scrollTop($('.chat-inner ul').height())
+  scrollToLastMessage = ->
+    $('.chat-inner').scrollTop($('.chat-inner ul').height())
 
-jQuery ->
-  channelId = $('meta[name=channel_id]').attr('content')
-  sub = client.subscribe('presence-group_' + channelId)
+  jQuery ->
+    channelId = $('meta[name=channel_id]').attr('content')
+    sub = client.subscribe('presence-group_' + channelId)
 
-  sub.bind 'pusher:subscription_succeeded', (payload) ->
-    $('textarea[name="chat_message[body]"]').prop('disabled', false).focus()
-    $('.participants-count').text(payload.count)
+    sub.bind 'pusher:subscription_succeeded', (payload) ->
+      $('textarea[name="chat_message[body]"]').prop('disabled', false).focus()
+      $('.participants-count').text(payload.count)
 
-  sub.bind 'pusher:member_added', (member) ->
-    $('#chat .messages').append("<li><a href='#{member.info.url}' target='_blank'>#{member.info.name}</a> joined.</li>")
-    scrollToLastMessage()
-    addParticipant()
+    sub.bind 'pusher:member_added', (member) ->
+      $('#chat .messages').append("<li><a href='#{member.info.url}' target='_blank'>#{member.info.name}</a> joined.</li>")
+      scrollToLastMessage()
+      addParticipant()
 
-  sub.bind 'pusher:member_removed', (member) ->
-    $('#chat .messages').append("<li><a href='#{member.info.url}' target='_blank'>#{member.info.name}</a> left.</li>")
-    scrollToLastMessage()
-    removeParticipant()
+    sub.bind 'pusher:member_removed', (member) ->
+      $('#chat .messages').append("<li><a href='#{member.info.url}' target='_blank'>#{member.info.name}</a> left.</li>")
+      scrollToLastMessage()
+      removeParticipant()
 
-  sub.bind 'new:message', (payload) ->
-    <% unless Rails.env == 'production' %>console.log(payload)<% end %>
-    if payload.tpl
-      $.each payload.tpl, (i, tpl) ->
-        $(tpl.target).append(tpl.content)
-        scrollToLastMessage()
+    sub.bind 'new:message', (payload) ->
+      <% unless Rails.env == 'production' %>console.log(payload)<% end %>
+      if payload.tpl
+        $.each payload.tpl, (i, tpl) ->
+          $(tpl.target).append(tpl.content)
+          scrollToLastMessage()
 
-  client.connection.bind 'connected', ->
-    $('textarea[name="chat_message[body]"]').prop('disabled', false).focus()
+    client.connection.bind 'connected', ->
+      $('textarea[name="chat_message[body]"]').prop('disabled', false).focus()
 
-  client.connection.bind 'connecting', ->
-    $('textarea[name="chat_message[body]"]').prop('disabled', true)
+    client.connection.bind 'connecting', ->
+      $('textarea[name="chat_message[body]"]').prop('disabled', true)
 
-  addParticipant = ->
-    val = $('.participants-count').text()
-    $('.participants-count').text(parseInt(val) + 1)
+    addParticipant = ->
+      val = $('.participants-count').text()
+      $('.participants-count').text(parseInt(val) + 1)
 
-  removeParticipant = ->
-    val = $('.participants-count').text()
-    $('.participants-count').text(parseInt(val) - 1)
+    removeParticipant = ->
+      val = $('.participants-count').text()
+      $('.participants-count').text(parseInt(val) - 1)
 
-  $(document).ready ->
-    scrollToLastMessage()
+    $(document).ready ->
+      scrollToLastMessage()
 
-    $('#new_chat_message textarea').on 'keypress', (event) ->
-      if event.which == 13 && !event.shiftKey
-        event.preventDefault()
-        that = this
-        body = $(this).val()
-        $(this).prop('disabled', true)
-        $.ajax
-          url: $(this).parents("form").attr("action")
-          type: 'POST'
-          data:
-            chat_message:
-              body: body
+      $('#new_chat_message textarea').on 'keypress', (event) ->
+        if event.which == 13 && !event.shiftKey
+          event.preventDefault()
+          that = this
+          body = $(this).val()
+          $(this).prop('disabled', true)
+          $.ajax
+            url: $(this).parents("form").attr("action")
+            type: 'POST'
+            data:
+              chat_message:
+                body: body
 
-          success: (response) ->
-            $(that).val("").css("height", 36).prop("disabled", false).focus()
+            success: (response) ->
+              $(that).val("").css("height", 36).prop("disabled", false).focus()
 
-    # auto adjust the height of
-    $('#new_chat_message textarea').on 'keyup keydown', ->
-      t = $(this);
-      if t[0].scrollHeight > 36
-        t.css('height', t[0].scrollHeight)
-      else
-        t.css('height', 36)
+      # auto adjust the height of
+      $('#new_chat_message textarea').on 'keyup keydown', ->
+        t = $(this);
+        if t[0].scrollHeight > 36
+          t.css('height', t[0].scrollHeight)
+        else
+          t.css('height', 36)
