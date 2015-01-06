@@ -28,6 +28,7 @@ gem 'rails-assets-underscore', '1.7.0'
 # gem 'html-pipeline'
 # gem 'reverse_markdown'
 
+gem 'pusher'
 # gem 'autoscaler', '0.9.0', groups: :staging
 gem 'auto_html', '1.6.3'
 gem 'aws-sdk', '1.33.0'

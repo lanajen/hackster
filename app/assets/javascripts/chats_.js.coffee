@@ -1,29 +1,64 @@
-client = new Pusher('a052792b761bf6079a9a')
-Pusher.log = (message) ->
-  if (window.console && window.console.log)
-    window.console.log(message)
+client = new Faye.Client('/faye')
 
 scrollToLastMessage = ->
   $('.chat-inner').scrollTop($('.chat-inner ul').height())
 
 jQuery ->
-  channelId = $('meta[name=channel_id]').attr('content')
-  sub = client.subscribe('group_' + channelId)
-  sub.bind 'pusher:subscription_succeeded', (payload) ->
+  client.on 'transport:down', ->
+    # the client is offline
+    console.log("we're offline, please wait while we try to reconnect...")
+    $('textarea[name="chat_message[body]"]').prop('disabled', true)
+
+  client.on 'transport:up', ->
+    # the client is online
+    console.log("we're online")
     $('textarea[name="chat_message[body]"]').prop('disabled', false).focus()
 
-  sub.bind 'new:message', (payload) ->
+  channelId = $('meta[name=channel_id]').attr('content')
+  client.addExtension {
+    outgoing: (message, callback) ->
+      message.ext = message.ext || {}
+      message.ext.csrfToken = $('meta[name=csrf-token]').attr('content')
+      callback(message)
+  }
+
+  try
+    client.unsubscribe '/chats/' + channelId
+  catch
+    console?.log "Can't unsubscribe." # print a message only if console is defined
+
+  sub = client.subscribe '/chats/' + channelId, (payload) ->
     console.log(payload)
     if payload.tpl
       $.each payload.tpl, (i, tpl) ->
         $(tpl.target).append(tpl.content)
         scrollToLastMessage()
 
-  client.connection.bind 'connected', ->
-    $('textarea[name="chat_message[body]"]').prop('disabled', false).focus()
+    # if payload.subscribed
+      # increment user count
 
-  client.connection.bind 'connecting', ->
-    $('textarea[name="chat_message[body]"]').prop('disabled', true)
+    # if payload.disconnected
+    #   userThumb = $("#participant-#{payload.disconnected}")
+    #   userName = userThumb.data('user-name')
+    #   $('#chat .messages').append("<li>#{userName} left.</li>")
+    #   scrollToLastMessage()
+    #   userThumb.remove()
+    #   # decrement user count
+
+  # sub.then ->
+  #   client.publish '/chats/' + channelId,
+  #     subscribed: current_user_details.id
+  #     tpl:
+  #       [
+  #         {
+  #           content: "<li>#{current_user_details.name} joined.</li>"
+  #           target: "#chat .messages"
+  #         }
+  #         {
+  #           content: current_user_thumb
+  #           target: ".chat-participants ul"
+  #         }
+  #       ]
 
   $(document).ready ->
     scrollToLastMessage()
@@ -54,9 +89,9 @@ jQuery ->
       else
         t.css('height', 36)
 
-    # window.addEventListener "beforeunload", ((e) ->
-    #   sub.cancel()
-    # ), false
+    window.addEventListener "beforeunload", ((e) ->
+      sub.cancel()
+    ), false
 
   #   $('form').submit (event) ->
   #     event.preventDefault()

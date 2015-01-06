@@ -18,7 +18,13 @@ class ChatMessagesController < ApplicationController
     @message.group_id = params[:group_id]
 
     if @message.valid?#save
-      faye_client.publish "/chats/#{@message.group_id}", {
+      # faye_client.publish "/chats/#{@message.group_id}", {
+      #   tpl: [{
+      #     content: render_to_string(@message),
+      #     target: '#chat .messages',
+      #   }]
+      # }
+      Pusher.trigger "group_#{@message.group_id}", 'new:message', {
         tpl: [{
           content: render_to_string(@message),
           target: '#chat .messages',

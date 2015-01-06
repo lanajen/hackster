@@ -103,12 +103,12 @@ module HackerIo
     #   { host: redis_conf['host'], port: redis_conf['port'], login: redis_conf['login'],
     #     password: redis_conf['password'] }
     # end
-    config.middleware.delete Rack::Lock
-    config.middleware.use FayeRails::Middleware,
-      mount: '/faye',
-      # engine: { type: Faye::Redis, namespace: 'faye' }.merge($redis_config),
-      timeout: 25,
-      server: 'puma'#,
+    # config.middleware.delete Rack::Lock
+    # config.middleware.use FayeRails::Middleware,
+    #   mount: '/faye',
+    #   # engine: { type: Faye::Redis, namespace: 'faye' }.merge($redis_config),
+    #   timeout: 25,
+    #   server: 'puma'#,
     #   extensions: [
     #     Faye::Authentication.new,
     #     Faye::CsrfProtection.new,
