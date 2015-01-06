@@ -12,7 +12,7 @@ jQuery ->
   client.on 'transport:up', ->
     # the client is online
     console.log("we're online")
-    $('textarea[name="chat_message[body]"]').prop('disabled', false)
+    $('textarea[name="chat_message[body]"]').prop('disabled', false).focus()
 
   channelId = $('meta[name=channel_id]').attr('content')
   client.addExtension {
@@ -66,8 +66,19 @@ jQuery ->
     $('#new_chat_message textarea').on 'keypress', (event) ->
       if event.which == 13 && !event.shiftKey
         event.preventDefault()
-        $(this).parents('form').submit()
+        # $(this).parents('form').submit()
+        that = this
+        body = $(this).val()
         $(this).prop('disabled', true)
+        $.ajax
+          url: $(this).parents("form").attr("action")
+          type: 'POST'
+          data:
+            chat_message:
+              body: body
+
+          success: (response) ->
+            $(that).val("").css("height", 36).prop("disabled", false).focus()
 
     # auto adjust the height of
     $('#new_chat_message textarea').on 'keyup keydown', ->

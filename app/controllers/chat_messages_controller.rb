@@ -10,13 +10,6 @@ class ChatMessagesController < ApplicationController
     # participants_ids = redis.smembers "/chats/#{@group.id}"
     # puts participants_ids.to_s
     # @participants = User.where(id: participants_ids)
-
-    # faye_client.publish "/chats/#{@group.id}", {
-    #   tpl: {
-    #     content: render_to_string(partial: 'chat_messages/user', locals: { user: current_user }),
-    #     target: '#chat .chat-participants',
-    #   }
-    # }
   end
 
   def create
@@ -25,9 +18,21 @@ class ChatMessagesController < ApplicationController
     @message.group_id = params[:group_id]
 
     if @message.valid?#save
-      render
+      faye_client.publish "/chats/#{@message.group_id}", {
+        tpl: [{
+          content: render_to_string(@message),
+          target: '#chat .messages',
+        }]
+      }
+      # render
+      render status: :ok, nothing: true
     else
       render status: :unprocessable_entity, json: @message.errors
     end
   end
+
+  private
+    def faye_client
+      @faye_client ||= Faye::Client.new("http://#{APP_CONFIG['full_host']}/faye")
+    end
 end

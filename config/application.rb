@@ -106,7 +106,7 @@ module HackerIo
     config.middleware.delete Rack::Lock
     config.middleware.use FayeRails::Middleware,
       mount: '/faye',
-      engine: { type: Faye::Redis, namespace: 'faye' }.merge($redis_config),
+      engine: { type: Faye::Redis, namespace: 'faye' }.merge({:url=>"redis://redistogo:e94e0d33cc5c54f51c5471d9e96036dd@hoki.redistogo.com:9133/"}),
       timeout: 25,
       server: 'puma'#,
     #   extensions: [

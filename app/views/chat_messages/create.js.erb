@@ -1,14 +1,16 @@
-publisher = client.publish('/chats/<%= @message.group_id %>', {
-  tpl: [{
-    content: '<%= j render @message %>',
-    target: '#chat .messages'
-  }]
-});
+$('textarea[name="chat_message[body]"]').val('').css('height', 36).prop('disabled', false);
 
-publisher.callback(function() {
-  $('textarea[name="chat_message[body]"]').val('').css('height', 36).prop('disabled', false);
-});
+// publisher = client.publish('/chats/<%= @message.group_id %>', {
+//   tpl: [{
+//     content: '<%= j render @message %>',
+//     target: '#chat .messages'
+//   }]
+// });
 
-publisher.errback(function() {
-  alert('There was an error while posting your comment.');
-});
+// publisher.callback(function() {
+//   $('textarea[name="chat_message[body]"]').val('').css('height', 36).prop('disabled', false);
+// });
+
+// publisher.errback(function() {
+//   alert('There was an error while posting your comment.');
+// });

@@ -35,4 +35,4 @@
             = render chat_message
 
       = simple_form_for ChatMessage.new, url: chat_messages_path(@group.id), html: { data: { remote: true } } do |f|
-        = f.input :body, label: false, input_html: { rows: 1, disabled: 'disabled' }, wrapper: false, placeholder: 'Type here, press Enter to send...'
+        = f.input :body, label: false, input_html: { rows: 1, disabled: 'disabled', autofocus: true }, wrapper: false, placeholder: 'Type here, press Enter to send...'
