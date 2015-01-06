@@ -16,11 +16,12 @@
       ==> link_to @group.name, @group
       | chat
 
-    / .chat-participants.pull-right
-      a
+    .chat-participants.pull-right
+      span
         i.fa.fa-user>
-        = @participants.size
-      ul.list-unstyled style='display:none'
+        span.participants-count
+        /= @participants.size
+      / ul.list-unstyled style='display:none'
         - @participants.each do |participant|
           = render partial: 'chat_messages/participant', locals: { participant: participant }
 

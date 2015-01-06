@@ -11,9 +11,21 @@ scrollToLastMessage = ->
 
 jQuery ->
   channelId = $('meta[name=channel_id]').attr('content')
-  sub = client.subscribe('group_' + channelId)
+  sub = client.subscribe('presence-group_' + channelId)
+
   sub.bind 'pusher:subscription_succeeded', (payload) ->
     $('textarea[name="chat_message[body]"]').prop('disabled', false).focus()
+    $('.participants-count').text(payload.count)
+
+  sub.bind 'pusher:member_added', (member) ->
+    $('#chat .messages').append("<li><a href='#{member.info.url}' target='_blank'>#{member.info.name}</a> joined.</li>")
+    scrollToLastMessage()
+    addParticipant()
+
+  sub.bind 'pusher:member_removed', (member) ->
+    $('#chat .messages').append("<li><a href='#{member.info.url}' target='_blank'>#{member.info.name}</a> left.</li>")
+    scrollToLastMessage()
+    removeParticipant()
 
   sub.bind 'new:message', (payload) ->
     <% unless Rails.env == 'production' %>console.log(payload)<% end %>
@@ -27,6 +39,14 @@ jQuery ->
 
   client.connection.bind 'connecting', ->
     $('textarea[name="chat_message[body]"]').prop('disabled', true)
+
+  addParticipant = ->
+    val = $('.participants-count').text()
+    $('.participants-count').text(parseInt(val) + 1)
+
+  removeParticipant = ->
+    val = $('.participants-count').text()
+    $('.participants-count').text(parseInt(val) - 1)
 
   $(document).ready ->
     scrollToLastMessage()

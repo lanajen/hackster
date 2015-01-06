@@ -13,7 +13,7 @@ class ChatMessagesController < ApplicationController
     @message.group_id = params[:group_id]
 
     if @message.save
-      Pusher.trigger_async "group_#{@message.group_id}", 'new:message', {
+      Pusher.trigger_async "presence-group_#{@message.group_id}", 'new:message', {
         tpl: [{
           content: render_to_string(@message),
           target: '#chat .messages',

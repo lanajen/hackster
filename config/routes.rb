@@ -57,6 +57,7 @@ HackerIo::Application.routes.draw do
         resources :simplified_registrations, only: [:create]
       end
     end
+    post 'pusher/auth' => 'users/pusher_authentications#create'
 
     namespace :admin do
       authenticate :user, lambda { |u| u.is? :admin } do

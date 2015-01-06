@@ -29,10 +29,13 @@
   }
 }
 .chat-inner {
-  padding: 10px 10px 46px;
+  padding: 10px;
   overflow-y: scroll;
   position: absolute;
   height: 100%;
+  .messages {
+    padding-bottom: 36px;
+  }
 }
 .chat-participants {
 }
