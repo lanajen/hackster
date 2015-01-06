@@ -14,7 +14,6 @@
 //= require medium-editor-ext
 //= require gist-embed
 //= require underscore
-//= require faye
 
 //= require chats
 //= require projects

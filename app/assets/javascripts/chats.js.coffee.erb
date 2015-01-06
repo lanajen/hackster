@@ -1,7 +1,10 @@
-client = new Pusher('a052792b761bf6079a9a')
+client = new Pusher('<%= PUSHER_API_KEY %>')
+
+<% unless Rails.env == 'production' %>
 Pusher.log = (message) ->
   if (window.console && window.console.log)
     window.console.log(message)
+<% end %>
 
 scrollToLastMessage = ->
   $('.chat-inner').scrollTop($('.chat-inner ul').height())
@@ -13,7 +16,7 @@ jQuery ->
     $('textarea[name="chat_message[body]"]').prop('disabled', false).focus()
 
   sub.bind 'new:message', (payload) ->
-    console.log(payload)
+    <% unless Rails.env == 'production' %>console.log(payload)<% end %>
     if payload.tpl
       $.each payload.tpl, (i, tpl) ->
         $(tpl.target).append(tpl.content)
@@ -31,7 +34,6 @@ jQuery ->
     $('#new_chat_message textarea').on 'keypress', (event) ->
       if event.which == 13 && !event.shiftKey
         event.preventDefault()
-        # $(this).parents('form').submit()
         that = this
         body = $(this).val()
         $(this).prop('disabled', true)
@@ -48,32 +50,7 @@ jQuery ->
     # auto adjust the height of
     $('#new_chat_message textarea').on 'keyup keydown', ->
       t = $(this);
-      # console.log t[0].scrollHeight
       if t[0].scrollHeight > 36
         t.css('height', t[0].scrollHeight)
       else
         t.css('height', 36)
-
-    # window.addEventListener "beforeunload", ((e) ->
-    #   sub.cancel()
-    # ), false
-
-  #   $('form').submit (event) ->
-  #     event.preventDefault()
-
-  #     # button.attr('disabled', 'disabled')
-  #     # button.val('Posting...')
-  #     publication = client.publish '/chats/' + channelId,
-  #       message: input.val()
-  #       created_at: new Date()
-  #     publication.callback ->
-  #       input.val('')
-  #       # button.removeAttr('disabled')
-  #       # button.val("Post")
-  #     publication.errback ->
-  #       # button.removeAttr('disabled')
-  #       # button.val("Try Again")
-  #       console.log('error')
-
-# in case anyone wants to play with the inspector.
-window.client = client
