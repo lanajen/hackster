@@ -10,6 +10,8 @@ class Users::PusherAuthenticationsController < ApplicationController
           email: current_user.email,
           url: url_for(current_user),
           avatar: current_user.decorate.avatar(:thumb),
+          tpl: render_to_string(partial: 'chat_messages/participant',
+            locals: { participant: current_user }),
         }
       })
       render json: response

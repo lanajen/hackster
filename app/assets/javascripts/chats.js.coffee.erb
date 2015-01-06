@@ -17,16 +17,18 @@ if (typeof(Pusher) == 'function')
     sub.bind 'pusher:subscription_succeeded', (payload) ->
       $('textarea[name="chat_message[body]"]').prop('disabled', false).focus()
       $('.participants-count').text(payload.count)
+      $.each payload.members, (i, member) ->
+        $('.chat-participants ul').append(member.tpl)
 
     sub.bind 'pusher:member_added', (member) ->
       $('#chat .messages').append("<li><a href='#{member.info.url}' target='_blank'>#{member.info.name}</a> joined.</li>")
       scrollToLastMessage()
-      addParticipant()
+      addParticipant(member)
 
     sub.bind 'pusher:member_removed', (member) ->
       $('#chat .messages').append("<li><a href='#{member.info.url}' target='_blank'>#{member.info.name}</a> left.</li>")
       scrollToLastMessage()
-      removeParticipant()
+      removeParticipant(member)
 
     sub.bind 'new:message', (payload) ->
       <% unless Rails.env == 'production' %>console.log(payload)<% end %>
@@ -41,13 +43,15 @@ if (typeof(Pusher) == 'function')
     client.connection.bind 'connecting', ->
       $('textarea[name="chat_message[body]"]').prop('disabled', true)
 
-    addParticipant = ->
+    addParticipant = (member) ->
       val = $('.participants-count').text()
       $('.participants-count').text(parseInt(val) + 1)
+      $('.chat-participants ul').append(member.tpl)
 
-    removeParticipant = ->
+    removeParticipant = (member) ->
       val = $('.participants-count').text()
       $('.participants-count').text(parseInt(val) - 1)
+      $(".participant-#{member.id}").remove()
 
     $(document).ready ->
       scrollToLastMessage()
@@ -75,3 +79,7 @@ if (typeof(Pusher) == 'function')
           t.css('height', t[0].scrollHeight)
         else
           t.css('height', 36)
+
+      $('a.toggle-participants').on 'click', (e) ->
+        e.preventDefault()
+        $('body').toggleClass('participants-open')

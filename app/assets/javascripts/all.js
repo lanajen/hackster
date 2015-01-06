@@ -58,9 +58,9 @@ $(function () {
     target = $(this).data('close');
     effect = $(this).data('effect') || 'slide';
     if (effect == 'fade') {
-      $(target).fadeOut(100,updatedScrollEventHandlers);  //after closing alerts/fade-in notices, we need to update the scroll handlers
+      $(target).fadeOut(100);  //after closing alerts/fade-in notices, we need to update the scroll handlers
     } else {
-      $(target).slideUp(100,updatedScrollEventHandlers);  //after closing alerts/fade-in notices, we need to update the scroll handlers
+      $(target).slideUp(100);  //after closing alerts/fade-in notices, we need to update the scroll handlers
     }
     e.stopPropagation();
     return false;
