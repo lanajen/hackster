@@ -42,7 +42,6 @@
 
       - if current_user.is? :admin
         h4 Slack integration
-        = f.input :slack_channel_id, label: 'Channel ID'
         = f.input :slack_token, label: 'Token'
         = f.input :slack_hook_url, label: 'Hook URL'
 

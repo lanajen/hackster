@@ -16,7 +16,7 @@
     });
 
 = content_for :no_container do
-  - cache ['home-visitor', user_signed_in?], tag: ['home', 'home-visitor'], expires_in: 1.hour do
+  - cache ['home-visitor', user_signed_in?, returning_user?], tag: ['home', 'home-visitor'], expires_in: 1.hour do
     section#home-banner
       .home-slide#hello-hackster
         .container.text-center
@@ -32,7 +32,7 @@
             ' with
             = link_to 'Autodesk Fusion 360', '/autodesk?ref=homeabout', class: 'alert-link'
 
-    - if !user_signed_in?
+    - if !user_signed_in? and !returning_user?
       section#projects.showcase-section
         .container
           .view-all-header.clearfix
@@ -74,7 +74,7 @@
           - @platforms.each do |platform|
             = render partial: 'groups/platforms/platform_thumb', locals: { platform: platform }
 
-    - if user_signed_in?
+    - if user_signed_in? or returning_user?
       section#projects.showcase-section
         .container
           .view-all-header.clearfix
@@ -115,7 +115,7 @@
                         h4
                           = link_to category, '#'
 
-    - if !user_signed_in?
+    - if !user_signed_in? and !returning_user?
       section#signup-now-pretty-please
         .container.text-center
           h1 Become a better hardware hacker!

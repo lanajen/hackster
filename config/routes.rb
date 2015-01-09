@@ -325,6 +325,9 @@ HackerIo::Application.routes.draw do
     get 'electric-imp', to: redirect('electricimp')
 
     post 'chats/:group_id' => 'chat_messages#create', as: :chat_messages
+    post 'chats/:group_id/slack' => 'chat_messages#incoming_slack'
+    get 'users/slack_settings' => 'chat_messages#slack_settings', as: :user_slack_settings
+    post 'users/slack_settings' => 'chat_messages#save_slack_settings'
 
     constraints(PlatformPage) do
       get ':slug' => 'platforms#show', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }

@@ -1,0 +1,12 @@
+.col-xs-6.col-xs-offset-3
+  .box
+    .box-title
+      h2 Your Slack settings
+
+    .box-content
+      p So we can identify messages as coming from you, please enter the following info:
+
+      = simple_form_for @auth, url: user_slack_settings_path, html: { data: { method: :patch }, class: 'form-horizontal widget-form' }, wrapper: :bootstrap3_horizontal do |f|
+        = f.error_notification
+        = f.input :uid, label: 'Slack username'
+        = f.submit 'Save changes', class: 'btn btn-primary'

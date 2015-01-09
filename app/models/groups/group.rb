@@ -40,7 +40,7 @@ class Group < ActiveRecord::Base
     :blog_link, :github_link, :email, :mini_resume, :city, :country,
     :user_name, :full_name, :members_attributes, :avatar_id,
     :permissions_attributes, :google_plus_link, :youtube_link, :access_level,
-    :hidden, :slack_channel_id, :slack_token, :slack_hook_url
+    :hidden, :slack_token, :slack_hook_url
 
   accepts_nested_attributes_for :avatar, :members, :permissions,
     allow_destroy: true
@@ -49,7 +49,7 @@ class Group < ActiveRecord::Base
     :google_plus_link, :youtube_link, :website_link, :blog_link, :github_link]
   set_changes_for_stored_attributes :websites
 
-  store :properties, accessors: [:hidden, :slack_channel_id, :slack_token,
+  store :properties, accessors: [:hidden, :slack_token,
     :slack_hook_url]
   set_changes_for_stored_attributes :properties
 
