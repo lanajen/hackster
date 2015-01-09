@@ -18,7 +18,7 @@ class Rack::Attack
     '127.0.0.1' == req.ip
   end
   whitelist('slack') do |req|
-    req.user_agent =~ 'Slackbot'
+    req.user_agent == "Slackbot 1.0 (+https://api.slack.com/robots)"
   end
 
   ### Throttle Spammy Clients ###
