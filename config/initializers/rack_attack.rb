@@ -97,7 +97,7 @@ class Rack::Attack
 end
 
 ActiveSupport::Notifications.subscribe("rack.attack") do |name, start, finish, request_id, req|
-  if req.env['rack.attack.matched'] == "bad_scraper" && req.env['rack.attack.match_type'] == :track
+  if req.env['rack.attack.matched'] == "block scraper access" && req.env['rack.attack.match_type'] == :blacklist
     Rails.logger.info "bad_scraper: #{req.path}"
     Rails.logger.info req.inspect
     # STATSD.increment("bad_scraper")
