@@ -21,6 +21,12 @@ class ConversationsController < ApplicationController
     authorize! :read, @conversation
     title "Messages > #{@conversation.subject}"
     @conversation.mark_as_read! current_user
+    @receipts = @conversation.receipts
+    @receipts = if current_user.is?(:admin)
+      @receipts.distinct(:message_id)
+    else
+      @receipts.where(receipts: { user_id: current_user.id })
+    end
   end
 
   def new

@@ -12,7 +12,7 @@ section#conversation.section-container
     .clearfix
 
     .comments
-      - @conversation.receipts.where(receipts: { user_id: current_user.id }).each do |receipt|
+      - @receipts.each do |receipt|
         = render partial: 'messages/message', locals: { receipt: receipt }
       .new-comment-reply style='display:block'
         .new-comment
