@@ -88,11 +88,18 @@ class Rack::Attack
   #    {},   # headers
   #    ['']] # body
   # end
+
+  blacklisted_response = lambda do |env|
+    # Using 503 because it may make attacker think that they have successfully
+    # DOSed the site. Rack::Attack returns 403 for blacklists by default
+    [ 503, {}, ['Blocked']]
+  end
 end
 
 ActiveSupport::Notifications.subscribe("rack.attack") do |name, start, finish, request_id, req|
   if req.env['rack.attack.matched'] == "bad_scraper" && req.env['rack.attack.match_type'] == :track
     Rails.logger.info "bad_scraper: #{req.path}"
-    STATSD.increment("bad_scraper")
+    Rails.logger.info req.inspect
+    # STATSD.increment("bad_scraper")
   end
 end
