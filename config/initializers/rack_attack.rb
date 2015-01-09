@@ -17,6 +17,9 @@ class Rack::Attack
     # Requests are allowed if the return value is truthy
     '127.0.0.1' == req.ip
   end
+  whitelist('slack') do |req|
+    req.user_agent =~ 'Slackbot'
+  end
 
   ### Throttle Spammy Clients ###
 
@@ -98,8 +101,8 @@ end
 
 ActiveSupport::Notifications.subscribe("rack.attack") do |name, start, finish, request_id, req|
   if req.env['rack.attack.matched'] == "block scraper access" && req.env['rack.attack.match_type'] == :blacklist
-    Rails.logger.info "bad_scraper: #{req.path}"
-    Rails.logger.info req.inspect
+    Rails.logger.info "bad_scraper: #{req.path} / #{req.user_agent} / #{req.ip}"
+    # Rails.logger.info req.inspect
     # STATSD.increment("bad_scraper")
   end
 end

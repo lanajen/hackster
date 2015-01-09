@@ -85,6 +85,7 @@ gem 'sidekiq-status', '0.5.1'
 gem 'sidekiq-failures', '0.4.3'
 gem 'simple_form', '3.0.2'
 gem 'sinatra', '>= 1.3.0', require: nil
+# gem 'slack-rtmapi'
 gem 'slick_rails', '1.3.7'
 gem 'slim-rails', '2.1.5'
 gem 'split', '0.7.2', :require => 'split/dashboard'
