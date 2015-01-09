@@ -55,7 +55,7 @@ class ScraperQueue < BaseWorker
 
   rescue => exception
     @message.subject = "Your project couldn't be imported"
-    @message.body = "<p>Hi</p><p>This is to let you know that we couldn't import your page: #{page_url}.</p><p>We've been notified and will try to fix it. We'll keep you updated.</p><p>Cheers<br/>The Hackster.io team</p>"
+    @message.body = "<p>Hi</p><p>This is to let you know that we couldn't import your page: #{page_url}.</p><p>Please double check that the URL is publicly accessible, and if it's a Github repo make sure that it's public. In any case, we've been notified and will try to fix it. We'll keep you updated.</p><p>Cheers<br/>The Hackster.io team</p>"
 
     clean_backtrace = Rails.backtrace_cleaner.clean(exception.backtrace)
     message = "Project import error: #{exception.inspect} // backtrace: #{clean_backtrace.join(' - ')} // page_url: #{page_url} // user_id: #{user_id} // project_errors: #{@project.try(:errors).try(:messages)}"

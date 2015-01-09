@@ -40,6 +40,12 @@
         = f.input :city
         = f.input :country, input_html: { class: 'form-control' }
 
+      - if current_user.is? :admin
+        h4 Slack integration
+        = f.input :slack_channel_id, label: 'Channel ID'
+        = f.input :slack_token, label: 'Token'
+        = f.input :slack_hook_url, label: 'Hook URL'
+
     .col-xs-6
       = f.input :accept_project_ideas, input_label: "Accept project ideas?", as: :boolean, hint: "This is useful if your product hasn't shipped yet and you want to encourage your community to start posting project ideas."
       = f.input :project_ideas_phrasing, collection: @platform.project_ideas_phrasing_options, label: 'Phrasing for project ideas prompt'
