@@ -21,7 +21,7 @@ class ChatMessagesController < ApplicationController
           target: '#chat .messages',
         }]
       }
-      post_to_slack @message, @group.slack_hook_url if @group.slack_hook_url
+      post_to_slack @message, @group.slack_hook_url if @group.slack_hook_url.present?
       render status: :ok, nothing: true
     else
       render status: :unprocessable_entity, json: @message.errors
