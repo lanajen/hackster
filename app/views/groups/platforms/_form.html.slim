@@ -20,9 +20,11 @@
       = f.input :new_user_name, label: 'Pretty URL', wrapper: :addon do
         span.input-group-addon www.hackster.io/
         = f.input_field :new_user_name
+      = f.input :public, inline_label: 'Make the page public', label: false, hint: "Uncheck this box if you want to hide the page everywhere on Hackster.", as: :boolean
       - if current_user.is? :admin
         = f.input :email
         = f.input :is_new, as: :boolean, inline_label: 'Show as new', label: false
+        = f.input :disclaimer, as: :text, input_html: { rows: 4 }
       = f.input :mini_resume, as: :text, label: 'Short description', input_html: { rows: 4 },
         hint: 'Maximum 140 characters'
 

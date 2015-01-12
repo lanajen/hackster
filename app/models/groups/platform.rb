@@ -13,7 +13,7 @@ class Platform < List
   attr_accessible :forums_link, :documentation_link, :crowdfunding_link,
     :buy_link, :shoplocket_link, :cover_image_id, :accept_project_ideas,
     :project_ideas_phrasing, :client_subdomain_attributes, :logo_id,
-    :download_link, :company_logo_id
+    :download_link, :company_logo_id, :disclaimer
 
   accepts_nested_attributes_for :client_subdomain
 
@@ -24,7 +24,7 @@ class Platform < List
   set_changes_for_stored_attributes :websites
 
   store_accessor :properties, :accept_project_ideas, :project_ideas_phrasing,
-    :active_challenge
+    :active_challenge, :disclaimer
   set_changes_for_stored_attributes :properties
 
   parse_as_booleans :properties, :accept_project_ideas, :active_challenge
