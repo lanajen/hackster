@@ -48,7 +48,7 @@ class ChatMessagesController < ApplicationController
     render status: :unauthorized, json: { text: 'Unauthorized. Please check that you have configured Slack correctly in the platform page settings.' } and return unless params[:token] == @group.slack_token
 
     user = User.joins(:authorizations).where(authorizations: { uid: params[:user_name], provider: 'Slack' }).first
-    render status: :unprocessable_entity, json: { text: "Couldn't post message to chat, user '#{params[:user_name]}' unknown. Please authenticate." } unless user
+    render status: :unprocessable_entity, json: { text: "Couldn't post message to chat, user '#{params[:user_name]}' unknown. Please authenticate." } and redirect unless user
 
     @message = ChatMessage.new body: params[:text]
     @message.user = user
