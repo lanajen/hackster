@@ -6,6 +6,11 @@ section#conversation.section-container
       ' /
       = conversation.subject
   .section-content
+    - if current_user.is? :admin
+      .pull-left
+        p
+          ' Conversation between
+          = @conversation.participants.map{ |u| link_to(u.name, u) }.to_sentence.html_safe
     .btn-group.pull-right
       / # = link_to 'Reply', conversation_path(conversation, :location => 'conversation', :box => @box), data: { :confirm => "Are you sure you want to delete this conversation?", :method => :delete, :remote => true }, class: 'btn btn-default'
       = link_to 'Delete', conversation_path(conversation), data: { :confirm => "Are you sure you want to delete this conversation?", :method => :delete }, class: 'btn btn-default'

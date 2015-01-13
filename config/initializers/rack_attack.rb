@@ -21,7 +21,7 @@ class Rack::Attack
   end
   whitelist('trusted_ua') do |req|
     TRUSTED_USER_AGENTS.each do |ua|
-      req.user_agent =~ ua
+      ua.in? req.user_agent
     end
   end
 
