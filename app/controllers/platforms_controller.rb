@@ -174,13 +174,18 @@ class PlatformsController < ApplicationController
 
       per_page = per_page - 1 if @platform.accept_project_ideas
 
-      sort = params[:sort] ||= 'magic'
+      sort = if params[:sort] and params[:sort].in? Project::SORTING.keys
+        params[:sort]
+      else
+        params[:sort] = 'magic'
+      end
       @by = params[:by] || 'all'
 
       @projects = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.indexable_and_external.for_thumb_display_in_collection)
-      if sort and sort.in? Project::SORTING.keys
+      # @projects.to_a
+      # if sort and sort.in? Project::SORTING.keys
         @projects = @projects.merge(Project.send(Project::SORTING[sort]))
-      end
+      # end
 
       if @by and @by.in? Project::FILTERS.keys
         @projects = if @by == 'featured'
@@ -191,6 +196,7 @@ class PlatformsController < ApplicationController
       end
 
       @projects = @projects.paginate(page: safe_page_params, per_page: per_page)
+
     end
 
     def load_platform

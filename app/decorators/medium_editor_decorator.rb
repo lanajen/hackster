@@ -46,10 +46,10 @@ module MediumEditorDecorator
             end
 
             el.add_child code if code
-          # rescue
+          rescue
             # el.add_child "<p>Something should be showing up here but an error occurred. Send this info to hi@hackster.io: data-type: #{el['data-type']}, data-url: #{el['data-url']}, data-widget-id: #{el['data-widget-id']}. Thanks!</p>"
-            # el.remove
-            # next
+            el.remove
+            next
           end
         end
         parsed.to_html.html_safe
