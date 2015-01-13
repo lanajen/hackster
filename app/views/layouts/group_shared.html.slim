@@ -1,0 +1,142 @@
+- @group = ListDecorator.decorate(@group)
+
+/ = content_for :before_main do
+  #about style='position: relative;z-index: 999;background: #F2F2F2;'
+    - if !user_signed_in?
+      = render partial: 'shared/signup_top', locals: { message: "Dig #{@group.name}? Join and receive updates about new projects: ", redirect_to: create_followers_path(followable_type: 'Group', followable_id: @group.id), source: 'group' }
+
+= content_for :head do
+  = render partial: "groups/#{@group.identifier.pluralize}/meta_tags"
+  meta name='group_id' content=@group.id
+
+= content_for :js do
+  script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-51b26f5613fb83d2" async="async"
+  javascript:
+    var addthis_share = {
+      "data_track_addressbar":false,
+       url: "#{url_for [@group, only_path: false]}",
+       title: "#{@group.twitter_share}"
+    }
+
+= content_for :no_container do
+  section.top-banner
+    .top-banner-image style="background-image:url('#{@group.cover_image.try(:file_url, :cover)}');"
+      .top-banner-image-inner
+        / .top-banner-image-inner-corner.top-right.text.hidden-xs
+          = @group.class.name
+        .top-banner-image-inner-corner.bottom-right.hidden-xs
+          ul.websites.list-inline
+            - @group.websites.select{|t,u| u.present? }.each do |type, url|
+              = render partial: "shared/website", locals: { type: type, url: url }
+        .top-banner-image-inner-corner.bottom-left.bottom-center-mobile
+          ul.list-unstyled.list-inline.project-stats
+            li
+              span.stat-figure> = number_with_delimiter @group.projects_count
+              = pluralize_without_count @group.projects_count, 'project'
+            li
+              span.stat-figure> = number_with_delimiter @group.followers_count
+              = pluralize_without_count @group.followers_count, 'follower'
+
+        .container.hidden-xs
+          .media
+            .media-left
+              = image_tag @group.avatar(:big), class: 'img-thumbnail'
+            .media-body
+              / p.text-muted By Spark
+              .clearfix
+                h1.pull-left
+                  - if @group.model.respond_to?(:company_logo) and @group.company_logo
+                    = image_tag @group.company_logo.try(:file_url), class: 'company-logo'
+                  = @group.name
+                  - if @group.model.respond_to?(:disclaimer) and @group.disclaimer.present?
+                    i.fa.fa-info-circle.istooltip.small< title=@group.disclaimer
+                / ul.list-inline.tags.pull-left
+                  li
+                    a.tag href='' Beginners
+                  li
+                    a.tag href='' Wearables
+                  li
+                    a.tag href='' Wifi
+              p= @group.mini_resume
+              .button-content
+                = render partial: 'followers/button_text', locals: { followable: @group }
+                = render partial: "groups/#{@group.identifier.pluralize}/additional_links"
+                a.btn.btn-link.addthis_button_compact
+                  i.fa.fa-share-square-o
+
+                - if can? :manage, @group
+                  span.dropdown role='presentation'
+                    a.btn.btn-link.dropdown-toggle data-toggle="dropdown" aria-expanded="false"
+                      i.fa.fa-cog
+                    ul.dropdown-menu role="menu"
+                      li= link_to 'Edit settings', url_for([:edit, @group])
+                      li.divider
+                      li= link_to 'Manage admins', url_for([@group, :edit, :members])
+                      li= link_to 'Invite admins', url_for([@group, :new, :invitations])
+        .container.visible-xs
+          = image_tag @group.avatar(:big), class: 'img-thumbnail'
+          h1= @group.name
+          p= @group.mini_resume
+          p= render partial: 'followers/button_text', locals: { followable: @group }
+
+  / section.group-nav
+    .container
+      ul.nav.nav-tabs.pull-left
+        li.active role='presentation'
+          a href=url_for(@group)
+            | Projects
+            small 79
+        li role='presentation'
+          a href=''
+            | Followers
+            small 121
+        li role='presentation'
+          a href=''
+            | Resources
+
+      .pull-right
+        ul.list-inline
+          - if can? :manage, @group
+            li.dropdown role='presentation'
+              a.btn.btn-default.dropdown-toggle data-toggle="dropdown" aria-expanded="false"
+                ' Manage this page
+                span.caret
+              ul.dropdown-menu role="menu"
+                li= link_to 'Edit settings', edit_platform_path(@group)
+                li.divider
+                / li= link_to 'Post fresh news', new_platform_announcement_path(@group.user_name)
+                li= link_to 'Manage admins', group_edit_members_path(@group)
+                li= link_to 'Invite admins', group_new_invitations_path(@group)
+          - if !(can? :manage, @group) or (user_signed_in? and current_user.is? :admin)
+            li= render partial: 'followers/button_text', locals: { followable: @group }
+
+  - if can? :join, @group and user_signed_in? and member = current_user.is_member?(@group) and member.invitation_pending?
+    section#alert-section
+      .alert.alert-warning.alert-flat
+        ' You have been invited to manage
+        strong = @group.name
+        ' .
+        = link_to 'Rock the place', group_accept_invitation_path(@group), class: 'btn btn-warning btn-sm'
+
+  - if @announcement
+    section#alert-section
+      .alert.alert-info.alert-flat.text-center
+        strong> News:
+        = link_to @announcement.title, platform_announcement_path(@announcement), class: 'alert-link'
+
+  - elsif @challenge
+    section#alert-section
+      .alert.alert-info.alert-flat.text-center
+        strong> #{@group.name} is having a challenge!
+        ' Join the
+        = link_to @challenge.name, @challenge, class: 'alert-link'
+
+  - elsif !user_signed_in?
+    section#alert-section.follow-section
+      .alert.alert-info.alert-flat.text-center
+        ==> link_to "Follow #{@group.name}", new_user_registration_path(redirect_to: create_followers_path(followable_type: 'Group', followable_id: @group.id), reason: 'follow', m: 'group', id: @group.id), class: 'follow-button alert-link show-simplified-signup', data: { container: 'body', redirect_to: create_followers_path(followable_type: 'Group', followable_id: @group.id) }, rel: 'tooltip'
+        ' to be notified when new projects are posted.
+
+  = yield
+
+= render template: 'layouts/application'

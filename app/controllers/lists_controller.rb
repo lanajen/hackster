@@ -4,7 +4,7 @@ class ListsController < ApplicationController
   before_filter :load_list, only: [:show, :update]
   before_filter :load_projects, only: [:show, :embed]
   before_filter :load_project, only: [:feature_project, :unfeature_project]
-  layout 'group', only: [:edit, :update, :show]
+  layout 'group_shared', only: [:edit, :update, :show]
   after_action :allow_iframe, only: [:embed]
   respond_to :html
 
@@ -17,7 +17,7 @@ class ListsController < ApplicationController
   # end
 
   def show
-    @group = @list = ListDecorator.decorate(@list)
+    # @group = @list = ListDecorator.decorate(@list)
     impressionist_async @list, "", unique: [:session_hash]
     # authorize! :read, @list
     title (@list.category? ? "#{@list.name} projects and hacks" : "#{@list.name}'s favorite hardware projects and hacks")

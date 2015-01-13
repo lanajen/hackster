@@ -79,7 +79,7 @@ class GroupInvitationsController < ApplicationController
     def set_layout
       case @invitable
       when List, Platform
-        @invitable.class.name.underscore
+        'group'
       else
         @model_name
       end
