@@ -5,6 +5,7 @@ module ScraperStrategies
     def initialize parsed, page_url=''
       @parsed = parsed
       uri = URI(page_url)
+      @scheme = uri.scheme || 'http'
       @host = uri.host
       if uri.path.present?
         path = uri.path.split(/\//)[1..-1]
@@ -226,7 +227,7 @@ module ScraperStrategies
       end
 
       def normalize_link src
-        src = 'http:' + src if (src =~ /\A\/\//)
+        src = "#{@scheme}:" + src if (src =~ /\A\/\//)
         if !(src =~ /\Ahttp/) and @host and src != '/'
           src = "#{@base_uri}/#{src}" unless src =~ /\A\//
           clean_path = []
@@ -237,7 +238,7 @@ module ScraperStrategies
               clean_path << dir
             end
           end
-          src = "http://#{@host}/#{clean_path.join('/')}"
+          src = "#{@scheme}://#{@host}/#{clean_path.join('/')}"
         end
         src.gsub /\s/, '%20'
       end

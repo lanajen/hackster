@@ -16,7 +16,8 @@ module ScraperUtils
     5.times do
       begin
         return open(page_url).read
-      rescue
+      rescue => e
+        # raise e.inspect
         puts "Failed opening #{page_url}. Retrying in 1 second..."
         sleep 1
       end
