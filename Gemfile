@@ -96,14 +96,14 @@ gem 'tinymce-rails', '4.1.5'
 gem 'tire', '0.5.5'
 gem 'therubyracer', '0.12.0'
 gem 'twitter', '5.11.0'
-# gem 'unicorn', '4.7.0'
+gem 'unicorn', '4.7.0'
 gem 'vimeo', '1.5.3'
 gem 'will_paginate', '3.0.4'
 gem 'workflow', '1.0.0'
 
 # heroku
 gem 'heroku-api', '0.3.15'
-# gem 'heroku-forward', '0.4.0'
+gem 'heroku-forward', '0.4.0'
 gem 'rails_12factor', group: [:production, :staging]
 
 # gem "bullet", :group => "development"
