@@ -1,4 +1,6 @@
 class Rack::Attack
+  TRUSTED_USER_AGENTS = ['NewRelicPinger/1.0',
+    'Slackbot 1.0 (+https://api.slack.com/robots)']
 
   ### Configure Cache ###
 
@@ -17,8 +19,10 @@ class Rack::Attack
     # Requests are allowed if the return value is truthy
     '127.0.0.1' == req.ip
   end
-  whitelist('slack') do |req|
-    req.user_agent == "Slackbot 1.0 (+https://api.slack.com/robots)"
+  whitelist('trusted_ua') do |req|
+    TRUSTED_USER_AGENTS.each do |ua|
+      req.user_agent =~ ua
+    end
   end
 
   ### Throttle Spammy Clients ###

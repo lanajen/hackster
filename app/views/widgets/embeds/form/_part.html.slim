@@ -13,7 +13,7 @@ li.fields
       tr
         td style='width:85%'= f.input :description, label: 'Part name', placeholder: 'Eg: 10K Ohm Resistor'
         td style='width:15%;'
-          = f.input :quantity, label: '&times;'.html_safe, input_html: { style: 'width:calc(100% - 30px)' }, label_html: { style: 'width:30px;' }
+          = f.input :quantity, label: 'x'.html_safe, input_html: { style: 'width:calc(100% - 30px)' }, label_html: { style: 'width:30px;' }
 
       tr data-name='part-comment' class="#{'default-hidden' if part.comment.blank?}"
         td colspan=2 = f.input :comment, label: 'Comment', placeholder: 'Eg: can be replaced by a higher value if necessary'

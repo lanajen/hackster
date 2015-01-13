@@ -54,16 +54,18 @@ class ChatMessagesController < ApplicationController
     @message.user = user
     @message.group_id = params[:group_id]
 
-    @message.save
+    if @message.save
+      Pusher.trigger_async "presence-group_#{@message.group_id}", 'new:message', {
+        tpl: [{
+          content: render_to_string(@message),
+          target: '#chat .messages',
+        }]
+      }
 
-    Pusher.trigger_async "presence-group_#{@message.group_id}", 'new:message', {
-      tpl: [{
-        content: render_to_string(@message),
-        target: '#chat .messages',
-      }]
-    }
-
-    render status: :ok, nothing: true
+      render status: :ok, nothing: true
+    else
+      render status: :unprocessable_entity, json: { text: @message.errors.full_messages.to_sentence }
+    end
   end
 
   def post_to_slack message, slack_hook_url
