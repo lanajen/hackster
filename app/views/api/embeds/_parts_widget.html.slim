@@ -1,9 +1,20 @@
-/ table.sortable-table.table.table-hover.fields-container
+table.sortable-table.table.table-hover.fields-container
+  thead
+    tr
+      th colspan=4
+        .pull-right
+          = render partial: 'api/embeds/digikey_form', locals: { widget: embed.widget, project: @project }
   tbody
     - embed.widget.parts.each_with_index do |part, i|
       = render partial: "widgets/embeds/show/part", locals: { part: part, i: i }
 
-table.sortable-table.table.table-hover.fields-container  contenteditable='false'
+  tfoot style='display:none' data-edit-only='true'
+    tr
+      td colspan=4
+        ' To edit parts,
+        = link_to 'go to the bottom of the page.', '#components', class: 'smooth-scroll', 'data-target' => '#components'
+
+/ table.sortable-table.table.table-hover.fields-container  contenteditable='false'
   thead
     tr
       th.widget-attribute.widget-attribute-editable*{ colspan: 5, 'data-attribute' => 'name', 'data-default-text' => 'Components list label', 'data-disable-toolbar' => 'true', 'data-contenteditable' => 'true', 'data-value' => (embed.widget.name.presence || 'Components list') } = (embed.widget.name.presence || 'Components list')

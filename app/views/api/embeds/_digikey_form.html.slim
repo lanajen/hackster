@@ -1,0 +1,35 @@
+- @digikey_id = @digikey_id ? @digikey_id + 1 : 1
+
+- if widget.parts.with_sku.any?
+  form action="http://www.digikey.com/classic/ordering/fastadd.aspx?WT.z_cid=ref_hacksterfastadd" method="post" target="_blank" id="digikey-form-#{@digikey_id}"
+    - widget.parts.with_sku.each_with_index do |part, i|
+      input type="hidden" name="part#{i + 1}" value=part.vendor_sku
+      input type="hidden" name="qty#{i + 1}" value=part.quantity
+      input type="hidden" name="cref#{i + 1}" value=project.name
+
+    button.unselectable class="btn btn-default btn-sm"
+      i.fa.fa-shopping-cart>
+      | Buy the parts from DigiKey
+
+- if widget.parts.without_sku.any?
+  .popup-overlay id="no-digikey-parts-popup-#{@digikey_id}"
+    .popup-overlay-bg
+    .popup-overlay-outer
+      .popup-overlay-inner
+        button.close  onclick="closePopup('.popup-overlay');"   &times;
+        h2
+          | Heads up!
+        p
+          strong The following parts need to be purchased separately:
+        table.sortable-table.table.table-hover.fields-container
+          tbody
+            - widget.parts.without_sku.each_with_index do |part, i|
+              = render partial: "widgets/embeds/show/part", locals: { part: part, i: i }
+
+  = content_for :js do
+    javascript:
+      $(document).ready(function(){
+        $("#digikey-form-#{@digikey_id}").on('submit', function(){
+          $("#no-digikey-parts-popup-#{@digikey_id}").fadeIn(600);
+        });
+      });

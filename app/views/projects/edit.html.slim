@@ -59,7 +59,7 @@
                   i.fa.fa-chevron-up
               .section-content
                 #editable-description.text-widget.project-show-item.check-todo*{ 'data-human-name' => 'Description', 'data-check-todo' => '*value.find(".editable").text().trim() == ""*', 'data-target' => '#showcase' }
-                  = render partial: 'shared/medium_editor', locals: { editable: @project.decorate.description, attribute_name: 'description' }
+                  = render partial: 'shared/medium_editor', locals: { editable: @project.decorate.description(:edit), attribute_name: 'description' }
                 /
                   h3 How it started
                   p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
@@ -82,15 +82,17 @@
                     a.right.carousel-control href="#carousel" role="button" data-slide="next"
                       span.glyphicon.glyphicon-chevron-right aria-hidden="true"
 
-            / section#components.section-container.section-collapsible
+            section#components.section-container.section-collapsible
               h2.section-title
-                a href=''
+                a.title.title-toggle href=''
                   ' Components
                   i.fa.fa-chevron-down
                   i.fa.fa-chevron-up
               .section-content
+                - @project.widgets.where(type: 'PartsWidget').first_or_create
+                / = simple_nested_form_for @project do |f|
                 - @project.widgets.where(type: 'PartsWidget').each do |widget|
-                  = render partial: 'widgets/embeds/form/parts_widget', locals: { widget: widget, f: f }
+                  = render partial: 'widgets/embeds/form/parts_widget', locals: { widget: widget }
 
             / section#code.section-container.section-collapsible
               h2.section-title

@@ -1,18 +1,37 @@
-tr.fields
-  td
-    table style='width:100%'
-      tbody
+li.fields
+  table.table
+    tbody
+      tr
+        td colspan=2 style="background:white;padding:5px 0;"
+          = f.input :id, as: :hidden
+          = f.input :position, as: :hidden, input_html: { class: 'position' }
+          ul.list-inline.pull-right
+            li= link_to content_tag(:i, '', class: 'fa fa-angle-up'), '', class: 'btn btn-default btn-xs move-up'
+            li= link_to content_tag(:i, '', class: 'fa fa-angle-down'), '', class: 'btn btn-default btn-xs move-down'
+            li= f.link_to_remove (content_tag(:i, '', class: 'fa fa-times') + ' Delete').html_safe, class: 'btn btn-danger btn-xs'
+
+      tr
+        td style='width:85%'= f.input :description, label: 'Part name', placeholder: 'Eg: 10K Ohm Resistor'
+        td style='width:15%;'
+          = f.input :quantity, label: '&times;'.html_safe, input_html: { style: 'width:calc(100% - 30px)' }, label_html: { style: 'width:30px;' }
+
+      tr data-name='part-comment' class="#{'default-hidden' if part.comment.blank?}"
+        td colspan=2 = f.input :comment, label: 'Comment', placeholder: 'Eg: can be replaced by a higher value if necessary'
+
+      tr data-name='part-vendor-link' class="#{'default-hidden' if part.vendor_link.blank?}"
+        td colspan=2 = f.input :vendor_link, label: 'Online store URL', placeholder: 'Eg: http://www.digikey.com/product-detail/en/CF14JT10K0/CF14JT10K0CT-ND/1830374'
+
+      - if current_user.is? :admin
+        tr data-name='part-vendor-sku' class="#{'default-hidden' if part.vendor_sku.blank?}"
+          td colspan=2 = f.input :vendor_sku, label: 'DigiKey SKU', placeholder: 'Eg: CF14JT10K0CT-ND'
+
+      - if part.comment.blank? or part.vendor_link.blank? or (current_user.is? :admin and part.vendor_sku.blank?)
         tr
-          td
-            i.fa.fa-bars.handle
-            = f.input :id, as: :hidden
-            = f.input :position, as: :hidden, input_html: { class: 'position' }
-          td style='text-align:right' = f.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-danger btn-xs'
-        tr
-          td style='width:80%'= f.input :description, placeholder: 'Part name', label: false
-          td style='width:10%;min-width:20px;'
-            = f.input :quantity, label: false, placeholder: 'Quantity'
-        tr
-          td colspan=4 = f.input :comment, label: false, placeholder: 'Comment'
-        tr
-          td colspan=4 = f.input :vendor_link, placeholder: 'Where can this be purchased?', label: false
+          td colspan=2 style='padding:5px 10px'
+            ul.list-inline
+              - if part.comment.blank?
+                li= link_to 'Add comment', '', 'data-target' => 'part-comment', class: 'reveal btn btn-link btn-xs'
+              - if part.vendor_link.blank?
+                li= link_to 'Add link to online store', '', 'data-target' => 'part-vendor-link', class: 'reveal btn btn-link btn-xs'
+              - if part.vendor_sku.blank?
+                li= link_to 'Add DigiKey SKU', '', 'data-target' => 'part-vendor-sku', class: 'reveal btn btn-link btn-xs'

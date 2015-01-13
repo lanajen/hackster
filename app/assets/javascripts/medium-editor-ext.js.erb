@@ -92,29 +92,42 @@ $(function() {
 
         $.each(codeEditor, function(id, cEditor){
           if (cEditor.isActive) {
-            widget = $inserts.filter('[data-widget-id="' + id + '"]');
+            var widget = $inserts.filter('[data-widget-id="' + id + '"]');
             widget.find('[data-attribute="raw_code"]').attr('data-value', cEditor.ace.getValue());
           }
         });
 
         content[elementid]['widgets_attributes'] = {};
         $.each($inserts.filter('[data-type="widget"]'), function(i, el){
-          attrs = { id: $(el).data('widget-id') };
-          type = $(el).data('widget-type');
+          var attrs = { id: $(el).data('widget-id') };
+          var type = $(el).data('widget-type');
           if (type) attrs['type'] = type;
           $(el).find('[data-attribute]').each(function(){
             attrs[$(this).data('attribute')] = $(this).hasClass('widget-attribute-editable') ? $(this).text() : ($(this).hasClass('widget-attribute-val') ? $(this).val() : $(this).attr('data-value'));
           });
           content[elementid]['widgets_attributes'][i] = attrs;
         });
+        var partsWidget = $('#parts-widget-form');
+        if (partsWidget.length) {
+          var i = new Date().getTime();
+          var attrs = {};
+          partsWidget.find('input').each(function(){
+            var name = $(this).attr('name');
+            if (name.indexOf('widget') > -1) {
+              name = name.replace('widget', '');
+              attrs[name] = $(this).val();
+            }
+          });
+          content[elementid]['widgets_attributes'][i] = attrs;
+        }
 
         $inserts.find('.embed-figcaption').each(function(){
-          frame = $(this).closest('.embed-frame');
+          var frame = $(this).closest('.embed-frame');
           frame.attr('data-caption', $(this).text());
         });
         $inserts.children().remove();
 
-        html = $clone.html().trim();
+        var html = $clone.html().trim();
         content[elementid][elementName] = html;
       }
       // console.log(content);

@@ -1,44 +1,63 @@
-= f.simple_fields_for :widgets, widget, wrapper: false do |f_widget|
-  table#sortable.sortable-table.table.table-hover
-    tbody
-      = f_widget.simple_fields_for :parts do |f_part|
-        = render partial: 'widgets/embeds/form/part', locals: { f: f_part }
-      tr.sortable-disabled
-        td= f_widget.link_to_add 'Add another part', :parts, class: 'btn btn-success btn-sm btn-block'
+/ = f.simple_fields_for :widgets, widget, wrapper: false do |f_widget|
+= simple_nested_form_for widget, url: '', wrapper: false, html: { id: 'parts-widget-form' } do |f_widget|
+  = f_widget.input :id, as: :hidden
+  ul.list-unstyled.parts-widget
+    - widget.parts.new if widget.parts.empty?
+    - widget.parts.each do |part|
+      = f_widget.simple_fields_for :parts, part do |f_part|
+        = render partial: 'widgets/embeds/form/part', locals: { f: f_part, part: part }
+    = f_widget.link_to_add 'New part', :parts, class: 'btn btn-success btn-sm btn-block'
 
 = content_for :js do
   javascript:
     jQuery(function($) {
-      window.NestedFormEvents.prototype.insertFields = function(content, assoc, link) {
-        var $tr = $(link).closest('tr');
-        content = content.replace(/^<div class="fields">/,"");
-        content = content.replace(/<\/div>$/,"");
-        return $(content).insertBefore($tr);
-      }
+      $('.parts-widget').on('change', function(e){
+        editor.triggerInput();
+      });
 
-      $('form').on('nested:fieldAdded', function(event){
-        var field = event.field;
-        previousPosition = field.prev().find('input.position').val();
-        if (isNaN(previousPosition)) previousPosition = 0;
-        positionField = field.find('input.position');
-        positionField.val(parseInt(previousPosition) + 1);
+      $('.parts-widget').on('nested:fieldAdded', function(event){
+        resetPositions();
       })
 
-      $('form').on('nested:fieldRemoved', function(event){
+      $('.parts-widget').on('nested:fieldRemoved', function(event){
         event.field.addClass('removed');
         resetPositions();
       })
 
-      $(function() {
-        $('#sortable tbody')
-          .sortable({ handle: ".handle", containment: "#sortable", items: 'tr:not(.sortable-disabled)' })
-          .bind('sortupdate', function(event, ui) {
-            resetPositions();
-          });
+      $('.parts-widget').on('click', '.reveal', function(e){
+        e.preventDefault();
+        var parent = $(this).closest('tbody');
+        var target = parent.find('[data-name="' + $(this).data('target') + '"]');
+        target.slideDown();
+        var li = $(this).closest('li');
+        var ul = li.closest('ul');
+        var tr = ul.closest('tr');
+        li.remove();
+        if (ul.children().length == 0) {
+          tr.remove();
+        }
+      });
+
+      $('.parts-widget').on('click', '.move-up', function(e){
+        e.preventDefault();
+        var parent = $(this).closest('.fields');
+        if (parent.prev().length) {
+          parent.insertBefore(parent.prev());
+        }
+        resetPositions();
+      });
+
+      $('.parts-widget').on('click', '.move-down', function(e){
+        e.preventDefault();
+        var parent = $(this).closest('.fields');
+        if (parent.next().length) {
+          parent.insertAfter(parent.next());
+        }
+        resetPositions();
       });
 
       function resetPositions(){
-        $('#sortable tbody tr:not(.removed) input.position').each(function(i){
+        $('.parts-widget .fields:not(.removed) input.position').each(function(i){
           $(this)
             .val(i+1)
             .trigger('change');

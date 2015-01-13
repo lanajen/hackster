@@ -641,3 +641,43 @@ p.caption {
 .widget-attribute:not(.widget-attribute-editable) {
   display: none;
 }
+
+.parts-widget {
+  td {
+    background: #fafafa;
+  }
+  .table > tbody > tr > td {
+    padding: 0;
+  }
+  table {
+    border: 1px solid #ddd;
+  }
+  label {
+    width: 135px;
+    margin-bottom: 0;
+    float: left;
+    padding: 12px;
+    font-size: 12px;
+    text-transform: uppercase;
+  }
+  input, textarea {
+    width: calc(100% - 135px);
+    float: left;
+    border: 0;
+    padding: 12px;
+    border-radius: 0;
+    box-shadow: none;
+    height: auto;
+    border-left: 1px solid #ddd;
+    &:focus, &:hover {
+      outline: none;
+      box-shadow: none;
+    }
+  }
+  textarea {
+    resize: none;
+  }
+  .default-hidden {
+    display: none;
+  }
+}

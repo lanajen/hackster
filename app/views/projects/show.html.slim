@@ -100,6 +100,18 @@
                     a.right.carousel-control href="#carousel" role="button" data-slide="next"
                       span.glyphicon.glyphicon-chevron-right aria-hidden="true"
 
+          - if component_widget_ids = PartsWidget.where(widgetable_id: @project.id, widgetable_type: 'Project').joins(:parts).where("parts.description IS NOT NULL OR parts.description <> ''").distinct(:id).pluck(:id) and component_widget_ids.any?
+            section#components.section-container.section-collapsible
+              h2.section-title
+                a.title.title-toggle href=''
+                  ' Components
+                  i.fa.fa-chevron-down
+                  i.fa.fa-chevron-up
+              .section-content
+                - component_widget_ids.each do |widget_id|
+                  - embed = Embed.new widget_id: widget_id
+                  = render partial: 'api/embeds/embed', locals: { embed: embed }
+
           - if (@project.build_logs_count > 0 and !@project.private_logs) or @can_edit
             section#logs.section-container.section-collapsible
               h2.section-title
@@ -165,18 +177,6 @@
                   p No issues yet.
 
                 = link_to 'See all issues', project_logs_path, class: 'btn btn-default btn-sm'
-
-          / # - if widget_ids = @project.widgets.where(type: 'PartsWidget').pluck(:id) and widget_ids.any?
-            section#components.section-container.section-collapsible
-              h2.section-title
-                a.title.title-toggle href=''
-                  ' Components
-                  i.fa.fa-chevron-down
-                  i.fa.fa-chevron-up
-              .section-content
-                - widget_ids.each do |widget_id|
-                  - embed = Embed.new widget_id: widget_id
-                  = render partial: 'api/embeds/embed', locals: { embed: embed }
 
           / section#code.section-container.section-collapsible
             h2.section-title
@@ -424,6 +424,10 @@
                     li
                       a.smooth-scroll href="#about-project" data-target="#about-project"
                         | About this project
+                    - if component_widget_ids.any?
+                      li
+                        a.smooth-scroll href="#components" data-target="#components"
+                          | Components
                     - if (@project.build_logs_count > 0 and !@project.private_logs) or can? :edit, @project
                       li
                         a.smooth-scroll href="#logs"  data-target="#logs"

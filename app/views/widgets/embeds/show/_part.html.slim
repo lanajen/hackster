@@ -1,4 +1,4 @@
-/ tr.fields  id="part-#{part.id}"
+tr.fields  id="part-#{part.id}"
   td style='width:80%'
     table  style='width:100%'
       tbody
@@ -6,13 +6,13 @@
           td= part.description
         tr
           td colspan=4 style='color: #888;font-size:75%;' = part.comment
-  td style='width:30px;text-align:center;vertical-align:middle' x
+  td style='width:30px;text-align:center;vertical-align:middle' &times;
   td style='width:10%;min-width:20px;text-align:center;vertical-align:middle' = part.quantity
   td style='vertical-align:middle'
     - if part.vendor_link.present?
       = link_to content_tag(:i, '', class: 'fa fa-shopping-cart'), part.vendor_link, target: '_blank', style: 'color:#333'
 
-tr.fields  id="part-#{part.id}"
+/ tr.fields  id="part-#{part.id}"
   td
     table  style='width:100%'
       tbody

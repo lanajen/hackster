@@ -13,8 +13,9 @@ class ProjectDecorator < ApplicationDecorator
     end
   end
 
-  def description
-    parse_medium model.description
+  def description mode=:normal
+    # options = (mode == :edit ? { except: ['PartsWidget'] } : {})
+    parse_medium model.description#, options
   end
 
   def logo size=nil, use_default=true

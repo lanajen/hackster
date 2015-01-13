@@ -13,6 +13,14 @@ class Part < ActiveRecord::Base
   register_sanitizer :strip_whitespace, :before_validation, :mpn, :description
   # after_validation :compute_total_cost
 
+  def self.with_sku
+    where("parts.vendor_sku <> '' AND parts.vendor_sku IS NOT NULL")
+  end
+
+  def self.without_sku
+    where("parts.vendor_sku = '' OR parts.vendor_sku IS NULL")
+  end
+
   def compute_total_cost
     return false if unit_price.blank? or quantity.blank?
     self.total_cost = (unit_price * quantity.to_f).round(4)
