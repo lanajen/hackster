@@ -23,7 +23,9 @@ class ConversationsController < ApplicationController
     @conversation.mark_as_read! current_user
     @receipts = @conversation.receipts
     @receipts = if current_user.is?(:admin)
-      @receipts.where(id: @receipts.select("DISTINCT receipts.message_id").pluck(:id))
+      receipts = []
+      @receipts.inject([]){|mem, r| receipts << r unless r.message_id.in?(mem); mem << r.message_id; mem}
+      receipts
     else
       @receipts.where(receipts: { user_id: current_user.id })
     end
