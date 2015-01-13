@@ -1,6 +1,7 @@
 require 'net/http'
 require 'nokogiri'
 require 'open-uri'
+require 'open_uri_redirections'
 require 'uri'
 
 module ScraperUtils
@@ -15,7 +16,7 @@ module ScraperUtils
     puts "Fetching page #{page_url}..."
     5.times do
       begin
-        return open(page_url).read
+        return open(page_url, allow_redirections: :safe).read
       rescue => e
         # raise e.inspect
         puts "Failed opening #{page_url}. Retrying in 1 second..."
