@@ -16,7 +16,7 @@
           - content_for :js do
             - @awards.each do |award|
               javascript:
-                $('.project-list').prepend($('.project-#{award.project_id}'));
+                $('.project-list').prepend($('.project-#{award.project_id}').parent().parent());
                 text = "<div class='project-award'><i class='fa fa-trophy'></i> #{escape_javascript(award.grade).gsub(/'/, '&#x0027;')}</div>";
                 $('.project-#{award.project_id} .award-container').html(text);
 

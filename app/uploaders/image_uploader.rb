@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 class ImageUploader < BaseUploader
+  EXTENSION_WHITE_LIST = %w(gif png jpg jpeg ico bmp)
 
   process :fix_exif_rotation
 
@@ -29,7 +30,7 @@ class ImageUploader < BaseUploader
   end
 
   def extension_white_list
-    %w(gif png jpg jpeg ico bmp) unless model.skip_file_check?# or model.skip_extension_check
+    EXTENSION_WHITE_LIST unless model.skip_file_check?# or model.skip_extension_check
   end
 
   def needs_processing?
