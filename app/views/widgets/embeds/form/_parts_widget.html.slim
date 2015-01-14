@@ -1,5 +1,5 @@
 / = f.simple_fields_for :widgets, widget, wrapper: false do |f_widget|
-= simple_nested_form_for widget, url: '', wrapper: false, html: { id: 'parts-widget-form' } do |f_widget|
+= simple_nested_form_for widget, url: '', wrapper: false, html: { id: 'parts-widget-form', class: "widget-#{widget.id}" } do |f_widget|
   = f_widget.input :id, as: :hidden
   ul.list-unstyled.parts-widget
     - widget.parts.new if widget.parts.empty?

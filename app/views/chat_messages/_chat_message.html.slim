@@ -1,5 +1,5 @@
-li id="chat-message-#{chat_message.id}"
-  small.text-muted>
+li.chat-message id="chat-message-#{chat_message.id}"
+  .time>
     ==> time_for_chat chat_message.created_at || Time.now
     | UTC
   ==> link_to image_tag(chat_message.user.decorate.avatar(:mini), alt: chat_message.user.name, style: "width:20px", class: 'img-rounded'), chat_message.user

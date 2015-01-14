@@ -76,3 +76,11 @@
     font-weight: bold;
   }
 }
+.chat-message {
+  .time {
+    font-family: "Lucida Sans Typewriter","Lucida Console",monaco,"Bitstream Vera Sans Mono",monospace;
+    color: #666;
+    font-size: 0.7em;
+    display: inline;
+  }
+}

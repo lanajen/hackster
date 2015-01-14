@@ -26,7 +26,19 @@ class Api::V1::ProjectsController < Api::V1::BaseController
     authorize! :update, project
 
     if project.update_attributes params[:project]
-      render json: project, status: :ok
+      response = {}
+      response[:project] = project
+      if widgets = PartsWidget.where(widgetable_id: project.id, widgetable_type: 'Project') and widgets.any?
+        response[:parts_widgets] = {}
+        widgets.each do |widget|
+          response[:parts_widgets][widget.id] = {}
+          response[:parts_widgets][widget.id][:parts] = {}
+          widget.parts.each do |part|
+            response[:parts_widgets][widget.id][:parts][part.position] = part
+          end
+        end
+      end
+      render json: response.to_json, status: :ok
     else
       errors = project.errors.messages
       widget_errors = {}

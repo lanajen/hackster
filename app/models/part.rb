@@ -5,9 +5,11 @@ class Part < ActiveRecord::Base
     :vendor_sku, :partable_id, :partable_type, :mpn, :description, :position,
     :comment
 
+  # validates :description, presence: true
+  validate :ensure_not_empty
   validates :quantity, numericality: { greater_than: 0 }
   validates :unit_price, numericality: { greater_than_or_equal_to: 0 }
-  validates :description, length: { maximum: 255 }, allow_blank: true
+  validates :description, :comment, length: { maximum: 255 }, allow_blank: true
   before_validation :ensure_protocol_for_vendor_link
   # validate :mpn_or_description_is_present?
   register_sanitizer :strip_whitespace, :before_validation, :mpn, :description
@@ -27,6 +29,10 @@ class Part < ActiveRecord::Base
   end
 
   private
+    def ensure_not_empty
+      destroy unless description.present?
+    end
+
     def ensure_protocol_for_vendor_link
       return if vendor_link.blank?
 

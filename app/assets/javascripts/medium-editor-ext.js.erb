@@ -420,6 +420,7 @@ $(function() {
           _.unsavedChanges = false;
           // _.clearTimer();
           checkTodos();
+          _.updateParts(data.parts_widgets);
           successCallback(data);
         },
         error: function(data){
@@ -441,6 +442,16 @@ $(function() {
         }
       });
       _.lastSaved = new Date().getTime();
+    },
+
+    updateParts: function(widgets) {
+      $.each(widgets, function(id, parts){
+        $('.widget-' + id + ' .id').filter(function() { return $(this).val() == ""; }).each(function(i, el){
+          var posEl = $(el).parent().next().find('input');
+          var position = posEl.val();
+          if (parts.parts[position]) $(el).val(parts.parts[position].id);
+        });
+      });
     },
 
     showErrors: function(data) {

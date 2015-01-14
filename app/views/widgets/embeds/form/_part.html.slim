@@ -3,7 +3,7 @@ li.fields
     tbody
       tr
         td colspan=2 style="background:white;padding:5px 0;"
-          = f.input :id, as: :hidden
+          = f.input :id, as: :hidden, input_html: { class: 'id' }
           = f.input :position, as: :hidden, input_html: { class: 'position' }
           ul.list-inline.pull-right
             li= link_to content_tag(:i, '', class: 'fa fa-angle-up'), '', class: 'btn btn-default btn-xs move-up'
@@ -11,7 +11,7 @@ li.fields
             li= f.link_to_remove (content_tag(:i, '', class: 'fa fa-times') + ' Delete').html_safe, class: 'btn btn-danger btn-xs'
 
       tr
-        td style='width:85%'= f.input :description, label: 'Part name', placeholder: 'Eg: 10K Ohm Resistor'
+        td style='width:85%'= f.input :description, label: 'Part name', placeholder: 'Eg: 10K Ohm Resistor', input_html: { class: 'border-right: 1px solid #ddd;'}
         td style='width:15%;'
           = f.input :quantity, label: 'x'.html_safe, input_html: { style: 'width:calc(100% - 30px)' }, label_html: { style: 'width:30px;' }
 
