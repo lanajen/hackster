@@ -61,6 +61,7 @@ class ConversationsController < ApplicationController
     if @conversation.save
       redirect_to @conversation, notice: "Message sent!"
     else
+      @receipts = @conversation.receipts.where(receipts: { user_id: current_user.id })
       render :show
     end
   end
