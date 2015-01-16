@@ -2,9 +2,9 @@ if (typeof(Pusher) == 'function')
   client = new Pusher('<%= PUSHER_API_KEY %>')
 
   <% unless Rails.env == 'production' %>
-  # Pusher.log = (message) ->
-  #   if (window.console && window.console.log)
-  #     window.console.log(message)
+  Pusher.log = (message) ->
+    if (window.console && window.console.log)
+      window.console.log(message)
   <% end %>
 
   scrollToLastMessage = ->
