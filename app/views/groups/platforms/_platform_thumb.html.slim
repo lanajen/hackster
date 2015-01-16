@@ -7,7 +7,7 @@
           .label.label-primary style="margin-bottom:5px;display:block" New to Hackster
         p.description.show-on-hover
           = platform.mini_resume
-      .thumb-image-inner-over
+      a.thumb-image-inner-over href=url_for(platform)
         = image_tag platform.avatar.try(:file_url, :medium)
       .thumb-image-inner
     .thumb-bottom
