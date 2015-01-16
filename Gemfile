@@ -39,7 +39,7 @@ gem 'bootstrap-will_paginate', '0.0.10'
 gem 'browser-timezone-rails', '0.0.8'
 gem 'cancan', '1.6.10'
 gem 'cashier', '0.4.1'
-gem 'carrierwave', git: 'https://github.com/carrierwaveuploader/carrierwave.git'
+gem 'carrierwave', '0.10.0' #git: 'https://github.com/carrierwaveuploader/carrierwave.git'
 gem 'connection_pool', '2.0.0'
 gem 'country_select', '1.1.3'
 gem 'dalli', '2.7.0'  # memcached
