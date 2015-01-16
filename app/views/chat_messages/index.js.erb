@@ -1,0 +1,12 @@
+var out = '';
+
+<% date = nil %>
+<% @chat_messages.each do |chat_message| %>
+  <% if chat_message.created_at.to_date != date %>
+    <% date = chat_message.created_at.to_date %>
+    out += '<li class="date"><% l date, format: :long %></li>';
+  <% end %>
+  out += "<%= j render(chat_message, format: 'html') %>";
+<% end %>
+
+console.log(out);

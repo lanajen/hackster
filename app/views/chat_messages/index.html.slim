@@ -32,6 +32,8 @@
         noscript
           p Please enable Javascript to activate the chat.
         ul.messages.list-unstyled
+          / li
+            a.load-more Load more
           - date = nil
           - @chat_messages.each do |chat_message|
             - if chat_message.created_at.to_date != date
