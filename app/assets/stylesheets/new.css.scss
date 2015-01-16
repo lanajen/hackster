@@ -197,6 +197,41 @@ h1 {
   }
 }
 
+.thumb-image-inner-over {
+  position: absolute;
+  bottom: -20px;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  img {
+    display: block;
+    margin: 0 auto;
+    background-color: #fff;
+    @include border-radius(4px);
+    padding: 5px;
+  }
+}
+
+.thumb-bottom {
+  padding: 33px 20px 10px;
+  a {
+    color: #666;
+  }
+  h4 {
+    text-align: center;
+    margin: 0 0 10px;
+    font-weight: bold;
+    font-size: 1.2em;
+    i {
+      color: #aaa;
+      font-size: 75%;
+    }
+  }
+  .project-stats {
+    color: #999;
+  }
+}
+
 @media (min-width: 641px) {
   .category-row {
     &:first-child {
@@ -332,7 +367,10 @@ h1 {
 
 .platform-thumb {
   .thumb-image {
-    // @include background-size(90%);
+    padding-top: 50%;
+  }
+  .thumb-image-inner {
+    @include background-image(linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%));
   }
 }
 .platform-type {
