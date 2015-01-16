@@ -20,21 +20,24 @@
       a.toggle-participants
         i.fa.fa-user>
         span.participants-count
-            | 0
+          | 0
 
     .clearfix
 
-  section.chat-participants style='zdisplay:none'
-    ul.list-unstyled
-
   section.chat-container
+    .chat-participants
+      ul.list-unstyled
     #chat
       .chat-inner
         noscript
           p Please enable Javascript to activate the chat.
         ul.messages.list-unstyled
+          - date = nil
           - @chat_messages.each do |chat_message|
+            - if chat_message.created_at.to_date != date
+              - date = chat_message.created_at.to_date
+              li.date= l date, format: :long
             = render chat_message
 
       = simple_form_for ChatMessage.new, url: chat_messages_path(@group.id), html: { data: { remote: true } } do |f|
-        = f.input :body, label: false, input_html: { rows: 1, disabled: 'disabled', autofocus: true }, wrapper: false, placeholder: 'Type here, press Enter to send...'
+        = f.input :raw_body, label: false, input_html: { rows: 1, disabled: 'disabled', autofocus: true }, wrapper: false, placeholder: 'Type here, press Enter to send...'

@@ -19,6 +19,7 @@ class ChatMessagesController < ApplicationController
         tpl: [{
           content: render_to_string(@message),
           target: '#chat .messages',
+          time: @message.created_at.to_i,
         }]
       }
       post_to_slack @message, @group.slack_hook_url if @group.slack_hook_url.present?
@@ -50,7 +51,7 @@ class ChatMessagesController < ApplicationController
     user = User.joins(:authorizations).where(authorizations: { uid: params[:user_name], provider: 'Slack' }).first
     render status: :unprocessable_entity, json: { text: "Couldn't post message to chat, user '#{params[:user_name]}' unknown. Please authenticate." } and return unless user
 
-    @message = ChatMessage.new body: params[:text]
+    @message = ChatMessage.new raw_body: params[:text]
     @message.user = user
     @message.group_id = params[:group_id]
 
@@ -69,6 +70,6 @@ class ChatMessagesController < ApplicationController
   end
 
   def post_to_slack message, slack_hook_url
-    SlackQueue.perform_async 'post', slack_hook_url, @message.body, @message.user.name, @message.user.decorate.avatar(:thumb)
+    SlackQueue.perform_async 'post', slack_hook_url, @message.raw_body, @message.user.name, @message.user.decorate.avatar(:thumb)
   end
 end

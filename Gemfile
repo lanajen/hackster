@@ -8,7 +8,8 @@ gem 'rails', '4.1.6'
 gem 'dotenv-rails', :groups => [:development, :test]
 
 #  assets
-gem 'asset_sync', '1.0.0'
+gem 'fog', '~>1.20', require: 'fog/aws/storage'
+# gem 'asset_sync', '1.1.0'
 gem 'bootstrap-sass', '3.3.1'
 gem 'coffee-rails', '4.0.1'
 gem 'compass-rails', '1.1.2'
@@ -23,6 +24,7 @@ gem 'zocial-rails', '1.0.2'
 gem 'rails-assets-medium-editor', '1.8.14'
 gem 'rails-assets-underscore', '1.7.0'
 
+gem 'redcarpet'
 # gem 'github-markdown'
 # gem 'rinku'
 # gem 'html-pipeline'
@@ -34,16 +36,16 @@ gem 'aws-sdk', '1.33.0'
 gem 'bootstrap3-datetimepicker-rails', '3.1.3'
 gem 'bootstrap-will_paginate', '0.0.10'
 # gem 'bootstrap-wysihtml5-rails', '0.3.2.100'
+gem 'browser-timezone-rails', '0.0.8'
 gem 'cancan', '1.6.10'
 gem 'cashier', '0.4.1'
-gem 'carrierwave', '0.9.0'
+gem 'carrierwave', git: 'https://github.com/carrierwaveuploader/carrierwave.git'
 gem 'connection_pool', '2.0.0'
 gem 'country_select', '1.1.3'
 gem 'dalli', '2.7.0'  # memcached
 gem 'devise', '3.2.2'
 gem 'devise_invitable', '1.3.0'
 gem 'draper', '1.3.0'
-gem 'fog', '1.15.0'
 gem 'geocoder', '1.2.5'
 gem 'gibbon', '1.1.1'
 gem 'github-linguist', '2.11.5'
@@ -103,12 +105,14 @@ gem 'will_paginate', '3.0.4'
 gem 'workflow', '1.0.0'
 
 # heroku
-gem 'heroku-api', '0.3.15'
+gem 'heroku-api', '0.3.22'
 gem 'heroku-forward', '0.4.0'
+gem 'mail', '>= 2.6.3'
 gem 'rails_12factor', group: [:production, :staging]
 
 # gem "bullet", :group => "development"
 # gem 'ruby-prof', group: [:development, :profile]
+gem 'derailed_benchmarks', group: :development
 
 group :development, :test do
   # gem 'factory_girl_rails'

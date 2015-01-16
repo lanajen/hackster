@@ -14,6 +14,7 @@
 //= require medium-editor-ext
 //= require gist-embed
 //= require underscore
+//= require browser_timezone_rails/application
 
 //= require chats
 //= require projects

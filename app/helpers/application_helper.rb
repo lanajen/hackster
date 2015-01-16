@@ -144,12 +144,7 @@ module ApplicationHelper
   end
 
   def time_for_chat time
-    now = Time.now
-    if time.to_date == now.to_date
-      time.strftime('%H:%M')
-    else
-      time.strftime('%m/%d %H:%M')
-    end
+    l time.strftime('%m/%d %H:%M').in_time_zone(Time.zone), format: :chat
   end
 
   def user_is_current?

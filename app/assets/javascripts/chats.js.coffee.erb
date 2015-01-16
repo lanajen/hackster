@@ -2,20 +2,28 @@ if (typeof(Pusher) == 'function')
   client = new Pusher('<%= PUSHER_API_KEY %>')
 
   <% unless Rails.env == 'production' %>
-  Pusher.log = (message) ->
-    if (window.console && window.console.log)
-      window.console.log(message)
+  # Pusher.log = (message) ->
+  #   if (window.console && window.console.log)
+  #     window.console.log(message)
   <% end %>
 
   scrollToLastMessage = ->
     $('.chat-inner').scrollTop($('.chat-inner ul').height())
 
   jQuery ->
+    if $('#chat time').last().length
+      time = Date.parse $('#chat time').last().attr('datetime')
+    else
+      time = new Date().getTime()
+    lastMsgDate = new Date(0)
+    lastMsgDate.setUTCMilliseconds time
+    lastMsgDate = "#{lastMsgDate.getFullYear()}/#{lastMsgDate.getMonth()+1}/#{lastMsgDate.getDate()}"
+
     channelId = $('meta[name=channel_id]').attr('content')
     sub = client.subscribe('presence-group_' + channelId)
 
     sub.bind 'pusher:subscription_succeeded', (payload) ->
-      $('textarea[name="chat_message[body]"]').prop('disabled', false).focus()
+      $('textarea[name="chat_message[raw_body]"]').prop('disabled', false).focus()
       $('.participants-count').text(payload.count)
       $.each payload.members, (i, member) ->
         $('.chat-participants ul').append(member.tpl)
@@ -34,14 +42,28 @@ if (typeof(Pusher) == 'function')
       <% unless Rails.env == 'production' %>console.log(payload)<% end %>
       if payload.tpl
         $.each payload.tpl, (i, tpl) ->
+          # handle localized date
+          if tpl.time
+            date = new Date 0
+            date.setUTCSeconds tpl.time
+            dateString = "#{date.getFullYear()}/#{date.getMonth()+1}/#{date.getDate()}"
+            if dateString > lastMsgDate
+              lastMsgDate = dateString
+
+              if date.toLocaleDateString()
+                dateString = date.toLocaleDateString('nu', { year: 'numeric', month: 'long', day: '2-digit'})
+
+              $('#chat .messages').append("<li class='date'>#{dateString}</li>")
+
+          # process template
           $(tpl.target).append(tpl.content)
           scrollToLastMessage()
 
     client.connection.bind 'connected', ->
-      $('textarea[name="chat_message[body]"]').prop('disabled', false).focus()
+      $('textarea[name="chat_message[raw_body]"]').prop('disabled', false).focus()
 
     client.connection.bind 'connecting', ->
-      $('textarea[name="chat_message[body]"]').prop('disabled', true)
+      $('textarea[name="chat_message[raw_body]"]').prop('disabled', true)
 
     addParticipant = (member) ->
       val = $('.participants-count').text()
@@ -56,6 +78,19 @@ if (typeof(Pusher) == 'function')
     $(document).ready ->
       scrollToLastMessage()
 
+      showTime = (el) ->
+        time = el.attr('datetime')
+        epoch = Date.parse time
+        date = new Date 0
+        date.setUTCMilliseconds epoch
+        hours = date.getHours()
+        hours = '0' + hours if hours < 10
+        minutes = date.getMinutes()
+        minutes = '0' + minutes if minutes < 10
+        fullTime = "#{hours}:#{minutes}"
+        el.data 'processed', true
+        el.text fullTime
+
       $('#new_chat_message textarea').on 'keypress', (event) ->
         if event.which == 13 && !event.shiftKey
           event.preventDefault()
@@ -67,7 +102,7 @@ if (typeof(Pusher) == 'function')
             type: 'POST'
             data:
               chat_message:
-                body: body
+                raw_body: body
 
             success: (response) ->
               $(that).val("").css("height", 36).prop("disabled", false).focus()
@@ -83,3 +118,11 @@ if (typeof(Pusher) == 'function')
       $('a.toggle-participants').on 'click', (e) ->
         e.preventDefault()
         $('body').toggleClass('participants-open')
+
+      # adjust time to user timezone
+      $('#chat').on 'DOMNodeInserted', '.chat-message', (e) ->
+        timeEl = $(this).find('time')
+        showTime timeEl unless timeEl.data('processed') == true
+
+      $('.chat-message time').each (i, el) ->
+        showTime $(this)

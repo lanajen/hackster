@@ -34,3 +34,4 @@ require File.join(Rails.root, 'lib/heroku_domains')
 # require File.join(Rails.root, 'lib/carrierwave_uploader_download')
 # markdown converter
 require File.join(Rails.root, 'lib/markdown_filter')
+require File.join(Rails.root, 'lib/single_line_html')

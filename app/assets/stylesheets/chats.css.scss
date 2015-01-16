@@ -10,6 +10,8 @@
   height: 100%;
   position: relative;
   overflow-y: hidden;
+  width: 100%;
+  @include transition(width ease 0.5s);
   textarea {
     border: 2px solid #ddd;
     resize: none;
@@ -28,18 +30,31 @@
     padding-top: 0;
     background: #F2F2F2;
   }
+  .date {
+    text-align: center;
+    padding-top: 20px;
+    margin: 20px 0;
+    border-top: 1px solid #ddd;
+    font-size: 0.77em;
+    font-weight: bold;
+    &:first-of-type {
+      border: 0;
+      padding: 0;
+    }
+  }
 }
 .chat-inner {
   padding: 10px;
   overflow-y: scroll;
   position: absolute;
   height: 100%;
+  width: 100%;
   .messages {
     padding-bottom: 36px;
   }
 }
 .chat-participants {
-  position: absolute;
+  position: fixed;
   top: 106px;
   bottom: 60px;
   right: -300px;
@@ -47,15 +62,15 @@
   padding: 15px 20px;
   border-left: 1px solid #e7e7e7;
   background: #fff;
-  z-index: 2;
+  z-index: 3;
   @include transition(right ease 0.5s);
 }
 .participants-open {
   .chat-participants {
     right: 0;
   }
-  .chat-container {
-    right: 300px;
+  #chat {
+    width: calc(100% - 300px);
   }
 }
 .toggle-participants {
@@ -77,10 +92,12 @@
   }
 }
 .chat-message {
-  .time {
+  margin: 3px 0;
+  time {
     font-family: "Lucida Sans Typewriter","Lucida Console",monaco,"Bitstream Vera Sans Mono",monospace;
     color: #666;
     font-size: 0.7em;
     display: inline;
+    margin-right: 3px;
   }
 }

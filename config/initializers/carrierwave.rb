@@ -1,4 +1,5 @@
 # ENV['TMP'] = File.join(Rails.root, 'tmp')
+require 'fog/aws/storage'
 
 CarrierWave.configure do |config|
   config.fog_credentials = {

@@ -42,8 +42,15 @@
         = f.input :city
         = f.input :country, input_html: { class: 'form-control' }
 
+      .form-group
+        .col-xs-4
+          label.control-label Follow button code
+        .col-xs-8
+          textarea.form-control onclick="this.select();" = "<iframe src='#{platform_followers_url(@platform)}' scrolling='no' frameborder=0 height=24 width=200></iframe>"
+          span.help-block This is for reference, can't be edited!
+
       - if current_user.is? :admin
-        h4 Slack integration
+        h4 Slack integration (Hackster admins only)
         = f.input :slack_token, label: 'Token'
         = f.input :slack_hook_url, label: 'Hook URL'
 

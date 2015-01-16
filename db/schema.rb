@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141224122936) do
+ActiveRecord::Schema.define(version: 20150113194016) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -147,11 +147,14 @@ ActiveRecord::Schema.define(version: 20141224122936) do
   end
 
   create_table "chat_messages", force: true do |t|
-    t.integer  "user_id"
+    t.integer  "user_id",    null: false
     t.text     "body"
-    t.integer  "group_id"
+    t.integer  "group_id",   null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "user_name"
+    t.string   "source"
+    t.text     "raw_body"
   end
 
   add_index "chat_messages", ["group_id"], name: "index_chat_messages_on_group_id", using: :btree
@@ -443,7 +446,6 @@ ActiveRecord::Schema.define(version: 20141224122936) do
     t.string   "platform_tags_string"
     t.string   "product_tags_string"
     t.datetime "assignment_submitted_at"
-    t.text     "md_description"
   end
 
   add_index "projects", ["private"], name: "index_projects_on_private", using: :btree
@@ -493,16 +495,6 @@ ActiveRecord::Schema.define(version: 20141224122936) do
 
   add_index "slug_histories", ["sluggable_type", "sluggable_id"], name: "index_slug_histories_on_sluggable_type_and_sluggable_id", using: :btree
   add_index "slug_histories", ["value"], name: "index_slug_histories_on_value", using: :btree
-
-  create_table "steps", force: true do |t|
-    t.text    "description"
-    t.text    "md_description"
-    t.string  "title"
-    t.integer "project_id"
-    t.integer "position"
-  end
-
-  add_index "steps", ["project_id"], name: "index_steps_on_project_id", using: :btree
 
   create_table "subdomains", force: true do |t|
     t.string   "subdomain"
