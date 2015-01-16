@@ -8,5 +8,5 @@
 
       = simple_form_for @auth, url: user_slack_settings_path, html: { method: :post, class: 'form-horizontal widget-form' }, wrapper: :bootstrap3_horizontal do |f|
         = f.error_notification
-        = f.input :uid, label: 'Slack username'
+        = f.input :uid, label: 'Slack user ID', hint: "To find your user ID, go to #{link_to 'https://api.slack.com/web', 'https://api.slack.com', target: '_blank'} and create a token for your team at the bottom of the page. Then go to #{link_to 'https://api.slack.com/methods/users.info/test', 'https://api.slack.com/methods/users.info/test', target: '_blank'}, click your username at the end of the 'user' line and click 'Go'. Your ID will be at the beginning of the reponse below.".html_safe
         = f.submit 'Save changes', class: 'btn btn-primary'

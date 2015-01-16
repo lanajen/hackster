@@ -48,8 +48,8 @@ class ChatMessagesController < ApplicationController
     @group = Group.find params[:group_id]
     render status: :unauthorized, json: { text: 'Unauthorized. Please check that you have configured Slack correctly in the platform page settings.' } and return unless params[:token] == @group.slack_token
 
-    user = User.joins(:authorizations).where(authorizations: { uid: params[:user_name], provider: 'Slack' }).first
-    render status: :unprocessable_entity, json: { text: "Couldn't post message to chat, user '#{params[:user_name]}' unknown. Please authenticate." } and return unless user
+    user = User.joins(:authorizations).where(authorizations: { uid: params[:user_id], provider: 'Slack' }).first
+    render status: :unprocessable_entity, json: { text: "Couldn't post message to chat, user '#{params[:user_name]}' (#{params[:user_id]}) unknown. Please authenticate." } and return unless user
 
     @message = ChatMessage.new raw_body: params[:text]
     @message.user = user
