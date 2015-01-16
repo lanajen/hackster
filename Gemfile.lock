@@ -32,6 +32,10 @@ GEM
     addressable (2.3.6)
     ambry (0.3.1)
     arel (5.0.1.20140414130214)
+    asset_sync (1.1.0)
+      activemodel
+      fog (>= 1.8.0)
+      unf
     auto_html (1.6.3)
       redcarpet (~> 3.1)
       rinku (~> 1.5.0)
@@ -484,6 +488,9 @@ GEM
     uglifier (2.3.1)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.6)
     unicorn (4.7.0)
       kgio (~> 2.6)
       rack
@@ -508,6 +515,7 @@ PLATFORMS
 
 DEPENDENCIES
   ambry (~> 0.3.0)
+  asset_sync (= 1.1.0)
   auto_html (= 1.6.3)
   aws-sdk (= 1.33.0)
   bootstrap-sass (= 3.3.1)
