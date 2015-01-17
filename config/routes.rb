@@ -273,6 +273,8 @@ HackerIo::Application.routes.draw do
       end
     end
 
+    resources :project_collections, only: [:edit, :update]
+
     get 'hackers' => 'users#index', as: :hackers
     get 'hackers/:id' => 'users#redirect_to_show', as: :hacker
 

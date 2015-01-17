@@ -33,6 +33,8 @@
         = f.input :city
         = f.input :country, input_html: { class: 'form-control' }
 
+      = f.input :enable_comments, inline_label: 'Enable comments', label: false, as: :boolean
+
     .col-xs-6
       = f.input :facebook_link, label: 'Facebook link'
       = f.input :github_link, label: 'Github link'

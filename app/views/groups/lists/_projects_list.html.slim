@@ -3,8 +3,14 @@
 - if @projects.any?
   .thumb-list
     .row.project-list
-      - @projects.each do |project|
-        = render partial: 'projects/project_thumb', locals: { project: project.decorate }
+      - if @group.enable_comments
+        .col-xs-12
+          - @projects.each do |collection|
+            = render partial: 'project_collections/project_collection', locals: { collection: collection }
+      - else
+        - @projects.each do |project|
+          = render partial: 'projects/project_thumb', locals: { project: project.decorate }
+
   .row.text-center= will_paginate @projects
 - else
   .row

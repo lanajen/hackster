@@ -10,19 +10,22 @@ class List < Group
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'ListMember'
   has_one :cover_image, as: :attachable, dependent: :destroy
 
-  attr_accessible :cover_image_id, :list_type, :is_new
+  attr_accessible :cover_image_id, :list_type, :is_new, :enable_comments
 
   validates :user_name, :full_name, presence: true
   validate :user_name_is_unique
   before_validation :update_user_name, on: :create
 
-  store :counters_cache, accessors: [:external_projects_count,
-    :private_projects_count, :list_type, :is_new]
+  store_accessor :counters_cache, :external_projects_count,
+    :private_projects_count
 
   parse_as_integers :counters_cache, :external_projects_count,
     :private_projects_count
 
-  parse_as_booleans :counters_cache, :is_new
+  store_accessor :properties, :list_type, :is_new, :enable_comments
+  set_changes_for_stored_attributes :properties
+
+  parse_as_booleans :properties, :is_new, :enable_comments
 
   # beginning of search methods
   tire do

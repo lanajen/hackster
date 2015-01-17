@@ -34,7 +34,8 @@
       image_list: #{@post.images.select{|i| i.persisted? }.each_with_index.map{|i, j| { title: i.title || "image #{j+1}", value: i.file_url } }.to_json.html_safe},
       menubar: false,
       plugins: 'link paste code image',
-      height: 600
+      height: 600,
+      statusbar: false
     });
 
 = content_for :head do

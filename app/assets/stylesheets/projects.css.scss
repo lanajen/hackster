@@ -201,3 +201,14 @@
     color: #333;
   }
 }
+
+.project-collection {
+  margin-bottom: 50px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid #ddd;
+  &:last-of-type {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+}

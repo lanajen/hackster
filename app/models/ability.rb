@@ -84,6 +84,10 @@ class Ability
       project.external or project.guest_name.present?
     end
 
+    can :update, ProjectCollection do |collection|
+      @user.can? :update, collection.collectable
+    end
+
     can :join, Group do |group|
       (member = @user.is_member?(group) and member.invitation_pending?) or case group.access_level
       when 'anyone'

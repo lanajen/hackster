@@ -1,0 +1,8 @@
+.row.project-collection
+  = render partial: 'projects/project_thumb', locals: { project: collection.project.decorate }
+  .col-md-8
+    - if can? :edit, collection
+      .pull-right= link_to 'Edit comment', edit_project_collection_path(collection), class: 'btn btn-default btn-sm'
+      .clearfix
+
+    = raw collection.comment
