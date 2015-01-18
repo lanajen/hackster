@@ -31,6 +31,13 @@
             br
             ' with
             = link_to 'Autodesk Fusion 360', '/autodesk?ref=homeabout', class: 'alert-link'
+      .home-slide style="background-image: url('#{asset_url 'home/dragon_bg.jpg'}')"
+        .container.text-center
+          h1
+            ' Become Dragon Certified
+          p
+            ' and understand what it takes to manufacture your product.
+            = link_to 'Learn more.', '/partners?ref=homeabout', class: 'alert-link'
 
     - if !user_signed_in? and !returning_user?
       section#projects.showcase-section

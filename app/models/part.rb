@@ -28,6 +28,21 @@ class Part < ActiveRecord::Base
     self.total_cost = (unit_price * quantity.to_f).round(4)
   end
 
+  def search_on_octopart
+    return unless description.present? or mpn.present?
+
+    keywords = mpn.presence || description
+
+    if result = Octopart.search(keywords)
+      self.vendor_link = result[:octopart_url]
+      self.mpn = result[:mpn]
+      self.vendor_name = result[:vendor_name] + ' (auto-matched)'
+      self.unit_price = result[:price]
+      self.total_cost = unit_price * quantity || 1
+      result
+    end
+  end
+
   private
     def ensure_not_empty
       destroy unless description.present?
