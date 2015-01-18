@@ -16,8 +16,8 @@ class List < Group
   validate :user_name_is_unique
   before_validation :update_user_name, on: :create
 
-  store_accessor :counters_cache, :external_projects_count,
-    :private_projects_count
+  store :counters_cache, accessors: [:external_projects_count,
+    :private_projects_count]
 
   parse_as_integers :counters_cache, :external_projects_count,
     :private_projects_count
