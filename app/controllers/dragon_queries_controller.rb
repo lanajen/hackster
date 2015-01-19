@@ -14,9 +14,10 @@ class DragonQueriesController < ApplicationController
     if @dragon_query.valid?
       @message = Message.new(
         from_email: @dragon_query.email,
-        message_type: 'generic'
+        message_type: 'generic',
+        to_email: ''
       )
-      @message.recipients = 'ben@hackster.io,adam@hackster.io'
+      @message.recipients = 'ben@hackster.io;adam@hackster.io'
       @message.subject = "New Dragon certification request"
       @message.body = '<p>The following should be added to a CSV file to be given to Dragon:</p><p>' + @dragon_query.to_csv.gsub(/\n/, '<br>') + '</p>'
       @message.body += "<p>Thanks!<br><a href='#{url_for(current_user)}'>#{current_user.name}</a><br>" if user_signed_in?
