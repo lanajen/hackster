@@ -34,6 +34,7 @@ class ApplicationController < ActionController::Base
   helper_method :show_profile_needs_care?
   helper_method :is_mobile?
   helper_method :returning_user?
+  helper_method :controller_action
   helper BootstrapFlashHelper
 
   unless Rails.application.config.consider_all_requests_local
@@ -107,6 +108,10 @@ class ApplicationController < ActionController::Base
       end
       # @new_badge = Rewardino::Badge.all.first
       # @badge_level = :bronze
+    end
+
+    def controller_action
+      "#{controller_path}##{action_name}"
     end
 
     def show_badge

@@ -13,7 +13,7 @@ class FollowersController < ApplicationController
       end
     end
 
-    track_event "Followed #{@followable.class.name}", { id: @followable.id, name: @followable.name }
+    track_event "Followed #{@followable.class.name}", { id: @followable.id, name: @followable.name, source: params[:source] }
   end
 
   def destroy
@@ -44,7 +44,7 @@ class FollowersController < ApplicationController
       end
     end
 
-    track_event "Followed #{@followable.class.name}", { id: @followable.id, name: @followable.name }
+    track_event "Followed #{@followable.class.name}", { id: @followable.id, name: @followable.name, source: params[:source] }
   end
 
   private
