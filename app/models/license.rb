@@ -60,6 +60,10 @@ class License
     'http://creativecommons.org/licenses/by-nc-nd/4.0' => {
       name: 'Creative Commons Attribution-NonCommercial-NoDerivs CC BY-NC-ND (CC BY-NC-ND)',
       abbr: 'CC BY-NC-ND', },
+    'https://tldrlegal.com/license/beerware-license' => {
+      name: 'Beerware',
+      abbr: 'Beerware'
+    }
   }
 
   attr_reader :url, :name, :abbr
