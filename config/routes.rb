@@ -307,9 +307,9 @@ HackerIo::Application.routes.draw do
     # get 'help' => 'pages#help'
     get 'achievements' => 'pages#achievements'
     get 'home', to: redirect('/')
-    get 'hardwareweek' => 'pages#hardwareweek'
-    get 'hwweek', to: redirect('/hardwareweek')
-    get 'roadshow', to: redirect('/hardwareweek')
+    get 'hardwareweekend' => 'pages#hardwareweekend'
+    get 'hweekend', to: redirect('/hardwareweekend')
+    get 'roadshow', to: redirect('/hardwareweekend')
 
     get 'ping' => 'pages#ping'  # for availability monitoring
     get 'obscure/path/to/cron' => 'cron#run'
