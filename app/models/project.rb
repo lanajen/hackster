@@ -505,7 +505,7 @@ class Project < ActiveRecord::Base
   def post_new_tweet!
     prepend = "New project#{' idea' if is_idea?}: "  # 13-18 characters
     message = to_tweet(prepend)
-    TwitterQueue.perform_async 'schedule_update', message
+    TwitterQueue.perform_async 'throttle_update', message
   end
 
   def to_tweet prepend='', append=''

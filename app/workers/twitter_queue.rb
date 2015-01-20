@@ -10,7 +10,7 @@ class TwitterQueue < BaseWorker
     end
   end
 
-  def schedule_update message
+  def throttle_update message
     if Time.now >= next_update
       update message
     else
