@@ -1,0 +1,146 @@
+= content_for :head do
+  = stylesheet_link_tag 'flipclock'
+
+= content_for :js do
+  = javascript_include_tag '//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'
+  = javascript_include_tag 'flipclock'
+
+  javascript:
+    $(function(){
+      var date  = new Date(Date.UTC(2015, 2, 21, 18, 0, 0));
+      var now   = new Date();
+      var diff  = date.getTime()/1000 - now.getTime()/1000;
+
+      var clock = $('#about .countdown .inner').FlipClock(diff, {
+        countdown: true,
+        clockFace: 'DailyCounter'
+      });
+    });
+
+= content_for :no_container do
+  - cache ['hwweek'], tag: ['hwweek'], expires_in: 24.hours do
+    #hwweek
+      section#banner style="background-image:url('#{ asset_url 'hwweek/bg.jpg'}')"
+
+      section#about
+        .container
+          .text-center
+            h1 Hackster Hardware Week
+            .subtitle
+              | 10 Cities | 10 Hackathons | 10 Meetups
+          .countdown
+            .inner
+
+      section#sponsors
+        .container
+          h2.text-center Sponsors
+          | Logozzz
+
+      section#desc
+        .container
+          h2.text-center Ready to join the hardware revolution?
+          p The 2015 Hackster Hardware Week is coming. It's an event to celebrate makers, open source hardware and the hacker communities we love.
+
+          p From Seattle to NYC and everything in between, we are hitting the roads with loads of hardware kits, amazing speakers, software freebies and great people (Redbull and beer included).
+
+          p Grab your soldering stations and join our tour to meet THE BEST hardware hackers across America.
+
+      section#agenda
+        .container
+          h2.text-center Agenda
+          .row.text-center
+            .col-sm-6
+              h3 Day 1
+              table.table.table-hover
+                tbody
+                  tr
+                    td Sign-In and Say Hello
+                  tr
+                    td Get Your Awesome Kits
+                  tr
+                    td Kickoff Speaker
+                  tr
+                    td Training Workshop
+                  tr
+                    td Form Your Team
+                  tr
+                    td Industry Speaker
+                  tr
+                    td Start Your Hacks
+                  tr
+                    td Tasty Food, Loaded Coffee
+            .col-sm-6
+              h3 Day 2
+              table.table.table-hover
+                tbody
+                  tr
+                    td Sign-In and Say Hello
+                  tr
+                    td Get Your Awesome Kits
+                  tr
+                    td Kickoff Speaker
+                  tr
+                    td Training Workshop
+                  tr
+                    td Form Your Team
+                  tr
+                    td Industry Speaker
+                  tr
+                    td Start Your Hacks
+                  tr
+                    td Tasty Food, Loaded Coffee
+
+      section#events
+        .container
+          h2.text-center Register for an Event Near You
+          .row
+            .col-sm-6
+              a.city-card style="background-image:url('#{asset_url 'hwweek/seattle.jpg'}')" href=""
+                .caption
+                  h4 Seattle, WA
+                  p February 21-22
+            .col-sm-6
+              a.city-card style="background-image:url('#{asset_url 'hwweek/portland.jpg'}')" href=""
+                .caption
+                  h4 Portland, OR
+                  p March 7-8
+            .col-sm-6
+              a.city-card style="background-image:url('#{asset_url 'hwweek/sf.jpg'}')" href=""
+                .caption
+                  h4 San Francisco, CA
+                  p March 14-15
+            .col-sm-6
+              a.city-card style="background-image:url('#{asset_url 'hwweek/la.jpg'}')" href=""
+                .caption
+                  h4 Los Angeles, CA
+                  p March 21-22
+            .col-sm-6
+              a.city-card style="background-image:url('#{asset_url 'hwweek/phoenix.jpg'}')" href=""
+                .caption
+                  h4 Phoenix, NV
+                  p April 4-5
+            .col-sm-6
+              a.city-card style="background-image:url('#{asset_url 'hwweek/louisville.jpg'}')" href=""
+                .caption
+                  h4 Louisville, KY
+                  p April 10-11
+            .col-sm-6
+              a.city-card style="background-image:url('#{asset_url 'hwweek/dallas.jpg'}')" href=""
+                .caption
+                  h4 Dallas, TX
+                  p April 25-26
+            .col-sm-6
+              a.city-card style="background-image:url('#{asset_url 'hwweek/nyc.jpg'}')" href=""
+                .caption
+                  h4 New York City, NY
+                  p May 1-2
+            .col-sm-6
+              a.city-card style="background-image:url('#{asset_url 'hwweek/boston.jpg'}')" href=""
+                .caption
+                  h4 Boston, MA
+                  p May 9-10
+            .col-sm-6
+              a.city-card style="background-image:url('#{asset_url 'hwweek/pittsburgh.jpg'}')" href=""
+                .caption
+                  h4 Pittsburgh, PA
+                  p May 16-17

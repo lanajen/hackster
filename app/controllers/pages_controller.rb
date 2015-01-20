@@ -19,6 +19,12 @@ class PagesController < ApplicationController
     meta_desc 'What are achievements?'
   end
 
+  def hardwareweek
+    title "Hackster Hardware Week Roadshow"
+
+    render layout: 'blog'
+  end
+
   def help
   end
 

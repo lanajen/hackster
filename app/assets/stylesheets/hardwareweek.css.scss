@@ -1,0 +1,47 @@
+.countdown {
+  width: 620px;
+  margin: 100px auto 20px;
+}
+
+#hwweek {
+  section {
+    background: #fff;
+    padding: 100px 0;
+    &:nth-of-type(even) {
+      background: #fafafa;
+    }
+    h2 {
+      margin: 0 0 30px;
+    }
+  }
+
+  #banner {
+    @include background-cover;
+    height: 400px;
+  }
+}
+
+.city-card {
+  height: 200px;
+  position: relative;
+  display: block;
+  margin-bottom: 30px;
+  @include background-cover;
+  .caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    color: #fff;
+    padding: 30px 0 10px;
+    text-align: center;
+    @include background-image(linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.1) 20%, rgba(0, 0, 0, 0.6) 50%, rgba(0, 0, 0, 0.8) 100%));
+    h4 {
+      font-weight: bold;
+      font-size: 1.4em;
+    }
+    p {
+      font-size: 1.1em;
+    }
+  }
+}

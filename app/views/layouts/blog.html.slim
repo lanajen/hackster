@@ -10,7 +10,9 @@ html lang="en"
     meta charset="utf-8"
     meta content=meta_desc name="description"
     meta content="text/html;charset=utf-8" http-equiv="content-type"
-    link href='//fonts.googleapis.com/css?family=Open+Sans:300,400,600' rel='stylesheet' type='text/css'
+    = javascript_include_tag "//use.typekit.net/okr0yzp.js"
+    javascript:
+       try{Typekit.load();}catch(e){}
     = stylesheet_link_tag "application"
     link rel="apple-touch-icon" sizes="57x57" href="#{ asset_path 'favicons/apple-touch-icon-57x57.png' }"
     link rel="apple-touch-icon" sizes="114x114" href="#{ asset_path 'favicons/apple-touch-icon-114x114.png' }"
@@ -30,6 +32,7 @@ html lang="en"
     meta name="msapplication-TileImage" content="#{ asset_path 'favicons/mstile-144x144.png' }"
     link href="#{ asset_path 'favicons/favicon.ico' }" rel="shortcut icon" type="image/vnd.microsoft.icon"
     meta content="width=device-width, initial-scale=1" name="viewport"
+    = content_for :head
     - unless Rails.env == 'development' or (user_signed_in? and current_user.is? :admin)
       = render partial: 'shared/analytics', locals: { tracker: 'UA-11926897-15', domain: 'hackster.io', track_outbound: false }
 
@@ -44,20 +47,22 @@ html lang="en"
             ul#nav-actions.top-menu-nav
               li= link_to 'Projects', '/projects', class: 'nav-link'
               li= link_to 'Platforms', '/platforms', class: 'nav-link'
-              li= link_to 'Hacker spaces', '/hackerspaces', class: 'nav-link'
               li= link_to 'Blog', '/blog', class: 'nav-link'
             ul#navbar-right.clearfix
               li
                 span= link_to 'Visit Hackster.io', '/', class: 'btn btn-primary login-link'
 
-      #bg
-      #content
-        .wrapper700
-          .content
-            - flash.each do |name, msg|
-              .flash-notice
-                = msg
-            = yield
+      - if content_for(:no_container)
+        = yield(:no_container)
+      - else
+        #bg
+        #content
+          .wrapper700
+            .content
+              - flash.each do |name, msg|
+                .flash-notice
+                  = msg
+              = yield
 
     footer
       .wrapper700
@@ -76,6 +81,7 @@ html lang="en"
     #mobile-navigation.hide-on-desktop
       = link_to 'Projects', '/projects', class: 'mo-nav-link'
       = link_to 'Platforms', '/platforms', class: 'mo-nav-link'
-      = link_to 'Hacker spaces', '/hackerspaces', class: 'mo-nav-link'
       = link_to 'Blog', '/blog', class: 'mo-nav-link'
       = link_to 'Visit Hackster.io', '/', class: 'mo-nav-link'
+
+    = content_for :js
