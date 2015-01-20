@@ -71,164 +71,172 @@
                     span.stat-figure> = number_with_delimiter @project.respects_count
                     = pluralize_without_count @project.respects_count, 'respect'
 
-          - cache [@project, 'widgets'], tag: ["project-#{@project.id}-widgets", 'project-widgets'] do
-            section#about-project.section-container.section-collapsible
+          - if @project.assignment.present? and @project.assignment.private_grades and !@can_edit
+            section#about-project.section-container
               h2.section-title
-                a.title.title-toggle href=''
-                  ' About this project
-                  i.fa.fa-chevron-down
-                  i.fa.fa-chevron-up
+                .title.title-toggle Contents hidden
               .section-content
-                .medium-editor= @project.description
-                /
-                  #carousel.carousel.slide data-ride="carousel"
-                    .carousel-inner role="listbox"
-                      .item.active
-                        .clearfix.multi-image
-                          .col-xs-6
-                            = image_tag 'slide-1.png'
-                          .col-xs-6
-                            = image_tag 'slide-2.png'
-                      .item
-                        .clearfix.multi-image
-                          .col-xs-6
-                            = image_tag 'slide-1.png'
-                          .col-xs-6
-                            = image_tag 'slide-2.png'
-                    a.left.carousel-control href="#carousel" role="button" data-slide="prev"
-                      span.glyphicon.glyphicon-chevron-left aria-hidden="true"
-                    a.right.carousel-control href="#carousel" role="button" data-slide="next"
-                      span.glyphicon.glyphicon-chevron-right aria-hidden="true"
+                p The contents of this are project are currently hidden because the assignement is being graded.
 
-          - if component_widget_ids = PartsWidget.where(widgetable_id: @project.id, widgetable_type: 'Project').joins(:parts).where("parts.description IS NOT NULL OR parts.description <> ''").distinct(:id).pluck(:id) and component_widget_ids.any?
-            section#components.section-container.section-collapsible
-              h2.section-title
-                a.title.title-toggle href=''
-                  ' Components
-                  i.fa.fa-chevron-down
-                  i.fa.fa-chevron-up
-              .section-content
-                - component_widget_ids.each do |widget_id|
-                  - embed = Embed.new widget_id: widget_id
-                  = render partial: 'api/embeds/embed', locals: { embed: embed }
+          - else
+            - cache [@project, 'widgets'], tag: ["project-#{@project.id}-widgets", 'project-widgets'] do
+              section#about-project.section-container.section-collapsible
+                h2.section-title
+                  a.title.title-toggle href=''
+                    ' About this project
+                    i.fa.fa-chevron-down
+                    i.fa.fa-chevron-up
+                .section-content
+                  .medium-editor= @project.description
+                  /
+                    #carousel.carousel.slide data-ride="carousel"
+                      .carousel-inner role="listbox"
+                        .item.active
+                          .clearfix.multi-image
+                            .col-xs-6
+                              = image_tag 'slide-1.png'
+                            .col-xs-6
+                              = image_tag 'slide-2.png'
+                        .item
+                          .clearfix.multi-image
+                            .col-xs-6
+                              = image_tag 'slide-1.png'
+                            .col-xs-6
+                              = image_tag 'slide-2.png'
+                      a.left.carousel-control href="#carousel" role="button" data-slide="prev"
+                        span.glyphicon.glyphicon-chevron-left aria-hidden="true"
+                      a.right.carousel-control href="#carousel" role="button" data-slide="next"
+                        span.glyphicon.glyphicon-chevron-right aria-hidden="true"
 
-          - if (@project.build_logs_count > 0 and !@project.private_logs) or @can_edit
-            section#logs.section-container.section-collapsible
-              h2.section-title
-                a.title.title-toggle href=''
-                  - if @project.private_logs
-                    i.fa.fa-lock.istooltip>  title='Build logs are private' data-container='body'
-                  ' Build logs
-                  i.fa.fa-chevron-down
-                  i.fa.fa-chevron-up
-              .section-content
-                - if log = @project.build_logs.published.last.try(:decorate)
-                  .section-inset
-                    .section-title
-                      h3.title
-                        = link_to log.title, log_path(@project, log)
-                        .annotation
-                          | Build log ##{log.sub_id}
+            - if component_widget_ids = PartsWidget.where(widgetable_id: @project.id, widgetable_type: 'Project').joins(:parts).where("parts.description IS NOT NULL OR parts.description <> ''").distinct(:id).pluck(:id) and component_widget_ids.any?
+              section#components.section-container.section-collapsible
+                h2.section-title
+                  a.title.title-toggle href=''
+                    ' Components
+                    i.fa.fa-chevron-down
+                    i.fa.fa-chevron-up
+                .section-content
+                  - component_widget_ids.each do |widget_id|
+                    - embed = Embed.new widget_id: widget_id
+                    = render partial: 'api/embeds/embed', locals: { embed: embed }
 
-                        .subtitle
-                          ==> time_ago_in_words log.created_at
-                          ' ago -
-                          = link_to pluralize(log.comments.size, 'comment'), log_path(@project, log, anchor: 'comments')
-
-                    .section-content.medium-editor
-                      = raw log.decorate.body
-
-                - else
-                  p No build logs yet.
-
-                - if @can_edit
-                  = link_to 'See and manage all logs (including drafts)', project_logs_path, class: 'btn btn-default btn-sm'
-                - elsif @project.build_logs_count > 1
-                  = link_to 'Read previous logs', project_logs_path, class: 'btn btn-default btn-sm btn-block'
-
-          - if (@project.issues_count > 0 and !@project.private_issues) or @can_edit
-            section#issues.section-container.section-collapsible
-              h2.section-title
-                a.title.title-toggle href=''
-                  - if @project.private_issues
-                    i.fa.fa-lock.istooltip>  title='Issues are private' data-container='body'
-                  ' Issues
-                  i.fa.fa-chevron-down
-                  i.fa.fa-chevron-up
-              .section-content
-                - if issues = @project.issues.where(type: 'Issue').open and issues.any?
-                  - issues.each do |issue|
+            - if (@project.build_logs_count > 0 and !@project.private_logs) or @can_edit
+              section#logs.section-container.section-collapsible
+                h2.section-title
+                  a.title.title-toggle href=''
+                    - if @project.private_logs
+                      i.fa.fa-lock.istooltip>  title='Build logs are private' data-container='body'
+                    ' Build logs
+                    i.fa.fa-chevron-down
+                    i.fa.fa-chevron-up
+                .section-content
+                  - if log = @project.build_logs.published.last.try(:decorate)
                     .section-inset
                       .section-title
                         h3.title
-                          = link_to issue.title, issue_path(@project, issue)
+                          = link_to log.title, log_path(@project, log)
                           .annotation
-                            | Issue ##{issue.sub_id}
+                            | Build log ##{log.sub_id}
 
                           .subtitle
-                            ==> time_ago_in_words issue.created_at
+                            ==> time_ago_in_words log.created_at
                             ' ago -
-                            = link_to pluralize(issue.comments.size, 'comment'), issue_path(@project, issue, anchor: 'comments')
+                            = link_to pluralize(log.comments.size, 'comment'), log_path(@project, log, anchor: 'comments')
 
-                      .section-content
-                        = raw issue.body
+                      .section-content.medium-editor
+                        = raw log.decorate.body
 
-                - else
-                  p No issues yet.
+                  - else
+                    p No build logs yet.
 
-                = link_to 'See all issues', project_logs_path, class: 'btn btn-default btn-sm'
+                  - if @can_edit
+                    = link_to 'See and manage all logs (including drafts)', project_logs_path, class: 'btn btn-default btn-sm'
+                  - elsif @project.build_logs_count > 1
+                    = link_to 'Read previous logs', project_logs_path, class: 'btn btn-default btn-sm btn-block'
 
-          / section#code.section-container.section-collapsible
-            h2.section-title
-              a.title.title-toggle href=''
-                ' Schematics
-                i.fa.fa-chevron-down
-                i.fa.fa-chevron-up
-            .section-content
-              = image_tag 'circuit.png'
+            - if (@project.issues_count > 0 and !@project.private_issues) or @can_edit
+              section#issues.section-container.section-collapsible
+                h2.section-title
+                  a.title.title-toggle href=''
+                    - if @project.private_issues
+                      i.fa.fa-lock.istooltip>  title='Issues are private' data-container='body'
+                    ' Issues
+                    i.fa.fa-chevron-down
+                    i.fa.fa-chevron-up
+                .section-content
+                  - if issues = @project.issues.where(type: 'Issue').open and issues.any?
+                    - issues.each do |issue|
+                      .section-inset
+                        .section-title
+                          h3.title
+                            = link_to issue.title, issue_path(@project, issue)
+                            .annotation
+                              | Issue ##{issue.sub_id}
 
-          / section#code.section-container.section-collapsible
-            h2.section-title
-              a.title.title-toggle href=''
-                ' Code
-                i.fa.fa-chevron-down
-                i.fa.fa-chevron-up
-            .section-content
-              - @project.widgets.where(type: 'CodeWidget').pluck(:id).each do |widget_id|
-                - embed = Embed.new widget_id: widget_id
-                = render partial: 'api/embeds/embed', locals: { embed: embed }
+                            .subtitle
+                              ==> time_ago_in_words issue.created_at
+                              ' ago -
+                              = link_to pluralize(issue.comments.size, 'comment'), issue_path(@project, issue, anchor: 'comments')
 
-          / section#code.section-container.section-collapsible
-            h2.section-title
-              a.title.title-toggle href=''
-                ' CAD files
-                i.fa.fa-chevron-down
-                i.fa.fa-chevron-up
-            .section-content
+                        .section-content
+                          = raw issue.body
 
-          / section#instructions.section-container.section-collapsible
-            h2.section-title
-              a.title.title-toggle href=''
-                ' Assembly Instructions
-                i.fa.fa-chevron-down
-                i.fa.fa-chevron-up
-            .section-content
-              h3.title Step 1: hardware
-              p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+                  - else
+                    p No issues yet.
 
-              h3.title Step 2: code
-              p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+                  = link_to 'See all issues', project_logs_path, class: 'btn btn-default btn-sm'
 
-              h3.title Step 3: be happy!
+            / section#code.section-container.section-collapsible
+              h2.section-title
+                a.title.title-toggle href=''
+                  ' Schematics
+                  i.fa.fa-chevron-down
+                  i.fa.fa-chevron-up
+              .section-content
+                = image_tag 'circuit.png'
 
-          section#comments.section-container.section-collapsible
-            h2.section-title
-              a.title.title-toggle href=''
-                ' Comments
-                i.fa.fa-chevron-down
-                i.fa.fa-chevron-up
-            .section-content
-              = render partial: 'widgets/comments', locals: { comments: @project.comments, commentable: @project }
+            / section#code.section-container.section-collapsible
+              h2.section-title
+                a.title.title-toggle href=''
+                  ' Code
+                  i.fa.fa-chevron-down
+                  i.fa.fa-chevron-up
+              .section-content
+                - @project.widgets.where(type: 'CodeWidget').pluck(:id).each do |widget_id|
+                  - embed = Embed.new widget_id: widget_id
+                  = render partial: 'api/embeds/embed', locals: { embed: embed }
+
+            / section#code.section-container.section-collapsible
+              h2.section-title
+                a.title.title-toggle href=''
+                  ' CAD files
+                  i.fa.fa-chevron-down
+                  i.fa.fa-chevron-up
+              .section-content
+
+            / section#instructions.section-container.section-collapsible
+              h2.section-title
+                a.title.title-toggle href=''
+                  ' Assembly Instructions
+                  i.fa.fa-chevron-down
+                  i.fa.fa-chevron-up
+              .section-content
+                h3.title Step 1: hardware
+                p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+
+                h3.title Step 2: code
+                p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+
+                h3.title Step 3: be happy!
+
+            section#comments.section-container.section-collapsible
+              h2.section-title
+                a.title.title-toggle href=''
+                  ' Comments
+                  i.fa.fa-chevron-down
+                  i.fa.fa-chevron-up
+              .section-content
+                = render partial: 'widgets/comments', locals: { comments: @project.comments, commentable: @project }
 
         .col-md-4.right-column
           .container-mobile
@@ -414,45 +422,46 @@
                           h4= link_to project.name, project
                           / # p= render partial: 'projects/by_team', locals: { project: project }
 
-            section.section-thumbs.hidden-xs.hidden-sm
-              h4
-                | Table of contents
-              .affixable style='top:20px'
-                #scroll-nav.section-container
-                  ul.nav
-                    li.active
-                      a.smooth-scroll href="#home" data-target="#home" data-offset='-40'
-                        = @project.name
-                    li
-                      a.smooth-scroll href="#about-project" data-target="#about-project"
-                        | About this project
-                    - if component_widget_ids.any?
+            - unless @project.assignment.present? and @project.assignment.private_grades and !@can_edit
+              section.section-thumbs.hidden-xs.hidden-sm
+                h4
+                  | Table of contents
+                .affixable style='top:20px'
+                  #scroll-nav.section-container
+                    ul.nav
+                      li.active
+                        a.smooth-scroll href="#home" data-target="#home" data-offset='-40'
+                          = @project.name
                       li
-                        a.smooth-scroll href="#components" data-target="#components"
-                          | Components
-                    - if (@project.build_logs_count > 0 and !@project.private_logs) or can? :edit, @project
+                        a.smooth-scroll href="#about-project" data-target="#about-project"
+                          | About this project
+                      - if component_widget_ids.any?
+                        li
+                          a.smooth-scroll href="#components" data-target="#components"
+                            | Components
+                      - if (@project.build_logs_count > 0 and !@project.private_logs) or can? :edit, @project
+                        li
+                          a.smooth-scroll href="#logs"  data-target="#logs"
+                            | Build Logs
+                            span.nav-count
+                              | (
+                              = @project.build_logs_count
+                              | )
+                      - if (@project.issues_count > 0 and !@project.private_issues) or can? :edit, @project
+                        li
+                          a.smooth-scroll href="#issues"  data-target="#issues"
+                            | Issues
+                            span.nav-count
+                              | (
+                              = @project.issues_count
+                              | )
                       li
-                        a.smooth-scroll href="#logs"  data-target="#logs"
-                          | Build Logs
+                        a.smooth-scroll href="#comments"  data-target="#comments"
+                          | Comments
                           span.nav-count
                             | (
-                            = @project.build_logs_count
+                            = @project.comments_count
                             | )
-                    - if (@project.issues_count > 0 and !@project.private_issues) or can? :edit, @project
-                      li
-                        a.smooth-scroll href="#issues"  data-target="#issues"
-                          | Issues
-                          span.nav-count
-                            | (
-                            = @project.issues_count
-                            | )
-                    li
-                      a.smooth-scroll href="#comments"  data-target="#comments"
-                        | Comments
-                        span.nav-count
-                          | (
-                          = @project.comments_count
-                          | )
 
                 .show-on-affix style='margin-top:20px;'
                   - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
