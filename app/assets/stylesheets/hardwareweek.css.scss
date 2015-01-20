@@ -1,12 +1,12 @@
 .countdown {
   width: 620px;
-  margin: 100px auto 20px;
+  margin: 20px auto 20px;
 }
 
 #hwweek {
   section {
     background: #fff;
-    padding: 100px 0;
+    padding: 70px 0;
     &:nth-of-type(even) {
       background: #fafafa;
     }
@@ -23,6 +23,8 @@
   #sponsors {
     img {
       max-width: 200px;
+      max-height: 150px;
+      margin-right: 50px;
     }
   }
 }

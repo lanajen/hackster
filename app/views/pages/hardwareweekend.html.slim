@@ -20,23 +20,21 @@
 = content_for :no_container do
   - cache ['hwweek'], tag: ['hwweek'], expires_in: 24.hours do
     #hwweek
-      section#banner style="background-image:url('#{ asset_url 'hwweek/bg.jpg'}')"
+      section#home-banner style='padding:0'
+        .home-slide style="background-image:url('#{ asset_url 'hwweek/bg.jpg'}')"
+          .container.text-center
+            h1 Hackster Hardware Weekend
+            p 10 Cities | 10 Hackathons | 10 Meetups
 
       section#about
         .container
-          .text-center
-            h1 Hackster Hardware Weekend
-            .subtitle
-              | 10 Cities | 10 Hackathons | 10 Meetups
           .countdown
             .inner
 
       section#desc
         .container
           h2.text-center Ready to join the hardware revolution?
-          p The 2015 Hackster Hardware Weekend is coming. It's an event to celebrate makers, open source hardware and the hacker communities we love.
-
-          p From Seattle to NYC and everything in between, we are hitting the roads with loads of hardware kits, amazing speakers, software freebies and great people (Redbull and beer included).
+          p The 2015 Hackster Hardware Weekend is coming. It's an event to celebrate makers, open source hardware and the hacker communities we love. From Seattle to NYC and everything in between, we are hitting the roads with loads of hardware kits, amazing speakers, software freebies and great people (Redbull and beer included).
 
           p Grab your soldering stations and join our tour to meet THE BEST hardware hackers across America.
 
@@ -44,6 +42,8 @@
         .container
           h2.text-center Partners
           = image_tag 'hwweek/intel_edison.png'
+          = image_tag 'hwweek/1b.png'
+          = image_tag 'hwweek/udoo.png'
 
       section#agenda
         .container
@@ -54,41 +54,41 @@
               table.table.table-hover
                 tbody
                   tr
-                    td Sign-In and Say Hello
+                    td Sign-in and say hello
                   tr
-                    td Get Your Awesome Kits
+                    td Get your awesome kits
                   tr
-                    td Kickoff Speaker
+                    td Kickoff speaker
                   tr
-                    td Training Workshop
+                    td Training workshop
                   tr
-                    td Form Your Team
+                    td Form your team
                   tr
-                    td Industry Speaker
+                    td Industry speaker
                   tr
-                    td Start Your Hacks
+                    td Start hacking
                   tr
-                    td Tasty Food, Loaded Coffee
+                    td Tasty food, loaded coffee
             .col-sm-6
               h3 Day 2
               table.table.table-hover
                 tbody
                   tr
-                    td Sign-In and Say Hello
+                    td Work on your hacks
                   tr
-                    td Get Your Awesome Kits
+                    td Industry speaker
                   tr
-                    td Kickoff Speaker
+                    td Demo your hacks
                   tr
-                    td Training Workshop
+                    td Hackster hacks uploads
                   tr
-                    td Form Your Team
+                    td Global online judging
                   tr
-                    td Industry Speaker
+                    td Winner announcement*
                   tr
-                    td Start Your Hacks
-                  tr
-                    td Tasty Food, Loaded Coffee
+                    td Tasty food, loaded coffee
+
+              p.small * Winners announced online one week post the hackathon via global online voting
 
       section#events
         .container
