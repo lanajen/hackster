@@ -19,6 +19,12 @@
     @include background-cover;
     height: 400px;
   }
+
+  #sponsors {
+    img {
+      max-width: 200px;
+    }
+  }
 }
 
 .city-card {
