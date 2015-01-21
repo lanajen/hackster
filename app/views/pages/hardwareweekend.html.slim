@@ -45,7 +45,7 @@
           li= link_to 'Partners', '#partners', class: 'nav-link smooth-scroll', data: { target: '#partners' }
           li= link_to 'Mentors and speakers', '#mentors', class: 'nav-link smooth-scroll', data: { target: '#mentors' }
           li= link_to 'What to expect', '#what', class: 'nav-link smooth-scroll', data: { target: '#what' }
-          li= link_to 'Agenda', '#agenda', class: 'nav-link smooth-scroll', data: { target: '#agenda' }
+          li= link_to 'Schedule', '#schedule', class: 'nav-link smooth-scroll', data: { target: '#schedule' }
         ul#navbar-right.clearfix
           li
             span= link_to 'Register', '#register', class: 'btn btn-primary login-link smooth-scroll', data: { target: '#register' }
@@ -55,7 +55,7 @@
   = link_to 'Partners', '#partners', class: 'mo-nav-link smooth-scroll', data: { target: '#partners' }
   = link_to 'Mentors and speakers', '#mentors', class: 'mo-nav-link smooth-scroll', data: { target: '#mentors' }
   = link_to 'What to expect', '#what', class: 'mo-nav-link smooth-scroll', data: { target: '#what' }
-  = link_to 'Agenda', '#agenda', class: 'mo-nav-link smooth-scroll', data: { target: '#agenda' }
+  = link_to 'Schedule', '#schedule', class: 'mo-nav-link smooth-scroll', data: { target: '#schedule' }
 
 = content_for :no_container do
   - cache ['hwweek'], tag: ['hwweek'] do
@@ -130,9 +130,9 @@
           p.small.text-muted style='margin:30px 0 0;'
             | *check on your city event page which hardware kits, mentors, speakers and prizes we'll have.
 
-      section#agenda
+      section#schedule
         .container
-          h2.text-center Agenda
+          h2.text-center Schedule
           .row.text-center
             .col-sm-6
               table.table.table-hover
