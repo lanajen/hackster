@@ -237,14 +237,16 @@ class ProjectsController < ApplicationController
 
     if @project.update_attributes(params[:project])
       notice = "#{@project.name} was successfully updated."
-      if private_was != @project.private and @project.private == false
-        current_user.broadcast :new, @project.id, 'Project', @project.id
-        notice = "#{@project.name} is now published. Somebody from the Hackster team still needs to approve it before it shows on the site. Seat tight!"
+      if private_was != @project.private
+        if @project.private == false
+          current_user.broadcast :new, @project.id, 'Project', @project.id
+          notice = "#{@project.name} is now published. Somebody from the Hackster team still needs to approve it before it shows on the site. Seat tight!"
 
-        track_event 'Made project public', @project.to_tracker
-      elsif @project.private == false
-        current_user.broadcast :update, @project.id, 'Project', @project.id
-        notice = "#{@project.name} is now private again."
+          track_event 'Made project public', @project.to_tracker
+        elsif @project.private == false
+          current_user.broadcast :update, @project.id, 'Project', @project.id
+          notice = "#{@project.name} is now private again."
+        end
       end
       @refresh = @project.slug_was_changed?
       @project = @project.decorate
@@ -261,6 +263,7 @@ class ProjectsController < ApplicationController
 
       track_event 'Updated project', @project.to_tracker.merge({ type: 'project update'})
     else
+      raise @project.errors.inspect
       initialize_project
       @project = @project.decorate
       render action: "edit"

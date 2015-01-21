@@ -1,0 +1,95 @@
+.countdown {
+  width: 620px;
+  margin: 20px auto 20px;
+}
+
+#hwweek {
+  padding-top: 60px;
+
+  section {
+    background: #fff;
+    padding: 70px 0;
+    &:nth-of-type(odd) {
+      background: #fafafa;
+    }
+    h2 {
+      margin: 0 0 30px;
+    }
+  }
+
+  #home-banner {
+    @include background-cover;
+    padding: 0;
+    .home-slide {
+      padding: 100px 0;
+    }
+    h1 {
+      font-weight: bold;
+    }
+    p {
+      font-size: 1.2em;
+    }
+  }
+
+  #partners {
+    text-align: center;
+    img {
+      max-width: 200px;
+      max-height: 150px;
+    }
+    .platinum {
+      margin-bottom: 50px;
+      img {
+        max-width: 300px;
+        max-height: 225px;
+      }
+    }
+    a {
+      margin-right: 50px;
+      display: inline-block;
+      &:last-of-type {
+        margin-right: 0;
+      }
+    }
+    .layer {
+      margin-bottom: 20px;
+    }
+  }
+
+  .getintouch {
+    margin: 50px 0 0;
+    text-align: center;
+  }
+
+  .gifts {
+    li {
+      font-size: 1.4em;
+      margin-top: 20px;
+    }
+  }
+}
+
+.city-card {
+  height: 200px;
+  position: relative;
+  display: block;
+  margin-bottom: 30px;
+  @include background-cover;
+  .caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    color: #fff;
+    padding: 30px 0 10px;
+    text-align: center;
+    @include background-image(linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.1) 20%, rgba(0, 0, 0, 0.6) 50%, rgba(0, 0, 0, 0.8) 100%));
+    h4 {
+      font-weight: bold;
+      font-size: 1.4em;
+    }
+    p {
+      font-size: 1.1em;
+    }
+  }
+}

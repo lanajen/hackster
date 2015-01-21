@@ -17,8 +17,10 @@ POPULAR_TAGS = {
   'Wifi' => '/tags/wifi',
   'Wearable' => '/tags/wearable',
 }
-SLOGAN = 'Hackster.io is the community for hardware hackers. Learn, build and share your projects.'
-SLOGAN_NO_BRAND = 'The community for hardware hackers.'
+
+SLOGAN = 'Hackster is the place where hardware gets created. Learn, share and connect to build better hardware.'
+SLOGAN_NO_BRAND = 'The Place Where Hardware Gets Created.'
+# where hardware comes to life
 URL_REGEXP = /^(((http|https):\/\/|)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}(:[0-9]{1,5})?(\/.*)?)$/ix
 EMAIL_REGEXP = /^[a-zA-Z0-9_\.\+\-]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9\-\.]+$/
 

@@ -65,7 +65,7 @@
                   i.fa.fa-share-square-o
 
                 - if can? :manage, @group
-                  span.dropdown role='presentation'
+                  span.dropdown.dropup role='presentation'
                     a.btn.btn-link.dropdown-toggle data-toggle="dropdown" aria-expanded="false"
                       i.fa.fa-cog
                     ul.dropdown-menu role="menu"
@@ -73,6 +73,9 @@
                       li.divider
                       li= link_to 'Manage admins', url_for([@group, :edit, :members])
                       li= link_to 'Invite admins', url_for([@group, :new, :invitations])
+                      li.divider
+                      li= link_to 'Manage projects', url_for([@group, :admin, :projects])
+
         .container.visible-xs
           = image_tag @group.avatar(:big), class: 'img-thumbnail'
           h1= @group.name

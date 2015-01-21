@@ -31,6 +31,10 @@ class BlogPost < ThreadPost
     extract_excerpt[1].present?
   end
 
+  def public?
+    super and (published_at.nil? or published_at < Time.now)
+  end
+
   def tags
     blog_tags
   end

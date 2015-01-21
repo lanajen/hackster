@@ -19,8 +19,15 @@ table.table.table-striped
   tbody
     - @posts.each do |post|
       tr
-        td= post.title
-        td= post.public?
+        td= link_to post.title, blog_post_path(post)
+        td
+          - if post.public
+            - if post.published_at > Time.now
+              | Scheduled #{post.published_at}
+            - else
+              | Yes
+          - else
+            | No
         td= post.user.name
         td
           ==> link_to t('.edit', :default => t("helpers.links.edit")), edit_admin_blog_post_path(post), :class => 'btn btn-default btn-xs'

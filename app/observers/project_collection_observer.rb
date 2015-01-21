@@ -1,6 +1,5 @@
 class ProjectCollectionObserver < ActiveRecord::Observer
   def after_create record
-    update_counters record
     update_project record.project if record.collectable_type == 'Assignment'
   end
 
@@ -10,6 +9,10 @@ class ProjectCollectionObserver < ActiveRecord::Observer
 
   def after_update record
     update_project record.project if record.collectable_id_changed? and record.collectable_type == 'Assignment'
+  end
+
+  def after_status_updated record
+    update_counters record
   end
 
   private

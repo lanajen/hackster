@@ -1,0 +1,22 @@
+.box
+  .box-title
+    h2 What do you think about this project?
+  .box-content
+    .row
+      = render partial: 'projects/project_thumb', locals: { project: @project_collection.project.decorate }
+      .col-md-8
+        = simple_form_for @project_collection do |f|
+          = f.input :comment, label: 'Your comment', input_html: { class: 'text-editor' }
+          = f.submit 'Save changes', class: 'btn btn-primary'
+
+= content_for :js do
+  = tinymce_assets
+  javascript:
+    tinyMCE.init({
+      selector: 'textarea.text-editor',
+      toolbar1: "undo redo | bold italic underline | link unlink | bullist numlist",
+      menubar: false,
+      plugins: 'link paste',
+      height: 400,
+      statusbar: false
+    });

@@ -5,7 +5,18 @@ class ChatMessagesController < ApplicationController
   def index
     @group = load_with_slug
     instance_variable_set "@#{@group.identifier}", @group
-    @chat_messages = ChatMessage.where(group_id: @group.id).includes(:user).includes(user: :avatar).order(created_at: :asc).limit(100)
+    @chat_messages = ChatMessage.where(group_id: @group.id).includes(:user).includes(user: :avatar).order(created_at: :desc).limit(100)
+
+    if params[:last_id]
+      @chat_messages = @chat_messages.where("chat_messages.id < ?", params[:last_id])
+    end
+
+    @chat_messages = @chat_messages.reverse
+
+    respond_to do |format|
+      format.html
+      # format.json { render 'index.js' }
+    end
   end
 
   def create

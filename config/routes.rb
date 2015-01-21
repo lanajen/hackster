@@ -115,6 +115,8 @@ HackerIo::Application.routes.draw do
       get 'awards/edit' => 'grades#edit', as: :edit_awards
       patch 'awards' => 'grades#update'
       patch 'projects/link' => 'groups/projects#link'
+      get 'projects' => 'groups/projects#index', as: :admin_projects
+      patch 'projects/:id' => 'groups/projects#update_workflow', as: :update_workflow
     end
 
     get 'h/:user_name' => 'hacker_spaces#redirect_to_show'
@@ -273,6 +275,8 @@ HackerIo::Application.routes.draw do
       end
     end
 
+    resources :project_collections, only: [:edit, :update]
+
     get 'hackers' => 'users#index', as: :hackers
     get 'hackers/:id' => 'users#redirect_to_show', as: :hacker
 
@@ -305,6 +309,9 @@ HackerIo::Application.routes.draw do
     # get 'help' => 'pages#help'
     get 'achievements' => 'pages#achievements'
     get 'home', to: redirect('/')
+    get 'hardwareweekend' => 'pages#hardwareweekend'
+    get 'hweekend', to: redirect('/hardwareweekend')
+    get 'roadshow', to: redirect('/hardwareweekend')
 
     get 'ping' => 'pages#ping'  # for availability monitoring
     get 'obscure/path/to/cron' => 'cron#run'

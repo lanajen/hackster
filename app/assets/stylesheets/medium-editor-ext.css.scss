@@ -329,6 +329,9 @@ code.gist {
   background-color: initial;
   white-space: initial;
   border-radius: initial;
+  .line-numbers {
+    min-width: 34px;
+  }
 }
 
 .code-editor-container {

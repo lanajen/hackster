@@ -19,6 +19,12 @@ class PagesController < ApplicationController
     meta_desc 'What are achievements?'
   end
 
+  def hardwareweekend
+    title "Hackster Hardware Weekend Roadshow"
+
+    render layout: 'blog'
+  end
+
   def help
   end
 
@@ -30,7 +36,7 @@ class PagesController < ApplicationController
     # @active_projects = Project.last_updated.limit 4
     # @featured_projects = Project.featured.limit 4
     # @wip_projects = Project.wip.limit 4
-    @platforms = Platform.where(user_name: %w(spark lightbluebean metawear tinyduino arduino intel-edison)).for_thumb_display.order(:full_name)
+    @platforms = Platform.where(user_name: %w(spark lightbluebean metawear tinyduino intel-edison wunderbar)).for_thumb_display.order(:full_name)
 
     # render (user_signed_in? ? 'home_member' : 'home_visitor')
     render 'home_visitor'
