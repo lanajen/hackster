@@ -28,12 +28,8 @@ class ProjectObserver < ActiveRecord::Observer
     end
 
     if (record.changed && %w(private approved platform_tags_string)).any?
-      ProjectWorker.perform_async 'update_platforms', record.id
+      ProjectWorker.perform_in 0.5.second, 'update_platforms', record.id  # small delay so it's got time to save before bg task performs
     end
-
-    # if record.approved_changed? and record.approved
-    #   record.project_collections.each{|g| g.approve! }
-    # end
   end
 
   def before_create record
@@ -41,26 +37,6 @@ class ProjectObserver < ActiveRecord::Observer
     record.private_issues = record.private_logs = !!!record.open_source
     record.made_public_at = record.created_at if record.external
     record.last_edited_at = record.created_at
-  end
-
-  def before_save record
-    # record.platforms = Platform.joins(:platform_tags).references(:tags).where("LOWER(tags.name) IN (?)", record.platform_tags_cached.map{|t| t.strip.downcase }) if record.public? and !record.hide or (record.external and record.approved != false)
-
-    # ProjectQueue.perform_async 'update_platforms', record.id
-    # three approval levels after projects made public:
-    # - auto approve all
-    # mark pj approved immediately
-    # - hackster approves
-    # mark as pending_approval immediately, mark pj approved/rejected based on full project approval
-    # - platform approves
-    # mark as pending_approval immediately
-
-
-
-    # if record.private_changed? and record.public?
-      # record.post_new_tweet! unless record.made_public_at.present? or record.disable_tweeting? or Rails.env != 'production'
-      # record.made_public_at = Time.now
-    # end
   end
 
   def before_update record

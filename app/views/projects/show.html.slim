@@ -49,7 +49,7 @@
                     i.fa.fa-lightbulb-o.private-project-icon>
                   ==> @project.name
                   - if @project.license
-                    a.copyright target='_blank' href=@project.license.url &copy; #{@project.license.abbr}
+                    a.copyright target='_blank' href=@project.license.url &copy;&nbsp;#{@project.license.abbr}
                 p.project-one-liner= @project.one_liner
 
                 - if @project.product_tags_count > 0 or @project.platform_tags_cached.any?
