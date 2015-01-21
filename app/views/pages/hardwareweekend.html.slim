@@ -17,12 +17,29 @@
       });
     });
 
+  #myModal.modal.fade*{ 'aria-hidden' => "true", 'aria-labelledby' => "myModalLabel", role: "dialog", tabindex: "-1" }
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close data-dismiss="modal" type="button"
+            span aria-hidden="true"  ×
+            span.sr-only Close
+          h4#myModalLabel.modal-title Check back soon!
+        .modal-body
+          p This event isn't open for registration yet. Sign up to our newsletter below to be alerted when it does!
+          form#mc-embedded-subscribe-form.form-inline action="//hackster.us7.list-manage.com/subscribe/post?u=3fd72855783c7f1a97812d84e&amp;id=6ff81e3e5b" method="post" name="mc-embedded-subscribe-form" novalidate="" target="_blank"
+            .form-group
+              input#mce-EMAIL.form-control name="EMAIL" placeholder="nikola.tesla@hackster.io" type="email" value="" style=("width:200px;margin-right:10px;")
+            /! real people should not fill this in and expect good things - do not remove this or risk form bot signups
+            input name="b_3fd72855783c7f1a97812d84e_6ff81e3e5b" style=("position: absolute; left: -5000px;") tabindex="-1" type="text" value=""
+            input#mc-embedded-subscribe.btn.btn-primary.btn-sm name="subscribe" type="submit" value=("Sign up")
+
 = content_for :nav do
   .navbar.navbar-default.navbar-fixed-top#navigation
     #nav-mobile-trigger.hide-on-desktop.fa.fa-bars
     .navbar-in  style='position:relative;'
       .navbar-header
-        = link_to 'Hackster Hardware Weekend', '#hwweek', class: 'navbar-brand navbar-btn smooth-scroll', data: { target: '#hwweek' }
+        = link_to 'Hackster Hardware Weekend', '#hwweek', class: 'navbar-brand navbar-btn smooth-scroll', data: { target: '#hwweek' }, style: 'padding: 10px 20px;'
       #nav-non-logo.show-on-desktop
         ul#nav-actions.top-menu-nav
           li= link_to 'Partners', '#partners', class: 'nav-link smooth-scroll', data: { target: '#partners' }
@@ -41,7 +58,7 @@
   = link_to 'Agenda', '#agenda', class: 'mo-nav-link smooth-scroll', data: { target: '#agenda' }
 
 = content_for :no_container do
-  - cache ['hwweek'], tag: ['hwweek'], expires_in: 24.hours do
+  - cache ['hwweek'], tag: ['hwweek'] do
     #hwweek
       section#home-banner
         .home-slide style="background-image:url('#{ asset_url 'hwweek/bg.jpg'}')"
@@ -57,7 +74,7 @@
       section#desc
         .container.text-center
           h2.text-center Ready to join the hardware revolution?
-          p The 2015 Hackster Hardware Weekend is coming. It's an event to celebrate makers, open source hardware and the hacker communities we love. From Seattle to NYC and everything in between, we are hitting the roads with loads of hardware kits, amazing speakers, software freebies and great people (Redbull and beer included).
+          p Hackster is a community and it's time we all meet each other on the 2015 Hackster Hardware Weekend! This event series is a celebration of makers, open source hardware and the Hackster community across America. From Seattle to NYC and everything in between, we are hitting the road with loads of hardware kits, amazing speakers, software freebies and great people.
 
           p Grab your soldering stations and join our tour to meet THE BEST hardware hackers across America.
 
@@ -96,15 +113,19 @@
 
       section#what
         .container.text-center
-          h2.text-center What to expect?
-          p All throughout the weekend we'll be receiving tons of awesome things*, here are a few:
-          ul.list-unstyled.gifts
-            li Hardware kits
-            li Mentoring and great speakers
-            li Prizes for the winners
-            li Swag galore
-            li Food, snacks and beverages
-            li Meet hackers in your city and have a blast!
+          h2.text-center What's in it for you?
+          p.hidden-xs style='font-size:1.5em'
+            | Get Hardware Kits | Great Speakers & Mentors | Awesome Prizes | Swag Madness
+            br
+            | Food | Caffeine | Best Hardware Community On Earth
+          ul.list-unstyled.gifts.visible-xs
+            li Get Hardware Kits
+            li Great Speakers &amp; Mentors
+            li Awesome Prizes
+            li Swag Madness
+            li Food
+            li Caffeine
+            li Best Hardware Community On Earth
 
           p.small.text-muted style='margin:30px 0 0;'
             | *check on your city event page which hardware kits, mentors, speakers and prizes we'll have.
@@ -183,22 +204,26 @@
                   h4 Seattle, WA
                   p February 21-22
             .col-sm-6
-              a.city-card style="background-image:url('#{asset_url 'hwweek/portland.jpg'}')" href="https://www.eventbrite.com/e/portland-hackster-hardware-weekend-tickets-15426861157" target='_blank'
+              / a.city-card style="background-image:url('#{asset_url 'hwweek/portland.jpg'}')" href="https://www.eventbrite.com/e/portland-hackster-hardware-weekend-tickets-15426861157" target='_blank'
+              a.city-card data-target="#myModal" data-toggle="modal" style="background-image:url('#{asset_url 'hwweek/portland.jpg'}')" target='_blank'
                 .caption
                   h4 Portland, OR
                   p March 7-8
             .col-sm-6
-              a.city-card style="background-image:url('#{asset_url 'hwweek/sf.jpg'}')" href="https://www.eventbrite.com/e/san-francisco-hackster-hardware-weekend-tickets-15427010604" target='_blank'
+              / a.city-card style="background-image:url('#{asset_url 'hwweek/sf.jpg'}')" href="https://www.eventbrite.com/e/san-francisco-hackster-hardware-weekend-tickets-15427010604" target='_blank'
+              a.city-card data-target="#myModal" data-toggle="modal" style="background-image:url('#{asset_url 'hwweek/sf.jpg'}')" target='_blank'
                 .caption
                   h4 San Francisco, CA
                   p March 14-15
             .col-sm-6
-              a.city-card style="background-image:url('#{asset_url 'hwweek/la.jpg'}')" href="https://www.eventbrite.com/e/los-angeles-hackster-hardware-weekend-tickets-15427034676" target='_blank'
+              / a.city-card style="background-image:url('#{asset_url 'hwweek/la.jpg'}')" href="https://www.eventbrite.com/e/los-angeles-hackster-hardware-weekend-tickets-15427034676" target='_blank'
+              a.city-card data-target="#myModal" data-toggle="modal" style="background-image:url('#{asset_url 'hwweek/la.jpg'}')" target='_blank'
                 .caption
                   h4 Los Angeles, CA
                   p March 21-22
             .col-sm-6
-              a.city-card style="background-image:url('#{asset_url 'hwweek/phoenix.jpg'}')" href="http://www.eventbrite.com/e/phoenix-hackster-hardware-weekend-tickets-15427066772" target='_blank'
+              / a.city-card style="background-image:url('#{asset_url 'hwweek/phoenix.jpg'}')" href="http://www.eventbrite.com/e/phoenix-hackster-hardware-weekend-tickets-15427066772" target='_blank'
+              a.city-card data-target="#myModal" data-toggle="modal" style="background-image:url('#{asset_url 'hwweek/phoenix.jpg'}')" target='_blank'
                 .caption
                   h4 Phoenix, AZ
                   p April 4-5
@@ -208,22 +233,26 @@
                   h4 Louisville, KY
                   p April 10-11
             .col-sm-6
-              a.city-card style="background-image:url('#{asset_url 'hwweek/dallas.jpg'}')" href="https://www.eventbrite.com/e/dallas-hackster-hardware-weekend-tickets-15427087835" target='_blank'
+              / a.city-card style="background-image:url('#{asset_url 'hwweek/dallas.jpg'}')" href="https://www.eventbrite.com/e/dallas-hackster-hardware-weekend-tickets-15427087835" target='_blank'
+              a.city-card data-target="#myModal" data-toggle="modal" style="background-image:url('#{asset_url 'hwweek/dallas.jpg'}')" target='_blank'
                 .caption
                   h4 Dallas, TX
                   p April 25-26
             .col-sm-6
-              a.city-card style="background-image:url('#{asset_url 'hwweek/nyc.jpg'}')" href="https://www.eventbrite.com/e/new-york-hackster-hardware-weekend-tickets-15427219228" target='_blank'
+              / a.city-card style="background-image:url('#{asset_url 'hwweek/nyc.jpg'}')" href="https://www.eventbrite.com/e/new-york-hackster-hardware-weekend-tickets-15427219228" target='_blank'
+              a.city-card data-target="#myModal" data-toggle="modal" style="background-image:url('#{asset_url 'hwweek/nyc.jpg'}')" target='_blank'
                 .caption
                   h4 New York City, NY
                   p May 1-2
             .col-sm-6
-              a.city-card style="background-image:url('#{asset_url 'hwweek/boston.jpg'}')" href="https://www.eventbrite.com/e/boston-hackster-hardware-weekend-tickets-15427132970" target='_blank'
+              / a.city-card style="background-image:url('#{asset_url 'hwweek/boston.jpg'}')" href="https://www.eventbrite.com/e/boston-hackster-hardware-weekend-tickets-15427132970" target='_blank'
+              a.city-card data-target="#myModal" data-toggle="modal" style="background-image:url('#{asset_url 'hwweek/boston.jpg'}')" target='_blank'
                 .caption
                   h4 Boston, MA
                   p May 9-10
             .col-sm-6
-              a.city-card style="background-image:url('#{asset_url 'hwweek/pittsburgh.jpg'}')" href="https://www.eventbrite.com/e/pittsburgh-hackster-hardware-weekend-tickets-15427235276" target='_blank'
+              / a.city-card style="background-image:url('#{asset_url 'hwweek/pittsburgh.jpg'}')" href="https://www.eventbrite.com/e/pittsburgh-hackster-hardware-weekend-tickets-15427235276" target='_blank'
+              a.city-card data-target="#myModal" data-toggle="modal" style="background-image:url('#{asset_url 'hwweek/pittsburgh.jpg'}')" target='_blank'
                 .caption
                   h4 Pittsburgh, PA
                   p May 16-17
@@ -231,3 +260,10 @@
           p.getintouch
             ' Would you like to volunteer on an event?
             = link_to 'Get in touch.', 'mailto:monica@hackster.io?subject=Volunteer+for+Hackster+Hardware+Weekend&body=Hi,\r\nI+would+like+to+volunteer+for+<insert+city>.'
+
+      section#next
+        .container
+          p
+            ' Hackster wants to come see you next year in Europe, Asia and Latin America.
+            ==> link_to 'Reach out to us', 'mailto:hardwareweekend@hackster.io?subject=I+want+the+Hackster+Hardware+Weekend+in+my+country'
+            | and help us organize the most connected hardware event series.
