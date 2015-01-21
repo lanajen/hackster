@@ -27,6 +27,10 @@ class ProjectObserver < ActiveRecord::Observer
       end
     end
 
+    if (record.changed && %w(private approved platform_tags_string)).any?
+      ProjectWorker.perform_async 'update_platforms', record.id
+    end
+
     # if record.approved_changed? and record.approved
     #   record.project_collections.each{|g| g.approve! }
     # end
@@ -40,7 +44,18 @@ class ProjectObserver < ActiveRecord::Observer
   end
 
   def before_save record
-    record.platforms = Platform.joins(:platform_tags).references(:tags).where("LOWER(tags.name) IN (?)", record.platform_tags_cached.map{|t| t.strip.downcase }) if record.public? and !record.hide or (record.external and record.approved != false)
+    # record.platforms = Platform.joins(:platform_tags).references(:tags).where("LOWER(tags.name) IN (?)", record.platform_tags_cached.map{|t| t.strip.downcase }) if record.public? and !record.hide or (record.external and record.approved != false)
+
+    # ProjectQueue.perform_async 'update_platforms', record.id
+    # three approval levels after projects made public:
+    # - auto approve all
+    # mark pj approved immediately
+    # - hackster approves
+    # mark as pending_approval immediately, mark pj approved/rejected based on full project approval
+    # - platform approves
+    # mark as pending_approval immediately
+
+
 
     # if record.private_changed? and record.public?
       # record.post_new_tweet! unless record.made_public_at.present? or record.disable_tweeting? or Rails.env != 'production'
@@ -53,7 +68,6 @@ class ProjectObserver < ActiveRecord::Observer
       update_counters record, [:live_projects]
       record.commenters.each{|u| u.update_counters only: [:comments] }
       if record.private?
-        delete_platform_relations record
         Broadcast.where(context_model_id: record.id, context_model_type: 'Project').destroy_all
         Broadcast.where(project_id: record.id).destroy_all
       else
@@ -63,7 +77,6 @@ class ProjectObserver < ActiveRecord::Observer
 
     if record.approved_changed?
       if record.approved == false
-        delete_platform_relations record
         record.hide = true
       elsif record.approved == true and record.made_public_at.nil?
         record.post_new_tweet! unless record.hidden? or Rails.env != 'production'
@@ -101,10 +114,6 @@ class ProjectObserver < ActiveRecord::Observer
   end
 
   private
-    def delete_platform_relations record
-      record.platforms.delete_all
-    end
-
     def update_counters record, type
       record.users.each{ |u| u.update_counters only: [type].flatten }
     end

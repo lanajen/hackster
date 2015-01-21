@@ -115,6 +115,8 @@ HackerIo::Application.routes.draw do
       get 'awards/edit' => 'grades#edit', as: :edit_awards
       patch 'awards' => 'grades#update'
       patch 'projects/link' => 'groups/projects#link'
+      get 'projects' => 'groups/projects#index', as: :admin_projects
+      patch 'projects/:id' => 'groups/projects#update_workflow', as: :update_workflow
     end
 
     get 'h/:user_name' => 'hacker_spaces#redirect_to_show'

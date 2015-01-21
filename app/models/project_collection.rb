@@ -8,7 +8,7 @@ class ProjectCollection < ActiveRecord::Base
 
   validates :project_id, uniqueness: { scope: [:collectable_id, :collectable_type] }
 
-  after_create :approve!, if: proc {|p| p.can_approve? }
+  after_create :update_status
 
   workflow do
     state :new do
@@ -29,6 +29,9 @@ class ProjectCollection < ActiveRecord::Base
     state :rejected do
       event :approve, transitions_to: :approved
     end
+    after_transition do |from, to, triggering_event, *event_args|
+      notify_observers 'after_status_updated' if to.to_s.in? %w(approved rejected)
+    end
   end
 
   def self.assignment_or_event_for_project? project_id
@@ -46,4 +49,13 @@ class ProjectCollection < ActiveRecord::Base
   def self.visible
     where(workflow_state: VALID_STATES)
   end
+
+  private
+    def update_status
+      if collectable.class.name == 'Platform'
+        require_review!
+      else
+        approve!
+      end
+    end
 end

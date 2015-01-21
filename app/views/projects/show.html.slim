@@ -372,7 +372,7 @@
                         - else
                           span.user-name= credit_line.name
 
-            - if communities = (@project.platforms.where(groups: { private: false }) + [@project.hacker_space] + @project.communities.where(groups: { private: false })).compact and communities.any? #@project.communities_count > 0
+            - if communities = (@project.platforms.where(groups: { private: false }, project_collections: { workflow_state: ProjectCollection::VALID_STATES }) + [@project.hacker_space] + @project.communities.where(groups: { private: false })).compact and communities.any? #@project.communities_count > 0
               section.section-thumbs
                 h4
                   | Communities this project is part of
@@ -382,7 +382,7 @@
                     = render partial: 'groups/shared/community_thumb_mini', locals: { community: community }
 
             - cache ["project-#{@project.id}", 'metadata', @can_edit], tag: (["project-#{@project.id}-metadata", "team-#{@project.team_id}", "project-#{@project.id}-respects", 'project-metadata'] + @project.users.map{|u| "user-#{u.id}-thumb"}) do
-              - if @project.respects_count > 0
+              - if @project.public? and @project.respects_count > 0
                 section.section-thumbs
                   h4 Hackers who respect this project
                   #widget-respects= render partial: 'widgets/respect_widget', locals: { users: @respecting_users }

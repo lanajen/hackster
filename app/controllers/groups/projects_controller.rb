@@ -4,6 +4,20 @@ class Groups::ProjectsController < ApplicationController
   respond_to :html
   layout :set_layout
 
+  def index
+    authorize! :admin, @group
+
+    @pending_review_size = @group.project_collections.where(workflow_state: :pending_review).size
+
+    @project_collections = @group.project_collections
+
+    if params[:status] and params[:status].in? %w(approved rejected pending_review)
+      @project_collections = @project_collections.where(workflow_state: params[:status])
+    end
+
+    @project_collections = @project_collections.includes(:project).includes(project: :users).order(created_at: :desc).paginate(page: params[:page])
+  end
+
   def new
     @project = @group.projects.new params[:project]
     @projects = current_user.projects
@@ -55,6 +69,21 @@ class Groups::ProjectsController < ApplicationController
       format.html { redirect_to group_path(@group), notice: "Your project has been removed from #{@group.name}." }
       format.js { render status: :ok, json: @group.to_json }
     end
+  end
+
+  def update_workflow
+    @collection = ProjectCollection.find params[:id]
+
+    authorize! :update, @collection
+
+    if params[:event].in? %w(approve reject) and @collection.send "can_#{params[:event]}?"
+      @collection.send "#{params[:event]}!"
+      flash[:notice] = "Project updated!"
+    else
+      flash[:alert] = "Couldn't update project, please try again."
+    end
+
+    redirect_to group_admin_projects_path @group
   end
 
   private

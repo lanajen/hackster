@@ -1,4 +1,10 @@
 class Platform < List
+  MODERATION_LEVELS = {
+    'Approve all automatically' => 'auto',
+    'Only projects approved by the Hackster team' => 'hackster',
+    'Only projects approved by our team' => 'manual',
+  }
+
   PROJECT_IDEAS_PHRASING = ['"No #{name} yet?"', '"Have ideas on what to build with #{name}?"']
 
   has_many :active_members, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'") }, foreign_key: :group_id, class_name: 'PlatformMember'
@@ -13,7 +19,7 @@ class Platform < List
   attr_accessible :forums_link, :documentation_link, :crowdfunding_link,
     :buy_link, :shoplocket_link, :cover_image_id, :accept_project_ideas,
     :project_ideas_phrasing, :client_subdomain_attributes, :logo_id,
-    :download_link, :company_logo_id, :disclaimer
+    :download_link, :company_logo_id, :disclaimer, :moderation_level
 
   accepts_nested_attributes_for :client_subdomain
 
@@ -24,10 +30,11 @@ class Platform < List
   set_changes_for_stored_attributes :websites
 
   store_accessor :properties, :accept_project_ideas, :project_ideas_phrasing,
-    :active_challenge, :disclaimer
+    :active_challenge, :disclaimer, :moderation_level
   set_changes_for_stored_attributes :properties
 
-  parse_as_booleans :properties, :accept_project_ideas, :active_challenge
+  parse_as_booleans :properties, :accept_project_ideas, :active_challenge,
+    :is_new, :enable_comments, :hidden
 
   taggable :platform_tags
 
@@ -52,6 +59,10 @@ class Platform < List
       created_at: created_at,
       popularity: 1000.0,
     }.to_json
+  end
+
+  def self.default_moderation_level
+    'hackster'
   end
 
   def self.index_all
@@ -82,6 +93,10 @@ class Platform < List
       end
     end
     self.user_name = slug
+  end
+
+  def moderation_level
+    properties['moderation_level'].presence || self.class.default_moderation_level
   end
 
   def project_ideas_phrasing

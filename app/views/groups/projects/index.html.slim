@@ -1,0 +1,47 @@
+p= link_to "&larr; Go back to #{@group.name} page".html_safe, @group
+
+.box
+  .box-title
+    h2 Projects admin for #{@group.name}
+  .box-content
+    p.pull-left
+      - if @pending_review_size > 0
+        strong>= @pending_review_size
+        ==> pluralize_without_count @pending_review_size, 'project'
+        | pending review
+      - else
+        | All projects reviewed!
+
+    .btn-group.pull-right
+      button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
+        ' Filter by status
+        span.caret
+      ul.dropdown-menu.pull-right
+        li*{ class: "#{'active' if params[:status].nil? }" } = link_to 'All', group_admin_projects_path(@group)
+        li*{ class: "#{'active' if params[:status] == 'approved'}" } = link_to 'Approved', group_admin_projects_path(@group, status: 'approved')
+        li*{ class: "#{'active' if params[:status] == 'pending_review'}" } = link_to 'Pending review', group_admin_projects_path(@group, status: 'pending_review')
+        li*{ class: "#{'active' if params[:status] == 'rejected'}" } = link_to 'Rejected', group_admin_projects_path(@group, status: 'rejected')
+    .clearfix
+
+    table.table.table-hover
+      thead
+        th Name
+        th Author(s)
+        th Date created
+        th Status
+        th
+      tbody
+        - @project_collections.each do |project_collection|
+          tr class="#{'warning' if project_collection.pending_review? }"
+            - project = project_collection.project
+            td= link_to project.name, project
+            td= project.users.map{|u| link_to(u.name, u) }.to_sentence.html_safe.presence || project.guest_name
+            td= l project.created_at, format: :date
+            td= project_collection.workflow_state
+            td
+              - if project_collection.can_approve?
+                = link_to content_tag(:i, '', class: 'fa fa-check'), group_update_workflow_path(@group, project_collection, event: :approve), class: 'btn btn-sm btn-success', title: 'Approve', rel: 'tooltip', data: { method: :patch }
+              - if project_collection.can_reject?
+                = link_to content_tag(:i, '', class: 'fa fa-times'), group_update_workflow_path(@group, project_collection, event: :reject), class: 'btn btn-sm btn-danger', title: 'Reject', rel: 'tooltip', data: { method: :patch }
+
+    .text-center= will_paginate @project_collections

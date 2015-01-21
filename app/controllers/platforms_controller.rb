@@ -181,7 +181,7 @@ class PlatformsController < ApplicationController
       end
       @by = params[:by] || 'all'
 
-      @projects = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.indexable_and_external.for_thumb_display_in_collection)
+      @projects = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection)
       # @projects.to_a
       # if sort and sort.in? Project::SORTING.keys
         @projects = @projects.merge(Project.send(Project::SORTING[sort]))

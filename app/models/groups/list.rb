@@ -25,7 +25,7 @@ class List < Group
   store_accessor :properties, :list_type, :is_new, :enable_comments
   set_changes_for_stored_attributes :properties
 
-  parse_as_booleans :properties, :is_new, :enable_comments
+  parse_as_booleans :properties, :is_new, :enable_comments, :hidden
 
   # beginning of search methods
   tire do
@@ -74,7 +74,7 @@ class List < Group
       external_projects: 'projects.external.count',
       members: 'followers.count',
       private_projects: 'projects.private.count',
-      projects: 'projects.visible.indexable_and_external.count',
+      projects: 'project_collections.visible.count',
     }
   end
 
