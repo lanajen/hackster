@@ -4,10 +4,12 @@
 }
 
 #hwweek {
+  padding-top: 60px;
+
   section {
     background: #fff;
     padding: 70px 0;
-    &:nth-of-type(even) {
+    &:nth-of-type(odd) {
       background: #fafafa;
     }
     h2 {
@@ -29,15 +31,40 @@
     }
   }
 
-  #sponsors {
+  #partners {
     text-align: center;
     img {
       max-width: 200px;
       max-height: 150px;
+    }
+    .platinum {
+      margin-bottom: 50px;
+      img {
+        max-width: 300px;
+        max-height: 225px;
+      }
+    }
+    a {
       margin-right: 50px;
+      display: inline-block;
       &:last-of-type {
         margin-right: 0;
       }
+    }
+    .layer {
+      margin-bottom: 20px;
+    }
+  }
+
+  .getintouch {
+    margin: 50px 0 0;
+    text-align: center;
+  }
+
+  .gifts {
+    li {
+      font-size: 1.4em;
+      margin-top: 20px;
     }
   }
 }
