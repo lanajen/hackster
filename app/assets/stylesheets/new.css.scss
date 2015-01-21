@@ -363,7 +363,7 @@ h1 {
   }
 }
 
-#signup-now-pretty-please {
+#signup-now-pretty-please, #bottom-bar {
   margin-top: 50px;
   @include background-cover;
   background-image: asset-url('footer-bg.png');
@@ -374,6 +374,11 @@ h1 {
   p {
     max-width: 670px;
   }
+}
+
+#bottom-bar {
+  padding: 120px 0;
+  font-size: 1.5em;
 }
 
 footer {
