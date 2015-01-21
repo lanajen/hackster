@@ -15,16 +15,29 @@
     }
   }
 
-  #banner {
+  #home-banner {
     @include background-cover;
-    height: 400px;
+    padding: 0;
+    .home-slide {
+      padding: 100px 0;
+    }
+    h1 {
+      font-weight: bold;
+    }
+    p {
+      font-size: 1.2em;
+    }
   }
 
   #sponsors {
+    text-align: center;
     img {
       max-width: 200px;
       max-height: 150px;
       margin-right: 50px;
+      &:last-of-type {
+        margin-right: 0;
+      }
     }
   }
 }

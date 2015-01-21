@@ -7,7 +7,7 @@
 
   javascript:
     $(function(){
-      var date  = new Date(Date.UTC(2015, 2, 21, 18, 0, 0));
+      var date  = new Date(Date.UTC(2015, 1, 20, 18, 0, 0));
       var now   = new Date();
       var diff  = date.getTime()/1000 - now.getTime()/1000;
 
@@ -20,7 +20,7 @@
 = content_for :no_container do
   - cache ['hwweek'], tag: ['hwweek'], expires_in: 24.hours do
     #hwweek
-      section#home-banner style='padding:0'
+      section#home-banner
         .home-slide style="background-image:url('#{ asset_url 'hwweek/bg.jpg'}')"
           .container.text-center
             h1 Hackster Hardware Weekend

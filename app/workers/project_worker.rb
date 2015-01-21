@@ -12,25 +12,19 @@ class ProjectWorker < BaseWorker
 
         case platform.moderation_level
         when 'auto'
-          puts platform.name + ': approved (auto)'
           collection.approve! if collection.can_approve?
         when 'hackster'
           if project.approved?
-            puts platform.name + ': approved (hackster)'
             collection.approve! if collection.can_approve?
           elsif project.approved == false
-            puts platform.name + ': rejected (hackster)'
             collection.reject! if collection.can_reject?
           else
-            puts platform.name + ': waiting (hackster)'
+            # do nothing
           end
         when 'manual'
-          puts platform.name + ': waiting (manual)'
           # do nothing
         end
       end
     end
-
-    # record.platforms = Platform.joins(:platform_tags).references(:tags).where("LOWER(tags.name) IN (?)", record.platform_tags_cached.map{|t| t.strip.downcase }) if record.public? and !record.hide or (record.external and record.approved != false)
   end
 end
