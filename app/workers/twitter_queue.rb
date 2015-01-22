@@ -4,14 +4,14 @@ class TwitterQueue < BaseWorker
 
   def update message
     begin
-      twitter_client.update(message)
+      Rails.env == 'production' ? twitter_client.update(message) : puts("Twitter message: #{message}")
     rescue => e
       LogLine.create(log_type: 'error', source: 'twitter', message: "Error: #{e.inspect} // Tweet: \"#{message}\"")
     end
   end
 
   def throttle_update message
-    if Time.now >= next_update
+    if Time.now <= next_update
       update message
     else
       self.class.perform_at next_update, 'update', message
@@ -19,7 +19,7 @@ class TwitterQueue < BaseWorker
     end
   end
 
-  private
+  # private
     def last_update
       return @last_update if @last_update
 
@@ -41,7 +41,7 @@ class TwitterQueue < BaseWorker
     end
 
     def redis
-      @redis = Redis::Namespace.new('twitter_queue', redis: Redis.new($redis_config))
+      @redis ||= Redis::Namespace.new('twitter_queue', redis: Redis.new($redis_config))
     end
 
     def twitter_client

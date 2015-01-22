@@ -34,7 +34,7 @@ module ScraperStrategies
           c.created_at = created_at
           c.parent = parent
           c.disable_notification!
-          extract_comments comment, depth+1, c
+          _parse_comments comment, depth+1, c
         end
       end
   end
