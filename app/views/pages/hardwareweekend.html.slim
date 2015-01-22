@@ -1,5 +1,13 @@
 = content_for :head do
   = stylesheet_link_tag 'flipclock'
+  meta property="og:title" content="Hackster Hardware Weekend Roadshow"
+  meta property="og:description" content="Hackster is organizing Hardware Weekends in 10 cities across the US in 2015. Join us to hack, meet awesome hackers and win great prizes!"
+  meta property="og:image" content=asset_url('hwweek/bg.jpg')
+  meta(property="twitter:title" content="Hackster Hardware Weekend Roadshow")
+  meta(property="twitter:description" content="Hackster is organizing Hardware Weekends in 10 cities across the US in 2015. Join us to hack, meet awesome hackers and win great prizes!")
+  meta(property="twitter:image:src" content=asset_url('hwweek/bg.jpg'))
+  meta(property="twitter:image:width" content='1731')
+  meta(property="twitter:image:height" content='1155')
 
 = content_for :js do
   = javascript_include_tag 'application'
@@ -16,6 +24,14 @@
         clockFace: 'DailyCounter'
       });
     });
+
+  script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-51b26f5613fb83d2" async="async"
+  javascript:
+    var addthis_share = {
+      "data_track_addressbar": false,
+      title: "Join the Hackster Hardware Weekend Roadshow in your city!"
+    };
+
 
   #myModal.modal.fade*{ 'aria-hidden' => "true", 'aria-labelledby' => "myModalLabel", role: "dialog", tabindex: "-1" }
     .modal-dialog

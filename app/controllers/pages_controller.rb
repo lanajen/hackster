@@ -21,6 +21,7 @@ class PagesController < ApplicationController
 
   def hardwareweekend
     title "Hackster Hardware Weekend Roadshow"
+    meta_desc "Hackster is organizing Hardware Weekends in 10 cities across the US in 2015. Join us to hack, meet awesome hackers and win great prizes!"
 
     render layout: 'blog'
   end
