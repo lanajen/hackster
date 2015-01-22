@@ -70,6 +70,7 @@
       = f.input :forums_link, label: 'Forums link'
       = f.input :crowdfunding_link, label: 'Crowdfunding campaign or preorder link', hint: 'Fill in either your preorder or your store link depending on whether your product is available for sale or presale.'
       = f.input :buy_link, label: 'Store link', hint: 'Fill in either your preorder or your store link depending on whether your product is available for sale or presale.'
+      = f.input :cta_text, label: 'Call-to-action text', hint: "Customize the text for the preorder and buy links. By default it'll be 'Preorder/Buy #{indefinite_articlerize @platform.name}'."
       - if current_user.is? :admin
         = f.input :download_link, label: 'Download link', hint: 'If your product is a piece of software use this instead.'
         = f.input :shoplocket_link, label: 'ShopLocket link'
