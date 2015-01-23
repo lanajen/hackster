@@ -14,7 +14,7 @@ class HackerSpace < Community
 
   validates :address, length: { maximum: 255 }
 
-  attr_accessible :address, :state
+  attr_accessible :address, :state, :zipcode
 
   # beginning of search methods
   tire do
@@ -50,7 +50,7 @@ class HackerSpace < Community
   end
 
   def full_street_address
-    "#{address}, #{city}, #{state}, #{country}"
+    "#{address}, #{city}, #{state}, #{zipcode}, #{country}"
   end
 
   private

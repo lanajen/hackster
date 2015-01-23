@@ -13,12 +13,12 @@
   = f.simple_fields_for :images, image do |f_image|
     - if image and image.file_url
       .form-group
-        .col-xs-8.col-xs-offset-4= image_tag image.file_url, class: 'img-responsive'
+        .col-md-8.col-md-offset-4= image_tag image.file_url, class: 'img-responsive'
     = f_image.input :file, label: 'Image'
-    .col-xs-offset-4.col-xs-8= f_image.link_to_remove 'Delete', class: 'btn btn-sm btn-danger'
+    .col-md-offset-4.col-md-8= f_image.link_to_remove 'Delete', class: 'btn btn-sm btn-danger'
 = f.link_to_add 'Add an image', :images, class: 'btn btn-xs btn-success', style: 'margin-left:34%'
 
-.col-xs-offset-4.col-xs-8
+.col-md-offset-4.col-md-8
   ==> f.button :submit, :class => 'btn-primary'
   input> type="submit" name="preview" class="btn btn-default" value="Save and preview"
   ==> link_to t('.cancel', :default => t("helpers.links.cancel")), admin_blog_posts_path, :class => 'btn btn-default'

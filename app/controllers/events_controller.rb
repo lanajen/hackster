@@ -1,7 +1,7 @@
 class EventsController < ApplicationController
   before_filter :authenticate_user!, except: [:show, :participants, :organizers, :embed]
   before_filter :load_event, only: [:show, :update, :participants, :organizers, :embed]
-  layout 'event', only: [:edit, :update, :show, :participants, :organizers]
+  layout 'group_shared', only: [:edit, :update, :show, :participants, :organizers]
   after_action :allow_iframe, only: :embed
   respond_to :html
 
@@ -9,12 +9,12 @@ class EventsController < ApplicationController
     title @event.name
     meta_desc "Join the event #{@event.name} on Hackster.io!"
     # @broadcasts = @event.broadcasts.limit 20
-    @projects = @event.projects.for_thumb_display.order('projects.respects_count DESC')
+    @projects = @event.project_collections.visible.includes(:project).visible.merge(Project.for_thumb_display_in_collection.order('projects.respects_count DESC')).paginate(page: params[:page])
     # @participants = @event.members.request_accepted_or_not_requested.invitation_accepted_or_not_invited.with_group_roles('participant').includes(:user).includes(user: :avatar).map(&:user)
     # @organizers = @event.members.invitation_accepted_or_not_invited.with_group_roles('organizer').includes(:user).includes(user: :avatar).map(&:user)
     @awards = @event.awards
 
-    render "groups/events/#{self.action_name}"
+    render "groups/shared/#{self.action_name}"
   end
 
   def participants

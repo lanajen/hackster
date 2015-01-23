@@ -23,6 +23,14 @@ class GroupDecorator < UserDecorator
     "//gravatar.com/avatar/#{gravatar_id}.png?d=identicon&s=#{width}"
   end
 
+  def short_address
+    if model.country.in? ['United States', 'Canada']
+      "#{model.city}, #{model.state}"
+    else
+      model.city
+    end
+  end
+
   def twitter_share
     case model.type
     when 'List'

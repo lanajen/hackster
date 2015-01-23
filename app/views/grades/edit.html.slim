@@ -36,10 +36,10 @@
             = f.input :gradable_id, as: :hidden
             = f.input :project_id, as: :hidden
             .row
-              .col-xs-8
+              .col-md-8
                 = f.input :grade
                 = f.input :feedback, input_html: { rows: 4 }
-              .col-xs-4
+              .col-md-4
                 = f.submit 'Save and next', class: 'btn btn-primary'
                 = link_to 'Cancel', assignment_grades_path(@assignment), class: 'btn btn-link btn-sm'
     #iframe-container

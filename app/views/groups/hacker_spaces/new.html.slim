@@ -11,9 +11,9 @@
           = f.input :full_name, label: 'Name'
 
           .form-group
-            .col-xs-4
+            .col-md-4
               label.control-label Add a logo
-            .col-xs-8
+            .col-md-8
               .avatar.file-drop
                 div
                   span.avatar.image-preview.preview
@@ -22,5 +22,5 @@
           = render partial: 'shared/image_form_bare', locals: { file_type: 'avatar', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
 
           .form-group
-            .col-xs-8.col-xs-offset-4
+            .col-md-8.col-md-offset-4
               = f.button :submit, 'Go!', class: 'btn-block btn btn-primary'

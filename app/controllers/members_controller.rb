@@ -80,7 +80,7 @@ class MembersController < ApplicationController
 
     def set_layout
       case @group
-      when Event, HackerSpace, List, Promotion, Platform
+      when HackerSpace, List, Promotion, Platform
         @group.class.name.underscore
       when Team
         'project'

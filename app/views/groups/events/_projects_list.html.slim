@@ -1,0 +1,32 @@
+- if can? :read, @event
+  .project-list-actions.clearfix.mg-30
+    - if can? :add_project, @event
+    .pull-right
+      = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project to event".html_safe, "#{event_path(@event)}/projects/new", class: 'btn btn-sm btn-default'
+
+  - if @projects.any?
+    .row.project-list
+      - @projects.each do |collection|
+        = render partial: 'projects/project_thumb', locals: { project: collection.project.decorate }
+
+        - content_for :js do
+          - @awards.each do |award|
+            javascript:
+              $('.project-list').prepend($('.project-#{award.project_id}').parent().parent());
+              text = "<div class='project-award'><i class='fa fa-trophy'></i> #{escape_javascript(award.grade).gsub(/'/, '&#x0027;')}</div>";
+              $('.project-#{award.project_id} .award-container').html(text);
+
+    .row.text-center= will_paginate @projects
+  - else
+    .row
+      .col-xs-12
+        p
+          ' Participants haven't uploaded their hacks yet.
+
+- else
+  .alert.alert-warning
+    | The content of this group is only visible to members.
+    / if @event.access_level == 'anyone'
+      = link_to 'Join', '', class: 'btn btn-warning btn-sm'
+    / elsif @event.access_level == 'request'
+      = link_to 'Request access', '', class: 'btn btn-warning btn-sm'

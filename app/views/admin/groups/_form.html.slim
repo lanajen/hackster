@@ -28,6 +28,6 @@
   - if ClientSubdomain.find_by_subdomain(@group.user_name).present?
     = render partial: 'shared/image_form', locals: { file_type: 'logo', human_file_type: 'Portal logo', image_link: @group.logo.try(:file_url), help_block: '', attribute_type: 'logo', image_version: nil, model: 'group' }
 - when 'University'
-.col-xs-offset-4.col-xs-8
+.col-md-offset-4.col-md-8
   ==> f.button :submit, :class => 'btn btn-primary'
   = link_to t('.cancel', :default => t("helpers.links.cancel")), admin_groups_path, :class => 'btn btn-default'

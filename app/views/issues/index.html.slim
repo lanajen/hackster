@@ -1,5 +1,5 @@
 .row
-  .col-xs-8
+  .col-md-8
     - if @issues.any?
       - @issues.each do |issue|
         = render partial: issue, locals: { issue: issue }
@@ -11,7 +11,7 @@
           p
             | There are no #{params[:status]} issues.
 
-  .col-xs-4
+  .col-md-4
     section.section-thumbs
       h4 Filter
       .list-group

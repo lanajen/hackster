@@ -1,0 +1,6 @@
+li
+  span.stat-figure> = number_with_delimiter @group.projects_count
+  = pluralize_without_count @group.projects_count, 'project'
+li
+  span.stat-figure> = number_with_delimiter @group.members_count
+  = pluralize_without_count @group.members_count, 'follower'

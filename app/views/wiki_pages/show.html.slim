@@ -1,14 +1,17 @@
-- if can? :create, Issue, @event
-  .row
-    .col-xs-12
-      .pull-right
-        = link_to 'Create a new page', new_hackathon_event_page_path(@event.hackathon.user_name, @event.user_name), class: 'btn btn-primary btn-sm'
-      .clearfix
-      hr
+.wrapper700
+  section.section-container
+    .section-title
+      h3.title
+        = @page.title
 
-.row.page
-  .col-xs-12.page-content
-    .well
-      = render partial: 'wiki_pages/header', locals: { event: @event, page: @page }
-      .content
-        = @page.body.html_safe
+        .subtitle
+          ' Posted by
+          ==> link_to @page.user.name, @page.user
+          ==> time_ago_in_words @page.created_at
+          ' ago
+          - if can? :edit, @page
+            ' -
+            = link_to 'Edit', edit_hackathon_event_page_path(@event.hackathon.user_name, @event.user_name, @page.id)
+
+    .section-content.medium-editor
+      = raw @page.body

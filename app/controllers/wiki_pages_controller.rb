@@ -3,7 +3,7 @@ class WikiPagesController < ApplicationController
   before_filter :load_event, except: [:destroy]
   before_filter :load_page, only: [:edit, :update, :destroy]
   before_filter :load_page_with_slug, only: :show
-  layout 'event'
+  layout 'group_shared'
 
   # def index
   #   authorize! :read, Page, @event

@@ -219,6 +219,15 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+  h2 {
+    margin: 0 0 5px;
+    font-size: 1.1em;
+    font-weight: bold;
+    small {
+      font-size: 85%;
+      color: #fafafa;
+    }
+  }
   .tags {
     margin-left: 10px;
     margin-bottom: 0;
@@ -362,6 +371,7 @@
     & > li {
       margin-left: 10px;
       & > a {
+        padding: 8px 15px 12px;
         color: #666;
         border: 0;
         border-bottom: 4px solid transparent;

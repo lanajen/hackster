@@ -13,7 +13,7 @@
       hr
 
   .row
-    .col-xs-6
+    .col-md-6
       = f.input :name
       = f.input :grading_type, collection: Assignment::GRADING_TYPES
 
@@ -28,11 +28,11 @@
         = f.input :hide_all, as: :boolean
         = f.input :disable_tweeting, as: :boolean
 
-    .col-xs-6
+    .col-md-6
       .file-drop.form-group  class='document'
-        .col-xs-4
+        .col-md-4
           label.control-label Assignment instructions
-        .col-xs-8
+        .col-md-8
           span.file-preview.preview  class='document'  = @assignment.document.file_name if @assignment.document.file.present?
           a.btn.btn-default.btn-sm*{ data: { target: ".file_upload.document" } }
             - if @assignment.document.file.present?

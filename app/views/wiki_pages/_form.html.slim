@@ -7,16 +7,32 @@
       .input-group
         span.input-group-addon hackster.io/#{@event.hackathon.user_name}/#{@event.user_name}/pages/
         = f.input_field :slug, hint: "Changing this value after the page was created will break links."
-  .form-group
-    .controls
-      label Page content
-      = render 'shared/wysihtml5_toolbar'
-  = f.input :body, as: :text, input_html: { id: "text-widget-#{@wysihtml5_toolbar_increment}", class: "wysihtml5-textarea", rows: 10, style: 'height: 200px;' }, label: false
+  = f.input :body, as: :text, input_html: { class: "text-editor" }, label: 'Page content'
   = f.input :public, label: 'Show this page in the navigation bar', as: :boolean
 
   .form-actions
     = f.submit class: 'btn btn-primary'
     = link_to 'Cancel', event_path(@event), class: 'btn btn-link btn-sm'
+
+
+= content_for :js do
+  = tinymce_assets
+
+  javascript:
+    jQuery(function($) {
+      tinyMCE.init({
+        selector: 'textarea.text-editor',
+        toolbar: "undo redo | bold italic underline | link unlink | bullist numlist",
+        menubar: false,
+        plugins: 'link paste',
+        statusbar: false,
+        height: 300
+      });
+    });
+
+= content_for :head do
+  css:
+    .text-editor { overflow:scroll; max-height:600px }
 
 - unless @page.persisted?
   = content_for :js do

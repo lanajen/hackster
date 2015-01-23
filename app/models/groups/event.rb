@@ -4,9 +4,26 @@ class Event < Community
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'EventMember'
   has_many :pages, as: :threadable
 
-  attr_accessible :awards_attributes, :parent_id
+  geocoded_by :full_street_address
+  after_validation :geocode, if: proc{|h| h.address_changed? or h.city_changed? or
+    h.state_changed? or h.country_changed? }
+
+  validates :address, length: { maximum: 255 }
+
+  attr_accessor :start_date_dummy, :end_date_dummy
+
+  attr_accessible :awards_attributes, :parent_id, :address, :state, :zipcode,
+    :start_date, :start_date_dummy, :end_date, :end_date_dummy
 
   accepts_nested_attributes_for :awards, allow_destroy: true
+
+  store :counters_cache, accessors: [:participants_count]
+
+  parse_as_integers :counters_cache, :participants_count
+
+  store_accessor :properties, :start_date, :end_date
+
+  parse_as_datetimes :properties, :start_date, :end_date
 
   alias_method :short_name, :name
 
@@ -33,11 +50,53 @@ class Event < Community
   end
   # end of search methods
 
+  def counters
+    super.merge({
+      participants: "members.joins(:user).request_accepted_or_not_requested.invitation_accepted_or_not_invited.with_group_roles('participant').count",
+    })
+  end
+
+  def end_date=(val)
+    begin
+      date = val.to_datetime.to_i
+      self.properties[:end_date] = date
+    rescue
+    end
+  end
+
+  def end_date_dummy
+    end_date.strftime("%m/%d/%Y %l:%M %P") if end_date
+  end
+
+  def full_street_address
+    "#{address}, #{city}, #{state}, #{zipcode}, #{country}"
+  end
+
+  # def name
+  #   hackathon.name
+  # end
+
   def name
     "#{hackathon.name} - #{super}"
   end
 
   def proper_name
     hackathon.name
+  end
+
+  def secondary_name
+    full_name
+  end
+
+  def start_date=(val)
+    begin
+      date = val.to_datetime.to_i
+      self.properties[:start_date] = date
+    rescue
+    end
+  end
+
+  def start_date_dummy
+    start_date.strftime("%m/%d/%Y %l:%M %P") if start_date
   end
 end

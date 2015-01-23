@@ -2,7 +2,7 @@ class Groups::ProjectsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :load_group
   respond_to :html
-  layout :set_layout
+  # layout :set_layout
 
   def index
     authorize! :admin, @group
@@ -109,7 +109,7 @@ class Groups::ProjectsController < ApplicationController
     def set_layout
       case @group
       when Event
-        'event'
+        'group_shared'
       else
         'application'
       end

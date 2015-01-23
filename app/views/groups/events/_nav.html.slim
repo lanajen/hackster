@@ -1,0 +1,34 @@
+section.group-nav.affixable
+  .container
+    ul.nav.nav-tabs.pull-left
+      = active_li_link_to "Projects#{content_tag(:small, @group.projects_count)}".html_safe, url_for(@group), role: 'presentation'
+      = active_li_link_to "Participants#{content_tag(:small, @group.participants_count)}".html_safe, "#{url_for(@group)}/participants"
+      = active_li_link_to "Organizers", "#{url_for(@group)}/organizers"
+    .pull-left
+      - if pages = @group.pages.public.order(created_at: :asc) and pages.any?
+        .dropdown role='presentation'
+          a.btn.btn-default.dropdown-toggle data-toggle="dropdown" aria-expanded="false"
+            ' More info
+            span.caret
+          ul.dropdown-menu role="menu"
+            - pages.each do |page|
+              = active_li_link_to page.title, "#{url_for(@group)}/pages/#{page.slug}"
+
+    .pull-right
+      ul.list-inline
+        - if can? :manage, @group
+          li.dropdown role='presentation'
+            a.btn.btn-default.dropdown-toggle data-toggle="dropdown" aria-expanded="false"
+              ' Manage this page
+              span.caret
+            ul.dropdown-menu role="menu"
+              li= link_to 'Edit settings', url_for([:edit, @group])
+              li.divider
+              / li= link_to 'Post fresh news', new_platform_announcement_path(@group.user_name)
+              li= link_to 'Manage members', group_edit_members_path(@group)
+              li= link_to 'Invite members', group_new_invitations_path(@group)
+              li.divider
+              li= link_to 'Add a new page', new_hackathon_event_page_path(@event.hackathon.user_name, @event.user_name)
+              li= link_to 'Manage awards', group_edit_awards_path(@event)
+        / - if !(can? :manage, @group) or (user_signed_in? and current_user.is? :admin)
+          li= render partial: 'followers/button_text', locals: { followable: @group }

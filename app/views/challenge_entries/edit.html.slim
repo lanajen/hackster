@@ -27,10 +27,10 @@
           = simple_form_for [@challenge, @entry], url: challenge_entry_path(@challenge, @entry), wrapper: :bootstrap3_horizontal, html: { class: 'form-horizontal' } do |f|
             input type='hidden' name='current_action' value='judging'
             .row
-              .col-xs-8
+              .col-md-8
                 = f.input :prize_id, collection: @challenge.prizes
                 = f.input :judging_notes, input_html: { rows: 4 }
-              .col-xs-4
+              .col-md-4
                 = f.submit 'Save and next', class: 'btn btn-primary'
                 = link_to 'Cancel', challenge_entries_path(@challenge), class: 'btn btn-link btn-sm'
     #iframe-container
