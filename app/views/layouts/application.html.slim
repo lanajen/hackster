@@ -155,7 +155,7 @@ html(lang="en")
                       li= link_to 'Invite friends', new_user_invitation_path
                       li.divider
                       li= link_to 'Log out', destroy_user_session_path, method: :delete
-                ul.navbar-right.top-menu-nav
+                ul#left-nav.navbar-right.top-menu-nav
                   - if current_user.is? :admin
                     li= link_to 'Admin', admin_analytics_path, class: 'nav-link'
                   li= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'nav-link'
