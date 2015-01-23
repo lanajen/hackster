@@ -66,6 +66,7 @@ class CronTask < BaseWorker
     lock_assignment
     expire_challenges
     evaluate_badges
+    send_announcement_notifications
   end
 
   def launch_daily_cron
