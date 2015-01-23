@@ -107,6 +107,15 @@ class CronTask < BaseWorker
     end
   end
 
+  def send_announcement_notifications
+    Announcement.published.not_sent.each do |announcement|
+      BaseMailer.enqueue_email 'new_announcement_notification',
+        { context_type: 'announcement', context_id: announcement.id }
+      announcement.workflow_state = 'sent'
+      announcement.save
+    end
+  end
+
   def send_assignment_reminder
     assignments = Assignment.where("assignments.submit_by_date < ? AND assignments.reminder_sent_at IS NULL", 24.hours.from_now)
     assignments.each do |assignment|
