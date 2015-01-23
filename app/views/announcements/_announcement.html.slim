@@ -1,0 +1,22 @@
+section.section-container
+  .section-title
+    h3.title
+      = link_to announcement.title, platform_announcement_path(announcement)
+      .annotation
+        - if announcement.draft?
+          | (draft)
+        - elsif !announcement.published?
+          | (publishes on #{l announcement.published_at})
+
+      .subtitle
+        ' Posted by
+        ==> link_to announcement.user.name, announcement.user
+        ==> time_ago_in_words announcement.created_at
+        ' ago -
+        - if announcement.draft?
+          = link_to 'Edit this announcement', edit_platform_announcement_path(@platform.user_name, announcement.id)
+        - else
+          = link_to pluralize(announcement.comments.size, 'comment'), platform_announcement_path(announcement, anchor: 'comments')
+
+  .section-content.medium-editor
+    = raw announcement.body

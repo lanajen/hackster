@@ -1,18 +1,3 @@
-= render 'cover_image'
-
-section#projects-list
-  .wrapper700
-    .project-show.platform-news
-      .project-section
-        small= link_to "&larr; See all news".html_safe, platform_announcements_path(@platform.user_name)
-        .section-header
-          h2
-            | #{@platform.name} News
-            - if can? :create, Announcement, @platform
-              .pull-right= link_to 'Post fresh news', new_platform_announcement_path(@platform.user_name), class: 'btn btn-outline'
-
-        .section-content
-          .widget
-            .content
-              .text-widget
-                .medium-editor= render 'form'
+.projects-list
+  .container
+    = render 'form'

@@ -1,61 +1,56 @@
-.draftable class=(@announcement.draft? ? 'is-draft' : 'is-published')
-  .medium-status-bar.affixable
-    .static
-    .affixed
-      .inner
-        .pull-left= render partial: 'shared/medium_status', locals: { last_edit: @announcement.updated_at }
-        .pull-right
-          ==> content_tag :a, "#{content_tag(:i, '', class: 'fa fa-check')} Finish editing".html_safe, class: 'btn btn-success medium-edit-stop btn-sm show-when-draft', href: platform_announcements_path(@platform.user_name)
-          ==> content_tag :a, "#{content_tag(:i, '', class: 'fa fa-check')} Finish editing".html_safe, class: 'btn btn-success medium-edit-stop btn-sm show-when-published', href: platform_announcement_path(@announcement)
-          ==> link_to "Publish", '', class: 'btn btn-warning btn-sm show-when-draft', id: 'publish'
-          ==> link_to "Unpublish", '', class: 'btn btn-warning btn-sm show-when-published', id: 'unpublish'
-          ==> link_to 'Delete', announcement_path(@announcement), class: 'btn btn-danger btn-sm', data: { method: :delete, confirm: "Are you sure? There's no way back!" }
-          ==> link_to 'Cancel', platform_announcements_path(@platform.user_name), class: 'btn btn-link btn-sm'
-        .clearfix
+.row
+  .col-md-4.col-md-push-8
+    .medium-status-bar.affixable data-spy='affix'
+      = render partial: 'shared/medium_status', locals: { last_edit: @announcement.updated_at }
+      ==> content_tag :a, "#{content_tag(:i, '', class: 'fa fa-check')} Finish editing".html_safe, class: 'btn btn-success medium-edit-stop btn-sm btn-block', href: platform_announcement_path(@announcement)
+      ==> link_to "Publish", '', class: 'btn btn-warning btn-sm is-draft btn-block', id: 'publish', style: "#{'display:none;' unless @announcement.draft? }"
+      ==> link_to "Unpublish", '', class: 'btn btn-warning btn-sm is-published btn-block', id: 'unpublish', style: "#{'display:none;' if @announcement.draft? }"
+      ==> link_to 'Delete', announcement_path(@announcement), class: 'btn btn-danger btn-sm btn-block', data: { method: :delete, confirm: "Are you sure? There's no way back!" }
+      ==> link_to 'Cancel', platform_announcements_path(@platform.user_name), class: 'btn btn-link btn-sm btn-block'
 
-  #model-editor*{ data: { 'model-id' => @announcement.id, 'model-type' => 'ThreadPost', 'model-symbol' => 'announcement', 'model-placeholder' => 'What have you been up to? Enter text or add media by clicking the left button.', 'model-url' => '/api/v1/announcements' } }
+  .col-md-8.col-md-pull-4
+    .section-container
+      .section-content
+        #model-editor.mg-20*{ data: { 'model-id' => @announcement.id, 'model-type' => 'ThreadPost', 'model-symbol' => 'announcement', 'model-placeholder' => "What's new? Enter text or add media by clicking the left button.", 'model-url' => '/api/v1/announcements' } }
 
-    h2.mg-20
-      span.editable-attribute>*{ 'data-model' => "announcement", 'data-attribute' => "title", 'data-default-text' => "Untitled", 'data-view-tpl' => "*value*", 'data-value' => @announcement.title_not_default }
-      small
-        span.show-when-draft
-          | (draft)
-        span.show-when-published
-          | (published)
+          h3.mg-20
+            span.editable-attribute*{ 'data-model' => "announcement", 'data-attribute' => "title", 'data-default-text' => "Untitled", 'data-view-tpl' => "*value*", 'data-value' => @announcement.title_not_default }
+            small
+              span.is-draft  style="#{'display:none;' unless @announcement.draft? }"  (draft)
+              span.is-published  style="#{'display:none;' if @announcement.draft? }"  (published)
+          = render partial: 'shared/medium_editor', locals: { editable: @announcement.body, attribute_name: 'body' }
 
-    .mg-20= render partial: 'shared/medium_editor', locals: { editable: @announcement.body, attribute_name: 'body' }
+        .form-group
+          .row
+            .col-xs-12.col-sm-6
+              label.control-label
+                | Publish on
+                br
+                small Leave blank to publish immediately
+            .col-xs-12.col-sm-6
+              .input-group
+                span.input-group-addon
+                  a.datetimepicker-erase data-target='#published_at' href='#'
+                    i.fa.fa-times-circle-o
+                input#published_at.form-control.datetimepicker*{ 'data-model' => "announcement", 'data-attribute' => "published_at", 'data-value' => (@announcement.published_at || '') }
+                span.input-group-addon
+                  i.fa.fa-calendar
 
-    .form-group
-      .row
-        .col-xs-12.col-sm-6
-          label.control-label
-            | Publish on
-            br
-            small Leave blank to publish immediately
-        .col-xs-12.col-sm-6
-          .input-group
-            span.input-group-addon
-              a.datetimepicker-erase data-target='#published_at' href='#'
-                i.fa.fa-times-circle-o
-            input#published_at.form-control.datetimepicker*{ 'data-model' => "announcement", 'data-attribute' => "published_at", 'data-value' => (@announcement.published_at || '') }
-            span.input-group-addon
-              i.fa.fa-calendar
-
-    .form-group
-      .row
-        .col-xs-12.col-sm-6
-          label.control-label
-            | Display on main page until
-            br
-            small Leave blank to display until the next announcement is posted
-        .col-xs-12.col-sm-6
-          .input-group
-            span.input-group-addon
-              a.datetimepicker-erase data-target='#display_until' href='#'
-                i.fa.fa-times-circle-o
-            input#display_until.form-control.datetimepicker*{ 'data-model' => "announcement", 'data-attribute' => "display_until", 'data-value' => (@announcement.display_until || '') }
-            span.input-group-addon
-              i.fa.fa-calendar
+        .form-group
+          .row
+            .col-xs-12.col-sm-6
+              label.control-label
+                | Display on main page until
+                br
+                small Leave blank to display until the next announcement is posted
+            .col-xs-12.col-sm-6
+              .input-group
+                span.input-group-addon
+                  a.datetimepicker-erase data-target='#display_until' href='#'
+                    i.fa.fa-times-circle-o
+                input#display_until.form-control.datetimepicker*{ 'data-model' => "announcement", 'data-attribute' => "display_until", 'data-value' => (@announcement.display_until || '') }
+                span.input-group-addon
+                  i.fa.fa-calendar
 
 = content_for :head do
   = stylesheet_link_tag 'datepicker'
@@ -117,14 +112,7 @@
       function setAnnouncementDraftMode(mode) {
         data = { announcement: { draft: mode } };
         editor.saveModel(function(data){
-          var draft = $('.draftable');
-          if (draft.hasClass('is-draft')) {
-            draft.removeClass('is-draft').addClass('is-published');
-            console.log(data);
-            $('.medium-edit-stop.show-when-published').attr('href', data.uri);
-          } else {
-            draft.removeClass('is-published').addClass('is-draft');
-          }
+          $('.is-draft, .is-published').toggle();
         }, null, data);
       }
     });

@@ -420,7 +420,8 @@ $(function() {
           _.unsavedChanges = false;
           // _.clearTimer();
           checkTodos();
-          _.updateParts(data.parts_widgets);
+          if (_.modelType == 'Project')
+            _.updateParts(data.parts_widgets);
           successCallback(data);
         },
         error: function(data){
