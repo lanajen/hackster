@@ -5,10 +5,11 @@ class ProjectWorker < BaseWorker
     if project.private?
       project.platforms.delete_all
     else
-      project.platform_tags_cached.each do |tag|
-        next unless platform = Platform.joins(:platform_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first
+      project.platforms = Platform.joins(:platform_tags).references(:tags).where("LOWER(tags.name) IN (?)", project.platform_tags_cached.map{|t| t.downcase })
 
-        collection = ProjectCollection.where(collectable_id: platform.id, collectable_type: 'Group', project_id: project.id).first_or_create
+      project.project_collections.joins("inner join groups on groups.id = project_collections.collectable_id and project_collections.collectable_type = 'Group'").where(groups: { type: 'Platform'}).each do |collection|
+
+        platform = collection.collectable
 
         case platform.moderation_level
         when 'auto'
@@ -25,6 +26,38 @@ class ProjectWorker < BaseWorker
           # do nothing
         end
       end
+
+
+
+
+      # existing_platforms = project.platforms
+
+      # new_platforms = project.platform_tags_cached.map do |tag|
+      #   next unless platform = Platform.joins(:platform_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first
+
+      #   collection = ProjectCollection.where(collectable_id: platform.id, collectable_type: 'Group', project_id: project.id).first_or_create
+
+      #   case platform.moderation_level
+      #   when 'auto'
+      #     collection.approve! if collection.can_approve?
+      #   when 'hackster'
+      #     if project.approved?
+      #       collection.approve! if collection.can_approve?
+      #     elsif project.approved == false
+      #       collection.reject! if collection.can_reject?
+      #     else
+      #       # do nothing
+      #     end
+      #   when 'manual'
+      #     # do nothing
+      #   end
+
+      #   platform
+      # end
+
+      # (existing_platforms - new_platforms).each do |deleted|
+      #   project.platforms.delete deleted
+      # end
     end
   end
 end
