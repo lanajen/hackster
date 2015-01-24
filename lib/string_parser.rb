@@ -28,10 +28,10 @@ module StringParser
     end
 
     # make these methods return times instead of strings
-    def parse_as_times store_attr, *attrs
+    def parse_as_datetimes store_attr, *attrs
       attrs.each do |time|
         define_method time do
-          send(store_attr)[time] ? send(store_attr)[time].to_time : nil
+          send(store_attr)[time] ? Time.at(send(store_attr)[time]) : nil
         end
       end
     end

@@ -1,0 +1,21 @@
+- if can? :join, @event
+  .alert.alert-warning.alert-flat
+    .container
+      - case @event.access_level
+      - when 'anyone'
+        ' Registrations for
+        strong> = @event.name
+        ' are open.
+      - when 'invite'
+        ' You have been invited to join
+        strong = @event.name
+        ' .
+      = link_to 'Join event', group_accept_invitation_path(@event), class: 'btn btn-warning btn-sm'
+
+- elsif can? :request_access, @event
+  .alert.alert-warning.alert-flat
+    .container
+      ' Registrations for
+      strong> = @event.name
+      ' require approval.
+      = link_to 'Request to join event', group_members_path(@event), class: 'btn btn-sm btn-warning', data: { method: :post }

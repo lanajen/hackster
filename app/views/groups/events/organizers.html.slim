@@ -1,36 +1,45 @@
 = content_for :head do
   meta(name="robot" content="noindex nofollow")
 
-- if can? :read, @event
-  .row
-    #tab-organizers
-      .col-xs-12
-        - if @organizers.any?
-          .row
-            - if @judges.any? or @mentors.any?
-              h3.top.col-xs-12 Organizers
-            - @organizers.each do |user|
-              .col-xs-2  style='margin-bottom: 30px;'
-                = link_to image_tag(user.decorate.avatar(:big), class: 'img-responsive'), user, title: user.name, rel: 'tooltip'
-        - else
-          | This event has no organizers.
+.container
+  - if can? :read, @event
+    - if @organizers.any?
+      .row
+        - if @judges.any? or @mentors.any?
+          h3.top.col-xs-12 Organizers
+        <div class="col-md-6"><div class="row">
+        - @organizers.each_with_index do |user, i|
+          - if i != 0 and i % 3 == 0
+            </div></div><div class="col-md-6"><div class="row">
+          = render partial: 'users/user_thumb_mini', locals: { user: user }
+        </div>
+    - else
+      p This event has no participants.
 
-        - if @judges.any?
-          .row
-            h3.top.col-xs-12 Judges
-            - @judges.each do |user|
-              .col-xs-2  style='margin-bottom: 30px;'
-                = link_to image_tag(user.decorate.avatar(:big), class: 'img-responsive'), user, title: user.name, rel: 'tooltip'
+    - if @judges.any?
+      .row
+        h3.top.col-xs-12 Judges
+        <div class="col-md-6"><div class="row">
+        - @judges.each_with_index do |user, i|
+          - if i != 0 and i % 3 == 0
+            </div></div><div class="col-md-6"><div class="row">
+          = render partial: 'users/user_thumb_mini', locals: { user: user }
+        </div>
 
-        - if @mentors.any?
-          .row
-            h3.top.col-xs-12 Mentors
-            - @mentors.each do |user|
-              .col-xs-2  style='margin-bottom: 30px;'
-                = link_to image_tag(user.decorate.avatar(:big), class: 'img-responsive'), user, title: user.name, rel: 'tooltip'
+    - if @mentors.any?
+      .row
+        h3.top.col-xs-12 Mentors
+        <div class="col-md-6"><div class="row">
+        - @mentors.each_with_index do |user, i|
+          - if i != 0 and i % 3 == 0
+            </div></div><div class="col-md-6"><div class="row">
+          = render partial: 'users/user_thumb_mini', locals: { user: user }
+        </div>
 
-- else
-  .row
-    .col-xs-12
-      .alert.alert-warning
-        | The content of this group is only visible to members.
+  - else
+    .alert.alert-warning
+      | The content of this group is only visible to members.
+      / if @event.access_level == 'anyone'
+        = link_to 'Join', '', class: 'btn btn-warning btn-sm'
+      / elsif @event.access_level == 'request'
+        = link_to 'Request access', '', class: 'btn btn-warning btn-sm'

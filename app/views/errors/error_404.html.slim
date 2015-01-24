@@ -1,5 +1,5 @@
 .row
-  #error.col-xs-8.col-xs-offset-2  style='margin-top: 150px;'
+  #error.col-md-8.col-md-offset-2  style='margin-top: 150px;'
     .box
       .box-content.text-center
         h2 Bummer, we couldn't find that page
@@ -9,5 +9,4 @@
           ==> link_to 'Go back to the previous page', :back
           ' or
           = link_to 'go to the home page', root_path
-        .row
-          .col-xs-8.col-xs-offset-2= render 'shared/search_form'
+        = render 'shared/search_form'

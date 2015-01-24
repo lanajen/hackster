@@ -33,6 +33,8 @@ class UserObserver < ActiveRecord::Observer
       team.save
     end
 
+    record.events.each{|e| e.update_counters only: [:participants] }
+
     record.group_ties.invitation_not_accepted.each do |member|
       member.accept_invitation!
     end

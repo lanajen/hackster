@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150116232341) do
+ActiveRecord::Schema.define(version: 20150122233816) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -252,6 +252,7 @@ ActiveRecord::Schema.define(version: 20150116232341) do
     t.text     "properties"
     t.integer  "projects_count"
     t.integer  "members_count"
+    t.string   "zipcode"
   end
 
   add_index "groups", ["type"], name: "index_groups_on_type", using: :btree

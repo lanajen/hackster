@@ -1,8 +1,8 @@
 module ApplicationHelper
   def active_li_link_to content, link, options={}
     link = url_for link
-    klass = 'active' if link == request.path or (options[:truncate] and link.in? request.path)
-    content_tag(:li, link_to(content, link), class: klass)
+    klass = 'active' if link == request.path or (options.delete(:truncate) and link.in? request.path)
+    content_tag :li, link_to(content, link), options.merge(class: klass)
   end
 
   def affix_top project, user=nil

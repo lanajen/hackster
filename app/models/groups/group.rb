@@ -11,6 +11,7 @@ class Group < ActiveRecord::Base
     'projects' => :most_projects,
   }
 
+  include Counter
   include EditableSlug
   include SetChangesForStoredAttributes
   include StringParser
@@ -34,13 +35,14 @@ class Group < ActiveRecord::Base
   end
   has_many :users, through: :members
   has_one :avatar, as: :attachable, dependent: :destroy
+  has_one :cover_image, as: :attachable, dependent: :destroy
 
   attr_accessible :avatar_attributes, :type,
     :facebook_link, :twitter_link, :linked_in_link, :website_link,
     :blog_link, :github_link, :email, :mini_resume, :city, :country,
     :user_name, :full_name, :members_attributes, :avatar_id,
     :permissions_attributes, :google_plus_link, :youtube_link, :access_level,
-    :hidden, :slack_token, :slack_hook_url
+    :hidden, :slack_token, :slack_hook_url, :cover_image_id
 
   accepts_nested_attributes_for :avatar, :members, :permissions,
     allow_destroy: true
@@ -95,6 +97,17 @@ class Group < ActiveRecord::Base
 
   def avatar_id=(val)
     self.avatar = Avatar.find_by_id(val)
+  end
+
+  def counters
+    {
+      members: 'members.count',
+      projects: 'project_collections.visible.count',
+    }
+  end
+
+  def cover_image_id=(val)
+    self.cover_image = CoverImage.find_by_id(val)
   end
 
   def generate_user_name

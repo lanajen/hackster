@@ -31,10 +31,10 @@
 
             = f.input :start_date, order: [:year, :month, :day], label: 'Date', hint: 'When did this project come to life?' do
               .row
-                .col-xs-6
+                .col-md-6
                   = hidden_field_tag 'project[start_date(3i)]', '1'
                   = select_month(@project.start_date, { prompt: '--Month--' }, { class: 'form-control', name: 'project[start_date(2i)]' })
-                .col-xs-6
+                .col-md-6
                   = select_year(@project.start_date, { prompt: '--Year--', start_year: Date.today.year, end_year: Date.today.year - 15 }, { class: 'form-control', name: 'project[start_date(1i)]' })
 
       - else
@@ -65,10 +65,10 @@
             = f.input :buy_link, label: 'Where to buy', hint: "Are you making this project available for sale as a kit or assembled? Enter the link to the store page here."
             = f.input :start_date, order: [:year, :month, :day], label: 'Date', hint: 'When did this project come to life?' do
               .row
-                .col-xs-6
+                .col-md-6
                   = hidden_field_tag 'project[start_date(3i)]', '1'
                   = select_month(@project.start_date, { prompt: '--Month--' }, { class: 'form-control', name: 'project[start_date(2i)]' })
-                .col-xs-6
+                .col-md-6
                   = select_year(@project.start_date, { prompt: '--Year--', start_year: Date.today.year, end_year: Date.today.year - 15 }, { class: 'form-control', name: 'project[start_date(1i)]' })
 
             = render partial: 'projects/open_source_switch', locals: { f: f }
@@ -79,9 +79,9 @@
 
             - if @project.private?
               .form-group
-                .col-xs-4
+                .col-md-4
                   label.control-label Private sharing link
-                .col-xs-8
+                .col-md-8
                   input.form-control  type='text' value="http://#{APP_CONFIG['full_host']}/projects/#{@project.id}?auth_token=#{@project.security_token}" onclick='this.select();' style='color: #666;background:#ddd'
                   p.help-block Use this link if you want to share your project while keeping it private.
 
@@ -103,7 +103,7 @@
                   = f_credit.input :work, label: 'What you credit them for'
                   = f_credit.input :link, label: 'Link (optional)'
                   .row
-                    .col-xs-offset-4.col-xs-8= f_credit.link_to_remove 'Remove this contributor', class: 'btn btn-xs btn-danger'
+                    .col-xs-offset-4.col-md-8= f_credit.link_to_remove 'Remove this contributor', class: 'btn btn-xs btn-danger'
                 = f_cred.link_to_add 'Add another contributor', :credit_lines, class: 'btn btn-xs btn-success', style: 'margin:0 0 0 33.33333%;'
 
       .panel.panel-default#sharing
@@ -123,9 +123,9 @@
           = f.input :hacker_space_id, collection: hacker_spaces, label: 'Where did you hack this from?', hint: "Select the hacker space you worked from. You'll need to join their group first. <a href='/hackerspaces'>See all the hacker spaces.</a>".html_safe
           /
             .form-group
-              .col-xs-4
+              .col-md-4
                 label.control-label Share with a group
-              .col-xs-8
+              .col-md-8
                 - @project.permissions.new if @project.permissions.empty?
                 = f.simple_fields_for :permissions, wrapper: false do |f_perm|
                   - if current_user.is? :admin
@@ -150,7 +150,7 @@
           h4 Danger zone
         .panel-body
           .form-group
-            .col-xs-8.col-xs-offset-4= link_to 'Delete project', @project, method: :delete, class: 'btn btn-danger btn-sm', data: { confirm: "Are you sure? There's no coming back!" }
+            .col-md-8.col-xs-offset-4= link_to 'Delete project', @project, method: :delete, class: 'btn btn-danger btn-sm', data: { confirm: "Are you sure? There's no coming back!" }
 
   .row
     .col-xs-12

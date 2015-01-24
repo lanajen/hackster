@@ -1,5 +1,4 @@
 class List < Group
-  include Counter
   include Privatable
   include StringParser
   include Taggable
@@ -8,9 +7,8 @@ class List < Group
   has_many :follow_relations, as: :followable
   has_many :followers, through: :follow_relations, source: :user
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'ListMember'
-  has_one :cover_image, as: :attachable, dependent: :destroy
 
-  attr_accessible :cover_image_id, :list_type, :is_new, :enable_comments
+  attr_accessible :list_type, :is_new, :enable_comments
 
   validates :user_name, :full_name, presence: true
   validate :user_name_is_unique
@@ -76,10 +74,6 @@ class List < Group
       private_projects: 'projects.private.count',
       projects: 'project_collections.visible.count',
     }
-  end
-
-  def cover_image_id=(val)
-    self.cover_image = CoverImage.find_by_id(val)
   end
 
   def followers_count=(val)

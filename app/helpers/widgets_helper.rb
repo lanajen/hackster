@@ -73,9 +73,9 @@ module WidgetsHelper
     when ImageWidget, DocumentWidget, StlWidget, TextWidget, StepByStepWidget
       'col-xs-12'
     when PartsWidget
-      'col-xs-10 col-xs-offset-1'
+      'col-md-10 col-md-offset-1'
     else
-      'col-xs-6 col-xs-offset-3'
+      'col-md-6 col-md-offset-3'
     end
   end
 end

@@ -146,7 +146,7 @@ class ApplicationController < ActionController::Base
     end
 
     def load_event
-      @event = Event.includes(:hackathon).where(groups: { user_name: params[:event_name] }, hackathons_groups: { user_name: params[:user_name] }).first!
+      @group = @event = Event.includes(:hackathon).where(groups: { user_name: params[:event_name] }, hackathons_groups: { user_name: params[:user_name] }).first!
     end
 
     def load_project

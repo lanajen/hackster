@@ -22,9 +22,9 @@
             = f.input_field :slug
 
           .form-group
-            .col-xs-4
+            .col-md-4
               label.control-label Slug history
-            .col-xs-8
+            .col-md-8
               = f.simple_fields_for :slug_histories, wrapper: false do |f_slug|
                 .row.fields
                   .col-xs-11
@@ -35,15 +35,15 @@
 
                   .col-xs-1= f_slug.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-sm btn-danger'
           .form-group
-            .col-xs-8.col-xs-offset-4
+            .col-md-8.col-md-offset-4
               = f.link_to_add 'Add a slug to history', :slug_histories, class: 'btn btn-xs btn-success'
 
           = f.input :start_date, order: [:year, :month, :day], label: 'Date', hint: 'When did this project come to life?' do
             .row
-              .col-xs-6
+              .col-md-6
                 = hidden_field_tag 'project[start_date(3i)]', '1'
                 = select_month(@project.start_date, { prompt: '--Month--' }, { class: 'form-control', name: 'project[start_date(2i)]' })
-              .col-xs-6
+              .col-md-6
                 = select_year(@project.start_date, { prompt: '--Year--', start_year: Date.today.year, end_year: Date.today.year - 15 }, { class: 'form-control', name: 'project[start_date(1i)]' })
           = f.input :product_tags_string, as: :string, label: 'Tags', hint: 'Separate tags by commas. Used for finding your project more easily.'
           = f.input :license, collection: License.all, value_method: :url, hint: 'Is your project open source? If so specify under which license here.', selected: @project.license.try(:url), include_blank: true
@@ -58,7 +58,7 @@
           / = f.input :current, as: :boolean, label: false, inline_label: 'Currently working on it'
 
         .form-group
-          .col-xs-offset-4.col-xs-8
+          .col-md-offset-4.col-md-8
             ==> f.submit "Save changes", class: 'btn btn-primary'
             - if @project.persisted?
               = link_to 'Delete project', admin_project_path(@project), method: :delete, class: 'btn btn-danger btn-xs', data: { confirm: "Are you sure? There's no coming back!" }

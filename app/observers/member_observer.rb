@@ -1,5 +1,7 @@
 class MemberObserver < ActiveRecord::Observer
   def after_commit_on_create record
+    update_counters record
+
     # only send invitation if group is a community and the membership has an
     # invitation pending and the user is not being invited
     if (record.group.is? :community or record.group.is? :promotion or record.group.is? :event or record.group.is? :platform) and record.invitation_pending? and !record.user.try(:invited_to_sign_up?)
@@ -18,8 +20,6 @@ class MemberObserver < ActiveRecord::Observer
   end
 
   def after_create record
-    update_counters record
-
     if record.group.is? :team
       project = record.group.projects.first
       unless record.request_pending?
@@ -71,9 +71,13 @@ class MemberObserver < ActiveRecord::Observer
     end
 
     def update_counters record
-      if record.group and record.group.is? :team
-        record.user.update_counters only: [:projects, :live_projects]
-        record.group.projects.each{|p| p.update_counters only: [:team_members] }
+      if record.group
+        if record.group.is? :team
+          record.user.update_counters only: [:projects, :live_projects]
+          record.group.projects.each{|p| p.update_counters only: [:team_members] }
+        elsif record.group.is? :event
+          record.group.update_counters only: [:participants]
+        end
       end
     end
 end

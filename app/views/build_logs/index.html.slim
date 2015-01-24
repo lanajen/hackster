@@ -1,5 +1,5 @@
 .row
-  .col-xs-8
+  .col-md-8
     - if @logs.any?
       - @logs.each do |log|
         = render partial: log, locals: { log: log }
@@ -12,7 +12,7 @@
             | There are no logs.
 
   - if can? :create, @project.build_logs.new
-      .col-xs-4
+      .col-md-4
         section.section-thumbs
           h4 Admin actions
           = link_to 'Post a new build log', new_project_log_path(@project.user_name_for_url, @project.slug), class: 'btn btn-primary btn-sm'

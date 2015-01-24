@@ -106,11 +106,11 @@ GEM
     dotenv-deployment (0.0.2)
     dotenv-rails (0.11.1)
       dotenv (= 0.11.1)
-    draper (1.3.0)
+    draper (1.4.0)
       actionpack (>= 3.0)
       activemodel (>= 3.0)
       activesupport (>= 3.0)
-      request_store (~> 1.0.3)
+      request_store (~> 1.0)
     em-proxy (0.1.8)
       eventmachine
     equalizer (0.0.9)
@@ -338,7 +338,7 @@ GEM
       rack
     rack-protection (1.5.3)
       rack
-    rack-test (0.6.2)
+    rack-test (0.6.3)
       rack (>= 1.0)
     rails (4.1.6)
       actionmailer (= 4.1.6)
@@ -371,7 +371,7 @@ GEM
     redis-namespace (1.5.0)
       redis (~> 3.0, >= 3.0.4)
     ref (1.0.5)
-    request_store (1.0.6)
+    request_store (1.1.0)
     rest-client (1.6.7)
       mime-types (>= 1.16)
     rinku (1.5.1)
@@ -533,7 +533,7 @@ DEPENDENCIES
   devise (= 3.2.2)
   devise_invitable (= 1.3.0)
   dotenv-rails
-  draper (= 1.3.0)
+  draper (= 1.4.0)
   fog (~> 1.20)
   font-awesome-rails (= 4.1.0.0)
   foreman

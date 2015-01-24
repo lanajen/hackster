@@ -56,10 +56,10 @@ SimpleForm.setup do |config|
     b.optional :pattern
     b.optional :readonly
 
-    b.wrapper tag: 'div', class: 'col-xs-4' do |wrap|
+    b.wrapper tag: 'div', class: 'col-md-4' do |wrap|
       wrap.use :label
     end
-    b.wrapper tag: 'div', class: 'col-xs-8' do |wrap|
+    b.wrapper tag: 'div', class: 'col-md-8' do |wrap|
       wrap.use :input
       wrap.use :hint,  wrap_with: { tag: 'span', class: 'help-block' }
       wrap.use :error, wrap_with: { tag: 'span', class: 'help-block has-error' }
@@ -77,10 +77,10 @@ SimpleForm.setup do |config|
     b.optional :pattern
     b.optional :readonly
 
-    b.wrapper tag: 'div', class: 'col-xs-4' do |wrap|
+    b.wrapper tag: 'div', class: 'col-md-4' do |wrap|
       wrap.use :label
     end
-    b.wrapper tag: 'div', class: 'col-xs-8' do |input|
+    b.wrapper tag: 'div', class: 'col-md-8' do |input|
       input.wrapper :tag => 'div', :class => 'input-group' do |addon|
         addon.use :input
       end

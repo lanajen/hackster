@@ -78,7 +78,7 @@ class GroupInvitationsController < ApplicationController
 
     def set_layout
       case @invitable
-      when List, Platform
+      when List, Platform, Event
         'group'
       else
         @model_name

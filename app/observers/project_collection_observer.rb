@@ -17,7 +17,9 @@ class ProjectCollectionObserver < ActiveRecord::Observer
 
   private
     def update_counters record
-      record.collectable.update_counters only: [:projects, :external_projects, :private_projects] if record.collectable.class.in? [List, Platform]
+      counters = [:projects]
+      counters += [:external_projects, :private_projects] if record.collectable.class.in? [List, Platform]
+      record.collectable.update_counters only: counters
     end
 
     def update_project project

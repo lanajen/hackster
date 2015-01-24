@@ -45,7 +45,7 @@ gem 'country_select', '1.1.3'
 gem 'dalli', '2.7.0'  # memcached
 gem 'devise', '3.2.2'
 gem 'devise_invitable', '1.3.0'
-gem 'draper', '1.3.0'
+gem 'draper', '1.4.0'
 gem 'geocoder', '1.2.5'
 gem 'gibbon', '1.1.1'
 gem 'github-linguist', '2.11.5'

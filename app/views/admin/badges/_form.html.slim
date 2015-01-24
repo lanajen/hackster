@@ -4,7 +4,7 @@
 = f.input :level, collection: Rewardino::Badge::LEVELS, hint: "Caution: this won't validate whether the level exists for this badge, so please make sure you select the right level."
 - unless @badge.persisted?
   = f.input :send_notification, as: :boolean
-.col-xs-offset-4.col-xs-8
+.col-md-offset-4.col-md-8
   ==> f.button :submit, :class => 'btn-primary'
   ==> link_to t('.cancel', :default => t("helpers.links.cancel")), admin_badges_path, :class => 'btn btn-default'
   - if @badge.persisted?

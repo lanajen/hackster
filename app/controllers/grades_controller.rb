@@ -49,7 +49,7 @@ class GradesController < ApplicationController
       end
     elsif @group
       @event = @group
-      render 'grades/events/edit', layout: 'event'
+      render 'grades/events/edit', layout: 'group_shared'
     end
   end
 
@@ -83,7 +83,7 @@ class GradesController < ApplicationController
         redirect_to group_path(@group), notice: "Awards saved."
       else
         @event = @group
-        render 'grades/events/edit', layout: 'event'
+        render 'grades/events/edit', layout: 'group_shared'
       end
     end
   end

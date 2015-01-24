@@ -1,0 +1,26 @@
+- if can? :join, @group and user_signed_in? and member = current_user.is_member?(@group) and member.invitation_pending?
+  section#alert-section
+    .alert.alert-warning.alert-flat
+      ' You have been invited to manage
+      strong = @group.name
+      ' .
+      = link_to 'Rock the place', group_accept_invitation_path(@group), class: 'btn btn-warning btn-sm'
+
+- if @announcement
+  section#alert-section
+    .alert.alert-info.alert-flat.text-center
+      strong> News:
+      = link_to @announcement.title, platform_announcement_path(@announcement), class: 'alert-link'
+
+- elsif @challenge
+  section#alert-section
+    .alert.alert-info.alert-flat.text-center
+      strong> #{@group.name} is having a challenge!
+      ' Join the
+      = link_to @challenge.name, @challenge, class: 'alert-link'
+
+- elsif !user_signed_in?
+  section#alert-section.follow-section
+    .alert.alert-info.alert-flat.text-center
+      ==> link_to "Follow #{@group.name}", new_user_registration_path(redirect_to: create_followers_path(followable_type: 'Group', followable_id: @group.id), reason: 'follow', m: 'group', id: @group.id), class: 'follow-button alert-link show-simplified-signup', data: { container: 'body', redirect_to: create_followers_path(followable_type: 'Group', followable_id: @group.id) }, rel: 'tooltip'
+      ' to be notified when new projects are posted.

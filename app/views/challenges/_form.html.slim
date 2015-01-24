@@ -91,12 +91,12 @@
           h4 Danger zone
         .panel-body
           .form-group
-            .col-xs-8.col-xs-offset-4
+            .col-md-8.col-md-offset-4
               - case @challenge.workflow_state.to_sym
               - when :new
                 = link_to 'Launch challenge', update_workflow_challenge_path(@challenge, event: 'launch'), method: :put, class: 'btn btn-success btn-sm', data: { confirm: "Let's do this. Sure?" }
           .form-group
-            .col-xs-8.col-xs-offset-4= link_to 'Delete challenge', challenge_path(@challenge), method: :delete, class: 'btn btn-danger btn-sm', data: { confirm: "Are you sure? There's no coming back!" }
+            .col-md-8.col-md-offset-4= link_to 'Delete challenge', challenge_path(@challenge), method: :delete, class: 'btn btn-danger btn-sm', data: { confirm: "Are you sure? There's no coming back!" }
 
   .row
     .col-xs-12
