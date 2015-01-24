@@ -142,7 +142,11 @@ class BaseMailer < ActionMailer::Base
           context[:project] = followable
           context[:users] = followable.users.with_subscription('new_follow_project')
         when User
-          context[:users] = [followable] if 'new_follow_me'.in? followable.subscriptions
+          if 'new_follow_me'.in?(followable.subscriptions)
+            context[:user] = followable
+          else
+            context[:users] = []  # hack to send no email
+          end
         end
       when :grade
         grade = context[:grade] = Grade.find(context_id)
