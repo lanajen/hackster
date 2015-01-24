@@ -1,5 +1,0 @@
-$('.user .edit').html('<%= escape_javascript render("groups/platforms/form") %>');
-$("<%= escape_javascript content_for(:js) %>").appendTo($('.user .edit'));
-$('.user .display').slideUp(function(){
-  $('.user .edit').slideDown();
-});

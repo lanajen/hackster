@@ -57,14 +57,6 @@ class HackerSpacesController < ApplicationController
     end
   end
 
-  def edit
-    @hacker_space = HackerSpace.find(params[:id])
-    authorize! :update, @hacker_space
-    @hacker_space.build_avatar unless @hacker_space.avatar
-
-    render "groups/hacker_spaces/#{self.action_name}"
-  end
-
   def update
     authorize! :update, @hacker_space
     old_hacker_space = @hacker_space.dup

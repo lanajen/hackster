@@ -35,14 +35,6 @@ class ListsController < ApplicationController
   #   render "groups/lists/#{self.action_name}", layout: 'embed'
   # end
 
-  def edit
-    @list = List.find params[:id]
-    authorize! :update, @list
-    @list.build_avatar unless @list.avatar
-
-    render "groups/lists/#{self.action_name}"
-  end
-
   def update
     authorize! :update, @list
     old_list = @list.dup

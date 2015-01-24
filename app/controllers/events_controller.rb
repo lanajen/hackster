@@ -62,14 +62,6 @@ class EventsController < ApplicationController
     end
   end
 
-  def edit
-    @event = Event.find(params[:id])
-    authorize! :update, @event
-    @event.build_avatar unless @event.avatar
-
-    render "groups/events/#{self.action_name}"
-  end
-
   def update
     authorize! :update, @event
     old_event = @event.dup

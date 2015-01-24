@@ -104,13 +104,6 @@ class PlatformsController < ApplicationController
     render "groups/platforms/#{self.action_name}"
   end
 
-  def edit
-    authorize! :update, @platform
-    @platform.build_avatar unless @platform.avatar
-
-    render "groups/platforms/#{self.action_name}"
-  end
-
   def update
     authorize! :update, @platform
     old_platform = @platform.dup

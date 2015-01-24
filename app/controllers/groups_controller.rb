@@ -52,7 +52,7 @@ class GroupsController < ApplicationController
     instance_variable_set "@#{@group.identifier}", @group
     @group.build_avatar unless @group.avatar
 
-    render "groups/#{@group.identifier.pluralize}/#{self.action_name}"
+    render "groups/shared/#{self.action_name}"
   end
 
   def update
