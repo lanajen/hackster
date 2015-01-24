@@ -83,7 +83,24 @@
 
         .container.visible-xs
           = image_tag @group.avatar(:big), class: 'img-thumbnail'
-          h1= @group.name
+
+          - if @group.model.respond_to?(:secondary_name)
+            h1= @group.proper_name
+            h2
+              ==> @group.secondary_name
+              small
+                ' on
+                strong==> @group.date_range
+                ' in
+                strong==> @group.short_address
+          - else
+            h1
+              / # - if @group.model.respond_to?(:company_logo) and @group.company_logo
+                = image_tag @group.company_logo.try(:file_url), class: 'company-logo'
+              = @group.name
+              - if @group.model.respond_to?(:disclaimer) and @group.disclaimer.present?
+                i.fa.fa-info-circle.istooltip.small< title=@group.disclaimer
+
           p= @group.mini_resume
           p= render partial: 'followers/button_text', locals: { followable: @group }
 

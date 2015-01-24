@@ -4,13 +4,13 @@
       h3.title
         = @page.title
 
-        .subtitle
-          ' Posted by
-          ==> link_to @page.user.name, @page.user
-          ==> time_ago_in_words @page.created_at
-          ' ago
-          - if can? :edit, @page
-            ' -
+          / ' Posted by
+          / ==> link_to @page.user.name, @page.user
+          / ==> time_ago_in_words @page.created_at
+          / ' ago
+        - if can? :edit, @page
+          .subtitle
+            / ' -
             = link_to 'Edit', edit_hackathon_event_page_path(@event.hackathon.user_name, @event.user_name, @page.id)
 
     .section-content.medium-editor

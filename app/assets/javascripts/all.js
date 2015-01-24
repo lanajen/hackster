@@ -3,9 +3,15 @@ $(window).load(function(){
   function updateAffix(top, w, el){
     var y = w.scrollTop();
     if (y >= top) {
-      el.hasClass('affix') ? '' : el.addClass('affix');
+      if (!el.hasClass('affix')) {
+        el.addClass('affix');
+        el.trigger('affix-on');
+      }
     } else {
-      el.hasClass('affix') ? el.removeClass('affix') : '';
+      if (el.hasClass('affix')) {
+        el.removeClass('affix');
+        el.trigger('affix-off');
+      }
     }
   }
 
@@ -204,6 +210,20 @@ $(function () {
       $('.popup-overlay').fadeOut(200);
     });
   }
+
+  $('.close-nav').on('click', function(e){
+    e.preventDefault();
+    $(this).parent().parent().slideUp(function(){
+      $(this).prev().slideDown();
+    });
+  });
+
+  $('.event-menu').on('click', function(e){
+    e.preventDefault();
+    $(this).slideUp(function(){
+      $(this).next().slideDown();
+    });
+  });
 
   $('a.smooth-scroll').click(function(e){
     target = '#' + this.hash.substring(1);
