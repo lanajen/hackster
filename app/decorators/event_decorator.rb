@@ -1,4 +1,4 @@
-class EventDecorator < GroupDecorator
+class EventDecorator < GeographicCommunityDecorator
 
   def date_range
     if model.start_date.present? and model.end_date.present?

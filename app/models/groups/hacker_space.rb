@@ -41,6 +41,10 @@ class HackerSpace < GeographicCommunity
     'anyone'
   end
 
+  def show_address
+    true
+  end
+
   private
     def skip_website_check
       %w(irc_link mailing_list_link)

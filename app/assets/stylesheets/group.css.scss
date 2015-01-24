@@ -236,6 +236,18 @@
       color: #fafafa;
     }
   }
+  .secondary-info {
+    font-size: 0.85em;
+    a {
+      color: #fff;
+      &:hover {
+        color: #eee;
+      }
+    }
+    i {
+      margin-right: 8px;
+    }
+  }
   .tags {
     margin-left: 10px;
     margin-bottom: 0;

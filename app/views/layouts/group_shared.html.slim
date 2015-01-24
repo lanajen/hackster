@@ -63,6 +63,11 @@
                   li
                     a.tag href='' Wifi
               p= @group.mini_resume
+              - if @group.model.respond_to?(:show_address)
+                p.secondary-info
+                  i.fa.fa-map-marker
+                  = link_to @group.short_location, "https://www.google.com/maps/search/#{CGI.escape(@group.full_street_address)}", target: '_blank'
+
               .button-content
                 = render partial: 'followers/button_text', locals: { followable: @group }
                 = render partial: "groups/#{@group.identifier.pluralize}/additional_links"
