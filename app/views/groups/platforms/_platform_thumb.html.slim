@@ -8,6 +8,9 @@
         p.description.show-on-hover
           = platform.mini_resume
       .thumb-image-inner
+      .thumb-bottom
+        a.thumb-bottom-over-top href=url_for(platform)
+          = image_tag platform.avatar.try(:file_url, :medium)
         h4
           = link_to platform.name, platform
           / span.platform-type Platform

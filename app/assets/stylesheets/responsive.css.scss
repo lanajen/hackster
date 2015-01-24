@@ -23,23 +23,6 @@
   #signup-block {
     top: 57px;
   }
-  /* Autodesk2 */
-  .autodesk2-page {
-    .banner {
-      .banner-right .block-1 .item .value {
-        font-size: 20px;
-      }
-      .banner-left, .banner-right {
-        margin-top: 265px;
-      }
-    }
-  }
-  .autodesk2-page .single-tool h4 {
-    font-size: 15px;
-    a{
-      margin-top: 0;
-    }
-  }
 
   footer {
     ul.list-inline > li {
@@ -162,6 +145,27 @@
   }
 }
 
+@media (max-width: 1200px) {
+  #navigation{
+    li > a {
+      padding: 19px 14px;
+    }
+  }
+}
+@media (min-width: 1200px) {
+  #nav-non-logo{
+    #nav-actions .nav-link, #nav-actions .nav-link:focus{
+      min-width: 130px;
+    }
+  }
+}
+
+@media (max-width: 1100px) {
+  #left-nav {
+    display: none;
+  }
+}
+
 @media only screen and (max-width: 1320px) {
   #medium-editor .embed-frame .figure .embed-figcaption {
     &:before {
@@ -218,7 +222,6 @@
   }
 }
 @media only screen and (min-width: 1000px) {
-
   // GLOBAL
 
   .show-on-desktop{
@@ -233,12 +236,6 @@
   .navbar{
     .navbar-header{
       float: left;
-    }
-  }
-
-  #nav-non-logo{
-    #nav-actions .nav-link, #nav-actions .nav-link:focus{
-      min-width: 130px;
     }
   }
 }

@@ -66,6 +66,7 @@ class CronTask < BaseWorker
     lock_assignment
     expire_challenges
     evaluate_badges
+    send_announcement_notifications
   end
 
   def launch_daily_cron
@@ -104,6 +105,15 @@ class CronTask < BaseWorker
 
     users.each do |user_id|
       BaseMailer.enqueue_email 'new_projects_notification', { context_type: 'daily_notification', context_id: user_id }
+    end
+  end
+
+  def send_announcement_notifications
+    Announcement.published.not_sent.each do |announcement|
+      BaseMailer.enqueue_email 'new_announcement_notification',
+        { context_type: 'announcement', context_id: announcement.id }
+      announcement.workflow_state = 'sent'
+      announcement.save
     end
   end
 

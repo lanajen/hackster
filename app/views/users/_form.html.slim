@@ -3,14 +3,14 @@
 
   .row
     .col-xs-12
-      h3
-        | Edit profile
+      .header.clearfix
+        h3.pull-left
+          | Edit profile
         .pull-right
           ul.list-unstyled.list-inline
             li= link_to 'Go to account settings', edit_user_registration_path, class: 'btn btn-info btn-sm'
             li= f.submit 'Update profile', class: 'btn btn-primary btn-sm'
             li= link_to 'Cancel', @user, class: 'btn-link btn-sm'
-        .clearfix
       hr
 
   .row

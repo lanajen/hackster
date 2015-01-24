@@ -45,6 +45,10 @@ class BaseMailer < ActionMailer::Base
     def get_context_for context_type, context_id
       context = {}
       case context_type.to_sym
+      when :announcement
+        context[:announcement] = announcement = Announcement.find context_id
+        context[:platform] = platform = announcement.threadable
+        context[:users] = platform.followers.with_subscription('follow_platform_activity')
       when :assignment
         user = context[:user] = User.find(context_id)
         assignment = context[:assignment] = user.assignments.where("assignments.submit_by_date < ?", 24.hours.from_now).first

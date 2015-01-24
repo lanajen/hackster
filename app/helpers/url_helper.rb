@@ -1,7 +1,4 @@
 module UrlHelper
-  def platform_announcement_path announcement, opts={}
-    super(announcement.platform.user_name, announcement.sub_id, opts)
-  end
 
   def assignment_path assignment, opts={}
     course_promotion_assignment_path params_for_assignment(assignment).merge(opts)
@@ -161,6 +158,14 @@ module UrlHelper
 
   def new_assignment_path assignment, opts={}
     new_course_promotion_assignment_path params_for_new_assignment(assignment).merge(opts)
+  end
+
+  def platform_announcement_path announcement, opts={}
+    super(announcement.platform.user_name, announcement.sub_id, opts)
+  end
+
+  def platform_announcement_url announcement, opts={}
+    super(announcement.platform.user_name, announcement.sub_id, opts)
   end
 
   def project_path project, opts={}

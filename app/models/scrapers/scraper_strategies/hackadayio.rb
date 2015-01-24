@@ -83,7 +83,6 @@ module ScraperStrategies
         end
         widget.save
         @widgets << widget
-        @article.children.last.after "<div class='embed-frame' data-widget-id='#{widget.id}' data-type='widget'></div>"
       end
 
       def extract_images base=@article, super_base=@parsed
@@ -93,7 +92,7 @@ module ScraperStrategies
             if test_link(src)
               node = Nokogiri::XML::Node.new "img", base
               node['src'] = src
-              parent = base.css('img').last || base.at_css('.section-description')
+              parent = base.css('img').last || base.at_css('.section-description') || base.at_css('.section-details')
               parent.add_next_sibling node
             end
           end

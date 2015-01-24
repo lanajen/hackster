@@ -1,46 +1,24 @@
-= render 'cover_image'
-
-section#projects-list
+.projects-list
   .wrapper700
-    .project-show.platform-news
-      .project-section
-        small= link_to "&larr; See all announcements".html_safe, platform_announcements_path(@platform.user_name)
-        .section-header
-          h2
-            | #{@platform.name} News
-            - if can? :create, Announcement, @platform
-              .pull-right= link_to 'Post fresh news', new_platform_announcement_path(@platform.user_name), class: 'btn btn-outline'
+    = link_to "&larr; See all announcements".html_safe, platform_announcements_path(@platform.user_name), class: 'btn btn-link btn-sm btn-block mg-20 hidden-link'
 
-        .section-content
-          .widget
-            .content
-              .text-widget
-                h2
-                  ==> @announcement.title
-                  - if @announcement.draft?
-                    small.text-muted
-                      | (draft)
+    - if can? :edit, @announcement
+      section.section-thumbs
+        h4 Admin actions
+        ==> link_to 'Edit', edit_platform_announcement_path(@platform.user_name, @announcement.id), class: 'btn btn-sm btn-warning'
+        = link_to 'Delete', announcement_path(@announcement), class: 'btn btn-sm btn-danger', data: { method: :delete, confirm: "Are you sure? There's no way back!" }
 
-                  - if can? :edit, @announcement
-                    .btn-heading
-                      .pull-right
-                        = link_to content_tag(:i, '', class: 'fa fa-trash-o'), announcement_path(@announcement), class: 'btn-edit', rel: 'tooltip', title: 'Delete announcement', data: { container: 'body', method: :delete, confirm: "Are you sure? There's no way back!" }
-                        = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_platform_announcement_path(@platform.user_name, @announcement.id), class: 'btn-edit', rel: 'tooltip', title: 'Edit content', data: { container: 'body' }
+    section.section-thumbs
+      h4 Share
+      = render 'shared/share_buttons'
 
-                .h2-subtitle
-                  ' Posted by
-                  ==> link_to @announcement.user.name, @announcement.user
-                  ==> time_ago_in_words @announcement.created_at
-                  ' ago
-                  ' -
-                  ==> pluralize @announcement.comments.size, 'comment'
-                  ' -
-                  = render 'shared/share'
+    = render @announcement
 
-                .medium-editor= @announcement.body.html_safe
-
-      .project-section  id="widget-comments"
-        .section-header
-          h2 Comments
-        .section-content
-          = render partial: 'widgets/comments', locals: { comments: @announcement.comments, commentable: @announcement }
+    section#comments.section-container.section-collapsible
+      h2.section-title
+        a.title.title-toggle href=''
+          ' Comments
+          i.fa.fa-chevron-down
+          i.fa.fa-chevron-up
+      .section-content
+        = render partial: 'widgets/comments', locals: { comments: @announcement.comments, commentable: @announcement }

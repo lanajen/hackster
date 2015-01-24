@@ -3,7 +3,7 @@ class AnnouncementsController < ApplicationController
   before_filter :load_platform, except: [:show_redirect, :destroy]
   before_filter :load_announcement, only: [:show]
   before_filter :load_and_authorize_resource, only: [:edit, :update, :destroy]
-  layout 'platform'
+  layout 'group_shared'
 
   def index
     authorize! :read, Announcement
@@ -76,6 +76,6 @@ class AnnouncementsController < ApplicationController
     end
 
     def load_platform
-      @platform = load_with_slug
+      @group = @platform = load_with_slug
     end
 end

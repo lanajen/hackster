@@ -1,6 +1,27 @@
-= render 'cover_image'
+.projects-list
+  .wrapper700
+    = link_to "&larr; Back to projects".html_safe, @platform, class: 'btn btn-link btn-sm btn-block mg-20 hidden-link'
 
-section#projects-list
+    - if @announcements.any?
+      - @announcements.each do |announcement|
+        = render announcement
+        .section-interlude
+
+    - else
+      p
+        | No news yet, check back soon.
+
+  / # - if can? :create, @project.build_logs.new
+      .col-xs-4
+        section.section-thumbs
+          h4 Admin actions
+          = link_to 'Post a new build log', new_project_log_path(@project.user_name_for_url, @project.slug), class: 'btn btn-primary btn-sm'
+
+  .row
+    .col-xs-12
+      .text-center= will_paginate @announcements
+
+/ section#projects-list
   .wrapper700
     .project-show.platform-news
       .project-section

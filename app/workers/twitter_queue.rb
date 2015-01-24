@@ -11,7 +11,7 @@ class TwitterQueue < BaseWorker
   end
 
   def throttle_update message
-    if Time.now <= next_update
+    if Time.now > next_update
       update message
     else
       self.class.perform_at next_update, 'update', message
@@ -29,7 +29,7 @@ class TwitterQueue < BaseWorker
     end
 
     def next_update
-      if last_update
+      if last_update and (last_update + INTERVAL_BETWEEN_UPDATES * 60) > Time.now
         last_update + INTERVAL_BETWEEN_UPDATES * 60
       else
         Time.now

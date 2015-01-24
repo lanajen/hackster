@@ -19,11 +19,13 @@ class ProjectObserver < ActiveRecord::Observer
   end
 
   def after_update record
+    puts 'changed: ______________' + record.changed.to_s
     if record.private_changed?
       update_counters record, [:live_projects]
       record.commenters.each{|u| u.update_counters only: [:comments] }
       if record.private?
         Broadcast.where(context_model_id: record.id, context_model_type: 'Project').destroy_all
+        Broadcast.where(project_id: record.id).destroy_all
       end
     end
 
@@ -41,11 +43,7 @@ class ProjectObserver < ActiveRecord::Observer
 
   def before_update record
     if record.private_changed?
-      update_counters record, [:live_projects]
-      record.commenters.each{|u| u.update_counters only: [:comments] }
       if record.private?
-        Broadcast.where(context_model_id: record.id, context_model_type: 'Project').destroy_all
-        Broadcast.where(project_id: record.id).destroy_all
       else
         record.hide = true if record.force_hide?
       end

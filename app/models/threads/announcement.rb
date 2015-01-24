@@ -5,6 +5,10 @@ class Announcement < BuildLog
     published.where('threads.display_until IS NULL OR threads.display_until > ?', Time.now).first
   end
 
+  def self.not_sent
+    where(workflow_state: nil)
+  end
+
   def self.published
     where(draft: false).where('threads.published_at IS NULL OR threads.published_at < ?', Time.now)
   end

@@ -1,10 +1,10 @@
 = content_for :head do
   = stylesheet_link_tag 'flipclock'
   meta property="og:title" content="Hackster Hardware Weekend Roadshow"
-  meta property="og:description" content="Hackster #HardwareWeekend is coming to 10 cities across the US in 2015. Join us to hack, meet awesome hackers and win great prizes!"
+  meta property="og:description" content="The Hackster #HardwareWeekend is coming to 10 cities across America! Join us to hack, meet awesome people and win great prizes!"
   meta property="og:image" content=asset_url('hwweek/bg.jpg')
   meta(property="twitter:title" content="Hackster Hardware Weekend Roadshow")
-  meta(property="twitter:description" content="Hackster #HardwareWeekend is coming to 10 cities across the US in 2015. Join us to hack, meet awesome hackers and win great prizes!")
+  meta(property="twitter:description" content="The Hackster #HardwareWeekend is coming to 10 cities across America! Join us to hack, meet awesome people and win great prizes!")
   meta(property="twitter:image:src" content=asset_url('hwweek/bg.jpg'))
   meta(property="twitter:image:width" content='1731')
   meta(property="twitter:image:height" content='1155')
@@ -47,7 +47,7 @@
     #nav-mobile-trigger.hide-on-desktop.fa.fa-bars
     .navbar-in  style='position:relative;'
       .navbar-header
-        = link_to 'Hackster Hardware Weekend', '#hwweek', class: 'navbar-brand navbar-btn smooth-scroll', data: { target: '#hwweek' }, style: 'padding: 10px 20px;'
+        = link_to 'Hackster Hardware Weekend', root_path, class: 'navbar-brand navbar-btn', style: 'padding: 10px 20px;'
       #nav-non-logo.show-on-desktop
         ul#nav-actions.top-menu-nav
           li= link_to 'Partners', '#partners', class: 'nav-link smooth-scroll', data: { target: '#partners' }
@@ -96,18 +96,22 @@
             = link_to image_tag('hwweek/partners/softlayer.png'), 'http://www.softlayer.com'
             = link_to image_tag('hwweek/partners/freescale.png'), 'http://www.freescale.com'
           .layer
+            = link_to image_tag('hwweek/partners/haxlr8r.jpg'), 'https://www.haxlr8r.com'
             = link_to image_tag('hwweek/partners/1b.png'), 'https://firstbuild.com'
-            = link_to image_tag('hwweek/partners/udoo.png'), 'http://www.udoo.org'
             = link_to image_tag('hwweek/partners/spark.png'), 'http://spark.io'
             = link_to image_tag('hwweek/partners/seeed.png'), 'http://www.seeedstudio.com'
           .layer
+            = link_to image_tag('hwweek/partners/udoo.png'), 'http://www.udoo.org'
             = link_to image_tag('hwweek/partners/sparkfun.jpg'), 'https://www.sparkfun.com'
-            = link_to image_tag('hwweek/partners/highway1.jpg'), 'http://www.seeedstudio.com'
-            = link_to image_tag('hwweek/partners/dragon.jpg'), 'http://dragoninnovation.com'
-            = link_to image_tag('hwweek/partners/upverter.png'), 'https://upverter.com'
+            = link_to image_tag('hwweek/partners/highway1.jpg'), 'http://www.highway1.com'
+            = link_to image_tag('hwweek/partners/dragon.png'), 'http://dragoninnovation.com'
           .layer
+            = link_to image_tag('hwweek/partners/upverter.png'), 'https://upverter.com'
             = link_to image_tag('hwweek/partners/aws.png'), 'http://aws.amazon.com'
-            = link_to image_tag('hwweek/partners/lemnos.png'), 'http://lemnoslabs.com/'
+            = link_to image_tag('hwweek/partners/lemnos.png'), 'http://lemnoslabs.com'
+            = link_to image_tag('hwweek/partners/1sheeld.png'), 'http://1sheeld.com'
+          .layer
+            = link_to image_tag('hwweek/partners/relayr.png'), 'https://relayr.io'
 
           p.getintouch
             ' Interested in partnering?

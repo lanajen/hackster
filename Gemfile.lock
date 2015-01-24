@@ -340,7 +340,6 @@ GEM
       rack
     rack-test (0.6.3)
       rack (>= 1.0)
-    rack-timeout (0.0.4)
     rails (4.1.6)
       actionmailer (= 4.1.6)
       actionpack (= 4.1.6)
@@ -572,7 +571,6 @@ DEPENDENCIES
   pygments.rb (= 0.5.4)
   quiet_assets
   rack-attack (= 4.1.0)
-  rack-timeout (= 0.0.4)
   rails (= 4.1.6)
   rails-assets-medium-editor (= 1.8.14)
   rails-assets-underscore (= 1.7.0)

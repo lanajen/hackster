@@ -10,9 +10,9 @@
       = simple_form_for @user, url: user_after_registration_path, html: { class: 'widget-form form-horizontal accept-file-upload disable-drop-styling' }, wrapper: :bootstrap3_horizontal do |f|
         = f.error_notification
         = f.input :full_name, label: 'Full name', autofocus: true
-        = f.input :user_name, label: 'Username', wrapper: :addon do
+        = f.input :new_user_name, label: 'User name', wrapper: :addon do
           span.input-group-addon hackster.io/
-          = f.input_field :user_name
+          = f.input_field :new_user_name
 
         = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Profile picture', image_link: @user.avatar.try(:file_url, :thumb), help_block: '', attribute_type: 'avatar', image_version: 'thumb', model: 'user' }
 
