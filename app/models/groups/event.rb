@@ -1,19 +1,13 @@
-class Event < Community
+class Event < GeographicCommunity
   belongs_to :hackathon, foreign_key: :parent_id
   has_many :awards, as: :gradable
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'EventMember'
   has_many :pages, as: :threadable
 
-  geocoded_by :full_street_address
-  after_validation :geocode, if: proc{|h| h.address_changed? or h.city_changed? or
-    h.state_changed? or h.country_changed? }
-
-  validates :address, length: { maximum: 255 }
-
   attr_accessor :start_date_dummy, :end_date_dummy
 
-  attr_accessible :awards_attributes, :parent_id, :address, :state, :zipcode,
-    :start_date, :start_date_dummy, :end_date, :end_date_dummy
+  attr_accessible :awards_attributes, :parent_id, :start_date,
+    :start_date_dummy, :end_date, :end_date_dummy
 
   accepts_nested_attributes_for :awards, allow_destroy: true
 
@@ -66,10 +60,6 @@ class Event < Community
 
   def end_date_dummy
     end_date.strftime("%m/%d/%Y %l:%M %P") if end_date
-  end
-
-  def full_street_address
-    "#{address}, #{city}, #{state}, #{zipcode}, #{country}"
   end
 
   # def name

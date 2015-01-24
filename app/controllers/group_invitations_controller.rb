@@ -3,7 +3,7 @@ class GroupInvitationsController < ApplicationController
   before_filter :load_and_authorize_invitable, only: [:new, :create]
   before_filter :load_invitable, except: [:new, :create]
   respond_to :html
-  layout :set_layout
+  layout 'group'
 
   def index
     redirect_to group_path(@group), alert: 'Invalid invitation token' and return unless token_valid?
@@ -74,15 +74,6 @@ class GroupInvitationsController < ApplicationController
 
     def prepare_emails emails
       emails.gsub(/\r\n/, ',').gsub(/\n/, ',').gsub(/[ ]+/, ',').split(',').reject{ |l| !(l =~ EMAIL_REGEXP )}
-    end
-
-    def set_layout
-      case @invitable
-      when List, Platform, Event
-        'group'
-      else
-        @model_name
-      end
     end
 
     def token_valid?

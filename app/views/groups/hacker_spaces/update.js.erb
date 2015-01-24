@@ -1,8 +1,0 @@
-<%- if @refresh %>
-  window.location = '<%= hacker_space_path(@hacker_space) %>';
-<% else %>
-  $('.user .display').html('<%= escape_javascript render("groups/hacker_spaces/teaser") %>');
-  $('.user .edit').slideUp(function(){
-    $('.user .display').slideDown();
-  });
-<% end %>

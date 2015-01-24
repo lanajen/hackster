@@ -1,7 +1,7 @@
 class HackerSpacesController < ApplicationController
   before_filter :authenticate_user!, except: [:show, :redirect_to_show, :index]
   before_filter :load_hacker_space, only: [:show, :redirect_to_show, :update]
-  layout 'hacker_space', only: [:edit, :update, :show]
+  layout 'group_shared', only: [:edit, :update, :show]
   respond_to :html
 
   def index
@@ -19,13 +19,14 @@ class HackerSpacesController < ApplicationController
   def show
     title @hacker_space.name
     meta_desc "Join the hacker space #{@hacker_space.name} on Hackster.io!"
-    # @broadcasts = @hacker_space.broadcasts.limit 20
-    @projects = @hacker_space.projects.public.for_thumb_display.order(created_at: :desc).paginate(page: safe_page_params, per_page: 16)
+
+    @projects = @hacker_space.project_collections.visible.joins(:project).visible.merge(Project.public.for_thumb_display_in_collection.order(created_at: :desc)).paginate(page: safe_page_params)
+
     @members = @hacker_space.members.includes(:user).includes(user: :avatar).invitation_accepted_or_not_invited.with_group_roles('member').map(&:user).select{|u| u.invitation_token.nil? }
     @team_members = @hacker_space.members.includes(:user).includes(user: :avatar).invitation_accepted_or_not_invited.with_group_roles('team').map(&:user).select{|u| u.invitation_token.nil? }
     # @assignments = @hacker_space.assignments
 
-    render "groups/hacker_spaces/#{self.action_name}"
+    render "groups/shared/#{self.action_name}"
   end
 
   def redirect_to_show

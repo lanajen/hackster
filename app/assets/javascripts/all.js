@@ -211,11 +211,13 @@ $(function () {
     });
   }
 
+  $('.group-nav .visible-xs .nav a').on('click', function(e){
+    closeNav($(this).parent().parent());
+  });
+
   $('.close-nav').on('click', function(e){
     e.preventDefault();
-    $(this).parent().parent().slideUp(function(){
-      $(this).prev().slideDown();
-    });
+    closeNav($(this).parent().parent());
   });
 
   $('.event-menu').on('click', function(e){
@@ -234,6 +236,12 @@ $(function () {
     }
   });
 });
+
+function closeNav(nav) {
+  nav.slideUp(function(){
+    $(this).prev().slideDown();
+  });
+}
 
 function smoothScrollToIfOutOfBounds(target, offsetTop, speed) {
   if (typeof(target) == 'string') target = $(target);

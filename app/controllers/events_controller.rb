@@ -8,8 +8,8 @@ class EventsController < ApplicationController
   def show
     title @event.name
     meta_desc "Join the event #{@event.name} on Hackster.io!"
-    # @broadcasts = @event.broadcasts.limit 20
-    @projects = @event.project_collections.visible.includes(:project).visible.merge(Project.for_thumb_display_in_collection.order('projects.respects_count DESC')).paginate(page: params[:page])
+
+    @projects = @event.project_collections.visible.includes(:project).visible.merge(Project.for_thumb_display_in_collection.order('projects.respects_count DESC')).paginate(page: safe_page_params)
     # @participants = @event.members.request_accepted_or_not_requested.invitation_accepted_or_not_invited.with_group_roles('participant').includes(:user).includes(user: :avatar).map(&:user)
     # @organizers = @event.members.invitation_accepted_or_not_invited.with_group_roles('organizer').includes(:user).includes(user: :avatar).map(&:user)
     @awards = @event.awards

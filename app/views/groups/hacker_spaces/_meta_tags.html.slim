@@ -1,5 +1,5 @@
 meta(property="og:title" content="#{@group.name} projects")
-meta(property="og:description" content="Discover hacks and projects built during #{@group.name}!")
+meta(property="og:description" content="Discover hacks and projects built at #{@group.name}, and share your own!")
 - if @group.avatar
   meta(property="og:image" content=@group.avatar(:big))
   meta(property="twitter:image:src" content=@group.avatar(:big))
@@ -7,7 +7,7 @@ meta(property="og:description" content="Discover hacks and projects built during
   meta(property="og:image:height" content='200')
   meta(property="twitter:image:width" content='200')
   meta(property="twitter:image:height" content='200')
-meta(property="og:url" content=event_url(@group))
+meta(property="og:url" content=hacker_space_url(@group))
 meta(property="og:site_name" content="Hackster.io")
 meta(property="twitter:card" content="summary")
 meta(property="twitter:site" content="@hacksterio")
@@ -16,5 +16,5 @@ meta(property="twitter:title" content="#{@group.name} projects")
 meta(property="twitter:description" content="#{@group.mini_resume}")
 - if handle = @group.twitter_handle
   meta(property="twitter:creator" content=handle)
-link(rel="canonical" href=event_url(@group))
+link(rel="canonical" href=hacker_space_url(@group))
 meta(property="keywords" content="#{@group.name} projects, #{@group.name} hacks")

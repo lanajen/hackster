@@ -12,7 +12,7 @@
           - if i != 0 and i % 3 == 0
             </div></div><div class="col-md-6"><div class="row">
           = render partial: 'users/user_thumb_mini', locals: { user: user }
-        </div>
+        </div></div>
     - else
       p This event has no participants.
 
@@ -24,7 +24,7 @@
           - if i != 0 and i % 3 == 0
             </div></div><div class="col-md-6"><div class="row">
           = render partial: 'users/user_thumb_mini', locals: { user: user }
-        </div>
+        </div></div>
 
     - if @mentors.any?
       .row
@@ -34,7 +34,7 @@
           - if i != 0 and i % 3 == 0
             </div></div><div class="col-md-6"><div class="row">
           = render partial: 'users/user_thumb_mini', locals: { user: user }
-        </div>
+        </div></div>
 
   - else
     .alert.alert-warning

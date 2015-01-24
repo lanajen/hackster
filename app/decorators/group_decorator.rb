@@ -5,6 +5,22 @@ class GroupDecorator < UserDecorator
     end
   end
 
+  def bg_class
+    if model.cover_image and model.cover_image.file_url
+      'user-bg'
+    else
+      'default-bg'
+    end
+  end
+
+  def cover_image size=:cover
+    if model.cover_image and model.cover_image.file_url
+      model.cover_image.file_url(size)
+    else
+      h.asset_url 'footer-bg.png'
+    end
+  end
+
   def gravatar size=:thumb
     width = case size
     when :tiny

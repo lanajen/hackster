@@ -20,7 +20,7 @@
 
 = content_for :no_container do
   section.top-banner
-    .top-banner-image style="background-image:url('#{@group.cover_image.try(:file_url, :cover)}');"
+    .top-banner-image style="background-image:url('#{@group.cover_image(:cover)}');" class=@group.bg_class
       .top-banner-image-inner
         / .top-banner-image-inner-corner.top-right.text.hidden-xs
           = @group.class.name

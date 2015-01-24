@@ -1,0 +1,55 @@
+- if can? :read, @group
+  .tab-content
+    #tab-projects.tab-pane.active.fade.in
+      .project-list-actions.clearfix.mg-30
+        - if can? :add_project, @group
+        .pull-right
+          = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project to hacker space".html_safe, "#{hacker_space_path(@hacker_space)}/projects/new", class: 'btn btn-sm btn-default'
+
+      - if @projects.any?
+        .row.project-list
+          - @projects.each do |collection|
+            = render partial: 'projects/project_thumb', locals: { project: collection.project.decorate }
+
+        .row.text-center= will_paginate @projects
+      - else
+          p
+            ' All public projects will appear here.
+            - if can? :add_project, @hacker_space
+              = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project to hacker space".html_safe, "#{hacker_space_path(@hacker_space)}/projects/new", class: 'btn btn-sm btn-warning'
+
+    #tab-members.tab-pane.fade
+      - if @members.any?
+        .row
+          <div class="col-md-6"><div class="row">
+          - @members.each_with_index do |user, i|
+            - if i != 0 and i % 3 == 0
+              </div></div><div class="col-md-6"><div class="row">
+            = render partial: 'users/user_thumb_mini', locals: { user: user }
+          </div></div>
+      - else
+        ' Do you hack from #{@hacker_space.name}?
+        = link_to 'Join the group', group_accept_invitation_path(@hacker_space), class: 'btn btn-warning btn-sm'
+
+    #tab-team.tab-pane.fade
+      - if @team_members.any?
+        .row
+          <div class="col-md-6"><div class="row">
+          - @team_members.each_with_index do |user, i|
+            - if i != 0 and i % 3 == 0
+              </div></div><div class="col-md-6"><div class="row">
+            = render partial: 'users/user_thumb_mini', locals: { user: user }
+          </div></div>
+      - elsif can? :join, @hacker_space
+        ' Are you part of the team at #{@hacker_space.name}?
+        = link_to 'Join the group', group_accept_invitation_path(@hacker_space, role: 'team'), class: 'btn btn-warning btn-sm'
+      - else
+        | Looks like no team members have signed up. Let them know they should claim the page!
+
+- else
+  .alert.alert-warning
+    | The content of this group is only visible to members.
+    / if @event.access_level == 'anyone'
+      = link_to 'Join', '', class: 'btn btn-warning btn-sm'
+    / elsif @event.access_level == 'request'
+      = link_to 'Request access', '', class: 'btn btn-warning btn-sm'

@@ -1,14 +1,17 @@
-= simple_nested_form_for @hacker_space, html: { class: 'form-horizontal remote accept-file-upload', data: { remote: true } }, wrapper: :bootstrap3_horizontal do |f|
+= simple_nested_form_for @hacker_space, html: { class: 'form-horizontal remote accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
   = f.error_notification
 
   .row
     .col-xs-12
-      h3
-        | Edit profile
+      .header.clearfix
+        h3.pull-left
+          | Edit hacker space
         .pull-right
           ul.list-unstyled.list-inline
+            - if current_user.is? :admin
+              li= link_to 'Edit as admin', edit_admin_group_path(@group), class: 'btn btn-sm btn-warning'
             li= f.submit 'Update profile', class: 'btn btn-primary btn-sm'
-            li= link_to 'Cancel', '', class: 'btn-cancel btn-link btn-sm', data: { show: '.user .display', hide: '.user .edit' }
+            li= link_to 'Cancel', @group, class: 'btn-link btn-sm'
       hr
 
   .row
@@ -22,6 +25,8 @@
         hint: 'Maximum 140 characters'
 
       = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Profile picture', image_link: @hacker_space.avatar.try(:file_url, :thumb), help_block: '', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
+
+      = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @group.cover_image.try(:file_url), help_block: "High quality banner, at least 1600px wide and 430px high. An image with no text looks a lot better!", attribute_type: 'cover_image', image_version: nil, model: 'group' }
 
       = f.input :address
       = f.input :city

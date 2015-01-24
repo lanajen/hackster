@@ -1,20 +1,12 @@
-class HackerSpace < Community
+class HackerSpace < GeographicCommunity
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'HackerSpaceMember'
   has_many :pages, as: :threadable
 
   store_accessor :websites, :irc_link, :hackerspace_org_link, :wiki_link,
     :mailing_list_link
 
-  attr_accessible :irc_link, :hackerspace_org_link, :wiki_link, :mailing_list_link,
-    :latitude, :longitude
-
-  geocoded_by :full_street_address
-  after_validation :geocode, if: proc{|h| h.address_changed? or h.city_changed? or
-    h.state_changed? or h.country_changed? }
-
-  validates :address, length: { maximum: 255 }
-
-  attr_accessible :address, :state, :zipcode
+  attr_accessible :irc_link, :hackerspace_org_link, :wiki_link,
+    :mailing_list_link
 
   # beginning of search methods
   tire do
@@ -47,10 +39,6 @@ class HackerSpace < Community
 
   def self.default_access_level
     'anyone'
-  end
-
-  def full_street_address
-    "#{address}, #{city}, #{state}, #{zipcode}, #{country}"
   end
 
   private
