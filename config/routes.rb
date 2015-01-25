@@ -329,6 +329,7 @@ HackerIo::Application.routes.draw do
     get 'privacy' => 'pages#privacy'
     get 'terms' => 'pages#terms'
     get 'press' => 'pages#press'
+    get 'jobs' => 'pages#jobs'
     get 'resources' => 'pages#resources'
     get 'electric-imp', to: redirect('electricimp')
 

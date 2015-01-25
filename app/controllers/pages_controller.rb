@@ -50,6 +50,11 @@ class PagesController < ApplicationController
     title 'Infringement notice policy'
   end
 
+  def jobs
+    title 'Jobs at Hackster'
+    meta_desc "Join the Hackster team to help more hackers make things."
+  end
+
   def ping
     render text: 'pong!'
   end
