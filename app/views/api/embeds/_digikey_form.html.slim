@@ -11,14 +11,15 @@
       i.fa.fa-shopping-cart>
       | Buy the parts from DigiKey
 
-- if widget.parts.without_sku.any?
-  .popup-overlay id="no-digikey-parts-popup-#{@digikey_id}"
-    .popup-overlay-bg
-    .popup-overlay-outer
-      .popup-overlay-inner
-        button.close  onclick="closePopup('.popup-overlay');"   &times;
-        h2
-          | Heads up!
+.popup-overlay id="no-digikey-parts-popup-#{@digikey_id}"
+  .popup-overlay-bg
+  .popup-overlay-outer
+    .popup-overlay-inner
+      button.close  onclick="closePopup('.popup-overlay');"   &times;
+      h2
+        | Heads up!
+      p Automatic ordering is still an experimental feature, please double check that the components in your cart match the ones in the list!
+      - if widget.parts.without_sku.any?
         p
           strong The following parts need to be purchased separately:
         table.sortable-table.table.table-hover.fields-container

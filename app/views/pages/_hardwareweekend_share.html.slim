@@ -6,5 +6,7 @@ section style="padding: 20px 0;"
     = link_to 'Facebook', "#", onclick: "window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),'facebook-share-dialog','width=626,height=436'); return false;", class: 'zocial facebook', target: '_blank'
     ' ,
     = link_to 'Twitter', "https://twitter.com/intent/tweet?url=#{link}&via=hacksterio&text=#{CGI.escape(text)}&tw_p=tweetbutton", class: 'zocial twitter', target: '_blank'
-    ' or
+    ' ,
     = link_to 'Google+', "https://plus.google.com/share?url=#{link}", class: 'zocial googleplus', target: '_blank', onclick: "javascript:window.open(this.href,'','menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"
+    ' or
+    = link_to 'LinkedIn', "http://www.linkedin.com/shareArticle?mini=true&url=#{link}&title=Hackster+Hardware+Weekend&summary=#{CGI.escape(text)}&source=Hackster", class: 'zocial linkedin', target: '_blank'

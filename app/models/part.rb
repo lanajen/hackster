@@ -8,7 +8,7 @@ class Part < ActiveRecord::Base
   # validates :description, presence: true
   validate :ensure_not_empty
   validates :quantity, numericality: { greater_than: 0 }
-  validates :unit_price, numericality: { greater_than_or_equal_to: 0 }
+  validates :unit_price, numericality: { greater_than_or_equal_to: 0 }, allow_blank: true
   validates :description, :comment, length: { maximum: 255 }, allow_blank: true
   before_validation :ensure_protocol_for_vendor_link
   # validate :mpn_or_description_is_present?
