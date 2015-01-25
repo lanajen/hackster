@@ -1,32 +1,38 @@
-section.group-nav.affixable
-  .hidden-xs
-    .container
-      ul.nav.nav-tabs
-        li.active= link_to "Projects#{content_tag(:small, @group.projects_count)}".html_safe, '#tab-projects', data: { toggle: 'tab' }
-        li= link_to "Members".html_safe, "#tab-members", data: { toggle: 'tab' }
-        li= link_to "Team", "#tab-team", data: { toggle: 'tab' }
+.group-nav.affixable
+  .group-nav-inner.hidden-xs
+    .brand
+      = image_tag @group.avatar(:big), class: 'img-thumbnail'
+      h2= @group.name
+    ul.nav.nav-tabs
+      li.active= link_to "Projects#{content_tag(:small, @group.projects_count)}".html_safe, '#tab-projects', data: { toggle: 'tab' }
+      li= link_to "Members".html_safe, "#tab-members", data: { toggle: 'tab' }
+      li= link_to "Team", "#tab-team", data: { toggle: 'tab' }
 
-      ul.list-inline.manage
-        - if can? :manage, @group
-          li.dropdown role='presentation'
-            a.btn.btn-default.dropdown-toggle data-toggle="dropdown" aria-expanded="false"
-              ' Manage this page
-              span.caret
-            ul.dropdown-menu role="menu"
-              li= link_to 'Edit settings', url_for([:edit, @group])
-              li.divider
-              / li= link_to 'Post fresh news', new_platform_announcement_path(@group.user_name)
-              li= link_to 'Manage members', group_edit_members_path(@group)
-              li= link_to 'Invite members', group_new_invitations_path(@group)
-        / - if !(can? :manage, @group) or (user_signed_in? and current_user.is? :admin)
-          li= render partial: 'followers/button_text', locals: { followable: @group }
+    ul.list-inline.manage
+      - if can? :manage, @group
+        li.dropdown role='presentation'
+          a.btn.btn-default.dropdown-toggle data-toggle="dropdown" aria-expanded="false"
+            ' Manage this page
+            span.caret
+          ul.dropdown-menu role="menu"
+            li= link_to 'Edit settings', url_for([:edit, @group])
+            li.divider
+            / li= link_to 'Post fresh news', new_platform_announcement_path(@group.user_name)
+            li= link_to 'Manage members', group_edit_members_path(@group)
+            li= link_to 'Invite members', group_new_invitations_path(@group)
+      / - if !(can? :manage, @group) or (user_signed_in? and current_user.is? :admin)
+        li= render partial: 'followers/button_text', locals: { followable: @group }
+
+    ul.websites.list-inline.pull-right
+      - @group.websites.select{|t,u| u.present? }.each do |type, url|
+        = render partial: "shared/website", locals: { type: type, url: url }
 
   .visible-xs
-    a.event-menu href=''
+    a.submenu-mobile-open href=''
       i.fa.fa-bars
       | Submenu
 
-    ul.nav.nav-pills.nav-stacked.nav-justified style='display:none;'
+    ul.nav.nav-pills.nav-stacked.nav-justified.submenu-mobile style='display:none;'
       li
         a.close-nav href='' &times; Close
       li.active= link_to "Projects#{content_tag(:small, @group.projects_count)}".html_safe, '#tab-projects', data: { toggle: 'tab' }
@@ -39,17 +45,3 @@ section.group-nav.affixable
         li.divider
         li= link_to 'Manage members', group_edit_members_path(@group)
         li= link_to 'Invite members', group_new_invitations_path(@group)
-
-= content_for :js do
-  javascript:
-    $('.group-nav.affixable').on('affix-on', function(e){
-      var next = $(this).next();
-      var pdg = parseInt(next.css('padding-top'));
-      next.data('padding-top', pdg);
-      next.css('padding-top', pdg + $(this).outerHeight());
-    });
-    $('.group-nav.affixable').on('affix-off', function(e){
-      var next = $(this).next();
-      var pdg = next.data('padding-top');
-      next.css('padding-top', pdg);
-    });

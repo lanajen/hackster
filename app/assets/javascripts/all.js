@@ -1,7 +1,9 @@
 // document.ready initializes too early and it messes the dimensions used in the following functions
 $(window).load(function(){
   function updateAffix(top, w, el){
+    // console.log(top);
     var y = w.scrollTop();
+    // console.log(y);
     if (y >= top) {
       if (!el.hasClass('affix')) {
         el.addClass('affix');
@@ -22,7 +24,7 @@ $(window).load(function(){
     var $window = $(window);
     if ($fixedEl.length) {
       $.each($fixedEl, function(){
-        var top = parseInt($(this).offset().top - (parseFloat($(this).css('top')) || 0)),
+        var top = parseInt($(this).offset().top - (parseFloat(this.style.top) || 0)),
             $this = $(this);
         updateAffix(top, $window, $this);
         $window.on('scroll.affix',function(){
@@ -210,22 +212,6 @@ $(function () {
       $('.popup-overlay').fadeOut(200);
     });
   }
-
-  $('.group-nav .visible-xs .nav a').on('click', function(e){
-    closeNav($(this).parent().parent());
-  });
-
-  $('.close-nav').on('click', function(e){
-    e.preventDefault();
-    closeNav($(this).parent().parent());
-  });
-
-  $('.event-menu').on('click', function(e){
-    e.preventDefault();
-    $(this).slideUp(function(){
-      $(this).next().slideDown();
-    });
-  });
 
   $('a.smooth-scroll').click(function(e){
     target = '#' + this.hash.substring(1);

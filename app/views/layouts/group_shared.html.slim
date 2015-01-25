@@ -25,10 +25,7 @@
         / .top-banner-image-inner-corner.top-right.text.hidden-xs
           = @group.class.name
         .top-banner-image-inner-corner.bottom-right.hidden-xs
-          ul.websites.list-inline
-            - @group.websites.select{|t,u| u.present? }.each do |type, url|
-              = render partial: "shared/website", locals: { type: type, url: url }
-        .top-banner-image-inner-corner.bottom-left.bottom-center-mobile
+        / .top-banner-image-inner-corner.bottom-left.bottom-center-mobile
           ul.list-unstyled.list-inline.project-stats
             = render partial: "groups/#{@group.identifier.pluralize}/stats"
 
@@ -109,7 +106,7 @@
           p= @group.mini_resume
           p= render partial: 'followers/button_text', locals: { followable: @group }
 
-  = render partial: "groups/#{@group.identifier.pluralize}/nav"
+    = render partial: "groups/#{@group.identifier.pluralize}/nav"
 
   = render partial: "groups/#{@group.identifier.pluralize}/alerts"
 

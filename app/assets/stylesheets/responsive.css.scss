@@ -45,46 +45,12 @@
 }
 
 @media only screen and (max-width: 768px) {
-  /* Autodesk2 */
-  .autodesk2-page .banner {
-    margin-bottom: 0px;
-    .banner-left {
-      margin-top: 35%;
-    }
-    .banner-right {
-      margin-top: 20px;
-    }
-  }
-  .single-prompt {
-    > img {
-      width: 130px;
-      float: left !important;
-    }
-  }
   #content.project-page {
     .carousel-control {
       display: none;
     }
     .content-container {
       padding: 10px 15px;
-    }
-  }
-}
-
-@media only screen and (max-width: 600px) {
-  /* Autodesk2 */
-  .autodesk2-page {
-    .banner {
-      .banner-right {
-        margin-top: 15px;
-      }
-      .banner-left h1 {
-        font-size: 25px;
-      }
-    }
-    .content .img-block img {
-      width: 100%;
-      margin-bottom: 1px;
     }
   }
 }
