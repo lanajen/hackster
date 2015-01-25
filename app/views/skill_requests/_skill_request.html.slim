@@ -1,0 +1,14 @@
+section.section-container
+  .section-title
+    h3.title
+      = link_to skill_request.title, skill_request
+
+      .subtitle
+        ==> time_ago_in_words skill_request.created_at
+        ' ago -
+        = link_to pluralize(skill_request.comments.size, 'response'), url_for([skill_request, anchor: 'comments'])
+
+  .section-content.medium-editor
+    = raw skill_request.body
+    - unless url_for(skill_request) == request.path
+      p= link_to "Respond to this request &rarr;".html_safe, skill_request

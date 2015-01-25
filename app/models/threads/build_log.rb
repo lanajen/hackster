@@ -1,4 +1,4 @@
-class BuildLog < ThreadPost
+class BuildLog < Post
   DEFAULT_TITLE = 'Untitled'
 
   has_many :widgets, as: :widgetable

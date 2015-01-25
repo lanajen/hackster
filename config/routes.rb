@@ -297,6 +297,10 @@ HackerIo::Application.routes.draw do
 
     resources :messages, as: :conversations, controller: :conversations
 
+    resources :skill_requests, path: 'cupidon' do
+      resources :comments, only: [:create]
+    end
+
     get 'users/registration/complete_profile' => 'users#after_registration', as: :user_after_registration
     patch 'users/registration/complete_profile' => 'users#after_registration_save'
 

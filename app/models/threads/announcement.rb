@@ -1,4 +1,4 @@
-class Announcement < BuildLog
+class Announcement < Post
   attr_accessible :published_at, :display_until
 
   def self.current

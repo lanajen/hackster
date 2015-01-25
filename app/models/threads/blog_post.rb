@@ -1,4 +1,4 @@
-class BlogPost < ThreadPost
+class BlogPost < Post
   include Taggable
 
   validates :slug, presence: true, uniqueness: { scope: :type }, format: { with: /\A[a-zA-Z0-9\-\/]+\z/, message: "only accepts letters, digits and the symbols - and /." }

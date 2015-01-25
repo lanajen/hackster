@@ -1,4 +1,4 @@
-class Page < ThreadPost
+class Page < Post
   validates :slug, format: { with: /\A[a-z0-9\-]+\z/, message: "only accepts lower case letters, digits and the symbol -." }
   attr_accessible :slug
   before_save :generate_slug, if: proc{|p| p.slug.blank? }

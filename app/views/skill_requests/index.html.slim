@@ -1,0 +1,10 @@
+h1.title Find someone to work with
+p Do you have an awesome project you're working on, and you'd like to find team mates? Post your request here!
+= link_to 'Find a team mate', new_skill_request_path, class: 'btn btn-primary'
+.section-interlude
+
+- @skill_requests.each do |skill_request|
+  = render skill_request
+  .section-interlude
+
+.text-center= will_paginate @skill_requests

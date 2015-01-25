@@ -7,7 +7,7 @@ class Ability
     @user = resource
 
     can :read, [Comment, User]
-    cannot :read, [Project, Group]
+    cannot :read, [Project, Group, SkillRequest]
     can :read, [Project, Group], private: false
     can :read, Assignment do |assignment|
       assignment.promotion.private == false
@@ -161,6 +161,12 @@ class Ability
 
     can :admin, Challenge do |challenge|
       ChallengeAdmin.where(challenge_id: challenge.id, user_id: @user.id).with_roles('admin').any?
+    end
+
+    can :create, SkillRequest
+
+    can [:update, :destroy], SkillRequest do |req|
+      req.user_id == @user.id
     end
   end
 end

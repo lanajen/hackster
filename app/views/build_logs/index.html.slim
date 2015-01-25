@@ -2,7 +2,7 @@
   .col-md-8
     - if @logs.any?
       - @logs.each do |log|
-        = render partial: log, locals: { log: log }
+        = render log
         .section-interlude
 
     - else

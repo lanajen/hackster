@@ -1,4 +1,4 @@
-class Issue < ThreadPost
+class Issue < Post
   include Workflow
   has_one :assignee_issue
   has_one :assignee, through: :assignee_issue

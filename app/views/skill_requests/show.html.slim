@@ -1,0 +1,30 @@
+p= link_to "&larr; Browse all requests".html_safe, skill_requests_path, class: 'hidden-link'
+h2.mg-20= link_to 'Find a team mate', skill_requests_path, class: 'hidden-link'
+
+.row
+  .col-md-4.col-md-push-8
+    - if can? :edit, @skill_request
+      section.section-thumbs
+        h4 Admin actions
+        ==> link_to 'Edit', edit_skill_request_path(@skill_request), class: 'btn btn-sm btn-warning'
+        / # = link_to 'Delete', build_log_path(@skill_request), class: 'btn btn-sm btn-danger', data: { method: :delete, confirm: "Are you sure? There's no way back!" }
+
+    section.section-thumbs
+      h4 Posted by
+      .row.desktop-tighter-margins= render partial: 'users/user_thumb_mini', locals: { user: @skill_request.user }
+
+    section.section-thumbs
+      h4 Share
+      = render 'shared/share_buttons'
+
+  .col-md-8.col-md-pull-4
+    = render @skill_request
+
+    section#comments.section-container.section-collapsible
+      h2.section-title
+        a.title.title-toggle href=''
+          ' Responses
+          i.fa.fa-chevron-down
+          i.fa.fa-chevron-up
+      .section-content
+        = render partial: 'widgets/comments', locals: { comments: @skill_request.comments, commentable: @skill_request }

@@ -1,0 +1,32 @@
+p.text-center.mg-40
+  small
+    strong> Tip:
+    ' Have you
+    = link_to 'filled out your profile', profile_edit_path
+    | ? Your chances of finding someone will be a lot higher.
+
+= simple_form_for @skill_request, html: { class: 'form-horizontal' }, wrapper: :bootstrap3_horizontal do |f|
+  = f.error_notification
+  = f.input :body, label: 'Description', hint: "Describe your project and what kind of team mate you'd like to find.", input_html: { class: 'text-editor' }
+  = f.input :title, hint: "Summarize the above project and team mate profile in just a few words"
+  .col-md-8.col-md-offset-4= f.submit 'Find my team mate!', class: 'btn btn-primary'
+  .clearfix
+
+= content_for :js do
+  = tinymce_assets
+
+  javascript:
+    $(document).ready(function(){
+      tinyMCE.init({
+        selector: 'textarea.text-editor',
+        toolbar: "undo redo | bold italic underline | link unlink | bullist numlist",
+        menubar: false,
+        plugins: 'link paste',
+        height: 400,
+        statusbar: false
+      });
+    });
+
+= content_for :head do
+  css:
+    .text-editor { overflow:scroll; max-height:300px }
