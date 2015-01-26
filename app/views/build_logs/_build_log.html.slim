@@ -1,20 +1,20 @@
 section.section-container
   .section-title
     h3.title
-      = link_to log.title, log_path(log.threadable, log)
+      = link_to build_log.title, log_path(build_log.threadable, build_log)
       .annotation
-        - if log.draft?
+        - if build_log.draft?
           | (draft)
         - else
-          | Build log ##{log.sub_id}
+          | Build log ##{build_log.sub_id}
 
       .subtitle
-        ==> time_ago_in_words log.created_at
+        ==> time_ago_in_words build_log.created_at
         ' ago -
-        - if log.draft?
-          = link_to 'Edit this log', edit_project_log_path(@project.user_name_for_url, @project.slug, log.id)
+        - if build_log.draft?
+          = link_to 'Edit this log', edit_project_log_path(@project.user_name_for_url, @project.slug, build_log.id)
         - else
-          = link_to pluralize(log.comments.size, 'comment'), log_path(@project, log, anchor: 'comments')
+          = link_to pluralize(build_log.comments.size, 'comment'), log_path(@project, build_log, anchor: 'comments')
 
   .section-content.medium-editor
-    = raw log.decorate.body
+    = raw build_log.decorate.body
