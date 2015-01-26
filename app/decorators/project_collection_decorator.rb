@@ -1,7 +1,7 @@
 class ProjectCollectionDecorator < ApplicationDecorator
   def status_css
     case model.workflow_state
-    when 'approved'
+    when 'approved', 'featured'
       'success'
     when 'pending_review'
       'warning'
@@ -20,6 +20,8 @@ class ProjectCollectionDecorator < ApplicationDecorator
       'Pending review'
     when 'rejected'
       'Hidden'
+    when 'featured'
+      'Featured'
     else
       'Unknown'
     end
