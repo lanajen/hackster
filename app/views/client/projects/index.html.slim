@@ -28,7 +28,7 @@
       | on Hackster.io
 
   - cache "platform-#{current_platform.id}-client-subheading", tag: ["platform-#{current_platform.id}-sidebar", 'platform-sidebar'] do
-    #subheading
+    #subheading.clearfix
       p.pull-left= current_platform.mini_resume
 
       ul.list-inline.list-unstyled.pull-right.submenu
