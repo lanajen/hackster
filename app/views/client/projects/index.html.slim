@@ -82,6 +82,7 @@
               text = "#{escape_javascript render(partial: 'groups/platforms/featured' )}";
               $(text).appendTo($('.project-#{project_collection.project_id} .project-thumb .award-container'));
 
+    .text-center= will_paginate @projects
+
   - else
     p No projects match your criteria.
-    .text-center= will_paginate @projects
