@@ -314,6 +314,8 @@ HackerIo::Application.routes.draw do
     get 'achievements' => 'pages#achievements'
     get 'home', to: redirect('/')
     get 'hardwareweekend' => 'pages#hardwareweekend'
+    get 'hhw', to: redirect('/hardwareweekend')
+    get 'hww', to: redirect('/hardwareweekend')
     get 'hweekend', to: redirect('/hardwareweekend')
     get 'roadshow', to: redirect('/hardwareweekend')
 
