@@ -471,10 +471,6 @@ HackerIo::Application.routes.draw do
     resources :logs, controller: :build_logs
   end
 
-  constraints(MainSite) do
-    get ':not_found' => 'application#not_found'  # find a way to not need this
-  end
-
   constraints(ClientSite) do
 
     scope module: :client, as: :client do
@@ -483,4 +479,6 @@ HackerIo::Application.routes.draw do
       root to: 'projects#index'
     end
   end
+
+  get '*not_found' => 'application#not_found'  # find a way to not need this
 end

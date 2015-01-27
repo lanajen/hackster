@@ -28,7 +28,7 @@ class PlatformsController < ApplicationController
   def show
     authorize! :read, @platform
     impressionist_async @platform, "", unique: [:session_hash]
-    # authorize! :read, @platform
+
     title "#{@platform.name} projects and hacks"
     meta_desc "Discover hacks and projects built with #{@platform.name}, and share your own!"
 

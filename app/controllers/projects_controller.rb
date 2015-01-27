@@ -1,6 +1,6 @@
 class ProjectsController < ApplicationController
   before_filter :load_project, only: [:show, :embed, :update, :destroy, :redirect_to_slug_route]
-  before_filter :ensure_belongs_to_platform
+  before_filter :ensure_belongs_to_platform, only: [:show, :embed, :update, :destroy, :redirect_to_slug_route]
   load_and_authorize_resource only: [:index, :new, :edit, :settings, :submit]
   # layout 'project', only: [:edit, :update, :show]
   before_filter :set_project_mode, only: [:settings]
