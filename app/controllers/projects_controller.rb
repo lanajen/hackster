@@ -277,10 +277,13 @@ class ProjectsController < ApplicationController
 
       track_event 'Updated project', @project.to_tracker.merge({ type: 'project update'})
     else
-      raise @project.errors.inspect
+      if params[:project].try(:[], 'private') == '0'
+        flash.now[:alert] = "Couldn't publish the project, please email us at hi@hackster.io to get help."
+      end
+      # raise @project.errors.inspect
       initialize_project
       @project = @project.decorate
-      render action: "edit"
+      render action: :settings
     end
   end
 

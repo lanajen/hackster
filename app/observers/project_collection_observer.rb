@@ -12,7 +12,7 @@ class ProjectCollectionObserver < ActiveRecord::Observer
   end
 
   def after_status_updated record
-    update_counters record
+    update_counters record unless record.collectable_type == 'Assignment'
   end
 
   private
