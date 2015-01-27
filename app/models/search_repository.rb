@@ -12,18 +12,19 @@ class SearchRepository
     models = params[:type] ? [params[:type]] : nil
 #    query += ' ' + params[:product_tag].keys.join(' ') if params[:product_tag]
 #    query += ' ' + params[:platform_tag].keys.join(' ') if params[:platform_tag]
-    results = self.search_models query, models, params[:offset], params[:page], params[:per_page], params[:include_external]
+    results = self.search_models query, models, params[:offset], params[:page], params[:per_page], params[:include_external], params[:platform_id]
 #    Search.create(user_id: user_id, results_count: results.count, query: query) unless params[:page]
     results
   end
 
   protected
-    def search_models query, models=nil, offset=nil, page=1, per_page=RESULTS_PER_PAGE, include_external
+    def search_models query, models=nil, offset=nil, page=1, per_page=RESULTS_PER_PAGE, include_external, platform_id
       per_page ||= RESULTS_PER_PAGE
       page ||= 1
       include_external = true if include_external.nil?
       filters = []
       filters << { terms: { model: models } } if models.present?
+      filters << { term: { platform_ids: platform_id } } if platform_id.present?
       Rails.logger.info "Searching for #{query} and model #{models.to_s} (offset: #{offset}, page: #{page}, per_page: #{per_page})"
       Tire.search ELASTIC_SEARCH_INDEX_NAME, load: true, page: page, per_page: per_page do
         query do

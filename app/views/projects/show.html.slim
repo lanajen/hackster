@@ -372,7 +372,7 @@
                         - else
                           span.user-name= credit_line.name
 
-            - if communities = (@project.platforms.where(groups: { private: false }, project_collections: { workflow_state: ProjectCollection::VALID_STATES }) + [@project.hacker_space] + @project.communities.where(groups: { private: false })).compact and communities.any? #@project.communities_count > 0
+            - if current_platform.nil? and communities = (@project.platforms.where(groups: { private: false }, project_collections: { workflow_state: ProjectCollection::VALID_STATES }) + [@project.hacker_space] + @project.communities.where(groups: { private: false })).compact and communities.any? #@project.communities_count > 0
               section.section-thumbs
                 h4
                   | Communities this project is part of

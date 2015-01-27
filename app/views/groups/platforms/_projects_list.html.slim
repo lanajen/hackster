@@ -34,8 +34,8 @@
     .row.project-list
       - if @platform.accept_project_ideas
         = render partial: 'groups/platforms/submit_idea', locals: { platform: @platform }
-      - @projects.each do |collection|
-        = render partial: 'projects/project_thumb', locals: { project: collection.project }
+      - @projects.each do |project|
+        = render partial: 'projects/project_thumb', locals: { project: project }
   .row.text-center= will_paginate @projects
 - else
   .row

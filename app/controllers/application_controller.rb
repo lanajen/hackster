@@ -37,6 +37,45 @@ class ApplicationController < ActionController::Base
   helper_method :controller_action
   helper BootstrapFlashHelper
 
+
+  # code to make whitelabel work
+  helper_method :current_site
+  helper_method :current_platform
+  before_filter :current_site
+  before_filter :current_platform
+  helper_method :current_layout
+  layout :current_layout
+
+  def current_layout
+    @layout ||= if current_site
+      'whitelabel'
+    else
+      'application'
+    end
+  end
+
+  def current_site
+    return if request.host == APP_CONFIG['default_host']
+
+    return @current_site if @current_site
+
+    redirect_to root_url(subdomain: 'www') unless @current_site = if request.domain == APP_CONFIG['default_domain']
+      ClientSubdomain.find_by_subdomain(request.subdomains[0])
+    else
+      ClientSubdomain.find_by_domain(request.host)
+    end
+  end
+
+  def current_platform
+    return if request.host == APP_CONFIG['default_host']
+
+    return @current_platform if @current_platform
+
+    redirect_to root_url(subdomain: 'www') unless @current_platform = current_site.platform
+  end
+  # end code for whitelabel
+
+
   unless Rails.application.config.consider_all_requests_local
     rescue_from Exception, with: :render_500
     rescue_from ActionController::RoutingError,
@@ -331,7 +370,7 @@ class ApplicationController < ActionController::Base
     def render_404(exception)
       LogLine.create(log_type: 'not_found', source: 'controller', message: request.url) unless request.url =~ /users\/auth\/[a-z]+\/callback/
       respond_to do |format|
-        format.html { render template: 'errors/error_404', layout: 'layouts/application', status: 404 }
+        format.html { render template: 'errors/error_404', layout: "layouts/#{current_layout}", status: 404 }
         format.all { render nothing: true, status: 404 }
       end
     end
@@ -356,7 +395,7 @@ class ApplicationController < ActionController::Base
       end
       @error = exception
       respond_to do |format|
-        format.html { render template: 'errors/error_500', layout: 'layouts/application', status: 500 }
+        format.html { render template: 'errors/error_500', layout: "layouts/#{current_layout}", status: 500 }
         format.all { render nothing: true, status: 500}
       end
     end

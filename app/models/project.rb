@@ -44,6 +44,8 @@ class Project < ActiveRecord::Base
   has_many :grades
   has_many :hacker_spaces, -> { where("groups.type = 'HackerSpace'") }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :project_collections, dependent: :destroy
+  has_many :visible_collections, -> { visible }, class_name: 'ProjectCollection'
+  has_many :visible_platforms, -> { where("groups.type = 'Platform'") }, through: :visible_collections, source_type: 'Group', source: :collectable
   has_many :issues, as: :threadable, dependent: :destroy
   has_many :images, as: :attachable, dependent: :destroy
   has_many :lists, -> { where("groups.type = 'List'") }, through: :project_collections, source_type: 'Group', source: :collectable
@@ -129,7 +131,8 @@ class Project < ActiveRecord::Base
       indexes :id,              index: :not_analyzed
       indexes :name,            analyzer: 'snowball', boost: 100
       indexes :product_tags,    analyzer: 'snowball', boost: 50
-      indexes :platform_tags,       analyzer: 'snowball', boost: 50
+      indexes :platform_tags,   analyzer: 'snowball', boost: 50
+      indexes :platform_ids
       indexes :description,     analyzer: 'snowball'
       indexes :one_liner,       analyzer: 'snowball'
       indexes :user_names,      analyzer: 'snowball'
@@ -146,6 +149,7 @@ class Project < ActiveRecord::Base
       description: description,
       product_tags: product_tags_string,
       platform_tags: platform_tags_string,
+      platform_ids: visible_platforms.pluck(:id),
       user_name: team_members.map{ |t| t.user.try(:name) },
       created_at: created_at,
       popularity: popularity_counter,
@@ -228,6 +232,10 @@ class Project < ActiveRecord::Base
 
   def self.wip
     indexable.where(wip: true).last_updated
+  end
+
+  def self.with_group group
+    joins(:project_collections).where(project_collections: { collectable_id: group.id, collectable_type: 'Group' })
   end
 
   def age

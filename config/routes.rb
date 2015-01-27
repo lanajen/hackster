@@ -16,21 +16,6 @@ HackerIo::Application.routes.draw do
     get 'sitemap_index.xml' => 'sitemap#index', as: 'sitemap_index', defaults: { format: 'xml' }
     get 'sitemap.xml' => 'sitemap#show', as: 'sitemap', defaults: { format: 'xml' }
 
-    # API (see if can be moved to its own subdomain)
-    namespace :api do
-      namespace :v1 do
-        get 'embeds' => 'embeds#show'
-        # post 'embeds' => 'embeds#create'
-        resources :announcements
-        resources :build_logs
-        resources :projects#, as: :api_projects
-        resources :parts, only: [:create, :destroy]
-        resources :platforms, only: [:show]
-        resources :widgets, only: [:destroy, :update, :create]
-        match "*all" => "base#cors_preflight_check", via: :options
-      end
-    end
-
     # api for split a/b testing gem
     get 'ab_test' => 'split#start_ab_test'
     # post 'finished' => 'split#finished_test'
@@ -41,22 +26,22 @@ HackerIo::Application.routes.draw do
     get 'build' => 'expert_requests#new'
     resources :expert_requests, only: [:create]
 
-    devise_for :users, controllers: {
-      confirmations: 'users/confirmations',
-      invitations: 'users/invitations',
-      omniauth_callbacks: 'users/omniauth_callbacks',
-      sessions: 'users/sessions',
-      registrations: 'users/registrations',
-    }
+    # devise_for :users, controllers: {
+    #   confirmations: 'users/confirmations',
+    #   invitations: 'users/invitations',
+    #   omniauth_callbacks: 'users/omniauth_callbacks',
+    #   sessions: 'users/sessions',
+    #   registrations: 'users/registrations',
+    # }
 
-    devise_scope :user do
-      namespace :users, as: '' do
-        patch '/confirm' => 'confirmations#confirm'
-        resources :authorizations
-        match '/auth/:provider/setup' => 'omniauth_callbacks#setup', via: :get
-        resources :simplified_registrations, only: [:create]
-      end
-    end
+    # devise_scope :user do
+    #   namespace :users, as: '' do
+    #     patch '/confirm' => 'confirmations#confirm'
+    #     resources :authorizations
+    #     match '/auth/:provider/setup' => 'omniauth_callbacks#setup', via: :get
+    #     resources :simplified_registrations, only: [:create]
+    #   end
+    # end
     post 'pusher/auth' => 'users/pusher_authentications#create'
 
     namespace :admin do
@@ -101,7 +86,7 @@ HackerIo::Application.routes.draw do
       get '*slug' => 'posts#show', as: :blog_post, slug: /[a-zA-Z0-9\-\/]+/
     end
 
-    resources :comments, only: [:edit, :update, :destroy]
+    # resources :comments, only: [:edit, :update, :destroy]
 
     # groups
     resources :groups, only: [:edit, :update] do
@@ -208,39 +193,39 @@ HackerIo::Application.routes.draw do
 
     # end groups
 
-    resources :files, only: [:create, :show, :destroy] do
-      get 'remote_upload' => 'files#check_remote_upload', on: :collection
-      post 'remote_upload', on: :collection
-      get 'signed_url', on: :collection
-    end
-    delete 'notifications' => 'notifications#destroy'
+    # resources :files, only: [:create, :show, :destroy] do
+    #   get 'remote_upload' => 'files#check_remote_upload', on: :collection
+    #   post 'remote_upload', on: :collection
+    #   get 'signed_url', on: :collection
+    # end
+    # delete 'notifications' => 'notifications#destroy'
 
-    resources :projects, except: [:show, :update, :destroy] do
-      patch 'submit' => 'projects#submit', on: :member
-      get 'settings' => 'projects#settings', on: :member
-      patch 'settings' => 'projects#update', on: :member
-      post 'claim' => 'projects#claim', on: :member
-      get 'last' => 'projects#redirect_to_last', on: :collection
-      get '' => 'projects#redirect_to_slug_route', constraints: lambda{|req| req.params[:project_id] != 'new' }
-      get 'embed', as: :old_embed
-      get 'permissions/edit' => 'permissions#edit', as: :edit_permissions
-      patch 'permissions' => 'permissions#update'
-      get 'team/edit' => 'members#edit', as: :edit_team
-      patch 'team' => 'members#update'
-      patch 'guest_name' => 'members#update_guest_name'
-      collection do
-        resources :imports, only: [:new, :create], controller: :project_imports, as: :project_imports
-      end
-      resources :comments, only: [:create]
-      resources :respects, only: [:create] do
-        get 'create' => 'respects#create', on: :collection, as: :create
-        delete '' => 'respects#destroy', on: :collection
-      end
-    end
+    # resources :projects, except: [:show, :update, :destroy] do
+    #   patch 'submit' => 'projects#submit', on: :member
+    #   get 'settings' => 'projects#settings', on: :member
+    #   patch 'settings' => 'projects#update', on: :member
+    #   post 'claim' => 'projects#claim', on: :member
+    #   get 'last' => 'projects#redirect_to_last', on: :collection
+    #   get '' => 'projects#redirect_to_slug_route', constraints: lambda{|req| req.params[:project_id] != 'new' }
+    #   get 'embed', as: :old_embed
+    #   get 'permissions/edit' => 'permissions#edit', as: :edit_permissions
+    #   patch 'permissions' => 'permissions#update'
+    #   get 'team/edit' => 'members#edit', as: :edit_team
+    #   patch 'team' => 'members#update'
+    #   patch 'guest_name' => 'members#update_guest_name'
+    #   collection do
+    #     resources :imports, only: [:new, :create], controller: :project_imports, as: :project_imports
+    #   end
+    #   resources :comments, only: [:create]
+    #   resources :respects, only: [:create] do
+    #     get 'create' => 'respects#create', on: :collection, as: :create
+    #     delete '' => 'respects#destroy', on: :collection
+    #   end
+    # end
 
-    get 'projects/e/:user_name/:id' => 'projects#show_external', as: :external_project, id: /[0-9]+\-[A-Za-z0-9\-]+/
-    delete 'projects/e/:user_name/:id' => 'projects#destroy', id: /[0-9]+\-[A-Za-z0-9\-]+/
-    get 'projects/e/:user_name/:slug' => 'projects#redirect_external', as: :external_project_redirect  # legacy route (google has indexed them)
+    # get 'projects/e/:user_name/:id' => 'projects#show_external', as: :external_project, id: /[0-9]+\-[A-Za-z0-9\-]+/
+    # delete 'projects/e/:user_name/:id' => 'projects#destroy', id: /[0-9]+\-[A-Za-z0-9\-]+/
+    # get 'projects/e/:user_name/:slug' => 'projects#redirect_external', as: :external_project_redirect  # legacy route (google has indexed them)
 
     resources :assignments, only: [] do
       get 'grades' => 'grades#index', as: :grades
@@ -250,29 +235,32 @@ HackerIo::Application.routes.draw do
     end
     resources :grades, only: [:index]
 
-    resources :issues, only: [] do
-      resources :comments, only: [:create]
-    end
+    # resources :issues, only: [] do
+    #   resources :comments, only: [:create]
+    # end
 
-    resources :build_logs, only: [:destroy] do
-      get '' => 'build_logs#show_redirect', on: :member
-      resources :comments, only: [:create]
-    end
+    # resources :build_logs, only: [:destroy] do
+    #   get '' => 'build_logs#show_redirect', on: :member
+    #   resources :comments, only: [:create]
+    # end
     resources :wiki_pages, only: [:destroy]
 
     resources :announcements, only: [:destroy] do
       resources :comments, only: [:create]
     end
 
-    resources :followers, only: [:create] do
-      collection do
-        get 'create' => 'followers#create', as: :create
-        delete '' => 'followers#destroy'
-        get 'tools/:id' => 'followers#standalone_button', as: :tool
-        post 'tools/:id' => 'followers#create_from_button'
-        get 'platforms/:id' => 'followers#standalone_button', as: :platform
-        post 'platforms/:id' => 'followers#create_from_button'
-      end
+    # resources :followers, only: [:create] do
+    #   collection do
+    #     get 'create' => 'followers#create', as: :create
+    #     delete '' => 'followers#destroy'
+    #   end
+    # end
+
+    namespace 'followers' do
+      get 'tools/:id' => 'followers#standalone_button', as: :tool
+      post 'tools/:id' => 'followers#create_from_button', as: :create_tool
+      get 'platforms/:id' => 'followers#standalone_button', as: :platform
+      post 'platforms/:id' => 'followers#create_from_button', as: :create_platform
     end
 
     resources :project_collections, only: [:edit, :update]
@@ -295,47 +283,46 @@ HackerIo::Application.routes.draw do
       put 'update_workflow' => 'challenges#update_workflow', on: :member
     end
 
-    resources :messages, as: :conversations, controller: :conversations
+    # resources :messages, as: :conversations, controller: :conversations
 
     resources :skill_requests, path: 'cupidon' do
       resources :comments, only: [:create]
     end
 
-    get 'users/registration/complete_profile' => 'users#after_registration', as: :user_after_registration
-    patch 'users/registration/complete_profile' => 'users#after_registration_save'
+    # get 'users/registration/complete_profile' => 'users#after_registration', as: :user_after_registration
+    # patch 'users/registration/complete_profile' => 'users#after_registration_save'
 
     # dragon
     get 'partners' => 'partners#index'
     get 'dragon/leads/new' => 'dragon_queries#new'
     post 'dragon/leads' => 'dragon_queries#create'
 
-    get 'about' => 'pages#about'
-    # get 'help' => 'pages#help'
-    get 'achievements' => 'pages#achievements'
-    get 'home', to: redirect('/')
+    get 'ping' => 'pages#ping'  # for availability monitoring
+    get 'obscure/path/to/cron' => 'cron#run'
+
+    # get 'profile/edit' => 'users#edit'
+    # patch 'profile' => 'users#update'
+
+    get 'search' => 'search#search'
+    # get 'tags/:tag' => 'search#tags', as: :tags
+    # get 'tags' => 'search#tags'
+    get 'tools', to: redirect('platforms')
+    get 'platforms' => 'platforms#index'
+
     get 'hardwareweekend' => 'pages#hardwareweekend'
     get 'hweekend', to: redirect('/hardwareweekend')
     get 'roadshow', to: redirect('/hardwareweekend')
 
-    get 'ping' => 'pages#ping'  # for availability monitoring
-    get 'obscure/path/to/cron' => 'cron#run'
-
-    get 'profile/edit' => 'users#edit'
-    patch 'profile' => 'users#update'
-
-    get 'search' => 'search#search'
-    get 'tags/:tag' => 'search#tags', as: :tags
-    get 'tags' => 'search#tags'
-    get 'tools', to: redirect('platforms')
-    get 'platforms' => 'platforms#index'
-
+    get 'about' => 'pages#about'
+    # get 'help' => 'pages#help'
+    get 'achievements' => 'pages#achievements'
+    get 'home', to: redirect('/')
     get 'infringement_policy' => 'pages#infringement_policy'
     get 'privacy' => 'pages#privacy'
     get 'terms' => 'pages#terms'
     get 'press' => 'pages#press'
     get 'jobs' => 'pages#jobs'
     get 'resources' => 'pages#resources'
-    get 'electric-imp', to: redirect('electricimp')
 
     post 'chats/:group_id' => 'chat_messages#create', as: :chat_messages
     post 'chats/:group_id/slack' => 'chat_messages#incoming_slack'
@@ -352,28 +339,144 @@ HackerIo::Application.routes.draw do
         resources :announcements, except: [:create, :update, :destroy], path: :news
       end
     end
-    constraints(UserPage) do
-      get ':slug' => 'users#show', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
-      get ':user_name' => 'users#show', as: :user, user_name: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
-    end
+    # constraints(UserPage) do
+    #   get ':slug' => 'users#show', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
+    #   get ':user_name' => 'users#show', as: :user, user_name: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
+    # end
 
-    scope ':user_name/:project_slug', as: :project, user_name: /[A-Za-z0-9_\-]{3,}/, project_slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|js)/ } do
-      get '' => 'projects#show', as: ''
-      delete '' => 'projects#destroy'
-      patch '' => 'projects#update'
-      get 'embed' => 'projects#embed', as: :embed
-      resources :issues do
-        patch 'update_workflow', on: :member
-      end
-      resources :logs, controller: :build_logs
-    end
-
-    get ':not_found' => 'application#not_found'  # find a way to not need this
+    # scope ':user_name/:project_slug', as: :project, user_name: /[A-Za-z0-9_\-]{3,}/, project_slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|js)/ } do
+    #   get '' => 'projects#show', as: ''
+    #   delete '' => 'projects#destroy'
+    #   patch '' => 'projects#update'
+    #   get 'embed' => 'projects#embed', as: :embed
+    #   resources :issues do
+    #     patch 'update_workflow', on: :member
+    #   end
+    #   resources :logs, controller: :build_logs
+    # end
 
     root to: 'pages#home'
   end
 
+  # API (see if can be moved to its own subdomain)
+  namespace :api do
+    namespace :v1 do
+      get 'embeds' => 'embeds#show'
+      # post 'embeds' => 'embeds#create'
+      resources :announcements
+      resources :build_logs
+      resources :projects#, as: :api_projects
+      resources :parts, only: [:create, :destroy]
+      resources :platforms, only: [:show]
+      resources :widgets, only: [:destroy, :update, :create]
+      match "*all" => "base#cors_preflight_check", via: :options
+    end
+  end
+
+  devise_for :users, controllers: {
+    confirmations: 'users/confirmations',
+    invitations: 'users/invitations',
+    omniauth_callbacks: 'users/omniauth_callbacks',
+    sessions: 'users/sessions',
+    registrations: 'users/registrations',
+  }
+
+  devise_scope :user do
+    namespace :users, as: '' do
+      patch '/confirm' => 'confirmations#confirm'
+      resources :authorizations
+      match '/auth/:provider/setup' => 'omniauth_callbacks#setup', via: :get
+      resources :simplified_registrations, only: [:create]
+    end
+  end
+
+  resources :comments, only: [:edit, :update, :destroy]
+
+  resources :files, only: [:create, :show, :destroy] do
+    get 'remote_upload' => 'files#check_remote_upload', on: :collection
+    post 'remote_upload', on: :collection
+    get 'signed_url', on: :collection
+  end
+  delete 'notifications' => 'notifications#destroy'
+
+  resources :projects, except: [:show, :update, :destroy] do
+    patch 'submit' => 'projects#submit', on: :member
+    get 'settings' => 'projects#settings', on: :member
+    patch 'settings' => 'projects#update', on: :member
+    post 'claim' => 'projects#claim', on: :member
+    get 'last' => 'projects#redirect_to_last', on: :collection
+    get '' => 'projects#redirect_to_slug_route', constraints: lambda{|req| req.params[:project_id] != 'new' }
+    get 'embed', as: :old_embed
+    get 'permissions/edit' => 'permissions#edit', as: :edit_permissions
+    patch 'permissions' => 'permissions#update'
+    get 'team/edit' => 'members#edit', as: :edit_team
+    patch 'team' => 'members#update'
+    patch 'guest_name' => 'members#update_guest_name'
+    collection do
+      resources :imports, only: [:new, :create], controller: :project_imports, as: :project_imports
+    end
+    resources :comments, only: [:create]
+    resources :respects, only: [:create] do
+      get 'create' => 'respects#create', on: :collection, as: :create
+      delete '' => 'respects#destroy', on: :collection
+    end
+  end
+
+  get 'projects/e/:user_name/:id' => 'projects#show_external', as: :external_project, id: /[0-9]+\-[A-Za-z0-9\-]+/
+  delete 'projects/e/:user_name/:id' => 'projects#destroy', id: /[0-9]+\-[A-Za-z0-9\-]+/
+  get 'projects/e/:user_name/:slug' => 'projects#redirect_external', as: :external_project_redirect  # legacy route (google has indexed them)
+
+  resources :issues, only: [] do
+    resources :comments, only: [:create]
+  end
+
+  resources :build_logs, only: [:destroy] do
+    get '' => 'build_logs#show_redirect', on: :member
+    resources :comments, only: [:create]
+  end
+
+  resources :messages, as: :conversations, controller: :conversations
+
+  resources :followers, only: [:create] do
+    collection do
+      # post '' => 'followers#create', as: ''
+      get 'create' => 'followers#create', as: :create
+      delete '' => 'followers#destroy'
+    end
+  end
+
+  get 'users/registration/complete_profile' => 'users#after_registration', as: :user_after_registration
+  patch 'users/registration/complete_profile' => 'users#after_registration_save'
+
+  get 'profile/edit' => 'users#edit'
+  patch 'profile' => 'users#update'
+
+  # get 'search' => 'search#search'
+  # get 'tags/:tag' => 'search#tags', as: :tags
+  # get 'tags' => 'search#tags'
+
+  constraints(UserPage) do
+    get ':slug' => 'users#show', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
+    get ':user_name' => 'users#show', as: :user, user_name: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
+  end
+
+  scope ':user_name/:project_slug', as: :project, user_name: /[A-Za-z0-9_\-]{3,}/, project_slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|js)/ } do
+    get '' => 'projects#show', as: ''
+    delete '' => 'projects#destroy'
+    patch '' => 'projects#update'
+    get 'embed' => 'projects#embed', as: :embed
+    resources :issues do
+      patch 'update_workflow', on: :member
+    end
+    resources :logs, controller: :build_logs
+  end
+
+  constraints(MainSite) do
+    get ':not_found' => 'application#not_found'  # find a way to not need this
+  end
+
   constraints(ClientSite) do
+
     scope module: :client, as: :client do
       get 'search' => 'search#search'
 

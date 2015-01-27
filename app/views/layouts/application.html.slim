@@ -48,7 +48,7 @@ html(lang="en")
       = render partial: 'shared/analytics', locals: { tracker: 'UA-11926897-15', domain: 'hackster.io', track_outbound: true }
     / = render 'shared/mixpanel'
 
-  body  class=yield(:body_class)
+  body class=yield(:body_class)
     #outer-wrapper
       - unless params[:blank_frame]
         - if show_hello_world?
@@ -209,7 +209,7 @@ html(lang="en")
             / # li= link_to 'Newsletter', 'http://us7.campaign-archive2.com/home/?u=3fd72855783c7f1a97812d84e&id=6ff81e3e5b', target: '_blank'
             li
           ul.list-unstyled.list-inline.pull-right
-            li Hackster 2014
+            li Hackster 2015
 
     #mobile-nav-overlay.hide-on-desktop
       #mobile-nav-overlay-close.fa.fa-times

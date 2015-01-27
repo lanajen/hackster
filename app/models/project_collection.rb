@@ -10,6 +10,8 @@ class ProjectCollection < ActiveRecord::Base
 
   after_create :update_status
 
+  # scope :visible, -> { where(workflow_state: VALID_STATES) }
+
   workflow do
     state :new do
       event :approve, transitions_to: :approved

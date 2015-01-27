@@ -1,4 +1,4 @@
-- cache ["user-#{@user.id}-sidebar", user_signed_in?, user_is_current?, (user_signed_in? and current_user.following?(@user)), (user_signed_in? and current_user.is?(:admin))], tag: ["user-#{@user.id}-sidebar"] do
+- cache ["user-#{@user.id}-sidebar", user_signed_in?, user_is_current?, (user_signed_in? and current_user.following?(@user)), (user_signed_in? and current_user.is?(:admin)), current_platform.present?], tag: ["user-#{@user.id}-sidebar"] do
   #sidebar-container.affixable
     section#sidebar-container-in
       - if @user.avatar
@@ -77,23 +77,24 @@
             / - @user.badges(:silver).each do |badge|
               = image_tag(asset_url(badge.get_image), class: 'img-circle istooltip', title: badge.name)
 
-      - if @user.followed_platforms.where(groups: { private: false }).any?
-        .display
-          h4 Platforms
-          .content.team-widget.user-communities
-            - @user.followed_platforms.where(groups: { private: false }).each do |c|
-              .community.user
-                ==> link_to image_tag(c.decorate.avatar(:mini), class: 'img-circle' ), c, class: ''
-                = link_to c.name, c
+      - unless current_platform.present?
+        - if @user.followed_platforms.where(groups: { private: false }).any?
+          .display
+            h4 Platforms
+            .content.team-widget.user-communities
+              - @user.followed_platforms.where(groups: { private: false }).each do |c|
+                .community.user
+                  ==> link_to image_tag(c.decorate.avatar(:mini), class: 'img-circle' ), c, class: ''
+                  = link_to c.name, c
 
-      - if @user.hacker_spaces.any?
-        .display
-          h4 Hacker spaces
-          .content.team-widget.user-communities
-            - @user.hacker_spaces.each do |c|
-              .community.user
-                ==> link_to image_tag(c.decorate.avatar(:mini), class: 'img-circle' ), c, class: ''
-                = link_to c.name, hacker_space_path(c)
+        - if @user.hacker_spaces.any?
+          .display
+            h4 Hacker spaces
+            .content.team-widget.user-communities
+              - @user.hacker_spaces.each do |c|
+                .community.user
+                  ==> link_to image_tag(c.decorate.avatar(:mini), class: 'img-circle' ), c, class: ''
+                  = link_to c.name, hacker_space_path(c)
 
       - if @user.interest_tags.any?
         .display

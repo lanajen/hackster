@@ -1,5 +1,6 @@
 class ProjectsController < ApplicationController
   before_filter :load_project, only: [:show, :embed, :update, :destroy, :redirect_to_slug_route]
+  before_filter :ensure_belongs_to_platform
   load_and_authorize_resource only: [:index, :new, :edit, :settings, :submit]
   # layout 'project', only: [:edit, :update, :show]
   before_filter :set_project_mode, only: [:settings]
@@ -54,12 +55,21 @@ class ProjectsController < ApplicationController
     @widgets = @project.widgets.order(:created_at)#.each{|w| @widgets_by_section[w.position[0].to_i] << w }
 
     # other projects by same author
-    @other_projects_count = Project.public.most_popular.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).size
+    @other_projects_count = Project.public.most_popular.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id)
+    @other_projects_count = @other_projects_count.with_group current_platform if current_platform
+    @other_projects_count = @other_projects_count.size
+
     if @other_projects_count > 6
-      @other_projects = Project.public.most_popular.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).includes(:team).includes(:cover_image).limit(3)
-      @last_projects = Project.public.last_public.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: [@project.id] + @other_projects.map(&:id)).includes(:team).includes(:cover_image).limit(3)
+      @other_projects = Project.public.most_popular.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).includes(:team).includes(:cover_image)
+      @other_projects.with_group current_platform if current_platform
+      @other_projects = @other_projects.limit(3)
+
+      @last_projects = Project.public.last_public.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: [@project.id] + @other_projects.map(&:id)).includes(:team).includes(:cover_image)
+      @last_projects = @last_projects.with_group current_platform if current_platform
+      @last_projects = @last_projects.limit(3)
     else
       @other_projects = Project.public.most_popular.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).includes(:team).includes(:cover_image)
+      @other_projects = @other_projects.with_group current_platform if current_platform
     end
 
     # next/previous project in search
@@ -196,6 +206,10 @@ class ProjectsController < ApplicationController
       event = 'Created project'
     end
 
+    if current_platform
+      @project.platform_tags_string = current_platform.name
+    end
+
     if current_user
       @project.build_team
       @project.team.members.new(user_id: current_user.id)
@@ -301,6 +315,12 @@ class ProjectsController < ApplicationController
   end
 
   private
+    def ensure_belongs_to_platform
+      if current_platform
+        raise ActiveRecord::RecordNotFound unless current_platform.in? @project.visible_platforms
+      end
+    end
+
     def initialize_project
       @project.build_logo unless @project.logo
       @project.build_cover_image unless @project.cover_image

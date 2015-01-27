@@ -6,7 +6,7 @@ class Client::SearchController < Client::BaseController
     if params[:q].present?
       begin
         opts = params.dup
-        opts[:q] += " #{current_platform.subdomain}"
+        opts[:platform_id] = current_platform.id
         opts[:type] = 'project'
         opts[:include_external] = true
         opts[:per_page] = Project.per_page

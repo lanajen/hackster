@@ -47,7 +47,7 @@
         .col-md-4
           label.control-label Follow button code
         .col-md-8
-          textarea.form-control onclick="this.select();" = "<iframe src='#{platform_followers_url(@platform)}' scrolling='no' frameborder=0 height=24 width=200></iframe>"
+          textarea.form-control onclick="this.select();" = "<iframe src='#{followers_platform_url(@platform)}' scrolling='no' frameborder=0 height=24 width=200></iframe>"
           span.help-block This is for reference, can't be edited!
 
       - if current_user.is? :admin
