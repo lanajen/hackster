@@ -9,7 +9,8 @@
 - unless resource.logging_in_socially  # for social login
   = f.input :password, label: 'Password'
 - resource.errors.each do |attr|
-  = f.input attr
+  - if resource.respond_to? attr
+    = f.input attr
 .form-group
   .col-xs-12
     = f.submit 'Create my account', class: 'btn btn-primary btn-block'
