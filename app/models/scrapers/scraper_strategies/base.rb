@@ -49,7 +49,7 @@ module ScraperStrategies
       @project
     end
 
-    # private
+    private
       def after_parse
         @widgets.each{|w| @project.widgets << w }
       end
@@ -111,7 +111,7 @@ module ScraperStrategies
         base.css('img').each do |img|
           src = get_src_for_img(img, base)
           if test_link(src)
-            ext = File.extname(URI.parse(src).path)
+            ext = File.extname(URI.parse(src).path)[1..-1]
             img.remove and next unless ext.in? ImageUploader::EXTENSION_WHITE_LIST
             img['src'] = src
             caption = find_caption_for img, base
@@ -279,7 +279,7 @@ module ScraperStrategies
             embed = Embed.new url: node[attr]
             if embed.provider
               @embedded_urls[embed.provider_name] << embed.provider_id
-              parent = find_parent node, base
+              parent = find_parent node, base, %w(li ol ul)
               parent.after "<div class='embed-frame' data-url='#{embed.url}' data-type='url'></div>"
             end
             node.remove
@@ -295,7 +295,7 @@ module ScraperStrategies
           if embed.provider
             unless embed.provider_id.in? @embedded_urls[embed.provider_name]
               @embedded_urls[embed.provider_name] << embed.provider_id
-              parent = find_parent node, base
+              parent = find_parent node, base, %w(li ol ul)
               parent.after "<div class='embed-frame' data-url='#{embed.url}' data-type='url'></div>"
             end
           end
