@@ -3,9 +3,7 @@ class Client::ProjectsController < Client::BaseController
   respond_to :html
 
   def index
-    title = "#{current_platform.name} projects"
-    title += " - Page #{safe_page_params}" if safe_page_params
-    title title
+    title "Projects - Page #{safe_page_params}" if safe_page_params
 
     impressionist_async current_platform, "", unique: [:session_hash]
 

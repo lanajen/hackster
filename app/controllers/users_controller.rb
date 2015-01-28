@@ -12,7 +12,7 @@ class UsersController < ApplicationController
   def show
     impressionist_async @user, "", unique: [:session_hash]  # no need to add :impressionable_type and :impressionable_id, they're already included with @user
     title @user.name
-    meta_desc "#{@user.name} is on Hackster.io. Come share your hardware projects with #{@user.name} and other hardware hackers and makers."
+    meta_desc "#{@user.name} is on #{site_name}. Come share your hardware projects with #{@user.name} and other hardware hackers and makers."
 
     @public_projects = @user.projects.live.for_thumb_display.order(start_date: :desc, created_at: :desc)
     @private_projects = @user.projects.private.for_thumb_display

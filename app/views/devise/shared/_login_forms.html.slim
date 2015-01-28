@@ -29,7 +29,7 @@
             .box-title
               h3.text-center
                 | Sign up
-              .subheading for a new #{'Hackster .io' if is_whitelabel? }account:
+              .subheading for a new #{'Hackster.io ' if is_whitelabel? }account:
             .box-content= render partial: 'devise/registrations/form', locals: { autofocus: (highlight == 'signup') }
 
         .col-xs-12.col-md-4

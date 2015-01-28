@@ -1,7 +1,7 @@
 / = content_for :head do
   meta  name='robots' content='noindex'
-  = auto_discovery_link_tag :rss, projects_path(format: :rss), title: 'Most recent projects - Hackster.io'
-  = auto_discovery_link_tag :atom, projects_path(format: :atom), title: 'Most recent projects - Hackster.io'
+  = auto_discovery_link_tag :rss, projects_path(format: :rss), title: "Most recent projects - #{site_name}"
+  = auto_discovery_link_tag :atom, projects_path(format: :atom), title: "Most recent projects - #{site_name}"
 
 - content_for :head do
   meta(property="og:title" content="#{current_platform.name} projects")
@@ -9,15 +9,15 @@
   - if current_platform.logo
     meta(property="og:image" content=current_platform.logo.file_url)
     meta(property="twitter:image:src" content=current_platform.logo.file_url)
-  meta(property="og:url" content="http://#{current_platform.user_name}.hackster.io")
-  meta(property="og:site_name" content="#{current_platform.name} projects")
-  - if link = current_platform.twitter_link.presence and handle = link.match(/twitter.com\/(.+)/).try(:[], 1)
-    meta(property="twitter:site" content="@#{handle}")
+  meta(property="og:url" content="http://#{site_domain}")
+  meta(property="og:site_name" content=site_name)
+  - if site_twitter.present?
+    meta(property="twitter:site" content=site_twitter)
   meta(property="twitter:card" content="summary")
-  meta(property="twitter:domain" content="#{current_platform.user_name}.hackster.io")
-  meta(property="twitter:title" content="#{current_platform.name} projects")
+  meta(property="twitter:domain" content=site_domain)
+  meta(property="twitter:title" content=site_name)
   meta(property="twitter:description" content=meta_desc)
-  link(rel="canonical" href="http://www.hackster.io/#{current_platform.user_name}")
+  link(rel="canonical" href="http://#{site_domain}")
 
 .content.projects
   - if @challenge
@@ -52,7 +52,7 @@
   .mg-20.clearfix
     .pull-left.btn-group-split
       = render partial: 'followers/button_text', locals: { followable: current_platform }
-      / # - if @custom_header.present?
+      - if @custom_header.present?
         = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'btn btn-default'
     .btn-group.pull-right
       .btn-group

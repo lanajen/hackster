@@ -29,6 +29,8 @@ class ApplicationController < ActionController::Base
   helper_method :safe_page_params
   helper_method :title
   helper_method :meta_desc
+  helper_method :site_name
+  helper_method :is_whitelabel?
   helper_method :user_return_to
   helper_method :show_hello_world?
   helper_method :show_profile_needs_care?
@@ -432,6 +434,10 @@ class ApplicationController < ActionController::Base
       request.user_agent.to_s.downcase =~ Regexp.new(MOBILE_USER_AGENTS)
     end
 
+    def is_whitelabel?
+      current_site.present?
+    end
+
     def meta_desc meta_desc=nil
       if meta_desc
         @meta_desc = meta_desc
@@ -440,11 +446,19 @@ class ApplicationController < ActionController::Base
       end
     end
 
+    def site_name
+      is_whitelabel? ? current_site.name : 'Hackster.io'
+    end
+
     def title title=nil
       if title
         @title = title
       else
-        @title ? "#{@title} - Hackster.io" : "Hackster.io - #{SLOGAN_NO_BRAND}"
+        if is_whitelabel?
+          @title ? "#{@title} - #{site_name}" : site_name
+        else
+          @title ? "#{@title} - #{site_name}" : "#{site_name} - #{SLOGAN_NO_BRAND}"
+        end
       end
     end
 

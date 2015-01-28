@@ -171,7 +171,7 @@ class ProjectsController < ApplicationController
 
   def embed
     title @project.name
-    meta_desc "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."
+    meta_desc "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on #{site_name}."
     @project = @project.decorate
     render layout: 'embed'
 

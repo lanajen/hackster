@@ -18,7 +18,7 @@
 
         - unless @project.external
           = f.input :slug, label: 'URL', wrapper: :addon do
-            span.input-group-addon www.hackster.io/#{@project.user_name_for_url}/
+            span.input-group-addon #{site_domain}/#{@project.user_name_for_url}/
             = f.input_field :slug
 
           .form-group
@@ -30,7 +30,7 @@
                   .col-xs-11
                     = f_slug.input :value, label: false, wrapper: false do
                       .input-group
-                        span.input-group-addon www.hackster.io/
+                        span.input-group-addon #{site_domain}/
                         = f_slug.input_field :value
 
                   .col-xs-1= f_slug.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-sm btn-danger'

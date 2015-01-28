@@ -252,7 +252,7 @@ img {
     padding: 21px 12px 20px 48px;
     font-size: 14px;
     font-weight: 200;
-    width: 150px;
+    width: 200px;
     @include transition(all .5s ease);
     @include box-shadow(none);
     &:focus{
@@ -380,6 +380,7 @@ img {
     margin: 0;
   }
   & > li > a{
+    text-align: left;
     padding: 10px 20px;
     color: #676767;
     margin: 0;

@@ -1,4 +1,13 @@
 body.whitelabel {
+  .powered-by {
+    font-size: 11px;
+    padding: 2px 15px;
+    img {
+      margin-left: 3px;
+      height: 11px;
+      vertical-align: text-top;
+    }
+  }
   .navbar {
     .navbar-brand {
       height: 60px;

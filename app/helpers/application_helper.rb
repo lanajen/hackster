@@ -106,10 +106,6 @@ module ApplicationHelper
     "<div class='alert alert-warning text-center'>#{msg}</div>".html_safe
   end
 
-  def is_whitelabel?
-    current_platform.present?
-  end
-
   def next_meetup_for_group group_url
     if event = Meetup.new.get_next_meetup(group_url)
       "#{link_to(event['name'], event['event_url'])} on #{event['time'].to_date}".html_safe
@@ -128,6 +124,14 @@ module ApplicationHelper
       "
     end
     roles
+  end
+
+  def site_domain
+    is_whitelabel? ? current_site.full_domain : 'hackster.io'
+  end
+
+  def site_twitter
+    is_whitelabel? ? current_platform.twitter_handle : '@hacksterio'
   end
 
   def time_diff_in_natural_language(from_time, to_time)

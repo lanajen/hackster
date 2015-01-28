@@ -45,7 +45,7 @@
             .hidden= @project.id
             / = f.input :name, label: 'Title'
             = f.input :new_slug, label: 'Project URL', wrapper: :addon do
-              span.input-group-addon hackster.io/#{@project.user_name_for_url.truncate(10)}/
+              span.input-group-addon #{site_domain}/#{@project.user_name_for_url.truncate(10)}/
               = f.input_field :new_slug
 
             / = f.input :one_liner, as: :text, input_html: { rows: 4 },
