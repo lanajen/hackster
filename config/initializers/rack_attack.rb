@@ -31,15 +31,14 @@ class Rack::Attack
   # malicious or a poorly-configured scraper. Either way, they don't deserve
   # to hog all of the app server's CPU. Cut them off!
 
-  # Throttle all requests by IP (60rpm)
+  # Throttle all requests by IP (20rpm)
   #
   # Key: "rack::attack:#{Time.now.to_i/:period}:req/ip:#{req.ip}"
-  # throttle('req/ip', :limit => 300, :period => 60.minutes) do |req|
-  #   # unless req.path =~ /\A\/admin/
-  #   unless req.path == '/admin/sidekiq/dashboard/stats'
-  #     req.ip
-  #   end
-  # end
+  throttle('req/ip', limit: 100, period: 5.minutes) do |req|
+    if req.get? and !req.xhr?
+      req.ip
+    end
+  end
 
   ### Prevent Brute-Force Login Attacks ###
 
