@@ -9,15 +9,17 @@
 
         = simple_form_for resource, as: resource_name, url: registration_path(resource_name), html: { method: :patch, class: 'form-horizontal widget-form', autocomplete: "off" }, wrapper: :bootstrap3_horizontal do |f|
           = f.error_notification
-          = f.input :email, :required => true, :autofocus => true, autocomplete: "off"
+          = f.input :email, required: true, autofocus: true, autocomplete: "off"
           .form-group
             .col-md-offset-4.col-md-8
               = link_to 'Edit password', 'javascript:$("#password").slideToggle();', class: 'btn btn-default'
           #password  style='display:none;'
             = password_field_tag 'password_fake', '', style: 'display:none;'
-            = f.input :password, :autocomplete => "off", :hint => "leave it blank if you don't want to change it", :required => false
-            = f.input :password_confirmation, :required => false
-            = f.input :current_password, :hint => "we need your current password to confirm your changes", :required => true
+            = f.input :password, autocomplete: "off", hint: "leave it blank if you don't want to change it", required: false
+            = f.input :password_confirmation, required: false
+            = f.input :current_password, hint: "we need your current password to confirm your changes", required: true
+          - unless is_whitelabel?
+            = f.input :enable_sharing, as: :boolean, label: false, inline_label: "Allow my profile and projects to appear on community sites powered by Hackster", hint: "Hackster powers dedicated community sites for platforms like Spark, UDOO and Tessel. If you're following these platforms, or you've created a project that's tagged with one of these platforms, or respected one, or commented on one, your profile will appear on these sites. Uncheck the above box to disable this feature. <strong>Please note: your data isn't sold or shared with these platforms in any way. All of it remains on our servers.</strong".html_safe
           = f.input :subscriptions, collection: User::SUBSCRIPTIONS.invert, as: :check_boxes, label: 'Email subscriptions'
           .form-actions
             = f.button :submit, "Save changes", class: 'btn btn-primary'

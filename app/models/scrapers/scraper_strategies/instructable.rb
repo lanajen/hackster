@@ -33,7 +33,7 @@ module ScraperStrategies
       end
 
       def crap_list
-        super + %w(.inline-ads)
+        super + %w(.inline-ads .photoset-seemore)
       end
 
       def extract_title

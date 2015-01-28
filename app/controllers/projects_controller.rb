@@ -56,20 +56,20 @@ class ProjectsController < ApplicationController
 
     # other projects by same author
     @other_projects_count = Project.public.most_popular.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id)
-    @other_projects_count = @other_projects_count.with_group current_platform if current_platform
+    @other_projects_count = @other_projects_count.with_group current_platform if is_whitelabel?
     @other_projects_count = @other_projects_count.size
 
     if @other_projects_count > 6
       @other_projects = Project.public.most_popular.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).includes(:team).includes(:cover_image)
-      @other_projects.with_group current_platform if current_platform
+      @other_projects.with_group current_platform if is_whitelabel?
       @other_projects = @other_projects.limit(3)
 
       @last_projects = Project.public.last_public.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: [@project.id] + @other_projects.map(&:id)).includes(:team).includes(:cover_image)
-      @last_projects = @last_projects.with_group current_platform if current_platform
+      @last_projects = @last_projects.with_group current_platform if is_whitelabel?
       @last_projects = @last_projects.limit(3)
     else
       @other_projects = Project.public.most_popular.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).includes(:team).includes(:cover_image)
-      @other_projects = @other_projects.with_group current_platform if current_platform
+      @other_projects = @other_projects.with_group current_platform if is_whitelabel?
     end
 
     # next/previous project in search
@@ -125,14 +125,18 @@ class ProjectsController < ApplicationController
 
     @team_members = @project.team_members.includes(:user).includes(user: :avatar)
 
-    @comments = @project.comments.includes(:user).includes(:parent)#.includes(user: :avatar)
+    if is_whitelabel?
+      @comments = @project.comments.joins(:user).where(users: { enable_sharing: true }).includes(:user).includes(:parent).includes(user: :avatar)
+      @respecting_users = @project.respecting_users.where(users: { enable_sharing: true }).includes(:avatar) if @project.public?
+    else
+      @comments = @project.comments.includes(:user).includes(:parent)#.includes(user: :avatar)
+      @respecting_users = @project.respecting_users.includes(:avatar) if @project.public?
+    end
 
     if @project.has_assignment?
       @issue = Feedback.where(threadable_type: 'Project', threadable_id: @project.id).first
       @issue_comments = @issue.comments.includes(:user).includes(:parent) if @issue #.includes(user: :avatar)
     end
-
-    @respecting_users = @project.respecting_users.includes(:avatar) if @project.public?
 
     # track_event 'Viewed project', @project.to_tracker.merge({ own: !!current_user.try(:is_team_member?, @project) })
   end
@@ -319,8 +323,10 @@ class ProjectsController < ApplicationController
 
   private
     def ensure_belongs_to_platform
-      if current_platform
-        raise ActiveRecord::RecordNotFound unless current_platform.in? @project.visible_platforms
+      if is_whitelabel?
+        if !(current_platform.in? @project.visible_platforms) or @project.users.reject{|u| u.enable_sharing }.any?
+          raise ActiveRecord::RecordNotFound
+        end
       end
     end
 

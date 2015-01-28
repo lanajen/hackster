@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150122233816) do
+ActiveRecord::Schema.define(version: 20150128183640) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -595,10 +595,12 @@ ActiveRecord::Schema.define(version: 20150122233816) do
     t.integer  "subscriptions_mask",                 default: 0
     t.boolean  "mailchimp_registered",               default: false
     t.string   "authentication_token",   limit: 25
+    t.boolean  "enable_sharing",                     default: true,   null: false
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
+  add_index "users", ["enable_sharing"], name: "index_users_on_enable_sharing", using: :btree
   add_index "users", ["invitation_token"], name: "index_users_on_invitation_token", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["type"], name: "index_users_on_type", using: :btree
