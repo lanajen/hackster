@@ -5,7 +5,7 @@ class CronTask < BaseWorker
   def cleanup_duplicates
     ProjectCollection.select("id, count(id) as quantity").group(:project_id, :collectable_id, :collectable_type).having("count(id) > 1").size.each do |c, count|
       ProjectCollection.where(:project_id => c[0], :collectable_id => c[1], :collectable_type => c[2]).limit(count-1).each{|cp| cp.delete }
-      Group.find(c[2]).update_counters only: [:projects]
+      Group.find(c[1]).update_counters only: [:projects]
     end
   end
 

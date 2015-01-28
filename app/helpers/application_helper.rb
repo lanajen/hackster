@@ -52,7 +52,7 @@ module ApplicationHelper
       return f if f.present?
     end
 
-    msg = "Please log in or create an account to get full access to our maker resources and start building."
+    msg = "Please log in or create an account to get full access to our maker resources and start creating."
     # group, project, user
 
     case params[:m]
@@ -104,6 +104,10 @@ module ApplicationHelper
       msg = "Please log in or sign up to claim #{content_tag(:b, project.name)}."
     end
     "<div class='alert alert-warning text-center'>#{msg}</div>".html_safe
+  end
+
+  def is_whitelabel?
+    current_platform.present?
   end
 
   def next_meetup_for_group group_url

@@ -1,0 +1,159 @@
+css:
+  header {
+    background-color: #F2F2F2;
+    height: 45px;
+    width: 100%;
+    line-height: 45px;
+    font-weight: bold;
+    color: #333;
+  }
+  header .twitterbird {
+    font-family: FontAwesome;
+    color: #4099FF;
+    vertical-align: middle;
+    font-size: 30px;
+  }
+  @media (max-width: 320px) {
+    header {
+      height: auto;
+    }
+  }
+  header img {
+    max-height: 45px;
+  }
+  header a {
+    height: 45px;
+    color: #333;
+  }
+
+  nav {
+    display: block;
+  }
+  nav .mobile-nav__container {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    height: 45px;
+    width: 100%;
+  }
+  nav .mobile-nav__container .mobile-nav__logo {
+    padding: 11.25px;
+  }
+  @media (max-width: 320px) {
+    nav .mobile-nav__container {
+      height: auto;
+    }
+  }
+  nav .mobile-nav__container a {
+    display: inline-block;
+    text-decoration: none;
+  }
+  nav .mobile-nav__container a.mobile-nav__button--show, nav .mobile-nav__container a.mobile-nav__button--hide {
+    display: none;
+    background-color: #F2F2F2;
+    font-family: FontAwesome;
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding-right: 11.25px;
+    width: 20%;
+    text-align: right;
+    z-index: 500;
+    font-size: 30px;
+  }
+  @media (max-width: 320px) {
+    nav .mobile-nav__container a.mobile-nav__button--show, nav .mobile-nav__container a.mobile-nav__button--hide {
+      display: block;
+    }
+  }
+  nav .mobile-nav__container ul {
+    display: inline-block;
+    padding: 0;
+    max-width: 75%;
+    float: right;
+  }
+  @media (max-width: 320px) {
+    nav .mobile-nav__container ul {
+      display: block;
+      min-width: 100%;
+    }
+  }
+  nav .mobile-nav__container ul li {
+    display: inline-block;
+    border-right: 1px solid black;
+  }
+  @media (max-width: 320px) {
+    nav .mobile-nav__container ul li {
+      display: block;
+      width: 100%;
+      height: 0px;
+      -moz-transition-property: height;
+      -o-transition-property: height;
+      -webkit-transition-property: height;
+      transition-property: height;
+      -moz-transition-property: 0.5s;
+      -o-transition-property: 0.5s;
+      -webkit-transition-property: 0.5s;
+      transition-property: 0.5s;
+      overflow: hidden;
+      margin-bottom: 0;
+      width: auto;
+      float: none;
+      border: none;
+      margin-left: -1px;
+    }
+  }
+  nav .mobile-nav__container ul a {
+    background-color: transparent;
+    text-align: center;
+    padding: 0px 15px;
+  }
+  @media all and (max-width: 700px) {
+    nav .mobile-nav__container ul a {
+      width: 100%;
+      font-size: 22.5px;
+    }
+  }
+  nav .mobile-nav__container ul a:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  nav .mobile-nav__container:target ul li {
+    height: 45px;
+  }
+  @media (max-width: 320px) {
+    nav .mobile-nav__container:target ul li {
+      border-bottom: 1px solid #c8c8c8;
+    }
+  }
+
+  nav .mobile-nav__container:target .mobile-nav__button--hide {
+    z-index: 1000;
+  }
+
+
+header
+  nav
+    .mobile-nav__container#mobile-nav
+      a.mobile-nav__button--hide(title='click to close' href='#') &#xf00d;
+      a.mobile-nav__button--show(title='click to open' href='#mobile-nav') &#xf0c9;
+      a(href="https://tessel.io")
+        img.mobile-nav__logo(src="https://s3.amazonaws.com/technicalmachine-assets/storefront/tessel-name.png" alt="Tessel")
+      ul
+        li
+          a(href="//tessel.io/start") Start
+        li
+          a(href="//tessel.io/docs") Docs
+        li
+          a(href="//tessel.io/modules") Modules
+        li
+          a(href="/") Projects
+        li
+          a(href="//tessel.io/forums") Forums
+        li
+          a(href="//tessel.io/shop") Shop
+        li
+          a(href="//tessel.io/blog") Blog
+        li
+          a.twitterbird(href="//twitter.com/technicalhumans" title="technicalhumans") &#xf099;

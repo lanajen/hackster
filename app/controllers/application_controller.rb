@@ -64,6 +64,8 @@ class ApplicationController < ActionController::Base
     else
       ClientSubdomain.find_by_domain(request.host)
     end
+
+    @custom_header = render_to_string(partial: "whitelabel/#{current_site.subdomain}/header")
   end
 
   def current_platform
@@ -71,7 +73,7 @@ class ApplicationController < ActionController::Base
 
     return @current_platform if @current_platform
 
-    redirect_to root_url(subdomain: 'www') unless @current_platform = current_site.platform
+    redirect_to root_url(subdomain: 'www') unless @current_platform = current_site.try(:platform)
   end
   # end code for whitelabel
 

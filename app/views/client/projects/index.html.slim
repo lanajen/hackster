@@ -27,30 +27,33 @@
       ==> link_to @challenge.name, "http://www.hackster.io/challenges/#{@challenge.slug}", class: 'alert-link'
       | on Hackster.io
 
-  - cache "platform-#{current_platform.id}-client-subheading", tag: ["platform-#{current_platform.id}-sidebar", 'platform-sidebar'] do
-    #subheading.clearfix
-      p.pull-left= current_platform.mini_resume
+  - unless @custom_header.present?
+    - cache "platform-#{current_platform.id}-client-subheading", tag: ["platform-#{current_platform.id}-sidebar", 'platform-sidebar'] do
+      #subheading.clearfix
+        p.pull-left= current_platform.mini_resume
 
-      ul.list-inline.list-unstyled.pull-right.submenu
-        - if current_platform.documentation_link.present?
-          li= link_to "Documentation", current_platform.documentation_link, target: '_blank'
-        - if current_platform.forums_link.present?
-          li= link_to "Forums", current_platform.forums_link, target: '_blank'
-        - if current_platform.shoplocket_token.present?
-          li= link_to (current_platform.cta_text.presence || "Buy #{indefinite_articlerize current_platform.name}"), current_platform.buy_link, class: 'shoplocket-checkout', data: { 'shoplocket-product-token' => current_platform.shoplocket_token }
-          = content_for :js do
-            = javascript_include_tag '//www.shoplocket.com/assets/widgets/embed.js'
-        - else
-          - if current_platform.crowdfunding_link.present?
-            li= link_to (current_platform.cta_text.presence || "Preorder #{indefinite_articlerize current_platform.name}"), current_platform.crowdfunding_link, target: '_blank'
-          - if current_platform.buy_link.present?
-            li= link_to (current_platform.cta_text.presence || "Buy #{indefinite_articlerize current_platform.name}"), current_platform.buy_link, target: '_blank'
-          - if current_platform.download_link.present?
-            li= link_to (current_platform.cta_text.presence || "Download #{current_platform.name}"), current_platform.download_link, target: '_blank'
+        ul.list-inline.list-unstyled.pull-right.submenu
+          - if current_platform.documentation_link.present?
+            li= link_to "Documentation", current_platform.documentation_link, target: '_blank'
+          - if current_platform.forums_link.present?
+            li= link_to "Forums", current_platform.forums_link, target: '_blank'
+          - if current_platform.shoplocket_token.present?
+            li= link_to (current_platform.cta_text.presence || "Buy #{indefinite_articlerize current_platform.name}"), current_platform.buy_link, class: 'shoplocket-checkout', data: { 'shoplocket-product-token' => current_platform.shoplocket_token }
+            = content_for :js do
+              = javascript_include_tag '//www.shoplocket.com/assets/widgets/embed.js'
+          - else
+            - if current_platform.crowdfunding_link.present?
+              li= link_to (current_platform.cta_text.presence || "Preorder #{indefinite_articlerize current_platform.name}"), current_platform.crowdfunding_link, target: '_blank'
+            - if current_platform.buy_link.present?
+              li= link_to (current_platform.cta_text.presence || "Buy #{indefinite_articlerize current_platform.name}"), current_platform.buy_link, target: '_blank'
+            - if current_platform.download_link.present?
+              li= link_to (current_platform.cta_text.presence || "Download #{current_platform.name}"), current_platform.download_link, target: '_blank'
 
   .mg-20.clearfix
-    .pull-left
+    .pull-left.btn-group-split
       = render partial: 'followers/button_text', locals: { followable: current_platform }
+      / # - if @custom_header.present?
+        = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'btn btn-default'
     .btn-group.pull-right
       .btn-group
         button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
@@ -70,7 +73,7 @@
         ul.dropdown-menu.pull-right
           li*{ class: "#{'active' if params[:by] == nil}" } = link_to 'All', root_path(sort: params[:sort])
           li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to 'Featured', root_path(by: 'featured', sort: params[:sort])
-          li*{ class: "#{'active' if params[:by] == 'wip'}" } = link_to 'Work in progress', root_path(by: 'wip', sort: params[:sort])
+          / li*{ class: "#{'active' if params[:by] == 'wip'}" } = link_to 'Work in progress', root_path(by: 'wip', sort: params[:sort])
 
   - if @projects.any?
     .row.thumb-list

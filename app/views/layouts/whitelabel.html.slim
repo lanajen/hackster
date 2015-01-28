@@ -56,6 +56,9 @@ html(lang="en")
         = render 'shared/simplified_signup_popup'
 
       / # - cache "platform-#{current_platform.id}-client-nav", tag: ["platform-#{current_platform.id}-client-nav", "platform-client-nav"] do
+      - if @custom_header.present?
+        = raw @custom_header
+      / - else
       .navbar.navbar-default.navbar-static-top#navigation
         #nav-mobile-trigger.hide-on-desktop.fa.fa-bars
         .navbar-in  style='position:relative;'
