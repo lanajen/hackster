@@ -107,7 +107,7 @@ $(function() {
           });
           content[elementid]['widgets_attributes'][i] = attrs;
         });
-        var partsWidget = $('#parts-widget-form');
+        var partsWidget = $('#parts-widget-form div:not(.removed)');
         if (partsWidget.length) {
           var i = new Date().getTime();
           var attrs = {};
