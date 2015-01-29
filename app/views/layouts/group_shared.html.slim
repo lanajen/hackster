@@ -60,7 +60,7 @@
                   li
                     a.tag href='' Wifi
               p= @group.mini_resume
-              - if @group.model.respond_to?(:show_address)
+              - if @group.model.respond_to?(:show_address) and @group.full_street_address.present?
                 p.secondary-info
                   i.fa.fa-map-marker
                   = link_to @group.short_location, "https://www.google.com/maps/search/#{CGI.escape(@group.full_street_address)}", target: '_blank'

@@ -19,7 +19,6 @@ class ProjectObserver < ActiveRecord::Observer
   end
 
   def after_update record
-    puts 'changed: ______________' + record.changed.to_s
     if record.private_changed?
       update_counters record, [:live_projects]
       record.commenters.each{|u| u.update_counters only: [:comments] }

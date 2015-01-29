@@ -6,6 +6,31 @@ module ScraperStrategies
         tags = @parsed.css('.ible-tags a')
         @project.product_tags_string = tags.map{|a| a.text }.join(',')
 
+        if attachments = @parsed.css('#attachments') and attachments.any?
+          files = []
+          attachments.each do |attachment|
+            attachments.css('a').each do |node|
+              puts node.inspect
+              next unless link = node['href']
+              next if link.in? files
+              files << link
+              link = normalize_link link
+              if link.match /\/\/.+\/.+\.([a-z0-9]{,5})$/
+                next unless test_link(link)
+                content = node.text
+                title = (content != link) ? content : ''
+                puts "Parsing file #{link}..."
+                document = Document.new remote_file_url: link, title: title.truncate(255)
+                document.attachable_id = 0
+                document.attachable_type = 'Orphan'
+                document.save
+                document.attachable = @project
+                @article.add_child "<div class='embed-frame' data-file-id='#{document.id}' data-type='file'></div>"
+              end
+            end
+          end
+        end
+
         # parse_comments
         super
       end
@@ -33,7 +58,7 @@ module ScraperStrategies
       end
 
       def crap_list
-        super + %w(.inline-ads .photoset-seemore)
+        super + %w(.inline-ads .photoset-seemore #attachments)
       end
 
       def extract_title

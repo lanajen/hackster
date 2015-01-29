@@ -61,27 +61,29 @@ module UrlHelper
   end
 
   def group_path group, opts={}
-    case group.type
-    when 'Assignment'
+    if group.respond_to? :type
+      case group.type
+      when 'Community'
+        community_path group, opts
+      when 'Course'
+        super params_for_course(group).merge(opts)
+      when 'HackerSpace'
+        hacker_space_path(group, opts)
+      when 'Promotion'
+        promotion_path group, opts
+      when 'University'
+        super params_for_group(group).merge(opts)
+      when 'Event'
+        event_path group, opts
+      when 'Platform'
+        platform_short_path group, opts
+      when 'List'
+        list_path group, opts
+      else
+        super params_for_group(group).merge(opts)
+      end
+    elsif group.class.name == 'Assignment'
       assignment_path group, opts
-    when 'Community'
-      community_path group, opts
-    when 'Course'
-      super params_for_course(group).merge(opts)
-    when 'HackerSpace'
-      hacker_space_path(group, opts)
-    when 'Promotion'
-      promotion_path group, opts
-    when 'University'
-      super params_for_group(group).merge(opts)
-    when 'Event'
-      event_path group, opts
-    when 'Platform'
-      platform_short_path group, opts
-    when 'List'
-      list_path group, opts
-    else
-      super params_for_group(group).merge(opts)
     end
   end
 

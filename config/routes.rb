@@ -310,6 +310,8 @@ HackerIo::Application.routes.draw do
     get 'platforms' => 'platforms#index'
 
     get 'hardwareweekend' => 'pages#hardwareweekend'
+    get 'hhw', to: redirect('/hardwareweekend')
+    get 'hww', to: redirect('/hardwareweekend')
     get 'hweekend', to: redirect('/hardwareweekend')
     get 'roadshow', to: redirect('/hardwareweekend')
 
