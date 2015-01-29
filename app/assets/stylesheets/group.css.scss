@@ -365,7 +365,7 @@
     //   padding-top: 90px;
     // }
     .brand {
-      margin-left: 0;
+      margin-left: 0 !important;
     }
     .nav-tabs, .more-info, .manage {
       background: #111;
@@ -446,7 +446,7 @@
   }
   .brand {
     float: left;
-    @include transition(margin-left ease .5s);
+    @include transition(margin-left ease-in-out 200ms);
     margin-left: -500px;
     img {
       width: 40px;
