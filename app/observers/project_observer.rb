@@ -44,7 +44,7 @@ class ProjectObserver < ActiveRecord::Observer
     if record.private_changed?
       if record.private?
       else
-        record.hide = true if record.force_hide?
+        record.approved = false if record.approved.nil? and record.force_hide?
       end
     end
 
