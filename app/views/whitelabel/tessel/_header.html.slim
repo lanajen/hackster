@@ -7,11 +7,14 @@ css:
     font-weight: bold;
     color: #333;
     font-size: 14px;
-    font-family: "Helvetica Neue","Helvetica",Helvetica,Arial,sans-serif;
+    font-family: sans-serif;
   }
-  @media (max-width: 320px) {
+  @media (max-width: 719px) {
     #tessel-header header {
       height: auto;
+    }
+    #tessel-header .navbar-nav.navbar-right {
+      display: none;
     }
   }
   #tessel-header header img {
@@ -34,9 +37,9 @@ css:
     width: 100%;
   }
   #tessel-header nav .mobile-nav__container .mobile-nav__logo {
-    padding: 13.5px;
+    padding: 11.25px;
   }
-  @media (max-width: 320px) {
+  @media (max-width: 719px) {
     #tessel-header nav .mobile-nav__container {
       height: auto;
     }
@@ -58,7 +61,7 @@ css:
     z-index: 500;
     font-size: 30px;
   }
-  @media (max-width: 320px) {
+  @media (max-width: 719px) {
     #tessel-header nav .mobile-nav__container a.mobile-nav__button--show, #tessel-header nav .mobile-nav__container a.mobile-nav__button--hide {
       display: block;
     }
@@ -69,7 +72,7 @@ css:
     max-width: 75%;
     float: right;
   }
-  @media (max-width: 320px) {
+  @media (max-width: 719px) {
     #tessel-header nav .mobile-nav__container ul {
       display: block;
       min-width: 100%;
@@ -77,9 +80,15 @@ css:
   }
   #tessel-header nav .mobile-nav__container ul li {
     display: inline-block;
-    border-right: 1px solid #bbb;
+    border-right: 1px solid black;
   }
-  @media (max-width: 320px) {
+  #tessel-header nav .mobile-nav__container ul li.mobile-li {
+    display: none;
+  }
+  @media (max-width: 719px) {
+    #tessel-header nav .mobile-nav__container ul li.mobile-li {
+      display: block;
+    }
     #tessel-header nav .mobile-nav__container ul li {
       display: block;
       width: 100%;
@@ -118,7 +127,7 @@ css:
   #tessel-header nav .mobile-nav__container:target ul li {
     height: 45px;
   }
-  @media (max-width: 320px) {
+  @media (max-width: 719px) {
     #tessel-header nav .mobile-nav__container:target ul li {
       border-bottom: 1px solid #c8c8c8;
     }
@@ -205,7 +214,7 @@ css:
         a(href="https://tessel.io")
           img.mobile-nav__logo(src="https://s3.amazonaws.com/technicalmachine-assets/storefront/tessel-name.png" alt="Tessel")
         #navbar-search
-          = render 'shared/search_form'
+          = render partial: 'shared/search_form', locals: { placeholder: 'Search projects' }
         ul
           li
             a(href="//tessel.io/start") Start
@@ -237,6 +246,7 @@ css:
                   li= link_to 'Invite friends', new_user_invitation_path
                   li.divider
                   li= link_to 'Log out', destroy_user_session_path, method: :delete
+            li.mobile-li= link_to 'Log out', destroy_user_session_path, method: :delete
 
           - else
             ul#navbar-right.clearfix
@@ -256,3 +266,5 @@ css:
                     = link_to 'Github', user_omniauth_authorize_path(:github), class: 'zocial icon github'
                     = link_to 'Google+', user_omniauth_authorize_path(:gplus), class: 'zocial icon googleplus'
                     = link_to 'Twitter', user_omniauth_authorize_path(:twitter), class: 'zocial icon twitter'
+            li.mobile-li= link_to 'Log in', new_user_session_path(source: 'nav')
+            li.mobile-li= link_to 'Sign up', new_user_registration_path(source: 'nav')
