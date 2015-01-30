@@ -28,7 +28,7 @@ class PlatformsController < ApplicationController
   def show
     authorize! :read, @platform
     impressionist_async @platform, "", unique: [:session_hash]
-    # authorize! :read, @platform
+
     title "#{@platform.name} projects and hacks"
     meta_desc "Discover hacks and projects built with #{@platform.name}, and share your own!"
 
@@ -174,17 +174,19 @@ class PlatformsController < ApplicationController
       end
       @by = params[:by] || 'all'
 
-      @projects = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection)
+      # @projects = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection)
+
+      @projects = Project.joins(:visible_platforms).where("groups.id = ?", @platform.id).order('project_collections.workflow_state DESC').for_thumb_display
       # @projects.to_a
       # if sort and sort.in? Project::SORTING.keys
-        @projects = @projects.merge(Project.send(Project::SORTING[sort]))
+        @projects = @projects.send(Project::SORTING[sort])
       # end
 
       if @by and @by.in? Project::FILTERS.keys
         @projects = if @by == 'featured'
           @projects.featured
         else
-          @projects.merge(Project.send(Project::FILTERS[@by]))
+          @projects.send(Project::FILTERS[@by])
         end
       end
 

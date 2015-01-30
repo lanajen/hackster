@@ -3,16 +3,14 @@ class Client::ProjectsController < Client::BaseController
   respond_to :html
 
   def index
-    title = "#{current_platform.name} projects"
-    title += " - Page #{safe_page_params}" if safe_page_params
-    title title
+    title "Projects - Page #{safe_page_params}" if safe_page_params
 
     impressionist_async current_platform, "", unique: [:session_hash]
 
     params[:sort] = (params[:sort].in?(Project::SORTING.keys) ? params[:sort] : 'trending')
     @by = (params[:by].in?(Project::FILTERS.keys) ? params[:by] : 'all')
 
-    @projects = current_platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.indexable_and_external.for_thumb_display_in_collection)
+    @projects = current_platform.project_collections.where(users: { enable_sharing: true }).includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.indexable_and_external.for_thumb_display_in_collection)
     if params[:sort]
       @projects = @projects.merge(Project.send(Project::SORTING[params[:sort]]))
     end

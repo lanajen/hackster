@@ -2,6 +2,13 @@ class CronTask < BaseWorker
   # @queue = :low
   sidekiq_options queue: :cron, retry: 0
 
+  def cleanup_duplicates
+    ProjectCollection.select("id, count(id) as quantity").group(:project_id, :collectable_id, :collectable_type).having("count(id) > 1").size.each do |c, count|
+      ProjectCollection.where(:project_id => c[0], :collectable_id => c[1], :collectable_type => c[2]).limit(count-1).each{|cp| cp.delete }
+      Group.find(c[1]).update_counters only: [:projects]
+    end
+  end
+
   def compute_popularity
     CronTask.perform_async 'compute_popularity_for_projects'
     CronTask.perform_async 'compute_popularity_for_users'
@@ -67,6 +74,7 @@ class CronTask < BaseWorker
     expire_challenges
     evaluate_badges
     send_announcement_notifications
+    cleanup_duplicates
   end
 
   def launch_daily_cron

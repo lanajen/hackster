@@ -108,6 +108,8 @@ h6, .h6 {
     display: block;
   }
 }
-// .btn + .btn {
-//   margin-left: 10px;
-// }
+.btn-group-split {
+  .btn + .btn {
+    margin-left: 10px;
+  }
+}

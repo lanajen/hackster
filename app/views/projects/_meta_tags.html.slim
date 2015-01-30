@@ -6,10 +6,11 @@
   meta(property="og:image:width" content='400')
   meta(property="og:image:height" content='300')
   meta(property="og:url" content=project_url(@project))
-  meta(property="og:site_name" content="Hackster.io")
+  meta(property="og:site_name" content=site_name)
   meta(property="twitter:card" content="product")
-  meta(property="twitter:site" content="@hacksterio")
-  meta(property="twitter:domain" content="hackster.io")
+  - if site_twitter.present?
+    meta(property="twitter:site" content=site_twitter)
+  meta(property="twitter:domain" content=site_domain)
   meta(property="twitter:title" content=@project.name)
   meta(property="twitter:description" content=@project.one_liner)
   - if platforms = Platform.joins(:platform_tags).references(:tags).where("LOWER(tags.name) IN (?)", @project.platform_tags_cached.map{|t| t.downcase }) and platforms.any?
@@ -22,6 +23,6 @@
   meta(property="twitter:image:src" content=@project.cover_image(:cover_thumb))
   meta(property="twitter:image:width" content='400')
   meta(property="twitter:image:height" content='300')
-  link(rel="canonical" href=project_url(@project))
+  link(rel="canonical" href=project_url(@project, subdomain: 'www'))
   - if @project.product_tags_string.present? or @project.platform_tags_string.present?
     meta(name='keywords' content="#{(@project.product_tags_cached + @project.platform_tags_cached).join(',')}")

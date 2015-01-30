@@ -7,7 +7,14 @@ class FollowersController < ApplicationController
   def create
     FollowRelation.add current_user, @followable
     respond_to do |format|
-      format.html { redirect_to @followable, notice: "You are now following #{@followable.name}" }
+      format.html do
+        next_url = if @followable == current_platform
+          root_path
+        else
+          @followable
+        end
+        redirect_to next_url, notice: "You are now following #{@followable.name}"
+      end
       format.js do
         render 'button'
       end

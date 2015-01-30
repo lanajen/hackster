@@ -2,7 +2,13 @@
 
 = content_for :no_container do
   .block
-    .alert.alert-info.alert-top.alert-flat.text-center= SLOGAN
+    .alert.alert-info.alert-top.alert-flat.text-center
+      - if is_whitelabel?
+        ' Hey there! #{current_site.name} is powered by
+        = link_to 'Hackster.io', root_url(subdomain: 'www'), target: '_blank', class: 'alert-link'
+        | , #{SLOGAN_NO_BRAND.downcase}
+      - else
+        = SLOGAN
 
   .container
     #content
@@ -15,7 +21,7 @@
             .box-title
               h3.text-center
                 | Log in
-              .subheading with your existing account:
+              .subheading with your existing #{'Hackster.io ' if is_whitelabel? }account:
             .box-content= render partial: 'devise/sessions/form', locals: { autofocus: (highlight == 'login') }
 
         .col-xs-12.col-md-4
@@ -23,7 +29,7 @@
             .box-title
               h3.text-center
                 | Sign up
-              .subheading for a new account:
+              .subheading for a new #{'Hackster.io ' if is_whitelabel? }account:
             .box-content= render partial: 'devise/registrations/form', locals: { autofocus: (highlight == 'signup') }
 
         .col-xs-12.col-md-4
@@ -33,3 +39,5 @@
                 | Connect
               .subheading with your social account:
             .box-content= render partial: 'devise/shared/omniauth', locals: { autofocus: (highlight == 'connect') }
+
+        .col-xs-12.text-center

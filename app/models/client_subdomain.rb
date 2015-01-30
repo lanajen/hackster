@@ -16,12 +16,16 @@ class ClientSubdomain < Subdomain
   validates :subdomain, exclusion: { in: RESERVED_SUBDOMAINS, message: "Subdomain %{value} is reserved" }
   validates :subdomain, uniqueness: true
 
-  attr_accessible :subdomain, :domain
+  attr_accessible :subdomain, :domain, :logo_id, :name
 
   after_destroy do
     remove_domain_from_heroku(domain) unless domain.blank?
   end
   after_save :update_domains_on_heroku
+
+  def logo_id=(val)
+    self.logo = Logo.find_by_id val
+  end
 
   private
   def update_domains_on_heroku

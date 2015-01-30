@@ -111,7 +111,7 @@ class Groups::ProjectsController < ApplicationController
       when Event
         'group_shared'
       else
-        'application'
+        current_layout
       end
     end
 end

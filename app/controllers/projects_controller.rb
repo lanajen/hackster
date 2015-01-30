@@ -1,5 +1,6 @@
 class ProjectsController < ApplicationController
   before_filter :load_project, only: [:show, :embed, :update, :destroy, :redirect_to_slug_route]
+  before_filter :ensure_belongs_to_platform, only: [:show, :embed, :update, :destroy, :redirect_to_slug_route]
   load_and_authorize_resource only: [:index, :new, :edit, :settings, :submit]
   # layout 'project', only: [:edit, :update, :show]
   before_filter :set_project_mode, only: [:settings]
@@ -54,12 +55,21 @@ class ProjectsController < ApplicationController
     @widgets = @project.widgets.order(:created_at)#.each{|w| @widgets_by_section[w.position[0].to_i] << w }
 
     # other projects by same author
-    @other_projects_count = Project.public.most_popular.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).size
+    @other_projects_count = Project.public.most_popular.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id)
+    @other_projects_count = @other_projects_count.with_group current_platform if is_whitelabel?
+    @other_projects_count = @other_projects_count.size
+
     if @other_projects_count > 6
-      @other_projects = Project.public.most_popular.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).includes(:team).includes(:cover_image).limit(3)
-      @last_projects = Project.public.last_public.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: [@project.id] + @other_projects.map(&:id)).includes(:team).includes(:cover_image).limit(3)
+      @other_projects = Project.public.most_popular.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).includes(:team).includes(:cover_image)
+      @other_projects.with_group current_platform if is_whitelabel?
+      @other_projects = @other_projects.limit(3)
+
+      @last_projects = Project.public.last_public.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: [@project.id] + @other_projects.map(&:id)).includes(:team).includes(:cover_image)
+      @last_projects = @last_projects.with_group current_platform if is_whitelabel?
+      @last_projects = @last_projects.limit(3)
     else
       @other_projects = Project.public.most_popular.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).includes(:team).includes(:cover_image)
+      @other_projects = @other_projects.with_group current_platform if is_whitelabel?
     end
 
     # next/previous project in search
@@ -115,14 +125,18 @@ class ProjectsController < ApplicationController
 
     @team_members = @project.team_members.includes(:user).includes(user: :avatar)
 
-    @comments = @project.comments.includes(:user).includes(:parent)#.includes(user: :avatar)
+    if is_whitelabel?
+      @comments = @project.comments.joins(:user).where(users: { enable_sharing: true }).includes(:user).includes(:parent).includes(user: :avatar)
+      @respecting_users = @project.respecting_users.where(users: { enable_sharing: true }).includes(:avatar) if @project.public?
+    else
+      @comments = @project.comments.includes(:user).includes(:parent)#.includes(user: :avatar)
+      @respecting_users = @project.respecting_users.includes(:avatar) if @project.public?
+    end
 
     if @project.has_assignment?
       @issue = Feedback.where(threadable_type: 'Project', threadable_id: @project.id).first
       @issue_comments = @issue.comments.includes(:user).includes(:parent) if @issue #.includes(user: :avatar)
     end
-
-    @respecting_users = @project.respecting_users.includes(:avatar) if @project.public?
 
     # track_event 'Viewed project', @project.to_tracker.merge({ own: !!current_user.try(:is_team_member?, @project) })
   end
@@ -161,7 +175,7 @@ class ProjectsController < ApplicationController
 
   def embed
     title @project.name
-    meta_desc "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."
+    meta_desc "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on #{site_name}."
     @project = @project.decorate
     render layout: 'embed'
 
@@ -194,6 +208,10 @@ class ProjectsController < ApplicationController
       # @project.approved = true
       @project.private = true
       event = 'Created project'
+    end
+
+    if current_platform
+      @project.platform_tags_string = current_platform.name
     end
 
     if current_user
@@ -240,7 +258,7 @@ class ProjectsController < ApplicationController
       if private_was != @project.private
         if @project.private == false
           current_user.broadcast :new, @project.id, 'Project', @project.id
-          notice = "#{@project.name} is now published. Somebody from the Hackster team still needs to approve it before it shows on the site. Seat tight!"
+          notice = "#{@project.name} is now published. Somebody from the Hackster team still needs to approve it before it shows on the site. Sit tight!"
 
           track_event 'Made project public', @project.to_tracker
         elsif @project.private == false
@@ -304,6 +322,14 @@ class ProjectsController < ApplicationController
   end
 
   private
+    def ensure_belongs_to_platform
+      if is_whitelabel?
+        if !(current_platform.in? @project.visible_platforms) or @project.users.reject{|u| u.enable_sharing }.any?
+          raise ActiveRecord::RecordNotFound
+        end
+      end
+    end
+
     def initialize_project
       @project.build_logo unless @project.logo
       @project.build_cover_image unless @project.cover_image

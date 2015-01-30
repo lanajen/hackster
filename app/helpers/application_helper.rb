@@ -52,7 +52,7 @@ module ApplicationHelper
       return f if f.present?
     end
 
-    msg = "Please log in or create an account to get full access to our maker resources and start building."
+    msg = "Please log in or create an account to get full access to our maker resources and start creating."
     # group, project, user
 
     case params[:m]
@@ -124,6 +124,14 @@ module ApplicationHelper
       "
     end
     roles
+  end
+
+  def site_domain
+    is_whitelabel? ? current_site.full_domain : 'hackster.io'
+  end
+
+  def site_twitter
+    is_whitelabel? ? current_platform.twitter_handle : '@hacksterio'
   end
 
   def time_diff_in_natural_language(from_time, to_time)

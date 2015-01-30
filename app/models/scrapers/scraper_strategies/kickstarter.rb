@@ -8,7 +8,7 @@ module ScraperStrategies
       end
 
       def extract_title
-        @parsed.at_css('#project-header h2').text.strip
+        @parsed.at_css('.NS_projects__header h2').text.strip
       end
 
       def select_article

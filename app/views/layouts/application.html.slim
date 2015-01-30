@@ -51,7 +51,7 @@ html(lang="en")
       - unless current_user and current_user.is? :admin
         = render partial: 'shared/analytics', locals: { tracker: 'UA-11926897-15', domain: 'hackster.io', track_outbound: true }
 
-  body  class=yield(:body_class)
+  body class=yield(:body_class)
     #outer-wrapper
       - unless params[:blank_frame]
         - if show_hello_world?
@@ -102,7 +102,7 @@ html(lang="en")
                 li= link_to 'Platforms', platforms_path, class: 'nav-link'
                 li= link_to 'Hardware Weekend', '/hardwareweekend', class: 'nav-link'
                 / # li= link_to 'Challenges', '/challenges/wunderbar-holiday', class: 'nav-link'
-                - if Time.now < '2014-12-31 23:59:00-0800'.to_datetime
+                / # - if Time.now < '2014-12-31 23:59:00-0800'.to_datetime
                   li.dropdown
                     a.nav-link.dropdown-toggle data-toggle="dropdown" href='#'
                       | Challenges
@@ -135,7 +135,7 @@ html(lang="en")
               - if user_signed_in?
                 ul.navbar-nav.navbar-right
                   li.btn-group.navbar-btn#user-navigation-links
-                    = link_to image_tag(current_user.decorate.avatar(:mini), style: 'width:30px;'), current_user, class: 'btn',id: 'user-nav-face', style: 'padding:0;'
+                    = link_to image_tag(current_user.decorate.avatar(:mini), style: 'width:30px;'), current_user, class: 'btn',id: 'user-nav-face'
                     button#user-dropdown-toggle.btn.btn-default.dropdown-toggle data-toggle="dropdown"
                       span.caret
                     ul.dropdown-menu#nav-user-menu
@@ -158,10 +158,6 @@ html(lang="en")
                       li= link_to 'Invite friends', new_user_invitation_path
                       li.divider
                       li= link_to 'Log out', destroy_user_session_path, method: :delete
-                ul#left-nav.navbar-right.top-menu-nav
-                  - if current_user.is? :admin
-                    li= link_to 'Admin', admin_analytics_path, class: 'nav-link'
-                  li= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'nav-link'
 
               - else
                 ul#navbar-right.clearfix
@@ -173,7 +169,6 @@ html(lang="en")
                     .dropdown-menu style=("padding: 15px; width: 250px;")
                       = render 'devise/sessions/form'
                       hr
-                      / = link_to 'Connect with your social account', new_user_session_path(a: 'connect'), class: 'btn btn-black connect-social'
                       .social-icons.text-center
                         p.text-muted
                           small Or connect with your social account:
@@ -181,6 +176,11 @@ html(lang="en")
                         = link_to 'Github', user_omniauth_authorize_path(:github), class: 'zocial icon github'
                         = link_to 'Google+', user_omniauth_authorize_path(:gplus), class: 'zocial icon googleplus'
                         = link_to 'Twitter', user_omniauth_authorize_path(:twitter), class: 'zocial icon twitter'
+
+              ul#left-nav.navbar-right.top-menu-nav
+                - if user_signed_in? and current_user.is? :admin
+                  li= link_to 'Admin', admin_analytics_path, class: 'nav-link'
+                li= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'nav-link'
 
               #navbar-search
                 = render 'shared/search_form'
@@ -212,7 +212,7 @@ html(lang="en")
             / # li= link_to 'Newsletter', 'http://us7.campaign-archive2.com/home/?u=3fd72855783c7f1a97812d84e&id=6ff81e3e5b', target: '_blank'
             li
           ul.list-unstyled.list-inline.pull-right
-            li Hackster 2014
+            li Hackster 2015
 
     #mobile-nav-overlay.hide-on-desktop
       #mobile-nav-overlay-close.fa.fa-times
