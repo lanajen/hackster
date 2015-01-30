@@ -274,6 +274,10 @@ class User < ActiveRecord::Base
     joins(:reputation).order('reputations.points DESC')
   end
 
+  def self.with_at_least_one_action
+    where(id: (User.joins(:follow_relations).where("follow_relations.user_id = users.id").distinct('users.id').pluck(:id) + User.joins(:projects).distinct('users.id').pluck(:id) + User.joins(:respects).distinct('users.id').pluck(:id) + User.joins(:comments).distinct('users.id').pluck(:id)).uniq)
+  end
+
   def self.with_subscription subscription, invert=false
     negate = invert ? 'NOT' : ''
     where("#{negate}(users.subscriptions_mask & #{2**SUBSCRIPTIONS.keys.index(subscription.to_s)} > 0)")

@@ -38,7 +38,9 @@ class BaseMailer < ActionMailer::Base
 
   def enqueue_generic_email message
     self.message.perform_deliveries = false
-    MailerQueue.perform_async 'generic_message', message.name, message.from_email, message.to_email, message.subject, message.body, message.message_type, message.recipients
+    message.recipients.each_slice(1000) do |recipients|
+      MailerQueue.perform_async 'generic_message', message.name, message.from_email, message.to_email, message.subject, message.body, message.message_type, recipients
+    end
   end
 
   private
@@ -174,6 +176,13 @@ class BaseMailer < ActionMailer::Base
         context[:users] = project.users
       when :log_line
         context[:error] = LogLine.find(context_id)
+      when :mass_announcement
+        context[:users] = case context_id
+        when 0  # have made at least one action
+          User.with_at_least_one_action
+        else
+          []
+        end
       when :membership
         member = context[:member] = Member.find(context_id)
         context[:group] = group = member.group

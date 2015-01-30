@@ -53,7 +53,7 @@ module MailerHelpers
     end
 
     LogLine.create(source: :mailer, log_type: :mail_sent,
-      message: "Email sent of type: #{type}")
+      message: "Email sent of type: #{type} to #{(headers[:to])}")
 
     output_email
   end
