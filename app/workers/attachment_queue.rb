@@ -1,5 +1,5 @@
 class AttachmentQueue < BaseWorker
-  sidekiq_options queue: :critical
+  sidekiq_options queue: :critical, retry: 1
 
   def process id
     attachment = Attachment.find_by_id(id)
