@@ -8,7 +8,7 @@ class List < Group
   has_many :followers, through: :follow_relations, source: :user
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'ListMember'
 
-  attr_accessible :list_type, :is_new, :enable_comments
+  attr_accessible :list_type, :is_new, :enable_comments, :hashtag
 
   validates :user_name, :full_name, presence: true
   validate :user_name_is_unique
@@ -20,7 +20,7 @@ class List < Group
   parse_as_integers :counters_cache, :external_projects_count,
     :private_projects_count
 
-  store_accessor :properties, :list_type, :is_new, :enable_comments
+  store_accessor :properties, :list_type, :is_new, :enable_comments, :hashtag
   set_changes_for_stored_attributes :properties
 
   parse_as_booleans :properties, :is_new, :enable_comments, :hidden
@@ -74,6 +74,10 @@ class List < Group
       private_projects: 'projects.private.count',
       projects: 'project_collections.visible.count',
     }
+  end
+
+  def default_hashtag
+    "##{name.gsub(/\s+/, '')}"
   end
 
   def followers_count=(val)

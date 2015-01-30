@@ -31,7 +31,7 @@ class Platform < List
   set_changes_for_stored_attributes :websites
 
   store_accessor :properties, :accept_project_ideas, :project_ideas_phrasing,
-    :active_challenge, :disclaimer, :moderation_level, :cta_text
+    :active_challenge, :disclaimer, :moderation_level, :cta_text, :hashtag
   set_changes_for_stored_attributes :properties
 
   parse_as_booleans :properties, :accept_project_ideas, :active_challenge,

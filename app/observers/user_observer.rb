@@ -24,6 +24,7 @@ class UserObserver < ActiveRecord::Observer
     BaseMailer.enqueue_email 'invitation_accepted',
       { context_type: :inviter, context_id: record.id }
     record.build_reputation unless record.reputation
+    record.update_column :invitation_token, nil if record.invitation_token.present?
     record.subscribe_to_all && record.generate_user_name && record.save
 
     invite = record.find_invite_request
