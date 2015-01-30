@@ -5,7 +5,7 @@
     - cache "platform-#{platform.id}-submit-idea", tag: ["platform-#{platform.id}-submit-idea", 'platform-submit-idea'], expires_in: 24.hours do
       div class="submit-idea"
         .thumb.project-thumb
-          .thumb-image.has-link-overlay style="background-image:url(#{platform.cover_image.try(:file_url) || platform.avatar.try(:file_url, :big)});"
+          .thumb-image.has-link-overlay style="background-image:url(#{platform.cover_image.try(:file_url, :cover) || platform.avatar.try(:file_url, :big)});"
             = link_to '', '', class: 'link-overlay'
             .thumb-image-inner-top
             .thumb-image-inner

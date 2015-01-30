@@ -39,11 +39,14 @@
   .row.text-center= will_paginate @projects
 - else
   .row
-    .col-xs-12
-      p
-        ' No projects here yet!
-        - if @platform.platform_tags.any?
-          = link_to "Create the first #{@platform.name} project", new_project_path(project: { platform_tags_string: @platform.name }), class: 'btn btn-primary btn-sm'
+    - if @platform.accept_project_ideas
+      = render partial: 'groups/platforms/submit_idea', locals: { platform: @platform }
+    - else
+      .col-xs-12
+        p
+          ' No projects here yet!
+          - if @platform.platform_tags.any?
+            = link_to "Create the first #{@platform.name} project", new_project_path(project: { platform_tags_string: @platform.name }), class: 'btn btn-primary btn-sm'
 
 - if can? :manage, @group
   - @projects.each do |project|
