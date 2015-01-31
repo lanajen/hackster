@@ -112,7 +112,7 @@ module ScraperStrategies
           src = get_src_for_img(img, base)
           if test_link(src)
             ext = File.extname(URI.parse(src).path)[1..-1]
-            img.remove and next unless ext.in? ImageUploader::EXTENSION_WHITE_LIST
+            # img.remove and next unless ext.in? ImageUploader::EXTENSION_WHITE_LIST
             img['src'] = src
             caption = find_caption_for img, base
             img['title'] = caption if caption.present?
