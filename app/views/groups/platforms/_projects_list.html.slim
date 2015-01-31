@@ -30,7 +30,7 @@
 
 
 - if @projects.any?
-  .thumb-list  class=@switch_style
+  .thumb-list
     .row.project-list
       - if @platform.accept_project_ideas
         = render partial: 'groups/platforms/submit_idea', locals: { platform: @platform }
@@ -54,3 +54,10 @@
       javascript:
         text = "#{escape_javascript render(partial: 'groups/platforms/button_featured', locals: { project: project } )}";
         $(text).appendTo($('.project-#{project.id} .project-thumb .award-container'));
+- else
+  - @projects.each do |project|
+    - if project.in? @platform.featured_projects
+      = content_for :js do
+        javascript:
+          text = "#{escape_javascript render(partial: 'groups/platforms/featured', locals: { project: project } )}";
+          $(text).appendTo($('.project-#{project.id} .project-thumb .award-container'));

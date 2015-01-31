@@ -37,6 +37,11 @@
       display: none;
     }
   }
+  &:hover {
+    .project-feature {
+      display: block;
+    }
+  }
   .project-featured {
     position: absolute;
     left: 10px;
@@ -46,10 +51,11 @@
     font-size: 0.85em;
   }
   .project-feature {
-    position: relative;
-    left: 10px;
+    position: absolute;
+    right: 10px;
     top: 10px;
     display: none;
+    z-index: 5;
   }
 }
 
