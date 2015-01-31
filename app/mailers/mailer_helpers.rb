@@ -3,7 +3,7 @@ module MailerHelpers
 
   DEFAULT_EMAIL = 'Hackster.io<hi@hackster.io>'
 
-  def send_notification_email type
+  def send_notification_email type, opts={}
     @headers = {
       to: DEFAULT_EMAIL,
     }
@@ -18,7 +18,7 @@ module MailerHelpers
     send_email type, opts
   end
 
-  def send_bulk_email type
+  def send_bulk_email type, opts={}
     @users = @context[:users]
     @headers = {
       to: DEFAULT_EMAIL,
@@ -55,7 +55,7 @@ module MailerHelpers
     LogLine.create(source: :mailer, log_type: :mail_sent,
       message: "Email sent of type: #{type} to #{(headers[:to])}")
 
-    output_email
+    output_email.deliver!
   end
 
   private
