@@ -16,7 +16,7 @@ module ScraperUtils
     puts "Fetching page #{page_url}..."
     5.times do
       begin
-        return open(page_url, allow_redirections: :safe).read
+        return open(page_url, allow_redirections: :safe, ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE).read
       rescue => e
         # raise e.inspect
         puts "Failed opening #{page_url}. Retrying in 1 second..."
@@ -58,7 +58,10 @@ module ScraperUtils
     print "Testing link #{link}... "
     begin
       http = Net::HTTP.new(u.host, u.port)
-      http.use_ssl = true if u.scheme == 'https'
+      if u.scheme == 'https'
+        http.use_ssl = true
+        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      end
       status_code = http.request_head(u.request_uri).code
     rescue
       status_code = "Error"

@@ -101,6 +101,7 @@ class ApplicationController < ActionController::Base
 
   def not_found
     render_404 ActiveRecord::RecordNotFound.new
+  rescue ActionController::InvalidCrossOriginRequest
   end
 
   # Stores the user's current page to reuse when needed.
@@ -372,7 +373,7 @@ class ApplicationController < ActionController::Base
     end
 
     def render_404(exception)
-      LogLine.create(log_type: 'not_found', source: 'controller', message: request.url) unless request.url =~ /users\/auth\/[a-z]+\/callback/
+      # LogLine.create(log_type: 'not_found', source: 'controller', message: request.url) unless request.url =~ /users\/auth\/[a-z]+\/callback/
       respond_to do |format|
         format.html { render template: 'errors/error_404', layout: "layouts/#{current_layout}", status: 404 }
         format.all { render nothing: true, status: 404 }

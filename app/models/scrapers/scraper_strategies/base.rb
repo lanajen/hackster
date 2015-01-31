@@ -3,6 +3,7 @@ module ScraperStrategies
     include ScraperUtils
 
     def initialize parsed, page_url=''
+      @page_url = page_url
       @parsed = parsed
       uri = URI(page_url)
       @scheme = uri.scheme || 'http'

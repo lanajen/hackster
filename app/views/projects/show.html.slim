@@ -52,7 +52,7 @@
                     a.copyright target='_blank' href=@project.license.url &copy;&nbsp;#{@project.license.abbr}
                 p.project-one-liner= @project.one_liner
 
-                - if @project.product_tags_count > 0 or @project.platform_tags_cached.any?
+                - if @project.product_tags_cached.any? or @project.platform_tags_cached.any?
                   ul.list-inline.tags
                     - unknown_platforms = @project.platform_tags_cached.select do |tag|
                       - Platform.includes(:platform_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first.nil?
