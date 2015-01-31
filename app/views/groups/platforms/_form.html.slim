@@ -58,8 +58,9 @@
         = f.input :slack_hook_url, label: 'Hook URL'
 
     .col-md-6
-      = f.input :accept_project_ideas, input_label: "Accept project ideas?", as: :boolean, hint: "This is useful if your product hasn't shipped yet and you want to encourage your community to start posting project ideas."
-      = f.input :project_ideas_phrasing, collection: @platform.project_ideas_phrasing_options, label: 'Phrasing for project ideas prompt'
+      - if current_user.is? :admin
+        = f.input :accept_project_ideas, input_label: "Accept project ideas?", as: :boolean, hint: "This is useful if your product hasn't shipped yet and you want to encourage your community to start posting project ideas."
+        = f.input :project_ideas_phrasing, collection: @platform.project_ideas_phrasing_options, label: 'Phrasing for project ideas prompt'
       = f.input :facebook_link, label: 'Facebook link'
       = f.input :github_link, label: 'Github link'
       = f.input :google_plus_link, label: 'Google+ link'

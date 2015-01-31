@@ -107,7 +107,7 @@ $(function() {
           });
           content[elementid]['widgets_attributes'][i] = attrs;
         });
-        var partsWidget = $('#parts-widget-form div:not(.removed)');
+        var partsWidget = $('#parts-widget-form');
         if (partsWidget.length) {
           var i = new Date().getTime();
           var attrs = {};
@@ -452,6 +452,15 @@ $(function() {
           var position = posEl.val();
           if (parts.parts[position]) $(el).val(parts.parts[position].id);
         });
+      });
+      $.each($('#parts-widget-form .removed'), function(i, el){
+        var id = $(el).find('.id').val();
+        $.each(widgets, function(id, parts){
+          $.each(parts.parts, function(j, part){
+            if (part.id == id) return;
+          });
+        });
+        $(el).remove();
       });
     },
 
