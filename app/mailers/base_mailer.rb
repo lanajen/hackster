@@ -4,6 +4,7 @@ class BaseMailer < ActionMailer::Base
   add_template_helper UrlHelper
 
   def deliver_email action, context, type, opts={}
+    sendgrid_category type
     @context = context
     send action, type, opts
   end

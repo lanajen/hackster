@@ -243,8 +243,6 @@ class MailerQueue < BaseWorker
       else
         BaseMailer.deliver_email 'send_notification_email', context, type
       end
-
-      # "deliver!"
     end
 end
 
