@@ -32,6 +32,8 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
     session['devise.invitation_token'] = params[:invitation_token] if params[:invitation_token]
 
+    session[:redirect_host] = params[:redirect_host] if params[:redirect_host]
+
     render text: 'Setup complete.', status: 404
   end
 
@@ -47,6 +49,8 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     def oauthorize(kind)
       @user = User.find_for_oauth(kind, request.env['omniauth.auth'], current_user)
       # logger.info request.env['omniauth.auth'].to_yaml
+
+      redirect_host = session.delete(:redirect_host).presence || APP_CONFIG['default_host']
 
       omniauth_data = case kind
       when 'Facebook', 'Twitter'
@@ -64,21 +68,17 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
           session['devise.provider_data'] = omniauth_data
           session['devise.provider'] = kind
           session['devise.match_by'] = @user.match_by
-          redirect_to edit_authorization_url(@user.id)
+          redirect_to edit_authorization_url(@user.id, host: redirect_host)
         end
       else
         session['devise.provider_data'] = omniauth_data
         session['devise.provider'] = kind
-        redirect_to new_authorization_url(autosave: 1)
+        redirect_to new_authorization_url(autosave: 1, host: redirect_host)
       end
     end
 
   protected
-    def after_sign_up_path_for(resource)
-      super(resource)
-    end
-
     def after_sign_in_path_for(resource)
-      super(resource)
+      user_return_to
     end
 end

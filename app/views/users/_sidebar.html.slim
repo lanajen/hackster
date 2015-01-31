@@ -122,7 +122,7 @@
             ' No skills.
             = link_to 'Add some?', profile_edit_path
 
-      - if user_signed_in?
+      - if user_signed_in? and (user_is_current? or current_user.is? :admin)
         .display
           h4
             i.fa.fa-cog>

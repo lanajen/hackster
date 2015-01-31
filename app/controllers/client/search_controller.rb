@@ -12,7 +12,7 @@ class Client::SearchController < Client::BaseController
         opts[:per_page] = Project.per_page
         @results = SearchRepository.new(opts).search.results
 
-        if @results.empty?
+        if @results.empty? and !current_site.hide_alternate_search_results
           opts = params.dup
           opts[:type] = 'project'
           opts[:per_page] = Project.per_page

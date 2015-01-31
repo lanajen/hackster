@@ -35,8 +35,10 @@
 
       - if client = @platform.client_subdomain
         = render partial: 'shared/image_form', locals: { file_type: 'logo', human_file_type: 'Portal logo', image_link: @platform.logo.try(:file_url), help_block: '', attribute_type: 'logo', image_version: nil, model: 'group' }
+        = render partial: 'shared/image_form', locals: { file_type: 'favicon', human_file_type: 'Portal favicon', image_link: client.favicon.try(:file_url), help_block: '', attribute_type: 'favicon', image_version: nil, model: 'group[client_subdomain_attributes]' }
         = f.simple_fields_for :client_subdomain, client do |f_client|
           = f_client.input :domain, hint: "If you want to personalize the domain name of your dedicated portal, enter it. You will then need to add a CNAME pointing from this domain to #{client.subdomain}.hackster.io.", label: 'Portal custom domain'
+          = f_client.input :hide_alternate_search_results, as: :boolean, hint: "When users make a search on your site that returns no results, by default we'll show them alternate results from Hackster.io. Uncheck this to disable alternate results.", label: false, inline_label: 'Hide alternate search results'
         p Want to use your own design? Send us the HTML and CSS to portals@hackster.io.
 
       /

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150128183640) do
+ActiveRecord::Schema.define(version: 20150131062333) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -360,25 +360,46 @@ ActiveRecord::Schema.define(version: 20150128183640) do
 
   add_index "monologue_tags", ["name"], name: "index_monologue_tags_on_name", using: :btree
 
+  create_table "part_joins", force: true do |t|
+    t.integer  "part_id",                           null: false
+    t.integer  "partable_id",                       null: false
+    t.string   "partable_type",                     null: false
+    t.integer  "quantity",              default: 1
+    t.string   "unquantifiable_amount"
+    t.float    "total_cost"
+    t.text     "comment"
+    t.integer  "position",              default: 0, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "part_joins", ["part_id"], name: "index_part_joins_on_part_id", using: :btree
+  add_index "part_joins", ["partable_id", "partable_type", "position"], name: "index_part_joins_on_partable_id_and_partable_type_and_position", using: :btree
+
   create_table "parts", force: true do |t|
-    t.integer  "quantity",      default: 1
-    t.float    "unit_price",    default: 0.0
-    t.float    "total_cost",    default: 0.0
+    t.integer  "quantity",            default: 1
+    t.float    "unit_price",          default: 0.0
+    t.float    "total_cost",          default: 0.0
     t.string   "name"
     t.string   "vendor_name"
     t.string   "vendor_sku"
     t.string   "vendor_link"
-    t.string   "partable_type",               null: false
-    t.integer  "partable_id",                 null: false
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.string   "partable_type",                      null: false
+    t.integer  "partable_id",                        null: false
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
     t.string   "mpn"
-    t.string   "description"
+    t.text     "description"
     t.integer  "position"
     t.string   "comment"
+    t.text     "websites"
+    t.integer  "platform_id"
+    t.boolean  "private",             default: true
+    t.string   "product_tags_string"
   end
 
   add_index "parts", ["partable_id", "partable_type"], name: "partable_index", using: :btree
+  add_index "parts", ["platform_id"], name: "index_parts_on_platform_id", using: :btree
 
   create_table "permissions", force: true do |t|
     t.string   "permissible_type", limit: 15, null: false
@@ -505,6 +526,7 @@ ActiveRecord::Schema.define(version: 20150128183640) do
     t.datetime "updated_at"
     t.string   "domain"
     t.integer  "platform_id"
+    t.text     "properties"
   end
 
   add_index "subdomains", ["domain"], name: "index_subdomains_on_domain", using: :btree

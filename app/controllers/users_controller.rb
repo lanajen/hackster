@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   before_filter :authenticate_user!, except: [:show, :index]
   before_filter :load_user, only: [:show]
   authorize_resource except: [:after_registration, :after_registration_save]
-  layout 'user', only: [:edit, :update, :show]
+  layout :set_layout
 
   def index
     title "Browse top hackers"
@@ -18,8 +18,12 @@ class UsersController < ApplicationController
     @private_projects = @user.projects.private.for_thumb_display
     @respected_projects = @user.respected_projects.indexable.for_thumb_display
     if current_platform
+      @private_projects = if current_user == @user
+        @private_projects.select{ |p| (p.platform_tags_cached.map{|t| t.downcase } & current_platform.platform_tags.map{|t| t.name.downcase }).any? }
+      else
+        @private_projects.with_group(current_platform)
+      end
       @public_projects = @public_projects.with_group(current_platform)
-      @private_projects = @private_projects.with_group(current_platform)
       @respected_projects = @respected_projects.with_group(current_platform)
     end
 
@@ -99,4 +103,9 @@ class UsersController < ApplicationController
       render action: 'after_registration'
     end
   end
+
+  private
+    def set_layout
+      action_name.in?(%w(edit update show)) ? 'user' : current_layout
+    end
 end

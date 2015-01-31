@@ -5,6 +5,13 @@ development:
   default_port: 5000
   send_emails: false
 
+# development:
+#   full_host: www.lvh.me:5000
+#   default_host: www.lvh.me
+#   default_domain: lvh.me
+#   default_port: 5000
+#   send_emails: false
+
 test:
   full_host: www.example.com
   default_host: www.example.com

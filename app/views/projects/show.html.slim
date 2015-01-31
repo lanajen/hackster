@@ -382,7 +382,7 @@
                     = render partial: 'groups/shared/community_thumb_mini', locals: { community: community }
 
             - cache ["project-#{@project.id}", 'metadata', @can_edit], tag: (["project-#{@project.id}-metadata", "team-#{@project.team_id}", "project-#{@project.id}-respects", 'project-metadata'] + @project.users.map{|u| "user-#{u.id}-thumb"}) do
-              - if @project.public? and @project.respects_count > 0
+              - if @project.public? and @respecting_users.count > 0
                 section.section-thumbs
                   h4 Hackers who respect this project
                   #widget-respects= render partial: 'widgets/respect_widget', locals: { users: @respecting_users }

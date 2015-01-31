@@ -13,8 +13,8 @@
           #project-embed
             p
               | Add the following snippet to your HTML:
-              input.embed-code  type='text' onclick="this.select();" value="<iframe frameborder='0' height='270' scrolling='no' src='#{project_embed_url(@project)}' width='360'></iframe>"
-            .row= render partial: 'projects/project_embed_thumb', locals: { project: @project }
+              input.embed-code  type='text' onclick="this.select();" value="<iframe frameborder='0' height='270' scrolling='no' src='#{project_embed_url(@project, host: site_host)}' width='360'></iframe>"
+            .row= render partial: 'projects/project_embed_thumb', locals: { project: @project, host: site_host }
             .clearfix
 
     javascript:

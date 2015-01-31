@@ -1,4 +1,6 @@
 class ProjectWorker < BaseWorker
+  sidekiq_options unique: :all
+
   def update_platforms id
     return unless project = Project.find_by_id(id)
 

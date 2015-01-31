@@ -127,7 +127,11 @@ module ApplicationHelper
   end
 
   def site_domain
-    is_whitelabel? ? current_site.full_domain : 'hackster.io'
+    is_whitelabel? ? current_site.full_domain : APP_CONFIG['default_domain']
+  end
+
+  def site_host
+    is_whitelabel? ? current_site.full_domain : APP_CONFIG['default_host']
   end
 
   def site_twitter

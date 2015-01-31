@@ -37,7 +37,7 @@
             .box-title
               h3.text-center
                 | Connect
-              .subheading with your social account:
+              .subheading with your social account#{' and Hackster.io' if is_whitelabel? }:
             .box-content= render partial: 'devise/shared/omniauth', locals: { autofocus: (highlight == 'connect') }
 
         .col-xs-12.text-center
