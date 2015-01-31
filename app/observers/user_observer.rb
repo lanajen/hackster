@@ -65,7 +65,7 @@ class UserObserver < ActiveRecord::Observer
     record.skill_tags_count = record.skill_tags_string.split(',').count
 
 
-    if (record.changed && %w(full_name user_name avatar slug)).any?
+    if (record.changed & %w(full_name user_name avatar slug)).any?
       keys = ["user-#{record.id}-teaser", "user-#{record.id}-thumb"]
       record.teams.each{|t| keys << "team-#{t.id}-user-thumbs" }
       record.respected_projects.each{|p| keys << "project-#{p.id}-respects" }

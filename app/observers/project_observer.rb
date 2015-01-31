@@ -3,6 +3,12 @@ class ProjectObserver < ActiveRecord::Observer
     update_counters record, :projects
   end
 
+  def after_commit_on_update record
+    if record.needs_platform_refresh
+      ProjectWorker.perform_async 'update_platforms', record.id
+    end
+  end
+
   def after_destroy record
     Broadcast.where(context_model_id: record.id, context_model_type: 'Project').destroy_all
     Broadcast.where(project_id: record.id).destroy_all
@@ -27,10 +33,6 @@ class ProjectObserver < ActiveRecord::Observer
         Broadcast.where(project_id: record.id).destroy_all
       end
     end
-
-    if (record.changed && %w(private approved platform_tags_string)).any?
-      ProjectWorker.perform_in 0.5.second, 'update_platforms', record.id  # small delay so it's got time to save before bg task performs
-    end
   end
 
   def before_create record
@@ -41,6 +43,10 @@ class ProjectObserver < ActiveRecord::Observer
   end
 
   def before_update record
+    if (record.changed & %w(private approved platform_tags_string)).any?
+      record.needs_platform_refresh = true
+    end
+
     if record.private_changed?
       if record.private?
       else

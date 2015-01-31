@@ -105,14 +105,15 @@ class Project < ActiveRecord::Base
     :issues_count, :team_members_count, :platform_tags_count, :communities_count]
 
   store :properties, accessors: [:private_logs, :private_issues, :locked,
-    :guest_twitter_handle, :celery_id]
+    :guest_twitter_handle, :celery_id, :needs_platform_refresh]
 
   parse_as_integers :counters_cache, :comments_count, :product_tags_count,
     :widgets_count, :followers_count, :build_logs_count,
     :issues_count, :team_members_count, :platform_tags_count,
     :communities_count
 
-  parse_as_booleans :properties, :private_logs, :private_issues, :locked
+  parse_as_booleans :properties, :private_logs, :private_issues, :locked,
+    :needs_platform_refresh
 
   self.per_page = 18
 
