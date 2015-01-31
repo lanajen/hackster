@@ -71,7 +71,7 @@
                     span.stat-figure> = number_with_delimiter @project.respects_count
                     = pluralize_without_count @project.respects_count, 'respect'
 
-          - if @project.assignment.present? and @project.assignment.private_grades and !@can_edit
+          - if @project.assignment.present? and @project.assignment.private_grades and !@can_edit and cannot? :manage, @project.assignment
             section#about-project.section-container
               h2.section-title
                 .title.title-toggle Contents hidden
