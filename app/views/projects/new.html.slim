@@ -46,7 +46,7 @@
 
     - else
       - if !@project.external and user_signed_in? and platform_projects = current_user.projects.where.not(id: current_user.projects.includes(:platform_tags).references(:tags).where('lower(tags.name) IN (?)', platform.platform_tags.pluck(:name).map{|n| n.downcase }).pluck(:id)) and platform_projects.any?
-        .col-md-8.col-md-offset-2.col-xs-12
+        .col-md-8.col-md-offset-2
           .box
             .box-content
               strong Want to link an existing project to #{platform.name}?
@@ -56,11 +56,11 @@
                   = select_tag :project_id, options_from_collection_for_select(platform_projects, :id, :name), include_blank: true, class: 'form-control'
                 = submit_tag 'Link project', class: 'btn btn-primary btn-block'
 
-        .col-md-8.col-md-offset-2.col-xs-12
-          hr
+        .col-md-8.col-md-offset-2
+          .hr or
 
   - if @project.external
-    .col-md-4.col-md-offset-4.col-xs-12
+    .col-md-4.col-md-offset-4
       .box
         .box-title
           h2 Submit a link
@@ -101,7 +101,7 @@
 
             = f.button :submit, 'Submit', class: 'btn-block btn btn-primary'
 
-    .col-md-3.col-md-offset-1.col-xs-12
+    .col-md-3.col-md-offset-1
       h4 What is this?
       p
         ' Do you know of an existing project page hosted on an external website that you would like to list
@@ -111,13 +111,13 @@
         - else
           | on your profile
         | ?
-      p Submit it to Hackster.io by filling in this form. We'll give it a quick review and post it to the list.
+      p Submit it to #{site_name} by filling in this form. We'll give it a quick review and post it to the list.
       / %p
         strong PS:
         | Be cool and credit the hacker who built it if it's not you!
 
   - elsif !@project.is_idea?
-    .col-md-8.col-md-offset-2.col-xs-12
+    .col-md-8.col-md-offset-2
       .box
         .box-title
           h2 Start a new project
@@ -155,17 +155,17 @@
                 = f.button :submit, 'Continue', class: 'btn-block btn-primary'
 
     - if @project.open_source
-      .col-md-6.col-md-offset-3.col-xs-12
-        hr
+      .col-md-8.col-md-offset-2
+        .hr or
 
-      .col-md-8.col-md-offset-2.col-xs-12.mg-40
+      .col-md-8.col-md-offset-2.mg-40
         .box
           .box-content
             p.text-center
               strong> Is there an existing web page for this project?
               | Enter the URL below and we'll import it.
               br
-              small= link_to 'More than one page?', new_project_import_path
+              small= link_to 'Need to import more than one page?', new_project_import_path
 
             = form_tag project_imports_path, method: :post, class: 'disable-on-submit' do
               .form-group

@@ -27,9 +27,11 @@ module ScraperStrategies
 
       def _parse_comments dom, depth=1, parent=nil
         dom.css("li.depth-#{depth}").each do |comment|
-          body = comment.at_css('.comment-content').inner_html
-          name = comment.at_css('.comment-author .fn').text.try(:strip)
-          created_at = DateTime.parse comment.at_css('time')['datetime']
+          body = comment.at_css('.comment-content').try(:inner_html) || comment.at_css('.comment-body').try(:inner_html)
+          name = comment.at_css('.comment-author .fn').try(:text).try(:strip)
+          next unless body and name
+          datetime = comment.at_css('time').try(:[], 'datetime')
+          created_at = DateTime.parse datetime if datetime
           c = @project.comments.new body: body, guest_name: name
           c.created_at = created_at
           c.parent = parent

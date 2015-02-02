@@ -31,5 +31,8 @@
       var pdg = next.data('padding-top');
       next.css('padding-top', pdg);
     });
+
+    var brand = $('.group-nav .brand');
+    brand.css('margin-left', -brand.outerWidth());
   });
 })(jQuery, window, document);

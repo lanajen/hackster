@@ -3,4 +3,4 @@ form.navbar-form  action=search_path method=:get
     .input-group
       span.input-group-addon
         i.fa.fa-search
-      = text_field_tag :q, params[:q], class: 'form-control', placeholder: 'Search'
+      = text_field_tag :q, params[:q], class: 'form-control', placeholder: (defined?(placeholder) ? placeholder : 'Search')

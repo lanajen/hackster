@@ -53,7 +53,7 @@
           li= link_to 'Partners', '#partners', class: 'nav-link smooth-scroll', data: { target: '#partners' }
           li= link_to 'Mentors and speakers', '#mentors', class: 'nav-link smooth-scroll', data: { target: '#mentors' }
           li= link_to 'What to expect', '#what', class: 'nav-link smooth-scroll', data: { target: '#what' }
-          li= link_to 'Schedule', '#schedule', class: 'nav-link smooth-scroll', data: { target: '#schedule' }
+          li= link_to 'Schedule', '#schedule', class: 'nav-link smooth-scroll last', data: { target: '#schedule' }
         ul#navbar-right.clearfix
           li
             span= link_to 'Register', '#register', class: 'btn btn-primary login-link smooth-scroll', data: { target: '#register' }
@@ -72,7 +72,7 @@
         .home-slide style="background-image:url('#{ asset_url 'hwweek/bg.jpg'}')"
           .container.text-center
             h1 Hackster Hardware Weekend
-            p 10 Cities | 10 Hackathons | 10 Meetups
+            p 10 Cities | 10 Hackathons | 10 Meetups | 1 DeLorean
 
       section#about
         .container
@@ -80,11 +80,26 @@
             .inner
 
       section#desc
-        .container.text-center
-          h2.text-center Ready to join the hardware revolution?
-          p Hackster is a community and it's time we all meet each other on the 2015 Hackster Hardware Weekend! This event series is a celebration of makers, open source hardware and the Hackster community across America. From Seattle to NYC and everything in between, we are hitting the road with loads of hardware kits, amazing speakers, software freebies and great people.
+        .container
+          .row
+            .col-md-6
+              h2 Ready to hack the future of hardware?
+              p The Hackster Hardware Weekend is a celebration of makers, open source hardware and the Hackster community across America. From Seattle to NYC and everything in between, we are hitting the road driving an original DeLorean DMC 12 to run the coolest Hackathon & Meetup series of the year, with loads of free hardware kits, amazing speakers, software freebies and great people.
+              p
+                strong> Best yet, you also get to hack our Time Machine.
+                | Update our DeLorean with the latest sensors, electronics, radios and data service. Make Doc Emmet Brown proud and #HackToTheFuture!
+              p
+                ' What will you build with the DeLorean?
+                strong
+                  ' Share your ideas on the
+                  = link_to "DeLorean hacks page", '/delorean'
+                  | .
 
-          p Grab your soldering stations and join our tour to meet THE BEST hardware hackers across America.
+              / p Hackster is a community and it's time we all meet each other on the 2015 Hackster Hardware Weekend! This event series is a celebration of makers, open source hardware and the Hackster community across America. From Seattle to NYC and everything in between, we are hitting the road with loads of hardware kits, amazing speakers, software freebies and great people.
+
+              / p Grab your soldering stations and join our tour to meet THE BEST hardware hackers across America.
+            .col-md-6.text-center
+              = image_tag 'hwweek/delorean_logo.png'
 
       = render 'hardwareweekend_share'
 
@@ -133,9 +148,11 @@
         .container.text-center
           h2.text-center What's in it for you?
           p.hidden-xs style='font-size:1.5em'
-            | Get Hardware Kits | Great Speakers & Mentors | Awesome Prizes | Swag Madness
+            | Get Hardware Kits | Great Speakers &amp; Mentors | Awesome Prizes | Swag Madness
             br
             | Food | Caffeine | Best Hardware Community On Earth
+            br
+            strong And of course: One Time Opportunity to Hack a Real DeLorean
           ul.list-unstyled.gifts.visible-xs
             li Get Hardware Kits
             li Great Speakers &amp; Mentors
@@ -144,6 +161,8 @@
             li Food
             li Caffeine
             li Best Hardware Community On Earth
+            li
+              strong And of course: One Time Opportunity to Hack a Real DeLorean
 
           p.small.text-muted style='margin:30px 0 0;'
             | *check on your city event page which hardware kits, mentors, speakers and prizes we'll have.
@@ -229,8 +248,7 @@
                   h4 Portland, OR
                   p March 7-8
             .col-sm-6
-              / a.city-card style="background-image:url('#{asset_url 'hwweek/sf.jpg'}')" href="https://www.eventbrite.com/e/san-francisco-hackster-hardware-weekend-tickets-15427010604" target='_blank'
-              a.city-card data-target="#myModal" data-toggle="modal" style="background-image:url('#{asset_url 'hwweek/sf.jpg'}')" target='_blank'
+              a.city-card style="background-image:url('#{asset_url 'hwweek/sf.jpg'}')" href="https://www.eventbrite.com/e/hackster-hardware-weekend-san-francisco-tickets-15427010604" target='_blank'
                 .caption
                   h4 San Francisco, CA
                   p March 14-15

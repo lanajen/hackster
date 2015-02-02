@@ -91,7 +91,7 @@ class ChallengesController < ApplicationController
       if self.action_name.to_s.in? %w(show rules)
         'challenge'
       else
-        'application'
+        current_layout
       end
     end
 end

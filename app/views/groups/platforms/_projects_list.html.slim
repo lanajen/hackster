@@ -30,20 +30,23 @@
 
 
 - if @projects.any?
-  .thumb-list  class=@switch_style
+  .thumb-list
     .row.project-list
       - if @platform.accept_project_ideas
         = render partial: 'groups/platforms/submit_idea', locals: { platform: @platform }
-      - @projects.each do |collection|
-        = render partial: 'projects/project_thumb', locals: { project: collection.project }
+      - @projects.each do |project|
+        = render partial: 'projects/project_thumb', locals: { project: project }
   .row.text-center= will_paginate @projects
 - else
   .row
-    .col-xs-12
-      p
-        ' No projects here yet!
-        - if @platform.platform_tags.any?
-          = link_to "Create the first #{@platform.name} project", new_project_path(project: { platform_tags_string: @platform.name }), class: 'btn btn-primary btn-sm'
+    - if @platform.accept_project_ideas
+      = render partial: 'groups/platforms/submit_idea', locals: { platform: @platform }
+    - else
+      .col-xs-12
+        p
+          ' No projects here yet!
+          - if @platform.platform_tags.any?
+            = link_to "Create the first #{@platform.name} project", new_project_path(project: { platform_tags_string: @platform.name }), class: 'btn btn-primary btn-sm'
 
 - if can? :manage, @group
   - @projects.each do |project|
@@ -51,3 +54,10 @@
       javascript:
         text = "#{escape_javascript render(partial: 'groups/platforms/button_featured', locals: { project: project } )}";
         $(text).appendTo($('.project-#{project.id} .project-thumb .award-container'));
+- else
+  - @projects.each do |project|
+    - if project.in? @platform.featured_projects
+      = content_for :js do
+        javascript:
+          text = "#{escape_javascript render(partial: 'groups/platforms/featured', locals: { project: project } )}";
+          $(text).appendTo($('.project-#{project.id} .project-thumb .award-container'));

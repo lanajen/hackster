@@ -49,10 +49,10 @@
                     i.fa.fa-lightbulb-o.private-project-icon>
                   ==> @project.name
                   - if @project.license
-                    a.copyright target='_blank' href=@project.license.url &copy;&nbsp;#{@project.license.abbr}
+                    a.copyright target='_blank' href=@project.license.url &copy;&nbsp;#{@project.license.abbr.gsub(' ', '&nbsp;').html_safe}
                 p.project-one-liner= @project.one_liner
 
-                - if @project.product_tags_count > 0 or @project.platform_tags_cached.any?
+                - if @project.product_tags_cached.any? or @project.platform_tags_cached.any?
                   ul.list-inline.tags
                     - unknown_platforms = @project.platform_tags_cached.select do |tag|
                       - Platform.includes(:platform_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first.nil?
@@ -71,7 +71,7 @@
                     span.stat-figure> = number_with_delimiter @project.respects_count
                     = pluralize_without_count @project.respects_count, 'respect'
 
-          - if @project.assignment.present? and @project.assignment.private_grades and !@can_edit
+          - if @project.assignment.present? and @project.assignment.private_grades and !@can_edit and cannot? :manage, @project.assignment
             section#about-project.section-container
               h2.section-title
                 .title.title-toggle Contents hidden
@@ -236,7 +236,7 @@
                   i.fa.fa-chevron-down
                   i.fa.fa-chevron-up
               .section-content
-                = render partial: 'widgets/comments', locals: { comments: @project.comments, commentable: @project }
+                = render partial: 'widgets/comments', locals: { comments: @comments, commentable: @project }
 
         .col-md-4.right-column
           .container-mobile
@@ -372,7 +372,7 @@
                         - else
                           span.user-name= credit_line.name
 
-            - if communities = (@project.platforms.where(groups: { private: false }, project_collections: { workflow_state: ProjectCollection::VALID_STATES }) + [@project.hacker_space] + @project.communities.where(groups: { private: false })).compact and communities.any? #@project.communities_count > 0
+            - if current_platform.nil? and communities = (@project.platforms.where(groups: { private: false }, project_collections: { workflow_state: ProjectCollection::VALID_STATES }) + [@project.hacker_space] + @project.communities.where(groups: { private: false })).compact and communities.any? #@project.communities_count > 0
               section.section-thumbs
                 h4
                   | Communities this project is part of
@@ -382,7 +382,7 @@
                     = render partial: 'groups/shared/community_thumb_mini', locals: { community: community }
 
             - cache ["project-#{@project.id}", 'metadata', @can_edit], tag: (["project-#{@project.id}-metadata", "team-#{@project.team_id}", "project-#{@project.id}-respects", 'project-metadata'] + @project.users.map{|u| "user-#{u.id}-thumb"}) do
-              - if @project.public? and @project.respects_count > 0
+              - if @project.public? and @respecting_users.count > 0
                 section.section-thumbs
                   h4 Hackers who respect this project
                   #widget-respects= render partial: 'widgets/respect_widget', locals: { users: @respecting_users }

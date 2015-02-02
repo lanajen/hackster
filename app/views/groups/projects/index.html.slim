@@ -18,9 +18,10 @@ p= link_to "&larr; Go back to #{@group.name} page".html_safe, @group
         span.caret
       ul.dropdown-menu.pull-right
         li*{ class: "#{'active' if params[:status].nil? }" } = link_to 'All', group_admin_projects_path(@group)
+        li*{ class: "#{'active' if params[:status] == 'featured'}" } = link_to 'Featured', group_admin_projects_path(@group, status: 'featured')
+        li*{ class: "#{'active' if params[:status] == 'rejected'}" } = link_to 'Hidden', group_admin_projects_path(@group, status: 'rejected')
         li*{ class: "#{'active' if params[:status] == 'approved'}" } = link_to 'Showing', group_admin_projects_path(@group, status: 'approved')
         li*{ class: "#{'active' if params[:status] == 'pending_review'}" } = link_to 'Pending review', group_admin_projects_path(@group, status: 'pending_review')
-        li*{ class: "#{'active' if params[:status] == 'rejected'}" } = link_to 'Hidden', group_admin_projects_path(@group, status: 'rejected')
     .clearfix
 
     table.table.table-hover
@@ -42,6 +43,10 @@ p= link_to "&larr; Go back to #{@group.name} page".html_safe, @group
             td
               - if project_collection.can_approve?
                 = link_to content_tag(:i, '', class: 'fa fa-eye'), group_update_workflow_path(@group, project_collection, event: :approve), class: 'btn btn-sm btn-default', title: 'Show on page', rel: 'tooltip', data: { method: :patch }
+              - if project_collection.can_feature?
+                = link_to content_tag(:i, '', class: 'fa fa-star'), group_update_workflow_path(@group, project_collection, event: :feature), class: 'btn btn-sm btn-default', title: 'Feature on page', rel: 'tooltip', data: { method: :patch }
+              - if project_collection.can_unfeature?
+                = link_to content_tag(:i, '', class: 'fa fa-star-o'), group_update_workflow_path(@group, project_collection, event: :unfeature), class: 'btn btn-sm btn-default', title: 'Unfeature from page', rel: 'tooltip', data: { method: :patch }
               - if project_collection.can_reject?
                 = link_to content_tag(:i, '', class: 'fa fa-eye-slash'), group_update_workflow_path(@group, project_collection, event: :reject), class: 'btn btn-sm btn-default', title: 'Hide from page', rel: 'tooltip', data: { method: :patch }
 

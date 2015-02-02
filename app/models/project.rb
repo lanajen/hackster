@@ -46,6 +46,8 @@ class Project < ActiveRecord::Base
   has_many :parts, through: :parts_widgets
   has_many :parts_widgets, as: :widgetable
   has_many :project_collections, dependent: :destroy
+  has_many :visible_collections, -> { visible }, class_name: 'ProjectCollection'
+  has_many :visible_platforms, -> { where("groups.type = 'Platform'") }, through: :visible_collections, source_type: 'Group', source: :collectable
   has_many :issues, as: :threadable, dependent: :destroy
   has_many :images, as: :attachable, dependent: :destroy
   has_many :lists, -> { where("groups.type = 'List'") }, through: :project_collections, source_type: 'Group', source: :collectable
@@ -105,14 +107,15 @@ class Project < ActiveRecord::Base
     :issues_count, :team_members_count, :platform_tags_count, :communities_count]
 
   store :properties, accessors: [:private_logs, :private_issues, :locked,
-    :guest_twitter_handle, :celery_id]
+    :guest_twitter_handle, :celery_id, :needs_platform_refresh]
 
   parse_as_integers :counters_cache, :comments_count, :product_tags_count,
     :widgets_count, :followers_count, :build_logs_count,
     :issues_count, :team_members_count, :platform_tags_count,
     :communities_count
 
-  parse_as_booleans :properties, :private_logs, :private_issues, :locked
+  parse_as_booleans :properties, :private_logs, :private_issues, :locked,
+    :needs_platform_refresh
 
   self.per_page = 18
 
@@ -131,7 +134,8 @@ class Project < ActiveRecord::Base
       indexes :id,              index: :not_analyzed
       indexes :name,            analyzer: 'snowball', boost: 100
       indexes :product_tags,    analyzer: 'snowball', boost: 50
-      indexes :platform_tags,       analyzer: 'snowball', boost: 50
+      indexes :platform_tags,   analyzer: 'snowball', boost: 50
+      indexes :platform_ids
       indexes :description,     analyzer: 'snowball'
       indexes :one_liner,       analyzer: 'snowball'
       indexes :user_names,      analyzer: 'snowball'
@@ -148,6 +152,7 @@ class Project < ActiveRecord::Base
       description: description,
       product_tags: product_tags_string,
       platform_tags: platform_tags_string,
+      platform_ids: visible_platforms.pluck(:id),
       user_name: team_members.map{ |t| t.user.try(:name) },
       created_at: created_at,
       popularity: popularity_counter,
@@ -230,6 +235,10 @@ class Project < ActiveRecord::Base
 
   def self.wip
     indexable.where(wip: true).last_updated
+  end
+
+  def self.with_group group
+    joins(:project_collections).where(project_collections: { collectable_id: group.id, collectable_type: 'Group' })
   end
 
   def age
@@ -530,7 +539,7 @@ class Project < ActiveRecord::Base
     end
 
     tags = platforms.map do |platform|
-      out = "##{platform.name.gsub(/\s+/, '')}"
+      out = platform.hashtag.presence || platform.default_hashtag
       if link = platform.twitter_link.presence and handle = link.match(/twitter.com\/([a-zA-Z0-9_]+)/).try(:[], 1)
         out << " (@#{handle})"
       end

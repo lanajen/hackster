@@ -21,14 +21,14 @@
 
         .row.thumb-list
           - @results.each do |project|
-            = render partial: 'client/projects/project_thumb', locals: { project: project.decorate }
+            = render partial: 'projects/project_thumb', locals: { project: project.decorate, force_subdomain: (@alternate_results.present? ? 'www' : false) }
 
         .row
           .col-xs-12.text-center= will_paginate @results
 
       - else
         .content.search-results
-          | No results for <i>#{params[:q]}</i>. <a href="//www.hackster.io/projects/new?project[name]=#{params[:q]}&project[platform_tags_string]=#{current_platform.name}" class="btn btn-primary btn-sm">Add your own #{params[:q]} project</a>
+          | No results for <i>#{params[:q]}</i>. <a href="/projects/new?project[name]=#{params[:q]}" class="btn btn-primary btn-sm">Add your own #{params[:q]} project</a>
     - else
       .content.search-results
         | Go ahead, look something up!

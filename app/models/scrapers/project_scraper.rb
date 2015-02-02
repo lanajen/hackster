@@ -56,6 +56,7 @@ class ProjectScraper
       'community.spark.io' => :spark_forum,
       'developer.mbed.org' => :mbed,
       'forum.arduino.cc' => :arduinocc,
+      'fusion360.autodesk.com' => :fusion360,
       'github.com' => :github,
       'hackaday.io' => :hackadayio,
       'instructables.com' => :instructable,

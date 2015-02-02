@@ -86,7 +86,7 @@ class User < ActiveRecord::Base
     :facebook_link, :twitter_link, :linked_in_link, :website_link,
     :blog_link, :github_link, :google_plus_link, :youtube_link, :categories,
     :github_link, :invitation_limit, :email, :mini_resume, :city, :country,
-    :user_name, :full_name, :type, :avatar_id, :subscriptions
+    :user_name, :full_name, :type, :avatar_id, :subscriptions, :enable_sharing
   accepts_nested_attributes_for :avatar, :projects, allow_destroy: true
 
   store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link, :website_link, :blog_link, :github_link, :google_plus_link, :youtube_link]
@@ -272,6 +272,10 @@ class User < ActiveRecord::Base
 
   def self.top
     joins(:reputation).order('reputations.points DESC')
+  end
+
+  def self.with_at_least_one_action
+    where(id: (User.joins(:follow_relations).where("follow_relations.user_id = users.id").distinct('users.id').pluck(:id) + User.joins(:projects).distinct('users.id').pluck(:id) + User.joins(:respects).distinct('users.id').pluck(:id) + User.joins(:comments).distinct('users.id').pluck(:id)).uniq)
   end
 
   def self.with_subscription subscription, invert=false

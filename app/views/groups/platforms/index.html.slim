@@ -26,7 +26,6 @@
                     li*{ class: "#{'active' if params[:sort] == 'projects'}" } = link_to 'Most projects', platforms_path(sort: 'projects')
 
           .row
-            = render partial: 'groups/platforms/platform_thumb', locals: { platform: Platform.find_by_user_name('autodesk') }
             - @platforms.each do |platform|
               - unless platform.hidden
                 = render partial: 'groups/platforms/platform_thumb', locals: { platform: platform }

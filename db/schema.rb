@@ -396,8 +396,11 @@ ActiveRecord::Schema.define(version: 20150201063326) do
     t.integer  "platform_id"
     t.boolean  "private",             default: true
     t.string   "product_tags_string"
+<<<<<<< HEAD
     t.text     "counters_cache"
     t.string   "workflow_state"
+=======
+>>>>>>> master
   end
 
   add_index "parts", ["partable_id", "partable_type"], name: "partable_index", using: :btree

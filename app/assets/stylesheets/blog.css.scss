@@ -14,7 +14,7 @@
     height: 100%;
     margin: 0 auto;
     padding-bottom: 0;
-    @include transition(all .5s ease);
+    // @include transition(all .5s ease);
     &.mobile-nav-open{
       -webkit-filter: blur(1px);
     }

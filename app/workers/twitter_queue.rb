@@ -1,5 +1,5 @@
 class TwitterQueue < BaseWorker
-  INTERVAL_BETWEEN_UPDATES = 45
+  INTERVAL_BETWEEN_UPDATES = 15
   sidekiq_options queue: :default, retry: 0
 
   def update message

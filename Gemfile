@@ -86,6 +86,7 @@ gem 'sendgrid', '1.2.0'
 gem 'sidekiq', '3.2.5'
 gem 'sidekiq-status', '0.5.1'
 gem 'sidekiq-failures', '0.4.3'
+gem 'sidekiq-middleware', '0.3.0'
 gem 'simple_form', '3.0.2'
 gem 'sinatra', '>= 1.3.0', require: nil
 # gem 'slack-rtmapi'

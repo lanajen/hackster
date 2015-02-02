@@ -1,8 +1,12 @@
 class AttachmentQueue < BaseWorker
-  sidekiq_options queue: :critical
+  sidekiq_options queue: :critical, retry: 1
 
   def process id
-    Attachment.find(id).process
+    attachment = Attachment.find_by_id(id)
+
+    raise NotFound unless attachment
+
+    attachment.process
   end
 
   def remote_upload id, url
@@ -11,4 +15,6 @@ class AttachmentQueue < BaseWorker
     a.save
     a.notify_observers :after_process
   end
+
+  class NotFound < StandardError; end
 end

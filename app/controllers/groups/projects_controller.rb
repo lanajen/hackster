@@ -76,7 +76,7 @@ class Groups::ProjectsController < ApplicationController
 
     authorize! :update, @collection
 
-    if params[:event].in? %w(approve reject) and @collection.send "can_#{params[:event]}?"
+    if params[:event].in? %w(approve reject feature unfeature) and @collection.send "can_#{params[:event]}?"
       @collection.send "#{params[:event]}!"
       flash[:notice] = "Project updated!"
     else
@@ -111,7 +111,7 @@ class Groups::ProjectsController < ApplicationController
       when Event
         'group_shared'
       else
-        'application'
+        current_layout
       end
     end
 end

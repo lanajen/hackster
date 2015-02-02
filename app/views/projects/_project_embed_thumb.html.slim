@@ -1,3 +1,5 @@
+- host = (defined?(host) && host.present? ? host : request.host)
+
 .col-sm-6.col-md-4.project-embed-thumb
   .project-thumb-container
     - cache ["project-#{project.id}-thumb-external"], tag: ["project-#{project.id}-thumb", "project-#{project.id}-thumb-external", "team-#{project.team_id}", "team-#{project.team_id}-user-thumbs", 'project-thumb', 'project-thumb-external'], expires_in: 24.hours do
@@ -5,18 +7,19 @@
       div class="project-#{project.id}"
         .thumb.project-thumb
           .thumb-image.has-link-overlay style="background-image:url(#{project.cover_image(:cover_thumb)})"
-            = link_to '', project_url(project), class: 'link-overlay', target: '_blank'
+            = link_to '', project_url(project, host: host), class: 'link-overlay', target: '_blank'
             .thumb-image-inner-top
               .award-container
               p.description.show-on-hover
                 = project.one_liner
-              .featured-logo.show-on-hover
-                = link_to "featured on #{image_tag('hackster_logo_20_white.png', alt: 'Hackster.io', title: SLOGAN)}".html_safe, root_url, target: '_blank'
+              - unless is_whitelabel?
+                .featured-logo.show-on-hover
+                  = link_to "featured on #{image_tag('hackster_logo_20_white.png', alt: 'Hackster.io', title: SLOGAN)}".html_safe, root_url(host: host), target: '_blank'
             .thumb-image-inner
               h4
                 - if project.is_idea?
                   i.fa.fa-lightbulb-o>
-                ==> link_to project.name, project_url(project), target: '_blank'
+                ==> link_to project.name, project_url(project, host: host), target: '_blank'
                 - if project.external
                   i.fa.fa-external-link.istooltip  title='This project is hosted on an external website' data-container='body'
               p
@@ -26,7 +29,7 @@
                     span.user-name>= project.guest_name
                   - elsif u = project.users.first
                     ' by
-                    span.user-name==> link_to u.name, user_url(u), target: '_blank'
+                    span.user-name==> link_to u.name, user_url(u, host: host), target: '_blank'
                   ' on
                   strong= project.website_host
                 - else

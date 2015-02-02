@@ -5,7 +5,7 @@
   .row
     .col-xs-12
       .header.clearfix
-        h1.pull-left
+        h3.pull-left
           ' Projects in
           span.label.label-primary> #{@tag}
           - if safe_page_params
@@ -21,11 +21,9 @@
       .row
         - @results.each do |project|
           = render partial: "projects/project_thumb", locals: { project: project.decorate, ref: 'tags' }
-      .row
-        .col-xs-12.text-center= will_paginate @results
+      .text-center= will_paginate @results
     - else
-      .row
-        .col-xs-12.text-center
-          .box
-            .box-content
-              | No projects match this tag. Use the search box above to modify your query.
+      .text-center
+        .box
+          .box-content
+            | No projects match this tag. Use the search box above to modify your query.

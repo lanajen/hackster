@@ -1,0 +1,2 @@
+class Favicon < Document
+end
