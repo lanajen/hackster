@@ -55,8 +55,9 @@
           li= link_to 'What to expect', '#what', class: 'nav-link smooth-scroll', data: { target: '#what' }
           li= link_to 'Schedule', '#schedule', class: 'nav-link smooth-scroll last', data: { target: '#schedule' }
         ul#navbar-right.clearfix
+          li= link_to 'Back to hackster.io', '/', class: 'login-link nav-link', style: 'display:inline-block'
           li
-            span= link_to 'Register', '#register', class: 'btn btn-primary login-link smooth-scroll', data: { target: '#register' }
+            span style='display:inline-block' = link_to 'Register', '#register', class: 'btn btn-primary login-link smooth-scroll', data: { target: '#register' }
 
 = content_for :mobile_nav do
   = link_to 'Register', '#register', class: 'mo-nav-link smooth-scroll', data: { target: '#register' }
@@ -293,6 +294,24 @@
                 .caption
                   h4 Pittsburgh, PA
                   p May 16-17
+
+          / h2.text-center Coming soon
+          / a.city-card data-target="#myModal" data-toggle="modal" style="background-image:url('#{asset_url 'hwweek/pittsburgh.jpg'}')" target='_blank'
+          /   .caption
+          /     h4 Berlin
+          /     p September
+          / a.city-card data-target="#myModal" data-toggle="modal" style="background-image:url('#{asset_url 'hwweek/pittsburgh.jpg'}')" target='_blank'
+          /   .caption
+          /     h4 Berlin
+          /     p September
+          / a.city-card data-target="#myModal" data-toggle="modal" style="background-image:url('#{asset_url 'hwweek/pittsburgh.jpg'}')" target='_blank'
+          /   .caption
+          /     h4 Berlin
+          /     p September
+          / a.city-card data-target="#myModal" data-toggle="modal" style="background-image:url('#{asset_url 'hwweek/pittsburgh.jpg'}')" target='_blank'
+          /   .caption
+          /     h4 Berlin
+          /     p September
 
           p.getintouch
             ' Would you like to volunteer on an event?
