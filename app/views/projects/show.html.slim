@@ -108,7 +108,7 @@
                       a.right.carousel-control href="#carousel" role="button" data-slide="next"
                         span.glyphicon.glyphicon-chevron-right aria-hidden="true"
 
-            - if component_widget_ids = PartsWidget.where(widgetable_id: @project.id, widgetable_type: 'Project').joins(:parts).where("parts.description IS NOT NULL OR parts.description <> ''").distinct(:id).pluck(:id) and component_widget_ids.any?
+            - if component_widget_ids = PartsWidget.where(widgetable_id: @project.id, widgetable_type: 'Project').joins(:parts).where("parts.name IS NOT NULL OR parts.name <> ''").distinct(:id).pluck(:id) and component_widget_ids.any?
               section#components.section-container.section-collapsible
                 h2.section-title
                   a.title.title-toggle href=''
