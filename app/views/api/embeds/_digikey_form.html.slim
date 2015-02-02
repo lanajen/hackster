@@ -2,8 +2,8 @@
 
 - if widget.parts.with_sku.any?
   form action="http://www.digikey.com/classic/ordering/fastadd.aspx?WT.z_cid=ref_hacksterfastadd" method="post" target="_blank" id="digikey-form-#{@digikey_id}"
-    - widget.parts.with_sku.each_with_index do |part, i|
-      input type="hidden" name="part#{i + 1}" value=part.vendor_sku
+    - widget.part_joins.joins(:part).where("parts.vendor_sku <> '' AND parts.vendor_sku IS NOT NULL").includes(:part).each_with_index do |part, i|
+      input type="hidden" name="part#{i + 1}" value=part.part.vendor_sku
       input type="hidden" name="qty#{i + 1}" value=part.quantity
       input type="hidden" name="cref#{i + 1}" value=project.name
 
@@ -24,7 +24,7 @@
           strong The following parts need to be purchased separately:
         table.sortable-table.table.table-hover.fields-container
           tbody
-            - widget.parts.without_sku.each_with_index do |part, i|
+            - widget.part_joins.joins(:part).where("parts.vendor_sku = '' OR parts.vendor_sku IS NULL").includes(:part).each_with_index do |part, i|
               = render partial: "widgets/embeds/show/part", locals: { part: part, i: i }
 
   = content_for :js do

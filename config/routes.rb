@@ -24,7 +24,9 @@ HackerIo::Application.routes.draw do
         resources :announcements
         resources :build_logs
         resources :projects#, as: :api_projects
-        resources :parts, only: [:create, :destroy]
+        resources :parts, only: [:create, :destroy] do
+          get :autocomplete, on: :collection
+        end
         resources :platforms, only: [:show]
         resources :widgets, only: [:destroy, :update, :create]
         match "*all" => "base#cors_preflight_check", via: :options
@@ -163,6 +165,9 @@ HackerIo::Application.routes.draw do
         post 'feature' => 'platforms#feature_project'#, as: :platform_feature_project
         delete 'feature' => 'platforms#unfeature_project'
       end
+    end
+    resources :groups, only: [] do
+      resources :parts, controller: :parts
     end
 
     # resources :courses, except: [:show, :update, :destroy]

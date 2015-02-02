@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150122233816) do
+ActiveRecord::Schema.define(version: 20150201063326) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -360,25 +360,48 @@ ActiveRecord::Schema.define(version: 20150122233816) do
 
   add_index "monologue_tags", ["name"], name: "index_monologue_tags_on_name", using: :btree
 
+  create_table "part_joins", force: true do |t|
+    t.integer  "part_id",                           null: false
+    t.integer  "partable_id",                       null: false
+    t.string   "partable_type",                     null: false
+    t.integer  "quantity",              default: 1
+    t.string   "unquantifiable_amount"
+    t.float    "total_cost"
+    t.text     "comment"
+    t.integer  "position",              default: 0, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "part_joins", ["part_id"], name: "index_part_joins_on_part_id", using: :btree
+  add_index "part_joins", ["partable_id", "partable_type", "position"], name: "index_part_joins_on_partable_id_and_partable_type_and_position", using: :btree
+
   create_table "parts", force: true do |t|
-    t.integer  "quantity",      default: 1
-    t.float    "unit_price",    default: 0.0
-    t.float    "total_cost",    default: 0.0
+    t.integer  "quantity",            default: 1
+    t.float    "unit_price",          default: 0.0
+    t.float    "total_cost",          default: 0.0
     t.string   "name"
     t.string   "vendor_name"
     t.string   "vendor_sku"
     t.string   "vendor_link"
-    t.string   "partable_type",               null: false
-    t.integer  "partable_id",                 null: false
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.string   "partable_type",                      null: false
+    t.integer  "partable_id",                        null: false
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
     t.string   "mpn"
-    t.string   "description"
+    t.text     "description"
     t.integer  "position"
     t.string   "comment"
+    t.text     "websites"
+    t.integer  "platform_id"
+    t.boolean  "private",             default: true
+    t.string   "product_tags_string"
+    t.text     "counters_cache"
+    t.string   "workflow_state"
   end
 
   add_index "parts", ["partable_id", "partable_type"], name: "partable_index", using: :btree
+  add_index "parts", ["platform_id"], name: "index_parts_on_platform_id", using: :btree
 
   create_table "permissions", force: true do |t|
     t.string   "permissible_type", limit: 15, null: false
@@ -505,6 +528,7 @@ ActiveRecord::Schema.define(version: 20150122233816) do
     t.datetime "updated_at"
     t.string   "domain"
     t.integer  "platform_id"
+    t.text     "properties"
   end
 
   add_index "subdomains", ["domain"], name: "index_subdomains_on_domain", using: :btree
@@ -595,10 +619,12 @@ ActiveRecord::Schema.define(version: 20150122233816) do
     t.integer  "subscriptions_mask",                 default: 0
     t.boolean  "mailchimp_registered",               default: false
     t.string   "authentication_token",   limit: 25
+    t.boolean  "enable_sharing",                     default: true,   null: false
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
+  add_index "users", ["enable_sharing"], name: "index_users_on_enable_sharing", using: :btree
   add_index "users", ["invitation_token"], name: "index_users_on_invitation_token", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["type"], name: "index_users_on_type", using: :btree

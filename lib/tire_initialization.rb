@@ -2,10 +2,9 @@ require 'tire'
 
 module TireInitialization
   module ClassMethods
-    def has_tire_index no_index_condition
-      include
+    def has_tire_index no_index_condition, tire_index_name=ELASTIC_SEARCH_INDEX_NAME
       # include Tire::Model::Callbacks
-      index_name ELASTIC_SEARCH_INDEX_NAME
+      index_name tire_index_name
 
       after_commit on: [:create, :update] do
         if eval(no_index_condition)

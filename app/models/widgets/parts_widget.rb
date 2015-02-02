@@ -4,13 +4,15 @@ class PartsWidget < Widget
     Widget.model_name
   end
 
-  has_many :parts, -> { order position: :asc }, as: :partable
+  has_many :part_joins, -> { order position: :asc }, as: :partable
+  has_many :parts, through: :part_joins
 
   define_attributes [:parts_count, :total_cost]
 
-  attr_accessible :parts_attributes
-  accepts_nested_attributes_for :parts, allow_destroy: true
+  attr_accessible :part_joins_attributes
+  accepts_nested_attributes_for :part_joins, allow_destroy: true
   after_save :compute_total_cost, unless: :dont_compute_cost?
+  before_validation :delete_empty_part_ids
 
   def default_label
     'Bill of materials'
@@ -38,6 +40,12 @@ class PartsWidget < Widget
   end
 
   private
+    def delete_empty_part_ids
+      part_joins.each do |part_join|
+        # part_join.delete if part_join.part_id.blank?
+        part_join.delete if part_join.name.blank?
+      end
+    end
 
     def dont_compute_cost?
       @dont_compute_cost
@@ -46,7 +54,7 @@ class PartsWidget < Widget
     def compute_total_cost
       # Octopart.match parts.select{ |p| p.changed? }  # only changed parts
       total = 0
-      parts.each{ |p| total += p.total_cost || 0 }
+      part_joins.each{ |p| total += p.total_cost || 0 }
       self.total_cost = total.round(4)
       @dont_compute_cost = true
       save

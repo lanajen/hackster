@@ -2,12 +2,11 @@
 
 <p>This is to let you know that <a href="|author_link|">|author_name|</a> has sent you a message:</p>
 
-<p class="quote">
+<div class="quote">
   <strong>|conversation_subject|</strong>
   <br/>
-  <br/>
-  |comment_body|
-</p>
+  <%= raw @context[:comment].body %>
+</div>
 
 <p>To reply, just follow <a href="<%= conversation_url(@context[:conversation]) %>">this link</a>.</p>
 

@@ -423,20 +423,20 @@
     margin-top: 7px;
   }
 }
-.file-drop.image{
-  padding: 40px 20px 20px;
-  background: #eee;
-  text-align: center;
-  color: #444447;
-  font-size: 18px;
-  @include box-shadow(inset 0 1px 5px rgba(0,0,0,.1));
-  margin-top: 10px;
-  @include border-radius(3px);
-  a{
-    color: #808080;
-    text-decoration: underline;
-  }
-}
+// .file-drop.image{
+//   padding: 40px 20px 20px;
+//   background: #eee;
+//   text-align: center;
+//   color: #444447;
+//   font-size: 18px;
+//   @include box-shadow(inset 0 1px 5px rgba(0,0,0,.1));
+//   margin-top: 10px;
+//   @include border-radius(3px);
+//   a{
+//     color: #808080;
+//     text-decoration: underline;
+//   }
+// }
 
 #widget-respects {
   // padding-bottom: 30px;
@@ -652,6 +652,14 @@ p.caption {
   table {
     border: 1px solid #ddd;
   }
+  .form-group-with-select-and-caret {
+    position: relative;
+    i {
+      position: absolute;
+      top: 13px;
+      right: 10px;
+    }
+  }
   label {
     width: 135px;
     margin-bottom: 0;
@@ -659,23 +667,60 @@ p.caption {
     padding: 12px;
     font-size: 12px;
     text-transform: uppercase;
+    height: 44px;
+    &.times {
+      width: 30px;
+      font-size: 18px;
+    }
   }
-  input, textarea {
+  .form-group > input, .form-group > textarea, .form-group > select, .select2-container {
+  }
+  input, textarea, select, .select2-container {
     width: calc(100% - 135px);
     float: left;
+
+    height: 44px;
     border: 0;
-    padding: 12px;
-    border-radius: 0;
+    @include border-radius(0);
+    @include appearance(none);
     box-shadow: none;
-    height: auto;
     border-left: 1px solid #ddd;
+  }
+  input, textarea, select {
+    padding: 12px;
     &:focus, &:hover {
       outline: none;
       box-shadow: none;
     }
   }
+  .select2-container {
+    padding: 0;
+    .select2-selection--single .select2-selection__rendered {
+      padding: 0;
+    }
+    .select2-selection--single {
+      height: 44px;
+      padding: 12px;
+      &:focus {
+        outline: 0;
+      }
+    }
+  }
+  .select2-container--default .select2-selection--single {
+    border: 0;
+    border-right: 1px solid #ddd;
+    @include border-radius(0);
+    .select2-selection__arrow b {
+      margin-top: 6px;
+    }
+    .select2-selection__rendered {
+      color: #666;
+      line-height: initial;
+    }
+  }
   textarea {
     resize: none;
+    color: #666;
   }
   .default-hidden {
     display: none;

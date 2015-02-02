@@ -115,33 +115,33 @@ $(function () {
 
   //[data-remote="true"]
   $(document)
-    .on("ajax:beforeSend", 'form', function(evt, xhr, settings){
+    .on("ajax:beforeSend", 'form.remote', function(xhr, settings){
       var $submitButton = $(this).find('input[name="commit"]');
 
       // Update the text of the submit button to let the user know stuff is happening.
       // But first, store the original text of the submit button, so it can be restored when the request is finished.
-      $submitButton.data( 'origText', $(this).text() );
-      $submitButton.text( "Submitting..." );
-
+      $submitButton.data('origText', $submitButton.val());
+      $submitButton.val('Submitting...');
     })
-    .on("ajax:success", 'form', function(evt, data, status, xhr){
+
+    .on("ajax:success", 'form.remote', function(xhr, data, status){
       var $form = $(this);
 
       // Reset fields and any validation errors, so form can be used again, but leave hidden_field values intact.
-      $('.form-group').find('.help-inline').remove();
+      $('.form-group').find('.error-message').remove();
       $('.form-group').removeClass('has-error');
 
       // Insert response partial into page below the form.
       $('#comments').append(xhr.responseText);
-
     })
-    .on('ajax:complete', 'form', function(evt, xhr, status){
+    .on('ajax:complete', 'form.remote', function(xhr, status){
       var $submitButton = $(this).find('input[name="commit"]');
 
       // Restore the original submit button text
-      $submitButton.text( $(this).data('origText') );
+      $submitButton.val($submitButton.data('origText'));
     })
-    .on("ajax:error", 'form', function(evt, xhr, status, error){
+
+    .on("ajax:error", 'form.remote', function(error, xhr, status){
       var $form = $(this),
           errors,
           errorText;
@@ -159,7 +159,7 @@ $(function () {
       $('.form-group').removeClass('has-error');
 
       for (model in errors) {
-        for ( error in errors[model] ) {
+        for (error in errors[model]) {
           input = $form.find('[name="' + model + '['+error+']"]');
           input.parents('.form-group').addClass('has-error');
           errorMsg = $('<span class="help-block error-message">' + errors[model][error] + '</span>');

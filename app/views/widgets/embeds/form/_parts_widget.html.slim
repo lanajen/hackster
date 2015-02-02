@@ -1,22 +1,123 @@
-/ = f.simple_fields_for :widgets, widget, wrapper: false do |f_widget|
 = simple_nested_form_for widget, url: '', wrapper: false, html: { id: 'parts-widget-form', class: "widget-#{widget.id}" } do |f_widget|
   = f_widget.input :id, as: :hidden
   ul.list-unstyled.parts-widget
-    - widget.parts.new if widget.parts.empty?
-    - widget.parts.each do |part|
-      = f_widget.simple_fields_for :parts, part do |f_part|
+    - widget.part_joins.new if widget.part_joins.empty?
+    - widget.part_joins.each do |part|
+      = f_widget.simple_fields_for :part_joins, part do |f_part|
         = render partial: 'widgets/embeds/form/part', locals: { f: f_part, part: part }
-    = f_widget.link_to_add 'New part', :parts, class: 'btn btn-success btn-sm btn-block'
+    = f_widget.link_to_add 'Add another part', :part_joins, class: 'btn btn-success btn-sm btn-block'
+
+/ # = content_for :head do
+  = stylesheet_link_tag "//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-beta.3/css/select2.min.css"
+
+/ # = content_for :js do
+  #new-part-modal.modal.fade*{ 'aria-hidden' => "true", 'aria-labelledby' => "new-par-modal-label", role: "dialog", tabindex: "-1" }
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close data-dismiss="modal" type="button"
+            span aria-hidden="true"  ×
+            span.sr-only Close
+          h4#new-par-modal-label.modal-title Create a new part
+        .modal-body
+          = simple_nested_form_for Part.new, url: '/api/v1/parts', html: { class: 'form-horizontal accept-file-upload remote', data: { remote: true } }, wrapper: :bootstrap3_horizontal do |f|
+            = f.error_notification
+            = f.input :name
+            / # = f.input :description, input_html: { class: 'text-editor', rows: 5 }
+            / # = f.input :product_tags_string, label: 'Tags', hint: "Most useful tags would include technologies like 'Wifi', 'BLE', 'accelerometer'... Please enter each tag separated by commas."
+            = f.input :store_link, label: 'Link to store page'
+            / # = f.input :product_page_link, hint: 'If different than the store link', label: 'Link to product page'
+            / # = f.input :documentation_link, label: 'Link to documentation page'
+            / # = f.input :libraries_link, label: 'Link to code libraries page'
+            / # = f.input :datasheet_link, label: 'Link to datasheet'
+
+            / # = render partial: 'shared/image_form', locals: { file_type: 'image', human_file_type: 'Product shot', image_link: nil, help_block: 'Make it look nice!', attribute_type: 'image', image_version: 'thumb', model: 'part' }
+
+            .row
+              .col-md-8.col-md-offset-4
+                = f.submit 'Save part and add to list', class: 'btn btn-primary'
+                = link_to 'Cancel', '#', class: 'btn btn-link btn-sm', 'data-dismiss' => "modal"
+
+  / = tinymce_assets
+  / javascript:
+      tinyMCE.init({
+        selector: 'textarea.text-editor',
+        toolbar: "undo redo | bold italic underline | link unlink | bullist numlist",
+        menubar: false,
+        plugins: 'link paste',
+        statusbar: false,
+        height: 150
+      });
+
+  javascript:
+    $select2containers = {};
+    $select2target = null;
+
+    $(function(){
+      $('#new-part-modal').on('show.bs.modal', function(e){
+        $('#parts-widget-form .select2-container--open').each(function(i, el){
+          var select = $(el).prev();
+          $select2target = select.attr('id');
+          $select2containers[$select2target].select2('close');
+        });
+      });
+
+      $(document).on('ajax:success', 'form', function(xhr, data, status){
+        $('#' + $select2target).append('<option value="' + data.id + '">' + data.name + '</option>');
+        $('#select2-' + $select2target + '-container').text(data.name);
+        $select2containers[$select2target].val(data.id).trigger('change');
+        $('#new-part-modal').modal('hide');
+        $(this).find('input').val('');
+        $select2target = null;
+      });
+    });
+
+  = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-beta.3/js/select2.min.js"
+  javascript:
+    jQuery(function($) {
+      var select2Options = {
+        placeholder: 'Select a part',
+        minimumInputLength: 3,
+
+        ajax: {
+          url: "/api/v1/parts/autocomplete",
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term, // search term
+              page: params.page
+            };
+          },
+          processResults: function (data, page) {
+            // parse the results into the format expected by Select2.
+            // since we are using custom formatting functions we do not need to
+            // alter the remote JSON data
+            return {
+              results: data
+            };
+          },
+          cache: true
+        }
+        //templateResult: formatRepo, // omitted for brevity, see the source of this page
+        //templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
+      };
+
+      $('.parts-widget .select2').each(function(i, el){
+        $select2containers[el.id] = $(el).select2(select2Options);
+      });
 
 = content_for :js do
   javascript:
-    jQuery(function($) {
+    $(function(){
       $('.parts-widget').on('change', function(e){
         editor.triggerInput();
       });
 
       $('.parts-widget').on('nested:fieldAdded', function(event){
         resetPositions();
+        //var select = $(event.target).find('.select2');
+        //$select2containers[select.attr('id')] = $(event.target).find('.select2').select2(select2Options);
       })
 
       $('.parts-widget').on('nested:fieldRemoved', function(event){

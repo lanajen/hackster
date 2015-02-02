@@ -11,6 +11,7 @@ class Platform < List
   has_many :announcements, as: :threadable, dependent: :destroy
   has_many :challenges
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'PlatformMember'
+  has_many :parts
   has_one :client_subdomain
   has_one :company_logo, as: :attachable, dependent: :destroy
   has_one :logo, as: :attachable, dependent: :destroy
@@ -20,9 +21,9 @@ class Platform < List
     :buy_link, :shoplocket_link, :cover_image_id, :accept_project_ideas,
     :project_ideas_phrasing, :client_subdomain_attributes, :logo_id,
     :download_link, :company_logo_id, :disclaimer, :moderation_level,
-    :cta_text
+    :cta_text, :parts_attributes
 
-  accepts_nested_attributes_for :client_subdomain
+  accepts_nested_attributes_for :client_subdomain, :parts
 
   # before_save :update_user_name
 

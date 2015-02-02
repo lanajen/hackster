@@ -33,7 +33,7 @@ class Api::V1::ProjectsController < Api::V1::BaseController
         widgets.each do |widget|
           response[:parts_widgets][widget.id] = {}
           response[:parts_widgets][widget.id][:parts] = {}
-          widget.parts.each do |part|
+          widget.part_joins.each do |part|
             response[:parts_widgets][widget.id][:parts][part.position] = part
           end
         end
