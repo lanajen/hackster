@@ -9,5 +9,5 @@ tr.fields  id="part-#{part.id}"
   td style='width:30px;text-align:center;vertical-align:middle' &times;
   td style='width:10%;min-width:20px;text-align:center;vertical-align:middle' = part.quantity
   td style='vertical-align:middle'
-    - if part.part.vendor_link.present?
-      = link_to content_tag(:i, '', class: 'fa fa-shopping-cart'), part.part.vendor_link, target: '_blank', style: 'color:#333'
+    - if part.part.vendor_link.present? or part.part.store_link.present?
+      = link_to content_tag(:i, '', class: 'fa fa-shopping-cart'), (part.part.vendor_link || part.part.store_link), target: '_blank', style: 'color:#333'

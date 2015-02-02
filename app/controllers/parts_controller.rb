@@ -1,8 +1,10 @@
 class PartsController < ApplicationController
   before_filter :load_platform
-  load_and_authorize_resource
+  load_resource except: [:index]
 
   def index
+    authorize! :manage, @platform
+
     @parts = @platform.parts.paginate(page: safe_page_params)
   end
 
@@ -39,5 +41,6 @@ class PartsController < ApplicationController
   private
     def load_platform
       @group = @platform = Platform.find(params[:group_id] || params[:id])
+      authorize! :manage, @platform
     end
 end
