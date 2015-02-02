@@ -112,7 +112,7 @@ module ScraperStrategies
         base.css('img').each do |img|
           src = get_src_for_img(img, base)
           if test_link(src)
-            ext = File.extname(URI.parse(src).path)[1..-1]
+            # ext = File.extname(URI.parse(src).path)[1..-1]
             # img.remove and next unless ext.in? ImageUploader::EXTENSION_WHITE_LIST
             img['src'] = src
             caption = find_caption_for img, base
@@ -312,7 +312,7 @@ module ScraperStrategies
         base.css('a').each do |node|
           next unless link = node['href']
           if link.match /\/\/.+\/.+\.([a-z0-9]{,5})$/
-            next if $1.in? %w(html htm gif jpg jpeg png bmp php aspx asp js css)
+            next if $1.in? %w(html htm gif jpg jpeg png bmp php aspx asp js css shtml)
             next unless test_link(link)
             content = node.text
             title = (content != link) ? content : ''

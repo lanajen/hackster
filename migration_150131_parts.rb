@@ -1,5 +1,14 @@
 errors = []
-Part.find_each do |part|
+Part.order(:id).find_each do |part|
+  if part.description.present?
+    part.name = if part.name.present?
+      (part.name + ' ' + part.description)[0..254]
+    else
+      part.description
+    end
+    part.save
+  end
+
   part_join = PartJoin.new(
     partable_id: part.partable_id,
     partable_type: part.partable_type,
@@ -10,15 +19,6 @@ Part.find_each do |part|
     part_id: part.id
   )
   errors << part_join unless part_join.save
-
-  if part.description.present?
-    part.name = if part.name.present?
-      part.name + ' ' + part.description
-    else
-      part.description
-    end
-    part.save
-  end
 end
 
 
