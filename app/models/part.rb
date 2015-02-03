@@ -10,8 +10,8 @@ class Part < ActiveRecord::Base
   include Workflow
 
   belongs_to :platform
-  has_many :part_joins, as: :partable
-  has_many :parts_widgets, through: :part_joins, source_type: 'PartsWidget', source: :partable
+  has_many :part_joins
+  has_many :parts_widgets, through: :part_joins, source: :partable, class_name: 'PartsWidget'
   has_many :projects, through: :parts_widgets, source_type: 'Project', source: :widgetable
   has_one :image, as: :attachable
 
