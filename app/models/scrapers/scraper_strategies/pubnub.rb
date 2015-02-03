@@ -7,7 +7,6 @@ module ScraperStrategies
         @project.product_tags_string = tags.map{|a| a.text }.join(',')
         desc = @parsed.at_css('meta[property="og:description"]').try(:[], 'content').try(:truncate, 140)
         @project.one_liner = desc
-        raise desc.to_s
       end
 
       def extract_title
