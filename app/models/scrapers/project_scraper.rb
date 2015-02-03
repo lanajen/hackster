@@ -45,6 +45,7 @@ class ProjectScraper
     DEFAULT_STRATEGY = :base
     KNOWN_GENERATORS = {
       'blogger' => :blogspot,
+      'discourse' => :discourse,
       'frontpage' => :base,
       'joomla' => :base,
       'wordpress' => :wordpress,
