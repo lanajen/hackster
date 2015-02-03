@@ -135,25 +135,23 @@ class PlatformsController < ApplicationController
   def feature_project
     @group_rel = ProjectCollection.where(project_id: params[:project_id], collectable_id: params[:platform_id], collectable_type: 'Group').first!
 
-    if @group_rel.feature!
+    if (@group_rel.can_feature? and @group_rel.feature!) or @group_rel.featured?
       respond_to do |format|
         format.html { redirect_to @project, notice: "#{@project.name} has been featured." }
         format.js { render 'groups/platforms/button_featured' }
       end
-      event_name = 'Respected project'
     else
       respond_to do |format|
-        format.html { redirect_to @project, alert: "Couldn\'t feature project!" }
+        format.html { redirect_to @project, notice: "Couldn\'t feature project!" }
         format.js { render text: 'alert("Couldn\'t feature project!")' }
       end
-      event_name = 'Tried respecting own project'
     end
   end
 
   def unfeature_project
     @group_rel = ProjectCollection.where(project_id: params[:project_id], collectable_id: params[:platform_id], collectable_type: 'Group').first!
 
-    if @group_rel.unfeature!
+    if (@group_rel.can_unfeature? and @group_rel.unfeature!) or @group_rel.approved?
       respond_to do |format|
         format.html { redirect_to @project, notice: "#{@project.name} was unfeatured." }
         format.js { render 'groups/platforms/button_featured' }
