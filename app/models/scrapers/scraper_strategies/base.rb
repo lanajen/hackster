@@ -269,7 +269,23 @@ module ScraperStrategies
         end
       end
 
-      def parse_embeds base=@article
+      def parse_embeds base=@article, attachable=@project
+        base.css('video').each do |node|
+          link = node.at_css('source').try(:[], 'src')
+          link = normalize_link link if link
+          if test_link(link)
+            puts "Parsing video file #{link}..."
+            document = Document.new remote_file_url: link
+            document.attachable_id = 0
+            document.attachable_type = 'Orphan'
+            document.save
+            document.attachable = attachable
+            parent = find_parent node, base, %w(li ol ul)
+            parent.after "<div class='embed-frame' data-video-id='#{document.id}' data-type='video'></div>"
+          end
+          node.remove
+        end
+
         {
           # 'a' => 'href',
           'embed' => 'src',
@@ -312,7 +328,7 @@ module ScraperStrategies
         base.css('a').each do |node|
           next unless link = node['href']
           if link.match /\/\/.+\/.+\.([a-z0-9]{,5})$/
-            next if $1.in? %w(html htm gif jpg jpeg png bmp php aspx asp js css shtml)
+            next if $1.in? %w(html htm gif jpg jpeg png bmp php aspx asp js css shtml md)
             next unless test_link(link)
             content = node.text
             title = (content != link) ? content : ''

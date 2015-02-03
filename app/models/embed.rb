@@ -19,6 +19,7 @@ class Embed
     /(?:youtube\.com|youtu\.be)\/(?:watch\?v=|v\/|embed\/)?([a-zA-Z0-9\-_]+)/ => :youtube,
     /youmagine\.com\/designs\/([a-zA-Z0-9\-]+)/ => :youmagine,
     /(.+\.(?:jpg|jpeg|bmp|gif|png)(?:\?.*)?)$/i => :image,
+    /(.+\.(?:mp4)(?:\?.*)?)$/i => :mp4,
     # /(.+\.(html|html|asp|aspx|php|js|css)(\?.*)?)$/ => nil,
     # /(.+\.[a-z]{3,4}(\?.*)?)$/ => { embed_class: 'original', code: '<div class="document-widget"><div class="file"><i class="fa fa-file-o fa-lg"></i><a href="|id|">|id|</a></div></div>',},
   }
@@ -71,6 +72,15 @@ class Embed
         @type = @provider.type
         @provider_name = @provider.identifier
         @default_caption = file.title.presence || file.caption
+      end
+    elsif video_id = options[:video_id]
+      if file = Attachment.find_by_id(video_id)
+        @url = file.file_url
+        @provider = Mp4Embed.new @url
+        @format = @provider.format
+        @provider_id = @provider.id
+        @type = @provider.type
+        @provider_name = @provider.identifier
       end
     end
   end

@@ -63,6 +63,7 @@ class ProjectScraper
       'instructables.com' => :instructable,
       'kickstarter.com' => :kickstarter,
       'medium.com' => :medium,
+      'pubnub.com' => :pubnub,
       'seeedstudio.com' => :seeed,
       'udoo.org' => :udoo,
       'wordpress.com' => :wordpress,

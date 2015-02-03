@@ -7,7 +7,7 @@ class Sanitize
       elements: %w(a br p i b ul ol li pre code div h2 h3 h4 h5 h6 blockquote),
       remove_contents: %w(script style),
       attributes: BASIC[:attributes].merge(
-        'div' => %w(class data-url data-caption data-type data-file-id data-widget-id)),
+        'div' => %w(class data-url data-caption data-type data-file-id data-widget-id data-video-id)),
       protocols: BASIC[:protocols],
     }
 

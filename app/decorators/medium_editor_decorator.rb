@@ -9,16 +9,21 @@ module MediumEditorDecorator
             type = el['data-type']
 
             embed = case type
-            when 'url'
-              link = el['data-url']
-              next unless link
-
-              Embed.new url: link, fallback_to_default: true
             when 'file'
               file_id = el['data-file-id']
               next unless file_id
 
               Embed.new file_id: file_id
+            when 'url'
+              link = el['data-url']
+              next unless link
+
+              Embed.new url: link, fallback_to_default: true
+            when 'video'
+              video_id = el['data-video-id']
+              next unless video_id
+
+              Embed.new video_id: video_id
             when 'widget'
               embed = Embed.new widget_id: el['data-widget-id']
               if options[:except]

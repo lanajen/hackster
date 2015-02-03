@@ -4,7 +4,7 @@ class Assignment < ActiveRecord::Base
   GRADING_TYPES = {
     'One grade per student' => 'individual',
     'A single grade per team' => 'group',
-    'We will grade students outside of Hackster' => 'none'
+    'We will grade students outside of Hackster' => 'none',
   }
 
   belongs_to :promotion
