@@ -10,6 +10,7 @@
         .form-group
           = text_area_tag :urls, params[:urls], placeholder: 'Project log URLs', class: 'form-control disable-on-submit', rows: 5
           p.help-block Enter as many URLs as you like, separated by commas, spaces or new lines.
+          = hidden_field_tag :platform_tags_string, params[:platform_tags_string]
         - if current_user.is? :admin
           .form-group
             = text_field_tag :user_id, params[:user_id], placeholder: 'User ID', class: 'form-control'
