@@ -174,21 +174,27 @@ class PlatformsController < ApplicationController
       end
       @by = params[:by] || 'all'
 
-      # @projects = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection)
-
-      @projects = Project.joins(:visible_platforms).where("groups.id = ?", @platform.id).order('project_collections.workflow_state DESC').for_thumb_display
-      # @projects.to_a
-      # if sort and sort.in? Project::SORTING.keys
-        @projects = @projects.send(Project::SORTING[sort])
-      # end
+      @projects = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection)
+      @projects = @projects.merge(Project.send(Project::SORTING[sort]))
 
       if @by and @by.in? Project::FILTERS.keys
         @projects = if @by == 'featured'
           @projects.featured
         else
-          @projects.send(Project::FILTERS[@by])
+          @projects.merge(Project.send(Project::FILTERS[@by]))
         end
       end
+
+      # @projects = Project.joins(:visible_platforms).where("groups.id = ?", @platform.id).order('project_collections.workflow_state DESC').for_thumb_display
+      # @projects = @projects.send(Project::SORTING[sort])
+
+      # if @by and @by.in? Project::FILTERS.keys
+      #   @projects = if @by == 'featured'
+      #     @projects.featured
+      #   else
+      #     @projects.send(Project::FILTERS[@by])
+      #   end
+      # end
 
       @projects = @projects.paginate(page: safe_page_params, per_page: per_page)
 

@@ -10,7 +10,7 @@ class Client::ProjectsController < Client::BaseController
     params[:sort] = (params[:sort].in?(Project::SORTING.keys) ? params[:sort] : 'trending')
     @by = (params[:by].in?(Project::FILTERS.keys) ? params[:by] : 'all')
 
-    @projects = current_platform.project_collections.where(users: { enable_sharing: true }).includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.indexable_and_external.for_thumb_display_in_collection)
+    @projects = current_platform.project_collections.where(users: { enable_sharing: true }).includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection)
     if params[:sort]
       @projects = @projects.merge(Project.send(Project::SORTING[params[:sort]]))
     end
