@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
     'webos|amoi|novarra|cdm|alcatel|pocket|ipad|iphone|mobileexplorer|' +
     'mobile'
 
-  protect_from_forgery
+  protect_from_forgery except: [:not_found]
   before_filter :authenticate_user_from_token!
   # before_filter :authenticate_user!
   before_filter :set_new_user_session
