@@ -71,12 +71,12 @@
                     span.stat-figure> = number_with_delimiter @project.respects_count
                     = pluralize_without_count @project.respects_count, 'respect'
 
-          - if @project.assignment.present? and @project.assignment.private_grades and !@can_edit and cannot? :manage, @project.assignment
+          - if @project.assignment.present? and @project.assignment.grading_activated? and @project.assignment.private_grades and !@can_edit and cannot? :manage, @project.assignment
             section#about-project.section-container
               h2.section-title
                 .title.title-toggle Contents hidden
               .section-content
-                p The contents of this are project are currently hidden because the assignement is being graded.
+                p The contents of this project are currently hidden because the assignement is being graded.
 
           - else
             - cache [@project, 'widgets'], tag: ["project-#{@project.id}-widgets", 'project-widgets'] do

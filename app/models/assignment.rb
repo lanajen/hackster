@@ -4,6 +4,7 @@ class Assignment < ActiveRecord::Base
   GRADING_TYPES = {
     'One grade per student' => 'individual',
     'A single grade per team' => 'group',
+    'We will grade students outside of Hackster' => 'none'
   }
 
   belongs_to :promotion
@@ -21,6 +22,22 @@ class Assignment < ActiveRecord::Base
 
   before_create :generate_id
 
+  def document_id=(val)
+    self.document = Document.find_by_id(val)
+  end
+
+  def graded?
+    graded
+  end
+
+  def grading_activated?
+    grading_type != 'none'
+  end
+
+  def past_due?
+    submit_by_date and submit_by_date < Time.now
+  end
+
   def submit_by_date=(val)
     begin
       date = val.to_datetime
@@ -31,18 +48,6 @@ class Assignment < ActiveRecord::Base
 
   def submit_by_date_dummy
     submit_by_date.strftime("%m/%d/%Y %l:%M %P") if submit_by_date
-  end
-
-  def document_id=(val)
-    self.document = Document.find_by_id(val)
-  end
-
-  def graded?
-    graded
-  end
-
-  def past_due?
-    submit_by_date and submit_by_date < Time.now
   end
 
   def to_csv
