@@ -336,7 +336,7 @@ HackerIo::Application.routes.draw do
     post 'users/slack_settings' => 'chat_messages#save_slack_settings'
 
     constraints(PlatformPage) do
-      get ':slug' => 'platforms#show', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
+      get ':slug' => 'platforms#show', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|atom|rss)/ }
       get ':slug/embed' => 'platforms#embed', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
       get ':user_name' => 'platforms#show', as: :platform_short, user_name: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
       scope ':slug', slug: /[A-Za-z0-9_\-]{3,}/, as: :platform, constraints: { format: /(html|json)/ } do

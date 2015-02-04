@@ -1,3 +1,5 @@
+= auto_discovery_link_tag :rss, url_for([@group, format: :rss]), title: "Last projects for #{@group.name} - Hackster.io"
+= auto_discovery_link_tag :atom, url_for([@group, format: :atom]), title: "Last projects for #{@group.name} - Hackster.io"
 meta(property="og:title" content="#{@group.name} projects")
 meta(property="og:description" content="Discover hacks and projects built with #{@group.name}, and share your own!")
 - if @group.avatar

@@ -5,7 +5,7 @@ class PlatformsController < ApplicationController
   before_filter :authenticate_user!, except: [:show, :embed, :index]
   before_filter :load_platform, except: [:show, :embed, :index, :analytics]
   before_filter :load_platform_with_slug, only: [:show, :embed, :analytics]
-  before_filter :load_projects, only: [:show, :embed]
+  before_filter :load_projects, only: [:embed]
   before_filter :load_project, only: [:feature_project, :unfeature_project]
   layout 'group_shared', only: [:edit, :update, :show, :analytics]
   after_action :allow_iframe, only: [:embed]
@@ -35,9 +35,18 @@ class PlatformsController < ApplicationController
     @announcement = @platform.announcements.current
     @challenge = @platform.active_challenge ? @platform.challenges.active.first : nil
 
-    render "groups/shared/#{self.action_name}"
-
     # track_event 'Visited platform', @platform.to_tracker.merge({ page: safe_page_params })
+    respond_to do |format|
+      format.html do
+        load_projects
+        render "groups/shared/show"
+      end
+      format.atom do
+        load_projects_for_rss
+        render template: "projects/index", layout: false
+      end
+      format.rss { redirect_to platform_short_path(@platform, params.merge(format: :atom)), status: :moved_permanently }
+    end
   end
 
   def embed
@@ -193,6 +202,33 @@ class PlatformsController < ApplicationController
       #     @projects.send(Project::FILTERS[@by])
       #   end
       # end
+
+      @projects = @projects.paginate(page: safe_page_params, per_page: per_page)
+
+    end
+
+    def load_projects_for_rss
+      per_page = begin; [Integer(params[:per_page]), Project.per_page].min; rescue; Project.per_page end;  # catches both no and invalid params
+
+      per_page = per_page - 1 if @platform.accept_project_ideas
+
+      sort = if params[:sort] and params[:sort].in? Project::SORTING.keys
+        params[:sort]
+      else
+        params[:sort] = 'recent'
+      end
+      @by = params[:by] || 'all'
+
+      @projects = Project.joins(:visible_platforms).where("groups.id = ?", @platform.id).for_thumb_display
+      @projects = @projects.send(Project::SORTING[sort])
+
+      if @by and @by.in? Project::FILTERS.keys
+        @projects = if @by == 'featured'
+          @projects.featured
+        else
+          @projects.send(Project::FILTERS[@by])
+        end
+      end
 
       @projects = @projects.paginate(page: safe_page_params, per_page: per_page)
 

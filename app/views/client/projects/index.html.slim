@@ -1,7 +1,7 @@
 / = content_for :head do
   meta  name='robots' content='noindex'
-  = auto_discovery_link_tag :rss, projects_path(format: :rss), title: "Most recent projects - #{site_name}"
-  = auto_discovery_link_tag :atom, projects_path(format: :atom), title: "Most recent projects - #{site_name}"
+  = auto_discovery_link_tag :rss, projects_path(format: :rss, sort: 'recent'), title: "Most recent projects - #{site_name}"
+  = auto_discovery_link_tag :atom, projects_path(format: :atom, sort: 'recent'), title: "Most recent projects - #{site_name}"
 
 - content_for :head do
   meta(property="og:title" content="#{current_platform.name} projects")
