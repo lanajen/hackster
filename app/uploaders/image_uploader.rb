@@ -42,6 +42,7 @@ class ImageUploader < BaseUploader
       manipulate! do |img|
         img.tap(&:auto_orient)
       end
+    rescue
     end
 
     def is_cover? picture

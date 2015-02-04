@@ -291,6 +291,7 @@ module ScraperStrategies
           'embed' => 'src',
           'iframe' => 'src',
           'object' => 'data',
+          'script' => 'src',
         }.each do |el, attr|
           base.css(el).each do |node|
             embed = Embed.new url: node[attr]
