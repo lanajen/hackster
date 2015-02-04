@@ -22,7 +22,7 @@ class Part < ActiveRecord::Base
     :datasheet_link, :product_page_link, :image_id
 
   store :websites, accessors: [:store_link, :documentation_link, :libraries_link,
-    :datasheet_link, :product_page_link, :vendor_link]
+    :datasheet_link, :product_page_link]
   set_changes_for_stored_attributes :websites
 
   validates :name, presence: true
