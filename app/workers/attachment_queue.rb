@@ -4,9 +4,9 @@ class AttachmentQueue < BaseWorker
   def process id
     attachment = Attachment.find_by_id(id)
 
-    raise NotFound unless attachment
+    # raise NotFound unless attachment
 
-    attachment.process
+    attachment.process if attachment
   end
 
   def remote_upload id, url

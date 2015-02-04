@@ -40,8 +40,8 @@ class Attachment < ActiveRecord::Base
     # notify_observers :after_process
 
     # TODO: capture errors and figure out a way to send feedback to user
-  # rescue AWS::S3::Errors::NoSuchKey
-    # destroy
+  rescue AWS::S3::Errors::NoSuchKey
+    destroy
   ensure
     notify_observers :after_process
   end
