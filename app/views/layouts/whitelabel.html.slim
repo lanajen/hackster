@@ -114,10 +114,10 @@ html(lang="en")
                       .social-icons.text-center
                         p.text-muted
                           small Or connect with your social account:
-                        = link_to 'Facebook', user_omniauth_authorize_url(:facebook), class: 'zocial icon facebook'
-                        = link_to 'Github', user_omniauth_authorize_path(:github), class: 'zocial icon github'
-                        = link_to 'Google+', user_omniauth_authorize_path(:gplus), class: 'zocial icon googleplus'
-                        = link_to 'Twitter', user_omniauth_authorize_path(:twitter), class: 'zocial icon twitter'
+                        = link_to 'Facebook', user_omniauth_authorize_url(:facebook, host: APP_CONFIG['default_host'], redirect_host: request.host), class: 'zocial icon facebook'
+                        = link_to 'Github', user_omniauth_authorize_path(:github, host: APP_CONFIG['default_host'], redirect_host: request.host), class: 'zocial icon github'
+                        = link_to 'Google+', user_omniauth_authorize_path(:gplus, host: APP_CONFIG['default_host'], redirect_host: request.host), class: 'zocial icon googleplus'
+                        = link_to 'Twitter', user_omniauth_authorize_path(:twitter, host: APP_CONFIG['default_host'], redirect_host: request.host), class: 'zocial icon twitter'
 
               ul#left-nav.navbar-right.top-menu-nav
                 / # - if current_user.is? :admin

@@ -417,6 +417,10 @@ class ApplicationController < ActionController::Base
       @new_user_session = User.new unless user_signed_in?
     end
 
+    def site_platform
+      is_whitelabel? ? current_platform.user_name : 'hackster'
+    end
+
     def ssl_configured?
       Rails.env == 'production'
     end

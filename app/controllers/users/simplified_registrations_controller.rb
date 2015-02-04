@@ -15,5 +15,11 @@ class Users::SimplifiedRegistrationsController < Devise::RegistrationsController
       render action: 'new'
     end
   end
+
+  private
+    def build_resource(hash=nil)
+      super
+      self.resource.platform = site_platform
+    end
 end
 # clean up all conditions to plug in better with devise api

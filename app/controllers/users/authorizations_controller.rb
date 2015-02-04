@@ -81,6 +81,10 @@ class Users::AuthorizationsController < Users::RegistrationsController
           self.resource.invitation_token = hash[:invitation_token]
         end
       end
-      self.resource ||= super
+      if resource
+        resource.platform = site_platform
+      else
+        self.resource = super
+      end
     end
 end

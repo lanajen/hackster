@@ -62,6 +62,12 @@ class Users::RegistrationsController < Devise::RegistrationsController
     end
 
   private
+    def build_resource(hash=nil)
+      super
+      self.resource.platform = site_platform
+      resource
+    end
+
     # check if we need password to update user data
     # ie if password or email was changed
     # extend this as needed
