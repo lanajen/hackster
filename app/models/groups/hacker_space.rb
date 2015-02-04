@@ -41,6 +41,10 @@ class HackerSpace < GeographicCommunity
     'anyone'
   end
 
+  def claimed?
+    members.with_group_roles('team').any?
+  end
+
   def show_address
     true
   end

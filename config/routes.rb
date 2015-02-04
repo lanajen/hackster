@@ -112,6 +112,7 @@ HackerIo::Application.routes.draw do
       resources :projects, only: [:new, :create], controller: 'groups/projects'
       patch 'projects/link' => 'groups/projects#link'
     end
+    post 'claims' => 'claims#create'
 
     resources :members, only: [] do
       patch 'process' => 'members#process_request'

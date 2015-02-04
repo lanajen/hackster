@@ -301,6 +301,7 @@ class ApplicationController < ActionController::Base
         visits_count_before_signup: JSON.parse(cookies[:visits]).size,
         simplified: simplified,
         source: params[:source],
+        platform: site_platform,
       }
 
       track_alias

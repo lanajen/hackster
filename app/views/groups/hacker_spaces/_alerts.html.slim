@@ -1,22 +1,49 @@
 - unless @hide_top_join_prompt or (user_signed_in? and current_user.is_member? @hacker_space)
-  - if can? :join, @hacker_space
+  - if !@hacker_space.claimed?
     .alert.alert-warning.alert-flat
       .container
-        - case @hacker_space.access_level
-        - when 'anyone'
-          ' Are you a member of
-          strong = @hacker_space.name
-          ' ?
-        - when 'invite'
-          ' You have been invited to join
-          strong = @hacker_space.name
-          ' .
-        = link_to 'Join hacker space', group_accept_invitation_path(@hacker_space), class: 'btn btn-warning btn-sm'
+        ' This is a community-generated profile. If you would like to claim it, please
+        - if user_signed_in?
+          = link_to 'contact us', '#', data: { target: "#claim-modal", toggle: "modal" }, class: 'alert-link'
+        - else
+          = link_to 'log in', new_user_session_path, class: 'alert-link'
+        | .
+    = content_for :js do
+      #claim-modal.modal.fade*{ 'aria-hidden' => "true", 'aria-labelledby' => "claim-modal-label", role: "dialog", tabindex: "-1" }
+        .modal-dialog
+          .modal-content
+            .modal-header
+              button.close data-dismiss="modal" type="button"
+                span aria-hidden="true"  ×
+                span.sr-only Close
+              h4#claim-modal-label.modal-title Claim #{@hacker_space.name}
+            .modal-body
+              p Your claim will only be approved if we can verify that you are a qualified representative of #{@hacker_space.name}. Please add a message below if your claim needs additional explanation.
+              = form_tag claims_path, method: :post do
+                .form-group
+                  = text_area_tag :message, params[:message], class: 'form-control disable-on-submit', rows: 3
+                  = hidden_field_tag :group_id, @hacker_space.id
+                = submit_tag 'Claim page', class: 'btn btn-primary btn-block'
 
-  - elsif can? :request_access, @hacker_space
-    .alert.alert-warning.alert-flat
-      .container
-        ' Registrations for
-        strong> = @hacker_space.name
-        ' require approval.
-        = link_to 'Request to join hacker space', group_members_path(@hacker_space), class: 'btn btn-sm btn-warning', data: { method: :post }
+  - else
+    - if can? :join, @hacker_space
+      .alert.alert-warning.alert-flat
+        .container
+          - case @hacker_space.access_level
+          - when 'anyone'
+            ' Are you a member of
+            strong = @hacker_space.name
+            ' ?
+          - when 'invite'
+            ' You have been invited to join
+            strong = @hacker_space.name
+            ' .
+          = link_to 'Join hacker space', group_accept_invitation_path(@hacker_space), class: 'btn btn-warning btn-sm'
+
+    - elsif can? :request_access, @hacker_space
+      .alert.alert-warning.alert-flat
+        .container
+          ' Registrations for
+          strong> = @hacker_space.name
+          ' require approval.
+          = link_to 'Request to join hacker space', group_members_path(@hacker_space), class: 'btn btn-sm btn-warning', data: { method: :post }

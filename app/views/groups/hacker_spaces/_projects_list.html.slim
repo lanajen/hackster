@@ -40,11 +40,17 @@
               </div></div><div class="col-md-6"><div class="row">
             = render partial: 'users/user_thumb_mini', locals: { user: user }
           </div></div>
-      - elsif can? :join, @hacker_space
+      / - elsif can? :join, @hacker_space
         ' Are you part of the team at #{@hacker_space.name}?
         = link_to 'Join the group', group_accept_invitation_path(@hacker_space, role: 'team'), class: 'btn btn-warning btn-sm'
       - else
-        | Looks like no team members have signed up. Let them know they should claim the page!
+        ' Are you part of the team at #{@hacker_space.name}?
+        - if user_signed_in?
+          = link_to 'Claim the page', '#', data: { target: "#claim-modal", toggle: "modal" }
+          | .
+        - else
+          ==> link_to 'Log in', new_user_session_path
+          | to claim the page.
 
 - else
   .alert.alert-warning

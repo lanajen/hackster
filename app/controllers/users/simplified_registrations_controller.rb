@@ -8,7 +8,7 @@ class Users::SimplifiedRegistrationsController < Devise::RegistrationsController
     if resource_saved
       sign_in resource_name, resource
       track_signup resource, true
-      track_event 'Signed up using simplified process', { source: params[:source] }
+      track_event 'Signed up using simplified process', { source: params[:source], platform: site_platform }
       set_flash_message :notice, :"signed_up_but_#{resource.inactive_message}" if is_flashing_format?
       respond_with resource, location: user_return_to
     else
