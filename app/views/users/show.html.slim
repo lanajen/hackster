@@ -18,30 +18,24 @@ section#projects-list
 
     - elsif user_is_current?
       p
-        ' You have no public projects.
-        = link_to 'Showcase a project', new_project_path, class: 'btn btn-info btn-sm'
+        ' Looks like a great time to
+        ==> link_to 'showcase your first project', new_project_path, class: 'btn btn-info btn-sm'
+        ' !
       p.smaller.text-muted
         strong> Tip:
         | Access private projects below.
     - else
       | #{@user.name} has no public projects.
 
-    - if user_is_current_or_admin?
+    - if user_is_current_or_admin? and @private_projects.any?
       hr
       h2
         ' Private projects
         = content_tag(:span, @private_projects.count, class: 'badge')
-      - if @private_projects.any?
-        .thumb-list  class=@switch_style
-          .row.project-list
-            - @private_projects.each_with_index do |project, i|
-              = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'userprivate', ref_id: @user.id, offset: i }
-
-      - elsif user_is_current?
-        p
-          | You have no private projects.
-      - else
-        | #{@user.name} has no private projects.
+      .thumb-list  class=@switch_style
+        .row.project-list
+          - @private_projects.each_with_index do |project, i|
+            = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'userprivate', ref_id: @user.id, offset: i }
 
     hr
     h2
