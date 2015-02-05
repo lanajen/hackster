@@ -6,7 +6,8 @@ class ProjectImportsController < ApplicationController
 
   def create
     if urls_valid?(params[:urls])
-      ScraperQueue.perform_async 'scrape_projects', params[:urls], params[:user_id].presence || current_user.id, params[:platform_tags_string]
+      product_tags_string = begin; CGI::unescape(params[:product_tags_string]); rescue; end;
+      ScraperQueue.perform_async 'scrape_projects', params[:urls], params[:user_id].presence || current_user.id, params[:platform_tags_string], product_tags_string
       send_admin_message(true) unless current_user.is? :admin
       redirect_to current_user, notice: "Our robot spiders are analyzing your page and getting ready to import it. They'll send you an email when they're done."
     else

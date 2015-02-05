@@ -230,6 +230,8 @@ module ScraperStrategies
       end
 
       def normalize_link src
+        return src if src =~ /\Amailto/
+
         src = "#{@scheme}:" + src if (src =~ /\A\/\//)
         if !(src =~ /\Ahttp/) and @host and src != '/'
           src = "#{@base_uri}/#{src}" unless src =~ /\A\//
@@ -329,7 +331,11 @@ module ScraperStrategies
         base.css('a').each do |node|
           next unless link = node['href']
           if link.match /\/\/.+\/.+\.([a-z0-9]{,5})$/
-            next if $1.in? %w(html htm gif jpg jpeg png bmp php aspx asp js css shtml md)
+            ext = File.extname(URI.parse(link).path)[1..-1]
+            next if ext.in? %w(html htm gif jpg jpeg png bmp php aspx asp js css shtml md)
+            puts link.to_s
+            puts $1.to_s
+            puts '_________________________'
             next unless test_link(link)
             content = node.text
             title = (content != link) ? content : ''

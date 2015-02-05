@@ -18,9 +18,9 @@ class ImageUploader < BaseUploader
   end
 
   version :cover, if: :is_cover? do
-    process resize_to_fill: [1600, 1200]
-    # process resize_to_fit: [1600, 1200]
-    # process resize_and_pad: [1600, 1200, '#ffffff']
+    # process resize_to_fill: [1600, 1200]
+    process resize_to_fit: [1600, 1200]
+    process resize_and_pad: [1600, 1200, '#ffffff']
   end
 
   version :cover_thumb, from_version: :cover, if: :is_cover? do
@@ -50,9 +50,4 @@ class ImageUploader < BaseUploader
     def is_cover? picture
       model.class == CoverImage
     end
-
-    # def resize_to_fit_and_pad width, height, color
-    #   resize_to_fit:
-    #   resize_and_pad:
-    # end
 end
