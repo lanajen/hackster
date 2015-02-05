@@ -1,6 +1,6 @@
 atom_feed language: 'en-US' do |feed|
   feed.title title
-  feed.updated @projects.first.made_public_at
+  feed.updated @projects.first.try(:made_public_at)
 
   @projects.each do |project|
     feed.entry(project) do |entry|
