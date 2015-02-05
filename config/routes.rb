@@ -319,6 +319,8 @@ HackerIo::Application.routes.draw do
     get 'hweekend', to: redirect('/hardwareweekend')
     get 'roadshow', to: redirect('/hardwareweekend')
 
+    get 'tinyduino', to: redirect('/tinycircuits')
+
     get 'about' => 'pages#about'
     # get 'help' => 'pages#help'
     get 'achievements' => 'pages#achievements'
