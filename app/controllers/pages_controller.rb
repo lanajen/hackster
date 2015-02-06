@@ -51,6 +51,7 @@ class PagesController < ApplicationController
       'Raspberry Pi' => '/raspberry-pi',
       'Wearables' => '/l/wearables',
       'Intel Edison' => '/intel-edison',
+      'Pets' => '/l/creature-feature',
     }
 
     # render (user_signed_in? ? 'home_member' : 'home_visitor')
