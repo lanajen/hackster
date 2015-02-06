@@ -1,0 +1,99 @@
+span.twitter-typeahead .tt-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  display: none;
+  float: left;
+  min-width: 160px;
+  padding: 5px 0;
+  margin: 0;
+  list-style: none;
+  font-size: 14px;
+  text-align: left;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  background-clip: padding-box;
+  border-top: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  width: 100%;
+}
+span.twitter-typeahead .tt-suggestion {
+  &.tt-cursor, & > p:hover, & > p:focus, & > p:active,  {
+    text-decoration: none;
+    outline: 0;
+    background-color: #428bca;
+    color: #ffffff;
+    .tt-context {
+      color: #ddd;
+    }
+  }
+  & > p {
+    display: block;
+    padding: 3px 20px;
+    margin-bottom: 0px;
+    clear: both;
+    font-weight: normal;
+    line-height: 1.42857143;
+    color: #333333;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+    .tt-result, .tt-context {
+      display: block;
+    }
+    .tt-result {
+      font-size: 120%;
+      font-weight: bold;
+    }
+    .tt-context {
+      color: #999;
+      text-transform: uppercase;
+      font-size: 80%;
+    }
+  }
+}
+span.twitter-typeahead {
+  width: 100%;
+}
+.input-group span.twitter-typeahead {
+  display: block !important;
+}
+.input-group span.twitter-typeahead .tt-dropdown-menu {
+  top: 32px !important;
+}
+.input-group.input-group-lg span.twitter-typeahead .tt-dropdown-menu {
+  top: 44px !important;
+}
+.input-group.input-group-sm span.twitter-typeahead .tt-dropdown-menu {
+  top: 28px !important;
+}
+.twitter-typeahead {
+  @include input-placeholder {
+     color: #eee;
+     font-style: italic;
+   }
+}
+.twitter-typeahead.tt-hint, .twitter-typeahead.tt-input {
+  background: transparent !important;
+  border: 0;
+  @include box-shadow(none);
+  @include border-radius(0);
+  height: 100%;
+  margin-bottom: 1px;
+  outline: 0;
+  font-size: 30px;
+  color: #fff;
+  padding: 5px 12px;
+}
+.twitter-typeahead.tt-hint {
+  color: #bbb;
+}
+#typeahead {
+  @include opacity(0);
+}

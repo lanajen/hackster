@@ -1,10 +1,116 @@
 = content_for :head do
   meta(name='robots' content='noindex')
-  = auto_discovery_link_tag :rss, projects_path(format: :rss), title: 'Trending projects - Hackster.io'
-  = auto_discovery_link_tag :atom, projects_path(format: :atom), title: 'Trending projects - Hackster.io'
+  = auto_discovery_link_tag :rss, projects_path(format: :rss, sort: 'recent'), title: 'Last projects - Hackster.io'
+  = auto_discovery_link_tag :atom, projects_path(format: :atom, sort: 'recent'), title: 'Last projects - Hackster.io'
 
 = content_for :js do
+  = javascript_include_tag '//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.4/typeahead.bundle.min.js'
+
   javascript:
+    $(function(){
+      // http://jsfiddle.net/Webveloper/HjFUK/
+      $.fn.shake = function (options) {
+        // defaults
+        var settings = {
+            'shakes': 2,
+            'distance': 10,
+            'duration': 400
+        };
+        // merge options
+        if (options) {
+            $.extend(settings, options);
+        }
+        // make it so
+        var pos;
+        return this.each(function () {
+            $this = $(this);
+            // position if necessary
+            pos = $this.css('position');
+            if (!pos || pos === 'static') {
+                $this.css('position', 'relative');
+            }
+            // shake it
+            for (var x = 1; x <= settings.shakes; x++) {
+                $this.animate({ left: settings.distance * -1 }, (settings.duration / settings.shakes) / 4)
+                    .animate({ left: settings.distance }, (settings.duration / settings.shakes) / 2)
+                    .animate({ left: 0 }, (settings.duration / settings.shakes) / 4);
+            }
+        });
+      };
+
+      var tagsPrefetch = #{@typeahead_tags.to_json.to_s.html_safe};
+
+      var engine = new Bloodhound({
+        datumTokenizer: function(d) {
+          return Bloodhound.tokenizers.whitespace(d.tag);
+        },
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        local: tagsPrefetch
+      });
+
+      // kicks off the loading/processing of `local` and `prefetch`
+      engine.initialize();
+
+      // platforms
+      // lists
+      // tags
+
+      $('.typeahead').typeahead({
+        hint: true,
+        highlight: false,
+        minLength: 1
+      },
+      {
+        name: 'tags',
+        displayKey: 'tag',
+        source: engine.ttAdapter(),
+        templates: {
+          suggestion: function (data) {
+            return "<p><span class='tt-result'>" + data.tag + "</span><span class='tt-context'><strong>" + data.projects + "</strong> projects</span></p>";
+          }
+        }
+      }).on('typeahead:selected', function (obj, datum) {
+        window.location = datum.url;
+      });;
+
+      $('#hack_select').on('change', function(e){
+        window.location = $(this).val();
+      });
+      $('.scrolldown').on('click', function(e){
+        e.preventDefault();
+        var id = $('#home-banner').next().attr('id');
+        smoothScrollTo('#' + id);
+      });
+      $('#typeahead-label').on('click', function(e){
+        $(this).animate({ opacity: 0 }, 200, function(){
+          $(this).hide();
+          $('#typeahead').animate({ opacity: 1 }, 100).focus();
+        });
+      });
+      $('#typeahead')
+        .on('focusout', function(e){
+          $(this).animate({ opacity: 0 }, 100, function(){
+            $('#typeahead-label').show().animate({ opacity: 1 }, 200);
+            $(this).typeahead('val', '');
+          });
+        })
+        .on('keypress', function(e){
+          if (e.which == 13 && !e.shiftKey) {
+            e.preventDefault();
+            engine.get($(this).val(), function(suggestions) {
+              var match;
+              $.each(suggestions, function(i, suggestion) {
+                match = suggestion;
+                return window.location = suggestion.url;
+              });
+              if (match == null) $('.shakable').shake();
+            });
+          }
+        });
+
+    });
+
+  / javascript:
     $('#home-banner').slick({
       accessibility: false,
       autoplay: true,
@@ -20,11 +126,33 @@
     section#home-banner
       .home-slide#hello-hackster
         .container.text-center
-          h1 The place where hardware gets created.
-          p
+          h1 Hackster is the place where hardware gets created.
+          / p style="margin-bottom:20vh"
             ' Learn, share, and connect to build better hardware.
             = link_to 'Learn more.', about_path(ref: 'homeabout'), class: 'alert-link'
-      .home-slide style="background-image:url('#{ asset_url 'hwweek/bg.jpg'}')"
+          .hack-selector-container
+            .typeahead-container.hidden-xs
+              .inner-container.shakable
+                label#typeahead-label
+                  ' What do you hack?
+                  i.fa.fa-chevron-down
+                input.form-control.typeahead.twitter-typeahead#typeahead type='search' autofocus='true' placeholder='Start typing...'
+            .select-container.visible-xs
+              label
+                ' What do you hack?
+                i.fa.fa-chevron-down
+                select#hack_select
+                  - @typeahead_tags.each do |tag|
+                    option value=tag[:url] = tag[:tag]
+            ul.list-inline
+              li Try one of these:
+              - @suggestions.each do |tag, url|
+                li= link_to tag, url
+          p.scrolldown
+            ==> link_to "I'm not sure yet, show me more", '#'
+            | &darr;
+
+      / .home-slide style="background-image:url('#{ asset_url 'hwweek/bg.jpg'}')"
         .container.text-center
           h1 Hackster Hardware Weekend
           p
@@ -37,7 +165,7 @@
             br
             ' with
             = link_to 'Autodesk Fusion 360', '/autodesk?ref=homeabout', class: 'alert-link'
-      .home-slide style="background-image: url('#{asset_url 'home/dragon_bg.jpg'}')"
+      / .home-slide style="background-image: url('#{asset_url 'home/dragon_bg.jpg'}')"
         .container.text-center
           h1
             ' Become Dragon Certified
@@ -46,7 +174,7 @@
             = link_to 'Learn more.', '/partners?ref=homeabout', class: 'alert-link'
 
     - if !user_signed_in? and !returning_user?
-      section#projects.showcase-section
+      section#trending-projects.showcase-section
         .container
           .view-all-header.clearfix
             h4.pull-left Trending projects
@@ -57,7 +185,7 @@
             - @trending_projects.each do |project|
               = render partial: 'projects/project_thumb', locals: { project: project }
     - else
-      section#categories.showcase-section.last
+      section#recent-projects.showcase-section.last
         .container
           .view-all-header.clearfix
             h4.pull-left Latest projects
@@ -88,7 +216,7 @@
             = render partial: 'groups/platforms/platform_thumb', locals: { platform: platform }
 
     - if user_signed_in? or returning_user?
-      section#projects.showcase-section
+      section#trending-projects.showcase-section
         .container
           .view-all-header.clearfix
             h4.pull-left Trending projects
@@ -99,7 +227,7 @@
             - @trending_projects.each do |project|
               = render partial: 'projects/project_thumb', locals: { project: project }
     - else
-      section#categories.showcase-section.last
+      section#recent-projects.showcase-section.last
         .container
           .view-all-header.clearfix
             h4.pull-left Latest projects
@@ -110,23 +238,23 @@
             - @latest_projects.each do |project|
               = render partial: 'projects/project_thumb', locals: { project: project }
 
-    / section#categories.showcase-section.last
+    section#categories.showcase-section.last
       .container
         .view-all-header.clearfix
           h4.pull-left Top categories
           / # = link_to 'View more Categories', '#', class: 'btn btn-default btn-sm pull-right'
 
         .row
-          - [['Home automation', 'Flying', 'Bluetooth'], ['Wearables', 'Pets', 'Wifi']].each do |categories|
+          - @lists.each do |lists|
             .col-sm-6.category-row
-              - categories.each do |category|
+              - lists.each do |list|
                 .category-col
                   .thumb.category-thumb
-                    .thumb-image.has-link-overlay style="background-image:url(#{ asset_url 'home/img-1.png' })"
-                      = link_to '', category, class: 'link-overlay'
+                    .thumb-image.has-link-overlay style="background-image:url(#{list.decorate.cover_image})"
+                      = link_to '', list, class: 'link-overlay'
                       .thumb-image-inner
                         h4
-                          = link_to category, '#'
+                          = link_to list.name, list
 
     - if !user_signed_in? and !returning_user?
       section#signup-now-pretty-please

@@ -363,7 +363,7 @@ HackerIo::Application.routes.draw do
     #   resources :logs, controller: :build_logs
     # end
 
-    root to: 'pages#home'
+    # root to: 'pages#home'
   end
 
   # API (see if can be moved to its own subdomain)
@@ -491,4 +491,5 @@ HackerIo::Application.routes.draw do
   end
 
   get '*not_found' => 'application#not_found'  # find a way to not need this
+  root to: 'pages#home'
 end
