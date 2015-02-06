@@ -66,10 +66,10 @@ class ScraperQueue < BaseWorker
     BaseMailer.enqueue_generic_email(@message)
   end
 
-  def scrape_projects page_urls, user_id, platform_tags_string=nil
+  def scrape_projects page_urls, user_id, platform_tags_string=nil, product_tags_string=nil
     urls = page_urls.gsub(/\r\n/, ',').gsub(/\n/, ',').gsub(/[ ]+/, ',').split(',').reject{ |l| l.blank? }
     urls.each do |url|
-      self.class.perform_async 'scrape_project', url, user_id, platform_tags_string
+      self.class.perform_async 'scrape_project', url, user_id, platform_tags_string, product_tags_string
     end
   end
 
