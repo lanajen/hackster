@@ -21,7 +21,7 @@ module ScraperStrategies
       end
 
       def select_article
-        @parsed.at_css('article') || @parsed.at('#readme .plain') || @parsed.at('body')
+        @parsed.at_css('article') || @parsed.at('#readme .plain') || @parsed.at('h1')
       end
   end
 end
