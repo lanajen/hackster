@@ -251,6 +251,7 @@
   .btn-link {
     color: #fff;
     text-decoration: underline;
+    display: inline !important; // for addthis plugin
     &:hover {
       color: #ddd;
     }
