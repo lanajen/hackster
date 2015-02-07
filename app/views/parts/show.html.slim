@@ -28,27 +28,35 @@
     / # - link = new_project_path(project: { platform_tags_string: @platform.name, external: true }, redirect_to: request.path)
     / # = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Submit a link".html_safe, link, class: 'btn btn-default'
 
-  .btn-group.pull-left
-    .btn-group
+  / .btn-group.pull-left
+    / .btn-group
       button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
         ' Sort by
         span.caret
-      ul.dropdown-menu.pull-right
+      ul.dropdown-menu
         li*{ class: "#{'active' if params[:sort] == 'updated'}" } = link_to 'Last updated', platform_short_path(@platform, sort: 'updated', by: params[:by])
         li*{ class: "#{'active' if params[:sort] == 'magic'}" } = link_to 'Magic', platform_short_path(@platform, sort: 'magic', by: params[:by])
         li*{ class: "#{'active' if params[:sort] == 'popular'}" } = link_to 'Most popular', platform_short_path(@platform, sort: 'popular', by: params[:by])
         li*{ class: "#{'active' if params[:sort] == 'recent'}" } = link_to 'Most recent', platform_short_path(@platform, sort: 'recent', by: params[:by])
         li*{ class: "#{'active' if params[:sort] == 'respected'}" } = link_to 'Most respected', platform_short_path(@platform, sort: 'respected', by: params[:by])
 
-    .btn-group
+    / .btn-group
       button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
         ' Filter by
         span.caret
-      ul.dropdown-menu.pull-right
+      ul.dropdown-menu
         li*{ class: "#{'active' if params[:by] == nil}" } = link_to 'All', platform_short_path(@platform, sort: params[:sort])
         li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to 'Featured', platform_short_path(@platform, by: 'featured', sort: params[:sort])
         li*{ class: "#{'active' if params[:by] == 'on_hackster'}" } = link_to 'On Hackster', platform_short_path(@platform, by: 'on_hackster', sort: params[:sort])
         li*{ class: "#{'active' if params[:by] == 'wip'}" } = link_to 'Work in progress', platform_short_path(@platform, by: 'wip', sort: params[:sort])
+
+  .btn-group.pull-left
+    button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
+      ' More parts
+      span.caret
+    ul.dropdown-menu
+      - @platform.parts.each do |part|
+        li= link_to part.name, part
 
 
 - if @projects.any?

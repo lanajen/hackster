@@ -72,18 +72,6 @@
                 a.btn.btn-link.addthis_button_compact
                   i.fa.fa-share-square-o
 
-                - if can? :manage, @group
-                  span.dropdown.dropup role='presentation'
-                    a.btn.btn-link.dropdown-toggle data-toggle="dropdown" aria-expanded="false"
-                      i.fa.fa-cog
-                    ul.dropdown-menu role="menu"
-                      li= link_to 'Edit settings', url_for([:edit, @group])
-                      li.divider
-                      li= link_to 'Manage admins', url_for([@group, :edit, :members])
-                      li= link_to 'Invite admins', url_for([@group, :new, :invitations])
-                      li.divider
-                      li= link_to 'Manage projects', url_for([@group, :admin, :projects])
-
         .container.visible-xs
           = image_tag @group.avatar(:big), class: 'img-thumbnail'
 
