@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150201063326) do
+ActiveRecord::Schema.define(version: 20150206203522) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -396,11 +396,9 @@ ActiveRecord::Schema.define(version: 20150201063326) do
     t.integer  "platform_id"
     t.boolean  "private",             default: true
     t.string   "product_tags_string"
-<<<<<<< HEAD
     t.text     "counters_cache"
     t.string   "workflow_state"
-=======
->>>>>>> master
+    t.string   "slug"
   end
 
   add_index "parts", ["partable_id", "partable_type"], name: "partable_index", using: :btree
@@ -494,10 +492,10 @@ ActiveRecord::Schema.define(version: 20150201063326) do
   add_index "receipts", ["user_id"], name: "index_receipts_on_user_id", using: :btree
 
   create_table "reputations", force: true do |t|
-    t.integer  "points",     default: 0
-    t.integer  "user_id",                null: false
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.float    "points",     default: 0.0
+    t.integer  "user_id",                  null: false
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
   end
 
   add_index "reputations", ["user_id"], name: "index_reputations_on_user_id", using: :btree
@@ -623,6 +621,7 @@ ActiveRecord::Schema.define(version: 20150201063326) do
     t.boolean  "mailchimp_registered",               default: false
     t.string   "authentication_token",   limit: 25
     t.boolean  "enable_sharing",                     default: true,   null: false
+    t.string   "platform"
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree

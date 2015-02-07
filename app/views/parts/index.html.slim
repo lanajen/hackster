@@ -1,24 +1,7 @@
-p= link_to "&larr; Go back to #{@group.name} page".html_safe, @group
+- @parts.each do |part|
+  = render part.decorate
 
-.box
-  .box-title
-    h2 Parts admin for #{@group.name}
-  .box-content
-    .mg-20= link_to 'New part', new_group_part_path(@group), class: 'btn btn-success'
-
-    table.table.table-hover
-      thead
-        th Image
-        th Name
-        th
-      tbody
-        - @parts.each do |part|
-          tr
-            td= image_tag part.image.try(:file_url, :thumb)
-            td= part.name
-            td= link_to 'Edit', edit_group_part_path(@group, part), class: 'btn btn-default btn-sm'
-
-    .text-center= will_paginate @parts
+.text-center= will_paginate @parts
 
 = content_for :head do
   css:

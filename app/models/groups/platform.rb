@@ -11,7 +11,7 @@ class Platform < List
   has_many :announcements, as: :threadable, dependent: :destroy
   has_many :challenges
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'PlatformMember'
-  has_many :parts
+  has_many :parts, -> { order :name }
   has_one :client_subdomain
   has_one :company_logo, as: :attachable, dependent: :destroy
   has_one :logo, as: :attachable, dependent: :destroy

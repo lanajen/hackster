@@ -1,46 +1,33 @@
 class PartsController < ApplicationController
-  before_filter :load_platform
+  before_filter :load_platform_with_slug
+  before_filter :load_part, only: [:show]
   load_resource except: [:index]
+  layout 'group_shared'
 
   def index
-    authorize! :manage, @platform
-
+    title "Parts for #{@platform.name}"
+    meta_desc "Discover all the parts for #{@platform.name} and their related hardware hacks and projects."
     @parts = @platform.parts.paginate(page: safe_page_params)
   end
 
   def show
-  end
-
-  def new
-  end
-
-  def create
-    @part.platform_id = @platform.id
-
-    if @part.save
-      redirect_to group_parts_path(@platform), notice: "#{@part.name} created!"
-    else
-      render :new
-    end
-  end
-
-  def edit
-  end
-
-  def update
-    if @part.update_attributes(params[:part])
-      redirect_to group_parts_path(@platform), notice: "#{@part.name} saved!"
-    else
-      render :edit
-    end
-  end
-
-  def destroy
+    title "#{@platform.name} #{@part.name} projects and hacks"
+    meta_desc "Discover hardware hacks and projects made with #{@platform.name} #{@part.name}."
+    @projects = @part.projects.paginate(page: safe_page_params)
+    @part = @part.decorate
   end
 
   private
-    def load_platform
-      @group = @platform = Platform.find(params[:group_id] || params[:id])
-      authorize! :manage, @platform
+    def load_part
+      @part = if params[:id]
+        Part.find params[:id]
+      else
+        Part.where(slug: params[:part_slug], platform_id: @platform.id).first!
+      end
+    end
+
+    def load_platform_with_slug
+      @group = @platform = load_with_slug
+      authorize! :read, @platform
     end
 end

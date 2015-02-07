@@ -1,3 +1,25 @@
+= content_for :head do
+  meta(property="og:title" content="#{@part.full_name} projects")
+  meta(property="og:description" content="Discover hacks and projects built with #{@part.full_name}, and share your own!")
+  - if @part.image
+    meta(property="og:image" content=@part.image(:headline))
+    meta(property="twitter:image:src" content=@part.image(:headline))
+    meta(property="og:image:width" content='580')
+    meta(property="og:image:height" content='435')
+    meta(property="twitter:image:width" content='580')
+    meta(property="twitter:image:height" content='435')
+  meta(property="og:url" content=platform_part_path(@platform.user_name, @part.slug))
+  meta(property="og:site_name" content="Hackster.io")
+  meta(property="twitter:card" content="summary")
+  meta(property="twitter:site" content="@hacksterio")
+  meta(property="twitter:domain" content="hackster.io")
+  meta(property="twitter:title" content="#{@part.full_name} projects")
+  meta(property="twitter:description" content=strip_tags(@part.description.truncate(200)))
+  link(rel="canonical" href=platform_part_path(@platform.user_name, @part.slug))
+  meta(property="keywords" content="#{@part.full_name} projects, #{@part.full_name} hacks")
+
+= render @part
+
 .main-section-actions.clearfix.mg-30
   .pull-right
     - link = user_signed_in? ? new_project_path(project: { platform_tags_string: @platform.name }) : new_user_registration_path(reason: 'project', m: 'group', id: @platform.id, redirect_to: new_project_path(project: { platform_tags_string: @platform.name }))
@@ -31,30 +53,11 @@
 
 - if @projects.any?
   .row.project-list
-    - if @platform.accept_project_ideas
-      = render partial: 'groups/platforms/submit_idea', locals: { platform: @platform }
-    - @projects.each do |col|
-      = render partial: 'projects/project_thumb', locals: { project: col.project }
-      - if can? :manage, @group
-        = content_for :js do
-          javascript:
-            text = "#{escape_javascript render(partial: 'groups/platforms/button_featured', locals: { col: col } )}";
-            $(text).appendTo($('.project-#{col.project_id} .project-thumb .award-container'));
-      - else
-        - if col.featured?
-          = content_for :js do
-            javascript:
-              text = "#{escape_javascript render(partial: 'groups/platforms/featured', locals: { project: col.project } )}";
-              $(text).appendTo($('.project-#{col.project_id} .project-thumb .award-container'));
-
+    - @projects.each do |project|
+      = render partial: 'projects/project_thumb', locals: { project: project }
   .row.text-center= will_paginate @projects
 - else
-  .row
-    - if @platform.accept_project_ideas
-      = render partial: 'groups/platforms/submit_idea', locals: { platform: @platform }
-    - else
-      .col-xs-12
-        p
-          ' No projects here yet!
-          - if @platform.platform_tags.any?
-            = link_to "Create the first #{@platform.name} project", new_project_path(project: { platform_tags_string: @platform.name }), class: 'btn btn-primary btn-sm'
+  p
+    ' No projects here yet!
+    - if @platform.platform_tags.any?
+      = link_to "Create the first #{@platform.name} project", new_project_path(project: { platform_tags_string: @platform.name }), class: 'btn btn-primary btn-sm'

@@ -7,6 +7,12 @@ class ProjectObserver < ActiveRecord::Observer
     if record.needs_platform_refresh
       ProjectWorker.perform_async 'update_platforms', record.id
     end
+
+    if record.private_changed
+      record.parts.each do |part|
+        part.update_counters only: [:projects]
+      end
+    end
   end
 
   def after_destroy record
@@ -48,6 +54,7 @@ class ProjectObserver < ActiveRecord::Observer
     end
 
     if record.private_changed?
+      record.private_changed = true
       if record.private?
       else
         record.approved = false if record.approved.nil? and record.force_hide?

@@ -1,6 +1,6 @@
 section#projects-list
   .wrapper
-    .project-list-actions.clearfix.mg-30
+    .main-section-actions.clearfix.mg-30
       - if user_is_current?
         .pull-right
           ==> link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'btn btn-default'

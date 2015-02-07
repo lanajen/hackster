@@ -19,6 +19,6 @@ module FilterHelper
       end
     end
 
-    collection.order(sort).paginate(page: safe_page_params)
+    collection.order(sort).paginate(page: safe_page_params, per_page: params[:per_page])
   end
 end

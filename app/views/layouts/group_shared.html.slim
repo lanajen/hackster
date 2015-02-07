@@ -6,7 +6,8 @@
       = render partial: 'shared/signup_top', locals: { message: "Dig #{@group.name}? Join and receive updates about new projects: ", redirect_to: create_followers_path(followable_type: 'Group', followable_id: @group.id), source: 'group' }
 
 = content_for :head do
-  = render partial: "groups/#{@group.identifier.pluralize}/meta_tags"
+  - if url_for(@group) == request.path
+    = render partial: "groups/#{@group.identifier.pluralize}/meta_tags"
   meta name='group_id' content=@group.id
 
 = content_for :js do
@@ -110,7 +111,8 @@
 
   = render partial: "groups/#{@group.identifier.pluralize}/alerts"
 
-  section.projects-list
-    = yield
+  section.main-section
+    .container
+      = yield
 
 = render template: "layouts/#{current_layout}"

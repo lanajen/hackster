@@ -9,6 +9,7 @@ class PartJoin < ActiveRecord::Base
   # after_validation :compute_total_cost
   validates :quantity, numericality: { greater_than: 0 }
   validates :comment, length: { maximum: 255 }, allow_blank: true
+  validates :part_id, uniqueness: { scope: [:partable_type, :partable_id] }
   # validates :part_id, :partable_id, :partable_type, presence: true  # put this back when full system implemented
 
 

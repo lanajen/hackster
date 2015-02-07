@@ -1,7 +1,7 @@
 - if can? :read, @group
   .tab-content
     #tab-projects.tab-pane.active.fade.in
-      .project-list-actions.clearfix.mg-30
+      .main-section-actions.clearfix.mg-30
         - if can? :add_project, @group
         .pull-right
           = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project to hacker space".html_safe, "#{hacker_space_path(@hacker_space)}/projects/new", class: 'btn btn-sm btn-default'

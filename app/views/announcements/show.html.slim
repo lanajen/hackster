@@ -1,24 +1,23 @@
-.projects-list
-  .wrapper700
-    = link_to "&larr; See all announcements".html_safe, platform_announcements_path(@platform.user_name), class: 'btn btn-link btn-sm btn-block mg-20 hidden-link'
+.wrapper700
+  = link_to "&larr; See all announcements".html_safe, platform_announcements_path(@platform.user_name), class: 'btn btn-link btn-sm btn-block mg-20 hidden-link'
 
-    - if can? :edit, @announcement
-      section.section-thumbs
-        h4 Admin actions
-        ==> link_to 'Edit', edit_platform_announcement_path(@platform.user_name, @announcement.id), class: 'btn btn-sm btn-warning'
-        = link_to 'Delete', announcement_path(@announcement), class: 'btn btn-sm btn-danger', data: { method: :delete, confirm: "Are you sure? There's no way back!" }
-
+  - if can? :edit, @announcement
     section.section-thumbs
-      h4 Share
-      = render 'shared/share_buttons'
+      h4 Admin actions
+      ==> link_to 'Edit', edit_platform_announcement_path(@platform.user_name, @announcement.id), class: 'btn btn-sm btn-warning'
+      = link_to 'Delete', announcement_path(@announcement), class: 'btn btn-sm btn-danger', data: { method: :delete, confirm: "Are you sure? There's no way back!" }
 
-    = render @announcement
+  section.section-thumbs
+    h4 Share
+    = render 'shared/share_buttons'
 
-    section#comments.section-container.section-collapsible
-      h2.section-title
-        a.title.title-toggle href=''
-          ' Comments
-          i.fa.fa-chevron-down
-          i.fa.fa-chevron-up
-      .section-content
-        = render partial: 'widgets/comments', locals: { comments: @announcement.comments, commentable: @announcement }
+  = render @announcement
+
+  section#comments.section-container.section-collapsible
+    h2.section-title
+      a.title.title-toggle href=''
+        ' Comments
+        i.fa.fa-chevron-down
+        i.fa.fa-chevron-up
+    .section-content
+      = render partial: 'widgets/comments', locals: { comments: @announcement.comments, commentable: @announcement }
