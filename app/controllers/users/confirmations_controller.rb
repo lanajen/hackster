@@ -27,6 +27,9 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
       sign_in resource_name, resource, bypass: user_signed_in?
       respond_with_navigational(resource){ redirect_to after_confirmation_path_for(resource_name, resource) }
     else
+      message = "Error confirming account for user ID #{resource.id}: #{resource.errors.messages}"
+      log_line = LogLine.create(message: message, log_type: 'error', source: 'confirmations_controller')
+      BaseMailer.enqueue_email 'error_notification', { context_type: :log_line, context_id: log_line.id }
       respond_with_navigational(resource.errors, :status => :unprocessable_entity){ render :new }
     end
   end
