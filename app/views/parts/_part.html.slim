@@ -8,7 +8,7 @@
 
     .col-md-2.col-md-push-8.action-buttons
       = link_to 'I own it!', '', class: 'btn btn-primary btn-block btn-sm'
-      = link_to pluralize(part.projects.count, 'project'), platform_part_path(@group.user_name, part.slug), class: 'btn btn-link btn-block btn-sm'
+      = link_to pluralize(part.projects_count, 'project'), platform_part_path(@group.user_name, part.slug), class: 'btn btn-link btn-block btn-sm'
 
     .col-md-8.col-md-pull-2.description
       = raw part.description

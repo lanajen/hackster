@@ -20,8 +20,6 @@ class Admin::PartsController < Admin::BaseController
   def create
     @part = Part.new(params[:part])
 
-    # raise 'no merge'
-
     if @part.save
       merge_parts
       redirect_to admin_parts_path, :notice => 'New part created'
@@ -79,9 +77,10 @@ class Admin::PartsController < Admin::BaseController
   private
     def merge_parts
       if params[:merge_parts]
-        part_joins = PartJoin.where(part_id: params[:merge_parts])
+        part_joins = PartJoin.where(part_id: params[:merge_parts].to_a - [@part.id.to_s])
         part_joins.update_all(part_id: @part.id)
-        Part.where(id: params[:merge_parts]).update_all(workflow_state: :retired)
+        @part.update_counters only: [:projects]
+        Part.where(id: params[:merge_parts].to_a - [@part.id.to_s]).update_all(workflow_state: :retired)
       end
     end
 end
