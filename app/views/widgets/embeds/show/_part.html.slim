@@ -3,7 +3,11 @@ tr.fields  id="part-#{part.id}"
     table  style='width:100%'
       tbody
         tr
-          td= part.part.name
+          td
+            - if part.part.platform_id
+              = link_to part.part.name, part.part
+            - else
+              = part.part.name
         tr
           td colspan=4 style='color: #888;font-size:75%;' = part.comment
   td style='width:30px;text-align:center;vertical-align:middle' &times;

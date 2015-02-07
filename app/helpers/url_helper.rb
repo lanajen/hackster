@@ -162,6 +162,14 @@ module UrlHelper
     new_course_promotion_assignment_path params_for_new_assignment(assignment).merge(opts)
   end
 
+  def part_path part, opts={}
+    if part.platform_id
+      platform_part_path(part.platform.user_name, part.slug)
+    else
+      ''
+    end
+  end
+
   def platform_announcement_path announcement, opts={}
     super(announcement.platform.user_name, announcement.sub_id, opts)
   end
