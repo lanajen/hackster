@@ -203,21 +203,6 @@ class Part < ActiveRecord::Base
     end
   end
 
-  def search_on_octopart
-    return unless description.present? or mpn.present?
-
-    keywords = mpn.presence || description
-
-    if result = Octopart.search(keywords)
-      self.vendor_link = result[:octopart_url]
-      self.mpn = result[:mpn]
-      self.vendor_name = result[:vendor_name] + ' (auto-matched)'
-      self.unit_price = result[:price]
-      # self.total_cost = unit_price * quantity || 1
-      result
-    end
-  end
-
   def generate_slug
     return if name.blank?
 
@@ -234,6 +219,21 @@ class Part < ActiveRecord::Base
       end
     end
     self.slug = slug
+  end
+
+  def search_on_octopart
+    return unless description.present? or mpn.present?
+
+    keywords = mpn.presence || description
+
+    if result = Octopart.search(keywords)
+      self.vendor_link = result[:octopart_url]
+      self.mpn = result[:mpn]
+      self.vendor_name = result[:vendor_name] + ' (auto-matched)'
+      self.unit_price = result[:price]
+      # self.total_cost = unit_price * quantity || 1
+      result
+    end
   end
 
   private
