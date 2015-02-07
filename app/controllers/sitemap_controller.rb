@@ -1,5 +1,5 @@
 class SitemapController < ApplicationController
-  DYNAMIC_CATEGORIES = %w(blog projects external_projects platforms users product_tags hacker_spaces lists)
+  DYNAMIC_CATEGORIES = %w(blog projects external_projects platforms users product_tags hacker_spaces lists parts)
   ALL_CATEGORIES = DYNAMIC_CATEGORIES + %w(static)
   PER_PAGE = 100
   skip_before_filter :store_location_before
@@ -122,6 +122,20 @@ class SitemapController < ApplicationController
           loc: url_for(platform),
           changefreq: 'weekly',
           lastmod: platform.updated_at.strftime("%F"),
+        }
+      end
+    end
+
+    def parts_query
+      Part.approved
+    end
+
+    def parts_pages offset=0
+      sitemap_scope(parts_query, offset).map do |part|
+        {
+          loc: url_for(part),
+          changefreq: 'weekly',
+          lastmod: part.updated_at.strftime("%F"),
         }
       end
     end

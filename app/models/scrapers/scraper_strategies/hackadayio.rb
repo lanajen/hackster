@@ -74,14 +74,21 @@ module ScraperStrategies
 
         widget = PartsWidget.new
         widget.widgetable_id = 0
-        parts.each_with_index do |comp, i|
-          part = widget.parts.new
-          part.quantity = comp.at_css('.quantity, .component-number').text.strip
-          part.comment = comp.at_css('.component-description').try(:text).try(:strip)
-          part.description = comp.at_css('.component-name, .component-content').text.gsub(part.comment || '', '').strip
-          part.position = i + 1
-        end
         widget.save
+        parts.each_with_index do |comp, i|
+
+          part = Part.new
+          comment = comp.at_css('.component-description').try(:text).try(:strip)
+          part.name = comp.at_css('.component-name, .component-content').text.gsub(comment || '', '').strip
+          part.save
+
+          part_join = PartJoin.new partable_id: widget.id,
+            partable_type: 'Widget', part_id: part.id
+          part_join.quantity = comp.at_css('.quantity, .component-number').text.strip
+          part_join.comment = comment
+          part_join.position = i + 1
+          part_join.save
+        end
         @widgets << widget
       end
 

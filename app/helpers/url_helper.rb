@@ -170,6 +170,14 @@ module UrlHelper
     end
   end
 
+  def part_url part, opts={}
+    if part.platform_id
+      platform_part_url(part.platform.user_name, part.slug)
+    else
+      ''
+    end
+  end
+
   def platform_announcement_path announcement, opts={}
     super(announcement.platform.user_name, announcement.sub_id, opts)
   end
