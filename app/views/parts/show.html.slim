@@ -18,11 +18,12 @@
   link(rel="canonical" href=platform_part_path(@platform.user_name, @part.slug))
   meta(property="keywords" content="#{@part.full_name} projects, #{@part.full_name} hacks")
 
-= render @part
+= render 'parts/part', { part: @part }
 
 .main-section-actions.clearfix.mg-30
   .pull-right
-    - link = user_signed_in? ? new_project_path(project: { platform_tags_string: @platform.name }) : new_user_registration_path(reason: 'project', m: 'group', id: @platform.id, redirect_to: new_project_path(project: { platform_tags_string: @platform.name }))
+    - hash = is_whitelabel? ? {} : { project: { platform_tags_string: @platform.name } }
+    - link = user_signed_in? ? new_project_path(hash) : new_user_registration_path(reason: 'project', m: 'group', id: @platform.id, redirect_to: new_project_path(hash))
     ==> link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add a project".html_safe, link, class: 'btn btn-default'
     / small> or
     / # - link = new_project_path(project: { platform_tags_string: @platform.name, external: true }, redirect_to: request.path)

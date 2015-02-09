@@ -1,13 +1,13 @@
-class PartsController < ApplicationController
-  before_filter :load_platform_with_slug
+class Client::PartsController < Client::BaseController
+  before_filter :load_platform
   before_filter :load_part, only: [:show, :embed]
   load_resource except: [:index]
-  layout 'group_shared'
 
   def index
-    title "Parts for #{@platform.name}"
+    title "Parts"
     meta_desc "Discover all the parts for #{@platform.name} and their related hardware hacks and projects."
     @parts = @platform.parts.paginate(page: safe_page_params)
+    render template: 'parts/index'
   end
 
   def show
@@ -15,12 +15,13 @@ class PartsController < ApplicationController
     meta_desc "Discover hardware hacks and projects made with #{@platform.name} #{@part.name}."
     @part = @part.decorate
     @projects = @part.projects.paginate(page: safe_page_params)
+    render template: 'parts/show'
   end
 
   def embed
     per_page = begin; [Integer(params[:per_page]), Project.per_page].min; rescue; Project.per_page end;  # catches both no and invalid params
     @projects = @part.projects.paginate(per_page: per_page, page: safe_page_params)
-    render layout: 'embed'
+    render template: 'parts/embed', layout: 'embed'
   end
 
   private
@@ -32,8 +33,7 @@ class PartsController < ApplicationController
       end
     end
 
-    def load_platform_with_slug
-      @group = @platform = load_with_slug
-      authorize! :read, @platform
+    def load_platform
+      @group = @platform = current_platform
     end
 end

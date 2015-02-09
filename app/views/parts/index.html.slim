@@ -1,5 +1,5 @@
 - @parts.each do |part|
-  = render part.decorate
+  = render 'parts/part', { part: part.decorate }
 
 .text-center= will_paginate @parts
 

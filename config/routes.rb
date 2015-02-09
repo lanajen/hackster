@@ -279,6 +279,7 @@ HackerIo::Application.routes.draw do
         resources :announcements, except: [:create, :update, :destroy], path: :news
         get 'parts' => 'parts#index'
         get ':part_slug' => 'parts#show', as: :part
+        get ':part_slug/embed' => 'parts#embed', as: :embed_part
       end
     end
 
@@ -388,6 +389,14 @@ HackerIo::Application.routes.draw do
   get 'tags/:tag' => 'search#tags', as: :tags
   get 'tags' => 'search#tags'
 
+  constraints(ClientSite) do
+    scope module: :client, as: :client do
+      get 'parts' => 'parts#index'
+      get ':part_slug' => 'parts#show', as: :part
+      get ':part_slug/embed' => 'parts#embed', as: :embed_part
+    end
+  end
+
   constraints(UserPage) do
     get ':slug' => 'users#show', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
     get ':user_name' => 'users#show', as: :user, user_name: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
@@ -405,7 +414,6 @@ HackerIo::Application.routes.draw do
   end
 
   constraints(ClientSite) do
-
     scope module: :client, as: :client do
       get 'search' => 'search#search'
 
