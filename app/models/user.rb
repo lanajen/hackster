@@ -291,6 +291,11 @@ class User < ActiveRecord::Base
     user_name.present? and invitation_token.nil?
   end
 
+  def accept_invitation!
+    generate_user_name if user_name.blank?
+    super
+  end
+
   def add_confirmed_role
     self.roles = roles << 'confirmed_user'
     save
