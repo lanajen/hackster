@@ -4,8 +4,6 @@ class ProjectWorker < BaseWorker
   def update_platforms id
     return unless project = Project.find_by_id(id)
 
-    project.update_attribute :needs_platform_refresh, false
-
     if project.private?
       project.platforms.delete_all
     else

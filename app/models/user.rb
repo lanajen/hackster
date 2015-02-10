@@ -111,6 +111,7 @@ class User < ActiveRecord::Base
 
   # before_validation :generate_password, if: proc{|u| u.skip_password }
   before_validation :ensure_website_protocol
+  before_validation :generate_user_name, if: proc{|u| u.user_name.blank? and u.new_user_name.blank? }
   before_create :subscribe_to_all, unless: proc{|u| u.invitation_token.present? }
   before_save :ensure_authentication_token
   after_invitation_accepted :invitation_accepted
@@ -195,7 +196,7 @@ class User < ActiveRecord::Base
 
   class << self
     def find_for_oauth provider, auth, resource=nil
-#    Rails.logger.info 'auth: ' + auth.to_yaml
+   # Rails.logger.info 'auth: ' + auth.to_yaml
       case provider
       when 'Facebook'
         uid = auth.uid
@@ -289,6 +290,11 @@ class User < ActiveRecord::Base
 
   def active_profile?
     user_name.present? and invitation_token.nil?
+  end
+
+  def accept_invitation!
+    generate_user_name if user_name.blank?
+    super
   end
 
   def add_confirmed_role
@@ -443,7 +449,7 @@ class User < ActiveRecord::Base
         token: data.credentials.token
       )
     elsif info and provider == 'Google+'
-      self.user_name = clean_user_name(info.nickname) if user_name.blank?
+      self.user_name = clean_user_name(info.email.match(/^([^@]+)@/)[1]) if user_name.blank?
       self.full_name = info.name if full_name.blank?
       self.email = self.email_confirmation = info.email if email.blank?
       self.google_plus_link = info.urls['Google+']

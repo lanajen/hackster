@@ -1,15 +1,17 @@
 = simple_nested_form_for [@platform, @part], html: { class: 'form-horizontal accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
   = f.error_notification
   = f.input :name
+  = f.input :slug, label: 'Name for URL'
   = f.input :description, input_html: { class: 'text-editor', rows: 10 }
   = f.input :product_tags_string, label: 'Tags', hint: "Most useful tags would include technologies like 'Wifi', 'BLE', 'accelerometer'... Please enter each tag separated by commas."
+  = f.input :unit_price, label: 'Suggested retail price, $'
   = f.input :store_link, label: 'Link to store page'
   = f.input :product_page_link, hint: 'If different than the store link', label: 'Link to product page'
   = f.input :documentation_link, label: 'Link to documentation page'
   = f.input :libraries_link, label: 'Link to code libraries page'
   = f.input :datasheet_link, label: 'Link to datasheet'
 
-  = render partial: 'shared/image_form', locals: { file_type: 'image', human_file_type: 'Product shot', image_link: @part.image.try(:file_url, :thumb), help_block: 'Make it look nice!', attribute_type: 'image', image_version: 'thumb', model: 'part' }
+  = render partial: 'shared/image_form', locals: { file_type: 'image', human_file_type: 'Product shot', image_link: @part.image.try(:file_url, :thumb), help_block: 'Make it look nice! PNG with transparent background preferred; JPG/PNG/GIF with white background OK.', attribute_type: 'image', image_version: 'thumb', model: 'part' }
 
   .row
     .col-md-8.col-md-offset-4= f.submit 'Save changes', class: 'btn btn-primary'

@@ -113,14 +113,14 @@
             = link_to image_tag('hwweek/partners/freescale.png'), 'http://www.freescale.com'
             = link_to image_tag('hwweek/partners/udoo.png'), 'http://www.udoo.org'
           .layer
-            = link_to image_tag('hwweek/partners/haxlr8r.jpg'), 'https://www.haxlr8r.com'
+            = link_to image_tag('hwweek/partners/haxlr8r.jpg'), 'http://www.haxlr8r.com'
             = link_to image_tag('hwweek/partners/1b.png'), 'https://firstbuild.com'
             = link_to image_tag('hwweek/partners/spark.png'), 'http://spark.io'
             = link_to image_tag('hwweek/partners/seeed.png'), 'http://www.seeedstudio.com'
           .layer
             = link_to image_tag('hwweek/partners/autodesk.jpg'), 'https://www.autodesk.com'
             = link_to image_tag('hwweek/partners/sparkfun.jpg'), 'https://www.sparkfun.com'
-            = link_to image_tag('hwweek/partners/highway1.jpg'), 'http://www.highway1.com'
+            = link_to image_tag('hwweek/partners/highway1.jpg'), 'http://www.highway1.io'
             = link_to image_tag('hwweek/partners/dragon.png'), 'http://dragoninnovation.com'
           .layer
             = link_to image_tag('hwweek/partners/upverter.png'), 'https://upverter.com'
@@ -131,6 +131,9 @@
             = link_to image_tag('hwweek/partners/relayr.png'), 'https://relayr.io'
             = link_to image_tag('hwweek/partners/adafruit.png'), 'https://www.adafruit.com'
             = link_to image_tag('hwweek/partners/tindie.png'), 'https://www.tindie.com'
+            = link_to image_tag('hwweek/partners/leap.png'), 'https://www.leapmotion.com'
+          .layer
+            = link_to image_tag('hwweek/partners/modutowo.jpg'), 'http://modulowo.com/en'
 
           p.getintouch
             ' Interested in partnering?
@@ -139,7 +142,22 @@
       section#mentors
         .container
           h2.text-center Mentors and Speakers
-          p.text-center style="font-size:1.2em;font-style: italic;" More info soon!
+          .row
+            .col-md-2.col-sm-4.col-md-offset-3
+              a.thumbnail href="https://www.linkedin.com/in/ericklein"
+                = image_tag 'hwweek/guests/erik_klein.jpg'
+                .caption
+                  | Erik Klein
+            .col-md-2.col-sm-4
+              a.thumbnail href="https://www.linkedin.com/in/scottnmiller"
+                = image_tag 'hwweek/guests/scott_miller.jpg', style: 'width: 100%'
+                .caption
+                  | Scott Miller
+            .col-md-2.col-sm-4
+              a.thumbnail href="https://www.linkedin.com/in/bradyforrest"
+                = image_tag 'hwweek/guests/brady_forrest.jpg'
+                .caption
+                  | Brady Forrest
 
           p.getintouch
             ' Interested in being a mentor or speaking at an event?
@@ -285,8 +303,7 @@
                   h4 New York City, NY
                   p May 1-2
             .col-sm-6
-              / a.city-card style="background-image:url('#{asset_url 'hwweek/cities/boston.jpg'}')" href="https://www.eventbrite.com/e/boston-hackster-hardware-weekend-tickets-15427132970" target='_blank'
-              a.city-card data-target="#myModal" data-toggle="modal" style="background-image:url('#{asset_url 'hwweek/cities/boston.jpg'}')" target='_blank'
+              a.city-card style="background-image:url('#{asset_url 'hwweek/cities/boston.jpg'}')" href="https://www.eventbrite.com/e/hackster-hardware-weekend-boston-tickets-15427132970" target='_blank'
                 .caption
                   h4 Boston, MA
                   p May 9-10

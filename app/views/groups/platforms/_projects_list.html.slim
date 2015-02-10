@@ -1,4 +1,4 @@
-.project-list-actions.clearfix.mg-30
+.main-section-actions.clearfix.mg-30
   .pull-right
     - link = user_signed_in? ? new_project_path(project: { platform_tags_string: @platform.name }) : new_user_registration_path(reason: 'project', m: 'group', id: @platform.id, redirect_to: new_project_path(project: { platform_tags_string: @platform.name }))
     ==> link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add a project".html_safe, link, class: 'btn btn-default'
@@ -11,7 +11,7 @@
       button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
         ' Sort by
         span.caret
-      ul.dropdown-menu.pull-right
+      ul.dropdown-menu
         li*{ class: "#{'active' if params[:sort] == 'updated'}" } = link_to 'Last updated', platform_short_path(@platform, sort: 'updated', by: params[:by])
         li*{ class: "#{'active' if params[:sort] == 'magic'}" } = link_to 'Magic', platform_short_path(@platform, sort: 'magic', by: params[:by])
         li*{ class: "#{'active' if params[:sort] == 'popular'}" } = link_to 'Most popular', platform_short_path(@platform, sort: 'popular', by: params[:by])
@@ -22,31 +22,38 @@
       button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
         ' Filter by
         span.caret
-      ul.dropdown-menu.pull-right
+      ul.dropdown-menu
         li*{ class: "#{'active' if params[:by] == nil}" } = link_to 'All', platform_short_path(@platform, sort: params[:sort])
         li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to 'Featured', platform_short_path(@platform, by: 'featured', sort: params[:sort])
         li*{ class: "#{'active' if params[:by] == 'on_hackster'}" } = link_to 'On Hackster', platform_short_path(@platform, by: 'on_hackster', sort: params[:sort])
         li*{ class: "#{'active' if params[:by] == 'wip'}" } = link_to 'Work in progress', platform_short_path(@platform, by: 'wip', sort: params[:sort])
 
+    / .btn-group
+      button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
+        ' Filter by part
+        span.caret
+      ul.dropdown-menu
+        - @platform.parts.each do |part|
+          li= link_to part.name, part
+
 
 - if @projects.any?
-  .thumb-list
-    .row.project-list
-      - if @platform.accept_project_ideas
-        = render partial: 'groups/platforms/submit_idea', locals: { platform: @platform }
-      - @projects.each do |col|
-        = render partial: 'projects/project_thumb', locals: { project: col.project }
-        - if can? :manage, @group
+  .row.project-list
+    - if @platform.accept_project_ideas
+      = render partial: 'groups/platforms/submit_idea', locals: { platform: @platform }
+    - @projects.each do |col|
+      = render partial: 'projects/project_thumb', locals: { project: col.project }
+      - if can? :manage, @group
+        = content_for :js do
+          javascript:
+            text = "#{escape_javascript render(partial: 'groups/platforms/button_featured', locals: { col: col } )}";
+            $(text).appendTo($('.project-#{col.project_id} .project-thumb .award-container'));
+      - else
+        - if col.featured?
           = content_for :js do
             javascript:
-              text = "#{escape_javascript render(partial: 'groups/platforms/button_featured', locals: { col: col } )}";
+              text = "#{escape_javascript render(partial: 'groups/platforms/featured', locals: { project: col.project } )}";
               $(text).appendTo($('.project-#{col.project_id} .project-thumb .award-container'));
-        - else
-          - if col.featured?
-            = content_for :js do
-              javascript:
-                text = "#{escape_javascript render(partial: 'groups/platforms/featured', locals: { project: col.project } )}";
-                $(text).appendTo($('.project-#{col.project_id} .project-thumb .award-container'));
 
   .row.text-center= will_paginate @projects
 - else

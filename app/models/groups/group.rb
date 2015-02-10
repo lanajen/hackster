@@ -64,6 +64,7 @@ class Group < ActiveRecord::Base
   validate :website_format_is_valid
   before_validation :clean_members
   before_validation :ensure_website_protocol
+  after_validation :add_errors_to_user_name
   before_save :ensure_invitation_token
 
   # beginning of shared search methods
@@ -168,6 +169,12 @@ class Group < ActiveRecord::Base
   end
 
   private
+    def add_errors_to_user_name
+      if errors[:new_user_name]
+        errors[:new_user_name].each{|e| errors.add :user_name, e }
+      end
+    end
+
     def clean_members
       members.each do |member|
         members.delete(member) if member.new_record? and member.user.nil?

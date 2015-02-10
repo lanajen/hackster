@@ -1,0 +1,31 @@
+.part-thumb {
+  margin-bottom: 50px;
+  h3 {
+    margin: 0 0 20px;
+    font-size: 1.3em;
+    font-weight: bold;
+    text-align: center;
+    a {
+      color: #4d4d4d;
+    }
+  }
+  ul {
+    font-size: 0.85em;
+    margin-left: -8px;
+    li {
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+  }
+  .image {
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .part-thumb {
+    .image, .action-buttons {
+      margin-bottom: 20px;
+    }
+  }
+}

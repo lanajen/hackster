@@ -1,69 +1,21 @@
-.projects-list
-  .wrapper700
-    = link_to "&larr; Back to projects".html_safe, @platform, class: 'btn btn-link btn-sm btn-block mg-20 hidden-link'
+.wrapper700
+  = link_to "&larr; Back to projects".html_safe, @platform, class: 'btn btn-link btn-sm btn-block mg-20 hidden-link'
 
-    - if @announcements.any?
-      - @announcements.each do |announcement|
-        = render announcement
-        .section-interlude
+  - if @announcements.any?
+    - @announcements.each do |announcement|
+      = render announcement
+      .section-interlude
 
-    - else
-      p
-        | No news yet, check back soon.
+  - else
+    p
+      | No news yet, check back soon.
 
-  / # - if can? :create, @project.build_logs.new
-      .col-xs-4
-        section.section-thumbs
-          h4 Admin actions
-          = link_to 'Post a new build log', new_project_log_path(@project.user_name_for_url, @project.slug), class: 'btn btn-primary btn-sm'
+/ # - if can? :create, @project.build_logs.new
+    .col-xs-4
+      section.section-thumbs
+        h4 Admin actions
+        = link_to 'Post a new build log', new_project_log_path(@project.user_name_for_url, @project.slug), class: 'btn btn-primary btn-sm'
 
-  .row
-    .col-xs-12
-      .text-center= will_paginate @announcements
-
-/ section#projects-list
-  .wrapper700
-    .project-show.platform-news
-      .project-section
-        .section-header
-          h2
-            | #{@platform.name} News
-            - if can? :create, Announcement, @platform
-              .pull-right= link_to 'Post fresh news', new_platform_announcement_path(@platform.user_name), class: 'btn btn-outline'
-
-        .section-content
-          - if @announcements.any?
-            - @announcements.each do |announcement|
-              - announcement = BuildLogDecorator.decorate(announcement)
-              .widget
-                .content
-                  .text-widget
-                    h2
-                      - if announcement.draft?
-                        ==> announcement.title
-                        small.text-muted
-                          | (draft)
-                      - else
-                        = link_to announcement.title, platform_announcement_path(announcement)
-                        - unless announcement.published?
-                          small.text-muted
-                            | (publishes on #{l announcement.published_at})
-                    .h2-subtitle
-                      ' Posted by
-                      ==> link_to announcement.user.name, announcement.user
-                      ==> time_ago_in_words announcement.created_at
-                      ' ago
-                      - unless announcement.draft?
-                        ' -
-                        = link_to pluralize(announcement.comments.size, 'comment'), platform_announcement_path(announcement, anchor: 'comments')
-                    .medium-editor.mg-20= announcement.body
-                    - if announcement.draft?
-                      = link_to 'Edit this announcement &rarr;'.html_safe, edit_platform_announcement_path(@platform.user_name, announcement.id), class: 'btn btn-outline btn-block'
-                    - else
-                      = link_to 'Discuss this announcement &rarr;'.html_safe, platform_announcement_path(announcement, anchor: 'comments'), class: 'btn btn-outline btn-block'
-
-            .text-center= will_paginate @announcements
-
-          - else
-            p
-              | There are no news.
+.row
+  .col-xs-12
+    .text-center= will_paginate @announcements

@@ -37,7 +37,7 @@ class PagesController < ApplicationController
     # @active_projects = Project.last_updated.limit 4
     # @featured_projects = Project.featured.limit 4
     # @wip_projects = Project.wip.limit 4
-    @platforms = Platform.where(user_name: %w(spark delorean metawear tinyduino intel-edison wunderbar)).for_thumb_display.order(:full_name)
+    @platforms = Platform.where(user_name: %w(spark delorean metawear tinycircuits intel-edison wunderbar)).for_thumb_display.order(:full_name)
     @lists = List.where(type: 'List').limit(6).each_slice(3).to_a
 
     @typeahead_tags = List.public.order(:full_name).select{|p| p.projects_count >= 5 }.map do |p|

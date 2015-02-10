@@ -1,0 +1,25 @@
+.part-thumb.box
+  .box-content.row
+    .col-xs-12
+      h3= link_to part.name, part
+
+    .col-md-2.image
+      = image_tag part.image(:headline)
+
+    .col-md-2.col-md-push-8.action-buttons
+      = link_to 'I own it!', 'javascript:alert("Coming soon!");', class: 'btn btn-primary btn-block btn-sm'
+      = link_to pluralize(part.projects_count, 'project'), part, class: 'btn btn-link btn-block btn-sm'
+
+    .col-md-8.col-md-pull-2.description
+      = raw part.description
+      ul.list-inline
+        - if part.store_link.present?
+          li= link_to 'Buy it', part.store_link, target: '_blank'
+        - if part.product_page_link.present?
+          li= link_to 'Official page', part.product_page_link, target: '_blank'
+        - if part.documentation_link.present?
+          li= link_to 'Documentation', part.documentation_link, target: '_blank'
+        - if part.libraries_link.present?
+          li= link_to 'Libraries', part.libraries_link, target: '_blank'
+        - if part.datasheet_link.present?
+          li= link_to 'Datasheet', part.datasheet_link, target: '_blank'

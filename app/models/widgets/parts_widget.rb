@@ -4,7 +4,7 @@ class PartsWidget < Widget
     Widget.model_name
   end
 
-  has_many :part_joins, -> { order position: :asc }, as: :partable
+  has_many :part_joins, -> { order position: :asc }, as: :partable, dependent: :destroy
   has_many :parts, through: :part_joins
 
   define_attributes [:parts_count, :total_cost]

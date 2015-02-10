@@ -1,0 +1,6 @@
+- if @projects.any?
+  .row
+    - @projects.each_with_index do |project, i|
+      = render partial: "projects/project_embed_thumb", locals: { project: project.decorate, ref: 'part', ref_id: @part.id, offset: i }
+- else
+  | All projects made with #{@part.name} will appear here.

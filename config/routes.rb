@@ -26,22 +26,6 @@ HackerIo::Application.routes.draw do
     get 'build' => 'expert_requests#new'
     resources :expert_requests, only: [:create]
 
-    # devise_for :users, controllers: {
-    #   confirmations: 'users/confirmations',
-    #   invitations: 'users/invitations',
-    #   omniauth_callbacks: 'users/omniauth_callbacks',
-    #   sessions: 'users/sessions',
-    #   registrations: 'users/registrations',
-    # }
-
-    # devise_scope :user do
-    #   namespace :users, as: '' do
-    #     patch '/confirm' => 'confirmations#confirm'
-    #     resources :authorizations
-    #     match '/auth/:provider/setup' => 'omniauth_callbacks#setup', via: :get
-    #     resources :simplified_registrations, only: [:create]
-    #   end
-    # end
     post 'pusher/auth' => 'users/pusher_authentications#create'
 
     namespace :admin do
@@ -66,6 +50,11 @@ HackerIo::Application.routes.draw do
       resources :badges, except: [:show, :create]
       resources :blog_posts, except: [:show]
       resources :groups, except: [:show]
+      resources :parts, except: [:show] do
+        get 'duplicates' => 'parts#duplicates', as: 'duplicates', on: :collection
+        get 'merge/new' => 'parts#merge_new', as: 'merge_new', on: :collection
+        post 'merge' => 'parts#update', as: 'merge_into', on: :collection
+      end
       resources :projects, except: [:show]
       resources :users, except: [:show]
 
@@ -85,8 +74,6 @@ HackerIo::Application.routes.draw do
       get 'tags/:tag' => 'posts#index', as: :blog_tag
       get '*slug' => 'posts#show', as: :blog_post, slug: /[a-zA-Z0-9\-\/]+/
     end
-
-    # resources :comments, only: [:edit, :update, :destroy]
 
     # groups
     resources :groups, only: [:edit, :update] do
@@ -151,7 +138,7 @@ HackerIo::Application.routes.draw do
       end
     end
     resources :groups, only: [] do
-      resources :parts, controller: :parts
+      resources :parts, controller: 'groups/parts'
     end
 
     # resources :courses, except: [:show, :update, :destroy]
@@ -194,42 +181,7 @@ HackerIo::Application.routes.draw do
         get 'embed' => 'events#embed'
       end
     end
-
     # end groups
-
-    # resources :files, only: [:create, :show, :destroy] do
-    #   get 'remote_upload' => 'files#check_remote_upload', on: :collection
-    #   post 'remote_upload', on: :collection
-    #   get 'signed_url', on: :collection
-    # end
-    # delete 'notifications' => 'notifications#destroy'
-
-    # resources :projects, except: [:show, :update, :destroy] do
-    #   patch 'submit' => 'projects#submit', on: :member
-    #   get 'settings' => 'projects#settings', on: :member
-    #   patch 'settings' => 'projects#update', on: :member
-    #   post 'claim' => 'projects#claim', on: :member
-    #   get 'last' => 'projects#redirect_to_last', on: :collection
-    #   get '' => 'projects#redirect_to_slug_route', constraints: lambda{|req| req.params[:project_id] != 'new' }
-    #   get 'embed', as: :old_embed
-    #   get 'permissions/edit' => 'permissions#edit', as: :edit_permissions
-    #   patch 'permissions' => 'permissions#update'
-    #   get 'team/edit' => 'members#edit', as: :edit_team
-    #   patch 'team' => 'members#update'
-    #   patch 'guest_name' => 'members#update_guest_name'
-    #   collection do
-    #     resources :imports, only: [:new, :create], controller: :project_imports, as: :project_imports
-    #   end
-    #   resources :comments, only: [:create]
-    #   resources :respects, only: [:create] do
-    #     get 'create' => 'respects#create', on: :collection, as: :create
-    #     delete '' => 'respects#destroy', on: :collection
-    #   end
-    # end
-
-    # get 'projects/e/:user_name/:id' => 'projects#show_external', as: :external_project, id: /[0-9]+\-[A-Za-z0-9\-]+/
-    # delete 'projects/e/:user_name/:id' => 'projects#destroy', id: /[0-9]+\-[A-Za-z0-9\-]+/
-    # get 'projects/e/:user_name/:slug' => 'projects#redirect_external', as: :external_project_redirect  # legacy route (google has indexed them)
 
     resources :assignments, only: [] do
       get 'grades' => 'grades#index', as: :grades
@@ -239,26 +191,11 @@ HackerIo::Application.routes.draw do
     end
     resources :grades, only: [:index]
 
-    # resources :issues, only: [] do
-    #   resources :comments, only: [:create]
-    # end
-
-    # resources :build_logs, only: [:destroy] do
-    #   get '' => 'build_logs#show_redirect', on: :member
-    #   resources :comments, only: [:create]
-    # end
     resources :wiki_pages, only: [:destroy]
 
     resources :announcements, only: [:destroy] do
       resources :comments, only: [:create]
     end
-
-    # resources :followers, only: [:create] do
-    #   collection do
-    #     get 'create' => 'followers#create', as: :create
-    #     delete '' => 'followers#destroy'
-    #   end
-    # end
 
     namespace 'followers' do
       get 'tools/:id' => 'followers#standalone_button', as: :tool
@@ -287,14 +224,9 @@ HackerIo::Application.routes.draw do
       put 'update_workflow' => 'challenges#update_workflow', on: :member
     end
 
-    # resources :messages, as: :conversations, controller: :conversations
-
     resources :skill_requests, path: 'cupidon' do
       resources :comments, only: [:create]
     end
-
-    # get 'users/registration/complete_profile' => 'users#after_registration', as: :user_after_registration
-    # patch 'users/registration/complete_profile' => 'users#after_registration_save'
 
     # dragon
     get 'partners' => 'partners#index'
@@ -345,22 +277,14 @@ HackerIo::Application.routes.draw do
         get 'analytics' => 'platforms#analytics'
         get 'chat' => 'chat_messages#index'
         resources :announcements, except: [:create, :update, :destroy], path: :news
+        get 'parts' => 'parts#index'
+        get ':part_slug' => 'parts#show', as: :part
+        get ':part_slug/embed' => 'parts#embed', as: :embed_part
       end
     end
-    # constraints(UserPage) do
-    #   get ':slug' => 'users#show', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
-    #   get ':user_name' => 'users#show', as: :user, user_name: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
-    # end
 
-    # scope ':user_name/:project_slug', as: :project, user_name: /[A-Za-z0-9_\-]{3,}/, project_slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|js)/ } do
-    #   get '' => 'projects#show', as: ''
-    #   delete '' => 'projects#destroy'
-    #   patch '' => 'projects#update'
-    #   get 'embed' => 'projects#embed', as: :embed
-    #   resources :issues do
-    #     patch 'update_workflow', on: :member
-    #   end
-    #   resources :logs, controller: :build_logs
+    # constraints(PartPage) do
+    #   get ':slug' => 'platforms#show', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|atom|rss)/ }
     # end
 
     # root to: 'pages#home'
@@ -465,6 +389,14 @@ HackerIo::Application.routes.draw do
   get 'tags/:tag' => 'search#tags', as: :tags
   get 'tags' => 'search#tags'
 
+  constraints(ClientSite) do
+    scope module: :client, as: :client do
+      get 'parts' => 'parts#index'
+      get ':part_slug' => 'parts#show', as: :part
+      get ':part_slug/embed' => 'parts#embed', as: :embed_part
+    end
+  end
+
   constraints(UserPage) do
     get ':slug' => 'users#show', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
     get ':user_name' => 'users#show', as: :user, user_name: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
@@ -482,7 +414,6 @@ HackerIo::Application.routes.draw do
   end
 
   constraints(ClientSite) do
-
     scope module: :client, as: :client do
       get 'search' => 'search#search'
 
