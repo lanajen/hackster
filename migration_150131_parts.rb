@@ -22,6 +22,7 @@ Part.order(:id).find_each do |part|
 end
 
 
+Part.where("parts.name = concat(parts.description,' ',parts.description)").update_all("name = description")
 
 # below is just draft notes for the digikey import
 
@@ -54,4 +55,33 @@ parts.each do |part|
   #rescue => e
    # errors << [part, e]
   end
+end
+
+
+
+
+Part.where.not(platform_id: nil).each do |orig|
+  Part.where(name: orig.name).where(platform_id: nil).each do |part|
+    part.part_joins.update_all(part_id: orig.id)
+  end
+end
+
+
+parts = []
+Part.where.not(workflow_state: :approved).where(platform_id: nil).joins("left join part_joins on part_joins.part_id = parts.id").each do |part|
+  if part.part_joins.empty? or part.part_joins.map{|p| p.partable }.compact.empty?
+    part.update_column :workflow_state, :rejected
+  end
+end
+
+Part.where("(name = '' or name is null) and (description = '' or description is null)").update_all(workflow_state: :rejected)
+
+js = []
+PartJoin.all.each do |j|
+  # j.destroy unless j.partable
+  js << j unless j.part
+end
+
+PartJoin.group(:part_id, :partable_type, :partable_id).having("count(*) > 1").order("count_all desc").count.each do |a,c|
+  PartJoin.where("part_id = ? AND partable_type = ? AND partable_id = ?", *a).first.destroy
 end
