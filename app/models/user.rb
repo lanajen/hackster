@@ -111,6 +111,7 @@ class User < ActiveRecord::Base
 
   # before_validation :generate_password, if: proc{|u| u.skip_password }
   before_validation :ensure_website_protocol
+  before_validation :generate_user_name, if: proc{|u| u.user_name.blank? and u.new_user_name.blank? }
   before_create :subscribe_to_all, unless: proc{|u| u.invitation_token.present? }
   before_save :ensure_authentication_token
   after_invitation_accepted :invitation_accepted
