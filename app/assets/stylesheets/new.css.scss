@@ -82,12 +82,12 @@ h1 {
 .view-all-header {
   margin-bottom: 20px;
   h4 {
-    margin: 0;
+    margin: 0 0 30px;
   }
 }
 .showcase-section {
-  padding: 50px 0 20px;
-  // border-bottom: 1px solid #ddd;
+  padding: 50px 0;
+  border-bottom: 1px solid #ddd;
   &.last {
     border-bottom: 0;
   }
@@ -97,7 +97,7 @@ h1 {
   background: #ffffff;
   padding: 15px 0;
   line-height: 28px;
-  border-top: 1px solid #ddd;
+  // border-top: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
   img {
     margin-right: 5px;
@@ -369,7 +369,7 @@ h1 {
 
 .platform-thumb {
   .thumb-image {
-    background: no-repeat center -50px;
+    background-position: center -50px;
   }
   .thumb-image-inner {
     height: 100%;

@@ -30,15 +30,15 @@ class PagesController < ApplicationController
   end
 
   def home
-    limit = 6
+    limit = 3
 
     @trending_projects = Project.indexable.magic_sort.for_thumb_display.limit limit
     @latest_projects = Project.indexable.last_public.for_thumb_display.limit limit
     # @active_projects = Project.last_updated.limit 4
     # @featured_projects = Project.featured.limit 4
     # @wip_projects = Project.wip.limit 4
-    @platforms = Platform.where(user_name: %w(spark delorean metawear tinycircuits intel-edison wunderbar)).for_thumb_display.order(:full_name)
-    @lists = List.where(type: 'List').limit(6).each_slice(3).to_a
+    @platforms = Platform.where(user_name: %w(spark delorean metawear tinycircuits intel-edison wunderbar)).for_thumb_display.order(:full_name).limit(3)
+    @lists = List.where(user_name: %w(home-automation blinky-lights lights wearables creature-feature remote-control displays)).limit(6).each_slice(3).to_a
 
     @typeahead_tags = List.public.order(:full_name).select{|p| p.projects_count >= 5 }.map do |p|
       { tag: p.name, projects: p.projects_count, url: url_for([p, only_path: true]) }

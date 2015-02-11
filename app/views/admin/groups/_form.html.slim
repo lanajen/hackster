@@ -22,6 +22,7 @@
 - when 'Promotion'
   = f.association :course, collection: Course.all
 - when 'Platform'
+  = f.input :product_tags_string
   = f.input :platform_tags_string
   = render partial: 'shared/image_form', locals: { file_type: 'document', human_file_type: 'Cover image', image_link: @group.cover_image.try(:file_url), help_block: 'A high quality picture of your product, at least 1200px wide and 400px high.', attribute_type: 'cover_image', image_version: nil, model: 'group' }
 
