@@ -1,4 +1,6 @@
 class Platform < List
+  include Taggable
+
   MODERATION_LEVELS = {
     'Approve all automatically' => 'auto',
     'Only projects approved by the Hackster team' => 'hackster',
@@ -38,7 +40,7 @@ class Platform < List
   parse_as_booleans :properties, :accept_project_ideas, :active_challenge,
     :is_new, :enable_comments, :hidden
 
-  taggable :platform_tags
+  taggable :platform_tags, :product_tags
 
   # beginning of search methods
   tire do
