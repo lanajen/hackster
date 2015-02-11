@@ -25,6 +25,8 @@ class User < ActiveRecord::Base
     'new_message' => 'I receive a new private message',
   }
   CATEGORIES = %w()
+  USER_NAME_WORDS_LIST1 = %w(acid ada agent alien chell colossus crash cyborg doc ender enigma hal isambard jarvis kaneda leela morpheus neo nikola oracle phantom radio silicon sim starbuck straylight synergy tank tetsuo trinity zero)
+  USER_NAME_WORDS_LIST2 = %w(algorithm blue brunel burn clone cool core curie davinci deckard driver energy fett flynn formula gibson glitch grid hawking jaunte newton overdrive override phreak plasma ripley skywalker tesla titanium uhura wiggin)
 
   editable_slug :user_name
 
@@ -111,7 +113,7 @@ class User < ActiveRecord::Base
 
   # before_validation :generate_password, if: proc{|u| u.skip_password }
   before_validation :ensure_website_protocol
-  # before_validation :generate_user_name, if: proc{|u| u.user_name.blank? and u.new_user_name.blank? }
+  before_validation :generate_user_name, if: proc{|u| u.user_name.blank? and u.new_user_name.blank? and !u.invited_to_sign_up? }
   before_create :subscribe_to_all, unless: proc{|u| u.invitation_token.present? }
   before_save :ensure_authentication_token
   after_invitation_accepted :invitation_accepted
@@ -512,7 +514,7 @@ class User < ActiveRecord::Base
       )
     end
 #          logger.info 'auth: ' + self.authorizations.inspect
-    generate_user_name if user_name.blank? or self.class.where(user_name: user_name).any?
+    generate_user_name if self.class.where(user_name: user_name).any?
     self.password = Devise.friendly_token[0,20]
     self.logging_in_socially = true
   end
@@ -530,7 +532,15 @@ class User < ActiveRecord::Base
   end
 
   def generate_user_name
-    self.user_name = default_user_name
+    random_user_name = self.class.generate_random_user_name
+
+    count = self.class.where("users.user_name ILIKE '#{random_user_name}-%'").count
+
+    self.user_name = "#{random_user_name}-#{count + 1}"
+  end
+
+  def self.generate_random_user_name
+    "#{USER_NAME_WORDS_LIST1.sample}-#{USER_NAME_WORDS_LIST2.sample}"
   end
 
   def has_notifications?

@@ -7,12 +7,6 @@ class UserObserver < ActiveRecord::Observer
     end
   end
 
-  def after_create record
-    unless record.invited_to_sign_up?
-      record.update_column :user_name, record.generate_user_name
-    end
-  end
-
   def after_destroy record
     Broadcast.where(context_model_id: record.id, context_model_type: 'User').destroy_all
     Broadcast.where(broadcastable_id: record.id, broadcastable_type: 'User').destroy_all
@@ -25,7 +19,7 @@ class UserObserver < ActiveRecord::Observer
       { context_type: :inviter, context_id: record.id }
     record.build_reputation unless record.reputation
     record.update_column :invitation_token, nil if record.invitation_token.present?
-    record.subscribe_to_all && record.generate_user_name && record.save
+    record.subscribe_to_all && record.save
 
     invite = record.find_invite_request
     if invite and project = invite.project
