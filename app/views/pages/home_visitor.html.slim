@@ -163,7 +163,7 @@
         .col-md-4.col-md-offset-1
           .pull-right-desktop= render 'shared/mailchimp_form'
 
-    section#trending-projects.showcase-section.middle-section
+    section#trending-projects.showcase-section
       .container
         .view-all-header.clearfix
           h4.text-center Find cool projects you can make yourself
@@ -192,6 +192,35 @@
                       .thumb-image-inner
                         h4
                           = link_to list.name, list
+
+    / section#trending-projects.showcase-section
+      .container
+        .view-all-header.clearfix
+          h4.text-center Join some of the best hardware hackers
+
+        .row.mobile-scroll-row
+          - 2.times do
+            .col-md-6
+              .row
+                - User.invitation_accepted_or_not_invited.limit(3).each do |user|
+                  = render partial: 'users/user_thumb_mini', locals: { user: user }
+
+        .text-center
+          = link_to 'Browse top hackers &rarr;'.html_safe, hackers_path, class: 'btn btn-default btn-sm hidden-xs'
+          = link_to 'Browse top hackers &rarr;'.html_safe, hackers_path, class: 'btn btn-default btn-sm visible-xs-block'
+
+    / section#trending-projects.showcase-section
+      .container
+        .view-all-header.clearfix
+          h4.text-center And even more ways to connect with fellow hackers
+
+        .row.mobile-scroll-row
+          - @trending_projects.each do |project|
+            = render partial: 'projects/project_thumb', locals: { project: project }
+
+        .text-center
+          = link_to 'Learn more about communities &rarr;'.html_safe, '', class: 'btn btn-default btn-sm hidden-xs'
+          = link_to 'Learn more about communities &rarr;'.html_safe, '', class: 'btn btn-default btn-sm visible-xs-block'
 
     section#signup-now-pretty-please
       .container.text-center
