@@ -177,7 +177,7 @@ class PlatformsController < ApplicationController
       sort = if params[:sort] and params[:sort].in? Project::SORTING.keys
         params[:sort]
       else
-        params[:sort] = 'magic'
+        params[:sort] = @platform.project_sorting.presence || 'magic'
       end
       @by = params[:by] || 'all'
 

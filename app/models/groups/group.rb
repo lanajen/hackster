@@ -4,6 +4,12 @@ class Group < ActiveRecord::Base
     'Anyone can request access' => 'request',
     'Only people who are explicitely invited' => 'invite',
   }
+  PROJECT_SORTING = {
+    'Magic (most popular first)' => 'magic',
+    'Most impressions first' => 'popular',
+    'Most recent first' => 'recent',
+    'Most respects first' => 'respected',
+  }
   SORTING = {
     'followers' => :most_members,
     'members' => :most_members,
@@ -42,7 +48,7 @@ class Group < ActiveRecord::Base
     :blog_link, :github_link, :email, :mini_resume, :city, :country,
     :user_name, :full_name, :members_attributes, :avatar_id,
     :permissions_attributes, :google_plus_link, :youtube_link, :access_level,
-    :hidden, :slack_token, :slack_hook_url, :cover_image_id
+    :hidden, :slack_token, :slack_hook_url, :cover_image_id, :project_sorting
 
   accepts_nested_attributes_for :avatar, :members, :permissions,
     allow_destroy: true
@@ -52,7 +58,7 @@ class Group < ActiveRecord::Base
   set_changes_for_stored_attributes :websites
 
   store :properties, accessors: [:hidden, :slack_token,
-    :slack_hook_url]
+    :slack_hook_url, :default_project_sorting]
   set_changes_for_stored_attributes :properties
 
   parse_as_booleans :properties, :hidden
@@ -78,6 +84,10 @@ class Group < ActiveRecord::Base
 
   def self.default_permission
     'read'
+  end
+
+  def self.default_project_sorting
+    'magic'
   end
 
   def self.alphabetical_sorting
@@ -109,6 +119,14 @@ class Group < ActiveRecord::Base
 
   def cover_image_id=(val)
     self.cover_image = CoverImage.find_by_id(val)
+  end
+
+  def project_sorting
+    default_project_sorting.presence || self.class.default_project_sorting
+  end
+
+  def project_sorting=(val)
+    self.default_project_sorting = val
   end
 
   def generate_user_name

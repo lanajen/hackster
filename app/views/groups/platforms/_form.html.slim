@@ -22,6 +22,7 @@
         = f.input_field :new_user_name
       = f.input :public, inline_label: 'Make the page public', label: false, hint: "Uncheck this box if you want to hide the page everywhere on Hackster.", as: :boolean
       = f.input :moderation_level, hint: "What type of moderation do you want regarding new projects being added to your page?", collection: Platform::MODERATION_LEVELS
+      = f.input :project_sorting, hint: "How should projects be sorted by default?", label: 'Default project sorting order', collection: Group::PROJECT_SORTING
       - if current_user.is? :admin
         = f.input :email
         = f.input :is_new, as: :boolean, inline_label: 'Show as new', label: false
