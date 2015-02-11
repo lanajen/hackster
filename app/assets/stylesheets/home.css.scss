@@ -34,8 +34,168 @@
   display: inline;
 }
 
-#hello-hackster {
+.showcase-section-header {
+  margin-bottom: 20px;
+  h4 {
+    margin: 0 0 30px;
+  }
+}
+
+#home-banner {
+  .slick-slider {
+    margin: 0;
+  }
+  .slick-prev {
+      left: 20px;
+  }
+  .slick-next {
+    right: 20px;
+  }
+  .slick-dots {
+    bottom: 0;
+    li {
+      button {
+        &:before {
+          color: white;
+          text-shadow: black 0 0 20px;
+          font-size: 10px;
+        }
+      }
+      &.slick-active {
+        button {
+          &:before {
+            color: white;
+          }
+        }
+      }
+    }
+  }
+}
+
+.home-slide {
+  @include background-cover;
+  padding: 100px 0;
+  color: #fff;
+  a {
+    color: #fff;
+    text-decoration: underline;
+  }
+  .container {
+    height: 130px;
+  }
+}
+@media (max-width: 768px) {
+  .home-slide {
+    .container {
+      height: 230px;
+    }
+  }
+}
+
+.view-all-header {
+  margin-bottom: 20px;
+  h4 {
+    margin: 0;
+  }
+}
+.showcase-section {
+  padding: 50px 0;
+  border-bottom: 1px solid #ddd;
+  &:last-of-type {
+    border-bottom: 0;
+  }
+}
+
+.subscribe-block {
+  background: #ffffff;
+  padding: 15px 0;
+  line-height: 28px;
+  // border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  img {
+    margin-right: 5px;
+    width: 22px;
+  }
+  .form-inline .form-group {
+    margin-right: 5px;
+  }
+  input[type='email'] {
+    min-width: 200px;
+  }
+}
+
+.carousel-left,
+.carousel-right {
+  position: absolute;
+  top: calc(50% - 15px);
+  font-size: 30px;
+  color: #ccc;
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  outline: 0;
+  &:hover {
+    color: #666;
+  }
+}
+
+.carousel-left {
+  left: -40px;
+}
+.carousel-right {
+  right: -50px;
+}
+.thumbs-carousel {
+  // margin-left: -10px;
+  // margin-right: 0px;
+  margin-bottom: 30px;
+  .slick-slide {
+    // padding-right: 0px;
+    // padding-left: 10px;
+    .thumb {
+      margin-bottom: 0;
+    }
+  }
+}
+
+@media (max-width: 1260px) {
+  .carousel-left {
+    left: 15px;
+  }
+  .carousel-right {
+    right: 15px;
+  }
+  .carousel-left,
+  .carousel-right {
+    top: 0;
+    height: 100%;
+    background: rgba(0,0,0,0.2);
+    padding: 20px 30px;
+    @include transition(background ease 150ms);
+    &:hover {
+      background: rgba(0,0,0,0.5);
+    }
+  }
+}
+
+#hello-hackster,
+#welcome-back {
   background-image: asset-url('home/banner.jpg');
+}
+
+#welcome-back {
+  padding: 60px 0 70px;
+  h1 {
+    margin: 0;
+    text-align: center;
+    font-weight: bold;
+  }
+  .container {
+    height: auto;
+  }
+}
+
+#hello-hackster {
   position: relative;
   padding: 0;
   height: calc(100vh - 60px);

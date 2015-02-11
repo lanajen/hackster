@@ -47,9 +47,9 @@ class User < ActiveRecord::Base
   has_many :follow_relations, dependent: :destroy
   has_many :followed_groups, -> { order('groups.full_name ASC') }, source_type: 'Group', through: :follow_relations, source: :followable
   has_many :followed_lists, -> { order('groups.full_name ASC').where("groups.type = 'List'") }, source_type: 'Group', through: :follow_relations, source: :followable
+  has_many :followed_platforms, -> { order('groups.full_name ASC').where("groups.type = 'Platform'") }, source_type: 'Group', through: :follow_relations, source: :followable
   has_many :followed_projects, source_type: 'Project', through: :follow_relations, source: :followable
   has_many :followed_users, source_type: 'User', through: :follow_relations, source: :followable
-  has_many :followed_platforms, -> { order('groups.full_name ASC').where("groups.type = 'Platform'") }, source_type: 'Group', through: :follow_relations, source: :followable
   has_many :grades, as: :gradable
   has_many :invert_follow_relations, class_name: 'FollowRelation', as: :followable
   has_many :followers, through: :invert_follow_relations, source: :user

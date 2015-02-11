@@ -30,3 +30,6 @@
           li
             span.stat-figure> = number_with_delimiter platform.followers_count
             = pluralize_without_count platform.followers_count, 'follower'
+
+    - if defined?(follow) and follow
+      = render(partial: 'followers/button_short', locals: { followable: platform })

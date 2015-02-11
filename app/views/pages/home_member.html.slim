@@ -1,108 +1,81 @@
 = content_for :head do
   meta(name='robots' content='noindex')
-  = auto_discovery_link_tag :rss, projects_path(format: :rss), title: 'Trending projects - Hackster.io'
-  = auto_discovery_link_tag :atom, projects_path(format: :atom), title: 'Trending projects - Hackster.io'
+  = auto_discovery_link_tag :rss, projects_path(format: :rss, sort: 'recent'), title: 'Last projects - Hackster.io'
+  = auto_discovery_link_tag :atom, projects_path(format: :atom, sort: 'recent'), title: 'Last projects - Hackster.io'
 
 = content_for :no_container do
-  - cache ['home-visitor'], tag: ['home', 'home-visitor'], expires_in: 1.hour do
-    section#hello-hackster
-      .container.text-center
-        h1 The community for hardware hackers.
+  section#home-banner
+    .home-slide#welcome-back
+      .container
+        h1 Welcome to your dashboard!
+
+  - if @follow_relations_count.zero?
+    section#intro.showcase-section
+      .container
         p
-          ' Learn, share, and connect to build better hardware.
-          = link_to 'Learn more.', about_path(ref: 'homeabout'), class: 'alert-link'
+          | This place is all about you and what you care about. To make magic happen, start following platforms, hackers and lists you like.
+        p
+          small
+            ' This is a new feature! Please let us know what you'd like to see by emailing us at
+            = link_to 'hi@hackster.io', 'mailto:hi@hackster.io&subject=Feedback%20for%dashboard'
+            | .
 
-    section#projects.showcase-section
+    section#intro.showcase-section
       .container
         .view-all-header.clearfix
-          h4.pull-left Trending projects
-          = link_to 'View All Projects', '#', class: 'btn btn-default btn-sm pull-right'
+          h4.pull-left Suggested platforms to follow
+          = link_to 'View more platforms', platforms_path, class: 'btn btn-default btn-sm hidden-xs pull-right'
+          = link_to 'View more platforms', platforms_path, class: 'btn btn-default btn-sm visible-xs-block pull-right'
 
-        .row
-          .mobile-scroll-row
-            - 6.times do
-              .col-sm-4.mobile-scroll-row-item
-                .thumb.project-thumb
-                  .thumb-image style="background-image:url(#{ asset_url 'home/img-1.png' })"
-                    .thumb-image-inner
-                      h4
-                        = link_to 'Building a WiFi Outlet', '#'
-                      p
-                        'by
-                        strong
-                          = link_to 'Daniel Nordness', '#', class: 'profile-name'
-                      ul.list-unstyled.project-stats
-                        li
-                          span.stat-figure> 52k
-                          ' views
-                        li
-                          span.stat-figure> 1.5k
-                          ' comments
-                        li
-                          span.stat-figure> 521
-                          ' respects
+        .row.mobile-scroll-row.thumbs-carousel
+          - @platforms.each do |platform|
+            = render partial: 'groups/platforms/platform_thumb', locals: { platform: platform, follow: true }
 
-    section.subscribe-block.clearfix
-      .container
-        = image_tag 'home/envelope.png', width: "22"
-        ' Want fresh news and projects in your inbox every Friday?
-        form.form-inline.pull-right
-          .form-group
-            label.sr-only 'Email address'
-            input type="text" class="form-control input-sm" placeholder="nikola@tesla.com"
-          input type="submit" class="btn btn-primary btn-sm" value='HELL YEAH'
-
-    section#platforms.middle-section.showcase-section
+    section#intro.showcase-section
       .container
         .view-all-header.clearfix
-          h4.pull-left Popular communities
-          = link_to 'View All Communities', '#', class: 'btn btn-default btn-sm pull-right'
+          h4.pull-left Suggested hackers to follow
+          = link_to 'View more hackers', hackers_path, class: 'btn btn-default btn-sm hidden-xs pull-right'
+          = link_to 'View more hackers', hackers_path, class: 'btn btn-default btn-sm visible-xs-block pull-right'
 
-        .row
-          .mobile-scroll-row
-            - 3.times do
-              .col-sm-4.mobile-scroll-row-item
-                .thumb.platform-thumb
-                  .thumb-image style="background-image:url(#{ asset_url 'home/arduino.jpg' })"
-                    / a.thumb-image-link href =''
-                    .thumb-image-inner
-                      h4
-                        = link_to 'Arduino', '#'
-                      ul.list-inline
-                        / li.list-label Good for
-                        li
-                          a.tag href='' Beginners
-                        li
-                          a.tag href='' Wearables
-                        li
-                          a.tag href='' Wifi
-                      ul.list-unstyled.project-stats
-                        li
-                          span.stat-figure> 120
-                          ' projects
-                        li
-                        li
-                          span.stat-figure> 21
-                          ' followers
+        .row.mobile-scroll-row.thumbs-carousel data-slides-count=6
+          - @hackers.each do |user|
+            = render partial: 'users/user_thumb_mini', locals: { user: user, actions: %w(follow), col: 'col-md-2' }
 
-    section#categories.showcase-section
+    section#trending-projects.showcase-section
       .container
         .view-all-header.clearfix
-          h4.pull-left Top categories
-          = link_to 'View All Categories', '#', class: 'btn btn-default btn-sm pull-right'
+          h4.pull-left Not ready to follow yet? Here's the latest projects
+          = link_to 'View more recent projects', projects_path, class: 'btn btn-default btn-sm hidden-xs pull-right'
+          = link_to 'View more projects', projects_path, class: 'btn btn-default btn-sm visible-xs-block pull-right'
 
-        .row
-          .mobile-scroll-row
-            - 6 .times do
-              .col-sm-4.mobile-scroll-row-item
-                .thumb.category-thumb
-                  .thumb-image style="background-image:url(#{ asset_url 'home/img-1.png' })"
-                    .thumb-image-inner
-                      h4
-                        = link_to 'Wifi', '#'
+        .row.mobile-scroll-row.thumbs-carousel
+          - @last_projects.each do |project|
+            = render partial: 'projects/project_thumb', locals: { project: project }
 
-    section#signup-now-pretty-please
-      .container.text-center
-        h1 Become better hardware hacker!
-        p Get inspired by top projects, enter challenges and earn amazing prizes. You will get access to the list of the latest tools and you will be able to participate in the conversations with other hardware experts.
-        p= link_to 'Create free account', '#', class: 'btn btn-primary btn-sm'
+  - else
+    section#intro.showcase-section
+      .container
+        p
+          | This place is all about you and what you care about. To make magic happen, follow platforms, hackers and lists you like.
+        p
+          small
+            ' This is a new feature! Please let us know what you'd like to see by emailing us at
+            = link_to 'hi@hackster.io', 'mailto:hi@hackster.io&subject=Feedback%20for%dashboard'
+            | .
+
+    - @platforms.each do |platform|
+      - projects = platform.projects.where("project_collections.workflow_state IN (?) AND project_collections.created_at > ?", ProjectCollection::VALID_STATES, 7.days.ago).order("project_collections.created_at DESC").limit(3)
+      - if projects.any?
+        section#intro.showcase-section
+          .container
+            .view-all-header.clearfix
+              h4.pull-left
+                ==> image_tag platform.avatar.file_url(:tiny), class: 'img-thumbnail'
+                | Recent projects for #{platform.name}
+              = link_to "View more from #{platform.name}", platform, class: 'btn btn-default btn-sm hidden-xs pull-right'
+              = link_to "View more from #{platform.name}", platform, class: 'btn btn-default btn-sm visible-xs-block pull-right'
+
+            .row.mobile-scroll-row
+              - projects.each do |project|
+                = render partial: 'projects/project_thumb', locals: { project: project }

@@ -16,55 +16,6 @@ h1 {
   font-weight: 300;
 }
 
-#home-banner {
-  .slick-slider {
-    margin: 0;
-  }
-  .slick-prev {
-      left: 20px;
-  }
-  .slick-next {
-    right: 20px;
-  }
-  .slick-dots {
-    bottom: 0;
-    li {
-      button {
-        &:before {
-          color: white;
-          text-shadow: black 0 0 20px;
-          font-size: 10px;
-        }
-      }
-      &.slick-active {
-        button {
-          &:before {
-            color: white;
-          }
-        }
-      }
-    }
-  }
-}
-.home-slide {
-  @include background-cover;
-  padding: 100px 0;
-  color: #fff;
-  a {
-    color: #fff;
-    text-decoration: underline;
-  }
-  .container {
-    height: 130px;
-  }
-}
-@media (max-width: 768px) {
-  .home-slide {
-    .container {
-      height: 230px;
-    }
-  }
-}
 .block-image {
   @include background-cover;
   position: relative;
@@ -77,38 +28,6 @@ h1 {
   bottom: 0;
   left: 0;
   width: 100%;
-}
-
-.view-all-header {
-  margin-bottom: 20px;
-  h4 {
-    margin: 0 0 30px;
-  }
-}
-.showcase-section {
-  padding: 50px 0;
-  border-bottom: 1px solid #ddd;
-  &.last {
-    border-bottom: 0;
-  }
-}
-
-.subscribe-block {
-  background: #ffffff;
-  padding: 15px 0;
-  line-height: 28px;
-  // border-top: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
-  img {
-    margin-right: 5px;
-    width: 22px;
-  }
-  .form-inline .form-group {
-    margin-right: 5px;
-  }
-  input[type='email'] {
-    min-width: 200px;
-  }
 }
 
 .thumb {
@@ -279,7 +198,7 @@ h1 {
   z-index: 1;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 992px) {
   .mobile-scroll-row {
     white-space: nowrap;
     overflow-y: hidden;
@@ -295,12 +214,6 @@ h1 {
     padding-right: 0px;
     float: none;
     padding-left: 10px;
-    &.col-xs-4 {
-      width: 32.333333%;
-    }
-    &.col-xs-6 {
-      width: 49%;
-    }
     // &:first-child {
     //   margin-left: 0px;
     // }
@@ -312,6 +225,17 @@ h1 {
     }
     &:last-child {
       margin-right: 0;
+    }
+  }
+}
+
+@media (min-width: 768px) and (max-width: 992px) {
+  .mobile-scroll-row .mobile-scroll-row-item {
+    &.col-sm-4 {
+      width: 32.333333%;
+    }
+    &.col-sm-6 {
+      width: 49%;
     }
   }
 }

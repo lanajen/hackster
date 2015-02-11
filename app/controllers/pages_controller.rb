@@ -30,32 +30,36 @@ class PagesController < ApplicationController
   end
 
   def home
-    limit = 3
+    if user_signed_in?
+      @last_projects = Project.indexable.last_public.for_thumb_display.limit 12
+      @follow_relations_count = current_user.follow_relations.count
+      if @follow_relations_count.zero?
+        @platforms = Platform.most_members.limit(12)
+        @hackers = User.top.limit(24)
+      else
+        @platforms = current_user.followed_platforms
+      end
+      render 'home_member'
+    else
+      @trending_projects = Project.indexable.magic_sort.for_thumb_display.limit 12
+      @platforms = Platform.where(user_name: %w(spark delorean metawear tinycircuits intel-edison wunderbar)).for_thumb_display.order(:full_name)
+      @lists = List.where(user_name: %w(home-automation blinky-lights lights wearables creature-feature remote-control displays)).limit(6).each_slice(3).to_a
 
-    @trending_projects = Project.indexable.magic_sort.for_thumb_display.limit limit
-    @latest_projects = Project.indexable.last_public.for_thumb_display.limit limit
-    # @active_projects = Project.last_updated.limit 4
-    # @featured_projects = Project.featured.limit 4
-    # @wip_projects = Project.wip.limit 4
-    @platforms = Platform.where(user_name: %w(spark delorean metawear tinycircuits intel-edison wunderbar)).for_thumb_display.order(:full_name).limit(3)
-    @lists = List.where(user_name: %w(home-automation blinky-lights lights wearables creature-feature remote-control displays)).limit(6).each_slice(3).to_a
-
-    @typeahead_tags = List.public.order(:full_name).select{|p| p.projects_count >= 5 }.map do |p|
-      { tag: p.name, projects: p.projects_count, url: url_for([p, only_path: true]) }
+      @typeahead_tags = List.public.order(:full_name).select{|p| p.projects_count >= 5 or p.followers_count >= 10 }.map do |p|
+        { tag: p.name, projects: p.projects_count, url: url_for([p, only_path: true]) }
+      end
+      @suggestions = {
+        'Arduino' => '/arduino',
+        'Spark Core' => '/spark',
+        'Home automation' => '/l/home-automation',
+        'Blinky lights' => '/l/blinky-lights',
+        'Raspberry Pi' => '/raspberry-pi',
+        'Wearables' => '/l/wearables',
+        'Intel Edison' => '/intel-edison',
+        'Pets' => '/l/creature-feature',
+      }
+      render 'home_visitor'
     end
-    @suggestions = {
-      'Arduino' => '/arduino',
-      'Spark Core' => '/spark',
-      'Home automation' => '/l/home-automation',
-      'Blinky lights' => '/l/blinky-lights',
-      'Raspberry Pi' => '/raspberry-pi',
-      'Wearables' => '/l/wearables',
-      'Intel Edison' => '/intel-edison',
-      'Pets' => '/l/creature-feature',
-    }
-
-    # render (user_signed_in? ? 'home_member' : 'home_visitor')
-    render 'home_visitor'
 
     # track_event 'Visited home page'
   end

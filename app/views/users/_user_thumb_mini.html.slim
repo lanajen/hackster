@@ -1,10 +1,17 @@
 - user = user.decorate
-.col-xs-6.col-md-4.mobile-scroll-row-item
+- defined_actions = { 'follow' => render(partial: 'followers/button_short', locals: { followable: user }), 'contact' => link_to('Contact', new_conversation_path(recipient_id: user.id), class: 'btn btn-default btn-sm btn-block btn-append btn-short') }
+- actions = (defined?(actions) and actions) ? actions : %w(follow contact)
+- col = (defined?(col) and col) ? col : 'col-xs-6 col-md-4'
+
+.mobile-scroll-row-item class=col
   .mini-thumb.thumb
     .mini-thumb-image.thumb-image.has-link-overlay style="background-image: url('#{user.avatar(:big)}');"
       = link_to '', user, class: 'link-overlay'
       .mini-thumb-image-inner.thumb-image-inner
         h5= link_to user.name, user
-    .btn-append-sandwich
-      = render partial: 'followers/button_short', locals: { followable: user }
-      = link_to 'Contact', new_conversation_path(recipient_id: user.id), class: 'btn btn-default btn-sm btn-block btn-append btn-short'
+    - if actions.size > 1
+      .btn-append-sandwich
+        - actions.each do |action|
+          = defined_actions[action]
+    - else
+      = defined_actions[actions[0]]

@@ -23,6 +23,7 @@
 //= require badges
 //= require all
 //= require mobile
+//= require home
 //= require ilightbox/jquery.mousewheel
 //= require ilightbox/ilightbox.packed
 //= require jquery.ui.widget
