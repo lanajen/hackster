@@ -512,7 +512,7 @@ class User < ActiveRecord::Base
       )
     end
 #          logger.info 'auth: ' + self.authorizations.inspect
-    generate_user_name if user_name.blank?
+    generate_user_name if user_name.blank? or self.class.where(user_name: user_name).any?
     self.password = Devise.friendly_token[0,20]
     self.logging_in_socially = true
   end
