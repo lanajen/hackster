@@ -302,6 +302,9 @@ HackerIo::Application.routes.draw do
         get :autocomplete, on: :collection
       end
       resources :platforms, only: [:show]
+      resources :users, only: [] do
+        get :autocomplete, on: :collection
+      end
       resources :widgets, only: [:destroy, :update, :create]
       match "*all" => "base#cors_preflight_check", via: :options
     end
