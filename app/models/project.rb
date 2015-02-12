@@ -281,6 +281,10 @@ class Project < ActiveRecord::Base
     }
   end
 
+  def cover_image
+    @cover_image ||= CoverImage.where(attachable_type: 'Project', attachable_id: id).order(created_at: :desc).first
+  end
+
   def cover_image_id=(val)
     self.cover_image = CoverImage.find_by_id(val)
   end
