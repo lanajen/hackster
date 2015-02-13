@@ -77,11 +77,17 @@ class UserObserver < ActiveRecord::Observer
 
   private
     def advertise_new_user record
+      send_zapier record.email
       record.broadcast :new, record.id, 'User'
       BaseMailer.enqueue_email 'registration_confirmation',
         { context_type: :user, context_id: record.id } unless record.skip_registration_confirmation
     end
 
     def expire record
+    end
+
+    def send_zapier email
+      time = Random.rand(3..24).hours.from_now + 17.minutes + 48.seconds
+      ZapierQueue.perform_at time, email
     end
 end
