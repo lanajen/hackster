@@ -65,6 +65,7 @@ class ProjectScraper
       'medium.com' => :medium,
       'pubnub.com' => :pubnub,
       'seeedstudio.com' => :seeed,
+      'e2e.ti.com' => :tie2e,
       'udoo.org' => :udoo,
       'wordpress.com' => :wordpress,
     }
