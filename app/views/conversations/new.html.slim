@@ -11,6 +11,11 @@
         ' New message to
         b= @recipient.name
     .box-content
+      p.small.text-center.text-muted.mg-20
+        strong> Tip:
+        ' Did you
+        = link_to 'fill out your profile', profile_edit_path
+        | ? Think of the person on the other side, it's always nicer when you know who you're talking to.
       = simple_form_for @conversation do |f|
         = f.input :recipient_id, as: :hidden
         = f.input :subject, label: false, placeholder: 'Subject'
