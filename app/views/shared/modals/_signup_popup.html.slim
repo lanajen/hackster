@@ -1,9 +1,9 @@
-#signup-popup.popup-overlay
+#signup-popup.popup-overlay.modal-popup.modal-show.modal-remove
   .popup-overlay-bg
   .popup-overlay-outer
     .popup-overlay-inner
-      button.close  onclick="closePopup('.popup-overlay');"   &times;
-      h2
+      button.close data-target='#signup-popup' &times;
+      h3
         | Hackster.io is a community
         br
         | for hardware hackers.
@@ -27,11 +27,3 @@
           ==> link_to 'Prefer connecting using your social account?', new_user_registration_path(highlight: 'connect')
           ' Already have an account?
           = link_to 'Sign in', new_user_session_path
-
-= content_for :js do
-  javascript:
-    $(document).ready(function(){
-      window.setTimeout(function(){
-        $('#signup-popup').fadeIn(600);
-      }, 1000);
-    });

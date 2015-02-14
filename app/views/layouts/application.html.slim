@@ -68,10 +68,8 @@ html(lang="en")
               ' Haven't received such email?
               = link_to 'Resend confirmation email', new_user_confirmation_path, class: 'alert-link'
 
-        - if @show_signup_popup
-          = render 'shared/signup_popup'
         - unless user_signed_in?
-          = render 'shared/simplified_signup_popup'
+          = render 'shared/modals/simplified_signup_popup'
 
         - unless @no_flash
           = bootstrap_flash
@@ -232,8 +230,8 @@ html(lang="en")
       - else
         = link_to 'Sign up / Login', new_user_registration_path, class: 'mo-nav-link', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '#{request.path}']);"
 
-    - if @new_badge and @badge_level
-      = render partial: 'shared/badge_alert', locals: { badge: @new_badge, level: @badge_level }
+    - if @modal
+       = @modal.html_safe
 
     = content_for :js
     - unless is_mobile? or params[:blank_frame]

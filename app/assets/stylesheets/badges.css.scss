@@ -1,34 +1,15 @@
 #badge-alert {
-  .popup-overlay-inner {
-    height: 400px;
-    width: 800px;
-    max-width: 100%;
-    margin-top: -200px;
-    margin-left: -400px;
-    text-align: left;
-    img {
-      width: 200px;
-    }
-    h3 {
-      font-size: 100px;
-      line-height: 1;
-      margin-bottom: 20px;
-    }
-    h4 {
-      font-size: 30px;
-    }
-    .media-left {
-      padding-right: 30px;
-    }
-    p {
-      font-size: 20px;
-      small {
-        font-size: 14px;
-      }
-    }
-    .close {
-      font-size: 40px;
-      color: #fff;
+  text-align: left;
+  img {
+    width: 200px;
+  }
+  .media-left {
+    padding-right: 30px;
+  }
+  p {
+    font-size: 20px;
+    small {
+      font-size: 14px;
     }
   }
 }

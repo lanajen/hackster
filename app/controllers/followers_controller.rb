@@ -6,6 +6,12 @@ class FollowersController < ApplicationController
 
   def create
     FollowRelation.add current_user, @followable
+
+    if @followable.class != User
+      session[:share_modal] = 'followed_share_prompt'
+      session[:share_modal_model] = 'followable'
+    end
+
     respond_to do |format|
       format.html do
         next_url = if @followable == current_platform

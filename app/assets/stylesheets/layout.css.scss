@@ -773,17 +773,6 @@ footer {
   font-size: 0.9em;
 }
 
-// .preview {
-//   padding-top: 20px;
-//   border-top: 1px dashed #E2E2E2;
-//   margin-top: 20px;
-//   &.first {
-//     margin-top: 0;
-//     padding-top: 0;
-//     border-top: none;
-//   }
-// }
-
 .form-search {
   margin: 5px 0 0 50px;
   .btn {
@@ -1015,10 +1004,8 @@ a.hidden-link {
     z-index: 100000000001;
   }
   .popup-overlay-inner {
-    // height: 175px;
-    width: 450px;
-    margin-top: -88px;
-    margin-left: -225px;
+    width: 600px;
+    max-width: 90%;
     top: 50%;
     left: 50%;
     background: #fff;
@@ -1030,16 +1017,32 @@ a.hidden-link {
     &.transparent {
       background: transparent;
       color: #fff;
+      h2, h3, h4, .close {
+        color: #fff;
+      }
     }
   }
-  h2 {
-    color: #333;
-    font-size: 18px;
+  h2, h3, h4 {
+    line-height: 1;
     margin: 0 0 20px;
-    font-weight: 200;
+  }
+  h2 {
+    color: #555;
+    font-size: 2em;
+    font-weight: bold;
+  }
+  h3 {
+    font-size: 1.5em;
+  }
+  .close {
+    font-size: 40px;
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    outline: 0;
   }
   p {
-    font-size: 0.85em;
+    // font-size: 0.85em;
   }
   &.normal-size {
     p {

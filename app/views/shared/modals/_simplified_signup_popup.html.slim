@@ -1,9 +1,9 @@
-#simplified-signup-popup.popup-overlay
+#simplified-signup-popup.popup-overlay.modal-popup data-width='450'
   .popup-overlay-bg
   .popup-overlay-outer
     .popup-overlay-inner
-      button.close  onclick="closePopup('.popup-overlay');"   &times;
-      h2 Please enter your email to continue:
+      button.close data-target='#simplified-signup-popup' &times;
+      h4 Please enter your email to continue:
 
       = simple_form_for User.new, url: simplified_registrations_path, html: { class: 'form-compact disable-on-submit' } do |f|
         input  type='hidden' name='redirect_to'

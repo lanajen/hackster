@@ -11,12 +11,12 @@
       i.fa.fa-shopping-cart>
       | Buy the parts from DigiKey
 
-.popup-overlay id="no-digikey-parts-popup-#{@digikey_id}"
+.popup-overlay.modal-popup id="no-digikey-parts-popup-#{@digikey_id}"
   .popup-overlay-bg
   .popup-overlay-outer
     .popup-overlay-inner
-      button.close  onclick="closePopup('.popup-overlay');"   &times;
-      h2
+      button.close data-close="#no-digikey-parts-popup-#{@digikey_id}"  &times;
+      h3
         | Heads up!
       p Automatic ordering is still an experimental feature, please double check that the components in your cart match the ones in the list!
       - if widget.parts.without_sku.any?
@@ -31,6 +31,6 @@
     javascript:
       $(document).ready(function(){
         $("#digikey-form-#{@digikey_id}").on('submit', function(){
-          $("#no-digikey-parts-popup-#{@digikey_id}").fadeIn(600);
+          openModal("#no-digikey-parts-popup-#{@digikey_id}");
         });
       });
