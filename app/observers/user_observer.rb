@@ -87,7 +87,8 @@ class UserObserver < ActiveRecord::Observer
     end
 
     def send_zapier email
-      time = Random.rand(3..24).hours.from_now + 17.minutes + 48.seconds
+      # between 8am and 8pm tomorrow
+      time = Time.at(DateTime.tomorrow.in_time_zone(PDT_TIME_ZONE).to_time.to_i + rand(8.to_f..20.to_f) * 60 * 60)
       ZapierQueue.perform_at time, 'post', email
     end
 end
