@@ -88,6 +88,6 @@ class UserObserver < ActiveRecord::Observer
 
     def send_zapier email
       time = Random.rand(3..24).hours.from_now + 17.minutes + 48.seconds
-      ZapierQueue.perform_at time, email
+      ZapierQueue.perform_at time, 'post', email
     end
 end
