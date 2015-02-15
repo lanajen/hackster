@@ -90,8 +90,8 @@ class ApplicationController < ActionController::Base
       ActionController::UnknownController,
       AbstractController::ActionNotFound,
       ActiveRecord::RecordNotFound,
-      ActionView::MissingTemplate,
       with: :render_404
+    # rescue_from ActionView::MissingTemplate, with: :render_404_with_error
   end
 
   rescue_from CanCan::AccessDenied do |exception|
@@ -367,7 +367,7 @@ class ApplicationController < ActionController::Base
       return unless is_trackable_page?
       if cookies[:next_show_banner].to_time < Time.now
         # cookies[:first_seen].to_time < 3.days.ago and (cookies[:last_shown_banner].nil? or cookies[:last_shown_banner].to_time < 3.days.ago)
-        @modal = render 'shared/modals/signup_popup'
+        @modal = render_to_string partial: 'shared/modals/signup_popup'
         cookies[:last_shown_banner] = { value: Time.now, expires: 10.years.from_now }
         cookies[:next_show_banner] = 3.days.from_now
         if cookies[:shown_banner_count].present?
