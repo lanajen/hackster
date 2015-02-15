@@ -60,7 +60,7 @@ html(lang="en")
             ' Haven't received such email?
             = link_to 'Resend confirmation email', new_user_confirmation_path, class: 'alert-link'
       - unless user_signed_in?
-        = render 'shared/simplified_signup_popup'
+        = render 'shared/modals/simplified_signup_popup'
 
       / # - cache "platform-#{current_platform.id}-client-nav", tag: ["platform-#{current_platform.id}-client-nav", "platform-client-nav"] do
       - if @custom_header.present?
