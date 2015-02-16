@@ -54,7 +54,7 @@ class ProjectDecorator < ApplicationDecorator
     model.name == Project::DEFAULT_NAME ? nil : model.name
   end
 
-  def to_personnal_message type
+  def to_personnal_message
     "I just published #{model.name} on hackster.io, take a look and tell me what you think!"
   end
 
