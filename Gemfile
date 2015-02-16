@@ -62,7 +62,7 @@ gem 'nested_form', '0.3.2'
 gem 'newrelic_rpm', '3.6.9.171'
 gem 'nokogiri', '1.6.0'
 gem 'omniauth-facebook', '1.5.1'
-gem 'omniauth-github', '1.0.0'
+gem 'omniauth-github', '1.1.2'
 gem 'omniauth-gplus', '1.2.0'
 gem 'omniauth-oauth', '1.0.1'  # for omniauth-twitter
 gem 'omniauth-oauth2', '1.1.1'  # for omniauth-facebook, google, github
