@@ -2,7 +2,7 @@
 
 .mobile-scroll-row-item class=col
   .thumb.event-thumb
-    .thumb-image.has-link-overlay style="background-image:url('#{event.cover_image.try(:file_url, :cover_thumb)}')"
+    .thumb-image.has-link-overlay style="background-image:url('#{event.cover_image(:cover_thumb)}')"
       = link_to '', event, class: 'link-overlay'
       .thumb-image-inner-top
         p.description.show-on-hover
@@ -12,7 +12,7 @@
       .thumb-image-inner
       .thumb-bottom
         a.thumb-bottom-over-top href=url_for(event)
-          = image_tag event.avatar.try(:file_url, :medium)
+          = image_tag event.model.avatar.try(:file_url, :medium)
         h4
           = link_to event.name, event
         ul.list-inline.project-stats

@@ -1,21 +1,22 @@
 - if can? :read, @hackathon
   .row
-    .col-md-8
+    div class=(@hackathon.twitter_widget_id.present? ? 'col-md-8' : 'col-xs-12')
       - if @events.any?
         .row.project-list
           - @events.each do |event|
-            = render partial: 'groups/events/event_thumb', locals: { event: EventDecorator.decorate(event), col: 'col-md-6' }
+            = render partial: 'groups/events/event_thumb', locals: { event: EventDecorator.decorate(event), col: (@hackathon.twitter_widget_id.present? ? 'col-md-6' : nil) }
 
         .row.text-center= will_paginate @events
       - else
         p
           ' There are no planned events yet.
 
-    .col-md-4
-      a class="twitter-timeline" href="https://twitter.com/hashtag/HardwareWeekend" data-widget-id=@hackathon.twitter_widget_id height=600 data-theme='light' data-related='hacksterio'
-        | #HardwareWeekend Tweets
-      javascript:
-        !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+    - if @hackathon.twitter_widget_id.present?
+      .col-md-4
+        a class="twitter-timeline" href="https://twitter.com/hashtag/HardwareWeekend" data-widget-id=@hackathon.twitter_widget_id height=600 data-theme='light' data-related='hacksterio'
+          | Twitter feed
+        javascript:
+          !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
 
 - else
   .alert.alert-warning
