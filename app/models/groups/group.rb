@@ -61,9 +61,7 @@ class Group < ActiveRecord::Base
     :slack_hook_url, :default_project_sorting]
   set_changes_for_stored_attributes :properties
 
-  store :counters_cache, accessors: [:projects_count, :members_count]
-
-  parse_as_integers :counters_cache, :projects_count, :members_count
+  # :projects_count and :members_count are DB columns! don't include them in counters_cache
 
   parse_as_booleans :properties, :hidden
 
