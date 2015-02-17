@@ -39,7 +39,7 @@ class Event < GeographicCommunity
   end
 
   def self.now
-    where("groups.start_date < ? AND groups.end_date > ?", Time.now, Time.now).order(start_date: :asc)
+    where("groups.start_date < ? AND groups.end_date > ?", Time.now, Time.now).order(start_date: :asc, end_date: :desc)
   end
 
   def self.upcoming
