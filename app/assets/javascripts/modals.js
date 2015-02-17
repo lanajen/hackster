@@ -27,7 +27,7 @@ $(function () {
 
   $('body').on('click', '.modal-popup .close', function(e){
     e.preventDefault();
-    var target = $(this).data('target');
+    var target = $(this).data('close');
     closeModal(target);
   });
 

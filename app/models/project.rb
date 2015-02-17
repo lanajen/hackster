@@ -282,7 +282,8 @@ class Project < ActiveRecord::Base
   end
 
   def cover_image
-    @cover_image ||= CoverImage.where(attachable_type: 'Project', attachable_id: id).order(created_at: :desc).first
+    # overloading because projects seem to have multiple cover images (probably because of the way we save them) and which of them is shown is kinda random
+    @cover_image = (persisted? ? CoverImage.where(attachable_type: 'Project', attachable_id: id).order(created_at: :desc).first : super)
   end
 
   def cover_image_id=(val)

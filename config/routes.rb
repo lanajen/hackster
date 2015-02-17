@@ -280,8 +280,8 @@ HackerIo::Application.routes.draw do
         get 'chat' => 'chat_messages#index'
         resources :announcements, except: [:create, :update, :destroy], path: :news
         get 'parts' => 'parts#index'
-        get ':part_slug' => 'parts#show', as: :part
-        get ':part_slug/embed' => 'parts#embed', as: :embed_part
+        get 'parts/:part_slug' => 'parts#show', as: :part
+        get 'parts/:part_slug/embed' => 'parts#embed', as: :embed_part
       end
     end
 
@@ -397,8 +397,8 @@ HackerIo::Application.routes.draw do
   constraints(ClientSite) do
     scope module: :client, as: :client do
       get 'parts' => 'parts#index'
-      get ':part_slug' => 'parts#show', as: :part
-      get ':part_slug/embed' => 'parts#embed', as: :embed_part
+      get 'parts/:part_slug' => 'parts#show', as: :part
+      get 'parts/:part_slug/embed' => 'parts#embed', as: :embed_part
     end
   end
 
