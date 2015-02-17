@@ -88,10 +88,11 @@ class User < ActiveRecord::Base
     :facebook_link, :twitter_link, :linked_in_link, :website_link,
     :blog_link, :github_link, :google_plus_link, :youtube_link, :categories,
     :github_link, :invitation_limit, :email, :mini_resume, :city, :country,
-    :user_name, :full_name, :type, :avatar_id, :subscriptions, :enable_sharing
+    :user_name, :full_name, :type, :avatar_id, :subscriptions, :enable_sharing,
+    :instagram_link, :flickr_link, :reddit_link, :pinterest_link
   accepts_nested_attributes_for :avatar, :projects, allow_destroy: true
 
-  store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link, :website_link, :blog_link, :github_link, :google_plus_link, :youtube_link]
+  store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link, :website_link, :blog_link, :github_link, :google_plus_link, :youtube_link, :instagram_link, :flickr_link, :reddit_link, :pinterest_link]
   set_changes_for_stored_attributes :websites
 
   validates :name, length: { in: 1..200 }, allow_blank: true
