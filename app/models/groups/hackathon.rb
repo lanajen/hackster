@@ -6,7 +6,7 @@ class Hackathon < Community
   store_accessor :properties, :hashtag, :twitter_widget_id
   set_changes_for_stored_attributes :properties
 
-  store_accessor :counters_cache, :events_count
+  store :counters_cache, accessors: [:events_count]
   parse_as_integers :counters_cache, :events_count, :members_count, :projects_count
 
   def closest_event
