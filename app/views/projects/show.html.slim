@@ -353,9 +353,8 @@
                   - if @can_edit
                     = link_to content_tag(:i, '', class: 'fa fa-pencil'), project_edit_team_path(@project), class: 'btn-edit'
 
-                .row.mobile-scroll-row.desktop-tighter-margins
-                  - @project.team_members.each do |member|
-                    = render partial: 'users/member_thumb_mini', locals: { member: member }
+                - @project.team_members.each do |member|
+                  = render partial: 'users/member_thumb_mini', locals: { member: member }
 
             - if @project.credit_lines.any?
               section.section-thumbs

@@ -1,10 +1,23 @@
 - user = member.user.decorate
-.col-xs-6.col-md-4.mobile-scroll-row-item
-  .mini-thumb.thumb*{ data: { title: 'Contribution', content: member.contribution, container: 'body', placement: 'top', trigger: 'hover' }} class="#{'ispopover' if member.contribution.present?}"
-    .mini-thumb-image.thumb-image.has-link-overlay style="background-image: url(#{user.avatar(:big)});"
-      = link_to '', user, class: 'link-overlay'
-      .mini-thumb-image-inner.thumb-image-inner
-        h5= link_to user.name, user
-    .btn-append-sandwich
-      = render partial: 'followers/button_short', locals: { followable: user }
-      = link_to 'Contact', new_conversation_path(recipient_id: user.id), class: 'btn btn-default btn-sm btn-block btn-append btn-short'
+
+.thumb.wide-thumb.clearfix
+  = link_to image_tag(user.avatar(:big), class: 'media-object'), user
+
+  .wide-thumb-body
+    h5
+      ==> link_to user.name, user
+      - if member.contribution.present?
+        small
+          i.fa.fa-info-circle.ispopover*{ data: { title: 'Contribution', content: member.contribution, container: 'body', placement: 'top', trigger: 'hover' }}
+
+    ul.project-stats.list-inline
+      li
+        strong>= number_with_delimiter user.live_projects_count
+        ==> pluralize_without_count user.live_projects_count, 'project'
+      li
+        strong>= number_with_delimiter user.followers_count
+        ==> pluralize_without_count user.followers_count, 'follower'
+
+    .wide-thumb-body-bottom
+      = render partial: 'followers/button_shorter', locals: { followable: user }
+      = link_to 'Contact me', new_conversation_path(recipient_id: user.id), class: 'btn btn-link btn-sm'
