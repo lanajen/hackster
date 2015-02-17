@@ -32,6 +32,7 @@ $(function () {
   });
 
   $('body').on('click', '.modal-open', function(e){
+    e.preventDefault();
     var target = $(this).data('target');
     openModal(target);
   });

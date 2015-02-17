@@ -60,7 +60,7 @@
                 i.fa.fa-chevron-down
                 i.fa.fa-chevron-up
             .section-content
-              = render partial: 'widgets/comments', locals: { comments: @project.comments, commentable: @project }
+              = render partial: 'widgets/comments', locals: { comments: @comments, commentable: @project }
 
         .col-md-4.right-column
           .container-mobile
@@ -114,6 +114,11 @@
                 .row.mobile-scroll-row.desktop-tighter-margins
                   - platforms.each do |platform|
                     = render partial: 'groups/shared/community_thumb_mini', locals: { community: platform }
+
+            - if @project.public? and @respecting_users.count > 0
+              section.section-thumbs
+                h4 Hackers who respect this project
+                #widget-respects= render partial: 'widgets/respect_widget', locals: { users: @respecting_users }
 
             / - if @other_projects_count > 0
               section.section-thumbs

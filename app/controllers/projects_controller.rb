@@ -146,6 +146,15 @@ class ProjectsController < ApplicationController
     impressionist_async @project, '', unique: [:session_hash]
     title @project.name
     meta_desc @project.one_liner
+
+    if is_whitelabel?
+      @comments = @project.comments.joins(:user).where(users: { enable_sharing: true }).includes(:user).includes(:parent).includes(user: :avatar)
+      @respecting_users = @project.respecting_users.where(users: { enable_sharing: true }).includes(:avatar) if @project.public?
+    else
+      @comments = @project.comments.includes(:user).includes(:parent)#.includes(user: :avatar)
+      @respecting_users = @project.respecting_users.includes(:avatar) if @project.public?
+    end
+
     # track_event 'Viewed project', @project.to_tracker.merge({ own: !!current_user.try(:is_team_member?, @project) })
   end
 
