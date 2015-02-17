@@ -60,15 +60,15 @@ class ProjectsController < ApplicationController
     @other_projects_count = @other_projects_count.size
 
     if @other_projects_count > 6
-      @other_projects = Project.public.most_popular.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).where("projects.guest_name = '' OR projects.guest_name IS NULL").includes(:team).includes(:cover_image)
+      @other_projects = Project.public.most_popular.own.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).includes(:team).includes(:cover_image)
       @other_projects.with_group current_platform if is_whitelabel?
       @other_projects = @other_projects.limit(3)
 
-      @last_projects = Project.public.last_public.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: [@project.id] + @other_projects.map(&:id)).where("projects.guest_name = '' OR projects.guest_name IS NULL").includes(:team).includes(:cover_image)
+      @last_projects = Project.public.last_public.own.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: [@project.id] + @other_projects.map(&:id)).includes(:team).includes(:cover_image)
       @last_projects = @last_projects.with_group current_platform if is_whitelabel?
       @last_projects = @last_projects.limit(3)
     else
-      @other_projects = Project.public.most_popular.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).where("projects.guest_name = '' OR projects.guest_name IS NULL").includes(:team).includes(:cover_image)
+      @other_projects = Project.public.most_popular.own.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).includes(:team).includes(:cover_image)
       @other_projects = @other_projects.with_group current_platform if is_whitelabel?
     end
 

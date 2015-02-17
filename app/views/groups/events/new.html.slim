@@ -34,14 +34,14 @@
 
           = f.input :full_name, label: 'Event name'
 
-          = f.input :start_date_dummy, label: 'Starts on', wrapper_html: { id: 'start_date_dummy', class: 'datetimepicker' } do
+          = f.input :start_date_dummy, label: 'Starts on', wrapper_html: { id: 'start_date_dummy', class: 'datetimepicker', autocomplete: 'off' } do
             #datepicker.input-group
               = f.input_field :start_date_dummy, as: :string, label: false
               span.input-group-addon
                 i.fa.fa-calendar
           = f.input :start_date, as: :hidden, input_html: { id: 'start_date' }
 
-          = f.input :end_date_dummy, label: 'Ends on', wrapper_html: { id: 'end_date_dummy', class: 'datetimepicker' } do
+          = f.input :end_date_dummy, label: 'Ends on', wrapper_html: { id: 'end_date_dummy', class: 'datetimepicker', autocomplete: 'off' } do
             #datepicker.input-group
               = f.input_field :end_date_dummy, as: :string, label: false
               span.input-group-addon

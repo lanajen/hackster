@@ -228,6 +228,10 @@ class Project < ActiveRecord::Base
     order('projects.respects_count DESC')
   end
 
+  def self.own
+    where("projects.guest_name = '' OR projects.guest_name IS NULL")
+  end
+
   def self.self_hosted
     where(external: false)
   end
