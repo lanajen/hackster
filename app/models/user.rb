@@ -808,6 +808,10 @@ class User < ActiveRecord::Base
     handle.present? ? "@#{handle}" : nil
   end
 
+  def update_last_seen!
+    update_column :last_seen_at, Time.now
+  end
+
   private
     def clean_user_name user_name
       user_name.try(:downcase).try(:gsub, /[^a-z0-9_\-]/, '')

@@ -14,7 +14,7 @@ class UsersController < ApplicationController
     title @user.name
     meta_desc "#{@user.name} is on #{site_name}. Come share your hardware projects with #{@user.name} and other hardware hackers and makers."
 
-    @public_projects = @user.projects.live.for_thumb_display.order(start_date: :desc, created_at: :desc)
+    @public_projects = @user.projects.live.for_thumb_display.order(start_date: :desc, made_public_at: :desc, created_at: :desc)
     @private_projects = @user.projects.private.for_thumb_display
     @respected_projects = @user.respected_projects.indexable.for_thumb_display
     if current_platform

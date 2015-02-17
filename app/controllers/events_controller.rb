@@ -1,6 +1,7 @@
 class EventsController < ApplicationController
   before_filter :authenticate_user!, except: [:show, :participants, :organizers, :embed]
   before_filter :load_event, only: [:show, :update, :participants, :organizers, :embed]
+  before_filter :load_hackathon, only: [:new, :create]
   layout 'group_shared', only: [:edit, :update, :show, :participants, :organizers]
   after_action :allow_iframe, only: :embed
   respond_to :html
@@ -47,7 +48,7 @@ class EventsController < ApplicationController
   end
 
   def create
-    @event = Event.new(params[:event])
+    @event = @hackathon.events.new(params[:group])
     authorize! :create, @event
 
     admin = @event.members.new(user_id: current_user.id)
@@ -88,4 +89,9 @@ class EventsController < ApplicationController
       end
     end
   end
+
+  private
+    def load_hackathon
+      @hackathon = load_with_user_name Hackathon
+    end
 end

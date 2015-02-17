@@ -13,11 +13,11 @@ class List < Group
   validate :user_name_is_unique
   before_validation :update_user_name, on: :create
 
-  store :counters_cache, accessors: [:external_projects_count,
-    :private_projects_count]
+  store_accessor :counters_cache, :external_projects_count,
+    :private_projects_count
 
   parse_as_integers :counters_cache, :external_projects_count,
-    :private_projects_count
+    :private_projects_count, :projects_count, :members_count
 
   store_accessor :properties, :list_type, :is_new, :enable_comments, :hashtag
   set_changes_for_stored_attributes :properties

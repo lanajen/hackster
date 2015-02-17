@@ -2,11 +2,10 @@ class Community < Group
   include Privatable
 
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'CommunityMember'
-  # has_many :projects, through: :granted_permissions, source: :permissible,
-    # source_type: 'Project'
   validates :user_name, :full_name, presence: true
   validate :user_name_is_unique
   validates :user_name, uniqueness: { scope: [:type, :parent_id] }
+
   before_validation :generate_user_name, on: :create
 
   def self.default_access_level
@@ -19,6 +18,6 @@ class Community < Group
 
   private
     def user_name_is_unique
-      errors.add :new_user_name, 'has already been taken' if self.class.where(type: type, parent_id: parent_id).where("LOWER(groups.user_name) = ?", new_user_name.downcase).where.not(id: id).any?
+      errors.add :new_user_name, 'has already been taken' if new_user_name.present? and self.class.where(type: type, parent_id: parent_id).where("LOWER(groups.user_name) = ?", new_user_name.downcase).where.not(id: id).any?
     end
 end

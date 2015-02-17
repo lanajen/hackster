@@ -1,0 +1,45 @@
+= content_for :head do
+  meta(name="robot" content="noindex nofollow")
+
+.container
+  - if can? :read, @event
+    - if @organizers.any?
+      .row
+        - if @judges.any? or @mentors.any?
+          h3.top.col-xs-12 Organizers
+        <div class="col-md-6"><div class="row">
+        - @organizers.each_with_index do |user, i|
+          - if i != 0 and i % 3 == 0
+            </div></div><div class="col-md-6"><div class="row">
+          = render partial: 'users/user_thumb_mini', locals: { user: user }
+        </div></div>
+    - else
+      p This event has no participants.
+
+    - if @judges.any?
+      .row
+        h3.top.col-xs-12 Judges
+        <div class="col-md-6"><div class="row">
+        - @judges.each_with_index do |user, i|
+          - if i != 0 and i % 3 == 0
+            </div></div><div class="col-md-6"><div class="row">
+          = render partial: 'users/user_thumb_mini', locals: { user: user }
+        </div></div>
+
+    - if @mentors.any?
+      .row
+        h3.top.col-xs-12 Mentors
+        <div class="col-md-6"><div class="row">
+        - @mentors.each_with_index do |user, i|
+          - if i != 0 and i % 3 == 0
+            </div></div><div class="col-md-6"><div class="row">
+          = render partial: 'users/user_thumb_mini', locals: { user: user }
+        </div></div>
+
+  - else
+    .alert.alert-warning
+      | The content of this group is only visible to members.
+      / if @event.access_level == 'anyone'
+        = link_to 'Join', '', class: 'btn btn-warning btn-sm'
+      / elsif @event.access_level == 'request'
+        = link_to 'Request access', '', class: 'btn btn-warning btn-sm'

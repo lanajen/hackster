@@ -1,0 +1,25 @@
+- col = (defined?(col) and col) ? col : 'col-md-4 col-sm-6'
+
+.mobile-scroll-row-item class=col
+  .thumb.event-thumb
+    .thumb-image.has-link-overlay style="background-image:url('#{event.cover_image.try(:file_url, :cover_thumb)}')"
+      = link_to '', event, class: 'link-overlay'
+      .thumb-image-inner-top
+        p.description.show-on-hover
+          strong= event.date_range
+          br
+          = event.mini_resume
+      .thumb-image-inner
+      .thumb-bottom
+        a.thumb-bottom-over-top href=url_for(event)
+          = image_tag event.avatar.try(:file_url, :medium)
+        h4
+          = link_to event.name, event
+        ul.list-inline.project-stats
+          li
+            span.stat-figure> = number_with_delimiter event.projects_count
+            = pluralize_without_count event.projects_count, 'project'
+          li
+          li
+            span.stat-figure> = number_with_delimiter event.participants_count
+            = pluralize_without_count event.participants_count, 'participant'

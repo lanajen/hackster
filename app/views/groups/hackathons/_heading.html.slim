@@ -1,0 +1,16 @@
+h1
+  - if @group.model.respond_to?(:company_logo) and @group.company_logo
+    = image_tag @group.company_logo.try(:file_url), class: 'company-logo'
+  = @group.name
+  - if @group.model.respond_to?(:disclaimer) and @group.disclaimer.present?
+    i.fa.fa-info-circle.istooltip.small< title=@group.disclaimer
+p= @group.mini_resume
+- if @event
+  p.secondary-info
+    - if @event.start_date > Time.now
+      ' Next event:
+    - elsif @event.end_date > Time.now
+      ' Happening now:
+    - else
+      ' Last event:
+    strong= link_to @event.name, @event

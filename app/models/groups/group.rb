@@ -61,6 +61,10 @@ class Group < ActiveRecord::Base
     :slack_hook_url, :default_project_sorting]
   set_changes_for_stored_attributes :properties
 
+  store :counters_cache, accessors: [:projects_count, :members_count]
+
+  parse_as_integers :counters_cache, :projects_count, :members_count
+
   parse_as_booleans :properties, :hidden
 
   validates :user_name, :new_user_name, length: { in: 3..100 },
@@ -129,10 +133,14 @@ class Group < ActiveRecord::Base
     self.default_project_sorting = val
   end
 
+  def default_user_name
+    name.gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
+  end
+
   def generate_user_name
     return if full_name.blank?
 
-    slug = name.gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
+    slug = default_user_name
 
     # make sure it doesn't exist
     if result = self.class.where(user_name: slug).first

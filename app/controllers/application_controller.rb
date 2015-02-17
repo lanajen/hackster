@@ -18,7 +18,7 @@ class ApplicationController < ActionController::Base
 
   protect_from_forgery except: [:not_found]
   before_filter :authenticate_user_from_token!
-  # before_filter :authenticate_user!
+  before_filter :mark_last_seen!
   before_filter :set_new_user_session
   before_filter :store_location_before
   before_filter :track_visitor
@@ -244,6 +244,10 @@ class ApplicationController < ActionController::Base
     def load_with_slug
       slug = SlugHistory.find_by_value!(params[:slug].downcase)
       slug.sluggable
+    end
+
+    def mark_last_seen!
+      current_user.update_last_seen! if user_signed_in?
     end
 
     def track_alias user=nil

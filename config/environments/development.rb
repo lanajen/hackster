@@ -33,13 +33,8 @@ HackerIo::Application.configure do
   config.eager_load = false
 
   config.action_mailer.smtp_settings = {
-    :address              => "smtp.gmail.com",
-    :port                 => 587,
-    :domain               => "localhost.com",
-    :user_name            => "benjamin.larralde@gmail.com",
-    :password             => "sa1pa5$$",
-    :authentication       => "plain",
-    :enable_starttls_auto => true
+    address: 'localhost',
+    port: 1025
   }
 
   config.action_mailer.default_url_options = { :host => 'www.localhost.local:5000' }

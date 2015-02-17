@@ -37,30 +37,24 @@
             .media-body
               / p.text-muted By Spark
               .clearfix
-                - if @group.model.respond_to?(:secondary_name)
-                  h1= @group.proper_name
-                  h2
-                    ==> @group.secondary_name
-                    small
-                      ' on
-                      strong==> @group.date_range
-                      ' in
-                      strong==> @group.short_address
-                - else
+                - begin
+                  = render partial: "groups/#{@group.identifier.pluralize}/heading"
+                - rescue
                   h1
                     - if @group.model.respond_to?(:company_logo) and @group.company_logo
                       = image_tag @group.company_logo.try(:file_url), class: 'company-logo'
                     = @group.name
                     - if @group.model.respond_to?(:disclaimer) and @group.disclaimer.present?
                       i.fa.fa-info-circle.istooltip.small< title=@group.disclaimer
-                / ul.list-inline.tags.pull-left
-                  li
-                    a.tag href='' Beginners
-                  li
-                    a.tag href='' Wearables
-                  li
-                    a.tag href='' Wifi
-              p= @group.mini_resume
+                  / ul.list-inline.tags.pull-left
+                    li
+                      a.tag href='' Beginners
+                    li
+                      a.tag href='' Wearables
+                    li
+                      a.tag href='' Wifi
+                  p= @group.mini_resume
+
               - if @group.model.respond_to?(:show_address) and @group.full_street_address.present?
                 p.secondary-info
                   i.fa.fa-map-marker

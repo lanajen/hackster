@@ -1,0 +1,57 @@
+= content_for :head do
+  = stylesheet_link_tag 'datepicker'
+
+= content_for :js do
+  = javascript_include_tag 'datepicker'
+
+  javascript:
+    $('.datetimepicker').datetimepicker({
+      icons: {
+          time: "fa fa-clock-o",
+          date: "fa fa-calendar",
+          up: "fa fa-arrow-up",
+          down: "fa fa-arrow-down"
+      },
+      sideBySide: true
+    });
+
+    $('#start_date_dummy').on('change', function(){
+      $('#start_date').val($('#start_date_dummy').data("DateTimePicker").getDate());
+    });
+    $('#end_date_dummy').on('change', function(){
+      $('#end_date').val($('#end_date_dummy').data("DateTimePicker").getDate());
+    });
+
+.row
+  .col-xs-12.col-md-offset-2.col-md-8
+    .box
+      .box-title
+        h2 New event for #{@hackathon.name}
+
+      .box-content
+        = simple_nested_form_for @event, url: hackathon_events_path(@hackathon.user_name), html: { class: 'form-horizontal disable-on-submit accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
+          = f.error_notification
+
+          = f.input :full_name, label: 'Event name'
+
+          = f.input :start_date_dummy, label: 'Starts on', wrapper_html: { id: 'start_date_dummy', class: 'datetimepicker' }, hint: "Times are UTC (+00)" do
+            #datepicker.input-group
+              = f.input_field :start_date_dummy, as: :string, label: false
+              span.input-group-addon
+                i.fa.fa-calendar
+          = f.input :start_date, as: :hidden, input_html: { id: 'start_date' }
+
+          = f.input :end_date_dummy, label: 'Ends on', wrapper_html: { id: 'end_date_dummy', class: 'datetimepicker' }, hint: "Times are UTC (+00)" do
+            #datepicker.input-group
+              = f.input_field :end_date_dummy, as: :string, label: false
+              span.input-group-addon
+                i.fa.fa-calendar
+          = f.input :end_date, as: :hidden, input_html: { id: 'end_date' }
+
+          = f.input :city
+          = f.input :state, hint: 'US and Canada only', input_html: { class: 'form-control' }
+          = f.input :country, input_html: { class: 'form-control' }
+
+          .form-group
+            .col-md-8.col-md-offset-4
+              = f.button :submit, 'Go!', class: 'btn-block btn btn-primary'

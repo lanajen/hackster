@@ -165,8 +165,10 @@ HackerIo::Application.routes.draw do
     resources :events, except: [:show, :update, :destroy]
     scope 'hackathons/:user_name', as: :hackathon do
       get '' => 'hackathons#show', as: ''
-      # delete '' => 'hackathons#destroy'
-      # patch '' => 'hackathons#update'
+      delete '' => 'hackathons#destroy'
+      patch '' => 'hackathons#update'
+      get 'events/new' => 'events#new', as: :new_event
+      post 'events' => 'events#create', as: :events
 
       scope ':event_name', as: :event do
         get '' => 'events#show', as: ''

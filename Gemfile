@@ -123,6 +123,7 @@ group :development, :test do
   # gem 'guard-rspec'
   # gem 'guard-spork'
   # gem 'launchy'
+  gem 'mailcatcher'
   gem 'quiet_assets'
   # gem 'spork'
   # gem 'rspec-cells'

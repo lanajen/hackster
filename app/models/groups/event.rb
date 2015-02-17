@@ -15,9 +15,9 @@ class Event < GeographicCommunity
 
   parse_as_integers :counters_cache, :participants_count
 
-  store_accessor :properties, :start_date, :end_date
+  # store_accessor :properties, :start_date, :end_date
 
-  parse_as_datetimes :properties, :start_date, :end_date
+  # parse_as_datetimes :properties, :start_date, :end_date
 
   alias_method :short_name, :name
 
@@ -30,6 +30,16 @@ class Event < GeographicCommunity
       indexes :private,         analyzer: 'keyword'
       indexes :created_at
     end
+  end
+
+  %w(facebook twitter linked_in google_plus github blog website youtube).each do |link|
+    define_method "#{link}_link" do
+      websites["#{link}_link"].presence || hackathon.try("#{link}_link")
+    end
+  end
+
+  def avatar
+    hackathon.try(:avatar)
   end
 
   def to_indexed_json
@@ -50,10 +60,14 @@ class Event < GeographicCommunity
     })
   end
 
+  def default_user_name
+    secondary_name.gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
+  end
+
   def end_date=(val)
     begin
-      date = val.to_datetime.to_i
-      self.properties[:end_date] = date
+      date = val.to_datetime
+      write_attribute :end_date, date
     rescue
     end
   end
@@ -65,6 +79,10 @@ class Event < GeographicCommunity
   # def name
   #   hackathon.name
   # end
+
+  def mini_resume
+    hackathon.try(:mini_resume)
+  end
 
   def name
     "#{hackathon.name} - #{super}"
@@ -80,8 +98,8 @@ class Event < GeographicCommunity
 
   def start_date=(val)
     begin
-      date = val.to_datetime.to_i
-      self.properties[:start_date] = date
+      date = val.to_datetime
+      write_attribute :start_date, date
     rescue
     end
   end
