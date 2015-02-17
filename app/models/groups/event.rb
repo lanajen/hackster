@@ -38,6 +38,18 @@ class Event < GeographicCommunity
     end
   end
 
+  def self.now
+    where("groups.start_date < ? AND groups.end_date > ?", Time.now, Time.now).order(start_date: :asc)
+  end
+
+  def self.upcoming
+    where("groups.start_date > ?", Time.now).order(start_date: :asc)
+  end
+
+  def self.past
+    where("groups.end_date < ?", Time.now).order(start_date: :desc)
+  end
+
   def avatar
     hackathon.try(:avatar)
   end

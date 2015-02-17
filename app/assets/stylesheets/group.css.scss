@@ -215,6 +215,9 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    a {
+      color: #fff;
+    }
   }
   h2 {
     margin: 0 0 5px;

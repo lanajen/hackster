@@ -9,11 +9,14 @@ class HackathonsController < ApplicationController
     meta_desc "Join the event #{@hackathon.name} on Hackster.io!"
 
     # @projects = @hackathon.projects.for_thumb_display.paginate(page: safe_page_params)
-    @events = if can? :manage, @hackathon
-      @hackathon.events.order(start_date: :desc).paginate(page: safe_page_params)
+    @upcoming_events = if can? :manage, @hackathon
+      @hackathon.events
     else
-      @hackathon.events.public.order(start_date: :desc).paginate(page: safe_page_params)
+      @hackathon.events.public
     end
+    @upcoming_events = @upcoming_events.upcoming.paginate(page: safe_page_params)
+    @past_events = @hackathon.events.public.past.paginate(page: safe_page_params)
+    @now_events = @hackathon.events.public.now.paginate(page: safe_page_params)
     @event = @hackathon.closest_event
 
     render "groups/hackathons/show"
