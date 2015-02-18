@@ -35,19 +35,11 @@
             .media-left
               = image_tag @group.avatar(:big), class: 'img-thumbnail'
             .media-body
-              / p.text-muted By Spark
               .clearfix
                 - begin
                   = render partial: "groups/#{@group.identifier.pluralize}/heading"
                 - rescue
                   h1= @group.name
-                  / ul.list-inline.tags.pull-left
-                    li
-                      a.tag href='' Beginners
-                    li
-                      a.tag href='' Wearables
-                    li
-                      a.tag href='' Wifi
                   p= @group.mini_resume
 
               - if @group.model.respond_to?(:show_address) and @group.full_street_address.present?
