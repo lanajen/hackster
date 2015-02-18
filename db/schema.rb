@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150217020128) do
+ActiveRecord::Schema.define(version: 20150218061058) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -581,6 +581,12 @@ ActiveRecord::Schema.define(version: 20150217020128) do
   add_index "threads", ["sub_id", "threadable_id", "threadable_type"], name: "threadable_sub_ids", using: :btree
   add_index "threads", ["threadable_id", "threadable_type"], name: "index_blog_posts_on_bloggable_id_and_bloggable_type", using: :btree
   add_index "threads", ["user_id"], name: "index_blog_posts_on_user_id", using: :btree
+
+  create_table "user_activities", force: true do |t|
+    t.integer  "user_id"
+    t.string   "event"
+    t.datetime "created_at"
+  end
 
   create_table "users", force: true do |t|
     t.string   "user_name",              limit: 100

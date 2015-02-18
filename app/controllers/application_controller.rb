@@ -247,7 +247,7 @@ class ApplicationController < ActionController::Base
     end
 
     def mark_last_seen!
-      current_user.update_last_seen! if user_signed_in?
+      TrackerQueue.perform_async 'mark_last_seen', current_user.id, Time.now.to_i, request.method_symbol if user_signed_in?
     end
 
     def track_alias user=nil

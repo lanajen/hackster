@@ -73,6 +73,7 @@ class User < ActiveRecord::Base
   has_many :team_grades, through: :teams, source: :grades
   has_many :teams, through: :group_ties, source: :group, class_name: 'Team'
   has_many :platforms, -> { order('groups.full_name ASC') }, through: :group_ties, source: :group, class_name: 'Platform'
+  has_many :user_activities
   has_one :avatar, as: :attachable, dependent: :destroy
   has_one :reputation, dependent: :destroy
   has_one :slug, as: :sluggable, dependent: :destroy, class_name: 'SlugHistory'
@@ -805,8 +806,8 @@ class User < ActiveRecord::Base
     handle.present? ? "@#{handle}" : nil
   end
 
-  def update_last_seen!
-    update_column :last_seen_at, Time.now
+  def update_last_seen! time=nil
+    update_column :last_seen_at, time || Time.now
   end
 
   private
