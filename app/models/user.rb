@@ -269,6 +269,10 @@ class User < ActiveRecord::Base
     def invitation_accepted_or_not_invited
       where('users.invitation_token IS NULL')
     end
+
+    def user_name_set
+      where("users.user_name IS NOT NULL AND users.user_name <> ''")
+    end
   end
 
   def self.last_logged_in
