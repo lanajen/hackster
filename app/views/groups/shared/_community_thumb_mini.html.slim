@@ -1,8 +1,19 @@
-.col-xs-6.col-md-4.mobile-scroll-row-item
-  .mini-thumb.thumb
-    .mini-thumb-image.thumb-image.has-link-overlay style="background-image: url(#{community.avatar.try(:file_url, :big)});"
-      = link_to '', community, class: 'link-overlay'
-      .mini-thumb-image-inner.thumb-image-inner
-        h5
-          = link_to community.name, community
-    = render partial: 'followers/button_short', locals: { followable: community }
+- community = community.decorate
+
+.thumb-group
+  .thumb-group-body
+    = link_to image_tag(community.avatar(:big)), community
+
+    h5= link_to community.name, community
+
+      / ul.project-stats.list-inline
+        li
+          strong>= number_with_delimiter community.projects_count
+          ==> pluralize_without_count community.projects_count, 'project'
+        li
+          strong>= number_with_delimiter community.followers_count
+          ==> pluralize_without_count community.followers_count, 'follower'
+
+  .input-group-btn
+    = render partial: 'followers/button_shorter', locals: { followable: community }
+    / # = link_to 'Contact me', new_conversation_path(recipient_id: user.id), class: 'btn btn-link btn-sm'

@@ -86,9 +86,8 @@
                   = link_to content_tag(:i, '', class: 'fa fa-pencil'), project_edit_team_path(@project), class: 'btn-edit'
 
               - if @hide_claim
-                .row.mobile-scroll-row.desktop-tighter-margins
-                  - @project.team_members.each do |member|
-                    = render partial: 'users/member_thumb_mini', locals: { member: member }
+                - @project.team_members.each do |member|
+                  = render partial: 'users/member_thumb_mini', locals: { member: member }
 
               - else
                 - q = @project.guest_name.present? ? "Are you #{content_tag(:span, @project.guest_name, class: 'user-name')}?".html_safe : 'Are you the author of this project?'
@@ -111,9 +110,8 @@
                 h4
                   | Communities this project belongs to
                   /   = link_to content_tag(:i, '', class: 'fa fa-pencil'), '', class: 'btn-edit'
-                .row.mobile-scroll-row.desktop-tighter-margins
-                  - platforms.each do |platform|
-                    = render partial: 'groups/shared/community_thumb_mini', locals: { community: platform }
+                - platforms.each do |platform|
+                  = render partial: 'groups/shared/community_thumb_mini', locals: { community: platform }
 
             - if @project.public? and @respecting_users.count > 0
               section.section-thumbs

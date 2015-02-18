@@ -368,12 +368,8 @@ class User < ActiveRecord::Base
     }
   end
 
-  def default_user_name
-    "user#{id}"
-  end
-
   def default_user_name?
-    user_name == default_user_name
+    !!(user_name =~ /.+\-.+\-[0-9]+/)
   end
 
   # allows overriding the invitation email template and the model that's sent to the mailer
