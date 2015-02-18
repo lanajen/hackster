@@ -36,7 +36,7 @@ class GroupDecorator < UserDecorator
     end
     model.email ||= 'hi@hackster.io'  # TODO: find a better way
     gravatar_id = Digest::MD5::hexdigest(model.email).downcase
-    "//gravatar.com/avatar/#{gravatar_id}.png?d=identicon&s=#{width}"
+    "//gravatar.com/avatar/#{gravatar_id}.png?d=retro&s=#{width}"
   end
 
   def twitter_share

@@ -30,7 +30,7 @@ class UserDecorator < ApplicationDecorator
       200
     end
     gravatar_id = Digest::MD5::hexdigest(model.email).downcase
-    "//gravatar.com/avatar/#{gravatar_id}.png?d=identicon&s=#{width}"
+    "//gravatar.com/avatar/#{gravatar_id}.png?d=retro&s=#{width}"
   end
 
   def location
