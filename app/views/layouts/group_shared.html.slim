@@ -40,12 +40,7 @@
                 - begin
                   = render partial: "groups/#{@group.identifier.pluralize}/heading"
                 - rescue
-                  h1
-                    - if @group.model.respond_to?(:company_logo) and @group.company_logo
-                      = image_tag @group.company_logo.try(:file_url), class: 'company-logo'
-                    = @group.name
-                    - if @group.model.respond_to?(:disclaimer) and @group.disclaimer.present?
-                      i.fa.fa-info-circle.istooltip.small< title=@group.disclaimer
+                  h1= @group.name
                   / ul.list-inline.tags.pull-left
                     li
                       a.tag href='' Beginners

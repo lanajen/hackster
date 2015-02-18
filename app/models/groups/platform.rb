@@ -23,7 +23,7 @@ class Platform < List
     :buy_link, :shoplocket_link, :cover_image_id, :accept_project_ideas,
     :project_ideas_phrasing, :client_subdomain_attributes, :logo_id,
     :download_link, :company_logo_id, :disclaimer, :moderation_level,
-    :cta_text, :parts_attributes
+    :cta_text, :parts_attributes, :verified
 
   accepts_nested_attributes_for :client_subdomain, :parts
 
@@ -34,11 +34,12 @@ class Platform < List
   set_changes_for_stored_attributes :websites
 
   store_accessor :properties, :accept_project_ideas, :project_ideas_phrasing,
-    :active_challenge, :disclaimer, :moderation_level, :cta_text, :hashtag
+    :active_challenge, :disclaimer, :moderation_level, :cta_text, :hashtag,
+    :verified
   set_changes_for_stored_attributes :properties
 
   parse_as_booleans :properties, :accept_project_ideas, :active_challenge,
-    :is_new, :enable_comments, :hidden
+    :is_new, :enable_comments, :hidden, :verified
 
   taggable :platform_tags, :product_tags
 

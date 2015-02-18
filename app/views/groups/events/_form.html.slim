@@ -79,7 +79,7 @@
       = f.input :country, input_html: { class: 'form-control' }
 
     .col-md-6
-      - { facebook: 'Facebook', github: 'Github', google_plus: 'Google+', linked_in: 'LinkedIn', twitter: 'Twitter', youtube: 'Youtube', website: 'Website', blog: 'Blog' }.each do |link, text|
+      - { facebook: 'Facebook', github: 'Github', google_plus: 'Google+', linked_in: 'LinkedIn', twitter: 'Twitter', youtube: 'Youtube', website: 'Website', blog: 'Blog', instagram: 'Instagram', pinterest: 'Pinterest', flickr: 'Flickr', reddit: 'Reddit' }.each do |link, text|
         = f.input :"#{link}_link", label: "#{text} link", input_html: { value: @event.websites["#{link}_link"]}
       /
         = f.input :facebook_link, label: 'Facebook link'

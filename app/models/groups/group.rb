@@ -48,13 +48,15 @@ class Group < ActiveRecord::Base
     :blog_link, :github_link, :email, :mini_resume, :city, :country,
     :user_name, :full_name, :members_attributes, :avatar_id,
     :permissions_attributes, :google_plus_link, :youtube_link, :access_level,
-    :hidden, :slack_token, :slack_hook_url, :cover_image_id, :project_sorting
+    :hidden, :slack_token, :slack_hook_url, :cover_image_id, :project_sorting,
+    :instagram_link, :flickr_link, :reddit_link, :pinterest_link
 
   accepts_nested_attributes_for :avatar, :members, :permissions,
     allow_destroy: true
 
   store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link,
-    :google_plus_link, :youtube_link, :website_link, :blog_link, :github_link]
+    :google_plus_link, :youtube_link, :website_link, :blog_link, :github_link,
+    :instagram_link, :flickr_link, :reddit_link, :pinterest_link]
   set_changes_for_stored_attributes :websites
 
   store :properties, accessors: [:hidden, :slack_token,

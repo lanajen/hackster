@@ -32,7 +32,7 @@ class Event < GeographicCommunity
     end
   end
 
-  %w(facebook twitter linked_in google_plus github blog website youtube).each do |link|
+  %w(facebook twitter linked_in google_plus github blog website youtube pinterest flickr instagram reddit).each do |link|
     define_method "#{link}_link" do
       websites["#{link}_link"].presence || hackathon.try("#{link}_link")
     end

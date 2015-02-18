@@ -26,6 +26,7 @@
       - if current_user.is? :admin
         = f.input :email
         = f.input :is_new, as: :boolean, inline_label: 'Show as new', label: false
+        = f.input :verified, as: :boolean, inline_label: 'Verified', label: false, hint: "Check if a representative of the community is onboard"
         = f.input :disclaimer, as: :text, input_html: { rows: 4 }
       = f.input :mini_resume, as: :text, label: 'Short description', input_html: { rows: 4 },
         hint: 'Maximum 140 characters'
@@ -63,9 +64,13 @@
         = f.input :accept_project_ideas, input_label: "Accept project ideas?", as: :boolean, hint: "This is useful if your product hasn't shipped yet and you want to encourage your community to start posting project ideas."
         = f.input :project_ideas_phrasing, collection: @platform.project_ideas_phrasing_options, label: 'Phrasing for project ideas prompt'
       = f.input :facebook_link, label: 'Facebook link'
+      = f.input :flickr_link, label: 'Flickr link'
       = f.input :github_link, label: 'Github link'
       = f.input :google_plus_link, label: 'Google+ link'
+      = f.input :instagram_link, label: 'Instagram link'
       = f.input :linked_in_link, label: 'LinkedIn link'
+      = f.input :pinterest_link, label: 'Pinterest link'
+      = f.input :reddit_link, label: 'Reddit link'
       = f.input :twitter_link, label: 'Twitter link'
       = f.input :hashtag, label: 'Hashtag for automatic tweets', hint: "Don't forget the #! Default is #{@group.default_hashtag}."
       = f.input :youtube_link, label: 'Youtube link'

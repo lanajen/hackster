@@ -350,6 +350,13 @@
   vertical-align: baseline;
   margin-right: 10px;
 }
+.verified {
+  color: #36C74E;
+  @include opacity(0.5);
+  font-size: 0.6em;
+  vertical-align: super;
+  margin-left: 8px;
+}
 .group-nav {
   position: absolute;
   left: 0;
