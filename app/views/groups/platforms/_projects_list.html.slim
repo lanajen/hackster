@@ -26,8 +26,8 @@
         li*{ class: "#{'active' if params[:by] == nil}" } = link_to 'All', platform_short_path(@platform, sort: params[:sort])
         li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to 'Featured', platform_short_path(@platform, by: 'featured', sort: params[:sort])
         li*{ class: "#{'active' if params[:by] == 'on_hackster'}" } = link_to 'On Hackster', platform_short_path(@platform, by: 'on_hackster', sort: params[:sort])
-        li*{ class: "#{'active' if params[:by] == '7days'}" } = link_to 'Last 7 days', platform_short_path(by: '7days', sort: params[:sort])
-        li*{ class: "#{'active' if params[:by] == '30days'}" } = link_to 'Last 30 days', platform_short_path(by: '30days', sort: params[:sort])
+        li*{ class: "#{'active' if params[:by] == '7days'}" } = link_to 'Last 7 days', platform_short_path(@platform, by: '7days', sort: params[:sort])
+        li*{ class: "#{'active' if params[:by] == '30days'}" } = link_to 'Last 30 days', platform_short_path(@platform, by: '30days', sort: params[:sort])
         / li*{ class: "#{'active' if params[:by] == 'wip'}" } = link_to 'Work in progress', platform_short_path(@platform, by: 'wip', sort: params[:sort])
 
     / .btn-group
