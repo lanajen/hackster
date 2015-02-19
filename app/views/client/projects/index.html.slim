@@ -54,7 +54,7 @@
       = render partial: 'followers/button_text', locals: { followable: current_platform }
       - if @custom_header.present?
         = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'btn btn-default'
-    .btn-group.pull-right
+    .btn-group.btn-group-default.pull-right
       .btn-group
         button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
           ' Sort by
@@ -73,6 +73,8 @@
         ul.dropdown-menu.pull-right
           li*{ class: "#{'active' if params[:by] == nil}" } = link_to 'All', root_path(sort: params[:sort])
           li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to 'Featured', root_path(by: 'featured', sort: params[:sort])
+          li*{ class: "#{'active' if params[:by] == '7days'}" } = link_to 'Last 7 days', root_path(by: '7days', sort: params[:sort])
+          li*{ class: "#{'active' if params[:by] == '30days'}" } = link_to 'Last 30 days', root_path(by: '30days', sort: params[:sort])
           / li*{ class: "#{'active' if params[:by] == 'wip'}" } = link_to 'Work in progress', root_path(by: 'wip', sort: params[:sort])
 
   - if @projects.any?

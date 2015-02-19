@@ -2,6 +2,8 @@ class Project < ActiveRecord::Base
   DEFAULT_NAME = 'Untitled'
 
   FILTERS = {
+    '7days' => :last_7days,
+    '30days' => :last_30days,
     'featured' => :featured,
     'gfeatured' => :featured_by_collection,
     'on_hackster' => :self_hosted,
@@ -202,6 +204,14 @@ class Project < ActiveRecord::Base
 
   def self.live
     where(private: false)
+  end
+
+  def self.last_7days
+    where('projects.made_public_at > ?', 7.days.ago)
+  end
+
+  def self.last_30days
+    where('projects.made_public_at > ?', 30.days.ago)
   end
 
   def self.last_created
