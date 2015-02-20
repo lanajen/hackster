@@ -48,13 +48,12 @@ class PagesController < ApplicationController
 
       else
         unless request.xhr?
-          @hackers = User.invitation_accepted_or_not_invited.user_name_set.where("users.id NOT IN (?)", current_user.followed_users.pluck(:id)).top.limit(24)
-          @lists = List.where(user_name: featured_lists - current_user.followed_lists.pluck(:user_name))
-          @platforms = Platform.public.where("groups.id NOT IN (?)", current_user.followed_platforms.pluck(:id)).most_members.limit(12)
+          @hackers = User.invitation_accepted_or_not_invited.user_name_set.where.not(id: current_user.followed_users.pluck(:id)).top.limit(24)
+          # @lists = List.where(user_name: featured_lists - current_user.followed_lists.pluck(:user_name))
+          @platforms = Platform.public.where.not(id: current_user.followed_platforms.pluck(:id)).most_members.limit(12)
         end
         @last_projects = Project.indexable.last_public.limit(12)
       end
-
 
       render 'home_member'
     else
