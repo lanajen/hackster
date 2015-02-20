@@ -1,0 +1,33 @@
+var text, thumb, item;
+
+<% @followed.each do |rel|
+    entity = rel.followable
+%>
+  if ($("#hide .<%= dom_id(entity) %>").length == 0) {
+    text = '<%= content_tag(:div, link_to(image_tag(entity.decorate.avatar(:medium)), entity, title: "You follow #{entity.name}", class: 'istooltip', data: { container: "body" }), class: "thumb-super-item #{dom_id(entity)}") %>';
+    $("#hide").append(text);
+  }
+<% end %>
+
+<% @projects.each do |project| %>
+  $('#projects .row').append("<%= j(render partial: 'projects/project_thumb', locals: { project: project }) %>");
+<%
+  if common = build_common_for_follow(project, @followed) and common.any?
+    dom_ids = common.map{|e| "#{e[0].underscore}_#{e[1]}" }
+    dom_ids.each do |dom_id|
+%>
+      thumb = $(".project-<%= project.id %> .thumb-super");
+      item = $(".thumb-super-item.<%= dom_id %>")[0].outerHTML;
+      thumb.append(item);
+<%
+    end
+  end
+end
+%>
+
+<% if @next_page %>
+  $('#loader').html('<div class="text-center"><%= will_paginate @projects %></div>');
+<% else %>
+  $(window).off('scroll');
+  $('#loader').html("<p>Hurray! You've reached the end of the internet.</p>");
+<% end %>

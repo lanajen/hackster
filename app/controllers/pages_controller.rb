@@ -30,20 +30,37 @@ class PagesController < ApplicationController
   end
 
   def home
+    featured_lists = %w(home-automation lights wearables animals remote-control displays)
+
     if user_signed_in?
-      @last_projects = Project.indexable.last_public.for_thumb_display.limit 12
-      @follow_relations_count = current_user.follow_relations.count
-      if @follow_relations_count.zero?
-        @platforms = Platform.most_members.limit(12)
-        @hackers = User.top.limit(24)
+      @projects = Project.custom_for(current_user).for_thumb_display.paginate(page: safe_page_params, per_page: 12)
+      if @projects.any?
+        @followed = current_user.follow_relations.includes(:followable).includes(followable: :avatar)
+        # @followed = current_user.follow_relations.joins("INNER JOIN project_collections ON follow_relations.followable_id = project_collections.collectable_id AND follow_relations.followable_type = project_collections.collectable_type").joins("INNER JOIN projects ON projects.id = project_collections.project_id").where(projects: { id: @projects.map(&:id) }).distinct([:followable_id, :followable_type]).includes(:followable)
+        @next_page = safe_page_params ? safe_page_params + 1 : 2
+        @next_page = nil if @projects.total_pages < @next_page
+
+        unless request.xhr?
+          @hackers = User.invitation_accepted_or_not_invited.user_name_set.where("users.id NOT IN (?)", current_user.followed_users.pluck(:id)).top.limit(6)
+          @lists = List.where(user_name: featured_lists - current_user.followed_lists.pluck(:user_name))
+          @platforms = Platform.public.where("groups.id NOT IN (?)", current_user.followed_platforms.pluck(:id)).most_members.limit(6)
+        end
+
       else
-        @platforms = current_user.followed_platforms
+        unless request.xhr?
+          @hackers = User.invitation_accepted_or_not_invited.user_name_set.where("users.id NOT IN (?)", current_user.followed_users.pluck(:id)).top.limit(24)
+          @lists = List.where(user_name: featured_lists - current_user.followed_lists.pluck(:user_name))
+          @platforms = Platform.public.where("groups.id NOT IN (?)", current_user.followed_platforms.pluck(:id)).most_members.limit(12)
+        end
+        @last_projects = Project.indexable.last_public.limit(12)
       end
+
+
       render 'home_member'
     else
       @trending_projects = Project.indexable.magic_sort.for_thumb_display.limit 12
       @platforms = Platform.where(user_name: %w(spark delorean metawear tinycircuits intel-edison wunderbar)).for_thumb_display.order(:full_name)
-      @lists = List.where(user_name: %w(home-automation blinky-lights lights wearables creature-feature remote-control displays)).limit(6).each_slice(3).to_a
+      @lists = List.where(user_name: featured_lists).each_slice(3).to_a
 
       @typeahead_tags = List.public.order(:full_name).select{|p| p.projects_count >= 5 or p.followers_count >= 10 }.map do |p|
         { tag: p.name, projects: p.projects_count, url: url_for([p, only_path: true]) }

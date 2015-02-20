@@ -9,7 +9,7 @@
       .container
         h1 Welcome to your dashboard!
 
-  - if @follow_relations_count.zero?
+  - if @projects.count.zero?
     section#intro.showcase-section
       .container
         p
@@ -20,7 +20,7 @@
             = link_to 'hi@hackster.io', 'mailto:hi@hackster.io&subject=Feedback%20for%dashboard'
             | .
 
-    section#intro.showcase-section
+    section#suggested-platforms.showcase-section
       .container
         .view-all-header.clearfix
           h4.pull-left Suggested platforms to follow
@@ -31,7 +31,7 @@
           - @platforms.each do |platform|
             = render partial: 'groups/platforms/platform_thumb', locals: { platform: platform, follow: true }
 
-    section#intro.showcase-section
+    section#suggested-hackers.showcase-section
       .container
         .view-all-header.clearfix
           h4.pull-left Suggested hackers to follow
@@ -42,7 +42,7 @@
           - @hackers.each do |user|
             = render partial: 'users/user_thumb_mini', locals: { user: user, actions: %w(follow), col: 'col-md-2' }
 
-    section#trending-projects.showcase-section
+    section#recent-projects.showcase-section
       .container
         .view-all-header.clearfix
           h4.pull-left Not ready to follow yet? Here's the latest projects
@@ -54,6 +54,12 @@
             = render partial: 'projects/project_thumb', locals: { project: project }
 
   - else
+    #hide.hide
+      - @followed.each do |rel|
+        - entity = rel.followable
+        .thumb-super-item class=dom_id(entity)
+          = link_to image_tag(entity.decorate.avatar(:medium)), entity, title: "You follow #{entity.name}", class: 'istooltip', data: { container: 'body' }
+
     section#intro.showcase-section
       .container
         p
@@ -61,21 +67,27 @@
         p
           small
             ' This is a new feature! Please let us know what you'd like to see by emailing us at
-            = link_to 'hi@hackster.io', 'mailto:hi@hackster.io&subject=Feedback%20for%dashboard'
+            = link_to 'hi@hackster.io', 'mailto:hi@hackster.io&subject=Feedback%20for%20dashboard'
             | .
 
-    - @platforms.each do |platform|
-      - projects = platform.projects.where("project_collections.workflow_state IN (?) AND project_collections.created_at > ?", ProjectCollection::VALID_STATES, 7.days.ago).order("project_collections.created_at DESC").limit(3)
-      - if projects.any?
-        section#intro.showcase-section
-          .container
-            .view-all-header.clearfix
-              h4.pull-left
-                ==> image_tag platform.avatar.file_url(:tiny), class: 'img-thumbnail'
-                | Recent projects for #{platform.name}
-              = link_to "View more from #{platform.name}", platform, class: 'btn btn-default btn-sm hidden-xs pull-right'
-              = link_to "View more from #{platform.name}", platform, class: 'btn btn-default btn-sm visible-xs-block pull-right'
+    section#projects.showcase-section
+      .container
+        .row#infinite-scrolling
+          - @projects.each do |project|
+            = render partial: 'projects/project_thumb', locals: { project: project }
+            - if common = build_common_for_follow(project, @followed) and common.any?
+              - dom_ids = common.map{|e| "#{e[0].underscore}_#{e[1]}" }
+              - dom_ids.each do |dom_id|
+                = content_for :js do
+                  javascript:
+                    var thumb = $(".project-#{project.id} .thumb-super");
+                    var item = $(".thumb-super-item.#{dom_id}")[0].outerHTML;
+                    thumb.append(item);
 
-            .row.mobile-scroll-row
-              - projects.each do |project|
-                = render partial: 'projects/project_thumb', locals: { project: project }
+        #loader.text-center= will_paginate @projects
+
+    = content_for :js do
+      javascript:
+        $('#projects .project-thumb-container:nth-of-type(9)').after("#{j render(partial: 'suggestions', locals: { suggestions: @hackers, term: 'hackers' })}");
+        $('#projects .project-thumb-container:nth-of-type(6)').after("#{j render(partial: 'suggestions', locals: { suggestions: @lists, term: 'lists' })}");
+        $('#projects .project-thumb-container:nth-of-type(3)').after("#{j render(partial: 'suggestions', locals: { suggestions: @platforms, term: 'platforms' })}");

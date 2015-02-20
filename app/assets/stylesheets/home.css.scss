@@ -275,23 +275,35 @@
   }
 }
 
-.customSelect {
-/* This is the default class that is used */
-/* Put whatever custom styles you want here */
-}
-
-.customSelect.customSelectHover {
-/* Styles for when the select box is hovered */
-}
-
-.customSelect.customSelectOpen {
-/* Styles for when the select box is open */
-}
-
-.customSelect.customSelectFocus {
-/* Styles for when the select box is in focus */
-}
-
-.customSelectInner {
-/* You can style the inner box too */
+.suggestions {
+  margin-bottom: 30px;
+  h3 {
+    display: inline;
+    margin: 0;
+    margin-right: 30px;
+    font-size: 1em;
+    font-weight: bold;
+  }
+  ul {
+    display: inline;
+    margin-left: -15px;
+    li {
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+    a {
+      font-weight: bold;
+      font-size: .9em;
+    }
+    .tag {
+      color: #555;
+      border-color: #666;
+      font-size: .9em;
+      padding: 6px 9px;
+      &:hover {
+        color: #fff;
+        background: #666;
+      }
+    }
+  }
 }

@@ -1,0 +1,7 @@
+- if suggestions.any?
+  .suggestions.col-xs-12
+    p
+      h3 Suggested #{term} to follow:
+      ul.list-inline
+        - suggestions.each do |suggestion|
+          li= link_to suggestion.name, suggestion

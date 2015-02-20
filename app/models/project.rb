@@ -62,7 +62,7 @@ class Project < ActiveRecord::Base
   has_many :platforms, -> { where("groups.type = 'Platform'") }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :users, through: :team_members
   has_many :widgets, -> { order position: :asc }, as: :widgetable, dependent: :destroy
-  has_one :cover_image, as: :attachable, class_name: 'CoverImage', dependent: :destroy
+  has_one :cover_image, -> { order created_at: :desc }, as: :attachable, class_name: 'CoverImage', dependent: :destroy  # added order because otherwise it randomly picks up the wrong image
   has_one :logo, as: :attachable, class_name: 'Avatar', dependent: :destroy
   has_one :project_collection, class_name: 'ProjectCollection'
   has_one :video, as: :recordable, dependent: :destroy
@@ -171,6 +171,12 @@ class Project < ActiveRecord::Base
 
   def self.approval_needed
     where(approved: nil)
+  end
+
+  def self.custom_for user
+    # indexable.joins("LEFT JOIN project_collections as pj1 ON pj1.project_id = projects.id").joins("LEFT JOIN follow_relations AS fr1 ON fr1.followable_id = pj1.collectable_id AND fr1.followable_type = pj1.collectable_type").joins("LEFT JOIN groups ON groups.id = projects.team_id").joins("LEFT JOIN members ON groups.id = members.group_id").joins("LEFT JOIN follow_relations AS fr2 ON fr2.followable_id = members.user_id AND fr2.followable_type = 'User'").where("fr1.user_id = ? OR fr2.user_id = ?", user.id, user.id).distinct("projects.id").last_public.includes(:project_collections)
+
+    indexable.where("projects.id IN (?) OR projects.id IN (?)", select('projects.id').joins("LEFT JOIN project_collections as pj1 ON pj1.project_id = projects.id").joins("LEFT JOIN follow_relations AS fr1 ON fr1.followable_id = pj1.collectable_id AND fr1.followable_type = pj1.collectable_type").where("fr1.user_id = ?", user.id).distinct("projects.id"), select('projects.id').joins("LEFT JOIN groups ON groups.id = projects.team_id").joins("LEFT JOIN members ON groups.id = members.group_id").joins("LEFT JOIN follow_relations AS fr2 ON fr2.followable_id = members.user_id AND fr2.followable_type = 'User'").where("fr2.user_id = ?", user.id).distinct("projects.id")).last_public.includes(:project_collections).includes(:users)
   end
 
   def self.external
@@ -293,11 +299,6 @@ class Project < ActiveRecord::Base
       platform_tags: 'platform_tags_cached.count',
       widgets: 'widgets.count',
     }
-  end
-
-  def cover_image
-    # overloading because projects seem to have multiple cover images (probably because of the way we save them) and which of them is shown is kinda random
-    @cover_image = (persisted? ? CoverImage.where(attachable_type: 'Project', attachable_id: id).order(created_at: :desc).first : super)
   end
 
   def cover_image_id=(val)

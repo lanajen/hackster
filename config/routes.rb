@@ -255,6 +255,7 @@ HackerIo::Application.routes.draw do
 
     get 'tinyduino', to: redirect('/tinycircuits')
 
+    get 'home' => 'pages#home'
     get 'about' => 'pages#about'
     # get 'help' => 'pages#help'
     get 'achievements' => 'pages#achievements'

@@ -7,47 +7,47 @@
 - subdomain = defined?(force_subdomain) ? force_subdomain : false
 - only_path = !subdomain
 
-.col-sm-6.mobile-scroll-row-item class="col-md-#{col}"
-  .project-thumb-container data-ref=ref data-ref-id=ref_id data-offset=offset data-show-year=show_year class="#{'has-data' if ref and ref_id}"
-    - cache ["project-#{project.id}-thumb", subdomain], tag: ["project-#{project.id}-thumb", "team-#{project.team_id}", "team-#{project.team_id}-user-thumbs", 'project-thumb'], expires_in: 6.hours do
-      - project = project.decorate
-      div class="project-#{project.id}"
-        .thumb.project-thumb
-          .thumb-image.has-link-overlay style="background-image:url('#{project.cover_image(:cover_thumb)}')"
-            = link_to '', url_for([project, subdomain: subdomain, only_path: only_path]), class: 'link-overlay'
-            .thumb-image-inner-top
-              .award-container
-              p.description.show-on-hover
-                = project.one_liner
-            .thumb-image-inner
-              h4
-                - if project.private?
-                  i.fa.fa-lock>
-                - elsif project.is_idea?
-                  i.fa.fa-lightbulb-o>
-                ==> link_to project.name, url_for([project, subdomain: subdomain, only_path: only_path]), class: 'project-link-with-ref'
-                - if project.external
-                  i.fa.fa-external-link.istooltip  title='This project is hosted on an external website' data-container='body'
-              p
-                - if project.external
-                  - if project.guest_name.present?
-                    ' by
-                    span.user-name>= project.guest_name
-                  - elsif u = project.users.first
-                    ' by
-                    span.user-name==> link_to u.name, u
-                  ' on
-                  strong= project.website_host
-                - else
-                  = render partial: 'projects/by_team', locals: { project: project }
+.col-sm-6.mobile-scroll-row-item.project-thumb-container data-ref=ref data-ref-id=ref_id data-offset=offset data-show-year=show_year class="col-md-#{col} #{'has-data' if ref and ref_id}"
+  - cache ["project-#{project.id}-thumb", subdomain], tag: ["project-#{project.id}-thumb", "team-#{project.team_id}", "team-#{project.team_id}-user-thumbs", 'project-thumb'], expires_in: 6.hours do
+    - project = project.decorate
+    div class="project-#{project.id}"
+      .thumb.project-thumb
+        .thumb-image.has-link-overlay style="background-image:url('#{project.cover_image(:cover_thumb)}')"
+          = link_to '', url_for([project, subdomain: subdomain, only_path: only_path]), class: 'link-overlay'
+          .thumb-image-inner-top
+            .award-container
+            p.description.show-on-hover
+              = project.one_liner
+          .thumb-image-inner
+            h4
+              - if project.private?
+                i.fa.fa-lock>
+              - elsif project.is_idea?
+                i.fa.fa-lightbulb-o>
+              ==> link_to project.name, url_for([project, subdomain: subdomain, only_path: only_path]), class: 'project-link-with-ref'
+              - if project.external
+                i.fa.fa-external-link.istooltip  title='This project is hosted on an external website' data-container='body'
+            p
+              - if project.external
+                - if project.guest_name.present?
+                  ' by
+                  span.user-name>= project.guest_name
+                - elsif u = project.users.first
+                  ' by
+                  span.user-name==> link_to u.name, u
+                ' on
+                strong= project.website_host
+              - else
+                = render partial: 'projects/by_team', locals: { project: project }
 
-              ul.list-inline.project-stats
-                li
-                  span.stat-figure> = number_with_delimiter project.impressions_count
-                  = pluralize_without_count project.impressions_count, 'view'
-                li
-                  span.stat-figure> = number_with_delimiter project.comments_count
-                  = pluralize_without_count project.comments_count, 'comment'
-                li
-                  span.stat-figure> = number_with_delimiter project.respects_count
-                  = pluralize_without_count project.respects_count, 'respect'
+            ul.list-inline.project-stats
+              li
+                span.stat-figure> = number_with_delimiter project.impressions_count
+                = pluralize_without_count project.impressions_count, 'view'
+              li
+                span.stat-figure> = number_with_delimiter project.comments_count
+                = pluralize_without_count project.comments_count, 'comment'
+              li
+                span.stat-figure> = number_with_delimiter project.respects_count
+                = pluralize_without_count project.respects_count, 'respect'
+          .thumb-super
