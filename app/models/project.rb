@@ -2,6 +2,8 @@ class Project < ActiveRecord::Base
   DEFAULT_NAME = 'Untitled'
 
   FILTERS = {
+    '7days' => :last_7days,
+    '30days' => :last_30days,
     'featured' => :featured,
     'gfeatured' => :featured_by_collection,
     'on_hackster' => :self_hosted,
@@ -204,6 +206,14 @@ class Project < ActiveRecord::Base
     where(private: false)
   end
 
+  def self.last_7days
+    where('projects.made_public_at > ?', 7.days.ago)
+  end
+
+  def self.last_30days
+    where('projects.made_public_at > ?', 30.days.ago)
+  end
+
   def self.last_created
     order('projects.created_at DESC')
   end
@@ -226,6 +236,10 @@ class Project < ActiveRecord::Base
 
   def self.most_respected
     order('projects.respects_count DESC')
+  end
+
+  def self.own
+    where("projects.guest_name = '' OR projects.guest_name IS NULL")
   end
 
   def self.self_hosted
@@ -279,6 +293,11 @@ class Project < ActiveRecord::Base
       platform_tags: 'platform_tags_cached.count',
       widgets: 'widgets.count',
     }
+  end
+
+  def cover_image
+    # overloading because projects seem to have multiple cover images (probably because of the way we save them) and which of them is shown is kinda random
+    @cover_image = (persisted? ? CoverImage.where(attachable_type: 'Project', attachable_id: id).order(created_at: :desc).first : super)
   end
 
   def cover_image_id=(val)

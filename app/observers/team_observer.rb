@@ -5,7 +5,7 @@ class TeamObserver < ActiveRecord::Observer
       p.update_slug!
     end if record.user_name_changed?
 
-    if record.full_name_changed?
+    if record.full_name_changed? or record.user_name_changed?
       Cashier.expire "team-#{record.id}"
     end
   end

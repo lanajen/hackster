@@ -113,6 +113,12 @@ $(function () {
     return false;
   });
 
+  $('body').on('click', '.social-share-link', function(e){
+    e.preventDefault();
+    var url = $(this).data('url');
+    window.open(url, '_blank').focus();
+  });
+
   //[data-remote="true"]
   $(document)
     .on("ajax:beforeSend", 'form.remote', function(xhr, settings){

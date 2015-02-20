@@ -9,6 +9,9 @@ class RespectsController < ApplicationController
     @team_members = @project.users
 
     if @respect.persisted?
+      session[:share_modal] = 'respected_share_prompt'
+      session[:share_modal_model] = 'project'
+
       respond_to do |format|
         format.html { redirect_to @project, notice: "You respect #{@project.name}!" }
         format.js { render 'button' }

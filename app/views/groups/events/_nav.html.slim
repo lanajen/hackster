@@ -36,8 +36,8 @@ section.group-nav.affixable
         li= render partial: 'followers/button_text', locals: { followable: @group }
 
     ul.websites.list-inline.pull-right
-      - @group.websites.select{|t,u| u.present? }.each do |type, url|
-        = render partial: "shared/website", locals: { type: type, url: url }
+      - @group.websites.select{|t,u| @group.send(t).present? }.each do |type, url|
+        = render partial: "shared/website", locals: { type: type, url: @group.send(type) }
 
   .visible-xs
     a.submenu-mobile-open href=''
@@ -64,17 +64,3 @@ section.group-nav.affixable
         li.divider
         li= link_to 'Add a new page', new_hackathon_event_page_path(@event.hackathon.user_name, @event.user_name)
         li= link_to 'Manage awards', group_edit_awards_path(@event)
-
-= content_for :js do
-  javascript:
-    $('.group-nav.affixable').on('affix-on', function(e){
-      var next = $(this).next();
-      var pdg = parseInt(next.css('padding-top'));
-      next.data('padding-top', pdg);
-      next.css('padding-top', pdg + $(this).outerHeight());
-    });
-    $('.group-nav.affixable').on('affix-off', function(e){
-      var next = $(this).next();
-      var pdg = next.data('padding-top');
-      next.css('padding-top', pdg);
-    });

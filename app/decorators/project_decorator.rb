@@ -53,4 +53,48 @@ class ProjectDecorator < ApplicationDecorator
   def name_not_default
     model.name == Project::DEFAULT_NAME ? nil : model.name
   end
+
+  def to_personnal_message
+    "I just published #{model.name} on hackster.io, take a look and tell me what you think!"
+  end
+
+  def to_share_message
+    platforms = model.known_platforms
+    sentences = ['I love this', 'Check this out', 'Cool stuff', 'Awesome project', 'Nice hack']
+
+    "#{sentences.sample}: #{model.name} by #{model.guest_name.presence || model.users.map{|u| u.twitter_handle || u.name }.to_sentence}#{ ' with ' + platforms.map{|t| t.twitter_handle.presence || t.name }.to_sentence if platforms.any? }"
+  end
+
+  def to_personnal_tweet
+    message = "I just published #{model.name} on @hacksterio, take a look and tell me what you think!"
+
+    size = message.size + " http://#{APP_CONFIG['full_host']}/#{model.uri}".size
+
+    model.known_platforms.map do |platform|
+      if handle = platform.twitter_handle
+
+        new_size = size + handle.size + 1
+        if new_size <= 140
+          message << " #{handle}"
+          size += " #{handle}".size
+        end
+      end
+    end
+
+    # we add tags until character limit is reached
+    tags = model.product_tags_cached.map{|t| "##{t.gsub(/[^a-zA-Z0-9]/, '')}"}
+    if tags.any?
+      tags.each do |tag|
+        new_size = size + tag.size + 1
+        if new_size <= 140
+          message << " #{tag}"
+          size += " #{tag}".size
+        else
+          break
+        end
+      end
+    end
+
+    message
+  end
 end

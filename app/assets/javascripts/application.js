@@ -20,7 +20,7 @@
 //= require projects
 //= require groups
 //= require comments
-//= require badges
+//= require modals
 //= require all
 //= require mobile
 //= require home

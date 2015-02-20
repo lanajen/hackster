@@ -4,6 +4,12 @@ class Group < ActiveRecord::Base
     'Anyone can request access' => 'request',
     'Only people who are explicitely invited' => 'invite',
   }
+  PROJECT_SORTING = {
+    'Magic (most popular first)' => 'magic',
+    'Most impressions first' => 'popular',
+    'Most recent first' => 'recent',
+    'Most respects first' => 'respected',
+  }
   SORTING = {
     'followers' => :most_members,
     'members' => :most_members,
@@ -42,18 +48,22 @@ class Group < ActiveRecord::Base
     :blog_link, :github_link, :email, :mini_resume, :city, :country,
     :user_name, :full_name, :members_attributes, :avatar_id,
     :permissions_attributes, :google_plus_link, :youtube_link, :access_level,
-    :hidden, :slack_token, :slack_hook_url, :cover_image_id
+    :hidden, :slack_token, :slack_hook_url, :cover_image_id, :project_sorting,
+    :instagram_link, :flickr_link, :reddit_link, :pinterest_link
 
   accepts_nested_attributes_for :avatar, :members, :permissions,
     allow_destroy: true
 
   store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link,
-    :google_plus_link, :youtube_link, :website_link, :blog_link, :github_link]
+    :google_plus_link, :youtube_link, :website_link, :blog_link, :github_link,
+    :instagram_link, :flickr_link, :reddit_link, :pinterest_link]
   set_changes_for_stored_attributes :websites
 
   store :properties, accessors: [:hidden, :slack_token,
-    :slack_hook_url]
+    :slack_hook_url, :default_project_sorting]
   set_changes_for_stored_attributes :properties
+
+  # :projects_count and :members_count are DB columns! don't include them in counters_cache
 
   parse_as_booleans :properties, :hidden
 
@@ -78,6 +88,10 @@ class Group < ActiveRecord::Base
 
   def self.default_permission
     'read'
+  end
+
+  def self.default_project_sorting
+    'magic'
   end
 
   def self.alphabetical_sorting
@@ -111,10 +125,22 @@ class Group < ActiveRecord::Base
     self.cover_image = CoverImage.find_by_id(val)
   end
 
+  def project_sorting
+    default_project_sorting.presence || self.class.default_project_sorting
+  end
+
+  def project_sorting=(val)
+    self.default_project_sorting = val
+  end
+
+  def default_user_name
+    name.gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
+  end
+
   def generate_user_name
     return if full_name.blank?
 
-    slug = name.gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
+    slug = default_user_name
 
     # make sure it doesn't exist
     if result = self.class.where(user_name: slug).first

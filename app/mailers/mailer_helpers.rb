@@ -123,7 +123,7 @@ module MailerHelpers
         url.edit_user_registration_url(user_email: user.email,
           user_token: user.authentication_token, host: default_host)
       when :user_profile_edit_link
-        url.user_url(user, host: default_host)
+        url.profile_edit_url(host: default_host)
       else
         split_token = token.split '_', 2
         object = split_token[0]

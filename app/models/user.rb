@@ -25,6 +25,8 @@ class User < ActiveRecord::Base
     'new_message' => 'I receive a new private message',
   }
   CATEGORIES = %w()
+  USER_NAME_WORDS_LIST1 = %w(acid ada agent alien chell colossus crash cyborg doc ender enigma hal isambard jarvis kaneda leela morpheus neo nikola oracle phantom radio silicon sim starbuck straylight synergy tank tetsuo trinity zero)
+  USER_NAME_WORDS_LIST2 = %w(algorithm blue brunel burn clone cool core curie davinci deckard driver energy fett flynn formula gibson glitch grid hawking jaunte newton overdrive override phreak plasma ripley skywalker tesla titanium uhura wiggin)
 
   editable_slug :user_name
 
@@ -71,6 +73,7 @@ class User < ActiveRecord::Base
   has_many :team_grades, through: :teams, source: :grades
   has_many :teams, through: :group_ties, source: :group, class_name: 'Team'
   has_many :platforms, -> { order('groups.full_name ASC') }, through: :group_ties, source: :group, class_name: 'Platform'
+  has_many :user_activities
   has_one :avatar, as: :attachable, dependent: :destroy
   has_one :reputation, dependent: :destroy
   has_one :slug, as: :sluggable, dependent: :destroy, class_name: 'SlugHistory'
@@ -86,10 +89,11 @@ class User < ActiveRecord::Base
     :facebook_link, :twitter_link, :linked_in_link, :website_link,
     :blog_link, :github_link, :google_plus_link, :youtube_link, :categories,
     :github_link, :invitation_limit, :email, :mini_resume, :city, :country,
-    :user_name, :full_name, :type, :avatar_id, :subscriptions, :enable_sharing
+    :user_name, :full_name, :type, :avatar_id, :subscriptions, :enable_sharing,
+    :instagram_link, :flickr_link, :reddit_link, :pinterest_link
   accepts_nested_attributes_for :avatar, :projects, allow_destroy: true
 
-  store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link, :website_link, :blog_link, :github_link, :google_plus_link, :youtube_link]
+  store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link, :website_link, :blog_link, :github_link, :google_plus_link, :youtube_link, :instagram_link, :flickr_link, :reddit_link, :pinterest_link]
   set_changes_for_stored_attributes :websites
 
   validates :name, length: { in: 1..200 }, allow_blank: true
@@ -111,7 +115,7 @@ class User < ActiveRecord::Base
 
   # before_validation :generate_password, if: proc{|u| u.skip_password }
   before_validation :ensure_website_protocol
-  before_validation :generate_user_name, if: proc{|u| u.user_name.blank? and u.new_user_name.blank? }
+  before_validation :generate_user_name, if: proc{|u| u.user_name.blank? and u.new_user_name.blank? and !u.invited_to_sign_up? }
   before_create :subscribe_to_all, unless: proc{|u| u.invitation_token.present? }
   before_save :ensure_authentication_token
   after_invitation_accepted :invitation_accepted
@@ -265,6 +269,10 @@ class User < ActiveRecord::Base
     def invitation_accepted_or_not_invited
       where('users.invitation_token IS NULL')
     end
+
+    def user_name_set
+      where("users.user_name IS NOT NULL AND users.user_name <> ''")
+    end
   end
 
   def self.last_logged_in
@@ -365,12 +373,8 @@ class User < ActiveRecord::Base
     }
   end
 
-  def default_user_name
-    "user#{id}"
-  end
-
   def default_user_name?
-    user_name == default_user_name
+    !!(user_name =~ /.+\-.+\-[0-9]+/)
   end
 
   # allows overriding the invitation email template and the model that's sent to the mailer
@@ -512,7 +516,7 @@ class User < ActiveRecord::Base
       )
     end
 #          logger.info 'auth: ' + self.authorizations.inspect
-    generate_user_name if user_name.blank?
+    generate_user_name if self.class.where(user_name: user_name).any?
     self.password = Devise.friendly_token[0,20]
     self.logging_in_socially = true
   end
@@ -530,7 +534,15 @@ class User < ActiveRecord::Base
   end
 
   def generate_user_name
-    self.user_name = default_user_name
+    random_user_name = self.class.generate_random_user_name
+
+    count = self.class.where("users.user_name ILIKE '#{random_user_name}-%'").count
+
+    self.user_name = "#{random_user_name}-#{count + 1}"
+  end
+
+  def self.generate_random_user_name
+    "#{USER_NAME_WORDS_LIST1.sample}-#{USER_NAME_WORDS_LIST2.sample}"
   end
 
   def has_notifications?
@@ -796,6 +808,10 @@ class User < ActiveRecord::Base
 
     handle = twitter_link.match(/twitter.com\/(.+)/).try(:[], 1)
     handle.present? ? "@#{handle}" : nil
+  end
+
+  def update_last_seen! time=nil
+    update_column :last_seen_at, time || Time.now
   end
 
   private

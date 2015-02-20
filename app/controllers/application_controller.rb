@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+  include SocialLinkHelper
   include UrlHelper
 
   include Rewardino::ControllerExtension
@@ -17,12 +18,15 @@ class ApplicationController < ActionController::Base
 
   protect_from_forgery except: [:not_found]
   before_filter :authenticate_user_from_token!
-  # before_filter :authenticate_user!
+  before_filter :mark_last_seen!
   before_filter :set_new_user_session
   before_filter :store_location_before
   before_filter :track_visitor
   before_filter :check_new_badge
+  before_filter :show_badge
   prepend_after_filter :show_badge
+  before_filter :check_share_modal
+  prepend_after_filter :check_share_modal
   after_filter :store_location_after
   after_filter :track_landing_page
   helper_method :flash_disabled?
@@ -86,8 +90,8 @@ class ApplicationController < ActionController::Base
       ActionController::UnknownController,
       AbstractController::ActionNotFound,
       ActiveRecord::RecordNotFound,
-      ActionView::MissingTemplate,
       with: :render_404
+    # rescue_from ActionView::MissingTemplate, with: :render_404_with_error
   end
 
   rescue_from CanCan::AccessDenied do |exception|
@@ -154,15 +158,28 @@ class ApplicationController < ActionController::Base
       # @badge_level = :bronze
     end
 
+    def check_share_modal
+      if session[:share_modal] and name = session.delete(:share_modal) and model = session.delete(:share_modal_model)
+        @modal = render_to_string(partial: "shared/modals/#{name}", locals: { :"#{model}" => instance_variable_get("@#{model}") })
+        if request.xhr?
+          response.headers['X-Alert'] = @modal
+          response.headers['X-Alert-ID'] = "##{name}"
+        end
+      end
+    end
+
     def controller_action
       "#{controller_path}##{action_name}"
     end
 
     def show_badge
-      return unless request.xhr?
-
-      check_new_badge
-      response.headers['X-New-Badge'] = render_to_string(partial: 'shared/badge_alert', locals: { badge: @new_badge, level: @badge_level }) if @new_badge and @badge_level
+      if @new_badge and @badge_level
+        @modal = render_to_string(partial: 'shared/modals/badge_alert', locals: { badge: @new_badge, level: @badge_level })
+        if request.xhr?
+          response.headers['X-Alert'] = @modal
+          response.headers['X-Alert-ID'] = '#badge-alert'
+        end
+      end
     end
 
     def current_ability
@@ -227,6 +244,10 @@ class ApplicationController < ActionController::Base
     def load_with_slug
       slug = SlugHistory.find_by_value!(params[:slug].downcase)
       slug.sluggable
+    end
+
+    def mark_last_seen!
+      TrackerQueue.perform_async 'mark_last_seen', current_user.id, Time.now.to_i, "#{controller_path}##{self.action_name}" if user_signed_in?
     end
 
     def track_alias user=nil
@@ -350,7 +371,7 @@ class ApplicationController < ActionController::Base
       return unless is_trackable_page?
       if cookies[:next_show_banner].to_time < Time.now
         # cookies[:first_seen].to_time < 3.days.ago and (cookies[:last_shown_banner].nil? or cookies[:last_shown_banner].to_time < 3.days.ago)
-        @show_signup_popup = true
+        @modal = render_to_string partial: 'shared/modals/signup_popup'
         cookies[:last_shown_banner] = { value: Time.now, expires: 10.years.from_now }
         cookies[:next_show_banner] = 3.days.from_now
         if cookies[:shown_banner_count].present?

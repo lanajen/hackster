@@ -36,6 +36,7 @@
     input name='file_url' type='text' class='form-control' size=60
     input type='submit' value='Upload' class='btn btn-default'
     a href='' class='btn btn-link btn-close btn-sm' data-close='#remote-file-upload' data-effect='fade'
+      | Cancel
 
   form#sketchfab-upload action="https://#{ENV['FOG_DIRECTORY']}.s3.amazonaws.com" enctype="multipart/form-data" method="post" style="display:none;"
     input name="key" type="hidden"

@@ -12,6 +12,7 @@ class Member < ActiveRecord::Base
 
   validates :user_id, uniqueness: { scope: :group_id }
   validates :mini_resume, length: { maximum: 250 }
+  # after_initialize :initialize_permission
 
   def self.invitation_not_accepted
     where.not(invitation_sent_at: nil).where(invitation_accepted_at: nil)

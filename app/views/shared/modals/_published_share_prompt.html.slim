@@ -1,0 +1,26 @@
+#published_share_prompt.popup-overlay.modal-popup.modal-show.modal-remove
+  .popup-overlay-bg
+  .popup-overlay-outer
+    .popup-overlay-inner
+      button.close.unselectable data-target='#published_share_prompt' &times;
+      h2 Your project is published!
+      p
+        ' We still need to approve it before it shows on the home page and platform pages.
+
+      p In the meantime, share it on:
+      ul.list-inline.small
+        li
+          a.zocial.facebook.social-share-link data-url=facebook_share(project_url(@project), @project.name, @project.to_personnal_message, @project.cover_image.try(:file_url, :cover_thumb))
+            | Facebook
+        li
+          a.zocial.twitter.social-share-link data-url=twitter_share(project_url(@project), @project.to_personnal_tweet)
+            | Twitter
+        li
+          a.zocial.reddit.social-share-link data-url=reddit_share(project_url(@project), @project.to_personnal_message)
+            | Reddit
+        / li
+          a.zocial.googleplus.social-share-link data-url=googleplus_share(project_url(@project))
+            | Google+
+        / li
+          a.zocial.linkedin.social-share-link data-url=linkedin_share(project_url(@project), @project.name, @project.to_personnal_message)
+            | LinkedIn

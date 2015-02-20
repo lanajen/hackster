@@ -1,0 +1,48 @@
+= simple_nested_form_for @hackathon, url: hackathon_path(@hackathon), html: { class: 'form-horizontal remote accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
+  = f.error_notification
+
+  .row
+    .col-xs-12
+      .header.clearfix
+        h3.pull-left
+          | Edit hackathon
+        .pull-right
+          ul.list-unstyled.list-inline
+            - if current_user.is? :admin
+              li= link_to 'Edit as admin', edit_admin_group_path(@hackathon), class: 'btn btn-sm btn-warning'
+            li= f.submit 'Update profile', class: 'btn btn-primary btn-sm'
+            li= link_to 'Cancel', @hackathon, class: 'btn-link btn-sm'
+
+      hr
+
+  .row
+    .col-md-6
+      = f.input :full_name, label: 'Hackathon name'
+      = f.input :user_name, label: 'Pretty URL', wrapper: :addon do
+        span.input-group-addon hackster.io/hackathons/
+        = f.input_field :user_name
+      / = f.input :email
+      = f.input :mini_resume, label: 'One line description', as: :text, input_html: { rows: 4 },
+        hint: 'Maximum 140 characters'
+
+      = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Profile picture', image_link: @hackathon.avatar.try(:file_url, :thumb), help_block: '', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
+
+      = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @hackathon.cover_image.try(:file_url), help_block: "High quality banner, at least 1600px wide and 430px high. An image with no text looks a lot better!", attribute_type: 'cover_image', image_version: nil, model: 'group' }
+
+    .col-md-6
+      = f.input :hashtag, label: 'Hackathon hashtag'
+      = f.input :twitter_widget_id, label: 'Twitter widget ID'
+      = f.input :facebook_link, label: 'Facebook link'
+      = f.input :flickr_link, label: 'Flickr link'
+      = f.input :github_link, label: 'Github link'
+      = f.input :google_plus_link, label: 'Google+ link'
+      = f.input :instagram_link, label: 'Instagram link'
+      = f.input :linked_in_link, label: 'LinkedIn link'
+      = f.input :pinterest_link, label: 'Pinterest link'
+      = f.input :reddit_link, label: 'Reddit link'
+      = f.input :twitter_link, label: 'Twitter link'
+      = f.input :youtube_link, label: 'Youtube link'
+      = f.input :website_link, label: 'Website link'
+      = f.input :blog_link, label: 'Blog link'
+
+      = f.input :private, inline_label: 'Make this group private', label: false, hint: "Private groups are only visible by their members and are invite only."

@@ -165,8 +165,10 @@ HackerIo::Application.routes.draw do
     resources :events, except: [:show, :update, :destroy]
     scope 'hackathons/:user_name', as: :hackathon do
       get '' => 'hackathons#show', as: ''
-      # delete '' => 'hackathons#destroy'
-      # patch '' => 'hackathons#update'
+      delete '' => 'hackathons#destroy'
+      patch '' => 'hackathons#update'
+      get 'events/new' => 'events#new', as: :new_event
+      post 'events' => 'events#create', as: :events
 
       scope ':event_name', as: :event do
         get '' => 'events#show', as: ''
@@ -278,8 +280,8 @@ HackerIo::Application.routes.draw do
         get 'chat' => 'chat_messages#index'
         resources :announcements, except: [:create, :update, :destroy], path: :news
         get 'parts' => 'parts#index'
-        get ':part_slug' => 'parts#show', as: :part
-        get ':part_slug/embed' => 'parts#embed', as: :embed_part
+        get 'parts/:part_slug' => 'parts#show', as: :part
+        get 'parts/:part_slug/embed' => 'parts#embed', as: :embed_part
       end
     end
 
@@ -302,6 +304,9 @@ HackerIo::Application.routes.draw do
         get :autocomplete, on: :collection
       end
       resources :platforms, only: [:show]
+      resources :users, only: [] do
+        get :autocomplete, on: :collection
+      end
       resources :widgets, only: [:destroy, :update, :create]
       match "*all" => "base#cors_preflight_check", via: :options
     end
@@ -392,8 +397,8 @@ HackerIo::Application.routes.draw do
   constraints(ClientSite) do
     scope module: :client, as: :client do
       get 'parts' => 'parts#index'
-      get ':part_slug' => 'parts#show', as: :part
-      get ':part_slug/embed' => 'parts#embed', as: :embed_part
+      get 'parts/:part_slug' => 'parts#show', as: :part
+      get 'parts/:part_slug/embed' => 'parts#embed', as: :embed_part
     end
   end
 

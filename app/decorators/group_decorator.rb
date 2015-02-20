@@ -36,19 +36,27 @@ class GroupDecorator < UserDecorator
     end
     model.email ||= 'hi@hackster.io'  # TODO: find a better way
     gravatar_id = Digest::MD5::hexdigest(model.email).downcase
-    "//gravatar.com/avatar/#{gravatar_id}.png?d=identicon&s=#{width}"
+    "//gravatar.com/avatar/#{gravatar_id}.png?d=retro&s=#{width}"
   end
 
   def twitter_share
-    case model.type
+    message = case model.type
     when 'List'
       if model.category?
-        "Check out all the #{model.name} hacks on @hacksterio."
+        "Check out all the #{model.name} hardware hacks on @hacksterio."
       else
-        "Check out all the hacks curated by #{model.name}#{' (' + model.twitter_handle + ')' if model.twitter_handle}."
+        "Check out all the hardware hacks curated by #{model.name}"
       end
     when 'Platform'
-      "Check out all the hacks made with #{model.name}#{' (' + model.twitter_handle + ')' if model.twitter_handle}."
+      "Check out all the hardware hacks made with #{model.name}"
+    else
+      "Check out all the hardware hacks at #{model.name}"
     end
+    message += " (#{model.twitter_handle})" if model.twitter_handle
+    message
+  end
+
+  def to_share_message
+    twitter_share
   end
 end

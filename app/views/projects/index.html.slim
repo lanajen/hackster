@@ -11,7 +11,7 @@
           ' Explore #{@by} projects
           small page #{safe_page_params || 1}
 
-        .btn-group.pull-right style='margin-left:10px'
+        .btn-group.btn-group-default.pull-right style='margin-left:10px'
           .btn-group
             button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
               ' Sort by
@@ -30,7 +30,9 @@
             ul.dropdown-menu.pull-right
               li*{ class: "#{'active' if params[:by] == nil}" } = link_to 'All', projects_path(sort: params[:sort])
               li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to 'Featured', projects_path(by: 'featured', sort: params[:sort])
-              li*{ class: "#{'active' if params[:by] == 'wip'}" } = link_to 'Work in progress', projects_path(by: 'wip', sort: params[:sort])
+              li*{ class: "#{'active' if params[:by] == '7days'}" } = link_to 'Last 7 days', projects_path(by: '7days', sort: params[:sort])
+              li*{ class: "#{'active' if params[:by] == '30days'}" } = link_to 'Last 30 days', projects_path(by: '30days', sort: params[:sort])
+              / li*{ class: "#{'active' if params[:by] == 'wip'}" } = link_to 'Work in progress', projects_path(by: 'wip', sort: params[:sort])
       hr
         .clearfix
 

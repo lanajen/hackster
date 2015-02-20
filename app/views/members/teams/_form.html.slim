@@ -4,12 +4,6 @@
     = check_box_tag :use_guest, '1', @project.guest_name.present?
     | I'm posting this project on behalf of someone else
 
-= content_for :js do
-  javascript:
-    $('body').on('click', '#use_guest', function() {
-      $('#project-form, #team-form').slideToggle();
-    });
-
 #project-form  style="#{'display:none;' unless @project.guest_name.present?}"
   = simple_form_for @project, url: project_guest_name_path(@project), html: { class: 'widget-form' } do |f|
     = f.error_notification
@@ -45,7 +39,8 @@
                 td= link_to member.user.name, member.user
               - else
                 td
-                  = f_member.association :user, collection: User.where('user_name IS NOT NULL').sort_by{|u| u.name }, label: false
+                  / # = f_member.association :user, collection: User.where('user_name IS NOT NULL').sort_by{|u| u.name }, label: false
+                  = f_member.input :user_id, input_html: { class: 'select2' }, label: false, collection: [], prompt: 'Select a user (type in their name)'
               = f_member.simple_fields_for :permission do |f_perm|
                 td= f_perm.input :action, collection: Permission::ACTIONS, label: false
               td= f_member.input :mini_resume, as: :text, label: false
@@ -80,13 +75,56 @@
       = link_to 'Cancel', @project, class: 'btn btn-link btn-sm'
 
 
-  = content_for :js do
-    javascript:
-      jQuery(function($) {
-        window.NestedFormEvents.prototype.insertFields = function(content, assoc, link) {
-          var $tr = $(link).closest('tr');
-          content = content.replace(/^<div class="fields">/,"");
-          content = content.replace(/<\/div>$/,"");
-          return $(content).insertBefore($tr);
-        }
+= content_for :head do
+  = stylesheet_link_tag "//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-beta.3/css/select2.min.css"
+
+= content_for :js do
+  = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-beta.3/js/select2.min.js"
+
+  javascript:
+    $(function() {
+      $('body').on('click', '#use_guest', function() {
+        $('#project-form, #team-form').slideToggle();
       });
+
+      window.NestedFormEvents.prototype.insertFields = function(content, assoc, link) {
+        var $tr = $(link).closest('tr');
+        content = content.replace(/^<div class="fields">/,"");
+        content = content.replace(/<\/div>$/,"");
+        return $(content).insertBefore($tr);
+      }
+
+      var select2Options = {
+        placeholder: 'Select a user',
+        minimumInputLength: 3,
+
+        ajax: {
+          url: "/api/v1/users/autocomplete",
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term, // search term
+              page: params.page
+            };
+          },
+          processResults: function (data, page) {
+            // parse the results into the format expected by Select2.
+            // since we are using custom formatting functions we do not need to
+            // alter the remote JSON data
+            return {
+              results: data
+            };
+          },
+          cache: true
+        }
+        //templateResult: formatRepo, // omitted for brevity, see the source of this page
+        //templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
+      };
+
+      $('.select2').select2(select2Options);
+
+      $('#team-form').on('nested:fieldAdded', function(event){
+        $('.select2').select2(select2Options);
+      });
+    });

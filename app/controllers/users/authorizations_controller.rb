@@ -18,8 +18,8 @@ class Users::AuthorizationsController < Users::RegistrationsController
       logger.error resource.errors.inspect
       resource.authorizations.each{|a| logger.error a.errors.inspect }
       message = "Error authorizing account for #{resource.inspect}: #{resource.errors.messages} // #{resource.authorizations.map{|a| a.errors.inspect }.join(' // ')}"
-      log_line = LogLine.create(message: message, log_type: 'error', source: 'authorizations_controller')
-      BaseMailer.enqueue_email 'error_notification', { context_type: :log_line, context_id: log_line.id }
+      log_line = LogLine.create(message: message, log_type: 'social_signup_error', source: 'authorizations_controller#new')
+      # BaseMailer.enqueue_email 'error_notification', { context_type: :log_line, context_id: log_line.id }
       resource.errors.clear
       respond_with resource
     end

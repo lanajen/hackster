@@ -11,7 +11,7 @@
             = @user.mini_resume
           - elsif user_is_current?
             ' No mini resume.
-            = link_to 'Add one?', profile_edit_path(@user)
+            = link_to 'Add one?', profile_edit_path
         p.user-categories
           - if @user.location
             span.category.first
@@ -56,7 +56,7 @@
             ul.websites.list-inline
               li
                 ' No websites.
-                = link_to 'Add some?', profile_edit_path(@user)
+                = link_to 'Add some?', profile_edit_path
 
       - if @user.badges_count > 0
         .display

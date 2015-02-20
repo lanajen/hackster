@@ -60,15 +60,15 @@ class ProjectsController < ApplicationController
     @other_projects_count = @other_projects_count.size
 
     if @other_projects_count > 6
-      @other_projects = Project.public.most_popular.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).where("projects.guest_name = '' OR projects.guest_name IS NULL").includes(:team).includes(:cover_image)
+      @other_projects = Project.public.most_popular.own.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).includes(:team).includes(:cover_image)
       @other_projects.with_group current_platform if is_whitelabel?
       @other_projects = @other_projects.limit(3)
 
-      @last_projects = Project.public.last_public.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: [@project.id] + @other_projects.map(&:id)).where("projects.guest_name = '' OR projects.guest_name IS NULL").includes(:team).includes(:cover_image)
+      @last_projects = Project.public.last_public.own.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: [@project.id] + @other_projects.map(&:id)).includes(:team).includes(:cover_image)
       @last_projects = @last_projects.with_group current_platform if is_whitelabel?
       @last_projects = @last_projects.limit(3)
     else
-      @other_projects = Project.public.most_popular.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).where("projects.guest_name = '' OR projects.guest_name IS NULL").includes(:team).includes(:cover_image)
+      @other_projects = Project.public.most_popular.own.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).includes(:team).includes(:cover_image)
       @other_projects = @other_projects.with_group current_platform if is_whitelabel?
     end
 
@@ -146,6 +146,15 @@ class ProjectsController < ApplicationController
     impressionist_async @project, '', unique: [:session_hash]
     title @project.name
     meta_desc @project.one_liner
+
+    if is_whitelabel?
+      @comments = @project.comments.joins(:user).where(users: { enable_sharing: true }).includes(:user).includes(:parent).includes(user: :avatar)
+      @respecting_users = @project.respecting_users.where(users: { enable_sharing: true }).includes(:avatar) if @project.public?
+    else
+      @comments = @project.comments.includes(:user).includes(:parent)#.includes(user: :avatar)
+      @respecting_users = @project.respecting_users.includes(:avatar) if @project.public?
+    end
+
     # track_event 'Viewed project', @project.to_tracker.merge({ own: !!current_user.try(:is_team_member?, @project) })
   end
 
@@ -243,6 +252,7 @@ class ProjectsController < ApplicationController
   end
 
   def settings
+    puts 'settings'
     authorize! :edit, @project
     title 'Project settings'
   end
@@ -259,6 +269,8 @@ class ProjectsController < ApplicationController
         if @project.private == false
           current_user.broadcast :new, @project.id, 'Project', @project.id
           notice = "#{@project.name} is now published. Somebody from the Hackster team still needs to approve it before it shows on the site. Sit tight!"
+          session[:share_modal] = 'published_share_prompt'
+          session[:share_modal_model] = 'project'
 
           track_event 'Made project public', @project.to_tracker
         elsif @project.private == false

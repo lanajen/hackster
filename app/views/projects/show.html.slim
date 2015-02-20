@@ -353,9 +353,8 @@
                   - if @can_edit
                     = link_to content_tag(:i, '', class: 'fa fa-pencil'), project_edit_team_path(@project), class: 'btn-edit'
 
-                .row.mobile-scroll-row.desktop-tighter-margins
-                  - @project.team_members.each do |member|
-                    = render partial: 'users/member_thumb_mini', locals: { member: member }
+                - @project.team_members.each do |member|
+                  = render partial: 'users/member_thumb_mini', locals: { member: member }
 
             - if @project.credit_lines.any?
               section.section-thumbs
@@ -377,15 +376,14 @@
                 h4
                   | Communities this project is part of
                   /   = link_to content_tag(:i, '', class: 'fa fa-pencil'), '', class: 'btn-edit'
-                .row.mobile-scroll-row.desktop-tighter-margins
-                  - communities.each do |community|
-                    = render partial: 'groups/shared/community_thumb_mini', locals: { community: community }
+                - communities.each do |community|
+                  = render partial: 'groups/shared/community_thumb_mini', locals: { community: community }
 
             - cache ["project-#{@project.id}", 'metadata', @can_edit], tag: (["project-#{@project.id}-metadata", "team-#{@project.team_id}", "project-#{@project.id}-respects", 'project-metadata'] + @project.users.map{|u| "user-#{u.id}-thumb"}) do
               - if @project.public? and @respecting_users.count > 0
                 section.section-thumbs
                   h4 Hackers who respect this project
-                  #widget-respects= render partial: 'widgets/respect_widget', locals: { users: @respecting_users }
+                  = render partial: 'widgets/respect_widget', locals: { users: @respecting_users }
 
               / # - if hacker_space = @project.hacker_space
                 section.section-thumbs

@@ -28,7 +28,13 @@ class TrackerQueue < BaseWorker
   # @queue = :trackers
   sidekiq_options queue: :low, retry: false
 
-  def perform env, method_name, *args
+  def add_to_tracker env, method_name, *args
     Tracker.new({ env: env }).send method_name, *args
+  end
+
+  def mark_last_seen user_id, timestamp, event=nil
+    time = Time.at(timestamp)
+    UserActivity.create user_id: user_id, created_at: time, event: event
+    User.find(user_id).update_last_seen! time
   end
 end

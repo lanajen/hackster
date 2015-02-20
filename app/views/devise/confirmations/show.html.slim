@@ -7,6 +7,6 @@
       .box-content
         = simple_form_for(resource, :as => resource_name, :url => confirm_path) do |form|
           = form.error_notification
-          = form.input :password, :input_html => {:autofocus => true}, label: false, placeholder: 'Password'
+          = form.input :password, :input_html => {:autofocus => true}, label: false, placeholder: 'Password', hint: "At least 8 characters long"
           = form.input :confirmation_token, :as => :hidden, :value => @original_token
           = form.submit 'Confirm account', class: 'btn btn-primary btn-block'

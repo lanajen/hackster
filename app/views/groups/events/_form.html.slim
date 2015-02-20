@@ -29,7 +29,7 @@
     .col-xs-12
       .header.clearfix
         h3.pull-left
-          | Edit hackathon
+          | Edit event
         .pull-right
           ul.list-unstyled.list-inline
             - if current_user.is? :admin
@@ -51,24 +51,24 @@
         span.input-group-addon hackster.io/hackathons/#{@event.hackathon.user_name.truncate(10)}/
         = f.input_field :user_name
       / = f.input :email
-      = f.input :mini_resume, label: 'One line description', as: :text, input_html: { rows: 4 },
+      / # = f.input :mini_resume, label: 'One line description', as: :text, input_html: { rows: 4 },
         hint: 'Maximum 140 characters'
 
-      = f.input :start_date_dummy, label: 'Starts on', wrapper_html: { id: 'start_date_dummy', class: 'datetimepicker' }, hint: "Times are UTC (+00)" do
+      = f.input :start_date_dummy, label: 'Starts on', wrapper_html: { id: 'start_date_dummy', class: 'datetimepicker', autocomplete: 'off' } do
         #datepicker.input-group
           = f.input_field :start_date_dummy, as: :string, label: false
           span.input-group-addon
             i.fa.fa-calendar
       = f.input :start_date, as: :hidden, input_html: { id: 'start_date' }
 
-      = f.input :end_date_dummy, label: 'Ends on', wrapper_html: { id: 'end_date_dummy', class: 'datetimepicker' }, hint: "Times are UTC (+00)" do
+      = f.input :end_date_dummy, label: 'Ends on', wrapper_html: { id: 'end_date_dummy', class: 'datetimepicker', autocomplete: 'off' } do
         #datepicker.input-group
           = f.input_field :end_date_dummy, as: :string, label: false
           span.input-group-addon
             i.fa.fa-calendar
       = f.input :end_date, as: :hidden, input_html: { id: 'end_date' }
 
-      = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Profile picture', image_link: @event.avatar.try(:file_url, :thumb), help_block: '', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
+      / # = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Profile picture', image_link: @event.avatar.try(:file_url, :thumb), help_block: '', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
 
       = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @event.cover_image.try(:file_url), help_block: "High quality banner, at least 1600px wide and 430px high. An image with no text looks a lot better!", attribute_type: 'cover_image', image_version: nil, model: 'group' }
 
@@ -79,14 +79,17 @@
       = f.input :country, input_html: { class: 'form-control' }
 
     .col-md-6
-      = f.input :facebook_link, label: 'Facebook link'
-      = f.input :github_link, label: 'Github link'
-      = f.input :google_plus_link, label: 'Google+ link'
-      = f.input :linked_in_link, label: 'LinkedIn link'
-      = f.input :twitter_link, label: 'Twitter link'
-      = f.input :youtube_link, label: 'Youtube link'
-      = f.input :website_link, label: 'Website link'
-      = f.input :blog_link, label: 'Blog link'
+      - { facebook: 'Facebook', github: 'Github', google_plus: 'Google+', linked_in: 'LinkedIn', twitter: 'Twitter', youtube: 'Youtube', website: 'Website', blog: 'Blog', instagram: 'Instagram', pinterest: 'Pinterest', flickr: 'Flickr', reddit: 'Reddit' }.each do |link, text|
+        = f.input :"#{link}_link", label: "#{text} link", input_html: { value: @event.websites["#{link}_link"]}
+      /
+        = f.input :facebook_link, label: 'Facebook link'
+        = f.input :github_link, label: 'Github link'
+        = f.input :google_plus_link, label: 'Google+ link'
+        = f.input :linked_in_link, label: 'LinkedIn link'
+        = f.input :twitter_link, label: 'Twitter link'
+        = f.input :youtube_link, label: 'Youtube link'
+        = f.input :website_link, label: 'Website link'
+        = f.input :blog_link, label: 'Blog link'
 
       = f.input :access_level, label: 'Who can join this group?', collection: Group::ACCESS_LEVELS
       = f.input :private, inline_label: 'Make this group private', label: false, hint: "Private groups are only visible by their members and are invite only."

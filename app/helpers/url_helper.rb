@@ -69,6 +69,8 @@ module UrlHelper
         super params_for_course(group).merge(opts)
       when 'HackerSpace'
         hacker_space_path(group, opts)
+      when 'Hackathon'
+        hackathon_path(group, opts)
       when 'Promotion'
         promotion_path group, opts
       when 'University'
@@ -95,6 +97,8 @@ module UrlHelper
       super params_for_course(group).merge(opts)
     when 'HackerSpace'
       hacker_space_url(group, opts)
+    when 'Hackathon'
+      hackathon_url(group, opts)
     when 'Promotion'
       promotion_url group, opts
     when 'University'
@@ -108,6 +112,14 @@ module UrlHelper
     else
       super params_for_group(group).merge(opts)
     end
+  end
+
+  def hackathon_path group, opts={}
+    super group.user_name, opts
+  end
+
+  def hackathon_url group, opts={}
+    super group.user_name, opts
   end
 
   def hacker_space_path group, opts={}
