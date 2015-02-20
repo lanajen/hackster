@@ -65,13 +65,13 @@ class ApplicationController < ActionController::Base
 
     return @current_site if @current_site
 
-    # redirect_to root_url(subdomain: 'www') unless @current_site = if request.domain == APP_CONFIG['default_domain']
-    #   ClientSubdomain.find_by_subdomain(request.subdomains[0])
-    # else
-    #   ClientSubdomain.find_by_domain(request.host)
-    # end
+    redirect_to root_url(subdomain: 'www') unless @current_site = if request.domain == APP_CONFIG['default_domain']
+      ClientSubdomain.find_by_subdomain(request.subdomains[0])
+    else
+      ClientSubdomain.find_by_domain(request.host)
+    end
 
-    # @custom_header = begin;render_to_string(partial: "whitelabel/#{current_site.subdomain}/header"); rescue; end;
+    @custom_header = begin;render_to_string(partial: "whitelabel/#{current_site.subdomain}/header"); rescue; end;
   end
 
   def current_platform
@@ -79,7 +79,7 @@ class ApplicationController < ActionController::Base
 
     return @current_platform if @current_platform
 
-    # redirect_to root_url(subdomain: 'www') unless @current_platform = current_site.try(:platform)
+    redirect_to root_url(subdomain: 'www') unless @current_platform = current_site.try(:platform)
   end
   # end code for whitelabel
 
