@@ -25,33 +25,54 @@
         .view-all-header.clearfix
           h4.pull-left Suggested platforms to follow
           = link_to 'View more platforms', platforms_path, class: 'btn btn-default btn-sm hidden-xs pull-right'
-          = link_to 'View more platforms', platforms_path, class: 'btn btn-default btn-sm visible-xs-block pull-right'
 
         .row.mobile-scroll-row.thumbs-carousel
           - @platforms.each do |platform|
             = render partial: 'groups/platforms/platform_thumb', locals: { platform: platform, follow: true }
+
+        = link_to 'View more platforms', platforms_path, class: 'btn btn-default btn-sm visible-xs-block'
+
+    section#suggested-lists.showcase-section
+      .container
+        .view-all-header.clearfix
+          h4.pull-left Suggested lists to follow
+          / # = link_to 'View more hackers', hackers_path, class: 'btn btn-default btn-sm hidden-xs pull-right'
+
+        .row.category-full-row
+          - @lists.each do |list|
+            .col-sm-6.col-md-4.category-full-col
+              .thumb.category-thumb
+                .thumb-image.has-link-overlay style="background-image:url(#{list.decorate.cover_image})"
+                  = link_to '', list, class: 'link-overlay'
+                  .thumb-image-inner
+                    h4
+                      = link_to list.name, list
+
+        / # = link_to 'View more hackers', hackers_path, class: 'btn btn-default btn-sm visible-xs-block'
 
     section#suggested-hackers.showcase-section
       .container
         .view-all-header.clearfix
           h4.pull-left Suggested hackers to follow
           = link_to 'View more hackers', hackers_path, class: 'btn btn-default btn-sm hidden-xs pull-right'
-          = link_to 'View more hackers', hackers_path, class: 'btn btn-default btn-sm visible-xs-block pull-right'
 
         .row.mobile-scroll-row.thumbs-carousel data-slides-count=6
           - @hackers.each do |user|
             = render partial: 'users/user_thumb_mini', locals: { user: user, actions: %w(follow), col: 'col-md-2' }
 
-    section#recent-projects.showcase-section
+        = link_to 'View more hackers', hackers_path, class: 'btn btn-default btn-sm visible-xs-block'
+
+    section#recent-projects.showcase-section.last
       .container
         .view-all-header.clearfix
           h4.pull-left Not ready to follow yet? Here's the latest projects
           = link_to 'View more recent projects', projects_path, class: 'btn btn-default btn-sm hidden-xs pull-right'
-          = link_to 'View more projects', projects_path, class: 'btn btn-default btn-sm visible-xs-block pull-right'
 
         .row.mobile-scroll-row.thumbs-carousel
           - @last_projects.each do |project|
             = render partial: 'projects/project_thumb', locals: { project: project }
+
+        = link_to 'View more projects', projects_path, class: 'btn btn-default btn-sm visible-xs-block'
 
   - else
     #hide.hide
@@ -70,24 +91,33 @@
             = link_to 'hi@hackster.io', 'mailto:hi@hackster.io&subject=Feedback%20for%20dashboard'
             | .
 
-    section#projects.showcase-section
+    section#projects.showcase-section.last
       .container
-        .row#infinite-scrolling
-          - @projects.each do |project|
-            = render partial: 'projects/project_thumb', locals: { project: project }
-            - if common = build_common_for_follow(project, @followed) and common.any?
-              - dom_ids = common.map{|e| "#{e[0].underscore}_#{e[1]}" }
-              - dom_ids.each do |dom_id|
-                = content_for :js do
-                  javascript:
-                    var thumb = $(".project-#{project.id} .thumb-super");
-                    var item = $(".thumb-super-item.#{dom_id}")[0].outerHTML;
-                    thumb.append(item);
+        #infinite-scrolling
+          #page_1.row.page.visible
+            - @projects.each do |project|
+              = render partial: 'projects/project_thumb', locals: { project: project }
+              - if common = build_common_for_follow(project, @followed) and common.any?
+                - dom_ids = common.map{|e| "#{e[0].underscore}_#{e[1]}" }
+                - dom_ids.each do |dom_id|
+                  = content_for :js do
+                    javascript:
+                      var thumb = $(".project-#{project.id} .thumb-super");
+                      var item = $(".thumb-super-item.#{dom_id}")[0].outerHTML;
+                      thumb.append(item);
 
         #loader.text-center= will_paginate @projects
 
     = content_for :js do
       javascript:
-        $('#projects .project-thumb-container:nth-of-type(9)').after("#{j render(partial: 'suggestions', locals: { suggestions: @hackers, term: 'hackers' })}");
-        $('#projects .project-thumb-container:nth-of-type(6)').after("#{j render(partial: 'suggestions', locals: { suggestions: @lists, term: 'lists' })}");
-        $('#projects .project-thumb-container:nth-of-type(3)').after("#{j render(partial: 'suggestions', locals: { suggestions: @platforms, term: 'platforms' })}");
+        var hackers = "#{j render(partial: 'suggestions', locals: { suggestions: @hackers, term: 'hackers' })}";
+        $('#projects .project-thumb-container:nth-of-type(9)').after('<div class="hidden-sm">' + hackers + '</div>');
+        $('#projects .project-thumb-container:nth-of-type(6)').after('<div class="visible-sm">' + hackers + '</div>');
+
+        var lists = "#{j render(partial: 'suggestions', locals: { suggestions: @lists, term: 'lists' })}";
+        $('#projects .project-thumb-container:nth-of-type(6)').after('<div class="hidden-sm">' + lists + '</div>');
+        $('#projects .project-thumb-container:nth-of-type(4)').after('<div class="visible-sm">' + lists + '</div>');
+
+        var platforms = "#{j render(partial: 'suggestions', locals: { suggestions: @platforms, term: 'platforms' })}";
+        $('#projects .project-thumb-container:nth-of-type(3)').after('<div class="hidden-sm">' + platforms + '</div>');
+        $('#projects .project-thumb-container:nth-of-type(2)').after('<div class="visible-sm">' + platforms + '</div>');

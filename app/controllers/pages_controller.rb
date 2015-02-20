@@ -33,11 +33,12 @@ class PagesController < ApplicationController
     featured_lists = %w(home-automation lights wearables animals remote-control displays)
 
     if user_signed_in?
-      @projects = Project.custom_for(current_user).for_thumb_display.paginate(page: safe_page_params, per_page: 12)
+      @projects = Project.where("1=0").paginate(page: safe_page_params, per_page: 12)#Project.custom_for(current_user).for_thumb_display.paginate(page: safe_page_params, per_page: 12)
       if @projects.any?
         @followed = current_user.follow_relations.includes(:followable).includes(followable: :avatar)
         # @followed = current_user.follow_relations.joins("INNER JOIN project_collections ON follow_relations.followable_id = project_collections.collectable_id AND follow_relations.followable_type = project_collections.collectable_type").joins("INNER JOIN projects ON projects.id = project_collections.project_id").where(projects: { id: @projects.map(&:id) }).distinct([:followable_id, :followable_type]).includes(:followable)
-        @next_page = safe_page_params ? safe_page_params + 1 : 2
+        @current_page = safe_page_params || 1
+        @next_page = @current_page + 1
         @next_page = nil if @projects.total_pages < @next_page
 
         unless request.xhr?
@@ -49,7 +50,7 @@ class PagesController < ApplicationController
       else
         unless request.xhr?
           @hackers = User.invitation_accepted_or_not_invited.user_name_set.where.not(id: current_user.followed_users.pluck(:id)).top.limit(24)
-          # @lists = List.where(user_name: featured_lists - current_user.followed_lists.pluck(:user_name))
+          @lists = List.where(user_name: featured_lists - current_user.followed_lists.pluck(:user_name))
           @platforms = Platform.public.where.not(id: current_user.followed_platforms.pluck(:id)).most_members.limit(12)
         end
         @last_projects = Project.indexable.last_public.limit(12)

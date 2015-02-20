@@ -119,13 +119,59 @@ $(function(){
     });
   }
 
+  $loadMore = function() {
+    var more_posts_url = $('.pagination .next_page a').attr('href');
+    if (more_posts_url && $(window).scrollTop() > $(document).height() - $(window).height() - 1000) {  // load early
+      $('#loader').html('<i class="fa fa-spin fa-spinner"></i>');
+      $.getScript(more_posts_url);
+    }
+  }
+
+  var previousScroll = -1;
+  $togglePageVisibility = function() {
+    var scrollTop = $(window).scrollTop();
+    var scrollBottom = scrollTop + $(window).height();
+    if (previousScroll < scrollTop) {  // scrolling down
+      $('.page.visible').each(function(i, page){
+        var height = $(page).outerHeight();
+        var top = $(page).offset().top;
+        var bottom = height + top;
+        if (scrollTop > bottom + height) {  // OK
+          $(page).removeClass('visible');
+        }
+      });
+      $('.page:not(.visible)').each(function(i, page){
+        var height = $(page).outerHeight();
+        var top = $(page).offset().top;
+        var bottom = height + top;
+        if ((scrollTop < bottom + height) && (scrollBottom > top - height)) {
+          $(page).addClass('visible');
+        }
+      });
+    } else {  // scrolling up
+      $('.page.visible').each(function(i, page){
+        var height = $(page).outerHeight();
+        var top = $(page).offset().top;
+        var bottom = height + top;
+        if (scrollBottom < top - height) {  // OK
+          $(page).removeClass('visible');
+        }
+      });
+      $('.page:not(.visible)').each(function(i, page){
+        var height = $(page).outerHeight();
+        var top = $(page).offset().top;
+        var bottom = height + top;
+        if ((scrollBottom > top - height) && (scrollTop < bottom + height)) {
+          $(page).addClass('visible');
+        }
+      });
+    }
+
+    previousScroll = scrollTop;
+  }
+
   if ($('#infinite-scrolling').size() > 0) {
-    $(window).on('scroll', function(){
-      var more_posts_url = $('.pagination .next_page a').attr('href');
-      if (more_posts_url && $(window).scrollTop() > $(document).height() - $(window).height() - 1000) {
-        $('#loader').html('<i class="fa fa-spin fa-spinner"></i>');
-        $.getScript(more_posts_url);
-      }
-    });
+    $(window).on('scroll', $loadMore);
+    $(window).on('scroll', $togglePageVisibility);
   }
 });

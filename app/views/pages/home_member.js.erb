@@ -9,8 +9,9 @@ var text, thumb, item;
   }
 <% end %>
 
+$('#infinite-scrolling').append("<div class='row page visible' id='page_<%= @current_page %>'</div>")
 <% @projects.each do |project| %>
-  $('#projects .row').append("<%= j(render partial: 'projects/project_thumb', locals: { project: project }) %>");
+  $('#page_<%= @current_page %>').append("<%= j(render partial: 'projects/project_thumb', locals: { project: project }) %>");
 <%
   if common = build_common_for_follow(project, @followed) and common.any?
     dom_ids = common.map{|e| "#{e[0].underscore}_#{e[1]}" }
@@ -28,6 +29,6 @@ end
 <% if @next_page %>
   $('#loader').html('<div class="text-center"><%= will_paginate @projects %></div>');
 <% else %>
-  $(window).off('scroll');
+  $(window).off('scroll', $loadMore);
   $('#loader').html("<p>Hurray! You've reached the end of the internet.</p>");
 <% end %>
