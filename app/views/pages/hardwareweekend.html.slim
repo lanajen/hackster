@@ -9,7 +9,7 @@
   meta(property="twitter:image:width" content='1731')
   meta(property="twitter:image:height" content='1155')
 
-= content_for :js do
+/ # = content_for :js do
   = javascript_include_tag 'application'
   = javascript_include_tag 'flipclock'
 
@@ -75,10 +75,16 @@
             h1 Hackster Hardware Weekend
             p 10 Cities | 10 Hackathons | 10 Meetups | 1 DeLorean
 
-      section#about
+      / section#about
         .container
           .countdown
             .inner
+
+      section#about
+        .container
+          p.text-center
+            ' Currently happening:
+            strong= link_to 'Hardware Weekend - Seattle Edition', '/hackathons/hardware-weekend/seattle'
 
       section#desc
         .container
@@ -171,7 +177,7 @@
         .container.text-center
           h2.text-center What's in it for you?
           p.hidden-xs style='font-size:1.5em'
-            | Get Hardware Kits | Great Speakers &amp; Mentors | Swag Madness
+            | Hardware Kits | Great Speakers &amp; Mentors | Swag Madness
             br
             | Food | Caffeine | Best Hardware Community On Earth
             br
