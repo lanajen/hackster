@@ -252,6 +252,7 @@ HackerIo::Application.routes.draw do
     get 'hww', to: redirect('/hardwareweekend')
     get 'hweekend', to: redirect('/hardwareweekend')
     get 'roadshow', to: redirect('/hardwareweekend')
+    get 'seattle', to: redirect('/hackathons/hardware-weekend/seattle')
 
     get 'tinyduino', to: redirect('/tinycircuits')
 
