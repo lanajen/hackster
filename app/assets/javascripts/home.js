@@ -174,4 +174,17 @@ $(function(){
     $(window).on('scroll', $loadMore);
     $(window).on('scroll', $togglePageVisibility);
   }
+
+  $('.follow-button').on('click', function(e){
+    $.ajax({
+      url: '/home',
+      data: { count: true },
+      success: function(data){
+        var count = data.count;
+        if (count > 10) {
+          $("<div class='mini-alert'>You're good to go! <a href=\"javascript:window.location.replace('/');\">Refresh the page</a> to see personalized results.</div>").appendTo('body');
+        }
+      }
+    })
+  });
 });

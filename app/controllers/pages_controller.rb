@@ -33,6 +33,11 @@ class PagesController < ApplicationController
     featured_lists = %w(home-automation lights wearables animals remote-control displays)
 
     if user_signed_in?
+      if params[:count]
+        count = Project.custom_for(current_user).count
+        render json: { count: count } and return
+      end
+
       @projects = Project.custom_for(current_user).for_thumb_display.paginate(page: safe_page_params, per_page: 12)
       if @projects.any?
         @followed = current_user.follow_relations.includes(:followable).includes(followable: :avatar)
