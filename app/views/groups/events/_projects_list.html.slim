@@ -1,8 +1,8 @@
 - if can? :read, @event
   .main-section-actions.clearfix.mg-30
     - if can? :add_project, @event
-    .pull-right
-      = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project to event".html_safe, "#{event_path(@event)}/projects/new", class: 'btn btn-sm btn-default'
+      .pull-right
+        = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project to event".html_safe, "#{event_path(@event)}/projects/new", class: 'btn btn-sm btn-default'
 
   - if @projects.any?
     .row.project-list

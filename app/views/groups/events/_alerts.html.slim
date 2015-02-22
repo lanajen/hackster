@@ -3,9 +3,9 @@
     .container
       - case @event.access_level
       - when 'anyone'
-        ' Registrations for
-        strong> = @event.name
-        ' are open.
+        ' Are you a registered participant of
+        strong = @event.name
+        ' ?
       - when 'invite'
         ' You have been invited to join
         strong = @event.name
