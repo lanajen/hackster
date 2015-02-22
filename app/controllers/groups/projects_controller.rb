@@ -31,7 +31,7 @@ class Groups::ProjectsController < ApplicationController
 
     if @project.save
       flash[:notice] = "#{@project.name} was successfully created."
-      respond_with @project
+      respond_with @project, location: edit_project_path(@project)
 
       track_event 'Created project', @project.to_tracker
     else
