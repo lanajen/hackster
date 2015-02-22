@@ -780,7 +780,7 @@ $(function () {
           frame.fadeOut(function(){
             slider = $(this).closest('.slick-slider');
             if (slider.find('.slick-slide').length > 1) {
-              slider.slickRemove(slider.slickCurrentSlide());
+              slider.slick('slickRemove', slider.slickCurrentSlide());
               $(this).remove();
             } else {
               slider.remove();
@@ -869,7 +869,7 @@ $(function () {
 
         slide.fadeOut(function(){
           slider = $(this).closest('.slick-slider');
-          slider.slickRemove(slider.slickCurrentSlide());
+          slider.slick('slickRemove', slider.slick('slickCurrentSlide'));
           $(this).remove();
           resetPositions(slider.find('.position'));
           editor.triggerInput();
@@ -879,7 +879,7 @@ $(function () {
       case 'move-left':
         frame = $(this).closest('.slick-slide');
         slider = frame.closest('.slick-slider');
-        i = slider.slickCurrentSlide();
+        i = slider.slick('slickCurrentSlide');
         if (i > 0) {
           moveSlideTo(slider, i, i-1, i-1, frame, true);
         }
@@ -888,7 +888,7 @@ $(function () {
       case 'move-right':
         frame = $(this).closest('.slick-slide');
         slider = frame.closest('.slick-slider');
-        i = slider.slickCurrentSlide();
+        i = slider.slick('slickCurrentSlide');
         if ((slider.find('.slick-slide').length - 1) > i) {
           moveSlideTo(slider, i, i, i+1, frame);
         }
@@ -1178,8 +1178,8 @@ $(function () {
           slider = el.closest('.slick-slider');
           if (slider.length > 0) {
             slider = $(slider[0]);
-            slider.slickAdd(el);
-            slider.slickGoTo(slider.find('.slick-slide').length - 1);
+            slider.slick('slickAdd', el);
+            slider.slick('slickGoTo', slider.find('.slick-slide').length - 1);
           }
         }
         reader.readAsDataURL(data.files[0]);
@@ -1294,8 +1294,8 @@ $(function () {
           slider = tpl.closest('.slick-slider');
           if (slider.length > 0) {
             slider = $(slider[0]);
-            slider.slickAdd(tpl);
-            slider.slickGoTo(slider.find('.slick-slide').length - 1);
+            slider.slick('slickAdd', tpl);
+            slider.slick('slickGoTo', slider.find('.slick-slide').length - 1);
           }
 
           checkRemoteFileProcessed(data.job_id, tpl);
@@ -2049,9 +2049,9 @@ function activateSortable() {
 }
 
 function moveSlideTo(slider, i, j, l, frame, insertBefore){
-  slider.slickRemove(i);
-  slider.slickAdd(frame, j, insertBefore);
-  slider.slickGoTo(l);
+  slider.slick('slickRemove', i);
+  slider.slick('slickAdd', frame, j, insertBefore);
+  slider.slick('slickGoTo', l);
   resetPositions(slider.find('.position'));
   editor.triggerInput();
 }
