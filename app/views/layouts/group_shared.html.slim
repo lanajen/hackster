@@ -48,7 +48,8 @@
                   = link_to @group.short_location, "https://www.google.com/maps/search/#{CGI.escape(@group.full_street_address)}", target: '_blank'
 
               .button-content
-                = render partial: 'followers/button_text', locals: { followable: @group }
+                - if @group.model.class.name.in? %w(Platform List)
+                  = render partial: 'followers/button_text', locals: { followable: @group }
                 = render partial: "groups/#{@group.identifier.pluralize}/additional_links"
                 a.btn.btn-link.addthis_button_compact
                   i.fa.fa-share-square-o
