@@ -74,11 +74,11 @@ class PagesController < ApplicationController
         'Arduino' => '/arduino',
         'Spark Core' => '/spark',
         'Home automation' => '/l/home-automation',
-        'Blinky lights' => '/l/blinky-lights',
+        'Blinky lights' => '/l/lights',
         'Raspberry Pi' => '/raspberry-pi',
         'Wearables' => '/l/wearables',
         'Intel Edison' => '/intel-edison',
-        'Pets' => '/l/creature-feature',
+        'Pets' => '/l/animals',
       }
       render 'home_visitor'
     end
