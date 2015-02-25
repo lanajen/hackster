@@ -24,7 +24,7 @@
           = f.input :new_slug, label: 'Challenge URL', wrapper: :addon do
             span.input-group-addon hackster.io/challenges/
             = f.input_field :new_slug
-          = render partial: 'shared/image_form', locals: { file_type: 'document', human_file_type: 'Cover image', image_link: @challenge.cover_image.try(:file_url), help_block: 'A high definition shot, at least 1600px wide and 430px high.', attribute_type: 'cover_image', image_version: nil, model: 'challenge' }
+          = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @challenge.cover_image.try(:file_url), help_block: 'A high definition shot, at least 1600px wide and 430px high.', attribute_type: 'cover_image', image_version: nil, model: 'challenge' }
           = f.input :video_link, label: 'Video link'
           = f.input :teaser, as: :text, input_html: { rows: 2 }, hint: 'Maximum 140 characters.'
           = f.input :custom_tweet, as: :text, input_html: { rows: 2 }, hint: "Maximum 140 characters. Default: '#{@challenge.decorate.default_tweet}'"
