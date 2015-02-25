@@ -1,8 +1,130 @@
+- @challenge = @challenge.decorate
+
+= content_for :head do
+  - if url_for(@challenge) == request.path
+    / = render partial: "groups/#{@challenge.identifier.pluralize}/meta_tags"
+  meta name='group_id' content=@challenge.id
+
+= content_for :js do
+  script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-51b26f5613fb83d2" async="async"
+  javascript:
+    var addthis_share = {
+      "data_track_addressbar":false,
+       url: "#{challenge_url(@challenge)}",
+       title: "Submit your project to #{@challenge.name} and win #{indefinite_articlerize @challenge.prizes.first.name}."
+    }
+
+    $(document).ready(function(){
+      $('.enter-challenge').click(function(e){
+        e.preventDefault();
+        openModal('#enter-popup');
+      });
+    });
+
 = content_for :no_container do
   #challenge
-    #platform-page.page-div
-      = render "sidebar"
-      #content-with-sidebar
+    section.top-banner
+      .top-banner-image style="background-image:url('#{@challenge.cover_image(:cover)}');" class=@challenge.bg_class
+        .top-banner-image-inner
+          .container.hidden-xs
+            .media
+              h1= @challenge.name
+              p= @challenge.teaser
+
+              - if @platform
+                p.sponsored
+                  | Sponsored by
+                  - if @platform.avatar
+                    = image_tag @platform.avatar(:big), class: 'img-thumbnail'
+                  = link_to @platform.name, @platform
+
+              .button-content
+                / # = render partial: "groups/#{@challenge.identifier.pluralize}/additional_links"
+                a.btn.btn-link.addthis_button_compact
+                  i.fa.fa-share-square-o
+
+          .container.visible-xs
+            = image_tag @challenge.avatar(:big), class: 'img-thumbnail'
+
+            h1= @challenge.name
+            p= @challenge.teaser
+
+      section.group-nav.affixable
+        .group-nav-inner.hidden-xs
+          .brand
+            = image_tag @challenge.avatar(:big), class: 'img-thumbnail'
+            h2= @challenge.name
+          ul.nav.nav-tabs= render 'nav'
+          - if @challenge.open_for_submissions? and (!@is_challenge_entrant or @challenge.allow_multiple_entries?)
+            ul.list-inline.manage
+              li= link_to 'Enter challenge', '', class: 'btn btn-primary enter-challenge'
+
+          - if can? :admin, @challenge
+            ul.list-inline.manage
+              li.dropdown role='presentation'
+                a.btn.btn-default.dropdown-toggle data-toggle="dropdown" aria-expanded="false"
+                  ' Manage challenge
+                  span.caret
+                ul.dropdown-menu role="menu"
+                  li= link_to "Edit settings", edit_challenge_path(@challenge)
+                  li= link_to "Entries dashboard", challenge_entries_path(@challenge)
+
+        .visible-xs
+          a.submenu-mobile-open href=''
+            i.fa.fa-bars
+            | Event menu
+
+          ul.nav.nav-pills.nav-stacked.nav-justified.submenu-mobile style='display:none;'
+            li
+              a.close-nav href='' &times; Close
+            = render 'nav'
+            - if can? :manage, @challenge
+              li.divider
+              li= link_to "Edit challenge settings", edit_challenge_path(@challenge)
+              li= link_to "Entries dashboard", challenge_entries_path(@challenge)
+
+    / = render partial: "groups/#{@challenge.identifier.pluralize}/alerts"
+
+    - if @challenge.judging? and can? :admin, @challenge
+      .alert.alert-info.alert-flat.text-center
+        strong> This challenge is ready to be judged!
+        = link_to 'Go to the judging dashboard', challenge_entries_path(@challenge), class: 'alert-link'
+
+    section.main-section
+      .container
         = yield
 
 = render template: "layouts/#{current_layout}"
+
+#enter-popup.popup-overlay.normal-size.modal-popup class="#{ 'modal-show' if params[:enter] }"
+  .popup-overlay-bg
+  .popup-overlay-outer
+    .popup-overlay-inner
+      button.close data-target='#enter-popup' &times;
+      - link_params = @challenge.project_ideas ? { project: { mark_as_idea: true, platform_tags_string: @platform.try(:name) } } : { project: {platform_tags_string: @platform.try(:name) } }
+      - if user_signed_in?
+        - if @user_projects.any?
+          p Which project do you want to use to enter the challenge?
+          = form_tag challenge_entries_path(@challenge), method: :post do
+            = select_tag :project_id, options_from_collection_for_select(@user_projects, :id, :name), class: 'form-control'
+            p
+              small
+                ' By entering you agree to the
+                = link_to 'challenge rules', challenge_path(@challenge, anchor: 'rules'), onclick: 'javascript:closeModal("#enter-popup");$("#rules .section-content").slideDown();'
+            = submit_tag "Enter my project #{'idea ' if @challenge.project_ideas}into the challenge", class: 'btn btn-primary'
+          p
+            small
+              ' or
+              = link_to "create a new project#{' idea' if @challenge.project_ideas}", new_project_path(link_params)
+
+        - else
+          p You need a project #{'idea ' if @challenge.project_ideas}to enter!
+          p= link_to "Create a new project#{' idea' if @challenge.project_ideas}", new_project_path(link_params)
+      - else
+        p You need a project to #{'idea ' if @challenge.project_ideas}enter!
+        p
+          ==> link_to "Create a new project#{' idea' if @challenge.project_ideas}", new_user_registration_path(reason: 'project', redirect_to: new_project_path(link_params))
+          ' or
+          = link_to 'log in to use one of your existing projects', new_user_session_path(m: 'challenge', id: @challenge.id, reason: 'enter', redirect_to: challenge_path(@challenge, enter: 't'))
+
+= content_for :js do

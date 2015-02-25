@@ -213,7 +213,8 @@ HackerIo::Application.routes.draw do
 
     scope 'challenges/:slug', as: :challenge do
       get '' => 'challenges#show'
-      get 'rules' => 'challenges#rules'
+      get 'brief' => 'challenges#brief'
+      get 'projects' => 'challenges#projects'
       patch '' => 'challenges#update'
     end
     # get 'challenges/:slug' => 'challenges#show', as: :challenge

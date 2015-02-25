@@ -1,0 +1,6 @@
+- if @challenge.judged?
+  = active_li_link_to "Projects#{content_tag(:small, @challenge.projects_count)}".html_safe, url_for(@challenge), role: 'presentation'
+  = active_li_link_to 'Challenge brief', challenge_brief_path(@challenge.slug), role: 'presentation'
+- else
+  = active_li_link_to 'Challenge brief', url_for(@challenge), role: 'presentation'
+  = active_li_link_to "Projects#{content_tag(:small, @challenge.projects_count)}".html_safe, challenge_projects_path(@challenge.slug), role: 'presentation'

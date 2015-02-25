@@ -1,6 +1,18 @@
 class ChallengeDecorator < ApplicationDecorator
-  def cover_image
-    model.cover_image.try(:file_url)
+  def bg_class
+    if model.cover_image and model.cover_image.file_url
+      'user-bg'
+    else
+      'default-bg'
+    end
+  end
+
+  def cover_image size=:cover
+    if model.cover_image and model.cover_image.file_url
+      model.cover_image.file_url(size)
+    else
+      h.asset_url 'footer-bg.png'
+    end
   end
 
   def status
@@ -12,7 +24,7 @@ class ChallengeDecorator < ApplicationDecorator
     when :judging
       'Judging in progress'
     when :judged
-      'Prizes awarded'
+      h.content_tag(:i, '', class: 'fa fa-check') + ' Prizes awarded'
     end
   end
 

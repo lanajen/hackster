@@ -466,12 +466,16 @@
       margin: 10px 0 9px 10px;
     }
     h2 {
-      display: inline;
+      display: inline-block;
       margin: 0 15px 0 10px;
       vertical-align: middle;
       color: #fff;
       font-weight: bold;
       font-size: 1.5em;
+      max-width: 300px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
   }
 }

@@ -2,6 +2,7 @@ class Challenge < ActiveRecord::Base
   DEFAULT_DURATION = 60
   VISIBLE_STATES = %w(in_progress ended paused canceled judging judged)
 
+  include Counter
   include StringParser
   include Workflow
 
@@ -13,11 +14,9 @@ class Challenge < ActiveRecord::Base
   has_many :prizes, -> { order(:position) }, dependent: :destroy
   has_many :projects, through: :entries
   has_one :avatar, as: :attachable, dependent: :destroy
-  has_one :cover_image, as: :attachable, class_name: 'Document', dependent: :destroy
-  has_one :tile_image, as: :attachable, class_name: 'Image', dependent: :destroy
+  has_one :cover_image, as: :attachable, dependent: :destroy
   validates :name, :slug, :end_date, presence: true
   validates :teaser, length: { maximum: 140 }
-  validate :end_date_is_valid, if: proc{ |c| c.persisted? }
   before_validation :assign_new_slug
   before_validation :generate_slug, if: proc{ |c| c.slug.blank? }
 
@@ -34,9 +33,13 @@ class Challenge < ActiveRecord::Base
 
   parse_as_booleans :properties, :multiple_entries, :project_ideas
 
+  store :counters_cache, accessors: [:projects_count]
+
+  parse_as_integers :counters_cache, :projects_count
+
   workflow do
     state :new do
-      event :launch, transitions_to: :in_progress
+      event :launch, transitions_to: :in_progress, if: :end_date_is_valid
     end
     state :in_progress do
       event :cancel, transitions_to: :canceled
@@ -76,6 +79,12 @@ class Challenge < ActiveRecord::Base
 
   def cover_image_id=(val)
     self.cover_image = Document.find_by_id(val)
+  end
+
+  def counters
+    {
+      projects: 'entries.approved.count',
+    }
   end
 
   def duration
@@ -122,6 +131,8 @@ class Challenge < ActiveRecord::Base
   end
 
   def launch
+    halt and return unless end_date_is_valid?
+
     self.start_date = Time.now
     save
     notify_observers(:after_launch)
@@ -145,8 +156,9 @@ class Challenge < ActiveRecord::Base
   end
 
   private
-    def end_date_is_valid
+    def end_date_is_valid?
       errors.add :end_date_dummy, 'is required' and return unless end_date
-      errors.add :end_date_dummy, 'must be at least 5 days in the future' if end_date < 5.days.from_now
+      errors.add :end_date_dummy, 'must be at least 5 days in the future' and return if end_date < 5.days.from_now
+      true
     end
 end

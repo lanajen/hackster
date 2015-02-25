@@ -1,5 +1,6 @@
 class ChallengeEntryObserver < ActiveRecord::Observer
   def after_approve record
+    record.challenge.update_counters only: [:projects]
     BaseMailer.enqueue_email 'new_entry_accepted_notification',
       { context_type: 'challenge_entry', context_id: record.id }
   end

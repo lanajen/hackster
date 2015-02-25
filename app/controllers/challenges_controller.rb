@@ -1,16 +1,30 @@
 class ChallengesController < ApplicationController
-  before_filter :authenticate_user!, except: [:show, :rules]
-  before_filter :load_challenge, only: [:show, :rules, :update]
-  before_filter :load_platform, only: [:show, :rules]
+  before_filter :authenticate_user!, only: [:edit, :update, :update_workflow]
+  before_filter :load_challenge, except: [:edit, :update_workflow]
+  before_filter :load_platform, only: [:show, :brief, :projects]
   before_filter :load_and_authorize_challenge, only: [:enter, :update_workflow]
-  before_filter :set_challenge_entrant, only: [:show, :rules]
-  before_filter :load_user_projects, only: [:show, :rules]
-  load_and_authorize_resource except: [:show, :rules, :update]
+  before_filter :set_challenge_entrant, only: [:show, :brief, :projects]
+  before_filter :load_user_projects, only: [:show, :brief, :projects]
+  load_and_authorize_resource except: [:show, :brief, :projects, :update]
   layout :set_layout
 
   def show
     authorize! :read, @challenge
     title @challenge.name
+    # @embed = Embed.new(url: @challenge.video_link)
+
+    render 'challenges/brief'
+  end
+
+  def brief
+    authorize! :read, @challenge
+    title "#{@challenge.name} brief"
+  end
+
+  def projects
+    authorize! :read, @challenge
+    title "#{@challenge.name} projects"
+
     per_page = Challenge.per_page
     per_page = per_page - 1 if @challenge.open_for_submissions? and @is_challenge_entrant
     if @challenge.judged?
@@ -19,13 +33,6 @@ class ChallengesController < ApplicationController
     else
       @projects = @challenge.projects.paginate(page: params[:page], per_page: per_page)
     end
-    @embed = Embed.new(url: @challenge.video_link)
-
-  end
-
-  def rules
-    authorize! :read, @challenge
-    title "#{@challenge.name} rules"
   end
 
   def edit
@@ -41,13 +48,13 @@ class ChallengesController < ApplicationController
   end
 
   def update_workflow
-    begin
-      @challenge.send "#{params[:event]}!"
+    if @challenge.send "#{params[:event]}!"
       flash[:notice] = "Challenge #{event_to_human(params[:event])}."
-    rescue
-      flash[:error] = "Couldn't #{params[:event].gsub(/_/, ' ')} challenge, please try again or contact an admin."
+      redirect_to @challenge
+    else
+      # flash[:error] = "Couldn't #{params[:event].gsub(/_/, ' ')} challenge, please try again or contact an admin."
+      render :edit
     end
-    redirect_to @challenge
   end
 
   private
@@ -75,7 +82,7 @@ class ChallengesController < ApplicationController
     end
 
     def load_user_projects
-      if user_signed_in?
+      if user_signed_in? and @challenge.open_for_submissions?
         @user_projects = current_user.projects.where(external: false)
         @user_projects = @user_projects.select{|p| p.is_idea? } if @challenge.project_ideas
       else
@@ -88,7 +95,7 @@ class ChallengesController < ApplicationController
     end
 
     def set_layout
-      if self.action_name.to_s.in? %w(show rules)
+      if self.action_name.to_s.in? %w(show rules projects brief)
         'challenge'
       else
         current_layout

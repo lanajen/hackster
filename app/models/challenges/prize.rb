@@ -3,7 +3,8 @@ class Prize < ActiveRecord::Base
   has_one :image, as: :attachable, dependent: :destroy
   has_one :project
 
-  attr_accessible :name, :description, :position, :requires_shipping, :quantity
+  attr_accessible :name, :description, :position, :requires_shipping, :quantity,
+    :cash_value
 
   def requires_shipping?
     requires_shipping

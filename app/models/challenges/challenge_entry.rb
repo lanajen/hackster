@@ -2,6 +2,7 @@ class ChallengeEntry < ActiveRecord::Base
   self.table_name = :challenge_projects
 
   AWARDED_STATES = %w(awarded fullfiled)
+  APPROVED_STATES = AWARDED_STATES + %w(qualified unawarded)
 
   include Workflow
 
@@ -28,6 +29,10 @@ class ChallengeEntry < ActiveRecord::Base
       event :mark_prize_shipped, transitions_to: :fullfiled
     end
     state :fullfiled
+  end
+
+  def self.approved
+    where(workflow_state: APPROVED_STATES)
   end
 
   def self.winning

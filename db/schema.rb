@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150218061058) do
+ActiveRecord::Schema.define(version: 20150224201617) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -400,10 +400,7 @@ ActiveRecord::Schema.define(version: 20150218061058) do
     t.string   "product_tags_string"
     t.text     "counters_cache"
     t.string   "workflow_state"
-<<<<<<< HEAD
-=======
     t.string   "slug"
->>>>>>> master
   end
 
   add_index "parts", ["partable_id", "partable_type"], name: "partable_index", using: :btree
@@ -429,6 +426,7 @@ ActiveRecord::Schema.define(version: 20150218061058) do
     t.integer "position"
     t.boolean "requires_shipping"
     t.integer "quantity",          default: 1
+    t.integer "cash_value"
   end
 
   create_table "project_collections", force: true do |t|

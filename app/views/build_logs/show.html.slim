@@ -1,29 +1,29 @@
 .row
-    .col-md-4.col-md-push-8
-      = link_to "&larr; See all build logs".html_safe, project_logs_path(@project.user_name_for_url, @project.slug), class: 'btn btn-link btn-sm btn-block mg-20 hidden-link'
+  .col-md-4.col-md-push-8
+    = link_to "&larr; See all build logs".html_safe, project_logs_path(@project.user_name_for_url, @project.slug), class: 'btn btn-link btn-sm btn-block mg-20 hidden-link'
 
-      - if can? :edit, @log
-        section.section-thumbs
-          h4 Admin actions
-          ==> link_to 'Edit', edit_project_log_path(@project.user_name_for_url, @project.slug, @log.id), class: 'btn btn-sm btn-warning'
-          = link_to 'Delete', build_log_path(@log), class: 'btn btn-sm btn-danger', data: { method: :delete, confirm: "Are you sure? There's no way back!" }
-
+    - if can? :edit, @log
       section.section-thumbs
-        h4 Posted by
-        .row.desktop-tighter-margins= render partial: 'users/user_thumb_mini', locals: { user: @log.user }
+        h4 Admin actions
+        ==> link_to 'Edit', edit_project_log_path(@project.user_name_for_url, @project.slug, @log.id), class: 'btn btn-sm btn-warning'
+        = link_to 'Delete', build_log_path(@log), class: 'btn btn-sm btn-danger', data: { method: :delete, confirm: "Are you sure? There's no way back!" }
 
-      section.section-thumbs
-        h4 Share
-        = render 'shared/share_buttons'
+    section.section-thumbs
+      h4 Posted by
+      .row.desktop-tighter-margins= render partial: 'users/user_thumb_mini', locals: { user: @log.user }
 
-    .col-md-8.col-md-pull-4
-      = render @log
+    section.section-thumbs
+      h4 Share
+      = render 'shared/share_buttons'
 
-      section#comments.section-container.section-collapsible
-        h2.section-title
-          a.title.title-toggle href=''
-            ' Comments
-            i.fa.fa-chevron-down
-            i.fa.fa-chevron-up
-        .section-content
-          = render partial: 'widgets/comments', locals: { comments: @log.comments, commentable: @log }
+  .col-md-8.col-md-pull-4
+    = render @log
+
+    section#comments.section-container.section-collapsible
+      h2.section-title
+        a.title.title-toggle href=''
+          ' Comments
+          i.fa.fa-chevron-down
+          i.fa.fa-chevron-up
+      .section-content
+        = render partial: 'widgets/comments', locals: { comments: @log.comments, commentable: @log }
