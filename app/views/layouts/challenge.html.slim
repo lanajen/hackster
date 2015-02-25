@@ -71,6 +71,7 @@
           .brand
             / # - if @challenge.avatar
               = image_tag @challenge.avatar.file_url(:mini), class: 'img-thumbnail'
+            .img-placeholder
             h2= @challenge.name
           ul.nav.nav-tabs= render 'nav'
           - if @challenge.open_for_submissions? and (!@is_challenge_entrant or @challenge.allow_multiple_entries?)
