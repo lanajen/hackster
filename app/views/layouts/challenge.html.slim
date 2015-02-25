@@ -37,6 +37,12 @@
                   - if @platform.avatar
                     = image_tag @platform.avatar(:big), class: 'img-thumbnail'
                   = link_to @platform.name, @platform
+              - elsif @challenge.sponsor_name.present?
+                p.sponsored
+                  | Sponsored by
+                  - if @challenge.avatar
+                    = image_tag @challenge.avatar(:big), class: 'img-thumbnail'
+                  = link_to @challenge.sponsor_name, @challenge.sponsor_link
 
               .button-content
                 / # = render partial: "groups/#{@challenge.identifier.pluralize}/additional_links"
