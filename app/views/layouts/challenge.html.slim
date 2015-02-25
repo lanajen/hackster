@@ -50,10 +50,21 @@
                   i.fa.fa-share-square-o
 
           .container.visible-xs
-            = image_tag @challenge.avatar.file_url(:mini), class: 'img-thumbnail'
 
             h1= @challenge.name
             p= @challenge.teaser
+            - if @platform
+              p.sponsored
+                | Sponsored by
+                - if @platform.avatar
+                  = image_tag @platform.avatar(:mini), class: 'img-thumbnail'
+                = link_to @platform.name, @platform
+            - elsif @challenge.sponsor_name.present?
+              p.sponsored
+                | Sponsored by
+                - if @challenge.avatar
+                  = image_tag @challenge.avatar.file_url(:mini), class: 'img-thumbnail'
+                = link_to @challenge.sponsor_name, @challenge.sponsor_link
 
       section.group-nav.affixable
         .group-nav-inner.hidden-xs
