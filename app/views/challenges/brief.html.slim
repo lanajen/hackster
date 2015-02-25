@@ -59,7 +59,7 @@
     section.section-container.section-collapsible.section-toggled#rules
       h2.section-title
         a.title.title-toggle href=''
-          ' Full rules
+          ' Challenge rules
           i.fa.fa-chevron-down
           i.fa.fa-chevron-up
 
@@ -79,3 +79,7 @@
         - if @challenge.how_to_enter.present?
           h3 How to enter
           = raw @challenge.how_to_enter
+
+        - if @challenge.rules.present?
+          h3 Full rules
+          = raw @challenge.rules
