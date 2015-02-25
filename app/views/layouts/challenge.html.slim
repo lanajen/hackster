@@ -11,7 +11,7 @@
     var addthis_share = {
       "data_track_addressbar":false,
        url: "#{challenge_url(@challenge)}",
-       title: "Submit your project to #{@challenge.name} and win #{indefinite_articlerize @challenge.prizes.first.name}."
+       title: "#{@challenge.to_tweet}"
     }
 
     $(document).ready(function(){

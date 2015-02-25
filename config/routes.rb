@@ -48,6 +48,7 @@ HackerIo::Application.routes.draw do
 
       resources :awarded_badges, only: [:create], controller: 'badges'
       resources :badges, except: [:show, :create]
+      resources :challenges, except: [:show]
       resources :blog_posts, except: [:show]
       resources :groups, except: [:show]
       resources :parts, except: [:show] do

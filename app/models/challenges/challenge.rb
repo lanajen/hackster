@@ -15,19 +15,20 @@ class Challenge < ActiveRecord::Base
   has_many :projects, through: :entries
   has_one :avatar, as: :attachable, dependent: :destroy
   has_one :cover_image, as: :attachable, dependent: :destroy
-  validates :name, :slug, :end_date, presence: true
-  validates :teaser, length: { maximum: 140 }
+  validates :name, :slug, presence: true
+  validates :teaser, :custom_tweet, length: { maximum: 140 }
   before_validation :assign_new_slug
   before_validation :generate_slug, if: proc{ |c| c.slug.blank? }
 
   attr_accessible :new_slug, :name, :prizes_attributes, :platform_id, :description,
     :rules, :teaser, :multiple_entries, :duration, :eligibility, :requirements,
     :judging_criteria, :how_to_enter, :video_link, :cover_image_id, :project_ideas,
-    :end_date, :end_date_dummy, :avatar_id
+    :end_date, :end_date_dummy, :avatar_id, :custom_tweet
   attr_accessor :new_slug, :end_date_dummy
 
   store :properties, accessors: [:description, :rules, :teaser, :multiple_entries,
-    :eligibility, :requirements, :judging_criteria, :how_to_enter, :project_ideas]
+    :eligibility, :requirements, :judging_criteria, :how_to_enter, :project_ideas,
+    :custom_tweet]
 
   accepts_nested_attributes_for :prizes, allow_destroy: true
 
@@ -96,7 +97,7 @@ class Challenge < ActiveRecord::Base
   end
 
   def ended?
-    Time.now > end_date
+    end_date and Time.now > end_date
   end
 
   def end_date=(val)

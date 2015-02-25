@@ -35,15 +35,22 @@ html(lang="en")
                 | Groups
                 span.caret
               ul.dropdown-menu
-                li
-                  = link_to 'Hacker Spaces', admin_hacker_spaces_path
-                  = link_to 'Platforms', admin_platforms_path
-                  = link_to 'Others', admin_groups_path
+                li= link_to 'Hacker Spaces', admin_hacker_spaces_path
+                li= link_to 'Platforms', admin_platforms_path
+                li= link_to 'Others', admin_groups_path
             li= link_to 'Comments', admin_comments_path
-            li= link_to 'Issues', admin_issues_path
-            li= link_to 'Build logs', admin_build_logs_path
-            li= link_to 'Followers', admin_followers_path
-            li= link_to 'Respects', admin_respects_path
+            li= link_to 'Blog', admin_blog_posts_path
+            li= link_to 'Challenges', admin_challenges_path
+            li.dropdown
+              a.nav-link.dropdown-toggle data-toggle="dropdown" href='#'
+                | More
+                span.caret
+              ul.dropdown-menu
+                li= link_to 'Issues', admin_issues_path
+                li= link_to 'Build logs', admin_build_logs_path
+                li= link_to 'Followers', admin_followers_path
+                li= link_to 'Respects', admin_respects_path
+                li= link_to 'Messages', admin_messages_path
             li
               a.divider-vertical= "|"
             li= link_to 'Logs', admin_logs_path

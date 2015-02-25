@@ -15,6 +15,14 @@ class ChallengeDecorator < ApplicationDecorator
     end
   end
 
+  def default_tweet
+    append = if prize = model.prizes.first and prize.name.present?
+      ' ' + h.indefinite_articlerize(prize.try(:name))
+    end
+
+    "Submit your project to #{model.name} and win#{append}."
+  end
+
   def status
     case model.workflow_state.to_sym
     when :new
@@ -30,6 +38,12 @@ class ChallengeDecorator < ApplicationDecorator
 
   def time_left
     h.time_diff_in_natural_language(Time.now, model.end_date)
+  end
+
+  def to_tweet
+    return model.custom_tweet if model.custom_tweet.present?
+
+    default_tweet
   end
 
   private
