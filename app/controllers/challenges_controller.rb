@@ -13,7 +13,12 @@ class ChallengesController < ApplicationController
     title @challenge.name
     # @embed = Embed.new(url: @challenge.video_link)
 
-    render 'challenges/brief'
+    if @challenge.ended?
+      load_projects
+      render 'challenges/projects'
+    else
+      render 'challenges/brief'
+    end
   end
 
   def brief
@@ -24,15 +29,7 @@ class ChallengesController < ApplicationController
   def projects
     authorize! :read, @challenge
     title "#{@challenge.name} projects"
-
-    per_page = Challenge.per_page
-    per_page = per_page - 1 if @challenge.open_for_submissions? and @is_challenge_entrant
-    if @challenge.judged?
-      @winning_entries = @challenge.entries.winning.includes(:project)
-      @other_projects = @challenge.projects.references(:challenge_entries).where("challenge_projects.prize_id IS NULL")
-    else
-      @projects = @challenge.projects.paginate(page: params[:page], per_page: per_page)
-    end
+    load_projects
   end
 
   def edit
@@ -79,6 +76,17 @@ class ChallengesController < ApplicationController
 
     def load_platform
       @platform = @challenge.platform.try(:decorate)
+    end
+
+    def load_projects
+      per_page = Challenge.per_page
+      per_page = per_page - 1 if @challenge.open_for_submissions? and @is_challenge_entrant
+      if @challenge.judged?
+        @winning_entries = @challenge.entries.winning.includes(:project)
+        @other_projects = @challenge.projects.references(:challenge_entries).where("challenge_projects.prize_id IS NULL")
+      else
+        @projects = @challenge.projects.paginate(page: params[:page], per_page: per_page)
+      end
     end
 
     def load_user_projects

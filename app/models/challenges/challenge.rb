@@ -95,6 +95,10 @@ class Challenge < ActiveRecord::Base
     notify_observers(:after_end)
   end
 
+  def ended?
+    Time.now > end_date
+  end
+
   def end_date=(val)
     begin
       date = val.to_datetime
