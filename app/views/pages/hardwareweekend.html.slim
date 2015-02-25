@@ -132,7 +132,8 @@
           .layer
             = link_to image_tag('hwweek/partners/upverter.png'), 'https://upverter.com'
             = link_to image_tag('hwweek/partners/lemnos.png'), 'http://lemnoslabs.com'
-            = link_to image_tag('hwweek/partners/1sheeld.png'), 'http://1sheeld.com'
+            = link_to image_tag('hwweek/partners/mouser.png'), 'http://www.mouser.com'
+            / = link_to image_tag('hwweek/partners/1sheeld.png'), 'http://1sheeld.com'
             = link_to image_tag('hwweek/partners/relayr.png'), 'https://relayr.io'
           .layer
             = link_to image_tag('hwweek/partners/adafruit.png'), 'https://www.adafruit.com'
@@ -153,7 +154,7 @@
         .container
           h2.text-center Mentors and Speakers
           .row
-            .col-md-2.col-sm-4.col-md-offset-2
+            .col-md-2.col-sm-4.col-md-offset-1
               a.thumbnail href="https://www.linkedin.com/in/ericklein"
                 = image_tag 'hwweek/guests/erik_klein.jpg'
                 .caption
@@ -174,6 +175,13 @@
                   | Zach Supalla
                   br
                   small.text-muted San Francisco
+            .col-md-2.col-sm-4
+              a.thumbnail href="https://twitter.com/mramontgomery"
+                = image_tag 'hwweek/guests/anthony_montgomery.jpg', style: 'width: 100%'
+                .caption
+                  | Anthony Montgomery
+                  br
+                  small.text-muted Los Angeles
             .col-md-2.col-sm-4
               a.thumbnail href="https://www.linkedin.com/in/scottnmiller"
                 = image_tag 'hwweek/guests/scott_miller.jpg', style: 'width: 100%'
@@ -225,17 +233,17 @@
                     h3 Day 1
                 tbody
                   tr
-                    td 10:00 am
-                    td Sign-in, say hello and form teams
+                    td 9:00 am
+                    td Check-in and breakfast
                   tr
-                    td 11:00 am
+                    td 10:00 am
                     td Kickoff
                   tr
                     td 11:30 am
                     td Training workshop
                   tr
                     td 12:30 pm
-                    td Lunch break with industry speaker
+                    td Lunch served
                   tr
                     td 1:00 pm
                     td Start hacking
@@ -256,10 +264,10 @@
                     h3 Day 2
                 tbody
                   tr
-                    td 9:00 am
+                    td 8:00 am
                     td Work on your hacks and get breakfast
                   tr
-                    td 1:00 pm
+                    td 12:30 pm
                     td Lunch break with industry speaker
                   tr
                     td 4:00 pm
@@ -305,17 +313,17 @@
               a.city-card style="background-image:url('#{asset_url 'hwweek/cities/phoenix.jpg'}')" href="http://www.eventbrite.com/e/phoenix-hackster-hardware-weekend-tickets-15427066772" target='_blank'
                 .caption
                   h4 Phoenix, AZ
+                  p March 28-29
+            .col-sm-6
+              a.city-card style="background-image:url('#{asset_url 'hwweek/cities/dallas.jpg'}')" href="https://www.eventbrite.com/e/dallas-hackster-hardware-weekend-tickets-15427087835" target='_blank'
+                .caption
+                  h4 Dallas, TX
                   p April 4-5
             .col-sm-6
               a.city-card style="background-image:url('#{asset_url 'hwweek/cities/louisville.jpg'}')" href="https://firstbuild.com/mary/mega-hackathon-hack-the-home/discussion/topic/hack-to-the-future-with-hacksterio-and-1b/2464/" target='_blank'
                 .caption
                   h4 Louisville, KY (Parnership with FirstBuild)
                   p April 10-11
-            .col-sm-6
-              a.city-card style="background-image:url('#{asset_url 'hwweek/cities/dallas.jpg'}')" href="https://www.eventbrite.com/e/dallas-hackster-hardware-weekend-tickets-15427087835" target='_blank'
-                .caption
-                  h4 Dallas, TX
-                  p April 25-26
             .col-sm-6
               a.city-card style="background-image:url('#{asset_url 'hwweek/cities/nyc.jpg'}')" href="https://www.eventbrite.com/e/new-york-hackster-hardware-weekend-tickets-15427219228" target='_blank'
                 .caption
