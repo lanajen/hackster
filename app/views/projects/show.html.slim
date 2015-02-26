@@ -17,11 +17,11 @@
                 ' This project is part of
                 - if @project.assignment.present?
                   - if @project.assignment.promotion.avatar
-                    ==> image_tag @project.assignment.promotion.avatar.file_url(:mini), class: 'img-circle'
+                    ==> image_tag @project.assignment.promotion.avatar.file_url(:mini), class: 'img-thumb'
                   = link_to @project.assignment.to_label, assignment_path(@project.assignment)
                 - elsif @project.event.present?
                   - if @project.event.avatar
-                    ==> image_tag @project.event.avatar.file_url(:mini), class: 'img-circle'
+                    ==> image_tag @project.event.avatar.file_url(:mini), class: 'img-thumb'
                   = link_to @project.event.name, event_path(@project.event)
                   / - @project.awards.where(gradable_id: @project.collection_id, gradable_type: 'Group').each do |award|
                     span.project-award<

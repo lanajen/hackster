@@ -11,6 +11,7 @@
 - resource.errors.each do |attr|
   - if resource.respond_to? attr
     = f.input attr
+= hidden_field_tag :redirect_to, @redirect_to
 .form-group
   .col-xs-12
     = f.submit 'Create my account', class: 'btn btn-primary btn-block'

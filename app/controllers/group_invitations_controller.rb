@@ -9,6 +9,13 @@ class GroupInvitationsController < ApplicationController
     redirect_to group_path(@group), alert: 'Invalid invitation token' and return unless token_valid?
     redirect_to group_path(@group) and return if user_signed_in? and current_user.is_member?(@group)
     @hide_top_join_prompt = true
+
+    @redirect_to = group_accept_invitation_path(@group, token: @group.invitation_token, role: params[:role], permission: params[:permission])
+  end
+
+  helper_method :resource
+  def resource
+    User.new
   end
 
   def new

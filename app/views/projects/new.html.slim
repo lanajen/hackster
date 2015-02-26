@@ -3,7 +3,7 @@
     - platform = GroupDecorator.decorate(platform)
     .col-md-4.col-md-offset-4
       h2.text-center
-        ==> image_tag platform.avatar(:mini), class: 'img-circle'
+        ==> image_tag platform.avatar(:mini), class: 'img-thumb'
         = link_to platform.name, platform_short_path(platform), class: 'hidden-link'
 
     - if @project.is_idea?

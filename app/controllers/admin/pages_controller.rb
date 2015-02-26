@@ -21,6 +21,12 @@ class Admin::PagesController < Admin::BaseController
     @new_user_follows_count = FollowRelation.where(followable_type: 'User').where('follow_relations.created_at > ?', Date.today).count
     @new_platform_follows_count = FollowRelation.where(followable_type: 'Group').where('follow_relations.created_at > ?', Date.today).count
     @new_users_count = User.invitation_accepted_or_not_invited.where('users.created_at > ?', Date.today).count
+    @active_users1d = User.where("users.last_seen_at > ?", 1.days.ago).count
+    @active_users7d = User.where("users.last_seen_at > ?", 7.days.ago).count
+    @active_users30d = User.where("users.last_seen_at > ?", 30.days.ago).count
+    @new_users1d = User.invitation_accepted_or_not_invited.where("users.created_at > ?", 1.days.ago).count
+    @new_users7d = User.invitation_accepted_or_not_invited.where("users.created_at > ?", 7.days.ago).count
+    @new_users30d = User.invitation_accepted_or_not_invited.where("users.created_at > ?", 30.days.ago).count
 
     sql = "SELECT users.*, t1.count FROM (SELECT members.user_id as user_id, COUNT(*) as count FROM members INNER JOIN groups AS team ON team.id = members.group_id INNER JOIN projects ON projects.team_id = team.id WHERE projects.private = 'f' AND projects.hide = 'f' AND projects.approved = 't' AND (projects.guest_name = '' OR projects.guest_name IS NULL) GROUP BY user_id) AS t1 INNER JOIN users ON users.id = t1.user_id WHERE t1.count > 1 AND (NOT (users.roles_mask & ? > 0) OR users.roles_mask IS NULL) ORDER BY t1.count DESC LIMIT 10;"
     @heroes = User.find_by_sql([sql, 2**User::ROLES.index('admin')])

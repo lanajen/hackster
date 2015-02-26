@@ -26,7 +26,7 @@
                     td
                       span.avatar
                         - if space.avatar(:tiny)
-                          = image_tag space.avatar(:tiny), class: 'img-circle'
+                          = image_tag space.avatar(:tiny), class: 'img-thumb'
                       = link_to space.name, hacker_space_path(space)
                     td= space.short_location
 

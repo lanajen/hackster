@@ -1,15 +1,21 @@
-- if @invitable.class == Platform
-  = '<div id="main-content"><div class="row">'.html_safe
-
-h2.text-center Welcome to #{@group.name}.
+p.text-center You have been invited to join
+h2.text-center style='margin:10px 0 20px;'
+  - if @group.avatar
+    ==> image_tag @group.avatar.file_url(:mini), class: 'img-thumb'
+  = link_to @group.name, @group, class: 'hidden-link'
 - if user_signed_in?
-  p.text-center= link_to 'Join group', group_accept_invitation_path(@group, token: @group.invitation_token, role: params[:role], permission: params[:permission]), class: 'btn btn-warning btn-sm'
+  p.text-center= link_to 'Join group', @redirect_to, class: 'btn btn-primary'
 - else
-  p.text-center
-    ' You need an account to join this group. Please
-    ==> link_to 'Sign in', new_user_session_path, class: 'btn btn-primary btn-sm'
-    ' or
-    = link_to 'Create an account', new_user_registration_path, class: 'btn btn-primary btn-sm'
-
-- if @invitable.class == Platform
-  = '</div></div>'.html_safe
+  .row
+    .col-md-6.col-md-offset-3.col-sm-8.col-sm-offset-2
+      .box
+        .box-content.text-center
+          p
+            ' To accept your invitation, please
+            ==> link_to 'log in', new_user_session_path(redirect_to: @redirect_to)
+            ' or select how you want to connect:
+          = render 'devise/shared/omniauth'
+          hr
+          p Or use your email:
+          = simple_form_for resource, as: :user, url: registration_path(:user), wrapper: :bootstrap3_horizontal, html: { class: 'form-horizontal disable-on-submit', method: :post } do |f|
+            = render partial: 'shared/registration_form', locals: { f: f, resource: resource }
