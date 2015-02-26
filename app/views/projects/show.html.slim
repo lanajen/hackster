@@ -6,7 +6,7 @@
     = render partial: 'groups/platforms/platform_card', locals: { platform: platform }
 
 = content_for :no_container do
-  #content.project-page
+  #content.project-page class="project-#{@project.id}"
     .container-desktop.container
       .row
         .col-md-8.left-column

@@ -16,7 +16,7 @@
     });
 
     $('#start_date_dummy').on('change', function(){
-      var date = $('#start_date_dummy').data("DateTimePicker").getDate();
+      var date = $(this).data("DateTimePicker").getDate();
       $('#start_date').val(date);
       if ($('#end_date').val() == '') {
         $('#end_date').val(date);
@@ -24,7 +24,17 @@
       }
     });
     $('#end_date_dummy').on('change', function(){
-      $('#end_date').val($('#end_date_dummy').data("DateTimePicker").getDate());
+      $('#end_date').val($(this).data("DateTimePicker").getDate());
+    });
+    $('#voting_end_date_dummy').on('change', function(){
+      $('#voting_end_date').val($(this).data("DateTimePicker").getDate());
+    });
+    $('#group_activate_voting').on('change', function(){
+      if ($(this).is(':checked')) {
+        $('#voting_end_date_dummy').slideDown();
+      } else {
+        $('#voting_end_date_dummy').slideUp();
+      }
     });
 
 = simple_nested_form_for @event, url: event_path(@event), html: { class: 'form-horizontal remote accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
@@ -72,6 +82,14 @@
           span.input-group-addon
             i.fa.fa-calendar
       = f.input :end_date, as: :hidden, input_html: { id: 'end_date' }
+
+      = f.input :activate_voting, as: :boolean, inline_label: 'Activate voting', label: false
+      = f.input :voting_end_date_dummy, label: 'Voting ends on', wrapper_html: { id: 'voting_end_date_dummy', class: 'datetimepicker', autocomplete: 'off', style: "#{'display:none' unless @event.activate_voting}" } do
+        #datepicker.input-group
+          = f.input_field :voting_end_date_dummy, as: :string, label: false
+          span.input-group-addon
+            i.fa.fa-calendar
+      = f.input :voting_end_date, as: :hidden, input_html: { id: 'voting_end_date' }
 
       / # = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Profile picture', image_link: @event.avatar.try(:file_url, :thumb), help_block: '', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
 

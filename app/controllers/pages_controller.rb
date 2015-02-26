@@ -64,7 +64,7 @@ class PagesController < ApplicationController
       render 'home_member'
     else
       @trending_projects = Project.indexable.magic_sort.for_thumb_display.limit 12
-      @platforms = Platform.where(user_name: %w(spark delorean metawear tinycircuits intel-edison wunderbar)).for_thumb_display.order(:full_name)
+      @platforms = Platform.where(user_name: %w(spark delorean metawear tessel intel-edison wunderbar)).for_thumb_display.order(:full_name)
       @lists = List.where(user_name: featured_lists).each_slice(3).to_a
 
       @typeahead_tags = List.public.order(:full_name).select{|p| p.projects_count >= 5 or p.followers_count >= 10 }.map do |p|

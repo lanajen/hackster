@@ -8,13 +8,29 @@
     .row.project-list
       - @projects.each do |collection|
         = render partial: 'projects/project_thumb', locals: { project: collection.project.decorate }
+        - if @event.voting_active?
+          = content_for :js do
+            javascript:
+              text = "#{j render(partial: 'respects/button', locals: { project: collection.project })}";
+              $('.project-#{collection.project_id} .thumb').append(text);
+
+      - content_for :js do
+        - @awards.each do |award|
+          javascript:
+            $('.project-list').prepend($('.project-#{award.project_id}').parent());
+            var text = "<div class='project-award'><i class='fa fa-trophy'></i> #{escape_javascript(award.grade).gsub(/'/, '&#x0027;')}</div>";
+            $('.project-#{award.project_id} .award-container').html(text);
+
+        - if @event.voting_active?
+          javascript:
+            $('.respect-button').addClass('btn-append');
+            $('.project-list').on('DOMSubtreeModified', '.project-thumb', function(){
+              $(this).find('.respect-button').addClass('btn-append');
+            });
+
 
         - content_for :js do
-          - @awards.each do |award|
-            javascript:
-              $('.project-list').prepend($('.project-#{award.project_id}').parent().parent());
-              text = "<div class='project-award'><i class='fa fa-trophy'></i> #{escape_javascript(award.grade).gsub(/'/, '&#x0027;')}</div>";
-              $('.project-#{award.project_id} .award-container').html(text);
+
 
     .row.text-center= will_paginate @projects
   - else

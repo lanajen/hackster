@@ -4,23 +4,26 @@ class Event < GeographicCommunity
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'EventMember'
   has_many :pages, as: :threadable
 
-  attr_accessor :start_date_dummy, :end_date_dummy
+  attr_accessor :start_date_dummy, :end_date_dummy, :voting_end_date_dummy
 
   attr_accessible :awards_attributes, :parent_id, :start_date,
-    :start_date_dummy, :end_date, :end_date_dummy, :tickets_link
+    :start_date_dummy, :end_date, :end_date_dummy, :tickets_link,
+    :voting_end_date, :voting_end_date_dummy, :activate_voting
 
   accepts_nested_attributes_for :awards, allow_destroy: true
 
   store_accessor :websites, :tickets_link
   set_changes_for_stored_attributes :websites
 
+  store_accessor :properties, :voting_start_date, :voting_end_date,
+    :activate_voting
+  parse_as_datetimes :properties, :voting_start_date, :voting_end_date
+  parse_as_booleans :properties, :activate_voting, :hidden
+  # set_changes_for_stored_attributes :properties
+
   store :counters_cache, accessors: [:participants_count]
 
   parse_as_integers :counters_cache, :participants_count
-
-  # store_accessor :properties, :start_date, :end_date
-
-  # parse_as_datetimes :properties, :start_date, :end_date
 
   alias_method :short_name, :name
 
@@ -121,5 +124,21 @@ class Event < GeographicCommunity
 
   def start_date_dummy
     start_date.strftime("%m/%d/%Y %l:%M %P") if start_date
+  end
+
+  def voting_end_date=(val)
+    begin
+      date = val.to_datetime
+      properties[:voting_end_date] = date.to_i
+    rescue
+    end
+  end
+
+  def voting_end_date_dummy
+    voting_end_date.strftime("%m/%d/%Y %l:%M %P") if voting_end_date
+  end
+
+  def voting_active?
+    activate_voting and voting_end_date and voting_end_date > Time.now
   end
 end
