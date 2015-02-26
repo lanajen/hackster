@@ -1,12 +1,12 @@
 - if can? :read, @event
   .main-section-actions.clearfix.mg-30
-    - if @event.in_the_future?
-      p #{@event.name} is coming up in #{time_diff_in_natural_language(Time.now, @event.start_date)}! Get ready for it by sharing your project idea, giving feedback to existing projects and joining teams you'd like to be part of.
+    - if can? :add_project, @event
+      - if @event.in_the_future?
+        p #{@event.name} is coming up in #{time_diff_in_natural_language(Time.now, @event.start_date)}! Get ready for it by sharing your project idea, giving feedback to existing projects and joining teams you'd like to be part of.
 
-    - else
-      - if can? :add_project, @event
+      - else
         .pull-right
-          = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project to event".html_safe, "#{event_path(@event)}/projects/new", class: 'btn btn-sm btn-default'
+          = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project to event".html_safe, "#{event_path(@event)}/projects/new", class: 'btn btn-sm btn-primary'
 
   - if @projects.any?
     .row.project-list

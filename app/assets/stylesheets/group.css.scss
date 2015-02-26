@@ -339,7 +339,6 @@
     font-size: 0.85em;
     line-height: 1;
     @include border-radius(3px);
-    color: #aaa;
   }
   .btn:active, .btn-follow:active, .btn.active, .active.btn-follow{
     color:#444447;
