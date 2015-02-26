@@ -1,5 +1,6 @@
 class Hackathon < Community
   has_many :events, foreign_key: :parent_id
+  has_many :pages, as: :threadable
 
   attr_accessible :hashtag, :twitter_widget_id
 

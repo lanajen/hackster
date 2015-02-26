@@ -48,6 +48,24 @@ module UrlHelper
     hackathon_event_url params_for_event(event).merge(opts)
   end
 
+  def edit_group_page_path group, page, opts={}
+    case group.type
+    when 'Event'
+      edit_hackathon_event_page_path(group.hackathon.user_name, group.user_name, page.id)
+    when 'Hackathon'
+      edit_hackathon_page_path(group.user_name, page.id)
+    end
+  end
+
+  def group_page_path group, page, opts={}
+    case group.type
+    when 'Event'
+      hackathon_event_page_path(group.hackathon.user_name, group.user_name, page.slug)
+    when 'Hackathon'
+      hackathon_page_path(group.user_name, page.slug)
+    end
+  end
+
   def external_project_path project, opts={}
     super project.user_name_for_url, "#{project.id}-#{project.slug}", opts
   end
@@ -263,11 +281,20 @@ module UrlHelper
     super options
   end
 
-  def url_for_wiki_page_form event, page
-    if page.persisted?
-      hackathon_event_page_path(event.hackathon.user_name, event.user_name, page.id)
-    else
-      hackathon_event_pages_path(event.hackathon.user_name, event.user_name)
+  def url_for_wiki_page_form group, page
+    case group.type
+    when 'Event'
+      if page.persisted?
+        hackathon_event_page_path(group.hackathon.user_name, group.user_name, page.id)
+      else
+        hackathon_event_pages_path(group.hackathon.user_name, group.user_name)
+      end
+    when 'Hackathon'
+      if page.persisted?
+        hackathon_page_path(group.user_name, page.id)
+      else
+        hackathon_pages_path(group.user_name)
+      end
     end
   end
 

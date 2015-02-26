@@ -170,6 +170,8 @@ HackerIo::Application.routes.draw do
       patch '' => 'hackathons#update'
       get 'events/new' => 'events#new', as: :new_event
       post 'events' => 'events#create', as: :events
+      resources :pages, except: [:index, :show, :destroy], controller: 'wiki_pages'
+      get 'pages/:slug' => 'wiki_pages#show'
 
       scope ':event_name', as: :event do
         get '' => 'events#show', as: ''
