@@ -7,9 +7,12 @@ class Event < GeographicCommunity
   attr_accessor :start_date_dummy, :end_date_dummy
 
   attr_accessible :awards_attributes, :parent_id, :start_date,
-    :start_date_dummy, :end_date, :end_date_dummy
+    :start_date_dummy, :end_date, :end_date_dummy, :tickets_link
 
   accepts_nested_attributes_for :awards, allow_destroy: true
+
+  store_accessor :websites, :tickets_link
+  set_changes_for_stored_attributes :websites
 
   store :counters_cache, accessors: [:participants_count]
 
@@ -31,6 +34,18 @@ class Event < GeographicCommunity
       indexes :created_at
     end
   end
+
+  def to_indexed_json
+    {
+      _id: id,
+      name: name,
+      model: self.class.name,
+      mini_resume: mini_resume,
+      private: private,
+      created_at: created_at,
+    }.to_json
+  end
+  # end of search methods
 
   %w(facebook twitter linked_in google_plus github blog website youtube pinterest flickr instagram reddit).each do |link|
     define_method "#{link}_link" do
@@ -54,18 +69,6 @@ class Event < GeographicCommunity
     hackathon.try(:avatar)
   end
 
-  def to_indexed_json
-    {
-      _id: id,
-      name: name,
-      model: self.class.name,
-      mini_resume: mini_resume,
-      private: private,
-      created_at: created_at,
-    }.to_json
-  end
-  # end of search methods
-
   def counters
     super.merge({
       participants: "members.joins(:user).request_accepted_or_not_requested.invitation_accepted_or_not_invited.with_group_roles('participant').count",
@@ -88,9 +91,9 @@ class Event < GeographicCommunity
     end_date.strftime("%m/%d/%Y %l:%M %P") if end_date
   end
 
-  # def name
-  #   hackathon.name
-  # end
+  def in_the_future?
+    start_date and start_date > Time.now
+  end
 
   def mini_resume
     hackathon.try(:mini_resume)

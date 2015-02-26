@@ -6,7 +6,8 @@ section.group-nav.affixable
     ul.nav.nav-tabs
       = active_li_link_to "Projects#{content_tag(:small, @group.projects_count)}".html_safe, url_for(@group), role: 'presentation'
       = active_li_link_to "Participants#{content_tag(:small, @group.participants_count)}".html_safe, "#{url_for(@group)}/participants"
-      = active_li_link_to "Organizers", "#{url_for(@group)}/organizers"
+      - unless @group.hackathon.show_organizers
+        = active_li_link_to "Organizers", "#{url_for(@group)}/organizers"
 
     - if pages = @group.pages.public.order(created_at: :asc) and pages.any?
       .more-info.dropdown role='presentation'
@@ -30,8 +31,8 @@ section.group-nav.affixable
             li= link_to 'Manage members', group_edit_members_path(@group)
             li= link_to 'Invite members', group_new_invitations_path(@group)
             li.divider
-            li= link_to 'Add a new page', new_hackathon_event_page_path(@event.hackathon.user_name, @event.user_name)
-            li= link_to 'Manage awards', group_edit_awards_path(@event)
+            li= link_to 'Add a new page', new_hackathon_event_page_path(@group.hackathon.user_name, @group.user_name)
+            li= link_to 'Manage awards', group_edit_awards_path(@group)
       / - if !(can? :manage, @group) or (user_signed_in? and current_user.is? :admin)
         li= render partial: 'followers/button_text', locals: { followable: @group }
 
@@ -49,7 +50,8 @@ section.group-nav.affixable
         a.close-nav href='' &times; Close
       = active_li_link_to "Projects#{content_tag(:small, @group.projects_count)}".html_safe, url_for(@group), role: 'presentation'
       = active_li_link_to "Participants#{content_tag(:small, @group.participants_count)}".html_safe, "#{url_for(@group)}/participants"
-      = active_li_link_to "Organizers", "#{url_for(@group)}/organizers"
+      - unless @group.hackathon.show_organizers
+        = active_li_link_to "Organizers", "#{url_for(@group)}/organizers"
       - if pages = @group.pages.public.order(created_at: :asc) and pages.any?
         li.divider
         - pages.each do |page|
@@ -62,5 +64,5 @@ section.group-nav.affixable
         li= link_to 'Manage members', group_edit_members_path(@group)
         li= link_to 'Invite members', group_new_invitations_path(@group)
         li.divider
-        li= link_to 'Add a new page', new_hackathon_event_page_path(@event.hackathon.user_name, @event.user_name)
-        li= link_to 'Manage awards', group_edit_awards_path(@event)
+        li= link_to 'Add a new page', new_hackathon_event_page_path(@group.hackathon.user_name, @group.user_name)
+        li= link_to 'Manage awards', group_edit_awards_path(@group)

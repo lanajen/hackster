@@ -17,6 +17,10 @@
 
     $('#start_date_dummy').on('change', function(){
       $('#start_date').val($('#start_date_dummy').data("DateTimePicker").getDate());
+      if ($('#end_date').val() == '') {
+        $('#end_date').val(date);
+        $('#end_date_dummy').data("DateTimePicker").setDate(date);
+      }
     });
     $('#end_date_dummy').on('change', function(){
       $('#end_date').val($('#end_date_dummy').data("DateTimePicker").getDate());

@@ -5,6 +5,8 @@ section.group-nav.affixable
       h2= @group.name
     ul.nav.nav-tabs
       = active_li_link_to "Events#{content_tag(:small, @group.events_count)}".html_safe, url_for(@group), role: 'presentation'
+      - if @group.show_organizers
+        = active_li_link_to "Organizers", "#{url_for(@group)}/organizers"
 
       - @group.pages.public.order(created_at: :asc).each do |page|
         = active_li_link_to page.title, group_page_path(@group, page)
@@ -40,8 +42,12 @@ section.group-nav.affixable
       li
         a.close-nav href='' &times; Close
       = active_li_link_to "Events#{content_tag(:small, @group.events_count)}".html_safe, url_for(@group), role: 'presentation'
+      - if @group.show_organizers
+        = active_li_link_to "Organizers", "#{url_for(@group)}/organizers"
+
       - @group.pages.public.order(created_at: :asc).each do |page|
         = active_li_link_to page.title, group_page_path(@group, page)
+
       - if can? :manage, @group
         li.divider
         li= link_to 'Edit settings', url_for([:edit, @group])

@@ -1,7 +1,7 @@
 class HackathonsController < ApplicationController
   before_filter :authenticate_user!, except: [:show]
-  before_filter :load_hackathon, only: [:show, :update]
-  layout 'group_shared', only: [:show]
+  before_filter :load_hackathon
+  layout 'group_shared', except: [:update]
   respond_to :html
 
   def show
@@ -20,6 +20,12 @@ class HackathonsController < ApplicationController
     @event = @hackathon.closest_event
 
     render "groups/hackathons/show"
+  end
+
+  def organizers
+    @organizers = @group.members.includes(:user).includes(user: :avatar).invitation_accepted_or_not_invited.with_group_roles('organizer').map(&:user)
+
+    render "groups/events/organizers"
   end
 
   def update

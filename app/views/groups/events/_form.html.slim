@@ -16,7 +16,12 @@
     });
 
     $('#start_date_dummy').on('change', function(){
-      $('#start_date').val($('#start_date_dummy').data("DateTimePicker").getDate());
+      var date = $('#start_date_dummy').data("DateTimePicker").getDate();
+      $('#start_date').val(date);
+      if ($('#end_date').val() == '') {
+        $('#end_date').val(date);
+        $('#end_date_dummy').data("DateTimePicker").setDate(date);
+      }
     });
     $('#end_date_dummy').on('change', function(){
       $('#end_date').val($('#end_date_dummy').data("DateTimePicker").getDate());
@@ -90,6 +95,7 @@
         = f.input :youtube_link, label: 'Youtube link'
         = f.input :website_link, label: 'Website link'
         = f.input :blog_link, label: 'Blog link'
+      = f.input :tickets_link, label: 'Page to buy tickets'
 
       = f.input :access_level, label: 'Who can join this group?', collection: Group::ACCESS_LEVELS
       = f.input :private, inline_label: 'Make this group private', label: false, hint: "Private groups are only visible by their members and are invite only."
