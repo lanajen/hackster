@@ -51,10 +51,11 @@ class EventsController < ApplicationController
     @event = @hackathon.events.new(params[:group])
     authorize! :create, @event
 
-    admin = @event.members.new(user_id: current_user.id)
+    admin = @event.members.new(user_id: current_user.id, group_roles: ['organizer'])
     @event.private = true
 
     if @event.save
+
       admin.update_attribute :permission_action, 'manage'
       flash[:notice] = "Welcome to #{@event.class.name} #{@event.name}!"
       respond_with @event
