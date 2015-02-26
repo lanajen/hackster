@@ -36,7 +36,7 @@
 
     - if @other_projects.any?
       h2.text-center Other entries
-      .thumb-list  class=@switch_style
+      .thumb-list
         .row.project-list
           - @other_projects.each do |project|
             = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: 4 }
@@ -53,6 +53,6 @@
     - else
       .row
         - if @challenge.open_for_submissions?
-          p.text-center= link_to 'Enter challenge', '', class: 'follow-button btn btn-lg btn-info btn-block btn-ellipsis btn-standout enter-challenge'
+          = render partial: 'enter_thumb', locals: { challenge: @challenge }
         - else
           p No submissions.

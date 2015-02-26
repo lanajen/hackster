@@ -4,111 +4,112 @@
   = auto_discovery_link_tag :atom, projects_path(format: :atom, sort: 'recent'), title: 'Last projects - Hackster.io'
 
 = content_for :no_container do
-  section#home-banner
-    .home-slide#welcome-back
-      - if Time.now < DateTime.parse('2015-02-22 20:00 -0800')
-        = link_to 'Hardware Weekend Seattle', '/hackathons/hardware-weekend/seattle', class: 'btn btn-warning btn-sm btn-over'
-      .container
-        h1 Welcome to your dashboard!
+  #home
+    section#home-banner
+      .home-slide#welcome-back
+        - if Time.now < DateTime.parse('2015-02-22 20:00 -0800')
+          = link_to 'Hardware Weekend Seattle', '/hackathons/hardware-weekend/seattle', class: 'btn btn-warning btn-sm btn-over'
+        .container
+          h1 Welcome to your dashboard!
 
-  - if @projects.count.zero?
-    section#intro.showcase-section
-      .container
-        p
-          | This place is all about you and what you care about. To make magic happen, start following platforms, hackers and lists you like.
-        p
-          small
-            ' This is a new feature! Please let us know what you'd like to see by emailing us at
-            = link_to 'hi@hackster.io', 'mailto:hi@hackster.io&subject=Feedback%20for%dashboard'
-            | .
+    - if @projects.count.zero?
+      section#intro.showcase-section
+        .container
+          p
+            | This place is all about you and what you care about. To make magic happen, start following platforms, hackers and lists you like.
+          p
+            small
+              ' This is a new feature! Please let us know what you'd like to see by emailing us at
+              = link_to 'hi@hackster.io', 'mailto:hi@hackster.io&subject=Feedback%20for%dashboard'
+              | .
 
-    section#suggested-platforms.showcase-section
-      .container
-        .view-all-header.clearfix
-          h4.pull-left Suggested platforms to follow
-          = link_to 'View more platforms', platforms_path, class: 'btn btn-default btn-sm hidden-xs pull-right'
+      section#suggested-platforms.showcase-section
+        .container
+          .view-all-header.clearfix
+            h4.pull-left Suggested platforms to follow
+            = link_to 'View more platforms', platforms_path, class: 'btn btn-default btn-sm hidden-xs pull-right'
 
-        .row.mobile-scroll-row.thumbs-carousel
-          - @platforms.each do |platform|
-            = render partial: 'groups/platforms/platform_thumb', locals: { platform: platform, follow: true }
+          .row.mobile-scroll-row.thumbs-carousel
+            - @platforms.each do |platform|
+              = render partial: 'groups/platforms/platform_thumb', locals: { platform: platform, follow: true }
 
-        = link_to 'View more platforms', platforms_path, class: 'btn btn-default btn-sm visible-xs-block'
+          = link_to 'View more platforms', platforms_path, class: 'btn btn-default btn-sm visible-xs-block'
 
-    section#suggested-lists.showcase-section
-      .container
-        .view-all-header.clearfix
-          h4.pull-left Suggested lists to follow
-          / # = link_to 'View more hackers', hackers_path, class: 'btn btn-default btn-sm hidden-xs pull-right'
+      section#suggested-lists.showcase-section
+        .container
+          .view-all-header.clearfix
+            h4.pull-left Suggested lists to follow
+            / # = link_to 'View more hackers', hackers_path, class: 'btn btn-default btn-sm hidden-xs pull-right'
 
-        .row.category-full-row
-          - @lists.each do |list|
-            .col-sm-6.col-md-4.category-full-col
-              .thumb.category-thumb
-                .thumb-image.has-link-overlay style="background-image:url(#{list.decorate.cover_image})"
-                  = link_to '', list, class: 'link-overlay'
-                  .thumb-image-inner
-                    h4
-                      = link_to list.name, list
+          .row.category-full-row
+            - @lists.each do |list|
+              .col-sm-6.col-md-4.category-full-col
+                .thumb.category-thumb
+                  .thumb-image.has-link-overlay style="background-image:url(#{list.decorate.cover_image})"
+                    = link_to '', list, class: 'link-overlay'
+                    .thumb-image-inner
+                      h4
+                        = link_to list.name, list
 
-        / # = link_to 'View more hackers', hackers_path, class: 'btn btn-default btn-sm visible-xs-block'
+          / # = link_to 'View more hackers', hackers_path, class: 'btn btn-default btn-sm visible-xs-block'
 
-    section#suggested-hackers.showcase-section
-      .container
-        .view-all-header.clearfix
-          h4.pull-left Suggested hackers to follow
-          = link_to 'View more hackers', hackers_path, class: 'btn btn-default btn-sm hidden-xs pull-right'
+      section#suggested-hackers.showcase-section
+        .container
+          .view-all-header.clearfix
+            h4.pull-left Suggested hackers to follow
+            = link_to 'View more hackers', hackers_path, class: 'btn btn-default btn-sm hidden-xs pull-right'
 
-        .row.mobile-scroll-row.thumbs-carousel data-slides-count=6
-          - @hackers.each do |user|
-            = render partial: 'users/user_thumb_mini', locals: { user: user, actions: %w(follow), col: 'col-md-2' }
+          .row.mobile-scroll-row.thumbs-carousel data-slides-count=6
+            - @hackers.each do |user|
+              = render partial: 'users/user_thumb_mini', locals: { user: user, actions: %w(follow), col: 'col-md-2' }
 
-        = link_to 'View more hackers', hackers_path, class: 'btn btn-default btn-sm visible-xs-block'
+          = link_to 'View more hackers', hackers_path, class: 'btn btn-default btn-sm visible-xs-block'
 
-    section#recent-projects.showcase-section.last
-      .container
-        .view-all-header.clearfix
-          h4.pull-left Not ready to follow yet? Here's the latest projects
-          = link_to 'View more recent projects', projects_path, class: 'btn btn-default btn-sm hidden-xs pull-right'
+      section#recent-projects.showcase-section.last
+        .container
+          .view-all-header.clearfix
+            h4.pull-left Not ready to follow yet? Here's the latest projects
+            = link_to 'View more recent projects', projects_path, class: 'btn btn-default btn-sm hidden-xs pull-right'
 
-        .row.mobile-scroll-row.thumbs-carousel
-          - @last_projects.each do |project|
-            = render partial: 'projects/project_thumb', locals: { project: project }
-
-        = link_to 'View more projects', projects_path, class: 'btn btn-default btn-sm visible-xs-block'
-
-  - else
-    #hide.hide
-      - @followed.each do |rel|
-        - entity = rel.followable
-        .thumb-super-item class=dom_id(entity)
-          = link_to image_tag(entity.decorate.avatar(:medium)), entity, title: "You follow #{entity.name}", class: 'istooltip', data: { container: 'body' }
-
-    section#intro.showcase-section
-      .container
-        p
-          | This place is all about you and what you care about. To make magic happen, follow platforms, hackers and lists you like.
-        p
-          small
-            ' This is a new feature! Please let us know what you'd like to see by emailing us at
-            = link_to 'hi@hackster.io', 'mailto:hi@hackster.io&subject=Feedback%20for%20dashboard'
-            | .
-
-    section#projects.showcase-section.last
-      .container
-        #infinite-scrolling
-          #page_1.row.page.visible
-            - @projects.each do |project|
+          .row.mobile-scroll-row.thumbs-carousel
+            - @last_projects.each do |project|
               = render partial: 'projects/project_thumb', locals: { project: project }
-              - if common = build_common_for_follow(project, @followed) and common.any?
-                - dom_ids = common.map{|e| "#{e[0].underscore}_#{e[1]}" }
-                - dom_ids.each do |dom_id|
-                  = content_for :js do
-                    javascript:
-                      var thumb = $(".project-#{project.id} .thumb-super");
-                      var item = $(".thumb-super-item.#{dom_id}")[0].outerHTML;
-                      thumb.append(item);
 
-        #loader.text-center= will_paginate @projects
+          = link_to 'View more projects', projects_path, class: 'btn btn-default btn-sm visible-xs-block'
+
+    - else
+      #hide.hide
+        - @followed.each do |rel|
+          - entity = rel.followable
+          .thumb-super-item class=dom_id(entity)
+            = link_to image_tag(entity.decorate.avatar(:medium)), entity, title: "You follow #{entity.name}", class: 'istooltip', data: { container: 'body' }
+
+      section#intro.showcase-section
+        .container
+          p
+            | This place is all about you and what you care about. To make magic happen, follow platforms, hackers and lists you like.
+          p
+            small
+              ' This is a new feature! Please let us know what you'd like to see by emailing us at
+              = link_to 'hi@hackster.io', 'mailto:hi@hackster.io&subject=Feedback%20for%20dashboard'
+              | .
+
+      section#projects.showcase-section.last
+        .container
+          #infinite-scrolling
+            #page_1.row.page.visible
+              - @projects.each do |project|
+                = render partial: 'projects/project_thumb', locals: { project: project }
+                - if common = build_common_for_follow(project, @followed) and common.any?
+                  - dom_ids = common.map{|e| "#{e[0].underscore}_#{e[1]}" }
+                  - dom_ids.each do |dom_id|
+                    = content_for :js do
+                      javascript:
+                        var thumb = $(".project-#{project.id} .thumb-super");
+                        var item = $(".thumb-super-item.#{dom_id}")[0].outerHTML;
+                        thumb.append(item);
+
+          #loader.text-center= will_paginate @projects
 
     = content_for :js do
       javascript:

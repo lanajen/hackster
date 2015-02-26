@@ -175,7 +175,7 @@ $(function(){
     $(window).on('scroll', $togglePageVisibility);
   }
 
-  $('.follow-button').on('click', function(e){
+  $('#home .follow-button').on('click', function(e){
     $.ajax({
       url: '/home',
       data: { count: true },
