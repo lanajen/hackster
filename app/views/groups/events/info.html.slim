@@ -4,6 +4,8 @@
       h4 Event status
       p.status
         strong= @group.status
+        - if @group.status == 'Upcoming' and @group.tickets_link
+          p= link_to 'Buy tickets', @group.tickets_link, class: 'btn btn-primary btn-sm'
 
     - if @group.awards.any?
       section.section-thumbs

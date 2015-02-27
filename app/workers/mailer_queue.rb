@@ -209,7 +209,7 @@ class MailerQueue < BaseWorker
         respect = context[:respect] = Respect.find(context_id)
         project = context[:project] = respect.project
         context[:author] = respect.user
-        context[:users] = project.users.with_subscription('new_respect_own')
+        context[:users] = project.users.with_subscription('new_respect_own').to_a  # added to_a so that .uniq line 235 doesn't add DISTINCT to the query and make it fail
       when :user
         context[:user] = User.find(context_id)
       when :user_informal
