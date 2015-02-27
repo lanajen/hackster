@@ -47,6 +47,7 @@ class PagesController < ApplicationController
         @next_page = nil if @projects.total_pages < @next_page
 
         unless request.xhr?
+          @last_projects = Project.indexable.last_public.limit(12)
           @hackers = User.invitation_accepted_or_not_invited.user_name_set.where("users.id NOT IN (?)", current_user.followed_users.pluck(:id)).top.limit(6)
           @lists = List.where(user_name: featured_lists - current_user.followed_lists.pluck(:user_name))
           @platforms = Platform.public.where("groups.id NOT IN (?)", current_user.followed_platforms.pluck(:id)).most_members.limit(6)
@@ -64,6 +65,7 @@ class PagesController < ApplicationController
       render 'home_member'
     else
       @trending_projects = Project.indexable.magic_sort.for_thumb_display.limit 12
+      @last_projects = Project.indexable.last_public.limit 12
       @platforms = Platform.where(user_name: %w(spark delorean metawear tessel intel-edison wunderbar)).for_thumb_display.order(:full_name)
       @lists = List.where(user_name: featured_lists).each_slice(3).to_a
 

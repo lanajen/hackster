@@ -94,8 +94,21 @@
               = link_to 'hi@hackster.io', 'mailto:hi@hackster.io&subject=Feedback%20for%20dashboard'
               | .
 
+      section#latest.showcase-section
+        .container
+          .view-all-header.clearfix
+            h4.pull-left Latest projects
+            = link_to 'View more recent projects', projects_path(by: 'recent'), class: 'btn btn-default btn-sm hidden-xs pull-right'
+
+          .row.mobile-scroll-row.thumbs-carousel
+            - @last_projects.each do |project|
+              = render partial: 'projects/project_thumb', locals: { project: project }
+
       section#projects.showcase-section.last
         .container
+          .view-all-header.clearfix
+            h4.pull-left Recent projects from hackers, platforms and lists you follow
+
           #infinite-scrolling
             #page_1.row.page.visible
               - @projects.each do |project|
@@ -105,7 +118,7 @@
                   - dom_ids.each do |dom_id|
                     = content_for :js do
                       javascript:
-                        var thumb = $(".project-#{project.id} .thumb-super");
+                        var thumb = $("#projects .project-#{project.id} .thumb-super");
                         var item = $(".thumb-super-item.#{dom_id}")[0].outerHTML;
                         thumb.append(item);
 

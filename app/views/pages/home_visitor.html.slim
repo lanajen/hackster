@@ -69,7 +69,7 @@
           = link_to 'View more projects &rarr;'.html_safe, projects_path, class: 'btn btn-default btn-sm hidden-xs'
           = link_to 'View more projects &rarr;'.html_safe, projects_path, class: 'btn btn-default btn-sm visible-xs-block'
 
-    section#categories.showcase-section.last
+    section#categories.showcase-section
       .container
         .showcase-section-header.clearfix
           h4 Follow topics you enjoy
@@ -85,6 +85,18 @@
                       .thumb-image-inner
                         h4
                           = link_to list.name, list
+
+    section#latest.showcase-section.last
+      .container
+        .view-all-header.clearfix
+          h4 Check the latest of the latest
+        .row.mobile-scroll-row.thumbs-carousel
+          - @last_projects.each do |project|
+            = render partial: 'projects/project_thumb', locals: { project: project }
+
+      .text-center
+        = link_to 'View more recent projects &rarr;'.html_safe, projects_path(by: 'recent'), class: 'btn btn-default btn-sm hidden-xs'
+        = link_to 'View more recent projects &rarr;'.html_safe, projects_path(by: 'recent'), class: 'btn btn-default btn-sm visible-xs-block'
 
     / section#trending-projects.showcase-section
       .container

@@ -17,7 +17,7 @@ $('#infinite-scrolling').append("<div class='row page visible' id='page_<%= @cur
     dom_ids = common.map{|e| "#{e[0].underscore}_#{e[1]}" }
     dom_ids.each do |dom_id|
 %>
-      thumb = $(".project-<%= project.id %> .thumb-super");
+      thumb = $("#projects .project-<%= project.id %> .thumb-super");
       item = $(".thumb-super-item.<%= dom_id %>")[0].outerHTML;
       thumb.append(item);
 <%
