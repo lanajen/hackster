@@ -26,8 +26,9 @@
     meta(property="twitter:label2" content="SPONSORED BY")
   - if platform = @challenge.platform and handle = platform.twitter_handle
     meta(property="twitter:creator" content=handle)
-  meta(property="twitter:data1" content=@challenge.prizes.first.try(:description))
-  meta(property="twitter:label1" content="TOP PRIZE")
+  - if prize = @challenge.prizes.first and prize_name = (prize.description.presence || number_to_currency(prize.cash_value, precision: 0)) and prize_name.present?
+    meta(property="twitter:data1" content=prize_name)
+    meta(property="twitter:label1" content="TOP PRIZE")
   meta(property="twitter:image:src" content=@challenge.cover_image(:cover_thumb))
   meta(property="twitter:image:width" content='400')
   meta(property="twitter:image:height" content='300')
