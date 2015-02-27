@@ -6,7 +6,7 @@
 
       .box-content
         - @group.new_schedule_item if @group.schedule_items.empty?
-        = simple_nested_form_for @group do |f|
+        = simple_nested_form_for @group, html: { class: 'sortable' } do |f|
           = f.error_notification
           table#sortable.table.table-condensed
             thead
@@ -21,55 +21,11 @@
                   tr.fields
                     td
                       i.fa.fa-bars.handle
-                      = f_schedule_item.input :position, as: :hidden
+                      = f_schedule_item.input :position, as: :hidden, input_html: { class: 'position' }
                     td= f_schedule_item.input :day, label: false
                     td= f_schedule_item.input :time, label: false
                     td= f_schedule_item.input :description, label: false
                     td= f_schedule_item.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-sm btn-danger'
               tr.sortable-disabled
-                td  colspan=3  = f.link_to_add 'Add an item to the schedule', :schedule_items, class: 'btn btn-sm btn-success'
+                td  colspan=3  = f.link_to_add 'Add an item to the schedule', :schedule_items, class: 'btn btn-sm btn-success nested-field-table'
           = f.button :submit, 'Save changes', class: 'btn-block btn btn-primary'
-
-= content_for :js do
-  javascript:
-    jQuery(function($) {
-      window.NestedFormEvents.prototype.insertFields = function(content, assoc, link) {
-        var $tr = $(link).closest('tr');
-        content = content.replace(/^<div class="fields">/,"");
-        content = content.replace(/<\/div>$/,"");
-        return $(content).insertBefore($tr);
-      }
-
-      $('form').on('nested:fieldAdded', function(event){
-        var field = event.field;
-        previousPosition = field.prev().find('input.position').val();
-        if (isNaN(previousPosition)) previousPosition = 0;
-        positionField = field.find('input.position');
-        positionField.val(parseInt(previousPosition) + 1);
-      })
-
-      $('form').on('nested:fieldRemoved', function(event){
-        event.field.addClass('removed');
-        resetPositions();
-      })
-
-      $(function() {
-        $('#sortable tbody')
-          .sortable({ handle: ".handle", containment: "#sortable", items: 'tr:not(.sortable-disabled)' })
-          .bind('sortupdate', function(event, ui) {
-            resetPositions();
-          });
-      });
-
-      function resetPositions(){
-        $('#sortable tbody tr:not(.removed) input.position').each(function(i){
-          $(this)
-            .val(i+1)
-            .trigger('change');
-        });
-      }
-
-      $('form').on('change keyup', 'input.quantity,input.unit-price', function(){
-        field = $(this).parents('.fields');
-      });
-    });

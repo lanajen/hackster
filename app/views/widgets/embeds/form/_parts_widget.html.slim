@@ -115,14 +115,8 @@
       });
 
       $('.parts-widget').on('nested:fieldAdded', function(event){
-        resetPositions();
         //var select = $(event.target).find('.select2');
         //$select2containers[select.attr('id')] = $(event.target).find('.select2').select2(select2Options);
-      })
-
-      $('.parts-widget').on('nested:fieldRemoved', function(event){
-        event.field.addClass('removed');
-        resetPositions();
       })
 
       $('.parts-widget').on('click', '.reveal', function(e){
@@ -145,7 +139,6 @@
         if (parent.prev().length) {
           parent.insertBefore(parent.prev());
         }
-        resetPositions();
       });
 
       $('.parts-widget').on('click', '.move-down', function(e){
@@ -154,14 +147,5 @@
         if (parent.next().length) {
           parent.insertAfter(parent.next());
         }
-        resetPositions();
       });
-
-      function resetPositions(){
-        $('.parts-widget .fields:not(.removed) input.position').each(function(i){
-          $(this)
-            .val(i+1)
-            .trigger('change');
-        });
-      }
     });

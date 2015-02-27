@@ -119,6 +119,46 @@ $(function () {
     window.open(url, '_blank').focus();
   });
 
+
+  // handling nested forms
+  window.NestedFormEvents.prototype.insertFields = function(content, assoc, link) {
+    if ($(link).hasClass('nested-field-table')) {
+      var $tr = $(link).closest('tr');
+      content = content.replace(/^<div class="fields">/,"");
+      content = content.replace(/<\/div>$/,"");
+      return $(content).insertBefore($tr);
+    } else {
+      return $(content).insertBefore($(link));
+    }
+  }
+
+  $('form.sortable').on('nested:fieldAdded', function(event){
+    var field = event.field;
+    previousPosition = field.prev().find('input.position').val();
+    if (isNaN(previousPosition)) previousPosition = 0;
+    positionField = field.find('input.position');
+    positionField.val(parseInt(previousPosition) + 1);
+  })
+
+  $('form.sortable').on('nested:fieldRemoved', function(event){
+    event.field.addClass('removed');
+    resetPositions();
+  })
+
+  $('form.sortable #sortable tbody')
+    .sortable({ handle: ".handle", containment: "#sortable", items: 'tr:not(.sortable-disabled)' })
+    .bind('sortupdate', function(event, ui) {
+      resetPositions();
+    });
+
+  function resetPositions(){
+    $('form.sortable #sortable tbody tr:not(.removed) input.position').each(function(i){
+      $(this)
+        .val(i+1)
+        .trigger('change');
+    });
+  }
+
   //[data-remote="true"]
   $(document)
     .on("ajax:beforeSend", 'form.remote', function(xhr, settings){

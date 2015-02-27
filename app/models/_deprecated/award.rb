@@ -10,6 +10,14 @@ class Award < Grade
     self.grade = val
   end
 
+  def position
+    user_id
+  end
+
+  def position=(val)
+    self.user_id = val
+  end
+
   def prize
     feedback
   end

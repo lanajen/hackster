@@ -2,7 +2,7 @@ class Event < GeographicCommunity
   include TablelessAssociation
 
   belongs_to :hackathon, foreign_key: :parent_id
-  has_many :awards, as: :gradable
+  has_many :awards, -> { order(user_id: :asc) }, as: :gradable  # user_id is reused as "position"
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'EventMember'
   has_many :pages, as: :threadable
   has_many_tableless :schedule_items, order: :position
