@@ -11,6 +11,7 @@
           table#sortable.table.table-condensed
             thead
               th
+              th Day
               th Time
               th Description
               th
@@ -21,6 +22,7 @@
                     td
                       i.fa.fa-bars.handle
                       = f_schedule_item.input :position, as: :hidden
+                    td= f_schedule_item.input :day, label: false
                     td= f_schedule_item.input :time, label: false
                     td= f_schedule_item.input :description, label: false
                     td= f_schedule_item.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-sm btn-danger'
