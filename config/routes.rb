@@ -173,6 +173,7 @@ HackerIo::Application.routes.draw do
       resources :pages, except: [:index, :show, :destroy], controller: 'wiki_pages'
       get 'pages/:slug' => 'wiki_pages#show'
       get 'organizers' => 'hackathons#organizers'
+      get 'schedule/edit' => 'hackathons#edit_schedule'
 
       scope ':event_name', as: :event do
         get '' => 'events#show', as: ''
@@ -182,9 +183,12 @@ HackerIo::Application.routes.draw do
         patch 'projects/link' => 'groups/projects#link'
         resources :pages, except: [:index, :show, :destroy], controller: 'wiki_pages'
         get 'pages/:slug' => 'wiki_pages#show'
+        get 'info' => 'events#info'
         get 'participants' => 'events#participants'
+        get 'projects' => 'events#projects'
         get 'organizers' => 'events#organizers'
         get 'embed' => 'events#embed'
+        get 'schedule/edit' => 'events#edit_schedule'
       end
     end
     # end groups

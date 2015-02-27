@@ -20,8 +20,10 @@
 
       - content_for :js do
         - @awards.each do |award|
+          - unless @event.voting_active?
+            javascript:
+              $('.project-list').prepend($('.project-#{award.project_id}').parent());
           javascript:
-            $('.project-list').prepend($('.project-#{award.project_id}').parent());
             var text = "<div class='project-award'><i class='fa fa-trophy'></i> #{escape_javascript(award.grade).gsub(/'/, '&#x0027;')}</div>";
             $('.project-#{award.project_id} .award-container').html(text);
 

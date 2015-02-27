@@ -1,8 +1,11 @@
 class Event < GeographicCommunity
+  include TablelessAssociation
+
   belongs_to :hackathon, foreign_key: :parent_id
   has_many :awards, as: :gradable
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'EventMember'
   has_many :pages, as: :threadable
+  has_many_tableless :schedule_items, order: :position
 
   attr_accessor :start_date_dummy, :end_date_dummy, :voting_end_date_dummy
 
@@ -16,7 +19,7 @@ class Event < GeographicCommunity
   set_changes_for_stored_attributes :websites
 
   store_accessor :properties, :voting_start_date, :voting_end_date,
-    :activate_voting
+    :activate_voting, :schedule
   parse_as_datetimes :properties, :voting_start_date, :voting_end_date
   parse_as_booleans :properties, :activate_voting, :hidden
   # set_changes_for_stored_attributes :properties

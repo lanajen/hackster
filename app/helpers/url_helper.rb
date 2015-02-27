@@ -48,6 +48,14 @@ module UrlHelper
     hackathon_event_url params_for_event(event).merge(opts)
   end
 
+  def event_info_path event, opts={}
+    hackathon_event_info_path event.hackathon.user_name, event.user_name, opts
+  end
+
+  def event_projects_path event, opts={}
+    hackathon_event_projects_path event.hackathon.user_name, event.user_name, opts
+  end
+
   def edit_group_page_path group, page, opts={}
     case group.type
     when 'Event'

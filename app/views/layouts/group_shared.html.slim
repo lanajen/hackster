@@ -1,4 +1,5 @@
-- @group = begin; "#{@group.class.name}Decorator".constantize.decorate(@group); rescue; @group.decorate; end;
+- unless @group.decorated?
+  - @group = begin; "#{@group.class.name}Decorator".constantize.decorate(@group); rescue; @group.decorate; end;
 
 / = content_for :before_main do
   #about style='position: relative;z-index: 999;background: #F2F2F2;'

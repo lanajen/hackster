@@ -19,13 +19,13 @@ section.group-nav.affixable
             span.caret
           ul.dropdown-menu role="menu"
             li= link_to 'Edit settings', url_for([:edit, @group])
+            li= link_to 'Edit schedule', hackathon_schedule_edit_path(@group.user_name)
+            li= link_to 'Add a new page', new_hackathon_page_path(@group.user_name)
             li.divider
             li= link_to 'Manage members', group_edit_members_path(@group)
             li= link_to 'Invite members', group_new_invitations_path(@group)
             li.divider
             li= link_to 'Add an event', hackathon_new_event_path(@group.user_name)
-            li.divider
-            li= link_to 'Add a new page', new_hackathon_page_path(@group.user_name)
       / - if !(can? :manage, @group) or (user_signed_in? and current_user.is? :admin)
         li= render partial: 'followers/button_text', locals: { followable: @group }
 
@@ -51,10 +51,10 @@ section.group-nav.affixable
       - if can? :manage, @group
         li.divider
         li= link_to 'Edit settings', url_for([:edit, @group])
+        li= link_to 'Edit schedule', hackathon_schedule_edit_path(@group.user_name)
+        li= link_to 'Add a new page', new_hackathon_page_path(@group.user_name)
         li.divider
         li= link_to 'Manage members', group_edit_members_path(@group)
         li= link_to 'Invite members', group_new_invitations_path(@group)
         li.divider
         li= link_to 'Add an event', hackathon_new_event_path(@group.user_name)
-        li.divider
-        li= link_to 'Add a new page', new_hackathon_page_path(@group.user_name)

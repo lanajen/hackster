@@ -1,21 +1,32 @@
 class EventsController < ApplicationController
-  before_filter :authenticate_user!, except: [:show, :participants, :organizers, :embed]
-  before_filter :load_event, only: [:show, :update, :participants, :organizers, :embed]
+  before_filter :authenticate_user!, only: [:new, :create, :edit, :update]
+  before_filter :load_event, except: [:new, :create]
   before_filter :load_hackathon, only: [:new, :create]
-  layout 'group_shared', only: [:edit, :update, :show, :participants, :organizers]
+  layout 'group_shared', except: [:embed, :new, :create, :update]
   after_action :allow_iframe, only: :embed
   respond_to :html
 
   def show
+    redirect_to (@event.in_the_future? ? event_info_path(@event) : event_projects_path(@event))
+  end
+
+  def info
     title @event.name
     meta_desc "Join the event #{@event.name} on Hackster.io!"
 
+    @group = @event = EventDecorator.decorate(@event)
+
+    render "groups/events/info"
+  end
+
+  def projects
+    title @event.name
+    meta_desc "See what's cooking at #{@event.name}."
+
     @projects = @event.project_collections.visible.includes(:project).visible.merge(Project.for_thumb_display_in_collection.order('projects.respects_count DESC')).paginate(page: safe_page_params)
-    # @participants = @event.members.request_accepted_or_not_requested.invitation_accepted_or_not_invited.with_group_roles('participant').includes(:user).includes(user: :avatar).map(&:user)
-    # @organizers = @event.members.invitation_accepted_or_not_invited.with_group_roles('organizer').includes(:user).includes(user: :avatar).map(&:user)
     @awards = @event.awards
 
-    render "groups/shared/#{self.action_name}"
+    render "groups/events/projects"
   end
 
   def participants
@@ -37,6 +48,10 @@ class EventsController < ApplicationController
     # @list_style = '_horizontal'
     @projects = @event.projects.public.order('projects.respects_count DESC')
     render "groups/events/#{self.action_name}", layout: 'embed'
+  end
+
+  def edit_schedule
+    render "groups/shared/edit_schedule"
   end
 
   def new

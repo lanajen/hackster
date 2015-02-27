@@ -1,7 +1,10 @@
 class Hackathon < Community
+  include TablelessAssociation
+
   has_many :events, foreign_key: :parent_id
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'HackathonMember'
   has_many :pages, as: :threadable
+  has_many_tableless :schedule_items, order: :position
 
   attr_accessible :hashtag, :twitter_widget_id, :show_organizers
 

@@ -22,6 +22,10 @@ class HackathonsController < ApplicationController
     render "groups/hackathons/show"
   end
 
+  def edit_schedule
+    render "groups/shared/edit_schedule"
+  end
+
   def organizers
     @organizers = @group.members.includes(:user).includes(user: :avatar).invitation_accepted_or_not_invited.with_group_roles('organizer').map(&:user)
 

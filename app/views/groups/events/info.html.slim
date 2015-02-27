@@ -1,0 +1,50 @@
+.row
+  .col-md-4.col-md-push-8
+    section.section-thumbs
+      h4 Event status
+      p.status
+        strong= @group.status
+
+    - if @group.awards.any?
+      section.section-thumbs
+        h4 Awards
+        - @group.awards.each do |award|
+          .award
+            h5
+              i.fa.fa-trophy
+              = award.name
+            p
+              = award.prize
+            - if award.project_id and award.project_id > 0
+              ' Awarded to
+              = link_to award.project.name, award.project
+
+  .col-md-8.col-md-pull-4
+    section.section-container.section-collapsible
+      h2.section-title
+        a.title.title-toggle href=''
+          ' Event info
+          i.fa.fa-chevron-down
+          i.fa.fa-chevron-up
+
+      .section-content.medium-editor
+        p= @group.mini_resume
+
+        p
+          strong> Starts on:
+          = l @group.start_date
+
+        p
+          strong> Ends on:
+          = l @group.end_date
+
+        p
+          strong> Location:
+          = link_to @group.full_street_address, "https://www.google.com/maps/search/#{CGI.escape(@group.full_street_address)}", target: '_blank'
+          br
+          small.text-muted Only participants with a valid ticket will be allowed in the event.
+
+    - if @group.schedule_items.any?
+      = render partial: 'groups/events/schedule', locals: { group: @group }
+    - elsif @group.hackathon.schedule_items.any?
+      = render partial: 'groups/events/schedule', locals: { group: @group.hackathon }

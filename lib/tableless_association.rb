@@ -44,7 +44,7 @@ module TablelessAssociation
       association_instance = if val.present?
         YAML::load(val).map do |attrs|
           attrs.except!(:_destroy, '_destroy')
-          association_model.new attrs.merge(widget_id: id)
+          association_model.new attrs.merge(parent_id: id)
         end
       else
         []
@@ -55,7 +55,7 @@ module TablelessAssociation
     def new_association association_name, association_model, attrs={}
       records = send("#{association_name}")
 
-      records << association_model.new(attrs.merge(widget_id: id))
+      records << association_model.new(attrs.merge(parent_id: id))
 
       _set_association association_name, records
     end

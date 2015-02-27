@@ -1,0 +1,17 @@
+.section-interlude
+
+section.section-container.section-collapsible
+  h2.section-title
+    a.title.title-toggle href=''
+      ' Event schedule
+      i.fa.fa-chevron-down
+      i.fa.fa-chevron-up
+
+  .section-content
+    table.table style='margin: 0'
+      tbody
+        - group.schedule_items.each do |schedule|
+          tr
+            td style="width:120px"
+              strong= schedule.time
+            td= schedule.description

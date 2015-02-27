@@ -4,7 +4,8 @@ section.group-nav.affixable
       = image_tag @group.avatar(:big), class: 'img-thumbnail'
       h2= @group.proper_name
     ul.nav.nav-tabs
-      = active_li_link_to "Projects#{content_tag(:small, @group.projects_count)}".html_safe, url_for(@group), role: 'presentation'
+      = active_li_link_to 'Info', event_info_path(@group), role: 'presentation'
+      = active_li_link_to "Projects#{content_tag(:small, @group.projects_count)}".html_safe, event_projects_path(@group), role: 'presentation'
       = active_li_link_to "Participants#{content_tag(:small, @group.participants_count)}".html_safe, "#{url_for(@group)}/participants"
       - unless @group.hackathon.show_organizers
         = active_li_link_to "Organizers", "#{url_for(@group)}/organizers"
@@ -26,12 +27,13 @@ section.group-nav.affixable
             span.caret
           ul.dropdown-menu role="menu"
             li= link_to 'Edit settings', url_for([:edit, @group])
+            li= link_to 'Edit schedule', hackathon_event_schedule_edit_path(@group.hackathon.user_name, @group.user_name)
+            li= link_to 'Add a new page', new_hackathon_event_page_path(@group.hackathon.user_name, @group.user_name)
             li.divider
             / li= link_to 'Post fresh news', new_platform_announcement_path(@group.user_name)
             li= link_to 'Manage members', group_edit_members_path(@group)
             li= link_to 'Invite members', group_new_invitations_path(@group)
             li.divider
-            li= link_to 'Add a new page', new_hackathon_event_page_path(@group.hackathon.user_name, @group.user_name)
             li= link_to 'Manage awards', group_edit_awards_path(@group)
       / - if !(can? :manage, @group) or (user_signed_in? and current_user.is? :admin)
         li= render partial: 'followers/button_text', locals: { followable: @group }
@@ -48,7 +50,8 @@ section.group-nav.affixable
     ul.nav.nav-pills.nav-stacked.nav-justified.submenu-mobile style='display:none;'
       li
         a.close-nav href='' &times; Close
-      = active_li_link_to "Projects#{content_tag(:small, @group.projects_count)}".html_safe, url_for(@group), role: 'presentation'
+      = active_li_link_to 'Info', event_info_path(@group), role: 'presentation'
+      = active_li_link_to "Projects#{content_tag(:small, @group.projects_count)}".html_safe, event_projects_path(@group), role: 'presentation'
       = active_li_link_to "Participants#{content_tag(:small, @group.participants_count)}".html_safe, "#{url_for(@group)}/participants"
       - unless @group.hackathon.show_organizers
         = active_li_link_to "Organizers", "#{url_for(@group)}/organizers"
@@ -59,10 +62,11 @@ section.group-nav.affixable
       - if can? :manage, @group
         li.divider
         li= link_to 'Edit settings', url_for([:edit, @group])
+        li= link_to 'Edit schedule', hackathon_event_schedule_edit_path(@group.hackathon.user_name, @group.user_name)
+        li= link_to 'Add a new page', new_hackathon_event_page_path(@group.hackathon.user_name, @group.user_name)
         li.divider
         / li= link_to 'Post fresh news', new_platform_announcement_path(@group.user_name)
         li= link_to 'Manage members', group_edit_members_path(@group)
         li= link_to 'Invite members', group_new_invitations_path(@group)
         li.divider
-        li= link_to 'Add a new page', new_hackathon_event_page_path(@group.hackathon.user_name, @group.user_name)
         li= link_to 'Manage awards', group_edit_awards_path(@group)

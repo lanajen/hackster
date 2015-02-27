@@ -17,4 +17,16 @@ class EventDecorator < GeographicCommunityDecorator
       'no date set'
     end
   end
+
+  def status
+    if model.in_the_future?
+      'Upcoming'
+    elsif model.end_date and model.end_date > Time.now
+      'Happening now'
+    elsif model.voting_active?
+      'Voting in progress'
+    else
+      'Ended'
+    end
+  end
 end

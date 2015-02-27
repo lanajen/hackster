@@ -5,36 +5,38 @@
   = javascript_include_tag 'datepicker'
 
   javascript:
-    $('.datetimepicker').datetimepicker({
-      icons: {
-          time: "fa fa-clock-o",
-          date: "fa fa-calendar",
-          up: "fa fa-arrow-up",
-          down: "fa fa-arrow-down"
-      },
-      sideBySide: true
-    });
+    $(document).ready(function(){
+      $('.datetimepicker').datetimepicker({
+        icons: {
+            time: "fa fa-clock-o",
+            date: "fa fa-calendar",
+            up: "fa fa-arrow-up",
+            down: "fa fa-arrow-down"
+        },
+        sideBySide: true
+      });
 
-    $('#start_date_dummy').on('change', function(){
-      var date = $(this).data("DateTimePicker").getDate();
-      $('#start_date').val(date);
-      if ($('#end_date').val() == '') {
-        $('#end_date').val(date);
-        $('#end_date_dummy').data("DateTimePicker").setDate(date);
-      }
-    });
-    $('#end_date_dummy').on('change', function(){
-      $('#end_date').val($(this).data("DateTimePicker").getDate());
-    });
-    $('#voting_end_date_dummy').on('change', function(){
-      $('#voting_end_date').val($(this).data("DateTimePicker").getDate());
-    });
-    $('#group_activate_voting').on('change', function(){
-      if ($(this).is(':checked')) {
-        $('#voting_end_date_dummy').slideDown();
-      } else {
-        $('#voting_end_date_dummy').slideUp();
-      }
+      $('#start_date_dummy').on('change', function(){
+        var date = $(this).data("DateTimePicker").getDate();
+        $('#start_date').val(date);
+        if ($('#end_date').val() == '') {
+          $('#end_date').val(date);
+          $('#end_date_dummy').data("DateTimePicker").setDate(date);
+        }
+      });
+      $('#end_date_dummy').on('change', function(){
+        $('#end_date').val($(this).data("DateTimePicker").getDate());
+      });
+      $('#voting_end_date_dummy').on('change', function(){
+        $('#voting_end_date').val($(this).data("DateTimePicker").getDate());
+      });
+      $('#group_activate_voting').on('change', function(){
+        if ($(this).is(':checked')) {
+          $('#voting_end_date_dummy').slideDown();
+        } else {
+          $('#voting_end_date_dummy').slideUp();
+        }
+      });
     });
 
 = simple_nested_form_for @event, url: event_path(@event), html: { class: 'form-horizontal remote accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|

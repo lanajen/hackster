@@ -2,30 +2,30 @@
   .col-md-10.col-md-offset-1
     .box
       .box-title
-        h2 Event awards
+        h2 Event schedule
 
       .box-content
-        - @group.awards.new if @group.awards.empty?
-        = simple_nested_form_for @group, url: group_awards_path(@group) do |f|
+        - @group.new_schedule_item if @group.schedule_items.empty?
+        = simple_nested_form_for @group do |f|
           = f.error_notification
           table#sortable.table.table-condensed
             thead
-              th Award label
-              th Prize
-              th Project
+              th
+              th Time
+              th Description
               th
             tbody
-              - @group.awards.each do |award|
-                = f.simple_fields_for :awards, award, wrapper: false do |f_award|
+              - @group.schedule_items.each do |schedule_item|
+                = f.simple_fields_for :schedule_items, schedule_item, wrapper: false do |f_schedule_item|
                   tr.fields
                     td
-                      = f_award.input :name, label: false, input_html: { size: 20 }
-                      = f_award.input :id, as: :hidden
-                    td= f_award.input :prize, label: false
-                    td= f_award.association :project, label: false, collection: @group.projects.order(:name)
-                    td= f_award.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-sm btn-danger'
+                      i.fa.fa-bars.handle
+                      = f_schedule_item.input :position, as: :hidden
+                    td= f_schedule_item.input :time, label: false
+                    td= f_schedule_item.input :description, label: false
+                    td= f_schedule_item.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-sm btn-danger'
               tr.sortable-disabled
-                td  colspan=3  = f.link_to_add 'Add an award', :awards, class: 'btn btn-sm btn-success'
+                td  colspan=3  = f.link_to_add 'Add an item to the schedule', :schedule_items, class: 'btn btn-sm btn-success'
           = f.button :submit, 'Save changes', class: 'btn-block btn btn-primary'
 
 = content_for :js do
@@ -44,7 +44,6 @@
         if (isNaN(previousPosition)) previousPosition = 0;
         positionField = field.find('input.position');
         positionField.val(parseInt(previousPosition) + 1);
-        $('.total-price', field).text('$0.00');
       })
 
       $('form').on('nested:fieldRemoved', function(event){
@@ -70,7 +69,5 @@
 
       $('form').on('change keyup', 'input.quantity,input.unit-price', function(){
         field = $(this).parents('.fields');
-        updateTotal(field);
       });
-
     });

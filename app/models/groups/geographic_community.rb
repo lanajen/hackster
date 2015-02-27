@@ -8,6 +8,12 @@ class GeographicCommunity < Community
   attr_accessible :address, :state, :zipcode, :latitude, :longitude
 
   def full_street_address
-    "#{address}, #{city}, #{state}, #{zipcode}, #{country}"
+    locations = []
+    locations << address if address.present?
+    locations << city if city.present?
+    locations << state if state.present?
+    locations << zipcode if zipcode.present?
+    locations << country if country.present?
+    locations.join(', ')
   end
 end
