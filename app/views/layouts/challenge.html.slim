@@ -4,6 +4,34 @@
   - if url_for(@challenge) == request.path
     / = render partial: "groups/#{@challenge.identifier.pluralize}/meta_tags"
   meta name='group_id' content=@challenge.id
+  - sponsor = @platform ? @platform.name : @challenge.sponsor_name
+  - desc = @challenge.teaser.presence || @challenge.name
+  - if sponsor.present?
+    - desc += " Sponsored by #{sponsor}."
+  meta(name="description" content=desc)
+  meta(property="og:description" content=desc)
+  meta(property="og:image" content=@challenge.cover_image(:cover_thumb))
+  meta(property="og:image:width" content='400')
+  meta(property="og:image:height" content='300')
+  meta(property="og:url" content=url_for([@challenge, only_path: false]))
+  meta(property="og:site_name" content=site_name)
+  meta(property="twitter:card" content="product")
+  - if site_twitter.present?
+    meta(property="twitter:site" content=site_twitter)
+  meta(property="twitter:domain" content=site_domain)
+  meta(property="twitter:title" content=@challenge.name)
+  meta(property="twitter:description" content=@challenge.teaser)
+  - if sponsor.present?
+    meta(property="twitter:data2" content=sponsor)
+    meta(property="twitter:label2" content="SPONSORED BY")
+  - if platform = @challenge.platform and handle = platform.twitter_handle
+    meta(property="twitter:creator" content=handle)
+  meta(property="twitter:data1" content=@challenge.prizes.first.try(:description))
+  meta(property="twitter:label1" content="TOP PRIZE")
+  meta(property="twitter:image:src" content=@challenge.cover_image(:cover_thumb))
+  meta(property="twitter:image:width" content='400')
+  meta(property="twitter:image:height" content='300')
+  link(rel="canonical" href=url_for([@challenge, subdomain: 'www', only_path: false]))
 
 = content_for :js do
   script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-51b26f5613fb83d2" async="async"
