@@ -10,6 +10,18 @@
     .container-desktop.container
       .row
         .col-md-8.left-column
+          - if @project.event
+            .project-group
+              i.fa.fa-challenge>
+              ' This project is part of
+              ==> link_to @project.event.name, @project.event
+              - if can? :request_access, @project.team
+                - if user_signed_in? and member = current_user.is_team_member?(@project)
+                  - if member.request_pending?
+                    span.label.label-default Request to join team pending
+                - else
+                  = link_to 'I want to join!', group_members_path(@project.team), class: 'btn btn-sm btn-warning', data: { method: :post }, id: 'join-button'
+
           - cache [@project, 'teaser'], tag: ["project-#{@project.id}-teaser"], expires_in: 6.hours do
             - if ProjectCollection.assignment_or_event_for_project?(@project.id)
               .project-group
@@ -26,12 +38,6 @@
                   / - @project.awards.where(gradable_id: @project.collection_id, gradable_type: 'Group').each do |award|
                     span.project-award<
                       i.fa.fa-trophy.istooltip  title=award.grade   data-container='body'
-                  / if can? :request_access, @project.team
-                    - if user_signed_in? and member = current_user.is_team_member?(@project)
-                      - if member.request_pending?
-                        span.label.label-default Request to join team pending
-                    - else
-                      = link_to 'Join team', group_members_path(@project.team), class: 'btn btn-xs btn-warning', data: { method: :post }, id: 'join-button'
 
             - if @winning_entry
               .project-group
