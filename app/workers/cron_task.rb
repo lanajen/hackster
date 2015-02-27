@@ -7,6 +7,11 @@ class CronTask < BaseWorker
       ProjectCollection.where(:project_id => c[0], :collectable_id => c[1], :collectable_type => c[2]).limit(count-1).each{|cp| cp.delete }
       Group.find(c[1]).update_counters only: [:projects]
     end
+
+    CoverImage.select("id, count(id) as quantity").where("attachable_type = 'Project'").group(:attachable_id, :attachable_type).having("count(id) > 1").size.each do |c, count|
+      pid = c[0]
+      CoverImage.where(attachable_id: pid, attachable_type: 'Project').order(created_at: :asc).limit(count - 1).each{|cp| cp.delete }
+    end
   end
 
   def compute_popularity
