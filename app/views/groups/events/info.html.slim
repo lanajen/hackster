@@ -32,13 +32,15 @@
       .section-content.medium-editor
         p= @group.mini_resume
 
-        p
-          strong> Starts on:
-          = l @group.start_date
+        - if @group.start_date
+          p
+            strong> Starts on:
+            = l @group.start_date
 
-        p
-          strong> Ends on:
-          = l @group.end_date
+        - if @group.end_date
+          p
+            strong> Ends on:
+            = l @group.end_date
 
         p
           strong> Location:
