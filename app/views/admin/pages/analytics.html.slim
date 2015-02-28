@@ -36,8 +36,6 @@
         h3.panel-title Active users (last 24 hours)
       .panel-body
         ==> number_with_delimiter @active_users1d
-        small.text-muted
-          | (#{@new_users1d} new)
 
   .col-xs-12.col-sm-4
     .panel.panel-default.panel-dashboard
@@ -45,8 +43,6 @@
         h3.panel-title Active users (last 7 days)
       .panel-body
         ==> number_with_delimiter @active_users7d
-        small.text-muted
-          | (#{@new_users7d} new)
 
   .col-xs-12.col-sm-4
     .panel.panel-default.panel-dashboard
@@ -54,8 +50,6 @@
         h3.panel-title Active users (last 30 days)
       .panel-body
         ==> number_with_delimiter @active_users30d
-        small.text-muted
-          | (#{@new_users30d} new)
 
 .row
   .col-xs-12.col-sm-4
