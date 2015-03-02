@@ -69,7 +69,7 @@
         .container
           .view-all-header.clearfix
             h4.pull-left Not ready to follow yet? Here's the latest projects
-            = link_to 'View more recent projects', projects_path, class: 'btn btn-default btn-sm hidden-xs pull-right'
+            = link_to 'View more recent projects', projects_path(sort: 'recent'), class: 'btn btn-default btn-sm hidden-xs pull-right'
 
           .row.mobile-scroll-row.thumbs-carousel
             - @last_projects.each do |project|
@@ -98,7 +98,7 @@
         .container
           .view-all-header.clearfix
             h4.pull-left Latest projects
-            = link_to 'View more recent projects', projects_path(by: 'recent'), class: 'btn btn-default btn-sm hidden-xs pull-right'
+            = link_to 'View more recent projects', projects_path(sort: 'recent'), class: 'btn btn-default btn-sm hidden-xs pull-right'
 
           .row.mobile-scroll-row.thumbs-carousel
             - @last_projects.each do |project|
