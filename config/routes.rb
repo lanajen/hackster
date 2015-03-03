@@ -267,6 +267,7 @@ HackerIo::Application.routes.draw do
 
     get 'home' => 'pages#home'
     get 'about' => 'pages#about'
+    get 'pricing' => 'pages#pricing'
     # get 'help' => 'pages#help'
     get 'achievements' => 'pages#achievements'
     get 'home', to: redirect('/')
