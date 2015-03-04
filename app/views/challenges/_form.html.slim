@@ -61,6 +61,7 @@
               th Award Name
               th Prize description
               th Cash value
+              th Link
               th Quantity available
               th Requires shipping
               th
@@ -75,6 +76,7 @@
                     td  style='width:20%'  = f_prize.input :name, label: false, wrapper: false, placeholder: 'Eg: First place'
                     td  style='width:40%'  = f_prize.input :description, label: false, wrapper: false, input_html: { rows: 3 }, placeholder: 'Eg: iPad Air'
                     td= f_prize.input :cash_value, label: false, wrapper: false
+                    td= f_prize.input :link, label: false, wrapper: false
                     td= f_prize.input :quantity, label: false, wrapper: false
                     td= f_prize.input :requires_shipping, label: false, wrapper: false
                     td= f_prize.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-xs btn-danger'

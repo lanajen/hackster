@@ -4,7 +4,7 @@ class Prize < ActiveRecord::Base
   has_one :project
 
   attr_accessible :name, :description, :position, :requires_shipping, :quantity,
-    :cash_value
+    :cash_value, :link
 
   def requires_shipping?
     requires_shipping
