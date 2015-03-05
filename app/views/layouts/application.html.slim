@@ -60,7 +60,6 @@ html(lang="en")
               button.close.btn-close  data-close='#hello-world'  &times;
               ==> SLOGAN
               = link_to 'Learn more.', about_path
-              / = link_to 'Start building.', new_user_registration_path, onclick: "_gaq.push(['_trackEvent', 'Hello world bar', 'Sign up', '#{request.path}']);"
         - elsif user_signed_in? and current_user.simplified_signup?
           .alert.alert-flat.alert-warning.alert-smaller
             .container
@@ -231,7 +230,7 @@ html(lang="en")
         - if current_user.is? :admin
           = link_to 'Admin', admin_analytics_path, class: 'mo-nav-link'
       - else
-        = link_to 'Sign up / Login', new_user_registration_path, class: 'mo-nav-link', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '#{request.path}']);"
+        = link_to 'Sign up / Login', new_user_registration_path, class: 'mo-nav-link'
 
     - if @modal
        = @modal.html_safe

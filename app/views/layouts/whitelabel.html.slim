@@ -166,7 +166,7 @@ html(lang="en")
         / - if current_user.is? :admin
           = link_to 'Admin', admin_analytics_path, class: 'mo-nav-link'
       - else
-        = link_to 'Sign up / Login', new_user_registration_path, class: 'mo-nav-link', onclick: "_gaq.push(['_trackEvent', 'Header bar', 'Sign up', '#{request.path}']);"
+        = link_to 'Sign up / Login', new_user_registration_path, class: 'mo-nav-link'
 
     = content_for :js
     / = render 'shared/feedback'
