@@ -320,10 +320,7 @@
               section.section-thumbs
                 h4 Manage this project
                 - if @can_update
-                    ==> link_to 'Edit project details', edit_project_path(@project), class: 'btn btn-default'
-                    .btn-group<
-                      = link_to content_tag(:i, '', class: 'fa fa-cog'), settings_project_path(@project), class: 'btn btn-default', rel: 'tooltip', data: { container: 'body' }, title: 'Edit settings'
-                      = link_to content_tag(:i, '', class: 'fa fa-group'), project_edit_team_path(@project), class: 'btn btn-default', rel: 'tooltip', data: { container: 'body' }, title: 'Manage team'
+                    = link_to 'Edit project and team', edit_project_path(@project), class: 'btn btn-default btn-block'
                 - else
                   p This project is locked for editing.
 

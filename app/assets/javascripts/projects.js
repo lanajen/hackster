@@ -227,13 +227,9 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
       .on("ajax:beforeSend", 'form.remote', function(xhr, settings){
         $('.pe-save').slideUp(200);
         $(this).closest('.pe-container').addClass('processing');
-        // $('.pe-submit').prop('disabled', true);
-        console.log("before");
       })
       .on('ajax:complete', 'form.remote', function(xhr, status){
         $(this).closest('.pe-container').removeClass('processing');
-        // $('.pe-submit').prop('disabled', false);
-        console.log('complete');
       })
       .on('ajax:success', 'form.remote', function(xhr, status){
         serializeForm();
