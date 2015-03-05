@@ -20,9 +20,9 @@ class ClientSubdomain < Subdomain
   validates :subdomain, uniqueness: true
 
   attr_accessible :subdomain, :domain, :logo_id, :name, :favicon_id,
-    :hide_alternate_search_results
+    :hide_alternate_search_results, :analytics_code
 
-  store :properties, accessors: [:hide_alternate_search_results]
+  store :properties, accessors: [:hide_alternate_search_results, :analytics_code]
   set_changes_for_stored_attributes :properties
   parse_as_booleans :properties, :hide_alternate_search_results
 
