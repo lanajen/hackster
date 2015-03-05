@@ -26,7 +26,7 @@
     .box-content
       = f.error_notification
 
-      = f.input :platform_tags_array, label: 'Platforms used', hint: "Select all the platforms you've used", collection: Platform.public.order(:full_name), input_html: { multiple: 'multiple' }, value_method: :name
+      = f.input :platform_tags_array, label: 'Platforms used', hint: "Select all the platforms you've used", collection: (Platform.public.order(:full_name).pluck(:full_name) + @project.platform_tags_array).uniq, input_html: { multiple: 'multiple' }
       - communities = current_user.is?(:admin) ? Community.where(type: 'Community').order(:full_name) : current_user.communities.where(type: 'Community')
       - if communities.any?
         = f.association :communities, collection: communities, as: :check_boxes
