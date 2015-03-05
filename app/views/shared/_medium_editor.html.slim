@@ -1,7 +1,8 @@
 #medium-editor
   .editable  data-attribute-name=attribute_name  = editable
 
-  .media-menu.unselectable
+= content_for :js do
+  .medium-media-menu.media-menu.unselectable
     a.media-btn.add-media-btn
       i.fa.fa-plus>
       | Add media
@@ -47,5 +48,4 @@
     input name="success_action_status" type="hidden" value="201"
     input name="file" type="file" multiple='multiple'
 
-= content_for :js do
   .loading-bar

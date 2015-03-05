@@ -1,4 +1,4 @@
-= simple_nested_form_for widget, url: '', wrapper: false, html: { id: 'parts-widget-form', class: "widget-#{widget.id}" } do |f_widget|
+= f.simple_fields_for :widgets, widget, url: '', wrapper: false, html: { id: 'parts-widget-form', class: "widget-#{widget.id}" } do |f_widget|
   = f_widget.input :id, as: :hidden
   ul.list-unstyled.parts-widget
     - widget.part_joins.new if widget.part_joins.empty?
@@ -111,18 +111,28 @@
   javascript:
     $(function(){
       $('.parts-widget').on('change', function(e){
-        editor.triggerInput();
+        // editor.triggerInput();
       });
 
-      $('.parts-widget').on('nested:fieldAdded', function(event){
+      function resetPositions(){
+        $('.parts-widget tr:not(.removed) input.position').each(function(i){
+          $(this)
+            .val(i+1)
+            .trigger('change');
+        });
+      }
+
+      $('.pe-panel').on('nested:fieldAdded', '.parts-widget', function(event){
         //var select = $(event.target).find('.select2');
         //$select2containers[select.attr('id')] = $(event.target).find('.select2').select2(select2Options);
+        resetPositions();
       })
 
-      $('.parts-widget').on('click', '.reveal', function(e){
+      $('.pe-panel').on('click', '.reveal', '.parts-widget', function(e){
         e.preventDefault();
         var parent = $(this).closest('tbody');
         var target = parent.find('[data-name="' + $(this).data('target') + '"]');
+        var panel = $(this).closest('.pe-panel');
         target.slideDown();
         var li = $(this).closest('li');
         var ul = li.closest('ul');
@@ -133,19 +143,21 @@
         }
       });
 
-      $('.parts-widget').on('click', '.move-up', function(e){
+      $('.pe-panel').on('click', '.move-up', '.parts-widget', function(e){
         e.preventDefault();
         var parent = $(this).closest('.fields');
         if (parent.prev().length) {
           parent.insertBefore(parent.prev());
         }
+        resetPositions();
       });
 
-      $('.parts-widget').on('click', '.move-down', function(e){
+      $('.pe-panel').on('click', '.move-down', '.parts-widget', function(e){
         e.preventDefault();
         var parent = $(this).closest('.fields');
         if (parent.next().length) {
           parent.insertAfter(parent.next());
         }
+        resetPositions();
       });
     });

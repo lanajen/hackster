@@ -138,12 +138,12 @@ $(function () {
     if (isNaN(previousPosition)) previousPosition = 0;
     positionField = field.find('input.position');
     positionField.val(parseInt(previousPosition) + 1);
-  })
+  });
 
   $('form.sortable').on('nested:fieldRemoved', function(event){
     event.field.addClass('removed');
     resetPositions();
-  })
+  });
 
   $('form.sortable #sortable tbody')
     .sortable({ handle: ".handle", containment: "#sortable", items: 'tr:not(.sortable-disabled)' })
@@ -168,6 +168,7 @@ $(function () {
       // But first, store the original text of the submit button, so it can be restored when the request is finished.
       $submitButton.data('origText', $submitButton.val());
       $submitButton.val('Submitting...');
+      $submitButton.prop('disabled', true);
     })
 
     .on("ajax:success", 'form.remote', function(xhr, data, status){
@@ -185,6 +186,7 @@ $(function () {
 
       // Restore the original submit button text
       $submitButton.val($submitButton.data('origText'));
+      $submitButton.prop('disabled', false);
     })
 
     .on("ajax:error", 'form.remote', function(error, xhr, status){
@@ -205,10 +207,22 @@ $(function () {
       $('.form-group').removeClass('has-error');
 
       for (model in errors) {
-        for (error in errors[model]) {
-          input = $form.find('[name="' + model + '['+error+']"]');
+        for (attribute in errors[model]) {
+          // transforms attribute name for nested attributes
+          var attrName = attribute;
+          if (attribute.indexOf('.') != -1) {
+            var attributes = attribute.split('.');
+            var nested = attributes[0];
+            nested += '_attributes';
+            var all = [nested];
+            for (var i = 1; i < attributes.length; i++) {
+              all.push(attributes[i]);
+            }
+            attribute = all.join('][');
+          }
+          var input = $form.find('[name="' + model + '['+attribute+']"]');
           input.parents('.form-group').addClass('has-error');
-          errorMsg = $('<span class="help-block error-message">' + errors[model][error] + '</span>');
+          errorMsg = $('<span class="help-block error-message">' + errors[model][attrName] + '</span>');
           if (input.parent().hasClass('input-group')) {
             errorMsg.insertAfter(input.parent());
           } else {

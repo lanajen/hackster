@@ -642,6 +642,18 @@ p.caption {
   display: none;
 }
 
+
+.form-horizontal {
+  .parts-widget {
+    .fields .form-group {
+      margin-bottom: 0;
+    }
+    .control-label {
+      padding-top: 12px;
+    }
+  }
+}
+
 .parts-widget {
   td {
     background: #fafafa;
@@ -725,4 +737,7 @@ p.caption {
   .default-hidden {
     display: none;
   }
+}
+.select2-container {
+  width: 100% !important;
 }

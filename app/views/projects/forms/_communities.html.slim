@@ -1,0 +1,39 @@
+/
+  Built with: choose from list, checkboxes with select2.. or maybe just remove and auto-add based on components
+  show communities if part of any
+  show assignment if student
+  show event if happening now OR if part of the group
+  show all hackerspaces via autocomplete
+
+= content_for :js do
+  javascript:
+    $(function(){
+      $("#project_platform_tags_array").select2({
+        tags: true,
+        tokenSeparators: [',']
+      });
+      $("#project_hacker_space_id").select2();
+    });
+
+= simple_nested_form_for @project, url: api_v1_project_path(@project), html: { data: { remote: true }, class: 'form-horizontal remote' }, wrapper: :bootstrap3_horizontal do |f|
+
+  input type='hidden' name='panel' value='communities'
+
+  .box
+    .box-title
+      h3 The communities
+      .subheading Is this project part of a bigger thing? Do you want to share it with other communities?
+    .box-content
+      = f.error_notification
+
+      = f.input :platform_tags_array, label: 'Platforms used', hint: "Select all the platforms you've used", collection: Platform.public.order(:full_name), input_html: { multiple: 'multiple' }, value_method: :name
+      - communities = current_user.is?(:admin) ? Community.where(type: 'Community').order(:full_name) : current_user.communities.where(type: 'Community')
+      - if communities.any?
+        = f.association :communities, collection: communities, as: :check_boxes
+      - assignments = current_user.is?(:admin) ? Assignment.order(created_at: :desc) : current_user.assignments.order(created_at: :desc)
+      - if assignments.any?
+        = f.input :assignment_id, collection: assignments, label: 'Assignment', hint: "If you made the hack as part of a course assignment, select it above."
+      - events = current_user.is?(:admin) ? Event.order(created_at: :desc) : current_user.events.order(created_at: :desc) + Event.recent
+      - if events.any?
+        = f.input :event_id, collection: events, label: 'Event', hint: "If you made the hack as part of an event, select it above."
+      = f.input :hacker_space_id, collection: HackerSpace.order(full_name: :asc), label: 'Where did you hack this from?', hint: "Select the hacker space you worked from. <a href='/hackerspaces'>See all the hacker spaces.</a>".html_safe

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150224201617) do
+ActiveRecord::Schema.define(version: 20150302202021) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -475,6 +475,7 @@ ActiveRecord::Schema.define(version: 20150224201617) do
     t.string   "platform_tags_string"
     t.string   "product_tags_string"
     t.datetime "assignment_submitted_at"
+    t.text     "story"
   end
 
   add_index "projects", ["private"], name: "index_projects_on_private", using: :btree

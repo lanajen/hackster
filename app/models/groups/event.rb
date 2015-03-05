@@ -71,6 +71,10 @@ class Event < GeographicCommunity
     where("groups.end_date < ?", Time.now).order(start_date: :desc)
   end
 
+  def self.recent
+    where("groups.start_date < ? AND groups.end_date > ?", 7.days.from_now, 7.days.ago).order(start_date: :asc, end_date: :desc)
+  end
+
   def avatar
     hackathon.try(:avatar)
   end

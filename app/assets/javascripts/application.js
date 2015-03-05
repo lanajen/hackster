@@ -15,6 +15,8 @@
 //= require gist-embed
 //= require underscore
 //= require browser_timezone_rails/application
+//= require jquery.resize
+// require jquery.deserialize
 
 //= require chats
 //= require projects

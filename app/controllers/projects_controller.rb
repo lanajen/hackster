@@ -248,6 +248,7 @@ class ProjectsController < ApplicationController
     @mode = 'edit_mode'
     @show_sidebar = true
     initialize_project
+    @team = @project.team
     @project = @project.decorate
   end
 

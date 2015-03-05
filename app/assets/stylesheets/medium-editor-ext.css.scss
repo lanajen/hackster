@@ -128,53 +128,6 @@
       }
     }
   }
-  .media-menu {
-    display: none;
-    position: absolute;
-    left: -120px;
-    // background: #fff;
-    .media-btn {
-      background: #fff;
-      color: #aaa;
-      cursor: pointer;
-      display: inline-block;
-      border: 3px solid #aaa;
-      padding: 7px 10px;
-      @include border-radius(40px);
-      font-size: 0.85em;
-      min-width: 38px;
-      text-align: center;
-      &:hover {
-        color: #777;
-        border-color: #777;
-        text-decoration: none;
-      }
-      &.add-media-btn {
-        color: #FF7745;
-        border-color: #FF7745;
-        font-weight: bold;
-        &:hover {
-          color: #FF5B1E;
-          border-color: #FF5B1E;
-        }
-      }
-    }
-    .media-menu-btns {
-      background: #fff;
-      display: none;
-      margin-left: 16px;
-      .media-btn {
-        @include transform(scale(0));
-      }
-      &.is-open {
-        display: inline-block;
-        .media-btn {
-          @include transform(scale(1));
-          @include transition(all .2s);
-        }
-      }
-    }
-  }
   .embed {
     position: relative;
     .embed-img {
@@ -196,6 +149,55 @@
         figcaption, .figcaption {
           display: block !important;
         }
+      }
+    }
+  }
+}
+
+.medium-media-menu {
+  display: none;
+  position: absolute;
+  z-index: 2000;
+  // left: -120px;
+  // background: #fff;
+  .media-btn {
+    background: #fff;
+    color: #aaa;
+    cursor: pointer;
+    display: inline-block;
+    border: 3px solid #aaa;
+    padding: 7px 10px;
+    @include border-radius(40px);
+    font-size: 0.85em;
+    min-width: 38px;
+    text-align: center;
+    &:hover {
+      color: #777;
+      border-color: #777;
+      text-decoration: none;
+    }
+    &.add-media-btn {
+      color: #FF7745;
+      border-color: #FF7745;
+      font-weight: bold;
+      &:hover {
+        color: #FF5B1E;
+        border-color: #FF5B1E;
+      }
+    }
+  }
+  .media-menu-btns {
+    background: #fff;
+    display: none;
+    margin-left: 16px;
+    .media-btn {
+      @include transform(scale(0));
+    }
+    &.is-open {
+      display: inline-block;
+      .media-btn {
+        @include transform(scale(1));
+        @include transition(all .2s);
       }
     }
   }

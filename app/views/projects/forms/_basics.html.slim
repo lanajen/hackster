@@ -1,0 +1,28 @@
+/ add more of the basics
+
+= content_for :js do
+  javascript:
+    $(function(){
+      $("#project_product_tags_array").select2({
+        tags: true,
+        tokenSeparators: [',']
+      });
+    });
+
+= simple_nested_form_for @project, url: api_v1_project_path(@project), html: { data: { remote: true }, class: 'form-horizontal remote accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
+
+  input type='hidden' name='panel' value='basics'
+
+  .box
+    .box-title
+      h3  The basics
+      .subheading Get started with your project
+    .box-content
+      = f.error_notification
+
+      = f.input :name, label: "Project name", hint: 'Make it sound cool!'
+      = f.input :one_liner, as: :text, input_html: { rows: 3 },
+        hint: "Describe your project in one short sentence", label: 'Elevator pitch'
+      = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @project.cover_image.try(:file_url, :cover_mini_thumb), help_block: 'This should be your nicest picture for this project. Give us some high def for best results! It will be cropped to 4:3 format.', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
+      = f.input :license, collection: License.all, value_method: :url, hint: "Under which license are you sharing your project? If you don't know/don't care, \"Beerware\" is a pretty good one :)", selected: @project.license.try(:url), include_blank: true
+      = f.input :product_tags_array, label: 'Tags', collection: ['Home automation', 'Wearable', 'Internet of Things', 'Lights', 'Animals', 'Wifi', 'Bluetooth', 'Accelerometer', 'Robot', 'Drone', 'Embedded', 'IR', 'LED', 'Display', 'Servo', 'Relay'].sort, input_html: { multiple: 'multiple' }

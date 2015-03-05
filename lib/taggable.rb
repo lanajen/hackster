@@ -2,7 +2,7 @@ module Taggable
   module ClassMethods
     def taggable *tags
       tags.each do |tag_type|
-        attr_accessible :"#{tag_type}_string"
+        attr_accessible :"#{tag_type}_string", :"#{tag_type}_array"
         has_many tag_type, -> { order(name: :asc) }, as: :taggable, dependent: :destroy
 
         if "#{tag_type}_string".in? self.column_names
@@ -11,6 +11,14 @@ module Taggable
           self.send :define_method, "#{tag_type}_cached" do
             eval "
               #{tag_type}_string.present? ? #{tag_type}_string.split(',').map{ |s| s.strip } : []
+            "
+          end
+          self.send :define_method, "#{tag_type}_array" do
+            eval "#{tag_type}_cached"
+          end
+          self.send :define_method, "#{tag_type}_array=" do |val|
+            eval "
+              self.#{tag_type}_string = val.join(',')
             "
           end
           self.send :define_method, "#{tag_type}_string_from_tags" do

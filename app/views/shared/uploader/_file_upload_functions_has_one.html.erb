@@ -13,8 +13,8 @@ var <%= file_type %>Functions = {
     //file = file.file || data.result.file;
 
     if ($('.<%= file_type %>.image-preview').length > 0) {
-      inputTpl = '<span><img>';
-      inputTpl += '<input type="hidden" name="<%= model %>[<%= attribute_type %>_id]"></span>';
+      inputTpl = '<span class="inserted"><img>';
+      inputTpl += '<input type="hidden" name="<%= model %>[<%= attribute_type %>_id]" class="inserted"></span>';
       input = $(inputTpl);
       input.find('input').val(id);
 
@@ -24,10 +24,10 @@ var <%= file_type %>Functions = {
         input.find('img').attr('src', e.target.result);
       }
       reader.readAsDataURL(data.files[0]);
-      $('.<%= file_type %>.image-preview').html(input);
+      $('.<%= file_type %>.image-preview').html(input).trigger('change');
     } else {
-      inputTpl = '<span><span class="filename"></span>';
-      inputTpl += '<input type="hidden" name="<%= model %>[<%= attribute_type %>_id]"></span>';
+      inputTpl = '<span class="inserted"><span class="filename"></span>';
+      inputTpl += '<input type="hidden" name="<%= model %>[<%= attribute_type %>_id]" class="inserted"></span>';
       input = $(inputTpl);
       input.find('input').val(id);
       filename = file.url.substring(file.url.lastIndexOf('/')+1);

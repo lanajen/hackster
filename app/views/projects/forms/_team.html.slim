@@ -1,0 +1,139 @@
+/ cleanup
+  make it possible to add team members who don't have an account
+  make it possible to create an account for yourself at that step + edit profile info
+
+= simple_nested_form_for @project, url: api_v1_project_path(@project), html: { data: { remote: true }, class: 'form-horizontal remote' }, wrapper: :bootstrap3_horizontal do |f|
+
+  input type='hidden' name='panel' value='team'
+
+  .box
+    .box-title
+      h3 The team
+      .subheading Who made this?
+    .box-content
+      = f.error_notification
+
+      .form-group.boolean.optional
+        .col-xs-12
+          input name="use_guest" type="hidden" value="0"
+          label.checkbox
+            = check_box_tag :use_guest, '1', @project.guest_name.present?
+            | I'm posting this project on behalf of someone else
+
+      #project-form  style="#{'display:none;' unless @project.guest_name.present?}"
+        = f.input :guest_name, label: 'Author name', hint: "Use this field if you're posting this project on behalf of somebody else. The project team will only consist of this author. Your name will show as \"Posted by\"."
+
+      #team-form  style="#{'display:none;' if @project.guest_name.present?}"
+        = f.simple_fields_for :team do |f_team|
+          = f.error_notification
+
+          table#sortable.table.table-condensed
+            thead
+              th style='width:40%' User
+              / th Permission
+              th Contribution
+              th Status
+              th
+            tbody
+              - (@team.members.includes(:user).sort_by{|m| m.user.name } + [@team.members.new]).each do |member|
+                = f_team.simple_fields_for :members, member, wrapper: false do |f_member|
+                  tr.fields
+                    - if member.persisted?
+                      td style='width:40%'
+                        = f_member.input :id, as: :hidden
+                        = link_to member.user.name, member.user
+                    - else
+                      td style='width:40%'
+                        / # = f_member.association :user, collection: User.where('user_name IS NOT NULL').sort_by{|u| u.name }, label: false
+                        = f_member.input :user_id, input_html: { class: 'select2' }, label: false, collection: [], prompt: 'Select a user (type in their name)'
+                    / = f_member.simple_fields_for :permission do |f_perm|
+                      td= f_perm.input :action, collection: Permission::ACTIONS, label: false
+                    td= f_member.input :mini_resume, as: :text, label: false
+                    td
+                      - if member.persisted?
+                        - if member.invitation_pending?
+                          - if member.user.invited_to_sign_up?
+                            | Pending sign up
+                          - else
+                            | Invitation pending
+                        - else
+                          - if member.requested_to_join_at.present? and !member.approved_to_join
+                            - if member.approved_to_join.nil?
+                              | Pending approval
+                              div
+                                = link_to 'Approve', member_process_path(member, event: 'approve'), class: 'btn btn-sm btn-success', data: { method: :patch }
+                                = link_to 'Reject', member_process_path(member, event: 'reject'), class: 'btn btn-sm btn-danger', data: { method: :patch }
+                            - elsif !member.approved_to_join
+                              | Rejected
+                          - else
+                            | Member
+                      - else
+                        | Not saved
+                    td= f_member.link_to_remove content_tag(:i, '', class: 'fa fa-times-circle-o'), class: 'btn btn-sm btn-danger'
+              tr.sortable-disabled
+                td  colspan=4  = f_team.link_to_add 'Add a member', :members, class: 'btn btn-xs btn-success nested-field-table'
+
+          = f_team.input :full_name, label: 'Team name'
+          = f_team.input :new_user_name, label: 'Pretty URL' do
+            .input-group
+              span.input-group-addon hackster.io/
+              = f_team.input_field :new_user_name
+              span.input-group-addon
+                | /#{@project.slug}
+
+        hr style='margin:30px 0'
+        h4
+          ' Work attribution
+          small If you're using other people's work, give a shout for them here
+        - widget = @project.credits_widget
+        = f.simple_fields_for :widgets, widget do |f_cred|
+          - widget.new_credit_line if widget.credit_lines.empty?
+          .form-fields
+            = f_cred.simple_fields_for :credit_lines do |f_credit|
+              = f_credit.input :name, label: 'Contributor name'
+              = f_credit.input :work, label: 'What you credit them for'
+              = f_credit.input :link, label: 'Link (optional)'
+              .row
+                .col-xs-offset-4.col-md-8= f_credit.link_to_remove 'Remove this contributor', class: 'btn btn-xs btn-danger'
+            = f_cred.link_to_add 'Add another contributor', :credit_lines, class: 'btn btn-xs btn-success', style: 'margin:0 0 0 33.33333%;'
+
+  javascript:
+    $(function() {
+      $('body').on('click', '#use_guest', function() {
+        $('#project-form, #team-form').slideToggle();
+      });
+
+      var select2Options = {
+        placeholder: 'Select a user',
+        minimumInputLength: 3,
+
+        ajax: {
+          url: "/api/v1/users/autocomplete",
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term, // search term
+              page: params.page
+            };
+          },
+          processResults: function (data, page) {
+            // parse the results into the format expected by Select2.
+            // since we are using custom formatting functions we do not need to
+            // alter the remote JSON data
+            return {
+              results: data
+            };
+          },
+          cache: true
+        }
+        //templateResult: formatRepo, // omitted for brevity, see the source of this page
+        //templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
+      };
+
+      $('#team-form .select2').select2(select2Options);
+
+      $('#team-form').on('nested:fieldAdded', function(event){
+        $(event.field).find('.select2').select2(select2Options);
+      });
+    });

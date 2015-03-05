@@ -107,19 +107,19 @@ $(function() {
           });
           content[elementid]['widgets_attributes'][i] = attrs;
         });
-        var partsWidget = $('#parts-widget-form');
-        if (partsWidget.length) {
-          var i = new Date().getTime();
-          var attrs = {};
-          partsWidget.find('input, select, textarea').each(function(){
-            var name = $(this).attr('name');
-            if (name.indexOf('widget') > -1) {
-              name = name.replace('widget', '');
-              attrs[name] = $(this).val();
-            }
-          });
-          content[elementid]['widgets_attributes'][i] = attrs;
-        }
+        // var partsWidget = $('#parts-widget-form');
+        // if (partsWidget.length) {
+        //   var i = new Date().getTime();
+        //   var attrs = {};
+        //   partsWidget.find('input, select, textarea').each(function(){
+        //     var name = $(this).attr('name');
+        //     if (name.indexOf('widget') > -1) {
+        //       name = name.replace('widget', '');
+        //       attrs[name] = $(this).val();
+        //     }
+        //   });
+        //   content[elementid]['widgets_attributes'][i] = attrs;
+        // }
 
         $inserts.find('.embed-figcaption').each(function(){
           var frame = $(this).closest('.embed-frame');
@@ -245,6 +245,7 @@ $(function() {
     placeholder: $('#model-editor').data('model-placeholder'),
     modelUrl: $('#model-editor').data('model-url'),
     lastSaved: null,
+    saveMode: $('#model-editor').data('save-mode') || 'auto',
     saveTimerOn: false,
     unsavedChanges: false,
     saveTimer: null,
@@ -392,6 +393,7 @@ $(function() {
         formData = {};
         formData[_.modelSymbol] = modelData;
       }
+      console.log(modelData);
       formData.utf8 = '✓';
       // var form = $(projectFormTpl);
       // createInputFor('utf8', '✓', form);
@@ -401,68 +403,73 @@ $(function() {
       //   createInputFor('project[widgets_attributes]' + key, val, form);
       // });
       // var formData = new FormData(form[0]);
-      _.showLoadingBar();
-      _.status.html('<i class="fa fa-refresh fa-spin"></i> Saving...');
 
-      $.ajax(_.modelUrl + '/' + _.modelId, {
-        data: formData,
-        // processData: false,
-        // contentType: false,
-        type: 'PATCH',
-        xhr: function() {
-            return window.XMLHttpRequest == null || new window.XMLHttpRequest().addEventListener == null
-                ? new window.ActiveXObject("Microsoft.XMLHTTP")
-                : $.ajaxSettings.xhr();
-        },
-        success: function(data){
-          _.clearErrors();
-          _.status.html('<i class="fa fa-check" style="color:#5cb85c"></i> All changes saved');
-          _.unsavedChanges = false;
-          // _.clearTimer();
-          checkTodos();
-          if (_.modelType == 'Project')
-            _.updateParts(data.parts_widgets);
-          successCallback(data);
-        },
-        error: function(data){
-          switch(data.status) {
-            case 400:
-              _.status.html('<i class="fa fa-times" style="color:#d9534f"></i> Could not save! Please correct errors below. (Last saved at ' + getTimeInText(_.lastSaved) + ')');
-              if (_.element.hasClass('editable-activated')) {
-                _.clearErrors();
-                _.showErrors(data.responseJSON);
-              }
-              break;
-            default:
-              _.status.html('<i class="fa fa-times" style="color:#d9534f"></i> Error saving! (Last saved at ' + getTimeInText(_.lastSaved) + ')');
+      if (_.saveMode == 'auto') {
+        _.showLoadingBar();
+        _.status.html('<i class="fa fa-refresh fa-spin"></i> Saving...');
+
+        $.ajax(_.modelUrl + '/' + _.modelId, {
+          data: formData,
+          // processData: false,
+          // contentType: false,
+          type: 'PATCH',
+          xhr: function() {
+              return window.XMLHttpRequest == null || new window.XMLHttpRequest().addEventListener == null
+                  ? new window.ActiveXObject("Microsoft.XMLHTTP")
+                  : $.ajaxSettings.xhr();
+          },
+          success: function(data){
+            _.clearErrors();
+            _.status.html('<i class="fa fa-check" style="color:#5cb85c"></i> All changes saved');
+            _.unsavedChanges = false;
+            // _.clearTimer();
+            checkTodos();
+            // if (_.modelType == 'Project')
+              // _.updateParts(data.parts_widgets);
+            successCallback(data);
+          },
+          error: function(data){
+            switch(data.status) {
+              case 400:
+                _.status.html('<i class="fa fa-times" style="color:#d9534f"></i> Could not save! Please correct errors below. (Last saved at ' + getTimeInText(_.lastSaved) + ')');
+                if (_.element.hasClass('editable-activated')) {
+                  _.clearErrors();
+                  _.showErrors(data.responseJSON);
+                }
+                break;
+              default:
+                _.status.html('<i class="fa fa-times" style="color:#d9534f"></i> Error saving! (Last saved at ' + getTimeInText(_.lastSaved) + ')');
+            }
+            failCallback(data);
+          },
+          complete: function(data){
+            _.hideLoadingBar();
           }
-          failCallback(data);
-        },
-        complete: function(data){
-          _.hideLoadingBar();
-        }
-      });
-      _.lastSaved = new Date().getTime();
+        });
+        _.lastSaved = new Date().getTime();
+      } else if (_.saveMode == 'form') {
+        $('#project_description').val(modelData.description);
+      }
     },
 
-    updateParts: function(widgets) {
-      $.each(widgets, function(id, parts){
-        $('.widget-' + id + ' .id').filter(function() { return $(this).val() == ""; }).each(function(i, el){
-          var posEl = $(el).parent().next().find('input');
-          var position = posEl.val();
-          if (parts.parts[position]) $(el).val(parts.parts[position].id);
-        });
-      });
-      $.each($('#parts-widget-form .removed'), function(i, el){
-        var id = $(el).find('.id').val();
-        $.each(widgets, function(id, parts){
-          $.each(parts.parts, function(j, part){
-            if (part.id == id) return;
-          });
-        });
-        $(el).remove();
-      });
-    },
+    // updateParts: function(widgets) {
+    //   $.each(widgets, function(id, parts){
+    //     $('.widget-' + id + ' .id').filter(function() { return $(this).val() == ""; }).each(function(i, el){
+    //       var posEl = $(el).parent().next().find('input');
+    //       var position = posEl.val();
+    //       if (parts.parts[position]) $(el).val(parts.parts[position].id);
+    //     });
+    //   });
+    //   $.each($('#parts-widget-form .removed'), function(i, el){
+    //     var id = $(el).find('.id').val();
+    //     $.each(widgets, function(id, parts){
+    //       $.each(parts.parts, function(j, part){
+    //         if (part.id == id) return;
+    //       });
+    //     });
+    //     $(el).remove();
+    //   });
+    // },
 
     showErrors: function(data) {
       $.each(data['widgets'], function(id, errors){
@@ -823,39 +830,39 @@ $(function () {
   $('#medium-editor').on('click', '.editable.editable-activated .embed-frame[data-type="widget"] :not(.embed-actions) button', function(e){
     var btn = $(this);
     switch (btn.data('action')) {
-      case 'delete-part':
-        target = btn.closest('.fields');
-        id = target.find('[data-attribute$="[id]"]').data('value');
-        deletePart(id);
-        target.remove();
-        editor.triggerInput();
-        break;
+      // case 'delete-part':
+      //   target = btn.closest('.fields');
+      //   id = target.find('[data-attribute$="[id]"]').data('value');
+      //   deletePart(id);
+      //   target.remove();
+      //   editor.triggerInput();
+      //   break;
 
-      case 'add-part':
-        $.ajax({
-          url: '/api/v1/parts',
-          data: {
-            part: {
-              partable_type: 'Widget',
-              partable_id: $(this).closest('.embed-frame').data('widget-id'),
-              quantity: 1
-            }
-          },
-          type: 'POST',
-          success: function(data){
-            tpl = btn.data('template');
-            i = btn.closest('.fields-container').find('.fields').length - 1;
-            tpl = tpl.replace(/replace_id/g, i);
-            tpl = $(tpl);
-            tpl.find('[data-attribute="[parts_attributes][' + i + '][id]"]').attr('data-value', data.id);
-            tpl.find('[data-edit-only="true"]').show();
-            tpl.find('[data-contenteditable="true"]').attr('contenteditable', 'true');
-            loadPlaceholders(tpl);
-            btn.closest('.fields').before(tpl);
-            tpl.trigger('nested:fieldAdded');
-          }
-        });
-        break;
+      // case 'add-part':
+      //   $.ajax({
+      //     url: '/api/v1/parts',
+      //     data: {
+      //       part: {
+      //         partable_type: 'Widget',
+      //         partable_id: $(this).closest('.embed-frame').data('widget-id'),
+      //         quantity: 1
+      //       }
+      //     },
+      //     type: 'POST',
+      //     success: function(data){
+      //       tpl = btn.data('template');
+      //       i = btn.closest('.fields-container').find('.fields').length - 1;
+      //       tpl = tpl.replace(/replace_id/g, i);
+      //       tpl = $(tpl);
+      //       tpl.find('[data-attribute="[parts_attributes][' + i + '][id]"]').attr('data-value', data.id);
+      //       tpl.find('[data-edit-only="true"]').show();
+      //       tpl.find('[data-contenteditable="true"]').attr('contenteditable', 'true');
+      //       loadPlaceholders(tpl);
+      //       btn.closest('.fields').before(tpl);
+      //       tpl.trigger('nested:fieldAdded');
+      //     }
+      //   });
+      //   break;
 
       case 'delete-slide':
         slide = $(this).closest('.slick-slide');
@@ -871,7 +878,7 @@ $(function () {
           slider = $(this).closest('.slick-slider');
           slider.slick('slickRemove', slider.slick('slickCurrentSlide'));
           $(this).remove();
-          resetPositions(slider.find('.position'));
+          mediumResetPositions(slider.find('.position'));
           editor.triggerInput();
         });
         break;
@@ -945,7 +952,7 @@ $(function () {
   $('body').on('click', function(e){
     // hideMediaButtons($('#medium-editor'));
     resetPos();
-  }).find('#medium-editor').on('click', function(e) {
+  }).find('#medium-editor, .medium-media-menu').on('click', function(e) {
     e.stopPropagation();
   });
 
@@ -1115,11 +1122,11 @@ $(function () {
     }
   });
 
-  $('#medium-editor').on('click', '.add-media-btn', function(e){
+  $('.add-media-btn').on('click', function(e){
     $(this).next('.media-menu-btns').toggleClass('is-open');
   });
 
-  $('#medium-editor').on('click', '.media-btn-action', function(e){
+  $('.media-btn-action').on('click', function(e){
     e.preventDefault();
     btn = $(this);
     var node;
@@ -1323,7 +1330,7 @@ $(function () {
                 timestamp = new Date().getTime();
                 $("<div class='figcaption widget-attribute widget-attribute-editable' data-attribute='[images_attributes][" + timestamp + "][title]' contenteditable='true' data-default-text='Type in a caption' data-disable-toolbar='true'></div><span class='widget-attribute' data-attribute='[images_attributes][" + timestamp + "][id]' contenteditable='true' data-value='" + id + "'></span><span class='widget-attribute position' data-attribute='[images_attributes][" + timestamp + "][position]' contenteditable='true'></span>").appendTo(el.find('figure, .figure'));
                 el.closest('.image-gallery-container').find('select').append('<option selected="selected" value="' + id + '"></option>');
-                resetPositions(el.closest('.image-gallery').find('.position'));
+                mediumResetPositions(el.closest('.image-gallery').find('.position'));
                 $(embedOverlay.moveLeftBtn).appendTo(el.find('.embed-overlay-content'));
                 $(embedOverlay.moveRightBtn).appendTo(el.find('.embed-overlay-content'));
               } else {
@@ -1401,6 +1408,7 @@ $(function () {
         $('#' + data.context).remove();
         showErrorBubble("Couldn't upload " + file.name + ': ' + errors.join(', '));
       } else {
+        console.log(fileType);
         fileuploadFunctions[fileType].addToTpl(data);
 
         uploadToS3(data, file, $(this));
@@ -1442,7 +1450,7 @@ $(function () {
           timestamp = new Date().getTime();
           $("<div class='figcaption widget-attribute widget-attribute-editable' data-attribute='[images_attributes][" + timestamp + "][title]' contenteditable='true' data-default-text='Type in a caption' data-disable-toolbar='true'></div><span class='widget-attribute' data-attribute='[images_attributes][" + timestamp + "][id]' contenteditable='true' data-value='" + id + "'></span><span class='widget-attribute position' data-attribute='[images_attributes][" + timestamp + "][position]' contenteditable='true'></span>").appendTo(el.find('figure, .figure'));
           el.closest('.image-gallery-container').find('select').append('<option selected="selected" value="' + id + '"></option>');
-          resetPositions(el.closest('.image-gallery').find('.position'));
+          mediumResetPositions(el.closest('.image-gallery').find('.position'));
           $(embedOverlay.moveLeftBtn).appendTo(el.find('.embed-overlay-content'));
           $(embedOverlay.moveRightBtn).appendTo(el.find('.embed-overlay-content'));
         } else {
@@ -1695,11 +1703,11 @@ function checkFileForErrors(file, validations) {
     errors.push('Maximum file size is ' + maxFileSize / 1000000 + 'MB');
   }
   if (validations['fileType'] != undefined) {
-    var fileType = validations['fileType'];
-    regexp = new RegExp('(\.|\/)(' + fileType.split(',').join('|') + ')$', 'gi');
+    var fileTypes = validations['fileType'];
+    regexp = new RegExp('(\.|\/)(' + fileTypes.split(',').join('|') + ')$', 'gi');
     type = (file.type != '') ? file.type : file.name
     if (!regexp.test(type)) {
-      msg = fileType.split(',').join(', ');
+      msg = fileTypes.split(',').join(', ');
       errors.push('Allowed file types are ' + msg);
     }
   }
@@ -1757,7 +1765,8 @@ function showMediaButtons(node) {
   w = $('#medium-editor');
   // b = w.find('.media-menu');
   $('.media-menu')
-    .css('top', top - w.offset().top)
+    .css('top', top - 10)  // 20 is 1/4 of button height
+    .css('left', w.offset().left - 120 - 20)  // 120 is button width, 20 is editor padding
     .show();
 }
 
@@ -1931,7 +1940,7 @@ function pad(n) {
   return ('0' + n).slice(-2)
 }
 
-function resetPositions(selector){
+function mediumResetPositions(selector){
   selector.each(function(i){
     $(this)
       .attr('data-value', i+1)
@@ -2018,12 +2027,12 @@ function deleteWidget(id) {
   })
 }
 
-function deletePart(id) {
-  $.ajax({
-    url: '/api/v1/parts/' + id,
-    type: 'DELETE'
-  })
-}
+// function deletePart(id) {
+//   $.ajax({
+//     url: '/api/v1/parts/' + id,
+//     type: 'DELETE'
+//   })
+// }
 
 function resizeToolBars() {
   $('.medium-editor-toolbar-embed:not(.medium-editor-toolbar-resized)').each(function(){
@@ -2042,7 +2051,7 @@ function activateSortable() {
     $(this)
       .sortable({handle: ".handle", containment: $(this), items: 'tr.fields:not(.sortable-disabled)'})
       .bind('sortupdate', function(event, ui) {
-        resetPositions($(this).find('tr.fields:not(.removed) .position'));
+        mediumResetPositions($(this).find('tr.fields:not(.removed) .position'));
         editor.triggerInput();
       });
   });
@@ -2052,7 +2061,7 @@ function moveSlideTo(slider, i, j, l, frame, insertBefore){
   slider.slick('slickRemove', i);
   slider.slick('slickAdd', frame, j, insertBefore);
   slider.slick('slickGoTo', l);
-  resetPositions(slider.find('.position'));
+  mediumResetPositions(slider.find('.position'));
   editor.triggerInput();
 }
 

@@ -76,10 +76,12 @@ class Project < ActiveRecord::Base
     :graded, :wip, :columns_count, :external, :guest_name,
     :approved, :open_source, :buy_link, :private_logs, :private_issues,
     :hacker_space_id, :locked, :mark_as_idea, :event_id, :assignment_id,
-    :community_ids, :new_group_id, :guest_twitter_handle, :celery_id
+    :community_ids, :new_group_id, :guest_twitter_handle, :celery_id,
+    :team_attributes, :story
   attr_accessor :current, :private_changed, :needs_platform_refresh
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
-    :widgets, :cover_image, :permissions, :slug_histories, allow_destroy: true
+    :widgets, :cover_image, :permissions, :slug_histories, :team,
+    allow_destroy: true
 
   validates :name, length: { in: 3..60 }, allow_blank: true
   validates :one_liner, :logo, presence: true, if: proc { |p| p.force_basic_validation? }

@@ -1,0 +1,22 @@
+/
+  can we reduce the size of component inputs?
+  add schematics: upload + link (embed)
+  add CAD: upload + link (embed)
+  add assembly instructions (steps?)
+
+
+
+= simple_nested_form_for @project, url: api_v1_project_path(@project), html: { data: { remote: true }, class: 'form-horizontal remote' }, wrapper: :bootstrap3_horizontal do |f|
+
+  input type='hidden' name='panel' value='hardware'
+
+  .box
+    .box-title
+      h3 The components
+      .subheading What are the components that you're using in this project?
+    .box-content
+      = f.error_notification
+
+      - @project.widgets.where(type: 'PartsWidget').first_or_create
+      - @project.widgets.where(type: 'PartsWidget').each do |widget|
+        = render partial: 'widgets/embeds/form/parts_widget', locals: { widget: widget, f: f }

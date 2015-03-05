@@ -1,0 +1,18 @@
+/*
+ *= require_self
+ */
+@import 'custom_mixins';
+@import 'compass/css3';
+@import 'bootstrap';
+@import 'bootstrap_overrides2';
+
+body {
+  padding: 10px;
+  overflow: hidden;
+
+  * {
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}

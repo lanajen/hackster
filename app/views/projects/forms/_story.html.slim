@@ -1,0 +1,102 @@
+/ super editor with text/images/videos/files
+  bold/italic/h1/links/list
+  full width input
+
+= content_for :js do
+  javascript:
+    $(function(){
+      editor.activate();
+    });
+
+/ # = content_for :head do
+  = stylesheet_link_tag 'wymeditor/wymeditor'
+
+/ # = content_for :js do
+  = javascript_include_tag 'wymeditor/jquery.wymeditor.min'
+  = javascript_include_tag 'wymeditor/plugins/hovertools/jquery.wymeditor.hovertools'
+  = javascript_include_tag 'wymeditor/plugins/resizable/jquery.wymeditor.resizable'
+  = javascript_include_tag 'wymeditor/wymeditor'
+  javascript:
+    $(document).ready(function() {
+
+
+      $('.wym-editor').wymeditor({
+        html: '<p><br></p>',
+        iframeBasePath: '/wymeditor/iframe/default/',
+        boxHtml: String() +
+            "<div class='wym_box'>" +
+                "<div class='wym_area_top'>" +
+                    WYMeditor.TOOLS +
+                "</div>" +
+                "<div class='wym_area_main'>" +
+                    WYMeditor.HTML +
+                    WYMeditor.IFRAME +
+                "</div>" +
+            "</div>",
+        toolsHtml: String() +
+            '<div class="wym_tools wym_section">' +
+                '<ul>' +
+                    WYMeditor.TOOLS_ITEMS +
+                '</ul>' +
+            '</div>',
+        toolsItemHtml: String() +
+            '<li>' +
+                '<a href="#" name="' + WYMeditor.TOOL_NAME + '" ' +
+                        'title="' + WYMeditor.TOOL_TITLE + '">' +
+                    '<i class="fa fa-' + WYMeditor.TOOL_CLASS + '"></i>' +
+                '</a>' +
+            '</li>',
+        containersHtml: '',
+        classesHtml: '',
+        toolsItems: [
+          {'name': 'Bold', 'title': 'Bold', 'css': 'bold'}
+          ,{'name': 'Italic', 'title': 'Emphasis', 'css': 'italic'}
+          ,{'name': 'Header', 'title': 'Header', 'css': 'header'}
+          ,{'name': 'InsertUnorderedList', 'title': 'Unordered_List', 'css': 'list-ul'}
+          ,{'name': 'InsertOrderedList', 'title': 'Ordered_List', 'css': 'list-ol'}
+          ,{'name': 'CreateLink', 'title': 'Link', 'css': 'link'}
+          ,{'name': 'Unlink', 'title': 'Unlink', 'css': 'unlink'}
+          ,{'name': 'InsertImage', 'title': 'Image', 'css': 'image'}
+        ],
+        dialogHtml: '<div class="wymodal">' + WYMeditor.DIALOG_BODY + '</div>',
+        dialogImageHtml: 'hi!',
+        postInit: function(wym) {
+          $(wym._doc.body).click(function() {
+            wym.sbCatchPaste();
+          });
+
+          wym.hovertools(); // other plugins...
+          wym.resizable({ handles: "s,e",
+                         maxHeight: 600 });
+
+          $(wym._doc).on('keydown keyup', function(event) {
+            h = $(this).find('html').outerHeight();  // iframe document height
+            $(wym._iframe).height(200).height(h);  // adjust iframe height
+          });
+
+          h = $(wym._doc).find('html').outerHeight();  // iframe document height
+          $(wym._iframe).height(200).height(h);  // adjust iframe height
+          console.log($(wym._doc).find('html').height());
+        }
+      });
+    });
+
+= simple_nested_form_for @project, url: api_v1_project_path(@project), html: { data: { remote: true }, class: 'form-horizontal remote' }, wrapper: :bootstrap3_horizontal do |f|
+
+  input type='hidden' name='panel' value='story'
+
+  .box
+    .box-title
+      h3 The meaty details
+      .subheading What is your project about? Why did you decide to make it? How does it work? What's the code? How to assemble it? Tell us everything!
+    .box-content
+      = f.error_notification
+
+      = f.input :description, as: :hidden
+
+      #model-editor data-model-id=@project.id data-model-type='Project' data-model-symbol='project' data-model-placeholder="Start describing your #{@project.is_idea? ? 'project idea' : 'project'} here. Enter text or add media by clicking the left button." data-model-url='/api/v1/projects' data-save-mode='form'
+
+        #editable-description.text-widget.project-show-item= render partial: 'shared/medium_editor', locals: { editable: @project.decorate.description(:edit), attribute_name: 'description' }
+
+      / textarea.wym-editor
+        = @project.story

@@ -1,268 +1,46 @@
 = content_for :head do
-  = javascript_include_tag '//cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js', charset: "utf-8"
-
-= content_for :no_container do
-  #content.project-page
-    / # = simple_nested_form_for @project, wrapper: false, html: { class: 'form-horizontal' } do |f|
-    #model-editor   data-model-id=@project.id data-model-type='Project' data-model-symbol='project' data-model-placeholder="Start describing your #{@project.is_idea? ? 'project idea' : 'project'} here. Enter text or add media by clicking the left button." data-model-url='/api/v1/projects'
-      .container-desktop.container
-        .row
-          .col-md-8.left-column
-            #home.project-banner style="background-image: url('#{@project.cover_image}')"
-              .project-banner-inner
-                #upload-cover-image
-                  a.check-todo#editabl-cover*{ href: '', rel: 'tooltip', title: 'Change cover image', 'data-human-name' => 'Cover image', 'data-value' => @project.model.cover_image.try(:id), 'data-target' => '#top-project-section' }
-                    i.fa.fa-image
-                  form#upload-cover-image-form action="https://#{ENV['FOG_DIRECTORY']}.s3.amazonaws.com" enctype="multipart/form-data" method="post" style="display:none;"
-                    input name="key" type="hidden"
-                    input name="AWSAccessKeyId" type="hidden" value=ENV['AWS_ACCESS_KEY_ID']
-                    input name="acl" type="hidden" value="public-read"
-                    input name="policy" type="hidden"
-                    input name="signature" type="hidden"
-                    input name="success_action_status" type="hidden" value="201"
-                    input name="file" type="file"
-
-                h1.project-title
-                  - if @project.logo(:thumb, false)
-                    = image_tag @project.logo(:thumb), class: 'project-logo'
-                  - if @project.is_idea?
-                    i.fa.fa-lightbulb-o.private-project-icon>
-                  span#editable-name.editable-attribute.check-todo>*{ 'data-model' => "project", 'data-attribute' => "name", 'data-default-text' => "Untitled", 'data-view-tpl' => "*value*", 'data-value' => @project.name_not_default, 'data-human-name' => 'Title', 'data-target' => '.project-banner' }
-                  / a.copyright href=@project.license.url &copy; #{@project.license.abbr} target='_blank'
-                  span#editable-license.editable-attribute.is-not-editable.has-select*{ 'data-model' => "project", 'data-attribute' => "license", 'data-default-text' => "Select a license", 'data-view-tpl' => "*var f=function(licenseUrl){ if (licenseUrl == '') return ''; licenses = #{License.all_with_abbr.to_s.gsub(/=>/, ': ')}; abbr = licenses[licenseUrl]; return \"<a href='\" + licenseUrl + \"' class='copyright'>&copy; \" + abbr + \"</a>\"; }; f(value);*", 'data-value' => @project.license.try(:url), 'data-edit-tpl' => "*var f=function(url){ var input=$(\"<select><option></option>#{License.all.map{|l| "<option value='#{l.url}'>#{l.name.gsub(/"/, '\"')}</option>" }.join('')}</select>\"); var option=input.children('option[value=\"' + url + '\"]'); option.attr('selected', 'selected'); return input[0].outerHTML; }; f(value);*", 'data-human-name' => 'License', 'data-target' => '.project-banner' }
-
-                p#editable-one-liner.project-one-liner.editable-attribute.check-todo*{ 'data-model' => "project", 'data-attribute' => "one_liner", 'data-default-text' => "Describe this #{@project.is_idea? ? 'project idea' : 'project'} in a sentence (140 characters max)", 'data-value' => @project.one_liner, 'data-view-tpl' => '*value*', 'data-human-name' => 'One liner', 'data-target' => '.project-banner' }
-
-                br
-                ul#editable-product-tags.list-inline.editable-attribute.check-todo.tags*{ 'data-model' => "project", 'data-attribute' => "product_tags_string", 'data-default-text' => "Add tags, separated by commas. Eg: home automation, drone, display...", 'data-view-tpl' => "*var f=function(tagString){ var out = '', tags = []; tags = tagString.split(','); $.each(tags, function(i, tag){ tag = tag.trim(); tpl = \"<li><a class='tag' href='/tags/\" + encodeURIComponent(tag) + \"'>\" + tag + \"</a></li>\"; out += tpl; }); return out; }; f(value);*", 'data-value' => @project.product_tags_string, 'data-human-name' => 'Tags', 'data-target' => '.project-banner' }
-
-                / a.btn.btn-primary.btn-sm href="#" Respect it!
-                / a.btn.btn-default.btn-sm href="#" Share it
-
-
-                ul.list-inline.project-stats
-                  li
-                    span.stat-figure> = number_with_delimiter @project.impressions_count
-                    = pluralize_without_count @project.impressions_count, 'view'
-                  li
-                    span.stat-figure> = number_with_delimiter @project.comments_count
-                    = pluralize_without_count @project.comments_count, 'comment'
-                  li
-                    span.stat-figure> = number_with_delimiter @project.respects_count
-                    = pluralize_without_count @project.respects_count, 'respect'
-
-            section#about-project.section-container.section-collapsible
-              h2.section-title
-                a.title.title-toggle href=''
-                  ' About this project
-                  i.fa.fa-chevron-down
-                  i.fa.fa-chevron-up
-              .section-content
-                #editable-description.text-widget.project-show-item.check-todo*{ 'data-human-name' => 'Description', 'data-check-todo' => '*value.find(".editable").text().trim() == ""*', 'data-target' => '#showcase' }
-                  = render partial: 'shared/medium_editor', locals: { editable: @project.decorate.description(:edit), attribute_name: 'description' }
-                /
-                  h3 How it started
-                  p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
-                  #carousel.carousel.slide data-ride="carousel"
-                    .carousel-inner role="listbox"
-                      .item.active
-                        .clearfix.multi-image
-                          .col-md-6
-                            = image_tag 'slide-1.png'
-                          .col-md-6
-                            = image_tag 'slide-2.png'
-                      .item
-                        .clearfix.multi-image
-                          .col-md-6
-                            = image_tag 'slide-1.png'
-                          .col-md-6
-                            = image_tag 'slide-2.png'
-                    a.left.carousel-control href="#carousel" role="button" data-slide="prev"
-                      span.glyphicon.glyphicon-chevron-left aria-hidden="true"
-                    a.right.carousel-control href="#carousel" role="button" data-slide="next"
-                      span.glyphicon.glyphicon-chevron-right aria-hidden="true"
-
-            section#components.section-container.section-collapsible
-              h2.section-title
-                a.title.title-toggle href=''
-                  ' Components
-                  i.fa.fa-chevron-down
-                  i.fa.fa-chevron-up
-              .section-content
-                - @project.widgets.where(type: 'PartsWidget').first_or_create
-                / = simple_nested_form_for @project do |f|
-                - @project.widgets.where(type: 'PartsWidget').each do |widget|
-                  = render partial: 'widgets/embeds/form/parts_widget', locals: { widget: widget }
-
-            / section#code.section-container.section-collapsible
-              h2.section-title
-                a href=''
-                  ' Schematics
-                  i.fa.fa-chevron-down
-                  i.fa.fa-chevron-up
-              .section-content
-                = image_tag 'circuit.png'
-
-            / section#code.section-container.section-collapsible
-              h2.section-title
-                a href=''
-                  ' Code
-                  i.fa.fa-chevron-down
-                  i.fa.fa-chevron-up
-              .section-content
-                - @project.widgets.where(type: 'CodeWidget').pluck(:id).each do |widget_id|
-                  - embed = Embed.new widget_id: widget_id
-                  = render partial: 'api/embeds/embed', locals: { embed: embed }
-
-            / section#code.section-container.section-collapsible
-              h2.section-title
-                a href=''
-                  ' CAD files
-                  i.fa.fa-chevron-down
-                  i.fa.fa-chevron-up
-              .section-content
-
-            / section#instructions.section-container.section-collapsible
-              h2.section-title
-                a href=''
-                  ' Assembly Instructions
-                  i.fa.fa-chevron-down
-                  i.fa.fa-chevron-up
-              .section-content
-                h3.title Step 1: hardware
-                p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
-
-                h3.title Step 2: code
-                p Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
-
-                h3.title Step 3: be happy!
-
-            / section.section-container.section-collapsible
-              h2.section-title Test Vue
-              .section-content
-                #editor
-                  textarea v-model="input"
-                  #preview v-html="input | marked"
-
-          .col-md-4.right-column
-            / section.section-thumbs data-spy='affix'
-              h4 Controls
-              ==> f.button :submit, value: 'Save'
-              = link_to 'Cancel', project_path(@project), class: 'btn btn-link btn-sm'
-
-            section.affixable
-              - unless @project.public?
-                - who = %w(you)
-                - who += ['team members'] if @project.users.size > 1
-                - who += ["members of #{@project.assignment.promotion.name}"] if @project.has_assignment?
-                .alert.alert-warning.alert-flat.text-center
-                  span
-                    p
-                      i.fa.fa-lock>
-                      | This project is private so only #{who.to_sentence} can see it.
-                  - if @project.can_be_public? or current_user.try(:is?, :admin)
-                    = link_to 'Publish publicly', project_path(@project, project: { private: 0 }), method: :patch, class: 'btn btn-warning btn-sm btn-block'
-                  - else
-                    = content_tag(:i, '', class: 'fa fa-info-circle istooltip', title: 'You need to add a description and a cover image before you can make it public.')
-              #project-actions.medium-status-bar
-                p
-                  small
-                    | Welcome to the new project editor. Read our
-                    ==>< link_to 'blog post', 'http://www.hackster.io/blog/introducing-the-new-project-editor', target: '_blank'
-                    | for more info.
-                = render 'shared/medium_status_buttons'
-                = render partial: 'shared/medium_status', locals: { last_edit: @project.last_edited_at }
-
-              ul#errors
-              ul#todos
-              ul#checklist
-                li.list-title Project checklist:
-                li
-                  input type='checkbox'
-                  .item-title Story and demo:
-                  .item-description What does your project do? How did you come up with the idea? Any interesting learnings or fun anecdotes?
-                li
-                  input type='checkbox'
-                  .item-title Bill of materials:
-                  .item-description What are the components necessary to make this project?
-                li
-                  input type='checkbox'
-                  .item-title Schematics:
-                  .item-description
-                    ' What is the blueprint to assemble the components?
-                    .hint
-                      ' Check
-                      ==> link_to 'Fritzing.org', 'http://fritzing.org', target: '_blank'
-                      | if you're not sure how to do it.
-                li
-                  input type='checkbox'
-                  .item-title Code:
-                  .item-description What are the code files or snippets necessary to make it work?
-                li
-                  input type='checkbox'
-                  .item-title Build instructions:
-                  .item-description Optional if the previous items are well documented, but useful to help others get started.
+  = stylesheet_link_tag "//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-beta.3/css/select2.min.css"
 
 = content_for :js do
-  javascript:
-    $(function(){
-      editor.activate();
-    });
+  = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-beta.3/js/select2.min.js"
 
-/ # = content_for :js do
-  = javascript_include_tag 'https://cdn.rawgit.com/yyx990803/vue/master/dist/vue.min.js'
-  = javascript_include_tag 'http://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js'
-  = javascript_include_tag 'https://pagedown.googlecode.com/hg/Markdown.Converter.js'
-  = javascript_include_tag 'https://pagedown.googlecode.com/hg/Markdown.Editor.js'
-  = javascript_include_tag 'https://pagedown.googlecode.com/hg/Markdown.Sanitizer.js'
+.container
+  .clearfix.text-center
+    ol.pe-nav
+      li= link_to 'Basics', '#basics', id: 'basics-nav', class: 'active'
+      li= link_to 'Team', '#team', id: 'team-nav'
+      li= link_to 'Communities', '#communities', id: 'communities-nav'
+      li= link_to 'Details', '#story', id: 'story-nav'
+      li= link_to 'Components', '#hardware', id: 'hardware-nav'
+      / li= link_to 'Software', '#software', id: 'software-nav'
 
-  css:
-    #editor {
-      margin: 0;
-      height: 100%;
-      font-family: 'Helvetica Neue', Arial, sans-serif;
-      color: #333;
-    }
+    ol.pe-nav
+      / li= link_to 'Preview', '#preview', id: 'preview-nav'
+      li= link_to 'Publish', '#publish', id: 'publish-nav'
+      li= link_to 'Go to project', @project
 
-    #editor textarea, #preview {
-      display: inline-block;
-      width: 49%;
-      height: 100%;
-      vertical-align: top;
-      -webkit-box-sizing: border-box;
-      -moz-box-sizing: border-box;
-      box-sizing: border-box;
-      padding: 0 20px;
-    }
+  .row
+    .col-md-8.col-md-offset-2.pe-container
+      .busy-overlay
+        .center-align-wrapper
+          .center-align-inner
+            i.fa.fa-spin.fa-refresh
 
-    #editor textarea {
-      border: none;
-      border-right: 1px solid #ccc;
-      resize: none;
-      outline: none;
-      background-color: #f6f6f6;
-      font-size: 14px;
-      font-family: 'Monaco', courier, monospace;
-      padding: 20px;
-    }
+      #basics.pe-panel style='display:block' = render 'projects/forms/basics'
+      #team.pe-panel = render 'projects/forms/team'
+      #communities.pe-panel= render 'projects/forms/communities'
+      #story.pe-panel= render 'projects/forms/story'
+      #hardware.pe-panel= render 'projects/forms/hardware'
+      #software.pe-panel= render 'projects/forms/software'
 
-    code {
-      color: #f66;
-    }
+      #publish.pe-panel= render 'projects/forms/publish'
 
-  javascript:
-    $(function(){
-      editor.activate();
-
-      new Vue({
-        el: '#editor',
-        data: {
-          input: '# hello'
-        },
-        filters: {
-          marked: function(input){
-            return marked(input, { breaks: true });
-          }
-        }
-      });
-    });
+= content_for :js do
+  .pe-save
+    .container
+      .row
+        .col-md-8.col-md-offset-2
+          .clearfix
+            .pull-right
+              = link_to 'Discard changes', @project, class: 'btn btn-link pe-discard'
+              = link_to 'Save changes', '', class: 'btn btn-primary pe-submit'
