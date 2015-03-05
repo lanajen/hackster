@@ -341,7 +341,12 @@ class ApplicationController < ActionController::Base
       end
 
       cookies[:visits] = { value: {}.to_json, expires: 10.years.from_now } unless cookies[:visits].present?
-      visits = JSON.parse cookies[:visits]
+      begin
+        visits = JSON.parse cookies[:visits]
+      rescue
+        visits = cookies[:visits] = { value: {}.to_json, expires: 10.years.from_now }  # so that corrupt cookies don't make an error
+      end
+
       if visits[Date.today.to_s].present?
         visits[Date.today.to_s] = visits[Date.today.to_s].to_i + 1
       else

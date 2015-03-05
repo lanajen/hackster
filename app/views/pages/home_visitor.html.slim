@@ -95,8 +95,8 @@
             = render partial: 'projects/project_thumb', locals: { project: project }
 
       .text-center
-        = link_to 'View more recent projects &rarr;'.html_safe, projects_path(by: 'recent'), class: 'btn btn-default btn-sm hidden-xs'
-        = link_to 'View more recent projects &rarr;'.html_safe, projects_path(by: 'recent'), class: 'btn btn-default btn-sm visible-xs-block'
+        = link_to 'View more recent projects &rarr;'.html_safe, projects_path(sort: 'recent'), class: 'btn btn-default btn-sm hidden-xs'
+        = link_to 'View more recent projects &rarr;'.html_safe, projects_path(sort: 'recent'), class: 'btn btn-default btn-sm visible-xs-block'
 
     / section#trending-projects.showcase-section
       .container
