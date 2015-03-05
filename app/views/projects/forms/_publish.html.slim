@@ -36,3 +36,10 @@
 
       = f.input :private_logs, inline_label: 'Private build logs', hint: "If your project is published, you can choose to keep build logs private by checking this box.", label: false, as: :boolean
       = f.input :private_issues, inline_label: 'Private issues', hint: "If your project is published, you can choose to keep issues private by checking this box.", label: false, as: :boolean
+
+      hr.clearfix
+      .form-group
+        .col-sm-4
+          label.control-label Danger zone
+        .col-sm-8
+          = link_to 'Delete project', @project, method: :delete, class: 'btn btn-danger btn-sm', data: { confirm: "Are you sure? There's no coming back!" }

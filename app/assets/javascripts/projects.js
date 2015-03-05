@@ -191,6 +191,9 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
 
       // discardChanges();
 
+      // hide the medium media bar
+      $('.medium-media-menu').hide().find('.media-menu-btns').removeClass('is-open');
+
       $('.pe-save').slideUp(200);
 
       $('.pe-nav a').removeClass('active');
