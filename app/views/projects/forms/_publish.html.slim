@@ -1,5 +1,7 @@
 = simple_nested_form_for @project, url: api_v1_project_path(@project), html: { data: { remote: true }, class: 'form-horizontal remote accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
 
+  input type='hidden' name='panel' value='publish'
+
   .box
     .box-title
       h3  Publish
@@ -7,7 +9,8 @@
     .box-content
       = f.error_notification
 
-      = f.input :public, inline_label: "Make this project public #{content_tag(:i, '', class: 'fa fa-info-circle istooltip', title: 'You need to add a name, a description and a cover image before you can make it public.')}".html_safe, label: false, disabled: (@project.private and !@project.can_be_public?), as: :boolean
+      / # = f.input :public, inline_label: "Make this project public #{content_tag(:i, '', class: 'fa fa-info-circle istooltip', title: 'You need to add a name, a description and a cover image before you can make it public.')}".html_safe, label: false, disabled: (@project.private and !@project.can_be_public?), as: :boolean
+      = f.input :public, inline_label: "Make this project public #{content_tag(:i, '', class: 'fa fa-info-circle istooltip', title: 'You need to add a name, a description and a cover image before you can make it public.')}".html_safe, label: false, as: :boolean
 
       - if @project.private?
         .form-group

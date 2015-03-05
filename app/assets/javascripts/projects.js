@@ -132,14 +132,17 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
     $formContent = {};
 
     function serializeForm() {
-      $('.pe-panel:visible form.remote').find('input, textarea, select').each(function(i, el){
-        $formContent[$(el).attr('name')] = $(el).val();
+      $('.pe-panel:visible form.remote').find('input:not([type="checkbox"])').each(function(){
+        // be as specific as possible so that fields with the same name don't collide
+        $formContent['[name="' + $(this).attr('name') + '"][type="' + $(this).attr('type') + '"]'] = $(this).val();
+      });
+      $('.pe-panel:visible form.remote').find('textarea, select').each(function(){
+        $formContent['[name="' + $(this).attr('name') + '"]'] = $(this).val();
       });
 
-      var checkVals = [];
-      $('.pe-panel:visible form.remote').find('input[type="checkbox"]:checked').each(function(){
-        checkVals.push($(this).val());
-        $formContent[$(this).attr('name')] = checkVals;
+      // handle checkboxes since they don't react to val() the same way
+      $('.pe-panel:visible form.remote').find('input[type="checkbox"]').each(function(){
+        $formContent['[name="' + $(this).attr('name') + '"][type="checkbox"][value="' + $(this).val() + '"]'] = $(this).prop('checked');
       });
 
       $serializedForm = $('.pe-panel:visible form.remote').serialize();
@@ -156,20 +159,25 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
 
     function discardChanges() {
       if ($serializedForm != null) {
-        $.each($formContent, function(name, val) {
-          var input = $('.pe-panel:visible form.remote').find('[name="' + name + '"]');
-          input.val(val);
+        $.each($formContent, function(selector, val) {
+          var input = $('.pe-panel:visible form.remote').find(selector);
+          // handle checkboxes since they don't react to val() the same way
+          if (selector.indexOf('[type="checkbox"]') != -1) {
+            input.prop('checked', val);
+          } else {
+            input.val(val);
 
-          // for select2 inputs
-          if (input.length > 1) {
-            // because select2 automatically adds a hidden input
-            input.each(function(i, el){
-              if ($(el).is('select') && typeof($(el).data('select2')) != 'undefined') {
-                $(el).trigger('change');
-              }
-            });
-          } else if (input.hasClass('select2')) {
-            input.trigger('change');
+            // for select2 inputs
+            if (input.length > 1) {
+              // because select2 automatically adds a hidden input
+              input.each(function(i, el){
+                if ($(el).is('select') && typeof($(el).data('select2')) != 'undefined') {
+                  $(el).trigger('change');
+                }
+              });
+            } else if (input.hasClass('select2')) {
+              input.trigger('change');
+            }
           }
         });
         $('.inserted').remove();
@@ -201,7 +209,7 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
     $('.pe-panel:visible').resize(function(){ resizePeContainer() });
     serializeForm();
 
-    $('.pe-nav').on('click', 'a', function(e){
+    $('.pe-nav').on('click', 'a.tab', function(e){
       if (window.location.hash == $(this).attr('href')) {
         e.preventDefault();
       } else if (unsavedChanges()) {

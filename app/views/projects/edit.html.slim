@@ -7,16 +7,16 @@
 .container
   .clearfix.text-center
     ol.pe-nav
-      li= link_to 'Basics', '#basics', id: 'basics-nav', class: 'active'
-      li= link_to 'Team', '#team', id: 'team-nav'
-      li= link_to 'Communities', '#communities', id: 'communities-nav'
-      li= link_to 'Details', '#story', id: 'story-nav'
-      li= link_to 'Components', '#hardware', id: 'hardware-nav'
-      / li= link_to 'Software', '#software', id: 'software-nav'
+      li= link_to 'Basics', '#basics', id: 'basics-nav', class: 'active tab'
+      li= link_to 'Team', '#team', id: 'team-nav', class: 'tab'
+      li= link_to 'Communities', '#communities', id: 'communities-nav', class: 'tab'
+      li= link_to 'Details', '#story', id: 'story-nav', class: 'tab'
+      li= link_to 'Components', '#hardware', id: 'hardware-nav', class: 'tab'
+      / li= link_to 'Software', '#software', id: 'software-nav', class: 'tab'
 
     ol.pe-nav
-      / li= link_to 'Preview', '#preview', id: 'preview-nav'
-      li= link_to 'Publish', '#publish', id: 'publish-nav'
+      / li= link_to 'Preview', '#preview', id: 'preview-nav', class: 'tab'
+      li= link_to 'Publish', '#publish', id: 'publish-nav', class: 'tab'
       li= link_to 'Go to project', @project
 
   .row
