@@ -35,7 +35,7 @@
               th Status
               th
             tbody
-              - (@team.members.includes(:user).sort_by{|m| m.user.name } + [@team.members.new]).each do |member|
+              - (@project.team.members.includes(:user).sort_by{|m| m.user.name } + [@project.team.members.new]).each do |member|
                 = f_team.simple_fields_for :members, member, wrapper: false do |f_member|
                   tr.fields
                     - if member.persisted?
@@ -97,8 +97,10 @@
                 .col-xs-offset-4.col-md-8= f_credit.link_to_remove 'Remove this contributor', class: 'btn btn-xs btn-danger'
             = f_cred.link_to_add 'Add another contributor', :credit_lines, class: 'btn btn-xs btn-success', style: 'margin:0 0 0 33.33333%;'
 
+
   javascript:
     $(function() {
+      $('body').off('click', '#use_guest');
       $('body').on('click', '#use_guest', function() {
         $('#project-form, #team-form').slideToggle();
       });

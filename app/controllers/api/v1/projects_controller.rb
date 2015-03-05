@@ -40,7 +40,7 @@ class Api::V1::ProjectsController < Api::V1::BaseController
       #     end
       #   end
       # end
-      if @panel.in? %w(hardware publish)
+      if @panel.in? %w(hardware publish team)
         # render 'projects/forms/hardware'
         render 'projects/forms/update'#, status: :ok
       else
