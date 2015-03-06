@@ -289,7 +289,7 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
 })(jQuery, window, document);
 
 function loadSlickSlider(){
-  $('.image-gallery').slick({
+  $('.image-gallery:visible:not(.slick-initialized)').slick({
     accessibility: false,
     speed: 500,
     fade: true,
