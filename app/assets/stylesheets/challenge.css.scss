@@ -20,6 +20,40 @@
       }
     }
   }
+
+  .group-nav {
+    .enter-challenge {
+      margin: 0;
+    }
+    .brand {
+      h2 {
+        max-width: 350px;
+      }
+    }
+  }
+}
+
+@media (min-width: 768px) and (max-width: 850px) {
+  #challenge {
+    .group-nav {
+      .brand {
+        h2 {
+          max-width: 220px;
+        }
+      }
+    }
+  }
+}
+@media (min-width: 850px) and (max-width: 1030px) {
+  #challenge {
+    .group-nav {
+      .brand {
+        h2 {
+          max-width: 300px;
+        }
+      }
+    }
+  }
 }
 
 #rules {
@@ -57,9 +91,4 @@
 
 .enter-challenge {
   margin-bottom: 10px;
-}
-.group-nav {
-  .enter-challenge {
-    margin: 0;
-  }
 }

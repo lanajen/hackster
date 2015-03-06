@@ -24,12 +24,12 @@ class Challenge < ActiveRecord::Base
     :rules, :teaser, :multiple_entries, :duration, :eligibility, :requirements,
     :judging_criteria, :how_to_enter, :video_link, :cover_image_id, :project_ideas,
     :end_date, :end_date_dummy, :avatar_id, :custom_tweet, :sponsor_name,
-    :sponsor_link
+    :sponsor_link, :custom_css
   attr_accessor :new_slug, :end_date_dummy
 
   store :properties, accessors: [:description, :rules, :teaser, :multiple_entries,
     :eligibility, :requirements, :judging_criteria, :how_to_enter, :project_ideas,
-    :custom_tweet, :sponsor_name, :sponsor_link]
+    :custom_tweet, :sponsor_name, :sponsor_link, :custom_css]
 
   accepts_nested_attributes_for :prizes, allow_destroy: true
 
