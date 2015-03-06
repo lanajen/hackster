@@ -41,7 +41,7 @@
         = f.simple_fields_for :client_subdomain, client do |f_client|
           = f_client.input :domain, hint: "If you want to personalize the domain name of your dedicated portal, enter it. You will then need to add a CNAME pointing from this domain to #{client.subdomain}.hackster.io.", label: 'Portal custom domain'
           = f_client.input :hide_alternate_search_results, as: :boolean, hint: "When users make a search on your site that returns no results, by default we'll show them alternate results from Hackster.io. Uncheck this to disable alternate results.", label: false, inline_label: 'Hide alternate search results'
-          = f_client.input :analytics_code, hint: "If you want to add custom tracking to your site. Note: we already have Google Analytics in place, so it'll need to be compatible."
+          = f_client.input :analytics_code, hint: "If you want to add custom tracking to your site. Note: we already have Google Analytics in place, so it'll need to be compatible.", as: :text
         p Want to use your own design? Send us the HTML and CSS to portals@hackster.io.
 
       /
