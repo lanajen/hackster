@@ -99,34 +99,33 @@ html(lang="en")
                 li= link_to 'Platforms', platforms_path, class: 'nav-link'
                 li= link_to 'Hardware Weekend', '/hardwareweekend', class: 'nav-link'
                 / # li= link_to 'Challenges', '/challenges/wunderbar-holiday', class: 'nav-link'
-                / # - if Time.now < '2014-12-31 23:59:00-0800'.to_datetime
-                  li.dropdown
-                    a.nav-link.dropdown-toggle data-toggle="dropdown" href='#'
-                      | Challenges
-                      span.caret
-                    ul#challenge-nav.dropdown-menu
-                      li
-                        .row style="width:300px"
-                          .col-md-12 style="padding-left:5px;padding-right:5px"
-                            .thumb
-                              .thumb-image.has-link-overlay style="background-image:url('https://halckemy.s3.amazonaws.com/uploads/document/file/23653/my-ugly-christmas-sweater-light-up-the-party%20(1).jpg')"
-                                = link_to '', '/challenges/ugly-christmas-sweater-contest', class: 'link-overlay'
-                                .thumb-image-inner
-                                  h4
-                                    = link_to 'The Ugly Christmas Sweater Contest', '/challenges/ugly-christmas-sweater-contest'
-                                  p
-                                    strong>= time_diff_in_natural_language(Time.now, '2014-12-31 23:59:00-0800'.to_datetime)
-                                    | left to enter
-                        / .col-md-6
-                          .thumb
-                            .thumb-image.has-link-overlay style="background-image:url('https://halckemy.s3.amazonaws.com/uploads/document/file/23503/DSC_0369.JPG')"
-                              = link_to '', '/challenges/wunderbar-holiday', class: 'link-overlay'
-                              .thumb-image-inner
-                                h4
-                                  = link_to 'The Great WunderBar Holiday Challenge', '/challenges/wunderbar-holiday'
-                                p
-                                  strong>= time_diff_in_natural_language(Time.now, '2014-12-21 20:59:00-0800'.to_datetime)
-                                  | left to enter
+                li.dropdown
+                  a.nav-link.dropdown-toggle data-toggle="dropdown" href='#'
+                    | Challenges
+                    span.caret
+                  ul#challenge-nav.dropdown-menu style="padding:5px"
+                    li
+                      div style="width:300px;"
+                        .thumb style='padding-bottom:5px'
+                          .thumb-image.has-link-overlay style="background-image:url('https://halckemy.s3.amazonaws.com/uploads/cover_image/file/36555/cover_wide_HeroImage4Cropped2.png');padding-top:50%"
+                            = link_to '', '/challenges/hardware-home', class: 'link-overlay'
+                            .thumb-image-inner
+                              h4
+                                ==> link_to 'Give Your Hardware a Home', '/challenges/hardware-home'
+                                br
+                                a.small sponsored by Autodesk
+                              p
+                                strong Win a Type A Series 1 3D Printer
+                        .thumb
+                          .thumb-image.has-link-overlay style="background-image:url('https://halckemy.s3.amazonaws.com/uploads/cover_image/file/36527/cover_wide_blog_techniczny_microsoft_azure_web_jobs.png');padding-top:50%"
+                            = link_to '', '/challenges/microsoft-azure', class: 'link-overlay'
+                            .thumb-image-inner
+                              h4
+                                ==> link_to 'Microsoft Azure Challenge', '/challenges/microsoft-azure'
+                                br
+                                a.small sponsored by Microsoft
+                              p
+                                strong Win $5,000
 
 
               - if user_signed_in?
