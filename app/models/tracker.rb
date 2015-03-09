@@ -6,7 +6,7 @@ class Tracker
 
   def enqueue method_name, *args
     TrackerQueue.perform_async 'add_to_tracker', @tracker.instance_variable_get('@env'), method_name, *args
-  rescue Timeout::Error
+  rescue
   end
 
   def initialize options={}
