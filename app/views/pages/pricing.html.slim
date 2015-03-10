@@ -1,6 +1,6 @@
 = content_for :no_container do
   #pricing
-    section.section-one
+    / section.section-one
       .container
         .title
           h2
@@ -8,36 +8,46 @@
             br
             | Move faster with Hackster.io.
 
-          p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          / p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 
     section.section-two
       .container
         .title
           .split-left
             h2
-              | Hackster brings value to your work
+              | Hackster helps you connect with your community
 
           .split-right
-            p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi bibendum arcu a sapien tincidunt ullamcorper. Nullam blandit libero luctus nisi faucibus, ut mattis odio volutpat. Nullam tellus diam, semper eget nulla ut, dictum facilisis sapien. Etiam sed rutrum dui, vel convallis est. Donec accumsan mi quis felis laoreet blandit. Suspendisse finibus nulla tortor, eget egestas enim semper pharetra. Cras quis urna sollicitudin, porttitor est vel, cursus diam.
-
-            p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi bibendum arcu a sapien tincidunt ullamcorper. Nullam blandit libero luctus nisi faucibus, ut mattis odio volutpat. Nullam tellus diam, semper eget nulla ut, dictum facilisis sapien. Etiam sed rutrum dui, vel convallis est. Donec accumsan mi quis felis laoreet blandit. Suspendisse finibus nulla tortor, eget egestas enim semper pharetra. Cras quis urna sollicitudin, porttitor est vel, cursus diam.
+            p We're on a mission to turn your legacy project showcase into a thriving network that drives mindshare and adoption for your platform, while being more pleasant and productive for your community.
+            p Whether you're evangelizing, distributing or innovating, Hackster communities provide the single one hub for content, conversations and your startup and maker ecosystem.
 
     section.section-pricing
       .container
         .title
-          h2 Pricing
-          p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi bibendum arcu a sapien tincidunt ullamcorper.
+          h2 Plans
+          / p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi bibendum arcu a sapien tincidunt ullamcorper.
 
         .row.plans
           .col-sm-4.plan
             .plan-top
-              h3 Student
-              p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              h3 Startup
+              p For new communities that just need a place to connect.
             .plan-middle
-              | 1-49 projects
+              ul
+                li Platform channel on Hackster
+                li Embed into your site
+                li
+                  strong> 100,000
+                  | page views/month
+                li Optimized for SEO
+                li Email support
+              br
+              br
+              br
+              br
             .plan-bottom
               .plan-price
-                | $100
+                | $99
                 span.monthly
                   | /mo
               .plan-more
@@ -45,13 +55,26 @@
 
           .col-sm-4.plan
             .plan-top
-              h3 Student
-              p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              h3 Business
+              p For medium communities trying to grow revenue.
             .plan-middle
-              | 1-49 projects
+              ul
+                li Platform channel on Hackster
+                li Embed into your site
+                li
+                  strong> 1,000,000
+                  | page views/month
+                li Optimized for SEO
+                li
+                  strong Custom Single Sign-On
+                li
+                  strong Insights and analytics
+                li Email support
+              br
+              br
             .plan-bottom
               .plan-price
-                | $100
+                | $499
                 span.monthly
                   | /mo
               .plan-more
@@ -59,46 +82,63 @@
 
           .col-sm-4.plan
             .plan-top
-              h3 Student
-              p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              h3 Enterprise
+              p For large communities with high performance requirements.
             .plan-middle
-              | 1-49 projects
+              ul
+                li Platform channel on Hackster
+                li Embed into your site
+                li
+                  strong> Unlimited
+                  | page views/month
+                li Optimized for SEO
+                li Custom Single Sign-On
+                li Insights and analytics
+                li
+                  strong Priority phone support
+                li
+                  strong Strict SLA's
+                li
+                  strong More customization capabilities
             .plan-bottom
               .plan-price
-                | $100
-                span.monthly
-                  | /mo
+                | Call
               .plan-more
                 | Learn more
+
+        p.text-center style='margin-top:50px'
+          ' Just looking to be featured in our platforms section?
+          = link_to 'Apply', ''
+          | .
 
     section.section-packages
       .container
         .title
           h2 Special packages
-          p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi bibendum arcu a sapien tincidunt ullamcorper.
+          p Start engaging your future customers right when they're starting out as makers. Crowdsource your innovation, build authentic dialogue with tomorrow's unicorns, and evangelize your platform across the world.
 
         .row.packages
-          .col-sm-4.package.package-one
+          .col-sm-4.package.package-one.col-sm-offset-2
             .package-top
-              h3 Hackster physical hackathon
-              p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              h3 Virtual Challenges
+              p Engage thousands of makers online and reward creativity with virtual challenges.
             .package-bottom
               .package-price
-                | $100
+                | Call
               .package-more
                   | Learn more
           .col-sm-4.package.package-two
             .package-top
-              h3 Hackster physical hackathon
-              p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              h3 Physical Hackathons
+              p Create deep connections with local communities thanks to hackathons.
             .package-bottom
               .package-price
-                | $100
+                | Call
               .package-more
                   | Learn more
-          .col-sm-4.package.package-three
+          / .col-sm-4.package.package-three
             .package-top
-              h3 Hackster physical hackathon
+              h3 Lorem
               p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             .package-bottom
               .package-price

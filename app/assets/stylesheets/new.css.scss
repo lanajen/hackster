@@ -176,7 +176,7 @@ h1 {
   }
 }
 
-@media (min-width: 641px) {
+@media (min-width: 768px) {
   .category-row {
     &:first-child {
       padding-right: 2px;
@@ -209,6 +209,12 @@ h1 {
       text-transform: uppercase;
       font-size: 26px;
     }
+  }
+}
+
+.challenge-thumb {
+  .thumb-image {
+    padding-top: 50%;
   }
 }
 

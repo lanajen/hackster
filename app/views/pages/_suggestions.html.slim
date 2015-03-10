@@ -1,7 +1,6 @@
 - if suggestions.any?
   .suggestions.col-sm-12
-    p
-      h3 Suggested #{term} to follow:
-      ul
-        - suggestions.each do |suggestion|
-          li= link_to suggestion.name, suggestion
+    h3 Suggested #{term} to follow:
+    ul
+      - suggestions.each do |suggestion|
+        li= link_to suggestion.name, suggestion

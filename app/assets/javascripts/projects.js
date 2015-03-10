@@ -183,6 +183,8 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
         $('.inserted').remove();
         $('.fields.added').remove();
         $('.fields.removed').show().removeClass('removed');
+
+        serializeForm();
       }
     }
 

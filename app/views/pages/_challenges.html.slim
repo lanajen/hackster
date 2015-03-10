@@ -1,0 +1,9 @@
+- if @challenges and @challenges.any?
+  section#live-challenges.showcase-section
+    .container
+      .row
+        .suggestions.col-sm-12
+          h3 Live challenges:
+          ul
+            - @challenges.each do |challenge|
+              li= link_to challenge.name, challenge

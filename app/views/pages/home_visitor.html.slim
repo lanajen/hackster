@@ -59,6 +59,37 @@
     section#trending-projects.showcase-section
       .container
         .showcase-section-header.clearfix
+          h4 Participate in challenges and win prizes
+
+        .row
+          .col-sm-6.category-row
+            .category-col
+              .thumb.category-thumb
+                .thumb-image.has-link-overlay style="background-image:url('https://halckemy.s3.amazonaws.com/uploads/cover_image/file/36555/cover_wide_HeroImage4Cropped2.png')"
+                  = link_to '', '/challenges/hardware-home', class: 'link-overlay'
+                  .thumb-image-inner
+                    h4
+                      = link_to 'Give Your Hardware a Home', '/challenges/hardware-home'
+                      br
+                      a.small sponsored by Autodesk
+                    p
+                      strong Win a Type A Series 1 3D Printer
+          .col-sm-6.category-row
+            .category-col
+              .thumb.category-thumb
+                .thumb-image.has-link-overlay style="background-image:url('https://halckemy.s3.amazonaws.com/uploads/cover_image/file/36527/cover_wide_blog_techniczny_microsoft_azure_web_jobs.png')"
+                  = link_to '', '/challenges/microsoft-azure', class: 'link-overlay'
+                  .thumb-image-inner
+                    h4
+                      = link_to 'Microsoft Azure Challenge', '/challenges/microsoft-azure'
+                      br
+                      a.small sponsored by Microsoft
+                    p
+                      strong Win $5,000
+
+    section#trending-projects.showcase-section
+      .container
+        .showcase-section-header.clearfix
           h4 Find cool projects you can make yourself
 
         .row.mobile-scroll-row.thumbs-carousel

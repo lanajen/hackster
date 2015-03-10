@@ -97,35 +97,42 @@ html(lang="en")
                             - POPULAR_TAGS.each do |tag, link|
                               li= link_to tag, "#{link}?ref=topnav"
                 li= link_to 'Platforms', platforms_path, class: 'nav-link'
-                li= link_to 'Hardware Weekend', '/hardwareweekend', class: 'nav-link'
-                / # li= link_to 'Challenges', '/challenges/wunderbar-holiday', class: 'nav-link'
                 li.dropdown
                   a.nav-link.dropdown-toggle data-toggle="dropdown" href='#'
-                    | Challenges
+                    | More
                     span.caret
-                  ul#challenge-nav.dropdown-menu style="padding:5px"
-                    li
-                      div style="width:300px;"
-                        .thumb style='padding-bottom:5px'
-                          .thumb-image.has-link-overlay style="background-image:url('https://halckemy.s3.amazonaws.com/uploads/cover_image/file/36555/cover_wide_HeroImage4Cropped2.png');padding-top:50%"
-                            = link_to '', '/challenges/hardware-home', class: 'link-overlay'
-                            .thumb-image-inner
-                              h4
-                                ==> link_to 'Give Your Hardware a Home', '/challenges/hardware-home'
-                                br
-                                a.small sponsored by Autodesk
-                              p
-                                strong Win a Type A Series 1 3D Printer
-                        .thumb
-                          .thumb-image.has-link-overlay style="background-image:url('https://halckemy.s3.amazonaws.com/uploads/cover_image/file/36527/cover_wide_blog_techniczny_microsoft_azure_web_jobs.png');padding-top:50%"
-                            = link_to '', '/challenges/microsoft-azure', class: 'link-overlay'
-                            .thumb-image-inner
-                              h4
-                                ==> link_to 'Microsoft Azure Challenge', '/challenges/microsoft-azure'
-                                br
-                                a.small sponsored by Microsoft
-                              p
-                                strong Win $5,000
+                  ul#nav-user-menu.dropdown-menu style='padding:0;margin-top:-10px;'
+                    li= link_to 'Hardware Weekend', '/hardwareweekend', class: 'nav-link'
+                    li= link_to 'Challenges', challenges_path, class: 'nav-link'
+                    li= link_to 'Hacker spaces', hacker_spaces_path, class: 'nav-link'
+                    li= link_to 'Blog', blog_index_path, class: 'nav-link'
+                    / li.dropdown
+                      a.nav-link.dropdown-toggle data-toggle="dropdown" href='#'
+                        | Challenges
+                        span.caret
+                      ul#challenge-nav.dropdown-menu style="padding:5px"
+                        li
+                          div style="width:300px;"
+                            .thumb style='padding-bottom:5px'
+                              .thumb-image.has-link-overlay style="background-image:url('https://halckemy.s3.amazonaws.com/uploads/cover_image/file/36555/cover_wide_HeroImage4Cropped2.png');padding-top:50%"
+                                = link_to '', '/challenges/hardware-home', class: 'link-overlay'
+                                .thumb-image-inner
+                                  h4
+                                    ==> link_to 'Give Your Hardware a Home', '/challenges/hardware-home'
+                                    br
+                                    a.small sponsored by Autodesk
+                                  p
+                                    strong Win a Type A Series 1 3D Printer
+                            .thumb
+                              .thumb-image.has-link-overlay style="background-image:url('https://halckemy.s3.amazonaws.com/uploads/cover_image/file/36527/cover_wide_blog_techniczny_microsoft_azure_web_jobs.png');padding-top:50%"
+                                = link_to '', '/challenges/microsoft-azure', class: 'link-overlay'
+                                .thumb-image-inner
+                                  h4
+                                    ==> link_to 'Microsoft Azure Challenge', '/challenges/microsoft-azure'
+                                    br
+                                    a.small sponsored by Microsoft
+                                  p
+                                    strong Win $5,000
 
 
               - if user_signed_in?
@@ -220,6 +227,9 @@ html(lang="en")
       = link_to 'Projects', projects_path(ref: 'topnav'), class: 'mo-nav-link'
       = link_to 'Platforms', platforms_path, class: 'mo-nav-link'
       = link_to 'Hardware Weekend', '/hardwareweekend', class: 'mo-nav-link'
+      = link_to 'Challenges', challenges_path, class: 'mo-nav-link'
+      = link_to 'Hacker spaces', hacker_spaces_path, class: 'mo-nav-link'
+      = link_to 'Blog', blog_index_path, class: 'mo-nav-link'
       = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'mo-nav-link'
       - if user_signed_in?
         = link_to 'Profile', current_user, class: 'mo-nav-link'
