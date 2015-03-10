@@ -193,6 +193,12 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
 
       // hide the medium media bar
       $('.medium-media-menu').hide().find('.media-menu-btns').removeClass('is-open');
+      // hide discard button if story
+      if (tab == '#story') {
+        $('.pe-discard').hide();
+      } else {
+        $('.pe-discard').show();
+      }
 
       $('.pe-save').slideUp(200);
 
