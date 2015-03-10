@@ -23,7 +23,7 @@
 .main-section-actions.clearfix.mg-30
   .pull-right
     - hash = is_whitelabel? ? {} : { project: { platform_tags_string: @platform.name } }
-    - link = user_signed_in? ? new_project_path(hash) : new_user_registration_path(reason: 'project', m: 'group', id: @platform.id, redirect_to: new_project_path(hash))
+    - link = user_signed_in? ? new_project_path(hash) : new_user_registration_path(reason: 'project', m: 'group', id: @platform.id, redirect_to: new_project_path(hash), source: 'new_project')
     ==> link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add a project".html_safe, link, class: 'btn btn-default'
     / small> or
     / # - link = new_project_path(project: { platform_tags_string: @platform.name, external: true }, redirect_to: request.path)

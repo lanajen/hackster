@@ -70,8 +70,6 @@ class ApplicationController < ActionController::Base
     else
       ClientSubdomain.find_by_domain(request.host)
     end
-
-    @custom_header = begin;render_to_string(partial: "whitelabel/#{current_site.subdomain}/header"); rescue; end;
   end
 
   def current_platform

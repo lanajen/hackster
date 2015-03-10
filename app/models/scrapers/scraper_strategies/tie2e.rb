@@ -18,7 +18,7 @@ module ScraperStrategies
       end
 
       def select_article
-        @parsed.at_css('.content table') || @parsed.at_css('.media-gallery-post .content-fragment-content')
+        @parsed.at_css('.content.full > .content') || @parsed.at_css('.media-gallery-post .content-fragment-content')
       end
   end
 end
