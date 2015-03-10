@@ -340,7 +340,7 @@
                 - if user_signed_in?
                   = link_to 'This is mine', claim_project_path(@project), data: { method: :post, confirm: "Are you really the author of this project? Note that we'll have to approve it!" }, class: 'btn btn-primary btn-sm'
                 - else
-                  = link_to 'This is mine', new_user_registration_path(reason: 'claim', m: 'project', id: @project.id), class: 'btn btn-primary btn-sm'
+                  = link_to 'This is mine', new_user_registration_path(reason: 'claim', m: 'project', id: @project.id, source: 'claim'), class: 'btn btn-primary btn-sm'
 
               - if poster = @project.team.try(:active_members).try(:includes, :user).try(:first).try(:user)
                 section.section-thumbs

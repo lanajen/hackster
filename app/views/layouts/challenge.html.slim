@@ -177,7 +177,7 @@
       - else
         p You need a project to #{'idea ' if @challenge.project_ideas}enter!
         p
-          ==> link_to "Create a new project#{' idea' if @challenge.project_ideas}", new_user_registration_path(reason: 'project', redirect_to: new_project_path(link_params))
+          ==> link_to "Create a new project#{' idea' if @challenge.project_ideas}", new_user_registration_path(reason: 'project', redirect_to: new_project_path(link_params), source: 'challenge')
           ' or
           = link_to 'log in to use one of your existing projects', new_user_session_path(m: 'challenge', id: @challenge.id, reason: 'enter', redirect_to: challenge_path(@challenge, enter: 't'))
 

@@ -171,6 +171,6 @@ html(lang="en")
         = link_to 'Account settings', edit_user_registration_path, class: 'mo-nav-link'
         = link_to 'Log out', destroy_user_session_path, method: :delete, class: 'mo-nav-link'
       - else
-        = link_to 'Sign up / Login', new_user_registration_path, class: 'mo-nav-link'
+        = link_to 'Sign up / Login', new_user_registration_path(source: 'nav'), class: 'mo-nav-link'
 
     = content_for :js
