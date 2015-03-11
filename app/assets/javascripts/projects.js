@@ -214,6 +214,10 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
       target.resize(function(){ resizePeContainer() });
       serializeForm();
 
+      if (tab == '#story') {
+        loadSlickSlider();
+      }
+
       window.scroll(0, 0);  // so it doesn't scroll to the div
     }
 
@@ -259,6 +263,9 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
     $('.pe-submit').on('click', function(e){
       e.preventDefault();
 
+      if ($('#story:visible').length) {
+        editor.forceSaveModel();
+      }
       $('.pe-panel:visible form.remote').submit();
     });
 
