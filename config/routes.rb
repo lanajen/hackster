@@ -189,6 +189,7 @@ HackerIo::Application.routes.draw do
         get 'organizers' => 'events#organizers'
         get 'embed' => 'events#embed'
         get 'schedule/edit' => 'events#edit_schedule'
+        get 'admin/participants' => 'events#participants_list', as: :participants_list
       end
     end
     # end groups
