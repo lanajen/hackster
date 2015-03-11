@@ -302,3 +302,13 @@
   border-top: 2px solid #ddd;
   padding: 20px 0;
 }
+
+#team {
+  .team-request {
+    display: block;
+    margin-bottom: 10px;
+    a {
+      @extend .btn-block;
+    }
+  }
+}

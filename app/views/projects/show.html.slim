@@ -16,11 +16,14 @@
               ' This project is part of
               ==> link_to @project.event.name, @project.event
               - if can? :request_access, @project.team
-                - if user_signed_in? and member = current_user.is_team_member?(@project)
-                  - if member.request_pending?
-                    span.label.label-default Request to join team pending
-                - else
-                  = link_to 'I want to join!', group_members_path(@project.team), class: 'btn btn-sm btn-warning', data: { method: :post }, id: 'join-button'
+                span.team-request
+                  - if user_signed_in? and member = current_user.is_team_member?(@project)
+                    - if member.request_pending?
+                      span.label.label-default Request to join team pending
+                  - else
+                    = link_to 'I want to join the team!', group_members_path(@project.team), class: 'btn btn-sm btn-warning', data: { method: :post }, id: 'join-button'
+                javascript:
+                  $(function(){ $('.team-request').insertAfter('#team h4'); });
 
           - cache [@project, 'teaser'], tag: ["project-#{@project.id}-teaser"], expires_in: 6.hours do
             - if ProjectCollection.assignment_or_event_for_project?(@project.id)
@@ -345,7 +348,7 @@
                   .row= render partial: 'users/user_thumb_mini', locals: { user: poster }
 
             - else
-              section.section-thumbs
+              section.section-thumbs#team
                 h4
                   - if @project.project.team.full_name.present?
                     | Team #{@project.team.full_name}
