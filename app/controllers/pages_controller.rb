@@ -50,16 +50,16 @@ class PagesController < ApplicationController
 
         unless request.xhr?
           @last_projects = Project.indexable.last_public.limit(12)
-          @hackers = User.invitation_accepted_or_not_invited.user_name_set.where("users.id NOT IN (?)", current_user.followed_users.pluck(:id)).top.limit(6)
+          @hackers = User.invitation_accepted_or_not_invited.user_name_set.where("users.id NOT IN (?)", current_user.followed_users.pluck(:id)).joins(:reputation).where("reputations.points > 5").order('RANDOM()').limit(6)
           @lists = List.where(user_name: featured_lists - current_user.followed_lists.pluck(:user_name))
-          @platforms = Platform.public.where("groups.id NOT IN (?)", current_user.followed_platforms.pluck(:id)).most_members.limit(6)
+          @platforms = Platform.public.where("groups.id NOT IN (?)", current_user.followed_platforms.pluck(:id)).minimum_followers.order('RANDOM()').limit(6)
         end
 
       else
         unless request.xhr?
-          @hackers = User.invitation_accepted_or_not_invited.user_name_set.where.not(id: current_user.followed_users.pluck(:id)).top.limit(24)
+          @hackers = User.invitation_accepted_or_not_invited.user_name_set.where.not(id: current_user.followed_users.pluck(:id)).joins(:reputation).where("reputations.points > 5").order('RANDOM()').limit(24)
           @lists = List.where(user_name: featured_lists - current_user.followed_lists.pluck(:user_name))
-          @platforms = Platform.public.where.not(id: current_user.followed_platforms.pluck(:id)).most_members.limit(12)
+          @platforms = Platform.public.where.not(id: current_user.followed_platforms.pluck(:id)).minimum_followers_strict.order('RANDOM()').limit(12)
         end
         @last_projects = Project.indexable.last_public.limit(12)
       end
@@ -68,7 +68,7 @@ class PagesController < ApplicationController
     else
       @trending_projects = Project.indexable.magic_sort.for_thumb_display.limit 12
       @last_projects = Project.indexable.last_public.limit 12
-      @platforms = Platform.where(user_name: %w(spark delorean metawear tessel intel-edison wunderbar)).for_thumb_display.order(:full_name)
+      @platforms = Platform.public.minimum_followers_strict.order('RANDOM()').for_thumb_display.limit 12
       @lists = List.where(user_name: featured_lists).each_slice(3).to_a
 
       @typeahead_tags = List.public.order(:full_name).select{|p| p.projects_count >= 5 or p.followers_count >= 10 }.map do |p|

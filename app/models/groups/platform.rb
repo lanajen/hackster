@@ -1,6 +1,8 @@
 class Platform < List
   include Taggable
 
+  MINIMUM_FOLLOWERS = 5
+  MINIMUM_FOLLOWERS_STRICT = 20
   MODERATION_LEVELS = {
     'Approve all automatically' => 'auto',
     'Only projects approved by the Hackster team' => 'hackster',
@@ -77,6 +79,14 @@ class Platform < List
 
   def self.for_thumb_display
     includes(:avatar).includes(:cover_image)
+  end
+
+  def self.minimum_followers
+    where("groups.members_count > ?", MINIMUM_FOLLOWERS)
+  end
+
+  def self.minimum_followers_strict
+    where("groups.members_count > ?", MINIMUM_FOLLOWERS_STRICT)
   end
 
   def company_logo_id=(val)
