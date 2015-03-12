@@ -708,3 +708,47 @@
     }
   }
 }
+
+#platforms {
+  section {
+    padding: 40px 0;
+  }
+  .section-header {
+    color: #fff;
+    @include background-cover;
+    background-image: asset-url('hwweek/bg.jpg');
+    background-position: center 61%;
+    text-align: center;
+    padding: 50px 0;
+    h1 {
+      margin: 0;
+      text-align: center;
+      font-weight: bold;
+    }
+    p {
+
+    }
+  }
+  .section-projects {
+
+    h4 {
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+    .controls {
+      margin-bottom: 40px;
+    }
+    .tag {
+      margin-bottom: 10px;
+      font-size: 0.9em;
+      display: block;
+    }
+  }
+  .tag-status {
+    margin-top: 10px;
+    .reset {
+      margin-left: 20px;
+      font-size: 0.9em;
+    }
+  }
+}

@@ -2,16 +2,58 @@
   meta(name='keywords' content='hardware platforms,software platforms,diy machines')
 
 = content_for :no_container do
-  - cache ['platform-index', params[:sort]], tag: ['platform-index'], expires_in: 1.hour do
-    .container
-      #content
-        .content
-          .row
-            .col-xs-12
-              h1
-                | Explore platforms
-              p Development and prototyping platforms are the foundation of modern hardware projects. By packing up common functions, they help both professionals and hobbyists focus on the real use case of their product and make functional prototypes faster.
-              hr
+  - cache ['platform-index', params[:sort], params[:tag]], tag: ['platform-index'], expires_in: 1.hour do
+    #platforms
+      section.section-header
+        .container
+          h1 Platforms to build faster
+          p Thanks to hardware and software platforms for makers
+          / p Development and prototyping platforms are the foundation of modern hardware projects. By packing up common functions, they help both professionals and hobbyists focus on the real use case of their product and make functional prototypes faster.
+
+
+      / section.section-controls
+        .container
+          p Development and prototyping platforms are the foundation of modern hardware projects. By packing up common functions, they help both professionals and hobbyists focus on the real use case of their product and make functional prototypes faster.
+
+
+
+      section.section-projects
+        .container
+          .controls
+            .row
+              .col-md-4
+                h4 Project type:
+                ul.list-inline
+                  li= link_to '#iot', tag_platforms_path('internet-of-things'), class: 'tag tag-invert'
+                  li= link_to '#home-automation', tag_platforms_path('home-automation'), class: 'tag tag-invert'
+                  li= link_to '#wearable', tag_platforms_path('wearable'), class: 'tag tag-invert'
+                  li= link_to '#embeddable', tag_platforms_path('embeddable'), class: 'tag tag-invert'
+
+              .col-md-4
+                h4 Platform type:
+                ul.list-inline
+                  li= link_to '#microcontroller', tag_platforms_path('microcontroller'), class: 'tag tag-invert'
+                  li= link_to '#mini-pc', tag_platforms_path('mini-pc'), class: 'tag tag-invert'
+                  li= link_to '#interface', tag_platforms_path('interface'), class: 'tag tag-invert'
+                  li= link_to '#software', tag_platforms_path('software'), class: 'tag tag-invert'
+
+              .col-md-4
+                h4 Connectivity:
+                ul.list-inline
+                  li= link_to '#bluetooth', tag_platforms_path('bluetooth'), class: 'tag tag-invert'
+                  li= link_to '#wifi', tag_platforms_path('wifi'), class: 'tag tag-invert'
+                  li= link_to '#serial', tag_platforms_path('serial'), class: 'tag tag-invert'
+                  / li= link_to '#ethernet', tag_platforms_path('ethernet'), class: 'tag tag-invert'
+                  / li= link_to '#usb', tag_platforms_path('usb'), class: 'tag tag-invert'
+                  / li= link_to '#mesh', tag_platforms_path('mesh-network'), class: 'tag tag-invert'
+                  li= link_to '#radio', tag_platforms_path('radio'), class: 'tag tag-invert'
+
+            - if params[:tag]
+              p.tag-status
+                ' Showing
+                strong> ##{params[:tag]}
+                ' platforms
+                = link_to 'reset', platforms_path, class: 'reset'
 
           .row
             .col-xs-12.main-section-actions.mg-20
@@ -20,18 +62,21 @@
                   button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
                     ' Sort by
                     span.caret
-                  ul.dropdown-menu.pull-right
+                  ul.dropdown-menu
                     li*{ class: "#{'active' if params[:sort] == 'name'}" } = link_to 'Alphabetically', platforms_path(sort: 'name')
                     li*{ class: "#{'active' if params[:sort] == 'followers'}" } = link_to 'Most followers', platforms_path(sort: 'followers')
                     li*{ class: "#{'active' if params[:sort] == 'projects'}" } = link_to 'Most projects', platforms_path(sort: 'projects')
 
-          .row
-            - @platforms.each do |platform|
-              - unless platform.hidden
-                = render partial: 'groups/platforms/platform_thumb', locals: { platform: platform }
+          - if @platforms.any?
+            .row
+              - @platforms.each do |platform|
+                - unless platform.hidden
+                  = render partial: 'groups/platforms/platform_thumb', locals: { platform: platform }
+          - else
+            p Nothing matched your search, try another one!
 
-    #bottom-bar
-      .container.text-center
-        p
-          ' Want to feature your platform on this page?
-          = link_to 'Apply', 'mailto:platforms@hackster.io?subject=Application%20to%20feature%20platform', class: 'btn btn-primary'
+      section#bottom-bar
+        .container.text-center
+          p
+            ' Want to feature your platform on this page?
+            = link_to 'Apply', 'mailto:platforms@hackster.io?subject=Application%20to%20feature%20platform', class: 'btn btn-primary'

@@ -133,6 +133,7 @@ HackerIo::Application.routes.draw do
     end
 
     resources :platforms, except: [:show] do
+      get ':tag' => 'platforms#index', on: :collection, as: :tag
       resources :projects, only: [] do
         post 'feature' => 'platforms#feature_project'#, as: :platform_feature_project
         delete 'feature' => 'platforms#unfeature_project'

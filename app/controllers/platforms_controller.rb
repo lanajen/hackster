@@ -22,6 +22,10 @@ class PlatformsController < ApplicationController
       @platforms = @platforms.send(Group::SORTING[params[:sort]])
     end
 
+    if params[:tag]
+      @platforms = @platforms.joins(:product_tags).where("LOWER(tags.name) = ?", params[:tag].downcase)
+    end
+
     render "groups/platforms/#{self.action_name}"
   end
 

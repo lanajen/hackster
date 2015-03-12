@@ -355,6 +355,14 @@ h1 {
     color: #333;
     text-decoration: none;
   }
+  &.tag-invert {
+    color: #555;
+    border: 1px solid #555;
+    &:hover {
+      background: #555;
+      color: #fff;
+    }
+  }
 }
 
 #signup-now-pretty-please, #bottom-bar {
