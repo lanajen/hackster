@@ -129,7 +129,7 @@
                     - embed = Embed.new widget_id: widget_id
                     = render partial: 'api/embeds/embed', locals: { embed: embed }
 
-            - if (@project.build_logs_count > 0 and !@project.private_logs) or @can_edit
+            - if (@project.build_logs_count > 0 and !@project.private_logs)
               section#logs.section-container.section-collapsible
                 h2.section-title
                   a.title.title-toggle href=''
@@ -163,7 +163,7 @@
                   - elsif @project.build_logs_count > 1
                     = link_to 'Read previous logs', project_logs_path, class: 'btn btn-default btn-sm btn-block'
 
-            - if (@project.issues_count > 0 and !@project.private_issues) or @can_edit
+            - if (@project.issues_count > 0 and !@project.private_issues)
               section#issues.section-container.section-collapsible
                 h2.section-title
                   a.title.title-toggle href=''
@@ -453,7 +453,7 @@
                         li
                           a.smooth-scroll href="#components" data-target="#components"
                             | Components
-                      - if (@project.build_logs_count > 0 and !@project.private_logs) or can? :edit, @project
+                      - if (@project.build_logs_count > 0 and !@project.private_logs)
                         li
                           a.smooth-scroll href="#logs"  data-target="#logs"
                             | Build Logs
@@ -461,7 +461,7 @@
                               | (
                               = @project.build_logs_count
                               | )
-                      - if (@project.issues_count > 0 and !@project.private_issues) or can? :edit, @project
+                      - if (@project.issues_count > 0 and !@project.private_issues)
                         li
                           a.smooth-scroll href="#issues"  data-target="#issues"
                             | Issues

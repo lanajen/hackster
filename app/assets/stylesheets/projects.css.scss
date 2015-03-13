@@ -291,6 +291,13 @@
   display: none;
 }
 
+.pe-error {
+  float: left;
+  padding: 10px 0;
+  display: none;
+  color: #E45454;
+  font-size: 0.9em;
+}
 .pe-save {
   display: none;
   position: fixed;

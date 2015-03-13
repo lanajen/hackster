@@ -249,10 +249,15 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
     $('.pe-panel')
       .on("ajax:beforeSend", 'form.remote', function(xhr, settings){
         $('.pe-save').slideUp(200);
+        $('.pe-error').hide();
         $(this).closest('.pe-container').addClass('processing');
       })
       .on('ajax:complete', 'form.remote', function(xhr, status){
         $(this).closest('.pe-container').removeClass('processing');
+      })
+      .on('ajax:error', 'form.remote', function(xhr, status){
+        $('.pe-save').slideDown(200);
+        $('.pe-error').show();
       })
       .on('ajax:success', 'form.remote', function(xhr, status){
         serializeForm();
