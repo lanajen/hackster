@@ -420,7 +420,7 @@ class ApplicationController < ActionController::Base
         logger.error ""
         clean_backtrace.each { |line| logger.error "Backtrace: " + line }
         logger.error ""
-        BaseMailer.enqueue_email 'error_notification', { context_type: :log_line, context_id: log_line.id }
+        BaseMailer.enqueue_email 'error_notification', { context_type: :log_line, context_id: log_line.id } if Rails.env == 'production'
       rescue
       end
       @error = exception
