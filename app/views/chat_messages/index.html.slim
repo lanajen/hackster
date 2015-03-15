@@ -1,14 +1,15 @@
-= content_for :head do
-  = javascript_include_tag '//js.pusher.com/2.2/pusher.min.js'
-  meta name='channel_id' content=@group.id
-  javascript:
-    var current_user_details = {
-      name: "#{current_user.name}",
-      avatar: "#{current_user.decorate.avatar(:thumb)}",
-      url: "#{url_for(current_user)}",
-      id: "#{current_user.id}",
-    };
-    var current_user_thumb = "#{j render(partial: 'chat_messages/participant', locals: { participant: current_user })}";
+- if @group.enable_chat
+  = content_for :head do
+    = javascript_include_tag '//js.pusher.com/2.2/pusher.min.js'
+    meta name='channel_id' content=@group.id
+    javascript:
+      var current_user_details = {
+        name: "#{current_user.name}",
+        avatar: "#{current_user.decorate.avatar(:thumb)}",
+        url: "#{url_for(current_user)}",
+        id: "#{current_user.id}",
+      };
+      var current_user_thumb = "#{j render(partial: 'chat_messages/participant', locals: { participant: current_user })}";
 
 = content_for :no_main do
   section.chat-header
@@ -16,11 +17,12 @@
       ==> link_to @group.name, @group
       | chat
 
-    .pull-right
-      a.toggle-participants
-        i.fa.fa-user>
-        span.participants-count
-          | 0
+    - if @group.enable_chat
+      .pull-right
+        a.toggle-participants
+          i.fa.fa-user>
+          span.participants-count
+            | 0
 
     .clearfix
 
@@ -29,17 +31,21 @@
       ul.list-unstyled
     #chat
       .chat-inner
-        noscript
-          p Please enable Javascript to activate the chat.
-        ul.messages.list-unstyled
-          / li
-            a.load-more Load more
-          - date = nil
-          - @chat_messages.each do |chat_message|
-            - if chat_message.created_at.to_date != date
-              - date = chat_message.created_at.to_date
-              li.date= l date, format: :long
-            = render chat_message
+        - if @group.enable_chat
+          noscript
+            p Please enable Javascript to activate the chat.
+          ul.messages.list-unstyled
+            / li
+              a.load-more Load more
+            - date = nil
+            - @chat_messages.each do |chat_message|
+              - if chat_message.created_at.to_date != date
+                - date = chat_message.created_at.to_date
+                li.date= l date, format: :long
+              = render chat_message
+        - else
+          p Chat is currently closed. Reach out to #{@group.name} if you want them to activate it!
 
-      = simple_form_for ChatMessage.new, url: chat_messages_path(@group.id), html: { data: { remote: true } } do |f|
+      - if @group.enable_chat
+        = simple_form_for ChatMessage.new, url: chat_messages_path(@group.id), html: { data: { remote: true } } do |f|
         = f.input :raw_body, label: false, input_html: { rows: 1, disabled: 'disabled', autofocus: true }, wrapper: false, placeholder: 'Type here, press Enter to send...'
