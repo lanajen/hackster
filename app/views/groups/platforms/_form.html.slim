@@ -23,6 +23,7 @@
       = f.input :public, inline_label: 'Make the page public', label: false, hint: "Uncheck this box if you want to hide the page everywhere on Hackster.", as: :boolean
       = f.input :moderation_level, hint: "What type of moderation do you want regarding new projects being added to your page?", collection: Platform::MODERATION_LEVELS
       = f.input :project_sorting, hint: "How should projects be sorted by default?", label: 'Default project sorting', collection: Group::PROJECT_SORTING
+      = f.input :enable_chat, hint: "Real time group chat for your community", inline_label: 'Enable chat', label: false, as: :boolean
       - if current_user.is? :admin
         = f.input :email
         = f.input :is_new, as: :boolean, inline_label: 'Show as new', label: false
