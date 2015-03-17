@@ -19,6 +19,13 @@ class PagesController < ApplicationController
     meta_desc 'What are achievements?'
   end
 
+  def business
+    title "Hackster for Business"
+    meta_desc "Build a community of makers around your products, we'll show you the way."
+
+    @info_request = InfoRequest.new
+  end
+
   def create_info_request
     @info_request = InfoRequest.new params[:info_request]
 
@@ -133,10 +140,6 @@ class PagesController < ApplicationController
 
   def ping
     render text: 'pong!'
-  end
-
-  def pricing
-    @info_request = InfoRequest.new
   end
 
   def privacy

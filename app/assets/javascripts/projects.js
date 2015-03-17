@@ -210,13 +210,21 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
       var target = $(tab);
       $('.pe-panel:visible').removeResize();
       $('.pe-panel').hide();
-      target.fadeIn(100);
-      target.resize(function(){ resizePeContainer() });
-      serializeForm();
 
-      if (tab == '#story') {
-        loadSlickSlider();
-      }
+      target.fadeIn(100, function(){
+        if (tab == '#story') {
+          $('.pe-discard').hide();
+          $.each(codeEditor, function(i, el) {
+            heightUpdateFunction("#code-editor-" + el.id, el.ace);
+          });
+        }
+        if (tab == '#story') {
+          loadSlickSlider();
+        }
+        target.resize(function(){ resizePeContainer() });
+      });
+
+      serializeForm();
 
       window.scroll(0, 0);  // so it doesn't scroll to the div
     }
