@@ -11,7 +11,7 @@
           - if safe_page_params
             small page #{safe_page_params}
         .pull-right
-          = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add a project to #{@tag}".html_safe, new_project_path(project: { product_tags_string: @tag.capitalize}), class: 'btn btn-warning btn-sm'
+          = link_to content_tag(:i, '', class: 'fa fa-plus') + "Add a project to #{@tag}", new_project_path(project: { product_tags_string: @tag.capitalize}), class: 'btn btn-warning btn-sm'
 
       hr
         .clearfix
