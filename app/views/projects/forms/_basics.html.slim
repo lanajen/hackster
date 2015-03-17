@@ -23,6 +23,7 @@
       = f.input :name, label: "Project name", hint: 'Make it sound cool!'
       = f.input :one_liner, as: :text, input_html: { rows: 3 },
         hint: "Describe your project in one short sentence", label: 'Elevator pitch'
+      - if @project.cover_image.present?
       = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @project.cover_image.try(:file_url, :cover_mini_thumb), help_block: 'This should be your nicest picture for this project. Give us some high def for best results! It will be cropped to 4:3 format.', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
       = f.input :license, collection: License.all, value_method: :url, hint: "Under which license are you sharing your project? If you don't know/don't care, \"Beerware\" is a pretty good one :)", selected: @project.license.try(:url), include_blank: true
-      = f.input :product_tags_array, label: 'Tags', collection: (['Home automation', 'Wearable', 'Internet of Things', 'Lights', 'Animals', 'Wifi', 'Bluetooth', 'Accelerometer', 'Robot', 'Drone', 'Embedded', 'IR', 'LED', 'Display', 'Servo', 'Relay'] + @project.product_tags_array).sort, input_html: { multiple: 'multiple' }
+      = f.input :product_tags_array, label: 'Tags', collection: (['Home automation', 'Wearable', 'Internet of Things', 'Lights', 'Animals', 'Wifi', 'Bluetooth', 'Accelerometer', 'Robot', 'Drone', 'Embedded', 'IR', 'LED', 'Display', 'Servo', 'Relay'] + @project.product_tags_array).uniq.sort, input_html: { multiple: 'multiple' }

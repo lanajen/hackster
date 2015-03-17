@@ -22,9 +22,10 @@ HackerIo::Application.routes.draw do
     # get 'finish_and_redirect' => 'split#finish_and_redirect'
     # get 'validate_step' => 'split#validate_step'
 
-    get 'experts', to: redirect('/build')
-    get 'build' => 'expert_requests#new'
-    resources :expert_requests, only: [:create]
+    # get 'experts', to: redirect('/build')
+    # get 'build' => 'expert_requests#new'
+    # resources :expert_requests, only: [:create]
+    post 'info_requests' => 'pages#create_info_request'
 
     post 'pusher/auth' => 'users/pusher_authentications#create'
 

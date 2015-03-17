@@ -19,6 +19,37 @@ class PagesController < ApplicationController
     meta_desc 'What are achievements?'
   end
 
+  def create_info_request
+    @info_request = InfoRequest.new params[:info_request]
+
+    if @info_request.valid?
+      @message = Message.new(
+        from_email: @info_request.email,
+        message_type: 'generic'
+      )
+      @message.subject = "New info request"
+      @message.recipients = 'ben@hackster.io;adam@hackster.io'
+      @message.body = "<p>Hi<br><p>Please provide more info about business opportunities:<br>"
+      @message.body += "<p>"
+      @message.body += "<b>Company: </b>#{@info_request.company}<br>"
+      @message.body += "<b>Website: </b>#{@info_request.website}<br>"
+      @message.body += "<b>Plan: </b>#{@info_request.plan.compact.to_sentence}<br>"
+      @message.body += "<b>Needs: </b>#{@info_request.needs}<br>"
+      @message.body += "<b>Name: </b>#{@info_request.name}<br>"
+      @message.body += "<b>Phone: </b>#{@info_request.phone}<br>"
+      @message.body += "<b>Email: </b>#{@info_request.email}<br>"
+      @message.body += "<b>Location: </b>#{@info_request.location}"
+      @message.body += "<b>Referral: </b>#{@info_request.referral}<br>"
+      @message.body += "</p>"
+      BaseMailer.enqueue_generic_email(@message)
+      LogLine.create source: 'info_request', log_type: 'info_request', message: @message.body
+
+      redirect_to business_path, notice: "Thanks for your request, we'll be in touch soon!"
+    else
+      render 'new'
+    end
+  end
+
   def hardwareweekend
     title "Hackster Hardware Weekend Roadshow"
     meta_desc "The Hackster #HardwareWeekend is coming to 10 cities across America! Join us to hack, meet awesome people and win great prizes!"
@@ -102,6 +133,10 @@ class PagesController < ApplicationController
 
   def ping
     render text: 'pong!'
+  end
+
+  def pricing
+    @info_request = InfoRequest.new
   end
 
   def privacy

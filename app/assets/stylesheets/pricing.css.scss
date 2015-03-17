@@ -50,10 +50,25 @@
     background: #fff;
     h2 {
       color: #000000;
+      &.subsection-title {
+        padding-bottom: 5px;
+        border-bottom: 4px solid #208edb;
+        margin-left: -10px;
+        margin-right: -10px;
+        font-size: 1.3em;
+        text-transform: uppercase;
+        color: #111;
+      }
     }
   }
   .plans {
-    margin-top: 100px;
+    // margin-top: 100px;
+    margin-left: -5px;
+    margin-right: -5px;
+  }
+  .plan {
+    padding-left: 5px;
+    padding-right: 5px;
   }
   .plan-top {
     background: #eeedf2;
@@ -77,11 +92,22 @@
     strong {
       font-weight: 600;
     }
+    ul {
+      list-style: none;
+      padding: 0;
+      li {
+        margin-bottom: 7px;
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
   }
   .plan-bottom {
     font-weight: bold;
     text-align: center;
     color: #fff;
+    @extend .clearfix;
   }
   .plan-price {
     background: #000;
@@ -99,6 +125,11 @@
     width: 66.666666667%;
     float: left;
     padding: 15px 0;
+    color: #fff;
+    &:hover {
+      text-decoration: none;
+      background: #1C7DC2;
+    }
   }
 
 
@@ -109,11 +140,16 @@
     border-bottom: 1px solid #666;
   }
   .packages {
-    margin-top: 100px;
+    // margin-top: 100px;
+    margin-left: -5px;
+    margin-right: -5px;
+  }
+  .package {
+    padding-left: 5px;
+    padding-right: 5px;
   }
   .package-top {
-    background: #fff;
-    border-bottom: 1px solid #fff;
+    background: #eeedf2;
     padding: 30px 20px 40px;
     h3 {
       margin-top: 0;
@@ -130,6 +166,7 @@
     font-weight: bold;
     text-align: center;
     color: #fff;
+    @extend .clearfix;
   }
   .package-price {
     text-transform: uppercase;
@@ -141,6 +178,11 @@
     width: 66.666666667%;
     float: left;
     padding: 15px 0;
+    color: #fff;
+    &:hover {
+      text-decoration: none;
+      background: #1C7DC2;
+    }
   }
   .package-one {
     .package-price {
@@ -148,6 +190,9 @@
     }
     .package-more {
       background: #20daa8;
+      &:hover {
+        background: #1DC799;
+      }
     }
   }
   .package-two {
@@ -156,6 +201,9 @@
     }
     .package-more {
       background: #e66639;
+      &:hover {
+        background: #C2552F;
+      }
     }
   }
   .package-three {
@@ -166,5 +214,36 @@
       background: #7325eb;
     }
   }
+}
 
+@media (max-width: 768px) {
+  #pricing {
+    .plan, .package {
+      margin-bottom: 20px;
+    }
+  }
+}
+@media (min-width: 768px) {
+  #pricing {
+    .plan-top {
+      min-height: 160px;
+    }
+    .plan-middle {
+      min-height: 400px;
+    }
+  }
+}
+@media (max-width: 992px) {
+  #pricing {
+    .packages {
+      margin-top: 50px;
+    }
+  }
+}
+@media (min-width: 992px) {
+  #pricing {
+    .package-top {
+      min-height: 300px;
+    }
+  }
 }
