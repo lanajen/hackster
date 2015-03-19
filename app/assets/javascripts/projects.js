@@ -183,6 +183,8 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
         $('.inserted').remove();
         $('.fields.added').remove();
         $('.fields.removed').show().removeClass('removed');
+
+        serializeForm();
       }
     }
 
@@ -193,6 +195,12 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
 
       // hide the medium media bar
       $('.medium-media-menu').hide().find('.media-menu-btns').removeClass('is-open');
+      // hide discard button if story
+      if (tab == '#story') {
+        $('.pe-discard').hide();
+      } else {
+        $('.pe-discard').show();
+      }
 
       $('.pe-save').slideUp(200);
 
@@ -202,8 +210,20 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
       var target = $(tab);
       $('.pe-panel:visible').removeResize();
       $('.pe-panel').hide();
-      target.fadeIn(100);
-      target.resize(function(){ resizePeContainer() });
+
+      target.fadeIn(100, function(){
+        if (tab == '#story') {
+          $('.pe-discard').hide();
+          $.each(codeEditor, function(i, el) {
+            heightUpdateFunction("#code-editor-" + el.id, el.ace);
+          });
+        }
+        if (tab == '#story') {
+          loadSlickSlider();
+        }
+        target.resize(function(){ resizePeContainer() });
+      });
+
       serializeForm();
 
       window.scroll(0, 0);  // so it doesn't scroll to the div
@@ -237,10 +257,15 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
     $('.pe-panel')
       .on("ajax:beforeSend", 'form.remote', function(xhr, settings){
         $('.pe-save').slideUp(200);
+        $('.pe-error').hide();
         $(this).closest('.pe-container').addClass('processing');
       })
       .on('ajax:complete', 'form.remote', function(xhr, status){
         $(this).closest('.pe-container').removeClass('processing');
+      })
+      .on('ajax:error', 'form.remote', function(xhr, status){
+        $('.pe-save').slideDown(200);
+        $('.pe-error').show();
       })
       .on('ajax:success', 'form.remote', function(xhr, status){
         serializeForm();
@@ -251,6 +276,9 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
     $('.pe-submit').on('click', function(e){
       e.preventDefault();
 
+      if ($('#story:visible').length) {
+        editor.forceSaveModel();
+      }
       $('.pe-panel:visible form.remote').submit();
     });
 

@@ -442,6 +442,11 @@
     margin-top: 10px;
     margin-left: 10px;
   }
+  .manage {
+    .caret {
+      margin-left: 3px;
+    }
+  }
   .btn-default {
     color: #eee;
     border-color: #eee;
@@ -461,10 +466,16 @@
     margin-left: -500px;
     img, .img-placeholder {
       display: inline-block;
-      width: 40px;
       height: 40px;
-      margin: 10px 0 9px 10px;
       vertical-align: middle;
+    }
+    img {
+      width: 40px;
+      margin: 10px 0 9px 10px;
+    }
+    .img-placeholder {
+      width: 0;
+      margin: 10px 0 9px 0;
     }
     h2 {
       display: inline-block;
@@ -473,10 +484,29 @@
       color: #fff;
       font-weight: bold;
       font-size: 1.5em;
-      max-width: 200px;
+      max-width: 350px;
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
+    }
+  }
+}
+
+@media (min-width: 768px) and (max-width: 850px) {
+  .group-nav {
+    .brand {
+      h2 {
+        max-width: 220px;
+      }
+    }
+  }
+}
+@media (min-width: 850px) and (max-width: 1030px) {
+  .group-nav {
+    .brand {
+      h2 {
+        max-width: 300px;
+      }
     }
   }
 }
@@ -675,6 +705,50 @@
   .table {
     &:last-child {
       margin-bottom: 0;
+    }
+  }
+}
+
+#platforms {
+  section {
+    padding: 40px 0;
+  }
+  .section-header {
+    color: #fff;
+    @include background-cover;
+    background-image: asset-url('hwweek/bg.jpg');
+    background-position: center 61%;
+    text-align: center;
+    padding: 50px 0;
+    h1 {
+      margin: 0;
+      text-align: center;
+      font-weight: bold;
+    }
+    p {
+
+    }
+  }
+  .section-projects {
+
+    h4 {
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+    .controls {
+      margin-bottom: 40px;
+    }
+    .tag {
+      margin-bottom: 10px;
+      font-size: 0.9em;
+      display: block;
+    }
+  }
+  .tag-status {
+    margin-top: 10px;
+    .reset {
+      margin-left: 20px;
+      font-size: 0.9em;
     }
   }
 }

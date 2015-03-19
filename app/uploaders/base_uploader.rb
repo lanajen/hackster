@@ -4,7 +4,7 @@ class BaseUploader < CarrierWave::Uploader::Base
   include CarrierWave::MiniMagick
   include Sprockets::Rails::Helper
 
-  if Rails.env.in? %w(production staging) or ENV['CARRIERWAVE_FORCE_FOG'] == 'true'
+  if Rails.env.in? %w(production staging dev) or ENV['CARRIERWAVE_FORCE_FOG'] == 'true'
     storage :fog
   else
     storage :file

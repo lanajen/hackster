@@ -1,6 +1,8 @@
 class Platform < List
   include Taggable
 
+  MINIMUM_FOLLOWERS = 5
+  MINIMUM_FOLLOWERS_STRICT = 20
   MODERATION_LEVELS = {
     'Approve all automatically' => 'auto',
     'Only projects approved by the Hackster team' => 'hackster',
@@ -23,7 +25,7 @@ class Platform < List
     :buy_link, :shoplocket_link, :cover_image_id, :accept_project_ideas,
     :project_ideas_phrasing, :client_subdomain_attributes, :logo_id,
     :download_link, :company_logo_id, :disclaimer, :moderation_level,
-    :cta_text, :parts_attributes, :verified
+    :cta_text, :parts_attributes, :verified, :enable_chat
 
   accepts_nested_attributes_for :client_subdomain, :parts
 
@@ -35,11 +37,11 @@ class Platform < List
 
   store_accessor :properties, :accept_project_ideas, :project_ideas_phrasing,
     :active_challenge, :disclaimer, :moderation_level, :cta_text, :hashtag,
-    :verified
+    :verified, :enable_chat
   set_changes_for_stored_attributes :properties
 
   parse_as_booleans :properties, :accept_project_ideas, :active_challenge,
-    :is_new, :enable_comments, :hidden, :verified
+    :is_new, :enable_comments, :hidden, :verified, :enable_chat
 
   taggable :platform_tags, :product_tags
 
@@ -77,6 +79,14 @@ class Platform < List
 
   def self.for_thumb_display
     includes(:avatar).includes(:cover_image)
+  end
+
+  def self.minimum_followers
+    where("groups.members_count > ?", MINIMUM_FOLLOWERS)
+  end
+
+  def self.minimum_followers_strict
+    where("groups.members_count > ?", MINIMUM_FOLLOWERS_STRICT)
   end
 
   def company_logo_id=(val)

@@ -7,8 +7,8 @@
   #home
     section#home-banner
       .home-slide#welcome-back
-        - if Time.now < DateTime.parse('2015-02-22 20:00 -0800')
-          = link_to 'Hardware Weekend Seattle', '/hackathons/hardware-weekend/seattle', class: 'btn btn-warning btn-sm btn-over'
+        / # - if Time.now < DateTime.parse('2015-03-22 20:00 -0800')
+          = link_to 'Hardware Weekend Los Angeles', '/la', class: 'btn btn-warning btn-sm btn-over'
         .container
           h1 Welcome to your dashboard!
 
@@ -22,6 +22,8 @@
               ' This is a new feature! Please let us know what you'd like to see by emailing us at
               = link_to 'hi@hackster.io', 'mailto:hi@hackster.io&subject=Feedback%20for%dashboard'
               | .
+
+      = render 'challenges'
 
       section#suggested-platforms.showcase-section
         .container
@@ -93,6 +95,8 @@
               ' This is a new feature! Please let us know what you'd like to see by emailing us at
               = link_to 'hi@hackster.io', 'mailto:hi@hackster.io&subject=Feedback%20for%20dashboard'
               | .
+
+      = render 'challenges'
 
       section#latest.showcase-section
         .container

@@ -1,0 +1,153 @@
+= content_for :no_container do
+  #pricing
+    / section.section-one
+      .container
+        .title
+          h2
+            | The world moves fast.
+            br
+            | Move faster with Hackster.io.
+
+          / p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+
+    section.section-two
+      .container
+        .title
+          .split-left
+            h2
+              | Hackster helps you connect with your community
+
+          .split-right
+            p We're on a mission to turn your legacy project showcase into a thriving network that drives mindshare and adoption for your platform, while being more pleasant and productive for your community.
+            p Whether you're evangelizing, distributing or innovating, Hackster communities provide the single one hub for content, conversations and your startup and maker ecosystem.
+
+    section.section-pricing
+      .container
+        / .title
+          h2 Plans
+          / p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi bibendum arcu a sapien tincidunt ullamcorper.
+
+        .row
+          .col-md-8.col-sm-12
+            .row.plans
+              .col-xs-12
+                h2.subsection-title Plans
+              .col-sm-4.col-xs-12.plan
+                .plan-top
+                  h3 Startup
+                  p For new communities that just need a place to connect.
+                .plan-middle
+                  ul
+                    li Platform channel on Hackster
+                    li Embed into your site
+                    li
+                      strong> 100,000
+                      | page views/month
+                    li Optimized for SEO
+                    li Email support
+                .plan-bottom
+                  .plan-price
+                    | $99
+                    span.monthly
+                      | /mo
+                  = link_to 'Get this', '#', class: 'plan-more', 'data-target' => "#myModal", 'data-toggle' => "modal"
+
+              .col-sm-4.col-xs-12.plan
+                .plan-top
+                  h3 Business
+                  p For medium communities trying to grow revenue.
+                .plan-middle
+                  ul
+                    li Platform channel on Hackster
+                    li Embed into your site
+                    li
+                      strong> 1,000,000
+                      | page views/month
+                    li Optimized for SEO
+                    li
+                      strong Custom Single Sign-On
+                    li
+                      strong Insights and analytics
+                    li Email support
+                .plan-bottom
+                  .plan-price
+                    | $499
+                    span.monthly
+                      | /mo
+                  = link_to 'Get this', '#', class: 'plan-more', 'data-target' => "#myModal", 'data-toggle' => "modal"
+
+              .col-sm-4.col-xs-12.plan
+                .plan-top
+                  h3 Enterprise
+                  p For large communities with high performance requirements.
+                .plan-middle
+                  ul
+                    li Platform channel on Hackster
+                    li Embed into your site
+                    li
+                      strong> Unlimited
+                      | page views/month
+                    li Optimized for SEO
+                    li Custom Single Sign-On
+                    li Insights and analytics
+                    li
+                      strong Priority phone support
+                    li
+                      strong Strict SLA's
+                    li
+                      strong More customization capabilities
+                .plan-bottom
+                  .plan-price
+                    | Call
+                  = link_to 'Get this', '#', class: 'plan-more', 'data-target' => "#myModal", 'data-toggle' => "modal"
+
+          .col-md-4.col-sm-12
+            .row.packages
+              .col-xs-12
+                h2.subsection-title Services
+              .col-sm-6.col-xs-12.package.package-one
+                .package-top
+                  h3 Virtual Challenges
+                  p Engage thousands of makers online and reward creativity with virtual challenges.
+                .package-bottom
+                  .package-price
+                    | Call
+                  = link_to 'Get this', '#', class: 'package-more', 'data-target' => "#myModal", 'data-toggle' => "modal"
+              .col-sm-6.col-xs-12.package.package-two
+                .package-top
+                  h3 Physical Hackathons
+                  p Create deep connections with local communities thanks to hackathons.
+                .package-bottom
+                  .package-price
+                    | Call
+                  = link_to 'Get this', '#', class: 'package-more', 'data-target' => "#myModal", 'data-toggle' => "modal"
+
+        p.text-center style='margin-top:50px'
+          ' Just looking to be featured in our platforms section?
+          = link_to 'Apply', 'https://docs.google.com/forms/d/1QVyIRXMR1FEFcby3Gwg-ZrmtWkkCax9UHhQRDyvXxHg/viewform?usp=send_form'
+          | .
+
+= content_for :js do
+  #myModal.modal.fade*{ 'aria-hidden' => "true", 'aria-labelledby' => "myModalLabel", role: "dialog", tabindex: "-1" }
+    = simple_form_for @info_request, url: info_requests_path, html: { class: 'form-vertical modal-dialog' }, wrapper: :bootstrap3 do |f|
+      .modal-content
+        .modal-header
+          button.close data-dismiss="modal" type="button"
+            span aria-hidden="true"  ×
+            span.sr-only Close
+          h4#myModalLabel.modal-title Please tell us about you and your project:
+        .modal-body
+          = f.input :company, label: 'Company name'
+          = f.input :website, label: 'Website'
+          = f.input :plan, label: 'What package are you interested in?', collection: InfoRequest::PLANS, as: :check_boxes
+          = f.input :needs, label: 'What needs are you looking to get solved?', as: :text
+
+          p Last, tell us who you are and how we can reach you:
+          = f.input :name, label: 'Your full name'
+          = f.input :email, label: 'Your email'
+          = f.input :phone, label: 'Your phone'
+          = f.input :location, label: 'Your location', hint: 'City, State, Country'
+          = f.input :referral, label: 'Where did you hear about us?', collection: InfoRequest::REFERRALS
+        .modal-footer
+          = f.submit 'Send request', class: 'btn btn-primary'
+          button.btn.btn-default data-dismiss="modal" type="button"  Close

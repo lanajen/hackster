@@ -19,6 +19,44 @@ class PagesController < ApplicationController
     meta_desc 'What are achievements?'
   end
 
+  def business
+    title "Hackster for Business"
+    meta_desc "Build a community of makers around your products, we'll show you the way."
+
+    @info_request = InfoRequest.new
+  end
+
+  def create_info_request
+    @info_request = InfoRequest.new params[:info_request]
+
+    if @info_request.valid?
+      @message = Message.new(
+        from_email: @info_request.email,
+        message_type: 'generic'
+      )
+      @message.subject = "New info request"
+      @message.recipients = 'ben@hackster.io;adam@hackster.io'
+      @message.body = "<p>Hi<br><p>Please provide more info about business opportunities:<br>"
+      @message.body += "<p>"
+      @message.body += "<b>Company: </b>#{@info_request.company}<br>"
+      @message.body += "<b>Website: </b>#{@info_request.website}<br>"
+      @message.body += "<b>Plan: </b>#{@info_request.plan.compact.to_sentence}<br>"
+      @message.body += "<b>Needs: </b>#{@info_request.needs}<br>"
+      @message.body += "<b>Name: </b>#{@info_request.name}<br>"
+      @message.body += "<b>Phone: </b>#{@info_request.phone}<br>"
+      @message.body += "<b>Email: </b>#{@info_request.email}<br>"
+      @message.body += "<b>Location: </b>#{@info_request.location}"
+      @message.body += "<b>Referral: </b>#{@info_request.referral}<br>"
+      @message.body += "</p>"
+      BaseMailer.enqueue_generic_email(@message)
+      LogLine.create source: 'info_request', log_type: 'info_request', message: @message.body
+
+      redirect_to business_path, notice: "Thanks for your request, we'll be in touch soon!"
+    else
+      render 'new'
+    end
+  end
+
   def hardwareweekend
     title "Hackster Hardware Weekend Roadshow"
     meta_desc "The Hackster #HardwareWeekend is coming to 10 cities across America! Join us to hack, meet awesome people and win great prizes!"
@@ -38,6 +76,8 @@ class PagesController < ApplicationController
         render json: { count: count } and return
       end
 
+      @challenges = Challenge.where(id: %w(8 9))
+
       @projects = Project.custom_for(current_user).for_thumb_display.paginate(page: safe_page_params, per_page: 12)
       if @projects.any?
         @followed = current_user.follow_relations.includes(:followable).includes(followable: :avatar)
@@ -48,16 +88,16 @@ class PagesController < ApplicationController
 
         unless request.xhr?
           @last_projects = Project.indexable.last_public.limit(12)
-          @hackers = User.invitation_accepted_or_not_invited.user_name_set.where("users.id NOT IN (?)", current_user.followed_users.pluck(:id)).top.limit(6)
+          @hackers = User.invitation_accepted_or_not_invited.user_name_set.where("users.id NOT IN (?)", current_user.followed_users.pluck(:id)).joins(:reputation).where("reputations.points > 5").order('RANDOM()').limit(6)
           @lists = List.where(user_name: featured_lists - current_user.followed_lists.pluck(:user_name))
-          @platforms = Platform.public.where("groups.id NOT IN (?)", current_user.followed_platforms.pluck(:id)).most_members.limit(6)
+          @platforms = Platform.public.where("groups.id NOT IN (?)", current_user.followed_platforms.pluck(:id)).minimum_followers.order('RANDOM()').limit(6)
         end
 
       else
         unless request.xhr?
-          @hackers = User.invitation_accepted_or_not_invited.user_name_set.where.not(id: current_user.followed_users.pluck(:id)).top.limit(24)
+          @hackers = User.invitation_accepted_or_not_invited.user_name_set.where.not(id: current_user.followed_users.pluck(:id)).joins(:reputation).where("reputations.points > 5").order('RANDOM()').limit(24)
           @lists = List.where(user_name: featured_lists - current_user.followed_lists.pluck(:user_name))
-          @platforms = Platform.public.where.not(id: current_user.followed_platforms.pluck(:id)).most_members.limit(12)
+          @platforms = Platform.public.where.not(id: current_user.followed_platforms.pluck(:id)).minimum_followers_strict.order('RANDOM()').limit(12)
         end
         @last_projects = Project.indexable.last_public.limit(12)
       end
@@ -66,7 +106,7 @@ class PagesController < ApplicationController
     else
       @trending_projects = Project.indexable.magic_sort.for_thumb_display.limit 12
       @last_projects = Project.indexable.last_public.limit 12
-      @platforms = Platform.where(user_name: %w(spark delorean metawear tessel intel-edison wunderbar)).for_thumb_display.order(:full_name)
+      @platforms = Platform.public.minimum_followers_strict.order('RANDOM()').for_thumb_display.limit 12
       @lists = List.where(user_name: featured_lists).each_slice(3).to_a
 
       @typeahead_tags = List.public.order(:full_name).select{|p| p.projects_count >= 5 or p.followers_count >= 10 }.map do |p|

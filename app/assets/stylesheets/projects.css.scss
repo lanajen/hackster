@@ -291,6 +291,13 @@
   display: none;
 }
 
+.pe-error {
+  float: left;
+  padding: 10px 0;
+  display: none;
+  color: #E45454;
+  font-size: 0.9em;
+}
 .pe-save {
   display: none;
   position: fixed;
@@ -301,4 +308,14 @@
   background: white;
   border-top: 2px solid #ddd;
   padding: 20px 0;
+}
+
+#team {
+  .team-request {
+    display: block;
+    margin-bottom: 10px;
+    a {
+      @extend .btn-block;
+    }
+  }
 }

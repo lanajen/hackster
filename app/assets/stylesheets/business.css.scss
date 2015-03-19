@@ -1,0 +1,249 @@
+#pricing {
+  section {
+    padding: 150px 0;
+  }
+  .title {
+    text-align: center;
+    width: 800px;
+    margin: 0 auto;
+    h2 {
+      margin-top: 0;
+      font-size: 3em;
+      font-weight: 200;
+    }
+    p {
+      width: 600px;
+      margin: 0 auto;
+    }
+  }
+  .section-one {
+    background: #208edb;
+    color: #fff;
+  }
+
+  .section-two {
+    padding: 200px 0;
+    color: #fff;
+    @include background-cover;
+    background-image: asset-url('manhattan.jpg');
+    .split-left {
+      float: left;
+      width: 50%;
+      text-align: right;
+      padding-right: 40px;
+    }
+    .split-right {
+      border-left: 1px solid rgba(255,255,255,0.5);
+      padding-left: 30px;
+      float: left;
+      width: 50%;
+      text-align: left;
+    }
+    p {
+      margin: 0 0 10px;
+      width: auto;
+    }
+  }
+
+  .section-pricing {
+    color: #aaaaac;
+    background: #fff;
+    h2 {
+      color: #000000;
+      &.subsection-title {
+        padding-bottom: 5px;
+        border-bottom: 4px solid #208edb;
+        margin-left: -10px;
+        margin-right: -10px;
+        font-size: 1.3em;
+        text-transform: uppercase;
+        color: #111;
+      }
+    }
+  }
+  .plans {
+    // margin-top: 100px;
+    margin-left: -5px;
+    margin-right: -5px;
+  }
+  .plan {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  .plan-top {
+    background: #eeedf2;
+    border-bottom: 1px solid #fff;
+    padding: 30px 20px 20px;
+    h3 {
+      margin-top: 0;
+      color: #000;
+      font-size: 1.2em;
+      font-weight: 500;
+    }
+    p {
+      color: #aaaaac;
+      margin: 0;
+    }
+  }
+  .plan-middle {
+    color: #000;
+    background: #eeedf2;
+    padding: 15px 20px;
+    strong {
+      font-weight: 600;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      li {
+        margin-bottom: 7px;
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+  .plan-bottom {
+    font-weight: bold;
+    text-align: center;
+    color: #fff;
+    @extend .clearfix;
+  }
+  .plan-price {
+    background: #000;
+    text-transform: uppercase;
+    width: 33.333333333%;
+    float: left;
+    padding: 15px 0;
+    .monthly {
+      vertical-align: super;
+      font-size: 10px;
+    }
+  }
+  .plan-more {
+    background: #208edb;
+    width: 66.666666667%;
+    float: left;
+    padding: 15px 0;
+    color: #fff;
+    &:hover {
+      text-decoration: none;
+      background: #1C7DC2;
+    }
+  }
+
+
+  .section-packages {
+    padding: 100px 0;
+    background: #333;
+    color: #fff;
+    border-bottom: 1px solid #666;
+  }
+  .packages {
+    // margin-top: 100px;
+    margin-left: -5px;
+    margin-right: -5px;
+  }
+  .package {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  .package-top {
+    background: #eeedf2;
+    padding: 30px 20px 40px;
+    h3 {
+      margin-top: 0;
+      color: #000;
+      font-size: 1.2em;
+      font-weight: 500;
+    }
+    p {
+      color: #aaaaac;
+      margin: 0;
+    }
+  }
+  .package-bottom {
+    font-weight: bold;
+    text-align: center;
+    color: #fff;
+    @extend .clearfix;
+  }
+  .package-price {
+    text-transform: uppercase;
+    width: 33.333333333%;
+    float: left;
+    padding: 15px 0;
+  }
+  .package-more {
+    width: 66.666666667%;
+    float: left;
+    padding: 15px 0;
+    color: #fff;
+    &:hover {
+      text-decoration: none;
+      background: #1C7DC2;
+    }
+  }
+  .package-one {
+    .package-price {
+      background: #0f9b76;
+    }
+    .package-more {
+      background: #20daa8;
+      &:hover {
+        background: #1DC799;
+      }
+    }
+  }
+  .package-two {
+    .package-price {
+      background: #a73f1a;
+    }
+    .package-more {
+      background: #e66639;
+      &:hover {
+        background: #C2552F;
+      }
+    }
+  }
+  .package-three {
+    .package-price {
+      background: #4a149e;
+    }
+    .package-more {
+      background: #7325eb;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  #pricing {
+    .plan, .package {
+      margin-bottom: 20px;
+    }
+  }
+}
+@media (min-width: 768px) {
+  #pricing {
+    .plan-top {
+      min-height: 160px;
+    }
+    .plan-middle {
+      min-height: 400px;
+    }
+  }
+}
+@media (max-width: 992px) {
+  #pricing {
+    .packages {
+      margin-top: 50px;
+    }
+  }
+}
+@media (min-width: 992px) {
+  #pricing {
+    .package-top {
+      min-height: 300px;
+    }
+  }
+}

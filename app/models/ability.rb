@@ -108,7 +108,7 @@ class Ability
     end
 
     can :join_team, Project do |project|
-      project.event and project.event.in_the_future? and @user.is_member? project.event
+      project.event.present? and @user.is_member? project.event
     end
 
     can :read_members, Community do |community|

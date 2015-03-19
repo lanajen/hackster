@@ -92,6 +92,7 @@
             .col-md-8.col-md-offset-4 -or-
             = f.input :sponsor_name
             = f.input :sponsor_link
+            = f.input :custom_css, as: :text
             = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Logo', image_link: @challenge.avatar.try(:file_url), help_block: "In case the challenge isn't tied to a platform.", attribute_type: 'avatar', image_version: :big, model: 'challenge' }
 
       .panel.panel-default
@@ -177,7 +178,7 @@
 
       tinyMCE.init({
         selector: 'textarea.text-editor',
-        toolbar: "undo redo | bold italic underline | link unlink | bullist numlist | image",
+        toolbar: "undo redo | bold italic underline | alignleft aligncenter alignright | link unlink | bullist numlist | image",
         menubar: false,
         plugins: 'link paste image',
         statusbar: false

@@ -22,9 +22,10 @@ HackerIo::Application.routes.draw do
     # get 'finish_and_redirect' => 'split#finish_and_redirect'
     # get 'validate_step' => 'split#validate_step'
 
-    get 'experts', to: redirect('/build')
-    get 'build' => 'expert_requests#new'
-    resources :expert_requests, only: [:create]
+    # get 'experts', to: redirect('/build')
+    # get 'build' => 'expert_requests#new'
+    # resources :expert_requests, only: [:create]
+    post 'info_requests' => 'pages#create_info_request'
 
     post 'pusher/auth' => 'users/pusher_authentications#create'
 
@@ -133,6 +134,7 @@ HackerIo::Application.routes.draw do
     end
 
     resources :platforms, except: [:show] do
+      get ':tag' => 'platforms#index', on: :collection, as: :tag
       resources :projects, only: [] do
         post 'feature' => 'platforms#feature_project'#, as: :platform_feature_project
         delete 'feature' => 'platforms#unfeature_project'
@@ -189,6 +191,7 @@ HackerIo::Application.routes.draw do
         get 'organizers' => 'events#organizers'
         get 'embed' => 'events#embed'
         get 'schedule/edit' => 'events#edit_schedule'
+        get 'admin/participants' => 'events#participants_list', as: :participants_list
       end
     end
     # end groups
@@ -262,12 +265,20 @@ HackerIo::Application.routes.draw do
     get 'hweekend', to: redirect('/hardwareweekend')
     get 'roadshow', to: redirect('/hardwareweekend')
     get 'seattle', to: redirect('/hackathons/hardware-weekend/seattle')
+    get 'portland', to: redirect('/hackathons/hardware-weekend/portland')
+    get 'sf', to: redirect('/hackathons/hardware-weekend/san-francisco')
+    get 'la', to: redirect('/hackathons/hardware-weekend/los-angeles')
+    get 'phoenix', to: redirect('/hackathons/hardware-weekend/phoenix')
+    get 'louisville', to: redirect('/hackathons/hardware-weekend/louisville')
+    get 'dallas', to: redirect('/hackathons/hardware-weekend/dallas')
+    get 'nyc', to: redirect('/hackathons/hardware-weekend/new-york-city')
+    get 'boston', to: redirect('/hackathons/hardware-weekend/boston')
 
     get 'tinyduino', to: redirect('/tinycircuits')
 
     get 'home' => 'pages#home'
     get 'about' => 'pages#about'
-    get 'business' => 'pages#pricing'
+    get 'business' => 'pages#business'
     # get 'help' => 'pages#help'
     get 'achievements' => 'pages#achievements'
     get 'home', to: redirect('/')

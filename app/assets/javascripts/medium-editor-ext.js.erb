@@ -383,6 +383,15 @@ $(function() {
       _.saveModel();
     },
 
+    forceSaveModel: function(successCallback, failCallback, formData) {
+      var _ = this;
+
+      var tmpSaveMode = _.saveMode;
+      _.saveMode = 'auto';
+      _.saveModel();
+      _.saveMode = tmpSaveMode;
+    },
+
     saveModel: function(successCallback, failCallback, formData) {
       var _ = this;
       successCallback = successCallback || function(){};
@@ -402,6 +411,9 @@ $(function() {
       //   createInputFor('project[widgets_attributes]' + key, val, form);
       // });
       // var formData = new FormData(form[0]);
+
+      console.log('saving...');
+      console.log('mode: ' + _.saveMode);
 
       if (_.saveMode == 'auto') {
         _.showLoadingBar();

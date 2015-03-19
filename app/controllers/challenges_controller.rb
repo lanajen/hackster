@@ -1,12 +1,17 @@
 class ChallengesController < ApplicationController
   before_filter :authenticate_user!, only: [:edit, :update, :update_workflow]
-  before_filter :load_challenge, except: [:edit, :update_workflow]
+  before_filter :load_challenge, except: [:index, :edit, :update_workflow]
   before_filter :load_platform, only: [:show, :brief, :projects]
   before_filter :load_and_authorize_challenge, only: [:enter, :update_workflow]
   before_filter :set_challenge_entrant, only: [:show, :brief, :projects]
   before_filter :load_user_projects, only: [:show, :brief, :projects]
-  load_and_authorize_resource except: [:show, :brief, :projects, :update]
+  load_and_authorize_resource except: [:index, :show, :brief, :projects, :update]
   layout :set_layout
+
+  def index
+    title 'Hardware challenges'
+    meta_desc "Create the best hardware hacks and win awesome prizes!"
+  end
 
   def show
     authorize! :read, @challenge

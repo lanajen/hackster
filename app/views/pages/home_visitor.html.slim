@@ -9,8 +9,8 @@
   - cache ['home-visitor', user_signed_in?, returning_user?], tag: ['home', 'home-visitor'], expires_in: 1.hour do
     section#home-banner
       .home-slide#hello-hackster
-        - if Time.now < DateTime.parse('2015-02-22 20:00 -0800')
-          = link_to 'Hardware Weekend Seattle', '/hackathons/hardware-weekend/seattle', class: 'btn btn-warning btn-sm btn-over'
+        / - if Time.now < DateTime.parse('2015-03-22 20:00 -0800')
+          = link_to 'Hardware Weekend Los Angeles', '/la', class: 'btn btn-warning btn-sm btn-over'
         .container.text-center
           h1 Hackster is the place where hardware gets created.
           .hack-selector-container
@@ -55,6 +55,37 @@
           ' Want fresh news, projects and free stuff in your inbox once a week?
         .col-md-4.col-md-offset-1
           .pull-right-desktop= render 'shared/mailchimp_form'
+
+    section#trending-projects.showcase-section
+      .container
+        .showcase-section-header.clearfix
+          h4 Participate in challenges and win prizes
+
+        .row
+          .col-sm-6.category-row
+            .category-col
+              .thumb.category-thumb
+                .thumb-image.has-link-overlay style="background-image:url('https://halckemy.s3.amazonaws.com/uploads/cover_image/file/36555/cover_wide_HeroImage4Cropped2.png')"
+                  = link_to '', '/challenges/hardware-home', class: 'link-overlay'
+                  .thumb-image-inner
+                    h4
+                      = link_to 'Give Your Hardware a Home', '/challenges/hardware-home'
+                      br
+                      a.small sponsored by Autodesk
+                    p
+                      strong Win a Type A Series 1 3D Printer
+          .col-sm-6.category-row
+            .category-col
+              .thumb.category-thumb
+                .thumb-image.has-link-overlay style="background-image:url('https://halckemy.s3.amazonaws.com/uploads/cover_image/file/36527/cover_wide_blog_techniczny_microsoft_azure_web_jobs.png')"
+                  = link_to '', '/challenges/microsoft-azure', class: 'link-overlay'
+                  .thumb-image-inner
+                    h4
+                      = link_to 'Microsoft Azure Challenge', '/challenges/microsoft-azure'
+                      br
+                      a.small sponsored by Microsoft
+                    p
+                      strong Win $5,000
 
     section#trending-projects.showcase-section
       .container
@@ -131,4 +162,4 @@
       .container.text-center
         h1 Ready to start hacking?
         p Learn, share and connect to build better hardware.
-        p= link_to 'Join the Hackster community', new_user_registration_path, class: 'btn btn-primary btn-sm'
+        p= link_to 'Join the Hackster community', new_user_registration_path(source: 'home_bottom'), class: 'btn btn-primary btn-sm'

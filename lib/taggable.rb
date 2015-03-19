@@ -18,7 +18,7 @@ module Taggable
           end
           self.send :define_method, "#{tag_type}_array=" do |val|
             eval "
-              self.#{tag_type}_string = val.join(',')
+              self.#{tag_type}_string = val.select{|v| v.present?}.join(',')
             "
           end
           self.send :define_method, "#{tag_type}_string_from_tags" do

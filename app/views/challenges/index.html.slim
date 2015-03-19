@@ -1,0 +1,44 @@
+= content_for :no_container do
+  - cache ['challenge-index', params[:sort]], tag: ['challenge-index'], expires_in: 24.hours do
+    .container
+      #content
+        .content
+          .row
+            .col-xs-12
+              h1
+                | Take part in challenges
+              p Show us what you're made of by entering our sponsored challenges and take the chance to win awesome prizes!
+              hr
+
+          .row
+            .col-sm-6.category-row
+              .category-col
+                .thumb.category-thumb.challenge-thumb
+                  .thumb-image.has-link-overlay style="background-image:url('https://halckemy.s3.amazonaws.com/uploads/cover_image/file/36555/cover_wide_HeroImage4Cropped2.png')"
+                    = link_to '', '/challenges/hardware-home', class: 'link-overlay'
+                    .thumb-image-inner
+                      h4
+                        = link_to 'Give Your Hardware a Home', '/challenges/hardware-home'
+                        br
+                        a.small sponsored by Autodesk
+                      p
+                        strong Win a Type A Series 1 3D Printer
+
+            .col-sm-6.category-row
+              .category-col
+                .thumb.category-thumb.challenge-thumb
+                  .thumb-image.has-link-overlay style="background-image:url('https://halckemy.s3.amazonaws.com/uploads/cover_image/file/36527/cover_wide_blog_techniczny_microsoft_azure_web_jobs.png')"
+                    = link_to '', '/challenges/microsoft-azure', class: 'link-overlay'
+                    .thumb-image-inner
+                      h4
+                        = link_to 'Microsoft Azure Challenge', '/challenges/microsoft-azure'
+                        br
+                        a.small sponsored by Microsoft
+                      p
+                        strong Win $5,000
+
+    #bottom-bar
+      .container.text-center
+        p
+          ' Want to launch your own challenge?
+          = link_to 'Contact us', 'mailto:challenges@hackster.io?subject=Launch%20a%20challenge', class: 'btn btn-primary'

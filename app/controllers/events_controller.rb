@@ -1,5 +1,5 @@
 class EventsController < ApplicationController
-  before_filter :authenticate_user!, only: [:new, :create, :edit, :update]
+  before_filter :authenticate_user!, only: [:new, :create, :edit, :update, :participants_list]
   before_filter :load_event, except: [:new, :create]
   before_filter :load_hackathon, only: [:new, :create]
   layout 'group_shared', except: [:embed, :new, :create, :update]
@@ -17,6 +17,14 @@ class EventsController < ApplicationController
     @group = @event = EventDecorator.decorate(@event)
 
     render "groups/events/info"
+  end
+
+  def participants_list
+    authorize! :manage, @event
+
+    @projects = @event.project_collections.visible.includes(:project).visible.merge(Project.for_thumb_display_in_collection.order('projects.respects_count DESC')).paginate(page: safe_page_params)
+
+    render "groups/events/participants_list"
   end
 
   def projects

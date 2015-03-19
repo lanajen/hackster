@@ -16,11 +16,14 @@
               ' This project is part of
               ==> link_to @project.event.name, @project.event
               - if can? :request_access, @project.team
-                - if user_signed_in? and member = current_user.is_team_member?(@project)
-                  - if member.request_pending?
-                    span.label.label-default Request to join team pending
-                - else
-                  = link_to 'I want to join!', group_members_path(@project.team), class: 'btn btn-sm btn-warning', data: { method: :post }, id: 'join-button'
+                span.team-request
+                  - if user_signed_in? and member = current_user.is_team_member?(@project)
+                    - if member.request_pending?
+                      span.label.label-default Request to join team pending
+                  - else
+                    = link_to 'I want to join the team!', group_members_path(@project.team), class: 'btn btn-sm btn-warning', data: { method: :post }, id: 'join-button'
+                javascript:
+                  $(function(){ $('.team-request').insertAfter('#team h4'); });
 
           - cache [@project, 'teaser'], tag: ["project-#{@project.id}-teaser"], expires_in: 6.hours do
             - if ProjectCollection.assignment_or_event_for_project?(@project.id)
@@ -126,7 +129,7 @@
                     - embed = Embed.new widget_id: widget_id
                     = render partial: 'api/embeds/embed', locals: { embed: embed }
 
-            - if (@project.build_logs_count > 0 and !@project.private_logs) or @can_edit
+            - if (@project.build_logs_count > 0 and !@project.private_logs)
               section#logs.section-container.section-collapsible
                 h2.section-title
                   a.title.title-toggle href=''
@@ -160,7 +163,7 @@
                   - elsif @project.build_logs_count > 1
                     = link_to 'Read previous logs', project_logs_path, class: 'btn btn-default btn-sm btn-block'
 
-            - if (@project.issues_count > 0 and !@project.private_issues) or @can_edit
+            - if (@project.issues_count > 0 and !@project.private_issues)
               section#issues.section-container.section-collapsible
                 h2.section-title
                   a.title.title-toggle href=''
@@ -337,7 +340,7 @@
                 - if user_signed_in?
                   = link_to 'This is mine', claim_project_path(@project), data: { method: :post, confirm: "Are you really the author of this project? Note that we'll have to approve it!" }, class: 'btn btn-primary btn-sm'
                 - else
-                  = link_to 'This is mine', new_user_registration_path(reason: 'claim', m: 'project', id: @project.id), class: 'btn btn-primary btn-sm'
+                  = link_to 'This is mine', new_user_registration_path(reason: 'claim', m: 'project', id: @project.id, source: 'claim'), class: 'btn btn-primary btn-sm'
 
               - if poster = @project.team.try(:active_members).try(:includes, :user).try(:first).try(:user)
                 section.section-thumbs
@@ -345,7 +348,7 @@
                   .row= render partial: 'users/user_thumb_mini', locals: { user: poster }
 
             - else
-              section.section-thumbs
+              section.section-thumbs#team
                 h4
                   - if @project.project.team.full_name.present?
                     | Team #{@project.team.full_name}
@@ -450,7 +453,7 @@
                         li
                           a.smooth-scroll href="#components" data-target="#components"
                             | Components
-                      - if (@project.build_logs_count > 0 and !@project.private_logs) or can? :edit, @project
+                      - if (@project.build_logs_count > 0 and !@project.private_logs)
                         li
                           a.smooth-scroll href="#logs"  data-target="#logs"
                             | Build Logs
@@ -458,7 +461,7 @@
                               | (
                               = @project.build_logs_count
                               | )
-                      - if (@project.issues_count > 0 and !@project.private_issues) or can? :edit, @project
+                      - if (@project.issues_count > 0 and !@project.private_issues)
                         li
                           a.smooth-scroll href="#issues"  data-target="#issues"
                             | Issues
