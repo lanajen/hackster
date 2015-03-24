@@ -20,6 +20,10 @@
             input.form-control  type='text' value="http://#{APP_CONFIG['full_host']}/projects/#{@project.id}?auth_token=#{@project.security_token}" onclick='this.select();' style='color: #666;background:#ddd'
             p.help-block Use this link if you want to share your project while keeping it private.
 
+      = f.input :new_slug, label: 'Project URL', wrapper: :addon do
+        span.input-group-addon #{site_domain}/#{@project.user_name_for_url.truncate(10)}/
+        = f.input_field :new_slug
+
       = f.input :start_date, order: [:year, :month, :day], label: 'Date', hint: 'When did this project come to life?' do
         .row
           .col-md-6
