@@ -23,6 +23,7 @@ class User < ActiveRecord::Base
     'follow_list_activity' => 'Activity for a list I follow',
     'new_badge' => 'I receive a new badge',
     'new_message' => 'I receive a new private message',
+    'project_approved' => 'My project has been approved',
   }
   CATEGORIES = %w()
   USER_NAME_WORDS_LIST1 = %w(acid ada agent alien chell colossus crash cyborg doc ender enigma hal isambard jarvis kaneda leela morpheus neo nikola oracle phantom radio silicon sim starbuck straylight synergy tank tetsuo trinity zero)

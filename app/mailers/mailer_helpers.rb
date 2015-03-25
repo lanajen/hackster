@@ -46,7 +46,7 @@ module MailerHelpers
       end
     end
 
-    # raise premailer.to_inline_css.to_s
+    raise premailer.to_inline_css.to_s
 
     output_email = mail(headers.merge(default_headers)) do |format|
       format.text { render text: premailer.to_plain_text }

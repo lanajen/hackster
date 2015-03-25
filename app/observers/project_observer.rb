@@ -13,6 +13,11 @@ class ProjectObserver < ActiveRecord::Observer
         part.update_counters only: [:projects]
       end
     end
+
+    if record.approved_changed and record.approved and record.made_public_at
+      BaseMailer.enqueue_email 'project_approved_notification',
+        { context_type: :project, context_id: record.id }
+    end
   end
 
   def after_destroy record
@@ -64,9 +69,14 @@ class ProjectObserver < ActiveRecord::Observer
     if record.approved_changed?
       if record.approved == false
         record.hide = true
-      elsif record.approved == true and record.made_public_at.nil?
-        record.post_new_tweet! unless record.hidden? or Rails.env != 'production'
-        record.made_public_at = Time.now
+      elsif record.approved == true
+        record.approved_changed = true
+        if record.made_public_at.nil?
+          record.post_new_tweet! unless record.hidden? or Rails.env != 'production'
+          record.made_public_at = Time.now
+        elsif record.made_public_at > Time.now
+          record.post_new_tweet_at! record.made_public_at unless record.hidden? or Rails.env != 'production'
+        end
       end
     end
 

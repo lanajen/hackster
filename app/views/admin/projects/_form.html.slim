@@ -15,6 +15,23 @@
         = f.input :external, inline_label: 'Is this project hosted on another site?', label: false
         = f.input :approved, inline_label: 'Is this project approved to show on the site?', label: false
         = f.input :locked, inline_label: 'Should this project be locked for changes?', label: false, as: :boolean
+        = f.input :made_public_at, order: [:year, :month, :day], label: 'Approve project on', hint: 'Leave empty to approve now' do
+          .row
+            .col-md-2
+              = select_day(@project.made_public_at, { prompt: '--Day--' }, { class: 'form-control', name: 'project[made_public_at(3i)]' })
+            .col-md-2
+              = select_month(@project.made_public_at, { prompt: '--Month--' }, { class: 'form-control', name: 'project[made_public_at(2i)]' })
+            .col-md-2
+              = select_year(@project.made_public_at, { prompt: '--Year--', start_year: Date.today.year, end_year: Date.today.year + 1 }, { class: 'form-control', name: 'project[made_public_at(1i)]' })
+            .col-md-2
+              = select_hour(@project.made_public_at, { prompt: '--Hours--' }, { class: 'form-control', name: 'project[made_public_at(4i)]' })
+            .col-md-2
+              = select_minute(@project.made_public_at, { prompt: '--Minutes--' }, { class: 'form-control', name: 'project[made_public_at(5i)]' })
+            .col-md-2
+              = select_second(@project.made_public_at, { prompt: '--Seconds--' }, { class: 'form-control', name: 'project[made_public_at(6i)]' })
+
+        - if @project.assignment_submitted_at.present?
+          = f.input :assignment_submitted_at
 
         - unless @project.external
           = f.input :slug, label: 'URL', wrapper: :addon do

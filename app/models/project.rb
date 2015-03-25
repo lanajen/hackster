@@ -77,8 +77,9 @@ class Project < ActiveRecord::Base
     :approved, :open_source, :buy_link, :private_logs, :private_issues,
     :hacker_space_id, :locked, :mark_as_idea, :event_id, :assignment_id,
     :community_ids, :new_group_id, :guest_twitter_handle, :celery_id,
-    :team_attributes, :story
-  attr_accessor :current, :private_changed, :needs_platform_refresh
+    :team_attributes, :story, :made_public_at
+  attr_accessor :current, :private_changed, :needs_platform_refresh,
+    :approved_changed
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
     :widgets, :cover_image, :permissions, :slug_histories, :team,
     allow_destroy: true
@@ -203,7 +204,7 @@ class Project < ActiveRecord::Base
   end
 
   def self.indexable
-    live.where(approved: true, hide: false)
+    live.where(approved: true, hide: false).where("projects.made_public_at < ?", Time.now)
   end
 
   def self.indexable_and_external
@@ -535,9 +536,18 @@ class Project < ActiveRecord::Base
   end
 
   def post_new_tweet!
-    prepend = "New project#{' idea' if is_idea?}: "  # 13-18 characters
-    message = to_tweet(prepend)
+    message = prepare_tweet
     TwitterQueue.perform_async 'throttle_update', message
+  end
+
+  def post_new_tweet_at! time
+    message = prepare_tweet
+    TwitterQueue.perform_at time, 'update', message
+  end
+
+  def prepare_tweet
+    prepend = "New project#{' idea' if is_idea?}: "  # 13-18 characters
+    to_tweet(prepend)
   end
 
   def to_tweet prepend='', append=''
