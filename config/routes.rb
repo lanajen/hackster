@@ -52,6 +52,7 @@ HackerIo::Application.routes.draw do
       resources :challenges, except: [:show]
       resources :blog_posts, except: [:show]
       resources :groups, except: [:show]
+      resources :invitations, only: [:new, :create]
       resources :parts, except: [:show] do
         get 'duplicates' => 'parts#duplicates', as: 'duplicates', on: :collection
         get 'merge/new' => 'parts#merge_new', as: 'merge_new', on: :collection

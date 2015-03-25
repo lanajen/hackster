@@ -109,7 +109,7 @@ class User < ActiveRecord::Base
       user.validate :email_matches_confirmation
       user.validate :used_valid_invite_code?
   end
-  validate :email_is_unique_for_registered_users, if: :being_invited?
+  # validate :email_is_unique_for_registered_users, if: :being_invited?
   validate :website_format_is_valid
   validate :user_name_is_unique
 
