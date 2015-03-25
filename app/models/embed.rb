@@ -5,7 +5,7 @@ class Embed
     /bitbucket\.org\/([0-9a-zA-Z_\-]+\/[0-9a-zA-Z_\-]+)/ => :bitbucket,
     /codebender\.cc\/sketch:([0-9]+)/ => :codebender,
     /gist\.github\.com\/(?:[0-9a-zA-Z_\-]+\/)?([0-9a-zA-Z_\-]+)/ => :gist,
-    /github\.com\/(?:downloads\/)?([0-9a-zA-Z_\-]+\/[0-9a-zA-Z_\-]+)/ => :github,
+    /github\.com\/(?:downloads\/)?([0-9a-zA-Z_\-\.]+\/[0-9a-zA-Z_\-\.]+)/ => :github,
     /instagram\.com\/p\/([a-zA-Z\-0-9]+)/ => :instagram,
     /kickstarter\.com\/projects\/([0-9a-z\-]+\/[0-9a-z\-]+)/ => :kickstarter,
     /myhub\.autodesk360\.com\/([a-z0-9]+\/shares\/public\/[a-zA-Z0-9]+)/ => :autodesk360,

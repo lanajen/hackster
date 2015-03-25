@@ -39,7 +39,7 @@ class CodeWidget < Widget
     'autohotkey' => 'AutoHotKey',
     'batchfile' => 'BatchFile',
     'c9search' => 'C9Search',
-    'c_cpp' => 'C/C++',
+    'c_cpp' => 'C/C++ (incl. Arduino)',
     'cirru' => 'Cirru',
     'clojure' => 'Clojure',
     'cobol' => 'Cobol',
