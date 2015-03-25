@@ -28,6 +28,7 @@ module MailerHelpers
 
   def send_email type, opts={}
     @context[:devise_token] = opts['token']
+    @context[:personal_message] = opts['personal_message']
     subject = render template: "mailers/subjects/#{type}"
     body = render template: "mailers/bodies/#{type}.html", layout: 'email'
     premailer = Premailer.new(substitute_in(body), with_html_string: true,

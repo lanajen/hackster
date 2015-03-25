@@ -2,6 +2,10 @@
 
 <p>|inviter_name| has invited you to join Hackster.io, you can accept it through the link below.</p>
 
+<% if @context[:personal_message].present? %>
+  <p class="quote"><%= @context[:personal_message] %></p>
+<% end %>
+
 <p>|slogan|</p>
 
 <p><a href="|invitation_link|">Accept invitation</a></p>

@@ -81,7 +81,8 @@ class User < ActiveRecord::Base
   attr_accessor :email_confirmation, :skip_registration_confirmation,
     :friend_invite_id, :new_invitation, :invitation_code, :match_by,
     :logging_in_socially, :skip_password
-  attr_writer :override_devise_notification, :override_devise_model
+  attr_writer :override_devise_notification, :override_devise_model,
+    :invitation_message
   attr_accessible :email_confirmation, :password, :password_confirmation,
     :remember_me, :avatar_attributes, :projects_attributes,
     :websites_attributes, :invitation_token,
@@ -378,9 +379,15 @@ class User < ActiveRecord::Base
   end
 
   # allows overriding the invitation email template and the model that's sent to the mailer
-  def deliver_invitation_with model
-    self.override_devise_notification = "invitation_instructions_with_#{model.class.model_name.to_s.underscore}"
-    self.override_devise_model = model
+  # options: model, message
+  def deliver_invitation_with options={}
+    if model = options[:model]
+      self.override_devise_notification = "invitation_instructions_with_#{model.class.model_name.to_s.underscore}"
+      self.override_devise_model = model
+    end
+    if message = options[:personal_message]
+      self.invitation_message = message
+    end
     deliver_invitation
   end
 
@@ -703,6 +710,11 @@ class User < ActiveRecord::Base
   def send_devise_notification(notification, *args)
     notification = @override_devise_notification if @override_devise_notification.present?
     model = @override_devise_model || self
+    if args[1]
+      args[1][:personal_message] = @invitation_message
+    else
+      args[1] = { personal_message: @invitation_message }
+    end
     devise_mailer.send(notification, model, *args).deliver
   end
 
