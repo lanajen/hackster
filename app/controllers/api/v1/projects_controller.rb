@@ -2,7 +2,22 @@ class Api::V1::ProjectsController < Api::V1::BaseController
   # before_filter :public_api_methods, only: [:index, :show]
 
   def index
-    render json: Project.order(created_at: :desc).limit(10)
+
+    params[:sort] = (params[:sort].in?(Project::SORTING.keys) ? params[:sort] : 'trending')
+    by = (params[:by].in?(Project::FILTERS.keys) ? params[:by] : 'all')
+
+    projects = Project.indexable.for_thumb_display
+    if params[:sort]
+      projects = projects.send(Project::SORTING[params[:sort]])
+    end
+
+    if by and by.in? Project::FILTERS.keys
+      projects = projects.send(Project::FILTERS[by])
+    end
+
+    projects = projects.paginate(page: safe_page_params)
+
+    render json: projects
   end
 
   def show

@@ -327,7 +327,9 @@ HackerIo::Application.routes.draw do
       resources :parts, only: [:create, :destroy] do
         get :autocomplete, on: :collection
       end
-      resources :platforms, only: [:show]
+      resources :platforms, only: [] do
+        get ':user_name' => 'platforms#show', on: :collection
+      end
       resources :users, only: [] do
         get :autocomplete, on: :collection
       end

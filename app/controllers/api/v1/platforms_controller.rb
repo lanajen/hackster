@@ -35,6 +35,6 @@ class Api::V1::PlatformsController < Api::V1::BaseController
     end
 
     def load_platform
-      @platform = Platform.find params[:id]
+      @platform = Platform.find_by_user_name! params[:user_name]
     end
 end
