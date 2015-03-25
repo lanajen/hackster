@@ -111,7 +111,7 @@ class User < ActiveRecord::Base
   end
   # validate :email_is_unique_for_registered_users, if: :being_invited?
   validate :website_format_is_valid
-  validate :user_name_is_unique
+  validate :user_name_is_unique, unless: :being_invited?
 
   # before_validation :generate_password, if: proc{|u| u.skip_password }
   before_validation :ensure_website_protocol
