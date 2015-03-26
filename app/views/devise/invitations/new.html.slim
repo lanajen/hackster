@@ -18,6 +18,7 @@
           = f.error_notification
           = f.simple_fields_for :users do |f_user|
             = f_user.input :email, :label => false, :placeholder => 'Email'
+          = f.input :message, as: :text, input_html: { rows: 3 }, label: false, placeholder: 'Personal message'
           = f.submit "Spread happiness", class: 'btn btn-primary btn-block'
 
 .col-md-3.col-sm-4.pull-right

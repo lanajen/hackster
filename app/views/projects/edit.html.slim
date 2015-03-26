@@ -6,6 +6,9 @@
 
 .container
   .clearfix.text-center
+    - if current_user.is? :admin
+      = link_to 'Edit as admin', edit_admin_project_path(@project), class: 'btn btn-sm btn-warning'
+      hr
     ol.pe-nav
       li= link_to 'Basics', '#basics', id: 'basics-nav', class: 'active tab'
       li= link_to 'Team', '#team', id: 'team-nav', class: 'tab'

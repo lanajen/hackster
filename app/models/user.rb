@@ -23,6 +23,7 @@ class User < ActiveRecord::Base
     'follow_list_activity' => 'Activity for a list I follow',
     'new_badge' => 'I receive a new badge',
     'new_message' => 'I receive a new private message',
+    'project_approved' => 'My project has been approved',
   }
   CATEGORIES = %w()
   USER_NAME_WORDS_LIST1 = %w(acid ada agent alien chell colossus crash cyborg doc ender enigma hal isambard jarvis kaneda leela morpheus neo nikola oracle phantom radio silicon sim starbuck straylight synergy tank tetsuo trinity zero)
@@ -81,7 +82,8 @@ class User < ActiveRecord::Base
   attr_accessor :email_confirmation, :skip_registration_confirmation,
     :friend_invite_id, :new_invitation, :invitation_code, :match_by,
     :logging_in_socially, :skip_password
-  attr_writer :override_devise_notification, :override_devise_model
+  attr_writer :override_devise_notification, :override_devise_model,
+    :invitation_message
   attr_accessible :email_confirmation, :password, :password_confirmation,
     :remember_me, :avatar_attributes, :projects_attributes,
     :websites_attributes, :invitation_token,
@@ -109,9 +111,9 @@ class User < ActiveRecord::Base
       user.validate :email_matches_confirmation
       user.validate :used_valid_invite_code?
   end
-  validate :email_is_unique_for_registered_users, if: :being_invited?
+  # validate :email_is_unique_for_registered_users, if: :being_invited?
   validate :website_format_is_valid
-  validate :user_name_is_unique
+  validate :user_name_is_unique, unless: :being_invited?
 
   # before_validation :generate_password, if: proc{|u| u.skip_password }
   before_validation :ensure_website_protocol
@@ -378,9 +380,15 @@ class User < ActiveRecord::Base
   end
 
   # allows overriding the invitation email template and the model that's sent to the mailer
-  def deliver_invitation_with model
-    self.override_devise_notification = "invitation_instructions_with_#{model.class.model_name.to_s.underscore}"
-    self.override_devise_model = model
+  # options: model, message
+  def deliver_invitation_with options={}
+    if model = options[:model]
+      self.override_devise_notification = "invitation_instructions_with_#{model.class.model_name.to_s.underscore}"
+      self.override_devise_model = model
+    end
+    if message = options[:personal_message]
+      self.invitation_message = message
+    end
     deliver_invitation
   end
 
@@ -703,6 +711,11 @@ class User < ActiveRecord::Base
   def send_devise_notification(notification, *args)
     notification = @override_devise_notification if @override_devise_notification.present?
     model = @override_devise_model || self
+    if args[1]
+      args[1][:personal_message] = @invitation_message
+    else
+      args[1] = { personal_message: @invitation_message }
+    end
     devise_mailer.send(notification, model, *args).deliver
   end
 

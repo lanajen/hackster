@@ -30,7 +30,7 @@
           table#sortable.table.table-condensed
             thead
               th style='width:40%' User
-              / th Permission
+              th Permission
               th Contribution
               th Status
               th
@@ -46,7 +46,7 @@
                       td style='width:40%'
                         / # = f_member.association :user, collection: User.where('user_name IS NOT NULL').sort_by{|u| u.name }, label: false
                         = f_member.input :user_id, input_html: { class: 'select2' }, label: false, collection: [], prompt: 'Select a user (type in their name)'
-                    / = f_member.simple_fields_for :permission do |f_perm|
+                    = f_member.simple_fields_for :permission do |f_perm|
                       td= f_perm.input :action, collection: Permission::ACTIONS, label: false
                     td= f_member.input :mini_resume, as: :text, label: false
                     td

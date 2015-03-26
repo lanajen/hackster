@@ -15,7 +15,7 @@ formTpl += "<a href='' class='btn btn-link btn-close btn-sm' data-close='.remote
 formTpl += "</form>";
 
 form = $('form.accept-file-upload');
-$($(formTpl)).insertAfter(form);
+$($(formTpl)).appendTo('body');
 //$('.file_upload.<%= file_type %> input[name="authenticity_token"]').val($('input[name="authenticity_token"]', form).val());
 //$('.file_upload.<%= file_type %> input[name="file_type"]').val('<%= defined?(attribute_type) ? attribute_type : file_type %>');
 

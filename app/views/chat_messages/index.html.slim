@@ -44,8 +44,9 @@
                 li.date= l date, format: :long
               = render chat_message
         - else
-          p Chat is currently closed. Reach out to #{@group.name} if you want them to activate it!
+          ul.messages.list-unstyled
+            li Chat is currently closed. Reach out to #{@group.name} if you want them to activate it!
 
       - if @group.enable_chat
         = simple_form_for ChatMessage.new, url: chat_messages_path(@group.id), html: { data: { remote: true } } do |f|
-        = f.input :raw_body, label: false, input_html: { rows: 1, disabled: 'disabled', autofocus: true }, wrapper: false, placeholder: 'Type here, press Enter to send...'
+          = f.input :raw_body, label: false, input_html: { rows: 1, disabled: 'disabled', autofocus: true }, wrapper: false, placeholder: 'Type here, press Enter to send...'

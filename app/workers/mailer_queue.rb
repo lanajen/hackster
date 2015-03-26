@@ -17,6 +17,14 @@ class MailerQueue < BaseWorker
     GenericMailer.send_message(message).deliver!
   end
 
+  def send_invites emails, user_id=nil, message=nil
+    user = User.find_by_id user_id
+    f = FriendInvite.new emails: emails, message: message
+    f.extract_emails
+    f.filter_blank_and_init!
+    f.invite_all! user
+  end
+
   private
     def get_context_for context_type, context_id
       context = {}

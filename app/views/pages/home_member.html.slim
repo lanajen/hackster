@@ -7,7 +7,7 @@
   #home
     section#home-banner
       .home-slide#welcome-back
-        / # - if Time.now < DateTime.parse('2015-03-22 20:00 -0800')
+        - if Time.now < DateTime.parse('2015-03-22 20:00 -0800')
           = link_to 'Hardware Weekend Los Angeles', '/la', class: 'btn btn-warning btn-sm btn-over'
         .container
           h1 Welcome to your dashboard!
@@ -16,7 +16,7 @@
       section#intro.showcase-section
         .container
           p
-            | This place is all about you and what you care about. To make magic happen, start following platforms, hackers and lists you like.
+            | This page is all about you and what you care about. To make magic happen, start following platforms, hackers and lists you like.
           p
             small
               ' This is a new feature! Please let us know what you'd like to see by emailing us at

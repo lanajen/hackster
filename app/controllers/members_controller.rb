@@ -17,6 +17,7 @@ class MembersController < ApplicationController
     case params[:event]
     when 'approve'
       @member.update_attribute :approved_to_join, true
+      @member.permission.update_attribute :action, 'manage'
       flash[:notice] = "#{@member.user.name} is now a member of the #{group_name}."
     when 'reject'
       @member.update_attribute :approved_to_join, false

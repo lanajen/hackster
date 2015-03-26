@@ -52,6 +52,7 @@ HackerIo::Application.routes.draw do
       resources :challenges, except: [:show]
       resources :blog_posts, except: [:show]
       resources :groups, except: [:show]
+      resources :invitations, only: [:new, :create]
       resources :parts, except: [:show] do
         get 'duplicates' => 'parts#duplicates', as: 'duplicates', on: :collection
         get 'merge/new' => 'parts#merge_new', as: 'merge_new', on: :collection
@@ -326,7 +327,9 @@ HackerIo::Application.routes.draw do
       resources :parts, only: [:create, :destroy] do
         get :autocomplete, on: :collection
       end
-      resources :platforms, only: [:show]
+      resources :platforms, only: [] do
+        get ':user_name' => 'platforms#show', on: :collection
+      end
       resources :users, only: [] do
         get :autocomplete, on: :collection
       end
