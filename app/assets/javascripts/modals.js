@@ -1,7 +1,6 @@
 function openModal(id) {
   $(id).trigger('modal:opening');
   resizeModal(id);
-  $('body').addClass('modal-open');
   return false;
 }
 
@@ -15,6 +14,7 @@ function resizeModal(id) {
     .css('margin-left', -(p.outerWidth() / 2))
 
   m.fadeIn(200, function(){
+    $('body').addClass('modal-open');
     m.trigger('modal:open');
   });
 
