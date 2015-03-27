@@ -453,6 +453,10 @@
                         li
                           a.smooth-scroll href="#components" data-target="#components"
                             | Components
+                      - if @project.code_files.any?
+                        li
+                          a.smooth-scroll href="#code" data-target="#code"
+                            | Code
                       - if (@project.build_logs_count > 0 and !@project.private_logs)
                         li
                           a.smooth-scroll href="#logs"  data-target="#logs"
