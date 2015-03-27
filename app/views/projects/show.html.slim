@@ -129,15 +129,16 @@
                     - embed = Embed.new widget_id: widget_id
                     = render partial: 'api/embeds/embed', locals: { embed: embed }
 
-            section#code.section-container.section-collapsible
-              h2.section-title
-                a.title.title-toggle href=''
-                  ' Code
-                  i.fa.fa-chevron-down
-                  i.fa.fa-chevron-up
-              .section-content
-                - @project.code_files.each do |file|
-                  = render partial: 'api/embeds/code_file', locals: { file: file }
+            - if @project.code_files.any?
+              section#code.section-container.section-collapsible
+                h2.section-title
+                  a.title.title-toggle href=''
+                    ' Code
+                    i.fa.fa-chevron-down
+                    i.fa.fa-chevron-up
+                .section-content
+                  - @project.code_files.each do |file|
+                    = render partial: 'api/embeds/code_file', locals: { file: file }
 
             - if (@project.build_logs_count > 0 and !@project.private_logs)
               section#logs.section-container.section-collapsible
