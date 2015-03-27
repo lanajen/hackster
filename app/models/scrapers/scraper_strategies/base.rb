@@ -21,6 +21,7 @@ module ScraperStrategies
 
       @project = Project.new private: true
       @widgets = []
+      @code_entities = []
       @embedded_urls = {}
       Embed::LINK_REGEXP.values.each{|provider| @embedded_urls[provider.to_s] = [] }
 
@@ -53,6 +54,7 @@ module ScraperStrategies
     private
       def after_parse
         @widgets.each{|w| @project.widgets << w }
+        @code_entities.each{|c| @project.code_entities << c }
       end
 
       def before_parse
@@ -88,12 +90,15 @@ module ScraperStrategies
       end
 
       def extract_code_lines node
-        if node.name.in? %w(code pre)
+        out = if node.name.in? %w(code pre)
+          lang = node['data-lang']
           code = node.content.gsub(/<br ?\/?>/, "\r\n")
           code.lines.count <= 5 ? nil : code  # we leave snippets in place
         else
           node.css('.crayon-line, .line').map{|l| l.content }.join("\r\n")
         end
+
+        return out, lang
       end
 
       def extract_comments
@@ -259,14 +264,12 @@ module ScraperStrategies
 
       def parse_code base=@article
         extract_code_blocks(base).each do |node|
-          next unless code = extract_code_lines(node)
+          code, lang = extract_code_lines(node)
+          next unless code
 
-          widget = CodeWidget.new(raw_code: code, name: 'Code')
-          widget.widgetable_id = 0
-          widget.save
-          parent = find_parent node, base
-          parent.after "<div class='embed-frame' data-widget-id='#{widget.id}' data-type='widget'></div>"
-          @widgets << widget
+          file = CodeFile.new raw_code: code, name: 'Code', language: lang
+          file.project = @project
+          @code_entities << file
           node.remove  # remove so it's not added to text later
         end
       end
@@ -298,9 +301,16 @@ module ScraperStrategies
           base.css(el).each do |node|
             embed = Embed.new url: node[attr]
             if embed.provider
-              @embedded_urls[embed.provider_name] << embed.provider_id
-              parent = find_parent node, base, %w(li ol ul)
-              parent.after "<div class='embed-frame' data-url='#{embed.url}' data-type='url'></div>"
+              if embed.code_repo?
+                repo = CodeRepository.new repository: embed.url, name: embed.provider_name.to_s.capitalize
+                # repo.project = @project
+                repo.comment = embed.url
+                @code_entities << repo
+              else
+                @embedded_urls[embed.provider_name] << embed.provider_id
+                parent = find_parent node, base, %w(li ol ul)
+                parent.after "<div class='embed-frame' data-url='#{embed.url}' data-type='url'></div>"
+              end
             end
             node.remove
           end
@@ -315,8 +325,15 @@ module ScraperStrategies
           if embed.provider
             unless embed.provider_id.in? @embedded_urls[embed.provider_name]
               @embedded_urls[embed.provider_name] << embed.provider_id
-              parent = find_parent node, base, %w(li ol ul)
-              parent.after "<div class='embed-frame' data-url='#{embed.url}' data-type='url'></div>"
+              if embed.code_repo?
+                repo = CodeRepository.new repository: embed.url, name: embed.provider_name.to_s.capitalize
+                # repo.project = @project
+                repo.comment = embed.url
+                @code_entities << repo
+              else
+                parent = find_parent node, base, %w(li ol ul)
+                parent.after "<div class='embed-frame' data-url='#{embed.url}' data-type='url'></div>"
+              end
             end
           end
         end
@@ -333,9 +350,6 @@ module ScraperStrategies
           if link.match /\/\/.+\/.+\.([a-z0-9]{,5})$/
             ext = File.extname(URI.parse(link).path)[1..-1]
             next if ext.in? %w(html htm gif jpg jpeg png bmp php aspx asp js css shtml md)
-            puts link.to_s
-            puts $1.to_s
-            puts '_________________________'
             next unless test_link(link)
             content = node.text
             title = (content != link) ? content : ''

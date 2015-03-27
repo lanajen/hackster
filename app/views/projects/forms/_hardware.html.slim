@@ -12,11 +12,15 @@
 
   .box
     .box-title
-      h3 The components
-      .subheading What are the components that you're using in this project?
+      h3 The hardware
+      .subheading What are the components that you're using in this project? How are they assembled?
     .box-content
       = f.error_notification
 
+      / .section-title
+      /   h4.title-toggle Components
       - @project.widgets.where(type: 'PartsWidget').first_or_create
       - @project.widgets.where(type: 'PartsWidget').each do |widget|
         = render partial: 'widgets/embeds/form/parts_widget', locals: { widget: widget, f: f }
+
+      / h4 schematics

@@ -44,6 +44,10 @@ class Embed
     provider
   end
 
+  def code_repo?
+    provider and provider_name.to_s.in? %w(bitbucket codebender gist github snip2code)
+  end
+
   def format
     @format || DEFAULT_FORMAT
   end

@@ -10,6 +10,6 @@ class CodeRepository < CodeEntity
       # raise 'yo'
       embed = Embed.new url: repository
       # raise embed.inspect
-      errors.add :repository, "is not recognized. Please insert the HTTP link of the repository." unless embed.provider and embed.provider_name.to_s.in? %(bitbucket codebender gist github snip2code)
+      errors.add :repository, "is not recognized. Please insert the HTTP link of the repository." unless embed.code_repo?
     end
 end

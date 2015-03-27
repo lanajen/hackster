@@ -33,7 +33,7 @@ module ScraperStrategies
       end
 
       def extract_code_lines node
-        node.content
+        return node.content, 'c_cpp'
       end
 
       def extract_title

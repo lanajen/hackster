@@ -5,7 +5,7 @@ require 'pygments'
 # require 'rubyzip'
 
 class CodeFile < CodeEntity
-    LANGUAGES = {
+  LANGUAGES = {
     'Assembly' => '',
     'C' => 'c',
     'C++' => 'cpp',
@@ -141,6 +141,12 @@ class CodeFile < CodeEntity
     'xquery' => 'XQuery',
     'yaml' => 'YAML',
   }
+
+  LANGUAGE_MATCHER = {
+    'Arduino' => 'c_cpp',
+    'c' => 'c_cpp',
+    'cpp' => 'c_cpp',
+  }
   BINARY_MESSAGE = "Binary file (no preview)"
   ERROR_MESSAGE = "Error opening file."
 
@@ -250,6 +256,17 @@ class CodeFile < CodeEntity
 
   def language
     read_attribute(:language) || 'text'
+  end
+
+  def language=(val)
+    if val.present?
+      unless val.in? ACE_LANGUAGES.keys
+        if val.in? LANGUAGE_MATCHER.keys
+          val = LANGUAGE_MATCHER[val]
+        end
+      end
+    end
+    write_attribute :language, val
   end
 
   private
