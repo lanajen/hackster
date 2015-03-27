@@ -1,0 +1,25 @@
+- if file.repository?
+  .code-repository
+    h5= file.name
+    - if file.comment.present?
+      .comment= file.comment
+    - embed = Embed.new(url: file.repository)
+    = render partial: "api/embeds/#{embed.provider_name}", locals: { embed: embed }
+- else
+  .code-widget
+    .button-content.clearfix
+      .pull-left
+        h5= file.name
+      .pull-right
+        / button.btn.btn-default.btn-md
+          ' Copy to clipboard
+          /  https://github.com/zeroclipboard/zeroclipboard-rails
+        - if document = file.document and document.file_url.present?
+          a.btn.btn-primary.btn-md href=document.file_url
+            ' Download
+
+    - if file.comment.present?
+      .comment= file.comment
+
+    .code-container
+      = raw file.formatted_code

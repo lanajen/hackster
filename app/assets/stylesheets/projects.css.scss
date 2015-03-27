@@ -319,3 +319,36 @@
     }
   }
 }
+
+#software {
+  table {
+    .actions {
+      visibility: hidden;
+    }
+    .fields:hover {
+      .actions {
+        visibility: visible;
+      }
+    }
+  }
+}
+
+.code-widget, .code-repository {
+  margin-bottom: 30px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid #ddd;
+  &:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+    margin-bottom: 0;
+  }
+  h5 {
+    font-weight: bold;
+    margin: 0 0 5px;
+  }
+  .comment {
+    font-size: 0.95em;
+    color: #999;
+    margin-bottom: 15px;
+  }
+}

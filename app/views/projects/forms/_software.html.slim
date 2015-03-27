@@ -6,13 +6,211 @@
 = content_for :head do
   = javascript_include_tag '//cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js', charset: "utf-8"
 
-= simple_nested_form_for @project, url: api_v1_project_path(@project), html: { data: { remote: true }, class: 'form-horizontal remote' }, wrapper: :bootstrap3_horizontal do |f|
+= simple_nested_form_for @project, url: api_v1_project_path(@project), html: { id: 'software-form', data: { remote: true }, class: 'form-horizontal remote sortable' }, wrapper: :bootstrap3_horizontal do |f|
 
   input type='hidden' name='panel' value='software'
+  input type='hidden' name='save' value='1'
 
   .box
     .box-title
       h3 The software
       .subheading What is the code that powers this project?
     .box-content
-      = f.error_notification
+      .btn-group
+        a.btn.btn-sm.btn-default.modal-open.code-new data-target='#code-editor-popup'
+          i.fa.fa-cloud-upload>
+          | Upload or paste code
+        a.btn.btn-sm.btn-default.modal-open.code-new data-target='#code-repository-popup'
+          i.fa.fa-link>
+          | Link existing repository
+
+      table.table#sortable
+        tbody
+          - @project.code_files.each do |file|
+            = f.simple_fields_for :code_files, file do |f_file|
+              tr.fields
+                / td
+                  i.fa.fa-bars.handle
+                td
+                  = f_file.input :id, as: :hidden, input_html: { 'data-field-type' => 'id' }
+                  = f_file.input :position, as: :hidden, input_html: { 'data-field-type' => 'position', class: 'position' }
+                  = f_file.input :name, as: :hidden, input_html: { 'data-field-type' => 'name' }
+                  = f_file.input :comment, as: :hidden, input_html: { 'data-field-type' => 'comment' }
+                  - if file.repository?
+                    = f_file.input :repository, as: :hidden, input_html: { 'data-field-type' => 'repository' }
+                  - else
+                    = f_file.input :raw_code, as: :hidden, input_html: { 'data-field-type' => 'raw_code' }
+                    = f_file.input :language, as: :hidden, input_html: { 'data-field-type' => 'language' }
+                  - if file.repository?
+                    i.fa.fa-link
+                  - else
+                    i.fa.fa-file-text-o
+                td
+                  .name= file.name
+                  - if file.repository?
+                    .repository.small.text-muted= file.repository
+                  - else
+                    .language.small.text-muted= file.human_language
+                  - if file.comment.present?
+                    em.comment.small.text-muted= file.comment
+                td
+                  .actions
+                    a.edit-code.btn.btn-sm.btn-link data-type=file.file_type href=''
+                      | Edit
+                    = f_file.link_to_remove 'Delete', class: 'btn btn-sm btn-link'
+
+
+= content_for :js do
+
+  #code-repository-popup.popup-overlay.modal-popup
+    .popup-overlay-bg
+    .popup-overlay-outer
+      .popup-overlay-inner.text-left
+        button.close data-target='#code-repository-popup' &times;
+        h4.text-center Link an existing repository
+
+        = simple_nested_form_for @project, url: api_v1_project_path(@project), html: {  id: 'code-repository-form', data: { remote: true, modal: '#code-repository-popup' }, class: 'remote' } do |f|
+          = f.simple_fields_for :code_files, @project.code_files.new do |f_code|
+            = f_code.input :id, as: :hidden, input_html: { 'data-field-type' => 'id', class: 'resetable' }
+            = f_code.input :name, input_html: { 'data-field-type' => 'name', class: 'resetable' }, label: 'Name'
+            = f_code.input :repository, label: 'Repository link', placeholder: 'Eg: https://github.com/fritzing/fritzing-app', hint: 'Supported: Bitbucket, Codebender, Gist, Github', input_html: { 'data-field-type' => 'repository', class: 'resetable' }
+            = f_code.input :comment, input_html: { 'data-field-type' => 'comment', class: 'resetable' }, placeholder: 'What does this file do?'
+
+          = f.submit 'Save changes', class: 'btn btn-primary'
+          a.close-btn.btn.btn-link data-target='#code-repository-popup' href='' Cancel
+
+  #code-editor-popup.popup-overlay.modal-popup data-width='800'
+    .popup-overlay-bg
+    .popup-overlay-outer
+      .popup-overlay-inner.text-left
+        button.close data-target='#code-editor-popup' &times;
+        h4.text-center Upload or paste a file
+
+        = simple_nested_form_for @project, url: api_v1_project_path(@project), html: { id: 'code-editor-form', data: { remote: true, modal: '#code-editor-popup' }, class: 'remote' } do |f|
+          = f.simple_fields_for :code_files, @project.code_files.new do |f_code|
+            = f_code.input :id, as: :hidden, input_html: { 'data-field-type' => 'id', class: 'resetable' }
+            = f_code.input :name, input_html: { 'data-field-type' => 'name', class: 'resetable' }, label: 'File name'
+            = f_code.input :language, collection: CodeFile::ACE_LANGUAGES.invert, input_html: { 'data-field-type' => 'language', class: 'resetable' }
+            = f_code.input :comment, input_html: { 'data-field-type' => 'comment', class: 'resetable' }, placeholder: 'What does this file do?'
+            = f_code.input :raw_code, as: :hidden, input_html: { 'data-field-type' => 'raw_code', class: 'resetable' }
+            .form-group
+              label.control-label Code
+              div style='margin-bottom:10px'
+                a.btn.btn-default.btn-xs.upload-code> Select code file
+                span.text-muted.small or paste code below
+              .code-upload-progress-container
+              .code-editor  id="code-editor-0" style='text-align:left !important;font-size:14px;'
+
+          = f.submit 'Save changes', class: 'btn btn-primary'
+          a.close-btn.btn.btn-link data-target='#code-editor-popup' href='' Cancel
+
+        form id='code-upload-form' action='/api/v1/code_files' method='post' enctype='multipart/form-data' style='display:none;'
+          input type="file" name="file"
+
+  javascript:
+
+    $(function(){
+      var cEditor = new ProjectCodeEditor('text', '0');
+      cEditor.activate();
+      window.cEditor = cEditor;
+
+      $('#code-editor-form, #code-repository-form').on('ajax:complete', function(e){
+        closeModal($(this).data('modal'));
+        pe.reload();
+      });
+
+      cEditor.ace.getSession().on('change', function(e){
+        $('#code-editor-form [data-field-type="raw_code"]').val(cEditor.ace.getValue());
+        resizeModal('#code-editor-popup');
+      });
+
+      $('#code-editor-popup').on('modal:opening', function(){
+        cEditor.ace.setValue($(this).find('[data-field-type="raw_code"]').val());
+        cEditor.ace.selection.clearSelection();
+        var lang = $(this).find('[data-field-type="language"]').val();
+        if (lang == '') lang = 'text';
+        cEditor.ace.getSession().setMode("ace/mode/" + lang);
+      });
+
+      $('#code-editor-popup').on('modal:open', function(){
+        cEditorUpdateHeight('#code-editor-0', cEditor.ace);
+      });
+
+      $('#code-editor-popup').on('change', '[data-field-type="language"]', function(e){
+        var lang = $(this).val();
+        if (lang == '') lang = 'text';
+        cEditor.ace.getSession().setMode("ace/mode/" + lang);
+      });
+
+      $('#code-editor-popup').on('click', '.upload-code', function(e){
+        e.preventDefault();
+
+        $('#code-upload-form input').click();
+      });
+
+      $('.pe-panel').on('click', '.code-new', function(e){
+        $($(this).data('target')).find('.resetable').val('');
+      });
+
+      $('.pe-panel').on('click', '.edit-code', function(e){
+        e.preventDefault();
+        var popup = $(this).data('type') == 'repository' ? '#code-repository-popup' : '#code-editor-popup';
+        var inputs = $(this).closest('.fields').find('input[type=hidden]');
+        inputs.each(function(i, el){
+          var input = $(popup).find('[data-field-type="' + $(el).data('field-type') + '"]');
+          input.val($(el).val());
+        });
+        openModal(popup);
+      });
+
+
+      $("#code-upload-form").fileupload({
+        dataType: 'json',
+        limitMultifileUploads: 1,
+        sequentialUploads: true,
+        limitConcurrentUploads: 1,
+
+        add: function(e, data) {
+          fileName = data.files[0].name;
+          ext = fileName.substr(fileName.lastIndexOf('.') + 1);
+          if($.inArray(ext, ['gif','png','jpg','jpeg']) != -1) {
+            $(".code-upload-progress-container").html("<p>Images are not allowed. You can only upload files that contain code.</p>");
+            return;
+          }
+          tpl = $('<p class="progress-legend">Uploading...</p><div class="progress progress-striped active"><div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%;">');
+          $(".code-upload-progress-container").html(tpl);
+          data.context = tpl;
+          data.submit();
+        },
+
+        fail: function(e, data){
+          data.context.fadeOut(200, function(){
+            $(this).remove();
+          });
+          $(".code-upload-progress-container").html('<p>Error uploading ' + data.files[0].name + '.</p>');
+          //showErrorBubble(data.files[0].name);
+        },
+
+        progress: function(e, data) {
+          progress = parseInt(data.loaded / data.total * 100, 10);
+          target = data.context.find('.progress-bar');
+          target.css('width', progress + '%');
+          if (progress == 100) {
+            target.addClass('progress-bar-success');
+          }
+        },
+
+        success: function(data) {
+          cEditor.ace.setValue(data.raw_code);
+          cEditor.ace.selection.clearSelection();
+          $('#code-editor-popup [data-field-type="name"]').val(data.name);
+          $('#code-editor-popup [data-field-type="language"]').val(data.language);
+        },
+
+        done: function(e, data){
+          data.context.fadeOut(200, function(){
+            $(this).remove();
+          });
+        }
+      });
+    });

@@ -45,38 +45,6 @@
 
 .code-widget {
   position: relative;
-  // a.more, a.less {
-  //   display: none;
-  //   position: absolute;
-  //   bottom: 0;
-  //   right: 0;
-  //   background: white;
-  //   padding: 4px 7px;
-  //   border: 1px solid #CCC;
-  //   @include font-size(11);
-  //   &:hover {
-  //     text-decoration: none;
-  //   }
-  // }
-  // &.collapsible {
-  //   a.less {
-  //     display: block;
-  //   }
-  //   &.collapsed {
-  //     .highlight {
-  //       pre {
-  //         max-height: 150px;
-  //         overflow: hidden;
-  //       }
-  //     }
-  //     a.more {
-  //       display: block;
-  //     }
-  //     a.less {
-  //       display: none;
-  //     }
-  //   }
-  // }
   pre {
     word-break: normal;
     word-wrap: normal;
@@ -90,7 +58,7 @@
     max-height: 600px;
     max-width: 100%;
     overflow: scroll;
-    margin-bottom: 20px;
+    margin-top: 20px;
   }
   // &.expanded {
     .highlight {
@@ -102,6 +70,7 @@
         border-left: 1px solid #222;
         padding: 9.5px 20px;
         counter-reset: linenumbers;
+        margin: 0;
         @include border-radius(0);
         & > span:before {
           font-size: .9em;

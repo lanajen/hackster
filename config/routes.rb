@@ -323,6 +323,7 @@ HackerIo::Application.routes.draw do
       # post 'embeds' => 'embeds#create'
       resources :announcements
       resources :build_logs
+      resources :code_files, only: [:create]
       resources :projects#, as: :api_projects
       resources :parts, only: [:create, :destroy] do
         get :autocomplete, on: :collection

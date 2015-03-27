@@ -131,114 +131,133 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
     $serializedForm = null;
     $formContent = {};
 
-    function serializeForm() {
-      $('.pe-panel:visible form.remote').find('input:not([type="checkbox"])').each(function(){
-        // be as specific as possible so that fields with the same name don't collide
-        $formContent['[name="' + $(this).attr('name') + '"][type="' + $(this).attr('type') + '"]'] = $(this).val();
-      });
-      $('.pe-panel:visible form.remote').find('textarea, select').each(function(){
-        $formContent['[name="' + $(this).attr('name') + '"]'] = $(this).val();
-      });
-
-      // handle checkboxes since they don't react to val() the same way
-      $('.pe-panel:visible form.remote').find('input[type="checkbox"]').each(function(){
-        $formContent['[name="' + $(this).attr('name') + '"][type="checkbox"][value="' + $(this).val() + '"]'] = $(this).prop('checked');
-      });
-
-      $serializedForm = $('.pe-panel:visible form.remote').serialize();
-    }
-
-    function unsavedChanges() {
-      return ($serializedForm != $('.pe-panel:visible form.remote').serialize());
-    }
-
-    function resizePeContainer() {
-      $('.pe-container').height($('.pe-panel:visible').outerHeight());
-      // console.log('resize!');
-    }
-
-    function discardChanges() {
-      if ($serializedForm != null) {
-        $.each($formContent, function(selector, val) {
-          var input = $('.pe-panel:visible form.remote').find(selector);
-          // handle checkboxes since they don't react to val() the same way
-          if (selector.indexOf('[type="checkbox"]') != -1) {
-            input.prop('checked', val);
-          } else {
-            input.val(val);
-
-            // for select2 inputs
-            if (input.length > 1) {
-              // because select2 automatically adds a hidden input
-              input.each(function(i, el){
-                if ($(el).is('select') && typeof($(el).data('select2')) != 'undefined') {
-                  $(el).trigger('change');
-                }
-              });
-            } else if (input.hasClass('select2')) {
-              input.trigger('change');
-            }
-          }
+    var pe = {
+      serializeForm: function() {
+        $('.pe-panel:visible form.remote').find('input:not([type="checkbox"])').each(function(){
+          // be as specific as possible so that fields with the same name don't collide
+          $formContent['[name="' + $(this).attr('name') + '"][type="' + $(this).attr('type') + '"]'] = $(this).val();
         });
-        $('.inserted').remove();
-        $('.fields.added').remove();
-        $('.fields.removed').show().removeClass('removed');
+        $('.pe-panel:visible form.remote').find('textarea, select').each(function(){
+          $formContent['[name="' + $(this).attr('name') + '"]'] = $(this).val();
+        });
 
-        serializeForm();
-      }
-    }
+        // handle checkboxes since they don't react to val() the same way
+        $('.pe-panel:visible form.remote').find('input[type="checkbox"]').each(function(){
+          $formContent['[name="' + $(this).attr('name') + '"][type="checkbox"][value="' + $(this).val() + '"]'] = $(this).prop('checked');
+        });
 
-    function showEditorTab(tab) {
-      // console.log("showing " + tab);
+        $serializedForm = $('.pe-panel:visible form.remote').serialize();
+      },
 
-      // discardChanges();
+      unsavedChanges: function() {
+        return ($serializedForm != $('.pe-panel:visible form.remote').serialize());
+      },
 
-      // hide the medium media bar
-      $('.medium-media-menu').hide().find('.media-menu-btns').removeClass('is-open');
-      // hide discard button if story
-      if (tab == '#story') {
-        $('.pe-discard').hide();
-      } else {
-        $('.pe-discard').show();
-      }
+      resizePeContainer: function() {
+        $('.pe-container').height($('.pe-panel:visible').outerHeight());
+        // console.log('resize!');
+      },
 
-      $('.pe-save').slideUp(200);
+      discardChanges: function() {
+        if ($serializedForm != null) {
+          $.each($formContent, function(selector, val) {
+            var input = $('.pe-panel:visible form.remote').find(selector);
+            // handle checkboxes since they don't react to val() the same way
+            if (selector.indexOf('[type="checkbox"]') != -1) {
+              input.prop('checked', val);
+            } else {
+              input.val(val);
 
-      $('.pe-nav a').removeClass('active');
-      $(tab + '-nav').addClass('active');
+              // for select2 inputs
+              if (input.length > 1) {
+                // because select2 automatically adds a hidden input
+                input.each(function(i, el){
+                  if ($(el).is('select') && typeof($(el).data('select2')) != 'undefined') {
+                    $(el).trigger('change');
+                  }
+                });
+              } else if (input.hasClass('select2')) {
+                input.trigger('change');
+              }
+            }
+          });
+          $('.inserted').remove();
+          $('.fields.added').remove();
+          $('.fields.removed').show().removeClass('removed');
 
-      var target = $(tab);
-      $('.pe-panel:visible').removeResize();
-      $('.pe-panel').hide();
+          this.serializeForm();
+        }
+      },
 
-      target.fadeIn(100, function(){
+      showEditorTab: function(tab) {
+        var _ = this;
+
+        // console.log("showing " + tab);
+
+        // discardChanges();
+
+        // hide the medium media bar
+        $('.medium-media-menu').hide().find('.media-menu-btns').removeClass('is-open');
+        // hide discard button if story
         if (tab == '#story') {
           $('.pe-discard').hide();
-          $.each(codeEditor, function(i, el) {
-            heightUpdateFunction("#code-editor-" + el.id, el.ace);
-          });
+        } else {
+          $('.pe-discard').show();
         }
-        if (tab == '#story') {
-          loadSlickSlider();
+
+        $('.pe-save').slideUp(200);
+
+        $('.pe-nav a').removeClass('active');
+        $(tab + '-nav').addClass('active');
+
+        var target = $(tab);
+        $('.pe-panel:visible').removeResize();
+        $('.pe-panel').hide();
+
+        target.fadeIn(100, function(){
+          if (tab == '#story') {
+            $('.pe-discard').hide();
+            $.each(codeEditor, function(i, el) {
+              heightUpdateFunction("#code-editor-" + el.id, el.ace);
+            });
+          }
+          if (tab == '#story') {
+            loadSlickSlider();
+          }
+          target.resize(function(){ _.resizePeContainer() });
+        });
+
+        _.serializeForm();
+
+        window.scroll(0, 0);  // so it doesn't scroll to the div
+      },
+
+      saveChanges: function() {
+        if ($('#story:visible').length) {
+          editor.forceSaveModel();
         }
-        target.resize(function(){ resizePeContainer() });
-      });
+        $('.pe-panel:visible form.remote').submit();
+      },
 
-      serializeForm();
-
-      window.scroll(0, 0);  // so it doesn't scroll to the div
+      reload: function() {
+        var form = $('.pe-panel:visible form.remote');
+        form.find('input[name=save]').val('0');
+        form.submit();
+      }
     }
 
-    $('.pe-panel:visible').resize(function(){ resizePeContainer() });
-    serializeForm();
+    window.pe = pe;
+
+    $('.pe-panel:visible').resize(function(){ pe.resizePeContainer() });
+    pe.serializeForm();
 
     $('.pe-nav').on('click', 'a.tab', function(e){
       if (window.location.hash == $(this).attr('href')) {
         e.preventDefault();
-      } else if (unsavedChanges()) {
+      } else if (pe.unsavedChanges()) {
         var c = confirm("There are unsaved changes\nAre you sure you want to move away?");
         if (c == true) {
-          discardChanges();
+          pe.discardChanges();
         } else {
           e.preventDefault();
         }
@@ -247,10 +266,10 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
 
     if (window.location.pathname.match(/\/projects\/[0-9]+\/edit/) != null) {
       if (hash = window.location.hash) {
-        showEditorTab(hash);
+        pe.showEditorTab(hash);
       }
       $(window).bind('hashchange', function() {
-        showEditorTab(window.location.hash);
+        pe.showEditorTab(window.location.hash);
       });
     }
 
@@ -268,18 +287,14 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
         $('.pe-error').show();
       })
       .on('ajax:success', 'form.remote', function(xhr, status){
-        serializeForm();
+        pe.serializeForm();
         $('.fields.added').removeClass('added');
         $('.fields.removed').remove();
       });
 
     $('.pe-submit').on('click', function(e){
       e.preventDefault();
-
-      if ($('#story:visible').length) {
-        editor.forceSaveModel();
-      }
-      $('.pe-panel:visible form.remote').submit();
+      pe.saveChanges();
     });
 
     $('.pe-panel').on('input change', 'form, input, textarea, select', function(e){
@@ -289,7 +304,7 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
     $('.pe-discard').on('click', function(e){
       e.preventDefault();
 
-      discardChanges();
+      pe.discardChanges();
       $('.pe-save').slideUp(200);
     });
 
@@ -304,7 +319,7 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
     });
 
     window.addEventListener("beforeunload", function (e) {
-      if (unsavedChanges()) {
+      if (pe.unsavedChanges()) {
         var message = "There are unsaved changes.";
 
         (e || window.event).returnValue = message;
@@ -315,6 +330,53 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
     loadSlickSlider();
   });
 })(jQuery, window, document);
+
+function ProjectCodeEditor(language, id) {
+  this.ace = null;
+  this.isActive = false;
+  this.language = language;
+  this.id = id;
+}
+
+ProjectCodeEditor.prototype.activate = function() {
+  this.ace = ace.edit("code-editor-"  + this.id);
+  this.ace.setTheme("ace/theme/idle_fingers");
+  this.ace.getSession().setMode("ace/mode/" + this.language);
+  this.ace.getSession().setUseSoftTabs(true);
+  this.ace.setShowPrintMargin(false);
+  this.ace.getSession().setTabSize(2);
+  this.ace.renderer.setPadding(10);
+  this.ace.renderer.setScrollMargin(10, 10, 0, 0);
+  this.ace.getSession().setUseWrapMode(true);
+
+  // Set initial size to match initial content
+  cEditorUpdateHeight("#code-editor-" + this.id, this.ace);
+
+  // Whenever a change happens inside the ACE editor, update
+  // the size again
+  var _ = this;
+  this.ace.getSession().on('change', function(e){
+    cEditorUpdateHeight("#code-editor-" + _.id, _.ace);
+  });
+
+  this.isActive = true;
+}
+
+function cEditorUpdateHeight(div, cEditor) {
+  // http://stackoverflow.com/questions/11584061/
+  var newHeight =
+    cEditor.getSession().getScreenLength()
+    * cEditor.renderer.lineHeight
+    + cEditor.renderer.scrollBar.getWidth()
+    + 20;  // padding
+
+  $(div).height(newHeight);
+  $(div).parent('.code-editor-container').height(newHeight);
+
+  // This call is required for the editor to fix all of
+  // its inner structure for adapting to a change in size
+  cEditor.resize();
+}
 
 function loadSlickSlider(){
   $('.image-gallery:visible:not(.slick-initialized)').slick({

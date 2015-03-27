@@ -14,6 +14,9 @@ body {
   &.nav-affixed {
     padding-top: 40px;
   }
+  &.modal-open {
+    overflow: hidden;
+  }
 }
 
 img {
@@ -994,6 +997,7 @@ a.hidden-link {
     position: relative;
     height: 100%;
     width: 100%;
+    overflow-y: scroll;
   }
   .popup-overlay-bg {
     position: absolute;
@@ -1005,6 +1009,7 @@ a.hidden-link {
   }
   .popup-overlay-inner {
     width: 600px;
+    margin-bottom: 20px;
     max-width: 90%;
     top: 50%;
     left: 50%;
