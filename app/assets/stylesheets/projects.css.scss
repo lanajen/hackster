@@ -351,4 +351,18 @@
     color: #999;
     margin-bottom: 15px;
   }
+  .button-content-container {
+    display: table;
+    width: 100%;
+  }
+  .button-content {
+    display: table-row;
+    h5, .buttons {
+      display: table-cell;
+      vertical-align: bottom;
+    }
+    .buttons {
+      text-align: right;
+    }
+  }
 }

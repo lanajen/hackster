@@ -1,12 +1,10 @@
-# codewidget
-# read project descriptions and extract github/bitbucket/snip2code/gist/codebender
-
 require 'linguist'
 require 'open-uri'
+require 'ptools'
 require 'pygments'
 # require 'rubyzip'
 
-class CodeFile < ActiveRecord::Base
+class CodeFile < CodeEntity
     LANGUAGES = {
     'Assembly' => '',
     'C' => 'c',
@@ -143,36 +141,46 @@ class CodeFile < ActiveRecord::Base
     'xquery' => 'XQuery',
     'yaml' => 'YAML',
   }
+  BINARY_MESSAGE = "Binary file (no preview)"
   ERROR_MESSAGE = "Error opening file."
 
-  belongs_to :project
   has_one :document, as: :attachable
 
-  attr_accessible :document_attributes, :directory, :raw_code, :language,
-    :repository, :name, :position, :comment
+  attr_accessible :document_attributes, :directory, :raw_code, :language
+  attr_accessor :binary
   accepts_nested_attributes_for :document, allow_destroy: true
 
-  before_validation :force_encoding
+  validates :language, presence: true
+
+  # before_validation :force_encoding
   before_validation :disallow_blank_file
   before_save :check_changes
   before_save :guess_language_from_document, if: proc{|w| w.language.nil? || w.document.try(:file_changed?) }
   before_save :format_content
 
   def self.read_from_file file
-    raw_code = begin
-      # file.read.try(:force_encoding, "UTF-8")
-      file.read.encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
-    rescue
-      ERROR_MESSAGE
+    output_file = new
+
+    orig_file = file.respond_to?(:tempfile) ? file.tempfile : file
+    output_file.raw_code = if File.binary?(orig_file)
+      output_file.binary = true
+      BINARY_MESSAGE
+    else
+      begin
+        file.rewind if file.eof?
+        file.read.encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
+      rescue
+        ERROR_MESSAGE
+      end
     end
 
-    name = file.original_filename
+    output_file.name = file.original_filename
 
-    if language = Linguist::Language.detect(name, raw_code)
-      language = Hash[ACE_LANGUAGES.to_a.collect(&:reverse)][language.name]
+    if language = Linguist::Language.detect(output_file.name, output_file.raw_code)
+      output_file.language = Hash[ACE_LANGUAGES.to_a.collect(&:reverse)][language.name]
     end
 
-    new(raw_code: raw_code, name: name, language: language)
+    output_file
   end
 
   # def self.process
@@ -210,6 +218,14 @@ class CodeFile < ActiveRecord::Base
   #   false
   # end
 
+  def binary?
+    binary or raw_code == BINARY_MESSAGE
+  end
+
+  def document_url
+    document.try(:file_url)
+  end
+
   def extension
     return @extension if @extension
     @extension = Pygments.lexers[ACE_LANGUAGES[language]][:aliases].first
@@ -228,24 +244,12 @@ class CodeFile < ActiveRecord::Base
     (document and document.file_name.present?) ? document.file_name : "#{name.downcase.gsub(/[^a-z0-9_]/, '_')}.#{extension}"
   end
 
-  def name
-    read_attribute(:name).presence || 'Untitled'
-  end
-
   def human_language
     ACE_LANGUAGES[language]
   end
 
   def language
     read_attribute(:language) || 'text'
-  end
-
-  def file_type
-    repository.present? ? 'repository' : 'code'
-  end
-
-  def repository?
-    file_type == 'repository'
   end
 
   private

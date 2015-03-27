@@ -179,7 +179,7 @@ $(function () {
       $('.form-group').removeClass('has-error');
 
       // Insert response partial into page below the form.
-      $('#comments').append(xhr.responseText);
+      //$('#comments').append(xhr.responseText);
     })
     .on('ajax:complete', 'form.remote', function(xhr, status){
       var $submitButton = $(this).find('input[name="commit"]');
@@ -201,10 +201,6 @@ $(function () {
         // If the responseText is not valid JSON (like if a 500 exception was thrown), populate errors with a generic error message.
         errors = {message: "Please reload the page and try again"};
       }
-
-      // cleanup before adding new elements
-      $('.has-error .help-block.error-message').remove();
-      $('.form-group').removeClass('has-error');
 
       for (model in errors) {
         for (attribute in errors[model]) {

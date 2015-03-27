@@ -5,8 +5,8 @@ class Api::V1::CodeFilesController < Api::V1::BaseController
   def create
     code_file = CodeFile.read_from_file params[:file]
 
-    render json: code_file.to_json
-  rescue
-    render status: :unprocessable_entity, nothing: true
+    render json: code_file.to_json(methods: [:binary, :document_url], only: [:raw_code, :language, :name])
+  # rescue
+  #   render status: :unprocessable_entity, nothing: true
   end
 end

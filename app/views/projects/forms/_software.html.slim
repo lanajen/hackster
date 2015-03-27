@@ -25,8 +25,8 @@
 
       table.table#sortable
         tbody
-          - @project.code_files.each do |file|
-            = f.simple_fields_for :code_files, file do |f_file|
+          - @project.code_entities.each do |file|
+            = f.simple_fields_for :code_entities, file do |f_file|
               tr.fields
                 / td
                   i.fa.fa-bars.handle
@@ -69,7 +69,8 @@
         h4.text-center Link an existing repository
 
         = simple_nested_form_for @project, url: api_v1_project_path(@project), html: {  id: 'code-repository-form', data: { remote: true, modal: '#code-repository-popup' }, class: 'remote' } do |f|
-          = f.simple_fields_for :code_files, @project.code_files.new do |f_code|
+          = f.simple_fields_for :code_entities, @project.code_entities.new do |f_code|
+            = f_code.input :type, as: :hidden, input_html: { value: 'CodeRepository' }
             = f_code.input :id, as: :hidden, input_html: { 'data-field-type' => 'id', class: 'resetable' }
             = f_code.input :name, input_html: { 'data-field-type' => 'name', class: 'resetable' }, label: 'Name'
             = f_code.input :repository, label: 'Repository link', placeholder: 'Eg: https://github.com/fritzing/fritzing-app', hint: 'Supported: Bitbucket, Codebender, Gist, Github', input_html: { 'data-field-type' => 'repository', class: 'resetable' }
@@ -86,7 +87,8 @@
         h4.text-center Upload or paste a file
 
         = simple_nested_form_for @project, url: api_v1_project_path(@project), html: { id: 'code-editor-form', data: { remote: true, modal: '#code-editor-popup' }, class: 'remote' } do |f|
-          = f.simple_fields_for :code_files, @project.code_files.new do |f_code|
+          = f.simple_fields_for :code_entities, @project.code_entities.new do |f_code|
+            = f_code.input :type, as: :hidden, input_html: { value: 'CodeFile' }
             = f_code.input :id, as: :hidden, input_html: { 'data-field-type' => 'id', class: 'resetable' }
             = f_code.input :name, input_html: { 'data-field-type' => 'name', class: 'resetable' }, label: 'File name'
             = f_code.input :language, collection: CodeFile::ACE_LANGUAGES.invert, input_html: { 'data-field-type' => 'language', class: 'resetable' }
@@ -113,10 +115,50 @@
       cEditor.activate();
       window.cEditor = cEditor;
 
-      $('#code-editor-form, #code-repository-form').on('ajax:complete', function(e){
-        closeModal($(this).data('modal'));
-        pe.reload();
-      });
+      $('#code-editor-form, #code-repository-form')
+        .on('ajax:success', function(xhr, data, status){
+          closeModal($(this).data('modal'));
+          pe.reload();
+        })
+        .on('ajax:error', function(error, xhr, status){
+          error.stopPropagation();
+
+          var $form = $(this),
+              errors,
+              errorText;
+
+          try {
+            // Populate errorText with the comment errors
+            errors = $.parseJSON(xhr.responseText);
+          } catch(err) {
+            // If the responseText is not valid JSON (like if a 500 exception was thrown), populate errors with a generic error message.
+            errors = {message: "Please reload the page and try again"};
+          }
+
+          // cleanup before adding new elements
+          $('.has-error .help-block.error-message').remove();
+          $('.form-group').removeClass('has-error');
+
+          // make it work for nested attributes in this specific case
+          for (model in errors) {
+            for (attribute in errors[model]) {
+              // transforms attribute name for nested attributes
+              var attrName = attribute;
+              if (attribute.indexOf('.') != -1) {
+                var attributes = attribute.split('.');
+                attribute = attributes[attributes.length - 1];
+              }
+              var input = $form.find('[name$="['+attribute+']"]');
+              input.parents('.form-group').addClass('has-error');
+              errorMsg = $('<span class="help-block error-message">' + errors[model][attrName] + '</span>');
+              if (input.parent().hasClass('input-group')) {
+                errorMsg.insertAfter(input.parent());
+              } else {
+                errorMsg.insertAfter(input);
+              }
+            }
+          }
+        });
 
       cEditor.ace.getSession().on('change', function(e){
         $('#code-editor-form [data-field-type="raw_code"]').val(cEditor.ace.getValue());
@@ -202,8 +244,10 @@
         success: function(data) {
           cEditor.ace.setValue(data.raw_code);
           cEditor.ace.selection.clearSelection();
-          $('#code-editor-popup [data-field-type="name"]').val(data.name);
-          $('#code-editor-popup [data-field-type="language"]').val(data.language);
+          if ($('#code-editor-popup [data-field-type="name"]').val() == '')
+            $('#code-editor-popup [data-field-type="name"]').val(data.name);
+          if ($('#code-editor-popup [data-field-type="language"]').val() == '')
+            $('#code-editor-popup [data-field-type="language"]').val(data.language);
         },
 
         done: function(e, data){
