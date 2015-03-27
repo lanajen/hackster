@@ -86,6 +86,6 @@ class HackerSpacesController < ApplicationController
 
   private
     def load_hacker_space
-      @group = @hacker_space = HackerSpace.find_by_user_name! params[:user_name].downcase
+      @group = @hacker_space = HackerSpace.where("LOWER(groups.user_name) = ?", params[:user_name].downcase).first!
     end
 end
