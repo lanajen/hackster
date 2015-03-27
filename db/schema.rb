@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150302202021) do
+ActiveRecord::Schema.define(version: 20150306031104) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -64,7 +64,7 @@ ActiveRecord::Schema.define(version: 20150302202021) do
     t.string   "type"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
-    t.string   "caption"
+    t.text     "caption"
     t.string   "title"
     t.integer  "position"
     t.string   "tmp_file"
@@ -158,6 +158,22 @@ ActiveRecord::Schema.define(version: 20150302202021) do
   end
 
   add_index "chat_messages", ["group_id"], name: "index_chat_messages_on_group_id", using: :btree
+
+  create_table "code_files", force: true do |t|
+    t.string   "name"
+    t.text     "raw_code"
+    t.text     "formatted_code"
+    t.string   "language"
+    t.string   "directory"
+    t.string   "project_id",     null: false
+    t.string   "repository"
+    t.integer  "position"
+    t.text     "comment"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "code_files", ["project_id"], name: "index_code_files_on_project_id", using: :btree
 
   create_table "comments", force: true do |t|
     t.integer  "user_id",          default: 0, null: false
@@ -427,6 +443,7 @@ ActiveRecord::Schema.define(version: 20150302202021) do
     t.boolean "requires_shipping"
     t.integer "quantity",          default: 1
     t.integer "cash_value"
+    t.string  "link"
   end
 
   create_table "project_collections", force: true do |t|

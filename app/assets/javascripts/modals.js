@@ -1,19 +1,35 @@
 function openModal(id) {
-  var p = $(id).find('.popup-overlay-inner');
+  $(id).trigger('modal:opening');
+  resizeModal(id);
+  $('body').addClass('modal-open');
+  return false;
+}
+
+function resizeModal(id) {
+  var m = $(id);
+  var p = m.find('.popup-overlay-inner');
   var defaultWidth = parseInt($(id).data('width')) || 600;
   var width = window.innerWidth * 0.9 > defaultWidth ? defaultWidth : window.innerWidth * 0.9;
   p
     .css('width', width)
     .css('margin-left', -(p.outerWidth() / 2))
-  $(id).fadeIn(200);
-  p.css('margin-top', -(p.height() / 2));
-  return false;
+
+  m.fadeIn(200, function(){
+    m.trigger('modal:open');
+  });
+
+  var height = Math.max(-(p.height() / 2), -($(window).height() / 2 - 20));  // 20 for padding
+  p.css('margin-top', height);
 }
 
 function closeModal(id) {
-  $(id).fadeOut(200, function(){
+  var m = $(id);
+  m.trigger('modal:closing');
+  m.fadeOut(200, function(){
     if ($(this).hasClass('modal-remove')) $(this).remove();
+    m.trigger('modal:closed');
   });
+  $('body').removeClass('modal-open');
   return false;
 }
 
@@ -25,7 +41,7 @@ $(function () {
     }, 2000);
   });
 
-  $('body').on('click', '.modal-popup .close', function(e){
+  $('body').on('click', '.modal-popup .close, .modal-popup .close-btn', function(e){
     e.preventDefault();
     var target = $(this).data('target');
     closeModal(target);

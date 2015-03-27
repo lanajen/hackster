@@ -1,7 +1,10 @@
+# codewidget
+# read project descriptions and extract github/bitbucket/snip2code/gist/codebender
+
 require 'linguist'
 require 'open-uri'
 require 'pygments'
-require 'rubyzip'
+# require 'rubyzip'
 
 class CodeFile < ActiveRecord::Base
     LANGUAGES = {
@@ -39,7 +42,7 @@ class CodeFile < ActiveRecord::Base
     'autohotkey' => 'AutoHotKey',
     'batchfile' => 'BatchFile',
     'c9search' => 'C9Search',
-    'c_cpp' => 'C/C++',
+    'c_cpp' => 'C/C++ (incl. Arduino)',
     'cirru' => 'Cirru',
     'clojure' => 'Clojure',
     'cobol' => 'Cobol',
@@ -142,9 +145,11 @@ class CodeFile < ActiveRecord::Base
   }
   ERROR_MESSAGE = "Error opening file."
 
+  belongs_to :project
   has_one :document, as: :attachable
 
-  attr_accessible :document_attributes, :directory, :raw_code, :language
+  attr_accessible :document_attributes, :directory, :raw_code, :language,
+    :repository, :name, :position, :comment
   accepts_nested_attributes_for :document, allow_destroy: true
 
   before_validation :force_encoding
@@ -153,42 +158,57 @@ class CodeFile < ActiveRecord::Base
   before_save :guess_language_from_document, if: proc{|w| w.language.nil? || w.document.try(:file_changed?) }
   before_save :format_content
 
-  store :properties, accessors: [:raw_code, :formatted_code, :directory, :language]
-
-  def self.process
-    if file_is_zip?
-      extract_files_from_zip
-    else
-      extract_code
+  def self.read_from_file file
+    raw_code = begin
+      # file.read.try(:force_encoding, "UTF-8")
+      file.read.encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
+    rescue
+      ERROR_MESSAGE
     end
-  end
 
-  def self.extract_files_from_zip
-    files = []
-    Zip::File.open(document.real_file_url) do |zip_file|
-      # Handle entries one by one
-      zip_file.each do |entry|
-        puts "Extracting #{entry.name}"
+    name = file.original_filename
 
-        # Read into memory
-        content = entry.get_input_stream.read
-
-        new_file = new
-        new_file.raw_code = content
-        new_file.name = File.basename(entry.name)
-        new_file.directory = File.dirname(entry.name)
-        files << new_file.save
-      end
+    if language = Linguist::Language.detect(name, raw_code)
+      language = Hash[ACE_LANGUAGES.to_a.collect(&:reverse)][language.name]
     end
-    files
+
+    new(raw_code: raw_code, name: name, language: language)
   end
 
-  def self.file_is_zip?
-    Zip::File.open(document.real_file_url){}
-    true
-  rescue
-    false
-  end
+  # def self.process
+  #   if file_is_zip?
+  #     extract_files_from_zip
+  #   else
+  #     extract_code
+  #   end
+  # end
+
+  # def self.extract_files_from_zip
+  #   files = []
+  #   Zip::File.open(document.real_file_url) do |zip_file|
+  #     # Handle entries one by one
+  #     zip_file.each do |entry|
+  #       puts "Extracting #{entry.name}"
+
+  #       # Read into memory
+  #       content = entry.get_input_stream.read
+
+  #       new_file = new
+  #       new_file.raw_code = content
+  #       new_file.name = File.basename(entry.name)
+  #       new_file.directory = File.dirname(entry.name)
+  #       files << new_file.save
+  #     end
+  #   end
+  #   files
+  # end
+
+  # def self.file_is_zip?
+  #   Zip::File.open(document.real_file_url){}
+  #   true
+  # rescue
+  #   false
+  # end
 
   def extension
     return @extension if @extension
@@ -208,8 +228,24 @@ class CodeFile < ActiveRecord::Base
     (document and document.file_name.present?) ? document.file_name : "#{name.downcase.gsub(/[^a-z0-9_]/, '_')}.#{extension}"
   end
 
+  def name
+    read_attribute(:name).presence || 'Untitled'
+  end
+
+  def human_language
+    ACE_LANGUAGES[language]
+  end
+
   def language
-    properties[:language] || 'text'
+    read_attribute(:language) || 'text'
+  end
+
+  def file_type
+    repository.present? ? 'repository' : 'code'
+  end
+
+  def repository?
+    file_type == 'repository'
   end
 
   private
@@ -249,7 +285,7 @@ class CodeFile < ActiveRecord::Base
     def format_content
       return unless raw_code_changed? or language_changed?
 
-      self.formatted_content = if raw_code == ERROR_MESSAGE
+      self.formatted_code = if raw_code == ERROR_MESSAGE
         ERROR_MESSAGE
       else
         translated_lang = ACE_PYGMENTS_TRANSLATIONS[language].presence || language
@@ -258,7 +294,7 @@ class CodeFile < ActiveRecord::Base
       end
 
     rescue
-      self.formatted_content = ERROR_MESSAGE
+      self.formatted_code = ERROR_MESSAGE
     end
 
     def read_code_from_file

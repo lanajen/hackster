@@ -1,4 +1,4 @@
-= simple_nested_form_for @challenge, html: { class: 'form-horizontal remote accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
+= simple_nested_form_for @challenge, html: { class: 'form-horizontal remote accept-file-upload sortable' }, wrapper: :bootstrap3_horizontal do |f|
   = f.error_notification
 
   .row
@@ -140,42 +140,6 @@
     });
 
     jQuery(function($) {
-      window.NestedFormEvents.prototype.insertFields = function(content, assoc, link) {
-        var $tr = $(link).closest('tr');
-        content = content.replace(/^<div class="fields">/,"");
-        content = content.replace(/<\/div>$/,"");
-        return $(content).insertBefore($tr);
-      }
-
-      $('form').on('nested:fieldAdded', function(event){
-        var field = event.field;
-        previousPosition = field.prev().find('input.position').val();
-        if (isNaN(previousPosition)) previousPosition = 0;
-        positionField = field.find('input.position');
-        positionField.val(parseInt(previousPosition) + 1);
-      })
-
-      $('form').on('nested:fieldRemoved', function(event){
-        event.field.addClass('removed');
-        resetPositions();
-      })
-
-      $(function() {
-        $('#sortable tbody')
-          .sortable({ handle: ".handle", containment: "#sortable", items: 'tr:not(.sortable-disabled)' })
-          .bind('sortupdate', function(event, ui) {
-            resetPositions();
-          });
-      });
-
-      function resetPositions(){
-        $('#sortable tbody tr:not(.removed) input.position').each(function(i){
-          $(this)
-            .val(i+1)
-            .trigger('change');
-        });
-      }
-
       tinyMCE.init({
         selector: 'textarea.text-editor',
         toolbar: "undo redo | bold italic underline | alignleft aligncenter alignright | link unlink | bullist numlist | image",
