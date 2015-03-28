@@ -10,7 +10,7 @@ class Api::V1::PartsController < Api::V1::BaseController
     parts_json = if parts.any?
       parts.map{|p| { id: p.id, text: p.name } }
     else
-      [{ id: '-1', text: ("No results for #{params[:q]}. " + content_tag(:a, 'Create a new part', href: '#', class: 'new-part-modal-toggle btn btn-sm btn-success', data: { target: '#new-part-modal', toggle: 'modal'}), disabled: true }]
+      [{ id: '-1', text: "No results for #{params[:q]}. " + content_tag(:a, 'Create a new part', href: '#', class: 'new-part-modal-toggle btn btn-sm btn-success', data: { target: '#new-part-modal', toggle: 'modal'}), disabled: true }]
     end
 
     render json: parts_json
