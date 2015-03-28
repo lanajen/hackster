@@ -10,4 +10,4 @@
         span.text-muted
           ==> time_ago_in_words(message.created_at)
           | ago
-    = auto_html(message.body) { link(:target => 'blank') }.html_safe
+    = raw auto_html(message.body) { link(:target => 'blank') }

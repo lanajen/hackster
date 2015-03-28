@@ -3,9 +3,9 @@ class Api::V1::CodeFilesController < Api::V1::BaseController
   load_and_authorize_resource except: [:create]
 
   def create
-    code_file = CodeFile.read_from_file params[:file]
+    code_file = CodeWidget.read_from_file params[:file]
 
-    render json: code_file.to_json(methods: [:binary, :document_url], only: [:raw_code, :language, :name])
+    render json: code_file.to_json
   # rescue
   #   render status: :unprocessable_entity, nothing: true
   end

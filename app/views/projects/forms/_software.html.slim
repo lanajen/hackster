@@ -14,19 +14,20 @@
     .box-title
       h3 The software
       .subheading What is the code that powers this project?
+
     .box-content
       .btn-group
-        a.btn.btn-sm.btn-default.modal-open.code-new data-target='#code-editor-popup'
+        a.btn.btn-sm.btn-default.modal-open.modal-reset data-target='#code-editor-popup'
           i.fa.fa-cloud-upload>
           | Upload or paste code
-        a.btn.btn-sm.btn-default.modal-open.code-new data-target='#code-repository-popup'
+        a.btn.btn-sm.btn-default.modal-open.modal-reset data-target='#code-repository-popup'
           i.fa.fa-link>
           | Link existing repository
 
-      table.table#sortable
+      table.table.table-decorated.table-hover#sortable
         tbody
-          - @project.code_entities.each do |file|
-            = f.simple_fields_for :code_entities, file do |f_file|
+          - @project.widgets.where(type: %w(CodeRepoWidget CodeWidget)).each do |file|
+            = f.simple_fields_for :code_widgets, file do |f_file|
               tr.fields
                 / td
                   i.fa.fa-bars.handle
@@ -35,64 +36,68 @@
                   = f_file.input :position, as: :hidden, input_html: { 'data-field-type' => 'position', class: 'position' }
                   = f_file.input :name, as: :hidden, input_html: { 'data-field-type' => 'name' }
                   = f_file.input :comment, as: :hidden, input_html: { 'data-field-type' => 'comment' }
-                  - if file.repository?
-                    = f_file.input :repository, as: :hidden, input_html: { 'data-field-type' => 'repository' }
-                  - else
+                  - if file.type == 'CodeWidget'
                     = f_file.input :raw_code, as: :hidden, input_html: { 'data-field-type' => 'raw_code' }
                     = f_file.input :language, as: :hidden, input_html: { 'data-field-type' => 'language' }
-                  - if file.repository?
-                    i.fa.fa-link
                   - else
+                    = f_file.input :url, as: :hidden, input_html: { 'data-field-type' => 'url' }
+                  - if file.type == 'CodeWidget'
                     i.fa.fa-file-text-o
-                td
-                  .name= file.name
-                  - if file.repository?
-                    .repository.small.text-muted= file.repository
                   - else
-                    .language.small.text-muted= file.human_language
+                    i.fa.fa-link
+                td.details
+                  h5= file.name
+                  - if file.type == 'CodeWidget'
+                    p= file.human_language
+                  - else
+                    p= file.url
                   - if file.comment.present?
-                    em.comment.small.text-muted= file.comment
+                    p.comment= plain_to_html file.comment
                 td
                   .actions
-                    a.edit-code.btn.btn-sm.btn-link data-type=file.file_type href=''
-                      | Edit
+                    - if file.type == 'CodeWidget'
+                      a.edit-in-modal.btn.btn-sm.btn-link data-modal='#code-editor-popup' href=''
+                        | Edit
+                    - else
+                      a.edit-in-modal.btn.btn-sm.btn-link data-modal='#code-repository-popup' href=''
+                        | Edit
                     = f_file.link_to_remove 'Delete', class: 'btn btn-sm btn-link'
 
 
 = content_for :js do
 
-  #code-repository-popup.popup-overlay.modal-popup
+  #code-repository-popup.popup-overlay.modal-popup.modal-with-form
     .popup-overlay-bg
     .popup-overlay-outer
       .popup-overlay-inner.text-left
         button.close data-target='#code-repository-popup' &times;
         h4.text-center Link an existing repository
 
-        = simple_nested_form_for @project, url: api_v1_project_path(@project), html: {  id: 'code-repository-form', data: { remote: true, modal: '#code-repository-popup' }, class: 'remote' } do |f|
-          = f.simple_fields_for :code_entities, @project.code_entities.new do |f_code|
-            = f_code.input :type, as: :hidden, input_html: { value: 'CodeRepository' }
+        = simple_nested_form_for @project, url: api_v1_project_path(@project), html: {  id: 'code-repository-form', data: { remote: true, modal: '#code-repository-popup' }, class: 'remote form-within-modal' } do |f|
+          = f.simple_fields_for :widgets, CodeRepoWidget.new do |f_code|
+            = f_code.input :type, as: :hidden
             = f_code.input :id, as: :hidden, input_html: { 'data-field-type' => 'id', class: 'resetable' }
             = f_code.input :name, input_html: { 'data-field-type' => 'name', class: 'resetable' }, label: 'Name'
-            = f_code.input :repository, label: 'Repository link', placeholder: 'Eg: https://github.com/fritzing/fritzing-app', hint: 'Supported: Bitbucket, Codebender, Gist, Github', input_html: { 'data-field-type' => 'repository', class: 'resetable' }
-            = f_code.input :comment, input_html: { 'data-field-type' => 'comment', class: 'resetable' }, placeholder: 'What does this file do?'
+            = f_code.input :url, label: 'Repository link', placeholder: 'Eg: https://github.com/fritzing/fritzing-app', hint: 'Supported: Bitbucket, Codebender, Gist, Github', input_html: { 'data-field-type' => 'url', class: 'resetable' }
+            = f_code.input :comment, input_html: { 'data-field-type' => 'comment', class: 'resetable' }, placeholder: 'What do files in this repo do?', as: :text
 
           = f.submit 'Save changes', class: 'btn btn-primary'
           a.close-btn.btn.btn-link data-target='#code-repository-popup' href='' Cancel
 
-  #code-editor-popup.popup-overlay.modal-popup data-width='800'
+  #code-editor-popup.popup-overlay.modal-popup.modal-with-form data-width='800'
     .popup-overlay-bg
     .popup-overlay-outer
       .popup-overlay-inner.text-left
         button.close data-target='#code-editor-popup' &times;
         h4.text-center Upload or paste a file
 
-        = simple_nested_form_for @project, url: api_v1_project_path(@project), html: { id: 'code-editor-form', data: { remote: true, modal: '#code-editor-popup' }, class: 'remote' } do |f|
-          = f.simple_fields_for :code_entities, @project.code_entities.new do |f_code|
-            = f_code.input :type, as: :hidden, input_html: { value: 'CodeFile' }
+        = simple_nested_form_for @project, url: api_v1_project_path(@project), html: { id: 'code-editor-form', data: { remote: true, modal: '#code-editor-popup' }, class: 'remote form-within-modal' } do |f|
+          = f.simple_fields_for :widgets, CodeWidget.new do |f_code|
+            = f_code.input :type, as: :hidden
             = f_code.input :id, as: :hidden, input_html: { 'data-field-type' => 'id', class: 'resetable' }
             = f_code.input :name, input_html: { 'data-field-type' => 'name', class: 'resetable' }, label: 'File name'
-            = f_code.input :language, collection: CodeFile::ACE_LANGUAGES.invert, input_html: { 'data-field-type' => 'language', class: 'resetable' }
-            = f_code.input :comment, input_html: { 'data-field-type' => 'comment', class: 'resetable' }, placeholder: 'What does this file do?'
+            = f_code.input :language, collection: CodeWidget::ACE_LANGUAGES.invert, input_html: { 'data-field-type' => 'language', class: 'resetable' }
+            = f_code.input :comment, input_html: { 'data-field-type' => 'comment', class: 'resetable' }, placeholder: 'What does this file do?', as: :text
             = f_code.input :raw_code, as: :hidden, input_html: { 'data-field-type' => 'raw_code', class: 'resetable' }
             .form-group
               label.control-label Code
@@ -115,7 +120,13 @@
       cEditor.activate();
       window.cEditor = cEditor;
 
-      $('#code-editor-form, #code-repository-form')
+      $('.modal-with-form')
+        .on('modal:closed', function(){
+          $(this).find('.has-error .help-block.error-message').remove();
+          $(this).find('.form-group').removeClass('has-error');
+        });
+
+      $('.form-within-modal')
         .on('ajax:success', function(xhr, data, status){
           closeModal($(this).data('modal'));
           pe.reload();
@@ -136,8 +147,8 @@
           }
 
           // cleanup before adding new elements
-          $('.has-error .help-block.error-message').remove();
-          $('.form-group').removeClass('has-error');
+          $(this).find('.has-error .help-block.error-message').remove();
+          $(this).find('.form-group').removeClass('has-error');
 
           // make it work for nested attributes in this specific case
           for (model in errors) {
@@ -189,13 +200,13 @@
         $('#code-upload-form input').click();
       });
 
-      $('.pe-panel').on('click', '.code-new', function(e){
+      $('.pe-panel').on('click', '.modal-reset', function(e){
         $($(this).data('target')).find('.resetable').val('');
       });
 
-      $('.pe-panel').on('click', '.edit-code', function(e){
+      $('.pe-panel').on('click', '.edit-in-modal', function(e){
         e.preventDefault();
-        var popup = $(this).data('type') == 'repository' ? '#code-repository-popup' : '#code-editor-popup';
+        var popup = $(this).data('modal');
         var inputs = $(this).closest('.fields').find('input[type=hidden]');
         inputs.each(function(i, el){
           var input = $(popup).find('[data-field-type="' + $(el).data('field-type') + '"]');

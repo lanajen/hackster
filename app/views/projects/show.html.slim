@@ -129,7 +129,18 @@
                     - embed = Embed.new widget_id: widget_id
                     = render partial: 'api/embeds/embed', locals: { embed: embed }
 
-            - if @project.code_entities.any?
+            - if @project.widgets.where(type: %w(SchematicWidget)).any?
+              section#code.section-container.section-collapsible
+                h2.section-title
+                  a.title.title-toggle href=''
+                    ' Schematics
+                    i.fa.fa-chevron-down
+                    i.fa.fa-chevron-up
+                .section-content
+                  - @project.widgets.where(type: %w(SchematicWidget)).each do |widget|
+                    = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
+
+            - if @project.widgets.where(type: %w(CodeWidget CodeRepoWidget)).any?
               section#code.section-container.section-collapsible
                 h2.section-title
                   a.title.title-toggle href=''
@@ -137,8 +148,8 @@
                     i.fa.fa-chevron-down
                     i.fa.fa-chevron-up
                 .section-content
-                  - @project.code_entities.each do |file|
-                    = render partial: 'api/embeds/code_entity', locals: { file: file }
+                  - @project.widgets.where(type: %w(CodeWidget CodeRepoWidget)).each do |widget|
+                    = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
 
             - if (@project.build_logs_count > 0 and !@project.private_logs)
               section#logs.section-container.section-collapsible
@@ -205,15 +216,6 @@
                     p No issues yet.
 
                   = link_to 'See all issues', project_logs_path, class: 'btn btn-default btn-sm'
-
-            / section#code.section-container.section-collapsible
-              h2.section-title
-                a.title.title-toggle href=''
-                  ' Schematics
-                  i.fa.fa-chevron-down
-                  i.fa.fa-chevron-up
-              .section-content
-                = image_tag 'circuit.png'
 
             / section#code.section-container.section-collapsible
               h2.section-title
@@ -290,9 +292,9 @@
                   = render partial: 'respects/button', locals: { project: @project }
                 = render 'projects/project_embed_popup'
                 - if @project.celery_id.present?
-                  = link_to "#{content_tag(:i, '', class: 'fa fa-shopping-cart')} Buy it".html_safe, '#', 'data-celery' => @project.celery_id, 'data-celery-version' => 'v2', class: 'btn btn-warning btn-ellipsis btn-block'
+                  = link_to content_tag(:i, '', class: 'fa fa-shopping-cart') + content_tag(:span, "Buy it"), '#', 'data-celery' => @project.celery_id, 'data-celery-version' => 'v2', class: 'btn btn-warning btn-ellipsis btn-block'
                 - if @project.buy_link.present?
-                  = link_to "#{content_tag(:i, '', class: 'fa fa-shopping-cart')} Buy it".html_safe, @project.buy_link, class: 'btn btn-block btn-warning btn-lg', target: '_blank', rel: 'nofollow'
+                  = link_to content_tag(:i, '', class: 'fa fa-shopping-cart') + content_tag(:span, "Buy it"), @project.buy_link, class: 'btn btn-block btn-warning btn-lg', target: '_blank', rel: 'nofollow'
                 .add-to-list
                 = render partial: 'add_to_list_button'
 
@@ -453,7 +455,11 @@
                         li
                           a.smooth-scroll href="#components" data-target="#components"
                             | Components
-                      - if @project.code_entities.any?
+                      - if @project.widgets.where(type: %w(SchematicWidget)).any?
+                        li
+                          a.smooth-scroll href="#code" data-target="#code"
+                            | Schematics
+                      - if @project.widgets.where(type: %w(CodeWidget CodeRepoWidget)).any?
                         li
                           a.smooth-scroll href="#code" data-target="#code"
                             | Code
@@ -487,4 +493,4 @@
                     = render 'projects/project_embed_popup'
                     .add-to-list
                     - if @project.celery_id.present?
-                      = link_to "#{content_tag(:i, '', class: 'fa fa-shopping-cart')} Buy it".html_safe, '#', 'data-celery' => @project.celery_id, 'data-celery-version' => 'v2', class: 'btn btn-warning btn-ellipsis btn-block'
+                      = link_to content_tag(:i, '', class: 'fa fa-shopping-cart') + content_tag(:span, "Buy it"), '#', 'data-celery' => @project.celery_id, 'data-celery-version' => 'v2', class: 'btn btn-warning btn-ellipsis btn-block'

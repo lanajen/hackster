@@ -8,7 +8,7 @@ li.fields
           ul.list-inline.pull-right
             li= link_to content_tag(:i, '', class: 'fa fa-angle-up'), '', class: 'btn btn-default btn-xs move-up'
             li= link_to content_tag(:i, '', class: 'fa fa-angle-down'), '', class: 'btn btn-default btn-xs move-down'
-            li= f.link_to_remove (content_tag(:i, '', class: 'fa fa-times') + ' Delete').html_safe, class: 'btn btn-danger btn-xs'
+            li= f.link_to_remove content_tag(:i, '', class: 'fa fa-times') + ' Delete', class: 'btn btn-danger btn-xs'
 
       / tr
         - if part.part_id.present?

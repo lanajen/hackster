@@ -45,11 +45,4 @@ class ChallengeDecorator < ApplicationDecorator
 
     default_tweet
   end
-
-  private
-    def raw_text_to_html text
-      text.gsub!("\r\n", '<br>')
-      text = '<p>' + text.split('<br><br>').join('</p><p>') + '</p>'
-      text.html_safe
-    end
 end

@@ -175,8 +175,8 @@ $(function () {
       var $form = $(this);
 
       // Reset fields and any validation errors, so form can be used again, but leave hidden_field values intact.
-      $('.form-group').find('.error-message').remove();
-      $('.form-group').removeClass('has-error');
+      $(this).find('.form-group').find('.error-message').remove();
+      $(this).find('.form-group').removeClass('has-error');
 
       // Insert response partial into page below the form.
       //$('#comments').append(xhr.responseText);
@@ -201,6 +201,10 @@ $(function () {
         // If the responseText is not valid JSON (like if a 500 exception was thrown), populate errors with a generic error message.
         errors = {message: "Please reload the page and try again"};
       }
+
+      // Reset fields and any validation errors, so form can be used again, but leave hidden_field values intact.
+      $(this).find('.form-group').find('.error-message').remove();
+      $(this).find('.form-group').removeClass('has-error');
 
       for (model in errors) {
         for (attribute in errors[model]) {

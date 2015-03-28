@@ -1,5 +1,10 @@
+# next:
+# - upload files for schematics
+# - do CAD
+
 require 'linguist'
 require 'open-uri'
+require 'ptools'
 require 'pygments'
 
 class CodeWidget < Widget
@@ -140,14 +145,21 @@ class CodeWidget < Widget
     'xquery' => 'XQuery',
     'yaml' => 'YAML',
   }
+  LANGUAGE_MATCHER = {
+    'Arduino' => 'c_cpp',
+    'c' => 'c_cpp',
+    'cpp' => 'c_cpp',
+  }
+  BINARY_MESSAGE = "Binary file (no preview)"
   ERROR_MESSAGE = "Error opening file."
 
   # device only supports "Spark Core", compiles needs to be set to true
   define_attributes [:raw_code, :formatted_content, :language, :device,
-    :compiles]
+    :compiles, :comment, :binary]
   has_one :document, as: :attachable
 
   attr_accessible :document_attributes
+
   accepts_nested_attributes_for :document, allow_destroy: true
   before_validation :force_encoding
   before_validation :disallow_blank_file
@@ -157,6 +169,39 @@ class CodeWidget < Widget
 
   def self.model_name
     Widget.model_name
+  end
+
+  def self.read_from_file file
+    output_file = new
+
+    orig_file = file.respond_to?(:tempfile) ? file.tempfile : file
+    output_file.raw_code = if File.binary?(orig_file)
+      output_file.binary = true
+      BINARY_MESSAGE
+    else
+      begin
+        file.rewind if file.eof?
+        file.read.encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
+      rescue
+        ERROR_MESSAGE
+      end
+    end
+
+    output_file.name = file.original_filename
+
+    if language = Linguist::Language.detect(output_file.name, output_file.raw_code)
+      output_file.language = Hash[ACE_LANGUAGES.to_a.collect(&:reverse)][language.name]
+    end
+
+    output_file
+  end
+
+  def binary?
+    binary or raw_code == BINARY_MESSAGE
+  end
+
+  def document_url
+    document.try(:file_url)
   end
 
   def default_label
@@ -181,20 +226,38 @@ class CodeWidget < Widget
     (document and document.file_name.present?) ? document.file_name : "#{name.downcase.gsub(/[^a-z0-9_]/, '_')}.#{extension}"
   end
 
+  def formatted_code
+    formatted_content
+  end
+
+  def formatted_code=(val)
+    self.formatted_content = val
+  end
+
+  def human_language
+    ACE_LANGUAGES[language]
+  end
+
   def language
     properties[:language] || 'text'
   end
 
-  def name
-    super || "file_#{id}"
+  def language=(val)
+    if val.present?
+      unless val.in? ACE_LANGUAGES.keys
+        if val.in? LANGUAGE_MATCHER.keys
+          val = LANGUAGE_MATCHER[val]
+        end
+      end
+    end
+    prop = properties
+    prop[:language] = val
+    self.properties = prop
   end
 
-  # def raw_code
-  #   val = read_attribute :raw_code
-  #   val.try(:force_encoding, "UTF-8")
-  # rescue
-  #   ERROR_MESSAGE
-  # end
+  def name
+    super || 'Untitled'
+  end
 
   def to_json
     {
@@ -204,6 +267,7 @@ class CodeWidget < Widget
       language: language,
       name: name,
       raw_code: raw_code,
+      binary: binary,
     }.to_json
   end
 

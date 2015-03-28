@@ -169,6 +169,8 @@ ActiveRecord::Schema.define(version: 20150327185338) do
     t.string   "repository"
     t.integer  "position"
     t.text     "comment"
+    t.string   "device"
+    t.boolean  "compiles"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "type",           limit: 15

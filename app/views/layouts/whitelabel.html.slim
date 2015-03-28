@@ -126,7 +126,7 @@ html(lang="en")
               ul#left-nav.navbar-right.top-menu-nav
                 / # - if current_user.is? :admin
                   li= link_to 'Admin', admin_analytics_path, class: 'nav-link'
-                li= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'nav-link'
+                li= link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project"), new_project_path, class: 'nav-link'
 
               #navbar-search
                 = render 'shared/search_form'
@@ -164,7 +164,7 @@ html(lang="en")
     #mobile-navigation.hide-on-desktop
       = render 'shared/search_form'
       / # = link_to 'Projects', root_path(ref: 'monav'), class: 'mo-nav-link'
-      = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'mo-nav-link'
+      = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project"), new_project_path, class: 'mo-nav-link'
       - if user_signed_in?
         = link_to 'Profile', current_user, class: 'mo-nav-link'
         = link_to 'Messages', conversations_path, class: 'mo-nav-link'

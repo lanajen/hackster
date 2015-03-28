@@ -4,7 +4,9 @@ require 'ptools'
 require 'pygments'
 # require 'rubyzip'
 
-class CodeFile < CodeEntity
+class CodeFile < ActiveRecord::Base
+  self.table_name = :code_entities
+
   LANGUAGES = {
     'Assembly' => '',
     'C' => 'c',
@@ -150,9 +152,11 @@ class CodeFile < CodeEntity
   BINARY_MESSAGE = "Binary file (no preview)"
   ERROR_MESSAGE = "Error opening file."
 
+  belongs_to :project
   has_one :document, as: :attachable
 
-  attr_accessible :document_attributes, :directory, :raw_code, :language
+  attr_accessible :document_attributes, :directory, :raw_code, :language,
+    :name, :position, :comment
   attr_accessor :binary
   accepts_nested_attributes_for :document, allow_destroy: true
 
@@ -267,6 +271,10 @@ class CodeFile < CodeEntity
       end
     end
     write_attribute :language, val
+  end
+
+  def name
+    read_attribute(:name).presence || 'Untitled'
   end
 
   private

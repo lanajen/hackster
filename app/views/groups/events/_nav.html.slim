@@ -5,8 +5,8 @@ section.group-nav.affixable
       h2= @group.proper_name
     ul.nav.nav-tabs
       = active_li_link_to 'Info', event_info_path(@group), role: 'presentation'
-      = active_li_link_to "Projects#{content_tag(:small, @group.projects_count)}".html_safe, event_projects_path(@group), role: 'presentation'
-      = active_li_link_to "Participants#{content_tag(:small, @group.participants_count)}".html_safe, "#{url_for(@group)}/participants"
+      = active_li_link_to content_tag(:span, "Projects") + content_tag(:small, @group.projects_count), event_projects_path(@group), role: 'presentation'
+      = active_li_link_to content_tag(:span, "Participants") + content_tag(:small, @group.participants_count), "#{url_for(@group)}/participants"
       - unless @group.hackathon.show_organizers
         = active_li_link_to "Organizers", "#{url_for(@group)}/organizers"
 
@@ -53,8 +53,8 @@ section.group-nav.affixable
       li
         a.close-nav href='' &times; Close
       = active_li_link_to 'Info', event_info_path(@group), role: 'presentation'
-      = active_li_link_to "Projects#{content_tag(:small, @group.projects_count)}".html_safe, event_projects_path(@group), role: 'presentation'
-      = active_li_link_to "Participants#{content_tag(:small, @group.participants_count)}".html_safe, "#{url_for(@group)}/participants"
+      = active_li_link_to content_tag(:span, "Projects") + content_tag(:small, @group.projects_count), event_projects_path(@group), role: 'presentation'
+      = active_li_link_to content_tag(:span, "Participants") + content_tag(:small, @group.participants_count), "#{url_for(@group)}/participants"
       - unless @group.hackathon.show_organizers
         = active_li_link_to "Organizers", "#{url_for(@group)}/organizers"
       - if pages = @group.pages.public.order(created_at: :asc) and pages.any?

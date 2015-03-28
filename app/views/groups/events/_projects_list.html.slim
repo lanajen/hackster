@@ -4,11 +4,11 @@
       - if @event.in_the_future?
         p
           ' #{@event.name} is coming up in #{time_diff_in_natural_language(Time.now, @event.start_date)}! Get ready for it by sharing your project idea, giving feedback to existing projects and joining teams you'd like to be part of.
-          = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add your project".html_safe, "#{event_path(@event)}/projects/new", class: 'btn btn-sm btn-primary'
+          = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add your project"), "#{event_path(@event)}/projects/new", class: 'btn btn-sm btn-primary'
 
       - else
         .pull-right
-          = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project to event".html_safe, "#{event_path(@event)}/projects/new", class: 'btn btn-sm btn-primary'
+          = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project to event"), "#{event_path(@event)}/projects/new", class: 'btn btn-sm btn-primary'
 
   - if @projects.any?
     .row.project-list
@@ -43,7 +43,7 @@
         p
           - if can? :add_project, @event
             ' No hacks have been uploaded yet.
-            = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add yours".html_safe, "#{event_path(@event)}/projects/new", class: 'btn btn-sm btn-primary'
+            = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add yours"), "#{event_path(@event)}/projects/new", class: 'btn btn-sm btn-primary'
           - else
             ' Participants haven't uploaded their hacks yet.
 

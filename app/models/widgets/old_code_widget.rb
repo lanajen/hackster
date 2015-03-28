@@ -1,0 +1,2 @@
+class OldCodeWidget < CodeWidget
+end

@@ -3,9 +3,9 @@ section#projects-list
     .main-section-actions.clearfix.mg-30
       - if user_is_current?
         .pull-right
-          ==> link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'btn btn-default'
+          ==> link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project"), new_project_path, class: 'btn btn-default'
           small> or
-          = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Submit a link".html_safe, new_project_path(project: { external: true }), class: 'btn btn-default'
+          = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Submit a link"), new_project_path(project: { external: true }), class: 'btn btn-default'
 
     h2
       ' Public projects
@@ -69,7 +69,7 @@ section#projects-list
               small
                 ==> time_ago_in_words(comment.created_at)
                 | ago
-            .comment-text= comment.body.html_safe
+            .comment-text= raw comment.body
     - elsif user_is_current?
       p
         ' You haven't commented on any projects yet.

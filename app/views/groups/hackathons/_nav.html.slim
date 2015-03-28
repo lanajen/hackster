@@ -4,7 +4,7 @@ section.group-nav.affixable
       = image_tag @group.avatar(:big), class: 'img-thumbnail'
       h2= @group.name
     ul.nav.nav-tabs
-      = active_li_link_to "Events#{content_tag(:small, @group.events_count)}".html_safe, url_for(@group), role: 'presentation'
+      = active_li_link_to content_tag(:span, "Events") + content_tag(:small, @group.events_count), url_for(@group), role: 'presentation'
       - if @group.show_organizers
         = active_li_link_to "Organizers", "#{url_for(@group)}/organizers"
 
@@ -43,7 +43,7 @@ section.group-nav.affixable
     ul.nav.nav-pills.nav-stacked.nav-justified.submenu-mobile style='display:none;'
       li
         a.close-nav href='' &times; Close
-      = active_li_link_to "Events#{content_tag(:small, @group.events_count)}".html_safe, url_for(@group), role: 'presentation'
+      = active_li_link_to content_tag(:span, "Events") + content_tag(:small, @group.events_count), url_for(@group), role: 'presentation'
       - if @group.show_organizers
         = active_li_link_to "Organizers", "#{url_for(@group)}/organizers"
 

@@ -30,7 +30,7 @@
         h2
           - if profs = @promotion.members.with_group_roles('professor') and profs.any?
             ' By
-            = profs.map{ |prof| link_to prof.user.name, prof.user }.to_sentence.html_safe
+            = profs.map{ |prof| link_to html_escape(prof.user.name), prof.user }.to_sentence.html_safe
             ' ,
           = link_to @promotion.short_name, promotion_path(@promotion)
           ' ,

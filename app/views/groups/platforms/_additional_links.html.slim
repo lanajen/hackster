@@ -1,7 +1,7 @@
 - if @platform.documentation_link.present?
-  = link_to "Documentation".html_safe, @platform.documentation_link, target: '_blank', class: 'btn btn-link'
+  = link_to "Documentation", @platform.documentation_link, target: '_blank', class: 'btn btn-link'
 - if @platform.forums_link.present?
-  = link_to "Forums".html_safe, @platform.forums_link, target: '_blank', class: 'btn btn-link'
+  = link_to "Forums", @platform.forums_link, target: '_blank', class: 'btn btn-link'
 - if @platform.crowdfunding_link.present?
   = link_to (@platform.cta_text.presence || "Preorder #{indefinite_articlerize @platform.name}"), @platform.crowdfunding_link, target: '_blank', class: 'btn btn-link btn-link-accent'
 - if @platform.buy_link.present?

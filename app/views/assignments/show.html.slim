@@ -30,10 +30,10 @@
                 ' by
                 ==> time_ago_in_words @assignment.submit_by_date
               ' (#{l @submit_date})
-            = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project to assignment".html_safe, "#{assignment_path(@assignment)}/projects/new", class: 'btn btn-sm btn-warning'
+            = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project to assignment"), "#{assignment_path(@assignment)}/projects/new", class: 'btn btn-sm btn-warning'
 
         - elsif can? :add_project, @assignment
-          = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project to assignment".html_safe, "#{assignment_path(@assignment)}/projects/new", class: 'btn btn-sm btn-warning'
+          = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project to assignment"), "#{assignment_path(@assignment)}/projects/new", class: 'btn btn-sm btn-warning'
 
       .row.thumb-list  class=@switch_style
         - @projects.each_with_index do |project, i|

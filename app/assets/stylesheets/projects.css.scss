@@ -320,7 +320,10 @@
   }
 }
 
-#software {
+#software, #hardware {
+  .btn-group {
+    margin-bottom: 20px;
+  }
   table {
     .actions {
       visibility: hidden;
@@ -333,7 +336,7 @@
   }
 }
 
-.code-widget, .code-repository {
+.code-widget, .repository {
   margin-bottom: 30px;
   padding-bottom: 30px;
   border-bottom: 1px solid #ddd;
@@ -363,6 +366,33 @@
     }
     .buttons {
       text-align: right;
+    }
+  }
+}
+
+.table-decorated {
+  & > tbody > tr > td {
+    padding: 13px 8px;
+  }
+  .details {
+    h5 {
+      margin: 0;
+      font-weight: bold;
+      font-size: 1em;
+      & + p {
+        margin-top: 5px;
+      }
+    }
+    p {
+      margin-bottom: 0;
+      font-size: 0.85em;
+      color: #777;
+      & + p {
+        margin-top: 3px;
+      }
+      &.comment {
+        font-style: italic;
+      }
     }
   }
 }

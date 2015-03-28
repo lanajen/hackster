@@ -5,7 +5,7 @@ module AdminHelper
       out += '<option'
       out += ' selected="selected"' if val.to_s == selected.to_s
       out += '>'
-      out += val.to_s
+      out += html_escape(val).to_s
       out += '</option>'
     end
     out.html_safe

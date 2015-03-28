@@ -48,6 +48,10 @@ class Embed
     provider and provider_name.to_s.in? %w(bitbucket codebender gist github snip2code)
   end
 
+  def schematic_repo?
+    provider and provider_name.to_s.in? %w(circuitsio oshpark upverter)
+  end
+
   def format
     @format || DEFAULT_FORMAT
   end

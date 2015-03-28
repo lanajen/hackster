@@ -50,7 +50,7 @@
                   - u = users.first.user
                   span.user-name>= link_to u.name, u
               ' on
-              ==> link_to "#{@project.website_host} #{content_tag(:i, '', class: 'fa fa-external-link')}".html_safe, @project.website, target: '_blank'
+              ==> link_to @project.website_host + ' ' + content_tag(:i, '', class: 'fa fa-external-link'), @project.website, target: '_blank'
             ==> link_to 'View project', @project.website, target: '_blank', class: 'btn btn-primary'
 
           section#comments.section-container.section-collapsible
@@ -90,7 +90,7 @@
                   = render partial: 'users/member_thumb_mini', locals: { member: member }
 
               - else
-                - q = @project.guest_name.present? ? "Are you #{content_tag(:span, @project.guest_name, class: 'user-name')}?".html_safe : 'Are you the author of this project?'
+                - q = @project.guest_name.present? ? content_tag(:span, "Are you ") + content_tag(:span, @project.guest_name, class: 'user-name') + "?" : 'Are you the author of this project?'
                 - a = @project.guest_name.present? ? 'Claim this project and add it to your profile' : 'Claim it and add it to your profile'
                 p= q
                 p.text-muted= a

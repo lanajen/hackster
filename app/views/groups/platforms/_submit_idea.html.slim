@@ -10,7 +10,7 @@
             .thumb-image-inner-top
             .thumb-image-inner
               h4= platform.project_ideas_phrasing
-              p= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Post your project idea".html_safe, '', class: 'btn btn-primary btn-sm'
+              p= link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Post your project idea"), '', class: 'btn btn-primary btn-sm'
 
 - link = user_signed_in? ? new_project_path(project: { platform_tags_string: @platform.name, mark_as_idea: true }) : new_user_registration_path(reason: 'project', m: 'group', id: @platform.id, redirect_to: new_project_path(project: { platform_tags_string: @platform.name, mark_as_idea: true }))
 javascript:

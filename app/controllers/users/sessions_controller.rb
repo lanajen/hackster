@@ -11,7 +11,7 @@ class Users::SessionsController < Devise::SessionsController
   def create
     if params[:user] and email = params[:user][:email] and user = User.find_by_email(email)
       if user.simplified_signup?
-        flash[:alert] = "You haven't created a password yet! To do so, click the link in the email we've sent you. No email? <a href='/users/confirmation/new?user[email]=#{email}' class='alert-link'>Resend confirmation email</a>".html_safe
+        flash[:alert] = "You haven't created a password yet! To do so, click the link in the email we've sent you. No email? " + content_tag(:a, 'Resend confirmation email', href: "/users/confirmation/new?user[email]=#{email}", class: 'alert-link') + "."
         redirect_to new_user_session_path and return
       end
     end

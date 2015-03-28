@@ -53,7 +53,7 @@
     .pull-left.btn-group-split
       = render partial: 'followers/button_text', locals: { followable: current_platform }
       - if @custom_header.present?
-        = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add project".html_safe, new_project_path, class: 'btn btn-default'
+        = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project"), new_project_path, class: 'btn btn-default'
     .btn-group.btn-group-default.pull-right
       .btn-group
         button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }

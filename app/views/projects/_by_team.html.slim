@@ -8,6 +8,6 @@
 - else
   - users = project.users
   - if project.team_members_count <= 2
-    = project.users.map { |u| content_tag(:span, link_to(u.name, (full_url ? user_url(u, subdomain: 'www') : u)), class: 'user-name') }.to_sentence.html_safe
+    = project.users.map { |u| content_tag(:span, link_to(html_escape(u.name), (full_url ? user_url(u, subdomain: 'www') : u)), class: 'user-name') }.to_sentence.html_safe
   - else
     span.user-name= pluralize project.team_members_count, 'hacker'

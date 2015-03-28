@@ -10,4 +10,4 @@
           .thumb-image-inner-top
           .thumb-image-inner
             h4 Have a project #{'idea ' if challenge.project_ideas}of your own?
-            p= link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Enter the challenge".html_safe, '', class: 'btn btn-primary btn-sm enter-challenge'
+            p= link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Enter the challenge"), '', class: 'btn btn-primary btn-sm enter-challenge'

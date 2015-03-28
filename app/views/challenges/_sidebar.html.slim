@@ -69,8 +69,8 @@
           li= link_to "#{@platform.name} projects", platform_short_path(@platform)
 
         - if can? :admin, @challenge
-          li= link_to "#{content_tag(:i, '', class: 'fa fa-cog')} Manage challenge".html_safe, edit_challenge_path(@challenge)
-          li= link_to "#{content_tag(:i, '', class: 'fa fa-cog')} Entries dashboard".html_safe, challenge_entries_path(@challenge)
+          li= link_to content_tag(:i, '', class: 'fa fa-cog') + content_tag(:span, "Manage challenge"), edit_challenge_path(@challenge)
+          li= link_to content_tag(:i, '', class: 'fa fa-cog') + content_tag(:span, "Entries dashboard"), challenge_entries_path(@challenge)
 
 #enter-popup.popup-overlay.normal-size.modal-popup class="#{ 'modal-show' if params[:enter] }"
   .popup-overlay-bg

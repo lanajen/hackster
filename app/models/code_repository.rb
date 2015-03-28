@@ -1,4 +1,4 @@
-class CodeRepository < CodeEntity
+class CodeRepository < CodeFile
   attr_accessible :repository
 
   validates :repository, presence: true

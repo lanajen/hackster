@@ -21,7 +21,7 @@ module ScraperStrategies
 
       @project = Project.new private: true
       @widgets = []
-      @code_entities = []
+      @code_files = []
       @embedded_urls = {}
       Embed::LINK_REGEXP.values.each{|provider| @embedded_urls[provider.to_s] = [] }
 
@@ -54,7 +54,7 @@ module ScraperStrategies
     private
       def after_parse
         @widgets.each{|w| @project.widgets << w }
-        @code_entities.each{|c| @project.code_entities << c }
+        @code_files.each{|c| @project.code_files << c }
       end
 
       def before_parse
@@ -269,7 +269,7 @@ module ScraperStrategies
 
           file = CodeFile.new raw_code: code, name: 'Code', language: lang
           file.project = @project
-          @code_entities << file
+          @code_files << file
           node.remove  # remove so it's not added to text later
         end
       end
@@ -302,10 +302,10 @@ module ScraperStrategies
             embed = Embed.new url: node[attr]
             if embed.provider
               if embed.code_repo?
-                repo = CodeRepository.new repository: embed.url, name: embed.provider_name.to_s.capitalize
+                repo = CodeRepoWidget.new url: embed.url
                 # repo.project = @project
                 repo.comment = embed.url
-                @code_entities << repo
+                @widgets << repo
               else
                 @embedded_urls[embed.provider_name] << embed.provider_id
                 parent = find_parent node, base, %w(li ol ul)
@@ -326,10 +326,10 @@ module ScraperStrategies
             unless embed.provider_id.in? @embedded_urls[embed.provider_name]
               @embedded_urls[embed.provider_name] << embed.provider_id
               if embed.code_repo?
-                repo = CodeRepository.new repository: embed.url, name: embed.provider_name.to_s.capitalize
+                repo = CodeRepoWidget.new url: embed.url
                 # repo.project = @project
                 repo.comment = embed.url
-                @code_entities << repo
+                @widgets << repo
               else
                 parent = find_parent node, base, %w(li ol ul)
                 parent.after "<div class='embed-frame' data-url='#{embed.url}' data-type='url'></div>"

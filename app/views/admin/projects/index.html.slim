@@ -34,8 +34,8 @@ table.table.table-striped
               ==> project.guest_name
               - if project.users.any?
                 ' - posted by:
-            = project.users.map { |u| link_to u.name, u }.to_sentence.html_safe
-        td= project.private? ? '<b>Private</b>'.html_safe : (project.approved.nil? ? '<b>Needs approval</b>'.html_safe : (project.hidden? ? 'Hidden' : 'Public'))
+            = project.users.map { |u| link_to html_escape(u.name), u }.to_sentence.html_safe
+        td= project.private? ? content_tag(:b, 'Private') : (project.approved.nil? ? content_tag(:b, 'Needs approval') : (project.hidden? ? 'Hidden' : 'Public'))
         td= l project.created_at
         td
           = link_to t('.edit', :default => t("helpers.links.edit")), edit_admin_project_path(project), :class => 'btn btn-default btn-xs'

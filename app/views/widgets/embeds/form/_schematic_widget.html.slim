@@ -1,0 +1,29 @@
+= f.simple_fields_for :schematic_widgets, widget, url: '', wrapper: false, html: { id: 'parts-widget-form', class: "widget-#{widget.id}" } do |f_widget|
+  = f_widget.input :id, as: :hidden
+  ul.list-unstyled.parts-widget
+    li.fields
+      table.table
+        tbody
+          tr
+            td colspan=2 style="background:white;padding:5px 0;"
+              = f_widget.input :id, as: :hidden, input_html: { class: 'id' }
+              = f_widget.input :position, as: :hidden, input_html: { class: 'position' }
+              ul.list-inline.pull-right
+                li= link_to content_tag(:i, '', class: 'fa fa-angle-up'), '', class: 'btn btn-default btn-xs move-up'
+                li= link_to content_tag(:i, '', class: 'fa fa-angle-down'), '', class: 'btn btn-default btn-xs move-down'
+                li= f_widget.link_to_remove content_tag(:i, '', class: 'fa fa-times') + ' Delete', class: 'btn btn-danger btn-xs'
+
+          tr
+            td= f_widget.input :name, label: 'Name'
+          tr
+            td= f_widget.input :url, label: 'Link'
+
+          tr data-name='part-comment' class="#{'default-hidden' if widget.comment.blank?}"
+            td colspan=2 = f_widget.input :comment, label: 'Comment', placeholder: 'Eg: can be replaced by a higher value if necessary'
+
+          - if widget.comment.blank?
+            tr
+              td colspan=2 style='padding:5px 10px'
+                = link_to 'Add comment', '', 'data-target' => 'part-comment', class: 'reveal btn btn-link btn-xs'
+
+= f.link_to_add 'Add another schematic', :widgets, class: 'btn btn-success btn-sm btn-block'

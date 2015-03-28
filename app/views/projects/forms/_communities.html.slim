@@ -36,4 +36,4 @@
       - events = current_user.is?(:admin) ? Event.order(created_at: :desc) : current_user.events.order(created_at: :desc) + Event.recent
       - if events.any?
         = f.input :event_id, collection: events, label: 'Event', hint: "If you made the hack as part of an event, select it above."
-      = f.input :hacker_space_id, collection: HackerSpace.public.order("LOWER(full_name) ASC"), label: 'Where did you hack this from?', hint: "Select the hacker space you worked from. <a href='/hackerspaces'>See all the hacker spaces.</a>".html_safe
+      = f.input :hacker_space_id, collection: HackerSpace.public.order("LOWER(full_name) ASC"), label: 'Where did you hack this from?', hint: "Select the hacker space you worked from. " + content_tag(:a, 'See all the hacker spaces.', href: '/hackerspaces')

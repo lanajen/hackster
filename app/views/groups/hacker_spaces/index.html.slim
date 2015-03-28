@@ -14,7 +14,7 @@
         .row
           .col-xs-12
             .pull-right
-              = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} List your space".html_safe, new_hacker_space_path, class: 'btn btn-outline'
+              = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "List your space"), new_hacker_space_path, class: 'btn btn-outline'
           .col-xs-12
             table.table
               thead

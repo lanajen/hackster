@@ -25,6 +25,9 @@
       = f.input :city
       = f.input :country, input_html: { class: 'form-control' }
 
+      = f.input :interest_tags_string, as: :text, label: 'Interests', hint: 'Enter a list of tags separated by commas'
+      = f.input :skill_tags_string, as: :text, label: 'Skills'
+
     .col-md-6
       / = f.input :categories, as: :check_boxes, collection: User::CATEGORIES.sort
       = f.input :facebook_link, label: 'Facebook link'
@@ -39,6 +42,3 @@
       = f.input :youtube_link, label: 'Youtube link'
       = f.input :website_link, label: 'Website link'
       = f.input :blog_link, label: 'Blog link'
-
-      = f.input :interest_tags_string, label: 'Interests', hint: 'Enter a list of tags separated by commas'
-      = f.input :skill_tags_string, label: 'Skills'

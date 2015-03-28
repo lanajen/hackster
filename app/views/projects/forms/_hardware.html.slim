@@ -17,10 +17,64 @@
     .box-content
       = f.error_notification
 
-      / .section-title
-      /   h4.title-toggle Components
-      - @project.widgets.where(type: 'PartsWidget').first_or_create
-      - @project.widgets.where(type: 'PartsWidget').each do |widget|
-        = render partial: 'widgets/embeds/form/parts_widget', locals: { widget: widget, f: f }
+      .box-section
+        h4.title Components
+        - @project.widgets.where(type: 'PartsWidget').first_or_create
+        - @project.widgets.where(type: 'PartsWidget').each do |widget|
+          = render partial: 'widgets/embeds/form/parts_widget', locals: { widget: widget, f: f }
 
-      / h4 schematics
+      .box-section
+        h4.title schematics
+
+        .btn-group
+          / a.btn.btn-sm.btn-default.modal-open.modal-reset data-target='#schematic-upload-popup'
+            i.fa.fa-cloud-upload>
+            | Upload file
+          a.btn.btn-sm.btn-default.modal-open.modal-reset data-target='#schematic-link-popup'
+            i.fa.fa-link>
+            | Link existing repository
+
+        table.table.table-decorated.table-hover#sortable
+          tbody
+            - @project.widgets.where(type: 'SchematicWidget').each do |widget|
+              / = render partial: 'widgets/embeds/form/schematic_widget', locals: { widget: widget, f: f }
+              = f.simple_fields_for :widgets, widget do |f_widget|
+                tr.fields
+                  / td
+                    i.fa.fa-bars.handle
+                  td.details
+                    = f_widget.input :id, as: :hidden, input_html: { 'data-field-type' => 'id' }
+                    = f_widget.input :position, as: :hidden, input_html: { 'data-field-type' => 'position', class: 'position' }
+                    = f_widget.input :name, as: :hidden, input_html: { 'data-field-type' => 'name' }
+                    = f_widget.input :comment, as: :hidden, input_html: { 'data-field-type' => 'comment' }
+                    = f_widget.input :url, as: :hidden, input_html: { 'data-field-type' => 'url' }
+                    h5= widget.name
+                    p= widget.url
+                    - if widget.comment.present?
+                      p.comment= plain_to_html widget.comment
+                  td
+                    .actions
+                      a.edit-in-modal.btn.btn-sm.btn-link data-modal="#schematic-link-popup" href=''
+                        | Edit
+                      = f_widget.link_to_remove 'Delete', class: 'btn btn-sm btn-link'
+
+
+= content_for :js do
+
+  #schematic-link-popup.popup-overlay.modal-popup.modal-with-form
+    .popup-overlay-bg
+    .popup-overlay-outer
+      .popup-overlay-inner.text-left
+        button.close data-target='#schematic-link-popup' &times;
+        h4.text-center Link an existing repository
+
+        = simple_nested_form_for @project, url: api_v1_project_path(@project), html: {  id: 'schematic-link-form', data: { remote: true, modal: '#schematic-link-popup' }, class: 'remote form-within-modal' } do |f|
+          = f.simple_fields_for :widgets, SchematicWidget.new do |f_widget|
+            = f_widget.input :type, as: :hidden
+            = f_widget.input :id, as: :hidden, input_html: { 'data-field-type' => 'id', class: 'resetable' }
+            = f_widget.input :name, input_html: { 'data-field-type' => 'name', class: 'resetable' }, label: 'Name'
+            = f_widget.input :url, label: 'Repository link', placeholder: 'Eg: https://upverter.com/honnet/69441ea47f5d22da/twi', hint: 'Supported: 123D Circuits, OSH Park, Upverter', input_html: { 'data-field-type' => 'url', class: 'resetable' }
+            = f_widget.input :comment, input_html: { 'data-field-type' => 'comment', class: 'resetable' }, placeholder: 'What does this represent?', as: :text
+
+          = f.submit 'Save changes', class: 'btn btn-primary'
+          a.close-btn.btn.btn-link data-target='#schematic-link-popup' href='' Cancel

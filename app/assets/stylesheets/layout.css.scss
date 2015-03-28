@@ -615,6 +615,23 @@ footer {
   padding-top: 30px;
 }
 
+.box-section {
+  margin-bottom: 30px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid #ddd;
+  &:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+  .title {
+    font-weight: bold;
+    text-transform: uppercase;
+    margin: 0 0 20px;
+    font-size: 1em;
+  }
+}
+
 .box-transparent {
   background: transparent;
   border-color: transparent;
@@ -1278,4 +1295,8 @@ input.cmn-toggle ~ .option-checked, input.cmn-toggle:checked ~ .option-unchecked
   h1, h2, h3, h4 {
     margin: 0;
   }
+}
+
+i + span, span + i {
+  margin-left: 5px;
 }

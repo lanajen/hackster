@@ -3,14 +3,14 @@
   - unfollow_text = "&#x2713; Following #{followable.name}"
 - else
   - params[:style] = 'branded'
-  - follow_text = "#{image_tag('hackster_logo_mini_black_36.png')} Follow #{followable.name} projects"
-  - unfollow_text = "#{image_tag('hackster_logo_mini_black_36.png')} Following #{followable.name} projects"
+  - follow_text = image_tag('hackster_logo_mini_black_36.png') + " Follow #{followable.name} projects"
+  - unfollow_text = image_tag('hackster_logo_mini_black_36.png') + " Following #{followable.name} projects"
 
 div class=params[:style]
   - if user_signed_in?
     - if current_user.following? followable
-      = link_to unfollow_text.html_safe, url_for(followable), class: "follow-button", target: '_blank'
+      = link_to unfollow_text, url_for(followable), class: "follow-button", target: '_blank'
     - else
-      = link_to follow_text.html_safe, followers_platform_path(followable_type: followable.class.model_name, followable_id: followable.id, style: params[:style], source: controller_action), data: { method: :post, remote: true }, class: "follow-button disable-link follow-#{followable.class.model_name.to_s.underscore}-#{followable.id}"
+      = link_to follow_text, followers_platform_path(followable_type: followable.class.model_name, followable_id: followable.id, style: params[:style], source: controller_action), data: { method: :post, remote: true }, class: "follow-button disable-link follow-#{followable.class.model_name.to_s.underscore}-#{followable.id}"
   - else
-    = link_to follow_text.html_safe, new_user_registration_path(redirect_to: create_followers_path(followable_type: followable.class.model_name, followable_id: followable.id, source: controller_action), reason: 'follow', m: followable.class.model_name.to_s.underscore, id: followable.id), class: 'follow-button show-simplified-signup', data: { container: 'body', redirect_to: create_followers_path(followable_type: followable.class.model_name, followable_id: followable.id, source: controller_action) }, target: '_blank'
+    = link_to follow_text, new_user_registration_path(redirect_to: create_followers_path(followable_type: followable.class.model_name, followable_id: followable.id, source: controller_action), reason: 'follow', m: followable.class.model_name.to_s.underscore, id: followable.id), class: 'follow-button show-simplified-signup', data: { container: 'body', redirect_to: create_followers_path(followable_type: followable.class.model_name, followable_id: followable.id, source: controller_action) }, target: '_blank'

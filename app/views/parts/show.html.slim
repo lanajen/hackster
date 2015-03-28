@@ -24,10 +24,10 @@
   .pull-right
     - hash = is_whitelabel? ? {} : { project: { platform_tags_string: @platform.name } }
     - link = user_signed_in? ? new_project_path(hash) : new_user_registration_path(reason: 'project', m: 'group', id: @platform.id, redirect_to: new_project_path(hash), source: 'new_project')
-    ==> link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Add a project".html_safe, link, class: 'btn btn-default'
+    ==> link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add a project"), link, class: 'btn btn-default'
     / small> or
     / # - link = new_project_path(project: { platform_tags_string: @platform.name, external: true }, redirect_to: request.path)
-    / # = link_to "#{content_tag(:i, '', class: 'fa fa-plus')} Submit a link".html_safe, link, class: 'btn btn-default'
+    / # = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Submit a link"), link, class: 'btn btn-default'
 
   / .btn-group.pull-left
     / .btn-group
