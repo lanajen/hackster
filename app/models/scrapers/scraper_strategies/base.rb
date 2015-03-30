@@ -301,13 +301,20 @@ module ScraperStrategies
           base.css(el).each do |node|
             embed = Embed.new url: node[attr]
             if embed.provider
+              @embedded_urls[embed.provider_name] << embed.provider_id
               if embed.code_repo?
                 repo = CodeRepoWidget.new url: embed.url
-                # repo.project = @project
+                repo.comment = embed.url
+                @widgets << repo
+              elsif embed.cad_repo?
+                repo = CadRepoWidget.new url: embed.url
+                repo.comment = embed.url
+                @widgets << repo
+              elsif embed.schematic_repo?
+                repo = SchematicRepoWidget.new url: embed.url
                 repo.comment = embed.url
                 @widgets << repo
               else
-                @embedded_urls[embed.provider_name] << embed.provider_id
                 parent = find_parent node, base, %w(li ol ul)
                 parent.after "<div class='embed-frame' data-url='#{embed.url}' data-type='url'></div>"
               end
@@ -327,7 +334,14 @@ module ScraperStrategies
               @embedded_urls[embed.provider_name] << embed.provider_id
               if embed.code_repo?
                 repo = CodeRepoWidget.new url: embed.url
-                # repo.project = @project
+                repo.comment = embed.url
+                @widgets << repo
+              elsif embed.cad_repo?
+                repo = CadRepoWidget.new url: embed.url
+                repo.comment = embed.url
+                @widgets << repo
+              elsif embed.schematic_repo?
+                repo = SchematicRepoWidget.new url: embed.url
                 repo.comment = embed.url
                 @widgets << repo
               else

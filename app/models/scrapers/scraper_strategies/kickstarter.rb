@@ -3,7 +3,7 @@ module ScraperStrategies
 
     private
       def before_parse
-        @project.one_liner = @parsed.at_css('.short_blurb').text.truncate(140)
+        @project.one_liner = @parsed.at_css('meta[property="og:description"]')['content'].truncate(140)
         super
       end
 

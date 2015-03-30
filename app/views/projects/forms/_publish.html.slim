@@ -2,12 +2,14 @@
 
   input type='hidden' name='panel' value='publish'
 
+  .pe-header
+    h2 Publish
+    .subheading Ready to share your project with the world?
+
+  = f.error_notification
+
   .box
-    .box-title
-      h3  Publish
-      .subheading Ready to share your project with the world?
     .box-content
-      = f.error_notification
 
       / # = f.input :public, inline_label: "Make this project public #{content_tag(:i, '', class: 'fa fa-info-circle istooltip', title: 'You need to add a name, a description and a cover image before you can make it public.')}".html_safe, label: false, disabled: (@project.private and !@project.can_be_public?), as: :boolean
       = f.input :public, inline_label: content_tag(:span, "Make this project public") + content_tag(:i, '', class: 'fa fa-info-circle istooltip', title: 'You need to add a name, a description and a cover image before you can make it public.'), label: false, as: :boolean

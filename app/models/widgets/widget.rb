@@ -11,7 +11,7 @@ class Widget < ActiveRecord::Base
   attr_accessible :properties, :type, :name, :position, :project_id, :widgetable_id,
     :widgetable_type
 
-  validates :type, :project_id, presence: true
+  validates :type, presence: true
   # before_create :set_position
 
   def has_name?
