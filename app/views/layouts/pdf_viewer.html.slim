@@ -9,7 +9,7 @@ html(lang="en")
     = javascript_include_tag 'pdf_viewer'
     = javascript_include_tag 'pdf.worker'
     javascript:
-      PDFJS.workerSrc = '/assets/pdf.worker.js';
+      PDFJS.workerSrc = '#{ asset_url 'pdf.worker.js' }';
       PDFJS.getDocument('#{@url}').then(function(pdf) {
         // Using promise to fetch the page
         pdf.getPage(1).then(function(page) {
