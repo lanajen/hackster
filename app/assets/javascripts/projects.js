@@ -46,17 +46,6 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
     //make scrollspy/sidebar navigation work
     $('body').scrollspy({ target: '#scroll-nav'});
 
-    // $('body').on('click', 'a.expand', function(e){
-    //   e.preventDefault();
-    //   target = $(this).data('target');
-    //   $target = $(target);
-    //   $target.toggleClass('collapsed');
-    //   $target.slideToggle();
-    //   if (!$target.hasClass('collapsed')) {
-    //     smoothScrollTo($target);
-    //   }
-    // });
-
     $('body').on('click', 'a.scroll', function(e){
       e.preventDefault();
       target = $($(this).data('target'));
@@ -417,6 +406,21 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
         input.val($(el).val());
       });
       openModal(popup);
+    });
+
+    $(document).on('click', '.goto', function(e){
+      e.preventDefault();
+
+      var target = $(this).data('target');
+      var anchor = $('[data-anchor="' + target + '"]');
+      if (anchor.length) {
+        var id = anchor.closest('.pe-panel').attr('id');
+        window.location.hash = '#' + id;
+        // give it time to change tab before scrolling down
+        window.setTimeout(function(){
+          smoothScrollToAndHighlight(anchor, null, anchor);
+        },1);
+      }
     });
 
 

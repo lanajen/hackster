@@ -14,60 +14,62 @@
     h2 The software
     .subheading What is the code that powers this project?
 
-  = f.error_notification
+  .row
+    .col-md-8.col-md-offset-2
+      = f.error_notification
 
-  .box
-    .box-content
-      .btn-group
-        a.btn.btn-sm.btn-default.modal-open.modal-reset data-target='#code-editor-popup'
-          i.fa.fa-cloud-upload>
-          | Upload or paste code
-        a.btn.btn-sm.btn-default.modal-open.modal-reset data-target='#code-repository-popup'
-          i.fa.fa-link>
-          | Link existing repository
+      .box data-anchor='code'
+        .box-content
+          .btn-group
+            a.btn.btn-sm.btn-default.modal-open.modal-reset data-target='#code-editor-popup'
+              i.fa.fa-cloud-upload>
+              | Upload or paste code
+            a.btn.btn-sm.btn-default.modal-open.modal-reset data-target='#code-repository-popup'
+              i.fa.fa-link>
+              | Link existing repository
 
-      - if @project.widgets.where(type: %w(CodeRepoWidget CodeWidget)).any?
-        table.table.table-decorated.table-hover#sortable
-          tbody
-            - @project.widgets.where(type: %w(CodeRepoWidget CodeWidget)).each do |file|
-              = f.simple_fields_for :code_widgets, file do |f_file|
-                tr.fields
-                  / td
-                    i.fa.fa-bars.handle
-                  td
-                    = f_file.input :id, as: :hidden, input_html: { 'data-field-type' => 'id' }
-                    = f_file.input :position, as: :hidden, input_html: { 'data-field-type' => 'position', class: 'position' }
-                    = f_file.input :name, as: :hidden, input_html: { 'data-field-type' => 'name' }
-                    = f_file.input :comment, as: :hidden, input_html: { 'data-field-type' => 'comment' }
-                    - if file.type == 'CodeWidget'
-                      = f_file.input :raw_code, as: :hidden, input_html: { 'data-field-type' => 'raw_code' }
-                      = f_file.input :language, as: :hidden, input_html: { 'data-field-type' => 'language' }
-                    - else
-                      = f_file.input :url, as: :hidden, input_html: { 'data-field-type' => 'url' }
-                    - if file.type == 'CodeWidget'
-                      - if file.raw_code.present?
-                        i.fa.fa-file-code-o
-                      - else
-                        i.fa.fa-file-o
-                    - else
-                      i.fa.fa-link
-                  td.details
-                    h5= file.name
-                    - if file.type == 'CodeWidget'
-                      p= file.human_language
-                    - else
-                      p= file.url
-                    - if file.comment.present?
-                      p.comment= plain_to_html file.comment
-                  td
-                    .actions
-                      - if file.type == 'CodeWidget'
-                        a.edit-in-modal.btn.btn-sm.btn-link data-modal='#code-editor-popup' href=''
-                          | Edit
-                      - else
-                        a.edit-in-modal.btn.btn-sm.btn-link data-modal='#code-repository-popup' href=''
-                          | Edit
-                      = f_file.link_to_remove 'Delete', class: 'btn btn-sm btn-link'
+          - if @project.widgets.where(type: %w(CodeRepoWidget CodeWidget)).any?
+            table.table.table-decorated.table-hover#sortable
+              tbody
+                - @project.widgets.where(type: %w(CodeRepoWidget CodeWidget)).each do |file|
+                  = f.simple_fields_for :code_widgets, file do |f_file|
+                    tr.fields
+                      / td
+                        i.fa.fa-bars.handle
+                      td
+                        = f_file.input :id, as: :hidden, input_html: { 'data-field-type' => 'id' }
+                        = f_file.input :position, as: :hidden, input_html: { 'data-field-type' => 'position', class: 'position' }
+                        = f_file.input :name, as: :hidden, input_html: { 'data-field-type' => 'name' }
+                        = f_file.input :comment, as: :hidden, input_html: { 'data-field-type' => 'comment' }
+                        - if file.type == 'CodeWidget'
+                          = f_file.input :raw_code, as: :hidden, input_html: { 'data-field-type' => 'raw_code' }
+                          = f_file.input :language, as: :hidden, input_html: { 'data-field-type' => 'language' }
+                        - else
+                          = f_file.input :url, as: :hidden, input_html: { 'data-field-type' => 'url' }
+                        - if file.type == 'CodeWidget'
+                          - if file.raw_code.present?
+                            i.fa.fa-file-code-o
+                          - else
+                            i.fa.fa-file-o
+                        - else
+                          i.fa.fa-link
+                      td.details
+                        h5= file.name
+                        - if file.type == 'CodeWidget'
+                          p= file.human_language
+                        - else
+                          p= file.url
+                        - if file.comment.present?
+                          p.comment= plain_to_html file.comment
+                      td
+                        .actions
+                          - if file.type == 'CodeWidget'
+                            a.edit-in-modal.btn.btn-sm.btn-link data-modal='#code-editor-popup' href=''
+                              | Edit
+                          - else
+                            a.edit-in-modal.btn.btn-sm.btn-link data-modal='#code-repository-popup' href=''
+                              | Edit
+                          = f_file.link_to_remove 'Delete', class: 'btn btn-sm btn-link'
 
 
 = content_for :js do

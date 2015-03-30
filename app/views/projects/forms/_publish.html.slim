@@ -6,46 +6,49 @@
     h2 Publish
     .subheading Ready to share your project with the world?
 
-  = f.error_notification
+  .row
+    .col-md-8
+      = f.error_notification
 
-  .box
-    .box-content
+      .box
+        .box-content
+          = f.input :public, inline_label: "Make this project public", label: false, as: :boolean
 
-      / # = f.input :public, inline_label: "Make this project public #{content_tag(:i, '', class: 'fa fa-info-circle istooltip', title: 'You need to add a name, a description and a cover image before you can make it public.')}".html_safe, label: false, disabled: (@project.private and !@project.can_be_public?), as: :boolean
-      = f.input :public, inline_label: content_tag(:span, "Make this project public") + content_tag(:i, '', class: 'fa fa-info-circle istooltip', title: 'You need to add a name, a description and a cover image before you can make it public.'), label: false, as: :boolean
+          - if @project.private?
+            .form-group
+              .col-md-4
+                label.control-label Private sharing link
+              .col-md-8
+                input.form-control  type='text' value="http://#{APP_CONFIG['full_host']}/projects/#{@project.id}?auth_token=#{@project.security_token}" onclick='this.select();' style='color: #666;background:#ddd'
+                p.help-block Use this link if you want to share your project while keeping it private.
 
-      - if @project.private?
-        .form-group
-          .col-md-4
-            label.control-label Private sharing link
-          .col-md-8
-            input.form-control  type='text' value="http://#{APP_CONFIG['full_host']}/projects/#{@project.id}?auth_token=#{@project.security_token}" onclick='this.select();' style='color: #666;background:#ddd'
-            p.help-block Use this link if you want to share your project while keeping it private.
+          = f.input :new_slug, label: 'Project URL', wrapper: :addon do
+            span.input-group-addon #{site_domain}/#{@project.user_name_for_url.truncate(10)}/
+            = f.input_field :new_slug
 
-      = f.input :new_slug, label: 'Project URL', wrapper: :addon do
-        span.input-group-addon #{site_domain}/#{@project.user_name_for_url.truncate(10)}/
-        = f.input_field :new_slug
-
-      = f.input :start_date, order: [:year, :month, :day], label: 'Date', hint: 'When did this project come to life?' do
-        .row
-          .col-md-6
-            = hidden_field_tag 'project[start_date(3i)]', '1'
-            = select_month(@project.start_date, { prompt: '--Month--' }, { class: 'form-control', name: 'project[start_date(2i)]' })
-          .col-md-6
-            = select_year(@project.start_date, { prompt: '--Year--', start_year: Date.today.year, end_year: Date.today.year - 15 }, { class: 'form-control', name: 'project[start_date(1i)]' })
-
-
-      / = render partial: 'projects/open_source_switch', locals: { f: f }
-      = f.input :mark_as_idea, inline_label: "This project is just an idea and hasn't been implemented yet", label: false, as: :boolean
-      = f.input :wip, inline_label: 'This is a work in progress', label: false
+          = f.input :start_date, order: [:year, :month, :day], label: 'Date', hint: 'When did this project come to life?' do
+            .row
+              .col-md-6
+                = hidden_field_tag 'project[start_date(3i)]', '1'
+                = select_month(@project.start_date, { prompt: '--Month--' }, { class: 'form-control', name: 'project[start_date(2i)]' })
+              .col-md-6
+                = select_year(@project.start_date, { prompt: '--Year--', start_year: Date.today.year, end_year: Date.today.year - 15 }, { class: 'form-control', name: 'project[start_date(1i)]' })
 
 
-      / # = f.input :private_logs, inline_label: 'Private build logs', hint: "If your project is published, you can choose to keep build logs private by checking this box.", label: false, as: :boolean
-      / # = f.input :private_issues, inline_label: 'Private issues', hint: "If your project is published, you can choose to keep issues private by checking this box.", label: false, as: :boolean
+          / = render partial: 'projects/open_source_switch', locals: { f: f }
+          = f.input :mark_as_idea, inline_label: "This project is just an idea and hasn't been implemented yet", label: false, as: :boolean
+          = f.input :wip, inline_label: 'This is a work in progress', label: false
 
-      hr.clearfix
-      .form-group
-        .col-sm-4
-          label.control-label Danger zone
-        .col-sm-8
-          = link_to 'Delete project', @project, method: :delete, class: 'btn btn-danger btn-sm', data: { confirm: "Are you sure? There's no coming back!" }
+
+          / # = f.input :private_logs, inline_label: 'Private build logs', hint: "If your project is published, you can choose to keep build logs private by checking this box.", label: false, as: :boolean
+          / # = f.input :private_issues, inline_label: 'Private issues', hint: "If your project is published, you can choose to keep issues private by checking this box.", label: false, as: :boolean
+
+          hr.clearfix
+          .form-group
+            .col-sm-4
+              label.control-label Danger zone
+            .col-sm-8
+              = link_to 'Delete project', @project, method: :delete, class: 'btn btn-danger btn-sm', data: { confirm: "Are you sure? There's no coming back!" }
+
+    .col-md-4
+      = render 'projects/forms/checklist'

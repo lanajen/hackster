@@ -53,7 +53,7 @@ module ScraperUtils
     File.open(file_name).read
   end
 
-  def test_link link
+  def test_link link, mime=nil
     u = URI.parse link
     print "Testing link #{link}... "
     begin
@@ -62,12 +62,15 @@ module ScraperUtils
         http.use_ssl = true
         http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       end
-      status_code = http.request_head(u.request_uri).code
+      head = http.request_head(u.request_uri)
+      status_code = head.code
+      mime_type = head.content_type
     rescue
       status_code = "Error"
+      mime_type = ''
     end
-    puts "#{status_code}"
-    status_code.in? %w(200 301 302)
+    puts "#{status_code} (#{mime_type})"
+    status_code.in? %w(200 301 302) and (mime ? mime.in?(mime_type) : true)
   end
 
   def write_file file_name, content, header=nil, mode=nil

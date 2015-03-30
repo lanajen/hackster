@@ -1,6 +1,13 @@
 class Project < ActiveRecord::Base
   DEFAULT_NAME = 'Untitled'
 
+  DIFFICULTIES = {
+    'Beginner' => :beginner,
+    'Intermediate' => :intermediate,
+    'Advanced' => :advanced,
+    'Hardcore hacker' => :hardcore,
+  }
+
   FILTERS = {
     '7days' => :last_7days,
     '30days' => :last_30days,
@@ -78,7 +85,7 @@ class Project < ActiveRecord::Base
     :approved, :open_source, :buy_link, :private_logs, :private_issues,
     :hacker_space_id, :locked, :mark_as_idea, :event_id, :assignment_id,
     :community_ids, :new_group_id, :guest_twitter_handle, :celery_id,
-    :team_attributes, :story, :made_public_at
+    :team_attributes, :story, :made_public_at, :difficulty
   attr_accessor :current, :private_changed, :needs_platform_refresh,
     :approved_changed
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
@@ -278,16 +285,72 @@ class Project < ActiveRecord::Base
     buy_link
   end
 
+  def checklist
+    {
+      name: {
+        label: 'Name',
+        condition: 'name.present? and !has_default_name?',
+      },
+      one_liner: {
+        label: 'Elevator pitch',
+      },
+      cover_image: {
+        label: 'Cover image',
+        condition: 'cover_image and cover_image.file_url'
+      },
+      difficulty: {
+        label: 'Skill level',
+      },
+      product_tags_string: {
+        label: 'Tags',
+      },
+      platform_tags_string: {
+        label: 'Platforms used',
+      },
+      description: {
+        label: 'Story',
+      },
+      parts: {
+        label: 'Components',
+        conditions: 'parts.any?',
+      },
+      schematics: {
+        label: 'Schematics',
+        condition: 'widgets.where(type: %w(SchematicRepoWidget SchematicFileWidget)).any?',
+      },
+      code: {
+        label: 'Code',
+        condition: 'widgets.where(type: %w(CodeWidget CodeRepoWidget)).any?',
+      }
+    }
+  end
+
+  def checklist_evaled
+    return @checklist_evaled if @checklist_evaled
+
+    done = []
+    todo = []
+    checklist.each do |name, item|
+      item[:goto] = name
+
+      condition = if item[:condition]
+        item[:condition]
+      else
+        "#{name}.present?"
+      end
+
+      if eval(condition)
+        done << item
+      else
+        todo << item
+      end
+    end
+
+    @checklist_evaled = { done: done, todo: todo, complete: todo.empty? }
+  end
+
   def compute_popularity time_period=365
     self.popularity_counter = ((respects_count * 4 + impressions_count * 0.05 + comments_count * 2 + featured.to_i * 10) * [1 - [(Math.log(age, time_period)), 1].min, 0.001].max).round(4)
-  end
-
-  def columns_count
-    layout.to_i
-  end
-
-  def columns_count=(val)
-    self.layout = val
   end
 
   def counters
@@ -428,6 +491,10 @@ class Project < ActiveRecord::Base
     assignment.nil?
   end
 
+  def has_default_name?
+    name == DEFAULT_NAME
+  end
+
   def hidden?
     hide
   end
@@ -472,44 +539,6 @@ class Project < ActiveRecord::Base
 
   def security_token
     Digest::MD5.hexdigest(id.to_s)
-  end
-
-  def sections
-    @sections ||= [
-      OpenStruct.new({
-        name: 'Showcase',
-        allow: %w(video text image),
-        editable: true,
-        index: 1,
-        id: 'showcase',
-        icon: 'fa-picture-o',
-      }),
-      OpenStruct.new({
-        name: 'Hardware design',
-        allow: %w(video text image parts),
-        defaults: %w(parts schematics),
-        editable: true,
-        index: 2,
-        id: 'hardware',
-        icon: 'fa-gears',
-      }),
-      OpenStruct.new({
-        name: 'Software design',
-        allow: %w(video text image code),
-        defaults: %w(code),
-        editable: true,
-        index: 3,
-        id: 'software',
-        icon: 'fa-code',
-      }),
-      # OpenStruct.new({
-      #   name: 'Collaborate',
-      #   allow: %w(),
-      #   editable: false,
-      #   index: 4,
-      #   id: 'collaborate',
-      # }),
-    ]
   end
 
   def slug_was_changed?
@@ -630,14 +659,6 @@ class Project < ActiveRecord::Base
     URI.parse(website).host.gsub(/^www\./, '')
   rescue
     website
-  end
-
-  def widgets_first_col
-    widgets.first_column
-  end
-
-  def widgets_second_col
-    widgets.second_column
   end
 
   def wip?

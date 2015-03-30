@@ -2,7 +2,6 @@ class Api::V1::ProjectsController < Api::V1::BaseController
   # before_filter :public_api_methods, only: [:index, :show]
 
   def index
-
     params[:sort] = (params[:sort].in?(Project::SORTING.keys) ? params[:sort] : 'trending')
     by = (params[:by].in?(Project::FILTERS.keys) ? params[:by] : 'all')
 
@@ -46,7 +45,7 @@ class Api::V1::ProjectsController < Api::V1::BaseController
       if @panel.in? %w(hardware publish team software)
         render 'projects/forms/update'
       else
-        render nothing: true, status: :ok
+        render 'projects/forms/checklist', status: :ok
       end
     else
       render json: { project: @project.errors }, status: :unprocessable_entity

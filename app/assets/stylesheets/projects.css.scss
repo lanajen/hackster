@@ -147,18 +147,7 @@
   padding: 20px 14px;
 }
 
-#todos, #errors, #checklist {
-  &:empty {
-    display: none;
-  }
-  &:last-child {
-    border-bottom: 0;
-  }
-  padding: 20px;
-  padding-left: 40px;
-  margin: 0;
-  background: #fff;
-  border-bottom: 1px solid #ddd;
+#checklist {
   li {
     font-size: 0.85em;
     margin-bottom: 5px;
@@ -169,10 +158,8 @@
       font-weight: bold;
     }
     &.todo-complete {
-      list-style: none;
-      i {
-        color: #5cb85c;
-      }
+      text-decoration: line-through;
+      color: #aaa;
     }
     .item-title {
       text-decoration: underline;
@@ -181,18 +168,6 @@
       .hint {
         font-style: italic;
       }
-    }
-  }
-}
-
-#checklist {
-  list-style: none;
-  li {
-    position: relative;
-    input[type="checkbox"] {
-      position: absolute;
-      top: -2px;
-      left: -18px;
     }
   }
 }

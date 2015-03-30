@@ -22,21 +22,20 @@
       li= link_to 'Publish', '#publish', id: 'publish-nav', class: 'tab'
       li= link_to 'Go to project', @project
 
-  .row
-    .col-md-8.col-md-offset-2.pe-container
-      .busy-overlay
-        .center-align-wrapper
-          .center-align-inner
-            i.fa.fa-spin.fa-refresh
+  .pe-container
+    .busy-overlay
+      .center-align-wrapper
+        .center-align-inner
+          i.fa.fa-spin.fa-refresh
 
-      #basics.pe-panel style='display:block' = render 'projects/forms/basics'
-      #team.pe-panel = render 'projects/forms/team'
-      #communities.pe-panel= render 'projects/forms/communities'
-      #story.pe-panel= render 'projects/forms/story'
-      #hardware.pe-panel= render 'projects/forms/hardware'
-      #software.pe-panel= render 'projects/forms/software'
+    #basics.pe-panel style='display:block' = render 'projects/forms/basics'
+    #team.pe-panel = render 'projects/forms/team'
+    #communities.pe-panel= render 'projects/forms/communities'
+    #story.pe-panel= render 'projects/forms/story'
+    #hardware.pe-panel= render 'projects/forms/hardware'
+    #software.pe-panel= render 'projects/forms/software'
 
-      #publish.pe-panel= render 'projects/forms/publish'
+    #publish.pe-panel= render 'projects/forms/publish'
 
 = content_for :js do
   .pe-save
