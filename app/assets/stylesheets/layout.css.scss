@@ -1313,3 +1313,10 @@ input.cmn-toggle ~ .option-checked, input.cmn-toggle:checked ~ .option-unchecked
 i + span, span + i {
   margin-left: 5px;
 }
+
+.job-title {
+  font-weight: bold;
+  margin: 20px 0 5px;
+  font-size: 1.2em;
+  color: #666;
+}
