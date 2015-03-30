@@ -36,7 +36,7 @@ class FileWidget < Widget
   end
 
   def name
-    read_attribute(:name).presence || 'Untitled file'
+    read_attribute(:name).presence || document.try(:file_name) || 'Untitled file'
   end
 
   private

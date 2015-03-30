@@ -7,6 +7,7 @@ html(lang="en")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
     title PDF Viewer
     = javascript_include_tag 'pdf_viewer'
+    = javascript_include_tag 'pdf.worker'
     javascript:
       PDFJS.workerSrc = '/assets/pdf.worker.js';
       PDFJS.getDocument('#{@url}').then(function(pdf) {

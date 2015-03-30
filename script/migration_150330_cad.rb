@@ -1,4 +1,4 @@
-Project.where("description is not null and description <> ''").order(:created_at).each do |project|
+Project.where("description is not null and description <> ''").where("id > 6632").order(:created_at).each do |project|
   parsed = Nokogiri::HTML::DocumentFragment.parse project.description
 
   parsed.css('.embed-frame').each do |el|
@@ -29,7 +29,6 @@ Project.where("description is not null and description <> ''").order(:created_at
           w.name = file.file_name
           w.widgetable = widget.widgetable
           w.comment = el['data-caption'].presence
-          widgets << w
           w.save
         end
       end
