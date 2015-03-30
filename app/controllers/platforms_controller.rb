@@ -188,6 +188,10 @@ class PlatformsController < ApplicationController
       @projects = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection)
       @projects = @projects.merge(Project.send(Project::SORTING[sort]))
 
+      if params[:tag]
+        @projects = @projects.joins(:project).joins(project: :product_tags).where("LOWER(tags.name) = ?", CGI::unescape(params[:tag]))
+      end
+
       if @by and @by.in? Project::FILTERS.keys
         @projects = if @by == 'featured'
           @projects.featured
