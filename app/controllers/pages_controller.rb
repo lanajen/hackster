@@ -142,6 +142,11 @@ class PagesController < ApplicationController
     render text: 'pong!'
   end
 
+  def pdf_viewer
+    @url = params[:url]
+    render template: 'layouts/pdf_viewer', layout: false
+  end
+
   def privacy
     meta_desc 'Read our privacy policy.'
     title 'Privacy policy'

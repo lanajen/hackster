@@ -10,11 +10,13 @@
   input type='hidden' name='panel' value='software'
   input type='hidden' name='save' value='1'
 
-  .box
-    .box-title
-      h3 The software
-      .subheading What is the code that powers this project?
+  .pe-header
+    h2 The software
+    .subheading What is the code that powers this project?
 
+  = f.error_notification
+
+  .box
     .box-content
       .btn-group
         a.btn.btn-sm.btn-default.modal-open.modal-reset data-target='#code-editor-popup'
@@ -24,247 +26,67 @@
           i.fa.fa-link>
           | Link existing repository
 
-      table.table.table-decorated.table-hover#sortable
-        tbody
-          - @project.widgets.where(type: %w(CodeRepoWidget CodeWidget)).each do |file|
-            = f.simple_fields_for :code_widgets, file do |f_file|
-              tr.fields
-                / td
-                  i.fa.fa-bars.handle
-                td
-                  = f_file.input :id, as: :hidden, input_html: { 'data-field-type' => 'id' }
-                  = f_file.input :position, as: :hidden, input_html: { 'data-field-type' => 'position', class: 'position' }
-                  = f_file.input :name, as: :hidden, input_html: { 'data-field-type' => 'name' }
-                  = f_file.input :comment, as: :hidden, input_html: { 'data-field-type' => 'comment' }
-                  - if file.type == 'CodeWidget'
-                    = f_file.input :raw_code, as: :hidden, input_html: { 'data-field-type' => 'raw_code' }
-                    = f_file.input :language, as: :hidden, input_html: { 'data-field-type' => 'language' }
-                  - else
-                    = f_file.input :url, as: :hidden, input_html: { 'data-field-type' => 'url' }
-                  - if file.type == 'CodeWidget'
-                    i.fa.fa-file-text-o
-                  - else
-                    i.fa.fa-link
-                td.details
-                  h5= file.name
-                  - if file.type == 'CodeWidget'
-                    p= file.human_language
-                  - else
-                    p= file.url
-                  - if file.comment.present?
-                    p.comment= plain_to_html file.comment
-                td
-                  .actions
+      - if @project.widgets.where(type: %w(CodeRepoWidget CodeWidget)).any?
+        table.table.table-decorated.table-hover#sortable
+          tbody
+            - @project.widgets.where(type: %w(CodeRepoWidget CodeWidget)).each do |file|
+              = f.simple_fields_for :code_widgets, file do |f_file|
+                tr.fields
+                  / td
+                    i.fa.fa-bars.handle
+                  td
+                    = f_file.input :id, as: :hidden, input_html: { 'data-field-type' => 'id' }
+                    = f_file.input :position, as: :hidden, input_html: { 'data-field-type' => 'position', class: 'position' }
+                    = f_file.input :name, as: :hidden, input_html: { 'data-field-type' => 'name' }
+                    = f_file.input :comment, as: :hidden, input_html: { 'data-field-type' => 'comment' }
                     - if file.type == 'CodeWidget'
-                      a.edit-in-modal.btn.btn-sm.btn-link data-modal='#code-editor-popup' href=''
-                        | Edit
+                      = f_file.input :raw_code, as: :hidden, input_html: { 'data-field-type' => 'raw_code' }
+                      = f_file.input :language, as: :hidden, input_html: { 'data-field-type' => 'language' }
                     - else
-                      a.edit-in-modal.btn.btn-sm.btn-link data-modal='#code-repository-popup' href=''
-                        | Edit
-                    = f_file.link_to_remove 'Delete', class: 'btn btn-sm btn-link'
+                      = f_file.input :url, as: :hidden, input_html: { 'data-field-type' => 'url' }
+                    - if file.type == 'CodeWidget'
+                      - if file.raw_code.present?
+                        i.fa.fa-file-code-o
+                      - else
+                        i.fa.fa-file-o
+                    - else
+                      i.fa.fa-link
+                  td.details
+                    h5= file.name
+                    - if file.type == 'CodeWidget'
+                      p= file.human_language
+                    - else
+                      p= file.url
+                    - if file.comment.present?
+                      p.comment= plain_to_html file.comment
+                  td
+                    .actions
+                      - if file.type == 'CodeWidget'
+                        a.edit-in-modal.btn.btn-sm.btn-link data-modal='#code-editor-popup' href=''
+                          | Edit
+                      - else
+                        a.edit-in-modal.btn.btn-sm.btn-link data-modal='#code-repository-popup' href=''
+                          | Edit
+                      = f_file.link_to_remove 'Delete', class: 'btn btn-sm btn-link'
 
 
 = content_for :js do
 
-  #code-repository-popup.popup-overlay.modal-popup.modal-with-form
-    .popup-overlay-bg
-    .popup-overlay-outer
-      .popup-overlay-inner.text-left
-        button.close data-target='#code-repository-popup' &times;
-        h4.text-center Link an existing repository
+  = render_pe_popup 'code-repository', widget_class: CodeRepoWidget, url_placeholder: 'Eg: https://github.com/fritzing/fritzing-app', url_hint: 'Supported: Bitbucket, Codebender, Gist, Github', popup_style: 'repository'
 
-        = simple_nested_form_for @project, url: api_v1_project_path(@project), html: {  id: 'code-repository-form', data: { remote: true, modal: '#code-repository-popup' }, class: 'remote form-within-modal' } do |f|
-          = f.simple_fields_for :widgets, CodeRepoWidget.new do |f_code|
-            = f_code.input :type, as: :hidden
-            = f_code.input :id, as: :hidden, input_html: { 'data-field-type' => 'id', class: 'resetable' }
-            = f_code.input :name, input_html: { 'data-field-type' => 'name', class: 'resetable' }, label: 'Name'
-            = f_code.input :url, label: 'Repository link', placeholder: 'Eg: https://github.com/fritzing/fritzing-app', hint: 'Supported: Bitbucket, Codebender, Gist, Github', input_html: { 'data-field-type' => 'url', class: 'resetable' }
-            = f_code.input :comment, input_html: { 'data-field-type' => 'comment', class: 'resetable' }, placeholder: 'What do files in this repo do?', as: :text
+  = render_pe_popup 'code-editor', widget_class: CodeWidget, popup_style: 'code_upload', width: 800
 
-          = f.submit 'Save changes', class: 'btn btn-primary'
-          a.close-btn.btn.btn-link data-target='#code-repository-popup' href='' Cancel
-
-  #code-editor-popup.popup-overlay.modal-popup.modal-with-form data-width='800'
-    .popup-overlay-bg
-    .popup-overlay-outer
-      .popup-overlay-inner.text-left
-        button.close data-target='#code-editor-popup' &times;
-        h4.text-center Upload or paste a file
-
-        = simple_nested_form_for @project, url: api_v1_project_path(@project), html: { id: 'code-editor-form', data: { remote: true, modal: '#code-editor-popup' }, class: 'remote form-within-modal' } do |f|
-          = f.simple_fields_for :widgets, CodeWidget.new do |f_code|
-            = f_code.input :type, as: :hidden
-            = f_code.input :id, as: :hidden, input_html: { 'data-field-type' => 'id', class: 'resetable' }
-            = f_code.input :name, input_html: { 'data-field-type' => 'name', class: 'resetable' }, label: 'File name'
-            = f_code.input :language, collection: CodeWidget::ACE_LANGUAGES.invert, input_html: { 'data-field-type' => 'language', class: 'resetable' }
-            = f_code.input :comment, input_html: { 'data-field-type' => 'comment', class: 'resetable' }, placeholder: 'What does this file do?', as: :text
-            = f_code.input :raw_code, as: :hidden, input_html: { 'data-field-type' => 'raw_code', class: 'resetable' }
-            .form-group
-              label.control-label Code
-              div style='margin-bottom:10px'
-                a.btn.btn-default.btn-xs.upload-code> Select code file
-                span.text-muted.small or paste code below
-              .code-upload-progress-container
-              .code-editor  id="code-editor-0" style='text-align:left !important;font-size:14px;'
-
-          = f.submit 'Save changes', class: 'btn btn-primary'
-          a.close-btn.btn.btn-link data-target='#code-editor-popup' href='' Cancel
-
-        form id='code-upload-form' action='/api/v1/code_files' method='post' enctype='multipart/form-data' style='display:none;'
-          input type="file" name="file"
+  form id='code-upload-form' action='/api/v1/code_files' method='post' enctype='multipart/form-data' style='display:none;'
+    input type="file" name="file"
 
   javascript:
-
     $(function(){
       var cEditor = new ProjectCodeEditor('text', '0');
       cEditor.activate();
       window.cEditor = cEditor;
 
-      $('.modal-with-form')
-        .on('modal:closed', function(){
-          $(this).find('.has-error .help-block.error-message').remove();
-          $(this).find('.form-group').removeClass('has-error');
-        });
-
-      $('.form-within-modal')
-        .on('ajax:success', function(xhr, data, status){
-          closeModal($(this).data('modal'));
-          pe.reload();
-        })
-        .on('ajax:error', function(error, xhr, status){
-          error.stopPropagation();
-
-          var $form = $(this),
-              errors,
-              errorText;
-
-          try {
-            // Populate errorText with the comment errors
-            errors = $.parseJSON(xhr.responseText);
-          } catch(err) {
-            // If the responseText is not valid JSON (like if a 500 exception was thrown), populate errors with a generic error message.
-            errors = {message: "Please reload the page and try again"};
-          }
-
-          // cleanup before adding new elements
-          $(this).find('.has-error .help-block.error-message').remove();
-          $(this).find('.form-group').removeClass('has-error');
-
-          // make it work for nested attributes in this specific case
-          for (model in errors) {
-            for (attribute in errors[model]) {
-              // transforms attribute name for nested attributes
-              var attrName = attribute;
-              if (attribute.indexOf('.') != -1) {
-                var attributes = attribute.split('.');
-                attribute = attributes[attributes.length - 1];
-              }
-              var input = $form.find('[name$="['+attribute+']"]');
-              input.parents('.form-group').addClass('has-error');
-              errorMsg = $('<span class="help-block error-message">' + errors[model][attrName] + '</span>');
-              if (input.parent().hasClass('input-group')) {
-                errorMsg.insertAfter(input.parent());
-              } else {
-                errorMsg.insertAfter(input);
-              }
-            }
-          }
-        });
-
       cEditor.ace.getSession().on('change', function(e){
         $('#code-editor-form [data-field-type="raw_code"]').val(cEditor.ace.getValue());
         resizeModal('#code-editor-popup');
-      });
-
-      $('#code-editor-popup').on('modal:opening', function(){
-        cEditor.ace.setValue($(this).find('[data-field-type="raw_code"]').val());
-        cEditor.ace.selection.clearSelection();
-        var lang = $(this).find('[data-field-type="language"]').val();
-        if (lang == '') lang = 'text';
-        cEditor.ace.getSession().setMode("ace/mode/" + lang);
-      });
-
-      $('#code-editor-popup').on('modal:open', function(){
-        cEditorUpdateHeight('#code-editor-0', cEditor.ace);
-      });
-
-      $('#code-editor-popup').on('change', '[data-field-type="language"]', function(e){
-        var lang = $(this).val();
-        if (lang == '') lang = 'text';
-        cEditor.ace.getSession().setMode("ace/mode/" + lang);
-      });
-
-      $('#code-editor-popup').on('click', '.upload-code', function(e){
-        e.preventDefault();
-
-        $('#code-upload-form input').click();
-      });
-
-      $('.pe-panel').on('click', '.modal-reset', function(e){
-        $($(this).data('target')).find('.resetable').val('');
-      });
-
-      $('.pe-panel').on('click', '.edit-in-modal', function(e){
-        e.preventDefault();
-        var popup = $(this).data('modal');
-        var inputs = $(this).closest('.fields').find('input[type=hidden]');
-        inputs.each(function(i, el){
-          var input = $(popup).find('[data-field-type="' + $(el).data('field-type') + '"]');
-          input.val($(el).val());
-        });
-        openModal(popup);
-      });
-
-
-      $("#code-upload-form").fileupload({
-        dataType: 'json',
-        limitMultifileUploads: 1,
-        sequentialUploads: true,
-        limitConcurrentUploads: 1,
-
-        add: function(e, data) {
-          fileName = data.files[0].name;
-          ext = fileName.substr(fileName.lastIndexOf('.') + 1);
-          if($.inArray(ext, ['gif','png','jpg','jpeg']) != -1) {
-            $(".code-upload-progress-container").html("<p>Images are not allowed. You can only upload files that contain code.</p>");
-            return;
-          }
-          tpl = $('<p class="progress-legend">Uploading...</p><div class="progress progress-striped active"><div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%;">');
-          $(".code-upload-progress-container").html(tpl);
-          data.context = tpl;
-          data.submit();
-        },
-
-        fail: function(e, data){
-          data.context.fadeOut(200, function(){
-            $(this).remove();
-          });
-          $(".code-upload-progress-container").html('<p>Error uploading ' + data.files[0].name + '.</p>');
-          //showErrorBubble(data.files[0].name);
-        },
-
-        progress: function(e, data) {
-          progress = parseInt(data.loaded / data.total * 100, 10);
-          target = data.context.find('.progress-bar');
-          target.css('width', progress + '%');
-          if (progress == 100) {
-            target.addClass('progress-bar-success');
-          }
-        },
-
-        success: function(data) {
-          cEditor.ace.setValue(data.raw_code);
-          cEditor.ace.selection.clearSelection();
-          if ($('#code-editor-popup [data-field-type="name"]').val() == '')
-            $('#code-editor-popup [data-field-type="name"]').val(data.name);
-          if ($('#code-editor-popup [data-field-type="language"]').val() == '')
-            $('#code-editor-popup [data-field-type="language"]').val(data.language);
-        },
-
-        done: function(e, data){
-          data.context.fadeOut(200, function(){
-            $(this).remove();
-          });
-        }
       });
     });

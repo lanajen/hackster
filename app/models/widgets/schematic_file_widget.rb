@@ -1,0 +1,2 @@
+class SchematicFileWidget < FileWidget
+end

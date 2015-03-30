@@ -14,6 +14,10 @@ class Widget < ActiveRecord::Base
   validates :type, :project_id, presence: true
   # before_create :set_position
 
+  def has_name?
+    name.present? and name != 'Untitled'
+  end
+
   def default_label
     nil
   end

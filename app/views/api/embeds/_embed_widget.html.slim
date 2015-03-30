@@ -3,6 +3,7 @@
   - if widget.comment.present?
     .comment= widget.comment
   - if embed = widget.embed and embed.provider
-    = render partial: "api/embeds/#{embed.provider_name}", locals: { embed: embed }
+    .embed class=widget.embed.format
+      = render partial: "api/embeds/#{embed.provider_name}", locals: { embed: embed }
   - else
     p Unrecognized repository.

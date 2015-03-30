@@ -119,3 +119,16 @@ h6, .h6 {
 .img-thumb {
   @extend .img-rounded;
 }
+.fa-stack.fa-stack-half {
+  width: 1em;
+  height: 1em;
+  line-height: 1em;
+}
+.fa-stack-1x.fa-stack-half {
+  font-size: 0.5em;
+}
+.form-group, .table {
+  &:last-child {
+    margin-bottom: 0;
+  }
+}

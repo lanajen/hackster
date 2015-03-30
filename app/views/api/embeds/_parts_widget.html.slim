@@ -1,18 +1,15 @@
 table.sortable-table.table.table-hover.fields-container
   thead
     tr
-      th colspan=4
+      td colspan=4 style='display:none' data-edit-only='true'
+        strong> Warning:
+        ' embedding parts within the project story has been deprecated. To edit, remove or add more parts, go to the "Hardware" tab. To remove this list from the story, click on it to trigger the context menu, then click the trash can button (this won't delete it from the "Hardware" tab).
+      th colspan=4 data-edit-hide='true'
         .pull-right
           = render partial: 'api/embeds/digikey_form', locals: { widget: embed.widget, project: @project }
   tbody
     - embed.widget.part_joins.each_with_index do |part, i|
       = render partial: "widgets/embeds/show/part", locals: { part: part, i: i }
-
-  tfoot style='display:none' data-edit-only='true'
-    tr
-      td colspan=4
-        ' To edit parts,
-        = link_to 'go to the bottom of the page.', '#components', class: 'smooth-scroll', 'data-target' => '#components'
 
 / table.sortable-table.table.table-hover.fields-container  contenteditable='false'
   thead

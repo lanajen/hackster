@@ -1,0 +1,2 @@
+class CadFileWidget < FileWidget
+end

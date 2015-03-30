@@ -1,0 +1,5 @@
+= f_widget.input :url, as: :hidden, input_html: { 'data-field-type' => 'url' }
+h5= widget.name
+p= widget.url
+- if widget.comment.present?
+  p.comment= plain_to_html widget.comment

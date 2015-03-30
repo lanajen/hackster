@@ -13,13 +13,14 @@
 
   input type='hidden' name='panel' value='basics'
 
-  .box
-    .box-title
-      h3  The basics
-      .subheading Get started with your project
-    .box-content
-      = f.error_notification
+  .pe-header
+    h2 The basics
+    .subheading Get started with your project
 
+  = f.error_notification
+
+  .box
+    .box-content
       = f.input :name, label: "Project name", hint: 'Make it sound cool!'
       = f.input :one_liner, as: :text, input_html: { rows: 3 },
         hint: "Describe your project in one short sentence", label: 'Elevator pitch'

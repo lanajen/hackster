@@ -10,6 +10,10 @@
           a.btn.btn-primary.btn-sm href=document.file_url
             ' Download
 
+    p data-edit-only='true' style='display:none;margin-top:10px;font-style:italic;font-size:0.9em'
+      strong> Warning:
+      | Embedding code files within the project story has been deprecated. To edit this file or add more files, go to the "Software" tab. To remove this file from the story, click on it to trigger the context menu, then click the trash can button (this won't delete it from the "Software" tab).
+
   - if embed.widget.comment.present?
     .comment= plain_to_html(embed.widget.comment)
 

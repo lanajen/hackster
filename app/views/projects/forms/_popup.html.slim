@@ -1,0 +1,20 @@
+- popup_id = "##{id}-popup"
+
+.popup-overlay.modal-popup.modal-with-form id=popup_id.gsub('#', '') data-width=width
+  .popup-overlay-bg.disable-click
+  .popup-overlay-outer
+    .popup-overlay-inner.text-left
+      button.close data-target=popup_id &times;
+      h4.text-center= popup_title
+
+      = simple_nested_form_for @project, url: api_v1_project_path(@project), html: {  id: "#{id}-form", data: { remote: true, modal: popup_id }, class: 'remote form-within-modal' } do |f|
+        = f.simple_fields_for :widgets, widget_class.new do |f_widget|
+          = f_widget.input :type, as: :hidden, input_html: { 'data-field-type' => 'type' }
+          = f_widget.input :id, as: :hidden, input_html: { 'data-field-type' => 'id', class: 'resetable' }
+          = f_widget.input :name, input_html: { 'data-field-type' => 'name', class: 'resetable' }, label: 'Name'
+          = f_widget.input :comment, input_html: { 'data-field-type' => 'comment', class: 'resetable' }, placeholder: 'What is it? How do you use it?', as: :text
+          - if :popup_style.in? local_assigns
+            = render partial: "projects/forms/#{popup_style}_popup", locals: { f_widget: f_widget }.merge(local_assigns)
+
+        = f.submit 'Save changes', class: 'btn btn-primary'
+        a.close-btn.btn.btn-link data-target=popup_id href='' Cancel

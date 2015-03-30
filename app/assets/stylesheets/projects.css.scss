@@ -291,6 +291,17 @@
   display: none;
 }
 
+.pe-header {
+  text-align: center;
+  margin: 20px 0 40px;
+  h2 {
+    margin: 0 0 10px;
+  }
+  .subheading {
+    color: #777;
+  }
+}
+
 .pe-error {
   float: left;
   padding: 10px 0;
@@ -322,7 +333,10 @@
 
 #software, #hardware {
   .btn-group {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
   table {
     .actions {
@@ -357,6 +371,7 @@
   .button-content-container {
     display: table;
     width: 100%;
+    margin-bottom: 5px;
   }
   .button-content {
     display: table-row;

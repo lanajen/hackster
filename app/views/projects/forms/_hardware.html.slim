@@ -1,80 +1,176 @@
 /
   can we reduce the size of component inputs?
-  add schematics: upload + link (embed)
-  add CAD: upload + link (embed)
   add assembly instructions (steps?)
-
 
 
 = simple_nested_form_for @project, url: api_v1_project_path(@project), html: { data: { remote: true }, class: 'form-horizontal remote' }, wrapper: :bootstrap3_horizontal do |f|
 
   input type='hidden' name='panel' value='hardware'
+  input type='hidden' name='save' value='1'
+
+  .pe-header
+    h2 The hardware
+    .subheading What are the components that you're using in this project? How are they assembled?
+
+  = f.error_notification
 
   .box
-    .box-title
-      h3 The hardware
-      .subheading What are the components that you're using in this project? How are they assembled?
+    .box-title.small-title
+      h4 Components
     .box-content
-      = f.error_notification
+      - @project.widgets.where(type: 'PartsWidget').first_or_create
+      - @project.widgets.where(type: 'PartsWidget').each do |widget|
+        = render partial: 'widgets/embeds/form/parts_widget', locals: { widget: widget, f: f }
 
-      .box-section
-        h4.title Components
-        - @project.widgets.where(type: 'PartsWidget').first_or_create
-        - @project.widgets.where(type: 'PartsWidget').each do |widget|
-          = render partial: 'widgets/embeds/form/parts_widget', locals: { widget: widget, f: f }
+  .box
+    .box-title.small-title
+      h4 Schematics
+    .box-content
+      .btn-group
+        a.btn.btn-sm.btn-default.modal-open.modal-reset data-target='#upload-popup' data-field-type='SchematicFileWidget'
+          i.fa.fa-cloud-upload>
+          | Upload image or file
+        a.btn.btn-sm.btn-default.modal-open.modal-reset data-target='#schematic-repo-popup'
+          i.fa.fa-link>
+          | Link existing repository
 
-      .box-section
-        h4.title schematics
+      / # = render partial: 'projects/forms/table', locals: { f: f, id: 'schematic-repo', widget_types: 'SchematicWidget', style: 'repository' }
 
-        .btn-group
-          / a.btn.btn-sm.btn-default.modal-open.modal-reset data-target='#schematic-upload-popup'
-            i.fa.fa-cloud-upload>
-            | Upload file
-          a.btn.btn-sm.btn-default.modal-open.modal-reset data-target='#schematic-link-popup'
-            i.fa.fa-link>
-            | Link existing repository
-
+      - if @project.widgets.where(type: %w(SchematicWidget SchematicFileWidget)).any?
         table.table.table-decorated.table-hover#sortable
           tbody
-            - @project.widgets.where(type: 'SchematicWidget').each do |widget|
-              / = render partial: 'widgets/embeds/form/schematic_widget', locals: { widget: widget, f: f }
-              = f.simple_fields_for :widgets, widget do |f_widget|
+            - @project.widgets.where(type: %w(SchematicWidget SchematicFileWidget)).order(:created_at).each do |file|
+              = f.simple_fields_for :widgets, file do |f_widget|
                 tr.fields
                   / td
                     i.fa.fa-bars.handle
-                  td.details
+                  td
                     = f_widget.input :id, as: :hidden, input_html: { 'data-field-type' => 'id' }
                     = f_widget.input :position, as: :hidden, input_html: { 'data-field-type' => 'position', class: 'position' }
                     = f_widget.input :name, as: :hidden, input_html: { 'data-field-type' => 'name' }
                     = f_widget.input :comment, as: :hidden, input_html: { 'data-field-type' => 'comment' }
-                    = f_widget.input :url, as: :hidden, input_html: { 'data-field-type' => 'url' }
-                    h5= widget.name
-                    p= widget.url
-                    - if widget.comment.present?
-                      p.comment= plain_to_html widget.comment
+                    = f_widget.input :type, as: :hidden, input_html: { 'data-field-type' => 'type' }
+                    - if file.type == 'SchematicFileWidget'
+                      = f_widget.input :document_file_name, as: :hidden, input_html: { 'data-field-type' => 'document_file_name', name: '' }
+                      = f_widget.input :document_id, as: :hidden, input_html: { 'data-field-type' => 'document_id' }
+                    - else
+                      = f_widget.input :url, as: :hidden, input_html: { 'data-field-type' => 'url' }
+                    - if file.type == 'SchematicFileWidget'
+                      - case file.document.try(:type)
+                      - when 'ImageFile'
+                        i.fa.fa-file-image-o
+                      - when 'PdfFile'
+                        i.fa.fa-file-pdf-o
+                      - when 'SketchfabFile'
+                        span.fa-stack.fa-stack-half
+                          i.fa.fa-file-o.fa-stack-1x
+                          i.fa.fa-cube.fa-stack-1x.fa-stack-half
+                      - else
+                        i.fa.fa-file-o
+                    - else
+                      i.fa.fa-link
+                  td.details
+                    h5= file.name
+                    - if file.type == 'SchematicFileWidget'
+                      p
+                        - if file.document
+                          = file.document.file_name
+                        - else
+                          | No document
+                    - else
+                      p= file.url
+                    - if file.comment.present?
+                      p.comment= plain_to_html file.comment
                   td
                     .actions
-                      a.edit-in-modal.btn.btn-sm.btn-link data-modal="#schematic-link-popup" href=''
-                        | Edit
+                      - if file.type == 'SchematicFileWidget'
+                        a.edit-in-modal.btn.btn-sm.btn-link data-modal='#upload-popup' href=''
+                          | Edit
+                      - else
+                        a.edit-in-modal.btn.btn-sm.btn-link data-modal='#schematic-repo-popup' href=''
+                          | Edit
+                      = f_widget.link_to_remove 'Delete', class: 'btn btn-sm btn-link'
+
+  .box
+    .box-title.small-title
+      h4 CAD
+      .subheading Enclosures and custom parts
+    .box-content
+      .btn-group
+        a.btn.btn-sm.btn-default.modal-open.modal-reset data-target='#upload-popup' data-field-type='CadFileWidget'
+          i.fa.fa-cloud-upload>
+          | Upload file
+        a.btn.btn-sm.btn-default.modal-open.modal-reset data-target='#cad-repo-popup'
+          i.fa.fa-link>
+          | Link existing repository
+
+      / # = render partial: 'projects/forms/table', locals: { f: f, id: 'cad-repo', widget_types: %w(CadRepoWidget), style: 'repository' }
+
+      - if @project.widgets.where(type: %w(CadRepoWidget CadFileWidget)).any?
+        table.table.table-decorated.table-hover#sortable
+          tbody
+            - @project.widgets.where(type: %w(CadRepoWidget CadFileWidget)).order(:created_at).each do |file|
+              = f.simple_fields_for :widgets, file do |f_widget|
+                tr.fields
+                  / td
+                    i.fa.fa-bars.handle
+                  td
+                    = f_widget.input :id, as: :hidden, input_html: { 'data-field-type' => 'id' }
+                    = f_widget.input :position, as: :hidden, input_html: { 'data-field-type' => 'position', class: 'position' }
+                    = f_widget.input :name, as: :hidden, input_html: { 'data-field-type' => 'name' }
+                    = f_widget.input :comment, as: :hidden, input_html: { 'data-field-type' => 'comment' }
+                    = f_widget.input :type, as: :hidden, input_html: { 'data-field-type' => 'type' }
+                    - if file.type == 'CadFileWidget'
+                      = f_widget.input :document_file_name, as: :hidden, input_html: { 'data-field-type' => 'document_file_name', name: '' }
+                      = f_widget.input :document_id, as: :hidden, input_html: { 'data-field-type' => 'document_id' }
+                    - else
+                      = f_widget.input :url, as: :hidden, input_html: { 'data-field-type' => 'url' }
+                    - if file.type == 'CadFileWidget'
+                      - case file.document.try(:type)
+                      - when 'ImageFile'
+                        i.fa.fa-file-image-o
+                      - when 'SketchfabFile'
+                        span.fa-stack.fa-stack-half
+                          i.fa.fa-file-o.fa-stack-1x
+                          i.fa.fa-cube.fa-stack-1x.fa-stack-half
+                      - else
+                        i.fa.fa-file-o
+                    - else
+                      i.fa.fa-link
+                  td.details
+                    h5= file.name
+                    - if file.type == 'CadFileWidget'
+                      p
+                        - if file.document
+                          = file.document.file_name
+                        - else
+                          | No document
+                    - else
+                      p= file.url
+                    - if file.comment.present?
+                      p.comment= plain_to_html file.comment
+                  td
+                    .actions
+                      - if file.type == 'CadFileWidget'
+                        a.edit-in-modal.btn.btn-sm.btn-link data-modal='#upload-popup' href=''
+                          | Edit
+                      - else
+                        a.edit-in-modal.btn.btn-sm.btn-link data-modal='#cad-repo-popup' href=''
+                          | Edit
                       = f_widget.link_to_remove 'Delete', class: 'btn btn-sm btn-link'
 
 
 = content_for :js do
 
-  #schematic-link-popup.popup-overlay.modal-popup.modal-with-form
-    .popup-overlay-bg
-    .popup-overlay-outer
-      .popup-overlay-inner.text-left
-        button.close data-target='#schematic-link-popup' &times;
-        h4.text-center Link an existing repository
+  = render_pe_popup 'upload', widget_class: FileWidget, popup_style: 'upload'
+  = render_pe_popup 'schematic-repo', widget_class: SchematicWidget, url_placeholder: 'Eg: https://upverter.com/honnet/69441ea47f5d22da/twi', url_hint: 'Supported: 123D Circuits, OSH Park, Upverter', popup_style: 'repository'
+  = render_pe_popup 'cad-repo', widget_class: CadRepoWidget, url_placeholder: 'Eg: https://sketchfab.com/models/c0541f8dbd3d42829205516bf6a71f29', url_hint: 'Supported: Autodesk Fusion 360, Sketchfab, Youmagine', popup_style: 'repository'
 
-        = simple_nested_form_for @project, url: api_v1_project_path(@project), html: {  id: 'schematic-link-form', data: { remote: true, modal: '#schematic-link-popup' }, class: 'remote form-within-modal' } do |f|
-          = f.simple_fields_for :widgets, SchematicWidget.new do |f_widget|
-            = f_widget.input :type, as: :hidden
-            = f_widget.input :id, as: :hidden, input_html: { 'data-field-type' => 'id', class: 'resetable' }
-            = f_widget.input :name, input_html: { 'data-field-type' => 'name', class: 'resetable' }, label: 'Name'
-            = f_widget.input :url, label: 'Repository link', placeholder: 'Eg: https://upverter.com/honnet/69441ea47f5d22da/twi', hint: 'Supported: 123D Circuits, OSH Park, Upverter', input_html: { 'data-field-type' => 'url', class: 'resetable' }
-            = f_widget.input :comment, input_html: { 'data-field-type' => 'comment', class: 'resetable' }, placeholder: 'What does this represent?', as: :text
-
-          = f.submit 'Save changes', class: 'btn btn-primary'
-          a.close-btn.btn.btn-link data-target='#schematic-link-popup' href='' Cancel
+  form#file-upload-form action="https://#{ENV['FOG_DIRECTORY']}.s3.amazonaws.com" enctype="multipart/form-data" method="post" style="display:none;"
+    input name="key" type="hidden"
+    input name="AWSAccessKeyId" type="hidden" value="#{ENV['AWS_ACCESS_KEY_ID']}"
+    input name="acl" type="hidden" value="public-read"
+    input name="policy" type="hidden"
+    input name="signature" type="hidden"
+    input name="success_action_status" type="hidden" value="201"
+    input name="file" type="file" multiple='multiple'

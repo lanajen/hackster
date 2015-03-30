@@ -129,15 +129,26 @@
                     - embed = Embed.new widget_id: widget_id
                     = render partial: 'api/embeds/embed', locals: { embed: embed }
 
-            - if @project.widgets.where(type: %w(SchematicWidget)).any?
-              section#code.section-container.section-collapsible
+            - if @project.widgets.where(type: %w(CadRepoWidget CadFileWidget)).any?
+              section#cad.section-container.section-collapsible
+                h2.section-title
+                  a.title.title-toggle href=''
+                    ' Custom parts and enclosures
+                    i.fa.fa-chevron-down
+                    i.fa.fa-chevron-up
+                .section-content
+                  - @project.widgets.where(type: %w(CadRepoWidget CadFileWidget)).order(:created_at).each do |widget|
+                    = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
+
+            - if @project.widgets.where(type: %w(SchematicWidget SchematicFileWidget)).order(:created_at).any?
+              section#schematics.section-container.section-collapsible
                 h2.section-title
                   a.title.title-toggle href=''
                     ' Schematics
                     i.fa.fa-chevron-down
                     i.fa.fa-chevron-up
                 .section-content
-                  - @project.widgets.where(type: %w(SchematicWidget)).each do |widget|
+                  - @project.widgets.where(type: %w(SchematicWidget SchematicFileWidget)).order(:created_at).each do |widget|
                     = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
 
             - if @project.widgets.where(type: %w(CodeWidget CodeRepoWidget)).any?
@@ -216,14 +227,6 @@
                     p No issues yet.
 
                   = link_to 'See all issues', project_logs_path, class: 'btn btn-default btn-sm'
-
-            / section#code.section-container.section-collapsible
-              h2.section-title
-                a.title.title-toggle href=''
-                  ' CAD files
-                  i.fa.fa-chevron-down
-                  i.fa.fa-chevron-up
-              .section-content
 
             / section#instructions.section-container.section-collapsible
               h2.section-title
@@ -455,9 +458,13 @@
                         li
                           a.smooth-scroll href="#components" data-target="#components"
                             | Components
-                      - if @project.widgets.where(type: %w(SchematicWidget)).any?
+                      - if @project.widgets.where(type: %w(CadRepoWidget CadFileWidget)).any?
                         li
-                          a.smooth-scroll href="#code" data-target="#code"
+                          a.smooth-scroll href="#cad" data-target="#cad"
+                            | Custom parts and enclosures
+                      - if @project.widgets.where(type: %w(SchematicWidget SchematicFileWidget)).any?
+                        li
+                          a.smooth-scroll href="#schematics" data-target="#schematics"
                             | Schematics
                       - if @project.widgets.where(type: %w(CodeWidget CodeRepoWidget)).any?
                         li

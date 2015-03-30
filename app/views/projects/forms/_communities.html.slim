@@ -19,13 +19,14 @@
 
   input type='hidden' name='panel' value='communities'
 
-  .box
-    .box-title
-      h3 The communities
-      .subheading Is this project part of a bigger thing? Do you want to share it with other communities?
-    .box-content
-      = f.error_notification
+  .pe-header
+    h2 The communities
+    .subheading Is this project part of a bigger thing? Do you want to share it with other communities?
 
+  = f.error_notification
+
+  .box
+    .box-content
       = f.input :platform_tags_array, label: 'Platforms used', hint: "Select all the platforms you've used", collection: (Platform.public.order(:full_name).pluck(:full_name) + @project.platform_tags_array).uniq.sort, input_html: { multiple: 'multiple' }
       - communities = current_user.is?(:admin) ? Community.where(type: 'Community').order(:full_name) : current_user.communities.where(type: 'Community')
       - if communities.any?

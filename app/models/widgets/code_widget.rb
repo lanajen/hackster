@@ -1,7 +1,3 @@
-# next:
-# - upload files for schematics
-# - do CAD
-
 require 'linguist'
 require 'open-uri'
 require 'ptools'
@@ -256,7 +252,7 @@ class CodeWidget < Widget
   end
 
   def name
-    super || 'Untitled'
+    super || 'Untitled file'
   end
 
   def to_json

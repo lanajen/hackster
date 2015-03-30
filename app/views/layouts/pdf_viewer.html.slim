@@ -1,0 +1,39 @@
+doctype 5
+
+html(lang="en")
+  head
+    meta(http-equiv="content-type" content="text/html; charset=UTF-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title PDF Viewer
+    = javascript_include_tag 'pdf_viewer'
+    javascript:
+      PDFJS.workerSrc = '/assets/pdf.worker.js';
+      PDFJS.getDocument('#{@url}').then(function(pdf) {
+        // Using promise to fetch the page
+        pdf.getPage(1).then(function(page) {
+          var scale = 1;
+          var viewport = page.getViewport(scale);
+
+          //
+          // Prepare canvas using PDF page dimensions
+          //
+          var canvas = document.getElementById('canvas');
+          var context = canvas.getContext('2d');
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+
+          //
+          // Render PDF page into canvas context
+          //
+          var renderContext = {
+            canvasContext: context,
+            viewport: viewport
+          };
+          page.render(renderContext);
+        });
+      });
+
+  body
+    canvas#canvas
+

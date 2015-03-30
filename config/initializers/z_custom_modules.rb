@@ -35,3 +35,12 @@ require File.join(Rails.root, 'lib/heroku_domains')
 # markdown converter
 require File.join(Rails.root, 'lib/markdown_filter')
 require File.join(Rails.root, 'lib/single_line_html')
+
+# require it so that STI works correctly; not necessarily in prod since all classes are preloaded
+if Rails.env == 'development'
+  require File.join(Rails.root, 'app/models/attachments/sketchfab_file')
+  require File.join(Rails.root, 'app/models/attachments/image_file')
+  require File.join(Rails.root, 'app/models/attachments/pdf_file')
+  require File.join(Rails.root, 'app/models/widgets/cad_file_widget')
+  require File.join(Rails.root, 'app/models/widgets/schematic_file_widget')
+end

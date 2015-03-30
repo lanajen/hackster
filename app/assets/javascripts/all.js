@@ -267,12 +267,6 @@ $(function () {
     });
   });
 
-  if ($('.popup-overlay').length) {
-    $('.popup-overlay-bg').click(function(){
-      $('.popup-overlay').fadeOut(200);
-    });
-  }
-
   $('a.smooth-scroll').click(function(e){
     target = '#' + this.hash.substring(1);
     offset = $(this).data('offset') || 0;

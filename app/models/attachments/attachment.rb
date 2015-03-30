@@ -18,6 +18,20 @@ class Attachment < ActiveRecord::Base
     @disallow_blank_file = true
   end
 
+  def file_extension
+    file_name.split('.').last
+  end
+
+  def file_name
+    if file_url.present?
+      File.basename file_url
+    elsif tmp_file.present?
+      File.basename tmp_file
+    else
+      'unknown'
+    end
+  end
+
   def needs_processing?
     send(:_mounter, :file).uploader.needs_processing?
   end
@@ -28,14 +42,14 @@ class Attachment < ActiveRecord::Base
     s3 = AWS::S3.new
 
     s3_tmp_file = tmp_file.split('/')[3..-1].join('/')
-    file_name = s3_tmp_file.split('/').last
-    file_path = "uploads/#{self.class.name.underscore}/file/#{id}/#{file_name}"
+    name = s3_tmp_file.split('/').last
+    file_path = "uploads/#{self.class.name.underscore}/file/#{id}/#{name}"
     s3.buckets[ENV['FOG_DIRECTORY']].objects[s3_tmp_file].move_to(file_path, acl: :public_read)
 
-    raw_write_attribute :file, file_name
+    raw_write_attribute :file, name
     file.recreate_versions! if needs_processing?  # only if has post processing
 
-    update_attributes file: file_name, tmp_file: nil
+    update_attributes file: name, tmp_file: nil
 
     # notify_observers :after_process
 

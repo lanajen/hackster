@@ -63,7 +63,7 @@ $(function () {
     }
   });
 
-  $('body').on('click', '.modal-popup .popup-overlay-bg', function(e){
+  $('body').on('click', '.modal-popup .popup-overlay-bg:not(.disable-click)', function(e){
     e.preventDefault();
     closeModal('#' + $(this).parent().attr('id'));
   });

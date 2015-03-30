@@ -124,6 +124,25 @@ module ApplicationHelper
     count == 1 ? "#{noun}#{text}" : "#{noun.pluralize}#{text}"
   end
 
+  def render_pe_popup id, locals={}
+    locals[:id] = id
+    locals[:popup_title] = locals[:title]
+    locals[:width] ||= nil
+    if locals[:popup_title].nil?
+      locals[:popup_title] = case locals[:popup_style]
+      when 'code_upload'
+        'Upload or paste a file'
+      when 'upload'
+        'Upload a file'
+      when 'repository'
+        'Link an existing repository'
+      else
+        ''
+      end
+    end
+    render(partial: 'projects/forms/popup', locals: locals).html_safe
+  end
+
   def roles_with_mask model_class, attribute
     roles = {}
     model_class.send("#{attribute}").each do |role|

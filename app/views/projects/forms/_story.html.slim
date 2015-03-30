@@ -12,13 +12,14 @@
 
   input type='hidden' name='panel' value='story'
 
-  .box
-    .box-title
-      h3 The meaty details
-      .subheading What is your project about? Why did you decide to make it? How does it work? What's the code? How to assemble it? Tell us everything!
-    .box-content
-      = f.error_notification
+  .pe-header
+    h2 The story
+    .subheading What is your project about? Why did you decide to make it? How does it work?
 
+  = f.error_notification
+
+  .box
+    .box-content
       = f.input :description, as: :hidden
 
       #model-editor data-model-id=@project.id data-model-type='Project' data-model-symbol='project' data-model-placeholder="Start describing your #{@project.is_idea? ? 'project idea' : 'project'} here. Enter text or add media by clicking the left button." data-model-url='/api/v1/projects' data-save-mode='form'

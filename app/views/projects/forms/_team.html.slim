@@ -6,13 +6,14 @@
 
   input type='hidden' name='panel' value='team'
 
-  .box
-    .box-title
-      h3 The team
-      .subheading Who made this?
-    .box-content
-      = f.error_notification
+  .pe-header
+    h2 The team
+    .subheading Who made this?
 
+  = f.error_notification
+
+  .box
+    .box-content
       .form-group.boolean.optional
         .col-xs-12
           input name="use_guest" type="hidden" value="0"
@@ -81,21 +82,22 @@
               span.input-group-addon
                 | /#{@project.slug}
 
-        hr style='margin:30px 0'
-        h4
-          ' Work attribution
-          small If you're using other people's work, give a shout for them here
-        - widget = @project.credits_widget
-        = f.simple_fields_for :widgets, widget do |f_cred|
-          - widget.new_credit_line if widget.credit_lines.empty?
-          .form-fields
-            = f_cred.simple_fields_for :credit_lines do |f_credit|
-              = f_credit.input :name, label: 'Contributor name'
-              = f_credit.input :work, label: 'What you credit them for'
-              = f_credit.input :link, label: 'Link (optional)'
-              .row
-                .col-xs-offset-4.col-md-8= f_credit.link_to_remove 'Remove this contributor', class: 'btn btn-xs btn-danger'
-            = f_cred.link_to_add 'Add another contributor', :credit_lines, class: 'btn btn-xs btn-success', style: 'margin:0 0 0 33.33333%;'
+  .box
+    .box-title.small-title
+      h4 Work attribution
+      .subheading If you're using other people's work, give a shout for them here
+    .box-content
+      - widget = @project.credits_widget
+      = f.simple_fields_for :widgets, widget do |f_cred|
+        - widget.new_credit_line if widget.credit_lines.empty?
+        .form-fields
+          = f_cred.simple_fields_for :credit_lines do |f_credit|
+            = f_credit.input :name, label: 'Contributor name'
+            = f_credit.input :work, label: 'What you credit them for'
+            = f_credit.input :link, label: 'Link (optional)'
+            .row
+              .col-xs-offset-4.col-md-8= f_credit.link_to_remove 'Remove this contributor', class: 'btn btn-xs btn-danger'
+          = f_cred.link_to_add 'Add another contributor', :credit_lines, class: 'btn btn-xs btn-success', style: 'margin:0 0 0 33.33333%;'
 
 
   javascript:

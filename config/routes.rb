@@ -421,6 +421,8 @@ HackerIo::Application.routes.draw do
   get 'tags/:tag' => 'search#tags', as: :tags
   get 'tags' => 'search#tags'
 
+  get 'pdf_viewer' => 'pages#pdf_viewer'
+
   constraints(ClientSite) do
     scope module: :client, as: :client do
       get 'parts' => 'parts#index'

@@ -318,6 +318,249 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
       $(this).trigger('change');
     });
 
+    // event methods for software/hardware
+    $('.modal-with-form')
+      .on('click', '.select-file', function(e){
+        e.preventDefault();
+
+        var form = $($(this).data('form'));
+        form.find('input:file').click();
+      })
+      .on('modal:closed', function(){
+        $(this).find('.has-error .help-block.error-message').remove();
+        $(this).find('.form-group').removeClass('has-error');
+      });
+
+    $('.form-within-modal')
+      .on('ajax:success', function(xhr, data, status){
+        closeModal($(this).data('modal'));
+        pe.reload();
+      })
+      .on('ajax:error', function(error, xhr, status){
+        error.stopPropagation();
+
+        var $form = $(this),
+            errors,
+            errorText;
+
+        try {
+          // Populate errorText with the comment errors
+          errors = $.parseJSON(xhr.responseText);
+        } catch(err) {
+          // If the responseText is not valid JSON (like if a 500 exception was thrown), populate errors with a generic error message.
+          errors = {message: "Please reload the page and try again"};
+        }
+
+        // cleanup before adding new elements
+        $(this).find('.has-error .help-block.error-message').remove();
+        $(this).find('.form-group').removeClass('has-error');
+
+        // make it work for nested attributes in this specific case
+        for (model in errors) {
+          for (attribute in errors[model]) {
+            // transforms attribute name for nested attributes
+            var attrName = attribute;
+            if (attribute.indexOf('.') != -1) {
+              var attributes = attribute.split('.');
+              attribute = attributes[attributes.length - 1];
+            }
+            var input = $form.find('[name$="['+attribute+']"]');
+            input.parents('.form-group').addClass('has-error');
+            errorMsg = $('<span class="help-block error-message">' + errors[model][attrName] + '</span>');
+            if (input.parent().hasClass('input-group')) {
+              errorMsg.insertAfter(input.parent());
+            } else {
+              errorMsg.insertAfter(input);
+            }
+          }
+        }
+      });
+
+    $('#code-editor-popup').on('modal:opening', function(){
+      cEditor.ace.setValue($(this).find('[data-field-type="raw_code"]').val());
+      cEditor.ace.selection.clearSelection();
+      var lang = $(this).find('[data-field-type="language"]').val();
+      if (lang == '') lang = 'text';
+      cEditor.ace.getSession().setMode("ace/mode/" + lang);
+    });
+
+    $('#code-editor-popup').on('modal:open', function(){
+      cEditorUpdateHeight('#code-editor-0', cEditor.ace);
+    });
+
+    $('#code-editor-popup').on('change', '[data-field-type="language"]', function(e){
+      var lang = $(this).val();
+      if (lang == '') lang = 'text';
+      cEditor.ace.getSession().setMode("ace/mode/" + lang);
+    });
+
+    $('#code-editor-popup').on('click', '.upload-code', function(e){
+      e.preventDefault();
+
+      $('#code-upload-form input').click();
+    });
+
+    $('.pe-panel').on('click', '.modal-reset', function(e){
+      var target = $($(this).data('target'));
+      target.find('.resetable').val('');
+      var type = $(this).data('field-type');
+      if (type)
+        target.find('[data-field-type=type]').val(type);
+    });
+
+    $('.pe-panel').on('click', '.edit-in-modal', function(e){
+      e.preventDefault();
+      var popup = $(this).data('modal');
+      var inputs = $(this).closest('.fields').find('input[type=hidden]');
+      inputs.each(function(i, el){
+        var input = $(popup).find('[data-field-type="' + $(el).data('field-type') + '"]');
+        input.val($(el).val());
+      });
+      openModal(popup);
+    });
+
+
+    $("#code-upload-form").fileupload({
+      dataType: 'json',
+      limitMultifileUploads: 1,
+      sequentialUploads: true,
+      limitConcurrentUploads: 1,
+
+      add: function(e, data) {
+        fileName = data.files[0].name;
+        ext = fileName.substr(fileName.lastIndexOf('.') + 1);
+        if($.inArray(ext, ['gif','png','jpg','jpeg']) != -1) {
+          $(".code-upload-progress-container").html("<p>Images are not allowed. You can only upload files that contain code.</p>");
+          return;
+        }
+        tpl = $('<p class="progress-legend">Uploading...</p><div class="progress progress-striped active"><div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%;">');
+        $(".code-upload-progress-container").html(tpl);
+        data.context = tpl;
+        data.submit();
+      },
+
+      fail: function(e, data){
+        data.context.fadeOut(200, function(){
+          $(this).remove();
+        });
+        $(".code-upload-progress-container").html('<p>Error uploading ' + data.files[0].name + '.</p>');
+        //showErrorBubble(data.files[0].name);
+      },
+
+      progress: function(e, data) {
+        progress = parseInt(data.loaded / data.total * 100, 10);
+        target = data.context.find('.progress-bar');
+        target.css('width', progress + '%');
+        if (progress == 100) {
+          target.addClass('progress-bar-success');
+        }
+      },
+
+      success: function(data) {
+        cEditor.ace.setValue(data.raw_code);
+        cEditor.ace.selection.clearSelection();
+        if ($('#code-editor-popup [data-field-type="name"]').val() == '')
+          $('#code-editor-popup [data-field-type="name"]').val(data.name);
+        if ($('#code-editor-popup [data-field-type="language"]').val() == '')
+          $('#code-editor-popup [data-field-type="language"]').val(data.language);
+      },
+
+      done: function(e, data){
+        data.context.fadeOut(200, function(){
+          $(this).remove();
+        });
+      }
+    });
+
+    $('#file-upload-form').fileupload({
+      dataType: 'xml', // This is really important as s3 gives us back the url of the file in a XML document
+      limitMultifileUploads: 1,
+      sequentialUploads: true,
+      limitConcurrentUploads: 1,
+      fileInput: $('#file-upload-form input:file'),
+      dropZone: $('#file-upload-form'),
+
+      add: function(e, data) {
+        file = data.files[0];
+        tpl = $('<p class="progress-legend">Uploading...</p><div class="progress progress-striped active"><div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%;">');
+        $(".file-upload-progress-container").html(tpl);
+        data.context = tpl;
+
+        var form = $(this);
+        var _data = data;
+        data.context.data('data', data);
+
+        $.ajax({
+          url: '/files/signed_url',
+          type: 'GET',
+          dataType: 'json',
+          data: { file: {name: file.name}, context: 'no-context' },
+          success: function(data) {
+            form.find('input[name=key]').val(data.key);
+            form.find('input[name=policy]').val(data.policy);
+            form.find('input[name=signature]').val(data.signature);
+            _data.submit();
+          },
+          error: function(data) {
+            context = decodeURIComponent($.urlParam(this.url, 'context'));
+            handleUploadErrors($('#' + context));
+          }
+        });
+      },
+
+      fail: function(e, data){
+        data.context.fadeOut(200, function(){
+          $(this).remove();
+        });
+        $(".code-upload-progress-container").html('<p>Error uploading ' + data.files[0].name + '.</p>');
+      },
+
+      progress: function(e, data) {
+        progress = parseInt(data.loaded / data.total * 100, 10);
+        target = data.context.find('.progress-bar');
+        target.css('width', progress + '%');
+        if (progress == 100) {
+          target.addClass('progress-bar-success');
+        }
+      },
+
+      success: function(data) {
+        var url = $(data).find('Location').text(); // or Key for path
+        form = $('#file-upload-form');
+        form.attr('data-url', url);  // pass it to 'done'
+      },
+
+      done: function(e, data){
+        var _data = data;
+
+        data.context.data('data', data);
+
+        form = $('#file-upload-form');
+        form.data('data', data);
+        url = form.attr('data-url');
+
+        $.ajax({
+          url: '/files',
+          type: 'POST',
+          dataType: 'json',
+          data: {
+            file_url: url,
+            file_type: 'document',
+            context: 'no-context'
+          },
+          success: function(data) {
+            $('[data-field-type=document_file_name]').val(data.file_name);
+            $('[data-field-type=document_id]').val(data.id);
+            _data.context.remove();
+          },
+          error: function(data) {
+            context = decodeURIComponent($.urlParam(this.data, 'context'));
+            handleUploadErrors($('#' + context));
+          }
+        });
+      }
+    });
+
     window.addEventListener("beforeunload", function (e) {
       if (pe.unsavedChanges()) {
         var message = "There are unsaved changes.";

@@ -1,0 +1,9 @@
+= f_widget.input :language, collection: CodeWidget::ACE_LANGUAGES.invert, input_html: { 'data-field-type' => 'language', class: 'resetable' }
+= f_widget.input :raw_code, as: :hidden, input_html: { 'data-field-type' => 'raw_code', class: 'resetable' }
+.form-group
+  label.control-label Code
+  div style='margin-bottom:10px'
+    a.btn.btn-default.btn-xs.upload-code> Select code file
+    span.text-muted.small or paste code below
+  .code-upload-progress-container
+  .code-editor  id="code-editor-0" style='text-align:left !important;font-size:14px;'

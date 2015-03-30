@@ -44,8 +44,16 @@ class Embed
     provider
   end
 
+  def cad_repo?
+    provider and provider_name.to_s.in? %w(autodesk360 sketchfab youmagine)
+  end
+
   def code_repo?
     provider and provider_name.to_s.in? %w(bitbucket codebender gist github snip2code)
+  end
+
+  def for_text_editor?
+    provider and provider_name.to_s.in? %w(instagram kickstarter ustream vimeo vine youtube image mp4)
   end
 
   def schematic_repo?

@@ -10,7 +10,7 @@ class FilesController < ApplicationController
     @file.tmp_file = CGI.unescape params[:file_url]
 
     if @file.save
-      render json: @file.attributes.merge(context: params[:context]), status: :ok
+      render json: @file.attributes.merge(file_name: @file.file_name).merge(context: params[:context]), status: :ok
     else
       render json: @file.errors, status: :unprocessable_entity
     end

@@ -1553,67 +1553,67 @@ $(function () {
     }
   });
 
-  $('#sketchfab-upload').fileupload({
-    dataType: 'xml', // This is really important as s3 gives us back the url of the file in a XML document
-    limitMultifileUploads: 1,
-    sequentialUploads: true,
-    limitConcurrentUploads: 1,
-    fileInput: $('#sketchfab-upload input:file'),
-    dropZone: $('#sketchfab-upload'),
+  // $('#sketchfab-upload').fileupload({
+  //   dataType: 'xml', // This is really important as s3 gives us back the url of the file in a XML document
+  //   limitMultifileUploads: 1,
+  //   sequentialUploads: true,
+  //   limitConcurrentUploads: 1,
+  //   fileInput: $('#sketchfab-upload input:file'),
+  //   dropZone: $('#sketchfab-upload'),
 
-    add: function(e, data) {
-      file = data.files[0];
-      tpl = $('<div class="embed-frame remove-on-save" id="sketchfab-' + editor.iFile + '"><div class="embed">' + progressTpl + '</div></<div>');
-      tpl.insertBefore('#sketchfab-placeholder');
-      data.context = 'sketchfab-' + editor.iFile;
-      editor.iFile++;
+  //   add: function(e, data) {
+  //     file = data.files[0];
+  //     tpl = $('<div class="embed-frame remove-on-save" id="sketchfab-' + editor.iFile + '"><div class="embed">' + progressTpl + '</div></<div>');
+  //     tpl.insertBefore('#sketchfab-placeholder');
+  //     data.context = 'sketchfab-' + editor.iFile;
+  //     editor.iFile++;
 
-      editor.showLoadingBar();
-      uploadToS3(data, file, $(this));
-    },
+  //     editor.showLoadingBar();
+  //     uploadToS3(data, file, $(this));
+  //   },
 
-    fail: function(e, data){
-      form = $('#sketchfab-upload');
-      handleUploadErrors(form);
-      editor.hideLoadingBar();
-    },
+  //   fail: function(e, data){
+  //     form = $('#sketchfab-upload');
+  //     handleUploadErrors(form);
+  //     editor.hideLoadingBar();
+  //   },
 
-    progress: function(e, data) {
-      showUploadProgress(data);
-    },
+  //   progress: function(e, data) {
+  //     showUploadProgress(data);
+  //   },
 
-    progressall: function(e, data) {
-      progress = parseInt(data.loaded / data.total * 100, 10);
-      if (progress == 100) {
-        $('#sketchfab-placeholder').remove();
-      }
-    },
+  //   progressall: function(e, data) {
+  //     progress = parseInt(data.loaded / data.total * 100, 10);
+  //     if (progress == 100) {
+  //       $('#sketchfab-placeholder').remove();
+  //     }
+  //   },
 
-    success: function(data) {
-      uploadAssignUrl(data);
-    },
+  //   success: function(data) {
+  //     uploadAssignUrl(data);
+  //   },
 
-    done: function(e, data){
-      createFileOnServerAfterUpload(data, 'sketchfab_file', function(data){
-        var id = data.id;
+  //   done: function(e, data){
+  //     createFileOnServerAfterUpload(data, 'sketchfab_file', function(data){
+  //       var id = data.id;
 
-        checkSketfabProcessed(id, data.context, function(data){
-          var widgetData = {
-            widget: {
-              document_ids: [id],
-              sketchfab_uid: data.title
-            }
-          };
-          insertWidget('StlWidget', editor.modelId, editor.modelType, $('#' + data.context), widgetData);
-          editor.hideLoadingBar();
-        }, function(data){
-          showErrorBubble('the 3D file');
-          $('#' + data.context).remove();
-          editor.hideLoadingBar();
-        });
-      });
-    }
-  });
+  //       checkSketfabProcessed(id, data.context, function(data){
+  //         var widgetData = {
+  //           widget: {
+  //             document_ids: [id],
+  //             sketchfab_uid: data.title
+  //           }
+  //         };
+  //         insertWidget('StlWidget', editor.modelId, editor.modelType, $('#' + data.context), widgetData);
+  //         editor.hideLoadingBar();
+  //       }, function(data){
+  //         showErrorBubble('the 3D file');
+  //         $('#' + data.context).remove();
+  //         editor.hideLoadingBar();
+  //       });
+  //     });
+  //   }
+  // });
 
   // // handles status bar
   // if ($('.medium-status-bar.static').length > 0) {
@@ -2185,27 +2185,27 @@ function createFileOnServerAfterUpload(data, fileType, successCallback) {
   });
 }
 
-function checkSketfabProcessed(id, context, successCallback, failCallback) {
-  window.setTimeout(function(){
-    $.ajax({
-      url: '/files/' + id,
-      data: { context: context },
-      success: function(data){
-        switch(data.processed){
-          case 'upload_error':
-            failCallback(data);
-            break;
-          case 'done':
-            successCallback(data);
-            break;
-          default:
-            checkSketfabProcessed(id, context, successCallback, failCallback);
-            break;
-        }
-      }
-    });
-  }, 1000);
-}
+// function checkSketfabProcessed(id, context, successCallback, failCallback) {
+//   window.setTimeout(function(){
+//     $.ajax({
+//       url: '/files/' + id,
+//       data: { context: context },
+//       success: function(data){
+//         switch(data.processed){
+//           case 'upload_error':
+//             failCallback(data);
+//             break;
+//           case 'done':
+//             successCallback(data);
+//             break;
+//           default:
+//             checkSketfabProcessed(id, context, successCallback, failCallback);
+//             break;
+//         }
+//       }
+//     });
+//   }, 1000);
+// }
 
 function formatLinks(nodes) {
   var regex = /( ?)(<a[^>]+>[^<]+<\/a>)( ?)/g;

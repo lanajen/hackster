@@ -1,0 +1,38 @@
+- document = widget.document
+
+.repository
+  .button-content-container
+    .button-content
+      h5= widget.name
+      .buttons
+        - if document and document.file_url.present?
+          a.btn.btn-primary.btn-sm href=document.file_url
+            ' Download
+
+  - if widget.comment.present?
+    .comment= plain_to_html(widget.comment)
+
+  - if document
+    - case document.type
+    - when 'ImageFile'
+      .embed.original
+        = image_tag document.file_url
+    - when 'PdfFile'
+      .embed.four-by-three
+        iframe width="100%" height="100%" src="/pdf_viewer?url=#{document.file_url}" frameborder="0" style='border:1px solid #ddd'
+
+    - when 'SketchfabFile'
+      - if document.uid
+        .embed.widescreen
+          iframe width="100%" height="100%" frameborder="0" allowFullScreen='' webkitallowfullscreen='' mozallowfullscreen='' src="https://sketchfab.com/models/#{document.uid}/embed"
+      - else
+        p Sketchfab still processing.
+
+    - else
+      .document-widget
+        .file
+          i.fa.fa-file-o.fa-lg
+          span= document.file_name
+
+  - else
+    p No document.

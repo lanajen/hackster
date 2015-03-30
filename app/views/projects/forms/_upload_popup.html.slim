@@ -1,0 +1,8 @@
+.form-group
+  label.control-label File
+  .file-upload-progress-container
+  .input-group style='margin-bottom:10px'
+    input class='form-control resetable' type='text' disabled='disabled' data-field-type='document_file_name'
+    span.input-group-btn
+      a.btn.btn-default.select-file> data-form='#file-upload-form' Select file
+  = f_widget.input :document_id, as: :hidden, input_html: { 'data-field-type' => 'document_id', class: 'resetable' }, wrapper: false
