@@ -14,7 +14,7 @@
 
   .pe-header
     h2 The story
-    .subheading What is your project about? Why did you decide to make it? How does it work?
+    .subheading What is your project about? Why did you decide to make it? How does it work? Show us with images and videos!
 
   = f.error_notification
 
@@ -22,7 +22,10 @@
     .box-content
       = f.input :description, as: :hidden
 
-      #model-editor data-model-id=@project.id data-model-type='Project' data-model-symbol='project' data-model-placeholder="Start describing your #{@project.is_idea? ? 'project idea' : 'project'} here. Enter text or add media by clicking the left button." data-model-url='/api/v1/projects' data-save-mode='form'
+      p.small.text-muted
+        strong> Tip:
+        | Add photos and videos by clicking the 'Add media' button to the left. It will show up any time you're on a new paragraph.
+      #model-editor data-model-id=@project.id data-model-type='Project' data-model-symbol='project' data-model-placeholder="Start describing your #{@project.is_idea? ? 'project idea' : 'project'} here. Enter text or add images and videos by clicking the 'Add media' button to the left." data-model-url='/api/v1/projects' data-save-mode='form'
 
         #editable-description.text-widget.project-show-item= render partial: 'shared/medium_editor', locals: { editable: @project.decorate.description(:edit), attribute_name: 'description' }
 
