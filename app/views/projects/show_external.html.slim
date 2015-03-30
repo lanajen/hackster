@@ -50,7 +50,7 @@
                   - u = users.first.user
                   span.user-name>= link_to u.name, u
               ' on
-              ==> link_to @project.website_host + ' ' + content_tag(:i, '', class: 'fa fa-external-link'), @project.website, target: '_blank'
+              ==> link_to content_tag(:span, @project.website_host) + content_tag(:i, '', class: 'fa fa-external-link'), @project.website, target: '_blank'
             ==> link_to 'View project', @project.website, target: '_blank', class: 'btn btn-primary'
 
           section#comments.section-container.section-collapsible
