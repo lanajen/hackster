@@ -2,6 +2,8 @@
 
 class CoverImageUploader < BaseImageUploader
 
+  # process :convert_gifs
+
   version :cover do
     process resize_to_fill: [1600, 1200]
     # process resize_to_fit: [1600, 1200]
@@ -20,4 +22,9 @@ class CoverImageUploader < BaseImageUploader
     process resize_to_fill: [60, 60]
   end
 
+  # def convert_gifs
+  #   manipulate! do |img|
+  #     img.format('png')
+  #   end
+  # end
 end

@@ -220,7 +220,9 @@ $(function () {
             }
             attribute = all.join('][');
           }
-          var input = $form.find('[name="' + model + '['+attribute+']"]');
+          var input = $form.find('[name="' + model + '['+attribute+']"]').first();
+          // sometimes they have [] in the name
+          if (input.length == 0) input = $form.find('[name="' + model + '['+attribute+'][]"]').first();
           input.parents('.form-group').addClass('has-error');
           errorMsg = $('<span class="help-block error-message">' + errors[model][attrName] + '</span>');
           if (input.parent().hasClass('input-group')) {

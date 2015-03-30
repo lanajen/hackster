@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150330175709) do
+ActiveRecord::Schema.define(version: 20150330211816) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -493,7 +493,7 @@ ActiveRecord::Schema.define(version: 20150330175709) do
     t.datetime "last_edited_at"
     t.text     "properties"
     t.string   "platform_tags_string"
-    t.string   "product_tags_string"
+    t.text     "product_tags_string"
     t.datetime "assignment_submitted_at"
     t.text     "story"
     t.string   "difficulty"

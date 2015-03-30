@@ -105,6 +105,7 @@ class Project < ActiveRecord::Base
   end
   # validates :website, uniqueness: { message: 'has already been submitted' }, allow_blank: true, if: proc {|p| p.website_changed? }
   validates :guest_name, length: { minimum: 3 }, allow_blank: true
+  validate :tags_length_is_valid
   validate :slug_is_unique
   # before_validation :check_if_current
   before_validation :clean_permissions
@@ -717,6 +718,10 @@ class Project < ActiveRecord::Base
 
       parent = team ? self.class.joins(:team).where(groups: { user_name: team.user_name }) : self.class
       errors.add :new_slug, 'has already been taken' if parent.where("LOWER(projects.slug) = ?", slug.downcase).where.not(id: id).any?
+    end
+
+    def tags_length_is_valid
+      errors.add :product_tags_array, 'too many tags (20 max, choose wisely!)' if product_tags_array.length > 20
     end
 
     def widgets_to_text
