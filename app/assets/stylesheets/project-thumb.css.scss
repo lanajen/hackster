@@ -1,0 +1,100 @@
+@import 'custom_mixins';
+@import 'compass/css3';
+// @import 'bootstrap';
+
+.project-thumb {
+  max-width: 100%;
+  overflow: hidden;
+  position: relative;
+  height: 450px;
+  a {
+    color: #337ab7;
+  }
+  p {
+    margin: 0 0 10px;
+  }
+  &:hover {
+    .featured-logo {
+      display: block;
+    }
+  }
+}
+
+.project-thumb-img {
+  position: relative;
+  a {
+    display: block;
+  }
+  img {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+.project-thumb-details {
+  padding: 10px 20px 5px;
+  background: #fff;
+  h4 {
+    font-weight: bold;
+    margin: 0 0 5px;
+    font-size: 1.2em;
+  }
+  .description {
+    margin-bottom: 0;
+  }
+}
+.project-thumb-stats {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  width: 100%;
+  overflow: hidden;
+  li {
+    text-transform: uppercase;
+    color: #999;
+    font-size: 0.5em;
+    float: left;
+    width: 33%;
+    text-align: center;
+  }
+}
+.stat-figure {
+  font-weight: bold;
+  font-size: 150%;
+  display: block;
+}
+
+a.featured-logo {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  background: rgba(0,0,0,0.9);
+  color: #fff;
+  text-align: center;
+  padding-top: 10px;
+  text-decoration: none;
+  &:hover {
+    color: #fff;
+    text-decoration: none;
+  }
+  img {
+    height: 14px;
+    vertical-align: baseline;
+  }
+}
+.project-thumb-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px 20px 15px;
+  background: #fff;
+  @include background-image(linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 20%, rgba(255,255,255,1) 100%));
+}
+.project-thumb-bottom-inner {
+  position: relative;
+}

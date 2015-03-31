@@ -10,6 +10,7 @@ class PlatformsController < ApplicationController
   layout 'group_shared', only: [:edit, :update, :show, :analytics]
   after_action :allow_iframe, only: [:embed]
   respond_to :html
+  protect_from_forgery except: :embed
 
   def index
     title "Explore platforms"
@@ -57,7 +58,15 @@ class PlatformsController < ApplicationController
     title "Projects built with #{@platform.name}"
     @list_style = ([params[:list_style]] & ['', '_horizontal']).first || ''
     @list_style = '_vertical' if @list_style == ''
-    render "groups/platforms/#{self.action_name}", layout: 'embed'
+    respond_to do |format|
+      format.html { render "groups/platforms/embed", layout: 'embed' }
+      format.js do
+        @projects = @projects.map do |project|
+          project.project.to_js
+        end.to_json
+        render "groups/platforms/embed"
+      end
+    end
   end
 
   def analytics

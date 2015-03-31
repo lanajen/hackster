@@ -1,0 +1,40 @@
+<div class="thumb project-thumb">
+  <div class="project-thumb-img">
+    <a href="{{url}}" target='_blank'>
+      <img src="{{cover_image_url}}">
+    </a>
+  </div>
+  <div class="project-thumb-details">
+    <h4>
+      <a href="{{url}}" target="_blank">{{name}}</a>
+    </h4>
+    <p>
+      by <span class="user-name"><a href="{{author.url}}" target='_blank'>{{author.name}}</a></span>
+    </p>
+    <p class="description">{{one_liner}}</p>
+  </div>
+
+  <div class="project-thumb-bottom">
+    <a class="featured-logo" href="http://www.hackster.io" target="_blank">
+      <span>featured on
+        <img alt="Hackster.io" src=
+        "//d10bayquaxne4a.cloudfront.net/assets/production/hackster_logo_20_white-211cf5aba5b6ae209c33dc74877e8579.png"
+        title=
+        "Hackster is the place where hardware gets created. Learn, share and connect to build better hardware.">
+      </span>
+    </a>
+    <div class="project-thumb-bottom-inner">
+      <ul class="project-thumb-stats">
+        <li>
+          <span class="stat-figure">{{views_count}}</span> views
+        </li>
+        <li>
+          <span class="stat-figure">{{comments_count}}</span> comments
+        </li>
+        <li>
+          <span class="stat-figure">{{respects_count}}</span> respects
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

@@ -298,7 +298,7 @@ HackerIo::Application.routes.draw do
     constraints(PlatformPage) do
       get ':slug' => redirect('%{slug}/projects'), slug: /[A-Za-z0-9_\-]{3,}/
       get ':slug/projects' => 'platforms#show', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|atom|rss)/ }
-      get ':slug/embed' => 'platforms#embed', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
+      get ':slug/embed' => 'platforms#embed', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|js)/ }
       get ':user_name' => 'platforms#show', as: :platform_short, user_name: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
       scope ':slug', slug: /[A-Za-z0-9_\-]{3,}/, as: :platform, constraints: { format: /(html|json)/ } do
         get 'analytics' => 'platforms#analytics'

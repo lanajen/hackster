@@ -581,6 +581,22 @@ class Project < ActiveRecord::Base
     to_tweet(prepend)
   end
 
+  def to_js
+    {
+      author: {
+        name: users.first.try(:name),
+        url: "#{APP_CONFIG['full_host']}/#{users.first.try(:user_name)}",
+      },
+      name: name,
+      one_liner: one_liner,
+      url: "#{APP_CONFIG['full_host']}/#{uri}",
+      cover_image_url: cover_image.try(:file_url, :cover_thumb),
+      views_count: impressions_count,
+      respects_count: respects_count,
+      comments_count: comments_count,
+    }
+  end
+
   def to_tweet prepend='', append=''
     # we have 113-118 characters to play with
 

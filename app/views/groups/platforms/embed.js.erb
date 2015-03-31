@@ -1,0 +1,23 @@
+var scripts = document.getElementsByTagName('script');
+var script = scripts[scripts.length - 1];
+var source = '<%= j(render("groups/platforms/project_thumb_template")) %>';
+var css = '<%= asset_url "project-thumb.css" %>';
+if (!$("link[href='"+ css + "']").length)
+  $('<link href="' + css + '" rel="stylesheet">').appendTo("head");
+
+var template = Handlebars.compile(source);
+var data = <%= @projects.to_s.html_safe %>;
+
+if (typeof(hackster_config) != undefined) {
+  var superContainer = $('<div class="' + hackster_config.containerClass + '" />');
+  $(script).before(superContainer);
+
+  $.each(data, function(i, context) {
+    var container = $('<div class="' + hackster_config.thumbContainerClass + '" />');
+    container.appendTo(superContainer);
+
+    var html = template(context);
+    container.html(html);
+  });
+}
+$(script).remove();
