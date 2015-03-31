@@ -296,7 +296,8 @@ HackerIo::Application.routes.draw do
     post 'users/slack_settings' => 'chat_messages#save_slack_settings'
 
     constraints(PlatformPage) do
-      get ':slug' => 'platforms#show', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|atom|rss)/ }
+      get ':slug' => redirect('%{slug}/projects'), slug: /[A-Za-z0-9_\-]{3,}/
+      get ':slug/projects' => 'platforms#show', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|atom|rss)/ }
       get ':slug/embed' => 'platforms#embed', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
       get ':user_name' => 'platforms#show', as: :platform_short, user_name: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
       scope ':slug', slug: /[A-Za-z0-9_\-]{3,}/, as: :platform, constraints: { format: /(html|json)/ } do
@@ -371,7 +372,7 @@ HackerIo::Application.routes.draw do
     patch 'settings' => 'projects#update', on: :member
     post 'claim' => 'projects#claim', on: :member
     get 'last' => 'projects#redirect_to_last', on: :collection
-    get '' => 'projects#redirect_to_slug_route', constraints: lambda{|req| req.params[:project_id] != 'new' }
+    get '' => 'projects#redirect_to_slug_route', constraints: lambda{|req| req.params[:project_id] =~ /[0-9]+/ }
     get 'embed', as: :old_embed
     get 'permissions/edit' => 'permissions#edit', as: :edit_permissions
     patch 'permissions' => 'permissions#update'
@@ -418,8 +419,10 @@ HackerIo::Application.routes.draw do
   patch 'profile' => 'users#update'
 
   # get 'search' => 'search#search'
-  get 'tags/:tag' => 'search#tags', as: :tags
-  get 'tags' => 'search#tags'
+  get 'tags/:tag' => redirect('/projects/tags/%{tag}'), via: :get, as: :deprecated_tags
+  get 'tags' => 'search#tags', as: :deprecated_tags2
+  get 'projects/tags/:tag' => 'search#tags', as: :tags
+  get 'projects/tags' => 'search#tags'
 
   get 'pdf_viewer' => 'pages#pdf_viewer'
 

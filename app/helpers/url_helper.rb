@@ -255,7 +255,7 @@ module UrlHelper
   end
 
   def tag_path tag
-    "/tags/#{CGI::escape(tag)}"
+    "/projects/tags/#{CGI::escape(tag)}"
   end
 
   def platform_short_path platform, opts={}

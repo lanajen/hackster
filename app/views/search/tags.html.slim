@@ -5,8 +5,9 @@
   .row
     .col-xs-12
       .header.clearfix
-        h3.pull-left
-          ' Projects in
+        h1.pull-left
+          ==> pluralize @results.size, 'project'
+          ' tagged with
           span.label.label-primary> #{@tag}
           - if safe_page_params
             small page #{safe_page_params}

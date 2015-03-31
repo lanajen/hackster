@@ -5,14 +5,14 @@ class Client::PartsController < Client::BaseController
 
   def index
     title "Parts"
-    meta_desc "Discover all the parts for #{@platform.name} and their related hardware hacks and projects."
+    meta_desc "Discover all the parts for #{@platform.name} and their related hardware projects."
     @parts = @platform.parts.paginate(page: safe_page_params)
     render template: 'parts/index'
   end
 
   def show
-    title "#{@platform.name} #{@part.name} projects and hacks"
-    meta_desc "Discover hardware hacks and projects made with #{@platform.name} #{@part.name}."
+    title "#{@platform.name} #{@part.name} projects"
+    meta_desc "Discover hardware projects made with #{@platform.name} #{@part.name}."
     @part = @part.decorate
     @projects = @part.projects.paginate(page: safe_page_params)
     render template: 'parts/show'

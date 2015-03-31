@@ -10,7 +10,7 @@ class ChallengesController < ApplicationController
 
   def index
     title 'Hardware challenges'
-    meta_desc "Create the best hardware hacks and win awesome prizes!"
+    meta_desc "Build the best hardware projects and win awesome prizes!"
   end
 
   def show

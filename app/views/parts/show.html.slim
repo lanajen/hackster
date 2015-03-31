@@ -1,6 +1,6 @@
 = content_for :head do
   meta(property="og:title" content="#{@part.full_name} projects")
-  meta(property="og:description" content="Discover hacks and projects built with #{@part.full_name}, and share your own!")
+  meta(property="og:description" content="Discover projects built with #{@part.full_name}, and share your own!")
   - if @part.image
     meta(property="og:image" content=@part.image(:headline))
     meta(property="twitter:image:src" content=@part.image(:headline))
@@ -16,7 +16,7 @@
   meta(property="twitter:title" content="#{@part.full_name} projects")
   meta(property="twitter:description" content=strip_tags(@part.description.truncate(200)))
   link(rel="canonical" href=platform_part_path(@platform.user_name, @part.slug))
-  meta(property="keywords" content="#{@part.full_name} projects, #{@part.full_name} hacks")
+  meta(property="keywords" content="#{@part.full_name} projects")
 
 = render 'parts/part', { part: @part }
 

@@ -119,7 +119,7 @@ class SitemapController < ApplicationController
     def platforms_pages offset=0
       sitemap_scope(platforms_query, offset).map do |platform|
         {
-          loc: url_for(platform),
+          loc: url_for(platform) + '/projects',
           changefreq: 'weekly',
           lastmod: platform.updated_at.strftime("%F"),
         }

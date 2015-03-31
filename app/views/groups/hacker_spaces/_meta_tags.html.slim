@@ -1,5 +1,5 @@
 meta(property="og:title" content="#{@group.name} projects")
-meta(property="og:description" content="Discover hacks and projects built at #{@group.name}, and share your own!")
+meta(property="og:description" content="Discover projects built at #{@group.name}, and share your own!")
 - if @group.avatar
   meta(property="og:image" content=@group.avatar(:big))
   meta(property="twitter:image:src" content=@group.avatar(:big))
@@ -17,4 +17,4 @@ meta(property="twitter:description" content="#{@group.mini_resume}")
 - if handle = @group.twitter_handle
   meta(property="twitter:creator" content=handle)
 link(rel="canonical" href=hacker_space_url(@group))
-meta(property="keywords" content="#{@group.name} projects, #{@group.name} hacks")
+meta(property="keywords" content="#{@group.name} projects")

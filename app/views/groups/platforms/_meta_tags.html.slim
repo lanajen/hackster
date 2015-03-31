@@ -1,7 +1,7 @@
 = auto_discovery_link_tag :rss, url_for([@group, format: :rss]), title: "Last projects for #{@group.name} - Hackster.io"
 = auto_discovery_link_tag :atom, url_for([@group, format: :atom]), title: "Last projects for #{@group.name} - Hackster.io"
 meta(property="og:title" content="#{@group.name} projects")
-meta(property="og:description" content="Discover hacks and projects built with #{@group.name}, and share your own!")
+meta(property="og:description" content="Discover projects built with #{@group.name}, and share your own!")
 - if @group.avatar
   meta(property="og:image" content=@group.avatar(:big))
   meta(property="twitter:image:src" content=@group.avatar(:big))
@@ -19,7 +19,7 @@ meta(property="twitter:description" content="#{@group.mini_resume}")
 - if handle = @group.twitter_handle
   meta(property="twitter:creator" content=handle)
 link(rel="canonical" href=platform_short_url(@group))
-meta(property="keywords" content="#{@group.name} projects, #{@group.name} hacks")
+meta(property="keywords" content="#{@group.name} projects")
 meta(property="twitter:data1" content=@group.projects_count)
 meta(property="twitter:label1" content="PROJECTS")
 meta(property="twitter:data2" content=@group.followers_count)

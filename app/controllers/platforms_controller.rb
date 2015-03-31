@@ -13,7 +13,7 @@ class PlatformsController < ApplicationController
 
   def index
     title "Explore platforms"
-    meta_desc "Find hardware and software platforms to help you build your next hacks."
+    meta_desc "Find hardware and software platforms to help you build your next projects."
 
     params[:sort] = (params[:sort].in?(Group::SORTING.keys) ? params[:sort] : 'followers')
 
@@ -33,8 +33,8 @@ class PlatformsController < ApplicationController
     authorize! :read, @platform
     impressionist_async @platform, "", unique: [:session_hash]
 
-    title "#{@platform.name} projects and hacks"
-    meta_desc "Discover hacks and projects built with #{@platform.name}, and share your own!"
+    title "#{@platform.name} projects"
+    meta_desc "Explore #{@platform.projects_count} projects built with #{@platform.name}, and share your own! Join #{@platform.followers_count} hackers who follow #{@platform.name} on Hackster."
 
     @announcement = @platform.announcements.current
     @challenge = @platform.active_challenge ? @platform.challenges.active.first : nil

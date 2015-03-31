@@ -43,15 +43,16 @@ class SearchController < ApplicationController
 
     begin
       @tag = CGI::unescape params[:tag]
-      title "Projects in '#{@tag}'"
-      meta_desc "Explore projects tagged '#{@tag}'. Find these and other hardware projects on #{site_name}."
       params[:q] = @tag
       params[:type] = 'project'
       # params[:platform_id] = current_platform.id if current_platform
       params[:per_page] = Project.per_page
-      @results = SearchRepository.new(params).search.results
+
       # raise @results.inspect
       params[:per_page] = nil  # so that it doesn't appear in the URL
+
+      title "Projects tagged with '#{@tag}'"
+      meta_desc "Explore #{pluralize @results.size, 'project'} tagged with '#{@tag}'. Find these and other hardware projects on #{site_name}."
 
       track_event 'Searched projects by tag', { tag: @tag, result_count: @results.size, type: params[:type] }
     rescue => e
