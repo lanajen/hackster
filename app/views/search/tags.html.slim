@@ -6,9 +6,8 @@
     .col-xs-12
       .header.clearfix
         h1.pull-left
-          ==> pluralize @results.size, 'project'
-          ' tagged with
-          span.label.label-primary> #{@tag}
+          | #{@results.size} #{@tag} #{pluralize_without_count @results.size, 'project'}
+          span.label.label-primary>
           - if safe_page_params
             small page #{safe_page_params}
         .pull-right

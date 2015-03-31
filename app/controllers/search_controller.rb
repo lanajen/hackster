@@ -51,10 +51,10 @@ class SearchController < ApplicationController
       # raise @results.inspect
       params[:per_page] = nil  # so that it doesn't appear in the URL
 
-      title "Projects tagged with '#{@tag}'"
-      meta_desc "Explore #{@results.size} projects tagged with '#{@tag}'. Find these and other hardware projects on #{site_name}."
+      title "#{@results.size} #{@tag} Projects"
+      meta_desc "Interested in #{@results.size}? Explore #{@results.size} projects tagged with '#{@tag}'. Find these and other hardware projects on #{site_name}."
 
-      track_event 'Searched projects by tag', { tag: @tag, result_count: @results.size, type: params[:type] }
+      # track_event 'Searched projects by tag', { tag: @tag, result_count: @results.size, type: params[:type] }
     rescue => e
       logger.error "Error while searching for #{params[:q]}: #{e.message}"
       @results = []
