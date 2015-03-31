@@ -39,6 +39,8 @@ class Challenge < ActiveRecord::Base
 
   parse_as_integers :counters_cache, :projects_count
 
+  is_impressionable counter_cache: true, unique: :session_hash
+
   workflow do
     state :new do
       event :launch, transitions_to: :in_progress, if: :end_date_is_valid

@@ -15,6 +15,8 @@ class ChallengesController < ApplicationController
 
   def show
     authorize! :read, @challenge
+
+    impressionist_async @challenge, "", unique: [:session_hash]
     title @challenge.name
     # @embed = Embed.new(url: @challenge.video_link)
 

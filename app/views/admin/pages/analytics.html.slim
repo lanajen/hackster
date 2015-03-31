@@ -142,6 +142,13 @@
       .panel-body
         = number_with_delimiter @messages_count
         small.text-muted +#{@new_messages_count}
+.row
+  .col-xs-12
+    .panel.panel-default.panel-dashboard
+      .panel-heading
+        h3.panel-title Project impressions
+      .panel-body
+        = number_with_delimiter @project_impressions
 
 .row
   .col-xs-12.col-sm-6
