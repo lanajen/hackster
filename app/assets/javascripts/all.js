@@ -132,32 +132,20 @@ $(function () {
     }
   }
 
-  $('form.sortable').on('nested:fieldAdded', function(event){
-    var field = event.field;
+  $('form.sortable').on('nested:fieldAdded', function(e){
+    var field = e.field;
     previousPosition = field.prev().find('input.position').val();
     if (isNaN(previousPosition)) previousPosition = 0;
     positionField = field.find('input.position');
     positionField.val(parseInt(previousPosition) + 1);
   });
 
-  $('form.sortable').on('nested:fieldRemoved', function(event){
-    event.field.addClass('removed');
-    resetPositions();
+  $('form.sortable').on('nested:fieldRemoved', function(e){
+    e.field.addClass('removed');
+    resetSortablePositions($(e.field.parent()));
   });
 
-  $('form.sortable #sortable tbody')
-    .sortable({ handle: ".handle", containment: "#sortable", items: 'tr:not(.sortable-disabled)' })
-    .bind('sortupdate', function(event, ui) {
-      resetPositions();
-    });
-
-  function resetPositions(){
-    $('form.sortable #sortable tbody tr:not(.removed) input.position').each(function(i){
-      $(this)
-        .val(i+1)
-        .trigger('change');
-    });
-  }
+  sortTable();
 
   //[data-remote="true"]
   $(document)
@@ -318,4 +306,33 @@ function smoothScrollTo(target, offsetTop, speed) {
 function closePopup(id) {
   $(id).fadeOut(200);
   return false;
+}
+
+function sortTable(){
+  $('form.sortable .table-sortable tbody')
+    .sortable({
+      axis: 'y',
+      handle: ".handle",
+      containment: 'parent',
+      items: 'tr:not(.sortable-disabled)',
+      placeholder: "sortable-placeholder",
+      helper: function(e, el){
+        var copy = $(el).clone();
+        copy.addClass('sortable-helper');
+        return copy;
+      },
+      tolerance: 'pointer'
+    })
+    .bind('sortupdate', function(e, ui) {
+      resetSortablePositions($(e.target));
+    });
+}
+
+function resetSortablePositions(target){
+  var target = target || $('form.sortable .table-sortable tbody');
+  target.find('tr:not(.removed) input.position').each(function(i){
+    $(this)
+      .val(i+1)
+      .trigger('change');
+  });
 }

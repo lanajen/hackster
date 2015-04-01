@@ -173,6 +173,7 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
           $('.inserted').remove();
           $('.fields.added').remove();
           $('.fields.removed').show().removeClass('removed');
+          $('form.sortable .table-sortable tbody').sortable('cancel');
 
           this.serializeForm();
         }
@@ -270,6 +271,7 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
       })
       .on('ajax:complete', 'form.remote', function(xhr, status){
         $(this).closest('.pe-container').removeClass('processing');
+        sortTable();
       })
       .on('ajax:error', 'form.remote', function(xhr, status){
         $('.pe-save').slideDown(200);

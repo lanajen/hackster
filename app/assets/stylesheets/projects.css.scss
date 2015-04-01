@@ -386,4 +386,15 @@
       }
     }
   }
+  .sortable-placeholder {
+    border: 3px dashed #ddd;
+    height: 100px;
+  }
+  .sortable-helper {
+    background: #ddd !important;
+    @include opacity(0.5);
+    .actions {
+      display: none;
+    }
+  }
 }

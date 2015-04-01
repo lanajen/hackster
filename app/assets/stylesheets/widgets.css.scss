@@ -218,42 +218,42 @@
   }
 }
 
-.sortable {
-  overflow: hidden;
-  margin-bottom: 10px;
-  ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    float: left;
-    margin-right: 10px;
-    background: #eee;
-    padding: 5px;
-    width: 210px;
-    &.single {
-      margin: 0 auto;
-      float: none;
-    }
-  }
-  li {
-    margin: 5px;
-    padding: 5px;
-    font-size: 1.2em;
-    width: 188px;
-    border: 1px solid #ccc;
-    cursor: pointer;
-    background: #f2f2f2;
-    &.ui-sortable-helper {
-      pointer: move;
-    }
-    &.placeholder {
-      border: 1px solid #eee;
-      color: #999;
-      cursor: initial;
-      background: #eee;
-    }
-  }
-}
+// .sortable {
+//   overflow: hidden;
+//   margin-bottom: 10px;
+//   ul {
+//     list-style-type: none;
+//     margin: 0;
+//     padding: 0;
+//     float: left;
+//     margin-right: 10px;
+//     background: #eee;
+//     padding: 5px;
+//     width: 210px;
+//     &.single {
+//       margin: 0 auto;
+//       float: none;
+//     }
+//   }
+//   li {
+//     margin: 5px;
+//     padding: 5px;
+//     font-size: 1.2em;
+//     width: 188px;
+//     border: 1px solid #ccc;
+//     cursor: pointer;
+//     background: #f2f2f2;
+//     &.ui-sortable-helper {
+//       pointer: move;
+//     }
+//     &.placeholder {
+//       border: 1px solid #eee;
+//       color: #999;
+//       cursor: initial;
+//       background: #eee;
+//     }
+//   }
+// }
 
 .table.table-condensed{
   .fields{

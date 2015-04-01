@@ -29,14 +29,13 @@
               | Link existing repository
 
           - if @project.widgets.where(type: %w(CodeRepoWidget CodeWidget)).any?
-            table.table.table-decorated.table-hover#sortable
+            table.table.table-decorated.table-hover.table-sortable
               tbody
                 - @project.widgets.where(type: %w(CodeRepoWidget CodeWidget)).each do |file|
-                  = f.simple_fields_for :code_widgets, file do |f_file|
+                  = f.simple_fields_for :widgets, file do |f_file|
                     tr.fields
-                      / td
-                        i.fa.fa-bars.handle
                       td
+                        i.fa.fa-bars.handle
                         = f_file.input :id, as: :hidden, input_html: { 'data-field-type' => 'id' }
                         = f_file.input :position, as: :hidden, input_html: { 'data-field-type' => 'position', class: 'position' }
                         = f_file.input :name, as: :hidden, input_html: { 'data-field-type' => 'name' }
@@ -46,15 +45,16 @@
                           = f_file.input :language, as: :hidden, input_html: { 'data-field-type' => 'language' }
                         - else
                           = f_file.input :url, as: :hidden, input_html: { 'data-field-type' => 'url' }
-                        - if file.type == 'CodeWidget'
-                          - if file.raw_code.present?
-                            i.fa.fa-file-code-o
-                          - else
-                            i.fa.fa-file-o
-                        - else
-                          i.fa.fa-link
                       td.details
-                        h5= file.name
+                        h5
+                          - if file.type == 'CodeWidget'
+                            - if file.raw_code.present?
+                              i.fa.fa-file-code-o
+                            - else
+                              i.fa.fa-file-o
+                          - else
+                            i.fa.fa-link
+                          span= file.name
                         - if file.type == 'CodeWidget'
                           p= file.human_language
                         - else
