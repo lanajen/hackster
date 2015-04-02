@@ -5,7 +5,7 @@ module ScraperStrategies
       def before_parse
         tags = @parsed.css('#built-with li')
         @project.platform_tags_string = tags.map{|a| a.text.gsub('-', ' ').titleize }.join(',')
-        @article.at_css('#built-with').remove
+        @article.at_css('#built-with').try(:remove)
 
         @project.one_liner = @parsed.at_css('#app-tagline').try(:text).try(:strip).try(:truncate, 140)
         super
@@ -17,10 +17,10 @@ module ScraperStrategies
 
       def select_article
         article = @parsed.at_css('#app-details-left')
-        gallery = article.at_css('#gallery')
-        gallery.css('img, iframe').reverse.each{|m| article.children.first.add_previous_sibling(m) }
-        gallery.remove
-        # Nokogiri::HTML::DocumentFragment.parse(article.to_html)
+        if gallery = article.at_css('#gallery')
+          gallery.css('img, iframe').reverse.each{|m| article.children.first.add_previous_sibling(m) }
+          gallery.remove
+        end
         article
       end
   end
