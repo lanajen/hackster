@@ -6,7 +6,10 @@ css:
   .tessel-html #user-navigation-links {
     margin-top: 0;
     margin-bottom: 0;
-    margin-right: 53px;
+    margin-right: 52px;
+  }
+  .tessel-html #navbar-right {
+    margin-right: 32px;
   }
   .tessel-html #navbar-search .form-control {
     height: auto;
@@ -15,11 +18,23 @@ css:
   .tessel-html #navbar-search .input-group-addon {
     top: 13px;
   }
+  .tessel-html #navbar-right .login-link {
+    margin-top: 8px;
+  }
+  .tessel-html #navbar-right .login-link.btn-primary {
+    margin-top: 0;
+  }
   @media only screen and (max-width: 992px) {
+    .tessel-html #navbar-right .login-link:not(.btn) {
+      display: none;
+    }
     .tessel-html .navbar-nav {
       float: right;
       border: 0;
       margin: 0 -15px;
+    }
+    .tessel-html #navbar-right {
+      margin-right: 11px;
     }
     .tessel-html #user-navigation-links {
       margin-right: 32px;

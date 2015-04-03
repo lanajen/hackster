@@ -111,8 +111,8 @@ html lang="en" class=content_for(:html_class)
                       = link_to 'Github', user_omniauth_authorize_url(:github, host: APP_CONFIG['default_host'], redirect_host: request.host), class: 'zocial icon github'
                       = link_to 'Google+', user_omniauth_authorize_url(:gplus, host: APP_CONFIG['default_host'], redirect_host: request.host), class: 'zocial icon googleplus'
                       = link_to 'Twitter', user_omniauth_authorize_url(:twitter, host: APP_CONFIG['default_host'], redirect_host: request.host), class: 'zocial icon twitter'
-              li.mobile-li= link_to 'Log in', new_user_session_path(source: 'nav')
-              li.mobile-li= link_to 'Sign up', new_user_registration_path(source: 'nav')
+              / li.mobile-li= link_to 'Log in', new_user_session_path(source: 'nav')
+              / li.mobile-li= link_to 'Sign up', new_user_registration_path(source: 'nav')
             #navbar-search.pull-right.show-on-desktop
               = render partial: 'shared/search_form', locals: { placeholder: 'Search projects' }
       - else
