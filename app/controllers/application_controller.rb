@@ -159,8 +159,9 @@ class ApplicationController < ActionController::Base
     def check_share_modal
       if session[:share_modal] and name = session.delete(:share_modal) and model = session.delete(:share_modal_model)
         @modal = render_to_string(partial: "shared/modals/#{name}", locals: { :"#{model}" => instance_variable_get("@#{model}") })
+        # raise @modal.inspect
         if request.xhr?
-          response.headers['X-Alert'] = @modal
+          response.headers['X-Alert'] = @modal.gsub(/\n/, '')  # cleanup otherwise line breaks create multiple lines
           response.headers['X-Alert-ID'] = "##{name}"
         end
       end

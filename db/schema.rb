@@ -11,26 +11,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150330211816) do
+ActiveRecord::Schema.define(version: 20150403015337) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pg_stat_statements"
 
-  create_table "addresses", force: true do |t|
+  create_table "addresses", force: :cascade do |t|
     t.integer "addressable_id"
-    t.string  "addressable_type"
-    t.string  "full_name"
-    t.string  "address_line1"
-    t.string  "address_line2"
-    t.string  "city"
-    t.string  "state"
-    t.string  "country"
-    t.string  "zip"
-    t.string  "phone"
+    t.string  "addressable_type", limit: 255
+    t.string  "full_name",        limit: 255
+    t.string  "address_line1",    limit: 255
+    t.string  "address_line2",    limit: 255
+    t.string  "city",             limit: 255
+    t.string  "state",            limit: 255
+    t.string  "country",          limit: 255
+    t.string  "zip",              limit: 255
+    t.string  "phone",            limit: 255
   end
 
-  create_table "assignee_issues", force: true do |t|
+  create_table "assignee_issues", force: :cascade do |t|
     t.integer  "assignee_id", null: false
     t.integer  "issue_id",    null: false
     t.datetime "created_at"
@@ -40,15 +40,15 @@ ActiveRecord::Schema.define(version: 20150330211816) do
   add_index "assignee_issues", ["assignee_id"], name: "index_assignee_issues_on_assignee_id", using: :btree
   add_index "assignee_issues", ["issue_id"], name: "index_assignee_issues_on_issue_id", using: :btree
 
-  create_table "assignments", force: true do |t|
-    t.integer  "promotion_id",                     null: false
-    t.integer  "id_for_promotion",                 null: false
-    t.string   "name"
+  create_table "assignments", force: :cascade do |t|
+    t.integer  "promotion_id",                                 null: false
+    t.integer  "id_for_promotion",                             null: false
+    t.string   "name",             limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "grading_type"
-    t.boolean  "graded",           default: false
-    t.boolean  "private_grades",   default: true
+    t.string   "grading_type",     limit: 255
+    t.boolean  "graded",                       default: false
+    t.boolean  "private_grades",               default: true
     t.text     "properties"
     t.datetime "submit_by_date"
     t.datetime "reminder_sent_at"
@@ -57,55 +57,55 @@ ActiveRecord::Schema.define(version: 20150330211816) do
   add_index "assignments", ["id_for_promotion"], name: "index_assignments_on_id_for_promotion", using: :btree
   add_index "assignments", ["promotion_id"], name: "index_assignments_on_promotion_id", using: :btree
 
-  create_table "attachments", force: true do |t|
-    t.string   "file"
+  create_table "attachments", force: :cascade do |t|
+    t.string   "file",            limit: 255
     t.integer  "attachable_id"
-    t.string   "attachable_type"
-    t.string   "type"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.string   "attachable_type", limit: 255
+    t.string   "type",            limit: 255
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
     t.text     "caption"
-    t.string   "title"
+    t.string   "title",           limit: 255
     t.integer  "position"
-    t.string   "tmp_file"
+    t.string   "tmp_file",        limit: 255
   end
 
   add_index "attachments", ["attachable_id", "attachable_type", "type"], name: "index_attachments_on_attachable_id_and_attachable_type_and_type", using: :btree
 
-  create_table "authorizations", force: true do |t|
+  create_table "authorizations", force: :cascade do |t|
     t.string   "uid",        limit: 100, null: false
     t.string   "provider",   limit: 50,  null: false
     t.integer  "user_id",                null: false
-    t.string   "name"
-    t.string   "link"
+    t.string   "name",       limit: 255
+    t.string   "link",       limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "token"
-    t.string   "secret"
+    t.string   "token",      limit: 255
+    t.string   "secret",     limit: 255
   end
 
   add_index "authorizations", ["provider", "uid"], name: "index_authorizations_on_provider_and_uid", using: :btree
   add_index "authorizations", ["user_id"], name: "index_authorizations_on_user_id", using: :btree
 
-  create_table "awarded_badges", force: true do |t|
+  create_table "awarded_badges", force: :cascade do |t|
     t.integer  "awardee_id"
-    t.string   "awardee_type"
-    t.string   "badge_code"
+    t.string   "awardee_type", limit: 255
+    t.string   "badge_code",   limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "level"
+    t.string   "level",        limit: 255
   end
 
   add_index "awarded_badges", ["awardee_id", "awardee_type", "badge_code"], name: "awarded_badges_awardee_badge_index", unique: true, using: :btree
 
-  create_table "broadcasts", force: true do |t|
-    t.string   "broadcastable_type", null: false
-    t.integer  "broadcastable_id",   null: false
-    t.string   "event",              null: false
-    t.integer  "context_model_id",   null: false
-    t.string   "context_model_type", null: false
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
+  create_table "broadcasts", force: :cascade do |t|
+    t.string   "broadcastable_type", limit: 255, null: false
+    t.integer  "broadcastable_id",               null: false
+    t.string   "event",              limit: 255, null: false
+    t.integer  "context_model_id",               null: false
+    t.string   "context_model_type", limit: 255, null: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
     t.integer  "user_id"
     t.integer  "project_id"
   end
@@ -113,16 +113,16 @@ ActiveRecord::Schema.define(version: 20150330211816) do
   add_index "broadcasts", ["broadcastable_type", "broadcastable_id"], name: "index_broadcastable", using: :btree
   add_index "broadcasts", ["context_model_type", "context_model_id"], name: "index_broadcasted", using: :btree
 
-  create_table "challenge_admins", force: true do |t|
+  create_table "challenge_admins", force: :cascade do |t|
     t.integer "challenge_id"
     t.integer "user_id"
     t.integer "roles_mask"
   end
 
-  create_table "challenge_projects", force: true do |t|
+  create_table "challenge_projects", force: :cascade do |t|
     t.integer  "project_id"
     t.integer  "challenge_id"
-    t.string   "workflow_state"
+    t.string   "workflow_state",   limit: 255
     t.text     "submission_notes"
     t.text     "judging_notes"
     t.integer  "prize_id"
@@ -131,45 +131,45 @@ ActiveRecord::Schema.define(version: 20150330211816) do
     t.integer  "user_id"
   end
 
-  create_table "challenges", force: true do |t|
+  create_table "challenges", force: :cascade do |t|
     t.integer  "duration"
     t.text     "properties"
     t.datetime "start_date"
-    t.string   "video_link"
+    t.string   "video_link",     limit: 255
     t.text     "counters_cache"
     t.integer  "platform_id"
-    t.string   "name"
-    t.string   "slug"
-    t.string   "workflow_state"
+    t.string   "name",           limit: 255
+    t.string   "slug",           limit: 255
+    t.string   "workflow_state", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "end_date"
   end
 
-  create_table "chat_messages", force: true do |t|
-    t.integer  "user_id",    null: false
+  create_table "chat_messages", force: :cascade do |t|
+    t.integer  "user_id",                null: false
     t.text     "body"
-    t.integer  "group_id",   null: false
+    t.integer  "group_id",               null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "user_name"
-    t.string   "source"
+    t.string   "user_name",  limit: 255
+    t.string   "source",     limit: 255
     t.text     "raw_body"
   end
 
   add_index "chat_messages", ["group_id"], name: "index_chat_messages_on_group_id", using: :btree
 
-  create_table "code_entities", force: true do |t|
-    t.string   "name"
+  create_table "code_entities", force: :cascade do |t|
+    t.string   "name",           limit: 255
     t.text     "raw_code"
     t.text     "formatted_code"
-    t.string   "language"
-    t.string   "directory"
-    t.string   "project_id",                null: false
-    t.string   "repository"
+    t.string   "language",       limit: 255
+    t.string   "directory",      limit: 255
+    t.string   "project_id",     limit: 255, null: false
+    t.string   "repository",     limit: 255
     t.integer  "position"
     t.text     "comment"
-    t.string   "device"
+    t.string   "device",         limit: 255
     t.boolean  "compiles"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -178,35 +178,35 @@ ActiveRecord::Schema.define(version: 20150330211816) do
 
   add_index "code_entities", ["project_id"], name: "index_code_entities_on_project_id", using: :btree
 
-  create_table "comments", force: true do |t|
-    t.integer  "user_id",          default: 0, null: false
-    t.integer  "commentable_id",               null: false
-    t.string   "commentable_type",             null: false
+  create_table "comments", force: :cascade do |t|
+    t.integer  "user_id",                      default: 0, null: false
+    t.integer  "commentable_id",                           null: false
+    t.string   "commentable_type", limit: 255,             null: false
     t.text     "body"
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
     t.integer  "parent_id"
-    t.string   "guest_name"
+    t.string   "guest_name",       limit: 255
   end
 
   add_index "comments", ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type", using: :btree
   add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
 
-  create_table "conversations", force: true do |t|
-    t.string   "subject"
+  create_table "conversations", force: :cascade do |t|
+    t.string   "subject",    limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "courses_universities", force: true do |t|
+  create_table "courses_universities", force: :cascade do |t|
     t.integer "university_id"
     t.integer "course_id"
   end
 
-  create_table "follow_relations", force: true do |t|
+  create_table "follow_relations", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "followable_id"
-    t.string   "followable_type"
+    t.string   "followable_type", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -214,21 +214,21 @@ ActiveRecord::Schema.define(version: 20150330211816) do
   add_index "follow_relations", ["followable_id", "followable_type"], name: "index_follow_relations_on_followable_id_and_followable_type", using: :btree
   add_index "follow_relations", ["user_id"], name: "index_follow_relations_on_user_id", using: :btree
 
-  create_table "friend_invites", force: true do |t|
+  create_table "friend_invites", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "grades", force: true do |t|
-    t.integer  "gradable_id",                                null: false
-    t.string   "gradable_type",                              null: false
-    t.string   "grade"
+  create_table "grades", force: :cascade do |t|
+    t.integer  "gradable_id",                                 null: false
+    t.string   "gradable_type", limit: 255,                   null: false
+    t.string   "grade",         limit: 255
     t.text     "feedback"
-    t.integer  "project_id",                                 null: false
-    t.integer  "user_id",                                    null: false
+    t.integer  "project_id",                                  null: false
+    t.integer  "user_id",                                     null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "type",          limit: 20, default: "Grade", null: false
+    t.string   "type",          limit: 20,  default: "Grade", null: false
   end
 
   add_index "grades", ["gradable_type", "gradable_id"], name: "index_grades_on_gradable_type_and_gradable_id", using: :btree
@@ -236,7 +236,7 @@ ActiveRecord::Schema.define(version: 20150330211816) do
   add_index "grades", ["type"], name: "index_grades_on_type", using: :btree
   add_index "grades", ["user_id"], name: "index_grades_on_user_id", using: :btree
 
-  create_table "group_relations", force: true do |t|
+  create_table "group_relations", force: :cascade do |t|
     t.integer  "project_id",                null: false
     t.integer  "group_id",                  null: false
     t.string   "workflow_state", limit: 30
@@ -247,13 +247,13 @@ ActiveRecord::Schema.define(version: 20150330211816) do
   add_index "group_relations", ["group_id"], name: "index_group_relations_on_group_id", using: :btree
   add_index "group_relations", ["project_id"], name: "index_group_relations_on_project_id", using: :btree
 
-  create_table "groups", force: true do |t|
+  create_table "groups", force: :cascade do |t|
     t.string   "user_name",         limit: 100
     t.string   "city",              limit: 50
     t.string   "country",           limit: 50
     t.string   "mini_resume",       limit: 160
-    t.string   "full_name"
-    t.string   "email"
+    t.string   "full_name",         limit: 255
+    t.string   "email",             limit: 255
     t.text     "websites"
     t.string   "type",              limit: 15,  default: "Group", null: false
     t.integer  "impressions_count",             default: 0
@@ -262,36 +262,36 @@ ActiveRecord::Schema.define(version: 20150330211816) do
     t.datetime "updated_at"
     t.boolean  "private",                       default: false
     t.integer  "parent_id"
-    t.string   "access_level"
+    t.string   "access_level",      limit: 255
     t.string   "invitation_token",  limit: 30
     t.float    "latitude"
     t.float    "longitude"
-    t.string   "address"
-    t.string   "state"
+    t.string   "address",           limit: 255
+    t.string   "state",             limit: 255
     t.text     "properties"
     t.integer  "projects_count"
     t.integer  "members_count"
-    t.string   "zipcode"
+    t.string   "zipcode",           limit: 255
     t.datetime "start_date"
     t.datetime "end_date"
   end
 
   add_index "groups", ["type"], name: "index_groups_on_type", using: :btree
 
-  create_table "impressions", force: true do |t|
-    t.string   "impressionable_type"
+  create_table "impressions", force: :cascade do |t|
+    t.string   "impressionable_type", limit: 255
     t.integer  "impressionable_id"
     t.integer  "user_id"
-    t.string   "controller_name"
-    t.string   "action_name"
-    t.string   "view_name"
-    t.string   "request_hash"
-    t.string   "ip_address"
-    t.string   "session_hash"
+    t.string   "controller_name",     limit: 255
+    t.string   "action_name",         limit: 255
+    t.string   "view_name",           limit: 255
+    t.string   "request_hash",        limit: 255
+    t.string   "ip_address",          limit: 255
+    t.string   "session_hash",        limit: 255
     t.text     "message"
     t.text     "referrer"
-    t.datetime "created_at",          null: false
-    t.datetime "updated_at",          null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
   end
 
   add_index "impressions", ["controller_name", "action_name", "ip_address"], name: "controlleraction_ip_index", using: :btree
@@ -303,7 +303,7 @@ ActiveRecord::Schema.define(version: 20150330211816) do
   add_index "impressions", ["impressionable_type", "message", "impressionable_id"], name: "impressionable_type_message_index", using: :btree
   add_index "impressions", ["user_id"], name: "index_impressions_on_user_id", using: :btree
 
-  create_table "invite_codes", force: true do |t|
+  create_table "invite_codes", force: :cascade do |t|
     t.string   "code",       limit: 20
     t.integer  "limit"
     t.boolean  "active",                default: true
@@ -311,41 +311,41 @@ ActiveRecord::Schema.define(version: 20150330211816) do
     t.datetime "updated_at",                           null: false
   end
 
-  create_table "invite_requests", force: true do |t|
-    t.string   "email"
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+  create_table "invite_requests", force: :cascade do |t|
+    t.string   "email",       limit: 255
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
     t.boolean  "whitelisted"
-    t.integer  "user_id",     default: 0, null: false
+    t.integer  "user_id",                 default: 0, null: false
     t.integer  "project_id"
   end
 
   add_index "invite_requests", ["user_id"], name: "index_invite_requests_on_user_id", using: :btree
 
-  create_table "log_lines", force: true do |t|
-    t.string   "log_type"
-    t.string   "source"
+  create_table "log_lines", force: :cascade do |t|
+    t.string   "log_type",      limit: 255
+    t.string   "source",        limit: 255
     t.text     "message"
     t.string   "loggable_type", limit: 15
     t.integer  "loggable_id"
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
   end
 
-  create_table "members", force: true do |t|
-    t.integer  "group_id",                                  null: false
-    t.integer  "user_id",                                   null: false
-    t.string   "title"
+  create_table "members", force: :cascade do |t|
+    t.integer  "group_id",                                              null: false
+    t.integer  "user_id",                                               null: false
+    t.string   "title",                  limit: 255
     t.integer  "group_roles_mask"
-    t.string   "mini_resume"
+    t.string   "mini_resume",            limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "invitation_accepted_at"
     t.datetime "invitation_sent_at"
     t.integer  "invited_by_id"
-    t.string   "invited_by_type"
-    t.integer  "permission_id",          default: 0,        null: false
-    t.string   "type",                   default: "Member", null: false
+    t.string   "invited_by_type",        limit: 255
+    t.integer  "permission_id",                      default: 0,        null: false
+    t.string   "type",                   limit: 255, default: "Member", null: false
     t.datetime "requested_to_join_at"
     t.boolean  "approved_to_join"
   end
@@ -354,20 +354,20 @@ ActiveRecord::Schema.define(version: 20150330211816) do
   add_index "members", ["permission_id"], name: "index_members_on_permission_id", using: :btree
   add_index "members", ["user_id"], name: "index_members_on_user_id", using: :btree
 
-  create_table "monologue_posts", force: true do |t|
+  create_table "monologue_posts", force: :cascade do |t|
     t.boolean  "published"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
-    t.string   "title"
+    t.string   "title",        limit: 255
     t.text     "content"
-    t.string   "url"
+    t.string   "url",          limit: 255
     t.datetime "published_at"
   end
 
   add_index "monologue_posts", ["url"], name: "index_monologue_posts_on_url", unique: true, using: :btree
 
-  create_table "monologue_taggings", force: true do |t|
+  create_table "monologue_taggings", force: :cascade do |t|
     t.integer "post_id"
     t.integer "tag_id"
   end
@@ -375,21 +375,21 @@ ActiveRecord::Schema.define(version: 20150330211816) do
   add_index "monologue_taggings", ["post_id"], name: "index_monologue_taggings_on_post_id", using: :btree
   add_index "monologue_taggings", ["tag_id"], name: "index_monologue_taggings_on_tag_id", using: :btree
 
-  create_table "monologue_tags", force: true do |t|
-    t.string "name"
+  create_table "monologue_tags", force: :cascade do |t|
+    t.string "name", limit: 255
   end
 
   add_index "monologue_tags", ["name"], name: "index_monologue_tags_on_name", using: :btree
 
-  create_table "part_joins", force: true do |t|
-    t.integer  "part_id",                           null: false
-    t.integer  "partable_id",                       null: false
-    t.string   "partable_type",                     null: false
-    t.integer  "quantity",              default: 1
-    t.string   "unquantifiable_amount"
+  create_table "part_joins", force: :cascade do |t|
+    t.integer  "part_id",                                       null: false
+    t.integer  "partable_id",                                   null: false
+    t.string   "partable_type",         limit: 255,             null: false
+    t.integer  "quantity",                          default: 1
+    t.string   "unquantifiable_amount", limit: 255
     t.float    "total_cost"
     t.text     "comment"
-    t.integer  "position",              default: 0, null: false
+    t.integer  "position",                          default: 0, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -397,35 +397,35 @@ ActiveRecord::Schema.define(version: 20150330211816) do
   add_index "part_joins", ["part_id"], name: "index_part_joins_on_part_id", using: :btree
   add_index "part_joins", ["partable_id", "partable_type", "position"], name: "index_part_joins_on_partable_id_and_partable_type_and_position", using: :btree
 
-  create_table "parts", force: true do |t|
-    t.integer  "quantity",            default: 1
-    t.float    "unit_price",          default: 0.0
-    t.float    "total_cost",          default: 0.0
-    t.string   "name"
-    t.string   "vendor_name"
-    t.string   "vendor_sku"
-    t.string   "vendor_link"
-    t.string   "partable_type",                      null: false
-    t.integer  "partable_id",                        null: false
-    t.datetime "created_at",                         null: false
-    t.datetime "updated_at",                         null: false
-    t.string   "mpn"
+  create_table "parts", force: :cascade do |t|
+    t.integer  "quantity",                        default: 1
+    t.float    "unit_price",                      default: 0.0
+    t.float    "total_cost",                      default: 0.0
+    t.string   "name",                limit: 255
+    t.string   "vendor_name",         limit: 255
+    t.string   "vendor_sku",          limit: 255
+    t.string   "vendor_link",         limit: 255
+    t.string   "partable_type",       limit: 255,                null: false
+    t.integer  "partable_id",                                    null: false
+    t.datetime "created_at",                                     null: false
+    t.datetime "updated_at",                                     null: false
+    t.string   "mpn",                 limit: 255
     t.text     "description"
     t.integer  "position"
-    t.string   "comment"
+    t.string   "comment",             limit: 255
     t.text     "websites"
     t.integer  "platform_id"
-    t.boolean  "private",             default: true
-    t.string   "product_tags_string"
+    t.boolean  "private",                         default: true
+    t.string   "product_tags_string", limit: 255
     t.text     "counters_cache"
-    t.string   "workflow_state"
-    t.string   "slug"
+    t.string   "workflow_state",      limit: 255
+    t.string   "slug",                limit: 255
   end
 
   add_index "parts", ["partable_id", "partable_type"], name: "partable_index", using: :btree
   add_index "parts", ["platform_id"], name: "index_parts_on_platform_id", using: :btree
 
-  create_table "permissions", force: true do |t|
+  create_table "permissions", force: :cascade do |t|
     t.string   "permissible_type", limit: 15, null: false
     t.integer  "permissible_id",              null: false
     t.string   "action",           limit: 20
@@ -438,38 +438,38 @@ ActiveRecord::Schema.define(version: 20150330211816) do
   add_index "permissions", ["grantee_type", "grantee_id"], name: "index_permissions_on_grantee_type_and_grantee_id", using: :btree
   add_index "permissions", ["permissible_id", "permissible_type"], name: "index_permissions_on_permissible_id_and_permissible_type", using: :btree
 
-  create_table "prizes", force: true do |t|
+  create_table "prizes", force: :cascade do |t|
     t.integer "challenge_id"
-    t.string  "name"
+    t.string  "name",              limit: 255
     t.text    "description"
     t.integer "position"
     t.boolean "requires_shipping"
-    t.integer "quantity",          default: 1
+    t.integer "quantity",                      default: 1
     t.integer "cash_value"
-    t.string  "link"
+    t.string  "link",              limit: 255
   end
 
-  create_table "project_collections", force: true do |t|
+  create_table "project_collections", force: :cascade do |t|
     t.integer  "project_id"
     t.integer  "collectable_id"
-    t.string   "collectable_type"
+    t.string   "collectable_type", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "workflow_state"
+    t.string   "workflow_state",   limit: 255
     t.text     "comment"
   end
 
-  create_table "projects", force: true do |t|
-    t.string   "name"
+  create_table "projects", force: :cascade do |t|
+    t.string   "name",                    limit: 255
     t.text     "description"
     t.date     "start_date"
     t.date     "end_date"
     t.datetime "created_at",                                          null: false
     t.datetime "updated_at",                                          null: false
-    t.string   "website"
+    t.string   "website",                 limit: 255
     t.boolean  "private",                             default: false, null: false
-    t.string   "workflow_state"
-    t.string   "one_liner"
+    t.string   "workflow_state",          limit: 255
+    t.string   "one_liner",               limit: 255
     t.boolean  "featured"
     t.integer  "impressions_count",                   default: 0
     t.text     "counters_cache"
@@ -489,20 +489,20 @@ ActiveRecord::Schema.define(version: 20150330211816) do
     t.string   "guest_name",              limit: 128
     t.boolean  "approved"
     t.boolean  "open_source",                         default: true
-    t.string   "buy_link"
+    t.string   "buy_link",                limit: 255
     t.datetime "last_edited_at"
     t.text     "properties"
-    t.string   "platform_tags_string"
+    t.string   "platform_tags_string",    limit: 255
     t.text     "product_tags_string"
     t.datetime "assignment_submitted_at"
     t.text     "story"
-    t.string   "difficulty"
+    t.string   "difficulty",              limit: 255
   end
 
   add_index "projects", ["private"], name: "index_projects_on_private", using: :btree
   add_index "projects", ["team_id"], name: "index_projects_on_team_id", using: :btree
 
-  create_table "receipts", force: true do |t|
+  create_table "receipts", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "message_id"
     t.integer  "conversation_id"
@@ -516,7 +516,7 @@ ActiveRecord::Schema.define(version: 20150330211816) do
   add_index "receipts", ["message_id"], name: "index_receipts_on_message_id", using: :btree
   add_index "receipts", ["user_id"], name: "index_receipts_on_user_id", using: :btree
 
-  create_table "reputations", force: true do |t|
+  create_table "reputations", force: :cascade do |t|
     t.float    "points",     default: 0.0
     t.integer  "user_id",                  null: false
     t.datetime "created_at",               null: false
@@ -525,34 +525,34 @@ ActiveRecord::Schema.define(version: 20150330211816) do
 
   add_index "reputations", ["user_id"], name: "index_reputations_on_user_id", using: :btree
 
-  create_table "respects", force: true do |t|
-    t.integer  "respecting_id"
-    t.integer  "project_id"
-    t.datetime "created_at",                       null: false
-    t.datetime "updated_at",                       null: false
-    t.string   "respecting_type", default: "User", null: false
+  create_table "respects", force: :cascade do |t|
+    t.integer  "user_id",                                         null: false
+    t.integer  "respectable_id",                                  null: false
+    t.datetime "created_at",                                      null: false
+    t.datetime "updated_at",                                      null: false
+    t.string   "respectable_type", limit: 15, default: "Project", null: false
   end
 
-  add_index "respects", ["project_id"], name: "index_respects_on_project_id", using: :btree
-  add_index "respects", ["respecting_id", "respecting_type"], name: "index_respects_on_respecting_id_and_respecting_type", using: :btree
+  add_index "respects", ["respectable_id", "respectable_type"], name: "index_respects_on_respectable_id_and_respectable_type", using: :btree
+  add_index "respects", ["user_id"], name: "index_respects_on_user_id", using: :btree
 
-  create_table "slug_histories", force: true do |t|
-    t.string   "value",                              null: false
-    t.integer  "sluggable_id",                       null: false
+  create_table "slug_histories", force: :cascade do |t|
+    t.string   "value",          limit: 255,                     null: false
+    t.integer  "sluggable_id",                                   null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "sluggable_type", default: "Project", null: false
+    t.string   "sluggable_type", limit: 255, default: "Project", null: false
   end
 
   add_index "slug_histories", ["sluggable_type", "sluggable_id"], name: "index_slug_histories_on_sluggable_type_and_sluggable_id", using: :btree
   add_index "slug_histories", ["value"], name: "index_slug_histories_on_value", using: :btree
 
-  create_table "subdomains", force: true do |t|
-    t.string   "subdomain"
-    t.string   "name"
+  create_table "subdomains", force: :cascade do |t|
+    t.string   "subdomain",   limit: 255
+    t.string   "name",        limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "domain"
+    t.string   "domain",      limit: 255
     t.integer  "platform_id"
     t.text     "properties"
   end
@@ -560,42 +560,54 @@ ActiveRecord::Schema.define(version: 20150330211816) do
   add_index "subdomains", ["domain"], name: "index_subdomains_on_domain", using: :btree
   add_index "subdomains", ["platform_id"], name: "index_subdomains_on_platform_id", using: :btree
 
-  create_table "tags", force: true do |t|
-    t.integer  "taggable_id",   null: false
-    t.string   "taggable_type", null: false
-    t.string   "type",          null: false
-    t.string   "name"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+  create_table "tags", force: :cascade do |t|
+    t.integer  "taggable_id",               null: false
+    t.string   "taggable_type", limit: 255, null: false
+    t.string   "type",          limit: 255, null: false
+    t.string   "name",          limit: 255
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
   end
 
   add_index "tags", ["taggable_id", "taggable_type", "type"], name: "index_taggable", using: :btree
 
-  create_table "team_members", force: true do |t|
-    t.integer  "user_id",    null: false
-    t.integer  "project_id", null: false
-    t.string   "role"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+  create_table "team_members", force: :cascade do |t|
+    t.integer  "user_id",                null: false
+    t.integer  "project_id",             null: false
+    t.string   "role",       limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
 
   add_index "team_members", ["project_id"], name: "index_team_members_on_project_id", using: :btree
   add_index "team_members", ["user_id"], name: "index_team_members_on_user_id", using: :btree
 
-  create_table "threads", force: true do |t|
-    t.string   "title"
+  create_table "thoughts", force: :cascade do |t|
     t.text     "body"
-    t.integer  "threadable_id",                              null: false
-    t.string   "threadable_type",                            null: false
+    t.integer  "user_id",                null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "link"
+    t.text     "cached_link_properties"
+    t.text     "raw_body"
+  end
+
+  add_index "thoughts", ["user_id"], name: "index_thoughts_on_user_id", using: :btree
+
+  create_table "threads", force: :cascade do |t|
+    t.string   "title",           limit: 255
+    t.text     "body"
+    t.integer  "threadable_id",                               null: false
+    t.string   "threadable_type", limit: 255,                 null: false
     t.boolean  "private"
-    t.integer  "user_id",                                    null: false
-    t.datetime "created_at",                                 null: false
-    t.datetime "updated_at",                                 null: false
+    t.integer  "user_id",                                     null: false
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
     t.string   "type",            limit: 20
-    t.string   "workflow_state"
-    t.integer  "sub_id",                     default: 0,     null: false
-    t.string   "slug"
-    t.boolean  "draft",                      default: false
+    t.string   "workflow_state",  limit: 255
+    t.integer  "sub_id",                      default: 0,     null: false
+    t.string   "slug",            limit: 255
+    t.boolean  "draft",                       default: false
     t.datetime "published_at"
     t.datetime "display_until"
   end
@@ -605,54 +617,54 @@ ActiveRecord::Schema.define(version: 20150330211816) do
   add_index "threads", ["threadable_id", "threadable_type"], name: "index_blog_posts_on_bloggable_id_and_bloggable_type", using: :btree
   add_index "threads", ["user_id"], name: "index_blog_posts_on_user_id", using: :btree
 
-  create_table "user_activities", force: true do |t|
+  create_table "user_activities", force: :cascade do |t|
     t.integer  "user_id"
-    t.string   "event"
+    t.string   "event",      limit: 255
     t.datetime "created_at"
   end
 
-  create_table "users", force: true do |t|
+  create_table "users", force: :cascade do |t|
     t.string   "user_name",              limit: 100
     t.string   "mini_resume",            limit: 160
     t.string   "city",                   limit: 50
     t.string   "country",                limit: 50
     t.integer  "roles_mask"
-    t.string   "email",                              default: "",     null: false
-    t.string   "encrypted_password",                 default: ""
-    t.string   "reset_password_token"
+    t.string   "email",                  limit: 255, default: "",     null: false
+    t.string   "encrypted_password",     limit: 255, default: ""
+    t.string   "reset_password_token",   limit: 255
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.integer  "sign_in_count",                      default: 0
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
-    t.string   "current_sign_in_ip"
-    t.string   "last_sign_in_ip"
+    t.string   "current_sign_in_ip",     limit: 255
+    t.string   "last_sign_in_ip",        limit: 255
     t.datetime "created_at",                                          null: false
     t.datetime "updated_at",                                          null: false
-    t.string   "full_name"
+    t.string   "full_name",              limit: 255
     t.text     "websites"
     t.integer  "categories_mask"
-    t.string   "invitation_token"
+    t.string   "invitation_token",       limit: 255
     t.datetime "invitation_sent_at"
     t.datetime "invitation_accepted_at"
     t.integer  "invitation_limit"
     t.integer  "invited_by_id"
-    t.string   "invited_by_type"
-    t.string   "type",                               default: "User", null: false
+    t.string   "invited_by_type",        limit: 255
+    t.string   "type",                   limit: 255, default: "User", null: false
     t.integer  "invite_code_id"
     t.integer  "impressions_count",                  default: 0
     t.text     "counters_cache"
     t.text     "notifications"
     t.datetime "invitation_created_at"
-    t.string   "confirmation_token"
+    t.string   "confirmation_token",     limit: 255
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
-    t.string   "unconfirmed_email"
+    t.string   "unconfirmed_email",      limit: 255
     t.integer  "subscriptions_mask",                 default: 0
     t.boolean  "mailchimp_registered",               default: false
     t.string   "authentication_token",   limit: 25
     t.boolean  "enable_sharing",                     default: true,   null: false
-    t.string   "platform"
+    t.string   "platform",               limit: 255
     t.datetime "last_seen_at"
   end
 
@@ -663,32 +675,32 @@ ActiveRecord::Schema.define(version: 20150330211816) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["type"], name: "index_users_on_type", using: :btree
 
-  create_table "videos", force: true do |t|
-    t.string   "title"
-    t.string   "link"
-    t.string   "provider"
-    t.string   "id_for_provider"
-    t.integer  "recordable_id",                null: false
-    t.string   "thumbnail_link"
+  create_table "videos", force: :cascade do |t|
+    t.string   "title",           limit: 255
+    t.string   "link",            limit: 255
+    t.string   "provider",        limit: 255
+    t.string   "id_for_provider", limit: 255
+    t.integer  "recordable_id",                            null: false
+    t.string   "thumbnail_link",  limit: 255
     t.integer  "ratio_height"
     t.integer  "ratio_width"
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
-    t.string   "recordable_type", default: "", null: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+    t.string   "recordable_type", limit: 255, default: "", null: false
   end
 
   add_index "videos", ["recordable_id", "recordable_type"], name: "recordable_index", using: :btree
 
-  create_table "widgets", force: true do |t|
-    t.string   "type",                                null: false
+  create_table "widgets", force: :cascade do |t|
+    t.string   "type",            limit: 255,                     null: false
     t.text     "properties"
-    t.string   "name"
-    t.datetime "created_at",                          null: false
-    t.datetime "updated_at",                          null: false
-    t.integer  "project_id",      default: 0,         null: false
-    t.string   "position",        default: "",        null: false
+    t.string   "name",            limit: 255
+    t.datetime "created_at",                                      null: false
+    t.datetime "updated_at",                                      null: false
+    t.integer  "project_id",                  default: 0,         null: false
+    t.string   "position",        limit: 255, default: "",        null: false
     t.integer  "widgetable_id"
-    t.string   "widgetable_type", default: "Project"
+    t.string   "widgetable_type", limit: 255, default: "Project"
   end
 
   add_index "widgets", ["position"], name: "index_widgets_on_position", using: :btree

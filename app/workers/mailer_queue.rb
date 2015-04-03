@@ -215,7 +215,7 @@ class MailerQueue < BaseWorker
         return unless user.subscribed_to? 'other'
       when :respect
         respect = context[:respect] = Respect.find(context_id)
-        project = context[:project] = respect.project
+        project = context[:project] = respect.respectable
         context[:author] = respect.user
         context[:users] = project.users.with_subscription('new_respect_own').to_a  # added to_a so that .uniq line 235 doesn't add DISTINCT to the query and make it fail
       when :user

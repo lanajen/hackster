@@ -16,6 +16,9 @@
         ' Did you
         = link_to 'fill out your profile', profile_edit_path
         | ? Think of the person on the other side, it's always nicer when you know who you're talking to.
+      p.small.text-center.text-muted.mg-20
+        strong> Tip #2:
+        ' If you're asking details about a project, consider doing so in the comments! That way the rest of the community can benefit from the answer as well.
       = simple_form_for @conversation do |f|
         = f.input :recipient_id, as: :hidden
         = f.input :subject, label: false, placeholder: 'Subject'

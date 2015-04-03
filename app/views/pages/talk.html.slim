@@ -1,0 +1,18 @@
+= content_for :js do
+  = javascript_include_tag "https://fb.me/react-0.13.1.js"
+  = javascript_include_tag "https://fb.me/JSXTransformer-0.13.1.js"
+  = javascript_include_tag "https://cdn.rawgit.com/mquan/cortex/master/build/cortex.min.js"
+  = javascript_include_tag 'fluxxor'
+  = javascript_include_tag "channel_store", type: "text/jsx"
+  = javascript_include_tag "channel", type: "text/jsx"
+  javascript:
+    var user_data = {
+      avatar_url: '#{current_user.decorate.avatar}',
+      id: '#{current_user.id}',
+      name: '#{current_user.name}',
+      url: '#{url_for current_user}'
+    }
+
+.row
+  .col-md-8.col-md-offset-2
+    #react-container

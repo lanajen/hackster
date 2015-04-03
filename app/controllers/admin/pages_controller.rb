@@ -124,7 +124,7 @@ class Admin::PagesController < Admin::BaseController
   def respects
     title "Admin / Respects - #{safe_page_params}"
 
-    @respects = Respect.where(respecting_type: 'User').order(created_at: :desc).paginate(page: safe_page_params)
+    @respects = Respect.where(respectable_type: 'Project').order(created_at: :desc).paginate(page: safe_page_params)
   end
 
   def root

@@ -1,0 +1,219 @@
+.channel-container {
+
+}
+
+.channel-header {
+  h1 {
+    font-size: 1em;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #777;
+  }
+}
+
+.thought-form {
+  border: 1px solid #ddd;
+  @include border-radius(4px);
+  overflow: hidden;  // for rounded corners to show properly
+  margin-bottom: 30px;
+  .textarea-container {
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+    textarea {
+      width: 100%;
+      margin: 0;
+      padding: 7px 10px;
+      border: 0;
+      outline: 0;
+      resize: none;
+    }
+  }
+  .submit-container {
+    background: #f2f2f2;
+    padding: 7px 10px;
+    text-align: right;
+  }
+}
+
+.thought-list {
+
+}
+
+.thought-container {
+  border: 1px solid #ddd;
+  @include border-radius(4px);
+  overflow: hidden;  // for rounded corners to show properly
+  margin-bottom: 20px;
+  &.deleted {
+    display: none;
+  }
+}
+
+.thought {
+  background: #fff;
+  padding: 20px 30px;
+  border-bottom: 1px solid #ddd;
+  img {
+    width: 50px;
+    height: 50px;
+  }
+  .user {
+    font-weight: bold;
+    font-size: 1em;
+  }
+  .time-created {
+    color: #777;
+    font-size: 0.85em;
+    margin: 0;
+  }
+  .media {
+    margin-bottom: 10px;
+  }
+  .body {
+    margin-bottom: 12px;
+  }
+  .actions {
+    font-size: 0.8em;
+    a {
+      text-decoration: none;
+      color: #999;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+    .separator {
+      margin: 0 7px;
+      color: #999;
+    }
+  }
+}
+
+.likes-container {
+  background: #f2f2f2;
+  padding: 10px 30px;
+  border-bottom: 1px solid #ddd;
+  font-size: 0.8em;
+  color: #555;
+  a {
+    font-weight: bold;
+    color: #555;
+  }
+}
+
+.comment-container {
+  background: #f2f2f2;
+  padding: 20px 30px;
+}
+
+.comment-list {
+
+}
+
+.comment-form {
+  img {
+    display: inline-block;
+    width: 35px;
+    height: 35px;
+    margin-right: 8px;
+  }
+  .textarea-container {
+    display: inline-block;
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 5px;
+    @include border-radius(4px);
+    width: calc(100% - 45px);  // image size
+    textarea {
+      height: 25px;
+      vertical-align: bottom;
+      border: 0;
+      outline: 0;
+      resize: none;
+      font-size: 0.85em;
+      width: calc(100% - 42px);  // input button size
+    }
+    input {
+      padding: 2px 7px;
+      font-size: 0.8em;
+    }
+  }
+}
+
+.comment {
+  margin-bottom: 15px;
+  font-size: 0.8em;
+  &.deleted {
+    display: none;
+  }
+  img {
+    width: 35px;
+    height: 35px;
+  }
+  .user {
+    font-weight: bold;
+    margin-bottom: 0;
+  }
+  .body {
+    margin-bottom: 5px;
+    p {
+      margin-bottom: 0;
+    }
+  }
+  .actions {
+    color: #bbb;
+    a {
+      text-decoration: none;
+      color: #999;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+    .separator {
+      margin: 0 7px;
+      color: #999;
+    }
+  }
+}
+
+.thought-link {
+  display: block;
+  border: 1px solid #ddd;
+  background: #F2F2F2;
+  padding: 10px 20px;
+  color: #555;
+  margin-bottom: 10px;
+  cursor: pointer;
+  font-size: 0.85em;
+  h5 {
+    font-weight: bold;
+    font-size: 1.1em;
+  }
+  img {
+    width: 100px;
+    height: 100px;
+  }
+  .media, .website {
+    margin-bottom: 0;
+  }
+  .website {
+    position: absolute;
+    bottom: 0;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    color: #777;
+  }
+  .description {
+    line-height: 1.2em;
+  }
+  .media-body {
+    width: 100000px;
+  }
+  &:hover, &:focus, &:active, &:visited {
+    text-decoration: none;
+    color: #555;
+  }
+}
+.thought-link-inner {
+  position: relative;
+  height: 100px;
+}
