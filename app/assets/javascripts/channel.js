@@ -158,8 +158,20 @@ var Thought = React.createClass({
 });
 
 var CommentForm = React.createClass({
+  getInitialState: function() {
+    return {
+      submitVisibility: 'hidden'
+    };
+  },
+
   focus: function(e){
     this.refs.body.getDOMNode().focus();
+  },
+
+  componentDidMount: function() {
+    var body = $(this.refs.body.getDOMNode());
+    body.on('focus', this.updateSubmit());
+    // body.on('blur', this.updateSubmit());
   },
 
   handleSubmit: function(e){
@@ -174,13 +186,33 @@ var CommentForm = React.createClass({
     this.getDOMNode().focus();
   },
 
+  updateSubmit: function() {
+    // console.log(body);
+    var body = $(this.refs.body.getDOMNode());
+    if (body.val() == '') {
+      if (body.is(':focus')) {
+        console.log('disabled');
+        this.setState({ submitVisibility: 'disabled' });
+      } else {
+        console.log('hidden');
+        this.setState({ submitVisibility: 'hidden' });
+      }
+    } else {
+      console.log('ready');
+      this.setState({ submitVisibility: 'ready' });
+    }
+  },
+
   render: function() {
+    var classes = ['comment-form'];
+    classes.push('submit-' + this.state.submitVisibility);
+
     return (
-      <form className="comment-form" onSubmit={this.handleSubmit}>
+      <form className={classes.join(' ')} onSubmit={this.handleSubmit}>
         <img className="img-rounded" src={user_data.avatar_url} />
         <div className="textarea-container">
           <textarea ref="body" placeholder="Type your comment" />
-          <input ref="submit" className="btn btn-primary btn-sm" type="submit" value="Post" />
+          <input ref="submit" disabled={this.state.submitVisibility == 'disabled'} className="btn btn-primary btn-sm" type="submit" value="Post" />
         </div>
       </form>
     );
