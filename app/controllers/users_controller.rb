@@ -16,7 +16,7 @@ class UsersController < ApplicationController
 
     @public_projects = @user.projects.live.for_thumb_display.order(start_date: :desc, made_public_at: :desc, created_at: :desc)
     @private_projects = @user.projects.private.for_thumb_display
-    @respected_projects = @user.respected_projects.indexable.for_thumb_display
+    @respected_projects = @user.respected_projects.indexable_and_external.for_thumb_display
     if current_platform
       @private_projects = if current_user == @user
         @private_projects.select{ |p| (p.platform_tags_cached.map{|t| t.downcase } & current_platform.platform_tags.map{|t| t.name.downcase }).any? }

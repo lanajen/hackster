@@ -1,7 +1,8 @@
 class ThoughtSerializer < ActiveModel::Serializer
   include ApplicationHelper
 
-  attributes :id, :body, :date, :liked, :own, :deleted, :edited, :likes, :link, :link_data
+  attributes :id, :body, :date, :liked, :own, :deleted, :edited, :likes, :link,
+    :link_data
 
   has_one :user, embed: :id, include: true
   has_many :comments, embed: :id, include: true
@@ -19,13 +20,7 @@ class ThoughtSerializer < ActiveModel::Serializer
   end
 
   def link_data
-    hash = {}
-    [:title, :image_link, :website_name,
-    :description, :extra_data_value1, :extra_data_label1, :extra_data_value2,
-    :extra_data_label2].each do |attr|
-      hash[attr] = object.send(attr)
-    end
-    hash
+    object.link_datum ? LinkDatumSerializer.new(object.link_datum, root: false) : []
   end
 
   def liked
@@ -36,7 +31,6 @@ class ThoughtSerializer < ActiveModel::Serializer
     {
       count: object.likes.count,
       likers: object.liking_users.where.not(id: current_user.id).limit(2).map{|u| { name: u.name, url: url_for([u, only_path: true]) }}
-      # likers: object.liking_users.limit(2).map{|u| { name: u.name, url: url_for([u, only_path: true]) }}
     }
   end
 

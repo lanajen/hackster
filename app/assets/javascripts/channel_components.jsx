@@ -170,8 +170,7 @@ var CommentForm = React.createClass({
 
   componentDidMount: function() {
     var body = $(this.refs.body.getDOMNode());
-    body.on('focus', this.updateSubmit());
-    // body.on('blur', this.updateSubmit());
+    body.on('focus blur keyup', this.updateSubmit);
   },
 
   handleSubmit: function(e){
@@ -184,22 +183,19 @@ var CommentForm = React.createClass({
     this.props.onCommentSubmit(body);
     this.refs.body.getDOMNode().value = '';
     this.getDOMNode().focus();
+    this.updateSubmit(e);
   },
 
-  updateSubmit: function() {
-    // console.log(body);
-    var body = $(this.refs.body.getDOMNode());
-    if (body.val() == '') {
-      if (body.is(':focus')) {
-        console.log('disabled');
+  updateSubmit: function(e) {
+    var body = this.refs.body.getDOMNode();
+    if (body.value.length) {
+      this.setState({ submitVisibility: 'ready' });
+    } else {
+      if (e.type == 'focus' || $(body).is(':focus')) {
         this.setState({ submitVisibility: 'disabled' });
       } else {
-        console.log('hidden');
         this.setState({ submitVisibility: 'hidden' });
       }
-    } else {
-      console.log('ready');
-      this.setState({ submitVisibility: 'ready' });
     }
   },
 

@@ -44,6 +44,8 @@ HackerIo::Application.configure do
   config.cache_store = :dalli_store
   config.cashier.adapter = :cache_store
 
+  config.react.variant = :development
+
   # config.after_initialize do
   #   Bullet.enable = true
   #   # Bullet.alert = true

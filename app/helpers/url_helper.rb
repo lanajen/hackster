@@ -234,16 +234,21 @@ module UrlHelper
 
   def project_path project, opts={}
     # if there's a path not found error check that user_name.size >= 3
-    super params_for_project(project).merge(opts)
+    params = params_for_project(project).merge(opts)
+    params.delete(:use_route)
+    super params
   end
 
   def project_url project, opts={}
-    super params_for_project(project).merge(opts)
+    params = params_for_project(project).merge(opts)
+    params.delete(:use_route)
+    super params
+    # super params_for_project(project).merge(opts)
   end
 
   def project_embed_url project, opts={}
-    force_params = { use_route: 'project_embed' }
-    super params_for_project(project, force_params).merge(opts)
+    # force_params = { use_route: 'project_embed' }
+    super params_for_project(project).merge(opts)
   end
 
   def promotion_path promotion, opts={}
@@ -264,14 +269,6 @@ module UrlHelper
 
   def platform_short_url platform, opts={}
     super platform.user_name, opts
-  end
-
-  def universal_project_path project, opts={}
-    project.external? ? external_project_path(project, opts) : project_path(project, opts)
-  end
-
-  def universal_project_url project, opts={}
-    project.external? ? external_project_url(project, opts) : project_url(project, opts)
   end
 
   def url_for(options = nil)
@@ -318,7 +315,7 @@ module UrlHelper
         user_name: assignment.promotion.course.user_name,
         promotion_name: assignment.promotion.user_name,
         id: assignment.id_for_promotion,
-        use_route: 'course_promotion_assignment',
+        # use_route: 'course_promotion_assignment',
       }
     end
 
@@ -341,7 +338,7 @@ module UrlHelper
       {
         user_name: event.hackathon.user_name,
         event_name: event.user_name,
-        use_route: 'hackathon_event',
+        # use_route: 'hackathon_event',
       }
     end
 
@@ -350,14 +347,14 @@ module UrlHelper
         uni_name: promotion.course.university.user_name,
         user_name: promotion.course.user_name,
         promotion_name: promotion.user_name,
-        use_route: 'course_promotion',
+        # use_route: 'course_promotion',
       }
     end
 
     def params_for_group group, route='group'
       {
         user_name: group.user_name,
-        use_route: route,
+        # use_route: route,
       }
     end
 

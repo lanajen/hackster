@@ -137,6 +137,11 @@
       font-size: 0.8em;
     }
   }
+  &.submit-hidden {
+    input {
+      visibility: hidden;
+    }
+  }
 }
 
 .comment {
@@ -207,6 +212,9 @@
   }
   .media-body {
     width: 100000px;
+  }
+  &:hover {
+    border-color: #999;
   }
   &:hover, &:focus, &:active, &:visited {
     text-decoration: none;

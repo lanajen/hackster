@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150403015337) do
+ActiveRecord::Schema.define(version: 20150404022335) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -321,6 +321,21 @@ ActiveRecord::Schema.define(version: 20150403015337) do
   end
 
   add_index "invite_requests", ["user_id"], name: "index_invite_requests_on_user_id", using: :btree
+
+  create_table "link_data", force: :cascade do |t|
+    t.string   "title"
+    t.string   "website_name"
+    t.text     "description"
+    t.string   "extra_data_value1"
+    t.string   "extra_data_value2"
+    t.string   "extra_data_label1"
+    t.string   "extra_data_label2"
+    t.string   "link",              null: false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+  end
+
+  add_index "link_data", ["link"], name: "index_link_data_on_link", using: :btree
 
   create_table "log_lines", force: :cascade do |t|
     t.string   "log_type",      limit: 255
