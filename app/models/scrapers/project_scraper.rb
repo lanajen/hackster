@@ -54,6 +54,7 @@ class ProjectScraper
       '1sheeld.com' => :onesheeld,
       'blogspot.com' => :blogspot,
       'blogspot.fr' => :blogspot,
+      'challengepost.com' => :challengepost,
       'community.spark.io' => :spark_forum,
       'developer.mbed.org' => :mbed,
       'forum.arduino.cc' => :arduinocc,

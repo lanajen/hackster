@@ -24,7 +24,8 @@ class Users::InvitationsController < Devise::InvitationsController
       # else
       #   remaining_msg = "You've used all your invitations, good job!"
       # end
-      flash[:notice] = "Cool, you just invited #{view_context.pluralize(invited.size, 'friend')}!"
+      # flash[:notice] = "Cool, you just invited #{view_context.pluralize(invited.size, 'friend')}!"
+      flash[:notice] = "Cool, your invites are on their way!"
 
       respond_with @friend_invite, :location => after_invite_path_for(@friend_invite)
 
