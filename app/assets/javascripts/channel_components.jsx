@@ -30,13 +30,14 @@ var ThoughtForm = React.createClass({
   handleSubmit: function(e){
     e.preventDefault();
 
+    this.refs.submit.getDOMNode().blur();
+
     var body = this.refs.body.getDOMNode().value.trim();
     if (!body) {
       return;
     }
     this.props.onThoughtSubmit(body);
     this.refs.body.getDOMNode().value = '';
-    this.getDOMNode().focus();
   },
 
   render: function() {
