@@ -17,7 +17,8 @@
 //= require browser_timezone_rails/application
 //= require jquery.resize
 //= require jquery.githubRepoWidget.min
-// require jquery.deserialize
+// require react
+// require channel
 
 //= require chats
 //= require projects

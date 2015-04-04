@@ -401,14 +401,7 @@ var ChannelContainer = React.createClass({
   }
 });
 
-var initialChannelData = { thoughts: [] };
-var thoughtCortex = new Cortex(initialChannelData);
-
 var channelComponent = React.render(
   <ChannelContainer flux={flux} url='/api/v1/thoughts' />,
   document.getElementById('react-container')
 );
-
-thoughtCortex.on("update", function(updatedCortex) {
-  channelComponent.setProps({ channelData: updatedCortex });
-});
