@@ -73,6 +73,8 @@ HackerIo::Application.configure do
 
   config.assets.initialize_on_precompile = false
 
+  config.react.variant = :production
+
   # config.middleware.use(Oink::Middleware, logger: Hodel3000CompliantLogger.new(STDOUT))
 
   require File.expand_path('../../../lib/queue_time_logger', __FILE__)
