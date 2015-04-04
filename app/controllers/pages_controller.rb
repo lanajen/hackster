@@ -1,4 +1,5 @@
 class PagesController < ApplicationController
+  before_filter :authenticate_user!, only: [:talk]
 
   def about
     meta_desc 'What is Hackster.io?'

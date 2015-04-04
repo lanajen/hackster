@@ -17,7 +17,7 @@
         = link_to 'Twitter', user_omniauth_authorize_path(:twitter), class: 'zocial icon twitter'
         = link_to 'Email', 'javascript:$(".popup-overlay-inner").toggleClass("expanded");', class: 'zocial icon email'
 
-      = simple_form_for User.new, url: simplified_registrations_path(source: 'popup'), html: { id: 'signup-popup-email', class: 'form-compact disable-on-submit' } do |f|
+      = simple_form_for User.new, url: _simplified_registrations_path(source: 'popup'), html: { id: 'signup-popup-email', class: 'form-compact disable-on-submit' } do |f|
         input  type='hidden' name='redirect_to'
         = f.input :email, label: false, placeholder: 'Email', tabindex: 1
         = f.button :submit, "Continue", class: 'btn btn-primary btn-block'

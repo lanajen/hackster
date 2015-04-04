@@ -68,12 +68,12 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
           session['devise.provider_data'] = omniauth_data
           session['devise.provider'] = kind
           session['devise.match_by'] = @user.match_by
-          redirect_to edit_authorization_url(@user.id, host: redirect_host)
+          redirect_to edit__authorization_url(@user.id, host: redirect_host)
         end
       else
         session['devise.provider_data'] = omniauth_data
         session['devise.provider'] = kind
-        redirect_to new_authorization_url(autosave: 1, host: redirect_host)
+        redirect_to new__authorization_url(autosave: 1, host: redirect_host)
       end
     end
 

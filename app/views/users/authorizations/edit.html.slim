@@ -9,7 +9,7 @@
         li
           p Link it with #{@provider} by confirming it's yours:
 
-          = simple_form_for resource, as: resource_name, url: authorization_path, html: { data: { method: :patch }, class: 'form-inline' } do |f|
+          = simple_form_for resource, as: resource_name, url: _authorization_path, html: { data: { method: :patch }, class: 'form-inline' } do |f|
             = f.input :email, as: :hidden
             .input-group
               ==> f.input :password, wrapper: false, label: false, placeholder: "Existing password", input_html: { class: 'form-control' }
@@ -20,4 +20,4 @@
         li
           p
             ' Or
-            = link_to 'continue connecting and use a different email.', new_authorization_path(new_email: 1)
+            = link_to 'continue connecting and use a different email.', new__authorization_path(new_email: 1)
