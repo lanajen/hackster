@@ -149,8 +149,8 @@ var Thought = React.createClass({
           <Like liked={this.props.liked} onButtonClick={this.handleLike} />
           <span className="separator">&bull;</span>
           <a href='' onClick={this.handleComment}>Comment</a>
-          <span className="separator">&bull;</span>
-          <a href=''>Share</a>
+          {/*<span className="separator">&bull;</span>
+                    <a href=''>Share</a>*/}
           {actions}
         </div>
       </div>

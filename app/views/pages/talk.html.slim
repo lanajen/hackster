@@ -1,6 +1,7 @@
 = content_for :js do
   = javascript_include_tag "https://fb.me/react-0.13.1.js"
-  = javascript_include_tag "https://fb.me/JSXTransformer-0.13.1.js"
+  - if Rails.env == 'development'
+    = javascript_include_tag "https://fb.me/JSXTransformer-0.13.1.js"
   = javascript_include_tag "https://cdn.rawgit.com/mquan/cortex/master/build/cortex.min.js"
   = javascript_include_tag 'https://cdn.rawgit.com/BinaryMuse/fluxxor/master/build/fluxxor.min.js'
   = javascript_include_tag "channel", type: "text/jsx"
