@@ -25,7 +25,8 @@ gem 'zocial-rails', '1.0.2'
 # bower
 gem 'rails-assets-medium-editor', '1.8.14'
 gem 'rails-assets-underscore', '1.7.0'
-# gem 'rails-assets-fluxxor', '1.5.2'
+gem 'rails-assets-fluxxor', '1.5.2'
+gem 'rails-assets-momentjs', '2.9.0'
 
 gem 'redcarpet'
 # gem 'github-markdown'

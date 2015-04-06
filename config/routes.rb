@@ -261,7 +261,7 @@ HackerIo::Application.routes.draw do
     get 'tools', to: redirect('platforms')
     get 'platforms' => 'platforms#index'
 
-    get 'talk' => 'pages#talk'
+    get 'talk' => 'channels#show'
 
     get 'hardwareweekend' => 'pages#hardwareweekend'
     get 'hhw', to: redirect('/hardwareweekend')

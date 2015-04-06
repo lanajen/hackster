@@ -1,7 +1,7 @@
 class CommentSerializer < ActiveModel::Serializer
   include ApplicationHelper
 
-  attributes :id, :body, :date, :liked, :own, :deleted, :edited, :commentable_id
+  attributes :id, :body, :timestamp, :liked, :own, :deleted, :edited, :commentable_id
 
   has_one :user, embed: :id, include: true
 
@@ -19,6 +19,10 @@ class CommentSerializer < ActiveModel::Serializer
 
   def liked
     Respect.to_be? current_user, object
+  end
+
+  def timestamp
+    object.created_at.to_i
   end
 
   def own

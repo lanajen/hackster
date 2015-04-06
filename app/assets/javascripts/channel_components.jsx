@@ -20,8 +20,64 @@ var ChannelHeader = React.createClass({
   render: function() {
     return (
       <div className="channel-header">
-        <h1>Public channel</h1>
+        <h1>Public feed</h1>
       </div>
+    );
+  }
+});
+
+var DateComponent = React.createClass({
+  componentDidMount: function() {
+    this.refresh();
+  },
+
+  refresh: function() {
+    if (!this.isMounted())
+      return;
+
+    var period = 10000;
+
+    var now = Date.now() / 1000;
+    var seconds = Math.round(Math.abs(this.props.timestamp - now));
+
+    // refresh periods match momentjs
+    if (seconds < 90) {
+      period = 30 * 1000;  // 30 secs
+    } else if (seconds < 45 * 60) {  // 45 mins
+      period = 60 * 1000;  // 60 secs
+    } else if (seconds < 90 * 60) {  // 90 mins
+      period = 30 * 60 * 1000;  // 30 mins
+    } else if (seconds < 22 * 60 * 60) {  // 22 hours
+      period = 60 * 60 * 1000;  // 1 hour
+    } else if (seconds < 25 * 60 * 60 * 24) {  // 25 days
+      period = 24 * 60 * 60 * 1000;  // 1 day
+    } else {
+      period = 0;
+    }
+
+    if (!period)
+      return;
+
+    var _ = this;
+    var timer = window.setTimeout(function(){
+      _.forceUpdate();
+      _.refresh();
+    }, period);
+
+    this.setState({ timer: timer });  // so we can clear it when unmounting
+  },
+
+  componentWillUnmount: function() {
+    if (this.state && this.state.timer)
+      window.clearTimeout(this.state.timer);
+  },
+
+
+  render: function(){
+    var date = moment.unix(this.props.timestamp).fromNow();
+
+    return (
+      <span>{date}</span>
     );
   }
 });
@@ -140,7 +196,7 @@ var Thought = React.createClass({
           </div>
           <div className="media-body">
             <h4 className="user media-heading"><a href={user.url}>{user.name}</a></h4>
-            <p className="time-created">{this.props.date}</p>
+            <p className="time-created"><DateComponent timestamp={this.props.timestamp} /></p>
           </div>
         </div>
         <div className="body" dangerouslySetInnerHTML={{__html: this.props.body}} />
@@ -217,14 +273,16 @@ var CommentForm = React.createClass({
 });
 
 var Comment = React.createClass({
+  mixins: [FluxMixin],
+
   handleDelete: function(e) {
     e.preventDefault();
 
-    flux.actions.comments.remove(this.props.id);
+    this.getFlux().actions.comments.remove(this.props.id);
   },
 
   handleLike: function(oldState) {
-    flux.actions.comments.like(this.props.id, oldState);
+    this.getFlux().actions.comments.like(this.props.id, oldState);
   },
 
   render: function() {
@@ -256,7 +314,7 @@ var Comment = React.createClass({
             <p className="user"><a href={user.url}>{user.name}</a></p>
             <div className="body" dangerouslySetInnerHTML={{__html: this.props.body}} />
             <div className="actions">
-              <span className="time-created">{this.props.date}</span>
+              <span className="time-created"><DateComponent timestamp={this.props.timestamp} /></span>
               <span className="separator">&bull;</span>
               <Like liked={this.props.liked} onButtonClick={this.handleLike} />
               {actions}
@@ -284,12 +342,14 @@ var CommentList = React.createClass({
 });
 
 var CommentContainer = React.createClass({
+  mixins: [FluxMixin],
+
   focusForm: function() {
     this.refs.commentForm.focus();
   },
 
   handleCommentSubmit: function(body, thoughtId) {
-    flux.actions.comments.add({ body: body, thoughtId: this.props.thoughtId });
+    this.getFlux().actions.comments.add({ body: body, thoughtId: this.props.thoughtId });
   },
 
   render: function() {

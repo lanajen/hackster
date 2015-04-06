@@ -1,4 +1,4 @@
-var c = {
+var channelConstants = {
   COMMENT: {
     ADD: "COMMENT:ADD",
     LIKE: "COMMENT:LIKE",
@@ -15,51 +15,51 @@ var c = {
 var methods = {
   comments: {
     add: function(payload) {
-      this.dispatch(c.COMMENT.ADD, {
+      this.dispatch(channelConstants.COMMENT.ADD, {
         body: payload.body,
         thoughtId: payload.thoughtId
       });
     },
 
     like: function(id, oldState) {
-      this.dispatch(c.COMMENT.LIKE, {
+      this.dispatch(channelConstants.COMMENT.LIKE, {
         id: id,
         oldState: oldState
       });
     },
 
     remove: function(id) {
-      this.dispatch(c.COMMENT.REMOVE, id);
+      this.dispatch(channelConstants.COMMENT.REMOVE, id);
     }
   },
 
   thoughts: {
     add: function(body) {
-      this.dispatch(c.THOUGHT.ADD, {
+      this.dispatch(channelConstants.THOUGHT.ADD, {
         body: body
       });
     },
 
     like: function(id, oldState) {
-      this.dispatch(c.THOUGHT.LIKE, {
+      this.dispatch(channelConstants.THOUGHT.LIKE, {
         id: id,
         oldState: oldState
       });
     },
 
     load: function(comments) {
-      this.dispatch(c.THOUGHT.LOAD, comments);
+      this.dispatch(channelConstants.THOUGHT.LOAD, comments);
     },
 
     remove: function(id) {
-      this.dispatch(c.THOUGHT.REMOVE, id);
+      this.dispatch(channelConstants.THOUGHT.REMOVE, id);
     }
   }
 };
 
 var actions = {
   methods: methods,
-  constants: c
+  constants: channelConstants
 };
 
 var NOT_FOUND_TOKEN = {};
@@ -96,7 +96,7 @@ var CommentStore = Fluxxor.createStore({
   prepareNewComment: function(body, thoughtId) {
     comment = {
       body: body,
-      date: 'Just now',
+      timestamp: Date.now()/1000,
       liked: false,
       own: true,
       deleted: false,
@@ -234,7 +234,7 @@ var ThoughtStore = Fluxxor.createStore({
   prepareNewThought: function(body) {
     thought = {
       body: body,
-      date: 'Just now',
+      timestamp: Date.now()/1000,
       liked: false,
       own: true,
       deleted: false,

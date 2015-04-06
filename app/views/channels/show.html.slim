@@ -1,0 +1,26 @@
+= content_for :js do
+
+  = javascript_include_tag "channel"
+  javascript:
+    var user_data = {
+      avatar_url: '#{current_user.decorate.avatar}',
+      id: '#{current_user.id}',
+      name: '#{current_user.name}',
+      url: '#{url_for current_user}'
+    }
+
+.row
+  .col-md-3
+  .col-md-6
+    #react-container
+
+  / .col-md-3
+    .channel-header
+      h2 Who to follow
+
+  / .col-md-4
+    .channel-header
+      h2 Latest projects
+    .row
+      - @projects.each do |project|
+        = render partial: 'projects/project_thumb', locals: { project: project, col: 12 }

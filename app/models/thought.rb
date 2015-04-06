@@ -32,6 +32,7 @@ class Thought < ActiveRecord::Base
         no_styles: true,
         no_images: true,
         escape_html: true,
+        no_intra_emphasis: true,
       }
 
       markdown = Redcarpet::Markdown.new(Redcarpet::Render::TargetBlankHTML, filters)

@@ -3,11 +3,12 @@
 }
 
 .channel-header {
-  h1 {
+  h1, h2 {
     font-size: 1em;
     font-weight: bold;
     text-transform: uppercase;
     color: #777;
+    margin-top: 0;
   }
 }
 

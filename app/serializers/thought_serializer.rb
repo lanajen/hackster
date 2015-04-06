@@ -1,7 +1,7 @@
 class ThoughtSerializer < ActiveModel::Serializer
   include ApplicationHelper
 
-  attributes :id, :body, :date, :liked, :own, :deleted, :edited, :likes, :link,
+  attributes :id, :body, :timestamp, :liked, :own, :deleted, :edited, :likes, :link,
     :link_data
 
   has_one :user, embed: :id, include: true
@@ -32,6 +32,10 @@ class ThoughtSerializer < ActiveModel::Serializer
       count: object.likes.count,
       likers: object.liking_users.where.not(id: current_user.id).limit(2).map{|u| { name: u.name, url: url_for([u, only_path: true]) }}
     }
+  end
+
+  def timestamp
+    object.created_at.to_i
   end
 
   def own

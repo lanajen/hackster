@@ -43,13 +43,8 @@ html(lang="en")
     meta name="msapplication-TileColor" content="#da532c"
     meta name="msapplication-TileImage" content="#{ asset_path 'favicons/mstile-144x144.png' }"
     link href="#{ asset_path 'favicons/favicon.ico' }" rel="shortcut icon" type="image/vnd.microsoft.icon"
-    = javascript_include_tag "application"
-    - if Rails.env == 'production'
-      javascript:
-        window.heap=window.heap||[],heap.load=function(t,e){window.heap.appid=t,window.heap.config=e;var a=document.createElement("script");a.type="text/javascript",a.async=!0,a.src=("https:"===document.location.protocol?"https:":"http:")+"//cdn.heapanalytics.com/js/heap.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(a,n);for(var o=function(t){return function(){heap.push([t].concat(Array.prototype.slice.call(arguments,0)))}},p=["clearEventProperties","identify","setEventProperties","track","unsetEventProperty"],c=0;c<p.length;c++)heap[p[c]]=o(p[c])};
-        heap.load("3903892806");
-      - unless current_user and current_user.is? :admin
-        = render partial: 'shared/analytics', locals: { tracker: 'UA-11926897-15', domain: 'hackster.io', track_outbound: true }
+    - unless Rails.env != 'production' and current_user and current_user.is? :admin
+      = render partial: 'shared/analytics', locals: { tracker: 'UA-11926897-15', domain: 'hackster.io', track_outbound: true }
 
   body class=yield(:body_class)
     #outer-wrapper
@@ -244,6 +239,7 @@ html(lang="en")
     - if @modal
        = raw @modal
 
+    = javascript_include_tag "application"
     = content_for :js
     - unless is_mobile? or params[:blank_frame]
       = render 'shared/feedback'
