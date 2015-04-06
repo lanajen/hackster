@@ -101,6 +101,10 @@ css:
     background: #FFFFFF;
     margin-bottom: 0;
   }
+  #tessel-header .top-bar.expanded {
+    height: auto;
+    background: transparent;
+  }
   #tessel-header ul {
     padding: 0;
     margin: 0;
@@ -119,6 +123,9 @@ css:
   #tessel-header .top-bar .title-area {
     position: relative;
     margin: 0;
+  }
+  #tessel-header .top-bar.expanded .title-area {
+    background: #FFFFFF;
   }
   @media only screen and (min-width: 800px) {
     #tessel-header .top-bar {
@@ -241,6 +248,9 @@ css:
     padding: 0 1.25rem;
     height: 3.75rem;
     line-height: 3.75rem;
+  }
+  #tessel-header .top-bar.expanded .toggle-topbar a {
+    color: #888888;
   }
   #tessel-header .top-bar .toggle-topbar.menu-icon a,
   #tessel-header .top-bar .toggle-topbar.menu-icon .link--styling {
