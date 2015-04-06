@@ -1,7 +1,3 @@
-.channel-container {
-
-}
-
 .channel-header {
   h1, h2 {
     font-size: 1em;
@@ -34,10 +30,6 @@
     padding: 7px 10px;
     text-align: right;
   }
-}
-
-.thought-list {
-
 }
 
 .thought-container {
@@ -104,10 +96,6 @@
 .comment-container {
   background: #f2f2f2;
   padding: 20px 30px;
-}
-
-.comment-list {
-
 }
 
 .comment-form {
@@ -196,7 +184,7 @@
   }
   img {
     width: 100px;
-    height: 100px;
+    max-height: 100px;
   }
   .media, .website {
     margin-bottom: 0;
@@ -210,6 +198,7 @@
   }
   .description {
     line-height: 1.2em;
+    margin: 0;
   }
   .media-body {
     width: 100000px;
@@ -224,5 +213,5 @@
 }
 .thought-link-inner {
   position: relative;
-  height: 100px;
+  height: 120px;
 }
