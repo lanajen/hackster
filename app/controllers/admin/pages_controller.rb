@@ -142,4 +142,8 @@ class Admin::PagesController < Admin::BaseController
 
     @groups = filter_for Platform, @fields
   end
+
+  def platform_contacts
+    @platforms = Platform.order(:full_name).includes(:members, members: :user)
+  end
 end

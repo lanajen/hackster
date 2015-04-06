@@ -44,6 +44,7 @@ HackerIo::Application.routes.draw do
       get 'messages' => 'pages#messages'
       get 'respects' => 'pages#respects'
       get 'platforms' => 'pages#platforms'
+      get 'platforms/contacts' => 'pages#platform_contacts'
       get 'followers' => 'pages#followers'
       delete 'sidekiq/failures' => 'pages#clear_sidekiq_failures'
 

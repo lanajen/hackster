@@ -1,0 +1,13 @@
+h1 Platform contacts
+
+- @platforms.each do |platform|
+  h2= platform.name
+  - if platform.members.any?
+    ul
+      - platform.members.each do |member|
+        - user = member.user
+        li
+          strong>= user.name.presence || 'Account not claimed'
+          | (#{user.email})
+  - else
+    p No admins for this platform.
