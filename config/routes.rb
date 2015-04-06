@@ -44,6 +44,7 @@ HackerIo::Application.routes.draw do
       get 'messages' => 'pages#messages'
       get 'respects' => 'pages#respects'
       get 'platforms' => 'pages#platforms'
+      get 'platforms/contacts' => 'pages#platform_contacts'
       get 'followers' => 'pages#followers'
       delete 'sidekiq/failures' => 'pages#clear_sidekiq_failures'
 
@@ -260,6 +261,8 @@ HackerIo::Application.routes.draw do
     get 'tools', to: redirect('platforms')
     get 'platforms' => 'platforms#index'
 
+    get 'talk' => 'pages#talk'
+
     get 'hardwareweekend' => 'pages#hardwareweekend'
     get 'hhw', to: redirect('/hardwareweekend')
     get 'hww', to: redirect('/hardwareweekend')
@@ -325,6 +328,10 @@ HackerIo::Application.routes.draw do
       resources :announcements
       resources :build_logs
       resources :code_files, only: [:create]
+      resources :comments, only: [:create, :destroy]
+      resources :likes, only: [:create] do
+        delete '' => 'likes#destroy', on: :collection
+      end
       resources :projects#, as: :api_projects
       resources :parts, only: [:create, :destroy] do
         get :autocomplete, on: :collection
@@ -332,6 +339,7 @@ HackerIo::Application.routes.draw do
       resources :platforms, only: [] do
         get ':user_name' => 'platforms#show', on: :collection
       end
+      resources :thoughts, except: [:show]
       resources :users, only: [] do
         get :autocomplete, on: :collection
       end

@@ -124,7 +124,7 @@ class Admin::PagesController < Admin::BaseController
   def respects
     title "Admin / Respects - #{safe_page_params}"
 
-    @respects = Respect.where(respecting_type: 'User').order(created_at: :desc).paginate(page: safe_page_params)
+    @respects = Respect.where(respectable_type: 'Project').order(created_at: :desc).paginate(page: safe_page_params)
   end
 
   def root
@@ -141,5 +141,9 @@ class Admin::PagesController < Admin::BaseController
     params[:sort_by] ||= 'created_at'
 
     @groups = filter_for Platform, @fields
+  end
+
+  def platform_contacts
+    @platforms = Platform.order(:full_name).includes(:members, members: :user)
   end
 end
