@@ -2,3 +2,5 @@
   = render "whitelabel/#{current_site.subdomain}/css"
 = content_for :header do
   = render "whitelabel/#{current_site.subdomain}/header"
+= content_for :js do
+  = render "whitelabel/#{current_site.subdomain}/js"

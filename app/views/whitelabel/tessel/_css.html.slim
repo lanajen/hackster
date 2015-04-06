@@ -1,4 +1,364 @@
 css:
+  .tessel-html #navigation {
+    border: 0;
+    height: auto;
+  }
+  .tessel-html #user-navigation-links {
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-right: 52px;
+  }
+  .tessel-html #navbar-right {
+    margin-right: 32px;
+  }
+  .tessel-html #navbar-search .form-control {
+    height: auto;
+    padding-top: 11px;
+  }
+  .tessel-html #navbar-search .input-group-addon {
+    top: 13px;
+  }
+  .tessel-html #navbar-right .login-link {
+    margin-top: 8px;
+  }
+  .tessel-html #navbar-right .login-link.btn-primary {
+    margin-top: 0;
+  }
+  @media only screen and (max-width: 992px) {
+    .tessel-html #navbar-right .login-link:not(.btn) {
+      display: none;
+    }
+    .tessel-html .navbar-nav {
+      float: right;
+      border: 0;
+      margin: 0 -15px;
+    }
+    .tessel-html #navbar-right {
+      margin-right: 11px;
+    }
+    .tessel-html #user-navigation-links {
+      margin-right: 32px;
+    }
+  }
+  @media (max-width: 767px) {
+    .navbar-nav .open .dropdown-menu {
+      position: absolute;
+      float: none;
+      width: 160px;
+      margin-top: 0;
+      background-color: #fff;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+      left: initial;
+      right: 0;
+    }
+  }
+  html.tessel-html {
+    font-size: 0.875em;
+    line-height: 1.42857;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+  }
+  html.tessel-html,
+  .tessel-html body {
+    font-size: 100%;
+  }
+  .tessel-html body {
+    background: #FFFFFF;
+    color: #252525;
+    padding: 0;
+    margin: 0;
+    font-weight: normal;
+    font-style: normal;
+    line-height: 150%;
+    position: relative;
+    cursor: auto;
+  }
+  html.tessel-html,
+  .tessel-html body {
+    letter-spacing: 0.04em;
+  }
+  #tessel-header nav {
+    font: regular 26px Source Sans Pro, sans-serif;
+    color: #363636;
+    letter-spacing: 0.075em;
+    text-transform: uppercase;
+  }
+  #tessel-header .fixed {
+    width: 100%;
+    left: 0;
+    position: fixed;
+    top: 0;
+    z-index: 99;
+  }
+  #tessel-header .top-bar {
+    overflow: hidden;
+    height: 3.75rem;
+    line-height: 3.75rem;
+    position: relative;
+    background: #FFFFFF;
+    margin-bottom: 0;
+  }
+  #tessel-header .top-bar.expanded {
+    height: auto;
+    background: transparent;
+  }
+  #tessel-header ul {
+    padding: 0;
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 1.25rem;
+    list-style-position: outside;
+    font-family: inherit;
+    margin-left: 1.1rem;
+    list-style-position: inside;
+  }
+  #tessel-header .top-bar ul {
+    margin-bottom: 0;
+    list-style: none;
+  }
+  #tessel-header .top-bar .title-area {
+    position: relative;
+    margin: 0;
+  }
+  #tessel-header .top-bar.expanded .title-area {
+    background: #FFFFFF;
+  }
+  @media only screen and (min-width: 800px) {
+    #tessel-header .top-bar {
+      background: #FFFFFF;
+      overflow: visible;
+    }
+    #tessel-header .top-bar:before,
+    #tessel-header .top-bar:after {
+      content: " ";
+      display: table;
+    }
+    #tessel-header .top-bar .title-area {
+      float: left;
+    }
+  }
+  #tessel-header .top-bar .name {
+    height: 3.75rem;
+    margin: 0;
+    font-size: 16px;
+  }
+
+  #tessel-header h1 {
+    font-family: Source Sans Pro, sans-serif;
+    font-weight: normal;
+    font-style: bold;
+    color: #252525;
+    text-rendering: optimizeLegibility;
+    margin-top: 0.2rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+  }
+  #tessel-header h1 {
+    font-size: 2.125rem;
+  }
+  @media only screen and (min-width: 40.063em) {
+    #tessel-header h1 {
+      line-height: 1.4;
+    }
+    #tessel-header h1 {
+      font-size: 2.75rem;
+    }
+  }
+  #tessel-header h1 {
+    color: #555;
+  }
+  #tessel-header h1 {
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  #tessel-header .top-bar .name h1,
+  #tessel-header .top-bar .name p,
+  #tessel-header .top-bar .name span {
+    line-height: 3.75rem;
+    font-size: 1.0625rem;
+    margin: 0;
+  }
+
+  #tessel-header .top-bar .name h1 a,
+  #tessel-header .top-bar .name h1 .link--styling,
+  #tessel-header .top-bar .name h2 a,
+  #tessel-header .top-bar .name h2 .link--styling,
+  #tessel-header .top-bar .name h3 a,
+  #tessel-header .top-bar .name h3 .link--styling,
+  #tessel-header .top-bar .name h4 a,
+  #tessel-header .top-bar .name h4 .link--styling,
+  #tessel-header .top-bar .name p a,
+  #tessel-header .top-bar .name p .link--styling,
+  #tessel-header .top-bar .name span a,
+  #tessel-header .top-bar .name span .link--styling {
+    font-weight: normal;
+    color: #333333;
+    width: 75%;
+    display: block;
+    padding: 0 1.25rem;
+  }
+  @media only screen and (min-width: 800px) {
+    #tessel-header .top-bar .name h1 a,
+    #tessel-header .top-bar .name h1 .link--styling,
+    #tessel-header .top-bar .name h2 a,
+    #tessel-header .top-bar .name h2 .link--styling,
+    #tessel-header .top-bar .name h3 a,
+    #tessel-header .top-bar .name h3 .link--styling,
+    #tessel-header .top-bar .name h4 a,
+    #tessel-header .top-bar .name h4 .link--styling,
+    #tessel-header .top-bar .name h5 a,
+    #tessel-header .top-bar .name h5 .link--styling,
+    #tessel-header .top-bar .name h6 a,
+    #tessel-header .top-bar .name h6 .link--styling {
+      width: auto;
+    }
+  }
+  #tessel-header .top-bar__logo {
+    padding: 0.625rem;
+    max-height: 3.75rem;
+  }
+
+  #tessel-header .top-bar .toggle-topbar {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  @media only screen and (min-width: 800px) {
+    #tessel-header .top-bar .toggle-topbar {
+      display: none;
+    }
+  }
+  #tessel-header .top-bar .toggle-topbar.menu-icon {
+    top: 50%;
+    margin-top: -16px;
+  }
+
+  #tessel-header .top-bar .toggle-topbar a,
+  #tessel-header .top-bar .toggle-topbar .link--styling {
+    color: #333333;
+    text-transform: uppercase;
+    font-size: 0.8125rem;
+    font-weight: bold;
+    position: relative;
+    display: block;
+    padding: 0 1.25rem;
+    height: 3.75rem;
+    line-height: 3.75rem;
+  }
+  #tessel-header .top-bar.expanded .toggle-topbar a {
+    color: #888888;
+  }
+  #tessel-header .top-bar .toggle-topbar.menu-icon a,
+  #tessel-header .top-bar .toggle-topbar.menu-icon .link--styling {
+    height: 34px;
+    line-height: 33px;
+    padding: 0 2.8125rem 0 1.25rem;
+    color: #333333;
+    position: relative;
+  }
+  #tessel-header .top-bar .toggle-topbar.menu-icon a span::after,
+  #tessel-header .top-bar .toggle-topbar.menu-icon .link--styling span::after {
+    content: "";
+    position: absolute;
+    display: block;
+    height: 0;
+    top: 50%;
+    margin-top: -8px;
+    right: 1.25rem;
+    box-shadow: 0 0 0 1px #333333, 0 7px 0 1px #333333, 0 14px 0 1px #333333;
+    width: 16px;
+  }
+  #tessel-header .top-bar-section {
+    left: 0;
+    position: relative;
+    width: auto;
+    transition: left 300ms ease-out;
+  }
+  @media only screen and (min-width: 800px) {
+    #tessel-header .top-bar-section {
+      transition: none 0 0;
+      left: 0 !important;
+    }
+  }
+
+  #tessel-header .right {
+    float: right !important;
+  }
+  #tessel-header .top-bar ul {
+    margin-bottom: 0;
+    list-style: none;
+  }
+  #tessel-header .top-bar-section ul {
+    padding: 0;
+    width: 100%;
+    height: auto;
+    display: block;
+    font-size: 16px;
+    margin: 0;
+  }
+  @media only screen and (min-width: 800px) {
+    #tessel-header .top-bar-section ul {
+      width: auto;
+      height: auto !important;
+      display: inline;
+    }
+  }
+
+  #tessel-header .top-bar-section ul li {
+    background: #FFFFFF;
+  }
+  @media only screen and (min-width: 800px) {
+    #tessel-header .top-bar-section ul li {
+      float: left;
+    }
+  }
+  #tessel-header .top-bar-section li:last-of-type {
+    padding-right: 1.25rem;
+  }
+  #tessel-header a {
+    text-decoration: none;
+  }
+
+  #tessel-header .top-bar-section ul li > a,
+  #tessel-header .top-bar-section ul li > .link--styling {
+    display: block;
+    width: 100%;
+    color: #333333;
+    padding: 12px 0 12px 0;
+    padding-left: 1.25rem;
+    font-family: Source Sans Pro, sans-serif;
+    font-size: 0.8125rem;
+    font-weight: normal;
+    text-transform: none;
+  }
+  @media only screen and (min-width: 800px) {
+    #tessel-header .top-bar-section li:not(.has-form) a:not(.button),
+    #tessel-header .top-bar-section li:not(.has-form) .link--styling:not(.button) {
+      padding: 0 1.25rem;
+      line-height: 3.75rem;
+      background: #FFFFFF;
+    }
+  }
+  @media only screen and (min-width: 800px) {
+    #tessel-header .top-bar-section li:not(.has-form) a:not(.button):hover,
+    #tessel-header .top-bar-section li:not(.has-form) .link--styling:not(.button):hover {
+      background-color: #555555;
+      background: #F6F6F6;
+    }
+  }
+  #tessel-header .top-bar-section ul li:hover:not(.has-form) > a,
+  #tessel-header .top-bar-section ul li:hover:not(.has-form) > .link--styling {
+    background-color: #555555;
+    background: #F6F6F6;
+    color: #555555;
+  }
+
+
+/ css:
   #tessel-header header {
     background-color: #F2F2F2;
     height: 45px;

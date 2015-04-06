@@ -5,7 +5,7 @@ class RespectsController < ApplicationController
 
   def create
     @respect = Respect.create_for current_user, @project
-    @project = @respect.project  # otherwise @project isn't updated
+    @project = @respect.respectable  # otherwise @project isn't updated
     @team_members = @project.users
 
     if @respect.persisted?
@@ -30,7 +30,7 @@ class RespectsController < ApplicationController
 
   def destroy
     @respects = Respect.destroy_for current_user, @project
-    @project = @respects.first.project if @respects.any?  # otherwise @project isn't updated
+    @project = @respects.first.respectable if @respects.any?  # otherwise @project isn't updated
     @team_members = @project.users
 
     respond_to do |format|

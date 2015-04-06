@@ -66,14 +66,15 @@ class User < ActiveRecord::Base
   has_many :lists_group_ties, -> { where(type: 'ListMember') }, class_name: 'ListMember', dependent: :destroy
   has_many :lists, through: :lists_group_ties, source: :group, class_name: 'List'
   has_many :permissions, as: :grantee
+  has_many :platforms, -> { order('groups.full_name ASC') }, through: :group_ties, source: :group, class_name: 'Platform'
   has_many :projects, -> { where("projects.guest_name IS NULL OR projects.guest_name = ''") }, through: :teams
   has_many :promotions, through: :group_ties, source: :group, class_name: 'Promotion'
   has_many :promotion_group_ties, -> { where(type: 'PromotionMember') }, class_name: 'PromotionMember', dependent: :destroy
-  has_many :respects, as: :respecting, dependent: :destroy, class_name: 'Respect'
-  has_many :respected_projects, through: :respects, source: :project
+  has_many :respects, dependent: :destroy
+  has_many :respected_projects, through: :respects, source: :respectable, source_type: 'Project'
   has_many :team_grades, through: :teams, source: :grades
   has_many :teams, through: :group_ties, source: :group, class_name: 'Team'
-  has_many :platforms, -> { order('groups.full_name ASC') }, through: :group_ties, source: :group, class_name: 'Platform'
+  has_many :thoughts
   has_many :user_activities
   has_one :avatar, as: :attachable, dependent: :destroy
   has_one :reputation, dependent: :destroy

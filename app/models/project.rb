@@ -63,8 +63,8 @@ class Project < ActiveRecord::Base
   has_many :lists, -> { where("groups.type = 'List'") }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :permissions, as: :permissible
   has_many :project_collections, dependent: :destroy
-  has_many :respects, dependent: :destroy, class_name: 'Respect'
-  has_many :respecting_users, -> { order 'respects.created_at ASC' }, through: :respects, source: :respecting, source_type: User
+  has_many :respects, dependent: :destroy, as: :respectable
+  has_many :respecting_users, -> { order 'respects.created_at ASC' }, through: :respects, source: :user
   has_many :slug_histories, -> { order updated_at: :desc }, as: :sluggable, dependent: :destroy
   has_many :team_members, -> { order(created_at: :asc).where("members.approved_to_join <> 'f' OR members.approved_to_join IS NULL") }, through: :team, source: :members #.includes(:user)
   has_many :platforms, -> { where("groups.type = 'Platform'") }, through: :project_collections, source_type: 'Group', source: :collectable

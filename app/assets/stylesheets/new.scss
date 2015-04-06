@@ -271,9 +271,13 @@ h1 {
 
 .thumb {
   .project-stats {
+    @extend .clearfix;  // had to do the following change after bootstrap update, can't find what they did
     li {
-      display: inline-block;
+      // display: inline-block;
       width: 33.33%;
+      display: block;
+      float: left;
+      min-height: 1px;  // so empty elements don't get overriden by siblings
       &:nth-child(2) {
         text-align: center;
       }

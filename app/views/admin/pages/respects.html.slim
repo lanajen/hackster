@@ -14,8 +14,8 @@ table.table.table-striped
     - @respects.each do |respect|
       tr
         td= link_to respect.user.name, respect.user
-        td= link_to respect.project.name, respect.project
-        - own = respect.user.in? respect.project.users
+        td= link_to respect.respectable.name, respect.respectable
+        - own = respect.user.in? respect.respectable.users
         td
           - if own
             b Yes

@@ -165,7 +165,7 @@ module ApplicationHelper
     is_whitelabel? ? current_platform.twitter_handle : '@hacksterio'
   end
 
-  def time_diff_in_natural_language(from_time, to_time)
+  def time_diff_in_natural_language from_time, to_time, affix=''
     from_time = from_time.to_time if from_time.respond_to?(:to_time)
     to_time = to_time.to_time if to_time.respond_to?(:to_time)
     distance_in_seconds = (to_time - from_time).round
@@ -176,10 +176,10 @@ module ApplicationHelper
       if distance_in_seconds >= 1.send(interval)
         delta = (distance_in_seconds / 1.send(interval)).floor
 #        distance_in_seconds -= delta.send(interval)
-        return I18n.t("datetime.distance_in_words.x_#{interval}s", count: [0, delta].max)
+        return I18n.t("datetime.distance_in_words.x_#{interval}s", count: [0, delta].max) + affix
       end
     end
-    I18n.t('datetime.distance_in_words.x_seconds', count: 0)
+    'Just now'
   end
 
   def time_for_chat time

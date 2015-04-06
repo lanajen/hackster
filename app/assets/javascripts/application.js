@@ -17,8 +17,6 @@
 //= require browser_timezone_rails/application
 //= require jquery.resize
 //= require jquery.githubRepoWidget.min
-// require jquery.deserialize
-
 //= require chats
 //= require projects
 //= require groups
@@ -32,7 +30,6 @@
 //= require jquery.ui.widget
 //= require jquery.iframe-transport
 //= require jquery.fileupload
-
 
 (function($) {
 

@@ -2,6 +2,7 @@ class Comment < ActiveRecord::Base
   belongs_to :commentable, polymorphic: true
   belongs_to :parent, class_name: 'Comment'
   belongs_to :user
+  has_many :likes, as: :respectable, class_name: 'Respect', dependent: :destroy
 
   attr_accessor :children, :depth
   attr_accessible :body, :user_attributes, :parent_id, :guest_name

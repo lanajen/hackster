@@ -15,6 +15,7 @@ module HackerIo
     # Custom directories with classes and modules you want to be autoloadable.
     # config.autoload_paths += %W(#{config.root}/extras)
     config.autoload_paths += Dir[ config.root.join('app', 'models', '**/') ]
+    config.autoload_paths += Dir[ config.root.join('app', 'serializers', '**/') ]
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
@@ -58,12 +59,15 @@ module HackerIo
 
 
     # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-    config.assets.precompile += %w( admin.css email.css bitbucket-widget.min.css bitbucket-widget.min.js slick.eot slick.svg slick.ttf slick.woff datepicker.js datepicker.css tinymce.js tinymce/plugins/link/plugin.js tinymce/plugins/paste/plugin.js tinymce/plugins/code/plugin.js gmaps/google.js follow_iframe.css follow_iframe.js pdf_viewer.js pdf.worker.js project-thumb.css )
+    config.assets.precompile += %w( admin.css email.css bitbucket-widget.min.css bitbucket-widget.min.js slick.eot slick.svg slick.ttf slick.woff datepicker.js datepicker.css tinymce.js tinymce/plugins/link/plugin.js tinymce/plugins/paste/plugin.js tinymce/plugins/code/plugin.js gmaps/google.js follow_iframe.css follow_iframe.js pdf_viewer.js pdf.worker.js project-thumb.css
+      channel.js )
 
     config.active_record.whitelist_attributes = false
 
     # Enable the asset pipeline
     config.assets.enabled = true
+
+    config.active_record.raise_in_transactional_callbacks = true
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'

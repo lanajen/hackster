@@ -31,8 +31,10 @@
       .row.project-list
         - @winning_entries.each do |entry|
           = render partial: 'projects/project_thumb', locals: { project: entry.project.decorate, col: 6 }
-          javascript:
-            $(".project-#{entry.project_id} .award-container").html("<div class='project-award'><i class='fa fa-trophy'></i> #{entry.prize.name}</div>");
+          = content_for :js do
+
+            javascript:
+              $(".project-#{entry.project_id} .award-container").html("<div class='project-award'><i class='fa fa-trophy'></i> #{entry.prize.name}</div>");
 
     - if @other_projects.any?
       h2.text-center Other entries
