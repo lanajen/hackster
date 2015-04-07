@@ -1,7 +1,8 @@
 class Tableless < ActiveRecord::Base
 
   def self.column(name, sql_type = nil, default = nil, null = true)
-    columns << ActiveRecord::ConnectionAdapters::Column.new( name.to_s, default, sql_type.to_s, null )
+    cast_type = "ActiveRecord::Type::#{sql_type.to_s.camelize}".constantize.new
+    columns << ActiveRecord::ConnectionAdapters::Column.new( name.to_s, default, cast_type, null )
   end
 
   def self.columns()
@@ -13,7 +14,7 @@ class Tableless < ActiveRecord::Base
     for c in self.columns
       h[c.name] = c
     end
-    return h
+    h
   end
 
   def self.column_defaults
@@ -23,11 +24,11 @@ class Tableless < ActiveRecord::Base
   end
 
   def self.descends_from_active_record?
-    return true
+    true
   end
 
   def persisted?
-    return false
+    false
   end
 
   # override the save method to prevent exceptions
