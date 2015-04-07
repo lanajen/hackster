@@ -202,7 +202,8 @@
   padding: 0;
   text-align: center;
   li {
-    display: inline-block;
+    display: block;
+    float: left;
     a {
       display: block;
       padding: 13px 24px;

@@ -84,7 +84,7 @@
                   span.input-group-addon
                     | /#{@project.slug}
 
-      .box
+      / .box
         .box-title.small-title
           h4 Work attribution
           .subheading If you're using other people's work, give a shout for them here
@@ -101,6 +101,7 @@
                   .col-xs-offset-4.col-md-8= f_credit.link_to_remove 'Remove this contributor', class: 'btn btn-xs btn-danger'
               = f_cred.link_to_add 'Add another contributor', :credit_lines, class: 'btn btn-xs btn-success', style: 'margin:0 0 0 33.33333%;'
 
+= content_for :js do
 
   javascript:
     $(function() {

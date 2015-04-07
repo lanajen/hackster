@@ -3,6 +3,7 @@ class Comment < ActiveRecord::Base
   belongs_to :parent, class_name: 'Comment'
   belongs_to :user
   has_many :likes, as: :respectable, class_name: 'Respect', dependent: :destroy
+  has_many :liking_users, class_name: 'User', through: :likes, source: :user
 
   attr_accessor :children, :depth
   attr_accessible :body, :user_attributes, :parent_id, :guest_name

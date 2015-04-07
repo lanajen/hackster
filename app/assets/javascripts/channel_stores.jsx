@@ -100,7 +100,11 @@ var CommentStore = Fluxxor.createStore({
       liked: false,
       own: true,
       deleted: false,
-      commentable_id: thoughtId
+      commentable_id: thoughtId,
+      likes: {
+        count: 0,
+        likers: []
+      }
     };
     comment.id = 'tmpCommentId' + this.commentId;  // arbitrary so it gets at the top
     comment.user = user_data;  // has to be defined in the DOM
@@ -144,8 +148,10 @@ var CommentStore = Fluxxor.createStore({
     var oldState = payload.oldState;
     var action = oldState ? 'DELETE' : 'POST';
     var comment = this.comments[payload.id];
+    var count = oldState ? -1 : 1;
 
     comment.liked = !oldState;
+    comment.likes.count += count;
     this.flux.store('thought').emit('change');
 
     $.ajax({
@@ -158,6 +164,7 @@ var CommentStore = Fluxxor.createStore({
       }.bind(this),
       error: function(xhr, status, err) {
         comment.liked = oldState;
+        comment.likes.count -= count;
       }.bind(this),
       complete: function() {
         this.flux.store('thought').emit('change');

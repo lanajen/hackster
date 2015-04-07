@@ -181,8 +181,8 @@ var Thought = React.createClass({
     if (this.props.own) {
       var actions =
         <span>
-          <span className="separator">&bull;</span>
           <a href='' onClick={this.handleDelete}>Delete</a>
+          <span className="separator">&bull;</span>
         </span>;
     }
 
@@ -202,12 +202,12 @@ var Thought = React.createClass({
         <div className="body" dangerouslySetInnerHTML={{__html: this.props.body}} />
         <Link link={this.props.link} data={this.props.link_data} />
         <div className="actions">
+          {actions}
           <Like liked={this.props.liked} onButtonClick={this.handleLike} />
           <span className="separator">&bull;</span>
           <a href='' onClick={this.handleComment}>Comment</a>
           {/*<span className="separator">&bull;</span>
                     <a href=''>Share</a>*/}
-          {actions}
         </div>
       </div>
     );
@@ -272,6 +272,24 @@ var CommentForm = React.createClass({
   }
 });
 
+var LikesCount = React.createClass({
+  render: function() {
+    if (this.props.likes.count) {
+      return (
+        <span>
+          <span className="separator">&bull;</span>
+          <span>
+            {this.props.likes.count}
+            <i className='fa fa-thumbs-o-up' />
+          </span>
+        </span>
+      );
+    } else {
+      return <div />
+    }
+  }
+});
+
 var Comment = React.createClass({
   mixins: [FluxMixin],
 
@@ -291,8 +309,8 @@ var Comment = React.createClass({
     if (this.props.own) {
       var actions =
         <span>
-          <span className="separator">&bull;</span>
           <a href='' onClick={this.handleDelete}>Delete</a>
+          <span className="separator">&bull;</span>
         </span>;
     }
     var classes = ['comment'];
@@ -316,8 +334,9 @@ var Comment = React.createClass({
             <div className="actions">
               <span className="time-created"><DateComponent timestamp={this.props.timestamp} /></span>
               <span className="separator">&bull;</span>
-              <Like liked={this.props.liked} onButtonClick={this.handleLike} />
               {actions}
+              <Like liked={this.props.liked} onButtonClick={this.handleLike} />
+              <LikesCount likes={this.props.likes} />
             </div>
           </div>
         </div>
