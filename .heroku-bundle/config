@@ -1,5 +1,5 @@
 ---
-BUNDLE_BUILD__RUBY-FILEMAGIC: --with-magic-include=/app/.apt/usr/include --with-magic-lib=/app/.apt/usr/lib
+BUNDLE_BUILD__RUBY-FILEMAGIC: --with-magic-include=/app/.apt/usr/include/file --with-magic-lib=/app/.apt/usr/lib/x86_64-linux-gnu
 BUNDLE_PATH: vendor
 BUNDLE_DISABLE_SHARED_GEMS: '1'
 BUNDLE_CACHE_ALL: true
