@@ -55,6 +55,10 @@ module TablelessAssociation
     def new_association association_name, association_model, attrs={}
       records = send("#{association_name}")
 
+      puts records.inspect
+      puts association_model.inspect
+      puts attrs.inspect
+      puts id.inspect
       records << association_model.new(attrs.merge(parent_id: id))
 
       _set_association association_name, records
