@@ -1,6 +1,14 @@
 class Document < Attachment
   mount_uploader :file, DocumentUploader
 
+  def self.save_from_file file
+    doc = new
+
+    doc.file.cache! file
+    doc.save
+    doc
+  end
+
   def process
     if type == 'Document' and file_extension
       case file_extension

@@ -45,7 +45,7 @@
           - if @project.widgets.where(type: %w(SchematicWidget SchematicFileWidget)).any?
             table.table.table-decorated.table-hover.table-sortable
               tbody
-                - @project.widgets.where(type: %w(SchematicWidget SchematicFileWidget)).order(:created_at).each do |file|
+                - @project.widgets.where(type: %w(SchematicWidget SchematicFileWidget)).order(:position, :id).each do |file|
                   = f.simple_fields_for :widgets, file do |f_widget|
                     tr.fields
                       td
@@ -115,7 +115,7 @@
           - if @project.widgets.where(type: %w(CadRepoWidget CadFileWidget)).any?
             table.table.table-decorated.table-hover.table-sortable
               tbody
-                - @project.widgets.where(type: %w(CadRepoWidget CadFileWidget)).order(:created_at).each do |file|
+                - @project.widgets.where(type: %w(CadRepoWidget CadFileWidget)).order(:position, :id).each do |file|
                   = f.simple_fields_for :widgets, file do |f_widget|
                     tr.fields
                       td

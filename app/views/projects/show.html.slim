@@ -137,10 +137,10 @@
                     i.fa.fa-chevron-down
                     i.fa.fa-chevron-up
                 .section-content
-                  - @project.widgets.where(type: %w(CadRepoWidget CadFileWidget)).order(:created_at).each do |widget|
+                  - @project.widgets.where(type: %w(CadRepoWidget CadFileWidget)).order(:position, :id).each do |widget|
                     = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
 
-            - if @project.widgets.where(type: %w(SchematicWidget SchematicFileWidget)).order(:created_at).any?
+            - if @project.widgets.where(type: %w(SchematicWidget SchematicFileWidget)).order(:position, :id).any?
               section#schematics.section-container.section-collapsible
                 h2.section-title
                   a.title.title-toggle href=''
@@ -148,7 +148,7 @@
                     i.fa.fa-chevron-down
                     i.fa.fa-chevron-up
                 .section-content
-                  - @project.widgets.where(type: %w(SchematicWidget SchematicFileWidget)).order(:created_at).each do |widget|
+                  - @project.widgets.where(type: %w(SchematicWidget SchematicFileWidget)).order(:position, :id).each do |widget|
                     = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
 
             - if @project.widgets.where(type: %w(CodeWidget CodeRepoWidget)).any?
@@ -159,7 +159,7 @@
                     i.fa.fa-chevron-down
                     i.fa.fa-chevron-up
                 .section-content
-                  - @project.widgets.where(type: %w(CodeWidget CodeRepoWidget)).each do |widget|
+                  - @project.widgets.where(type: %w(CodeWidget CodeRepoWidget)).order(:position, :id).each do |widget|
                     = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
 
             - if (@project.build_logs_count > 0 and !@project.private_logs)

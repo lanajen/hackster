@@ -6,4 +6,5 @@
     a.btn.btn-default.btn-xs.upload-code> Select code file
     span.text-muted.small or paste code below
   .code-upload-progress-container
-  .code-editor  id="code-editor-0" style='text-align:left !important;font-size:14px;'
+  .code-editor id="code-editor-0" style='text-align:left !important;font-size:14px;'
+  = f_widget.input :document_id, as: :hidden, input_html: { 'data-field-type' => 'document_id', class: 'resetable' }, wrapper: false

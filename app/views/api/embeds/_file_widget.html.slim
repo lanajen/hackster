@@ -19,7 +19,8 @@
         = image_tag document.file_url
     - when 'PdfFile'
       .embed.four-by-three
-        iframe width="100%" height="100%" src="/pdf_viewer?url=#{document.file_url}" frameborder="0" style='border:1px solid #ddd;overflow-y:scroll'
+        / iframe width="100%" height="100%" src="/pdf_viewer?url=#{document.file_url}" frameborder="0" style='border:1px solid #ddd;overflow-y:scroll'
+        iframe src="http://docs.google.com/gview?url=#{document.file_url}&embedded=true" width="100%" height="100%" frameborder="0"
 
     - when 'SketchfabFile'
       - if document.uid

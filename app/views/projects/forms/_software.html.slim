@@ -31,7 +31,7 @@
           - if @project.widgets.where(type: %w(CodeRepoWidget CodeWidget)).any?
             table.table.table-decorated.table-hover.table-sortable
               tbody
-                - @project.widgets.where(type: %w(CodeRepoWidget CodeWidget)).each do |file|
+                - @project.widgets.where(type: %w(CodeRepoWidget CodeWidget)).order(:position, :id).each do |file|
                   = f.simple_fields_for :widgets, file do |f_file|
                     tr.fields
                       td
@@ -41,8 +41,9 @@
                         = f_file.input :name, as: :hidden, input_html: { 'data-field-type' => 'name' }
                         = f_file.input :comment, as: :hidden, input_html: { 'data-field-type' => 'comment' }
                         - if file.type == 'CodeWidget'
-                          = f_file.input :raw_code, as: :hidden, input_html: { 'data-field-type' => 'raw_code' }
+                          = f_file.input :raw_code, as: :text, label: false, input_html: { 'data-field-type' => 'raw_code', class: 'hidden' }
                           = f_file.input :language, as: :hidden, input_html: { 'data-field-type' => 'language' }
+                          / # = f_file.input :document_id, as: :hidden, input_html: { 'data-field-type' => 'document_id' }
                         - else
                           = f_file.input :url, as: :hidden, input_html: { 'data-field-type' => 'url' }
                       td.details

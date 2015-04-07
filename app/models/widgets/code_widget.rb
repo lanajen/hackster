@@ -1,6 +1,6 @@
+require 'filemagic'
 require 'linguist'
 require 'open-uri'
-require 'ptools'
 require 'pygments'
 
 class CodeWidget < Widget
@@ -154,7 +154,7 @@ class CodeWidget < Widget
     :compiles, :comment, :binary]
   has_one :document, as: :attachable
 
-  attr_accessible :document_attributes
+  attr_accessible :document_attributes, :document_id
 
   accepts_nested_attributes_for :document, allow_destroy: true
   before_validation :force_encoding
@@ -167,11 +167,21 @@ class CodeWidget < Widget
     Widget.model_name
   end
 
+  def self.is_binary? buffer
+    begin
+      fm = FileMagic.new(FileMagic::MAGIC_MIME)
+      mime = fm.buffer(buffer)
+      mime !~ /^text\//
+    ensure
+      fm.close
+    end
+  end
+
   def self.read_from_file file
     output_file = new
 
     orig_file = file.respond_to?(:tempfile) ? file.tempfile : file
-    output_file.raw_code = if File.binary?(orig_file)
+    output_file.raw_code = if is_binary?(file.read)
       output_file.binary = true
       BINARY_MESSAGE
     else
@@ -194,6 +204,14 @@ class CodeWidget < Widget
 
   def binary?
     binary or raw_code == BINARY_MESSAGE
+  end
+
+  def document_id=(val)
+    self.document = Document.find_by_id(val)
+  end
+
+  def document_id
+    document.try(:id)
   end
 
   def document_url
@@ -252,7 +270,7 @@ class CodeWidget < Widget
   end
 
   def name
-    super || 'Untitled file'
+    super.presence || 'Untitled file'
   end
 
   def to_json
@@ -264,7 +282,8 @@ class CodeWidget < Widget
       name: name,
       raw_code: raw_code,
       binary: binary,
-    }.to_json
+      document_id: document.try(:id),
+    }#.to_json
   end
 
   def to_text
@@ -282,7 +301,7 @@ class CodeWidget < Widget
     def check_changes
       if document and (document.file_changed? or raw_code.blank?)
         read_code_from_file
-      elsif raw_code_changed?
+      elsif raw_code_changed? and document_id.blank?
         read_code_from_text
       end
     end

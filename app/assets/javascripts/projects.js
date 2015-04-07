@@ -402,7 +402,7 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
     $('.pe-panel').on('click', '.edit-in-modal', function(e){
       e.preventDefault();
       var popup = $(this).data('modal');
-      var inputs = $(this).closest('.fields').find('input[type=hidden]');
+      var inputs = $(this).closest('.fields').find('input[type=hidden], textarea.hidden');
       inputs.each(function(i, el){
         var input = $(popup).find('[data-field-type="' + $(el).data('field-type') + '"]');
         input.val($(el).val());
@@ -424,7 +424,6 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
         },1);
       }
     });
-
 
     $("#code-upload-form").fileupload({
       dataType: 'json',
@@ -469,6 +468,7 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
           $('#code-editor-popup [data-field-type="name"]').val(data.name);
         if ($('#code-editor-popup [data-field-type="language"]').val() == '')
           $('#code-editor-popup [data-field-type="language"]').val(data.language);
+        $('#code-editor-popup [data-field-type="document_id"]').val(data.document_id);
       },
 
       done: function(e, data){

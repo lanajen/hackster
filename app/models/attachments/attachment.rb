@@ -27,8 +27,6 @@ class Attachment < ActiveRecord::Base
       File.basename file_url
     elsif tmp_file.present?
       File.basename tmp_file
-    else
-      'unknown'
     end
   end
 
