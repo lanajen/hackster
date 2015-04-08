@@ -3,6 +3,12 @@ class ProjectObserver < ActiveRecord::Observer
     update_counters record, :projects
   end
 
+  def after_commit_on_create record
+    if record.product?
+      ProjectWorker.perform_async 'update_platforms', record.id
+    end
+  end
+
   def after_commit_on_update record
     if record.needs_platform_refresh
       ProjectWorker.perform_async 'update_platforms', record.id
