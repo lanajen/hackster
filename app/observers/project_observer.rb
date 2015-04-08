@@ -28,7 +28,7 @@ class ProjectObserver < ActiveRecord::Observer
   end
 
   def after_save record
-    if record.external
+    if record.external? or record.product?
       record.slug_histories.destroy_all
     else
       SlugHistory.update_history_for record.id if record.slug_changed? or (record.guest_name.present? and record.guest_name_changed?)
@@ -49,7 +49,7 @@ class ProjectObserver < ActiveRecord::Observer
   def before_create record
     record.reset_counters assign_only: true
     record.private_issues = record.private_logs = !!!record.open_source
-    record.made_public_at = record.created_at if record.external
+    record.made_public_at = record.created_at if record.external? or record.product?
     record.last_edited_at = record.created_at
   end
 
@@ -100,7 +100,7 @@ class ProjectObserver < ActiveRecord::Observer
       Cashier.expire "project-#{record.id}-thumb"
     end
 
-    if record.external and (record.changed & %w(website)).any?
+    if record.external? or record.product? and (record.changed & %w(website)).any?
       Cashier.expire "project-#{record.id}-thumb"
     end
 

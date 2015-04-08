@@ -31,10 +31,10 @@
               - elsif project.is_idea?
                 i.fa.fa-lightbulb-o>
               ==> link_to project.name, project_link, class: 'project-link-with-ref'
-              - if project.external
+              - if project.external?
                 i.fa.fa-external-link.istooltip  title='This project is hosted on an external website' data-container='body'
             p
-              - if project.external
+              - if project.external?
                 - if project.guest_name.present?
                   ' by
                   span.user-name>= project.guest_name

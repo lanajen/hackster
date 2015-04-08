@@ -1,4 +1,5 @@
 .page-header
   h1 New project
 
-= render 'form'
+= simple_nested_form_for [:admin, @project], url: admin_projects_path, html: { class: 'form-horizontal accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
+  = render partial: 'form', locals: { f: f }

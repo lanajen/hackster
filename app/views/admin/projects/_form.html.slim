@@ -1,81 +1,80 @@
-= simple_nested_form_for [:admin, @project], html: { class: 'form-horizontal accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
-  = f.error_notification
+= f.error_notification
 
-  .row
-    .col-xs-12
-      .row
-        = f.input :name, label: 'Title'
-        = f.input :one_liner, as: :text, input_html: { rows: 4 },
-          hint: 'Maximum 140 characters'
-        = f.input :website, label: 'Project website'
-        = f.input :guest_name, label: 'Author name'
-        = f.input :guest_twitter_handle, label: 'Author Twitter handle'
-        = f.input :platform_tags_string, as: :string, label: 'Platforms', hint: 'Separate tags by commas. Used for finding your project more easily.'
-        = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @project.cover_image.try(:file_url, :cover_mini_thumb), help_block: 'This should be your nicest picture for this project. In 4:3 format, at least 600x450px for best results', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
-        = f.input :external, inline_label: 'Is this project hosted on another site?', label: false
-        = f.input :approved, inline_label: 'Is this project approved to show on the site?', label: false
-        = f.input :locked, inline_label: 'Should this project be locked for changes?', label: false, as: :boolean
-        = f.input :made_public_at, order: [:year, :month, :day], label: 'Approve project on', hint: 'Leave empty to approve now' do
-          .row
-            .col-md-2
-              = select_day(@project.made_public_at, { prompt: '--Day--' }, { class: 'form-control', name: 'project[made_public_at(3i)]' })
-            .col-md-2
-              = select_month(@project.made_public_at, { prompt: '--Month--' }, { class: 'form-control', name: 'project[made_public_at(2i)]' })
-            .col-md-2
-              = select_year(@project.made_public_at, { prompt: '--Year--', start_year: Date.today.year, end_year: Date.today.year + 1 }, { class: 'form-control', name: 'project[made_public_at(1i)]' })
-            .col-md-2
-              = select_hour(@project.made_public_at, { prompt: '--Hours--' }, { class: 'form-control', name: 'project[made_public_at(4i)]' })
-            .col-md-2
-              = select_minute(@project.made_public_at, { prompt: '--Minutes--' }, { class: 'form-control', name: 'project[made_public_at(5i)]' })
-            .col-md-2
-              = select_second(@project.made_public_at, { prompt: '--Seconds--' }, { class: 'form-control', name: 'project[made_public_at(6i)]' })
+.row
+  .col-xs-12
+    .row
+      = f.input :name, label: 'Title'
+      = f.input :one_liner, as: :text, input_html: { rows: 4 },
+        hint: 'Maximum 140 characters'
+      = f.input :website, label: 'Project website'
+      = f.input :guest_name, label: 'Author name'
+      = f.input :guest_twitter_handle, label: 'Author Twitter handle'
+      = f.input :platform_tags_string, as: :string, label: 'Platforms', hint: 'Separate tags by commas. Used for finding your project more easily.'
+      = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @project.cover_image.try(:file_url, :cover_mini_thumb), help_block: 'This should be your nicest picture for this project. In 4:3 format, at least 600x450px for best results', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
+      = f.input :type, label: 'Project type', collection: Project::TYPES
+      = f.input :approved, inline_label: 'Is this project approved to show on the site?', label: false
+      = f.input :made_public_at, order: [:year, :month, :day], label: 'Approve project on', hint: 'Leave empty to approve now' do
+        .row
+          .col-md-2
+            = select_day(@project.made_public_at, { prompt: '--Day--' }, { class: 'form-control', name: 'project[made_public_at(3i)]' })
+          .col-md-2
+            = select_month(@project.made_public_at, { prompt: '--Month--' }, { class: 'form-control', name: 'project[made_public_at(2i)]' })
+          .col-md-2
+            = select_year(@project.made_public_at, { prompt: '--Year--', start_year: Date.today.year, end_year: Date.today.year + 1 }, { class: 'form-control', name: 'project[made_public_at(1i)]' })
+          .col-md-2
+            = select_hour(@project.made_public_at, { prompt: '--Hours--' }, { class: 'form-control', name: 'project[made_public_at(4i)]' })
+          .col-md-2
+            = select_minute(@project.made_public_at, { prompt: '--Minutes--' }, { class: 'form-control', name: 'project[made_public_at(5i)]' })
+          .col-md-2
+            = select_second(@project.made_public_at, { prompt: '--Seconds--' }, { class: 'form-control', name: 'project[made_public_at(6i)]' })
 
-        - if @project.assignment_submitted_at.present?
-          = f.input :assignment_submitted_at
+      - if @project.assignment_submitted_at.present?
+        = f.input :assignment_submitted_at
 
-        - unless @project.external
-          = f.input :slug, label: 'URL', wrapper: :addon do
-            span.input-group-addon #{site_domain}/#{@project.user_name_for_url}/
-            = f.input_field :slug
-
-          .form-group
-            .col-md-4
-              label.control-label Slug history
-            .col-md-8
-              = f.simple_fields_for :slug_histories, wrapper: false do |f_slug|
-                .row.fields
-                  .col-xs-11
-                    = f_slug.input :value, label: false, wrapper: false do
-                      .input-group
-                        span.input-group-addon #{site_domain}/
-                        = f_slug.input_field :value
-
-                  .col-xs-1= f_slug.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-sm btn-danger'
-          .form-group
-            .col-md-8.col-md-offset-4
-              = f.link_to_add 'Add a slug to history', :slug_histories, class: 'btn btn-xs btn-success'
-
-          = f.input :start_date, order: [:year, :month, :day], label: 'Date', hint: 'When did this project come to life?' do
-            .row
-              .col-md-6
-                = hidden_field_tag 'project[start_date(3i)]', '1'
-                = select_month(@project.start_date, { prompt: '--Month--' }, { class: 'form-control', name: 'project[start_date(2i)]' })
-              .col-md-6
-                = select_year(@project.start_date, { prompt: '--Year--', start_year: Date.today.year, end_year: Date.today.year - 15 }, { class: 'form-control', name: 'project[start_date(1i)]' })
-          = f.input :product_tags_string, as: :string, label: 'Tags', hint: 'Separate tags by commas. Used for finding your project more easily.'
-          = f.input :license, collection: License.all, value_method: :url, hint: 'Is your project open source? If so specify under which license here.', selected: @project.license.try(:url), include_blank: true
-
-          = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Logo', image_link: @project.logo.try(:file_url, :thumb), help_block: 'Optional, only if you have one. Should be squared, at least 200x200px for best results', attribute_type: 'logo', image_version: 'thumb', model: 'project' }
-
-          = f.input :private, inline_label: 'Make this project private', label: false
-          = f.input :hide, inline_label: 'Hide this project from search', label: false
-          = f.input :featured, inline_label: 'Feature this project', label: false
-          = f.input :featured_date, label: 'Feature date'
-
-          / = f.input :current, as: :boolean, label: false, inline_label: 'Currently working on it'
+      - unless @project.external? or @project.product?
+        = f.input :slug, label: 'URL', wrapper: :addon do
+          span.input-group-addon #{site_domain}/#{@project.user_name_for_url}/
+          = f.input_field :slug
 
         .form-group
-          .col-md-offset-4.col-md-8
-            ==> f.submit "Save changes", class: 'btn btn-primary'
-            - if @project.persisted?
-              = link_to 'Delete project', admin_project_path(@project), method: :delete, class: 'btn btn-danger btn-xs', data: { confirm: "Are you sure? There's no coming back!" }
+          .col-md-4
+            label.control-label Slug history
+          .col-md-8
+            = f.simple_fields_for :slug_histories, wrapper: false do |f_slug|
+              .row.fields
+                .col-xs-11
+                  = f_slug.input :value, label: false, wrapper: false do
+                    .input-group
+                      span.input-group-addon #{site_domain}/
+                      = f_slug.input_field :value
+
+                .col-xs-1= f_slug.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-sm btn-danger'
+        .form-group
+          .col-md-8.col-md-offset-4
+            = f.link_to_add 'Add a slug to history', :slug_histories, class: 'btn btn-xs btn-success'
+
+        = f.input :start_date, order: [:year, :month, :day], label: 'Date', hint: 'When did this project come to life?' do
+          .row
+            .col-md-6
+              = hidden_field_tag 'project[start_date(3i)]', '1'
+              = select_month(@project.start_date, { prompt: '--Month--' }, { class: 'form-control', name: 'project[start_date(2i)]' })
+            .col-md-6
+              = select_year(@project.start_date, { prompt: '--Year--', start_year: Date.today.year, end_year: Date.today.year - 15 }, { class: 'form-control', name: 'project[start_date(1i)]' })
+        = f.input :product_tags_string, as: :string, label: 'Tags', hint: 'Separate tags by commas. Used for finding your project more easily.'
+        = f.input :license, collection: License.all, value_method: :url, hint: 'Is your project open source? If so specify under which license here.', selected: @project.license.try(:url), include_blank: true
+
+        = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Logo', image_link: @project.logo.try(:file_url, :thumb), help_block: 'Optional, only if you have one. Should be squared, at least 200x200px for best results', attribute_type: 'logo', image_version: 'thumb', model: 'project' }
+
+        = f.input :private, inline_label: 'Make this project private', label: false
+        = f.input :hide, inline_label: 'Hide this project from search', label: false
+        = f.input :locked, inline_label: 'Should this project be locked for changes?', label: false, as: :boolean
+        = f.input :featured, inline_label: 'Feature this project', label: false
+        = f.input :featured_date, label: 'Feature date'
+
+        / = f.input :current, as: :boolean, label: false, inline_label: 'Currently working on it'
+
+      .form-group
+        .col-md-offset-4.col-md-8
+          ==> f.submit "Save changes", class: 'btn btn-primary'
+          - if @project.persisted?
+            = link_to 'Delete project', admin_project_path(@project), method: :delete, class: 'btn btn-danger btn-xs', data: { confirm: "Are you sure? There's no coming back!" }

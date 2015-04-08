@@ -34,7 +34,7 @@ class InstructablesScraper
           link = 'http://www.instructables.com' + li.at_css('.title a')['href']
           if project = Project.find_by_website(link)
             puts "[Scraper] Found existing project on instructables.com: #{link}"
-            if project.external and project.approved.nil?
+            if project.external? and project.approved.nil?
               project.platform_tags_string += ",#{platform}" unless project.platform_tags_string =~ Regexp.new(platform)
               project.save
             end

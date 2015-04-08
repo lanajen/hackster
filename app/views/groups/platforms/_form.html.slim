@@ -10,7 +10,7 @@
           ul.list-unstyled.list-inline
             - if current_user.is? :admin
               li= link_to 'Edit as admin', edit_admin_group_path(@platform), class: 'btn btn-sm btn-warning'
-            li= f.submit 'Update profile', class: 'btn btn-primary btn-sm'
+            li= f.submit 'Save changes', class: 'btn btn-primary btn-sm'
             li= link_to 'Cancel', platform_short_path(@platform), class: 'btn-link btn-sm'
       hr
 
@@ -24,11 +24,6 @@
       = f.input :moderation_level, hint: "What type of moderation do you want regarding new projects being added to your page?", collection: Platform::MODERATION_LEVELS
       = f.input :project_sorting, hint: "How should projects be sorted by default?", label: 'Default project sorting', collection: Group::PROJECT_SORTING
       = f.input :enable_chat, hint: "Real time group chat for your community", inline_label: 'Enable chat', label: false, as: :boolean
-      - if current_user.is? :admin
-        = f.input :email
-        = f.input :is_new, as: :boolean, inline_label: 'Show as new', label: false
-        = f.input :verified, as: :boolean, inline_label: 'Verified', label: false, hint: "Check if a representative of the community is onboard"
-        = f.input :disclaimer, as: :text, input_html: { rows: 4 }
       = f.input :mini_resume, as: :text, label: 'Short description', input_html: { rows: 4 },
         hint: 'Maximum 140 characters'
 
@@ -57,14 +52,20 @@
           span.help-block This is for reference, can't be edited!
 
       - if current_user.is? :admin
-        h4 Slack integration (Hackster admins only)
+        h4 Hackster admin only
+        = f.input :email
+        = f.input :is_new, as: :boolean, inline_label: 'Show as new', label: false
+        = f.input :enable_products, as: :boolean, inline_label: 'Enable products tab', label: false
+        = f.input :verified, as: :boolean, inline_label: 'Verified', label: false, hint: "Check if a representative of the community is onboard"
+        = f.input :disclaimer, as: :text, input_html: { rows: 4 }
+        = f.input :accept_project_ideas, input_label: "Accept project ideas?", as: :boolean, hint: "This is useful if your product hasn't shipped yet and you want to encourage your community to start posting project ideas."
+        = f.input :project_ideas_phrasing, collection: @platform.project_ideas_phrasing_options, label: 'Phrasing for project ideas prompt'
+        p
+          strong Slack integration
         = f.input :slack_token, label: 'Token'
         = f.input :slack_hook_url, label: 'Hook URL'
 
     .col-md-6
-      - if current_user.is? :admin
-        = f.input :accept_project_ideas, input_label: "Accept project ideas?", as: :boolean, hint: "This is useful if your product hasn't shipped yet and you want to encourage your community to start posting project ideas."
-        = f.input :project_ideas_phrasing, collection: @platform.project_ideas_phrasing_options, label: 'Phrasing for project ideas prompt'
       = f.input :facebook_link, label: 'Facebook link'
       = f.input :flickr_link, label: 'Flickr link'
       = f.input :github_link, label: 'Github link'

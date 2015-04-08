@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150404022335) do
+ActiveRecord::Schema.define(version: 20150408015931) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -479,16 +479,16 @@ ActiveRecord::Schema.define(version: 20150404022335) do
     t.text     "description"
     t.date     "start_date"
     t.date     "end_date"
-    t.datetime "created_at",                                          null: false
-    t.datetime "updated_at",                                          null: false
+    t.datetime "created_at",                                              null: false
+    t.datetime "updated_at",                                              null: false
     t.string   "website",                 limit: 255
-    t.boolean  "private",                             default: false, null: false
+    t.boolean  "private",                             default: false,     null: false
     t.string   "workflow_state",          limit: 255
     t.string   "one_liner",               limit: 255
     t.boolean  "featured"
     t.integer  "impressions_count",                   default: 0
     t.text     "counters_cache"
-    t.integer  "team_id",                             default: 0,     null: false
+    t.integer  "team_id",                             default: 0,         null: false
     t.string   "license",                 limit: 100
     t.string   "slug",                    limit: 105
     t.datetime "featured_date"
@@ -512,10 +512,12 @@ ActiveRecord::Schema.define(version: 20150404022335) do
     t.datetime "assignment_submitted_at"
     t.text     "story"
     t.string   "difficulty",              limit: 255
+    t.string   "type",                    limit: 15,  default: "Project", null: false
   end
 
   add_index "projects", ["private"], name: "index_projects_on_private", using: :btree
   add_index "projects", ["team_id"], name: "index_projects_on_team_id", using: :btree
+  add_index "projects", ["type"], name: "index_projects_on_type", using: :btree
 
   create_table "receipts", force: :cascade do |t|
     t.integer  "user_id"

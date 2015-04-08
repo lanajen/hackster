@@ -36,7 +36,11 @@ p= link_to "&larr; Go back to #{@group.name} page".html_safe, @group
           - project_collection = project_collection.decorate
           tr class=project_collection.status_css
             - project = project_collection.project
-            td= link_to project.name, project
+            td
+              - if project.product?
+                = link_to project.name, settings_project_path(project)
+              - else
+                = link_to project.name, project
             td= project.users.map{|u| link_to(html_escape(u.name), u) }.to_sentence.html_safe.presence || project.guest_name
             td= l project.created_at, format: :date
             td= project_collection.decorate.status

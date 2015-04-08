@@ -24,7 +24,6 @@ class Ability
     can :read, Issue do |thread|
       @user.can? :read, thread.threadable and !thread.threadable.private_issues
     end
-    # can :create, Project, external: true
     can :join, Group do |group|
       !@user.persisted? and group.access_level == 'anyone'
     end
@@ -85,7 +84,7 @@ class Ability
     end
 
     can :claim, Project do |project|
-      project.external or project.guest_name.present?
+      project.external? or project.guest_name.present?
     end
 
     can :update, ProjectCollection do |collection|
