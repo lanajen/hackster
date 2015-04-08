@@ -1,2 +1,2 @@
 ---
-BUNDLE_BUILD__RUBY-FILEMAGIC: --with-magic-include=/app/.apt/usr/include/file --with-magic-lib=/app/.apt/usr/lib/x86_64-linux-gnu
+BUNDLE_BUILD__RUBY-FILEMAGIC: --with-magic-dir=/app/.apt/usr/ --with-magic-include=/app/.apt/usr/include --with-magic-lib=/app/.apt/usr/lib
