@@ -86,7 +86,7 @@ gem 'redis', '3.0.6'
 gem 'redis-namespace', '1.5.0'
 gem 'rest-client', '1.6.7'
 # gem 'rewardino', '0.0.1'
-gem 'ruby-filemagic', '0.6.3'
+# gem 'ruby-filemagic', '0.6.3'  # can't get it to install on heroku
 gem 'rubyzip', '1.1.7'
 gem 'ambry', '~> 0.3.0'
 gem 'sanitize', '2.0.6'

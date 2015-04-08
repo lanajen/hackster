@@ -1,4 +1,4 @@
-require 'filemagic'
+# require 'filemagic'
 require 'linguist'
 require 'open-uri'
 require 'pygments'
@@ -157,7 +157,7 @@ class CodeWidget < Widget
   attr_accessible :document_attributes, :document_id
 
   accepts_nested_attributes_for :document, allow_destroy: true
-  # before_validation :force_encoding
+  before_validation :force_encoding
   before_validation :disallow_blank_file
   before_save :check_changes
   before_save :guess_language_from_document, if: proc{|w| w.language.nil? || w.document.try(:file_changed?) }
@@ -168,13 +168,14 @@ class CodeWidget < Widget
   end
 
   def self.is_binary? buffer
-    begin
-      fm = FileMagic.new(FileMagic::MAGIC_MIME)
-      mime = fm.buffer(buffer)
-      mime !~ /^text\//
-    ensure
-      fm.close
-    end
+    !buffer.force_encoding("UTF-8").valid_encoding?
+    # begin
+    #   fm = FileMagic.new(FileMagic::MAGIC_MIME)
+    #   mime = fm.buffer(buffer)
+    #   mime !~ /^text\//
+    # ensure
+    #   fm.close
+    # end
   end
 
   def self.read_from_file file
@@ -328,7 +329,7 @@ class CodeWidget < Widget
     end
 
     def force_encoding
-      self.raw_code = raw_code.force_encoding "UTF-8" if raw_code.present? and raw_code_changed?
+      self.raw_code = raw_code.encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '') if raw_code.present? and raw_code_changed?
     end
 
     def format_content
