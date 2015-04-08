@@ -1,4 +1,5 @@
 class LinkDatum < ActiveRecord::Base
+  TRASH_ELEMENTS = %w(nav header #sidebar #sidebar-right #sidebar-left .sidebar .sidebar-left .sidebar-right #head #header #hd .navbar .navbar-top header footer #ft #footer .sharedaddy .ts-fab-wrapper .shareaholic-canvas .post-nav .navigation .post-data .meta .social-ring .postinfo .page-title)
   has_one :image, as: :attachable, dependent: :destroy
 
   validate :link_is_not_changed
@@ -6,8 +7,13 @@ class LinkDatum < ActiveRecord::Base
   before_save :get_link_properties, if: proc{|t| t.link.present? }
 
   private
-    def get_description head
-      meta(head, 'property="og:description"') || meta(head, 'property="twitter:description"') || meta(head, 'name="description"')
+    def clean_body body
+      body.css(TRASH_ELEMENTS.join(',')).each{|e| e.remove }
+      body
+    end
+
+    def get_description head, body
+      meta(head, 'property="og:description"') || meta(head, 'property="twitter:description"') || meta(head, 'name="description"') || clean_body(body).text.gsub(/\s+/, " ").strip.truncate(200)
     end
 
     def get_extra_data head, val, num
@@ -18,8 +24,8 @@ class LinkDatum < ActiveRecord::Base
       meta(head, 'property="og:link"') || link
     end
 
-    def get_image head
-      meta(head, 'property="og:image"') || meta(head, 'property="twitter:image:src"')
+    def get_image head, body
+      meta(head, 'property="og:image"') || meta(head, 'property="twitter:image:src"') || body.at_css('img').try(:[], 'href')
     end
 
     def get_link_properties
@@ -28,12 +34,16 @@ class LinkDatum < ActiveRecord::Base
       if content = fetch_page(link)
         doc = Nokogiri::HTML(content)
         head = doc.at_css('head')
+        body = doc.at_css('body')
         self.title = get_title head
-        self.description = get_description head
+        self.description = get_description head, body
         self.website_name = get_website_name head
         self.link = get_link head
-        build_image unless image
-        image.remote_file_url = get_image head
+        captured_image = get_image head, body
+        if captured_image.present?
+          build_image unless image
+          image.remote_file_url = captured_image
+        end
         self.extra_data_value1 = get_extra_data head, 'data', 1
         self.extra_data_label1 = get_extra_data head, 'label', 1
         self.extra_data_value2 = get_extra_data head, 'data', 2
