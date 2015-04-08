@@ -22,7 +22,7 @@
 
       .box data-anchor='description'
         .box-content
-          = f.input :description, as: :hidden
+          = f.input :description, as: :text, wrapper_html: { class: 'hidden' }
 
           p.small.text-muted
             strong> Tip:

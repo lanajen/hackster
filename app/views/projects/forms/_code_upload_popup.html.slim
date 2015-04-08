@@ -1,5 +1,5 @@
 = f_widget.input :language, collection: CodeWidget::ACE_LANGUAGES.invert, input_html: { 'data-field-type' => 'language', class: 'resetable' }
-= f_widget.input :raw_code, as: :hidden, input_html: { 'data-field-type' => 'raw_code', class: 'resetable' }
+= f_widget.input :raw_code, as: :text, wrapper_html: { class: 'hidden' }, input_html: { 'data-field-type' => 'raw_code', class: 'resetable' }
 .form-group
   label.control-label Code
   div style='margin-bottom:10px'
