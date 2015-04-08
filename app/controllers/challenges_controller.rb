@@ -98,7 +98,7 @@ class ChallengesController < ApplicationController
 
     def load_user_projects
       if user_signed_in? and @challenge.open_for_submissions?
-        @user_projects = current_user.projects.where(external: false)
+        @user_projects = current_user.projects.self_hosted
         @user_projects = @user_projects.select{|p| p.is_idea? } if @challenge.project_ideas
       else
         @user_projects = []

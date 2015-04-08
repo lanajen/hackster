@@ -7,7 +7,7 @@ class Admin::ProjectsController < Admin::BaseController
       'made_public_at' => 'projects.made_public_at',
       'name' => 'projects.name',
       'private' => 'projects.private',
-      'external' => 'projects.external',
+      'type' => 'projects.type',
     }
 
     params[:sort_order] ||= 'DESC'

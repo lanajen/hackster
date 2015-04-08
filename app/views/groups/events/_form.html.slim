@@ -51,7 +51,7 @@
           ul.list-unstyled.list-inline
             - if current_user.is? :admin
               li= link_to 'Edit as admin', edit_admin_group_path(@event), class: 'btn btn-sm btn-warning'
-            li= f.submit 'Update profile', class: 'btn btn-primary btn-sm'
+            li= f.submit 'Save changes', class: 'btn btn-primary btn-sm'
             li= link_to 'Cancel', @event, class: 'btn-link btn-sm'
 
       hr

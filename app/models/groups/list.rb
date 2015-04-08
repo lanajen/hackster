@@ -14,10 +14,10 @@ class List < Group
   before_validation :update_user_name, on: :create
 
   store :counters_cache, accessors: [:external_projects_count,
-    :private_projects_count]
+    :private_projects_count, :products_count]
 
   parse_as_integers :counters_cache, :external_projects_count,
-    :private_projects_count
+    :private_projects_count, :products_count
 
   store_accessor :properties, :list_type, :is_new, :enable_comments, :hashtag
   set_changes_for_stored_attributes :properties
@@ -71,6 +71,7 @@ class List < Group
       external_projects: 'projects.external.count',
       members: 'followers.count',
       private_projects: 'projects.private.count',
+      products: 'projects.products.count',
       projects: 'project_collections.visible.count',
     }
   end

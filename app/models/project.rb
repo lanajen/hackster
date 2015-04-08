@@ -24,6 +24,11 @@ class Project < ActiveRecord::Base
     'trending' => :magic_sort,
     'updated' => :last_updated,
   }
+  TYPES = {
+    'External (hosted on another site)' => 'ExternalProject',
+    'Normal' => 'Project',
+    'Product' => 'Product',
+  }
 
   include Counter
   include EditableSlug
@@ -85,7 +90,7 @@ class Project < ActiveRecord::Base
     :approved, :open_source, :buy_link, :private_logs, :private_issues,
     :hacker_space_id, :locked, :mark_as_idea, :event_id, :assignment_id,
     :community_ids, :new_group_id, :guest_twitter_handle, :celery_id,
-    :team_attributes, :story, :made_public_at, :difficulty
+    :team_attributes, :story, :made_public_at, :difficulty, :type, :product
   attr_accessor :current, :private_changed, :needs_platform_refresh,
     :approved_changed
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
@@ -99,10 +104,6 @@ class Project < ActiveRecord::Base
     format: { with: /\A[a-z0-9_\-]+\z/, message: "accepts only downcase letters, numbers, dashes '-' and underscores '_'." },
     length: { maximum: 105 }, allow_blank: true
   validates :new_slug, presence: true, if: proc{ |p| p.persisted? }
-  with_options if: proc {|p| p.external } do |project|
-    project.validates :name, :website, :one_liner, :cover_image, presence: true
-    project.before_save :external_is_hidden
-  end
   # validates :website, uniqueness: { message: 'has already been submitted' }, allow_blank: true, if: proc {|p| p.website_changed? }
   validates :guest_name, length: { minimum: 3 }, allow_blank: true
   validate :tags_length_is_valid
@@ -192,7 +193,7 @@ class Project < ActiveRecord::Base
   end
 
   def self.external
-    where(external: true)
+    where(type: 'ExternalProject')
   end
 
   def self.featured
@@ -217,7 +218,7 @@ class Project < ActiveRecord::Base
   end
 
   def self.indexable_and_external
-    where("(projects.approved = 't' AND projects.private = 'f' AND projects.hide = 'f') OR (projects.external = 't' AND projects.approved <> 'f')")#.magic_sort
+    where("(projects.approved = 't' AND projects.private = 'f' AND projects.hide = 'f') OR (projects.type = 'ExternalProject' AND projects.approved <> 'f')")#.magic_sort
   end
 
   def self.live
@@ -260,8 +261,12 @@ class Project < ActiveRecord::Base
     where("projects.guest_name = '' OR projects.guest_name IS NULL")
   end
 
+  def self.products
+    where(type: 'Product')
+  end
+
   def self.self_hosted
-    where(external: false)
+    where(type: 'Project')
   end
 
   def self.wip
@@ -383,6 +388,30 @@ class Project < ActiveRecord::Base
 
   def disable_tweeting?
     assignment.present?
+  end
+
+  def external
+    external?
+  end
+
+  def external=(val)
+    self.type = 'ExternalProject' if val
+  end
+
+  def external?
+    type == 'ExternalProject'
+  end
+
+  def product
+    product?
+  end
+
+  def product=(val)
+    self.type = 'Product' if val
+  end
+
+  def product?
+    type == 'Product'
   end
 
   def force_basic_validation!
@@ -531,7 +560,7 @@ class Project < ActiveRecord::Base
   end
 
   def name
-    super.presence || DEFAULT_NAME
+    super.presence ||(persisted? ? DEFAULT_NAME : nil)
   end
 
   def new_group_id=(val)
@@ -553,7 +582,7 @@ class Project < ActiveRecord::Base
   def to_tracker
     {
       comments_count: comments_count,
-      external: external,
+      external: external?,
       has_logo: logo.present?,
       is_featured: featured,
       is_public: public?,
@@ -700,10 +729,6 @@ class Project < ActiveRecord::Base
     def ensure_website_protocol
       self.website = 'http://' + website if website_changed? and website.present? and !(website =~ /^http/)
       self.buy_link = 'http://' + buy_link if buy_link_changed? and buy_link.present? and !(buy_link =~ /^http/)
-    end
-
-    def external_is_hidden
-      self.hide = true
     end
 
     def generate_slug

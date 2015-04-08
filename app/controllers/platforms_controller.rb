@@ -2,12 +2,12 @@ class PlatformsController < ApplicationController
   include FilterHelper
   include GraphHelper
 
-  before_filter :authenticate_user!, except: [:show, :embed, :index]
-  before_filter :load_platform, except: [:show, :embed, :index, :analytics]
-  before_filter :load_platform_with_slug, only: [:show, :embed, :analytics]
+  before_filter :authenticate_user!, except: [:show, :embed, :projects, :products, :followers, :index]
+  before_filter :load_platform, except: [:show, :embed, :projects, :products, :followers, :index, :analytics]
+  before_filter :load_platform_with_slug, only: [:show, :embed, :projects, :products, :followers, :analytics]
   before_filter :load_projects, only: [:embed]
   before_filter :load_project, only: [:feature_project, :unfeature_project]
-  layout 'group_shared', only: [:edit, :update, :show, :analytics]
+  layout 'group_shared', only: [:edit, :update, :show, :projects, :products, :followers, :analytics]
   after_action :allow_iframe, only: [:embed]
   respond_to :html
   protect_from_forgery except: :embed
@@ -30,7 +30,7 @@ class PlatformsController < ApplicationController
     render "groups/platforms/#{self.action_name}"
   end
 
-  def show
+  def projects
     authorize! :read, @platform
     impressionist_async @platform, "", unique: [:session_hash]
 
@@ -44,13 +44,37 @@ class PlatformsController < ApplicationController
     respond_to do |format|
       format.html do
         load_projects
-        render "groups/shared/show"
+        render "groups/platforms/projects"
       end
       format.atom do
         load_projects_for_rss
         render template: "projects/index", layout: false
       end
       format.rss { redirect_to platform_short_path(@platform, params.merge(format: :atom)), status: :moved_permanently }
+    end
+  end
+
+  def products
+    authorize! :read, @platform
+    impressionist_async @platform, "", unique: [:session_hash]
+
+    title "#{@platform.name} products"
+    meta_desc "Explore #{@platform.products_count} products built with #{@platform.name}! Join #{@platform.followers_count} hackers who follow #{@platform.name} on Hackster."
+
+    @announcement = @platform.announcements.current
+    @challenge = @platform.active_challenge ? @platform.challenges.active.first : nil
+
+    # track_event 'Visited platform', @platform.to_tracker.merge({ page: safe_page_params })
+    respond_to do |format|
+      format.html do
+        load_projects type: 'Product'
+        render "groups/platforms/products"
+      end
+      # format.atom do
+      #   load_projects_for_rss
+      #   render template: "projects/index", layout: false
+      # end
+      # format.rss { redirect_to platform_short_path(@platform, params.merge(format: :atom)), status: :moved_permanently }
     end
   end
 
@@ -106,7 +130,7 @@ class PlatformsController < ApplicationController
 
     @most_recent_followers = @platform.follow_relations.order(created_at: :desc).limit(10)
 
-    sql = "SELECT to_char(projects.made_public_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM projects INNER JOIN project_collections ON project_collections.project_id = projects.id WHERE project_collections.collectable_type = 'Group' AND project_collections.collectable_id = %i AND (projects.private = 'f' OR projects.external = 't') AND date_part('days', now() - projects.made_public_at) < 31 AND date_part('days', now() - projects.made_public_at) > 1 GROUP BY date ORDER BY date;"
+    sql = "SELECT to_char(projects.made_public_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM projects INNER JOIN project_collections ON project_collections.project_id = projects.id WHERE project_collections.collectable_type = 'Group' AND project_collections.collectable_id = %i AND (projects.private = 'f' OR projects.type = 'ExternalProject') AND date_part('days', now() - projects.made_public_at) < 31 AND date_part('days', now() - projects.made_public_at) > 1 GROUP BY date ORDER BY date;"
     @new_projects = graph_with_dates_for sql % @platform.id, 'Projects in the last 30 days', 'AreaChart', Project.indexable_and_external.joins(:project_collections).where(project_collections: { collectable_id: @platform.id, collectable_type: 'Group' }).where('projects.created_at < ?', 32.days.ago).count
 
     sql = "SELECT to_char(impressions.created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM impressions INNER JOIN project_collections ON project_collections.project_id = impressions.impressionable_id WHERE impressions.impressionable_type = 'Project' AND project_collections.collectable_type = 'Group' AND project_collections.collectable_id = %i AND date_part('days', now() - impressions.created_at) < 32 GROUP BY date ORDER BY date;"
@@ -182,10 +206,11 @@ class PlatformsController < ApplicationController
   end
 
   private
-    def load_projects
+    def load_projects options={}
       per_page = begin; [Integer(params[:per_page]), Project.per_page].min; rescue; Project.per_page end;  # catches both no and invalid params
 
-      per_page = per_page - 1 if @platform.accept_project_ideas
+      options[:type] ||= %w(Project ExternalProject)
+      per_page = per_page - 1 if @platform.accept_project_ideas and !options[:type] == 'Product'
 
       sort = if params[:sort] and params[:sort].in? Project::SORTING.keys
         params[:sort]
@@ -196,6 +221,10 @@ class PlatformsController < ApplicationController
 
       @projects = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection)
       @projects = @projects.merge(Project.send(Project::SORTING[sort]))
+
+      if options[:type]
+        @projects = @projects.merge(Project.where(type: options[:type]))
+      end
 
       if params[:tag]
         @projects = @projects.joins(:project).joins(project: :product_tags).where("LOWER(tags.name) = ?", CGI::unescape(params[:tag]))

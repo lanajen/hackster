@@ -1,2 +1,6 @@
 ---
-BUNDLE_BUILD__RUBY-FILEMAGIC: --with-magic-dir=/app/.apt/usr/ --with-magic-include=/app/.apt/usr/include --with-magic-lib=/app/.apt/usr/lib
+BUNDLE_BUILD__RUBY-FILEMAGIC: --with-magic-dir=/app/.apt/usr --with-magic-include=/app/.apt/usr/include --with-magic-lib=/app/.apt/usr/lib
+BUNDLE_PATH: vendor/bundle
+BUNDLE_BIN: vendor/bundle/bin
+BUNDLE_WITHOUT: development:test
+BUNDLE_DISABLE_SHARED_GEMS: '1'

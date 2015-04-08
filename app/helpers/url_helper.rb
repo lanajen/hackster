@@ -232,6 +232,18 @@ module UrlHelper
     super(announcement.platform.user_name, announcement.sub_id, opts)
   end
 
+  def platform_products_path platform, opts={}
+    super platform.user_name, opts
+  end
+
+  def platform_projects_path platform, opts={}
+    super platform.user_name, opts
+  end
+
+  def product_path product, opts={}
+    ''
+  end
+
   def project_path project, opts={}
     # if there's a path not found error check that user_name.size >= 3
     params = params_for_project(project).merge(opts)
@@ -281,7 +293,12 @@ module UrlHelper
       options = params_for_group options
       options[:use_route] = 'platform_short'
     when Project
-      options = params_for_project options
+      case options.type
+      when 'ExternalProject'
+        options = params_for_external_project options
+      when 'Project'
+        options = params_for_project options
+      end
     end
     super options
   end
@@ -358,19 +375,19 @@ module UrlHelper
       }
     end
 
+    def params_for_external_project project, force_params={}
+      {
+        id: "#{project.id}-#{project.slug}",
+        user_name: project.user_name_for_url,
+        use_route: 'external_project',
+      }.merge(force_params)
+    end
+
     def params_for_project project, force_params={}
-      if project.external
-        {
-          id: "#{project.id}-#{project.slug}",
-          user_name: project.user_name_for_url,
-          use_route: 'external_project',
-        }.merge(force_params)
-      else
-        {
-          project_slug: project.slug,
-          user_name: project.user_name_for_url,
-          use_route: 'project',
-        }.merge(force_params)
-      end
+      {
+        project_slug: project.slug,
+        user_name: project.user_name_for_url,
+        use_route: 'project',
+      }.merge(force_params)
     end
 end

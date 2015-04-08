@@ -1,12 +1,10 @@
 class ProjectsController < ApplicationController
   before_filter :load_project, only: [:show, :embed, :update, :destroy, :redirect_to_slug_route]
   before_filter :ensure_belongs_to_platform, only: [:show, :embed, :update, :destroy, :redirect_to_slug_route]
-  load_and_authorize_resource only: [:index, :new, :edit, :settings, :submit]
+  load_and_authorize_resource only: [:index, :new, :edit, :submit]
   # layout 'project', only: [:edit, :update, :show]
-  before_filter :set_project_mode, only: [:settings]
   before_filter :load_lists, only: [:show, :show_external]
   respond_to :html
-  respond_to :js, only: [:edit, :update, :settings]
   after_action :allow_iframe, only: :embed
 
   def index
@@ -141,28 +139,6 @@ class ProjectsController < ApplicationController
     # track_event 'Viewed project', @project.to_tracker.merge({ own: !!current_user.try(:is_team_member?, @project) })
   end
 
-  def show_external
-    @project = Project.external.find_by_id!(params[:id]).decorate
-    impressionist_async @project, '', unique: [:session_hash]
-    title @project.name
-    meta_desc @project.one_liner
-
-    if is_whitelabel?
-      @comments = @project.comments.joins(:user).where(users: { enable_sharing: true }).includes(:user).includes(:parent).includes(user: :avatar)
-      @respecting_users = @project.respecting_users.where(users: { enable_sharing: true }).includes(:avatar) if @project.public?
-    else
-      @comments = @project.comments.includes(:user).includes(:parent)#.includes(user: :avatar)
-      @respecting_users = @project.respecting_users.includes(:avatar) if @project.public?
-    end
-
-    # track_event 'Viewed project', @project.to_tracker.merge({ own: !!current_user.try(:is_team_member?, @project) })
-  end
-
-  def redirect_external
-    @project = Project.external.find_by_slug!(params[:slug])
-    redirect_to external_project_path(@project), status: 301
-  end
-
   def claim
     @project = Project.find_by_id!(params[:id]).decorate
     authorize! :claim, @project
@@ -245,22 +221,12 @@ class ProjectsController < ApplicationController
 
   def edit
     title 'Edit project'
-    @mode = 'edit_mode'
-    @show_sidebar = true
     initialize_project
     @team = @project.team
     @project = @project.decorate
   end
 
-  def settings
-    puts 'settings'
-    authorize! :edit, @project
-    title 'Project settings'
-  end
-
   def update
-    @mode = 'edit_mode'
-    @show_sidebar = true
     authorize! :update, @project
     private_was = @project.private
 
@@ -279,28 +245,20 @@ class ProjectsController < ApplicationController
           notice = "#{@project.name} is now private again."
         end
       end
-      @refresh = @project.slug_was_changed?
       @project = @project.decorate
-      @widgets = @project.widgets.order(:created_at)
       respond_with @project do |format|
         format.html do
           flash[:notice] = notice
           redirect_to @project
-        end
-        format.js do
-          flash[:notice] = notice if @refresh
         end
       end
 
       track_event 'Updated project', @project.to_tracker.merge({ type: 'project update'})
     else
       if params[:project].try(:[], 'private') == '0'
-        flash.now[:alert] = "Couldn't publish the project, please email us at hi@hackster.io to get help."
+        flash[:alert] = "Couldn't publish the project, please email us at hi@hackster.io to get help."
       end
-      # raise @project.errors.inspect
-      initialize_project
-      @project = @project.decorate
-      render action: :settings
+      redirect_to @project
     end
   end
 

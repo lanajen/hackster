@@ -300,9 +300,10 @@ HackerIo::Application.routes.draw do
 
     constraints(PlatformPage) do
       get ':slug' => redirect('%{slug}/projects'), slug: /[A-Za-z0-9_\-]{3,}/
-      get ':slug/projects' => 'platforms#show', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|atom|rss)/ }
+      get ':slug/products' => 'platforms#products', slug: /[A-Za-z0-9_\-]{3,}/, as: :platform_products, constraints: { format: /(html|json)/ }
+      get ':slug/projects' => 'platforms#projects', slug: /[A-Za-z0-9_\-]{3,}/, as: :platform_projects, constraints: { format: /(html|json|atom|rss)/ }
       get ':slug/embed' => 'platforms#embed', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|js)/ }
-      get ':user_name' => 'platforms#show', as: :platform_short, user_name: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
+      get ':user_name' => redirect('%{slug}/projects'), as: :platform_short, user_name: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
       scope ':slug', slug: /[A-Za-z0-9_\-]{3,}/, as: :platform, constraints: { format: /(html|json)/ } do
         get 'analytics' => 'platforms#analytics'
         get 'chat' => 'chat_messages#index'
@@ -376,8 +377,8 @@ HackerIo::Application.routes.draw do
 
   resources :projects, except: [:show, :update, :destroy] do
     patch 'submit' => 'projects#submit', on: :member
-    get 'settings' => 'projects#settings', on: :member
-    patch 'settings' => 'projects#update', on: :member
+    get 'settings' => 'external_projects#edit', on: :member
+    patch 'settings' => 'external_projects#update', on: :member
     post 'claim' => 'projects#claim', on: :member
     get 'last' => 'projects#redirect_to_last', on: :collection
     get '' => 'projects#redirect_to_slug_route', constraints: lambda{|req| req.params[:project_id] =~ /[0-9]+/ }
@@ -397,9 +398,9 @@ HackerIo::Application.routes.draw do
     end
   end
 
-  get 'projects/e/:user_name/:id' => 'projects#show_external', as: :external_project, id: /[0-9]+\-[A-Za-z0-9\-]+/
+  get 'projects/e/:user_name/:id' => 'external_projects#show', as: :external_project, id: /[0-9]+\-[A-Za-z0-9\-]+/
   delete 'projects/e/:user_name/:id' => 'projects#destroy', id: /[0-9]+\-[A-Za-z0-9\-]+/
-  get 'projects/e/:user_name/:slug' => 'projects#redirect_external', as: :external_project_redirect  # legacy route (google has indexed them)
+  get 'projects/e/:user_name/:slug' => 'external_projects#redirect_to_show', as: :external_project_redirect  # legacy route (google has indexed them)
 
   resources :issues, only: [] do
     resources :comments, only: [:create]
@@ -432,7 +433,7 @@ HackerIo::Application.routes.draw do
   get 'projects/tags/:tag' => 'search#tags', as: :tags
   get 'projects/tags' => 'search#tags'
 
-  get 'pdf_viewer' => 'pages#pdf_viewer'
+  # get 'pdf_viewer' => 'pages#pdf_viewer'
 
   constraints(ClientSite) do
     scope module: :client, as: :client do

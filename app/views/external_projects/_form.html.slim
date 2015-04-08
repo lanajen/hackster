@@ -1,0 +1,55 @@
+= simple_nested_form_for @project, url: settings_project_path(@project), html: { class: 'form-horizontal remote accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
+  = f.error_notification
+
+  .row
+    .col-xs-12
+      .header.clearfix
+        h3.pull-left
+          | Project settings
+        .pull-right
+          ul.list-unstyled.list-inline
+            - if current_user.is? :admin
+              li= link_to 'Edit as admin', edit_admin_project_path(@project), class: 'btn btn-warning btn-sm'
+            li= f.submit 'Save changes', class: 'btn btn-primary btn-sm'
+            li= link_to 'Cancel', @project, class: 'btn-link btn-sm'
+      hr
+
+
+  .row
+    .col-xs-12
+      .panel.panel-default
+        .panel-heading
+          h4 General settings
+        .panel-body
+          = f.input :name, label: 'Project name'
+          = f.input :one_liner, as: :text, input_html: { rows: 4 },
+            hint: 'Maximum 140 characters'
+          = f.input :platform_tags_string, as: :string, label: 'Built with', hint: 'Separate technologies by commas', placeholder: 'Eg: Arduino, ATmega, Attiny...'
+          = f.input :website, label: 'Project website'
+          = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @project.cover_image.try(:file_url, :cover_mini_thumb), help_block: 'This should be your nicest picture for this project. Give us some high def for best results!', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
+
+          = f.input :start_date, order: [:year, :month, :day], label: 'Date', hint: 'When did this project come to life?' do
+            .row
+              .col-md-6
+                = hidden_field_tag 'project[start_date(3i)]', '1'
+                = select_month(@project.start_date, { prompt: '--Month--' }, { class: 'form-control', name: 'project[start_date(2i)]' })
+              .col-md-6
+                = select_year(@project.start_date, { prompt: '--Year--', start_year: Date.today.year, end_year: Date.today.year - 15 }, { class: 'form-control', name: 'project[start_date(1i)]' })
+
+
+      .panel.panel-default
+        .panel-heading
+          h4 Danger zone
+        .panel-body
+          .form-group
+            .col-md-8.col-xs-offset-4= link_to 'Delete project', @project, method: :delete, class: 'btn btn-danger btn-sm', data: { confirm: "Are you sure? There's no coming back!" }
+
+  .row
+    .col-xs-12
+      hr
+      .pull-right
+        ul.list-unstyled.list-inline
+          - if current_user.is? :admin
+            li= link_to 'Edit as admin', edit_admin_project_path(@project), class: 'btn btn-warning btn-sm'
+          li= f.submit 'Save changes', class: 'btn btn-primary btn-sm'
+          li= link_to 'Cancel', @project, class: 'btn-link btn-sm'
