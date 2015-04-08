@@ -481,6 +481,6 @@ var ChannelContainer = React.createClass({
 });
 
 var channelComponent = React.render(
-  <ChannelContainer flux={flux} url='/api/v1/thoughts' />,
+  <ChannelContainer flux={flux} />,
   document.getElementById('react-container')
 );
