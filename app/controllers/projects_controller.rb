@@ -187,7 +187,7 @@ class ProjectsController < ApplicationController
     @project = Project.new params[:project]
     authorize! :create, @project
 
-    if @project.external
+    if @project.external? or @project.product?
       event = 'Submitted link'
     else
       # @project.approved = true
@@ -199,14 +199,14 @@ class ProjectsController < ApplicationController
       @project.platform_tags_string = current_platform.name
     end
 
-    if current_user
+    if !@project.product? and current_user
       @project.build_team
       @project.team.members.new(user_id: current_user.id)
     end
 
     if @project.save
       flash[:notice] = "#{@project.name} was successfully created."
-      if @project.external
+      if @project.external? or @project.product?
         redirect_to user_return_to, notice: "Thanks for your submission!"
       else
         respond_with @project, location: edit_project_path(@project)
