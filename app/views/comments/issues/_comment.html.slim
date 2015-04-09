@@ -16,4 +16,4 @@
           .pull-right
             = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_comment_path(comment), data: { remote: true, container: 'body' }, class: 'btn-edit', title: 'Edit comment', rel: 'tooltip'
     .panel-body
-      = auto_link comment.body
+      = raw comment.body

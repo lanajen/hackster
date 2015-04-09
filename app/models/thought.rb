@@ -9,9 +9,9 @@ class Thought < ActiveRecord::Base
 
   attr_accessible :raw_body, :link
 
-  before_save :parse_body
-  before_save :parse_link
-  before_save :get_link_properties, if: proc{|t| t.link.present? }
+  before_save :parse_body, if: proc{|t| t.raw_body_changed? }
+  before_save :parse_link, if: proc{|t| t.body_changed? }
+  before_save :get_link_properties, if: proc{|t| t.link.present? and t.link_changed? }
 
   def liked_by? user
     likes.where(user_id: user.id).any?

@@ -124,10 +124,11 @@ var CommentStore = Fluxxor.createStore({
       url: '/api/v1/comments',
       dataType: 'json',
       type: 'POST',
-      data: { thought_id: thoughtId, comment: { body: body } },
+      data: { thought_id: thoughtId, comment: { raw_body: body } },
       success: function(data) {
         var newComment = this.comments[tmpId];
         newComment.id = data.comment.id;
+        newComment.body = data.comment.body;
         this.comments[newComment.id] = newComment;
         this.flux.store('thought').addCommentId(comment.commentable_id, newComment.id);
         this.flux.store('thought').removeCommentId(comment.commentable_id, tmpId);

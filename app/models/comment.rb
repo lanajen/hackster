@@ -6,14 +6,15 @@ class Comment < ActiveRecord::Base
   has_many :liking_users, class_name: 'User', through: :likes, source: :user
 
   attr_accessor :children, :depth
-  attr_accessible :body, :user_attributes, :parent_id, :guest_name
+  attr_accessible :raw_body, :user_attributes, :parent_id, :guest_name
 
-  validates :body, presence: true
+  validates :raw_body, presence: true
 
   accepts_nested_attributes_for :user
 
-  sanitize_text :body
-  register_sanitizer :newlines_to_br, :before_save, :body
+  before_save :parse_body, if: proc{|c| c.raw_body_changed?}
+  # sanitize_text :body
+  # register_sanitizer :newlines_to_br, :before_save, :body
   register_sanitizer :responsive_images, :before_save, :body
 
   def self.by_commentable_type type
@@ -78,14 +79,28 @@ class Comment < ActiveRecord::Base
       parent
     end
 
-    def newlines_to_br text
-      text.strip.gsub(/\r\n/, '<br>')
+    def parse_body
+      return unless raw_body
+
+      filters = {
+        autolink: true,
+        no_styles: true,
+        no_images: true,
+        escape_html: true,
+        no_intra_emphasis: true,
+      }
+
+      markdown = Redcarpet::Markdown.new(Redcarpet::Render::TargetBlankHTML, filters)
+      self.body = markdown.render(raw_body)
     end
 
+    # def newlines_to_br text
+    #   text.strip.gsub(/\r\n/, '<br>')
+    # end
+
     def responsive_images text
-      xml = Nokogiri::HTML text
-      xml = xml.at_css('body').children
-      xml.search('img').each do |img|
+      xml = Nokogiri::HTML::DocumentFragment.parse text
+      xml.css('img').each do |img|
         img['class'] = 'img-responsive'
       end
       xml.to_html

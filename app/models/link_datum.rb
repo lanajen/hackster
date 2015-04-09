@@ -25,7 +25,20 @@ class LinkDatum < ActiveRecord::Base
     end
 
     def get_image head, body
-      meta(head, 'property="og:image"') || meta(head, 'property="twitter:image:src"') || body.at_css('img').try(:[], 'href')
+      src = meta(head, 'property="og:image"') || meta(head, 'property="twitter:image:src"') || body.at_css('img').try(:[], 'src')
+      return unless src
+
+      # stuff taken from scrapers/base.rb
+      uri = URI(link)
+      @host = uri.host
+      @scheme = uri.scheme
+      if uri.path.present?
+        path = uri.path.split(/\//)[1..-1]
+        path.pop if path and path.last =~ /.+\..+/
+        @base_uri = "#{path.join('/')}" if path
+      end
+      @base_uri = @base_uri.present? ? "/#{@base_uri}" : ''
+      normalize_link src
     end
 
     def get_link_properties
@@ -36,7 +49,6 @@ class LinkDatum < ActiveRecord::Base
         head = doc.at_css('head')
         body = doc.at_css('body')
         self.title = get_title head
-        self.description = get_description head, body
         self.website_name = get_website_name head
         self.link = get_link head
         captured_image = get_image head, body
@@ -44,6 +56,7 @@ class LinkDatum < ActiveRecord::Base
           build_image unless image
           image.remote_file_url = captured_image
         end
+        self.description = get_description head, body
         self.extra_data_value1 = get_extra_data head, 'data', 1
         self.extra_data_label1 = get_extra_data head, 'label', 1
         self.extra_data_value2 = get_extra_data head, 'data', 2
@@ -81,5 +94,24 @@ class LinkDatum < ActiveRecord::Base
 
     def link_is_not_changed
       errors.add :link, "Change of link not allowed!" if link_changed? and self.persisted?
+    end
+
+    def normalize_link src
+      return src if src =~ /\Amailto/
+
+      src = "#{@scheme}:" + src if (src =~ /\A\/\//)
+      if (src !~ /\Ahttp/) and @host and src != '/'
+        src = "#{@base_uri}/#{src}" unless src =~ /\A\//
+        clean_path = []
+        src.split('/')[1..-1].each do |dir|
+          if dir == '..'
+            clean_path.pop
+          elsif !(dir == '.')
+            clean_path << dir
+          end
+        end
+        src = "#{@scheme}://#{@host}/#{clean_path.join('/')}"
+      end
+      src.gsub /\s/, '%20'
     end
 end
