@@ -236,20 +236,21 @@ class MailerQueue < BaseWorker
       raise 'Illegal arguments' unless context_type.kind_of? String and context_id.kind_of? Integer
       puts "Preparing email of type '#{type}' for context '#{context_type}' of id #{context_id}."
       context = get_context_for context_type, context_id
-      return unless context
+      raise "MailerQueue.deliver_email: couldn't find context '#{context_type}' with ID '#{context_id}'" unless context
 
+      # using deliver_now below is required as of rails 4.2, with the introduction of deliver_later
       if context.include? :users
         return if context[:users].empty?
         context[:users] = context[:users].uniq
         users_copy = context[:users]
         users_copy.each_slice(1000) do |users|
           context[:users] = users
-          BaseMailer.deliver_email 'send_bulk_email', context, type
+          BaseMailer.deliver_email('send_bulk_email', context, type).deliver_now
         end
       elsif context.include? :user
-        BaseMailer.deliver_email 'send_single_email', context, type, opts
+        BaseMailer.deliver_email('send_single_email', context, type, opts).deliver_now
       else
-        BaseMailer.deliver_email 'send_notification_email', context, type
+        BaseMailer.deliver_email('send_notification_email', context, type).deliver_now
       end
     end
 end
