@@ -8,8 +8,9 @@ $(document).ready(function(){
 
   // auto adjust the height of
   $('.project-show .well').on('keyup keydown', '#new_comment textarea', function(){
-    var t=$(this);
-    t.height(15).height(t[0].scrollHeight);//where 15 is minimum height of textarea
+    var t = $(this);
+    var h = t[0].scrollHeight - parseInt(t.css('padding-top')) - parseInt(t.css('padding-bottom'));
+    t.height(21).height(h);  // where 21 is the minimum height of textarea (25 - 4 for padding)
   });
 
   $('.issue-content').on('click', '.issue-comment-cancel', function(e){

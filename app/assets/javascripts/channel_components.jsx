@@ -228,15 +228,35 @@ var CommentForm = React.createClass({
   componentDidMount: function() {
     var body = $(this.refs.body.getDOMNode());
     body.on('focus blur keyup', this.updateSubmit);
+
+    body.on('keypress', this.handleKeypress);
+
+    // auto adjust the height of the textarea
+    body.on('keyup keydown', function() {
+      var t = $(this);
+      var h = t[0].scrollHeight - parseInt(t.css('padding-top')) - parseInt(t.css('padding-bottom'));
+      t.height(21).height(h);  // where 21 is the minimum height of textarea (25 - 4 for padding)
+    });
   },
 
-  handleSubmit: function(e){
+  componentWillUnmount: function () {
+    var body = $(this.refs.body.getDOMNode());
+    body.off('focus blur keyup keypress keydown');
+  },
+
+  handleKeypress: function(e) {
+    if (e.which == 13 && !e.shiftKey) {
+      this.handleSubmit(e);
+    }
+  },
+
+  handleSubmit: function(e) {
     e.preventDefault();
 
     var body = this.refs.body.getDOMNode().value.trim();
-    if (!body) {
+    if (!body)
       return;
-    }
+
     this.props.onCommentSubmit(body);
     this.refs.body.getDOMNode().value = '';
     this.getDOMNode().focus();
@@ -261,7 +281,7 @@ var CommentForm = React.createClass({
     classes.push('submit-' + this.state.submitVisibility);
 
     return (
-      <form className={classes.join(' ')} onSubmit={this.handleSubmit}>
+      <form ref='form' className={classes.join(' ')} onSubmit={this.handleSubmit}>
         <img className="img-rounded" src={user_data.avatar_url} />
         <div className="textarea-container">
           <textarea ref="body" placeholder="Type your comment" />

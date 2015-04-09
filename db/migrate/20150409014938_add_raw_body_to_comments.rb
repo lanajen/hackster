@@ -11,7 +11,6 @@ end
 #   raw_body = comment.body.gsub(/<br\s*\/?>/, "\n")
 #   raw_body = Nokogiri::HTML::DocumentFragment.parse(raw_body).text
 #   body = Rinku.auto_link(comment.body, :all, 'target="_blank"')
-#   comment.body = body
-#   comment.raw_body = raw_body
-#   comment.save
+#   comment.update_column :body, body
+#   comment.update_column :raw_body, raw_body
 # end

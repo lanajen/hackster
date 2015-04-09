@@ -120,6 +120,7 @@
       resize: none;
       font-size: 0.85em;
       width: calc(100% - 42px);  // input button size
+      overflow: hidden;
     }
     input {
       padding: 2px 7px;
