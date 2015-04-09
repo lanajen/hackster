@@ -50,7 +50,7 @@ class PlatformsController < ApplicationController
         load_projects_for_rss
         render template: "projects/index", layout: false
       end
-      format.rss { redirect_to platform_short_path(@platform, params.merge(format: :atom)), status: :moved_permanently }
+      format.rss { redirect_to platform_projects_path(@platform, params.slice(:sort, :by).merge(format: :atom)), status: :moved_permanently }
     end
   end
 
@@ -220,7 +220,11 @@ class PlatformsController < ApplicationController
       @by = params[:by] || 'all'
 
       @projects = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection)
-      @projects = @projects.merge(Project.send(Project::SORTING[sort]))
+      @projects = if sort == 'recent'
+        @projects.most_recent.joins(:project)  # fails without joins
+      else
+        @projects.merge(Project.send(Project::SORTING[sort]))
+      end
 
       if options[:type]
         @projects = @projects.merge(Project.where(type: options[:type]))
