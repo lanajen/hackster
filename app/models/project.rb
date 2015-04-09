@@ -233,27 +233,27 @@ class Project < ActiveRecord::Base
   end
 
   def self.last_created
-    order('projects.created_at DESC')
+    order(created_at: :desc)
   end
 
   def self.last_public
-    order('projects.made_public_at DESC')
+    order(made_public_at: :desc)
   end
 
   def self.last_updated
-    order('projects.updated_at DESC')
+    order(updated_at: :desc)
   end
 
   def self.magic_sort
-    order('projects.popularity_counter DESC').order('projects.created_at DESC')
+    order(popularity_counter: :desc, created_at: :desc)
   end
 
   def self.most_popular
-    order('projects.impressions_count DESC')
+    order(impressions_count: :desc)
   end
 
   def self.most_respected
-    order('projects.respects_count DESC')
+    order(respects_count: :desc)
   end
 
   def self.own

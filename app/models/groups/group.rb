@@ -5,7 +5,7 @@ class Group < ActiveRecord::Base
     'Only people who are explicitely invited' => 'invite',
   }
   PROJECT_SORTING = {
-    'Magic (most popular first)' => 'magic',
+    'Trending (most popular first)' => 'trending',
     'Most impressions first' => 'popular',
     'Most recent first' => 'recent',
     'Most respects first' => 'respected',
@@ -91,7 +91,7 @@ class Group < ActiveRecord::Base
   end
 
   def self.default_project_sorting
-    'magic'
+    'trending'
   end
 
   def self.alphabetical_sorting

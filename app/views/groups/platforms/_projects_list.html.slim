@@ -13,10 +13,10 @@
         span.caret
       ul.dropdown-menu
         li*{ class: "#{'active' if params[:sort] == 'updated'}" } = link_to 'Last updated', platform_projects_path(@platform, sort: 'updated', by: params[:by])
-        li*{ class: "#{'active' if params[:sort] == 'magic'}" } = link_to 'Magic', platform_projects_path(@platform, sort: 'magic', by: params[:by])
         li*{ class: "#{'active' if params[:sort] == 'popular'}" } = link_to 'Most popular', platform_projects_path(@platform, sort: 'popular', by: params[:by])
         li*{ class: "#{'active' if params[:sort] == 'recent'}" } = link_to 'Most recent', platform_projects_path(@platform, sort: 'recent', by: params[:by])
         li*{ class: "#{'active' if params[:sort] == 'respected'}" } = link_to 'Most respected', platform_projects_path(@platform, sort: 'respected', by: params[:by])
+        li*{ class: "#{'active' if params[:sort] == 'trending'}" } = link_to 'Trending', platform_projects_path(@platform, sort: 'trending', by: params[:by])
 
     .btn-group.btn-group-default
       button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }

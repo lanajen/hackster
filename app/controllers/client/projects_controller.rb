@@ -1,4 +1,6 @@
 class Client::ProjectsController < Client::BaseController
+  include PlatformHelper
+
   load_and_authorize_resource only: [:index]
   respond_to :html
 
@@ -7,23 +9,8 @@ class Client::ProjectsController < Client::BaseController
 
     impressionist_async current_platform, "", unique: [:session_hash]
 
-    params[:sort] = (params[:sort].in?(Project::SORTING.keys) ? params[:sort] : 'trending')
-    @by = (params[:by].in?(Project::FILTERS.keys) ? params[:by] : 'all')
+    load_projects platform: current_platform, disable_ideas: true
 
-    @projects = current_platform.project_collections.where(users: { enable_sharing: true }).includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection)
-    if params[:sort]
-      @projects = @projects.merge(Project.send(Project::SORTING[params[:sort]]))
-    end
-
-    if @by and @by.in? Project::FILTERS.keys
-      @projects = if @by == 'featured'
-        @projects.featured
-      else
-        @projects.merge(Project.send(Project::FILTERS[@by]))
-      end
-    end
-
-    @projects = @projects.paginate(page: safe_page_params, per_page: Project.per_page)
     @challenge = current_platform.active_challenge ? current_platform.challenges.active.first : nil
 
     respond_to do |format|

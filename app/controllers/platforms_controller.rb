@@ -1,6 +1,7 @@
 class PlatformsController < ApplicationController
   include FilterHelper
   include GraphHelper
+  include PlatformHelper
 
   before_filter :authenticate_user!, except: [:show, :embed, :projects, :products, :followers, :index]
   before_filter :load_platform, except: [:show, :embed, :projects, :products, :followers, :index, :analytics]
@@ -82,6 +83,7 @@ class PlatformsController < ApplicationController
     title "Projects built with #{@platform.name}"
     @list_style = ([params[:list_style]] & ['', '_horizontal']).first || ''
     @list_style = '_vertical' if @list_style == ''
+
     respond_to do |format|
       format.html { render "groups/platforms/embed", layout: 'embed' }
       format.js do
@@ -206,57 +208,6 @@ class PlatformsController < ApplicationController
   end
 
   private
-    def load_projects options={}
-      per_page = begin; [Integer(params[:per_page]), Project.per_page].min; rescue; Project.per_page end;  # catches both no and invalid params
-
-      options[:type] ||= %w(Project ExternalProject)
-      per_page = per_page - 1 if @platform.accept_project_ideas and !options[:type] == 'Product'
-
-      sort = if params[:sort] and params[:sort].in? Project::SORTING.keys
-        params[:sort]
-      else
-        params[:sort] = @platform.project_sorting.presence || 'magic'
-      end
-      @by = params[:by] || 'all'
-
-      @projects = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection)
-      @projects = if sort == 'recent'
-        @projects.most_recent.joins(:project)  # fails without joins
-      else
-        @projects.merge(Project.send(Project::SORTING[sort]))
-      end
-
-      if options[:type]
-        @projects = @projects.merge(Project.where(type: options[:type]))
-      end
-
-      if params[:tag]
-        @projects = @projects.joins(:project).joins(project: :product_tags).where("LOWER(tags.name) = ?", CGI::unescape(params[:tag]))
-      end
-
-      if @by and @by.in? Project::FILTERS.keys
-        @projects = if @by == 'featured'
-          @projects.featured
-        else
-          @projects.merge(Project.send(Project::FILTERS[@by]))
-        end
-      end
-
-      # @projects = Project.joins(:visible_platforms).where("groups.id = ?", @platform.id).order('project_collections.workflow_state DESC').for_thumb_display
-      # @projects = @projects.send(Project::SORTING[sort])
-
-      # if @by and @by.in? Project::FILTERS.keys
-      #   @projects = if @by == 'featured'
-      #     @projects.featured
-      #   else
-      #     @projects.send(Project::FILTERS[@by])
-      #   end
-      # end
-
-      @projects = @projects.paginate(page: safe_page_params, per_page: per_page)
-
-    end
-
     def load_projects_for_rss
       per_page = begin; [Integer(params[:per_page]), Project.per_page].min; rescue; Project.per_page end;  # catches both no and invalid params
 
@@ -271,6 +222,8 @@ class PlatformsController < ApplicationController
 
       @projects = Project.joins(:visible_platforms).where("groups.id = ?", @platform.id).for_thumb_display
       @projects = @projects.send(Project::SORTING[sort])
+
+      @projects = @projects.joins(:project).merge(Project.where(type: %w(Project ExternalProject)))
 
       if @by and @by.in? Project::FILTERS.keys
         @projects = if @by == 'featured'
