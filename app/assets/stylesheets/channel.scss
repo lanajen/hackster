@@ -183,6 +183,7 @@
   margin-bottom: 10px;
   cursor: pointer;
   font-size: 0.85em;
+  overflow: hidden;
   h5 {
     font-weight: bold;
     font-size: 1.1em;
@@ -201,6 +202,9 @@
     font-size: 0.9em;
     text-transform: uppercase;
     color: #777;
+    padding-top: 5px;
+    width: 100%;
+    background: #fafafa;
   }
   .description {
     line-height: 1.2em;
