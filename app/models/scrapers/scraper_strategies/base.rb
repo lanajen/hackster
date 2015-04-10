@@ -131,7 +131,11 @@ module ScraperStrategies
       end
 
       def extract_title
-        @article.at_css('.entry-title').try(:remove).try(:text).try(:strip) || @parsed.title
+        unless title = @article.at_css('.entry-title').try(:remove).try(:text).try(:strip)
+          title = @parsed.title
+          title = title.split(/\|/)[0].strip
+        end
+        title
       end
 
       def find_caption_for img, base_parent=@article

@@ -1,5 +1,6 @@
 class Admin::ProjectsController < Admin::BaseController
-  load_resource except: :index
+  load_resource except: [:index, :new, :create]
+
   def index
     title "Admin / Projects - #{safe_page_params}"
     @fields = {
@@ -18,9 +19,23 @@ class Admin::ProjectsController < Admin::BaseController
 
   def new
     title "Admin / Projects / New"
+
+    model_class = if params[:type] and params[:type].in? Project::MACHINE_TYPES.keys
+      Project::MACHINE_TYPES[params[:type]].constantize
+    else
+      Project
+    end
+    @project = model_class.new params[:project]
   end
 
   def create
+    model_class = if params[:project] and params[:project][:type] and params[:project][:type].in? Project::MACHINE_TYPES.values
+      params[:project][:type].constantize
+    else
+      Project
+    end
+    @project = model_class.new params[:project]
+
     if @project.save
       redirect_to admin_projects_path, :notice => 'New project created'
     else

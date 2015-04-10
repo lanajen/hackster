@@ -3,8 +3,8 @@
   h1
     ==> t '.title', :default => model_class.model_name.human.pluralize
     small>= link_to 'New normal', new_admin_project_path, :class => 'btn btn-primary btn-sm'
-    small>= link_to 'New external', new_admin_project_path(project: { external: true } ), :class => 'btn btn-primary btn-sm'
-    small= link_to 'New product', new_admin_project_path(project: { product: true } ), :class => 'btn btn-primary btn-sm'
+    small>= link_to 'New external', new_admin_project_path(type: 'external'), :class => 'btn btn-primary btn-sm'
+    small= link_to 'New product', new_admin_project_path(type: 'product'), :class => 'btn btn-primary btn-sm'
 
 ==> render 'admin/shared/search_form_tag'
 - (@fields.keys - %w(created_at private made_public_at type)).each do |field|

@@ -5,7 +5,7 @@ section#projects-list
         .pull-right
           ==> link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project"), new_project_path, class: 'btn btn-default'
           small> or
-          = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Submit a link"), new_project_path(project: { external: true }), class: 'btn btn-default'
+          = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Submit a link"), new_project_path(type: 'external'), class: 'btn btn-default'
 
     h2
       ' Public projects

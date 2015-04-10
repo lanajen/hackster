@@ -30,3 +30,12 @@ if Rails.env == 'development'
   ENV['CARRIERWAVE_FORCE_FOG'] = ENV['UPLOAD'].in?(%w(dev prod)).to_s
   puts ENV['CARRIERWAVE_FORCE_FOG'] == 'true' ? "Forcing use of fog" : 'Using default storage'
 end
+
+
+IMAGE_EXTENSIONS = %w(jpg jpeg gif bmp png)
+PDF_EXTENSIONS = %w(pdf)
+
+SKETCHFAB_API_URL = 'https://api.sketchfab.com/v2'
+SKETCHFAB_API_MODEL_ENDPOINT = SKETCHFAB_API_URL + '/models'
+SKETCHFAB_API_TOKEN = 'f6f4db3865a945a38f0d09cae381efd6'
+SKETCHFAB_SUPPORTED_EXTENSIONS = %w(3dc 3ds ac asc bvh blend geo dae dwf dw x fbx gta mu kmz lwo lws flt iv osg osgt osgb ive ply shp stl vpk wrl ojb)

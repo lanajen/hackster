@@ -1,5 +1,4 @@
 <script type="text/javascript">
-
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', '<%= tracker %>']);
   _gaq.push(['_setDomainName', '<%= domain %>']);
@@ -10,23 +9,27 @@
     ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
-
-  <%- if defined?(track_outbound) and track_outbound %>
-    $(function() {
-      $("body").on('click', 'a', function(e){
-        var url = $(this).attr("href");
-        if (e.currentTarget.host != window.location.host && url.indexOf('javascript:') == -1) {
-          _gaq.push(['_trackEvent', 'Outbound Links', e.currentTarget.host.replace(':80', ''), url]);
-          if (e.metaKey || e.ctrlKey || this.target == "_blank") {
-            var newtab = true;
-          }
-          if (!newtab) {
-            e.preventDefault();
-            setTimeout('document.location = "' + url + '"', 100);
-          }
-        }
-      });
-    });
-  <% end %>
-
 </script>
+
+<%- if defined?(track_outbound) and track_outbound %>
+  <%= content_for :js do %>
+    <%# moving it to :js so that $ is defined %>
+    <script type="text/javascript">
+      $(function() {
+        $("body").on('click', 'a', function(e){
+          var url = $(this).attr("href");
+          if (e.currentTarget.host != window.location.host && url.indexOf('javascript:') == -1) {
+            _gaq.push(['_trackEvent', 'Outbound Links', e.currentTarget.host.replace(':80', ''), url]);
+            if (e.metaKey || e.ctrlKey || this.target == "_blank") {
+              var newtab = true;
+            }
+            if (!newtab) {
+              e.preventDefault();
+              setTimeout('document.location = "' + url + '"', 100);
+            }
+          }
+        });
+      });
+    </script>
+  <% end %>
+<% end %>

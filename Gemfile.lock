@@ -368,7 +368,7 @@ GEM
     premailer-rails (1.7.0)
       actionmailer (>= 3, < 5)
       premailer (~> 1.7, >= 1.7.9)
-    protected_attributes (1.0.7)
+    protected_attributes (1.0.9)
       activemodel (>= 4.0.1, < 5.0)
     pusher (0.14.2)
       httpclient (~> 2.4)
@@ -649,7 +649,7 @@ DEPENDENCIES
   open_uri_redirections (= 0.2.1)
   pg (= 0.17.0)
   premailer-rails (= 1.7.0)
-  protected_attributes (= 1.0.7)
+  protected_attributes (= 1.0.9)
   pusher (= 0.14.2)
   pygments.rb (= 0.5.4)
   quiet_assets
