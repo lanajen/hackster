@@ -317,7 +317,7 @@
                   = content_tag(:i, '', class: 'fa fa-info-circle istooltip', title: 'You need to add a title, a description and a cover image before you can make it public.')
                 p
                   small
-                    = link_to 'Need to privately share?', settings_project_path(@project), class: 'alert-link'
+                    = link_to 'Need to privately share?', edit_project_path(@project, anchor: 'publish'), class: 'alert-link'
             - else
               .alert.alert-warning.text-center
                 p
