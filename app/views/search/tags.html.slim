@@ -6,9 +6,9 @@
     .col-xs-12
       .header.clearfix
         h1.pull-left
-          ==> @results.size
+          ==> @results.total
           strong>= @tag
-          = pluralize_without_count @results.size, 'project'
+          = pluralize_without_count @results.total, 'project'
           span.label.label-primary>
           - if safe_page_params
             small page #{safe_page_params}

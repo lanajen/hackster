@@ -50,14 +50,15 @@ class SearchController < ApplicationController
       @results = SearchRepository.new(params).search.results
       # raise @results.inspect
       params[:per_page] = nil  # so that it doesn't appear in the URL
+      params[:type] = nil
 
-      title "#{@results.size} #{@tag} Projects"
-      meta_desc "Interested in #{@tag}? Explore #{@results.size} projects tagged with '#{@tag}'. Find these and other hardware projects on #{site_name}."
+      title "#{@results.total} #{@tag} Projects"
+      meta_desc "Interested in #{@tag}? Explore #{@results.total} projects tagged with '#{@tag}'. Find these and other hardware projects on #{site_name}."
 
       # track_event 'Searched projects by tag', { tag: @tag, result_count: @results.size, type: params[:type] }
-    rescue => e
-      logger.error "Error while searching for #{params[:q]}: #{e.message}"
-      @results = []
+    # rescue => e
+    #   logger.error "Error while searching for #{params[:q]}: #{e.message}"
+    #   @results = []
     end
   end
 end
