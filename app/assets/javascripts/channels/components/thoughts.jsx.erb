@@ -10,6 +10,8 @@ var ThoughtForm = React.createClass({
       var h = t[0].scrollHeight - parseInt(t.css('padding-top')) - parseInt(t.css('padding-bottom'));
       t.height(50).height(h);  // where 21 is the minimum height of textarea (64 - 14 for padding)
     });
+
+    $(this.refs.body.getDOMNode()).on('keyup', this.showFeedback);
   },
 
   componentWillUnmount: function () {
@@ -19,7 +21,20 @@ var ThoughtForm = React.createClass({
     $(this.refs.md.getDOMNode()).tooltip('destroy');
   },
 
-  handleSubmit: function(e){
+  showFeedback: function(e) {
+    var bodyVal = this.refs.body.getDOMNode().value;
+    var match = null;
+    if (bodyVal)
+      match = bodyVal.match(/(^|\s)(#[a-z\d]+)/ig);
+    var feedback = $(this.refs.feedback.getDOMNode());
+    if (bodyVal && !match) {
+      feedback.html("Don't forget to add one or more hashtags to categorize your post! For instance: #arduino, <a href='http://onlineslangdictionary.com/meaning-definition-of/wip' target='_blank'>#WIP</a>, #feedback");
+    } else {
+      feedback.html('');
+    }
+  },
+
+  handleSubmit: function(e) {
     e.preventDefault();
 
     this.refs.submit.getDOMNode().blur();
@@ -41,6 +56,7 @@ var ThoughtForm = React.createClass({
           <textarea ref="body" placeholder="Share something interesting or ask a question." />
         </div>
         <div className="submit-container">
+          <div ref="feedback" className="feedback"></div>
           <a tabIndex='-1' ref='md' className="markdown-supported" href='https://help.github.com/articles/github-flavored-markdown/' target='_blank'>
             <img src='<%= image_path "markdown-mark.png" %>' />
           </a>

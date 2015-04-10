@@ -33,6 +33,14 @@
     background: #fafafa;
     padding: 7px 10px;
     text-align: right;
+    @extend .clearfix;
+  }
+  .feedback {
+    max-width: 50%;
+    float: left;
+    font-size: 0.8em;
+    text-align: left;
+    color: #999;
   }
 }
 
