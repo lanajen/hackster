@@ -25,7 +25,7 @@ class LinkDatum < ActiveRecord::Base
     end
 
     def get_image head, body
-      src = meta(head, 'property="og:image"') || meta(head, 'property="twitter:image:src"') || body.at_css('img').try(:[], 'src')
+      src = meta(head, 'property="og:image"') || meta(head, 'property="twitter:image:src"') || body.at_css('img').try(:[], 'src')
       return unless src
 
       # stuff taken from scrapers/base.rb

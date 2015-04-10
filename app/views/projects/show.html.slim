@@ -494,10 +494,11 @@
                             = @project.comments_count
                             | )
 
-                  .show-on-affix style='margin-top:20px;'
-                    - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
-                      = render partial: 'respects/button', locals: { project: @project }
-                    = render 'projects/project_embed_popup'
-                    .add-to-list
-                    - if @project.celery_id.present?
-                      = link_to content_tag(:i, '', class: 'fa fa-shopping-cart') + content_tag(:span, "Buy it"), '#', 'data-celery' => @project.celery_id, 'data-celery-version' => 'v2', class: 'btn btn-warning btn-ellipsis btn-block'
+                  - if @project.public?
+                    .show-on-affix style='margin-top:20px;'
+                      - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
+                        = render partial: 'respects/button', locals: { project: @project }
+                      = render 'projects/project_embed_popup'
+                      .add-to-list
+                      - if @project.celery_id.present?
+                        = link_to content_tag(:i, '', class: 'fa fa-shopping-cart') + content_tag(:span, "Buy it"), '#', 'data-celery' => @project.celery_id, 'data-celery-version' => 'v2', class: 'btn btn-warning btn-ellipsis btn-block'

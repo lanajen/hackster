@@ -1,3 +1,5 @@
+<% @remote_upload_count = @remote_upload_count ? @remote_upload_count + 1 : 0 %>
+
 formTpl = "<form action='https://<%= ENV['FOG_DIRECTORY'] %>.s3.amazonaws.com' method='post' enctype='multipart/form-data' class='file_upload <%= file_type %>' style='display:none;'>";
 formTpl += "<input name='key' type='hidden'>";
 formTpl += "<input name='AWSAccessKeyId' type='hidden' value='<%= ENV['AWS_ACCESS_KEY_ID'] %>'>";
@@ -8,11 +10,23 @@ formTpl += "<input name='success_action_status' type='hidden' value='201'>";
 //formTpl += "<input name='file_type' type='hidden' value=''>";
 formTpl += "<input type='file' name='file' multiple>";
 formTpl += "</form>";
-formTpl += "<form class='remote_file_upload <%= file_type %> form-inline'>";
+formTpl += "<div id='remote-upload-<%= @remote_upload_count %>' class='remote_file_upload <%= file_type %> popup-overlay modal-popup'>";
+formTpl += "<div class='popup-overlay-bg'></div>";
+formTpl += "<div class='popup-overlay-outer'>";
+formTpl += "<div class='popup-overlay-inner'>";
+formTpl += "<button class='close btn-close unselectable' data-target='#remote-upload-<%= @remote_upload_count %>' data-effect='fade'>&times;</button>";
+formTpl += "<form>";
+formTpl += "<div class='input-group'>";
 formTpl += "<input name='file_url' type='text' class='form-control'>";
-formTpl += "<input value='Upload' type='submit' class='btn btn-default'>";
-formTpl += "<a href='' class='btn btn-link btn-close btn-sm' data-close='.remote_file_upload' data-effect='fade'>Cancel</a>";
+formTpl += "<span class='input-group-btn'>";
+formTpl += "<input value='Grab image' type='submit' class='btn btn-primary'>";
+formTpl += "</span>";
+formTpl += "</div>";
 formTpl += "</form>";
+//formTpl += "<a href='' class='btn btn-link btn-close btn-sm' data-close='.remote_file_upload' data-effect='fade'>Cancel</a>";
+formTpl += "</div>";
+formTpl += "</div>";
+formTpl += "</div>";
 
 form = $('form.accept-file-upload');
 $($(formTpl)).appendTo('body');

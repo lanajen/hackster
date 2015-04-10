@@ -19,6 +19,7 @@ h6, .h6 {
 
 .btn {
   font-size: 1em;
+  font-weight: bold;
 }
 .input-group-btn .btn {
   font-size: 14px;
@@ -38,6 +39,29 @@ h6, .h6 {
 .btn-default {
   background: transparent;
   color: #666;
+  border-width: 2px;
+  padding: 5px 12px;
+  &.btn-sm {
+    padding: 4px 10px;
+  }
+  &.btn-xs {
+    padding: 0 5px;
+  }
+  &:hover,
+  &:focus,
+  &.focus,
+  &:active,
+  &.active {
+    color: #555;
+  }
+}
+.open > .btn-default.dropdown-toggle {
+  color: #555;
+}
+.btn-group {
+  .btn-default + .btn-default {
+    margin-left: -2px;
+  }
 }
 .btn-default:hover,
 .btn-default:focus,

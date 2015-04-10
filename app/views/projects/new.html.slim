@@ -17,7 +17,7 @@
               = f.error_notification
 
               = f.input :name, label: 'How would you call it?'
-              = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner description, Twitter-style.'
+              = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner description, Twitter-style.', hint: 'Max 140 characters'
               = f.input :product_tags_string, as: :hidden
               = f.input :platform_tags_string, as: :hidden
               = f.input :mark_as_idea, as: :hidden
@@ -37,6 +37,7 @@
                         a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.cover_image' } }  Select picture
                         a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.cover_image" } }
                           i.fa.fa-link
+                  p.help-block Will be cropped to fit 4:3 format. 1200x900px or higher recommended.
 
               = render partial: 'shared/image_form_bare', locals: { file_type: 'cover_image', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
 
@@ -76,7 +77,7 @@
             = f.input :type, as: :hidden
             = f.input :website, label: (@project.external? ? 'Link to the project' : 'Main website'), required: true
             = f.input :name, label: (@project.external? ? 'What is the project called?' : 'What is the product called?'), required: true
-            = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner description, Twitter-style.', required: true
+            = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner description, Twitter-style.', required: true, hint: 'Max 140 characters'
             - if @project.external?
               - if user_signed_in?
                 = f.input :guest_name, label: 'Who should be credited for this hack?', hint: "Leave this blank if you're the author of this hack."
@@ -99,6 +100,7 @@
                   a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.cover_image' } }  Select picture
                   a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.cover_image" } }
                     i.fa.fa-link
+                p.help-block Will be cropped to fit 4:3 format. 1200x900px or higher recommended.
                 - if @project.errors[:cover_image]
                   span.help-block.has-error= @project.errors[:cover_image].to_sentence
 
@@ -140,7 +142,7 @@
 
             / # = render partial: 'projects/open_source_switch', locals: { f: f }
             = f.input :name, label: 'What is it called?'
-            = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner description, Twitter-style.'
+            = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner description, Twitter-style.', hint: 'Max 140 characters'
             = f.input :product_tags_string, as: :hidden
             = f.input :platform_tags_string, as: :hidden
 
@@ -159,6 +161,7 @@
                       a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.cover_image' } }  Select picture
                       a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.cover_image" } }
                         i.fa.fa-link
+                p.help-block Will be cropped to fit 4:3 format. 1200x900px or higher recommended.
 
             = render partial: 'shared/image_form_bare', locals: { file_type: 'cover_image', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
 
