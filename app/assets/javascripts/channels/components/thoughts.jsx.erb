@@ -28,7 +28,7 @@ var ThoughtForm = React.createClass({
       match = bodyVal.match(/(^|\s)(#[a-z\d]+)/ig);
     var feedback = $(this.refs.feedback.getDOMNode());
     if (bodyVal && !match) {
-      feedback.html("Don't forget to add one or more hashtags to categorize your post! For instance: #arduino, <a href='http://onlineslangdictionary.com/meaning-definition-of/wip' target='_blank'>#WIP</a>, #feedback");
+      feedback.html("Don't forget to add one or more hashtags to categorize your post! For instance: #arduino, <a href='http://onlineslangdictionary.com/meaning-definition-of/wip' target='_blank'>#WIP</a>, #feedback.<br>Posts without a hashtag can only be found on the public channel.");
     } else {
       feedback.html('');
     }
