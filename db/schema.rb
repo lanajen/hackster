@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150409014938) do
+ActiveRecord::Schema.define(version: 20150409070310) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -146,6 +146,23 @@ ActiveRecord::Schema.define(version: 20150409014938) do
     t.datetime "end_date"
   end
 
+  create_table "channel_hashtags", force: :cascade do |t|
+    t.integer "hashtag_id"
+    t.integer "channel_id"
+  end
+
+  add_index "channel_hashtags", ["channel_id"], name: "index_channel_hashtags_on_channel_id", using: :btree
+  add_index "channel_hashtags", ["hashtag_id"], name: "index_channel_hashtags_on_hashtag_id", using: :btree
+
+  create_table "channels", force: :cascade do |t|
+    t.string   "name"
+    t.integer  "group_id"
+    t.text     "cache_counters"
+    t.boolean  "restricted"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+  end
+
   create_table "chat_messages", force: :cascade do |t|
     t.integer  "user_id",                null: false
     t.text     "body"
@@ -259,6 +276,21 @@ ActiveRecord::Schema.define(version: 20150409014938) do
   end
 
   add_index "groups", ["type"], name: "index_groups_on_type", using: :btree
+
+  create_table "hashtag_thoughts", force: :cascade do |t|
+    t.integer "hashtag_id"
+    t.integer "thought_id"
+  end
+
+  add_index "hashtag_thoughts", ["hashtag_id"], name: "index_hashtag_thoughts_on_hashtag_id", using: :btree
+  add_index "hashtag_thoughts", ["thought_id"], name: "index_hashtag_thoughts_on_thought_id", using: :btree
+
+  create_table "hashtags", force: :cascade do |t|
+    t.string   "name"
+    t.text     "cache_counters"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+  end
 
   create_table "impressions", force: :cascade do |t|
     t.string   "impressionable_type", limit: 255

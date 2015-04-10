@@ -9,6 +9,9 @@ var channelConstants = {
     LIKE: "THOUGHT:LIKE",
     LOAD: "THOUGHT:LOAD",
     REMOVE: "THOUGHT:REMOVE"
+  },
+  ROUTE: {
+    TRANSITION: "ROUTE:TRANSITION"
   }
 };
 
@@ -53,6 +56,12 @@ var methods = {
 
     remove: function(id) {
       this.dispatch(channelConstants.THOUGHT.REMOVE, id);
+    }
+  },
+
+  routes: {
+    transition: function(path, params) {
+      this.dispatch(c.ROUTE.TRANSITION, {path: path, params: params});
     }
   }
 };
@@ -201,6 +210,7 @@ var ThoughtStore = Fluxxor.createStore({
   initialize: function() {
     this.thoughtId = 0;
     this.thoughts = {};
+    this.currentData = {};
 
     this.bindActions(
       actions.constants.THOUGHT.ADD, this.handleAddThought,
@@ -210,22 +220,40 @@ var ThoughtStore = Fluxxor.createStore({
     );
   },
 
-  getThoughts: function() {
+  getThoughts: function(data) {
+    data = data || {};
+
+    if (data['hashtag'] != this.currentData['hashtag']) {
+      this.handleLoadThoughts(data);
+      this.currentData = data;
+    }
+
     return Object.keys(this.thoughts).reverse().map(function(key) {
       var t = this.thoughts[key];
-      t.comments = [];
-      t.comment_ids.forEach(function(id){
-        var comment = this.flux.store('comment').getComment(id);
-        if (comment)
-          t.comments.push(comment);
-      });
-      t.user = this.flux.store('user').getUser(t.user_id);
-      return t;
+      return this.populateThought(t);
     }.bind(this));
   },
 
   getThought: function(id) {
-    return this.thoughts[id] || NOT_FOUND_TOKEN;
+    var thought = this.thoughts[id];
+    if (thought) {
+      return this.populateThought(thought);
+    }
+
+    this.loadThought(id);
+
+    return NOT_FOUND_TOKEN;
+  },
+
+  populateThought: function(thought) {
+    thought.comments = [];
+    thought.comment_ids.forEach(function(id){
+      var comment = this.flux.store('comment').getComment(id);
+      if (comment)
+        thought.comments.push(comment);
+    });
+    thought.user = this.flux.store('user').getUser(thought.user_id);
+    return thought;
   },
 
   setThoughts: function(thoughts) {
@@ -259,9 +287,30 @@ var ThoughtStore = Fluxxor.createStore({
     return thought;
   },
 
-  handleLoadThoughts: function() {
+  loadThought: function(id) {
+    $.ajax({
+      url: '/api/v1/thoughts/' + id,
+      dataType: 'json',
+      type: 'GET',
+      success: function(data) {
+        this.flux.store('user').setUsers(data.users);
+        this.flux.store('comment').setComments(data.comments);
+        this.thoughts[data.thought.id] = data.thought;
+        // this.setThoughts({ thoughts: [data.thought] });
+        this.emit("change");
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error('cant load', status, err.toString());
+      }.bind(this),
+      complete: function() {
+      }.bind(this)
+    });
+  },
+
+  handleLoadThoughts: function(data) {
     $.ajax({
       url: 'api/v1/thoughts',
+      data: data,
       dataType: 'json',
       type: 'GET',
       success: function(data) {
@@ -388,15 +437,21 @@ var UserStore = Fluxxor.createStore({
   },
 });
 
-ThoughtStore.NOT_FOUND_TOKEN = NOT_FOUND_TOKEN;
+var RouteStore = Fluxxor.createStore({
+  initialize: function(options) {
+    this.router = options.router;
 
-var stores = {
-  comment: new CommentStore(),
-  thought: new ThoughtStore(),
-  user: new UserStore()
-};
+    this.bindActions(
+      actions.constants.ROUTE.TRANSITION, this.handleRouteTransition
+    );
+  },
 
-var flux = new Fluxxor.Flux(stores, actions.methods);
-flux.on("dispatch", function(type, payload) {
-  console.log("Dispatch:", type, payload);
+  handleRouteTransition: function(payload) {
+    var path = payload.path,
+        params = payload.params;
+
+    this.router.transitionTo(path, params);
+  }
 });
+
+ThoughtStore.NOT_FOUND_TOKEN = NOT_FOUND_TOKEN;

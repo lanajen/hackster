@@ -2,6 +2,7 @@ require 'uri'
 
 class Thought < ActiveRecord::Base
   belongs_to :user
+  has_and_belongs_to_many :hashtags
   has_many :comments, -> { order :created_at }, as: :commentable, dependent: :destroy
   has_many :likes, class_name: 'Respect', as: :respectable, dependent: :destroy
   has_many :liking_users, class_name: 'User', through: :likes, source: :user
@@ -12,6 +13,10 @@ class Thought < ActiveRecord::Base
   before_save :parse_body, if: proc{|t| t.raw_body_changed? }
   before_save :parse_link, if: proc{|t| t.body_changed? }
   before_save :get_link_properties, if: proc{|t| t.link.present? and t.link_changed? }
+
+  def self.with_hashtag hashtag
+    where("thoughts.raw_body ILIKE '%##{hashtag}%'")
+  end
 
   def liked_by? user
     likes.where(user_id: user.id).any?
@@ -27,17 +32,7 @@ class Thought < ActiveRecord::Base
     def parse_body
       return unless raw_body
 
-      filters = {
-        autolink: true,
-        no_styles: true,
-        no_images: true,
-        escape_html: true,
-        no_intra_emphasis: true,
-        fenced_code_blocks: true,
-        lax_spacing: true,
-      }
-
-      markdown = Redcarpet::Markdown.new(Redcarpet::Render::TargetBlankHTML, filters)
+      markdown = Redcarpet::Markdown.new(Redcarpet::Render::CustomRenderer, Redcarpet::MARKDOWN_FILTERS)
       self.body = markdown.render(raw_body)
     end
 

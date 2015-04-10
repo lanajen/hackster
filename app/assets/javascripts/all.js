@@ -222,28 +222,28 @@ $(function () {
       }
     });
 
-  // handle tabs navigation with URL
-  var hash = document.location.hash;
-  var prefix = "#tab-";
-  if (hash) {
-    $('.navbar-tabs a[href=' + prefix + hash.replace('#', '') + ']').tab('show');
-    history.pushState(null, null, window.location.href);
-  }
-  // navigate to a tab when the history changes
-  window.addEventListener("popstate", function(e) {
-    hash = document.location.hash;
-    var activeTab = $('[href=' + prefix + hash.replace('#', '') + ']');
-    if (activeTab.length) {
-      activeTab.tab('show');
-    } else {
-      $('.navbar-tabs a:first').tab('show');
-    }
-  });
+  // // handle tabs navigation with URL
+  // var hash = document.location.hash;
+  // var prefix = "#tab-";
+  // if (hash) {
+  //   $('.navbar-tabs a[href=' + prefix + hash.replace('#', '') + ']').tab('show');
+  //   history.pushState(null, null, window.location.href);
+  // }
+  // // navigate to a tab when the history changes
+  // window.addEventListener("popstate", function(e) {
+  //   hash = document.location.hash;
+  //   var activeTab = $('[href=' + prefix + hash.replace('#', '') + ']');
+  //   if (activeTab.length) {
+  //     activeTab.tab('show');
+  //   } else {
+  //     $('.navbar-tabs a:first').tab('show');
+  //   }
+  // });
 
-  // Change hash for page-reload
-  $('.navbar-tabs a').on('shown.bs.tab', function (e) {
-    window.location.hash = e.target.hash.replace(prefix, "#");
-  });
+  // // Change hash for page-reload
+  // $('.navbar-tabs a').on('shown.bs.tab', function (e) {
+  //   window.location.hash = e.target.hash.replace(prefix, "#");
+  // });
 
   // update thumbnail links for projects
   $(".project-thumb-container.has-data").each(function(i, project){

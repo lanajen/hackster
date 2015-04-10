@@ -262,6 +262,7 @@ HackerIo::Application.routes.draw do
     get 'platforms' => 'platforms#index'
 
     get 'talk' => 'channels#show'
+    get 'talk/*all' => 'channels#show'
 
     get 'hardwareweekend' => 'pages#hardwareweekend'
     get 'hhw', to: redirect('/hardwareweekend')
@@ -340,7 +341,7 @@ HackerIo::Application.routes.draw do
       resources :platforms, only: [] do
         get ':user_name' => 'platforms#show', on: :collection
       end
-      resources :thoughts, except: [:show]
+      resources :thoughts
       resources :users, only: [] do
         get :autocomplete, on: :collection
       end

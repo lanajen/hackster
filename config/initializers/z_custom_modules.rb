@@ -35,7 +35,7 @@ require File.join(Rails.root, 'lib/heroku_domains')
 # markdown converter
 require File.join(Rails.root, 'lib/markdown_filter')
 require File.join(Rails.root, 'lib/single_line_html')
-require File.join(Rails.root, 'lib/markdown_with_target_blank')
+require File.join(Rails.root, 'lib/custom_markdown_renderer')
 
 # require it so that STI works correctly; not necessarily in prod since all classes are preloaded
 if Rails.env == 'development'

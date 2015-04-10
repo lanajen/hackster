@@ -1,0 +1,229 @@
+var ThoughtForm = React.createClass({
+  componentDidMount: function () {
+    $(this.refs.md.getDOMNode()).tooltip({
+      title: 'Markdown supported!'
+    });
+
+    // auto adjust the height of the textarea
+    $(this.refs.body.getDOMNode()).on('keyup keydown', function() {
+      var t = $(this);
+      var h = t[0].scrollHeight - parseInt(t.css('padding-top')) - parseInt(t.css('padding-bottom'));
+      t.height(50).height(h);  // where 21 is the minimum height of textarea (64 - 14 for padding)
+    });
+  },
+
+  componentWillUnmount: function () {
+    var body = $(this.refs.body.getDOMNode());
+    body.off('keyup keydown');
+
+    $(this.refs.md.getDOMNode()).tooltip('destroy');
+  },
+
+  handleSubmit: function(e){
+    e.preventDefault();
+
+    this.refs.submit.getDOMNode().blur();
+
+    var textarea = this.refs.body.getDOMNode();
+    var body = textarea.value.trim();
+    if (!body) {
+      return;
+    }
+    this.props.onThoughtSubmit(body);
+    textarea.value = '';
+    $(textarea).css('height', '');
+  },
+
+  render: function() {
+    return (
+      <form className="thought-form" onSubmit={this.handleSubmit}>
+        <div className="textarea-container">
+          <textarea ref="body" placeholder="Share something interesting or ask a question." />
+        </div>
+        <div className="submit-container">
+          <a tabIndex='-1' ref='md' className="markdown-supported" href='https://help.github.com/articles/github-flavored-markdown/' target='_blank'>
+            <img src='<%= image_path "markdown-mark.png" %>' />
+          </a>
+          <input ref="submit" className="btn btn-primary" type="submit" value="Post" />
+        </div>
+      </form>
+    );
+  }
+});
+
+var Thought = React.createClass({
+  mixins: [FluxMixin],
+
+  handleComment: function(e) {
+    e.preventDefault();
+
+    this.props.onCommentClick();
+  },
+
+  handleDelete: function(e) {
+    e.preventDefault();
+
+    this.getFlux().actions.thoughts.remove(this.props.id);
+  },
+
+  handleLike: function(oldState) {
+    this.getFlux().actions.thoughts.like(this.props.id, oldState);
+  },
+
+  render: function() {
+    var user = this.props.user;
+    if (this.props.own) {
+      var actions =
+        <span>
+          <a href='' onClick={this.handleDelete}>Delete</a>
+          <span className="separator">&bull;</span>
+        </span>;
+    }
+
+    return (
+      <div className="thought">
+        <div className="media">
+          <div className="media-left">
+            <a href={user.url}>
+              <img className="media-object img-rounded" src={user.avatar_url} />
+            </a>
+          </div>
+          <div className="media-body">
+            <h4 className="user media-heading"><a href={user.url}>{user.name}</a></h4>
+            <p className="time-created"><DateComponent timestamp={this.props.timestamp} /></p>
+          </div>
+        </div>
+        <div className="body" dangerouslySetInnerHTML={{__html: this.props.body}} />
+        <LinkData link={this.props.link} data={this.props.link_data} />
+        <div className="actions">
+          {actions}
+          <Like liked={this.props.liked} onButtonClick={this.handleLike} />
+          <span className="separator">&bull;</span>
+          {/*<a href=''>Share</a>
+          <Link to="thought" params={{id: this.props.id}}>Share</Link>
+          <span className="separator">&bull;</span>*/}
+          <a href='' onClick={this.handleComment}>Comment</a>
+        </div>
+      </div>
+    );
+  }
+});
+
+var ThoughtLikes = React.createClass({
+  render: function() {
+    var likes = this.props.likes;
+    var liked = this.props.liked;
+    var nameList = [];
+    if (liked)
+      nameList.push('You');
+    likes.likers.map(function(liker){
+      nameList.push("<a href='" + liker.url + "'>" + liker.name + "</a>");
+    });
+    var others = 0;
+    if (liked) {
+      others = likes.count - 3;
+    } else {
+      others = likes.count - 2;
+    }
+    if (others > 0) {
+      var othersAdj = (others == 1) ? 'other' : 'others';
+      nameList.push(others + ' ' + othersAdj);
+    }
+    var verb = (nameList.length == 1 && !liked) ? 'likes' : 'like';
+    var content = arrayToSentence(nameList) + ' ' + verb + ' this.';
+
+    if (likes.count) {
+      return (
+        <div className='likes-container' dangerouslySetInnerHTML={{__html: content}} />
+      );
+    } else {
+      return <div />;
+    }
+  }
+});
+
+var ThoughtContainer = React.createClass({
+  handleComment: function() {
+    window.thoughtContainer = this;
+    this.refs.commentContainer.focusForm();
+  },
+
+  render: function() {
+    var thought = this.props.thought;
+
+    var classes = ['thought-container'];
+    if (thought.deleted)
+      classes.push('deleted');
+
+    return (
+      <div className={classes.join(' ')}>
+        <Thought {...thought} onCommentClick={this.handleComment} />
+        <ThoughtLikes likes={thought.likes} liked={thought.liked} />
+        <CommentContainer ref='commentContainer' thoughtId={thought.id} comments={thought.comments} />
+      </div>
+    );
+  }
+});
+
+var ThoughtList = React.createClass({
+  render: function() {
+    var thoughtNodes = this.props.thoughts.map(function(thought, index) {
+      return (
+        <ThoughtContainer thought={thought} key={index} />
+      );
+    });
+    return (
+      <div className="thought-list">
+        {thoughtNodes}
+      </div>
+    );
+  }
+});
+
+var ThoughtPage = React.createClass({
+  mixins: [FluxMixin, StoreWatchMixin("thought")],
+
+  contextTypes: {
+    router: React.PropTypes.func
+  },
+
+  getStateFromFlux: function() {
+    var params = this.context.router.getCurrentParams();
+
+    return {
+      thought: this.getFlux().store("thought").getThought(params.id)
+    };
+  },
+
+  componentWillReceiveProps: function(nextProps) {
+    this.setState(this.getStateFromFlux());
+  },
+
+  render: function() {
+    var thought = this.state.thought;
+
+    if (thought === ThoughtStore.NOT_FOUND_TOKEN) {
+      return this.renderNotFound();
+    }
+
+    return this.renderWithLayout(
+      <ThoughtContainer thought={thought} />
+    );
+  },
+
+  renderNotFound: function() {
+    return this.renderWithLayout(
+      <div>That thought was not found.</div>
+    );
+  },
+
+  renderWithLayout: function(content) {
+    return (
+      <div>
+        <Link to="home">&larr; Go back to the feed</Link>
+        <hr />
+        {content}
+      </div>
+    );
+  }
+});

@@ -1,5 +1,9 @@
-//= require react
-//= require fluxxor
 //= require moment
+//= require react
+//= require ReactRouter.min
+//= require fluxxor
+//= require channels/variables
 //= require channels/stores
 //= require channels/components
+//= require channels/routes
+//= require channels/app

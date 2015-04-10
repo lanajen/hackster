@@ -2,7 +2,20 @@ class Api::V1::ThoughtsController < Api::V1::BaseController
   # before_filter :public_api_methods, only: [:index, :show]
 
   def index
-    render json: Thought.includes([:comments, :user, user: :avatar]).order(created_at: :desc).limit(50)
+    thoughts = Thought.includes([:comments, :user, user: :avatar])
+    if params[:hashtag]
+      thoughts = thoughts.with_hashtag(params[:hashtag])
+    end
+
+    thoughts = thoughts.order(created_at: :desc).limit(50)
+
+    render json: thoughts
+  end
+
+  def show
+    thought = Thought.find params[:id]
+
+    render json: thought, status: :ok
   end
 
   def create

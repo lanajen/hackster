@@ -82,17 +82,7 @@ class Comment < ActiveRecord::Base
     def parse_body
       return unless raw_body
 
-      filters = {
-        autolink: true,
-        no_styles: true,
-        no_images: true,
-        escape_html: true,
-        no_intra_emphasis: true,
-        fenced_code_blocks: true,
-        lax_spacing: true,
-      }
-
-      markdown = Redcarpet::Markdown.new(Redcarpet::Render::TargetBlankHTML, filters)
+      markdown = Redcarpet::Markdown.new(Redcarpet::Render::CustomRenderer, Redcarpet::MARKDOWN_FILTERS)
       self.body = markdown.render(raw_body)
     end
 
