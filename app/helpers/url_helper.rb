@@ -240,6 +240,14 @@ module UrlHelper
     super platform.user_name, opts
   end
 
+  def platform_products_url platform, opts={}
+    super platform.user_name, opts
+  end
+
+  def platform_projects_url platform, opts={}
+    super platform.user_name, opts
+  end
+
   def product_path product, opts={}
     ''
   end
