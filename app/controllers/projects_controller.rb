@@ -168,12 +168,16 @@ class ProjectsController < ApplicationController
   end
 
   def new
-    # somehow load_and_authorize_resource loads a model with external = true
-    @project = Project.new params[:project]
+    model_class = if params[:type] and params[:type].in? Project::MACHINE_TYPES.keys
+      Project::MACHINE_TYPES[params[:type]].constantize
+    else
+      Project
+    end
+    @project = model_class.new params[:project]
     authorize! :create, @project
 
     initialize_project
-    event = if @project.external
+    event = if @project.external?
       'Attempted to submit a link'
     else
       'Attempted to create a project'
@@ -183,8 +187,12 @@ class ProjectsController < ApplicationController
   end
 
   def create
-    # somehow load_and_authorize_resource loads a model with external = true
-    @project = Project.new params[:project]
+    model_class = if params[:project] and params[:project][:type] and params[:project][:type].in? Project::MACHINE_TYPES.values
+      params[:project][:type].constantize
+    else
+      Project
+    end
+    @project = model_class.new params[:project]
     authorize! :create, @project
 
     if @project.external? or @project.product?

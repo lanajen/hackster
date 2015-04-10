@@ -73,14 +73,11 @@
           = simple_nested_form_for @project, url: projects_path(redirect_to: params[:redirect_to]), html: { class: 'accept-file-upload disable-on-submit' } do |f|
             = f.error_notification
 
-            - if @project.external?
-              = f.input :external, as: :hidden
-            - else
-              = f.input :product, as: :hidden
+            = f.input :type, as: :hidden
             = f.input :website, label: (@project.external? ? 'Link to the project' : 'Main website'), required: true
             = f.input :name, label: (@project.external? ? 'What is the project called?' : 'What is the product called?'), required: true
             = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner description, Twitter-style.', required: true
-            = if @project.external?
+            - if @project.external?
               - if user_signed_in?
                 = f.input :guest_name, label: 'Who should be credited for this hack?', hint: "Leave this blank if you're the author of this hack."
               - else

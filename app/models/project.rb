@@ -29,6 +29,11 @@ class Project < ActiveRecord::Base
     'Normal' => 'Project',
     'Product' => 'Product',
   }
+  MACHINE_TYPES = {
+    'external' => 'ExternalProject',
+    'normal' => 'Project',
+    'product' => 'Product',
+  }
 
   include Counter
   include EditableSlug
@@ -110,6 +115,7 @@ class Project < ActiveRecord::Base
   # before_validation :check_if_current
   before_validation :clean_permissions
   before_validation :ensure_website_protocol
+  before_save :ensure_name
   before_update :update_slug, if: proc{|p| p.name_was == DEFAULT_NAME and p.name_changed? }
   # before_create :set_columns_count
   before_save :generate_slug, if: proc {|p| !p.persisted? or p.team_id_changed? }
@@ -558,9 +564,9 @@ class Project < ActiveRecord::Base
     self.workflow_state = (val.in?([1, '1', 't']) ? 'idea' : nil)
   end
 
-  def name
-    super.presence ||(persisted? ? DEFAULT_NAME : nil)
-  end
+  # def name
+  #   super.presence ||(persisted? ? DEFAULT_NAME : nil)
+  # end
 
   def new_group_id=(val)
     project_collections.new collectable_type: 'Group', collectable_id: val
@@ -725,12 +731,18 @@ class Project < ActiveRecord::Base
       end
     end
 
+    def ensure_name
+      self.name = DEFAULT_NAME unless name.present?
+    end
+
     def ensure_website_protocol
       self.website = 'http://' + website if website_changed? and website.present? and !(website =~ /^http/)
       self.buy_link = 'http://' + buy_link if buy_link_changed? and buy_link.present? and !(buy_link =~ /^http/)
     end
 
     def generate_slug
+      return unless name.present?
+
       slug = I18n.transliterate(name).gsub(/[^a-zA-Z0-9\-]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
       parent = team ? self.class.joins(:team).where(groups: { user_name: team.user_name }).where.not(id: id) : self.class.where(team_id: 0).where.not(id: id)
 

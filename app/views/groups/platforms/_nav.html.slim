@@ -37,6 +37,7 @@
             li= link_to 'Invite admins', url_for([@group, :new, :invitations])
             li.divider
             li= link_to 'Moderate projects', url_for([@group, :admin, :projects])
+            li= link_to 'Link an external project', url_for([:new, :project, type: 'external', project: { platform_tags_string: @group.name }])
 
 .visible-xs
   .top-banner-image-inner-corner.bottom-left.bottom-center-mobile

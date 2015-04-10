@@ -75,7 +75,7 @@ gem 'omniauth-twitter', '1.0.1'
 gem 'open_uri_redirections', '0.2.1'  # to allow redirects from http to https
 gem 'pg', '0.17.0'
 gem 'premailer-rails', '1.7.0'
-gem 'protected_attributes', '1.0.7'
+gem 'protected_attributes', '1.0.9'
 # gem 'puma', '2.10.2'
 gem 'pusher', '0.14.2'
 gem 'pygments.rb', '0.5.4'
@@ -136,7 +136,7 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'spring'
   # gem 'sqlite3'
-  gem 'web-console', '~> 2.0'
+  # gem 'web-console', '~> 2.0'
 end
 
 # group :test do
