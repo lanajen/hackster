@@ -128,7 +128,7 @@ var Comment = React.createClass({
           </div>
           <div className="media-body">
             <p className="user"><a href={user.url}>{user.name}</a></p>
-            <div className="body" dangerouslySetInnerHTML={{__html: this.props.body}} />
+            <BodyContainer body={this.props.body} />
             <div className="actions">
               <span className="time-created"><DateComponent timestamp={this.props.timestamp} /></span>
               <span className="separator">&bull;</span>

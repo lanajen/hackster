@@ -1,3 +1,10 @@
+marked.setOptions({
+  renderer: new marked.Renderer(),
+  gfm: true,
+  breaks: true,
+  sanitize: true,
+});
+
 var channelConstants = {
   COMMENT: {
     ADD: "COMMENT:ADD",
@@ -104,7 +111,7 @@ var CommentStore = Fluxxor.createStore({
 
   prepareNewComment: function(body, thoughtId) {
     comment = {
-      body: body,
+      body: marked(body),
       timestamp: Date.now()/1000,
       liked: false,
       own: true,
@@ -268,8 +275,9 @@ var ThoughtStore = Fluxxor.createStore({
   },
 
   prepareNewThought: function(body) {
+
     thought = {
-      body: body,
+      body: marked(body),
       timestamp: Date.now()/1000,
       liked: false,
       own: true,

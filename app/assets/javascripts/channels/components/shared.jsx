@@ -118,3 +118,43 @@ var Like = React.createClass({
     );
   }
 });
+
+var BodyContainer = React.createClass({
+  componentDidMount: function() {
+    var body = $(this.refs.bodyContainer.getDOMNode());
+    var height = body.height();
+    if (height > 130) {
+      body.data('orig-height', height);
+      body.addClass('collapsed');
+    }
+  },
+  componentDidUpdate: function() {
+    var body = $(this.refs.bodyContainer.getDOMNode());
+    body.css('height', '');
+    body.removeClass('collapsed');
+    var height = body.height();
+    if (height > 130) {
+      body.data('orig-height', height);
+      body.addClass('collapsed');
+    }
+  },
+
+  expand: function(e) {
+    e.preventDefault();
+
+    var body = $(this.refs.bodyContainer.getDOMNode());
+    var height = body.data('orig-height');
+    body.animate({ height: height }, 150, function() {
+      $(this).removeClass('collapsed');
+    });
+  },
+
+  render: function() {
+    return (
+      <div className="body-container" ref='bodyContainer'>
+        <div className="body" dangerouslySetInnerHTML={{__html: this.props.body}} />
+        <a className="expand" onClick={this.expand}>See more...</a>
+      </div>
+    );
+  }
+});

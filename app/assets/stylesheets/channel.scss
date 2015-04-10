@@ -44,6 +44,24 @@
   &.deleted {
     display: none;
   }
+  .body-container {
+    overflow: hidden;
+    &.collapsed {
+      position: relative;
+      .expand {
+        display: block;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        cursor: pointer;
+        font-size: 0.9em;
+        font-weight: bold;
+      }
+    }
+  }
+  .expand {
+    display: none;
+  }
 }
 
 .thought {
@@ -66,8 +84,16 @@
   .media {
     margin-bottom: 10px;
   }
-  .body {
+  .body-container {
     margin-bottom: 12px;
+    &.collapsed {
+      height: 300px;
+      .expand {
+        padding-top: 10px;
+        background: #fff;
+        @include background(linear-gradient(top, transparent 0%, rgba(255,255,255, 0.9) 30%, rgba(255,255,255, 0.95) 50%, #fff 100%));
+      }
+    }
   }
   .actions {
     font-size: 0.8em;
@@ -153,8 +179,18 @@
     font-weight: bold;
     margin-bottom: 0;
   }
-  .body {
+  .body-container {
     margin-bottom: 5px;
+    &.collapsed {
+      height: 100px;
+      .expand {
+        padding-top: 8px;
+        background: #fafafa;
+        @include background(linear-gradient(top, transparent 0%, rgba(250,250,250, 0.9) 30%, rgba(250,250,250, 0.95) 50%, #fafafa 100%));
+      }
+    }
+  }
+  .body {
     p {
       margin-bottom: 0;
     }
@@ -184,7 +220,6 @@
   margin-bottom: 10px;
   cursor: pointer;
   font-size: 0.85em;
-  overflow: hidden;
   h5 {
     font-weight: bold;
     font-size: 1.1em;
@@ -225,4 +260,5 @@
 .thought-link-inner {
   position: relative;
   height: 120px;
+  overflow: hidden;
 }
