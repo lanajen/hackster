@@ -65,7 +65,9 @@ class LinkDatum < ActiveRecord::Base
     end
 
     def get_title head
-      meta(head, 'property="og:title"') || meta(head, 'property="twitter:title"') || head.at_css('title').try(:text).try(:strip)
+      title = meta(head, 'property="og:title"') || meta(head, 'property="twitter:title"') || head.at_css('title').try(:text).try(:strip)
+      title = title.split(/(\||\s\-\s)/)[0].strip if title
+      title
     end
 
     def get_website_name head

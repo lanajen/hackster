@@ -123,7 +123,7 @@ var BodyContainer = React.createClass({
   componentDidMount: function() {
     var body = $(this.refs.bodyContainer.getDOMNode());
     var height = body.height();
-    if (height > 130) {
+    if (height > this.props.maxHeight) {
       body.data('orig-height', height);
       body.addClass('collapsed');
     }
@@ -133,7 +133,7 @@ var BodyContainer = React.createClass({
     body.css('height', '');
     body.removeClass('collapsed');
     var height = body.height();
-    if (height > 130) {
+    if (height > this.props.maxHeight) {
       body.data('orig-height', height);
       body.addClass('collapsed');
     }

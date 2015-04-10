@@ -93,7 +93,7 @@ var Thought = React.createClass({
             <p className="time-created"><DateComponent timestamp={this.props.timestamp} /></p>
           </div>
         </div>
-        <BodyContainer body={this.props.body} />
+        <BodyContainer body={this.props.body} maxHeight='300' />
         <LinkData link={this.props.link} data={this.props.link_data} />
         <div className="actions">
           {actions}

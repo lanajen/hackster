@@ -128,7 +128,7 @@ var Comment = React.createClass({
           </div>
           <div className="media-body">
             <p className="user"><a href={user.url}>{user.name}</a></p>
-            <BodyContainer body={this.props.body} />
+            <BodyContainer body={this.props.body} maxHeight='130'/>
             <div className="actions">
               <span className="time-created"><DateComponent timestamp={this.props.timestamp} /></span>
               <span className="separator">&bull;</span>

@@ -133,7 +133,7 @@ module ScraperStrategies
       def extract_title
         unless title = @article.at_css('.entry-title').try(:remove).try(:text).try(:strip)
           title = @parsed.title
-          title = title.split(/\|/)[0].strip
+          title = title.split(/(\||\s\-\s)/)[0].strip
         end
         title
       end
