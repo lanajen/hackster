@@ -72,49 +72,50 @@ html lang="en" class=content_for(:html_class)
 
         .navbar.navbar-default.navbar-static-top#navigation
           .navbar-in  style='position:relative;'
-            .powered-by.pull-left
-              | projects powered by
-              = link_to image_tag('hackster_logo_20.png', style: 'height:11px;vertical-align:text-top;'), root_url(subdomain: 'www')
+            .container
+              .powered-by.pull-left
+                | projects powered by
+                = link_to image_tag('hackster_logo_20.png', style: 'height:11px;vertical-align:text-top;'), root_url(subdomain: 'www')
 
-            - if user_signed_in?
-              ul.navbar-nav.navbar-right
-                li.btn-group.navbar-btn#user-navigation-links
-                  = link_to image_tag(current_user.decorate.avatar(:mini), style: 'width:30px;'), current_user, class: 'btn',id: 'user-nav-face'
-                  button#user-dropdown-toggle.btn.btn-default.dropdown-toggle data-toggle="dropdown"
-                    span.caret
-                  ul.dropdown-menu#nav-user-menu
-                    li= link_to 'My profile', current_user
-                    li.divider
-                    li= link_to 'Messages', conversations_path
-                    li.divider
-                    li= link_to 'Account settings', edit_user_registration_path
-                    li= link_to 'Invite friends', new_user_invitation_path
-                    li.divider
-                    li= link_to 'Log out', destroy_user_session_path, method: :delete
-              / li.mobile-li= link_to 'Log out', destroy_user_session_path, method: :delete
+              - if user_signed_in?
+                ul.navbar-nav.navbar-right
+                  li.btn-group.navbar-btn#user-navigation-links
+                    = link_to image_tag(current_user.decorate.avatar(:mini), style: 'width:30px;'), current_user, class: 'btn',id: 'user-nav-face'
+                    button#user-dropdown-toggle.btn.btn-default.dropdown-toggle data-toggle="dropdown"
+                      span.caret
+                    ul.dropdown-menu#nav-user-menu
+                      li= link_to 'My profile', current_user
+                      li.divider
+                      li= link_to 'Messages', conversations_path
+                      li.divider
+                      li= link_to 'Account settings', edit_user_registration_path
+                      li= link_to 'Invite friends', new_user_invitation_path
+                      li.divider
+                      li= link_to 'Log out', destroy_user_session_path, method: :delete
+                / li.mobile-li= link_to 'Log out', destroy_user_session_path, method: :delete
 
-            - else
-              ul#navbar-right.clearfix
-                li= link_to 'Sign up', new_user_registration_path(source: 'nav'), class: 'login-link'
+              - else
+                ul#navbar-right.clearfix
+                  li= link_to 'Sign up', new_user_registration_path(source: 'nav'), class: 'login-link'
 
-                li.dropdown
-                  a.btn.btn-primary.login-link.dropdown-toggle data-toggle="dropdown" href='#'
-                    | Log in
-                  .dropdown-menu style=("padding: 15px; width: 250px;")
-                    = render 'devise/sessions/form'
-                    hr
-                    / = link_to 'Connect with your social account', new_user_session_path(a: 'connect'), class: 'btn btn-black connect-social'
-                    .social-icons.text-center
-                      p.text-muted
-                        small Or connect with your social account:
-                      = link_to 'Facebook', user_omniauth_authorize_url(:facebook, host: APP_CONFIG['default_host'], redirect_host: request.host), class: 'zocial icon facebook'
-                      = link_to 'Github', user_omniauth_authorize_url(:github, host: APP_CONFIG['default_host'], redirect_host: request.host), class: 'zocial icon github'
-                      = link_to 'Google+', user_omniauth_authorize_url(:gplus, host: APP_CONFIG['default_host'], redirect_host: request.host), class: 'zocial icon googleplus'
-                      = link_to 'Twitter', user_omniauth_authorize_url(:twitter, host: APP_CONFIG['default_host'], redirect_host: request.host), class: 'zocial icon twitter'
-              / li.mobile-li= link_to 'Log in', new_user_session_path(source: 'nav')
-              / li.mobile-li= link_to 'Sign up', new_user_registration_path(source: 'nav')
-            #navbar-search.pull-right.show-on-desktop
-              = render partial: 'shared/search_form', locals: { placeholder: 'Search projects' }
+                  li.dropdown
+                    a.btn.btn-primary.login-link.dropdown-toggle data-toggle="dropdown" href='#'
+                      | Log in
+                    .dropdown-menu style=("padding: 15px; width: 250px;")
+                      = render 'devise/sessions/form'
+                      hr
+                      / = link_to 'Connect with your social account', new_user_session_path(a: 'connect'), class: 'btn btn-black connect-social'
+                      .social-icons.text-center
+                        p.text-muted
+                          small Or connect with your social account:
+                        = link_to 'Facebook', user_omniauth_authorize_url(:facebook, host: APP_CONFIG['default_host'], redirect_host: request.host), class: 'zocial icon facebook'
+                        = link_to 'Github', user_omniauth_authorize_url(:github, host: APP_CONFIG['default_host'], redirect_host: request.host), class: 'zocial icon github'
+                        = link_to 'Google+', user_omniauth_authorize_url(:gplus, host: APP_CONFIG['default_host'], redirect_host: request.host), class: 'zocial icon googleplus'
+                        = link_to 'Twitter', user_omniauth_authorize_url(:twitter, host: APP_CONFIG['default_host'], redirect_host: request.host), class: 'zocial icon twitter'
+                / li.mobile-li= link_to 'Log in', new_user_session_path(source: 'nav')
+                / li.mobile-li= link_to 'Sign up', new_user_registration_path(source: 'nav')
+              #navbar-search.pull-right.show-on-desktop
+                = render partial: 'shared/search_form', locals: { placeholder: 'Search projects' }
       - else
         .navbar.navbar-default.navbar-static-top#navigation
           #nav-mobile-trigger.hide-on-desktop.fa.fa-bars
