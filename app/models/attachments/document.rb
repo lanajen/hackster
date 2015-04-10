@@ -11,7 +11,7 @@ class Document < Attachment
 
   def process
     if type == 'Document' and file_extension
-      case file_extension
+      case file_extension.downcase
       when *IMAGE_EXTENSIONS
         update_attribute :type, 'ImageFile'
 
