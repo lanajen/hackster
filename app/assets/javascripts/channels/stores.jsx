@@ -210,7 +210,7 @@ var ThoughtStore = Fluxxor.createStore({
   initialize: function() {
     this.thoughtId = 0;
     this.thoughts = {};
-    this.currentData = {};
+    this.currentData = null;
 
     this.bindActions(
       actions.constants.THOUGHT.ADD, this.handleAddThought,
@@ -223,7 +223,7 @@ var ThoughtStore = Fluxxor.createStore({
   getThoughts: function(data) {
     data = data || {};
 
-    if (data['hashtag'] != this.currentData['hashtag']) {
+    if (!this.currentData || data['hashtag'] != this.currentData['hashtag']) {
       this.handleLoadThoughts(data);
       this.currentData = data;
     }

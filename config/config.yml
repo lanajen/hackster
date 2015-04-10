@@ -4,6 +4,7 @@ development:
   default_domain: localhost.local
   default_port: 5000
   send_emails: false
+  workers_running: false
 
 # development:
 #   full_host: www.lvh.me:5000
@@ -18,6 +19,7 @@ test:
   default_domain: example.com
   default_port: 80
   send_emails: false
+  workers_running: false
 
 staging:
   full_host: staging.hackster.io
@@ -25,6 +27,7 @@ staging:
   default_domain: hackster.io
   default_port: 80
   send_emails: true
+  workers_running: false
 
 dev:
   full_host: dev.hackster.io
@@ -32,6 +35,7 @@ dev:
   default_domain: hackster.io
   default_port: 80
   send_emails: true
+  workers_running: true
 
 production:
   full_host: www.hackster.io
@@ -39,3 +43,4 @@ production:
   default_domain: hackster.io
   default_port: 80
   send_emails: true
+  workers_running: true

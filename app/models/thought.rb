@@ -13,13 +13,35 @@ class Thought < ActiveRecord::Base
   before_save :parse_body, if: proc{|t| t.raw_body_changed? }
   before_save :parse_link, if: proc{|t| t.body_changed? }
   before_save :get_link_properties, if: proc{|t| t.link.present? and t.link_changed? }
+  after_commit :enqueue_parse_hashtags
 
   def self.with_hashtag hashtag
-    where("thoughts.raw_body ILIKE '%##{hashtag}%'")
+    joins(:hashtags).where("LOWER(hashtags.name) = ?", hashtag.downcase)
+  end
+
+  def enqueue_parse_hashtags
+    if APP_CONFIG['workers_running']
+      delay.parse_hashtags
+    else
+      parse_hashtags
+    end
   end
 
   def liked_by? user
     likes.where(user_id: user.id).any?
+  end
+
+  def reparse_body!
+    parse_body
+    save if body_changed?
+  end
+
+  def parse_hashtags
+    return unless raw_body
+
+    raw_body.scan /(?:^|[\s])+#([\w\-]+)(?:\b|\-|\.|,|:|;|\?|!|\(|\)|$)?/ do |match|
+      hashtags << Hashtag.where(name: match[0]).first_or_create!
+    end
   end
 
   private

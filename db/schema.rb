@@ -146,14 +146,6 @@ ActiveRecord::Schema.define(version: 20150409070310) do
     t.datetime "end_date"
   end
 
-  create_table "channel_hashtags", force: :cascade do |t|
-    t.integer "hashtag_id"
-    t.integer "channel_id"
-  end
-
-  add_index "channel_hashtags", ["channel_id"], name: "index_channel_hashtags_on_channel_id", using: :btree
-  add_index "channel_hashtags", ["hashtag_id"], name: "index_channel_hashtags_on_hashtag_id", using: :btree
-
   create_table "channels", force: :cascade do |t|
     t.string   "name"
     t.integer  "group_id"
@@ -162,6 +154,14 @@ ActiveRecord::Schema.define(version: 20150409070310) do
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
   end
+
+  create_table "channels_hashtags", force: :cascade do |t|
+    t.integer "hashtag_id"
+    t.integer "channel_id"
+  end
+
+  add_index "channels_hashtags", ["channel_id"], name: "index_channels_hashtags_on_channel_id", using: :btree
+  add_index "channels_hashtags", ["hashtag_id"], name: "index_channels_hashtags_on_hashtag_id", using: :btree
 
   create_table "chat_messages", force: :cascade do |t|
     t.integer  "user_id",                null: false
@@ -277,20 +277,20 @@ ActiveRecord::Schema.define(version: 20150409070310) do
 
   add_index "groups", ["type"], name: "index_groups_on_type", using: :btree
 
-  create_table "hashtag_thoughts", force: :cascade do |t|
-    t.integer "hashtag_id"
-    t.integer "thought_id"
-  end
-
-  add_index "hashtag_thoughts", ["hashtag_id"], name: "index_hashtag_thoughts_on_hashtag_id", using: :btree
-  add_index "hashtag_thoughts", ["thought_id"], name: "index_hashtag_thoughts_on_thought_id", using: :btree
-
   create_table "hashtags", force: :cascade do |t|
     t.string   "name"
     t.text     "cache_counters"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
   end
+
+  create_table "hashtags_thoughts", force: :cascade do |t|
+    t.integer "hashtag_id"
+    t.integer "thought_id"
+  end
+
+  add_index "hashtags_thoughts", ["hashtag_id"], name: "index_hashtags_thoughts_on_hashtag_id", using: :btree
+  add_index "hashtags_thoughts", ["thought_id"], name: "index_hashtags_thoughts_on_thought_id", using: :btree
 
   create_table "impressions", force: :cascade do |t|
     t.string   "impressionable_type", limit: 255

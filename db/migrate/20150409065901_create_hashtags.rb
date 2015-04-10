@@ -7,18 +7,18 @@ class CreateHashtags < ActiveRecord::Migration
       t.timestamps null: false
     end
 
-    create_table :hashtag_thoughts do |t|
+    create_table :hashtags_thoughts do |t|
       t.integer :hashtag_id
       t.integer :thought_id
     end
-    add_index :hashtag_thoughts, :hashtag_id
-    add_index :hashtag_thoughts, :thought_id
+    add_index :hashtags_thoughts, :hashtag_id
+    add_index :hashtags_thoughts, :thought_id
 
-    create_table :channel_hashtags do |t|
+    create_table :channels_hashtags do |t|
       t.integer :hashtag_id
       t.integer :channel_id
     end
-    add_index :channel_hashtags, :hashtag_id
-    add_index :channel_hashtags, :channel_id
+    add_index :channels_hashtags, :hashtag_id
+    add_index :channels_hashtags, :channel_id
   end
 end

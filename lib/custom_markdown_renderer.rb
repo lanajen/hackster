@@ -1,4 +1,6 @@
 class Redcarpet::Render::CustomRenderer < Redcarpet::Render::HTML
+  include Redcarpet::Render::SociableHTML
+
   def initialize(extensions = {})
     super extensions.merge(hard_wrap: true, link_attributes: { target: "_blank" })
   end
