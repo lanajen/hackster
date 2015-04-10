@@ -63,6 +63,11 @@ h6, .h6 {
     margin-left: -2px;
   }
 }
+.btn-group-default {
+  .btn-group + .btn-group {
+    margin-left: -2px;
+  }
+}
 .btn-default:hover,
 .btn-default:focus,
 .btn-default.focus,
