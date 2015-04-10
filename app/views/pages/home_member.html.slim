@@ -17,7 +17,7 @@
         .container
           p
             | This page is all about you and what you care about. To make magic happen, start following platforms, hackers and lists you like.
-          p
+          / p
             small
               ' This is a new feature! Please let us know what you'd like to see by emailing us at
               = link_to 'hi@hackster.io', 'mailto:hi@hackster.io&subject=Feedback%20for%dashboard'
@@ -80,21 +80,10 @@
           = link_to 'View more projects', projects_path, class: 'btn btn-default btn-sm visible-xs-block'
 
     - else
-      #hide.hide
-        - @followed.each do |rel|
-          - entity = rel.followable
-          .thumb-super-item class=dom_id(entity)
-            = link_to image_tag(entity.decorate.avatar(:medium)), entity, title: "You follow #{entity.name}", class: 'istooltip', data: { container: 'body' }
-
-      section#intro.showcase-section
-        .container
-          p
-            | This page is all about you and what you care about. To make magic happen, follow platforms, hackers and lists you like.
-          p
-            small
-              ' This is a new feature! Please let us know what you'd like to see by emailing us at
-              = link_to 'hi@hackster.io', 'mailto:hi@hackster.io&subject=Feedback%20for%20dashboard'
-              | .
+      - if current_user.projects.indexable.any?
+        section#intro.showcase-section.section-short
+          .container
+            = link_to 'Ask a question or share something interesting with the community &rarr;'.html_safe, talk_path
 
       = render 'challenges'
 
@@ -127,6 +116,12 @@
                         thumb.append(item);
 
           #loader.text-center= will_paginate @projects
+
+      #hide.hide
+        - @followed.each do |rel|
+          - entity = rel.followable
+          .thumb-super-item class=dom_id(entity)
+            = link_to image_tag(entity.decorate.avatar(:medium)), entity, title: "You follow #{entity.name}", class: 'istooltip', data: { container: 'body' }
 
     = content_for :js do
       javascript:

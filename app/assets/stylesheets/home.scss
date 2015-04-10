@@ -104,6 +104,24 @@
   &.last {
     border-bottom: 0;
   }
+  &.section-short {
+    padding: 20px 0;
+    .suggestions {
+      margin: 0;
+    }
+  }
+}
+
+#home {
+  #home-banner {
+    margin-bottom: 20px;
+    & + .showcase-section {
+      padding-top: 30px;
+    }
+    & + .showcase-section.section-short {
+      padding-top: 0;
+    }
+  }
 }
 
 .subscribe-block {
@@ -359,11 +377,4 @@
   border: 2px solid #DDD;
   @include border-radius(4px);
   color: #555;
-}
-
-#live-challenges {
-  padding: 20px 0;
-  .suggestions {
-    margin: 0;
-  }
 }
