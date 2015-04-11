@@ -3,7 +3,7 @@
     - link = user_signed_in? ? new_project_path(project: { platform_tags_string: @platform.name }) : new_user_registration_path(reason: 'project', m: 'group', id: @platform.id, redirect_to: new_project_path(project: { platform_tags_string: @platform.name }), source: 'new_project')
     ==> link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add a project"), link, class: 'btn btn-default'
 
-  .btn-group.pull-left
+  .btn-group.btn-group-default.pull-left
     .btn-group
       button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
         ' Sort by
@@ -15,7 +15,7 @@
         li*{ class: "#{'active' if params[:sort] == 'respected'}" } = link_to 'Most respected', platform_projects_path(@platform, sort: 'respected', by: params[:by])
         li*{ class: "#{'active' if params[:sort] == 'trending'}" } = link_to 'Trending', platform_projects_path(@platform, sort: 'trending', by: params[:by])
 
-    .btn-group.btn-group-default
+    .btn-group
       button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
         ' Filter by
         span.caret
