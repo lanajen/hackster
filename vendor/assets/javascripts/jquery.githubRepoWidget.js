@@ -11,7 +11,7 @@ $(function() {
             success: function(a) {
                 var m = a.meta;
                 if (m.status == '404') {
-                    $(b).text('Repo not found');
+                    $(b).text("Repo not found. Make sure the repo is public!");
                     return;
                 }
                 console.log(a);

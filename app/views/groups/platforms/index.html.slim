@@ -57,7 +57,7 @@
 
           .row
             .col-xs-12.main-section-actions.mg-20
-              strong Sort by:
+              strong> Sort by:
               .btn-group
                 = link_to 'Alphabetically', platforms_path(sort: 'name'), class: "btn btn-default btn-sm #{'active' if params[:sort] == 'name'}"
                 = link_to 'Most followers', platforms_path(sort: 'followers'), class: "btn btn-default btn-sm #{'active' if params[:sort] == 'followers'}"
