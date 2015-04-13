@@ -1,0 +1,13 @@
+.repository
+  h5= widget.name
+  - if widget.comment.present?
+    .comment= widget.comment
+  - if embed = widget.embed and embed.provider
+    .embed class=widget.embed.format
+      - partial = "api/embeds/#{embed.provider_name}"
+      - begin
+        = render partial: "#{partial}_print", locals: { embed: embed }
+      - rescue
+        = render partial: partial, locals: { embed: embed }
+  - else
+    p Unrecognized repository.
