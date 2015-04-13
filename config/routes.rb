@@ -212,11 +212,11 @@ HackerIo::Application.routes.draw do
       resources :comments, only: [:create]
     end
 
-    namespace 'followers' do
-      get 'tools/:id' => 'followers#standalone_button', as: :tool
-      post 'tools/:id' => 'followers#create_from_button', as: :create_tool
-      get 'platforms/:id' => 'followers#standalone_button', as: :platform
-      post 'platforms/:id' => 'followers#create_from_button', as: :create_platform
+    scope 'followers' do
+      get 'tools/:id' => 'followers#standalone_button', as: :followers_tool
+      post 'tools/:id' => 'followers#create_from_button', as: :followers_create_tool
+      get 'platforms/:id' => 'followers#standalone_button', as: :followers_platform
+      post 'platforms/:id' => 'followers#create_from_button', as: :followers_create_platform
     end
 
     resources :project_collections, only: [:edit, :update]
@@ -454,6 +454,7 @@ HackerIo::Application.routes.draw do
     delete '' => 'projects#destroy'
     patch '' => 'projects#update'
     get 'embed' => 'projects#embed', as: :embed
+    get 'print' => 'projects#print', as: :print
     resources :issues do
       patch 'update_workflow', on: :member
     end

@@ -1,0 +1,8 @@
+.figure  class=embed.provider_name
+  .figcaption.embed-figcaption= embed.default_caption
+  .embed  class=embed.format
+    - partial = "api/embeds/#{embed.provider_name}"
+    - begin
+      = render partial: "#{partial}_print", locals: { embed: embed }
+    - rescue
+      = render partial: partial, locals: { embed: embed }

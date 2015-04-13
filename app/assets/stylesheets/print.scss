@@ -1,0 +1,47 @@
+#print {
+  background: #fff;
+  .project {
+    img {
+      width: 100%;
+    }
+    .image {
+      margin-bottom: 10px;
+    }
+    .code-container {
+      max-height: initial;
+    }
+    .code-widget pre > span {
+      word-wrap: break-word;
+    }
+    h1 {
+      font-weight: bold;
+      font-size: 2em;
+      text-align: center;
+      margin: 30px 0 15px;
+    }
+    .medium-editor .embed-frame {
+      padding: 0;
+      border: 0;
+    }
+    .embed {
+      padding-bottom: initial !important;
+    }
+    .project-one-liner {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .project-banner {
+      margin: 0;
+    }
+    .section-content, .section-title .title {
+      padding-left: 0;
+      padding-right: 0;
+    }
+    .new-comment,
+    .fa.fa-chevron-down,
+    .fa.fa-chevron-down,
+    .reply-comment {
+      display: none;
+    }
+  }
+}

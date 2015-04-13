@@ -1,5 +1,5 @@
 # require 'filemagic'
-require 'linguist'
+# require 'linguist'
 require 'open-uri'
 require 'pygments'
 
@@ -160,7 +160,7 @@ class CodeWidget < Widget
   before_validation :force_encoding
   before_validation :disallow_blank_file
   before_save :check_changes
-  before_save :guess_language_from_document, if: proc{|w| w.language.nil? || w.document.try(:file_changed?) }
+  # before_save :guess_language_from_document, if: proc{|w| w.language.nil? || w.document.try(:file_changed?) }
   before_save :format_content
 
   def self.model_name
@@ -196,9 +196,9 @@ class CodeWidget < Widget
 
     output_file.name = file.original_filename
 
-    if language = Linguist::Language.detect(output_file.name, output_file.raw_code)
-      output_file.language = Hash[ACE_LANGUAGES.to_a.collect(&:reverse)][language.name]
-    end
+    # if language = Linguist::Language.detect(output_file.name, output_file.raw_code)
+    #   output_file.language = Hash[ACE_LANGUAGES.to_a.collect(&:reverse)][language.name]
+    # end
 
     output_file
   end
@@ -317,16 +317,16 @@ class CodeWidget < Widget
       end
     end
 
-    def guess_language_from_document
-      return unless document and document.file_url
+    # def guess_language_from_document
+    #   return unless document and document.file_url
 
-      if language = Linguist::FileBlob.new(document.real_file_url).language
-        self.language = Hash[ACE_LANGUAGES.to_a.collect(&:reverse)][language.name]
-      end
-    rescue => e
-      puts "rescued error while guessing language: #{e.message}"
-      self.language = nil
-    end
+    #   if language = Linguist::FileBlob.new(document.real_file_url).language
+    #     self.language = Hash[ACE_LANGUAGES.to_a.collect(&:reverse)][language.name]
+    #   end
+    # rescue => e
+    #   puts "rescued error while guessing language: #{e.message}"
+    #   self.language = nil
+    # end
 
     def force_encoding
       self.raw_code = raw_code.encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '') if raw_code.present? and raw_code_changed?

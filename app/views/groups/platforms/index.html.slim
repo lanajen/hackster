@@ -57,15 +57,11 @@
 
           .row
             .col-xs-12.main-section-actions.mg-20
+              strong> Sort by:
               .btn-group
-                .btn-group
-                  button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
-                    ' Sort by
-                    span.caret
-                  ul.dropdown-menu
-                    li*{ class: "#{'active' if params[:sort] == 'name'}" } = link_to 'Alphabetically', platforms_path(sort: 'name')
-                    li*{ class: "#{'active' if params[:sort] == 'followers'}" } = link_to 'Most followers', platforms_path(sort: 'followers')
-                    li*{ class: "#{'active' if params[:sort] == 'projects'}" } = link_to 'Most projects', platforms_path(sort: 'projects')
+                = link_to 'Alphabetically', platforms_path(sort: 'name'), class: "btn btn-default btn-sm #{'active' if params[:sort] == 'name'}"
+                = link_to 'Most followers', platforms_path(sort: 'followers'), class: "btn btn-default btn-sm #{'active' if params[:sort] == 'followers'}"
+                = link_to 'Most projects', platforms_path(sort: 'projects'), class: "btn btn-default btn-sm #{'active' if params[:sort] == 'projects'}"
 
           - if @platforms.any?
             .row

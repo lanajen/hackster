@@ -22,6 +22,6 @@ class Api::V1::UsersController < Api::V1::BaseController
       [{ id: '-1', text: "No results for #{params[:q]}.", disabled: true }]
     end
 
-    render json: users_json
+    render json: users_json, root: false
   end
 end

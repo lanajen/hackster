@@ -1,0 +1,19 @@
+tr.fields  id="part-#{part.id}"
+  td style='width:80%'
+    table  style='width:100%'
+      tbody
+        tr
+          td
+            - if part.part.platform_id
+              = link_to part.part.name, part.part
+            - else
+              = part.part.name
+        tr
+          td  style='color: #888;font-size:75%;' = part.comment
+        - if part.part.vendor_link.present? or part.part.store_link.present?
+          tr
+            td  style='color: #888;font-size:75%;'
+              ' Buy from
+              = part.part.vendor_link.presence || part.part.store_link
+  td style='width:30px;text-align:center;vertical-align:middle' &times;
+  td style='width:10%;min-width:20px;text-align:center;vertical-align:middle' = part.quantity

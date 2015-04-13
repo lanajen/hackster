@@ -8,7 +8,7 @@ gem 'rails', '4.2.1'
 gem 'dotenv-rails', :groups => [:development, :test]
 
 #  assets
-gem 'fog', '~>1.20', require: 'fog/aws/storage'
+gem 'fog-aws', '0.1.2'
 gem 'asset_sync', '1.1.0'
 gem 'bootstrap-sass', '3.3.1'
 gem 'coffee-rails', '4.0.1'
@@ -53,7 +53,7 @@ gem 'devise_invitable', '1.3.0'
 gem 'draper', '1.4.0'
 gem 'geocoder', '1.2.5'
 gem 'gibbon', '1.1.1'
-gem 'github-linguist', '2.11.5'
+# gem 'github-linguist', '2.11.5'
 gem 'gmaps4rails', '2.1.2'
 gem 'google_visualr', '2.4.0'
 gem "hirefire-resource", '0.3.4'

@@ -56,7 +56,7 @@ class Conversation < ActiveRecord::Base
 
   private
     def create_message
-      message = messages.new body: body
+      message = messages.new raw_body: body
       message.user_id = sender_id
       message.save
       receipts.create user_id: recipient_id, message_id: message.id
@@ -64,7 +64,7 @@ class Conversation < ActiveRecord::Base
     end
 
     def create_reply
-      message = messages.new body: body
+      message = messages.new raw_body: body
       message.user_id = sender_id
       message.save
       recipient_id = participants.where.not(users: { id: sender_id }).first.id

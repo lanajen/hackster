@@ -29,9 +29,9 @@ class Ability
     end
     can :read, Challenge, workflow_state: Challenge::VISIBLE_STATES
 
-    @user.roles.each{ |role| send role }
-    beta_tester if @user.is? :beta_tester
     member if @user.persisted?
+    @user.roles.each{ |role| send role }
+    # beta_tester if @user.is? :beta_tester
 
     @user.permissions.each do |permission|
       can permission.action.to_sym, permission.permissible_type.constantize, id: permission.permissible_id

@@ -1,0 +1,82 @@
+.wrapper700.project
+  h1.project-title
+    - if @project.is_idea?
+      i.fa.fa-lightbulb-o.private-project-icon>
+    ==> @project.name
+    - if @project.license
+      a.copyright target='_blank' href=@project.license.url &copy;&nbsp;#{@project.license.abbr.gsub(' ', '&nbsp;').html_safe}
+  p.project-one-liner= @project.one_liner
+  = image_tag @project.cover_image
+
+  - if @project.assignment.present? and @project.assignment.grading_activated? and @project.assignment.private_grades and !@can_edit and cannot? :manage, @project.assignment
+    section#about-project.section-container
+      h2.section-title
+        .title.title-toggle Contents hidden
+      .section-content
+        p The contents of this project are currently hidden because the assignement is being graded.
+
+  - else
+    - cache [@project, 'widgets'], tag: ["project-#{@project.id}-widgets", 'project-widgets'] do
+      section#about-project.section-container.section-collapsible
+        h2.section-title
+          a.title.title-toggle href=''
+            ' About this project
+        .section-content
+          .medium-editor= @project.printable_description
+
+    - if component_widget_ids = PartsWidget.where(widgetable_id: @project.id, widgetable_type: 'Project').joins(:parts).where("parts.name IS NOT NULL OR parts.name <> ''").distinct(:id).pluck(:id) and component_widget_ids.any?
+      section#components.section-container.section-collapsible
+        h2.section-title
+          a.title.title-toggle href=''
+            ' Components
+        .section-content
+          - component_widget_ids.each do |widget_id|
+            - embed = Embed.new widget_id: widget_id
+            = render partial: 'api/embeds/embed_print', locals: { embed: embed }
+
+    - if @project.widgets.where(type: %w(CadRepoWidget CadFileWidget)).any?
+      section#cad.section-container.section-collapsible
+        h2.section-title
+          a.title.title-toggle href=''
+            ' Custom parts and enclosures
+        .section-content
+          - @project.widgets.where(type: %w(CadRepoWidget CadFileWidget)).order(:position, :id).each do |widget|
+            - partial = "api/embeds/#{widget.identifier}"
+            - begin
+              = render partial: "#{partial}_print", locals: { widget: widget }
+            - rescue
+              = render partial: partial, locals: { widget: widget }
+
+    - if @project.widgets.where(type: %w(SchematicWidget SchematicFileWidget)).order(:position, :id).any?
+      section#schematics.section-container.section-collapsible
+        h2.section-title
+          a.title.title-toggle href=''
+            ' Schematics
+        .section-content
+          - @project.widgets.where(type: %w(SchematicWidget SchematicFileWidget)).order(:position, :id).each do |widget|
+            - partial = "api/embeds/#{widget.identifier}"
+            - begin
+              = render partial: "#{partial}_print", locals: { widget: widget }
+            - rescue
+              = render partial: partial, locals: { widget: widget }
+
+    - if @project.widgets.where(type: %w(CodeWidget CodeRepoWidget)).any?
+      section#code.section-container.section-collapsible
+        h2.section-title
+          a.title.title-toggle href=''
+            ' Code
+        .section-content
+          - @project.widgets.where(type: %w(CodeWidget CodeRepoWidget)).order(:position, :id).each do |widget|
+            - partial = "api/embeds/#{widget.identifier}"
+            - begin
+              = render partial: "#{partial}_print", locals: { widget: widget }
+            - rescue
+              = render partial: partial, locals: { widget: widget }
+
+    - if @project.comments.any?
+      section#comments.section-container.section-collapsible
+        h2.section-title
+          a.title.title-toggle href=''
+            ' Comments
+        .section-content
+          = render partial: 'widgets/comments', locals: { comments: @project.comments, commentable: @project }
