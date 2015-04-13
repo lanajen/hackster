@@ -454,6 +454,7 @@ HackerIo::Application.routes.draw do
     delete '' => 'projects#destroy'
     patch '' => 'projects#update'
     get 'embed' => 'projects#embed', as: :embed
+    get 'print' => 'projects#print', as: :print
     resources :issues do
       patch 'update_workflow', on: :member
     end

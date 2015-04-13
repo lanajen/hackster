@@ -1,0 +1,14 @@
+.code-widget
+  h5= widget.name
+  - if document = widget.document and document.file_url.present?
+    .small
+      ' Download from #{document.file_url}
+
+  - if widget.comment.present?
+    .comment= plain_to_html(widget.comment)
+
+  - if widget.formatted_code.present?
+    - unless widget.binary?
+      .code-container= raw widget.formatted_code
+  - else
+    p No code.

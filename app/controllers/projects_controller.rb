@@ -1,6 +1,6 @@
 class ProjectsController < ApplicationController
-  before_filter :load_project, only: [:show, :embed, :update, :destroy, :redirect_to_slug_route]
-  before_filter :ensure_belongs_to_platform, only: [:show, :embed, :update, :destroy, :redirect_to_slug_route]
+  before_filter :load_project, only: [:show, :embed, :print, :update, :destroy, :redirect_to_slug_route]
+  before_filter :ensure_belongs_to_platform, only: [:show, :embed, :print, :update, :destroy, :redirect_to_slug_route]
   load_and_authorize_resource only: [:index, :new, :edit, :submit]
   # layout 'project', only: [:edit, :update, :show]
   before_filter :load_lists, only: [:show, :show_external]
@@ -137,6 +137,11 @@ class ProjectsController < ApplicationController
     end
 
     # track_event 'Viewed project', @project.to_tracker.merge({ own: !!current_user.try(:is_team_member?, @project) })
+  end
+
+  def print
+    @project = @project.decorate
+    render layout: 'print'
   end
 
   def claim

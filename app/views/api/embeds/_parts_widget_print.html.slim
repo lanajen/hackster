@@ -1,0 +1,4 @@
+table.sortable-table.table.table-hover.fields-container
+  tbody
+    - embed.widget.part_joins.each_with_index do |part, i|
+      = render partial: "widgets/embeds/show/part_print", locals: { part: part, i: i }

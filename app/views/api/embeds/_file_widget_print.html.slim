@@ -1,0 +1,19 @@
+- document = widget.document
+
+.repository
+  h5= widget.name
+  - if document and document.file_url.present?
+    .small
+      ' Download from #{document.file_url}
+
+  - if widget.comment.present?
+    .comment= plain_to_html(widget.comment)
+
+  - if document
+    - case document.type
+    - when 'ImageFile'
+      .embed.original
+        = image_tag document.file_url
+
+  - else
+    p No document.

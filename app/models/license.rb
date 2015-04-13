@@ -9,9 +9,13 @@ class License
     'http://opensource.org/licenses/BSD-2-Clause' => {
       name: 'BSD 2-Clause "Simplified" or "FreeBSD" license (BSD-2-Clause)',
       abbr: 'BSD-2-Clause', },
-    'http://opensource.org/licenses/gpl-license' => {
+    'http://opensource.org/licenses/GPL-3.0' => {
       name: 'GNU General Public License, version 3 or later (GPL-3.0)',
       abbr: 'GPL', },
+    'http://opensource.org/licenses/gpl-license' => {
+      name: 'GNU General Public License (GPL)',
+      abbr: 'GPL',
+      deprecated: true },
     'http://opensource.org/licenses/lgpl-license' => {
       name: 'GNU Lesser General Public License (LGPL)',
       abbr: 'LGPL', },
@@ -30,18 +34,28 @@ class License
     'http://www.tapr.org/OHL' => {
       name: 'TAPR Open Hardware License (TAPR-OHL)',
       abbr: 'TAPR-OHL', },
-    # 'http://www.balloonboard.org/docs/Balloon_License_0v2.pdf' => {
-    #   name: 'Balloon Open Hardware License (BOHL)',
-    #   abbr: 'BOHL', },
-    # 'http://www.opencollector.org/hardlicense/hdpl.html' => {
-    #   name: 'Hardware Design Public License Version 0.04 (HDPL)',
-    #   abbr: 'HDPL', },
+    'http://www.balloonboard.org/docs/Balloon_License_0v2.pdf' => {
+      name: 'Balloon Open Hardware License (BOHL)',
+      abbr: 'BOHL',
+      deprecated: true, },
+    'http://www.opencollector.org/hardlicense/hdpl.html' => {
+      name: 'Hardware Design Public License Version 0.04 (HDPL)',
+      abbr: 'HDPL',
+      deprecated: true, },
+    'http://www.ohwr.org/projects/cernohl/wiki' => {
+      name: 'CERN Open Hardware Licence (CERN-OHL)',
+      abbr: 'CERN-OHL',
+      deprecated: true, },
     'http://www.ohwr.org/documents/294' => {
-      name: 'CERN Open Hardware Licence version 1.2 (CERN-OHL-1.2)',
+      name: 'CERN Open Hardware Licence version 1.2 or later (CERN-OHL-1.2)',
       abbr: 'CERN-OHL', },
     'http://solderpad.org/licenses/SHL-0.51/' => {
       name: 'Solderpad Hardware License version 0.51 or later (SHL-0.51)',
       abbr: 'SHL', },
+    'http://solderpad.org/licenses/' => {
+      name: 'Solderpad Hardware License (SHL)',
+      abbr: 'SHL',
+      deprecated: true },
     'http://creativecommons.org/licenses/by/4.0' => {
       name: 'Creative Commons Attribution CC BY 4.0 (CC BY 4.0)',
       abbr: 'CC BY', },
@@ -69,7 +83,9 @@ class License
   attr_reader :url, :name, :abbr
 
   def self.all
-    LICENSE_TYPES.map do |url, attrs|
+    LICENSE_TYPES.select do |url, attrs|
+      !attrs[:deprecated]
+    end.map do |url, attrs|
       new url
     end.sort_by{ |l| l.name }
   end
