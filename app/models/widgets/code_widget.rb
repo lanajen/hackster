@@ -1,5 +1,5 @@
 # require 'filemagic'
-require 'linguist'
+# require 'linguist'
 require 'open-uri'
 require 'pygments'
 
@@ -160,7 +160,7 @@ class CodeWidget < Widget
   before_validation :force_encoding
   before_validation :disallow_blank_file
   before_save :check_changes
-  before_save :guess_language_from_document, if: proc{|w| w.language.nil? || w.document.try(:file_changed?) }
+  # before_save :guess_language_from_document, if: proc{|w| w.language.nil? || w.document.try(:file_changed?) }
   before_save :format_content
 
   def self.model_name
