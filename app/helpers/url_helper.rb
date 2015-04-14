@@ -249,7 +249,17 @@ module UrlHelper
   end
 
   def product_path product, opts={}
-    ''
+    # super product.slug, opts
+    params = params_for_product(product).merge(opts)
+    params.delete(:use_route)
+    super params
+  end
+
+  def product_url product, opts={}
+    # super product.slug, opts
+    params = params_for_product(product).merge(opts)
+    params.delete(:use_route)
+    super params
   end
 
   def project_path project, opts={}
@@ -302,6 +312,8 @@ module UrlHelper
       options[:use_route] = 'platform_short'
     when Project
       case options.type
+      when 'Product'
+        options = params_for_product options
       when 'ExternalProject'
         options = params_for_external_project options
       when 'Project'
@@ -388,6 +400,13 @@ module UrlHelper
         id: "#{project.id}-#{project.slug}",
         user_name: project.user_name_for_url,
         use_route: 'external_project',
+      }.merge(force_params)
+    end
+
+    def params_for_product project, force_params={}
+      {
+        slug: project.slug,
+        use_route: 'product',
       }.merge(force_params)
     end
 

@@ -32,4 +32,4 @@
             = pluralize_without_count platform.followers_count, 'follower'
 
     - if defined?(follow) and follow
-      = render(partial: 'followers/button_short', locals: { followable: platform })
+      = render(partial: 'followers/button_append', locals: { followable: platform })

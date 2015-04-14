@@ -295,7 +295,16 @@ class ProjectsController < ApplicationController
   end
 
   def redirect_to_last
-    redirect_to url_for(Project.last), status: 302
+    project = Project.last
+    url = case project
+    when Product
+      product_path(project)
+    when ExternalProject
+      external_project_path(project)
+    else
+      url_for(project)
+    end
+    redirect_to url, status: 302
   end
 
   def submit

@@ -405,6 +405,8 @@ HackerIo::Application.routes.draw do
   delete 'projects/e/:user_name/:id' => 'projects#destroy', id: /[0-9]+\-[A-Za-z0-9\-]+/
   get 'projects/e/:user_name/:slug' => 'external_projects#redirect_to_show', as: :external_project_redirect  # legacy route (google has indexed them)
 
+  get 'products/:slug' => 'products#show', as: :product
+
   resources :issues, only: [] do
     resources :comments, only: [:create]
   end
