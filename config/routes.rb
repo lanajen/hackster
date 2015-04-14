@@ -276,8 +276,10 @@ HackerIo::Application.routes.draw do
     get 'phoenix', to: redirect('/hackathons/hardware-weekend/phoenix')
     get 'louisville', to: redirect('/hackathons/hardware-weekend/louisville')
     get 'dallas', to: redirect('/hackathons/hardware-weekend/dallas')
-    get 'nyc', to: redirect('/hackathons/hardware-weekend/new-york-city')
     get 'boston', to: redirect('/hackathons/hardware-weekend/boston')
+    get 'brooklyn', to: redirect('/hackathons/hardware-weekend/brooklyn')
+    get 'washington', to: redirect('/hackathons/hardware-weekend/washington')
+    get 'nyc', to: redirect('/hackathons/hardware-weekend/new-york-city')
 
     get 'tinyduino', to: redirect('/tinycircuits')
 
