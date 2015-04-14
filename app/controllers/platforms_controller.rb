@@ -132,22 +132,22 @@ class PlatformsController < ApplicationController
 
     @most_recent_followers = @platform.follow_relations.order(created_at: :desc).limit(10)
 
-    sql = "SELECT to_char(projects.made_public_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM projects INNER JOIN project_collections ON project_collections.project_id = projects.id WHERE project_collections.collectable_type = 'Group' AND project_collections.collectable_id = %i AND (projects.private = 'f' OR projects.type = 'ExternalProject') AND date_part('days', now() - projects.made_public_at) < 31 AND date_part('days', now() - projects.made_public_at) > 1 GROUP BY date ORDER BY date;"
-    @new_projects = graph_with_dates_for sql % @platform.id, 'Projects in the last 30 days', 'AreaChart', Project.indexable_and_external.joins(:project_collections).where(project_collections: { collectable_id: @platform.id, collectable_type: 'Group' }).where('projects.created_at < ?', 32.days.ago).count
+    @new_projects_sql = "SELECT to_char(projects.made_public_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM projects INNER JOIN project_collections ON project_collections.project_id = projects.id WHERE project_collections.collectable_type = 'Group' AND project_collections.collectable_id = %i AND (projects.private = 'f' OR projects.type = 'ExternalProject') AND date_part('days', now() - projects.made_public_at) < 31 AND date_part('days', now() - projects.made_public_at) > 1 GROUP BY date ORDER BY date;"
+    @new_projects = graph_with_dates_for @new_projects_sql % @platform.id, 'Projects in the last 30 days', 'AreaChart', Project.indexable_and_external.joins(:project_collections).where(project_collections: { collectable_id: @platform.id, collectable_type: 'Group' }).where('projects.created_at < ?', 32.days.ago).count
 
-    sql = "SELECT to_char(impressions.created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM impressions INNER JOIN project_collections ON project_collections.project_id = impressions.impressionable_id WHERE impressions.impressionable_type = 'Project' AND project_collections.collectable_type = 'Group' AND project_collections.collectable_id = %i AND date_part('days', now() - impressions.created_at) < 32 GROUP BY date ORDER BY date;"
-    @new_project_views = graph_with_dates_for sql % @platform.id, 'Project views in the last 30 days', 'AreaChart'
+    @new_project_views_sql = "SELECT to_char(impressions.created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM impressions INNER JOIN project_collections ON project_collections.project_id = impressions.impressionable_id WHERE impressions.impressionable_type = 'Project' AND project_collections.collectable_type = 'Group' AND project_collections.collectable_id = %i AND date_part('days', now() - impressions.created_at) < 32 GROUP BY date ORDER BY date;"
+    @new_project_views = graph_with_dates_for @new_project_views_sql % @platform.id, 'Project views in the last 30 days', 'AreaChart'
 
-    sql = "SELECT to_char(impressions.created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM impressions WHERE impressions.impressionable_type = 'Group' AND impressions.impressionable_id = %i AND date_part('days', now() - impressions.created_at) < 32  GROUP BY date ORDER BY date;"
-    @new_views = graph_with_dates_for sql % @platform.id, 'Page views in the last 30 days', 'AreaChart'
-
-
-    sql = "SELECT to_char(respects.created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM respects INNER JOIN project_collections ON project_collections.project_id = respects.respectable_id AND respects.respectable_type = 'Project' WHERE project_collections.collectable_type = 'Group' AND project_collections.collectable_id = %i AND date_part('days', now() - respects.created_at) < 32 GROUP BY date ORDER BY date;"
-    @new_respects = graph_with_dates_for sql % @platform.id, 'Respects in the last 30 days', 'AreaChart', Respect.joins("INNER JOIN project_collections ON project_collections.project_id = respects.respectable_id AND respects.respectable_type = 'Project'").where(project_collections: { collectable_type: 'Group', collectable_id: @platform.id }).where('respects.created_at < ?', 32.days.ago).count
+    @new_views_sql = "SELECT to_char(impressions.created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM impressions WHERE impressions.impressionable_type = 'Group' AND impressions.impressionable_id = %i AND date_part('days', now() - impressions.created_at) < 32  GROUP BY date ORDER BY date;"
+    @new_views = graph_with_dates_for @new_views_sql % @platform.id, 'Page views in the last 30 days', 'AreaChart'
 
 
-    sql = "SELECT to_char(follow_relations.created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM follow_relations WHERE date_part('days', now() - follow_relations.created_at) < 32 AND follow_relations.followable_type = 'Group' AND follow_relations.followable_id = %i GROUP BY date ORDER BY date;"
-    @new_follows = graph_with_dates_for sql % @platform.id, 'Follows in the last 30 days', 'AreaChart', FollowRelation.where(followable_type: 'Group', followable_id: @platform.id).where('follow_relations.created_at < ?', 32.days.ago).count
+    @new_respects_sql = "SELECT to_char(respects.created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM respects INNER JOIN project_collections ON project_collections.project_id = respects.respectable_id AND respects.respectable_type = 'Project' WHERE project_collections.collectable_type = 'Group' AND project_collections.collectable_id = %i AND date_part('days', now() - respects.created_at) < 32 GROUP BY date ORDER BY date;"
+    @new_respects = graph_with_dates_for @new_respects_sql % @platform.id, 'Respects in the last 30 days', 'AreaChart', Respect.joins("INNER JOIN project_collections ON project_collections.project_id = respects.respectable_id AND respects.respectable_type = 'Project'").where(project_collections: { collectable_type: 'Group', collectable_id: @platform.id }).where('respects.created_at < ?', 32.days.ago).count
+
+
+    @new_follows_sql = "SELECT to_char(follow_relations.created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM follow_relations WHERE date_part('days', now() - follow_relations.created_at) < 32 AND follow_relations.followable_type = 'Group' AND follow_relations.followable_id = %i GROUP BY date ORDER BY date;"
+    @new_follows = graph_with_dates_for @new_follows_sql % @platform.id, 'Follows in the last 30 days', 'AreaChart', FollowRelation.where(followable_type: 'Group', followable_id: @platform.id).where('follow_relations.created_at < ?', 32.days.ago).count
 
     render "groups/platforms/#{self.action_name}"
   end
