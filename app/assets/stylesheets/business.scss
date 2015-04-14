@@ -6,7 +6,7 @@
     text-align: center;
     width: 800px;
     margin: 0 auto;
-    h2 {
+    h1, h2 {
       margin-top: 0;
       font-size: 3em;
       font-weight: 200;
@@ -46,25 +46,26 @@
   }
 
   .section-pricing {
+    padding: 100px 0;
     color: #aaaaac;
     background: #fff;
-    h2 {
-      color: #000000;
-      &.subsection-title {
+    .plan-title {
+      padding-right: 5px;
+      padding-left: 5px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      h2 {
+        color: #444;
+        margin: 0;
+        font-size: 1.1em;
+        font-weight: bold;
         padding-bottom: 5px;
         border-bottom: 4px solid #208edb;
-        margin-left: -10px;
-        margin-right: -10px;
-        font-size: 1.3em;
-        text-transform: uppercase;
-        color: #111;
       }
     }
   }
   .plans {
-    // margin-top: 100px;
-    margin-left: -5px;
-    margin-right: -5px;
+    margin-bottom: 100px;
   }
   .plan {
     padding-left: 5px;
@@ -76,17 +77,17 @@
     padding: 30px 20px 20px;
     h3 {
       margin-top: 0;
-      color: #000;
+      color: #333;
       font-size: 1.2em;
       font-weight: 500;
     }
     p {
-      color: #aaaaac;
+      color: #999;
       margin: 0;
     }
   }
   .plan-middle {
-    color: #000;
+    color: #333;
     background: #eeedf2;
     padding: 15px 20px;
     strong {
@@ -97,6 +98,7 @@
       padding: 0;
       li {
         margin-bottom: 7px;
+        line-height: 22px;
         &:last-child {
           margin-bottom: 0;
         }
@@ -110,7 +112,7 @@
     @extend .clearfix;
   }
   .plan-price {
-    background: #000;
+    background: #333;
     text-transform: uppercase;
     width: 33.333333333%;
     float: left;
@@ -133,76 +135,86 @@
   }
 
 
-  .section-packages {
-    padding: 100px 0;
-    background: #333;
-    color: #fff;
-    border-bottom: 1px solid #666;
-  }
-  .packages {
-    // margin-top: 100px;
-    margin-left: -5px;
-    margin-right: -5px;
-  }
-  .package {
-    padding-left: 5px;
-    padding-right: 5px;
-  }
-  .package-top {
-    background: #eeedf2;
-    padding: 30px 20px 40px;
-    h3 {
-      margin-top: 0;
-      color: #000;
-      font-size: 1.2em;
-      font-weight: 500;
-    }
-    p {
-      color: #aaaaac;
-      margin: 0;
-    }
-  }
-  .package-bottom {
-    font-weight: bold;
-    text-align: center;
-    color: #fff;
-    @extend .clearfix;
-  }
-  .package-price {
-    text-transform: uppercase;
-    width: 33.333333333%;
-    float: left;
-    padding: 15px 0;
-  }
-  .package-more {
-    width: 66.666666667%;
-    float: left;
-    padding: 15px 0;
-    color: #fff;
-    &:hover {
-      text-decoration: none;
-      background: #1C7DC2;
-    }
-  }
-  .package-one {
-    .package-price {
+  // .section-packages {
+  //   padding: 100px 0;
+  //   background: #333;
+  //   color: #fff;
+  //   border-bottom: 1px solid #666;
+  // }
+  // .packages {
+  //   // margin-top: 100px;
+  //   margin-left: -5px;
+  //   margin-right: -5px;
+  // }
+  // .package {
+  //   padding-left: 5px;
+  //   padding-right: 5px;
+  // }
+  // .package-top {
+  //   background: #eeedf2;
+  //   padding: 30px 20px 40px;
+  //   h3 {
+  //     margin-top: 0;
+  //     color: #333;
+  //     font-size: 1.2em;
+  //     font-weight: 500;
+  //   }
+  //   p {
+  //     color: #aaaaac;
+  //     margin: 0;
+  //   }
+  // }
+  // // .package-bottom {
+  //   font-weight: bold;
+  //   text-align: center;
+  //   color: #fff;
+  //   @extend .clearfix;
+  // }
+  // .package-price {
+  //   text-transform: uppercase;
+  //   width: 33.333333333%;
+  //   float: left;
+  //   padding: 15px 0;
+  // }
+  // .package-more {
+  //   width: 66.666666667%;
+  //   float: left;
+  //   padding: 15px 0;
+  //   color: #fff;
+  //   &:hover {
+  //     text-decoration: none;
+  //     background: #1C7DC2;
+  //   }
+  // }
+  .plan-green {
+    .plan-price {
       background: #0f9b76;
     }
-    .package-more {
+    .plan-more {
       background: #20daa8;
       &:hover {
         background: #1DC799;
       }
     }
+    .plan-title {
+      h2 {
+        border-color: #20daa8;
+      }
+    }
   }
-  .package-two {
-    .package-price {
+  .plan-orange {
+    .plan-price {
       background: #a73f1a;
     }
-    .package-more {
+    .plan-more {
       background: #e66639;
       &:hover {
         background: #C2552F;
+      }
+    }
+    .plan-title {
+      h2 {
+        border-color: #e66639;
       }
     }
   }
@@ -214,6 +226,11 @@
       background: #7325eb;
     }
   }
+    .plan-title {
+      h2 {
+        border-color: #7325eb;
+      }
+    }
 }
 
 @media (max-width: 768px) {
