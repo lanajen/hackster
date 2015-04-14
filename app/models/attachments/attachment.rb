@@ -8,8 +8,8 @@ class Attachment < ActiveRecord::Base
   belongs_to :attachable, polymorphic: true
   # validate :ensure_has_file, unless: proc { |a| a.skip_file_check? }
   # validate :file_size
-  register_sanitizer :strip, :before_save
-  strip_text :title, :caption
+  # register_sanitizer :strip, :before_save
+  # strip_text :title, :caption
   after_commit :queue_processing, on: :create, unless: proc{|a| a.processed? }
 
   def disallow_blank_file?
