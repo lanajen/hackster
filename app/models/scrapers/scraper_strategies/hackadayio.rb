@@ -114,6 +114,20 @@ module ScraperStrategies
 
       def select_article
         text =  @parsed.at_css('.section-description').to_s + @parsed.at_css('.section-details').to_s + @parsed.css('.links-item a').map{|el| el.to_s }.join('<br>')
+
+        if instructions = @parsed.at_css('.section-instructions')
+          parsed_instructions = if instructions.at_css('a.show')
+            content = fetch_page @host + @base_uri + '/instructions'
+            Nokogiri::HTML(content)
+          else
+            instructions
+          end
+          text += '<h2>Build instructions</h2>'
+          instructions.css('.instruction-list-item').each do |item|
+            text += item.children.to_html
+          end
+        end
+
         Nokogiri::HTML::DocumentFragment.parse(text)
       end
   end
