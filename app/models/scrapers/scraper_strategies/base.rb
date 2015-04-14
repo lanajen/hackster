@@ -422,7 +422,7 @@ module ScraperStrategies
             this_images.each_with_index do |img, x|
               src = img['src']
               puts "Parsing image #{src}..."
-              image = widget.images.new title: img['title'], position: x
+              image = widget.images.new title: img['title'].presence, position: x
               image.skip_file_check!
               image.remote_file_url = src
             end

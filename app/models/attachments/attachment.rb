@@ -8,6 +8,8 @@ class Attachment < ActiveRecord::Base
   belongs_to :attachable, polymorphic: true
   # validate :ensure_has_file, unless: proc { |a| a.skip_file_check? }
   # validate :file_size
+  register_sanitizer :strip, :before_save
+  strip_text :title, :caption
   after_commit :queue_processing, on: :create, unless: proc{|a| a.processed? }
 
   def disallow_blank_file?
@@ -125,6 +127,10 @@ class Attachment < ActiveRecord::Base
 
     def file_size
       errors[:file] << "should be less than #{MAX_FILE_SIZE}MB" if file.size > MAX_FILE_SIZE.megabytes
+    end
+
+    def strip_text text
+      text.try(:strip)
     end
 
   # protected
