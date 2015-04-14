@@ -5,7 +5,7 @@
     .col-xs-12
       .header.clearfix
         h3.pull-left
-          | Edit profile
+          | #{@platform.name} hub settings
         .pull-right
           ul.list-unstyled.list-inline
             - if current_user.is? :admin
