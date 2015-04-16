@@ -4,7 +4,7 @@
       $('.top-banner-image').parallaxScroll({ rate: .5, opacity: true, opacitySpread: 300 });
     }
 
-    $('.group-nav .visible-xs .nav a').on('click', function(e){
+    $('.group-nav:not(.standalone) .visible-xs .nav a').on('click', function(e){
       closeNav($(this).parent().parent());
     });
 

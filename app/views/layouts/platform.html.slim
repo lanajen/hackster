@@ -32,20 +32,8 @@
             = @group.name
             - if @group.verified
               i.fa.fa-check-circle.istooltip.verified title="Verified"
-          / p
             - if @group.disclaimer.present?
-              i.fa.fa-info-circle.istooltip.small< title=@group.disclaimer
-
-        .top-banner-image-inner.visible-xs
-          .container.visible-xs
-            = image_tag @group.avatar(:big), class: 'img-thumbnail'
-
-            h1
-              / # - if @group.model.respond_to?(:company_logo) and @group.company_logo
-                = image_tag @group.company_logo.try(:file_url), class: 'company-logo'
-              = @group.name
-              - if @group.model.respond_to?(:disclaimer) and @group.disclaimer.present?
-                i.fa.fa-info-circle.istooltip.small< title=@group.disclaimer
+              i.fa.fa-info-circle.istooltip.disclaimer title=@group.disclaimer
 
     = render partial: "groups/#{@group.identifier.pluralize}/alerts"
 
