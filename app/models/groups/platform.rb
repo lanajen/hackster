@@ -25,11 +25,13 @@ class Platform < List
     :buy_link, :shoplocket_link, :cover_image_id, :accept_project_ideas,
     :project_ideas_phrasing, :client_subdomain_attributes, :logo_id,
     :download_link, :company_logo_id, :disclaimer, :moderation_level,
-    :cta_text, :parts_attributes, :verified, :enable_chat, :enable_products
+    :cta_text, :parts_attributes, :verified, :enable_chat, :enable_products,
+    :description, :enable_parts
 
   accepts_nested_attributes_for :client_subdomain, :parts
 
   # before_save :update_user_name
+  before_save :format_hashtag
 
   store_accessor :websites, :forums_link, :documentation_link,
     :crowdfunding_link, :buy_link, :shoplocket_link, :download_link
@@ -37,11 +39,12 @@ class Platform < List
 
   store_accessor :properties, :accept_project_ideas, :project_ideas_phrasing,
     :active_challenge, :disclaimer, :moderation_level, :cta_text, :hashtag,
-    :verified, :enable_chat, :enable_products
+    :verified, :enable_chat, :enable_products, :description, :enable_parts
   set_changes_for_stored_attributes :properties
 
   parse_as_booleans :properties, :accept_project_ideas, :active_challenge,
-    :is_new, :enable_comments, :hidden, :verified, :enable_chat, :enable_products
+    :is_new, :enable_comments, :hidden, :verified, :enable_chat, :enable_products,
+    :enable_parts
 
   taggable :platform_tags, :product_tags
 
@@ -139,6 +142,10 @@ class Platform < List
   end
 
   private
+    def format_hashtag
+      self.hashtag = '#' + hashtag if hashtag.present? and hashtag !~ /\A#/
+    end
+
     def user_name_is_unique
       return unless new_user_name.present?
 

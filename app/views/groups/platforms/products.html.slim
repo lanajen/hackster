@@ -1,7 +1,8 @@
-- if can? :manage, @group
-  .main-section-actions.clearfix.mg-30
+.clearfix
+  h2.section-title.pull-left Products you can buy powered by #{@platform.name}
+  - if can? :manage, @group
     .pull-right
-      = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add product"), new_project_path(project: { platform_tags_string: @platform.name }, type: 'product'), class: 'btn btn-sm btn-primary'
+      = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add product"), new_project_path(project: { platform_tags_string: @platform.name }, type: 'product'), class: 'btn btn-sm btn-default'
 
 - if @projects.any?
   .row.project-list

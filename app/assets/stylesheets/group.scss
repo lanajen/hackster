@@ -364,6 +364,69 @@
   bottom: 0;
   @include background-image(linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.1) 20%, rgba(0, 0, 0, 0.6) 50%, rgba(0, 0, 0, 0.6) 100%));
   z-index: 3;
+  &.standalone {
+    position: static;
+    background: #fff;
+    &.affix {
+      background-color: #fff;
+      @include box-shadow(0 0px 1px #333);
+      .nav-tabs, .more-info, .manage {
+        background: transparent;
+      }
+      & + .group-nav-placeholder {
+        height: 59px;  // takes the space of the nav when it becomes absolute
+      }
+    }
+    .nav-tabs {
+      & > li {
+        & > a, .link {
+          color: #555;
+          &:hover {
+            border-bottom-color: #999;
+            color: #999;
+          }
+          small {
+            color: #999;
+          }
+        }
+        &.active {
+          & > a, & > a:focus, & > .link {
+            color: #555;
+            border-bottom-color: #666;
+            &:hover {
+              border-bottom-color: #666;
+            }
+          }
+        }
+      }
+    }
+    .websites {
+      a {
+        color: #bbb;
+        &:hover {
+          color: #ddd;
+        }
+      }
+    }
+    .btn-default {
+      color: #666;
+      border-color: #ccc;
+    }
+    .btn-default:hover,
+    .btn-default:focus,
+    .btn-default.focus,
+    .btn-default:active,
+    .btn-default.active,
+    .open > .btn-default.dropdown-toggle {
+      color: #555;
+      border-color: #adadad;
+    }
+    .brand {
+      h2 {
+        color: #555;
+      }
+    }
+  }
   &.affix {
     position: fixed;
     top: 0;
@@ -512,6 +575,58 @@
   }
 }
 
+@media (max-width: 992px) {
+  .group-nav {
+    &.standalone {
+      .nav-tabs {
+        padding-top: 0;
+        float: none;
+        & > li {
+          margin-left: 0;
+          width: 100%;
+          & > a, .link {
+            &:first-child {
+              padding-top: 18px;
+            }
+            border-bottom: 0;
+            &:hover {
+              color: #555;
+              background: #fafafa;
+            }
+          }
+          &.active {
+            & > a, & > a:focus, & > .link {
+              border-bottom: 0;
+              &:hover {
+                border-bottom: 0;
+              }
+            }
+          }
+        }
+      }
+    }
+    .group-nav-inner {
+      display: none;
+    }
+    .toggle-close {
+      display: none;
+    }
+    &.open {
+      .group-nav-inner {
+        display: block;
+        background: #fff;
+        @include box-shadow(0 2px 1px #666);
+      }
+      .toggle-close {
+        display: block;
+      }
+      .toggle-open {
+        display: none;
+      }
+    }
+  }
+}
+
 .group-nav-inner {
   position: relative;
 }
@@ -534,6 +649,21 @@
   }
   i {
     margin-right: 10px;
+  }
+}
+
+.group-nav-toggle {
+  cursor: pointer;
+  float: right;
+  padding: 20px 20px 19px;
+  border-left: 1px solid #ddd;
+  color: #555;
+  font-size: 0.8em;
+  font-weight: bold;
+  text-transform: uppercase;
+  &:hover, &:active, &:focus {
+    color: #555;
+    text-decoration: none;
   }
 }
 
@@ -750,6 +880,175 @@
     .reset {
       margin-left: 20px;
       font-size: 0.9em;
+    }
+  }
+}
+
+.platform-page {
+  .top-banner-image-inner-corner.bottom-left {
+    bottom: 30px;
+  }
+  h2.section-title {
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    color: #777;
+    font-weight: bold;
+    letter-spacing: 0.01em;
+  }
+  .main-section {
+    padding-top: 0;
+  }
+  .section-feature {
+    padding: 50px 0;
+    &:nth-child(odd) {
+      background: #fff;
+    }
+    h2 {
+      text-align: center;
+      .bdg {
+        margin-left: 5px;
+        font-size: 0.6em;
+        background: #208edb;
+        color: #fff;
+        padding: 3px 6px;
+        vertical-align: middle;
+        font-weight: bold;
+        border-radius: 50px;
+      }
+    }
+  }
+  .section-nav {
+    margin-bottom: 60px;
+  }
+  #about-us {
+    padding-top: 0;
+    .text-center {
+      margin-top: 10px;
+      a {
+        color: #666;
+      }
+    }
+    .websites {
+      margin-top: 10px;
+      font-size: 1.5em;
+    }
+  }
+  .about-us-text {
+    text-align: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+  }
+  #community {
+    padding: 30px 0;
+    h2 {
+      margin: 0;
+    }
+    .thumbs {
+      img {
+        margin-right: 10px;
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+    }
+  }
+}
+
+.group-nav {
+  &.standalone {
+    .follow-container {
+      padding: 11px 20px 0;
+      float: right;
+      .addthis_button_compact {
+        margin-right: 10px;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .platform-page {
+    .top-banner {
+      height: 300px;
+    }
+    #community {
+      .community-container {
+        text-align: center;
+      }
+      h2, .thumbs {
+        margin-bottom: 20px;
+
+      }
+    }
+  }
+}
+
+@media (min-width: 769px) {
+  .platform-page {
+    #community {
+      .community-container {
+        display: table;
+        width: 100%;
+      }
+      h2, .thumbs, .follow-container {
+        display: table-cell;
+      }
+      h2 {
+        text-align: left;
+        width: 25%;
+      }
+      .thumbs {
+        text-align: center;
+        width: 50%;
+      }
+      .follow-container {
+        width: 25%;
+        text-align: right;
+      }
+    }
+  }
+}
+
+.top-banner-image-bottom-left {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 50px 25px 50px;
+  @include background-image(linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.1) 20%, rgba(0, 0, 0, 0.6) 50%, rgba(0, 0, 0, 0.8) 100%));
+  h1 {
+    margin: 0;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline;
+    color: #fff;
+    vertical-align: bottom;
+  }
+  img {
+    border: 0;
+    margin-right: 10px;
+    width: 180px;
+    height: 180px;
+    position: absolute;
+    bottom: 105px;
+  }
+}
+
+.top-banner {
+  &.top-banner-short {
+    height: 180px;
+    .top-banner-image-bottom-left {
+      padding-bottom: 40px;
+      h1 {
+        display: inline;
+      }
+      img {
+        width: 50px;
+        height: 50px;
+        position: static;
+      }
     }
   }
 }

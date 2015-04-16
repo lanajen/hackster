@@ -2,7 +2,7 @@ class PartsController < ApplicationController
   before_filter :load_platform_with_slug
   before_filter :load_part, only: [:show, :embed]
   load_resource except: [:index]
-  layout 'group_shared'
+  layout 'platform'
 
   def index
     title "Parts for #{@platform.name}"

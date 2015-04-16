@@ -1,3 +1,5 @@
+h2.section-title Projects you can make at home
+
 .main-section-actions.clearfix.mg-30
   .pull-right
     - link = user_signed_in? ? new_project_path(project: { platform_tags_string: @platform.name }) : new_user_registration_path(reason: 'project', m: 'group', id: @platform.id, redirect_to: new_project_path(project: { platform_tags_string: @platform.name }), source: 'new_project')

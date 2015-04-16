@@ -8,7 +8,7 @@ class PlatformsController < ApplicationController
   before_filter :load_platform_with_slug, only: [:show, :embed, :projects, :products, :followers, :analytics]
   before_filter :load_projects, only: [:embed]
   before_filter :load_project, only: [:feature_project, :unfeature_project]
-  layout 'group_shared', only: [:edit, :update, :show, :projects, :products, :followers, :analytics]
+  layout 'platform', only: [:edit, :update, :projects, :products, :followers, :analytics]
   after_action :allow_iframe, only: [:embed]
   respond_to :html
   protect_from_forgery except: :embed
@@ -29,6 +29,19 @@ class PlatformsController < ApplicationController
     end
 
     render "groups/platforms/#{self.action_name}"
+  end
+
+  def show
+    @followers = @platform.followers.top.limit(5)
+    @parts = @platform.parts.limit(3)
+    if @parts.count == 1
+      @parts = @parts * 3
+    elsif @parts.count == 2
+      @parts = @parts + [@parts.first]
+    end
+    @projects = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection).merge(Project.magic_sort).joins(:project).where(projects: { type: 'Project' }).limit(3)
+    @products = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection).merge(Project.magic_sort).joins(:project).where(projects: { type: 'Product' }).limit(3)
+    render "groups/platforms/home"
   end
 
   def projects
@@ -75,7 +88,7 @@ class PlatformsController < ApplicationController
       #   load_projects_for_rss
       #   render template: "projects/index", layout: false
       # end
-      # format.rss { redirect_to platform_short_path(@platform, params.merge(format: :atom)), status: :moved_permanently }
+      # format.rss { redirect_to platform_home_path(@platform, params.merge(format: :atom)), status: :moved_permanently }
     end
   end
 

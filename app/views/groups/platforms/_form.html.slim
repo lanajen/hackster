@@ -1,91 +1,149 @@
 = simple_nested_form_for @platform, url: platform_path(@platform), html: { class: 'form-horizontal remote accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
   = f.error_notification
 
-  .row
-    .col-xs-12
-      .header.clearfix
-        h3.pull-left
-          | #{@platform.name} hub settings
-        .pull-right
-          ul.list-unstyled.list-inline
-            - if current_user.is? :admin
-              li= link_to 'Edit as admin', edit_admin_group_path(@platform), class: 'btn btn-sm btn-warning'
-            li= f.submit 'Save changes', class: 'btn btn-primary btn-sm'
-            li= link_to 'Cancel', platform_short_path(@platform), class: 'btn-link btn-sm'
-      hr
+  .header.clearfix
+    h3.pull-left
+      | #{@platform.name} hub settings
+    .pull-right
+      ul.list-unstyled.list-inline
+        - if current_user.is? :admin
+          li= link_to 'Edit as admin', edit_admin_group_path(@platform), class: 'btn btn-sm btn-warning'
+        li= f.submit 'Save changes', class: 'btn btn-primary btn-sm'
+        li= link_to 'Cancel', platform_home_path(@platform), class: 'btn-link btn-sm'
+  hr
 
-  .row
-    .col-md-6
-      = f.input :full_name, label: 'Name'
-      = f.input :new_user_name, label: 'Pretty URL', wrapper: :addon do
-        span.input-group-addon www.hackster.io/
-        = f.input_field :new_user_name
-      = f.input :public, inline_label: 'Make the page public', label: false, hint: "Uncheck this box if you want to hide the page everywhere on Hackster.", as: :boolean
-      = f.input :moderation_level, hint: "What type of moderation do you want regarding new projects being added to your page?", collection: Platform::MODERATION_LEVELS
-      = f.input :project_sorting, hint: "How should projects be sorted by default?", label: 'Default project sorting', collection: Group::PROJECT_SORTING
-      = f.input :enable_chat, hint: "Real time group chat for your community", inline_label: 'Enable chat', label: false, as: :boolean
-      = f.input :mini_resume, as: :text, label: 'Short description', input_html: { rows: 4 },
-        hint: 'Maximum 140 characters'
+  div role='tabpanel'
+    ul.nav.nav-tabs style='margin-bottom:40px;'
+      li.active
+        a href='#general' data-toggle='tab' role='tab' General
+      li
+        a href='#about-us' data-toggle='tab' role='tab' About us
+      li
+        a href='#projects' data-toggle='tab' role='tab' Projects
+      - if client = @platform.client_subdomain
+        li
+          a href='#whitelabel' data-toggle='tab' role='tab' Whitelabel
+      li
+        a href='#chat' data-toggle='tab' role='tab' Chat
+      li
+        a href='#other' data-toggle='tab' role='tab' Other tabs
+      - if current_user.is? :admin
+        li
+          a href='#admin' data-toggle='tab' role='tab' Hackster admin
 
-      = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Logo', image_link: @platform.avatar.try(:file_url, :thumb), help_block: 'This picture needs to be squared, at least 200x200px for best quality.', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
+    .tab-content
+      .tab-pane.active.fade.in#general role='tabpanel'
+        .row
+          .col-md-6
+            = f.input :full_name, label: 'Name'
+            = f.input :new_user_name, label: 'Pretty URL', wrapper: :addon do
+              span.input-group-addon www.hackster.io/
+              = f.input_field :new_user_name
+            = f.input :public, inline_label: 'Make the hub public', label: false, hint: "Uncheck this box if you want to hide the page everywhere on Hackster.", as: :boolean
 
-      = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @platform.cover_image.try(:file_url), help_block: "A high quality picture of your product, at least 1600x430px minimum. An image with no text looks a lot better!", attribute_type: 'cover_image', image_version: nil, model: 'group' }
+            / .form-group
+              .col-md-4
+                label.control-label Follow button code
+              .col-md-8
+                textarea.form-control onclick="this.select();" = "<iframe src='#{followers_platform_url(@platform)}' scrolling='no' frameborder=0 height=24 width=200></iframe>"
+                span.help-block This is for reference, can't be edited!
+
+          .col-md-6
+            = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Logo', image_link: @platform.avatar.try(:file_url, :thumb), help_block: 'This picture needs to be squared, at least 200x200px for best quality.', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
+
+            = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @platform.cover_image.try(:file_url), help_block: "A high quality picture of your product, at least 1600x430px minimum. An image with no text looks a lot better!", attribute_type: 'cover_image', image_version: nil, model: 'group' }
+
+
+      .tab-pane.fade#about-us role='tabpanel'
+        .row
+          .col-md-6
+            = f.input :mini_resume, as: :text, label: 'Short description', input_html: { rows: 4 },
+              hint: 'Maximum 140 characters'
+
+            = f.input :documentation_link, label: 'Documentation link'
+            = f.input :forums_link, label: 'Forums link'
+            = f.input :crowdfunding_link, label: 'Crowdfunding campaign or preorder link', hint: 'Fill in either your preorder or your store link depending on whether your product is available for sale or presale.'
+            = f.input :buy_link, label: 'Store link', hint: 'Fill in either your preorder or your store link depending on whether your product is available for sale or presale.'
+            = f.input :cta_text, label: 'Call-to-action text', hint: "Customize the text for the preorder and buy links. By default it'll be 'Preorder/Buy #{indefinite_articlerize @platform.name}'."
+
+          .col-md-6
+            = f.input :facebook_link, label: 'Facebook link'
+            = f.input :flickr_link, label: 'Flickr link'
+            = f.input :github_link, label: 'Github link'
+            = f.input :google_plus_link, label: 'Google+ link'
+            = f.input :instagram_link, label: 'Instagram link'
+            = f.input :linked_in_link, label: 'LinkedIn link'
+            = f.input :pinterest_link, label: 'Pinterest link'
+            = f.input :reddit_link, label: 'Reddit link'
+            = f.input :twitter_link, label: 'Twitter link'
+            = f.input :youtube_link, label: 'Youtube link'
+            = f.input :website_link, label: 'Website link'
+            = f.input :blog_link, label: 'Blog link'
+
+      .tab-pane.active.fade#projects role='tabpanel'
+        .row
+          .col-xs-12.text-center
+            .btn-group.btn-group-default.mg-20
+              = link_to 'Moderate projects', url_for([@group, :admin, :projects]), class: 'btn btn-default btn-sm'
+              = link_to 'Link an external project', url_for([:new, :project, type: 'external', project: { platform_tags_string: @group.name }]), class: 'btn btn-default btn-sm'
+          .col-md-6
+            = f.input :moderation_level, hint: "What type of moderation do you want regarding new projects being added to your page?", collection: Platform::MODERATION_LEVELS
+            = f.input :project_sorting, hint: "How should projects be sorted by default?", label: 'Default project sorting', collection: Group::PROJECT_SORTING
+          .col-md-6
+            = f.input :hashtag, label: 'Hashtag for automatic tweets', hint: "Projects we approve are automatically tweeted from our Twitter account (@hacksterio). We add hashtags to improve discoverability. The default is #{@group.default_hashtag}."
 
       - if client = @platform.client_subdomain
-        = render partial: 'shared/image_form', locals: { file_type: 'logo', human_file_type: 'Portal logo', image_link: @platform.logo.try(:file_url), help_block: '', attribute_type: 'logo', image_version: nil, model: 'group' }
-        = render partial: 'shared/image_form', locals: { file_type: 'favicon', human_file_type: 'Portal favicon', image_link: client.favicon.try(:file_url), help_block: '', attribute_type: 'favicon', image_version: nil, model: 'group[client_subdomain_attributes]' }
-        = f.simple_fields_for :client_subdomain, client do |f_client|
-          = f_client.input :domain, hint: "If you want to personalize the domain name of your dedicated portal, enter it. You will then need to add a CNAME pointing from this domain to #{client.subdomain}.hackster.io.", label: 'Portal custom domain'
-          = f_client.input :hide_alternate_search_results, as: :boolean, hint: "When users make a search on your site that returns no results, by default we'll show them alternate results from Hackster.io. Uncheck this to disable alternate results.", label: false, inline_label: 'Hide alternate search results'
-          = f_client.input :analytics_code, hint: "If you want to add custom tracking to your site. Note: we already have Google Analytics in place, so it'll need to be compatible.", as: :text
-        p Want to use your own design? Send us the HTML and CSS to portals@hackster.io.
+        .tab-pane.active.fade#whitelabel role='tabpanel'
+          .row
+            .col-md-6
+              = render partial: 'shared/image_form', locals: { file_type: 'logo', human_file_type: 'Portal logo', image_link: @platform.logo.try(:file_url), help_block: '', attribute_type: 'logo', image_version: nil, model: 'group' }
+              = render partial: 'shared/image_form', locals: { file_type: 'favicon', human_file_type: 'Portal favicon', image_link: client.favicon.try(:file_url), help_block: '', attribute_type: 'favicon', image_version: nil, model: 'group[client_subdomain_attributes]' }
+              = f.simple_fields_for :client_subdomain, client do |f_client|
+                = f_client.input :domain, hint: "If you want to personalize the domain name of your dedicated portal, enter it. You will then need to add a CNAME pointing from this domain to #{client.subdomain}.hackster.io.", label: 'Portal custom domain'
+                = f_client.input :hide_alternate_search_results, as: :boolean, hint: "When users make a search on your site that returns no results, by default we'll show them alternate results from Hackster.io. Uncheck this to disable alternate results.", label: false, inline_label: 'Hide alternate search results'
+                = f_client.input :analytics_code, hint: "If you want to add custom tracking to your site. Note: we already have Google Analytics in place, so it'll need to be compatible.", as: :text
+              p Want to use your own design? Send us the HTML and CSS to portals@hackster.io.
 
-      /
-        = f.input :city
-        = f.input :country, input_html: { class: 'form-control' }
+      .tab-pane.active.fade#chat role='tabpanel'
+        .row
+          .col-md-6
+            = f.input :enable_chat, hint: "Real time group chat for your community", inline_label: 'Enable chat', label: false, as: :boolean
+            .form-group
+              .row
+                .col-md-8.col-md-offset-4
+                  h5
+                    strong Slack integration
+            = f.input :slack_token, label: 'Token'
+            = f.input :slack_hook_url, label: 'Hook URL'
 
-      .form-group
-        .col-md-4
-          label.control-label Follow button code
-        .col-md-8
-          textarea.form-control onclick="this.select();" = "<iframe src='#{followers_platform_url(@platform)}' scrolling='no' frameborder=0 height=24 width=200></iframe>"
-          span.help-block This is for reference, can't be edited!
+      .tab-pane.active.fade#other role='tabpanel'
+        .row
+          .col-xs-12.text-center
+            .btn-group.btn-group-default.mg-20
+              = link_to 'Manage parts', url_for([@group, :parts]), class: 'btn btn-default btn-sm'
+              = link_to "Add product", new_project_path(project: { platform_tags_string: @platform.name }, type: 'product'), class: 'btn btn-sm btn-default'
+
+          .col-md-6
+            = f.input :enable_parts, as: :boolean, inline_label: 'Enable parts tab', label: false, hint: "Parts are the boards you manufacture"
+            = f.input :enable_products, as: :boolean, inline_label: 'Enable products tab', label: false, hint: "Products are commercial products powered by your boards"
 
       - if current_user.is? :admin
-        h4 Hackster admin only
-        = f.input :email
-        = f.input :is_new, as: :boolean, inline_label: 'Show as new', label: false
-        = f.input :enable_products, as: :boolean, inline_label: 'Enable products tab', label: false
-        = f.input :verified, as: :boolean, inline_label: 'Verified', label: false, hint: "Check if a representative of the community is onboard"
-        = f.input :disclaimer, as: :text, input_html: { rows: 4 }
-        = f.input :accept_project_ideas, input_label: "Accept project ideas?", as: :boolean, hint: "This is useful if your product hasn't shipped yet and you want to encourage your community to start posting project ideas."
-        = f.input :project_ideas_phrasing, collection: @platform.project_ideas_phrasing_options, label: 'Phrasing for project ideas prompt'
-        p
-          strong Slack integration
-        = f.input :slack_token, label: 'Token'
-        = f.input :slack_hook_url, label: 'Hook URL'
+        .tab-pane.active.fade#admin role='tabpanel'
+          .row
+            .col-md-6
+              h4
+                strong Feel free to use
+              = f.input :platform_tags_string, as: :string, label: 'Platform tags', hint: 'All the projects tagged with these tags will appear on this page. Separate technologies by commas'
+              = f.input :email
+              = f.input :verified, as: :boolean, inline_label: 'Verified', label: false, hint: "Check if a representative of the community is onboard"
+              = f.input :disclaimer, as: :text, input_html: { rows: 4 }
+              = f.input :download_link, label: 'Download link', hint: 'If your product is a piece of software use this instead.'
+              = f.input :shoplocket_link, label: 'ShopLocket link'
 
-    .col-md-6
-      = f.input :facebook_link, label: 'Facebook link'
-      = f.input :flickr_link, label: 'Flickr link'
-      = f.input :github_link, label: 'Github link'
-      = f.input :google_plus_link, label: 'Google+ link'
-      = f.input :instagram_link, label: 'Instagram link'
-      = f.input :linked_in_link, label: 'LinkedIn link'
-      = f.input :pinterest_link, label: 'Pinterest link'
-      = f.input :reddit_link, label: 'Reddit link'
-      = f.input :twitter_link, label: 'Twitter link'
-      = f.input :hashtag, label: 'Hashtag for automatic tweets', hint: "Don't forget the #! Default is #{@group.default_hashtag}."
-      = f.input :youtube_link, label: 'Youtube link'
-      = f.input :website_link, label: 'Website link'
-      = f.input :blog_link, label: 'Blog link'
-      = f.input :documentation_link, label: 'Documentation link'
-      = f.input :forums_link, label: 'Forums link'
-      = f.input :crowdfunding_link, label: 'Crowdfunding campaign or preorder link', hint: 'Fill in either your preorder or your store link depending on whether your product is available for sale or presale.'
-      = f.input :buy_link, label: 'Store link', hint: 'Fill in either your preorder or your store link depending on whether your product is available for sale or presale.'
-      = f.input :cta_text, label: 'Call-to-action text', hint: "Customize the text for the preorder and buy links. By default it'll be 'Preorder/Buy #{indefinite_articlerize @platform.name}'."
-      - if current_user.is? :admin
-        = f.input :download_link, label: 'Download link', hint: 'If your product is a piece of software use this instead.'
-        = f.input :shoplocket_link, label: 'ShopLocket link'
-        = f.input :platform_tags_string, as: :string, label: 'Platform tags', hint: 'All the projects tagged with these tags will appear on this page. Separate technologies by commas'
-        = render partial: 'shared/image_form', locals: { file_type: 'company_logo', human_file_type: 'Company logo', image_link: @platform.company_logo.try(:file_url), help_block: '', attribute_type: 'company_logo', image_version: nil, model: 'group' }
+            .col-md-6
+              h4
+                strong Don't use
+              = f.input :is_new, as: :boolean, inline_label: 'Show as new', label: false
+              = f.input :accept_project_ideas, inline_label: "Accept project ideas?", as: :boolean, hint: "This is useful if your product hasn't shipped yet and you want to encourage your community to start posting project ideas.", label: false
+              = f.input :project_ideas_phrasing, collection: @platform.project_ideas_phrasing_options, label: 'Phrasing for project ideas prompt'
+              = render partial: 'shared/image_form', locals: { file_type: 'company_logo', human_file_type: 'Company logo', image_link: @platform.company_logo.try(:file_url), help_block: '', attribute_type: 'company_logo', image_version: nil, model: 'group' }

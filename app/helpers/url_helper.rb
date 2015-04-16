@@ -104,7 +104,7 @@ module UrlHelper
       when 'Event'
         event_path group, opts
       when 'Platform'
-        platform_short_path group, opts
+        platform_home_path group, opts
       when 'List'
         list_path group, opts
       else
@@ -132,7 +132,7 @@ module UrlHelper
     when 'Event'
       event_url group, opts
     when 'Platform'
-      platform_short_url group, opts
+      platform_home_url group, opts
     when 'List'
       list_url group, opts
     else
@@ -236,15 +236,23 @@ module UrlHelper
     super platform.user_name, opts
   end
 
-  def platform_projects_path platform, opts={}
-    super platform.user_name, opts
-  end
-
   def platform_products_url platform, opts={}
     super platform.user_name, opts
   end
 
+  def platform_projects_path platform, opts={}
+    super platform.user_name, opts
+  end
+
   def platform_projects_url platform, opts={}
+    super platform.user_name, opts
+  end
+
+  def platform_parts_path platform, opts={}
+    super platform.user_name, opts
+  end
+
+  def platform_parts_url platform, opts={}
     super platform.user_name, opts
   end
 
@@ -283,11 +291,11 @@ module UrlHelper
     "/projects/tags/#{CGI::escape(tag)}"
   end
 
-  def platform_short_path platform, opts={}
+  def platform_home_path platform, opts={}
     super platform.user_name, opts
   end
 
-  def platform_short_url platform, opts={}
+  def platform_home_url platform, opts={}
     super platform.user_name, opts
   end
 
