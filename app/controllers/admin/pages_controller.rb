@@ -125,7 +125,9 @@ class Admin::PagesController < Admin::BaseController
     if params[:project_ids]
       @projects = Project.where(id: params[:project_ids])
     else
-      @projects = Project.indexable.last_30days.most_respected
+      params[:sort] ||= 'respected'
+      params[:by] ||= '7days'
+      @projects = Project.indexable.send(Project::SORTING[params[:sort]]).send(Project::FILTERS[params[:by]])
     end
   end
 
