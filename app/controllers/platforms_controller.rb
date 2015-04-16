@@ -32,15 +32,19 @@ class PlatformsController < ApplicationController
   end
 
   def show
-    @followers = @platform.followers.top.limit(5)
+    sql = "SELECT users.*, t1.count FROM (SELECT members.user_id as user_id, COUNT(*) as count FROM members INNER JOIN groups AS team ON team.id = members.group_id INNER JOIN projects ON projects.team_id = team.id INNER JOIN project_collections ON project_collections.project_id = projects.id WHERE project_collections.collectable_type = 'Group' AND project_collections.collectable_id = ? AND projects.private = 'f' AND projects.hide = 'f' AND projects.approved = 't' AND (projects.guest_name = '' OR projects.guest_name IS NULL) GROUP BY user_id) AS t1 INNER JOIN users ON users.id = t1.user_id WHERE t1.count > 0 ORDER BY t1.count DESC LIMIT 5;"
+    @followers = User.find_by_sql([sql, @platform.id])
+    if @followers.count < 5
+      @followers = @platform.followers.top.limit(5)
+    end
     @parts = @platform.parts.limit(3)
     if @parts.count == 1
       @parts = @parts * 3
     elsif @parts.count == 2
       @parts = @parts + [@parts.first]
     end
-    @projects = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection).merge(Project.magic_sort).joins(:project).where(projects: { type: 'Project' }).limit(3)
-    @products = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection).merge(Project.magic_sort).joins(:project).where(projects: { type: 'Product' }).limit(3)
+    @projects = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection).merge(Project.magic_sort).where(projects: { type: %w(Project ExternalProject) }).limit(3)
+    @products = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection).merge(Project.magic_sort).where(projects: { type: 'Product' }).limit(3)
     render "groups/platforms/home"
   end
 

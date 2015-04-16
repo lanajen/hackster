@@ -75,7 +75,7 @@
               span.bdg= @platform.followers_count
             .thumbs
               - @followers.each do |user|
-                = link_to image_tag(user.decorate.avatar, class: 'img-circle'), user
+                = link_to image_tag(user.decorate.avatar, class: 'img-circle'), user, class: 'thumb'
             .follow-container
               = render partial: 'followers/button_text', locals: { followable: @group }
 
