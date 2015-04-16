@@ -34,7 +34,7 @@ class FollowRelationObserver < ActiveRecord::Observer
       case record.followable.class.name
       when 'User'
         record.followable.update_counters only: [:followers]
-      when 'Platform'
+      when 'Platform', 'List'
         record.followable.update_counters only: [:members]
       end
     end
