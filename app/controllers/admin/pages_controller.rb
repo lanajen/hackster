@@ -123,7 +123,7 @@ class Admin::PagesController < Admin::BaseController
 
   def newsletter
     if params[:project_ids]
-      @projects = Project.where(id: params[:project_ids])
+      @projects = Project.where(id: params[:project_ids]).most_respected
     else
       params[:sort] ||= 'respected'
       params[:by] ||= '7days'

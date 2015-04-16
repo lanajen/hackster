@@ -36,6 +36,9 @@
   = form_tag do
     div style='margin-bottom:20px'
       input.btn.btn-primary type='submit' value='Convert selected projects to HTML'
+      small.text-muted<
+        span.select-count> 0
+        | selected
 
     / .small.text-muted Showing projects from the last 7 days sorted by most respected
     table.table.table-striped
@@ -55,11 +58,13 @@
 
 
 = content_for :js do
+
   javascript:
     $(function(){
       $('tr').on('click', function(e){
         var checkbox = $(this).find('input[type="checkbox"]');
-        console.log(checkbox);
+        $(this).toggleClass('success');
         checkbox.prop('checked', !checkbox.is(':checked'));
+        $('.select-count').text($('input[type="checkbox"]:checked').length);
       });
     });
