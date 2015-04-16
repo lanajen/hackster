@@ -1,0 +1,18 @@
+- community = collection.collectable.decorate
+
+.member-thumb.media
+  .media-left
+    = link_to image_tag(community.avatar(:big), class: 'img-rounded media-object'), community
+  .member-thumb-body.media-body
+    h5.media-heading
+      ==> link_to community.name, community
+    - if community.mini_resume.present?
+      p= community.mini_resume
+    .member-actions
+      = render partial: 'followers/button', locals: { followable: community }
+
+  - if collection.comment.present?
+    blockquote style='margin-top:10px'
+      h5 style='margin-top:0'
+        strong Why we used #{community.name}
+      = raw collection.comment.gsub(/\r\n/, '<br>')

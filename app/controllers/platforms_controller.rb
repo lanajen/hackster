@@ -45,7 +45,8 @@ class PlatformsController < ApplicationController
     end
     @projects = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection).merge(Project.magic_sort).where(projects: { type: %w(Project ExternalProject) }).limit(3)
     @products = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection).merge(Project.magic_sort).where(projects: { type: 'Product' }).limit(3)
-    render "groups/platforms/home"
+
+    render "groups/platforms/show"
   end
 
   def projects

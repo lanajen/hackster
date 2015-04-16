@@ -99,11 +99,11 @@
               = render partial: 'users/user_thumb_for_product', locals: { user: member.user.decorate, contribution: member.contribution }
 
 
-        - if current_platform.nil? and communities = @product.platforms.where(groups: { private: false }, project_collections: { workflow_state: ProjectCollection::VALID_STATES }) and communities.any? #@product.communities_count > 0
+        - if current_platform.nil? and communities = @product.project_collections.joins("INNER JOIN groups ON groups.id = project_collections.collectable_id AND project_collections.collectable_type = 'Group'").where("groups.type = 'Platform'").where(groups: { private: false }, project_collections: { workflow_state: ProjectCollection::VALID_STATES }).order("groups.full_name ASC") and communities.any? #@product.communities_count > 0
           section#communities-list.section-container
             h2.section-title
               span.title
                 ' #{@product.name} is powered by
             .section-content
-              - communities.each do |community|
-                = render partial: 'groups/shared/community_thumb_small', locals: { community: community }
+              - communities.each do |collection|
+                = render partial: 'groups/shared/community_thumb_small_with_collection', locals: { collection: collection }

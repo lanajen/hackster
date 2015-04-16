@@ -33,7 +33,7 @@
             - if @group.verified
               i.fa.fa-check-circle.istooltip.verified title="Verified"
             - if @group.disclaimer.present?
-              i.fa.fa-info-circle.istooltip.disclaimer title=@group.disclaimer
+              i.fa.fa-info-circle.istooltip.disclaimer data-container='body' title=@group.disclaimer
 
           / .top-banner-image-inner-corner.bottom-left.bottom-center-mobile
             ul.list-unstyled.list-inline.project-stats
