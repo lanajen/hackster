@@ -39,13 +39,6 @@
 
       - cache [@product, 'widgets'], tag: ["product-#{@product.id}-widgets", 'product-widgets'] do
 
-        section#about-product.section-container
-          h2.section-title
-            span.title
-              ' What is #{@product.name}?
-          .section-content
-            .medium-editor= @product.description
-
         section#section-extra.section-container.section-no-title
           .section-content
             .clearfix.product-actions-lg
@@ -55,17 +48,17 @@
                     = link_to 'Edit product', settings_project_path(@product), class: 'btn btn-primary btn-block'
                   .col-xs-6
                     = link_to 'Edit team', project_edit_team_path(@product), class: 'btn btn-primary btn-block'
-                - if @product.public?
-                  .respects
-                    / - if @can_respect
-                      = render partial: 'respects/button', locals: { product: @product }
-                    / = render partial: 'respects/count', locals: { count: @product.respects_count, product: @product }
+              - if @product.public?
+                .respects
+                  / - if @can_respect
+                    = render partial: 'respects/button', locals: { product: @product }
+                  / = render partial: 'respects/count', locals: { count: @product.respects_count, product: @product }
 
-                    .views-info
-                      ' Viewed
-                      span.hl
-                        ==> number_with_delimiter @product.impressions_count
-                        = pluralize_without_count @product.impressions_count, 'time'
+                  .views-info
+                    ' Viewed
+                    span.hl
+                      ==> number_with_delimiter @product.impressions_count
+                      = pluralize_without_count @product.impressions_count, 'time'
 
               .share
                 - if @product.public?
@@ -77,9 +70,9 @@
                     i.fa.fa-share-square-o
                     span Share
                 - if @product.buy_link.present?
-                  = link_to content_tag(:i, '', class: 'fa fa-shopping-cart') + "Buy it", @product.buy_link, class: 'btn btn-warning', target: '_blank', rel: 'nofollow', style: 'margin-left: 3px;'
+                  = link_to content_tag(:i, '', class: 'fa fa-shopping-cart') + content_tag(:span, "Buy it"), @product.buy_link, class: 'btn btn-warning', target: '_blank', rel: 'nofollow', style: 'margin-left: 3px;'
 
-            - if @product.product_tags_cached.any?# or @product.platform_tags_cached.any?
+            / # - if @product.product_tags_cached.any?# or @product.platform_tags_cached.any?
               .section-inner
                 h4 Tagged in
                 ul.list-inline.tags
@@ -88,6 +81,13 @@
 
                   - (@product.product_tags_cached  + unknown_platforms).map{|t| t.downcase }.uniq.each do |tag|
                     li= link_to tag, tag_path(tag), class: 'tag tag-invert'
+
+        section#about-product.section-container
+          h2.section-title
+            span.title
+              ' What is #{@product.name}?
+          .section-content
+            .medium-editor= @product.description
 
 
         section#team.section-container

@@ -213,7 +213,7 @@ class ProjectsController < ApplicationController
       @project.platform_tags_string = current_platform.name
     end
 
-    if !@project.product? and current_user
+    if current_user
       @project.build_team
       @project.team.members.new(user_id: current_user.id)
     end
