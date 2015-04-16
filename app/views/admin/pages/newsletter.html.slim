@@ -1,0 +1,39 @@
+.page-header
+  h1 Newsletter builder
+
+- if params[:project_ids]
+  = link_to '&larr; Back to list'.html_safe, ''
+  textarea.form-control style='height:600px'
+    - @projects.each do |project|
+       = html_escape_once render(partial: 'newsletter', locals: { project: project }).to_s
+- else
+  = form_tag do
+    div style='margin-bottom:20px'
+      input.btn.btn-primary type='submit' value='Convert selected projects to HTML'
+
+    .small.text-muted Showing projects from the last 7 days sorted by most respected
+    table.table.table-striped
+      tbody
+        - @projects.each do |project|
+          tr
+            td= check_box_tag 'project_ids[]', project.id
+            td= image_tag project.cover_image.file_url(:cover_mini_thumb)
+            td= link_to project.name, project
+            td
+              = pluralize project.respects_count, 'respect'
+              br
+              = pluralize project.impressions_count, 'views'
+              br
+              = pluralize project.comments_count, 'comments'
+            td= link_to t('.edit', :default => t("helpers.links.edit")), edit_admin_project_path(project), :class => 'btn btn-default btn-xs'
+
+
+= content_for :js do
+  javascript:
+    $(function(){
+      $('tr').on('click', function(e){
+        var checkbox = $(this).find('input[type="checkbox"]');
+        console.log(checkbox);
+        checkbox.prop('checked', !checkbox.is(':checked'));
+      });
+    });

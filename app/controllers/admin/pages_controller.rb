@@ -121,6 +121,14 @@ class Admin::PagesController < Admin::BaseController
     @comments = Comment.where(commentable_type: 'Conversation').order(created_at: :desc).paginate(page: safe_page_params)
   end
 
+  def newsletter
+    if params[:project_ids]
+      @projects = Project.where(id: params[:project_ids])
+    else
+      @projects = Project.indexable.last_30days.most_respected
+    end
+  end
+
   def respects
     title "Admin / Respects - #{safe_page_params}"
 
