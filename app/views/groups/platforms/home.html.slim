@@ -88,7 +88,7 @@
             - @projects.each do |col|
               = render partial: 'projects/project_thumb', locals: { project: col.project }
           .text-center
-            = link_to 'View more projects you can make at home &rarr;'.html_safe, platform_projects_path(@platform), class: 'btn btn-default btn-sm hidden-xs'
+            = link_to 'View more home-made projects &rarr;'.html_safe, platform_projects_path(@platform), class: 'btn btn-default btn-sm hidden-xs'
             = link_to 'View more projects &rarr;'.html_safe, platform_projects_path(@platform), class: 'btn btn-default btn-sm visible-xs-block'
 
       - if @platform.enable_products
