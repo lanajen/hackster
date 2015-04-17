@@ -12,7 +12,7 @@
             = link_to resource.invited_by.name, resource.invited_by
         p
           | To accept your invitation, please select how you want to connect:
-        = render 'devise/shared/omniauth'
+        = render partial: 'devise/shared/omniauth', locals: { css: 'zocial-block' }
         hr
         p Or use your email:
         = render 'devise/shared/signup_form'

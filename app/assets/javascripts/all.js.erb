@@ -56,7 +56,6 @@ $(window).load(function(){
 })
 
 $(function () {
-  // rails.env: <%= Rails.env %>
   <% if Rails.env == 'dev' %>
     // fix image URLS so they work on dev
     $('img').each(function(i, el) {

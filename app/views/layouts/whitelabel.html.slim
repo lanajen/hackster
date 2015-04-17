@@ -108,10 +108,7 @@ html lang="en" class=content_for(:html_class)
                       .social-icons.text-center
                         p.text-muted
                           small Or connect with your social account:
-                        = link_to 'Facebook', user_omniauth_authorize_url(:facebook, host: APP_CONFIG['default_host'], redirect_host: request.host), class: 'zocial icon facebook'
-                        = link_to 'Github', user_omniauth_authorize_url(:github, host: APP_CONFIG['default_host'], redirect_host: request.host), class: 'zocial icon github'
-                        = link_to 'Google+', user_omniauth_authorize_url(:gplus, host: APP_CONFIG['default_host'], redirect_host: request.host), class: 'zocial icon googleplus'
-                        = link_to 'Twitter', user_omniauth_authorize_url(:twitter, host: APP_CONFIG['default_host'], redirect_host: request.host), class: 'zocial icon twitter'
+                        = render 'devise/shared/omniauth', css: 'icon'
                 / li.mobile-li= link_to 'Log in', new_user_session_path(source: 'nav')
                 / li.mobile-li= link_to 'Sign up', new_user_registration_path(source: 'nav')
               #navbar-search.pull-right.show-on-desktop
