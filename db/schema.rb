@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150416173346) do
+ActiveRecord::Schema.define(version: 20150417190555) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -80,8 +80,8 @@ ActiveRecord::Schema.define(version: 20150416173346) do
     t.string   "link",       limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "token",      limit: 255
-    t.string   "secret",     limit: 255
+    t.text     "token"
+    t.text     "secret"
   end
 
   add_index "authorizations", ["provider", "uid"], name: "index_authorizations_on_provider_and_uid", using: :btree

@@ -32,7 +32,6 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def setup
-    puts 'setup'
     session.keys.grep(/^devise\./).each { |k| session.delete(k) }
 
     session['devise.invitation_token'] = params[:invitation_token] if params[:invitation_token]

@@ -15,7 +15,7 @@ require File.join(Rails.root, 'lib/counter')
 # virtual associations stored in a model's column
 require File.join(Rails.root, 'lib/tableless_association')
 # turn off asset messages in logger
-# require File.join(Rails.root, 'lib/quiet_assets')
+require File.join(Rails.root, 'lib/quiet_assets')
 # roles
 require File.join(Rails.root, 'lib/roles')
 # route constraints
