@@ -33,7 +33,8 @@ class User < ActiveRecord::Base
 
   devise :database_authenticatable, :registerable, :invitable,
          :recoverable, :rememberable, :trackable, :validatable, :confirmable,
-         :omniauthable, omniauth_providers: [:facebook, :github, :gplus, :linkedin, :twitter]
+         :omniauthable, omniauth_providers: [:facebook, :github, :gplus,
+          :linkedin, :twitter, :windowslive]
 
   belongs_to :invite_code
   has_many :assignments, through: :promotions
@@ -203,7 +204,7 @@ class User < ActiveRecord::Base
 
   class << self
     def find_for_oauth provider, auth, resource=nil
-   # Rails.logger.info 'auth: ' + auth.to_yaml
+   Rails.logger.info 'auth: ' + auth.to_yaml
       case provider
       when 'Facebook'
         uid = auth.uid
@@ -224,6 +225,24 @@ class User < ActiveRecord::Base
       when 'Twitter'
         uid = auth.uid
         name = auth.info.name
+      when 'Windowslive'
+        uid = auth.uid
+        name = auth.info.name
+        email = if emails = auth.info.emails
+          emails.first['value']
+          # raise emails.to_s
+          # if emails['preferred']
+          #   emails['preferred']
+          # elsif emails['account']
+          #   emails['account']
+          # elsif emails['personal']
+          #   emails['personal']
+          # elsif emails['business']
+          #   emails['business']
+          # elsif emails['other']
+          #   emails['other']
+          # end
+        end
       else
         raise 'Provider #{provider} not handled'
       end
@@ -410,9 +429,9 @@ class User < ActiveRecord::Base
     extra = data.extra
     info = data.info
     provider = session['devise.provider']
-    # logger.info data.to_yaml
-    # logger.info provider.to_s
-    # logger.info 'user: ' + self.to_yaml
+    logger.info data.to_yaml
+    logger.info provider.to_s
+    logger.info 'user: ' + self.to_yaml
     if info and provider == 'Facebook'
       self.user_name = clean_user_name(info.nickname) if user_name.blank?
       self.email = self.email_confirmation = info.email if email.blank?
@@ -522,6 +541,14 @@ class User < ActiveRecord::Base
         link: info.urls['Twitter'],
         token: data.credentials.token,
         secret: data.credentials.secret
+      )
+    elsif info and provider == 'Windowslive'
+      self.full_name = info.name if full_name.blank?
+      self.authorizations.build(
+        uid: data.uid,
+        provider: 'Windowslive',
+        name: info.name,
+        token: data.credentials.token
       )
     end
 #          logger.info 'auth: ' + self.authorizations.inspect

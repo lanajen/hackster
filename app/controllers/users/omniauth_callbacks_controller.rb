@@ -27,7 +27,12 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     oauthorize 'Twitter'
   end
 
+  def windowslive
+    oauthorize 'Windowslive'
+  end
+
   def setup
+    puts 'setup'
     session.keys.grep(/^devise\./).each { |k| session.delete(k) }
 
     session['devise.invitation_token'] = params[:invitation_token] if params[:invitation_token]
@@ -53,7 +58,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       redirect_host = session.delete(:redirect_host).presence || APP_CONFIG['default_host']
 
       omniauth_data = case kind
-      when 'Facebook', 'Twitter'
+      when 'Facebook', 'Twitter', 'Windowslive'
         request.env['omniauth.auth'].except("extra")
       else
         request.env['omniauth.auth']
