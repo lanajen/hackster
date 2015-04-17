@@ -722,6 +722,10 @@ class User < ActiveRecord::Base
     # the new token is set automatically on save
   end
 
+  def security_token
+    Digest::MD5.hexdigest(id.to_s)
+  end
+
   # allows overriding the email template and model that are sent to devise mailer
   def send_devise_notification(notification, *args)
     notification = @override_devise_notification if @override_devise_notification.present?

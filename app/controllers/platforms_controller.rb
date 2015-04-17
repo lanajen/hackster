@@ -90,7 +90,7 @@ class PlatformsController < ApplicationController
         @projects = @projects.map do |project|
           project.project.to_js
         end.to_json
-        render "groups/platforms/embed"
+        render "shared/embed"
       end
     end
   end
