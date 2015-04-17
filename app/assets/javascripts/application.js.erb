@@ -47,21 +47,4 @@
     oldHide.call(this, arguments);
   };
 
-  // rails.env: <%= Rails.env %>
-  <% if Rails.env == 'dev' %>
-    // fix image URLS so they work on dev
-    $('img').each(function(i, el) {
-      var src = $(el).attr('src');
-      src = src.replace('hackster-dev', 'halckemy');
-      src = src.replace('/dev/', '/production/');
-      $(el).attr('src', src);
-    });
-
-    $('[style*="background-image"]').each(function(i, el) {
-      var style = $(el).attr('style');
-      style = style.replace('hackster-dev', 'halckemy');
-      $(el).attr('style', style);
-    });
-  <% end %>
-
 })(jQuery);
