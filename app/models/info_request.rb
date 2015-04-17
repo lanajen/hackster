@@ -1,10 +1,11 @@
 class InfoRequest
   PLANS = [
-    'Startup community',
-    'Business community',
-    'Enterprise community',
-    'Virtual challenge',
-    'Physical hackathon',
+    'Platform channel for startups',
+    'Platform channel for enterprise',
+    'Product challenge',
+    'Product tutorial',
+    'Product workshop',
+    'Product hackathon',
   ]
 
   REFERRALS = [

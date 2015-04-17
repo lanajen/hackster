@@ -1,0 +1,72 @@
+<%
+  url = project_url(project, ref: 'newsletter')
+  one_liner = project.one_liner.strip
+  one_liner += '.' if one_liner !~ /(\.|\!)$/
+  authors = (project.users.count == 1 ? project.users.first.name : project.users.map{|u| u.name.split(/ /)[0] }.to_sentence).strip
+  platforms = project.platforms.map{|p| link_to(p.name, platform_short_url(p, ref: 'newsletter'), target: '_blank').html_safe }.to_sentence
+  platforms = " With #{platforms}." if platforms.present?
+  image_url = project.decorate.cover_image(:cover_thumb)
+
+  # "padding: 0 18px 9px 18px;"" instead of "padding: 0 9px 9px 9px;" below to compensate for missing padding in parent
+%>
+
+<table border="0" cellpadding="0" cellspacing="0" class=
+"mcnCaptionRightContentOuter" style=
+"border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"
+width="100%">
+  <tbody>
+    <tr>
+      <td class="mcnCaptionRightContentInner" style=
+      "padding: 0 18px 9px 18px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"
+      valign="top">
+        <table align="left" border="0" cellpadding="0" cellspacing="0"
+        class="mcnCaptionRightImageContentContainer" style=
+        "border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+        <tbody>
+            <tr>
+              <td class="mcnCaptionRightImageContent" style=
+              "mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"
+              valign="top">
+                <a class="" href=
+                "<%= url %>"
+                style=
+                "word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"
+                target="_blank" title=""><img alt="" class="mcnImage"
+                src=
+                "<%= image_url %>"
+                style=
+                "max-width: 400px;border: 0;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;vertical-align: bottom;"
+                width="176"></a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <table align="right" border="0" cellpadding="0" cellspacing="0"
+        class="mcnCaptionRightTextContentContainer" style=
+        "border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"
+        width="352">
+          <tbody>
+            <tr>
+              <td class="mcnTextContent" style=
+              "mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #606060;font-family: Helvetica;font-size: 15px;line-height: 150%;text-align: left;"
+              valign="top">
+                <h4 style=
+                "margin-top: 0;margin-bottom: 7px;font-size: 16px;margin: 0;padding: 0;display: block;font-family: Helvetica;font-style: normal;font-weight: bold;line-height: 125%;letter-spacing: normal;text-align: left;color: #808080 !important;">
+                <a href=
+                "<%= url %>"
+                  style=
+                  "color: #337ab7;text-decoration: none;font-weight: bold;word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"
+                  target="_blank"><%= project.name %> by <%= authors %></a>
+                </h4>
+                <p style=
+                "margin: 1em 0;margin-bottom: 5px;padding: 0;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #606060;font-family: Helvetica;font-size: 15px;line-height: 150%;text-align: left;">
+                    <%= one_liner %><%= platforms %>
+                </p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>

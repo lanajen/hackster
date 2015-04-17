@@ -35,9 +35,9 @@ class Challenge < ActiveRecord::Base
 
   parse_as_booleans :properties, :multiple_entries, :project_ideas
 
-  store :counters_cache, accessors: [:projects_count, :impressions_count]
+  store :counters_cache, accessors: [:projects_count]
 
-  parse_as_integers :counters_cache, :projects_count, :impressions_count
+  parse_as_integers :counters_cache, :projects_count
 
   is_impressionable counter_cache: true, unique: :session_hash
 

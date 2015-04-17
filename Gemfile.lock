@@ -373,6 +373,8 @@ GEM
       yajl-ruby (~> 1.1.0)
     quiet_assets (1.1.0)
       railties (>= 3.1, < 5.0)
+    rabl (0.11.6)
+      activesupport (>= 2.3.14)
     rack (1.6.0)
     rack-attack (4.1.0)
       rack
@@ -646,6 +648,7 @@ DEPENDENCIES
   pusher (= 0.14.2)
   pygments.rb (= 0.5.4)
   quiet_assets
+  rabl (= 0.11.6)
   rack-attack (= 4.1.0)
   rails (= 4.2.1)
   rails-assets-fluxxor (= 1.5.2)
@@ -685,4 +688,5 @@ DEPENDENCIES
   vimeo (= 1.5.3)
   will_paginate (= 3.0.4)
   workflow (= 1.0.0)
+  yajl-ruby (= 1.1.0)
   zocial-rails (= 1.0.2)

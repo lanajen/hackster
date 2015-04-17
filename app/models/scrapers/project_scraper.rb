@@ -56,6 +56,7 @@ class ProjectScraper
       'blogspot.fr' => :blogspot,
       'challengepost.com' => :challengepost,
       'community.spark.io' => :spark_forum,
+      'cypress.com' => :cypress_blog,
       'developer.mbed.org' => :mbed,
       'forum.arduino.cc' => :arduinocc,
       'fusion360.autodesk.com' => :fusion360,

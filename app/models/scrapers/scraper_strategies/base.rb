@@ -21,7 +21,6 @@ module ScraperStrategies
 
       @project = Project.new private: true
       @widgets = []
-      @code_files = []
       @embedded_urls = {}
       Embed::LINK_REGEXP.values.each{|provider| @embedded_urls[provider.to_s] = [] }
 
@@ -54,7 +53,6 @@ module ScraperStrategies
     private
       def after_parse
         @widgets.each{|w| @project.widgets << w }
-        @code_files.each{|c| @project.code_files << c }
       end
 
       def before_parse
@@ -271,10 +269,10 @@ module ScraperStrategies
           code, lang = extract_code_lines(node)
           next unless code
 
-          file = CodeFile.new raw_code: code, name: 'Code', language: lang
+          file = CodeWidget.new raw_code: code, name: 'Code', language: lang
           file.project = @project
-          @code_files << file
-          node.remove  # remove so it's not added to text later
+          @widgets << file
+          # node.remove  # remove so it's not added to text later
         end
       end
 
@@ -315,7 +313,7 @@ module ScraperStrategies
                 repo.comment = embed.url
                 @widgets << repo
               elsif embed.schematic_repo?
-                repo = SchematicRepoWidget.new url: embed.url
+                repo = SchematicWidget.new url: embed.url
                 repo.comment = embed.url
                 @widgets << repo
               else
@@ -345,7 +343,7 @@ module ScraperStrategies
                 repo.comment = embed.url
                 @widgets << repo
               elsif embed.schematic_repo?
-                repo = SchematicRepoWidget.new url: embed.url
+                repo = SchematicWidget.new url: embed.url
                 repo.comment = embed.url
                 @widgets << repo
               else
@@ -424,7 +422,7 @@ module ScraperStrategies
             this_images.each_with_index do |img, x|
               src = img['src']
               puts "Parsing image #{src}..."
-              image = widget.images.new title: img['title'], position: x
+              image = widget.images.new title: img['title'].presence, position: x
               image.skip_file_check!
               image.remote_file_url = src
             end

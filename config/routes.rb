@@ -42,6 +42,8 @@ HackerIo::Application.routes.draw do
       get 'issues' => 'pages#issues'
       get 'logs' => 'pages#logs'
       get 'messages' => 'pages#messages'
+      get 'newsletter' => 'pages#newsletter'
+      post 'newsletter' => 'pages#newsletter'
       get 'respects' => 'pages#respects'
       get 'platforms' => 'pages#platforms'
       get 'platforms/contacts' => 'pages#platform_contacts'
@@ -276,8 +278,10 @@ HackerIo::Application.routes.draw do
     get 'phoenix', to: redirect('/hackathons/hardware-weekend/phoenix')
     get 'louisville', to: redirect('/hackathons/hardware-weekend/louisville')
     get 'dallas', to: redirect('/hackathons/hardware-weekend/dallas')
-    get 'nyc', to: redirect('/hackathons/hardware-weekend/new-york-city')
     get 'boston', to: redirect('/hackathons/hardware-weekend/boston')
+    get 'brooklyn', to: redirect('/hackathons/hardware-weekend/brooklyn')
+    get 'washington', to: redirect('/hackathons/hardware-weekend/washington')
+    get 'nyc', to: redirect('/hackathons/hardware-weekend/new-york-city')
 
     get 'tinyduino', to: redirect('/tinycircuits')
 
@@ -338,8 +342,11 @@ HackerIo::Application.routes.draw do
       resources :parts, only: [:create, :destroy] do
         get :autocomplete, on: :collection
       end
-      resources :platforms, only: [] do
-        get ':user_name' => 'platforms#show', on: :collection
+      scope 'platforms' do
+        get ':user_name' => 'platforms#show'
+        scope ':user_name' do
+          get 'analytics' => 'platforms#analytics', defaults: { format: :json }
+        end
       end
       resources :thoughts
       resources :users, only: [] do

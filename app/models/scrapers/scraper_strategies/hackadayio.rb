@@ -19,8 +19,23 @@ module ScraperStrategies
           @project.platforms = platforms
           @project.platform_tags_string = platforms.map{|t| t.name }.join(',')
         end
+        prepare_images @article, @parsed
 
         super
+      end
+
+      def prepare_images base=@article, super_base=@parsed
+        if super_base and super_base.at_css('.thumbs-holder')
+          super_base.css('.thumbs-holder a').each do |img|
+            src = img['data-image'].gsub(/resize\/[0-9x]+\//, '')
+            if test_link(src)
+              node = Nokogiri::XML::Node.new "img", base
+              node['src'] = src
+              parent = base.at_css('.section-description') || base.at_css('.section-details')
+              parent.add_previous_sibling node
+            end
+          end
+        end
       end
 
       def extract_build_logs
@@ -51,7 +66,7 @@ module ScraperStrategies
 
       def extract_cover_image
         @parsed.css('.thumbs-holder a').each do |img|
-          src = img['href']
+          src = img['data-image'].gsub(/resize\/[0-9x]+\//, '')
           if test_link(src)
             node = Nokogiri::XML::Node.new 'img', @parsed
             node['src'] = src
@@ -92,28 +107,26 @@ module ScraperStrategies
         @widgets << widget
       end
 
-      def extract_images base=@article, super_base=@parsed
-        if super_base and super_base.at_css('.thumbs-holder')
-          super_base.css('.thumbs-holder a').each do |img|
-            src = img['href']
-            if test_link(src)
-              node = Nokogiri::XML::Node.new "img", base
-              node['src'] = src
-              parent = base.css('img').last || base.at_css('.section-description') || base.at_css('.section-details')
-              parent.add_next_sibling node
-            end
-          end
-        else
-          super base
-        end
-      end
-
       def extract_title
         @parsed.at_css('.headline h2').text.strip
       end
 
       def select_article
         text =  @parsed.at_css('.section-description').to_s + @parsed.at_css('.section-details').to_s + @parsed.css('.links-item a').map{|el| el.to_s }.join('<br>')
+
+        if instructions = @parsed.at_css('.section-instructions')
+          parsed_instructions = if instructions.at_css('a.show')
+            content = fetch_page @host + @base_uri + '/instructions'
+            Nokogiri::HTML(content)
+          else
+            instructions
+          end
+          text += '<h2>Build instructions</h2>'
+          instructions.css('.instruction-list-item').each do |item|
+            text += item.children.to_html
+          end
+        end
+
         Nokogiri::HTML::DocumentFragment.parse(text)
       end
   end

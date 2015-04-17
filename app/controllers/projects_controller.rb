@@ -140,6 +140,7 @@ class ProjectsController < ApplicationController
   end
 
   def print
+    authorize! :read, @project unless params[:auth_token] and params[:auth_token] == @project.security_token
     @project = @project.decorate
     render layout: 'print'
   end

@@ -353,6 +353,9 @@
     font-weight: 200;
     -webkit-transform: translateZ(0);
     z-index: 1001 !important;
+    &:empty {
+      display: none;
+    }
   }
 }
 
