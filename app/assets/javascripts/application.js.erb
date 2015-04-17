@@ -47,6 +47,7 @@
     oldHide.call(this, arguments);
   };
 
+  <% puts 'rails env: ' + Rails.env.to_s %>
   <% if Rails.env == 'dev' %>
     // fix image URLS so they work on dev
     $('img').each(function(i, el) {
