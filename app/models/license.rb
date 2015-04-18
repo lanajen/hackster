@@ -17,11 +17,12 @@ class License
       abbr: 'GPL',
       deprecated: true },
     'http://opensource.org/licenses/lgpl-license' => {
-      name: 'GNU Lesser General Public License (LGPL)',
+      name: 'GNU Lesser General Public License version 3 or later (LGPL-3.0)',
       abbr: 'LGPL', },
     'http://opensource.org/licenses/MIT' => {
       name: 'MIT license (MIT)',
-      abbr: 'MIT', },
+      abbr: 'MIT',
+      deprecated: true, },
     'http://opensource.org/licenses/MPL-2.0' => {
       name: 'Mozilla Public License 2.0 (MPL-2.0)',
       abbr: 'MPL-2.0', },

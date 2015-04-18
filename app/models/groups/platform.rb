@@ -31,7 +31,7 @@ class Platform < List
   accepts_nested_attributes_for :client_subdomain, :parts
 
   # before_save :update_user_name
-  before_save :format_hashtag
+  before_save :format_hashtag, :ensure_api_credentials
 
   store_accessor :websites, :forums_link, :documentation_link,
     :crowdfunding_link, :buy_link, :shoplocket_link, :download_link
@@ -39,7 +39,8 @@ class Platform < List
 
   store_accessor :properties, :accept_project_ideas, :project_ideas_phrasing,
     :active_challenge, :disclaimer, :moderation_level, :cta_text, :hashtag,
-    :verified, :enable_chat, :enable_products, :description, :enable_parts
+    :verified, :enable_chat, :enable_products, :description, :enable_parts,
+    :api_username, :api_password
   set_changes_for_stored_attributes :properties
 
   parse_as_booleans :properties, :accept_project_ideas, :active_challenge,
@@ -155,6 +156,15 @@ class Platform < List
   private
     def format_hashtag
       self.hashtag = '#' + hashtag if hashtag.present? and hashtag !~ /\A#/
+    end
+
+    def ensure_api_credentials
+      generate_api_credentials unless api_username.present? and api_password.present?
+    end
+
+    def generate_api_credentials
+      self.api_username = SecureRandom.urlsafe_base64(nil, false)
+      self.api_password = Digest::SHA1.hexdigest([Time.now, rand].join)
     end
 
     def user_name_is_unique

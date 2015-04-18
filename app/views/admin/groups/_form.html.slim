@@ -39,6 +39,19 @@
   - unless subdomain.present?
     = f.link_to_add 'Add a whitelabel portal', :client_subdomain
 
+  hr
+  h4.col-md-8.col-md-offset-4 API credentials
+  .form-group
+    .col-md-4
+      label.control-label Username
+    .col-md-8
+      input.form-control type='text' disabled=true value=@group.api_username
+  .form-group
+    .col-md-4
+      label.control-label Password
+    .col-md-8
+      input.form-control type='text' disabled=true value=@group.api_password
+
 - when 'University'
 .col-md-offset-4.col-md-8
   ==> f.button :submit, :class => 'btn btn-primary'

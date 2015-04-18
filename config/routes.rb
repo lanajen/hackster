@@ -42,6 +42,8 @@ HackerIo::Application.routes.draw do
       get 'issues' => 'pages#issues'
       get 'logs' => 'pages#logs'
       get 'messages' => 'pages#messages'
+      get 'newsletter' => 'pages#newsletter'
+      post 'newsletter' => 'pages#newsletter'
       get 'respects' => 'pages#respects'
       get 'platforms' => 'pages#platforms'
       get 'platforms/contacts' => 'pages#platform_contacts'
@@ -340,8 +342,11 @@ HackerIo::Application.routes.draw do
       resources :parts, only: [:create, :destroy] do
         get :autocomplete, on: :collection
       end
-      resources :platforms, only: [] do
-        get ':user_name' => 'platforms#show', on: :collection
+      scope 'platforms' do
+        get ':user_name' => 'platforms#show'
+        scope ':user_name' do
+          get 'analytics' => 'platforms#analytics', defaults: { format: :json }
+        end
       end
       resources :thoughts
       resources :users, only: [] do

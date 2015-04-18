@@ -1,0 +1,70 @@
+.page-header
+  h1 Newsletter builder
+
+- if params[:project_ids]
+  = link_to '&larr; Back to list'.html_safe, ''
+  textarea.form-control style='height:600px'
+    - @projects.each do |project|
+       = html_escape_once render(partial: 'newsletter', locals: { project: project }).to_s
+- else
+  .btn-group.btn-group-default.pull-right style='margin-left:10px'
+    .btn-group
+      button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
+        ' Sort by
+        span.caret
+      ul.dropdown-menu.pull-right
+        li*{ class: "#{'active' if params[:sort] == 'updated'}" } = link_to 'Last updated', admin_newsletter_path(sort: 'updated', by: params[:by])
+        li*{ class: "#{'active' if params[:sort] == 'popular'}" } = link_to 'Most popular', admin_newsletter_path(sort: 'popular', by: params[:by])
+        li*{ class: "#{'active' if params[:sort] == 'recent'}" } = link_to 'Most recent', admin_newsletter_path(sort: 'recent', by: params[:by])
+        li*{ class: "#{'active' if params[:sort] == 'respected'}" } = link_to 'Most respected', admin_newsletter_path(sort: 'respected', by: params[:by])
+        li*{ class: "#{'active' if params[:sort] == 'trending'}" } = link_to 'Trending', admin_newsletter_path(sort: 'trending', by: params[:by])
+
+    .btn-group
+      button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
+        ' Filter by
+        span.caret
+      ul.dropdown-menu.pull-right
+        li*{ class: "#{'active' if params[:by] == nil}" } = link_to 'All', admin_newsletter_path(sort: params[:sort])
+        li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to 'Featured', admin_newsletter_path(by: 'featured', sort: params[:sort])
+        li*{ class: "#{'active' if params[:by] == '7days'}" } = link_to 'Last 7 days', admin_newsletter_path(by: '7days', sort: params[:sort])
+        li*{ class: "#{'active' if params[:by] == '30days'}" } = link_to 'Last 30 days', admin_newsletter_path(by: '30days', sort: params[:sort])
+        / li*{ class: "#{'active' if params[:by] == 'wip'}" } = link_to 'Work in progress', admin_newsletter_path(by: 'wip', sort: params[:sort])
+
+  .clearfix
+  hr
+
+  = form_tag do
+    div style='margin-bottom:20px'
+      input.btn.btn-primary type='submit' value='Convert selected projects to HTML'
+      small.text-muted<
+        span.select-count> 0
+        | selected
+
+    / .small.text-muted Showing projects from the last 7 days sorted by most respected
+    table.table.table-striped
+      tbody
+        - @projects.each do |project|
+          tr
+            td= check_box_tag 'project_ids[]', project.id
+            td= image_tag project.cover_image.file_url(:cover_mini_thumb)
+            td= link_to project.name, project
+            td
+              = pluralize project.respects_count, 'respect'
+              br
+              = pluralize project.impressions_count, 'views'
+              br
+              = pluralize project.comments_count, 'comments'
+            td= link_to t('.edit', :default => t("helpers.links.edit")), edit_admin_project_path(project), :class => 'btn btn-default btn-xs'
+
+
+= content_for :js do
+
+  javascript:
+    $(function(){
+      $('tr').on('click', function(e){
+        var checkbox = $(this).find('input[type="checkbox"]');
+        $(this).toggleClass('success');
+        checkbox.prop('checked', !checkbox.is(':checked'));
+        $('.select-count').text($('input[type="checkbox"]:checked').length);
+      });
+    });

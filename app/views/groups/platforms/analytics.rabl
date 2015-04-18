@@ -59,6 +59,11 @@ node :most_recent_followers do |n|
     }
   end
 end
+node :project_respects do |n|
+  @project_respects.map do |p|
+    { name: p.name, url: url_for([p, only_path: false]), respects_count: p.count }
+  end
+end
 
 node(:new_projects) do |n|
   ActiveRecord::Base.connection.exec_query(@new_projects_sql % @platform.id).each do |r|
