@@ -9,8 +9,8 @@
   - cache ['home-visitor', user_signed_in?, returning_user?], tag: ['home', 'home-visitor'], expires_in: 1.hour do
     section#home-banner
       .home-slide#hello-hackster
-        / - if Time.now < DateTime.parse('2015-03-29 20:00 -0800')
-          = link_to 'Hardware Weekend Phoenix', '/phoenix', class: 'btn btn-warning btn-sm btn-over'
+        - if Time.now < DateTime.parse('2015-04-19 20:00 -0800')
+          = link_to 'Hardware Weekend Dallas', '/dallas', class: 'btn btn-warning btn-sm btn-over'
         .container.text-center
           h1 Hackster is the place where hardware gets created.
           .hack-selector-container
