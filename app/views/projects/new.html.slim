@@ -17,7 +17,7 @@
               = f.error_notification
 
               = f.input :name, label: 'How would you call it?'
-              = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner description, Twitter-style.', hint: 'Max 140 characters'
+              = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner description, Twitter-style', hint: 'Max 140 characters'
               = f.input :product_tags_string, as: :hidden
               = f.input :platform_tags_string, as: :hidden
               = f.input :mark_as_idea, as: :hidden
@@ -77,7 +77,7 @@
             = f.input :type, as: :hidden
             = f.input :website, label: (@project.external? ? 'Link to the project' : 'Main website'), required: true
             = f.input :name, label: (@project.external? ? 'What is the project called?' : 'What is the device called?'), required: true
-            = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner description, Twitter-style.', required: true, hint: 'Max 140 characters'
+            = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner description, Twitter-style', required: true, hint: 'Max 140 characters'
             - if @project.external?
               - if user_signed_in?
                 = f.input :guest_name, label: 'Who should be credited for this hack?', hint: "Leave this blank if you're the author of this hack."
@@ -142,7 +142,7 @@
 
             / # = render partial: 'projects/open_source_switch', locals: { f: f }
             = f.input :name, label: 'What is it called?'
-            = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner description, Twitter-style.', hint: 'Max 140 characters'
+            = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner description, Twitter-style', hint: 'Max 140 characters'
             = f.input :product_tags_string, as: :hidden
             = f.input :platform_tags_string, as: :hidden
 

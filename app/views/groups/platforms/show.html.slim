@@ -41,7 +41,7 @@
 
 
     section.main-section
-      = render partial: "groups/#{@group.identifier.pluralize}/nav_new"
+      = render partial: "groups/#{@group.identifier.pluralize}/nav"
 
       = render partial: "groups/#{@group.identifier.pluralize}/alerts"
 
@@ -60,12 +60,17 @@
           .container
             h2.section-title What we make
             .row
+              - if @platform.parts_count == 1
+                .col-sm-4
+              - elsif @platform.parts_count == 2
+                .col-sm-2
               - @parts.each do |part|
                 = render partial: 'parts/part_thumb', locals: { part: part.decorate }
 
-            .text-center
-              = link_to 'View more of our products &rarr;'.html_safe, platform_parts_path(@platform), class: 'btn btn-default btn-sm hidden-xs'
-              = link_to 'View more &rarr;'.html_safe, platform_parts_path(@platform), class: 'btn btn-default btn-sm visible-xs-block'
+            - if @platform.parts_count > 3
+              .text-center
+                = link_to 'View more of our products &rarr;'.html_safe, platform_parts_path(@platform), class: 'btn btn-default btn-sm hidden-xs'
+                = link_to 'View more &rarr;'.html_safe, platform_parts_path(@platform), class: 'btn btn-default btn-sm visible-xs-block'
 
       section#community.section-feature
         .container
@@ -98,9 +103,14 @@
               | Devices we power
               span.bdg= @platform.products_count
             .row
+              - if @platform.products_count == 1
+                .col-md-4.col-sm-3
+              - elsif @platform.products_count == 2
+                .col-md-2
               - @products.each do |col|
                 = render partial: 'projects/product_thumb', locals: { project: col.project }
 
-            .text-center
-              = link_to 'View more devices we power &rarr;'.html_safe, platform_products_path(@platform), class: 'btn btn-default btn-sm hidden-xs'
-              = link_to 'View more devices &rarr;'.html_safe, platform_products_path(@platform), class: 'btn btn-default btn-sm visible-xs-block'
+            - if @platform.products_count > 3
+              .text-center
+                = link_to 'View more devices we power &rarr;'.html_safe, platform_products_path(@platform), class: 'btn btn-default btn-sm hidden-xs'
+                = link_to 'View more devices &rarr;'.html_safe, platform_products_path(@platform), class: 'btn btn-default btn-sm visible-xs-block'

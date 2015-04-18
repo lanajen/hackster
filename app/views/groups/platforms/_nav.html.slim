@@ -3,43 +3,115 @@
 /     | Projects
 /     small 79
 
-.group-nav.hidden-xs.affixable
-  .group-nav-inner
-    .brand
-      = image_tag @group.avatar(:big), class: 'img-thumbnail'
-      h2= @group.name
-    ul.nav.nav-tabs
-      = active_li_link_to content_tag(:span, "Projects") + content_tag(:small, @group.projects_count), platform_projects_path(@group)
-      - if @group.enable_products
-        = active_li_link_to content_tag(:span, "Products") + content_tag(:small, @group.products_count), platform_products_path(@group)
-      li
-        .link= content_tag(:span, "Followers") + content_tag(:small, @group.followers_count)
-      - if @group.enable_chat
-        = active_li_link_to 'Chat', platform_chat_path(@group.user_name)
+section.section-nav
+  .group-nav.standalone.affixable
+    .hidden-xs.hidden-sm
+      .group-nav-inner.clearfix
+        .brand
+          = image_tag @group.avatar(:big), class: 'img-rounded'
+          h2= @group.name
+        ul.nav.nav-tabs
+          = active_li_link_to 'Home', platform_home_path(@group)
+          = active_li_link_to content_tag(:span, "Projects") + content_tag(:small, @group.projects_count), platform_projects_path(@group)
+          - if @group.enable_products
+            = active_li_link_to content_tag(:span, "Devices") + content_tag(:small, @group.products_count), platform_products_path(@group)
+          - if @group.enable_parts
+            = active_li_link_to content_tag(:span, "Products") + content_tag(:small, @group.parts_count), platform_parts_path(@group)
+          li
+            .link= content_tag(:span, "Community") + content_tag(:small, @group.followers_count)
+          - if @group.enable_chat
+            = active_li_link_to 'Chat', platform_chat_path(@group.user_name)
+        .follow-container
 
-    ul.websites.list-inline.pull-right
-      - @group.websites.select{|t,u| u.present? }.each do |type, url|
-        = render partial: "shared/website", locals: { type: type, url: url }
+          <!-- AddToAny BEGIN -->
+          / a.a2a_dd.btn.btn-default
+            span Share
+            i.fa.fa-share-square-o
+          a.a2a_dd.btn.btn-link
+            i.fa.fa-share-square-o
+          javascript:
+            var a2a_config = a2a_config || {};
+            a2a_config.onclick = 1;
+            a2a_config.color_main = "D7E5ED";
+            a2a_config.color_border = "AECADB";
+            a2a_config.color_link_text = "333333";
+            a2a_config.color_link_text_hover = "333333";
+            a2a_config.prioritize = ["facebook", "twitter", "reddit", "google_plus", "email"];
+            a2a_config.templates = {
+              twitter: "#{@group.twitter_share} #{url_for([@group, only_path: false])} via @hacksterio"
+            };
+            a2a_config.linkname = "#{@platform.name}'s community hub"
+            a2a_config.linkurl = "#{url_for([@group, only_path: false])}";
+          script type="text/javascript" src="//static.addtoany.com/menu/page.js"
+          <!-- AddToAny END -->
 
-    ul.list-inline.manage
-      - if can? :manage, @group
-        li.dropdown role='presentation'
-          a.btn.btn-default.dropdown-toggle data-toggle="dropdown" aria-expanded="false"
-            span.visible-sm-inline
-              i.fa.fa-cog
-            span.hidden-sm Manage page
-            span.caret
-          ul.dropdown-menu role="menu"
-            li= link_to 'Edit settings', url_for([:edit, @group])
-            li= link_to 'Manage parts', url_for([@group, :parts])
-            li.divider
-            li= link_to 'Manage admins', url_for([@group, :edit, :members])
-            li= link_to 'Invite admins', url_for([@group, :new, :invitations])
-            li.divider
-            li= link_to 'Moderate projects', url_for([@group, :admin, :projects])
-            li= link_to 'Link an external project', url_for([:new, :project, type: 'external', project: { platform_tags_string: @group.name }])
+          = render partial: 'followers/button_text', locals: { followable: @group }
 
-.visible-xs
-  .top-banner-image-inner-corner.bottom-left.bottom-center-mobile
-    ul.list-unstyled.list-inline.project-stats
-      = render partial: "groups/#{@group.identifier.pluralize}/stats"
+        ul.list-inline.manage
+          - if can? :manage, @group
+            li.dropdown role='presentation'
+              a.btn.btn-default.dropdown-toggle data-toggle="dropdown" aria-expanded="false"
+                span.visible-sm-inline
+                  i.fa.fa-cog
+                span.hidden-sm Manage hub
+                span.caret
+              ul.dropdown-menu role="menu"
+                li= link_to 'Edit settings', url_for([:edit, @group])
+                li= link_to 'Manage products', url_for([@group, :parts])
+                li.divider
+                li= link_to 'Manage admins', url_for([@group, :edit, :members])
+                li= link_to 'Invite admins', url_for([@group, :new, :invitations])
+                li.divider
+                li= link_to 'Moderate projects', url_for([@group, :admin, :projects])
+                li= link_to 'Link an external project', url_for([:new, :project, type: 'external', project: { platform_tags_string: @group.name }])
+
+    .visible-xs.visible-sm
+      .clearfix
+        .brand
+          = image_tag @group.avatar(:big), class: 'img-rounded'
+          h2= @group.name
+
+        a.group-nav-toggle
+          .toggle-open
+            | Menu
+          .toggle-close
+            | Close
+
+        .follow-container.visible-sm-block
+          a.a2a_dd.btn.btn-default
+            span Share
+            i.fa.fa-share-square-o
+          = render partial: 'followers/button_text', locals: { followable: @group }
+      .group-nav-inner.clearfix
+        ul.nav.nav-tabs
+          = active_li_link_to 'Home', platform_home_path(@group)
+          = active_li_link_to content_tag(:span, "Projects") + content_tag(:small, @group.projects_count), platform_projects_path(@group)
+          - if @group.enable_products
+            = active_li_link_to content_tag(:span, "Devices") + content_tag(:small, @group.products_count), platform_products_path(@group)
+          - if @group.enable_parts
+            = active_li_link_to content_tag(:span, "Products") + content_tag(:small, @group.parts_count), platform_parts_path(@group)
+          li
+            .link= content_tag(:span, "Community") + content_tag(:small, @group.followers_count)
+          - if @group.enable_chat
+            = active_li_link_to 'Chat', platform_chat_path(@group.user_name)
+        .follow-container
+          a.btn.btn-link.addthis_button_compact
+            i.fa.fa-share-square-o
+          = render partial: 'followers/button_text', locals: { followable: @group }
+
+        ul.list-inline.manage
+          - if can? :manage, @group
+            li.dropdown role='presentation'
+              a.btn.btn-default.dropdown-toggle data-toggle="dropdown" aria-expanded="false"
+                i.fa.fa-cog
+                span.caret
+              ul.dropdown-menu role="menu"
+                li= link_to 'Edit settings', url_for([:edit, @group])
+                li= link_to 'Manage parts', url_for([@group, :parts])
+                li.divider
+                li= link_to 'Manage admins', url_for([@group, :edit, :members])
+                li= link_to 'Invite admins', url_for([@group, :new, :invitations])
+                li.divider
+                li= link_to 'Moderate projects', url_for([@group, :admin, :projects])
+                li= link_to 'Link an external project', url_for([:new, :project, type: 'external', project: { platform_tags_string: @group.name }])
+  .group-nav-placeholder
