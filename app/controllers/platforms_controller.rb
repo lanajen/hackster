@@ -75,8 +75,8 @@ class PlatformsController < ApplicationController
     authorize! :read, @platform
     impressionist_async @platform, "", unique: [:session_hash]
 
-    title "#{@platform.name} products"
-    meta_desc "Explore #{@platform.products_count} products built with #{@platform.name}! Join #{@platform.followers_count} hackers who follow #{@platform.name} on Hackster."
+    title "Devices made with #{@platform.name}"
+    meta_desc "Explore #{@platform.products_count} devices built with #{@platform.name}! Join #{@platform.followers_count} hackers who follow #{@platform.name} on Hackster."
 
     @announcement = @platform.announcements.current
     @challenge = @platform.active_challenge ? @platform.challenges.active.first : nil
