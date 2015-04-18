@@ -41,7 +41,7 @@ class Part < ActiveRecord::Base
   before_validation :ensure_website_protocol
   before_validation :ensure_partable, unless: proc{|p| p.persisted? }
   before_validation :generate_slug, if: proc{|p| p.slug.blank? }
-  register_sanitizer :strip_whitespace, :before_validation, :mpn, :description
+  register_sanitizer :strip_whitespace, :before_validation, :mpn, :description, :name
   after_create proc{|p| p.require_review! if p.workflow_state.blank? or p.new? }
 
   workflow do
@@ -163,7 +163,7 @@ class Part < ActiveRecord::Base
       "(parts.description ILIKE '%#{token}%' OR parts.name ILIKE '%#{token}%' OR parts.product_tags_string ILIKE '%#{token}%')"
     end.join(' AND ')
 
-    where(query)
+    approved.where(query)
   end
 
   def self.approved
@@ -259,6 +259,6 @@ class Part < ActiveRecord::Base
     end
 
     def strip_whitespace text
-      text.strip
+      text.try(:strip)
     end
 end

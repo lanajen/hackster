@@ -7,13 +7,14 @@ class Api::V1::PartsController < Api::V1::BaseController
       []
     end
 
-    parts_json = if parts.any?
-      parts.map{|p| { id: p.id, text: p.name } }
+    if parts.any?
+      parts_json = parts.map{|p| { id: p.id, text: p.name } }
+      parts_json << { id: '-1', text: "Can't find the right one? <a href='#' class='new-part-modal-toggle btn btn-sm btn-success' data-target= '#new-part-modal' data-toggle='modal'>Create a new part</a>".html_safe, disabled: true }
     else
-      [{ id: '-1', text: "No results for #{params[:q]}. <a href='#' class='new-part-modal-toggle btn btn-sm btn-success' data-target= '#new-part-modal' data-toggle='modal'>Create a new part.</a>".html_safe, disabled: true }]
+      parts_json = [{ id: '-1', text: "No results for #{params[:q]}. <a href='#' class='new-part-modal-toggle btn btn-sm btn-success' data-target= '#new-part-modal' data-toggle='modal'>Create a new part</a>".html_safe, disabled: true }]
     end
 
-    render json: parts_json
+    render json: parts_json, root: false
   end
 
   def create
