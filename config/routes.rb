@@ -309,10 +309,10 @@ HackerIo::Application.routes.draw do
         get 'chat' => 'chat_messages#index'
         resources :announcements, except: [:create, :update, :destroy], path: :news
         get 'embed' => 'platforms#embed'
-        get 'parts' => 'parts#index'
-        get 'parts/:part_slug' => 'parts#show', as: :part
-        get 'parts/:part_slug/embed' => 'parts#embed', as: :embed_part
-        get 'products' => 'platforms#products', as: :products
+        get 'makes' => 'parts#index', as: :parts
+        get 'makes/:part_slug' => 'parts#show', as: :part
+        get 'makes/:part_slug/embed' => 'parts#embed', as: :embed_part
+        get 'powers' => 'platforms#products', as: :products
         get 'projects' => 'platforms#projects', as: :projects
       end
     end
@@ -405,7 +405,7 @@ HackerIo::Application.routes.draw do
   delete 'projects/e/:user_name/:id' => 'projects#destroy', id: /[0-9]+\-[A-Za-z0-9\-]+/
   get 'projects/e/:user_name/:slug' => 'external_projects#redirect_to_show', as: :external_project_redirect  # legacy route (google has indexed them)
 
-  get 'products/:slug' => 'products#show', as: :product
+  get ':user_name/powers/:slug' => 'products#show', as: :product
 
   resources :issues, only: [] do
     resources :comments, only: [:create]

@@ -11,7 +11,7 @@
       li.active
         .link= content_tag(:span, "Projects") + content_tag(:small, @group.projects_count)
       li
-        .link= content_tag(:span, "Followers") + content_tag(:small, @group.followers_count)
+        .link= content_tag(:span, "Community") + content_tag(:small, @group.followers_count)
 
     ul.websites.list-inline.pull-right
       - @group.websites.select{|t,u| u.present? }.each do |type, url|

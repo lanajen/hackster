@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150409070310) do
+ActiveRecord::Schema.define(version: 20150417223252) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -80,8 +80,8 @@ ActiveRecord::Schema.define(version: 20150409070310) do
     t.string   "link",       limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "token",      limit: 255
-    t.string   "secret",     limit: 255
+    t.text     "token"
+    t.text     "secret"
   end
 
   add_index "authorizations", ["provider", "uid"], name: "index_authorizations_on_provider_and_uid", using: :btree
@@ -135,15 +135,16 @@ ActiveRecord::Schema.define(version: 20150409070310) do
     t.integer  "duration"
     t.text     "properties"
     t.datetime "start_date"
-    t.string   "video_link",     limit: 255
+    t.string   "video_link",        limit: 255
     t.text     "counters_cache"
     t.integer  "platform_id"
-    t.string   "name",           limit: 255
-    t.string   "slug",           limit: 255
-    t.string   "workflow_state", limit: 255
+    t.string   "name",              limit: 255
+    t.string   "slug",              limit: 255
+    t.string   "workflow_state",    limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "end_date"
+    t.integer  "impressions_count"
   end
 
   create_table "channels", force: :cascade do |t|
@@ -449,6 +450,7 @@ ActiveRecord::Schema.define(version: 20150409070310) do
     t.text     "counters_cache"
     t.string   "workflow_state",      limit: 255
     t.string   "slug",                limit: 255
+    t.string   "one_liner",           limit: 140
   end
 
   add_index "parts", ["partable_id", "partable_type"], name: "partable_index", using: :btree

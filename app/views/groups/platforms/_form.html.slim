@@ -120,12 +120,12 @@
         .row
           .col-xs-12.text-center
             .btn-group.btn-group-default.mg-20
-              = link_to 'Manage parts', url_for([@group, :parts]), class: 'btn btn-default btn-sm'
-              = link_to "Add product", new_project_path(project: { platform_tags_string: @platform.name }, type: 'product'), class: 'btn btn-sm btn-default'
+              = link_to 'Manage products', url_for([@group, :parts]), class: 'btn btn-default btn-sm'
+              = link_to "Add device", new_project_path(project: { platform_tags_string: @platform.name }, type: 'product'), class: 'btn btn-sm btn-default'
 
           .col-md-6
-            = f.input :enable_parts, as: :boolean, inline_label: 'Enable parts tab', label: false, hint: "Parts are the boards you manufacture"
-            = f.input :enable_products, as: :boolean, inline_label: 'Enable products tab', label: false, hint: "Products are commercial products powered by your boards"
+            = f.input :enable_parts, as: :boolean, inline_label: 'Enable products tab', label: false, hint: "Products are the boards you manufacture"
+            = f.input :enable_products, as: :boolean, inline_label: 'Enable devices tab', label: false, hint: "Devices are third-party commercial products powered by your boards"
 
       - if current_user.is? :admin
         .tab-pane.active.fade#admin role='tabpanel'

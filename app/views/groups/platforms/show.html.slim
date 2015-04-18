@@ -64,7 +64,7 @@
                 = render partial: 'parts/part_thumb', locals: { part: part.decorate }
 
             .text-center
-              = link_to 'View more of the products we make &rarr;'.html_safe, platform_parts_path(@platform), class: 'btn btn-default btn-sm hidden-xs'
+              = link_to 'View more of our products &rarr;'.html_safe, platform_parts_path(@platform), class: 'btn btn-default btn-sm hidden-xs'
               = link_to 'View more &rarr;'.html_safe, platform_parts_path(@platform), class: 'btn btn-default btn-sm visible-xs-block'
 
       section#community.section-feature
@@ -82,7 +82,7 @@
       section#projects.section-feature
         .container
           h2.section-title
-            | Projects you can make at home
+            | Home-made projects
             span.bdg= @platform.projects_count
           .row
             - @projects.each do |col|
@@ -95,12 +95,12 @@
         section#products.section-feature
           .container
             h2.section-title
-              | Products we power
+              | Devices we power
               span.bdg= @platform.products_count
             .row
               - @products.each do |col|
                 = render partial: 'projects/product_thumb', locals: { project: col.project }
 
             .text-center
-              = link_to 'View more products we power &rarr;'.html_safe, platform_products_path(@platform), class: 'btn btn-default btn-sm hidden-xs'
-              = link_to 'View more products &rarr;'.html_safe, platform_products_path(@platform), class: 'btn btn-default btn-sm visible-xs-block'
+              = link_to 'View more devices we power &rarr;'.html_safe, platform_products_path(@platform), class: 'btn btn-default btn-sm hidden-xs'
+              = link_to 'View more devices &rarr;'.html_safe, platform_products_path(@platform), class: 'btn btn-default btn-sm visible-xs-block'

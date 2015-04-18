@@ -32,6 +32,9 @@ class PlatformsController < ApplicationController
   end
 
   def show
+    title "#{@platform.name}'s community hub"
+    meta_desc "Explore #{@platform.name}'s community hub to learn and share about their products! Join #{@platform.followers_count} hackers who follow #{@platform.name} on Hackster."
+
     sql = "SELECT users.*, t1.count FROM (SELECT members.user_id as user_id, COUNT(*) as count FROM members INNER JOIN groups AS team ON team.id = members.group_id INNER JOIN projects ON projects.team_id = team.id INNER JOIN project_collections ON project_collections.project_id = projects.id WHERE project_collections.collectable_type = 'Group' AND project_collections.collectable_id = ? AND projects.private = 'f' AND projects.hide = 'f' AND projects.approved = 't' AND (projects.guest_name = '' OR projects.guest_name IS NULL) GROUP BY user_id) AS t1 INNER JOIN users ON users.id = t1.user_id WHERE t1.count > 0 ORDER BY t1.count DESC LIMIT 5;"
     @followers = User.find_by_sql([sql, @platform.id])
     if @followers.count < 5

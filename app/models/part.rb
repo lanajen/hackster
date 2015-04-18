@@ -23,7 +23,7 @@ class Part < ActiveRecord::Base
   attr_accessible :name, :vendor_link, :vendor_name, :vendor_sku, :mpn, :unit_price,
     :description, :store_link, :documentation_link, :libraries_link,
     :datasheet_link, :product_page_link, :image_id, :platform_id,
-    :part_joins_attributes, :part_join_ids, :workflow_state, :slug
+    :part_joins_attributes, :part_join_ids, :workflow_state, :slug, :one_liner
 
   accepts_nested_attributes_for :part_joins, allow_destroy: true
 
@@ -37,6 +37,7 @@ class Part < ActiveRecord::Base
   validates :name, presence: true
   validates :unit_price, numericality: { greater_than_or_equal_to: 0 }, allow_blank: true
   validates :slug, uniqueness: { scope: :platform_id }, presence: true
+  validates :one_liner, length: { maximum: 140 }, allow_blank: true
   before_validation :ensure_website_protocol
   before_validation :ensure_partable, unless: proc{|p| p.persisted? }
   before_validation :generate_slug, if: proc{|p| p.slug.blank? }
@@ -219,6 +220,10 @@ class Part < ActiveRecord::Base
       end
     end
     self.slug = slug
+  end
+
+  def one_liner_or_description
+    one_liner.presence || ActionController::Base.helpers.strip_tags(description).try(:truncate, 140)
   end
 
   def search_on_octopart

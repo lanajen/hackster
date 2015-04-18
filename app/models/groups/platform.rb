@@ -46,6 +46,11 @@ class Platform < List
     :is_new, :enable_comments, :hidden, :verified, :enable_chat, :enable_products,
     :enable_parts
 
+  store_accessor :counters_cache, :parts_count
+
+  parse_as_integers :counters_cache, :external_projects_count,
+    :private_projects_count, :products_count, :parts_count
+
   taggable :platform_tags, :product_tags
 
   # beginning of search methods
@@ -94,6 +99,12 @@ class Platform < List
 
   def company_logo_id=(val)
     self.company_logo = CompanyLogo.find_by_id(val)
+  end
+
+  def counters
+    super.merge({
+      parts: 'parts.count',
+    })
   end
 
   def generate_user_name

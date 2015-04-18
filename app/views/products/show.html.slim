@@ -11,7 +11,7 @@
             span
               p
                 i.fa.fa-lock>
-                | This product is private so only #{who.to_sentence} can see it.
+                | This page is private so only #{who.to_sentence} can see it.
             - if @product.can_be_public? or current_user.try(:is?, :admin)
               p= link_to 'Publish publicly', product_path(@product, product: {  private: 0 } ), method: :patch, class: 'btn btn-warning btn-sm btn-block'
             - else
@@ -20,7 +20,7 @@
               small
                 = link_to 'Need to privately share?', settings_project_path(@product, anchor: 'publish'), class: 'alert-link'
 
-      - cache [@product, 'teaser'], tag: ["product-#{@product.id}-teaser"], expires_in: 6.hours do
+      - cache [@product, 'teaser'], tag: ["product-#{@product.id}-teaser", 'product-teaser'], expires_in: 6.hours do
 
         #home.product-banner style="background-image: url('#{@product.cover_image}')"
           .product-banner-inner
@@ -45,7 +45,7 @@
               - if @can_edit
                 .edit-product.row
                   .col-xs-6
-                    = link_to 'Edit product', settings_project_path(@product), class: 'btn btn-primary btn-block'
+                    = link_to 'Edit page', settings_project_path(@product), class: 'btn btn-primary btn-block'
                   .col-xs-6
                     = link_to 'Edit team', project_edit_team_path(@product), class: 'btn btn-primary btn-block'
               - if @product.public?

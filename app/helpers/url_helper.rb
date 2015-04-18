@@ -413,6 +413,7 @@ module UrlHelper
 
     def params_for_product project, force_params={}
       {
+        user_name: project.user_name_for_url,
         slug: project.slug,
         use_route: 'product',
       }.merge(force_params)
