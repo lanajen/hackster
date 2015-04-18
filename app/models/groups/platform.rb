@@ -47,7 +47,7 @@ class Platform < List
     :is_new, :enable_comments, :hidden, :verified, :enable_chat, :enable_products,
     :enable_parts
 
-  store_accessor :counters_cache, :parts_count
+  store_accessor :counters_cache, :parts_count, :products_count
 
   parse_as_integers :counters_cache, :external_projects_count,
     :private_projects_count, :products_count, :parts_count

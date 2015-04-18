@@ -163,7 +163,7 @@ class Part < ActiveRecord::Base
       "(parts.description ILIKE '%#{token}%' OR parts.name ILIKE '%#{token}%' OR parts.product_tags_string ILIKE '%#{token}%')"
     end.join(' AND ')
 
-    approved.where(query)
+    approved.where(query).includes(:platform)
   end
 
   def self.approved
@@ -198,7 +198,7 @@ class Part < ActiveRecord::Base
 
   def full_name
     if platform
-      "#{platform.name} #{name}"
+      "#{platform.name} - #{name}"
     else
       name
     end
