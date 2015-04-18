@@ -58,7 +58,7 @@
       - if @platform.enable_parts
         section#parts.section-feature
           .container
-            h2.section-title What we make
+            h2.section-title Products we make
             .row
               - if @platform.parts_count == 1
                 .col-sm-4
@@ -69,7 +69,7 @@
 
             - if @platform.parts_count > 3
               .text-center
-                = link_to 'View more of our products &rarr;'.html_safe, platform_parts_path(@platform), class: 'btn btn-default btn-sm hidden-xs'
+                = link_to 'View more of the products we make &rarr;'.html_safe, platform_parts_path(@platform), class: 'btn btn-default btn-sm hidden-xs'
                 = link_to 'View more &rarr;'.html_safe, platform_parts_path(@platform), class: 'btn btn-default btn-sm visible-xs-block'
 
       section#community.section-feature
@@ -87,20 +87,20 @@
       section#projects.section-feature
         .container
           h2.section-title
-            | Home-made projects
+            | Projects built by makers
             span.bdg= @platform.projects_count
           .row
             - @projects.each do |col|
               = render partial: 'projects/project_thumb', locals: { project: col.project }
           .text-center
-            = link_to 'View more home-made projects &rarr;'.html_safe, platform_projects_path(@platform), class: 'btn btn-default btn-sm hidden-xs'
-            = link_to 'View more projects &rarr;'.html_safe, platform_projects_path(@platform), class: 'btn btn-default btn-sm visible-xs-block'
+            = link_to 'View more projects built by makers &rarr;'.html_safe, platform_projects_path(@platform), class: 'btn btn-default btn-sm hidden-xs'
+            = link_to 'View more &rarr;'.html_safe, platform_projects_path(@platform), class: 'btn btn-default btn-sm visible-xs-block'
 
       - if @platform.enable_products
         section#products.section-feature
           .container
             h2.section-title
-              | Devices we power
+              | Devices built by companies
               span.bdg= @platform.products_count
             .row
               - if @platform.products_count == 1
@@ -112,5 +112,5 @@
 
             - if @platform.products_count > 3
               .text-center
-                = link_to 'View more devices we power &rarr;'.html_safe, platform_products_path(@platform), class: 'btn btn-default btn-sm hidden-xs'
-                = link_to 'View more devices &rarr;'.html_safe, platform_products_path(@platform), class: 'btn btn-default btn-sm visible-xs-block'
+                = link_to 'View more devices built by companies &rarr;'.html_safe, platform_products_path(@platform), class: 'btn btn-default btn-sm hidden-xs'
+                = link_to 'View more &rarr;'.html_safe, platform_products_path(@platform), class: 'btn btn-default btn-sm visible-xs-block'
