@@ -389,7 +389,10 @@
           color: #555;
           &:hover {
             border-bottom-color: #999;
-            color: #999;
+            color: #333;
+            small {
+              color: #777;
+            }
           }
           small {
             color: #999;
