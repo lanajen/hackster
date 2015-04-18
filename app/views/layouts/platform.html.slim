@@ -17,7 +17,7 @@
       .top-banner-image style="background-image:url('#{@group.cover_image(:cover_wide)}');" class=@group.bg_class
         .top-banner-image-bottom-left.hidden-xs
           = image_tag @group.avatar(:big), class: 'img-thumbnail'
-          h1
+          h2.group-name
             - if @group.company_logo
               = image_tag @group.company_logo.try(:file_url), class: 'company-logo'
             = @group.name

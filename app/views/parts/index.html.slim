@@ -1,4 +1,4 @@
-h2.section-title Products we make you can build with
+h1.section-title #{@platform.name} products you can build with
 
 - @parts.each do |part|
   = render 'parts/part', { part: part.decorate }
