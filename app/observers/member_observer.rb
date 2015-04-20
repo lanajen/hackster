@@ -5,17 +5,14 @@ class MemberObserver < ActiveRecord::Observer
     # only send invitation if group is a community and the membership has an
     # invitation pending and the user is not being invited
     if (record.group.is? :community or record.group.is? :promotion or record.group.is? :event or record.group.is? :platform) and record.invitation_pending? and !record.user.try(:invited_to_sign_up?)
-      BaseMailer.enqueue_email 'new_community_invitation',
-        { context_type: :membership, context_id: record.id }
+      NotificationCenter.notify_all :new, :membership_invitation, record.id
     elsif record.group.is? :team
       project = record.group.projects.first
       if record.request_pending?
-        BaseMailer.enqueue_email 'new_request_to_join_team',
-          { context_type: :membership_request, context_id: record.id }
+        NotificationCenter.notify_via_email :new, :membership_request, record.id
       end
     elsif record.group.is? :event and record.request_pending?
-      BaseMailer.enqueue_email 'new_request_to_join_event',
-        { context_type: :membership_request, context_id: record.id }
+      NotificationCenter.notify_via_email :new, :membership_request, record.id
     end
   end
 
@@ -45,8 +42,7 @@ class MemberObserver < ActiveRecord::Observer
     if record.group.is?(:team) and record.approved_to_join_changed?
       if record.approved_to_join
         record.group.touch
-        BaseMailer.enqueue_email "request_to_join_#{record.group.class.name.underscore}_accepted",
-          { context_type: :membership, context_id: record.id }
+        NotificationCenter.notify_all :accepted, :membership_request, record.id
         expire_projects record
       else
         record.update_column :group_roles_mask, 0

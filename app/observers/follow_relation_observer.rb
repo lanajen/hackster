@@ -1,8 +1,6 @@
 class FollowRelationObserver < ActiveRecord::Observer
   def after_commit_on_create record
-    msg_type = "new_follower_notification_#{record.followable_type.underscore}"
-    BaseMailer.enqueue_email msg_type,
-        { context_type: 'follower', context_id: record.id } unless record.skip_notification? or (record.followable_type == 'Group' and record.followable.email.blank?)
+    NotificationCenter.notify_all :new, :follow_relation, record.id unless record.skip_notification? or (record.followable_type == 'Group' and record.followable.email.blank?)
   end
 
   def after_create record

@@ -30,7 +30,7 @@ class ExpertRequestsController < ApplicationController
       @message.body += "<b>Location: </b>#{@expert_request.location}"
       @message.body += "</p>"
       @message.body += "<p>Thanks!<br><a href='#{url_for(current_user)}'>#{current_user.name}</a><br>" if user_signed_in?
-      BaseMailer.enqueue_generic_email(@message)
+      MailerQueue.enqueue_generic_email(@message)
       LogLine.create source: 'expert_request', type: 'expert_request', message: @message.body
 
       redirect_to root_path, notice: "Thanks for your request, we will let you know once we've matched you with an expert!"

@@ -1,6 +1,6 @@
 class Conversation < ActiveRecord::Base
   has_many :messages, -> { order(created_at: :asc) }, as: :commentable, class_name: 'Comment', dependent: :destroy
-  has_many :receipts, dependent: :destroy
+  has_many :receipts, through: :messages, dependent: :destroy
 
   validates :subject, :body, :sender_id, :recipient_id, presence: true,
     on: :create
@@ -12,15 +12,15 @@ class Conversation < ActiveRecord::Base
   attr_accessible :subject, :recipient_id, :sender_id, :body
 
   def self.inbox_for user
-    joins(:receipts).where(receipts: { user_id: user.id, deleted: false }).joins("INNER JOIN comments ON comments.id = receipts.message_id").where.not(comments: { user_id: user.id }).order("receipts.created_at DESC")
+    joins(:receipts).where(receipts: { user_id: user.id, deleted: false }).where.not(comments: { user_id: user.id }).order("receipts.created_at DESC")
   end
 
   def self.sent_for user
-    joins(:receipts).where(receipts: { user_id: user.id, deleted: false }).joins("INNER JOIN comments ON comments.id = receipts.message_id").where(comments: { user_id: user.id }).order("receipts.created_at DESC")
+    joins(:receipts).where(receipts: { user_id: user.id, deleted: false }).where(comments: { user_id: user.id }).order("receipts.created_at DESC")
   end
 
   def self.unread_for user
-    joins(:receipts).where(receipts: { user_id: user.id, deleted: false, read: false }).joins("INNER JOIN comments ON comments.id = receipts.message_id").where.not(comments: { user_id: user.id }).order("receipts.created_at DESC")
+    joins(:receipts).where(receipts: { user_id: user.id, deleted: false, read: false }).where.not(comments: { user_id: user.id }).order("receipts.created_at DESC")
   end
 
   def first_unread_message_for user
@@ -50,8 +50,7 @@ class Conversation < ActiveRecord::Base
   end
 
   def participants
-    # @participants ||=
-    User.joins(:conversations).where(conversations: { id: id })
+    User.joins("INNER JOIN receipts ON receipts.user_id = users.id").joins("INNER JOIN comments ON receipts.receivable_id = comments.id AND receipts.receivable_type = 'Comment'").joins("INNER JOIN conversations ON comments.commentable_id = conversations.id AND comments.commentable_type = 'Conversation'").where(conversations: { id: id })
   end
 
   private
@@ -59,16 +58,17 @@ class Conversation < ActiveRecord::Base
       message = messages.new raw_body: body
       message.user_id = sender_id
       message.save
-      receipts.create user_id: recipient_id, message_id: message.id
-      receipts.create user_id: sender_id, message_id: message.id, read: true
+      message.receipts.create user_id: recipient_id
+      message.receipts.create user_id: sender_id, read: true
     end
 
     def create_reply
       message = messages.new raw_body: body
       message.user_id = sender_id
       message.save
-      recipient_id = participants.where.not(users: { id: sender_id }).first.id
-      receipts.create user_id: recipient_id, message_id: message.id
-      receipts.create user_id: sender_id, message_id: message.id, read: true
+      participants.where.not(users: { id: sender_id }).each do |recipient|
+        message.receipts.create user_id: recipient.id
+      end
+      message.receipts.create user_id: sender_id, read: true
     end
   end

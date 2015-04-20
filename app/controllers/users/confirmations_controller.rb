@@ -29,7 +29,6 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
     else
       message = "Error confirming account for user ID #{resource.id}: #{resource.errors.messages}"
       log_line = LogLine.create(message: message, log_type: 'error', source: 'confirmations_controller')
-      BaseMailer.enqueue_email 'error_notification', { context_type: :log_line, context_id: log_line.id }
       respond_with_navigational(resource.errors, :status => :unprocessable_entity){ render :new }
     end
   end
@@ -42,15 +41,13 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
     if resource.valid?
       self.resource.confirm!
       track_event 'Confirmed their email address'
-      BaseMailer.enqueue_email 'registration_confirmation',
-        { context_type: :user, context_id: resource.id }
+      NotificationCenter.notify_via_email nil, :user, resource.id, 'registration_confirmation'
       set_flash_message :notice, :confirmed
       sign_in resource_name, resource, bypass: user_signed_in?
       redirect_to after_confirmation_path_for resource_name, resource
     else
       message = "Error confirming account for user ID #{resource.id}: #{resource.errors.messages}"
       log_line = LogLine.create(message: message, log_type: 'error', source: 'confirmations_controller')
-      BaseMailer.enqueue_email 'error_notification', { context_type: :log_line, context_id: log_line.id }
       render :action => 'show'
     end
   end

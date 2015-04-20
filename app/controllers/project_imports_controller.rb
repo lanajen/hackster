@@ -29,7 +29,7 @@ class ProjectImportsController < ApplicationController
       @message.body += "<p>Platform tag: #{params[:platform_tags_string]}</p>" if params[:platform_tags_string].present?
       @message.body += "<p>Product tag: #{params[:product_tags_string]}</p>" if params[:product_tags_string].present?
       @message.body += "<p>Thanks!<br><a href='#{url_for(current_user)}'>#{current_user.name}</a></p><p><a href='http://#{APP_CONFIG['full_host']}/projects/imports/new?user_id=#{current_user.id}&urls=#{params[:urls]}'>Start importing</a></p>"
-      BaseMailer.enqueue_generic_email(@message)
+      MailerQueue.enqueue_generic_email(@message)
     end
 
     def urls_valid? urls

@@ -17,6 +17,10 @@ class Respect < ActiveRecord::Base
     where(respectable_id: respectable.id, respectable_type: respectable.class.name, user_id: user.id).any?
   end
 
+  def association_name_for_notifications
+    respectable_type
+  end
+
   private
     def user_is_not_team_member
       errors.add :base, "You can't respect your own project!" if respectable_type == 'Project' and user and user.is_team_member?(respectable)

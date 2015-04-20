@@ -2,16 +2,9 @@ class CommentObserver < ActiveRecord::Observer
   # include BroadcastObserver
 
   def after_commit_on_create record
-    type = case record.commentable_type
-    when 'Issue'
-      'new_comment_issue_notification'
-    when 'Project'
-      'new_comment_project_notification'
-    else
-      return
-    end
-    BaseMailer.enqueue_email type,
-        { context_type: 'comment', context_id: record.id } unless record.disable_notification?
+    return unless record.commentable_type.in? %w(Issue Project)
+
+    NotificationCenter.notify_all :new, :comment, record.id unless record.disable_notification?
   end
 
   def after_create record

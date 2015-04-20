@@ -7,8 +7,7 @@ class ChallengeObserver < ActiveRecord::Observer
   end
 
   def after_end record
-    BaseMailer.enqueue_email 'challenge_ended_notification',
-      { context_type: 'challenge', context_id: record.id }
+    NotificationCenter.notify_all :completed, :challenge, record.id
     if platform = record.platform
       platform.active_challenge = false
       platform.save

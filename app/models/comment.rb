@@ -4,6 +4,7 @@ class Comment < ActiveRecord::Base
   belongs_to :user
   has_many :likes, as: :respectable, class_name: 'Respect', dependent: :destroy
   has_many :liking_users, class_name: 'User', through: :likes, source: :user
+  has_many :receipts, as: :receivable
 
   attr_accessor :children, :depth
   attr_accessible :raw_body, :user_attributes, :parent_id, :guest_name
@@ -42,6 +43,10 @@ class Comment < ActiveRecord::Base
 
       sorted << child
     end
+  end
+
+  def association_name_for_notifications
+    commentable_type
   end
 
   def disable_notification!

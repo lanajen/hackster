@@ -21,7 +21,7 @@ class DragonQueriesController < ApplicationController
       @message.subject = "New Dragon certification request"
       @message.body = '<p>The following should be added to a CSV file to be given to Dragon:</p><p>' + @dragon_query.to_csv.gsub(/\n/, '<br>') + '</p>'
       @message.body += "<p>Thanks!<br><a href='#{url_for(current_user)}'>#{current_user.name}</a><br>" if user_signed_in?
-      BaseMailer.enqueue_generic_email(@message)
+      MailerQueue.enqueue_generic_email(@message)
       LogLine.create source: 'dragon_query', log_type: 'dragon_query', message: @message.body
 
       redirect_to root_path, notice: "Thanks for your query, Dragon will be in touch soon!"

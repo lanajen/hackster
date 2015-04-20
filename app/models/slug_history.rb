@@ -24,7 +24,7 @@ class SlugHistory < ActiveRecord::Base
       if where(value: uri).count > 1
         message = "A duplicate slug_history url has been created: project_id: #{project.id} // project_uri: #{project.uri}"
         log_line = LogLine.create(message: message, log_type: 'error', source: 'slug_history')
-        BaseMailer.enqueue_email 'error_notification', { context_type: :log_line, context_id: log_line.id }
+        NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification'
       end
     end
   end

@@ -117,14 +117,13 @@ class CronTask < BaseWorker
     users.uniq!
 
     users.each do |user_id|
-      BaseMailer.enqueue_email 'new_projects_notification', { context_type: 'daily_notification', context_id: user_id }
+      NotificationCenter.notify_via_email nil, 'daily_notification', user_id, 'new_projects'
     end
   end
 
   def send_announcement_notifications
     Announcement.published.not_sent.each do |announcement|
-      BaseMailer.enqueue_email 'new_announcement_notification',
-        { context_type: 'announcement', context_id: announcement.id }
+      NotificationCenter.notify_all :new, :announcement, announcement.id
       announcement.workflow_state = 'sent'
       announcement.save
     end
@@ -135,7 +134,7 @@ class CronTask < BaseWorker
     assignments.each do |assignment|
       assignment.promotion.members.with_group_roles('student').includes(:user).each do |member|
         user = member.user
-        BaseMailer.enqueue_email 'assignment_due_reminder', { context_type: 'assignment', context_id: user.id } unless user.submitted_project_to_assignment?(assignment)
+        NotificationCenter.notify_all :due, :assignment, user.id unless user.submitted_project_to_assignment?(assignment)
       end
       assignment.update_column :reminder_sent_at, Time.now
     end
@@ -159,7 +158,7 @@ class CronTask < BaseWorker
       response = gb.lists.batch_subscribe({ id: list_id, batch: batch, double_optin: false, update_existing: true })
       failed_emails = response['errors'].map { |error| error['email']['email'] }
       successful_emails = get_email_from_users(users) - failed_emails
-      update_settings_for failed_emails, "subscriptions_mask = (subscriptions_mask - #{2**User::SUBSCRIPTIONS.keys.index('newsletter')})"
+      update_settings_for failed_emails, "subscriptions_masks -> 'email' = (CAST(subscriptions_masks -> 'email' AS INTEGER) - #{2**User::SUBSCRIPTIONS['email'].keys.index('newsletter')})"
       update_settings_for successful_emails, { mailchimp_registered: true }
       puts "Results for adding: #{successful_emails.size} successes, #{failed_emails.size} failures."
     end

@@ -11,11 +11,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150416173346) do
+ActiveRecord::Schema.define(version: 20150419212338) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pg_stat_statements"
+  enable_extension "hstore"
 
   create_table "addresses", force: :cascade do |t|
     t.integer "addressable_id"
@@ -80,8 +81,8 @@ ActiveRecord::Schema.define(version: 20150416173346) do
     t.string   "link",       limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "token",      limit: 255
-    t.string   "secret",     limit: 255
+    t.text     "token"
+    t.text     "secret"
   end
 
   add_index "authorizations", ["provider", "uid"], name: "index_authorizations_on_provider_and_uid", using: :btree
@@ -450,6 +451,7 @@ ActiveRecord::Schema.define(version: 20150416173346) do
     t.text     "counters_cache"
     t.string   "workflow_state",      limit: 255
     t.string   "slug",                limit: 255
+    t.string   "one_liner",           limit: 140
   end
 
   add_index "parts", ["partable_id", "partable_type"], name: "partable_index", using: :btree
@@ -536,16 +538,17 @@ ActiveRecord::Schema.define(version: 20150416173346) do
 
   create_table "receipts", force: :cascade do |t|
     t.integer  "user_id"
-    t.integer  "message_id"
+    t.integer  "receivable_id"
     t.integer  "conversation_id"
     t.boolean  "read",            default: false
     t.boolean  "deleted",         default: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "receivable_type", default: "Comment", null: false
   end
 
   add_index "receipts", ["conversation_id"], name: "index_receipts_on_conversation_id", using: :btree
-  add_index "receipts", ["message_id"], name: "index_receipts_on_message_id", using: :btree
+  add_index "receipts", ["receivable_id", "receivable_type"], name: "index_receipts_on_receivable_id_and_receivable_type", using: :btree
   add_index "receipts", ["user_id"], name: "index_receipts_on_user_id", using: :btree
 
   create_table "reputations", force: :cascade do |t|
@@ -698,6 +701,7 @@ ActiveRecord::Schema.define(version: 20150416173346) do
     t.boolean  "enable_sharing",                     default: true,   null: false
     t.string   "platform",               limit: 255
     t.datetime "last_seen_at"
+    t.hstore   "subscriptions_masks",                default: {},     null: false
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree

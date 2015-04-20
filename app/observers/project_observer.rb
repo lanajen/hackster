@@ -21,8 +21,7 @@ class ProjectObserver < ActiveRecord::Observer
     end
 
     if record.approved_changed and record.approved and record.made_public_at
-      BaseMailer.enqueue_email 'project_approved_notification',
-        { context_type: :project, context_id: record.id }
+      NotificationCenter.notify_all :approved, :project, record.id
     end
   end
 

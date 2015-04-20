@@ -25,7 +25,7 @@ class GroupInvitationsController < ApplicationController
     if params[:emails].present?
       emails = prepare_emails(params[:emails])
       if emails.any?
-        @invitable.invite_with_emails emails, current_user
+        @invitable.invite_with_emails emails, current_user, params[:personal_message]
         flash[:notice] = "Your invitations are on their way!"
       else
         flash[:alert] = "Uho, looks like the email format you entered was incorrect."

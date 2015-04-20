@@ -1,4 +1,4 @@
-class DeviseMailer < BaseMailer
+class DeviseMailer < ActionMailer::Base
   def confirmation_instructions(record, token, opts={})
     user_email 'confirmation_instructions', record, token, opts
   end
@@ -8,38 +8,22 @@ class DeviseMailer < BaseMailer
   end
 
   def invitation_instructions(record, token, opts={})
-    type = record.invited_by.present? ? 'invitation_instructions' : 'invite_granted'
-    enqueue_devise_email type, { context_type: :invited, context_id: record.id }, opts.merge(token: token)
-  end
-
-  def invitation_instructions_with_event_member(record, token, opts={})
-    invitation_instructions_with_member(record, token, opts={})
-  end
-
-  def invitation_instructions_with_hackathon_member(record, token, opts={})
-    invitation_instructions_with_member(record, token, opts={})
-  end
-
-  def invitation_instructions_with_list_member(record, token, opts={})
-    invitation_instructions_with_member(record, token, opts={})
-  end
-
-  def invitation_instructions_with_promotion_member(record, token, opts={})
-    invitation_instructions_with_member(record, token, opts={})
-  end
-
-  def invitation_instructions_with_platform_member(record, token, opts={})
-    invitation_instructions_with_member(record, token, opts={})
-  end
-
-  def invitation_instructions_with_hacker_space_member(record, token, opts={})
-    invitation_instructions_with_member(record, token, opts={})
+    template = record.invited_by.present? ? 'invitation_instructions' : 'invite_granted'
+    user_email template, record, token, opts.merge(context_type: :invited)
   end
 
   def invitation_instructions_with_member(record, token, opts={})
-    enqueue_devise_email 'invitation_instructions_with_member',
-      { context_type: :membership, context_id: record.id }, opts.merge(token: token)
+    user_email 'invitation_instructions_with_member', record, token, opts.merge(context_type: :membership)
   end
+
+  # def method_missing method_sym, *args, &block
+  #   puts method_sym.to_s
+  #   if method_sym.to_s =~ /^invitation_instructions_with_([a-z_])_member$/
+  #     invitation_instructions_with_member *args
+  #   else
+  #     super
+  #   end
+  # end
 
   def reset_password_instructions(record, token, opts={})
     user_email 'password_lost', record, token, opts
@@ -47,6 +31,8 @@ class DeviseMailer < BaseMailer
 
   private
     def user_email template, record, token, opts={}
-      enqueue_devise_email template, { context_type: :user, context_id: record.id }, opts.merge(token: token)
+      self.message.perform_deliveries = false
+      context_type = opts.delete(:context_type) || :user
+      NotificationCenter.perform_async 'notify_via_email', nil, context_type, record.id, template, opts
     end
 end
