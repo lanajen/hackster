@@ -7,8 +7,8 @@
   #home
     section#home-banner
       .home-slide#welcome-back
-        / # - if Time.now < DateTime.parse('2015-03-29 20:00 -0800')
-          = link_to 'Hardware Weekend Phoenix', '/phoenix', class: 'btn btn-warning btn-sm btn-over'
+        - if Time.now < DateTime.parse('2015-04-19 20:00 -0800')
+          = link_to 'Hardware Weekend Dallas', '/dallas', class: 'btn btn-warning btn-sm btn-over'
         .container
           h1 Welcome to your dashboard!
 

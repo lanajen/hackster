@@ -28,6 +28,7 @@ class AnnouncementsController < ApplicationController
     authorize! :create, Announcement, @platform
     @announcement = @platform.announcements.new
     @announcement.user_id = current_user.id
+    @announcement.draft = true
     @announcement.save validate: false
     redirect_to edit_platform_announcement_path(@platform.user_name, @announcement.id)
   end
