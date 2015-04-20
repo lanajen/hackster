@@ -16,15 +16,6 @@ class DeviseMailer < ActionMailer::Base
     user_email 'invitation_instructions_with_member', record, token, opts.merge(context_type: :membership)
   end
 
-  # def method_missing method_sym, *args, &block
-  #   puts method_sym.to_s
-  #   if method_sym.to_s =~ /^invitation_instructions_with_([a-z_])_member$/
-  #     invitation_instructions_with_member *args
-  #   else
-  #     super
-  #   end
-  # end
-
   def reset_password_instructions(record, token, opts={})
     user_email 'password_lost', record, token, opts
   end
