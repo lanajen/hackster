@@ -31,7 +31,7 @@
     tinyMCE.init({
       selector: 'textarea.text-editor',
       toolbar1: "undo redo | bold italic underline | link unlink | bullist numlist | image | code",
-      image_list: #{@post.images.select{|i| i.persisted? }.each_with_index.map{|i, j| { title: i.title || "image #{j+1}", value: i.file_url } }.to_json.html_safe},
+      image_list: #{@post.images.select{|i| i.persisted? and i.file_url.present? }.each_with_index.map{|i, j| { title: i.title || "image #{j+1}", value: i.file_url } }.to_json.html_safe},
       menubar: false,
       plugins: 'link paste code image',
       height: 600,
