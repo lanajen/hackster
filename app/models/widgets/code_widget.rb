@@ -333,7 +333,7 @@ class CodeWidget < Widget
     end
 
     def format_content
-      return unless raw_code_changed? or language_changed?
+      return unless raw_code_changed? or language_changed? or (raw_code.present? and formatted_content.blank?)
 
       self.formatted_content = if raw_code == ERROR_MESSAGE
         ERROR_MESSAGE
