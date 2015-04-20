@@ -31,7 +31,10 @@ class Part < ActiveRecord::Base
     :datasheet_link, :product_page_link]
   set_changes_for_stored_attributes :websites
 
+  # convert these to hstore so they can be queried on
+  # def self.most_used; order("counters_cache -> 'projects_count' DESC"); end
   store :counters_cache, accessors: [:projects_count]
+  # update parser to work with hstore
   parse_as_integers :counters_cache, :projects_count
 
   validates :name, presence: true
