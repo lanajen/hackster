@@ -3,9 +3,13 @@ class Post < ThreadPost
 
   belongs_to :threadable, polymorphic: true
 
-  attr_accessible :private
+  attr_accessible :private, :draft
 
   before_create :generate_sub_id
+
+  def draft?
+    draft
+  end
 
   private
     def generate_sub_id
