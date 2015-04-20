@@ -2,7 +2,8 @@
   = f.error_notification
   = f.input :name
   = f.input :slug, label: 'Name for URL'
-  = f.input :description, input_html: { class: 'text-editor', rows: 10 }
+  = f.input :one_liner, as: :text, input_html: { rows: 2 }, hint: 'Maximum 140 characters', label: 'Elevator pitch'
+  = f.input :description, hint: 'Full description. You can make it as long and thorough as you need.', input_html: { class: 'text-editor', rows: 10 }
   = f.input :product_tags_string, label: 'Tags', hint: "Most useful tags would include technologies like 'Wifi', 'BLE', 'accelerometer'... Please enter each tag separated by commas."
   = f.input :unit_price, label: 'Suggested retail price, $'
   = f.input :store_link, label: 'Link to store page'

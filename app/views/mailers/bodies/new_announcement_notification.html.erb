@@ -1,6 +1,6 @@
 <p>Hello there,</p>
 
-<p><a href="<%= platform_short_url(@context[:platform]) %>?ref=emailnotif"><%= @context[:platform].name %></a> just posted news on <a href="http://www.hackster.io?ref=emailnotif">Hackster.io</a>:</p>
+<p><a href="<%= platform_home_url(@context[:platform]) %>?ref=emailnotif"><%= @context[:platform].name %></a> just posted news on <a href="http://www.hackster.io?ref=emailnotif">Hackster.io</a>:</p>
 
 <p class="quote">
   <strong><a href="<%= platform_announcement_url(@context[:announcement]) %>?ref=emailnotif"><%= @context[:announcement].title %></a></strong>

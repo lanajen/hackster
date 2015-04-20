@@ -10,7 +10,7 @@ class Api::V1::PlatformsController < Api::V1::BaseController
   end
 
   def show
-    render json: { platform: { name: @platform.name, url: platform_short_url(@platform) }, projects: @projects.map{|c| project = c.project; { name: project.name, url: project_url(project), embed_url: project_embed_url(project), cover_image_url: project.cover_image.try(:file_url, :cover_thumb), one_liner: project.one_liner, author_names: project.users.map(&:name).to_sentence, views: project.impressions_count, comments: project.comments_count, respects: project.respects_count } } }
+    render json: { platform: { name: @platform.name, url: platform_home_url(@platform) }, projects: @projects.map{|c| project = c.project; { name: project.name, url: project_url(project), embed_url: project_embed_url(project), cover_image_url: project.cover_image.try(:file_url, :cover_thumb), one_liner: project.one_liner, author_names: project.users.map(&:name).to_sentence, views: project.impressions_count, comments: project.comments_count, respects: project.respects_count } } }
   end
 
   def analytics

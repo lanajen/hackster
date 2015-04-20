@@ -5,7 +5,7 @@
     .col-xs-12
       .header.clearfix
         h3.pull-left
-          | Project settings
+          | Page settings
         .pull-right
           ul.list-unstyled.list-inline
             - if current_user.is? :admin
@@ -21,20 +21,39 @@
         .panel-heading
           h4 General settings
         .panel-body
-          = f.input :name, label: 'Project name'
-          = f.input :one_liner, as: :text, input_html: { rows: 4 },
-            hint: 'Maximum 140 characters'
-          = f.input :platform_tags_string, as: :string, label: 'Built with', hint: 'Separate technologies by commas', placeholder: 'Eg: Arduino, ATmega, Attiny...'
-          = f.input :website, label: 'Project website'
-          = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @project.cover_image.try(:file_url, :cover_mini_thumb), help_block: 'This should be your nicest picture for this project. Give us some high def for best results!', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
+          - if @project.external?
+            = f.input :name, label: 'Project name'
+            = f.input :one_liner, label: 'Mini description', as: :text, input_html: { rows: 4 },
+              hint: 'Maximum 140 characters'
+            = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @project.cover_image.try(:file_url, :cover_mini_thumb), help_block: 'This should be your nicest picture for this project. Give us some high def for best results!', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
+            = f.input :platform_tags_string, as: :string, label: 'Built with', hint: 'Separate technologies by commas', placeholder: 'Eg: Arduino, ATmega, Attiny...'
+            = f.input :website, label: 'Project website'
 
-          = f.input :start_date, order: [:year, :month, :day], label: 'Date', hint: 'When did this project come to life?' do
-            .row
-              .col-md-6
-                = hidden_field_tag 'project[start_date(3i)]', '1'
-                = select_month(@project.start_date, { prompt: '--Month--' }, { class: 'form-control', name: 'project[start_date(2i)]' })
-              .col-md-6
-                = select_year(@project.start_date, { prompt: '--Year--', start_year: Date.today.year, end_year: Date.today.year - 15 }, { class: 'form-control', name: 'project[start_date(1i)]' })
+            = f.input :start_date, order: [:year, :month, :day], label: 'Date', hint: 'When did this project come to life?' do
+              .row
+                .col-md-6
+                  = hidden_field_tag 'project[start_date(3i)]', '1'
+                  = select_month(@project.start_date, { prompt: '--Month--' }, { class: 'form-control', name: 'project[start_date(2i)]' })
+                .col-md-6
+                  = select_year(@project.start_date, { prompt: '--Year--', start_year: Date.today.year, end_year: Date.today.year - 15 }, { class: 'form-control', name: 'project[start_date(1i)]' })
+          - else
+            = f.input :name, label: 'Device name'
+            = f.input :one_liner, label: 'Elevator pitch', as: :text, input_html: { rows: 4 },
+              hint: 'Maximum 140 characters'
+            = f.input :description, hint: "Describe your device in more details.", input_html: { class: 'text-editor', rows: 20 }
+            = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @project.cover_image.try(:file_url, :cover_mini_thumb), help_block: 'High definition shot for your device. Will be cropped to 4:3.', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
+            / # = f.input :platform_tags_string, label: 'Powered by', hint: 'Select the platform that powers your device', collection: Platform.public.order(:full_name).pluck(:full_name)
+            / - @project.project_collections.joins("INNER JOIN groups ON groups.id = project_collections.collectable_id AND project_collections.collectable_type = 'Group'").where("groups.type = 'Platform'").each do |col|
+              = f.simple_fields_for :project_collections, col do |f_col|
+                = f_col.input :id, as: :hidden
+                = f_col.input :collectable_type, as: :hidden, input_html: { value: 'Group' }
+                = f_col.input :collectable_id, label: "Powered by", collection: Platform.public.order(:full_name)
+                = f_col.input :comment, label: "How did you use it?", hint: "Describe why you chose to use this platform to power your device and how you're using it", as: :text, input_html: { rows: 5 }
+                / .row
+                  .col-md-8.col-md-offset-4= f_col.link_to_remove 'Remove this platform', class: 'btn btn-danger btn-xs'
+            / = f.link_to_add 'Add a platform powering this device', :project_collections, class: 'btn btn-success btn-xs'
+            = f.input :website, label: 'Official website'
+            = f.input :buy_link, label: 'E-commerce page'
 
 
       .panel.panel-default
@@ -42,7 +61,7 @@
           h4 Danger zone
         .panel-body
           .form-group
-            .col-md-8.col-xs-offset-4= link_to 'Delete project', @project, method: :delete, class: 'btn btn-danger btn-sm', data: { confirm: "Are you sure? There's no coming back!" }
+            .col-md-8.col-xs-offset-4= link_to 'Delete page', @project, method: :delete, class: 'btn btn-danger btn-sm', data: { confirm: "Are you sure? There's no coming back!" }
 
   .row
     .col-xs-12
@@ -53,3 +72,19 @@
             li= link_to 'Edit as admin', edit_admin_project_path(@project), class: 'btn btn-warning btn-sm'
           li= f.submit 'Save changes', class: 'btn btn-primary btn-sm'
           li= link_to 'Cancel', @project, class: 'btn-link btn-sm'
+
+= content_for :js do
+  = tinymce_assets
+
+  javascript:
+    $(function(){
+
+      tinyMCE.init({
+        selector: 'textarea.text-editor',
+        toolbar: "undo redo | bold italic underline | link unlink | bullist numlist",
+        menubar: false,
+        plugins: 'link paste',
+        statusbar: false,
+        height: 300
+      });
+    });

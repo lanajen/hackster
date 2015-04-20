@@ -25,12 +25,13 @@ class Platform < List
     :buy_link, :shoplocket_link, :cover_image_id, :accept_project_ideas,
     :project_ideas_phrasing, :client_subdomain_attributes, :logo_id,
     :download_link, :company_logo_id, :disclaimer, :moderation_level,
-    :cta_text, :parts_attributes, :verified, :enable_chat, :enable_products
+    :cta_text, :parts_attributes, :verified, :enable_chat, :enable_products,
+    :description, :enable_parts
 
   accepts_nested_attributes_for :client_subdomain, :parts
 
   # before_save :update_user_name
-  before_save :ensure_api_credentials
+  before_save :format_hashtag, :ensure_api_credentials
 
   store_accessor :websites, :forums_link, :documentation_link,
     :crowdfunding_link, :buy_link, :shoplocket_link, :download_link
@@ -38,11 +39,18 @@ class Platform < List
 
   store_accessor :properties, :accept_project_ideas, :project_ideas_phrasing,
     :active_challenge, :disclaimer, :moderation_level, :cta_text, :hashtag,
-    :verified, :enable_chat, :enable_products, :api_username, :api_password
+    :verified, :enable_chat, :enable_products, :description, :enable_parts,
+    :api_username, :api_password
   set_changes_for_stored_attributes :properties
 
   parse_as_booleans :properties, :accept_project_ideas, :active_challenge,
-    :is_new, :enable_comments, :hidden, :verified, :enable_chat, :enable_products
+    :is_new, :enable_comments, :hidden, :verified, :enable_chat, :enable_products,
+    :enable_parts
+
+  store_accessor :counters_cache, :parts_count, :products_count
+
+  parse_as_integers :counters_cache, :external_projects_count,
+    :private_projects_count, :products_count, :parts_count
 
   taggable :platform_tags, :product_tags
 
@@ -94,6 +102,12 @@ class Platform < List
     self.company_logo = CompanyLogo.find_by_id(val)
   end
 
+  def counters
+    super.merge({
+      parts: 'parts.count',
+    })
+  end
+
   def generate_user_name
     return if full_name.blank?
 
@@ -140,6 +154,10 @@ class Platform < List
   end
 
   private
+    def format_hashtag
+      self.hashtag = '#' + hashtag if hashtag.present? and hashtag !~ /\A#/
+    end
+
     def ensure_api_credentials
       generate_api_credentials unless api_username.present? and api_password.present?
     end

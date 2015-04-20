@@ -71,12 +71,11 @@ class Project < ActiveRecord::Base
   has_many :images, as: :attachable, dependent: :destroy
   has_many :lists, -> { where("groups.type = 'List'") }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :permissions, as: :permissible
-  has_many :project_collections, dependent: :destroy
   has_many :respects, dependent: :destroy, as: :respectable
   has_many :respecting_users, -> { order 'respects.created_at ASC' }, through: :respects, source: :user
   has_many :slug_histories, -> { order updated_at: :desc }, as: :sluggable, dependent: :destroy
   has_many :team_members, -> { order(created_at: :asc).where("members.approved_to_join <> 'f' OR members.approved_to_join IS NULL") }, through: :team, source: :members #.includes(:user)
-  has_many :platforms, -> { where("groups.type = 'Platform'") }, through: :project_collections, source_type: 'Group', source: :collectable
+  has_many :platforms, -> { where("groups.type = 'Platform'").order("groups.full_name ASC") }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :users, through: :team_members
   has_many :widgets, -> { order position: :asc }, as: :widgetable, dependent: :destroy
   has_one :cover_image, -> { order created_at: :desc }, as: :attachable, class_name: 'CoverImage', dependent: :destroy  # added order because otherwise it randomly picks up the wrong image
@@ -94,12 +93,13 @@ class Project < ActiveRecord::Base
     :approved, :open_source, :buy_link, :private_logs, :private_issues,
     :hacker_space_id, :locked, :mark_as_idea, :event_id, :assignment_id,
     :community_ids, :new_group_id, :guest_twitter_handle, :celery_id,
-    :team_attributes, :story, :made_public_at, :difficulty, :type, :product
+    :team_attributes, :story, :made_public_at, :difficulty, :type, :product,
+    :project_collections_attributes
   attr_accessor :current, :private_changed, :needs_platform_refresh,
     :approved_changed
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
     :widgets, :cover_image, :permissions, :slug_histories, :team,
-    allow_destroy: true
+    :project_collections, allow_destroy: true
 
   validates :name, length: { in: 3..60 }, allow_blank: true
   validates :one_liner, :logo, presence: true, if: proc { |p| p.force_basic_validation? }

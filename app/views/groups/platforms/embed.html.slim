@@ -13,6 +13,6 @@
   p.pull-right.text-muted
     small
       ' Projects made with
-      ==> link_to @platform.name, platform_short_url(@platform), target: '_blank'
+      ==> link_to @platform.name, platform_home_url(@platform), target: '_blank'
       ' on
       = link_to 'Hackster.io', root_url, target: '_blank'

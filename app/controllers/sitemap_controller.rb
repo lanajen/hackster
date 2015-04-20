@@ -118,12 +118,34 @@ class SitemapController < ApplicationController
 
     def platforms_pages offset=0
       sitemap_scope(platforms_query, offset).map do |platform|
-        {
-          loc: platform_projects_url(platform),
-          changefreq: 'daily',
-          lastmod: platform.updated_at.strftime("%F"),
-        }
-      end
+        urls = [
+          {
+            loc: platform_home_url(platform),
+            changefreq: 'daily',
+            lastmod: platform.updated_at.strftime("%F"),
+          },
+          {
+            loc: platform_projects_url(platform),
+            changefreq: 'daily',
+            lastmod: platform.updated_at.strftime("%F"),
+          }
+        ]
+        if platform.enable_products
+          urls << {
+            loc: platform_products_url(platform),
+            changefreq: 'daily',
+            lastmod: platform.updated_at.strftime("%F"),
+          }
+        end
+        if platform.enable_parts
+          urls << {
+            loc: platform_parts_url(platform),
+            changefreq: 'daily',
+            lastmod: platform.updated_at.strftime("%F"),
+          }
+        end
+        urls
+      end.flatten
     end
 
     def parts_query

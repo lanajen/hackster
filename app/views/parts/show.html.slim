@@ -32,27 +32,27 @@
         ' Sort by
         span.caret
       ul.dropdown-menu
-        li*{ class: "#{'active' if params[:sort] == 'updated'}" } = link_to 'Last updated', platform_short_path(@platform, sort: 'updated', by: params[:by])
-        li*{ class: "#{'active' if params[:sort] == 'magic'}" } = link_to 'Magic', platform_short_path(@platform, sort: 'magic', by: params[:by])
-        li*{ class: "#{'active' if params[:sort] == 'popular'}" } = link_to 'Most popular', platform_short_path(@platform, sort: 'popular', by: params[:by])
-        li*{ class: "#{'active' if params[:sort] == 'recent'}" } = link_to 'Most recent', platform_short_path(@platform, sort: 'recent', by: params[:by])
-        li*{ class: "#{'active' if params[:sort] == 'respected'}" } = link_to 'Most respected', platform_short_path(@platform, sort: 'respected', by: params[:by])
+        li*{ class: "#{'active' if params[:sort] == 'updated'}" } = link_to 'Last updated', platform_home_path(@platform, sort: 'updated', by: params[:by])
+        li*{ class: "#{'active' if params[:sort] == 'magic'}" } = link_to 'Magic', platform_home_path(@platform, sort: 'magic', by: params[:by])
+        li*{ class: "#{'active' if params[:sort] == 'popular'}" } = link_to 'Most popular', platform_home_path(@platform, sort: 'popular', by: params[:by])
+        li*{ class: "#{'active' if params[:sort] == 'recent'}" } = link_to 'Most recent', platform_home_path(@platform, sort: 'recent', by: params[:by])
+        li*{ class: "#{'active' if params[:sort] == 'respected'}" } = link_to 'Most respected', platform_home_path(@platform, sort: 'respected', by: params[:by])
 
     / .btn-group
       button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
         ' Filter by
         span.caret
       ul.dropdown-menu
-        li*{ class: "#{'active' if params[:by] == nil}" } = link_to 'All', platform_short_path(@platform, sort: params[:sort])
-        li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to 'Featured', platform_short_path(@platform, by: 'featured', sort: params[:sort])
-        li*{ class: "#{'active' if params[:by] == 'on_hackster'}" } = link_to 'On Hackster', platform_short_path(@platform, by: 'on_hackster', sort: params[:sort])
-        li*{ class: "#{'active' if params[:by] == '7days'}" } = link_to 'Last 7 days', platform_short_path(by: '7days', sort: params[:sort])
-        li*{ class: "#{'active' if params[:by] == '30days'}" } = link_to 'Last 30 days', platform_short_path(by: '30days', sort: params[:sort])
-        / li*{ class: "#{'active' if params[:by] == 'wip'}" } = link_to 'Work in progress', platform_short_path(@platform, by: 'wip', sort: params[:sort])
+        li*{ class: "#{'active' if params[:by] == nil}" } = link_to 'All', platform_home_path(@platform, sort: params[:sort])
+        li*{ class: "#{'active' if params[:by] == 'featured'}" } = link_to 'Featured', platform_home_path(@platform, by: 'featured', sort: params[:sort])
+        li*{ class: "#{'active' if params[:by] == 'on_hackster'}" } = link_to 'On Hackster', platform_home_path(@platform, by: 'on_hackster', sort: params[:sort])
+        li*{ class: "#{'active' if params[:by] == '7days'}" } = link_to 'Last 7 days', platform_home_path(by: '7days', sort: params[:sort])
+        li*{ class: "#{'active' if params[:by] == '30days'}" } = link_to 'Last 30 days', platform_home_path(by: '30days', sort: params[:sort])
+        / li*{ class: "#{'active' if params[:by] == 'wip'}" } = link_to 'Work in progress', platform_home_path(@platform, by: 'wip', sort: params[:sort])
 
   .btn-group.pull-left
     button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
-      ' More parts
+      ' More products
       span.caret
     ul.dropdown-menu
       - @platform.parts.each do |part|

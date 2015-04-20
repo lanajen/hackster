@@ -11,7 +11,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20150417190555) do
+=======
+<<<<<<< HEAD
+ActiveRecord::Schema.define(version: 20150417223252) do
+=======
+ActiveRecord::Schema.define(version: 20150416173346) do
+>>>>>>> master
+>>>>>>> master
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -450,6 +458,7 @@ ActiveRecord::Schema.define(version: 20150417190555) do
     t.text     "counters_cache"
     t.string   "workflow_state",      limit: 255
     t.string   "slug",                limit: 255
+    t.string   "one_liner",           limit: 140
   end
 
   add_index "parts", ["partable_id", "partable_type"], name: "partable_index", using: :btree

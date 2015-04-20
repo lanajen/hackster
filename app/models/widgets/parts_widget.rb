@@ -42,8 +42,8 @@ class PartsWidget < Widget
   private
     def delete_empty_part_ids
       part_joins.each do |part_join|
-        # part_join.delete if part_join.part_id.blank?
-        part_join.delete if part_join.name.blank?
+        part_join.delete if part_join.part_id.blank?
+        # part_join.delete if part_join.name.blank?
       end
     end
 

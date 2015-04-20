@@ -6,19 +6,19 @@
     div class="project-#{project.id}"
       .thumb.project-thumb
         .thumb-image.has-link-overlay style="background-image:url('#{project.cover_image(:cover_thumb)}')"
-          = link_to '', project.website, class: 'link-overlay'
+          = link_to '', project, class: 'link-overlay'
           .thumb-image-inner-top
             .award-container
             p.description.show-on-hover
               = project.one_liner
           .thumb-image-inner
             h4
-              ==> link_to project.name, project.website, class: 'project-link-with-ref'
+              ==> link_to project.name, project, class: 'project-link-with-ref'
             / p
               - if project.guest_name.present?
                 ' by
                 span.user-name>= project.guest_name
-            p
+            / p
               ' More info at
               strong= project.website_host
           .thumb-super

@@ -1,14 +1,14 @@
 - cache "platform-#{platform.id}-card", tag: ["platform-#{platform.id}-card"], expires_in: 24.hours do
   .platform-card.media id="platform-card-#{platform.id}" style="background-image:url(#{platform.cover_image.try(:file_url)})"
-    = link_to(image_tag(platform.avatar.file_url(:big), class: 'img-thumbnail media-object'), platform_short_path(platform), class: 'pull-left') if platform.avatar
+    = link_to(image_tag(platform.avatar.file_url(:big), class: 'img-thumbnail media-object'), platform_home_path(platform), class: 'pull-left') if platform.avatar
     .media-body
       .platform-card-inner
         .platform-card-name.media-heading
-          strong = link_to platform.name, platform_short_path(platform)
+          strong = link_to platform.name, platform_home_path(platform)
         .platform-card-desc
           p= platform.mini_resume
           p
-            a href=platform_short_path(platform) class='hidden-link'
+            a href=platform_home_path(platform) class='hidden-link'
               strong> = number_with_delimiter platform.projects_count
               ==> pluralize_without_count platform.projects_count, 'project'
               strong>= number_with_delimiter platform.followers_count

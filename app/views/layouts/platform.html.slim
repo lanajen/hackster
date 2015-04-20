@@ -1,0 +1,37 @@
+- unless @group.decorated?
+  - @group = begin; "#{@group.class.name}Decorator".constantize.decorate(@group); rescue; @group.decorate; end;
+
+/ = content_for :before_main do
+  #about style='position: relative;z-index: 999;background: #F2F2F2;'
+    - if !user_signed_in?
+      = render partial: 'shared/signup_top', locals: { message: "Dig #{@group.name}? Join and receive updates about new projects: ", redirect_to: create_followers_path(followable_type: 'Group', followable_id: @group.id), source: 'group' }
+
+= content_for :head do
+  = render partial: "groups/#{@group.identifier.pluralize}/meta_tags"
+  meta name='group_id' content=@group.id
+
+= content_for :no_container do
+
+  .platform-page
+    section.top-banner.top-banner-short
+      .top-banner-image style="background-image:url('#{@group.cover_image(:cover_wide)}');" class=@group.bg_class
+        .top-banner-image-bottom-left.hidden-xs
+          = image_tag @group.avatar(:big), class: 'img-thumbnail'
+          h2.group-name
+            - if @group.company_logo
+              = image_tag @group.company_logo.try(:file_url), class: 'company-logo'
+            = @group.name
+            - if @group.verified
+              i.fa.fa-check-circle.istooltip.verified title="Verified"
+            - if @group.disclaimer.present?
+              i.fa.fa-info-circle.istooltip.disclaimer data-container='body' title=@group.disclaimer
+
+    = render partial: "groups/#{@group.identifier.pluralize}/alerts"
+
+    section.main-section
+      = render partial: "groups/#{@group.identifier.pluralize}/nav"
+
+      .container
+        = yield
+
+= render template: "layouts/#{current_layout}"

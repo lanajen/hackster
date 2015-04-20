@@ -304,18 +304,18 @@ HackerIo::Application.routes.draw do
     post 'users/slack_settings' => 'chat_messages#save_slack_settings'
 
     constraints(PlatformPage) do
-      get ':slug' => redirect('%{slug}/projects'), slug: /[A-Za-z0-9_\-]{3,}/
-      get ':slug/products' => 'platforms#products', slug: /[A-Za-z0-9_\-]{3,}/, as: :platform_products, constraints: { format: /(html|json)/ }
-      get ':slug/projects' => 'platforms#projects', slug: /[A-Za-z0-9_\-]{3,}/, as: :platform_projects, constraints: { format: /(html|json|atom|rss)/ }
-      get ':slug/embed' => 'platforms#embed', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|js)/ }
+      get ':slug' => 'platforms#show', as: :platform_home, slug: /[A-Za-z0-9_\-]{3,}/
       get ':user_name' => redirect('%{slug}/projects'), as: :platform_short, user_name: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
-      scope ':slug', slug: /[A-Za-z0-9_\-]{3,}/, as: :platform, constraints: { format: /(html|json)/ } do
+      scope ':slug', slug: /[A-Za-z0-9_\-]{3,}/, as: :platform, constraints: { format: /(html|json|js|atom|rss)/ } do
         get 'analytics' => 'platforms#analytics'
         get 'chat' => 'chat_messages#index'
         resources :announcements, except: [:create, :update, :destroy], path: :news
-        get 'parts' => 'parts#index'
-        get 'parts/:part_slug' => 'parts#show', as: :part
-        get 'parts/:part_slug/embed' => 'parts#embed', as: :embed_part
+        get 'embed' => 'platforms#embed'
+        get 'makes' => 'parts#index', as: :parts
+        get 'makes/:part_slug' => 'parts#show', as: :part
+        get 'makes/:part_slug/embed' => 'parts#embed', as: :embed_part
+        get 'powers' => 'platforms#products', as: :products
+        get 'projects' => 'platforms#projects', as: :projects
       end
     end
 
@@ -409,6 +409,8 @@ HackerIo::Application.routes.draw do
   get 'projects/e/:user_name/:id' => 'external_projects#show', as: :external_project, id: /[0-9]+\-[A-Za-z0-9\-]+/
   delete 'projects/e/:user_name/:id' => 'projects#destroy', id: /[0-9]+\-[A-Za-z0-9\-]+/
   get 'projects/e/:user_name/:slug' => 'external_projects#redirect_to_show', as: :external_project_redirect  # legacy route (google has indexed them)
+
+  get ':user_name/powers/:slug' => 'products#show', as: :product
 
   resources :issues, only: [] do
     resources :comments, only: [:create]

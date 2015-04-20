@@ -10,29 +10,32 @@ li.fields
             li= link_to content_tag(:i, '', class: 'fa fa-angle-down'), '', class: 'btn btn-default btn-xs move-down'
             li= f.link_to_remove content_tag(:i, '', class: 'fa fa-times') + ' Delete', class: 'btn btn-danger btn-xs'
 
-      / tr
+      tr
         - if part.part_id.present?
           td style='width:85%'= f.input :part_id, input_html: { class: 'select2' }, label: 'Part', collection: { part.part.name  => part.part_id }, prompt: 'Select a part'
         - else
           td style='width:85%'= f.input :part_id, input_html: { class: 'select2' }, label: 'Part', collection: {}, prompt: 'Select a part'
 
-      tr
+        td style='width:15%;'
+          = f.input :quantity, label: '&times;'.html_safe, input_html: { style: 'width:calc(100% - 30px) !important' }, label_html: { class: 'times' }
+
+      / tr
         td style='width:85%'= f.input :name, input_html: { style: 'border-right:1px solid #ddd' }, label: 'Part name'
 
         td style='width:15%;'
           = f.input :quantity, label: '&times;'.html_safe, input_html: { style: 'width:calc(100% - 30px)' }, label_html: { class: 'times' }
 
       tr data-name='part-comment' class="#{'default-hidden' if part.comment.blank?}"
-        td colspan=2 = f.input :comment, label: 'Comment', placeholder: 'Eg: can be replaced by a higher value if necessary'
+        td colspan=2 = f.input :comment, label: 'Comment', placeholder: 'Eg: can be replaced by a component of higher value'
 
-      tr data-name='part-vendor-link' class="#{'default-hidden' if part.vendor_link.blank?}"
+      / tr data-name='part-vendor-link' class="#{'default-hidden' if part.vendor_link.blank?}"
         td colspan=2 = f.input :vendor_link, label: 'Online store URL', placeholder: 'Eg: http://www.digikey.com/product-detail/en/CF14JT10K0/CF14JT10K0CT-ND/1830374'
 
-      / # - if current_user.is? :admin
+      / - if current_user.is? :admin
         tr data-name='part-vendor-sku' class="#{'default-hidden' if part.vendor_sku.blank?}"
           td colspan=2 = f.input :vendor_sku, label: 'DigiKey SKU', placeholder: 'Eg: CF14JT10K0CT-ND'
 
-      - if part.comment.blank? or part.vendor_link.blank?# or (current_user.is? :admin and part.vendor_sku.blank?)
+      / - if part.comment.blank? or part.vendor_link.blank?# or (current_user.is? :admin and part.vendor_sku.blank?)
         tr
           td colspan=2 style='padding:5px 10px'
             ul.list-inline
@@ -43,7 +46,8 @@ li.fields
               / # - if part.vendor_sku.blank?
                 li= link_to 'Add DigiKey SKU', '', 'data-target' => 'part-vendor-sku', class: 'reveal btn btn-link btn-xs'
 
-      / # - if part.comment.blank?
+      - if part.comment.blank?
         tr
           td colspan=2 style='padding:5px 10px'
-            = link_to 'Add comment', '', 'data-target' => 'part-comment', class: 'reveal btn btn-link btn-xs'
+            ul.list-inline
+              li= link_to 'Add comment', '', 'data-target' => 'part-comment', class: 'reveal btn btn-link btn-xs'
