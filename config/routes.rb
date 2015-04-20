@@ -224,7 +224,7 @@ HackerIo::Application.routes.draw do
     resources :project_collections, only: [:edit, :update]
 
     get 'hackers' => 'users#index', as: :hackers
-    get 'hackers/:id' => 'users#redirect_to_show', as: :hacker
+    get 'hackers/:id' => 'users#redirect_to_show', as: :hacker, format: /(html|js)/
 
     scope 'challenges/:slug', as: :challenge do
       get '' => 'challenges#show'
@@ -454,7 +454,7 @@ HackerIo::Application.routes.draw do
   end
 
   constraints(UserPage) do
-    get ':slug' => 'users#show', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|js)/ }
+    get ':slug' => 'users#show', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
     get ':user_name' => 'users#show', as: :user, user_name: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
   end
 

@@ -1,9 +1,9 @@
 class UsersController < ApplicationController
-  before_filter :authenticate_user!, except: [:show, :index]
+  before_filter :authenticate_user!, except: [:show, :index, :redirect_to_show]
   before_filter :load_user, only: [:show]
-  authorize_resource except: [:after_registration, :after_registration_save]
+  authorize_resource except: [:after_registration, :after_registration_save, :redirect_to_show]
   layout :set_layout
-  protect_from_forgery except: :show
+  protect_from_forgery except: :redirect_to_show
 
   def index
     title "Browse top hackers"
@@ -11,32 +11,37 @@ class UsersController < ApplicationController
   end
 
   def show
-    respond_to do |format|
-      format.html do
-        impressionist_async @user, "", unique: [:session_hash]  # no need to add :impressionable_type and :impressionable_id, they're already included with @user
-        title @user.name
-        meta_desc "#{@user.name} is on #{site_name}. Come share your hardware projects with #{@user.name} and other hardware hackers and makers."
+    impressionist_async @user, "", unique: [:session_hash]  # no need to add :impressionable_type and :impressionable_id, they're already included with @user
+    title @user.name
+    meta_desc "#{@user.name} is on #{site_name}. Come share your hardware projects with #{@user.name} and other hardware hackers and makers."
 
-        @public_projects = @user.projects.live.for_thumb_display.order(start_date: :desc, made_public_at: :desc, created_at: :desc)
-        @private_projects = @user.projects.private.for_thumb_display
-        @respected_projects = @user.respected_projects.indexable_and_external.for_thumb_display
-        if current_platform
-          @private_projects = if current_user == @user
-            @private_projects.select{ |p| (p.platform_tags_cached.map{|t| t.downcase } & current_platform.platform_tags.map{|t| t.name.downcase }).any? }
-          else
-            @private_projects.with_group(current_platform)
-          end
-          @public_projects = @public_projects.with_group(current_platform)
-          @respected_projects = @respected_projects.with_group(current_platform)
-        end
-
-        @comments = if current_platform
-          @user.live_comments.includes(:commentable).joins("INNER JOIN project_collections ON project_collections.project_id = comments.commentable_id AND commentable_type = 'Project'").where(project_collections: { collectable_id: current_platform.id, collectable_type: 'Group' })
-        else
-          @user.live_comments.includes(:commentable)
-        end
+    @public_projects = @user.projects.live.for_thumb_display.order(start_date: :desc, made_public_at: :desc, created_at: :desc)
+    @private_projects = @user.projects.private.for_thumb_display
+    @respected_projects = @user.respected_projects.indexable_and_external.for_thumb_display
+    if current_platform
+      @private_projects = if current_user == @user
+        @private_projects.select{ |p| (p.platform_tags_cached.map{|t| t.downcase } & current_platform.platform_tags.map{|t| t.name.downcase }).any? }
+      else
+        @private_projects.with_group(current_platform)
       end
+      @public_projects = @public_projects.with_group(current_platform)
+      @respected_projects = @respected_projects.with_group(current_platform)
+    end
 
+    @comments = if current_platform
+      @user.live_comments.includes(:commentable).joins("INNER JOIN project_collections ON project_collections.project_id = comments.commentable_id AND commentable_type = 'Project'").where(project_collections: { collectable_id: current_platform.id, collectable_type: 'Group' })
+    else
+      @user.live_comments.includes(:commentable)
+    end
+
+    # track_event 'Viewed profile', @user.to_tracker.merge({ own: (current_user.try(:id) == @user.id) })
+  end
+
+  def redirect_to_show
+    @user = User.find params[:id]
+
+    respond_to do |format|
+      format.html { redirect_to user_path(@user, ref: params[:ref]), status: 301 }
       format.js do
         @projects = if params[:project_ids] and params[:auth_token] and params[:auth_token] == @user.security_token
           ids = params[:project_ids]
@@ -50,13 +55,6 @@ class UsersController < ApplicationController
         render "shared/embed"
       end
     end
-
-    # track_event 'Viewed profile', @user.to_tracker.merge({ own: (current_user.try(:id) == @user.id) })
-  end
-
-  def redirect_to_show
-    @user = User.find params[:id]
-    redirect_to user_path(@user, ref: params[:ref]), status: 301
   end
 
   def edit
