@@ -58,7 +58,11 @@
       - if @platform.enable_parts
         section#parts.section-feature
           .container
-            h2.section-title Products we make
+            h2.section-title
+              - if @platform.verified
+                | Products we make
+              - else
+                | Products made by #{@platform.name}
             .row
               - if @platform.parts_count == 1
                 .col-sm-4
@@ -69,14 +73,21 @@
 
             - if @platform.parts_count > 3
               .text-center
-                = link_to 'View more of the products we make &rarr;'.html_safe, platform_parts_path(@platform), class: 'btn btn-default btn-sm hidden-xs'
+                - if @platform.verified
+                  - text = 'we make'
+                - else
+                  - text = "made by #{@platform.name}"
+                = link_to "View more of the products #{text} &rarr;".html_safe, platform_parts_path(@platform), class: 'btn btn-default btn-sm hidden-xs'
                 = link_to 'View more &rarr;'.html_safe, platform_parts_path(@platform), class: 'btn btn-default btn-sm visible-xs-block'
 
       section#community.section-feature
         .container
           .community-container
             h2.section-title
-              | Join our community
+              - if @platform.verified
+                | Join our community
+              - else
+                | Join the community
               span.bdg= @platform.followers_count
             .thumbs
               - @followers.each do |user|
