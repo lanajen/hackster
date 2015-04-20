@@ -300,9 +300,9 @@ class CodeWidget < Widget
 
   private
     def check_changes
-      if document and (document.file_changed? or raw_code.blank?)
-        read_code_from_file
-      elsif raw_code_changed? and document_id.blank?
+      # if document and (document.file_changed? or raw_code.blank?)
+      #   read_code_from_file
+      if raw_code_changed? and document_id.blank?
         read_code_from_text
       end
     end
