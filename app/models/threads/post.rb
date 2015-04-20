@@ -2,8 +2,11 @@ class Post < ThreadPost
   include Privatable
 
   belongs_to :threadable, polymorphic: true
+  has_many :widgets, as: :widgetable
 
-  attr_accessible :private, :draft
+  attr_accessible :private, :draft, :widget_attributes
+
+  accepts_nested_attributes_for :widgets
 
   before_create :generate_sub_id
 
