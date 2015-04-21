@@ -180,7 +180,7 @@ html(lang="en")
                   - if current_user.is? :admin
                     li= link_to content_tag(:i, '', class: 'fa fa-cogs'), admin_analytics_path, class: 'nav-link', rel: 'tooltip', title: 'Admin', data: { container: 'body', placement: 'bottom' }
                   li
-                    a.nav-link href='' rel='tooltip' title='Notifications' data-container='body' data-placement='bottom'
+                    a.nav-link href=notifications_path rel='tooltip' title=(current_user.has_notifications? ? 'You have unread notifications' : 'No new notifications') data-container='body' data-placement='bottom'
                       - if current_user.has_notifications?
                         span.fa-stack.fa-stack-half
                           i.fa.fa-inbox.fa-stack-1x

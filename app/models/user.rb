@@ -85,7 +85,11 @@ class User < ActiveRecord::Base
   has_many :projects, -> { where("projects.guest_name IS NULL OR projects.guest_name = ''") }, through: :teams
   has_many :promotions, through: :group_ties, source: :group, class_name: 'Promotion'
   has_many :promotion_group_ties, -> { where(type: 'PromotionMember') }, class_name: 'PromotionMember', dependent: :destroy
-  has_many :receipts, dependent: :destroy
+  has_many :receipts, dependent: :destroy do
+    def for_notifications
+      joins("INNER JOIN notifications ON notifications.id = receipts.receivable_id AND receipts.receivable_type = 'Notification'")
+    end
+  end
   has_many :respects, dependent: :destroy
   has_many :respected_projects, through: :respects, source: :respectable, source_type: 'Project'
   has_many :team_grades, through: :teams, source: :grades
