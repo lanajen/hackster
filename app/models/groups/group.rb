@@ -39,7 +39,11 @@ class Group < ActiveRecord::Base
       where(project_collections: { workflow_state: ProjectCollection::VALID_STATES })
     end
   end
-  has_many :users, through: :members
+  has_many :users, through: :members do
+    def active
+      where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'")
+    end
+  end
   has_one :avatar, as: :attachable, dependent: :destroy
   has_one :cover_image, as: :attachable, dependent: :destroy
 

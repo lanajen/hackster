@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150419212338) do
+ActiveRecord::Schema.define(version: 20150420223836) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -411,6 +411,14 @@ ActiveRecord::Schema.define(version: 20150419212338) do
   end
 
   add_index "monologue_tags", ["name"], name: "index_monologue_tags_on_name", using: :btree
+
+  create_table "notifications", force: :cascade do |t|
+    t.string   "notifiable_type"
+    t.integer  "notifiable_id"
+    t.string   "event"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
 
   create_table "part_joins", force: :cascade do |t|
     t.integer  "part_id",                                       null: false

@@ -79,11 +79,13 @@ class User < ActiveRecord::Base
   has_many :invitations, class_name: self.to_s, as: :invited_by
   has_many :lists_group_ties, -> { where(type: 'ListMember') }, class_name: 'ListMember', dependent: :destroy
   has_many :lists, through: :lists_group_ties, source: :group, class_name: 'List'
+  has_many :notifications, through: :receipts, source: :receivable, source_type: 'Notification'
   has_many :permissions, as: :grantee
   has_many :platforms, -> { order('groups.full_name ASC') }, through: :group_ties, source: :group, class_name: 'Platform'
   has_many :projects, -> { where("projects.guest_name IS NULL OR projects.guest_name = ''") }, through: :teams
   has_many :promotions, through: :group_ties, source: :group, class_name: 'Promotion'
   has_many :promotion_group_ties, -> { where(type: 'PromotionMember') }, class_name: 'PromotionMember', dependent: :destroy
+  has_many :receipts, dependent: :destroy
   has_many :respects, dependent: :destroy
   has_many :respected_projects, through: :respects, source: :respectable, source_type: 'Project'
   has_many :team_grades, through: :teams, source: :grades
@@ -167,8 +169,6 @@ class User < ActiveRecord::Base
   is_impressionable counter_cache: true, unique: :session_hash
 
   taggable :interest_tags, :skill_tags
-
-  serialize :notifications
 
   self.per_page = 20
 
@@ -579,12 +579,6 @@ class User < ActiveRecord::Base
     notifications.any?
   end
 
-  def hide_notification! name
-    val = (notifications || []) << name
-    self.notifications = val
-    save
-  end
-
   def informal_name
     full_name.present? ? full_name.split(' ')[0] : user_name
   end
@@ -686,27 +680,6 @@ class User < ActiveRecord::Base
     full_name.present? ? full_name : user_name
   end
 
-  def notifications
-    return @notifications if @notifications
-
-    @notifications = []
-    group_ties.each do |group_tie|
-      @notifications << {
-        message: "You have been invited to join #{group_tie.group.name}. Click to visit this group.",
-        link: group_tie.group,
-      } if group_tie.invitation_pending?
-    end
-    @notifications
-  end
-
-  # def add_notification message, link=nil
-  #   notifications << { message: message, link: link }
-  # end
-
-  # def delete_notification message
-  #   @notifications.delete message
-  # end
-
   def profile_needs_care?
     # live_projects_count.zero? or (country.blank? and city.blank?) or mini_resume.blank? or interest_tags_count.zero? or skill_tags_count.zero? or websites.values.reject{|v|v.nil?}.count.zero?
     (country.blank? and city.blank?) or mini_resume.blank? or full_name.blank? or default_user_name? or avatar.nil?
@@ -718,10 +691,6 @@ class User < ActiveRecord::Base
 
   def respected? project
     project.id.in? respected_projects.map(&:id)
-  end
-
-  def receive_notification? name
-    !(notifications and name.in? notifications)
   end
 
   def reset_authentication_token

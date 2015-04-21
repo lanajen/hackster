@@ -12,14 +12,14 @@ class NotificationHandler
     @event = event
     @context_type = context_type
     @context_id = context_id
-    @model = if is_class? context_type.camelize
-      context_type.camelize.constantize.find_by_id context_id
-    end
+    # @model = if is_class? context_type.camelize.to_s
+    #   context_type.camelize.to_s.constantize.find_by_id context_id
+    # end
   end
 
   def notify_all template=nil
     notify_via_email template
-    # notify_via_web
+    notify_via_web
   end
 
   def notify_via_email template=nil, opts={}
@@ -46,33 +46,33 @@ class NotificationHandler
 
     def get_context_for notification_type
       context = {}
-      context[context_type.to_sym] = context[:model] = model if model
+      # context[context_type.to_sym] = context[:model] = model if model
 
       case context_type.to_sym
       when :announcement
-        context[:announcement] = announcement = Announcement.find context_id
+        context[:model] = context[:announcement] = announcement = Announcement.find context_id
         context[:platform] = platform = announcement.threadable
         context[:users] = platform.followers.with_subscription(notification_type, 'follow_platform_activity')
       when :assignment
         user = context[:user] = User.find(context_id)
-        assignment = context[:assignment] = user.assignments.where("assignments.submit_by_date < ?", 24.hours.from_now).first
+        context[:model] = assignment = context[:assignment] = user.assignments.where("assignments.submit_by_date < ?", 24.hours.from_now).first
         context[:project] = user.project_for_assignment(assignment).first
       when :badge
-        awarded_badge = context[:awarded_badge] = AwardedBadge.find context_id
+        context[:model] = awarded_badge = context[:awarded_badge] = AwardedBadge.find context_id
         context[:badge] = awarded_badge.badge
         user = awarded_badge.awardee
         user.subscribed_to?(notification_type, 'new_badge') ? context[:user] = user : context[:users] = []
       when :challenge
-        challenge = context[:challenge] = Challenge.find context_id
+        context[:model] = challenge = context[:challenge] = Challenge.find context_id
         context[:users] = challenge.admins
       when :challenge_entry
-        entry = context[:entry] = ChallengeEntry.find context_id
+        context[:model] = entry = context[:entry] = ChallengeEntry.find context_id
         context[:challenge] = entry.challenge
         context[:project] = entry.project
         context[:user] = entry.user
         context[:prize] = entry.prize
       when :comment
-        comment = context[:comment] = Comment.find(context_id)
+        context[:model] = comment = context[:comment] = Comment.find(context_id)
         commentable = comment.commentable
         project = context[:project] = case commentable
         when Feedback, Issue
@@ -135,13 +135,13 @@ class NotificationHandler
           context[:users] = []  # hack to send no email
         end
       when :follow_relation
-        follow = context[:follow] = FollowRelation.find(context_id)
+        context[:model] = follow = context[:follow] = FollowRelation.find(context_id)
         followable = follow.followable
         context[:author] = follow.user
         case followable
         when Group
           context[:group] = followable
-          context[:user] = followable
+          context[:users] = followable.users.active
         when Project
           context[:project] = followable
           context[:users] = followable.users.with_subscription(notification_type, 'new_follow_project')
@@ -153,7 +153,7 @@ class NotificationHandler
           end
         end
       when :grade
-        grade = context[:grade] = Grade.find(context_id)
+        context[:model] = grade = context[:grade] = Grade.find(context_id)
         project = context[:project] = grade.project
         case grade.gradable
         when User
@@ -162,17 +162,17 @@ class NotificationHandler
           context[:users] = grade.gradable.users
         end
       when :invited
-        user = context[:user] = User.find(context_id)
+        context[:model] = user = context[:user] = User.find(context_id)
         context[:inviter] = user.invited_by if user.invited_by
       when :invitation
-        invited = context[:invited] = User.find(context_id)
+        context[:model] = invited = context[:invited] = User.find(context_id)
         context[:user] = invited.invited_by if invited.invited_by
       when :invite_request
-        context[:user] = context[:invite] = InviteRequest.find(context_id)
+        context[:model] = context[:user] = context[:invite] = InviteRequest.find(context_id)
       when :invite_request_notification
         context[:invite] = InviteRequest.find(context_id)
       when :issue
-        issue = context[:issue] = Issue.find(context_id)
+        context[:model] = issue = context[:issue] = Issue.find(context_id)
         project = context[:project] = issue.threadable
         context[:author] = issue.user
         context[:users] = project.users
@@ -188,13 +188,13 @@ class NotificationHandler
           []
         end
       when :membership, :membership_invitation
-        member = context[:member] = Member.find(context_id)
+        context[:model] = member = context[:member] = Member.find(context_id)
         context[:group] = group = member.group
         context[:project] = group.project if group.is? :team
         context[:user] = member.user
         context[:inviter] = member.invited_by
       when :membership_request
-        member = context[:member] = Member.find(context_id)
+        context[:model] = member = context[:member] = Member.find(context_id)
         context[:group] = group = member.group
         context[:project] = group.project if group.is? :team
         context[:users] = case group
@@ -209,18 +209,12 @@ class NotificationHandler
         end
         context[:requester] = member.user
       when :new_membership
-        member = context[:member] = Member.find(context_id)
+        context[:model] = member = context[:member] = Member.find(context_id)
         context[:group] = group = member.group
         context[:user] = group
         context[:author] = member.user
-      when :participant_invite
-        context[:invite] = invite = ParticipantInvite.find(context_id)
-        context[:user] = User.new email: invite.email
-        context[:project] = invite.project
-        context[:issue] = invite.issue
-        context[:inviter] = invite.user
       when :project
-        project = context[:project] = Project.find(context_id)
+        context[:model] = project = context[:project] = Project.find(context_id)
         context[:users] = project.users
       when :project_user_informal
         project = context[:project] = Project.find(context_id)
@@ -228,7 +222,7 @@ class NotificationHandler
         context[:from_email] = 'Benjamin Larralde<ben@hackster.io>'
         return unless user.subscribed_to? 'other'
       when :receipt
-        receipt = Receipt.find context_id
+        context[:model] = receipt = Receipt.find context_id
         message = context[:comment] = receipt.receivable
         context[:conversation] = message.commentable
         context[:author] = message.user
@@ -238,12 +232,12 @@ class NotificationHandler
           context[:users] = []
         end
       when :respect
-        respect = context[:respect] = Respect.find(context_id)
+        context[:model] = respect = context[:respect] = Respect.find(context_id)
         project = context[:project] = respect.respectable
         context[:author] = respect.user
         context[:users] = project.users.with_subscription(notification_type, 'new_respect_own').to_a  # added to_a so that .uniq line 235 doesn't add DISTINCT to the query and make it fail
       when :user
-        context[:user] = User.find(context_id)
+        context[:model] = context[:user] = User.find(context_id)
       when :user_informal
         context[:user] = User.find(context_id)
         context[:from_email] = 'Benjamin Larralde<ben@hackster.io>'
