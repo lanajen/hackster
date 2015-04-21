@@ -8,7 +8,31 @@
 = f.input :roles, collection: User::ROLES, as: :check_boxes
 = f.input :invitation_limit
 = f.input :enable_sharing
-= f.input :subscriptions, collection: User::SUBSCRIPTIONS.invert, as: :check_boxes, label: 'Email subscriptions'
+.form-group
+  .col-sm-4
+    label.control-label Notification preferences
+  .col-sm-8
+    table.table
+      thead
+        th
+        th Email
+        th Web
+      tbody
+        - (User::SUBSCRIPTIONS[:email].keys - User::SUBSCRIPTIONS[:web].keys).each do |sub|
+          tr
+            td= User::SUBSCRIPTIONS[:email][sub]
+            td= check_box_tag 'user[email_subscriptions][]', sub, @user.subscribed_to?('email', sub)
+            td
+        - (User::SUBSCRIPTIONS[:email].keys & User::SUBSCRIPTIONS[:web].keys).each do |sub|
+          tr
+            td= User::SUBSCRIPTIONS[:email][sub]
+            td= check_box_tag 'user[email_subscriptions][]', sub, @user.subscribed_to?('email', sub)
+            td= check_box_tag 'user[web_subscriptions][]', sub, @user.subscribed_to?('web', sub)
+        - (User::SUBSCRIPTIONS[:web].keys - User::SUBSCRIPTIONS[:email].keys).each do |sub|
+          tr
+            td= User::SUBSCRIPTIONS[:web][sub]
+            td
+            td= check_box_tag 'user[web_subscriptions][]', sub, @user.subscribed_to?('web', sub)
 = f.input :facebook_link, label: 'Facebook link'
 = f.input :github_link, label: 'Github link'
 = f.input :google_plus_link, label: 'Google+ link'

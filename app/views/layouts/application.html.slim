@@ -173,9 +173,18 @@ html(lang="en")
                         = render 'devise/shared/omniauth', css: 'icon'
 
               ul#left-nav.navbar-right.top-menu-nav
-                - if user_signed_in? and current_user.is? :admin
-                  li= link_to 'Admin', admin_analytics_path, class: 'nav-link'
-                li= link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project"), new_project_path, class: 'nav-link'
+                - if user_signed_in?
+                  - if current_user.is? :admin
+                    li= link_to content_tag(:i, '', class: 'fa fa-cogs'), admin_analytics_path, class: 'nav-link', rel: 'tooltip', title: 'Admin', data: { container: 'body', placement: 'bottom' }
+                  li
+                    a.nav-link href=notifications_path rel='tooltip' title=(current_user.has_unread_notifications? ? 'You have unread notifications' : 'No new notifications') data-container='body' data-placement='bottom'
+                      - if current_user.has_unread_notifications?
+                        span.fa-stack.fa-stack-half
+                          i.fa.fa-inbox.fa-stack-1x
+                          i.fa.fa-circle.fa-stack-1x.fa-stack-half.text-danger
+                      - else
+                        i.fa.fa-inbox
+                  li= link_to content_tag(:i, '', class: 'fa fa-plus'), new_project_path, class: 'nav-link', rel: 'tooltip', title: 'New project', data: { container: 'body', placement: 'bottom' }
 
               #navbar-search
                 = render 'shared/search_form'

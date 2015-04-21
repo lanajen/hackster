@@ -10,22 +10,45 @@ class User < ActiveRecord::Base
 
   ROLES = %w(admin confirmed_user beta_tester)
   SUBSCRIPTIONS = {
-    'newsletter' => 'Newsletter',
-    'other' => 'Other mailings (announcements, tips, feedback...)',
-    'new_comment_own' => 'New comment on one of my projects',
-    'new_comment_commented' => "New comment on a project I commented on",
-    'new_respect_own' => 'Somebody respects one of my projects',
-    'new_follow_project' => 'Somebody starts following one of my projects',
-    'new_follow_me' => 'Somebody starts following me',
-    'follow_project_activity' => 'Activity for a project I follow',
-    'follow_user_activity' => 'Activity for a user I follow',
-    'follow_platform_activity' => 'Activity for a platform I follow',
-    'follow_list_activity' => 'Activity for a list I follow',
-    'new_badge' => 'I receive a new badge',
-    'new_message' => 'I receive a new private message',
-    'project_approved' => 'My project has been approved',
+    email: {
+      'newsletter' => 'Newsletter',
+      'other' => 'Other mailings (announcements, tips, feedback...)',
+      'new_comment_own' => 'New comment on one of my projects',
+      'new_comment_commented' => "New comment on a project I commented on",
+      'new_respect_own' => 'Somebody respects one of my projects',
+      'new_follow_project' => 'Somebody starts following one of my projects',
+      'new_follow_me' => 'Somebody starts following me',
+      'follow_project_activity' => 'Activity for a project I follow',
+      'follow_user_activity' => 'Activity for a user I follow',
+      'follow_platform_activity' => 'Activity for a platform I follow',
+      'follow_list_activity' => 'Activity for a list I follow',
+      'new_badge' => 'I receive a new badge',
+      'new_message' => 'I receive a new private message',
+      'project_approved' => 'My project has been approved',
+      'new_comment_update' => 'Somebody comments on one of my updates',
+      'new_comment_update_commented' => 'Somebody comments on an update I commented on',
+      'new_like' => 'Somebody likes one of my updates or comments',
+      'new_mention' => 'Somebody mentions me in an update or comment',
+    },
+    web: {
+      'new_comment_own' => 'New comment on one of my projects',
+      'new_comment_commented' => "New comment on a project I commented on",
+      'new_respect_own' => 'Somebody respects one of my projects',
+      'new_follow_project' => 'Somebody starts following one of my projects',
+      'new_follow_me' => 'Somebody starts following me',
+      'follow_project_activity' => 'Activity for a project I follow',
+      'follow_user_activity' => 'Activity for a user I follow',
+      'follow_platform_activity' => 'Activity for a platform I follow',
+      'follow_list_activity' => 'Activity for a list I follow',
+      'new_badge' => 'I receive a new badge',
+      'new_message' => 'I receive a new private message',
+      'project_approved' => 'My project has been approved',
+      'new_comment_update' => 'Somebody comments on one of my updates',
+      'new_comment_update_commented' => 'Somebody comments on an update I commented on',
+      'new_like' => 'Somebody likes one of my updates or comments',
+      'new_mention' => 'Somebody mentions me in an update or comment',
+    }
   }
-  CATEGORIES = %w()
   USER_NAME_WORDS_LIST1 = %w(acid ada agent alien chell colossus crash cyborg doc ender enigma hal isambard jarvis kaneda leela morpheus neo nikola oracle phantom radio silicon sim starbuck straylight synergy tank tetsuo trinity zero)
   USER_NAME_WORDS_LIST2 = %w(algorithm blue brunel burn clone cool core curie davinci deckard driver energy fett flynn formula gibson glitch grid hawking jaunte newton overdrive override phreak plasma ripley skywalker tesla titanium uhura wiggin)
 
@@ -44,8 +67,6 @@ class User < ActiveRecord::Base
   has_many :blog_posts, dependent: :destroy
   has_many :comments, -> { order created_at: :desc }, foreign_key: :user_id, dependent: :destroy
   has_many :communities, through: :group_ties, source: :group, class_name: 'Community'
-  has_many :conversations, through: :conversation_receipts, dependent: :destroy
-  has_many :conversation_receipts, class_name: 'Receipt', dependent: :destroy
   # has_many :courses, through: :promotions  # doesnt work
   has_many :events, through: :group_ties, source: :group, class_name: 'Event'
   has_many :follow_relations, dependent: :destroy
@@ -66,11 +87,17 @@ class User < ActiveRecord::Base
   has_many :invitations, class_name: self.to_s, as: :invited_by
   has_many :lists_group_ties, -> { where(type: 'ListMember') }, class_name: 'ListMember', dependent: :destroy
   has_many :lists, through: :lists_group_ties, source: :group, class_name: 'List'
+  has_many :notifications, through: :receipts, source: :receivable, source_type: 'Notification'
   has_many :permissions, as: :grantee
   has_many :platforms, -> { order('groups.full_name ASC') }, through: :group_ties, source: :group, class_name: 'Platform'
   has_many :projects, -> { where("projects.guest_name IS NULL OR projects.guest_name = ''") }, through: :teams
   has_many :promotions, through: :group_ties, source: :group, class_name: 'Promotion'
   has_many :promotion_group_ties, -> { where(type: 'PromotionMember') }, class_name: 'PromotionMember', dependent: :destroy
+  has_many :receipts, dependent: :destroy do
+    def for_notifications
+      joins("INNER JOIN notifications ON notifications.id = receipts.receivable_id AND receipts.receivable_type = 'Notification'")
+    end
+  end
   has_many :respects, dependent: :destroy
   has_many :respected_projects, through: :respects, source: :respectable, source_type: 'Project'
   has_many :team_grades, through: :teams, source: :grades
@@ -93,8 +120,9 @@ class User < ActiveRecord::Base
     :facebook_link, :twitter_link, :linked_in_link, :website_link,
     :blog_link, :github_link, :google_plus_link, :youtube_link, :categories,
     :github_link, :invitation_limit, :email, :mini_resume, :city, :country,
-    :user_name, :full_name, :type, :avatar_id, :subscriptions, :enable_sharing,
-    :instagram_link, :flickr_link, :reddit_link, :pinterest_link
+    :user_name, :full_name, :type, :avatar_id, :enable_sharing,
+    :instagram_link, :flickr_link, :reddit_link, :pinterest_link,
+    :email_subscriptions, :web_subscriptions
   accepts_nested_attributes_for :avatar, :projects, allow_destroy: true
 
   store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link, :website_link, :blog_link, :github_link, :google_plus_link, :youtube_link, :instagram_link, :flickr_link, :reddit_link, :pinterest_link]
@@ -126,8 +154,6 @@ class User < ActiveRecord::Base
 
   set_roles :roles, ROLES
 
-  # scope :with_category, ->(category) { where("users.categories_mask & #{2**CATEGORIES.index(category.to_s)} > 0") }
-
   store :counters_cache, accessors: [:comments_count, :interest_tags_count,
     :invitations_count, :projects_count, :respects_count, :skill_tags_count,
     :live_projects_count, :project_views_count, :followers_count,
@@ -144,13 +170,18 @@ class User < ActiveRecord::Base
     :badges_green_count, :badges_bronze_count,
     :badges_silver_count, :badges_gold_count
 
+  # store_accessor :subscriptions_masks, :email_subscriptions_mask,
+  #   :web_subscriptions_mask
+  # parse_as_integers :subscriptions_masks, :email, :web
+
+  store :properties, accessors: [:has_unread_notifications]
+  parse_as_booleans :properties, :has_unread_notifications
+
   delegate :can?, :cannot?, to: :ability
 
   is_impressionable counter_cache: true, unique: :session_hash
 
   taggable :interest_tags, :skill_tags
-
-  serialize :notifications
 
   self.per_page = 20
 
@@ -295,9 +326,10 @@ class User < ActiveRecord::Base
     where(id: (User.joins(:follow_relations).where("follow_relations.user_id = users.id").distinct('users.id').pluck(:id) + User.joins(:projects).distinct('users.id').pluck(:id) + User.joins(:respects).distinct('users.id').pluck(:id) + User.joins(:comments).distinct('users.id').pluck(:id)).uniq)
   end
 
-  def self.with_subscription subscription, invert=false
-    negate = invert ? 'NOT' : ''
-    where("#{negate}(users.subscriptions_mask & #{2**SUBSCRIPTIONS.keys.index(subscription.to_s)} > 0)")
+  def self.with_subscription notification_type, subscription, invert=false
+    negate = invert ? 'NOT ' : ''
+    const = SUBSCRIPTIONS[notification_type.to_sym]
+    where("#{negate}(CAST(users.subscriptions_masks -> '#{notification_type}' AS INTEGER) & #{2**const.keys.index(subscription.to_s)} > 0)")
   end
 
   def ability
@@ -342,14 +374,6 @@ class User < ActiveRecord::Base
     new_invitation.present?
   end
 
-  def categories=(categories)
-    self.categories_mask = (categories & CATEGORIES).map { |r| 2**CATEGORIES.index(r) }.sum
-  end
-
-  def categories
-    CATEGORIES.reject { |r| ((categories_mask || 0) & 2**CATEGORIES.index(r)).zero? }
-  end
-
   def community_group_ties
     group_ties.joins(:group).where(groups: { type: %w(Community Event Promotion) }).includes(:group)
   end
@@ -389,7 +413,8 @@ class User < ActiveRecord::Base
   # options: model, message
   def deliver_invitation_with options={}
     if model = options[:model]
-      self.override_devise_notification = "invitation_instructions_with_#{model.class.model_name.to_s.underscore}"
+      # self.override_devise_notification = "invitation_instructions_with_#{model.class.model_name.to_s.underscore}"
+      self.override_devise_notification = "invitation_instructions_with_member"
       self.override_devise_model = model
     end
     if message = options[:personal_message]
@@ -572,10 +597,8 @@ class User < ActiveRecord::Base
     notifications.any?
   end
 
-  def hide_notification! name
-    val = (notifications || []) << name
-    self.notifications = val
-    save
+  def has_unread_notifications?
+    has_unread_notifications
   end
 
   def informal_name
@@ -675,30 +698,17 @@ class User < ActiveRecord::Base
     live_projects_count - (live_hidden_projects_count || 0)
   end
 
+  def mark_has_unread_notifications!
+    update_attribute :has_unread_notifications, true if !has_unread_notifications?
+  end
+
+  def mark_has_no_unread_notifications!
+    update_attribute :has_unread_notifications, false if has_unread_notifications?
+  end
+
   def name
     full_name.present? ? full_name : user_name
   end
-
-  def notifications
-    return @notifications if @notifications
-
-    @notifications = []
-    group_ties.each do |group_tie|
-      @notifications << {
-        message: "You have been invited to join #{group_tie.group.name}. Click to visit this group.",
-        link: group_tie.group,
-      } if group_tie.invitation_pending?
-    end
-    @notifications
-  end
-
-  # def add_notification message, link=nil
-  #   notifications << { message: message, link: link }
-  # end
-
-  # def delete_notification message
-  #   @notifications.delete message
-  # end
 
   def profile_needs_care?
     # live_projects_count.zero? or (country.blank? and city.blank?) or mini_resume.blank? or interest_tags_count.zero? or skill_tags_count.zero? or websites.values.reject{|v|v.nil?}.count.zero?
@@ -711,10 +721,6 @@ class User < ActiveRecord::Base
 
   def respected? project
     project.id.in? respected_projects.map(&:id)
-  end
-
-  def receive_notification? name
-    !(notifications and name.in? notifications)
   end
 
   def reset_authentication_token
@@ -764,24 +770,57 @@ class User < ActiveRecord::Base
     skip_password
   end
 
+  def email_subscriptions
+    subscriptions_for 'email'
+  end
+
+  def email_subscriptions=(val)
+    set_subscriptions_for 'email', val
+  end
+
+  def web_subscriptions
+    subscriptions_for 'web'
+  end
+
+  def web_subscriptions=(val)
+    set_subscriptions_for 'web', val
+  end
+
   def subscribe_to_all
-    self.subscriptions = SUBSCRIPTIONS.keys
+    %w(email web).each do |notification_type|
+      set_subscriptions_for notification_type, subscriptions_const_for(notification_type).keys
+    end
   end
 
-  def subscribed_to? subscription
-    subscription.in? subscriptions
+  def subscribed_to? notification_type, subscription
+    subscription.in? subscriptions_for(notification_type)
   end
 
-  def subscriptions=(subscriptions)
-    self.subscriptions_mask = (subscriptions & SUBSCRIPTIONS.keys).map { |r| 2**SUBSCRIPTIONS.keys.index(r) }.sum
+  def set_subscriptions_for notification_type, subscriptions
+    const = subscriptions_const_for(notification_type)
+    set_subscriptions_mask_for notification_type, (subscriptions & const.keys).map { |r| 2**const.keys.index(r) }.sum
   end
 
-  def subscriptions
-    SUBSCRIPTIONS.keys.reject { |r| ((subscriptions_mask || 0) & 2**SUBSCRIPTIONS.keys.index(r)).zero? }
+  def set_subscriptions_mask_for notification_type, mask_value
+    self.subscriptions_masks[notification_type.to_s] = mask_value
   end
 
-  def subscription_symbols
-    subscriptions.map(&:to_sym)
+  def subscriptions_mask_for notification_type
+    subscriptions_masks[notification_type.to_s].to_i
+  end
+
+  def subscriptions_const_for notification_type
+    SUBSCRIPTIONS[notification_type.to_sym]
+  end
+
+  def subscription_symbols_for notification_type
+    subscriptions_for(notification_type).map(&:to_sym)
+  end
+
+  def subscriptions_for notification_type
+    mask = subscriptions_mask_for(notification_type)
+    const = subscriptions_const_for(notification_type)
+    const.keys.reject { |r| ((mask || 0) & 2**const.keys.index(r)).zero? }
   end
 
   def project_for_assignment assignment

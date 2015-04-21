@@ -297,16 +297,24 @@ module UrlHelper
     course_promotion_url params_for_promotion(promotion).merge(opts)
   end
 
-  def tag_path tag
-    "/projects/tags/#{CGI::escape(tag)}"
-  end
-
   def platform_home_path platform, opts={}
     super platform.user_name, opts
   end
 
   def platform_home_url platform, opts={}
     super platform.user_name, opts
+  end
+
+  def tag_path tag
+    "/projects/tags/#{CGI::escape(tag)}"
+  end
+
+  def thought_path thought, opts={}
+    "/talk#/posts/#{thought.id}"
+  end
+
+  def thought_url thought, opts={}
+    APP_CONFIG['full_host'] + thought_path(thought, opts)
   end
 
   def url_for(options = nil)

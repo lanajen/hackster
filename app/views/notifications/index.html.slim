@@ -1,0 +1,14 @@
+.row
+  .col-md-6.col-md-offset-3.col-sm-8.col-sm-offset-2
+    .channel-header
+      h1 Notifications
+    - if @receipts.any?
+      ul.list-group.notifications
+        - @receipts.each do |receipt|
+          - notification = receipt.receivable.decorate
+          li.list-group-item.clearfix
+            = notification.message
+            .text-muted.small= time_diff_in_natural_language receipt.created_at, Time.now, ' ago'
+    - else
+      .notifications.empty
+        | Notifications about other hackers' activity related to you will appear here.

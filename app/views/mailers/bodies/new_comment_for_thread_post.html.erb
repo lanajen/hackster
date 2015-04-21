@@ -1,6 +1,10 @@
 <p>Hello there,</p>
 
-<p>This is to let you know that <a href="|author_link|">|author_name|</a> is now following your project <a href="|project_link|">|project_name|</a>. You rock!</p>
+<p>This is to let you know that <a href="|author_link|">|author_name|</a> posted a new comment on <a href="<%= url_for([@context[:thread], path_only: false]) %>"><%= @context[:thread].title %></a>:</p>
+
+<p class="quote">|comment_body|</p>
+
+<p>To reply, just follow <a href="<%= url_for([@context[:thread], path_only: false]) %>">this link</a>.</p>
 
 <p>Cheers,<br> The Hackster.io team</p>
 <p>

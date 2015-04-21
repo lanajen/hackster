@@ -6,6 +6,6 @@ class UserSerializer < ActiveModel::Serializer
   end
 
   def url
-    url_for [object, only_path: true]
+    url_for [object, only_path: false]
   end
 end

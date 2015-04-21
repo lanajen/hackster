@@ -29,7 +29,7 @@ module HackerIo
       :platform_observer, :project_collection_observer, :attachment_observer,
       :challenge_entry_observer, :challenge_observer, :awarded_badge_observer,
       :list_observer, :receipt_observer, :part_join_observer, :event_observer,
-      :part_observer
+      :notification_observer, :part_observer, :thought_observer
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.

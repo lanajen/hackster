@@ -24,8 +24,8 @@ module Redcarpet::Render::SociableHTML
 
   private
     # mentions
-    def mention_template(text)
-      %(<a href="/#{text}">@#{text}</a>)
+    def mention_template user
+      %(<a class="mention" data-user-name="#{user.user_name}" data-user-id="#{user.id}" href="/#{user.user_name}">#{user.full_name}</a>)
     end
 
     def mention_regexp
@@ -40,7 +40,7 @@ module Redcarpet::Render::SociableHTML
         return match if start_tag.to_s.start_with?('<a')
 
         if user = User.find_by_user_name(mention)
-          %{#{start_tag}#{before}#{mention_template(mention)}#{after}#{close_tag}}
+          %{#{start_tag}#{before}#{mention_template(user)}#{after}#{close_tag}}
         else
           match
         end

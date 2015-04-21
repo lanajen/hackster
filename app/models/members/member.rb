@@ -30,6 +30,10 @@ class Member < ActiveRecord::Base
     update_attributes(invitation_accepted_at: Time.now) unless invitation_accepted_at.present?
   end
 
+  def association_name_for_notifications
+    group.type
+  end
+
   def contribution
     mini_resume
   end

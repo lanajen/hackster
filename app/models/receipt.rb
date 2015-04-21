@@ -1,12 +1,15 @@
 class Receipt < ActiveRecord::Base
-  belongs_to :conversation
-  belongs_to :message, class_name: 'Comment'
+  belongs_to :receivable, polymorphic: true
   belongs_to :user
 
-  attr_accessible :user_id, :message_id, :read
+  attr_accessible :user_id, :receivable_id, :receivable_type, :read
 
   def self.unread
     where(read: false)
+  end
+
+  def association_name_for_notifications
+    receivable_type
   end
 
   def deleted?
@@ -18,7 +21,7 @@ class Receipt < ActiveRecord::Base
   end
 
   def is_sender? user
-    message.user == user
+    receivable.user == user
   end
 
   def is_unread?

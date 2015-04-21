@@ -35,15 +35,10 @@
             - if @group.disclaimer.present?
               i.fa.fa-info-circle.istooltip.disclaimer data-container='body' title=@group.disclaimer
 
-          / .top-banner-image-inner-corner.bottom-left.bottom-center-mobile
-            ul.list-unstyled.list-inline.project-stats
-              = render partial: "groups/#{@group.identifier.pluralize}/stats"
-
+    = render partial: "groups/#{@group.identifier.pluralize}/alerts"
 
     section.main-section
       = render partial: "groups/#{@group.identifier.pluralize}/nav"
-
-      = render partial: "groups/#{@group.identifier.pluralize}/alerts"
 
       section#about-us.section-feature
         .container

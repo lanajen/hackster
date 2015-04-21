@@ -242,9 +242,11 @@ HackerIo::Application.routes.draw do
       put 'update_workflow' => 'challenges#update_workflow', on: :member
     end
 
-    resources :skill_requests, path: 'cupidon' do
-      resources :comments, only: [:create]
-    end
+    # resources :skill_requests, path: 'cupidon' do
+    #   resources :comments, only: [:create]
+    # end
+
+    resources :notifications, only: [:index, :update, :destroy]
 
     # dragon
     get 'partners' => 'partners#index'
@@ -254,12 +256,7 @@ HackerIo::Application.routes.draw do
     get 'ping' => 'pages#ping'  # for availability monitoring
     get 'obscure/path/to/cron' => 'cron#run'
 
-    # get 'profile/edit' => 'users#edit'
-    # patch 'profile' => 'users#update'
-
     get 'search' => 'search#search'
-    # get 'tags/:tag' => 'search#tags', as: :tags
-    # get 'tags' => 'search#tags'
     get 'tools', to: redirect('platforms')
     get 'platforms' => 'platforms#index'
 
@@ -381,7 +378,6 @@ HackerIo::Application.routes.draw do
     post 'remote_upload', on: :collection
     get 'signed_url', on: :collection
   end
-  delete 'notifications' => 'notifications#destroy'
 
   resources :projects, except: [:show, :update, :destroy] do
     patch 'submit' => 'projects#submit', on: :member

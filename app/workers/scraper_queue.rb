@@ -14,7 +14,7 @@ class ScraperQueue < BaseWorker
     @results.each do |platform, results|
       @message.body += "<p><b>#{platform}: #{results[:errors].size} errors, #{results[:successes]} successes, #{results[:skips]} skips</p>"
     end
-    BaseMailer.enqueue_generic_email(@message)
+    MailerQueue.enqueue_generic_email(@message)
 
   rescue => e
     clean_backtrace = Rails.backtrace_cleaner.clean(e.backtrace)
@@ -52,7 +52,7 @@ class ScraperQueue < BaseWorker
       end
     end
 
-    BaseMailer.enqueue_generic_email(@message)
+    MailerQueue.enqueue_generic_email(@message)
 
   rescue => exception
     @message.subject = "Your project couldn't be imported"
@@ -63,7 +63,7 @@ class ScraperQueue < BaseWorker
     log_error exception, clean_backtrace, message
 
   ensure
-    BaseMailer.enqueue_generic_email(@message)
+    MailerQueue.enqueue_generic_email(@message)
   end
 
   def scrape_projects page_urls, user_id, platform_tags_string=nil, product_tags_string=nil
@@ -82,7 +82,7 @@ class ScraperQueue < BaseWorker
       logger.error ""
       clean_backtrace.each { |line| logger.error "Backtrace: " + line }
       logger.error ""
-      BaseMailer.enqueue_email 'error_notification', { context_type: :log_line, context_id: log_line.id }
+      NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification'
     end
 
   class ScrapeError < StandardError

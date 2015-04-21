@@ -15,7 +15,11 @@
       .box-content
         = form_tag group_invitations_path, method: :post do
           .form-group
+            label.control-label Emails to invite
             = text_area_tag :emails, params[:emails], placeholder: 'User emails, separated by commas, spaces or new lines.', class: 'form-control', rows: 4
+          .form-group
+            label.control-label Personal message
+            = text_area_tag :personal_message, params[:personal_message], placeholder: 'Personal message to send along (optional).', class: 'form-control', rows: 2
           = submit_tag 'Invite users', class: 'btn btn-primary btn-block'
         hr
         p

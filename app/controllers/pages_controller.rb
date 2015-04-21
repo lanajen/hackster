@@ -48,7 +48,7 @@ class PagesController < ApplicationController
       @message.body += "<b>Location: </b>#{@info_request.location}"
       @message.body += "<b>Referral: </b>#{@info_request.referral}<br>"
       @message.body += "</p>"
-      BaseMailer.enqueue_generic_email(@message)
+      MailerQueue.enqueue_generic_email(@message)
       LogLine.create source: 'info_request', log_type: 'info_request', message: @message.body
 
       redirect_to business_path, notice: "Thanks for your request, we'll be in touch soon!"
@@ -110,7 +110,7 @@ class PagesController < ApplicationController
       @lists = List.where(user_name: featured_lists).each_slice(3).to_a
 
       @typeahead_tags = List.public.order(:full_name).select{|p| p.projects_count >= 5 or p.followers_count >= 10 }.map do |p|
-        { tag: p.name, projects: p.projects_count, url: url_for([p, only_path: true]) }
+        { tag: p.name, projects: p.projects_count, url: url_for([p]) }
       end
       @suggestions = {
         'Arduino' => '/arduino',

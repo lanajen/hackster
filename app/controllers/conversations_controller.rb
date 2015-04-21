@@ -24,7 +24,7 @@ class ConversationsController < ApplicationController
     @receipts = @conversation.receipts
     @receipts = if current_user.is?(:admin)
       receipts = []
-      @receipts.inject([]){|mem, r| receipts << r unless r.message_id.in?(mem); mem << r.message_id; mem}
+      @receipts.inject([]){|mem, r| receipts << r unless r.receivable_id.in?(mem); mem << r.receivable_id; mem}
       receipts
     else
       @receipts.where(receipts: { user_id: current_user.id })

@@ -4,6 +4,7 @@ class Thought < ActiveRecord::Base
   belongs_to :user
   has_and_belongs_to_many :hashtags
   has_many :comments, -> { order :created_at }, as: :commentable, dependent: :destroy
+  has_many :commenters, through: :comments, source: :user, class_name: 'User'
   has_many :likes, class_name: 'Respect', as: :respectable, dependent: :destroy
   has_many :liking_users, class_name: 'User', through: :likes, source: :user
   has_one :link_datum, foreign_key: :link, primary_key: :link
@@ -29,6 +30,24 @@ class Thought < ActiveRecord::Base
 
   def liked_by? user
     likes.where(user_id: user.id).any?
+  end
+
+  def has_mentions?
+    return unless body
+
+    mentioned_users.any?
+  end
+
+  def mentioned_users
+    return @mentions if @mentions
+    return [] unless body
+
+    user_ids = []
+    doc = Nokogiri::HTML::DocumentFragment.parse body
+    doc.css('a.mention').each do |mention|
+      user_ids << mention['data-user-id']
+    end
+    @mentions = user_ids.any? ? User.where(id: user_ids) : []
   end
 
   def reparse_body!

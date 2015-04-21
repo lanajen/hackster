@@ -17,6 +17,6 @@ class ClaimsController < ApplicationController
       @message.body = "<p>Hi</p><p>I would like to claim this page: <a href='#{url_for(@group)}'>#{@group.name}</a>.</p>"
       @message.body += "<p>Personal message:<br>#{params[:message]}</p>"
       @message.body += "<p>Thanks!<br><a href='#{hacker_url(current_user.id)}'>#{current_user.name}</a></p>"
-      BaseMailer.enqueue_generic_email(@message)
+      MailerQueue.enqueue_generic_email(@message)
     end
 end

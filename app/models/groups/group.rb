@@ -39,7 +39,11 @@ class Group < ActiveRecord::Base
       where(project_collections: { workflow_state: ProjectCollection::VALID_STATES })
     end
   end
-  has_many :users, through: :members
+  has_many :users, through: :members do
+    def active
+      where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'")
+    end
+  end
   has_one :avatar, as: :attachable, dependent: :destroy
   has_one :cover_image, as: :attachable, dependent: :destroy
 
@@ -163,20 +167,20 @@ class Group < ActiveRecord::Base
     self.class.name.underscore == group_type.to_s
   end
 
-  def invite_with_emails emails, invited_by=nil
+  def invite_with_emails emails, invited_by=nil, message=nil
     emails.each do |email|
-      invite_with_email email, invited_by
+      invite_with_email email, invited_by, message
     end
   end
 
-  def invite_with_email email, invited_by=nil
+  def invite_with_email email, invited_by=nil, message=nil
     unless user = User.find_by_email(email)
       user = User.invite!({ email: email }, invited_by) do |u|
         u.skip_invitation = true
       end
     end
     member = members.create user_id: user.id, invitation_sent_at: Time.now, invited_by: invited_by
-    user.deliver_invitation_with member if member.persisted? and user.invited_to_sign_up?
+    user.deliver_invitation_with({ model: member, personal_message: message }) if member.persisted? and user.invited_to_sign_up?
   end
 
   def has_websites?

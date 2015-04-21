@@ -15,8 +15,7 @@ class UserObserver < ActiveRecord::Observer
 
   def after_invitation_accepted record
     advertise_new_user record
-    BaseMailer.enqueue_email 'invitation_accepted',
-      { context_type: :inviter, context_id: record.id }
+    NotificationCenter.notify_all :accepted, :invitation, record.id
     record.build_reputation unless record.reputation
     record.update_column :invitation_token, nil if record.invitation_token.present?
     record.subscribe_to_all && record.save
@@ -79,8 +78,7 @@ class UserObserver < ActiveRecord::Observer
     def advertise_new_user record
       send_zapier record.email
       record.broadcast :new, record.id, 'User'
-      BaseMailer.enqueue_email 'registration_confirmation',
-        { context_type: :user, context_id: record.id } unless record.skip_registration_confirmation
+      NotificationCenter.notify_via_email nil, :user, record.id, 'registration_confirmation' unless record.skip_registration_confirmation
     end
 
     def expire record

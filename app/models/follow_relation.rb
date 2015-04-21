@@ -17,6 +17,10 @@ class FollowRelation < ActiveRecord::Base
     where(user_id: user.id, followable_type: followable.class.model_name.to_s, followable_id: followable.id).destroy_all
   end
 
+  def association_name_for_notifications
+    followable_type
+  end
+
   def skip_notification!
     @skip_notification = true
   end

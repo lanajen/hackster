@@ -24,7 +24,7 @@ class MessageSerializer < ActiveModel::Serializer
   def likes
     {
       count: object.likes.count,
-      likers: object.liking_users.where.not(id: current_user.id).limit(2).map{|u| { name: u.name, url: url_for([u, only_path: true]) }}
+      likers: object.liking_users.where.not(id: current_user.id).limit(2).map{|u| { name: u.name, url: url_for([u, only_path: false]) }}
     }
   end
 

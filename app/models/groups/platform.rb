@@ -105,6 +105,7 @@ class Platform < List
   def counters
     super.merge({
       parts: 'parts.count',
+      products: 'projects.products.count',
     })
   end
 

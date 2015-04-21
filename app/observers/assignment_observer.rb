@@ -4,8 +4,7 @@ class AssignmentObserver < ActiveRecord::Observer
       record.projects.each{ |p| p.update_attribute :locked, false }
 
       record.grades.each do |grade|
-        BaseMailer.enqueue_email 'grade_notification',
-          { context_type: 'grade', context_id: grade.id }
+        NotificationCenter.notify_all :new, :grade, grade.id
       end
     end
   end

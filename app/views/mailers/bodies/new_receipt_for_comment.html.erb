@@ -3,7 +3,7 @@
 <p>This is to let you know that <a href="|author_link|">|author_name|</a> has sent you a message:</p>
 
 <div class="quote">
-  <strong>|conversation_subject|</strong>
+  <strong><%= @context[:conversation].subject %></strong>
   <br/>
   <%= raw @context[:comment].body %>
 </div>
