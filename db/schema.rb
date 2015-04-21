@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150420223836) do
+ActiveRecord::Schema.define(version: 20150421015737) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -697,7 +697,7 @@ ActiveRecord::Schema.define(version: 20150420223836) do
     t.integer  "invite_code_id"
     t.integer  "impressions_count",                  default: 0
     t.text     "counters_cache"
-    t.text     "notifications"
+    t.text     "properties"
     t.datetime "invitation_created_at"
     t.string   "confirmation_token",     limit: 255
     t.datetime "confirmed_at"

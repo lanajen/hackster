@@ -475,6 +475,11 @@
     font-weight: normal;
     color: #666;
   }
+  &.section-no-title {
+    .section-content {
+      padding-top: 40px;
+    }
+  }
 }
 .section-title {
   font-size: 1em;

@@ -1,4 +1,12 @@
 GIT
+  remote: https://github.com/joel/omniauth-windowslive.git
+  revision: 9fe2beaef262f0f6ed800877364f2b585f257c89
+  specs:
+    omniauth-windowslive (0.0.9)
+      multi_json (>= 1.0.3)
+      omniauth-oauth2 (~> 1.0)
+
+GIT
   remote: https://github.com/sj26/mailcatcher.git
   revision: d7a4737532f84fea89336a2707327568b0dee472
   specs:
@@ -641,6 +649,7 @@ DEPENDENCIES
   omniauth-oauth (= 1.0.1)
   omniauth-oauth2 (= 1.1.1)
   omniauth-twitter (= 1.0.1)
+  omniauth-windowslive!
   open_uri_redirections (= 0.2.1)
   pg (= 0.17.0)
   premailer-rails (= 1.7.0)

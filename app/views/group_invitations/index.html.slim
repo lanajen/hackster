@@ -14,7 +14,7 @@ h2.text-center style='margin:10px 0 20px;'
             ' To accept your invitation, please
             ==> link_to 'log in', new_user_session_path(redirect_to: @redirect_to)
             ' or select how you want to connect:
-          = render 'devise/shared/omniauth'
+          = render 'devise/shared/omniauth', css: 'zocial-block'
           hr
           p Or use your email:
           = simple_form_for resource, as: :user, url: registration_path(:user), wrapper: :bootstrap3_horizontal, html: { class: 'form-horizontal disable-on-submit', method: :post } do |f|

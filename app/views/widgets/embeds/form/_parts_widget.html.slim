@@ -1,16 +1,15 @@
-= f.simple_fields_for :widgets, widget, url: '', wrapper: false, html: { id: 'parts-widget-form', class: "widget-#{widget.id}" } do |f_widget|
-  = f_widget.input :id, as: :hidden
-  ul.list-unstyled.parts-widget
-    - widget.part_joins.new if widget.part_joins.empty?
-    - widget.part_joins.each do |part|
-      = f_widget.simple_fields_for :part_joins, part do |f_part|
-        = render partial: 'widgets/embeds/form/part', locals: { f: f_part, part: part }
-    = f_widget.link_to_add 'Add another part', :part_joins, class: 'btn btn-success btn-sm btn-block'
+#parts-widget-form
+  = f.simple_fields_for :widgets, widget, url: '', wrapper: false do |f_widget|
+    = f_widget.input :id, as: :hidden
+    ul.list-unstyled.parts-widget
+      - widget.part_joins.new if widget.part_joins.empty?
+      - widget.part_joins.each do |part|
+        = f_widget.simple_fields_for :part_joins, part do |f_part|
+          = render partial: 'widgets/embeds/form/part', locals: { f: f_part, part: part }
+      = f_widget.link_to_add 'Add another part', :part_joins, class: 'btn btn-success btn-sm btn-block'
 
-/ # = content_for :head do
-  = stylesheet_link_tag "//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-beta.3/css/select2.min.css"
+= content_for :js do
 
-/ # = content_for :js do
   #new-part-modal.modal.fade*{ 'aria-hidden' => "true", 'aria-labelledby' => "new-par-modal-label", role: "dialog", tabindex: "-1" }
     .modal-dialog
       .modal-content
@@ -20,7 +19,7 @@
             span.sr-only Close
           h4#new-par-modal-label.modal-title Create a new part
         .modal-body
-          = simple_nested_form_for Part.new, url: '/api/v1/parts', html: { class: 'form-horizontal accept-file-upload remote', data: { remote: true } }, wrapper: :bootstrap3_horizontal do |f|
+          = simple_nested_form_for Part.new, url: '/api/v1/parts', html: { id: 'new-part-form', class: 'form-horizontal accept-file-upload remote', data: { remote: true } }, wrapper: :bootstrap3_horizontal do |f|
             = f.error_notification
             = f.input :name
             / # = f.input :description, input_html: { class: 'text-editor', rows: 5 }
@@ -54,27 +53,6 @@
     $select2target = null;
 
     $(function(){
-      $('#new-part-modal').on('show.bs.modal', function(e){
-        $('#parts-widget-form .select2-container--open').each(function(i, el){
-          var select = $(el).prev();
-          $select2target = select.attr('id');
-          $select2containers[$select2target].select2('close');
-        });
-      });
-
-      $(document).on('ajax:success', 'form', function(xhr, data, status){
-        $('#' + $select2target).append('<option value="' + data.id + '">' + data.name + '</option>');
-        $('#select2-' + $select2target + '-container').text(data.name);
-        $select2containers[$select2target].val(data.id).trigger('change');
-        $('#new-part-modal').modal('hide');
-        $(this).find('input').val('');
-        $select2target = null;
-      });
-    });
-
-  = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-beta.3/js/select2.min.js"
-  javascript:
-    jQuery(function($) {
       var select2Options = {
         placeholder: 'Select a part',
         minimumInputLength: 3,
@@ -99,22 +77,37 @@
           },
           cache: true
         }
-        //templateResult: formatRepo, // omitted for brevity, see the source of this page
-        //templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
       };
 
-      $('.parts-widget .select2').each(function(i, el){
-        $select2containers[el.id] = $(el).select2(select2Options);
+      $('#new-part-modal').on('show.bs.modal', function(e){
+        $('#parts-widget-form .select2-container--open').each(function(i, el){
+          var select = $(el).prev();
+          $select2target = select.attr('id');
+          $select2containers[$select2target].select2('close');
+        });
       });
 
-= content_for :js do
-  javascript:
-    $(function(){
-      $('.parts-widget').on('change', function(e){
-        // editor.triggerInput();
+      $('#new-part-form').on('ajax:success', function(xhr, data, status){
+        $('#' + $select2target).append('<option value="' + data.id + '">' + data.name + '</option>');
+        $('#select2-' + $select2target + '-container').text(data.name);
+        $select2containers[$select2target].val(data.id).trigger('change');
+        $('#new-part-modal').modal('hide');
+        $(this).find('input').val('');
+        $select2target = null;
       });
 
-      function resetPositions(){
+      $('.pe-panel').on('ajax:complete', '.remote:not(#new-part-form)', function(xhr, data, status){
+         setupSelect2();
+      });
+
+      function setupSelect2() {
+        $('.parts-widget .select2').each(function(i, el){
+          $select2containers[el.id] = $(el).select2(select2Options);
+        });
+      }
+      setupSelect2();
+
+      function resetPartPositions(){
         $('.parts-widget tr:not(.removed) input.position').each(function(i){
           $(this)
             .val(i+1)
@@ -123,12 +116,15 @@
       }
 
       $('.pe-panel').on('nested:fieldAdded', '.parts-widget', function(event){
-        //var select = $(event.target).find('.select2');
-        //$select2containers[select.attr('id')] = $(event.target).find('.select2').select2(select2Options);
-        resetPositions();
+        var select = $(event.target).find('.select2');
+        $select2containers[select.attr('id')] = $(event.target).find('.select2').select2(select2Options);
+        resetPartPositions();
+
+        // the blueprint has white spaces and they're copied over when adding a field
+        $(event.target).find('textarea').val('');
       })
 
-      $('.pe-panel').on('click', '.reveal', '.parts-widget', function(e){
+      $('.pe-panel').on('click', '.parts-widget .reveal', function(e){
         e.preventDefault();
         var parent = $(this).closest('tbody');
         var target = parent.find('[data-name="' + $(this).data('target') + '"]');
@@ -149,7 +145,7 @@
         if (parent.prev().length) {
           parent.insertBefore(parent.prev());
         }
-        resetPositions();
+        resetPartPositions();
       });
 
       $('.pe-panel').on('click', '.move-down', '.parts-widget', function(e){

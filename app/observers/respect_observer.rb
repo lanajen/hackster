@@ -1,10 +1,7 @@
 class RespectObserver < ActiveRecord::Observer
   def after_commit_on_create record
-    case record.respectable
-    when Project
-      NotificationCenter.notify_all :new, :respect, record.id
-      record.user.broadcast :new, record.id, 'Respect', record.respectable_id
-    end
+    NotificationCenter.notify_all :new, :respect, record.id
+    record.user.broadcast :new, record.id, 'Respect', record.respectable_id
   end
 
   def after_create record

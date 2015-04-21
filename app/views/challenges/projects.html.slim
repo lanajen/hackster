@@ -5,7 +5,7 @@
       - if @platform
         p
           ' by
-          = link_to @platform.name, platform_short_path(@platform)
+          = link_to @platform.name, platform_home_path(@platform)
 
       - if @embed.url
         #video.embed.widescreen= render partial: "api/embeds/#{@embed.provider_name}", locals: { embed: @embed }
@@ -22,7 +22,7 @@
       - if @platform
         p
           ' by
-          = link_to @platform.name, platform_short_path(@platform)
+          = link_to @platform.name, platform_home_path(@platform)
 
 .project-list
   - if @challenge.judged?

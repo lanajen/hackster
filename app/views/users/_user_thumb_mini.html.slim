@@ -1,5 +1,5 @@
 - user = user.decorate
-- defined_actions = { 'follow' => render(partial: 'followers/button_short', locals: { followable: user }), 'contact' => link_to('Contact', new_conversation_path(recipient_id: user.id), class: 'btn btn-default btn-sm btn-block btn-append btn-short') }
+- defined_actions = { 'follow' => render(partial: 'followers/button_append', locals: { followable: user }), 'contact' => link_to('Contact', new_conversation_path(recipient_id: user.id), class: 'btn btn-default btn-sm btn-block btn-append btn-short') }
 - actions = (defined?(actions) and actions) ? actions : %w(follow contact)
 - col = (defined?(col) and col) ? col : 'col-xs-6 col-md-4'
 

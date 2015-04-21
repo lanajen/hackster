@@ -1,0 +1,53 @@
+= content_for :no_container do
+  #content.project-page
+    .container-desktop.container
+      .row
+        .col-md-8.left-column
+          - cache [@project, 'teaser'], tag: ["project-#{@project.id}-teaser"], expires_in: 6.hours do
+            .project-banner style="background-image: url(#{@project.cover_image})"
+              .project-banner-inner
+                h1.project-title
+                  - if @project.is_idea?
+                    i.fa.fa-lightbulb-o.private-project-icon>
+                  ==> @project.name
+                  - if @project.license
+                    a.copyright target='_blank' href=@project.license.url &copy; #{@project.license.abbr}
+                p.project-one-liner= @project.one_liner
+
+                - if @project.product_tags_count > 0 or @project.platform_tags_cached.any?
+                  ul.list-inline
+                    - unknown_platforms = @project.platform_tags_cached.select do |tag|
+                      - Platform.includes(:platform_tags).references(:tags).where("LOWER(tags.name) = ?", tag.downcase).first.nil?
+
+                    - (@project.product_tags_cached  + unknown_platforms).map{|t| t.downcase }.uniq.each do |tag|
+                      li= link_to tag, tag_path(tag), class: 'tag'
+
+                ul.list-inline.project-stats
+                  li
+                    span.stat-figure> = number_with_delimiter @project.impressions_count
+                    = pluralize_without_count @project.impressions_count, 'view'
+                  li
+                    span.stat-figure> = number_with_delimiter @project.comments_count
+                    = pluralize_without_count @project.comments_count, 'comment'
+                  li
+                    span.stat-figure> = number_with_delimiter @project.respects_count
+                    = pluralize_without_count @project.respects_count, 'respect'
+
+          section.project-external
+            p
+              ' More info about #{@project.name} on
+              ==> link_to content_tag(:span, @project.website_host) + content_tag(:i, '', class: 'fa fa-external-link'), @project.website, target: '_blank'
+
+        .col-md-4.right-column
+          .container-mobile
+            section.section-thumbs
+              h4 Do something awesome
+              - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
+                = render partial: 'respects/button', locals: { project: @project }
+
+            - if can? :edit, @project
+              section.section-thumbs
+                h4 Manage this project
+                .btn-group<
+                  = link_to content_tag(:i, '', class: 'fa fa-cog'), settings_project_path(@project), class: 'btn btn-default btn-sm', rel: 'tooltip', data: { container: 'body' }, title: 'Edit settings'
+                  = link_to content_tag(:i, '', class: 'fa fa-group'), project_edit_team_path(@project), class: 'btn btn-default btn-sm', rel: 'tooltip', data: { container: 'body' }, title: 'Manage team'

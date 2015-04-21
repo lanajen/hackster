@@ -165,6 +165,10 @@ module ApplicationHelper
     is_whitelabel? ? current_platform.twitter_handle : '@hacksterio'
   end
 
+  def site_user_name
+    is_whitelabel? ? current_platform.user_name : 'hackster'
+  end
+
   def time_diff_in_natural_language from_time, to_time, affix=''
     from_time = from_time.to_time if from_time.respond_to?(:to_time)
     to_time = to_time.to_time if to_time.respond_to?(:to_time)

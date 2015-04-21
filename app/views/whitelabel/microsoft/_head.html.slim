@@ -1,9 +1,50 @@
-link href="//assets.onestore.ms/cdnfiles/onestorerolling-1503-03007/shell/common/scss/shell.min.css" rel="stylesheet" type="text/css"
+- content_for :html_class do
+  = 'microsoft-html'
 
 css:
+  @font-face{font-family:'Glyphicons Halflings';src:url('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/fonts/glyphicons-halflings-regular.eot');src:url('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'),url('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/fonts/glyphicons-halflings-regular.woff') format('woff'),url('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/fonts/glyphicons-halflings-regular.ttf') format('truetype'),url('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');}.glyphicon{position:relative;top:1px;display:inline-block;font-family:'Glyphicons Halflings';font-style:normal;font-weight:normal;line-height:1;-webkit-font-smoothing:antialiased;}
+
+  @media (min-width: 1200px) {
+    .container {
+      max-width: 1200px;
+      width: 90%;
+    }
+  }
+  #navigation {
+    background: #f2f2f2;
+    border-bottom: 0;
+  }
   body.whitelabel .powered-by {
-    width: 90%;
-    max-width: 1180px;
+    padding: 13px 0 0;
+    text-align: left;
+  }
+  body.whitelabel .powered-by a {
+    display: block;
+  }
+  #user-navigation-links {
+    margin-right: 16px;
+  }
+  .l2-nav-container {
+    background-color: #505050;
+  }
+  .l2-nav {
+    max-width: 1300px;
     margin: 0 auto;
-    padding: 6px 0;
+  }
+  .l2-nav > ul > li > a {
+    color: #fff;
+    border-radius: 0;
+    height: 100%;
+  }
+
+  .l2-nav > ul > li {
+      background-color: #505050;
+  }
+
+  .l2-nav > ul > li > a:visited {
+      background-color: #505050;
+  }
+
+  .l2-nav > ul > li > a:hover {
+      background-color: #AAA;
   }

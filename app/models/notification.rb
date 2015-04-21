@@ -1,7 +1,7 @@
 class Notification < ActiveRecord::Base
   belongs_to :user
   belongs_to :notifiable, polymorphic: true
-  has_many :receipts, as: :receivable
+  has_many :receipts, as: :receivable, dependent: :destroy
 
   # validates :event, uniqueness: { scope: [:notifiable_id, :notifiable_type] }
 

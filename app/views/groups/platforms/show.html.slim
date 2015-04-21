@@ -1,0 +1,122 @@
+- unless @group.decorated?
+  - @group = begin; "#{@group.class.name}Decorator".constantize.decorate(@group); rescue; @group.decorate; end;
+
+/ = content_for :before_main do
+  #about style='position: relative;z-index: 999;background: #F2F2F2;'
+    - if !user_signed_in?
+      = render partial: 'shared/signup_top', locals: { message: "Dig #{@group.name}? Join and receive updates about new projects: ", redirect_to: create_followers_path(followable_type: 'Group', followable_id: @group.id), source: 'group' }
+
+= content_for :head do
+  = render partial: "groups/#{@group.identifier.pluralize}/meta_tags"
+  meta name='group_id' content=@group.id
+
+= content_for :js do
+  script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-51b26f5613fb83d2" async="async"
+  javascript:
+    var addthis_share = {
+      "data_track_addressbar":false,
+       url: "#{url_for [@group, only_path: false]}",
+       title: "#{@group.twitter_share}"
+    }
+
+= content_for :no_container do
+
+  .platform-page
+    section.top-banner
+      .top-banner-image style="background-image:url('#{@group.cover_image(:cover_wide)}');" class=@group.bg_class
+        .top-banner-image-bottom-left.hidden-xs
+          = image_tag @group.avatar(:big), class: 'img-thumbnail'
+          h1
+            - if @group.company_logo
+              = image_tag @group.company_logo.try(:file_url), class: 'company-logo'
+            = @group.name
+            - if @group.verified
+              i.fa.fa-check-circle.istooltip.verified title="Verified"
+            - if @group.disclaimer.present?
+              i.fa.fa-info-circle.istooltip.disclaimer data-container='body' title=@group.disclaimer
+
+    = render partial: "groups/#{@group.identifier.pluralize}/alerts"
+
+    section.main-section
+      = render partial: "groups/#{@group.identifier.pluralize}/nav"
+
+      section#about-us.section-feature
+        .container
+          h2.section-title About #{@platform.name}
+          .about-us-text= @platform.description.presence || @platform.mini_resume
+          .text-center
+            = render partial: "groups/#{@group.identifier.pluralize}/additional_links"
+            ul.websites.list-inline
+              - @group.websites.select{|t,u| u.present? }.each do |type, url|
+                = render partial: "shared/website", locals: { type: type, url: url }
+
+      - if @platform.enable_parts
+        section#parts.section-feature
+          .container
+            h2.section-title
+              - if @platform.verified
+                | Products we make
+              - else
+                | Products made by #{@platform.name}
+            .row
+              - if @platform.parts_count == 1
+                .col-sm-4
+              - elsif @platform.parts_count == 2
+                .col-sm-2
+              - @parts.each do |part|
+                = render partial: 'parts/part_thumb', locals: { part: part.decorate }
+
+            - if @platform.parts_count > 3
+              .text-center
+                - if @platform.verified
+                  - text = 'we make'
+                - else
+                  - text = "made by #{@platform.name}"
+                = link_to "View more of the products #{text} &rarr;".html_safe, platform_parts_path(@platform), class: 'btn btn-default btn-sm hidden-xs'
+                = link_to 'View more &rarr;'.html_safe, platform_parts_path(@platform), class: 'btn btn-default btn-sm visible-xs-block'
+
+      section#community.section-feature
+        .container
+          .community-container
+            h2.section-title
+              - if @platform.verified
+                | Join our community
+              - else
+                | Join the community
+              span.bdg= @platform.followers_count
+            .thumbs
+              - @followers.each do |user|
+                = link_to image_tag(user.decorate.avatar, class: 'img-circle'), user, class: 'thumb'
+            .follow-container
+              = render partial: 'followers/button_text', locals: { followable: @group }
+
+      section#projects.section-feature
+        .container
+          h2.section-title
+            | Projects built by makers
+            span.bdg= @platform.projects_count
+          .row
+            - @projects.each do |col|
+              = render partial: 'projects/project_thumb', locals: { project: col.project }
+          .text-center
+            = link_to 'View more projects built by makers &rarr;'.html_safe, platform_projects_path(@platform), class: 'btn btn-default btn-sm hidden-xs'
+            = link_to 'View more &rarr;'.html_safe, platform_projects_path(@platform), class: 'btn btn-default btn-sm visible-xs-block'
+
+      - if @platform.enable_products
+        section#products.section-feature
+          .container
+            h2.section-title
+              | Devices built by companies
+              span.bdg= @platform.products_count
+            .row
+              - if @platform.products_count == 1
+                .col-md-4.col-sm-3
+              - elsif @platform.products_count == 2
+                .col-md-2
+              - @products.each do |col|
+                = render partial: 'projects/product_thumb', locals: { project: col.project }
+
+            - if @platform.products_count > 3
+              .text-center
+                = link_to 'View more devices built by companies &rarr;'.html_safe, platform_products_path(@platform), class: 'btn btn-default btn-sm hidden-xs'
+                = link_to 'View more &rarr;'.html_safe, platform_products_path(@platform), class: 'btn btn-default btn-sm visible-xs-block'

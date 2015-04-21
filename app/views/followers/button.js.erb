@@ -8,12 +8,6 @@ if ($('a.after-' + followLabel).length > 0) {
     $('a.after-' + followLabel + ' .inner-btn').animate({ top: '-38px' }, 500);
   }, 1000);
 } else {
-  if (followBtn.hasClass('btn-short')) {
-    followBtn.replaceWith('<%= escape_javascript render(partial: "followers/button_short", locals: { followable: @followable }) %>');
-  } else if (followBtn.hasClass('btn-shorter')) {
-    followBtn.replaceWith('<%= escape_javascript render(partial: "followers/button_shorter", locals: { followable: @followable }) %>');
-  } else {
-    followBtn.replaceWith('<%= escape_javascript render(partial: "followers/button_text", locals: { followable: @followable }) %>');
-  }
+  followBtn.replaceWith('<%= escape_javascript render(partial: "followers/#{params[:button]}", locals: { followable: @followable }) %>');
 }
 followBtn.tooltip();

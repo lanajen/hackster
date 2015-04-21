@@ -170,24 +170,21 @@ html(lang="en")
                       .social-icons.text-center
                         p.text-muted
                           small Or connect with your social account:
-                        = link_to 'Facebook', user_omniauth_authorize_url(:facebook), class: 'zocial icon facebook'
-                        = link_to 'Github', user_omniauth_authorize_path(:github), class: 'zocial icon github'
-                        = link_to 'Google+', user_omniauth_authorize_path(:gplus), class: 'zocial icon googleplus'
-                        = link_to 'Twitter', user_omniauth_authorize_path(:twitter), class: 'zocial icon twitter'
+                        = render 'devise/shared/omniauth', css: 'icon'
 
               ul#left-nav.navbar-right.top-menu-nav
                 - if user_signed_in?
                   - if current_user.is? :admin
                     li= link_to content_tag(:i, '', class: 'fa fa-cogs'), admin_analytics_path, class: 'nav-link', rel: 'tooltip', title: 'Admin', data: { container: 'body', placement: 'bottom' }
                   li
-                    a.nav-link href=notifications_path rel='tooltip' title=(current_user.has_notifications? ? 'You have unread notifications' : 'No new notifications') data-container='body' data-placement='bottom'
-                      - if current_user.has_notifications?
+                    a.nav-link href=notifications_path rel='tooltip' title=(current_user.has_unread_notifications? ? 'You have unread notifications' : 'No new notifications') data-container='body' data-placement='bottom'
+                      - if current_user.has_unread_notifications?
                         span.fa-stack.fa-stack-half
                           i.fa.fa-inbox.fa-stack-1x
-                          i.fa.fa-circle.fa-stack-1x.fa-stack-half.text-primary
+                          i.fa.fa-circle.fa-stack-1x.fa-stack-half.text-danger
                       - else
                         i.fa.fa-inbox
-                li= link_to content_tag(:i, '', class: 'fa fa-plus'), new_project_path, class: 'nav-link', rel: 'tooltip', title: 'New project', data: { container: 'body', placement: 'bottom' }
+                  li= link_to content_tag(:i, '', class: 'fa fa-plus'), new_project_path, class: 'nav-link', rel: 'tooltip', title: 'New project', data: { container: 'body', placement: 'bottom' }
 
               #navbar-search
                 = render 'shared/search_form'

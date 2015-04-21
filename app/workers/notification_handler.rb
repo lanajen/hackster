@@ -12,9 +12,9 @@ class NotificationHandler
     @event = event
     @context_type = context_type
     @context_id = context_id
-    # @model = if is_class? context_type.camelize.to_s
-    #   context_type.camelize.to_s.constantize.find_by_id context_id
-    # end
+    @model = if is_class? context_type.camelize.to_s
+      context_type.camelize.to_s.constantize.find_by_id context_id
+    end
   end
 
   def notify_all template=nil
@@ -73,16 +73,32 @@ class NotificationHandler
         context[:prize] = entry.prize
       when :comment
         context[:model] = comment = context[:comment] = Comment.find(context_id)
-        commentable = comment.commentable
-        project = context[:project] = case commentable
-        when Feedback, Issue
-          context[:thread] = comment.commentable
-          comment.commentable.threadable
-        when Project
-          comment.commentable
-        end
         author = context[:author] = comment.user
-        context[:users] = project.users.with_subscription(notification_type, 'new_comment_own') + comment.commentable.commenters.with_subscription(notification_type, 'new_comment_commented') - [author]
+        commentable = comment.commentable
+        case commentable
+        when Feedback, Issue, Project
+          project = context[:project] = case commentable
+          when Feedback, Issue
+            context[:thread] = comment.commentable
+            comment.commentable.threadable
+          when Project
+            comment.commentable
+          end
+          context[:users] = project.users.with_subscription(notification_type, 'new_comment_own') + comment.commentable.commenters.with_subscription(notification_type, 'new_comment_commented') - [author]
+        when Thought
+          thought = context[:thought] = commentable
+          context[:users] = thought.commenters.with_subscription(notification_type, 'new_comment_update_commented')
+          if thought.user.subscribed_to?(notification_type, 'new_comment_update')
+            context[:users] += [thought.user]
+          end
+          context[:users].uniq!
+          context[:users] -= [author]
+        end
+      when :comment_mention
+        context[:model] = comment = context[:comment] = Comment.find context_id
+        context[:commentable] = comment.commentable
+        context[:author] = comment.user
+        context[:users] = comment.mentioned_users
       when :daily_notification
         user = User.find context_id
         relations = {}
@@ -208,11 +224,11 @@ class NotificationHandler
           []
         end
         context[:requester] = member.user
-      when :new_membership
-        context[:model] = member = context[:member] = Member.find(context_id)
-        context[:group] = group = member.group
-        context[:user] = group
-        context[:author] = member.user
+      # when :new_membership
+      #   context[:model] = member = context[:member] = Member.find(context_id)
+      #   context[:group] = group = member.group
+      #   context[:users] = group.members.active
+      #   context[:author] = member.user
       when :project
         context[:model] = project = context[:project] = Project.find(context_id)
         context[:users] = project.users
@@ -233,9 +249,31 @@ class NotificationHandler
         end
       when :respect
         context[:model] = respect = context[:respect] = Respect.find(context_id)
-        project = context[:project] = respect.respectable
         context[:author] = respect.user
-        context[:users] = project.users.with_subscription(notification_type, 'new_respect_own').to_a  # added to_a so that .uniq line 235 doesn't add DISTINCT to the query and make it fail
+        case respect.respectable
+        when Comment
+          comment = context[:comment] = respect.respectable
+          context[:thought] = comment.commentable
+          if comment.user.subscribed_to? notification_type, 'new_like'
+            context[:user] = comment.user
+          else
+            context[:users] = []
+          end
+        when Project
+          project = context[:project] = respect.respectable
+          context[:users] = project.users.with_subscription(notification_type, 'new_respect_own').to_a  # added to_a so that .uniq line 235 doesn't add DISTINCT to the query and make it fail
+        when Thought
+          thought = context[:thought] = respect.respectable
+          if thought.user.subscribed_to? notification_type, 'new_like'
+            context[:user] = thought.user
+          else
+            context[:users] = []
+          end
+        end
+      when :thought_mention
+        context[:model] = thought = context[:thought] = Thought.find context_id
+        context[:author] = thought.user
+        context[:users] = thought.mentioned_users
       when :user
         context[:model] = context[:user] = User.find(context_id)
       when :user_informal

@@ -4,7 +4,7 @@ class Comment < ActiveRecord::Base
   belongs_to :user
   has_many :likes, as: :respectable, class_name: 'Respect', dependent: :destroy
   has_many :liking_users, class_name: 'User', through: :likes, source: :user
-  has_many :receipts, as: :receivable
+  has_many :receipts, as: :receivable, dependent: :destroy
 
   attr_accessor :children, :depth
   attr_accessible :raw_body, :user_attributes, :parent_id, :guest_name
@@ -55,6 +55,24 @@ class Comment < ActiveRecord::Base
 
   def disable_notification?
     @disable_notification
+  end
+
+  def has_mentions?
+    return unless body
+
+    mentioned_users.any?
+  end
+
+  def mentioned_users
+    return @mentions if @mentions
+    return [] unless body
+
+    user_ids = []
+    doc = Nokogiri::HTML::DocumentFragment.parse body
+    doc.css('a.mention').each do |mention|
+      user_ids << mention['data-user-id']
+    end
+    @mentions = user_ids.any? ? User.where(id: user_ids) : []
   end
 
   def to_tracker

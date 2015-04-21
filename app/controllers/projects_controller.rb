@@ -213,7 +213,7 @@ class ProjectsController < ApplicationController
       @project.platform_tags_string = current_platform.name
     end
 
-    if !@project.product? and current_user
+    if current_user
       @project.build_team
       @project.team.members.new(user_id: current_user.id)
     end
@@ -295,7 +295,16 @@ class ProjectsController < ApplicationController
   end
 
   def redirect_to_last
-    redirect_to url_for(Project.last), status: 302
+    project = Project.last
+    url = case project
+    when Product
+      product_path(project)
+    when ExternalProject
+      external_project_path(project)
+    else
+      url_for(project)
+    end
+    redirect_to url, status: 302
   end
 
   def submit

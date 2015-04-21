@@ -25,6 +25,10 @@ class User < ActiveRecord::Base
       'new_badge' => 'I receive a new badge',
       'new_message' => 'I receive a new private message',
       'project_approved' => 'My project has been approved',
+      'new_comment_update' => 'Somebody comments on one of my updates',
+      'new_comment_update_commented' => 'Somebody comments on an update I commented on',
+      'new_like' => 'Somebody likes one of my updates or comments',
+      'new_mention' => 'Somebody mentions me in an update or comment',
     },
     web: {
       'new_comment_own' => 'New comment on one of my projects',
@@ -39,9 +43,12 @@ class User < ActiveRecord::Base
       'new_badge' => 'I receive a new badge',
       'new_message' => 'I receive a new private message',
       'project_approved' => 'My project has been approved',
+      'new_comment_update' => 'Somebody comments on one of my updates',
+      'new_comment_update_commented' => 'Somebody comments on an update I commented on',
+      'new_like' => 'Somebody likes one of my updates or comments',
+      'new_mention' => 'Somebody mentions me in an update or comment',
     }
   }
-  CATEGORIES = %w()
   USER_NAME_WORDS_LIST1 = %w(acid ada agent alien chell colossus crash cyborg doc ender enigma hal isambard jarvis kaneda leela morpheus neo nikola oracle phantom radio silicon sim starbuck straylight synergy tank tetsuo trinity zero)
   USER_NAME_WORDS_LIST2 = %w(algorithm blue brunel burn clone cool core curie davinci deckard driver energy fett flynn formula gibson glitch grid hawking jaunte newton overdrive override phreak plasma ripley skywalker tesla titanium uhura wiggin)
 
@@ -49,7 +56,8 @@ class User < ActiveRecord::Base
 
   devise :database_authenticatable, :registerable, :invitable,
          :recoverable, :rememberable, :trackable, :validatable, :confirmable,
-         :omniauthable, omniauth_providers: [:facebook, :github, :gplus, :linkedin, :twitter]
+         :omniauthable, omniauth_providers: [:facebook, :github, :gplus,
+          :linkedin, :twitter, :windowslive]
 
   belongs_to :invite_code
   has_many :assignments, through: :promotions
@@ -146,8 +154,6 @@ class User < ActiveRecord::Base
 
   set_roles :roles, ROLES
 
-  # scope :with_category, ->(category) { where("users.categories_mask & #{2**CATEGORIES.index(category.to_s)} > 0") }
-
   store :counters_cache, accessors: [:comments_count, :interest_tags_count,
     :invitations_count, :projects_count, :respects_count, :skill_tags_count,
     :live_projects_count, :project_views_count, :followers_count,
@@ -167,6 +173,9 @@ class User < ActiveRecord::Base
   # store_accessor :subscriptions_masks, :email_subscriptions_mask,
   #   :web_subscriptions_mask
   # parse_as_integers :subscriptions_masks, :email, :web
+
+  store :properties, accessors: [:has_unread_notifications]
+  parse_as_booleans :properties, :has_unread_notifications
 
   delegate :can?, :cannot?, to: :ability
 
@@ -226,7 +235,7 @@ class User < ActiveRecord::Base
 
   class << self
     def find_for_oauth provider, auth, resource=nil
-   # Rails.logger.info 'auth: ' + auth.to_yaml
+      # Rails.logger.info 'auth: ' + auth.to_yaml
       case provider
       when 'Facebook'
         uid = auth.uid
@@ -247,6 +256,10 @@ class User < ActiveRecord::Base
       when 'Twitter'
         uid = auth.uid
         name = auth.info.name
+      when 'Windowslive'
+        uid = auth.uid
+        name = auth.info.name
+        email = auth.info.emails.try(:first).try(:value)
       else
         raise 'Provider #{provider} not handled'
       end
@@ -359,14 +372,6 @@ class User < ActiveRecord::Base
 
   def being_invited?
     new_invitation.present?
-  end
-
-  def categories=(categories)
-    self.categories_mask = (categories & CATEGORIES).map { |r| 2**CATEGORIES.index(r) }.sum
-  end
-
-  def categories
-    CATEGORIES.reject { |r| ((categories_mask || 0) & 2**CATEGORIES.index(r)).zero? }
   end
 
   def community_group_ties
@@ -548,6 +553,15 @@ class User < ActiveRecord::Base
         token: data.credentials.token,
         secret: data.credentials.secret
       )
+    elsif info and provider == 'Windowslive'
+      self.full_name = info.name if full_name.blank?
+      self.email = self.email_confirmation = info.emails.try(:first).try(:value) if email.blank?
+      self.authorizations.build(
+        uid: data.uid,
+        provider: 'Windowslive',
+        name: info.name,
+        token: data.credentials.token
+      )
     end
 #          logger.info 'auth: ' + self.authorizations.inspect
     generate_user_name if self.class.where(user_name: user_name).any?
@@ -581,6 +595,10 @@ class User < ActiveRecord::Base
 
   def has_notifications?
     notifications.any?
+  end
+
+  def has_unread_notifications?
+    has_unread_notifications
   end
 
   def informal_name
@@ -680,6 +698,14 @@ class User < ActiveRecord::Base
     live_projects_count - (live_hidden_projects_count || 0)
   end
 
+  def mark_has_unread_notifications!
+    update_attribute :has_unread_notifications, true if !has_unread_notifications?
+  end
+
+  def mark_has_no_unread_notifications!
+    update_attribute :has_unread_notifications, false if has_unread_notifications?
+  end
+
   def name
     full_name.present? ? full_name : user_name
   end
@@ -700,6 +726,10 @@ class User < ActiveRecord::Base
   def reset_authentication_token
     update_attribute(:authentication_token, nil)
     # the new token is set automatically on save
+  end
+
+  def security_token
+    Digest::MD5.hexdigest(id.to_s)
   end
 
   # allows overriding the email template and model that are sent to devise mailer

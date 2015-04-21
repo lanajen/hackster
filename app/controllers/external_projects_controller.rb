@@ -25,7 +25,7 @@ class ExternalProjectsController < ApplicationController
   end
 
   def edit
-    title 'Project settings'
+    title 'Page settings'
   end
 
   def update
@@ -34,17 +34,10 @@ class ExternalProjectsController < ApplicationController
       respond_with @project do |format|
         format.html do
           flash[:notice] = notice
-          if @project.product?
-            redirect_to settings_project_path(@project)
-          else
-            redirect_to @project
-          end
+          redirect_to @project
         end
       end
-
-      track_event 'Updated project', @project.to_tracker.merge({ type: 'project update'})
     else
-      initialize_project
       @project = @project.decorate
       render action: :edit
     end

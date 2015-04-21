@@ -70,8 +70,9 @@ gem 'omniauth-facebook', '1.5.1'
 gem 'omniauth-github', '1.1.2'
 gem 'omniauth-gplus', '1.2.0'
 gem 'omniauth-oauth', '1.0.1'  # for omniauth-twitter
-gem 'omniauth-oauth2', '1.1.1'  # for omniauth-facebook, google, github
+gem 'omniauth-oauth2', '1.1.1'  # for omniauth-facebook, google, github, windowslive
 gem 'omniauth-twitter', '1.0.1'
+gem 'omniauth-windowslive', git: 'https://github.com/joel/omniauth-windowslive.git'
 gem 'open_uri_redirections', '0.2.1'  # to allow redirects from http to https
 gem 'pg', '0.17.0'
 gem 'premailer-rails', '1.7.0'

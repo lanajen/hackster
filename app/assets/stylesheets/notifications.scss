@@ -1,0 +1,15 @@
+.notifications {
+  li {
+    &:hover {
+      background: #fefefe;
+    }
+  }
+  &.empty {
+    padding: 100px 50px;
+    text-align: center;
+    font-weight: bold;
+    border: 1px solid #ddd;
+    @include border-radius(4px);
+    background: #fff;
+  }
+}

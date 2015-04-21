@@ -23,7 +23,7 @@ class Part < ActiveRecord::Base
   attr_accessible :name, :vendor_link, :vendor_name, :vendor_sku, :mpn, :unit_price,
     :description, :store_link, :documentation_link, :libraries_link,
     :datasheet_link, :product_page_link, :image_id, :platform_id,
-    :part_joins_attributes, :part_join_ids, :workflow_state, :slug
+    :part_joins_attributes, :part_join_ids, :workflow_state, :slug, :one_liner
 
   accepts_nested_attributes_for :part_joins, allow_destroy: true
 
@@ -31,16 +31,20 @@ class Part < ActiveRecord::Base
     :datasheet_link, :product_page_link]
   set_changes_for_stored_attributes :websites
 
+  # convert these to hstore so they can be queried on
+  # def self.most_used; order("counters_cache -> 'projects_count' DESC"); end
   store :counters_cache, accessors: [:projects_count]
+  # update parser to work with hstore
   parse_as_integers :counters_cache, :projects_count
 
   validates :name, presence: true
   validates :unit_price, numericality: { greater_than_or_equal_to: 0 }, allow_blank: true
   validates :slug, uniqueness: { scope: :platform_id }, presence: true
+  validates :one_liner, length: { maximum: 140 }, allow_blank: true
   before_validation :ensure_website_protocol
   before_validation :ensure_partable, unless: proc{|p| p.persisted? }
   before_validation :generate_slug, if: proc{|p| p.slug.blank? }
-  register_sanitizer :strip_whitespace, :before_validation, :mpn, :description
+  register_sanitizer :strip_whitespace, :before_validation, :mpn, :description, :name
   after_create proc{|p| p.require_review! if p.workflow_state.blank? or p.new? }
 
   workflow do
@@ -162,7 +166,7 @@ class Part < ActiveRecord::Base
       "(parts.description ILIKE '%#{token}%' OR parts.name ILIKE '%#{token}%' OR parts.product_tags_string ILIKE '%#{token}%')"
     end.join(' AND ')
 
-    where(query)
+    approved.where(query).includes(:platform)
   end
 
   def self.approved
@@ -197,7 +201,7 @@ class Part < ActiveRecord::Base
 
   def full_name
     if platform
-      "#{platform.name} #{name}"
+      "#{platform.name} - #{name}"
     else
       name
     end
@@ -219,6 +223,10 @@ class Part < ActiveRecord::Base
       end
     end
     self.slug = slug
+  end
+
+  def one_liner_or_description
+    one_liner.presence || ActionController::Base.helpers.strip_tags(description).try(:truncate, 140)
   end
 
   def search_on_octopart
@@ -254,6 +262,6 @@ class Part < ActiveRecord::Base
     end
 
     def strip_whitespace text
-      text.strip
+      text.try(:strip)
     end
 end

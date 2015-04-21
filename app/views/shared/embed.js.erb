@@ -1,6 +1,6 @@
 var scripts = document.getElementsByTagName('script');
 var script = scripts[scripts.length - 1];
-var source = '<%= j(render("groups/platforms/project_thumb_template")) %>';
+var source = '<%= j(render("projects/project_thumb_template")) %>';
 var css = '<%= asset_url "project-thumb.css" %>';
 if (!$("link[href='"+ css + "']").length)
   $('<link href="' + css + '" rel="stylesheet">').appendTo("head");

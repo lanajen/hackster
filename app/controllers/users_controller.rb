@@ -1,8 +1,9 @@
 class UsersController < ApplicationController
-  before_filter :authenticate_user!, except: [:show, :index]
+  before_filter :authenticate_user!, except: [:show, :index, :redirect_to_show]
   before_filter :load_user, only: [:show]
-  authorize_resource except: [:after_registration, :after_registration_save]
+  authorize_resource except: [:after_registration, :after_registration_save, :redirect_to_show]
   layout :set_layout
+  protect_from_forgery except: :redirect_to_show
 
   def index
     title "Browse top hackers"
@@ -38,7 +39,22 @@ class UsersController < ApplicationController
 
   def redirect_to_show
     @user = User.find params[:id]
-    redirect_to user_path(@user, ref: params[:ref]), status: 301
+
+    respond_to do |format|
+      format.html { redirect_to user_path(@user, ref: params[:ref]), status: 301 }
+      format.js do
+        @projects = if params[:project_ids] and params[:auth_token] and params[:auth_token] == @user.security_token
+          ids = params[:project_ids]
+          @projects = Project.where(id: ids.split(','))
+        else
+          @user.projects.live.for_thumb_display.order(start_date: :desc, made_public_at: :desc, created_at: :desc)
+        end
+        @projects = @projects.map do |project|
+          project.to_js
+        end.to_json
+        render "shared/embed"
+      end
+    end
   end
 
   def edit

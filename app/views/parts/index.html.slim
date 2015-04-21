@@ -1,3 +1,5 @@
+h1.section-title Products made by #{@platform.name}
+
 - @parts.each do |part|
   = render 'parts/part', { part: part.decorate }
 

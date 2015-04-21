@@ -85,6 +85,5 @@ module PlatformHelper
     end
 
     @projects = @projects.paginate(page: safe_page_params, per_page: per_page)
-
   end
 end

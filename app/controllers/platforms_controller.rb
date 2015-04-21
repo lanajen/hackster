@@ -8,7 +8,7 @@ class PlatformsController < ApplicationController
   before_filter :load_platform_with_slug, only: [:show, :embed, :projects, :products, :followers, :analytics]
   before_filter :load_projects, only: [:embed]
   before_filter :load_project, only: [:feature_project, :unfeature_project]
-  layout 'group_shared', only: [:edit, :update, :show, :projects, :products, :followers, :analytics]
+  layout 'platform', only: [:edit, :update, :projects, :products, :followers, :analytics]
   after_action :allow_iframe, only: [:embed]
   respond_to :html
   protect_from_forgery except: :embed
@@ -29,6 +29,28 @@ class PlatformsController < ApplicationController
     end
 
     render "groups/platforms/#{self.action_name}"
+  end
+
+  def show
+    respond_to do |format|
+      format.html do
+        title "#{@platform.name}'s community hub"
+        meta_desc "Explore #{@platform.name}'s community hub to learn and share about their products! Join #{@platform.followers_count} hackers who follow #{@platform.name} on Hackster."
+
+        sql = "SELECT users.*, t1.count FROM (SELECT members.user_id as user_id, COUNT(*) as count FROM members INNER JOIN groups AS team ON team.id = members.group_id INNER JOIN projects ON projects.team_id = team.id INNER JOIN project_collections ON project_collections.project_id = projects.id WHERE project_collections.collectable_type = 'Group' AND project_collections.collectable_id = ? AND projects.private = 'f' AND projects.hide = 'f' AND projects.approved = 't' AND (projects.guest_name = '' OR projects.guest_name IS NULL) GROUP BY user_id) AS t1 INNER JOIN users ON users.id = t1.user_id WHERE t1.count > 0 ORDER BY t1.count DESC LIMIT 5;"
+        @followers = User.find_by_sql([sql, @platform.id])
+        if @followers.count < 5
+          @followers = @platform.followers.top.limit(5)
+        end
+        @parts = @platform.parts.limit(3)
+        @projects = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection).merge(Project.magic_sort).where(projects: { type: %w(Project ExternalProject) }).limit(3)
+        @products = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection).merge(Project.magic_sort).where(projects: { type: 'Product' }).limit(3)
+
+        render "groups/platforms/show"
+      end
+      format.atom { redirect_to platform_projects_path(@platform, params.slice(:sort, :by).merge(format: :atom)), status: :moved_permanently }
+      format.rss { redirect_to platform_projects_path(@platform, params.slice(:sort, :by).merge(format: :atom)), status: :moved_permanently }
+    end
   end
 
   def projects
@@ -59,8 +81,8 @@ class PlatformsController < ApplicationController
     authorize! :read, @platform
     impressionist_async @platform, "", unique: [:session_hash]
 
-    title "#{@platform.name} products"
-    meta_desc "Explore #{@platform.products_count} products built with #{@platform.name}! Join #{@platform.followers_count} hackers who follow #{@platform.name} on Hackster."
+    title "Devices made with #{@platform.name}"
+    meta_desc "Explore #{@platform.products_count} devices built with #{@platform.name}! Join #{@platform.followers_count} hackers who follow #{@platform.name} on Hackster."
 
     @announcement = @platform.announcements.current
     @challenge = @platform.active_challenge ? @platform.challenges.active.first : nil
@@ -75,7 +97,7 @@ class PlatformsController < ApplicationController
       #   load_projects_for_rss
       #   render template: "projects/index", layout: false
       # end
-      # format.rss { redirect_to platform_short_path(@platform, params.merge(format: :atom)), status: :moved_permanently }
+      # format.rss { redirect_to platform_home_path(@platform, params.merge(format: :atom)), status: :moved_permanently }
     end
   end
 
@@ -90,7 +112,7 @@ class PlatformsController < ApplicationController
         @projects = @projects.map do |project|
           project.project.to_js
         end.to_json
-        render "groups/platforms/embed"
+        render "shared/embed"
       end
     end
   end
@@ -185,7 +207,7 @@ class PlatformsController < ApplicationController
       @projects = Project.joins(:visible_platforms).where("groups.id = ?", @platform.id).for_thumb_display
       @projects = @projects.send(Project::SORTING[sort])
 
-      @projects = @projects.joins(:project).merge(Project.where(type: %w(Project ExternalProject)))
+      @projects = @projects.merge(Project.where(type: %w(Project ExternalProject)))
 
       if @by and @by.in? Project::FILTERS.keys
         @projects = if @by == 'featured'
@@ -196,7 +218,6 @@ class PlatformsController < ApplicationController
       end
 
       @projects = @projects.paginate(page: safe_page_params, per_page: per_page)
-
     end
 
     def load_platform

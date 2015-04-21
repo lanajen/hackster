@@ -104,7 +104,7 @@ module UrlHelper
       when 'Event'
         event_path group, opts
       when 'Platform'
-        platform_short_path group, opts
+        platform_home_path group, opts
       when 'List'
         list_path group, opts
       else
@@ -132,7 +132,7 @@ module UrlHelper
     when 'Event'
       event_url group, opts
     when 'Platform'
-      platform_short_url group, opts
+      platform_home_url group, opts
     when 'List'
       list_url group, opts
     else
@@ -236,11 +236,11 @@ module UrlHelper
     super platform.user_name, opts
   end
 
-  def platform_projects_path platform, opts={}
+  def platform_products_url platform, opts={}
     super platform.user_name, opts
   end
 
-  def platform_products_url platform, opts={}
+  def platform_projects_path platform, opts={}
     super platform.user_name, opts
   end
 
@@ -248,8 +248,26 @@ module UrlHelper
     super platform.user_name, opts
   end
 
+  def platform_parts_path platform, opts={}
+    super platform.user_name, opts
+  end
+
+  def platform_parts_url platform, opts={}
+    super platform.user_name, opts
+  end
+
   def product_path product, opts={}
-    ''
+    # super product.slug, opts
+    params = params_for_product(product).merge(opts)
+    params.delete(:use_route)
+    super params
+  end
+
+  def product_url product, opts={}
+    # super product.slug, opts
+    params = params_for_product(product).merge(opts)
+    params.delete(:use_route)
+    super params
   end
 
   def project_path project, opts={}
@@ -279,16 +297,24 @@ module UrlHelper
     course_promotion_url params_for_promotion(promotion).merge(opts)
   end
 
+  def platform_home_path platform, opts={}
+    super platform.user_name, opts
+  end
+
+  def platform_home_url platform, opts={}
+    super platform.user_name, opts
+  end
+
   def tag_path tag
     "/projects/tags/#{CGI::escape(tag)}"
   end
 
-  def platform_short_path platform, opts={}
-    super platform.user_name, opts
+  def thought_path thought, opts={}
+    "/talk#/posts/#{thought.id}"
   end
 
-  def platform_short_url platform, opts={}
-    super platform.user_name, opts
+  def thought_url thought, opts={}
+    APP_CONFIG['full_host'] + thought_path(thought, opts)
   end
 
   def url_for(options = nil)
@@ -302,6 +328,8 @@ module UrlHelper
       options[:use_route] = 'platform_short'
     when Project
       case options.type
+      when 'Product'
+        options = params_for_product options
       when 'ExternalProject'
         options = params_for_external_project options
       when 'Project'
@@ -388,6 +416,14 @@ module UrlHelper
         id: "#{project.id}-#{project.slug}",
         user_name: project.user_name_for_url,
         use_route: 'external_project',
+      }.merge(force_params)
+    end
+
+    def params_for_product project, force_params={}
+      {
+        user_name: project.user_name_for_url,
+        slug: project.slug,
+        use_route: 'product',
       }.merge(force_params)
     end
 
