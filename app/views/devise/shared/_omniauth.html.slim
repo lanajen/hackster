@@ -3,5 +3,5 @@
 = link_to 'Google+', user_omniauth_authorize_url(:gplus, host: APP_CONFIG['default_host'], redirect_host: request.host, redirect_to: @redirect_to), class: "zocial #{css} googleplus"
 / = link_to 'LinkedIn', user_omniauth_authorize_path(:linkedin), class: "zocial #{css} linkedin"
 = link_to 'Twitter', user_omniauth_authorize_url(:twitter, host: APP_CONFIG['default_host'], redirect_host: request.host, redirect_to: @redirect_to), class: "zocial #{css} twitter"
-- if site_user_name == 'microsoft'
-  = link_to 'Windows live', user_omniauth_authorize_url(:windowslive, host: APP_CONFIG['default_host'], redirect_host: request.host, redirect_to: @redirect_to), class: "zocial #{css} windows"
+/ - if site_user_name == 'microsoft'
+= link_to 'Windows live', user_omniauth_authorize_url(:windowslive, host: APP_CONFIG['default_host'], redirect_host: request.host, redirect_to: @redirect_to), class: "zocial #{css} windows"
