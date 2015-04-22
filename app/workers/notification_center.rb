@@ -1,7 +1,7 @@
 # intermediary class that allows passing notification handling to background
 class NotificationCenter < BaseWorker
-  def self.notify_all event, context_type, context_id, template=nil, opts={}
-    perform_async 'notify_all', event, context_type, context_id, template, opts
+  def self.notify_all event, context_type, context_id, template=nil
+    perform_async 'notify_all', event, context_type, context_id, template
   end
 
   def self.notify_via_email event, context_type, context_id, template=nil, opts={}
