@@ -10,12 +10,16 @@ $(function(){
   var data = <%= @projects.to_s.html_safe %>;
 
   if (typeof(hackster_config) != undefined) {
-    if (hackster_config.containerId) {
-      var superContainer =  $('#' + hackster_config.containerId);
-    } else {
-      var superContainer = $('<div />');
-      $(script).before(superContainer);
-    }
+    <% if params[:container_id] %>
+      var superContainer =  $('#<%= params[:container_id] %>');
+    <% else %>
+      if (hackster_config.containerId) {
+        var superContainer =  $('#' + hackster_config.containerId);
+      } else {
+        var superContainer = $('<div />');
+        $(script).before(superContainer);
+      }
+    <% end %>
     if (hackster_config.containerClass)
       superContainer.addClass(hackster_config.containerClass);
 
