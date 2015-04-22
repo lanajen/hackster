@@ -158,7 +158,7 @@ class CronTask < BaseWorker
       response = gb.lists.batch_subscribe({ id: list_id, batch: batch, double_optin: false, update_existing: true })
       failed_emails = response['errors'].map { |error| error['email']['email'] }
       successful_emails = get_email_from_users(users) - failed_emails
-      update_settings_for failed_emails, "subscriptions_masks -> 'email' = (CAST(subscriptions_masks -> 'email' AS INTEGER) - #{2**User::SUBSCRIPTIONS['email'].keys.index('newsletter')})"
+      update_settings_for failed_emails, "subscriptions_masks -> 'email' = (CAST(subscriptions_masks -> 'email' AS INTEGER) - #{2**User::SUBSCRIPTIONS[:email].keys.index('newsletter')})"
       update_settings_for successful_emails, { mailchimp_registered: true }
       puts "Results for adding: #{successful_emails.size} successes, #{failed_emails.size} failures."
     end
