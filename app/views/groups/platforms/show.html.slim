@@ -96,8 +96,9 @@
             | Projects built by makers
             span.bdg= @platform.projects_count
           .row
-            - @projects.each do |col|
-              = render partial: 'projects/project_thumb', locals: { project: col.project }
+            - @projects.each_with_index do |col, i|
+              - css = i == 2 ? '4 hidden-sm' : nil
+              = render partial: 'projects/project_thumb', locals: { project: col.project, col: css }
           .text-center
             = link_to 'View more projects built by makers &rarr;'.html_safe, platform_projects_path(@platform), class: 'btn btn-default btn-sm hidden-xs'
             = link_to 'View more &rarr;'.html_safe, platform_projects_path(@platform), class: 'btn btn-default btn-sm visible-xs-block'
@@ -113,8 +114,9 @@
                 .col-md-4.col-sm-3
               - elsif @platform.products_count == 2
                 .col-md-2
-              - @products.each do |col|
-                = render partial: 'projects/product_thumb', locals: { project: col.project }
+              - @products.each_with_index do |col, i|
+                - css = i == 2 ? '4 hidden-sm' : nil
+                = render partial: 'projects/product_thumb', locals: { project: col.project, col: css }
 
             - if @platform.products_count > 3
               .text-center
