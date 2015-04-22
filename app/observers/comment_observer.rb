@@ -2,11 +2,12 @@ class CommentObserver < ActiveRecord::Observer
   # include BroadcastObserver
 
   def after_commit_on_create record
-    return unless record.disable_notification?
+    return if record.disable_notification?
 
     if record.commentable_type.in? %w(Issue Project Thought)
       NotificationCenter.notify_all :new, :comment, record.id
     end
+    NotificationCenter.notify_all :mention, :comment_mention, record.id if record.has_mentions?
   end
 
   def after_create record
@@ -15,7 +16,6 @@ class CommentObserver < ActiveRecord::Observer
       record.user.broadcast :new, record.id, 'Comment', project_id if record.user.class == User
       update_counters record
     end
-    NotificationCenter.notify_all :mention, :comment_mention, record.id if record.has_mentions?
   end
 
   def after_update record
