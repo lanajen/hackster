@@ -1,4 +1,11 @@
-.mg-20= link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add a project"), new_project_url(project: { platform_tags_string: @platform.name }), class: 'btn btn-primary btn-sm', target: '_blank'
+.clearfix.mg-20
+  .pull-left= link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add a project"), new_project_url(project: { platform_tags_string: @platform.name }), class: 'btn btn-primary btn-sm', target: '_blank'
+  p.pull-right.text-muted
+    small
+      ' Projects made with
+      ==> link_to @platform.name, platform_home_url(@platform), target: '_blank'
+      ' on
+      = link_to 'Hackster.io', root_url, target: '_blank'
 
 - if @projects.any?
   .row
@@ -8,11 +15,3 @@
 
 - else
   | All the projects made with #{@platform.name} will appear here.
-
-.clearfix
-  p.pull-right.text-muted
-    small
-      ' Projects made with
-      ==> link_to @platform.name, platform_home_url(@platform), target: '_blank'
-      ' on
-      = link_to 'Hackster.io', root_url, target: '_blank'
