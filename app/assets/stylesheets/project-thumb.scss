@@ -6,7 +6,7 @@
   max-width: 100%;
   overflow: hidden;
   position: relative;
-  height: 450px;
+  // height: 450px;
   margin-bottom: 30px;
   a {
     color: #337ab7;
@@ -35,6 +35,7 @@
 .project-thumb-details {
   padding: 10px 20px 5px;
   background: #fff;
+  height: 220px;
   h4 {
     font-weight: bold;
     margin: 0 0 5px;

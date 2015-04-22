@@ -1,23 +1,31 @@
-var scripts = document.getElementsByTagName('script');
-var script = scripts[scripts.length - 1];
-var source = '<%= j(render("projects/project_thumb_template")) %>';
-var css = '<%= asset_url "project-thumb.css" %>';
-if (!$("link[href='"+ css + "']").length)
-  $('<link href="' + css + '" rel="stylesheet">').appendTo("head");
+$(function(){
+  var scripts = document.getElementsByTagName('script');
+  var script = scripts[scripts.length - 1];
+  var source = '<%= j(render("projects/project_thumb_template")) %>';
+  var css = '<%= asset_url "project-thumb.css" %>';
+  if (!$("link[href='"+ css + "']").length)
+    $('<link href="' + css + '" rel="stylesheet">').appendTo("head");
 
-var template = Handlebars.compile(source);
-var data = <%= @projects.to_s.html_safe %>;
+  var template = Handlebars.compile(source);
+  var data = <%= @projects.to_s.html_safe %>;
 
-if (typeof(hackster_config) != undefined) {
-  var superContainer = $('<div class="' + hackster_config.containerClass + '" />');
-  $(script).before(superContainer);
+  if (typeof(hackster_config) != undefined) {
+    if (hackster_config.containerId) {
+      var superContainer =  $('#' + hackster_config.containerId);
+    } else {
+      var superContainer = $('<div />');
+      $(script).before(superContainer);
+    }
+    if (hackster_config.containerClass)
+      superContainer.addClass(hackster_config.containerClass);
 
-  $.each(data, function(i, context) {
-    var container = $('<div class="' + hackster_config.thumbContainerClass + '" />');
-    container.appendTo(superContainer);
+    $.each(data, function(i, context) {
+      var container = $('<div class="' + hackster_config.thumbContainerClass + '" />');
+      container.appendTo(superContainer);
 
-    var html = template(context);
-    container.html(html);
-  });
-}
-$(script).remove();
+      var html = template(context);
+      container.html(html);
+    });
+  }
+  $(script).remove();
+});
