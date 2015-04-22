@@ -10,14 +10,14 @@ class License
       name: 'BSD 2-Clause "Simplified" or "FreeBSD" license (BSD-2-Clause)',
       abbr: 'BSD-2-Clause', },
     'http://opensource.org/licenses/GPL-3.0' => {
-      name: 'GNU General Public License, version 3 or later (GPL-3.0)',
+      name: 'GNU General Public License, version 3 or later (GPL3+)',
       abbr: 'GPL', },
     'http://opensource.org/licenses/gpl-license' => {
       name: 'GNU General Public License (GPL)',
       abbr: 'GPL',
       deprecated: true },
     'http://opensource.org/licenses/lgpl-license' => {
-      name: 'GNU Lesser General Public License version 3 or later (LGPL-3.0)',
+      name: 'GNU Lesser General Public License version 3 or later (LGPL3+)',
       abbr: 'LGPL', },
     'http://opensource.org/licenses/MIT' => {
       name: 'MIT license (MIT)',
@@ -48,32 +48,32 @@ class License
       abbr: 'CERN-OHL',
       deprecated: true, },
     'http://www.ohwr.org/documents/294' => {
-      name: 'CERN Open Hardware Licence version 1.2 or later (CERN-OHL-1.2)',
+      name: 'CERN Open Hardware Licence version 1.2 or later (CERN-OHL1.2+)',
       abbr: 'CERN-OHL', },
     'http://solderpad.org/licenses/SHL-0.51/' => {
-      name: 'Solderpad Hardware License version 0.51 or later (SHL-0.51)',
+      name: 'Solderpad Hardware License version 0.51 or later (SHL0.51+)',
       abbr: 'SHL', },
     'http://solderpad.org/licenses/' => {
       name: 'Solderpad Hardware License (SHL)',
       abbr: 'SHL',
       deprecated: true },
     'http://creativecommons.org/licenses/by/4.0' => {
-      name: 'Creative Commons Attribution CC BY 4.0 (CC BY 4.0)',
+      name: 'Creative Commons Attribution CC BY version 4.0 or later (CC BY 4+)',
       abbr: 'CC BY', },
     'http://creativecommons.org/licenses/by-sa/4.0' => {
-      name: 'Creative Commons Attribution-ShareAlike CC BY-SA 4.0 (CC BY-SA 4.0)',
+      name: 'Creative Commons Attribution-ShareAlike CC BY-SA version 4.0 or later (CC BY-SA 4+)',
       abbr: 'CC BY-SA', },
     'http://creativecommons.org/licenses/by-nd/4.0' => {
-      name: 'Creative Commons Attribution-NoDerivs CC BY-ND 4.0 (CC BY-ND 4.0)',
+      name: 'Creative Commons Attribution-NoDerivs CC BY-ND version 4.0 or later (CC BY-ND 4+)',
       abbr: 'CC BY-ND', },
     'http://creativecommons.org/licenses/by-nc/4.0' => {
-      name: 'Creative Commons Attribution-NonCommercial CC BY-NC 4.0 (CC BY-NC 4.0)',
+      name: 'Creative Commons Attribution-NonCommercial CC BY-NC version 4.0 or later (CC BY-NC 4+)',
       abbr: 'CC BY-NC', },
     'http://creativecommons.org/licenses/by-nc-sa/4.0' => {
-      name: 'Creative Commons Attribution-NonCommercial-ShareAlike CC BY-NC-SA 4.0 (CC BY-NC-SA 4.0)',
+      name: 'Creative Commons Attribution-NonCommercial-ShareAlike CC BY-NC-SA version 4.0 or later (CC BY-NC-SA 4+)',
       abbr: 'CC BY-NC-SA', },
     'http://creativecommons.org/licenses/by-nc-nd/4.0' => {
-      name: 'Creative Commons Attribution-NonCommercial-NoDerivs CC BY-NC-ND 4.0 (CC BY-NC-ND 4.0)',
+      name: 'Creative Commons Attribution-NonCommercial-NoDerivs CC BY-NC-ND version 4.0 or later (CC BY-NC-ND 4+)',
       abbr: 'CC BY-NC-ND', },
     'https://tldrlegal.com/license/beerware-license' => {
       name: 'Beerware',
