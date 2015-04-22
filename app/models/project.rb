@@ -619,11 +619,11 @@ class Project < ActiveRecord::Base
     {
       author: {
         name: users.first.try(:name),
-        url: "#{APP_CONFIG['full_host']}/#{users.first.try(:user_name)}",
+        url: "http://#{APP_CONFIG['full_host']}/#{users.first.try(:user_name)}",
       },
       name: name,
       one_liner: one_liner,
-      url: "#{APP_CONFIG['full_host']}/#{uri}",
+      url: "http://#{APP_CONFIG['full_host']}/#{uri}",
       cover_image_url: cover_image.try(:file_url, :cover_thumb),
       views_count: impressions_count,
       respects_count: respects_count,

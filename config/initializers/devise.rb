@@ -242,7 +242,11 @@ Devise.setup do |config|
   else
     config.omniauth :facebook, '543757942384158', '17cd88cd421350f4cba3d00a87c71257', setup: true, scope: 'email,publish_actions,user_about_me,user_education_history,user_interests,user_location,user_work_history,user_website'
     config.omniauth :github, 'b322eb2b4591c7101d72', '030d6c27463f4fde985033e4d050de2bebbd1d8b', scope: 'user:email', setup: true
-    config.omniauth :windowslive, '000000004015349D', 'bQsaGvKft9UVNwG-qeZHjTZH7HjGdTju', scope: 'wl.basic,wl.emails', setup: true
+    if Rails.env == 'dev'
+      config.omniauth :windowslive, '000000004414C007', '1U9OqgqZCO5biQgGVIRUYQOMe1BswKsH', scope: 'wl.basic,wl.emails', setup: true
+    else
+      config.omniauth :windowslive, '000000004015349D', 'bQsaGvKft9UVNwG-qeZHjTZH7HjGdTju', scope: 'wl.basic,wl.emails', setup: true
+    end
   end
   config.omniauth :gplus, '194136473933-bh5c4avsnut4s8j4tt1hutvc5klohsak.apps.googleusercontent.com', '51d-2itWVP6yu3_auKinyAd5', scope: 'userinfo.email,plus.login,userinfo.profile', request_visible_actions: 'AddActivity,CreateActivity,CommentActivity', setup: true
   # config.omniauth :linkedin, '75zl0lfslm3m2z', 'gxqbyweSK444eEmN', setup: true, scope: 'r_fullprofile,r_emailaddress,rw_nus'
