@@ -736,12 +736,14 @@ class User < ActiveRecord::Base
   def send_devise_notification(notification, *args)
     notification = @override_devise_notification if @override_devise_notification.present?
     model = @override_devise_model || self
-    if args[1]
-      args[1][:personal_message] = @invitation_message
-    else
-      args[1] = { personal_message: @invitation_message }
+    if @invitation_message.present?
+      if args[1]
+        args[1][:personal_message] = @invitation_message
+      else
+        args[1] = { personal_message: @invitation_message }
+      end
     end
-    devise_mailer.send(notification, model, *args).deliver
+    devise_mailer.send(notification, model, *args).deliver_now
   end
 
   def send_reset_password_instructions

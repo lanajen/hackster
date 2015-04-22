@@ -24,6 +24,7 @@ class DeviseMailer < ActionMailer::Base
     def user_email template, record, token, opts={}
       self.message.perform_deliveries = false
       context_type = opts.delete(:context_type) || :user
-      NotificationCenter.perform_async 'notify_via_email', nil, context_type, record.id, template, opts
+      opts[:token] = token
+      NotificationCenter.notify_via_email nil, context_type, record.id, template, opts
     end
 end
