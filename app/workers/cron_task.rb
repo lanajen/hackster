@@ -184,7 +184,7 @@ class CronTask < BaseWorker
     end
 
     def subscription_changes_with change_type
-      User.with_subscription(:newsletter, !change_type).where.not(mailchimp_registered: change_type)
+      User.with_subscription(:email, :newsletter, !change_type).where.not(mailchimp_registered: change_type)
     end
 
     def update_settings_for emails, settings
