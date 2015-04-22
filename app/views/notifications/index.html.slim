@@ -1,7 +1,9 @@
 .row
   .col-md-6.col-md-offset-3.col-sm-8.col-sm-offset-2
-    .channel-header
-      h1 Notifications
+    .channel-header.clearfix
+      h1.pull-left Notifications
+      .pull-right
+        small= link_to content_tag(:i, '', class: 'fa fa-cog') + content_tag(:span, 'Settings'), edit_user_registration_path
     - if @receipts.any?
       ul.list-group.notifications
         - @receipts.each do |receipt|
