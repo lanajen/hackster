@@ -1,0 +1,33 @@
+.row
+  .col-md-8.col-md-offset-2
+    .box
+      .box-title
+        h2 Notifications settings
+
+      .box-content
+        = simple_form_for current_user, url: edit_notifications_path, html: { method: :patch, class: 'form-horizontal widget-form', autocomplete: "off" }, wrapper: :bootstrap3_horizontal do |f|
+          = f.error_notification
+          table.table
+            thead
+              th
+              th Email
+              th Web
+            tbody
+              - (User::SUBSCRIPTIONS[:email].keys - User::SUBSCRIPTIONS[:web].keys).each do |sub|
+                tr
+                  td= User::SUBSCRIPTIONS[:email][sub]
+                  td= check_box_tag 'user[email_subscriptions][]', sub, current_user.subscribed_to?('email', sub)
+                  td
+              - (User::SUBSCRIPTIONS[:email].keys & User::SUBSCRIPTIONS[:web].keys).each do |sub|
+                tr
+                  td= User::SUBSCRIPTIONS[:email][sub]
+                  td= check_box_tag 'user[email_subscriptions][]', sub, current_user.subscribed_to?('email', sub)
+                  td= check_box_tag 'user[web_subscriptions][]', sub, current_user.subscribed_to?('web', sub)
+              - (User::SUBSCRIPTIONS[:web].keys - User::SUBSCRIPTIONS[:email].keys).each do |sub|
+                tr
+                  td= User::SUBSCRIPTIONS[:web][sub]
+                  td
+                  td= check_box_tag 'user[web_subscriptions][]', sub, current_user.subscribed_to?('web', sub)
+          .form-actions
+            = f.button :submit, "Save changes", class: 'btn btn-primary'
+            = link_to 'Cancel', user_path(current_user), class: 'btn btn-link btn-sm'

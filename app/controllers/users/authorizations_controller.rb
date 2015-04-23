@@ -37,14 +37,18 @@ class Users::AuthorizationsController < Users::RegistrationsController
   end
 
   def update
-    # set the email here instead of within the edit form, just to make it more
-    # difficult to mess with it
-
-    resource = warden.authenticate!({ :scope => resource_name, :recall => "#{controller_path}#edit" })
-    resource.link_to_provider session['devise.provider'], session['devise.provider_data'].uid, session['devise.provider_data']
-    set_flash_message(:notice, :linked_and_signed_in) if is_navigational_format?
-    sign_in(resource_name, resource)
-    respond_with resource, location: after_sign_in_path_for(resource)
+    if user_signed_in?
+      self.resource = resource_class.to_adapter.get!(send(:"current_#{resource_name}").to_key)
+      resource.link_to_provider session['devise.provider'], session['devise.provider_data'].uid, session['devise.provider_data']
+      set_flash_message(:notice, :linked_and_signed_in) if is_navigational_format?
+      redirect_to edit_registration_path(resource)
+    else
+      resource = warden.authenticate!({ :scope => resource_name, :recall => "#{controller_path}#edit" })
+      resource.link_to_provider session['devise.provider'], session['devise.provider_data'].uid, session['devise.provider_data']
+      set_flash_message(:notice, :linked_and_signed_in) if is_navigational_format?
+      sign_in(resource_name, resource)
+      respond_with resource, location: after_sign_in_path_for(resource)
+    end
   end
 
   private

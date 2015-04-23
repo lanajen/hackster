@@ -201,4 +201,26 @@ module ApplicationHelper
   def value_for_input param, val
     param.nil? or param == val ? true : false
   end
+
+  def proper_name_for_provider provider
+    case provider
+    when :facebook, :github, :twitter
+      provider.to_s.capitalize
+    when :gplus
+      'Google+'
+    when :windowslive
+      'Windows Live'
+    end
+  end
+
+  def zocial_class_for_provider provider
+    case provider
+    when :facebook, :github, :twitter
+      provider.to_s
+    when :gplus
+      'googleplus'
+    when :windowslive
+      'windows'
+    end
+  end
 end

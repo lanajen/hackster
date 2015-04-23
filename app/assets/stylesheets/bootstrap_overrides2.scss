@@ -163,6 +163,6 @@ h6, .h6 {
     right: -9px;
   }
 }
-.btn + .btn {
+.btn:not(.btn-block) + .btn:not(.btn-block) {
   margin-left: 3px;
 }

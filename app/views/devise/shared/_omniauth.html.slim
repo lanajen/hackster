@@ -1,7 +1,11 @@
-= link_to 'Facebook', user_omniauth_authorize_url(:facebook, host: APP_CONFIG['default_host'], redirect_host: request.host, redirect_to: @redirect_to), class: "zocial #{css} facebook", tabindex: (defined?(autofocus) and autofocus ? 1 : nil)
-= link_to 'Github', user_omniauth_authorize_url(:github, host: APP_CONFIG['default_host'], redirect_host: request.host, redirect_to: @redirect_to), class: "zocial #{css} github"
-= link_to 'Google+', user_omniauth_authorize_url(:gplus, host: APP_CONFIG['default_host'], redirect_host: request.host, redirect_to: @redirect_to), class: "zocial #{css} googleplus"
-/ = link_to 'LinkedIn', user_omniauth_authorize_path(:linkedin), class: "zocial #{css} linkedin"
-= link_to 'Twitter', user_omniauth_authorize_url(:twitter, host: APP_CONFIG['default_host'], redirect_host: request.host, redirect_to: @redirect_to), class: "zocial #{css} twitter"
-/ - if site_user_name == 'microsoft'
-= link_to 'Windows live', user_omniauth_authorize_url(:windowslive, host: APP_CONFIG['default_host'], redirect_host: request.host, redirect_to: @redirect_to), class: "zocial #{css} windows"
+/
+  = link_to 'Facebook', user_omniauth_authorize_url(:facebook, host: APP_CONFIG['default_host'], redirect_host: request.host, redirect_to: @redirect_to), class: "zocial #{css} facebook", tabindex: (defined?(autofocus) and autofocus ? 1 : nil)
+  = link_to 'Github', user_omniauth_authorize_url(:github, host: APP_CONFIG['default_host'], redirect_host: request.host, redirect_to: @redirect_to), class: "zocial #{css} github"
+  = link_to 'Google+', user_omniauth_authorize_url(:gplus, host: APP_CONFIG['default_host'], redirect_host: request.host, redirect_to: @redirect_to), class: "zocial #{css} googleplus"
+  / = link_to 'LinkedIn', user_omniauth_authorize_path(:linkedin), class: "zocial #{css} linkedin"
+  = link_to 'Twitter', user_omniauth_authorize_url(:twitter, host: APP_CONFIG['default_host'], redirect_host: request.host, redirect_to: @redirect_to), class: "zocial #{css} twitter"
+  / - if site_user_name == 'microsoft'
+  = link_to 'Windows live', user_omniauth_authorize_url(:windowslive, host: APP_CONFIG['default_host'], redirect_host: request.host, redirect_to: @redirect_to), class: "zocial #{css} windows"
+
+- Devise.omniauth_providers.sort.each do |provider|
+  = link_to proper_name_for_provider(provider), user_omniauth_authorize_url(provider, host: APP_CONFIG['default_host'], redirect_host: request.host, redirect_to: @redirect_to), class: "zocial #{css} #{zocial_class_for_provider(provider)}"

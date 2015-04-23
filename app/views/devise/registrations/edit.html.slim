@@ -21,33 +21,23 @@
           - unless is_whitelabel?
             = f.input :enable_sharing, as: :boolean, label: false, inline_label: "Allow my profile and projects to appear on community sites powered by Hackster", hint: "Hackster powers dedicated community sites for platforms like Spark, UDOO and Tessel. If you're following these platforms, or you've created a project that's tagged with one of these platforms, or respected one, or commented on one, your profile will appear on these sites. Uncheck the above box to disable this feature. <strong>Please note: your data isn't sold or shared with these platforms in any way. All of it remains on our servers.</strong>".html_safe
           .form-group
-            .col-sm-4
-              label.control-label Notification preferences
-            .col-sm-8
-              table.table
-                thead
-                  th
-                  th Email
-                  th Web
-                tbody
-                  - (User::SUBSCRIPTIONS[:email].keys - User::SUBSCRIPTIONS[:web].keys).each do |sub|
-                    tr
-                      td= User::SUBSCRIPTIONS[:email][sub]
-                      td= check_box_tag 'user[email_subscriptions][]', sub, resource.subscribed_to?('email', sub)
-                      td
-                  - (User::SUBSCRIPTIONS[:email].keys & User::SUBSCRIPTIONS[:web].keys).each do |sub|
-                    tr
-                      td= User::SUBSCRIPTIONS[:email][sub]
-                      td= check_box_tag 'user[email_subscriptions][]', sub, resource.subscribed_to?('email', sub)
-                      td= check_box_tag 'user[web_subscriptions][]', sub, resource.subscribed_to?('web', sub)
-                  - (User::SUBSCRIPTIONS[:web].keys - User::SUBSCRIPTIONS[:email].keys).each do |sub|
-                    tr
-                      td= User::SUBSCRIPTIONS[:web][sub]
-                      td
-                      td= check_box_tag 'user[web_subscriptions][]', sub, resource.subscribed_to?('web', sub)
-          .form-actions
-            = f.button :submit, "Save changes", class: 'btn btn-primary'
-            = link_to 'Cancel', user_path(current_user), class: 'btn btn-link btn-sm'
+            .col-md-4
+              label.control-label Social login
+            .col-md-8
+              ul.list-unstyled
+                - Devise.omniauth_providers.sort.each do |provider|
+                  li.clearfix.mg-10
+                    span.pull-left= proper_name_for_provider(provider)
+                    - if resource.is_connected_with? provider
+                      span.label.label-success.pull-right
+                        span Connected
+                        i.fa.fa-check
+                    - else
+                      = link_to 'Connect account', user_omniauth_authorize_url(provider, host: APP_CONFIG['default_host'], redirect_host: request.host, redirect_to: @redirect_to), class: "pull-right zocial #{zocial_class_for_provider(provider)}"
+          .form-group
+            .col-md-offset-4.col-md-8
+              = f.button :submit, "Save changes", class: 'btn btn-primary'
+              = link_to 'Cancel', user_path(current_user), class: 'btn btn-link btn-sm'
 
     .box
       .box-content

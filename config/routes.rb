@@ -246,7 +246,10 @@ HackerIo::Application.routes.draw do
     #   resources :comments, only: [:create]
     # end
 
-    resources :notifications, only: [:index, :update, :destroy]
+    resources :notifications, only: [:index] do
+      get 'edit' => 'notifications#edit', on: :collection
+      patch 'edit' => 'notifications#update', on: :collection
+    end
 
     # dragon
     get 'partners' => 'partners#index'
@@ -365,7 +368,9 @@ HackerIo::Application.routes.draw do
   devise_scope :user do
     namespace :users, as: '' do
       patch '/confirm' => 'confirmations#confirm'
-      resources :authorizations
+      resources :authorizations do
+        get 'update' => 'authorizations#update', on: :collection, as: :update
+      end
       match '/auth/:provider/setup' => 'omniauth_callbacks#setup', via: :get
       resources :simplified_registrations, only: [:create]
     end

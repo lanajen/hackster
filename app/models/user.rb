@@ -613,6 +613,10 @@ class User < ActiveRecord::Base
     self.in? challenge.entrants
   end
 
+  def is_connected_with? provider_name
+    provider_name.to_s.downcase.in? authorizations.pluck(:provider).map{|p| p.downcase }
+  end
+
   def following? followable
     case followable
     when Group
@@ -648,32 +652,24 @@ class User < ActiveRecord::Base
 
   def link_to_provider provider, uid, data=nil
     auth = {
+      name: data.name,
       provider: provider,
       uid: uid,
     }
-    if data and data = data.info
-      case provider
-      when 'Facebook'
-        auth.merge!({
-            name: data.name,
-            link: data.urls['Facebook'],
-          })
-      when 'Github'
-        auth.merge!({
-          name: data.name.to_s,
-          link: data.urls['GitHub'],
-          })
+
+    link = if data and data = data.info
+       data.urls.try(:[], provider)
+     end
+
+    if link
+      auth[:link] = link
+      link_name = case provider
       when 'Google+'
-        auth.merge!({
-          name: data.name.to_s,
-          link: data.urls['Google+'],
-          })
-      when 'Twitter'
-        auth.merge!({
-            name: data.name,
-            link: data.urls['Twitter'],
-          })
+        'google_plus'
+      else
+        provider.to_s.underscore
       end
+      update_attribute "#{link_name}_link", link
     end
     authorizations.create(auth)
   end
@@ -920,11 +916,6 @@ class User < ActiveRecord::Base
 
     def invitation_accepted
       notify_observers(:after_invitation_accepted)
-    end
-
-    def is_whitelisted?
-      return unless email.present?
-      errors.add :email, 'is not on our beta list' unless InviteRequest.email_whitelisted? email
     end
 
     def website_format_is_valid

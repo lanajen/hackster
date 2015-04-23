@@ -3,7 +3,7 @@
     .channel-header.clearfix
       h1.pull-left Notifications
       .pull-right
-        small= link_to content_tag(:i, '', class: 'fa fa-cog') + content_tag(:span, 'Settings'), edit_user_registration_path
+        small= link_to content_tag(:i, '', class: 'fa fa-cog') + content_tag(:span, 'Settings'), edit_notifications_path
     - if @receipts.any?
       ul.list-group.notifications
         - @receipts.each do |receipt|
