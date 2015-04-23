@@ -41,7 +41,7 @@ section#projects-list
     - if user_is_current_or_admin? and @other_projects and @other_projects.any?
       hr
       h2
-        ' Other projects on Hackster.io
+        ' Other public and private projects on Hackster.io
         = content_tag(:span, @other_projects.count, class: 'badge')
       .thumb-list
         .row.project-list
