@@ -1,8 +1,9 @@
 = content_for :head do
   = render "whitelabel/#{current_site.subdomain}/head"
-= content_for :header do
-  - base_url = Rails.env == 'dev' ? 'http://wod:411' : ''
-  = render partial: "whitelabel/#{current_site.subdomain}/header", locals: { base_url: base_url }
+- if Rails.env == 'dev'
+  = content_for :header do
+    - base_url = Rails.env == 'dev' ? 'http://wod:411' : ''
+    = render partial: "whitelabel/#{current_site.subdomain}/header", locals: { base_url: base_url }
 = content_for :footer do
   = render "whitelabel/#{current_site.subdomain}/footer"
 = content_for :js do

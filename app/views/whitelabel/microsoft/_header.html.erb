@@ -265,36 +265,34 @@
     }
 </script>
 
-<% if Rails.env == 'dev' %>
-    <div class="l2-nav-container">
-        <div class="l2-nav hidden-xs">
-            <ul class="nav nav-justified">
-                <li role="presentation"><a href="<%= base_url %>"><div class="glyphicon glyphicon-home hidden-xs"></div><br>IoT Home</a></li>
-                <li role="presentation"><a href="<%= base_url %>/GetStarted.htm"><div class="glyphicon glyphicon-play-circle hidden-xs"></div><br>Get Started</a></li>
-                <li role="presentation"><a href="http://microsoft.dev.hackster.io"><div class="glyphicon glyphicon-wrench hidden-xs"></div><br>Projects</a></li>
-                <li role="presentation"><a href="<%= base_url %>/win10/StartCoding.htm"><div class="glyphicon glyphicon-list-alt hidden-xs"></div><br>Docs and Samples</a></li>
-                <li role="presentation"><a href="<%= base_url %>/Faqs.htm"><div class="glyphicon glyphicon-comment hidden-xs"></div><br>FAQs</a></li>
-                <li role="presentation"><a href="<%= base_url %>/Downloads.htm"><div class="glyphicon glyphicon-list-alt hidden-xs"></div><br>Downloads</a></li>
-                <li role="presentation"><a href="<%= base_url %>/Community.htm"><div class="glyphicon glyphicon-comment hidden-xs"></div><br>Community</a></li>
-            </ul>
-        </div>
-    </div>
-
-
-    <!-- Nav for mobile view -->
-    <button class="btn btn-default iot-nav visible-xs" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">IoT Nav<br><div class="glyphicon glyphicon-menu-down"></div></button>
-    <div class="collapse" id="collapseExample">
-      <div class="well">
-        <ul class="nav">
-            <li role="presentation"><a href="<%= base_url %>">Home</a></li>
-            <li role="presentation"><a href="<%= base_url %>/GetStarted.htm">Get Started</a></li>
-            <li role="presentation"><a href="http://microsoft.dev.hackster.io">Projects</a></li>
-            <li role="presentation"><a href="<%= base_url %>/win10/StartCoding.htm">Docs and Samples</a></li>
-            <li role="presentation"><a href="<%= base_url %>/Faqs.htm">FAQs</a></li>
-            <li role="presentation"><a href="<%= base_url %>/Downloads.htm">Downloads</a></li>
-            <li role="presentation"><a href="<%= base_url %>/Community.htm">Community</a></li>
+<div class="l2-nav-container">
+    <div class="l2-nav hidden-xs">
+        <ul class="nav nav-justified">
+            <li role="presentation"><a href="<%= base_url %>"><div class="glyphicon glyphicon-home hidden-xs"></div><br>IoT Home</a></li>
+            <li role="presentation"><a href="<%= base_url %>/GetStarted.htm"><div class="glyphicon glyphicon-play-circle hidden-xs"></div><br>Get Started</a></li>
+            <li role="presentation"><a href="http://microsoft.dev.hackster.io"><div class="glyphicon glyphicon-wrench hidden-xs"></div><br>Projects</a></li>
+            <li role="presentation"><a href="<%= base_url %>/win10/StartCoding.htm"><div class="glyphicon glyphicon-list-alt hidden-xs"></div><br>Docs and Samples</a></li>
+            <li role="presentation"><a href="<%= base_url %>/Faqs.htm"><div class="glyphicon glyphicon-comment hidden-xs"></div><br>FAQs</a></li>
+            <li role="presentation"><a href="<%= base_url %>/Downloads.htm"><div class="glyphicon glyphicon-list-alt hidden-xs"></div><br>Downloads</a></li>
+            <li role="presentation"><a href="<%= base_url %>/Community.htm"><div class="glyphicon glyphicon-comment hidden-xs"></div><br>Community</a></li>
         </ul>
-      </div>
     </div>
-    <!-- end mobile nav -->
-<% end %>
+</div>
+
+
+<!-- Nav for mobile view -->
+<button class="btn btn-default iot-nav visible-xs" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">IoT Nav<br><div class="glyphicon glyphicon-menu-down"></div></button>
+<div class="collapse" id="collapseExample">
+  <div class="well">
+    <ul class="nav">
+        <li role="presentation"><a href="<%= base_url %>">Home</a></li>
+        <li role="presentation"><a href="<%= base_url %>/GetStarted.htm">Get Started</a></li>
+        <li role="presentation"><a href="http://microsoft.dev.hackster.io">Projects</a></li>
+        <li role="presentation"><a href="<%= base_url %>/win10/StartCoding.htm">Docs and Samples</a></li>
+        <li role="presentation"><a href="<%= base_url %>/Faqs.htm">FAQs</a></li>
+        <li role="presentation"><a href="<%= base_url %>/Downloads.htm">Downloads</a></li>
+        <li role="presentation"><a href="<%= base_url %>/Community.htm">Community</a></li>
+    </ul>
+  </div>
+</div>
+<!-- end mobile nav -->
