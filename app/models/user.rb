@@ -134,7 +134,7 @@ class User < ActiveRecord::Base
   validates :user_name, :new_user_name, presence: true, if: proc{|u| u.persisted? }
   validates :user_name, :new_user_name, length: { in: 3..100 },
     format: { with: /\A[a-zA-Z0-9_\-]+\z/, message: "accepts only letters, numbers, underscores '_' and dashes '-'." }, allow_blank: true
-  validates :user_name, :new_user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users communities hackerspaces hackers lists) }
+  validates :user_name, :new_user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users communities hackerspaces hackers lists products about store api talk) }
   with_options unless: proc { |u| u.skip_registration_confirmation },
     on: :create do |user|
       user.validates :email_confirmation, presence: true
@@ -947,7 +947,10 @@ class User < ActiveRecord::Base
       return unless user_name.present?
 
       slug = SlugHistory.where("LOWER(slug_histories.value) = ?", new_user_name.downcase).first
-      errors.add :user_name, 'is already taken' if slug and slug.sluggable != self
+      if slug and slug.sluggable != self
+        errors.add :new_user_name, 'is already taken'
+        errors.add :user_name, 'is already taken'
+      end
     end
 
   protected
