@@ -12,7 +12,8 @@
     ol.pe-nav
       li= link_to 'Basics', '#basics', id: 'basics-nav', class: 'active tab'
       li= link_to 'Team', '#team', id: 'team-nav', class: 'tab'
-      li= link_to 'Communities', '#communities', id: 'communities-nav', class: 'tab'
+      - unless is_whitelabel?
+        li= link_to 'Communities', '#communities', id: 'communities-nav', class: 'tab'
       li= link_to 'Story', '#story', id: 'story-nav', class: 'tab'
       li= link_to 'Hardware', '#hardware', id: 'hardware-nav', class: 'tab'
       li= link_to 'Software', '#software', id: 'software-nav', class: 'tab'
@@ -30,7 +31,8 @@
 
     #basics.pe-panel style='display:block' = render 'projects/forms/basics'
     #team.pe-panel = render 'projects/forms/team'
-    #communities.pe-panel= render 'projects/forms/communities'
+    - unless is_whitelabel?
+      #communities.pe-panel= render 'projects/forms/communities'
     #story.pe-panel= render 'projects/forms/story'
     #hardware.pe-panel= render 'projects/forms/hardware'
     #software.pe-panel= render 'projects/forms/software'

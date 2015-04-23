@@ -20,4 +20,4 @@
 
     .wide-thumb-body-bottom
       = render partial: 'followers/button_shorter', locals: { followable: user }
-      = link_to 'Contact me', new_conversation_path(recipient_id: user.id), class: 'btn btn-link btn-sm'
+      = link_to 'Contact', new_conversation_path(recipient_id: user.id), class: 'btn btn-link btn-sm'

@@ -26,6 +26,10 @@ class UsersController < ApplicationController
       end
       @public_projects = @public_projects.with_group(current_platform)
       @respected_projects = @respected_projects.with_group(current_platform)
+      if @user == current_user and !current_site.hide_alternate_search_results
+        ids = @user.projects.with_group(current_platform).pluck(:id)
+        @other_projects = @user.projects.where.not(id: ids).for_thumb_display
+      end
     end
 
     @comments = if current_platform
