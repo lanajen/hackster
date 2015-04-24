@@ -70,7 +70,7 @@ html lang="en" class=content_for(:html_class)
       - if content_for? :header
         = content_for :header
 
-        .navbar.navbar-default.navbar-static-top#navigation
+        / .navbar.navbar-default.navbar-static-top#navigation
           .navbar-in  style='position:relative;'
             .container
               .powered-by.pull-left
@@ -92,7 +92,6 @@ html lang="en" class=content_for(:html_class)
                       li= link_to 'Invite friends', new_user_invitation_path
                       li.divider
                       li= link_to 'Log out', destroy_user_session_path, method: :delete
-                / li.mobile-li= link_to 'Log out', destroy_user_session_path, method: :delete
 
               - else
                 ul#navbar-right.clearfix
@@ -104,13 +103,10 @@ html lang="en" class=content_for(:html_class)
                     .dropdown-menu style=("padding: 15px; width: 250px;")
                       = render 'devise/sessions/form'
                       hr
-                      / = link_to 'Connect with your social account', new_user_session_path(a: 'connect'), class: 'btn btn-black connect-social'
                       .social-icons.text-center
                         p.text-muted
                           small Or connect with your social account:
                         = render 'devise/shared/omniauth', css: 'icon'
-                / li.mobile-li= link_to 'Log in', new_user_session_path(source: 'nav')
-                / li.mobile-li= link_to 'Sign up', new_user_registration_path(source: 'nav')
               #navbar-search.pull-right.show-on-desktop
                 = render partial: 'shared/search_form', locals: { placeholder: 'Search projects' }
       - else
@@ -155,14 +151,10 @@ html lang="en" class=content_for(:html_class)
                     .dropdown-menu style=("padding: 15px; width: 250px;")
                       = render 'devise/sessions/form'
                       hr
-                      / = link_to 'Connect with your social account', new_user_session_path(a: 'connect'), class: 'btn btn-black connect-social'
                       .social-icons.text-center
                         p.text-muted
                           small Or connect with your social account:
-                        = link_to 'Facebook', user_omniauth_authorize_url(:facebook, host: APP_CONFIG['default_host'], redirect_host: request.host), class: 'zocial icon facebook'
-                        = link_to 'Github', user_omniauth_authorize_path(:github, host: APP_CONFIG['default_host'], redirect_host: request.host), class: 'zocial icon github'
-                        = link_to 'Google+', user_omniauth_authorize_path(:gplus, host: APP_CONFIG['default_host'], redirect_host: request.host), class: 'zocial icon googleplus'
-                        = link_to 'Twitter', user_omniauth_authorize_path(:twitter, host: APP_CONFIG['default_host'], redirect_host: request.host), class: 'zocial icon twitter'
+                        = render 'devise/shared/omniauth', css: 'icon'
 
               ul#left-nav.navbar-right.top-menu-nav
                 / # - if current_user.is? :admin
