@@ -48,13 +48,14 @@
           = link_to 'View more platforms &rarr;'.html_safe, platforms_path, class: 'btn btn-default btn-sm hidden-xs'
           = link_to 'View more platforms &rarr;'.html_safe, platforms_path, class: 'btn btn-default btn-sm visible-xs-block'
 
-    section.subscribe-block.clearfix.text-center-mobile
+    section.subscribe-block.text-center-mobile
       .container
-        .col-md-7 style='margin-top:3px'
-          = image_tag 'home/envelope.png'
-          ' Want fresh news, projects and free stuff in your inbox once a week?
-        .col-md-4.col-md-offset-1
-          .pull-right-desktop= render 'shared/mailchimp_form'
+        .row
+          .col-sm-6 style='margin-top:3px'
+            i.fa.fa-comments style='color:#337ab7'
+            span Have a question or something to say?
+          .col-sm-6.text-right.text-center-mobile
+            = link_to 'Share it with the community &rarr;'.html_safe, new_user_session_path(redirect_to: talk_path)
 
     section#trending-projects.showcase-section
       .container
@@ -86,6 +87,15 @@
                       a.small sponsored by Microsoft
                     p
                       strong Win $5,000
+
+    section.subscribe-block.text-center-mobile
+      .container
+        .row
+          .col-md-7 style='margin-top:3px'
+            = image_tag 'home/envelope.png'
+            ' Want fresh news, projects and free stuff in your inbox once a week?
+          .col-md-4.col-md-offset-1
+            .pull-right-desktop= render 'shared/mailchimp_form'
 
     section#trending-projects.showcase-section
       .container
