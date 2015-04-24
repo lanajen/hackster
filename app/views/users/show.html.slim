@@ -9,7 +9,12 @@ section#projects-list
 
     h2
       ' Public projects
-      = content_tag(:span, @public_projects.count, class: 'badge')
+      = content_tag(:span, @public_count, class: 'badge')
+    - if @other_projects and @other_projects.any?
+      strong.text-muted
+        ' Built with #{current_platform.name}
+        = content_tag(:span, @public_projects.count, class: 'badge')
+
     - if @public_projects.any?
       .thumb-list
         .row.project-list
@@ -28,6 +33,16 @@ section#projects-list
     - else
       | #{@user.name} has no public projects.
 
+
+    - if @other_projects and @other_projects.any?
+      strong.text-muted
+        ' Built with other platforms
+        = content_tag(:span, @other_projects.count, class: 'badge')
+      .thumb-list
+        .row.project-list
+          - @other_projects.each_with_index do |project|
+            = render partial: 'projects/project_thumb', locals: { project: project.decorate, force_subdomain: 'www' }
+
     - if user_is_current_or_admin? and @private_projects.any?
       hr
       h2
@@ -37,16 +52,6 @@ section#projects-list
         .row.project-list
           - @private_projects.each_with_index do |project, i|
             = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'userprivate', ref_id: @user.id, offset: i }
-
-    - if user_is_current_or_admin? and @other_projects and @other_projects.any?
-      hr
-      h2
-        ' Other public and private projects on Hackster.io
-        = content_tag(:span, @other_projects.count, class: 'badge')
-      .thumb-list
-        .row.project-list
-          - @other_projects.each_with_index do |project|
-            = render partial: 'projects/project_thumb', locals: { project: project.decorate, force_subdomain: 'www' }
 
     hr
     h2

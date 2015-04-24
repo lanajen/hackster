@@ -16,6 +16,7 @@ class UsersController < ApplicationController
     meta_desc "#{@user.name} is on #{site_name}. Come share your hardware projects with #{@user.name} and other hardware hackers and makers."
 
     @public_projects = @user.projects.live.for_thumb_display.order(start_date: :desc, made_public_at: :desc, created_at: :desc)
+    @public_count = @public_projects.count
     @private_projects = @user.projects.private.for_thumb_display
     @respected_projects = @user.respected_projects.indexable_and_external.for_thumb_display
     if current_platform
@@ -25,10 +26,12 @@ class UsersController < ApplicationController
         @private_projects.with_group(current_platform)
       end
       @public_projects = @public_projects.with_group(current_platform)
+      @public_count = @public_projects.count
       @respected_projects = @respected_projects.with_group(current_platform)
       if @user == current_user and !current_site.hide_alternate_search_results
         ids = @user.projects.with_group(current_platform).pluck(:id)
         @other_projects = @user.projects.where.not(id: ids).for_thumb_display
+        @public_count += @other_projects.count
       end
     end
 
