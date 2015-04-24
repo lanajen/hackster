@@ -57,7 +57,7 @@ class UsersController < ApplicationController
           @user.projects.live.for_thumb_display.order(start_date: :desc, made_public_at: :desc, created_at: :desc)
         end
         @projects = @projects.map do |project|
-          project.to_js
+          project.to_js(private_url: true)
         end.to_json
         render "shared/embed"
       end

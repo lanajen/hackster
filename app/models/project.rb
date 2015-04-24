@@ -615,7 +615,9 @@ class Project < ActiveRecord::Base
     to_tweet(prepend)
   end
 
-  def to_js
+  def to_js opts={}
+    url = "http://#{APP_CONFIG['full_host']}/#{uri}"
+    url += "?auth_token=#{security_token}" if opts[:private_url]
     {
       author: {
         name: users.first.try(:name),
@@ -623,7 +625,7 @@ class Project < ActiveRecord::Base
       },
       name: name,
       one_liner: one_liner,
-      url: "http://#{APP_CONFIG['full_host']}/#{uri}",
+      url: url,
       cover_image_url: cover_image.try(:file_url, :cover_thumb),
       views_count: impressions_count,
       respects_count: respects_count,
