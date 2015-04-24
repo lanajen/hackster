@@ -26,7 +26,7 @@ class Api::V1::WidgetsController < Api::V1::BaseController
   end
 
   def destroy
-    @widget.destroy
+    @widget.destroy if @widget.type != 'PartsWidget'
 
     render status: :ok, text: ''
   end
