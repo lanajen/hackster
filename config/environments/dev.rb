@@ -6,7 +6,7 @@ HackerIo::Application.configure do
 
   # Full error reports are disabled and caching is turned off
   config.consider_all_requests_local       = false
-  config.action_controller.perform_caching = false
+  config.action_controller.perform_caching = true
 
   # Disable Rails's static asset server (Apache or nginx will already do this)
   config.serve_static_files = false
@@ -83,8 +83,8 @@ HackerIo::Application.configure do
   require File.expand_path('../../../lib/log_request_id', __FILE__)
   config.middleware.use Rack::LogRequestID
 
-  # config.cashier.adapter = :cache_store
-  # if ENV["MEMCACHEDCLOUD_SERVERS"]
-  #   config.cache_store = :dalli_store, ENV["MEMCACHEDCLOUD_SERVERS"].split(','), { :username => ENV["MEMCACHEDCLOUD_USERNAME"], :password => ENV["MEMCACHEDCLOUD_PASSWORD"] }
-  # end
+  config.cashier.adapter = :cache_store
+  if ENV["MEMCACHEDCLOUD_SERVERS"]
+    config.cache_store = :dalli_store, ENV["MEMCACHEDCLOUD_SERVERS"].split(','), { :username => ENV["MEMCACHEDCLOUD_USERNAME"], :password => ENV["MEMCACHEDCLOUD_PASSWORD"], :pool_size => 5 }
+  end
 end
