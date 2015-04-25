@@ -348,6 +348,10 @@ HackerIo::Application.routes.draw do
           get 'analytics' => 'platforms#analytics', defaults: { format: :json }
         end
       end
+      resources :microsoft_chrome_sync, only: [] do
+        get '' => 'microsoft_chrome_sync#show', on: :collection
+        patch '' => 'microsoft_chrome_sync#update', on: :collection
+      end
       resources :thoughts
       resources :users, only: [] do
         get :autocomplete, on: :collection
