@@ -83,7 +83,6 @@ class Group < ActiveRecord::Base
 
   # beginning of shared search methods
   include TireInitialization
-  has_tire_index 'private'
   # end of search methods
 
   def self.default_access_level

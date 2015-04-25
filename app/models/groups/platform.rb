@@ -55,6 +55,8 @@ class Platform < List
   taggable :platform_tags, :product_tags
 
   # beginning of search methods
+  has_tire_index 'private'
+
   tire do
     mapping do
       indexes :id,              index: :not_analyzed

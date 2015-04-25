@@ -1,2 +1,2 @@
-- if @group.in_the_future?
+- if @group.in_the_future? and @group.tickets_link.present?
   = link_to 'Buy your ticket', @group.tickets_link, class: 'btn btn-primary'

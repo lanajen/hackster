@@ -9,6 +9,8 @@ class HackerSpace < GeographicCommunity
     :mailing_list_link
 
   # beginning of search methods
+  has_tire_index 'private'
+
   tire do
     mapping do
       indexes :id,              index: :not_analyzed
@@ -26,7 +28,7 @@ class HackerSpace < GeographicCommunity
     {
       _id: id,
       name: name,
-      model: self.class.name,
+      model: self.class.name.underscore,
       city: city,
       country: country,
       state: state,
