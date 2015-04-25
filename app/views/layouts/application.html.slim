@@ -43,7 +43,7 @@ html(lang="en")
     meta name="msapplication-TileColor" content="#da532c"
     meta name="msapplication-TileImage" content="#{ asset_path 'favicons/mstile-144x144.png' }"
     link href="#{ asset_path 'favicons/favicon.ico' }" rel="shortcut icon" type="image/vnd.microsoft.icon"
-    - unless Rails.env != 'production' and current_user and current_user.is? :admin
+    - if Rails.env == 'production' and !current_user.try(:is?, :admin)
       = render partial: 'shared/analytics', locals: { tracker: 'UA-11926897-15', domain: 'hackster.io', track_outbound: true }
 
   body class=yield(:body_class)
