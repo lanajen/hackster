@@ -43,7 +43,9 @@ class MicrosoftChromeSync
     end
 
     def setter attribute, val
-      redis.set attribute, val
-      Cashier.expire "ms_chrome-#{attribute}"
+      if getter(attribute) != val
+        redis.set attribute, val
+        Cashier.expire "ms_chrome-#{attribute}"
+      end
     end
 end
