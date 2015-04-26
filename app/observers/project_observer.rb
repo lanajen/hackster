@@ -89,10 +89,6 @@ class ProjectObserver < ActiveRecord::Observer
       Cashier.expire "project-#{record.id}-teaser"
     end
 
-    # if (record.changed & %w(name cover_image one_liner platform_tags product_tags guest_name )).any? or record.platform_tags_string_changed? or record.product_tags_string_changed?
-    #   Cashier.expire "project-#{record.id}-meta-tags"
-    # end
-
     if (record.changed & %w(platform_tags)).any? or record.platform_tags_string_changed? or record.product_tags_string_changed?
       Cashier.expire "project-#{record.id}-metadata"
     end
@@ -103,6 +99,10 @@ class ProjectObserver < ActiveRecord::Observer
 
     if (record.changed & %w(name guest_name cover_image one_liner private wip start_date slug respects_count comments_count workflow_state)).any?
       Cashier.expire "project-#{record.id}-thumb"
+    end
+
+    if (record.changed & %w(name guest_name cover_image one_liner slug)).any? or record.platform_tags_string_changed? or record.product_tags_string_changed?
+      Cashier.expire "project-#{record.id}-meta-tags"
     end
 
     if record.external? or record.product? and (record.changed & %w(website)).any?
