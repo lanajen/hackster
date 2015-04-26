@@ -60,12 +60,12 @@ h6, .h6 {
 }
 .btn-group {
   .btn-default + .btn-default {
-    margin-left: -2px;
+    margin-left: -2px !important;
   }
 }
 .btn-group-default {
   .btn-group + .btn-group {
-    margin-left: -2px;
+    margin-left: -2px !important;
   }
 }
 .btn-default:hover,

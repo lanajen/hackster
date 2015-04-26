@@ -25,7 +25,7 @@
                 javascript:
                   $(function(){ $('.team-request').insertAfter('#team h4'); });
 
-          - cache [@project, 'teaser'], tag: ["project-#{@project.id}-teaser"], expires_in: 6.hours do
+          - cache ["project-#{@project.id}-teaser"], tag: ["project-#{@project.id}-teaser"], expires_in: 6.hours do
             - if ProjectCollection.assignment_or_event_for_project?(@project.id)
               .project-group
                 i.fa.fa-graduation-cap>
@@ -88,7 +88,7 @@
                 p The contents of this project are currently hidden because the assignement is being graded.
 
           - else
-            - cache [@project, 'widgets'], tag: ["project-#{@project.id}-widgets", 'project-widgets'] do
+            - cache ["project-#{@project.id}-widgets"], tag: ["project-#{@project.id}-widgets", 'project-widgets'] do
               section#about-project.section-container.section-collapsible
                 h2.section-title
                   a.title.title-toggle href=''
@@ -97,136 +97,123 @@
                     i.fa.fa-chevron-up
                 .section-content
                   .medium-editor= @project.description
-                  /
-                    #carousel.carousel.slide data-ride="carousel"
-                      .carousel-inner role="listbox"
-                        .item.active
-                          .clearfix.multi-image
-                            .col-md-6
-                              = image_tag 'slide-1.png'
-                            .col-md-6
-                              = image_tag 'slide-2.png'
-                        .item
-                          .clearfix.multi-image
-                            .col-md-6
-                              = image_tag 'slide-1.png'
-                            .col-md-6
-                              = image_tag 'slide-2.png'
-                      a.left.carousel-control href="#carousel" role="button" data-slide="prev"
-                        span.glyphicon.glyphicon-chevron-left aria-hidden="true"
-                      a.right.carousel-control href="#carousel" role="button" data-slide="next"
-                        span.glyphicon.glyphicon-chevron-right aria-hidden="true"
 
-            - if component_widget_ids = PartsWidget.where(widgetable_id: @project.id, widgetable_type: 'Project').joins(:parts).where("parts.name IS NOT NULL OR parts.name <> ''").distinct(:id).pluck(:id) and component_widget_ids.any?
-              section#components.section-container.section-collapsible
-                h2.section-title
-                  a.title.title-toggle href=''
-                    ' Components
-                    i.fa.fa-chevron-down
-                    i.fa.fa-chevron-up
-                .section-content
-                  - component_widget_ids.each do |widget_id|
-                    - embed = Embed.new widget_id: widget_id
-                    = render partial: 'api/embeds/embed', locals: { embed: embed }
+          - if component_widget_ids = PartsWidget.where(widgetable_id: @project.id, widgetable_type: 'Project').joins(:parts).where("parts.name IS NOT NULL OR parts.name <> ''").distinct(:id).pluck(:id) and component_widget_ids.any?
+            - cache ["project-#{@project.id}-components"], tag: ["project-#{@project.id}-components", 'project-components'] do
+                section#components.section-container.section-collapsible
+                  h2.section-title
+                    a.title.title-toggle href=''
+                      ' Components
+                      i.fa.fa-chevron-down
+                      i.fa.fa-chevron-up
+                  .section-content
+                    - component_widget_ids.each do |widget_id|
+                      - embed = Embed.new widget_id: widget_id
+                      = render partial: 'api/embeds/embed', locals: { embed: embed }
 
-            - if @project.widgets.where(type: %w(CadRepoWidget CadFileWidget)).any?
-              section#cad.section-container.section-collapsible
-                h2.section-title
-                  a.title.title-toggle href=''
-                    ' Custom parts and enclosures
-                    i.fa.fa-chevron-down
-                    i.fa.fa-chevron-up
-                .section-content
-                  - @project.widgets.where(type: %w(CadRepoWidget CadFileWidget)).order(:position, :id).each do |widget|
-                    = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
+            - cache ["project-#{@project.id}-cad"], tag: ["project-#{@project.id}-cad", 'project-cad'] do
+              - if @project.widgets.where(type: %w(CadRepoWidget CadFileWidget)).any?
+                section#cad.section-container.section-collapsible
+                  h2.section-title
+                    a.title.title-toggle href=''
+                      ' Custom parts and enclosures
+                      i.fa.fa-chevron-down
+                      i.fa.fa-chevron-up
+                  .section-content
+                    - @project.widgets.where(type: %w(CadRepoWidget CadFileWidget)).order(:position, :id).each do |widget|
+                      = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
 
-            - if @project.widgets.where(type: %w(SchematicWidget SchematicFileWidget)).order(:position, :id).any?
-              section#schematics.section-container.section-collapsible
-                h2.section-title
-                  a.title.title-toggle href=''
-                    ' Schematics
-                    i.fa.fa-chevron-down
-                    i.fa.fa-chevron-up
-                .section-content
-                  - @project.widgets.where(type: %w(SchematicWidget SchematicFileWidget)).order(:position, :id).each do |widget|
-                    = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
+            - cache ["project-#{@project.id}-schematics"], tag: ["project-#{@project.id}-schematics", 'project-schematics'] do
+              - if @project.widgets.where(type: %w(SchematicWidget SchematicFileWidget)).order(:position, :id).any?
+                section#schematics.section-container.section-collapsible
+                  h2.section-title
+                    a.title.title-toggle href=''
+                      ' Schematics
+                      i.fa.fa-chevron-down
+                      i.fa.fa-chevron-up
+                  .section-content
+                    - @project.widgets.where(type: %w(SchematicWidget SchematicFileWidget)).order(:position, :id).each do |widget|
+                      = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
 
-            - if @project.widgets.where(type: %w(CodeWidget CodeRepoWidget)).any?
-              section#code.section-container.section-collapsible
-                h2.section-title
-                  a.title.title-toggle href=''
-                    ' Code
-                    i.fa.fa-chevron-down
-                    i.fa.fa-chevron-up
-                .section-content
-                  - @project.widgets.where(type: %w(CodeWidget CodeRepoWidget)).order(:position, :id).each do |widget|
-                    = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
+            - cache ["project-#{@project.id}-code"], tag: ["project-#{@project.id}-code", 'project-code'] do
+              - if @project.widgets.where(type: %w(CodeWidget CodeRepoWidget)).any?
+                section#code.section-container.section-collapsible
+                  h2.section-title
+                    a.title.title-toggle href=''
+                      ' Code
+                      i.fa.fa-chevron-down
+                      i.fa.fa-chevron-up
+                  .section-content
+                    - @project.widgets.where(type: %w(CodeWidget CodeRepoWidget)).order(:position, :id).each do |widget|
+                      = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
 
-            - if (@project.build_logs_count > 0 and !@project.private_logs)
-              section#logs.section-container.section-collapsible
-                h2.section-title
-                  a.title.title-toggle href=''
-                    - if @project.private_logs
-                      i.fa.fa-lock.istooltip>  title='Build logs are private' data-container='body'
-                    ' Build logs
-                    i.fa.fa-chevron-down
-                    i.fa.fa-chevron-up
-                .section-content
-                  - if log = @project.build_logs.published.last.try(:decorate)
-                    .section-inset
-                      .section-title
-                        h3.title
-                          = link_to log.title, log_path(@project, log)
-                          .annotation
-                            | Build log ##{log.sub_id}
-
-                          .subtitle
-                            ==> time_ago_in_words log.created_at
-                            ' ago -
-                            = link_to pluralize(log.comments.size, 'comment'), log_path(@project, log, anchor: 'comments')
-
-                      .section-content.medium-editor
-                        = raw log.decorate.body
-
-                  - else
-                    p No build logs yet.
-
-                  - if @can_edit
-                    = link_to 'See and manage all logs (including drafts)', project_logs_path, class: 'btn btn-default btn-sm'
-                  - elsif @project.build_logs_count > 1
-                    = link_to 'Read previous logs', project_logs_path, class: 'btn btn-default btn-sm btn-block'
-
-            - if (@project.issues_count > 0 and !@project.private_issues)
-              section#issues.section-container.section-collapsible
-                h2.section-title
-                  a.title.title-toggle href=''
-                    - if @project.private_issues
-                      i.fa.fa-lock.istooltip>  title='Issues are private' data-container='body'
-                    ' Issues
-                    i.fa.fa-chevron-down
-                    i.fa.fa-chevron-up
-                .section-content
-                  - if issues = @project.issues.where(type: 'Issue').open and issues.any?
-                    - issues.each do |issue|
+            - cache ["project-#{@project.id}-build_logs"], tag: ["project-#{@project.id}-build_logs", 'project-build_logs'] do
+              - if (@project.build_logs_count > 0 and !@project.private_logs)
+                section#logs.section-container.section-collapsible
+                  h2.section-title
+                    a.title.title-toggle href=''
+                      - if @project.private_logs
+                        i.fa.fa-lock.istooltip>  title='Build logs are private' data-container='body'
+                      ' Build logs
+                      i.fa.fa-chevron-down
+                      i.fa.fa-chevron-up
+                  .section-content
+                    - if log = @project.build_logs.published.last.try(:decorate)
                       .section-inset
                         .section-title
                           h3.title
-                            = link_to issue.title, issue_path(@project, issue)
+                            = link_to log.title, log_path(@project, log)
                             .annotation
-                              | Issue ##{issue.sub_id}
+                              | Build log ##{log.sub_id}
 
                             .subtitle
-                              ==> time_ago_in_words issue.created_at
+                              ==> time_ago_in_words log.created_at
                               ' ago -
-                              = link_to pluralize(issue.comments.size, 'comment'), issue_path(@project, issue, anchor: 'comments')
+                              = link_to pluralize(log.comments.size, 'comment'), log_path(@project, log, anchor: 'comments')
 
-                        .section-content
-                          = raw issue.body
+                        .section-content.medium-editor
+                          = raw log.decorate.body
 
-                  - else
-                    p No issues yet.
+                    - else
+                      p No build logs yet.
 
-                  = link_to 'See all issues', project_logs_path, class: 'btn btn-default btn-sm'
+                    - if @can_edit
+                      = link_to 'See and manage all logs (including drafts)', project_logs_path, class: 'btn btn-default btn-sm'
+                    - elsif @project.build_logs_count > 1
+                      = link_to 'Read previous logs', project_logs_path, class: 'btn btn-default btn-sm btn-block'
+
+            - cache ["project-#{@project.id}-issues"], tag: ["project-#{@project.id}-issues", 'project-issues'] do
+              - if (@project.issues_count > 0 and !@project.private_issues)
+                section#issues.section-container.section-collapsible
+                  h2.section-title
+                    a.title.title-toggle href=''
+                      - if @project.private_issues
+                        i.fa.fa-lock.istooltip>  title='Issues are private' data-container='body'
+                      ' Issues
+                      i.fa.fa-chevron-down
+                      i.fa.fa-chevron-up
+                  .section-content
+                    - if issues = @project.issues.where(type: 'Issue').open and issues.any?
+                      - issues.each do |issue|
+                        .section-inset
+                          .section-title
+                            h3.title
+                              = link_to issue.title, issue_path(@project, issue)
+                              .annotation
+                                | Issue ##{issue.sub_id}
+
+                              .subtitle
+                                ==> time_ago_in_words issue.created_at
+                                ' ago -
+                                = link_to pluralize(issue.comments.size, 'comment'), issue_path(@project, issue, anchor: 'comments')
+
+                          .section-content
+                            = raw issue.body
+
+                    - else
+                      p No issues yet.
+
+                    = link_to 'See all issues', project_logs_path, class: 'btn btn-default btn-sm'
 
             / section#instructions.section-container.section-collapsible
               h2.section-title
@@ -243,6 +230,7 @@
 
                 h3.title Step 3: be happy!
 
+            / - cache ["project-#{@project.id}-comments"], tag: ["project-#{@project.id}-comments", 'project-comments'] do
             section#comments.section-container.section-collapsible
               h2.section-title
                 a.title.title-toggle href=''
@@ -332,40 +320,41 @@
                 - else
                   p This project is locked for editing.
 
-            - if @project.guest_name.present?
-              section.section-thumbs
-                h4 Created by
-                p.user-name= @project.guest_name
-
-                p
-                  ' Are you
-                  span.user-name= @project.guest_name
-                  ' ?
-                  span.text-muted Claim this project and add it to your profile.
-                - if user_signed_in?
-                  = link_to 'This is mine', claim_project_path(@project), data: { method: :post, confirm: "Are you really the author of this project? Note that we'll have to approve it!" }, class: 'btn btn-primary btn-sm'
-                - else
-                  = link_to 'This is mine', new_user_registration_path(reason: 'claim', m: 'project', id: @project.id, source: 'claim'), class: 'btn btn-primary btn-sm'
-
-              - if poster = @project.team.try(:active_members).try(:includes, :user).try(:first).try(:user)
+            - cache ['project-team', @can_edit, @project.guest_name], tag: ["project-#{@project.id}-team", 'project-team', "team-#{@project.team_id}-user-thumbs"], expires_in: 24.hours do
+              - if @project.guest_name.present?
                 section.section-thumbs
-                  h4 Posted by
-                  .row= render partial: 'users/user_thumb_mini', locals: { user: poster }
+                  h4 Created by
+                  p.user-name= @project.guest_name
 
-            - else
-              section.section-thumbs#team
-                h4
-                  - if @project.project.team.full_name.present?
-                    | Team #{@project.team.full_name}
-                  - elsif @project.team_members_count > 1
-                    | Team members
+                  p
+                    ' Are you
+                    span.user-name= @project.guest_name
+                    ' ?
+                    span.text-muted Claim this project and add it to your profile.
+                  - if user_signed_in?
+                    = link_to 'This is mine', claim_project_path(@project), data: { method: :post, confirm: "Are you really the author of this project? Note that we'll have to approve it!" }, class: 'btn btn-primary btn-sm'
                   - else
-                    | Author
-                  - if @can_edit
-                    = link_to content_tag(:i, '', class: 'fa fa-pencil'), project_edit_team_path(@project), class: 'btn-edit'
+                    = link_to 'This is mine', new_user_registration_path(reason: 'claim', m: 'project', id: @project.id, source: 'claim'), class: 'btn btn-primary btn-sm'
 
-                - @project.team_members.each do |member|
-                  = render partial: 'users/member_thumb_mini', locals: { member: member }
+                - if poster = @project.team.try(:active_members).try(:includes, :user).try(:first).try(:user)
+                  section.section-thumbs
+                    h4 Posted by
+                    .row= render partial: 'users/user_thumb_mini', locals: { user: poster }
+
+              - else
+                section.section-thumbs#team
+                  h4
+                    - if @project.project.team.full_name.present?
+                      | Team #{@project.team.full_name}
+                    - elsif @project.team_members_count > 1
+                      | Team members
+                    - else
+                      | Author
+                    - if @can_edit
+                      = link_to content_tag(:i, '', class: 'fa fa-pencil'), project_edit_team_path(@project), class: 'btn-edit'
+
+                  - @project.team_members.each do |member|
+                    = render partial: 'users/member_thumb_mini', locals: { member: member }
 
             - if @project.credit_lines.any?
               section.section-thumbs
@@ -420,7 +409,7 @@
                       ' Participated in
                     = link_to entry.challenge.name, entry.challenge
 
-            - cache [@project, 'other', @other_projects], tag: "project-#{@project.id}-other" do
+            - cache ["project-#{@project.id}-other", @other_projects], tag: "project-#{@project.id}-other" do
               - if @other_projects_count > 0
                 section.section-thumbs
                   h4 Other projects by the same #{pluralize_without_count @project.team_members_count, 'author'}

@@ -1,11 +1,7 @@
 class WidgetObserver < ActiveRecord::Observer
-  # def after_create record
-  #   update_project_for record
-  # end
-
-  # def after_destroy record
-  #   update_project_for record
-  # end
+  def after_destroy record
+    expire record
+  end
 
   def after_save record
     case record.identifier
@@ -18,8 +14,8 @@ class WidgetObserver < ActiveRecord::Observer
     when 'part_widget'
       record.parts_count = record.parts.count
       @save = true
-    when 'credits_widget'
-      Cashier.expire "project-#{record.project_id}-metadata"
+    # when 'credits_widget'
+    #   Cashier.expire "project-#{record.project_id}-metadata"
     end
 
     record.update_column :properties, record.properties.to_yaml if @save
@@ -28,13 +24,22 @@ class WidgetObserver < ActiveRecord::Observer
 
   private
     def expire record
-      Cashier.expire "widget-#{record.id}", "project-#{record.project_id}-widgets" if record.widgetable_type == 'Project'
+      keys = []
+      if record.widgetable_type == 'Project'
+        case record.type
+        when 'CadRepoWidget', 'CadFileWidget'
+          keys << "project-#{record.project_id}-cad"
+        when 'SchematicWidget', 'SchematicFileWidget'
+          keys << "project-#{record.project_id}-schematics"
+        when 'CodeWidget', 'CodeRepoWidget'
+          keys << "project-#{record.project_id}-code"
+        when 'PartsWidget'
+          keys << "project-#{record.project_id}-components"
+        else
+          keys << "project-#{record.project_id}-widgets"
+        end
+        keys << "widget-#{record.id}"
+      end
+      Cashier.expire *keys if keys
     end
-
-    # def update_project_for record
-    #   if record.widgetable_type == 'Project'
-    #     record.project.touch
-    #     record.project.update_counters only: [:widgets]
-    #   end
-    # end
 end

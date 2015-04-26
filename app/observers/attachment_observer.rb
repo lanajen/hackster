@@ -15,15 +15,7 @@ class AttachmentObserver < ActiveRecord::Observer
       when 'Logo'
         Cashier.expire "platform-#{record.attachable_id}-client-nav"
       end
-    # elsif record.attachable_type == 'User'
-    #   keys = ["user-#{record.attachable_id}-teaser", "user-#{record.attachable_id}-thumb", "user-#{record.attachable_id}-sidebar"]
-    #   user = record.attachable
-    #   user.teams.each{|t| keys << "team-#{t.id}-user-thumbs" }
-    #   user.respected_projects.each{|p| keys << "project-#{p.id}-respects" }
-    #   Cashier.expire *keys
-    # elsif record.attachable_type == 'Platform'
-    #   keys = record.followers.map{|u| "user-#{u.id}-sidebar" } + ["platform-#{record.id}-sidebar"]
-    #   Cashier.expire *keys
+      record.attachable.update_attribute :updated_at, Time.now if record.attachable
     end
   end
 end

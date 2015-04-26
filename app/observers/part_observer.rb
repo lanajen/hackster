@@ -17,6 +17,11 @@ class PartObserver < ActiveRecord::Observer
         end
       end
     end
+    keys = []
+    record.projects.pluck(:id).each do |id|
+      keys << "project-#{id}-components"
+    end
+    Cashier.expire *keys if keys.any?
   end
 
   private
