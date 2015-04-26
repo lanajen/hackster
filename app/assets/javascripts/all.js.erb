@@ -72,6 +72,12 @@ $(function () {
     });
   <% end %>
 
+  if ($('body').data('user-signed-in')) {
+    doUserSignedInUpdate();
+  } else {
+    $('.user-signed-out').show();
+  }
+
   $('input, textarea').placeholder();
 
   $('form.disable-on-submit').submit(function(){
@@ -322,6 +328,14 @@ function smoothScrollTo(target, offsetTop, speed) {
 function closePopup(id) {
   $(id).fadeOut(200);
   return false;
+}
+
+function doUserSignedInUpdate(){
+  $('.user-signed-in').show();
+  var csrf = $('meta[name="csrf-token"]').attr('content');
+  var input = $('<input type="hidden" name="authenticity_token" />')
+  input.val(csrf);
+  $('form').append(input);
 }
 
 function sortTable(){

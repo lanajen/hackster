@@ -1,2 +1,3 @@
 $('.comments').replaceWith("<%= escape_javascript render(partial: 'widgets/comments', locals: { comments: @commentable.comments, commentable: @commentable }) %>");
 checkIfCommentsHaveSameDepthYoungerSiblings();
+doUserSignedInUpdate();

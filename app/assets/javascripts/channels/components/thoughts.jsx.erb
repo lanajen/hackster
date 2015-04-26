@@ -186,7 +186,7 @@ var ThoughtList = React.createClass({
   render: function() {
     var thoughtNodes = this.props.thoughts.map(function(thought, index) {
       return (
-        <ThoughtContainer thought={thought} key={index} />
+        <ThoughtContainer thought={thought} key={thought.id} />
       );
     });
     return (

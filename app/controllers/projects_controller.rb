@@ -45,6 +45,8 @@ class ProjectsController < ApplicationController
     @challenge_entries = @project.challenge_entries.includes(:challenge).includes(:prize)
     @winning_entry = @challenge_entries.select{|e| e.awarded? }.first
 
+    @component_widgets = PartsWidget.select(:id).distinct(:id).where(widgetable_id: @project.id, widgetable_type: 'Project').joins(:parts).where("parts.name IS NOT NULL OR parts.name <> ''")
+
     title @project.name
     @project_meta_desc = "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."
     meta_desc @project_meta_desc
