@@ -6,7 +6,7 @@
     = render partial: 'groups/platforms/platform_card', locals: { platform: platform }
 
 = content_for :no_container do
-  - cache_if !user_signed_in?, "project-#{@project.id}", expires_in: 1.hour do
+  - cache_if !user_signed_in?, @project, expires_in: 1.hour do
     #content.project-page class="project-#{@project.id}"
       .container-desktop.container
         .row
@@ -321,7 +321,7 @@
                   - else
                     p This project is locked for editing.
 
-              - cache ['project-team', @can_edit, @project.guest_name], tag: ["project-#{@project.id}-team", 'project-team', "team-#{@project.team_id}-user-thumbs"], expires_in: 24.hours do
+              - cache ["project-#{@project.id}-team", @can_edit, @project.guest_name], tag: ["project-#{@project.id}-team", 'project-team', "team-#{@project.team_id}-user-thumbs"], expires_in: 24.hours do
                 - if @project.guest_name.present?
                   section.section-thumbs
                     h4 Created by
