@@ -1,7 +1,7 @@
 class CacheWorker < BaseWorker
   def warm_cache
-    Project.indexable.most_popular.pluck(:id).each do |project|
-      self.class.perform_async 'warm_project_cache', id
+    Project.indexable.most_popular.pluck(:id).each do |project_id|
+      self.class.perform_async 'warm_project_cache', project_id
     end
     self.class.perform_async 'warm_home_cache'
   end
