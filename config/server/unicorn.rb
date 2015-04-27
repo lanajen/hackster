@@ -89,7 +89,7 @@ before_fork do |server, worker|
   if defined?(ActiveRecord::Base)
     ActiveRecord::Base.connection_proxy.instance_variable_get(:@shards).each do |shard, connection_pool|
       connection_pool.disconnect!
-    end if Octopus.enabled?
+    end if Module.const_defined?(:Octopus) and Octopus.enabled?
 
     ActiveRecord::Base.connection.disconnect!
   end
@@ -117,7 +117,7 @@ after_fork do |server, worker|
     config['reaping_frequency'] = ENV['DB_REAP_FREQ'] || 10 # seconds
     config['pool']              = db_pool_size
 
-    if Octopus.enabled?
+    if Module.const_defined?(:Octopus) and Octopus.enabled?
       Octopus.config[Rails.env]['master'] = config
       ActiveRecord::Base.connection.initialize_shards(Octopus.config)
     else

@@ -8,7 +8,7 @@ table.sortable-table.table.table-hover.fields-container
         .pull-right
           = render partial: 'api/embeds/digikey_form', locals: { widget: embed.widget, project: @project }
   tbody
-    - embed.widget.part_joins.each_with_index do |part, i|
+    - embed.widget.part_joins.includes(:part).each_with_index do |part, i|
       = render partial: "widgets/embeds/show/part", locals: { part: part, i: i }
 
 / table.sortable-table.table.table-hover.fields-container  contenteditable='false'

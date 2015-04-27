@@ -78,7 +78,7 @@ octopus:
         <% (c['params'] || {}).each do |key, value| %>
         <%= key %>: <%= value.first %>
         <% end %>
- 
+
       <% end %>
   <% else %>
     - none

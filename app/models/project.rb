@@ -1,5 +1,5 @@
 class Project < ActiveRecord::Base
-  replicated_model
+  # replicated_model
 
   DEFAULT_NAME = 'Untitled'
 

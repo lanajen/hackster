@@ -82,7 +82,7 @@
           .display
             h4 Platforms
             .content.team-widget.user-communities
-              - @user.followed_platforms.where(groups: { private: false }).each do |c|
+              - @user.followed_platforms.includes(:avatar).where(groups: { private: false }).each do |c|
                 .community.user
                   ==> link_to image_tag(c.decorate.avatar(:mini), class: 'img-circle' ), c, class: ''
                   = link_to c.name, c

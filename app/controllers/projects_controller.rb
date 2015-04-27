@@ -36,14 +36,10 @@ class ProjectsController < ApplicationController
 
     impressionist_async @project, '', unique: [:session_hash]
 
-    @show_part_of = ProjectCollection.assignment_or_event_for_project? @project.id
-    @show_sidebar = true
     @can_edit = (user_signed_in? and current_user.can? :edit, @project)
     @can_update = (@can_edit and current_user.can? :update, @project)
 
-    @collections = @project.project_collections.includes(:collection)
     @challenge_entries = @project.challenge_entries.includes(:challenge).includes(:prize)
-    @winning_entry = @challenge_entries.select{|e| e.awarded? }.first
 
     @component_widgets = PartsWidget.select(:id).distinct(:id).where(widgetable_id: @project.id, widgetable_type: 'Project').joins(:parts).where("parts.name IS NOT NULL OR parts.name <> ''")
 
@@ -51,8 +47,6 @@ class ProjectsController < ApplicationController
     @project_meta_desc = "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."
     meta_desc @project_meta_desc
     @project = @project.decorate
-    # @widgets_by_section ={ 1=>[], 2=>[], 3=>[], 4=>[] }
-    @widgets = @project.widgets.order(:created_at)#.each{|w| @widgets_by_section[w.position[0].to_i] << w }
 
     # other projects by same author
     @other_projects_count = Project.public.most_popular.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id)

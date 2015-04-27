@@ -63,9 +63,6 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.3.8)
     ambry (0.3.1)
-    ar-octopus (0.8.5)
-      activerecord (>= 3.2.0)
-      activesupport (>= 3.2.0)
     arel (6.0.0)
     asset_sync (1.1.0)
       activemodel
@@ -603,7 +600,6 @@ PLATFORMS
 DEPENDENCIES
   active_model_serializers (= 0.8.3)
   ambry (~> 0.3.0)
-  ar-octopus (= 0.8.5)
   asset_sync (= 1.1.0)
   auto_html (= 1.6.3)
   aws-sdk (= 1.33.0)

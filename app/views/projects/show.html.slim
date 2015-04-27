@@ -39,6 +39,7 @@
                         span.project-award<
                           i.fa.fa-trophy.istooltip  title=award.grade   data-container='body'
 
+                - @winning_entry = @challenge_entries.select{|e| e.awarded? }.first
                 - if @winning_entry
                   .project-group
                     span.project-award>
