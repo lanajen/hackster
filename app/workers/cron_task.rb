@@ -73,7 +73,7 @@ class CronTask < BaseWorker
   end
 
   def launch_cron
-    CacheWorker.perform_async 'turn_up_the_heat'
+    CacheWorker.perform_async 'warm_cache'
     update_mailchimp_list
     send_assignment_reminder
     lock_assignment
