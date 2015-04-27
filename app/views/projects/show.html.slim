@@ -8,7 +8,7 @@
 = render partial: 'add_to_list_button'
 
 = content_for :no_container do
-  - cache_unless user_signed_in?, @project, tag: ['project-show', "project-#{@project.id}"], expires_in: 24.hours do
+  - cache_unless user_signed_in?, @project, tag: ['project-show', "project-#{@project.id}"], expires_in: 3.hours do
     = render 'projects/project_embed_popup'
     #content.project-page class="project-#{@project.id}"
       .container-desktop.container
@@ -227,15 +227,15 @@
 
                     h3.title Step 3: be happy!
 
-                / - cache ["project-#{@project.id}-comments"], tag: ["project-#{@project.id}-comments", 'project-comments'] do
-                section#comments.section-container.section-collapsible
-                  h2.section-title
-                    a.title.title-toggle href=''
-                      ' Comments
-                      i.fa.fa-chevron-down
-                      i.fa.fa-chevron-up
-                  .section-content
-                    = render partial: 'widgets/comments', locals: { comments: @comments, commentable: @project }
+                - cache ["project-#{@project.id}-comments"], tag: ["project-#{@project.id}-comments", 'project-comments'], expires_in: 24.hours do
+                  section#comments.section-container.section-collapsible
+                    h2.section-title
+                      a.title.title-toggle href=''
+                        ' Comments
+                        i.fa.fa-chevron-down
+                        i.fa.fa-chevron-up
+                    .section-content
+                      = render partial: 'widgets/comments', locals: { comments: @comments, commentable: @project }
 
           .col-md-4.right-column
             .container-mobile

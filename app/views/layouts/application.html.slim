@@ -46,7 +46,7 @@ html(lang="en")
     - if Rails.env == 'production' and !current_user.try(:is?, :admin)
       = render partial: 'shared/analytics', locals: { tracker: 'UA-11926897-15', domain: 'hackster.io', track_outbound: true }
 
-  body class=yield(:body_class)
+  body class=yield(:body_class) data-user-signed-in=user_signed_in?
     #outer-wrapper
       - unless params[:blank_frame]
         - if show_hello_world?

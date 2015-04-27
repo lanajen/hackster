@@ -15,6 +15,7 @@ class CommentObserver < ActiveRecord::Observer
       project_id = record.commentable_id
       record.user.broadcast :new, record.id, 'Comment', project_id if record.user.class == User
       update_counters record
+      expire_cache record
     end
   end
 
@@ -25,11 +26,17 @@ class CommentObserver < ActiveRecord::Observer
   def after_destroy record
     Broadcast.where(context_model_id: record.id, context_model_type: 'Comment').destroy_all
     update_counters record
+    expire_cache record if record.commentable_type == 'Project'
   end
 
   private
+    def expire_cache record
+      project = record.commentable
+      Cashier.expire "project-#{project.id}-comments", "project-#{project.id}-left-column", "project-#{project.id}"
+    end
+
     def update_counters record
-      if record.commentable.class == Project
+      if record.commentable_type == 'Project'
         record.commentable.update_counters only: [:comments]
         record.user.update_counters only: [:comments] if record.user
       end
