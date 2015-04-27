@@ -271,3 +271,112 @@ Rewardino::Trigger.set :cron, action: :set_badge, badge_code: :project_viewed,
 
 Rewardino::Trigger.all.freeze
 Rewardino::Triggers = Rewardino::Trigger.all
+
+
+# Rewardino::Event.create!({
+#   code: :approved_project,
+#   points: 5,
+#   date_method: :made_public_at,
+#   models: Project.own.approved,
+#   users_method: :users,
+# })
+
+# Rewardino::Event.create!({
+#   code: :new_respect,
+#   points: 1,
+#   date_method: :created_at,
+#   users_method: 'respectable.users',
+#   models: Respect.where(respectable_type: 'Project').joins("INNER JOIN projects ON projects.id = respects.respectable_id").where("projects.guest_name = '' OR projects.guest_name IS NULL"),
+# })
+
+# Rewardino::Event.create!({
+#   code: :new_comment,
+#   points: 1,
+#   date_method: :created_at,
+#   users_method: 'commentable.users',
+#   models: Comment.where(commentable_type: 'Project').joins("INNER JOIN projects ON projects.id = comments.commentable_id").where("projects.guest_name = '' OR projects.guest_name IS NULL"),
+# })
+
+# Rewardino::Event.create!({
+#   code: :accepted_invitation_inviter,
+#   points: 5,
+#   date_method: :invitation_accepted_at,
+#   user_method: 'invited_by',
+#   models: User.invitation_accepted,
+# })
+
+# Rewardino::Event.create!({
+#   code: :accepted_invitation_invitee,
+#   points: 5,
+#   date_method: :invitation_accepted_at,
+#   models: User.invitation_accepted,
+# })
+
+# Rewardino::Event.create!({
+#   code: :signup_user,
+#   points: 1,
+#   date_method: ':invitation_accepted_at || :created_at',
+#   models: User.invitation_accepted_or_not_invited,
+# })
+
+# Rewardino::Event.create!({
+#   code: :viewed_project,
+#   points: [
+#     { every: 100, limit: 10, points: 1 },
+#     { every: 10_000, limit: 1, points: 10 },
+#   ],
+#   date_method: :created_at,
+#   compute_method: -> {
+#     points.each do |conf|
+#       Impression.where(impressionable_type: 'Project').joins("INNER JOIN projects ON projects.id = impressions.impressionable_id").where("projects.guest_name = '' OR projects.guest_name IS NULL").where("projects.impressions_count >= ?", conf[:every]).order(:created_at).group_by(&:impressionable_id).each do |id, group|
+
+#         project = group.first.impressionable
+#         next unless user_count = project.team_members_count and user_count > 0
+#         points = (conf[:points] / user_count).ceil.to_i
+
+#         slide_index = 0
+#         group.each_slice(conf[:every]) do |slice|
+#           slide_index += 1
+#           next if slide_index > conf[:limit]
+
+#           if slice.size == conf[:every]
+#             last = slice.last
+#             project.users.each do |user|
+#               ReputationEvent.create event_name: code, event_model: project, points: points, date_method: last.send(date_method), user_id: user.id
+#             end
+#           end
+#         end
+#       end
+#     end
+#   },
+# })
+
+# Rewardino::Event.create!({
+#   code: :liked_thought,
+#   points: [
+#     { every: 10, limit: 10, points: 1 },
+#   ],
+#   date_method: :created_at,
+#   compute_method: -> {
+#     points.each do |conf|
+#       Respect.where(respectable_type: %w(Comment Thought)).order(:created_at).group_by{|r| [r.respectable_id, r.respectable_type]}.each do |id, group|
+
+#         respect = group.first
+#         user = respect.respectable.try(:user)
+#         next unless user
+
+#         slide_index = 0
+#         group.each_slice(conf[:every]) do |slice|
+#           slide_index += 1
+#           next if slide_index > conf[:limit]
+
+#           if slice.size == conf[:every]
+#             last = slice.last
+#             ReputationEvent.create event_name: code, event_model: respect, points: conf[:points], date_method: last.send(date_method), user_id: user.id
+#             end
+#           end
+#         end
+#       end
+#     end
+#   },
+# })
