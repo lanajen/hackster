@@ -103,6 +103,7 @@ class ProjectObserver < ActiveRecord::Observer
 
     if (record.changed & %w(name guest_name cover_image one_liner slug)).any? or record.platform_tags_string_changed? or record.product_tags_string_changed?
       Cashier.expire "project-#{record.id}-meta-tags"
+      record.purge
     end
 
     if record.external? or record.product? and (record.changed & %w(website)).any?
@@ -111,6 +112,7 @@ class ProjectObserver < ActiveRecord::Observer
 
     if (record.changed & %w(name cover_image one_liner private wip start_date made_public_at license buy_link description)).any? or record.platform_tags_string_changed? or record.product_tags_string_changed?
       record.last_edited_at = Time.now
+      record.purge
     end
   end
 

@@ -5,6 +5,7 @@ development:
   default_port: 5000
   send_emails: false
   workers_running: false
+  purging_enable: false
 
 # development:
 #   full_host: www.lvh.me:5000
@@ -20,6 +21,7 @@ test:
   default_port: 80
   send_emails: false
   workers_running: false
+  purging_enable: false
 
 staging:
   full_host: staging.hackster.io
@@ -28,6 +30,7 @@ staging:
   default_port: 80
   send_emails: true
   workers_running: false
+  purging_enable: false
 
 dev:
   full_host: dev.hackster.io
@@ -36,6 +39,7 @@ dev:
   default_port: 80
   send_emails: true
   workers_running: true
+  purging_enable: true
 
 production:
   full_host: www.hackster.io
@@ -44,3 +48,4 @@ production:
   default_port: 80
   send_emails: true
   workers_running: true
+  purging_enable: true

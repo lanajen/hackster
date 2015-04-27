@@ -24,6 +24,7 @@ class Users::SessionsController < Devise::SessionsController
       track_alias
       track_event 'Logged in'
       track_user current_user.to_tracker_profile
+      cookies[:signed_in] = '1'
 
       user_return_to
     end
@@ -33,6 +34,7 @@ class Users::SessionsController < Devise::SessionsController
         track_event 'Logged out'
         reset_current_mixpanel_user
       end
+      cookies.delete(:hackster_user_signed_in)
 
       super resource
     end

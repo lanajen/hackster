@@ -41,6 +41,7 @@ class ApplicationController < ActionController::Base
   helper_method :is_mobile?
   helper_method :returning_user?
   helper_method :controller_action
+  before_filter :set_signed_in_cookie
   helper BootstrapFlashHelper
 
 
@@ -51,6 +52,11 @@ class ApplicationController < ActionController::Base
   before_filter :current_platform
   helper_method :current_layout
   layout :current_layout
+
+  def set_signed_in_cookie
+    cookies[:hackster_user_signed_in] = '1' if user_signed_in? and cookies[:hackster_user_signed_in].blank?
+    puts cookies.to_yaml
+  end
 
   def current_layout
     @layout ||= if current_site
