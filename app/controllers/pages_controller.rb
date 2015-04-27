@@ -87,7 +87,7 @@ class PagesController < ApplicationController
         @next_page = nil if @projects.total_pages < @next_page
 
         unless request.xhr?
-          @last_projects = Project.indexable.last_public.limit(12)
+          @last_projects = Project.indexable.last_public.for_thumb_display.limit(12)
           @hackers = User.invitation_accepted_or_not_invited.user_name_set.where("users.id NOT IN (?)", current_user.followed_users.pluck(:id)).joins(:reputation).where("reputations.points > 5").order('RANDOM()').limit(6)
           @lists = List.where(user_name: featured_lists - current_user.followed_lists.pluck(:user_name))
           @platforms = Platform.public.where("groups.id NOT IN (?)", current_user.followed_platforms.pluck(:id)).minimum_followers.order('RANDOM()').limit(6)
@@ -99,13 +99,13 @@ class PagesController < ApplicationController
           @lists = List.where(user_name: featured_lists - current_user.followed_lists.pluck(:user_name))
           @platforms = Platform.public.where.not(id: current_user.followed_platforms.pluck(:id)).minimum_followers_strict.order('RANDOM()').limit(12)
         end
-        @last_projects = Project.indexable.last_public.limit(12)
+        @last_projects = Project.indexable.last_public.for_thumb_display.limit(12)
       end
 
       render 'home_member'
     else
       @trending_projects = Project.indexable.magic_sort.for_thumb_display.limit 12
-      @last_projects = Project.indexable.last_public.limit 12
+      @last_projects = Project.indexable.last_public.for_thumb_display.limit 12
       @platforms = Platform.public.minimum_followers_strict.order('RANDOM()').for_thumb_display.limit 12
       @lists = List.where(user_name: featured_lists).each_slice(3).to_a
 

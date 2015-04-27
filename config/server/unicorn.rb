@@ -87,6 +87,10 @@ before_fork do |server, worker|
   end
 
   if defined?(ActiveRecord::Base)
+    ActiveRecord::Base.connection_proxy.instance_variable_get(:@shards).each do |shard, connection_pool|
+      connection_pool.disconnect!
+    end if Octopus.enabled?
+
     ActiveRecord::Base.connection.disconnect!
   end
 
@@ -111,11 +115,14 @@ after_fork do |server, worker|
     config = ActiveRecord::Base.configurations[Rails.env] ||
                 Rails.application.config.database_configuration[Rails.env]
     config['reaping_frequency'] = ENV['DB_REAP_FREQ'] || 10 # seconds
-    config['pool']              = ENV['DB_POOL'] || 2
-    ActiveRecord::Base.establish_connection(config)
+    config['pool']              = db_pool_size
 
-    # Turning synchronous_commit off can be a useful alternative when performance is more important than exact certainty about the durability of a transaction
-    # ActiveRecord::Base.connection.execute "update pg_settings set setting='off' where name = 'synchronous_commit';"
+    if Octopus.enabled?
+      Octopus.config[Rails.env]['master'] = config
+      ActiveRecord::Base.connection.initialize_shards(Octopus.config)
+    else
+      ActiveRecord::Base.establish_connection(config)
+    end
 
     Rails.logger.info("Connection pool size for unicorn is now: #{ActiveRecord::Base.connection.pool.instance_variable_get('@size')}")
   end
