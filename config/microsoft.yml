@@ -1,0 +1,23 @@
+production:
+  site.baseurl: "http://ms-iot.github.io/content"
+  site.repository_url: "https://github.com/ms-iot/content/blob/develop/"
+  site.landing_url: "http://dev.windows.com/iot"
+  site.hackster_url: "http://microsoft.hackster.io"
+
+dev:
+  site.baseurl: "https://content-private.azurewebsites.net/content"
+  site.repository_url: "https://github.com/ms-iot/content-private/blob/develop/"
+  site.landing_url: "http://devx.windows-int.com/iot"
+  site.hackster_url: "http://microsoft.dev.hackster.io"
+
+staging:
+  site.baseurl: "https://content-private.azurewebsites.net/content"
+  site.repository_url: "https://github.com/ms-iot/content-private/blob/develop/"
+  site.landing_url: "http://devx.windows-int.com/iot"
+  site.hackster_url: "http://microsoft.staging.hackster.io"
+
+development:
+  site.baseurl: "https://content-private.azurewebsites.net/content"
+  site.repository_url: "https://github.com/ms-iot/content-private/blob/develop/"
+  site.landing_url: "http://devx.windows-int.com/iot"
+  site.hackster_url: "http://microsoft.localhost.local:5000"

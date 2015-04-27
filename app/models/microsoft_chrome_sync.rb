@@ -1,7 +1,7 @@
 class MicrosoftChromeSync
   include Singleton
 
-  @@attributes = :chrome_footer, :chrome_header, :nav
+  @@attributes = :chrome_footer, :chrome_header, :nav, :nav_css
 
   def self.attributes
     @@attributes
@@ -34,12 +34,27 @@ class MicrosoftChromeSync
   end
 
   private
+    def config
+      @config ||= YAML.load_file("#{Rails.root}/config/microsoft.yml")[Rails.env]
+    end
+
     def getter attribute
-      redis.get(attribute)
+      replace_urls redis.get(attribute)
     end
 
     def redis
       @redis ||= Redis::Namespace.new('ms_chrome', redis: Redis.new($redis_config))
+    end
+
+    def replace_urls text
+      return unless text
+
+      text.scan(/\{\{([a-z_\.]+)\}\}/).each do |token|
+        token = token.first if token.class == Array
+        sub = config[token]
+        text = text.gsub("{{#{token}}}", sub) if sub
+      end
+      text
     end
 
     def setter attribute, val
