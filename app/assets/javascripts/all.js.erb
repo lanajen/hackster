@@ -60,7 +60,7 @@ $(function () {
     // fix image URLS so they work on dev
     $('img').each(function(i, el) {
       var src = $(el).attr('src');
-      if (src.length) {
+      if (typeof(src) != 'undefined') {
         src = src.replace('hackster-dev', 'halckemy');
         src = src.replace('/dev/', '/production/');
         $(el).attr('src', src);
