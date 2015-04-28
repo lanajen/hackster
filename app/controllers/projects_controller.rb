@@ -35,7 +35,7 @@ class ProjectsController < ApplicationController
 
   def show
     authorize! :read, @project unless params[:auth_token] and params[:auth_token] == @project.security_token
-    set_surrogate_key_header @project.record_key
+    set_surrogate_key_header @project.record_key unless user_signed_in?
 
     impressionist_async @project, '', unique: [:session_hash]
 

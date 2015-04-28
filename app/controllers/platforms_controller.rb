@@ -15,7 +15,7 @@ class PlatformsController < ApplicationController
   before_filter -> { set_cache_control_headers '3600' }, only: [:index, :show]
 
   def index
-    set_surrogate_key_header 'platforms'
+    set_surrogate_key_header 'platforms' unless user_signed_in?
 
     title "Explore platforms"
     meta_desc "Find hardware and software platforms to help you build your next projects."
@@ -35,7 +35,7 @@ class PlatformsController < ApplicationController
   end
 
   def show
-    set_surrogate_key_header @platform.record_key
+    set_surrogate_key_header @platform.record_key unless user_signed_in?
 
     respond_to do |format|
       format.html do

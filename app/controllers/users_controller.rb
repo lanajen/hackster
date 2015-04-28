@@ -13,7 +13,7 @@ class UsersController < ApplicationController
   end
 
   def show
-    set_surrogate_key_header @user.record_key
+    set_surrogate_key_header @user.record_key unless user_signed_in?
     impressionist_async @user, "", unique: [:session_hash]  # no need to add :impressionable_type and :impressionable_id, they're already included with @user
     title @user.name
     meta_desc "#{@user.name} is on #{site_name}. Come share your hardware projects with #{@user.name} and other hardware hackers and makers."

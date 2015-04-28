@@ -60,7 +60,7 @@ class PagesController < ApplicationController
   end
 
   def hardwareweekend
-    set_surrogate_key_header 'hhw'
+    set_surrogate_key_header 'hhw' unless user_signed_in?
     title "Hackster Hardware Weekend Roadshow"
     meta_desc "The Hackster #HardwareWeekend is coming to 10 cities across America! Join us to hack, meet awesome people and win great prizes!"
 
