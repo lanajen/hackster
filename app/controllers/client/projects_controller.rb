@@ -5,6 +5,8 @@ class Client::ProjectsController < Client::BaseController
   respond_to :html
 
   def index
+    set_surrogate_key_header "home/#{current_platform.user_name}"
+    set_cache_control_headers 3600
     title "Projects - Page #{safe_page_params}" if safe_page_params
 
     impressionist_async current_platform, "", unique: [:session_hash]

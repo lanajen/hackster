@@ -8,7 +8,7 @@
 = render partial: 'add_to_list_button'
 
 = content_for :no_container do
-  - cache_unless user_signed_in?, @project, tag: ['project-show', "project-#{@project.id}"], expires_in: 3.hours do
+  - cache_unless user_signed_in?, [@project, site_user_name], tag: ['project-show', "project-#{@project.id}"], expires_in: 3.hours do
     = render 'projects/project_embed_popup'
     #content.project-page class="project-#{@project.id}"
       .container-desktop.container
@@ -379,7 +379,7 @@
                           - else
                             span.user-name= credit_line.name
 
-              - if current_platform.nil? and communities = (@project.platforms.where(groups: { private: false }, project_collections: { workflow_state: ProjectCollection::VALID_STATES }) + [@project.hacker_space] + @project.communities.where(groups: { private: false })).compact and communities.any? #@project.communities_count > 0
+              - if !is_whitelabel? and communities = (@project.platforms.where(groups: { private: false }, project_collections: { workflow_state: ProjectCollection::VALID_STATES }) + [@project.hacker_space] + @project.communities.where(groups: { private: false })).compact and communities.any? #@project.communities_count > 0
                 section.section-thumbs
                   h4
                     | Communities this project is part of
@@ -387,7 +387,7 @@
                   - communities.each do |community|
                     = render partial: 'groups/shared/community_thumb_mini', locals: { community: community }
 
-              - cache ["project-#{@project.id}", 'metadata', @can_edit], tag: (["project-#{@project.id}-metadata", "team-#{@project.team_id}", "project-#{@project.id}-respects", 'project-metadata'] + @project.users.map{|u| "user-#{u.id}-thumb"}) do
+              - cache ["project-#{@project.id}", 'metadata', site_user_name], tag: ["project-#{@project.id}-metadata", "project-#{@project.id}-respects", 'project-metadata'] do
                 - if @project.public? and @respecting_users.count > 0
                   section.section-thumbs
                     h4 Hackers who respect this project
@@ -417,7 +417,7 @@
                         ' Participated in
                       = link_to entry.challenge.name, entry.challenge
 
-              - cache ["project-#{@project.id}-other", @other_projects], tag: "project-#{@project.id}-other" do
+              - cache ["project-#{@project.id}-other", @other_projects, site_user_name], tag: "project-#{@project.id}-other" do
                 - if @other_projects_count > 0
                   section.section-thumbs
                     h4 Other projects by the same #{pluralize_without_count @project.team_members_count, 'author'}

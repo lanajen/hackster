@@ -104,6 +104,8 @@ class PagesController < ApplicationController
 
       render 'home_member'
     else
+      set_cache_control_headers 3600
+      set_surrogate_key_header 'home-visitor'
       @trending_projects = Project.indexable.magic_sort.for_thumb_display.limit 12
       @last_projects = Project.indexable.last_public.for_thumb_display.limit 12
       @platforms = Platform.public.minimum_followers_strict.order('RANDOM()').for_thumb_display.limit 12

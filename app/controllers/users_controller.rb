@@ -4,6 +4,7 @@ class UsersController < ApplicationController
   authorize_resource except: [:after_registration, :after_registration_save, :redirect_to_show]
   layout :set_layout
   protect_from_forgery except: :redirect_to_show
+  before_filter :set_cache_control_headers, only: [:show]
 
   def index
     title "Browse top hackers"
@@ -11,6 +12,7 @@ class UsersController < ApplicationController
   end
 
   def show
+    set_surrogate_key_header @user.record_key
     impressionist_async @user, "", unique: [:session_hash]  # no need to add :impressionable_type and :impressionable_id, they're already included with @user
     title @user.name
     meta_desc "#{@user.name} is on #{site_name}. Come share your hardware projects with #{@user.name} and other hardware hackers and makers."
