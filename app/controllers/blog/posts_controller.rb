@@ -1,9 +1,14 @@
 class Blog::PostsController < ApplicationController
+  before_filter :set_cache_control_headers, only: [:index, :show, :feed]
+
   layout 'blog'
 
   def index
     @page = safe_page_params.nil? ? 1 : safe_page_params
     @posts = BlogPost.published
+
+    set_surrogate_key_header 'posts', @posts.map(&:record_key)
+
     if params[:tag]
       @posts = @posts.joins(:blog_tags).where(tags: { name: params[:tag] })
     end
@@ -24,6 +29,7 @@ class Blog::PostsController < ApplicationController
     else
       @post = BlogPost.published.find_by_slug! params[:slug]
     end
+    set_surrogate_key_header @post.record_key if @post.public?
 
     meta_desc ActionController::Base.helpers.strip_tags(@post.body).truncate 155
     title @post.title
@@ -33,6 +39,7 @@ class Blog::PostsController < ApplicationController
 
   def feed
     @posts = BlogPost.published.limit(25)
+    set_surrogate_key_header 'posts', @posts.map(&:record_key)
   end
 
   private

@@ -1,5 +1,6 @@
 class PagesController < ApplicationController
-  skip_before_filter :track_visitor, only: [:home]
+  before_filter :set_cache_control_headers, only: [:hardwareweekend]
+  skip_before_filter :track_visitor, only: [:home, :hardwareweekend]
 
   def about
     meta_desc 'What is Hackster.io?'
@@ -59,6 +60,7 @@ class PagesController < ApplicationController
   end
 
   def hardwareweekend
+    set_surrogate_key_header 'hhw'
     title "Hackster Hardware Weekend Roadshow"
     meta_desc "The Hackster #HardwareWeekend is coming to 10 cities across America! Join us to hack, meet awesome people and win great prizes!"
 
