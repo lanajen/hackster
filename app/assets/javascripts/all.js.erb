@@ -335,7 +335,7 @@ function doUserSignedInUpdate(){
   var csrf = $('meta[name="csrf-token"]').attr('content');
   var input = $('<input type="hidden" name="authenticity_token" />')
   input.val(csrf);
-  $('form').append(input);
+  $('form.simple_form').append(input);
 }
 
 function sortTable(){

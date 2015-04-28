@@ -1,4 +1,6 @@
 class Users::SimplifiedRegistrationsController < Devise::RegistrationsController
+  protect_from_forgery except: [:create]
+
   def create
     build_resource(sign_up_params)
     resource.simplify_signup!

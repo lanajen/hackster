@@ -1,6 +1,7 @@
 class Users::SessionsController < Devise::SessionsController
   before_filter :disable_flash
   before_filter :set_action, only: [:new, :create]
+  protect_from_forgery except: [:create]
 
   def new
     track_event 'Visited log in page', { referrer: request.referrer }
