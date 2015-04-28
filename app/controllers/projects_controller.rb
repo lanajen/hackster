@@ -35,7 +35,12 @@ class ProjectsController < ApplicationController
 
   def show
     authorize! :read, @project unless params[:auth_token] and params[:auth_token] == @project.security_token
-    set_surrogate_key_header @project.record_key unless user_signed_in?
+
+    unless user_signed_in?
+      surrogate_keys = [@project.record_key]
+      surrogate_keys << current_platform.user_name if is_whitelabel?
+      set_surrogate_key_header *surrogate_keys
+    end
 
     impressionist_async @project, '', unique: [:session_hash]
 
