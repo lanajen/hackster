@@ -31,15 +31,7 @@ class CacheWorker < BaseWorker
     def fetch_url page_url
       page_url = 'http://' + page_url unless page_url =~ /^https?\:\/\//
       puts "Fetching page #{page_url}..."
-      5.times do
-        begin
-          return open(page_url, allow_redirections: :safe, ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE).read
-        rescue => e
-          # raise e.inspect
-          puts "Failed opening #{page_url}. Retrying in 1 second..."
-          sleep 1
-        end
-      end
-      raise "Failed opening page #{page_url} after 5 tries."
+      return open(page_url, allow_redirections: :safe, ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE).read
+      raise "Failed opening page #{page_url}."
     end
 end

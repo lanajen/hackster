@@ -1,15 +1,1 @@
-<% @gist_count = @gist_count ? @gist_count + 1 : 1 %>
-
-<div id="replace-me-<%= @gist_count %>"></div>
-
-<script>
-   $(function() {
-      // Just need to add the element with a valid data-gist-id to the document, then call gist() on it
-      var code = $('<code class="gist" id="gist-<%= embed.provider_id %>"data-gist-id="<%= embed.provider_id %>"/>');
-      $('#replace-me-<%= @gist_count %>').replaceWith(code);
-      code.gist();
-      window.setTimeout(function(){
-        $('#gist-<%= embed.provider_id %> .gist-meta a').attr('target', '_blank');
-      }, 1000);
-  });
-</script>
+<code class="gist" id="gist-<%= embed.provider_id %>" data-gist-id="<%= embed.provider_id %>"></code>

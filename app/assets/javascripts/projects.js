@@ -576,6 +576,11 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
       }
     });
 
+    $('.gist').gist();
+    window.setTimeout(function(){
+      $('.gist .gist-meta a').attr('target', '_blank');
+    }, 1000);
+
     loadSlickSlider();
   });
 })(jQuery, window, document);

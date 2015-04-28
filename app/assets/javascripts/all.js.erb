@@ -60,9 +60,11 @@ $(function () {
     // fix image URLS so they work on dev
     $('img').each(function(i, el) {
       var src = $(el).attr('src');
-      src = src.replace('hackster-dev', 'halckemy');
-      src = src.replace('/dev/', '/production/');
-      $(el).attr('src', src);
+      if (src.length) {
+        src = src.replace('hackster-dev', 'halckemy');
+        src = src.replace('/dev/', '/production/');
+        $(el).attr('src', src);
+      }
     });
 
     $('[style*="background-image"]').each(function(i, el) {
@@ -335,7 +337,7 @@ function doUserSignedInUpdate(){
   var csrf = $('meta[name="csrf-token"]').attr('content');
   var input = $('<input type="hidden" name="authenticity_token" />')
   input.val(csrf);
-  $('form.simple_form').append(input);
+  $('form.append-csrf-token').append(input);
 }
 
 function sortTable(){
