@@ -1,4 +1,5 @@
 class PagesController < ApplicationController
+  skip_before_filter :track_visitor, only: [:home]
 
   def about
     meta_desc 'What is Hackster.io?'

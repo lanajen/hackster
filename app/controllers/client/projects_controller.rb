@@ -2,6 +2,7 @@ class Client::ProjectsController < Client::BaseController
   include PlatformHelper
 
   load_and_authorize_resource only: [:index]
+  skip_before_filter :track_visitor, only: [:index]
   respond_to :html
 
   def index

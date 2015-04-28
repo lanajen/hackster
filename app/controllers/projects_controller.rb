@@ -7,6 +7,7 @@ class ProjectsController < ApplicationController
   respond_to :html
   after_action :allow_iframe, only: :embed
   before_filter :set_cache_control_headers, only: [:show]
+  skip_before_filter :track_visitor, only: [:show]
 
   def index
     title "Explore all projects - Page #{safe_page_params || 1}"

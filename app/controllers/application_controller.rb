@@ -21,7 +21,7 @@ class ApplicationController < ActionController::Base
   before_filter :mark_last_seen!
   before_filter :set_new_user_session
   before_filter :store_location_before
-  # before_filter :track_visitor
+  before_filter :track_visitor
   before_filter :check_new_badge
   before_filter :show_badge
   prepend_after_filter :show_badge
@@ -317,13 +317,13 @@ class ApplicationController < ActionController::Base
     end
 
     def track_signup resource, simplified=false
-      time_since_shown_signup_popup = cookies[:last_shown_banner].present? ? (Time.now - cookies[:last_shown_banner].to_time) : 'never'
+      # time_since_shown_signup_popup = cookies[:last_shown_banner].present? ? (Time.now - cookies[:last_shown_banner].to_time) : 'never'
       data = {
-        first_seen: cookies[:first_seen],
+        # first_seen: cookies[:first_seen],
         initial_referrer: cookies[:initial_referrer],
         landing_page: cookies[:landing_page],
-        shown_banner_count: cookies[:shown_banner_count],
-        visits_count_before_signup: JSON.parse(cookies[:visits]).size,
+        # shown_banner_count: cookies[:shown_banner_count],
+        # visits_count_before_signup: JSON.parse(cookies[:visits]).size,
         simplified: simplified,
         source: params[:source],
         platform: site_platform,
@@ -331,7 +331,8 @@ class ApplicationController < ActionController::Base
 
       track_alias
       track_user resource.to_tracker_profile.merge(data)
-      track_event 'Signed up', data.merge({ time_since_shown_signup_popup: time_since_shown_signup_popup })
+      # track_event 'Signed up', data.merge({ time_since_shown_signup_popup: time_since_shown_signup_popup })
+      track_event 'Signed up', data
 
       cookies.delete(:first_seen)
       cookies.delete(:last_shown_banner)
