@@ -6,7 +6,7 @@ class ProjectsController < ApplicationController
   before_filter :load_lists, only: [:show, :show_external]
   respond_to :html
   after_action :allow_iframe, only: :embed
-  before_filter :set_cache_control_headers, only: [:show]
+  # before_filter :set_cache_control_headers, only: [:show]
 
   def index
     title "Explore all projects - Page #{safe_page_params || 1}"
@@ -36,6 +36,9 @@ class ProjectsController < ApplicationController
     # raise cookies.inspect
     authorize! :read, @project unless params[:auth_token] and params[:auth_token] == @project.security_token
     set_surrogate_key_header @project.record_key
+    request.session_options[:skip] = true    # no cookies
+    response.headers['Cache-Control'] = "public, max-age=60"
+    response.headers['Surrogate-Control'] = FastlyRails.configuration.max_age
 
     impressionist_async @project, '', unique: [:session_hash]
 
