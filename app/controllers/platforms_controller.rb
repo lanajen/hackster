@@ -12,8 +12,11 @@ class PlatformsController < ApplicationController
   after_action :allow_iframe, only: [:embed]
   respond_to :html
   protect_from_forgery except: :embed
+  before_filter -> { set_cache_control_headers '3600' }, only: [:index, :show]
 
   def index
+    set_surrogate_key_header 'platforms'
+
     title "Explore platforms"
     meta_desc "Find hardware and software platforms to help you build your next projects."
 
@@ -32,6 +35,8 @@ class PlatformsController < ApplicationController
   end
 
   def show
+    set_surrogate_key_header @platform.record_key
+
     respond_to do |format|
       format.html do
         title "#{@platform.name}'s community hub"

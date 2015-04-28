@@ -61,6 +61,7 @@ class MicrosoftChromeSync
       if getter(attribute) != val
         redis.set attribute, val
         Cashier.expire "ms_chrome-#{attribute}"
+        FastlyRails.purge_by_key 'home/microsoft'
       end
     end
 end
