@@ -33,12 +33,8 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    # raise cookies.inspect
     authorize! :read, @project unless params[:auth_token] and params[:auth_token] == @project.security_token
     set_surrogate_key_header @project.record_key
-    # request.session_options[:skip] = true    # no cookies
-    # response.headers['Cache-Control'] = "public, no-cache"
-    # response.headers['Surrogate-Control'] = FastlyRails.configuration.max_age
 
     impressionist_async @project, '', unique: [:session_hash]
 

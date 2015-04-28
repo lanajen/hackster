@@ -54,7 +54,7 @@ class ApplicationController < ActionController::Base
   layout :current_layout
 
   def set_signed_in_cookie
-    cookies[:hackster_user_signed_in] = '1' if user_signed_in? and cookies[:hackster_user_signed_in].blank?
+    cookies[:signedin] = '1' if user_signed_in? and cookies[:signedin].blank?
     # puts cookies.to_yaml
   end
 
