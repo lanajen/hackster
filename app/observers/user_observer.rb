@@ -60,7 +60,7 @@ class UserObserver < ActiveRecord::Observer
 
     if (record.changed & %w(full_name user_name avatar slug)).any?
       keys = ["user-#{record.id}-teaser", "user-#{record.id}-thumb"]
-      record.teams.each{|t| keys << "team-#{t.id}-user-thumbs" }
+      record.teams.each{|t| keys << "team-#{t.id}" }
       record.respected_projects.each{|p| keys << "project-#{p.id}-respects" }
       Cashier.expire *keys
     end

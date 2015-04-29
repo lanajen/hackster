@@ -2,7 +2,7 @@
 
 .col-sm-6.mobile-scroll-row-item class="col-md-#{col}"
   .project-thumb-container
-    - cache "platform-#{platform.id}-submit-idea", tag: ["platform-#{platform.id}-submit-idea", 'platform-submit-idea'], expires_in: 24.hours do
+    - cache "platform-#{platform.id}-submit-idea", tag: ["platform-#{platform.id}-submit-idea"], expires_in: 24.hours do
       div class="submit-idea"
         .thumb.project-thumb
           .thumb-image.has-link-overlay style="background-image:url(#{platform.cover_image.try(:file_url, :cover) || platform.avatar.try(:file_url, :big)});"

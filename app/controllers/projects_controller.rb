@@ -2,7 +2,6 @@ class ProjectsController < ApplicationController
   before_filter :load_project, only: [:show, :embed, :print, :update, :destroy, :redirect_to_slug_route]
   before_filter :ensure_belongs_to_platform, only: [:show, :embed, :print, :update, :destroy, :redirect_to_slug_route]
   load_and_authorize_resource only: [:index, :new, :edit, :submit]
-  # layout 'project', only: [:edit, :update, :show]
   before_filter :load_lists, only: [:show, :show_external]
   respond_to :html
   after_action :allow_iframe, only: :embed

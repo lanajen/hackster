@@ -1,4 +1,4 @@
-- cache_unless (@user == current_user), "user-#{@user.id}-#{site_user_name}", tag: ['user-show', "user-#{@user.id}"], expires_in: 3.hours do
+- cache_unless (@user == current_user), "user-#{@user.id}-#{site_user_name}", tag: ["user-#{@user.id}"], expires_in: 3.hours do
   section#projects-list
     .wrapper
       .main-section-actions.clearfix.mg-30

@@ -28,7 +28,7 @@
       | on Hackster.io
 
   - unless @custom_header.present?
-    - cache "platform-#{current_platform.id}-client-subheading", tag: ["platform-#{current_platform.id}-sidebar", 'platform-sidebar'] do
+    - cache "platform-#{current_platform.id}-client-subheading", tag: ["platform-#{current_platform.id}-sidebar"] do
       #subheading.clearfix
         p.pull-left= current_platform.mini_resume
 

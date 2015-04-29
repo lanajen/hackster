@@ -8,12 +8,12 @@
 = render partial: 'add_to_list_button'
 
 = content_for :no_container do
-  - cache_unless user_signed_in?, [@project, site_user_name], tag: ['project-show', "project-#{@project.id}"], expires_in: 3.hours do
+  - cache_unless user_signed_in?, [@project, site_user_name], tag: ["project-#{@project.id}"], expires_in: 3.hours do
     = render 'projects/project_embed_popup'
     #content.project-page class="project-#{@project.id}"
       .container-desktop.container
         .row
-          - cache_unless @can_edit, [@project, 'left-column'], tag: ['project-left-column', "project-#{@project.id}-left-column"], expires_in: 24.hours do
+          - cache_unless @can_edit, [@project, 'left-column'], tag: ["project-#{@project.id}-left-column"], expires_in: 24.hours do
 
             .col-md-8.left-column
               - if @project.event
@@ -86,7 +86,7 @@
                     p The contents of this project are currently hidden because the assignement is being graded.
 
               - else
-                - cache ["project-#{@project.id}-widgets"], tag: ["project-#{@project.id}-widgets", 'project-widgets'] do
+                - cache ["project-#{@project.id}-widgets"], tag: ["project-#{@project.id}-widgets"] do
                   section#about-project.section-container.section-collapsible
                     h2.section-title
                       a.title.title-toggle href=''
@@ -96,7 +96,7 @@
                     .section-content
                       .medium-editor= @project.description
 
-                - cache ["project-#{@project.id}-components"], tag: ["project-#{@project.id}-components", 'project-components'] do
+                - cache ["project-#{@project.id}-components"], tag: ["project-#{@project.id}-components"] do
                   - if @component_widgets.any?
                     section#components.section-container.section-collapsible
                       h2.section-title
@@ -109,7 +109,7 @@
                           - embed = Embed.new widget_id: widget.id
                           = render partial: 'api/embeds/embed', locals: { embed: embed }
 
-                - cache ["project-#{@project.id}-cad"], tag: ["project-#{@project.id}-cad", 'project-cad'] do
+                - cache ["project-#{@project.id}-cad"], tag: ["project-#{@project.id}-cad"] do
                   - if @project.widgets.where(type: %w(CadRepoWidget CadFileWidget)).any?
                     section#cad.section-container.section-collapsible
                       h2.section-title
@@ -121,7 +121,7 @@
                         - @project.widgets.where(type: %w(CadRepoWidget CadFileWidget)).order(:position, :id).each do |widget|
                           = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
 
-                - cache ["project-#{@project.id}-schematics"], tag: ["project-#{@project.id}-schematics", 'project-schematics'] do
+                - cache ["project-#{@project.id}-schematics"], tag: ["project-#{@project.id}-schematics"] do
                   - if @project.widgets.where(type: %w(SchematicWidget SchematicFileWidget)).order(:position, :id).any?
                     section#schematics.section-container.section-collapsible
                       h2.section-title
@@ -133,7 +133,7 @@
                         - @project.widgets.where(type: %w(SchematicWidget SchematicFileWidget)).order(:position, :id).each do |widget|
                           = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
 
-                - cache ["project-#{@project.id}-code"], tag: ["project-#{@project.id}-code", 'project-code'] do
+                - cache ["project-#{@project.id}-code"], tag: ["project-#{@project.id}-code"] do
                   - if @project.widgets.where(type: %w(CodeWidget CodeRepoWidget)).any?
                     section#code.section-container.section-collapsible
                       h2.section-title
@@ -145,7 +145,7 @@
                         - @project.widgets.where(type: %w(CodeWidget CodeRepoWidget)).order(:position, :id).each do |widget|
                           = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
 
-                - cache ["project-#{@project.id}-build_logs"], tag: ["project-#{@project.id}-build_logs", 'project-build_logs'] do
+                - cache ["project-#{@project.id}-build_logs"], tag: ["project-#{@project.id}-build_logs"] do
                   - if (@project.build_logs_count > 0 and !@project.private_logs)
                     section#logs.section-container.section-collapsible
                       h2.section-title
@@ -180,7 +180,7 @@
                         - elsif @project.build_logs_count > 1
                           = link_to 'Read previous logs', project_logs_path, class: 'btn btn-default btn-sm btn-block'
 
-                - cache ["project-#{@project.id}-issues"], tag: ["project-#{@project.id}-issues", 'project-issues'] do
+                - cache ["project-#{@project.id}-issues"], tag: ["project-#{@project.id}-issues"] do
                   - if (@project.issues_count > 0 and !@project.private_issues)
                     section#issues.section-container.section-collapsible
                       h2.section-title
@@ -228,7 +228,7 @@
 
                     h3.title Step 3: be happy!
 
-                - cache ["project-#{@project.id}-comments"], tag: ["project-#{@project.id}-comments", 'project-comments'], expires_in: 24.hours do
+                - cache ["project-#{@project.id}-comments"], tag: ["project-#{@project.id}-comments"], expires_in: 24.hours do
                   section#comments.section-container.section-collapsible
                     h2.section-title
                       a.title.title-toggle href=''
@@ -317,7 +317,7 @@
                   - else
                     p This project is locked for editing.
 
-              - cache ["project-#{@project.id}-team", @can_edit, @project.guest_name], tag: ["project-#{@project.id}-team", 'project-team', "team-#{@project.team_id}-user-thumbs"], expires_in: 24.hours do
+              - cache ["project-#{@project.id}-team", @can_edit, @project.guest_name], tag: ["team-#{@project.team_id}"], expires_in: 24.hours do
                 - if @project.guest_name.present?
                   section.section-thumbs
                     h4 Created by
@@ -387,7 +387,7 @@
                   - communities.each do |community|
                     = render partial: 'groups/shared/community_thumb_mini', locals: { community: community }
 
-              - cache ["project-#{@project.id}", 'metadata', site_user_name], tag: ["project-#{@project.id}-metadata", "project-#{@project.id}-respects", 'project-metadata'] do
+              - cache ["project-#{@project.id}", 'metadata', site_user_name], tag: ["project-#{@project.id}-metadata", "project-#{@project.id}-respects"] do
                 - if @project.public? and @respecting_users.count > 0
                   section.section-thumbs
                     h4 Hackers who respect this project
