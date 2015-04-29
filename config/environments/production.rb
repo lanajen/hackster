@@ -85,6 +85,6 @@ HackerIo::Application.configure do
 
   config.cashier.adapter = :cache_store
   if ENV["MEMCACHIER_SERVERS"]
-    config.cache_store = :dalli_store, ENV["MEMCACHIER_SERVERS"].split(','), { :username => ENV["MEMCACHIER_USERNAME"], :password => ENV["MEMCACHIER_PASSWORD"], compress: true }
+    config.cache_store = :dalli_store, ENV["MEMCACHIER_SERVERS"].split(','), { username: ENV["MEMCACHIER_USERNAME"], password: ENV["MEMCACHIER_PASSWORD"], compress: true }
   end
 end

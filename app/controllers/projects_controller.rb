@@ -5,7 +5,6 @@ class ProjectsController < ApplicationController
   before_filter :load_lists, only: [:show, :show_external]
   respond_to :html
   after_action :allow_iframe, only: :embed
-  before_filter :set_cache_control_headers, only: [:show]
   skip_before_filter :track_visitor, only: [:show]
 
   def index
@@ -39,6 +38,7 @@ class ProjectsController < ApplicationController
       surrogate_keys = [@project.record_key]
       surrogate_keys << current_platform.user_name if is_whitelabel?
       set_surrogate_key_header *surrogate_keys
+      set_cache_control_headers
     end
 
     impressionist_async @project, '', unique: [:session_hash]

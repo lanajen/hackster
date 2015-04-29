@@ -18,7 +18,6 @@ module BootstrapFlashHelper
         flash_messages << text if msg
       end
     end
-    response.headers['X-Alert'] = 'yes' if flash_messages.any?
     flash_messages.join("\n").html_safe
   end
 end

@@ -44,7 +44,6 @@ class ApplicationController < ActionController::Base
   before_filter :set_signed_in_cookie
   helper BootstrapFlashHelper
 
-
   # code to make whitelabel work
   helper_method :current_site
   helper_method :current_platform
@@ -131,7 +130,7 @@ class ApplicationController < ActionController::Base
   end
 
   def user_return_to
-    params[:redirect_to] || session[:user_return_to] || (user_signed_in? ? current_user : nil) || root_path
+    params[:redirect_to] || session[:user_return_to] || root_path
   end
 
   private
@@ -483,6 +482,22 @@ class ApplicationController < ActionController::Base
       end
     end
 
+    # two following methods taken from fastly-rails gem
+    def set_cache_control_headers(max_age = FastlyRails.configuration.max_age, opts = {})
+      if flash.empty?
+        request.session_options[:skip] = true  # no cookies
+        response.headers['Cache-Control'] = opts[:cache_control] || "public, no-cache"
+        response.headers['Surrogate-Control'] = opts[:surrogate_control] || "max-age=#{max_age}"
+      end
+    end
+
+    def set_surrogate_key_header(*surrogate_keys)
+      if flash.empty?
+        request.session_options[:skip] = true  # No Set-Cookie
+        response.headers['Surrogate-Key'] = surrogate_keys.join(' ')
+      end
+    end
+
     def site_name
       is_whitelabel? ? current_site.name : 'Hackster.io'
     end
@@ -508,9 +523,11 @@ class ApplicationController < ActionController::Base
     end
 
     def show_hello_world?
-      incoming = request.referer.present? ? URI(request.referer).host != APP_CONFIG['default_host'] : true
+      # incoming = request.referer.present? ? URI(request.referer).host != APP_CONFIG['default_host'] : true
 
-      incoming and !user_signed_in? and (params[:controller].in? %w(projects users platforms)) and params[:action] == 'show'
+      # incoming and
+      # removed to allow http caching: checking for referrer in the browser directly
+      !user_signed_in? and (params[:controller].in? %w(projects users platforms)) and params[:action] == 'show'
     rescue
       false
     end

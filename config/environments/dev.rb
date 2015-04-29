@@ -84,7 +84,7 @@ HackerIo::Application.configure do
   config.middleware.use Rack::LogRequestID
 
   config.cashier.adapter = :cache_store
-  if ENV["MEMCACHEDCLOUD_SERVERS"]
-    config.cache_store = :dalli_store, ENV["MEMCACHEDCLOUD_SERVERS"].split(','), { :username => ENV["MEMCACHEDCLOUD_USERNAME"], :password => ENV["MEMCACHEDCLOUD_PASSWORD"], compress: true }
+  if ENV["MEMCACHIER_SERVERS"]
+    config.cache_store = :dalli_store, ENV["MEMCACHIER_SERVERS"].split(','), { username: ENV["MEMCACHIER_USERNAME"], password: ENV["MEMCACHIER_PASSWORD"], compress: true }
   end
 end

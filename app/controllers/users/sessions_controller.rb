@@ -25,7 +25,7 @@ class Users::SessionsController < Devise::SessionsController
       track_alias
       track_event 'Logged in'
       track_user current_user.to_tracker_profile
-      cookies[:signed_in] = '1'
+      cookies[:hackster_user_signed_in] = '1'
 
       user_return_to
     end
