@@ -30,6 +30,7 @@ class ProjectObserver < ActiveRecord::Observer
     Broadcast.where(project_id: record.id).destroy_all
     update_counters record, [:projects, :live_projects]
     record.team.destroy if record.team
+    record.purge
   end
 
   def after_save record
@@ -49,6 +50,7 @@ class ProjectObserver < ActiveRecord::Observer
         Broadcast.where(project_id: record.id).destroy_all
       end
     end
+    record.purge
   end
 
   def before_create record
@@ -103,7 +105,6 @@ class ProjectObserver < ActiveRecord::Observer
 
     if (record.changed & %w(name guest_name cover_image one_liner slug)).any? or record.platform_tags_string_changed? or record.product_tags_string_changed?
       Cashier.expire "project-#{record.id}-meta-tags"
-      record.purge
     end
 
     if record.external? or record.product? and (record.changed & %w(website)).any?
@@ -112,7 +113,6 @@ class ProjectObserver < ActiveRecord::Observer
 
     if (record.changed & %w(name cover_image one_liner private wip start_date made_public_at license buy_link description)).any? or record.platform_tags_string_changed? or record.product_tags_string_changed?
       record.last_edited_at = Time.now
-      record.purge
     end
   end
 

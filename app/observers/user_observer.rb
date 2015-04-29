@@ -11,6 +11,7 @@ class UserObserver < ActiveRecord::Observer
     Broadcast.where(context_model_id: record.id, context_model_type: 'User').destroy_all
     Broadcast.where(broadcastable_id: record.id, broadcastable_type: 'User').destroy_all
     Broadcast.where(user_id: record.id).destroy_all
+    record.purge
   end
 
   def after_invitation_accepted record
@@ -48,6 +49,7 @@ class UserObserver < ActiveRecord::Observer
         team.update_attribute :user_name, record.user_name if team.user_name == record.user_name_was
       end
     end
+    record.purge
   end
 
   def before_update record
