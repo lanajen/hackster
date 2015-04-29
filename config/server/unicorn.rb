@@ -87,10 +87,6 @@ before_fork do |server, worker|
   end
 
   if defined?(ActiveRecord::Base)
-    ActiveRecord::Base.connection_proxy.instance_variable_get(:@shards).each do |shard, connection_pool|
-      connection_pool.disconnect!
-    end if Module.const_defined?(:Octopus) and Octopus.enabled?
-
     ActiveRecord::Base.connection.disconnect!
   end
 
@@ -117,12 +113,7 @@ after_fork do |server, worker|
     config['reaping_frequency'] = ENV['DB_REAP_FREQ'] || 10 # seconds
     config['pool']              = db_pool_size
 
-    if Module.const_defined?(:Octopus) and Octopus.enabled?
-      Octopus.config[Rails.env]['master'] = config
-      ActiveRecord::Base.connection.initialize_shards(Octopus.config)
-    else
-      ActiveRecord::Base.establish_connection(config)
-    end
+    ActiveRecord::Base.establish_connection(config)
 
     Rails.logger.info("Connection pool size for unicorn is now: #{ActiveRecord::Base.connection.pool.instance_variable_get('@size')}")
   end
