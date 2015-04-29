@@ -1,4 +1,6 @@
 class CacheWorker < BaseWorker
+  sidekiq_options queue: :cron, retry: 0
+
   def warm_cache
     perform_time = Time.now
     Project.indexable.most_popular.pluck(:id).each do |project_id|
