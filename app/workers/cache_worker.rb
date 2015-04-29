@@ -10,13 +10,13 @@ class CacheWorker < BaseWorker
 
   def warm_project_cache id
     project = Project.find id
-    # app.get '/' + project.uri unless Rails.cache.exist?(project)
-    fetch_url(APP_CONFIG['full_host'] + '/' + project.uri) unless Rails.cache.exist?(project)
+    app.get '/' + project.uri unless Rails.cache.exist?(project)
+    # fetch_url(APP_CONFIG['full_host'] + '/' + project.uri) unless Rails.cache.exist?(project)
   end
 
   def warm_home_cache
-    # app.get root_path unless Rails.cache.exist?('home-visitor')
-    fetch_url(APP_CONFIG['full_host']) unless Rails.cache.exist?('home-visitor')
+    app.get root_path unless Rails.cache.exist?('home-visitor')
+    # fetch_url(APP_CONFIG['full_host']) unless Rails.cache.exist?('home-visitor')
   end
 
   private
