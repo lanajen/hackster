@@ -13,6 +13,7 @@ class PlatformsController < ApplicationController
   respond_to :html
   protect_from_forgery except: :embed
   skip_before_filter :track_visitor, only: [:index, :show]
+  skip_after_filter :track_landing_page, only: [:index, :show]
 
   def index
     unless user_signed_in?

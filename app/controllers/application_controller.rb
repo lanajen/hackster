@@ -28,7 +28,7 @@ class ApplicationController < ActionController::Base
   before_filter :check_share_modal
   prepend_after_filter :check_share_modal
   after_filter :store_location_after
-  # after_filter :track_landing_page
+  after_filter :track_landing_page
   helper_method :flash_disabled?
   helper_method :safe_page_params
   helper_method :title

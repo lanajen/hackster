@@ -1,6 +1,7 @@
 class Blog::PostsController < ApplicationController
   before_filter :set_cache_control_headers, only: [:index, :show, :feed]
-  skip_before_filter :track_visitor, only: [:index, :show, :feed]
+  skip_before_filter :track_visitor
+  skip_after_filter :track_landing_page
 
   layout 'blog'
 

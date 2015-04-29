@@ -3,6 +3,7 @@ class Client::ProjectsController < Client::BaseController
 
   load_and_authorize_resource only: [:index]
   skip_before_filter :track_visitor, only: [:index]
+  skip_after_filter :track_landing_page, only: [:index]
   respond_to :html
 
   def index

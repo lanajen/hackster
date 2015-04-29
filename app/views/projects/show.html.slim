@@ -11,7 +11,8 @@
     javascript:
       $(function(){
         $.ajax({
-          url: '/projects/#{@project.id}/views',
+          url: '#{APP_CONFIG['stats_url']}/projects/#{@project.id}/views',
+          data: { referrer: document.referrer },
           method: 'POST'
         });
       });

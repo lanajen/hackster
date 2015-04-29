@@ -5,6 +5,7 @@ class UsersController < ApplicationController
   layout :set_layout
   protect_from_forgery except: :redirect_to_show
   skip_before_filter :track_visitor, only: [:show]
+  skip_after_filter :track_landing_page, only: [:show]
 
   def index
     title "Browse top hackers"
