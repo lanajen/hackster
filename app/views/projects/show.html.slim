@@ -6,6 +6,20 @@
     = render partial: 'groups/platforms/platform_card', locals: { platform: platform }
 
 = render partial: 'add_to_list_button'
+= content_for :js do
+  javascript:
+    $(function(){
+      var following = #{@following.to_json.html_safe};
+      $.each(following, function(type, ids){
+        var joinedIds = ids.map(function(id){
+          return '.follow-' + type + '-' + id;
+        });
+        joinedIds = joinedIds.join(',');
+        $(joinedIds).filter('.create').remove();
+        $(joinedIds).filter('.destroy').show();
+      });
+      $('.follow-button:hidden').remove();
+    });
 
 = content_for :no_container do
   - cache_unless user_signed_in?, [@project, site_user_name], tag: ["project-#{@project.id}"], expires_in: 3.hours do
@@ -288,7 +302,7 @@
 
               - elsif @can_edit
                 - who = %w(you)
-                - who += ['team members'] if @project.users.size > 1
+                - who += ['team members'] if @project.team_members_count > 1
                 - who += ["members of #{@project.assignment.promotion.name}"] if @project.has_assignment?
 
                 .alert.alert-warning.text-center
@@ -350,7 +364,7 @@
                       - if @can_edit
                         = link_to content_tag(:i, '', class: 'fa fa-pencil'), project_edit_team_path(@project), class: 'btn-edit'
 
-                    - @project.team_members.each do |member|
+                    - @project.team_members.includes(:user, user: :avatar).each do |member|
                       = render partial: 'users/member_thumb_mini', locals: { member: member }
 
               - if @project.event
@@ -379,7 +393,7 @@
                           - else
                             span.user-name= credit_line.name
 
-              - if !is_whitelabel? and communities = (@project.platforms.where(groups: { private: false }, project_collections: { workflow_state: ProjectCollection::VALID_STATES }) + [@project.hacker_space] + @project.communities.where(groups: { private: false })).compact and communities.any? #@project.communities_count > 0
+              - if !is_whitelabel? and communities = @project.groups.where(groups: { private: false }, project_collections: { workflow_state: ProjectCollection::VALID_STATES }).includes(:avatar) and communities.any? #@project.communities_count > 0
                 section.section-thumbs
                   h4
                     | Communities this project is part of

@@ -43,6 +43,12 @@ class ProjectsController < ApplicationController
 
     impressionist_async @project, '', unique: [:session_hash]
 
+    @following = if user_signed_in?
+      # gets all follow_relations and sorts them in { user: [], group: [] } depending on type
+      User.first.follow_relations.select(:followable_id, :followable_type).inject({ user: [], group: [] }) {|h, f| f.followable_type == 'User' ? h[:user] << f.followable_id : h[:group] << f.followable_id; h }
+    else
+      { user: [], group: [] }
+    end
     @can_edit = (user_signed_in? and current_user.can? :edit, @project)
     @can_update = (@can_edit and current_user.can? :update, @project)
 

@@ -7,8 +7,8 @@
       = raw ms_sync.nav_css
 
 = content_for :header do
-
   - cache 'ms_chrome_header', tag: %w(ms_chrome-nav ms_chrome-chrome_header) do
+    .force-refresh
     = raw ms_sync.chrome_header
     = raw ms_sync.nav
 
@@ -53,6 +53,5 @@
           = render partial: 'shared/search_form', locals: { placeholder: 'Search projects' }
 
 = content_for :footer do
-  / = render "whitelabel/#{current_site.subdomain}/footer"
   - cache 'ms_chrome_footer', tag: %w(ms_chrome-chrome_footer) do
     = raw ms_sync.chrome_footer
