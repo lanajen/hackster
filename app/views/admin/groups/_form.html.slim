@@ -34,6 +34,7 @@
     = f_sub.input :subdomain
     = f_sub.input :domain
     = f_sub.input :name
+    = f.input :enable_password, as: :boolean, inline_label: 'Enable password protection', label: false
     = render partial: 'shared/image_form', locals: { file_type: 'logo', human_file_type: 'Portal logo', image_link: subdomain.try(:logo).try(:file_url), help_block: '', attribute_type: 'logo', image_version: nil, model: 'group' }
     = render partial: 'shared/image_form', locals: { file_type: 'favicon', human_file_type: 'Portal favicon', image_link: subdomain.try(:favicon).try(:file_url), help_block: '', attribute_type: 'favicon', image_version: nil, model: 'group[client_subdomain_attributes]' }
   - unless subdomain.present?
@@ -51,6 +52,18 @@
       label.control-label Password
     .col-md-8
       input.form-control type='text' disabled=true value=@group.api_password
+  hr
+  h4.col-md-8.col-md-offset-4 Whitelabel credentials
+  .form-group
+    .col-md-4
+      label.control-label Username
+    .col-md-8
+      input.form-control type='text' disabled=true value=@group.user_name
+  .form-group
+    .col-md-4
+      label.control-label Password
+    .col-md-8
+      input.form-control type='text' disabled=true value=@group.http_password
 
 - when 'University'
 .col-md-offset-4.col-md-8
