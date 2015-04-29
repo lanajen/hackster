@@ -84,7 +84,7 @@ HackerIo::Application.configure do
   config.react.variant = :production
 
   config.cashier.adapter = :cache_store
-  if ENV["MEMCACHEDCLOUD_SERVERS"]
+  if ENV["MEMCACHIER_SERVERS"]
     config.cache_store = :dalli_store, ENV["MEMCACHIER_SERVERS"].split(','), { :username => ENV["MEMCACHIER_USERNAME"], :password => ENV["MEMCACHIER_PASSWORD"], compress: true }
   end
 end
