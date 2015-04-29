@@ -39,7 +39,7 @@ class WidgetObserver < ActiveRecord::Observer
           keys << "project-#{record.project_id}-widgets"
         end
         keys << "widget-#{record.id}"
-        record.widgetable.purge
+        record.widgetable.try(:purge)
       end
       Cashier.expire *keys if keys
     end

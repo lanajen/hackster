@@ -1,7 +1,7 @@
 class AttachmentObserver < ActiveRecord::Observer
   def after_process record
     if record.attachable_type == 'Project'
-      record.attachable.purge
+      record.attachable.try(:purge)
       case record.type
       when 'CoverImage'
         Cashier.expire "project-#{record.attachable_id}-teaser"
@@ -15,7 +15,7 @@ class AttachmentObserver < ActiveRecord::Observer
         Cashier.expire "project-#{record.attachable.widgetable_id}-widgets"
       end
     elsif record.attachable_type.in? %w(Platform)
-      record.attachable.purge
+      record.attachable.try(:purge)
       case record.type
       when 'Avatar'
         Cashier.expire "platform-#{record.attachable_id}-sidebar"
