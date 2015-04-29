@@ -1,5 +1,4 @@
 class Group < ActiveRecord::Base
-  # replicated_model
 
   ACCESS_LEVELS = {
     'Anyone without approval' => 'anyone',

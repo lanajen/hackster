@@ -1,4 +1,5 @@
 class User < ActiveRecord::Base
+
   include Counter
   include EditableSlug
   include Roles
@@ -66,6 +67,7 @@ class User < ActiveRecord::Base
   has_many :authorizations, dependent: :destroy
   has_many :blog_posts, dependent: :destroy
   has_many :comments, -> { order created_at: :desc }, foreign_key: :user_id, dependent: :destroy
+  has_many :comment_likes, class_name: 'Respect', through: :comments, source: :likes
   has_many :communities, through: :group_ties, source: :group, class_name: 'Community'
   # has_many :courses, through: :promotions  # doesnt work
   has_many :events, through: :group_ties, source: :group, class_name: 'Event'
@@ -84,7 +86,11 @@ class User < ActiveRecord::Base
   has_many :hackathons, through: :events
   has_many :hacker_spaces_group_ties, -> { where(type: 'HackerSpaceMember') }, class_name: 'HackerSpaceMember', dependent: :destroy
   has_many :hacker_spaces, through: :hacker_spaces_group_ties, source: :group, class_name: 'HackerSpace'
-  has_many :invitations, class_name: self.to_s, as: :invited_by
+  has_many :invitations, class_name: self.to_s, as: :invited_by do
+    def accepted
+      where("users.invitation_accepted_at IS NOT NULL")
+    end
+  end
   has_many :lists_group_ties, -> { where(type: 'ListMember') }, class_name: 'ListMember', dependent: :destroy
   has_many :lists, through: :lists_group_ties, source: :group, class_name: 'List'
   has_many :notifications, through: :receipts, source: :receivable, source_type: 'Notification'
@@ -103,6 +109,7 @@ class User < ActiveRecord::Base
   has_many :team_grades, through: :teams, source: :grades
   has_many :teams, through: :group_ties, source: :group, class_name: 'Team'
   has_many :thoughts
+  has_many :thought_likes, class_name: 'Respect', through: :thoughts, source: :likes
   has_many :user_activities
   has_one :avatar, as: :attachable, dependent: :destroy
   has_one :reputation, dependent: :destroy
@@ -160,7 +167,8 @@ class User < ActiveRecord::Base
     :websites_count, :popularity_points_count, :project_respects_count,
     :platforms_count, :live_hidden_projects_count, :followed_users_count,
     :hacker_spaces_count, :badges_green_count,
-    :badges_bronze_count, :badges_silver_count, :badges_gold_count]
+    :badges_bronze_count, :badges_silver_count, :badges_gold_count,
+    :accepted_invitations_count, :feed_likes_count, :thoughts_count]
 
   parse_as_integers :counters_cache, :comments_count, :interest_tags_count,
     :invitations_count, :projects_count, :respects_count, :skill_tags_count,
@@ -168,7 +176,8 @@ class User < ActiveRecord::Base
     :popularity_points_count, :project_respects_count, :platforms_count,
     :live_hidden_projects_count, :followed_users_count, :hacker_spaces_count,
     :badges_green_count, :badges_bronze_count,
-    :badges_silver_count, :badges_gold_count
+    :badges_silver_count, :badges_gold_count, :accepted_invitations_count,
+    :feed_likes_count, :thoughts_count
 
   # store_accessor :subscriptions_masks, :email_subscriptions_mask,
   #   :web_subscriptions_mask
@@ -380,12 +389,14 @@ class User < ActiveRecord::Base
 
   def counters
     {
+      accepted_invitations: 'invitations.accepted.count',
       # badges: 'badges.count',
       badges_green: 'badges(:green).count',
       badges_bronze: 'badges(:bronze).count',
       badges_silver: 'badges(:silver).count',
       badges_gold: 'badges(:gold).count',
       comments: 'live_comments.count',
+      feed_likes: 'comment_likes.count + thought_likes.count',
       followed_users: 'followed_users.count',
       followers: 'followers.count',
       hacker_spaces: 'hacker_spaces.count',
@@ -394,13 +405,14 @@ class User < ActiveRecord::Base
       # live_approved_projects: 'projects.where(private: false, approved: true).count',
       live_projects: 'projects.where(private: false).count',
       live_hidden_projects: 'projects.where(private: false, hide: true).count',
+      platforms: 'followed_platforms.count',
       popularity_points: 'projects.live.map{|p| p.team_members_count > 0 ? p.popularity_counter / p.team_members_count : 0 }.sum',
       projects: 'projects.count',
       project_respects: 'projects.includes(:respects).count(:respects)',
       project_views: 'projects.sum(:impressions_count)',
       respects: 'respects.count',
       skill_tags: 'skill_tags.count',
-      platforms: 'followed_platforms.count',
+      thoughts: 'thoughts.count',
       websites: 'websites.values.select{|v| v.present? }.size',
     }
   end

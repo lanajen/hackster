@@ -53,7 +53,7 @@ $(window).load(function(){
   } else{
     affixDivs();
   }
-})
+});
 
 $(function () {
   <% if Rails.env == 'dev' %>
@@ -79,6 +79,8 @@ $(function () {
   } else {
     $('.user-signed-out').show();
   }
+
+  showAlerts();
 
   $('input, textarea').placeholder();
 
@@ -367,4 +369,10 @@ function resetSortablePositions(target){
       .val(i+1)
       .trigger('change');
   });
+}
+
+function showAlerts() {
+  window.setTimeout(function(){
+    $('.alert-top').removeClass('alert-hidden');
+  }, 500);
 }

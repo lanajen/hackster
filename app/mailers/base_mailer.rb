@@ -86,7 +86,7 @@ class BaseMailer < ActionMailer::Base
         SLOGAN
       when :unsubscribe_link
         return false unless defined?(user) and user
-        url.edit_notifications_path(user_email: user.email,
+        url.edit_notifications_url(user_email: user.email,
           user_token: user.authentication_token, host: default_host)
       when :user_profile_edit_link
         url.profile_edit_url(host: default_host)

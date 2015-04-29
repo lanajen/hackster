@@ -765,6 +765,40 @@ footer {
   }
 }
 
+.alert-top {
+  z-index: 1000000000099;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 500px;
+  max-width: 90%;
+  border-width: 2px;
+  padding: 15px 20px;
+  border-width: 0;
+  border-radius: 0;
+  border-left-width: 4px;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  @include transition(right ease-in-out 200ms);
+  &.alert-hidden {
+    right: -520px;
+  }
+  &.alert-success {
+    background: #d8eeca;
+    border-color: #278400;
+  }
+  &.alert-danger {
+    background: #f3e9e8;
+    border-color: #d3080c;
+  }
+  .close {
+    position: absolute;
+    top: 5px;
+    right: 7px;
+    float: none;
+  }
+}
+
 .teaser {
   position: relative;
 }
