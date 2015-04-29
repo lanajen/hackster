@@ -401,6 +401,7 @@ HackerIo::Application.routes.draw do
     get 'team/edit' => 'members#edit', as: :edit_team
     patch 'team' => 'members#update'
     patch 'guest_name' => 'members#update_guest_name'
+    post 'views' => 'projects#create_view', on: :member
     collection do
       resources :imports, only: [:new, :create], controller: :project_imports, as: :project_imports
     end

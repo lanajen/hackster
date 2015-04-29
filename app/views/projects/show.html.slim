@@ -7,6 +7,15 @@
 
 = render partial: 'add_to_list_button'
 = content_for :js do
+  - unless user_signed_in?
+    javascript:
+      $(function(){
+        $.ajax({
+          url: '/projects/#{@project.id}/views',
+          method: 'POST'
+        });
+      });
+
   javascript:
     $(function(){
       var following = #{@following.to_json.html_safe};

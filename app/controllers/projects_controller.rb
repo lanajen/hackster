@@ -6,6 +6,7 @@ class ProjectsController < ApplicationController
   respond_to :html
   after_action :allow_iframe, only: :embed
   skip_before_filter :track_visitor, only: [:show]
+  protect_from_forgery except: [:create_view]
 
   def index
     title "Explore all projects - Page #{safe_page_params || 1}"
@@ -31,17 +32,23 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def create_view
+    impressionist_async({ id: params[:id], type: 'Project'}, '', unique: [:session_hash])
+
+    render status: :ok, nothing: true
+  end
+
   def show
     authorize! :read, @project unless params[:auth_token] and params[:auth_token] == @project.security_token
 
-    unless user_signed_in?
+    if user_signed_in?
+      impressionist_async @project, '', unique: [:session_hash]
+    else
       surrogate_keys = [@project.record_key]
       surrogate_keys << current_platform.user_name if is_whitelabel?
       set_surrogate_key_header *surrogate_keys
       set_cache_control_headers
     end
-
-    impressionist_async @project, '', unique: [:session_hash]
 
     @following = if user_signed_in?
       # gets all follow_relations and sorts them in { user: [], group: [] } depending on type
