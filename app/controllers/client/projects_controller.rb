@@ -7,13 +7,13 @@ class Client::ProjectsController < Client::BaseController
   respond_to :html
 
   def index
-    unless user_signed_in?
+    if user_signed_in?
+      impressionist_async current_platform, "", unique: [:session_hash]
+    else
       set_surrogate_key_header current_platform.user_name, "#{current_platform.user_name}/home"
       set_cache_control_headers 3600
     end
     title "Projects - Page #{safe_page_params}" if safe_page_params
-
-    impressionist_async current_platform, "", unique: [:session_hash]
 
     load_projects platform: current_platform, disable_ideas: true
 

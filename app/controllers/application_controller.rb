@@ -469,7 +469,7 @@ class ApplicationController < ActionController::Base
         obj_id = obj.id
         obj_type = obj.class.to_s
       end
-      ImpressionistQueue.perform_async 'count', { "action_dispatch.remote_ip" => request.remote_ip, "HTTP_REFERER" => request.referer, 'HTTP_USER_AGENT' => request.user_agent, session_hash: request.session_options[:id] }, action_name, controller_name, params, obj_id, obj_type, message, opts
+      ImpressionistQueue.perform_async 'count', { "action_dispatch.remote_ip" => request.remote_ip, "HTTP_REFERER" => (opts.delete(:referrer).presence || request.referer), 'HTTP_USER_AGENT' => request.user_agent, session_hash: (request.session_options[:id].presence || SecureRandom.hex(16)) }, (opts.delete(:action_name).presence || action_name), (opts.delete(:controller_name).presence || controller_name), params, obj_id, obj_type, message, opts
     rescue
     end
 

@@ -298,6 +298,9 @@ HackerIo::Application.routes.draw do
     get 'jobs' => 'pages#jobs'
     get 'resources' => 'pages#resources'
 
+    # updates counter for cached pages
+    post 'stats' => 'stats#create'
+
     post 'chats/:group_id' => 'chat_messages#create', as: :chat_messages
     post 'chats/:group_id/slack' => 'chat_messages#incoming_slack'
     get 'users/slack_settings' => 'chat_messages#slack_settings', as: :user_slack_settings
@@ -401,7 +404,6 @@ HackerIo::Application.routes.draw do
     get 'team/edit' => 'members#edit', as: :edit_team
     patch 'team' => 'members#update'
     patch 'guest_name' => 'members#update_guest_name'
-    post 'views' => 'projects#create_view', on: :member
     collection do
       resources :imports, only: [:new, :create], controller: :project_imports, as: :project_imports
     end

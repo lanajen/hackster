@@ -39,7 +39,9 @@ class PlatformsController < ApplicationController
   end
 
   def show
-    unless user_signed_in?
+    if user_signed_in?
+      impressionist_async @platform, "", unique: [:session_hash]
+    else
       set_surrogate_key_header @platform.record_key, 'platform'
       set_cache_control_headers 3600
     end

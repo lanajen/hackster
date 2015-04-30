@@ -213,6 +213,28 @@ module ApplicationHelper
     end
   end
 
+  def inserts_stats_for model_id, model_type
+    content_for :js do
+      content_tag(
+        :script,
+        "
+        $(function(){
+          $.ajax({
+            url: '#{APP_CONFIG['stats_url']}/stats',
+            data: {
+              referrer: document.referrer,
+              id: '#{model_id}',
+              type: '#{model_type}',
+              a: '#{action_name}',
+              c: '#{controller_name}'
+            },
+            method: 'POST'
+          });
+        });
+        ".html_safe, type: 'text/javascript')
+    end unless user_signed_in?
+  end
+
   def zocial_class_for_provider provider
     case provider
     when :facebook, :github, :twitter

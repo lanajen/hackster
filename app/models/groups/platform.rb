@@ -54,6 +54,8 @@ class Platform < List
 
   taggable :platform_tags, :product_tags
 
+  is_impressionable counter_cache: true, unique: :session_hash
+
   # beginning of search methods
   has_tire_index 'private'
 

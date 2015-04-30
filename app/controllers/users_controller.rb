@@ -13,14 +13,15 @@ class UsersController < ApplicationController
   end
 
   def show
-    unless user_signed_in?
+    if user_signed_in?
+      impressionist_async @user, "", unique: [:session_hash]  # no need to add :impressionable_type and :impressionable_id, they're already included with @user
+    else
       surrogate_keys = [@user.record_key, 'user']
       surrogate_keys << current_platform.user_name if is_whitelabel?
       set_surrogate_key_header *surrogate_keys
       set_cache_control_headers
     end
 
-    impressionist_async @user, "", unique: [:session_hash]  # no need to add :impressionable_type and :impressionable_id, they're already included with @user
     title @user.name
     meta_desc "#{@user.name} is on #{site_name}. Come share your hardware projects with #{@user.name} and other hardware hackers and makers."
 

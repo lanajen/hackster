@@ -6,8 +6,7 @@ class ProjectsController < ApplicationController
   respond_to :html
   after_action :allow_iframe, only: :embed
   skip_before_filter :track_visitor, only: [:show]
-  skip_after_filter :track_landing_page, only: [:show, :create_view]
-  protect_from_forgery except: [:create_view]
+  skip_after_filter :track_landing_page, only: [:show]
 
   def index
     title "Explore all projects - Page #{safe_page_params || 1}"
@@ -31,16 +30,6 @@ class ProjectsController < ApplicationController
       format.atom { render layout: false }
       format.rss { redirect_to projects_path(params.merge(format: :atom)), status: :moved_permanently }
     end
-  end
-
-  def create_view
-    render json: { session: request.session_options[:id].to_s } and return
-    impressionist_async({ id: params[:id], type: 'Project'}, '', unique: [:session_hash])
-
-    cookies[:landing_page] = request.referrer unless cookies[:landing_page]
-    cookies[:initial_referrer] = (params[:referrer].presence || 'unknown') unless cookies[:initial_referrer]
-
-    render status: :ok, nothing: true
   end
 
   def show

@@ -6,7 +6,7 @@ end
 
 class MainSite
   def self.matches?(request)
-    request.subdomains[0].in? %w(staging www dev) and request.domain == APP_CONFIG['default_domain']
+    request.subdomains[0].in? %w(staging www dev stats) and request.domain == APP_CONFIG['default_domain']
   end
 end
 

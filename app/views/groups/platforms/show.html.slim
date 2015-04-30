@@ -1,6 +1,8 @@
 - unless @group.decorated?
   - @group = begin; "#{@group.class.name}Decorator".constantize.decorate(@group); rescue; @group.decorate; end;
 
+= inserts_stats_for @group.id, 'Group'
+
 / = content_for :before_main do
   #about style='position: relative;z-index: 999;background: #F2F2F2;'
     - if !user_signed_in?

@@ -1,4 +1,6 @@
 class Product < ExternalProject
+  is_impressionable counter_cache: true, unique: :session_hash
+
   def platform
     platforms.first
   end
