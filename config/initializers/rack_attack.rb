@@ -105,7 +105,7 @@ end
 ActiveSupport::Notifications.subscribe("rack.attack") do |name, start, finish, request_id, req|
   Rails.logger.debug "user_agent: " + req.user_agent
   Rails.logger.debug "ip: " + req.ip
-  Rails.logger.debug "remote_ip: " + req.remote_ip
+  # Rails.logger.debug "remote_ip: " + req.remote_ip
   if req.env['rack.attack.matched'] == "block scraper access" && req.env['rack.attack.match_type'] == :blacklist
     Rails.logger.info "bad_scraper: #{req.path} / #{req.user_agent} / #{req.ip}"
     # Rails.logger.info req.inspect
