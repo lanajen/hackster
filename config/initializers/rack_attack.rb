@@ -22,7 +22,7 @@ class Rack::Attack
   whitelist('trusted_ua') do |req|
     TRUSTED_USER_AGENTS.each do |ua|
       ua.in? req.user_agent
-    end
+    end if req.user_agent
   end
 
   ### Throttle Spammy Clients ###
