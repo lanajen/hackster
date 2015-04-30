@@ -76,7 +76,7 @@ class UserObserver < ActiveRecord::Observer
       keys << "user-#{record.id}-sidebar"
     end
 
-    Cashier.expire *keys
+    Cashier.expire *keys if keys.any?
   end
 
   def before_create record
