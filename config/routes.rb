@@ -300,6 +300,7 @@ HackerIo::Application.routes.draw do
 
     # updates counter for cached pages
     post 'stats' => 'stats#create'
+    post 'projects/:id/views' => 'stats#legacy'
 
     post 'chats/:group_id' => 'chat_messages#create', as: :chat_messages
     post 'chats/:group_id/slack' => 'chat_messages#incoming_slack'
