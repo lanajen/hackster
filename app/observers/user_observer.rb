@@ -74,6 +74,9 @@ class UserObserver < ActiveRecord::Observer
 
   def before_create record
     record.reset_counters assign_only: true
+    if record.platform.present? and record.platform != 'hackster' and platform = Platform.find_by_user_name(record.platform)
+      record.followed_platforms << platform
+    end
   end
 
   private
