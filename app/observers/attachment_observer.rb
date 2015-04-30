@@ -21,7 +21,7 @@ class AttachmentObserver < ActiveRecord::Observer
         Cashier.expire "platform-#{record.attachable_id}-client-nav"
       end
     end
-    if record.attachable
+    if record.attachable_type != 'Orphan' and record.attachable
       record.attachable.purge
       record.attachable.update_attribute :updated_at, Time.now
     end
