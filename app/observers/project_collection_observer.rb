@@ -5,10 +5,12 @@ class ProjectCollectionObserver < ActiveRecord::Observer
 
   def after_destroy record
     update_counters record
+    expire_cache record if record.workflow_state.in? ProjectCollection::VALID_STATES
   end
 
   def after_update record
     update_project record.project if record.collectable_id_changed? and record.collectable_type == 'Assignment'
+    expire_cache record if record.workflow_state_changed?
   end
 
   def after_status_updated record
@@ -16,6 +18,19 @@ class ProjectCollectionObserver < ActiveRecord::Observer
   end
 
   private
+    def expire_cache record
+      project = record.project
+      keys = []
+      project.users.each do |user|
+        keys << "user-#{u.id}"
+        user.purge
+      end
+      if record.collectable.class == Platform
+        FastlyRails.purge_by_key "#{record.collectable.user_name}/home"
+        record.collectable.purge
+      end
+    end
+
     def update_counters record
       return unless record.collectable.respond_to? :counters
       counters = [:projects]
