@@ -23,8 +23,7 @@ class StatsController < ApplicationController
 
   private
     def set_cors
-      headers['Access-Control-Allow-Origin'] = 'http://www.hackster.io'
-      headers['Access-Control-Allow-Origin'] = 'https://www.hackster.io'
+      headers['Access-Control-Allow-Origin'] = 'http://www.hackster.io https://www.hackster.io'
       headers['Access-Control-Request-Method'] = '*'
     end
 end
