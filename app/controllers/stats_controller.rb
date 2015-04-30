@@ -1,4 +1,5 @@
 class StatsController < ApplicationController
+  after_action :set_cors
   skip_after_filter :track_landing_page, only: [:create]
   protect_from_forgery except: [:legacy, :create]
 
@@ -19,4 +20,11 @@ class StatsController < ApplicationController
 
     render status: :ok, nothing: true
   end
+
+  private
+    def set_cors
+      headers['Access-Control-Allow-Origin'] = 'http://www.hackster.io'
+      headers['Access-Control-Allow-Origin'] = 'https://www.hackster.io'
+      headers['Access-Control-Request-Method'] = '*'
+    end
 end
