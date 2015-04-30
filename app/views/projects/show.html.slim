@@ -403,12 +403,12 @@
                           - else
                             span.user-name= credit_line.name
 
-              - if !is_whitelabel? and communities = @project.groups.where(groups: { private: false }, project_collections: { workflow_state: ProjectCollection::VALID_STATES }).includes(:avatar) and communities.any? #@project.communities_count > 0
+              - if !is_whitelabel? and @communities.any? #@project.communities_count > 0
                 section.section-thumbs
                   h4
                     | Communities this project is part of
                     /   = link_to content_tag(:i, '', class: 'fa fa-pencil'), '', class: 'btn-edit'
-                  - communities.each do |community|
+                  - @communities.each do |community|
                     = render partial: 'groups/shared/community_thumb_mini', locals: { community: community }
 
               - cache ["project-#{@project.id}", 'metadata', site_user_name], tag: ["project-#{@project.id}-metadata", "project-#{@project.id}-respects"] do
@@ -421,13 +421,6 @@
                   section.section-thumbs
                     h4 Made at
                     = link_to hacker_space.name, hacker_space_path(hacker_space)
-
-                / # - if @project.communities.any?
-                  section.section-thumbs
-                    h4 Communities this project is part of
-                    - @project.communities.each do |community|
-                      ' Part of
-                      = link_to community.name, community_path(community)
 
                 - if @challenge_entries.any?
                   section.section-thumbs

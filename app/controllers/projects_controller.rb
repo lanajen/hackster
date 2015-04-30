@@ -34,6 +34,7 @@ class ProjectsController < ApplicationController
   end
 
   def create_view
+    render json: { session: request.session_options[:id].to_s } and return
     impressionist_async({ id: params[:id], type: 'Project'}, '', unique: [:session_hash])
 
     cookies[:landing_page] = request.referrer unless cookies[:landing_page]
@@ -64,6 +65,7 @@ class ProjectsController < ApplicationController
     @can_update = (@can_edit and current_user.can? :update, @project)
 
     @challenge_entries = @project.challenge_entries.includes(:challenge).includes(:prize)
+    @communities = @project.groups.where.not(groups: { type: 'Event' }).includes(:avatar).order(full_name: :asc)
 
     @component_widgets = PartsWidget.select(:id).distinct(:id).where(widgetable_id: @project.id, widgetable_type: 'Project').joins(:parts).where("parts.name IS NOT NULL OR parts.name <> ''")
 

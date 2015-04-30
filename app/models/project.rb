@@ -62,7 +62,7 @@ class Project < ActiveRecord::Base
   has_many :follow_relations, as: :followable
   has_many :followers, through: :follow_relations, source: :user
   has_many :grades
-  has_many :groups, through: :project_collections, source_type: 'Group', source: :collectable
+  has_many :groups, -> { where(groups: { private: false }, project_collections: { workflow_state: ProjectCollection::VALID_STATES }) }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :hacker_spaces, -> { where("groups.type = 'HackerSpace'") }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :parts, through: :parts_widgets
   has_many :parts_widgets, as: :widgetable
@@ -126,7 +126,8 @@ class Project < ActiveRecord::Base
 
   store :counters_cache, accessors: [:comments_count, :product_tags_count,
     :widgets_count, :followers_count, :build_logs_count,
-    :issues_count, :team_members_count, :platform_tags_count, :communities_count]
+    :issues_count, :team_members_count, :platform_tags_count, :communities_count,
+    :platforms_count]
 
   store :properties, accessors: [:private_logs, :private_issues, :locked,
     :guest_twitter_handle, :celery_id]
@@ -134,7 +135,7 @@ class Project < ActiveRecord::Base
   parse_as_integers :counters_cache, :comments_count, :product_tags_count,
     :widgets_count, :followers_count, :build_logs_count,
     :issues_count, :team_members_count, :platform_tags_count,
-    :communities_count
+    :communities_count, :platforms_count
 
   parse_as_booleans :properties, :private_logs, :private_issues, :locked
 
@@ -370,9 +371,10 @@ class Project < ActiveRecord::Base
     {
       build_logs: 'build_logs.published.count',
       comments: 'comments.count',
-      communities: 'platforms.count',
+      communities: 'groups.count',
       followers: 'followers.count',
       issues: 'issues.where(type: "Issue").count',
+      platforms: 'platforms.count',
       product_tags: 'product_tags_cached.count',
       respects: 'respects.count',
       team_members: 'users.count',

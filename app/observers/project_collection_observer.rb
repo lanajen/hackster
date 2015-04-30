@@ -10,7 +10,10 @@ class ProjectCollectionObserver < ActiveRecord::Observer
 
   def after_update record
     update_project record.project if record.collectable_id_changed? and record.collectable_type == 'Assignment'
-    expire_cache record if record.workflow_state_changed?
+    if record.workflow_state_changed?
+      expire_cache record
+      record.project.update_counters only: [:communities] if record.project_id and record.project
+    end
   end
 
   def after_status_updated record
