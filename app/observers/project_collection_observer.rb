@@ -20,11 +20,14 @@ class ProjectCollectionObserver < ActiveRecord::Observer
   private
     def expire_cache record
       project = record.project
-      keys = []
-      project.users.each do |user|
-        keys << "user-#{u.id}"
-        user.purge
-      end
+      return unless record.project
+
+      # memcache
+      keys = ["project-#{project.id}"]
+      Cashier.expire *keys
+
+      # fastly
+      project.purge
       if record.collectable.class == Platform
         FastlyRails.purge_by_key "#{record.collectable.user_name}/home"
         record.collectable.purge

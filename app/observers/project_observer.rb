@@ -49,6 +49,10 @@ class ProjectObserver < ActiveRecord::Observer
         Broadcast.where(context_model_id: record.id, context_model_type: 'Project').destroy_all
         Broadcast.where(project_id: record.id).destroy_all
       end
+      keys = []
+      record.users.each { |u| keys << "user-#{u.id}" }
+      Cashier.expire *keys
+      record.users.each { |u| u.purge }
     end
     record.purge
   end
