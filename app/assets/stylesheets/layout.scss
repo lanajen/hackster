@@ -345,11 +345,11 @@ img {
   @include border-radius(50%);
   overflow: hidden;
   z-index: 2;
-  border: 2px solid #2A6186;
+  border: 2px solid #2A6186 !important;
   margin: 0 !important;
   padding: 0 !important;
   .open > &{
-    border: 2px solid #2A6186;
+    border-right: 2px solid #2A6186;
   }
 }
 

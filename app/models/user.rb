@@ -387,6 +387,10 @@ class User < ActiveRecord::Base
     group_ties.joins(:group).where(groups: { type: %w(Community Event Promotion) }).includes(:group)
   end
 
+  def confirmed?
+    !!confirmed_at and unconfirmed_email.nil?
+  end
+
   def counters
     {
       accepted_invitations: 'invitations.accepted.count',
@@ -963,6 +967,6 @@ class User < ActiveRecord::Base
     end
 
     def password_required?
-      (!persisted? || !password.nil? || !password_confirmation.nil?) && !being_invited? && !skip_password?
+      (!skip_password? && !persisted? && !being_invited?) || !password.nil? || !password_confirmation.nil?
     end
 end
