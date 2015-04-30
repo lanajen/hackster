@@ -59,17 +59,24 @@ class UserObserver < ActiveRecord::Observer
     record.interest_tags_count = record.interest_tags_string.split(',').count
     record.skill_tags_count = record.skill_tags_string.split(',').count
 
+    keys = []
+
+    if (record.changed & %w(projects_count followers_count)).any?
+      keys << "user-#{record.id}-thumb"
+      record.teams.each{|t| keys << "team-#{t.id}" }
+    end
 
     if (record.changed & %w(full_name user_name avatar slug)).any?
-      keys = ["user-#{record.id}-teaser", "user-#{record.id}-thumb"]
+      keys << "user-#{record.id}-thumb"
       record.teams.each{|t| keys << "team-#{t.id}" }
       record.respected_projects.each{|p| keys << "project-#{p.id}-respects" }
-      Cashier.expire *keys
     end
 
-    if (record.changed & %w(full_name avatar mini_resume slug user_name forums_link documentation_link crowdfunding_link buy_link twitter_link facebook_link linked_in_link blog_link github_link website_link youtube_link google_plus_link city country state)).any? or record.interest_tags_string_changed? or record.skill_tags_string_changed?
-      Cashier.expire "user-#{record.id}-sidebar"
+    if (record.changed & %w(full_name avatar mini_resume slug user_name forums_link documentation_link crowdfunding_link buy_link twitter_link facebook_link linked_in_link blog_link github_link website_link youtube_link google_plus_link city country state projects_count followers_count)).any? or record.interest_tags_string_changed? or record.skill_tags_string_changed?
+      keys << "user-#{record.id}-sidebar"
     end
+
+    Cashier.expire *keys
   end
 
   def before_create record
