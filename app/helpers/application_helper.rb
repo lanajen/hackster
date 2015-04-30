@@ -209,7 +209,7 @@ module ApplicationHelper
     when :gplus
       'Google+'
     when :windowslive
-      'Windows Live'
+      'Microsoft Account'
     end
   end
 
