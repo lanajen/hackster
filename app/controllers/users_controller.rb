@@ -14,7 +14,7 @@ class UsersController < ApplicationController
 
   def show
     unless user_signed_in?
-      surrogate_keys = [@user.record_key]
+      surrogate_keys = [@user.record_key, 'user']
       surrogate_keys << current_platform.user_name if is_whitelabel?
       set_surrogate_key_header *surrogate_keys
       set_cache_control_headers

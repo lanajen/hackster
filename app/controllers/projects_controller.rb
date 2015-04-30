@@ -48,7 +48,7 @@ class ProjectsController < ApplicationController
     if user_signed_in?
       impressionist_async @project, '', unique: [:session_hash]
     else
-      surrogate_keys = [@project.record_key]
+      surrogate_keys = [@project.record_key, 'project']
       surrogate_keys << current_platform.user_name if is_whitelabel?
       set_surrogate_key_header *surrogate_keys
       set_cache_control_headers
