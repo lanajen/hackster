@@ -14,6 +14,7 @@ class Client::ProjectsController < Client::BaseController
       set_cache_control_headers 3600
     end
     title "Projects - Page #{safe_page_params}" if safe_page_params
+    @custom_header = template_exists?("whitelabel/#{current_site.subdomain}/all", nil, true)
 
     load_projects platform: current_platform, disable_ideas: true
 
