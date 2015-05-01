@@ -51,7 +51,7 @@ gem 'dalli', '2.7.0'  # memcached
 gem 'devise', '3.4.1'
 gem 'devise_invitable', '1.3.0'
 gem 'draper', '1.4.0'
-gem 'fastly-rails', git: 'https://github.com/fastly/fastly-rails.git'
+gem 'fastly-rails', git: 'https://github.com/blarralde/fastly-rails.git'
 gem 'geocoder', '1.2.5'
 gem 'gibbon', '1.1.1'
 # gem 'github-linguist', '2.11.5'
