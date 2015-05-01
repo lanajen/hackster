@@ -52,7 +52,7 @@ html lang="en" class=content_for(:html_class)
     = content_for :head
     = javascript_include_tag "application"
 
-  body.whitelabel
+  body.whitelabel data-user-signed-in=user_signed_in?
     #outer-wrapper
       - if user_signed_in? and current_user.simplified_signup?
         .alert.alert-flat.alert-warning.alert-smaller
