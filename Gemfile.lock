@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/blarralde/fastly-rails.git
-  revision: 9e90c9c9b12ebbeafacc38ffcbc3cad07024419a
+  revision: b67520e9ff6c501f541dd19ddd3ec7363ee3136c
   specs:
-    fastly-rails (0.3.0.pre.ben)
+    fastly-rails (0.3.1)
       rails
 
 GIT
