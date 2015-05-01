@@ -72,7 +72,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
         if @user
           case @user.match_by
           when 'uid'
-            flash[:notice] = I18n.t 'devise.omniauth_callbacks.success', kind: kind
+            flash[:notice] = I18n.t "devise.omniauth_callbacks.success_#{site_platform == 'hackster' ? 'hackster' : 'other'}"
             sign_in_and_redirect @user, event: :authentication
           when 'email'#, 'name'
             session['devise.provider_data'] = omniauth_data
@@ -90,6 +90,8 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   protected
     def after_sign_in_path_for(resource)
+      cookies[:hackster_user_signed_in] = '1'
+
       user_return_to
     end
 end

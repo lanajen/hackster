@@ -51,7 +51,8 @@ en:
       unlocked: 'Your account has been unlocked successfully. Please sign in to continue.'
       send_paranoid_instructions: 'If your account exists, you will receive an email with instructions about how to unlock it in a few minutes.'
     omniauth_callbacks:
-      success: 'Successfully authenticated from %{kind} account.'
+      success_hackster: 'Welcome back! <a href="/talk" class="alert-link">What are you up to today?</a>'
+      success_other: 'Welcome back!'
       failure: 'Could not authenticate you from %{kind} because "%{reason}".'
     mailer:
       confirmation_instructions:
@@ -62,5 +63,5 @@ en:
         subject: 'Unlock Instructions'
     authorizations:
       user:
-        signed_up: "Your account was created successfuly. You are now signed in."
+        signed_up: "Welcome! We're glad you're here :)"
         linked_and_signed_in: "Your two accounts are now linked."

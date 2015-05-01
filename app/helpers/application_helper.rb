@@ -107,7 +107,7 @@ module ApplicationHelper
     when 'claim'
       msg = "Please log in or sign up to claim #{content_tag(:b, project.name)}."
     end
-    content_tag(:div, msg, class: 'alert alert-warning text-center')
+    content_tag(:div, msg.html_safe, class: 'alert alert-warning text-center')
   end
 
   def next_meetup_for_group group_url
