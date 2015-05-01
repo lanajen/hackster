@@ -489,22 +489,6 @@ class ApplicationController < ActionController::Base
       end
     end
 
-    # two following methods taken from fastly-rails gem
-    def set_cache_control_headers(max_age = FastlyRails.configuration.max_age, opts = {})
-      if flash.empty?
-        request.session_options[:skip] = true  # no cookies
-        response.headers['Cache-Control'] = opts[:cache_control] || "public, no-cache"
-        response.headers['Surrogate-Control'] = opts[:surrogate_control] || "max-age=#{max_age}"
-      end
-    end
-
-    def set_surrogate_key_header(*surrogate_keys)
-      if flash.empty?
-        request.session_options[:skip] = true  # No Set-Cookie
-        response.headers['Surrogate-Key'] = surrogate_keys.join(' ')
-      end
-    end
-
     def site_name
       is_whitelabel? ? current_site.name : 'Hackster.io'
     end
