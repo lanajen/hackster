@@ -282,7 +282,7 @@ class Project < ActiveRecord::Base
   end
 
   def self.with_group group
-    joins(:project_collections).where(project_collections: { collectable_id: group.id, collectable_type: 'Group' })
+    joins(:project_collections).where(project_collections: { collectable_id: group.id, collectable_type: 'Group', workflow_state: ProjectCollection::VALID_STATES })
   end
 
   def age

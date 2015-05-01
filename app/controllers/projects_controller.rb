@@ -70,7 +70,7 @@ class ProjectsController < ApplicationController
 
     if @other_projects_count > 6
       @other_projects = Project.public.most_popular.own.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).includes(:team).includes(:cover_image)
-      @other_projects.with_group current_platform if is_whitelabel?
+      @other_projects = @other_projects.with_group current_platform if is_whitelabel?
       @other_projects = @other_projects.limit(3)
 
       @last_projects = Project.public.last_public.own.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: [@project.id] + @other_projects.map(&:id)).includes(:team).includes(:cover_image)
