@@ -3,7 +3,7 @@ class ImpressionObserver < ActiveRecord::Observer
     if record.impressionable_type == 'Project'
       project = record.impressionable
 
-      if project.impressions_count % 999 == 0  # every 1000 views. This executes before impressions_count is updated, which means that the counter is about to become 1000
+      if project.impressions_count % 249 == 0  # every 250 views. This executes before impressions_count is updated, which means that the counter is about to become 250
         # memcache
         keys = ["project-#{project.id}-thumb", "project-#{project.id}-teaser", "project-#{project.id}-left-column", "project-#{project.id}"]
         project.users.each { |u| keys << "user-#{u.id}" }
