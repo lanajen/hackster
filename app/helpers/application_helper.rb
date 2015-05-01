@@ -220,7 +220,7 @@ module ApplicationHelper
         "
         $(function(){
           $.ajax({
-            url: '://#{APP_CONFIG['stats_host']}/stats',
+            url: '#{APP_CONFIG['stats_url']}/stats',
             data: {
               referrer: document.referrer,
               id: '#{model_id}',
