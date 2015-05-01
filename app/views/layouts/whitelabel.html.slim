@@ -48,7 +48,7 @@ html lang="en" class=content_for(:html_class)
     - if Rails.env == 'production'
       = raw current_site.analytics_code
       - unless current_user and current_user.is? :admin
-        = render partial: 'shared/analytics', locals: { tracker: 'UA-11926897-17', domain: 'hackster.io' }
+        = render partial: 'shared/analytics', locals: { tracker: 'UA-11926897-15', domain: 'hackster.io' }
     = content_for :head
     = javascript_include_tag "application"
 
