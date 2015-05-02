@@ -352,7 +352,8 @@ class CodeWidget < Widget
 
       self.raw_code = begin
         file_url = if document.file_changed?
-          "http://#{APP_CONFIG['default_host']}:#{APP_CONFIG['default_port']}#{document.file_url}"
+          scheme = APP_CONFIG['use_ssl'] ? 'https' : 'http'
+          "#{scheme}://#{APP_CONFIG['default_host']}:#{APP_CONFIG['default_port']}#{document.file_url}"
         else
           document.real_file_url
         end

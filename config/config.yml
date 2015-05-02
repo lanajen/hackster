@@ -42,7 +42,7 @@ dev:
   full_host: dev.hackster.io
   default_host: dev.hackster.io
   default_domain: hackster.io
-  default_port: 80
+  default_port: 443
   send_emails: true
   workers_running: true
   purging_enable: true
@@ -53,7 +53,7 @@ production:
   full_host: www.hackster.io
   default_host: www.hackster.io
   default_domain: hackster.io
-  default_port: 80
+  default_port: 443
   send_emails: true
   workers_running: true
   purging_enable: true
@@ -64,7 +64,7 @@ stats:
   full_host: stats.hackster.io
   default_host: stats.hackster.io
   default_domain: hackster.io
-  default_port: 80
+  default_port: 443
   send_emails: true
   workers_running: true
   purging_enable: true
