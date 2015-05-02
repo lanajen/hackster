@@ -165,7 +165,7 @@ html(lang="en")
                     a.btn.btn-primary.login-link.dropdown-toggle data-toggle="dropdown" href='#'
                       | Log in
                     .dropdown-menu style=("padding: 15px; width: 250px;")
-                      = render 'devise/sessions/form', redirect_to: (is_trackable_page? ? request.path : nil)
+                      = render 'devise/sessions/form'
                       hr
                       .social-icons.text-center
                         p.text-muted
