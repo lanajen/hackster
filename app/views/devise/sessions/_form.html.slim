@@ -1,4 +1,4 @@
-= simple_form_for @new_user_session, url: new_user_session_path(redirect_to: params[:redirect_to]), html: { class: 'form-compact disable-on-submit' } do |f|
+= simple_form_for @new_user_session, url: new_user_session_path(redirect_to: params[:redirect_to] || (is_trackable_page? ? request.path : nil)), html: { class: 'form-compact disable-on-submit' } do |f|
   = f.input :email, required: false, autofocus: (defined?(autofocus) ? autofocus : true), placeholder: 'Email', label: false
   = f.input :password, label: false do
     = f.input :password, required: false, placeholder: 'Password', label: false, wrapper: false

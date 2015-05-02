@@ -41,6 +41,7 @@ class ApplicationController < ActionController::Base
   helper_method :is_mobile?
   helper_method :returning_user?
   helper_method :controller_action
+  helper_method :is_trackable_page?
   before_filter :set_signed_in_cookie
   helper BootstrapFlashHelper
 
@@ -117,14 +118,14 @@ class ApplicationController < ActionController::Base
   # Stores the user's current page to reuse when needed.
   # Excludes all pages that a user shouldn't be redirected to.
   def store_location cookie_name
-   # logger.info 'stored location (before): ' + session[request.host].try(:[], :user_return_to).to_s
-   # logger.info 'controller: ' + params[:controller].to_s
-   # logger.info 'action: ' + params[:action].to_s
+    # puts 'stored location (before): ' + session[request.host].try(:[], :user_return_to).to_s
+    # logger.info 'controller: ' + params[:controller].to_s
+    # logger.info 'action: ' + params[:action].to_s
     if is_trackable_page?
       session[request.host] ||= {}
       session[request.host][cookie_name] = request.path
     end
-   # logger.info 'stored location (after): ' + session[request.host].try(:[], :user_return_to).to_s
+    # puts 'stored location (after): ' + session[request.host].try(:[], :user_return_to).to_s
   end
 
   # Stores location after the request has been processed
@@ -138,6 +139,8 @@ class ApplicationController < ActionController::Base
   end
 
   def user_return_to host=nil
+    # puts 'params[:redirect_to]: ' + params[:redirect_to].to_s
+    # puts 'session[request.host].try(:[], :user_return_to): ' + session[request.host].try(:[], :user_return_to).to_s
     if host
       scheme = APP_CONFIG['use_ssl'] ? 'https://' : 'http://'
       if params[:redirect_to].present?
@@ -217,7 +220,7 @@ class ApplicationController < ActionController::Base
     end
 
     def is_trackable_page?
-      @is_trackable_page ||= (%w(users/sessions users/registrations users/confirmations users/omniauth_callbacks users/facebook_connections users/invitations users/authorizations devise/passwords split).exclude?(params[:controller]) and params[:action] != 'after_registration' and request.method_symbol == :get and request.format == 'text/html')
+      @is_trackable_page ||= (%w(users/sessions users/registrations users/confirmations users/omniauth_callbacks users/facebook_connections users/invitations users/authorizations devise/passwords split application).exclude?(params[:controller]) and params[:action] != 'after_registration' and request.method_symbol == :get and request.format == 'text/html')
     end
 
     def load_assignment
