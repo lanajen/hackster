@@ -8,4 +8,4 @@
   = link_to 'Microsoft Account', user_omniauth_authorize_url(:windowslive, host: APP_CONFIG['default_host'], redirect_host: request.host, redirect_to: @redirect_to), class: "zocial #{css} windows"
 
 - Devise.omniauth_providers.sort.each do |provider|
-  = link_to proper_name_for_provider(provider), user_omniauth_authorize_url(provider, host: APP_CONFIG['default_host'], redirect_host: request.host, redirect_to: @redirect_to), class: "zocial #{css} #{zocial_class_for_provider(provider)}"
+  = link_to proper_name_for_provider(provider), user_omniauth_authorize_url(provider, host: APP_CONFIG['default_host'], redirect_host: request.host, redirect_to: @redirect_to || request.path), class: "zocial #{css} #{zocial_class_for_provider(provider)}"

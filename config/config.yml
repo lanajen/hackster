@@ -6,7 +6,8 @@ development:
   send_emails: false
   workers_running: false
   purging_enable: false
-  stats_url: http://www.localhost.local:5000
+  stats_url: www.localhost.local:5000
+  use_ssl: false
 
 # development:
 #   full_host: www.lvh.me:5000
@@ -23,7 +24,8 @@ test:
   send_emails: false
   workers_running: false
   purging_enable: false
-  stats_url: http://www.localhost.local:5000
+  stats_url: www.localhost.local:5000
+  use_ssl: false
 
 staging:
   full_host: staging.hackster.io
@@ -33,7 +35,8 @@ staging:
   send_emails: true
   workers_running: false
   purging_enable: false
-  stats_url: http://staging.hackster.io
+  stats_url: staging.hackster.io
+  use_ssl: false
 
 dev:
   full_host: dev.hackster.io
@@ -43,7 +46,8 @@ dev:
   send_emails: true
   workers_running: true
   purging_enable: true
-  stats_url: https://dev.hackster.io
+  stats_url: dev.hackster.io
+  use_ssl: true
 
 production:
   full_host: www.hackster.io
@@ -53,7 +57,8 @@ production:
   send_emails: true
   workers_running: true
   purging_enable: true
-  stats_url: https://stats.hackster.io
+  stats_url: stats.hackster.io
+  use_ssl: true
 
 stats:
   full_host: stats.hackster.io
@@ -63,4 +68,5 @@ stats:
   send_emails: true
   workers_running: true
   purging_enable: true
-  stats_url: https://stats.hackster.io
+  stats_url: stats.hackster.io
+  use_ssl: true

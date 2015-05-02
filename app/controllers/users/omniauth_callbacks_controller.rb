@@ -28,7 +28,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def windowslive
-    oauthorize 'Windowslive'
+    oauthorize 'Microsoft'
   end
 
   def setup
@@ -37,6 +37,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     session['devise.invitation_token'] = params[:invitation_token] if params[:invitation_token]
 
     session[:redirect_host] = params[:redirect_host] if params[:redirect_host]
+    session[:redirect_to] = params[:redirect_to] if params[:redirect_to] and [new_user_session_path, new_user_registration_path].exclude?(params[:redirect_to])
 
     render text: 'Setup complete.', status: 404
   end
@@ -53,10 +54,12 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     def oauthorize(kind)
       # logger.info request.env['omniauth.auth'].to_yaml
 
-      redirect_host = session.delete(:redirect_host).presence || APP_CONFIG['default_host']
+      @redirect_host = session.delete(:redirect_host).presence || APP_CONFIG['default_host']
+      is_hackster = @redirect_host == APP_CONFIG['default_host']
+      params[:redirect_to] = session.delete(:redirect_to)
 
       omniauth_data = case kind
-      when 'Facebook', 'Github', 'Twitter', 'Windowslive'
+      when 'Facebook', 'Github', 'Twitter', 'Microsoft'
         request.env['omniauth.auth'].except("extra")
       else
         request.env['omniauth.auth']
@@ -65,25 +68,25 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       if user_signed_in?
         session['devise.provider_data'] = omniauth_data
         session['devise.provider'] = kind
-        redirect_to update__authorizations_url(host: redirect_host)
+        redirect_to update__authorizations_url(host: @redirect_host)
       else
         @user = User.find_for_oauth(kind, request.env['omniauth.auth'], current_user)
 
         if @user
           case @user.match_by
           when 'uid'
-            flash[:notice] = I18n.t "devise.omniauth_callbacks.success_#{site_platform == 'hackster' ? 'hackster' : 'other'}"
+            flash[:notice] = I18n.t "devise.omniauth_callbacks.success_#{is_hackster ? 'hackster' : 'other'}"
             sign_in_and_redirect @user, event: :authentication
           when 'email'#, 'name'
             session['devise.provider_data'] = omniauth_data
             session['devise.provider'] = kind
             session['devise.match_by'] = @user.match_by
-            redirect_to edit__authorization_url(@user.id, host: redirect_host)
+            redirect_to edit__authorization_url(@user.id, host: @redirect_host)
           end
         else
           session['devise.provider_data'] = omniauth_data
           session['devise.provider'] = kind
-          redirect_to new__authorization_url(autosave: 1, host: redirect_host)
+          redirect_to new__authorization_url(autosave: 1, host: @redirect_host)
         end
       end
     end
@@ -92,6 +95,6 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     def after_sign_in_path_for(resource)
       cookies[:hackster_user_signed_in] = '1'
 
-      user_return_to
+      user_return_to @redirect_host
     end
 end

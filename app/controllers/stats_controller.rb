@@ -1,5 +1,7 @@
 class StatsController < ApplicationController
   after_filter :set_cors
+  skip_before_filter :store_location_before
+  skip_after_filter :store_location_after
   skip_after_filter :track_landing_page, only: [:create]
   protect_from_forgery except: [:legacy, :create]
 

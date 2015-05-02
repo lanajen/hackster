@@ -265,7 +265,7 @@ class User < ActiveRecord::Base
       when 'Twitter'
         uid = auth.uid
         name = auth.info.name
-      when 'Windowslive'
+      when 'Microsoft'
         uid = auth.uid
         name = auth.info.name
         email = auth.info.emails.try(:first).try(:value)
@@ -569,12 +569,12 @@ class User < ActiveRecord::Base
         token: data.credentials.token,
         secret: data.credentials.secret
       )
-    elsif info and provider == 'Windowslive'
+    elsif info and provider == 'Microsoft'
       self.full_name = info.name if full_name.blank?
       self.email = self.email_confirmation = info.emails.try(:first).try(:value) if email.blank?
       self.authorizations.build(
         uid: data.uid,
-        provider: 'Windowslive',
+        provider: 'Microsoft',
         name: info.name,
         token: data.credentials.token
       )

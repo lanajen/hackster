@@ -1,10 +1,6 @@
 = content_for :head do
   = render 'meta_tags'
 
-/ - @project.known_platforms.each do |platform|
-  = content_for :js do
-    = render partial: 'groups/platforms/platform_card', locals: { platform: platform }
-
 = render partial: 'add_to_list_button'
 
 = inserts_stats_for @project.id, 'Project'
