@@ -53,7 +53,11 @@ class ApplicationController < ActionController::Base
   layout :current_layout
 
   def set_signed_in_cookie
-    cookies[:hackster_user_signed_in] = '1' if user_signed_in? and cookies[:hackster_user_signed_in].blank?
+    if user_signed_in?
+      cookies[:hackster_user_signed_in] = '1' if cookies[:hackster_user_signed_in].blank?
+    else
+      cookies.delete(:hackster_user_signed_in) if cookies[:hackster_user_signed_in].present?
+    end
   end
 
   def current_layout

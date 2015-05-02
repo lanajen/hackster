@@ -38,6 +38,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
     session[:redirect_host] = params[:redirect_host] if params[:redirect_host]
     session[:redirect_to] = params[:redirect_to] if params[:redirect_to] and [new_user_session_path, new_user_registration_path].exclude?(params[:redirect_to])
+    session[:link_accounts] = params[:link_accounts] if params[:link_accounts]
 
     render text: 'Setup complete.', status: 404
   end
@@ -65,10 +66,10 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
         request.env['omniauth.auth']
       end
 
-      if user_signed_in?
+      if session.delete(:link_accounts)
         session['devise.provider_data'] = omniauth_data
         session['devise.provider'] = kind
-        redirect_to update__authorizations_url(host: @redirect_host)
+        redirect_to update__authorizations_url(host: @redirect_host, link_accounts: true)
       else
         @user = User.find_for_oauth(kind, request.env['omniauth.auth'], current_user)
 

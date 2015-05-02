@@ -40,7 +40,6 @@ class Users::SessionsController < Devise::SessionsController
         track_event 'Logged out'
         reset_current_mixpanel_user
       end
-      cookies.delete(:hackster_user_signed_in)
 
       super resource
     end

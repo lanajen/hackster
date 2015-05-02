@@ -33,7 +33,7 @@
                         span Connected
                         i.fa.fa-check
                     - else
-                      = link_to 'Connect account', user_omniauth_authorize_url(provider, host: APP_CONFIG['default_host'], redirect_host: request.host, redirect_to: @redirect_to), class: "pull-right zocial #{zocial_class_for_provider(provider)}"
+                      = link_to 'Connect account', user_omniauth_authorize_url(provider, host: APP_CONFIG['default_host'], redirect_host: request.host, redirect_to: @redirect_to, link_accounts: true), class: "pull-right zocial #{zocial_class_for_provider(provider)}"
           .form-group
             .col-md-offset-4.col-md-8
               = f.button :submit, "Save changes", class: 'btn btn-primary'
