@@ -88,8 +88,8 @@ module HackerIo
       :port => 587,
       :domain => "hackster.io",
       :authentication => :plain,
-      :user_name => "hacksterio",
-      :password => "mod3pa55"
+      :user_name => ENV['SENDGRID_USERNAME'],
+      :password => ENV['SENDGRID_PASSWORD']
     }
 
     config.middleware.use Rack::Attack
