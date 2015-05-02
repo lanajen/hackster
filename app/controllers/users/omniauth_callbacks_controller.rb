@@ -96,6 +96,6 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     def after_sign_in_path_for(resource)
       cookies[:hackster_user_signed_in] = '1'
 
-      user_return_to @redirect_host
+      user_return_to(@redirect_host) + '?f=1'
     end
 end
