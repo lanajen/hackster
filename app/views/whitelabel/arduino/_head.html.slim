@@ -2,12 +2,15 @@
   = 'arduino-html'
 
 = stylesheet_link_tag '//www.arduino.cc/fonts/fonts.css'
-/ = stylesheet_link_tag 'whitelabel/arduino/all'
-= stylesheet_link_tag 'whitelabel/arduino/foundation2'
-= stylesheet_link_tag 'whitelabel/arduino/typeplate'
-= stylesheet_link_tag 'whitelabel/arduino/common'
-= stylesheet_link_tag 'whitelabel/arduino/new_style'
-= stylesheet_link_tag 'whitelabel/arduino/arduino-icons'
+- if Rails.env == 'development'
+  = stylesheet_link_tag 'whitelabel/arduino/foundation2'
+- else
+  = stylesheet_link_tag '//d10bayquaxne4a.cloudfront.net/assets/production/whitelabel/arduino/foundation2'
+= stylesheet_link_tag 'whitelabel/arduino/all'
+/ # = stylesheet_link_tag 'whitelabel/arduino/typeplate'
+/ # = stylesheet_link_tag 'whitelabel/arduino/common'
+/ # = stylesheet_link_tag 'whitelabel/arduino/new_style'
+/ # = stylesheet_link_tag 'whitelabel/arduino/arduino-icons'
 
 css:
   .arduino-projects {
