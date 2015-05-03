@@ -1,9 +1,9 @@
 - content_for :html_class do
   = 'arduino-html'
 
-= stylesheet_link_tag '//www.arduino.cc/fonts/fonts.css'
+/ = stylesheet_link_tag '//www.arduino.cc/fonts/fonts.css'
 - if Rails.env == 'development'
-  = stylesheet_link_tag 'whitelabel/arduino/foundation2'
+  = stylesheet_link_tag 'whitelabel/arduino/foundation2.css'
 - else
   = stylesheet_link_tag '//d10bayquaxne4a.cloudfront.net/assets/production/whitelabel/arduino/foundation2'
 = stylesheet_link_tag 'whitelabel/arduino/all'
@@ -11,6 +11,31 @@
 / # = stylesheet_link_tag 'whitelabel/arduino/common'
 / # = stylesheet_link_tag 'whitelabel/arduino/new_style'
 / # = stylesheet_link_tag 'whitelabel/arduino/arduino-icons'
+
+javascript:
+   WebFontConfig = {
+    custom: {
+      families: [
+        'TyponineSans Light 17',
+        'TyponineSans Regular 18',
+        'TyponineSans Monospace Medium 3',
+        'arduino-icons'
+      ],
+      urls: [
+        '//arduino.cc/fonts/fonts.css',
+        "#{asset_url 'whitelabel/arduino/arduino-icons' }"
+      ]
+    }
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })();
 
 css:
   .arduino-projects {
