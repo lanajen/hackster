@@ -33,9 +33,9 @@ class SearchController < ApplicationController
       meta_desc "Interested in #{@tag}? Explore #{@results.total} projects tagged with '#{@tag}'. Find these and other hardware projects on #{site_name}."
 
       # track_event 'Searched projects by tag', { tag: @tag, result_count: @results.size, type: params[:type] }
-    # rescue => e
-    #   logger.error "Error while searching for #{params[:q]}: #{e.message}"
-    #   @results = []
+    rescue => e
+      logger.error "Error while searching for #{params[:q]}: #{e.message}"
+      @results = []
     end
   end
 
