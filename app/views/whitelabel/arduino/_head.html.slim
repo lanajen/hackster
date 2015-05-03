@@ -5,7 +5,7 @@
 - if Rails.env == 'development'
   = stylesheet_link_tag 'whitelabel/arduino/foundation2.css'
 - else
-  = stylesheet_link_tag '//d10bayquaxne4a.cloudfront.net/assets/production/whitelabel/arduino/foundation2.css'
+  = stylesheet_link_tag 'https://d10bayquaxne4a.cloudfront.net/assets/production/whitelabel/arduino/foundation2.css'
 = stylesheet_link_tag 'whitelabel/arduino/all'
 / # = stylesheet_link_tag 'whitelabel/arduino/typeplate'
 / # = stylesheet_link_tag 'whitelabel/arduino/common'
@@ -18,12 +18,10 @@ javascript:
       families: [
         'TyponineSans Light 17',
         'TyponineSans Regular 18',
-        'TyponineSans Monospace Medium 3',
-        'arduino-icons'
+        'TyponineSans Monospace Medium 3'
       ],
       urls: [
-        '//arduino.cc/fonts/fonts.css',
-        "#{asset_url 'whitelabel/arduino/arduino-icons' }"
+        '//arduino.cc/fonts/fonts.css'
       ]
     }
   };
