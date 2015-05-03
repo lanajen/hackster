@@ -1,0 +1,39 @@
+- content_for :html_class do
+  = 'arduino-html'
+
+= stylesheet_link_tag 'whitelabel/arduino/foundation2'
+= stylesheet_link_tag 'whitelabel/arduino/typeplate'
+= stylesheet_link_tag 'whitelabel/arduino/common'
+= stylesheet_link_tag 'whitelabel/arduino/new_style'
+= stylesheet_link_tag '//www.arduino.cc/fonts/fonts.css'
+= stylesheet_link_tag 'whitelabel/arduino/arduino-icons'
+
+css:
+  .arduino-projects {
+    background-color: #00979C;
+  }
+  a:hover {
+    text-decoration: none;
+  }
+  #page {
+    padding: 0 !important;
+  }
+  .navbar-static-top {
+    z-index: 10;
+  }
+  .top-bar, .top-bar a {
+    font-weight: bold;
+  }
+  .row .row.collapse:before, .row .row.collapse:after {
+    content: " ";
+    display: table; }
+  .row .row.collapse:after {
+    clear: both; }
+  @media (min-width: 1200px) {
+    .navbar-in .container {
+      max-width: 990px;
+    }
+  }
+  body.whitelabel .powered-by {
+    padding: 20px 0;
+  }

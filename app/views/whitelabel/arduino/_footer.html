@@ -1,0 +1,130 @@
+<div class='arduino-projects'>
+  <div id="pagefooter">
+    <div id="newsletterModal" class="reveal-modal small">
+      <form action="http://www.arduino.cc/subscribe.php" method="post" name="sendy-subscribe-form" id="sendy-subscribe-form" class="form-popup">
+        <div class="modalHeader">
+          <h3 style="line-height: 1.8rem;" class="modal-header-alt">This link has expired. <br>Please re-subscribe to our Newsletters.</h3>
+          <h3 class="modal-header-main">Subscribe to our Newsletters</h3>
+        </div>
+        <div class="modalBody" id="newsletterModalBody">
+            <div id="newsletterEmailField" class="row" style="padding-left: 0">
+              <div class="large-2 columns">
+                <label for="email" class="newsletter-form-label inline">Email</label>
+              </div>
+              <div class="large-10 columns" style="padding-left: 0">
+                <input placeholder="Enter your email address" type="email" name="email" class="subscribe-form-input">
+                <p id="emailMissing" class="newsletterPopupError">Please enter a valid email to subscribe</p>
+              </div>
+            </div>
+            <div style="margin-left:20px">
+              <div style="margin-bottom:0.3em">
+                <input style="display:none" type="checkbox" checked="" name="list[]" value="arduino_newsletter_id" id="worldwide" class="newsletter-form-checkbox">
+                <label for="worldwide"></label>
+                <div style="display:inline-block" class="newsletter-form-label">Arduino Newsletter</div>
+              </div>
+              <div>
+                <input style="display:none" type="checkbox" checked="" name="list[]" value="arduino_store_newsletter_id" id="store" class="newsletter-form-checkbox">
+                <label for="store"></label>
+                <div style="display:inline-block" class="newsletter-form-label">Arduino Store Newsletter</div>
+              </div>
+            </div>
+            <div>
+              <p class="newsletterPopupError2" id="newsletterSubscribeStatus"></p>
+            </div>
+        </div>
+        <div class="row modalFooter">
+          <div class="form-buttons-row">
+
+              <button type="button" value="Cancel" class="popup-form-button white cancel-modal close-reveal-modal">Cancel</button>
+              <button type="submit" name="Subscribe" id="subscribe-submit-btn" class="popup-form-button">Next</button>
+
+          </div>
+        </div>
+      </form>
+
+      <!-- step 2, confirm popup -->
+      <div class="confirm-popup" style="margin-bottom:1em">
+        <div class="modalHeader">
+          <h3>Confirm your email address</h3>
+        </div>
+        <div class="modalBody" id="newsletterModalBody" style="padding-right:1em;margin-bottom:0">
+            <p style="margin-bottom:1em;font-size:15px">
+              We need to confirm your email address.<br>
+              To complete the subscription, please click the link in the
+              email we just sent you.
+            </p>
+            <p style="margin-bottom:1em;font-size:15px">
+              Thank you for subscribing!
+            </p>
+            <p style="margin-bottom:1em;font-size:15px">
+              Arduino<br>
+              via Egeo 16<br>
+              Torino, 10131<br>
+              Italy<br>
+            </p>
+        </div>
+        <div class="row modalFooter">
+          <div class="form-buttons-row">
+
+              <button name="Ok" class="popup-form-button" id="close-confirm-popup">Ok</button>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div id="pagefooter" class="pagefooter">
+      <div class="row">
+        <div class="large-8 eight columns">
+          <div class="large-4 four columns newsletter-box">
+            <!-- Begin Sendy Signup Form -->
+            <h6>Newsletter</h6>
+            <div>
+              <input type="email" name="email" class="email" id="sendy-EMAIL" placeholder="Enter your email to sign up">
+              <i class="icon-right-small"></i>
+              <input value="Subscribe" name="subscribe" id="sendy-subscribe" class="newsletter-button">
+            </div>
+            <!--End sendy_embed_signup-->
+          </div>
+          <div class="clearfix"></div>
+          <ul class="inline-list">
+            <li class="monospace">©2015 Arduino</li>
+            <li><a href="http://arduino.cc/en/Main/CopyrightNotice">Copyright Notice</a></li>
+            <li><a href="http://arduino.cc/en/Main/ContactUs">Contact us</a></li>
+            <li><a href="http://arduino.cc/en/Main/AboutUs">About us</a></li>
+            <li><a href="http://arduino.cc/Careers">Careers</a></li>
+          </ul>
+        </div>
+        <div class="large-4 four columns">
+          <ul id="arduinoSocialLinks" class="arduino-social-links">
+            <li>
+              <a href="https://twitter.com/arduino" target="_blank">
+                <img src="http://arduino.cc/img/twitter.png">
+              </a>
+            </li>
+            <li>
+              <a href="http://www.facebook.com/official.arduino" target="_blank">
+                <img src="http://arduino.cc/img/facebook.png">
+              </a>
+            </li>
+            <li>
+              <a href="https://plus.google.com/+Arduino" target="_blank">
+                <img src="http://arduino.cc/img/gplus.png">
+              </a>
+            </li>
+            <li>
+              <a href="http://www.flickr.com/photos/arduino_cc" target="_blank">
+                <img src="http://arduino.cc/img/flickr.png">
+              </a>
+            </li>
+            <li>
+              <a href="http://youtube.com/arduinoteam" target="_blank">
+                <img src="http://arduino.cc/img/youtube.png">
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
