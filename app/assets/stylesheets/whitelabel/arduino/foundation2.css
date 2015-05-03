@@ -1473,7 +1473,7 @@ button, .arduino-projects .button {
   .arduino-projects button, .arduino-projects .button {
     display: inline-block; } }
 /* Standard Forms */
-form {
+.arduino-projects form {
   margin: 0 0 1em; }
 
 /* Using forms within rows, we need to set some defaults */
