@@ -21,13 +21,11 @@ class SearchController < ApplicationController
     begin
       @tag = CGI::unescape params[:tag]
       params[:q] = @tag
-      params[:type] = 'project'
-      # params[:platform_id] = current_platform.id if current_platform
-      params[:per_page] = Project.per_page
-      @results = SearchRepository.new(params).search.results
-      # raise @results.inspect
-      params[:per_page] = nil  # so that it doesn't appear in the URL
-      params[:type] = nil
+      opts = params.dup
+      opts[:type] = 'project'
+      opts[:platform_id] = current_platform.id if is_whitelabel?
+      opts[:per_page] = Project.per_page
+      @results = SearchRepository.new(opts).search.results
 
       title "#{@results.total} #{@tag} Projects"
       meta_desc "Interested in #{@tag}? Explore #{@results.total} projects tagged with '#{@tag}'. Find these and other hardware projects on #{site_name}."
