@@ -247,7 +247,7 @@ class Project < ActiveRecord::Base
   end
 
   def self.indexable_and_external
-    where("(projects.workflow_state = 'approved' AND projects.private = 'f' AND projects.hide = 'f') OR (projects.type = 'ExternalProject' AND projects.approved <> 'rejected')")#.magic_sort
+    where("(projects.workflow_state = 'approved' AND projects.private = 'f' AND projects.hide = 'f') OR (projects.type = 'ExternalProject' AND projects.workflow_state <> 'rejected')")#.magic_sort
   end
 
   def self.live
