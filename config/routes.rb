@@ -452,6 +452,7 @@ HackerIo::Application.routes.draw do
   get 'tags' => 'search#tags', as: :deprecated_tags2
   get 'projects/tags/:tag' => 'search#tags', as: :tags
   get 'projects/tags' => 'search#tags'
+  get 'robots' => 'pages#robots'
 
   # get 'pdf_viewer' => 'pages#pdf_viewer'
 

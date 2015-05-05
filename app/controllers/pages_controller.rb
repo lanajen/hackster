@@ -165,6 +165,10 @@ class PagesController < ApplicationController
     title 'Resources'
   end
 
+  def robots
+    render "robots/#{Rails.env}"
+  end
+
   def terms
     meta_desc 'Read our terms of service.'
     title 'Terms of service'
