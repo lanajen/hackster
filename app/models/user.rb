@@ -406,7 +406,7 @@ class User < ActiveRecord::Base
       hacker_spaces: 'hacker_spaces.count',
       interest_tags: 'interest_tags.count',
       invitations: 'invitations.count',
-      # live_approved_projects: 'projects.where(private: false, approved: true).count',
+      # live_approved_projects: 'projects.approved.where(private: false).count',
       live_projects: 'projects.where(private: false).count',
       live_hidden_projects: 'projects.where(private: false, hide: true).count',
       platforms: 'followed_platforms.count',

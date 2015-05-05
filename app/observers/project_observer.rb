@@ -20,7 +20,7 @@ class ProjectObserver < ActiveRecord::Observer
       end
     end
 
-    if record.approved_changed and record.approved and record.made_public_at
+    if record.workflow_state_changed? and record.approved? and record.made_public_at
       NotificationCenter.notify_all :approved, :project, record.id
     end
   end
@@ -65,7 +65,7 @@ class ProjectObserver < ActiveRecord::Observer
   end
 
   def before_update record
-    if (record.changed & %w(private approved platform_tags_string)).any?
+    if (record.changed & %w(private workflow_state platform_tags_string)).any?
       record.needs_platform_refresh = true
     end
 
@@ -73,14 +73,14 @@ class ProjectObserver < ActiveRecord::Observer
       record.private_changed = true
       if record.private?
       else
-        record.approved = false if record.approved.nil? and record.force_hide?
+        record.workflow_state = :rejected if record.pending_review? and record.force_hide?
       end
     end
 
     if record.approved_changed?
-      if record.approved == false
+      if record.rejected?
         record.hide = true
-      elsif record.approved == true
+      elsif record.approved?
         record.approved_changed = true
         if record.made_public_at.nil?
           record.post_new_tweet! unless record.hidden? or Rails.env != 'production'

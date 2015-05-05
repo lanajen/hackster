@@ -567,6 +567,11 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
       }
     });
 
+    $('.admin-bar .toggle-checklist').on('click', function(e){
+      e.preventDefault();
+      $('.admin-bar #checklist').toggle();
+    });
+
     window.addEventListener("beforeunload", function (e) {
       if (pe.unsavedChanges()) {
         var message = "There are unsaved changes.";

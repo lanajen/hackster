@@ -25,6 +25,7 @@ class Project < ActiveRecord::Base
     'trending' => :magic_sort,
     'updated' => :last_updated,
   }
+  STATES = %w(approved pending_review rejected unpublished)
   TYPES = {
     'External (hosted on another site)' => 'ExternalProject',
     'Normal' => 'Project',
@@ -41,7 +42,7 @@ class Project < ActiveRecord::Base
   include Privatable
   include StringParser
   include Taggable
-  # include Workflow
+  include Workflow
 
   editable_slug :slug
 
@@ -141,11 +142,31 @@ class Project < ActiveRecord::Base
 
   self.per_page = 18
 
-  # worlfow do
-  #   state :idea
-  #   state :prototype
-  #   state :finished_product
-  # end
+  workflow do
+    state :unpublished do
+      event :publish, transitions_to: :pending_review
+    end
+    state :pending_review do
+      event :approve, transitions_to: :approved
+      event :reject, transitions_to: :rejected
+      event :mark_needs_work, transitions_to: :needs_work
+    end
+    state :approved do
+      event :reject, transitions_to: :rejected
+      event :mark_needs_work, transitions_to: :needs_work
+      event :mark_needs_review, transitions_to: :pending_review
+    end
+    state :rejected do
+      event :approve, transitions_to: :approved
+      event :mark_needs_work, transitions_to: :needs_work
+      event :mark_needs_review, transitions_to: :pending_review
+    end
+    state :needs_work do
+      event :approve, transitions_to: :approved
+      event :reject, transitions_to: :rejected
+      event :mark_needs_review, transitions_to: :pending_review
+    end
+  end
 
   # beginning of search methods
   include TireInitialization
@@ -187,11 +208,11 @@ class Project < ActiveRecord::Base
   # end of search methods
 
   def self.approved
-    where.not(approved: false)
+    where(workflow_state: :approved)
   end
 
   def self.approval_needed
-    where(approved: nil)
+    where(workflow_state: :pending_review)
   end
 
   def self.custom_for user
@@ -222,11 +243,11 @@ class Project < ActiveRecord::Base
   end
 
   def self.indexable
-    live.where(approved: true, hide: false).where("projects.made_public_at < ?", Time.now)
+    live.approved.where(hide: false).where("projects.made_public_at < ?", Time.now)
   end
 
   def self.indexable_and_external
-    where("(projects.approved = 't' AND projects.private = 'f' AND projects.hide = 'f') OR (projects.type = 'ExternalProject' AND projects.approved <> 'f')")#.magic_sort
+    where("(projects.workflow_state = 'approved' AND projects.private = 'f' AND projects.hide = 'f') OR (projects.type = 'ExternalProject' AND projects.approved <> 'rejected')")#.magic_sort
   end
 
   def self.live

@@ -40,12 +40,14 @@ table.table.table-striped
               - if project.users.any?
                 ' - posted by:
             = project.users.map { |u| link_to html_escape(u.name), u }.to_sentence.html_safe
-        td= project.private? ? content_tag(:b, 'Private') : (project.approved.nil? ? content_tag(:b, 'Needs approval') : (project.hidden? ? 'Hidden' : 'Public'))
+        td= project.private? ? content_tag(:b, 'Private') : (project.pending_review? ? content_tag(:b, 'Needs approval') : (project.hidden? ? 'Hidden' : 'Public'))
         td= l project.created_at
         td
-          = link_to t('.edit', :default => t("helpers.links.edit")), edit_admin_project_path(project), :class => 'btn btn-default btn-xs'
-          = link_to 'Edit team', project_edit_team_path(project), :class => 'btn btn-default btn-xs'
-          = link_to t('.destroy', :default => t("helpers.links.destroy")), admin_project_path(project), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'
+          ul.list-unstyled
+            li= link_to 'Edit as user', edit_project_path(project, show_admin_bar: 1), class: 'btn btn-default btn-xs'
+            li= link_to 'Edit as admin', edit_admin_project_path(project), :class => 'btn btn-default btn-xs'
+            li= link_to 'Edit team', project_edit_team_path(project), :class => 'btn btn-default btn-xs'
+            li= link_to t('.destroy', :default => t("helpers.links.destroy")), admin_project_path(project), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'
 
 .pagination.col-xs-12.text-center
   = will_paginate @projects

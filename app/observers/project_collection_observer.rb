@@ -48,7 +48,7 @@ class ProjectCollectionObserver < ActiveRecord::Observer
     def update_project project
       Cashier.expire "project-#{project.id}-teaser"
 
-      project.update_attribute :approved, false if project.approved.nil? and project.force_hide?
+      project.reject! if project.pending_review? and project.force_hide?
       if project.issues.empty?
         issue = project.issues.new title: 'Feedback'
         issue.type = 'Feedback'

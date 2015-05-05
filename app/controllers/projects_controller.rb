@@ -1,7 +1,7 @@
 class ProjectsController < ApplicationController
   before_filter :load_project, only: [:show, :embed, :print, :update, :destroy, :redirect_to_slug_route]
   before_filter :ensure_belongs_to_platform, only: [:show, :embed, :print, :update, :destroy, :redirect_to_slug_route]
-  load_and_authorize_resource only: [:index, :new, :edit, :submit]
+  load_and_authorize_resource only: [:index, :new, :edit, :submit, :update_workflow]
   before_filter :load_lists, only: [:show, :show_external]
   respond_to :html
   after_action :allow_iframe, only: :embed
@@ -169,7 +169,7 @@ class ProjectsController < ApplicationController
       m.save
     end
     # @project.guest_name = nil
-    @project.approved = nil
+    @project.mark_needs_review!
     @project.save
 
     redirect_to project_path(@project), notice: "You just claimed #{@project.name}. We'll let you know when it's approved!"
@@ -215,7 +215,7 @@ class ProjectsController < ApplicationController
     if @project.external? or @project.product?
       event = 'Submitted link'
     else
-      # @project.approved = true
+      # @project.approve!
       @project.private = true
       event = 'Created project'
     end
@@ -249,6 +249,7 @@ class ProjectsController < ApplicationController
     initialize_project
     @team = @project.team
     @project = @project.decorate
+    @show_admin_bar = true if params[:show_admin_bar] and current_user.is? :admin
   end
 
   def update
@@ -284,6 +285,16 @@ class ProjectsController < ApplicationController
         flash[:alert] = "Couldn't publish the project, please email us at hi@hackster.io to get help."
       end
       redirect_to @project
+    end
+  end
+
+  def update_workflow
+    if @project.send "#{params[:event]}!"
+      flash[:notice] = "Project state changed to: #{params[:event]}."
+      redirect_to admin_projects_path(workflow_state: 'pending_review')
+    else
+      # flash[:error] = "Couldn't #{params[:event].gsub(/_/, ' ')} challenge, please try again or contact an admin."
+      render :edit
     end
   end
 
