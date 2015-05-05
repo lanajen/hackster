@@ -25,7 +25,10 @@ URL_REGEXP = /^(((http|https):\/\/|)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}(
 EMAIL_REGEXP = /^[a-zA-Z0-9_\.\+\-]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9\-\.]+$/
 
 if Rails.env == 'development'
-  ENV['FOG_DIRECTORY'] = ENV['DEV_FOG_DIRECTORY'] if ENV['UPLOAD'] == 'dev'
+  if ENV['UPLOAD'] == 'dev'
+    ENV['FOG_DIRECTORY'] = ENV['DEV_FOG_DIRECTORY']
+    ENV['IMGIX_HOST'] = ENV['DEV_IMGIX_HOST']
+  end
   puts "Using #{ENV['FOG_DIRECTORY']} for FOG_DIRECTORY"
   ENV['CARRIERWAVE_FORCE_FOG'] = ENV['UPLOAD'].in?(%w(dev prod)).to_s
   puts ENV['CARRIERWAVE_FORCE_FOG'] == 'true' ? "Forcing use of fog" : 'Using default storage'
