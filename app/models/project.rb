@@ -122,6 +122,7 @@ class Project < ActiveRecord::Base
   before_update :update_slug, if: proc{|p| p.name_was == DEFAULT_NAME and p.name_changed? }
   # before_create :set_columns_count
   before_save :generate_slug, if: proc {|p| !p.persisted? or p.team_id_changed? }
+  after_update :publish!, if: proc {|p| p.private_changed? and p.public? and p.can_publish? }
 
   taggable :product_tags, :platform_tags
 
