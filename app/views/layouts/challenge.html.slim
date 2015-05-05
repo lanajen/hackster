@@ -74,7 +74,7 @@
                 p.sponsored
                   | Sponsored by
                   - if @challenge.avatar
-                    = image_tag @challenge.avatar.file_url(:mini), class: 'img-thumbnail'
+                    = image_tag @challenge.avatar.try(:imgix_url, :mini), class: 'img-thumbnail'
                   = link_to @challenge.sponsor_name, @challenge.sponsor_link
 
               .button-content
@@ -96,7 +96,7 @@
               p.sponsored
                 | Sponsored by
                 - if @challenge.avatar
-                  = image_tag @challenge.avatar.file_url(:mini), class: 'img-thumbnail'
+                  = image_tag @challenge.avatar.try(:imgix_url, :mini), class: 'img-thumbnail'
                 = link_to @challenge.sponsor_name, @challenge.sponsor_link
 
       section.group-nav.affixable

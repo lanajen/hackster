@@ -651,7 +651,7 @@ class Project < ActiveRecord::Base
       name: name,
       one_liner: one_liner,
       url: url,
-      cover_image_url: cover_image.try(:file_url, :cover_thumb),
+      cover_image_url: cover_image.try(:imgix_url, :cover_thumb),
       views_count: impressions_count,
       respects_count: respects_count,
       comments_count: comments_count,

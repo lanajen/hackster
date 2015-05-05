@@ -10,7 +10,7 @@
       p In the meantime, share it on:
       ul.list-inline.small
         li
-          a.zocial.facebook.social-share-link data-url=facebook_share(project_url(@project), @project.name, @project.to_personnal_message, @project.cover_image.try(:file_url, :cover_thumb))
+          a.zocial.facebook.social-share-link data-url=facebook_share(project_url(@project), @project.name, @project.to_personnal_message, @project.cover_image.try(:imgix_url, :cover_thumb))
             | Facebook
         li
           a.zocial.twitter.social-share-link data-url=twitter_share(project_url(@project), @project.to_personnal_tweet)

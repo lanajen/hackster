@@ -15,7 +15,7 @@ p= link_to "&larr; Go back to #{@group.name} page".html_safe, @group
       tbody
         - @parts.each do |part|
           tr
-            td= image_tag part.image.try(:file_url, :thumb)
+            td= image_tag part.image.try(:imgix_url, :thumb)
             td= link_to part.name, platform_part_path(@group.user_name, part.slug)
             td= part.projects_count
             td

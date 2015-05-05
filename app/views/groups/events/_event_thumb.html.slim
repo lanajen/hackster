@@ -12,7 +12,7 @@
       .thumb-image-inner
       .thumb-bottom
         a.thumb-bottom-over-top href=url_for(event)
-          = image_tag event.model.avatar.try(:file_url, :medium)
+          = image_tag event.model.avatar.try(:imgix_url, :medium)
         h4
           = link_to event.name, event
         ul.list-inline.project-stats

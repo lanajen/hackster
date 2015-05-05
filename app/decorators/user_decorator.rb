@@ -1,7 +1,7 @@
 class UserDecorator < ApplicationDecorator
   def avatar size=:thumb
     if model.avatar and model.avatar.file_url
-      avatar = model.avatar.file_url(size)
+      avatar = model.avatar.imgix_url(size)
     else
       avatar = gravatar size
     end

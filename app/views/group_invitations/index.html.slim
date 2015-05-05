@@ -1,7 +1,7 @@
 p.text-center You have been invited to join
 h2.text-center style='margin:10px 0 20px;'
   - if @group.avatar
-    ==> image_tag @group.avatar.file_url(:mini), class: 'img-thumb'
+    ==> image_tag @group.avatar.try(:imgix_url, :mini), class: 'img-thumb'
   = link_to @group.name, @group, class: 'hidden-link'
 - if user_signed_in?
   p.text-center= link_to 'Join group', @redirect_to, class: 'btn btn-primary'

@@ -32,7 +32,7 @@
                     div
                       span.cover_image.image-preview.preview
                         - if @project.cover_image
-                          = image_tag @project.cover_image.file_url(:cover_mini_thumb)
+                          = image_tag @project.cover_image.try(:imgix_url, :cover_mini_thumb)
                       .btn-group
                         a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.cover_image' } }  Select picture
                         a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.cover_image" } }
@@ -95,7 +95,7 @@
               div
                 span.cover_image.image-preview.preview
                   - if @project.cover_image
-                    = image_tag @project.cover_image.file_url(:cover_mini_thumb)
+                    = image_tag @project.cover_image.imgix_url(:cover_mini_thumb)
                 .btn-group
                   a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.cover_image' } }  Select picture
                   a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.cover_image" } }
@@ -156,7 +156,7 @@
                   div
                     span.cover_image.image-preview.preview
                       - if @project.cover_image
-                        = image_tag @project.cover_image.file_url(:cover_mini_thumb)
+                        = image_tag @project.cover_image.imgix_url(:cover_mini_thumb)
                     .btn-group
                       a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.cover_image' } }  Select picture
                       a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.cover_image" } }
