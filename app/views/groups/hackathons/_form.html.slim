@@ -25,9 +25,9 @@
       = f.input :mini_resume, label: 'One line description', as: :text, input_html: { rows: 4 },
         hint: 'Maximum 140 characters'
 
-      = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Profile picture', image_link: @hackathon.avatar.try(:file_url, :thumb), help_block: '', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
+      = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Profile picture', image_link: @hackathon.avatar.try(:imgix_url, :thumb), help_block: '', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
 
-      = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @hackathon.cover_image.try(:file_url), help_block: "High quality banner, at least 1600px wide and 430px high. An image with no text looks a lot better!", attribute_type: 'cover_image', image_version: nil, model: 'group' }
+      = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @hackathon.cover_image.try(:imgix_url), help_block: "High quality banner, at least 1600px wide and 430px high. An image with no text looks a lot better!", attribute_type: 'cover_image', image_version: nil, model: 'group' }
 
       = f.input :show_organizers, as: :boolean, inline_label: 'Show organizers on main page', hint: "If you select this option, the organizer tab will show on the main hackathon page, but not on event pages", label: false
 

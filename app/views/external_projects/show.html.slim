@@ -122,7 +122,7 @@
               section.section-thumbs
                 h4 Other projects by the same authors
                 - @other_projects.each do |project|
-                  .project-thumb-mini style="background-image: url(#{project.cover_image.try(:file_url, :cover_thumb)})"
+                  .project-thumb-mini style="background-image: url(#{project.cover_image.try(:imgix_url, :cover_thumb)})"
                     .project-thumb-mini-inner
                       h4= link_to project.name, project
                       p= render partial: 'projects/by_team', locals: { project: project }

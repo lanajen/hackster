@@ -32,7 +32,7 @@
               div
                 span.cover_image.image-preview.preview
                   - if @project.cover_image
-                    = image_tag @project.cover_image.file_url(:cover_mini_thumb)
+                    = image_tag @project.cover_image.try(:imgix_url, :cover_mini_thumb)
 
                 .btn-group
                   a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.cover_image' } }  Select picture
@@ -64,7 +64,7 @@
         h2.text-center
           - if @group.respond_to? :avatar and @group.avatar.present?
             - if @group.avatar.respond_to?(:file_url)
-              ==> image_tag @group.avatar.file_url(:mini), class: 'img-thumb'
+              ==> image_tag @group.avatar.try(:imgix_url, :mini), class: 'img-thumb'
             - else
               ==> image_tag @group.avatar(:mini), class: 'img-thumb'
           = link_to @group.name, @group, class: 'hidden-link'
@@ -101,7 +101,7 @@
               div
                 span.cover_image.image-preview.preview
                   - if @project.cover_image
-                    = image_tag @project.cover_image.file_url(:cover_mini_thumb)
+                    = image_tag @project.cover_image.try(:imgix_url, :cover_mini_thumb)
 
                 .btn-group
                   a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.cover_image' } }  Select picture

@@ -44,11 +44,11 @@
                     ' This project is part of
                     - if @project.assignment.present?
                       - if @project.assignment.promotion.avatar
-                        ==> image_tag @project.assignment.promotion.avatar.file_url(:mini), class: 'img-thumb'
+                        ==> image_tag @project.assignment.promotion.avatar.imgix_url(:mini), class: 'img-thumb'
                       = link_to @project.assignment.to_label, assignment_path(@project.assignment)
                     - elsif @project.event.present?
                       - if @project.event.avatar
-                        ==> image_tag @project.event.avatar.file_url(:mini), class: 'img-thumb'
+                        ==> image_tag @project.event.avatar.imgix_url(:mini), class: 'img-thumb'
                       = link_to @project.event.name, event_path(@project.event)
                       / - @project.awards.where(gradable_id: @project.collection_id, gradable_type: 'Group').each do |award|
                         span.project-award<
@@ -432,7 +432,7 @@
                     - if @last_projects.present?
                       .subtitle Most popular
                     - @other_projects.each do |project|
-                      .project-thumb-mini.has-link-overlay style="background-image: url('#{project.cover_image.try(:file_url, :cover_thumb)}')"
+                      .project-thumb-mini.has-link-overlay style="background-image: url('#{project.cover_image.try(:imgix_url, :cover_thumb)}')"
                         = link_to '', project, class: 'link-overlay'
                         .project-thumb-mini-inner
                           h4= link_to project.name, project
@@ -440,7 +440,7 @@
                     - if @last_projects.present?
                       .subtitle Most recent
                       - @last_projects.each do |project|
-                        .project-thumb-mini.has-link-overlay style="background-image: url('#{project.cover_image.try(:file_url, :cover_thumb)}')"
+                        .project-thumb-mini.has-link-overlay style="background-image: url('#{project.cover_image.try(:imgix_url, :cover_thumb)}')"
                           = link_to '', project, class: 'link-overlay'
                           .project-thumb-mini-inner
                             h4= link_to project.name, project

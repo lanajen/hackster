@@ -1,6 +1,6 @@
 - url = url_for([@followable, only_path: false])
 - message = @followable.decorate.to_share_message
-- image = @followable.avatar.try(:file_url)
+- image = @followable.avatar.try(:imgix_url)
 
 #followed_share_prompt.popup-overlay.modal-popup.modal-show.modal-remove
   .popup-overlay-bg

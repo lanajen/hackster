@@ -9,7 +9,7 @@
 = f.input :private, hint: 'Private groups are only visible to and accessible by admins.'
 = f.input :hidden, as: :boolean, hint: 'Hidden groups are not listed on pages like hackster.io/platforms.'
 = f.input :type, collection: %w(Community Course Event Hackathon HackerSpace List Promotion Platform University)
-= render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Profile picture', image_link: @group.avatar.try(:file_url, :thumb), help_block: 'This picture needs to be squared, at least 200x200px for best quality.', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
+= render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Profile picture', image_link: @group.avatar.try(:imgix_url, :thumb), help_block: 'This picture needs to be squared, at least 200x200px for best quality.', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
 
 - case @group.type
 - when 'Course'
@@ -25,7 +25,7 @@
   = f.input :product_tags_string
   = f.input :platform_tags_string
   = f.input :verified, as: :boolean, inline_label: 'Verified', label: false, hint: "Check if a representative of the community is onboard"
-  = render partial: 'shared/image_form', locals: { file_type: 'document', human_file_type: 'Cover image', image_link: @group.cover_image.try(:file_url), help_block: 'A high quality picture of your product, at least 1200px wide and 400px high.', attribute_type: 'cover_image', image_version: nil, model: 'group' }
+  = render partial: 'shared/image_form', locals: { file_type: 'document', human_file_type: 'Cover image', image_link: @group.cover_image.try(:imgix_url), help_block: 'A high quality picture of your product, at least 1200px wide and 400px high.', attribute_type: 'cover_image', image_version: nil, model: 'group' }
 
   hr
   h4.col-md-8.col-md-offset-4 Whitelabel parameters

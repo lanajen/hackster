@@ -1,10 +1,8 @@
-class Image < Attachment
+class Image < BaseImage
+  VERSIONS = {
+    lightbox: { w: 1280, h: 960 },
+    headline: { w: 580, h: 435 },
+    thumb: { w: 200, h: 150 },
+  }
   mount_uploader :file, ImageUploader
-
-  before_save :truncate_title
-
-  private
-    def truncate_title
-      self.title = title.truncate 255 if title
-    end
 end

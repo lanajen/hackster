@@ -3,6 +3,6 @@ class LinkDatumSerializer < ActiveModel::Serializer
     :extra_data_value2, :extra_data_label1, :extra_data_label2, :image_link
 
   def image_link
-    object.image.try(:file_url)
+    object.image.try(:imgix_url, :thumb)
   end
 end
