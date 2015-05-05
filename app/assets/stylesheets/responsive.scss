@@ -89,7 +89,12 @@
   //     background: transparent;
   //   }
   }
-  .text-center-mobile {
+  .text-center-mobile, .text-center-xs {
+    text-align: center !important;
+  }
+}
+@media only screen and (min-width: 769px) and (max-width: 992px) {
+  .text-center-sm {
     text-align: center !important;
   }
 }
