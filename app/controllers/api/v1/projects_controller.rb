@@ -43,6 +43,7 @@ class Api::V1::ProjectsController < Api::V1::BaseController
 
     if (params[:save].present? and params[:save] == '0') or  @project.update_attributes params[:project]
       if @panel.in? %w(hardware publish team software)
+        puts 'user_name: ' + @project.team.user_name
         render 'projects/forms/update'
       else
         render 'projects/forms/checklist', status: :ok

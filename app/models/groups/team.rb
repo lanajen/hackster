@@ -38,10 +38,13 @@ class Team < Group
   # user_name is kept.
   def update_user_name
     was_auto_generated = user_name == generated_user_name
-    new_user_name_changed = (new_user_name != user_name)
+    # new_user_name_changed = (new_user_name != user_name)
+    puts "was_auto_generated: " + was_auto_generated.to_s
+    puts "new_user_name_changed: " + new_user_name_changed?.to_s
+    puts "full_name_changed?: " + full_name_changed?.to_s
 
     self.user_name = generate_user_name if user_name.blank? or was_auto_generated or full_name_changed?
-    assign_new_user_name if new_user_name_changed
+    assign_new_user_name if new_user_name_changed? and new_user_name.present?
     user_name
   end
 end
