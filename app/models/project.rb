@@ -212,7 +212,7 @@ class Project < ActiveRecord::Base
     where(workflow_state: :approved)
   end
 
-  def self.approval_needed
+  def self.need_review
     where(workflow_state: :pending_review)
   end
 

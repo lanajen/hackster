@@ -13,7 +13,7 @@ class Admin::ProjectsController < Admin::BaseController
 
     params[:sort_order] ||= 'DESC'
 
-    @projects = params[:approval_needed] ? Project.approval_needed : Project
+    @projects = params[:approval_needed] ? Project.need_review : Project
     @projects = filter_for @projects, @fields
   end
 
