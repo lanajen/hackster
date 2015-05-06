@@ -5,8 +5,8 @@ class ProjectsController < ApplicationController
   before_filter :load_lists, only: [:show, :show_external]
   respond_to :html
   after_action :allow_iframe, only: :embed
-  skip_before_filter :track_visitor, only: [:show]
-  skip_after_filter :track_landing_page, only: [:show]
+  skip_before_filter :track_visitor, only: [:show, :embed]
+  skip_after_filter :track_landing_page, only: [:show, :embed]
 
   def index
     title "Explore all projects - Page #{safe_page_params || 1}"
@@ -176,6 +176,11 @@ class ProjectsController < ApplicationController
   end
 
   def embed
+    surrogate_keys = [@project.record_key, "projects/#{@project.id}/embed"]
+    surrogate_keys << current_platform.user_name if is_whitelabel?
+    set_surrogate_key_header *surrogate_keys
+    set_cache_control_headers
+
     title @project.name
     meta_desc "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on #{site_name}."
     @project = @project.decorate

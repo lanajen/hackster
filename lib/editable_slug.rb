@@ -1,9 +1,9 @@
 module EditableSlug
   module ClassMethods
-    def editable_slug attribute_name
+    def editable_slug attribute_name, callback=:before_save
       attr_accessible :"new_#{attribute_name}"
       attr_writer :"new_#{attribute_name}", :"new_#{attribute_name}_changed"
-      before_validation :"assign_new_#{attribute_name}"
+      self.send(callback, :"assign_new_#{attribute_name}")
 
       self.send :define_method, "new_#{attribute_name}" do
         eval "

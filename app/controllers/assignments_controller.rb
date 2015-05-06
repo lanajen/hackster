@@ -4,6 +4,8 @@ class AssignmentsController < ApplicationController
   before_filter :load_promotion, only: [:new, :create]
   load_and_authorize_resource only: [:edit, :update, :destroy]
   after_action :allow_iframe, only: :embed
+  skip_before_filter :track_visitor, only: [:embed]
+  skip_after_filter :track_landing_page, only: [:embed]
   layout 'assignment'
 
   def show
@@ -25,6 +27,10 @@ class AssignmentsController < ApplicationController
   end
 
   def embed
+    surrogate_keys = [@assignment.record_key, "assignments/#{@assignment.id}/embed"]
+    set_surrogate_key_header *surrogate_keys
+    set_cache_control_headers
+
     @list_style = ([params[:list_style]] & ['_vertical', '_horizontal']).first || '_horizontal'
     # @list_style = '_horizontal'
     @projects = @assignment.projects.order(:created_at)
