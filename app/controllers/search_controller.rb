@@ -26,6 +26,7 @@ class SearchController < ApplicationController
       opts[:platform_id] = current_platform.id if is_whitelabel?
       opts[:per_page] = Project.per_page
       @results = SearchRepository.new(opts).search.results
+      @total = @results.total
 
       title "#{@results.total} #{@tag} Projects"
       meta_desc "Interested in #{@tag}? Explore #{@results.total} projects tagged with '#{@tag}'. Find these and other hardware projects on #{site_name}."
@@ -34,6 +35,7 @@ class SearchController < ApplicationController
     rescue => e
       logger.error "Error while searching for #{params[:q]}: #{e.message}"
       @results = []
+      @total = 0
     end
   end
 

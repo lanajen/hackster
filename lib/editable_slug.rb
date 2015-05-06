@@ -3,7 +3,7 @@ module EditableSlug
     def editable_slug attribute_name
       attr_accessible :"new_#{attribute_name}"
       attr_writer :"new_#{attribute_name}", :"new_#{attribute_name}_changed"
-      before_validation :"assign_new_#{attribute_name}"
+      after_validation :"assign_new_#{attribute_name}"
 
       self.send :define_method, "new_#{attribute_name}" do
         eval "
