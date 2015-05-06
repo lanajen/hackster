@@ -12,8 +12,8 @@ class PlatformsController < ApplicationController
   after_action :allow_iframe, only: [:embed]
   respond_to :html
   protect_from_forgery except: :embed
-  skip_before_filter :track_visitor, only: [:index, :show]
-  skip_after_filter :track_landing_page, only: [:index, :show]
+  skip_before_filter :track_visitor, only: [:index, :show, :embed]
+  skip_after_filter :track_landing_page, only: [:index, :show, :embed]
 
   def index
     unless user_signed_in?
@@ -116,6 +116,9 @@ class PlatformsController < ApplicationController
   end
 
   def embed
+    set_surrogate_key_header "platforms/#{@platform.id}/embed"
+    set_cache_control_headers 3600
+
     title "Projects built with #{@platform.name}"
     @list_style = ([params[:list_style]] & ['', '_horizontal']).first || ''
     @list_style = '_vertical' if @list_style == ''
