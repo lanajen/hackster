@@ -23,7 +23,7 @@ class Group < ActiveRecord::Base
   include SetChangesForStoredAttributes
   include StringParser
 
-  editable_slug :user_name
+  editable_slug :user_name, :before_validation
 
   is_impressionable counter_cache: true, unique: :session_hash
 
