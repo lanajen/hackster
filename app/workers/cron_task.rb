@@ -171,7 +171,7 @@ class CronTask < BaseWorker
     remove_subscribers(gb, list_id, cancellers) unless cancellers.empty?
   end
 
-  # private
+  private
     def add_subscribers gb, list_id, users
       puts "Adding #{users.count} subscribers to list #{list_id}."
       batch = batch_from_user_list users
