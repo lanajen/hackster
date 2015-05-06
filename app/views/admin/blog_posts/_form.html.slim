@@ -9,11 +9,12 @@
 = f.input :blog_tags_string, label: 'Tags', hint: 'Enter a list of tags separated by commas'
 
 - @post.build_cover_image unless @post.cover_image.present?
-= f.simple_fields_for :cover_image do |f_image|
+- image = @post.cover_image || @post.build_cover_image
+= f.simple_fields_for :cover_image, image do |f_image|
   - if image and image.file_url
     .form-group
       .col-md-8.col-md-offset-4= image_tag image.file_url, class: 'img-responsive'
-  = f_image.input :file, label: 'Image'
+  = f_image.input :file, label: 'Cover image'
 
 - @post.images.new if @post.images.empty?
 - @post.images.each do |image|

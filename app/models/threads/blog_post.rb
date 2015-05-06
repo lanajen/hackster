@@ -2,14 +2,15 @@ class BlogPost < Post
   include Taggable
 
   validates :slug, presence: true, uniqueness: { scope: :type }, format: { with: /\A[a-zA-Z0-9\-\/]+\z/, message: "only accepts letters, digits and the symbols - and /." }
-  attr_accessible :slug, :published_at, :images_attributes
+  attr_accessible :slug, :published_at, :images_attributes, :cover_image_attributes
   before_validation :generate_slug, if: proc{|p| p.slug.blank? }
   before_create :set_threadable
 
   has_many :blog_tags, as: :taggable, class_name: 'BlogTag'
   has_many :images, as: :attachable, class_name: 'Document'
+  has_one :cover_image, as: :attachable
 
-  accepts_nested_attributes_for :images
+  accepts_nested_attributes_for :images, :cover_image
 
   taggable :blog_tags
 
