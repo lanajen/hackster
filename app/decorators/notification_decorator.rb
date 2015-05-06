@@ -152,12 +152,11 @@ class NotificationDecorator < ApplicationDecorator
     end
 
     unless msg.present?
-      message = "Unknown notification: #{model.inspect}"
       if Rails.env == 'production'
         log_line = LogLine.create(message: message, log_type: 'error', source: 'notification_decorator')
         NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification'
       else
-        raise message
+        raise "Unknown notification: #{model.inspect}"
       end
     end
 
