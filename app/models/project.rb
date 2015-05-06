@@ -97,7 +97,7 @@ class Project < ActiveRecord::Base
     :hacker_space_id, :locked, :mark_as_idea, :event_id, :assignment_id,
     :community_ids, :new_group_id, :guest_twitter_handle, :celery_id,
     :team_attributes, :story, :made_public_at, :difficulty, :type, :product,
-    :project_collections_attributes
+    :project_collections_attributes, :workflow_state
   attr_accessor :current, :private_changed, :needs_platform_refresh,
     :approved_changed
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
