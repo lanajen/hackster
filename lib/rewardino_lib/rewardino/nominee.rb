@@ -10,11 +10,6 @@ module Rewardino
           nominee = find id
           nominee.evaluate_badge *args
         end
-
-        def self.compute_reputation id, *args
-          nominee = find id
-          nominee.compute_reputation *args
-        end
       end
     end
 
@@ -24,12 +19,6 @@ module Rewardino
       user_badges = user_badges.map(&:badge)
       user_badges
     end
-
-    # def compute_reputation
-    #   # current_reputation = reputation.points
-    #   self.reputation.points = reputation_events.sum(:points)
-    #   # reputation.points - current_reputation
-    # end
 
     def evaluate_badge badge_or_code, opts={}
       send_notification = opts[:send_notification]

@@ -103,9 +103,9 @@ class CronTask < BaseWorker
 
   def launch_daily_cron
     begin
+      compute_daily_reputation
       compute_popularity
       send_daily_notifications
-      compute_daily_reputation
       self.class.perform_in 24.hours, 'launch_daily_cron'
     rescue => e
       Rails.logger.error "Error in launch_daily_cron: #{e.inspect}"

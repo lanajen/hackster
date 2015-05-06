@@ -9,7 +9,7 @@ class UsersController < ApplicationController
 
   def index
     title "Browse top hackers"
-    @users = User.invitation_accepted_or_not_invited.where.not(user_name: nil).where('reputations.points > 15').top.paginate(page: safe_page_params)
+    @users = User.not_admin.invitation_accepted_or_not_invited.where.not(user_name: nil).where('reputations.points > 15').top.paginate(page: safe_page_params)
   end
 
   def show

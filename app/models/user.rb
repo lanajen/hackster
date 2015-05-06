@@ -168,7 +168,8 @@ class User < ActiveRecord::Base
     :platforms_count, :live_hidden_projects_count, :followed_users_count,
     :hacker_spaces_count, :badges_green_count,
     :badges_bronze_count, :badges_silver_count, :badges_gold_count,
-    :accepted_invitations_count, :feed_likes_count, :thoughts_count]
+    :accepted_invitations_count, :feed_likes_count, :thoughts_count,
+    :reputation_count]
 
   parse_as_integers :counters_cache, :comments_count, :interest_tags_count,
     :invitations_count, :projects_count, :respects_count, :skill_tags_count,
@@ -177,7 +178,7 @@ class User < ActiveRecord::Base
     :live_hidden_projects_count, :followed_users_count, :hacker_spaces_count,
     :badges_green_count, :badges_bronze_count,
     :badges_silver_count, :badges_gold_count, :accepted_invitations_count,
-    :feed_likes_count, :thoughts_count
+    :feed_likes_count, :thoughts_count, :reputation_count
 
   # store_accessor :subscriptions_masks, :email_subscriptions_mask,
   #   :web_subscriptions_mask
@@ -327,6 +328,10 @@ class User < ActiveRecord::Base
     order('last_sign_in_at DESC')
   end
 
+  def self.not_admin
+    without_roles('admin')
+  end
+
   def self.top
     joins(:reputation).order('reputations.points DESC')
   end
@@ -414,6 +419,7 @@ class User < ActiveRecord::Base
       projects: 'projects.count',
       project_respects: 'projects.includes(:respects).count(:respects)',
       project_views: 'projects.sum(:impressions_count)',
+      reputation: 'reputation_events.sum(:points)',
       respects: 'respects.count',
       skill_tags: 'skill_tags.count',
       thoughts: 'thoughts.count',

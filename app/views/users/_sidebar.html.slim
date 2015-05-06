@@ -62,6 +62,9 @@
         .display
           h4 Achievements
           .content.badges
+            - if @user.reputation_count
+              strong.istooltip> title="Reputation"
+                = @user.reputation_count
             - if @user.badges_green_count > 0
               a.fa.fa-certificate> style='color:green' data-container='body'  data-toggle="popover" data-placement="right" data-trigger="hover" data-content="<div><strong>Green badges</strong></div>#{@user.badges(:green).map{|b| "<div>#{b.name(:green)}</div>"}.join('')}" data-html="true" rel="popover"
               strong>= number_with_delimiter @user.badges_green_count
