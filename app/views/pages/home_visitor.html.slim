@@ -1,5 +1,4 @@
 = content_for :head do
-  meta(name='robots' content='noindex')
   = auto_discovery_link_tag :rss, projects_path(format: :rss, sort: 'recent'), title: 'Last projects - Hackster.io'
   = auto_discovery_link_tag :atom, projects_path(format: :atom, sort: 'recent'), title: 'Last projects - Hackster.io'
   javascript:
