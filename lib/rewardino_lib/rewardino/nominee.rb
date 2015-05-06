@@ -3,11 +3,17 @@ module Rewardino
 
     def self.included base
       base.class_eval do
-        has_many :awarded_badges, as: :awardee
+        has_many :awarded_badges, as: :awardee, dependent: :destroy
+        has_many :reputation_events, dependent: :destroy
 
         def self.evaluate_badge id, *args
           nominee = find id
           nominee.evaluate_badge *args
+        end
+
+        def self.compute_reputation id, *args
+          nominee = find id
+          nominee.compute_reputation *args
         end
       end
     end
@@ -18,6 +24,12 @@ module Rewardino
       user_badges = user_badges.map(&:badge)
       user_badges
     end
+
+    # def compute_reputation
+    #   # current_reputation = reputation.points
+    #   self.reputation.points = reputation_events.sum(:points)
+    #   # reputation.points - current_reputation
+    # end
 
     def evaluate_badge badge_or_code, opts={}
       send_notification = opts[:send_notification]

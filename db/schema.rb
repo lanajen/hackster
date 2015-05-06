@@ -11,12 +11,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150421015737) do
+ActiveRecord::Schema.define(version: 20150425203837) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-  enable_extension "pg_stat_statements"
   enable_extension "hstore"
+  enable_extension "pg_stat_statements"
 
   create_table "addresses", force: :cascade do |t|
     t.integer "addressable_id"
@@ -559,6 +559,17 @@ ActiveRecord::Schema.define(version: 20150421015737) do
   add_index "receipts", ["receivable_id", "receivable_type"], name: "index_receipts_on_receivable_id_and_receivable_type", using: :btree
   add_index "receipts", ["user_id"], name: "index_receipts_on_user_id", using: :btree
 
+  create_table "reputation_events", force: :cascade do |t|
+    t.integer  "points"
+    t.integer  "user_id"
+    t.string   "event_name"
+    t.integer  "event_model_id"
+    t.string   "event_model_type"
+    t.datetime "event_date"
+  end
+
+  add_index "reputation_events", ["user_id"], name: "index_reputation_events_on_user_id", using: :btree
+
   create_table "reputations", force: :cascade do |t|
     t.float    "points",     default: 0.0
     t.integer  "user_id",                  null: false
@@ -627,11 +638,10 @@ ActiveRecord::Schema.define(version: 20150421015737) do
 
   create_table "thoughts", force: :cascade do |t|
     t.text     "body"
-    t.integer  "user_id",                null: false
+    t.integer  "user_id",    null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "link"
-    t.text     "cached_link_properties"
     t.text     "raw_body"
   end
 
