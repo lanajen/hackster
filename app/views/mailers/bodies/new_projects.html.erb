@@ -6,7 +6,7 @@
   Because you follow
   <%= followables.map do |f|
     out = ''
-    out += "<img src='#{f.avatar.file_url(:tiny)}' style='width:20px;height:20px;vertical-align:middle;'> " if f.avatar
+    out += "<img src='#{f.avatar.try(:imgix_url, :tiny)}' style='width:20px;height:20px;vertical-align:middle;'> " if f.avatar
     out += "<strong><a href='#{url_for(f)}?ref=emailnotif'>#{f.name}</a></strong>"
     out
   end.to_sentence.html_safe %>:

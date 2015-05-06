@@ -567,6 +567,11 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
       }
     });
 
+    $('.admin-bar .toggle-checklist').on('click', function(e){
+      e.preventDefault();
+      $('.admin-bar #checklist').toggle();
+    });
+
     window.addEventListener("beforeunload", function (e) {
       if (pe.unsavedChanges()) {
         var message = "There are unsaved changes.";
@@ -575,6 +580,11 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
         return message;
       }
     });
+
+    $('.gist').gist();
+    window.setTimeout(function(){
+      $('.gist .gist-meta a').attr('target', '_blank');
+    }, 1000);
 
     loadSlickSlider();
   });

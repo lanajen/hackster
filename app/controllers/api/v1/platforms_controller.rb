@@ -10,13 +10,13 @@ class Api::V1::PlatformsController < Api::V1::BaseController
   end
 
   def show
-    render json: { platform: { name: @platform.name, url: platform_home_url(@platform) }, projects: @projects.map{|c| project = c.project; { name: project.name, url: project_url(project), embed_url: project_embed_url(project), cover_image_url: project.cover_image.try(:file_url, :cover_thumb), one_liner: project.one_liner, author_names: project.users.map(&:name).to_sentence, views: project.impressions_count, comments: project.comments_count, respects: project.respects_count } } }
+    render json: { platform: { name: @platform.name, url: platform_home_url(@platform) }, projects: @projects.map{|c| project = c.project; { name: project.name, url: project_url(project), embed_url: project_embed_url(project), cover_image_url: project.cover_image.try(:imgix_url, :cover_thumb), one_liner: project.one_liner, author_names: project.users.map(&:name).to_sentence, views: project.impressions_count, comments: project.comments_count, respects: project.respects_count } } }
   end
 
   def analytics
     load_analytics
 
-    sql = "SELECT projects.*, t1.count FROM (SELECT respects.respectable_id as project_id, COUNT(*) as count FROM respects INNER JOIN project_collections ON project_collections.project_id = respects.respectable_id WHERE respects.respectable_type = 'Project' AND project_collections.collectable_type = 'Group' AND project_collections.collectable_id = ? GROUP BY respects.respectable_id) AS t1 INNER JOIN projects ON projects.id = t1.project_id WHERE t1.count > 1 AND projects.private = 'f' AND projects.approved = 't' ORDER BY t1.count DESC LIMIT 50;"
+    sql = "SELECT projects.*, t1.count FROM (SELECT respects.respectable_id as project_id, COUNT(*) as count FROM respects INNER JOIN project_collections ON project_collections.project_id = respects.respectable_id WHERE respects.respectable_type = 'Project' AND project_collections.collectable_type = 'Group' AND project_collections.collectable_id = ? GROUP BY respects.respectable_id) AS t1 INNER JOIN projects ON projects.id = t1.project_id WHERE t1.count > 1 AND projects.private = 'f' AND projects.workflow_state = 'approved' ORDER BY t1.count DESC LIMIT 50;"
     @project_respects = Project.find_by_sql([sql, @platform.id])
 
     render "groups/platforms/#{self.action_name}"

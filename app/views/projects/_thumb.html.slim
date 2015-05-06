@@ -4,4 +4,4 @@
   = strip_tags truncate(project.description, length: 100)
   .image-thumbs
     - if image = project.images.first
-      = image_tag image.file_url(:small_thumb)
+      = image_tag image.try(:imgix_url, :small_thumb)

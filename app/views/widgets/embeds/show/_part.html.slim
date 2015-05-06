@@ -4,7 +4,7 @@ tr.fields  id="part-#{part.id}"
       tbody
         tr
           td
-            - if part.part.platform_id
+            - if part.part.platform_id and !is_whitelabel?
               = link_to part.part.name, part.part
             - else
               = part.part.name

@@ -107,7 +107,7 @@ class NotificationHandler
         relations = {}
 
         # get projects newly attached to followed platform
-        platform_projects = user.subscribed_to?(notification_type, 'follow_platform_activity') ? Project.select('projects.*, follow_relations.followable_id').self_hosted.joins(:platforms).where(groups: { private: false }).where('projects.made_public_at > ? AND projects.made_public_at < ?', 24.hours.ago, Time.now).where(projects: { approved: true }).joins("INNER JOIN follow_relations ON follow_relations.followable_id = groups.id AND follow_relations.followable_type = 'Group'").where(follow_relations: { user_id: user.id }) : []
+        platform_projects = user.subscribed_to?(notification_type, 'follow_platform_activity') ? Project.select('projects.*, follow_relations.followable_id').self_hosted.joins(:platforms).where(groups: { private: false }).where('projects.made_public_at > ? AND projects.made_public_at < ?', 24.hours.ago, Time.now).approved.joins("INNER JOIN follow_relations ON follow_relations.followable_id = groups.id AND follow_relations.followable_type = 'Group'").where(follow_relations: { user_id: user.id }) : []
         platform_projects.each do |project|
           platform = Platform.find(project.followable_id)
           relations[platform] = {} unless platform.in? relations.keys
@@ -115,7 +115,7 @@ class NotificationHandler
         end
 
         # get projects newly made public by followed users
-        user_projects = user.subscribed_to?(notification_type, 'follow_user_activity') ? Project.select('projects.*, follow_relations.followable_id').self_hosted.joins(:users).where('projects.made_public_at > ?', 24.hours.ago).where(projects: { approved: true }).joins("INNER JOIN follow_relations ON follow_relations.followable_id = users.id AND follow_relations.followable_type = 'User'").where(follow_relations: { user_id: user.id }) : []
+        user_projects = user.subscribed_to?(notification_type, 'follow_user_activity') ? Project.select('projects.*, follow_relations.followable_id').self_hosted.joins(:users).where('projects.made_public_at > ?', 24.hours.ago).approved.joins("INNER JOIN follow_relations ON follow_relations.followable_id = users.id AND follow_relations.followable_type = 'User'").where(follow_relations: { user_id: user.id }) : []
         user_projects.each do |project|
           _user = User.find(project.followable_id)
           relations[_user] = {} unless _user.in? relations.keys

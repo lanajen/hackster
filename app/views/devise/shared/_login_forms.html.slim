@@ -2,7 +2,7 @@
 
 = content_for :no_container do
   .block
-    .alert.alert-info.alert-top.alert-flat.text-center
+    .alert.alert-info.alert-flat.text-center
       - if is_whitelabel?
         ' Hey there! #{current_site.name} is powered by
         = link_to 'Hackster.io', root_url(subdomain: 'www'), target: '_blank', class: 'alert-link'

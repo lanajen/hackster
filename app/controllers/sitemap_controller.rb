@@ -85,7 +85,7 @@ class SitemapController < ApplicationController
     end
 
     def external_projects_query
-      Project.external.where(approved: true)
+      Project.external.approved
     end
 
     def external_projects_pages offset=0

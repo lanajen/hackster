@@ -46,7 +46,7 @@
         - @projects.each do |project|
           tr
             td= check_box_tag 'project_ids[]', project.id
-            td= image_tag project.cover_image.file_url(:cover_mini_thumb)
+            td= image_tag project.cover_image.try(:imgix_url, :cover_mini_thumb)
             td= link_to project.name, project
             td
               = pluralize project.respects_count, 'respect'

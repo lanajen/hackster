@@ -107,7 +107,7 @@ module ApplicationHelper
     when 'claim'
       msg = "Please log in or sign up to claim #{content_tag(:b, project.name)}."
     end
-    content_tag(:div, msg, class: 'alert alert-warning text-center')
+    content_tag(:div, msg.html_safe, class: 'alert alert-warning text-center')
   end
 
   def next_meetup_for_group group_url
@@ -209,8 +209,32 @@ module ApplicationHelper
     when :gplus
       'Google+'
     when :windowslive
-      'Windows Live'
+      'Microsoft Account'
     end
+  end
+
+  def inserts_stats_for model_id, model_type
+    base_url = APP_CONFIG['use_ssl'] ? 'https://' : 'http://'
+    base_url += APP_CONFIG['stats_url']
+    content_for :js do
+      content_tag(
+        :script,
+        "
+        $(function(){
+          $.ajax({
+            url: '#{base_url}/stats',
+            data: {
+              referrer: document.referrer,
+              id: '#{model_id}',
+              type: '#{model_type}',
+              a: '#{action_name}',
+              c: '#{controller_name}'
+            },
+            method: 'POST'
+          });
+        });
+        ".html_safe, type: 'text/javascript')
+    end unless user_signed_in?
   end
 
   def zocial_class_for_provider provider

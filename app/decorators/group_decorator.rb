@@ -1,7 +1,7 @@
 class GroupDecorator < UserDecorator
   def avatar size=:thumb
     if model.avatar and model.avatar.file_url
-      model.avatar.file_url(size)
+      model.avatar.imgix_url(size)
     end
   end
 
@@ -15,7 +15,7 @@ class GroupDecorator < UserDecorator
 
   def cover_image size=:cover
     if model.cover_image and model.cover_image.file_url
-      model.cover_image.file_url(size)
+      model.cover_image.imgix_url(size)
     else
       h.asset_url 'footer-bg.png'
     end

@@ -4,6 +4,8 @@ class UsersController < ApplicationController
   authorize_resource except: [:after_registration, :after_registration_save, :redirect_to_show]
   layout :set_layout
   protect_from_forgery except: :redirect_to_show
+  skip_before_filter :track_visitor, only: [:show]
+  skip_after_filter :track_landing_page, only: [:show]
 
   def index
     title "Browse top hackers"
@@ -11,7 +13,15 @@ class UsersController < ApplicationController
   end
 
   def show
-    impressionist_async @user, "", unique: [:session_hash]  # no need to add :impressionable_type and :impressionable_id, they're already included with @user
+    if user_signed_in?
+      impressionist_async @user, "", unique: [:session_hash]  # no need to add :impressionable_type and :impressionable_id, they're already included with @user
+    else
+      surrogate_keys = [@user.record_key, 'user']
+      surrogate_keys << current_platform.user_name if is_whitelabel?
+      set_surrogate_key_header *surrogate_keys
+      set_cache_control_headers
+    end
+
     title @user.name
     meta_desc "#{@user.name} is on #{site_name}. Come share your hardware projects with #{@user.name} and other hardware hackers and makers."
 
@@ -111,7 +121,7 @@ class UsersController < ApplicationController
       if @user.projects.any?
         redirect_to @user.projects.first, notice: "Profile info saved! Now you can start working on your project."
       else
-        redirect_to user_return_to, notice: 'Profile info saved!'
+        redirect_to user_return_to, notice: "Profile info saved. Now, <a href='/talk' class='alert-link'>come introduce yourself to the community!</a>"
       end
 
       track_user @user.to_tracker_profile

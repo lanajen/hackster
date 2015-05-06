@@ -41,8 +41,9 @@ class ApplicationController < ActionController::Base
   helper_method :is_mobile?
   helper_method :returning_user?
   helper_method :controller_action
+  helper_method :is_trackable_page?
+  before_filter :set_signed_in_cookie
   helper BootstrapFlashHelper
-
 
   # code to make whitelabel work
   helper_method :current_site
@@ -51,6 +52,14 @@ class ApplicationController < ActionController::Base
   before_filter :current_platform
   helper_method :current_layout
   layout :current_layout
+
+  def set_signed_in_cookie
+    if user_signed_in?
+      cookies[:hackster_user_signed_in] = '1' if cookies[:hackster_user_signed_in].blank?
+    else
+      cookies.delete(:hackster_user_signed_in) if cookies[:hackster_user_signed_in].present?
+    end
+  end
 
   def current_layout
     @layout ||= if current_site
@@ -109,10 +118,14 @@ class ApplicationController < ActionController::Base
   # Stores the user's current page to reuse when needed.
   # Excludes all pages that a user shouldn't be redirected to.
   def store_location cookie_name
-#    logger.info 'controller: ' + params[:controller].to_s
-#    logger.info 'action: ' + params[:action].to_s
-    session[cookie_name] = request.url if is_trackable_page?
-#    logger.info 'stored location: ' + session[cookie_name].to_s
+    # puts 'stored location (before): ' + session[request.host].try(:[], :user_return_to).to_s
+    # logger.info 'controller: ' + params[:controller].to_s
+    # logger.info 'action: ' + params[:action].to_s
+    if is_trackable_page?
+      session[request.host] ||= {}
+      session[request.host][cookie_name] = request.path
+    end
+    # puts 'stored location (after): ' + session[request.host].try(:[], :user_return_to).to_s
   end
 
   # Stores location after the request has been processed
@@ -125,8 +138,21 @@ class ApplicationController < ActionController::Base
     store_location :user_return_to
   end
 
-  def user_return_to
-    params[:redirect_to] || session[:user_return_to] || (user_signed_in? ? current_user : nil) || root_path
+  def user_return_to host=nil
+    # puts 'params[:redirect_to]: ' + params[:redirect_to].to_s
+    # puts 'session[request.host].try(:[], :user_return_to): ' + session[request.host].try(:[], :user_return_to).to_s
+    if host
+      scheme = APP_CONFIG['use_ssl'] ? 'https://' : 'http://'
+      if params[:redirect_to].present?
+        "#{scheme}#{host}:#{APP_CONFIG['default_port']}#{params[:redirect_to]}"
+      elsif session[request.host].try(:[], :user_return_to).present?
+        "#{scheme}#{host}:#{APP_CONFIG['default_port']}#{session[request.host].try(:[], :user_return_to)}"
+      else
+        root_url(host: host)
+      end
+    else
+      params[:redirect_to].presence || session[request.host].try(:[], :user_return_to).presence || root_path
+    end
   end
 
   private
@@ -194,7 +220,7 @@ class ApplicationController < ActionController::Base
     end
 
     def is_trackable_page?
-      @is_trackable_page ||= (!params[:controller].in?(%w(users/sessions users/registrations users/confirmations users/omniauth_callbacks users/facebook_connections users/invitations users/authorizations devise/passwords split)) && params[:action] != 'after_registration' && request.method_symbol == :get && request.format == 'text/html')
+      @is_trackable_page ||= (%w(users/sessions users/registrations users/confirmations users/omniauth_callbacks users/facebook_connections users/invitations users/authorizations devise/passwords split application).exclude?(params[:controller]) and params[:action] != 'after_registration' and request.method_symbol == :get and request.format == 'text/html')
     end
 
     def load_assignment
@@ -312,13 +338,13 @@ class ApplicationController < ActionController::Base
     end
 
     def track_signup resource, simplified=false
-      time_since_shown_signup_popup = cookies[:last_shown_banner].present? ? (Time.now - cookies[:last_shown_banner].to_time) : 'never'
+      # time_since_shown_signup_popup = cookies[:last_shown_banner].present? ? (Time.now - cookies[:last_shown_banner].to_time) : 'never'
       data = {
-        first_seen: cookies[:first_seen],
+        # first_seen: cookies[:first_seen],
         initial_referrer: cookies[:initial_referrer],
         landing_page: cookies[:landing_page],
-        shown_banner_count: cookies[:shown_banner_count],
-        visits_count_before_signup: JSON.parse(cookies[:visits]).size,
+        # shown_banner_count: cookies[:shown_banner_count],
+        # visits_count_before_signup: JSON.parse(cookies[:visits]).size,
         simplified: simplified,
         source: params[:source],
         platform: site_platform,
@@ -326,7 +352,8 @@ class ApplicationController < ActionController::Base
 
       track_alias
       track_user resource.to_tracker_profile.merge(data)
-      track_event 'Signed up', data.merge({ time_since_shown_signup_popup: time_since_shown_signup_popup })
+      # track_event 'Signed up', data.merge({ time_since_shown_signup_popup: time_since_shown_signup_popup })
+      track_event 'Signed up', data
 
       cookies.delete(:first_seen)
       cookies.delete(:last_shown_banner)
@@ -457,7 +484,14 @@ class ApplicationController < ActionController::Base
 
   protected
     def impressionist_async obj, message, opts
-      ImpressionistQueue.perform_async 'count', { "action_dispatch.remote_ip" => request.remote_ip, "HTTP_REFERER" => request.referer, 'HTTP_USER_AGENT' => request.user_agent, session_hash: request.session_options[:id] }, action_name, controller_name, params, obj.id, obj.class.to_s, message, opts
+      if obj.kind_of? Hash
+        obj_id = obj[:id]
+        obj_type = obj[:type]
+      else
+        obj_id = obj.id
+        obj_type = obj.class.to_s
+      end
+      ImpressionistQueue.perform_async 'count', { "action_dispatch.remote_ip" => request.remote_ip, "HTTP_REFERER" => (opts.delete(:referrer).presence || request.referer), 'HTTP_USER_AGENT' => request.user_agent, session_hash: (request.session_options[:id].presence || SecureRandom.hex(16)) }, (opts.delete(:action_name).presence || action_name), (opts.delete(:controller_name).presence || controller_name), params, obj_id, obj_type, message, opts
     rescue
     end
 
@@ -502,9 +536,11 @@ class ApplicationController < ActionController::Base
     end
 
     def show_hello_world?
-      incoming = request.referer.present? ? URI(request.referer).host != APP_CONFIG['default_host'] : true
+      # incoming = request.referer.present? ? URI(request.referer).host != APP_CONFIG['default_host'] : true
 
-      incoming and !user_signed_in? and (params[:controller].in? %w(projects users platforms)) and params[:action] == 'show'
+      # incoming and
+      # removed to allow http caching: checking for referrer in the browser directly
+      !user_signed_in? and (params[:controller].in? %w(projects users platforms)) and params[:action] == 'show'
     rescue
       false
     end

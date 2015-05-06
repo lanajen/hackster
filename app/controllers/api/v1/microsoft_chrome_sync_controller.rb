@@ -1,4 +1,6 @@
 class Api::V1::MicrosoftChromeSyncController < Api::V1::BaseController
+  skip_before_filter :track_visitor
+  skip_after_filter :track_landing_page
   before_filter :load_platform
   before_filter :authenticate
 

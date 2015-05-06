@@ -4,7 +4,7 @@ class ProjectDecorator < ApplicationDecorator
   def cover_image version=:cover
     if model.cover_image
       if model.cover_image.file_url
-        model.cover_image.file_url(version)
+        model.cover_image.imgix_url(version)
       elsif model.cover_image.tmp_file.present?
         h.asset_url "project_#{version}_image_processing.png"
       end
@@ -20,7 +20,7 @@ class ProjectDecorator < ApplicationDecorator
 
   def logo size=nil, use_default=true
     if model.logo and model.logo.file_url
-      model.logo.file_url(size)
+      model.logo.imgix_url(size)
     elsif use_default
       width = case size
       when :tiny

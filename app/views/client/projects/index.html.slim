@@ -3,6 +3,8 @@
   = auto_discovery_link_tag :rss, projects_path(format: :rss, sort: 'recent'), title: "Most recent projects - #{site_name}"
   = auto_discovery_link_tag :atom, projects_path(format: :atom, sort: 'recent'), title: "Most recent projects - #{site_name}"
 
+= inserts_stats_for current_platform.id, 'Group'
+
 - content_for :head do
   meta(property="og:title" content="#{current_platform.name} projects")
   meta(property="og:description" content=meta_desc)
@@ -28,11 +30,12 @@
       | on Hackster.io
 
   - unless @custom_header.present?
-    - cache "platform-#{current_platform.id}-client-subheading", tag: ["platform-#{current_platform.id}-sidebar", 'platform-sidebar'] do
-      #subheading.clearfix
-        p.pull-left= current_platform.mini_resume
+    - cache "platform-#{current_platform.id}-client-subheading", tag: ["platform-#{current_platform.id}-sidebar"] do
 
-        ul.list-inline.list-unstyled.pull-right.submenu
+      #subheading.row
+        p.col-md-8.text-center-sm.text-center-xs= current_platform.mini_resume
+
+        ul.list-inline.list-unstyled.col-md-4.submenu.text-right.text-center-sm.text-center-xs
           - if current_platform.documentation_link.present?
             li= link_to "Documentation", current_platform.documentation_link, target: '_blank'
           - if current_platform.forums_link.present?

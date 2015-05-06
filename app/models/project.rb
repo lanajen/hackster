@@ -1,4 +1,5 @@
 class Project < ActiveRecord::Base
+
   DEFAULT_NAME = 'Untitled'
 
   DIFFICULTIES = {
@@ -24,6 +25,7 @@ class Project < ActiveRecord::Base
     'trending' => :magic_sort,
     'updated' => :last_updated,
   }
+  STATES = %w(approved pending_review rejected unpublished)
   TYPES = {
     'External (hosted on another site)' => 'ExternalProject',
     'Normal' => 'Project',
@@ -40,7 +42,7 @@ class Project < ActiveRecord::Base
   include Privatable
   include StringParser
   include Taggable
-  # include Workflow
+  include Workflow
 
   editable_slug :slug
 
@@ -61,6 +63,7 @@ class Project < ActiveRecord::Base
   has_many :follow_relations, as: :followable
   has_many :followers, through: :follow_relations, source: :user
   has_many :grades
+  has_many :groups, -> { where(groups: { private: false }, project_collections: { workflow_state: ProjectCollection::VALID_STATES }) }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :hacker_spaces, -> { where("groups.type = 'HackerSpace'") }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :parts, through: :parts_widgets
   has_many :parts_widgets, as: :widgetable
@@ -119,12 +122,14 @@ class Project < ActiveRecord::Base
   before_update :update_slug, if: proc{|p| p.name_was == DEFAULT_NAME and p.name_changed? }
   # before_create :set_columns_count
   before_save :generate_slug, if: proc {|p| !p.persisted? or p.team_id_changed? }
+  after_update :publish!, if: proc {|p| p.private_changed? and p.public? and p.can_publish? }
 
   taggable :product_tags, :platform_tags
 
   store :counters_cache, accessors: [:comments_count, :product_tags_count,
     :widgets_count, :followers_count, :build_logs_count,
-    :issues_count, :team_members_count, :platform_tags_count, :communities_count]
+    :issues_count, :team_members_count, :platform_tags_count, :communities_count,
+    :platforms_count]
 
   store :properties, accessors: [:private_logs, :private_issues, :locked,
     :guest_twitter_handle, :celery_id]
@@ -132,17 +137,37 @@ class Project < ActiveRecord::Base
   parse_as_integers :counters_cache, :comments_count, :product_tags_count,
     :widgets_count, :followers_count, :build_logs_count,
     :issues_count, :team_members_count, :platform_tags_count,
-    :communities_count
+    :communities_count, :platforms_count
 
   parse_as_booleans :properties, :private_logs, :private_issues, :locked
 
   self.per_page = 18
 
-  # worlfow do
-  #   state :idea
-  #   state :prototype
-  #   state :finished_product
-  # end
+  workflow do
+    state :unpublished do
+      event :publish, transitions_to: :pending_review
+    end
+    state :pending_review do
+      event :approve, transitions_to: :approved
+      event :reject, transitions_to: :rejected
+      event :mark_needs_work, transitions_to: :needs_work
+    end
+    state :approved do
+      event :reject, transitions_to: :rejected
+      event :mark_needs_work, transitions_to: :needs_work
+      event :mark_needs_review, transitions_to: :pending_review
+    end
+    state :rejected do
+      event :approve, transitions_to: :approved
+      event :mark_needs_work, transitions_to: :needs_work
+      event :mark_needs_review, transitions_to: :pending_review
+    end
+    state :needs_work do
+      event :approve, transitions_to: :approved
+      event :reject, transitions_to: :rejected
+      event :mark_needs_review, transitions_to: :pending_review
+    end
+  end
 
   # beginning of search methods
   include TireInitialization
@@ -184,11 +209,11 @@ class Project < ActiveRecord::Base
   # end of search methods
 
   def self.approved
-    where.not(approved: false)
+    where(workflow_state: :approved)
   end
 
-  def self.approval_needed
-    where(approved: nil)
+  def self.need_review
+    where(workflow_state: :pending_review)
   end
 
   def self.custom_for user
@@ -219,11 +244,11 @@ class Project < ActiveRecord::Base
   end
 
   def self.indexable
-    live.where(approved: true, hide: false).where("projects.made_public_at < ?", Time.now)
+    live.approved.where(hide: false).where("projects.made_public_at < ?", Time.now)
   end
 
   def self.indexable_and_external
-    where("(projects.approved = 't' AND projects.private = 'f' AND projects.hide = 'f') OR (projects.type = 'ExternalProject' AND projects.approved <> 'f')")#.magic_sort
+    where("(projects.workflow_state = 'approved' AND projects.private = 'f' AND projects.hide = 'f') OR (projects.type = 'ExternalProject' AND projects.workflow_state <> 'rejected')")#.magic_sort
   end
 
   def self.live
@@ -279,7 +304,7 @@ class Project < ActiveRecord::Base
   end
 
   def self.with_group group
-    joins(:project_collections).where(project_collections: { collectable_id: group.id, collectable_type: 'Group' })
+    joins(:project_collections).where(project_collections: { collectable_id: group.id, collectable_type: 'Group', workflow_state: ProjectCollection::VALID_STATES })
   end
 
   def age
@@ -368,9 +393,10 @@ class Project < ActiveRecord::Base
     {
       build_logs: 'build_logs.published.count',
       comments: 'comments.count',
-      communities: 'platforms.count',
+      communities: 'groups.count',
       followers: 'followers.count',
       issues: 'issues.where(type: "Issue").count',
+      platforms: 'platforms.count',
       product_tags: 'product_tags_cached.count',
       respects: 'respects.count',
       team_members: 'users.count',
@@ -626,7 +652,7 @@ class Project < ActiveRecord::Base
       name: name,
       one_liner: one_liner,
       url: url,
-      cover_image_url: cover_image.try(:file_url, :cover_thumb),
+      cover_image_url: cover_image.try(:imgix_url, :cover_thumb),
       views_count: impressions_count,
       respects_count: respects_count,
       comments_count: comments_count,
@@ -677,7 +703,7 @@ class Project < ActiveRecord::Base
         end
       end
     end
-    # "#{message} (#{size})"
+
     message
   end
 

@@ -19,7 +19,7 @@ class ProjectWorker < BaseWorker
         when 'hackster'
           if project.approved?
             collection.approve! if collection.can_approve?
-          elsif project.approved == false
+          elsif project.rejected?
             collection.reject! if collection.can_reject?
           else
             # do nothing

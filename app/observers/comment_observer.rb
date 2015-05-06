@@ -33,6 +33,7 @@ class CommentObserver < ActiveRecord::Observer
     def expire_cache record
       project = record.commentable
       Cashier.expire "project-#{project.id}-comments", "project-#{project.id}-left-column", "project-#{project.id}"
+      project.purge
     end
 
     def update_counters record

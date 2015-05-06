@@ -1,5 +1,5 @@
 - embed.widget.images.each do |image|
   .image
     .figure
-      = image_tag image.file_url
+      = image_tag image.imgix_url
       .figcaption.small.text-center= image.title

@@ -1,6 +1,7 @@
 class Users::SessionsController < Devise::SessionsController
   before_filter :disable_flash
   before_filter :set_action, only: [:new, :create]
+  protect_from_forgery except: [:create]
 
   def new
     track_event 'Visited log in page', { referrer: request.referrer }
@@ -16,7 +17,12 @@ class Users::SessionsController < Devise::SessionsController
       end
     end
 
-    super
+    # is there a way to not have to duplicate the following code to change the flash message?
+    self.resource = warden.authenticate!(auth_options)
+    set_flash_message(:notice, :"signed_in_#{site_platform == 'hackster' ? 'hackster' : 'other'}") if is_flashing_format?
+    sign_in(resource_name, resource)
+    yield resource if block_given?
+    respond_with resource, location: after_sign_in_path_for(resource)
   end
 
   protected
@@ -24,6 +30,7 @@ class Users::SessionsController < Devise::SessionsController
       track_alias
       track_event 'Logged in'
       track_user current_user.to_tracker_profile
+      cookies[:hackster_user_signed_in] = '1'
 
       user_return_to
     end

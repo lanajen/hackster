@@ -2,6 +2,9 @@ class Rack::Attack
   TRUSTED_USER_AGENTS = ['NewRelicPinger/1.0',
     'Slackbot 1.0 (+https://api.slack.com/robots)']
 
+  # replaced req.ip with req.env['HTTP_FASTLY_CLIENT_IP'] because of HTTP caching
+  # same for req.user_agent and req.env['HTTP_USER_AGENT']
+
   ### Configure Cache ###
 
   # If you don't want to use Rails.cache (Rack::Attack's default), then
@@ -21,8 +24,8 @@ class Rack::Attack
   end
   whitelist('trusted_ua') do |req|
     TRUSTED_USER_AGENTS.each do |ua|
-      ua.in? req.user_agent
-    end
+      ua.in? req.env['HTTP_USER_AGENT']
+    end if req.env['HTTP_USER_AGENT']
   end
 
   ### Throttle Spammy Clients ###
@@ -36,7 +39,7 @@ class Rack::Attack
   # Key: "rack::attack:#{Time.now.to_i/:period}:req/ip:#{req.ip}"
   throttle('req/ip', limit: 100, period: 5.minutes) do |req|
     if req.get? and !req.xhr?
-      req.ip
+      req.env['HTTP_FASTLY_CLIENT_IP']
     end
   end
 
@@ -54,7 +57,7 @@ class Rack::Attack
   # Key: "rack::attack:#{Time.now.to_i/:period}:logins/ip:#{req.ip}"
   throttle('logins/ip', :limit => 5, :period => 20.seconds) do |req|
     if req.path == '/users/sign_in' && req.post?
-      req.ip
+      req.env['HTTP_FASTLY_CLIENT_IP']
     end
   end
 
@@ -75,10 +78,10 @@ class Rack::Attack
 
   # Block logins from a bad user agent
   blacklist('block scraper access') do |req|
-    req.user_agent =~ /23\.0\.1271\.97/ or (range = IPCat.datacenter?(req.ip) and range.name == 'Amazon AWS' and req.path != '/ping') or req.ip == '78.110.60.230'
+    req.user_agent =~ /23\.0\.1271\.97/ or (range = IPCat.datacenter?(req.env['HTTP_FASTLY_CLIENT_IP']) and range.name == 'Amazon AWS' and req.path != '/ping') or req.env['HTTP_FASTLY_CLIENT_IP'] == '78.110.60.230'
   end
   track('bad_scraper') do |req|
-    req.user_agent =~ /23\.0\.1271\.97/ or (range = IPCat.datacenter?(req.ip) and range.name == 'Amazon AWS' and req.path != '/ping')
+    req.user_agent =~ /23\.0\.1271\.97/ or (range = IPCat.datacenter?(req.env['HTTP_FASTLY_CLIENT_IP']) and range.name == 'Amazon AWS' and req.path != '/ping')
   end
 
   ### Custom Throttle Response ###

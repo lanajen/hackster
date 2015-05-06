@@ -1,7 +1,7 @@
 .col-md-8.col-md-offset-2
   h2.text-center
     - if @group.avatar.present?
-      ==> image_tag @group.avatar.file_url(:mini), class: 'img-thumb'
+      ==> image_tag @group.avatar.try(:imgix_url, :mini), class: 'img-thumb'
     = link_to @group.name, @group, class: 'hidden-link'
 
   .box

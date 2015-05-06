@@ -281,7 +281,6 @@ module UrlHelper
     params = params_for_project(project).merge(opts)
     params.delete(:use_route)
     super params
-    # super params_for_project(project).merge(opts)
   end
 
   def project_embed_url project, opts={}
@@ -326,7 +325,7 @@ module UrlHelper
     when Platform
       options = params_for_group options
       options[:use_route] = 'platform_short'
-    when Project
+    when Project, ProjectDecorator
       case options.type
       when 'Product'
         options = params_for_product options
@@ -432,6 +431,6 @@ module UrlHelper
         project_slug: project.slug,
         user_name: project.user_name_for_url,
         use_route: 'project',
-      }.merge(force_params)
+      }
     end
 end

@@ -45,24 +45,37 @@ $(window).load(function(){
   };
 
   //Fade in alerts/notices
-  if($('.fade-in').length){
+  if($('.fade-in').length) {
     //if there's a slide-in notification on top of the page, wait until it's down sliding down before affixing divs
     $('.fade-in').delay(2000).slideDown(500,function(){
       affixDivs();
     });
-  } else{
+  } else if ($('#hello-world').length) {
+    $('#hello-world')
+    var parser = document.createElement('a');
+    parser.href = document.referrer;
+    if (!document.referrer.length || parser.hostname != '<%= APP_CONFIG['default_host'] %>') {
+      $('#hello-world').delay(2000).slideDown(500,function(){
+        affixDivs();
+      });
+    } else {
+      affixDivs();
+    }
+  } else {
     affixDivs();
   }
-})
+});
 
 $(function () {
   <% if Rails.env == 'dev' %>
     // fix image URLS so they work on dev
     $('img').each(function(i, el) {
       var src = $(el).attr('src');
-      src = src.replace('hackster-dev', 'halckemy');
-      src = src.replace('/dev/', '/production/');
-      $(el).attr('src', src);
+      if (typeof(src) != 'undefined') {
+        src = src.replace('hackster-dev', 'halckemy');
+        src = src.replace('/dev/', '/production/');
+        $(el).attr('src', src);
+      }
     });
 
     $('[style*="background-image"]').each(function(i, el) {
@@ -77,6 +90,8 @@ $(function () {
   } else {
     $('.user-signed-out').show();
   }
+
+  showAlerts();
 
   $('input, textarea').placeholder();
 
@@ -335,7 +350,7 @@ function doUserSignedInUpdate(){
   var csrf = $('meta[name="csrf-token"]').attr('content');
   var input = $('<input type="hidden" name="authenticity_token" />')
   input.val(csrf);
-  $('form').append(input);
+  $('form.append-csrf-token').append(input);
 }
 
 function sortTable(){
@@ -365,4 +380,10 @@ function resetSortablePositions(target){
       .val(i+1)
       .trigger('change');
   });
+}
+
+function showAlerts() {
+  window.setTimeout(function(){
+    $('.alert-top').removeClass('alert-hidden');
+  }, 500);
 }

@@ -1,11 +1,12 @@
 class ProjectsController < ApplicationController
   before_filter :load_project, only: [:show, :embed, :print, :update, :destroy, :redirect_to_slug_route]
   before_filter :ensure_belongs_to_platform, only: [:show, :embed, :print, :update, :destroy, :redirect_to_slug_route]
-  load_and_authorize_resource only: [:index, :new, :edit, :submit]
-  # layout 'project', only: [:edit, :update, :show]
+  load_and_authorize_resource only: [:index, :new, :edit, :submit, :update_workflow]
   before_filter :load_lists, only: [:show, :show_external]
   respond_to :html
   after_action :allow_iframe, only: :embed
+  skip_before_filter :track_visitor, only: [:show]
+  skip_after_filter :track_landing_page, only: [:show]
 
   def index
     title "Explore all projects - Page #{safe_page_params || 1}"
@@ -34,16 +35,26 @@ class ProjectsController < ApplicationController
   def show
     authorize! :read, @project unless params[:auth_token] and params[:auth_token] == @project.security_token
 
-    impressionist_async @project, '', unique: [:session_hash]
+    if user_signed_in?
+      impressionist_async @project, '', unique: [:session_hash]
+    else
+      surrogate_keys = [@project.record_key, 'project']
+      surrogate_keys << current_platform.user_name if is_whitelabel?
+      set_surrogate_key_header *surrogate_keys
+      set_cache_control_headers
+    end
 
-    @show_part_of = ProjectCollection.assignment_or_event_for_project? @project.id
-    @show_sidebar = true
+    @following = if user_signed_in?
+      # gets all follow_relations and sorts them in { user: [], group: [] } depending on type
+      User.first.follow_relations.select(:followable_id, :followable_type).inject({ user: [], group: [] }) {|h, f| f.followable_type == 'User' ? h[:user] << f.followable_id : h[:group] << f.followable_id; h }
+    else
+      { user: [], group: [] }
+    end
     @can_edit = (user_signed_in? and current_user.can? :edit, @project)
     @can_update = (@can_edit and current_user.can? :update, @project)
 
-    @collections = @project.project_collections.includes(:collection)
     @challenge_entries = @project.challenge_entries.includes(:challenge).includes(:prize)
-    @winning_entry = @challenge_entries.select{|e| e.awarded? }.first
+    @communities = @project.groups.where.not(groups: { type: 'Event' }).includes(:avatar).order(full_name: :asc)
 
     @component_widgets = PartsWidget.select(:id).distinct(:id).where(widgetable_id: @project.id, widgetable_type: 'Project').joins(:parts).where("parts.name IS NOT NULL OR parts.name <> ''")
 
@@ -51,8 +62,6 @@ class ProjectsController < ApplicationController
     @project_meta_desc = "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."
     meta_desc @project_meta_desc
     @project = @project.decorate
-    # @widgets_by_section ={ 1=>[], 2=>[], 3=>[], 4=>[] }
-    @widgets = @project.widgets.order(:created_at)#.each{|w| @widgets_by_section[w.position[0].to_i] << w }
 
     # other projects by same author
     @other_projects_count = Project.public.most_popular.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id)
@@ -61,7 +70,7 @@ class ProjectsController < ApplicationController
 
     if @other_projects_count > 6
       @other_projects = Project.public.most_popular.own.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).includes(:team).includes(:cover_image)
-      @other_projects.with_group current_platform if is_whitelabel?
+      @other_projects = @other_projects.with_group current_platform if is_whitelabel?
       @other_projects = @other_projects.limit(3)
 
       @last_projects = Project.public.last_public.own.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: [@project.id] + @other_projects.map(&:id)).includes(:team).includes(:cover_image)
@@ -160,7 +169,7 @@ class ProjectsController < ApplicationController
       m.save
     end
     # @project.guest_name = nil
-    @project.approved = nil
+    @project.mark_needs_review!
     @project.save
 
     redirect_to project_path(@project), notice: "You just claimed #{@project.name}. We'll let you know when it's approved!"
@@ -206,7 +215,7 @@ class ProjectsController < ApplicationController
     if @project.external? or @project.product?
       event = 'Submitted link'
     else
-      # @project.approved = true
+      # @project.approve!
       @project.private = true
       event = 'Created project'
     end
@@ -240,6 +249,7 @@ class ProjectsController < ApplicationController
     initialize_project
     @team = @project.team
     @project = @project.decorate
+    @show_admin_bar = true if params[:show_admin_bar] and current_user.is? :admin
   end
 
   def update
@@ -275,6 +285,16 @@ class ProjectsController < ApplicationController
         flash[:alert] = "Couldn't publish the project, please email us at hi@hackster.io to get help."
       end
       redirect_to @project
+    end
+  end
+
+  def update_workflow
+    if @project.send "#{params[:event]}!"
+      flash[:notice] = "Project state changed to: #{params[:event]}."
+      redirect_to admin_projects_path(workflow_state: 'pending_review')
+    else
+      # flash[:error] = "Couldn't #{params[:event].gsub(/_/, ' ')} challenge, please try again or contact an admin."
+      render :edit
     end
   end
 

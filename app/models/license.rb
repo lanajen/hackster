@@ -5,10 +5,12 @@ class License
       abbr: 'Apache-2.0', },
     'http://opensource.org/licenses/BSD-3-Clause' => {
       name: 'BSD 3-Clause "New" or "Revised" license (BSD-3-Clause)',
-      abbr: 'BSD-3-Clause', },
+      abbr: 'BSD-3-Clause',
+      deprecated: true, },
     'http://opensource.org/licenses/BSD-2-Clause' => {
       name: 'BSD 2-Clause "Simplified" or "FreeBSD" license (BSD-2-Clause)',
-      abbr: 'BSD-2-Clause', },
+      abbr: 'BSD-2-Clause',
+      deprecated: true, },
     'http://opensource.org/licenses/GPL-3.0' => {
       name: 'GNU General Public License, version 3 or later (GPL3+)',
       abbr: 'GPL', },
@@ -28,10 +30,12 @@ class License
       abbr: 'MPL-2.0', },
     'http://opensource.org/licenses/CDDL-1.0' => {
       name: 'Common Development and Distribution License (CDDL-1.0)',
-      abbr: 'CDDL-1.0', },
+      abbr: 'CDDL-1.0',
+      deprecated: true, },
     'http://opensource.org/licenses/EPL-1.0' => {
       name: 'Eclipse Public License (EPL-1.0)',
-      abbr: 'EPL-1.0', },
+      abbr: 'EPL-1.0',
+      deprecated: true, },
     'http://www.tapr.org/OHL' => {
       name: 'TAPR Open Hardware License (TAPR-OHL)',
       abbr: 'TAPR-OHL', },
@@ -77,7 +81,8 @@ class License
       abbr: 'CC BY-NC-ND', },
     'https://tldrlegal.com/license/beerware-license' => {
       name: 'Beerware',
-      abbr: 'Beerware'
+      abbr: 'Beerware',
+      deprecated: true
     }
   }
 

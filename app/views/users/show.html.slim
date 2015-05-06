@@ -1,95 +1,98 @@
-section#projects-list
-  .wrapper
-    .main-section-actions.clearfix.mg-30
-      - if user_is_current?
-        .pull-right
-          ==> link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project"), new_project_path, class: 'btn btn-default'
-          small> or
-          = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Submit a link"), new_project_path(type: 'external'), class: 'btn btn-default'
+= inserts_stats_for @user.id, 'User'
 
-    h2
-      ' Public projects
-      = content_tag(:span, @public_count, class: 'badge')
-    - if @other_projects and @other_projects.any?
-      strong.text-muted
-        ' Built with #{current_platform.name}
-        = content_tag(:span, @public_projects.count, class: 'badge')
+- cache_unless user_is_current_or_admin?, "user-#{@user.id}-#{site_user_name}", tag: ["user-#{@user.id}"], expires_in: 3.hours do
+  section#projects-list
+    .wrapper
+      .main-section-actions.clearfix.mg-30
+        - if user_is_current?
+          .pull-right
+            ==> link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project"), new_project_path, class: 'btn btn-default'
+            small> or
+            = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Submit a link"), new_project_path(type: 'external'), class: 'btn btn-default'
 
-    - if @public_projects.any?
-      .thumb-list
-        .row.project-list
-          - @public_projects.each_with_index do |project, i|
-            = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'user', ref_id: @user.id, offset: i }
+      h2
+        ' Public projects
+        = content_tag(:span, @public_count, class: 'badge')
+      - if @other_projects and @other_projects.any?
+        strong.text-muted
+          ' Built with #{current_platform.name}
+          = content_tag(:span, @public_projects.count, class: 'badge')
 
-    - elsif user_is_current?
-      p
-        ' Looks like a great time to
-        - link_text = is_whitelabel? ? "showcase your first #{current_platform.name} project" : 'showcase your first project'
-        ==> link_to link_text, new_project_path, class: 'btn btn-info btn-sm'
-        ' !
-      p.smaller.text-muted
-        strong> Tip:
-        | Access private projects below.
-    - else
-      | #{@user.name} has no public projects.
+      - if @public_projects.any?
+        .thumb-list
+          .row.project-list
+            - @public_projects.each_with_index do |project, i|
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'user', ref_id: @user.id, offset: i }
+
+      - elsif user_is_current?
+        p
+          ' Looks like a great time to
+          - link_text = is_whitelabel? ? "showcase your first #{current_platform.name} project" : 'showcase your first project'
+          ==> link_to link_text, new_project_path, class: 'btn btn-info btn-sm'
+          ' !
+        p.smaller.text-muted
+          strong> Tip:
+          | Access private projects below.
+      - else
+        | #{@user.name} has no public projects.
 
 
-    - if @other_projects and @other_projects.any?
-      strong.text-muted
-        ' Built with other platforms
-        = content_tag(:span, @other_projects.count, class: 'badge')
-      .thumb-list
-        .row.project-list
-          - @other_projects.each_with_index do |project|
-            = render partial: 'projects/project_thumb', locals: { project: project.decorate, force_subdomain: 'www' }
+      - if @other_projects and @other_projects.any?
+        strong.text-muted
+          ' Built with other platforms
+          = content_tag(:span, @other_projects.count, class: 'badge')
+        .thumb-list
+          .row.project-list
+            - @other_projects.each_with_index do |project|
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate, force_subdomain: 'www' }
 
-    - if user_is_current_or_admin? and @private_projects.any?
+      - if user_is_current_or_admin? and @private_projects.any?
+        hr
+        h2
+          ' Private projects
+          = content_tag(:span, @private_projects.count, class: 'badge')
+        .thumb-list
+          .row.project-list
+            - @private_projects.each_with_index do |project, i|
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'userprivate', ref_id: @user.id, offset: i }
+
       hr
       h2
-        ' Private projects
-        = content_tag(:span, @private_projects.count, class: 'badge')
-      .thumb-list
-        .row.project-list
-          - @private_projects.each_with_index do |project, i|
-            = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'userprivate', ref_id: @user.id, offset: i }
+        ' Respected projects
+        = content_tag(:span, @respected_projects.count, class: 'badge')
+      - if @respected_projects.any?
+        .thumb-list
+          .row.project-list
+            - @respected_projects.each_with_index do |project, i|
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'userrespected', ref_id: @user.id, offset: i }
 
-    hr
-    h2
-      ' Respected projects
-      = content_tag(:span, @respected_projects.count, class: 'badge')
-    - if @respected_projects.any?
-      .thumb-list
-        .row.project-list
-          - @respected_projects.each_with_index do |project, i|
-            = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'userrespected', ref_id: @user.id, offset: i }
-
-    - elsif user_is_current?
-      p
-        ' You haven't respected any projects yet.
-        ==> link_to 'Browse around', projects_path
-        | for cool projects!
-    - else
-      | #{@user.name} hasn't respected any projects yet.
+      - elsif user_is_current?
+        p
+          ' You haven't respected any projects yet.
+          ==> link_to 'Browse around', projects_path
+          | for cool projects!
+      - else
+        | #{@user.name} hasn't respected any projects yet.
 
 
-    hr
-    h2
-      ' Comments
-      = content_tag(:span, @comments.count, class: 'badge')
-    - if @comments.any?
-      ul.list-unstyled.user-comments-list
-        - @comments.each do |comment|
-          li.comment
-            h5.comment-project
-              ==> link_to comment.commentable.name, project_path(comment.commentable, ref: 'usercomment', anchor: 'widget-comments')
-              small
-                ==> time_ago_in_words(comment.created_at)
-                | ago
-            .comment-text= raw comment.body
-    - elsif user_is_current?
-      p
-        ' You haven't commented on any projects yet.
-        ==> link_to 'Browse around', projects_path
-        ' for projects you can get involved in!
-    - else
-      | #{@user.name} hasn't commented on any projects yet.
+      hr
+      h2
+        ' Comments
+        = content_tag(:span, @comments.count, class: 'badge')
+      - if @comments.any?
+        ul.list-unstyled.user-comments-list
+          - @comments.each do |comment|
+            li.comment
+              h5.comment-project
+                ==> link_to comment.commentable.name, project_path(comment.commentable, ref: 'usercomment', anchor: 'widget-comments')
+                small
+                  ==> time_ago_in_words(comment.created_at)
+                  | ago
+              .comment-text= raw comment.body
+      - elsif user_is_current?
+        p
+          ' You haven't commented on any projects yet.
+          ==> link_to 'Browse around', projects_path
+          ' for projects you can get involved in!
+      - else
+        | #{@user.name} hasn't commented on any projects yet.

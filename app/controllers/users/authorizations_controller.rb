@@ -37,7 +37,7 @@ class Users::AuthorizationsController < Users::RegistrationsController
   end
 
   def update
-    if user_signed_in?
+    if params[:link_accounts]
       self.resource = resource_class.to_adapter.get!(send(:"current_#{resource_name}").to_key)
       resource.link_to_provider session['devise.provider'], session['devise.provider_data'].uid, session['devise.provider_data']
       set_flash_message(:notice, :linked_and_signed_in) if is_navigational_format?
@@ -68,6 +68,7 @@ class Users::AuthorizationsController < Users::RegistrationsController
     end
 
     def after_sign_up_path_for(resource)
+      cookies[:hackster_user_signed_in] = '1'
       track_event 'Connected with social account', { provider: resource.authorizations.first.try(:provider) }
       super(resource)
     end

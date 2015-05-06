@@ -11,6 +11,7 @@ class UserObserver < ActiveRecord::Observer
     Broadcast.where(context_model_id: record.id, context_model_type: 'User').destroy_all
     Broadcast.where(broadcastable_id: record.id, broadcastable_type: 'User').destroy_all
     Broadcast.where(user_id: record.id).destroy_all
+    record.purge
   end
 
   def after_invitation_accepted record
@@ -48,6 +49,7 @@ class UserObserver < ActiveRecord::Observer
         team.update_attribute :user_name, record.user_name if team.user_name == record.user_name_was
       end
     end
+    record.purge
   end
 
   def before_update record
@@ -57,21 +59,31 @@ class UserObserver < ActiveRecord::Observer
     record.interest_tags_count = record.interest_tags_string.split(',').count
     record.skill_tags_count = record.skill_tags_string.split(',').count
 
+    keys = []
+
+    if (record.changed & %w(projects_count followers_count)).any?
+      keys << "user-#{record.id}-thumb"
+      record.teams.each{|t| keys << "team-#{t.id}" }
+    end
 
     if (record.changed & %w(full_name user_name avatar slug)).any?
-      keys = ["user-#{record.id}-teaser", "user-#{record.id}-thumb"]
-      record.teams.each{|t| keys << "team-#{t.id}-user-thumbs" }
+      keys << "user-#{record.id}-thumb"
+      record.teams.each{|t| keys << "team-#{t.id}" }
       record.respected_projects.each{|p| keys << "project-#{p.id}-respects" }
-      Cashier.expire *keys
     end
 
-    if (record.changed & %w(full_name avatar mini_resume slug user_name forums_link documentation_link crowdfunding_link buy_link twitter_link facebook_link linked_in_link blog_link github_link website_link youtube_link google_plus_link city country state)).any? or record.interest_tags_string_changed? or record.skill_tags_string_changed?
-      Cashier.expire "user-#{record.id}-sidebar"
+    if (record.changed & %w(full_name avatar mini_resume slug user_name forums_link documentation_link crowdfunding_link buy_link twitter_link facebook_link linked_in_link blog_link github_link website_link youtube_link google_plus_link city country state projects_count followers_count)).any? or record.interest_tags_string_changed? or record.skill_tags_string_changed?
+      keys << "user-#{record.id}-sidebar"
     end
+
+    Cashier.expire *keys if keys.any?
   end
 
   def before_create record
     record.reset_counters assign_only: true
+    if record.platform.present? and record.platform != 'hackster' and platform = Platform.find_by_user_name(record.platform)
+      record.followed_platforms << platform
+    end
   end
 
   private

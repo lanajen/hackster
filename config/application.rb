@@ -29,7 +29,8 @@ module HackerIo
       :platform_observer, :project_collection_observer, :attachment_observer,
       :challenge_entry_observer, :challenge_observer, :awarded_badge_observer,
       :list_observer, :receipt_observer, :part_join_observer, :event_observer,
-      :notification_observer, :part_observer, :thought_observer
+      :notification_observer, :part_observer, :thought_observer,
+      :blog_post_observer, :impression_observer
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
@@ -60,8 +61,8 @@ module HackerIo
 
 
     # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-    config.assets.precompile += %w( admin.css email.css bitbucket-widget.min.css bitbucket-widget.min.js slick.eot slick.svg slick.ttf slick.woff datepicker.js datepicker.css tinymce.js tinymce/plugins/link/plugin.js tinymce/plugins/paste/plugin.js tinymce/plugins/code/plugin.js gmaps/google.js follow_iframe.css follow_iframe.js pdf_viewer.js pdf.worker.js project-thumb.css
-      channel.js )
+    config.assets.precompile += %w( admin.css email.css bitbucket-widget.min.css bitbucket-widget.min.js slick.eot slick.svg slick.ttf slick.woff datepicker.js datepicker.css tinymce.js tinymce/plugins/link/plugin.js tinymce/plugins/paste/plugin.js tinymce/plugins/code/plugin.js gmaps/google.js follow_iframe.css follow_iframe.js project-thumb.css
+      channel.js whitelabel/arduino/all.css )
 
     config.active_record.whitelist_attributes = false
 
@@ -87,8 +88,8 @@ module HackerIo
       :port => 587,
       :domain => "hackster.io",
       :authentication => :plain,
-      :user_name => "hacksterio",
-      :password => "mod3pa55"
+      :user_name => ENV['SENDGRID_USERNAME'],
+      :password => ENV['SENDGRID_PASSWORD']
     }
 
     config.middleware.use Rack::Attack

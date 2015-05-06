@@ -19,5 +19,5 @@
         ==> pluralize_without_count user.followers_count, 'follower'
 
     .wide-thumb-body-bottom
-      = render partial: 'followers/button_shorter', locals: { followable: user }
+      = render partial: 'followers/button_shorter', locals: { followable: user, full: true }
       = link_to 'Contact', new_conversation_path(recipient_id: user.id), class: 'btn btn-link btn-sm'

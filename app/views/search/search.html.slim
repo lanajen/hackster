@@ -1,3 +1,8 @@
+- if params[:q].present?
+  = content_for :head do
+    = auto_discovery_link_tag :rss, search_path(format: :rss, q: params[:q]), title: "Projects that match '#{params[:q]}' - Hackster.io"
+    = auto_discovery_link_tag :atom, search_path(format: :atom, q: params[:q]), title: "Projects that match '#{params[:q]}' - Hackster.io"
+
 .search-page.row
   .col-xs-3
     ul.nav.nav-pills.nav-stacked

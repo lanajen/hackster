@@ -1,7 +1,7 @@
 module BootstrapFlashHelper
   ALERT_TYPES = %w(danger info success warning)
 
-  def bootstrap_flash classes='fade alert-top alert-flat in'
+  def bootstrap_flash classes='alert-top alert-hidden'
     flash_messages = []
     flash.each do |type, message|
       # Skip empty messages, e.g. for devise messages set to nothing in a locale file.
@@ -13,9 +13,8 @@ module BootstrapFlashHelper
 
       Array(message).each do |msg|
         text = content_tag(:div,
-                  content_tag(:div,
-                     content_tag(:button, raw("&times;"), :class => "btn-close close", "data-close" => ".alert-top") +
-                       msg.html_safe, class: 'container'), class: "alert alert-#{type} #{classes}")
+                   content_tag(:button, raw("&times;"), :class => "btn-close close", "data-close" => ".alert-top") +
+                     msg.html_safe, class: "alert alert-#{type} #{classes}")
         flash_messages << text if msg
       end
     end

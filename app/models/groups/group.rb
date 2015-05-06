@@ -1,4 +1,5 @@
 class Group < ActiveRecord::Base
+
   ACCESS_LEVELS = {
     'Anyone without approval' => 'anyone',
     'Anyone can request access' => 'request',

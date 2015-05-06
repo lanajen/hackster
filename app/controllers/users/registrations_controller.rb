@@ -32,7 +32,11 @@ class Users::RegistrationsController < Devise::RegistrationsController
     end
 
     if successfully_updated
-      set_flash_message :notice, :updated
+      if @user.unconfirmed_email.present?
+        set_flash_message :notice, :updated_email, email: @user.email
+      else
+        set_flash_message :notice, :updated
+      end
       # Sign in the user bypassing validation in case his password changed
       sign_in @user, :bypass => true
       redirect_to after_update_path_for(@user)
@@ -43,6 +47,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   protected
     def after_sign_up_path_for(resource)
+      cookies[:hackster_user_signed_in] = '1'
       track_signup resource
 
       user_after_registration_path
@@ -72,7 +77,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
     # ie if password or email was changed
     # extend this as needed
     def needs_password?(user, params)
-      user.email != params[:user][:email] ||
-        params[:user][:password].present?
+      params[:user][:password].present?
     end
 end

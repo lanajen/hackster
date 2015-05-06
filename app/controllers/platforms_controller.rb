@@ -12,8 +12,15 @@ class PlatformsController < ApplicationController
   after_action :allow_iframe, only: [:embed]
   respond_to :html
   protect_from_forgery except: :embed
+  skip_before_filter :track_visitor, only: [:index, :show]
+  skip_after_filter :track_landing_page, only: [:index, :show]
 
   def index
+    unless user_signed_in?
+      set_surrogate_key_header 'platforms'
+      set_cache_control_headers 3600
+    end
+
     title "Explore platforms"
     meta_desc "Find hardware and software platforms to help you build your next projects."
 
@@ -32,12 +39,19 @@ class PlatformsController < ApplicationController
   end
 
   def show
+    if user_signed_in?
+      impressionist_async @platform, "", unique: [:session_hash]
+    else
+      set_surrogate_key_header @platform.record_key, 'platform'
+      set_cache_control_headers 3600
+    end
+
     respond_to do |format|
       format.html do
         title "#{@platform.name}'s community hub"
         meta_desc "Explore #{@platform.name}'s community hub to learn and share about their products! Join #{@platform.followers_count} hackers who follow #{@platform.name} on Hackster."
 
-        sql = "SELECT users.*, t1.count FROM (SELECT members.user_id as user_id, COUNT(*) as count FROM members INNER JOIN groups AS team ON team.id = members.group_id INNER JOIN projects ON projects.team_id = team.id INNER JOIN project_collections ON project_collections.project_id = projects.id WHERE project_collections.collectable_type = 'Group' AND project_collections.collectable_id = ? AND projects.private = 'f' AND projects.hide = 'f' AND projects.approved = 't' AND (projects.guest_name = '' OR projects.guest_name IS NULL) GROUP BY user_id) AS t1 INNER JOIN users ON users.id = t1.user_id WHERE t1.count > 0 ORDER BY t1.count DESC LIMIT 5;"
+        sql = "SELECT users.*, t1.count FROM (SELECT members.user_id as user_id, COUNT(*) as count FROM members INNER JOIN groups AS team ON team.id = members.group_id INNER JOIN projects ON projects.team_id = team.id INNER JOIN project_collections ON project_collections.project_id = projects.id WHERE project_collections.collectable_type = 'Group' AND project_collections.collectable_id = ? AND projects.private = 'f' AND projects.hide = 'f' AND projects.workflow_state = 'approved' AND (projects.guest_name = '' OR projects.guest_name IS NULL) GROUP BY user_id) AS t1 INNER JOIN users ON users.id = t1.user_id WHERE t1.count > 0 ORDER BY t1.count DESC LIMIT 5;"
         @followers = User.find_by_sql([sql, @platform.id])
         if @followers.count < 5
           @followers = @platform.followers.top.limit(5)

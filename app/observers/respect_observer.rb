@@ -18,7 +18,8 @@ class RespectObserver < ActiveRecord::Observer
       case record.respectable
       when Project
         record.respectable.update_counters only: [:respects], solo_counters: true
-        Cashier.expire "project-#{record.respectable_id}-respects"
+        Cashier.expire "project-#{record.respectable_id}-respects", "project-#{record.respectable_id}"
+        record.respectable.purge
         record.user.update_counters only: [:respects]
       end
     end

@@ -57,12 +57,18 @@ class PlatformObserver < ActiveRecord::Observer
     expire_index
   end
 
+  def after_update record
+    record.purge
+  end
+
   def after_destroy record
     expire_index
+    record.purge
   end
 
   private
     def expire_index
       Cashier.expire 'platform-index'
+      Platform.purge_all
     end
 end

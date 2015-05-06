@@ -27,35 +27,15 @@ html lang="en" class=content_for(:html_class)
 
     - if current_site.favicon.try(:file_url)
       link href=current_site.favicon.file_url rel="shortcut icon"
-    / link rel="apple-touch-icon" sizes="57x57" href="#{ asset_path 'favicons/apple-touch-icon-57x57.png' }"
-    / link rel="apple-touch-icon" sizes="114x114" href="#{ asset_path 'favicons/apple-touch-icon-114x114.png' }"
-    / link rel="apple-touch-icon" sizes="72x72" href="#{ asset_path 'favicons/apple-touch-icon-72x72.png' }"
-    / link rel="apple-touch-icon" sizes="144x144" href="#{ asset_path 'favicons/apple-touch-icon-144x144.png' }"
-    / link rel="apple-touch-icon" sizes="60x60" href="#{ asset_path 'favicons/apple-touch-icon-60x60.png' }"
-    / link rel="apple-touch-icon" sizes="120x120" href="#{ asset_path 'favicons/apple-touch-icon-120x120.png' }"
-    / link rel="apple-touch-icon" sizes="76x76" href="#{ asset_path 'favicons/apple-touch-icon-76x76.png' }"
-    / link rel="apple-touch-icon" sizes="152x152" href="#{ asset_path 'favicons/apple-touch-icon-152x152.png' }"
-    / link rel="apple-touch-icon" sizes="180x180" href="#{ asset_path 'favicons/apple-touch-icon-180x180.png' }"
-    / link rel="icon" type="image/png" href="#{ asset_path 'favicons/favicon-192x192.png" sizes="192x192' }"
-    / link rel="icon" type="image/png" href="#{ asset_path 'favicons/favicon-160x160.png" sizes="160x160' }"
-    / link rel="icon" type="image/png" href="#{ asset_path 'favicons/favicon-96x96.png" sizes="96x96' }"
-    / link rel="icon" type="image/png" href="#{ asset_path 'favicons/favicon-16x16.png" sizes="16x16' }"
-    / link rel="icon" type="image/png" href="#{ asset_path 'favicons/favicon-32x32.png" sizes="32x32' }"
-    / meta name="msapplication-TileColor" content="#da532c"
-    / meta name="msapplication-TileImage" content="#{ asset_path 'favicons/mstile-144x144.png' }"
-    / link href="#{ asset_path 'favicons/favicon.ico' }" rel="shortcut icon" type="image/vnd.microsoft.icon"
 
     - if Rails.env == 'production'
       = raw current_site.analytics_code
-      javascript:
-        window.heap=window.heap||[],heap.load=function(t,e){window.heap.appid=t,window.heap.config=e;var a=document.createElement("script");a.type="text/javascript",a.async=!0,a.src=("https:"===document.location.protocol?"https:":"http:")+"//cdn.heapanalytics.com/js/heap.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(a,n);for(var o=function(t){return function(){heap.push([t].concat(Array.prototype.slice.call(arguments,0)))}},p=["clearEventProperties","identify","setEventProperties","track","unsetEventProperty"],c=0;c<p.length;c++)heap[p[c]]=o(p[c])};
-        heap.load("3903892806");
       - unless current_user and current_user.is? :admin
-        = render partial: 'shared/analytics', locals: { tracker: 'UA-11926897-17', domain: 'hackster.io' }
+        = render partial: 'shared/analytics', locals: { tracker: 'UA-11926897-15', domain: 'hackster.io' }
     = content_for :head
     = javascript_include_tag "application"
 
-  body.whitelabel
+  body.whitelabel data-user-signed-in=user_signed_in?
     #outer-wrapper
       - if user_signed_in? and current_user.simplified_signup?
         .alert.alert-flat.alert-warning.alert-smaller

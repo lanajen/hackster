@@ -1,0 +1,66 @@
+- content_for :html_class do
+  = 'arduino-html'
+
+/ = stylesheet_link_tag '//www.arduino.cc/fonts/fonts.css'
+- if Rails.env == 'development'
+  = stylesheet_link_tag 'whitelabel/arduino/foundation2.css'
+- else
+  = stylesheet_link_tag '//s3.amazonaws.com/halckemy/assets/production/whitelabel/arduino/foundation2.css'
+= stylesheet_link_tag 'whitelabel/arduino/all'
+/ # = stylesheet_link_tag 'whitelabel/arduino/typeplate'
+/ # = stylesheet_link_tag 'whitelabel/arduino/common'
+/ # = stylesheet_link_tag 'whitelabel/arduino/new_style'
+/ # = stylesheet_link_tag 'whitelabel/arduino/arduino-icons'
+
+javascript:
+   WebFontConfig = {
+    custom: {
+      families: [
+        'TyponineSans Light 17',
+        'TyponineSans Regular 18',
+        'TyponineSans Monospace Medium 3'
+      ],
+      urls: [
+        '//arduino.cc/fonts/fonts.css'
+      ]
+    }
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })();
+
+css:
+  .arduino-projects {
+    background-color: #00979C;
+  }
+  a:hover {
+    text-decoration: none;
+  }
+  #page {
+    padding: 0 !important;
+  }
+  .navbar-static-top {
+    z-index: 10;
+  }
+  .top-bar, .top-bar a {
+    font-weight: bold;
+  }
+  .row .row.collapse:before, .row .row.collapse:after {
+    content: " ";
+    display: table; }
+  .row .row.collapse:after {
+    clear: both; }
+  @media (min-width: 1200px) {
+    .navbar-in .container {
+      max-width: 990px;
+    }
+  }
+  body.whitelabel .powered-by {
+    padding: 20px 0;
+  }

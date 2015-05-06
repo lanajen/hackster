@@ -111,11 +111,9 @@ after_fork do |server, worker|
     config = ActiveRecord::Base.configurations[Rails.env] ||
                 Rails.application.config.database_configuration[Rails.env]
     config['reaping_frequency'] = ENV['DB_REAP_FREQ'] || 10 # seconds
-    config['pool']              = ENV['DB_POOL'] || 2
-    ActiveRecord::Base.establish_connection(config)
+    config['pool']              = db_pool_size
 
-    # Turning synchronous_commit off can be a useful alternative when performance is more important than exact certainty about the durability of a transaction
-    # ActiveRecord::Base.connection.execute "update pg_settings set setting='off' where name = 'synchronous_commit';"
+    ActiveRecord::Base.establish_connection(config)
 
     Rails.logger.info("Connection pool size for unicorn is now: #{ActiveRecord::Base.connection.pool.instance_variable_get('@size')}")
   end

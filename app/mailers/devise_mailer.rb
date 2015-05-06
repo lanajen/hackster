@@ -1,6 +1,7 @@
 class DeviseMailer < ActionMailer::Base
   def confirmation_instructions(record, token, opts={})
-    user_email 'confirmation_instructions', record, token, opts
+    template = record.unconfirmed_email ?  'email_update_instructions' : 'confirmation_instructions'
+    user_email template, record, token, opts
   end
 
   def confirmation_instructions_simplified_signup(record, token, opts={})

@@ -1,6 +1,6 @@
 .col-sm-6.col-md-4.mobile-scroll-row-item
   .thumb.platform-thumb
-    .thumb-image.has-link-overlay style="background-image:url('#{platform.cover_image.try(:file_url, :cover_thumb)}')"
+    .thumb-image.has-link-overlay style="background-image:url('#{platform.cover_image.try(:imgix_url, :cover_thumb)}')"
       = link_to '', platform, class: 'link-overlay'
       .thumb-image-inner-top
         - if platform.is_new
@@ -10,7 +10,7 @@
       .thumb-image-inner
       .thumb-bottom
         a.thumb-bottom-over-top href=url_for(platform)
-          = image_tag platform.avatar.try(:file_url, :medium)
+          = image_tag platform.avatar.try(:imgix_url, :medium)
         h4
           = link_to platform.name, platform
           / span.platform-type Platform

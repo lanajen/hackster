@@ -26,12 +26,12 @@ class Platform < List
     :project_ideas_phrasing, :client_subdomain_attributes, :logo_id,
     :download_link, :company_logo_id, :disclaimer, :moderation_level,
     :cta_text, :parts_attributes, :verified, :enable_chat, :enable_products,
-    :description, :enable_parts
+    :description, :enable_parts, :enable_password
 
   accepts_nested_attributes_for :client_subdomain, :parts
 
   # before_save :update_user_name
-  before_save :format_hashtag, :ensure_api_credentials
+  before_save :format_hashtag, :ensure_extra_credentials
 
   store_accessor :websites, :forums_link, :documentation_link,
     :crowdfunding_link, :buy_link, :shoplocket_link, :download_link
@@ -40,12 +40,12 @@ class Platform < List
   store_accessor :properties, :accept_project_ideas, :project_ideas_phrasing,
     :active_challenge, :disclaimer, :moderation_level, :cta_text, :hashtag,
     :verified, :enable_chat, :enable_products, :description, :enable_parts,
-    :api_username, :api_password
+    :api_username, :api_password, :http_password, :enable_password
   set_changes_for_stored_attributes :properties
 
   parse_as_booleans :properties, :accept_project_ideas, :active_challenge,
     :is_new, :enable_comments, :hidden, :verified, :enable_chat, :enable_products,
-    :enable_parts
+    :enable_parts, :enable_password
 
   store_accessor :counters_cache, :parts_count, :products_count
 
@@ -53,6 +53,8 @@ class Platform < List
     :private_projects_count, :products_count, :parts_count
 
   taggable :platform_tags, :product_tags
+
+  is_impressionable counter_cache: true, unique: :session_hash
 
   # beginning of search methods
   has_tire_index 'private'
@@ -161,13 +163,14 @@ class Platform < List
       self.hashtag = '#' + hashtag if hashtag.present? and hashtag !~ /\A#/
     end
 
-    def ensure_api_credentials
-      generate_api_credentials unless api_username.present? and api_password.present?
+    def ensure_extra_credentials
+      generate_extra_credentials unless api_username.present? and api_password.present? and http_password.present?
     end
 
-    def generate_api_credentials
-      self.api_username = SecureRandom.urlsafe_base64(nil, false)
-      self.api_password = Digest::SHA1.hexdigest([Time.now, rand].join)
+    def generate_extra_credentials opts={}
+      self.api_username = SecureRandom.urlsafe_base64(nil, false) if api_username.blank? or opts[:force]
+      self.api_password = Digest::SHA1.hexdigest([Time.now, rand].join) if api_password.blank? or opts[:force]
+      self.http_password = Digest::SHA1.hexdigest([Time.now, rand].join) if http_password.blank? or opts[:force]
     end
 
     def user_name_is_unique

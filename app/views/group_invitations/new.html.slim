@@ -5,7 +5,7 @@
   .col-md-6.col-md-offset-3.col-sm-8.col-sm-offset-2
     h2.text-center
       - if @invitable.respond_to?(:avatar) and @invitable.avatar.present?
-        ==> image_tag @invitable.avatar.file_url(:mini), class: 'img-thumb'
+        ==> image_tag @invitable.avatar.try(:imgix_url, :mini), class: 'img-thumb'
       = link_to @invitable.name, @invitable, class: 'hidden-link'
 
     .box

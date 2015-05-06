@@ -9,7 +9,7 @@ class ChallengeDecorator < ApplicationDecorator
 
   def cover_image size=:cover
     if model.cover_image and model.cover_image.file_url
-      model.cover_image.file_url(size)
+      model.cover_image.imgix_url(size)
     else
       h.asset_url 'footer-bg.png'
     end
