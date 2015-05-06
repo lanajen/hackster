@@ -27,6 +27,16 @@ class Team < Group
     end
   end
 
+  def name
+    if full_name.present?
+      if full_name =~ /team/i
+        full_name
+      else
+        "Team #{full_name}"
+      end
+    end
+  end
+
   def project
     projects.first
   end

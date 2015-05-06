@@ -357,7 +357,7 @@
                   section.section-thumbs#team
                     h4
                       - if @project.project.team.full_name.present?
-                        | Team #{@project.team.full_name}
+                        = @project.team.name
                       - elsif @project.team_members_count > 1
                         | Team members
                       - else
