@@ -77,7 +77,7 @@ class ProjectObserver < ActiveRecord::Observer
       end
     end
 
-    if record.approved_changed?
+    if record.workflow_state_changed?
       if record.rejected?
         record.hide = true
       elsif record.approved?

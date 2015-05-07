@@ -69,6 +69,8 @@
                     h1.project-title
                       - if @project.is_idea?
                         i.fa.fa-lightbulb-o.private-project-icon>
+                      - if @project.wip
+                        span.istooltip style='vertical-align: middle;font-size: 50%;color: #ddd;margin-right: 5px;' title="Work in progress" WIP
                       ==> @project.name
                       - if @project.license
                         a.copyright target='_blank' href=@project.license.url &copy;&nbsp;#{@project.license.abbr.gsub(' ', '&nbsp;').html_safe}
