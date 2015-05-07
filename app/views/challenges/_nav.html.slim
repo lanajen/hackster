@@ -1,4 +1,4 @@
-- if @challenge.judged?
+- if @challenge.ended?
   = active_li_link_to content_tag(:span, "Projects") + content_tag(:small, @challenge.projects_count), url_for(@challenge), role: 'presentation'
   = active_li_link_to 'Challenge brief', challenge_brief_path(@challenge.slug), role: 'presentation'
 - else
