@@ -96,7 +96,7 @@ class ListsController < ApplicationController
       @projects = if @list.enable_comments
         @list.project_collections.joins(:project).visible.order('project_collections.workflow_state DESC').merge(Project.indexable_and_external.for_thumb_display_in_collection).paginate(page: safe_page_params, per_page: per_page)
       else
-        @list.projects.visible.indexable_and_external.order('project_collections.workflow_state DESC').magic_sort.for_thumb_display.paginate(page: safe_page_params, per_page: per_page)
+        @list.projects.visible.order('project_collections.workflow_state DESC').magic_sort.for_thumb_display.paginate(page: safe_page_params, per_page: per_page)
       end
     end
 

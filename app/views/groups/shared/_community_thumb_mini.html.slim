@@ -2,7 +2,8 @@
 
 .thumb-group
   .thumb-group-body
-    = link_to image_tag(community.avatar(:big)), community
+    - unless community.type == 'List'
+      = link_to image_tag(community.avatar(:big)), community
 
     h5= link_to community.name, community
 

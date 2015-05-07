@@ -32,9 +32,10 @@
 
         .container.hidden-xs
           .media
-            .media-left
-              = image_tag @group.avatar(:big), class: 'img-thumbnail'
-            .media-body
+            - unless @group.type == 'List'
+              .media-left
+                = image_tag @group.avatar(:big), class: 'img-thumbnail'
+            .media-body class=(@group.type == 'List' ? 'no-avatar' : nil)
               .clearfix
                 - begin
                   = render partial: "groups/#{@group.identifier.pluralize}/heading"

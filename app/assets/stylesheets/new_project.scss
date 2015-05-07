@@ -401,12 +401,20 @@
   background: #fff;
   img {
     max-height: 100%;
+    float: left;
+    display: block;
+    width: 34px;
   }
   h5 {
     margin: 0;
-    display: inline-block;
-    margin-left: 10px;
+    display: block;
+    padding-left: 10px;
+    padding-top: 7px;
     font-weight: bold;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: calc(100% - 34px);
+    overflow: hidden;
     a {
       color: #666;
     }
