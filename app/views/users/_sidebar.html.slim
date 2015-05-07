@@ -1,4 +1,4 @@
-- cache ["user-#{@user.id}-sidebar", user_signed_in?, user_is_current?, (user_signed_in? and current_user.following?(@user)), (user_signed_in? and current_user.is?(:admin)), current_platform.present?], tag: ["user-#{@user.id}-sidebar"], expires_in: 6.hours do
+- cache ["user-#{@user.id}-sidebar", user_signed_in?, user_is_current?, (user_signed_in? and current_user.following?(@user)), (user_signed_in? and current_user.is?(:admin)), !is_whitelabel?], tag: ["user-#{@user.id}-sidebar"], expires_in: 6.hours do
   #sidebar-container.affixable
     section#sidebar-container-in
       - if @user.avatar
@@ -20,7 +20,7 @@
           - elsif user_is_current?
             ' No location.
             = link_to 'Add one?', profile_edit_path
-        - if members = PlatformMember.where(user_id: @user.id).includes(:group) and members.any?
+        - if !is_whitelabel? and members = PlatformMember.where(user_id: @user.id).includes(:group) and members.any?
           - members.each do |member|
             p.team-widget.user-communities
               - platform = member.group
@@ -80,7 +80,7 @@
             / - @user.badges(:silver).each do |badge|
               = image_tag(asset_url(badge.get_image), class: 'img-circle istooltip', title: badge.name)
 
-      - unless current_platform.present?
+      - unless is_whitelabel?
         - if @user.followed_platforms.where(groups: { private: false }).any?
           .display
             h4 Platforms
