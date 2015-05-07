@@ -22,6 +22,10 @@ class Comment < ActiveRecord::Base
     joins("JOIN #{type.table_name} ON #{type.table_name}.id = #{self.table_name}.commentable_id AND #{self.table_name}.commentable_type = '#{type.to_s}'")
   end
 
+  def self.have_owner
+    where.not(user_id: 0)
+  end
+
   def self.sort_from_hierarchy comments
     parents = {}
     comments.each do |comment|

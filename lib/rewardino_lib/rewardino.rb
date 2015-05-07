@@ -1,4 +1,5 @@
 require File.join(Rails.root,  'lib/rewardino_lib/rewardino/badge')
+require File.join(Rails.root,  'lib/rewardino_lib/rewardino/event')
 require File.join(Rails.root,  'lib/rewardino_lib/rewardino/trigger')
 require File.join(Rails.root,  'lib/rewardino_lib/rewardino/status')
 require File.join(Rails.root,  'lib/rewardino_lib/rewardino/nominee')

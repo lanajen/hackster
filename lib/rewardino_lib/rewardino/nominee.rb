@@ -3,7 +3,8 @@ module Rewardino
 
     def self.included base
       base.class_eval do
-        has_many :awarded_badges, as: :awardee
+        has_many :awarded_badges, as: :awardee, dependent: :destroy
+        has_many :reputation_events, dependent: :destroy
 
         def self.evaluate_badge id, *args
           nominee = find id

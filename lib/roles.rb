@@ -8,13 +8,23 @@ module Roles
         define_method "#{attribute}" do
           class_variable_get "@@#{attribute}"
         end
-        define_method "with_#{attribute}" do |roles|
-          roles = [roles] unless roles.class == Array
-          bits = roles.map{|r| eval("2**#{attribute}.index(r.to_s)") }
+        define_method "with_#{attribute}" do |_roles|
+          bits = send("bits_for_#{attribute}_query", _roles)
           conditions = bits.map{|b| "(#{self.table_name}.#{attribute}_mask & #{b} > 0)" }
           eval "
             where('#{conditions.join(' OR ')}')
           "
+        end
+        define_method "without_#{attribute}" do |_roles|
+          bits = send("bits_for_#{attribute}_query", _roles)
+          conditions = bits.map{|b| "(#{self.table_name}.#{attribute}_mask & #{b} = 0)" }
+          eval "
+            where('#{conditions.join(' AND ')} OR #{attribute}_mask IS NULL')
+          "
+        end
+        define_method "bits_for_#{attribute}_query" do |_roles|
+          _roles = [_roles] unless _roles.class == Array
+          bits = _roles.map{|r| eval("2**#{attribute}.index(r.to_s)") }
         end
       end
 

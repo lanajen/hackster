@@ -54,6 +54,24 @@ class CronTask < BaseWorker
     end
   end
 
+  def compute_reputation code=nil, date=nil
+    if code
+      date = Time.at(date.to_i) if date
+      Rewardino::Event.find(code).compute date
+    else
+      Rewardino::Event.all.keys.each do |code|
+        CronTask.perform_async 'compute_reputation', code, date
+      end
+      redis.set 'last_update', Time.now.to_i
+    end
+  end
+
+  def compute_daily_reputation
+    date = redis.get('last_update')
+    # date = Time.at(date.to_i) if date.present?
+    compute_reputation nil, date.presence
+  end
+
   def evaluate_badges
     return unless Rewardino.activated?
 
@@ -85,6 +103,7 @@ class CronTask < BaseWorker
 
   def launch_daily_cron
     begin
+      compute_daily_reputation
       compute_popularity
       send_daily_notifications
       self.class.perform_in 24.hours, 'launch_daily_cron'
@@ -173,6 +192,10 @@ class CronTask < BaseWorker
 
     def get_email_from_users users
       users.map(&:email)
+    end
+
+    def redis
+      @redis ||= Redis::Namespace.new('cron_task', redis: Redis.new($redis_config))
     end
 
     def remove_subscribers gb, list_id, users
