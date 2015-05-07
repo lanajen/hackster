@@ -67,18 +67,19 @@ table.table.table-striped
   tbody
     - if @entries.any?
       - @entries.each do |entry|
-        tr
-          td= link_to entry.project.name, entry.project
-          td
-            - user = entry.user
-            ==> link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
-            = link_to user.name, user
-          td= l entry.created_at
-          td= entry.workflow_state
-          td= entry.judging_notes.try(:truncate, 100)
-          td= entry.prize ? entry.prize.name : 'None'
-          td
-            - if @challenge.judging?
-              = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_challenge_entry_path(@challenge, entry), class: 'btn btn-xs btn-default', rel: 'tooltip', title: 'Edit'
+        - if entry.project
+          tr
+            td= link_to entry.project.name, entry.project
+            td
+              - user = entry.user
+              ==> link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
+              = link_to user.name, user
+            td= l entry.created_at
+            td= entry.workflow_state
+            td= entry.judging_notes.try(:truncate, 100)
+            td= entry.prize ? entry.prize.name : 'None'
+            td
+              - if @challenge.judging?
+                = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_challenge_entry_path(@challenge, entry), class: 'btn btn-xs btn-default', rel: 'tooltip', title: 'Edit'
     - else
       td.text-center colspan=7 No entries yet
