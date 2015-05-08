@@ -80,11 +80,18 @@
       };
 
       $('#new-part-modal').on('show.bs.modal', function(e){
+        var button = $(e.relatedTarget);
+        $(this).find('#part_name').val(button.data('value'));
+
         $('#parts-widget-form .select2-container--open').each(function(i, el){
           var select = $(el).prev();
           $select2target = select.attr('id');
           $select2containers[$select2target].select2('close');
         });
+      });
+
+      $('#new-part-modal').on('shown.bs.modal', function(e){
+        $(this).find('#part_name').focus();
       });
 
       $('#new-part-form').on('ajax:success', function(xhr, data, status){
