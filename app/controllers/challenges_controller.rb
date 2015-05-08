@@ -90,9 +90,10 @@ class ChallengesController < ApplicationController
       per_page = per_page - 1 if @challenge.open_for_submissions? and @is_challenge_entrant
       if @challenge.judged?
         @winning_entries = @challenge.entries.winning.includes(:project)
+        @winning_entries_count = @winning_entries.count
         @other_projects = @challenge.projects.references(:challenge_entries).where("challenge_projects.prize_id IS NULL")
       else
-        @projects = @challenge.projects.paginate(page: params[:page], per_page: per_page)
+        @projects = @challenge.projects.for_thumb_display.paginate(page: params[:page], per_page: per_page)
       end
     end
 

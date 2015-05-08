@@ -36,7 +36,7 @@ class ChallengeEntry < ActiveRecord::Base
   end
 
   def self.winning
-    where("challenge_projects.prize_id IS NOT NULL")
+    where("challenge_projects.prize_id IS NOT NULL").joins("INNER JOIN prizes ON challenge_projects.prize_id = prizes.id").order("prizes.position ASC")
   end
 
   def approve

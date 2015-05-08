@@ -29,6 +29,8 @@
     h2.text-center Winning entries
     .thumb-list
       .row.project-list
+        - if @winning_entries_count % 2 == 1
+          .col-sm-3
         - @winning_entries.each do |entry|
           = render partial: 'projects/project_thumb', locals: { project: entry.project.decorate, col: 6 }
           = content_for :js do

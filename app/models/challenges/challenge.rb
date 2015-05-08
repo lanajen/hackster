@@ -9,10 +9,10 @@ class Challenge < ActiveRecord::Base
   belongs_to :platform
   has_many :admins, through: :challenge_admins, source: :user
   has_many :challenge_admins
-  has_many :entries, -> { order(:created_at) }, dependent: :destroy, class_name: ChallengeEntry
+  has_many :entries, dependent: :destroy, class_name: ChallengeEntry
   has_many :entrants, through: :projects, source: :users
   has_many :prizes, -> { order(:position) }, dependent: :destroy
-  has_many :projects, through: :entries
+  has_many :projects, -> { order('challenge_projects.created_at ASC') }, through: :entries
   has_one :avatar, as: :attachable, dependent: :destroy
   has_one :cover_image, as: :attachable, dependent: :destroy
   validates :name, :slug, presence: true
