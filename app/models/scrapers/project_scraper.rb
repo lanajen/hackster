@@ -52,6 +52,7 @@ class ProjectScraper
     }
     KNOWN_HOSTS = {
       '1sheeld.com' => :onesheeld,
+      'iot-hackseries.s3-website-us-west-2.amazonaws.com' => :aws_hackday,
       'blogspot.com' => :blogspot,
       'blogspot.fr' => :blogspot,
       'challengepost.com' => :challengepost,

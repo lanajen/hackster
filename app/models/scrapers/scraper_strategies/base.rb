@@ -182,13 +182,13 @@ module ScraperStrategies
           h[i] = base.css("h#{i}")
         end
         (title_levels).each do |i|
-          if h[i].any?
+          if h[i] and h[i].any?
             h[i].each { |h| h.name = 'h3' }
             (i+1..4).each do |j|
-              if h[j].any?
+              if h[j] and h[j].any?
                 h[j].each { |h| h.name = 'h4' }
                 (j+1..3).each do |l|
-                  h[l].each { |h| h.name = 'b' }
+                  h[l].each { |h| h.name = 'b' } if h[l] and h[l].any?
                 end
                 break
               end
