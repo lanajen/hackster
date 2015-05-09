@@ -72,7 +72,7 @@ class UserObserver < ActiveRecord::Observer
       record.respected_projects.each{|p| keys << "project-#{p.id}-respects" }
     end
 
-    if (record.changed & %w(full_name avatar mini_resume slug user_name forums_link documentation_link crowdfunding_link buy_link twitter_link facebook_link linked_in_link blog_link github_link website_link youtube_link google_plus_link city country state projects_count followers_count)).any? or record.interest_tags_string_changed? or record.skill_tags_string_changed?
+    if (record.changed & %w(full_name avatar mini_resume slug user_name forums_link documentation_link crowdfunding_link buy_link twitter_link facebook_link linked_in_link blog_link github_link website_link youtube_link google_plus_link city country state projects_count followers_count reputation_count)).any? or record.interest_tags_string_changed? or record.skill_tags_string_changed?
       keys << "user-#{record.id}-sidebar"
     end
 
