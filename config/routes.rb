@@ -299,6 +299,7 @@ HackerIo::Application.routes.draw do
     get 'resources' => 'pages#resources'
 
     # updates counter for cached pages
+    get 'users/stats' => 'stats#index'
     post 'stats' => 'stats#create'
     post 'projects/:id/views' => 'stats#legacy'
 

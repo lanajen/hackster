@@ -198,7 +198,7 @@ class ApplicationController < ActionController::Base
     end
 
     def show_badge
-      if @new_badge and @badge_level
+      if user_signed_in? and @new_badge and @badge_level
         @modal = render_to_string(partial: 'shared/modals/badge_alert', locals: { badge: @new_badge, level: @badge_level })
         if request.xhr?
           response.headers['X-Alert'] = @modal

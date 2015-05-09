@@ -1,10 +1,10 @@
 module GraphHelper
 
   private
-    def complete_dates rows, start_date, end_date, start=0
+    def complete_dates rows, start_date, end_date, start=0, date_format='%Y-%m-%d'
       cumul = start
       (start_date..end_date).map do |date|
-        new_value = rows[date.strftime('%Y-%m-%d')] || 0
+        new_value = rows[date.strftime(date_format)] || 0
         if start.zero?
           [date, new_value]
         else
@@ -14,12 +14,19 @@ module GraphHelper
       end
     end
 
-    def extract_date_and_int_from records_array, add_cumul=0
+    def extract_date_and_int_from records_array, add_cumul=0, interval_type
       rows = {}
       records_array.rows.map do |row|
         rows[row[0]] = row[1].to_i
       end
-      complete_dates rows, Date.today-31, Date.today-1, add_cumul
+      case interval_type
+      when 'day'
+        complete_dates rows, Date.today-31, Date.today-1, add_cumul
+      when 'month'
+        complete_dates rows, Date.today.months_since(-12), Date.today, add_cumul, '%Y-%m'
+      else
+        raise 'unknown interval: ' + interval_type.to_s
+      end
     end
 
     def graph rows, columns, title, chart_type, with_cumul=false
@@ -36,10 +43,10 @@ module GraphHelper
       "GoogleVisualr::Interactive::#{chart_type}".constantize.new(data_table, options)
     end
 
-    def graph_with_dates_for sql, title, chart_type, add_cumul=0
+    def graph_with_dates_for sql, title, chart_type, add_cumul=0, interval_type='day'
       records_array = ActiveRecord::Base.connection.exec_query(sql)
-      rows = extract_date_and_int_from records_array, add_cumul
-      columns = [['date', 'Day'], ['number', 'Total']]
+      rows = extract_date_and_int_from records_array, add_cumul, interval_type
+      columns = [['date', interval_type.capitalize], ['number', 'Total']]
       columns << ['number', 'Cumul'] unless add_cumul.zero?
       graph rows, columns, title, chart_type, !add_cumul.zero?
     end

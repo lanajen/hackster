@@ -1,0 +1,60 @@
+= content_for :js do
+  = javascript_include_tag 'https://www.google.com/jsapi'
+  = render_chart(@reputation_points, 'chart_reputation')
+
+.col-md-10.col-md-offset-1
+  .box
+    .box-title
+      - if @user == current_user
+        h2 User statistics
+      - else
+        h2
+          ' Statistics for
+          strong= @user.name
+    .box-content
+      .row
+        .col-sm-3
+          strong>= number_with_delimiter @user.reputation_count
+          = pluralize_without_count @user.reputation_count, 'reputation point'
+          br
+          small.text-muted
+            - if @reputation_this_month.zero?
+              ' No new points yet this month.
+              = link_to 'Read how to get more points.', ''
+            - else
+              | +#{number_with_delimiter @reputation_this_month} this month
+          br
+          br
+          / small
+            ' Redeem your points in the
+            = link_to 'Hackster free store.', ''
+        .col-sm-9
+          #chart_reputation= image_tag 'loader.gif'
+      hr
+      .row
+        .col-sm-6
+          strong>= number_with_delimiter @user.followers_count
+          = pluralize_without_count @user.followers_count, 'follower'
+          br
+          small.text-muted
+            | +#{number_with_delimiter @new_followers} this month
+        .col-sm-6
+          strong>= number_with_delimiter @user.impressions_count
+          = pluralize_without_count @user.impressions_count, 'profile view'
+          br
+          small.text-muted
+            | +#{number_with_delimiter @new_views} this month
+      hr
+      .row
+        .col-sm-6
+          strong>= number_with_delimiter @user.project_respects_count
+          = pluralize_without_count @user.project_respects_count, 'project respect'
+          br
+          small.text-muted
+            | +#{number_with_delimiter @new_respects} this month
+        .col-sm-6
+          strong>= number_with_delimiter @user.project_views_count
+          = pluralize_without_count @user.project_views_count, 'project view'
+          br
+          small.text-muted
+            | +#{number_with_delimiter @new_project_views} this month

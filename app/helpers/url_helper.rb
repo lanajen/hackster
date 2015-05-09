@@ -180,6 +180,11 @@ module UrlHelper
     super list.user_name, opts
   end
 
+  def login_as_path user
+    scheme = APP_CONFIG['use_ssl'] ? 'https' : 'http'
+    "#{scheme}://#{APP_CONFIG['full_host']}/?user_token=#{user.authentication_token}&user_email=#{user.email}"
+  end
+
   def log_path project, log, opts={}
     project_log_path(project.user_name_for_url, project.slug, log.sub_id, opts)
   end
@@ -352,6 +357,22 @@ module UrlHelper
       else
         hackathon_pages_path(group.user_name)
       end
+    end
+  end
+
+  def users_stats_path user=nil
+    if user
+      super(user_id: user.id)
+    else
+      super
+    end
+  end
+
+  def users_stats_url user=nil
+    if user
+      super(user_id: user.id)
+    else
+      super
     end
   end
 

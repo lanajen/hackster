@@ -1,9 +1,26 @@
 class StatsController < ApplicationController
-  after_filter :set_cors
-  skip_before_filter :store_location_before
-  skip_after_filter :store_location_after
-  skip_after_filter :track_landing_page, only: [:create]
+  include GraphHelper
+
+  before_filter :authenticate_user!, only: [:index]
+  after_filter :set_cors, only: [:create, :legacy]
+  skip_before_filter :store_location_before, only: [:create, :legacy]
+  skip_after_filter :store_location_after, only: [:create, :legacy]
+  skip_after_filter :track_landing_page, only: [:create, :legacy]
   protect_from_forgery except: [:legacy, :create]
+
+  def index
+    @user = ((params[:user_id] and current_user.is?(:admin)) ? User.find(params[:user_id]) : current_user)
+
+    @reputation_this_month = @user.reputation_events.where("reputation_events.event_date > ?", Date.today.beginning_of_month).sum(:points)
+
+    sql = "SELECT to_char(event_date, 'yyyy-mm') as date, COUNT(*) as count FROM reputation_events WHERE date_part('months', now() - reputation_events.event_date) < 12 AND reputation_events.user_id = %i GROUP BY date ORDER BY date;"
+    @reputation_points = graph_with_dates_for sql % @user.id, 'Reputation', 'AreaChart', 0, 'month'
+
+    @new_followers = @user.followers.where("follow_relations.created_at > ?", Date.today.beginning_of_month).count
+    @new_views = @user.impressions.where("impressions.created_at > ?", Date.today.beginning_of_month).count
+    @new_respects = Respect.where(respectable_type: 'Project', respectable_id: @user.projects.pluck(:id)).where("respects.created_at > ?", Date.today.beginning_of_month).count
+    @new_project_views = Impression.where(impressionable_type: 'Project', impressionable_id: @user.projects.pluck(:id)).where("impressions.created_at > ?", Date.today.beginning_of_month).count
+  end
 
   def create
     impressionist_async({ id: params[:id], type: (params[:type]) }, request.referrer, unique: [:session_hash], referrer: params[:referrer], action_name: params[:a], controller_name: params[:c])
