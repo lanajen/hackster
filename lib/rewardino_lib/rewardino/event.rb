@@ -49,10 +49,23 @@ module Rewardino
             [model]
           end
 
+          event_date = case date_method
+          when Array
+            result = nil
+            date_method.each do |method|
+              result = model.send(method)
+              break if result.present?
+            end
+            result
+          else
+            model.send(date_method)
+          end
+          next unless event_date
+
           prorated_points = users.count > 1 ? (points / users.count).ceil.to_i : points
           users.each do |user|
             next unless user
-            ReputationEvent.create event_name: code, event_model: model, points: prorated_points, event_date: model.send(date_method), user_id: user.id
+            ReputationEvent.create event_name: code, event_model: model, points: prorated_points, event_date: event_date, user_id: user.id
           end
         end
       end

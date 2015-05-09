@@ -332,7 +332,7 @@ Rewardino::Event.create!({
   name: 'Registered',
   description: "Welcome to Hackster!",
   points: 1,
-  date_method: (:invitation_accepted_at || :created_at),
+  date_method: [:invitation_accepted_at, :created_at],
   model_table: 'users',
   models_method: 'User.invitation_accepted_or_not_invited',
 })

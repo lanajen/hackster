@@ -142,7 +142,7 @@ class Event < GeographicCommunity
   end
 
   def voting_end_date_dummy
-    voting_end_date.strftime("%m/%d/%Y %l:%M %P") if voting_end_date
+    voting_end_date ? voting_end_date.strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
   end
 
   def voting_active?
