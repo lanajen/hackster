@@ -1,0 +1,75 @@
+= content_for :js do
+  = javascript_include_tag 'https://www.google.com/jsapi'
+  = render_chart(@chart_total_earned, 'chart_total_earned')
+
+.page-header
+  h1 Store admin
+
+.row
+  .col-xs-12.col-sm-6
+    .panel.panel-default.panel-dashboard
+      .panel-heading
+        h3.panel-title Total points earned
+      .panel-body
+        ==> number_with_delimiter @total_earned
+
+  .col-xs-12.col-sm-6
+    .panel.panel-default.panel-dashboard
+      .panel-heading
+        h3.panel-title Total redeemable (over 35)
+      .panel-body
+        ==> number_with_delimiter @total_redeemable
+
+.row
+  .col-xs-12.col-sm-4
+    .panel.panel-default.panel-dashboard
+      .panel-heading
+        h3.panel-title How many users can redeem
+      .panel-body
+        ==> number_with_delimiter @total_users
+
+  .col-xs-12.col-sm-4
+    .panel.panel-default.panel-dashboard
+      .panel-heading
+        h3.panel-title Redeemed this month
+      .panel-body
+        | Coming soon
+
+  .col-xs-12.col-sm-4
+    .panel.panel-default.panel-dashboard
+      .panel-heading
+        h3.panel-title Total redeemed
+      .panel-body
+        | Coming soon
+
+.row
+  .col-xs-12.col-sm-4
+    .panel.panel-default
+      .panel-heading
+        h3.panel-title
+          ' Points by categories
+      .panel-body
+        ul
+          - @categories.each do |category|
+            li
+              b= category.first
+              ' :
+              = number_with_delimiter category.last
+
+  .col-xs-12.col-sm-4
+    .panel.panel-default
+      .panel-heading
+        h3.panel-title
+          ' Heroes
+          small Users with most reputation
+      .panel-body
+        ul
+          - @heroes.each do |user|
+            li
+              b= link_to user.name, users_stats_path(user)
+              ' :
+              = user.sum
+
+.row
+  .col-xs-12.col-sm-6
+    #chart_total_earned= image_tag 'loader.gif'

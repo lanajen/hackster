@@ -121,6 +121,23 @@ class Admin::PagesController < Admin::BaseController
     @comments = Comment.where(commentable_type: 'Conversation').order(created_at: :desc).paginate(page: safe_page_params)
   end
 
+  def platforms
+    title "Admin / Platforms - #{safe_page_params}"
+    @fields = {
+      'created_at' => 'groups.created_at',
+      'name' => 'groups.full_name',
+      'user_name' => 'groups.user_name',
+    }
+
+    params[:sort_by] ||= 'created_at'
+
+    @groups = filter_for Platform, @fields
+  end
+
+  def platform_contacts
+    @platforms = Platform.order(:full_name).includes(:members, members: :user)
+  end
+
   def newsletter
     if params[:project_ids]
       @projects = Project.where(id: params[:project_ids]).most_respected
@@ -140,20 +157,16 @@ class Admin::PagesController < Admin::BaseController
   def root
   end
 
-  def platforms
-    title "Admin / Platforms - #{safe_page_params}"
-    @fields = {
-      'created_at' => 'groups.created_at',
-      'name' => 'groups.full_name',
-      'user_name' => 'groups.user_name',
-    }
+  def store
+    @total_redeemable = 0
+    @total_earned = ReputationEvent.sum(:points)
+    @total_users = ReputationEvent.group(:user_id).having("SUM(points) >= 35").sum(:points).size
+    @categories = ReputationEvent.group(:event_name).order("sum_points desc").sum(:points)
 
-    params[:sort_by] ||= 'created_at'
+    sql = "SELECT users.*, t1.sum FROM (SELECT reputation_events.user_id as user_id, SUM(reputation_events.points) as sum FROM reputation_events GROUP BY user_id) AS t1 INNER JOIN users ON users.id = t1.user_id WHERE t1.sum > 1 AND (NOT (users.roles_mask & ? > 0) OR users.roles_mask IS NULL) ORDER BY t1.sum DESC LIMIT 10;"
+    @heroes = User.find_by_sql([sql, 2**User::ROLES.index('admin')])
 
-    @groups = filter_for Platform, @fields
-  end
-
-  def platform_contacts
-    @platforms = Platform.order(:full_name).includes(:members, members: :user)
+    sql = "SELECT to_char(event_date, 'yyyy-mm') as date, COUNT(*) as count FROM reputation_events WHERE date_part('months', now() - reputation_events.event_date) < 12 GROUP BY date ORDER BY date;"
+    @chart_total_earned = graph_with_dates_for sql, 'New reputation points', 'AreaChart', ReputationEvent.where("reputation_events.event_date < ?", 12.months.ago).count, 'month'
   end
 end
