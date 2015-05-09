@@ -8,10 +8,10 @@ module GraphHelper
         (start_date..end_date).map do |date|
           new_value = rows[date.strftime('%Y-%m-%d')] || 0
           if start.zero?
-            [date, new_value]
+            [date.strftime('%B %Y, %d'), new_value]
           else
             cumul += new_value
-            [date, new_value, cumul]
+            [date.strftime('%B %Y, %d'), new_value, cumul]
           end
         end
       when 'month'
