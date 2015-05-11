@@ -167,7 +167,7 @@ class BaseMailer < ActionMailer::Base
     end
 
     def substitute_in text
-      text.scan(/\|[a-z_]*\|/).each do |token|
+      text.scan(/\|[a-z_]+\|/).each do |token|
         if substitute = get_value_for_token(token)
           text = text.gsub(token, substitute.to_s) if substitute
         end
