@@ -285,6 +285,7 @@ HackerIo::Application.routes.draw do
     get 'nyc', to: redirect('/hackathons/hardware-weekend/new-york-city')
 
     get 'tinyduino', to: redirect('/tinycircuits')
+    # get 'spark', to: redirect('/particle')
 
     get 'home' => 'pages#home'
     get 'about' => 'pages#about'

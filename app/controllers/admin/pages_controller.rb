@@ -158,9 +158,10 @@ class Admin::PagesController < Admin::BaseController
   end
 
   def store
-    @total_redeemable = 0
     @total_earned = ReputationEvent.sum(:points)
-    @total_users = ReputationEvent.group(:user_id).having("SUM(points) >= 35").sum(:points).size
+    @total_redeemable = ReputationEvent.group(:user_id).having("SUM(points) >= #{Rewardino::Event::MIN_REDEEMABLE_POINTS}").sum(:points).values.sum
+    @total_redeemable_month = ReputationEvent.group(:user_id).having("SUM(points) >= #{Rewardino::Event::MIN_REDEEMABLE_POINTS}").sum(:points).values.map{|v| [Rewardino::Event::MAX_REDEEMABLE_MONLTY, v].min }.sum
+    @total_users = ReputationEvent.group(:user_id).having("SUM(points) >= #{Rewardino::Event::MIN_REDEEMABLE_POINTS}").sum(:points).size
     @categories = ReputationEvent.group(:event_name).order("sum_points desc").sum(:points)
 
     sql = "SELECT users.*, t1.sum FROM (SELECT reputation_events.user_id as user_id, SUM(reputation_events.points) as sum FROM reputation_events GROUP BY user_id) AS t1 INNER JOIN users ON users.id = t1.user_id WHERE t1.sum > 1 AND (NOT (users.roles_mask & ? > 0) OR users.roles_mask IS NULL) ORDER BY t1.sum DESC LIMIT 10;"

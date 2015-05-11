@@ -6,19 +6,26 @@
   h1 Store admin
 
 .row
-  .col-xs-12.col-sm-6
+  .col-xs-12.col-sm-4
     .panel.panel-default.panel-dashboard
       .panel-heading
         h3.panel-title Total points earned
       .panel-body
         ==> number_with_delimiter @total_earned
 
-  .col-xs-12.col-sm-6
+  .col-xs-12.col-sm-4
     .panel.panel-default.panel-dashboard
       .panel-heading
-        h3.panel-title Total redeemable (over 35)
+        h3.panel-title Total redeemable (over #{Rewardino::Event::MIN_REDEEMABLE_POINTS})
       .panel-body
         ==> number_with_delimiter @total_redeemable
+
+  .col-xs-12.col-sm-4
+    .panel.panel-default.panel-dashboard
+      .panel-heading
+        h3.panel-title Total redeemable this month
+      .panel-body
+        ==> number_with_delimiter @total_redeemable_month
 
 .row
   .col-xs-12.col-sm-4

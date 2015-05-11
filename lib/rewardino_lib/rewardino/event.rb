@@ -6,6 +6,9 @@ module Rewardino
     extend Ambry::Model
     extend Ambry::ActiveModel
 
+    MAX_REDEEMABLE_MONLTY = 1000
+    MIN_REDEEMABLE_POINTS = 350
+
     field :code, :points, :date_method, :models_method, :users_method,
       :user_method, :compute_method, :model_table, :name, :description
 
