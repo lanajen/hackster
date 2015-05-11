@@ -68,7 +68,7 @@ module Rewardino
           end
           next unless event_date
 
-          prorated_points = users.count > 1 ? (points / users.count).ceil.to_i : points
+          prorated_points = users.count > 1 ? (points / users.count.to_f).ceil.to_i : points
           users.each do |user|
             next unless user
             ReputationEvent.create event_name: code, event_model: model, points: prorated_points, event_date: event_date, user_id: user.id
