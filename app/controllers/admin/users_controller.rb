@@ -4,7 +4,6 @@ class Admin::UsersController < Admin::BaseController
     @fields = {
       'created_at' => 'users.created_at',
       'email' => 'users.email',
-      'last_sign_in' => 'users.last_sign_in_at',
       'name' => 'users.full_name',
       'user_name' => 'users.user_name',
     }

@@ -167,6 +167,9 @@ class Project < ActiveRecord::Base
       event :reject, transitions_to: :rejected
       event :mark_needs_review, transitions_to: :pending_review
     end
+    after_transition do |from, to, triggering_event, *event_args|
+      notify_observers 'after_status_updated' if to.to_sym == :approved
+    end
   end
 
   # beginning of search methods

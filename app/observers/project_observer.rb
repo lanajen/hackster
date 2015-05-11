@@ -57,6 +57,18 @@ class ProjectObserver < ActiveRecord::Observer
     record.purge
   end
 
+  def after_status_updated record
+    ProjectWorker.perform_async 'update_platforms', record.id
+
+    if record.made_public_at.nil?
+      record.post_new_tweet! unless record.hidden? or Rails.env != 'production'
+      record.made_public_at = Time.now
+      record.save
+    elsif record.made_public_at > Time.now
+      record.post_new_tweet_at! record.made_public_at unless record.hidden? or Rails.env != 'production'
+    end
+  end
+
   def before_create record
     record.reset_counters assign_only: true
     record.private_issues = record.private_logs = !!!record.open_source

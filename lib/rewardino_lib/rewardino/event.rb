@@ -31,7 +31,13 @@ module Rewardino
         compute_method.call(self, date)
       else
         models = eval(models_method)
-        models = models.where("#{model_table}.#{date_method} > ?", date) if date
+        date_column = case date_method
+        when Array
+          date_method.first
+        else
+          date_method
+        end
+        models = models.where("#{model_table}.#{date_column} > ?", date) if date
         models.each do |model|
           users = if users_method
             users = model

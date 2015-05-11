@@ -47,7 +47,7 @@ p
               ==> link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
               = link_to user.name, user
             td= entry.prize.requires_shipping? ? 'Snail Mail' : 'Email'
-            td= entry.prize.requires_shipping? ? entry.address.try(:decorate).try(:full) || 'Not entered yet' : entry.user.email
+            td= entry.prize.requires_shipping? ? entry.address.try(:decorate).try(:full).try(:html_safe) || 'Not entered yet' : entry.user.email
             td
               - if @challenge.judging?
                 = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_challenge_entry_path(@challenge, entry), class: 'btn btn-xs btn-default', rel: 'tooltip', title: 'Edit'
