@@ -91,7 +91,7 @@ class BaseMailer < ActionMailer::Base
       when :user_profile_edit_link
         url.profile_edit_url(host: default_host)
       else
-        return unless split_token.present?
+        return unless token.present?
         split_token = token.split '_', 2
         object = split_token[0]
         attribute = split_token[1]
