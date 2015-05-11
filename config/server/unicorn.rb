@@ -64,7 +64,7 @@ if ENV['RAILS_ENV'] == 'development'
   # timeout 120
 else
   worker_processes Integer(ENV["WEB_CONCURRENCY"] || 2)
-  timeout 29
+  timeout 15
 end
 
 # The timeout mechanism in Unicorn is an extreme solution that should be avoided whenever possible.
