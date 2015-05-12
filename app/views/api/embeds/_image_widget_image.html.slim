@@ -1,6 +1,6 @@
 .image  data-type='file' data-file-id=image.id contenteditable='false'
   .figure
-    a.embed-img  style="background-image:url(#{image.imgix_url})" href="javascript:openLightBox(#{widget.id},#{i});"
+    a.embed-img  style="background-image:url('#{image.imgix_url}')" href="javascript:openLightBox(#{widget.id},#{i});"
     - if image.title.present?
       .figcaption.widget-attribute.widget-attribute-editable*{ 'data-attribute' => "[images_attributes][#{i}][title]", 'data-value' => image.title, 'data-default-text' => 'Type in a caption', 'data-disable-toolbar' => 'true' } = image.title
     - else
