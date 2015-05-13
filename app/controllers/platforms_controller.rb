@@ -39,6 +39,8 @@ class PlatformsController < ApplicationController
   end
 
   def show
+    authorize! :read, @platform
+
     if user_signed_in?
       impressionist_async @platform, "", unique: [:session_hash]
     else
