@@ -127,6 +127,7 @@
           .col-md-6
             = f.input :enable_parts, as: :boolean, inline_label: 'Enable products tab', label: false, hint: "Products are the boards you manufacture"
             = f.input :enable_products, as: :boolean, inline_label: 'Enable devices tab', label: false, hint: "Devices are third-party commercial products powered by your boards"
+            = f.input :products_text, label: 'Label for devices section', hint: "Default is \"#{@platform.default_products_text}\"."
 
       - if current_user.is? :admin
         .tab-pane.active.fade#admin role='tabpanel'

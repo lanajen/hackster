@@ -20,6 +20,7 @@ class Group < ActiveRecord::Base
 
   include Counter
   include EditableSlug
+  include HasDefault
   include SetChangesForStoredAttributes
   include StringParser
 
@@ -86,8 +87,8 @@ class Group < ActiveRecord::Base
   include TireInitialization
   # end of search methods
 
-  def self.default_access_level
-    'anyone'
+  has_default :access_level, 'anyone' do |instance|
+    instance.read_attribute(:access_level)
   end
 
   def self.default_permission
@@ -108,10 +109,6 @@ class Group < ActiveRecord::Base
 
   def self.most_projects
     order projects_count: :desc
-  end
-
-  def access_level
-    read_attribute(:access_level).presence || self.class.default_access_level
   end
 
   def avatar_id=(val)

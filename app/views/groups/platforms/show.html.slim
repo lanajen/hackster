@@ -113,7 +113,7 @@
         section#products.section-feature
           .container
             h2.section-title
-              | Devices built by companies
+              = @platform.products_text
               span.bdg= @platform.products_count
             .row
               - if @platform.products_count == 1

@@ -36,7 +36,7 @@ class Platform < List
   attr_accessible :forums_link, :documentation_link, :crowdfunding_link,
     :buy_link, :shoplocket_link, :cover_image_id, :accept_project_ideas,
     :project_ideas_phrasing, :client_subdomain_attributes, :logo_id,
-    :download_link, :company_logo_id, :disclaimer, :moderation_level,
+    :download_link, :company_logo_id, :disclaimer,
     :cta_text, :parts_attributes, :verified, :enable_chat, :enable_products,
     :description, :enable_parts, :enable_password
 
@@ -50,7 +50,7 @@ class Platform < List
   set_changes_for_stored_attributes :websites
 
   store_accessor :properties, :accept_project_ideas, :project_ideas_phrasing,
-    :active_challenge, :disclaimer, :moderation_level, :cta_text, :hashtag,
+    :active_challenge, :disclaimer, :cta_text, :hashtag,
     :verified, :enable_chat, :enable_products, :description, :enable_parts,
     :api_username, :api_password, :http_password, :enable_password
   set_changes_for_stored_attributes :properties
@@ -67,6 +67,9 @@ class Platform < List
   taggable :platform_tags, :product_tags
 
   is_impressionable counter_cache: true, unique: :session_hash
+
+  has_default :products_text, 'Devices built by companies'
+  has_default :moderation_level, 'hackster'
 
   # beginning of search methods
   has_tire_index 'private'
@@ -91,10 +94,6 @@ class Platform < List
       created_at: created_at,
       popularity: 1000.0,
     }.to_json
-  end
-
-  def self.default_moderation_level
-    'hackster'
   end
 
   def self.index_all
@@ -140,10 +139,6 @@ class Platform < List
       end
     end
     self.user_name = slug
-  end
-
-  def moderation_level
-    properties['moderation_level'].presence || self.class.default_moderation_level
   end
 
   def project_ideas_phrasing

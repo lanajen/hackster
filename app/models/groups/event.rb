@@ -1,4 +1,5 @@
 class Event < GeographicCommunity
+  include HasDefault
   include TablelessAssociation
 
   CTA_TEXT = ['Buy your ticket', 'RSVP now']
@@ -13,7 +14,7 @@ class Event < GeographicCommunity
 
   attr_accessible :awards_attributes, :parent_id, :start_date,
     :start_date_dummy, :end_date, :end_date_dummy, :tickets_link,
-    :voting_end_date, :voting_end_date_dummy, :activate_voting, :cta_text
+    :voting_end_date, :voting_end_date_dummy, :activate_voting
 
   accepts_nested_attributes_for :awards, allow_destroy: true
 
@@ -21,7 +22,7 @@ class Event < GeographicCommunity
   set_changes_for_stored_attributes :websites
 
   store_accessor :properties, :voting_start_date, :voting_end_date,
-    :activate_voting, :schedule, :cta_text
+    :activate_voting, :schedule
   parse_as_datetimes :properties, :voting_start_date, :voting_end_date
   parse_as_booleans :properties, :activate_voting, :hidden
   # set_changes_for_stored_attributes :properties
@@ -31,6 +32,8 @@ class Event < GeographicCommunity
   parse_as_integers :counters_cache, :participants_count
 
   alias_method :short_name, :name
+
+  has_default :cta_text, CTA_TEXT.first
 
   # beginning of search methods
   tire do
@@ -61,10 +64,6 @@ class Event < GeographicCommunity
     end
   end
 
-  def self.default_cta_text
-    CTA_TEXT.first
-  end
-
   def self.now
     where("groups.start_date < ? AND groups.end_date > ?", Time.now, Time.now).order(start_date: :asc, end_date: :desc)
   end
@@ -83,10 +82,6 @@ class Event < GeographicCommunity
 
   def avatar
     hackathon.try(:avatar)
-  end
-
-  def cta_text
-    properties[:cta_text].presence || self.class.default_cta_text
   end
 
   def counters
