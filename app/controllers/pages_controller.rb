@@ -143,7 +143,7 @@ class PagesController < ApplicationController
 
   def jobs
     title 'Jobs at Hackster'
-    meta_desc "Join the Hackster team to help more hackers make things."
+    meta_desc "Join the Hackster team to help more makers make things."
   end
 
   def ping
@@ -161,7 +161,7 @@ class PagesController < ApplicationController
   end
 
   def resources
-    meta_desc 'Resources that can help hardware hackers on their journey to making stuff.'
+    meta_desc 'Resources that can help hardware makers on their journey to making stuff.'
     title 'Resources'
   end
 

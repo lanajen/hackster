@@ -141,7 +141,7 @@
     / section#trending-projects.showcase-section
       .container
         .showcase-section-header.clearfix
-          h4 Join some of the best hardware hackers
+          h4 Join some of the best hardware makers
 
         .row.mobile-scroll-row
           - 2.times do
@@ -151,13 +151,13 @@
                   = render partial: 'users/user_thumb_mini', locals: { user: user }
 
         .text-center
-          = link_to 'Browse top hackers &rarr;'.html_safe, hackers_path, class: 'btn btn-default btn-sm hidden-xs'
-          = link_to 'Browse top hackers &rarr;'.html_safe, hackers_path, class: 'btn btn-default btn-sm visible-xs-block'
+          = link_to 'Browse top makers &rarr;'.html_safe, hackers_path, class: 'btn btn-default btn-sm hidden-xs'
+          = link_to 'Browse top makers &rarr;'.html_safe, hackers_path, class: 'btn btn-default btn-sm visible-xs-block'
 
     / section#trending-projects.showcase-section
       .container
         .showcase-section-header.clearfix
-          h4 And even more ways to connect with fellow hackers
+          h4 And even more ways to connect with fellow makers
 
         .row.mobile-scroll-row
           - @trending_projects.each do |project|

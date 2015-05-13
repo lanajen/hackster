@@ -33,7 +33,7 @@
         .panel-heading
           h4 Challenge settings
         .panel-body
-          = f.input :end_date_dummy, label: 'Entry deadline', wrapper_html: { id: 'datetimepicker' }, hint: "The maximum date by which hackers can submit entries to the challenge. Time here is UTC (+00), but it will be displayed in PST (-08)." do
+          = f.input :end_date_dummy, label: 'Entry deadline', wrapper_html: { id: 'datetimepicker' }, hint: "The maximum date by which makers can submit entries to the challenge. Time here is UTC (+00), but it will be displayed in PST (-08)." do
             #datepicker.input-group
               = f.input_field :end_date_dummy, as: :string, label: false
               span.input-group-addon

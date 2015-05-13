@@ -98,10 +98,10 @@
             | Projects built by makers
             span.bdg= @platform.projects_count
           .row
-              - if @platform.projects_count == 1
-                .col-md-4.col-sm-3
-              - elsif @platform.projects_count == 2
-                .col-md-2
+            - if @platform.projects_count == 1
+              .col-md-4.col-sm-3
+            - elsif @platform.projects_count == 2
+              .col-md-2
             - @projects.each_with_index do |col, i|
               - css = i == 2 ? '4 hidden-sm' : nil
               = render partial: 'projects/project_thumb', locals: { project: col.project, col: css }

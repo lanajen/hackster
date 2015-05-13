@@ -37,7 +37,7 @@ class ConversationsController < ApplicationController
       title "New message to #{@recipient.name}"
       @conversation.recipient_id = @recipient.id
     else
-      redirect_to conversations_path, alert: "We couldn't find a hacker to contact!" and return
+      redirect_to conversations_path, alert: "We couldn't find a maker to contact!" and return
     end
   end
 

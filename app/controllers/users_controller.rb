@@ -8,7 +8,7 @@ class UsersController < ApplicationController
   skip_after_filter :track_landing_page, only: [:show]
 
   def index
-    title "Browse top hackers"
+    title "Browse top makers"
     @users = User.not_admin.invitation_accepted_or_not_invited.where.not(user_name: nil).where('reputations.points > 15').top.paginate(page: safe_page_params)
   end
 
@@ -23,7 +23,7 @@ class UsersController < ApplicationController
     end
 
     title @user.name
-    meta_desc "#{@user.name} is on #{site_name}. Come share your hardware projects with #{@user.name} and other hardware hackers and makers."
+    meta_desc "#{@user.name} is on #{site_name}. Come share your hardware projects with #{@user.name} and other hardware makers and developers."
 
     @public_projects = @user.projects.live.for_thumb_display.order(start_date: :desc, made_public_at: :desc, created_at: :desc)
     @public_count = @public_projects.count

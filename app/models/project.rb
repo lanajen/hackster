@@ -6,7 +6,7 @@ class Project < ActiveRecord::Base
     'Beginner' => :beginner,
     'Intermediate' => :intermediate,
     'Advanced' => :advanced,
-    'Hardcore hacker' => :hardcore,
+    'Hardcore maker' => :hardcore,
   }
 
   FILTERS = {
