@@ -23,7 +23,8 @@ class Part < ActiveRecord::Base
   attr_accessible :name, :vendor_link, :vendor_name, :vendor_sku, :mpn, :unit_price,
     :description, :store_link, :documentation_link, :libraries_link,
     :datasheet_link, :product_page_link, :image_id, :platform_id,
-    :part_joins_attributes, :part_join_ids, :workflow_state, :slug, :one_liner
+    :part_joins_attributes, :part_join_ids, :workflow_state, :slug, :one_liner,
+    :position
 
   accepts_nested_attributes_for :part_joins, allow_destroy: true
 

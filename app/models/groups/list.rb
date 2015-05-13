@@ -71,7 +71,7 @@ class List < Group
       external_projects: 'projects.external.count',
       members: 'followers.count',
       private_projects: 'projects.private.count',
-      projects: 'project_collections.visible.count',
+      projects: 'projects.visible.count',
     }
   end
 
