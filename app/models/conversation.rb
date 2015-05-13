@@ -50,7 +50,7 @@ class Conversation < ActiveRecord::Base
   end
 
   def participants
-    User.joins("INNER JOIN receipts ON receipts.user_id = users.id").joins("INNER JOIN comments ON receipts.receivable_id = comments.id AND receipts.receivable_type = 'Comment'").joins("INNER JOIN conversations ON comments.commentable_id = conversations.id AND comments.commentable_type = 'Conversation'").where(conversations: { id: id })
+    User.joins("INNER JOIN receipts ON receipts.user_id = users.id").joins("INNER JOIN comments ON receipts.receivable_id = comments.id AND receipts.receivable_type = 'Comment'").joins("INNER JOIN conversations ON comments.commentable_id = conversations.id AND comments.commentable_type = 'Conversation'").where(conversations: { id: id }).distinct('users.id')
   end
 
   private

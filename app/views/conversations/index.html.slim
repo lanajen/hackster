@@ -17,7 +17,9 @@ section#conversations.section-container
   .section-content
     .list-group.conversations
       - if @conversations.any?
-        - @conversations.each do |conversation|
+        - conversations = []
+        - @conversations.inject([]){|mem, c| conversations << c unless c.id.in? mem; mem << c.id; mem }
+        - conversations.each do |conversation|
           a.list-group-item href=conversation_path(conversation) class=(conversation.has_unread?(current_user) ? 'unread' : '')
             .media
               span.media-left
