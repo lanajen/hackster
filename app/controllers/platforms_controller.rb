@@ -61,6 +61,8 @@ class PlatformsController < ApplicationController
         @parts = @platform.parts.limit(3)
         @projects = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection).merge(Project.magic_sort).where(projects: { type: %w(Project ExternalProject) }).limit(3)
         @products = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection).merge(Project.magic_sort).where(projects: { type: 'Product' }).limit(3)
+
+        @announcement = @platform.announcements.current
         @challenge = @platform.active_challenge ? @platform.challenges.active.first : nil
 
         render "groups/platforms/show"

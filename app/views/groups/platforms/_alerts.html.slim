@@ -6,10 +6,10 @@
       ' .
       = link_to 'Rock the place', group_accept_invitation_path(@group), class: 'btn btn-warning btn-sm'
 
-- if @announcement
+- if @announcement and @announcement.published?
   section#alert-section
     .alert.alert-info.alert-flat.text-center
-      strong> News:
+      strong> Announcement:
       = link_to @announcement.title, platform_announcement_path(@announcement), class: 'alert-link'
 
 - elsif @challenge

@@ -14,7 +14,7 @@ class Announcement < Post
   end
 
   def published?
-    published_at.blank? or (published_at and published_at < Time.now)
+    !draft and published_at.blank? or (published_at and published_at < Time.now)
   end
 
   def platform

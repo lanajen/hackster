@@ -18,6 +18,7 @@ class Client::ProjectsController < Client::BaseController
 
     load_projects platform: current_platform, disable_ideas: true
 
+    @announcement = current_platform.announcements.current
     @challenge = current_platform.active_challenge ? current_platform.challenges.active.first : nil
 
     respond_to do |format|

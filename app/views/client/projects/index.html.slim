@@ -22,7 +22,11 @@
   link(rel="canonical" href="http://#{site_domain}")
 
 .content.projects
-  - if @challenge
+  - if @announcement and @announcement.published?
+    .alert.alert-info.text-center
+      strong> Announcement:
+      = link_to @announcement.title, platform_announcement_path(@announcement), class: 'alert-link'
+  - elsif @challenge
     .alert.alert-info.text-center
       strong> #{current_platform.name} is having a challenge!
       ' Join the
