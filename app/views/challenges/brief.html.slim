@@ -22,6 +22,30 @@
         p.status
           strong= raw @challenge.status
 
+    - if @challenge.open_for_submissions?
+      section.section-thumbs
+        h4 Invite others to compete
+        <!-- AddToAny BEGIN -->
+        div class="a2a_kit a2a_kit_size_32 a2a_default_style"
+          a class="a2a_button_facebook"
+          a class="a2a_button_twitter"
+          a class="a2a_button_reddit"
+        javascript:
+          var a2a_config = a2a_config || {};
+          a2a_config.onclick = 1;
+          a2a_config.color_main = "D7E5ED";
+          a2a_config.color_border = "AECADB";
+          a2a_config.color_link_text = "333333";
+          a2a_config.color_link_text_hover = "333333";
+          a2a_config.prioritize = ["facebook", "twitter", "reddit"];
+          a2a_config.templates = {
+            twitter: "#{@challenge.to_tweet} #{challenge_url(@challenge)} via @hacksterio"
+          };
+          a2a_config.linkname = "#{@challenge.name}"
+          a2a_config.linkurl = "#{challenge_url(@challenge)}";
+        script type="text/javascript" src="//static.addtoany.com/menu/page.js"
+        <!-- AddToAny END -->
+
     section.section-thumbs
       h4 Awards
       - @challenge.prizes.each do |prize|
@@ -58,6 +82,8 @@
           i.fa.fa-chevron-up
 
       .section-content.medium-editor
+        - if @challenge.video
+          .mg-20= render partial: "api/embeds/embed", locals: { embed: @challenge.video }
         = raw @challenge.description
 
     .section-interlude

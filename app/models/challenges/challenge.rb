@@ -163,6 +163,12 @@ class Challenge < ActiveRecord::Base
     judging?
   end
 
+  def video
+    return unless video_link.present?
+
+    @video ||= Embed.new url: video_link
+  end
+
   private
     def end_date_is_valid?
       errors.add :end_date_dummy, 'is required' and return unless end_date

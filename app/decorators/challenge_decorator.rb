@@ -20,7 +20,7 @@ class ChallengeDecorator < ApplicationDecorator
       ' ' + h.indefinite_articlerize(prize.try(:name))
     end
 
-    "Submit your project to #{model.name} and win#{append}."
+    "Check out #{model.name}"
   end
 
   def status
