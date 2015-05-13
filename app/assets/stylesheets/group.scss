@@ -907,12 +907,14 @@
   .top-banner-image-inner-corner.bottom-left {
     bottom: 30px;
   }
-  .section-title {
-    margin-bottom: 30px;
-    text-transform: uppercase;
-    color: #777;
-    font-weight: bold;
-    letter-spacing: 0.01em;
+  h1, h2, h3 {
+    &.section-title {
+      margin-bottom: 30px;
+      text-transform: uppercase;
+      color: #777;
+      font-weight: bold;
+      letter-spacing: 0.01em;
+    }
   }
   .main-section {
     padding-top: 0;
