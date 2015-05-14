@@ -46,7 +46,7 @@ class ProjectsController < ApplicationController
 
     @can_edit = (user_signed_in? and current_user.can? :edit, @project)
     @can_update = (@can_edit and current_user.can? :update, @project)
-    @locked = (!@can_edit and @project.assignment.present? and @project.assignment.grading_activated? and @project.assignment.private_grades and cannot? :manage, @project.assignment)
+    @locked = false#(!@can_edit and @project.assignment.present? and @project.assignment.grading_activated? and @project.assignment.private_grades and cannot? :manage, @project.assignment)
 
     @following = if user_signed_in?
       # gets all follow_relations and sorts them in { user: [], group: [] } depending on type
