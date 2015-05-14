@@ -1,5 +1,5 @@
 module ScraperStrategies
-  class SparkForum < Base
+  class ParticleForum < Base
 
     def crap_list
       super + ['.meta .informations']
@@ -15,7 +15,7 @@ module ScraperStrategies
 
     private
       def after_parse
-        @project.platform_tags_string = 'Spark Core'
+        @project.platform_tags_string = 'Particle'
         super
       end
 

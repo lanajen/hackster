@@ -1,4 +1,5 @@
 class BaseMailer < ActionMailer::Base
+  ADMIN_EMAIL = 'Ben<ben@hackster.io>'
   DEFAULT_EMAIL = 'Hackster.io<hi@hackster.io>'
   include SendGrid
   add_template_helper UrlHelper
@@ -113,7 +114,7 @@ class BaseMailer < ActionMailer::Base
 
     def send_notification_email type, opts={}
       @headers = {
-        to: DEFAULT_EMAIL,
+        to: ADMIN_EMAIL,
       }
       send_email type
     end

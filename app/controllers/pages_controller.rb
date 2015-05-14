@@ -122,7 +122,7 @@ class PagesController < ApplicationController
       end
       @suggestions = {
         'Arduino' => '/arduino',
-        'Spark Core' => '/spark',
+        'Spark Core' => '/particle',
         'Home automation' => '/l/home-automation',
         'Blinky lights' => '/l/lights',
         'Raspberry Pi' => '/raspberry-pi',
