@@ -35,18 +35,18 @@ class ProjectsController < ApplicationController
   def show
     authorize! :read, @project unless params[:auth_token] and params[:auth_token] == @project.security_token
 
-    @can_edit = (user_signed_in? and current_user.can? :edit, @project)
-    @can_update = (@can_edit and current_user.can? :update, @project)
-
     if user_signed_in?
       impressionist_async @project, '', unique: [:session_hash]
-      @locked = (!@can_edit and @project.assignment.present? and @project.assignment.grading_activated? and @project.assignment.private_grades and cannot? :manage, @project.assignment)
     else
       surrogate_keys = [@project.record_key, 'project']
       surrogate_keys << current_platform.user_name if is_whitelabel?
       set_surrogate_key_header *surrogate_keys
       set_cache_control_headers
     end
+
+    @can_edit = (user_signed_in? and current_user.can? :edit, @project)
+    @can_update = (@can_edit and current_user.can? :update, @project)
+    @locked = (!@can_edit and @project.assignment.present? and @project.assignment.grading_activated? and @project.assignment.private_grades and cannot? :manage, @project.assignment)
 
     @following = if user_signed_in?
       # gets all follow_relations and sorts them in { user: [], group: [] } depending on type
