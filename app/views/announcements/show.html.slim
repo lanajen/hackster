@@ -1,7 +1,7 @@
 .wrapper700
   = link_to "&larr; See all announcements".html_safe, platform_announcements_path(@platform.user_name), class: 'btn btn-link btn-sm btn-block mg-20 hidden-link'
 
-  - if can? :edit, @announcement
+  - if !is_whitelabel? and can? :edit, @announcement
     section.section-thumbs
       h4 Admin actions
       ==> link_to 'Edit', edit_platform_announcement_path(@platform.user_name, @announcement.id), class: 'btn btn-sm btn-warning'
@@ -13,7 +13,7 @@
 
   = render @announcement
 
-  section#comments.section-container.section-collapsible
+  / section#comments.section-container.section-collapsible
     h2.section-title
       a.title.title-toggle href=''
         ' Comments

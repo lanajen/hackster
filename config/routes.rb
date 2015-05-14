@@ -286,6 +286,9 @@ HackerIo::Application.routes.draw do
 
     get 'tinyduino', to: redirect('/tinycircuits')
     get 'spark', to: redirect('/particle')
+    get 'spark/projects', to: redirect('/particle/projects')
+    get 'spark/makes', to: redirect('/particle/makes')
+    get 'spark/makes/spark-core', to: redirect('/particle/makes/spark-core')
 
     get 'home' => 'pages#home'
     get 'about' => 'pages#about'
@@ -460,6 +463,7 @@ HackerIo::Application.routes.draw do
   # get 'pdf_viewer' => 'pages#pdf_viewer'
 
   constraints(ClientSite) do
+    resources :announcements, only: [:index, :show], path: :news, as: :whitelabel_announcement
     scope module: :client, as: :client do
       get 'parts' => 'parts#index'
       get 'parts/:part_slug' => 'parts#show', as: :part

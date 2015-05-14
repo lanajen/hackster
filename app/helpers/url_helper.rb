@@ -229,12 +229,28 @@ module UrlHelper
     end
   end
 
+  def platform_announcements_path platform, opts={}
+    if is_whitelabel?
+      whitelabel_announcement_index_path(opts)
+    else
+      super(opts)
+    end
+  end
+
   def platform_announcement_path announcement, opts={}
-    super(announcement.platform.user_name, announcement.sub_id, opts)
+    if is_whitelabel?
+      whitelabel_announcement_path(announcement.sub_id, opts)
+    else
+      super(announcement.platform.user_name, announcement.sub_id, opts)
+    end
   end
 
   def platform_announcement_url announcement, opts={}
-    super(announcement.platform.user_name, announcement.sub_id, opts)
+    if is_whitelabel?
+      whitelabel_announcement_url(announcement.sub_id, opts)
+    else
+      super(announcement.platform.user_name, announcement.sub_id, opts)
+    end
   end
 
   def platform_products_path platform, opts={}

@@ -3,7 +3,7 @@ class AnnouncementsController < ApplicationController
   before_filter :load_platform, except: [:show_redirect, :destroy]
   before_filter :load_announcement, only: [:show]
   before_filter :load_and_authorize_resource, only: [:edit, :update, :destroy]
-  layout 'platform'
+  layout :set_layout
 
   def index
     authorize! :read, Announcement
@@ -77,6 +77,10 @@ class AnnouncementsController < ApplicationController
     end
 
     def load_platform
-      @group = @platform = load_with_slug
+      @group = @platform = current_platform || load_with_slug
+    end
+
+    def set_layout
+      is_whitelabel? ? nil : 'platform'
     end
 end
