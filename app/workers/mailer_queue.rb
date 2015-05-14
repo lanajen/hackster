@@ -16,6 +16,12 @@ class MailerQueue < BaseWorker
     f.filter_blank_and_init!
     f.invite_all! user
   end
+
+  def send_group_invites id, emails, invited_by_id=nil, message=nil
+    group = Group.find id
+    invited_by = User.find_by_id invited_by_id
+    group.invite_with_emails emails.split(','), invited_by, message
+  end
 end
 
 #TODO: catch Net::SMTPAuthenticationError and retry later
