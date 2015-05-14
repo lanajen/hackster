@@ -1,11 +1,12 @@
 class Team < Group
   has_many :grades, as: :gradable
   has_many :projects
-  # validates :prevent_save, absence: true
 
-  store_accessor :properties, :generated_user_name
+  store_accessor :properties, :generated_user_name, :disable_team_append
 
-  # attr_accessor :prevent_save
+  parse_as_booleans :properties, :hidden, :disable_team_append
+
+  attr_accessible :disable_team_append
 
   before_save :update_user_name
 
@@ -29,7 +30,7 @@ class Team < Group
 
   def name
     if full_name.present?
-      if full_name =~ /team/i
+      if full_name =~ /team/i or disable_team_append
         full_name
       else
         "Team #{full_name}"
