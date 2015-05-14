@@ -35,8 +35,12 @@ class ProjectsController < ApplicationController
   def show
     authorize! :read, @project unless params[:auth_token] and params[:auth_token] == @project.security_token
 
+    @can_edit = (user_signed_in? and current_user.can? :edit, @project)
+    @can_update = (@can_edit and current_user.can? :update, @project)
+
     if user_signed_in?
       impressionist_async @project, '', unique: [:session_hash]
+      @locked = (!@can_edit and @project.assignment.present? and @project.assignment.grading_activated? and @project.assignment.private_grades and cannot? :manage, @project.assignment)
     else
       surrogate_keys = [@project.record_key, 'project']
       surrogate_keys << current_platform.user_name if is_whitelabel?
@@ -50,8 +54,6 @@ class ProjectsController < ApplicationController
     else
       { user: [], group: [] }
     end
-    @can_edit = (user_signed_in? and current_user.can? :edit, @project)
-    @can_update = (@can_edit and current_user.can? :update, @project)
 
     @challenge_entries = @project.challenge_entries.includes(:challenge).includes(:prize)
     @communities = @project.groups.where.not(groups: { type: 'Event' }).includes(:avatar).order(full_name: :asc)
