@@ -233,7 +233,7 @@ module UrlHelper
     if is_whitelabel?
       whitelabel_announcement_index_path(opts)
     else
-      super(opts)
+      super(platform.user_name, opts)
     end
   end
 
