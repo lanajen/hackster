@@ -171,8 +171,8 @@ class ProjectsController < ApplicationController
       m.save
     end
     # @project.guest_name = nil
-    @project.mark_needs_review!
-    @project.save
+    @project.mark_needs_review! if @project.can_mark_needs_review?
+    # @project.save
 
     redirect_to project_path(@project), notice: "You just claimed #{@project.name}. We'll let you know when it's approved!"
   end
