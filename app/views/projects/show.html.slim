@@ -292,6 +292,14 @@
                         p= link_to 'Link to an assignment', settings_project_path(@project, anchor: 'sharing'), class: 'btn btn-warning btn-sm btn-block'
 
               - if @project.public?
+                - if @can_edit and @project.pending_review?
+                  .alert.alert-warning.text-center
+                    span
+                      p
+                        i.fa.fa-clock-o>
+                        ' We're reviewing your project before it can appear on the home page and the communities you selected.
+                        = link_to 'Learn more.', 'https://hackster.uservoice.com/knowledgebase/articles/588252-i-published-my-project-but-it-doesn-t-appear-on-th', class: 'alert-link'
+
                 section.section-thumbs
                   h4 Do something awesome
                   - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)

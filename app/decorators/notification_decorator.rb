@@ -6,7 +6,7 @@ class NotificationDecorator < ApplicationDecorator
     msg = case notifiable
     when Announcement
       announcement = notifiable
-      announcement_link = h.link_to announcement.title, platform_announcement_path(announcement)
+      announcement_link = h.link_to announcement.title, h.platform_announcement_path(announcement)
       group = announcement.threadable
       group_link = h.link_to group.name, group
       case event

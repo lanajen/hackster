@@ -85,7 +85,11 @@ class ProjectObserver < ActiveRecord::Observer
       record.private_changed = true
       if record.private?
       else
-        record.workflow_state = :rejected if record.pending_review? and record.force_hide?
+        if record.force_hide?
+          record.workflow_state = :rejected if record.can_reject?
+        else
+          record.workflow_state = :pending_review if record.can_mark_needs_review?
+        end
       end
     end
 
