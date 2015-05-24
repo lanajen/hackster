@@ -44,14 +44,16 @@ class ProjectsController < ApplicationController
       set_cache_control_headers
     end
 
+    @can_edit = (user_signed_in? and current_user.can? :edit, @project)
+    @can_update = (@can_edit and current_user.can? :update, @project)
+    @locked = false#(!@can_edit and @project.assignment.present? and @project.assignment.grading_activated? and @project.assignment.private_grades and cannot? :manage, @project.assignment)
+
     @following = if user_signed_in?
       # gets all follow_relations and sorts them in { user: [], group: [] } depending on type
       User.first.follow_relations.select(:followable_id, :followable_type).inject({ user: [], group: [] }) {|h, f| f.followable_type == 'User' ? h[:user] << f.followable_id : h[:group] << f.followable_id; h }
     else
       { user: [], group: [] }
     end
-    @can_edit = (user_signed_in? and current_user.can? :edit, @project)
-    @can_update = (@can_edit and current_user.can? :update, @project)
 
     @challenge_entries = @project.challenge_entries.includes(:challenge).includes(:prize)
     @communities = @project.groups.where.not(groups: { type: 'Event' }).includes(:avatar).order(full_name: :asc)
@@ -169,8 +171,8 @@ class ProjectsController < ApplicationController
       m.save
     end
     # @project.guest_name = nil
-    @project.mark_needs_review!
-    @project.save
+    @project.mark_needs_review! if @project.can_mark_needs_review?
+    # @project.save
 
     redirect_to project_path(@project), notice: "You just claimed #{@project.name}. We'll let you know when it's approved!"
   end

@@ -28,7 +28,7 @@
     #content.project-page class="project-#{@project.id}"
       .container-desktop.container
         .row
-          - cache_unless @can_edit, [@project, 'left-column'], tag: ["project-#{@project.id}-left-column"], expires_in: 24.hours do
+          - cache_unless (@can_edit or @locked), [@project, 'left-column'], tag: ["project-#{@project.id}-left-column"], expires_in: 24.hours do
 
             .col-md-8.left-column
               - if @project.event
@@ -95,7 +95,7 @@
                         span.stat-figure> = number_with_delimiter @project.respects_count
                         = pluralize_without_count @project.respects_count, 'respect'
 
-              - if !@can_edit and @project.assignment.present? and @project.assignment.grading_activated? and @project.assignment.private_grades and cannot? :manage, @project.assignment
+              - if @locked
                 section#about-project.section-container
                   h2.section-title
                     .title.title-toggle Contents hidden

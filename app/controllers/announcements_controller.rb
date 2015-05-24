@@ -62,7 +62,7 @@ class AnnouncementsController < ApplicationController
     @platform = @announcement.threadable
     @announcement.destroy
 
-    redirect_to platform_announcements_path(@platform.user_name), notice: "\"#{@announcement.title}\" was deleted."
+    redirect_to platform_announcements_path(@platform), notice: "\"#{@announcement.title}\" was deleted."
   end
 
   private

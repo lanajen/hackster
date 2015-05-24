@@ -180,6 +180,10 @@ class Group < ActiveRecord::Base
     user.deliver_invitation_with({ model: member, personal_message: message }) if member.persisted? and user.invited_to_sign_up?
   end
 
+  def enqueue_invites emails, invited_by=nil, message=nil
+    MailerQueue.perform_async 'send_group_invites', id, emails.join(','), invited_by.id, message
+  end
+
   def has_websites?
     websites.select{|k,v| v.present? }.any?
   end

@@ -77,6 +77,8 @@
                     td  colspan=4  = f_team.link_to_add 'Add a member', :members, class: 'btn btn-xs btn-success nested-field-table'
 
               = f_team.input :full_name, label: 'Team name'
+              - if current_user.is? :beta_tester or current_user.is? :admin
+                = f_team.input :disable_team_append, inline_label: 'Do not add "Team" to the team name', label: false, as: :boolean
               = f_team.input :new_user_name, label: 'Pretty URL' do
                 .input-group
                   span.input-group-addon hackster.io/
