@@ -12,6 +12,18 @@
 
     .col-md-8.col-md-pull-2.description
       = raw part.description
+      / # - if part.parent_parts.any?
+        ul.list-inline
+          li
+            strong> Found in:
+          - part.parent_parts.each do |linked_part|
+            = link_to linked_part.full_name, linked_part
+      - if part.child_parts.any?
+        ul.list-inline
+          li
+            strong> Contains:
+          - part.child_parts.each do |linked_part|
+            = link_to linked_part.full_name, linked_part
       ul.list-inline
         - if part.store_link.present?
           li= link_to 'Buy it', part.store_link, target: '_blank'

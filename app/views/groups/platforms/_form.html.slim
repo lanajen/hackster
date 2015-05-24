@@ -134,17 +134,18 @@
           .row
             .col-md-6
               h4
-                strong Feel free to use
+                strong Feel free to use (only if you know what you're doing)
               = f.input :platform_tags_string, as: :string, label: 'Platform tags', hint: 'All the projects tagged with these tags will appear on this page. Separate technologies by commas'
               = f.input :email
               = f.input :verified, as: :boolean, inline_label: 'Verified', label: false, hint: "Check if a representative of the community is onboard"
               = f.input :disclaimer, as: :text, input_html: { rows: 4 }
               = f.input :download_link, label: 'Download link', hint: 'If your product is a piece of software use this instead.'
               = f.input :shoplocket_link, label: 'ShopLocket link'
+              = f.input :enable_sub_platforms, as: :boolean, inline_label: 'Enable sub platforms', label: false
 
             .col-md-6
               h4
-                strong Don't use
+                strong Don't use (especially if you don't know what you're doing)
               = f.input :is_new, as: :boolean, inline_label: 'Show as new', label: false
               = f.input :accept_project_ideas, inline_label: "Accept project ideas?", as: :boolean, hint: "This is useful if your product hasn't shipped yet and you want to encourage your community to start posting project ideas.", label: false
               = f.input :project_ideas_phrasing, collection: @platform.project_ideas_phrasing_options, label: 'Phrasing for project ideas prompt'

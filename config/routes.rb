@@ -211,10 +211,6 @@ HackerIo::Application.routes.draw do
 
     resources :wiki_pages, only: [:destroy]
 
-    resources :announcements, only: [:destroy] do
-      resources :comments, only: [:create]
-    end
-
     scope 'followers' do
       get 'tools/:id' => 'followers#standalone_button', as: :followers_tool
       post 'tools/:id' => 'followers#create_from_button', as: :followers_create_tool
@@ -388,6 +384,10 @@ HackerIo::Application.routes.draw do
       match '/auth/:provider/setup' => 'omniauth_callbacks#setup', via: :get
       resources :simplified_registrations, only: [:create]
     end
+  end
+
+  resources :announcements, only: [:destroy] do
+    resources :comments, only: [:create]
   end
 
   resources :comments, only: [:edit, :update, :destroy]

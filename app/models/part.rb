@@ -13,10 +13,19 @@ class Part < ActiveRecord::Base
   include Workflow
 
   belongs_to :platform
+
+  has_and_belongs_to_many :parent_parts, join_table: :part_relations, foreign_key: :parent_part_id, association_foreign_key: :child_part_id, class_name: 'Part'
+  has_and_belongs_to_many :child_parts, join_table: :part_relations, foreign_key: :child_part_id, association_foreign_key: :parent_part_id, class_name: 'Part'
+
+  has_many :child_part_relations, foreign_key: :parent_part_id, class_name: 'PartRelation'
   has_many :part_joins, dependent: :destroy
   has_many :parts_widgets, through: :part_joins, source: :partable, class_name: 'PartsWidget'
   has_many :projects, through: :parts_widgets, source_type: 'Project', source: :widgetable
   has_one :image, as: :attachable, dependent: :destroy
+
+  has_many :sub_part_joins, dependent: :destroy, class_name: 'PartJoin', through: :child_parts, source: :part_joins
+  has_many :sub_parts_widgets, through: :sub_part_joins, source: :partable, class_name: 'PartsWidget'
+  has_many :sub_projects, through: :sub_parts_widgets, source_type: 'Project', source: :widgetable
 
   taggable :product_tags
 
@@ -24,9 +33,10 @@ class Part < ActiveRecord::Base
     :description, :store_link, :documentation_link, :libraries_link,
     :datasheet_link, :product_page_link, :image_id, :platform_id,
     :part_joins_attributes, :part_join_ids, :workflow_state, :slug, :one_liner,
-    :position
+    :position, :child_part_relations_attributes
 
-  accepts_nested_attributes_for :part_joins, allow_destroy: true
+  accepts_nested_attributes_for :part_joins, :child_part_relations,
+    allow_destroy: true
 
   store :websites, accessors: [:store_link, :documentation_link, :libraries_link,
     :datasheet_link, :product_page_link]
@@ -182,6 +192,10 @@ class Part < ActiveRecord::Base
     where.not workflow_state: INVALID_STATES
   end
 
+  def self.sorted_by_name
+    order(:name)
+  end
+
   def self.with_sku
     where("parts.vendor_sku <> '' AND parts.vendor_sku IS NOT NULL")
   end
@@ -190,8 +204,15 @@ class Part < ActiveRecord::Base
     where("parts.vendor_sku = '' OR parts.vendor_sku IS NULL")
   end
 
+  def all_projects
+    ids = [id]
+    ids += child_part_relations.pluck(:child_part_id)
+    Project.joins(:widgets).where(widgets: { type: 'PartsWidget' }).joins("INNER JOIN part_joins ON part_joins.partable_id = widgets.id AND part_joins.partable_type = 'Widget'").where(part_joins: { part_id: ids })
+  end
+
   def counters
     {
+      all_projects: 'all_projects.public.count',
       projects: 'projects.public.count',
     }
   end

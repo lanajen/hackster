@@ -20,6 +20,11 @@
 
 = render 'parts/part', { part: @part }
 
+- if @part.parent_parts.any?
+  h3.section-title #{@part.name} is used in
+  - @part.parent_parts.each do |linked_part|
+    = render 'parts/part', { part: linked_part.decorate }
+
 .main-section-actions.clearfix.mg-30
   .pull-right
     - hash = is_whitelabel? ? {} : { project: { platform_tags_string: @platform.name } }
