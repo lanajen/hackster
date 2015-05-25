@@ -1,5 +1,5 @@
 class PartObserver < ActiveRecord::Observer
-  def after_commit_on_create record
+  def after_commit record
     update_platform_counters record if record.platform_id.present?
   end
 
@@ -26,6 +26,6 @@ class PartObserver < ActiveRecord::Observer
 
   private
     def update_platform_counters record
-      record.platform.update_counters only: [:parts]
+      record.platform.update_counters only: [:parts, :sub_parts]
     end
 end

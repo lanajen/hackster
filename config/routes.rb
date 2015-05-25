@@ -322,6 +322,7 @@ HackerIo::Application.routes.draw do
         get 'makes/:part_slug/embed' => 'parts#embed', as: :embed_part
         get 'powers' => 'platforms#products', as: :products
         get 'projects' => 'platforms#projects', as: :projects
+        get 'using' => 'parts#sub_index', as: :sub_parts
       end
     end
 

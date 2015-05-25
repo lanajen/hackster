@@ -92,6 +92,29 @@
             .follow-container
               = render partial: 'followers/button_text', locals: { followable: @group }
 
+      - if @platform.enable_sub_parts
+        section#parts.section-feature
+          .container
+            h2.section-title
+              ' Products based on
+              - if @platform.verified
+                - text = "our technology"
+              - else
+                - text = "#{@platform.name}'s technology"
+              = text
+            .row
+              - if @platform.sub_parts_count == 1
+                .col-sm-4
+              - elsif @platform.sub_parts_count == 2
+                .col-sm-2
+              - @sub_parts.each do |part|
+                = render partial: 'parts/part_thumb', locals: { part: part.decorate }
+
+            - if @platform.sub_parts_count > 3
+              .text-center
+                = link_to "View more of the products based on #{text} &rarr;".html_safe, platform_sub_parts_path(@platform), class: 'btn btn-default btn-sm hidden-xs'
+                = link_to 'View more &rarr;'.html_safe, platform_sub_parts_path(@platform), class: 'btn btn-default btn-sm visible-xs-block'
+
       section#projects.section-feature
         .container
           h2.section-title

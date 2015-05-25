@@ -125,8 +125,9 @@
               = link_to "Add device", new_project_path(project: { platform_tags_string: @platform.name }, type: 'product'), class: 'btn btn-sm btn-default'
 
           .col-md-6
-            = f.input :enable_parts, as: :boolean, inline_label: 'Enable products tab', label: false, hint: "Products are the boards you manufacture"
-            = f.input :enable_products, as: :boolean, inline_label: 'Enable devices tab', label: false, hint: "Devices are third-party commercial products powered by your boards"
+            = f.input :enable_parts, as: :boolean, inline_label: 'Enable products tab', label: false, hint: "Products are the components you manufacture."
+            = f.input :enable_sub_parts, as: :boolean, inline_label: 'Enable sub-products tab', label: false, hint: "Sub-products are the components that are based on your technology, eg: they integrate your components in theirs."
+            = f.input :enable_products, as: :boolean, inline_label: 'Enable devices tab', label: false, hint: "Devices are third-party commercial products powered by your boards."
             = f.input :products_text, label: 'Label for devices section', hint: "Default is \"#{@platform.default_products_text}\"."
 
       - if current_user.is? :admin
@@ -141,7 +142,6 @@
               = f.input :disclaimer, as: :text, input_html: { rows: 4 }
               = f.input :download_link, label: 'Download link', hint: 'If your product is a piece of software use this instead.'
               = f.input :shoplocket_link, label: 'ShopLocket link'
-              = f.input :enable_sub_platforms, as: :boolean, inline_label: 'Enable sub platforms', label: false
 
             .col-md-6
               h4
