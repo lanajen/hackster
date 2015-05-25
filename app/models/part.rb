@@ -18,6 +18,7 @@ class Part < ActiveRecord::Base
   has_and_belongs_to_many :child_parts, join_table: :part_relations, foreign_key: :parent_part_id, association_foreign_key: :child_part_id, class_name: 'Part'
 
   has_many :child_part_relations, foreign_key: :parent_part_id, class_name: 'PartRelation'
+  has_many :parent_part_relations, foreign_key: :child_part_id, class_name: 'PartRelation'
   has_many :part_joins, dependent: :destroy
   has_many :parts_widgets, through: :part_joins, source: :partable, class_name: 'PartsWidget'
   has_many :projects, through: :parts_widgets, source_type: 'Project', source: :widgetable
@@ -33,10 +34,11 @@ class Part < ActiveRecord::Base
     :description, :store_link, :documentation_link, :libraries_link,
     :datasheet_link, :product_page_link, :image_id, :platform_id,
     :part_joins_attributes, :part_join_ids, :workflow_state, :slug, :one_liner,
-    :position, :child_part_relations_attributes
+    :position, :child_part_relations_attributes,
+    :parent_part_relations_attributes
 
   accepts_nested_attributes_for :part_joins, :child_part_relations,
-    allow_destroy: true
+    :parent_part_relations, allow_destroy: true
 
   store :websites, accessors: [:store_link, :documentation_link, :libraries_link,
     :datasheet_link, :product_page_link]

@@ -13,12 +13,18 @@
   = f.input :datasheet_link, label: 'Link to datasheet'
   - if current_user.is? :admin
     = f.input :position
-    = f.simple_fields_for :child_part_relations do |f_sub|
+    / = f.simple_fields_for :child_part_relations do |f_sub|
       = f_sub.input :child_part_id, label: 'Component' do
         .row
           .col-xs-10= f_sub.input_field :child_part_id, as: :select, collection: Part.approved.sorted_by_name, wrapper: false, label_method: :full_name
           .col-xs-2= f_sub.link_to_remove content_tag(:i, '', class: 'fa fa-times'), class: 'btn btn-danger btn-xs'
-    = f.link_to_add 'Add component', :child_part_relations, class: 'btn btn-link btn-sm'
+    / = f.link_to_add 'Add component', :child_part_relations, class: 'btn btn-link btn-sm'
+    = f.simple_fields_for :parent_part_relations do |f_sub|
+      = f_sub.input :parent_part_id, label: 'Used in' do
+        .row
+          .col-xs-10= f_sub.input_field :parent_part_id, as: :select, collection: Part.approved.sorted_by_name, wrapper: false, label_method: :full_name
+          .col-xs-2= f_sub.link_to_remove content_tag(:i, '', class: 'fa fa-times'), class: 'btn btn-danger btn-xs'
+    = f.link_to_add 'Add component that uses it', :parent_part_relations, class: 'btn btn-link btn-sm'
 
   = render partial: 'shared/image_form', locals: { file_type: 'image', human_file_type: 'Product shot', image_link: @part.image.try(:imgix_url, :thumb), help_block: 'Make it look nice! PNG with transparent background preferred; JPG/PNG/GIF with white background OK.', attribute_type: 'image', image_version: 'thumb', model: 'part' }
 
