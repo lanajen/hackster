@@ -10,6 +10,8 @@ section.section-nav
           = active_li_link_to content_tag(:span, "Projects") + content_tag(:small, @group.projects_count), platform_projects_path(@group)
           - if @group.enable_products
             = active_li_link_to content_tag(:span, "Devices") + content_tag(:small, @group.products_count), platform_products_path(@group)
+          - if @group.enable_sub_parts
+            = active_li_link_to content_tag(:span, "Using") + content_tag(:small, @group.sub_parts_count), platform_sub_parts_path(@group)
           - if @group.enable_parts
             = active_li_link_to content_tag(:span, "Products") + content_tag(:small, @group.parts_count), platform_parts_path(@group)
           li

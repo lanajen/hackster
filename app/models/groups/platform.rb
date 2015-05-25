@@ -16,6 +16,12 @@ class Platform < List
   has_many :challenges
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'PlatformMember'
   has_many :parts, -> { order [:position, :name] }
+
+  has_many :part_projects, through: :parts, class_name: 'Project', source: :projects
+  has_many :sub_parts, through: :parts, class_name: 'Part', source: :child_parts
+  has_many :sub_parts_projects, through: :parts, class_name: 'Project', source: :sub_projects
+  has_many :sub_platforms, through: :sub_parts, class_name: 'Platform', source: :platform
+
   has_many :projects, -> { where(type: %w(Project ExternalProject)) }, through: :project_collections do
     # TOOD: see if this can be delegated to ProjectCollection
     def visible
@@ -38,7 +44,7 @@ class Platform < List
     :project_ideas_phrasing, :client_subdomain_attributes, :logo_id,
     :download_link, :company_logo_id, :disclaimer,
     :cta_text, :parts_attributes, :verified, :enable_chat, :enable_products,
-    :description, :enable_parts, :enable_password
+    :description, :enable_parts, :enable_password, :enable_sub_parts
 
   accepts_nested_attributes_for :client_subdomain, :parts
 
@@ -52,17 +58,18 @@ class Platform < List
   store_accessor :properties, :accept_project_ideas, :project_ideas_phrasing,
     :active_challenge, :disclaimer, :cta_text, :hashtag,
     :verified, :enable_chat, :enable_products, :description, :enable_parts,
-    :api_username, :api_password, :http_password, :enable_password
+    :api_username, :api_password, :http_password, :enable_password,
+    :enable_sub_parts
   set_changes_for_stored_attributes :properties
 
   parse_as_booleans :properties, :accept_project_ideas, :active_challenge,
     :is_new, :enable_comments, :hidden, :verified, :enable_chat, :enable_products,
-    :enable_parts, :enable_password
+    :enable_parts, :enable_password, :enable_sub_parts
 
-  store_accessor :counters_cache, :parts_count, :products_count
+  store_accessor :counters_cache, :parts_count, :products_count, :sub_parts_count
 
   parse_as_integers :counters_cache, :external_projects_count,
-    :private_projects_count, :products_count, :parts_count
+    :private_projects_count, :products_count, :parts_count, :sub_parts_count
 
   taggable :platform_tags, :product_tags
 
@@ -119,8 +126,12 @@ class Platform < List
 
   def counters
     super.merge({
+      external_projects: 'projects.external.count',
+      private_projects: 'projects.private.count',
       parts: 'parts.count',
       products: 'products.count',
+      projects: 'projects.visible.count',
+      sub_parts: 'sub_parts.count',
     })
   end
 

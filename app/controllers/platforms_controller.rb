@@ -58,9 +58,10 @@ class PlatformsController < ApplicationController
         if @followers.count < 5
           @followers = @platform.followers.top.limit(5)
         end
-        @parts = @platform.parts.limit(3)
         @projects = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection).merge(Project.magic_sort).where(projects: { type: %w(Project ExternalProject) }).limit(3)
-        @products = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection).merge(Project.magic_sort).where(projects: { type: 'Product' }).limit(3)
+        @parts = @platform.parts.limit(3) if @platform.enable_parts
+        @products = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection).merge(Project.magic_sort).where(projects: { type: 'Product' }).limit(3) if @platform.enable_products
+        @sub_parts = @platform.sub_parts.limit(3) if @platform.enable_sub_parts
 
         @announcement = @platform.announcements.current
         @challenge = @platform.active_challenge ? @platform.challenges.active.first : nil

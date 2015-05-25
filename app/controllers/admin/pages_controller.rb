@@ -131,7 +131,7 @@ class Admin::PagesController < Admin::BaseController
 
     params[:sort_by] ||= 'created_at'
 
-    @groups = filter_for Group.where(type: %w(Platform MetaPlatform)), @fields
+    @groups = filter_for Platform, @fields
   end
 
   def platform_contacts

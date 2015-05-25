@@ -34,6 +34,8 @@
   .clearfix.text-center
     - if current_user.is? :admin
       = link_to 'Edit as admin', edit_admin_project_path(@project), class: 'btn btn-sm btn-warning'
+      - unless params[:show_admin_bar]
+        = link_to 'Show admin bar', edit_project_path(@project, show_admin_bar: 1), class: 'btn btn-sm btn-default'
       hr
     ol.pe-nav
       li= link_to 'Basics', '#basics', id: 'basics-nav', class: 'active tab'

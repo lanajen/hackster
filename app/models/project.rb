@@ -302,6 +302,10 @@ class Project < ActiveRecord::Base
     where(type: 'Project')
   end
 
+  def self.visible
+    joins(:project_collections).where(project_collections: { workflow_state: ProjectCollection::VALID_STATES })
+  end
+
   def self.wip
     indexable.where(wip: true).last_updated
   end

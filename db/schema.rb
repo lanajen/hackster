@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150425203837) do
+ActiveRecord::Schema.define(version: 20150514010234) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -435,6 +435,14 @@ ActiveRecord::Schema.define(version: 20150425203837) do
 
   add_index "part_joins", ["part_id"], name: "index_part_joins_on_part_id", using: :btree
   add_index "part_joins", ["partable_id", "partable_type", "position"], name: "index_part_joins_on_partable_id_and_partable_type_and_position", using: :btree
+
+  create_table "part_relations", force: :cascade do |t|
+    t.integer "parent_part_id"
+    t.integer "child_part_id"
+  end
+
+  add_index "part_relations", ["child_part_id"], name: "index_part_relations_on_child_part_id", using: :btree
+  add_index "part_relations", ["parent_part_id"], name: "index_part_relations_on_parent_part_id", using: :btree
 
   create_table "parts", force: :cascade do |t|
     t.integer  "quantity",                        default: 1
