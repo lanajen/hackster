@@ -10,7 +10,7 @@ module ScraperStrategies
 
       def before_parse
         tags = @parsed.css('.sideTags .tags a')
-        @project.product_tags_string = tags.map{|a| a.text }.join(',')
+        @project.product_tags_string = tags.map{|a| a.text }.join(',')[0..19]
 
         els = @parsed.css('.public-info .mr')
         if el = els.first
@@ -50,11 +50,14 @@ module ScraperStrategies
       end
 
       def extract_title
-        @parsed.at_css('h1').remove.text.strip
+        @parsed.at_css('h1').remove.text.strip.split(/\n/)[0]
       end
 
       def select_article
-        @parsed.at_css('#step_detail')
+        text = @parsed.at_css('.section-links').try(:to_html)
+        text ||= ''
+        text += @parsed.at_css('#step_detail').to_html
+        Nokogiri::HTML::DocumentFragment.parse(text)
       end
   end
 end

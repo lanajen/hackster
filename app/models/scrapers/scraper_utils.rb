@@ -70,7 +70,15 @@ module ScraperUtils
       mime_type = ''
     end
     puts "#{status_code} (#{mime_type})"
-    status_code.in? %w(200 301 302) and (mime ? mime.in?(mime_type) : true)
+    case status_code
+    when 200
+      return (mime.in?(mime_type) ? link : false) if mime
+      link
+    when 301, 302
+      test_link head['Location']
+    else
+      false
+    end
   end
 
   def write_file file_name, content, header=nil, mode=nil

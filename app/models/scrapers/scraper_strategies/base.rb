@@ -114,7 +114,7 @@ module ScraperStrategies
       def extract_images base=@article, super_base=nil
         base.css('img').each do |img|
           src = get_src_for_img(img, base)
-          if test_link(src)
+          if src = test_link(src)
             # ext = File.extname(URI.parse(src).path)[1..-1]
             # img.remove and next unless ext.in? ImageUploader::EXTENSION_WHITE_LIST
             img['src'] = src
@@ -260,7 +260,7 @@ module ScraperStrategies
           src = get_src_for_img(img)
           image = @project.build_cover_image
           image.skip_file_check!
-          image.remote_file_url = src
+          image.remote_file_url = test_link src
         end
       end
 
