@@ -7,6 +7,8 @@
       .box-content
         = simple_form_for current_user, url: edit_notifications_path, html: { method: :patch, class: 'form-horizontal widget-form', autocomplete: "off" }, wrapper: :bootstrap3_horizontal do |f|
           = f.error_notification
+          input name='user[email_subscriptions][]' value='' type='hidden'
+          input name='user[web_subscriptions][]' value='' type='hidden'
           table.table
             thead
               th
