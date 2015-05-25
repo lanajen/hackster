@@ -70,7 +70,7 @@ module ScraperUtils
       mime_type = ''
     end
     puts "#{status_code} (#{mime_type})"
-    case status_code
+    case status_code.to_i
     when 200
       return (mime.in?(mime_type) ? link : false) if mime
       link
