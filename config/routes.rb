@@ -263,6 +263,8 @@ HackerIo::Application.routes.draw do
     get 'talk' => 'channels#show'
     get 'talk/*all' => 'channels#show'
 
+    get 'csrf' => 'pages#csrf'
+
     get 'hardwareweekend' => 'pages#hardwareweekend'
     get 'hhw', to: redirect('/hardwareweekend')
     get 'hww', to: redirect('/hardwareweekend')

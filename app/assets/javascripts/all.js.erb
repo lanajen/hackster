@@ -93,6 +93,20 @@ $(function () {
 
   showAlerts();
 
+  $('#show-login-form, .show-simplified-signup').on('click', function(e){
+    if (!$('.user-form [name="authenticity_token"]').length) {
+      $.ajax({
+        url: '/csrf',
+        dataType: 'text',
+        success: function(token) {
+          var input = $('<input type="hidden" name="authenticity_token" />');
+          input.val(token);
+          $('.user-form').append(input);
+        }
+      });
+    }
+  });
+
   $('input, textarea').placeholder();
 
   $('form.disable-on-submit').submit(function(){
@@ -348,7 +362,7 @@ function closePopup(id) {
 function doUserSignedInUpdate(){
   $('.user-signed-in').show();
   var csrf = $('meta[name="csrf-token"]').attr('content');
-  var input = $('<input type="hidden" name="authenticity_token" />')
+  var input = $('<input type="hidden" name="authenticity_token" />');
   input.val(csrf);
   $('form.append-csrf-token').append(input);
 }

@@ -59,6 +59,10 @@ class PagesController < ApplicationController
     end
   end
 
+  def csrf
+    render json: form_authenticity_token
+  end
+
   def hardwareweekend
     unless user_signed_in?
       set_surrogate_key_header 'hhw'

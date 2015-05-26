@@ -18,7 +18,8 @@ html(lang="en")
     title= title
     meta(name="description" content="#{meta_desc}")
     = content_for :head
-    = csrf_meta_tags
+    - unless csrf_disabled?
+      = csrf_meta_tags
     = javascript_include_tag "//use.typekit.net/okr0yzp.js"
     javascript:
        try{Typekit.load();}catch(e){}
@@ -162,7 +163,7 @@ html(lang="en")
                   li= link_to 'Sign up', new_user_registration_path(source: 'nav'), class: 'login-link'
 
                   li.dropdown
-                    a.btn.btn-primary.login-link.dropdown-toggle data-toggle="dropdown" href='#'
+                    a.btn.btn-primary.login-link.dropdown-toggle#show-login-form data-toggle="dropdown" href='#'
                       | Log in
                     .dropdown-menu style=("padding: 15px; width: 250px;")
                       = render 'devise/sessions/form'

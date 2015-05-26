@@ -37,6 +37,7 @@ class Project < ActiveRecord::Base
     'product' => 'Product',
   }
 
+  include ActionView::Helpers::SanitizeHelper
   include Counter
   include EditableSlug
   include Privatable
@@ -87,6 +88,8 @@ class Project < ActiveRecord::Base
   has_one :video, as: :recordable, dependent: :destroy
 
   # sanitize_text :description
+  sanitize_text :name
+  register_sanitizer :strip_tags, :before_save, :name
   register_sanitizer :remove_whitespaces_from_html, :before_save, :description
   attr_accessible :description, :end_date, :name, :start_date, :current,
     :team_members_attributes, :website, :one_liner, :widgets_attributes,
@@ -805,6 +808,10 @@ class Project < ActiveRecord::Base
 
       parent = team ? self.class.joins(:team).where(groups: { user_name: team.user_name }) : self.class
       errors.add :new_slug, 'has already been taken' if parent.where("LOWER(projects.slug) = ?", slug.downcase).where.not(id: id).any?
+    end
+
+    def strip_tags text
+      sanitize(text, tags: [])
     end
 
     def tags_length_is_valid
