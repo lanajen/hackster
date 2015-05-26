@@ -16,12 +16,12 @@
             .typeahead-container.hidden-xs
               .inner-container.shakable
                 label#typeahead-label
-                  ' What do you hack?
+                  ' Choose a category
                   i.fa.fa-chevron-down
                 input.form-control.typeahead.twitter-typeahead#typeahead type='search' autofocus='true' placeholder='Search by typing...'
             .select-container.visible-xs
               label
-                ' What do you hack?
+                ' Choose a category
                 i.fa.fa-chevron-down
                 select#hack_select
                   - @typeahead_tags.each do |tag|

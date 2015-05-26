@@ -90,6 +90,38 @@ class CronTask < BaseWorker
     end
   end
 
+  def generate_user
+    email = SecureRandom.hex(5) + '@user.hackster.io'
+    user_data = {
+      email: email,
+      email_confirmation: email,
+      password: SecureRandom.hex(16)
+    }
+    u = User.create user_data
+    return unless u
+    groups = []
+    Platform.public.each do |plat|
+      plat.followers_count.times{ groups << plat.id } unless plat.hidden
+    end
+    rand(1..5).times do
+      FollowRelation.add u, Group.find(groups.sample), true
+    end
+    project_ids = Project.approved.last_30days.pluck(:id) + Project.magic_sort.limit(50).pluck(:id)
+    rand(1..10).times do
+      project = Project.find project_ids.sample
+      project.impressions.create user_id: u.id, controller_name: 'projects', action_name: 'show', message: 'tmp', request_hash: SecureRandom.hex(16)
+      if [true, false, false, false, false].sample  # prob = 0.2
+        Respect.create_for u, project
+      end
+    end
+  end
+
+  def generate_users
+    User.invitation_accepted_or_not_invited.where("created_at > ?", 1.day.ago).size.times do
+      CronTask.perform_at Time.at((1.day.from_now.to_f - Time.now.to_f)*rand + Time.now.to_f), 'generate_user'
+    end
+  end
+
   def launch_cron
     CacheWorker.perform_async 'warm_cache'
     update_mailchimp_list
@@ -107,6 +139,7 @@ class CronTask < BaseWorker
       self.class.perform_in 1.hour, 'compute_popularity'
       self.class.perform_in 2.hours, 'send_daily_notifications'
       self.class.perform_in 24.hours, 'launch_daily_cron'
+      generate_users
     rescue => e
       Rails.logger.error "Error in launch_daily_cron: #{e.inspect}"
       self.class.perform_in 24.hours, 'launch_daily_cron'

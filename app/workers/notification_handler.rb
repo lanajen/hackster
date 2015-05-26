@@ -159,8 +159,9 @@ class NotificationHandler
         context[:author] = follow.user
         case followable
         when Group
-          context[:group] = followable
-          context[:users] = followable.users.active
+          # context[:group] = followable
+          # context[:users] = followable.users.active
+          context[:users] = []  # disabled
         when Project
           context[:project] = followable
           context[:users] = followable.users.with_subscription(notification_type, 'new_follow_project')
