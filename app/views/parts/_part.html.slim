@@ -12,7 +12,7 @@
 
     .col-md-8.col-md-pull-2.description
       = raw part.description
-      / # - if part.parent_parts.any?
+      / - if part.parent_parts.any?
         ul.list-inline
           li
             strong> Found in:

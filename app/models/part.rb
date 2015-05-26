@@ -14,8 +14,8 @@ class Part < ActiveRecord::Base
 
   belongs_to :platform
 
-  has_and_belongs_to_many :parent_parts, join_table: :part_relations, foreign_key: :parent_part_id, association_foreign_key: :child_part_id, class_name: 'Part'
-  has_and_belongs_to_many :child_parts, join_table: :part_relations, foreign_key: :child_part_id, association_foreign_key: :parent_part_id, class_name: 'Part'
+  has_and_belongs_to_many :parent_parts, join_table: :part_relations, foreign_key: :child_part_id, association_foreign_key: :parent_part_id, class_name: 'Part'
+  has_and_belongs_to_many :child_parts, join_table: :part_relations, foreign_key: :parent_part_id, association_foreign_key: :child_part_id, class_name: 'Part'
 
   has_many :child_part_relations, foreign_key: :parent_part_id, class_name: 'PartRelation'
   has_many :parent_part_relations, foreign_key: :child_part_id, class_name: 'PartRelation'
