@@ -309,6 +309,10 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
       $(this).trigger('change');
     });
 
+    $('#basics').on('change', '[name="project[cover_image_id]"]', function(e){
+      $('.pe-save').slideDown(200);
+    });
+
     // event methods for software/hardware
     $('.modal-with-form')
       .on('click', '.select-file', function(e){
