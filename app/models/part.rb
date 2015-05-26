@@ -24,9 +24,9 @@ class Part < ActiveRecord::Base
   has_many :projects, through: :parts_widgets, source_type: 'Project', source: :widgetable
   has_one :image, as: :attachable, dependent: :destroy
 
-  has_many :sub_part_joins, dependent: :destroy, class_name: 'PartJoin', through: :child_parts, source: :part_joins
-  has_many :sub_parts_widgets, through: :sub_part_joins, source: :partable, class_name: 'PartsWidget'
-  has_many :sub_projects, through: :sub_parts_widgets, source_type: 'Project', source: :widgetable
+  has_many :parent_part_joins, dependent: :destroy, class_name: 'PartJoin', through: :parent_parts, source: :part_joins
+  has_many :parent_parts_widgets, through: :sub_part_joins, source: :partable, class_name: 'PartsWidget'
+  has_many :parent_projects, through: :sub_parts_widgets, source_type: 'Project', source: :widgetable
 
   taggable :product_tags
 
