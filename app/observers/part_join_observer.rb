@@ -36,5 +36,6 @@ class PartJoinObserver < ActiveRecord::Observer
         project.platform_tags_array += [platform_name]
         project.save
       end
+      ProjectWorker.perform_async 'update_platforms', project.id
     end
 end
