@@ -78,6 +78,7 @@ class Project < ActiveRecord::Base
   has_many :respects, dependent: :destroy, as: :respectable
   has_many :respecting_users, -> { order 'respects.created_at ASC' }, through: :respects, source: :user
   has_many :slug_histories, -> { order updated_at: :desc }, as: :sluggable, dependent: :destroy
+  has_many :sub_platforms, through: :parts, source: :child_platforms
   has_many :team_members, -> { order(created_at: :asc).where("members.approved_to_join <> 'f' OR members.approved_to_join IS NULL") }, through: :team, source: :members #.includes(:user)
   has_many :platforms, -> { where("groups.type = 'Platform'").order("groups.full_name ASC") }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :users, through: :team_members

@@ -28,6 +28,8 @@ class Part < ActiveRecord::Base
   has_many :parent_parts_widgets, through: :sub_part_joins, source: :partable, class_name: 'PartsWidget'
   has_many :parent_projects, through: :sub_parts_widgets, source_type: 'Project', source: :widgetable
 
+  has_many :child_platforms, through: :child_parts, source: :platform
+
   taggable :product_tags
 
   attr_accessible :name, :vendor_link, :vendor_name, :vendor_sku, :mpn, :unit_price,

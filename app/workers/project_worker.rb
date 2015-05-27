@@ -9,10 +9,8 @@ class ProjectWorker < BaseWorker
     else
       platforms = project.platforms = Platform.joins(:platform_tags).references(:tags).where("LOWER(tags.name) IN (?)", project.platform_tags_cached.map{|t| t.downcase })
 
-      platforms.each do |platform|
-        platform.sub_platforms.each do |sub_platform|
-          project.platforms << sub_platform unless sub_platform.in? platforms
-        end
+      project.sub_platforms.each do |sub_platform|
+        project.platforms << sub_platform unless sub_platform.in? platforms
       end
 
       project.project_collections.joins("inner join groups on groups.id = project_collections.collectable_id and project_collections.collectable_type = 'Group'").where(groups: { type: 'Platform'}).each do |collection|
