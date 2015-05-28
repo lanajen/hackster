@@ -15,7 +15,7 @@ class Platform < List
   has_many :announcements, as: :threadable, dependent: :destroy
   has_many :challenges
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'PlatformMember'
-  has_many :parts, -> { order [:position, :name] }
+  has_many :parts
 
   has_many :part_projects, through: :parts, class_name: 'Project', source: :projects
   has_many :sub_parts, through: :parts, class_name: 'Part', source: :parent_parts

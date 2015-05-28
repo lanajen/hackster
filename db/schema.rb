@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150514010234) do
+ActiveRecord::Schema.define(version: 20150528190523) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -464,10 +464,10 @@ ActiveRecord::Schema.define(version: 20150514010234) do
     t.integer  "platform_id"
     t.boolean  "private",                         default: true
     t.string   "product_tags_string", limit: 255
-    t.text     "counters_cache"
     t.string   "workflow_state",      limit: 255
     t.string   "slug",                limit: 255
     t.string   "one_liner",           limit: 140
+    t.hstore   "counters_cache"
   end
 
   add_index "parts", ["partable_id", "partable_type"], name: "partable_index", using: :btree

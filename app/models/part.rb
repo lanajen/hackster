@@ -2,7 +2,6 @@
 # - clean up parts/consolidate
 # - part moderation dashboard
 # - later: search by part
-# - later: show parts on platform page
 
 class Part < ActiveRecord::Base
   INVALID_STATES = %w(rejected retired)
@@ -46,11 +45,8 @@ class Part < ActiveRecord::Base
     :datasheet_link, :product_page_link]
   set_changes_for_stored_attributes :websites
 
-  # convert these to hstore so they can be queried on
-  # def self.most_used; order("counters_cache -> 'projects_count' DESC"); end
-  store :counters_cache, accessors: [:projects_count]
-  # update parser to work with hstore
-  parse_as_integers :counters_cache, :projects_count
+  store_accessor :counters_cache, :projects_count, :all_projects_count
+  parse_as_integers :counters_cache, :projects_count, :all_projects_count
 
   validates :name, presence: true
   validates :unit_price, numericality: { greater_than_or_equal_to: 0 }, allow_blank: true
@@ -87,6 +83,9 @@ class Part < ActiveRecord::Base
     #   notify_observers 'after_status_updated' if to.to_s.in? %w(approved rejected)
     # end
   end
+
+  scope :alphabetical, -> { order name: :asc }
+  scope :default_sort, -> { order("parts.position ASC, CAST(parts.counters_cache -> 'projects_count' AS INT) DESC, parts.name ASC") }
 
   # # beginning of search methods
   # include TireInitialization
@@ -192,6 +191,10 @@ class Part < ActiveRecord::Base
     where workflow_state: INVALID_STATES
   end
 
+  def self.most_used
+    order("CAST(counters_cache -> 'projects_count' AS INT) DESC, name ASC")
+  end
+
   def self.not_invalid
     where.not workflow_state: INVALID_STATES
   end
@@ -227,7 +230,7 @@ class Part < ActiveRecord::Base
 
   def full_name
     if platform
-      "#{platform.name} - #{name}"
+      "#{name} (#{platform.name})"
     else
       name
     end

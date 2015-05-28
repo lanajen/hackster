@@ -8,7 +8,7 @@ class PartsController < ApplicationController
     @page_title = "Products made by #{@platform.name}"
     title @page_title
     meta_desc "Discover all the products made by #{@platform.name} and their related hardware projects."
-    @parts = @platform.parts.paginate(page: safe_page_params)
+    @parts = @platform.parts.default_sort.paginate(page: safe_page_params)
   end
 
   def sub_index
@@ -24,7 +24,7 @@ class PartsController < ApplicationController
     title "#{@platform.name} #{@part.name} projects"
     meta_desc "Discover hardware projects made with #{@platform.name} #{@part.name}."
     @part = @part.decorate
-    @projects = @part.projects.paginate(page: safe_page_params)
+    @projects = @part.projects.public.paginate(page: safe_page_params)
   end
 
   def embed
