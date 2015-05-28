@@ -178,7 +178,7 @@ class Project < ActiveRecord::Base
 
   # beginning of search methods
   include TireInitialization
-  has_tire_index 'private or hide or !approved'
+  has_tire_index 'private or hide or !approved?'
 
   tire do
     mapping do
