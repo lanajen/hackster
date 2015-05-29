@@ -23,13 +23,13 @@ class PartsController < ApplicationController
   def show
     title "#{@platform.name} #{@part.name} projects"
     meta_desc "Discover hardware projects made with #{@platform.name} #{@part.name}."
-    @part = @part.decorate
     @projects = @part.projects.public.paginate(page: safe_page_params)
+    @part = @part.decorate
   end
 
   def embed
     per_page = begin; [Integer(params[:per_page]), Project.per_page].min; rescue; Project.per_page end;  # catches both no and invalid params
-    @projects = @part.projects.paginate(per_page: per_page, page: safe_page_params)
+    @projects = @part.projects.public.paginate(per_page: per_page, page: safe_page_params)
     render layout: 'embed'
   end
 

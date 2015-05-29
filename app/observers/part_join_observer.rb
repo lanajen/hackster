@@ -24,7 +24,7 @@ class PartJoinObserver < ActiveRecord::Observer
     end
 
     def update_counters record
-      record.part.update_counters only: [:projects]
+      record.part.update_counters only: [:projects, :all_projects]
     end
 
     def update_project record
