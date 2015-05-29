@@ -113,7 +113,7 @@
                     .section-content
                       .medium-editor= @project.description
 
-                - cache ["project-#{@project.id}-components"], tag: ["project-#{@project.id}-components"] do
+                - cache ["project-#{@project.id}-components", is_whitelabel?], tag: ["project-#{@project.id}-components"] do
                   - if @component_widgets.any?
                     section#components.section-container.section-collapsible
                       h2.section-title
