@@ -189,11 +189,19 @@ var ThoughtList = React.createClass({
         <ThoughtContainer thought={thought} key={thought.id} />
       );
     });
-    return (
-      <div className="thought-list">
-        {thoughtNodes}
-      </div>
-    );
+    if (this.props.thoughts.length) {
+      return (
+        <div className="thought-list">
+          {thoughtNodes}
+        </div>
+      );
+    } else {
+      return (
+        <div className="thought-list text-center">
+          <i className="fa fa-spin fa-spinner fa-3x"></i>
+        </div>
+      )
+    }
   }
 });
 

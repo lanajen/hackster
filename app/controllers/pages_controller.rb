@@ -86,7 +86,7 @@ class PagesController < ApplicationController
         render json: { count: count } and return
       end
 
-      @challenges = Challenge.where(id: %w(8 9))
+      @challenges = Challenge.where(id: %w(9))
 
       @projects = Project.custom_for(current_user).for_thumb_display.paginate(page: safe_page_params, per_page: 12)
       if @projects.any?
