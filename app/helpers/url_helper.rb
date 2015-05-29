@@ -281,6 +281,10 @@ module UrlHelper
     super platform.user_name, opts
   end
 
+  def platform_sub_platforms_path platform, opts={}
+    super platform.user_name, opts
+  end
+
   def product_path product, opts={}
     # super product.slug, opts
     params = params_for_product(product).merge(opts)

@@ -323,11 +323,12 @@ HackerIo::Application.routes.draw do
         match 'makes/:part_slug' => redirect { |params, request|
           URI.parse(request.url).tap { |uri| uri.path.sub!(/makes/i, 'components') }.to_s
         }, via: :get
-        get 'components/third-party-made' => 'parts#sub_index', as: :sub_parts
+        # get 'components/third-party-made' => 'parts#sub_index', as: :sub_parts
         get 'components/:part_slug' => 'parts#show', as: :part
         get 'components/:part_slug/embed' => 'parts#embed', as: :embed_part
         get 'products' => 'platforms#products', as: :products
         get 'projects' => 'platforms#projects', as: :projects
+        get 'startups' => 'platforms#sub_platforms', as: :sub_platforms
       end
     end
 

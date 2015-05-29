@@ -81,26 +81,6 @@
             .follow-container
               = render partial: 'followers/button_text', locals: { followable: @group }
 
-      - if @platform.enable_sub_parts
-        section#parts.section-feature
-          .container
-            .header-with-more-buttons.clearfix
-              h2.section-title.pull-left
-                ' Components based on #{@platform.name}'s technology
-                span.bdg= @platform.sub_parts_count
-              - if @platform.sub_parts_count > 3
-                = link_to "View more components &rarr;".html_safe, platform_sub_parts_path(@platform), class: 'btn btn-default btn-sm hidden-xs pull-right'
-            .row
-              - if @platform.sub_parts_count == 1
-                .col-sm-4
-              - elsif @platform.sub_parts_count == 2
-                .col-sm-2
-              - @sub_parts.each do |part|
-                .col-sm-4= render partial: 'parts/part_thumb', locals: { part: part.decorate }
-
-            - if @platform.sub_parts_count > 3
-              = link_to 'View more &rarr;'.html_safe, platform_sub_parts_path(@platform), class: 'btn btn-default btn-sm visible-xs-block'
-
       section#projects.section-feature
         .container
           .header-with-more-buttons.clearfix
@@ -138,3 +118,23 @@
 
             - if @platform.products_count > 3
               = link_to 'View more &rarr;'.html_safe, platform_products_path(@platform), class: 'btn btn-default btn-sm visible-xs-block'
+
+      - if @platform.enable_sub_parts
+        section#parts.section-feature
+          .container
+            .header-with-more-buttons.clearfix
+              h2.section-title.pull-left
+                ' Startups that use #{@platform.name} products
+                span.bdg= @platform.sub_platforms_count
+              - if @platform.sub_platforms_count > 3
+                = link_to "View more platforms &rarr;".html_safe, platform_sub_platforms_path(@platform), class: 'btn btn-default btn-sm hidden-xs pull-right'
+            .row
+              - if @platform.sub_platforms_count == 1
+                .col-sm-4
+              - elsif @platform.sub_platforms_count == 2
+                .col-sm-2
+              - @sub_platforms.each do |platform|
+                = render partial: 'groups/platforms/platform_thumb', locals: { platform: platform }
+
+            - if @platform.sub_platforms_count > 3
+              = link_to 'View more &rarr;'.html_safe, platform_sub_platforms_path(@platform), class: 'btn btn-default btn-sm visible-xs-block'

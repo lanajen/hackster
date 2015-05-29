@@ -9,13 +9,13 @@ section.section-nav
           = active_li_link_to 'Home', platform_home_path(@group)
           - if @group.enable_parts
             = active_li_link_to content_tag(:span, "Components") + content_tag(:small, @group.parts_count), platform_parts_path(@group)
-          / - if @group.enable_sub_parts
-            = active_li_link_to content_tag(:span, "Other components") + content_tag(:small, @group.sub_parts_count), platform_sub_parts_path(@group)
           = active_li_link_to content_tag(:span, "Projects") + content_tag(:small, @group.projects_count), platform_projects_path(@group)
-          - if @group.enable_products
-            = active_li_link_to content_tag(:span, "Products") + content_tag(:small, @group.products_count), platform_products_path(@group)
           li
             .link= content_tag(:span, "Community") + content_tag(:small, @group.followers_count)
+          - if @group.enable_products
+            = active_li_link_to content_tag(:span, "Startups") + content_tag(:small, @group.products_count), platform_products_path(@group)
+          - if @group.enable_sub_parts
+            = active_li_link_to content_tag(:span, "Startups") + content_tag(:small, @group.sub_parts_count), platform_sub_platforms_path(@group)
           - if @group.enable_chat
             = active_li_link_to 'Chat', platform_chat_path(@group.user_name)
         .follow-container
