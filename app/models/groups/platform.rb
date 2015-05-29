@@ -20,7 +20,7 @@ class Platform < List
   has_many :part_projects, through: :parts, class_name: 'Project', source: :projects
   has_many :sub_parts, through: :parts, class_name: 'Part', source: :parent_parts
   has_many :sub_parts_projects, through: :parts, class_name: 'Project', source: :parent_projects
-  has_many :sub_platforms, through: :sub_parts, class_name: 'Platform', source: :platform
+  has_many :sub_platforms, -> { uniq }, through: :sub_parts, class_name: 'Platform', source: :platform
 
   has_many :projects, -> { where(type: %w(Project ExternalProject)) }, through: :project_collections do
     # TOOD: see if this can be delegated to ProjectCollection
