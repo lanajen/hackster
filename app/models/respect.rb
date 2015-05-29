@@ -1,4 +1,6 @@
 class Respect < ActiveRecord::Base
+  include Notifiable
+
   belongs_to :respectable, polymorphic: true
   belongs_to :user
   attr_accessible :respectable_id, :respectable_type, :user_id

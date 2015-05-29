@@ -85,7 +85,7 @@ class Part < ActiveRecord::Base
   end
 
   scope :alphabetical, -> { order name: :asc }
-  scope :default_sort, -> { order("parts.position ASC, CAST(parts.counters_cache -> 'projects_count' AS INT) DESC, parts.name ASC") }
+  scope :default_sort, -> { order("parts.position ASC, CAST(parts.counters_cache -> 'all_projects_count' AS INT) DESC, parts.name ASC") }
 
   # # beginning of search methods
   # include TireInitialization
@@ -192,7 +192,7 @@ class Part < ActiveRecord::Base
   end
 
   def self.most_used
-    order("CAST(counters_cache -> 'projects_count' AS INT) DESC, name ASC")
+    order("CAST(counters_cache -> 'all_projects_count' AS INT) DESC, name ASC")
   end
 
   def self.not_invalid

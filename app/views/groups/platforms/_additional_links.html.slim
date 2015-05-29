@@ -1,10 +1,10 @@
 - if @platform.documentation_link.present?
-  = link_to "Documentation", @platform.documentation_link, target: '_blank', class: 'btn btn-link'
+  = link_to "Documentation", @platform.documentation_link, target: '_blank'
 - if @platform.forums_link.present?
-  = link_to "Forums", @platform.forums_link, target: '_blank', class: 'btn btn-link'
+  = link_to "Forums", @platform.forums_link, target: '_blank'
 - if @platform.crowdfunding_link.present?
-  = link_to (@platform.cta_text.presence || "Preorder #{indefinite_articlerize @platform.name}"), @platform.crowdfunding_link, target: '_blank', class: 'btn btn-link btn-link-accent'
+  = link_to (@platform.cta_text.presence || "Preorder #{indefinite_articlerize @platform.name}"), @platform.crowdfunding_link, target: '_blank', class: 'link-accent'
 - if @platform.buy_link.present?
-  = link_to (@platform.cta_text.presence || "Buy #{indefinite_articlerize @platform.name}"), @platform.buy_link, target: '_blank', class: 'btn btn-link btn-link-accent'
+  = link_to (@platform.cta_text.presence || "Buy #{indefinite_articlerize @platform.name}"), @platform.buy_link, target: '_blank', class: 'link-accent'
 - if @platform.download_link.present?
-  = link_to (@platform.cta_text.presence || "Download #{@platform.name}"), @platform.download_link, target: '_blank', class: 'btn btn-link btn-link-accent'
+  = link_to (@platform.cta_text.presence || "Download #{@platform.name}"), @platform.download_link, target: '_blank', class: 'link-accent'

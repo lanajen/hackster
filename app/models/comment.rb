@@ -1,4 +1,6 @@
 class Comment < ActiveRecord::Base
+  include Notifiable
+
   belongs_to :commentable, polymorphic: true
   belongs_to :parent, class_name: 'Comment'
   belongs_to :user

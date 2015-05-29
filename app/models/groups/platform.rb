@@ -75,7 +75,7 @@ class Platform < List
 
   is_impressionable counter_cache: true, unique: :session_hash
 
-  has_default :products_text, 'Devices built by companies'
+  has_default :products_text, 'Products built with %name%'
   has_default :moderation_level, 'hackster'
 
   # beginning of search methods

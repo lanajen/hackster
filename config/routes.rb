@@ -285,8 +285,8 @@ HackerIo::Application.routes.draw do
     get 'tinyduino', to: redirect('/tinycircuits')
     get 'spark', to: redirect('/particle')
     get 'spark/projects', to: redirect('/particle/projects')
-    get 'spark/makes', to: redirect('/particle/makes')
-    get 'spark/makes/spark-core', to: redirect('/particle/makes/spark-core')
+    get 'spark/makes', to: redirect('/particle/components')
+    get 'spark/makes/spark-core', to: redirect('/particle/components/spark-core')
 
     get 'home' => 'pages#home'
     get 'about' => 'pages#about'
@@ -319,12 +319,15 @@ HackerIo::Application.routes.draw do
         get 'chat' => 'chat_messages#index'
         resources :announcements, except: [:create, :update, :destroy], path: :news
         get 'embed' => 'platforms#embed'
-        get 'makes' => 'parts#index', as: :parts
-        get 'makes/:part_slug' => 'parts#show', as: :part
-        get 'makes/:part_slug/embed' => 'parts#embed', as: :embed_part
-        get 'powers' => 'platforms#products', as: :products
+        get 'components' => 'parts#index', as: :parts
+        match 'makes/:part_slug' => redirect { |params, request|
+          URI.parse(request.url).tap { |uri| uri.path.sub!(/makes/i, 'components') }.to_s
+        }, via: :get
+        get 'components/:part_slug' => 'parts#show', as: :part
+        get 'components/:part_slug/embed' => 'parts#embed', as: :embed_part
+        get 'components/third-party-made' => 'parts#sub_index', as: :sub_parts
+        get 'products' => 'platforms#products', as: :products
         get 'projects' => 'platforms#projects', as: :projects
-        get 'using' => 'parts#sub_index', as: :sub_parts
       end
     end
 

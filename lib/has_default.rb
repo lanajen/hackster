@@ -5,7 +5,9 @@ module HasDefault
       store_accessor :properties, :"#{attribute_name}" unless block_given?
 
       send :define_method, "default_#{attribute_name}" do
-        default
+        default.gsub(/%([a-z_]+)%/) do
+          send $1
+        end
       end
 
       self.send :define_method, "#{attribute_name}" do
