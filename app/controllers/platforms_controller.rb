@@ -128,7 +128,7 @@ class PlatformsController < ApplicationController
     title "Platforms that use #{@platform.name}"
     meta_desc "Explore #{@platform.sub_platforms_count} platforms that use #{@platform.name}! Join #{@platform.followers_count} makers who follow #{@platform.name} on Hackster."
 
-    @platforms = @platform.sub_platforms.paginate(page: safe_page_params)
+    @platforms = @platform.sub_platforms.most_members.paginate(page: safe_page_params)
 
     render "groups/platforms/#{self.action_name}"
   end

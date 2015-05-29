@@ -15,7 +15,7 @@ section.section-nav
           - if @group.enable_products
             = active_li_link_to content_tag(:span, "Startups") + content_tag(:small, @group.products_count), platform_products_path(@group)
           - if @group.enable_sub_parts
-            = active_li_link_to content_tag(:span, "Startups") + content_tag(:small, @group.sub_parts_count), platform_sub_platforms_path(@group)
+            = active_li_link_to content_tag(:span, "Startups") + content_tag(:small, @group.sub_platforms_count), platform_sub_platforms_path(@group)
           - if @group.enable_chat
             = active_li_link_to 'Chat', platform_chat_path(@group.user_name)
         .follow-container
