@@ -12,13 +12,15 @@
 
   .pe-header
     h2 The software
-    .subheading What is the code that powers this project?
+    .subheading What is the code that powers this project? What apps or online services are you using?
 
   .row
     .col-md-8.col-md-offset-2
       = f.error_notification
 
       .box data-anchor='code'
+        .box-title.small-title
+          h4 Code
         .box-content
           .btn-group
             a.btn.btn-sm.btn-default.modal-open.modal-reset data-target='#code-editor-popup'
