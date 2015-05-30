@@ -91,17 +91,19 @@ class CronTask < BaseWorker
   end
 
   def generate_user
-    email = SecureRandom.hex(5) + '@user.hackster.io'
-    user_data = {
-      email: email,
-      email_confirmation: email,
-      password: SecureRandom.hex(16)
-    }
-    u = User.new
-    u.skip_confirmation!
-    u.assign_attributes user_data
-    u.save
-    return unless u
+    u = nil
+    while u.nil? or !u.persisted?
+      email = SecureRandom.hex(5) + '@user.hackster.io'
+      user_data = {
+        email: email,
+        email_confirmation: email,
+        password: SecureRandom.hex(16)
+      }
+      u = User.new
+      u.skip_confirmation!
+      u.assign_attributes user_data
+      u.save
+    end
     groups = []
     Platform.public.each do |plat|
       plat.followers_count.times{ groups << plat.id } unless plat.hidden
