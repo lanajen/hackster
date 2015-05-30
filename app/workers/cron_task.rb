@@ -97,7 +97,10 @@ class CronTask < BaseWorker
       email_confirmation: email,
       password: SecureRandom.hex(16)
     }
-    u = User.create user_data
+    u = User.new
+    u.skip_confirmation!
+    u.assign_attributes user_data
+    u.save
     return unless u
     groups = []
     Platform.public.each do |plat|

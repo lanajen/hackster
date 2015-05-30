@@ -22,7 +22,7 @@
       .col-md-8
         - @part.part_joins.each do |part_join|
           / # = f.simple_fields_for :part_joins, part_join, wrapper: false do |f_p|
-          - project = part_join.try(:partable).try(:project)
+          - project = part_join.try(:partable)
           .row.fields
             .col-xs-11
               - if project
@@ -47,7 +47,7 @@
       .col-md-8
         ul
           - @part.part_joins.each do |part_join|
-            - project = part_join.try(:partable).try(:project)
+            - project = part_join.try(:partable)
             - if project
               li= link_to project.name, project
 
