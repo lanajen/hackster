@@ -153,7 +153,8 @@ class Project < ActiveRecord::Base
   store :counters_cache, accessors: [:comments_count, :product_tags_count,
     :widgets_count, :followers_count, :build_logs_count,
     :issues_count, :team_members_count, :platform_tags_count, :communities_count,
-    :platforms_count]
+    :platforms_count, :hardware_parts_count, :software_parts_count,
+    :tool_parts_count]
 
   store :properties, accessors: [:private_logs, :private_issues, :locked,
     :guest_twitter_handle, :celery_id]
@@ -161,7 +162,8 @@ class Project < ActiveRecord::Base
   parse_as_integers :counters_cache, :comments_count, :product_tags_count,
     :widgets_count, :followers_count, :build_logs_count,
     :issues_count, :team_members_count, :platform_tags_count,
-    :communities_count, :platforms_count
+    :communities_count, :platforms_count, :hardware_parts_count,
+    :software_parts_count, :tool_parts_count
 
   parse_as_booleans :properties, :private_logs, :private_issues, :locked
 
@@ -433,6 +435,9 @@ class Project < ActiveRecord::Base
       team_members: 'users.count',
       platform_tags: 'platform_tags_cached.count',
       widgets: 'widgets.count',
+      hardware_parts: 'hardware_parts.count',
+      software_parts: 'software_parts.count',
+      tool_parts: 'tool_parts.count',
     }
   end
 

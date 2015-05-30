@@ -34,14 +34,20 @@ class PartJoinObserver < ActiveRecord::Observer
     end
 
     def update_project record
-      return unless record.part and record.part.platform and record.partable.class.name == 'PartsWidget' and record.partable.project
+      return unless record.part and record.part.platform and ((record.partable.class.name == 'PartsWidget' and record.partable.project) or record.partable.class.name == 'Project')
 
-      project = record.partable.project
+      project = case record.partable
+      when Project
+        record.partable
+      when Widget
+        record.partable.project
+      end
       platform_name = record.part.platform.name
       unless platform_name.in? project.platform_tags_array
         project.platform_tags_array += [platform_name]
         project.save
       end
+      project.update_counters only: [record.part.class.name.underscore.pluralize.to_sym]
       ProjectWorker.perform_async 'update_platforms', project.id
     end
 end
