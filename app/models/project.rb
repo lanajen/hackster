@@ -140,6 +140,7 @@ class Project < ActiveRecord::Base
   validate :tags_length_is_valid
   validate :slug_is_unique
   # before_validation :check_if_current
+  before_validation :delete_empty_part_ids
   before_validation :clean_permissions
   before_validation :ensure_website_protocol
   before_save :ensure_name
@@ -792,6 +793,12 @@ class Project < ActiveRecord::Base
     def clean_permissions
       permissions.each do |permission|
         permissions.delete(permission) if permission.new_record? and permission.grantee.nil?
+      end
+    end
+
+    def delete_empty_part_ids
+      (hardware_part_joins + software_part_joins + tool_part_joins).each do |part_join|
+        part_join.delete if part_join.part_id.blank?
       end
     end
 
