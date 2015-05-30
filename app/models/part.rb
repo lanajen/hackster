@@ -20,13 +20,11 @@ class Part < ActiveRecord::Base
   has_many :child_part_relations, foreign_key: :parent_part_id, class_name: 'PartRelation'
   has_many :parent_part_relations, foreign_key: :child_part_id, class_name: 'PartRelation'
   has_many :part_joins, dependent: :destroy
-  has_many :parts_widgets, through: :part_joins, source: :partable, class_name: 'PartsWidget'
-  has_many :projects, through: :parts_widgets, source_type: 'Project', source: :widgetable
+  has_many :projects, through: :part_joins, source_type: 'Project', source: :partable
   has_one :image, as: :attachable, dependent: :destroy
 
   has_many :parent_part_joins, dependent: :destroy, class_name: 'PartJoin', through: :parent_parts, source: :part_joins
-  has_many :parent_parts_widgets, through: :sub_part_joins, source: :partable, class_name: 'PartsWidget'
-  has_many :parent_projects, through: :sub_parts_widgets, source_type: 'Project', source: :widgetable
+  has_many :parent_projects, through: :sub_part_joins, source_type: 'Project', source: :partable
 
   has_many :child_platforms, through: :child_parts, source: :platform
 
@@ -215,7 +213,7 @@ class Part < ActiveRecord::Base
   def all_projects
     ids = [id]
     ids += child_part_relations.pluck(:child_part_id)
-    Project.joins(:widgets).where(widgets: { type: 'PartsWidget' }).joins("INNER JOIN part_joins ON part_joins.partable_id = widgets.id AND part_joins.partable_type = 'Widget'").where(part_joins: { part_id: ids })
+    Project.joins("INNER JOIN part_joins ON part_joins.partable_id = projects.id AND part_joins.partable_type = 'Project'").where(part_joins: { part_id: ids })
   end
 
   def counters
