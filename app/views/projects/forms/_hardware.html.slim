@@ -16,13 +16,17 @@
     .col-md-8.col-md-offset-2
       = f.error_notification
 
-      .box data-anchor='parts'
+      .box data-anchor='hardware_parts'
         .box-title.small-title
-          h4 Components
+          h4 Components and supplies
         .box-content
-          - @project.widgets.where(type: 'PartsWidget').first_or_create
-          - @project.widgets.where(type: 'PartsWidget').each do |widget|
-            = render partial: 'widgets/embeds/form/parts_widget', locals: { widget: widget, f: f }
+          = render partial: 'projects/forms/hardware_parts', locals: { project: @project, f: f }
+
+      .box data-anchor='tools'
+        .box-title.small-title
+          h4 Necessary tools
+        .box-content
+          = render partial: 'projects/forms/tool_parts', locals: { project: @project, f: f }
 
       .box data-anchor='schematics'
         .box-title.small-title

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150528190523) do
+ActiveRecord::Schema.define(version: 20150529051031) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -452,10 +452,10 @@ ActiveRecord::Schema.define(version: 20150528190523) do
     t.string   "vendor_name",         limit: 255
     t.string   "vendor_sku",          limit: 255
     t.string   "vendor_link",         limit: 255
-    t.string   "partable_type",       limit: 255,                null: false
-    t.integer  "partable_id",                                    null: false
-    t.datetime "created_at",                                     null: false
-    t.datetime "updated_at",                                     null: false
+    t.string   "partable_type",       limit: 255,                          null: false
+    t.integer  "partable_id",                                              null: false
+    t.datetime "created_at",                                               null: false
+    t.datetime "updated_at",                                               null: false
     t.string   "mpn",                 limit: 255
     t.text     "description"
     t.integer  "position"
@@ -468,6 +468,7 @@ ActiveRecord::Schema.define(version: 20150528190523) do
     t.string   "slug",                limit: 255
     t.string   "one_liner",           limit: 140
     t.hstore   "counters_cache"
+    t.string   "type",                limit: 15,  default: "HardwarePart"
   end
 
   add_index "parts", ["partable_id", "partable_type"], name: "partable_index", using: :btree

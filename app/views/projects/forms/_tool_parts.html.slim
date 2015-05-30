@@ -1,0 +1,166 @@
+#tool-parts-form
+  ul.list-unstyled.parts-widget
+    - project.tool_part_joins.new if project.tool_part_joins.empty?
+    - project.tool_part_joins.each do |part|
+      = f.simple_fields_for :tool_part_joins, part, wrapper: false do |f_part|
+        = render partial: 'projects/forms/tool_part', locals: { f: f_part, part: part }
+    = f.link_to_add 'Add another tool', :tool_part_joins, class: 'btn btn-success btn-sm btn-block'
+
+= content_for :js do
+
+  #new-tool-modal.modal.fade*{ 'aria-hidden' => "true", 'aria-labelledby' => "new-par-modal-label", role: "dialog", tabindex: "-1" }
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close data-dismiss="modal" type="button"
+            span aria-hidden="true"  ×
+            span.sr-only Close
+          h4#new-par-modal-label.modal-title Create a new tool
+        .modal-body
+          = simple_nested_form_for Part.new, url: '/api/v1/parts', html: { id: 'new-tool-part-form', class: 'form-horizontal accept-file-upload remote', data: { remote: true } }, wrapper: :bootstrap3_horizontal do |f|
+            = f.error_notification
+            = f.input :type, as: :hidden, input_html: { value: 'ToolPart' }
+            = f.input :name
+            / # = f.input :description, input_html: { class: 'text-editor', rows: 5 }
+            / # = f.input :product_tags_string, label: 'Tags', hint: "Most useful tags would include technologies like 'Wifi', 'BLE', 'accelerometer'... Please enter each tag separated by commas."
+            = f.input :store_link, label: 'Link to store page'
+            / # = f.input :product_page_link, hint: 'If different than the store link', label: 'Link to product page'
+            / # = f.input :documentation_link, label: 'Link to documentation page'
+            / # = f.input :libraries_link, label: 'Link to code libraries page'
+            / # = f.input :datasheet_link, label: 'Link to datasheet'
+
+            / # = render partial: 'shared/image_form', locals: { file_type: 'image', human_file_type: 'Product shot', image_link: nil, help_block: 'Make it look nice!', attribute_type: 'image', image_version: 'thumb', model: 'part' }
+
+            .row
+              .col-md-8.col-md-offset-4
+                = f.submit 'Save tool and add to list', class: 'btn btn-primary'
+                = link_to 'Cancel', '#', class: 'btn btn-link btn-sm', 'data-dismiss' => "modal"
+
+  / = tinymce_assets
+  / javascript:
+      tinyMCE.init({
+        selector: 'textarea.text-editor',
+        toolbar: "undo redo | bold italic underline | link unlink | bullist numlist",
+        menubar: false,
+        plugins: 'link paste',
+        statusbar: false,
+        height: 150
+      });
+
+  javascript:
+    $select2containersTool = {};
+    $select2targetTool = null;
+
+    $(function(){
+      var select2OptionsTool = {
+        placeholder: 'Select a tool',
+        minimumInputLength: 3,
+
+        ajax: {
+          url: "/api/v1/parts/autocomplete",
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term, // search term
+              page: params.page,
+              type: 'ToolPart'
+            };
+          },
+          processResults: function (data, page) {
+            // parse the results into the format expected by Select2.
+            // since we are using custom formatting functions we do not need to
+            // alter the remote JSON data
+            return {
+              results: data
+            };
+          },
+          cache: true
+        }
+      };
+
+      $('#new-tool-modal').on('show.bs.modal', function(e){
+        var button = $(e.relatedTarget);
+        $(this).find('#part_name').val(button.data('value'));
+
+        $('#tool-parts-form .select2-container--open').each(function(i, el){
+          var select = $(el).prev();
+          $select2targetTool = select.attr('id');
+          $select2containersTool[$select2targetTool].select2('close');
+        });
+      });
+
+      $('#new-tool-modal').on('shown.bs.modal', function(e){
+        $(this).find('#part_name').focus();
+      });
+
+      $('#new-tool-part-form').on('ajax:success', function(xhr, data, status){
+        $('#' + $select2targetTool).append('<option value="' + data.id + '">' + data.name + '</option>');
+        $('#select2-' + $select2targetTool + '-container').text(data.name);
+        $select2containersTool[$select2targetTool].val(data.id).trigger('change');
+        $('#new-tool-modal').modal('hide');
+        $(this).find('input').val('');
+        $select2target = null;
+      });
+
+      $('.pe-panel').on('ajax:complete', '.remote:not(#new-tool-part-form)', function(xhr, data, status){
+         setupSelect2();
+      });
+
+      function setupSelect2() {
+        $('.parts-widget .select2').each(function(i, el){
+          $select2containersTool[el.id] = $(el).select2(select2OptionsTool);
+        });
+      }
+      setupSelect2();
+
+      function resetPartPositions(){
+        $('.parts-widget tr:not(.removed) input.position').each(function(i){
+          $(this)
+            .val(i+1)
+            .trigger('change');
+        });
+      }
+
+      $('.pe-panel').on('nested:fieldAdded', '.parts-widget', function(event){
+        var select = $(event.target).find('.select2');
+        $select2containersTool[select.attr('id')] = $(event.target).find('.select2').select2(select2OptionsTool);
+        resetPartPositions();
+
+        // the blueprint has white spaces and they're copied over when adding a field
+        $(event.target).find('textarea').val('');
+      })
+
+      $('.pe-panel').on('click', '.parts-widget .reveal', function(e){
+        e.preventDefault();
+        var parent = $(this).closest('tbody');
+        var target = parent.find('[data-name="' + $(this).data('target') + '"]');
+        var panel = $(this).closest('.pe-panel');
+        target.slideDown();
+        var li = $(this).closest('li');
+        var ul = li.closest('ul');
+        var tr = ul.closest('tr');
+        li.remove();
+        if (ul.children().length == 0) {
+          tr.remove();
+        }
+      });
+
+      $('.pe-panel').on('click', '.move-up', '.parts-widget', function(e){
+        e.preventDefault();
+        var parent = $(this).closest('.fields');
+        if (parent.prev().length) {
+          parent.insertBefore(parent.prev());
+        }
+        resetPartPositions();
+      });
+
+      $('.pe-panel').on('click', '.move-down', '.parts-widget', function(e){
+        e.preventDefault();
+        var parent = $(this).closest('.fields');
+        if (parent.next().length) {
+          parent.insertAfter(parent.next());
+        }
+        resetPositions();
+      });
+    });

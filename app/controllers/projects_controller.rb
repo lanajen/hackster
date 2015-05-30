@@ -58,7 +58,9 @@ class ProjectsController < ApplicationController
     @challenge_entries = @project.challenge_entries.includes(:challenge).includes(:prize)
     @communities = @project.groups.where.not(groups: { type: 'Event' }).includes(:avatar).order(full_name: :asc)
 
-    @component_widgets = PartsWidget.select(:id).distinct(:id).where(widgetable_id: @project.id, widgetable_type: 'Project').joins(:parts).where("parts.name IS NOT NULL OR parts.name <> ''")
+    @hardware_parts = @project.part_joins.hardware
+    @software_parts = @project.part_joins.software
+    @tool_parts = @project.part_joins.tool
 
     title @project.name
     @project_meta_desc = "#{@project.one_liner.try(:gsub, /\.$/, '')}. Find this and other hardware projects on Hackster.io."

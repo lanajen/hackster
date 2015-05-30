@@ -146,7 +146,7 @@ HackerIo::Application.routes.draw do
       end
     end
     resources :groups, only: [] do
-      resources :parts, controller: 'groups/parts'
+      resources :products, controller: 'groups/parts'
     end
 
     # resources :courses, except: [:show, :update, :destroy]
@@ -472,9 +472,9 @@ HackerIo::Application.routes.draw do
   constraints(ClientSite) do
     resources :announcements, only: [:index, :show], path: :news, as: :whitelabel_announcement
     scope module: :client, as: :client do
-      get 'parts' => 'parts#index'
-      get 'parts/:part_slug' => 'parts#show', as: :part
-      get 'parts/:part_slug/embed' => 'parts#embed', as: :embed_part
+      get 'products' => 'products#index'
+      get 'products/:part_slug' => 'parts#show', as: :part
+      get 'products/:part_slug/embed' => 'parts#embed', as: :embed_part
     end
   end
 

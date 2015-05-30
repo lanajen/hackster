@@ -20,7 +20,13 @@ class PartJoinObserver < ActiveRecord::Observer
 
   private
     def expire_cache record
-      Cashier.expire "project-#{record.partable.widgetable_id}-components"
+      key = case record.partable
+      when Project
+        "project-#{record.partable_id}-components"
+      when Widget
+        "project-#{record.partable.widgetable_id}-components"
+      end
+      Cashier.expire key
     end
 
     def update_counters record

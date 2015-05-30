@@ -18,7 +18,7 @@ class Groups::PartsController < ApplicationController
     @part.platform_id = @platform.id
 
     if @part.save
-      redirect_to group_parts_path(@platform), notice: "#{@part.name} created!"
+      redirect_to group_products_path(@platform), notice: "#{@part.name} created!"
     else
       render :new
     end
@@ -29,7 +29,7 @@ class Groups::PartsController < ApplicationController
 
   def update
     if @part.update_attributes(params[:part])
-      redirect_to group_parts_path(@platform), notice: "#{@part.name} saved!"
+      redirect_to group_products_path(@platform), notice: "#{@part.name} saved!"
     else
       render :edit
     end

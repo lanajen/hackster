@@ -58,10 +58,10 @@
               .col-md-8
                 .header-with-more-button.clearfix
                   h2.section-title.pull-left
-                    | Components made by #{@platform.name}
+                    | Products made by #{@platform.name}
                     span.bdg= @platform.parts_count
                   - if @platform.parts_count > 2
-                    = link_to "View more components &rarr;".html_safe, platform_parts_path(@platform), class: 'btn btn-default btn-sm hidden-xs pull-right'
+                    = link_to "View more products &rarr;".html_safe, platform_parts_path(@platform), class: 'btn btn-default btn-sm hidden-xs pull-right'
                 .row
                   - @parts.each do |part|
                     .col-sm-6= render partial: 'parts/part_thumb', locals: { part: part.decorate }
@@ -85,7 +85,7 @@
         .container
           .header-with-more-buttons.clearfix
             h2.section-title.pull-left
-              | Projects built by makers
+              | Projects built by the community
               span.bdg= @platform.projects_count
             = link_to 'View more projects &rarr;'.html_safe, platform_projects_path(@platform), class: 'btn btn-default btn-sm hidden-xs pull-right'
           .row
@@ -124,7 +124,7 @@
           .container
             .header-with-more-buttons.clearfix
               h2.section-title.pull-left
-                ' Startups that use #{@platform.name} products
+                ' Startups using #{@platform.name} products
                 span.bdg= @platform.sub_platforms_count
               - if @platform.sub_platforms_count > 3
                 = link_to "View more platforms &rarr;".html_safe, platform_sub_platforms_path(@platform), class: 'btn btn-default btn-sm hidden-xs pull-right'

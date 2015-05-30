@@ -72,6 +72,12 @@
                               | Edit
                           = f_file.link_to_remove 'Delete', class: 'btn btn-sm btn-link'
 
+      .box data-anchor='tools'
+        .box-title.small-title
+          h4 Apps and online services
+        .box-content
+          = render partial: 'projects/forms/software_parts', locals: { project: @project, f: f }
+
 
 = content_for :js do
 

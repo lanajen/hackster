@@ -5,6 +5,7 @@
 
 class Part < ActiveRecord::Base
   INVALID_STATES = %w(rejected retired)
+  TYPES = %w(Hardware Software Tool).inject({}){|mem, t| mem[t] = "#{t}Part"; mem }
   include Counter
   include SetChangesForStoredAttributes
   include StringParser
@@ -36,7 +37,7 @@ class Part < ActiveRecord::Base
     :datasheet_link, :product_page_link, :image_id, :platform_id,
     :part_joins_attributes, :part_join_ids, :workflow_state, :slug, :one_liner,
     :position, :child_part_relations_attributes,
-    :parent_part_relations_attributes
+    :parent_part_relations_attributes, :type
 
   accepts_nested_attributes_for :part_joins, :child_part_relations,
     :parent_part_relations, allow_destroy: true
@@ -180,7 +181,7 @@ class Part < ActiveRecord::Base
       "(parts.description ILIKE '%#{token}%' OR parts.name ILIKE '%#{token}%' OR parts.product_tags_string ILIKE '%#{token}%')"
     end.join(' AND ')
 
-    approved.where(query).includes(:platform)
+    approved.where(query).where(type: params[:type]).includes(:platform)
   end
 
   def self.approved

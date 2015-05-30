@@ -68,6 +68,23 @@ class Project < ActiveRecord::Base
   has_many :hacker_spaces, -> { where("groups.type = 'HackerSpace'") }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :parts, through: :parts_widgets
   has_many :parts_widgets, as: :widgetable
+  has_many :part_joins, as: :partable do
+    def hardware
+      joins(:part).where(parts: { type: 'HardwarePart' })
+    end
+    def software
+      joins(:part).where(parts: { type: 'SoftwarePart' })
+    end
+    def tool
+      joins(:part).where(parts: { type: 'ToolPart' })
+    end
+  end
+  has_many :hardware_part_joins, -> { joins(:part).where(parts: { type: 'HardwarePart'}) }, as: :partable, class_name: 'PartJoin'
+  has_many :software_part_joins, -> { joins(:part).where(parts: { type: 'SoftwarePart'}) }, as: :partable, class_name: 'PartJoin'
+  has_many :tool_part_joins, -> { joins(:part).where(parts: { type: 'ToolPart'}) }, as: :partable, class_name: 'PartJoin'
+  has_many :hardware_parts, -> { where(parts: { type: 'HardwarePart' } ) }, through: :part_joins, source: :part
+  has_many :software_parts, -> { where(parts: { type: 'SoftwarePart' } ) }, through: :part_joins, source: :part
+  has_many :tool_parts, -> { where(parts: { type: 'ToolPart' } ) }, through: :part_joins, source: :part
   has_many :project_collections, dependent: :destroy
   has_many :visible_collections, -> { visible }, class_name: 'ProjectCollection'
   has_many :visible_platforms, -> { where("groups.type = 'Platform'") }, through: :visible_collections, source_type: 'Group', source: :collectable
@@ -101,12 +118,15 @@ class Project < ActiveRecord::Base
     :hacker_space_id, :locked, :mark_as_idea, :event_id, :assignment_id,
     :community_ids, :new_group_id, :guest_twitter_handle, :celery_id,
     :team_attributes, :story, :made_public_at, :difficulty, :type, :product,
-    :project_collections_attributes, :workflow_state
+    :project_collections_attributes, :workflow_state, :part_joins_attributes,
+    :hardware_part_joins_attributes, :tool_part_joins_attributes,
+    :software_part_joins_attributes
   attr_accessor :current, :private_changed, :needs_platform_refresh,
     :approved_changed
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
     :widgets, :cover_image, :permissions, :slug_histories, :team,
-    :project_collections, allow_destroy: true
+    :project_collections, :part_joins, :hardware_part_joins, :tool_part_joins,
+    :software_part_joins, allow_destroy: true
 
   validates :name, length: { in: 3..60 }, allow_blank: true
   validates :one_liner, :logo, presence: true, if: proc { |p| p.force_basic_validation? }
@@ -357,7 +377,7 @@ class Project < ActiveRecord::Base
       description: {
         label: 'Story',
       },
-      parts: {
+      hardware_parts: {
         label: 'Components',
         conditions: 'parts.any?',
       },
