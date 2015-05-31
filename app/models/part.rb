@@ -245,11 +245,11 @@ class Part < ActiveRecord::Base
     slug = name.downcase.gsub(/[^a-z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
 
     # make sure it doesn't exist
-    if result = self.class.where(slug: slug, platform_id: platform_id).first
+    if result = Part.where(slug: slug, platform_id: platform_id).first
       unless self == result
         # if it exists add a 1 and increment it if necessary
         slug += '1'
-        while self.class.where(slug: slug, platform_id: platform_id).first
+        while Part.where(slug: slug, platform_id: platform_id).first
           slug.gsub!(/([0-9]+$)/, ($1.to_i + 1).to_s)
         end
       end
