@@ -1,5 +1,5 @@
 #tool-parts-form
-  ul.list-unstyled.parts-widget
+  ul.list-unstyled.parts-widget.tool-parts-widget
     - project.tool_part_joins.new if project.tool_part_joins.empty?
     - project.tool_part_joins.each do |part|
       = f.simple_fields_for :tool_part_joins, part, wrapper: false do |f_part|
@@ -108,21 +108,21 @@
       });
 
       function setupSelect2() {
-        $('.parts-widget .select2').each(function(i, el){
+        $('.tool-parts-widget .select2').each(function(i, el){
           $select2containersTool[el.id] = $(el).select2(select2OptionsTool);
         });
       }
       setupSelect2();
 
       function resetPartPositions(){
-        $('.parts-widget tr:not(.removed) input.position').each(function(i){
+        $('.tool-parts-widget tr:not(.removed) input.position').each(function(i){
           $(this)
             .val(i+1)
             .trigger('change');
         });
       }
 
-      $('.pe-panel').on('nested:fieldAdded', '.parts-widget', function(event){
+      $('.pe-panel').on('nested:fieldAdded', '.tool-parts-widget', function(event){
         var select = $(event.target).find('.select2');
         $select2containersTool[select.attr('id')] = $(event.target).find('.select2').select2(select2OptionsTool);
         resetPartPositions();
@@ -131,7 +131,7 @@
         $(event.target).find('textarea').val('');
       })
 
-      $('.pe-panel').on('click', '.parts-widget .reveal', function(e){
+      $('.pe-panel').on('click', '.tool-parts-widget .reveal', function(e){
         e.preventDefault();
         var parent = $(this).closest('tbody');
         var target = parent.find('[data-name="' + $(this).data('target') + '"]');
@@ -146,7 +146,7 @@
         }
       });
 
-      $('.pe-panel').on('click', '.move-up', '.parts-widget', function(e){
+      $('.pe-panel').on('click', '.move-up', '.tool-parts-widget', function(e){
         e.preventDefault();
         var parent = $(this).closest('.fields');
         if (parent.prev().length) {
@@ -155,7 +155,7 @@
         resetPartPositions();
       });
 
-      $('.pe-panel').on('click', '.move-down', '.parts-widget', function(e){
+      $('.pe-panel').on('click', '.move-down', '.tool-parts-widget', function(e){
         e.preventDefault();
         var parent = $(this).closest('.fields');
         if (parent.next().length) {
