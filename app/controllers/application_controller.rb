@@ -440,7 +440,7 @@ class ApplicationController < ActionController::Base
       end
 
       begin
-        unless exception.class == Sidekiq::Shutdown
+        unless exception.class.name == 'Sidekiq::Shutdown'
           clean_backtrace = Rails.backtrace_cleaner.clean(exception.backtrace)
           message = "#{exception.inspect} // backtrace: #{clean_backtrace.join(' - ')} // user: #{current_user.try(:user_name)} // request_url: #{request.url} // referrer: #{request.referrer} // request_params: #{request.params.to_s} // user_agent #{request.headers['HTTP_USER_AGENT']} // ip: #{request.remote_ip} // format: #{request.format} // HTTP_X_REQUESTED_WITH: #{request.headers['HTTP_X_REQUESTED_WITH']}"
           log_line = LogLine.create(message: message, log_type: 'error', source: 'controller')
