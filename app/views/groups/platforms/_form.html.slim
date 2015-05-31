@@ -122,12 +122,10 @@
           .col-xs-12.text-center
             .btn-group.btn-group-default.mg-20
               = link_to 'Manage products', url_for([@group, :products]), class: 'btn btn-default btn-sm'
-              = link_to "Add startup", new_project_path(project: { platform_tags_string: @platform.name }, type: 'product'), class: 'btn btn-sm btn-default'
+              / # = link_to "Add startup", new_project_path(project: { platform_tags_string: @platform.name }, type: 'product'), class: 'btn btn-sm btn-default'
 
           .col-md-6
             = f.input :enable_parts, as: :boolean, inline_label: 'Enable products tab', label: false, hint: "The products you make and sell."
-            = f.input :enable_products, as: :boolean, inline_label: 'Enable startups tab', label: false, hint: "Startups are the ones who use your products commercially."
-            = f.input :products_text, label: 'Label for startups section', hint: "Default is \"#{@platform.default_products_text}\"."
 
       - if current_user.is? :admin
         .tab-pane.active.fade#admin role='tabpanel'
@@ -150,3 +148,6 @@
               = f.input :accept_project_ideas, inline_label: "Accept project ideas?", as: :boolean, hint: "This is useful if your product hasn't shipped yet and you want to encourage your community to start posting project ideas.", label: false
               = f.input :project_ideas_phrasing, collection: @platform.project_ideas_phrasing_options, label: 'Phrasing for project ideas prompt'
               = render partial: 'shared/image_form', locals: { file_type: 'company_logo', human_file_type: 'Company logo', image_link: @platform.company_logo.try(:file_url), help_block: '', attribute_type: 'company_logo', image_version: nil, model: 'group' }
+
+              = f.input :enable_products, as: :boolean, inline_label: 'Enable startups tab', label: false, hint: "Startups are the ones who use your products commercially."
+              = f.input :products_text, label: 'Label for startups section', hint: "Default is \"#{@platform.default_products_text}\"."
