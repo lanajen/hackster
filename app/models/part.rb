@@ -223,6 +223,10 @@ class Part < ActiveRecord::Base
     }
   end
 
+  def identifier
+    type.underscore.gsub(/_part$/, '')
+  end
+
   def image_id=(val)
     self.image = Image.find_by_id(val)
   end
