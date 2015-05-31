@@ -320,6 +320,16 @@
                           | It looks like you have due assignments
                         p= link_to 'Link to an assignment', settings_project_path(@project, anchor: 'sharing'), class: 'btn btn-warning btn-sm btn-block'
 
+              - if @can_edit
+                - alert_color = @project.checklist_evaled[:complete] ? 'success' : 'warning'
+                .alert.text-center class="alert-#{alert_color}"
+                  span
+                    p
+                      i.fa.fa-list>
+                      ' Checklist
+                      = link_to "#{@project.checklist_completion}% complete", edit_project_path(@project, anchor: 'publish'), class: 'alert-link'
+                  .progress style="margin-bottom: 0"
+                    .progress-bar class="progress-bar-#{alert_color}" role="progressbar" style="width: #{@project.checklist_completion}%;"
               - if @project.public?
                 - if @can_edit and @project.pending_review?
                   .alert.alert-warning.text-center

@@ -399,6 +399,10 @@ class Project < ActiveRecord::Base
     }
   end
 
+  def checklist_completion
+    @checklist_completion ||= ((checklist_evaled[:complete] ? 1 : checklist_evaled[:done].size.to_f / (checklist_evaled[:done].size + checklist_evaled[:todo].size)) * 100).to_i
+  end
+
   def checklist_evaled
     return @checklist_evaled if @checklist_evaled
 
