@@ -11,7 +11,7 @@
   }
   #intro {
     @include background-cover;
-    background-image: asset-url('manhattan.jpg');
+    background-image: asset-url('business/bg.jpg');
     padding: 150px 0;
     color: #fff;
     h1, p {
