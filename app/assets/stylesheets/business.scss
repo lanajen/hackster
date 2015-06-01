@@ -3,15 +3,22 @@
   h2 {
     margin-bottom: 40px;
   }
+  .button {
+    cursor: pointer;
+  }
   section {
     border-bottom: 2px solid #e5e5e5;
     &:last-child {
       border-bottom: 0;
     }
   }
+  abbr {
+    border-bottom-color: #fff;
+  }
   #intro {
     @include background-cover;
     background-image: asset-url('business/bg.jpg');
+    border-bottom: 0;
     padding: 150px 0;
     color: #fff;
     h1, p {
@@ -24,19 +31,16 @@
     }
   }
   #channel {
-    abbr[title], abbr[data-original-title] {
-      border-bottom-color: #fff;
-    }
-    ul {
-      padding-left: 0;
-      list-style: none;
-      li {
-        margin-bottom: 10px;
-        &:last-child {
-          margin-bottom: 0;
-        }
-      }
-    }
+    // ul {
+    //   padding-left: 0;
+    //   list-style: none;
+    //   li {
+    //     margin-bottom: 10px;
+    //     &:last-child {
+    //       margin-bottom: 0;
+    //     }
+    //   }
+    // }
     color: #fff;
     background: #208edb asset-url('footer-bg.png');
     h3 {
@@ -44,6 +48,9 @@
       font-size: 1em;
       font-weight: bold;
       margin: 0 0 30px;
+    }
+    .product-description {
+      padding-bottom: 0;
     }
     .product-illustration {
       padding-top: 100px;

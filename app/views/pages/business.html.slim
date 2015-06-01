@@ -20,36 +20,36 @@
               .col-sm-6.startups
                 h3 Startups
                 ul
-                  li Get a platform channel with up to 500 projects
-                  li Showcase your products and clients
-                  li A branded Hackster community embedded in your website
-                  li Enjoy up to 100,000 monthly impressions
-                  li Benefit from top SEO for maximum discoverability
-                  li Monitor community health with insights and analytics
+                  li Platform hub with up to 500 projects
+                  li Products showcase
+                  li Community embedded in your website
+                  li Up to 100,000 monthly impressions
+                  li SEO for maximum discoverability
+                  li Insights and analytics
                   li Email support with 99% uptime SLA
                   li
                     abbr> data-trigger="hover" data-toggle="popover" data-container="body" data-placement="bottom" data-content='We love supporting shipped startup products with at least 5 reference projects, 250 followers, available technical support and documentation.' Prerequisites
-                a.button
+                a.button data-toggle="modal" data-target="#myModal"
                   span.price $99
                   span.month
                     | /mo
               .col-sm-6.enterprise
                 h3 Enterprise
                 ul
-                  li Get a platform channel with unlimited projects
-                  li Showcase your products and clients
-                  li A fully-branded Hackster community embedded in your website
+                  li Platform hub with unlimited projects
+                  li Products showcase
+                  li Branded community embedded in your website
                   li Unlimited monthly impressions
-                  li Benefit from top SEO for maximum discoverability
-                  li Single sign-on authentication between Hackster and your website
-                  li Monitor community health with insights and analytics
+                  li SEO for maximum discoverability
+                  li Insights and analytics
+                  li Single sign-on authentication
                   li Custom domain support
-                  li 8 hours of professional services (development and marketing)
+                  li Marketing and development services
                   li Email and phone support with 99.99% uptime SLA
                   li
                     abbr> data-trigger="hover" data-toggle="popover" data-container="body" data-placement="bottom" data-content='We love supporting enterprise partners who make products that fit our community needs. We are however selective in who we work with.' Prerequisites
 
-                a.button Contact us
+                a.button data-toggle="modal" data-target="#myModal" Contact us
 
     section#challenge
       .container
@@ -69,7 +69,7 @@
               li 60 days per challenge
             .cta
               .price $3,000
-              a.button Get it now
+              a.button data-toggle="modal" data-target="#myModal" Get it now
 
     section#tutorial
       .container
@@ -87,7 +87,7 @@
               li Displayed on Hackster.io and on your website
             .cta
               .price $2,500
-              a.button Get it now
+              a.button data-toggle="modal" data-target="#myModal" Get it now
 
     / section#else
       .container
@@ -108,10 +108,10 @@
         .modal-body
           = f.input :company, label: 'Company name'
           = f.input :website, label: 'Website'
-          = f.input :plan, label: 'What plan are you interested in?', collection: InfoRequest::PLANS, as: :check_boxes
+          = f.input :plan, label: 'What services are you interested in?', collection: InfoRequest::PLANS, as: :check_boxes
           = f.input :needs, label: 'What needs are you looking to get solved?', as: :text
 
-          p Last, tell us who you are and how we can reach you:
+          p How we can reach you?
           = f.input :name, label: 'Your full name'
           = f.input :email, label: 'Your email'
           = f.input :phone, label: 'Your phone'

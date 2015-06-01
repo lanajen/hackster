@@ -4,8 +4,8 @@ class InfoRequest
     'Platform channel for enterprise',
     'Product challenge',
     'Product tutorial',
-    'Product workshop',
-    'Product hackathon',
+    # 'Product workshop',
+    # 'Product hackathon',
   ]
 
   REFERRALS = [

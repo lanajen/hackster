@@ -3,9 +3,11 @@
   = f.error_notification
 
   .row
+    .mg-20
     .col-xs-12
-      h3
-        | Edit assignment
+      .header.clearfix
+        h3.pull-left
+          | Edit assignment
         .pull-right
           ul.list-unstyled.list-inline
             li= f.submit 'Update assignment', class: 'btn btn-primary btn-sm'
@@ -34,7 +36,7 @@
           label.control-label Assignment instructions
         .col-md-8
           span.file-preview.preview  class='document'  = @assignment.document.file_name if @assignment.document.file.present?
-          a.btn.btn-default.btn-sm*{ data: { target: ".file_upload.document" } }
+          a.btn.btn-default.btn-sm.browse*{ data: { target: ".file_upload.document" } }
             - if @assignment.document.file.present?
               | Change file
             - else
