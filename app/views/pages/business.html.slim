@@ -20,7 +20,7 @@
               .col-sm-6.startups
                 h3 Startups
                 ul
-                  li Platform hub with up to 500 projects
+                  li Platform hub with up to 1,000 projects
                   li Products showcase
                   li Community embedded in your website
                   li Up to 100,000 monthly impressions
@@ -29,10 +29,12 @@
                   li Email support with 99% uptime SLA
                   li
                     abbr> data-trigger="hover" data-toggle="popover" data-container="body" data-placement="bottom" data-content='We love supporting shipped startup products with at least 5 reference projects, 250 followers, available technical support and documentation.' Prerequisites
-                a.button data-toggle="modal" data-target="#myModal"
-                  span.price $99
-                  span.month
-                    | /mo
+                .cta
+                  .price
+                    | $99
+                    span.month
+                      | /mo
+                  a.button data-toggle="modal" data-target="#myModal" Get it now
               .col-sm-6.enterprise
                 h3 Enterprise
                 ul
@@ -49,7 +51,8 @@
                   li
                     abbr> data-trigger="hover" data-toggle="popover" data-container="body" data-placement="bottom" data-content='We love supporting enterprise partners who make products that fit our community needs. We are however selective in who we work with.' Prerequisites
 
-                a.button data-toggle="modal" data-target="#myModal" Contact us
+                .cta
+                  a.button data-toggle="modal" data-target="#myModal" Contact us
 
     section#challenge
       .container
@@ -58,7 +61,7 @@
             = image_tag 'business/challenge.png'
           .col-sm-6.col-sm-pull-6.product-description
             h2 Product Challenges
-            p Launch awesome product challenges
+            p Launch awesome product challenges:
             ul
               / li State-of-the-art project challenge system
               / li Available to embed challenge on your website
@@ -78,16 +81,42 @@
             = image_tag 'business/course.png'
           .col-sm-6.product-description
             h2 Product Tutorials
-            p Create authentic product tutorials
+            p Create authentic product tutorials:
             ul
               li Tap our top-notch community to create online tutorials that are unique and authentic
               / li Curate how-to videos with step by step instructions
               / li Enjoy our built-in discussion forum
               / li How-to product videos
               li Displayed on Hackster.io and on your website
-            .cta
+            / .cta
               .price $2,500
               a.button data-toggle="modal" data-target="#myModal" Get it now
+            .cta
+              a.button data-toggle="modal" data-target="#myModal" Coming soon
+
+    section#moar
+      .row
+        .col-md-4.product-small
+        .col-md-4.product-small
+          h2 Product Hackathons
+          ul
+            li
+              ' Based on our
+              = link_to 'Hardware Weekend', '/hardwareweekend'
+            li World-class industry venues
+            li Hackathon management software
+            li Industry and vertical focus
+            li Hardware assortment
+            li Reporting and insights
+            li Photography services
+            li Social media and blogging
+            li Mentors and onsite support
+            li Insurance and liability coverage
+            li 100% logistics and run-of-show support
+            .cta
+              a.button data-toggle="modal" data-target="#myModal" Contact us
+
+        .col-md-4.product-small
 
     / section#else
       .container

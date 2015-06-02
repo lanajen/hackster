@@ -31,18 +31,9 @@
     }
   }
   #channel {
-    // ul {
-    //   padding-left: 0;
-    //   list-style: none;
-    //   li {
-    //     margin-bottom: 10px;
-    //     &:last-child {
-    //       margin-bottom: 0;
-    //     }
-    //   }
-    // }
     color: #fff;
-    background: #208edb asset-url('footer-bg.png');
+    // background: #208edb asset-url('footer-bg.png');
+    background: #208edb;
     h3 {
       text-transform: uppercase;
       font-size: 1em;
@@ -59,37 +50,12 @@
         // width: 450px;
       }
     }
-    .button {
-      margin-top: 20px;
-      @include border-radius(4px);
-      display: inline-block;
-      font-weight: bold;
-      &:hover {
-        text-decoration: none;
-      }
-    }
-    .startups {
-      .button {
-        background: #fff;
-        padding: 8px 40px;
-        .price {
-          font-size: 1.2em;
-          color: #333;
-        }
-        .month {
-          font-weight: normal;
-          color: #208edb;
-          text-transform: uppercase;
-          vertical-align: super;
-          font-size: 0.7em;
-        }
-      }
-    }
-    .enterprise {
-      .button {
+    .cta {
+      .price {
         background: #105686;
-        padding: 5px 18px;
-        color: #fff;
+      }
+      .button {
+        background: #18C1E8;
       }
     }
   }
@@ -103,13 +69,16 @@
     .price {
       padding: 5px 12px;
       background: #1aaf86;
-      font-weight: bold;
       @include border-radius(4px 0 0 4px);
+      & + .button {
+        @include border-radius(0 4px 4px 0);
+      }
     }
     .button {
       padding: 5px 16px;
+      font-weight: bold;
       background: #20dba8;
-      @include border-radius(0 4px 4px 0);
+      @include border-radius(4px);
       &:hover {
         text-decoration: none;
       }
@@ -130,16 +99,32 @@
       padding-right: 50px;
     }
   }
+  #moar {
+    background: #fff asset-url('footer-bg.png');
+    background-size: contain;
+  }
   .product-description {
     padding-top: 100px;
     padding-bottom: 100px;
   }
   .product-illustration {
-    padding-top: 70px;
-    padding-bottom: 70px;
+    padding-top: 100px;
+    padding-bottom: 100px;
     text-align: right;
     img {
       // max-width: 80%;
+    }
+  }
+  .product-small {
+    padding: 100px 80px;
+    h2 {
+      text-align: center;
+      margin-top: 0;
+    }
+    &:nth-child(2) {
+      border-left: 2px solid #e5e5e5;
+      border-right: 2px solid #e5e5e5;
+      background: #fff;
     }
   }
 }

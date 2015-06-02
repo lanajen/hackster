@@ -5,7 +5,7 @@ class InfoRequest
     'Product challenge',
     'Product tutorial',
     # 'Product workshop',
-    # 'Product hackathon',
+    'Product hackathon',
   ]
 
   REFERRALS = [
