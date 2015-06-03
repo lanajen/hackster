@@ -14,6 +14,10 @@ class CronTask < BaseWorker
     end
   end
 
+  def clean_invitations
+    User.where.not(invitation_token: nil).where.not(last_sign_in_at: nil).update_all(invitation_token: nil)
+  end
+
   def compute_popularity
     CronTask.perform_async 'compute_popularity_for_projects'
     CronTask.perform_async 'compute_popularity_for_users'
@@ -144,6 +148,7 @@ class CronTask < BaseWorker
     evaluate_badges
     send_announcement_notifications
     cleanup_duplicates
+    clean_invitations
   end
 
   def launch_daily_cron
