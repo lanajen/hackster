@@ -132,7 +132,7 @@
                     section#tools.section-container.section-collapsible
                       h2.section-title
                         a.title.title-toggle href=''
-                          ' Necessary tools
+                          ' Necessary tools and machines
                           i.fa.fa-chevron-down
                           i.fa.fa-chevron-up
                       .section-content
@@ -515,7 +515,7 @@
                         - if @tool_parts.any?
                           li
                             a.smooth-scroll href="#tools" data-target="#tools"
-                              | Necessary tools
+                              | Necessary tools and machines
                         - if @project.widgets.where(type: %w(CadRepoWidget CadFileWidget)).any?
                           li
                             a.smooth-scroll href="#cad" data-target="#cad"
