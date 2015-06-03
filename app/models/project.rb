@@ -349,10 +349,6 @@ class Project < ActiveRecord::Base
     (issues + Issue.where(threadable_type: 'Widget').where('threadable_id IN (?)', widgets.pluck('widgets.id'))).sort_by{ |t| t.created_at }
   end
 
-  def association_name_for_notifications
-    'Project'
-  end
-
   def buy_link_host
     URI.parse(buy_link).host.gsub(/^www\./, '')
   rescue
