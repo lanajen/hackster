@@ -1,10 +1,13 @@
 class Conversation < ActiveRecord::Base
   has_many :messages, -> { order(created_at: :asc) }, as: :commentable, class_name: 'Comment', dependent: :destroy
   has_many :receipts, through: :messages, dependent: :destroy
+  has_many :users, through: :messages, source: :user
 
   validates :subject, :body, :sender_id, :recipient_id, presence: true,
     on: :create
   validates :body, :sender_id, presence: true, on: :update
+  validate :subject_is_unique, on: :create
+  validate :sender_is_not_spamming, on: :create
   after_create :create_message
   after_update :create_reply
 
@@ -25,6 +28,10 @@ class Conversation < ActiveRecord::Base
 
   def first_unread_message_for user
     receipts.unread.where(user_id: user.id).first
+  end
+
+  def initiater
+    messages.first.user
   end
 
   def has_unread? user
@@ -70,5 +77,13 @@ class Conversation < ActiveRecord::Base
         message.receipts.create user_id: recipient.id
       end
       message.receipts.create user_id: sender_id, read: true
+    end
+
+    def sender_is_not_spamming
+      errors.add :sender_id, "You're sending too many messages and your account has been put on hold. Please email us at hi@hackster.io if you believe this is a mistake." if Conversation.joins("INNER JOIN (SELECT distinct on (commentable_type, commentable_id) * FROM comments WHERE comments.commentable_type = 'Conversation' ORDER BY commentable_type, commentable_id, created_at) AS c ON c.commentable_id = conversations.id").where("c.user_id = ?", sender_id).where("conversations.created_at > ?", 24.hours.ago).count >= 5
+    end
+
+    def subject_is_unique
+      errors.add :subject, 'has already been used recently. No spam please!' if self.class.where(subject: subject).where("conversations.created_at > ?", 24.hours.ago).any?
     end
   end

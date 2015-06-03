@@ -53,8 +53,9 @@ HackerIo::Application.routes.draw do
 
       resources :awarded_badges, only: [:create], controller: 'badges'
       resources :badges, except: [:show, :create]
-      resources :challenges, except: [:show]
       resources :blog_posts, except: [:show]
+      resources :challenges, except: [:show]
+      resources :conversations, only: [:destroy]
       resources :groups, except: [:show]
       resources :invitations, only: [:new, :create]
       resources :parts, except: [:show] do
@@ -326,9 +327,9 @@ HackerIo::Application.routes.draw do
         # get 'components/third-party-made' => 'parts#sub_index', as: :sub_parts
         get 'products/:part_slug' => 'parts#show', as: :part
         get 'products/:part_slug/embed' => 'parts#embed', as: :embed_part
-        # get 'products' => 'platforms#products', as: :products
+        get 'startups' => 'platforms#products', as: :products
         get 'projects' => 'platforms#projects', as: :projects
-        get 'startups' => 'platforms#sub_platforms', as: :sub_platforms
+        get 'platforms' => 'platforms#sub_platforms', as: :sub_platforms
       end
     end
 

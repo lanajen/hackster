@@ -20,6 +20,9 @@
         strong> Tip #2:
         ' If you're asking details about a project, consider doing so in the comments! That way the rest of the community can benefit from the answer as well.
       = simple_form_for @conversation do |f|
+        - if @conversation.errors[:sender_id]
+          .form-group.has-error
+            p.help-block= @conversation.errors[:sender_id].first
         = f.input :recipient_id, as: :hidden
         = f.input :subject, label: false, placeholder: 'Subject'
         = f.input :body, as: :text, label: false, placeholder: 'Message', input_html: { rows: 5 }

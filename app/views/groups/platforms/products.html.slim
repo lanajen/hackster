@@ -1,8 +1,8 @@
 .clearfix
-  h1.section-title.pull-left Products built by companies that use #{@platform.name}
+  h1.section-title.pull-left Startups powered by #{@platform.name}
   - if can? :manage, @group
     .pull-right
-      = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add product"), new_project_path(project: { platform_tags_string: @platform.name }, type: 'product'), class: 'btn btn-sm btn-default'
+      = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add startup"), new_project_path(project: { platform_tags_string: @platform.name }, type: 'product'), class: 'btn btn-sm btn-default'
 
 - if @projects.any?
   .row.project-list
@@ -14,4 +14,4 @@
   .row
     .col-xs-12
       p
-        ' No products here yet!
+        ' No startups here yet!
