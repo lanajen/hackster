@@ -92,12 +92,20 @@ class CronTask < BaseWorker
 
   def generate_user
     u = nil
+    gender = %w(male male male male male male male male male female).sample  # 90% male
+    country = rand(1..10) > 6 ? "&country=united+states" : ''
+    resp = JSON.parse Net::HTTP.get_response("api.uinames.com","/?gender=#{gender}#{country}").body
+    generator = NameGenerator.new(resp['name'], resp['surname'])
+    full_name = generator.full_name
+    user_name = generator.user_name
     while u.nil? or !u.persisted?
       email = SecureRandom.hex(5) + '@user.hackster.io'
       user_data = {
         email: email,
         email_confirmation: email,
-        password: SecureRandom.hex(16)
+        password: SecureRandom.hex(16),
+        full_name: full_name,
+        user_name: user_name,
       }
       u = User.new
       u.skip_confirmation!
