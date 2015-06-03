@@ -11,7 +11,7 @@ class Conversation < ActiveRecord::Base
   after_create :create_message
   after_update :create_reply
 
-  attr_accessor :recipient_id, :sender_id, :body
+  attr_accessor :recipient_id, :sender_id, :body, :is_spam
   attr_accessible :subject, :recipient_id, :sender_id, :body
 
   def self.inbox_for user
@@ -80,10 +80,17 @@ class Conversation < ActiveRecord::Base
     end
 
     def sender_is_not_spamming
-      errors.add :sender_id, "You're sending too many messages and your account has been put on hold. Please email us at hi@hackster.io if you believe this is a mistake." if Conversation.joins("INNER JOIN (SELECT distinct on (commentable_type, commentable_id) * FROM comments WHERE comments.commentable_type = 'Conversation' ORDER BY commentable_type, commentable_id, created_at) AS c ON c.commentable_id = conversations.id").where("c.user_id = ?", sender_id).where("conversations.created_at > ?", 24.hours.ago).count >= 5
+      if Conversation.joins("INNER JOIN (SELECT distinct on (commentable_type, commentable_id) * FROM comments WHERE comments.commentable_type = 'Conversation' ORDER BY commentable_type, commentable_id, created_at) AS c ON c.commentable_id = conversations.id").where("c.user_id = ?", sender_id).where("conversations.created_at > ?", 24.hours.ago).count >= 5
+
+        errors.add :sender_id, "You're sending too many messages and your account has been put on hold. Please email us at hi@hackster.io if you believe this is a mistake."
+        self.is_spam = true
+      end
     end
 
     def subject_is_unique
-      errors.add :subject, 'has already been used recently. No spam please!' if self.class.where(subject: subject).where("conversations.created_at > ?", 24.hours.ago).any?
+      if self.class.where(subject: subject).where("conversations.created_at > ?", 24.hours.ago).any?
+        errors.add :subject, 'has already been used recently. No spam please!'
+        self.is_spam = true
+      end
     end
   end
