@@ -1,8 +1,3 @@
-# FAQS:
-# => what is the store? how does it work and how to get free stuff?
-# => about my order: when will I receive it?
-# => do you offer other products?
-# => what about spam?
 # TODO:
 # => email notif when shipped
 
@@ -21,8 +16,6 @@ class Order < ActiveRecord::Base
   belongs_to :user
   has_many :order_lines, dependent: :destroy
   has_many :store_products, through: :order_lines
-
-  # validate address_id present and run compute_costs on transition to :order
 
   attr_accessible :tracking_number, :address_id, :workflow_state,
     :order_lines_attributes
