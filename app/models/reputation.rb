@@ -26,7 +26,7 @@ class Reputation < ActiveRecord::Base
 
   def compute_redeemable
     self.redeemed_points = user.orders.valid.sum(:total_cost)
-    self.redeemable_points = points - redeemed_points
+    self.redeemable_points = user.reputation_count - redeemed_points
   end
 
   def compute_redeemable!

@@ -76,6 +76,10 @@ class UserObserver < ActiveRecord::Observer
       keys << "user-#{record.id}-sidebar"
     end
 
+    if (record.changed & %w(reputation_count)).any?
+      record.reputation.compute_redeemable!
+    end
+
     Cashier.expire *keys if keys.any?
   end
 
