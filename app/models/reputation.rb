@@ -12,8 +12,9 @@
 class Reputation < ActiveRecord::Base
   belongs_to :user
 
-  attr_accessible :points, :user_id
+  attr_accessible :points, :user_id, :redeemable_points, :redeemed_points
   validates :points, :user_id, presence: true
+  before_save :compute_redeemable, if: proc{ |r| r.points_changed? }
 
   def compute
     # self.points = (user.popularity_points_count * 0.1) + user.live_visible_projects_count * 10 + user.impressions_count * 0.01 + (user.name.present?.to_i + user.avatar.present?.to_i + user.mini_resume.present?.to_i + (user.city.present? or user.country.present?).to_i) * 2 + user.websites_count + user.interest_tags_count + user.skill_tags_count + user.comments_count * 3
@@ -21,6 +22,16 @@ class Reputation < ActiveRecord::Base
 
     # self.points = user.live_visible_projects_count * 5 + user.respects_count + (user.project_views_count / 100).to_i + user.comments_count + 1 + user.accepted_invitations_count * 5 + (user.invited_by.present? ? 5 : 0) + (user.feed_likes_count / 5).to_i
     # self.points = user.reputation_events.sum(:points)
+  end
+
+  def compute_redeemable
+    self.redeemed_points = user.orders.valid.sum(:total_cost)
+    self.redeemable_points = points - redeemed_points
+  end
+
+  def compute_redeemable!
+    compute_redeemable
+    save
   end
 end
 

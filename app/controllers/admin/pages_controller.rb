@@ -163,11 +163,17 @@ class Admin::PagesController < Admin::BaseController
     @total_redeemable_month = ReputationEvent.group(:user_id).having("SUM(points) >= #{Rewardino::Event::MIN_REDEEMABLE_POINTS}").sum(:points).values.map{|v| [Rewardino::Event::MAX_REDEEMABLE_MONLTY, v].min }.sum
     @total_users = ReputationEvent.group(:user_id).having("SUM(points) >= #{Rewardino::Event::MIN_REDEEMABLE_POINTS}").sum(:points).size
     @categories = ReputationEvent.group(:event_name).order("sum_points desc").sum(:points)
+    @total_redeemed_month = Order.valid.where("orders.created_at > ?", Date.today.beginning_of_month).sum(:total_cost)
+    @total_redeemed = Order.valid.sum(:total_cost)
+    @pending_orders = Order.processing.count
 
     sql = "SELECT users.*, t1.sum FROM (SELECT reputation_events.user_id as user_id, SUM(reputation_events.points) as sum FROM reputation_events GROUP BY user_id) AS t1 INNER JOIN users ON users.id = t1.user_id WHERE t1.sum > 1 AND (NOT (users.roles_mask & ? > 0) OR users.roles_mask IS NULL) ORDER BY t1.sum DESC LIMIT 10;"
     @heroes = User.find_by_sql([sql, 2**User::ROLES.index('admin')])
 
     sql = "SELECT to_char(event_date, 'yyyy-mm') as date, COUNT(*) as count FROM reputation_events WHERE date_part('months', now() - reputation_events.event_date) < 12 GROUP BY date ORDER BY date;"
     @chart_total_earned = graph_with_dates_for sql, 'New reputation points', 'AreaChart', ReputationEvent.where("reputation_events.event_date < ?", 12.months.ago).count, 'month'
+
+    sql = "SELECT to_char(ordered_at, 'yyyy-mm') as date, COUNT(*) as count FROM orders WHERE date_part('months', now() - orders.ordered_at) < 12 AND orders.workflow_state NOT IN (%s) GROUP BY date ORDER BY date;"
+    @chart_total_redeemed = graph_with_dates_for sql % Order::INVALID_STATES.map{|m| "'#{m}'" }.join(', '), 'Redeemed points', 'AreaChart', Order.valid.where("orders.ordered_at < ?", 12.months.ago).count, 'month'
   end
 end

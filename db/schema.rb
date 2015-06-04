@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150529051031) do
+ActiveRecord::Schema.define(version: 20150604055243) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,6 +29,8 @@ ActiveRecord::Schema.define(version: 20150529051031) do
     t.string  "country",          limit: 255
     t.string  "zip",              limit: 255
     t.string  "phone",            limit: 255
+    t.boolean "default",                      default: false
+    t.boolean "deleted",                      default: false
   end
 
   create_table "assignee_issues", force: :cascade do |t|
@@ -420,6 +422,30 @@ ActiveRecord::Schema.define(version: 20150529051031) do
     t.datetime "updated_at",      null: false
   end
 
+  create_table "order_lines", force: :cascade do |t|
+    t.integer "store_product_id", null: false
+    t.integer "order_id",         null: false
+  end
+
+  add_index "order_lines", ["order_id"], name: "index_order_lines_on_order_id", using: :btree
+  add_index "order_lines", ["store_product_id"], name: "index_order_lines_on_store_product_id", using: :btree
+
+  create_table "orders", force: :cascade do |t|
+    t.integer  "total_cost"
+    t.integer  "products_cost"
+    t.integer  "shipping_cost"
+    t.integer  "address_id"
+    t.string   "workflow_state"
+    t.string   "tracking_number"
+    t.integer  "user_id",         null: false
+    t.hstore   "counters_cache"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.datetime "ordered_at"
+  end
+
+  add_index "orders", ["user_id"], name: "index_orders_on_user_id", using: :btree
+
   create_table "part_joins", force: :cascade do |t|
     t.integer  "part_id",                                       null: false
     t.integer  "partable_id",                                   null: false
@@ -580,10 +606,12 @@ ActiveRecord::Schema.define(version: 20150529051031) do
   add_index "reputation_events", ["user_id"], name: "index_reputation_events_on_user_id", using: :btree
 
   create_table "reputations", force: :cascade do |t|
-    t.float    "points",     default: 0.0
-    t.integer  "user_id",                  null: false
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.float    "points",            default: 0.0
+    t.integer  "user_id",                         null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+    t.integer  "redeemed_points",   default: 0
+    t.integer  "redeemable_points", default: 0
   end
 
   add_index "reputations", ["user_id"], name: "index_reputations_on_user_id", using: :btree
@@ -609,6 +637,19 @@ ActiveRecord::Schema.define(version: 20150529051031) do
 
   add_index "slug_histories", ["sluggable_type", "sluggable_id"], name: "index_slug_histories_on_sluggable_type_and_sluggable_id", using: :btree
   add_index "slug_histories", ["value"], name: "index_slug_histories_on_value", using: :btree
+
+  create_table "store_products", force: :cascade do |t|
+    t.integer  "source_id",                      null: false
+    t.string   "source_type",                    null: false
+    t.integer  "unit_cost"
+    t.hstore   "counters_cache"
+    t.boolean  "available",      default: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+  end
+
+  add_index "store_products", ["available"], name: "index_store_products_on_available", using: :btree
+  add_index "store_products", ["source_id", "source_type"], name: "index_store_products_on_source_id_and_source_type", using: :btree
 
   create_table "subdomains", force: :cascade do |t|
     t.string   "subdomain",   limit: 255

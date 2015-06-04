@@ -61,6 +61,7 @@ class User < ActiveRecord::Base
           :linkedin, :twitter, :windowslive]
 
   belongs_to :invite_code
+  has_many :addresses, -> { order(id: :desc) }, as: :addressable
   has_many :assignments, through: :promotions
   has_many :assignee_issues, foreign_key: :assignee_id
   has_many :assigned_issues, through: :assignee_issues, source: :issue
@@ -86,6 +87,7 @@ class User < ActiveRecord::Base
   has_many :hackathons, through: :events
   has_many :hacker_spaces_group_ties, -> { where(type: 'HackerSpaceMember') }, class_name: 'HackerSpaceMember', dependent: :destroy
   has_many :hacker_spaces, through: :hacker_spaces_group_ties, source: :group, class_name: 'HackerSpace'
+  has_many :hardware_parts, -> { order('parts.name').where(parts: { type: 'HardwarePart' }) }, source_type: 'Part', through: :follow_relations, source: :followable
   has_many :invitations, class_name: self.to_s, as: :invited_by do
     def accepted
       where("users.invitation_accepted_at IS NOT NULL")
@@ -94,6 +96,7 @@ class User < ActiveRecord::Base
   has_many :lists_group_ties, -> { where(type: 'ListMember') }, class_name: 'ListMember', dependent: :destroy
   has_many :lists, through: :lists_group_ties, source: :group, class_name: 'List'
   has_many :notifications, through: :receipts, source: :receivable, source_type: 'Notification'
+  has_many :orders
   has_many :permissions, as: :grantee
   has_many :platforms, -> { order('groups.full_name ASC') }, through: :group_ties, source: :group, class_name: 'Platform'
   has_many :projects, -> { where("projects.guest_name IS NULL OR projects.guest_name = ''") }, through: :teams

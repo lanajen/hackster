@@ -175,5 +175,7 @@ class Ability
     can [:update, :destroy], SkillRequest do |req|
       req.user_id == @user.id
     end
+
+    can :manage, Order, user_id: @user.id
   end
 end

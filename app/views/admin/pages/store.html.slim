@@ -1,9 +1,13 @@
 = content_for :js do
   = javascript_include_tag 'https://www.google.com/jsapi'
   = render_chart(@chart_total_earned, 'chart_total_earned')
+  = render_chart(@chart_total_redeemed, 'chart_total_redeemed')
 
-.page-header
-  h1 Store admin
+.page-header.clearfix
+  h1.pull-left Store admin
+  ul.pull-right.list-inline
+    li= link_to 'Orders', admin_store_orders_path
+    li= link_to 'Products', admin_store_products_path
 
 .row
   .col-xs-12.col-sm-4
@@ -40,14 +44,14 @@
       .panel-heading
         h3.panel-title Redeemed this month
       .panel-body
-        | Coming soon
+        ==> number_with_delimiter @total_redeemed_month
 
   .col-xs-12.col-sm-4
     .panel.panel-default.panel-dashboard
       .panel-heading
         h3.panel-title Total redeemed
       .panel-body
-        | Coming soon
+        ==> number_with_delimiter @total_redeemed
 
 .row
   .col-xs-12.col-sm-4
@@ -77,6 +81,15 @@
               ' :
               = user.sum
 
+  .col-xs-12.col-sm-4
+    .panel.panel-default.panel-dashboard
+      .panel-heading
+        h3.panel-title= link_to 'Orders that need processing', admin_store_orders_path(filters: { status: :processing })
+      .panel-body
+        ==> number_with_delimiter @pending_orders
+
 .row
   .col-xs-12.col-sm-6
     #chart_total_earned= image_tag 'loader.gif'
+  .col-xs-12.col-sm-6
+    #chart_total_redeemed= image_tag 'loader.gif'

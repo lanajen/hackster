@@ -7,9 +7,9 @@
     small= link_to 'New product', new_admin_project_path(type: 'product'), :class => 'btn btn-primary btn-sm'
 
 ==> render 'admin/shared/search_form_tag'
-- (@fields.keys - %w(created_at private made_public_at type)).each do |field|
+- (@fields.keys - %w(created_at type status)).each do |field|
   ==> render partial: 'admin/shared/search_form_text_field', locals: { field: field }
-==> render partial: 'admin/shared/search_form_checkbox_field', locals: { field: 'private' }
+==> render partial: 'admin/shared/search_form_select_field', locals: { field: 'status', options: Project.workflow_spec.states.keys }
 = render 'admin/shared/search_form_sort_and_submit'
 
 table.table.table-striped

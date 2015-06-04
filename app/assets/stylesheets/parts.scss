@@ -36,6 +36,7 @@
   border: 2px solid #ddd;
   padding: 10px;
   border-radius: 4px;
+  background-color: #fff;
   h3 {
     margin: 20px 0 0;
     font-size: 1em;
@@ -72,5 +73,18 @@
     font-size: 87.5%;
     @include opacity(0);
     @include transition(opacity 200ms linear);
+  }
+  .order {
+    margin-top: 20px;
+    position: relative;
+    text-align: left;
+    .btn {
+    }
+    .cost {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      font-size: 0.8em;
+    }
   }
 }
