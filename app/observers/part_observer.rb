@@ -26,6 +26,6 @@ class PartObserver < ActiveRecord::Observer
 
   private
     def update_platform_counters record
-      record.platform.update_counters only: [:parts, :sub_parts]
+      record.platform.update_counters only: [:parts, :sub_parts, :sub_platforms]
     end
 end

@@ -4,11 +4,11 @@ class PlatformsController < ApplicationController
   include PlatformHelper
 
   before_filter :authenticate_user!, except: [:show, :embed, :projects, :products, :followers, :index]
-  before_filter :load_platform, except: [:show, :embed, :projects, :products, :followers, :index, :analytics]
-  before_filter :load_platform_with_slug, only: [:show, :embed, :projects, :products, :followers, :analytics]
+  before_filter :load_platform, except: [:show, :embed, :projects, :products, :followers, :index, :analytics, :sub_platforms]
+  before_filter :load_platform_with_slug, only: [:show, :embed, :projects, :products, :followers, :analytics, :sub_platforms]
   before_filter :load_projects, only: [:embed]
   before_filter :load_project, only: [:feature_project, :unfeature_project]
-  layout 'platform', only: [:edit, :update, :projects, :products, :followers, :analytics]
+  layout 'platform', only: [:edit, :update, :projects, :products, :followers, :analytics, :sub_platforms]
   after_action :allow_iframe, only: [:embed]
   respond_to :html
   protect_from_forgery except: :embed
@@ -59,9 +59,9 @@ class PlatformsController < ApplicationController
           @followers = @platform.followers.top.limit(5)
         end
         @projects = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection).merge(Project.magic_sort).where(projects: { type: %w(Project ExternalProject) }).limit(3)
-        @parts = @platform.parts.limit(3) if @platform.enable_parts
+        @parts = @platform.parts.default_sort.limit(2) if @platform.enable_parts
         @products = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection).merge(Project.magic_sort).where(projects: { type: 'Product' }).limit(3) if @platform.enable_products
-        @sub_parts = @platform.sub_parts.limit(3) if @platform.enable_sub_parts
+        @sub_platforms = @platform.sub_platforms.most_members.limit(3) if @platform.enable_sub_parts
 
         @announcement = @platform.announcements.current
         @challenge = @platform.active_challenge ? @platform.challenges.active.first : nil
@@ -101,8 +101,8 @@ class PlatformsController < ApplicationController
     authorize! :read, @platform
     impressionist_async @platform, "", unique: [:session_hash]
 
-    title "Devices made with #{@platform.name}"
-    meta_desc "Explore #{@platform.products_count} devices built with #{@platform.name}! Join #{@platform.followers_count} makers who follow #{@platform.name} on Hackster."
+    title "Products made with #{@platform.name}"
+    meta_desc "Explore #{@platform.products_count} products built with #{@platform.name}! Join #{@platform.followers_count} makers who follow #{@platform.name} on Hackster."
 
     @announcement = @platform.announcements.current
     @challenge = @platform.active_challenge ? @platform.challenges.active.first : nil
@@ -119,6 +119,18 @@ class PlatformsController < ApplicationController
       # end
       # format.rss { redirect_to platform_home_path(@platform, params.merge(format: :atom)), status: :moved_permanently }
     end
+  end
+
+  def sub_platforms
+    authorize! :read, @platform
+    impressionist_async @platform, "", unique: [:session_hash]
+
+    title "Platforms that use #{@platform.name}"
+    meta_desc "Explore #{@platform.sub_platforms_count} platforms that use #{@platform.name}! Join #{@platform.followers_count} makers who follow #{@platform.name} on Hackster."
+
+    @platforms = @platform.sub_platforms.most_members.paginate(page: safe_page_params)
+
+    render "groups/platforms/#{self.action_name}"
   end
 
   def embed

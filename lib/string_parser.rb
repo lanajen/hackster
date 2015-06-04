@@ -4,7 +4,7 @@ module StringParser
     def parse_as_booleans store_attr, *attrs
       attrs.each do |boolean|
         define_method boolean do
-          send(store_attr)[boolean] == '1' or send(store_attr)[boolean] == true or send(store_attr)[boolean] == 'true'
+          send(store_attr).try(:[], boolean.to_s) == '1' or send(store_attr)[boolean.to_s] == true or send(store_attr)[boolean.to_s] == 'true'
         end
       end
     end
@@ -13,7 +13,7 @@ module StringParser
     def parse_as_floats store_attr, *attrs
       attrs.each do |float|
         define_method float do
-          send(store_attr)[float] ? send(store_attr)[float].to_f : nil
+          send(store_attr).try(:[], float.to_s) ? send(store_attr)[float.to_s].to_f : nil
         end
       end
     end
@@ -22,7 +22,7 @@ module StringParser
     def parse_as_integers store_attr, *attrs
       attrs.each do |integer|
         define_method integer do
-          send(store_attr)[integer] ? send(store_attr)[integer].to_i : nil
+          send(store_attr).try(:[], integer.to_s) ? send(store_attr)[integer.to_s].to_i : nil
         end
       end
     end
@@ -31,7 +31,7 @@ module StringParser
     def parse_as_datetimes store_attr, *attrs
       attrs.each do |time|
         define_method time do
-          send(store_attr)[time] ? Time.at(send(store_attr)[time]) : nil
+          send(store_attr).try(:[], time.to_s) ? Time.at(send(store_attr)[time.to_s]) : nil
         end
       end
     end

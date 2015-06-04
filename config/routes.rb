@@ -53,8 +53,9 @@ HackerIo::Application.routes.draw do
 
       resources :awarded_badges, only: [:create], controller: 'badges'
       resources :badges, except: [:show, :create]
-      resources :challenges, except: [:show]
       resources :blog_posts, except: [:show]
+      resources :challenges, except: [:show]
+      resources :conversations, only: [:destroy]
       resources :groups, except: [:show]
       resources :invitations, only: [:new, :create]
       resources :parts, except: [:show] do
@@ -146,7 +147,7 @@ HackerIo::Application.routes.draw do
       end
     end
     resources :groups, only: [] do
-      resources :parts, controller: 'groups/parts'
+      resources :products, controller: 'groups/parts'
     end
 
     # resources :courses, except: [:show, :update, :destroy]
@@ -285,8 +286,8 @@ HackerIo::Application.routes.draw do
     get 'tinyduino', to: redirect('/tinycircuits')
     get 'spark', to: redirect('/particle')
     get 'spark/projects', to: redirect('/particle/projects')
-    get 'spark/makes', to: redirect('/particle/makes')
-    get 'spark/makes/spark-core', to: redirect('/particle/makes/spark-core')
+    get 'spark/makes', to: redirect('/particle/components')
+    get 'spark/makes/spark-core', to: redirect('/particle/components/spark-core')
 
     get 'home' => 'pages#home'
     get 'about' => 'pages#about'
@@ -319,12 +320,16 @@ HackerIo::Application.routes.draw do
         get 'chat' => 'chat_messages#index'
         resources :announcements, except: [:create, :update, :destroy], path: :news
         get 'embed' => 'platforms#embed'
-        get 'makes' => 'parts#index', as: :parts
-        get 'makes/:part_slug' => 'parts#show', as: :part
-        get 'makes/:part_slug/embed' => 'parts#embed', as: :embed_part
-        get 'powers' => 'platforms#products', as: :products
+        get 'products' => 'parts#index', as: :parts
+        match 'makes/:part_slug' => redirect { |params, request|
+          URI.parse(request.url).tap { |uri| uri.path.sub!(/makes/i, 'products') }.to_s
+        }, via: :get
+        # get 'components/third-party-made' => 'parts#sub_index', as: :sub_parts
+        get 'products/:part_slug' => 'parts#show', as: :part
+        get 'products/:part_slug/embed' => 'parts#embed', as: :embed_part
+        get 'startups' => 'platforms#products', as: :products
         get 'projects' => 'platforms#projects', as: :projects
-        get 'using' => 'parts#sub_index', as: :sub_parts
+        get 'platforms' => 'platforms#sub_platforms', as: :sub_platforms
       end
     end
 
@@ -468,9 +473,9 @@ HackerIo::Application.routes.draw do
   constraints(ClientSite) do
     resources :announcements, only: [:index, :show], path: :news, as: :whitelabel_announcement
     scope module: :client, as: :client do
-      get 'parts' => 'parts#index'
-      get 'parts/:part_slug' => 'parts#show', as: :part
-      get 'parts/:part_slug/embed' => 'parts#embed', as: :embed_part
+      get 'products' => 'products#index'
+      get 'products/:part_slug' => 'parts#show', as: :part
+      get 'products/:part_slug/embed' => 'parts#embed', as: :embed_part
     end
   end
 

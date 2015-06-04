@@ -8,7 +8,7 @@ class PartsController < ApplicationController
     @page_title = "Products made by #{@platform.name}"
     title @page_title
     meta_desc "Discover all the products made by #{@platform.name} and their related hardware projects."
-    @parts = @platform.parts.paginate(page: safe_page_params)
+    @parts = @platform.parts.default_sort.paginate(page: safe_page_params)
   end
 
   def sub_index
@@ -23,13 +23,13 @@ class PartsController < ApplicationController
   def show
     title "#{@platform.name} #{@part.name} projects"
     meta_desc "Discover hardware projects made with #{@platform.name} #{@part.name}."
+    @projects = @part.projects.public.paginate(page: safe_page_params)
     @part = @part.decorate
-    @projects = @part.projects.paginate(page: safe_page_params)
   end
 
   def embed
     per_page = begin; [Integer(params[:per_page]), Project.per_page].min; rescue; Project.per_page end;  # catches both no and invalid params
-    @projects = @part.projects.paginate(per_page: per_page, page: safe_page_params)
+    @projects = @part.projects.public.paginate(per_page: per_page, page: safe_page_params)
     render layout: 'embed'
   end
 

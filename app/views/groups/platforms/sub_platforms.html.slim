@@ -1,0 +1,14 @@
+.clearfix
+  h1.section-title.pull-left Startups that use #{@platform.name} products
+
+- if @platforms.any?
+  .row.project-list
+    - @platforms.each do |platform|
+      = render partial: 'groups/platforms/platform_thumb', locals: { platform: platform }
+
+  .row.text-center= will_paginate @projects
+- else
+  .row
+    .col-xs-12
+      p
+        ' No startups are using #{@platform.name}.

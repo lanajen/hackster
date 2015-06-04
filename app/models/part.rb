@@ -2,10 +2,10 @@
 # - clean up parts/consolidate
 # - part moderation dashboard
 # - later: search by part
-# - later: show parts on platform page
 
 class Part < ActiveRecord::Base
   INVALID_STATES = %w(rejected retired)
+  TYPES = %w(Hardware Software Tool).inject({}){|mem, t| mem[t] = "#{t}Part"; mem }
   include Counter
   include SetChangesForStoredAttributes
   include StringParser
@@ -20,13 +20,11 @@ class Part < ActiveRecord::Base
   has_many :child_part_relations, foreign_key: :parent_part_id, class_name: 'PartRelation'
   has_many :parent_part_relations, foreign_key: :child_part_id, class_name: 'PartRelation'
   has_many :part_joins, dependent: :destroy
-  has_many :parts_widgets, through: :part_joins, source: :partable, class_name: 'PartsWidget'
-  has_many :projects, through: :parts_widgets, source_type: 'Project', source: :widgetable
+  has_many :projects, through: :part_joins, source_type: 'Project', source: :partable
   has_one :image, as: :attachable, dependent: :destroy
 
   has_many :parent_part_joins, dependent: :destroy, class_name: 'PartJoin', through: :parent_parts, source: :part_joins
-  has_many :parent_parts_widgets, through: :sub_part_joins, source: :partable, class_name: 'PartsWidget'
-  has_many :parent_projects, through: :sub_parts_widgets, source_type: 'Project', source: :widgetable
+  has_many :parent_projects, through: :sub_part_joins, source_type: 'Project', source: :partable
 
   has_many :child_platforms, through: :child_parts, source: :platform
 
@@ -37,7 +35,7 @@ class Part < ActiveRecord::Base
     :datasheet_link, :product_page_link, :image_id, :platform_id,
     :part_joins_attributes, :part_join_ids, :workflow_state, :slug, :one_liner,
     :position, :child_part_relations_attributes,
-    :parent_part_relations_attributes
+    :parent_part_relations_attributes, :type
 
   accepts_nested_attributes_for :part_joins, :child_part_relations,
     :parent_part_relations, allow_destroy: true
@@ -46,11 +44,8 @@ class Part < ActiveRecord::Base
     :datasheet_link, :product_page_link]
   set_changes_for_stored_attributes :websites
 
-  # convert these to hstore so they can be queried on
-  # def self.most_used; order("counters_cache -> 'projects_count' DESC"); end
-  store :counters_cache, accessors: [:projects_count]
-  # update parser to work with hstore
-  parse_as_integers :counters_cache, :projects_count
+  store_accessor :counters_cache, :projects_count, :all_projects_count
+  parse_as_integers :counters_cache, :projects_count, :all_projects_count
 
   validates :name, presence: true
   validates :unit_price, numericality: { greater_than_or_equal_to: 0 }, allow_blank: true
@@ -87,6 +82,9 @@ class Part < ActiveRecord::Base
     #   notify_observers 'after_status_updated' if to.to_s.in? %w(approved rejected)
     # end
   end
+
+  scope :alphabetical, -> { order name: :asc }
+  scope :default_sort, -> { order("parts.position ASC, CAST(parts.counters_cache -> 'all_projects_count' AS INT) DESC, parts.name ASC") }
 
   # # beginning of search methods
   # include TireInitialization
@@ -181,7 +179,7 @@ class Part < ActiveRecord::Base
       "(parts.description ILIKE '%#{token}%' OR parts.name ILIKE '%#{token}%' OR parts.product_tags_string ILIKE '%#{token}%')"
     end.join(' AND ')
 
-    approved.where(query).includes(:platform)
+    approved.where(query).where(type: params[:type]).includes(:platform)
   end
 
   def self.approved
@@ -190,6 +188,10 @@ class Part < ActiveRecord::Base
 
   def self.invalid
     where workflow_state: INVALID_STATES
+  end
+
+  def self.most_used
+    order("CAST(counters_cache -> 'all_projects_count' AS INT) DESC, name ASC")
   end
 
   def self.not_invalid
@@ -211,7 +213,7 @@ class Part < ActiveRecord::Base
   def all_projects
     ids = [id]
     ids += child_part_relations.pluck(:child_part_id)
-    Project.joins(:widgets).where(widgets: { type: 'PartsWidget' }).joins("INNER JOIN part_joins ON part_joins.partable_id = widgets.id AND part_joins.partable_type = 'Widget'").where(part_joins: { part_id: ids })
+    Project.joins("INNER JOIN part_joins ON part_joins.partable_id = projects.id AND part_joins.partable_type = 'Project'").where(part_joins: { part_id: ids })
   end
 
   def counters
@@ -221,13 +223,17 @@ class Part < ActiveRecord::Base
     }
   end
 
+  def identifier
+    type.underscore.gsub(/_part$/, '')
+  end
+
   def image_id=(val)
     self.image = Image.find_by_id(val)
   end
 
   def full_name
     if platform
-      "#{platform.name} - #{name}"
+      "#{name} (#{platform.name})"
     else
       name
     end
@@ -239,11 +245,11 @@ class Part < ActiveRecord::Base
     slug = name.downcase.gsub(/[^a-z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
 
     # make sure it doesn't exist
-    if result = self.class.where(slug: slug, platform_id: platform_id).first
+    if result = Part.where(slug: slug, platform_id: platform_id).first
       unless self == result
         # if it exists add a 1 and increment it if necessary
         slug += '1'
-        while self.class.where(slug: slug, platform_id: platform_id).first
+        while Part.where(slug: slug, platform_id: platform_id).first
           slug.gsub!(/([0-9]+$)/, ($1.to_i + 1).to_s)
         end
       end

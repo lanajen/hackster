@@ -1,162 +1,129 @@
 = content_for :no_container do
 
-  #pricing
-    section.section-two
-      .container
-        .title
-          .split-left
-            h1
-              | Hackster helps you connect with your community
-
-          .split-right
-            p Hackster's vision is to deliver the world's best hardware creation platform for makers, makers and starters. We work with a selective list of customers who share our values and mission to empowers more people in more places to build awesome, connected hardware.
-
-    section.section-pricing
+  #business
+    section#intro
+      h1 Hackster for business
+      p
+        ' Hackster is a community for people who love building hardware. Our commitment to our community means that we put people ahead of commercial interests. These
+        abbr> data-trigger="hover" data-toggle="popover" data-container="body" data-placement="bottom" data-content='<ul><li>We do not serve banner ads on Hackster</li><li>We do not serve "infomercial" content that is of low value to our members</li><li>Our members’ private data belongs to them only, never to be shared</li><li>We take the time to curate quality projects</li><li>Any content that does not meet our quality and courtesy standards will be removed</li></ul>' data-html="true" principles
+        ' have attracted a
+        abbr> data-trigger="hover" data-toggle="popover" data-container="body" data-placement="bottom" data-content="We'll be 50,000 strong in the coming 12 months, with a healthy mix of 20% entrepreneurs, 50% makers, and 30% professionals developers from across the world" vast
+        ' network of makers, developers and entrepreneurs who come to Hackster to learn, collaborate and create awesome products. We look forward to working with a select group of partners who share our values and mission: to empower more people in more places to build awesome hardware.
+    section#channel
       .container
         .row
-          .col-sm-8.col-sm-offset-2
-            .row.plans
-              .plan-title.col-xs-12
-                h2 Build Genuine Communities
-              .col-sm-6.col-xs-12.plan
-                .plan-top
-                  h3 Platform Channel for Startups
-                  p New startup communities starting to grow revenue, awareness and adoption.
-                .plan-middle
-                  ul
-                    li Platform channel with unlimited projects
-                    li Product galleries with unlimited products
-                    li Embedded community for your website
-                    li
-                      ' Up to
-                      strong> 100,000
-                      | monthly impressions
-                    li SEO optimization for maximum discoverability online
-                    li Built in insights and analytics
-                    li Email support
-                .plan-bottom
-                  .plan-price
+          .col-sm-6.product-illustration
+            = image_tag 'business/channel.png'
+          .col-sm-6.product-description
+            h2 Platform Channel
+            .row
+              .col-sm-6.startups
+                h3 Startups
+                ul
+                  li Platform hub with up to 1,000 projects
+                  li Products showcase
+                  li Community embedded in your website
+                  li Up to 100,000 monthly impressions
+                  li SEO for maximum discoverability
+                  li Insights and analytics
+                  li Email support with 99% uptime SLA
+                  li
+                    abbr> data-trigger="hover" data-toggle="popover" data-container="body" data-placement="bottom" data-content='We love supporting shipped startup products with at least 5 reference projects, 250 followers, available technical support and documentation.' Prerequisites
+                .cta
+                  .price
                     | $99
-                    span.monthly
+                    span.month
                       | /mo
-                  = link_to 'Get this', '#', class: 'plan-more', 'data-target' => "#myModal", 'data-toggle' => "modal"
+                  a.button data-toggle="modal" data-target="#myModal" Get it now
+              .col-sm-6.enterprise
+                h3 Enterprise
+                ul
+                  li Platform hub with unlimited projects
+                  li Products showcase
+                  li Branded community embedded in your website
+                  li Unlimited monthly impressions
+                  li SEO for maximum discoverability
+                  li Insights and analytics
+                  li Single sign-on authentication
+                  li Custom domain support
+                  li Marketing and development services
+                  li Email and phone support with 99.99% uptime SLA
+                  li
+                    abbr> data-trigger="hover" data-toggle="popover" data-container="body" data-placement="bottom" data-content='We love supporting enterprise partners who make products that fit our community needs. We are however selective in who we work with.' Prerequisites
 
-              .col-sm-6.col-xs-12.plan
-                .plan-top
-                  h3 Platform Channel for Enterprise
-                  p Established companies looking to scale their communities, build critical awareness and adoption.
-                .plan-middle
-                  ul
-                    li Platform channel with unlimited projects
-                    li Product galleries with unlimited products
-                    li
-                      strong> Fully branded
-                      | embedded community for your website
-                    li
-                      strong> Unlimited
-                      | monthly impressions
-                    li SEO optimization for maximum discoverability online
-                    li Built in insights and analytics
-                    li
-                      strong Single sign-on authentication between Hackster and your website
-                    li
-                      strong New features creation
-                    li
-                      strong Custom domain
-                    li
-                      ' Email &amp;
-                      strong> phone
-                      ' support
-                .plan-bottom
-                  .plan-price
-                    | Call
-                  = link_to 'Get this', '#', class: 'plan-more', 'data-target' => "#myModal", 'data-toggle' => "modal"
+                .cta
+                  a.button data-toggle="modal" data-target="#myModal" Contact us
 
-            .row.plans.plan-green
-              .plan-title.col-xs-12
-                h2 Generate Amazing Content
-              .col-sm-6.col-xs-12.plan
-                .plan-top
-                  h3 Product Challenges
-                  p Land adoption and awareness by crafting a project development challenge.
-                .plan-middle.plan-middle
-                  ul
-                    li Engage thousands of makers online
-                    li Reward creativity and adoption of your product
-                    li Land a world-class showcase
-                    li Featured in newsletter
-                    li SEO optimization
-                    li Social outreach
-                    li 60 days challenge
-                    li Customer to provide prizes
-                .plan-bottom
-                  .plan-price
-                    | $3,000
-                  = link_to 'Get this', '#', class: 'plan-more', 'data-target' => "#myModal", 'data-toggle' => "modal"
-              .col-sm-6.col-xs-12.plan
-                .plan-top
-                  h3 Product Tutorials
-                  p Commission user-created tutorials on how to use your products, by the community, for the community.
-                .plan-middle.plan-middle
-                  / ul
-                    li Engage thousands of makers online
-                    li Reward creativity and adoption of your product
-                    li Land a world-class showcase
-                    li Featured in newsletter
-                    li SEO optimization
-                    li Social outreach
-                    li 60 days challenge
-                    li Customer to provide prizes
-                .plan-bottom
-                  .plan-price
-                    | $1,000
-                  = link_to 'Get this', '#', class: 'plan-more', 'data-target' => "#myModal", 'data-toggle' => "modal"
+    section#challenge
+      .container
+        .row
+          .col-sm-6.col-sm-push-6.product-illustration
+            = image_tag 'business/challenge.png'
+          .col-sm-6.col-sm-pull-6.product-description
+            h2 Product Challenges
+            p Launch awesome product challenges:
+            ul
+              / li State-of-the-art project challenge system
+              / li Available to embed challenge on your website
+              li Online voting capabilities
+              li Challenge submission showcase
+              li Prizes
+              li Social and newsletter outreach
+              li 60 days per challenge
+            .cta
+              .price $3,000
+              a.button data-toggle="modal" data-target="#myModal" Get it now
 
-            .row.plans.plan-orange
-              .plan-title.col-xs-12
-                h2 Deliver Product Education
-              .col-sm-6.col-xs-12.plan
-                .plan-top
-                  h3 Product Workshops
-                  p Reach out and educate people everywhere on how to build powerful products using your platform.
-                .plan-middle.plan-middle
-                  ul
-                    li Course setup and invitations
-                    li Live streamlining with up to 50 people
-                    li A Hackster moderator to manage the class
-                    li Personalized guidance
-                    li Teach best practices, avoid the gotchas, and give live feedback as you go
-                    li Screen sharing
-                    li Live Q&amp;A
-                    li Live Chat
-                    li 90 min workshop
-                .plan-bottom
-                  .plan-price
-                    | $1,500
-                  = link_to 'Get this', '#', class: 'plan-more', 'data-target' => "#myModal", 'data-toggle' => "modal"
-              .col-sm-6.col-xs-12.plan
-                .plan-top
-                  h3 Product Hackathons
-                  p Gain critical user adoption in various geographies, generate world-class evidence and have fun doing it.
-                .plan-middle.plan-middle
-                  ul
-                    li Hackster's Hardware Weekend Hackathon, your way
-                    li A world-class venue for one weekend
-                    li Quality food (pizza is not quality food): breakfast, lunch, dinner, drinks, snacks
-                    li Hackster Facilitators and volunteers
-                    li Complete hardware (wires, solder, breadboards, resistors, sensors, servos...)
-                    li End-to-end program management, no catch, 100% turn-key
-                    li 2-day hackathon
-                .plan-bottom
-                  .plan-price
-                    | $20,000
-                  = link_to 'Get this', '#', class: 'plan-more', 'data-target' => "#myModal", 'data-toggle' => "modal"
+    section#tutorial
+      .container
+        .row
+          .col-sm-6.product-illustration
+            = image_tag 'business/course.png'
+          .col-sm-6.product-description
+            h2 Product Tutorials
+            p Create authentic product tutorials:
+            ul
+              li Tap our top-notch community to create online tutorials that are unique and authentic
+              / li Curate how-to videos with step by step instructions
+              / li Enjoy our built-in discussion forum
+              / li How-to product videos
+              li Displayed on Hackster.io and on your website
+            / .cta
+              .price $2,500
+              a.button data-toggle="modal" data-target="#myModal" Get it now
+            .cta
+              a.button data-toggle="modal" data-target="#myModal" Coming soon
 
-        row
-          p.text-center
-            ' Just looking to be featured in our platforms section?
-            = link_to 'Apply', 'https://docs.google.com/forms/d/1QVyIRXMR1FEFcby3Gwg-ZrmtWkkCax9UHhQRDyvXxHg/viewform?usp=send_form'
-            | .
+    section#moar
+      .row
+        .col-md-4.product-small
+        .col-md-4.product-small
+          h2 Product Hackathons
+          ul
+            li
+              ' Based on our
+              = link_to 'Hardware Weekend', '/hardwareweekend'
+            li World-class industry venues
+            li Hackathon management software
+            li Industry and vertical focus
+            li Hardware assortment
+            li Reporting and insights
+            li Photography services
+            li Social media and blogging
+            li Mentors and onsite support
+            li Insurance and liability coverage
+            li 100% logistics and run-of-show support
+            .cta
+              a.button data-toggle="modal" data-target="#myModal" Contact us
+
+        .col-md-4.product-small
+
+    / section#else
+      .container
+        p.text-center
+          ' Just looking to be featured in our platforms section?
+          = link_to 'Apply', 'https://docs.google.com/forms/d/1QVyIRXMR1FEFcby3Gwg-ZrmtWkkCax9UHhQRDyvXxHg/viewform?usp=send_form'
+          | .
 
 = content_for :js do
   #myModal.modal.fade*{ 'aria-hidden' => "true", 'aria-labelledby' => "myModalLabel", role: "dialog", tabindex: "-1" }
@@ -170,10 +137,10 @@
         .modal-body
           = f.input :company, label: 'Company name'
           = f.input :website, label: 'Website'
-          = f.input :plan, label: 'What plan are you interested in?', collection: InfoRequest::PLANS, as: :check_boxes
+          = f.input :plan, label: 'What services are you interested in?', collection: InfoRequest::PLANS, as: :check_boxes
           = f.input :needs, label: 'What needs are you looking to get solved?', as: :text
 
-          p Last, tell us who you are and how we can reach you:
+          p How we can reach you?
           = f.input :name, label: 'Your full name'
           = f.input :email, label: 'Your email'
           = f.input :phone, label: 'Your phone'

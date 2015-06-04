@@ -1,0 +1,15 @@
+tr.fields  id="part-#{part.id}"
+  td
+    table  style='width:100%'
+      tbody
+        tr
+          td
+            - if part.part.platform_id and !is_whitelabel?
+              = link_to part.part.name, part.part
+            - else
+              = part.part.name
+        tr
+          td colspan=4 style='color: #888;font-size:75%;' = part.comment
+  td style='vertical-align:middle'
+    - if part.part.vendor_link.present? or part.part.store_link.present?
+      = link_to content_tag(:i, '', class: 'fa fa-shopping-cart'), (part.part.vendor_link.presence || part.part.store_link), target: '_blank', style: 'color:#333'

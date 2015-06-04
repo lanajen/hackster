@@ -1,4 +1,6 @@
 class FollowRelation < ActiveRecord::Base
+  include Notifiable
+
   belongs_to :followable, polymorphic: true
   belongs_to :user
 

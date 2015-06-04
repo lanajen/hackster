@@ -116,9 +116,8 @@ var Thought = React.createClass({
           {actions}
           <Like liked={this.props.liked} onButtonClick={this.handleLike} />
           <span className="separator">&bull;</span>
-          {/*<a href=''>Share</a>
-          <Link to="thought" params={{id: this.props.id}}>Share</Link>
-          <span className="separator">&bull;</span>*/}
+          <Link to="thought" params={{id: this.props.id}}>Permalink</Link>
+          <span className="separator">&bull;</span>
           <a href='' onClick={this.handleComment}>Comment</a>
         </div>
       </div>
@@ -189,11 +188,19 @@ var ThoughtList = React.createClass({
         <ThoughtContainer thought={thought} key={thought.id} />
       );
     });
-    return (
-      <div className="thought-list">
-        {thoughtNodes}
-      </div>
-    );
+    if (this.props.thoughts.length) {
+      return (
+        <div className="thought-list">
+          {thoughtNodes}
+        </div>
+      );
+    } else {
+      return (
+        <div className="thought-list text-center">
+          <i className="fa fa-spin fa-spinner fa-3x"></i>
+        </div>
+      )
+    }
   }
 });
 

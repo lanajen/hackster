@@ -880,7 +880,6 @@
     }
   }
   .section-projects {
-
     h4 {
       font-weight: bold;
       font-size: 1.1em;
@@ -904,6 +903,11 @@
 }
 
 .platform-page {
+  &.platform-home {
+    .main-section {
+      background: #fff;
+    }
+  }
   .top-banner-image-inner-corner.bottom-left {
     bottom: 30px;
   }
@@ -916,16 +920,19 @@
       letter-spacing: 0.01em;
     }
   }
+  .group-nav.standalone {
+    @include box-shadow(0 0px 1px #333);
+  }
   .main-section {
     padding-top: 0;
   }
   .section-feature {
     padding: 50px 0;
     &:nth-child(odd) {
-      background: #fff;
+      background: #f2f2f2;
     }
     h2 {
-      text-align: center;
+      // text-align: center;
       .bdg {
         margin-left: 5px;
         font-size: 0.6em;
@@ -938,15 +945,31 @@
       }
     }
   }
+  .header-with-more-button {
+    .section-title {
+      margin-bottom: 0;
+    }
+    margin-bottom: 30px;
+  }
   .section-nav {
     margin-bottom: 60px;
   }
   #about-us {
     padding-top: 0;
-    .text-center {
+    .extra-links {
+      margin-bottom: 40px;
       margin-top: 10px;
       a {
         color: #666;
+      }
+    }
+    .top-links {
+      a {
+        margin-right: 15px;
+        font-weight: bold;
+        &:last-child {
+          margin-right: 0;
+        }
       }
     }
     .websites {
@@ -955,7 +978,6 @@
     }
   }
   .about-us-text {
-    text-align: center;
     padding-bottom: 20px;
     border-bottom: 1px solid #ddd;
   }

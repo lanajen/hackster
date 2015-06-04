@@ -4,7 +4,7 @@ class InfoRequest
     'Platform channel for enterprise',
     'Product challenge',
     'Product tutorial',
-    'Product workshop',
+    # 'Product workshop',
     'Product hackathon',
   ]
 

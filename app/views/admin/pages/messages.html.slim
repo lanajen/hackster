@@ -22,7 +22,7 @@ table.table.table-striped
         td= comment.body.truncate 100
         td= time_ago_in_words comment.created_at
         td
-          / = link_to t('.destroy', :default => t("helpers.links.destroy")), comment_path(comment), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'
+          = link_to t('.destroy', :default => t("helpers.links.destroy")), admin_conversation_path(comment.commentable), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'This will delete the complete conversation. Are you sure?')) }, :class => 'btn btn-xs btn-danger'
 
 .pagination.col-xs-12.text-center
   = will_paginate @comments

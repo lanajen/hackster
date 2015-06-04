@@ -2,6 +2,7 @@
   = f.error_notification
   = f.input :name
   = f.input :slug, label: 'Name for URL'
+  = f.input :type, collection: Part::TYPES
   = f.input :description, input_html: { class: 'text-editor', rows: 10 }
   = f.input :one_liner, input_html: { rows: 2 }, as: :text
   = f.input :product_tags_string, label: 'Tags', hint: "Most useful tags would include technologies like 'Wifi', 'BLE', 'accelerometer'... Please enter each tag separated by commas."
@@ -21,7 +22,7 @@
       .col-md-8
         - @part.part_joins.each do |part_join|
           / # = f.simple_fields_for :part_joins, part_join, wrapper: false do |f_p|
-          - project = part_join.try(:partable).try(:project)
+          - project = part_join.try(:partable) ? (part_join.partable.class == Project ? part_join.partable : part_join.partable.widgetable) : nil
           .row.fields
             .col-xs-11
               - if project
@@ -46,7 +47,7 @@
       .col-md-8
         ul
           - @part.part_joins.each do |part_join|
-            - project = part_join.try(:partable).try(:project)
+            - project = part_join.try(:partable) ? (part_join.partable.class == Project ? part_join.partable : part_join.partable.widgetable) : nil
             - if project
               li= link_to project.name, project
 

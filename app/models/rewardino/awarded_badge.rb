@@ -1,4 +1,6 @@
 class AwardedBadge < ActiveRecord::Base
+  include Notifiable
+
   belongs_to :awardee, polymorphic: true
 
   attr_accessible :awardee_type, :awardee_id, :badge_code, :level, :send_notification

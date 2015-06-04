@@ -50,7 +50,7 @@ class NotificationDecorator < ApplicationDecorator
       case event
       when :new
         case commentable
-        when Project
+        when Project, ExternalProject
           project_link = h.link_to commentable.name, commentable
           "#{author_link} commented on #{project_link}."
         when Thought
@@ -97,7 +97,7 @@ class NotificationDecorator < ApplicationDecorator
       end
     when Issue
       ''  # TODO
-    when Project
+    when Project, ExternalProject
       project = notifiable
       project_link = h.link_to project.name, project
       case event
@@ -126,7 +126,7 @@ class NotificationDecorator < ApplicationDecorator
       when Comment
         comment_link = h.link_to 'one of your comments', respectable.commentable
         "#{user_link} liked #{comment_link}." if event == :new
-      when Project
+      when Project, ExternalProject
         project_link = h.link_to respectable.name, respectable
         "#{user_link} respected #{project_link}." if event == :new
       when Thought

@@ -39,6 +39,9 @@ require File.join(Rails.root, 'lib/redcarpet_sociable')
 require File.join(Rails.root, 'lib/custom_markdown_renderer')
 # attributes with defaults
 require File.join(Rails.root, 'lib/has_default')
+#notifiable
+require File.join Rails.root, 'lib/notifiable'
+require File.join Rails.root, 'lib/name_generator'
 
 # require it so that STI works correctly; not necessarily in prod since all classes are preloaded
 if Rails.env == 'development'

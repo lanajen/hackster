@@ -1,0 +1,26 @@
+li.fields
+  table.table
+    tbody
+      tr
+        td colspan=2 style="background:white;padding:5px 0;"
+          = f.input :id, as: :hidden, input_html: { class: 'id' }
+          = f.input :position, as: :hidden, input_html: { class: 'position' }
+          ul.list-inline.pull-right
+            li= link_to content_tag(:i, '', class: 'fa fa-angle-up'), '', class: 'btn btn-default btn-xs move-up'
+            li= link_to content_tag(:i, '', class: 'fa fa-angle-down'), '', class: 'btn btn-default btn-xs move-down'
+            li= f.link_to_remove content_tag(:i, '', class: 'fa fa-times') + ' Delete', class: 'btn btn-danger btn-xs'
+
+      tr
+        - if part.part_id.present?
+          td = f.input :part_id, input_html: { class: 'select2' }, label: 'Tool', collection: { part.part.name  => part.part_id }, prompt: 'Select a tool'
+        - else
+          td = f.input :part_id, input_html: { class: 'select2' }, label: 'Tool', collection: {}, prompt: 'Select a tool'
+
+      tr data-name='part-comment' class="#{'default-hidden' if part.comment.blank?}"
+        td colspan=2 = f.input :comment, label: 'Comment'
+
+      - if part.comment.blank?
+        tr
+          td colspan=2 style='padding:5px 10px'
+            ul.list-inline
+              li= link_to 'Add comment', '', 'data-target' => 'part-comment', class: 'reveal btn btn-link btn-xs'

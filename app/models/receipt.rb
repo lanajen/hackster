@@ -1,4 +1,6 @@
 class Receipt < ActiveRecord::Base
+  include Notifiable
+
   belongs_to :receivable, polymorphic: true
   belongs_to :user
 

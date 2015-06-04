@@ -68,6 +68,23 @@ class Project < ActiveRecord::Base
   has_many :hacker_spaces, -> { where("groups.type = 'HackerSpace'") }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :parts, through: :parts_widgets
   has_many :parts_widgets, as: :widgetable
+  has_many :part_joins, as: :partable do
+    def hardware
+      joins(:part).where(parts: { type: 'HardwarePart' })
+    end
+    def software
+      joins(:part).where(parts: { type: 'SoftwarePart' })
+    end
+    def tool
+      joins(:part).where(parts: { type: 'ToolPart' })
+    end
+  end
+  has_many :hardware_part_joins, -> { joins(:part).where(parts: { type: 'HardwarePart'}) }, as: :partable, class_name: 'PartJoin'
+  has_many :software_part_joins, -> { joins(:part).where(parts: { type: 'SoftwarePart'}) }, as: :partable, class_name: 'PartJoin'
+  has_many :tool_part_joins, -> { joins(:part).where(parts: { type: 'ToolPart'}) }, as: :partable, class_name: 'PartJoin'
+  has_many :hardware_parts, -> { where(parts: { type: 'HardwarePart' } ) }, through: :part_joins, source: :part
+  has_many :software_parts, -> { where(parts: { type: 'SoftwarePart' } ) }, through: :part_joins, source: :part
+  has_many :tool_parts, -> { where(parts: { type: 'ToolPart' } ) }, through: :part_joins, source: :part
   has_many :project_collections, dependent: :destroy
   has_many :visible_collections, -> { visible }, class_name: 'ProjectCollection'
   has_many :visible_platforms, -> { where("groups.type = 'Platform'") }, through: :visible_collections, source_type: 'Group', source: :collectable
@@ -101,12 +118,15 @@ class Project < ActiveRecord::Base
     :hacker_space_id, :locked, :mark_as_idea, :event_id, :assignment_id,
     :community_ids, :new_group_id, :guest_twitter_handle, :celery_id,
     :team_attributes, :story, :made_public_at, :difficulty, :type, :product,
-    :project_collections_attributes, :workflow_state
+    :project_collections_attributes, :workflow_state, :part_joins_attributes,
+    :hardware_part_joins_attributes, :tool_part_joins_attributes,
+    :software_part_joins_attributes
   attr_accessor :current, :private_changed, :needs_platform_refresh,
     :approved_changed
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
     :widgets, :cover_image, :permissions, :slug_histories, :team,
-    :project_collections, allow_destroy: true
+    :project_collections, :part_joins, :hardware_part_joins, :tool_part_joins,
+    :software_part_joins, allow_destroy: true
 
   validates :name, length: { in: 3..60 }, allow_blank: true
   validates :one_liner, :logo, presence: true, if: proc { |p| p.force_basic_validation? }
@@ -120,6 +140,7 @@ class Project < ActiveRecord::Base
   validate :tags_length_is_valid
   validate :slug_is_unique
   # before_validation :check_if_current
+  before_validation :delete_empty_part_ids
   before_validation :clean_permissions
   before_validation :ensure_website_protocol
   before_save :ensure_name
@@ -133,7 +154,8 @@ class Project < ActiveRecord::Base
   store :counters_cache, accessors: [:comments_count, :product_tags_count,
     :widgets_count, :followers_count, :build_logs_count,
     :issues_count, :team_members_count, :platform_tags_count, :communities_count,
-    :platforms_count]
+    :platforms_count, :hardware_parts_count, :software_parts_count,
+    :tool_parts_count]
 
   store :properties, accessors: [:private_logs, :private_issues, :locked,
     :guest_twitter_handle, :celery_id]
@@ -141,7 +163,8 @@ class Project < ActiveRecord::Base
   parse_as_integers :counters_cache, :comments_count, :product_tags_count,
     :widgets_count, :followers_count, :build_logs_count,
     :issues_count, :team_members_count, :platform_tags_count,
-    :communities_count, :platforms_count
+    :communities_count, :platforms_count, :hardware_parts_count,
+    :software_parts_count, :tool_parts_count
 
   parse_as_booleans :properties, :private_logs, :private_issues, :locked
 
@@ -178,7 +201,7 @@ class Project < ActiveRecord::Base
 
   # beginning of search methods
   include TireInitialization
-  has_tire_index 'private or hide or !approved'
+  has_tire_index 'private or hide or !approved?'
 
   tire do
     mapping do
@@ -357,7 +380,7 @@ class Project < ActiveRecord::Base
       description: {
         label: 'Story',
       },
-      parts: {
+      hardware_parts: {
         label: 'Components',
         conditions: 'parts.any?',
       },
@@ -370,6 +393,10 @@ class Project < ActiveRecord::Base
         condition: 'widgets.where(type: %w(CodeWidget CodeRepoWidget)).any?',
       }
     }
+  end
+
+  def checklist_completion
+    @checklist_completion ||= ((checklist_evaled[:complete] ? 1 : checklist_evaled[:done].size.to_f / (checklist_evaled[:done].size + checklist_evaled[:todo].size)) * 100).to_i
   end
 
   def checklist_evaled
@@ -413,6 +440,9 @@ class Project < ActiveRecord::Base
       team_members: 'users.count',
       platform_tags: 'platform_tags_cached.count',
       widgets: 'widgets.count',
+      hardware_parts: 'hardware_parts.count',
+      software_parts: 'software_parts.count',
+      tool_parts: 'tool_parts.count',
     }
   end
 
@@ -767,6 +797,12 @@ class Project < ActiveRecord::Base
     def clean_permissions
       permissions.each do |permission|
         permissions.delete(permission) if permission.new_record? and permission.grantee.nil?
+      end
+    end
+
+    def delete_empty_part_ids
+      (hardware_part_joins + software_part_joins + tool_part_joins).each do |part_join|
+        part_join.delete if part_join.part_id.blank?
       end
     end
 

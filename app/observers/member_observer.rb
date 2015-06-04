@@ -9,10 +9,10 @@ class MemberObserver < ActiveRecord::Observer
     elsif record.group.is? :team
       project = record.group.projects.first
       if record.request_pending?
-        NotificationCenter.notify_via_email :new, :membership_request, record.id
+        NotificationCenter.notify_via_email :new, :membership_request, record.id, 'new_membership_request_for_project'
       end
     elsif record.group.is? :event and record.request_pending?
-      NotificationCenter.notify_via_email :new, :membership_request, record.id
+      NotificationCenter.notify_via_email :new, :membership_request, record.id, 'new_membership_request_for_group'
     end
   end
 
@@ -42,7 +42,7 @@ class MemberObserver < ActiveRecord::Observer
     if record.group.is?(:team) and record.approved_to_join_changed?
       if record.approved_to_join
         record.group.touch
-        NotificationCenter.notify_all :accepted, :membership_request, record.id
+        NotificationCenter.notify_all :accepted, :membership_request, record.id, 'accepted_membership_request_for_project'
         expire_projects record
       else
         record.update_column :group_roles_mask, 0

@@ -113,18 +113,33 @@
                     .section-content
                       .medium-editor= @project.description
 
-                - cache ["project-#{@project.id}-components"], tag: ["project-#{@project.id}-components"] do
-                  - if @component_widgets.any?
+                - cache ["project-#{@project.id}-hardware-parts", is_whitelabel?], tag: ["project-#{@project.id}-hardware-parts"] do
+                  - if @hardware_parts.any?
                     section#components.section-container.section-collapsible
                       h2.section-title
                         a.title.title-toggle href=''
-                          ' Components
+                          ' Components and supplies
                           i.fa.fa-chevron-down
                           i.fa.fa-chevron-up
                       .section-content
-                        - @component_widgets.each do |widget|
-                          - embed = Embed.new widget_id: widget.id
-                          = render partial: 'api/embeds/embed', locals: { embed: embed }
+                        table.sortable-table.table.table-hover.fields-container
+                          tbody
+                            - @hardware_parts.each do |part|
+                              = render partial: 'widgets/embeds/show/part', locals: { part: part }
+
+                - cache ["project-#{@project.id}-tool-parts"], tag: ["project-#{@project.id}-tool-parts"] do
+                  - if @tool_parts.any?
+                    section#tools.section-container.section-collapsible
+                      h2.section-title
+                        a.title.title-toggle href=''
+                          ' Necessary tools and machines
+                          i.fa.fa-chevron-down
+                          i.fa.fa-chevron-up
+                      .section-content
+                        table.sortable-table.table.table-hover.fields-container
+                          tbody
+                            - @tool_parts.each do |part|
+                              = render partial: 'projects/tool_part', locals: { part: part }
 
                 - cache ["project-#{@project.id}-cad"], tag: ["project-#{@project.id}-cad"] do
                   - if @project.widgets.where(type: %w(CadRepoWidget CadFileWidget)).any?
@@ -149,6 +164,20 @@
                       .section-content
                         - @project.widgets.where(type: %w(SchematicWidget SchematicFileWidget)).order(:position, :id).each do |widget|
                           = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
+
+                - cache ["project-#{@project.id}-software-parts"], tag: ["project-#{@project.id}-software-parts"] do
+                  - if @software_parts.any?
+                    section#apps.section-container.section-collapsible
+                      h2.section-title
+                        a.title.title-toggle href=''
+                          ' Apps and online services
+                          i.fa.fa-chevron-down
+                          i.fa.fa-chevron-up
+                      .section-content
+                        table.sortable-table.table.table-hover.fields-container
+                          tbody
+                            - @software_parts.each do |part|
+                              = render partial: 'projects/software_part', locals: { part: part }
 
                 - cache ["project-#{@project.id}-code"], tag: ["project-#{@project.id}-code"] do
                   - if @project.widgets.where(type: %w(CodeWidget CodeRepoWidget)).any?
@@ -291,6 +320,16 @@
                           | It looks like you have due assignments
                         p= link_to 'Link to an assignment', settings_project_path(@project, anchor: 'sharing'), class: 'btn btn-warning btn-sm btn-block'
 
+              - if @can_edit
+                - alert_color = @project.checklist_evaled[:complete] ? 'success' : 'warning'
+                .alert.text-center class="alert-#{alert_color}"
+                  span
+                    p
+                      i.fa.fa-list>
+                      ' Checklist
+                      = link_to "#{@project.checklist_completion}% complete", edit_project_path(@project, anchor: 'publish'), class: 'alert-link'
+                  .progress style="margin-bottom: 0"
+                    .progress-bar class="progress-bar-#{alert_color}" role="progressbar" style="width: #{@project.checklist_completion}%;"
               - if @project.public?
                 - if @can_edit and @project.pending_review?
                   .alert.alert-warning.text-center
@@ -469,10 +508,14 @@
                         li
                           a.smooth-scroll href="#about-project" data-target="#about-project"
                             | About this project
-                        - if @component_widgets.any?
+                        - if @hardware_parts.any?
                           li
                             a.smooth-scroll href="#components" data-target="#components"
-                              | Components
+                              | Components and supplies
+                        - if @tool_parts.any?
+                          li
+                            a.smooth-scroll href="#tools" data-target="#tools"
+                              | Necessary tools and machines
                         - if @project.widgets.where(type: %w(CadRepoWidget CadFileWidget)).any?
                           li
                             a.smooth-scroll href="#cad" data-target="#cad"
@@ -481,6 +524,10 @@
                           li
                             a.smooth-scroll href="#schematics" data-target="#schematics"
                               | Schematics
+                        - if @software_parts.any?
+                          li
+                            a.smooth-scroll href="#apps" data-target="#apps"
+                              | Apps and online services
                         - if @project.widgets.where(type: %w(CodeWidget CodeRepoWidget)).any?
                           li
                             a.smooth-scroll href="#code" data-target="#code"

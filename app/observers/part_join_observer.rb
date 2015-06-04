@@ -20,22 +20,36 @@ class PartJoinObserver < ActiveRecord::Observer
 
   private
     def expire_cache record
-      Cashier.expire "project-#{record.partable.widgetable_id}-components"
+      project = case record.partable
+      when Project
+        record.partable
+      when Widget
+        record.partable.widgetable
+      end
+      keys = ["project-#{project.id}-#{record.part.identifier}-parts", "project-#{project.id}-left-column", "project-#{project.id}"]
+      Cashier.expire *keys
+      project.purge
     end
 
     def update_counters record
-      record.part.update_counters only: [:projects]
+      record.part.update_counters only: [:projects, :all_projects]
     end
 
     def update_project record
-      return unless record.part and record.part.platform and record.partable.class.name == 'PartsWidget' and record.partable.project
+      return unless record.part and record.part.platform and ((record.partable.class.name == 'PartsWidget' and record.partable.project) or record.partable.class.name == 'Project')
 
-      project = record.partable.project
+      project = case record.partable
+      when Project
+        record.partable
+      when Widget
+        record.partable.project
+      end
       platform_name = record.part.platform.name
       unless platform_name.in? project.platform_tags_array
         project.platform_tags_array += [platform_name]
         project.save
       end
+      project.update_counters only: [record.part.class.name.underscore.pluralize.to_sym]
       ProjectWorker.perform_async 'update_platforms', project.id
     end
 end

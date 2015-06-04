@@ -14,6 +14,10 @@ class CronTask < BaseWorker
     end
   end
 
+  def clean_invitations
+    User.where.not(invitation_token: nil).where.not(last_sign_in_at: nil).update_all(invitation_token: nil)
+  end
+
   def compute_popularity
     CronTask.perform_async 'compute_popularity_for_projects'
     CronTask.perform_async 'compute_popularity_for_users'
@@ -91,14 +95,27 @@ class CronTask < BaseWorker
   end
 
   def generate_user
-    email = SecureRandom.hex(5) + '@user.hackster.io'
-    user_data = {
-      email: email,
-      email_confirmation: email,
-      password: SecureRandom.hex(16)
-    }
-    u = User.create user_data
-    return unless u
+    u = nil
+    gender = %w(male male male male male male male male male female).sample  # 90% male
+    country = rand(1..10) > 6 ? "&country=united+states" : ''
+    resp = JSON.parse Net::HTTP.get_response("api.uinames.com","/?gender=#{gender}#{country}").body
+    generator = NameGenerator.new(resp['name'], resp['surname'])
+    full_name = generator.full_name
+    user_name = generator.user_name
+    while u.nil? or !u.persisted?
+      email = SecureRandom.hex(5) + '@user.hackster.io'
+      user_data = {
+        email: email,
+        email_confirmation: email,
+        password: SecureRandom.hex(16),
+        full_name: full_name,
+        user_name: user_name,
+      }
+      u = User.new
+      u.skip_confirmation!
+      u.assign_attributes user_data
+      u.save
+    end
     groups = []
     Platform.public.each do |plat|
       plat.followers_count.times{ groups << plat.id } unless plat.hidden
@@ -117,7 +134,7 @@ class CronTask < BaseWorker
   end
 
   def generate_users
-    User.invitation_accepted_or_not_invited.where("created_at > ?", 1.day.ago).size.times do
+    User.invitation_accepted_or_not_invited.where("created_at > ?", 1.day.ago).where.not("users.email ILIKE '%user.hackster.io'").size.times do
       CronTask.perform_at Time.at((1.day.from_now.to_f - Time.now.to_f)*rand + Time.now.to_f), 'generate_user'
     end
   end
@@ -131,6 +148,7 @@ class CronTask < BaseWorker
     evaluate_badges
     send_announcement_notifications
     cleanup_duplicates
+    clean_invitations
   end
 
   def launch_daily_cron

@@ -1,5 +1,6 @@
 class FilesController < ApplicationController
   before_filter :authenticate_user!, except: [:remote_upload, :check_remote_upload]
+  skip_before_filter :mark_last_seen!
 
   def create
     render text: 'bad', status: :unprocessable_entity and return unless params[:file_url] and params[:file_type] and params[:file_type].in? %w(avatar image cover_image document sketchfab_file logo company_logo favicon)

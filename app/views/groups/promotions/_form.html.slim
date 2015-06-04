@@ -2,9 +2,11 @@
   = f.error_notification
 
   .row
+    .mg-20
     .col-xs-12
-      h3
-        | Edit profile
+      .header.clearfix
+        h3.pull-left
+          | Edit promotion
         .pull-right
           ul.list-unstyled.list-inline
             li= f.submit 'Save changes', class: 'btn btn-primary btn-sm'
@@ -15,7 +17,7 @@
     .col-md-6
       = f.input :full_name, label: 'Name'
       = f.input :user_name, label: 'Pretty URL', wrapper: :addon do
-        span.input-group-addon www.hackster.io/courses/#{@promotion.course.user_name}/
+        span.input-group-addon hackster.io/courses/#{@promotion.course.user_name.truncate(10)}/
         = f.input_field :user_name
       = f.input :email
       = f.input :mini_resume, as: :text, input_html: { rows: 4 },

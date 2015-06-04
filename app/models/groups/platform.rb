@@ -15,12 +15,12 @@ class Platform < List
   has_many :announcements, as: :threadable, dependent: :destroy
   has_many :challenges
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'PlatformMember'
-  has_many :parts, -> { order [:position, :name] }
+  has_many :parts
 
   has_many :part_projects, through: :parts, class_name: 'Project', source: :projects
   has_many :sub_parts, through: :parts, class_name: 'Part', source: :parent_parts
   has_many :sub_parts_projects, through: :parts, class_name: 'Project', source: :parent_projects
-  has_many :sub_platforms, through: :related_parts, class_name: 'Platform', source: :platform
+  has_many :sub_platforms, -> { uniq }, through: :sub_parts, class_name: 'Platform', source: :platform
 
   has_many :projects, -> { where(type: %w(Project ExternalProject)) }, through: :project_collections do
     # TOOD: see if this can be delegated to ProjectCollection
@@ -66,16 +66,18 @@ class Platform < List
     :is_new, :enable_comments, :hidden, :verified, :enable_chat, :enable_products,
     :enable_parts, :enable_password, :enable_sub_parts
 
-  store_accessor :counters_cache, :parts_count, :products_count, :sub_parts_count
+  store_accessor :counters_cache, :parts_count, :products_count, :sub_parts_count,
+    :sub_platforms_count
 
   parse_as_integers :counters_cache, :external_projects_count,
-    :private_projects_count, :products_count, :parts_count, :sub_parts_count
+    :private_projects_count, :products_count, :parts_count, :sub_parts_count,
+    :sub_platforms_count
 
   taggable :platform_tags, :product_tags
 
   is_impressionable counter_cache: true, unique: :session_hash
 
-  has_default :products_text, 'Devices built by companies'
+  has_default :products_text, 'Startups powered by %name%'
   has_default :moderation_level, 'hackster'
 
   # beginning of search methods
@@ -132,6 +134,7 @@ class Platform < List
       products: 'products.count',
       projects: 'projects.visible.count',
       sub_parts: 'sub_parts.count',
+      sub_platforms: 'sub_platforms.count',
     })
   end
 
