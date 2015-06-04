@@ -68,7 +68,7 @@ class Project < ActiveRecord::Base
   has_many :groups, -> { where(groups: { private: false }, project_collections: { workflow_state: ProjectCollection::VALID_STATES }) }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :hacker_spaces, -> { where("groups.type = 'HackerSpace'") }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :parts, through: :part_joins
-  has_many :part_joins, as: :partable do
+  has_many :part_joins, as: :partable, dependent: :destroy do
     def hardware
       joins(:part).where(parts: { type: 'HardwarePart' })
     end
