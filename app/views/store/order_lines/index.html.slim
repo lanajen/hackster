@@ -55,13 +55,18 @@ h2.cart-title Your cart
           => link_to 'select an address', addresses_path(order_id: current_order.id, redirect_if_empty: true)
           | before placing your order.
 
-      - if current_order.good_to_go?
+      - if current_order.can_pass_order?
         .store-actions.text-center
           p After you place this order you will have #{pluralize current_order.after_points, 'point'} left to redeem.
           p
             => link_to 'Confirm order', confirm_store_orders_path(id: current_order.id), class: 'btn btn-primary', data: { method: :patch }
             ' or
             = link_to 'keep browsing', store_path
+      - elsif current_order.errors[:base].any?
+        .store-actions
+          p
+            strong> Oh shoot!
+            = current_order.errors[:base].first
 
 - else
   p

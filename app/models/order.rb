@@ -4,10 +4,10 @@
 # => do you offer other products?
 # => what about spam?
 # TODO:
-# => enforce limits (max 1000 points or one product per month)
 # => email notif when shipped
 
 class Order < ActiveRecord::Base
+  include ApplicationHelper
   include Counter
   include StringParser
   include Workflow
@@ -36,7 +36,7 @@ class Order < ActiveRecord::Base
 
   workflow do
     state :new do
-      event :pass_order, transitions_to: :processing
+      event :pass_order, transitions_to: :processing, if: :can_pass_order?
     end
     state :processing do
       event :ship, transitions_to: :shipped
@@ -65,6 +65,10 @@ class Order < ActiveRecord::Base
     where workflow_state: :processing
   end
 
+  def self.this_month
+    where "orders.placed_at > ?", Date.today.beginning_of_month
+  end
+
   def self.valid
     where.not workflow_state: INVALID_STATES
   end
@@ -74,7 +78,7 @@ class Order < ActiveRecord::Base
   end
 
   def after_points
-    total_cost ? user.reputation.redeemable_points - total_cost : user.reputation.redeemable_points
+    user.reputation.redeemable_points - total_cost.to_i
   end
 
   def compute_products_cost!
@@ -109,20 +113,17 @@ class Order < ActiveRecord::Base
     total_cost and total_cost <= user.reputation.redeemable_points
   end
 
-  def good_to_go?
-    address and order_lines_count and order_lines_count > 0 and enough_points?
-  end
+  def can_pass_order?
+    validate_address_is_present
+    validate_at_least_one_order_line
+    validate_has_enough_points
+    validate_order_limits
 
-  def pass_order
-    errors = []
-    errors << 'you need to select an address' unless address
-    errors << 'you need at least one item in your cart' unless order_lines and order_lines_count > 0
-    errors << "you don't have enough points" unless enough_points?
-    halt! errors.to_sentence if errors.any?
+    errors.empty?
   end
 
   def points_delta
-    user.reputation.redeemable_points - total_cost if total_cost
+    user.reputation.redeemable_points - total_cost.to_i
   end
 
   private
@@ -130,5 +131,22 @@ class Order < ActiveRecord::Base
       compute_shipping_cost
       compute_products_cost
       compute_total_cost
+    end
+
+    def validate_address_is_present
+      errors.add :address_id, 'is required' unless address_id.present?
+    end
+
+    def validate_at_least_one_order_line
+      errors.add :order_lines, 'at least one item is required' unless order_lines_count.to_i > 0
+    end
+
+    def validate_has_enough_points
+      errors.add :total_cost, "You don't have enough points (#{-points_delta} missing)." unless enough_points?
+    end
+
+    def validate_order_limits
+      errors.add :base, "You've reached the limit of one item per person per month during the trial phase. #{time_diff_in_natural_language Date.today, Date.today.beginning_of_month + 1.month} left before you can place a new order." if user.orders.valid.this_month.count >= 1 or user.total_orders_this_month >= 1
+      errors.add :base, "You can only order one item per month during the trial phase. Please choose your favorite and remove the others from the cart." if order_lines_count.to_i > 1
     end
 end

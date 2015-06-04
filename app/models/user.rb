@@ -897,6 +897,10 @@ class User < ActiveRecord::Base
     }
   end
 
+  def total_orders_this_month
+    @total_orders_this_month ||= orders.valid.this_month.sum("CAST(counters_cache -> 'order_lines_count' AS INTEGER)")
+  end
+
   def twitter_handle
     return unless twitter_link.present?
 
