@@ -1,0 +1,26 @@
+.row
+  .col-md-8.col-md-offset-2
+    .box
+      .box-title
+        h2
+          | Your addresses
+      .box-content
+        .mg-20
+          = link_to 'Add an address', new_address_path(order_id: params[:order_id]), class: 'btn btn-primary'
+          - if params[:order_id]
+            = link_to 'Go back to cart', store_cart_index_path, class: 'btn btn-link'
+        - if @addresses.any?
+          .row
+            - @addresses.each do |address|
+              .col-md-6
+                .address
+                  - if params[:order_id]
+                    .mg-10= link_to 'Ship to this address', store_order_path(params[:order_id], order: { address_id: address.id }), class: 'btn btn-sm btn-warning', data: { method: :patch }
+                  = address.decorate.full.html_safe
+                  br
+                  - if address.default
+                    small>
+                      strong Default
+                  - else
+                    = link_to 'Make default', address_path(address, address: { default: true }, order_id: params[:order_id]), class: 'btn btn-xs btn-link', data: { method: :patch }
+                  = link_to 'Remove', address_path(address, order_id: params[:order_id]), class: 'btn btn-xs btn-link', data: { method: :delete, confirm: 'Are you sure?' }

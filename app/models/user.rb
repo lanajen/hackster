@@ -96,7 +96,7 @@ class User < ActiveRecord::Base
   has_many :lists_group_ties, -> { where(type: 'ListMember') }, class_name: 'ListMember', dependent: :destroy
   has_many :lists, through: :lists_group_ties, source: :group, class_name: 'List'
   has_many :notifications, through: :receipts, source: :receivable, source_type: 'Notification'
-  has_many :orders
+  has_many :orders, -> { order :placed_at }
   has_many :permissions, as: :grantee
   has_many :platforms, -> { order('groups.full_name ASC') }, through: :group_ties, source: :group, class_name: 'Platform'
   has_many :projects, -> { where("projects.guest_name IS NULL OR projects.guest_name = ''") }, through: :teams

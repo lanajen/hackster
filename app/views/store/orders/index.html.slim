@@ -1,0 +1,27 @@
+.row
+  .col-md-8.col-md-offset-2
+    .box
+      .box-title
+        h2
+          | Your orders
+      .box-content
+        - if @orders.any?
+          table.table
+            thead
+              th ID
+              th Placed on
+              th Status
+              th Total cost
+              th
+            tbody
+              - @orders.each do |order|
+                tr
+                  td= link_to order.id, [:store, order]
+                  td= l order.placed_at if order.placed_at
+                  td= order.workflow_state
+                  td= pluralize order.total_cost, 'point'
+                  td= link_to 'Show', [:store, order], class: 'btn btn-link btn-sm'
+        - else
+          p
+            ' No orders yet.
+            = link_to 'Go check the store!', store_path

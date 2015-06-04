@@ -1,0 +1,43 @@
+= simple_nested_form_for [:admin, :store, @order], html: { class: 'form-horizontal' }, wrapper: :bootstrap3_horizontal do |f|
+  = f.error_notification
+  = f.input :workflow_state, collection: Order.workflow_spec.states.keys
+  = f.input :tracking_number
+  - @order.order_lines.new
+  - @order.order_lines.each do |order_line|
+    = f.simple_fields_for :order_lines, order_line do |f_line|
+      = f_line.association :store_product, wrapper: false do
+        .form-group
+          .col-sm-4
+            label.control-label Line item
+          .col-sm-8
+            .row
+              .col-xs-9
+                - if order_line.persisted?
+                  = order_line.store_product.source.name
+                - else
+                  = f_line.input_field :store_product_id, collection: StoreProduct.available, label_method: proc{|s| s.source.name }
+              .col-xs-3= f_line.link_to_remove 'Remove', class: 'btn btn-danger btn-sm'
+  = f.link_to_add 'Add a new line', :order_lines, class: 'btn btn-success btn-sm'
+  .form-group
+    .col-sm-4
+      label.control-label Products cost
+    .col-sm-8= pluralize @order.products_cost, 'points'
+  .form-group
+    .col-sm-4
+      label.control-label Shipping cost
+    .col-sm-8= pluralize @order.shipping_cost, 'points'
+  .form-group
+    .col-sm-4
+      label.control-label Total cost
+    .col-sm-8= pluralize @order.total_cost, 'points'
+  .form-group
+    .col-sm-4
+      label.control-label Address
+    .col-sm-8
+      - if @order.address
+        = @order.address.decorate.full.html_safe
+  .col-md-offset-4.col-md-8
+    ==> f.button :submit, :class => 'btn-primary'
+    ==> link_to t('.cancel', :default => t("helpers.links.cancel")), admin_store_orders_path, :class => 'btn btn-default'
+    - if @order.persisted?
+      = link_to t('.destroy', :default => t("helpers.links.destroy")), admin_store_order_path(@order), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'

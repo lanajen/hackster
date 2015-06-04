@@ -1,0 +1,69 @@
+h2.cart-title Your cart
+- if @order_lines.any?
+  .row
+    .col-md-8
+      .box
+        .box-content
+          table.table.table-hover
+            thead
+              th Product
+              th Cost
+              th
+            tbody
+              - @order_lines.each do |line|
+                tr
+                  td= link_to line.store_product.source.name, line.store_product.source
+                  td
+                    - if line.store_product.unit_cost.zero?
+                      | Free
+                    - else
+                      = pluralize line.store_product.unit_cost, 'point'
+                  td.text-right= link_to 'Remove', store_cart_path(line), class: 'btn btn-xs btn-link', data: { method: :delete }
+            tfooter
+              tr
+                td.order-label Shipping cost
+                td.order-cost
+                  - if current_order.shipping_cost
+                    = pluralize current_order.shipping_cost, 'point'
+                  - else
+                    = link_to 'Select an address', addresses_path(order_id: current_order.id, redirect_if_empty: true)
+                td
+
+              tr
+                td
+                  strong Total cost
+                td
+                  strong class=(current_order.enough_points? ? 'text-success' : 'text-danger')
+                    = pluralize current_order.total_cost, 'point'
+                    - unless current_order.shipping_cost
+                      small< + shipping
+                td.text-right
+                  - if current_order.enough_points?
+                    .label.label-success.label-order You have enough points!
+                  - else
+                    .label.label-danger.label-order Oh shoot, you're missing #{pluralize -current_order.points_delta, 'point'} for this order.
+
+    .col-md-4
+      .address
+        - if current_order.address
+          p.clearfix
+            strong.pull-left Shipping to:
+            small.pull-right= link_to 'Update', addresses_path(order_id: current_order.id)
+          = current_order.address.decorate.full.html_safe
+        - else
+          ' Please
+          => link_to 'select an address', addresses_path(order_id: current_order.id, redirect_if_empty: true)
+          | before placing your order.
+
+      - if current_order.good_to_go?
+        .store-actions.text-center
+          p After you place this order you will have #{pluralize current_order.after_points, 'point'} left to redeem.
+          p
+            => link_to 'Confirm order', confirm_store_orders_path(id: current_order.id), class: 'btn btn-primary', data: { method: :patch }
+            ' or
+            = link_to 'keep browsing', store_path
+
+- else
+  p
+    ' Your cart is empty.
+    = link_to 'Get free hardware', store_path

@@ -441,7 +441,8 @@ ActiveRecord::Schema.define(version: 20150604055243) do
     t.hstore   "counters_cache"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
-    t.datetime "ordered_at"
+    t.datetime "placed_at"
+    t.datetime "shipped_at"
   end
 
   add_index "orders", ["user_id"], name: "index_orders_on_user_id", using: :btree

@@ -1,0 +1,61 @@
+.alert.alert-success.clearfix
+  .pull-left= @order.long_status
+  .pull-right
+    strong Order ##{@order.id}
+
+.row
+  .col-md-8
+    .box
+      .box-content
+        table.table.table-hover
+          thead
+            th Product
+            th Cost
+          tbody
+            - @order.order_lines.each do |line|
+              tr
+                td= link_to line.store_product.source.name, line.store_product.source
+                td
+                  - if line.store_product.unit_cost.zero?
+                    | Free
+                  - else
+                    = pluralize line.store_product.unit_cost, 'point'
+          tfooter
+            tr
+              td.order-label Shipping cost
+              td.order-cost
+                = pluralize @order.shipping_cost, 'point'
+
+            tr
+              td
+                strong Total cost
+              td
+                strong
+                  = pluralize @order.total_cost, 'point'
+  .col-md-4
+    .address
+      p
+        strong Shipping to:
+      = @order.address.decorate.full.html_safe
+
+.row
+  .col-md-6
+    .box
+      .box-content.text-center
+        p
+          strong Happy? Share the joy:
+        ul.list-inline.small
+          li
+            a.zocial.facebook.social-share-link data-url=facebook_share(store_url, 'Free hardware on Hackster.io', @message_facebook)
+              | Facebook
+          li
+            a.zocial.twitter.social-share-link data-url=twitter_share(store_url, @message_twitter)
+              | Twitter
+  .col-md-6
+    .box
+      .box-content.text-center
+        p
+          strong> Do you want more free hardware?
+        p
+          => link_to 'Invite your friends', new_user_invitation_path
+          | and receive 50 points for each sign up. They'll also receive 50 points as a welcome bonus!

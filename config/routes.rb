@@ -94,9 +94,8 @@ HackerIo::Application.routes.draw do
 
     namespace :store do
       get '' => 'products#index', as: ''
-      resources :orders, only: [:update] do
+      resources :orders, only: [:index, :show, :update] do
         patch 'confirm' => 'orders#confirm', on: :collection
-        get 'confirmation_page' => 'orders#confirmation_page', on: :member
       end
       resources :order_lines, as: :cart, path: :cart, only: [:index, :create, :destroy]
     end
