@@ -484,7 +484,6 @@ GEM
       tilt (~> 1.1)
     sendgrid (1.2.0)
       json
-      json
     sidekiq (3.2.5)
       celluloid (= 0.15.2)
       connection_pool (>= 2.0.0)
