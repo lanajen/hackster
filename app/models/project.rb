@@ -17,6 +17,7 @@ class Project < ActiveRecord::Base
     'on_hackster' => :self_hosted,
     'wip' => :wip,
   }
+  PUBLIC_STATES = %w(pending_review approved rejected)
   SORTING = {
     'magic' => :magic_sort,
     'popular' => :most_popular,
@@ -66,8 +67,7 @@ class Project < ActiveRecord::Base
   has_many :grades
   has_many :groups, -> { where(groups: { private: false }, project_collections: { workflow_state: ProjectCollection::VALID_STATES }) }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :hacker_spaces, -> { where("groups.type = 'HackerSpace'") }, through: :project_collections, source_type: 'Group', source: :collectable
-  has_many :parts, through: :parts_widgets
-  has_many :parts_widgets, as: :widgetable
+  has_many :parts, through: :part_joins
   has_many :part_joins, as: :partable do
     def hardware
       joins(:part).where(parts: { type: 'HardwarePart' })
@@ -195,7 +195,7 @@ class Project < ActiveRecord::Base
       event :mark_needs_review, transitions_to: :pending_review
     end
     after_transition do |from, to, triggering_event, *event_args|
-      notify_observers 'after_status_updated' if to.to_sym == :approved
+      notify_observers(:"after_#{to}")
     end
   end
 
@@ -321,12 +321,24 @@ class Project < ActiveRecord::Base
     where("projects.guest_name = '' OR projects.guest_name IS NULL")
   end
 
+  def self.pending_review
+    where workflow_state: :pending_review
+  end
+
   def self.products
     where(type: 'Product')
   end
 
+  def self.scheduled_to_be_approved
+    approved.where("projects.made_public_at > ?", Time.now).order(:made_public_at)
+  end
+
   def self.self_hosted
     where(type: 'Project')
+  end
+
+  def self.unpublished
+    where workflow_state: :unpublished
   end
 
   def self.visible
@@ -339,6 +351,21 @@ class Project < ActiveRecord::Base
 
   def self.with_group group
     joins(:project_collections).where(project_collections: { collectable_id: group.id, collectable_type: 'Group', workflow_state: ProjectCollection::VALID_STATES })
+  end
+
+  def approve_later!
+    next_time_slot = get_next_time_slot Project.scheduled_to_be_approved.last.try(:made_public_at)
+    update_column :made_public_at, next_time_slot
+    approve!
+  end
+
+  def get_next_time_slot last_scheduled_slot
+    last_scheduled_slot ||= Time.now
+    last_scheduled_slot + rand(4*60..12*60).minutes
+  end
+
+  def scheduled_to_be_approved?
+    approved? and made_public_at > Time.now
   end
 
   def age

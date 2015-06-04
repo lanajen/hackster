@@ -8,7 +8,7 @@ class PartJoin < ActiveRecord::Base
   accepts_nested_attributes_for :part
   # after_validation :compute_total_cost
   validates :quantity, numericality: { greater_than: 0 }
-  validates :part_id, uniqueness: { scope: [:partable_type, :partable_id] }
+  # validates :part_id, uniqueness: { scope: [:partable_type, :partable_id] }
   validates :part_id, :partable_id, :partable_type, presence: true
 
   register_sanitizer :strip_whitespace, :before_validation, :comment

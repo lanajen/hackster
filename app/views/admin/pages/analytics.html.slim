@@ -111,8 +111,12 @@
   .col-xs-12.col-sm-4
     .panel.panel-default.panel-dashboard  class="#{'panel-danger' unless @waiting_for_approval_project_count.zero? }"
       .panel-heading
-        h3.panel-title= link_to 'Projects waiting for approval', admin_projects_path(approval_needed: true, filters: { private: 'f' } )
-      .panel-body= number_with_delimiter @waiting_for_approval_project_count
+        h3.panel-title
+          => link_to 'Projects waiting for approval', admin_projects_path(approval_needed: true, filters: { private: 'f' } )
+          = link_to '(buggy)', admin_projects_path(filters: { workflow_state: :unpublished, private: 0 })
+      .panel-body
+        => number_with_delimiter @waiting_for_approval_project_count
+        small.text-muted (#{Project.unpublished.public.count})
 
     .panel.panel-default.panel-dashboard
       .panel-heading

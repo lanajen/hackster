@@ -6,6 +6,7 @@ class Admin::ProjectsController < Admin::BaseController
     @fields = {
       'created_at' => 'projects.created_at',
       'status' => 'projects.workflow_state',
+      'private' => 'projects.private',
       'name' => 'projects.name',
       'type' => 'projects.type',
     }

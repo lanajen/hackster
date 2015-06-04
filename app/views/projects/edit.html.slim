@@ -11,7 +11,13 @@
         span.label.label-default= @project.workflow_state
       .col-sm-6.text-center
         - if @project.can_approve?
-          = link_to content_tag(:i, '', class: 'fa fa-check') + content_tag(:span, 'Approve'), update_workflow_project_path(@project, event: :approve), class: 'btn btn-success btn-sm', data: { method: :patch }
+          .btn-group
+            = link_to content_tag(:i, '', class: 'fa fa-check') + content_tag(:span, 'Approve now'), update_workflow_project_path(@project, event: :approve), class: 'btn btn-success btn-sm', data: { method: :patch }
+            button.btn.btn-success.btn-sm.dropdown-toggle data-toggle="dropdown"
+              span.caret
+            ul.dropdown-menu
+              li= link_to content_tag(:i, '', class: 'fa fa-check') + content_tag(:span, 'Add to queue'), update_workflow_project_path(@project, event: :approve_later), data: { method: :patch }
+
         - if @project.can_reject?
           = link_to content_tag(:i, '', class: 'fa fa-times') + content_tag(:span, 'Reject'), update_workflow_project_path(@project, event: :reject), class: 'btn btn-danger btn-sm', data: { method: :patch }
         - if @project.can_mark_needs_work?
