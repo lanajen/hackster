@@ -420,3 +420,15 @@
     text-align: left;
   }
 }
+
+.project-actions {
+  margin-bottom: 5px;
+  .action-item {
+    &:first-child {
+      padding-right: 2px;
+    }
+    &:last-child {
+      padding-left: 2px;
+    }
+  }
+}

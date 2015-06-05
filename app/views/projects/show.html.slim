@@ -94,6 +94,10 @@
                       li
                         span.stat-figure> = number_with_delimiter @project.respects_count
                         = pluralize_without_count @project.respects_count, 'respect'
+                      - if @project.replications_count.to_i > 0
+                        li
+                          span.stat-figure> = number_with_delimiter @project.replications_count
+                          = pluralize_without_count @project.replications_count, 'replication'
 
               - if @locked
                 section#about-project.section-container
@@ -342,7 +346,9 @@
                 section.section-thumbs
                   h4 Do something awesome
                   - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
-                    = render partial: 'respects/button', locals: { project: @project }
+                    .project-actions.row
+                      .action-item.col-xs-7= render partial: 'respects/button', locals: { project: @project }
+                      .action-item.col-xs-5= render partial: 'followers/project_button', locals: { followable: @project }
                   = render 'projects/project_embed_button'
                   - if @project.celery_id.present?
                     = link_to content_tag(:i, '', class: 'fa fa-shopping-cart') + content_tag(:span, "Buy it"), '#', 'data-celery' => @project.celery_id, 'data-celery-version' => 'v2', class: 'btn btn-warning btn-ellipsis btn-block'
@@ -559,7 +565,9 @@
                     - if @project.public?
                       .show-on-affix style='margin-top:20px;'
                         - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
-                          = render partial: 'respects/button', locals: { project: @project }
+                          .project-actions.row
+                            .action-item.col-xs-7= render partial: 'respects/button', locals: { project: @project }
+                            .action-item.col-xs-5= render partial: 'followers/project_button', locals: { followable: @project }
                         = render 'projects/project_embed_button'
                         .add-to-list
                         - if @project.celery_id.present?

@@ -63,10 +63,11 @@ class Project < ActiveRecord::Base
   has_many :communities, -> { where("groups.type = 'Community'") }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :events, -> { where("groups.type = 'Event'") }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :follow_relations, as: :followable
-  has_many :followers, through: :follow_relations, source: :user
   has_many :grades
   has_many :groups, -> { where(groups: { private: false }, project_collections: { workflow_state: ProjectCollection::VALID_STATES }) }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :hacker_spaces, -> { where("groups.type = 'HackerSpace'") }, through: :project_collections, source_type: 'Group', source: :collectable
+  has_many :hardware_parts, -> { where(parts: { type: 'HardwarePart' } ) }, through: :part_joins, source: :part
+  has_many :hardware_part_joins, -> { joins(:part).where(parts: { type: 'HardwarePart'}) }, as: :partable, class_name: 'PartJoin', autosave: true
   has_many :parts, through: :part_joins
   has_many :part_joins, as: :partable, dependent: :destroy do
     def hardware
@@ -79,19 +80,18 @@ class Project < ActiveRecord::Base
       joins(:part).where(parts: { type: 'ToolPart' })
     end
   end
-  has_many :hardware_part_joins, -> { joins(:part).where(parts: { type: 'HardwarePart'}) }, as: :partable, class_name: 'PartJoin', autosave: true
+  has_many :project_collections, dependent: :destroy
+  has_many :software_parts, -> { where(parts: { type: 'SoftwarePart' } ) }, through: :part_joins, source: :part
   has_many :software_part_joins, -> { joins(:part).where(parts: { type: 'SoftwarePart'}) }, as: :partable, class_name: 'PartJoin', autosave: true
   has_many :tool_part_joins, -> { joins(:part).where(parts: { type: 'ToolPart'}) }, as: :partable, class_name: 'PartJoin', autosave: true
-  has_many :hardware_parts, -> { where(parts: { type: 'HardwarePart' } ) }, through: :part_joins, source: :part
-  has_many :software_parts, -> { where(parts: { type: 'SoftwarePart' } ) }, through: :part_joins, source: :part
   has_many :tool_parts, -> { where(parts: { type: 'ToolPart' } ) }, through: :part_joins, source: :part
-  has_many :project_collections, dependent: :destroy
   has_many :visible_collections, -> { visible }, class_name: 'ProjectCollection'
   has_many :visible_platforms, -> { where("groups.type = 'Platform'") }, through: :visible_collections, source_type: 'Group', source: :collectable
   has_many :issues, as: :threadable, dependent: :destroy
   has_many :images, as: :attachable, dependent: :destroy
   has_many :lists, -> { where("groups.type = 'List'") }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :permissions, as: :permissible
+  has_many :replicated_users, through: :follow_relations, source: :user
   has_many :respects, dependent: :destroy, as: :respectable
   has_many :respecting_users, -> { order 'respects.created_at ASC' }, through: :respects, source: :user
   has_many :slug_histories, -> { order updated_at: :desc }, as: :sluggable, dependent: :destroy
@@ -155,7 +155,7 @@ class Project < ActiveRecord::Base
     :widgets_count, :followers_count, :build_logs_count,
     :issues_count, :team_members_count, :platform_tags_count, :communities_count,
     :platforms_count, :hardware_parts_count, :software_parts_count,
-    :tool_parts_count]
+    :tool_parts_count, :replications_count]
 
   store :properties, accessors: [:private_logs, :private_issues, :locked,
     :guest_twitter_handle, :celery_id]
@@ -164,7 +164,7 @@ class Project < ActiveRecord::Base
     :widgets_count, :followers_count, :build_logs_count,
     :issues_count, :team_members_count, :platform_tags_count,
     :communities_count, :platforms_count, :hardware_parts_count,
-    :software_parts_count, :tool_parts_count
+    :software_parts_count, :tool_parts_count, :replications_count
 
   parse_as_booleans :properties, :private_logs, :private_issues, :locked
 
@@ -460,14 +460,15 @@ class Project < ActiveRecord::Base
       comments: 'comments.count',
       communities: 'groups.count',
       followers: 'followers.count',
+      hardware_parts: 'hardware_parts.count',
       issues: 'issues.where(type: "Issue").count',
       platforms: 'platforms.count',
       product_tags: 'product_tags_cached.count',
+      replications: 'replicated_users.count',
       respects: 'respects.count',
       team_members: 'users.count',
       platform_tags: 'platform_tags_cached.count',
       widgets: 'widgets.count',
-      hardware_parts: 'hardware_parts.count',
       software_parts: 'software_parts.count',
       tool_parts: 'tool_parts.count',
     }

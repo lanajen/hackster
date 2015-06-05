@@ -76,7 +76,6 @@ class User < ActiveRecord::Base
   has_many :followed_groups, -> { order('groups.full_name ASC') }, source_type: 'Group', through: :follow_relations, source: :followable
   has_many :followed_lists, -> { order('groups.full_name ASC').where("groups.type = 'List'") }, source_type: 'Group', through: :follow_relations, source: :followable
   has_many :followed_platforms, -> { order('groups.full_name ASC').where("groups.type = 'Platform'") }, source_type: 'Group', through: :follow_relations, source: :followable
-  has_many :followed_projects, source_type: 'Project', through: :follow_relations, source: :followable
   has_many :followed_users, source_type: 'User', through: :follow_relations, source: :followable
   has_many :grades, as: :gradable
   has_many :invert_follow_relations, class_name: 'FollowRelation', as: :followable
@@ -107,6 +106,7 @@ class User < ActiveRecord::Base
       joins("INNER JOIN notifications ON notifications.id = receipts.receivable_id AND receipts.receivable_type = 'Notification'")
     end
   end
+  has_many :replicated_projects, source_type: 'Project', through: :follow_relations, source: :followable
   has_many :respects, dependent: :destroy
   has_many :respected_projects, through: :respects, source: :respectable, source_type: 'Project'
   has_many :team_grades, through: :teams, source: :grades
@@ -172,7 +172,8 @@ class User < ActiveRecord::Base
     :hacker_spaces_count, :badges_green_count,
     :badges_bronze_count, :badges_silver_count, :badges_gold_count,
     :accepted_invitations_count, :feed_likes_count, :thoughts_count,
-    :reputation_count, :project_platforms_count, :suggested_platforms_count]
+    :reputation_count, :project_platforms_count, :suggested_platforms_count,
+    :replicated_projects_count]
 
   parse_as_integers :counters_cache, :comments_count, :interest_tags_count,
     :invitations_count, :projects_count, :respects_count, :skill_tags_count,
@@ -182,7 +183,8 @@ class User < ActiveRecord::Base
     :badges_green_count, :badges_bronze_count,
     :badges_silver_count, :badges_gold_count, :accepted_invitations_count,
     :feed_likes_count, :thoughts_count, :reputation_count,
-    :project_platforms_count, :suggested_platforms_count
+    :project_platforms_count, :suggested_platforms_count,
+    :replicated_projects_count
 
   # store_accessor :subscriptions_masks, :email_subscriptions_mask,
   #   :web_subscriptions_mask
@@ -424,6 +426,7 @@ class User < ActiveRecord::Base
       projects: 'projects.count',
       project_respects: 'projects.includes(:respects).count(:respects)',
       project_views: 'projects.sum(:impressions_count)',
+      replicated_projects: 'replicated_projects.count',
       reputation: 'reputation_events.sum(:points)',
       respects: 'respects.count',
       skill_tags: 'skill_tags.count',
@@ -650,7 +653,7 @@ class User < ActiveRecord::Base
     when Group
       followable.in? followed_groups
     when Project
-      followable.in? followed_projects
+      followable.in? replicated_projects
     when User
       followable.in? followed_users
     end

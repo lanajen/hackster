@@ -7,7 +7,7 @@ class FollowersController < ApplicationController
   def create
     FollowRelation.add current_user, @followable
 
-    if @followable.class != User
+    if @followable.class.in? [Platform, List]
       session[:share_modal] = 'followed_share_prompt'
       session[:share_modal_model] = 'followable'
     end

@@ -89,7 +89,7 @@ module ApplicationHelper
       end
     when 'follow'
       if project
-        msg = "Please log in or sign up to follow #{content_tag(:b, project.name)}."
+        msg = "Please log in or sign up to indicate that you've assembled #{content_tag(:b, project.name)}."
       elsif user
         msg = "Please log in or sign up to follow #{content_tag(:b, user.name)}."
       elsif group
