@@ -1,4 +1,7 @@
 function openModal(id) {
+  $('.modal-popup:not(' + id  + ')').each(function(i, el){
+    closeModal('#' + $(el).attr('id'));
+  });
   $(id).trigger('modal:opening');
   resizeModal(id);
   return false;
