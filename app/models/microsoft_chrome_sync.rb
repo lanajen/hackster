@@ -40,7 +40,7 @@ class MicrosoftChromeSync
     end
 
     def format_locale locale
-      loc = locale[0..1]
+      loc = locale.try(:[], 0..1)
       loc.present? and loc != DEFAULT_LOCALE ? "#{loc}:" : nil
     end
 
