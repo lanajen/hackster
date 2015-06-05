@@ -19,7 +19,7 @@ class Part < ActiveRecord::Base
 
   has_many :child_part_relations, foreign_key: :parent_part_id, class_name: 'PartRelation'
   has_many :parent_part_relations, foreign_key: :child_part_id, class_name: 'PartRelation'
-  has_many :part_joins, dependent: :destroy
+  has_many :part_joins, inverse_of: :part, dependent: :destroy
   has_many :projects, through: :part_joins, source_type: 'Project', source: :partable
   has_one :image, as: :attachable, dependent: :destroy
 
@@ -47,7 +47,7 @@ class Part < ActiveRecord::Base
   store_accessor :counters_cache, :projects_count, :all_projects_count
   parse_as_integers :counters_cache, :projects_count, :all_projects_count
 
-  validates :name, presence: true
+  validates :name, :type, presence: true
   validates :unit_price, numericality: { greater_than_or_equal_to: 0 }, allow_blank: true
   validates :slug, uniqueness: { scope: :platform_id }, length: { in: 3..100 },
     format: { with: /\A[a-zA-Z0-9_\-]+\z/, message: "accepts only letters, numbers, and dashes '-'." }

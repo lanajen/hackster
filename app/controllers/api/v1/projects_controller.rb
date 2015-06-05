@@ -42,6 +42,7 @@ class Api::V1::ProjectsController < Api::V1::BaseController
     @panel = params[:panel]
 
     if (params[:save].present? and params[:save] == '0') or @project.update_attributes params[:project]
+      # @project = Project.find params[:id]
       if @panel.in? %w(hardware publish team software)
         render 'projects/forms/update'
       else

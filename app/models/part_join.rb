@@ -1,5 +1,5 @@
 class PartJoin < ActiveRecord::Base
-  belongs_to :part
+  belongs_to :part, inverse_of: :part_joins
   belongs_to :partable, polymorphic: true
 
   attr_accessible :part_id, :partable_id, :partable_type, :quantity, :comment,
