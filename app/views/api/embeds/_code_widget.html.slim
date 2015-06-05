@@ -13,8 +13,8 @@
   - if widget.comment.present?
     .comment= plain_to_html(widget.comment)
 
-  - if widget.formatted_code.present?
-    - unless widget.binary?
+  - unless widget.binary?
+    - if widget.formatted_code.present?
       .code-container= raw widget.formatted_code
-  - else
-    p No code.
+    - else
+      p No code.
