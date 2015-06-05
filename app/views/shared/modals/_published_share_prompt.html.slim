@@ -10,17 +10,17 @@
       p In the meantime, share it on:
       ul.list-inline.small
         li
-          a.zocial.facebook.social-share-link data-url=facebook_share(project_url(@project), @project.name, @project.to_personnal_message, @project.cover_image.try(:imgix_url, :cover_thumb))
+          a.zocial.facebook.social-share-link data-url=facebook_share(project_url(project), project.name, project.to_personnal_message, project.cover_image.try(:imgix_url, :cover_thumb))
             | Facebook
         li
-          a.zocial.twitter.social-share-link data-url=twitter_share(project_url(@project), @project.to_personnal_tweet)
+          a.zocial.twitter.social-share-link data-url=twitter_share(project_url(project), project.to_personnal_tweet)
             | Twitter
         li
-          a.zocial.reddit.social-share-link data-url=reddit_share(project_url(@project), @project.to_personnal_message)
+          a.zocial.reddit.social-share-link data-url=reddit_share(project_url(project), project.to_personnal_message)
             | Reddit
         / li
-          a.zocial.googleplus.social-share-link data-url=googleplus_share(project_url(@project))
+          a.zocial.googleplus.social-share-link data-url=googleplus_share(project_url(project))
             | Google+
         / li
-          a.zocial.linkedin.social-share-link data-url=linkedin_share(project_url(@project), @project.name, @project.to_personnal_message)
+          a.zocial.linkedin.social-share-link data-url=linkedin_share(project_url(project), project.name, project.to_personnal_message)
             | LinkedIn

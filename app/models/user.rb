@@ -172,7 +172,7 @@ class User < ActiveRecord::Base
     :hacker_spaces_count, :badges_green_count,
     :badges_bronze_count, :badges_silver_count, :badges_gold_count,
     :accepted_invitations_count, :feed_likes_count, :thoughts_count,
-    :reputation_count]
+    :reputation_count, :project_platforms_count, :suggested_platforms_count]
 
   parse_as_integers :counters_cache, :comments_count, :interest_tags_count,
     :invitations_count, :projects_count, :respects_count, :skill_tags_count,
@@ -181,7 +181,8 @@ class User < ActiveRecord::Base
     :live_hidden_projects_count, :followed_users_count, :hacker_spaces_count,
     :badges_green_count, :badges_bronze_count,
     :badges_silver_count, :badges_gold_count, :accepted_invitations_count,
-    :feed_likes_count, :thoughts_count, :reputation_count
+    :feed_likes_count, :thoughts_count, :reputation_count,
+    :project_platforms_count, :suggested_platforms_count
 
   # store_accessor :subscriptions_masks, :email_subscriptions_mask,
   #   :web_subscriptions_mask
@@ -418,6 +419,7 @@ class User < ActiveRecord::Base
       live_projects: 'projects.where(private: false).count',
       live_hidden_projects: 'projects.where(private: false, hide: true).count',
       platforms: 'followed_platforms.count',
+      project_platforms: 'project_platforms.count',
       popularity_points: 'projects.live.map{|p| p.team_members_count > 0 ? p.popularity_counter / p.team_members_count : 0 }.sum',
       projects: 'projects.count',
       project_respects: 'projects.includes(:respects).count(:respects)',
@@ -425,6 +427,7 @@ class User < ActiveRecord::Base
       reputation: 'reputation_events.sum(:points)',
       respects: 'respects.count',
       skill_tags: 'skill_tags.count',
+      suggested_platforms: 'suggested_platforms.count',
       thoughts: 'thoughts.count',
       websites: 'websites.values.select{|v| v.present? }.size',
     }
@@ -716,7 +719,7 @@ class User < ActiveRecord::Base
   end
 
   def live_visible_projects_count
-    live_projects_count - (live_hidden_projects_count || 0)
+    live_projects_count.to_i - live_hidden_projects_count.to_i
   end
 
   def mark_has_unread_notifications!
@@ -738,6 +741,10 @@ class User < ActiveRecord::Base
 
   def profile_complete?
     country.present? and city.present? and mini_resume.present? and (full_name.present? or !default_user_name?) and avatar.present? and interest_tags_count > 0 and skill_tags_count > 0 and websites.values.reject{|v|v.nil?}.count > 0
+  end
+
+  def project_platforms
+    Platform.distinct.joins(:project_collections).joins(project_collections: :project).joins(project_collections: { project: :team }).joins(project_collections: { project: { team: :members }}).where(members: { user_id: id }, projects: { private: false })
   end
 
   def respected? project
@@ -860,6 +867,10 @@ class User < ActiveRecord::Base
 
   def student_assignments
     Assignment.where(promotion_id: promotion_group_ties.with_group_roles('student').pluck(:group_id))
+  end
+
+  def suggested_platforms
+    project_platforms - followed_platforms
   end
 
   def to_param

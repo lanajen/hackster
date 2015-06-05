@@ -17,6 +17,13 @@
       .container
         = link_to content_tag(:i, '', class: 'fa fa-comments') + content_tag(:span, 'Ask a question or share something interesting with the community &rarr;'.html_safe), talk_path
 
+    / # - if @suggested_platforms.any?
+      section#suggested-platforms.showcase-section
+        .container
+          h4 Based on your activity, we think you might be interested in:
+          - @suggested_platforms.each do |platform|
+            = render partial: ''
+
     - if @projects.count.zero?
       section#intro.showcase-section
         .container

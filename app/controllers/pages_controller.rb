@@ -101,6 +101,7 @@ class PagesController < ApplicationController
           @hackers = User.invitation_accepted_or_not_invited.user_name_set.where("users.id NOT IN (?)", current_user.followed_users.pluck(:id)).joins(:reputation).where("reputations.points > 5").order('RANDOM()').limit(6)
           @lists = List.where(user_name: featured_lists - current_user.followed_lists.pluck(:user_name))
           @platforms = Platform.public.where("groups.id NOT IN (?)", current_user.followed_platforms.pluck(:id)).minimum_followers.order('RANDOM()').limit(6)
+          # @targeted_suggested_platforms = current_user.suggested_platforms
         end
 
       else
