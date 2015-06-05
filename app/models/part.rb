@@ -49,7 +49,8 @@ class Part < ActiveRecord::Base
 
   validates :name, presence: true
   validates :unit_price, numericality: { greater_than_or_equal_to: 0 }, allow_blank: true
-  validates :slug, uniqueness: { scope: :platform_id }, presence: true
+  validates :slug, uniqueness: { scope: :platform_id }, length: { in: 3..100 },
+    format: { with: /\A[a-zA-Z0-9_\-]+\z/, message: "accepts only letters, numbers, and dashes '-'." }
   validates :one_liner, length: { maximum: 140 }, allow_blank: true
   before_validation :ensure_website_protocol
   before_validation :ensure_partable, unless: proc{|p| p.persisted? }

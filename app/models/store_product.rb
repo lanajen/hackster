@@ -15,6 +15,10 @@ class StoreProduct < ActiveRecord::Base
     where available: true
   end
 
+  def self.by_cost
+    order :unit_cost
+  end
+
   def counters
     {
       orders: "orders.valid.count",

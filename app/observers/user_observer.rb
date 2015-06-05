@@ -3,7 +3,7 @@ class UserObserver < ActiveRecord::Observer
     unless record.invited_to_sign_up? or record.reputation  # this callback seems to be called twice somehow, which means two sets of emails are sent. Checking on reputation to see if the callback has already been called.
       record.create_reputation
       advertise_new_user record unless record.simplified_signup?
-      record.send_confirmation_instructions unless record.invitation_accepted?
+      record.send_confirmation_instructions unless record.invitation_accepted? or record.skip_registration_confirmation
     end
   end
 

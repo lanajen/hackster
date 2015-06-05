@@ -11,12 +11,12 @@
             ul.store-nav
               li= link_to 'Hardware', store_path
               li= link_to 'Help', 'http://hackster.uservoice.com/knowledgebase/topics/92217-hackster-free-store'
-              li= link_to 'Orders', store_orders_path
               - if user_signed_in?
+                li= link_to 'Orders', store_orders_path
                 li.wallet
-                  a href=users_stats_path rel='tooltip' title="#{pluralize current_user.reputation.redeemable_points, 'point'} available to redeem"
+                  a href=users_stats_path rel='tooltip' title="#{pluralize number_with_delimiter(current_user.reputation.redeemable_points), 'point'} available to redeem"
                     i.fa.fa-money
-                    span= current_user.reputation.redeemable_points
+                    span= number_with_delimiter current_user.reputation.redeemable_points
                 li.cart
                   a href=store_cart_index_path title="#{pluralize current_order.order_lines_count, 'item'} in your cart" rel='tooltip'
                     i.fa.fa-shopping-cart
