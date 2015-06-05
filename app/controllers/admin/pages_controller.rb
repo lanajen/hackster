@@ -28,6 +28,10 @@ class Admin::PagesController < Admin::BaseController
     @active_users7d = User.where("users.last_seen_at > ?", 7.days.ago).count - new_users7d
     @active_users30d = User.where("users.last_seen_at > ?", 30.days.ago).count - new_users30d
     @project_impressions = Impression.where(impressionable_type: 'Project').count
+    @replicated_projects_count = FollowRelation.where(followable_type: 'Project').count
+    @owned_parts_count = FollowRelation.where(followable_type: 'Part').count
+    @new_owned_parts_count = FollowRelation.where(followable_type: 'Part').where('follow_relations.created_at > ?', Date.today).count
+    @new_replicated_projects_count = FollowRelation.where(followable_type: 'Project').where('follow_relations.created_at > ?', Date.today).count
 
     sql = "SELECT users.*, t1.count FROM (SELECT members.user_id as user_id, COUNT(*) as count FROM members INNER JOIN groups AS team ON team.id = members.group_id INNER JOIN projects ON projects.team_id = team.id WHERE projects.private = 'f' AND projects.hide = 'f' AND projects.workflow_state = 'approved' AND (projects.guest_name = '' OR projects.guest_name IS NULL) GROUP BY user_id) AS t1 INNER JOIN users ON users.id = t1.user_id WHERE t1.count > 1 AND (NOT (users.roles_mask & ? > 0) OR users.roles_mask IS NULL) ORDER BY t1.count DESC LIMIT 10;"
     @heroes = User.find_by_sql([sql, 2**User::ROLES.index('admin')])
