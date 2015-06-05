@@ -21,7 +21,7 @@ POPULAR_TAGS = {
 SLOGAN = 'Hackster is the place where hardware gets created. Learn, share and connect to build better hardware.'
 SLOGAN_NO_BRAND = 'The place where hardware gets created.'
 # where hardware comes to life
-URL_REGEXP = /^(((http|https):\/\/|)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}(:[0-9]{1,5})?(\/.*)?)$/ix
+URL_REGEXP = /^((https?:\/\/|)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,}(:[0-9]{1,5})?(\/.*)?)$/ix
 EMAIL_REGEXP = /^[a-zA-Z0-9_\.\+\-]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9\-\.]+$/
 
 if Rails.env == 'development'
