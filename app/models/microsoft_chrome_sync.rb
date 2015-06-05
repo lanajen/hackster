@@ -1,5 +1,6 @@
 class MicrosoftChromeSync
   include Singleton
+  DEFAULT_LOCALE = 'en'
 
   @@attributes = :chrome_footer, :chrome_header, :nav, :nav_css
 
@@ -8,28 +9,28 @@ class MicrosoftChromeSync
   end
 
   attributes.each do |attribute|
-    define_method attribute do
-      getter attribute
+    define_method attribute do |locale|
+      getter attribute, locale
     end
 
-    define_method "#{attribute}=" do |val|
-      setter attribute, val
+    define_method "#{attribute}=" do |val, locale|
+      setter attribute, val, locale
     end
   end
 
-  def attributes
+  def attributes locale=DEFAULT_LOCALE
     out = {}
     self.class.attributes.each do |attr|
-      out[attr] = send(attr)
+      out[attr] = send(attr, format_locale(locale))
     end
     out
   end
 
-  def update_attributes attributes={}
+  def update_attributes attributes={}, locale=DEFAULT_LOCALE
     attributes ||= {}
     attributes = attributes.select{|k,v| k.to_sym.in? self.class.attributes }
     attributes.each do |attr_name, val|
-      send "#{attr_name}=", val
+      send "#{attr_name}=", format_locale(locale), val
     end
   end
 
@@ -38,8 +39,13 @@ class MicrosoftChromeSync
       @config ||= YAML.load_file("#{Rails.root}/config/microsoft.yml")[Rails.env]
     end
 
-    def getter attribute
-      replace_urls redis.get(attribute)
+    def format_locale locale
+      loc = locale[0..1]
+      loc.present? and loc != DEFAULT_LOCALE ? "#{loc}:" : nil
+    end
+
+    def getter attribute, locale
+      replace_urls redis.get("#{locale}#{attribute}")
     end
 
     def redis
@@ -57,9 +63,9 @@ class MicrosoftChromeSync
       text
     end
 
-    def setter attribute, val
-      if getter(attribute) != val
-        redis.set attribute, val
+    def setter attribute, locale, val
+      if getter(attribute, locale) != val
+        redis.set "#{locale}#{attribute}", val
         Cashier.expire "ms_chrome-#{attribute}"
         FastlyRails.purge_by_key 'microsoft'
       end
