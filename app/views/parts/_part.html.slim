@@ -7,7 +7,7 @@
       = image_tag part.image(:headline)
 
     .col-md-2.col-md-push-8.action-buttons
-      = link_to 'I own it!', 'javascript:alert("Coming soon!");', class: 'btn btn-primary btn-block btn-sm'
+      = render partial: 'followers/part_button', locals: { followable: part }
       = link_to pluralize(part.projects_count, 'project'), part, class: 'btn btn-link btn-block btn-sm'
 
     .col-md-8.col-md-pull-2.description

@@ -13,20 +13,18 @@ class Part < ActiveRecord::Base
   include Workflow
 
   belongs_to :platform
-
   has_and_belongs_to_many :parent_parts, join_table: :part_relations, foreign_key: :child_part_id, association_foreign_key: :parent_part_id, class_name: 'Part'
   has_and_belongs_to_many :child_parts, join_table: :part_relations, foreign_key: :parent_part_id, association_foreign_key: :child_part_id, class_name: 'Part'
-
+  has_many :child_platforms, through: :child_parts, source: :platform
   has_many :child_part_relations, foreign_key: :parent_part_id, class_name: 'PartRelation'
+  has_many :follow_relations, as: :followable
+  has_many :owners, through: :follow_relations, class_name: 'User'
+  has_many :parent_part_joins, dependent: :destroy, class_name: 'PartJoin', through: :parent_parts, source: :part_joins
   has_many :parent_part_relations, foreign_key: :child_part_id, class_name: 'PartRelation'
+  has_many :parent_projects, through: :sub_part_joins, source_type: 'Project', source: :partable
   has_many :part_joins, inverse_of: :part, dependent: :destroy
   has_many :projects, through: :part_joins, source_type: 'Project', source: :partable
   has_one :image, as: :attachable, dependent: :destroy
-
-  has_many :parent_part_joins, dependent: :destroy, class_name: 'PartJoin', through: :parent_parts, source: :part_joins
-  has_many :parent_projects, through: :sub_part_joins, source_type: 'Project', source: :partable
-
-  has_many :child_platforms, through: :child_parts, source: :platform
 
   taggable :product_tags
 
@@ -44,8 +42,10 @@ class Part < ActiveRecord::Base
     :datasheet_link, :product_page_link]
   set_changes_for_stored_attributes :websites
 
-  store_accessor :counters_cache, :projects_count, :all_projects_count
-  parse_as_integers :counters_cache, :projects_count, :all_projects_count
+  store_accessor :counters_cache, :projects_count, :all_projects_count,
+    :owners_count
+  parse_as_integers :counters_cache, :projects_count, :all_projects_count,
+    :owners_count
 
   validates :name, :type, presence: true
   validates :unit_price, numericality: { greater_than_or_equal_to: 0 }, allow_blank: true
@@ -220,6 +220,7 @@ class Part < ActiveRecord::Base
   def counters
     {
       all_projects: 'all_projects.public.count',
+      owners: 'owners.count',
       projects: 'projects.public.count',
     }
   end

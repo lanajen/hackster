@@ -96,6 +96,7 @@ class User < ActiveRecord::Base
   has_many :lists, through: :lists_group_ties, source: :group, class_name: 'List'
   has_many :notifications, through: :receipts, source: :receivable, source_type: 'Notification'
   has_many :orders, -> { order :placed_at }
+  has_many :owned_parts, -> { order('parts.name') }, source_type: 'Part', through: :follow_relations, source: :followable
   has_many :permissions, as: :grantee
   has_many :platforms, -> { order('groups.full_name ASC') }, through: :group_ties, source: :group, class_name: 'Platform'
   has_many :projects, -> { where("projects.guest_name IS NULL OR projects.guest_name = ''") }, through: :teams
@@ -173,7 +174,7 @@ class User < ActiveRecord::Base
     :badges_bronze_count, :badges_silver_count, :badges_gold_count,
     :accepted_invitations_count, :feed_likes_count, :thoughts_count,
     :reputation_count, :project_platforms_count, :suggested_platforms_count,
-    :replicated_projects_count]
+    :replicated_projects_count, :owned_parts_count]
 
   parse_as_integers :counters_cache, :comments_count, :interest_tags_count,
     :invitations_count, :projects_count, :respects_count, :skill_tags_count,
@@ -184,7 +185,7 @@ class User < ActiveRecord::Base
     :badges_silver_count, :badges_gold_count, :accepted_invitations_count,
     :feed_likes_count, :thoughts_count, :reputation_count,
     :project_platforms_count, :suggested_platforms_count,
-    :replicated_projects_count
+    :replicated_projects_count, :owned_parts_count
 
   # store_accessor :subscriptions_masks, :email_subscriptions_mask,
   #   :web_subscriptions_mask
@@ -420,6 +421,7 @@ class User < ActiveRecord::Base
       # live_approved_projects: 'projects.approved.where(private: false).count',
       live_projects: 'projects.where(private: false).count',
       live_hidden_projects: 'projects.where(private: false, hide: true).count',
+      owned_parts: 'owned_parts.count',
       platforms: 'followed_platforms.count',
       project_platforms: 'project_platforms.count',
       popularity_points: 'projects.live.map{|p| p.team_members_count > 0 ? p.popularity_counter / p.team_members_count : 0 }.sum',
@@ -652,6 +654,8 @@ class User < ActiveRecord::Base
     case followable
     when Group
       followable.in? followed_groups
+    when Part
+      followable.in? owned_parts
     when Project
       followable.in? replicated_projects
     when User
