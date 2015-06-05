@@ -7,9 +7,15 @@ class FollowersController < ApplicationController
   def create
     FollowRelation.add current_user, @followable
 
-    if @followable.class.in? [Platform, List]
+    case @followable
+    when Platform, List
       session[:share_modal] = 'followed_share_prompt'
       session[:share_modal_model] = 'followable'
+    when HardwarePart, SoftwarePart, ToolPart, Part
+      unless current_user.following? @followable.try(:platform)
+        session[:share_modal] = 'added_to_toolbox_prompt'
+        session[:share_modal_model] = 'followable'
+      end
     end
 
     respond_to do |format|

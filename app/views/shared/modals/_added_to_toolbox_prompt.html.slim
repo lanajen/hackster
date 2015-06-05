@@ -1,0 +1,9 @@
+#added_to_toolbox_prompt.popup-overlay.modal-popup.modal-show.modal-remove
+  .popup-overlay-bg
+  .popup-overlay-outer
+    .popup-overlay-inner
+      button.close.unselectable data-target='#added_to_toolbox_prompt' &times;
+      h2 #{@followable.name} is now in your toolbox!
+
+      p Since you own this, you might be interested in following #{@followable.platform.name}:
+      = render partial: 'followers/button_text', locals: { followable: @followable.platform }
