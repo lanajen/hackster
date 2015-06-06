@@ -459,18 +459,17 @@ class Project < ActiveRecord::Base
       build_logs: 'build_logs.published.count',
       comments: 'comments.count',
       communities: 'groups.count',
-      followers: 'followers.count',
       hardware_parts: 'hardware_parts.count',
       issues: 'issues.where(type: "Issue").count',
       platforms: 'platforms.count',
+      platform_tags: 'platform_tags_cached.count',
       product_tags: 'product_tags_cached.count',
       replications: 'replicated_users.count',
       respects: 'respects.count',
-      team_members: 'users.count',
-      platform_tags: 'platform_tags_cached.count',
-      widgets: 'widgets.count',
       software_parts: 'software_parts.count',
+      team_members: 'users.count',
       tool_parts: 'tool_parts.count',
+      widgets: 'widgets.count',
     }
   end
 
