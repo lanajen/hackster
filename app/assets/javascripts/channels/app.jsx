@@ -11,9 +11,9 @@ var stores = {
 };
 
 var flux = new Fluxxor.Flux(stores, actions.methods);
-flux.on("dispatch", function(type, payload) {
-  console.log("Dispatch:", type, payload);
-});
+// flux.on("dispatch", function(type, payload) {
+  // console.log("Dispatch:", type, payload);
+// });
 
 router.run(function(Handler) {
   React.render(

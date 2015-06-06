@@ -15,7 +15,9 @@ var channelConstants = {
     ADD: "THOUGHT:ADD",
     LIKE: "THOUGHT:LIKE",
     LOAD: "THOUGHT:LOAD",
-    REMOVE: "THOUGHT:REMOVE"
+    LOAD_MORE: "THOUGHT:LOAD_MORE",
+    REMOVE: "THOUGHT:REMOVE",
+    SHOW_ALL_COMMENTS: "THOUGHT:SHOW_ALL_COMMENTS"
   },
   ROUTE: {
     TRANSITION: "ROUTE:TRANSITION"
@@ -57,13 +59,21 @@ var methods = {
       });
     },
 
-    load: function(comments) {
-      this.dispatch(channelConstants.THOUGHT.LOAD, comments);
+    load: function(data) {
+      this.dispatch(channelConstants.THOUGHT.LOAD, data);
+    },
+
+    loadMore: function(data) {
+      this.dispatch(channelConstants.THOUGHT.LOAD_MORE, data);
     },
 
     remove: function(id) {
       this.dispatch(channelConstants.THOUGHT.REMOVE, id);
-    }
+    },
+
+    showAllComments: function(id) {
+      this.dispatch(channelConstants.THOUGHT.SHOW_ALL_COMMENTS, id);
+    },
   },
 
   routes: {
@@ -96,17 +106,23 @@ var CommentStore = Fluxxor.createStore({
     return this.comments[id] || NOT_FOUND_TOKEN;
   },
 
-  setComments: function(comments) {
+  prepareComments: function(comments, hash) {
     comments = comments || {};
-    var hash = {};
     for (var i = 0; i < comments.length; ++i) {
       var comment = comments[i];
       comment.user = this.flux.store('user').getUser(comment.user_id);
       hash[comment.id] = comment;
     }
-
     this.comments = hash;
     this.emit('change');
+  },
+
+  setComments: function(comments) {
+    this.prepareComments(comments, {});
+  },
+
+  addComments: function(comments) {
+    this.prepareComments(comments, this.comments);
   },
 
   prepareNewComment: function(body, thoughtId) {
@@ -204,7 +220,7 @@ var CommentStore = Fluxxor.createStore({
       }.bind(this),
       error: function(xhr, status, err) {
         comment.deleted = false;
-        console.log('error deleting', status, err.toString());
+        console.error('error deleting', status, err.toString());
       }.bind(this),
       complete: function() {
         this.flux.store('thought').emit('change');
@@ -223,7 +239,9 @@ var ThoughtStore = Fluxxor.createStore({
       actions.constants.THOUGHT.ADD, this.handleAddThought,
       actions.constants.THOUGHT.LIKE, this.handleLikeThought,
       actions.constants.THOUGHT.LOAD, this.handleLoadThoughts,
-      actions.constants.THOUGHT.REMOVE, this.handleRemoveThought
+      actions.constants.THOUGHT.LOAD_MORE, this.handleLoadMoreThoughts,
+      actions.constants.THOUGHT.REMOVE, this.handleRemoveThought,
+      actions.constants.THOUGHT.SHOW_ALL_COMMENTS, this.handleShowAllComments
     );
   },
 
@@ -235,10 +253,16 @@ var ThoughtStore = Fluxxor.createStore({
       this.currentData = data;
     }
 
-    return Object.keys(this.thoughts).reverse().map(function(key) {
+    var thoughts = Object.keys(this.thoughts).reverse().map(function(key) {
       var t = this.thoughts[key];
       return this.populateThought(t);
     }.bind(this));
+
+    return {
+      thoughts: thoughts,
+      nextPage: this.nextPage,
+      loading: this.loading
+    };
   },
 
   getThought: function(id) {
@@ -263,8 +287,7 @@ var ThoughtStore = Fluxxor.createStore({
     return thought;
   },
 
-  setThoughts: function(thoughts) {
-    var hash = {};
+  prepareThoughts: function(thoughts, hash) {
     for (var i = 0; i < thoughts.length; ++i) {
       var thought = thoughts[i];
       hash[thought.id] = thought;
@@ -274,8 +297,15 @@ var ThoughtStore = Fluxxor.createStore({
     this.emit('change');
   },
 
-  prepareNewThought: function(body) {
+  setThoughts: function(thoughts) {
+    this.prepareThoughts(thoughts, {});
+  },
 
+  addThoughts: function(thoughts) {
+    this.prepareThoughts(thoughts, this.thoughts);
+  },
+
+  prepareNewThought: function(body) {
     thought = {
       body: marked(body),
       timestamp: Date.now()/1000,
@@ -287,6 +317,7 @@ var ThoughtStore = Fluxxor.createStore({
         count: 0,
         likers: []
       },
+      showAllComments: false,
       link_data: {},
       user_id: user_data.id  // has to be defined in the DOM
     };
@@ -315,7 +346,16 @@ var ThoughtStore = Fluxxor.createStore({
     });
   },
 
+  handleShowAllComments: function(id) {
+    var thought = this.thoughts[id];
+    thought.showAllComments = true;
+    this.emit('change');
+  },
+
   handleLoadThoughts: function(data) {
+    this.loading = true;
+    this.emit('change');
+
     $.ajax({
       url: 'api/v1/thoughts',
       data: data,
@@ -324,12 +364,40 @@ var ThoughtStore = Fluxxor.createStore({
       success: function(data) {
         this.flux.store('user').setUsers(data.users);
         this.flux.store('comment').setComments(data.comments);
+        this.nextPage = data.meta.next_page;
         this.setThoughts(data.thoughts);
       }.bind(this),
       error: function(xhr, status, err) {
         console.error('cant load', status, err.toString());
       }.bind(this),
       complete: function() {
+        this.loading = false;
+        this.emit('change');
+      }.bind(this)
+    });
+  },
+
+  handleLoadMoreThoughts: function(data) {
+    this.loading = true;
+    this.emit('change');
+
+    $.ajax({
+      url: 'api/v1/thoughts',
+      data: data,
+      dataType: 'json',
+      type: 'GET',
+      success: function(data) {
+        this.flux.store('user').addUsers(data.users);
+        this.flux.store('comment').addComments(data.comments);
+        this.nextPage = data.meta.next_page;
+        this.addThoughts(data.thoughts);
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error('cant load', status, err.toString());
+      }.bind(this),
+      complete: function() {
+        this.loading = false;
+        this.emit('change');
       }.bind(this)
     });
   },
@@ -413,7 +481,7 @@ var ThoughtStore = Fluxxor.createStore({
       }.bind(this),
       error: function(xhr, status, err) {
         thought.deleted = false;
-        console.log('error deleting', status, err.toString());
+        console.error('error deleting', status, err.toString());
       }.bind(this),
       complete: function() {
         this.emit("change");
@@ -431,9 +499,8 @@ var UserStore = Fluxxor.createStore({
     return this.users[id] || NOT_FOUND_TOKEN;
   },
 
-  setUsers: function(users) {
+  prepareUsers: function(users, hash) {
     users = users || {};
-    var hash = {};
     for (var i = 0; i < users.length; ++i) {
       var user = users[i];
       hash[user.id] = user;
@@ -442,6 +509,14 @@ var UserStore = Fluxxor.createStore({
 
     this.users = hash;
     this.emit('change');
+  },
+
+  setUsers: function(users) {
+    this.prepareUsers(users, {});
+  },
+
+  addUsers: function(users) {
+    this.prepareUsers(users, this.users);
   },
 });
 
