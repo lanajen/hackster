@@ -25,12 +25,10 @@
                   Li Logo and branding tools
                   li Email support
                   li
-                    abbr> data-trigger="hover" data-toggle="popover" data-container="body" data-placement="bottom" data-content='We love supporting shipped startup products with at least 5 reference projects, 250 followers, available technical support and documentation.' Prerequisites
+                    abbr> data-trigger="hover" data-toggle="popover" data-container="body" data-placement="bottom" data-content="To be featured on Hackster, we require at least 10 projects, 20 followers, available documentation and technical support." Prerequisites
                 .cta
                   .price
                     | FREE
-                    span.month
-                      | /mo
                   a.button data-toggle="modal" data-target="#myModal" Get it now
               .col-sm-6.enterprise
                 h3 Professional
@@ -44,7 +42,7 @@
                   li Built-in insights and analytics
                   li Single sign-on authentication
                   li Custom domain support
-                  li Professional services 
+                  li Professional services
                   li Phone and email support with 99.99% uptime SLA
                   li
                     abbr> data-trigger="hover" data-toggle="popover" data-container="body" data-placement="bottom" data-content='We love supporting enterprise partners who make products that fit our community needs. We are however selective in who we work with.' Prerequisites
@@ -84,11 +82,11 @@
               li Step-by-step instructions
               li Including code samples, schematics, images and videos
               li Displayed on Hackster and on your website
-            / .cta
+            .cta
               .price $2,000
               a.button data-toggle="modal" data-target="#myModal" Get it now
-            .cta
-              a.button data-toggle="modal" data-target="#myModal" $2,000
+            / .cta
+              a.button data-toggle="modal" data-target="#myModal" Coming soon
 
     section#moar
       .row
@@ -101,13 +99,13 @@
               = link_to 'Hardware Weekend', '/hardwareweekend'
             li Complete planning and execution
             Li Run-of-show services
-            Li Access to awesome industry venues 
+            Li Access to awesome industry venues
             li Hackathon management software
             / li Prize management software
             Il Rich hardware assortment
             li Social media, photography and blogging
             li Insurance and liability coverage
-            li Dedicated project lead 
+            li Dedicated project lead
             .cta
               a.button data-toggle="modal" data-target="#myModal" Contact us
 
@@ -128,7 +126,7 @@
           button.close data-dismiss="modal" type="button"
             span aria-hidden="true"  ×
             span.sr-only Close
-          h4#myModalLabel.modal-title Please tell us about you and your project:
+          h4#myModalLabel.modal-title Hi! How can we help?
         .modal-body
           = f.input :company, label: 'Company name'
           = f.input :website, label: 'Website'
