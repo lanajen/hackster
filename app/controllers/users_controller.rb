@@ -29,6 +29,7 @@ class UsersController < ApplicationController
     @public_count = @public_projects.count
     @private_projects = @user.projects.private.for_thumb_display
     @respected_projects = @user.respected_projects.indexable_and_external.for_thumb_display
+    @parts = @user.owned_parts
     if current_platform
       @private_projects = if current_user == @user
         @private_projects.select{ |p| (p.platform_tags_cached.map{|t| t.downcase } & current_platform.platform_tags.map{|t| t.name.downcase }).any? }

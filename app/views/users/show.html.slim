@@ -56,6 +56,15 @@
             - @private_projects.each_with_index do |project, i|
               = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'userprivate', ref_id: @user.id, offset: i }
 
+      - if @parts.any?
+        hr
+        h2
+          ' Toolbox
+          = content_tag(:span, @parts.count, class: 'badge')
+        .row
+          - @parts.each do |part|
+            .col-md-4= render partial: 'parts/part_thumb', locals: { part: part.decorate }
+
       hr
       h2
         ' Respected projects
@@ -73,7 +82,6 @@
           | for cool projects!
       - else
         | #{@user.name} hasn't respected any projects yet.
-
 
       hr
       h2
