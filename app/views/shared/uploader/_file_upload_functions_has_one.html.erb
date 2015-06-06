@@ -30,7 +30,7 @@ var <%= file_type %>Functions = {
       inputTpl += '<input type="hidden" name="<%= model %>[<%= attribute_type %>_id]" class="inserted"></span>';
       input = $(inputTpl);
       input.find('input').val(id);
-      filename = file.url.substring(file.url.lastIndexOf('/')+1);
+      filename = file.tmp_file.substring(file.tmp_file.lastIndexOf('/')+1);
       input.find('.filename').text(filename);
       $('.<%= file_type %>.file-preview').html(input);
     }

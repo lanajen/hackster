@@ -240,7 +240,7 @@ class ApplicationController < ActionController::Base
       sql = "SELECT assignments.* FROM assignments INNER JOIN groups ON groups.id = assignments.promotion_id AND groups.type = 'Promotion' INNER JOIN groups courses_groups ON courses_groups.id = groups.parent_id AND courses_groups.type IN ('Course') WHERE groups.type IN ('Promotion') AND groups.user_name = ? AND courses_groups.user_name = ? AND assignments.id_for_promotion = ? ORDER BY assignments.id ASC LIMIT 1"
       @assignment = Assignment.find_by_sql([sql, params[:promotion_name], params[:user_name], params[:id] || params[:assignment_id]]).first
       raise ActiveRecord::RecordNotFound unless @assignment
-      @promotion = @assignment.promotion
+      @group = @promotion = @assignment.promotion
       @assignment
     end
 

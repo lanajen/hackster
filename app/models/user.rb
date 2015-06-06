@@ -331,6 +331,14 @@ class User < ActiveRecord::Base
     end
   end
 
+  def self.hackster
+    where "users.email ILIKE '%@user.hackster.io'"
+  end
+
+  def self.not_hackster
+    where.not "users.email ILIKE '%@user.hackster.io'"
+  end
+
   def self.last_logged_in
     order('last_sign_in_at DESC')
   end

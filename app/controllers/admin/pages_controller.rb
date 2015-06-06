@@ -21,9 +21,9 @@ class Admin::PagesController < Admin::BaseController
     @new_user_follows_count = FollowRelation.where(followable_type: 'User').where('follow_relations.created_at > ?', Date.today).count
     @new_platform_follows_count = FollowRelation.where(followable_type: 'Group').where('follow_relations.created_at > ?', Date.today).count
     @new_users_count = User.invitation_accepted_or_not_invited.where('users.created_at > ?', Date.today).count
-    new_users1d = User.invitation_accepted_or_not_invited.where("users.created_at > ?", 1.days.ago).count
-    new_users7d = User.invitation_accepted_or_not_invited.where("users.created_at > ?", 7.days.ago).count
-    new_users30d = User.invitation_accepted_or_not_invited.where("users.created_at > ?", 30.days.ago).count
+    new_users1d = User.invitation_accepted_or_not_invited.not_hackster.where("users.created_at > ?", 1.days.ago).count
+    new_users7d = User.invitation_accepted_or_not_invited.not_hackster.where("users.created_at > ?", 7.days.ago).count
+    new_users30d = User.invitation_accepted_or_not_invited.not_hackster.where("users.created_at > ?", 30.days.ago).count
     @active_users1d = User.where("users.last_seen_at > ?", 1.days.ago).count - new_users1d
     @active_users7d = User.where("users.last_seen_at > ?", 7.days.ago).count - new_users7d
     @active_users30d = User.where("users.last_seen_at > ?", 30.days.ago).count - new_users30d
@@ -81,7 +81,14 @@ class Admin::PagesController < Admin::BaseController
   def followers
     title "Admin / Followers - #{safe_page_params}"
 
-    @follow_relations = FollowRelation.order(created_at: :desc).paginate(page: safe_page_params)
+    @fields = {
+      'created_at' => 'follow_relations.created_at',
+      'followable_type' => 'follow_relations.followable_type',
+    }
+
+    params[:sort_by] ||= 'created_at'
+
+    @follow_relations = filter_for FollowRelation, @fields
   end
 
   def hacker_spaces

@@ -76,7 +76,8 @@
                 i.fa.fa-info-circle.istooltip.small< title=@group.disclaimer
 
           p= @group.mini_resume
-          p= render partial: 'followers/button_text', locals: { followable: @group }
+          - if @group.model.class.name.in? %w(Platform List)
+            p= render partial: 'followers/button_text', locals: { followable: @group }
 
     = render partial: "groups/#{@group.identifier.pluralize}/nav"
 
