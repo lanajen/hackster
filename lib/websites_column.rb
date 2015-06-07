@@ -13,6 +13,9 @@ module WebsitesColumn
   end
 
   def self.included base
+    # dependency
+    base.send :include, HstoreColumn unless base.included_modules.include? HstoreColumn
+
     base.send :extend, ClassMethods
   end
 end

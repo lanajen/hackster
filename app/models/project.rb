@@ -39,10 +39,10 @@ class Project < ActiveRecord::Base
   }
 
   include ActionView::Helpers::SanitizeHelper
-  include Counter
   include EditableSlug
+  include HstoreColumn
+  include HstoreCounter
   include Privatable
-  include StringParser
   include Taggable
   include Workflow
 
@@ -114,9 +114,9 @@ class Project < ActiveRecord::Base
     :featured, :featured_date, :cover_image_id, :logo_id, :license, :slug,
     :permissions_attributes, :slug_histories_attributes, :hide,
     :graded, :wip, :columns_count, :external, :guest_name,
-    :approved, :open_source, :buy_link, :private_logs, :private_issues,
-    :hacker_space_id, :locked, :mark_as_idea, :event_id, :assignment_id,
-    :community_ids, :new_group_id, :guest_twitter_handle, :celery_id,
+    :approved, :open_source, :buy_link,
+    :hacker_space_id, :mark_as_idea, :event_id, :assignment_id,
+    :community_ids, :new_group_id,
     :team_attributes, :story, :made_public_at, :difficulty, :type, :product,
     :project_collections_attributes, :workflow_state, :part_joins_attributes,
     :hardware_part_joins_attributes, :tool_part_joins_attributes,
@@ -151,22 +151,28 @@ class Project < ActiveRecord::Base
 
   taggable :product_tags, :platform_tags
 
-  store :counters_cache, accessors: [:comments_count, :product_tags_count,
-    :widgets_count, :followers_count, :build_logs_count,
-    :issues_count, :team_members_count, :platform_tags_count, :communities_count,
-    :platforms_count, :hardware_parts_count, :software_parts_count,
-    :tool_parts_count, :replications_count]
+  counters_column :counters_cache, long_format: true
+  has_counter :build_logs, 'build_logs.published.count'
+  has_counter :comments, 'comments.count'
+  has_counter :communities, 'groups.count'
+  has_counter :hardware_parts, 'hardware_parts.count'
+  has_counter :issues, 'issues.where(type: "Issue").count'
+  has_counter :platforms, 'platforms.count'
+  has_counter :platform_tags, 'platform_tags_cached.count'
+  has_counter :product_tags, 'product_tags_cached.count'
+  has_counter :replications, 'replicated_users.count'
+  has_counter :respects, 'respects.count'
+  has_counter :software_parts, 'software_parts.count'
+  has_counter :team_members, 'users.count'
+  has_counter :tool_parts, 'tool_parts.count'
+  has_counter :widgets, 'widgets.count'
 
-  store :properties, accessors: [:private_logs, :private_issues, :locked,
-    :guest_twitter_handle, :celery_id]
-
-  parse_as_integers :counters_cache, :comments_count, :product_tags_count,
-    :widgets_count, :followers_count, :build_logs_count,
-    :issues_count, :team_members_count, :platform_tags_count,
-    :communities_count, :platforms_count, :hardware_parts_count,
-    :software_parts_count, :tool_parts_count, :replications_count
-
-  parse_as_booleans :properties, :private_logs, :private_issues, :locked
+  store :properties, accessors: []
+  hstore_column :properties, :celery_id, :string
+  hstore_column :properties, :guest_twitter_handle, :string
+  hstore_column :properties, :locked, :boolean
+  hstore_column :properties, :private_issues, :boolean
+  hstore_column :properties, :private_logs, :boolean
 
   self.per_page = 18
 
@@ -452,25 +458,6 @@ class Project < ActiveRecord::Base
 
   def compute_popularity time_period=365
     self.popularity_counter = ((respects_count * 4 + impressions_count * 0.05 + comments_count * 2 + featured.to_i * 10) * [1 - [(Math.log(age, time_period)), 1].min, 0.001].max).round(4)
-  end
-
-  def counters
-    {
-      build_logs: 'build_logs.published.count',
-      comments: 'comments.count',
-      communities: 'groups.count',
-      hardware_parts: 'hardware_parts.count',
-      issues: 'issues.where(type: "Issue").count',
-      platforms: 'platforms.count',
-      platform_tags: 'platform_tags_cached.count',
-      product_tags: 'product_tags_cached.count',
-      replications: 'replicated_users.count',
-      respects: 'respects.count',
-      software_parts: 'software_parts.count',
-      team_members: 'users.count',
-      tool_parts: 'tool_parts.count',
-      widgets: 'widgets.count',
-    }
   end
 
   def cover_image_id=(val)
