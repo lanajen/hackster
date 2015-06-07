@@ -18,7 +18,6 @@ class Group < ActiveRecord::Base
     'projects' => :most_projects,
   }
 
-  # include Counter
   include EditableSlug
   include HasDefault
   include HstoreColumn
