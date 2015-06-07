@@ -8,6 +8,9 @@ module WebsitesColumn
 
     def has_websites store_attribute, *websites
       @@websites_column = store_attribute
+      if column_for_attribute(store_attribute).type == :text
+        store store_attribute, accessors: []
+      end
       add_websites *websites
     end
   end

@@ -1,11 +1,11 @@
 class User < ActiveRecord::Base
 
-  include Counter
   include EditableSlug
+  include HstoreColumn
+  include HstoreCounter
   include Roles
-  include SetChangesForStoredAttributes
-  include StringParser
   include Taggable
+  include WebsitesColumn
 
   include Rewardino::Nominee
 
@@ -127,17 +127,11 @@ class User < ActiveRecord::Base
   attr_accessible :email_confirmation, :password, :password_confirmation,
     :remember_me, :avatar_attributes, :projects_attributes,
     :websites_attributes, :invitation_token,
-    :first_name, :last_name, :invitation_code,
-    :facebook_link, :twitter_link, :linked_in_link, :website_link,
-    :blog_link, :github_link, :google_plus_link, :youtube_link, :categories,
-    :github_link, :invitation_limit, :email, :mini_resume, :city, :country,
+    :first_name, :last_name, :invitation_code, :categories,
+    :invitation_limit, :email, :mini_resume, :city, :country,
     :user_name, :full_name, :type, :avatar_id, :enable_sharing,
-    :instagram_link, :flickr_link, :reddit_link, :pinterest_link,
     :email_subscriptions, :web_subscriptions
   accepts_nested_attributes_for :avatar, :projects, allow_destroy: true
-
-  store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link, :website_link, :blog_link, :github_link, :google_plus_link, :youtube_link, :instagram_link, :flickr_link, :reddit_link, :pinterest_link]
-  set_changes_for_stored_attributes :websites
 
   validates :name, length: { in: 1..200 }, allow_blank: true
   validates :city, :country, length: { maximum: 50 }, allow_blank: true
@@ -165,34 +159,41 @@ class User < ActiveRecord::Base
 
   set_roles :roles, ROLES
 
-  store :counters_cache, accessors: [:comments_count, :interest_tags_count,
-    :invitations_count, :projects_count, :respects_count, :skill_tags_count,
-    :live_projects_count, :project_views_count, :followers_count,
-    :websites_count, :popularity_points_count, :project_respects_count,
-    :platforms_count, :live_hidden_projects_count, :followed_users_count,
-    :hacker_spaces_count, :badges_green_count,
-    :badges_bronze_count, :badges_silver_count, :badges_gold_count,
-    :accepted_invitations_count, :feed_likes_count, :thoughts_count,
-    :reputation_count, :project_platforms_count, :suggested_platforms_count,
-    :replicated_projects_count, :owned_parts_count]
+  counters_column :counters_cache, long_format: true
+  has_counter :accepted_invitations, 'invitations.accepted.count'
+  has_counter :badges_green, 'badges(:green).count'
+  has_counter :badges_bronze, 'badges(:bronze).count'
+  has_counter :badges_silver, 'badges(:silver).count'
+  has_counter :badges_gold, 'badges(:gold).count'
+  has_counter :comments, 'live_comments.count'
+  has_counter :feed_likes, 'comment_likes.count + thought_likes.count'
+  has_counter :followed_users, 'followed_users.count'
+  has_counter :followers, 'followers.count'
+  has_counter :hacker_spaces, 'hacker_spaces.count'
+  has_counter :interest_tags, 'interest_tags.count'
+  has_counter :invitations, 'invitations.count'
+  has_counter :live_projects, 'projects.where(private: false).count'
+  has_counter :live_hidden_projects, 'projects.where(private: false, hide: true).count'
+  has_counter :owned_parts, 'owned_parts.count'
+  has_counter :platforms, 'followed_platforms.count'
+  has_counter :project_platforms, 'project_platforms.count'
+  has_counter :popularity_points, 'projects.live.map{|p| p.team_members_count > 0 ? p.popularity_counter / p.team_members_count : 0 }.sum'
+  has_counter :projects, 'projects.count'
+  has_counter :project_respects, 'projects.includes(:respects).count(:respects)'
+  has_counter :project_views, 'projects.sum(:impressions_count)'
+  has_counter :replicated_projects, 'replicated_projects.count'
+  has_counter :reputation, 'reputation_events.sum(:points)'
+  has_counter :respects, 'respects.count'
+  has_counter :skill_tags, 'skill_tags.count'
+  has_counter :suggested_platforms, 'suggested_platforms.count'
+  has_counter :thoughts, 'thoughts.count'
+  has_counter :websites, 'websites.values.select{|v| v.present? }.size'
 
-  parse_as_integers :counters_cache, :comments_count, :interest_tags_count,
-    :invitations_count, :projects_count, :respects_count, :skill_tags_count,
-    :live_projects_count, :project_views_count, :websites_count,
-    :popularity_points_count, :project_respects_count, :platforms_count,
-    :live_hidden_projects_count, :followed_users_count, :hacker_spaces_count,
-    :badges_green_count, :badges_bronze_count,
-    :badges_silver_count, :badges_gold_count, :accepted_invitations_count,
-    :feed_likes_count, :thoughts_count, :reputation_count,
-    :project_platforms_count, :suggested_platforms_count,
-    :replicated_projects_count, :owned_parts_count
+  store :properties, accessors: []
+  hstore_column :properties, :has_unread_notifications, :boolean
 
-  # store_accessor :subscriptions_masks, :email_subscriptions_mask,
-  #   :web_subscriptions_mask
-  # parse_as_integers :subscriptions_masks, :email, :web
-
-  store :properties, accessors: [:has_unread_notifications]
-  parse_as_booleans :properties, :has_unread_notifications
+  has_websites :websites, :facebook, :twitter, :linked_in, :website, :blog,
+    :github, :google_plus, :youtube, :instagram, :flickr, :reddit, :pinterest
 
   delegate :can?, :cannot?, to: :ability
 
@@ -409,41 +410,6 @@ class User < ActiveRecord::Base
 
   def confirmed?
     !!confirmed_at and unconfirmed_email.nil?
-  end
-
-  def counters
-    {
-      accepted_invitations: 'invitations.accepted.count',
-      # badges: 'badges.count',
-      badges_green: 'badges(:green).count',
-      badges_bronze: 'badges(:bronze).count',
-      badges_silver: 'badges(:silver).count',
-      badges_gold: 'badges(:gold).count',
-      comments: 'live_comments.count',
-      feed_likes: 'comment_likes.count + thought_likes.count',
-      followed_users: 'followed_users.count',
-      followers: 'followers.count',
-      hacker_spaces: 'hacker_spaces.count',
-      interest_tags: 'interest_tags.count',
-      invitations: 'invitations.count',
-      # live_approved_projects: 'projects.approved.where(private: false).count',
-      live_projects: 'projects.where(private: false).count',
-      live_hidden_projects: 'projects.where(private: false, hide: true).count',
-      owned_parts: 'owned_parts.count',
-      platforms: 'followed_platforms.count',
-      project_platforms: 'project_platforms.count',
-      popularity_points: 'projects.live.map{|p| p.team_members_count > 0 ? p.popularity_counter / p.team_members_count : 0 }.sum',
-      projects: 'projects.count',
-      project_respects: 'projects.includes(:respects).count(:respects)',
-      project_views: 'projects.sum(:impressions_count)',
-      replicated_projects: 'replicated_projects.count',
-      reputation: 'reputation_events.sum(:points)',
-      respects: 'respects.count',
-      skill_tags: 'skill_tags.count',
-      suggested_platforms: 'suggested_platforms.count',
-      thoughts: 'thoughts.count',
-      websites: 'websites.values.select{|v| v.present? }.size',
-    }
   end
 
   def default_user_name?

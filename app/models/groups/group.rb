@@ -58,7 +58,6 @@ class Group < ActiveRecord::Base
   accepts_nested_attributes_for :avatar, :members, :permissions,
     allow_destroy: true
 
-  store :websites, accessors: []  # needed to serialize the hash
   has_websites :websites, :facebook, :twitter, :linked_in, :google_plus,
     :youtube, :website, :blog, :github, :instagram, :flickr, :reddit, :pinterest
 
