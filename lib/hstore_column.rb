@@ -12,7 +12,8 @@ module HstoreColumn
         inst_var = instance_variable_get("@#{attribute}")
         return inst_var unless inst_var.nil?
 
-        value = send(store_attribute).try(:[], attribute.to_s)
+        column_name = options[:column_name].presence || attribute
+        value = send(store_attribute).try(:[], column_name.to_s)
 
         value = if value.nil? and options[:default]
           case options[:default]
@@ -52,7 +53,8 @@ module HstoreColumn
         else
           cast_val
         end
-        store[attribute] = val
+        column_name = options[:column_name].presence || attribute
+        store[column_name] = val
 
         self.send "#{store_attribute}=", store
         cast_val
@@ -78,7 +80,7 @@ module HstoreColumn
         when :boolean
           value == '1' or value == true or value == 'true' or value == 't'
         when :datetime
-          value ? Time.at(value) : nil
+          value ? Time.at(value.to_i) : nil
         when :float
           value ? value.to_f : nil
         when :integer
