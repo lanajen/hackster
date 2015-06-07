@@ -1,14 +1,12 @@
 module HstoreColumn
   module ClassMethods
-    def hstore_columns
-      @@hstore_columns ||= {}
-    end
-
     def hstore_column store_attribute, attribute, type, options={}
       attr_accessible attribute
 
-      hstore_columns[store_attribute] ||= []
-      hstore_columns[store_attribute] << attribute
+      columns = hstore_columns.try(:dup) || {}
+      columns[store_attribute] ||= []
+      columns[store_attribute] += [attribute]
+      self.hstore_columns = columns
 
       self.send :define_method, "#{attribute}" do
         inst_var = instance_variable_get("@#{attribute}")
@@ -97,7 +95,7 @@ module HstoreColumn
       end
 
       def hstore_reset_was_attributes
-        self.class.hstore_columns.each do |store_attribute, attributes|
+        hstore_columns.each do |store_attribute, attributes|
           attributes.each do |attribute|
             instance_variable_set "@#{attribute}_was_set", false
             instance_variable_set "@#{attribute}_was", nil
@@ -109,6 +107,7 @@ module HstoreColumn
   def self.included base
     base.send :extend, ClassMethods
     base.send :include, InstanceMethods
+    base.send :class_attribute, :hstore_columns, instance_writer: false
     base.send :after_save, :hstore_reset_was_attributes
   end
 end
