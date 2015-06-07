@@ -12,6 +12,10 @@ class Hackathon < Community
   set_changes_for_stored_attributes :properties
   parse_as_booleans :properties, :hidden, :show_organizers
 
+  hstore_column :hproperties, :hashtag, :string
+  hstore_column :hproperties, :show_organizers, :boolean
+  hstore_column :hproperties, :twitter_widget_id, :string
+
   store :counters_cache, accessors: [:events_count]
   parse_as_integers :counters_cache, :events_count, :members_count, :projects_count
 

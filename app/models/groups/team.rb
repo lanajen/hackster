@@ -8,6 +8,9 @@ class Team < Group
 
   attr_accessible :disable_team_append
 
+  hstore_column :hproperties, :disable_team_append, :boolean
+  hstore_column :hproperties, :generated_user_name, :string
+
   before_save :update_user_name
 
   def self.default_access_level

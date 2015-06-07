@@ -8,6 +8,7 @@ class Platform < List
     'Only projects approved by the Hackster team' => 'hackster',
     'Only projects approved by our team' => 'manual',
   }
+  PLANS = %w(starter professional)
 
   PROJECT_IDEAS_PHRASING = ['"No #{name} yet?"', '"Have ideas on what to build with #{name}?"']
 
@@ -44,7 +45,7 @@ class Platform < List
     :project_ideas_phrasing, :client_subdomain_attributes, :logo_id,
     :download_link, :company_logo_id, :disclaimer,
     :cta_text, :parts_attributes, :verified, :enable_chat, :enable_products,
-    :description, :enable_parts, :enable_password, :enable_sub_parts
+    :description, :enable_parts, :enable_password, :enable_sub_parts, :cta_link
 
   accepts_nested_attributes_for :client_subdomain, :parts
 
@@ -52,19 +53,45 @@ class Platform < List
   before_save :format_hashtag, :ensure_extra_credentials
 
   store_accessor :websites, :forums_link, :documentation_link,
-    :crowdfunding_link, :buy_link, :shoplocket_link, :download_link
+    :crowdfunding_link, :buy_link, :shoplocket_link, :download_link, :cta_link
   set_changes_for_stored_attributes :websites
 
   store_accessor :properties, :accept_project_ideas, :project_ideas_phrasing,
     :active_challenge, :disclaimer, :cta_text, :hashtag,
     :verified, :enable_chat, :enable_products, :description, :enable_parts,
     :api_username, :api_password, :http_password, :enable_password,
-    :enable_sub_parts
+    :enable_sub_parts, :plan
   set_changes_for_stored_attributes :properties
 
   parse_as_booleans :properties, :accept_project_ideas, :active_challenge,
     :is_new, :enable_comments, :hidden, :verified, :enable_chat, :enable_products,
     :enable_parts, :enable_password, :enable_sub_parts
+
+  has_default :cta_text, "Buy %{h.indefinite_articlerize(name)}"
+  has_default :hidden, true
+  has_default :plan, 'starter'
+  has_default :moderation_level, 'hackster'
+  has_default :products_text, 'Startups powered by %{name}'
+
+  hstore_column :hproperties, :accept_project_ideas, :boolean
+  hstore_column :hproperties, :active_challenge, :boolean
+  hstore_column :hproperties, :api_password, :string
+  hstore_column :hproperties, :api_username, :string
+  hstore_column :hproperties, :cta_text, :string, default: "Buy %{h.indefinite_articlerize(name)}"
+  hstore_column :hproperties, :description, :string
+  hstore_column :hproperties, :disclaimer, :string
+  hstore_column :hproperties, :enable_chat, :boolean
+  hstore_column :hproperties, :enable_parts, :boolean
+  hstore_column :hproperties, :enable_password, :boolean
+  hstore_column :hproperties, :enable_products, :boolean
+  hstore_column :hproperties, :enable_sub_parts, :boolean
+  hstore_column :hproperties, :hidden, :boolean, default: true
+  hstore_column :hproperties, :http_password, :string
+  hstore_column :hproperties, :moderation_level, :string, default: 'hackster'
+  hstore_column :hproperties, :plan, :string, default: 'starter'
+  hstore_column :hproperties, :products_text, :string, default: 'Startups powered by %{name}'
+  hstore_column :hproperties, :project_ideas_phrasing, :string
+  hstore_column :hproperties, :verified, :boolean
 
   store_accessor :counters_cache, :parts_count, :products_count, :sub_parts_count,
     :sub_platforms_count
@@ -76,9 +103,6 @@ class Platform < List
   taggable :platform_tags, :product_tags
 
   is_impressionable counter_cache: true, unique: :session_hash
-
-  has_default :products_text, 'Startups powered by %name%'
-  has_default :moderation_level, 'hackster'
 
   # beginning of search methods
   has_tire_index 'private'

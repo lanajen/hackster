@@ -21,6 +21,7 @@ class Group < ActiveRecord::Base
   include Counter
   include EditableSlug
   include HasDefault
+  include HstoreColumn
   include SetChangesForStoredAttributes
   include StringParser
 
@@ -68,6 +69,11 @@ class Group < ActiveRecord::Base
   store :properties, accessors: [:hidden, :slack_token,
     :slack_hook_url, :default_project_sorting]
   set_changes_for_stored_attributes :properties
+
+  hstore_column :hproperties, :hidden, :boolean, default: true
+  hstore_column :hproperties, :slack_token, :string
+  hstore_column :hproperties, :slack_hook_url, :string
+  hstore_column :hproperties, :default_project_sorting, :string, default: 'trending'
 
   # :projects_count and :members_count are DB columns! don't include them in counters_cache
 

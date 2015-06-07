@@ -27,13 +27,19 @@ class Event < GeographicCommunity
   parse_as_booleans :properties, :activate_voting, :hidden
   # set_changes_for_stored_attributes :properties
 
+  has_default :cta_text, CTA_TEXT.first
+
+  hstore_column :hproperties, :activate_voting, :boolean
+  hstore_column :hproperties, :cta_text, :string, default: CTA_TEXT.first
+  hstore_column :hproperties, :schedule, :string
+  hstore_column :hproperties, :voting_end_date, :datetime
+  hstore_column :hproperties, :voting_start_date, :datetime
+
   store :counters_cache, accessors: [:participants_count]
 
   parse_as_integers :counters_cache, :participants_count
 
   alias_method :short_name, :name
-
-  has_default :cta_text, CTA_TEXT.first
 
   # beginning of search methods
   tire do

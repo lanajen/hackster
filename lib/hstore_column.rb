@@ -1,0 +1,114 @@
+module HstoreColumn
+  module ClassMethods
+    def hstore_columns
+      @@hstore_columns ||= {}
+    end
+
+    def hstore_column store_attribute, attribute, type, options={}
+      attr_accessible attribute
+
+      hstore_columns[store_attribute] ||= []
+      hstore_columns[store_attribute] << attribute
+
+      self.send :define_method, "#{attribute}" do
+        inst_var = instance_variable_get("@#{attribute}")
+        return inst_var unless inst_var.nil?
+
+        value = send(store_attribute).try(:[], attribute.to_s)
+
+        value = if value.nil? and options[:default]
+          case options[:default]
+          when String
+            options[:default].gsub(/%\{([a-z_\.\s\(\)]+)\}/) do
+              eval $1
+            end
+          else
+            options[:default]
+          end
+        else
+          cast_value value, type
+        end
+
+        instance_variable_set("@#{attribute}", value)
+      end
+
+      self.send :define_method, "#{attribute}=" do |val|
+        current_val = send(attribute)
+        return val if val == current_val
+
+        store = send(store_attribute) || {}
+
+        cast_val = cast_value val, type
+        unless instance_variable_get("@#{attribute}_was_set")
+          instance_variable_set "@#{attribute}_was", current_val
+          instance_variable_set "@#{attribute}_was_set", true
+        end
+        instance_variable_set "@#{attribute}", cast_val
+        attribute_will_change! attribute
+
+        val = case type
+        when :boolean
+          cast_val.to_i
+        when :datetime
+          cast_val.to_i
+        else
+          cast_val
+        end
+        store[attribute] = val
+
+        self.send "#{store_attribute}=", store
+        cast_val
+      end
+
+      self.send :define_method, "#{attribute}_was" do
+        return instance_variable_get("@#{attribute}_was") if instance_variable_get("@#{attribute}_was_set")
+
+        instance_variable_set "@#{attribute}_was_set", true
+        instance_variable_set "@#{attribute}_was", send(attribute)
+      end
+
+      self.send :define_method, "#{attribute}_changed?" do
+        send(attribute) != send("#{attribute}_was")
+      end
+    end
+  end
+
+  module InstanceMethods
+    private
+      def cast_value value, type
+        case type
+        when :boolean
+          value == '1' or value == true or value == 'true' or value == 't'
+        when :datetime
+          value ? Time.at(value) : nil
+        when :float
+          value ? value.to_f : nil
+        when :integer
+          value ? value.to_i : nil
+        when :string
+          value
+        else
+          value
+        end
+      end
+
+      def h
+        ClassHelper.new
+      end
+
+      def hstore_reset_was_attributes
+        self.class.hstore_columns.each do |store_attribute, attributes|
+          attributes.each do |attribute|
+            instance_variable_set "@#{attribute}_was_set", false
+            instance_variable_set "@#{attribute}_was", nil
+          end
+        end
+      end
+  end
+
+  def self.included base
+    base.send :extend, ClassMethods
+    base.send :include, InstanceMethods
+    base.send :after_save, :hstore_reset_was_attributes
+  end
+end

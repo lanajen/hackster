@@ -24,6 +24,11 @@ class List < Group
 
   parse_as_booleans :properties, :is_new, :enable_comments, :hidden
 
+  hstore_column :hproperties, :enable_comments, :boolean
+  hstore_column :hproperties, :hashtag, :string
+  hstore_column :hproperties, :is_new, :string
+  hstore_column :hproperties, :list_type, :boolean
+
   # beginning of search methods
   tire do
     mapping do
