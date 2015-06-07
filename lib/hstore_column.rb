@@ -47,7 +47,7 @@ module HstoreColumn
           cast_val
         end
         column_name = options[:column_name].presence || attribute
-        store[column_name] = val
+        store[column_name] = val.to_s
 
         self.send "#{store_attribute}=", store
         cast_val
