@@ -13,23 +13,14 @@ class Event < GeographicCommunity
   attr_accessor :start_date_dummy, :end_date_dummy, :voting_end_date_dummy
 
   attr_accessible :awards_attributes, :parent_id,
-    :start_date_dummy, :end_date_dummy, :tickets_link,
+    :start_date_dummy, :end_date_dummy,
     :voting_end_date_dummy
-
-  # attr_accessible :start_date, :end_date, :voting_end_date, :activate_voting
 
   accepts_nested_attributes_for :awards, allow_destroy: true
 
-  store_accessor :websites, :tickets_link
-  set_changes_for_stored_attributes :websites
+  has_websites :tickets
 
-  # store_accessor :properties, :voting_start_date, :voting_end_date,
-  #   :activate_voting, :schedule
-  # parse_as_datetimes :properties, :voting_start_date, :voting_end_date
-  # parse_as_booleans :properties, :activate_voting, :hidden
-  # set_changes_for_stored_attributes :properties
-
-  # has_default :cta_text, CTA_TEXT.first
+  store :properties, accessors: []  # left so that tableless schedule_items work
 
   hstore_column :hproperties, :activate_voting, :boolean
   hstore_column :hproperties, :cta_text, :string, default: CTA_TEXT.first
@@ -37,9 +28,7 @@ class Event < GeographicCommunity
   hstore_column :hproperties, :voting_end_date, :datetime
   hstore_column :hproperties, :voting_start_date, :datetime
 
-  store :counters_cache, accessors: [:participants_count]
-
-  parse_as_integers :counters_cache, :participants_count
+  has_counter :participants, "members.joins(:user).request_accepted_or_not_requested.invitation_accepted_or_not_invited.with_group_roles('participant').count"
 
   alias_method :short_name, :name
 
@@ -90,12 +79,6 @@ class Event < GeographicCommunity
 
   def avatar
     hackathon.try(:avatar)
-  end
-
-  def counters
-    super.merge({
-      participants: "members.joins(:user).request_accepted_or_not_requested.invitation_accepted_or_not_invited.with_group_roles('participant').count",
-    })
   end
 
   def default_user_name

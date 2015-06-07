@@ -2,12 +2,6 @@ class Team < Group
   has_many :grades, as: :gradable
   has_many :projects
 
-  # store_accessor :properties, :generated_user_name, :disable_team_append
-
-  # parse_as_booleans :properties, :hidden, :disable_team_append
-
-  # attr_accessible :disable_team_append
-
   hstore_column :hproperties, :disable_team_append, :boolean
   hstore_column :hproperties, :generated_user_name, :string
 

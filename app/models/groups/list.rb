@@ -7,22 +7,14 @@ class List < Group
   has_many :followers, through: :follow_relations, source: :user
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'ListMember'
 
-  # attr_accessible :list_type, :is_new, :enable_comments, :hashtag
-
   validates :user_name, :full_name, presence: true
   validate :user_name_is_unique
   before_validation :update_user_name, on: :create
 
-  store :counters_cache, accessors: [:external_projects_count,
-    :private_projects_count]
-
-  parse_as_integers :counters_cache, :external_projects_count,
-    :private_projects_count
-
-  # store_accessor :properties, :list_type, :is_new, :enable_comments, :hashtag
-  # set_changes_for_stored_attributes :properties
-
-  # parse_as_booleans :properties, :is_new, :enable_comments, :hidden
+  has_counter :external_projects, 'projects.external.count'
+  has_counter :members, 'followers.count'
+  has_counter :private_projects, 'projects.private.count'
+  has_counter :projects, 'projects.visible.count'
 
   hstore_column :hproperties, :enable_comments, :boolean
   hstore_column :hproperties, :hashtag, :string
@@ -69,15 +61,6 @@ class List < Group
 
   def category?
     list_type == 'category'
-  end
-
-  def counters
-    {
-      external_projects: 'projects.external.count',
-      members: 'followers.count',
-      private_projects: 'projects.private.count',
-      projects: 'projects.visible.count',
-    }
   end
 
   def default_hashtag

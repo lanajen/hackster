@@ -1,18 +1,4 @@
 module Counter
-  # module ClassMethods
-  #   def has_counter store_attribute, counter, count_method
-  #     attr_accessible attribute
-  #     store_accessor store_attribute, counter
-
-  #     columns = counter_columns.try(:dup) || {}
-  #     columns[store_attribute] ||= []
-  #     columns[store_attribute] += [attribute]
-  #     self.counter_columns = columns
-
-
-  #   end
-  # end
-
   module InstanceMethods
     def filter_counters counters, options={}
       counters.reject!{ |k,v| k.in? options[:except] } if options[:except]
@@ -31,7 +17,6 @@ module Counter
     end
 
     def update_counters options={}
-      # respond_to?(:counter_columns) ? counter_columns : counters
       do_update_counters filter_counters(counters, options), options
     end
 
@@ -53,8 +38,6 @@ module Counter
   end
 
   def self.included base
-    # base.send :extend, ClassMethods
     base.send :include, InstanceMethods
-    # base.send :class_attribute, :counter_columns, instance_writer: false
   end
 end

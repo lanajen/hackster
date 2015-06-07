@@ -40,41 +40,16 @@ class Platform < List
   has_one :logo, as: :attachable, dependent: :destroy
   has_one :slug, as: :sluggable, dependent: :destroy, class_name: 'SlugHistory'
 
-  attr_accessible :forums_link, :documentation_link, :crowdfunding_link,
-    :buy_link, :shoplocket_link, :cover_image_id,
-    :client_subdomain_attributes, :logo_id,
-    :download_link, :company_logo_id, :parts_attributes
-
-  # attr_accessible :accept_project_ideas,
-  #   :project_ideas_phrasing, :disclaimer,
-  #   :cta_text, :verified, :enable_chat, :enable_products,
-  #   :description, :enable_parts, :enable_password, :enable_sub_parts, :cta_link
+  attr_accessible :cover_image_id, :client_subdomain_attributes, :logo_id,
+    :company_logo_id, :parts_attributes
 
   accepts_nested_attributes_for :client_subdomain, :parts
 
   # before_save :update_user_name
   before_save :format_hashtag, :ensure_extra_credentials
 
-  store_accessor :websites, :forums_link, :documentation_link,
-    :crowdfunding_link, :buy_link, :shoplocket_link, :download_link, :cta_link
-  set_changes_for_stored_attributes :websites
-
-  # store_accessor :properties, :accept_project_ideas, :project_ideas_phrasing,
-  #   :active_challenge, :disclaimer, :cta_text, :hashtag,
-  #   :verified, :enable_chat, :enable_products, :description, :enable_parts,
-  #   :api_username, :api_password, :http_password, :enable_password,
-  #   :enable_sub_parts, :plan
-  # set_changes_for_stored_attributes :properties
-
-  # parse_as_booleans :properties, :accept_project_ideas, :active_challenge,
-  #   :is_new, :enable_comments, :hidden, :verified, :enable_chat, :enable_products,
-  #   :enable_parts, :enable_password, :enable_sub_parts
-
-  # has_default :cta_text, "Buy %{h.indefinite_articlerize(name)}"
-  # has_default :hidden, true
-  # has_default :plan, 'starter'
-  # has_default :moderation_level, 'hackster'
-  # has_default :products_text, 'Startups powered by %{name}'
+  has_websites :forums, :documentation, :crowdfunding, :buy,
+    :shoplocket, :download, :cta
 
   hstore_column :hproperties, :accept_project_ideas, :boolean
   hstore_column :hproperties, :active_challenge, :boolean
@@ -96,12 +71,13 @@ class Platform < List
   hstore_column :hproperties, :project_ideas_phrasing, :string
   hstore_column :hproperties, :verified, :boolean
 
-  store_accessor :counters_cache, :parts_count, :products_count, :sub_parts_count,
-    :sub_platforms_count
-
-  parse_as_integers :counters_cache, :external_projects_count,
-    :private_projects_count, :products_count, :parts_count, :sub_parts_count,
-    :sub_platforms_count
+  has_counter :external_projects, 'projects.external.count'
+  has_counter :private_projects, 'projects.private.count'
+  has_counter :parts, 'parts.count'
+  has_counter :products, 'products.count'
+  has_counter :projects, 'projects.visible.count'
+  has_counter :sub_parts, 'sub_parts.count'
+  has_counter :sub_platforms, 'sub_platforms.count'
 
   taggable :platform_tags, :product_tags
 
@@ -151,18 +127,6 @@ class Platform < List
 
   def company_logo_id=(val)
     self.company_logo = CompanyLogo.find_by_id(val)
-  end
-
-  def counters
-    super.merge({
-      external_projects: 'projects.external.count',
-      private_projects: 'projects.private.count',
-      parts: 'parts.count',
-      products: 'products.count',
-      projects: 'projects.visible.count',
-      sub_parts: 'sub_parts.count',
-      sub_platforms: 'sub_platforms.count',
-    })
   end
 
   def generate_user_name

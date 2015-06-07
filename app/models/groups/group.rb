@@ -18,12 +18,12 @@ class Group < ActiveRecord::Base
     'projects' => :most_projects,
   }
 
-  include Counter
+  # include Counter
   include EditableSlug
   include HasDefault
   include HstoreColumn
-  include SetChangesForStoredAttributes
-  include StringParser
+  include HstoreCounter
+  include WebsitesColumn
 
   editable_slug :user_name, :before_validation
 
@@ -50,38 +50,27 @@ class Group < ActiveRecord::Base
   has_one :avatar, as: :attachable, dependent: :destroy
   has_one :cover_image, as: :attachable, dependent: :destroy
 
-  attr_accessible :avatar_attributes, :type,
-    :facebook_link, :twitter_link, :linked_in_link, :website_link,
-    :blog_link, :github_link, :email, :mini_resume, :city, :country,
+  attr_accessible :avatar_attributes, :type, :email, :mini_resume, :city, :country,
     :user_name, :full_name, :members_attributes, :avatar_id,
-    :permissions_attributes, :google_plus_link, :youtube_link, :access_level,
-    :cover_image_id, :project_sorting,
-    :instagram_link, :flickr_link, :reddit_link, :pinterest_link
-
-  # attr_accessible :hidden, :slack_token, :slack_hook_url
+    :permissions_attributes, :access_level,
+    :cover_image_id, :project_sorting
 
   accepts_nested_attributes_for :avatar, :members, :permissions,
     allow_destroy: true
 
-  store :websites, accessors: [:facebook_link, :twitter_link, :linked_in_link,
-    :google_plus_link, :youtube_link, :website_link, :blog_link, :github_link,
-    :instagram_link, :flickr_link, :reddit_link, :pinterest_link]
-  set_changes_for_stored_attributes :websites
-
-  # store :properties, accessors: [:hidden, :slack_token,
-  #   :slack_hook_url, :default_project_sorting]
-  # set_changes_for_stored_attributes :properties
+  store :websites, accessors: []  # needed to serialize the hash
+  websites_column :websites
+  has_websites :facebook, :twitter, :linked_in, :google_plus,
+    :youtube, :website, :blog, :github, :instagram, :flickr, :reddit, :pinterest
 
   hstore_column :hproperties, :hidden, :boolean, default: true
   hstore_column :hproperties, :slack_token, :string
   hstore_column :hproperties, :slack_hook_url, :string
   hstore_column :hproperties, :default_project_sorting, :string, default: 'trending'
 
-  # has_counter :counters_cache, :members, 'members.count'
-
-  # :projects_count and :members_count are DB columns! don't include them in counters_cache
-
-  # parse_as_booleans :properties, :hidden
+  counters_column :hcounters_cache
+  has_counter :members, 'members.count'
+  has_counter :projects, 'project_collections.visible.count'
 
   validates :user_name, :new_user_name, length: { in: 3..100 },
     format: { with: /\A[a-zA-Z0-9_\-]+\z/, message: "accepts only letters, numbers, underscores '_' and dashes '-'." }, allow_blank: true, if: proc{|t| t.persisted?}
@@ -123,13 +112,6 @@ class Group < ActiveRecord::Base
 
   def avatar_id=(val)
     self.avatar = Avatar.find_by_id(val)
-  end
-
-  def counters
-    {
-      members: 'members.count',
-      projects: 'project_collections.visible.count',
-    }
   end
 
   def cover_image_id=(val)
