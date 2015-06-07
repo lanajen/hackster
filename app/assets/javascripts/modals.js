@@ -60,7 +60,7 @@ $(function () {
     var alertHtml = request.getResponseHeader('X-Alert');
     var id = request.getResponseHeader('X-Alert-ID');
 
-    if (typeof(alertHtml) != 'undefined') {
+    if (typeof(alertHtml) != 'undefined' && typeof(id) != 'undefined' && alertHtml && id) {
       $(alertHtml).appendTo('body');
       openModal(id);
     }
