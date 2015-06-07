@@ -8,7 +8,7 @@ module WebsitesColumn
 
     def has_websites store_attribute, *websites
       @@websites_column = store_attribute
-      add_websites websites
+      add_websites *websites
     end
   end
 
