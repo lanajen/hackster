@@ -17,7 +17,7 @@
                   li= link_to content_tag(:i, '', class: 'fa fa-cogs'), admin_store_path, rel: 'tooltip', title: 'Store admin'
                 li.wallet
                   a href=users_stats_path rel='tooltip' title="#{pluralize number_with_delimiter(current_user.reputation.redeemable_points), 'point'} available to redeem"
-                    i.fa.fa-money
+                    i.fa.fa-certificate
                     span= number_with_delimiter current_user.reputation.redeemable_points
                 li.cart
                   a href=store_cart_index_path title="#{pluralize current_order.order_lines_count, 'item'} in your cart" rel='tooltip'

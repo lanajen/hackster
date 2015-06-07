@@ -20,9 +20,9 @@
           small.text-muted
             - if @reputation_this_month.zero?
               ' No new points yet this month.
-              = link_to 'Read how to get more points.', ''
             - else
-              | +#{number_with_delimiter @reputation_this_month} this month
+              ' +#{number_with_delimiter @reputation_this_month} this month.
+            = link_to 'Read how to get more points.', 'http://hackster.uservoice.com/knowledgebase/topics/92217-hackster-free-store'
           br
           br
           / small
