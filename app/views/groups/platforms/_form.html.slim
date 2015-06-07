@@ -1,5 +1,4 @@
 = simple_nested_form_for @platform, url: platform_path(@platform), html: { class: 'form-horizontal remote accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
-  = f.error_notification
 
   .header.clearfix
     h3.pull-left
@@ -13,7 +12,7 @@
   hr
 
   div role='tabpanel'
-    ul.nav.nav-tabs style='margin-bottom:40px;'
+    ul.nav.nav-pills
       li.active role="presentation"
         a href='#general' data-toggle='tab' role='tab' General
       li role="presentation"
@@ -22,14 +21,21 @@
         a href='#projects' data-toggle='tab' role='tab' Projects
       li role="presentation"
         a href='#products' data-toggle='tab' role='tab' Products
-      - if client = @platform.client_subdomain
+      - if @platform.pro?
+        - client = @platform.client_subdomain
         li role="presentation"
-          a href='#whitelabel' data-toggle='tab' role='tab' Whitelabel
+          a href='#whitelabel' data-toggle='tab' role='tab' Dedicated portal
+        li role="presentation"
+          a href='#api' data-toggle='tab' role='tab' API
+
       / li role="presentation"
         a href='#chat' data-toggle='tab' role='tab' Chat
       - if current_user.is? :admin
         li role="presentation"
           a href='#admin' data-toggle='tab' role='tab' Hackster admin
+
+    hr style='margin-bottom:40px;'
+    = f.error_notification
 
     .tab-content
       .tab-pane.active.fade.in#general role='tabpanel'
@@ -51,7 +57,7 @@
           .col-md-6
             = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Logo', image_link: @platform.avatar.try(:imgix_url, :thumb), help_block: 'This picture needs to be squared, at least 200x200px for best quality.', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
 
-            = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @platform.cover_image.try(:imgix_url), help_block: "A high quality picture of your product, at least 1600x430px minimum. An image with no text looks a lot better!", attribute_type: 'cover_image', image_version: nil, model: 'group' }
+            = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @platform.cover_image.try(:imgix_url), help_block: "A high quality picture of your product, at least 1600x430px. An image with no or little text looks a lot better!", attribute_type: 'cover_image', image_version: nil, model: 'group' }
 
 
       .tab-pane.fade#about-us role='tabpanel'
@@ -81,28 +87,39 @@
 
       .tab-pane.fade#projects role='tabpanel'
         .row
-          .col-xs-12.text-center
-            .btn-group.btn-group-default.mg-20
-              = link_to 'Moderate projects', url_for([@group, :admin, :projects]), class: 'btn btn-default btn-sm'
-              = link_to 'Link an external project', url_for([:new, :project, type: 'external', project: { platform_tags_string: @group.name }]), class: 'btn btn-default btn-sm'
+          .col-xs-12.mg-20
+            strong Quick links:
+            ul.list-inline style='display:inline'
+              li= link_to 'Moderate projects', url_for([@group, :admin, :projects]), class: 'btn btn-link btn-sm'
+              li= link_to 'Link an external project', url_for([:new, :project, type: 'external', project: { platform_tags_string: @group.name }]), class: 'btn btn-link btn-sm'
           .col-md-6
             = f.input :moderation_level, hint: "What type of moderation do you want regarding new projects being added to your page?", collection: Platform::MODERATION_LEVELS
             = f.input :project_sorting, hint: "How should projects be sorted by default?", label: 'Default project sorting', collection: Group::PROJECT_SORTING
           .col-md-6
             = f.input :hashtag, label: 'Hashtag for automatic tweets', hint: "Projects we approve are automatically tweeted from our Twitter account (@hacksterio). We add hashtags to improve discoverability. The default is #{@group.default_hashtag}."
 
-      - if client = @platform.client_subdomain
+      - if @platform.pro?
         .tab-pane.fade#whitelabel role='tabpanel'
-          .row
-            .col-md-6
-              = render partial: 'shared/image_form', locals: { file_type: 'logo', human_file_type: 'Portal logo', image_link: @platform.logo.try(:file_url), help_block: '', attribute_type: 'logo', image_version: nil, model: 'group' }
-              = render partial: 'shared/image_form', locals: { file_type: 'favicon', human_file_type: 'Portal favicon', image_link: client.favicon.try(:file_url), help_block: '', attribute_type: 'favicon', image_version: nil, model: 'group[client_subdomain_attributes]' }
-              = f.simple_fields_for :client_subdomain, client do |f_client|
-                = f_client.input :domain, hint: "If you want to personalize the domain name of your dedicated portal, enter it. You will then need to add a CNAME pointing from this domain to #{client.subdomain}.hackster.io.", label: 'Portal custom domain'
+          = f.simple_fields_for :client_subdomain, client do |f_client|
+            .row
+              .col-md-6
+                = f_client.input :enabled, as: :boolean, inline_label: 'Enable portal', label: false, hint: "Enable or disable your dedicated projects portal."
+                = f_client.input :name, label: 'Portal name'
+                = f_client.input :subdomain, label: 'Portal base URL' do
+                  .input-group
+                    span.input-group-addon https://
+                    = f_client.input_field :subdomain
+                    span.input-group-addon .hackster.io
+                  span.help-block The base address at which your dedicated portal will be available. Please be aware that changing it will break existing links.
+                = render partial: 'shared/image_form', locals: { file_type: 'logo', human_file_type: 'Portal logo', image_link: @platform.logo.try(:file_url), help_block: '', attribute_type: 'logo', image_version: nil, model: 'group' }
+                = render partial: 'shared/image_form', locals: { file_type: 'favicon', human_file_type: 'Portal favicon', image_link: client.favicon.try(:file_url), help_block: '', attribute_type: 'favicon', image_version: nil, model: 'group[client_subdomain_attributes]' }
+                p Want to use your own design? Send the HTML and CSS to platforms@hackster.io.
+                / # = f_client.input :domain, hint: "If you want to personalize the domain name of your dedicated portal, enter it. You will then need to add a CNAME pointing from this domain to #{client.subdomain}.hackster.io.", label: 'Portal custom domain'
+
+              .col-md-6
+                = f_client.input :analytics_code, hint: "If you want to add custom tracking to your site. Note: we already have Google Analytics in place, so it'll need to be compatible.", as: :text, input_html: { rows: 5 }
+                = f.input :enable_password, as: :boolean, inline_label: 'Enable password protection', label: false, hint: "If you enable password protection, #{client.subdomain}.hackster.io will be password-protected. Email us for credentials."
                 = f_client.input :hide_alternate_search_results, as: :boolean, hint: "When users make a search on your site that returns no results, by default we'll show them alternate results from Hackster.io. Uncheck this to disable alternate results.", label: false, inline_label: 'Hide alternate search results'
-                = f_client.input :analytics_code, hint: "If you want to add custom tracking to your site. Note: we already have Google Analytics in place, so it'll need to be compatible.", as: :text
-                = f.input :enable_password, as: :boolean, inline_label: 'Enable password protection', label: false, hint: "If you enable password protection, #{@group.user_name}.hackster.io will be password protected. Email us for credentials."
-              p Want to use your own design? Send us the HTML and CSS to portals@hackster.io.
 
       / .tab-pane.fade#chat role='tabpanel'
         .row
@@ -116,15 +133,23 @@
             = f.input :slack_token, label: 'Token'
             = f.input :slack_hook_url, label: 'Hook URL'
 
+      .tab-pane.fade#api role='tabpanel'
+        .row
+          .col-xs-12
+            | Please email us at platforms@hackster.io to request your API credentials.
+
       .tab-pane.fade#products role='tabpanel'
         .row
-          .col-xs-12.text-center
-            .btn-group.btn-group-default.mg-20
-              = link_to 'Manage products', url_for([@group, :products]), class: 'btn btn-default btn-sm'
+          .col-xs-12.mg-20
+
+            strong Quick links:
+            ul.list-inline style='display:inline'
+              li= link_to 'Manage products', url_for([@group, :products]), class: 'btn btn-link btn-sm'
               / # = link_to "Add startup", new_project_path(project: { platform_tags_string: @platform.name }, type: 'product'), class: 'btn btn-sm btn-default'
 
           .col-md-6
-            = f.input :enable_parts, as: :boolean, inline_label: 'Enable products tab', label: false, hint: "The products you make and sell."
+            = f.input :enable_parts, as: :boolean, inline_label: 'Enable products tab', label: false, hint: "Showcase your products in your hub. Makers will still be able to add your products to their projects even if you disable this tab."
+            = f.input :parts_text, label: 'Label for products section', hint: "Default is \"#{@platform.default_parts_text}\"."
 
       - if current_user.is? :admin
         .tab-pane.fade#admin role='tabpanel'

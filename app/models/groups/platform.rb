@@ -8,8 +8,8 @@ class Platform < List
     'Only projects approved by the Hackster team' => 'hackster',
     'Only projects approved by our team' => 'manual',
   }
+  PARTS_TEXT_OPTIONS = ['"#{name} products"', '"Products made by #{name}"']
   PLANS = %w(starter professional)
-
   PROJECT_IDEAS_PHRASING = ['"No #{name} yet?"', '"Have ideas on what to build with #{name}?"']
 
   has_many :active_members, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'") }, foreign_key: :group_id, class_name: 'PlatformMember'
@@ -41,12 +41,18 @@ class Platform < List
   has_one :slug, as: :sluggable, dependent: :destroy, class_name: 'SlugHistory'
 
   attr_accessible :cover_image_id, :client_subdomain_attributes, :logo_id,
-    :company_logo_id, :parts_attributes
+    :company_logo_id, :parts_attributes, :reset_api_credentials,
+    :reset_portal_credentials
+
+  attr_accessor :reset_api_credentials, :reset_portal_credentials
 
   accepts_nested_attributes_for :client_subdomain, :parts
 
   # before_save :update_user_name
-  before_save :format_hashtag, :ensure_extra_credentials
+  before_save :ensure_api_credentials,
+    :ensure_portal_credentials,
+    :ensure_platform_tags,
+    :format_hashtag
 
   add_websites :forums, :documentation, :crowdfunding, :buy, :shoplocket,
     :download, :cta
@@ -67,9 +73,10 @@ class Platform < List
   hstore_column :hproperties, :http_password, :string
   hstore_column :hproperties, :moderation_level, :string, default: 'hackster'
   hstore_column :hproperties, :plan, :string, default: 'starter'
+  hstore_column :hproperties, :parts_text, :string, default: '%{parts_text_options.first}'
   hstore_column :hproperties, :products_text, :string, default: 'Startups powered by %{name}'
-  hstore_column :hproperties, :project_ideas_phrasing, :string
-  hstore_column :hproperties, :verified, :boolean
+  hstore_column :hproperties, :project_ideas_phrasing, :string, default: '%{project_ideas_phrasing_options[0]}'
+  hstore_column :hproperties, :verified, :boolean, default: false
 
   has_counter :external_projects, 'projects.external.count'
   has_counter :private_projects, 'projects.private.count'
@@ -146,8 +153,8 @@ class Platform < List
     self.user_name = slug
   end
 
-  def project_ideas_phrasing
-    super || project_ideas_phrasing_options[0]
+  def parts_text_options
+    PARTS_TEXT_OPTIONS.map{|t| eval(t) }
   end
 
   def project_ideas_phrasing_options
@@ -164,10 +171,26 @@ class Platform < List
     self.logo = Logo.find_by_id(val)
   end
 
+  def pro?
+    plan == 'professional'
+  end
+
   def shoplocket_token
     return unless shoplocket_link.present?
 
     shoplocket_link.split(/\//)[-1]
+  end
+
+  def reset_api_credentials=val
+    reset_credentials('api') if val == true or val == '1'
+  end
+
+  def reset_portal_credentials=val
+    reset_credentials('portal') if val == true or val == '1'
+  end
+
+  def reset_credentials type
+    send "generate_#{type}_credentials", force: true
   end
 
   private
@@ -175,13 +198,24 @@ class Platform < List
       self.hashtag = '#' + hashtag if hashtag.present? and hashtag !~ /\A#/
     end
 
-    def ensure_extra_credentials
-      generate_extra_credentials unless api_username.present? and api_password.present? and http_password.present?
+    def ensure_api_credentials
+      generate_api_credentials unless api_username.present? and api_password.present?
     end
 
-    def generate_extra_credentials opts={}
+    def ensure_portal_credentials
+      generate_portal_credentials unless http_password.present?
+    end
+
+    def ensure_platform_tags
+      self.platform_tags_string = name if platform_tags_string.blank?
+    end
+
+    def generate_api_credentials opts={}
       self.api_username = SecureRandom.urlsafe_base64(nil, false) if api_username.blank? or opts[:force]
       self.api_password = Digest::SHA1.hexdigest([Time.now, rand].join) if api_password.blank? or opts[:force]
+    end
+
+    def generate_portal_credentials opts={}
       self.http_password = Digest::SHA1.hexdigest([Time.now, rand].join) if http_password.blank? or opts[:force]
     end
 

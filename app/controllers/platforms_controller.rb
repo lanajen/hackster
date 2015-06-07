@@ -4,7 +4,7 @@ class PlatformsController < ApplicationController
   include PlatformHelper
 
   before_filter :authenticate_user!, except: [:show, :embed, :projects, :products, :followers, :index]
-  before_filter :load_platform, except: [:show, :embed, :projects, :products, :followers, :index, :analytics, :sub_platforms]
+  before_filter :load_platform, except: [:show, :embed, :new, :create, :projects, :products, :followers, :index, :analytics, :sub_platforms]
   before_filter :load_platform_with_slug, only: [:show, :embed, :projects, :products, :followers, :analytics, :sub_platforms]
   before_filter :load_projects, only: [:embed]
   before_filter :load_project, only: [:feature_project, :unfeature_project]
@@ -171,13 +171,30 @@ class PlatformsController < ApplicationController
     render "groups/platforms/#{self.action_name}"
   end
 
+  def new
+    @platform = Platform.new
+    render 'groups/platforms/new'
+  end
+
+  def create
+    @platform = Platform.new params[:group]
+    authorize! :create, @platform
+    @platform.members.new user_id: current_user.id
+
+    if @platform.save
+      redirect_to @platform, notice: "Welcome to the new hub for #{@platform.name}!"
+    else
+      render 'groups/platforms/new'
+    end
+  end
+
   def update
     authorize! :update, @platform
     old_platform = @platform.dup
 
     if @platform.update_attributes(params[:group])
       respond_to do |format|
-        format.html { redirect_to @platform, notice: 'Profile updated.' }
+        format.html { redirect_to @platform, notice: 'Settings updated.' }
         format.js do
           # if old_group.interest_tags_string != @platform.interest_tags_string or old_group.skill_tags_string != @platform.skill_tags_string
           if old_platform.user_name != @platform.user_name
@@ -193,7 +210,7 @@ class PlatformsController < ApplicationController
     else
       @platform.build_avatar unless @platform.avatar
       respond_to do |format|
-        format.html { render template: 'groups/platforms/edit' }
+        format.html { render template: 'groups/shared/edit', layout: current_layout }
         format.js { render json: { group: @platform.errors }, status: :unprocessable_entity }
       end
     end

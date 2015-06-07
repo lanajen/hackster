@@ -5,9 +5,9 @@ class PartsController < ApplicationController
   layout 'platform'
 
   def index
-    @page_title = "Products made by #{@platform.name}"
+    @page_title = @platform.parts_text
     title @page_title
-    meta_desc "Discover all the products made by #{@platform.name} and their related hardware projects."
+    meta_desc "Discover all the #{@platform.parts_text.sub(/^[A-Z]/) {|f| f.downcase }} and their related hardware projects."
     @parts = @platform.parts.default_sort.paginate(page: safe_page_params)
   end
 

@@ -78,7 +78,7 @@ class ApplicationController < ActionController::Base
       ClientSubdomain.find_by_subdomain(request.subdomains[0])
     else
       ClientSubdomain.find_by_domain(request.host)
-    end
+    end and @current_site.enabled?
   end
 
   def current_platform

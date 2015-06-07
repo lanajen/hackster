@@ -734,7 +734,7 @@ class Project < ActiveRecord::Base
     end
 
     tags = platforms.map do |platform|
-      out = platform.hashtag.presence || platform.default_hashtag
+      out = platform.hashtag
       if link = platform.twitter_link.presence and handle = link.match(/twitter.com\/([a-zA-Z0-9_]+)/).try(:[], 1)
         out << " (@#{handle})"
       end

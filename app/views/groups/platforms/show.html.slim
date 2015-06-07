@@ -58,7 +58,7 @@
               .col-md-8
                 .header-with-more-button.clearfix
                   h2.section-title.pull-left
-                    | Products made by #{@platform.name}
+                    = @platform.parts_text
                     span.bdg= @platform.parts_count
                   - if @platform.parts_count > 2
                     = link_to "View more products &rarr;".html_safe, platform_parts_path(@platform), class: 'btn btn-default btn-sm hidden-xs pull-right'

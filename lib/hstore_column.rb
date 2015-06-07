@@ -15,7 +15,7 @@ module HstoreColumn
         column_name = options[:column_name].presence || attribute
         value = send(store_attribute).try(:[], column_name.to_s)
 
-        value = if value.nil? and options[:default]
+        value = if value.blank? and options[:default]
           send "default_#{attribute}"
         else
           cast_value value, type
@@ -68,12 +68,18 @@ module HstoreColumn
         self.send :define_method, "default_#{attribute}" do
           case options[:default]
           when String
-            options[:default].gsub(/%\{([a-z_\.\s\(\)]+)\}/) do
+            options[:default].gsub(/%\{([^\}]+)\}/) do
               eval $1
             end
           else
             options[:default]
           end
+        end
+      end
+
+      if type == :boolean
+        self.send :define_method, "#{attribute}?" do
+          send attribute
         end
       end
     end
@@ -84,7 +90,7 @@ module HstoreColumn
       def cast_value value, type
         case type
         when :boolean
-          value == '1' or value == true or value == 'true' or value == 't'
+          value == '1' or value == true or value == 'true' or value == 't' or value == 1
         when :datetime
           value ? Time.at(value.to_i) : nil
         when :float

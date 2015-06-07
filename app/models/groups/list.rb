@@ -16,7 +16,7 @@ class List < Group
   has_counter :projects, 'projects.visible.count'
 
   hstore_column :hproperties, :enable_comments, :boolean
-  hstore_column :hproperties, :hashtag, :string
+  hstore_column :hproperties, :hashtag, :string, default: "#%{name.gsub(/\s+/, '')}"
   hstore_column :hproperties, :is_new, :boolean, default: false
   hstore_column :hproperties, :list_type, :string
 
@@ -60,10 +60,6 @@ class List < Group
 
   def category?
     list_type == 'category'
-  end
-
-  def default_hashtag
-    "##{name.gsub(/\s+/, '')}"
   end
 
   def followers_count=(val)
