@@ -59,8 +59,7 @@ class Group < ActiveRecord::Base
     allow_destroy: true
 
   store :websites, accessors: []  # needed to serialize the hash
-  websites_column :websites
-  has_websites :facebook, :twitter, :linked_in, :google_plus,
+  has_websites :websites, :facebook, :twitter, :linked_in, :google_plus,
     :youtube, :website, :blog, :github, :instagram, :flickr, :reddit, :pinterest
 
   hstore_column :hproperties, :hidden, :boolean, default: true
@@ -103,11 +102,11 @@ class Group < ActiveRecord::Base
   end
 
   def self.most_members
-    order members_count: :desc
+    order "groups.hcounters_cache -> 'members_count' DESC"
   end
 
   def self.most_projects
-    order projects_count: :desc
+    order "groups.hcounters_cache -> 'projects_count' DESC"
   end
 
   def avatar_id=(val)

@@ -16,14 +16,7 @@ module HstoreColumn
         value = send(store_attribute).try(:[], column_name.to_s)
 
         value = if value.nil? and options[:default]
-          case options[:default]
-          when String
-            options[:default].gsub(/%\{([a-z_\.\s\(\)]+)\}/) do
-              eval $1
-            end
-          else
-            options[:default]
-          end
+          send "default_#{attribute}"
         else
           cast_value value, type
         end
@@ -69,6 +62,19 @@ module HstoreColumn
 
       self.send :define_method, "#{attribute}_changed?" do
         send(attribute) != send("#{attribute}_was")
+      end
+
+      if options[:default]
+        self.send :define_method, "default_#{attribute}" do
+          case options[:default]
+          when String
+            options[:default].gsub(/%\{([a-z_\.\s\(\)]+)\}/) do
+              eval $1
+            end
+          else
+            options[:default]
+          end
+        end
       end
     end
   end

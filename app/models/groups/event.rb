@@ -18,7 +18,7 @@ class Event < GeographicCommunity
 
   accepts_nested_attributes_for :awards, allow_destroy: true
 
-  has_websites :tickets
+  add_websites :tickets
 
   store :properties, accessors: []  # left so that tableless schedule_items work
 

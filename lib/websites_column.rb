@@ -1,13 +1,14 @@
 module WebsitesColumn
   module ClassMethods
-    def websites_column store_attribute
-      @@websites_column = store_attribute
-    end
-
-    def has_websites *websites
+    def add_websites *websites
       websites.each do |website|
         hstore_column @@websites_column, "#{website}_link", :string
       end
+    end
+
+    def has_websites store_attribute, *websites
+      @@websites_column = store_attribute
+      add_websites websites
     end
   end
 

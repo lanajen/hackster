@@ -6,6 +6,8 @@ class Hackathon < Community
   has_many :pages, as: :threadable
   has_many_tableless :schedule_items, order: :position
 
+  store :properties, accessors: []  # left so that tableless schedule_items work
+
   hstore_column :hproperties, :hashtag, :string
   hstore_column :hproperties, :show_organizers, :boolean
   hstore_column :hproperties, :twitter_widget_id, :string

@@ -2,7 +2,7 @@ class Platform < List
   include Taggable
 
   MINIMUM_FOLLOWERS = 5
-  MINIMUM_FOLLOWERS_STRICT = 20
+  MINIMUM_FOLLOWERS_STRICT = 25
   MODERATION_LEVELS = {
     'Approve all automatically' => 'auto',
     'Only projects approved by the Hackster team' => 'hackster',
@@ -48,8 +48,8 @@ class Platform < List
   # before_save :update_user_name
   before_save :format_hashtag, :ensure_extra_credentials
 
-  has_websites :forums, :documentation, :crowdfunding, :buy,
-    :shoplocket, :download, :cta
+  add_websites :forums, :documentation, :crowdfunding, :buy, :shoplocket,
+    :download, :cta
 
   hstore_column :hproperties, :accept_project_ideas, :boolean
   hstore_column :hproperties, :active_challenge, :boolean
@@ -118,11 +118,11 @@ class Platform < List
   end
 
   def self.minimum_followers
-    where("groups.members_count > ?", MINIMUM_FOLLOWERS)
+    where("groups.hcounters_cache -> 'members_count' > ?", MINIMUM_FOLLOWERS)
   end
 
   def self.minimum_followers_strict
-    where("groups.members_count > ?", MINIMUM_FOLLOWERS_STRICT)
+    where("groups.hcounters_cache -> 'members_count' > ?", MINIMUM_FOLLOWERS_STRICT)
   end
 
   def company_logo_id=(val)

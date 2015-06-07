@@ -18,8 +18,8 @@ class List < Group
 
   hstore_column :hproperties, :enable_comments, :boolean
   hstore_column :hproperties, :hashtag, :string
-  hstore_column :hproperties, :is_new, :string
-  hstore_column :hproperties, :list_type, :boolean
+  hstore_column :hproperties, :is_new, :boolean, default: false
+  hstore_column :hproperties, :list_type, :string
 
   # beginning of search methods
   tire do
