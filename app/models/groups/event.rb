@@ -12,22 +12,24 @@ class Event < GeographicCommunity
 
   attr_accessor :start_date_dummy, :end_date_dummy, :voting_end_date_dummy
 
-  attr_accessible :awards_attributes, :parent_id, :start_date,
-    :start_date_dummy, :end_date, :end_date_dummy, :tickets_link,
-    :voting_end_date, :voting_end_date_dummy, :activate_voting
+  attr_accessible :awards_attributes, :parent_id,
+    :start_date_dummy, :end_date_dummy, :tickets_link,
+    :voting_end_date_dummy
+
+  # attr_accessible :start_date, :end_date, :voting_end_date, :activate_voting
 
   accepts_nested_attributes_for :awards, allow_destroy: true
 
   store_accessor :websites, :tickets_link
   set_changes_for_stored_attributes :websites
 
-  store_accessor :properties, :voting_start_date, :voting_end_date,
-    :activate_voting, :schedule
-  parse_as_datetimes :properties, :voting_start_date, :voting_end_date
-  parse_as_booleans :properties, :activate_voting, :hidden
+  # store_accessor :properties, :voting_start_date, :voting_end_date,
+  #   :activate_voting, :schedule
+  # parse_as_datetimes :properties, :voting_start_date, :voting_end_date
+  # parse_as_booleans :properties, :activate_voting, :hidden
   # set_changes_for_stored_attributes :properties
 
-  has_default :cta_text, CTA_TEXT.first
+  # has_default :cta_text, CTA_TEXT.first
 
   hstore_column :hproperties, :activate_voting, :boolean
   hstore_column :hproperties, :cta_text, :string, default: CTA_TEXT.first

@@ -41,11 +41,14 @@ class Platform < List
   has_one :slug, as: :sluggable, dependent: :destroy, class_name: 'SlugHistory'
 
   attr_accessible :forums_link, :documentation_link, :crowdfunding_link,
-    :buy_link, :shoplocket_link, :cover_image_id, :accept_project_ideas,
-    :project_ideas_phrasing, :client_subdomain_attributes, :logo_id,
-    :download_link, :company_logo_id, :disclaimer,
-    :cta_text, :parts_attributes, :verified, :enable_chat, :enable_products,
-    :description, :enable_parts, :enable_password, :enable_sub_parts, :cta_link
+    :buy_link, :shoplocket_link, :cover_image_id,
+    :client_subdomain_attributes, :logo_id,
+    :download_link, :company_logo_id, :parts_attributes
+
+  # attr_accessible :accept_project_ideas,
+  #   :project_ideas_phrasing, :disclaimer,
+  #   :cta_text, :verified, :enable_chat, :enable_products,
+  #   :description, :enable_parts, :enable_password, :enable_sub_parts, :cta_link
 
   accepts_nested_attributes_for :client_subdomain, :parts
 
@@ -56,22 +59,22 @@ class Platform < List
     :crowdfunding_link, :buy_link, :shoplocket_link, :download_link, :cta_link
   set_changes_for_stored_attributes :websites
 
-  store_accessor :properties, :accept_project_ideas, :project_ideas_phrasing,
-    :active_challenge, :disclaimer, :cta_text, :hashtag,
-    :verified, :enable_chat, :enable_products, :description, :enable_parts,
-    :api_username, :api_password, :http_password, :enable_password,
-    :enable_sub_parts, :plan
-  set_changes_for_stored_attributes :properties
+  # store_accessor :properties, :accept_project_ideas, :project_ideas_phrasing,
+  #   :active_challenge, :disclaimer, :cta_text, :hashtag,
+  #   :verified, :enable_chat, :enable_products, :description, :enable_parts,
+  #   :api_username, :api_password, :http_password, :enable_password,
+  #   :enable_sub_parts, :plan
+  # set_changes_for_stored_attributes :properties
 
-  parse_as_booleans :properties, :accept_project_ideas, :active_challenge,
-    :is_new, :enable_comments, :hidden, :verified, :enable_chat, :enable_products,
-    :enable_parts, :enable_password, :enable_sub_parts
+  # parse_as_booleans :properties, :accept_project_ideas, :active_challenge,
+  #   :is_new, :enable_comments, :hidden, :verified, :enable_chat, :enable_products,
+  #   :enable_parts, :enable_password, :enable_sub_parts
 
-  has_default :cta_text, "Buy %{h.indefinite_articlerize(name)}"
-  has_default :hidden, true
-  has_default :plan, 'starter'
-  has_default :moderation_level, 'hackster'
-  has_default :products_text, 'Startups powered by %{name}'
+  # has_default :cta_text, "Buy %{h.indefinite_articlerize(name)}"
+  # has_default :hidden, true
+  # has_default :plan, 'starter'
+  # has_default :moderation_level, 'hackster'
+  # has_default :products_text, 'Startups powered by %{name}'
 
   hstore_column :hproperties, :accept_project_ideas, :boolean
   hstore_column :hproperties, :active_challenge, :boolean

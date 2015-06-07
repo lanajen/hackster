@@ -6,11 +6,11 @@ class Hackathon < Community
   has_many :pages, as: :threadable
   has_many_tableless :schedule_items, order: :position
 
-  attr_accessible :hashtag, :twitter_widget_id, :show_organizers
+  # attr_accessible :hashtag, :twitter_widget_id, :show_organizers
 
-  store_accessor :properties, :hashtag, :twitter_widget_id, :show_organizers
-  set_changes_for_stored_attributes :properties
-  parse_as_booleans :properties, :hidden, :show_organizers
+  # store_accessor :properties, :hashtag, :twitter_widget_id, :show_organizers
+  # set_changes_for_stored_attributes :properties
+  # parse_as_booleans :properties, :hidden, :show_organizers
 
   hstore_column :hproperties, :hashtag, :string
   hstore_column :hproperties, :show_organizers, :boolean

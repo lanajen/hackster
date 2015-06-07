@@ -55,8 +55,10 @@ class Group < ActiveRecord::Base
     :blog_link, :github_link, :email, :mini_resume, :city, :country,
     :user_name, :full_name, :members_attributes, :avatar_id,
     :permissions_attributes, :google_plus_link, :youtube_link, :access_level,
-    :hidden, :slack_token, :slack_hook_url, :cover_image_id, :project_sorting,
+    :cover_image_id, :project_sorting,
     :instagram_link, :flickr_link, :reddit_link, :pinterest_link
+
+  # attr_accessible :hidden, :slack_token, :slack_hook_url
 
   accepts_nested_attributes_for :avatar, :members, :permissions,
     allow_destroy: true
@@ -66,18 +68,20 @@ class Group < ActiveRecord::Base
     :instagram_link, :flickr_link, :reddit_link, :pinterest_link]
   set_changes_for_stored_attributes :websites
 
-  store :properties, accessors: [:hidden, :slack_token,
-    :slack_hook_url, :default_project_sorting]
-  set_changes_for_stored_attributes :properties
+  # store :properties, accessors: [:hidden, :slack_token,
+  #   :slack_hook_url, :default_project_sorting]
+  # set_changes_for_stored_attributes :properties
 
   hstore_column :hproperties, :hidden, :boolean, default: true
   hstore_column :hproperties, :slack_token, :string
   hstore_column :hproperties, :slack_hook_url, :string
   hstore_column :hproperties, :default_project_sorting, :string, default: 'trending'
 
+  # has_counter :counters_cache, :members, 'members.count'
+
   # :projects_count and :members_count are DB columns! don't include them in counters_cache
 
-  parse_as_booleans :properties, :hidden
+  # parse_as_booleans :properties, :hidden
 
   validates :user_name, :new_user_name, length: { in: 3..100 },
     format: { with: /\A[a-zA-Z0-9_\-]+\z/, message: "accepts only letters, numbers, underscores '_' and dashes '-'." }, allow_blank: true, if: proc{|t| t.persisted?}
