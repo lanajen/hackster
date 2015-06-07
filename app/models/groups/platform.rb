@@ -118,11 +118,11 @@ class Platform < List
   end
 
   def self.minimum_followers
-    where("groups.hcounters_cache -> 'members_count' > ?", MINIMUM_FOLLOWERS)
+    where("CAST(groups.hcounters_cache -> 'members' AS INTEGER) > ?", MINIMUM_FOLLOWERS)
   end
 
   def self.minimum_followers_strict
-    where("groups.hcounters_cache -> 'members_count' > ?", MINIMUM_FOLLOWERS_STRICT)
+    where("CAST(groups.hcounters_cache -> 'members' AS INTEGER) > ?", MINIMUM_FOLLOWERS_STRICT)
   end
 
   def company_logo_id=(val)

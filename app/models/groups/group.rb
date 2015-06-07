@@ -102,11 +102,11 @@ class Group < ActiveRecord::Base
   end
 
   def self.most_members
-    order "groups.hcounters_cache -> 'members_count' DESC"
+    order "CAST(groups.hcounters_cache -> 'members' AS INTEGER) DESC"
   end
 
   def self.most_projects
-    order "groups.hcounters_cache -> 'projects_count' DESC"
+    order "CAST(groups.hcounters_cache -> 'projects' AS INTEGER) DESC"
   end
 
   def avatar_id=(val)
