@@ -3,9 +3,6 @@ module HstoreColumn
     def hstore_column store_attribute, attribute, type, options={}
       attr_accessible attribute
 
-      # puts 'class: ' + name.to_s
-      # puts 'store_attribute: ' + store_attribute.to_s
-      # puts 'attribute: ' + attribute.to_s
       columns = hstore_columns.try(:dup) || {}
       columns[store_attribute] ||= []
       columns[store_attribute] += [attribute] unless attribute.in? columns[store_attribute]
@@ -50,8 +47,6 @@ module HstoreColumn
           cast_val
         end
         column_name = options[:column_name].presence || attribute
-        puts 'column_name: ' + column_name.to_s
-        puts 'val: ' + val.to_s
         store[column_name] = val
 
         self.send "#{store_attribute}=", store
