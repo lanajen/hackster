@@ -24,7 +24,7 @@ class Order < ActiveRecord::Base
   accepts_nested_attributes_for :order_lines, allow_destroy: true
 
   counters_column :counters_cache
-  has_counter :order_lines, 'order_lines.count.count'
+  has_counter :order_lines, 'order_lines.count'
 
   workflow do
     state :new do
