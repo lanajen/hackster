@@ -28,7 +28,8 @@
                 ==> link_to image_tag(platform.decorate.avatar(:mini), class: ' img-circle' ), platform, class: ''
                 ' Team
                 ==> link_to platform.name, platform
-                i.fa.fa-check-circle.istooltip title="Verified" style="color:#66C866"
+                - if platform.verified?
+                  i.fa.fa-check-circle.istooltip title="Verified" style="color:#66C866"
 
         .stats
           p

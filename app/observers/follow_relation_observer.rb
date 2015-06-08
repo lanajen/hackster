@@ -38,6 +38,8 @@ class FollowRelationObserver < ActiveRecord::Observer
       when 'Project'
         record.followable.update_counters only: [:replications]
         record.user.update_counters only: [:replicated_projects]
+        Cashier.expire "project-#{record.followable_id}-replications", "project-#{record.followable_id}"
+        record.followable.purge
       when 'User'
         record.followable.update_counters only: [:followers]
       when 'Platform', 'List'

@@ -29,6 +29,7 @@ class UsersController < ApplicationController
     @public_count = @public_projects.count
     @private_projects = @user.projects.private.for_thumb_display
     @respected_projects = @user.respected_projects.indexable_and_external.for_thumb_display
+    @replicated_projects = @user.replicated_projects
     @parts = @user.owned_parts
     if current_platform
       @private_projects = if current_user == @user

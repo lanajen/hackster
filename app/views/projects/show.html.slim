@@ -457,11 +457,16 @@
                   - @communities.each do |community|
                     = render partial: 'groups/shared/community_thumb_mini', locals: { community: community }
 
-              - cache ["project-#{@project.id}", 'metadata', site_user_name], tag: ["project-#{@project.id}-metadata", "project-#{@project.id}-respects"] do
-                - if @project.public? and @respecting_users.count > 0
-                  section.section-thumbs
-                    h4 Makers who respect this project
-                    = render partial: 'widgets/respect_widget', locals: { users: @respecting_users }
+              - cache ["project-#{@project.id}", 'metadata', site_user_name], tag: ["project-#{@project.id}-metadata", "project-#{@project.id}-respects", "project-#{@project.id}-replications"] do
+                - if @project.public?
+                  - if @project.respects_count > 0
+                    section.section-thumbs
+                      h4 Makers who respect this project
+                      = render partial: 'widgets/respect_widget', locals: { users: @respecting_users }
+                  - if @project.replications_count > 0
+                    section.section-thumbs
+                      h4 Project replicated by
+                      = render partial: 'widgets/replication_widget', locals: { users: @project.replicated_users.includes(:avatar) }
 
                 / # - if hacker_space = @project.hacker_space
                   section.section-thumbs
