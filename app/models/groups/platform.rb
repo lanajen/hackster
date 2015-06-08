@@ -2,13 +2,14 @@ class Platform < List
   include Taggable
 
   MINIMUM_FOLLOWERS = 5
-  MINIMUM_FOLLOWERS_STRICT = 20
+  MINIMUM_FOLLOWERS_STRICT = 25
   MODERATION_LEVELS = {
     'Approve all automatically' => 'auto',
     'Only projects approved by the Hackster team' => 'hackster',
     'Only projects approved by our team' => 'manual',
   }
-
+  PARTS_TEXT_OPTIONS = ['"#{name} products"', '"Products made by #{name}"']
+  PLANS = %w(starter professional)
   PROJECT_IDEAS_PHRASING = ['"No #{name} yet?"', '"Have ideas on what to build with #{name}?"']
 
   has_many :active_members, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'") }, foreign_key: :group_id, class_name: 'PlatformMember'
@@ -39,46 +40,52 @@ class Platform < List
   has_one :logo, as: :attachable, dependent: :destroy
   has_one :slug, as: :sluggable, dependent: :destroy, class_name: 'SlugHistory'
 
-  attr_accessible :forums_link, :documentation_link, :crowdfunding_link,
-    :buy_link, :shoplocket_link, :cover_image_id, :accept_project_ideas,
-    :project_ideas_phrasing, :client_subdomain_attributes, :logo_id,
-    :download_link, :company_logo_id, :disclaimer,
-    :cta_text, :parts_attributes, :verified, :enable_chat, :enable_products,
-    :description, :enable_parts, :enable_password, :enable_sub_parts
+  attr_accessible :cover_image_id, :client_subdomain_attributes, :logo_id,
+    :company_logo_id, :parts_attributes, :reset_api_credentials,
+    :reset_portal_credentials
+
+  attr_accessor :reset_api_credentials, :reset_portal_credentials
 
   accepts_nested_attributes_for :client_subdomain, :parts
 
   # before_save :update_user_name
-  before_save :format_hashtag, :ensure_extra_credentials
+  before_save :ensure_api_credentials,
+    :ensure_portal_credentials,
+    :ensure_platform_tags,
+    :format_hashtag
 
-  store_accessor :websites, :forums_link, :documentation_link,
-    :crowdfunding_link, :buy_link, :shoplocket_link, :download_link
-  set_changes_for_stored_attributes :websites
+  add_websites :forums, :documentation, :crowdfunding, :buy, :shoplocket,
+    :download, :cta
 
-  store_accessor :properties, :accept_project_ideas, :project_ideas_phrasing,
-    :active_challenge, :disclaimer, :cta_text, :hashtag,
-    :verified, :enable_chat, :enable_products, :description, :enable_parts,
-    :api_username, :api_password, :http_password, :enable_password,
-    :enable_sub_parts
-  set_changes_for_stored_attributes :properties
+  hstore_column :hproperties, :accept_project_ideas, :boolean
+  hstore_column :hproperties, :active_challenge, :boolean
+  hstore_column :hproperties, :api_password, :string
+  hstore_column :hproperties, :api_username, :string
+  hstore_column :hproperties, :cta_text, :string, default: "Buy %{h.indefinite_articlerize(name)}"
+  hstore_column :hproperties, :description, :string
+  hstore_column :hproperties, :disclaimer, :string
+  hstore_column :hproperties, :enable_chat, :boolean
+  hstore_column :hproperties, :enable_parts, :boolean
+  hstore_column :hproperties, :enable_password, :boolean
+  hstore_column :hproperties, :enable_products, :boolean
+  hstore_column :hproperties, :enable_sub_parts, :boolean
+  hstore_column :hproperties, :hidden, :boolean, default: true
+  hstore_column :hproperties, :http_password, :string
+  hstore_column :hproperties, :moderation_level, :string, default: 'hackster'
+  hstore_column :hproperties, :plan, :string, default: 'starter'
+  hstore_column :hproperties, :parts_text, :string, default: '%{parts_text_options.first}'
+  hstore_column :hproperties, :products_text, :string, default: 'Startups powered by %{name}'
+  hstore_column :hproperties, :project_ideas_phrasing, :string, default: '%{project_ideas_phrasing_options[0]}'
+  hstore_column :hproperties, :verified, :boolean, default: false
 
-  parse_as_booleans :properties, :accept_project_ideas, :active_challenge,
-    :is_new, :enable_comments, :hidden, :verified, :enable_chat, :enable_products,
-    :enable_parts, :enable_password, :enable_sub_parts
-
-  store_accessor :counters_cache, :parts_count, :products_count, :sub_parts_count,
-    :sub_platforms_count
-
-  parse_as_integers :counters_cache, :external_projects_count,
-    :private_projects_count, :products_count, :parts_count, :sub_parts_count,
-    :sub_platforms_count
+  has_counter :parts, 'parts.count'
+  has_counter :products, 'products.count'
+  has_counter :sub_parts, 'sub_parts.count'
+  has_counter :sub_platforms, 'sub_platforms.count'
 
   taggable :platform_tags, :product_tags
 
   is_impressionable counter_cache: true, unique: :session_hash
-
-  has_default :products_text, 'Startups powered by %name%'
-  has_default :moderation_level, 'hackster'
 
   # beginning of search methods
   has_tire_index 'private'
@@ -114,28 +121,24 @@ class Platform < List
     includes(:avatar).includes(:cover_image)
   end
 
+  def self.featured
+    where "CAST(groups.hproperties -> 'hidden' AS BOOLEAN) = ?", false
+  end
+
   def self.minimum_followers
-    where("groups.members_count > ?", MINIMUM_FOLLOWERS)
+    where("CAST(groups.hcounters_cache -> 'members' AS INTEGER) > ?", MINIMUM_FOLLOWERS)
   end
 
   def self.minimum_followers_strict
-    where("groups.members_count > ?", MINIMUM_FOLLOWERS_STRICT)
+    where("CAST(groups.hcounters_cache -> 'members' AS INTEGER) > ?", MINIMUM_FOLLOWERS_STRICT)
+  end
+
+  def self.sub_platform_most_members
+    select("groups.id, groups.*, CAST(groups.hcounters_cache -> 'members' AS INTEGER) AS members_cnt").order("members_cnt DESC")
   end
 
   def company_logo_id=(val)
     self.company_logo = CompanyLogo.find_by_id(val)
-  end
-
-  def counters
-    super.merge({
-      external_projects: 'projects.external.count',
-      private_projects: 'projects.private.count',
-      parts: 'parts.count',
-      products: 'products.count',
-      projects: 'projects.visible.count',
-      sub_parts: 'sub_parts.count',
-      sub_platforms: 'sub_platforms.count',
-    })
   end
 
   def generate_user_name
@@ -155,8 +158,8 @@ class Platform < List
     self.user_name = slug
   end
 
-  def project_ideas_phrasing
-    super || project_ideas_phrasing_options[0]
+  def parts_text_options
+    PARTS_TEXT_OPTIONS.map{|t| eval(t) }
   end
 
   def project_ideas_phrasing_options
@@ -173,10 +176,26 @@ class Platform < List
     self.logo = Logo.find_by_id(val)
   end
 
+  def pro?
+    plan == 'professional'
+  end
+
   def shoplocket_token
     return unless shoplocket_link.present?
 
     shoplocket_link.split(/\//)[-1]
+  end
+
+  def reset_api_credentials=val
+    reset_credentials('api') if val == true or val == '1'
+  end
+
+  def reset_portal_credentials=val
+    reset_credentials('portal') if val == true or val == '1'
+  end
+
+  def reset_credentials type
+    send "generate_#{type}_credentials", force: true
   end
 
   private
@@ -184,13 +203,24 @@ class Platform < List
       self.hashtag = '#' + hashtag if hashtag.present? and hashtag !~ /\A#/
     end
 
-    def ensure_extra_credentials
-      generate_extra_credentials unless api_username.present? and api_password.present? and http_password.present?
+    def ensure_api_credentials
+      generate_api_credentials unless api_username.present? and api_password.present?
     end
 
-    def generate_extra_credentials opts={}
+    def ensure_portal_credentials
+      generate_portal_credentials unless http_password.present?
+    end
+
+    def ensure_platform_tags
+      self.platform_tags_string = name if platform_tags_string.blank?
+    end
+
+    def generate_api_credentials opts={}
       self.api_username = SecureRandom.urlsafe_base64(nil, false) if api_username.blank? or opts[:force]
       self.api_password = Digest::SHA1.hexdigest([Time.now, rand].join) if api_password.blank? or opts[:force]
+    end
+
+    def generate_portal_credentials opts={}
       self.http_password = Digest::SHA1.hexdigest([Time.now, rand].join) if http_password.blank? or opts[:force]
     end
 

@@ -77,7 +77,7 @@ class UserObserver < ActiveRecord::Observer
     end
 
     if (record.changed & %w(reputation_count)).any?
-      record.reputation.compute_redeemable!
+      record.reputation.try(:compute_redeemable!)
     end
 
     Cashier.expire *keys if keys.any?

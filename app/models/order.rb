@@ -3,8 +3,7 @@
 
 class Order < ActiveRecord::Base
   include ApplicationHelper
-  include Counter
-  include StringParser
+  include HstoreCounter
   include Workflow
 
   INVALID_STATES = %w(new).freeze
@@ -24,8 +23,8 @@ class Order < ActiveRecord::Base
 
   accepts_nested_attributes_for :order_lines, allow_destroy: true
 
-  store_accessor :counters_cache, :order_lines_count
-  parse_as_integers :counters_cache, :order_lines_count
+  counters_column :counters_cache
+  has_counter :order_lines, 'order_lines.count.count'
 
   workflow do
     state :new do
@@ -90,12 +89,6 @@ class Order < ActiveRecord::Base
 
   def compute_total_cost
     self.total_cost = shipping_cost.to_i + products_cost.to_i
-  end
-
-  def counters
-    {
-      order_lines: "order_lines.count",
-    }
   end
 
   def destination_country

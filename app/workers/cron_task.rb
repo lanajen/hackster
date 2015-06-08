@@ -121,8 +121,8 @@ class CronTask < BaseWorker
       u.save
     end
     groups = []
-    Platform.public.each do |plat|
-      plat.followers_count.times{ groups << plat.id } unless plat.hidden
+    Platform.public.featured.each do |plat|
+      (Math.log(plat.followers_count) * 100).to_i.times{ groups << plat.id } unless plat.followers_count.zero?
     end
     rand(1..5).times do
       FollowRelation.add u, Group.find(groups.sample), true
@@ -131,7 +131,7 @@ class CronTask < BaseWorker
     rand(1..10).times do
       project = Project.find project_ids.sample
       project.impressions.create user_id: u.id, controller_name: 'projects', action_name: 'show', message: 'tmp', request_hash: SecureRandom.hex(16)
-      if [true, false, false, false, false].sample  # prob = 0.2
+      if [true, false, false, false, false, false, false, false, false, false].sample  # prob = 0.1
         Respect.create_for u, project
       end
     end

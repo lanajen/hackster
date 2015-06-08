@@ -270,9 +270,11 @@ class ProjectsController < ApplicationController
       if private_was != @project.private
         if @project.private == false
           current_user.broadcast :new, @project.id, 'Project', @project.id
-          notice = "#{@project.name} is now published. Somebody from the Hackster team still needs to approve it before it shows on the site. Sit tight!"
+          notice = nil# "#{@project.name} is now published. Somebody from the Hackster team still needs to approve it before it shows on the site. Sit tight!"
           session[:share_modal] = 'published_share_prompt'
           session[:share_modal_model] = 'project'
+          session[:share_modal_model_id] = @project.id
+          session[:share_modal_time] = 'after_redirect'
 
           track_event 'Made project public', @project.to_tracker
         elsif @project.private == false

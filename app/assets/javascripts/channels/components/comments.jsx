@@ -1,4 +1,3 @@
-
 var CommentForm = React.createClass({
   getInitialState: function() {
     return {
@@ -169,9 +168,24 @@ var CommentContainer = React.createClass({
     this.getFlux().actions.comments.add({ body: body, thoughtId: this.props.thoughtId });
   },
 
+  handleShowAll: function(e) {
+    e.preventDefault();
+    this.props.showAllComments(this.props.thoughtId);
+  },
+
   render: function() {
+    var more = '';
+    if (this.props.moreCommentsCount) {
+      more = (
+        <div className="thought-comments-more">
+          <a href="#" onClick={this.handleShowAll} >Show earlier comments ({this.props.moreCommentsCount})</a>
+        </div>
+      );
+    }
+
     return (
       <div className='comment-container'>
+        {more}
         <CommentList comments={this.props.comments} />
         <CommentForm ref='commentForm' onCommentSubmit={this.handleCommentSubmit} />
       </div>

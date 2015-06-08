@@ -22,48 +22,53 @@
 - when 'Promotion'
   = f.association :course, collection: Course.all
 - when 'Platform'
+  = f.input :plan, collection: Platform::PLANS
   = f.input :product_tags_string
   = f.input :platform_tags_string
   = f.input :verified, as: :boolean, inline_label: 'Verified', label: false, hint: "Check if a representative of the community is onboard"
   = render partial: 'shared/image_form', locals: { file_type: 'document', human_file_type: 'Cover image', image_link: @group.cover_image.try(:imgix_url), help_block: 'A high quality picture of your product, at least 1200px wide and 400px high.', attribute_type: 'cover_image', image_version: nil, model: 'group' }
 
-  hr
-  h4.col-md-8.col-md-offset-4 Whitelabel parameters
-  - subdomain = ClientSubdomain.find_by_subdomain(@group.user_name)
-  = f.simple_fields_for :client_subdomain, subdomain do |f_sub|
-    = f_sub.input :subdomain
-    = f_sub.input :domain
-    = f_sub.input :name
-    = f.input :enable_password, as: :boolean, inline_label: 'Enable password protection', label: false
-    = render partial: 'shared/image_form', locals: { file_type: 'logo', human_file_type: 'Portal logo', image_link: subdomain.try(:logo).try(:file_url), help_block: '', attribute_type: 'logo', image_version: nil, model: 'group' }
-    = render partial: 'shared/image_form', locals: { file_type: 'favicon', human_file_type: 'Portal favicon', image_link: subdomain.try(:favicon).try(:file_url), help_block: '', attribute_type: 'favicon', image_version: nil, model: 'group[client_subdomain_attributes]' }
-  - unless subdomain.present?
-    = f.link_to_add 'Add a whitelabel portal', :client_subdomain
+  - if @group.pro?
+    hr
+    h4.col-md-8.col-md-offset-4 Dedicated portal parameters
+    - subdomain = ClientSubdomain.find_by_subdomain(@group.user_name)
+    = f.simple_fields_for :client_subdomain, subdomain do |f_sub|
+      = f_sub.input :enabled, as: :boolean, inline_label: 'Enable portal', label: false
+      = f_sub.input :subdomain
+      = f_sub.input :domain
+      = f_sub.input :name
+      = f.input :enable_password, as: :boolean, inline_label: 'Enable password protection', label: false
+      = render partial: 'shared/image_form', locals: { file_type: 'logo', human_file_type: 'Portal logo', image_link: subdomain.try(:logo).try(:file_url), help_block: '', attribute_type: 'logo', image_version: nil, model: 'group' }
+      = render partial: 'shared/image_form', locals: { file_type: 'favicon', human_file_type: 'Portal favicon', image_link: subdomain.try(:favicon).try(:file_url), help_block: '', attribute_type: 'favicon', image_version: nil, model: 'group[client_subdomain_attributes]' }
+    - unless subdomain.present?
+      = f.link_to_add 'Add a dedicated portal', :client_subdomain
 
-  hr
-  h4.col-md-8.col-md-offset-4 API credentials
-  .form-group
-    .col-md-4
-      label.control-label Username
-    .col-md-8
-      input.form-control type='text' disabled=true value=@group.api_username
-  .form-group
-    .col-md-4
-      label.control-label Password
-    .col-md-8
-      input.form-control type='text' disabled=true value=@group.api_password
-  hr
-  h4.col-md-8.col-md-offset-4 Whitelabel credentials
-  .form-group
-    .col-md-4
-      label.control-label Username
-    .col-md-8
-      input.form-control type='text' disabled=true value=@group.user_name
-  .form-group
-    .col-md-4
-      label.control-label Password
-    .col-md-8
-      input.form-control type='text' disabled=true value=@group.http_password
+    hr
+    h4.col-md-8.col-md-offset-4 Dedicated portal credentials
+    = f.input :reset_portal_credentials, as: :boolean, label: false, inline_label: 'Reset credentials'
+    .form-group
+      .col-md-4
+        label.control-label Username
+      .col-md-8
+        input.form-control type='text' disabled=true value=@group.user_name
+    .form-group
+      .col-md-4
+        label.control-label Password
+      .col-md-8
+        input.form-control type='text' disabled=true value=@group.http_password
+    hr
+    h4.col-md-8.col-md-offset-4 API credentials
+    = f.input :reset_api_credentials, as: :boolean, label: false, inline_label: 'Reset credentials'
+    .form-group
+      .col-md-4
+        label.control-label Username
+      .col-md-8
+        input.form-control type='text' disabled=true value=@group.api_username
+    .form-group
+      .col-md-4
+        label.control-label Password
+      .col-md-8
+        input.form-control type='text' disabled=true value=@group.api_password
 
 - when 'University'
 .col-md-offset-4.col-md-8

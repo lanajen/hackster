@@ -1,7 +1,7 @@
 class ClientSubdomain < Subdomain
+  include HasDefault
   include HerokuDomains
-  include SetChangesForStoredAttributes
-  include StringParser
+  include HstoreColumn
   RESERVED_SUBDOMAINS = %w(www beta api admin)
 
   belongs_to :platform
@@ -22,9 +22,14 @@ class ClientSubdomain < Subdomain
   attr_accessible :subdomain, :domain, :logo_id, :name, :favicon_id,
     :hide_alternate_search_results, :analytics_code
 
-  store :properties, accessors: [:hide_alternate_search_results, :analytics_code]
-  set_changes_for_stored_attributes :properties
-  parse_as_booleans :properties, :hide_alternate_search_results
+  store :properties, accessor: []
+  hstore_column :properties, :analytics_code, :string
+  hstore_column :properties, :enabled, :boolean, default: false
+  hstore_column :properties, :hide_alternate_search_results, :boolean
+
+  has_default :name, '%{platform.name} Projects' do |instance|
+    instance.read_attribute :name
+  end
 
   after_destroy do
     remove_domain_from_heroku(domain) unless domain.blank?

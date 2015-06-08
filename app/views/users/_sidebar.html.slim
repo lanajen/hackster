@@ -28,7 +28,8 @@
                 ==> link_to image_tag(platform.decorate.avatar(:mini), class: ' img-circle' ), platform, class: ''
                 ' Team
                 ==> link_to platform.name, platform
-                i.fa.fa-check-circle.istooltip title="Verified" style="color:#66C866"
+                - if platform.verified?
+                  i.fa.fa-check-circle.istooltip title="Verified" style="color:#66C866"
 
         .stats
           p
@@ -64,7 +65,7 @@
           .content.badges
             - if @user.reputation_count
               strong.istooltip> title="Reputation"
-                = @user.reputation_count
+                = number_with_delimiter @user.reputation_count
             - if @user.badges_green_count > 0
               a.fa.fa-certificate> style='color:green' data-container='body'  data-toggle="popover" data-placement="right" data-trigger="hover" data-content="<div><strong>Green badges</strong></div>#{@user.badges(:green).map{|b| "<div>#{b.name(:green)}</div>"}.join('')}" data-html="true" rel="popover"
               strong>= number_with_delimiter @user.badges_green_count

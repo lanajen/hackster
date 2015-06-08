@@ -42,19 +42,20 @@ class Api::V1::ProjectsController < Api::V1::BaseController
     @panel = params[:panel]
 
     if (params[:save].present? and params[:save] == '0') or @project.update_attributes params[:project]
+      # @project = Project.find params[:id]
       if @panel.in? %w(hardware publish team software)
         render 'projects/forms/update'
       else
         render 'projects/forms/checklist', status: :ok
       end
     else
-      message = "Couldn't save project: #{@project.inspect} // params: #{params.inspect} // errors: #{@project.errors.inspect}"
+      message = "Couldn't save project: #{@project.inspect} // user: #{current_user.user_name} // params: #{params.inspect} // errors: #{@project.errors.inspect}"
       log_line = LogLine.create(message: message, log_type: '422', source: 'api/projects')
       NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification' if Rails.env == 'production'
       render json: { project: @project.errors }, status: :unprocessable_entity
     end
   rescue => e
-    message = "Couldn't save project: #{@project.inspect} // params: #{params.inspect} // exception: #{e.inspect}"
+    message = "Couldn't save project: #{@project.inspect} // user: #{current_user.user_name} // params: #{params.inspect} // exception: #{e.inspect}"
     log_line = LogLine.create(message: message, log_type: '5xx', source: 'api/projects')
     NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification' if Rails.env == 'production'
     render status: :internal_server_error, nothing: true

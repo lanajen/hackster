@@ -1,10 +1,28 @@
 class PlatformObserver < ActiveRecord::Observer
+  def after_create record
+    expire_index
+    record.create_client_subdomain subdomain: record.user_name
+  end
+
+  def after_destroy record
+    expire_index
+    record.purge
+  end
+
   def after_save record
     return unless record.user_name.present?
     record.build_slug unless record.slug
     slug = record.slug
     slug.value = record.user_name.downcase
     slug.save
+  end
+
+  def after_update record
+    record.purge
+  end
+
+  def before_create record
+    record.update_counters assign_only: true
   end
 
   def before_update record
@@ -47,23 +65,6 @@ class PlatformObserver < ActiveRecord::Observer
     if (record.changed & %w(logo)).any?
       Cashier.expire "platform-#{record.id}-client-nav"
     end
-  end
-
-  def before_create record
-    record.update_counters assign_only: true
-  end
-
-  def after_create record
-    expire_index
-  end
-
-  def after_update record
-    record.purge
-  end
-
-  def after_destroy record
-    expire_index
-    record.purge
   end
 
   private

@@ -6,33 +6,29 @@
 class Part < ActiveRecord::Base
   INVALID_STATES = %w(rejected retired)
   TYPES = %w(Hardware Software Tool).inject({}){|mem, t| mem[t] = "#{t}Part"; mem }
-  include Counter
-  include SetChangesForStoredAttributes
-  include StringParser
+  include HstoreCounter
   include Taggable
+  include WebsitesColumn
   include Workflow
 
   belongs_to :platform
-
   has_and_belongs_to_many :parent_parts, join_table: :part_relations, foreign_key: :child_part_id, association_foreign_key: :parent_part_id, class_name: 'Part'
   has_and_belongs_to_many :child_parts, join_table: :part_relations, foreign_key: :parent_part_id, association_foreign_key: :child_part_id, class_name: 'Part'
-
+  has_many :child_platforms, through: :child_parts, source: :platform
   has_many :child_part_relations, foreign_key: :parent_part_id, class_name: 'PartRelation'
+  has_many :follow_relations, as: :followable
+  has_many :owners, through: :follow_relations, class_name: 'User', source: :user
+  has_many :parent_part_joins, dependent: :destroy, class_name: 'PartJoin', through: :parent_parts, source: :part_joins
   has_many :parent_part_relations, foreign_key: :child_part_id, class_name: 'PartRelation'
-  has_many :part_joins, dependent: :destroy
+  has_many :parent_projects, through: :sub_part_joins, source_type: 'Project', source: :partable
+  has_many :part_joins, inverse_of: :part, dependent: :destroy
   has_many :projects, through: :part_joins, source_type: 'Project', source: :partable
   has_one :image, as: :attachable, dependent: :destroy
-
-  has_many :parent_part_joins, dependent: :destroy, class_name: 'PartJoin', through: :parent_parts, source: :part_joins
-  has_many :parent_projects, through: :sub_part_joins, source_type: 'Project', source: :partable
-
-  has_many :child_platforms, through: :child_parts, source: :platform
 
   taggable :product_tags
 
   attr_accessible :name, :vendor_link, :vendor_name, :vendor_sku, :mpn, :unit_price,
-    :description, :store_link, :documentation_link, :libraries_link,
-    :datasheet_link, :product_page_link, :image_id, :platform_id,
+    :description, :image_id, :platform_id,
     :part_joins_attributes, :part_join_ids, :workflow_state, :slug, :one_liner,
     :position, :child_part_relations_attributes,
     :parent_part_relations_attributes, :type
@@ -40,14 +36,15 @@ class Part < ActiveRecord::Base
   accepts_nested_attributes_for :part_joins, :child_part_relations,
     :parent_part_relations, allow_destroy: true
 
-  store :websites, accessors: [:store_link, :documentation_link, :libraries_link,
-    :datasheet_link, :product_page_link]
-  set_changes_for_stored_attributes :websites
+  has_websites :websites, :store, :documentation, :libraries, :datasheet,
+    :product_page
 
-  store_accessor :counters_cache, :projects_count, :all_projects_count
-  parse_as_integers :counters_cache, :projects_count, :all_projects_count
+  counters_column :counters_cache, long_format: true
+  has_counter :all_projects, 'all_projects.public.count'
+  has_counter :owners, 'owners.count'
+  has_counter :projects, 'projects.public.count'
 
-  validates :name, presence: true
+  validates :name, :type, presence: true
   validates :unit_price, numericality: { greater_than_or_equal_to: 0 }, allow_blank: true
   validates :slug, uniqueness: { scope: :platform_id }, length: { in: 3..100 },
     format: { with: /\A[a-zA-Z0-9_\-]+\z/, message: "accepts only letters, numbers, and dashes '-'." }
@@ -215,13 +212,6 @@ class Part < ActiveRecord::Base
     ids = [id]
     ids += child_part_relations.pluck(:child_part_id)
     Project.joins("INNER JOIN part_joins ON part_joins.partable_id = projects.id AND part_joins.partable_type = 'Project'").where(part_joins: { part_id: ids })
-  end
-
-  def counters
-    {
-      all_projects: 'all_projects.public.count',
-      projects: 'projects.public.count',
-    }
   end
 
   def identifier

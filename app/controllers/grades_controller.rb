@@ -9,8 +9,8 @@ class GradesController < ApplicationController
     if @assignment
       respond_to do |format|
         format.html do
-          @promotion = @assignment.promotion
-          render 'grades/assignments/index', layout: 'assignment'
+          @group = @promotion = @assignment.promotion
+          render 'grades/assignments/index', layout: 'group_shared'
         end
         format.csv { send_data @assignment.to_csv, filename: "#{@assignment.name.downcase.gsub(/[^a-z0-9]/, '_')}_grades.csv", type: 'text/csv' }
       end

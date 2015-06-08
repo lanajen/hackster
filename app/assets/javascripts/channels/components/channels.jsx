@@ -21,14 +21,8 @@ var ChannelContainer = React.createClass({
     if (params.hashtag)
       data['hashtag'] = params.hashtag;
 
-    return {
-      thoughts: this.getFlux().store("thought").getThoughts(data)
-    };
+    return this.getFlux().store("thought").getThoughts(data);
   },
-
-  // componentDidMount: function() {
-  //   this.getFlux().actions.thoughts.load();
-  // },
 
   componentWillReceiveProps: function(nextProps) {
     this.setState(this.getStateFromFlux());
@@ -38,6 +32,16 @@ var ChannelContainer = React.createClass({
     this.getFlux().actions.thoughts.add(body);
   },
 
+  handleLoadMoreThoughts: function(e) {
+    e.preventDefault();
+    this.setState({ loading: true });
+    var data = { page: this.state.nextPage };
+    var params = this.context.router.getCurrentParams();
+    if (params.hashtag)
+      data['hashtag'] = params.hashtag;
+    this.getFlux().actions.thoughts.loadMore(data);
+  },
+
   render: function() {
     var params = this.context.router.getCurrentParams();
 
@@ -45,11 +49,25 @@ var ChannelContainer = React.createClass({
     if (params.hashtag)
       title = '#' + params.hashtag + ' channel';
 
+    var loadMoreButton = '';
+    if (this.state.loading) {
+      loadMoreButton = (
+        <div className="text-center">
+          <i className="fa fa-spin fa-spinner fa-3x"></i>
+        </div>
+      );
+    } else if (this.state.nextPage) {
+      loadMoreButton = (
+        <a href='#' className="btn btn-block btn-default" onClick={this.handleLoadMoreThoughts}>Load more</a>
+      );
+    }
+
     return (
       <div className="channel-container">
         <ChannelHeader title={title} />
         <ThoughtForm onThoughtSubmit={this.handleThoughtSubmit} />
         <ThoughtList thoughts={this.state.thoughts} />
+        {loadMoreButton}
       </div>
     );
   }

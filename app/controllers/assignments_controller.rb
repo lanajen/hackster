@@ -6,12 +6,12 @@ class AssignmentsController < ApplicationController
   after_action :allow_iframe, only: :embed
   skip_before_filter :track_visitor, only: [:embed]
   skip_after_filter :track_landing_page, only: [:embed]
-  layout 'assignment'
+  layout 'group_shared'
 
   def show
     redirect_to promotion_path(@assignment.promotion) and return unless can? :read, @assignment
     title "#{@assignment.name} | #{@assignment.promotion.name}"
-    @projects = @assignment.projects.for_thumb_display.order(:created_at)
+    @projects = @assignment.projects.for_thumb_display.order(:created_at).paginate(page: safe_page_params)
     if user_signed_in? and @assignment.submit_by_date.present? and can? :submit_project, @assignment
       @submit_date = @assignment.submit_by_date.in_time_zone(PDT_TIME_ZONE)
       @submission_status = if current_user.created_project_for_assignment?(@assignment)
@@ -41,7 +41,7 @@ class AssignmentsController < ApplicationController
     @assignment = @promotion.assignments.new
     authorize! :create, @assignment
 
-    render layout: 'promotion'
+    render layout: 'application'
   end
 
   def create
@@ -51,11 +51,12 @@ class AssignmentsController < ApplicationController
     if @assignment.save
       redirect_to assignment_path(@assignment), notice: "Assignment #{@assignment.name} was created."
     else
-      render 'new', layout: 'promotion'
+      render 'new', layout: 'application'
     end
   end
 
   def edit
+    render layout: 'application'
   end
 
   def update
@@ -70,7 +71,7 @@ class AssignmentsController < ApplicationController
       end
     else
       respond_to do |format|
-        format.html { render action: 'edit' }
+        format.html { render action: 'edit', layout: 'application' }
         format.js { render json: { assignment: @assignment.errors }, status: :unprocessable_entity }
       end
     end
@@ -86,6 +87,6 @@ class AssignmentsController < ApplicationController
 
   private
     def load_promotion
-      @promotion = Promotion.joins(:course).where(groups: { user_name: params[:promotion_name] }, courses_groups: { user_name: params[:user_name] }).first!
+      @group = @promotion = Promotion.joins(:course).where(groups: { user_name: params[:promotion_name] }, courses_groups: { user_name: params[:user_name] }).first!
     end
 end

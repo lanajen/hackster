@@ -1,4 +1,7 @@
 function openModal(id) {
+  $('.modal-popup:not(' + id  + ')').each(function(i, el){
+    closeModal('#' + $(el).attr('id'));
+  });
   $(id).trigger('modal:opening');
   resizeModal(id);
   return false;
@@ -57,7 +60,7 @@ $(function () {
     var alertHtml = request.getResponseHeader('X-Alert');
     var id = request.getResponseHeader('X-Alert-ID');
 
-    if (typeof(alertHtml) != 'undefined') {
+    if (typeof(alertHtml) != 'undefined' && typeof(id) != 'undefined' && alertHtml && id) {
       $(alertHtml).appendTo('body');
       openModal(id);
     }

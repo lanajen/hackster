@@ -12,6 +12,7 @@ require File.join(Rails.root, 'lib/base_broadcast_observer')
 require File.join(Rails.root, 'lib/string_parser')
 # cached counters
 require File.join(Rails.root, 'lib/counter')
+require File.join(Rails.root, 'lib/hstore_counter')
 # virtual associations stored in a model's column
 require File.join(Rails.root, 'lib/tableless_association')
 # turn off asset messages in logger
@@ -42,6 +43,9 @@ require File.join(Rails.root, 'lib/has_default')
 #notifiable
 require File.join Rails.root, 'lib/notifiable'
 require File.join Rails.root, 'lib/name_generator'
+# hstore columns
+require File.join Rails.root, 'lib/hstore_column'
+require File.join Rails.root, 'lib/websites_column'
 
 # require it so that STI works correctly; not necessarily in prod since all classes are preloaded
 if Rails.env == 'development'

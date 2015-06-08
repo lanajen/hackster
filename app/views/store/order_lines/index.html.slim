@@ -41,7 +41,7 @@ h2.cart-title Your cart
                   - if current_order.enough_points?
                     .label.label-success.label-order You have enough points!
                   - else
-                    .label.label-danger.label-order Oh shoot, you're missing #{pluralize -current_order.points_delta, 'point'} for this order.
+                    .label.label-danger.label-order Oh shoot, you're missing #{pluralize number_with_delimiter(-current_order.points_delta), 'point'} for this order.
 
     .col-md-4
       .address
@@ -57,7 +57,7 @@ h2.cart-title Your cart
 
       - if current_order.can_pass_order?
         .store-actions.text-center
-          p After you place this order you will have #{pluralize current_order.after_points, 'point'} left to redeem.
+          p After you place this order you will have #{pluralize number_with_delimiter(current_order.after_points), 'point'} left to redeem.
           p
             => link_to 'Confirm order', confirm_store_orders_path(id: current_order.id), class: 'btn btn-primary', data: { method: :patch }
             ' or

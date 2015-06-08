@@ -6,14 +6,13 @@ class Hackathon < Community
   has_many :pages, as: :threadable
   has_many_tableless :schedule_items, order: :position
 
-  attr_accessible :hashtag, :twitter_widget_id, :show_organizers
+  store :properties, accessors: []  # left so that tableless schedule_items work
 
-  store_accessor :properties, :hashtag, :twitter_widget_id, :show_organizers
-  set_changes_for_stored_attributes :properties
-  parse_as_booleans :properties, :hidden, :show_organizers
+  hstore_column :hproperties, :hashtag, :string
+  hstore_column :hproperties, :show_organizers, :boolean
+  hstore_column :hproperties, :twitter_widget_id, :string
 
-  store :counters_cache, accessors: [:events_count]
-  parse_as_integers :counters_cache, :events_count, :members_count, :projects_count
+  has_counter :events, 'events.public.count'
 
   def self.default_permission
     'manage'
@@ -21,12 +20,6 @@ class Hackathon < Community
 
   def closest_event
     events.public.where("groups.start_date > ?", Time.now).order(:start_date).first || events.public.where("groups.start_date < ?", Time.now).order(start_date: :desc).first
-  end
-
-  def counters
-    super.merge({
-      events: "events.public.count",
-    })
   end
 
   def projects

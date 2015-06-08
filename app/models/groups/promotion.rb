@@ -35,12 +35,14 @@ class Promotion < Community
     self.user_name = slug
   end
 
+  alias_method :old_name, :name
+
   def name
-    "#{course.name} #{super} @#{course.university.name}"
+    "#{course.name} - #{super} @#{course.university.name}"
   end
 
   def proper_name
-    course.name
+    "#{course.name} - #{old_name}"
   end
 
   def professor

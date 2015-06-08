@@ -1,0 +1,7 @@
+- if user_signed_in? and member = current_user.is_member?(@promotion) and member.invitation_pending?
+  .alert.alert-warning.alert-flat
+    .container
+      ' You have been invited to join
+      strong = @promotion.name
+      ' .
+      = link_to 'Join promotion', group_accept_invitation_path(@promotion), class: 'btn btn-warning btn-sm'

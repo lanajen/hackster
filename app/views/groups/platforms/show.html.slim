@@ -32,7 +32,7 @@
             - if @group.company_logo
               = image_tag @group.company_logo.try(:file_url), class: 'company-logo'
             = @group.name
-            - if @group.verified
+            - if @group.verified?
               i.fa.fa-check-circle.istooltip.verified title="Verified"
             - if @group.disclaimer.present?
               i.fa.fa-info-circle.istooltip.disclaimer data-container='body' title=@group.disclaimer
@@ -41,6 +41,13 @@
 
     section.main-section
       = render partial: "groups/#{@group.identifier.pluralize}/nav"
+
+      / # - if user_signed_in? and current_user.can? :manage, @platform
+
+        section.section-hide
+        section#admin.section-feature
+          .container
+            h2.section-title Admin panel
 
       section#about-us.section-feature
         .container
@@ -58,7 +65,7 @@
               .col-md-8
                 .header-with-more-button.clearfix
                   h2.section-title.pull-left
-                    | Products made by #{@platform.name}
+                    = @platform.parts_text
                     span.bdg= @platform.parts_count
                   - if @platform.parts_count > 2
                     = link_to "View more products &rarr;".html_safe, platform_parts_path(@platform), class: 'btn btn-default btn-sm hidden-xs pull-right'

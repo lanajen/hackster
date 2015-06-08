@@ -94,6 +94,10 @@
                       li
                         span.stat-figure> = number_with_delimiter @project.respects_count
                         = pluralize_without_count @project.respects_count, 'respect'
+                      - if @project.replications_count.to_i > 0
+                        li
+                          span.stat-figure> = number_with_delimiter @project.replications_count
+                          = pluralize_without_count @project.replications_count, 'replication'
 
               - if @locked
                 section#about-project.section-container
@@ -342,7 +346,9 @@
                 section.section-thumbs
                   h4 Do something awesome
                   - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
-                    = render partial: 'respects/button', locals: { project: @project }
+                    .project-actions.row
+                      .action-item.col-xs-7= render partial: 'respects/button', locals: { project: @project }
+                      .action-item.col-xs-5= render partial: 'followers/project_button', locals: { followable: @project }
                   = render 'projects/project_embed_button'
                   - if @project.celery_id.present?
                     = link_to content_tag(:i, '', class: 'fa fa-shopping-cart') + content_tag(:span, "Buy it"), '#', 'data-celery' => @project.celery_id, 'data-celery-version' => 'v2', class: 'btn btn-warning btn-ellipsis btn-block'
@@ -451,11 +457,16 @@
                   - @communities.each do |community|
                     = render partial: 'groups/shared/community_thumb_mini', locals: { community: community }
 
-              - cache ["project-#{@project.id}", 'metadata', site_user_name], tag: ["project-#{@project.id}-metadata", "project-#{@project.id}-respects"] do
-                - if @project.public? and @respecting_users.count > 0
-                  section.section-thumbs
-                    h4 Makers who respect this project
-                    = render partial: 'widgets/respect_widget', locals: { users: @respecting_users }
+              - cache ["project-#{@project.id}", 'metadata', site_user_name], tag: ["project-#{@project.id}-metadata", "project-#{@project.id}-respects", "project-#{@project.id}-replications"] do
+                - if @project.public?
+                  - if @project.respects_count > 0
+                    section.section-thumbs
+                      h4 Makers who respect this project
+                      = render partial: 'widgets/respect_widget', locals: { users: @respecting_users }
+                  - if @project.replications_count > 0
+                    section.section-thumbs
+                      h4 Project replicated by
+                      = render partial: 'widgets/replication_widget', locals: { users: @project.replicated_users.includes(:avatar) }
 
                 / # - if hacker_space = @project.hacker_space
                   section.section-thumbs
@@ -559,7 +570,9 @@
                     - if @project.public?
                       .show-on-affix style='margin-top:20px;'
                         - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
-                          = render partial: 'respects/button', locals: { project: @project }
+                          .project-actions.row
+                            .action-item.col-xs-7= render partial: 'respects/button', locals: { project: @project }
+                            .action-item.col-xs-5= render partial: 'followers/project_button', locals: { followable: @project }
                         = render 'projects/project_embed_button'
                         .add-to-list
                         - if @project.celery_id.present?
