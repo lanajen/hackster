@@ -78,11 +78,8 @@ class Platform < List
   hstore_column :hproperties, :project_ideas_phrasing, :string, default: '%{project_ideas_phrasing_options[0]}'
   hstore_column :hproperties, :verified, :boolean, default: false
 
-  has_counter :external_projects, 'projects.external.count'
-  has_counter :private_projects, 'projects.private.count'
   has_counter :parts, 'parts.count'
   has_counter :products, 'products.count'
-  has_counter :projects, 'projects.visible.count'
   has_counter :sub_parts, 'sub_parts.count'
   has_counter :sub_platforms, 'sub_platforms.count'
 
