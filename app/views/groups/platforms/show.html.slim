@@ -32,7 +32,7 @@
             - if @group.company_logo
               = image_tag @group.company_logo.try(:file_url), class: 'company-logo'
             = @group.name
-            - if @group.verified
+            - if @group.verified?
               i.fa.fa-check-circle.istooltip.verified title="Verified"
             - if @group.disclaimer.present?
               i.fa.fa-info-circle.istooltip.disclaimer data-container='body' title=@group.disclaimer
@@ -41,6 +41,13 @@
 
     section.main-section
       = render partial: "groups/#{@group.identifier.pluralize}/nav"
+
+      / # - if user_signed_in? and current_user.can? :manage, @platform
+
+        section.section-hide
+        section#admin.section-feature
+          .container
+            h2.section-title Admin panel
 
       section#about-us.section-feature
         .container

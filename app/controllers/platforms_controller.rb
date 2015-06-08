@@ -61,7 +61,7 @@ class PlatformsController < ApplicationController
         @projects = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection).merge(Project.magic_sort).where(projects: { type: %w(Project ExternalProject) }).limit(3)
         @parts = @platform.parts.default_sort.limit(2) if @platform.enable_parts
         @products = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection).merge(Project.magic_sort).where(projects: { type: 'Product' }).limit(3) if @platform.enable_products
-        @sub_platforms = @platform.sub_platforms.select("groups.id, groups.*, CAST(groups.hcounters_cache -> 'members' AS INTEGER) AS members_cnt").order("members_cnt DESC").limit(3) if @platform.enable_sub_parts
+        @sub_platforms = @platform.sub_platforms.sub_platform_most_members.limit(3) if @platform.enable_sub_parts
 
         @announcement = @platform.announcements.current
         @challenge = @platform.active_challenge ? @platform.challenges.active.first : nil
@@ -128,7 +128,7 @@ class PlatformsController < ApplicationController
     title "Platforms that use #{@platform.name}"
     meta_desc "Explore #{@platform.sub_platforms_count} platforms that use #{@platform.name}! Join #{@platform.followers_count} makers who follow #{@platform.name} on Hackster."
 
-    @platforms = @platform.sub_platforms.most_members.paginate(page: safe_page_params)
+    @platforms = @platform.sub_platforms.sub_platform_most_members.page(safe_page_params)
 
     render "groups/platforms/#{self.action_name}"
   end

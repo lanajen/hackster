@@ -133,6 +133,10 @@ class Platform < List
     where("CAST(groups.hcounters_cache -> 'members' AS INTEGER) > ?", MINIMUM_FOLLOWERS_STRICT)
   end
 
+  def self.sub_platform_most_members
+    select("groups.id, groups.*, CAST(groups.hcounters_cache -> 'members' AS INTEGER) AS members_cnt").order("members_cnt DESC")
+  end
+
   def company_logo_id=(val)
     self.company_logo = CompanyLogo.find_by_id(val)
   end
