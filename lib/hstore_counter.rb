@@ -3,7 +3,7 @@ module HstoreCounter
     def counters_column store_attribute, options={}
       self.counters_options = options.merge(counters_column: store_attribute)
 
-      if column_for_attribute(store_attribute).type == :text
+      if column_for_attribute(store_attribute).try(:type) == :text
         store store_attribute, accessors: []
       end
     end
