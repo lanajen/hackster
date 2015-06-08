@@ -26,7 +26,7 @@ class PlatformsController < ApplicationController
 
     params[:sort] = (params[:sort].in?(Group::SORTING.keys) ? params[:sort] : 'followers')
 
-    @platforms = Platform.public.for_thumb_display
+    @platforms = Platform.public.featured.for_thumb_display
     if params[:sort]
       @platforms = @platforms.send(Group::SORTING[params[:sort]])
     end

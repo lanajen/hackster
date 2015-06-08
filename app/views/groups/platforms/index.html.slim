@@ -66,8 +66,7 @@
           - if @platforms.any?
             .row
               - @platforms.each do |platform|
-                - unless platform.hidden
-                  = render partial: 'groups/platforms/platform_thumb', locals: { platform: platform }
+                = render partial: 'groups/platforms/platform_thumb', locals: { platform: platform }
           - else
             p Nothing matched your search, try another one!
 

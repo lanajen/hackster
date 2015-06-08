@@ -2,7 +2,7 @@ module HstoreCounter
   module ClassMethods
     def counters_column store_attribute, options={}
       @@counters_column = store_attribute
-      @@options = options
+      @@counters_options = options
 
       if column_for_attribute(store_attribute).type == :text
         store store_attribute, accessors: []
@@ -10,7 +10,7 @@ module HstoreCounter
     end
 
     def has_counter counter, count_method
-      hstore_column @@counters_column, "#{counter}_count", :integer, default: 0, column_name: (@@options[:long_format] ? nil : counter)
+      hstore_column @@counters_column, "#{counter}_count", :integer, default: 0, column_name: (@@counters_options[:long_format] ? nil : counter)
 
       columns = counter_columns.try(:dup) || {}
       columns[counter] = count_method

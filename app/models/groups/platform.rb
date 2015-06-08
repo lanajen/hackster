@@ -124,6 +124,10 @@ class Platform < List
     includes(:avatar).includes(:cover_image)
   end
 
+  def self.featured
+    where "CAST(groups.hproperties -> 'hidden' AS BOOLEAN) = ?", false
+  end
+
   def self.minimum_followers
     where("CAST(groups.hcounters_cache -> 'members' AS INTEGER) > ?", MINIMUM_FOLLOWERS)
   end
