@@ -45,6 +45,8 @@ class ApplicationController < ActionController::Base
   before_filter :set_signed_in_cookie
   helper BootstrapFlashHelper
 
+  before_action :set_locale
+
   # code to make whitelabel work
   helper_method :current_site
   helper_method :current_platform
@@ -222,6 +224,10 @@ class ApplicationController < ActionController::Base
 
     def current_ability
       current_user ? current_user.ability : User.new.ability
+    end
+
+    def default_url_options(options = {})
+      { locale: I18n.locale }.merge options
     end
 
     def disable_flash
@@ -475,6 +481,10 @@ class ApplicationController < ActionController::Base
 
     def set_flash_message type, message
       flash[type] = message
+    end
+
+    def set_locale
+      I18n.locale = params[:locale] || I18n.default_locale
     end
 
     def set_project_mode

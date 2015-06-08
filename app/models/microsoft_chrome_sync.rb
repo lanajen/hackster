@@ -9,19 +9,19 @@ class MicrosoftChromeSync
   end
 
   attributes.each do |attribute|
-    define_method attribute do |locale|
-      getter attribute, locale
+    define_method attribute do |locale=DEFAULT_LOCALE|
+      i18n_getter attribute, locale
     end
 
-    define_method "#{attribute}=" do |val, locale|
-      setter attribute, val, locale
+    define_method "#{attribute}=" do |val, locale=DEFAULT_LOCALE|
+      i18n_setter attribute, val, locale
     end
   end
 
   def attributes locale=DEFAULT_LOCALE
     out = {}
     self.class.attributes.each do |attr|
-      out[attr] = send(attr, format_locale(locale))
+      out[attr] = send(attr, locale)
     end
     out
   end
@@ -30,7 +30,7 @@ class MicrosoftChromeSync
     attributes ||= {}
     attributes = attributes.select{|k,v| k.to_sym.in? self.class.attributes }
     attributes.each do |attr_name, val|
-      send "#{attr_name}=", format_locale(locale), val
+      send "#{attr_name}=", locale, val
     end
   end
 
@@ -44,8 +44,18 @@ class MicrosoftChromeSync
       loc.present? and loc != DEFAULT_LOCALE ? "#{loc}:" : nil
     end
 
-    def getter attribute, locale
-      replace_urls redis.get("#{locale}#{attribute}")
+    def getter attribute
+      replace_urls redis.get(attribute)
+    end
+
+    def i18n_getter attribute, locale
+      i18n_attribute = "#{format_locale(locale)}#{attribute}"
+      getter i18n_attribute
+    end
+
+    def i18n_setter attribute, locale, val
+      i18n_attribute = "#{format_locale(locale)}#{attribute}"
+      setter i18n_attribute, val
     end
 
     def redis
@@ -63,9 +73,9 @@ class MicrosoftChromeSync
       text
     end
 
-    def setter attribute, locale, val
-      if getter(attribute, locale) != val
-        redis.set "#{locale}#{attribute}", val
+    def setter attribute, val
+      if getter(attribute) != val
+        redis.set attribute, val
         Cashier.expire "ms_chrome-#{attribute}"
         FastlyRails.purge_by_key 'microsoft'
       end
