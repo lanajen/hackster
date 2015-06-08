@@ -3,9 +3,12 @@ module HstoreColumn
     def hstore_column store_attribute, attribute, type, options={}
       attr_accessible attribute
 
+      # puts 'class: ' + name.to_s
+      # puts 'store_attribute: ' + store_attribute.to_s
+      # puts 'attribute: ' + attribute.to_s
       columns = hstore_columns.try(:dup) || {}
       columns[store_attribute] ||= []
-      columns[store_attribute] += [attribute]
+      columns[store_attribute] += [attribute] unless attribute.in? columns[store_attribute]
       self.hstore_columns = columns
 
       self.send :define_method, "#{attribute}" do
