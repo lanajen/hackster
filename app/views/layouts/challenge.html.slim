@@ -107,7 +107,7 @@
             .img-placeholder
             h2= @challenge.name
           ul.nav.nav-tabs= render 'nav'
-          - if @challenge.open_for_submissions? and (!@is_challenge_entrant or @challenge.allow_multiple_entries?)
+          - if (!@challenge.locked?(session) or can? :manage, @challenge) and @challenge.open_for_submissions? and (!@is_challenge_entrant or @challenge.allow_multiple_entries?)
             ul.list-inline.manage
               li= link_to 'Enter challenge', '', class: 'btn btn-primary enter-challenge'
 

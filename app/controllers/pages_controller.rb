@@ -47,7 +47,7 @@ class PagesController < ApplicationController
       @message.body += "<b>Name: </b>#{@info_request.name}<br>"
       @message.body += "<b>Phone: </b>#{@info_request.phone}<br>"
       @message.body += "<b>Email: </b>#{@info_request.email}<br>"
-      @message.body += "<b>Location: </b>#{@info_request.location}"
+      @message.body += "<b>Location: </b>#{@info_request.location}<br>"
       @message.body += "<b>Referral: </b>#{@info_request.referral}<br>"
       @message.body += "<b>Promotional code: </b>#{@info_request.promotional_code}<br>"
       @message.body += "</p>"
