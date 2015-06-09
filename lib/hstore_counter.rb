@@ -38,7 +38,7 @@ module HstoreCounter
         value = options[:reset] ? 0 : eval(counter_columns[counter])
         send "#{counter}_count=", value
       end
-      save unless options[:assign_only]
+      save if changed? and !options[:assign_only]
     end
   end
 

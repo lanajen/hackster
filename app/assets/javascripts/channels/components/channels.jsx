@@ -42,6 +42,20 @@ var ChannelContainer = React.createClass({
     this.getFlux().actions.thoughts.loadMore(data);
   },
 
+  componentDidMount: function() {
+    window.addEventListener('scroll', this.handleScroll);
+  },
+
+  componentWillUnmount: function() {
+    window.removeEventListener('scroll', this.handleScroll);
+  },
+
+  handleScroll: function(e) {
+    if ($('.load-more').length && $(window).scrollTop() > $(document).height() - $(window).height() - 1000) {
+      this.handleLoadMoreThoughts(e);
+    }
+  },
+
   render: function() {
     var params = this.context.router.getCurrentParams();
 
@@ -58,7 +72,7 @@ var ChannelContainer = React.createClass({
       );
     } else if (this.state.nextPage) {
       loadMoreButton = (
-        <a href='#' className="btn btn-block btn-default" onClick={this.handleLoadMoreThoughts}>Load more</a>
+        <a href='#' className="btn btn-block btn-default load-more" onClick={this.handleLoadMoreThoughts}>Load more</a>
       );
     }
 
