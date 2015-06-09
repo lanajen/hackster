@@ -1,8 +1,8 @@
-#widget-respects
+.project-widget-with-user-thumbs
   / - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
     = render partial: 'respects/button', locals: { project: @project }
   - cache ["project-#{@project.id}-respects", 'users'], tag: ["project-#{@project.id}-respects"] do
-    .respect-thumbs.clearfix
+    .user-thumbs.clearfix
       - users.each do |user|
         - cache ["user-#{user.id}-thumb", 'respect'], tag: ["user-#{user.id}-thumb"] do
-          = link_to image_tag(user.decorate.avatar(:thumb), class: 'img-responsive respects-user-img istooltip img-rounded', data: { container: 'body' }, rel: 'tooltip', title: user.name), user
+          = link_to image_tag(user.decorate.avatar(:thumb), class: 'img-responsive user-img istooltip img-rounded', data: { container: 'body' }, rel: 'tooltip', title: user.name), user
