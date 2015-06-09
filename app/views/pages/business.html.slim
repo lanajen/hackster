@@ -125,7 +125,7 @@
 
 = content_for :js do
   #myModal.modal.fade*{ 'aria-hidden' => "true", 'aria-labelledby' => "myModalLabel", role: "dialog", tabindex: "-1" }
-    = simple_form_for @info_request, url: info_requests_path, html: { class: 'form-vertical modal-dialog' }, wrapper: :bootstrap3 do |f|
+    = simple_form_for @info_request, url: info_requests_path, html: { class: 'form-vertical modal-dialog remote', data: { remote: true } }, wrapper: :bootstrap3 do |f|
       .modal-content
         .modal-header
           button.close data-dismiss="modal" type="button"

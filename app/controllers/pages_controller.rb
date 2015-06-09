@@ -54,9 +54,10 @@ class PagesController < ApplicationController
       MailerQueue.enqueue_generic_email(@message)
       LogLine.create source: 'info_request', log_type: 'info_request', message: @message.body
 
-      redirect_to business_path, notice: "Thanks for your request, we'll be in touch soon!"
+      flash[:notice] = "Thanks for your request, we'll be in touch soon!"
+      render json: { redirect_to: business_path }
     else
-      render 'new'
+      render json: { info_request: @info_request.errors }, status: :unprocessable_entity
     end
   end
 

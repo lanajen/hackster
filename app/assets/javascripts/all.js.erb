@@ -217,8 +217,9 @@ $(function () {
       $(this).find('.form-group').find('.error-message').remove();
       $(this).find('.form-group').removeClass('has-error');
 
-      // Insert response partial into page below the form.
-      //$('#comments').append(xhr.responseText);
+      if (data.redirect_to) {
+        window.location.replace(data.redirect_to);
+      }
     })
     .on('ajax:complete', 'form.remote', function(xhr, status){
       var $submitButton = $(this).find('input[name="commit"]');
