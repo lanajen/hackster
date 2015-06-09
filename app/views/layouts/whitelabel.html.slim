@@ -1,7 +1,4 @@
-- if Rails.env == 'development'
-  = render "whitelabel/#{current_site.subdomain}/all"
-- else
-  = begin; render "whitelabel/#{current_site.subdomain}/all"; rescue; end;
+= begin; render "whitelabel/#{current_site.subdomain}/all"; rescue; end;
 
 /!
   | Whatever your mind can conceive and can believe, it can achieve. ~Napoleon Hill

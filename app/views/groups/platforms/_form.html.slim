@@ -163,6 +163,11 @@
               = f.input :disclaimer, as: :text, input_html: { rows: 4 }
               = f.input :enable_sub_parts, as: :boolean, inline_label: 'Enable sub-products tab (startups)', label: false, hint: "Products that are based on your technology but manufactured by third parties, eg: they integrate your products in theirs."
               = f.input :plan, collection: Platform::PLANS
+              = f.simple_fields_for :client_subdomain, client do |f_client|
+                = f_client.input :enable_localization, as: :boolean, inline_label: 'Enable localization', label: false
+                = f_client.input :active_locales, collection: ClientSubdomain::AVAILABLE_LOCALES, as: :check_boxes
+                = f_client.input :default_locale, collection: ClientSubdomain::AVAILABLE_LOCALES
+                = f_client.input :force_explicit_locale, as: :boolean, inline_label: 'Force explicit locale', label: false
 
             .col-md-6
               h4

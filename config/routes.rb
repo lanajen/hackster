@@ -12,7 +12,7 @@ HackerIo::Application.routes.draw do
   # constraints(ApiSite) do
   # end
 
-  scope '(:locale)', locale: /(en|zh)(-[A-Z]{2})?/ do
+  scope '(:locale)', locale: /[a-z]{2}(-[A-Z]{2})?/ do
     constraints(MainSite) do
       get 'sitemap_index.xml' => 'sitemap#index', as: 'sitemap_index', defaults: { format: 'xml' }
       get 'sitemap.xml' => 'sitemap#show', as: 'sitemap', defaults: { format: 'xml' }

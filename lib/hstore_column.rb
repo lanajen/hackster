@@ -35,17 +35,23 @@ module HstoreColumn
           instance_variable_set "@#{attribute}_was", current_val
           instance_variable_set "@#{attribute}_was_set", true
         end
-        instance_variable_set "@#{attribute}", cast_val
+        if cast_val
+          instance_variable_set "@#{attribute}", cast_val
+        else
+          remove_instance_variable "@#{attribute}"
+        end
         attribute_will_change! attribute
 
         val = case type
+        when :array
+          val.join(',')
         when :boolean
-          cast_val.to_i
+          val.to_i
         when :datetime
-          cast_val.to_i
+          val.to_datetime.to_i
         else
-          cast_val
-        end
+          val
+        end if val
         column_name = options[:column_name].presence || attribute
         store[column_name] = val
 
@@ -89,6 +95,8 @@ module HstoreColumn
     private
       def cast_value value, type
         case type
+        when :array
+          value.split(',').flatten
         when :boolean
           value == '1' or value == true or value == 'true' or value == 't' or value == 1
         when :datetime
@@ -101,7 +109,7 @@ module HstoreColumn
           value
         else
           value
-        end
+        end if value
       end
 
       def h

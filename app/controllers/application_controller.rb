@@ -45,15 +45,15 @@ class ApplicationController < ActionController::Base
   before_filter :set_signed_in_cookie
   helper BootstrapFlashHelper
 
-  before_action :set_locale
-
   # code to make whitelabel work
   helper_method :current_site
   helper_method :current_platform
-  before_filter :current_site
-  before_filter :current_platform
+  before_action :current_site
+  before_action :current_platform
   helper_method :current_layout
   layout :current_layout
+
+  before_action :set_locale, except: [:not_found]
 
   def set_signed_in_cookie
     if user_signed_in?
@@ -484,11 +484,29 @@ class ApplicationController < ActionController::Base
     end
 
     def set_locale
-      I18n.locale = params[:locale] || I18n.default_locale
+      I18n.locale = params[:locale].presence || I18n.default_locale
+
+      if is_whitelabel? and current_site.try(:enable_localization?)
+       if !I18n.locale.to_s.in?(current_site.active_locales) or (params[:locale].blank? and current_site.force_explicit_locale?)
+          redirect_to path_for_default_locale
+        end
+      elsif !I18n.locale.in? I18n.active_locales
+        redirect_to path_for_default_locale
+      end
+
+      I18n.locale = params[:locale].presence || I18n.default_locale
+      I18n.short_locale = I18n.locale[0..1]  # two-letter version
+    rescue I18n::InvalidLocale
+      redirect_to path_for_default_locale
     end
 
-    def set_project_mode
-      @mode = 'editing'
+    def path_for_default_locale
+      default_locale = current_site.try(:default_locale) || I18n.default_locale
+      pathes = request.path.split(/\//).select{|a| a.present? }
+      pathes.shift if params[:locale].present?
+      pathes.unshift default_locale
+      path = pathes.join('/')
+      "/#{path}"
     end
 
     def set_new_user_session

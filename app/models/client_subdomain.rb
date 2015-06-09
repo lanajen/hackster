@@ -2,6 +2,12 @@ class ClientSubdomain < Subdomain
   include HasDefault
   include HerokuDomains
   include HstoreColumn
+  AVAILABLE_LOCALES = {
+    'Chinese (zh)' => 'zh',
+    'Chinese - China (zh-CN)' => 'zh-CN',
+    'English (en)' => 'en',
+    'English - American (en-US)' => 'en-US',
+  }
   RESERVED_SUBDOMAINS = %w(www beta api admin)
 
   belongs_to :platform
@@ -23,8 +29,12 @@ class ClientSubdomain < Subdomain
     :hide_alternate_search_results, :analytics_code
 
   store :properties, accessor: []
+  hstore_column :properties, :active_locales, :array, default: I18n.active_locales.map{|v| v.to_s }
   hstore_column :properties, :analytics_code, :string
+  hstore_column :properties, :default_locale, :string, default: I18n.default_locale
+  hstore_column :properties, :enable_localization, :boolean, default: false
   hstore_column :properties, :enabled, :boolean, default: false
+  hstore_column :properties, :force_explicit_locale, :boolean, default: false
   hstore_column :properties, :hide_alternate_search_results, :boolean
 
   has_default :name, '%{platform.name} Projects' do |instance|

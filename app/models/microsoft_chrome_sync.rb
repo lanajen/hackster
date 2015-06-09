@@ -10,11 +10,11 @@ class MicrosoftChromeSync
 
   attributes.each do |attribute|
     define_method attribute do |locale=DEFAULT_LOCALE|
-      i18n_getter attribute, locale
+      getter attribute, locale
     end
 
     define_method "#{attribute}=" do |val, locale=DEFAULT_LOCALE|
-      i18n_setter attribute, val, locale
+      setter attribute, val, locale
     end
   end
 
@@ -35,6 +35,11 @@ class MicrosoftChromeSync
   end
 
   private
+    def cache_key attribute, locale
+      locale ||= DEFAULT_LOCALE
+      "ms_chrome-#{locale[0..1]}:#{attribute}"
+    end
+
     def config
       @config ||= YAML.load_file("#{Rails.root}/config/microsoft.yml")[Rails.env]
     end
@@ -44,19 +49,20 @@ class MicrosoftChromeSync
       loc.present? and loc != DEFAULT_LOCALE ? "#{loc}:" : nil
     end
 
-    def getter attribute
-      replace_urls redis.get(attribute)
+    def getter attribute, locale
+      i18n_attribute = "#{format_locale(locale)}#{attribute}"
+      replace_urls redis.get(i18n_attribute)
     end
 
-    def i18n_getter attribute, locale
-      i18n_attribute = "#{format_locale(locale)}#{attribute}"
-      getter i18n_attribute
-    end
+    # def i18n_getter attribute, locale
+    #   i18n_attribute = "#{format_locale(locale)}#{attribute}"
+    #   getter i18n_attribute
+    # end
 
-    def i18n_setter attribute, locale, val
-      i18n_attribute = "#{format_locale(locale)}#{attribute}"
-      setter i18n_attribute, val
-    end
+    # def i18n_setter attribute, locale, val
+    #   i18n_attribute = "#{format_locale(locale)}#{attribute}"
+    #   setter i18n_attribute, val
+    # end
 
     def redis
       @redis ||= Redis::Namespace.new('ms_chrome', redis: Redis.new($redis_config))
@@ -73,10 +79,11 @@ class MicrosoftChromeSync
       text
     end
 
-    def setter attribute, val
-      if getter(attribute) != val
-        redis.set attribute, val
-        Cashier.expire "ms_chrome-#{attribute}"
+    def setter attribute, locale, val
+      if getter(attribute, locale) != val
+        i18n_attribute = "#{format_locale(locale)}#{attribute}"
+        redis.set i18n_attribute, val
+        Cashier.expire cache_key(attribute, locale)
         FastlyRails.purge_by_key 'microsoft'
       end
     end
