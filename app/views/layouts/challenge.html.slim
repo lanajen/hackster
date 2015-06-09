@@ -146,7 +146,21 @@
 
     section.main-section
       .container
-        = yield
+        - if @challenge.locked?(session) and cannot? :manage, @challenge
+          .row
+            .col-md-4.col-md-offset-4.col-sm-6.col-sm-offset-3.col-xs-10.col-xs-offset-1
+              .box
+                .box-content
+                  p.text-center
+                    strong This challenge is password-protected.
+                  / p.text-center Please enter a password below to unlock it:
+                  = form_tag unlock_challenge_path(@challenge), autocomplete: 'off' do
+                    .input-group
+                      = password_field_tag :password, nil, class: 'form-control', placeholder: 'Password'
+                      span.input-group-btn
+                        = submit_tag 'Unlock', class: 'btn btn-primary'
+        - else
+          = yield
 
 = render template: "layouts/#{current_layout}"
 
