@@ -12,6 +12,41 @@ HackerIo::Application.routes.draw do
   # constraints(ApiSite) do
   # end
 
+  # API (see if can be moved to its own subdomain)
+  namespace :api do
+    namespace :v1 do
+      get 'embeds' => 'embeds#show'
+      # post 'embeds' => 'embeds#create'
+      resources :announcements
+      resources :build_logs
+      resources :code_files, only: [:create]
+      resources :comments, only: [:create, :destroy]
+      resources :likes, only: [:create] do
+        delete '' => 'likes#destroy', on: :collection
+      end
+      resources :projects#, as: :api_projects
+      resources :parts, only: [:create, :destroy] do
+        get :autocomplete, on: :collection
+      end
+      scope 'platforms' do
+        get ':user_name' => 'platforms#show'
+        scope ':user_name' do
+          get 'analytics' => 'platforms#analytics', defaults: { format: :json }
+        end
+      end
+      resources :microsoft_chrome_sync, only: [] do
+        get '' => 'microsoft_chrome_sync#show', on: :collection
+        patch '' => 'microsoft_chrome_sync#update', on: :collection
+      end
+      resources :thoughts
+      resources :users, only: [] do
+        get :autocomplete, on: :collection
+      end
+      resources :widgets, only: [:destroy, :update, :create]
+      match "*all" => "base#cors_preflight_check", via: :options
+    end
+  end
+
   scope '(:locale)', locale: /[a-z]{2}(-[A-Z]{2})?/ do
     constraints(MainSite) do
       get 'sitemap_index.xml' => 'sitemap#index', as: 'sitemap_index', defaults: { format: 'xml' }
@@ -356,41 +391,6 @@ HackerIo::Application.routes.draw do
       # end
 
       # root to: 'pages#home'
-    end
-
-    # API (see if can be moved to its own subdomain)
-    namespace :api do
-      namespace :v1 do
-        get 'embeds' => 'embeds#show'
-        # post 'embeds' => 'embeds#create'
-        resources :announcements
-        resources :build_logs
-        resources :code_files, only: [:create]
-        resources :comments, only: [:create, :destroy]
-        resources :likes, only: [:create] do
-          delete '' => 'likes#destroy', on: :collection
-        end
-        resources :projects#, as: :api_projects
-        resources :parts, only: [:create, :destroy] do
-          get :autocomplete, on: :collection
-        end
-        scope 'platforms' do
-          get ':user_name' => 'platforms#show'
-          scope ':user_name' do
-            get 'analytics' => 'platforms#analytics', defaults: { format: :json }
-          end
-        end
-        resources :microsoft_chrome_sync, only: [] do
-          get '' => 'microsoft_chrome_sync#show', on: :collection
-          patch '' => 'microsoft_chrome_sync#update', on: :collection
-        end
-        resources :thoughts
-        resources :users, only: [] do
-          get :autocomplete, on: :collection
-        end
-        resources :widgets, only: [:destroy, :update, :create]
-        match "*all" => "base#cors_preflight_check", via: :options
-      end
     end
 
     devise_for :users, skip: :omniauth_callbacks, controllers: {

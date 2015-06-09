@@ -24,6 +24,7 @@ class ClientSubdomain < Subdomain
   validates :subdomain, length: { in: 3..60 }, allow_blank: true
   validates :subdomain, exclusion: { in: RESERVED_SUBDOMAINS, message: "Subdomain %{value} is reserved" }
   validates :subdomain, uniqueness: true
+  validate :default_locale_is_active
 
   attr_accessible :subdomain, :domain, :logo_id, :name, :favicon_id,
     :hide_alternate_search_results, :analytics_code
@@ -55,10 +56,14 @@ class ClientSubdomain < Subdomain
   end
 
   private
-  def update_domains_on_heroku
-    if domain_changed?
-      remove_domain_from_heroku(domain_was) unless domain_was.blank?
-      add_domain_to_heroku(domain) unless domain.blank?
+    def default_locale_is_active
+      errors.add :default_locale, 'is not in the list of active locales' unless default_locale.in? active_locales
     end
-  end
+
+    def update_domains_on_heroku
+      if domain_changed?
+        remove_domain_from_heroku(domain_was) unless domain_was.blank?
+        add_domain_to_heroku(domain) unless domain.blank?
+      end
+    end
 end
