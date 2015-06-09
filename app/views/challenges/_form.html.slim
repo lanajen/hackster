@@ -8,7 +8,7 @@
           | Challenge settings
         .pull-right
           ul.list-unstyled.list-inline
-            / if current_user.is? :admin
+            - if current_user.is? :admin
               li= link_to 'Edit as admin', edit_admin_challenge_path(@challenge), class: 'btn btn-warning btn-sm'
             li= f.submit 'Save changes', class: 'btn btn-primary btn-sm'
             li= link_to 'Cancel', @challenge, class: 'btn-link btn-sm'
