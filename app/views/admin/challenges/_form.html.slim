@@ -2,6 +2,8 @@
 
 = f.input :name
 = f.input :new_slug
+- if @challenge.persisted?
+  = f.input :workflow_state, collection: Challenge.workflow_spec.states.keys
 
 .col-md-offset-4.col-md-8
   ==> f.button :submit, :class => 'btn btn-primary'
