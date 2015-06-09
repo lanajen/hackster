@@ -85,7 +85,7 @@
               li Any topic or skill level
               li Step-by-step instructions
               li Including code samples, schematics, BOMs
-              il Rich with images and videos
+              li Rich with images and videos
               li Displayed on Hackster and on your website
             / .cta
               .price $2,000
@@ -104,10 +104,10 @@
               = link_to 'Hardware Weekend', '/hardwareweekend'
             li Complete planning and execution
             Li Run-of-show services
-            Li Awesome industry venues
+            li Awesome industry venues
             li Hackathon management software
             / li Prize management software
-            Il Rich hardware assortment
+            li Rich hardware assortment
             li Social, photography and blogging
             li Liability insurance coverage
             li Dedicated project lead
@@ -131,12 +131,12 @@
           button.close data-dismiss="modal" type="button"
             span aria-hidden="true"  ×
             span.sr-only Close
-          h4#myModalLabel.modal-title Hi! How can we help?
+          h4#myModalLabel.modal-title Hi! We're going to make you smile.
         .modal-body
           = f.input :company, label: 'Company name'
           = f.input :website, label: 'Website'
           = f.input :plan, label: 'What services are you interested in?', collection: InfoRequest::PLANS, as: :check_boxes
-          = f.input :needs, label: 'What needs are you looking to get solved?', as: :text
+          = f.input :needs, label: 'Any particular problems you are looking to solve or opportunities to seize?', as: :text
 
           p How we can reach you?
           = f.input :name, label: 'Your full name'
@@ -144,6 +144,7 @@
           = f.input :phone, label: 'Your phone'
           = f.input :location, label: 'Your location', hint: 'City, State, Country'
           = f.input :referral, label: 'Where did you hear about us?', collection: InfoRequest::REFERRALS
+          = f.input :promotional_code, label: 'Promotional code'
         .modal-footer
           = f.submit 'Send request', class: 'btn btn-primary'
           button.btn.btn-default data-dismiss="modal" type="button"  Close
