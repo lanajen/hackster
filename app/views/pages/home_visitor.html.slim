@@ -5,7 +5,7 @@
     var tagsPrefetch = #{@typeahead_tags.to_json.to_s.html_safe};
 
 = content_for :no_container do
-  - cache 'home-visitor', tag: ['home', 'home-visitor'], expires_in: 1.hour do
+  - cache [I18n.short_locale, 'home-visitor'], tag: ['home', 'home-visitor'], expires_in: 1.hour do
     section#home-banner
       .home-slide#hello-hackster
         / - if Time.now < DateTime.parse('2015-04-19 20:00 -0800')

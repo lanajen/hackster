@@ -2,12 +2,12 @@
 
 = content_for :head do
   = render "whitelabel/#{current_site.subdomain}/head"
-  - cache ['ms_chrome_css', I18n.locale], tag: %W(ms_chrome-#{I18n.short_locale}:nav_css) do
+  - cache [I18n.short_locale, 'ms_chrome_css'], tag: %W(ms_chrome-#{I18n.short_locale}:nav_css) do
     style text='text/css'
       = raw ms_sync.nav_css(I18n.locale)
 
 = content_for :header do
-  - cache ['ms_chrome_header', I18n.locale], tag: %W(ms_chrome-#{I18n.short_locale}:nav ms_chrome-#{I18n.short_locale}:chrome_header) do
+  - cache [I18n.short_locale, 'ms_chrome_header'], tag: %W(ms_chrome-#{I18n.short_locale}:nav ms_chrome-#{I18n.short_locale}:chrome_header) do
     = raw ms_sync.chrome_header(I18n.locale)
     = raw ms_sync.nav(I18n.locale)
 
@@ -52,5 +52,5 @@
           = render partial: 'shared/search_form', locals: { placeholder: 'Search projects' }
 
 = content_for :footer do
-  - cache ['ms_chrome_footer', I18n.locale], tag: %W(ms_chrome-#{I18n.short_locale}:chrome_footer) do
+  - cache [I18n.short_locale, 'ms_chrome_footer'], tag: %W(ms_chrome-#{I18n.short_locale}:chrome_footer) do
     = raw ms_sync.chrome_footer(I18n.locale)

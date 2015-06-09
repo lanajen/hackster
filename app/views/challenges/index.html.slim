@@ -1,5 +1,5 @@
 = content_for :no_container do
-  - cache ['challenge-index', params[:sort]], tag: ['challenge-index'], expires_in: 24.hours do
+  - cache [I18n.short_locale, 'challenge-index', params[:sort]], tag: ['challenge-index'], expires_in: 24.hours do
     .container
       #content
         .content

@@ -2,7 +2,7 @@
   | white
 
 = content_for :no_container do
-  - cache ['hackerspaces'], expires_in: 24.hours do
+  - cache [I18n.short_locale, 'hackerspaces'], expires_in: 24.hours do
     #content
       .container
         h1.text-center  style='margin-bottom:30px'   Find your local hacker space
