@@ -26,7 +26,7 @@ class Blog::PostsController < ApplicationController
   end
 
   def show
-    if user_signed_in? and current_user.is? :admin
+    if (user_signed_in? and current_user.is? :admin) or params[:show_unpublished]
       @post = BlogPost.find_by_slug! params[:slug]
     else
       @post = BlogPost.published.find_by_slug! params[:slug]
