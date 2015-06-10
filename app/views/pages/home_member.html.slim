@@ -6,6 +6,9 @@
 = content_for :no_container do
 
   #home
+    a.toggle-footer
+      i.fa.fa-arrow-down.hide-on-footer-affixed
+      i.fa.fa-eye-slash.show-on-footer-affixed
     section#home-banner
       .home-slide#welcome-back
         / - if Time.now < DateTime.parse('2015-04-19 20:00 -0800')

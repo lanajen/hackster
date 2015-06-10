@@ -312,12 +312,23 @@ $(function () {
     });
   });
 
-  $('a.smooth-scroll').click(function(e){
+  $('a.smooth-scroll').on('click', function(e){
     target = '#' + this.hash.substring(1);
     offset = $(this).data('offset') || 0;
     if ($(target).length) {
       e.preventDefault();
       smoothScrollTo(target, offset);
+    }
+  });
+
+  $('a.toggle-footer').on('click', function(e){
+    e.preventDefault();
+    $(this).toggleClass('footer-affixed');
+    $('footer').toggleClass('affixed');
+    if ($(this).hasClass('footer-affixed')) {
+      $(this).css('bottom', $('footer').height());
+    } else {
+      $(this).css('bottom', 0);
     }
   });
 });

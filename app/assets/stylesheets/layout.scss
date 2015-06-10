@@ -556,9 +556,38 @@ li.highlight-item {
   }
 }
 
+.toggle-footer {
+  position: fixed;
+  left: 20px;
+  bottom: 0;
+  display: block;
+  padding: 6px 11px 3px;
+  background: #444447;
+  color: #fff;
+  @include border-radius(4px 4px 0 0);
+  cursor: pointer;
+  z-index: 2;
+  &:hover, &:focus {
+    color: #fff;
+    text-decoration: none;
+  }
+  .show-on-footer-affixed {
+    display: none;
+  }
+  &.footer-affixed {
+    bottom: 59px;
+    .hide-on-footer-affixed {
+      display: none;
+    }
+    .show-on-footer-affixed {
+      display: initial;
+    }
+  }
+}
+
 footer {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   // padding: 24px 0 0;
   // height: 60px;
   background: #444447;
@@ -580,6 +609,11 @@ footer {
         padding-right: 20px;
       }
     }
+  }
+  &.affixed {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
   }
 }
 
