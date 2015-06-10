@@ -46,6 +46,8 @@ require File.join Rails.root, 'lib/name_generator'
 # hstore columns
 require File.join Rails.root, 'lib/hstore_column'
 require File.join Rails.root, 'lib/websites_column'
+# checklist
+require File.join Rails.root, 'lib/checklist'
 
 # require it so that STI works correctly; not necessarily in prod since all classes are preloaded
 if Rails.env == 'development'

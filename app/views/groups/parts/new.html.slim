@@ -9,5 +9,8 @@
       .box-title
         h2 New product for #{@platform.name}
       .box-content
+        p.mg-20.small
+          strong> Products are items you make and sell, whether it's software or hardware.
+          | Example: if you're Arduino, you make the Arduino UNO and the Arduino MEGA. If you're Microsoft, you make Windows 10 and Microsoft Azure.
         = simple_nested_form_for [@platform, @part], url: group_products_path(@platform), html: { class: 'form-horizontal accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
           = render 'form', f: f

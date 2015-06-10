@@ -987,6 +987,12 @@
     padding-bottom: 20px;
     border-bottom: 1px solid #ddd;
   }
+  #admin {
+    margin-top: -59px;  // 1px for nav shadow
+  }
+  #admin + #about-us {
+    padding-top: 50px;
+  }
   #community {
     padding: 30px 0;
     h2 {

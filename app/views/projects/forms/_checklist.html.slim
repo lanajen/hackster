@@ -3,12 +3,12 @@
     .box-content
       strong Publish checklist
       p.small.text-muted Before you publish this project, make sure that all these details are filled in:
-      ul.fa-ul
-        - @project.checklist_evaled[:todo].each do |item|
+      ul.fa-ul.checklist
+        - @project.checklist_todo.each do |item|
           li
             i.fa.fa-li.fa-square-o
-            = link_to item[:label], '', class: 'goto', data: { target: item[:goto] }
-        - @project.checklist_evaled[:done].each do |item|
+            = link_to item[:label], '', class: 'goto', data: { target: eval(item[:goto]) }
+        - @project.checklist_done.each do |item|
           li.todo-complete
             i.fa.fa-li.fa-check-square-o
             = item[:label]

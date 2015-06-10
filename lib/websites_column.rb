@@ -12,6 +12,10 @@ module WebsitesColumn
         store store_attribute, accessors: []
       end
       add_websites *websites
+
+      self.send :define_method, :has_websites? do
+        send(store_attribute).select{|k,v| v.present? }.any?
+      end
     end
   end
 

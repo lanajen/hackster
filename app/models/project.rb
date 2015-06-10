@@ -39,6 +39,7 @@ class Project < ActiveRecord::Base
   }
 
   include ActionView::Helpers::SanitizeHelper
+  include Checklist
   include EditableSlug
   include HstoreColumn
   include HstoreCounter
@@ -204,6 +205,17 @@ class Project < ActiveRecord::Base
       notify_observers(:"after_#{to}")
     end
   end
+
+  add_checklist :name, 'Name', 'name.present? and !has_default_name?'
+  add_checklist :one_liner, 'Elevator pitch'
+  add_checklist :cover_image, 'Cover image', 'cover_image and cover_image.file_url'
+  add_checklist :difficulty, 'Skill level'
+  add_checklist :product_tags_string, 'Tags'
+  add_checklist :platform_tags_string, 'Platforms used'
+  add_checklist :description, 'Story'
+  add_checklist :hardware_parts, 'Components', 'hardware_parts.any?'
+  add_checklist :schematics, 'Schematics', 'widgets.where(type: %w(SchematicRepoWidget SchematicFileWidget)).any?'
+  add_checklist :code, 'Code', 'widgets.where(type: %w(CodeWidget CodeRepoWidget)).any?'
 
   # beginning of search methods
   include TireInitialization
@@ -386,74 +398,6 @@ class Project < ActiveRecord::Base
     URI.parse(buy_link).host.gsub(/^www\./, '')
   rescue
     buy_link
-  end
-
-  def checklist
-    {
-      name: {
-        label: 'Name',
-        condition: 'name.present? and !has_default_name?',
-      },
-      one_liner: {
-        label: 'Elevator pitch',
-      },
-      cover_image: {
-        label: 'Cover image',
-        condition: 'cover_image and cover_image.file_url'
-      },
-      difficulty: {
-        label: 'Skill level',
-      },
-      product_tags_string: {
-        label: 'Tags',
-      },
-      platform_tags_string: {
-        label: 'Platforms used',
-      },
-      description: {
-        label: 'Story',
-      },
-      hardware_parts: {
-        label: 'Components',
-        conditions: 'parts.any?',
-      },
-      schematics: {
-        label: 'Schematics',
-        condition: 'widgets.where(type: %w(SchematicRepoWidget SchematicFileWidget)).any?',
-      },
-      code: {
-        label: 'Code',
-        condition: 'widgets.where(type: %w(CodeWidget CodeRepoWidget)).any?',
-      }
-    }
-  end
-
-  def checklist_completion
-    @checklist_completion ||= ((checklist_evaled[:complete] ? 1 : checklist_evaled[:done].size.to_f / (checklist_evaled[:done].size + checklist_evaled[:todo].size)) * 100).to_i
-  end
-
-  def checklist_evaled
-    return @checklist_evaled if @checklist_evaled
-
-    done = []
-    todo = []
-    checklist.each do |name, item|
-      item[:goto] = name
-
-      condition = if item[:condition]
-        item[:condition]
-      else
-        "#{name}.present?"
-      end
-
-      if eval(condition)
-        done << item
-      else
-        todo << item
-      end
-    end
-
-    @checklist_evaled = { done: done, todo: todo, complete: todo.empty? }
   end
 
   def compute_popularity time_period=365

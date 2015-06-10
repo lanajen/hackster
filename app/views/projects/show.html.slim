@@ -325,7 +325,7 @@
                         p= link_to 'Link to an assignment', settings_project_path(@project, anchor: 'sharing'), class: 'btn btn-warning btn-sm btn-block'
 
               - if @can_edit
-                - alert_color = @project.checklist_evaled[:complete] ? 'success' : 'warning'
+                - alert_color = @project.checklist_completed? ? 'success' : 'warning'
                 .alert.text-center class="alert-#{alert_color}"
                   span
                     p

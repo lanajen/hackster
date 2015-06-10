@@ -1,4 +1,5 @@
 class Platform < List
+  include Checklist
   include Taggable
 
   MINIMUM_FOLLOWERS = 5
@@ -86,6 +87,17 @@ class Platform < List
   taggable :platform_tags, :product_tags
 
   is_impressionable counter_cache: true, unique: :session_hash
+
+  add_checklist :name, 'Set a name', 'name.present?', goto: 'edit_group_path(@platform)', group: :get_started
+  add_checklist :short_description, 'Write a short description', 'mini_resume.present?', goto: 'edit_group_path(@platform, anchor: "about-us")', group: :get_started
+  add_checklist :logo, 'Upload a logo', 'avatar.present?', goto: 'edit_group_path(@platform)', group: :get_started
+  add_checklist :cover_image, 'Upload a cover image', 'cover_image.present?', goto: 'edit_group_path(@platform)', group: :get_started
+  add_checklist :links, 'Add links to your other web presence', 'has_websites?', goto: 'edit_group_path(@platform, anchor: "about-us")', group: :get_started
+  add_checklist :first_product, 'Add your first product', 'parts_count >= 1', goto: 'new_group_product_path(@group)', group: :get_started
+  add_checklist :documentation, 'Add a link to your documentation', 'documentation_link.present?', hint: "Add a link to your documentation.", goto: 'edit_group_path(@platform, anchor: "about-us")', group: :featured
+  add_checklist :cta, 'Add a call-to-action', 'cta_link.present?', hint: "Add a call to action, for instance to buy your product.", goto: 'edit_group_path(@platform, anchor: "about-us")', group: :featured
+  add_checklist_family :projects, 'projects_count >= %{n}', labels: { 1 => 'Add your first project (and approved it)', n: 'Reach %{n} projects' }, thresholds: [1, 5, 50, 100, 500, 1_000, 5_000, 10_000, 50_000, 100_000, 500_000, 1_000_000], groups: { 1 => :get_started, 5 => :featured, n: :next_level }, goto: 'new_project_path(platform_tags_string: @platform.name)'
+  add_checklist_family :followers, 'followers_count >= %{n}', labels: { 1 => 'Be your first follower', n: 'Reach %{n} followers' }, thresholds: [1, 25, 100, 500, 1_000, 5_000, 10_000, 50_000, 100_000, 500_000, 1_000_000], groups: { 1 => :get_started, 25 => :featured, n: :next_level }, goto: 'create_followers_path(followable_type: "Group", followable_id: @platform.id)'
 
   # beginning of search methods
   has_tire_index 'private'

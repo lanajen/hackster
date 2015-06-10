@@ -153,6 +153,8 @@ class PlatformsController < ApplicationController
   end
 
   def analytics
+    not_found and return unless @platform.pro? or current_user.is? :admin
+
     authorize! :admin, @platform
     title "#{@platform.name} projects - Analytics dashboard"
 

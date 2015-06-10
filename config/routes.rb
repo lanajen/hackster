@@ -467,7 +467,6 @@ HackerIo::Application.routes.draw do
 
   resources :followers, only: [:create] do
     collection do
-      # post '' => 'followers#create', as: ''
       get 'create' => 'followers#create', as: :create
       delete '' => 'followers#destroy'
     end
