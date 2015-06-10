@@ -37,6 +37,7 @@ require File.join(Rails.root, 'lib/heroku_domains')
 require File.join(Rails.root, 'lib/markdown_filter')
 require File.join(Rails.root, 'lib/single_line_html')
 require File.join(Rails.root, 'lib/redcarpet_sociable')
+require File.join(Rails.root, 'lib/redcarpet_hackster')
 require File.join(Rails.root, 'lib/custom_markdown_renderer')
 # attributes with defaults
 require File.join(Rails.root, 'lib/has_default')
