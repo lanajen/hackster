@@ -4,7 +4,7 @@ class ClientSubdomain < Subdomain
   include HstoreColumn
   RESERVED_SUBDOMAINS = %w(www beta api admin)
 
-  belongs_to :platform
+  belongs_to :platform, inverse_of: :client_subdomain
   has_one :favicon, as: :attachable
   has_one :logo, as: :attachable, class_name: 'Document'
 
@@ -27,7 +27,7 @@ class ClientSubdomain < Subdomain
   hstore_column :properties, :enabled, :boolean, default: false
   hstore_column :properties, :hide_alternate_search_results, :boolean
 
-  has_default :name, '%{platform.name} Projects' do |instance|
+  has_default :name, '%{platform.try(:name)} Projects' do |instance|
     instance.read_attribute :name
   end
 

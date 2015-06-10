@@ -36,7 +36,7 @@ class Platform < List
       where(project_collections: { workflow_state: ProjectCollection::VALID_STATES })
     end
   end
-  has_one :client_subdomain
+  has_one :client_subdomain, inverse_of: :platform
   has_one :company_logo, as: :attachable, dependent: :destroy
   has_one :logo, as: :attachable, dependent: :destroy
   has_one :slug, as: :sluggable, dependent: :destroy, class_name: 'SlugHistory'
