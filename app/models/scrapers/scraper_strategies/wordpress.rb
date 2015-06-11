@@ -32,7 +32,7 @@ module ScraperStrategies
           next unless body and name
           datetime = comment.at_css('time').try(:[], 'datetime')
           created_at = DateTime.parse datetime if datetime
-          c = @project.comments.new body: body, guest_name: name
+          c = @project.comments.new raw_body: body, guest_name: name
           c.created_at = created_at
           c.parent = parent
           c.disable_notification!
