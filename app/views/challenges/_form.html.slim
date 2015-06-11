@@ -103,6 +103,7 @@
             = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Logo', image_link: @challenge.avatar.try(:imgix_url), help_block: "In case the challenge isn't tied to a platform.", attribute_type: 'avatar', image_version: :big, model: 'challenge' }
             = f.simple_fields_for :challenge_admins do |f_admin|
               = f_admin.input :user_id, label: 'Admin user ID'
+              = f_admin.input :roles, label: 'Roles', collection: ChallengeAdmin.roles
               .col-sm-8.col-sm-offset-4= f_admin.link_to_remove 'Remove this admin'
             = f.link_to_add 'Add an admin', :challenge_admins
 
