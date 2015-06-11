@@ -454,6 +454,8 @@ GEM
       railties (>= 4.2.0, < 5)
     rest-client (1.6.7)
       mime-types (>= 1.16)
+    reverse_markdown (0.6.0)
+      nokogiri
     rinku (1.5.1)
     rspec-core (3.2.3)
       rspec-support (~> 3.2.0)
@@ -682,6 +684,7 @@ DEPENDENCIES
   redis (= 3.0.6)
   redis-namespace (= 1.5.0)
   rest-client (= 1.6.7)
+  reverse_markdown
   rspec-rails
   rubyzip (= 1.1.7)
   sanitize (= 2.0.6)

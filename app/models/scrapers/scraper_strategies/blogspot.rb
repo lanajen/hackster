@@ -16,6 +16,7 @@ module ScraperStrategies
             name = author.text.gsub(/said\.\.\./, '').strip
             body = bodies[i].inner_html
             created_at = DateTime.parse footers[i].text.strip
+            body = ReverseMarkdown.convert body
             c = @project.comments.new raw_body: body, guest_name: name
             c.created_at = created_at
             c.disable_notification!
