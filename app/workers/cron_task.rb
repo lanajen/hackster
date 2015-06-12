@@ -122,7 +122,7 @@ class CronTask < BaseWorker
     end
     groups = []
     Platform.public.featured.each do |plat|
-      (Math.log(plat.followers_count) * 100).to_i.times{ groups << plat.id } unless plat.followers_count.zero?
+      (Math.log(plat.followers_count) * Math.log(plat.followers_count)).to_i.times{ groups << plat.id } unless plat.followers_count.zero?
     end
     rand(1..5).times do
       FollowRelation.add u, Group.find(groups.sample), true
