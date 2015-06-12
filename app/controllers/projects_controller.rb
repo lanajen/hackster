@@ -264,7 +264,7 @@ class ProjectsController < ApplicationController
     initialize_project
     @team = @project.team
     @project = @project.decorate
-    @show_admin_bar = true if params[:show_admin_bar] and current_user.is? :admin
+    @show_admin_bar = true if params[:show_admin_bar] and current_user.is? :admin, :moderator
   end
 
   def update

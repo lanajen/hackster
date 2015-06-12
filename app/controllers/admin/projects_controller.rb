@@ -5,6 +5,7 @@ class Admin::ProjectsController < Admin::BaseController
     title "Admin / Projects - #{safe_page_params}"
     @fields = {
       'created_at' => 'projects.created_at',
+      'made_public_at' => 'projects.made_public_at',
       'status' => 'projects.workflow_state',
       'private' => 'projects.private',
       'name' => 'projects.name',
@@ -60,4 +61,9 @@ class Admin::ProjectsController < Admin::BaseController
     @project.destroy
     redirect_to admin_projects_path, :notice => 'Project successfuly deleted'
   end
+
+  private
+    def check_authorization_for_admin
+      raise CanCan::AccessDenied unless current_user.is? :admin, :moderator
+    end
 end
