@@ -1,7 +1,7 @@
 class PromotionsController < ApplicationController
   before_filter :authenticate_user!, except: [:show]
   before_filter :load_promotion, only: [:show, :update]
-  layout 'promotion', only: [:edit, :update, :show]
+  layout 'group_shared', only: [:edit, :update, :show]
   respond_to :html
 
   def show
@@ -77,6 +77,6 @@ class PromotionsController < ApplicationController
 
   private
     def load_promotion
-      @promotion = Promotion.includes(:course).where(groups: { user_name: params[:promotion_name] }, courses_groups: { user_name: params[:user_name] }).first!
+      @group = @promotion = Promotion.includes(:course).where(groups: { user_name: params[:promotion_name] }, courses_groups: { user_name: params[:user_name] }).first!
     end
 end

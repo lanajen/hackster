@@ -1,0 +1,39 @@
+class OrderObserver < ActiveRecord::Observer
+  def after_ship record
+    record.update_column :shipped_at, Time.now
+  end
+
+  def after_pass_order record
+    record.user.reputation.compute_redeemable!
+    record.store_products.each do |product|
+      product.update_counters only: [:orders]
+      product.save
+    end
+    record.update_column :placed_at, Time.now
+  end
+
+  def after_update record
+    if record.processing? and record.total_cost_changed?
+      record.reputation_needs_update = true
+    end
+  end
+
+  def after_commit_on_update record
+    if record.reputation_needs_update
+      record.user.reputation.compute_redeemable!
+    end
+  end
+
+  def before_create record
+    record.order_lines_count = 0
+  end
+
+  def before_save record
+    if (record.changed & %w(address_id)).any?
+      record.shipping_cost = record.compute_shipping_cost
+    end
+    if (record.changed & %w(shipping_cost products_cost)).any?
+      record.total_cost = record.compute_total_cost
+    end
+  end
+end

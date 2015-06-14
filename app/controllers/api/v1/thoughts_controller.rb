@@ -7,9 +7,9 @@ class Api::V1::ThoughtsController < Api::V1::BaseController
       thoughts = thoughts.with_hashtag(params[:hashtag])
     end
 
-    thoughts = thoughts.includes([:comments, :link_datum, :user, user: :avatar]).order(created_at: :desc).limit(50)
+    thoughts = thoughts.includes([:comments, :link_datum, :user, user: :avatar]).order(created_at: :desc).paginate(page: safe_page_params)
 
-    render json: thoughts
+    render json: thoughts, meta: { next_page: thoughts.next_page }
   end
 
   def show

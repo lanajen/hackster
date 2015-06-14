@@ -4,7 +4,7 @@ class PlatformsController < ApplicationController
   include PlatformHelper
 
   before_filter :authenticate_user!, except: [:show, :embed, :projects, :products, :followers, :index]
-  before_filter :load_platform, except: [:show, :embed, :projects, :products, :followers, :index, :analytics, :sub_platforms]
+  before_filter :load_platform, except: [:show, :embed, :new, :create, :projects, :products, :followers, :index, :analytics, :sub_platforms]
   before_filter :load_platform_with_slug, only: [:show, :embed, :projects, :products, :followers, :analytics, :sub_platforms]
   before_filter :load_projects, only: [:embed]
   before_filter :load_project, only: [:feature_project, :unfeature_project]
@@ -26,7 +26,7 @@ class PlatformsController < ApplicationController
 
     params[:sort] = (params[:sort].in?(Group::SORTING.keys) ? params[:sort] : 'followers')
 
-    @platforms = Platform.public.for_thumb_display
+    @platforms = Platform.public.featured.for_thumb_display
     if params[:sort]
       @platforms = @platforms.send(Group::SORTING[params[:sort]])
     end
@@ -61,7 +61,7 @@ class PlatformsController < ApplicationController
         @projects = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection).merge(Project.magic_sort).where(projects: { type: %w(Project ExternalProject) }).limit(3)
         @parts = @platform.parts.default_sort.limit(2) if @platform.enable_parts
         @products = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection).merge(Project.magic_sort).where(projects: { type: 'Product' }).limit(3) if @platform.enable_products
-        @sub_platforms = @platform.sub_platforms.most_members.limit(3) if @platform.enable_sub_parts
+        @sub_platforms = @platform.sub_platforms.sub_platform_most_members.limit(3) if @platform.enable_sub_parts
 
         @announcement = @platform.announcements.current
         @challenge = @platform.active_challenge ? @platform.challenges.active.first : nil
@@ -128,7 +128,7 @@ class PlatformsController < ApplicationController
     title "Platforms that use #{@platform.name}"
     meta_desc "Explore #{@platform.sub_platforms_count} platforms that use #{@platform.name}! Join #{@platform.followers_count} makers who follow #{@platform.name} on Hackster."
 
-    @platforms = @platform.sub_platforms.most_members.paginate(page: safe_page_params)
+    @platforms = @platform.sub_platforms.sub_platform_most_members.page(safe_page_params)
 
     render "groups/platforms/#{self.action_name}"
   end
@@ -171,13 +171,30 @@ class PlatformsController < ApplicationController
     render "groups/platforms/#{self.action_name}"
   end
 
+  def new
+    @platform = Platform.new
+    render 'groups/platforms/new'
+  end
+
+  def create
+    @platform = Platform.new params[:group]
+    authorize! :create, @platform
+    @platform.members.new user_id: current_user.id
+
+    if @platform.save
+      redirect_to @platform, notice: "Welcome to the new hub for #{@platform.name}!"
+    else
+      render 'groups/platforms/new'
+    end
+  end
+
   def update
     authorize! :update, @platform
     old_platform = @platform.dup
 
     if @platform.update_attributes(params[:group])
       respond_to do |format|
-        format.html { redirect_to @platform, notice: 'Profile updated.' }
+        format.html { redirect_to @platform, notice: 'Settings updated.' }
         format.js do
           # if old_group.interest_tags_string != @platform.interest_tags_string or old_group.skill_tags_string != @platform.skill_tags_string
           if old_platform.user_name != @platform.user_name
@@ -193,7 +210,7 @@ class PlatformsController < ApplicationController
     else
       @platform.build_avatar unless @platform.avatar
       respond_to do |format|
-        format.html { render template: 'groups/platforms/edit' }
+        format.html { render template: 'groups/shared/edit', layout: current_layout }
         format.js { render json: { group: @platform.errors }, status: :unprocessable_entity }
       end
     end

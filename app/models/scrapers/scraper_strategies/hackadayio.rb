@@ -87,24 +87,19 @@ module ScraperStrategies
         parts = parsed_components.css('.component-table-list tr, .section-component-list li')
         return unless parts.any?
 
-        widget = PartsWidget.new
-        widget.widgetable_id = 0
-        widget.save
         parts.each_with_index do |comp, i|
-
           part = Part.new
           comment = comp.at_css('.component-description').try(:text).try(:strip)
           part.name = comp.at_css('.component-name, .component-content').text.gsub(comment || '', '').strip
           part.save
 
-          part_join = PartJoin.new partable_id: widget.id,
-            partable_type: 'Widget', part_id: part.id
+          part_join = PartJoin.new part_id: part.id, partable_id: 0,
+            partable_type: 'Project'
           part_join.quantity = comp.at_css('.quantity, .component-number').text.strip
           part_join.comment = comment
           part_join.position = i + 1
-          part_join.save
+          @parts << part_join
         end
-        @widgets << widget
       end
 
       def extract_title

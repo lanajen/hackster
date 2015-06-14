@@ -43,16 +43,38 @@ class GroupDecorator < UserDecorator
     message = case model.type
     when 'List'
       if model.category?
-        "Check out all the #{model.name} hardware projects on @hacksterio."
+        "Check out all the #{model.name} hardware projects"
       else
         "Check out all the hardware projects curated by #{model.name}"
       end
     when 'Platform'
       "Check out all the hardware projects made with #{model.name}"
-    else
+    when 'Event', 'HackerSpace'
       "Check out all the hardware projects at #{model.name}"
+    else
+      "Check out all the hardware projects for #{model.name}"
     end
     message += " (#{model.twitter_handle})" if model.twitter_handle
+    message += " on @hacksterio"
+    message
+  end
+
+  def social_share
+    message = case model.type
+    when 'List'
+      if model.category?
+        "Check out all the #{model.name} hardware projects"
+      else
+        "Check out all the hardware projects curated by #{model.name}"
+      end
+    when 'Platform'
+      "Check out all the hardware projects made with #{model.name}"
+    when 'Event', 'HackerSpace'
+      "Check out all the hardware projects at #{model.name}"
+    else
+      "Check out all the hardware projects for #{model.name}"
+    end
+    message += " on Hackster.io"
     message
   end
 

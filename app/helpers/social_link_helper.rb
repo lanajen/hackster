@@ -1,5 +1,5 @@
 module SocialLinkHelper
-  def facebook_share link, name, description, picture
+  def facebook_share link, name, description, picture=nil
     out = 'https://www.facebook.com/dialog/feed?app_id=543757942384158'
     out += '&link=' + CGI.escape(link)
     out += '&name=' + CGI.escape(name)

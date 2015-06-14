@@ -6,10 +6,15 @@
           ==> image_tag @group.avatar.try(:imgix_url, :mini), class: 'img-thumb'
         = link_to @group.name, @group, class: 'hidden-link'
 
+      / p= link_to "&larr; Go back to the #{@group.name} hub".html_safe, @group
+
       .box
         .box-title
           h2 Manage admins
         .box-content
+          p.mg-20
+            strong.small= link_to 'Looking to invite people to join the team?', url_for([@group, :new, :invitations])
+
           = simple_nested_form_for @group, url: group_members_path(@group), html: { class: 'widget-form' } do |f|
             = f.error_notification
             table#sortable.table.table-condensed

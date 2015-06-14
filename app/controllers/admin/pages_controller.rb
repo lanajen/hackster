@@ -21,13 +21,17 @@ class Admin::PagesController < Admin::BaseController
     @new_user_follows_count = FollowRelation.where(followable_type: 'User').where('follow_relations.created_at > ?', Date.today).count
     @new_platform_follows_count = FollowRelation.where(followable_type: 'Group').where('follow_relations.created_at > ?', Date.today).count
     @new_users_count = User.invitation_accepted_or_not_invited.where('users.created_at > ?', Date.today).count
-    new_users1d = User.invitation_accepted_or_not_invited.where("users.created_at > ?", 1.days.ago).count
-    new_users7d = User.invitation_accepted_or_not_invited.where("users.created_at > ?", 7.days.ago).count
-    new_users30d = User.invitation_accepted_or_not_invited.where("users.created_at > ?", 30.days.ago).count
+    new_users1d = User.invitation_accepted_or_not_invited.not_hackster.where("users.created_at > ?", 1.days.ago).count
+    new_users7d = User.invitation_accepted_or_not_invited.not_hackster.where("users.created_at > ?", 7.days.ago).count
+    new_users30d = User.invitation_accepted_or_not_invited.not_hackster.where("users.created_at > ?", 30.days.ago).count
     @active_users1d = User.where("users.last_seen_at > ?", 1.days.ago).count - new_users1d
     @active_users7d = User.where("users.last_seen_at > ?", 7.days.ago).count - new_users7d
     @active_users30d = User.where("users.last_seen_at > ?", 30.days.ago).count - new_users30d
     @project_impressions = Impression.where(impressionable_type: 'Project').count
+    @replicated_projects_count = FollowRelation.where(followable_type: 'Project').count
+    @owned_parts_count = FollowRelation.where(followable_type: 'Part').count
+    @new_owned_parts_count = FollowRelation.where(followable_type: 'Part').where('follow_relations.created_at > ?', Date.today).count
+    @new_replicated_projects_count = FollowRelation.where(followable_type: 'Project').where('follow_relations.created_at > ?', Date.today).count
 
     sql = "SELECT users.*, t1.count FROM (SELECT members.user_id as user_id, COUNT(*) as count FROM members INNER JOIN groups AS team ON team.id = members.group_id INNER JOIN projects ON projects.team_id = team.id WHERE projects.private = 'f' AND projects.hide = 'f' AND projects.workflow_state = 'approved' AND (projects.guest_name = '' OR projects.guest_name IS NULL) GROUP BY user_id) AS t1 INNER JOIN users ON users.id = t1.user_id WHERE t1.count > 1 AND (NOT (users.roles_mask & ? > 0) OR users.roles_mask IS NULL) ORDER BY t1.count DESC LIMIT 10;"
     @heroes = User.find_by_sql([sql, 2**User::ROLES.index('admin')])
@@ -77,7 +81,14 @@ class Admin::PagesController < Admin::BaseController
   def followers
     title "Admin / Followers - #{safe_page_params}"
 
-    @follow_relations = FollowRelation.order(created_at: :desc).paginate(page: safe_page_params)
+    @fields = {
+      'created_at' => 'follow_relations.created_at',
+      'followable_type' => 'follow_relations.followable_type',
+    }
+
+    params[:sort_by] ||= 'created_at'
+
+    @follow_relations = filter_for FollowRelation, @fields
   end
 
   def hacker_spaces
@@ -163,11 +174,17 @@ class Admin::PagesController < Admin::BaseController
     @total_redeemable_month = ReputationEvent.group(:user_id).having("SUM(points) >= #{Rewardino::Event::MIN_REDEEMABLE_POINTS}").sum(:points).values.map{|v| [Rewardino::Event::MAX_REDEEMABLE_MONLTY, v].min }.sum
     @total_users = ReputationEvent.group(:user_id).having("SUM(points) >= #{Rewardino::Event::MIN_REDEEMABLE_POINTS}").sum(:points).size
     @categories = ReputationEvent.group(:event_name).order("sum_points desc").sum(:points)
+    @total_redeemed_month = Order.valid.where("orders.created_at > ?", Date.today.beginning_of_month).sum(:total_cost)
+    @total_redeemed = Order.valid.sum(:total_cost)
+    @pending_orders = Order.processing.count
 
     sql = "SELECT users.*, t1.sum FROM (SELECT reputation_events.user_id as user_id, SUM(reputation_events.points) as sum FROM reputation_events GROUP BY user_id) AS t1 INNER JOIN users ON users.id = t1.user_id WHERE t1.sum > 1 AND (NOT (users.roles_mask & ? > 0) OR users.roles_mask IS NULL) ORDER BY t1.sum DESC LIMIT 10;"
     @heroes = User.find_by_sql([sql, 2**User::ROLES.index('admin')])
 
     sql = "SELECT to_char(event_date, 'yyyy-mm') as date, COUNT(*) as count FROM reputation_events WHERE date_part('months', now() - reputation_events.event_date) < 12 GROUP BY date ORDER BY date;"
     @chart_total_earned = graph_with_dates_for sql, 'New reputation points', 'AreaChart', ReputationEvent.where("reputation_events.event_date < ?", 12.months.ago).count, 'month'
+
+    sql = "SELECT to_char(placed_at, 'yyyy-mm') as date, COUNT(*) as count FROM orders WHERE date_part('months', now() - orders.placed_at) < 12 AND orders.workflow_state NOT IN (%s) GROUP BY date ORDER BY date;"
+    @chart_total_redeemed = graph_with_dates_for sql % Order::INVALID_STATES.map{|m| "'#{m}'" }.join(', '), 'Redeemed points', 'AreaChart', Order.valid.where("orders.placed_at < ?", 12.months.ago).count, 'month'
   end
 end

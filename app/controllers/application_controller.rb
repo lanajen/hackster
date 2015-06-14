@@ -25,8 +25,8 @@ class ApplicationController < ActionController::Base
   before_filter :check_new_badge
   before_filter :show_badge
   prepend_after_filter :show_badge
-  before_filter :check_share_modal
-  prepend_after_filter :check_share_modal
+  prepend_after_filter :check_share_modal_after_action
+  append_before_filter :check_share_modal_after_redirect
   after_filter :store_location_after
   after_filter :track_landing_page
   helper_method :flash_disabled?
@@ -78,7 +78,7 @@ class ApplicationController < ActionController::Base
       ClientSubdomain.find_by_subdomain(request.subdomains[0])
     else
       ClientSubdomain.find_by_domain(request.host)
-    end
+    end and @current_site.enabled?
   end
 
   def current_platform
@@ -182,9 +182,22 @@ class ApplicationController < ActionController::Base
       # @badge_level = :bronze
     end
 
+    def check_share_modal_after_redirect
+      check_share_modal if session[:share_modal_time] == 'after_redirect'
+    end
+
+    def check_share_modal_after_action
+      check_share_modal if session[:share_modal_time].nil? or session[:share_modal_time] == 'after_action'
+    end
+
     def check_share_modal
-      if session[:share_modal] and name = session.delete(:share_modal) and model = session.delete(:share_modal_model)
-        @modal = render_to_string(partial: "shared/modals/#{name}", locals: { :"#{model}" => instance_variable_get("@#{model}") })
+      session[:share_modal_model_id] = 9762
+      session.delete(:share_modal_time)
+      if name = session.delete(:share_modal) and model_type = session.delete(:share_modal_model)
+        model = instance_variable_get("@#{model_type}")
+        model ||= model_type.camelize.constantize.find(session.delete(:share_modal_model_id)) if session[:share_modal_model_id]
+        model = model.decorate if model.respond_to? :decorate
+        @modal = render_to_string(partial: "shared/modals/#{name}", locals: { :"#{model_type}" => model })
         # raise @modal.inspect
         if request.xhr?
           response.headers['X-Alert'] = @modal.gsub(/\n/, '')  # cleanup otherwise line breaks create multiple lines
@@ -227,7 +240,7 @@ class ApplicationController < ActionController::Base
       sql = "SELECT assignments.* FROM assignments INNER JOIN groups ON groups.id = assignments.promotion_id AND groups.type = 'Promotion' INNER JOIN groups courses_groups ON courses_groups.id = groups.parent_id AND courses_groups.type IN ('Course') WHERE groups.type IN ('Promotion') AND groups.user_name = ? AND courses_groups.user_name = ? AND assignments.id_for_promotion = ? ORDER BY assignments.id ASC LIMIT 1"
       @assignment = Assignment.find_by_sql([sql, params[:promotion_name], params[:user_name], params[:id] || params[:assignment_id]]).first
       raise ActiveRecord::RecordNotFound unless @assignment
-      @promotion = @assignment.promotion
+      @group = @promotion = @assignment.promotion
       @assignment
     end
 

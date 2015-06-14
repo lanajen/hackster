@@ -1,0 +1,61 @@
+#store {
+  .header {
+    margin-bottom: 20px;
+    a {
+      color: #4d4d4d;
+      font-weight: bold;
+      i {
+        color: #999;
+      }
+    }
+    p {
+      margin: 0;
+    }
+  }
+  h1 {
+    font-size: 1.2em;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin: 0;
+  }
+}
+
+.store-nav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  li {
+    display: inline-block;
+    margin-left: 30px;
+  }
+}
+
+.order-summary {
+  .order-label {
+    font-weight: bold;
+  }
+  .order-cost {
+    text-align: right;
+  }
+  .order-minimize {
+    font-size: 0.8em;
+  }
+}
+
+.store-actions {
+  margin-top: 20px;
+}
+.label.label-order {
+  display: inline-block;
+  white-space: normal;
+  max-width: 200px;
+}
+
+h2.cart-title {
+  font-size: 1em;
+  font-weight: bold;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+  margin-bottom: 30px;
+  margin-top: 40px;
+}

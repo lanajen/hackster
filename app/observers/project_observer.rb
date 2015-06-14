@@ -19,10 +19,6 @@ class ProjectObserver < ActiveRecord::Observer
         part.update_counters only: [:projects]
       end
     end
-
-    if record.workflow_state_changed? and record.approved? and record.made_public_at
-      NotificationCenter.notify_all :approved, :project, record.id
-    end
   end
 
   def after_destroy record
@@ -57,7 +53,7 @@ class ProjectObserver < ActiveRecord::Observer
     record.purge
   end
 
-  def after_status_updated record
+  def after_approved record
     ProjectWorker.perform_async 'update_platforms', record.id
 
     if record.made_public_at.nil?
@@ -67,7 +63,17 @@ class ProjectObserver < ActiveRecord::Observer
     elsif record.made_public_at > Time.now
       record.post_new_tweet_at! record.made_public_at unless record.hidden? or Rails.env != 'production'
     end
+
+    NotificationCenter.notify_all :approved, :project, record.id
   end
+
+  def after_rejected record
+    record.update_column :hide, true
+  end
+
+  # def after_pending_review record
+  #   record.update_column :private, false
+  # end
 
   def before_create record
     record.reset_counters assign_only: true
@@ -86,23 +92,9 @@ class ProjectObserver < ActiveRecord::Observer
       if record.private?
       else
         if record.force_hide?
-          record.workflow_state = :rejected if record.can_reject?
+          record.reject! if record.can_reject?
         else
-          record.workflow_state = :pending_review if record.can_mark_needs_review?
-        end
-      end
-    end
-
-    if record.workflow_state_changed?
-      if record.rejected?
-        record.hide = true
-      elsif record.approved?
-        record.approved_changed = true
-        if record.made_public_at.nil?
-          record.post_new_tweet! unless record.hidden? or Rails.env != 'production'
-          record.made_public_at = Time.now
-        elsif record.made_public_at > Time.now
-          record.post_new_tweet_at! record.made_public_at unless record.hidden? or Rails.env != 'production'
+          record.mark_needs_review! if record.can_mark_needs_review?
         end
       end
     end

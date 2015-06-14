@@ -5,9 +5,9 @@ class Admin::ProjectsController < Admin::BaseController
     title "Admin / Projects - #{safe_page_params}"
     @fields = {
       'created_at' => 'projects.created_at',
-      'made_public_at' => 'projects.made_public_at',
-      'name' => 'projects.name',
+      'status' => 'projects.workflow_state',
       'private' => 'projects.private',
+      'name' => 'projects.name',
       'type' => 'projects.type',
     }
 

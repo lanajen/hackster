@@ -1,0 +1,29 @@
+= content_for :no_container do
+
+  #content
+    .container
+      #store
+        .header.row
+          .col-md-6
+            h1 Hackster (Free) Store
+            p Exchange your hard-earned reputation points for real hardware.
+          .col-md-6.text-right
+            ul.store-nav
+              li= link_to 'Hardware', store_path
+              li= link_to 'Help', 'http://hackster.uservoice.com/knowledgebase/topics/92217-hackster-free-store'
+              - if user_signed_in?
+                li= link_to 'Orders', store_orders_path
+                - if current_user.is? :admin
+                  li= link_to content_tag(:i, '', class: 'fa fa-cogs'), admin_store_path, rel: 'tooltip', title: 'Store admin'
+                li.wallet
+                  a href=users_stats_path rel='tooltip' title="#{pluralize number_with_delimiter(current_user.reputation.redeemable_points), 'point'} available to redeem"
+                    i.fa.fa-certificate
+                    span= number_with_delimiter current_user.reputation.redeemable_points
+                li.cart
+                  a href=store_cart_index_path title="#{pluralize current_order.order_lines_count, 'item'} in your cart" rel='tooltip'
+                    i.fa.fa-shopping-cart
+                    span= current_order.order_lines_count
+
+        = yield
+
+= render template: "layouts/#{current_layout}"

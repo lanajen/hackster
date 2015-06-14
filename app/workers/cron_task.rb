@@ -95,13 +95,17 @@ class CronTask < BaseWorker
   end
 
   def generate_user
+    full_name = nil
+    while full_name.nil? or full_name =~ /\p{Han}/
+      gender = %w(male male male male male male male male male female).sample  # 90% male
+      country = rand(1..10) > 6 ? "&country=united+states" : ''
+      resp = JSON.parse Net::HTTP.get_response("api.uinames.com","/?gender=#{gender}#{country}").body
+      generator = NameGenerator.new(resp['name'], resp['surname'])
+      full_name = generator.full_name
+      user_name = generator.user_name
+    end
+
     u = nil
-    gender = %w(male male male male male male male male male female).sample  # 90% male
-    country = rand(1..10) > 6 ? "&country=united+states" : ''
-    resp = JSON.parse Net::HTTP.get_response("api.uinames.com","/?gender=#{gender}#{country}").body
-    generator = NameGenerator.new(resp['name'], resp['surname'])
-    full_name = generator.full_name
-    user_name = generator.user_name
     while u.nil? or !u.persisted?
       email = SecureRandom.hex(5) + '@user.hackster.io'
       user_data = {
@@ -117,8 +121,8 @@ class CronTask < BaseWorker
       u.save
     end
     groups = []
-    Platform.public.each do |plat|
-      plat.followers_count.times{ groups << plat.id } unless plat.hidden
+    Platform.public.featured.each do |plat|
+      (Math.log(plat.followers_count) * 100).to_i.times{ groups << plat.id } unless plat.followers_count.zero?
     end
     rand(1..5).times do
       FollowRelation.add u, Group.find(groups.sample), true
@@ -127,7 +131,7 @@ class CronTask < BaseWorker
     rand(1..10).times do
       project = Project.find project_ids.sample
       project.impressions.create user_id: u.id, controller_name: 'projects', action_name: 'show', message: 'tmp', request_hash: SecureRandom.hex(16)
-      if [true, false, false, false, false].sample  # prob = 0.2
+      if [true, false, false, false, false, false, false, false, false, false].sample  # prob = 0.1
         Respect.create_for u, project
       end
     end

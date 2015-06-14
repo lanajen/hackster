@@ -100,7 +100,7 @@
                   a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.cover_image' } }  Select picture
                   a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.cover_image" } }
                     i.fa.fa-link
-                p.help-block Will be cropped to fit 4:3 format. 1200x900px or higher recommended.
+                p.help-block A high quality picture of your product, at least 1600x430px. An image with no or little text looks a lot better!
                 - if @project.errors[:cover_image]
                   span.help-block.has-error= @project.errors[:cover_image].to_sentence
 

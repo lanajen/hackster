@@ -48,7 +48,6 @@ HackerIo::Application.routes.draw do
       get 'platforms' => 'pages#platforms'
       get 'platforms/contacts' => 'pages#platform_contacts'
       get 'respects' => 'pages#respects'
-      get 'store' => 'pages#store'
       delete 'sidekiq/failures' => 'pages#clear_sidekiq_failures'
 
       resources :awarded_badges, only: [:create], controller: 'badges'
@@ -66,6 +65,12 @@ HackerIo::Application.routes.draw do
       resources :projects, except: [:show]
       resources :users, except: [:show]
 
+      get 'store' => 'pages#store'
+      namespace :store do
+        resources :orders
+        resources :products
+      end
+
       root to: 'pages#root'
     end  # end admin
 
@@ -81,6 +86,18 @@ HackerIo::Application.routes.draw do
       get '' => 'posts#index', as: :blog_index
       get 'tags/:tag' => 'posts#index', as: :blog_tag
       get '*slug' => 'posts#show', as: :blog_post, slug: /[a-zA-Z0-9\-\/]+/
+    end
+
+    scope :users, module: :users do
+      resources :addresses, except: [:show, :edit]
+    end
+
+    namespace :store do
+      get '' => 'products#index', as: ''
+      resources :orders, only: [:index, :show, :update] do
+        patch 'confirm' => 'orders#confirm', on: :collection
+      end
+      resources :order_lines, as: :cart, path: :cart, only: [:index, :create, :destroy]
     end
 
     # groups
@@ -140,7 +157,7 @@ HackerIo::Application.routes.draw do
     end
 
     resources :platforms, except: [:show] do
-      get ':tag' => 'platforms#index', on: :collection, as: :tag
+      get ':tag' => 'platforms#index', on: :collection, as: :tag, constraints: lambda{|req| req.params[:tag] != 'new' }
       resources :projects, only: [] do
         post 'feature' => 'platforms#feature_project'#, as: :platform_feature_project
         delete 'feature' => 'platforms#unfeature_project'
@@ -385,11 +402,11 @@ HackerIo::Application.routes.draw do
 
   devise_scope :user do
     namespace :users, as: '' do
-      patch '/confirm' => 'confirmations#confirm'
       resources :authorizations do
         get 'update' => 'authorizations#update', on: :collection, as: :update
       end
       match '/auth/:provider/setup' => 'omniauth_callbacks#setup', via: :get
+      patch '/confirm' => 'confirmations#confirm'
       resources :simplified_registrations, only: [:create]
     end
   end

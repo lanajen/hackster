@@ -3,7 +3,7 @@ class UserObserver < ActiveRecord::Observer
     unless record.invited_to_sign_up? or record.reputation  # this callback seems to be called twice somehow, which means two sets of emails are sent. Checking on reputation to see if the callback has already been called.
       record.create_reputation
       advertise_new_user record unless record.simplified_signup?
-      record.send_confirmation_instructions unless record.invitation_accepted?
+      record.send_confirmation_instructions unless record.invitation_accepted? or record.skip_registration_confirmation
     end
   end
 
@@ -74,6 +74,10 @@ class UserObserver < ActiveRecord::Observer
 
     if (record.changed & %w(full_name avatar mini_resume slug user_name forums_link documentation_link crowdfunding_link buy_link twitter_link facebook_link linked_in_link blog_link github_link website_link youtube_link google_plus_link city country state projects_count followers_count reputation_count)).any? or record.interest_tags_string_changed? or record.skill_tags_string_changed?
       keys << "user-#{record.id}-sidebar"
+    end
+
+    if (record.changed & %w(reputation_count)).any?
+      record.reputation.try(:compute_redeemable!)
     end
 
     Cashier.expire *keys if keys.any?

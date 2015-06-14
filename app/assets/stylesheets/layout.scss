@@ -592,11 +592,9 @@ footer {
   border: 2px solid #ddd;
   @include border-radius(4px);
   background: #fff;
+  margin-bottom: 10px;
   & + .box {
     margin-top: 20px;
-  }
-  :last-child {
-    margin-bottom: 0;
   }
 }
 .box-title {
@@ -623,6 +621,9 @@ footer {
 }
 .box-content {
   padding: 20px;
+  & > :last-child {
+    margin-bottom: 0;
+  }
 }
 .box-title + .box-content {
   padding-top: 30px;
@@ -651,7 +652,7 @@ footer {
 }
 .box-outside {
   text-align: center;
-  margin-top: 10px;
+  // margin-top: 10px;
 }
 
 .no-float {

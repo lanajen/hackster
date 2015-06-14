@@ -15,39 +15,38 @@
           .col-sm-6.product-illustration
             = image_tag 'business/channel.png'
           .col-sm-6.product-description
-            h2 Platform Channel
+            h2 Platform Hubs
             .row
               .col-sm-6.startups
-                h3 Startups
+                h3 Starter
                 ul
-                  li Platform hub with up to 1,000 projects
-                  li Products showcase
-                  li Community embedded in your website
-                  li Up to 100,000 monthly impressions
-                  li SEO for maximum discoverability
-                  li Insights and analytics
-                  li Email support with 99% uptime SLA
+                  li Unlimited projects
+                  li Unlimited monthly impressions
+                  LI Products showcase
+                  Li Logo and branding tools
+                  li Email support
                   li
-                    abbr> data-trigger="hover" data-toggle="popover" data-container="body" data-placement="bottom" data-content='We love supporting shipped startup products with at least 5 reference projects, 250 followers, available technical support and documentation.' Prerequisites
+                    abbr> data-trigger="hover" data-toggle="popover" data-container="body" data-placement="bottom" data-content="To be featured on Hackster, we require at least 10 projects, 25 followers, available documentation and technical support." Prerequisites
                 .cta
                   .price
-                    | $99
-                    span.month
-                      | /mo
+                    | FREE
                   a.button data-toggle="modal" data-target="#myModal" Get it now
               .col-sm-6.enterprise
-                h3 Enterprise
+                h3 Professional
                 ul
-                  li Platform hub with unlimited projects
-                  li Products showcase
-                  li Branded community embedded in your website
+                  li Unlimited projects
                   li Unlimited monthly impressions
-                  li SEO for maximum discoverability
+                  lI Products showcase
+                  li Startups showcase
+                  li API access
+                  li Custom branding services
+                  li Integrated with your website
                   li Insights and analytics
                   li Single sign-on authentication
                   li Custom domain support
-                  li Marketing and development services
-                  li Email and phone support with 99.99% uptime SLA
+                  li Professional services
+                  li Phone and email support
+                  li 99.99% uptime SLA
                   li
                     abbr> data-trigger="hover" data-toggle="popover" data-container="body" data-placement="bottom" data-content='We love supporting enterprise partners who make products that fit our community needs. We are however selective in who we work with.' Prerequisites
 
@@ -67,9 +66,8 @@
               / li Available to embed challenge on your website
               li Online voting capabilities
               li Challenge submission showcase
-              li Prizes
-              li Social and newsletter outreach
-              li 60 days per challenge
+              li Winners and prize management
+              li Continuous promotion
             .cta
               .price $3,000
               a.button data-toggle="modal" data-target="#myModal" Get it now
@@ -83,36 +81,36 @@
             h2 Product Tutorials
             p Create authentic product tutorials:
             ul
-              li Tap our top-notch community to create online tutorials that are unique and authentic
-              / li Curate how-to videos with step by step instructions
-              / li Enjoy our built-in discussion forum
-              / li How-to product videos
-              li Displayed on Hackster.io and on your website
+              li Created by top community developers
+              li Any topic or skill level
+              li Step-by-step instructions
+              li Including code samples, schematics, BOMs
+              il Rich with images and videos
+              li Displayed on Hackster and on your website
             / .cta
-              .price $2,500
+              .price $2,000
               a.button data-toggle="modal" data-target="#myModal" Get it now
             .cta
-              a.button data-toggle="modal" data-target="#myModal" Coming soon
+              a.button data-toggle="modal" data-target="#myModal" Contact us
 
     section#moar
       .row
         .col-md-4.product-small
         .col-md-4.product-small
-          h2 Product Hackathons
+          h2 Live Hackathons
           ul
             li
               ' Based on our
               = link_to 'Hardware Weekend', '/hardwareweekend'
-            li World-class industry venues
+            li Complete planning and execution
+            Li Run-of-show services
+            Li Awesome industry venues
             li Hackathon management software
-            li Industry and vertical focus
-            li Hardware assortment
-            li Reporting and insights
-            li Photography services
-            li Social media and blogging
-            li Mentors and onsite support
-            li Insurance and liability coverage
-            li 100% logistics and run-of-show support
+            / li Prize management software
+            Il Rich hardware assortment
+            li Social, photography and blogging
+            li Liability insurance coverage
+            li Dedicated project lead
             .cta
               a.button data-toggle="modal" data-target="#myModal" Contact us
 
@@ -133,7 +131,7 @@
           button.close data-dismiss="modal" type="button"
             span aria-hidden="true"  ×
             span.sr-only Close
-          h4#myModalLabel.modal-title Please tell us about you and your project:
+          h4#myModalLabel.modal-title Hi! How can we help?
         .modal-body
           = f.input :company, label: 'Company name'
           = f.input :website, label: 'Website'

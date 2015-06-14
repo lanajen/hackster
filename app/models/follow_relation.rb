@@ -1,5 +1,6 @@
 class FollowRelation < ActiveRecord::Base
   include Notifiable
+  FOLLOWABLE_TYPES = %w(Group Part Project User)
 
   belongs_to :followable, polymorphic: true
   belongs_to :user

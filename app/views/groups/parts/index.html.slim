@@ -1,8 +1,13 @@
-p= link_to "&larr; Go back to #{@group.name} page".html_safe, @group
+h2.text-center
+  - if @group.avatar.present?
+    ==> image_tag @group.avatar.try(:imgix_url, :mini), class: 'img-thumb'
+  = link_to @group.name, @group, class: 'hidden-link'
+
+/ p= link_to "&larr; Go back to the #{@group.name} hub".html_safe, @group
 
 .box
   .box-title
-    h2 Products admin for #{@group.name}
+    h2 Manage products
   .box-content
     .mg-20= link_to 'New product', new_group_product_path(@group), class: 'btn btn-success'
 

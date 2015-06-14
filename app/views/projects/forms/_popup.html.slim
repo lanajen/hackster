@@ -11,7 +11,7 @@
         = f.simple_fields_for :widgets, widget_class.new do |f_widget|
           = f_widget.input :type, as: :hidden, input_html: { 'data-field-type' => 'type' }
           = f_widget.input :id, as: :hidden, input_html: { 'data-field-type' => 'id', class: 'resetable' }
-          = f_widget.input :name, input_html: { 'data-field-type' => 'name', class: 'resetable' }, label: 'Name'
+          = f_widget.input :name, input_html: { 'data-field-type' => 'name', class: 'resetable' }, label: 'Title'
           = f_widget.input :comment, input_html: { 'data-field-type' => 'comment', class: 'resetable' }, placeholder: 'What is it? How do you use it?', as: :text
           - if :popup_style.in? local_assigns
             = render partial: "projects/forms/#{popup_style}_popup", locals: { f_widget: f_widget }.merge(local_assigns)

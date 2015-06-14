@@ -20,6 +20,7 @@ module ScraperStrategies
       puts 'Converting to project...'
 
       @project = Project.new private: true
+      @parts = []
       @widgets = []
       @embedded_urls = {}
       Embed::LINK_REGEXP.values.each{|provider| @embedded_urls[provider.to_s] = [] }
@@ -52,6 +53,7 @@ module ScraperStrategies
 
     private
       def after_parse
+        @parts.each{|p| @project.part_joins << p }
         @widgets.each{|w| @project.widgets << w }
       end
 

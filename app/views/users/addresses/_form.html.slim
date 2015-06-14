@@ -1,0 +1,19 @@
+= simple_nested_form_for @address, html: { class: 'form-horizontal disable-on-submit' }, wrapper: :bootstrap3_horizontal do |f|
+  = f.error_notification
+
+  = f.input :full_name
+  = f.input :address_line1, label: 'Address line 1'
+  = f.input :address_line2, label: 'Address line 2'
+  = f.input :city
+  = f.input :state
+  = f.input :zip
+  = f.input :country, input_html: { class: 'form-control' }
+  = f.input :phone, hint: 'So the shipping company can call you if they have a problem.'
+  = f.input :default, inline_label: 'Make this my default address', label: false
+  - if params[:order_id]
+    input type='hidden' value=params[:order_id] name='order_id'
+
+  .form-group
+    .col-md-8.col-md-offset-4
+      = f.button :submit, 'Save address', class: 'btn btn-primary'
+      = link_to 'Cancel', addresses_path(order_id: params[:order_id]), class: 'btn btn-link'

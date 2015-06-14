@@ -159,9 +159,15 @@ var ThoughtLikes = React.createClass({
 });
 
 var ThoughtContainer = React.createClass({
+  mixins: [FluxMixin],
+
   handleComment: function() {
     window.thoughtContainer = this;
     this.refs.commentContainer.focusForm();
+  },
+
+  showAllComments: function(id) {
+    this.getFlux().actions.thoughts.showAllComments(id);
   },
 
   render: function() {
@@ -171,11 +177,19 @@ var ThoughtContainer = React.createClass({
     if (thought.deleted)
       classes.push('deleted');
 
+    if (thought.comments.length <= 3 || thought.showAllComments) {
+      var comments = thought.comments;
+      var moreCommentsCount = 0;
+    } else {
+      var comments = thought.comments.slice(Math.max(thought.comments.length - 3, 1));
+      var moreCommentsCount = thought.comments.length - 3;
+    }
+
     return (
       <div className={classes.join(' ')}>
         <Thought {...thought} onCommentClick={this.handleComment} />
         <ThoughtLikes likes={thought.likes} liked={thought.liked} />
-        <CommentContainer ref='commentContainer' thoughtId={thought.id} comments={thought.comments} />
+        <CommentContainer ref='commentContainer' thoughtId={thought.id} comments={comments} moreCommentsCount={moreCommentsCount} showAllComments={this.showAllComments} />
       </div>
     );
   }
@@ -188,19 +202,11 @@ var ThoughtList = React.createClass({
         <ThoughtContainer thought={thought} key={thought.id} />
       );
     });
-    if (this.props.thoughts.length) {
-      return (
-        <div className="thought-list">
-          {thoughtNodes}
-        </div>
-      );
-    } else {
-      return (
-        <div className="thought-list text-center">
-          <i className="fa fa-spin fa-spinner fa-3x"></i>
-        </div>
-      )
-    }
+    return (
+      <div className="thought-list">
+        {thoughtNodes}
+      </div>
+    );
   }
 });
 

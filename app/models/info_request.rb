@@ -1,7 +1,7 @@
 class InfoRequest
   PLANS = [
-    'Platform channel for startups',
-    'Platform channel for enterprise',
+    'Starter Platform hub',
+    'Professional Platform hub',
     'Product challenge',
     'Product tutorial',
     # 'Product workshop',
@@ -14,8 +14,9 @@ class InfoRequest
     'LinkedIn',
     'Meetup',
     'Hackathon',
-    'Google',
+    'Google or other search engine',
     'Friend or colleague',
+    'Other',
   ]
 
   include ActiveModel::Validations

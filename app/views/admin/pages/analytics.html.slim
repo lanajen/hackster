@@ -68,17 +68,6 @@
         ==> number_with_delimiter @like_count
         small.text-muted +#{@new_likes_count}
 
-  .col-xs-12.col-sm-4
-    .panel.panel-default.panel-dashboard
-      .panel-heading
-        h3.panel-title= link_to 'Followers (users/platforms)', admin_followers_path
-      .panel-body
-        ==> number_with_delimiter @follow_user_count
-        small.text-muted> +#{@new_user_follows_count}
-        ' /
-        ==> number_with_delimiter @follow_platform_count
-        small.text-muted +#{@new_platform_follows_count}
-
 .row
   .col-xs-12.col-sm-4
     .panel.panel-default
@@ -111,8 +100,12 @@
   .col-xs-12.col-sm-4
     .panel.panel-default.panel-dashboard  class="#{'panel-danger' unless @waiting_for_approval_project_count.zero? }"
       .panel-heading
-        h3.panel-title= link_to 'Projects waiting for approval', admin_projects_path(approval_needed: true, filters: { private: 'f' } )
-      .panel-body= number_with_delimiter @waiting_for_approval_project_count
+        h3.panel-title
+          => link_to 'Projects waiting for approval', admin_projects_path(approval_needed: true, filters: { private: 'f' } )
+          = link_to '(buggy)', admin_projects_path(filters: { status: :unpublished, private: 0 })
+      .panel-body
+        => number_with_delimiter @waiting_for_approval_project_count
+        small.text-muted (#{Project.unpublished.public.count})
 
     .panel.panel-default.panel-dashboard
       .panel-heading
@@ -142,6 +135,37 @@
       .panel-body
         = number_with_delimiter @messages_count
         small.text-muted +#{@new_messages_count}
+
+.row
+  .col-xs-12.col-sm-4
+    .panel.panel-default.panel-dashboard
+      .panel-heading
+        h3.panel-title
+          | Followers (
+          = link_to 'users', admin_followers_path(filters: { followable_type: 'User' })
+          | /
+          = link_to 'platforms', admin_followers_path(filters: { followable_type: 'Group' })
+          | )
+      .panel-body
+        ==> number_with_delimiter @follow_user_count
+        small.text-muted> +#{@new_user_follows_count}
+        ' /
+        ==> number_with_delimiter @follow_platform_count
+        small.text-muted +#{@new_platform_follows_count}
+  .col-xs-12.col-sm-4
+    .panel.panel-default.panel-dashboard
+      .panel-heading
+        h3.panel-title= link_to 'Replicated projects', admin_followers_path(filters: { followable_type: 'Project' })
+      .panel-body
+        ==> number_with_delimiter @replicated_projects_count
+        small.text-muted> +#{@new_replicated_projects_count}
+  .col-xs-12.col-sm-4
+    .panel.panel-default.panel-dashboard
+      .panel-heading
+        h3.panel-title= link_to 'Owned parts', admin_followers_path(filters: { followable_type: 'Part' })
+      .panel-body
+        ==> number_with_delimiter @owned_parts_count
+        small.text-muted> +#{@new_owned_parts_count}
 .row
   .col-xs-12
     .panel.panel-default.panel-dashboard

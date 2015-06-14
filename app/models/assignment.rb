@@ -1,5 +1,5 @@
 class Assignment < ActiveRecord::Base
-  include StringParser
+  include HstoreColumn
 
   GRADING_TYPES = {
     'One grade per student' => 'individual',
@@ -17,8 +17,9 @@ class Assignment < ActiveRecord::Base
     :disable_tweeting, :hide_all, :submit_by_date, :submit_by_date_dummy
   attr_accessor :submit_by_date_dummy
 
-  store :properties, accessors: [:hide_all, :disable_tweeting]
-  parse_as_booleans :properties, :hide_all, :disable_tweeting
+  store :properties, accessor: []
+  hstore_column :properties, :disable_tweeting, :boolean
+  hstore_column :properties, :hide_all, :boolean
 
   before_create :generate_id
 

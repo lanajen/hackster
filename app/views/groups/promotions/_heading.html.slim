@@ -1,0 +1,34 @@
+- if @assignment
+  h2
+    ' Assignment:
+    = link_to @assignment.name, assignment_path(@assignment)
+    - if @assignment.document.present?
+      small<= link_to content_tag(:i, '', class: 'fa fa-info-circle'), @assignment.document.file_url, title: 'Download assignment instructions', rel: 'tooltip', target: '_blank', data: { container: 'body' }
+h1
+  - if @group.private?
+    small>
+      i.fa.fa-lock.istooltip*{ title: 'Private group', data: { container: 'body' } }
+  => link_to "#{@group.course.name}", course_path(@group.course)
+h2
+  - if profs = @group.members.with_group_roles('professor') and profs.any?
+    ' By
+    = profs.map{ |prof| link_to html_escape(prof.user.name), prof.user }.to_sentence.html_safe
+    ' ,
+  = link_to @group.short_name, promotion_path(@group)
+  ' ,
+  = @group.course.university.full_name
+p
+  - if @group.mini_resume.present?
+    = @group.mini_resume
+  - elsif can? :update, @group
+    ' No mini resume.
+    = link_to 'Add one?', edit_promotion_path(@group)
+
+- if @group.location
+  p.secondary-info
+    i.fa.fa-map-marker>
+    = @group.location
+- elsif can? :update, @group
+  p.secondary-info
+    ' No location.
+    = link_to 'Add one?', edit_promotion_path(@group)

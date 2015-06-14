@@ -2,8 +2,8 @@ class Challenge < ActiveRecord::Base
   DEFAULT_DURATION = 60
   VISIBLE_STATES = %w(in_progress ended paused canceled judging judged)
 
-  include Counter
-  include StringParser
+  include HstoreColumn
+  include HstoreCounter
   include Workflow
 
   belongs_to :platform
@@ -20,24 +20,29 @@ class Challenge < ActiveRecord::Base
   before_validation :assign_new_slug
   before_validation :generate_slug, if: proc{ |c| c.slug.blank? }
 
-  attr_accessible :new_slug, :name, :prizes_attributes, :platform_id, :description,
-    :rules, :teaser, :multiple_entries, :duration, :eligibility, :requirements,
-    :judging_criteria, :how_to_enter, :video_link, :cover_image_id, :project_ideas,
-    :end_date, :end_date_dummy, :avatar_id, :custom_tweet, :sponsor_name,
-    :sponsor_link, :custom_css
+  attr_accessible :new_slug, :name, :prizes_attributes, :platform_id, :duration,
+    :video_link, :cover_image_id, :end_date, :end_date_dummy, :avatar_id
   attr_accessor :new_slug, :end_date_dummy
-
-  store :properties, accessors: [:description, :rules, :teaser, :multiple_entries,
-    :eligibility, :requirements, :judging_criteria, :how_to_enter, :project_ideas,
-    :custom_tweet, :sponsor_name, :sponsor_link, :custom_css]
 
   accepts_nested_attributes_for :prizes, allow_destroy: true
 
-  parse_as_booleans :properties, :multiple_entries, :project_ideas
+  store :properties, accessors: []
+  hstore_column :properties, :custom_css, :string
+  hstore_column :properties, :custom_tweet, :string
+  hstore_column :properties, :description, :string
+  hstore_column :properties, :eligibility, :string
+  hstore_column :properties, :how_to_enter, :string
+  hstore_column :properties, :judging_criteria, :string
+  hstore_column :properties, :multiple_entries, :boolean
+  hstore_column :properties, :project_ideas, :boolean
+  hstore_column :properties, :requirements, :string
+  hstore_column :properties, :rules, :string
+  hstore_column :properties, :teaser, :string
+  hstore_column :properties, :sponsor_link, :string
+  hstore_column :properties, :sponsor_name, :string
 
-  store :counters_cache, accessors: [:projects_count]
-
-  parse_as_integers :counters_cache, :projects_count
+  counters_column :counters_cache, long_format: true
+  has_counter :projects, 'entries.approved.count'
 
   is_impressionable counter_cache: true, unique: :session_hash
 
@@ -83,12 +88,6 @@ class Challenge < ActiveRecord::Base
 
   def cover_image_id=(val)
     self.cover_image = CoverImage.find_by_id(val)
-  end
-
-  def counters
-    {
-      projects: 'entries.approved.count',
-    }
   end
 
   def duration

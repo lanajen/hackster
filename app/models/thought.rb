@@ -16,6 +16,8 @@ class Thought < ActiveRecord::Base
   before_save :get_link_properties, if: proc{|t| t.link.present? and t.link_changed? }
   after_commit :enqueue_parse_hashtags
 
+  self.per_page = 15
+
   def self.with_hashtag hashtag
     joins(:hashtags).where("LOWER(hashtags.name) = ?", hashtag.downcase)
   end

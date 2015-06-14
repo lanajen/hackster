@@ -1,17 +1,16 @@
 - @assignment.build_document unless @assignment.document.present?
-= simple_nested_form_for @assignment, url: "/assignments/#{@assignment.id}", html: { class: 'form-horizontal remote accept-file-upload', data: { remote: true } }, wrapper: :bootstrap3_horizontal do |f|
+= simple_nested_form_for @assignment, url: "/assignments/#{@assignment.id}", html: { class: 'form-horizontal remote accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
   = f.error_notification
 
   .row
-    .mg-20
     .col-xs-12
       .header.clearfix
         h3.pull-left
-          | Edit assignment
+          | Edit promotion
         .pull-right
           ul.list-unstyled.list-inline
-            li= f.submit 'Update assignment', class: 'btn btn-primary btn-sm'
-            li= link_to 'Cancel', '', class: 'btn-cancel btn-link btn-sm', data: { show: '.user .display', hide: '.user .edit' }
+            li= f.submit 'Save changes', class: 'btn btn-primary btn-sm'
+            li= link_to 'Cancel', @assignment, class: 'btn-link btn-sm'
       hr
 
   .row
@@ -35,15 +34,13 @@
         .col-md-4
           label.control-label Assignment instructions
         .col-md-8
-          span.file-preview.preview  class='document'  = @assignment.document.file_name if @assignment.document.file.present?
+          span.file-preview.preview.document= @assignment.document.file_name if @assignment.document.file.present?
           a.btn.btn-default.btn-sm.browse*{ data: { target: ".file_upload.document" } }
             - if @assignment.document.file.present?
               | Change file
             - else
               | Select file
           p.help-block Upload the assignment instructions as a PDF.
-
-hr
 
 = content_for :js do
   = javascript_include_tag 'datepicker'

@@ -6,6 +6,9 @@
     #content
       .container
         h1.text-center  style='margin-bottom:30px'   Find your local hacker space
+        p.text-center.small.text-muted
+          ' Community-generated content retrieved from
+          = link_to 'hackerspaces.org', 'https://wiki.hackerspaces.org', target: '_blank'
 
       .mg-40  style='width:100%'
         #map  style='width: 100%;height:500px;'
@@ -14,7 +17,7 @@
         .row
           .col-xs-12
             .pull-right
-              = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "List your space"), new_hacker_space_path, class: 'btn btn-outline'
+              = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "List your space"), new_hacker_space_path, class: 'btn btn-default'
           .col-xs-12
             table.table
               thead

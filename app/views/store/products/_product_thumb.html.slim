@@ -1,0 +1,9 @@
+- part = product.source.decorate
+.part-thumb
+  a.img-container href=url_for(part)
+    = image_tag(part.image(:headline))
+    .description= part.one_liner_or_description
+  h3= link_to part.name, part
+  .order
+    = link_to 'Add to cart', store_cart_index_path(store_product_id: product.id), class: 'btn btn-primary btn-sm', data: { method: :post }
+    .cost= product.unit_cost.zero? ? 'Free' : pluralize(number_with_delimiter(product.unit_cost), 'point')

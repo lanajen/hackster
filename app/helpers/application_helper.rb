@@ -68,6 +68,8 @@ module ApplicationHelper
       project = Project.find_by_id(params[:id])
     when 'user'
       user = User.find_by_id(params[:id])
+    when 'part'
+      part = Part.find_by_id(params[:id])
     end
 
     case params[:reason]
@@ -89,11 +91,13 @@ module ApplicationHelper
       end
     when 'follow'
       if project
-        msg = "Please log in or sign up to follow #{content_tag(:b, project.name)}."
+        msg = "Please log in or sign up to indicate that you've assembled #{content_tag(:b, project.name)}."
       elsif user
         msg = "Please log in or sign up to follow #{content_tag(:b, user.name)}."
       elsif group
         msg = "Please log in or sign up to follow #{content_tag(:b, group.name)}."
+      elsif part
+        msg = "Please log in or sign up to put #{content_tag(:b, part.name)} in your toolbox."
       end
     when 'comment'
       if project

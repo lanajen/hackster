@@ -217,6 +217,12 @@
         position: static;
       }
     }
+    a {
+      color: #fff;
+      &:hover {
+        color: #fff;
+      }
+    }
   }
   h1, .group-name {
     margin: 0;

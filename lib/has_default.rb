@@ -5,8 +5,13 @@ module HasDefault
       store_accessor :properties, :"#{attribute_name}" unless block_given?
 
       send :define_method, "default_#{attribute_name}" do
-        default.gsub(/%([a-z_]+)%/) do
-          send $1
+        case default
+        when String
+          default.gsub(/%\{([a-z_\.\s\(\)]+)\}/) do
+            eval $1
+          end
+        else
+          default
         end
       end
 
@@ -20,7 +25,14 @@ module HasDefault
     end
   end
 
+  module InstanceMethods
+    def h
+      ClassHelper.new
+    end
+  end
+
   def self.included base
     base.send :extend, ClassMethods
+    base.send :include, InstanceMethods
   end
 end

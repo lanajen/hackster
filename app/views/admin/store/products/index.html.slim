@@ -1,0 +1,33 @@
+- model_class = StoreProduct
+.page-header
+  h1
+    ==> t '.title', :default => model_class.model_name.human.pluralize
+    small= link_to t('.new', :default => t("helpers.links.new")), new_admin_store_product_path, :class => 'btn btn-primary btn-sm'
+
+==> render 'admin/shared/search_form_tag'
+- (@fields.keys - %w(created_at status)).each do |field|
+  ==> render partial: 'admin/shared/search_form_text_field', locals: { field: field }
+= render 'admin/shared/search_form_sort_and_submit'
+
+table.table.table-striped
+  thead
+    tr
+      th= model_class.human_attribute_name(:source)
+      th= model_class.human_attribute_name(:orders)
+      th= model_class.human_attribute_name(:available)
+      th= model_class.human_attribute_name(:created_at)
+      th=t '.actions', :default => t("helpers.actions")
+  tbody
+    - @products.each do |product|
+      tr
+        td= link_to product.source.name, product.source
+        td= product.orders_count
+        td= product.available
+        td= l product.created_at
+        td
+          ul.list-unstyled
+            li= link_to 'Edit', edit_admin_store_product_path(product), :class => 'btn btn-default btn-xs'
+            li= link_to t('.destroy', :default => t("helpers.links.destroy")), admin_store_product_path(product), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'
+
+.pagination.col-xs-12.text-center
+  = will_paginate @products
