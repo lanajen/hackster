@@ -1,55 +1,65 @@
 .row
-  .col-md-4.col-md-offset-4
+  .col-md-8.col-md-offset-2
     .box
       .box-title
         h2 Create a new platform hub
+        p.subheading
+          = link_to 'Learn more about platform hubs', 'http://hackster.uservoice.com/knowledgebase/articles/622491'
 
       .box-content
-        = simple_nested_form_for @platform, url: platforms_path, html: { class: 'accept-file-upload disable-on-submit' } do |f|
+        = simple_nested_form_for @platform, url: platforms_path, html: { class: 'accept-file-upload disable-on-submit form-horizontal' }, wrapper: :bootstrap3_horizontal do |f|
           = f.error_notification
 
-          = f.input :full_name, label: 'What is the platform called?'
-          = f.input :mini_resume, as: :text, input_html: { rows: 4 }, label: 'Elevator pitch', hint: 'Max 140 characters'
+          = f.input :full_name, label: 'Platform name'
+          = f.input :mini_resume, as: :text, input_html: { rows: 3 }, label: 'Elevator pitch', hint: "Max 140 characters. Protip: save characters by not using your platform's name in the description. E.g., instead of 'PlatformX is a microcontroller...' just say 'A microcontroller...'."
 
           .avatar.file-drop.form-group  class="#{'has-error' if @platform.errors[:avatar].present?}"
-            - if @platform.avatar
-              = hidden_field_tag :cover_image_id, @platform.avatar.id
-            label.control-label
-              | Logo
-            div
-              span.avatar.image-preview.preview
-                - if @platform.avatar
-                  = image_tag @platform.avatar.imgix_url(:thumb)
-              .btn-group
-                a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.avatar' } }  Select picture
-                a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.avatar" } }
-                  i.fa.fa-link
-              p.help-block Will be cropped to fit 1:1 format (square). 200x200px or higher recommended.
-              - if @platform.errors[:avatar]
-                span.help-block.has-error= @platform.errors[:avatar].to_sentence
+            .col-sm-4
+              label.control-label Logo
+            .col-sm-8
+              - if @platform.avatar
+                = hidden_field_tag :cover_image_id, @platform.avatar.id
+              div
+                span.avatar.image-preview.preview
+                  - if @platform.avatar
+                    = image_tag @platform.avatar.imgix_url(:thumb)
+                .btn-group
+                  a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.avatar' } }  Select picture
+                  a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.avatar" } }
+                    i.fa.fa-link
+                p.help-block Will be cropped to fit 1:1 format (square). 200x200px or higher recommended.
+                - if @platform.errors[:avatar]
+                  span.help-block.has-error= @platform.errors[:avatar].to_sentence
 
-          .cover_image.file-drop.form-group  class="#{'has-error' if @platform.errors[:cover_image].present?}"
-            - if @platform.cover_image
-              = hidden_field_tag :cover_image_id, @platform.cover_image.id
-            label.control-label
-              | Cover image
-            div
-              span.cover_image.image-preview.preview
-                - if @platform.cover_image
-                  = image_tag @platform.cover_image.imgix_url(:cover_mini_thumb)
-              .btn-group
-                a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.cover_image' } }  Select picture
-                a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.cover_image" } }
-                  i.fa.fa-link
-              p.help-block A high quality picture of your product, at least 1600x430px. An image with no or little text looks a lot better!
-              - if @platform.errors[:cover_image]
-                span.help-block.has-error= @platform.errors[:cover_image].to_sentence
-
-          = render partial: 'shared/image_form_bare', locals: { file_type: 'cover_image', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'group' }
           = render partial: 'shared/image_form_bare', locals: { file_type: 'avatar', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
 
-          = f.button :submit, 'Continue', class: 'btn-block btn-primary'
+          / .cover_image.file-drop.form-group  class="#{'has-error' if @platform.errors[:cover_image].present?}"
+            .col-sm-4
+              label.control-label Cover image
+            .col-sm-8
+              - if @platform.cover_image
+                = hidden_field_tag :cover_image_id, @platform.cover_image.id
+              div
+                span.cover_image.image-preview.preview
+                  - if @platform.cover_image
+                    = image_tag @platform.cover_image.imgix_url(:cover_mini_thumb)
+                .btn-group
+                  a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.cover_image' } }  Select picture
+                  a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.cover_image" } }
+                    i.fa.fa-link
+                p.help-block A high quality picture of your product, at least 1600x430px. An image with no or little text looks a lot better!
+                - if @platform.errors[:cover_image]
+                  span.help-block.has-error= @platform.errors[:cover_image].to_sentence
 
-  .col-md-3.col-md-offset-1
+          / # = render partial: 'shared/image_form_bare', locals: { file_type: 'cover_image', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'group' }
+
+          - unless user_signed_in?
+            - link = link_to 'Already have an account?', new_user_session_path(redirect_to: new_platform_path)
+            = f.input :admin_email, label: 'Your email', hint: "We'll create an admin account with that email. <b>#{link}</b>".html_safe, required: true
+
+          .row
+            .col-sm-8.col-sm-offset-4= f.button :submit, 'Continue', class: 'btn-block btn-primary'
+
+  / .col-md-3.col-md-offset-1
     strong What's a platform hub?
     p Platform hubs are places where the community can meet and share projects as well as useful information.

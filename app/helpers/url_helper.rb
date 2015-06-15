@@ -253,6 +253,14 @@ module UrlHelper
     end
   end
 
+  def platform_community_path platform, opts={}
+    super platform.user_name, opts
+  end
+
+  def platform_community_url platform, opts={}
+    super platform.user_name, opts
+  end
+
   def platform_products_path platform, opts={}
     super platform.user_name, opts
   end

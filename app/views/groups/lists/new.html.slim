@@ -1,0 +1,21 @@
+.row
+  .col-md-8.col-md-offset-2
+    .box
+      .box-title
+        h2 Create a new list
+        p.subheading
+          = link_to 'Learn more about lists', 'http://hackster.uservoice.com/knowledgebase/articles/622497'
+
+      .box-content
+        = simple_nested_form_for @list, url: lists_path, html: { class: 'accept-file-upload disable-on-submit form-horizontal' }, wrapper: :bootstrap3_horizontal do |f|
+          = f.error_notification
+
+          = f.input :full_name, label: 'List name'
+          = f.input :mini_resume, as: :text, input_html: { rows: 3 }, label: 'Short description', hint: "Max 140 characters."
+
+          - unless user_signed_in?
+            - link = link_to 'Already have an account?', new_user_session_path(redirect_to: new_list_path)
+            = f.input :admin_email, label: 'Your email', hint: "We'll create an admin account with that email. <b>#{link}</b>".html_safe, required: true
+
+          .row
+            .col-sm-8.col-sm-offset-4= f.button :submit, 'Continue', class: 'btn-block btn-primary'

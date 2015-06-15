@@ -145,6 +145,10 @@ class Platform < List
     where("CAST(groups.hcounters_cache -> 'members' AS INTEGER) > ?", MINIMUM_FOLLOWERS_STRICT)
   end
 
+  def self.new_first
+    order("(CASE WHEN CAST(groups.hproperties -> 'is_new' AS BOOLEAN) THEN 1 ELSE 2 END) ASC")
+  end
+
   def self.sub_platform_most_members
     select("groups.id, groups.*, CAST(groups.hcounters_cache -> 'members' AS INTEGER) AS members_cnt").order("members_cnt DESC")
   end

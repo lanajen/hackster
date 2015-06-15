@@ -1,0 +1,40 @@
+- if can? :read, @group
+  .tab-content
+    #tab-projects.tab-pane.active.fade.in
+      .main-section-actions.clearfix.mg-30
+        - if can? :add_project, @group
+        .pull-right
+          = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project to community"), "#{community_path(@community)}/projects/new", class: 'btn btn-sm btn-default'
+
+      - if @projects.any?
+        .row.project-list
+          - @projects.each do |collection|
+            = render partial: 'projects/project_thumb', locals: { project: collection.project.decorate }
+
+        .row.text-center= will_paginate @projects
+      - else
+          p
+            ' All public projects will appear here.
+            - if can? :add_project, @community
+              = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project to community"), "#{community_path(@community)}/projects/new", class: 'btn btn-sm btn-warning'
+
+    #tab-members.tab-pane.fade
+      - if @members.any?
+        .row
+          <div class="col-md-6"><div class="row">
+          - @members.each_with_index do |user, i|
+            - if i != 0 and i % 3 == 0
+              </div></div><div class="col-md-6"><div class="row">
+            = render partial: 'users/user_thumb_mini', locals: { user: user }
+          </div></div>
+      - else
+        ' Do you hack from #{@community.name}?
+        = link_to 'Join the group', group_accept_invitation_path(@community), class: 'btn btn-warning btn-sm'
+
+- else
+  .alert.alert-warning
+    | The content of this group is only visible to members.
+    / if @event.access_level == 'anyone'
+      = link_to 'Join', '', class: 'btn btn-warning btn-sm'
+    / elsif @event.access_level == 'request'
+      = link_to 'Request access', '', class: 'btn btn-warning btn-sm'

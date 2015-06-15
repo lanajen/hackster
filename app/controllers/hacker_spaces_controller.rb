@@ -1,5 +1,5 @@
 class HackerSpacesController < ApplicationController
-  before_filter :authenticate_user!, except: [:show, :redirect_to_show, :index]
+  before_filter :authenticate_user!, only: [:edit, :update]
   before_filter :load_hacker_space, only: [:show, :redirect_to_show, :update]
   layout 'group_shared', only: [:edit, :update, :show]
   respond_to :html
@@ -20,7 +20,7 @@ class HackerSpacesController < ApplicationController
     title @hacker_space.name
     meta_desc "Join the hacker space #{@hacker_space.name} on Hackster.io!"
 
-    @projects = @hacker_space.project_collections.visible.joins(:project).visible.merge(Project.public.for_thumb_display_in_collection.order(created_at: :desc)).paginate(page: safe_page_params)
+    @projects = @hacker_space.project_collections.visible.joins(:project).merge(Project.for_thumb_display_in_collection.order(created_at: :desc)).paginate(page: safe_page_params)
 
     @members = @hacker_space.members.includes(:user).includes(user: :avatar).invitation_accepted_or_not_invited.with_group_roles('member').map(&:user).select{|u| u.invitation_token.nil? }
     @team_members = @hacker_space.members.includes(:user).includes(user: :avatar).invitation_accepted_or_not_invited.with_group_roles('team').map(&:user).select{|u| u.invitation_token.nil? }
@@ -36,6 +36,7 @@ class HackerSpacesController < ApplicationController
   def new
     authorize! :create, HackerSpace
     title "Create a new hacker space"
+    meta_desc "Add your hacker space to Hackster and tens of thousands of hardware developers and makers around the world."
     @hacker_space = HackerSpace.new
 
     render "groups/hacker_spaces/#{self.action_name}"
@@ -45,13 +46,20 @@ class HackerSpacesController < ApplicationController
     @hacker_space = HackerSpace.new(params[:group])
     authorize! :create, @hacker_space
 
-    admin = @hacker_space.members.new(user_id: current_user.id, group_roles: ['team'])
-    @hacker_space.private = true
+    if user_signed_in?
+      admin = @hacker_space.members.new user_id: current_user.id, group_roles: ['team']
+    else
+      @hacker_space.require_admin_email = true
+    end
 
-    if @hacker_space.save
-      admin.update_attribute :permission_action, 'manage'
-      flash[:notice] = "Welcome to #{@hacker_space.class.name} #{@hacker_space.name}!"
-      respond_with @hacker_space
+    if @hacker_space.valid?
+      if user_signed_in?
+        @hacker_space.save
+        admin.update_attribute :permission_action, 'manage'
+        redirect_to @hacker_space, notice: "Welcome to the new hub for #{@hacker_space.name}!"
+      else
+        redirect_to create__simplified_registrations_path(user: { email: @hacker_space.admin_email }, redirect_to: create_hacker_spaces_path(group: params[:group]))
+      end
     else
       render "groups/hacker_spaces/new"
     end

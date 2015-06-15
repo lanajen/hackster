@@ -117,7 +117,9 @@ HackerIo::Application.routes.draw do
     end
 
     get 'h/:user_name' => 'hacker_spaces#redirect_to_show'
-    resources :hacker_spaces, except: [:show, :update], path: 'hackerspaces'
+    resources :hacker_spaces, except: [:show, :update], path: 'hackerspaces' do
+      get 'create' => 'hacker_spaces#create', on: :collection, as: :create
+    end
     scope 'hackerspaces/:user_name', as: :hacker_space do
       get '' => 'hacker_spaces#show'
       patch '' => 'hacker_spaces#update'
@@ -131,7 +133,9 @@ HackerIo::Application.routes.draw do
     end
 
     get 'c/:user_name' => 'communities#redirect_to_show'
-    resources :communities, except: [:show, :update]
+    resources :communities, except: [:show, :update] do
+      get 'create' => 'communities#create', on: :collection, as: :create
+    end
     scope 'communities/:user_name', as: :communities do
       get '' => 'communities#show'
       patch '' => 'communities#update'
@@ -139,17 +143,16 @@ HackerIo::Application.routes.draw do
       patch 'projects/link' => 'groups/projects#link'
     end
 
-    get 'l/:user_name' => 'lists#show', as: :list
-    match 'lists/:user_name' => redirect { |params, request|
-      URI.parse(request.url).tap { |uri| uri.path.sub!(/lists/i, 'l') }.to_s
+    match 'l/:user_name' => redirect { |params, request|
+      URI.parse(request.url).tap { |uri| uri.path.sub!(/l/i, 'lists') }.to_s
     }, via: :get
-    scope 'l/:user_name', as: :lists do
+    scope 'lists/:user_name', as: :list, constraints: lambda{|req| req.params[:user_name] != 'new' } do
       get '' => 'lists#show'
       patch '' => 'lists#update'
       post 'projects/link' => 'groups/projects#link'
       delete 'projects/link' => 'groups/projects#unlink'
     end
-    resources :lists, except: [:show, :update], path: 'l' do
+    resources :lists, except: [:show, :update] do
       resources :projects, only: [] do
         post 'feature' => 'lists#feature_project'#, as: :platform_feature_project
         delete 'feature' => 'lists#unfeature_project'
@@ -157,6 +160,7 @@ HackerIo::Application.routes.draw do
     end
 
     resources :platforms, except: [:show] do
+      get 'create' => 'platforms#create', on: :collection, as: :create
       get ':tag' => 'platforms#index', on: :collection, as: :tag, constraints: lambda{|req| req.params[:tag] != 'new' }
       resources :projects, only: [] do
         post 'feature' => 'platforms#feature_project'#, as: :platform_feature_project
@@ -284,6 +288,8 @@ HackerIo::Application.routes.draw do
 
     get 'csrf' => 'pages#csrf'
 
+    get 'start' => 'pages#start'
+
     get 'hardwareweekend' => 'pages#hardwareweekend'
     get 'hhw', to: redirect('/hardwareweekend')
     get 'hww', to: redirect('/hardwareweekend')
@@ -338,6 +344,7 @@ HackerIo::Application.routes.draw do
         get 'chat' => 'chat_messages#index'
         resources :announcements, except: [:create, :update, :destroy], path: :news
         get 'embed' => 'platforms#embed'
+        get 'community' => 'platforms#members'
         get 'products' => 'parts#index', as: :parts
         match 'makes/:part_slug' => redirect { |params, request|
           URI.parse(request.url).tap { |uri| uri.path.sub!(/makes/i, 'products') }.to_s
@@ -408,7 +415,9 @@ HackerIo::Application.routes.draw do
       end
       match '/auth/:provider/setup' => 'omniauth_callbacks#setup', via: :get
       patch '/confirm' => 'confirmations#confirm'
-      resources :simplified_registrations, only: [:create]
+      resources :simplified_registrations, only: [:create] do
+        get 'create' => 'simplified_registrations#create', on: :collection, as: :create
+      end
     end
   end
 

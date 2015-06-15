@@ -1,14 +1,17 @@
-= simple_nested_form_for @community, url: group_path(@community), html: { class: 'form-horizontal remote accept-file-upload', data: { remote: true } }, wrapper: :bootstrap3_horizontal do |f|
+= simple_nested_form_for @community, html: { class: 'form-horizontal remote accept-file-upload', data: { remote: true } }, wrapper: :bootstrap3_horizontal do |f|
   = f.error_notification
 
   .row
     .col-xs-12
-      h3
-        | Edit profile
+      .header.clearfix
+        h3.pull-left
+          | Edit community
         .pull-right
           ul.list-unstyled.list-inline
+            - if current_user.is? :admin
+              li= link_to 'Edit as admin', edit_admin_group_path(@group), class: 'btn btn-sm btn-warning'
             li= f.submit 'Save changes', class: 'btn btn-primary btn-sm'
-            li= link_to 'Cancel', '', class: 'btn-cancel btn-link btn-sm', data: { show: '.user .display', hide: '.user .edit' }
+            li= link_to 'Cancel', @group, class: 'btn-link btn-sm'
       hr
 
   .row
@@ -38,5 +41,3 @@
 
       = f.input :private, inline_label: 'Make this group private', label: false, hint: "Private groups are only visible by their members and are invite only."
       = f.input :access_level, label: 'Who can join this group?', collection: Group::ACCESS_LEVELS
-
-hr

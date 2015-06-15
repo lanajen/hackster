@@ -3,24 +3,65 @@
     .box
       .box-title
         h2 List a hacker space
+        p.subheading
+          = link_to 'Learn more about hacker space hubs', 'http://hackster.uservoice.com/knowledgebase/articles/622494'
 
       .box-content
         = simple_nested_form_for @hacker_space, url: hacker_spaces_path, html: { class: 'form-horizontal disable-on-submit accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
           = f.error_notification
 
-          = f.input :full_name, label: 'Name'
+          = f.input :full_name, label: 'Hacker space name'
+          = f.input :mini_resume, as: :text, input_html: { rows: 3 }, label: 'Short description', hint: 'Max 140 characters'
+          = f.input :address, label: "Address"
+          = f.input :city, label: "City"
+          = f.input :state, label: "State"
+          = f.input :zipcode, label: "Zip code"
+          = f.input :country, label: "Country", input_html: { class: 'form-control' }
 
-          .form-group
-            .col-md-4
-              label.control-label Add a logo
-            .col-md-8
-              .avatar.file-drop
-                div
-                  span.avatar.image-preview.preview
-                  a.btn.btn-default.btn-sm*{ data: { target: '.file_upload.avatar' } }  Select picture
+          .avatar.file-drop.form-group  class="#{'has-error' if @hacker_space.errors[:avatar].present?}"
+            .col-sm-4
+              label.control-label Logo
+            .col-sm-8
+              - if @hacker_space.avatar
+                = hidden_field_tag :cover_image_id, @hacker_space.avatar.id
+              div
+                span.avatar.image-preview.preview
+                  - if @hacker_space.avatar
+                    = image_tag @hacker_space.avatar.imgix_url(:thumb)
+                .btn-group
+                  a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.avatar' } }  Select picture
+                  a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.avatar" } }
+                    i.fa.fa-link
+                p.help-block Will be cropped to fit 1:1 format (square). 200x200px or higher recommended.
+                - if @hacker_space.errors[:avatar]
+                  span.help-block.has-error= @hacker_space.errors[:avatar].to_sentence
 
           = render partial: 'shared/image_form_bare', locals: { file_type: 'avatar', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
 
-          .form-group
+          / .cover_image.file-drop.form-group  class="#{'has-error' if @hacker_space.errors[:cover_image].present?}"
+            .col-sm-4
+              label.control-label Cover image
+            .col-sm-8
+              - if @hacker_space.cover_image
+                = hidden_field_tag :cover_image_id, @hacker_space.cover_image.id
+              div
+                span.cover_image.image-preview.preview
+                  - if @hacker_space.cover_image
+                    = image_tag @hacker_space.cover_image.imgix_url(:cover_mini_thumb)
+                .btn-group
+                  a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.cover_image' } }  Select picture
+                  a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.cover_image" } }
+                    i.fa.fa-link
+                p.help-block A high quality picture of your product, at least 1600x430px. An image with no or little text looks a lot better!
+                - if @hacker_space.errors[:cover_image]
+                  span.help-block.has-error= @hacker_space.errors[:cover_image].to_sentence
+
+          / # = render partial: 'shared/image_form_bare', locals: { file_type: 'cover_image', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'group' }
+
+          - unless user_signed_in?
+            - link = link_to 'Already have an account?', new_user_session_path(redirect_to: new_hacker_space_path)
+            = f.input :admin_email, label: 'Your email', hint: "We'll create an admin account with that email. <b>#{link}</b>".html_safe, required: true
+
+          .row
             .col-md-8.col-md-offset-4
-              = f.button :submit, 'Go!', class: 'btn-block btn btn-primary'
+              = f.button :submit, 'Continue', class: 'btn-block btn btn-primary'

@@ -1,0 +1,22 @@
+- unless @hide_top_join_prompt or (user_signed_in? and current_user.is_member? @community)
+  - if can? :join, @community
+    .alert.alert-warning.alert-flat
+      .container
+        - case @community.access_level
+        - when 'anyone'
+          ' Are you a member of
+          strong = @community.name
+          ' ?
+        - when 'invite'
+          ' You have been invited to join
+          strong = @community.name
+          ' .
+        = link_to 'Join community', group_accept_invitation_path(@community), class: 'btn btn-warning btn-sm'
+
+  - elsif can? :request_access, @community
+    .alert.alert-warning.alert-flat
+      .container
+        ' Registrations for
+        strong> = @community.name
+        ' require approval.
+        = link_to 'Request to join community', group_members_path(@community), class: 'btn btn-sm btn-warning', data: { method: :post }
