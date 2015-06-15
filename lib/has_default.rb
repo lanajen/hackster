@@ -7,7 +7,7 @@ module HasDefault
       send :define_method, "default_#{attribute_name}" do
         case default
         when String
-          default.gsub(/%\{([a-z_\.\s\(\)]+)\}/) do
+          default.gsub(/%\{([^\}]+)\}/) do
             eval $1
           end
         else

@@ -12,7 +12,7 @@
   hr
 
   div role='tabpanel'
-    ul.nav.nav-pills
+    ul.nav.nav-pills.navbar-tabs
       li.active role="presentation"
         a href='#general' data-toggle='tab' role='tab' General
       li role="presentation"
@@ -30,9 +30,6 @@
 
       / li role="presentation"
         a href='#chat' data-toggle='tab' role='tab' Chat
-      - if current_user.is? :admin
-        li role="presentation"
-          a href='#admin' data-toggle='tab' role='tab' Hackster admin
 
     hr style='margin-bottom:40px;'
     = f.error_notification
@@ -149,33 +146,4 @@
 
           .col-md-6
             = f.input :enable_parts, as: :boolean, inline_label: 'Enable products tab', label: false, hint: "Showcase your products in your hub. Makers will still be able to add your products to their projects even if you disable this tab."
-            = f.input :parts_text, label: 'Label for products section', hint: "Default is \"#{@platform.default_parts_text}\"."
-
-      - if current_user.is? :admin
-        .tab-pane.fade#admin role='tabpanel'
-          .row
-            .col-md-6
-              h4
-                strong Feel free to use (only if you know what you're doing)
-              = f.input :platform_tags_string, as: :string, label: 'Platform tags', hint: 'All the projects tagged with these tags will appear on this page. Separate technologies by commas'
-              = f.input :email
-              = f.input :verified, as: :boolean, inline_label: 'Verified', label: false, hint: "Check if a representative of the community is onboard"
-              = f.input :disclaimer, as: :text, input_html: { rows: 4 }
-              = f.input :enable_sub_parts, as: :boolean, inline_label: 'Enable sub-products tab (startups)', label: false, hint: "Products that are based on your technology but manufactured by third parties, eg: they integrate your products in theirs."
-              = f.input :plan, collection: Platform::PLANS
-
-            .col-md-6
-              h4
-                strong Don't use (especially if you don't know what you're doing)
-              = f.input :is_new, as: :boolean, inline_label: 'Show as new', label: false
-              = f.input :accept_project_ideas, inline_label: "Accept project ideas?", as: :boolean, hint: "This is useful if your product hasn't shipped yet and you want to encourage your community to start posting project ideas.", label: false
-              = f.input :project_ideas_phrasing, collection: @platform.project_ideas_phrasing_options, label: 'Phrasing for project ideas prompt'
-              = render partial: 'shared/image_form', locals: { file_type: 'company_logo', human_file_type: 'Company logo', image_link: @platform.company_logo.try(:file_url), help_block: '', attribute_type: 'company_logo', image_version: nil, model: 'group' }
-
-              = f.input :crowdfunding_link, label: 'Crowdfunding campaign or preorder link', hint: 'Fill in either your preorder or your store link depending on whether your product is available for sale or presale.'
-              = f.input :buy_link, label: 'Store link', hint: 'Fill in either your preorder or your store link depending on whether your product is available for sale or presale.'
-              = f.input :download_link, label: 'Download link', hint: 'If your product is a piece of software use this instead.'
-              = f.input :shoplocket_link, label: 'ShopLocket link'
-
-              = f.input :enable_products, as: :boolean, inline_label: 'Enable startups tab', label: false, hint: "Startups are the ones who use your products commercially."
-              = f.input :products_text, label: 'Label for startups section', hint: "Default is \"#{@platform.default_products_text}\"."
+            = f.input :parts_text, label: 'Section label', collection: @platform.parts_text_options

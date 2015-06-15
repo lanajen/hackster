@@ -99,43 +99,44 @@
                   = image_tag @challenge.avatar.try(:imgix_url, :mini), class: 'img-thumbnail'
                 = link_to @challenge.sponsor_name, @challenge.sponsor_link
 
-      section.group-nav.affixable
-        .group-nav-inner.hidden-xs
-          .brand
-            / # - if @challenge.avatar
-              = image_tag @challenge.avatar.file_url(:mini), class: 'img-thumbnail'
-            .img-placeholder
-            h2= @challenge.name
-          ul.nav.nav-tabs= render 'nav'
-          - if @challenge.open_for_submissions? and (!@is_challenge_entrant or @challenge.allow_multiple_entries?)
-            ul.list-inline.manage
-              li= link_to 'Enter challenge', '', class: 'btn btn-primary enter-challenge'
+      - if !@challenge.locked?(session) or can? :manage, @challenge
+        section.group-nav.affixable
+          .group-nav-inner.hidden-xs
+            .brand
+              / # - if @challenge.avatar
+                = image_tag @challenge.avatar.file_url(:mini), class: 'img-thumbnail'
+              .img-placeholder
+              h2= @challenge.name
+            ul.nav.nav-tabs= render 'nav'
+            - if @challenge.open_for_submissions? and (!@is_challenge_entrant or @challenge.allow_multiple_entries?)
+              ul.list-inline.manage
+                li= link_to 'Enter challenge', '', class: 'btn btn-primary enter-challenge'
 
-          - if can? :admin, @challenge
-            ul.list-inline.manage
-              li.dropdown role='presentation'
-                a.btn.btn-default.dropdown-toggle data-toggle="dropdown" aria-expanded="false"
-                  span.visible-sm-inline
-                    i.fa.fa-cog
-                  span.hidden-sm Manage challenge
-                  span.caret
-                ul.dropdown-menu role="menu"
-                  li= link_to "Edit settings", edit_challenge_path(@challenge)
-                  li= link_to "Entries dashboard", challenge_entries_path(@challenge)
+            - if can? :admin, @challenge
+              ul.list-inline.manage
+                li.dropdown role='presentation'
+                  a.btn.btn-default.dropdown-toggle data-toggle="dropdown" aria-expanded="false"
+                    span.visible-sm-inline
+                      i.fa.fa-cog
+                    span.hidden-sm Manage challenge
+                    span.caret
+                  ul.dropdown-menu role="menu"
+                    li= link_to "Edit settings", edit_challenge_path(@challenge)
+                    li= link_to "Entries dashboard", challenge_entries_path(@challenge)
 
-        .visible-xs
-          a.submenu-mobile-open href=''
-            i.fa.fa-bars
-            | Event menu
+          .visible-xs
+            a.submenu-mobile-open href=''
+              i.fa.fa-bars
+              | Event menu
 
-          ul.nav.nav-pills.nav-stacked.nav-justified.submenu-mobile style='display:none;'
-            li
-              a.close-nav href='' &times; Close
-            = render 'nav'
-            - if can? :manage, @challenge
-              li.divider
-              li= link_to "Edit challenge settings", edit_challenge_path(@challenge)
-              li= link_to "Entries dashboard", challenge_entries_path(@challenge)
+            ul.nav.nav-pills.nav-stacked.nav-justified.submenu-mobile style='display:none;'
+              li
+                a.close-nav href='' &times; Close
+              = render 'nav'
+              - if can? :manage, @challenge
+                li.divider
+                li= link_to "Edit challenge settings", edit_challenge_path(@challenge)
+                li= link_to "Entries dashboard", challenge_entries_path(@challenge)
 
     / = render partial: "groups/#{@challenge.identifier.pluralize}/alerts"
 
@@ -146,7 +147,21 @@
 
     section.main-section
       .container
-        = yield
+        - if !@challenge.locked?(session) or can? :manage, @challenge
+          = yield
+        - else
+          .row
+            .col-md-4.col-md-offset-4.col-sm-6.col-sm-offset-3.col-xs-10.col-xs-offset-1
+              .box
+                .box-content
+                  p.text-center
+                    strong This challenge is password-protected.
+                  / p.text-center Please enter a password below to unlock it:
+                  = form_tag unlock_challenge_path(@challenge), autocomplete: 'off' do
+                    .input-group
+                      = password_field_tag :password, nil, class: 'form-control', placeholder: 'Password'
+                      span.input-group-btn
+                        = submit_tag 'Unlock', class: 'btn btn-primary'
 
 = render template: "layouts/#{current_layout}"
 

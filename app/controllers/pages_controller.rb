@@ -47,15 +47,17 @@ class PagesController < ApplicationController
       @message.body += "<b>Name: </b>#{@info_request.name}<br>"
       @message.body += "<b>Phone: </b>#{@info_request.phone}<br>"
       @message.body += "<b>Email: </b>#{@info_request.email}<br>"
-      @message.body += "<b>Location: </b>#{@info_request.location}"
+      @message.body += "<b>Location: </b>#{@info_request.location}<br>"
       @message.body += "<b>Referral: </b>#{@info_request.referral}<br>"
+      @message.body += "<b>Promotional code: </b>#{@info_request.promotional_code}<br>"
       @message.body += "</p>"
       MailerQueue.enqueue_generic_email(@message)
       LogLine.create source: 'info_request', log_type: 'info_request', message: @message.body
 
-      redirect_to business_path, notice: "Thanks for your request, we'll be in touch soon!"
+      flash[:notice] = "Thanks for your request, we'll be in touch soon!"
+      render json: { redirect_to: business_path }
     else
-      render 'new'
+      render json: { info_request: @info_request.errors }, status: :unprocessable_entity
     end
   end
 

@@ -56,7 +56,7 @@
           .col-sm-6.text-right.text-center-mobile
             = link_to 'Share it with the community &rarr;'.html_safe, new_user_session_path(redirect_to: talk_path)
 
-    section#trending-projects.showcase-section
+    / section#trending-projects.showcase-section
       .container
         .showcase-section-header.clearfix
           h4 Participate in challenges and win prizes
@@ -87,15 +87,6 @@
                     p
                       strong Win $5,000
 
-    section.subscribe-block.text-center-mobile
-      .container
-        .row
-          .col-md-7 style='margin-top:3px'
-            = image_tag 'home/envelope.png'
-            ' Want fresh news, projects and free stuff in your inbox once a week?
-          .col-md-4.col-md-offset-1
-            .pull-right-desktop= render 'shared/mailchimp_form'
-
     section#trending-projects.showcase-section
       .container
         .showcase-section-header.clearfix
@@ -108,6 +99,15 @@
         .text-center
           = link_to 'View more projects &rarr;'.html_safe, projects_path, class: 'btn btn-default btn-sm hidden-xs'
           = link_to 'View more projects &rarr;'.html_safe, projects_path, class: 'btn btn-default btn-sm visible-xs-block'
+
+    section.subscribe-block.text-center-mobile
+      .container
+        .row
+          .col-md-7 style='margin-top:3px'
+            = image_tag 'home/envelope.png'
+            ' Want fresh news, projects and free stuff in your inbox once a week?
+          .col-md-4.col-md-offset-1
+            .pull-right-desktop= render 'shared/mailchimp_form'
 
     section#categories.showcase-section
       .container

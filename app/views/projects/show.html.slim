@@ -94,7 +94,7 @@
                       li
                         span.stat-figure> = number_with_delimiter @project.respects_count
                         = pluralize_without_count @project.respects_count, 'respect'
-                      - if @project.replications_count.to_i > 0
+                      - if @project.replications_count > 0
                         li
                           span.stat-figure> = number_with_delimiter @project.replications_count
                           = pluralize_without_count @project.replications_count, 'replication'
@@ -325,7 +325,7 @@
                         p= link_to 'Link to an assignment', settings_project_path(@project, anchor: 'sharing'), class: 'btn btn-warning btn-sm btn-block'
 
               - if @can_edit
-                - alert_color = @project.checklist_evaled[:complete] ? 'success' : 'warning'
+                - alert_color = @project.checklist_completed? ? 'success' : 'warning'
                 .alert.text-center class="alert-#{alert_color}"
                   span
                     p
@@ -459,14 +459,14 @@
 
               - cache ["project-#{@project.id}", 'metadata', site_user_name], tag: ["project-#{@project.id}-metadata", "project-#{@project.id}-respects", "project-#{@project.id}-replications"] do
                 - if @project.public?
-                  - if @project.respects_count > 0
+                  - if @respecting_users.count > 0
                     section.section-thumbs
                       h4 Makers who respect this project
                       = render partial: 'widgets/respect_widget', locals: { users: @respecting_users }
-                  - if @project.replications_count > 0
+                  - if @replicating_users.count > 0
                     section.section-thumbs
                       h4 Project replicated by
-                      = render partial: 'widgets/replication_widget', locals: { users: @project.replicated_users.includes(:avatar) }
+                      = render partial: 'widgets/replication_widget', locals: { users: @replicating_users }
 
                 / # - if hacker_space = @project.hacker_space
                   section.section-thumbs

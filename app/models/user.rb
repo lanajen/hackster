@@ -9,7 +9,7 @@ class User < ActiveRecord::Base
 
   include Rewardino::Nominee
 
-  ROLES = %w(admin confirmed_user beta_tester)
+  ROLES = %w(admin confirmed_user beta_tester moderator)
   SUBSCRIPTIONS = {
     email: {
       'newsletter' => 'Newsletter',
@@ -612,8 +612,8 @@ class User < ActiveRecord::Base
     full_name.present? ? full_name.split(' ')[0] : user_name
   end
 
-  def is? role
-    roles.map(&:to_sym).include? role
+  def is? *tested_roles
+    (roles.map(&:to_sym) & tested_roles).any?
   end
 
   def is_challenge_entrant? challenge

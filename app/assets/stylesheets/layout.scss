@@ -396,80 +396,80 @@ img {
 
 
 // sticky nav in projects page
-.navbar-tabs {
-  background: #fff !important;
-  @include font-size(12);
+// .navbar-tabs {
+//   background: #fff !important;
+//   @include font-size(12);
 
-  &.navbar-default {
-    .navbar-nav {
-      & > .active {
-        & > a, & > a:hover, & > a:focus {
-          color: #777;
-          background-color: #fff;
-          border-bottom: 3px solid #777;
-          font-weight: bold;
-        }
-      }
-      & > li {
-        & > a {
-          border-bottom: 3px solid #fff;
-        }
-        & > a:hover, & > a:focus {
-          color: #777;
-          border-bottom: 3px solid #aaa;
-        }
-      }
-    }
-    &.navbar-vertical {
-      top: 20px;
-      &.affix {
-        width: 220px;
-      }
-      .navbar-nav {
-        float: none;
-        width: 100%;
-        border: 1px solid #e2e2e2;
-        & > .active {
-          & > a, & > a:hover, & > a:focus {
-            border-right: 3px solid #777;
-            border-bottom: none;
-          }
-        }
-        & > li {
-          float: none;
-          display: block;
-          & > a {
-            border-right: 3px solid #fff;
-            border-bottom: none;
-          }
-          & > a:hover, & > a:focus {
-            border-right: 3px solid #aaa;
-            border-bottom: none;
-          }
-        }
-        .actions {
-          text-align: center;
-          a {
-            display: inline-block;
-            border-right: none !important;
-          }
-        }
-      }
-    }
-  }
-  &.navbar {
-    border-radius: 0;
-    border: 0;
-  }
-  .badge {
-    min-width: 15px;
-    padding: 2px 5px;
-    font-size: 9px;
-    background-color: #999999;
-    border-radius: 6px;
-    margin-left: 3px;
-  }
-}
+//   &.navbar-default {
+//     .navbar-nav {
+//       & > .active {
+//         & > a, & > a:hover, & > a:focus {
+//           color: #777;
+//           background-color: #fff;
+//           border-bottom: 3px solid #777;
+//           font-weight: bold;
+//         }
+//       }
+//       & > li {
+//         & > a {
+//           border-bottom: 3px solid #fff;
+//         }
+//         & > a:hover, & > a:focus {
+//           color: #777;
+//           border-bottom: 3px solid #aaa;
+//         }
+//       }
+//     }
+//     &.navbar-vertical {
+//       top: 20px;
+//       &.affix {
+//         width: 220px;
+//       }
+//       .navbar-nav {
+//         float: none;
+//         width: 100%;
+//         border: 1px solid #e2e2e2;
+//         & > .active {
+//           & > a, & > a:hover, & > a:focus {
+//             border-right: 3px solid #777;
+//             border-bottom: none;
+//           }
+//         }
+//         & > li {
+//           float: none;
+//           display: block;
+//           & > a {
+//             border-right: 3px solid #fff;
+//             border-bottom: none;
+//           }
+//           & > a:hover, & > a:focus {
+//             border-right: 3px solid #aaa;
+//             border-bottom: none;
+//           }
+//         }
+//         .actions {
+//           text-align: center;
+//           a {
+//             display: inline-block;
+//             border-right: none !important;
+//           }
+//         }
+//       }
+//     }
+//   }
+//   &.navbar {
+//     border-radius: 0;
+//     border: 0;
+//   }
+//   .badge {
+//     min-width: 15px;
+//     padding: 2px 5px;
+//     font-size: 9px;
+//     background-color: #999999;
+//     border-radius: 6px;
+//     margin-left: 3px;
+//   }
+// }
 #nav-mobile-trigger{
   position: absolute;
   left: 0;
@@ -556,9 +556,38 @@ li.highlight-item {
   }
 }
 
+.toggle-footer {
+  position: fixed;
+  left: 20px;
+  bottom: 0;
+  display: block;
+  padding: 6px 11px 3px;
+  background: #444447;
+  color: #fff;
+  @include border-radius(4px 4px 0 0);
+  cursor: pointer;
+  z-index: 2;
+  &:hover, &:focus {
+    color: #fff;
+    text-decoration: none;
+  }
+  .show-on-footer-affixed {
+    display: none;
+  }
+  &.footer-affixed {
+    bottom: 59px;
+    .hide-on-footer-affixed {
+      display: none;
+    }
+    .show-on-footer-affixed {
+      display: initial;
+    }
+  }
+}
+
 footer {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   // padding: 24px 0 0;
   // height: 60px;
   background: #444447;
@@ -580,6 +609,11 @@ footer {
         padding-right: 20px;
       }
     }
+  }
+  &.affixed {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
   }
 }
 

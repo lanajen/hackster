@@ -1,0 +1,10 @@
+ul.fa-ul.checklist
+  - model.checklist_todo(group).each do |item|
+    li
+      i.fa.fa-li.fa-square-o
+      = link_to item[:label], eval(item[:goto])
+  - unless defined?(done) and done == false
+    - model.checklist_done(group).each do |item|
+      li.todo-complete
+        i.fa.fa-li.fa-check-square-o
+        = item[:label]

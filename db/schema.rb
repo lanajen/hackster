@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150607083657) do
+ActiveRecord::Schema.define(version: 20150609051914) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -148,6 +148,8 @@ ActiveRecord::Schema.define(version: 20150607083657) do
     t.datetime "updated_at"
     t.datetime "end_date"
     t.integer  "impressions_count"
+    t.hstore   "hproperties"
+    t.hstore   "hcounters_cache"
   end
 
   create_table "channels", force: :cascade do |t|

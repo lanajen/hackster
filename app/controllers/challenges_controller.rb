@@ -1,11 +1,11 @@
 class ChallengesController < ApplicationController
   before_filter :authenticate_user!, only: [:edit, :update, :update_workflow]
-  before_filter :load_challenge, except: [:index, :edit, :update_workflow]
+  before_filter :load_challenge, only: [:show, :brief, :projects, :update]
   before_filter :load_platform, only: [:show, :brief, :projects]
   before_filter :load_and_authorize_challenge, only: [:enter, :update_workflow]
   before_filter :set_challenge_entrant, only: [:show, :brief, :projects]
   before_filter :load_user_projects, only: [:show, :brief, :projects]
-  load_and_authorize_resource except: [:index, :show, :brief, :projects, :update]
+  load_and_authorize_resource only: [:edit, :update]
   layout :set_layout
 
   def index
@@ -59,6 +59,20 @@ class ChallengesController < ApplicationController
       # flash[:error] = "Couldn't #{params[:event].gsub(/_/, ' ')} challenge, please try again or contact an admin."
       render :edit
     end
+  end
+
+  def unlock
+    @challenge = Challenge.find params[:id]
+    redirect_to @challenge unless @challenge.password_protect?
+
+    if key = @challenge.unlock(params[:password])
+      session[:challenge_keys] ||= {}
+      session[:challenge_keys][@challenge.id] = key
+    else
+      flash[:alert] = 'The password you entered is incorrect.'
+    end
+
+    redirect_to @challenge
   end
 
   private

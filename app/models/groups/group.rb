@@ -165,10 +165,6 @@ class Group < ActiveRecord::Base
     MailerQueue.perform_async 'send_group_invites', id, emails.join(','), invited_by.id, message
   end
 
-  def has_websites?
-    websites.select{|k,v| v.present? }.any?
-  end
-
   def name
     full_name.presence || user_name
   end

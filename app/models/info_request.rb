@@ -24,7 +24,7 @@ class InfoRequest
   extend ActiveModel::Naming
 
   attr_accessor :company, :website, :plan, :needs, :referral, :name, :email,
-    :phone, :location
+    :phone, :location, :promotional_code
 
   validates :company, :website, :plan, :needs, :name, :email, :phone,
     :location, :referral, presence: true

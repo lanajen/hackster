@@ -408,7 +408,7 @@
 //   }
 // }
 
-#widget-respects {
+#widget-respects, #widget-replications {
   // padding-bottom: 30px;
   margin-top: 10px;
   clear: both;
@@ -422,6 +422,21 @@
     }
   }
   .respects-user-img{
+    float: left;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 0 5px 10px;
+  }
+}
+.project-widget-with-user-thumbs {
+  margin-top: 10px;
+  clear: both;
+  .user-thumbs {
+    margin: 0 -5px;
+  }
+  .user-img{
     float: left;
     width: 30px;
     height: 30px;

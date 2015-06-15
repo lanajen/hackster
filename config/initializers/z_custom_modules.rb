@@ -37,6 +37,7 @@ require File.join(Rails.root, 'lib/heroku_domains')
 require File.join(Rails.root, 'lib/markdown_filter')
 require File.join(Rails.root, 'lib/single_line_html')
 require File.join(Rails.root, 'lib/redcarpet_sociable')
+require File.join(Rails.root, 'lib/redcarpet_hackster')
 require File.join(Rails.root, 'lib/custom_markdown_renderer')
 # attributes with defaults
 require File.join(Rails.root, 'lib/has_default')
@@ -46,6 +47,8 @@ require File.join Rails.root, 'lib/name_generator'
 # hstore columns
 require File.join Rails.root, 'lib/hstore_column'
 require File.join Rails.root, 'lib/websites_column'
+# checklist
+require File.join Rails.root, 'lib/checklist'
 
 # require it so that STI works correctly; not necessarily in prod since all classes are preloaded
 if Rails.env == 'development'

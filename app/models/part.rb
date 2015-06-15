@@ -82,7 +82,7 @@ class Part < ActiveRecord::Base
   end
 
   scope :alphabetical, -> { order name: :asc }
-  scope :default_sort, -> { order("parts.position ASC, CAST(parts.counters_cache -> 'all_projects_count' AS INT) DESC, parts.name ASC") }
+  scope :default_sort, -> { order("parts.position ASC, CAST(parts.counters_cache -> 'all_projects_count' AS INT) DESC NULLS LAST, parts.name ASC") }
 
   # # beginning of search methods
   # include TireInitialization

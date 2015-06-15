@@ -8,7 +8,7 @@
           | Challenge settings
         .pull-right
           ul.list-unstyled.list-inline
-            / if current_user.is? :admin
+            - if current_user.is? :admin
               li= link_to 'Edit as admin', edit_admin_challenge_path(@challenge), class: 'btn btn-warning btn-sm'
             li= f.submit 'Save changes', class: 'btn btn-primary btn-sm'
             li= link_to 'Cancel', @challenge, class: 'btn-link btn-sm'
@@ -83,6 +83,13 @@
               tr.sortable-disabled
                 td  colspan=5  = f.link_to_add 'Add another prize', :prizes, class: 'btn btn-xs btn-success'
 
+      .panel.panel-default
+        .panel-heading
+          h4 Challenge settings
+        .panel-body
+          = f.input :password_protect, as: :boolean, inline_label: 'Enable password protection'
+          = f.input :password, hint: 'Only if password protection is enabled', as: :string
+
       - if current_user.is? :admin
         .panel.panel-default
           .panel-heading
@@ -94,6 +101,11 @@
             = f.input :sponsor_link
             = f.input :custom_css, as: :text
             = render partial: 'shared/image_form', locals: { file_type: 'avatar', human_file_type: 'Logo', image_link: @challenge.avatar.try(:imgix_url), help_block: "In case the challenge isn't tied to a platform.", attribute_type: 'avatar', image_version: :big, model: 'challenge' }
+            = f.simple_fields_for :challenge_admins do |f_admin|
+              = f_admin.input :user_id, label: 'Admin user ID'
+              = f_admin.input :roles, label: 'Roles', collection: ChallengeAdmin.roles
+              .col-sm-8.col-sm-offset-4= f_admin.link_to_remove 'Remove this admin'
+            = f.link_to_add 'Add an admin', :challenge_admins
 
       .panel.panel-default
         .panel-heading

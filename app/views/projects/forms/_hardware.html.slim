@@ -22,12 +22,14 @@
       .box data-anchor='hardware_parts'
         .box-title.small-title
           h4 Components and supplies
+          / p Here go things like microcontrollers, resistors, wires and all things that are part of your final project.
         .box-content
           = render partial: 'projects/forms/hardware_parts', locals: { project: @project, f: f }
 
       .box data-anchor='tools'
         .box-title.small-title
           h4 Necessary tools and machines
+          / p Here go things like screwdrivers, 3D printers, CNC machines and all things that were used during the making of your project but are not a part of it.
         .box-content
           = render partial: 'projects/forms/tool_parts', locals: { project: @project, f: f }
 

@@ -1,6 +1,6 @@
 class ChallengeObserver < ActiveRecord::Observer
   def after_launch record
-    if platform = record.platform
+    if platform = record.platform and !record.password_protect?
       platform.active_challenge = true
       platform.save
     end

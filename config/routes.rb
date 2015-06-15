@@ -254,6 +254,7 @@ HackerIo::Application.routes.draw do
         patch 'address' => 'addresses#update', on: :member
       end
       post 'projects' => 'challenges#enter', on: :member, as: :enter
+      post 'unlock' => 'challenges#unlock', on: :member
       put 'update_workflow' => 'challenges#update_workflow', on: :member
     end
 
@@ -466,7 +467,6 @@ HackerIo::Application.routes.draw do
 
   resources :followers, only: [:create] do
     collection do
-      # post '' => 'followers#create', as: ''
       get 'create' => 'followers#create', as: :create
       delete '' => 'followers#destroy'
     end

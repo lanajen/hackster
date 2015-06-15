@@ -26,7 +26,7 @@ class PlatformsController < ApplicationController
 
     params[:sort] = (params[:sort].in?(Group::SORTING.keys) ? params[:sort] : 'followers')
 
-    @platforms = Platform.public.featured.for_thumb_display
+    @platforms = Platform.public.featured.for_thumb_display.order("(CASE WHEN CAST(groups.hproperties -> 'is_new' AS BOOLEAN) THEN 1 ELSE 2 END) ASC")
     if params[:sort]
       @platforms = @platforms.send(Group::SORTING[params[:sort]])
     end
@@ -153,6 +153,8 @@ class PlatformsController < ApplicationController
   end
 
   def analytics
+    not_found and return unless @platform.pro? or current_user.is? :admin
+
     authorize! :admin, @platform
     title "#{@platform.name} projects - Analytics dashboard"
 
