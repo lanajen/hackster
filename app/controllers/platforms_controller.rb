@@ -26,7 +26,7 @@ class PlatformsController < ApplicationController
 
     params[:sort] = (params[:sort].in?(Group::SORTING.keys) ? params[:sort] : 'followers')
 
-    @platforms = Platform.public.featured.for_thumb_display.new_first
+    @platforms = Platform.public.featured.for_thumb_display.order("(CASE WHEN CAST(groups.hproperties -> 'is_new' AS BOOLEAN) THEN 1 ELSE 2 END) ASC")
     if params[:sort]
       @platforms = @platforms.send(Group::SORTING[params[:sort]])
     end
