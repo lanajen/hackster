@@ -123,6 +123,15 @@
   }
 }
 
+.home-slide {
+  color: #fff;
+  background-size: cover;
+  a {
+    color: #fff;
+    text-decoration: underline;
+  }
+}
+
 @media (max-width: 1260px) {
   .carousel-left {
     left: 15px;
