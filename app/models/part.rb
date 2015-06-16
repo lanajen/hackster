@@ -47,11 +47,11 @@ class Part < ActiveRecord::Base
   validates :name, :type, presence: true
   validates :unit_price, numericality: { greater_than_or_equal_to: 0 }, allow_blank: true
   validates :slug, uniqueness: { scope: :platform_id }, length: { in: 3..100 },
-    format: { with: /\A[a-zA-Z0-9_\-]+\z/, message: "accepts only letters, numbers, and dashes '-'." }
+    format: { with: /\A[a-z0-9\-]+\z/, message: "accepts only lowercase letters, numbers, and dashes '-'." }
   validates :one_liner, length: { maximum: 140 }, allow_blank: true
   before_validation :ensure_website_protocol
   before_validation :ensure_partable, unless: proc{|p| p.persisted? }
-  before_validation :generate_slug, if: proc{|p| p.slug.blank? }
+  before_validation :generate_slug, if: proc{|p| p.slug.blank? or p.name_changed? }
   register_sanitizer :strip_whitespace, :before_validation, :mpn, :description, :name
   after_create proc{|p| p.require_review! if p.workflow_state.blank? or p.new? }
 

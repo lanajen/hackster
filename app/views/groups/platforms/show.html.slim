@@ -50,10 +50,18 @@
               h2.section-title Welcome to your platform hub! Follow this checklist to get started:
               = render 'groups/platforms/checklist', model: @platform, group: :get_started
             - elsif !@platform.checklist_completed?(:featured)
-              h2.section-title Things to do before your platform can be featured
+              h2.section-title Things to do before your platform can be featured:
               = render 'groups/platforms/checklist', model: @platform, group: :featured
             - elsif !@platform.checklist_completed?(:next_level)
-              h2.section-title Take your platform to the next level
+              - if @platform.hidden?
+                p.mg-40
+                  strong> Your platform is ready to be featured!
+                  ' Please email us at
+                  => link_to 'platforms@hackster.io', 'mailto:platforms@hackster.io'
+                  ' so we can do a quick quality check and feature it on
+                  = link_to 'the platforms page', platforms_path
+                  | .
+              h2.section-title Take your platform to the next level:
               = render 'groups/platforms/checklist', model: @platform, group: :next_level, done: false
 
       - if @platform.name.present? and @platform.mini_resume.present? and @platform.has_websites?

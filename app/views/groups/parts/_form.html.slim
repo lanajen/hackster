@@ -1,6 +1,6 @@
 = f.error_notification
 = f.input :name
-= f.input :slug, label: 'Pretty URL'
+/ # = f.input :slug, label: 'Pretty URL'
 = f.input :type, collection: Part::TYPES, hint: "Choose 'Tool' if your product is used during the making of projects, but isn't present in the final project. Example: screwdriver, CNC, Dremel."
 = f.input :one_liner, as: :text, input_html: { rows: 2 }, hint: 'Maximum 140 characters', label: 'Elevator pitch'
 = f.input :description, hint: 'Full description. You can make it as long and thorough as you need.', input_html: { class: 'text-editor', rows: 10 }
