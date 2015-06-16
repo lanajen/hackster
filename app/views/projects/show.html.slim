@@ -37,7 +37,7 @@
                   ' This project is part of
                   ==> link_to @project.event.name, @project.event
 
-              - cache [I18n.short_locale, "project-#{@project.id}-teaser"], tag: ["project-#{@project.id}-teaser"], expires_in: 24.hours do
+              - cache [I18n.locale, "project-#{@project.id}-teaser"], tag: ["project-#{@project.id}-teaser"], expires_in: 24.hours do
                 - if ProjectCollection.assignment_or_event_for_project?(@project.id)
                   .project-group
                     i.fa.fa-graduation-cap>
@@ -107,7 +107,7 @@
                     p The contents of this project are currently hidden because the assignement is being graded.
 
               - else
-                - cache [I18n.short_locale, "project-#{@project.id}-widgets"], tag: ["project-#{@project.id}-widgets"] do
+                - cache [I18n.locale, "project-#{@project.id}-widgets"], tag: ["project-#{@project.id}-widgets"] do
                   section#about-project.section-container.section-collapsible
                     h2.section-title
                       a.title.title-toggle href=''
@@ -117,7 +117,7 @@
                     .section-content
                       .medium-editor= @project.description
 
-                - cache [I18n.short_locale, "project-#{@project.id}-hardware-parts", is_whitelabel?], tag: ["project-#{@project.id}-hardware-parts"] do
+                - cache [I18n.locale, "project-#{@project.id}-hardware-parts", is_whitelabel?], tag: ["project-#{@project.id}-hardware-parts"] do
                   - if @hardware_parts.any?
                     section#components.section-container.section-collapsible
                       h2.section-title
@@ -131,7 +131,7 @@
                             - @hardware_parts.each do |part|
                               = render partial: 'widgets/embeds/show/part', locals: { part: part }
 
-                - cache [I18n.short_locale, "project-#{@project.id}-tool-parts"], tag: ["project-#{@project.id}-tool-parts"] do
+                - cache [I18n.locale, "project-#{@project.id}-tool-parts"], tag: ["project-#{@project.id}-tool-parts"] do
                   - if @tool_parts.any?
                     section#tools.section-container.section-collapsible
                       h2.section-title
@@ -145,7 +145,7 @@
                             - @tool_parts.each do |part|
                               = render partial: 'projects/tool_part', locals: { part: part }
 
-                - cache [I18n.short_locale, "project-#{@project.id}-cad"], tag: ["project-#{@project.id}-cad"] do
+                - cache [I18n.locale, "project-#{@project.id}-cad"], tag: ["project-#{@project.id}-cad"] do
                   - if @project.widgets.where(type: %w(CadRepoWidget CadFileWidget)).any?
                     section#cad.section-container.section-collapsible
                       h2.section-title
@@ -157,7 +157,7 @@
                         - @project.widgets.where(type: %w(CadRepoWidget CadFileWidget)).order(:position, :id).each do |widget|
                           = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
 
-                - cache [I18n.short_locale, "project-#{@project.id}-schematics"], tag: ["project-#{@project.id}-schematics"] do
+                - cache [I18n.locale, "project-#{@project.id}-schematics"], tag: ["project-#{@project.id}-schematics"] do
                   - if @project.widgets.where(type: %w(SchematicWidget SchematicFileWidget)).order(:position, :id).any?
                     section#schematics.section-container.section-collapsible
                       h2.section-title
@@ -169,7 +169,7 @@
                         - @project.widgets.where(type: %w(SchematicWidget SchematicFileWidget)).order(:position, :id).each do |widget|
                           = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
 
-                - cache [I18n.short_locale, "project-#{@project.id}-software-parts"], tag: ["project-#{@project.id}-software-parts"] do
+                - cache [I18n.locale, "project-#{@project.id}-software-parts"], tag: ["project-#{@project.id}-software-parts"] do
                   - if @software_parts.any?
                     section#apps.section-container.section-collapsible
                       h2.section-title
@@ -183,7 +183,7 @@
                             - @software_parts.each do |part|
                               = render partial: 'projects/software_part', locals: { part: part }
 
-                - cache [I18n.short_locale, "project-#{@project.id}-code"], tag: ["project-#{@project.id}-code"] do
+                - cache [I18n.locale, "project-#{@project.id}-code"], tag: ["project-#{@project.id}-code"] do
                   - if @project.widgets.where(type: %w(CodeWidget CodeRepoWidget)).any?
                     section#code.section-container.section-collapsible
                       h2.section-title
@@ -195,7 +195,7 @@
                         - @project.widgets.where(type: %w(CodeWidget CodeRepoWidget)).order(:position, :id).each do |widget|
                           = render partial: "api/embeds/#{widget.identifier}", locals: { widget: widget }
 
-                - cache [I18n.short_locale, "project-#{@project.id}-build_logs"], tag: ["project-#{@project.id}-build_logs"] do
+                - cache [I18n.locale, "project-#{@project.id}-build_logs"], tag: ["project-#{@project.id}-build_logs"] do
                   - if (@project.build_logs_count > 0 and !@project.private_logs)
                     section#logs.section-container.section-collapsible
                       h2.section-title
@@ -230,7 +230,7 @@
                         - elsif @project.build_logs_count > 1
                           = link_to 'Read previous logs', project_logs_path, class: 'btn btn-default btn-sm btn-block'
 
-                - cache [I18n.short_locale, "project-#{@project.id}-issues"], tag: ["project-#{@project.id}-issues"] do
+                - cache [I18n.locale, "project-#{@project.id}-issues"], tag: ["project-#{@project.id}-issues"] do
                   - if (@project.issues_count > 0 and !@project.private_issues)
                     section#issues.section-container.section-collapsible
                       h2.section-title
@@ -278,7 +278,7 @@
 
                     h3.title Step 3: be happy!
 
-                - cache [I18n.short_locale, "project-#{@project.id}-comments"], tag: ["project-#{@project.id}-comments"], expires_in: 24.hours do
+                - cache [I18n.locale, "project-#{@project.id}-comments"], tag: ["project-#{@project.id}-comments"], expires_in: 24.hours do
                   section#comments.section-container.section-collapsible
                     h2.section-title
                       a.title.title-toggle href=''
@@ -387,7 +387,7 @@
                   - else
                     p This project is locked for editing.
 
-              - cache [I18n.short_locale, "project-#{@project.id}-team", @can_edit, @project.guest_name], tag: ["team-#{@project.team_id}"], expires_in: 24.hours do
+              - cache [I18n.locale, "project-#{@project.id}-team", @can_edit, @project.guest_name], tag: ["team-#{@project.team_id}"], expires_in: 24.hours do
                 - if @project.guest_name.present?
                   section.section-thumbs
                     h4 Created by
@@ -457,7 +457,7 @@
                   - @communities.each do |community|
                     = render partial: 'groups/shared/community_thumb_mini', locals: { community: community }
 
-              - cache [I18n.short_locale, "project-#{@project.id}", 'metadata', site_user_name], tag: ["project-#{@project.id}-metadata", "project-#{@project.id}-respects", "project-#{@project.id}-replications"] do
+              - cache [I18n.locale, "project-#{@project.id}", 'metadata', site_user_name], tag: ["project-#{@project.id}-metadata", "project-#{@project.id}-respects", "project-#{@project.id}-replications"] do
                 - if @project.public?
                   - if @respecting_users.count > 0
                     section.section-thumbs
@@ -485,7 +485,7 @@
                         ' Participated in
                       = link_to entry.challenge.name, entry.challenge
 
-              - cache [I18n.short_locale, "project-#{@project.id}-other", @other_projects, site_user_name], tag: "project-#{@project.id}-other" do
+              - cache [I18n.locale, "project-#{@project.id}-other", @other_projects, site_user_name], tag: "project-#{@project.id}-other" do
                 - if @other_projects_count > 0
                   section.section-thumbs
                     h4 Other projects by the same #{pluralize_without_count @project.team_members_count, 'author'}

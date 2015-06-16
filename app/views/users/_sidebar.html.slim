@@ -1,4 +1,4 @@
-- cache [I18n.short_locale, "user-#{@user.id}-sidebar", user_signed_in?, user_is_current?, (user_signed_in? and current_user.following?(@user)), (user_signed_in? and current_user.is?(:admin)), !is_whitelabel?], tag: ["user-#{@user.id}-sidebar"], expires_in: 6.hours do
+- cache [I18n.locale, "user-#{@user.id}-sidebar", user_signed_in?, user_is_current?, (user_signed_in? and current_user.following?(@user)), (user_signed_in? and current_user.is?(:admin)), !is_whitelabel?], tag: ["user-#{@user.id}-sidebar"], expires_in: 6.hours do
   #sidebar-container.affixable
     section#sidebar-container-in
       - if @user.avatar

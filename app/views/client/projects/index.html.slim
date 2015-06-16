@@ -34,7 +34,7 @@
       | on Hackster.io
 
   - unless @custom_header.present?
-    - cache [I18n.short_locale, "platform-#{current_platform.id}-client-subheading"], tag: ["platform-#{current_platform.id}-sidebar"] do
+    - cache [I18n.locale, "platform-#{current_platform.id}-client-subheading"], tag: ["platform-#{current_platform.id}-sidebar"] do
 
       #subheading.row
         p.col-md-8.text-center-sm.text-center-xs= current_platform.mini_resume

@@ -2,7 +2,7 @@
   meta(name='keywords' content='hardware platforms,software platforms,diy machines')
 
 = content_for :no_container do
-  - cache [I18n.short_locale, 'platform-index', params[:sort], params[:tag]], tag: ['platform-index'], expires_in: 1.hour do
+  - cache [I18n.locale, 'platform-index', params[:sort], params[:tag]], tag: ['platform-index'], expires_in: 1.hour do
     #platforms
       section.section-header.hero-header
         .container
