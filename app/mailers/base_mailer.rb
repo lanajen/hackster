@@ -139,7 +139,7 @@ class BaseMailer < ActionMailer::Base
       @context[:devise_token] = opts['token']
       @context[:personal_message] = opts['personal_message']
       subject = render template: "mailers/subjects/#{type}"
-      body = render template: "mailers/bodies/#{type}.html", layout: 'email'
+      body = render template: "mailers/bodies/#{type}.html", locals: { u: url }, layout: 'email'
       premailer = Premailer.new(substitute_in(body), with_html_string: true,
         warn_level: Premailer::Warnings::SAFE)
 
@@ -178,6 +178,6 @@ class BaseMailer < ActionMailer::Base
     end
 
     def url
-      UrlGenerator.new
+      UrlGenerator.new host: default_host
     end
 end

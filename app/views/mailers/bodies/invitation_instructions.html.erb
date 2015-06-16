@@ -1,6 +1,6 @@
 <p>Hello there,</p>
 
-<p><a href="<%= user_url(@context[:inviter]) %>">|inviter_name|</a> has invited you to join Hackster.io, you can accept it through the link below.</p>
+<p><a href="<%= u.user_url(@context[:inviter]) %>">|inviter_name|</a> has invited you to join Hackster.io, you can accept it through the link below.</p>
 
 <% if @context[:personal_message].present? %>
   <p class="quote"><%= raw @context[:personal_message] %></p>

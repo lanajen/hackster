@@ -1,12 +1,12 @@
 <p>Hello there,</p>
 
-<p>This is to let you know that <a href="|project_link|">your entry</a> for <a href="<%= challenge_url(@context[:challenge]) %>">|challenge_name|</a> has won a prize!</p>
+<p>This is to let you know that <a href="|project_link|">your entry</a> for <a href="<%= u.challenge_url(@context[:challenge]) %>">|challenge_name|</a> has won a prize!</p>
 
 <p>You have been awarded <strong><%= @context[:prize].position.ordinalize %> place</strong> and won <strong><%= @context[:prize].name %></strong>: <%= @context[:prize].description %>.</p>
 
 <% if @context[:prize].requires_shipping? %>
 
-  <p>To claim your prize, <strong>please fill out your mailing address</strong> at the following link: <a href="<%= edit_address_challenge_entry_url(@context[:challenge], @context[:entry]) %>"><%= edit_address_challenge_entry_url(@context[:challenge], @context[:entry]) %></a></p>
+  <p>To claim your prize, <strong>please fill out your mailing address</strong> at the following link: <a href="<%= u.edit_address_challenge_entry_url(@context[:challenge], @context[:entry]) %>"><%= edit_address_challenge_entry_url(@context[:challenge], @context[:entry]) %></a></p>
 
 <% else %>
 
