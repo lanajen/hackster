@@ -1,0 +1,8 @@
+h1
+  = @group.name
+- if @group.mini_resume.present?
+  p
+    = @group.mini_resume
+p.authors
+  ' Curated by
+  = @group.members.includes(:user).includes(user: :avatar).map{ |m| "#{image_tag(m.user.decorate.avatar(:mini), class: 'img-circle')} #{link_to(m.user.name, m.user, class: 'user-name')}" }.to_sentence.html_safe

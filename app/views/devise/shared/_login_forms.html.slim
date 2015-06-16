@@ -5,7 +5,7 @@
     .alert.alert-info.alert-flat.text-center
       - if is_whitelabel?
         ' Hey there! #{current_site.name} is powered by
-        = link_to 'Hackster.io', root_url(subdomain: 'www'), target: '_blank', class: 'alert-link'
+        = link_to 'Hackster.io', root_url(subdomain: 'www', locale: I18n.default_www_locale), target: '_blank', class: 'alert-link'
         | , #{SLOGAN_NO_BRAND.downcase}
       - else
         = SLOGAN

@@ -32,7 +32,7 @@ gem 'redcarpet'
 # gem 'github-markdown'
 # gem 'rinku'
 # gem 'html-pipeline'
-# gem 'reverse_markdown'
+gem 'reverse_markdown'
 
 # gem 'autoscaler', '0.9.0', groups: :staging
 gem 'active_model_serializers', '0.8.3'

@@ -14,10 +14,12 @@ class List < Group
   has_counter :members, 'followers.count'
   has_counter :private_projects, 'projects.private.count'
   has_counter :projects, 'projects.visible.count'
+  has_counter :team_members, 'team_members.count'
 
   hstore_column :hproperties, :enable_comments, :boolean
   hstore_column :hproperties, :hashtag, :string, default: "#%{name.gsub(/\s+/, '')}"
   hstore_column :hproperties, :is_new, :boolean, default: false
+  hstore_column :hproperties, :mark_new_until, :datetime
   hstore_column :hproperties, :list_type, :string
 
   # beginning of search methods
@@ -68,6 +70,10 @@ class List < Group
 
   def followers_count
     members_count
+  end
+
+  def team_members
+    members.invitation_accepted_or_not_invited
   end
 
   def to_tracker

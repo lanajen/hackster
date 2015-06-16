@@ -49,10 +49,12 @@ class Group < ActiveRecord::Base
   has_one :avatar, as: :attachable, dependent: :destroy
   has_one :cover_image, as: :attachable, dependent: :destroy
 
-  attr_accessible :avatar_attributes, :type, :email, :mini_resume, :city, :country,
-    :user_name, :full_name, :members_attributes, :avatar_id,
-    :permissions_attributes, :access_level,
-    :cover_image_id, :project_sorting
+  attr_accessible :avatar_attributes, :type, :email, :mini_resume, :city,
+    :country, :user_name, :full_name, :members_attributes, :avatar_id,
+    :permissions_attributes, :access_level, :cover_image_id, :project_sorting,
+    :admin_email
+
+  attr_accessor :admin_email, :require_admin_email
 
   accepts_nested_attributes_for :avatar, :members, :permissions,
     allow_destroy: true
@@ -74,6 +76,7 @@ class Group < ActiveRecord::Base
   validates :user_name, :new_user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users communities hackerspaces hackers lists) }
   validates :email, length: { maximum: 255 }
   validate :website_format_is_valid
+  validate :admin_email_is_present
   before_validation :clean_members
   before_validation :ensure_website_protocol
   after_validation :add_errors_to_user_name
@@ -165,10 +168,6 @@ class Group < ActiveRecord::Base
     MailerQueue.perform_async 'send_group_invites', id, emails.join(','), invited_by.id, message
   end
 
-  def has_websites?
-    websites.select{|k,v| v.present? }.any?
-  end
-
   def name
     full_name.presence || user_name
   end
@@ -185,6 +184,10 @@ class Group < ActiveRecord::Base
       if errors[:new_user_name]
         errors[:new_user_name].each{|e| errors.add :user_name, e }
       end
+    end
+
+    def admin_email_is_present
+      errors.add :admin_email, 'is required, or please log in first' if require_admin_email and admin_email.blank?
     end
 
     def clean_members

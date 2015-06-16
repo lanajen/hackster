@@ -9,9 +9,6 @@ HackerIo::Application.routes.draw do
     }, via: :get
   end
 
-  # constraints(ApiSite) do
-  # end
-
   # API (see if can be moved to its own subdomain)
   namespace :api do
     namespace :v1 do
@@ -46,6 +43,9 @@ HackerIo::Application.routes.draw do
       match "*all" => "base#cors_preflight_check", via: :options
     end
   end
+
+  # constraints(ApiSite) do
+  # end
 
   scope '(:locale)', locale: /[a-z]{2}(-[A-Z]{2})?/ do
     constraints(MainSite) do
@@ -106,8 +106,6 @@ HackerIo::Application.routes.draw do
           resources :orders
           resources :products
         end
-
-        root to: 'pages#root'
       end  # end admin
 
       namespace :spark do
@@ -175,17 +173,17 @@ HackerIo::Application.routes.draw do
         patch 'projects/link' => 'groups/projects#link'
       end
 
-      get 'l/:user_name' => 'lists#show', as: :list
-      match 'lists/:user_name' => redirect { |params, request|
-        URI.parse(request.url).tap { |uri| uri.path.sub!(/lists/i, 'l') }.to_s
+      get 'lists/:user_name' => 'lists#show', as: :list
+      match 'l/:user_name' => redirect { |params, request|
+        URI.parse(request.url).tap { |uri| uri.path.sub!(/\/l\//i, '/lists/') }.to_s
       }, via: :get
-      scope 'l/:user_name', as: :lists do
+      scope 'lists/:user_name', as: :lists do
         get '' => 'lists#show'
         patch '' => 'lists#update'
         post 'projects/link' => 'groups/projects#link'
         delete 'projects/link' => 'groups/projects#unlink'
       end
-      resources :lists, except: [:show, :update], path: 'l' do
+      resources :lists, except: [:show, :update] do
         resources :projects, only: [] do
           post 'feature' => 'lists#feature_project'#, as: :platform_feature_project
           delete 'feature' => 'lists#unfeature_project'
@@ -290,6 +288,7 @@ HackerIo::Application.routes.draw do
           patch 'address' => 'addresses#update', on: :member
         end
         post 'projects' => 'challenges#enter', on: :member, as: :enter
+        post 'unlock' => 'challenges#unlock', on: :member
         put 'update_workflow' => 'challenges#update_workflow', on: :member
       end
 
@@ -396,17 +395,13 @@ HackerIo::Application.routes.draw do
     devise_for :users, skip: :omniauth_callbacks, controllers: {
       confirmations: 'users/confirmations',
       invitations: 'users/invitations',
-      # omniauth_callbacks: 'users/omniauth_callbacks',
+      omniauth_callbacks: 'users/omniauth_callbacks',
       sessions: 'users/sessions',
       registrations: 'users/registrations',
     }
 
     devise_scope :user do
       namespace :users, as: '' do
-        # resources :authorizations do
-        #   get 'update' => 'authorizations#update', on: :collection, as: :update
-        # end
-        # match '/auth/:provider/setup' => 'omniauth_callbacks#setup', via: :get
         patch '/confirm' => 'confirmations#confirm'
         resources :simplified_registrations, only: [:create]
       end
@@ -420,6 +415,10 @@ HackerIo::Application.routes.draw do
       match '/auth/:provider/setup' => 'omniauth_callbacks#setup', via: :get
       resources :authorizations do
         get 'update' => 'authorizations#update', on: :collection, as: :update
+      end
+      patch '/confirm' => 'confirmations#confirm'
+      resources :simplified_registrations, only: [:create] do
+        get 'create' => 'simplified_registrations#create', on: :collection, as: :create
       end
     end
 
@@ -478,7 +477,6 @@ HackerIo::Application.routes.draw do
 
     resources :followers, only: [:create] do
       collection do
-        # post '' => 'followers#create', as: ''
         get 'create' => 'followers#create', as: :create
         delete '' => 'followers#destroy'
       end
@@ -505,6 +503,8 @@ HackerIo::Application.routes.draw do
         get 'products' => 'products#index'
         get 'products/:part_slug' => 'parts#show', as: :part
         get 'products/:part_slug/embed' => 'parts#embed', as: :embed_part
+
+        get 'search' => 'search#search'
       end
     end
 
@@ -527,8 +527,6 @@ HackerIo::Application.routes.draw do
 
     constraints(ClientSite) do
       scope module: :client, as: :client do
-        get 'search' => 'search#search'
-
         get '/:locale' => 'projects#index'
         root to: 'projects#index'
       end

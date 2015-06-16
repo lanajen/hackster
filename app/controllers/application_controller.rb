@@ -227,7 +227,8 @@ class ApplicationController < ActionController::Base
     end
 
     def default_url_options(options = {})
-      { locale: I18n.locale }.merge options
+      # pass in the locale we have in the URL because it's always the right one
+      { locale: params[:locale] }.merge options
     end
 
     def disable_flash
@@ -490,8 +491,10 @@ class ApplicationController < ActionController::Base
        if !I18n.locale.to_s.in?(current_site.active_locales) or (params[:locale].blank? and current_site.force_explicit_locale?)
           redirect_to path_for_default_locale
         end
-      elsif !I18n.locale.in? I18n.active_locales
-        redirect_to path_for_default_locale
+      elsif params[:locale]
+        redirect_to path_for_default_locale ''
+      # elsif !I18n.locale.in? I18n.active_locales
+      #   redirect_to path_for_default_locale
       end
 
       I18n.locale = params[:locale].presence || I18n.default_locale
@@ -500,12 +503,12 @@ class ApplicationController < ActionController::Base
       redirect_to path_for_default_locale
     end
 
-    def path_for_default_locale
-      default_locale = current_site.try(:default_locale) || I18n.default_locale
+    def path_for_default_locale locale=nil
+      default_locale = locale || current_site.try(:default_locale) || I18n.default_locale
       pathes = request.path.split(/\//).select{|a| a.present? }
       pathes.shift if params[:locale].present?
       pathes.unshift default_locale
-      path = pathes.join('/')
+      path = pathes.select{|v| v.present? }.join('/')
       "/#{path}"
     end
 

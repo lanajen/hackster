@@ -28,6 +28,7 @@ class Ability
       !@user.persisted? and group.access_level == 'anyone'
     end
     can :read, Challenge, workflow_state: Challenge::VISIBLE_STATES
+    can :create, Group
 
     member if @user.persisted?
     @user.roles.each{ |role| send role }
@@ -177,5 +178,9 @@ class Ability
     end
 
     can :manage, Order, user_id: @user.id
+  end
+
+  def moderator
+    can :manage, Project
   end
 end

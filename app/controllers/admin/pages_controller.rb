@@ -184,7 +184,7 @@ class Admin::PagesController < Admin::BaseController
     sql = "SELECT to_char(event_date, 'yyyy-mm') as date, COUNT(*) as count FROM reputation_events WHERE date_part('months', now() - reputation_events.event_date) < 12 GROUP BY date ORDER BY date;"
     @chart_total_earned = graph_with_dates_for sql, 'New reputation points', 'AreaChart', ReputationEvent.where("reputation_events.event_date < ?", 12.months.ago).count, 'month'
 
-    sql = "SELECT to_char(placed_at, 'yyyy-mm') as date, COUNT(*) as count FROM orders WHERE date_part('months', now() - orders.placed_at) < 12 AND orders.workflow_state NOT IN (%s) GROUP BY date ORDER BY date;"
-    @chart_total_redeemed = graph_with_dates_for sql % Order::INVALID_STATES.map{|m| "'#{m}'" }.join(', '), 'Redeemed points', 'AreaChart', Order.valid.where("orders.placed_at < ?", 12.months.ago).count, 'month'
+    sql = "SELECT to_char(placed_at, 'yyyy-mm') as date, SUM(orders.total_cost) as sum FROM orders WHERE date_part('months', now() - orders.placed_at) < 12 AND orders.workflow_state NOT IN (%s) GROUP BY date ORDER BY date;"
+    @chart_total_redeemed = graph_with_dates_for sql % Order::INVALID_STATES.map{|m| "'#{m}'" }.join(', '), 'Redeemed points', 'AreaChart', Order.valid.where("orders.placed_at > ?", 12.months.ago).sum(:total_cost), 'month'
   end
 end

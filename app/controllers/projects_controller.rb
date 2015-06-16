@@ -140,10 +140,16 @@ class ProjectsController < ApplicationController
 
     if is_whitelabel?
       @comments = @project.comments.joins(:user).where(users: { enable_sharing: true }).includes(:user).includes(:parent).includes(user: :avatar)
-      @respecting_users = @project.respecting_users.where(users: { enable_sharing: true }).includes(:avatar) if @project.public?
+      if @project.public?
+        @respecting_users = @project.respecting_users.where(users: { enable_sharing: true }).includes(:avatar).limit(8)
+        @replicating_users = @project.replicated_users.where(users: { enable_sharing: true }).includes(:avatar).limit(8)
+      end
     else
       @comments = @project.comments.includes(:user).includes(:parent)#.includes(user: :avatar)
-      @respecting_users = @project.respecting_users.includes(:avatar) if @project.public?
+      if @project.public?
+        @respecting_users = @project.respecting_users.includes(:avatar).limit(8)
+        @replicating_users = @project.replicated_users.includes(:avatar).limit(8)
+      end
     end
 
     if @project.has_assignment?
@@ -258,7 +264,7 @@ class ProjectsController < ApplicationController
     initialize_project
     @team = @project.team
     @project = @project.decorate
-    @show_admin_bar = true if params[:show_admin_bar] and current_user.is? :admin
+    @show_admin_bar = true if params[:show_admin_bar] and current_user.is? :admin, :moderator
   end
 
   def update

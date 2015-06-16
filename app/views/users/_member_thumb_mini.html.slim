@@ -1,4 +1,4 @@
-- user = member.user.decorate
+- user = (defined?(user) and user) ? user.decorate : member.user.decorate
 
 .thumb.wide-thumb.clearfix
   = link_to image_tag(user.avatar(:big), class: 'media-object'), user
@@ -6,7 +6,7 @@
   .wide-thumb-body
     h5
       ==> link_to user.name, user
-      - if member.contribution.present?
+      - if defined?(member) and member and member.contribution.present?
         small
           i.fa.fa-info-circle.ispopover*{ data: { title: 'Contribution', content: member.contribution, container: 'body', placement: 'top', trigger: 'hover' }}
 

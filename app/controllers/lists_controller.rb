@@ -1,6 +1,6 @@
 class ListsController < ApplicationController
 
-  before_filter :authenticate_user!, except: [:show, :embed, :index]
+  before_filter :authenticate_user!, only: [:edit, :update]
   before_filter :load_list, only: [:show, :update]
   before_filter :load_projects, only: [:show, :embed]
   before_filter :load_project, only: [:feature_project, :unfeature_project]
@@ -34,6 +34,36 @@ class ListsController < ApplicationController
   #   @list_style = '_vertical' if @list_style == ''
   #   render "groups/lists/#{self.action_name}", layout: 'embed'
   # end
+
+  def new
+    title "Create a new list"
+    meta_desc "Create a list on Hackster and curate thousands of hardware and IoT projects."
+    @list = List.new
+    authorize! :create, @list
+    render 'groups/lists/new'
+  end
+
+  def create
+    @list = List.new params[:group]
+    authorize! :create, @list
+
+    if user_signed_in?
+      @list.members.new user_id: current_user.id
+    else
+      @list.require_admin_email = true
+    end
+
+    if @list.valid?
+      if user_signed_in?
+        @list.save
+        redirect_to @list, notice: "Welcome to your new list!"
+      else
+        redirect_to create__simplified_registrations_path(user: { email: @list.admin_email }, redirect_to: create_lists_path(group: params[:group]))
+      end
+    else
+      render 'groups/lists/new'
+    end
+  end
 
   def update
     authorize! :update, @list

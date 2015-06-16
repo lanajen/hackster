@@ -24,21 +24,21 @@
           = link_to content_tag(:i, '', class: 'fa fa-clock-o') + content_tag(:span, 'Set aside for later review'), update_workflow_project_path(@project, event: :mark_needs_work), class: 'btn btn-warning btn-sm', data: { method: :patch }
         = link_to content_tag(:i, '', class: 'fa fa-envelope-o') + content_tag(:span, 'Email authors'), "mailto:#{@project.users.pluck(:email).join(',')}?subject=Your+project+needs+a+couple+updates&body=Hi,\n\rProject:+#{@project.name}\n\rLink:+#{project_url(@project)}", class: 'btn btn-default btn-sm', target: '_blank'
       .col-sm-3 style='text-align: right;'
-        - if @project.checklist_evaled[:complete]
+        - if @project.checklist_completed?
           i.fa.fa-check.text-success
           span Checklist complete!
         - else
           i.fa.fa-times.text-danger
           span
             a.toggle-checklist> href='#'
-              strong= pluralize @project.checklist_evaled[:todo].size, 'item'
+              strong= pluralize @project.checklist_todo.size, 'item'
               i.fa.fa-caret-down
             | to complete
           = render 'projects/forms/checklist'
 
 .container
   .clearfix.text-center
-    - if current_user.is? :admin
+    - if current_user.is? :admin, :moderator
       = link_to 'Edit as admin', edit_admin_project_path(@project), class: 'btn btn-sm btn-warning'
       - unless params[:show_admin_bar]
         = link_to 'Show admin bar', edit_project_path(@project, show_admin_bar: 1), class: 'btn btn-sm btn-default'

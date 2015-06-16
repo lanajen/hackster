@@ -23,6 +23,6 @@
   meta(property="twitter:image:src" content=@project.cover_image(:cover_thumb))
   meta(property="twitter:image:width" content='400')
   meta(property="twitter:image:height" content='300')
-  link(rel="canonical" href=project_url(@project, subdomain: 'www'))
+  link(rel="canonical" href=project_url(@project, subdomain: 'www', locale: I18n.default_www_locale))
   - if @project.product_tags_string.present? or @project.platform_tags_string.present?
     meta(name='keywords' content="#{(@project.product_tags_cached + @project.platform_tags_cached).join(',')}")

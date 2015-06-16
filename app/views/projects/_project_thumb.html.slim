@@ -5,11 +5,12 @@
 - show_year = show_year ? 'year' : 'placeholder' unless show_year.nil?
 - col = (defined?(col) and col) ? col : 4
 - subdomain = defined?(force_subdomain) ? force_subdomain : false
+- locale = defined?(locale) ? locale : params[:locale]
 - if subdomain
   - if project.external?
-    - project_link = external_project_url(project, subdomain: subdomain)
+    - project_link = external_project_url(project, subdomain: subdomain, locale: locale)
   - else
-    - project_link = project_url(project, subdomain: subdomain)
+    - project_link = project_url(project, subdomain: subdomain, locale: locale)
 - else
   - project_link = url_for(project)
 

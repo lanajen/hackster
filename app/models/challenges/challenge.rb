@@ -17,31 +17,35 @@ class Challenge < ActiveRecord::Base
   has_one :cover_image, as: :attachable, dependent: :destroy
   validates :name, :slug, presence: true
   validates :teaser, :custom_tweet, length: { maximum: 140 }
+  validate :password_exists
   before_validation :assign_new_slug
   before_validation :generate_slug, if: proc{ |c| c.slug.blank? }
 
   attr_accessible :new_slug, :name, :prizes_attributes, :platform_id, :duration,
-    :video_link, :cover_image_id, :end_date, :end_date_dummy, :avatar_id
+    :video_link, :cover_image_id, :end_date, :end_date_dummy, :avatar_id,
+    :challenge_admins_attributes
   attr_accessor :new_slug, :end_date_dummy
 
-  accepts_nested_attributes_for :prizes, allow_destroy: true
+  accepts_nested_attributes_for :prizes, :challenge_admins, allow_destroy: true
 
   store :properties, accessors: []
-  hstore_column :properties, :custom_css, :string
-  hstore_column :properties, :custom_tweet, :string
-  hstore_column :properties, :description, :string
-  hstore_column :properties, :eligibility, :string
-  hstore_column :properties, :how_to_enter, :string
-  hstore_column :properties, :judging_criteria, :string
-  hstore_column :properties, :multiple_entries, :boolean
-  hstore_column :properties, :project_ideas, :boolean
-  hstore_column :properties, :requirements, :string
-  hstore_column :properties, :rules, :string
-  hstore_column :properties, :teaser, :string
-  hstore_column :properties, :sponsor_link, :string
-  hstore_column :properties, :sponsor_name, :string
+  hstore_column :hproperties, :custom_css, :string
+  hstore_column :hproperties, :custom_tweet, :string
+  hstore_column :hproperties, :description, :string
+  hstore_column :hproperties, :eligibility, :string
+  hstore_column :hproperties, :how_to_enter, :string
+  hstore_column :hproperties, :judging_criteria, :string
+  hstore_column :hproperties, :multiple_entries, :boolean
+  hstore_column :hproperties, :password_protect, :boolean
+  hstore_column :hproperties, :password, :string
+  hstore_column :hproperties, :project_ideas, :boolean
+  hstore_column :hproperties, :requirements, :string
+  hstore_column :hproperties, :rules, :string
+  hstore_column :hproperties, :teaser, :string
+  hstore_column :hproperties, :sponsor_link, :string
+  hstore_column :hproperties, :sponsor_name, :string
 
-  counters_column :counters_cache, long_format: true
+  counters_column :hcounters_cache
   has_counter :projects, 'entries.approved.count'
 
   is_impressionable counter_cache: true, unique: :session_hash
@@ -67,6 +71,10 @@ class Challenge < ActiveRecord::Base
 
   def self.active
     where(workflow_state: :in_progress)
+  end
+
+  def self.public
+    where "CAST(hproperties -> 'password_protect' AS BOOLEAN) = ?", false
   end
 
   def allow_multiple_entries?
@@ -145,6 +153,10 @@ class Challenge < ActiveRecord::Base
     notify_observers(:after_launch)
   end
 
+  def locked? session
+    password_protect? and session[:challenge_keys].try(:[], id) != Digest::SHA1.hexdigest(password)
+  end
+
   def mark_as_judged
     notify_observers(:after_judging)
   end
@@ -162,6 +174,10 @@ class Challenge < ActiveRecord::Base
     judging?
   end
 
+  def unlock try_password
+    Digest::SHA1.hexdigest(password) if password.present? and password == try_password
+  end
+
   def video
     return unless video_link.present?
 
@@ -173,5 +189,9 @@ class Challenge < ActiveRecord::Base
       errors.add :end_date_dummy, 'is required' and return unless end_date
       errors.add :end_date_dummy, 'must be at least 5 days in the future' and return if end_date < 5.days.from_now
       true
+    end
+
+    def password_exists
+      errors.add :password, 'is required when password protection is enabled' if password_protect? and password.blank?
     end
 end

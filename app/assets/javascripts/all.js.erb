@@ -217,8 +217,9 @@ $(function () {
       $(this).find('.form-group').find('.error-message').remove();
       $(this).find('.form-group').removeClass('has-error');
 
-      // Insert response partial into page below the form.
-      //$('#comments').append(xhr.responseText);
+      if (data.redirect_to) {
+        window.location.replace(data.redirect_to);
+      }
     })
     .on('ajax:complete', 'form.remote', function(xhr, status){
       var $submitButton = $(this).find('input[name="commit"]');
@@ -273,28 +274,31 @@ $(function () {
       }
     });
 
-  // // handle tabs navigation with URL
-  // var hash = document.location.hash;
+  // handle tabs navigation with URL
+  var hash = document.location.hash;
   // var prefix = "#tab-";
-  // if (hash) {
-  //   $('.navbar-tabs a[href=' + prefix + hash.replace('#', '') + ']').tab('show');
-  //   history.pushState(null, null, window.location.href);
-  // }
-  // // navigate to a tab when the history changes
-  // window.addEventListener("popstate", function(e) {
-  //   hash = document.location.hash;
-  //   var activeTab = $('[href=' + prefix + hash.replace('#', '') + ']');
-  //   if (activeTab.length) {
-  //     activeTab.tab('show');
-  //   } else {
-  //     $('.navbar-tabs a:first').tab('show');
-  //   }
-  // });
+  var prefix = '#';
+  if (hash) {
+    $('.navbar-tabs a[href=' + prefix + hash.replace('#', '') + ']').tab('show');
+    history.pushState(null, null, window.location.href);
+  }
+  // navigate to a tab when the history changes
+  window.addEventListener("popstate", function(e) {
+    hash = document.location.hash;
+    var activeTab = $('[href=' + prefix + hash.replace('#', '') + ']');
+    if (activeTab.length) {
+      activeTab.tab('show');
+    } else {
+      $('.navbar-tabs a:first').tab('show');
+    }
+  });
 
-  // // Change hash for page-reload
-  // $('.navbar-tabs a').on('shown.bs.tab', function (e) {
-  //   window.location.hash = e.target.hash.replace(prefix, "#");
-  // });
+  // Change hash for page-reload
+  $('.navbar-tabs a').on('shown.bs.tab', function (e) {
+    var scroll = $(window).scrollTop();
+    window.location.hash = e.target.hash.replace(prefix, "#");
+    $(window).scrollTop(scroll);
+  });
 
   // update thumbnail links for projects
   $(".project-thumb-container.has-data").each(function(i, project){
@@ -308,12 +312,23 @@ $(function () {
     });
   });
 
-  $('a.smooth-scroll').click(function(e){
+  $('a.smooth-scroll').on('click', function(e){
     target = '#' + this.hash.substring(1);
     offset = $(this).data('offset') || 0;
     if ($(target).length) {
       e.preventDefault();
       smoothScrollTo(target, offset);
+    }
+  });
+
+  $('a.toggle-footer').on('click', function(e){
+    e.preventDefault();
+    $(this).toggleClass('footer-affixed');
+    $('footer').toggleClass('affixed');
+    if ($(this).hasClass('footer-affixed')) {
+      $(this).css('bottom', $('footer').height());
+    } else {
+      $(this).css('bottom', 0);
     }
   });
 });

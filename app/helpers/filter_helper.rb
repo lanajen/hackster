@@ -4,7 +4,7 @@ module FilterHelper
     sort_by = fields[params[:sort_by]] || fields['created_at']
     params[:sort_order] ||= 'DESC'
     sort_order = params[:sort_order]
-    sort = "#{sort_by} #{sort_order}"
+    sort = "#{sort_by} #{sort_order} NULLS LAST"
 
 
     if filters = params[:filters]

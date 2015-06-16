@@ -310,28 +310,28 @@ Rewardino::Event.create!({
   code: :accepted_invitation_inviter,
   name: 'Friend invitation accepted',
   description: "A friend you invited has accepted their invitation",
-  points: 25,
+  points: 20,
   date_method: 'invitation_accepted_at',
   user_method: 'invited_by',
   model_table: 'users',
   models_method: 'User.invitation_accepted',
 })
 
-Rewardino::Event.create!({
-  code: :accepted_invitation_invitee,
-  name: 'Joined after being invited',
-  description: "You joined Hackster by accepting an invitation from a friend",
-  points: 25,
-  date_method: 'invitation_accepted_at',
-  model_table: 'users',
-  models_method: 'User.invitation_accepted',
-})
+# Rewardino::Event.create!({
+#   code: :accepted_invitation_invitee,
+#   name: 'Joined after being invited',
+#   description: "You joined Hackster by accepting an invitation from a friend",
+#   points: 25,
+#   date_method: 'invitation_accepted_at',
+#   model_table: 'users',
+#   models_method: 'User.invitation_accepted',
+# })
 
 Rewardino::Event.create!({
   code: :signup_user,
   name: 'Registered',
   description: "Welcome to Hackster!",
-  points: 10,
+  points: 1,
   date_method: [:invitation_accepted_at, :created_at],
   model_table: 'users',
   models_method: 'User.invitation_accepted_or_not_invited',

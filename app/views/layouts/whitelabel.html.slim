@@ -160,16 +160,16 @@ html lang="en" class=content_for(:html_class)
         .footer-nav.clearfix
           ul.list-unstyled.list-inline.pull-left
             li= link_to 'Feedback and support', 'javascript:showClassicWidget();'
-            li= link_to 'Terms', terms_url(subdomain: 'www')
-            li= link_to 'Privacy', privacy_url(subdomain: 'www')
+            li= link_to 'Terms', terms_url(subdomain: 'www', locale: I18n.default_www_locale)
+            li= link_to 'Privacy', privacy_url(subdomain: 'www', locale: I18n.default_www_locale)
             li
           ul.list-unstyled.list-inline.pull-right
             li
-              ==> link_to 'Community portal', root_url(subdomain: 'www')
+              ==> link_to 'Community portal', root_url(subdomain: 'www', locale: I18n.default_www_locale)
               ' for
-              ==> link_to 'hardware makers', root_url(subdomain: 'www')
+              ==> link_to 'hardware makers', root_url(subdomain: 'www', locale: I18n.default_www_locale)
               ' by
-              ==> link_to 'Hackster.io', root_url(subdomain: 'www')
+              ==> link_to 'Hackster.io', root_url(subdomain: 'www', locale: I18n.default_www_locale)
               | &copy; 2015
 
     #mobile-nav-overlay.hide-on-desktop

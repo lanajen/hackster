@@ -16,7 +16,7 @@ module HstoreCounter
       self.counter_columns = columns
 
       send :define_singleton_method, "most_#{counter}" do
-        order "CAST(groups.hcounters_cache -> '#{counter}' AS INTEGER) DESC"
+        order "CAST(groups.hcounters_cache -> '#{counter}' AS INTEGER) DESC NULLS LAST"
       end
     end
   end
@@ -38,7 +38,7 @@ module HstoreCounter
         value = options[:reset] ? 0 : eval(counter_columns[counter])
         send "#{counter}_count=", value
       end
-      save unless options[:assign_only]
+      save if changed? and !options[:assign_only]
     end
   end
 

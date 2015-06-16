@@ -6,8 +6,11 @@
 = content_for :no_container do
 
   #home
+    a.toggle-footer
+      i.fa.fa-arrow-down.hide-on-footer-affixed
+      i.fa.fa-eye-slash.show-on-footer-affixed
     section#home-banner
-      .home-slide#welcome-back
+      .home-slide#welcome-back.hero-header
         / - if Time.now < DateTime.parse('2015-04-19 20:00 -0800')
           = link_to 'Hardware Weekend Dallas', '/dallas', class: 'btn btn-warning btn-sm btn-over'
         .container
@@ -30,7 +33,7 @@
           p
             | To see projects tailored for you, start following platforms, makers and lists you like.
 
-      = render 'challenges'
+      / = render 'challenges'
 
       section#suggested-platforms.showcase-section
         .container
@@ -87,7 +90,7 @@
           = link_to 'View more projects', projects_path, class: 'btn btn-default btn-sm visible-xs-block'
 
     - else
-      = render 'challenges'
+      / = render 'challenges'
 
       section#latest.showcase-section
         .container
