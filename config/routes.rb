@@ -47,6 +47,8 @@ HackerIo::Application.routes.draw do
   # constraints(ApiSite) do
   # end
 
+  devise_for :users, skip: [:session, :password, :registration, :confirmation, :invitation], controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
+
   scope '(:locale)', locale: /[a-z]{2}(-[A-Z]{2})?/ do
     constraints(MainSite) do
       get 'sitemap_index.xml' => 'sitemap#index', as: 'sitemap_index', defaults: { format: 'xml' }
@@ -191,6 +193,7 @@ HackerIo::Application.routes.draw do
       end
 
       resources :platforms, except: [:show] do
+        get 'create' => 'platforms#create', on: :collection, as: :create
         get ':tag' => 'platforms#index', on: :collection, as: :tag, constraints: lambda{|req| req.params[:tag] != 'new' }
         resources :projects, only: [] do
           post 'feature' => 'platforms#feature_project'#, as: :platform_feature_project
@@ -402,23 +405,14 @@ HackerIo::Application.routes.draw do
 
     devise_scope :user do
       namespace :users, as: '' do
-        patch '/confirm' => 'confirmations#confirm'
-        resources :simplified_registrations, only: [:create]
-      end
-    end
-
-    namespace :users, as: :user do
-      match '/auth/:action/callback' => 'omniauth_callbacks', constraints: { action: Regexp.new(Devise.omniauth_providers.join('|')) }, as: :omniauth_callback, via: [:get, :post]
-      match '/auth/:provider' => 'omniauth_callbacks#passthru', constraints: { provider: Regexp.new(Devise.omniauth_providers.join('|')) }, as: :omniauth_authorize, via: [:get, :post]
-    end
-    namespace :users, as: '' do
-      match '/auth/:provider/setup' => 'omniauth_callbacks#setup', via: :get
-      resources :authorizations do
-        get 'update' => 'authorizations#update', on: :collection, as: :update
-      end
-      patch '/confirm' => 'confirmations#confirm'
-      resources :simplified_registrations, only: [:create] do
-        get 'create' => 'simplified_registrations#create', on: :collection, as: :create
+        resources :authorizations do
+          get 'update' => 'authorizations#update', on: :collection, as: :update
+        end
+        get 'auth/:provider/setup' => 'omniauth_callbacks#setup'
+        patch 'confirm' => 'confirmations#confirm'
+        resources :simplified_registrations, only: [:create] do
+          get 'create' => 'simplified_registrations#create', on: :collection, as: :create
+        end
       end
     end
 

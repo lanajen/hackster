@@ -14,7 +14,7 @@
           = f.input :mini_resume, as: :text, input_html: { rows: 3 }, label: 'Short description', hint: "Max 140 characters."
 
           - unless user_signed_in?
-            - link = link_to 'Already have an account?', new_user_session_path(redirect_to: new_list_path)
+            - link = link_to 'Already have an account?', new_user_session_path(redirect_to: new_list_path), tabindex: '-1'
             = f.input :admin_email, label: 'Your email', hint: "We'll create an admin account with that email. <b>#{link}</b>".html_safe, required: true
 
           .row

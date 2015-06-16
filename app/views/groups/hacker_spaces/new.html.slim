@@ -59,7 +59,7 @@
           / # = render partial: 'shared/image_form_bare', locals: { file_type: 'cover_image', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'group' }
 
           - unless user_signed_in?
-            - link = link_to 'Already have an account?', new_user_session_path(redirect_to: new_hacker_space_path)
+            - link = link_to 'Already have an account?', new_user_session_path(redirect_to: new_hacker_space_path), tabindex: '-1'
             = f.input :admin_email, label: 'Your email', hint: "We'll create an admin account with that email. <b>#{link}</b>".html_safe, required: true
 
           .row

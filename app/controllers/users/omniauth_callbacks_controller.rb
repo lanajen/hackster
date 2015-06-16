@@ -1,5 +1,6 @@
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   skip_before_filter :authenticate_user!
+  skip_before_filter :set_locale, except: [:setup]
 
   def passthru
     track_event 'Connecting via social account', { referrer: request.referrer }
@@ -39,6 +40,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     session[:redirect_host] = params[:redirect_host] if params[:redirect_host]
     session[:redirect_to] = params[:redirect_to] if params[:redirect_to] and [new_user_session_path, new_user_registration_path].exclude?(params[:redirect_to])
     session[:link_accounts] = params[:link_accounts] if params[:link_accounts]
+    session[:omniauth_login_locale] = I18n.locale
 
     render text: 'Setup complete.', status: 404
   end
@@ -58,6 +60,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       @redirect_host = session.delete(:redirect_host).presence || APP_CONFIG['default_host']
       is_hackster = @redirect_host == APP_CONFIG['default_host']
       params[:redirect_to] = session.delete(:redirect_to)
+      I18n.locale = session.delete(:omniauth_login_locale) || I18n.default_locale
 
       omniauth_data = case kind
       when 'Facebook', 'Github', 'Twitter', 'Microsoft'
