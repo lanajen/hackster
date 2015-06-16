@@ -44,7 +44,7 @@ class FollowRelationObserver < ActiveRecord::Observer
         record.followable.update_counters only: [:followers]
       when 'Platform', 'List'
         record.followable.update_counters only: [:members]
-        record.user.update_counters only: [:platforms]
+        record.user.update_counters only: [:platforms], assign_only: record.user.persisted?
       end
     end
 end

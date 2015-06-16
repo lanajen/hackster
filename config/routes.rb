@@ -399,8 +399,8 @@ HackerIo::Application.routes.draw do
       confirmations: 'users/confirmations',
       invitations: 'users/invitations',
       omniauth_callbacks: 'users/omniauth_callbacks',
-      sessions: 'users/sessions',
       registrations: 'users/registrations',
+      sessions: 'users/sessions',
     }
 
     devise_scope :user do
@@ -415,6 +415,9 @@ HackerIo::Application.routes.draw do
         end
       end
     end
+
+    get 'users/registration/complete_profile' => 'users#after_registration', as: :user_after_registration
+    patch 'users/registration/complete_profile' => 'users#after_registration_save'
 
     resources :announcements, only: [:destroy] do
       resources :comments, only: [:create]
@@ -475,9 +478,6 @@ HackerIo::Application.routes.draw do
         delete '' => 'followers#destroy'
       end
     end
-
-    get 'users/registration/complete_profile' => 'users#after_registration', as: :user_after_registration
-    patch 'users/registration/complete_profile' => 'users#after_registration_save'
 
     get 'profile/edit' => 'users#edit'
     patch 'profile' => 'users#update'

@@ -1,6 +1,6 @@
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   skip_before_filter :authenticate_user!
-  skip_before_filter :set_locale, except: [:setup]
+  skip_before_filter :set_locale
 
   def passthru
     track_event 'Connecting via social account', { referrer: request.referrer }

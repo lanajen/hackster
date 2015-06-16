@@ -1,7 +1,7 @@
 class Users::AuthorizationsController < Users::RegistrationsController
-  prepend_before_filter :require_no_authentication, :only => [:new, :create]
-  prepend_before_filter :authenticate_scope!, :only => [:destroy]
-  prepend_before_filter :allow_params_authentication!, :only => :update
+  prepend_before_filter :require_no_authentication, only: [:new, :create]
+  prepend_before_filter :authenticate_scope!, only: [:destroy]
+  prepend_before_filter :allow_params_authentication!, only: :update
   before_filter :ensure_provider_data
   before_filter :configure_permitted_parameters
 
