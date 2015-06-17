@@ -12,7 +12,7 @@ li.fields
 
       tr
         - if part.part_id.present?
-          td style='width:85%'= f.input :part_id, input_html: { class: 'select2' }, label: 'Part', collection: { part.part.name  => part.part_id }, prompt: 'Select a part'
+          td style='width:85%'= f.input :part_id, input_html: { class: 'select2' }, label: 'Part', collection: { part.part.full_name  => part.part_id }, prompt: 'Select a part'
         - else
           td style='width:85%'= f.input :part_id, input_html: { class: 'select2' }, label: 'Part', collection: {}, prompt: 'Select a part'
 

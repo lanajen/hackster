@@ -19,7 +19,7 @@ class PartObserver < ActiveRecord::Observer
     end
     keys = []
     record.projects.pluck(:id).each do |id|
-      keys << "project-#{id}-components"
+      keys += ["project-#{id}-#{record.class.name.underscore.gsub(/_part/, '')}-parts", "project-#{id}-left-column", "project-#{id}"]
     end
     Cashier.expire *keys if keys.any?
   end

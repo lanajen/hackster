@@ -12,7 +12,7 @@ li.fields
 
       tr
         - if part.part_id.present?
-          td = f.input :part_id, input_html: { class: 'select2' }, label: 'App', collection: { part.part.name  => part.part_id }, prompt: 'Select an app'
+          td = f.input :part_id, input_html: { class: 'select2' }, label: 'App', collection: { part.part.full_name  => part.part_id }, prompt: 'Select an app'
         - else
           td = f.input :part_id, input_html: { class: 'select2' }, label: 'App', collection: {}, prompt: 'Select an app'
 
