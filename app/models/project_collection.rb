@@ -56,6 +56,10 @@ class ProjectCollection < ActiveRecord::Base
     where(workflow_state: VALID_STATES)
   end
 
+  def featured? locale=nil
+    (locale ? project.locale == locale : true) and workflow_state == 'featured'
+  end
+
   private
     def update_status
       if collectable.class.name == 'Platform'

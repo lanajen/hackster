@@ -121,7 +121,7 @@ class Project < ActiveRecord::Base
     :team_attributes, :story, :made_public_at, :difficulty, :type, :product,
     :project_collections_attributes, :workflow_state, :part_joins_attributes,
     :hardware_part_joins_attributes, :tool_part_joins_attributes,
-    :software_part_joins_attributes
+    :software_part_joins_attributes, :locale
   attr_accessor :current, :private_changed, :needs_platform_refresh,
     :approved_changed
   accepts_nested_attributes_for :images, :video, :logo, :team_members,

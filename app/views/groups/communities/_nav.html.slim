@@ -5,7 +5,7 @@
       h2= @group.name
     ul.nav.nav-tabs
       li.active= link_to content_tag(:span, "Projects") + content_tag(:small, @group.projects_count), '#tab-projects', data: { toggle: 'tab' }
-      li= link_to content_tag(:span, "Members") + content_tag(:small, @group.members_count), "#tab-members", data: { toggle: 'tab' }
+      li= link_to content_tag(:span, "Members") + content_tag(:small, number_with_delimiter(@group.members_count)), "#tab-members", data: { toggle: 'tab' }
 
     ul.list-inline.manage
       - if can? :manage, @group

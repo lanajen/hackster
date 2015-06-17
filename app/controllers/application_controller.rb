@@ -193,11 +193,11 @@ class ApplicationController < ActionController::Base
     end
 
     def check_share_modal
-      session[:share_modal_model_id] = 9762
       session.delete(:share_modal_time)
       if name = session.delete(:share_modal) and model_type = session.delete(:share_modal_model)
         model = instance_variable_get("@#{model_type}")
-        model ||= model_type.camelize.constantize.find(session.delete(:share_modal_model_id)) if session[:share_modal_model_id]
+        model ||= model_type.camelize.constantize.find_by_id(session.delete(:share_modal_model_id)) if session[:share_modal_model_id]
+        return unless model
         model = model.decorate if model.respond_to? :decorate
         @modal = render_to_string(partial: "shared/modals/#{name}", locals: { :"#{model_type}" => model })
         # raise @modal.inspect

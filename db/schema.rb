@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150611225150) do
+ActiveRecord::Schema.define(version: 20150617195433) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -578,6 +578,7 @@ ActiveRecord::Schema.define(version: 20150611225150) do
     t.text     "story"
     t.string   "difficulty",              limit: 255
     t.string   "type",                    limit: 15,  default: "Project", null: false
+    t.string   "locale",                  limit: 2,   default: "en"
   end
 
   add_index "projects", ["private"], name: "index_projects_on_private", using: :btree
@@ -646,7 +647,7 @@ ActiveRecord::Schema.define(version: 20150611225150) do
   create_table "store_products", force: :cascade do |t|
     t.integer  "source_id",                      null: false
     t.string   "source_type",                    null: false
-    t.integer  "unit_cost"
+    t.integer  "unit_cost",      default: 0
     t.hstore   "counters_cache"
     t.boolean  "available",      default: false
     t.datetime "created_at",                     null: false
@@ -655,6 +656,7 @@ ActiveRecord::Schema.define(version: 20150611225150) do
 
   add_index "store_products", ["available"], name: "index_store_products_on_available", using: :btree
   add_index "store_products", ["source_id", "source_type"], name: "index_store_products_on_source_id_and_source_type", using: :btree
+  add_index "store_products", ["unit_cost"], name: "index_store_products_on_unit_cost", using: :btree
 
   create_table "subdomains", force: :cascade do |t|
     t.string   "subdomain",   limit: 255

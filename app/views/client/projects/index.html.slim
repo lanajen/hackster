@@ -89,7 +89,7 @@
       - @projects.each do |project_collection|
         = render partial: 'projects/project_thumb', locals: { project: project_collection.project.decorate }
         = content_for :js do
-          - if project_collection.featured?
+          - if project_collection.featured?(I18n.short_locale)
             javascript:
               text = "#{escape_javascript render(partial: 'groups/platforms/featured' )}";
               $(text).appendTo($('.project-#{project_collection.project_id} .project-thumb .award-container'));
