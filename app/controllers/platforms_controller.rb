@@ -59,7 +59,7 @@ class PlatformsController < ApplicationController
           @followers = @platform.followers.top.limit(5)
         end
         @projects = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection).merge(Project.magic_sort).where(projects: { type: %w(Project ExternalProject) }).limit(3)
-        @parts = @platform.parts.default_sort.limit(2) if @platform.enable_parts
+        @parts = @platform.parts.default_sort.limit(2) if @platform.parts_count > 0
         @products = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection).merge(Project.magic_sort).where(projects: { type: 'Product' }).limit(3) if @platform.enable_products
         @sub_platforms = @platform.sub_platforms.sub_platform_most_members.limit(3) if @platform.enable_sub_parts
 

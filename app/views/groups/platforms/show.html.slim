@@ -68,7 +68,7 @@
         section#about-us.section-feature
           .container
             .row
-              div class=(@platform.enable_parts and @platform.parts_count > 0 ? 'col-md-4' : 'col-md-12')
+              div class=(@platform.parts_count > 0 ? 'col-md-4' : 'col-md-12')
                 h2.section-title About #{@platform.name}
                 .about-us-text= @platform.description.presence || @platform.mini_resume
                 .extra-links
@@ -77,7 +77,7 @@
                     - @group.websites.select{|t,u| u.present? }.each do |type, url|
                       = render partial: "shared/website", locals: { type: type, url: url }
 
-              - if @platform.enable_parts and @platform.parts_count > 0
+              - if @platform.parts_count > 0
                 .col-md-8
                   .header-with-more-button.clearfix
                     h2.section-title.pull-left

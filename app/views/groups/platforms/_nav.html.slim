@@ -7,7 +7,7 @@ section.section-nav
           h2= @group.name
         ul.nav.nav-tabs
           = active_li_link_to 'Home', platform_home_path(@group)
-          - if @group.enable_parts
+          - if @group.parts_count > 0
             = active_li_link_to content_tag(:span, "Products") + content_tag(:small, @group.parts_count), platform_parts_path(@group)
           = active_li_link_to content_tag(:span, "Projects") + content_tag(:small, @group.projects_count), platform_projects_path(@group)
           li
@@ -87,7 +87,7 @@ section.section-nav
       .group-nav-inner.clearfix
         ul.nav.nav-tabs
           = active_li_link_to 'Home', platform_home_path(@group)
-          - if @group.enable_parts
+          - if @group.parts_count > 0
             = active_li_link_to content_tag(:span, "Products") + content_tag(:small, @group.parts_count), platform_parts_path(@group)
           = active_li_link_to content_tag(:span, "Projects") + content_tag(:small, @group.projects_count), platform_projects_path(@group)
           - if @group.enable_products

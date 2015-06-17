@@ -84,6 +84,7 @@ class MicrosoftChromeSync
         i18n_attribute = "#{format_locale(locale)}#{attribute}"
         redis.set i18n_attribute, val
         Cashier.expire cache_key(attribute, locale)
+        # has memcache cache expired when we send the request to fastly?
         FastlyRails.purge_by_key 'microsoft'
       end
     end

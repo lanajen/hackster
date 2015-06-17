@@ -137,7 +137,7 @@ class SitemapController < ApplicationController
             lastmod: platform.updated_at.strftime("%F"),
           }
         end
-        if platform.enable_parts
+        if platform.parts_count > 0
           urls << {
             loc: platform_parts_url(platform),
             changefreq: 'daily',
