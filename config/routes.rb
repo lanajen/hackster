@@ -304,6 +304,8 @@ HackerIo::Application.routes.draw do
         patch 'edit' => 'notifications#update', on: :collection
       end
 
+      resources :projects, only: [:index]
+
       # dragon
       get 'partners' => 'partners#index'
       get 'dragon/leads/new' => 'dragon_queries#new'
@@ -431,7 +433,7 @@ HackerIo::Application.routes.draw do
       get 'signed_url', on: :collection
     end
 
-    resources :projects, except: [:show, :update, :destroy] do
+    resources :projects, except: [:index, :show, :update, :destroy] do
       patch 'submit' => 'projects#submit', on: :member
       get 'settings' => 'external_projects#edit', on: :member
       patch 'settings' => 'external_projects#update', on: :member
@@ -521,13 +523,13 @@ HackerIo::Application.routes.draw do
 
     constraints(ClientSite) do
       scope module: :client, as: :client do
-        get '/:locale' => 'projects#index'
+        get '' => 'projects#index'
         root to: 'projects#index'
       end
     end
 
-    get '/:locale' => 'pages#home'
-    get '*not_found' => 'application#not_found'  # find a way to not need this
+    get '' => 'pages#home'
     root to: 'pages#home'
+    get '*not_found' => 'application#not_found'  # find a way to not need this
   end
 end
