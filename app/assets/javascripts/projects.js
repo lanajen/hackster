@@ -56,8 +56,23 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
     $('body').on('click', '.comment-reply', function(e){
       e.preventDefault();
       target = $($(this).data('target'));
-      target.slideToggle();
+      if (target.is(':visible')) {
+        scrollToComment(target);
+      } else {
+        target.slideToggle(100, function(){
+          scrollToComment(target);
+        });
+      }
     });
+
+    function scrollToComment(target) {
+      var x = window.scrollX, y = window.scrollY;
+      target.find('textarea').focus();
+      window.scrollTo(x, y);  // prevent focus() scroll so we can do it smoothly
+      if (target.offset().top > $(window).height() + $(window).scrollTop()) {
+        smoothScrollToBottom(target, 20);
+      }
+    }
 
     $('body').on('click', '.new-comment input[type="submit"]', function(e){
       $(this).parent().parent().submit();

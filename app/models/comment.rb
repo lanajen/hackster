@@ -63,6 +63,14 @@ class Comment < ActiveRecord::Base
     @disable_notification
   end
 
+  def is_root?
+    parent_id.nil?
+  end
+
+  def has_parent?
+    parent_id.present?
+  end
+
   def has_mentions?
     return unless body
 

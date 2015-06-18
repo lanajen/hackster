@@ -10,8 +10,13 @@
       | to comment.
 
   - if comments.any?
-    - sort_comments(comments).each do |comment|
-      = render partial: 'comments/comment', locals: { comment: comment }
+    - sort_comments(comments).each do |comment_id, comment|
+      = render partial: 'comments/comment', locals: { comment: comment[:root], comment_target: comment_id }
+      - comment[:children].each do |child|
+        = render partial: 'comments/comment', locals: { comment: child, comment_target: comment_id }
+      .new-comment-reply id="comment-reply-#{comment_id}"
+        = render partial: 'comments/signed_in_form', locals: { commentable: commentable, comment: Comment.new(parent_id: comment_id) }
+
   - else
     .first-to-comment
       | Be the first to comment!

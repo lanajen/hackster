@@ -359,6 +359,13 @@ function smoothScrollToAndHighlight(target, offsetTop, hiliTarget) {
   }, 3000);
 }
 
+function smoothScrollToBottom(target, offsetBottom, speed) {
+  offsetBottom = offsetBottom || 0;
+  if (typeof(target) == 'string') target = $(target);
+  offsetTop = -($(window).height() - target.height() - offsetBottom);
+  smoothScrollTo(target, offsetTop, speed);
+}
+
 function smoothScrollTo(target, offsetTop, speed) {
   offsetTop = offsetTop || 0;
   speed = speed || 500;
