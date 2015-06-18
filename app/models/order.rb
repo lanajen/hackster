@@ -34,9 +34,6 @@ class Order < ActiveRecord::Base
       event :ship, transitions_to: :shipped
     end
     state :shipped
-    after_transition do |from, to, triggering_event, *event_args|
-      notify_observers(:"after_#{triggering_event}")
-    end
     # on_transition do |from, to, triggering_event, *event_args|
     #   notify_observers(:"before_#{triggering_event}")
     # end

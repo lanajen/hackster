@@ -1,0 +1,41 @@
+.row
+  .col-md-6.col-md-offset-3.col-sm-8.col-sm-offset-2
+    .box
+      .box-title
+        h2 Bill payment
+      .box-content
+        p
+          b> Recipient name:
+          = @payment.recipient_name
+        p
+          b> Recipient email:
+          = @payment.recipient_email
+        - if @payment.invoice_number.present?
+          p
+            b> Invoice number:
+            = @payment.invoice_number
+        p
+          b> Description of services:
+          = @payment.label
+        p
+          b> Amount due:
+          => number_to_currency @payment.amount, precision: 0
+          small.text-muted
+            | (+#{number_to_currency @payment.credit_card_fee} credit card fee)
+        p
+          b> Status:
+          => @payment.workflow_state
+          - if @payment.paid?
+            | on #{l @payment.paid_at}
+
+        - if @payment.unpaid?
+          form action=payments_path method="POST"
+            input type='hidden' value=@payment.safe_id name='safe_id'
+            script(
+              src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+              data-key=ENV['STRIPE_PUBLIC_KEY']
+              data-image=asset_url('hackster_logo_squared.png')
+              data-name="Hackster, Inc."
+              data-description=@payment.label
+              data-amount=@payment.stripe_amount
+              data-email=@payment.recipient_email)

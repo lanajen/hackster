@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150617195433) do
+ActiveRecord::Schema.define(version: 20150618191506) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -504,6 +504,21 @@ ActiveRecord::Schema.define(version: 20150617195433) do
 
   add_index "parts", ["partable_id", "partable_type"], name: "partable_index", using: :btree
   add_index "parts", ["platform_id"], name: "index_parts_on_platform_id", using: :btree
+
+  create_table "payments", force: :cascade do |t|
+    t.string   "recipient_name"
+    t.string   "invoice_number"
+    t.string   "recipient_email"
+    t.integer  "amount"
+    t.string   "workflow_state"
+    t.hstore   "properties"
+    t.string   "safe_id",         null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
+  add_index "payments", ["safe_id"], name: "index_payments_on_safe_id", unique: true, using: :btree
+  add_index "payments", ["workflow_state"], name: "index_payments_on_workflow_state", using: :btree
 
   create_table "permissions", force: :cascade do |t|
     t.string   "permissible_type", limit: 15, null: false

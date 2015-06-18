@@ -100,6 +100,9 @@ HackerIo::Application.routes.draw do
           get 'merge/new' => 'parts#merge_new', as: 'merge_new', on: :collection
           post 'merge' => 'parts#update', as: 'merge_into', on: :collection
         end
+        resources :payments, except: [:show] do
+          patch 'update_workflow' => 'payments#update_workflow', on: :member
+        end
         resources :projects, except: [:show]
         resources :users, except: [:show]
 
@@ -368,6 +371,9 @@ HackerIo::Application.routes.draw do
       post 'chats/:group_id/slack' => 'chat_messages#incoming_slack'
       get 'users/slack_settings' => 'chat_messages#slack_settings', as: :user_slack_settings
       post 'users/slack_settings' => 'chat_messages#save_slack_settings'
+
+      get 'business/payments/:safe_id' => 'payments#show', as: :payment
+      post 'business/payments' => 'payments#create', as: :payments
 
       constraints(PlatformPage) do
         get ':slug' => 'platforms#show', as: :platform_home, slug: /[A-Za-z0-9_\-]{3,}/
