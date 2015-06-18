@@ -62,11 +62,11 @@ module PlatformHelper
     @by = params[:by] || 'all'
 
     @projects = platform.project_collections.includes(:project).visible.order("(CASE WHEN (project_collections.workflow_state = 'featured' AND projects.locale = '#{I18n.short_locale}') THEN 1 ELSE 2 END) ASC").merge(Project.for_thumb_display_in_collection)
-    # @projects = if sort == 'recent'
-    #   @projects.most_recent
-    # else
-    #   @projects.merge(Project.send(Project::SORTING[sort]))
-    # end
+    @projects = if sort == 'recent'
+      @projects.most_recent
+    else
+      @projects.merge(Project.send(Project::SORTING[sort]))
+    end
 
     if options[:type]
       @projects = @projects.joins(:project).merge(Project.where(type: options[:type]))  # fails without joins
