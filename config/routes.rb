@@ -178,21 +178,20 @@ HackerIo::Application.routes.draw do
         patch 'projects/link' => 'groups/projects#link'
       end
 
-      get 'lists/:user_name' => 'lists#show', as: :list
       match 'l/:user_name' => redirect { |params, request|
         URI.parse(request.url).tap { |uri| uri.path.sub!(/\/l\//i, '/lists/') }.to_s
       }, via: :get
-      scope 'lists/:user_name', as: :lists do
-        get '' => 'lists#show'
-        patch '' => 'lists#update'
-        post 'projects/link' => 'groups/projects#link'
-        delete 'projects/link' => 'groups/projects#unlink'
-      end
       resources :lists, except: [:show, :update] do
         resources :projects, only: [] do
           post 'feature' => 'lists#feature_project'#, as: :platform_feature_project
           delete 'feature' => 'lists#unfeature_project'
         end
+      end
+      get 'lists/:user_name' => 'lists#show'#, as: :list
+      scope 'lists/:user_name', as: :lists do
+        patch '' => 'lists#update'
+        post 'projects/link' => 'groups/projects#link'
+        delete 'projects/link' => 'groups/projects#unlink'
       end
 
       resources :platforms, except: [:show] do
