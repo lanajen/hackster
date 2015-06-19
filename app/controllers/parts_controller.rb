@@ -8,7 +8,7 @@ class PartsController < ApplicationController
     @page_title = @platform.parts_text
     title @page_title
     meta_desc "Discover all the #{@platform.parts_text.sub(/^[A-Z]/) {|f| f.downcase }} and their related hardware projects."
-    @parts = @platform.parts.default_sort.paginate(page: safe_page_params)
+    @parts = @platform.parts.visible.default_sort.paginate(page: safe_page_params)
   end
 
   def sub_index

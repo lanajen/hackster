@@ -79,7 +79,7 @@ class Platform < List
   hstore_column :hproperties, :project_ideas_phrasing, :string, default: '%{project_ideas_phrasing_options[0]}'
   hstore_column :hproperties, :verified, :boolean, default: false
 
-  has_counter :parts, 'parts.count'
+  has_counter :parts, 'parts.visible.count'
   has_counter :products, 'products.count'
   has_counter :sub_parts, 'sub_parts.count'
   has_counter :sub_platforms, 'sub_platforms.count'
@@ -150,7 +150,7 @@ class Platform < List
   end
 
   def self.sub_platform_most_members
-    select("groups.id, groups.*, CAST(groups.hcounters_cache -> 'members' AS INTEGER) AS members_cnt").order("members_cnt DESC")
+    order members_count: :desc
   end
 
   def company_logo_id=(val)

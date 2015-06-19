@@ -11,9 +11,9 @@ class List < Group
   before_validation :update_user_name, on: :create
 
   has_counter :external_projects, 'projects.external.count'
-  has_counter :members, 'followers.count'
+  has_counter :members, 'followers.count', accessor: false
   has_counter :private_projects, 'projects.private.count'
-  has_counter :projects, 'projects.visible.count'
+  has_counter :projects, 'projects.visible.count', accessor: false
   has_counter :team_members, 'team_members.count'
 
   hstore_column :hproperties, :enable_comments, :boolean

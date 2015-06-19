@@ -68,8 +68,8 @@ class Group < ActiveRecord::Base
   hstore_column :hproperties, :default_project_sorting, :string, default: 'trending'
 
   counters_column :hcounters_cache
-  has_counter :members, 'members.count'
-  has_counter :projects, 'project_collections.visible.count'
+  has_counter :members, 'members.count', accessor: false
+  has_counter :projects, 'project_collections.visible.count', accessor: false
 
   validates :user_name, :new_user_name, length: { in: 3..100 },
     format: { with: /\A[a-zA-Z0-9_\-]+\z/, message: "accepts only letters, numbers, underscores '_' and dashes '-'." }, allow_blank: true, if: proc{|t| t.persisted?}
@@ -100,6 +100,14 @@ class Group < ActiveRecord::Base
 
   def self.alphabetical_sorting
     order full_name: :asc
+  end
+
+  def self.most_members
+    order members_count: :desc
+  end
+
+  def self.most_projects
+    order projects_count: :desc
   end
 
   def avatar_id=(val)

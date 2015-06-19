@@ -17,7 +17,7 @@ section.section-nav
             = active_li_link_to content_tag(:span, "Startups") + content_tag(:small, @group.products_count), platform_products_path(@group)
           - if @group.enable_sub_parts
             = active_li_link_to content_tag(:span, "Startups") + content_tag(:small, @group.sub_platforms_count), platform_sub_platforms_path(@group)
-          - if @group.enable_chat
+          / # - if @group.enable_chat
             = active_li_link_to 'Chat', platform_chat_path(@group.user_name)
         .follow-container
 
@@ -94,7 +94,7 @@ section.section-nav
             = active_li_link_to content_tag(:span, "Products") + content_tag(:small, @group.products_count), platform_products_path(@group)
           li
             .link= content_tag(:span, "Community") + content_tag(:small, number_with_delimiter(@group.followers_count))
-          - if @group.enable_chat
+          / - if @group.enable_chat
             = active_li_link_to 'Chat', platform_chat_path(@group.user_name)
         .follow-container
           a.btn.btn-link.addthis_button_compact

@@ -8,8 +8,8 @@ module HstoreCounter
       end
     end
 
-    def has_counter counter, count_method
-      hstore_column counters_options[:counters_column], "#{counter}_count", :integer, default: 0, column_name: (counters_options[:long_format] ? nil : counter)
+    def has_counter counter, count_method, options={}
+      hstore_column counters_options[:counters_column], "#{counter}_count", :integer, default: 0, column_name: (counters_options[:long_format] ? nil : counter) unless options[:accessor] == false
 
       columns = counter_columns.try(:dup) || {}
       columns[counter] = count_method
@@ -17,7 +17,7 @@ module HstoreCounter
 
       send :define_singleton_method, "most_#{counter}" do
         order "CAST(groups.hcounters_cache -> '#{counter}' AS INTEGER) DESC NULLS LAST"
-      end
+      end unless options[:accessor] == false
     end
   end
 

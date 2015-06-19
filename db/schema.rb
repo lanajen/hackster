@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150618191506) do
+ActiveRecord::Schema.define(version: 20150619012408) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -493,7 +493,7 @@ ActiveRecord::Schema.define(version: 20150618191506) do
     t.string   "comment",             limit: 255
     t.text     "websites"
     t.integer  "platform_id"
-    t.boolean  "private",                         default: true
+    t.boolean  "private",                         default: false
     t.string   "product_tags_string", limit: 255
     t.string   "workflow_state",      limit: 255
     t.string   "slug",                limit: 255

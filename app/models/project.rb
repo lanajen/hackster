@@ -162,7 +162,7 @@ class Project < ActiveRecord::Base
   has_counter :platform_tags, 'platform_tags_cached.count'
   has_counter :product_tags, 'product_tags_cached.count'
   has_counter :replications, 'replicated_users.count'
-  has_counter :respects, 'respects.count'
+  has_counter :respects, 'respects.count', accessor: false
   has_counter :software_parts, 'software_parts.count'
   has_counter :team_members, 'users.count'
   has_counter :tool_parts, 'tool_parts.count'

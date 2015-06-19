@@ -7,6 +7,7 @@ class Part < ActiveRecord::Base
   INVALID_STATES = %w(rejected retired)
   TYPES = %w(Hardware Software Tool).inject({}){|mem, t| mem[t] = "#{t}Part"; mem }
   include HstoreCounter
+  include Privatable
   include Taggable
   include WebsitesColumn
   include Workflow
@@ -206,6 +207,10 @@ class Part < ActiveRecord::Base
 
   def self.without_sku
     where("parts.vendor_sku = '' OR parts.vendor_sku IS NULL")
+  end
+
+  def self.visible
+    public
   end
 
   def all_projects
