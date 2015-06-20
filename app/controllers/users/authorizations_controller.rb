@@ -82,7 +82,7 @@ class Users::AuthorizationsController < Users::RegistrationsController
       if hash[:invitation_token].present?
         self.resource = resource_class.where(invitation_token: hash[:invitation_token]).first
         if self.resource
-          self.resource.extract_from_social_profile params, session
+          self.resource = SocialProfileBuilder.new(resource).extract_from_social_profile params, session
           self.resource.attributes = hash
           self.resource.accept_invitation
           self.resource.invitation_token = hash[:invitation_token]
