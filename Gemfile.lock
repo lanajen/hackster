@@ -486,7 +486,6 @@ GEM
       tilt (~> 1.1)
     sendgrid (1.2.0)
       json
-      json
     sidekiq (3.2.5)
       celluloid (= 0.15.2)
       connection_pool (>= 2.0.0)
@@ -717,3 +716,6 @@ DEPENDENCIES
   workflow (= 1.0.0)
   yajl-ruby (= 1.1.0)
   zocial-rails (= 1.0.2)
+
+BUNDLED WITH
+   1.10.4
