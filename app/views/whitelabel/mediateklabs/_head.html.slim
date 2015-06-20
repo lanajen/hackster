@@ -1,0 +1,67 @@
+- content_for :html_class do
+  = 'mediatek-html'
+
+= stylesheet_link_tag 'whitelabel/mediateklabs/min'
+= stylesheet_link_tag 'whitelabel/mediateklabs/dp_print', media: 'print'
+
+
+css:
+  .img-ruler {
+      width: 208px;
+  }
+  body.whitelabel .powered-by {
+    padding: 13px;
+    text-align: left;
+  }
+  body.whitelabel .powered-by a {
+    display: block;
+  }
+  #user-navigation-links {
+    margin-right: 16px;
+  }
+  #navigation {
+    border: 0;
+    background: none;
+    height: auto;
+  }
+  #navigation .navbar-in {
+    width: 964px;
+    margin: 0 auto;
+    background-color: #fff;
+    border: 2px solid #aaa;
+    border-top: 0;
+  }
+  #navigation .navbar-right {
+    margin-right: 0 !important;
+  }
+  .mediateklabs-projects .searchTop {
+  }
+  .mediateklabs-projects .nav-container {
+    z-index: 1001;
+    height: auto;
+  }
+  .mediateklabs-projects *,
+  .mediateklabs-projects *:before,
+  .mediateklabs-projects *:after {
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+  }
+  .mediateklabs-projects .close {
+    float: none;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    color: inherit;
+    text-shadow: inherit;
+    opacity: inherit;
+  }
+
+
+- content_for :js do
+
+  = javascript_include_tag "whitelabel/mediateklabs/min"
+  javascript:
+    $('ul.sf-menu').superfish({
+        cssArrows: false
+    });

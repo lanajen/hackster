@@ -152,8 +152,8 @@ class Group < ActiveRecord::Base
     self.class.name.to_s.underscore
   end
 
-  def is? group_type
-    self.class.name.underscore == group_type.to_s
+  def is? *group_types
+    self.class.name.underscore.in? group_types.map{|v| v.to_s }
   end
 
   def invite_with_emails emails, invited_by=nil, message=nil

@@ -5,7 +5,7 @@ class CacheWorker < BaseWorker
     perform_time = Time.now
     Project.indexable.most_popular.pluck(:id).each do |project_id|
       self.class.perform_at perform_time, 'warm_project_cache', project_id
-      perform_time += 2.seconds
+      perform_time += 0.5.seconds
     end
     self.class.perform_async 'warm_home_cache'
   end
