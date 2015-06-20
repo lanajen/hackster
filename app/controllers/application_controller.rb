@@ -500,7 +500,17 @@ class ApplicationController < ActionController::Base
       I18n.locale = params[:locale].presence || I18n.default_locale
       I18n.short_locale = I18n.locale[0..1]  # two-letter version
     rescue I18n::InvalidLocale
-      redirect_to path_for_default_locale
+      locale = nil
+      if params[:locale].try(:size) == 5
+        locale = params[:locale][0..2] + params[:locale][3..4].upcase
+        begin
+          I18n.locale = locale
+        rescue
+          locale = nil
+        end unless locale == params[:locale]
+      end
+
+      redirect_to path_for_default_locale locale
     end
 
     def path_for_default_locale locale=nil

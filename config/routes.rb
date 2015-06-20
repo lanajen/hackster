@@ -49,7 +49,7 @@ HackerIo::Application.routes.draw do
 
   devise_for :users, skip: [:session, :password, :registration, :confirmation, :invitation], controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
 
-  scope '(:locale)', locale: /[a-z]{2}(-[A-Z]{2})?/ do
+  scope '(:locale)', locale: /[a-z]{2}(-[a-zA-Z]{2})?/ do
     constraints(MainSite) do
       get 'sitemap_index.xml' => 'sitemap#index', as: 'sitemap_index', defaults: { format: 'xml' }
       get 'sitemap.xml' => 'sitemap#show', as: 'sitemap', defaults: { format: 'xml' }
