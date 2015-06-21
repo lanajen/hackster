@@ -44,6 +44,9 @@
     a {
       color: #4d4d4d;
     }
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
   .img-container {
     height: 200px;
