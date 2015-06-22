@@ -23,7 +23,7 @@ Sidekiq.configure_server do |config|
   end
 
   config.failures_default_mode = :exhausted
-  config.redis = $redis_config.merge({ size: 3, namespace: "sidekiq:hacksterio" })
+  config.redis = $redis_config.merge({ size: 3, namespace: "sidekiq:hacksterio", network_timeout: 5 })
 
   # database_url = ENV['DATABASE_URL']
   # if database_url
@@ -61,7 +61,7 @@ Sidekiq.configure_client do |config|
     chain.add Sidekiq::Status::ClientMiddleware
   end
 
-  config.redis = $redis_config.merge({ size: 1, namespace: "sidekiq:hacksterio" })
+  config.redis = $redis_config.merge({ size: 1, namespace: "sidekiq:hacksterio", network_timeout: 5 })
 end
 
 Sidekiq.options[:concurrency] = sidekiq_pool

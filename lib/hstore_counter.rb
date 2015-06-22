@@ -13,7 +13,7 @@ module HstoreCounter
         hstore_column counters_options[:counters_column], "#{counter}_count", :integer, default: 0, column_name: (counters_options[:long_format] ? nil : counter)
 
         send :define_singleton_method, "most_#{counter}" do
-          order "CAST(groups.hcounters_cache -> '#{counter}' AS INTEGER) DESC NULLS LAST"
+          order "CAST(#{table_name}.hcounters_cache -> '#{counter}' AS INTEGER) DESC NULLS LAST"
         end
       else
         send :define_method, "#{counter}_count" do

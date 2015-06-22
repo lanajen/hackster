@@ -63,12 +63,14 @@ class ProjectObserver < ActiveRecord::Observer
     elsif record.made_public_at > Time.now
       record.post_new_tweet_at! record.made_public_at unless record.hidden? or Rails.env != 'production'
     end
+    record.users.each{|u| u.update_counters only: [:approved_projects] }
 
     NotificationCenter.notify_all :approved, :project, record.id
   end
 
   def after_rejected record
     record.update_column :hide, true
+    record.users.each{|u| u.update_counters only: [:approved_projects] }
   end
 
   # def after_pending_review record

@@ -101,8 +101,10 @@ class CronTask < BaseWorker
       country = rand(1..10) > 6 ? "&country=united+states" : ''
       resp = JSON.parse Net::HTTP.get_response("api.uinames.com","/?gender=#{gender}#{country}").body
       generator = NameGenerator.new(resp['name'], resp['surname'])
-      full_name = generator.full_name
-      user_name = generator.user_name
+      if generator.last_name.present?
+        full_name = generator.full_name
+        user_name = generator.user_name
+      end
     end
 
     u = nil

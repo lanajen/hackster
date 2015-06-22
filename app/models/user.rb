@@ -161,6 +161,7 @@ class User < ActiveRecord::Base
 
   counters_column :counters_cache, long_format: true
   has_counter :accepted_invitations, 'invitations.accepted.count'
+  has_counter :approved_projects, 'projects.approved.count'
   has_counter :badges_green, 'badges(:green).count'
   has_counter :badges_bronze, 'badges(:bronze).count'
   has_counter :badges_silver, 'badges(:silver).count'
