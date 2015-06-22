@@ -53,8 +53,8 @@ module ScraperStrategies
           post = @project.build_logs.new
           post.user_id = 0
           post.title = log.at_css('h2').text.strip
-          post.body = log.at_css('[id^="post-body"]')
-          @log = post.body
+          @log = log.at_css('[id^="post-body"]')
+          post.body = @log
           parse_images @log, false
           parse_embeds @log
           parse_files @log
