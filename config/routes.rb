@@ -26,7 +26,7 @@ HackerIo::Application.routes.draw do
         get :autocomplete, on: :collection
       end
       scope 'platforms' do
-        get ':user_name' => 'platforms#show'
+        get ':user_name' => 'platforms#show', defaults: { format: :json }
         scope ':user_name' do
           get 'analytics' => 'platforms#analytics', defaults: { format: :json }
         end

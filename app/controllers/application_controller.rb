@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
 
   include Rewardino::ControllerExtension
 
+  DEFAULT_RESPONSE_FORMAT = :html
   KNOWN_EVENTS = {
     'hob' => 'Identified as hobbyist',
     'pro' => 'Identified as professional',
@@ -43,6 +44,8 @@ class ApplicationController < ActionController::Base
   helper_method :controller_action
   helper_method :is_trackable_page?
   before_filter :set_signed_in_cookie
+  before_filter :set_default_response_format
+
   helper BootstrapFlashHelper
 
   # code to make whitelabel work
@@ -478,6 +481,10 @@ class ApplicationController < ActionController::Base
         format.html { render template: 'errors/error_500', layout: "layouts/#{current_layout}", status: 500 }
         format.all { render nothing: true, status: 500}
       end
+    end
+
+    def set_default_response_format
+      request.format = DEFAULT_RESPONSE_FORMAT if request.format.to_sym.nil?
     end
 
     def set_flash_message type, message
