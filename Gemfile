@@ -150,4 +150,5 @@ group :test do
   # gem 'factory_girl_rails'
   # gem 'faker'
   gem 'rspec-rails'
+  gem 'selenium-webdriver'
 end

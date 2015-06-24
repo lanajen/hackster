@@ -18,10 +18,10 @@ development:
 #   send_emails: false
 
 test:
-  full_host: www.example.com
-  default_host: www.example.com
-  default_domain: example.com
-  default_port: 80
+  full_host: www.localhost.local
+  default_host: www.localhost.local
+  default_domain: localhost.local
+  default_port: 31337
   port_required: false
   send_emails: false
   workers_running: false
