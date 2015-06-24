@@ -130,23 +130,24 @@ gem 'rails_12factor', group: [:production, :staging]
 gem 'derailed_benchmarks', group: :development
 
 group :development, :test do
-  # gem 'factory_girl_rails'
   gem 'foreman'
   # gem 'guard-livereload'
   # gem 'guard-rspec'
   # gem 'guard-spork'
   # gem 'launchy'
   gem 'mailcatcher', git: 'https://github.com/sj26/mailcatcher.git'
+  gem 'pry'
   gem 'quiet_assets'
   # gem 'spork'
   # gem 'rspec-cells'
-  gem 'rspec-rails'
   gem 'spring'
-  # gem 'sqlite3'
   # gem 'web-console', '~> 2.0'
 end
 
-# group :test do
-#   gem 'database_cleaner'
-#   gem 'faker'
-# end
+group :test do
+  gem 'capybara'
+  gem 'database_cleaner'
+  # gem 'factory_girl_rails'
+  # gem 'faker'
+  gem 'rspec-rails'
+end
