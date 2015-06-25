@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
 
   include Rewardino::ControllerExtension
 
+  BOGUS_REQUEST_FORMATS = ['*/*;', '/;', 'hc/url;*/*']
   DEFAULT_RESPONSE_FORMAT = :html
   KNOWN_EVENTS = {
     'hob' => 'Identified as hobbyist',
@@ -484,7 +485,7 @@ class ApplicationController < ActionController::Base
     end
 
     def set_default_response_format
-      request.format = DEFAULT_RESPONSE_FORMAT if request.format.to_sym.nil?
+      request.format = DEFAULT_RESPONSE_FORMAT if request.format.in? BOGUS_REQUEST_FORMATS
     end
 
     def set_flash_message type, message
