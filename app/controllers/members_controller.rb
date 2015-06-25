@@ -80,8 +80,6 @@ class MembersController < ApplicationController
 
     def set_layout
       case @group
-      when Promotion
-        @group.class.name.underscore
       when Team
         'project'
       else
