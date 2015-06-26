@@ -5,5 +5,17 @@
     .description= part.one_liner_or_description
   h3= link_to part.name, part
   .order
-    = link_to 'Add to cart', store_cart_index_path(store_product_id: product.id), class: 'btn btn-primary btn-sm', data: { method: :post }
-    .cost= product.unit_cost.zero? ? 'Free' : pluralize(number_with_delimiter(product.unit_cost), 'point')
+    - if product.actions.required_for? current_user
+      = link_to 'Add to cart', "javascript:openModal('#actions-popup-#{product.id}');", class: 'btn btn-primary btn-sm'
+    - else
+      = link_to 'Add to cart', store_cart_index_path(store_product_id: product.id), class: 'btn btn-primary btn-sm', data: { method: :post }
+    .cost
+      => product.unit_cost.zero? ? 'Free' : pluralize(number_with_delimiter(product.unit_cost), 'point')
+      - if product.actions.any?
+        ' +
+        abbr.istooltip title=product.actions.to_s
+          = pluralize product.actions.count, 'action'
+
+- if product.actions.any?
+  = content_for :js do
+    = render partial: 'actions_popup', locals: { product: product }

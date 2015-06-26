@@ -24,7 +24,10 @@ h2.cart-title Your cart
                 td.order-label Shipping cost
                 td.order-cost
                   - if current_order.shipping_cost
-                    = pluralize current_order.shipping_cost, 'point'
+                    - if current_order.shipping_cost > 0
+                      = pluralize current_order.shipping_cost, 'point'
+                    - else
+                      | Free
                   - else
                     = link_to 'Select an address', addresses_path(order_id: current_order.id, redirect_if_empty: true)
                 td

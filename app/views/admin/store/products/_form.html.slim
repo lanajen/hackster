@@ -4,6 +4,13 @@
   = f.input :source_type, as: :hidden, input_html: { value: 'Part' }
   = f.input :unit_cost, hint: 'In reputation points'
   = f.input :available
+  = f.input :width, hint: 'CM'
+  = f.input :height, hint: 'CM'
+  = f.input :length, hint: 'CM'
+  = f.input :weight, hint: 'Grams'
+  = f.input :real_unit_price, hint: 'USD'
+  = f.input :charge_shipping, as: :boolean, inline_label: 'Charge for shipping', label: false
+  = f.input :stored_actions, as: :text, hint: "Careful! This has to be JSON. Please don't change unless you know what you're doing."
   .col-md-offset-4.col-md-8
     ==> f.button :submit, :class => 'btn-primary'
     ==> link_to t('.cancel', :default => t("helpers.links.cancel")), admin_store_products_path, :class => 'btn btn-default'

@@ -79,9 +79,9 @@ class Order < ActiveRecord::Base
   end
 
   def compute_shipping_cost
-    self.shipping_cost = if address
-      destination_country.in?(REDUCED_SHIPPING_COUNTRIES) ? REDUCED_SHIPPING_COST : INTERNATIONAL_SHIPPING_COST
-    end
+    self.shipping_cost = store_products.map do |product|
+      product.charge_shipping? ? product.shipping_cost(address) : 0
+    end.sum
   end
 
   def compute_total_cost
