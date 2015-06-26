@@ -138,7 +138,7 @@ class Order < ActiveRecord::Base
     def validate_products_in_stock
       store_products.each do |product|
         unless product.in_stock?
-          errors.add :base, "#{product.source.name} is out of stock."
+          errors.add :base, "#{product.source.name} is out of stock. Please remove it from your cart and add a different product."
           return
         end
       end
