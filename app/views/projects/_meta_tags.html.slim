@@ -1,4 +1,4 @@
-- cache "project-#{@project.id}-meta-tags", tags: ["project-#{@project.id}-meta-tags", "team-#{@project.team_id}"], expires_in: 24.hours do
+- cache [I18n.locale, "project-#{@project.id}-meta-tags"], tags: ["project-#{@project.id}-meta-tags", "team-#{@project.team_id}"], expires_in: 24.hours do
   meta(property="og:title" content=@project.name)
   - if @project.one_liner.present?
     meta(property="og:description" content="#{@project.one_liner} By #{@project.guest_name.presence || @project.users.map{|u| u.name }.to_sentence}.")
@@ -23,6 +23,6 @@
   meta(property="twitter:image:src" content=@project.cover_image(:cover_thumb))
   meta(property="twitter:image:width" content='400')
   meta(property="twitter:image:height" content='300')
-  link(rel="canonical" href=project_url(@project, subdomain: 'www'))
+  link(rel="canonical" href=project_url(@project, subdomain: 'www', locale: I18n.default_www_locale))
   - if @project.product_tags_string.present? or @project.platform_tags_string.present?
     meta(name='keywords' content="#{(@project.product_tags_cached + @project.platform_tags_cached).join(',')}")

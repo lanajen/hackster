@@ -1,0 +1,40 @@
+- model_class = Payment
+.page-header
+  h1
+    ==> t '.title', :default => model_class.model_name.human.pluralize
+    small>= link_to 'New', new_admin_payment_path, :class => 'btn btn-primary btn-sm'
+
+==> render 'admin/shared/search_form_tag'
+- (@fields.keys - %w(created_at status)).each do |field|
+  ==> render partial: 'admin/shared/search_form_text_field', locals: { field: field }
+==> render partial: 'admin/shared/search_form_select_field', locals: { field: 'status', options: Payment.workflow_spec.states.keys }
+= render 'admin/shared/search_form_sort_and_submit'
+
+table.table.table-striped
+  thead
+    tr
+      th Safe ID
+      th= model_class.human_attribute_name(:recipient_name)
+      th= model_class.human_attribute_name(:recipient_email)
+      th= model_class.human_attribute_name(:amount)
+      th= model_class.human_attribute_name(:workflow_state)
+      th= model_class.human_attribute_name(:created_at)
+      th=t '.actions', :default => t("helpers.actions")
+  tbody
+    - @payments.each do |payment|
+      tr
+        td= link_to payment.safe_id, payment_path(payment.safe_id)
+        td= payment.recipient_name
+        td= payment.recipient_email
+        td= payment.amount
+        td= payment.workflow_state
+        td= l payment.created_at
+        td
+          ul.list-unstyled
+            li= link_to 'Edit', edit_admin_payment_path(payment), class: 'btn btn-default btn-xs'
+            - if payment.can_send_email?
+              li= link_to 'Send email to client', update_workflow_admin_payment_path(payment, event: 'send_email'), class: 'btn btn-xs btn-primary', data: { method: :patch, confirm: "Did you double check that name, email and amount are correct?" }
+            li= link_to t('.destroy', :default => t("helpers.links.destroy")), admin_payment_path(payment), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'
+
+.pagination.col-xs-12.text-center
+  = will_paginate @payments

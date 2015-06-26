@@ -1,6 +1,6 @@
 <p>Hello there,</p>
 
-<p><a href='<%= url_for([@context[:inviter], only_path: false]) %>'>|inviter_name|</a> has invited you to join the group <a href='<%= url_for([@context[:group], only_path: false]) %>'>|group_name|</a> on Hackster.io, you can accept it through the link below.</p>
+<p><a href='<%= u.url_for([@context[:inviter], only_path: false]) %>'>|inviter_name|</a> has invited you to join the group <a href='<%= u.url_for([@context[:group], only_path: false]) %>'>|group_name|</a> on Hackster.io, you can accept it through the link below.</p>
 
 <p><a href="|group_invitation_link|">Accept invitation</a></p>
 

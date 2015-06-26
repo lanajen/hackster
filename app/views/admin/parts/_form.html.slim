@@ -1,7 +1,7 @@
 = simple_nested_form_for [:admin, @part], html: { class: 'form-horizontal accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
   = f.error_notification
   = f.input :name
-  = f.input :slug, label: 'Name for URL'
+  = f.input :slug, label: 'Pretty URL'
   = f.input :type, collection: Part::TYPES
   = f.input :description, input_html: { class: 'text-editor', rows: 10 }
   = f.input :one_liner, input_html: { rows: 2 }, as: :text
@@ -14,6 +14,7 @@
   = f.input :datasheet_link, label: 'Link to datasheet'
   = f.input :platform_id, collection: Platform.order(:full_name)
   = f.input :workflow_state, collection: %w(approved rejected retired)
+  = f.input :private, inline_label: 'Hide from platform page', label: false, hint: "It might still appear in projects BOM's"
 
   - if @part.persisted?
     .form-group

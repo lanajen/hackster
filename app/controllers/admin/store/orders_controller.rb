@@ -3,10 +3,11 @@ class Admin::Store::OrdersController < Admin::BaseController
     title "Admin / Store / Orders - #{safe_page_params}"
     @fields = {
       'created_at' => 'orders.created_at',
+      'placed_at' => 'orders.placed_at',
       'status' => 'orders.workflow_state',
     }
 
-    params[:sort_by] ||= 'created_at'
+    params[:sort_by] ||= 'placed_at'
 
     @orders = filter_for Order, @fields
   end

@@ -1,8 +1,13 @@
 module WidgetsHelper
-  def display_comments comments, output=[]
+  def display_comments comments, output={}, root_comment=nil
     comments.each do |comment|
-      output << comment
-      output = display_comments comment.children, output if comment.children
+      if comment.is_root?
+        output[comment.id] = { root: comment, children: [] }
+        root_comment = comment
+      else
+        output[root_comment.id][:children] << comment
+      end
+      output = display_comments comment.children, output, root_comment if comment.children
     end
     output
   end

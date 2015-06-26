@@ -1,13 +1,13 @@
 <p>Hello there,</p>
 
-<p>This is to to reminder you that the assignment "<a href="<%= assignment_url(@context[:assignment]) %>">|assignment_name|</a>" is due in less than 24 hours.</p>
+<p>This is to to reminder you that the assignment "<a href="<%= u.assignment_url(@context[:assignment]) %>">|assignment_name|</a>" is due in less than 24 hours.</p>
 
 <p>
   <b>What to do?</b>:
   <% if @context[:project].present? %>
     <a href="|project_link|">Double check and submit your project</a>.
   <% else %>
-    <a href="<%= assignment_url(@context[:assignment]) %>/projects/new">Link a project to the assignment</a> and submit it.
+    <a href="<%= u.assignment_url(@context[:assignment]) %>/projects/new">Link a project to the assignment</a> and submit it.
   <% end %>
 </p>
 

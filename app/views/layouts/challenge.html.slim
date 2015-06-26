@@ -32,7 +32,7 @@
   meta(property="twitter:image:src" content=@challenge.cover_image(:cover_thumb))
   meta(property="twitter:image:width" content='400')
   meta(property="twitter:image:height" content='300')
-  link(rel="canonical" href=url_for([@challenge, subdomain: 'www', only_path: false]))
+  link(rel="canonical" href=url_for([@challenge, subdomain: 'www', only_path: false, locale: I18n.default_www_locale]))
 
   - if @challenge.custom_css.present?
     style

@@ -280,7 +280,7 @@ Rewardino::Event.create!({
   points: 50,
   date_method: 'made_public_at',
   model_table: 'projects',
-  models_method: 'Project.own.approved',
+  models_method: 'Project.own.self_hosted.approved',
   users_method: 'users',
 })
 

@@ -34,7 +34,7 @@
       | on Hackster.io
 
   - unless @custom_header.present?
-    - cache "platform-#{current_platform.id}-client-subheading", tag: ["platform-#{current_platform.id}-sidebar"] do
+    - cache [I18n.locale, "platform-#{current_platform.id}-client-subheading"], tag: ["platform-#{current_platform.id}-sidebar"] do
 
       #subheading.row
         p.col-md-8.text-center-sm.text-center-xs= current_platform.mini_resume
@@ -89,7 +89,7 @@
       - @projects.each do |project_collection|
         = render partial: 'projects/project_thumb', locals: { project: project_collection.project.decorate }
         = content_for :js do
-          - if project_collection.featured?
+          - if project_collection.featured?(I18n.short_locale)
             javascript:
               text = "#{escape_javascript render(partial: 'groups/platforms/featured' )}";
               $(text).appendTo($('.project-#{project_collection.project_id} .project-thumb .award-container'));

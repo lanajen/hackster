@@ -3,12 +3,12 @@ class PlatformsController < ApplicationController
   include GraphHelper
   include PlatformHelper
 
-  before_filter :authenticate_user!, except: [:show, :embed, :projects, :products, :followers, :index]
-  before_filter :load_platform, except: [:show, :embed, :new, :create, :projects, :products, :followers, :index, :analytics, :sub_platforms]
-  before_filter :load_platform_with_slug, only: [:show, :embed, :projects, :products, :followers, :analytics, :sub_platforms]
+  before_filter :authenticate_user!, only: [:analytics, :update, :feature_project, :unfeature_project]
+  before_filter :load_platform, only: [:update, :feature_project, :unfeature_project]
+  before_filter :load_platform_with_slug, only: [:show, :embed, :projects, :products, :followers, :analytics, :sub_platforms, :members]
   before_filter :load_projects, only: [:embed]
   before_filter :load_project, only: [:feature_project, :unfeature_project]
-  layout 'platform', only: [:edit, :update, :projects, :products, :followers, :analytics, :sub_platforms]
+  layout 'platform', only: [:edit, :update, :projects, :products, :followers, :analytics, :sub_platforms, :members]
   after_action :allow_iframe, only: [:embed]
   respond_to :html
   protect_from_forgery except: :embed
@@ -59,7 +59,7 @@ class PlatformsController < ApplicationController
           @followers = @platform.followers.top.limit(5)
         end
         @projects = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection).merge(Project.magic_sort).where(projects: { type: %w(Project ExternalProject) }).limit(3)
-        @parts = @platform.parts.default_sort.limit(2) if @platform.enable_parts
+        @parts = @platform.parts.visible.default_sort.limit(2) if @platform.parts_count > 0
         @products = @platform.project_collections.includes(:project).visible.order('project_collections.workflow_state DESC').merge(Project.for_thumb_display_in_collection).merge(Project.magic_sort).where(projects: { type: 'Product' }).limit(3) if @platform.enable_products
         @sub_platforms = @platform.sub_platforms.sub_platform_most_members.limit(3) if @platform.enable_sub_parts
 
@@ -71,6 +71,19 @@ class PlatformsController < ApplicationController
       format.atom { redirect_to platform_projects_path(@platform, params.slice(:sort, :by).merge(format: :atom)), status: :moved_permanently }
       format.rss { redirect_to platform_projects_path(@platform, params.slice(:sort, :by).merge(format: :atom)), status: :moved_permanently }
     end
+  end
+
+  def members
+    authorize! :read, @platform
+    impressionist_async @platform, "", unique: [:session_hash]
+
+    title "#{@platform.name}'s' community"
+    meta_desc "Join #{@platform.followers_count} makers in #{@platform.name}'s community on Hackster."
+
+    @team_members = @platform.team_members.includes(:user).includes(user: :avatar).paginate(page: safe_page_params)
+    @members = @platform.followers.where.not(follow_relations: { user_id: @team_members.map{|m| m.user_id } }).order("CAST(users.hcounters_cache -> 'reputation' AS INTEGER) DESC NULLS LAST").includes(:avatar).paginate(page: safe_page_params, per_page: 24)
+
+    render "groups/platforms/members"
   end
 
   def projects
@@ -174,17 +187,30 @@ class PlatformsController < ApplicationController
   end
 
   def new
+    title "Create a new platform hub"
+    meta_desc "Add your platform to Hackster and join dozens of other hardware and IoT platforms."
     @platform = Platform.new
+    authorize! :create, @platform
     render 'groups/platforms/new'
   end
 
   def create
     @platform = Platform.new params[:group]
     authorize! :create, @platform
-    @platform.members.new user_id: current_user.id
 
-    if @platform.save
-      redirect_to @platform, notice: "Welcome to the new hub for #{@platform.name}!"
+    if user_signed_in?
+      @platform.members.new user_id: current_user.id
+    else
+      @platform.require_admin_email = true
+    end
+
+    if @platform.valid?
+      if user_signed_in?
+        @platform.save
+        redirect_to @platform, notice: "Welcome to the new hub for #{@platform.name}!"
+      else
+        redirect_to create__simplified_registrations_path(user: { email: @platform.admin_email }, redirect_to: create_platforms_path(group: params[:group]))
+      end
     else
       render 'groups/platforms/new'
     end

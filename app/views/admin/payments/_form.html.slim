@@ -1,0 +1,10 @@
+= simple_form_for [:admin, @payment], html: { class: 'form-horizontal' }, wrapper: :bootstrap3_horizontal  do |f|
+  = f.error_notification
+  = f.input :recipient_name, label: 'Name of the person paying the bill'
+  = f.input :recipient_email, label: 'Email of the person paying the bill'
+  = f.input :amount, label: 'Invoice amount (excluding credit card fees)'
+  = f.input :invoice_number, label: 'Invoice number, if any'
+  = f.input :label, label: 'Services description'
+  .col-sm-8.col-sm-offset-4
+    => f.submit class: 'btn btn-primary'
+    = link_to 'Cancel', admin_payments_path, class: 'btn btn-default btn-sm'

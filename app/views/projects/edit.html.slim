@@ -7,22 +7,46 @@
 - if @show_admin_bar
   .admin-bar
     .row
-      .col-sm-3
-        span.label.label-default= @project.workflow_state
-      .col-sm-6.text-center
-        - if @project.can_approve?
-          .btn-group
-            = link_to content_tag(:i, '', class: 'fa fa-check') + content_tag(:span, 'Approve now'), update_workflow_project_path(@project, event: :approve), class: 'btn btn-success btn-sm', data: { method: :patch }
-            button.btn.btn-success.btn-sm.dropdown-toggle data-toggle="dropdown"
-              span.caret
-            ul.dropdown-menu
-              li= link_to content_tag(:i, '', class: 'fa fa-check') + content_tag(:span, 'Add to queue'), update_workflow_project_path(@project, event: :approve_later), data: { method: :patch }
+      .col-sm-1
+        - review_details = ''
+        - if @project.review_time
+          - review_details += "Last reviewed on #{l @project.review_time}"
+        - if reviewer = User.find_by_id(@project.reviewer_id)
+          - review_details += " by #{reviewer.name}."
+        - if @project.review_comment.present?
+          - review_details += " Commented: #{@project.review_comment}"
+        span.label.label-default.istooltip title=review_details data-placement="bottom"= @project.workflow_state
+      .col-sm-8.text-center
+        = form_tag update_workflow_project_path(@project), method: :patch
+          - if @project.can_approve?
+            label>
+              input> type='radio' name='event' value='approve'
+              | Approve now
+            label>
+              input> type='radio' name='event' value='approve_later'
+              | Approve later
+            / .btn-group
+              button.btn.btn-success.btn-sm= content_tag(:i, '', class: 'fa fa-check') + content_tag(:span, 'Approve now')
+              button.btn.btn-success.btn-sm.dropdown-toggle data-toggle="dropdown"
+                span.caret
+              ul.dropdown-menu
+                li
+                  button= content_tag(:i, '', class: 'fa fa-check') + content_tag(:span, 'Add to queue')
 
-        - if @project.can_reject?
-          = link_to content_tag(:i, '', class: 'fa fa-times') + content_tag(:span, 'Reject'), update_workflow_project_path(@project, event: :reject), class: 'btn btn-danger btn-sm', data: { method: :patch }
-        - if @project.can_mark_needs_work?
-          = link_to content_tag(:i, '', class: 'fa fa-clock-o') + content_tag(:span, 'Set aside for later review'), update_workflow_project_path(@project, event: :mark_needs_work), class: 'btn btn-warning btn-sm', data: { method: :patch }
-        = link_to content_tag(:i, '', class: 'fa fa-envelope-o') + content_tag(:span, 'Email authors'), "mailto:#{@project.users.pluck(:email).join(',')}?subject=Your+project+needs+a+couple+updates&body=Hi,\n\rProject:+#{@project.name}\n\rLink:+#{project_url(@project)}", class: 'btn btn-default btn-sm', target: '_blank'
+          - if @project.can_reject?
+            label>
+              input> type='radio' name='event' value='reject'
+              | Reject
+            / button.btn.btn-danger.btn-sm= content_tag(:i, '', class: 'fa fa-times') + content_tag(:span, 'Reject')
+          - if @project.can_mark_needs_work?
+            label>
+              input> type='radio' name='event' value='mark_needs_work'
+              | Set aside for later review
+            / button.btn.btn-warning.btn-sm= content_tag(:i, '', class: 'fa fa-clock-o') + content_tag(:span, 'Set aside for later review')
+          div style='width:150px;display: inline-block;vertical-align: top;'
+            textarea.form-control name='comment' rows=1 placeholder='Review comment (internal)'
+          input.btn.btn-sm.btn-primary type='submit' value='Submit review'
+          = link_to content_tag(:i, '', class: 'fa fa-envelope-o') + content_tag(:span, 'Email authors'), "mailto:#{@project.users.pluck(:email).join(',')}?subject=Your+project+needs+a+couple+updates&body=Hi,\n\rProject:+#{@project.name}\n\rLink:+#{project_url(@project)}", class: 'btn btn-default btn-sm', target: '_blank'
       .col-sm-3 style='text-align: right;'
         - if @project.checklist_completed?
           i.fa.fa-check.text-success

@@ -16,10 +16,11 @@ module ScraperStrategies
       @base_uri = @base_uri.present? ? "/#{@base_uri}" : ''
     end
 
-    def to_project
+    def to_project model_class=nil
+      model_class ||= Project
       puts 'Converting to project...'
 
-      @project = Project.new private: true
+      @project = model_class.new private: true
       @parts = []
       @widgets = []
       @embedded_urls = {}
@@ -34,19 +35,23 @@ module ScraperStrategies
       parse_comments
       format_text
       parse_cover_image
-      parse_images
-      parse_embeds
-      parse_files
-      parse_code
-      clean_up_formatting
+      if model_class == Project
+        parse_images
+        parse_embeds
+        parse_files
+        parse_code
+        clean_up_formatting
+      end
 
       after_parse
 
-      @project.description = @article.children.to_s
+      if model_class == Project
+        @project.description = @article.children.to_s
 
-      # puts @project.description
+        # puts @project.description
 
-      @project.give_embed_style!
+        @project.give_embed_style!
+      end
 
       @project
     end

@@ -2,9 +2,9 @@
   meta(name='keywords' content='hardware platforms,software platforms,diy machines')
 
 = content_for :no_container do
-  - cache ['platform-index', params[:sort], params[:tag]], tag: ['platform-index'], expires_in: 1.hour do
+  - cache [I18n.locale, 'platform-index', params[:sort], params[:tag]], tag: ['platform-index'], expires_in: 1.hour do
     #platforms
-      section.section-header
+      section.section-header.hero-header
         .container
           h1 Platforms to build faster
           p Thanks to hardware and software platforms for makers
@@ -73,5 +73,5 @@
       section#bottom-bar
         .container.text-center
           p
-            ' Want to feature your platform on this page?
-            = link_to 'Apply', 'https://docs.google.com/forms/d/1QVyIRXMR1FEFcby3Gwg-ZrmtWkkCax9UHhQRDyvXxHg/viewform?usp=send_form', class: 'btn btn-primary'
+            ' Want a hub for your own platform?
+            = link_to 'Launch it', new_platform_path, class: 'btn btn-primary btn-sm'

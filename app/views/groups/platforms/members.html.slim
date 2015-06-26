@@ -1,0 +1,38 @@
+what is this hub? who is it for? why would they use it? how does it help them?
+
+who:
+- makers of all kinds and ages. Mostly hobbyists, 15+, male, westerner
+- new users
+- experienced users
+- I just received my device, how do I get started?
+- what could I do with my device?
+- I have this idea, how do I do it?
+- I have a specific issue, please help.
+
+what do they get out of using their devices?
+- improve their worlds
+- doing a project for school
+- developing a prototype for a commercial product
+- have fun
+- learn, solve curiosity, extend knowledge, extend confidence/comfort zone, high gratification of making something work (more than just work done because of tangibility and magics of electronics)
+
+/
+  - recognize top users: maker who published the most projects, maker who commented the most, maker who respected the most, maker with the most popular project, first maker to publish, first maker to join
+  - show recent activity: comments, projects, respects, replications
+  - talk? chat?
+
+- if @platform.team_members_count > 0 and @team_members
+  h1.section-title #{@platform.name} team
+  .row.mg-40
+    - @team_members.each do |member|
+      .col-md-4= render partial: 'users/member_thumb_mini', locals: { member: member }
+
+h1.section-title #{@platform.name} community members
+- if @platform.followers_count > 0
+  .row
+    - @members.each do |user|
+      = render partial: 'users/user_thumb_mini', locals: { user: user, actions: [], col: 'col-md-2 col-sm-3 col-xs-4' }
+  .text-center= will_paginate @members
+- else
+  ' Be the first the follow #{@platform.name}!
+  = render partial: 'followers/button_text', locals: { followable: @platform }

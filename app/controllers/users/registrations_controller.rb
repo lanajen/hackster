@@ -1,7 +1,7 @@
 class Users::RegistrationsController < Devise::RegistrationsController
   # copied authenticate_scope from devise otherwise it's called before
   # authenticate_from_token in application_controller.rb
-  before_filter :authenticate_scope!, :only => [:edit, :update, :destroy]
+  before_filter :authenticate_scope!, only: [:edit, :update, :destroy]
   before_filter :configure_permitted_parameters, only: [:create, :update]
   before_filter :disable_flash, only: [:new, :create]
 

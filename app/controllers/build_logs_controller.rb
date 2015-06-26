@@ -3,7 +3,6 @@ class BuildLogsController < ApplicationController
   before_filter :load_project, except: [:destroy, :show_redirect]
   before_filter :load_log, only: [:show]
   before_filter :load_and_authorize_resource, only: [:edit, :update, :destroy]
-  before_filter :set_project_mode, except: [:destroy, :show_redirect]
   layout 'project'
 
   def index

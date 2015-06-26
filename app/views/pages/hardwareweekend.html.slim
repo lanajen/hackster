@@ -67,7 +67,7 @@
   = link_to 'Schedule', '#schedule', class: 'mo-nav-link smooth-scroll', data: { target: '#schedule' }
 
 = content_for :no_container do
-  - cache ['hwweek'], tag: ['hwweek'] do
+  - cache [I18n.locale, 'hwweek'], tag: ['hwweek'] do
     #hwweek
       section#home-banner
         .home-slide style="background-image:url('#{ asset_url 'hwweek/bg.jpg'}')"

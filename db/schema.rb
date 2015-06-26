@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150609051914) do
+ActiveRecord::Schema.define(version: 20150619012408) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -493,7 +493,7 @@ ActiveRecord::Schema.define(version: 20150609051914) do
     t.string   "comment",             limit: 255
     t.text     "websites"
     t.integer  "platform_id"
-    t.boolean  "private",                         default: true
+    t.boolean  "private",                         default: false
     t.string   "product_tags_string", limit: 255
     t.string   "workflow_state",      limit: 255
     t.string   "slug",                limit: 255
@@ -504,6 +504,21 @@ ActiveRecord::Schema.define(version: 20150609051914) do
 
   add_index "parts", ["partable_id", "partable_type"], name: "partable_index", using: :btree
   add_index "parts", ["platform_id"], name: "index_parts_on_platform_id", using: :btree
+
+  create_table "payments", force: :cascade do |t|
+    t.string   "recipient_name"
+    t.string   "invoice_number"
+    t.string   "recipient_email"
+    t.integer  "amount"
+    t.string   "workflow_state"
+    t.hstore   "properties"
+    t.string   "safe_id",         null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
+  add_index "payments", ["safe_id"], name: "index_payments_on_safe_id", unique: true, using: :btree
+  add_index "payments", ["workflow_state"], name: "index_payments_on_workflow_state", using: :btree
 
   create_table "permissions", force: :cascade do |t|
     t.string   "permissible_type", limit: 15, null: false
@@ -578,6 +593,7 @@ ActiveRecord::Schema.define(version: 20150609051914) do
     t.text     "story"
     t.string   "difficulty",              limit: 255
     t.string   "type",                    limit: 15,  default: "Project", null: false
+    t.string   "locale",                  limit: 2,   default: "en"
   end
 
   add_index "projects", ["private"], name: "index_projects_on_private", using: :btree
@@ -646,7 +662,7 @@ ActiveRecord::Schema.define(version: 20150609051914) do
   create_table "store_products", force: :cascade do |t|
     t.integer  "source_id",                      null: false
     t.string   "source_type",                    null: false
-    t.integer  "unit_cost"
+    t.integer  "unit_cost",      default: 0
     t.hstore   "counters_cache"
     t.boolean  "available",      default: false
     t.datetime "created_at",                     null: false
@@ -655,6 +671,7 @@ ActiveRecord::Schema.define(version: 20150609051914) do
 
   add_index "store_products", ["available"], name: "index_store_products_on_available", using: :btree
   add_index "store_products", ["source_id", "source_type"], name: "index_store_products_on_source_id_and_source_type", using: :btree
+  add_index "store_products", ["unit_cost"], name: "index_store_products_on_unit_cost", using: :btree
 
   create_table "subdomains", force: :cascade do |t|
     t.string   "subdomain",   limit: 255
@@ -775,6 +792,8 @@ ActiveRecord::Schema.define(version: 20150609051914) do
     t.string   "platform",               limit: 255
     t.datetime "last_seen_at"
     t.hstore   "subscriptions_masks",                default: {},     null: false
+    t.hstore   "hcounters_cache"
+    t.hstore   "hproperties"
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree

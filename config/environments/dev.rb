@@ -83,7 +83,8 @@ HackerIo::Application.configure do
   require File.expand_path('../../../lib/log_request_id', __FILE__)
   config.middleware.use Rack::LogRequestID
 
-  config.cashier.adapter = :cache_store
+  config.cashier.adapter = :redis_store
+  config.cashier.adapter.redis = Redis.new $redis_config
   if ENV["MEMCACHIER_SERVERS"]
     config.cache_store = :dalli_store, ENV["MEMCACHIER_SERVERS"].split(','), { username: ENV["MEMCACHIER_USERNAME"], password: ENV["MEMCACHIER_PASSWORD"], compress: true }
   end

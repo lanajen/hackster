@@ -1,0 +1,11 @@
+<p>Dear <%= @context[:payment].recipient_name %>,</p>
+<p>Your order is ready to be processed.</p>
+<p class="quote"><strong>Description:</strong><br><%= @context[:payment].label %></p>
+<p>The total of <%= number_to_currency(@context[:payment].amount, precision: 0) %> can be paid at the following link:</p>
+<p><a href="<%= u.payment_url(@context[:payment].safe_id) %>"><%= u.payment_url(@context[:payment].safe_id) %></a></p>
+<p>If you have any questions, please reply to this email directly.
+</p>
+<p>Cheers
+  <br>
+  The Hackster.io team
+</p>

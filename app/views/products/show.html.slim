@@ -20,7 +20,7 @@
               small
                 = link_to 'Need to privately share?', settings_project_path(@product, anchor: 'publish'), class: 'alert-link'
 
-      - cache [@product, 'teaser'], tag: ["product-#{@product.id}-teaser", 'product-teaser'], expires_in: 6.hours do
+      - cache [I18n.locale, @product, 'teaser'], tag: ["product-#{@product.id}-teaser", 'product-teaser'], expires_in: 6.hours do
 
         #home.product-banner style="background-image: url('#{@product.cover_image}')"
           .product-banner-inner
@@ -37,7 +37,7 @@
           / # - if @product.public?
             .col-xs-6.pull-right= render partial: 'respects/count', locals: { count: @product.respects_count, product: @product }
 
-      - cache [@product, 'widgets'], tag: ["product-#{@product.id}-widgets", 'product-widgets'] do
+      - cache [I18n.locale, @product, 'widgets'], tag: ["product-#{@product.id}-widgets", 'product-widgets'] do
 
         section#section-extra.section-container.section-no-title
           .section-content

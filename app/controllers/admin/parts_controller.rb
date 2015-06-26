@@ -15,7 +15,7 @@ class Admin::PartsController < Admin::BaseController
 
   def new
     @part = Part.new
-    @parts = Part.approved
+    @parts = []#Part.approved
   end
 
   def create

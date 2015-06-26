@@ -12,9 +12,15 @@ class OrderObserver < ActiveRecord::Observer
     record.update_column :placed_at, Time.now
   end
 
+  def after_ship record
+    NotificationCenter.notify_all :shipped, :order, record.id
+  end
+
   def after_update record
     if record.processing? and record.total_cost_changed?
       record.reputation_needs_update = true
+    elsif record.workflow_state_changed? and record.shipped?
+      after_ship record
     end
   end
 

@@ -11,7 +11,10 @@
       = link_to pluralize(part.projects_count, 'project'), part, class: 'btn btn-link btn-block btn-sm'
 
     .col-md-8.col-md-pull-2.description
-      = raw part.description
+      - if part.description.present?
+        = raw part.description
+      - elsif part.one_liner.present?
+        p= part.one_liner
       / - if part.parent_parts.any?
         ul.list-inline
           li

@@ -3,6 +3,7 @@ development:
   default_host: www.localhost.local
   default_domain: localhost.local
   default_port: 5000
+  port_required: true
   send_emails: false
   workers_running: false
   purging_enable: false
@@ -21,6 +22,7 @@ test:
   default_host: www.example.com
   default_domain: example.com
   default_port: 80
+  port_required: false
   send_emails: false
   workers_running: false
   purging_enable: false
@@ -32,6 +34,7 @@ staging:
   default_host: staging.hackster.io
   default_domain: hackster.io
   default_port: 80
+  port_required: false
   send_emails: true
   workers_running: false
   purging_enable: false
@@ -43,6 +46,7 @@ dev:
   default_host: dev.hackster.io
   default_domain: hackster.io
   default_port: 443
+  port_required: false
   send_emails: true
   workers_running: true
   purging_enable: true
@@ -54,6 +58,7 @@ production:
   default_host: www.hackster.io
   default_domain: hackster.io
   default_port: 443
+  port_required: false
   send_emails: true
   workers_running: true
   purging_enable: true
@@ -65,6 +70,7 @@ stats:
   default_host: stats.hackster.io
   default_domain: hackster.io
   default_port: 443
+  port_required: false
   send_emails: true
   workers_running: true
   purging_enable: true

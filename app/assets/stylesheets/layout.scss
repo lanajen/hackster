@@ -1392,3 +1392,25 @@ i + span, span + i {
   font-size: 1.2em;
   color: #666;
 }
+
+.hero-header {
+  color: #fff;
+  text-align: center;
+  padding: 50px 0;
+  @include background-cover;
+  h1 {
+    margin: 0;
+    font-weight: bold;
+  }
+}
+
+#start {
+  .hero-header {
+    background-image: asset-url('hwweek/bg.jpg');
+  }
+  .start-option {
+    p {
+      margin-bottom: 20px;
+    }
+  }
+}

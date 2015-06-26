@@ -1,7 +1,7 @@
 - col = (defined?(col) and col) ? col : 4
 
 .col-sm-6.mobile-scroll-row-item.project-thumb-container class="col-md-#{col}"
-  - cache ["project-#{project.id}-thumb"], tag: ["project-#{project.id}-thumb", "team-#{project.team_id}"], expires_in: 6.hours do
+  - cache [I18n.locale, "project-#{project.id}-thumb"], tag: ["project-#{project.id}-thumb", "team-#{project.team_id}"], expires_in: 6.hours do
     - project = project.decorate
     div class="project-#{project.id}"
       .thumb.project-thumb

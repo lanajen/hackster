@@ -14,7 +14,7 @@
         .row.text-center= will_paginate @projects
       - else
           p
-            ' All public projects will appear here.
+            ' All projects will appear here.
             - if can? :add_project, @hacker_space
               = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project to hacker space"), "#{hacker_space_path(@hacker_space)}/projects/new", class: 'btn btn-sm btn-warning'
 

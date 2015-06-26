@@ -30,8 +30,7 @@ class UsersController < ApplicationController
     @private_projects = @user.projects.private.for_thumb_display
     @respected_projects = @user.respected_projects.indexable_and_external.for_thumb_display
     @replicated_projects = @user.replicated_projects
-    @parts = @user.owned_parts
-    if current_platform
+    if is_whitelabel?
       @private_projects = if current_user == @user
         @private_projects.select{ |p| (p.platform_tags_cached.map{|t| t.downcase } & current_platform.platform_tags.map{|t| t.name.downcase }).any? }
       else
@@ -40,11 +39,14 @@ class UsersController < ApplicationController
       @public_projects = @public_projects.with_group(current_platform)
       @public_count = @public_projects.count
       @respected_projects = @respected_projects.with_group(current_platform)
+      @replicated_projects = @replicated_projects.with_group(current_platform)
       if @user == current_user and !current_site.hide_alternate_search_results
         ids = @user.projects.with_group(current_platform).pluck(:id)
         @other_projects = @user.projects.where.not(id: ids).for_thumb_display
         @public_count += @other_projects.count
       end
+    else
+      @parts = @user.owned_parts
     end
 
     @comments = if current_platform
@@ -123,7 +125,13 @@ class UsersController < ApplicationController
       if @user.projects.any?
         redirect_to @user.projects.first, notice: "Profile info saved! Now you can start working on your project."
       else
-        redirect_to user_return_to, notice: "Profile info saved. Now, <a href='/talk' class='alert-link'>come introduce yourself to the community!</a>"
+        message = "Profile info saved."
+        message += if is_whitelabel?
+          " Welcome!"
+        else
+          " Now, <a href='/talk' class='alert-link'>come introduce yourself to the community!</a>"
+        end
+        redirect_to user_return_to, notice: message
       end
 
       track_user @user.to_tracker_profile

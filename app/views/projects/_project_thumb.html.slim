@@ -5,16 +5,17 @@
 - show_year = show_year ? 'year' : 'placeholder' unless show_year.nil?
 - col = (defined?(col) and col) ? col : 4
 - subdomain = defined?(force_subdomain) ? force_subdomain : false
+- locale = defined?(locale) ? locale : params[:locale]
 - if subdomain
   - if project.external?
-    - project_link = external_project_url(project, subdomain: subdomain)
+    - project_link = external_project_url(project, subdomain: subdomain, locale: locale)
   - else
-    - project_link = project_url(project, subdomain: subdomain)
+    - project_link = project_url(project, subdomain: subdomain, locale: locale)
 - else
   - project_link = url_for(project)
 
 .col-sm-6.mobile-scroll-row-item.project-thumb-container data-ref=ref data-ref-id=ref_id data-offset=offset data-show-year=show_year class="col-md-#{col} #{'has-data' if ref and ref_id}"
-  - cache ["project-#{project.id}-thumb", subdomain], tag: ["project-#{project.id}-thumb", "team-#{project.team_id}"], expires_in: 6.hours do
+  - cache [I18n.locale, "project-#{project.id}-thumb", subdomain], tag: ["project-#{project.id}-thumb", "team-#{project.team_id}"], expires_in: 6.hours do
     - project = project.decorate
     div class="project-#{project.id}"
       .thumb.project-thumb

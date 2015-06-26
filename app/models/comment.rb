@@ -31,10 +31,10 @@ class Comment < ActiveRecord::Base
   def self.sort_from_hierarchy comments
     parents = {}
     comments.each do |comment|
-      if comment.parent.in? parents.keys
-        parents[comment.parent] << comment
+      if comment.parent_id.in? parents.keys
+        parents[comment.parent_id] << comment
       else
-        parents[comment.parent] = [comment]
+        parents[comment.parent_id] = [comment]
       end
     end
 
@@ -43,8 +43,8 @@ class Comment < ActiveRecord::Base
 
     parents[nil].each do |child|
       child.depth = 0
-      if child.in? parents.keys
-        child = make_hierachy parents[child], parents, child
+      if child.id.in? parents.keys
+        child = make_hierachy parents[child.id], parents, child
       end
 
       sorted << child
@@ -61,6 +61,14 @@ class Comment < ActiveRecord::Base
 
   def disable_notification?
     @disable_notification
+  end
+
+  def is_root?
+    parent_id.nil?
+  end
+
+  def has_parent?
+    parent_id.present?
   end
 
   def has_mentions?
@@ -95,8 +103,8 @@ class Comment < ActiveRecord::Base
       depth += 1
       children.each do |child|
         child.depth = depth
-        if child.in? parents.keys
-          child = make_hierachy parents[child], parents, child, depth
+        if child.id.in? parents.keys
+          child = make_hierachy parents[child.id], parents, child, depth
         end
 
         if parent.children

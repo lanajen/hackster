@@ -1,0 +1,60 @@
+/
+  - maker
+  - platform
+  - hacker space
+  - ~list
+  - community
+  - course
+  - hackathon
+  - (challenge)
+
+= content_for :no_container do
+  - cache ['start'], tag: ['start'] do
+
+    #start
+      section.section-header.hero-header.mg-40
+        .container
+          h1 Get involved in the maker movement
+          p Hackster is so much more than just a place to share and discover cool projects. It's the hub of hubs where you can connect with other makers with similar interests or in your local community. However you're involved with open source hardware, we have something for you.
+
+      section.text-center.mg-40
+        .container
+          / h2.text-center.mg-20 What do you want to start?
+          .row
+            / .start-option.col-md-3.col-sm-6
+              .box
+                .box-title
+                  h3 Maker
+                .box-content
+                  p You're a hardware rockstar, a software developer, somewhere in the middle or just want to get into it and learn. Either way, you're awesome!
+                  = link_to 'Join Hackster', new_user_registration_path(source: :start), class: 'btn btn-primary'
+            .start-option.col-md-3.col-sm-6
+              .box
+                .box-title
+                  h3 Platform
+                .box-content
+                  p You're working on a platform for hardware developers, whether it's a microcontroller, an application or a tool. All are welcome here!
+                  = link_to 'Launch your platform', new_platform_path, class: 'btn btn-primary'
+            .start-option.col-md-3.col-sm-6
+              .box
+                .box-title
+                  h3 Hacker Space
+                .box-content
+                  p You're part of the core team at your local hacker space, and we thank you for that. Create a hub to show the world how much your space rocks.
+                  = link_to 'Claim your hacker space', hacker_spaces_path, class: 'btn btn-primary'
+                  / .text-center or
+                  / = link_to 'List your hacker space', new_hacker_space_path, class: 'btn btn-primary'
+            .start-option.col-md-3.col-sm-6
+              .box
+                .box-title
+                  h3 Community
+                .box-content
+                  p You run a local community group such as a meetup and want a place for people to gather and collect their projects. You just found it.
+                  = link_to 'Add your community', new_community_path, class: 'btn btn-primary'
+            .start-option.col-md-3.col-sm-6
+              .box
+                .box-title
+                  h3 Curated list
+                .box-content
+                  p You're meticulous and wish the world was more organized. Curate your favorite projects into a list of your own. You decide what it's about.
+                  = link_to 'Create a list', new_list_path, class: 'btn btn-primary'

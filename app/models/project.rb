@@ -121,7 +121,7 @@ class Project < ActiveRecord::Base
     :team_attributes, :story, :made_public_at, :difficulty, :type, :product,
     :project_collections_attributes, :workflow_state, :part_joins_attributes,
     :hardware_part_joins_attributes, :tool_part_joins_attributes,
-    :software_part_joins_attributes
+    :software_part_joins_attributes, :locale
   attr_accessor :current, :private_changed, :needs_platform_refresh,
     :approved_changed
   accepts_nested_attributes_for :images, :video, :logo, :team_members,
@@ -162,7 +162,7 @@ class Project < ActiveRecord::Base
   has_counter :platform_tags, 'platform_tags_cached.count'
   has_counter :product_tags, 'product_tags_cached.count'
   has_counter :replications, 'replicated_users.count'
-  has_counter :respects, 'respects.count'
+  has_counter :respects, 'respects.count', accessor: false
   has_counter :software_parts, 'software_parts.count'
   has_counter :team_members, 'users.count'
   has_counter :tool_parts, 'tool_parts.count'
@@ -174,6 +174,9 @@ class Project < ActiveRecord::Base
   hstore_column :properties, :locked, :boolean
   hstore_column :properties, :private_issues, :boolean
   hstore_column :properties, :private_logs, :boolean
+  hstore_column :properties, :review_comment, :string
+  hstore_column :properties, :review_time, :datetime
+  hstore_column :properties, :reviewer_id, :string
 
   self.per_page = 18
 
@@ -200,6 +203,14 @@ class Project < ActiveRecord::Base
       event :approve, transitions_to: :approved
       event :reject, transitions_to: :rejected
       event :mark_needs_review, transitions_to: :pending_review
+    end
+    on_transition do |from, to, triggering_event, *event_args|
+      if event_args[0]
+        self.reviewer_id = event_args[0][:reviewer_id]
+        self.review_comment = event_args[0][:review_comment]
+        self.review_time = Time.now
+        save
+      end
     end
     after_transition do |from, to, triggering_event, *event_args|
       notify_observers(:"after_#{to}")
@@ -371,10 +382,10 @@ class Project < ActiveRecord::Base
     joins(:project_collections).where(project_collections: { collectable_id: group.id, collectable_type: 'Group', workflow_state: ProjectCollection::VALID_STATES })
   end
 
-  def approve_later!
+  def approve_later! *args
     next_time_slot = get_next_time_slot Project.scheduled_to_be_approved.last.try(:made_public_at)
     update_column :made_public_at, next_time_slot
-    approve!
+    approve! *args
   end
 
   def get_next_time_slot last_scheduled_slot

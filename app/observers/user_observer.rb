@@ -92,7 +92,7 @@ class UserObserver < ActiveRecord::Observer
 
   private
     def advertise_new_user record
-      send_zapier record.email
+      # send_zapier record.email
       record.broadcast :new, record.id, 'User'
       NotificationCenter.notify_via_email nil, :user, record.id, 'registration_confirmation' unless record.skip_registration_confirmation
     end

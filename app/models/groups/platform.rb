@@ -79,7 +79,7 @@ class Platform < List
   hstore_column :hproperties, :project_ideas_phrasing, :string, default: '%{project_ideas_phrasing_options[0]}'
   hstore_column :hproperties, :verified, :boolean, default: false
 
-  has_counter :parts, 'parts.count'
+  has_counter :parts, 'parts.visible.count'
   has_counter :products, 'products.count'
   has_counter :sub_parts, 'sub_parts.count'
   has_counter :sub_platforms, 'sub_platforms.count'
@@ -96,7 +96,7 @@ class Platform < List
   add_checklist :first_product, 'Add your first product', 'parts_count >= 1', goto: 'new_group_product_path(@group)', group: :get_started
   add_checklist :documentation, 'Add a link to your documentation', 'documentation_link.present?', hint: "Add a link to your documentation.", goto: 'edit_group_path(@platform, anchor: "about-us")', group: :featured
   add_checklist :cta, 'Add a call-to-action', 'cta_link.present?', hint: "Add a call to action, for instance to buy your product.", goto: 'edit_group_path(@platform, anchor: "about-us")', group: :featured
-  add_checklist_family :projects, 'projects_count >= %{n}', labels: { 1 => 'Add your first project (and approved it)', n: 'Reach %{n} projects' }, thresholds: [1, 5, 50, 100, 500, 1_000, 5_000, 10_000, 50_000, 100_000, 500_000, 1_000_000], groups: { 1 => :get_started, 5 => :featured, n: :next_level }, goto: 'new_project_path(platform_tags_string: @platform.name)'
+  add_checklist_family :projects, 'projects_count >= %{n}', labels: { 1 => 'Add your first project (and approve it)', n: 'Reach %{n} projects' }, thresholds: [1, 10, 50, 100, 500, 1_000, 5_000, 10_000, 50_000, 100_000, 500_000, 1_000_000], groups: { 1 => :get_started, 10 => :featured, n: :next_level }, goto: 'new_project_path(platform_tags_string: @platform.name)'
   add_checklist_family :followers, 'followers_count >= %{n}', labels: { 1 => 'Be your first follower', n: 'Reach %{n} followers' }, thresholds: [1, 25, 100, 500, 1_000, 5_000, 10_000, 50_000, 100_000, 500_000, 1_000_000], groups: { 1 => :get_started, 25 => :featured, n: :next_level }, goto: 'create_followers_path(followable_type: "Group", followable_id: @platform.id)'
 
   # beginning of search methods
@@ -145,8 +145,12 @@ class Platform < List
     where("CAST(groups.hcounters_cache -> 'members' AS INTEGER) > ?", MINIMUM_FOLLOWERS_STRICT)
   end
 
+  def self.new_first
+    order("(CASE WHEN CAST(groups.hproperties -> 'is_new' AS BOOLEAN) THEN 1 ELSE 2 END) ASC")
+  end
+
   def self.sub_platform_most_members
-    select("groups.id, groups.*, CAST(groups.hcounters_cache -> 'members' AS INTEGER) AS members_cnt").order("members_cnt DESC")
+    order members_count: :desc
   end
 
   def company_logo_id=(val)

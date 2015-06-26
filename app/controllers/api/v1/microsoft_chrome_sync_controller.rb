@@ -5,11 +5,11 @@ class Api::V1::MicrosoftChromeSyncController < Api::V1::BaseController
   before_filter :authenticate
 
   def show
-    render json: ms_sync.attributes
+    render json: ms_sync.attributes(params[:locale])
   end
 
   def update
-    changed = ms_sync.update_attributes(params[:chrome])
+    changed = ms_sync.update_attributes(params[:chrome], params[:locale])
 
     render json: { set: changed }, status: :ok
   end

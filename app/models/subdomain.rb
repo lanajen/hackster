@@ -1,5 +1,6 @@
 class Subdomain < ActiveRecord::Base
   def full_domain
-    domain.present? ? domain : "#{subdomain}.#{APP_CONFIG['default_domain']}"
+    port = APP_CONFIG['port_required'] ? ":#{APP_CONFIG['default_port']}" : nil
+    domain.present? ? domain : "#{subdomain}.#{APP_CONFIG['default_domain']}#{port}"
   end
 end

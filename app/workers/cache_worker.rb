@@ -5,9 +5,15 @@ class CacheWorker < BaseWorker
     perform_time = Time.now
     Project.indexable.most_popular.pluck(:id).each do |project_id|
       self.class.perform_at perform_time, 'warm_project_cache', project_id
-      perform_time += 2.seconds
+      perform_time += 0.5.seconds
     end
     self.class.perform_async 'warm_home_cache'
+  end
+
+  def warm_home_cache
+    app.get root_path unless Rails.cache.exist?('home-visitor')
+    # fetch_url(APP_CONFIG['full_host']) unless Rails.cache.exist?('home-visitor')
+  rescue
   end
 
   def warm_project_cache id
@@ -17,9 +23,10 @@ class CacheWorker < BaseWorker
   rescue
   end
 
-  def warm_home_cache
-    app.get root_path unless Rails.cache.exist?('home-visitor')
-    # fetch_url(APP_CONFIG['full_host']) unless Rails.cache.exist?('home-visitor')
+  def warm_user_cache id
+    user = User.find id
+    app.get '/' + user.user_name unless Rails.cache.exist?(user)
+    # fetch_url(APP_CONFIG['full_host'] + '/' + project.uri) unless Rails.cache.exist?(project)
   rescue
   end
 

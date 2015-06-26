@@ -1,6 +1,5 @@
 class MembersController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :set_project_mode, except: [:create, :process_request]
   before_filter :load_group, except: [:process_request]
   respond_to :html
   layout :set_layout, except: [:create, :process_request]

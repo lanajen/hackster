@@ -3,7 +3,7 @@ class ProjectScraper
 
   attr_accessor :content, :page_url
 
-  def self.scrape page_url
+  def self.scrape page_url, options={}
     s = new page_url
 
     # debug snippet
@@ -12,14 +12,16 @@ class ProjectScraper
     # s.content = s.read_file url
     # end debug snippet
 
-    project = s.document.to_project
-    project.website ||= page_url
+    project = s.document.to_project options[:model_class]
+    project.website ||= options[:website].presence || page_url
+    project.private = (options[:private].nil? ? true : options[:private])
+    project.workflow_state = options[:workflow_state]
     project.name = project.name[0..59]
     project
   end
 
-  def self.scrape_and_save page_url, user_id=1
-    project = scrape page_url
+  def self.scrape_and_save page_url, user_id=1, options={}
+    project = scrape page_url, options
     project.build_team
     project.team.members.new user_id: user_id
     project.save
@@ -80,8 +82,8 @@ class ProjectScraper
       @scraper = "::ScraperStrategies::#{strategy.to_s.classify}".constantize.new(@parsed, page_url)
     end
 
-    def to_project
-      @scraper.to_project
+    def to_project model_class=nil
+      @scraper.to_project model_class
     end
 
     private

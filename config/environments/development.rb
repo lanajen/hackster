@@ -42,7 +42,8 @@ HackerIo::Application.configure do
 
   config.action_controller.perform_caching = false
   config.cache_store = :dalli_store
-  config.cashier.adapter = :cache_store
+  config.cashier.adapter = :redis_store
+  config.cashier.adapter.redis = Redis.new $redis_config
 
   config.react.variant = :development
 

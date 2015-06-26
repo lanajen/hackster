@@ -1,10 +1,10 @@
 <p>Hello there,</p>
 
-<p>This is to let you know that <a href="|author_link|">|author_name|</a> mentioned you in <a href="<%= url_for([@context[:thought], only_path: false]) %>">an update</a>:</p>
+<p>This is to let you know that <a href="|author_link|">|author_name|</a> mentioned you in <a href="<%= u.url_for([@context[:thought], only_path: false]) %>">an update</a>:</p>
 
 <p class="quote"><%= ActionView::Base.full_sanitizer.sanitize @context[:thought].body %></p>
 
-<p>To reply, just follow <a href="<%= url_for([@context[:thought], only_path: false]) %>">this link</a>.</p>
+<p>To reply, just follow <a href="<%= u.url_for([@context[:thought], only_path: false]) %>">this link</a>.</p>
 
 <p>Cheers,<br> The Hackster.io team</p>
 <p>

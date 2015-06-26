@@ -79,6 +79,9 @@ module ScraperUtils
     else
       false
     end
+
+  rescue
+    false
   end
 
   def write_file file_name, content, header=nil, mode=nil

@@ -1,8 +1,8 @@
 .project-widget-with-user-thumbs
-  - cache ["project-#{@project.id}-respects", 'users'], tag: ["project-#{@project.id}-respects"] do
+  - cache [I18n.locale, "project-#{@project.id}-respects", 'users'], tag: ["project-#{@project.id}-respects"] do
     .user-thumbs.clearfix
       - users.each do |user|
-        - cache ["user-#{user.id}-thumb", 'respect'], tag: ["user-#{user.id}-thumb"] do
+        - cache [I18n.locale, "user-#{user.id}-thumb", 'respect'], tag: ["user-#{user.id}-thumb"] do
           = link_to image_tag(user.decorate.avatar(:thumb), class: 'img-responsive user-img istooltip img-rounded', data: { container: 'body' }, rel: 'tooltip', title: user.name), user
     - if @project.respects_count > users.count
       p style="font-size:0.8em" and #{pluralize @project.respects_count - users.count, 'other maker'}

@@ -9,18 +9,51 @@
           = f.error_notification
 
           = f.input :full_name, label: 'Community name'
+          = f.input :mini_resume, as: :text, input_html: { rows: 3 }, label: 'Short description', hint: 'Max 140 characters'
 
-          .form-group
-            .col-md-4
-              label.control-label Add a logo
-            .col-md-8
-              .avatar.file-drop
-                div
-                  span.avatar.image-preview.preview
-                  a.btn.btn-default.btn-sm*{ data: { target: '.file_upload.avatar' } }  Select picture
+          .avatar.file-drop.form-group  class="#{'has-error' if @community.errors[:avatar].present?}"
+            .col-sm-4
+              label.control-label Logo
+            .col-sm-8
+              - if @community.avatar
+                = hidden_field_tag :cover_image_id, @community.avatar.id
+              div
+                span.avatar.image-preview.preview
+                  - if @community.avatar
+                    = image_tag @community.avatar.imgix_url(:thumb)
+                .btn-group
+                  a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.avatar' } }  Select picture
+                  a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.avatar" } }
+                    i.fa.fa-link
+                p.help-block Will be cropped to fit 1:1 format (square). 200x200px or higher recommended.
+                - if @community.errors[:avatar]
+                  span.help-block.has-error= @community.errors[:avatar].to_sentence
 
           = render partial: 'shared/image_form_bare', locals: { file_type: 'avatar', attribute_type: 'avatar', image_version: 'thumb', model: 'group' }
 
-          .form-group
+          / .cover_image.file-drop.form-group  class="#{'has-error' if @community.errors[:cover_image].present?}"
+            .col-sm-4
+              label.control-label Cover image
+            .col-sm-8
+              - if @community.cover_image
+                = hidden_field_tag :cover_image_id, @community.cover_image.id
+              div
+                span.cover_image.image-preview.preview
+                  - if @community.cover_image
+                    = image_tag @community.cover_image.imgix_url(:cover_mini_thumb)
+                .btn-group
+                  a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.cover_image' } }  Select picture
+                  a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.cover_image" } }
+                    i.fa.fa-link
+                p.help-block A high quality picture of your product, at least 1600x430px. An image with no or little text looks a lot better!
+                - if @community.errors[:cover_image]
+                  span.help-block.has-error= @community.errors[:cover_image].to_sentence
+
+          / # = render partial: 'shared/image_form_bare', locals: { file_type: 'cover_image', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'group' }
+
+          - unless user_signed_in?
+            - link = link_to 'Already have an account?', new_user_session_path(redirect_to: new_community_path), tabindex: '-1'
+            = f.input :admin_email, label: 'Your email', hint: "We'll create an admin account with that email. <b>#{link}</b>".html_safe, required: true
+          .row
             .col-md-8.col-md-offset-4
-              = f.button :submit, 'Go!', class: 'btn-block btn btn-primary'
+              = f.button :submit, 'Continue', class: 'btn-block btn btn-primary'

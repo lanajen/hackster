@@ -233,6 +233,9 @@ class NotificationHandler
       #   context[:group] = group = member.group
       #   context[:users] = group.members.active
       #   context[:author] = member.user
+      when :payment
+        payment = context[:payment] = Payment.find context_id
+        context[:user] = User.new full_name: payment.recipient_name, email: payment.recipient_email
       when :project
         context[:model] = project = context[:project] = Project.find(context_id)
         context[:users] = project.users
@@ -241,6 +244,9 @@ class NotificationHandler
         user = context[:user] = project.users.first
         context[:from_email] = 'Benjamin Larralde<ben@hackster.io>'
         return unless user.subscribed_to? 'other'
+      when :order
+        order = context[:order] = Order.find context_id
+        context[:user] = order.user
       when :receipt
         context[:model] = receipt = Receipt.find context_id
         message = context[:comment] = receipt.receivable

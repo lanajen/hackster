@@ -306,7 +306,7 @@ class ProjectsController < ApplicationController
   end
 
   def update_workflow
-    if @project.send "#{params[:event]}!"
+    if @project.send "#{params[:event]}!", reviewer_id: current_user.id, review_comment: params[:comment]
       flash[:notice] = "Project state changed to: #{params[:event]}."
       redirect_to admin_projects_path(workflow_state: 'pending_review')
     else

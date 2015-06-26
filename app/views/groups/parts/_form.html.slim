@@ -1,6 +1,6 @@
 = f.error_notification
 = f.input :name
-= f.input :slug, label: 'Pretty URL'
+/ = f.input :slug, label: 'Pretty URL'
 = f.input :type, collection: Part::TYPES, hint: "Choose 'Tool' if your product is used during the making of projects, but isn't present in the final project. Example: screwdriver, CNC, Dremel."
 = f.input :one_liner, as: :text, input_html: { rows: 2 }, hint: 'Maximum 140 characters', label: 'Elevator pitch'
 = f.input :description, hint: 'Full description. You can make it as long and thorough as you need.', input_html: { class: 'text-editor', rows: 10 }
@@ -25,6 +25,7 @@
         .col-xs-10= f_sub.input_field :parent_part_id, as: :select, collection: Part.approved.sorted_by_name, wrapper: false, label_method: :full_name
         .col-xs-2= f_sub.link_to_remove content_tag(:i, '', class: 'fa fa-times'), class: 'btn btn-danger btn-xs'
   = f.link_to_add 'Add component that uses it', :parent_part_relations, class: 'btn btn-link btn-sm'
+= f.input :private, inline_label: 'Hide from platform page', label: false, hint: "It might still appear in projects BOM's"
 
 = render partial: 'shared/image_form', locals: { file_type: 'image', human_file_type: 'Product shot', image_link: @part.image.try(:imgix_url, :thumb), help_block: 'Make it look nice! PNG with transparent background preferred; JPG/PNG/GIF with white background OK.', attribute_type: 'image', image_version: 'thumb', model: 'part' }
 

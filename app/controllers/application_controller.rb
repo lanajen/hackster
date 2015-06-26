@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
 
   include Rewardino::ControllerExtension
 
+  DEFAULT_RESPONSE_FORMAT = :html
   KNOWN_EVENTS = {
     'hob' => 'Identified as hobbyist',
     'pro' => 'Identified as professional',
@@ -43,15 +44,19 @@ class ApplicationController < ActionController::Base
   helper_method :controller_action
   helper_method :is_trackable_page?
   before_filter :set_signed_in_cookie
+  before_filter :set_default_response_format
+
   helper BootstrapFlashHelper
 
   # code to make whitelabel work
   helper_method :current_site
   helper_method :current_platform
-  before_filter :current_site
-  before_filter :current_platform
+  before_action :current_site
+  before_action :current_platform
   helper_method :current_layout
   layout :current_layout
+
+  before_action :set_locale, except: [:not_found]
 
   def set_signed_in_cookie
     if user_signed_in?
@@ -191,11 +196,11 @@ class ApplicationController < ActionController::Base
     end
 
     def check_share_modal
-      session[:share_modal_model_id] = 9762
       session.delete(:share_modal_time)
       if name = session.delete(:share_modal) and model_type = session.delete(:share_modal_model)
         model = instance_variable_get("@#{model_type}")
-        model ||= model_type.camelize.constantize.find(session.delete(:share_modal_model_id)) if session[:share_modal_model_id]
+        model ||= model_type.camelize.constantize.find_by_id(session.delete(:share_modal_model_id)) if session[:share_modal_model_id]
+        return unless model
         model = model.decorate if model.respond_to? :decorate
         @modal = render_to_string(partial: "shared/modals/#{name}", locals: { :"#{model_type}" => model })
         # raise @modal.inspect
@@ -222,6 +227,11 @@ class ApplicationController < ActionController::Base
 
     def current_ability
       current_user ? current_user.ability : User.new.ability
+    end
+
+    def default_url_options(options = {})
+      # pass in the locale we have in the URL because it's always the right one
+      { locale: params[:locale] }.merge options
     end
 
     def disable_flash
@@ -473,12 +483,50 @@ class ApplicationController < ActionController::Base
       end
     end
 
+    def set_default_response_format
+      request.format = DEFAULT_RESPONSE_FORMAT if request.format.to_sym.nil?
+    end
+
     def set_flash_message type, message
       flash[type] = message
     end
 
-    def set_project_mode
-      @mode = 'editing'
+    def set_locale
+      I18n.locale = params[:locale].presence || I18n.default_locale
+
+      if is_whitelabel? and current_site.try(:enable_localization?)
+       if !I18n.locale.to_s.in?(current_site.active_locales) or (params[:locale].blank? and current_site.force_explicit_locale?)
+          redirect_to path_for_default_locale
+        end
+      elsif params[:locale]
+        redirect_to path_for_default_locale ''
+      # elsif !I18n.locale.in? I18n.active_locales
+      #   redirect_to path_for_default_locale
+      end
+
+      I18n.locale = params[:locale].presence || I18n.default_locale
+      I18n.short_locale = I18n.locale[0..1]  # two-letter version
+    rescue I18n::InvalidLocale
+      locale = nil
+      if params[:locale].try(:size) == 5
+        locale = params[:locale][0..2] + params[:locale][3..4].upcase
+        begin
+          I18n.locale = locale
+        rescue
+          locale = nil
+        end unless locale == params[:locale]
+      end
+
+      redirect_to path_for_default_locale locale
+    end
+
+    def path_for_default_locale locale=nil
+      default_locale = locale || current_site.try(:default_locale) || I18n.default_locale
+      pathes = request.path.split(/\//).select{|a| a.present? }
+      pathes.shift if params[:locale].present?
+      pathes.unshift default_locale
+      path = pathes.select{|v| v.present? }.join('/')
+      "/#{path}"
     end
 
     def set_new_user_session

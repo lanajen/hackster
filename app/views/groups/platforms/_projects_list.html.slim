@@ -50,7 +50,7 @@ h1.section-title Projects built by makers powered by #{@platform.name}
             text = "#{escape_javascript render(partial: 'groups/platforms/button_featured', locals: { col: col } )}";
             $(text).appendTo($('.project-#{col.project_id} .project-thumb .award-container'));
       - else
-        - if col.featured?
+        - if col.featured?(I18n.short_locale)
           = content_for :js do
             javascript:
               text = "#{escape_javascript render(partial: 'groups/platforms/featured', locals: { project: col.project } )}";

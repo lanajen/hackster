@@ -2,7 +2,6 @@ class IssuesController < ApplicationController
   before_filter :authenticate_user!, only: [:new, :create, :edit, :update]
   before_filter :load_project
   before_filter :load_issue, only: [:show, :edit, :update, :destroy, :update_workflow]
-  before_filter :set_project_mode
   layout 'project'
 
   def index

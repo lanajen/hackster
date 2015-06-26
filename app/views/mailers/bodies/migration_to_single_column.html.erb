@@ -5,7 +5,7 @@
 <p>Here are the projects that got affected:
   <ul>
     <% @context[:user].projects.where("projects.layout IS NULL or projects.layout = '2'").each do |project| %>
-    <li><a href="<%= project_url(project) %>"><%= project.name %></a></li>
+    <li><a href="<%= u.project_url(project) %>"><%= project.name %></a></li>
     <% end %>
   </ul>
 </p>

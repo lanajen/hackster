@@ -8,7 +8,7 @@ class PartObserver < ActiveRecord::Observer
   end
 
   def after_update record
-    if record.platform_id_changed? and record.platform_id.present?
+    if record.platform_id.present? and (record.platform_id_changed? or record.private_changed?)
       record.projects.each do |project|
         platform_name = record.platform.name
         unless platform_name.in? project.platform_tags_array
@@ -19,7 +19,7 @@ class PartObserver < ActiveRecord::Observer
     end
     keys = []
     record.projects.pluck(:id).each do |id|
-      keys << "project-#{id}-components"
+      keys += ["project-#{id}-#{record.class.name.underscore.gsub(/_part/, '')}-parts", "project-#{id}-left-column", "project-#{id}"]
     end
     Cashier.expire *keys if keys.any?
   end

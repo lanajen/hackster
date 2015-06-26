@@ -1,0 +1,23 @@
+<p>Hi there</p>
+<p>We just wanted to let you know that your order is on its way to you now!</p>
+<ul>
+  <% @context[:order].store_products.each do |product| %>
+  <li><%= product.source.name %></li>
+  <% end %>
+</ul>
+<p>
+  <% if @context[:order].tracking_number.present? %>
+    Track it with number <%= @context[:order].tracking_number %>.
+  <% else %>
+    It doesn't have a tracking number, but it should arrive in a week for US addresses, and 2-4 weeks internationally.
+  <% end %>
+</p>
+<p>Cheers
+  <br>
+  The Hackster.io team
+</p>
+<p>
+  <a href="http://www.facebook.com/hacksterio">Like us on Facebook</a>
+  |
+  <a href="http://twitter.com/hacksterio">Follow us on Twitter</a>
+</p>

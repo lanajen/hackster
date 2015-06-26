@@ -161,6 +161,7 @@ class User < ActiveRecord::Base
 
   counters_column :counters_cache, long_format: true
   has_counter :accepted_invitations, 'invitations.accepted.count'
+  has_counter :approved_projects, 'projects.approved.count'
   has_counter :badges_green, 'badges(:green).count'
   has_counter :badges_bronze, 'badges(:bronze).count'
   has_counter :badges_silver, 'badges(:silver).count'
@@ -252,56 +253,6 @@ class User < ActiveRecord::Base
   # end of search methods
 
   class << self
-    def find_for_oauth provider, auth, resource=nil
-      # Rails.logger.info 'auth: ' + auth.to_yaml
-      case provider
-      when 'Facebook'
-        uid = auth.uid
-        email = auth.info.email
-        name = auth.info.name
-      when 'Github'
-        uid = auth.uid
-        email = auth.info.email
-        name = auth.info.name
-      when 'Google+'
-        uid = auth.uid
-        email = auth.info.email
-        name = auth.info.name
-      when 'LinkedIn'
-        uid = auth.uid
-        email = auth.info.email
-        name = auth.info.name
-      when 'Twitter'
-        uid = auth.uid
-        name = auth.info.name
-      when 'Microsoft'
-        uid = auth.uid
-        name = auth.info.name
-        email = auth.info.emails.try(:first).try(:value)
-      else
-        raise 'Provider #{provider} not handled'
-      end
-
-      if user = User.find_for_oauth_by_uid(provider, uid)
-        user.match_by = 'uid'
-        return user
-      end
-
-      if email and user = User.where(email: email, invitation_token: nil).first
-        user.match_by = 'email'
-        return user
-      end
-
-      # if name and user = User.find_by_full_name(name)
-      #   user.match_by = 'name'
-      #   return user
-      # end
-    end
-
-    def find_for_oauth_by_uid(provider, uid)
-      where('authorizations.uid = ? AND authorizations.provider = ?', uid.to_s, provider).joins(:authorizations).readonly(false).first
-    end
-
     def new_with_session(params, session)
       # overwrite existing invites if any
       if params[:email] and user = where(email: params[:email]).where('invitation_token IS NOT NULL').first
@@ -310,7 +261,7 @@ class User < ActiveRecord::Base
       # extract social data for omniauth
       elsif session['devise.provider_data']
         user = super.tap do |user|
-          user.extract_from_social_profile params, session
+          SocialProfileBuilder.new(user).extract_from_social_profile params, session
         end
         if existing_user = where(email: user.email).where('invitation_token IS NOT NULL').first
           attributes = user.attributes.select{|k,v| k.in? accessible_attributes }
@@ -439,141 +390,6 @@ class User < ActiveRecord::Base
     if authentication_token.blank?
       self.authentication_token = generate_authentication_token
     end
-  end
-
-  require 'country_iso_translater'
-  def extract_from_social_profile params, session
-    data = session['devise.provider_data']
-    extra = data.extra
-    info = data.info
-    provider = session['devise.provider']
-    # logger.info data.to_yaml
-    # logger.info provider.to_s
-    # logger.info 'user: ' + self.to_yaml
-    if info and provider == 'Facebook'
-      self.user_name = clean_user_name(info.nickname) if user_name.blank?
-      self.email = self.email_confirmation = info.email if email.blank?
-      self.full_name = info.name if full_name.blank?
-      self.mini_resume = info.description if mini_resume.blank?
-      self.facebook_link = info.urls['Facebook']
-      self.website_link = info.urls['Website']
-      begin
-        if location = info['location']# || extra['raw_info']['hometown']
-          self.city = location['name'].split(',')[0] if city.nil?
-          self.country = location['name'].split(',')[1].strip if country.nil?
-        end
-
-      rescue => e
-        logger.error "Error in extract_from_social_profile (facebook location): " + e.inspect
-      end
-      begin
-        image_url = "https://graph.facebook.com/#{data.uid}/picture?height=200&width=200"
-        self.build_avatar(remote_file_url: image_url) if image_url and not avatar
-      rescue => e
-        logger.error "Error in extract_from_social_profile (facebook avatar): " + e.inspect
-      end
-      self.authorizations.build(
-        uid: data.uid,
-        provider: 'Facebook',
-        name: info.name.to_s,
-        link: info.urls['Facebook'],
-        token: data.credentials.token
-      )
-    elsif info and provider == 'Github'
-      self.user_name = clean_user_name(info.nickname) if user_name.blank?
-      self.full_name = info.name if full_name.blank?
-      self.email = self.email_confirmation = info.email if email.blank?
-      self.github_link = info.urls['GitHub']
-      self.website_link = info.urls['Blog']
-      begin
-        self.city = info.location.try(:split, ',').try(:[], 0) if city.nil?
-        self.country = info.location.try(:split, ',').try(:[], 1).try(:strip) if country.nil?
-      rescue => e
-        logger.error "Error in extract_from_social_profile (github): " + e.inspect
-      end
-      self.authorizations.build(
-        uid: data.uid,
-        provider: 'Github',
-        name: info.name.to_s,
-        link: info.urls['GitHub'],
-        token: data.credentials.token
-      )
-    elsif info and provider == 'Google+'
-      self.user_name = clean_user_name(info.email.match(/^([^@]+)@/)[1]) if user_name.blank?
-      self.full_name = info.name if full_name.blank?
-      self.email = self.email_confirmation = info.email if email.blank?
-      self.google_plus_link = info.urls['Google+']
-      begin
-        # self.city = info.location.split(',')[0] if city.nil?
-        # self.country = info.location.split(',')[1].strip if country.nil?
-        self.build_avatar(remote_file_url: info.image) if info.image and not avatar
-      rescue => e
-        logger.error "Error in extract_from_social_profile (google+): " + e.inspect
-      end
-      self.authorizations.build(
-        uid: data.uid,
-        provider: 'Google+',
-        name: info.name.to_s,
-        link: info.urls['Google+'],
-        token: data.credentials.token
-      )
-    elsif info and provider == 'LinkedIn'
-      # self.user_name = clean_user_name(info.nickname) if user_name.blank?
-      self.full_name = info.first_name.to_s + ' ' + info.last_name.to_s if full_name.blank?
-      self.email = self.email_confirmation = info.email if email.blank?
-      self.mini_resume = info.description if mini_resume.nil?
-      self.linked_in_link = info.urls['public_profile']
-      begin
-        self.city = info.location.name if city.nil?
-        self.country =
-          SunDawg::CountryIsoTranslater.translate_iso3166_alpha2_to_name(
-            info.location.country.code.upcase) if country.nil?
-        self.build_avatar(remote_file_url: info.image) if info.image and not avatar
-      rescue => e
-        logger.error "Error in extract_from_social_profile (linkedin): " + e.inspect
-      end
-      self.authorizations.build(
-        uid: info.uid,
-        provider: 'LinkedIn',
-        name: info.first_name.to_s + ' ' + info.last_name.to_s,
-        link: info.urls['public_profile'],
-        token: data.credentials.token
-      )
-    elsif info and provider == 'Twitter'
-      self.user_name = clean_user_name(info.nickname) if user_name.blank?
-      self.full_name = info.name if full_name.blank?
-      self.mini_resume = info.description if mini_resume.nil?
-      self.interest_tags_string = info.description.scan(/\#([[:alpha:]]+)/i).join(',')
-      self.twitter_link = info.urls['Twitter']
-      begin
-        self.city = info.location.split(',')[0] if city.nil?
-        self.country = info.location.split(',')[1].strip if country.nil?
-        self.build_avatar(remote_file_url: info.image.gsub(/_normal/, '')) unless avatar
-      rescue => e
-        logger.error "Error in extract_from_social_profile (twitter): " + e.inspect
-      end
-      self.authorizations.build(
-        uid: data.uid,
-        provider: 'Twitter',
-        name: info.name,
-        link: info.urls['Twitter'],
-        token: data.credentials.token,
-        secret: data.credentials.secret
-      )
-    elsif info and provider == 'Microsoft'
-      self.full_name = info.name if full_name.blank?
-      self.email = self.email_confirmation = info.emails.try(:first).try(:value) if email.blank?
-      self.authorizations.build(
-        uid: data.uid,
-        provider: 'Microsoft',
-        name: info.name,
-        token: data.credentials.token
-      )
-    end
-#          logger.info 'auth: ' + self.authorizations.inspect
-    generate_user_name if self.class.where(user_name: user_name).any?
-    self.password = Devise.friendly_token[0,20]
-    self.logging_in_socially = true
   end
 
   def find_invite_request
@@ -905,10 +721,6 @@ class User < ActiveRecord::Base
   end
 
   private
-    def clean_user_name user_name
-      user_name.try(:downcase).try(:gsub, /[^a-z0-9_\-]/, '')
-    end
-
     def email_is_unique_for_registered_users
       errors.add :email, 'is already a member' if self.class.where(email: email).where('users.invitation_token IS NULL').any?
     end

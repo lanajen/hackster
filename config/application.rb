@@ -6,6 +6,8 @@ if defined?(Bundler)
   Bundler.require(:default, Rails.env)
 end
 
+require File.expand_path('../redis_config', __FILE__)
+
 module HackerIo
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
@@ -15,6 +17,7 @@ module HackerIo
     # Custom directories with classes and modules you want to be autoloadable.
     # config.autoload_paths += %W(#{config.root}/extras)
     config.autoload_paths += Dir[ config.root.join('app', 'models', '**/') ]
+    config.autoload_paths += Dir[ config.root.join('app', 'objects', '**/') ]
     config.autoload_paths += Dir[ config.root.join('app', 'serializers', '**/') ]
 
     # Only load the plugins named here, in the order given (default is alphabetical).
@@ -31,7 +34,8 @@ module HackerIo
       :list_observer, :receipt_observer, :part_join_observer, :event_observer,
       :notification_observer, :part_observer, :thought_observer,
       :blog_post_observer, :impression_observer, :conversation_observer,
-      :order_observer, :order_line_observer, :address_observer
+      :order_observer, :order_line_observer, :address_observer,
+      :payment_observer
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
@@ -40,6 +44,8 @@ module HackerIo
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
+    config.i18n.enforce_available_locales = true
+    config.i18n.available_locales = [:en, :zh, :'en-US', :'zh-CN']
 
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding = "utf-8"
@@ -63,7 +69,7 @@ module HackerIo
 
     # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
     config.assets.precompile += %w( admin.css email.css bitbucket-widget.min.css bitbucket-widget.min.js slick.eot slick.svg slick.ttf slick.woff datepicker.js datepicker.css tinymce.js tinymce/plugins/link/plugin.js tinymce/plugins/paste/plugin.js tinymce/plugins/code/plugin.js gmaps/google.js follow_iframe.css follow_iframe.js project-thumb.css
-      channel.js whitelabel/arduino/all.css )
+      channel.js whitelabel/arduino/all.css whitelabel/mediateklabs/min.css whitelabel/mediateklabs/min.js )
 
     config.active_record.whitelist_attributes = false
 
@@ -75,6 +81,7 @@ module HackerIo
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
 
+    config.assets.paths << Rails.root.join('app', 'assets', 'fonts')
     config.assets.paths << Rails.root.join('vendor', 'assets', 'fonts')
     config.assets.paths << Rails.root.join('vendor', 'assets', 'images')
     config.assets.precompile += %w(.svg .eot .woff .ttf)

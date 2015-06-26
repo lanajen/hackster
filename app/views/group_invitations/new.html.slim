@@ -23,7 +23,7 @@
           = submit_tag 'Invite users', class: 'btn btn-primary btn-block'
         hr
         p
-          ' Anyone with the following link can join this group without being explicitely invited:
+          ' Anyone with the following link can join this group without being explicitly invited:
           textarea#group-link.form-control  onclick="this.select();"  = group_invitations_url(@group, token: @group.invitation_token)
 
 - if @invitable.class.in? [List, Platform]

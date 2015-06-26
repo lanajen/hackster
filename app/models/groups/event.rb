@@ -14,7 +14,7 @@ class Event < GeographicCommunity
 
   attr_accessible :awards_attributes, :parent_id,
     :start_date_dummy, :end_date_dummy,
-    :voting_end_date_dummy
+    :voting_end_date_dummy, :start_date, :end_date
 
   accepts_nested_attributes_for :awards, allow_destroy: true
 
@@ -127,14 +127,6 @@ class Event < GeographicCommunity
 
   def start_date_dummy
     start_date.strftime("%m/%d/%Y %l:%M %P") if start_date
-  end
-
-  def voting_end_date=(val)
-    begin
-      date = val.to_datetime
-      properties[:voting_end_date] = date.to_i
-    rescue
-    end
   end
 
   def voting_end_date_dummy

@@ -16,7 +16,7 @@ class ClientSite
       subdomain = request.subdomains[0]
       !subdomain.in? %w(www beta staging dev stats)
     else
-      site = ClientSubdomain.find_by_domain(request.host).present? and site.enabled?
+      site = ClientSubdomain.find_by_domain(request.host).presence and site.enabled?
     end
   end
 end
