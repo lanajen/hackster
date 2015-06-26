@@ -101,5 +101,9 @@ module HackerIo
     }
 
     config.middleware.use Rack::Attack
+
+    # React Browserify Transform
+    config.react.addons = true
+    config.browserify_rails.commandline_options = "-t [babelify --optional runtime]"
   end
 end
