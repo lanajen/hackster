@@ -101,6 +101,8 @@ class Order < ActiveRecord::Base
     validate_at_least_one_order_line
     validate_has_enough_points
     validate_order_limits
+    validate_products_in_stock
+    validate_products_have_not_reached_limit
 
     errors.empty?
   end
@@ -131,5 +133,24 @@ class Order < ActiveRecord::Base
     def validate_order_limits
       errors.add :base, "You've reached the limit of one item per person per month during the trial phase. #{time_diff_in_natural_language Date.today, Date.today.beginning_of_month + 1.month} left before you can place a new order." if user.orders.valid.this_month.count >= 1 or user.total_orders_this_month >= 1
       errors.add :base, "You can only order one item per month during the trial phase. Please choose your favorite and remove the others from the cart." if order_lines_count.to_i > 1
+    end
+
+    def validate_products_in_stock
+      store_products.each do |product|
+        unless product.in_stock?
+          errors.add :base, "#{product.source.name} is out of stock."
+          return
+        end
+      end
+    end
+
+    def validate_products_have_not_reached_limit
+      # TODO: validate that current order doesn't have more products of the same kind than possible
+      store_products.each do |product|
+        if product.limit_reached_for? user
+          errors.add :base, "You can order a maximum of #{pluralize product.limit_per_person, 'unit'} per person for #{product.source.name}."
+          return
+        end
+      end
     end
 end

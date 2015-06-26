@@ -24,14 +24,20 @@
             tr
               td.order-label Shipping cost
               td.order-cost
-                = pluralize @order.shipping_cost, 'point'
+                - if @order.shipping_cost > 0
+                  = pluralize @order.shipping_cost, 'point'
+                - else
+                  | Free
 
             tr
               td
                 strong Total cost
               td
                 strong
-                  = pluralize @order.total_cost, 'point'
+                  - if @order.total_cost > 0
+                    = pluralize @order.total_cost, 'point'
+                  - else
+                    | Free
   .col-md-4
     .address
       p

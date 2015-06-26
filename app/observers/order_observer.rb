@@ -7,6 +7,7 @@ class OrderObserver < ActiveRecord::Observer
     record.user.reputation.compute_redeemable!
     record.store_products.each do |product|
       product.update_counters only: [:orders]
+      product.update_attribute :in_stock, product.in_stock-1
       product.save
     end
     record.update_column :placed_at, Time.now
