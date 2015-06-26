@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::Base
+  force_ssl if: :ssl_configured?
+
   include SocialLinkHelper
   include UrlHelper
 
@@ -611,5 +613,9 @@ class ApplicationController < ActionController::Base
 
     def show_profile_needs_care?
       user_signed_in? and !(params[:controller] == 'users' and params[:action] == 'after_registration') and current_user.profile_needs_care? and current_user.receive_notification?('1311complete_profile')
+    end
+
+    def ssl_configured?
+      !Rails.env.development?
     end
 end
