@@ -1,6 +1,3 @@
-# TODO:
-# => email notif when shipped
-
 class Order < ActiveRecord::Base
   include ApplicationHelper
   include HstoreCounter
@@ -148,7 +145,7 @@ class Order < ActiveRecord::Base
       # TODO: validate that current order doesn't have more products of the same kind than possible
       store_products.each do |product|
         if product.limit_reached_for? user
-          errors.add :base, "You can order a maximum of #{pluralize product.limit_per_person, 'unit'} per person for #{product.source.name}."
+          errors.add :base, "You can order a maximum of #{ActionController::Base.helpers.pluralize product.limit_per_person, 'unit'} per person for #{product.source.name}."
           return
         end
       end
