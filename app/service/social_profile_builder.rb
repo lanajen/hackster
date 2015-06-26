@@ -49,7 +49,10 @@ class SocialProfileBuilder
     end
 
     def build_avatar image_url
-      @user.build_avatar(remote_file_url: image_url) if image_url and not @user.avatar
+      if image_url and not @user.avatar
+        @user.build_avatar(remote_file_url: image_url)
+        @user.avatar.delete unless @user.avatar.file.url
+      end
     rescue => e
       logger.error "Error in extract_from_social_profile (avatar): " + e.inspect
     end

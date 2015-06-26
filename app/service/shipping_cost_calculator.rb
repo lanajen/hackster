@@ -72,7 +72,7 @@ class ShippingCostCalculator
       EasyPost::Address.create(
         name: @address.full_name,
         street1: @address.address_line1,
-        city: @address.address_line2,
+        street2: @address.address_line2,
         city: @address.city,
         state: @address.state,
         zip: @address.zip,

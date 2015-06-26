@@ -6,7 +6,7 @@ module Rewardino
     extend Ambry::Model
     extend Ambry::ActiveModel
 
-    MAX_REDEEMABLE_MONLTY = 1000
+    MAX_REDEEMABLE_MONTHLY = 1000
     MIN_REDEEMABLE_POINTS = 350
 
     field :code, :points, :date_method, :models_method, :users_method,
@@ -26,6 +26,10 @@ module Rewardino
 
       def find code
         find_key code.to_sym
+      end
+
+      def min_redeemable_points
+        StoreProduct.cheapest.unit_cost || MIN_REDEEMABLE_POINTS
       end
     end
 

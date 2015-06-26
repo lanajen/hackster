@@ -27,6 +27,10 @@ class StoreProduct < ActiveRecord::Base
     where available: true
   end
 
+  def self.cheapest
+    where.not(unit_cost: nil).where.not(unit_cost: 0).order(unit_cost: :asc).first
+  end
+
   def self.by_cost
     order :unit_cost
   end

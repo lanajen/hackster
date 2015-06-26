@@ -170,9 +170,9 @@ class Admin::PagesController < Admin::BaseController
 
   def store
     @total_earned = ReputationEvent.sum(:points)
-    @total_redeemable = ReputationEvent.group(:user_id).having("SUM(points) >= #{Rewardino::Event::MIN_REDEEMABLE_POINTS}").sum(:points).values.sum
-    @total_redeemable_month = ReputationEvent.group(:user_id).having("SUM(points) >= #{Rewardino::Event::MIN_REDEEMABLE_POINTS}").sum(:points).values.map{|v| [Rewardino::Event::MAX_REDEEMABLE_MONLTY, v].min }.sum
-    @total_users = ReputationEvent.group(:user_id).having("SUM(points) >= #{Rewardino::Event::MIN_REDEEMABLE_POINTS}").sum(:points).size
+    @total_redeemable = ReputationEvent.group(:user_id).having("SUM(points) >= #{Rewardino::Event.min_redeemable_points}").sum(:points).values.sum
+    @total_redeemable_month = ReputationEvent.group(:user_id).having("SUM(points) >= #{Rewardino::Event.min_redeemable_points}").sum(:points).values.map{|v| [Rewardino::Event::MAX_REDEEMABLE_MONTHLY, v].min }.sum
+    @total_users = ReputationEvent.group(:user_id).having("SUM(points) >= #{Rewardino::Event.min_redeemable_points}").sum(:points).size
     @categories = ReputationEvent.group(:event_name).order("sum_points desc").sum(:points)
     @total_redeemed_month = Order.valid.where("orders.created_at > ?", Date.today.beginning_of_month).sum(:total_cost)
     @total_redeemed = Order.valid.sum(:total_cost)
