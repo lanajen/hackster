@@ -12,7 +12,7 @@ class Admin::PagesController < Admin::BaseController
     @like_count = Respect.count
     @follow_user_count = FollowRelation.where(followable_type: 'User').count
     @follow_platform_count = FollowRelation.where(followable_type: 'Group').count
-    @user_count = User.invitation_accepted_or_not_invited.count
+    @user_count = User.invitation_accepted_or_not_invited.not_hackster.count
     @messages_count = Comment.where(commentable_type: 'Conversation').count
     @new_messages_count = Comment.where(commentable_type: 'Conversation').where('comments.created_at > ?', Date.today).count
     @new_projects_count = Project.indexable.where('projects.made_public_at > ?', Date.today).count
@@ -20,7 +20,7 @@ class Admin::PagesController < Admin::BaseController
     @new_likes_count = Respect.where('respects.created_at > ?', Date.today).count
     @new_user_follows_count = FollowRelation.where(followable_type: 'User').where('follow_relations.created_at > ?', Date.today).count
     @new_platform_follows_count = FollowRelation.where(followable_type: 'Group').where('follow_relations.created_at > ?', Date.today).count
-    @new_users_count = User.invitation_accepted_or_not_invited.where('users.created_at > ?', Date.today).count
+    @new_users_count = User.invitation_accepted_or_not_invited.not_hackster.where('users.created_at > ?', Date.today).count
     new_users1d = User.invitation_accepted_or_not_invited.not_hackster.where("users.created_at > ?", 1.days.ago).count
     new_users7d = User.invitation_accepted_or_not_invited.not_hackster.where("users.created_at > ?", 7.days.ago).count
     new_users30d = User.invitation_accepted_or_not_invited.not_hackster.where("users.created_at > ?", 30.days.ago).count
@@ -49,8 +49,8 @@ class Admin::PagesController < Admin::BaseController
     sql = "SELECT to_char(made_public_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM projects WHERE private = 'f' AND hide = 'f' AND date_part('days', now() - projects.made_public_at) < 31 GROUP BY date ORDER BY date;"
     @new_projects = graph_with_dates_for sql, 'Projects made public', 'AreaChart', Project.where(private: false, hide: false).where("projects.made_public_at < ?", 31.days.ago).count
 
-    sql = "SELECT to_char(created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM users WHERE (users.invitation_sent_at IS NULL OR users.invitation_accepted_at IS NOT NULL) AND date_part('days', now() - users.created_at) < 31 GROUP BY date ORDER BY date;"
-    @new_users = graph_with_dates_for sql, 'New users', 'AreaChart', User.invitation_accepted_or_not_invited.where("users.created_at < ?", 31.days.ago).count
+    sql = "SELECT to_char(created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM users WHERE (users.invitation_sent_at IS NULL OR users.invitation_accepted_at IS NOT NULL) AND date_part('days', now() - users.created_at) < 31 AND NOT (users.email ILIKE '%user.hackster.io') GROUP BY date ORDER BY date;"
+    @new_users = graph_with_dates_for sql, 'New users', 'AreaChart', User.invitation_accepted_or_not_invited.not_hackster.where("users.created_at < ?", 31.days.ago).count
 
 
     sql = "SELECT to_char(created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM respects WHERE date_part('days', now() - respects.created_at) < 31 GROUP BY date ORDER BY date;"
