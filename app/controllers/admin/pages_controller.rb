@@ -9,17 +9,17 @@ class Admin::PagesController < Admin::BaseController
     @external_project_count = Project.external.approved.count
     @waiting_for_approval_project_count = Project.need_review.count
     @comment_count = Comment.where(commentable_type: 'Project').count
-    @like_count = Respect.count
-    @follow_user_count = FollowRelation.where(followable_type: 'User').count
-    @follow_platform_count = FollowRelation.where(followable_type: 'Group').count
+    @like_count = Respect.joins(:user).where.not("users.email ILIKE '%user.hackster.io'").count
+    @follow_user_count = FollowRelation.where(followable_type: 'User').joins(:user).where.not("users.email ILIKE '%user.hackster.io'").count
+    @follow_platform_count = FollowRelation.where(followable_type: 'Group').joins(:user).where.not("users.email ILIKE '%user.hackster.io'").count
     @user_count = User.invitation_accepted_or_not_invited.not_hackster.count
     @messages_count = Comment.where(commentable_type: 'Conversation').count
     @new_messages_count = Comment.where(commentable_type: 'Conversation').where('comments.created_at > ?', Date.today).count
     @new_projects_count = Project.indexable.where('projects.made_public_at > ?', Date.today).count
     @new_comments_count = Comment.where(commentable_type: 'Project').where('comments.created_at > ?', Date.today).count
     @new_likes_count = Respect.where('respects.created_at > ?', Date.today).count
-    @new_user_follows_count = FollowRelation.where(followable_type: 'User').where('follow_relations.created_at > ?', Date.today).count
-    @new_platform_follows_count = FollowRelation.where(followable_type: 'Group').where('follow_relations.created_at > ?', Date.today).count
+    @new_user_follows_count = FollowRelation.where(followable_type: 'User').where('follow_relations.created_at > ?', Date.today).joins(:user).where.not("users.email ILIKE '%user.hackster.io'").count
+    @new_platform_follows_count = FollowRelation.where(followable_type: 'Group').where('follow_relations.created_at > ?', Date.today).joins(:user).where.not("users.email ILIKE '%user.hackster.io'").count
     @new_users_count = User.invitation_accepted_or_not_invited.not_hackster.where('users.created_at > ?', Date.today).count
     new_users1d = User.invitation_accepted_or_not_invited.not_hackster.where("users.created_at > ?", 1.days.ago).count
     new_users7d = User.invitation_accepted_or_not_invited.not_hackster.where("users.created_at > ?", 7.days.ago).count
@@ -53,12 +53,12 @@ class Admin::PagesController < Admin::BaseController
     @new_users = graph_with_dates_for sql, 'New users', 'AreaChart', User.invitation_accepted_or_not_invited.not_hackster.where("users.created_at < ?", 31.days.ago).count
 
 
-    sql = "SELECT to_char(created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM respects WHERE date_part('days', now() - respects.created_at) < 31 GROUP BY date ORDER BY date;"
-    @new_respects = graph_with_dates_for sql, 'New respects', 'AreaChart', Respect.where("respects.created_at < ?", 31.days.ago).count
+    sql = "SELECT to_char(respects.created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM respects INNER JOIN users ON users.id = respects.user_id AND NOT users.email ILIKE '%user.hackster.io' WHERE date_part('days', now() - respects.created_at) < 31 GROUP BY date ORDER BY date;"
+    @new_respects = graph_with_dates_for sql, 'New respects', 'AreaChart', Respect.where("respects.created_at < ?", 31.days.ago).joins(:user).where.not("users.email ILIKE '%user.hackster.io'").count
 
 
-    sql = "SELECT to_char(created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM follow_relations WHERE date_part('days', now() - follow_relations.created_at) < 31 AND follow_relations.followable_type = 'Group' GROUP BY date ORDER BY date;"
-    @new_follows = graph_with_dates_for sql, 'New follows', 'AreaChart', FollowRelation.where(followable_type: 'Group').where("follow_relations.created_at < ?", 31.days.ago).count
+    sql = "SELECT to_char(follow_relations.created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM follow_relations INNER JOIN users ON users.id = follow_relations.user_id AND NOT users.email ILIKE '%user.hackster.io' WHERE date_part('days', now() - follow_relations.created_at) < 31 AND follow_relations.followable_type = 'Group' GROUP BY date ORDER BY date;"
+    @new_follows = graph_with_dates_for sql, 'New follows', 'AreaChart', FollowRelation.where(followable_type: 'Group').where("follow_relations.created_at < ?", 31.days.ago).joins(:user).where.not("users.email ILIKE '%user.hackster.io'").count
   end
 
   def build_logs
