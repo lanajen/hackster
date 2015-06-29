@@ -207,6 +207,18 @@ class PlatformsController < ApplicationController
     if @platform.valid?
       if user_signed_in?
         @platform.save
+        # gem 'customerio'
+        # $customerio = Customerio::Client.new("YOUR SITE ID", "YOUR API SECRET KEY")
+        # $customerio.identify(
+        #   id: current_user.id,
+        #   email: current_user.email,
+        #   created_at: Time.now.to_i,
+        #   full_name: current_user.name,
+        #   platform_id: @platform.id,
+        #   platform_name: @platform.name,
+        #   platform_user_name: @platform.user_name,
+        # )
+        # $customerio.track(5, "purchase", type: "socks", price: "13.99")
         redirect_to @platform, notice: "Welcome to the new hub for #{@platform.name}!"
       else
         redirect_to create__simplified_registrations_path(user: { email: @platform.admin_email }, redirect_to: create_platforms_path(group: params[:group]))

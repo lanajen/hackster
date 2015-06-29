@@ -6,7 +6,7 @@ class Ability
 
     @user = resource
 
-    can :read, [Comment, User, Thought]
+    can :read, [Comment, User, Thought, Challenge]
     cannot :read, [Project, Group, SkillRequest]
     can :read, [Project, Group], private: false
     can :read, Assignment do |assignment|
@@ -27,7 +27,6 @@ class Ability
     can :join, Group do |group|
       !@user.persisted? and group.access_level == 'anyone'
     end
-    can :read, Challenge, workflow_state: Challenge::VISIBLE_STATES
     can :create, Group
 
     member if @user.persisted?

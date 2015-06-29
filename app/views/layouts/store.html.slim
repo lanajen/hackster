@@ -15,10 +15,16 @@
                 li= link_to 'Orders', store_orders_path
                 - if current_user.is? :admin
                   li= link_to content_tag(:i, '', class: 'fa fa-cogs'), admin_store_path, rel: 'tooltip', title: 'Store admin'
-                li.wallet
-                  a href=users_stats_path rel='tooltip' title="#{pluralize number_with_delimiter(current_user.reputation.redeemable_points), 'point'} available to redeem"
-                    i.fa.fa-certificate
-                    span= number_with_delimiter current_user.reputation.try(:redeemable_points)
+                - if current_user.reputation
+                  li.wallet
+                    a href=users_stats_path rel='tooltip' title="#{pluralize number_with_delimiter(current_user.reputation.redeemable_points), 'point'} available to redeem"
+                      i.fa.fa-certificate
+                      span= number_with_delimiter current_user.reputation.redeemable_points
+                - else
+                  li.wallet
+                    a href='#' rel='tooltip' title="0 points available to redeem"
+                      i.fa.fa-certificate
+                      span 0
                 li.cart
                   a href=store_cart_index_path title="#{pluralize current_order.order_lines_count, 'item'} in your cart" rel='tooltip'
                     i.fa.fa-shopping-cart
