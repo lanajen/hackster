@@ -90,7 +90,7 @@ class Order < ActiveRecord::Base
   end
 
   def enough_points?
-    total_cost and total_cost <= user.reputation.redeemable_points
+    total_cost and user.reputation and total_cost <= user.reputation.redeemable_points
   end
 
   def can_pass_order?
