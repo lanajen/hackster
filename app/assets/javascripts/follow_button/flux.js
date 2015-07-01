@@ -1,5 +1,5 @@
 import { Flummox } from 'flummox';
-import FollowButtonActions from '/actions/FollowButtonActions';
+import FollowButtonActions from './actions/FollowButtonActions';
 import FollowButtonStore from './stores/FollowButtonStore';
 
 export default class Flux extends Flummox {

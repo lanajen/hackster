@@ -6,8 +6,10 @@ export default class FollowButtonStore extends Store {
   constructor(flux) {
     super();
 
-    // const softwareActions = flux.getActions('software');
+    const followButtonActions = flux.getActions('followButton');
 
     this.state = {
+
     };
+  }
 }
