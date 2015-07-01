@@ -8,7 +8,7 @@
     - if product.in_stock?
       - if user_signed_in?
         - if product.actions.required_for? current_user
-          = link_to 'Add to cart', "javascript:openModal('#actions-popup-#{product.id}');", class: 'btn btn-primary btn-sm'
+          = link_to 'Add to cart', "javascript:void(0)", onclick: "openModal('#actions-popup-#{product.id}');", class: 'btn btn-primary btn-sm'
         - else
           = link_to 'Add to cart', store_cart_index_path(store_product_id: product.id), class: 'btn btn-primary btn-sm', data: { method: :post }
       - else

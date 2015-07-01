@@ -107,7 +107,11 @@ var Thought = React.createClass({
           </div>
           <div className="media-body">
             <h4 className="user media-heading"><a href={user.url}>{user.name}</a></h4>
-            <p className="time-created"><DateComponent timestamp={this.props.timestamp} /></p>
+            <p className="time-created">
+              <Link to="thought" params={{id: this.props.id}}>
+                <DateComponent timestamp={this.props.timestamp} />
+              </Link>
+            </p>
           </div>
         </div>
         <BodyContainer body={this.props.body} maxHeight='300' />
@@ -115,8 +119,6 @@ var Thought = React.createClass({
         <div className="actions">
           {actions}
           <Like liked={this.props.liked} onButtonClick={this.handleLike} />
-          <span className="separator">&bull;</span>
-          <Link to="thought" params={{id: this.props.id}}>Permalink</Link>
           <span className="separator">&bull;</span>
           <a href='' onClick={this.handleComment}>Comment</a>
         </div>

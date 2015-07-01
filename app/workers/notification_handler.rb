@@ -90,7 +90,7 @@ class NotificationHandler
           context[:users] = project.users.with_subscription(notification_type, 'new_comment_own') + comment.commentable.commenters.with_subscription(notification_type, 'new_comment_commented') - [author]
         when Thought
           thought = context[:thought] = commentable
-          context[:users] = thought.commenters.with_subscription(notification_type, 'new_comment_update_commented')
+          context[:users] = thought.commenters.with_subscription(notification_type, 'new_comment_update_commented').to_a  # to_a is so that uniq! doesn't fail later on
           if thought.user.subscribed_to?(notification_type, 'new_comment_update')
             context[:users] += [thought.user]
           end
