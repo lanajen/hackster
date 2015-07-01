@@ -22,7 +22,7 @@ table.table.table-striped
   tbody
     - @orders.each do |order|
       tr
-        td= order.id
+        td= link_to order.id, store_order_path(order)
         td= link_to order.user.name, order.user
         td= order.total_cost
         td= order.order_lines_count
