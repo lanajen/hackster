@@ -10,7 +10,7 @@
       - else
         h2
           ' Statistics for
-          strong= @user.name
+          strong= link_to @user.name, @user
     .box-content
       .row
         .col-sm-3
@@ -58,3 +58,9 @@
           br
           small.text-muted
             | +#{number_with_delimiter @new_project_views} this month
+
+
+  - if current_user.is? :admin
+    ul
+      - @reputation_events.each do |event|
+        li= event.decorate.to_s
