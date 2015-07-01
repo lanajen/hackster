@@ -2,8 +2,8 @@
 
 .thumb.wide-thumb.clearfix
   = link_to image_tag(user.avatar(:big), class: 'media-object'), user
-
   .wide-thumb-body
+    = react_component('Tester', {test: 'test'})
     h5
       ==> link_to user.name, user
       - if defined?(member) and member and member.contribution.present?

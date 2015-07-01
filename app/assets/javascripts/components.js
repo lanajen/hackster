@@ -2,13 +2,10 @@
 //= require react_ujs
 
 global.React = require('react');
-
-// Brings in components to be exposed to ReactUJS.
-global.FollowButton = require('./follow_button/app.js');
-
+global.FollowButton = require('./follow_button/app');
 global.Tester = React.createClass({
-  console.log('TESTER RENDERED!');
   render() {
+    console.log('TESTER RENDERED!');
     return (
       <div>HELLO</div>
     );
