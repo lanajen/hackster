@@ -11,6 +11,9 @@
     javascript:
       $(function(){
         var following = #{@following.to_json.html_safe};
+        // Push to LocalStorage to make buttons cacheable.
+        localStorage.setItem('following', JSON.stringify(following));
+        
         $.each(following, function(type, ids){
           var joinedIds = ids.map(function(id){
             return '.follow-' + type + '-' + id;
@@ -348,7 +351,7 @@
                   - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
                     .project-actions.row
                       .action-item.col-xs-7= render partial: 'respects/button', locals: { project: @project }
-                      .action-item.col-xs-5= render partial: 'followers/project_button', locals: { followable: @project }
+                      .action-item.col-xs-5= render partial: 'followers/button', locals: { followable: @project, button_type: 'project', display_name: false }
                   = render 'projects/project_embed_button'
                   - if @project.celery_id.present?
                     = link_to content_tag(:i, '', class: 'fa fa-shopping-cart') + content_tag(:span, "Buy it"), '#', 'data-celery' => @project.celery_id, 'data-celery-version' => 'v2', class: 'btn btn-warning btn-ellipsis btn-block'
@@ -572,7 +575,7 @@
                         - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
                           .project-actions.row
                             .action-item.col-xs-7= render partial: 'respects/button', locals: { project: @project }
-                            .action-item.col-xs-5= render partial: 'followers/project_button', locals: { followable: @project }
+                            .action-item.col-xs-5= render partial: 'followers/button', locals: { followable: @project, button_type: 'project', display_name: false }
                         = render 'projects/project_embed_button'
                         .add-to-list
                         - if @project.celery_id.present?

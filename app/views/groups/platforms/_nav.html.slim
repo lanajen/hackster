@@ -43,7 +43,7 @@ section.section-nav
           script type="text/javascript" src="//static.addtoany.com/menu/page.js"
           <!-- AddToAny END -->
 
-          = render partial: 'followers/button_text', locals: { followable: @group }
+          = render partial: 'followers/button', locals: { followable: @group, button_type: 'text', display_name: true }
 
         ul.list-inline.manage
           - if can? :manage, @group
@@ -83,7 +83,7 @@ section.section-nav
           a.a2a_dd.btn.btn-default
             span Share
             i.fa.fa-share-square-o
-          = render partial: 'followers/button_text', locals: { followable: @group }
+          = render partial: 'followers/button', locals: { followable: @group, button_type: 'text', display_name: true }
       .group-nav-inner.clearfix
         ul.nav.nav-tabs
           = active_li_link_to 'Home', platform_home_path(@group)
@@ -99,7 +99,7 @@ section.section-nav
         .follow-container
           a.btn.btn-link.addthis_button_compact
             i.fa.fa-share-square-o
-          = render partial: 'followers/button_text', locals: { followable: @group }
+          = render partial: 'followers/button', locals: { followable: @group, button_type: 'text', display_name: true }
 
         ul.list-inline.manage
           - if can? :manage, @group

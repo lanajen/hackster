@@ -50,7 +50,7 @@
 
               .button-content
                 - if @group.model.class.name.in? %w(Platform List)
-                  = render partial: 'followers/button_text', locals: { followable: @group }
+                  = render partial: 'followers/button', locals: { followable: @group, button_type: 'text', display_name: true }
                 = render partial: "groups/#{@group.identifier.pluralize}/additional_links"
                 a.btn.btn-link.addthis_button_compact
                   i.fa.fa-share-square-o
@@ -77,7 +77,7 @@
 
           p= @group.mini_resume
           - if @group.model.class.name.in? %w(Platform List)
-            p= render partial: 'followers/button_text', locals: { followable: @group }
+            p= render partial: 'followers/button', locals: { followable: @group, button_type: 'text', display_name: true }
 
     = render partial: "groups/#{@group.identifier.pluralize}/nav"
 

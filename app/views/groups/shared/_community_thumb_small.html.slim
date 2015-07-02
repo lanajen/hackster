@@ -9,4 +9,4 @@
     - if community.mini_resume.present?
       p= community.mini_resume
     .member-actions
-      = render partial: 'followers/button', locals: { followable: community }
+      = render partial: 'followers/button', locals: { followable: community, button_type: nil, display_name: false }
