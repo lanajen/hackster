@@ -3,7 +3,6 @@
 .thumb.wide-thumb.clearfix
   = link_to image_tag(user.avatar(:big), class: 'media-object'), user
   .wide-thumb-body
-    = react_component('Tester', {test: 'test'})
     h5
       ==> link_to user.name, user
       - if defined?(member) and member and member.contribution.present?
@@ -19,6 +18,10 @@
         ==> pluralize_without_count user.followers_count, 'follower'
 
     .wide-thumb-body-bottom
-      / = render partial: 'followers/button_shorter', locals: { followable: user, full: true }
-      = react_component('FollowButton', {followable: user})
+      - isFollowing = current_user.following? user
+      = react_component('FollowButton', { isFollowing: isFollowing, followable: {followable_type: user.type, followable_id: user.id} })
+      = render partial: 'followers/button_shorter', locals: { followable: user, full: true }
       = link_to 'Contact', new_conversation_path(recipient_id: user.id), class: 'btn btn-link btn-sm'
+
+= content_for :js do
+  = javascript_include_tag 'components'
