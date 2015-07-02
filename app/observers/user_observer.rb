@@ -16,7 +16,7 @@ class UserObserver < ActiveRecord::Observer
 
   def after_invitation_accepted record
     advertise_new_user record
-    NotificationCenter.notify_all :accepted, :invitation, record.id
+    NotificationCenter.perform_in 15.minutes, 'notify_all', :accepted, :invitation, record.id
     record.build_reputation unless record.reputation
     record.update_column :invitation_token, nil if record.invitation_token.present?
     record.subscribe_to_all && record.save
