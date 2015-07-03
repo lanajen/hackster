@@ -144,7 +144,7 @@
           = f.input :phone, label: 'Your phone'
           = f.input :location, label: 'Your location', hint: 'City, State, Country'
           = f.input :referral, label: 'Where did you hear about us?', collection: InfoRequest::REFERRALS
-          = f.input :promotional_code, label: 'Promotional code'
+          = f.input :promotional_code, label: 'Referral code'
         .modal-footer
           = f.submit 'Send request', class: 'btn btn-primary'
           button.btn.btn-default data-dismiss="modal" type="button"  Close
