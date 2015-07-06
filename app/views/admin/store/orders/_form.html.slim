@@ -32,6 +32,15 @@
     .col-sm-8= pluralize @order.total_cost, 'points'
   .form-group
     .col-sm-4
+      label.control-label User
+    .col-sm-8
+      = link_to @order.user.name, @order.user
+      br
+      = @order.user.email
+      br
+      = link_to 'see reputation', users_stats_path(@order.user)
+  .form-group
+    .col-sm-4
       label.control-label Address
     .col-sm-8
       - if @order.address
