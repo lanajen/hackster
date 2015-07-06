@@ -5,7 +5,7 @@ module Taggable
         attr_accessible :"#{tag_type}_string", :"#{tag_type}_array"
         has_many tag_type, -> { order(name: :asc) }, as: :taggable, dependent: :destroy
 
-        if "#{tag_type}_string".in? self.column_names
+        if :"#{tag_type}_string".in? self.instance_methods
           before_save :"format_#{tag_type}_string", if: lambda {|m| m.send("#{tag_type}_string_changed?")}
           after_save :"save_#{tag_type}", if: lambda {|m| m.send("#{tag_type}_string_changed?")}
           self.send :define_method, "#{tag_type}_cached" do

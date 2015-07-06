@@ -5,9 +5,7 @@ class Order < ActiveRecord::Base
 
   INVALID_STATES = %w(new pending_verification).freeze
   PENDING_STATES = %w(pending_verification processing).freeze
-  REDUCED_SHIPPING_COUNTRIES = ['United States'].freeze
-  REDUCED_SHIPPING_COST = 50
-  INTERNATIONAL_SHIPPING_COST = 100
+  NO_DUTY_COUNTRIES = ['United States'].freeze
 
   belongs_to :address
   belongs_to :user
@@ -76,6 +74,17 @@ class Order < ActiveRecord::Base
     user.reputation.redeemable_points - total_cost.to_i
   end
 
+  def can_pass_order?
+    validate_address_is_present
+    validate_at_least_one_order_line
+    validate_has_enough_points
+    validate_order_limits
+    validate_products_in_stock
+    validate_products_have_not_reached_limit
+
+    errors.empty?
+  end
+
   def compute_products_cost!
     update_attribute :products_cost, compute_products_cost
   end
@@ -107,15 +116,8 @@ class Order < ActiveRecord::Base
     total_cost and user.reputation and total_cost <= user.reputation.redeemable_points
   end
 
-  def can_pass_order?
-    validate_address_is_present
-    validate_at_least_one_order_line
-    validate_has_enough_points
-    validate_order_limits
-    validate_products_in_stock
-    validate_products_have_not_reached_limit
-
-    errors.empty?
+  def might_pay_duty?
+    !NO_DUTY_COUNTRIES.include? destination_country
   end
 
   def points_delta

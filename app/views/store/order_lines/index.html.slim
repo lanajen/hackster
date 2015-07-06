@@ -66,6 +66,8 @@ h2.cart-title Your cart
       - if current_order.can_pass_order?
         .store-actions.text-center
           p After you place this order you will have #{pluralize number_with_delimiter(current_order.after_points), 'point'} left to redeem.
+          - if current_order.might_pay_duty?
+            p.alert.alert-danger By placing this order you understand and agree that you may have to pay import taxes on reception of the package.
           p
             - if current_order.shipping_cost_in_currency.zero?
               => link_to 'Confirm order', confirm_store_orders_path(id: current_order.id), class: 'btn btn-primary', data: { method: :patch }

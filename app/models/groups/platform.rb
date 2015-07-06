@@ -75,6 +75,7 @@ class Platform < List
   hstore_column :hproperties, :moderation_level, :string, default: 'hackster'
   hstore_column :hproperties, :plan, :string, default: 'starter'
   hstore_column :hproperties, :parts_text, :string, default: '%{parts_text_options.first}'
+  hstore_column :hproperties, :platform_tags_string, :string
   hstore_column :hproperties, :products_text, :string, default: 'Startups powered by %{name}'
   hstore_column :hproperties, :project_ideas_phrasing, :string, default: '%{project_ideas_phrasing_options[0]}'
   hstore_column :hproperties, :verified, :boolean, default: false

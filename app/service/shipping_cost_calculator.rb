@@ -2,7 +2,7 @@ class ShippingCostCalculator
   HS_TARIFF_NUMBER = 854232
   CM_TO_INCH = 0.393701
   GRAM_TO_OUNCE = 0.035274
-  DISCOUNT = 0.8
+  DISCOUNT = 0
 
   def cost
     # return 0  # disabling for now, more testing needed
@@ -13,7 +13,7 @@ class ShippingCostCalculator
       parcel: parcel,
       customs_info: customs_info,
     )
-    @shipment.lowest_rate.rate.to_f * DISCOUNT
+    @shipment.lowest_rate.rate.to_f * (1 - DISCOUNT)
   end
 
   def initialize product, address
