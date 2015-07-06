@@ -47,6 +47,7 @@ gem 'cashier', '0.4.1'
 gem 'carrierwave', '0.10.0' #git: 'https://github.com/carrierwaveuploader/carrierwave.git'
 gem 'connection_pool', '2.0.0'
 gem 'country_select', '1.1.3'
+gem 'customerio', '0.5.1'
 gem 'dalli', '2.7.0'  # memcached
 gem 'devise', '3.4.1'
 gem 'devise_invitable', '1.3.0'
