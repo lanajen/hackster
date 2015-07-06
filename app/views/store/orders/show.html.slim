@@ -26,9 +26,9 @@
                 - if @order.shipping_cost_in_currency.try(:>, 0)
                   | (paid)
               td.order-cost
-                - if @order.shipping_cost and @order.shipping_cost > 0
+                - if @order.shipping_cost.try(:>, 0)
                   = pluralize @order.shipping_cost, 'point'
-                - elsif @order.shipping_cost_in_currency > 0
+                - elsif @order.shipping_cost_in_currency.try(:>, 0)
                   = number_to_currency @order.shipping_cost_in_currency
                 - else
                   | Free
