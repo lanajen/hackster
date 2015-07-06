@@ -53,8 +53,8 @@ class StoreProduct < ActiveRecord::Base
     is_limited_per_person? and user.orders.valid.joins(:store_products).where(store_products: { id: id }).count + 1 > limit_per_person
   end
 
-  def shipping_cost address
-    @shipping_costs ||= {}
+  def shipping_cost_to address
+    @shipping_costs ||= {}
     @shipping_costs[address.id] ||= ShippingCostCalculator.new(self, address).cost
   end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150626000453) do
+ActiveRecord::Schema.define(version: 20150704213728) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -441,12 +441,13 @@ ActiveRecord::Schema.define(version: 20150626000453) do
     t.integer  "address_id"
     t.string   "workflow_state"
     t.string   "tracking_number"
-    t.integer  "user_id",         null: false
+    t.integer  "user_id",                   null: false
     t.hstore   "counters_cache"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
     t.datetime "placed_at"
     t.datetime "shipped_at"
+    t.float    "shipping_cost_in_currency"
   end
 
   add_index "orders", ["user_id"], name: "index_orders_on_user_id", using: :btree
@@ -509,12 +510,15 @@ ActiveRecord::Schema.define(version: 20150626000453) do
     t.string   "recipient_name"
     t.string   "invoice_number"
     t.string   "recipient_email"
-    t.integer  "amount"
+    t.float    "amount"
     t.string   "workflow_state"
     t.hstore   "properties"
     t.string   "safe_id",         null: false
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
+    t.integer  "payable_id"
+    t.string   "payable_type"
+    t.string   "stripe_token"
   end
 
   add_index "payments", ["safe_id"], name: "index_payments_on_safe_id", unique: true, using: :btree

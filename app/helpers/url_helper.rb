@@ -207,7 +207,7 @@ module UrlHelper
 
   def part_path part, opts={}
     if part.platform_id
-      if is_whitelabel?
+      if defined?(is_whitelabel?) and is_whitelabel?
         client_part_url(part.slug)
       else
         platform_part_path(part.platform.user_name, part.slug)
@@ -219,7 +219,7 @@ module UrlHelper
 
   def part_url part, opts={}
     if part.platform_id
-      if is_whitelabel?
+      if defined?(is_whitelabel?) and is_whitelabel?
         client_part_url(part.slug)
       else
         platform_part_url(part.platform.user_name, part.slug)

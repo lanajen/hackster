@@ -1,0 +1,51 @@
+<p>Hi there</p>
+<p>Your order to the Hackster (Free) Store is confirmed.</p>
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Product</th>
+      <th>Cost</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @context[:order].store_products.each do |product| %>
+      <tr>
+        <td>
+          <a href="<%= u.part_url(product.source) %>"><%= product.source.name %></a>
+        </td>
+        <td><%= pluralize product.unit_cost, 'point' %></td>
+      </tr>
+    <% end %>
+    <tr>
+      <td class="order-label">Shipping cost (paid)</td>
+      <td class="order-cost"><%= number_to_currency @context[:order].shipping_cost_in_currency %></td>
+    </tr>
+    <tr>
+      <td>
+        <strong>Total cost</strong>
+      </td>
+      <td>
+        <strong>
+          <%= pluralize @context[:order].total_cost, 'point' %>
+          <% if @context[:order].shipping_cost_in_currency.try(:>, 0) %>
+            <small> + <%= number_to_currency @context[:order].shipping_cost_in_currency %></small>
+          <% end %>
+        </strong>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p><strong>Shipping to:</strong></p>
+<p>
+  <%= @context[:order].address.decorate.full.html_safe %>
+</p>
+<p>We'll send you another email when it ships (expect 1-2 weeks processing).</p>
+<p>Cheers
+  <br>
+  The Hackster.io team
+</p>
+<p>
+  <a href="http://www.facebook.com/hacksterio">Like us on Facebook</a>
+  |
+  <a href="http://twitter.com/hacksterio">Follow us on Twitter</a>
+</p>

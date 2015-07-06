@@ -3,6 +3,7 @@ class OrderLineObserver < ActiveRecord::Observer
     order = record.order
     order.compute_products_cost
     order.update_counters only: [:order_lines]
+    order.compute_shipping_cost
     order.save
   end
 

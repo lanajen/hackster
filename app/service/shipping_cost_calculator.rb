@@ -2,9 +2,10 @@ class ShippingCostCalculator
   HS_TARIFF_NUMBER = 854232
   CM_TO_INCH = 0.393701
   GRAM_TO_OUNCE = 0.035274
+  DISCOUNT = 0.8
 
   def cost
-    return 0  # disabling for now, more testing needed
+    # return 0  # disabling for now, more testing needed
 
     @shipment ||= EasyPost::Shipment.create(
       to_address: to_address,
@@ -12,7 +13,7 @@ class ShippingCostCalculator
       parcel: parcel,
       customs_info: customs_info,
     )
-    @shipment.lowest_rate.rate
+    @shipment.lowest_rate.rate.to_f * DISCOUNT
   end
 
   def initialize product, address

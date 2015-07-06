@@ -12,7 +12,7 @@ class Address < ActiveRecord::Base
     :address_line2, :state, :city, :country, :zip, :phone
 
   def self.default
-    where(default: true).first
+    where(default: true).where.not(deleted: true).first
   end
 
   def self.visible

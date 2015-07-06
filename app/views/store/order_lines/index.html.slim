@@ -23,14 +23,16 @@ h2.cart-title Your cart
               tr
                 td.order-label Shipping cost
                 td.order-cost
-                  - if current_order.shipping_cost
-                    - if current_order.shipping_cost > 0
-                      = pluralize current_order.shipping_cost, 'point'
+                  - if current_order.shipping_cost_in_currency
+                    - if current_order.shipping_cost_in_currency > 0
+                      = number_to_currency current_order.shipping_cost_in_currency
+                      small<= link_to content_tag(:i, '', class: 'fa fa-question-circle'), 'http://hackster.uservoice.com/knowledgebase/articles/639226-how-does-shipping-work', target: '_blank'
                     - else
                       | Free
                   - else
                     = link_to 'Select an address', addresses_path(order_id: current_order.id, redirect_if_empty: true)
                 td
+
 
               tr
                 td
@@ -38,7 +40,10 @@ h2.cart-title Your cart
                 td
                   strong class=(current_order.enough_points? ? 'text-success' : 'text-danger')
                     = pluralize current_order.total_cost, 'point'
-                    - unless current_order.shipping_cost
+                    - if current_order.shipping_cost_in_currency
+                      - if current_order.shipping_cost_in_currency > 0
+                        small< + #{number_to_currency current_order.shipping_cost_in_currency}
+                    - else
                       small< + shipping
                 td.text-right
                   - if current_order.enough_points?
@@ -62,9 +67,71 @@ h2.cart-title Your cart
         .store-actions.text-center
           p After you place this order you will have #{pluralize number_with_delimiter(current_order.after_points), 'point'} left to redeem.
           p
-            => link_to 'Confirm order', confirm_store_orders_path(id: current_order.id), class: 'btn btn-primary', data: { method: :patch }
+            - if current_order.shipping_cost_in_currency.zero?
+              => link_to 'Confirm order', confirm_store_orders_path(id: current_order.id), class: 'btn btn-primary', data: { method: :patch }
+            - else
+              => link_to 'Pay shipping and confirm order', '#', class: 'btn btn-primary', id: 'pay'
+              = content_for :js do
+                = javascript_include_tag 'https://checkout.stripe.com/checkout.js'
+                javascript:
+                  var handler = StripeCheckout.configure({
+                    key: "#{ENV['STRIPE_PUBLIC_KEY']}",
+                    image: "#{asset_url('hackster_logo_squared.png')}",
+                    token: function(token) {
+                      $.ajax({
+                        type: 'POST',
+                        url: "#{payments_path}",
+                        dataType: 'json',
+                        data: {
+                          safe_id: "#{current_order.payment.safe_id}",
+                          authenticity_token: "#{form_authenticity_token}",
+                          stripeToken: token.id
+                        },
+                        success: function(data) {
+                          if (data.status == 'ok') {
+                            window.location.href = data.redirect_to;
+                          } else {
+                            alert(data.message);
+                          }
+                        },
+                        error: function(data) {
+                          alert("Something failed, please contact us at store@hackster.io");
+                        }
+                      });
+                    }
+                  });
+
+                  $('#pay').on('click', function(e) {
+                    // Open Checkout with further options
+                    handler.open({
+                      name: 'Hackster, Inc.',
+                      description: "#{current_order.payment.label}",
+                      amount: #{current_order.payment.stripe_amount},
+                      email: "#{current_order.payment.recipient_email}"
+                    });
+                    e.preventDefault();
+                  });
+
+                  // Close Checkout on page navigation
+                  $(window).on('popstate', function() {
+                    handler.close();
+                  });
+
+              / form> action=payments_path method="POST" style='display:inline'
+                input type='hidden' value=current_order.payment.safe_id name='safe_id'
+                input type='hidden' value=form_authenticity_token name='authenticity_token'
+                script(
+                  src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                  data-key=ENV['STRIPE_PUBLIC_KEY']
+                  data-image=asset_url('hackster_logo_squared.png')
+                  data-name="Hackster, Inc."
+                  data-description=current_order.payment.label
+                  data-amount=current_order.payment.stripe_amount
+                  data-email=current_order.payment.recipient_email
+                  data-label="Pay shipping and confirm order")
             ' or
             = link_to 'keep browsing', store_path
+
       - elsif current_order.errors[:base].any?
         .store-actions
           p

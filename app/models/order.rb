@@ -12,6 +12,7 @@ class Order < ActiveRecord::Base
   belongs_to :user
   has_many :order_lines, dependent: :destroy
   has_many :store_products, through: :order_lines
+  has_one :payment, as: :payable
 
   attr_accessible :tracking_number, :address_id, :workflow_state,
     :order_lines_attributes
@@ -76,13 +77,18 @@ class Order < ActiveRecord::Base
   end
 
   def compute_shipping_cost
-    self.shipping_cost = store_products.map do |product|
-      product.charge_shipping? ? product.shipping_cost(address) : 0
+    unless address
+      self.shipping_cost_in_currency = nil
+      return
+    end
+
+    self.shipping_cost_in_currency = store_products.map do |product|
+      product.charge_shipping? ? product.shipping_cost_to(address) : 0
     end.sum
   end
 
   def compute_total_cost
-    self.total_cost = shipping_cost.to_i + products_cost.to_i
+    self.total_cost = products_cost.to_i
   end
 
   def destination_country
