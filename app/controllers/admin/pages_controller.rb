@@ -188,7 +188,7 @@ class Admin::PagesController < Admin::BaseController
     @categories = ReputationEvent.group(:event_name).order("sum_points desc").sum(:points)
     @total_redeemed_month = Order.valid.where("orders.created_at > ?", Date.today.beginning_of_month).sum(:total_cost)
     @total_redeemed = Order.valid.sum(:total_cost)
-    @pending_orders = Order.processing.count
+    @pending_orders = Order.pending.count
 
     sql = "SELECT users.*, t1.sum FROM (SELECT reputation_events.user_id as user_id, SUM(reputation_events.points) as sum FROM reputation_events GROUP BY user_id) AS t1 INNER JOIN users ON users.id = t1.user_id WHERE t1.sum > 1 AND (NOT (users.roles_mask & ? > 0) OR users.roles_mask IS NULL) ORDER BY t1.sum DESC LIMIT 10;"
     @heroes = User.find_by_sql([sql, 2**User::ROLES.index('admin')])

@@ -3,7 +3,8 @@ class Order < ActiveRecord::Base
   include HstoreCounter
   include Workflow
 
-  INVALID_STATES = %w(new).freeze
+  INVALID_STATES = %w(new pending_verification).freeze
+  PENDING_STATES = %w(pending_verification processing).freeze
   REDUCED_SHIPPING_COUNTRIES = ['United States'].freeze
   REDUCED_SHIPPING_COST = 50
   INTERNATIONAL_SHIPPING_COST = 100
@@ -26,7 +27,10 @@ class Order < ActiveRecord::Base
 
   workflow do
     state :new do
-      event :pass_order, transitions_to: :processing, if: :can_pass_order?
+      event :pass_order, transitions_to: :pending_verification, if: :can_pass_order?
+    end
+    state :pending_verification do
+      event :mark_verified, transitions_to: :processing
     end
     state :processing do
       event :ship, transitions_to: :shipped
@@ -46,6 +50,10 @@ class Order < ActiveRecord::Base
 
   def self.not_new
     where.not workflow_state: :new
+  end
+
+  def self.pending
+    where workflow_state: PENDING_STATES
   end
 
   def self.processing
