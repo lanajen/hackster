@@ -109,7 +109,8 @@ h2.cart-title Your cart
                       name: 'Hackster, Inc.',
                       description: "#{current_order.payment.label}",
                       amount: #{current_order.payment.stripe_amount},
-                      email: "#{current_order.payment.recipient_email}"
+                      email: "#{current_order.payment.recipient_email}",
+                      bitcoin: true,
                     });
                     e.preventDefault();
                   });
@@ -119,18 +120,6 @@ h2.cart-title Your cart
                     handler.close();
                   });
 
-              / form> action=payments_path method="POST" style='display:inline'
-                input type='hidden' value=current_order.payment.safe_id name='safe_id'
-                input type='hidden' value=form_authenticity_token name='authenticity_token'
-                script(
-                  src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-                  data-key=ENV['STRIPE_PUBLIC_KEY']
-                  data-image=asset_url('hackster_logo_squared.png')
-                  data-name="Hackster, Inc."
-                  data-description=current_order.payment.label
-                  data-amount=current_order.payment.stripe_amount
-                  data-email=current_order.payment.recipient_email
-                  data-label="Pay shipping and confirm order")
             ' or
             = link_to 'keep browsing', store_path
 
