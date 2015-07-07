@@ -34,9 +34,13 @@
           li= link_to 'Buy it', part.store_link, target: '_blank'
         - if part.product_page_link.present?
           li= link_to 'Official page', part.product_page_link, target: '_blank'
+        - if part.get_started_link.present?
+          li= link_to 'Get started', part.get_started_link, target: '_blank'
         - if part.documentation_link.present?
-          li= link_to 'Documentation', part.documentation_link, target: '_blank'
+          li= link_to 'Full documentation', part.documentation_link, target: '_blank'
         - if part.libraries_link.present?
           li= link_to 'Libraries', part.libraries_link, target: '_blank'
         - if part.datasheet_link.present?
           li= link_to 'Datasheet', part.datasheet_link, target: '_blank'
+        - if part.review_link.present?
+          li= link_to 'Hackster review', part.review_link, target: '_blank'
