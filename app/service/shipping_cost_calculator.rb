@@ -2,7 +2,7 @@ class ShippingCostCalculator
   HS_TARIFF_NUMBER = 854232
   CM_TO_INCH = 0.393701
   GRAM_TO_OUNCE = 0.035274
-  DISCOUNT = 0
+  DISCOUNT = -0.3  # account for packaging
 
   def cost
     # return 0  # disabling for now, more testing needed
