@@ -1,8 +1,10 @@
+require 'country_iso_translater'
+
 class ShippingCostCalculator
   HS_TARIFF_NUMBER = 854232
   CM_TO_INCH = 0.393701
   GRAM_TO_OUNCE = 0.035274
-  DISCOUNT = -0.3  # account for packaging
+  DISCOUNT = 0.2
 
   def cost
     # return 0  # disabling for now, more testing needed
@@ -27,7 +29,7 @@ class ShippingCostCalculator
         description: 'Electronic kits',
         quantity: 1,
         value: @product.real_unit_price,
-        weight: @product.weight * GRAM_TO_OUNCE,
+        weight: parcel_weight,
         origin_country: 'us',
         hs_tariff_number: HS_TARIFF_NUMBER
       )
@@ -69,6 +71,10 @@ class ShippingCostCalculator
       )
     end
 
+    def parcel_weight
+      @product.weight * GRAM_TO_OUNCE + 200 * GRAM_TO_OUNCE
+    end
+
     def to_address
       EasyPost::Address.create(
         name: @address.full_name,
@@ -77,7 +83,7 @@ class ShippingCostCalculator
         city: @address.city,
         state: @address.state,
         zip: @address.zip,
-        country: @address.country,
+        country: SunDawg::CountryIsoTranslater.translate_iso3166_name_to_alpha2(@address.country),
         phone: @address.phone,
       )
     end
