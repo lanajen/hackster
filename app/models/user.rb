@@ -619,6 +619,12 @@ class User < ActiveRecord::Base
     end
   end
 
+  def unsubscribe_from_all
+    %w(email web).each do |notification_type|
+      set_subscriptions_for notification_type, []
+    end
+  end
+
   def subscribed_to? notification_type, subscription
     subscription.in? subscriptions_for(notification_type)
   end
