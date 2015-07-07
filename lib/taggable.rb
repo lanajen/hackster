@@ -7,7 +7,7 @@ module Taggable
 
         if "#{tag_type}_string".in? self.column_names or :"#{tag_type}_string".in? self.instance_methods
           before_save :"format_#{tag_type}_string", if: lambda {|m| m.send("#{tag_type}_string_changed?")}
-          before_save :"save_#{tag_type}", if: lambda {|m| m.send("#{tag_type}_string_changed?")}
+          after_save :"save_#{tag_type}", if: lambda {|m| m.send("#{tag_type}_string_changed?")}
           self.send :define_method, "#{tag_type}_cached" do
             eval "
               #{tag_type}_string.present? ? #{tag_type}_string.split(',').map{ |s| s.strip } : []

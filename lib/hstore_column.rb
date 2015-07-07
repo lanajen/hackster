@@ -134,6 +134,6 @@ module HstoreColumn
     base.send :extend, ClassMethods
     base.send :include, InstanceMethods
     base.send :class_attribute, :hstore_columns, instance_writer: false
-    base.send :after_save, :hstore_reset_was_attributes
+    base.send :after_commit, :hstore_reset_was_attributes
   end
 end
