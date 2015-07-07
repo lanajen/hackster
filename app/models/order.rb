@@ -3,7 +3,7 @@ class Order < ActiveRecord::Base
   include HstoreCounter
   include Workflow
 
-  INVALID_STATES = %w(new pending_verification).freeze
+  INVALID_STATES = %w(new).freeze
   PENDING_STATES = %w(pending_verification processing).freeze
   NO_DUTY_COUNTRIES = ['United States'].freeze
 
