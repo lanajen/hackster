@@ -138,18 +138,19 @@ class ProjectsController < ApplicationController
 
     @team_members = @project.team_members.includes(:user).includes(user: :avatar)
 
+    if @project.public?
+      @respecting_users = @project.respecting_users.includes(:avatar).where.not(users: { full_name: nil }).limit(8)
+      @replicating_users = @project.replicated_users.includes(:avatar).where.not(users: { full_name: nil }).limit(8)
+      if is_whitelabel?
+        @respecting_users = @respecting_users.where(users: { enable_sharing: true })
+        @replicating_users = @replicating_users.where(users: { enable_sharing: true })
+      end
+    end
+
     if is_whitelabel?
       @comments = @project.comments.joins(:user).where(users: { enable_sharing: true }).includes(:user).includes(:parent).includes(user: :avatar)
-      if @project.public?
-        @respecting_users = @project.respecting_users.where(users: { enable_sharing: true }).includes(:avatar).limit(8)
-        @replicating_users = @project.replicated_users.where(users: { enable_sharing: true }).includes(:avatar).limit(8)
-      end
     else
       @comments = @project.comments.includes(:user).includes(:parent)#.includes(user: :avatar)
-      if @project.public?
-        @respecting_users = @project.respecting_users.includes(:avatar).limit(8)
-        @replicating_users = @project.replicated_users.includes(:avatar).limit(8)
-      end
     end
 
     if @project.has_assignment?
