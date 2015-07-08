@@ -47,7 +47,7 @@ class Users::AuthorizationsController < Users::RegistrationsController
       resource.link_to_provider session['devise.provider'], session['devise.provider_data'].uid, session['devise.provider_data']
       set_flash_message(:notice, :linked_and_signed_in) if is_navigational_format?
       sign_in(resource_name, resource)
-      respond_with resource, location: after_sign_in_path_for(resource)
+      redirect_to after_sign_in_path_for(resource)
     end
   end
 

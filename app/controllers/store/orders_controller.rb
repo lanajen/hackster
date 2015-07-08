@@ -29,7 +29,7 @@ class Store::OrdersController < Store::BaseController
     not_found and return unless current_order.id.to_s == params[:id]
 
     begin
-      current_order.pass_order!
+      current_order.pass_order! if current_order.new?
       redirect_to store_order_path(current_order)
     rescue Workflow::TransitionHalted
       redirect_to store_cart_index_path, alert: "Couldn't place order: #{current_order.halted_because}."

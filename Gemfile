@@ -50,10 +50,12 @@ gem 'cashier', '0.4.1'
 gem 'carrierwave', '0.10.0' #git: 'https://github.com/carrierwaveuploader/carrierwave.git'
 gem 'connection_pool', '2.0.0'
 gem 'country_select', '1.1.3'
+gem 'customerio', '0.5.1'
 gem 'dalli', '2.7.0'  # memcached
 gem 'devise', '3.4.1'
 gem 'devise_invitable', '1.3.0'
 gem 'draper', '1.4.0'
+gem 'easypost', '2.1.6'
 gem 'fastly-rails', git: 'https://github.com/blarralde/fastly-rails.git'
 gem 'geocoder', '1.2.5'
 gem 'gibbon', '1.1.1'
@@ -133,24 +135,26 @@ gem 'rails_12factor', group: [:production, :staging]
 gem 'derailed_benchmarks', group: :development
 
 group :development, :test do
-  # gem 'factory_girl_rails'
   gem 'foreman'
   # gem 'guard-livereload'
   # gem 'guard-rspec'
   # gem 'guard-spork'
   # gem 'launchy'
   gem 'mailcatcher', git: 'https://github.com/sj26/mailcatcher.git'
+  gem 'pry'
   gem 'quiet_assets'
   # gem 'spork'
   # gem 'rspec-cells'
-  gem 'rspec-rails'
   gem 'spring'
-  # gem 'sqlite3'
   # gem 'web-console', '~> 2.0'
   gem 'byebug'
 end
 
-# group :test do
-#   gem 'database_cleaner'
-#   gem 'faker'
-# end
+group :test do
+  gem 'capybara'
+  gem 'database_cleaner'
+  gem 'factory_girl_rails'
+  # gem 'faker'
+  gem 'rspec-rails'
+  gem 'selenium-webdriver'
+end

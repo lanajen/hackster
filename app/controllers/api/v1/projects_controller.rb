@@ -55,7 +55,7 @@ class Api::V1::ProjectsController < Api::V1::BaseController
       render json: { project: @project.errors }, status: :unprocessable_entity
     end
   rescue => e
-    message = "Couldn't save project: #{@project.inspect} // user: #{current_user.user_name} // params: #{params.inspect} // exception: #{e.inspect}"
+    message = "Couldn't save project: #{@project.inspect} // user: #{current_user.try(:user_name)} // params: #{params.inspect} // exception: #{e.inspect}"
     log_line = LogLine.create(message: message, log_type: '5xx', source: 'api/projects')
     NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification' if Rails.env == 'production'
     render status: :internal_server_error, nothing: true

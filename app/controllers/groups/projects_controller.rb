@@ -5,7 +5,7 @@ class Groups::ProjectsController < ApplicationController
   # layout :set_layout
 
   def index
-    authorize! :admin, @group
+    authorize! :moderate, @group
 
     @pending_review_size = @group.project_collections.where(workflow_state: :pending_review).size
 

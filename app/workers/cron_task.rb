@@ -58,22 +58,18 @@ class CronTask < BaseWorker
     end
   end
 
-  def compute_reputation code=nil, date=nil
-    if code
-      date = Time.at(date.to_i) if date
-      Rewardino::Event.find(code).compute date
-    else
-      Rewardino::Event.all.keys.each do |code|
-        CronTask.perform_async 'compute_reputation', code, date
-      end
-      redis.set 'last_update', Time.now.to_i
-    end
+  def compute_reputation user_id, date=nil
+    date = Time.at(date.to_i) if date
+    Rewardino::Event.compute_for_user user_id, date
   end
 
   def compute_daily_reputation
     date = redis.get('last_update')
     # date = Time.at(date.to_i) if date.present?
-    compute_reputation nil, date.presence
+    User.invitation_accepted_or_not_invited.find_each do |user|
+      CronTask.perform_async 'compute_reputation', user.id, date.presence
+    end
+    redis.set 'last_update', Time.now.to_i
   end
 
   def evaluate_badges
@@ -95,48 +91,7 @@ class CronTask < BaseWorker
   end
 
   def generate_user
-    full_name = nil
-    while full_name.nil? or full_name =~ /\p{Han}/
-      gender = %w(male male male male male male male male male female).sample  # 90% male
-      country = rand(1..10) > 6 ? "&country=united+states" : ''
-      resp = JSON.parse Net::HTTP.get_response("api.uinames.com","/?gender=#{gender}#{country}").body
-      generator = NameGenerator.new(resp['name'], resp['surname'])
-      if generator.last_name.present?
-        full_name = generator.full_name
-        user_name = generator.user_name
-      end
-    end
-
-    u = nil
-    while u.nil? or !u.persisted?
-      email = SecureRandom.hex(5) + '@user.hackster.io'
-      user_data = {
-        email: email,
-        email_confirmation: email,
-        password: SecureRandom.hex(16),
-        full_name: full_name,
-        user_name: user_name,
-      }
-      u = User.new
-      u.skip_confirmation!
-      u.assign_attributes user_data
-      u.save
-    end
-    groups = []
-    Platform.public.featured.each do |plat|
-      (Math.log(plat.followers_count) * Math.log(plat.followers_count)).to_i.times{ groups << plat.id } unless plat.followers_count.zero?
-    end
-    rand(1..5).times do
-      FollowRelation.add u, Group.find(groups.sample), true
-    end
-    project_ids = Project.indexable.last_30days.pluck(:id) + Project.magic_sort.limit(50).pluck(:id)
-    rand(1..10).times do
-      project = Project.find project_ids.sample
-      project.impressions.create user_id: u.id, controller_name: 'projects', action_name: 'show', message: 'tmp', request_hash: SecureRandom.hex(16)
-      if [true, false, false, false, false, false, false, false, false, false].sample  # prob = 0.1
-        Respect.create_for u, project
-      end
-    end
+    UserGenerator.generate_user
   end
 
   def generate_users
@@ -147,7 +102,7 @@ class CronTask < BaseWorker
 
   def launch_cron
     CacheWorker.perform_async 'warm_cache'
-    update_mailchimp_list
+    MailchimpListManager.new(ENV['MAILCHIMP_API_KEY'], ENV['MAILCHIMP_LIST_ID']).update_list
     send_assignment_reminder
     lock_assignment
     expire_challenges
@@ -185,11 +140,11 @@ class CronTask < BaseWorker
     project_ids = Project.self_hosted.where('projects.made_public_at > ? AND projects.made_public_at < ?', 24.hours.ago, Time.now).approved.pluck(:id)
 
     users = []
-    users += Platform.joins(:projects).distinct('groups.id').where(projects: { id: project_ids }).map{|t| t.followers.with_subscription(:email, 'follow_platform_activity').pluck(:id) }.flatten
-    users += User.joins(:projects).distinct('users.id').where(projects: { id: project_ids }).map{|u| u.followers.with_subscription(:email, 'follow_user_activity').pluck(:id) }.flatten
+    users += Platform.joins(:projects).distinct('groups.id').where(projects: { id: project_ids }).map{|t| t.followers.not_hackster.with_subscription(:email, 'follow_platform_activity').pluck(:id) }.flatten
+    users += User.joins(:projects).distinct('users.id').where(projects: { id: project_ids }).map{|u| u.followers.not_hackster.with_subscription(:email, 'follow_user_activity').pluck(:id) }.flatten
 
     lists = List.joins(:project_collections).where('project_collections.created_at > ?', 24.hours.ago).where(groups: { type: 'List' }).distinct(:id)
-    users += lists.map{|l| l.followers.with_subscription(:email, 'follow_list_activity').pluck(:id) }.flatten
+    users += lists.map{|l| l.followers.not_hackster.with_subscription(:email, 'follow_list_activity').pluck(:id) }.flatten
 
     users.uniq!
 
@@ -217,58 +172,8 @@ class CronTask < BaseWorker
     end
   end
 
-  def update_mailchimp_list
-    gb = Gibbon::API
-    list_id = MAILCHIMP_LIST_ID
-
-    subscribers = subscription_changes_with true
-    add_subscribers(gb, list_id, subscribers) unless subscribers.empty?
-
-    cancellers = subscription_changes_with false
-    remove_subscribers(gb, list_id, cancellers) unless cancellers.empty?
-  end
-
   private
-    def add_subscribers gb, list_id, users
-      puts "Adding #{users.count} subscribers to list #{list_id}."
-      batch = batch_from_user_list users
-      response = gb.lists.batch_subscribe({ id: list_id, batch: batch, double_optin: false, update_existing: true })
-      failed_emails = response['errors'].map { |error| error['email']['email'] }
-      successful_emails = get_email_from_users(users) - failed_emails
-      update_settings_for failed_emails, "subscriptions_masks = subscriptions_masks || hstore('email', (CAST(subscriptions_masks -> 'email' AS INTEGER) - #{2**User::SUBSCRIPTIONS[:email].keys.index('newsletter')})::varchar)"
-      update_settings_for successful_emails, { mailchimp_registered: true }
-      puts "Results for adding: #{successful_emails.size} successes, #{failed_emails.size} failures."
-    end
-
-    def batch_from_user_list users
-      users.map { |u| {
-        email: { email: u.email },
-        email_type: 'html',
-      } }
-    end
-
-    def get_email_from_users users
-      users.map(&:email)
-    end
-
     def redis
       @redis ||= Redis::Namespace.new('cron_task', redis: Redis.new($redis_config))
-    end
-
-    def remove_subscribers gb, list_id, users
-      puts "Removing #{users.count} subscribers from list #{list_id}."
-      emails = get_email_from_users(users).map{|e| { email: e }}
-      response = gb.lists.batch_unsubscribe({ id: list_id, batch: emails, delete_member: true, send_goodbye: false, send_notify: false })
-      failed_emails = response['errors'].map { |error| error['email']['email'] }
-      successful_emails = get_email_from_users(users) - failed_emails
-      update_settings_for successful_emails, { mailchimp_registered: false }
-    end
-
-    def subscription_changes_with change_type
-      User.with_subscription(:email, :newsletter, !change_type).where.not(mailchimp_registered: change_type)
-    end
-
-    def update_settings_for emails, settings
-      User.where(email: emails).update_all(settings) if emails.any?
     end
 end

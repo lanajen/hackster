@@ -207,6 +207,7 @@ class PlatformsController < ApplicationController
     if @platform.valid?
       if user_signed_in?
         @platform.save
+        CustomerioNotifierWorker.perform_async('notify', @platform.id, current_user.id)  # here and not in an observer so that platforms that *we* create are not added to customerio
         redirect_to @platform, notice: "Welcome to the new hub for #{@platform.name}!"
       else
         redirect_to create__simplified_registrations_path(user: { email: @platform.admin_email }, redirect_to: create_platforms_path(group: params[:group]))

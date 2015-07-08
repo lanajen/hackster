@@ -4,6 +4,8 @@
   = render_chart(@new_users, 'chart_new_users')
   = render_chart(@new_respects, 'chart_new_respects')
   = render_chart(@new_follows, 'chart_new_follows')
+  = render_chart(@new_comments, 'chart_new_comments')
+  = render_chart(@new_engagements, 'chart_new_engagements')
 
 .page-header
   h1
@@ -67,6 +69,14 @@
       .panel-body
         ==> number_with_delimiter @like_count
         small.text-muted +#{@new_likes_count}
+
+  .col-xs-12.col-sm-4
+    .panel.panel-default.panel-dashboard
+      .panel-heading
+        h3.panel-title= link_to 'Engagements', ''
+      .panel-body
+        ==> number_with_delimiter @engagements_count
+        small.text-muted +#{@new_engagements_count}
 
 .row
   .col-xs-12.col-sm-4
@@ -184,3 +194,8 @@
     #chart_new_respects= image_tag 'loader.gif'
   .col-xs-12.col-sm-6
     #chart_new_follows= image_tag 'loader.gif'
+
+  .col-xs-12.col-sm-6
+    #chart_new_comments= image_tag 'loader.gif'
+  .col-xs-12.col-sm-6
+    #chart_new_engagements= image_tag 'loader.gif'

@@ -20,6 +20,7 @@ table.table.table-striped
       th= model_class.human_attribute_name(:visibility)
       th= model_class.human_attribute_name(:creation_date)
       th= model_class.human_attribute_name(:published_date)
+      th= model_class.human_attribute_name(:completion)
       th=t '.actions', :default => t("helpers.actions")
   tbody
     - @projects.each do |project|
@@ -44,6 +45,7 @@ table.table.table-striped
         td= project.private? ? content_tag(:b, 'Private') : (project.pending_review? ? content_tag(:b, 'Needs approval') : (project.hidden? ? 'Hidden' : 'Public') + '<br>(' + project.workflow_state + ')').html_safe
         td= l project.created_at
         td= l project.made_public_at if project.made_public_at
+        td= project.checklist_completion
         td
           ul.list-unstyled
             li= link_to 'Edit as user', edit_project_path(project, show_admin_bar: 1), class: 'btn btn-default btn-xs'

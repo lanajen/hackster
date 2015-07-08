@@ -3,3 +3,17 @@
   h1=t '.title', :default => [:'helpers.titles.edit', 'Edit % model '], :model => model_class.model_name.human
 
 = render 'form'
+- if @order.payment
+  h4 Payment
+  p
+    strong> Status:
+    = @order.payment.workflow_state
+  p
+    strong> Safe ID:
+    = @order.payment.safe_id
+  p
+    strong> Place at:
+    = @order.payment.paid_at
+  p
+    strong> Stripe token:
+    = @order.payment.stripe_token

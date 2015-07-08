@@ -9,18 +9,18 @@ class Admin::PagesController < Admin::BaseController
     @external_project_count = Project.external.approved.count
     @waiting_for_approval_project_count = Project.need_review.count
     @comment_count = Comment.where(commentable_type: 'Project').count
-    @like_count = Respect.count
-    @follow_user_count = FollowRelation.where(followable_type: 'User').count
-    @follow_platform_count = FollowRelation.where(followable_type: 'Group').count
-    @user_count = User.invitation_accepted_or_not_invited.count
+    @like_count = Respect.joins(:user).where.not("users.email ILIKE '%user.hackster.io'").count
+    @follow_user_count = FollowRelation.where(followable_type: 'User').joins(:user).where.not("users.email ILIKE '%user.hackster.io'").count
+    @follow_platform_count = FollowRelation.where(followable_type: 'Group').joins(:user).where.not("users.email ILIKE '%user.hackster.io'").count
+    @user_count = User.invitation_accepted_or_not_invited.not_hackster.count
     @messages_count = Comment.where(commentable_type: 'Conversation').count
     @new_messages_count = Comment.where(commentable_type: 'Conversation').where('comments.created_at > ?', Date.today).count
     @new_projects_count = Project.indexable.where('projects.made_public_at > ?', Date.today).count
     @new_comments_count = Comment.where(commentable_type: 'Project').where('comments.created_at > ?', Date.today).count
     @new_likes_count = Respect.where('respects.created_at > ?', Date.today).count
-    @new_user_follows_count = FollowRelation.where(followable_type: 'User').where('follow_relations.created_at > ?', Date.today).count
-    @new_platform_follows_count = FollowRelation.where(followable_type: 'Group').where('follow_relations.created_at > ?', Date.today).count
-    @new_users_count = User.invitation_accepted_or_not_invited.where('users.created_at > ?', Date.today).count
+    @new_user_follows_count = FollowRelation.where(followable_type: 'User').where('follow_relations.created_at > ?', Date.today).joins(:user).where.not("users.email ILIKE '%user.hackster.io'").count
+    @new_platform_follows_count = FollowRelation.where(followable_type: 'Group').where('follow_relations.created_at > ?', Date.today).joins(:user).where.not("users.email ILIKE '%user.hackster.io'").count
+    @new_users_count = User.invitation_accepted_or_not_invited.not_hackster.where('users.created_at > ?', Date.today).count
     new_users1d = User.invitation_accepted_or_not_invited.not_hackster.where("users.created_at > ?", 1.days.ago).count
     new_users7d = User.invitation_accepted_or_not_invited.not_hackster.where("users.created_at > ?", 7.days.ago).count
     new_users30d = User.invitation_accepted_or_not_invited.not_hackster.where("users.created_at > ?", 30.days.ago).count
@@ -32,6 +32,8 @@ class Admin::PagesController < Admin::BaseController
     @owned_parts_count = FollowRelation.where(followable_type: 'Part').count
     @new_owned_parts_count = FollowRelation.where(followable_type: 'Part').where('follow_relations.created_at > ?', Date.today).count
     @new_replicated_projects_count = FollowRelation.where(followable_type: 'Project').where('follow_relations.created_at > ?', Date.today).count
+    @engagements_count = Comment.where(commentable_type: %w(Project Thought)).count + Project.own.count + Respect.joins(:user).where.not("users.email ILIKE '%user.hackster.io'").count + FollowRelation.joins(:user).where.not("users.email ILIKE '%user.hackster.io'").count + Thought.count
+    @new_engagements_count = Comment.where(commentable_type: %w(Project Thought)).where('comments.created_at > ?', Date.today).count + Project.own.where('projects.created_at > ?', Date.today).count + Respect.joins(:user).where.not("users.email ILIKE '%user.hackster.io'").where('respects.created_at > ?', Date.today).count + FollowRelation.joins(:user).where.not("users.email ILIKE '%user.hackster.io'").where('follow_relations.created_at > ?', Date.today).count + Thought.where('thoughts.created_at > ?', Date.today).count
 
     sql = "SELECT users.*, t1.count FROM (SELECT members.user_id as user_id, COUNT(*) as count FROM members INNER JOIN groups AS team ON team.id = members.group_id INNER JOIN projects ON projects.team_id = team.id WHERE projects.private = 'f' AND projects.hide = 'f' AND projects.workflow_state = 'approved' AND (projects.guest_name = '' OR projects.guest_name IS NULL) GROUP BY user_id) AS t1 INNER JOIN users ON users.id = t1.user_id WHERE t1.count > 1 AND (NOT (users.roles_mask & ? > 0) OR users.roles_mask IS NULL) ORDER BY t1.count DESC LIMIT 10;"
     @heroes = User.find_by_sql([sql, 2**User::ROLES.index('admin')])
@@ -46,19 +48,29 @@ class Admin::PagesController < Admin::BaseController
 
     @users_with_at_least_one_live_project = User.invitation_accepted_or_not_invited.distinct.joins(:projects).where(projects: { private: false, hide: false, workflow_state: :approved }).where("projects.guest_name = '' OR projects.guest_name IS NULL").size
 
-    sql = "SELECT to_char(made_public_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM projects WHERE private = 'f' AND hide = 'f' AND date_part('days', now() - projects.made_public_at) < 31 GROUP BY date ORDER BY date;"
-    @new_projects = graph_with_dates_for sql, 'Projects made public', 'AreaChart', Project.where(private: false, hide: false).where("projects.made_public_at < ?", 31.days.ago).count
-
-    sql = "SELECT to_char(created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM users WHERE (users.invitation_sent_at IS NULL OR users.invitation_accepted_at IS NOT NULL) AND date_part('days', now() - users.created_at) < 31 GROUP BY date ORDER BY date;"
-    @new_users = graph_with_dates_for sql, 'New users', 'AreaChart', User.invitation_accepted_or_not_invited.where("users.created_at < ?", 31.days.ago).count
+    sql_projects = "SELECT to_char(made_public_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM projects WHERE private = 'f' AND hide = 'f' AND date_part('days', now() - projects.made_public_at) < 31 GROUP BY date ORDER BY date;"
+    @new_projects = graph_with_dates_for sql_projects, 'Projects made public', 'AreaChart', Project.where(private: false, hide: false).where("projects.made_public_at < ?", 31.days.ago).count
 
 
-    sql = "SELECT to_char(created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM respects WHERE date_part('days', now() - respects.created_at) < 31 GROUP BY date ORDER BY date;"
-    @new_respects = graph_with_dates_for sql, 'New respects', 'AreaChart', Respect.where("respects.created_at < ?", 31.days.ago).count
+    sql_users = "SELECT to_char(created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM users WHERE (users.invitation_sent_at IS NULL OR users.invitation_accepted_at IS NOT NULL) AND date_part('days', now() - users.created_at) < 31 AND NOT (users.email ILIKE '%user.hackster.io') GROUP BY date ORDER BY date;"
+    @new_users = graph_with_dates_for sql_users, 'New users', 'AreaChart', User.invitation_accepted_or_not_invited.not_hackster.where("users.created_at < ?", 31.days.ago).count
 
 
-    sql = "SELECT to_char(created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM follow_relations WHERE date_part('days', now() - follow_relations.created_at) < 31 AND follow_relations.followable_type = 'Group' GROUP BY date ORDER BY date;"
-    @new_follows = graph_with_dates_for sql, 'New follows', 'AreaChart', FollowRelation.where(followable_type: 'Group').where("follow_relations.created_at < ?", 31.days.ago).count
+    sql_respects = "SELECT to_char(respects.created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM respects INNER JOIN users ON users.id = respects.user_id AND NOT users.email ILIKE '%user.hackster.io' WHERE date_part('days', now() - respects.created_at) < 31 AND respects.respectable_type = 'Project' GROUP BY date ORDER BY date;"
+    @new_respects = graph_with_dates_for sql_respects, 'New respects', 'AreaChart', Respect.where("respects.created_at < ?", 31.days.ago).joins(:user).where.not("users.email ILIKE '%user.hackster.io'").count
+
+
+    sql_follows = "SELECT to_char(follow_relations.created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM follow_relations INNER JOIN users ON users.id = follow_relations.user_id AND NOT users.email ILIKE '%user.hackster.io' WHERE date_part('days', now() - follow_relations.created_at) < 31 AND follow_relations.followable_type = 'Group' GROUP BY date ORDER BY date;"
+    @new_follows = graph_with_dates_for sql_follows, 'New follows', 'AreaChart', FollowRelation.where(followable_type: 'Group').where("follow_relations.created_at < ?", 31.days.ago).joins(:user).where.not("users.email ILIKE '%user.hackster.io'").count
+
+
+    sql_comments = "SELECT to_char(comments.created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM comments INNER JOIN users ON users.id = comments.user_id WHERE date_part('days', now() - comments.created_at) < 31 AND comments.commentable_type = 'Project' GROUP BY date ORDER BY date;"
+    @new_comments = graph_with_dates_for sql_comments, 'New comments', 'AreaChart', Comment.where(commentable_type: 'Project').where("comments.created_at < ?", 31.days.ago).joins(:user).count
+
+
+    sql_respects = "SELECT to_char(respects.created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM respects INNER JOIN users ON users.id = respects.user_id AND NOT users.email ILIKE '%user.hackster.io' WHERE date_part('days', now() - respects.created_at) < 31 GROUP BY date ORDER BY date;"
+    sql_follows = "SELECT to_char(follow_relations.created_at, 'yyyy-mm-dd') as date, COUNT(*) as count FROM follow_relations INNER JOIN users ON users.id = follow_relations.user_id AND NOT users.email ILIKE '%user.hackster.io' WHERE date_part('days', now() - follow_relations.created_at) < 31 GROUP BY date ORDER BY date;"
+    @new_engagements = graph_with_dates_for [sql_comments, sql_follows, sql_respects, sql_projects], 'New engagements', 'AreaChart', @engagements_count
   end
 
   def build_logs
@@ -170,13 +182,13 @@ class Admin::PagesController < Admin::BaseController
 
   def store
     @total_earned = ReputationEvent.sum(:points)
-    @total_redeemable = ReputationEvent.group(:user_id).having("SUM(points) >= #{Rewardino::Event::MIN_REDEEMABLE_POINTS}").sum(:points).values.sum
-    @total_redeemable_month = ReputationEvent.group(:user_id).having("SUM(points) >= #{Rewardino::Event::MIN_REDEEMABLE_POINTS}").sum(:points).values.map{|v| [Rewardino::Event::MAX_REDEEMABLE_MONLTY, v].min }.sum
-    @total_users = ReputationEvent.group(:user_id).having("SUM(points) >= #{Rewardino::Event::MIN_REDEEMABLE_POINTS}").sum(:points).size
+    @total_redeemable = ReputationEvent.group(:user_id).having("SUM(points) >= #{Rewardino::Event.min_redeemable_points}").sum(:points).values.sum
+    @total_redeemable_month = ReputationEvent.group(:user_id).having("SUM(points) >= #{Rewardino::Event.min_redeemable_points}").sum(:points).values.map{|v| [Rewardino::Event::MAX_REDEEMABLE_MONTHLY, v].min }.sum
+    @total_users = ReputationEvent.group(:user_id).having("SUM(points) >= #{Rewardino::Event.min_redeemable_points}").sum(:points).size
     @categories = ReputationEvent.group(:event_name).order("sum_points desc").sum(:points)
     @total_redeemed_month = Order.valid.where("orders.created_at > ?", Date.today.beginning_of_month).sum(:total_cost)
     @total_redeemed = Order.valid.sum(:total_cost)
-    @pending_orders = Order.processing.count
+    @pending_orders = Order.pending.count
 
     sql = "SELECT users.*, t1.sum FROM (SELECT reputation_events.user_id as user_id, SUM(reputation_events.points) as sum FROM reputation_events GROUP BY user_id) AS t1 INNER JOIN users ON users.id = t1.user_id WHERE t1.sum > 1 AND (NOT (users.roles_mask & ? > 0) OR users.roles_mask IS NULL) ORDER BY t1.sum DESC LIMIT 10;"
     @heroes = User.find_by_sql([sql, 2**User::ROLES.index('admin')])

@@ -52,21 +52,49 @@ module GraphHelper
       data_table = GoogleVisualr::DataTable.new
 
       columns.each do |column|
-        data_table.new_column(column[0], column[1])
+        data_table.new_column(column[0], column[1], column[2], column[3])
       end
 
       data_table.add_rows rows
 
-      options = { width: '100%', height: 350, title: title, hAxis: { textStyle: { color: '#666' }, gridlines: { color: '#eee' } }, color: '#08C', lineWidth: 2, areaOpacity: 0.2, pointSize: 3, chartArea: { backgroundColor: '#fdfdfd' }, legend: { position: 'none' } }
+      options = { width: '100%', height: 350, title: title, hAxis: { textStyle: { color: '#666' }, gridlines: { color: '#eee' } }, color: '#08C', lineWidth: 2, areaOpacity: 0.2, pointSize: 3, chartArea: { backgroundColor: '#fdfdfd' }, legend: { position: 'none' } }  #, tooltip: { isHtml: true }
       options[:series] = [{ targetAxisIndex: 1, type: 'bars' }, {}] if with_cumul
       "GoogleVisualr::Interactive::#{chart_type}".constantize.new(data_table, options)
     end
 
-    def graph_with_dates_for sql, title, chart_type, add_cumul=0, interval_type='day', first_date=nil
-      records_array = ActiveRecord::Base.connection.exec_query(sql)
-      rows = extract_date_and_int_from records_array, add_cumul, interval_type, first_date
+    def graph_with_dates_for sql_queries, title, chart_type, add_cumul=0, interval_type='day', first_date=nil, tooltips=nil
+      sql_queries = [sql_queries] if sql_queries.is_a? String
+      aggregate_rows = []
+      sql_queries.each do |sql|
+        aggregate_rows << get_rows_from_sql(sql, add_cumul, interval_type, first_date)
+      end
+      rows = {}
+      aggregate_rows.each do |agg_row|
+        agg_row.each do |row|
+          val = (row[0].in?(rows) ? rows[row[0]][0] + row[1] : row[1])
+          cumul = (row[0].in?(rows) ? rows[row[0]][1] + row[2] : row[2]) unless add_cumul.zero?
+          rows[row[0]] = add_cumul.zero? ? val : [val, cumul]
+        end
+      end
+      final_rows = []
+      rows.each do |k,v|
+        final_rows << (add_cumul.zero? ? [k, v] : [k, v[0], v[1]])
+      end
       columns = [['string', interval_type.capitalize], ['number', 'Total']]
       columns << ['number', 'Cumul'] unless add_cumul.zero?
-      graph rows, columns, title, chart_type, !add_cumul.zero?
+      # if tooltips
+      #   columns << ['string', nil, nil, 'tooltip']
+      #   copy = final_rows.dup
+      #   final_rows = []
+      #   copy.each_with_index do |row, i|
+      #     final_rows << (add_cumul.zero? ? [row[0], row[1], tooltips[i]] : [row[0], row[1], row[2], tooltips[i]])
+      #   end
+      # end
+      graph final_rows, columns, title, chart_type, !add_cumul.zero?
+    end
+
+    def get_rows_from_sql sql, add_cumul, interval_type, first_date
+      records_array = ActiveRecord::Base.connection.exec_query(sql)
+      extract_date_and_int_from records_array, add_cumul, interval_type, first_date
     end
 end

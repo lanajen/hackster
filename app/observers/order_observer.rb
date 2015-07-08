@@ -7,9 +7,11 @@ class OrderObserver < ActiveRecord::Observer
     record.user.reputation.compute_redeemable!
     record.store_products.each do |product|
       product.update_counters only: [:orders]
+      product.update_attribute :in_stock, product.in_stock-1
       product.save
     end
     record.update_column :placed_at, Time.now
+    NotificationCenter.notify_all :placed, :order, record.id
   end
 
   def after_ship record
@@ -36,10 +38,13 @@ class OrderObserver < ActiveRecord::Observer
 
   def before_save record
     if (record.changed & %w(address_id)).any?
-      record.shipping_cost = record.compute_shipping_cost
+      record.compute_shipping_cost
     end
-    if (record.changed & %w(shipping_cost products_cost)).any?
+    if (record.changed & %w(products_cost)).any?
       record.total_cost = record.compute_total_cost
+    end
+    if (record.changed & %w(shipping_cost_in_currency)).any?
+      OrderPayment.new(record).configure
     end
   end
 end

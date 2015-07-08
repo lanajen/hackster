@@ -30,7 +30,7 @@
                 .cta
                   .price
                     | FREE
-                  a.button data-toggle="modal" data-target="#myModal" Get it now
+                  a.button href=new_platform_path Get it now
               .col-sm-6.enterprise
                 h3 Professional
                 ul
@@ -69,7 +69,7 @@
               li Winners and prize management
               li Continuous promotion
             .cta
-              .price $5,000
+              .price $10,000
               a.button data-toggle="modal" data-target="#myModal" Get it now
 
     section#tutorial
@@ -144,7 +144,7 @@
           = f.input :phone, label: 'Your phone'
           = f.input :location, label: 'Your location', hint: 'City, State, Country'
           = f.input :referral, label: 'Where did you hear about us?', collection: InfoRequest::REFERRALS
-          = f.input :promotional_code, label: 'Promotional code'
+          = f.input :promotional_code, label: 'Referral code'
         .modal-footer
           = f.submit 'Send request', class: 'btn btn-primary'
           button.btn.btn-default data-dismiss="modal" type="button"  Close

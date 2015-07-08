@@ -20,18 +20,30 @@
                     | Free
                   - else
                     = pluralize line.store_product.unit_cost, 'point'
-          tfooter
             tr
-              td.order-label Shipping cost
+              td.order-label
+                ' Shipping cost
+                - if @order.shipping_cost_in_currency.try(:>, 0)
+                  | (paid)
               td.order-cost
-                = pluralize @order.shipping_cost, 'point'
+                - if @order.shipping_cost.try(:>, 0)
+                  = pluralize @order.shipping_cost, 'point'
+                - elsif @order.shipping_cost_in_currency.try(:>, 0)
+                  = number_to_currency @order.shipping_cost_in_currency
+                - else
+                  | Free
 
             tr
               td
                 strong Total cost
               td
                 strong
-                  = pluralize @order.total_cost, 'point'
+                  - if @order.total_cost > 0
+                    = pluralize @order.total_cost, 'point'
+                    - if @order.shipping_cost_in_currency.try(:>, 0)
+                      small< + #{number_to_currency @order.shipping_cost_in_currency}
+                  - else
+                    | Free
   .col-md-4
     .address
       p
@@ -55,7 +67,7 @@
     .box
       .box-content.text-center
         p
-          strong> Do you want more free hardware?
+          strong> Want more free hardware?
         p
           => link_to 'Invite your friends', new_user_invitation_path
-          | and receive 50 points for each sign up. They'll also receive 50 points as a welcome bonus!
+          | and receive #{Rewardino::Event.find(:accepted_invitation_inviter).points} points for each sign up.

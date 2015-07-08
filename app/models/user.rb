@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base
 
+  include Checklist
   include EditableSlug
   include HstoreColumn
   include HstoreCounter
@@ -79,6 +80,7 @@ class User < ActiveRecord::Base
   has_many :followed_users, source_type: 'User', through: :follow_relations, source: :followable
   has_many :grades, as: :gradable
   has_many :invert_follow_relations, class_name: 'FollowRelation', as: :followable
+  has_many :invitees, class_name: self.to_s, as: :invited_by
   has_many :followers, through: :invert_follow_relations, source: :user
   has_many :group_permissions, through: :groups, source: :granted_permissions
   has_many :group_ties, class_name: 'Member', dependent: :destroy
@@ -202,6 +204,11 @@ class User < ActiveRecord::Base
 
   taggable :interest_tags, :skill_tags
 
+  add_checklist :full_name, 'Set a name', 'name.present?', group: :get_started
+  add_checklist :mini_resume, 'Write a short bio', 'mini_resume.present?', group: :get_started
+  add_checklist :avatar, 'Upload an avatar', 'avatar.present?', group: :get_started
+  add_checklist :links, 'Add links to your other web presence', 'has_websites?', group: :get_started
+
   self.per_page = 20
 
   # broadcastable
@@ -307,10 +314,17 @@ class User < ActiveRecord::Base
     where(id: (User.joins(:follow_relations).where("follow_relations.user_id = users.id").distinct('users.id').pluck(:id) + User.joins(:projects).distinct('users.id').pluck(:id) + User.joins(:respects).distinct('users.id').pluck(:id) + User.joins(:comments).distinct('users.id').pluck(:id)).uniq)
   end
 
-  def self.with_subscription notification_type, subscription, invert=false
-    negate = invert ? 'NOT ' : ''
+  def self.with_subscription notification_type, subscription
+    where(query_for_subscription(notification_type, subscription))
+  end
+
+  def self.without_subscription notification_type, subscription
+    where.not(query_for_subscription(notification_type, subscription))
+  end
+
+  def self.query_for_subscription notification_type, subscription
     const = SUBSCRIPTIONS[notification_type.to_sym]
-    where("#{negate}(CAST(users.subscriptions_masks -> '#{notification_type}' AS INTEGER) & #{2**const.keys.index(subscription.to_s)} > 0)")
+    "(CAST(users.subscriptions_masks -> '#{notification_type}' AS INTEGER) & #{2**const.keys.index(subscription.to_s)} > 0)"
   end
 
   def ability
@@ -616,6 +630,12 @@ class User < ActiveRecord::Base
   def subscribe_to_all
     %w(email web).each do |notification_type|
       set_subscriptions_for notification_type, subscriptions_const_for(notification_type).keys
+    end
+  end
+
+  def unsubscribe_from_all
+    %w(email web).each do |notification_type|
+      set_subscriptions_for notification_type, []
     end
   end
 

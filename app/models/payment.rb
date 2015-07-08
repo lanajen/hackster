@@ -4,9 +4,12 @@ class Payment < ActiveRecord::Base
   CREDIT_CARD_RATE = 0.03
   UNPAID_STATES = %w(new sent)
 
-  attr_accessible :recipient_name, :invoice_number, :recipient_email, :amount
+  attr_accessible :recipient_name, :invoice_number, :recipient_email, :amount,
+    :stripe_token
 
   validates :recipient_name, :label, :recipient_email, :amount, presence: true
+
+  belongs_to :payable, polymorphic: true
 
   hstore_column :properties, :label, :string
   hstore_column :properties, :paid_at, :datetime
@@ -15,6 +18,7 @@ class Payment < ActiveRecord::Base
   workflow do
     state :new do
       event :send_email, transitions_to: :sent
+      event :charge, transitions_to: :paid
     end
     state :sent do
       event :charge, transitions_to: :paid
@@ -34,15 +38,16 @@ class Payment < ActiveRecord::Base
         description: label,
         receipt_email: recipient_email
       )
-      update_attribute :paid_at, Time.now
+      update_attributes paid_at: Time.now, stripe_token: token
     rescue Stripe::CardError, Stripe::InvalidRequestError => e
+      puts "Stripe error: #{e.message}"
       halt!
       @stripe_errors = [e.message]
     end
   end
 
   def credit_card_fee
-    amount.to_i * CREDIT_CARD_RATE
+    (amount.to_f * CREDIT_CARD_RATE).round(2)
   end
 
   def unpaid?
@@ -58,7 +63,7 @@ class Payment < ActiveRecord::Base
   end
 
   def total_amount
-    amount.to_i + credit_card_fee
+    (amount.to_f + credit_card_fee).round(2)
   end
 
   private
