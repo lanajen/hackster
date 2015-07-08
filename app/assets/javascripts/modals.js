@@ -57,7 +57,6 @@ $(function () {
   });
 
   $(document).ajaxComplete(function(event, request) {
-    console.log(event, request);
     var alertHtml = request.getResponseHeader('X-Alert');
     var id = request.getResponseHeader('X-Alert-ID');
 
