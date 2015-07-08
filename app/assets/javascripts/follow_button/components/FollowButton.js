@@ -171,7 +171,7 @@ const FollowButton = React.createClass({
 
     return (
       <div>
-        <FlatButton style={buttonStyles} onMouseOver={this.onButtonHover.bind(this, true)} onMouseOut={this.onButtonHover.bind(this, false)} onClick={this.onButtonClick} disabled={disable}>
+        <FlatButton style={buttonStyles} rippleColor="rgba(0,0,0,0)" onMouseOver={this.onButtonHover.bind(this, true)} onMouseOut={this.onButtonHover.bind(this, false)} onClick={this.onButtonClick} disabled={disable}>
           {label}
         </FlatButton>
       </div>
