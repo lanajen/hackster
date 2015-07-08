@@ -157,13 +157,13 @@ const FollowButton = React.createClass({
     if(this.state.spinner) {
       label = <span className="fa fa-spinner fa-spin"></span>
     } else if(this.props.buttonType && this.props.buttonType === 'part') {
-      label = this.state.isFollowing ? (<span><i className="fa fa-check"></i><span>In toolbox!</span></span>) : 
+      label = this.state.isFollowing ? (<span><i className="fa fa-check"></i><span>In toolbox!</span></span>) :
               (<span>I own it!</span>);
-    } else if(this.props.buttonType === 'project') { 
-      label = this.state.isFollowing ? (<span><i className="fa fa-check"></i><span>Made!</span></span>) : 
+    } else if(this.props.buttonType === 'project') {
+      label = this.state.isFollowing ? (<span><i className="fa fa-check"></i><span>Made!</span></span>) :
               (<span><i className="fa fa-code-fork"></i><span>I made one</span></span>);
     } else {
-      label = this.state.isFollowing ? (<span><i className="fa fa-check"></i><span>Following</span></span>) : 
+      label = this.state.isFollowing ? (<span><i className="fa fa-check"></i><span>Following</span></span>) :
               this.props.followable.name ? (<span>Follow {this.props.followable.name}</span>) : (<span>Follow</span>);
     }
 
