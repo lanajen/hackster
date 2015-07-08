@@ -1,3 +1,4 @@
-.disable-ripple {
-  .mui-ripple-circle {display: none}
+.react-follow-button :first-child {
+  overflow: hidden!important;
+  text-overflow: ellipsis!important;
 }

@@ -124,8 +124,6 @@ const FollowButton = React.createClass({
         width: '100%',
         fontSize: '1em',
         padding: '12px 12px 10px',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
         whiteSpace: 'nowrap',
         marginBottom: 5
       },
@@ -134,8 +132,6 @@ const FollowButton = React.createClass({
         width: '100%',
         fontSize: '1em',
         padding: '12px 12px 10px',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
         whiteSpace: 'nowrap',
         marginBottom: 5,
         lineHeight: '1.42'
@@ -171,7 +167,7 @@ const FollowButton = React.createClass({
 
     return (
       <div>
-        <FlatButton style={buttonStyles} rippleColor="rgba(0,0,0,0)" onMouseOver={this.onButtonHover.bind(this, true)} onMouseOut={this.onButtonHover.bind(this, false)} onClick={this.onButtonClick} disabled={disable}>
+        <FlatButton style={buttonStyles} className="react-follow-button" rippleColor="rgba(0,0,0,0)" onMouseOver={this.onButtonHover.bind(this, true)} onMouseOut={this.onButtonHover.bind(this, false)} onClick={this.onButtonClick} disabled={disable}>
           {label}
         </FlatButton>
       </div>
