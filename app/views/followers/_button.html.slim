@@ -1,7 +1,11 @@
 - if user_signed_in?
-  - if current_user.following? followable
-    = link_to content_tag(:i, '', class: 'fa fa-check') + content_tag(:span, "Following"), followers_path(followable_type: followable.class.model_name, followable_id: followable.id, button: 'button'), data: { method: :delete, remote: true }, class: "follow-button btn btn-primary btn-sm disable-link follow-#{followable.class.model_name.to_s.underscore}-#{followable.id}"
-  - else
-    = link_to "Follow", followers_path(followable_type: followable.class.model_name, followable_id: followable.id, source: controller_action, button: 'button'), data: { method: :post, remote: true }, class: "follow-button btn btn-primary btn-sm disable-link follow-#{followable.class.model_name.to_s.underscore}-#{followable.id}"
+  - buttonType = button_type ? button_type : nil
+  - followableName = followable.name && display_name === true ? followable.name : nil
+  - display = button_type === 'text_wide' || button_type === 'part' || button_type === 'project' ? 'display: block;' : 'display: inline-block;'
+
+  = react_component('FollowButton', { currentUserId: current_user.id, buttonType: buttonType, followable: {type: followable.class.model_name.to_s, id: followable.id, name: followableName, source: controller_action} }, {style: display})
 - else
-  = link_to "Follow", new_user_registration_path(redirect_to: create_followers_path(followable_type: followable.class.model_name, followable_id: followable.id), reason: 'follow', m: followable.class.model_name.to_s.underscore, id: followable.id), class: 'follow-button btn btn-primary btn-sm show-simplified-signup', data: { redirect_to: create_followers_path(followable_type: followable.class.model_name, followable_id: followable.id, source: controller_action), source: "follow_#{followable.class.model_name.to_s.underscore}" }
+  = link_to "Follow", new_user_registration_path(redirect_to: create_followers_path(followable_type: followable.class.model_name, followable_id: followable.id), reason: 'follow', m: followable.class.model_name.to_s.underscore, id: followable.id), class: 'follow-button btn btn-primary btn-sm btn-shorter show-simplified-signup', data: { redirect_to: create_followers_path(followable_type: followable.class.model_name, followable_id: followable.id, source: controller_action), source: "follow_#{followable.class.model_name.to_s.underscore}" }
+
+= content_for :js do
+  = javascript_include_tag 'components'

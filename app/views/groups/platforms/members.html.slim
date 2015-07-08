@@ -35,4 +35,4 @@ h1.section-title #{@platform.name} community members
   .text-center= will_paginate @members
 - else
   ' Be the first the follow #{@platform.name}!
-  = render partial: 'followers/button_text', locals: { followable: @platform }
+  = render partial: 'followers/button', locals: { followable: @platform, button_type: 'text', display_name: true }

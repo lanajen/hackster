@@ -38,7 +38,7 @@ section.group-nav.affixable
             li.divider
             li= link_to 'Manage awards', group_edit_awards_path(@group)
       / - if !(can? :manage, @group) or (user_signed_in? and current_user.is? :admin)
-        li= render partial: 'followers/button_text', locals: { followable: @group }
+        li= render partial: 'followers/button', locals: { followable: @group, button_type: 'text', display_name: true }
 
     ul.websites.list-inline.pull-right
       - @group.websites.select{|t,u| @group.send(t).present? }.each do |type, url|

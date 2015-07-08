@@ -68,7 +68,7 @@ module HackerIo
 
     # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
     config.assets.precompile += %w( admin.css email.css bitbucket-widget.min.css bitbucket-widget.min.js slick.eot slick.svg slick.ttf slick.woff datepicker.js datepicker.css tinymce.js tinymce/plugins/link/plugin.js tinymce/plugins/paste/plugin.js tinymce/plugins/code/plugin.js gmaps/google.js follow_iframe.css follow_iframe.js project-thumb.css
-      channel.js whitelabel/arduino/all.css whitelabel/mediateklabs/min.css whitelabel/mediateklabs/min.js )
+      channel.js components.js whitelabel/arduino/all.css whitelabel/mediateklabs/min.css whitelabel/mediateklabs/min.js )
 
     config.active_record.whitelist_attributes = false
 
@@ -100,5 +100,9 @@ module HackerIo
     }
 
     config.middleware.use Rack::Attack
+
+    # React Browserify Transform
+    config.react.addons = true
+    config.browserify_rails.commandline_options = "-t [babelify --optional runtime]"
   end
 end
