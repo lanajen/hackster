@@ -103,7 +103,7 @@
                 - @followers.each do |user|
                   = link_to image_tag(user.decorate.avatar, class: 'img-circle'), user, class: 'thumb'
               .follow-container
-                = render partial: 'followers/button', locals: { followable: @group, button_type: 'text', display_name: true }
+                = render partial: 'followers/button_text', locals: { followable: @group }
 
       - if @platform.projects_count > 0
         section#projects.section-feature

@@ -40,7 +40,7 @@
 
         - if current_user.try(:id) != @user.id
           #platform-follow-div.text-center
-            = render partial: 'followers/button', locals: { followable: @user, button_type: 'text_wide', display_name: true }
+            = render partial: 'followers/button_text_wide', locals: { followable: @user }
             = link_to 'Contact', new_conversation_path(recipient_id: @user.id), class: 'btn btn-default btn-ellipsis btn-block'
 
       - if @user.websites.any?

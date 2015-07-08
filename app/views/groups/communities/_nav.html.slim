@@ -22,7 +22,7 @@
             li= link_to 'Manage members', group_edit_members_path(@group)
             li= link_to 'Invite members', group_new_invitations_path(@group)
       / - if !(can? :manage, @group) or (user_signed_in? and current_user.is? :admin)
-        li= render partial: 'followers/button', locals: { followable: @group, button_type: 'text', display_name: true }
+        li= render partial: 'followers/button_text', locals: { followable: @group }
 
     ul.websites.list-inline.pull-right
       - @group.websites.select{|t,u| u.present? }.each do |type, url|

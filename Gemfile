@@ -16,14 +16,11 @@ gem 'compass-rails', '2.0.4'
 gem 'font-awesome-rails', '4.1.0.0'
 gem 'jquery-rails', '3.0.4'
 gem 'jquery-ui-rails', '4.1.0'
-gem 'react-rails', '~> 1.0'
+gem 'react-rails', '0.13.0.0'
 gem 'sass-rails', '5.0.1'
 gem 'slick_rails', '1.4.1'
 gem 'uglifier', '2.3.1'
 gem 'zocial-rails', '1.0.2'
-
-# npm
-gem "browserify-rails", '1.0.1'
 
 # bower
 gem 'rails-assets-medium-editor', '1.8.14'
@@ -147,7 +144,6 @@ group :development, :test do
   # gem 'rspec-cells'
   gem 'spring'
   # gem 'web-console', '~> 2.0'
-  gem 'byebug'
 end
 
 group :test do

@@ -11,7 +11,6 @@
     javascript:
       $(function(){
         var following = #{@following.to_json.html_safe};
-        
         $.each(following, function(type, ids){
           var joinedIds = ids.map(function(id){
             return '.follow-' + type + '-' + id;
@@ -349,7 +348,7 @@
                   - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
                     .project-actions.row
                       .action-item.col-xs-7= render partial: 'respects/button', locals: { project: @project }
-                      .action-item.col-xs-5= render partial: 'followers/button', locals: { followable: @project, button_type: 'project', display_name: false }
+                      .action-item.col-xs-5= render partial: 'followers/project_button', locals: { followable: @project }
                   = render 'projects/project_embed_button'
                   - if @project.celery_id.present?
                     = link_to content_tag(:i, '', class: 'fa fa-shopping-cart') + content_tag(:span, "Buy it"), '#', 'data-celery' => @project.celery_id, 'data-celery-version' => 'v2', class: 'btn btn-warning btn-ellipsis btn-block'
@@ -432,8 +431,8 @@
                         span.label.label-default Request to join team pending
                     - else
                       = link_to 'I want to join the team!', group_members_path(@project.team), class: 'btn btn-sm btn-warning', data: { method: :post }, id: 'join-button'
-                  / javascript:
-                  /   $(function(){ $('.team-request').insertAfter('#team h4'); });
+                  javascript:
+                    $(function(){ $('.team-request').insertAfter('#team h4'); });
 
               - if @project.credit_lines.any?
                 section.section-thumbs
@@ -578,7 +577,7 @@
                         - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
                           .project-actions.row
                             .action-item.col-xs-7= render partial: 'respects/button', locals: { project: @project }
-                            .action-item.col-xs-5= render partial: 'followers/button', locals: { followable: @project, button_type: 'project', display_name: false }
+                            .action-item.col-xs-5= render partial: 'followers/project_button', locals: { followable: @project }
                         = render 'projects/project_embed_button'
                         .add-to-list
                         - if @project.celery_id.present?
