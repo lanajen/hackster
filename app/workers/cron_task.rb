@@ -103,14 +103,14 @@ class CronTask < BaseWorker
 
   def launch_cron
     CacheWorker.perform_async 'warm_cache'
-    MailchimpListManager.new(ENV['MAILCHIMP_API_KEY'], ENV['MAILCHIMP_LIST_ID']).update_list
-    send_assignment_reminder
-    lock_assignment
-    expire_challenges
-    evaluate_badges
-    send_announcement_notifications
-    cleanup_duplicates
-    clean_invitations
+    CronTask.perform_async 'update_mailchimp'
+    CronTask.perform_async 'send_assignment_reminder'
+    CronTask.perform_async 'lock_assignment'
+    CronTask.perform_async 'expire_challenges'
+    CronTask.perform_async 'evaluate_badges'
+    CronTask.perform_async 'send_announcement_notifications'
+    CronTask.perform_async 'cleanup_duplicates'
+    CronTask.perform_async 'clean_invitations'
   end
 
   def launch_daily_cron
@@ -171,6 +171,10 @@ class CronTask < BaseWorker
       end
       assignment.update_column :reminder_sent_at, Time.now
     end
+  end
+
+  def update_mailchimp
+    MailchimpListManager.new(ENV['MAILCHIMP_API_KEY'], ENV['MAILCHIMP_LIST_ID']).update!
   end
 
   private

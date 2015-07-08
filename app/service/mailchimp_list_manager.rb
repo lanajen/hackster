@@ -4,7 +4,7 @@ class MailchimpListManager
     @list_id = list_id
   end
 
-  def update_list
+  def update!
     subscribers = find_subscribers_that_need_update subscribe: true
     add_subscribers_in_batches(subscribers) unless subscribers.empty?
 
