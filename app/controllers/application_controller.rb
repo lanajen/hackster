@@ -1,9 +1,12 @@
 class ApplicationController < ActionController::Base
+  force_ssl if: :ssl_configured?
+
   include SocialLinkHelper
   include UrlHelper
 
   include Rewardino::ControllerExtension
 
+  BOGUS_REQUEST_FORMATS = ['*/*;', '/;', 'hc/url;*/*']
   DEFAULT_RESPONSE_FORMAT = :html
   KNOWN_EVENTS = {
     'hob' => 'Identified as hobbyist',
@@ -484,7 +487,7 @@ class ApplicationController < ActionController::Base
     end
 
     def set_default_response_format
-      request.format = DEFAULT_RESPONSE_FORMAT if request.format.to_sym.nil?
+      request.format = DEFAULT_RESPONSE_FORMAT if request.format.in? BOGUS_REQUEST_FORMATS
     end
 
     def set_flash_message type, message
@@ -610,5 +613,9 @@ class ApplicationController < ActionController::Base
 
     def show_profile_needs_care?
       user_signed_in? and !(params[:controller] == 'users' and params[:action] == 'after_registration') and current_user.profile_needs_care? and current_user.receive_notification?('1311complete_profile')
+    end
+
+    def ssl_configured?
+      !Rails.env.development?
     end
 end

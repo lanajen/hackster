@@ -7,7 +7,7 @@ class SlugHistory < ActiveRecord::Base
     project = Project.find project_id
     histories = project.slug_histories
     uris = { project.uri => false }
-    project.users.each{ |u| puts project.uri(u.user_name).to_s; uris[project.uri(u.user_name)] = false }
+    project.users.each{ |u| uris[project.uri(u.user_name)] = false }
 
     histories.each do |history|
       # if a slug exists we mark it so it's last updated

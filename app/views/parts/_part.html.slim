@@ -9,6 +9,8 @@
     .col-md-2.col-md-push-8.action-buttons
       = render partial: 'followers/part_button', locals: { followable: part }
       = link_to pluralize(part.projects_count, 'project'), part, class: 'btn btn-link btn-block btn-sm'
+      - if part.owners_count > 0
+        .text-center.text-muted.small #{part.owners_count} own it
 
     .col-md-8.col-md-pull-2.description
       - if part.description.present?
@@ -32,9 +34,13 @@
           li= link_to 'Buy it', part.store_link, target: '_blank'
         - if part.product_page_link.present?
           li= link_to 'Official page', part.product_page_link, target: '_blank'
+        - if part.get_started_link.present?
+          li= link_to 'Get started', part.get_started_link, target: '_blank'
         - if part.documentation_link.present?
-          li= link_to 'Documentation', part.documentation_link, target: '_blank'
+          li= link_to 'Full documentation', part.documentation_link, target: '_blank'
         - if part.libraries_link.present?
           li= link_to 'Libraries', part.libraries_link, target: '_blank'
         - if part.datasheet_link.present?
           li= link_to 'Datasheet', part.datasheet_link, target: '_blank'
+        - if part.review_link.present?
+          li= link_to 'Hackster review', part.review_link, target: '_blank'

@@ -20,7 +20,7 @@
   .col-xs-12.col-sm-4
     .panel.panel-default.panel-dashboard
       .panel-heading
-        h3.panel-title Total redeemable (over #{Rewardino::Event::MIN_REDEEMABLE_POINTS})
+        h3.panel-title Total redeemable (>#{Rewardino::Event.min_redeemable_points} pts)
       .panel-body
         ==> number_with_delimiter @total_redeemable
 
@@ -35,7 +35,7 @@
   .col-xs-12.col-sm-4
     .panel.panel-default.panel-dashboard
       .panel-heading
-        h3.panel-title How many users can redeem
+        h3.panel-title Users who can redeem (>#{Rewardino::Event.min_redeemable_points} pts)
       .panel-body
         ==> number_with_delimiter @total_users
 

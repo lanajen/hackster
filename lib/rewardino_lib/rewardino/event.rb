@@ -6,11 +6,12 @@ module Rewardino
     extend Ambry::Model
     extend Ambry::ActiveModel
 
-    MAX_REDEEMABLE_MONLTY = 1000
+    MAX_REDEEMABLE_MONTHLY = 1000
     MIN_REDEEMABLE_POINTS = 350
 
     field :code, :points, :date_method, :models_method, :users_method,
-      :user_method, :compute_method, :model_table, :name, :description
+      :user_method, :compute_method, :model_table, :name, :description,
+      :boolean_method, :users_count_method
 
     validates_presence_of :code
     validates_uniqueness_of :code
@@ -24,58 +25,41 @@ module Rewardino
     class << self
       alias_method :find_key, :find
 
+      def compute_for_user user_id, date=nil
+        all.each do |event|
+          event.compute_for_user user_id, date
+        end
+      end
+
       def find code
         find_key code.to_sym
       end
+
+      def min_redeemable_points
+        StoreProduct.cheapest.unit_cost || MIN_REDEEMABLE_POINTS
+      end
     end
 
-    def compute date=nil
-      if compute_method
-        compute_method.call(self, date)
-      else
-        models = eval(models_method)
-        date_column = case date_method
-        when Array
-          date_method.first
-        else
-          date_method
-        end
-        models = models.where("#{model_table}.#{date_column} > ?", date) if date
-        models.each do |model|
-          users = if users_method
-            users = model
-            users_method.split('.').each do |method|
-              users = users.send(method)
-            end
-            users
-          elsif user_method
-            user = model
-            user_method.split('.').each do |method|
-              user = user.send(method)
-            end
-            [user]
-          else
-            [model]
-          end
+    def compute_for_user user_id, date=nil
+      user = User.find_by_id user_id
+      return unless user
 
-          event_date = case date_method
-          when Array
-            result = nil
-            date_method.each do |method|
-              result = model.send(method)
-              break if result.present?
-            end
-            result
-          else
-            model.send(date_method)
-          end
+      if compute_method
+        compute_method.call(self, user, date)
+      elsif !boolean_method or boolean_method.call(self, user)
+        models = models_method.call(user)
+        # models = models.where("#{model_table}.#{date_column} > ?", date) if date
+
+        models.each do |model|
+
+          event_date = date_method.call(model)
           next unless event_date
 
-          prorated_points = users.count > 1 ? (points / users.count.to_f).ceil.to_i : points
-          users.each do |user|
-            next unless user
-            ReputationEvent.create event_name: code, event_model: model, points: prorated_points, event_date: event_date, user_id: user.id
-          end
+          users_count = users_count_method ? users_count_method.call(model) : 1
+
+          prorated_points = users_count > 1 ? (points / users_count.to_f).ceil.to_i : points
+
+          ReputationEvent.create event_name: code, event_model: model, points: prorated_points, event_date: event_date, user_id: user.id
         end
       end
     end

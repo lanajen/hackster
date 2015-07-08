@@ -506,6 +506,11 @@
                             h4= link_to project.name, project
                             / # p= render partial: 'projects/by_team', locals: { project: project }
 
+              - if @project.made_public_at
+                section.section-thumbs
+                  h4 Published on
+                  = l @project.made_public_at, format: :long_date
+
               - unless @project.assignment.present? and @project.assignment.private_grades and !@can_edit
                 section.section-thumbs.hidden-xs.hidden-sm
                   h4

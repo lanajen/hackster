@@ -1,20 +1,17 @@
-# TODO:
-# => email notif when shipped
-
 class Order < ActiveRecord::Base
   include ApplicationHelper
   include HstoreCounter
   include Workflow
 
   INVALID_STATES = %w(new).freeze
-  REDUCED_SHIPPING_COUNTRIES = ['United States'].freeze
-  REDUCED_SHIPPING_COST = 50
-  INTERNATIONAL_SHIPPING_COST = 100
+  PENDING_STATES = %w(pending_verification processing).freeze
+  NO_DUTY_COUNTRIES = ['United States'].freeze
 
   belongs_to :address
   belongs_to :user
   has_many :order_lines, dependent: :destroy
   has_many :store_products, through: :order_lines
+  has_one :payment, as: :payable
 
   attr_accessible :tracking_number, :address_id, :workflow_state,
     :order_lines_attributes
@@ -28,7 +25,10 @@ class Order < ActiveRecord::Base
 
   workflow do
     state :new do
-      event :pass_order, transitions_to: :processing, if: :can_pass_order?
+      event :pass_order, transitions_to: :pending_verification, if: :can_pass_order?
+    end
+    state :pending_verification do
+      event :mark_verified, transitions_to: :processing
     end
     state :processing do
       event :ship, transitions_to: :shipped
@@ -48,6 +48,10 @@ class Order < ActiveRecord::Base
 
   def self.not_new
     where.not workflow_state: :new
+  end
+
+  def self.pending
+    where workflow_state: PENDING_STATES
   end
 
   def self.processing
@@ -70,6 +74,17 @@ class Order < ActiveRecord::Base
     user.reputation.redeemable_points - total_cost.to_i
   end
 
+  def can_pass_order?
+    validate_address_is_present
+    validate_at_least_one_order_line
+    validate_has_enough_points
+    validate_order_limits
+    validate_products_in_stock
+    validate_products_have_not_reached_limit
+
+    errors.empty?
+  end
+
   def compute_products_cost!
     update_attribute :products_cost, compute_products_cost
   end
@@ -79,13 +94,18 @@ class Order < ActiveRecord::Base
   end
 
   def compute_shipping_cost
-    self.shipping_cost = if address
-      destination_country.in?(REDUCED_SHIPPING_COUNTRIES) ? REDUCED_SHIPPING_COST : INTERNATIONAL_SHIPPING_COST
+    unless address
+      self.shipping_cost_in_currency = nil
+      return
     end
+
+    self.shipping_cost_in_currency = store_products.map do |product|
+      product.charge_shipping? ? product.shipping_cost_to(address) : 0
+    end.sum
   end
 
   def compute_total_cost
-    self.total_cost = shipping_cost.to_i + products_cost.to_i
+    self.total_cost = products_cost.to_i
   end
 
   def destination_country
@@ -93,16 +113,11 @@ class Order < ActiveRecord::Base
   end
 
   def enough_points?
-    total_cost and total_cost <= user.reputation.redeemable_points
+    total_cost and user.reputation and total_cost <= user.reputation.redeemable_points
   end
 
-  def can_pass_order?
-    validate_address_is_present
-    validate_at_least_one_order_line
-    validate_has_enough_points
-    validate_order_limits
-
-    errors.empty?
+  def might_pay_duty?
+    !NO_DUTY_COUNTRIES.include? destination_country
   end
 
   def points_delta
@@ -131,5 +146,24 @@ class Order < ActiveRecord::Base
     def validate_order_limits
       errors.add :base, "You've reached the limit of one item per person per month during the trial phase. #{time_diff_in_natural_language Date.today, Date.today.beginning_of_month + 1.month} left before you can place a new order." if user.orders.valid.this_month.count >= 1 or user.total_orders_this_month >= 1
       errors.add :base, "You can only order one item per month during the trial phase. Please choose your favorite and remove the others from the cart." if order_lines_count.to_i > 1
+    end
+
+    def validate_products_in_stock
+      store_products.each do |product|
+        unless product.in_stock?
+          errors.add :base, "#{product.source.name} is out of stock. Please remove it from your cart and add a different product."
+          return
+        end
+      end
+    end
+
+    def validate_products_have_not_reached_limit
+      # TODO: validate that current order doesn't have more products of the same kind than possible
+      store_products.each do |product|
+        if product.limit_reached_for? user
+          errors.add :base, "You can order a maximum of #{ActionController::Base.helpers.pluralize product.limit_per_person, 'unit'} per person for #{product.source.name}."
+          return
+        end
+      end
     end
 end

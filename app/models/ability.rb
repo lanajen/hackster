@@ -2,11 +2,11 @@ class Ability
   include CanCan::Ability
 
   def initialize(resource)
-    alias_action :read, :edit, :update, :update_workflow, to: :admin
+    alias_action :read, :edit, :update, :update_workflow, :moderate, to: :admin
 
     @user = resource
 
-    can :read, [Comment, User, Thought]
+    can :read, [Comment, User, Thought, Challenge]
     cannot :read, [Project, Group, SkillRequest]
     can :read, [Project, Group], private: false
     can :read, Assignment do |assignment|
@@ -27,7 +27,6 @@ class Ability
     can :join, Group do |group|
       !@user.persisted? and group.access_level == 'anyone'
     end
-    can :read, Challenge, workflow_state: Challenge::VISIBLE_STATES
     can :create, Group
 
     member if @user.persisted?
@@ -182,5 +181,6 @@ class Ability
 
   def moderator
     can :manage, Project
+    can :moderate, Group
   end
 end

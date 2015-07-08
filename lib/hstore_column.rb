@@ -49,6 +49,8 @@ module HstoreColumn
           val.to_i
         when :datetime
           val.to_datetime.to_i
+        when :json_object
+          val.to_s
         else
           val
         end if val
@@ -105,6 +107,8 @@ module HstoreColumn
           value ? value.to_f : nil
         when :integer
           value ? value.to_i : nil
+        when :json_object
+          value.present? ? JSON.parse(value) : nil
         when :string
           value
         else
@@ -130,6 +134,6 @@ module HstoreColumn
     base.send :extend, ClassMethods
     base.send :include, InstanceMethods
     base.send :class_attribute, :hstore_columns, instance_writer: false
-    base.send :after_save, :hstore_reset_was_attributes
+    base.send :after_commit, :hstore_reset_was_attributes
   end
 end

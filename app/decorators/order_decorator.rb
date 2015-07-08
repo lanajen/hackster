@@ -3,7 +3,7 @@ class OrderDecorator < ApplicationDecorator
     case model.workflow_state.to_sym
     when :new
       'New order'
-    when :processing
+    when :processing, :pending_verification
       h.content_tag(:strong, "Your order is confirmed!") + " We'll send you an email when it ships."
     when :shipped
       message = h.content_tag(:strong, "Your order has been shipped!")

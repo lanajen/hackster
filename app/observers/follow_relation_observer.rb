@@ -32,7 +32,7 @@ class FollowRelationObserver < ActiveRecord::Observer
   private
     def update_counters record
       case record.followable.class.name
-      when 'Part'
+      when 'HardwarePart', 'SoftwarePart', 'ToolPart', 'Part'
         record.followable.update_counters only: [:owners]
         record.user.update_counters only: [:owned_parts]
       when 'Project'

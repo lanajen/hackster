@@ -38,7 +38,7 @@ class Part < ActiveRecord::Base
     :parent_part_relations, allow_destroy: true
 
   has_websites :websites, :store, :documentation, :libraries, :datasheet,
-    :product_page
+    :product_page, :review, :get_started
 
   counters_column :counters_cache, long_format: true
   has_counter :all_projects, 'all_projects.public.count'
