@@ -2,6 +2,8 @@ import request from 'superagent';
 import postal from 'postal';
 import _ from 'lodash';
 
+const channel = postal.channel('followers');
+
 const followersStore = {
 
   followersStore: {},
@@ -12,16 +14,15 @@ const followersStore = {
     if(!this.followersStore.length && this.isFetching === false) {
       this.isFetching = true;
       let promise = this.fetchInitialData(csrfToken);
+
       promise.then(function(res) {
         let store = res.body.following;
         this.followersStore = store;
-        
-        postal.publish({
-          channel: 'followers',
-          topic: 'initial.store',
-          data: store
-        });
-      }.bind(this)).catch(function(err) {console.log('Fetch Error: ' + err)});
+        channel.publish('initial.store', store);
+      }.bind(this)).catch(function(err) {
+        console.log('Fetch Error: ' + err)
+      });
+
     }
   },
 
@@ -53,11 +54,7 @@ const followersStore = {
     store[type].push(id);
     this.followersStore = store;
 
-    postal.publish({
-      channel: 'followers',
-      topic: 'add',
-      data: store
-    });
+    channel.publish('store.changed', store);
   }, 
 
   removeFromStore(id, type) {
@@ -72,7 +69,7 @@ const followersStore = {
       }
     }
 
-    console.log('newStore', store);
+    channel.publish('store.changed', store);
     this.followersStore = store;
   }
 

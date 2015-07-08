@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatButton } from 'material-ui';
+import { FlatButton, Dialog } from 'material-ui';
 import { addToFollowing, removeFromFollowing, getFollowing } from '../../utils/ReactAPIUtils';
 import FollowersStore from '../stores/FollowersStore';
 import postal from 'postal';
@@ -13,22 +13,24 @@ const FollowButton = React.createClass({
     return {
       isHovered: false,
       isFollowing: null,
-      spinner: false
+      spinner: false,
+      dialogBody: ''
     };
   },
 
   componentWillMount() {
-    this.sub = postal.subscribe({
-      channel: 'followers',
-      topic: 'initial.store',
-      callback: function(store) {
-        this.setFollowing(store);
-      }.bind(this)
-    });
+    this.initialSub = channel.subscribe('initial.store', function(store) {
+      this.setFollowing(store);
+    }.bind(this));
+
+    this.updateSub = channel.subscribe('store.changed', function(store) {
+      this.setFollowing(store);
+    }.bind(this));
   },
 
   componentWillUnmount: function() {
-    this.sub.unsubscribe();
+    this.initialSub.unsubscribe();
+    this.updateSub.unsubscribe();
   },
 
   setFollowing(store) {
@@ -37,7 +39,7 @@ const FollowButton = React.createClass({
       let type = this.props.followable.type.toLowerCase();
       let isFollowing = false;
       let following = store || FollowersStore.getStore();
-      console.log('FollowingStore', following);
+
       _.forEach(following[type], function(item) {
         if(item === id) {
           isFollowing = true;
@@ -62,7 +64,6 @@ const FollowButton = React.createClass({
     e.preventDefault();
     e.stopPropagation();
     let promise = this.handleFollowingCall();
-    let isFollowing;
     let id = this.props.followable.id;
     let type = this.props.followable.type.toLowerCase();
 
@@ -72,13 +73,14 @@ const FollowButton = React.createClass({
     });
 
     promise.then(function(response) {
-      // Updates Store and sets isFollowing.
-      isFollowing = this.state.isFollowing;
-      isFollowing === false ? FollowersStore.addToStore(id, type) : FollowersStore.removeFromStore(id, type);
-      this.setFollowing();
+      if(type === 'part') {
+        this.handleDialog(response);
+      }
+
+      this.updateStore(id, type);
     }.bind(this)).catch(function(err) {
       // Handle Error Message.
-      console.log(err);
+      console.log('Request Error: ' + err);
     });
   },
 
@@ -93,6 +95,22 @@ const FollowButton = React.createClass({
     }
 
     return promise;
+  },
+
+  updateStore(id, type) {
+    let isFollowing = this.state.isFollowing;
+    isFollowing === false ? FollowersStore.addToStore(id, type) : FollowersStore.removeFromStore(id, type);
+  },
+
+  handleDialog(response) {
+    console.log('RES', response);
+    let html = response.text;
+
+    this.setState({
+      dialogBody: html
+    });
+
+    this.refs.dialog.show();
   },
 
   getStyles() {
@@ -136,6 +154,11 @@ const FollowButton = React.createClass({
         whiteSpace: 'nowrap',
         marginBottom: 5,
         lineHeight: '1.42'
+      },
+      part: {
+        display: 'block',
+        width: '100%',
+        fontSize: '0.85em'
       }
     };
     return styles;
@@ -165,7 +188,9 @@ const FollowButton = React.createClass({
         <FlatButton style={buttonStyles} onMouseOver={this.onButtonHover.bind(this, true)} onMouseOut={this.onButtonHover.bind(this, false)} onClick={this.onButtonClick}>
           {label}
         </FlatButton>
+        <Dialog ref="dialog">{this.state.dialogBody}</Dialog>
       </div>
+
     );
   }
 
