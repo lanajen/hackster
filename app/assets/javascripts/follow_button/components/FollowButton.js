@@ -116,6 +116,19 @@ const FollowButton = React.createClass({
         borderTopLeftRadius: 0,
         borderBottomLeftRadius: 0
       },
+      'append_sandwich': {
+        width: '100%',
+        borderRadius: 0,
+        borderTop: '2px solid #333',
+        fontSize: '0.85em'
+      },
+      'append_hacker': {
+        width: '100%',
+        borderTopLeftRadius: 0,
+        borderTopRightRadius: 0,
+        borderTop: '2px solid #333',
+        fontSize: '0.85em'
+      },
       text: {
         fontSize: '1em'
       },
