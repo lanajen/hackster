@@ -49,6 +49,7 @@ class CronTask < BaseWorker
     user.build_reputation unless user.reputation
     reputation = user.reputation
     reputation.compute
+    reputation.compute_redeemable
     reputation.save
   end
 
