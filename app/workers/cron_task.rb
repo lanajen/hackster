@@ -67,7 +67,7 @@ class CronTask < BaseWorker
     date = redis.get('last_update')
     # date = Time.at(date.to_i) if date.present?
     User.invitation_accepted_or_not_invited.find_each do |user|
-      compute_reputation user.id, date.presence
+      CronTask.perform_async 'compute_reputation', user.id, date.presence
     end
     redis.set 'last_update', Time.now.to_i
   end
