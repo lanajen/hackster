@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatButton, Dialog } from 'material-ui';
+import { FlatButton } from 'material-ui';
 import { addToFollowing, removeFromFollowing, getFollowing } from '../../utils/ReactAPIUtils';
 import FollowersStore from '../stores/FollowersStore';
 import postal from 'postal';
@@ -13,8 +13,7 @@ const FollowButton = React.createClass({
     return {
       isHovered: false,
       isFollowing: null,
-      spinner: false,
-      dialogBody: ''
+      spinner: false
     };
   },
 
@@ -73,10 +72,6 @@ const FollowButton = React.createClass({
     });
 
     promise.then(function(response) {
-      if(type === 'part') {
-        this.handleDialog(response);
-      }
-
       this.updateStore(id, type);
     }.bind(this)).catch(function(err) {
       // Handle Error Message.
@@ -100,17 +95,6 @@ const FollowButton = React.createClass({
   updateStore(id, type) {
     let isFollowing = this.state.isFollowing;
     isFollowing === false ? FollowersStore.addToStore(id, type) : FollowersStore.removeFromStore(id, type);
-  },
-
-  handleDialog(response) {
-    console.log('RES', response);
-    let html = response.text;
-
-    this.setState({
-      dialogBody: html
-    });
-
-    this.refs.dialog.show();
   },
 
   getStyles() {
@@ -188,7 +172,6 @@ const FollowButton = React.createClass({
         <FlatButton style={buttonStyles} onMouseOver={this.onButtonHover.bind(this, true)} onMouseOut={this.onButtonHover.bind(this, false)} onClick={this.onButtonClick}>
           {label}
         </FlatButton>
-        <Dialog ref="dialog">{this.state.dialogBody}</Dialog>
       </div>
 
     );
