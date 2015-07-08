@@ -69,7 +69,7 @@ module HackerIo
 
     # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
     config.assets.precompile += %w( admin.css email.css bitbucket-widget.min.css bitbucket-widget.min.js slick.eot slick.svg slick.ttf slick.woff datepicker.js datepicker.css tinymce.js tinymce/plugins/link/plugin.js tinymce/plugins/paste/plugin.js tinymce/plugins/code/plugin.js gmaps/google.js follow_iframe.css follow_iframe.js project-thumb.css
-      channel.js components.js whitelabel/arduino/all.css whitelabel/mediateklabs/min.css whitelabel/mediateklabs/min.js )
+      channel.js  whitelabel/arduino/all.css whitelabel/mediateklabs/min.css whitelabel/mediateklabs/min.js )
 
     config.active_record.whitelist_attributes = false
 

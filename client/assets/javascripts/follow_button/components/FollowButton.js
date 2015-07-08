@@ -1,43 +1,58 @@
 import React from 'react';
 import { FlatButton } from 'material-ui';
 import { addToFollowing, removeFromFollowing, getFollowing } from '../../utils/ReactAPIUtils';
-import FollowersStore from '../stores/FollowersStore';
-import postal from 'postal';
 import _ from 'lodash';
-
-const channel = postal.channel('followers');
 
 const FollowButton = React.createClass({
 
   getInitialState() {
     return {
       isHovered: false,
+      csrfToken: null,
       isFollowing: null,
       spinner: false
     };
   },
 
   componentWillMount() {
-    this.sub = postal.subscribe({
-      channel: 'followers',
-      topic: 'initial.store',
-      callback: function(store) {
-        this.setFollowing(store);
-      }.bind(this)
-    });
+    if(this.state.csrfToken === null) {
+      let metaList, csrfToken;
+      // If we have access to document, grab the csrf-token from the meta tag.
+      if(document) {
+        metaList = document.getElementsByTagName('meta');
+        csrfToken = _.findWhere(metaList, {name: 'csrf-token'}).content;
+
+        this.setState({csrfToken: csrfToken});
+      }
+    }
+    // Gets an object of the Current Users followers from Local Storage and checks if this buttons followable id is among them.
+    // if(global.localStorage) {
+    //   this.setFollowing();
+    // }
+    if(!global.localStorage.getItem('following')) {
+      let promise = _.once(getFollowing)();
+      promise.then(function(res) {
+        console.log(res);
+        global.localStorage.setItem('following', JSON.stringify({yo: 'yoyoyo'}));
+      }).catch(function(err) {
+        console.log(err);
+      });
+    } else {
+      console.log('LS EXISTS!');
+    }
   },
 
-  componentWillUnmount: function() {
-    this.sub.unsubscribe();
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextState !== this.state;
   },
 
-  setFollowing(store) {
+  setFollowing() {
     if(this.props.followable) {
       let id = this.props.followable.id;
       let type = this.props.followable.type.toLowerCase();
+      let following = JSON.parse(global.localStorage.getItem('following'));
       let isFollowing = false;
-      let following = store || FollowersStore.getStore();
-      console.log('FollowingStore', following);
+      
       _.forEach(following[type], function(item) {
         if(item === id) {
           isFollowing = true;
@@ -62,9 +77,7 @@ const FollowButton = React.createClass({
     e.preventDefault();
     e.stopPropagation();
     let promise = this.handleFollowingCall();
-    let isFollowing;
-    let id = this.props.followable.id;
-    let type = this.props.followable.type.toLowerCase();
+    let isFollowing = this.state.isFollowing;
 
     // Sets label to spinner.
     this.setState({
@@ -72,9 +85,8 @@ const FollowButton = React.createClass({
     });
 
     promise.then(function(response) {
-      // Updates Store and sets isFollowing.
-      isFollowing = this.state.isFollowing;
-      isFollowing === false ? FollowersStore.addToStore(id, type) : FollowersStore.removeFromStore(id, type);
+      // Updates Local Storage and sets isFollowing.
+      isFollowing === false ? this.addToLocalStorage(this.props.followable.id) : this.removeFromLocalStorage(this.props.followable.id);
       this.setFollowing();
     }.bind(this)).catch(function(err) {
       // Handle Error Message.
@@ -87,12 +99,30 @@ const FollowButton = React.createClass({
         followable = this.props.followable;
 
     if(!this.state.isFollowing) {
-      promise = addToFollowing(followable.id, followable.type, this.props.csrfToken);
+      promise = addToFollowing(followable.id, followable.type, this.state.csrfToken);
     } else {
-      promise = removeFromFollowing(followable.id, followable.type, this.props.csrfToken);
+      promise = removeFromFollowing(followable.id, followable.type, this.state.csrfToken);
     }
 
     return promise;
+  },
+
+  addToLocalStorage(id) {
+    let storage = JSON.parse(global.localStorage.getItem('following'));
+    let type = this.props.followable.type.toLowerCase();
+    console.log('TEST', storage, type);
+    storage[type].push(id);
+    global.localStorage.setItem('following', JSON.stringify(storage));
+  },
+
+  removeFromLocalStorage(id) {
+    let storage = JSON.parse(global.localStorage.getItem('following'));
+    let type = this.props.followable.type.toLowerCase();
+    let newStorage = _.filter(storage[type], function(item) {
+      return item !== id;
+    });
+
+    global.localStorage.setItem('following', JSON.stringify(storage));
   },
 
   getStyles() {

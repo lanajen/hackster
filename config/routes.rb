@@ -40,6 +40,7 @@ HackerIo::Application.routes.draw do
         get :autocomplete, on: :collection
       end
       resources :widgets, only: [:destroy, :update, :create]
+      resources :followers, only: [:index], defaults: { format: :json }
       match "*all" => "base#cors_preflight_check", via: :options
     end
   end

@@ -11,8 +11,6 @@
     javascript:
       $(function(){
         var following = #{@following.to_json.html_safe};
-        // Push to LocalStorage to make buttons cacheable.
-        localStorage.setItem('following', JSON.stringify(following));
         
         $.each(following, function(type, ids){
           var joinedIds = ids.map(function(id){

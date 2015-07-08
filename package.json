@@ -10,12 +10,13 @@
     "material-ui": "^0.9.1",
     "node-uuid": "^1.4.3",
     "object-assign": "^2.0.0",
+    "postal": "^1.0.6",
     "promise": "^7.0.1",
     "react": "^0.13.3",
-    "react-tap-event-plugin": "^0.1.6",
     "react-codemirror": "^0.1.2",
     "react-input-autosize": "^0.4.4",
     "react-select": "^0.4.9",
+    "react-tap-event-plugin": "^0.1.6",
     "react-tween-state": "0.0.5",
     "react-vendor-prefix": "0.0.1",
     "superagent": "^1.2.0",
@@ -42,9 +43,11 @@
     "react-tools": "^0.13.2",
     "rewire": "^2.3.3",
     "sinon": "^1.14.1",
-    "webpack": "^1.8.11"
+    "webpack": "^1.10.1"
   },
   "scripts": {
+    "browserify": "browserify -t [babelify --optional runtime] -e ./client/assets/javascripts/follow_button/app.js -o ./app/assets/javascripts/bundle.js",
+    "build": "webpack --config ./client/webpack.config.js --progress --profile --colors",
     "test": "mocha --recursive --harmony --compilers js:babel/register --require ./app/assets/javascripts/tests/init.js ./app/assets/javascripts/**/**/__tests__/*-test.js"
   }
 }
