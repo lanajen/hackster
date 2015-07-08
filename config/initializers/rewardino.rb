@@ -278,21 +278,20 @@ Rewardino::Event.create!({
   name: 'Project approved',
   description: "One of your project got approved to show on Hackster",
   points: 50,
-  date_method: 'made_public_at',
-  model_table: 'projects',
-  models_method: 'Project.own.self_hosted.approved',
-  users_method: 'users',
+  date_method: -> (project) { project.review_time || project.made_public_at },
+  # model_table: 'projects',
+  models_method: -> (user) { user.projects.own.self_hosted.approved },
+  users_count_method: -> (project) { project.team_members_count }
 })
 
 Rewardino::Event.create!({
-  code: :new_respect,
-  name: 'New respect',
-  description: "One of your projects received a new respect",
-  points: 10,
-  date_method: 'created_at',
-  users_method: 'respectable.users',
-  model_table: 'respects',
-  models_method: "Respect.where(respectable_type: 'Project').joins('INNER JOIN projects ON projects.id = respects.respectable_id').where(\"projects.guest_name = '' OR projects.guest_name IS NULL\")",
+  code: :accepted_invitation_inviter,
+  name: 'Friend invitation accepted',
+  description: "A friend you invited has accepted their invitation",
+  points: 15,
+  date_method: -> (user) { user.invitation_accepted_at },
+  # model_table: 'users',
+  models_method: -> (user) { user.invitees.invitation_accepted }
 })
 
 Rewardino::Event.create!({
@@ -300,41 +299,20 @@ Rewardino::Event.create!({
   name: 'New comment',
   description: "You posted a new comment",
   points: 10,
-  date_method: 'created_at',
-  user_method: 'user',
-  model_table: 'comments',
-  models_method: "Comment.have_owner.where(commentable_type: 'Project')",
+  date_method: -> (comment) { comment.created_at },
+  # model_table: 'comments',
+  models_method: -> (user) { user.comments.where(commentable_type: 'Project') }
 })
 
 Rewardino::Event.create!({
-  code: :accepted_invitation_inviter,
-  name: 'Friend invitation accepted',
-  description: "A friend you invited has accepted their invitation",
-  points: 20,
-  date_method: 'invitation_accepted_at',
-  user_method: 'invited_by',
-  model_table: 'users',
-  models_method: 'User.invitation_accepted',
-})
-
-# Rewardino::Event.create!({
-#   code: :accepted_invitation_invitee,
-#   name: 'Joined after being invited',
-#   description: "You joined Hackster by accepting an invitation from a friend",
-#   points: 25,
-#   date_method: 'invitation_accepted_at',
-#   model_table: 'users',
-#   models_method: 'User.invitation_accepted',
-# })
-
-Rewardino::Event.create!({
-  code: :signup_user,
-  name: 'Registered',
-  description: "Welcome to Hackster!",
-  points: 1,
-  date_method: [:invitation_accepted_at, :created_at],
-  model_table: 'users',
-  models_method: 'User.invitation_accepted_or_not_invited',
+  code: :new_respect,
+  name: 'New respect',
+  description: "One of your projects received a new respect",
+  points: 5,
+  date_method: -> (respect) { respect.created_at },
+  # model_table: 'respects',
+  models_method: -> (user) { Respect.where(respectable_type: 'Project').joins('INNER JOIN projects ON projects.id = respects.respectable_id').joins('INNER JOIN groups ON groups.id = projects.team_id').joins('INNER JOIN members ON members.group_id = groups.id').where('members.user_id = ?', user.id) },
+  users_count_method: -> (respect) { respect.respectable.team_members_count }
 })
 
 Rewardino::Event.create!({
@@ -342,14 +320,15 @@ Rewardino::Event.create!({
   name: 'Project viewed',
   description: "One of your projects was viewed one more time and reached a new threashold",
   points: [
-    { every: 100, limit: 10, points: 10 },
-    { every: 10_000, limit: 1, points: 100 },
+    { every: 100, limit: 10, points: 5 },
+    { every: 10_000, limit: 1, points: 50 },
   ],
-  date_method: 'created_at',
-  model_table: 'impressions',
-  compute_method: -> (event, date) {
+  date_method: -> (impression) { impression.created_at },
+  # model_table: 'impressions',
+  compute_method: -> (event, user, date) {
+    date = nil
     event.points.each do |conf|
-      models = Impression.where(impressionable_type: 'Project').joins("INNER JOIN projects ON projects.id = impressions.impressionable_id").where("projects.guest_name = '' OR projects.guest_name IS NULL").where("projects.impressions_count >= ?", conf[:every]).order(:created_at)
+      models = Impression.where(impressionable_type: 'Project').joins("INNER JOIN projects ON projects.id = impressions.impressionable_id").where(projects: { id: user.projects.own.where("projects.impressions_count >= ?", conf[:every]).pluck(:id) }).order(:created_at)
       # models = models.where("#{event.model_table}.#{event.date_method} > ?", date) if date
       models.group_by(&:impressionable_id).each do |id, group|
 
@@ -357,16 +336,14 @@ Rewardino::Event.create!({
         next unless user_count = project.team_members_count and user_count > 0
         points = (conf[:points] / user_count).ceil.to_i
 
-        slide_index = 0
+        slice_index = 0
         group.each_slice(conf[:every]) do |slice|
-          slide_index += 1
-          next if slide_index > conf[:limit]
+          slice_index += 1
+          next if slice_index > conf[:limit]
 
           if slice.size == conf[:every]
             last = slice.last
-            project.users.each do |user|
-              ReputationEvent.create event_name: event.code, event_model: project, points: points, event_date: last.send(event.date_method), user_id: user.id
-            end
+            ReputationEvent.create event_name: event.code, event_model: last, points: points, event_date: event.date_method.call(last), user_id: user.id
           end
         end
       end
@@ -379,31 +356,42 @@ Rewardino::Event.create!({
   name: 'Post liked',
   description: "One of your posts was liked one more time and reached a new threashold",
   points: [
-    { every: 10, limit: 10, points: 10 },
+    { every: 1, limit: 10, points: 5 },
   ],
-  date_method: 'created_at',
-  model_table: 'respects',
-  compute_method: -> (event, date) {
+  date_method: -> (like) { like.created_at },
+  # model_table: 'respects',
+  compute_method: -> (event, user, date) {
     event.points.each do |conf|
-      models = Respect.where(respectable_type: %w(Comment Thought)).order(:created_at)
+      models = Respect.where(respectable_type: %w(Comment)).joins("INNER JOIN comments ON comments.id = respects.respectable_id").where("comments.user_id = ?", user.id).order(:created_at)
+      models += Respect.where(respectable_type: %w(Thought)).joins("INNER JOIN thoughts ON thoughts.id = respects.respectable_id").where("thoughts.user_id = ?", user.id).order(:created_at)
       # models = models.where("#{event.model_table}.#{event.date_method} > ?", date) if date
+
       models.group_by{|r| [r.respectable_id, r.respectable_type]}.each do |id, group|
 
-        respect = group.first
-        user = respect.respectable.try(:user)
-        next unless user
-
-        slide_index = 0
+        slice_index = 0
         group.each_slice(conf[:every]) do |slice|
-          slide_index += 1
-          next if slide_index > conf[:limit]
+          slice_index += 1
+          next if slice_index > conf[:limit]
 
           if slice.size == conf[:every]
             last = slice.last
-            ReputationEvent.create event_name: event.code, event_model: respect, points: conf[:points], event_date: last.send(event.date_method), user_id: user.id
+            ReputationEvent.create event_name: event.code, event_model: last, points: conf[:points], event_date: event.date_method.call(last), user_id: user.id
           end
         end
       end
     end
   },
+})
+
+Rewardino::Event.create!({
+  code: :signup_user,
+  name: 'Registered',
+  description: "Welcome to Hackster!",
+  points: 1,
+  date_method: -> (user) { user.invitation_accepted_at || user.created_at },
+  # model_table: 'users',
+  models_method: -> (user) { [user] },
+  boolean_method: -> (event, user) {
+    user.invitation_token.nil? or user.invitation_accepted_at.present?
+  }
 })

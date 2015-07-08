@@ -58,22 +58,18 @@ class CronTask < BaseWorker
     end
   end
 
-  def compute_reputation code=nil, date=nil
-    if code
-      date = Time.at(date.to_i) if date
-      Rewardino::Event.find(code).compute date
-    else
-      Rewardino::Event.all.keys.each do |code|
-        CronTask.perform_async 'compute_reputation', code, date
-      end
-      redis.set 'last_update', Time.now.to_i
-    end
+  def compute_reputation user_id, date=nil
+    date = Time.at(date.to_i) if date
+    Rewardino::Event.compute_for_user user_id, date
   end
 
   def compute_daily_reputation
     date = redis.get('last_update')
     # date = Time.at(date.to_i) if date.present?
-    compute_reputation nil, date.presence
+    User.invitation_accepted_or_not_invited.find_each do |user|
+      compute_reputation user.id, date.presence
+    end
+    redis.set 'last_update', Time.now.to_i
   end
 
   def evaluate_badges

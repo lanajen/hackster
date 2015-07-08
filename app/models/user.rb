@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base
 
+  include Checklist
   include EditableSlug
   include HstoreColumn
   include HstoreCounter
@@ -202,6 +203,11 @@ class User < ActiveRecord::Base
   is_impressionable counter_cache: true, unique: :session_hash
 
   taggable :interest_tags, :skill_tags
+
+  add_checklist :full_name, 'Set a name', 'name.present?', group: :get_started
+  add_checklist :mini_resume, 'Write a short bio', 'mini_resume.present?', group: :get_started
+  add_checklist :avatar, 'Upload an avatar', 'avatar.present?', group: :get_started
+  add_checklist :links, 'Add links to your other web presence', 'has_websites?', group: :get_started
 
   self.per_page = 20
 
