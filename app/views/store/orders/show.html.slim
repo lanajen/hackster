@@ -70,4 +70,4 @@
           strong> Want more free hardware?
         p
           => link_to 'Invite your friends', new_user_invitation_path
-          | and receive 20 points for each sign up.
+          | and receive #{Rewardino::Event.find(:accepted_invitation_inviter).points} points for each sign up.
