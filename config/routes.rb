@@ -18,6 +18,11 @@ HackerIo::Application.routes.draw do
       resources :build_logs
       resources :code_files, only: [:create]
       resources :comments, only: [:create, :destroy]
+      resources :followers, only: [:create, :index], defaults: { format: :json } do
+        collection do
+          delete '' => 'followers#destroy'
+        end
+      end
       resources :likes, only: [:create] do
         delete '' => 'likes#destroy', on: :collection
       end
@@ -40,7 +45,6 @@ HackerIo::Application.routes.draw do
         get :autocomplete, on: :collection
       end
       resources :widgets, only: [:destroy, :update, :create]
-      resources :followers, only: [:index], defaults: { format: :json }
       match "*all" => "base#cors_preflight_check", via: :options
     end
   end
@@ -480,10 +484,10 @@ HackerIo::Application.routes.draw do
 
     resources :messages, as: :conversations, controller: :conversations
 
-    resources :followers, only: [:create] do
+    resources :followers, only: [] do
       collection do
         get 'create' => 'followers#create', as: :create
-        delete '' => 'followers#destroy'
+        # delete '' => 'followers#destroy'
       end
     end
 

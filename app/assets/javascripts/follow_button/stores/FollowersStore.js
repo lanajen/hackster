@@ -32,7 +32,7 @@ const followersStore = {
         .get('/api/v1/followers')
         .set('X-CSRF-Token', csrfToken)
         .end(function(err, res) {
-          err ? reject(err) : resolve(res); 
+          err ? reject(err) : resolve(res);
         });
     });
   },
@@ -55,7 +55,7 @@ const followersStore = {
     this.followersStore = store;
 
     channel.publish('store.changed', store);
-  }, 
+  },
 
   removeFromStore(id, type) {
     let store = this.followersStore;
