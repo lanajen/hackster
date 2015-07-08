@@ -62,9 +62,10 @@ const FollowButton = React.createClass({
   onButtonClick(e) {
     e.preventDefault();
     e.stopPropagation();
-    let promise = this.handleFollowingCall();
     let id = this.props.followable.id;
     let type = this.props.followable.type.toLowerCase();
+
+    let promise = this.handleFollowingCall();
 
     // Sets label to spinner.
     this.setState({
@@ -82,11 +83,11 @@ const FollowButton = React.createClass({
   handleFollowingCall() {
     let promise,
         followable = this.props.followable;
-
+        // NEEEDS SOURCE!!!!
     if(!this.state.isFollowing) {
-      promise = addToFollowing(followable.id, followable.type, this.props.csrfToken);
+      promise = addToFollowing(followable.id, followable.type, followable.source, this.props.csrfToken);
     } else {
-      promise = removeFromFollowing(followable.id, followable.type, this.props.csrfToken);
+      promise = removeFromFollowing(followable.id, followable.type, followable.source, this.props.csrfToken);
     }
 
     return promise;
@@ -151,6 +152,7 @@ const FollowButton = React.createClass({
   render: function() {
     let styles = this.getStyles();
     let buttonStyles = _.extend({}, styles.button, styles[this.props.buttonType] || null);
+    let disable = this.props.currentUserId === this.props.followable.id;
     let label;
     if(this.state.spinner) {
       label = <span className="fa fa-spinner fa-spin"></span>
@@ -169,7 +171,7 @@ const FollowButton = React.createClass({
 
     return (
       <div>
-        <FlatButton style={buttonStyles} onMouseOver={this.onButtonHover.bind(this, true)} onMouseOut={this.onButtonHover.bind(this, false)} onClick={this.onButtonClick}>
+        <FlatButton style={buttonStyles} onMouseOver={this.onButtonHover.bind(this, true)} onMouseOut={this.onButtonHover.bind(this, false)} onClick={this.onButtonClick} disabled={disable}>
           {label}
         </FlatButton>
       </div>
