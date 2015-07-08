@@ -349,7 +349,7 @@
                   - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
                     .project-actions.row
                       .action-item.col-xs-7= render partial: 'respects/button', locals: { project: @project }
-                      .action-item.col-xs-5= render partial: 'followers/button', locals: { followable: @project, button_type: 'project', display_name: false }
+                      .action-item.col-xs-5= render partial: 'followers/button', locals: { followable: @project, button_type: 'project', button_partial: 'project_button', display_name: false }
                   = render 'projects/project_embed_button'
                   - if @project.celery_id.present?
                     = link_to content_tag(:i, '', class: 'fa fa-shopping-cart') + content_tag(:span, "Buy it"), '#', 'data-celery' => @project.celery_id, 'data-celery-version' => 'v2', class: 'btn btn-warning btn-ellipsis btn-block'
