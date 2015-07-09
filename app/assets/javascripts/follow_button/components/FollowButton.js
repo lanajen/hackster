@@ -12,8 +12,7 @@ const FollowButton = React.createClass({
     return {
       isHovered: false,
       isFollowing: null,
-      spinner: false,
-      dialogBody: ''
+      spinner: false
     };
   },
 
@@ -75,10 +74,10 @@ const FollowButton = React.createClass({
     promise.then(function(response) {
       // Remove this hack when we bring in a React Dialog Component.
       if(response.headers['x-alert'] !== undefined) {
-        this.setState({
-          dialogBody: response.headers['x-alert']
-        });
         // openModal is a Global jQuery function of modal.js.
+        var modal = window.document.createElement("DIV");
+        modal.innerHTML = response.headers['x-alert'];
+        window.document.body.appendChild(modal);
         window.openModal(response.headers['x-alert-id']);
       }
 
@@ -105,19 +104,6 @@ const FollowButton = React.createClass({
   updateStore(id, type) {
     let isFollowing = this.state.isFollowing;
     isFollowing === false ? FollowersStore.addToStore(id, type) : FollowersStore.removeFromStore(id, type);
-  },
-
-  createMarkUp() {
-    return {__html: this.state.dialogBody};
-  },
-
-  onDialogBlur() {
-    // Timeout allows jQuery to clean up DOM node first.
-    setTimeout(function() {
-      this.setState({
-        dialogBody: ''
-      });
-    }.bind(this), 300);
   },
 
   getClasses() {
@@ -155,14 +141,11 @@ const FollowButton = React.createClass({
               this.props.followable.name ? (<span>Follow {this.props.followable.name}</span>) : (<span>Follow</span>);
     }
 
-    let dialog = (<div dangerouslySetInnerHTML={this.createMarkUp()} onBlur={this.onDialogBlur}/>);
-
     return (
       <div>
         <button ref="button" className={classList} onMouseOver={this.onButtonHover.bind(this, true)} onMouseOut={this.onButtonHover.bind(this, false)} onClick={this.onButtonClick} disabled={disable}>
           {label}
         </button>
-        {dialog}
       </div>
 
     );
