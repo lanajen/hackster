@@ -63,8 +63,8 @@
     margin-top: 20px;
     .price, .button {
       display: block;
-      float: left;
       color: #fff;
+      float: left;
     }
     .price {
       padding: 5px 12px;
@@ -81,6 +81,19 @@
       @include border-radius(4px);
       &:hover {
         text-decoration: none;
+      }
+    }
+  }
+  .cta-block {
+    display: inline-block;
+    text-align: center;
+    .price, .button {
+      float: none;
+    }
+    .price {
+      @include border-radius(4px 4px 0 0);
+      & + .button {
+        @include border-radius(0 0 4px 4px);
       }
     }
   }
