@@ -7,7 +7,7 @@
       = image_tag part.image(:headline)
 
     .col-md-2.col-md-push-8.action-buttons
-      = render partial: 'followers/part_button', locals: { followable: part }
+      = render partial: 'followers/button', locals: { followable: part, button_type: 'part', display_name: false }
       = link_to pluralize(part.projects_count, 'project'), part, class: 'btn btn-link btn-block btn-sm'
       - if part.owners_count > 0
         .text-center.text-muted.small #{part.owners_count} own it

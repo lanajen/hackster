@@ -29,7 +29,7 @@ section.group-nav.affixable
             li.divider
             li= link_to 'Add an event', hackathon_new_event_path(@group.user_name)
       / - if !(can? :manage, @group) or (user_signed_in? and current_user.is? :admin)
-        li= render partial: 'followers/button_text', locals: { followable: @group }
+        li= render partial: 'followers/button', locals: { followable: @group, button_type: 'text', display_name: true }
 
     ul.websites.list-inline.pull-right
       - @group.websites.select{|t,u| u.present? }.each do |type, url|
