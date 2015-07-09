@@ -1,0 +1,14 @@
+- cache [I18n.locale, 'lists-index', params[:sort]], tag: ['lists-index'], expires_in: 24.hours do
+  .row
+    .col-xs-12
+      .clearfix
+        h1.pull-left style='margin-top: 0' Lists for all the tastes
+        = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, 'Create a list'), new_list_path, class: 'btn btn-default pull-right'
+      p
+        ' Explore projects by topics through curated lists. Can't find your favorite topic?
+        = link_to 'Create your own list.', new_list_path
+      hr
+
+  .row
+    - @lists.each do |list|
+      = render partial: 'groups/lists/list_thumb', locals: { list: list }

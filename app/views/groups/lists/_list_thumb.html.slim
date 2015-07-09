@@ -1,0 +1,13 @@
+- cache [I18n.locale, "list-#{list.id}-thumb"], tag: ["list-#{list.id}-thumb"] do
+
+  .col-sm-4
+    .thumb.list-thumb
+      .thumb-image.has-link-overlay style="background-image:url(#{list.decorate.cover_image})"
+        = link_to '', list, class: 'link-overlay'
+        .thumb-image-inner
+          h4= link_to list.name, list
+          p= list.mini_resume
+          - if list.team_members_count > 0
+            p.authors
+              ' Curated by
+              = list.members.includes(:user).includes(user: :avatar).map{ |m| "#{image_tag(m.user.decorate.avatar(:mini), class: 'img-circle')} #{link_to(m.user.name, m.user, class: 'user-name')}" }.to_sentence.html_safe

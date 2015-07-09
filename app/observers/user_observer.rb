@@ -69,6 +69,7 @@ class UserObserver < ActiveRecord::Observer
     if (record.changed & %w(full_name user_name avatar slug)).any?
       keys << "user-#{record.id}-thumb"
       record.teams.each{|t| keys << "team-#{t.id}" }
+      record.lists.each{|l| keys << "list-#{l.id}-thumb"}
       record.respected_projects.each{|p| keys << "project-#{p.id}-respects" }
     end
 
