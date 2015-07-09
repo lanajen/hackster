@@ -62,7 +62,6 @@
 
 .container
   .clearfix.text-center
-    = react_component('Tester', {test: 'props'})
     - if current_user.is? :admin, :moderator
       = link_to 'Edit as admin', edit_admin_project_path(@project), class: 'btn btn-sm btn-warning'
       - unless params[:show_admin_bar]

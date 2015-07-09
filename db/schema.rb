@@ -600,7 +600,6 @@ ActiveRecord::Schema.define(version: 20150704213728) do
     t.string   "locale",                  limit: 2,   default: "en"
   end
 
-  add_index "projects", ["locale"], name: "index_projects_on_locale", using: :btree
   add_index "projects", ["private"], name: "index_projects_on_private", using: :btree
   add_index "projects", ["team_id"], name: "index_projects_on_team_id", using: :btree
   add_index "projects", ["type"], name: "index_projects_on_type", using: :btree
