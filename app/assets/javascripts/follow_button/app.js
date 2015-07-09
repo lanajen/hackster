@@ -26,7 +26,7 @@ const App = React.createClass({
   componentWillMount() {
     if(this.state.csrfToken === null) {
       let metaList, csrfToken, following;
-      // If we have access to document, grab the csrf-token from the meta tag.
+
       if(document) {
         metaList = document.getElementsByTagName('meta');
         csrfToken = _.findWhere(metaList, {name: 'csrf-token'}).content;

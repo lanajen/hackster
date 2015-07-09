@@ -1,5 +1,4 @@
 import React from 'react';
-import {   } from 'material-ui';
 import { addToFollowing, removeFromFollowing, getFollowing } from '../../utils/ReactAPIUtils';
 import FollowersStore from '../stores/FollowersStore';
 import postal from 'postal';
@@ -76,7 +75,6 @@ const FollowButton = React.createClass({
       this.updateStore(id, type);
       React.findDOMNode(this.refs.button).blur();
     }.bind(this)).catch(function(err) {
-      // Handle Error Message.
       console.log('Request Error: ' + err);
     });
   },
@@ -84,7 +82,7 @@ const FollowButton = React.createClass({
   handleFollowingCall() {
     let promise,
         followable = this.props.followable;
-        // NEEEDS SOURCE!!!!
+
     if(!this.state.isFollowing) {
       promise = addToFollowing(followable.id, followable.type, followable.source, this.props.csrfToken);
     } else {
@@ -97,66 +95,6 @@ const FollowButton = React.createClass({
   updateStore(id, type) {
     let isFollowing = this.state.isFollowing;
     isFollowing === false ? FollowersStore.addToStore(id, type) : FollowersStore.removeFromStore(id, type);
-  },
-
-  getStyles() {
-    let styles = {
-      button: {
-        display: 'inline-block',
-        color: 'white',
-        textTransform: 'none',
-        fontFamily: '"proxima-nova", "HelveticaNeue", Helvetica, Arial, "Lucida Grande", sans-serif',
-        fontWeight: 'bold',
-        padding: '5px 10px',
-        lineHeight: '1.5',
-        borderRadius: 4,
-        fontSize: 14
-      },
-      append: {
-        fontSize: 16,
-        borderTopLeftRadius: 0,
-        borderBottomLeftRadius: 0
-      },
-      'append_sandwich': {
-        width: '100%',
-        borderRadius: 0,
-        borderTop: '2px solid #333',
-        fontSize: '0.85em'
-      },
-      'append_hacker': {
-        width: '100%',
-        borderTopLeftRadius: 0,
-        borderTopRightRadius: 0,
-        borderTop: '2px solid #333',
-        fontSize: '0.85em'
-      },
-      text: {
-        fontSize: '1em'
-      },
-      'text_wide': {
-        display: 'block',
-        width: '100%',
-        fontSize: '1em',
-        padding: '12px 12px 10px',
-        whiteSpace: 'nowrap',
-        marginBottom: 5
-      },
-      project: {
-        display: 'block',
-        width: '100%',
-        fontSize: '1em',
-        padding: '12px 12px 10px',
-        whiteSpace: 'nowrap',
-        marginBottom: 5,
-        lineHeight: '1.42'
-      },
-      part: {
-        display: 'block',
-        width: '100%',
-        fontSize: '0.85em'
-      }
-    };
-    return styles;
   },
 
   getClasses() {
@@ -175,10 +113,11 @@ const FollowButton = React.createClass({
   },
 
   render: function() {
-    let styles = this.getStyles();
-    let buttonStyles = _.extend({}, styles.button, styles[this.props.buttonType] || null);
+    let classes = this.getClasses();
+    let classList = classes[this.props.buttonType] || classes['text'];
     let disable = this.props.currentUserId === this.props.followable.id;
     let label;
+
     if(this.state.spinner) {
       label = <span className="fa fa-spinner fa-spin"></span>
     } else if(this.props.buttonType && this.props.buttonType === 'part') {
@@ -191,11 +130,6 @@ const FollowButton = React.createClass({
       label = this.state.isFollowing ? (<span><i className="fa fa-check"></i><span>Following</span></span>) :
               this.props.followable.name ? (<span>Follow {this.props.followable.name}</span>) : (<span>Follow</span>);
     }
-
-    buttonStyles = this.state.isHovered ? _.extend({}, buttonStyles, {backgroundColor: '#286090'}) : _.extend({}, buttonStyles, {backgroundColor: '#208edb'});
-
-    let classes = this.getClasses();
-    let classList = classes[this.props.buttonType] || classes['text'];
 
     return (
       <div>
