@@ -238,7 +238,7 @@ class Part < ActiveRecord::Base
   def generate_slug
     return if name.blank?
 
-    slug = name.downcase.gsub(/[^a-z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
+    slug = name.downcase.gsub(/[^a-z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase.truncate(100, omission: '')
 
     # make sure it doesn't exist
     if result = Part.where(slug: slug, platform_id: platform_id).first
