@@ -1,4 +1,5 @@
 import React from 'react';
+import { Dialog } from 'material-ui';
 import { addToFollowing, removeFromFollowing, getFollowing } from '../../utils/ReactAPIUtils';
 import FollowersStore from '../stores/FollowersStore';
 import postal from 'postal';
@@ -12,7 +13,8 @@ const FollowButton = React.createClass({
     return {
       isHovered: false,
       isFollowing: null,
-      spinner: false
+      spinner: false,
+      dialogBody: ''
     };
   },
 
@@ -72,6 +74,15 @@ const FollowButton = React.createClass({
     });
 
     promise.then(function(response) {
+
+      if(response.headers['x-alert'] !== undefined) {
+        this.setState({
+          dialogBody: response.headers['x-alert']
+        });
+        // THIS NEEDS TO CHANGE. DIRTY DIRTY DIRTY!!!
+        window.openModal(response.headers['x-alert-id']);
+      }
+
       this.updateStore(id, type);
       React.findDOMNode(this.refs.button).blur();
     }.bind(this)).catch(function(err) {
@@ -112,6 +123,10 @@ const FollowButton = React.createClass({
     return classes;
   },
 
+  createMarkUp() {
+    return {__html: this.state.dialogBody};
+  },
+
   render: function() {
     let classes = this.getClasses();
     let classList = classes[this.props.buttonType] || classes['text'];
@@ -131,11 +146,14 @@ const FollowButton = React.createClass({
               this.props.followable.name ? (<span>Follow {this.props.followable.name}</span>) : (<span>Follow</span>);
     }
 
+    let dialog = (<div dangerouslySetInnerHTML={this.createMarkUp()} />);
+
     return (
       <div>
         <button ref="button" className={classList} onMouseOver={this.onButtonHover.bind(this, true)} onMouseOut={this.onButtonHover.bind(this, false)} onClick={this.onButtonClick} disabled={disable}>
           {label}
         </button>
+        {dialog}
       </div>
 
     );
