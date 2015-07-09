@@ -12,7 +12,7 @@
           - when 'follow'
             li
               ' Follow #{action.followable.name}:
-              = render partial: 'followers/button_text', locals: { followable: action.followable }
+              = render partial: 'followers/button', locals: { followable: action.followable, buttonType: 'text', button_partial: 'button_text', display_name: true }
           - when 'signup'
             li
               ' Register for an account on
