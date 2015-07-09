@@ -31,7 +31,7 @@ gem 'rails-assets-underscore', '1.7.0'
 gem 'rails-assets-fluxxor', '1.5.2'
 gem 'rails-assets-momentjs', '2.9.0'
 
-gem 'redcarpet'
+gem 'redcarpet', '3.3.2'
 # gem 'github-markdown'
 # gem 'rinku'
 # gem 'html-pipeline'

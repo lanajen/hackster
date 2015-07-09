@@ -205,9 +205,9 @@ class ApplicationController < ActionController::Base
         model ||= model_type.camelize.constantize.find_by_id(session.delete(:share_modal_model_id)) if session[:share_modal_model_id]
         return unless model
         model = model.decorate if model.respond_to? :decorate
-        @modal = render_to_string(partial: "shared/modals/#{name}", locals: { :"#{model_type}" => model })
+        @modal = render_to_string(partial: "shared/modals/#{name}", locals: { :"#{model_type}" => model }, formats: [:html])
         # raise @modal.inspect
-        if request.xhr?
+        if request.xhr? or session.delete(:share_modal_xhr)
           response.headers['X-Alert'] = @modal.gsub(/\n/, '')  # cleanup otherwise line breaks create multiple lines
           response.headers['X-Alert-ID'] = "##{name}"
         end

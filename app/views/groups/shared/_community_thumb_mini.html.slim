@@ -16,5 +16,5 @@
           ==> pluralize_without_count community.followers_count, 'follower'
 
   .input-group-btn
-    = render partial: 'followers/button', locals: { followable: community, button_type: 'append', display_name: false }
+    = render partial: 'followers/button', locals: { followable: community, button_type: 'community_shorter', button_partial: 'button_shorter', display_name: false }
     / # = link_to 'Contact me', new_conversation_path(recipient_id: user.id), class: 'btn btn-link btn-sm'

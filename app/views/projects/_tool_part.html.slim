@@ -10,6 +10,6 @@ tr.fields  id="part-#{part.id}"
               = part.part.name
         tr
           td colspan=4 style='color: #888;font-size:75%;' = part.comment
-  td style='vertical-align:middle'
+  td.text-right style='vertical-align:middle'
     - if part.part.vendor_link.present? or part.part.store_link.present?
       = link_to content_tag(:i, '', class: 'fa fa-shopping-cart'), (part.part.vendor_link.presence || part.part.store_link), target: '_blank', style: 'color:#333'

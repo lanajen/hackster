@@ -743,7 +743,7 @@ DEPENDENCIES
   rails-observers (= 0.1.2)
   rails_12factor
   react-rails (~> 1.0)
-  redcarpet
+  redcarpet (= 3.3.2)
   redis (= 3.0.6)
   redis-namespace (= 1.5.0)
   rest-client (= 1.6.7)

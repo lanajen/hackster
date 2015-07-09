@@ -5,7 +5,7 @@ module.exports = {
   addToFollowing(id, type, source, csrfToken) {
     return new Promise((resolve, reject) => {
       request
-        .post('/followers')
+        .post('/api/v1/followers')
         .set('X-CSRF-Token', csrfToken)
         .set('Accept', 'application/javascript')
         .query({button: 'button_shorter'})
@@ -21,7 +21,7 @@ module.exports = {
   removeFromFollowing(id, type, source, csrfToken) {
     return new Promise((resolve, reject) => {
       request
-        .del('/followers')
+        .del('/api/v1/followers')
         .set('X-CSRF-Token', csrfToken)
         .set('Accept', 'application/javascript')
         .query({button: 'button_shorter'})

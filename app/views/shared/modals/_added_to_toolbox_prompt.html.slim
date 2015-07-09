@@ -6,4 +6,4 @@
       h2 #{@followable.name} is now in your toolbox!
 
       p Since you own this, you might be interested in following #{@followable.platform.name}:
-      = render partial: 'followers/button', locals: { followable: @followable.platform, button_type: 'text', display_name: true }
+      = render partial: 'followers/button', locals: { followable: @followable.platform, button_type: 'text', button_partial: 'button_text', display_name: true }
