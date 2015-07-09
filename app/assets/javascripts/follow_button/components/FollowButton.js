@@ -1,5 +1,4 @@
 import React from 'react';
-import { Dialog } from 'material-ui';
 import { addToFollowing, removeFromFollowing, getFollowing } from '../../utils/ReactAPIUtils';
 import FollowersStore from '../stores/FollowersStore';
 import postal from 'postal';
@@ -74,12 +73,12 @@ const FollowButton = React.createClass({
     });
 
     promise.then(function(response) {
-
+      // Remove this hack when we bring in a React Dialog Component.
       if(response.headers['x-alert'] !== undefined) {
         this.setState({
           dialogBody: response.headers['x-alert']
         });
-        // THIS NEEDS TO CHANGE. DIRTY DIRTY DIRTY!!!
+        // openModal is a Global jQuery function of modal.js.
         window.openModal(response.headers['x-alert-id']);
       }
 
@@ -108,6 +107,19 @@ const FollowButton = React.createClass({
     isFollowing === false ? FollowersStore.addToStore(id, type) : FollowersStore.removeFromStore(id, type);
   },
 
+  createMarkUp() {
+    return {__html: this.state.dialogBody};
+  },
+
+  onDialogBlur() {
+    // Timeout allows jQuery to clean up DOM node first.
+    setTimeout(function() {
+      this.setState({
+        dialogBody: ''
+      });
+    }.bind(this), 300);
+  },
+
   getClasses() {
     let classes = {
       'append': 'follow-button btn btn-primary btn-sm btn-block btn-append btn-short',
@@ -123,9 +135,6 @@ const FollowButton = React.createClass({
     return classes;
   },
 
-  createMarkUp() {
-    return {__html: this.state.dialogBody};
-  },
 
   render: function() {
     let classes = this.getClasses();
@@ -146,7 +155,7 @@ const FollowButton = React.createClass({
               this.props.followable.name ? (<span>Follow {this.props.followable.name}</span>) : (<span>Follow</span>);
     }
 
-    let dialog = (<div dangerouslySetInnerHTML={this.createMarkUp()} />);
+    let dialog = (<div dangerouslySetInnerHTML={this.createMarkUp()} onBlur={this.onDialogBlur}/>);
 
     return (
       <div>

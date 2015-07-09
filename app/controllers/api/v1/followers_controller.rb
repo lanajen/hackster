@@ -31,11 +31,11 @@ class Api::V1::FollowersController < Api::V1::BaseController
     when Platform, List
       session[:share_modal] = 'followed_share_prompt'
       session[:share_modal_model] = 'followable'
-    when HardwarePart, SoftwarePart, ToolPart, Part
-      unless current_user.following? @followable.try(:platform)
-        session[:share_modal] = 'added_to_toolbox_prompt'
-        session[:share_modal_model] = 'followable'
-      end
+    # when HardwarePart, SoftwarePart, ToolPart, Part
+    #   unless current_user.following? @followable.try(:platform)
+    #     session[:share_modal] = 'added_to_toolbox_prompt'
+    #     session[:share_modal_model] = 'followable'
+    #   end
     end
     session[:share_modal_xhr] = true if session[:share_modal]
 
