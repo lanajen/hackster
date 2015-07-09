@@ -1,4 +1,9 @@
-.react-follow-button :first-child {
-  overflow: hidden!important;
-  text-overflow: ellipsis!important;
+// Buttons
+.community_shorter {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.react-button-margin-bottom {
+  margin-bottom: 5px;
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatButton } from 'material-ui';
+import {   } from 'material-ui';
 import { addToFollowing, removeFromFollowing, getFollowing } from '../../utils/ReactAPIUtils';
 import FollowersStore from '../stores/FollowersStore';
 import postal from 'postal';
@@ -74,6 +74,7 @@ const FollowButton = React.createClass({
 
     promise.then(function(response) {
       this.updateStore(id, type);
+      React.findDOMNode(this.refs.button).blur();
     }.bind(this)).catch(function(err) {
       // Handle Error Message.
       console.log('Request Error: ' + err);
@@ -158,6 +159,21 @@ const FollowButton = React.createClass({
     return styles;
   },
 
+  getClasses() {
+    let classes = {
+      'append': 'follow-button btn btn-primary btn-sm btn-block btn-append btn-short',
+      'append_sandwich': 'follow-button btn btn-primary btn-sm btn-block btn-append btn-short',
+      'append_hacker': 'follow-button btn btn-primary btn-sm btn-block btn-append btn-short',
+      'shorter': 'follow-button btn btn-primary btn-sm btn-shorter',
+      'community_shorter': 'follow-button btn btn-primary btn-sm btn-shorter community_shorter',
+      'text': 'follow-button btn btn-primary',
+      'text_wide': 'follow-button btn btn-primary disable-link btn-block btn-ellipsis react-button-margin-bottom',
+      'part': 'follow-button btn btn-primary btn-block btn-sm',
+      'project': 'follow-button btn btn-primary btn-block btn-ellipsis'
+    };
+    return classes;
+  },
+
   render: function() {
     let styles = this.getStyles();
     let buttonStyles = _.extend({}, styles.button, styles[this.props.buttonType] || null);
@@ -178,11 +194,14 @@ const FollowButton = React.createClass({
 
     buttonStyles = this.state.isHovered ? _.extend({}, buttonStyles, {backgroundColor: '#286090'}) : _.extend({}, buttonStyles, {backgroundColor: '#208edb'});
 
+    let classes = this.getClasses();
+    let classList = classes[this.props.buttonType] || classes['text'];
+
     return (
       <div>
-        <FlatButton style={buttonStyles} className="react-follow-button" rippleColor="rgba(0,0,0,0)" onMouseOver={this.onButtonHover.bind(this, true)} onMouseOut={this.onButtonHover.bind(this, false)} onClick={this.onButtonClick} disabled={disable}>
+        <button ref="button" className={classList} onMouseOver={this.onButtonHover.bind(this, true)} onMouseOut={this.onButtonHover.bind(this, false)} onClick={this.onButtonClick} disabled={disable}>
           {label}
-        </FlatButton>
+        </button>
       </div>
 
     );

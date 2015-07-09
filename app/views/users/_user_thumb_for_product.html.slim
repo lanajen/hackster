@@ -9,5 +9,5 @@
     - if user.mini_resume.present?
       p= user.mini_resume
     .member-actions
-      = render partial: 'followers/button', locals: { followable: user, button_type: nil, button_partial: 'button_text', display_name: false }
+      = render partial: 'followers/button', locals: { followable: user, button_type: 'text', button_partial: 'button_text', display_name: false }
       = link_to 'Contact', new_conversation_path(recipient_id: user.id), class: 'btn btn-link btn-sm'
