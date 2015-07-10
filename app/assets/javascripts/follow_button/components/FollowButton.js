@@ -72,6 +72,17 @@ const FollowButton = React.createClass({
     });
 
     promise.then(function(response) {
+      // Remove this hack when we bring in a React Dialog Component.
+      if(response.headers['x-alert'] !== undefined) {
+        // openModal is a Global jQuery function of modal.js.
+        if(window) {
+          let modal = window.document.createElement("DIV");
+          modal.innerHTML = response.headers['x-alert'];
+          window.document.body.appendChild(modal);
+          window.openModal(response.headers['x-alert-id']);
+        }
+      }
+
       this.updateStore(id, type);
       React.findDOMNode(this.refs.button).blur();
     }.bind(this)).catch(function(err) {
@@ -111,6 +122,7 @@ const FollowButton = React.createClass({
     };
     return classes;
   },
+
 
   render: function() {
     let classes = this.getClasses();

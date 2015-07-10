@@ -32,6 +32,17 @@ module.exports = {
           err ? reject(err) : resolve(res);
         });
     });
+  },
+
+  fetchNotifications(csrfToken) {
+    return new Promise((resolve, reject) => {
+      request
+        .get('/api/v1/notifications')
+        .set('X-CSRF-Token', csrfToken)
+        .end(function(err, res) {
+          err ? reject(err) : resolve(res);
+        });
+    });
   }
 
 };

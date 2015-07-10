@@ -1,0 +1,44 @@
+.notification-dropdown {
+  width: 300px;
+  padding-top: 2px;
+  padding-bottom: 0;
+
+  .notification-list-wrapper {
+    display: flex;
+    flex-direction: column;
+    max-height: 400px;
+
+    .notification-list {
+      align-items: center;
+      flex-direction: column;
+      justify-content: center;
+      list-style-type: none;
+      margin: 0;
+      max-height: 350px;
+      overflow: auto;
+
+      .notification-item {
+        display: flex;
+        flex-direction: column;
+        height: 80px;
+        padding: 15px;
+
+        .notification {
+          font-size: 12px;
+          line-height: 1;
+          margin-top: 8px;
+        }
+
+        .notification-time {
+          font-size: 12px;
+        }
+      }
+    }
+
+    .notification-footer {
+      padding: 10px;
+      align-self: center;
+    }
+  }
+
+}

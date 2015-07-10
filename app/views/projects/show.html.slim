@@ -432,8 +432,8 @@
                         span.label.label-default Request to join team pending
                     - else
                       = link_to 'I want to join the team!', group_members_path(@project.team), class: 'btn btn-sm btn-warning', data: { method: :post }, id: 'join-button'
-                  / javascript:
-                  /   $(function(){ $('.team-request').insertAfter('#team h4'); });
+                  javascript:
+                    $(function(){ $('.team-request').insertAfter('#team h4'); });
 
               - if @project.credit_lines.any?
                 section.section-thumbs
