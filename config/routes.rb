@@ -161,7 +161,9 @@ HackerIo::Application.routes.draw do
       end
 
       get 'h/:user_name' => 'hacker_spaces#redirect_to_show'
-      resources :hacker_spaces, except: [:show, :update], path: 'hackerspaces'
+      resources :hacker_spaces, except: [:show, :update], path: 'hackerspaces' do
+        get 'create' => 'hacker_spaces#create', on: :collection, as: :create
+      end
       scope 'hackerspaces/:user_name', as: :hacker_space do
         get '' => 'hacker_spaces#show'
         patch '' => 'hacker_spaces#update'
@@ -187,6 +189,7 @@ HackerIo::Application.routes.draw do
         URI.parse(request.url).tap { |uri| uri.path.sub!(/\/l\//i, '/lists/') }.to_s
       }, via: :get
       resources :lists, except: [:show, :update] do
+        get 'create' => 'lists#create', on: :collection, as: :create
         resources :projects, only: [] do
           post 'feature' => 'lists#feature_project'#, as: :platform_feature_project
           delete 'feature' => 'lists#unfeature_project'
