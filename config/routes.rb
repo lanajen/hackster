@@ -40,6 +40,7 @@ HackerIo::Application.routes.draw do
         get '' => 'microsoft_chrome_sync#show', on: :collection
         patch '' => 'microsoft_chrome_sync#update', on: :collection
       end
+      resources :notifications, only: [:index], defaults: { format: :json }
       resources :thoughts
       resources :users, only: [] do
         get :autocomplete, on: :collection

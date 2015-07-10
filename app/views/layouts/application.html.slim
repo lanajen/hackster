@@ -177,12 +177,13 @@ html(lang="en")
                 - if user_signed_in?
                   - if current_user.is? :admin
                     li= link_to content_tag(:i, '', class: 'fa fa-cogs'), admin_analytics_path, class: 'nav-link', rel: 'tooltip', title: 'Admin', data: { container: 'body', placement: 'bottom' }
-                  li
-                    a.nav-link href=notifications_path rel='tooltip' title=(current_user.has_unread_notifications? ? 'You have unread notifications' : 'No new notifications') data-container='body' data-placement='bottom'
+                  li.btn-group
+                    a.nav-link href='javascript:void(0)' rel='tooltip' title=(current_user.has_unread_notifications? ? 'You have unread notifications' : 'No new notifications') data-container='body' data-placement='bottom' data-toggle='dropdown' aria-haspopup="true"
                       - if current_user.has_unread_notifications?
                         i.fa.fa-bell-o.text-danger
                       - else
                         i.fa.fa-bell-o
+                    = react_component('NotificationDropdown', {path: notifications_path}, {class: 'dropdown-menu notification-dropdown'})
                   li= link_to content_tag(:i, '', class: 'fa fa-plus'), new_project_path, class: 'nav-link', rel: 'tooltip', title: 'New project', data: { container: 'body', placement: 'bottom' }
 
               #navbar-search
