@@ -98,6 +98,7 @@ html(lang="en")
                     | More
                     span.caret
                   ul#nav-user-menu.dropdown-menu style='padding:0;margin-top:-10px;'
+                    li= link_to 'Curated lists', lists_path, class: 'nav-link'
                     li= link_to 'Hardware Weekend', '/hardwareweekend', class: 'nav-link'
                     / li= link_to 'Challenges', challenges_path, class: 'nav-link'
                     li= link_to 'Hacker spaces', hacker_spaces_path, class: 'nav-link'
