@@ -5,13 +5,16 @@ var NotificationDropdown = React.createClass({
 
   render: function() {
     let notifications = _.map(this.props.notifications, function(note, index) {
-      let bgColor = index % 2 === 0 ? 'white' : '#F8F8F8';
-      return (
-        <li key={index} className="notification-item" style={{backgroundColor: bgColor}}>
-          <p className="notification" dangerouslySetInnerHTML={{__html: note.message}}></p>
-          <p className="notification-time">{note.time}</p>
-        </li>
-      );
+      if (note.message) {
+        // let bgColor = index % 2 === 0 ? 'white' : '#F8F8F8';
+        let bgColor = 'white';
+        return (
+          <li key={index} className="notification-item" style={{backgroundColor: bgColor}}>
+            <p className="notification" dangerouslySetInnerHTML={{__html: note.message}}></p>
+            <p className="notification-time">{note.time}</p>
+          </li>
+        );
+      }
     });
 
     if(!notifications.length) {
