@@ -26,7 +26,9 @@ HackerIo::Application.routes.draw do
       resources :likes, only: [:create] do
         delete '' => 'likes#destroy', on: :collection
       end
-      resources :projects#, as: :api_projects
+      resources :projects do 
+        get 'images' => 'projects#images', on: :member, defaults: { format: :json }
+      end
       resources :parts, only: [:create, :destroy] do
         get :autocomplete, on: :collection
       end

@@ -23,13 +23,13 @@
       .box data-anchor='description'
         .box-content
           = f.input :description, as: :text, wrapper_html: { class: 'hidden' }
+          = react_component('ReactEditor', {}, {})
+          / p.small.text-muted
+          /   strong> Tip:
+          /   | Add photos and videos by clicking the 'Add media' button to the left. It will show up any time you're on a new paragraph.
+          / #model-editor data-model-id=@project.id data-model-type='Project' data-model-symbol='project' data-model-placeholder="Start describing your #{@project.is_idea? ? 'project idea' : 'project'} here. Enter text or add images and videos by clicking the 'Add media' button to the left." data-model-url='/api/v1/projects' data-save-mode='form'
 
-          p.small.text-muted
-            strong> Tip:
-            | Add photos and videos by clicking the 'Add media' button to the left. It will show up any time you're on a new paragraph.
-          #model-editor data-model-id=@project.id data-model-type='Project' data-model-symbol='project' data-model-placeholder="Start describing your #{@project.is_idea? ? 'project idea' : 'project'} here. Enter text or add images and videos by clicking the 'Add media' button to the left." data-model-url='/api/v1/projects' data-save-mode='form'
+          /   #editable-description.text-widget.project-show-item= render partial: 'shared/medium_editor', locals: { editable: @project.decorate.description(:edit), attribute_name: 'description' }
 
-            #editable-description.text-widget.project-show-item= render partial: 'shared/medium_editor', locals: { editable: @project.decorate.description(:edit), attribute_name: 'description' }
-
-          / textarea.wym-editor
-            = @project.story
+          / / textarea.wym-editor
+          /   = @project.story

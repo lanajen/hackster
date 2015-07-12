@@ -68,4 +68,9 @@ class Api::V1::ProjectsController < Api::V1::BaseController
 
     render json: 'Destroyed'
   end
+
+  def images
+    project = Project.find(params[:id])
+    @images = project.images
+  end
 end
