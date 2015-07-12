@@ -20,6 +20,14 @@
       .container
         = link_to content_tag(:i, '', class: 'fa fa-comments') + content_tag(:span, 'Ask a question or share something interesting with the community &rarr;'.html_safe), talk_path
 
+    section.showcase-section.section-short
+      .container
+        strong> New:
+        => link_to 'follow projects by topic', lists_path
+        ' and
+        = link_to 'create your own lists', new_list_path
+        | .
+
     / # - if @suggested_platforms.any?
       section#suggested-platforms.showcase-section
         .container

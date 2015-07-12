@@ -8,13 +8,13 @@ class ListsController < ApplicationController
   after_action :allow_iframe, only: [:embed]
   respond_to :html
 
-  # def index
-  #   title "Explore platforms"
-  #   meta_desc "Find hardware and software platforms to help you build your next hacks."
-  #   @lists = List.public.for_thumb_display.order(:full_name)
+  def index
+    title "Explore lists"
+    meta_desc "Explore hardware projects by topics through curated lists."
+    @lists = List.public.where(type: 'List').order(members_count: :desc)
 
-  #   render "groups/lists/#{self.action_name}"
-  # end
+    render "groups/lists/#{self.action_name}"
+  end
 
   def show
     # @group = @list = ListDecorator.decorate(@list)

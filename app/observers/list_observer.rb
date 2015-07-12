@@ -13,4 +13,11 @@ class ListObserver < ActiveRecord::Observer
       Cashier.expire "list-#{record.id}-sidebar"
     end
   end
+
+  def after_save record
+    if (record.changed & %w(full_name cover_image private mini_resume)).any?
+      Cashier.expire "list-#{record.id}-thumb"
+      Cashier.expire 'lists-index'
+    end
+  end
 end

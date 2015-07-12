@@ -1,7 +1,28 @@
+.notification-button-wrapper {
+  display: block;
+  text-decoration: none;
+  font-size: 0.9em;
+  font-weight: 600;
+  margin-top: 19px;
+  margin-bottom: 19px;
+  border-right: 1px solid #ddd;
+  text-align: center;
+
+  .notification-button {
+    padding: 0 22px;
+    color: #777;
+  }
+
+  .notification-button:hover {
+    color: #999;
+  }
+}
+
 .notification-dropdown {
   width: 300px;
   padding-top: 2px;
   padding-bottom: 0;
+  margin-top: 5px;
 
   .notification-list-wrapper {
     display: flex;
@@ -20,24 +41,37 @@
       .notification-item {
         display: flex;
         flex-direction: column;
-        height: 80px;
-        padding: 15px;
+        height: 60px;
+        padding: 15px 15px 5px;
+        border-bottom: 1px solid #ddd;
 
         .notification {
           font-size: 12px;
           line-height: 1;
-          margin-top: 8px;
         }
 
         .notification-time {
           font-size: 12px;
         }
       }
+
+      .notifications-loading-icon {
+        display: block;
+        padding: 15px;
+        text-align: center;
+        color: lightblue;
+      }
     }
 
     .notification-footer {
-      padding: 10px;
-      align-self: center;
+      width: 100%;
+      text-align: center;
+      background: #F8F8F8;
+      border-top: 1px solid #ddd;
+      a {
+        display: block;
+        padding: 10px;
+      }
     }
   }
 

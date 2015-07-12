@@ -114,18 +114,13 @@ class CronTask < BaseWorker
   end
 
   def launch_daily_cron
-    begin
-      compute_daily_reputation
-      self.class.perform_in 1.hour, 'compute_popularity'
-      self.class.perform_in 2.hours, 'send_daily_notifications'
-      self.class.perform_in 24.hours, 'launch_daily_cron'
-      generate_users
-    rescue => e
-      Rails.logger.error "Error in launch_daily_cron: #{e.inspect}"
-      self.class.perform_in 24.hours, 'launch_daily_cron'
-    ensure
-      # self.class.perform_in 24.hours, 'launch_daily_cron'
-    end
+    self.class.perform_async 'compute_daily_reputation'
+    self.class.perform_in 1.hour, 'compute_popularity'
+    self.class.perform_in 2.hours, 'send_daily_notifications'
+    self.class.perform_in 24.hours, 'launch_daily_cron'
+    self.class.perform_async 'generate_users'
+
+    self.class.perform_in 24.hours, 'launch_daily_cron'
   end
 
   def lock_assignment
@@ -141,11 +136,11 @@ class CronTask < BaseWorker
     project_ids = Project.self_hosted.where('projects.made_public_at > ? AND projects.made_public_at < ?', 24.hours.ago, Time.now).approved.pluck(:id)
 
     users = []
-    users += Platform.joins(:projects).distinct('groups.id').where(projects: { id: project_ids }).map{|t| t.followers.not_hackster.with_subscription(:email, 'follow_platform_activity').pluck(:id) }.flatten
-    users += User.joins(:projects).distinct('users.id').where(projects: { id: project_ids }).map{|u| u.followers.not_hackster.with_subscription(:email, 'follow_user_activity').pluck(:id) }.flatten
+    users += Platform.joins(:projects).distinct('groups.id').where(projects: { id: project_ids }).map{|t| t.followers.with_subscription(:email, 'follow_platform_activity').pluck(:id) }.flatten
+    users += User.joins(:projects).distinct('users.id').where(projects: { id: project_ids }).map{|u| u.followers.with_subscription(:email, 'follow_user_activity').pluck(:id) }.flatten
 
     lists = List.joins(:project_collections).where('project_collections.created_at > ?', 24.hours.ago).where(groups: { type: 'List' }).distinct(:id)
-    users += lists.map{|l| l.followers.not_hackster.with_subscription(:email, 'follow_list_activity').pluck(:id) }.flatten
+    users += lists.map{|l| l.followers.with_subscription(:email, 'follow_list_activity').pluck(:id) }.flatten
 
     users.uniq!
 

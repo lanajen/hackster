@@ -106,8 +106,8 @@ class Project < ActiveRecord::Base
   has_one :project_collection, class_name: 'ProjectCollection'
   has_one :video, as: :recordable, dependent: :destroy
 
-  # sanitize_text :description
   sanitize_text :name
+  register_sanitizer :sanitize_description, :before_validation, :description
   register_sanitizer :strip_tags, :before_save, :name
   register_sanitizer :remove_whitespaces_from_html, :before_save, :description
   attr_accessible :description, :end_date, :name, :start_date, :current,
@@ -818,6 +818,22 @@ class Project < ActiveRecord::Base
 
     def strip_tags text
       sanitize(text, tags: [])
+    end
+
+    def sanitize_description text
+      if text
+        doc = Nokogiri::HTML::DocumentFragment.parse(text)
+
+        {
+          'strong' => 'b',
+          'h1' => 'h2',
+          'em' => 'i',
+        }.each do |orig_tag, proper_tag|
+          doc.css(orig_tag).each{|el| el.name = proper_tag }
+        end
+
+        Sanitize.clean(doc.to_s.encode("UTF-8"), Sanitize::Config::SCRAPER)
+      end
     end
 
     def tags_length_is_valid
