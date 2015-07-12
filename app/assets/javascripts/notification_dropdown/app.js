@@ -9,8 +9,7 @@ const App = React.createClass({
       csrfToken: null,
       notifications: [],
       showDropdown: false,
-      isLoading: false,
-      tooltip: false
+      isLoading: false
     };
   },
 
