@@ -7,7 +7,10 @@ const App = React.createClass({
   getInitialState() {
     return {
       csrfToken: null,
-      notifications: []
+      notifications: [],
+      showDropdown: false,
+      isLoading: false,
+      tooltip: false
     };
   },
 
@@ -19,24 +22,67 @@ const App = React.createClass({
         metaList = document.getElementsByTagName('meta');
         csrfToken = _.findWhere(metaList, {name: 'csrf-token'}).content;
 
-        let promise = fetchNotifications(csrfToken);
+        this.setState({
+          csrfToken: csrfToken
+        });
+      }
+    }
+  },
+
+  componentDidMount() {
+    // Activates the tooltip.
+    if(window) {
+      window.$('[data-toggle="tooltip"]').tooltip();
+    }
+  },
+
+  componentWillUnmount() {
+    // Cleans up any listeners.
+    if(window) {
+      window.$('[data-toggle="tooltip"]').tooltip('destroy');
+    }
+  },
+
+  onIconClick() {
+    if(this.state.csrfToken) {
+      let isDropdownOpen = React.findDOMNode(this.refs.dropdown).parentNode.className.split(' ').indexOf('open') > 0;
+      // Bootstrap sets a class of open to this DOM node.  We only want make a request if the class is 'open' to prevent another call if
+      // the button is clicked to close the dropdown.  React_component doesn't allow refs, so we set one here and look up the parent node.
+      if(isDropdownOpen) {
+        let promise = fetchNotifications(this.state.csrfToken);
+        this.setState({
+          isLoading: true
+        });
 
         promise.then(function(response) {
           let notifications = response.body.notifications;
 
           this.setState({
-            csrfToken: csrfToken,
+            isLoading: false,
             notifications: notifications
           });
         }.bind(this)).catch(function(err) { console.log('Request Error: ' + err); });
-
       }
     }
   },
 
   render: function() {
+    let icon = this.props.hasNotifications ? (<i className="fa fa-bell-o text-danger"></i>) : 
+                                             (<i className="fa fa-bell-o"></i>);
+    let toolTipTitle = this.props.hasNotifications ? 'You have unread notifications' : 'No new notifications';
+
     return (
-      <NotificationDropdown notifications={this.state.notifications} {...this.props} />
+      <div className="dropdown">
+        <span className="notification-button-wrapper dropdown-toggle" ref="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onClick={this.onIconClick}>
+          <a href="javascript:void(0)" className="notification-button" rel="tooltip" title={toolTipTitle} data-toggle="tooltip" data-placement='bottom' data-container='body'>
+            {icon}
+          </a>
+        </span>
+
+        <div ref="notifications" className="dropdown-menu notification-dropdown">
+          <NotificationDropdown notifications={this.state.notifications} isLoading={this.state.isLoading} {...this.props} />
+        </div>
+      </div>
     );
   }
 

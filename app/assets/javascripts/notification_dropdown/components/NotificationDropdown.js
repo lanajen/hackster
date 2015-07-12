@@ -6,7 +6,6 @@ var NotificationDropdown = React.createClass({
   render: function() {
     let notifications = _.map(this.props.notifications, function(note, index) {
       if (note.message) {
-        // let bgColor = index % 2 === 0 ? 'white' : '#F8F8F8';
         let bgColor = 'white';
         return (
           <li key={index} className="notification-item" style={{backgroundColor: bgColor}}>
@@ -15,10 +14,14 @@ var NotificationDropdown = React.createClass({
           </li>
         );
       }
-    });
+    }).filter(function(item) { return item !== undefined; });
 
     if(!notifications.length) {
       notifications = (<p className="notification-item" style={{backgroundColor: '#F8F8F8'}}>Notifications about other makers' activity related to you will appear here.</p>);
+    }
+
+    if(this.props.isLoading) {
+      notifications = (<i className="fa fa-spinner fa-3x fa-spin notifications-loading-icon"></i>);
     }
 
     return (
