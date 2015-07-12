@@ -117,7 +117,6 @@ class CronTask < BaseWorker
     self.class.perform_async 'compute_daily_reputation'
     self.class.perform_in 1.hour, 'compute_popularity'
     self.class.perform_in 2.hours, 'send_daily_notifications'
-    self.class.perform_in 24.hours, 'launch_daily_cron'
     self.class.perform_async 'generate_users'
 
     self.class.perform_in 24.hours, 'launch_daily_cron'
