@@ -6,9 +6,8 @@ var NotificationDropdown = React.createClass({
   render: function() {
     let notifications = _.map(this.props.notifications, function(note, index) {
       if (note.message) {
-        let bgColor = 'white';
         return (
-          <li key={index} className="notification-item" style={{backgroundColor: bgColor}}>
+          <li key={index} className="notification-item">
             <p className="notification" dangerouslySetInnerHTML={{__html: note.message}}></p>
             <p className="notification-time">{note.time}</p>
           </li>
