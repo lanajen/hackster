@@ -1,5 +1,5 @@
 class FilesController < ApplicationController
-  before_filter :authenticate_user!, except: [:remote_upload, :check_remote_upload]
+  before_filter :authenticate_user!, only: [:show, :destroy]
   skip_before_filter :mark_last_seen!
 
   def create
