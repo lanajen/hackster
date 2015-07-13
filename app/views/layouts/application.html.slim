@@ -178,7 +178,7 @@ html(lang="en")
                 - if user_signed_in?
                   - if current_user.is? :admin
                     li= link_to content_tag(:i, '', class: 'fa fa-cogs'), admin_analytics_path, class: 'nav-link', rel: 'tooltip', title: 'Admin', data: { container: 'body', placement: 'bottom' }
-                  = react_component('NotificationDropdown', {path: notifications_path, hasNotifications:(current_user.has_unread_notifications?)}, {class: 'nav-link', tag: 'li'})
+                  = react_component 'NotificationDropdown', { path: notifications_path, initialHasNotifications: current_user.has_unread_notifications? }, { class: 'nav-link', tag: 'li' }
                   li= link_to content_tag(:i, '', class: 'fa fa-plus'), new_project_path, class: 'nav-link', rel: 'tooltip', title: 'New project', data: { container: 'body', placement: 'bottom' }
 
               #navbar-search

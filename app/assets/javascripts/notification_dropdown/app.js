@@ -9,7 +9,8 @@ const App = React.createClass({
       csrfToken: null,
       notifications: [],
       showDropdown: false,
-      isLoading: false
+      isLoading: false,
+      hasNotifications: this.props.initialHasNotifications
     };
   },
 
@@ -43,12 +44,12 @@ const App = React.createClass({
   },
 
   onNotificationButtonClick() {
-    if(this.state.csrfToken) {
+    if (this.state.csrfToken) {
       // Bootstrap sets a class of open to this DOM node.  We only want make a request if the class is 'open' to prevent another call if
       // the button is clicked to close the dropdown.  React_component doesn't allow refs, so we set one here and look up the parent node.
       let isDropdownOpen = React.findDOMNode(this.refs.dropdown).parentNode.className.split(' ').indexOf('open') > 0;
 
-      if(isDropdownOpen) {
+      if (isDropdownOpen) {
         let promise = fetchNotifications(this.state.csrfToken);
         this.setState({
           isLoading: true
@@ -59,7 +60,8 @@ const App = React.createClass({
 
           this.setState({
             isLoading: false,
-            notifications: notifications
+            notifications: notifications,
+            hasNotifications: false
           });
         }.bind(this)).catch(function(err) { console.log('Request Error: ' + err); });
       }
@@ -67,9 +69,9 @@ const App = React.createClass({
   },
 
   render: function() {
-    let icon = this.props.hasNotifications ? (<i className="fa fa-bell-o text-danger"></i>) :
+    let icon = this.state.hasNotifications ? (<i className="fa fa-bell-o text-danger"></i>) :
                                              (<i className="fa fa-bell-o"></i>);
-    let toolTipTitle = this.props.hasNotifications ? 'You have unread notifications' : 'No new notifications';
+    let toolTipTitle = this.state.hasNotifications ? 'You have unread notifications' : 'No new notifications';
 
     return (
       <div className="dropdown">
