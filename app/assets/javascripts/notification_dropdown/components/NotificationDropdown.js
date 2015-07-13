@@ -6,8 +6,12 @@ var NotificationDropdown = React.createClass({
   render: function() {
     let notifications = _.map(this.props.notifications, function(note, index) {
       if (note.message) {
+        let classNames = ['notification-item'];
+        if (!note.read) classNames.push('notification-unread');
+        classNames = classNames.join(' ');
+
         return (
-          <li key={index} className="notification-item">
+          <li key={index} className={classNames}>
             <p className="notification" dangerouslySetInnerHTML={{__html: note.message}}></p>
             <p className="notification-time">{note.time}</p>
           </li>

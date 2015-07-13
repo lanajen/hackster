@@ -38,6 +38,9 @@
         height: 80px;
         padding: 10px 15px 5px;
         border-bottom: 1px solid #ddd;
+        &.notification-unread {
+          background: #f2f2f2;
+        }
         &:hover {
           background: #fafafa;
         }

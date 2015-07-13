@@ -538,7 +538,10 @@ class User < ActiveRecord::Base
   end
 
   def mark_has_no_unread_notifications!
-    update_attribute :has_unread_notifications, false if has_unread_notifications?
+    if has_unread_notifications?
+      update_attribute :has_unread_notifications, false
+      receipts.for_notifications.update_all(read: true)
+    end
   end
 
   def name
