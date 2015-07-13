@@ -67,7 +67,7 @@ const App = React.createClass({
   },
 
   render: function() {
-    let icon = this.props.hasNotifications ? (<i className="fa fa-bell-o text-danger"></i>) : 
+    let icon = this.props.hasNotifications ? (<i className="fa fa-bell-o text-danger"></i>) :
                                              (<i className="fa fa-bell-o"></i>);
     let toolTipTitle = this.props.hasNotifications ? 'You have unread notifications' : 'No new notifications';
 
