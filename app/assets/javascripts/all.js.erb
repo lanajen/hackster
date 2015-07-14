@@ -268,7 +268,7 @@ $(function () {
           if (input.parent().hasClass('input-group')) {
             errorMsg.insertAfter(input.parent());
           } else {
-            errorMsg.insertAfter(input);
+            errorMsg.appendTo(input.closest('.form-group'));
           }
         }
       }

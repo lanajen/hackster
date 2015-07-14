@@ -317,6 +317,8 @@ HackerIo::Application.routes.draw do
 
       resources :projects, only: [:index]
 
+      resources :quotes, only: [:create]
+
       # dragon
       get 'partners' => 'partners#index'
       get 'dragon/leads/new' => 'dragon_queries#new'

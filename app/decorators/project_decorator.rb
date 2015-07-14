@@ -1,6 +1,10 @@
 class ProjectDecorator < ApplicationDecorator
   include MediumEditorDecorator
 
+  def components_for_buy_all
+    @components_for_buy_all ||= model.part_joins.hardware.map{|pj| "#{pj.quantity} x #{pj.part.name}" }
+  end
+
   def cover_image version=:cover
     if model.cover_image
       if model.cover_image.file_url
