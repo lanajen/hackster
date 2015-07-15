@@ -65,6 +65,15 @@
           - @parts.each do |part|
             .col-md-4= render partial: 'parts/part_thumb', locals: { part: part.decorate }
 
+      - if !is_whitelabel? and @lists and @lists.any?
+        hr
+        h2
+          ' Curated lists
+          = content_tag(:span, @lists.count, class: 'badge')
+        .row
+          - @lists.each do |list|
+            = render partial: 'groups/lists/list_thumb', locals: { list: list }
+
       hr
       h2
         ' Replicated projects
