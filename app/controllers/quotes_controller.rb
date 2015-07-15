@@ -29,7 +29,11 @@ class QuotesController < ApplicationController
       session[:share_modal_model_id] = @quote.project_id
 
       render status: :ok, nothing: true
+
+      track_event 'Requested a quote', { project_id: @quote.project_id, components_count: (@quote.components.size - 1), country: @quote.country }
     else
+      track_event 'Requested a quote', { project_id: @quote.project_id, components_count: (@quote.components.size - 1), country: @quote.country } if @quote.errors.count == 1 and @quote.errors[:country] and @quote.country.present?
+
       render json: { quote: @quote.errors }, status: :unprocessable_entity
     end
   end
