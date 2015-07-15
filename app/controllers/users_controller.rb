@@ -47,6 +47,7 @@ class UsersController < ApplicationController
       end
     else
       @parts = @user.owned_parts
+      @lists = @user.lists.public.order(:full_name)
     end
 
     @comments = if current_platform

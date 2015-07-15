@@ -173,6 +173,7 @@ class User < ActiveRecord::Base
   has_counter :hacker_spaces, 'hacker_spaces.count'
   has_counter :interest_tags, 'interest_tags.count'
   has_counter :invitations, 'invitations.count'
+  has_counter :lists, 'lists.public.count'
   has_counter :live_projects, 'projects.where(private: false).count'
   has_counter :live_hidden_projects, 'projects.where(private: false, hide: true).count'
   has_counter :owned_parts, 'owned_parts.count'

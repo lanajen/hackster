@@ -320,9 +320,9 @@ HackerIo::Application.routes.draw do
       resources :quotes, only: [:create]
 
       # dragon
-      get 'partners' => 'partners#index'
-      get 'dragon/leads/new' => 'dragon_queries#new'
-      post 'dragon/leads' => 'dragon_queries#create'
+      # get 'partners' => 'partners#index'
+      # get 'dragon/leads/new' => 'dragon_queries#new'
+      # post 'dragon/leads' => 'dragon_queries#create'
 
       get 'ping' => 'pages#ping'  # for availability monitoring
       get 'obscure/path/to/cron' => 'cron#run'
@@ -382,8 +382,12 @@ HackerIo::Application.routes.draw do
       get 'users/slack_settings' => 'chat_messages#slack_settings', as: :user_slack_settings
       post 'users/slack_settings' => 'chat_messages#save_slack_settings'
 
-      get 'business/payments/:safe_id' => 'payments#show', as: :payment
-      post 'business/payments' => 'payments#create', as: :payments
+      get 'business/payments/:safe_id' => redirect { |params, request|
+        URI.parse(request.url).tap { |uri| uri.path.sub!(/business\//i, '') }.to_s
+      }, via: :get
+
+      get 'payments/:safe_id' => 'payments#show', as: :payment
+      post 'payments' => 'payments#create', as: :payments
 
       constraints(PlatformPage) do
         get ':slug' => 'platforms#show', as: :platform_home, slug: /[A-Za-z0-9_\-]{3,}/
