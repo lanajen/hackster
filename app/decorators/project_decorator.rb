@@ -6,9 +6,11 @@ class ProjectDecorator < ApplicationDecorator
   end
 
   def cover_image version=:cover
+    options = {}
+    options[:fm] = 'jpg' if version == :cover  # force jpg so that gifs are not upscaled
     if model.cover_image
       if model.cover_image.file_url
-        model.cover_image.imgix_url(version)
+        model.cover_image.imgix_url(version, options)
       elsif model.cover_image.tmp_file.present?
         h.asset_url "project_#{version}_image_processing.png"
       end
