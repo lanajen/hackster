@@ -10,6 +10,8 @@ import * as ToolbarActions from '../actions/ToolbarActions';
 import * as ImageBucketActions from '../actions/ImageBucketActions';
 import * as EditorActions from '../actions/EditorActions';
 
+import Editable from './Editable';
+
 
 var Editor = React.createClass({
 

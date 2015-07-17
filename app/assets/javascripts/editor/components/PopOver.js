@@ -15,11 +15,12 @@ const PopOver = React.createClass({
   },
 
   componentDidMount() {
+    console.log('mounted');
     React.findDOMNode(this.refs.input).focus();
   },
 
   onBodyClick(e) {
-    if(e.target !== React.findDOMNode(this)) {
+    if(e.target !== React.findDOMNode(this.refs.input) && e.target !== React.findDOMNode(this.refs.popOver)) {
       this.props.unMountPopOver();
     }
   },
@@ -33,6 +34,8 @@ const PopOver = React.createClass({
       } else {
         this.props.onLinkInput(null);
       }
+      this.props.unMountPopOver();
+    } else if (e.key === 'Esc') {
       this.props.unMountPopOver();
     }
   },
@@ -50,14 +53,20 @@ const PopOver = React.createClass({
   },
 
   render: function() {
-    let pos = this.getPosition(this.props.node.anchorNode.parentElement);
+    console.log('rendered', this.props.node.anchorNode.parentElement.offsetTop);
+    let pos = this.props.node.anchorNode.parentElement;
+    // GET POS BASED ON EDITOR POS.
     let styles = {
-      position: 'absolute'
+      top: pos.offsetTop - 57,
+      left: pos.offsetLeft - 20
     };
     
     return (
-      <div style={styles}>
-        <input ref="input" type="text" placeholder="Enter a link" onKeyPress={this.onKeyPress} />
+      <div className="react-link-popover-wrapper" style={styles}>
+        <div ref="popOver" className="react-link-popover">
+          <input ref="input" className="link-popover-input" type="text" placeholder="Enter a link" onKeyPress={this.onKeyPress} />
+        </div>
+        <div className="link-popover-arrow"></div>
       </div>
     );
   }
