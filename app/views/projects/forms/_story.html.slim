@@ -2,11 +2,11 @@
   bold/italic/h1/links/list
   full width input
 
-= content_for :js do
-  javascript:
-    $(function(){
-      editor.activate();
-    });
+/ = content_for :js do
+/   javascript:
+/     $(function(){
+/       editor.activate();
+/     });
 
 = simple_nested_form_for @project, url: api_v1_project_path(@project), html: { data: { remote: true }, class: 'form-horizontal remote' }, wrapper: :bootstrap3_horizontal do |f|
 
@@ -19,11 +19,8 @@
   .row
     .col-md-8.col-md-offset-2
       = f.error_notification
-
-      .box data-anchor='description'
-        .box-content
-          = f.input :description, as: :text, wrapper_html: { class: 'hidden' }
-          = react_component('ReactEditor', {}, {})
+      = f.input :description, as: :text, wrapper_html: { class: 'hidden' }
+      = react_component('ReactEditor', { project: @project.story })
           / p.small.text-muted
           /   strong> Tip:
           /   | Add photos and videos by clicking the 'Add media' button to the left. It will show up any time you're on a new paragraph.

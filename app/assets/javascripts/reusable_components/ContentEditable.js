@@ -1,123 +1,54 @@
 import React from 'react';
 import _ from 'lodash';
 import htmlparser from 'htmlparser';
+import select from 'selection-range';
 
 const ContentEditable = React.createClass({
 
-    getInitialState() {
-      return {
-        html: null
-      };
-    },
-
     shouldComponentUpdate(nextProps, nextState){
-      return nextState.html !== this.getDOMNode().innerHTML;
+      return nextProps.html !== React.findDOMNode(this).innerHTML;
     },
 
-    componentWillMount() {
-      if(this.props.html) {
-        let html = this.toHTML(this.props.html);
-        this.setState({
-          html: html
-        });
+    componentDidUpdate(prevProps) {
+      // When we force a beginning p element in emitChange, the componentUpdates and we lose focus.  This will reset the focus to the end.
+      // This should happen only when we force an initial p element.
+      if(prevProps.html !== this.props.html) {
+        if(document) {
+          let node = React.findDOMNode(this);
+          let range = document.createRange();
+          let sel = document.getSelection();
+
+          node.focus();
+          range.selectNodeContents(node);
+          range.collapse(false);
+          sel.removeAllRanges();
+          sel.addRange(range);
+          range.detach();
+        }
       }
-    },
-
-    htmlParserHandler(html) {
-      function handler(html) {
-        return _.map(html, function(item) {
-          if(!item.children) {
-            return {
-              tag: item.data,
-              text: '',
-              children: []
-            };
-          }
-          
-          let textContent;
-          if(item.children) {
-            textContent = item.children.shift();
-            textContent = textContent.data;
-          }
-          return {
-            tag: item.data,
-            text: textContent,
-            children: handler(item.children)
-          };
-        });
-      }
-      return handler(html);
-    },
-
-    buildJSON(html) {
-      return new Promise((resolve, reject) => {
-        let handler = new htmlparser.DefaultHandler(function(err, dom) {
-          if(err) { reject(err) }
-
-          else {
-            resolve(this.htmlParserHandler(dom));
-          }
-        }.bind(this));
-
-        let parser = new htmlparser.Parser(handler);
-        parser.parseComplete(html);
-      }.bind(this));
-    },
-    
-    toHTML(collection) {
-      let result = (function recurse(html, string) {
-        html.forEach(function(item) {
-          if(!item.children) {
-            if(item.tag === 'br') {
-              string += ('<' + item.tag + '/>');
-            } else {
-              string += ('<' + item.tag + '>' + item.text + '</' + item.tag + '>');
-            }
-          } else if(item.children) {
-              string += recurse(item.children, ('<' + item.tag + '>' + item.text));
-              if(item.tag !== 'br') {
-                string += ('</' + item.tag + '>');
-              }
-            }
-        });
-        return string;
-      }(collection, ''));
-      
-      return result;
     },
 
     emitChange(e){
       let html = React.findDOMNode(this).innerHTML;
-
-      if (this.props.onChange) {
-        this.buildJSON(html).then(function(json) {
-          this.props.onChange({
-            target: {
-              value: json,
-              json: json
-            }
-          });
-        }.bind(this), function(err) {
-          console.log(err);
-        });
+      // Forces a paragraph when there's no content or user deletes all content.  This is to prevent a starting 'text' element.
+      if(html.length === 1) {
+        html = '<p>' + html + '</p>';
       }
-
-      this.setState({
-        html: html
-      });
+      this.props.onChange(html);
     },
 
     render(){
-
+      // console.log('CE', this.props);
       return (
         <div key={this.props.refLink}
           ref={this.props.refLink}
+          style={this.props.style || null}
           id="contenteditable"
-          style={this.props.style} 
+          className={this.props.textAreaClasses || null}
           onInput={this.emitChange} 
           onBlur={this.emitChange}
           contentEditable={true}
-          dangerouslySetInnerHTML={{__html: this.state.html }}></div>
+          dangerouslySetInnerHTML={{__html: this.props.html }}></div>
       );
     }
 });
