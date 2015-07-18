@@ -43,6 +43,18 @@ module.exports = {
           err ? reject(err) : resolve(res);
         });
     });
+  },
+
+  flagContent(csrfToken, flaggableType, flaggableId, userId) {
+    return new Promise((resolve, reject) => {
+      request
+        .post('/api/v1/flags')
+        .set('X-CSRF-Token', csrfToken)
+        .send({flag: { flaggable_type: flaggableType,  flaggable_id: flaggableId,  user_id: userId} })
+        .end(function(err, res) {
+          err ? reject(err) : resolve(res);
+        });
+    });
   }
 
 };
