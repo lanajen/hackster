@@ -114,12 +114,12 @@ class CronTask < BaseWorker
   end
 
   def launch_daily_cron
-    self.class.perform_async 'compute_daily_reputation'
-    self.class.perform_in 1.hour, 'compute_popularity'
-    self.class.perform_in 2.hours, 'send_daily_notifications'
-    self.class.perform_async 'generate_users'
+    ReputationWorker.perform_async 'compute_daily_reputation'
+    PopularityWorker.perform_in 1.hour, 'compute_popularity'
+    CronTask.perform_in 2.hours, 'send_daily_notifications'
+    CronTask.perform_async 'generate_users'
 
-    self.class.perform_in 24.hours, 'launch_daily_cron'
+    CronTask.perform_in 24.hours, 'launch_daily_cron'
   end
 
   def lock_assignment
