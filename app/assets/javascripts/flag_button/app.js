@@ -5,25 +5,9 @@ const App = React.createClass({
 
   getInitialState() {
     return {
-      csrfToken: null,
       flagged: false,
       isLoading: false
     };
-  },
-
-  componentWillMount() {
-    if(this.state.csrfToken === null) {
-      let metaList, csrfToken;
-
-      if(document) {
-        metaList = document.getElementsByTagName('meta');
-        csrfToken = _.findWhere(metaList, { name: 'csrf-token' }).content;
-
-        this.setState({
-          csrfToken: csrfToken
-        });
-      }
-    }
   },
 
   componentDidMount() {
@@ -51,8 +35,8 @@ const App = React.createClass({
   },
 
   onFlagButtonClick() {
-    if (this.state.csrfToken && !this.state.isLoading && !this.state.flagged) {
-      let promise = flagContent(this.state.csrfToken, this.props.flaggable.type, this.props.flaggable.id, this.props.currentUserId);
+    if (!this.state.isLoading && !this.state.flagged) {
+      let promise = flagContent(this.props.flaggable.type, this.props.flaggable.id, this.props.currentUserId);
       this.setState({
         isLoading: true
       });
