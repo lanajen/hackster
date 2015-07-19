@@ -121,6 +121,8 @@ var Thought = React.createClass({
           <Like liked={this.props.liked} onButtonClick={this.handleLike} />
           <span className="separator">&bull;</span>
           <a href='' onClick={this.handleComment}>Comment</a>
+          <span className="separator">&bull;</span>
+          <FlagButton flaggable={{id: this.props.id, type: 'Thought'}} />
         </div>
       </div>
     );

@@ -3,10 +3,13 @@ class Quote
   include ActiveModel::Conversion
   extend ActiveModel::Naming
 
+  SUPPORTED_COUNTRIES = ['United States', 'Canada']
+
   attr_accessor :project_id, :components, :email, :country
 
   validates :project_id, :country, presence: true
   validates :email, format: EMAIL_REGEXP
+  validates :country, inclusion: { in: SUPPORTED_COUNTRIES, message: 'sorry, we only support delivery to the US for now' }, allow_blank: true
   validate :validates_has_components
 
   def initialize attributes={}

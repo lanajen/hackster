@@ -14,7 +14,7 @@ class List < Group
   has_counter :external_projects, 'projects.external.count'
   has_counter :members, 'followers.count', accessor: false
   has_counter :private_projects, 'projects.private.count'
-  has_counter :projects, 'projects.visible.count', accessor: false
+  has_counter :projects, 'projects.public.visible.count', accessor: false
   has_counter :team_members, 'team_members.count'
 
   hstore_column :hproperties, :enable_comments, :boolean

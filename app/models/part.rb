@@ -174,7 +174,8 @@ class Part < ActiveRecord::Base
   # end of search methods
 
   def self.search params
-    query = params[:q].split(/\s+/).map do |token|
+    # escape single quotes and % so it doesn't break the query
+    query = params[:q].gsub(/['%]/, ' ').split(/\s+/).map do |token|
       "(parts.description ILIKE '%#{token}%' OR parts.name ILIKE '%#{token}%' OR parts.product_tags_string ILIKE '%#{token}%')"
     end.join(' AND ')
 

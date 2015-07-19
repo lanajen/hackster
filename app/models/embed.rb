@@ -46,7 +46,7 @@ class Embed
   end
 
   def cad_repo?
-    provider and provider_name.to_s.in? %w(autodesk360 sketchfab youmagine)
+    provider and provider_name.to_s.in? %w(autodesk360 sketchfab youmagine github)
   end
 
   def code_repo?
@@ -58,7 +58,7 @@ class Embed
   end
 
   def schematic_repo?
-    provider and provider_name.to_s.in? %w(circuitsio oshpark upverter fritzing)
+    provider and provider_name.to_s.in? %w(circuitsio oshpark upverter fritzing github)
   end
 
   def format
