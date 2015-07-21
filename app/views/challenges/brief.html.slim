@@ -18,6 +18,14 @@
             = link_to 'Enter an additional project', '', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge'
         - else
           = link_to 'Enter challenge', '', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge'
+
+      - elsif @challenge.voting_active?
+        p.status
+          ' Voting ends in
+          strong>= @challenge.voting_time_left
+        p style="font-size:11px"
+          ' Ends on #{l @challenge.voting_end_date.in_time_zone(PDT_TIME_ZONE)} PST
+
       - else
         p.status
           strong= raw @challenge.status
