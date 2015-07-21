@@ -15,7 +15,7 @@ class StoreProductAction
     case type
     when 'follow'
       @followable = options['followable_type'].constantize.find(options['followable_id'])
-    when 'signup'
+    when 'newsletter_url', 'signup'
       @url = options['url']
     end
   end
@@ -24,10 +24,10 @@ class StoreProductAction
     case type
     when 'follow'
       "Follow #{@followable.name}"
-    when 'signup'
-      "Register for an account on #{@url}"
     when 'newsletter_url'
       "Signup for their newsletter at #{@url}"
+    when 'signup'
+      "Register for an account on #{@url}"
     end
   end
 end
