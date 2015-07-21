@@ -21,7 +21,7 @@
                 | (we'll check manually after you've placed the order)
           - when 'newsletter_url'
             li
-              ' Sign up for their newsletter at
+              = action.message.presence || 'Sign up for their newsletter at'
               => link_to action.url, action.url, target: '_blank'
               small.text-muted
                 | (we'll check manually after you've placed the order)

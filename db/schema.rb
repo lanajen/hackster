@@ -11,11 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 20150721005512) do
-=======
-ActiveRecord::Schema.define(version: 20150714181543) do
->>>>>>> cleanup
+ActiveRecord::Schema.define(version: 20150721211942) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -611,6 +607,8 @@ ActiveRecord::Schema.define(version: 20150714181543) do
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
     t.hstore   "properties"
+    t.string   "name"
+    t.text     "description"
   end
 
   add_index "store_products", ["available"], name: "index_store_products_on_available", using: :btree

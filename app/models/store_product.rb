@@ -19,7 +19,8 @@ class StoreProduct < ActiveRecord::Base
   counters_column :counters_cache
   has_counter :orders, 'orders.valid.count'
 
-  attr_accessible :unit_cost, :source_id, :source_type, :available
+  attr_accessible :unit_cost, :source_id, :source_type, :available, :name,
+    :description
 
   validates :length, :height, :weight, :width, presence: true
 

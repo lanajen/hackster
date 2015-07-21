@@ -1,11 +1,11 @@
 class StoreProductAction
-  attr_accessor :url, :followable, :type
+  attr_accessor :url, :followable, :type, :message
 
   def completed_by? user
     case @type
     when 'follow'
       user.following? @followable
-    when 'signup'
+    when 'newsletter_url', 'signup'
       false
     end
   end
@@ -18,6 +18,7 @@ class StoreProductAction
     when 'newsletter_url', 'signup'
       @url = options['url']
     end
+    @message = options['message']
   end
 
   def to_s
