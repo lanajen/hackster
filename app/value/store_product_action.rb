@@ -26,6 +26,8 @@ class StoreProductAction
       "Follow #{@followable.name}"
     when 'signup'
       "Register for an account on #{@url}"
+    when 'newsletter_url'
+      "Signup for their newsletter at #{@url}"
     end
   end
 end

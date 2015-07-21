@@ -135,6 +135,7 @@ class User < ActiveRecord::Base
     :email_subscriptions, :web_subscriptions
   accepts_nested_attributes_for :avatar, :projects, allow_destroy: true
 
+  validates :email, format: { with: EMAIL_REGEXP }, allow_blank: true  # devise's regex allows for a lot of crap
   validates :name, length: { in: 1..200 }, allow_blank: true
   validates :city, :country, length: { maximum: 50 }, allow_blank: true
   validates :mini_resume, length: { maximum: 160 }, allow_blank: true
