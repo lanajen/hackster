@@ -354,7 +354,7 @@
                   h4 Do something awesome
                   - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
                     .project-actions.row
-                      .action-item.col-xs-7= render partial: 'respects/button', locals: { project: @project }
+                      .action-item.col-xs-7= render partial: 'respects/button', locals: { respectable: @project }
                       .action-item.col-xs-5= render partial: 'followers/button', locals: { followable: @project, button_type: 'project', button_partial: 'project_button', display_name: false }
                   = render 'projects/project_embed_button'
                   - if @project.celery_id.present?
@@ -583,7 +583,7 @@
                       .show-on-affix style='margin-top:20px;'
                         - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
                           .project-actions.row
-                            .action-item.col-xs-7= render partial: 'respects/button', locals: { project: @project }
+                            .action-item.col-xs-7= render partial: 'respects/button', locals: { respectable: @project }
                             .action-item.col-xs-5= render partial: 'followers/button', locals: { followable: @project, button_type: 'project', button_partial: 'project_button', display_name: false }
                         = render 'projects/project_embed_button'
                         .add-to-list

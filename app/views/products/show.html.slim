@@ -51,7 +51,7 @@
               - if @product.public?
                 .respects
                   / - if @can_respect
-                    = render partial: 'respects/button', locals: { product: @product }
+                    = render partial: 'respects/button', locals: { respectable: @product }
                   / = render partial: 'respects/count', locals: { count: @product.respects_count, product: @product }
 
                   .views-info

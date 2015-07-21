@@ -75,7 +75,7 @@ class ChallengeEntriesController < ApplicationController
   def destroy
     @entry.destroy
 
-    redirect_to @challenge, notice: "Entry deleted."
+    redirect_to challenge_entries_path, notice: "Entry deleted."
   end
 
   private

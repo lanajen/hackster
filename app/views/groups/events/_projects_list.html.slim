@@ -17,7 +17,7 @@
         - if @event.voting_active?
           = content_for :js do
             javascript:
-              text = "#{j render(partial: 'respects/button', locals: { project: collection.project })}";
+              text = "#{j render(partial: 'respects/button', locals: { respectable: collection.project })}";
               $('.project-#{collection.project_id} .thumb').append(text);
 
       - content_for :js do

@@ -75,6 +75,8 @@ module HstoreColumn
       if options[:default]
         self.send :define_method, "default_#{attribute}" do
           case options[:default]
+          when Proc
+            options[:default].call(self)
           when String
             options[:default].gsub(/%\{([^\}]+)\}/) do
               eval $1

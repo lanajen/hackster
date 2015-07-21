@@ -117,6 +117,7 @@ class User < ActiveRecord::Base
   has_many :thoughts
   has_many :thought_likes, class_name: 'Respect', through: :thoughts, source: :likes
   has_many :user_activities
+  has_many :voted_entries, source_type: 'ChallengeEntry', through: :respects, source: :respectable
   has_one :avatar, as: :attachable, dependent: :destroy
   has_one :reputation, dependent: :destroy
   has_one :slug, as: :sluggable, dependent: :destroy, class_name: 'SlugHistory'
@@ -562,8 +563,13 @@ class User < ActiveRecord::Base
     Platform.distinct.joins(:project_collections).joins(project_collections: :project).joins(project_collections: { project: :team }).joins(project_collections: { project: { team: :members }}).where(members: { user_id: id }, projects: { private: false })
   end
 
-  def respected? project
-    project.id.in? respected_projects.map(&:id)
+  def respected? respectable
+    case respectable
+    when ChallengeEntry
+      respectable.id.in? voted_entries.map(&:id)
+    when Project
+      respectable.id.in? respected_projects.map(&:id)
+    end
   end
 
   def reset_authentication_token

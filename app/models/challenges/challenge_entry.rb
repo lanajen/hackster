@@ -4,15 +4,20 @@ class ChallengeEntry < ActiveRecord::Base
   AWARDED_STATES = %w(awarded fullfiled)
   APPROVED_STATES = AWARDED_STATES + %w(qualified unawarded)
 
+  include HstoreCounter
   include Workflow
 
   belongs_to :challenge
   belongs_to :prize
   belongs_to :project
   belongs_to :user
+  has_many :votes, as: :respectable, class_name: 'Respect', dependent: :destroy
   has_one :address, as: :addressable
 
   validates :challenge_id, uniqueness: { scope: :project_id }
+
+  counters_column :counters_cache
+  has_counter :votes, 'votes.count'
 
   workflow do
     state :new do
@@ -53,5 +58,9 @@ class ChallengeEntry < ActiveRecord::Base
 
   def give_no_award
     notify_observers(:after_award_not_given)
+  end
+
+  def to_tracker
+    {}
   end
 end

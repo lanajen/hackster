@@ -307,6 +307,13 @@ HackerIo::Application.routes.draw do
         put 'update_workflow' => 'challenges#update_workflow', on: :member
       end
 
+      resources :challenge_entries, only: [] do
+        resources :respects, only: [:create] do
+          get 'create' => 'respects#create', on: :collection, as: :create
+          delete '' => 'respects#destroy', on: :collection
+        end
+      end
+
       # resources :skill_requests, path: 'cupidon' do
       #   resources :comments, only: [:create]
       # end
