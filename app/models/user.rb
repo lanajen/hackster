@@ -61,7 +61,6 @@ class User < ActiveRecord::Base
          :omniauthable, omniauth_providers: [:facebook, :github, :gplus,
           :linkedin, :twitter, :windowslive]
 
-  belongs_to :invite_code
   has_many :addresses, -> { order(id: :desc) }, as: :addressable
   has_many :assignments, through: :promotions
   has_many :assignee_issues, foreign_key: :assignee_id
@@ -147,7 +146,6 @@ class User < ActiveRecord::Base
     on: :create do |user|
       user.validates :email_confirmation, presence: true
       user.validate :email_matches_confirmation
-      user.validate :used_valid_invite_code?
   end
   # validate :email_is_unique_for_registered_users, if: :being_invited?
   validate :website_format_is_valid
@@ -212,15 +210,6 @@ class User < ActiveRecord::Base
   add_checklist :links, 'Add links to your other web presence', 'has_websites?', group: :get_started
 
   self.per_page = 20
-
-  # broadcastable
-  has_many :broadcasts
-
-  def broadcast event, context_model_id, context_model_type, project_id=nil
-    broadcasts.create event: event, context_model_id: context_model_id,
-      context_model_type: context_model_type, project_id: project_id,
-      broadcastable_type: 'User', broadcastable_id: id
-  end
 
   # beginning of search methods
   include TireInitialization
@@ -406,10 +395,6 @@ class User < ActiveRecord::Base
     if authentication_token.blank?
       self.authentication_token = generate_authentication_token
     end
-  end
-
-  def find_invite_request
-    InviteRequest.find_by_email email
   end
 
   # def has_access? project
@@ -785,15 +770,6 @@ class User < ActiveRecord::Base
       websites.each do |type, url|
         next if url.blank?
         errors.add type.to_sym, 'is not a valid URL' unless url.downcase =~ URL_REGEXP
-      end
-    end
-
-    def used_valid_invite_code?
-      return unless invitation_code.present?
-      if invite_code = InviteCode.authenticate(invitation_code)
-        self.invite_code_id = invite_code.id
-      else
-        errors.add :invitation_code, 'is either invalid or expired'
       end
     end
 

@@ -104,7 +104,6 @@ class Project < ActiveRecord::Base
   has_one :cover_image, -> { order created_at: :desc }, as: :attachable, class_name: 'CoverImage', dependent: :destroy  # added order because otherwise it randomly picks up the wrong image
   has_one :logo, as: :attachable, class_name: 'Avatar', dependent: :destroy
   has_one :project_collection, class_name: 'ProjectCollection'
-  has_one :video, as: :recordable, dependent: :destroy
 
   sanitize_text :name
   register_sanitizer :sanitize_description, :before_validation, :description
@@ -124,7 +123,7 @@ class Project < ActiveRecord::Base
     :software_part_joins_attributes, :locale
   attr_accessor :current, :private_changed, :needs_platform_refresh,
     :approved_changed
-  accepts_nested_attributes_for :images, :video, :logo, :team_members,
+  accepts_nested_attributes_for :images, :logo, :team_members,
     :widgets, :cover_image, :permissions, :slug_histories, :team,
     :project_collections, :part_joins, :hardware_part_joins, :tool_part_joins,
     :software_part_joins, allow_destroy: true

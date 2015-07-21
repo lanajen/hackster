@@ -61,16 +61,6 @@ class BaseMailer < ActionMailer::Base
         url.group_edit_members_url(group, host: default_host)
       when :group_invitation_link
         url.group_accept_invitation_url(group, host: default_host)
-      when :invite_friends_link
-        url.new_user_invitation_url(host: default_host)
-      when :invite_edit_url
-        url.edit_invite_request_url(invite, host: default_host)
-      when :invite_project_url
-        url.project_url(invite.project, host: default_host) if invite.project
-      when :invited_profile_link
-        url.user_url(@context[:invited], host: default_host)
-      # when :inviter_name
-      #   user.invited_by.name
       when :invitation_link
         url.accept_user_invitation_url(invitation_token: user.invitation_token, host: default_host)
       when :issue_link

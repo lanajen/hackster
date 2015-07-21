@@ -8,21 +8,14 @@ class FollowRelationObserver < ActiveRecord::Observer
   def after_create record
     update_counters record
     case record.followable_type
-    when 'Project'
-      record.user.broadcast :new, record.id, 'FollowRelation', record.followable_id
     when 'Group'
-      record.user.broadcast :new, record.id, 'FollowRelation', record.followable_id
       record.user.update_counters only: [:platforms]
       Cashier.expire "user-#{record.user_id}-sidebar"
-    # when 'User'
-    else
-      Broadcast.create event: :new, user_id: record.user_id, context_model_id: record.id, context_model_type: 'FollowRelation', broadcastable_id: record.followable_id, broadcastable_type: 'User'
     end
   end
 
   def after_destroy record
     update_counters record
-    Broadcast.where(context_model_id: record.id, context_model_type: 'FollowRelation').destroy_all
     case record.followable_type
     when 'Group'
       Cashier.expire "user-#{record.user_id}-sidebar"

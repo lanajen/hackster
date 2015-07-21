@@ -1,7 +1,6 @@
 class RespectObserver < ActiveRecord::Observer
   def after_commit_on_create record
     NotificationCenter.notify_all :new, :respect, record.id if record.respectable_type == 'Project'
-    # record.user.broadcast :new, record.id, 'Respect', record.respectable_id
   end
 
   def after_create record
@@ -10,7 +9,6 @@ class RespectObserver < ActiveRecord::Observer
 
   def after_destroy record
     update_counters record
-    # Broadcast.where(context_model_id: record.id, context_model_type: 'Respect').destroy_all
   end
 
   private
