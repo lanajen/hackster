@@ -223,7 +223,7 @@ class Project < ActiveRecord::Base
   add_checklist :platform_tags_string, 'Platforms used'
   add_checklist :description, 'Story'
   add_checklist :hardware_parts, 'Components', 'hardware_parts.any?'
-  add_checklist :schematics, 'Schematics', 'widgets.where(type: %w(SchematicRepoWidget SchematicFileWidget)).any?'
+  add_checklist :schematics, 'Schematics', 'widgets.where(type: %w(SchematicWidget SchematicFileWidget)).any?'
   add_checklist :code, 'Code', 'widgets.where(type: %w(CodeWidget CodeRepoWidget)).any?'
 
   # beginning of search methods
