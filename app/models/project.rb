@@ -826,6 +826,7 @@ class Project < ActiveRecord::Base
         '&amp;' => '&',
         '&lt;' => '<',
         '&gt;' => '>',
+        '&quot;' => '"',
       }.each do |code, character|
         text.gsub! Regexp.new(code), character
       end
