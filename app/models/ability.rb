@@ -177,6 +177,10 @@ class Ability
     end
 
     can :manage, Order, user_id: @user.id
+
+    can :manage, Part do |part|
+      part.platform_id.present? and @user.can? :manage, part.platform
+    end
   end
 
   def moderator

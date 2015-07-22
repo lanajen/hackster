@@ -7,6 +7,8 @@
       = image_tag part.image(:headline)
 
     .col-md-2.col-md-push-8.action-buttons
+      - if can? :manage, part
+        = link_to 'Edit', edit_group_product_path(part.platform, part), class: 'btn btn-warning btn-sm btn-block'
       = render partial: 'followers/button', locals: { followable: part, button_type: 'part', button_partial: 'part_button', display_name: false }
       = link_to pluralize(part.projects_count, 'project'), part, class: 'btn btn-link btn-block btn-sm'
       - if part.owners_count > 0

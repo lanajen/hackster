@@ -163,8 +163,14 @@ h6, .h6 {
     right: -9px;
   }
 }
-.btn:not(.btn-block) + .btn:not(.btn-block) {
+.btn:not(.btn-block) + .btn:not(.btn-block),
+.btn:not(.btn-block) + .react-btn,
+.react-btn + .btn:not(.btn-block) {
   margin-left: 3px;
+}
+.btn-block + .react-btn,
+.react-btn + .btn-block {
+  margin-top: 5px;
 }
 .btn-group {
   & > .btn:not(.btn-block) + .btn:not(.btn-block) {

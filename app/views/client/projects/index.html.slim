@@ -49,7 +49,7 @@
 
   .mg-20.clearfix
     .pull-left.btn-group-split
-      span style='margin-right:5px' = render partial: 'followers/button', locals: { followable: current_platform, buttonType: 'text', button_partial: 'button_text', display_name: true }
+      = render partial: 'followers/button', locals: { followable: current_platform, buttonType: 'text', button_partial: 'button_text', display_name: true }
       - if @custom_header.present?
         = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project"), new_project_path, class: 'btn btn-default'
 
