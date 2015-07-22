@@ -7,20 +7,21 @@ class ShippingCostCalculator
   DISCOUNT = 0.2
 
   def cost
-    # return 0  # disabling for now, more testing needed
+    shipment.lowest_rate.rate.to_f * (1 - DISCOUNT)
+  end
 
+  def initialize product, address
+    @product = product
+    @address = address
+  end
+
+  def shipment
     @shipment ||= EasyPost::Shipment.create(
       to_address: to_address,
       from_address: from_address,
       parcel: parcel,
       customs_info: customs_info,
     )
-    @shipment.lowest_rate.rate.to_f * (1 - DISCOUNT)
-  end
-
-  def initialize product, address
-    @product = product
-    @address = address
   end
 
   private

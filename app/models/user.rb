@@ -100,7 +100,7 @@ class User < ActiveRecord::Base
   has_many :owned_parts, -> { order('parts.name') }, source_type: 'Part', through: :follow_relations, source: :followable
   has_many :permissions, as: :grantee
   has_many :platforms, -> { order('groups.full_name ASC') }, through: :group_ties, source: :group, class_name: 'Platform'
-  has_many :projects, -> { where("projects.guest_name IS NULL OR projects.guest_name = ''") }, through: :teams
+  has_many :projects, through: :teams
   has_many :promotions, through: :group_ties, source: :group, class_name: 'Promotion'
   has_many :promotion_group_ties, -> { where(type: 'PromotionMember') }, class_name: 'PromotionMember', dependent: :destroy
   has_many :receipts, dependent: :destroy do

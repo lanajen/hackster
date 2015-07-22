@@ -18,8 +18,8 @@ class StatsController < ApplicationController
 
     @new_followers = @user.followers.where("follow_relations.created_at > ?", Date.today.beginning_of_month).count
     @new_views = @user.impressions.where("impressions.created_at > ?", Date.today.beginning_of_month).count
-    @new_respects = Respect.where(respectable_type: 'Project', respectable_id: @user.projects.pluck(:id)).where("respects.created_at > ?", Date.today.beginning_of_month).count
-    @new_project_views = Impression.where(impressionable_type: 'Project', impressionable_id: @user.projects.pluck(:id)).where("impressions.created_at > ?", Date.today.beginning_of_month).count
+    @new_respects = Respect.where(respectable_type: 'Project', respectable_id: @user.projects.own.pluck(:id)).where("respects.created_at > ?", Date.today.beginning_of_month).count
+    @new_project_views = Impression.where(impressionable_type: 'Project', impressionable_id: @user.projects.own.pluck(:id)).where("impressions.created_at > ?", Date.today.beginning_of_month).count
 
     @reputation_events = @user.reputation_events.order(event_date: :desc) if current_user.is? :admin
   end

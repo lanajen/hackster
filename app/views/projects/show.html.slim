@@ -322,7 +322,7 @@
                             - else
                               | This assignment hasn't been submitted.
                           p= link_to 'Submit assignment', submit_project_path(@project), method: :patch, class: 'btn btn-danger btn-sm btn-block', data: { confirm: "Are you sure you're ready to submit? #{"You have until #{l @project.assignment.submit_by_date.in_time_zone(PDT_TIME_ZONE)} to make edits." if @project.assignment.submit_by_date.present? }" }
-                - elsif @project.has_no_assignment? and (current_user.student_assignments.pluck(:id) - current_user.projects.joins(:project_collections).where(project_collections: { collectable_type: 'Assignment' }).pluck("project_collections.id")).any? and current_user.is_team_member?(@project)
+                - elsif @project.has_no_assignment? and (current_user.student_assignments.pluck(:id) - current_user.projects.own.joins(:project_collections).where(project_collections: { collectable_type: 'Assignment' }).pluck("project_collections.id")).any? and current_user.is_team_member?(@project)
                   section.section-thumbs
                     h4 Assignment
                     .alert.alert-warning.text-center

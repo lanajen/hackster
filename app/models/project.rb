@@ -301,6 +301,10 @@ class Project < ActiveRecord::Base
     includes(project: :users).includes(project: :cover_image).includes(project: :team)
   end
 
+  def self.guest
+    where("projects.guest_name <> '' AND projects.guest_name IS NOT NULL")
+  end
+
   def self.indexable
     live.approved.where(hide: false).where("projects.made_public_at < ?", Time.now)
   end
