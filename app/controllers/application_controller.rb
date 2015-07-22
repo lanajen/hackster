@@ -175,7 +175,7 @@ class ApplicationController < ActionController::Base
       if user && Devise.secure_compare(user.authentication_token, params[:user_token])
         sign_in user#, store: false
         flash.keep
-        redirect_to request.path and return
+        redirect_to UrlParam.new(request.url).remove_params(%w(user_token user_email)) and return
       end
     end
 

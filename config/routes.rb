@@ -320,7 +320,8 @@ HackerIo::Application.routes.draw do
 
       resources :notifications, only: [:index] do
         get 'edit' => 'notifications#edit', on: :collection
-        patch 'edit' => 'notifications#update', on: :collection
+        patch '' => 'notifications#update', on: :collection
+        get 'update' => 'notifications#update_from_link', on: :collection, as: :update
       end
 
       resources :projects, only: [:index]

@@ -629,12 +629,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  def unsubscribe_from_all
-    %w(email web).each do |notification_type|
-      set_subscriptions_for notification_type, []
-    end
-  end
-
   def subscribed_to? notification_type, subscription
     subscription.in? subscriptions_for(notification_type)
   end
@@ -664,6 +658,23 @@ class User < ActiveRecord::Base
     mask = subscriptions_mask_for(notification_type)
     const = subscriptions_const_for(notification_type)
     const.keys.reject { |r| ((mask || 0) & 2**const.keys.index(r)).zero? }
+  end
+
+  def unsubscribe_from_all
+    %w(email web).each do |notification_type|
+      set_subscriptions_for notification_type, []
+    end
+  end
+
+  def unsubscribe_from notification_type, subscription
+    new_subscriptions = subscriptions_for(notification_type)
+    new_subscriptions.delete(subscription)
+    set_subscriptions_for notification_type, new_subscriptions
+  end
+
+  def unsubscribe_from! notification_type, subscription
+    unsubscribe_from notification_type, subscription
+    save
   end
 
   def project_for_assignment assignment

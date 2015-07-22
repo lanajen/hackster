@@ -3,7 +3,7 @@ class UrlGenerator
   include UrlHelper
 
   def initialize opts={}
-    @host = opts[:host]
+    @host = opts[:host] || APP_CONFIG['full_host']
   end
 
   private
