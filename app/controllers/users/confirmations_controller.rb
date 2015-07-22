@@ -1,6 +1,6 @@
 class Users::ConfirmationsController < Devise::ConfirmationsController
   def new
-    self.resource = resource_class.new permitted_params_for_new
+    self.resource = resource_class.new permitted_params_for_new[:user]
   end
 
   # GET /resource/confirmation?confirmation_token=abcdef
@@ -62,6 +62,6 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
     end
 
     def permitted_params_for_new
-      params.permit(resource_name => [ :email ])
+      params.permit(resource_name => [:email])
     end
 end

@@ -3,7 +3,7 @@ class UserObserver < ActiveRecord::Observer
     unless record.invited_to_sign_up? or record.reputation  # this callback seems to be called twice somehow, which means two sets of emails are sent. Checking on reputation to see if the callback has already been called.
       record.create_reputation
       advertise_new_user record unless record.simplified_signup?
-      record.send_confirmation_instructions unless record.invitation_accepted? or record.skip_registration_confirmation
+      record.send_confirmation_instructions unless record.invitation_accepted?
     end
   end
 
@@ -66,6 +66,14 @@ class UserObserver < ActiveRecord::Observer
 
     if (record.changed & %w(reputation_count)).any?
       record.reputation.try(:compute_redeemable!)
+    end
+
+    # cleanup when an invited user signs up from a different path
+    if record.invitation_token and record.encrypted_password_changed?
+      record.invitation_token = nil
+      record.generate_user_name if record.user_name.nil? and record.new_user_name.nil?
+      record.build_reputation unless record.reputation
+      advertise_new_user record
     end
 
     Cashier.expire *keys if keys.any?
