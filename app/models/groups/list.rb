@@ -74,7 +74,7 @@ class List < Group
   end
 
   def team_members
-    members.invitation_accepted_or_not_invited
+    active_members
   end
 
   def to_tracker

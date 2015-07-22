@@ -34,8 +34,10 @@ class Group < ActiveRecord::Base
   has_many :members, dependent: :destroy
   has_many :permissions, as: :permissible
   has_many :project_collections, dependent: :destroy, as: :collectable
-  has_many :projects, through: :project_collections do
-    # TOOD: see if this can be delegated to ProjectCollection
+  # see https://github.com/rails/rails/issues/19042#issuecomment-91405982 about
+  # "counter_cache: :this_is_not_a_column_that_exists"
+  has_many :projects, through: :project_collections, counter_cache: :this_is_not_a_column_that_exists do
+    # TODO: see if this can be delegated to ProjectCollection
     def visible
       where(project_collections: { workflow_state: ProjectCollection::VALID_STATES })
     end

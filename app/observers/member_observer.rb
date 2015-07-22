@@ -24,6 +24,8 @@ class MemberObserver < ActiveRecord::Observer
       end
     elsif record.group.is? :platform
       Cashier.expire "user-#{record.user_id}-sidebar", "user-#{record.user_id}-thumb", "platform-#{record.group_id}-sidebar"
+    elsif record.group.is? :list
+      Cashier.expire "list-#{record.group_id}-thumb", 'lists-index'
     end
 
     unless record.permission
@@ -54,7 +56,11 @@ class MemberObserver < ActiveRecord::Observer
 
   def after_destroy record
     update_counters record
-    expire_projects record if record.group.is?(:team)
+    if record.group.is? :team
+      expire_projects record
+    elsif record.group.is? :list
+      Cashier.expire "list-#{record.group_id}-thumb", 'lists-index'
+    end
   end
 
   private

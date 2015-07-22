@@ -38,7 +38,6 @@ class Project < ActiveRecord::Base
     'product' => 'Product',
   }
 
-  include ActionView::Helpers::SanitizeHelper
   include Checklist
   include EditableSlug
   include HstoreColumn
@@ -820,7 +819,17 @@ class Project < ActiveRecord::Base
     end
 
     def strip_tags text
-      sanitize(text, tags: [])
+      text = ActionController::Base.helpers.strip_tags(text)
+
+      # so that these characters don't show escaped. Not the cleanest...
+      {
+        '&amp;' => '&',
+        '&lt;' => '<',
+        '&gt;' => '>',
+      }.each do |code, character|
+        text.gsub! Regexp.new(code), character
+      end
+      text
     end
 
     def sanitize_description text
