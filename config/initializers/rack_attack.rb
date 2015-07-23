@@ -5,7 +5,7 @@ class Rack::Attack
   # use req.env['HTTP_FASTLY_CLIENT_IP'] instead of req.ip when using fastly
 
   # replaced req.ip with req.env['HTTP_FASTLY_CLIENT_IP'] because of HTTP caching
-  # same for req.env['HTTP_USER_AGENT'] and req.env['HTTP_USER_AGENT']
+  # same for req.user_agent and req.env['HTTP_USER_AGENT']
 
   ### Configure Cache ###
 
@@ -108,6 +108,8 @@ class Rack::Attack
 end
 
 ActiveSupport::Notifications.subscribe("rack.attack") do |name, start, finish, request_id, req|
+  Rails.logger.info "RACK_ATTACK DEBUG: req.ip: #{req.ip} / req.env['HTTP_FASTLY_CLIENT_IP']: #{req.env['HTTP_FASTLY_CLIENT_IP']} / req.env['HTTP_USER_AGENT']: #{req.env['HTTP_USER_AGENT']} / req.user_agent: #{req.user_agent}"
+
   if req.env['rack.attack.matched'] == "block scraper access" && req.env['rack.attack.match_type'] == :blacklist
     Rails.logger.info "bad_scraper: #{req.path} / #{req.env['HTTP_USER_AGENT']} / #{req.env['HTTP_FASTLY_CLIENT_IP']}"
     # Rails.logger.info req.inspect
