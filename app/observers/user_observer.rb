@@ -1,9 +1,11 @@
 class UserObserver < ActiveRecord::Observer
   def after_commit_on_create record
-    unless record.invited_to_sign_up? or record.reputation  # this callback seems to be called twice somehow, which means two sets of emails are sent. Checking on reputation to see if the callback has already been called.
+    unless record.reputation  # this callback seems to be called twice somehow, which means two sets of emails are sent. Checking on reputation to see if the callback has already been called.
       record.create_reputation
-      advertise_new_user record unless record.simplified_signup?
-      record.send_confirmation_instructions unless record.invitation_accepted?
+      unless record.invited_to_sign_up?
+        advertise_new_user record unless record.simplified_signup?
+        record.send_confirmation_instructions unless record.invitation_accepted?
+      end
     end
   end
 
@@ -14,7 +16,7 @@ class UserObserver < ActiveRecord::Observer
   def after_invitation_accepted record
     advertise_new_user record
     NotificationCenter.perform_in 15.minutes, 'notify_all', :accepted, :invitation, record.id
-    record.build_reputation unless record.reputation
+    record.create_reputation unless record.reputation
     record.update_column :invitation_token, nil if record.invitation_token.present?
     record.subscribe_to_all && record.save
 
@@ -71,7 +73,7 @@ class UserObserver < ActiveRecord::Observer
     # cleanup when an invited user signs up from a different path
     if record.invitation_token and record.encrypted_password_changed?
       record.invitation_token = nil
-      record.generate_user_name if record.user_name.nil? and record.new_user_name.nil?
+      record.generate_user_name if record.user_name.blank? and record.new_user_name.blank?
       record.build_reputation unless record.reputation
       advertise_new_user record
     end
