@@ -47,3 +47,5 @@ require File.join Rails.root, 'lib/hstore_column'
 require File.join Rails.root, 'lib/websites_column'
 # checklist
 require File.join Rails.root, 'lib/checklist'
+# ActionDispatch::Request override
+require File.join Rails.root, 'lib/action_dispatch_request'

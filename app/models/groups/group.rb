@@ -24,7 +24,7 @@ class Group < ActiveRecord::Base
   include HstoreCounter
   include WebsitesColumn
 
-  editable_slug :user_name, :before_validation
+  editable_slug :user_name
 
   is_impressionable counter_cache: true, unique: :session_hash
 

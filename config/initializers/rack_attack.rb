@@ -5,7 +5,6 @@ class Rack::Attack
   # use req.env['HTTP_FASTLY_CLIENT_IP'] instead of req.ip when using fastly
 
   # replaced req.ip with req.env['HTTP_FASTLY_CLIENT_IP'] because of HTTP caching
-  # same for req.user_agent and req.env['HTTP_USER_AGENT']
 
   ### Configure Cache ###
 
@@ -26,8 +25,8 @@ class Rack::Attack
   end
   whitelist('trusted_ua') do |req|
     TRUSTED_USER_AGENTS.each do |ua|
-      ua.in? req.env['HTTP_USER_AGENT']
-    end if req.env['HTTP_USER_AGENT']
+      ua.in? req.user_agent
+    end if req.user_agent
   end
 
   ### Throttle Spammy Clients ###
@@ -80,10 +79,10 @@ class Rack::Attack
 
   # Block logins from a bad user agent
   blacklist('block scraper access') do |req|
-    req.env['HTTP_USER_AGENT'] =~ /23\.0\.1271\.97/ or (range = IPCat.datacenter?(req.env['HTTP_FASTLY_CLIENT_IP']) and range.name == 'Amazon AWS' and req.path != '/ping') or req.env['HTTP_FASTLY_CLIENT_IP'] == '78.110.60.230'
+    req.user_agent =~ /23\.0\.1271\.97/ or (range = IPCat.datacenter?(req.env['HTTP_FASTLY_CLIENT_IP']) and range.name == 'Amazon AWS' and req.path != '/ping') or req.env['HTTP_FASTLY_CLIENT_IP'] == '78.110.60.230'
   end
   track('bad_scraper') do |req|
-    req.env['HTTP_USER_AGENT'] =~ /23\.0\.1271\.97/ or (range = IPCat.datacenter?(req.env['HTTP_FASTLY_CLIENT_IP']) and range.name == 'Amazon AWS' and req.path != '/ping')
+    req.user_agent =~ /23\.0\.1271\.97/ or (range = IPCat.datacenter?(req.env['HTTP_FASTLY_CLIENT_IP']) and range.name == 'Amazon AWS' and req.path != '/ping')
   end
 
   ### Custom Throttle Response ###
@@ -108,10 +107,10 @@ class Rack::Attack
 end
 
 ActiveSupport::Notifications.subscribe("rack.attack") do |name, start, finish, request_id, req|
-  Rails.logger.info "RACK_ATTACK DEBUG: req.ip: #{req.ip} / req.env['HTTP_FASTLY_CLIENT_IP']: #{req.env['HTTP_FASTLY_CLIENT_IP']} / req.env['HTTP_USER_AGENT']: #{req.env['HTTP_USER_AGENT']} / req.user_agent: #{req.user_agent}"
+  Rails.logger.info "RACK_ATTACK DEBUG: req.ip: #{req.ip} / req.env['HTTP_FASTLY_CLIENT_IP']: #{req.env['HTTP_FASTLY_CLIENT_IP']} / req.user_agent: #{req.user_agent} / req.user_agent: #{req.user_agent}"
 
   if req.env['rack.attack.matched'] == "block scraper access" && req.env['rack.attack.match_type'] == :blacklist
-    Rails.logger.info "bad_scraper: #{req.path} / #{req.env['HTTP_USER_AGENT']} / #{req.env['HTTP_FASTLY_CLIENT_IP']}"
+    Rails.logger.info "bad_scraper: #{req.path} / #{req.user_agent} / #{req.env['HTTP_FASTLY_CLIENT_IP']}"
     # Rails.logger.info req.inspect
     # STATSD.increment("bad_scraper")
   end
