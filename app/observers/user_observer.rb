@@ -75,6 +75,7 @@ class UserObserver < ActiveRecord::Observer
       record.invitation_token = nil
       record.generate_user_name if record.user_name.blank? and record.new_user_name.blank?
       record.build_reputation unless record.reputation
+      record.subscribe_to_all
       advertise_new_user record
     end
 

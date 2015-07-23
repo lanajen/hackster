@@ -5,7 +5,7 @@ class Rack::Attack
   # use req.env['HTTP_FASTLY_CLIENT_IP'] instead of req.ip when using fastly
 
   # replaced req.ip with req.env['HTTP_FASTLY_CLIENT_IP'] because of HTTP caching
-  # same for req.user_agent and req.env['HTTP_USER_AGENT']
+  # same for req.env['HTTP_USER_AGENT'] and req.env['HTTP_USER_AGENT']
 
   ### Configure Cache ###
 
@@ -22,12 +22,12 @@ class Rack::Attack
   # (blacklist & throttles are skipped)
   whitelist('allow from localhost') do |req|
     # Requests are allowed if the return value is truthy
-    '127.0.0.1' == req.ip
+    '127.0.0.1' == req.env['HTTP_FASTLY_CLIENT_IP']
   end
   whitelist('trusted_ua') do |req|
     TRUSTED_USER_AGENTS.each do |ua|
-      ua.in? req.user_agent
-    end if req.user_agent
+      ua.in? req.env['HTTP_USER_AGENT']
+    end if req.env['HTTP_USER_AGENT']
   end
 
   ### Throttle Spammy Clients ###
@@ -38,10 +38,10 @@ class Rack::Attack
 
   # Throttle all requests by IP (20rpm)
   #
-  # Key: "rack::attack:#{Time.now.to_i/:period}:req/ip:#{req.ip}"
+  # Key: "rack::attack:#{Time.now.to_i/:period}:req/ip:#{req.env['HTTP_FASTLY_CLIENT_IP']}"
   throttle('req/ip', limit: 100, period: 5.minutes) do |req|
     if req.get? and !req.xhr?
-      req.ip
+      req.env['HTTP_FASTLY_CLIENT_IP']
     end
   end
 
@@ -56,10 +56,10 @@ class Rack::Attack
 
   # Throttle POST requests to /login by IP address
   #
-  # Key: "rack::attack:#{Time.now.to_i/:period}:logins/ip:#{req.ip}"
+  # Key: "rack::attack:#{Time.now.to_i/:period}:logins/ip:#{req.env['HTTP_FASTLY_CLIENT_IP']}"
   throttle('logins/ip', :limit => 5, :period => 20.seconds) do |req|
     if req.path == '/users/sign_in' && req.post?
-      req.ip
+      req.env['HTTP_FASTLY_CLIENT_IP']
     end
   end
 
@@ -80,10 +80,10 @@ class Rack::Attack
 
   # Block logins from a bad user agent
   blacklist('block scraper access') do |req|
-    req.user_agent =~ /23\.0\.1271\.97/ or (range = IPCat.datacenter?(req.ip) and range.name == 'Amazon AWS' and req.path != '/ping') or req.ip == '78.110.60.230'
+    req.env['HTTP_USER_AGENT'] =~ /23\.0\.1271\.97/ or (range = IPCat.datacenter?(req.env['HTTP_FASTLY_CLIENT_IP']) and range.name == 'Amazon AWS' and req.path != '/ping') or req.env['HTTP_FASTLY_CLIENT_IP'] == '78.110.60.230'
   end
   track('bad_scraper') do |req|
-    req.user_agent =~ /23\.0\.1271\.97/ or (range = IPCat.datacenter?(req.ip) and range.name == 'Amazon AWS' and req.path != '/ping')
+    req.env['HTTP_USER_AGENT'] =~ /23\.0\.1271\.97/ or (range = IPCat.datacenter?(req.env['HTTP_FASTLY_CLIENT_IP']) and range.name == 'Amazon AWS' and req.path != '/ping')
   end
 
   ### Custom Throttle Response ###
@@ -109,7 +109,7 @@ end
 
 ActiveSupport::Notifications.subscribe("rack.attack") do |name, start, finish, request_id, req|
   if req.env['rack.attack.matched'] == "block scraper access" && req.env['rack.attack.match_type'] == :blacklist
-    Rails.logger.info "bad_scraper: #{req.path} / #{req.user_agent} / #{req.ip}"
+    Rails.logger.info "bad_scraper: #{req.path} / #{req.env['HTTP_USER_AGENT']} / #{req.env['HTTP_FASTLY_CLIENT_IP']}"
     # Rails.logger.info req.inspect
     # STATSD.increment("bad_scraper")
   end
