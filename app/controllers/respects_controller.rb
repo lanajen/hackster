@@ -1,9 +1,11 @@
 class RespectsController < ApplicationController
-  before_filter :authenticate_user!
+  # before_filter :authenticate_user!  # TODO: find something better for anonymous votes than disabling all authentication
   before_filter :find_respectable
   respond_to :html, :json
 
   def create
+    authenticate_user! unless params[:respectable_type] = 'ChallengeEntry'
+
     @respect = Respect.create_for current_user, @respectable
     # @project = @respect.respectable  # otherwise @project isn't updated
     # @team_members = @respectable.users
@@ -13,6 +15,9 @@ class RespectsController < ApplicationController
         session[:share_modal] = 'respected_share_prompt'
         session[:share_modal_model] = 'project'
         event_name = 'Respected project'
+      elsif @respect.respectable_type == 'ChallengeEntry'
+        @respected = true
+        @allow_anonymous_votes = @respectable.challenge.allow_anonymous_votes
       end
 
       respond_to do |format|
@@ -39,6 +44,8 @@ class RespectsController < ApplicationController
   end
 
   def destroy
+    authenticate_user! unless params[:respectable_type] = 'ChallengeEntry'
+
     @respects = Respect.destroy_for current_user, @respectable
     # @project = @respects.first.respectable if @respects.any?  # otherwise @project isn't updated
     # @team_members = @project.users

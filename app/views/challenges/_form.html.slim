@@ -89,6 +89,7 @@
         .panel-body
           = f.input :activate_voting, as: :boolean, inline_label: 'Activate voting', label: false, input_html: { id: 'challenge_activate_voting' }
           #voting_dates style=(@challenge.activate_voting ? '' : 'display:none')
+            = f.input :allow_anonymous_votes, as: :boolean, inline_label: 'Allow anonymous votes', label: false, hint: "Not recommended. This makes it possible for contestants to fake the number of votes."
             = f.input :voting_start, label: 'Voting starts on', collection: Challenge::VOTING_START_OPTIONS
             = f.input :voting_end_date_dummy, label: 'Voting ends on', wrapper_html: { id: 'voting_end_date_dummy', class: 'datetimepicker', autocomplete: 'off' } do
               #datepicker.input-group

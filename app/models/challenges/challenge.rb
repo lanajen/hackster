@@ -38,6 +38,7 @@ class Challenge < ActiveRecord::Base
 
   store :properties, accessors: []
   hstore_column :hproperties, :activate_voting, :boolean
+  hstore_column :hproperties, :allow_anonymous_votes, :boolean
   hstore_column :hproperties, :custom_css, :string
   hstore_column :hproperties, :custom_tweet, :string
   hstore_column :hproperties, :description, :string

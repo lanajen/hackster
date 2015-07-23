@@ -1,6 +1,6 @@
 - content = content_tag(:i, '', class: 'fa fa-star-o') + content_tag(:span, "Vote for project")
-- if user_signed_in?
-  - if current_user.respected? respectable
+- if user_signed_in? or allow_anonymous_votes
+  - if user_signed_in? and current_user.respected? respectable or @respected
     = link_to content_tag(:i, '', class: 'fa fa-check') + content_tag(:span, "Voted"), challenge_entry_respects_path(respectable, button: 'vote_'), data: { method: :delete, remote: true, container: 'body' }, class: "btn-append action-respected respect-button btn btn-block btn-ellipsis btn-primary disable-link challenge_entry-#{respectable.id}-respect"
   - else
     = link_to content, challenge_entry_respects_path(respectable, button: 'vote_'), data: { method: :post, remote: true, container: 'body' }, class: "btn-append respect-button btn btn-block btn-ellipsis btn-primary disable-link challenge_entry-#{respectable.id}-respect"
