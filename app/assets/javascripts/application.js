@@ -49,3 +49,5 @@
   };
 
 })(jQuery);
+
+hljs.initHighlightingOnLoad();
