@@ -298,6 +298,7 @@ class ApplicationController < ActionController::Base
     end
 
     def mark_last_seen!
+      puts "DEBUG: request.ip: " + request.ip.to_s
       TrackerQueue.perform_async 'mark_last_seen', current_user.id, request.ip, Time.now.to_i, "#{controller_path}##{self.action_name}" if user_signed_in? and tracking_activated?
     end
 
