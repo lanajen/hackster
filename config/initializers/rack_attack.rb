@@ -107,7 +107,7 @@ class Rack::Attack
 end
 
 ActiveSupport::Notifications.subscribe("rack.attack") do |name, start, finish, request_id, req|
-  Rails.logger.info "RACK_ATTACK DEBUG: req.ip: #{req.ip} / req.env['HTTP_FASTLY_CLIENT_IP']: #{req.env['HTTP_FASTLY_CLIENT_IP']} / req.user_agent: #{req.user_agent} / req.user_agent: #{req.user_agent}"
+  # Rails.logger.info "RACK_ATTACK DEBUG: req.ip: #{req.ip} / req.env['HTTP_FASTLY_CLIENT_IP']: #{req.env['HTTP_FASTLY_CLIENT_IP']} / req.user_agent: #{req.user_agent} / req.user_agent: #{req.user_agent}"
 
   if req.env['rack.attack.matched'] == "block scraper access" && req.env['rack.attack.match_type'] == :blacklist
     Rails.logger.info "bad_scraper: #{req.path} / #{req.user_agent} / #{req.env['HTTP_FASTLY_CLIENT_IP']}"
