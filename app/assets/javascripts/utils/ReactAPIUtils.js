@@ -34,6 +34,17 @@ module.exports = {
     });
   },
 
+  fetchLists(projectId) {
+    return new Promise((resolve, reject) => {
+      request
+        .get('/api/v1/lists')
+        .query({ project_id: projectId })
+        .end(function(err, res) {
+          err ? reject(err) : resolve(res);
+        });
+    });
+  },
+
   fetchNotifications(csrfToken) {
     return new Promise((resolve, reject) => {
       request
@@ -50,6 +61,16 @@ module.exports = {
       request
         .post('/api/v1/flags')
         .send({flag: { flaggable_type: flaggableType,  flaggable_id: flaggableId,  user_id: userId} })
+        .end(function(err, res) {
+          err ? reject(err) : resolve(res);
+        });
+    });
+  },
+
+  toggleProjectInList(requestType, listId, projectId) {
+    return new Promise((resolve, reject) => {
+      request(requestType, '/api/v1/lists/' + listId + '/projects')
+        .send({ project_id: projectId })
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
         });

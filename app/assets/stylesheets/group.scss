@@ -836,35 +836,6 @@
   }
 }
 
-//
-// lists
-.add-to-list {
-  position: relative;
-  ul.lists {
-    display: none;
-    list-style: none;
-    padding: 10px 20px 8px;
-    background: #fff;
-    border: 1px solid #ddd;
-    border-top: 0;
-    position: absolute;
-    z-index: 20;
-    @include box-shadow(0 1px 2px #666);
-    width: 100%;
-    li {
-      label {
-        font-weight: normal;
-      }
-      input[type='checkbox'] {
-        margin-right: 5px;
-      }
-      i {
-        margin-left: 3px;
-      }
-    }
-  }
-}
-
 .event-schedule {
   .table {
     &:last-child {
