@@ -16,7 +16,10 @@ class Challenge < ActiveRecord::Base
   has_many :entries, class_name: 'ChallengeEntry', dependent: :destroy
   has_many :entrants, through: :projects, source: :users
   has_many :prizes, -> { order(:position) }, dependent: :destroy
-  has_many :projects, -> { order('challenge_projects.created_at ASC') }, through: :entries
+  # see https://github.com/rails/rails/issues/19042#issuecomment-91405982 about
+  # "counter_cache: :this_is_not_a_column_that_exists"
+  has_many :projects, -> { order('challenge_projects.created_at ASC') },
+    through: :entries, counter_cache: :this_is_not_a_column_that_exists
   has_many :votes, through: :entries
   has_one :avatar, as: :attachable, dependent: :destroy
   has_one :cover_image, as: :attachable, dependent: :destroy
