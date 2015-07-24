@@ -17,23 +17,15 @@ class ListsController < ApplicationController
   end
 
   def show
-    # @group = @list = ListDecorator.decorate(@list)
     impressionist_async @list, "", unique: [:session_hash]
-    # authorize! :read, @list
-    title (@list.category? ? "#{@list.name} projects" : "#{@list.name}'s favorite hardware projects")
-    meta_desc @list.mini_resume + ' ' + (@list.category? ? "Explore #{@list.projects_count} #{@list.name} hardware projects." : "Discover hardware projects curated by #{@list.name}.")
+    authorize! :read, @list
+    title @list.name
+    meta_desc "#{@list.mini_resume} Explore #{@list.projects_count} hardware projects in '#{@list.name}'."
 
     render "groups/shared/#{self.action_name}"
 
     # track_event 'Visited list', @list.to_tracker.merge({ page: safe_page_params })
   end
-
-  # def embed
-  #   title "Projects built with #{@list.name}"
-  #   @list_style = ([params[:list_style]] & ['', '_horizontal']).first || ''
-  #   @list_style = '_vertical' if @list_style == ''
-  #   render "groups/lists/#{self.action_name}", layout: 'embed'
-  # end
 
   def new
     title "Create a new list"
@@ -45,6 +37,7 @@ class ListsController < ApplicationController
 
   def create
     @list = List.new params[:group]
+    @list.private = true
     authorize! :create, @list
 
     if user_signed_in?

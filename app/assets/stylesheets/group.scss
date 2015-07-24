@@ -1080,3 +1080,16 @@
     bottom: 105px;
   }
 }
+
+.group-page {
+  .section-admin {
+    padding: 60px 0 40px;
+    background: #f2f2f2;
+    position: relative;
+    z-index: 2;
+    border-bottom: 1px solid #ddd;
+  }
+  .section-admin + .main-section {
+    padding-top: 20px;
+  }
+}

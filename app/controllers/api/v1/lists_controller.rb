@@ -5,24 +5,25 @@ class Api::V1::ListsController < Api::V1::BaseController
   def index
     @project_lists = ProjectCollection.where(project_id: params[:project_id], collectable_type: 'Group').joins("INNER JOIN groups ON project_collections.collectable_id = groups.id AND groups.type = 'List'").pluck('groups.id')
 
-    # @lists = if current_user.is? :admin
-    #   List.where(type: 'List').order(:full_name)
-    # else
-    #   current_user.lists.order(:full_name)
-    # end
-    @lists= []
+    @lists = if current_user.is? :admin
+      List.where(type: 'List').order(:full_name).limit(5)
+    else
+      current_user.lists.order(:full_name)
+    end
+    # @lists= []
   end
 
   def create
     @list = List.new params[:group]
     authorize! :create, @list
 
+    @list.private = true
     @list.members.new user_id: current_user.id
 
     if @list.save
-      redirect_to @list, notice: "Welcome to your new list!"
+      render status: :ok
     else
-      render 'groups/lists/new'
+      render status: :unprocessable_entity, json: { errors: @list.errors }
     end
   end
 

@@ -1,34 +1,22 @@
 class ListDecorator < GroupDecorator
 
   def facebook_description
-    model.mini_resume + ' ' + if model.category?
-      "Discover #{model.name} hardware projects."
-    else
-      "Discover hardware projects curated by #{model.name}."
-    end
+     "#{model.mini_resume} #{add_curated_by_to("Discover hardware projects in '#{model.name}'")}"
   end
 
   def facebook_title
-    if model.category?
-      "#{model.name} hardware projects"
-    else
-      "#{model.name}'s favorite hardware projects"
-    end
+    add_curated_by_to "Hardware projects in '#{model.name}'"
   end
 
   def twitter_description
-    if model.category?
-      "#{model.mini_resume}"
-    else
-      "#{model.mini_resume}"
-    end
+    "#{model.mini_resume}"
   end
 
-  def twitter_title
-    if model.category?
-      "#{model.name} hardware projects"
-    else
-      "#{model.name}'s favorite hardware projects"
+  alias_method :twitter_title, :facebook_title
+
+  private
+    def add_curated_by_to text
+      text += ", curated by #{model.team_members.first.user.name}" if model.team_members_count > 0
+      text
     end
-  end
 end

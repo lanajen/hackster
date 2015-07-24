@@ -74,8 +74,8 @@ class Group < ActiveRecord::Base
 
   validates :user_name, :new_user_name, length: { in: 3..100 },
     format: { with: /\A[a-zA-Z0-9_\-]+\z/, message: "accepts only letters, numbers, underscores '_' and dashes '-'." }, allow_blank: true, if: proc{|t| t.persisted?}
-  validates :user_name, :new_user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users communities hackerspaces hackers lists) }
-  validates :email, length: { maximum: 255 }
+  validates :user_name, :new_user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users communities hackerspaces hackers lists) }, allow_blank: true
+  validates :email, length: { maximum: 255 }, format: { with: EMAIL_REGEXP }, allow_blank: true
   validate :website_format_is_valid
   validate :admin_email_is_present
   before_validation :clean_members
