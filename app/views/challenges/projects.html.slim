@@ -57,7 +57,7 @@
             - @challenge.entries.each do |entry|
               = content_for :js do
                 javascript:
-                  text = "#{j render(partial: 'respects/vote_button', locals: { respectable: entry, allow_anonymous_votes: @challenge.allow_anonymous_votes })}";
+                  text = "#{j render(partial: 'votes/button', locals: { respectable: entry, allow_anonymous_votes: @challenge.allow_anonymous_votes })}";
                   $('.project-#{entry.project_id} .thumb').append(text);
 
       .row.text-center= will_paginate @projects

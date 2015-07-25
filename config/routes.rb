@@ -308,9 +308,9 @@ HackerIo::Application.routes.draw do
       end
 
       resources :challenge_entries, only: [] do
-        resources :respects, only: [:create] do
-          get 'create' => 'respects#create', on: :collection, as: :create
-          delete '' => 'respects#destroy', on: :collection
+        resources :respects, only: [:create], controller: 'votes' do
+          get 'create' => 'votes#create', on: :collection, as: :create
+          delete '' => 'votes#destroy', on: :collection
         end
       end
 
