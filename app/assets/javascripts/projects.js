@@ -10,9 +10,9 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
   });
 }
 
-;(function ( $, window, document, undefined ) {
-  $(function(){
-    $('.show-simplified-signup').click(function(e){
+(function ($, window, document, undefined) {
+  $(function() {
+    $('.show-simplified-signup').click(function(e) {
       e.preventDefault();
       $('#simplified-signup-popup input[name="redirect_to"]').val($(this).data('redirect-to'));
       $('#simplified-signup-popup input[name="source"]').val($(this).data('source'));
@@ -238,9 +238,6 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
       },
 
       saveChanges: function() {
-        if ($('#story:visible').length) {
-          editor.forceSaveModel();
-        }
         $('.pe-panel:visible form.remote').submit();
       },
 
@@ -293,6 +290,9 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
         $('.pe-error').show();
       })
       .on('ajax:success', 'form.remote', function(xhr, status){
+        if ($('#story:visible').length) {
+          editor.unsavedChanges = false;
+        }
         pe.serializeForm();
         $('.fields.added').removeClass('added');
         $('.fields.removed').remove();
