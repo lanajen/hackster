@@ -3,7 +3,7 @@
 <p>This is to let you know that <a href="|project_link|">|project_name|</a> has been approved!</p>
 
 <p>
-  It will show on <a href="http://www.hackster.io">Hackster's home page</a> and all related platform pages
+  It will show on <a href="https://www.hackster.io">Hackster's home page</a> and all related platform pages
   <% if @context[:project].made_public_at < Time.now %>
     immediately.
   <% else %>
@@ -19,5 +19,5 @@
 </p>
 
 <p class="unsubscribe">
-  Don't want to receive this type of email? <a href="|unsubscribe_link|">Update your notification preferences</a>
+  Don't want to receive this type of email? <a href="|unsubscribe_link:project_approved|">Unsubscribe</a> or <a href="|update_preferences_link|">update your notification preferences</a>.
 </p>

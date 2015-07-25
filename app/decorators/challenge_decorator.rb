@@ -45,4 +45,8 @@ class ChallengeDecorator < ApplicationDecorator
 
     default_tweet
   end
+
+  def voting_time_left
+    h.time_diff_in_natural_language(Time.now, model.voting_end_date)
+  end
 end

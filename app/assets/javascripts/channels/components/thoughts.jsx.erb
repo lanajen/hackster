@@ -95,6 +95,12 @@ var Thought = React.createClass({
           <a href='' onClick={this.handleDelete}>Delete</a>
           <span className="separator">&bull;</span>
         </span>;
+    } else {
+      var flag =
+      (<span className="default-hidden">
+        <span className="separator">&bull;</span>
+        <FlagButton flaggable={{id: this.props.id, type: 'Thought'}} />
+      </span>);
     }
 
     return (
@@ -121,6 +127,7 @@ var Thought = React.createClass({
           <Like liked={this.props.liked} onButtonClick={this.handleLike} />
           <span className="separator">&bull;</span>
           <a href='' onClick={this.handleComment}>Comment</a>
+          {flag}
         </div>
       </div>
     );

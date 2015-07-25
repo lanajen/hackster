@@ -67,7 +67,7 @@
             section.section-thumbs
               h4 Do something awesome
               - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
-                = render partial: 'respects/button', locals: { project: @project }
+                = render partial: 'respects/button', locals: { respectable: @project }
               / = render 'projects/project_embed_popup'
               / .add-to-list
               / # = render partial: 'add_to_list_button'

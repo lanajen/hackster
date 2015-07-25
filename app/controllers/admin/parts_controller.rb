@@ -80,7 +80,7 @@ class Admin::PartsController < Admin::BaseController
       if params[:merge_parts]
         part_joins = PartJoin.where(part_id: params[:merge_parts].to_a - [@part.id.to_s])
         part_joins.update_all(part_id: @part.id)
-        @part.update_counters only: [:projects]
+        @part.update_counters only: [:projects, :all_projects]
         Part.where(id: params[:merge_parts].to_a - [@part.id.to_s]).update_all(workflow_state: :retired)
       end
     end

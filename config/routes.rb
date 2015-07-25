@@ -18,6 +18,7 @@ HackerIo::Application.routes.draw do
       resources :build_logs
       resources :code_files, only: [:create]
       resources :comments, only: [:create, :destroy]
+      resources :flags, only: [:create]
       resources :followers, only: [:create, :index], defaults: { format: :json } do
         collection do
           delete '' => 'followers#destroy'
@@ -164,7 +165,9 @@ HackerIo::Application.routes.draw do
       end
 
       get 'h/:user_name' => 'hacker_spaces#redirect_to_show'
-      resources :hacker_spaces, except: [:show, :update], path: 'hackerspaces'
+      resources :hacker_spaces, except: [:show, :update], path: 'hackerspaces' do
+        get 'create' => 'hacker_spaces#create', on: :collection, as: :create
+      end
       scope 'hackerspaces/:user_name', as: :hacker_space do
         get '' => 'hacker_spaces#show'
         patch '' => 'hacker_spaces#update'
@@ -190,6 +193,7 @@ HackerIo::Application.routes.draw do
         URI.parse(request.url).tap { |uri| uri.path.sub!(/\/l\//i, '/lists/') }.to_s
       }, via: :get
       resources :lists, except: [:show, :update] do
+        get 'create' => 'lists#create', on: :collection, as: :create
         resources :projects, only: [] do
           post 'feature' => 'lists#feature_project'#, as: :platform_feature_project
           delete 'feature' => 'lists#unfeature_project'
@@ -305,21 +309,31 @@ HackerIo::Application.routes.draw do
         put 'update_workflow' => 'challenges#update_workflow', on: :member
       end
 
+      resources :challenge_entries, only: [] do
+        resources :respects, only: [:create] do
+          get 'create' => 'respects#create', on: :collection, as: :create
+          delete '' => 'respects#destroy', on: :collection
+        end
+      end
+
       # resources :skill_requests, path: 'cupidon' do
       #   resources :comments, only: [:create]
       # end
 
       resources :notifications, only: [:index] do
         get 'edit' => 'notifications#edit', on: :collection
-        patch 'edit' => 'notifications#update', on: :collection
+        patch '' => 'notifications#update', on: :collection
+        get 'update' => 'notifications#update_from_link', on: :collection, as: :update
       end
 
       resources :projects, only: [:index]
 
+      resources :quotes, only: [:create]
+
       # dragon
-      get 'partners' => 'partners#index'
-      get 'dragon/leads/new' => 'dragon_queries#new'
-      post 'dragon/leads' => 'dragon_queries#create'
+      # get 'partners' => 'partners#index'
+      # get 'dragon/leads/new' => 'dragon_queries#new'
+      # post 'dragon/leads' => 'dragon_queries#create'
 
       get 'ping' => 'pages#ping'  # for availability monitoring
       get 'obscure/path/to/cron' => 'cron#run'
@@ -379,8 +393,12 @@ HackerIo::Application.routes.draw do
       get 'users/slack_settings' => 'chat_messages#slack_settings', as: :user_slack_settings
       post 'users/slack_settings' => 'chat_messages#save_slack_settings'
 
-      get 'business/payments/:safe_id' => 'payments#show', as: :payment
-      post 'business/payments' => 'payments#create', as: :payments
+      get 'business/payments/:safe_id' => redirect { |params, request|
+        URI.parse(request.url).tap { |uri| uri.path.sub!(/business\//i, '') }.to_s
+      }, via: :get
+
+      get 'payments/:safe_id' => 'payments#show', as: :payment
+      post 'payments' => 'payments#create', as: :payments
 
       constraints(PlatformPage) do
         get ':slug' => 'platforms#show', as: :platform_home, slug: /[A-Za-z0-9_\-]{3,}/

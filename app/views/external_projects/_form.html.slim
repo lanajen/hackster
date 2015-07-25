@@ -1,3 +1,9 @@
+= content_for :head do
+  = stylesheet_link_tag "//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-beta.3/css/select2.min.css"
+
+= content_for :js do
+  = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-beta.3/js/select2.min.js"
+
 = simple_nested_form_for @project, url: settings_project_path(@project), html: { class: 'form-horizontal remote accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
   = f.error_notification
 
@@ -54,6 +60,14 @@
             / = f.link_to_add 'Add a platform powering this device', :project_collections, class: 'btn btn-success btn-xs'
             = f.input :website, label: 'Official website'
             = f.input :buy_link, label: 'E-commerce page'
+
+      .panel.panel-default
+        .panel-heading
+          h4 Components and supplies
+        .panel-body
+          / p Here go things like microcontrollers, resistors, wires and all things that are part of your final project.
+        .box-content
+          = render partial: 'projects/forms/hardware_parts', locals: { project: @project, f: f }
 
 
       .panel.panel-default

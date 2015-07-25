@@ -18,4 +18,12 @@ class NotificationsController < ApplicationController
       render :edit
     end
   end
+
+  def update_from_link
+    if params[:unsubscribe]
+      current_user.unsubscribe_from! :email, params[:unsubscribe]
+      flash[:notice] = "Notification preferences saved."
+    end
+    redirect_to edit_notifications_path
+  end
 end

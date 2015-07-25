@@ -1,5 +1,4 @@
 class CommentObserver < ActiveRecord::Observer
-  # include BroadcastObserver
 
   def after_commit_on_create record
     return if record.disable_notification?
@@ -13,7 +12,6 @@ class CommentObserver < ActiveRecord::Observer
   def after_create record
     if record.commentable_type == 'Project'
       project_id = record.commentable_id
-      record.user.broadcast :new, record.id, 'Comment', project_id if record.user.class == User
       update_counters record
       expire_cache record
     end
@@ -24,7 +22,6 @@ class CommentObserver < ActiveRecord::Observer
   end
 
   def after_destroy record
-    Broadcast.where(context_model_id: record.id, context_model_type: 'Comment').destroy_all
     update_counters record
     expire_cache record if record.commentable_type == 'Project'
   end

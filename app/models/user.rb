@@ -61,7 +61,6 @@ class User < ActiveRecord::Base
          :omniauthable, omniauth_providers: [:facebook, :github, :gplus,
           :linkedin, :twitter, :windowslive]
 
-  belongs_to :invite_code
   has_many :addresses, -> { order(id: :desc) }, as: :addressable
   has_many :assignments, through: :promotions
   has_many :assignee_issues, foreign_key: :assignee_id
@@ -101,7 +100,7 @@ class User < ActiveRecord::Base
   has_many :owned_parts, -> { order('parts.name') }, source_type: 'Part', through: :follow_relations, source: :followable
   has_many :permissions, as: :grantee
   has_many :platforms, -> { order('groups.full_name ASC') }, through: :group_ties, source: :group, class_name: 'Platform'
-  has_many :projects, -> { where("projects.guest_name IS NULL OR projects.guest_name = ''") }, through: :teams
+  has_many :projects, through: :teams
   has_many :promotions, through: :group_ties, source: :group, class_name: 'Promotion'
   has_many :promotion_group_ties, -> { where(type: 'PromotionMember') }, class_name: 'PromotionMember', dependent: :destroy
   has_many :receipts, dependent: :destroy do
@@ -117,6 +116,7 @@ class User < ActiveRecord::Base
   has_many :thoughts
   has_many :thought_likes, class_name: 'Respect', through: :thoughts, source: :likes
   has_many :user_activities
+  has_many :voted_entries, source_type: 'ChallengeEntry', through: :respects, source: :respectable
   has_one :avatar, as: :attachable, dependent: :destroy
   has_one :reputation, dependent: :destroy
   has_one :slug, as: :sluggable, dependent: :destroy, class_name: 'SlugHistory'
@@ -135,10 +135,11 @@ class User < ActiveRecord::Base
     :email_subscriptions, :web_subscriptions
   accepts_nested_attributes_for :avatar, :projects, allow_destroy: true
 
+  validates :email, format: { with: EMAIL_REGEXP }, allow_blank: true  # devise's regex allows for a lot of crap
   validates :name, length: { in: 1..200 }, allow_blank: true
   validates :city, :country, length: { maximum: 50 }, allow_blank: true
   validates :mini_resume, length: { maximum: 160 }, allow_blank: true
-  validates :user_name, :new_user_name, presence: true, if: proc{|u| u.persisted? }
+  validates :user_name, :new_user_name, presence: true, if: proc{|u| u.persisted? and !u.invited_to_sign_up? }
   validates :user_name, :new_user_name, length: { in: 3..100 },
     format: { with: /\A[a-zA-Z0-9_\-]+\z/, message: "accepts only letters, numbers, underscores '_' and dashes '-'." }, allow_blank: true
   validates :user_name, :new_user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users communities hackerspaces hackers lists products about store api talk) }
@@ -146,7 +147,6 @@ class User < ActiveRecord::Base
     on: :create do |user|
       user.validates :email_confirmation, presence: true
       user.validate :email_matches_confirmation
-      user.validate :used_valid_invite_code?
   end
   # validate :email_is_unique_for_registered_users, if: :being_invited?
   validate :website_format_is_valid
@@ -175,6 +175,7 @@ class User < ActiveRecord::Base
   has_counter :hacker_spaces, 'hacker_spaces.count'
   has_counter :interest_tags, 'interest_tags.count'
   has_counter :invitations, 'invitations.count'
+  has_counter :lists, 'lists.public.count'
   has_counter :live_projects, 'projects.where(private: false).count'
   has_counter :live_hidden_projects, 'projects.where(private: false, hide: true).count'
   has_counter :owned_parts, 'owned_parts.count'
@@ -210,15 +211,6 @@ class User < ActiveRecord::Base
   add_checklist :links, 'Add links to your other web presence', 'has_websites?', group: :get_started
 
   self.per_page = 20
-
-  # broadcastable
-  has_many :broadcasts
-
-  def broadcast event, context_model_id, context_model_type, project_id=nil
-    broadcasts.create event: event, context_model_id: context_model_id,
-      context_model_type: context_model_type, project_id: project_id,
-      broadcastable_type: 'User', broadcastable_id: id
-  end
 
   # beginning of search methods
   include TireInitialization
@@ -406,10 +398,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  def find_invite_request
-    InviteRequest.find_by_email email
-  end
-
   # def has_access? project
   #   permissions.where(permissible_type: 'Project', permissible_id: project.id).any? or group_permissions.where(permissible_type: 'Project', permissible_id: project.id).any?
   # end
@@ -538,7 +526,10 @@ class User < ActiveRecord::Base
   end
 
   def mark_has_no_unread_notifications!
-    update_attribute :has_unread_notifications, false if has_unread_notifications?
+    if has_unread_notifications?
+      update_attribute :has_unread_notifications, false
+      receipts.for_notifications.update_all(read: true)
+    end
   end
 
   def name
@@ -558,8 +549,13 @@ class User < ActiveRecord::Base
     Platform.distinct.joins(:project_collections).joins(project_collections: :project).joins(project_collections: { project: :team }).joins(project_collections: { project: { team: :members }}).where(members: { user_id: id }, projects: { private: false })
   end
 
-  def respected? project
-    project.id.in? respected_projects.map(&:id)
+  def respected? respectable
+    case respectable
+    when ChallengeEntry
+      respectable.id.in? voted_entries.map(&:id)
+    when Project
+      respectable.id.in? respected_projects.map(&:id)
+    end
   end
 
   def reset_authentication_token
@@ -633,12 +629,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  def unsubscribe_from_all
-    %w(email web).each do |notification_type|
-      set_subscriptions_for notification_type, []
-    end
-  end
-
   def subscribed_to? notification_type, subscription
     subscription.in? subscriptions_for(notification_type)
   end
@@ -668,6 +658,23 @@ class User < ActiveRecord::Base
     mask = subscriptions_mask_for(notification_type)
     const = subscriptions_const_for(notification_type)
     const.keys.reject { |r| ((mask || 0) & 2**const.keys.index(r)).zero? }
+  end
+
+  def unsubscribe_from_all
+    %w(email web).each do |notification_type|
+      set_subscriptions_for notification_type, []
+    end
+  end
+
+  def unsubscribe_from notification_type, subscription
+    new_subscriptions = subscriptions_for(notification_type)
+    new_subscriptions.delete(subscription)
+    set_subscriptions_for notification_type, new_subscriptions
+  end
+
+  def unsubscribe_from! notification_type, subscription
+    unsubscribe_from notification_type, subscription
+    save
   end
 
   def project_for_assignment assignment
@@ -775,15 +782,6 @@ class User < ActiveRecord::Base
       websites.each do |type, url|
         next if url.blank?
         errors.add type.to_sym, 'is not a valid URL' unless url.downcase =~ URL_REGEXP
-      end
-    end
-
-    def used_valid_invite_code?
-      return unless invitation_code.present?
-      if invite_code = InviteCode.authenticate(invitation_code)
-        self.invite_code_id = invite_code.id
-      else
-        errors.add :invitation_code, 'is either invalid or expired'
       end
     end
 

@@ -2,6 +2,7 @@
   = f.error_notification
   = f.association :source, collection: Part.approved.order(:name), label_method: :full_name
   = f.input :source_type, as: :hidden, input_html: { value: 'Part' }
+  = f.input :name, hint: 'Leave empty unless you want it to be different from the related part name.'
   = f.input :unit_cost, hint: 'In reputation points'
   = f.input :available
   = f.input :width, hint: 'CM'

@@ -49,7 +49,6 @@ class CronTask < BaseWorker
     user.build_reputation unless user.reputation
     reputation = user.reputation
     reputation.compute
-    reputation.compute_redeemable
     reputation.save
   end
 
@@ -59,18 +58,19 @@ class CronTask < BaseWorker
     end
   end
 
-  def compute_reputation user_id, date=nil
-    date = Time.at(date.to_i) if date
-    Rewardino::Event.compute_for_user user_id, date
+  def compute_reputation user_id
+    Rewardino::Event.compute_for_user user_id
+
+    user = User.find user_id
+    user.update_counters only: [:reputation]
+    user.build_reputation unless user.reputation
+    user.reputation.compute_redeemable!
   end
 
   def compute_daily_reputation
-    date = redis.get('last_update')
-    # date = Time.at(date.to_i) if date.present?
     User.invitation_accepted_or_not_invited.find_each do |user|
-      CronTask.perform_async 'compute_reputation', user.id, date.presence
+      CronTask.perform_async 'compute_reputation', user.id
     end
-    redis.set 'last_update', Time.now.to_i
   end
 
   def evaluate_badges
@@ -114,13 +114,12 @@ class CronTask < BaseWorker
   end
 
   def launch_daily_cron
-    self.class.perform_async 'compute_daily_reputation'
-    self.class.perform_in 1.hour, 'compute_popularity'
-    self.class.perform_in 2.hours, 'send_daily_notifications'
-    self.class.perform_in 24.hours, 'launch_daily_cron'
-    self.class.perform_async 'generate_users'
+    ReputationWorker.perform_async 'compute_daily_reputation'
+    PopularityWorker.perform_in 1.hour, 'compute_popularity'
+    CronTask.perform_in 2.hours, 'send_daily_notifications'
+    CronTask.perform_async 'generate_users'
 
-    self.class.perform_in 24.hours, 'launch_daily_cron'
+    CronTask.perform_in 24.hours, 'launch_daily_cron'
   end
 
   def lock_assignment

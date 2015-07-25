@@ -1,4 +1,4 @@
-class PostObserver < BaseBroadcastObserver
+class PostObserver < ActiveRecord::Observer
   def after_create record
     update_counters record
     expire_project record

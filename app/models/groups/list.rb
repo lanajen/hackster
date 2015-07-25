@@ -6,14 +6,15 @@ class List < Group
   has_many :followers, through: :follow_relations, source: :user
   has_many :members, dependent: :destroy, foreign_key: :group_id, class_name: 'ListMember'
 
-  validates :user_name, :full_name, presence: true
+  validates :user_name, :new_user_name, :full_name, presence: true
+  validates :mini_resume, :cover_image, presence: true, if: proc{|l| l.type == 'List' }
   validate :user_name_is_unique
   before_validation :update_user_name, on: :create
 
   has_counter :external_projects, 'projects.external.count'
   has_counter :members, 'followers.count', accessor: false
   has_counter :private_projects, 'projects.private.count'
-  has_counter :projects, 'projects.visible.count', accessor: false
+  has_counter :projects, 'projects.public.visible.count', accessor: false
   has_counter :team_members, 'team_members.count'
 
   hstore_column :hproperties, :enable_comments, :boolean
@@ -73,7 +74,7 @@ class List < Group
   end
 
   def team_members
-    members.invitation_accepted_or_not_invited
+    active_members
   end
 
   def to_tracker

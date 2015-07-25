@@ -187,10 +187,6 @@ class NotificationHandler
       when :invitation
         context[:model] = invited = context[:invited] = User.find(context_id)
         context[:user] = invited.invited_by if invited.invited_by
-      when :invite_request
-        context[:model] = context[:user] = context[:invite] = InviteRequest.find(context_id)
-      when :invite_request_notification
-        context[:invite] = InviteRequest.find(context_id)
       when :issue
         context[:model] = issue = context[:issue] = Issue.find(context_id)
         project = context[:project] = issue.threadable

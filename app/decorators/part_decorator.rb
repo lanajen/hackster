@@ -13,4 +13,8 @@ class PartDecorator < ApplicationDecorator
   def name_link
     link_to_model model.name
   end
+
+  def one_liner_or_description
+    model.one_liner.presence || h.strip_tags(model.description).try(:truncate, 140).html_safe
+  end
 end

@@ -1,5 +1,1 @@
-//$('a.respect-button').tooltip('hide');
-$('.project-<%= @project.id %>-respect').replaceWith('<%= escape_javascript render(partial: "button", locals: { project: @project }) %>');
-//$('a.respect-button').tooltip();
-$('#widget-respects').replaceWith('<%= escape_javascript render(partial: "widgets/respect_widget", locals: { users: @project.respecting_users }) %>');
-//$('#widget-respects a[rel=tooltip]').tooltip();
+$('.<%= @respectable.class.name.underscore %>-<%= @respectable.id %>-respect').replaceWith('<%= escape_javascript render(partial: "#{params[:button]}button", locals: { respectable: @respectable, allow_anonymous_votes: @allow_anonymous_votes }) %>');

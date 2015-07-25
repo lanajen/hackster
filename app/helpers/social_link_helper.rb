@@ -20,7 +20,7 @@ module SocialLinkHelper
     out += '&url=' + CGI.escape(url)
     out += '&title=' + CGI.escape(title)
     out += '&summary=' + CGI.escape(summary)
-    out += '&source=' + CGI.escape('http://www.hackster.io')
+    out += '&source=' + CGI.escape('https://www.hackster.io')
     out
   end
 

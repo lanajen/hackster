@@ -2,6 +2,9 @@
   = render 'meta_tags'
 
 = render partial: 'add_to_list_button'
+- if @hardware_parts.any?
+  = content_for :js do
+    = render partial: 'shared/modals/buy_all_quote', locals: { project: @project }
 
 = inserts_stats_for @project.id, 'Project'
 
@@ -11,7 +14,7 @@
     javascript:
       $(function(){
         var following = #{@following.to_json.html_safe};
-        
+
         $.each(following, function(type, ids){
           var joinedIds = ids.map(function(id){
             return '.follow-' + type + '-' + id;
@@ -128,6 +131,9 @@
                           i.fa.fa-chevron-up
                       .section-content
                         table.sortable-table.table.table-hover.fields-container
+                          thead
+                            th.text-right colspan=4
+                              = link_to content_tag(:i, '', class: 'fa fa-shopping-cart') + content_tag(:span, 'Buy all'), 'javascript:void(0)', class: 'modal-open btn btn-primary btn-sm', 'data-target' => '#buy-all-quote'
                           tbody
                             - @hardware_parts.each do |part|
                               = render partial: 'widgets/embeds/show/part', locals: { part: part }
@@ -316,7 +322,7 @@
                             - else
                               | This assignment hasn't been submitted.
                           p= link_to 'Submit assignment', submit_project_path(@project), method: :patch, class: 'btn btn-danger btn-sm btn-block', data: { confirm: "Are you sure you're ready to submit? #{"You have until #{l @project.assignment.submit_by_date.in_time_zone(PDT_TIME_ZONE)} to make edits." if @project.assignment.submit_by_date.present? }" }
-                - elsif @project.has_no_assignment? and (current_user.student_assignments.pluck(:id) - current_user.projects.joins(:project_collections).where(project_collections: { collectable_type: 'Assignment' }).pluck("project_collections.id")).any? and current_user.is_team_member?(@project)
+                - elsif @project.has_no_assignment? and (current_user.student_assignments.pluck(:id) - current_user.projects.own.joins(:project_collections).where(project_collections: { collectable_type: 'Assignment' }).pluck("project_collections.id")).any? and current_user.is_team_member?(@project)
                   section.section-thumbs
                     h4 Assignment
                     .alert.alert-warning.text-center
@@ -348,7 +354,7 @@
                   h4 Do something awesome
                   - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
                     .project-actions.row
-                      .action-item.col-xs-7= render partial: 'respects/button', locals: { project: @project }
+                      .action-item.col-xs-7= render partial: 'respects/button', locals: { respectable: @project }
                       .action-item.col-xs-5= render partial: 'followers/button', locals: { followable: @project, button_type: 'project', button_partial: 'project_button', display_name: false }
                   = render 'projects/project_embed_button'
                   - if @project.celery_id.present?
@@ -577,7 +583,7 @@
                       .show-on-affix style='margin-top:20px;'
                         - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
                           .project-actions.row
-                            .action-item.col-xs-7= render partial: 'respects/button', locals: { project: @project }
+                            .action-item.col-xs-7= render partial: 'respects/button', locals: { respectable: @project }
                             .action-item.col-xs-5= render partial: 'followers/button', locals: { followable: @project, button_type: 'project', button_partial: 'project_button', display_name: false }
                         = render 'projects/project_embed_button'
                         .add-to-list

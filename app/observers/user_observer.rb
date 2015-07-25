@@ -1,32 +1,24 @@
 class UserObserver < ActiveRecord::Observer
   def after_commit_on_create record
-    unless record.invited_to_sign_up? or record.reputation  # this callback seems to be called twice somehow, which means two sets of emails are sent. Checking on reputation to see if the callback has already been called.
+    unless record.reputation  # this callback seems to be called twice somehow, which means two sets of emails are sent. Checking on reputation to see if the callback has already been called.
       record.create_reputation
-      advertise_new_user record unless record.simplified_signup?
-      record.send_confirmation_instructions unless record.invitation_accepted? or record.skip_registration_confirmation
+      unless record.invited_to_sign_up?
+        advertise_new_user record unless record.simplified_signup?
+        record.send_confirmation_instructions unless record.invitation_accepted?
+      end
     end
   end
 
   def after_destroy record
-    Broadcast.where(context_model_id: record.id, context_model_type: 'User').destroy_all
-    Broadcast.where(broadcastable_id: record.id, broadcastable_type: 'User').destroy_all
-    Broadcast.where(user_id: record.id).destroy_all
     record.purge
   end
 
   def after_invitation_accepted record
     advertise_new_user record
     NotificationCenter.perform_in 15.minutes, 'notify_all', :accepted, :invitation, record.id
-    record.build_reputation unless record.reputation
+    record.create_reputation unless record.reputation
     record.update_column :invitation_token, nil if record.invitation_token.present?
     record.subscribe_to_all && record.save
-
-    invite = record.find_invite_request
-    if invite and project = invite.project
-      team = project.team || project.build_team
-      team.members.new(user_id: record.id)
-      team.save
-    end
 
     record.events.each{|e| e.update_counters only: [:participants] }
 
@@ -53,9 +45,6 @@ class UserObserver < ActiveRecord::Observer
   end
 
   def before_update record
-    if record.accepted_or_not_invited? and (record.changed & %w(user_name mini_resume city country full_name)).any?
-      record.broadcast :update, record.id, 'User'
-    end
     record.interest_tags_count = record.interest_tags_string.split(',').count
     record.skill_tags_count = record.skill_tags_string.split(',').count
 
@@ -81,6 +70,15 @@ class UserObserver < ActiveRecord::Observer
       record.reputation.try(:compute_redeemable!)
     end
 
+    # cleanup when an invited user signs up from a different path
+    if record.invitation_token and record.encrypted_password_changed?
+      record.invitation_token = nil
+      record.generate_user_name if record.user_name.blank? and record.new_user_name.blank?
+      record.build_reputation unless record.reputation
+      record.subscribe_to_all
+      advertise_new_user record
+    end
+
     Cashier.expire *keys if keys.any?
   end
 
@@ -94,7 +92,6 @@ class UserObserver < ActiveRecord::Observer
   private
     def advertise_new_user record
       # send_zapier record.email
-      record.broadcast :new, record.id, 'User'
       NotificationCenter.notify_via_email nil, :user, record.id, 'registration_confirmation' unless record.skip_registration_confirmation
     end
 

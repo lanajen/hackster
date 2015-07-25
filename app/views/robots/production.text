@@ -1,4 +1,4 @@
-Sitemap: http://www.hackster.io/sitemap_index.xml
+Sitemap: https://www.hackster.io/sitemap_index.xml
 
 User-Agent: *
 Disallow: /users/*

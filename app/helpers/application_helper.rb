@@ -62,6 +62,8 @@ module ApplicationHelper
     case params[:m]
     when 'challenge'
       challenge = Challenge.find_by_id(params[:id])
+    when 'challenge_entry'
+      challenge_entry = ChallengeEntry.find_by_id(params[:id])
     when 'group'
       group = Group.find_by_id(params[:id])
     when 'project'
@@ -88,6 +90,8 @@ module ApplicationHelper
     when 'respect'
       if project
         msg = "Please log in or sign up to respect #{content_tag(:b, project.name)}."
+      elsif challenge_entry
+        msg = "Please log in or sign up to vote for #{content_tag(:b, challenge_entry.project.name)}."
       end
     when 'follow'
       if project

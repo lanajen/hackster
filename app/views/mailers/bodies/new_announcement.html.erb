@@ -1,6 +1,6 @@
 <p>Hello there,</p>
 
-<p><a href="<%= u.platform_home_url(@context[:platform]) %>?ref=emailnotif"><%= @context[:platform].name %></a> just posted news on <a href="http://www.hackster.io?ref=emailnotif">Hackster.io</a>:</p>
+<p><a href="<%= u.platform_home_url(@context[:platform]) %>?ref=emailnotif"><%= @context[:platform].name %></a> just posted news on <a href="https://www.hackster.io?ref=emailnotif">Hackster.io</a>:</p>
 
 <p class="quote">
   <strong><a href="<%= u.platform_announcement_url(@context[:announcement]) %>?ref=emailnotif"><%= @context[:announcement].title %></a></strong>
@@ -19,5 +19,5 @@
 </p>
 
 <p class="unsubscribe">
-  Don't want to receive this type of email? <a href="|unsubscribe_link|?ref=emailnotif">Update your notification preferences</a>
+  Don't want to receive this type of email? <a href="|unsubscribe_link:follow_platform_activity|">Unsubscribe</a> or <a href="|update_preferences_link|">update your notification preferences</a>.
 </p>

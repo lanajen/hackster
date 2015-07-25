@@ -47,14 +47,24 @@
               = render partial: 'projects/project_thumb', locals: { project: project.decorate, force_subdomain: 'www', locale: I18n.default_www_locale }
 
       - if user_is_current_or_admin? and @private_projects.any?
+          hr
+          h2
+            ' Private projects
+            = content_tag(:span, @private_projects.count, class: 'badge')
+          .thumb-list
+            .row.project-list
+              - @private_projects.each_with_index do |project, i|
+                = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'userprivate', ref_id: @user.id, offset: i }
+
+      - if @guest_projects.any?
         hr
         h2
-          ' Private projects
-          = content_tag(:span, @private_projects.count, class: 'badge')
+          ' Guest projects (posted on their behalf)
+          = content_tag(:span, @guest_projects.count, class: 'badge')
         .thumb-list
           .row.project-list
-            - @private_projects.each_with_index do |project, i|
-              = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'userprivate', ref_id: @user.id, offset: i }
+            - @guest_projects.each_with_index do |project, i|
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'userguest', ref_id: @user.id, offset: i }
 
       - if !is_whitelabel? and @parts.any?
         hr
@@ -64,6 +74,15 @@
         .row
           - @parts.each do |part|
             .col-md-4= render partial: 'parts/part_thumb', locals: { part: part.decorate }
+
+      - if !is_whitelabel? and @lists and @lists.any?
+        hr
+        h2
+          ' Curated lists
+          = content_tag(:span, @lists.count, class: 'badge')
+        .row
+          - @lists.each do |list|
+            = render partial: 'groups/lists/list_thumb', locals: { list: list }
 
       hr
       h2

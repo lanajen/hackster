@@ -1,6 +1,10 @@
 class Challenge < ActiveRecord::Base
   DEFAULT_DURATION = 60
   VISIBLE_STATES = %w(in_progress ended paused canceled judging judged)
+  VOTING_START_OPTIONS = {
+    'Now' => :now,
+    'When the challenge ends' => :end,
+  }
 
   include HstoreColumn
   include HstoreCounter
@@ -9,10 +13,14 @@ class Challenge < ActiveRecord::Base
   belongs_to :platform
   has_many :admins, through: :challenge_admins, source: :user
   has_many :challenge_admins
-  has_many :entries, dependent: :destroy, class_name: ChallengeEntry
+  has_many :entries, class_name: 'ChallengeEntry', dependent: :destroy
   has_many :entrants, through: :projects, source: :users
   has_many :prizes, -> { order(:position) }, dependent: :destroy
-  has_many :projects, -> { order('challenge_projects.created_at ASC') }, through: :entries
+  # see https://github.com/rails/rails/issues/19042#issuecomment-91405982 about
+  # "counter_cache: :this_is_not_a_column_that_exists"
+  has_many :projects, -> { order('challenge_projects.created_at ASC') },
+    through: :entries, counter_cache: :this_is_not_a_column_that_exists
+  has_many :votes, through: :entries
   has_one :avatar, as: :attachable, dependent: :destroy
   has_one :cover_image, as: :attachable, dependent: :destroy
   validates :name, :slug, presence: true
@@ -23,12 +31,14 @@ class Challenge < ActiveRecord::Base
 
   attr_accessible :new_slug, :name, :prizes_attributes, :platform_id, :duration,
     :video_link, :cover_image_id, :end_date, :end_date_dummy, :avatar_id,
-    :challenge_admins_attributes
-  attr_accessor :new_slug, :end_date_dummy
+    :challenge_admins_attributes, :voting_end_date_dummy
+  attr_accessor :new_slug, :end_date_dummy, :voting_end_date_dummy
 
   accepts_nested_attributes_for :prizes, :challenge_admins, allow_destroy: true
 
   store :properties, accessors: []
+  hstore_column :hproperties, :activate_voting, :boolean
+  hstore_column :hproperties, :allow_anonymous_votes, :boolean
   hstore_column :hproperties, :custom_css, :string
   hstore_column :hproperties, :custom_tweet, :string
   hstore_column :hproperties, :description, :string
@@ -44,6 +54,8 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :teaser, :string
   hstore_column :hproperties, :sponsor_link, :string
   hstore_column :hproperties, :sponsor_name, :string
+  hstore_column :hproperties, :voting_start, :string, default: :end
+  hstore_column :hproperties, :voting_end_date, :datetime, default: proc{|c| c.end_date ? c.end_date + 7.days : nil }
 
   counters_column :hcounters_cache
   has_counter :projects, 'entries.approved.count'
@@ -182,6 +194,14 @@ class Challenge < ActiveRecord::Base
     return unless video_link.present?
 
     @video ||= Embed.new url: video_link
+  end
+
+  def voting_end_date_dummy
+    voting_end_date ? voting_end_date.strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
+  end
+
+  def voting_active?
+    activate_voting and (voting_start == :now or end_date and end_date < Time.now) and voting_end_date and voting_end_date > Time.now
   end
 
   private

@@ -117,6 +117,9 @@
       color: #999;
     }
   }
+  &:hover .default-hidden {
+    display: initial;
+  }
 }
 
 .likes-container {

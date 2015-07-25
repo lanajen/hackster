@@ -21,10 +21,11 @@ class MemberObserver < ActiveRecord::Observer
       project = record.group.projects.first
       unless record.request_pending?
         expire_projects record
-        record.user.broadcast :new, record.id, 'Member', project.id if project and project.public?
       end
     elsif record.group.is? :platform
       Cashier.expire "user-#{record.user_id}-sidebar", "user-#{record.user_id}-thumb", "platform-#{record.group_id}-sidebar"
+    elsif record.group.is? :list
+      Cashier.expire "list-#{record.group_id}-thumb", 'lists-index'
     end
 
     unless record.permission
@@ -54,9 +55,12 @@ class MemberObserver < ActiveRecord::Observer
   end
 
   def after_destroy record
-    Broadcast.where(context_model_id: record.id, context_model_type: 'Member').destroy_all
     update_counters record
-    expire_projects record if record.group.is?(:team)
+    if record.group.is? :team
+      expire_projects record
+    elsif record.group.is? :list
+      Cashier.expire "list-#{record.group_id}-thumb", 'lists-index'
+    end
   end
 
   private

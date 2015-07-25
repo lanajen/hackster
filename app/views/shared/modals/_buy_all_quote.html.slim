@@ -1,0 +1,17 @@
+#buy-all-quote.popup-overlay.modal-popup data-width='450'
+  .popup-overlay-bg
+  .popup-overlay-outer
+    .popup-overlay-inner
+      button.close data-target='#buy-all-quote' &times;
+      h4 style='margin-bottom:0' Buy the kit for #{project.name}
+      p.mg-20
+        small= link_to 'What is this?', 'http://hackster.uservoice.com/knowledgebase/articles/657256', target: '_blank'
+
+      .text-left= simple_form_for Quote.new(project_id: project.id), url: quotes_path, html: { class: 'user-form form-compact disable-on-submit remote' }, data: { remote: true }, authenticity_token: !csrf_disabled? do |f|
+        = f.input :project_id, as: :hidden
+        = f.input :components, as: :check_boxes, collection: project.components_for_buy_all, label: "Select the components you'd like to order:", checked: project.components_for_buy_all
+        p
+          strong We'll get back to you with a quote:
+        = f.input :country, prompt: 'Country', label: false, input_html: { class: 'form-control' }
+        = f.input :email, label: false, placeholder: 'Email'
+        = f.button :submit, "Request a quote", class: 'btn btn-primary btn-block'

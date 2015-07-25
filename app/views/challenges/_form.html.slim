@@ -33,7 +33,7 @@
         .panel-heading
           h4 Challenge settings
         .panel-body
-          = f.input :end_date_dummy, label: 'Entry deadline', wrapper_html: { id: 'datetimepicker' }, hint: "The maximum date by which makers can submit entries to the challenge. Time here is UTC (+00), but it will be displayed in PST (-08)." do
+          = f.input :end_date_dummy, label: 'Entry deadline', wrapper_html: { id: 'entry_deadline', class: 'datetimepicker' }, hint: "The maximum date by which makers can submit entries to the challenge. Time here is UTC (+00), but it will be displayed in PST (-08)." do
             #datepicker.input-group
               = f.input_field :end_date_dummy, as: :string, label: false
               span.input-group-addon
@@ -85,7 +85,22 @@
 
       .panel.panel-default
         .panel-heading
-          h4 Challenge settings
+          h4 Voting
+        .panel-body
+          = f.input :activate_voting, as: :boolean, inline_label: 'Activate voting', label: false, input_html: { id: 'challenge_activate_voting' }
+          #voting_dates style=(@challenge.activate_voting ? '' : 'display:none')
+            = f.input :allow_anonymous_votes, as: :boolean, inline_label: 'Allow anonymous votes', label: false, hint: "Not recommended. This makes it possible for contestants to fake the number of votes."
+            = f.input :voting_start, label: 'Voting starts on', collection: Challenge::VOTING_START_OPTIONS
+            = f.input :voting_end_date_dummy, label: 'Voting ends on', wrapper_html: { id: 'voting_end_date_dummy', class: 'datetimepicker', autocomplete: 'off' } do
+              #datepicker.input-group
+                = f.input_field :voting_end_date_dummy, as: :string, label: false
+                span.input-group-addon
+                  i.fa.fa-calendar
+            = f.input :voting_end_date, as: :hidden, input_html: { id: 'voting_end_date' }
+
+      .panel.panel-default
+        .panel-heading
+          h4 Password protection
         .panel-body
           = f.input :password_protect, as: :boolean, inline_label: 'Enable password protection'
           = f.input :password, hint: 'Only if password protection is enabled', as: :string
@@ -137,7 +152,7 @@
   = javascript_include_tag 'datepicker'
 
   javascript:
-    $('#datetimepicker').datetimepicker({
+    $('.datetimepicker').datetimepicker({
       icons: {
           time: "fa fa-clock-o",
           date: "fa fa-calendar",
@@ -147,16 +162,26 @@
       sideBySide: true
     });
 
-    $('#datetimepicker').on('change', function(){
-      $('#end_date').val($('#datetimepicker').data("DateTimePicker").getDate());
+    $('#entry_deadline').on('change', function(){
+      $('#end_date').val($('#entry_deadline').data("DateTimePicker").getDate());
+    });
+    $('#voting_end_date_dummy').on('change', function(){
+      $('#voting_end_date').val($(this).data("DateTimePicker").getDate());
+    });
+    $('#challenge_activate_voting').on('change', function(){
+      if ($(this).is(':checked')) {
+        $('#voting_dates').slideDown();
+      } else {
+        $('#voting_dates').slideUp();
+      }
     });
 
     jQuery(function($) {
       tinyMCE.init({
         selector: 'textarea.text-editor',
-        toolbar: "undo redo | bold italic underline | alignleft aligncenter alignright | link unlink | bullist numlist | image",
+        toolbar: "undo redo | bold italic underline | alignleft aligncenter alignright | link unlink | bullist numlist | image media",
         menubar: false,
-        plugins: 'link paste image',
+        plugins: 'link paste image media',
         statusbar: false
       });
     });

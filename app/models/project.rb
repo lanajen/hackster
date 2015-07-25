@@ -38,7 +38,6 @@ class Project < ActiveRecord::Base
     'product' => 'Product',
   }
 
-  include ActionView::Helpers::SanitizeHelper
   include Checklist
   include EditableSlug
   include HstoreColumn
@@ -104,7 +103,6 @@ class Project < ActiveRecord::Base
   has_one :cover_image, -> { order created_at: :desc }, as: :attachable, class_name: 'CoverImage', dependent: :destroy  # added order because otherwise it randomly picks up the wrong image
   has_one :logo, as: :attachable, class_name: 'Avatar', dependent: :destroy
   has_one :project_collection, class_name: 'ProjectCollection'
-  has_one :video, as: :recordable, dependent: :destroy
 
   sanitize_text :name
   register_sanitizer :sanitize_description, :before_validation, :description
@@ -124,7 +122,7 @@ class Project < ActiveRecord::Base
     :software_part_joins_attributes, :locale
   attr_accessor :current, :private_changed, :needs_platform_refresh,
     :approved_changed
-  accepts_nested_attributes_for :images, :video, :logo, :team_members,
+  accepts_nested_attributes_for :images, :logo, :team_members,
     :widgets, :cover_image, :permissions, :slug_histories, :team,
     :project_collections, :part_joins, :hardware_part_joins, :tool_part_joins,
     :software_part_joins, allow_destroy: true
@@ -225,7 +223,7 @@ class Project < ActiveRecord::Base
   add_checklist :platform_tags_string, 'Platforms used'
   add_checklist :description, 'Story'
   add_checklist :hardware_parts, 'Components', 'hardware_parts.any?'
-  add_checklist :schematics, 'Schematics', 'widgets.where(type: %w(SchematicRepoWidget SchematicFileWidget)).any?'
+  add_checklist :schematics, 'Schematics', 'widgets.where(type: %w(SchematicWidget SchematicFileWidget)).any?'
   add_checklist :code, 'Code', 'widgets.where(type: %w(CodeWidget CodeRepoWidget)).any?'
 
   # beginning of search methods
@@ -300,6 +298,10 @@ class Project < ActiveRecord::Base
 
   def self.for_thumb_display_in_collection
     includes(project: :users).includes(project: :cover_image).includes(project: :team)
+  end
+
+  def self.guest
+    where("projects.guest_name <> '' AND projects.guest_name IS NOT NULL")
   end
 
   def self.indexable
@@ -817,7 +819,18 @@ class Project < ActiveRecord::Base
     end
 
     def strip_tags text
-      sanitize(text, tags: [])
+      text = ActionController::Base.helpers.strip_tags(text)
+
+      # so that these characters don't show escaped. Not the cleanest...
+      {
+        '&amp;' => '&',
+        '&lt;' => '<',
+        '&gt;' => '>',
+        '&quot;' => '"',
+      }.each do |code, character|
+        text.gsub! Regexp.new(code), character
+      end
+      text
     end
 
     def sanitize_description text

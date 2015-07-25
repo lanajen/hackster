@@ -9,7 +9,7 @@ class StoreProduct < ActiveRecord::Base
   hstore_column :properties, :charge_shipping, :boolean, default: true
   hstore_column :properties, :length, :float
   hstore_column :properties, :height, :float
-  hstore_column :properties, :in_stock, :integer, default: 0  # auto lower after order placed
+  hstore_column :properties, :in_stock, :integer, default: 0  # auto decrease by 1 after order placed
   hstore_column :properties, :limit_per_person, :integer, default: 0
   hstore_column :properties, :real_unit_price, :float
   hstore_column :properties, :stored_actions, :string, default: '[]'
@@ -19,7 +19,8 @@ class StoreProduct < ActiveRecord::Base
   counters_column :counters_cache
   has_counter :orders, 'orders.valid.count'
 
-  attr_accessible :unit_cost, :source_id, :source_type, :available
+  attr_accessible :unit_cost, :source_id, :source_type, :available, :name,
+    :description
 
   validates :length, :height, :weight, :width, presence: true
 
@@ -29,6 +30,10 @@ class StoreProduct < ActiveRecord::Base
 
   def self.cheapest
     where.not(unit_cost: nil).where.not(unit_cost: 0).order(unit_cost: :asc).first
+  end
+
+  def self.unavailable_last
+    order("(CASE WHEN store_products.properties -> 'in_stock' = '0' THEN 1 ELSE 0 END) ASC");
   end
 
   def self.by_cost

@@ -175,7 +175,7 @@ class ApplicationController < ActionController::Base
       if user && Devise.secure_compare(user.authentication_token, params[:user_token])
         sign_in user#, store: false
         flash.keep
-        redirect_to request.path and return
+        redirect_to UrlParam.new(request.url).remove_params(%w(user_token user_email)) and return
       end
     end
 
@@ -298,7 +298,7 @@ class ApplicationController < ActionController::Base
     end
 
     def mark_last_seen!
-      TrackerQueue.perform_async 'mark_last_seen', current_user.id, Time.now.to_i, "#{controller_path}##{self.action_name}" if user_signed_in? and tracking_activated?
+      TrackerQueue.perform_async 'mark_last_seen', current_user.id, request.ip, Time.now.to_i, "#{controller_path}##{self.action_name}" if user_signed_in? and tracking_activated?
     end
 
     def track_alias user=nil

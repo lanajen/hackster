@@ -6,8 +6,6 @@ require File.join(Rails.root, 'lib/youtube/init')
 require File.join(Rails.root, 'lib/taggable')
 # Privatable
 require File.join(Rails.root, 'lib/privatable')
-# Broadcastable
-require File.join(Rails.root, 'lib/base_broadcast_observer')
 # parse strings into int and bool
 require File.join(Rails.root, 'lib/string_parser')
 # cached counters
@@ -49,3 +47,5 @@ require File.join Rails.root, 'lib/hstore_column'
 require File.join Rails.root, 'lib/websites_column'
 # checklist
 require File.join Rails.root, 'lib/checklist'
+# ActionDispatch::Request override
+require File.join Rails.root, 'lib/action_dispatch_request'

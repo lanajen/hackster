@@ -54,6 +54,7 @@ class Part < ActiveRecord::Base
   before_validation :ensure_partable, unless: proc{|p| p.persisted? }
   before_validation :generate_slug, if: proc{|p| p.slug.blank? or p.name_changed? }
   register_sanitizer :strip_whitespace, :before_validation, :mpn, :description, :name
+  register_sanitizer :sanitize_description, :before_validation, :description
   after_create proc{|p| p.require_review! if p.workflow_state.blank? or p.new? }
 
   workflow do
@@ -174,7 +175,8 @@ class Part < ActiveRecord::Base
   # end of search methods
 
   def self.search params
-    query = params[:q].split(/\s+/).map do |token|
+    # escape single quotes and % so it doesn't break the query
+    query = params[:q].gsub(/['%]/, ' ').split(/\s+/).map do |token|
       "(parts.description ILIKE '%#{token}%' OR parts.name ILIKE '%#{token}%' OR parts.product_tags_string ILIKE '%#{token}%')"
     end.join(' AND ')
 
@@ -253,10 +255,6 @@ class Part < ActiveRecord::Base
     self.slug = slug
   end
 
-  def one_liner_or_description
-    one_liner.presence || ActionController::Base.helpers.strip_tags(description).try(:truncate, 140)
-  end
-
   def search_on_octopart
     return unless description.present? or mpn.present?
 
@@ -286,6 +284,27 @@ class Part < ActiveRecord::Base
           next
         end
         send "#{type}=", 'http://' + url unless url =~ /^http/
+      end
+    end
+
+    def sanitize_description text
+      if text
+        doc = Nokogiri::HTML::DocumentFragment.parse(text)
+
+        {
+          'strong' => 'b',
+          'h1' => 'p',
+          'h2' => 'p',
+          'h3' => 'p',
+          'h4' => 'p',
+          'h5' => 'p',
+          'h6' => 'p',
+          'em' => 'i',
+        }.each do |orig_tag, proper_tag|
+          doc.css(orig_tag).each{|el| el.name = proper_tag }
+        end
+
+        Sanitize.clean(doc.to_s.encode("UTF-8"), Sanitize::Config::HACKSTER)
       end
     end
 
