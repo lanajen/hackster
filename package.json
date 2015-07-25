@@ -1,6 +1,7 @@
 {
   "name": "HacksterIO",
   "dependencies": {
+    "alloyeditor": "^0.3.7",
     "async": "^0.9.0",
     "babel": "^5.5.8",
     "babel-core": "^5.5.8",
@@ -12,9 +13,11 @@
     "classnames": "^1.2.0",
     "flummox": "^3.5.2",
     "htmlparser": "^1.7.7",
+    "htmltojsx": "^0.2.2",
     "lodash": "^3.7.0",
     "markdown-it": "^4.1.1",
     "material-ui": "^0.9.1",
+    "node-ckeditor": "^4.3.2",
     "node-uuid": "^1.4.3",
     "object-assign": "^2.0.0",
     "postal": "^1.0.6",
@@ -22,6 +25,7 @@
     "react": "^0.13.3",
     "react-codemirror": "^0.1.2",
     "react-input-autosize": "^0.4.4",
+    "react-quill": "^0.1.1",
     "react-select": "^0.4.9",
     "react-tap-event-plugin": "^0.1.6",
     "react-tween-state": "0.0.5",

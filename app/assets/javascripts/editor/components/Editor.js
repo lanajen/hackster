@@ -12,7 +12,6 @@ import * as EditorActions from '../actions/EditorActions';
 
 import Editable from './Editable';
 
-
 var Editor = React.createClass({
 
   onDrop(e) {
@@ -53,12 +52,12 @@ var Editor = React.createClass({
         <Toolbar toolbar={toolbar} isImageBucketOpen={imageBucket.show}  editor={editor} {...bindActionCreators(Object.assign({}, ToolbarActions, ImageBucketActions, EditorActions), dispatch)} />
 
         <DropZone className="box" onDrop={this.onDrop}>
-          <ContentEditable textAreaClasses="box-content" refLink={createRandomNumber()} html={this.props.editor.html} onChange={this.onContentEditableChange} isTextSelected={this.isTextSelected} onTextSelect={this.onTextSelect} />
+          <Editable refLink={createRandomNumber()} editor={editor} actions={bindActionCreators(EditorActions, dispatch)}/>
         </DropZone>
       </div>
     );
   }
 
 });
-
+// <ContentEditable textAreaClasses="box-content" refLink={createRandomNumber()} html={this.props.editor.html} onChange={this.onContentEditableChange} isTextSelected={this.isTextSelected} onTextSelect={this.onTextSelect} />
 export default Editor;

@@ -3,7 +3,25 @@ import _ from 'lodash';
 import htmlparser from 'htmlparser';
 
 const initialState = {
-  html: '<p>Start</p>'
+  html: '<p>Start</p>',
+  dom: [
+    {tag: 'p',
+     content: 'First Parent',
+     indexPos: [0, 0],
+     children: [{
+      tag: 'a',
+      content: 'anchor',
+      indexPos: [1, 0],
+      children: []
+     }]
+    },
+    {
+      tag: 'p',
+      content: 'Second P',
+      indexPos: [0, 1],
+      children: []
+    }
+  ]
 };
 
 export default function(state = initialState, action) {
@@ -13,20 +31,24 @@ export default function(state = initialState, action) {
         ...state,
         html: action.html
       };
+
     case Editor.setSelectedText:
       return {
         ...state,
         selectedText: action.data
       };
+
     case Editor.isTextSelected:
       return {
         ...state,
         isTextSelected: action.bool
       };
+
     case Editor.addMarkup:
       return {
         ...state
       };
+
     default:
       return state;
   };
@@ -38,7 +60,7 @@ function htmlParserHandler(html) {
       if(!item.children) {
         return {
           tag: item.data,
-          text: '',
+          content: '',
           children: []
         };
       }
@@ -50,7 +72,7 @@ function htmlParserHandler(html) {
       }
       return {
         tag: item.data,
-        text: textContent,
+        content: textContent,
         children: handler(item.children)
       };
     });
@@ -80,10 +102,10 @@ function toHTML(collection) {
         if(item.tag === 'br') {
           string += ('<' + item.tag + '/>');
         } else {
-          string += ('<' + item.tag + '>' + item.text + '</' + item.tag + '>');
+          string += ('<' + item.tag + '>' + item.content + '</' + item.tag + '>');
         }
       } else if(item.children) {
-          string += recurse(item.children, ('<' + item.tag + '>' + item.text));
+          string += recurse(item.children, ('<' + item.tag + '>' + item.content));
           if(item.tag !== 'br') {
             string += ('</' + item.tag + '>');
           }

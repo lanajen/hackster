@@ -6,6 +6,10 @@
   }
 }
 
+.no-outline-focus:focus {
+  outline: none;
+}
+
 /** Toolbar */
 
 .react-editor-toolbar {

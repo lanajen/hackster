@@ -20,7 +20,7 @@ var App = React.createClass({
               editor: state.editor
             }; 
           }}>
-            {({ editor, dispatch}) => 
+            {({editor, dispatch}) => 
               <Editor editor={editor} {...this.props} {...bindActionCreators(EditorActions, dispatch)} />
             }
           </Connector>
