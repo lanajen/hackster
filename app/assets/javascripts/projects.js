@@ -190,6 +190,10 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
           $('.fields.removed').show().removeClass('removed');
           $('form.sortable .table-sortable tbody').sortable('cancel');
 
+          $('.form-group .error-message').remove();
+          $('.form-group').removeClass('has-error');
+          $('.pe-error').hide();
+
           this.serializeForm();
         }
       },

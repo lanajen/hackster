@@ -59,6 +59,7 @@ class Api::V1::ProjectsController < Api::V1::BaseController
     log_line = LogLine.create(message: message, log_type: '5xx', source: 'api/projects')
     NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification' if Rails.env == 'production'
     render status: :internal_server_error, nothing: true
+    raise e if Rails.env.development?
   end
 
   def destroy
@@ -66,6 +67,6 @@ class Api::V1::ProjectsController < Api::V1::BaseController
     authorize! :destroy, project
     project.destroy
 
-    render json: 'Destroyed'
+    render status: :ok, nothing: true
   end
 end
