@@ -15,4 +15,12 @@ class List < Collection
       self.user_name += '_' * (3 - user_name.length)
     end
   end
+
+  private
+    def user_name_is_unique
+      return unless new_user_name.present?
+
+      list = self.class.where("LOWER(groups.user_name) = ?", new_user_name.downcase).where.not(id: id).first
+      errors.add :new_user_name, 'is already taken' if list
+    end
 end

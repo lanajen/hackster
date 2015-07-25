@@ -2,7 +2,6 @@ class ProjectsController < ApplicationController
   before_filter :load_project, only: [:show, :embed, :print, :update, :destroy, :redirect_to_slug_route]
   before_filter :ensure_belongs_to_platform, only: [:show, :embed, :print, :update, :destroy, :redirect_to_slug_route]
   load_and_authorize_resource only: [:index, :new, :edit, :submit, :update_workflow]
-  before_filter :load_lists, only: [:show, :show_external]
   respond_to :html
   after_action :allow_iframe, only: :embed
   skip_before_filter :track_visitor, only: [:show, :embed]
@@ -365,15 +364,5 @@ class ProjectsController < ApplicationController
     def initialize_project
       @project.build_logo unless @project.logo
       @project.build_cover_image unless @project.cover_image
-    end
-
-    def load_lists
-      @lists = if user_signed_in?
-        if current_user.is? :admin
-          List.where(type: 'List').order(:full_name)
-        else
-          current_user.lists.order(:full_name)
-        end
-      end
     end
 end

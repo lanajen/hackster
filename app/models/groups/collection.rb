@@ -91,9 +91,6 @@ class Collection < Group
 
   private
     def user_name_is_unique
-      return unless new_user_name.present?
-
-      list = List.where("LOWER(groups.user_name) = ?", new_user_name.downcase).where(type: 'List').where.not(id: id).first
-      errors.add :new_user_name, 'is already taken' if list
+      raise StandardError, "'user_name_is_unique' needs to be implemented in '#{self.class.name}'"
     end
 end

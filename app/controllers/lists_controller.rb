@@ -11,7 +11,7 @@ class ListsController < ApplicationController
   def index
     title "Explore lists"
     meta_desc "Explore hardware projects by topics through curated lists."
-    @lists = List.public.where(type: 'List').order(members_count: :desc)
+    @lists = List.public.order(members_count: :desc)
 
     render "groups/lists/#{self.action_name}"
   end
@@ -124,6 +124,6 @@ class ListsController < ApplicationController
     end
 
     def load_list
-      @group = @list = List.where(type: 'List').where("LOWER(groups.user_name) = ?", params[:user_name].downcase).first!
+      @group = @list = List.where("LOWER(groups.user_name) = ?", params[:user_name].downcase).first!
     end
 end

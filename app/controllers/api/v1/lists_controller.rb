@@ -6,11 +6,10 @@ class Api::V1::ListsController < Api::V1::BaseController
     @project_lists = ProjectCollection.where(project_id: params[:project_id], collectable_type: 'Group').joins("INNER JOIN groups ON project_collections.collectable_id = groups.id AND groups.type = 'List'").pluck('groups.id')
 
     @lists = if current_user.is? :admin
-      List.where(type: 'List').order(:full_name).limit(5)
+      List.order(:full_name)
     else
       current_user.lists.order(:full_name)
     end
-    # @lists= []
   end
 
   def create
