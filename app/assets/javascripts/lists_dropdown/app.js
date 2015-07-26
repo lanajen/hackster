@@ -1,8 +1,6 @@
 import React from 'react';
 import ListsDropdown from './components/ListsDropdown';
 import ListsStore from './stores/ListsStore';
-import injectTapEventPlugin from 'react-tap-event-plugin';
-injectTapEventPlugin();
 
 const App = React.createClass({
 

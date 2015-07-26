@@ -2,7 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import { toggleProjectInList } from '../../utils/ReactAPIUtils';
 
-var ListItem = React.createClass({
+const ListItem = React.createClass({
 
   getInitialState: function(){
     return {

@@ -4,14 +4,14 @@ import _ from 'lodash';
 
 const channel = postal.channel('lists');
 
-var ListForm = React.createClass({
+const ListForm = React.createClass({
 
-  clearInput: function() {
-    this.setState({
+  getInitialState: function() {
+    return {
       canSubmit: false,
       inputValue: '',
       isLoading: false
-    });
+    }
   },
 
   componentWillMount() {
@@ -24,12 +24,12 @@ var ListForm = React.createClass({
     this.updateSub.unsubscribe();
   },
 
-  getInitialState: function() {
-    return {
+  clearInput: function() {
+    this.setState({
       canSubmit: false,
       inputValue: '',
       isLoading: false
-    }
+    });
   },
 
   handleInputChange: function(e) {
@@ -47,7 +47,7 @@ var ListForm = React.createClass({
 
   handleSubmit: function(e) {
     e.preventDefault();
-    let name = this.refs.name.getDOMNode().value;
+    let name = React.findDOMNode(this.refs.name).value;;
     if (this.state.canSubmit) {
       this.props.onSubmit(name);
       this.setState({

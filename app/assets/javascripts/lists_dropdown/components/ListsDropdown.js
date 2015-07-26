@@ -6,7 +6,7 @@ import _ from 'lodash';
 
 const channel = postal.channel('lists');
 
-var ListsDropdown = React.createClass({
+const ListsDropdown = React.createClass({
 
   getInitialState() {
     return {
