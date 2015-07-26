@@ -2,7 +2,7 @@
   = render 'meta_tags'
 
 = render partial: 'add_to_list_button'
-- if @hardware_parts.any?
+/ - if @hardware_parts.any?
   = content_for :js do
     = render partial: 'shared/modals/buy_all_quote', locals: { project: @project }
 
@@ -131,7 +131,7 @@
                           i.fa.fa-chevron-up
                       .section-content
                         table.sortable-table.table.table-hover.fields-container
-                          thead
+                          / thead
                             th.text-right colspan=4
                               = link_to content_tag(:i, '', class: 'fa fa-shopping-cart') + content_tag(:span, 'Buy all'), 'javascript:void(0)', class: 'modal-open btn btn-primary btn-sm', 'data-target' => '#buy-all-quote'
                           tbody
