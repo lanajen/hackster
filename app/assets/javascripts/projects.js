@@ -242,6 +242,9 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
       },
 
       saveChanges: function() {
+        if ($('#story:visible').length) {
+          $('#project_description').html(editor.self.serialize()['element-0'].description);
+        }
         $('.pe-panel:visible form.remote').submit();
       },
 

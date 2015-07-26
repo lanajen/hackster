@@ -1447,9 +1447,15 @@ $(function () {
     },
 
     done: function(e, data){
-      fileType = $('#' + data.context).data('file-type');
+      var el = $('#' + data.context);
+      fileType = el.data('file-type');
+      var attachableId, attachableType;
+      if (fileType == 'image') {
+        attachableId = el.closest('.embed-frame').data('widget-id');
+        attachableType = 'Widget';
+      }
 
-      createFileOnServerAfterUpload(data, fileType, function(data){
+      createFileOnServerAfterUpload(data, fileType, attachableId, attachableType, function(data){
         id = data.id;
         el = $('#' + data.context);
         el.attr('id', '');
@@ -1535,7 +1541,7 @@ $(function () {
     },
 
     done: function(e, data){
-      createFileOnServerAfterUpload(data, 'cover_image', function(data){
+      createFileOnServerAfterUpload(data, 'cover_image', null, null, function(data){
         var id = data.id;
         formData = { project: { cover_image_id: id }};
         $('#upload-cover-image a').attr('data-value', id);
@@ -2158,7 +2164,7 @@ function uploadAssignUrl(data) {
   form.attr('data-url', url);  // pass it to 'done'
 }
 
-function createFileOnServerAfterUpload(data, fileType, successCallback) {
+function createFileOnServerAfterUpload(data, fileType, attachableId, attachableType, successCallback) {
   $('#' + data.context).data('data', data);
 
   form = $('#medium-file-upload');
@@ -2173,8 +2179,8 @@ function createFileOnServerAfterUpload(data, fileType, successCallback) {
       file_url: url,
       file_type: fileType,
       context: data.context,
-      attachable_id: editor.modelId,
-      attachable_type: editor.modelType
+      attachable_id: (attachableId || editor.modelId),
+      attachable_type: (attachableType || editor.modelType)
     },
     async: false,
     success: function(data) { successCallback(data) },
