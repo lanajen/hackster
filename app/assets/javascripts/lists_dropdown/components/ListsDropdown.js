@@ -44,7 +44,7 @@ const ListsDropdown = React.createClass({
 
     if (this.state.isLoading) {
       lists = (
-        <li className="list-item text-center">
+        <li className="list-item text-center mg-20">
           <i className="fa fa-spinner fa-3x fa-spin"></i>
         </li>
       );

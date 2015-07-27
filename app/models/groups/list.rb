@@ -1,6 +1,5 @@
 class List < Collection
   include Checklist
-  include Privatable
 
   hstore_column :hproperties, :enable_comments, :boolean
 
