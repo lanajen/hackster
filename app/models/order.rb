@@ -3,7 +3,7 @@ class Order < ActiveRecord::Base
   include HstoreCounter
   include Workflow
 
-  INVALID_STATES = %w(new).freeze
+  INVALID_STATES = %w(new rejected).freeze
   PENDING_STATES = %w(pending_verification processing).freeze
   NO_DUTY_COUNTRIES = ['United States'].freeze
 
@@ -29,11 +29,13 @@ class Order < ActiveRecord::Base
     end
     state :pending_verification do
       event :mark_verified, transitions_to: :processing
+      event :reject, transitions_to: :rejected
     end
     state :processing do
       event :ship, transitions_to: :shipped
     end
     state :shipped
+    state :rejected
     # on_transition do |from, to, triggering_event, *event_args|
     #   notify_observers(:"before_#{triggering_event}")
     # end
