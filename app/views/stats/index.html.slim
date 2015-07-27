@@ -25,7 +25,7 @@
                 ' +#{number_with_delimiter @reputation_this_month} this month.
               = link_to 'Read how to get more points.', 'http://hackster.uservoice.com/knowledgebase/topics/92217-hackster-free-store'
 
-          = react_component('ReputationUpdateButton', { timestamp: @user.reputation_last_updated_at.to_i }, { tag: 'p', class: 'small text-muted' })
+          = react_component('ReputationUpdateButton', { timestamp: @user.reputation_last_updated_at.to_i, userId: (current_user.is?(:admin) ? @user.id : nil) }, { tag: 'p', class: 'small text-muted' })
 
           / small
             ' Redeem your points in the

@@ -72,11 +72,11 @@ module.exports = {
     });
   },
 
-  launchJob(jobType) {
+  launchJob(jobType, userId) {
     return new Promise((resolve, reject) => {
       request
         .post('/api/v1/jobs')
-        .send({ type: jobType })
+        .send({ type: jobType, user_id: userId })
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
         });

@@ -13,7 +13,7 @@ const App = React.createClass({
 
   handleButtonClick() {
     if (!this.state.isLoading && !this.state.hasUpdated) {
-      let promise = launchJob('compute_reputation');
+      let promise = launchJob('compute_reputation', this.props.userId);
       this.setState({
         isLoading: true
       });
