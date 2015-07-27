@@ -195,6 +195,7 @@ class User < ActiveRecord::Base
 
   store :properties, accessors: []
   hstore_column :properties, :has_unread_notifications, :boolean
+  hstore_column :properties, :reputation_last_updated_at, :datetime
 
   has_websites :websites, :facebook, :twitter, :linked_in, :website, :blog,
     :github, :google_plus, :youtube, :instagram, :flickr, :reddit, :pinterest

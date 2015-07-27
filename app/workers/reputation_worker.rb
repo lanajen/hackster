@@ -8,6 +8,7 @@ class ReputationWorker < BaseWorker
     user.update_counters only: [:reputation]
     user.build_reputation unless user.reputation
     user.reputation.compute_redeemable!
+    user.update_attributes reputation_last_updated_at: Time.now
   end
 
   def compute_daily_reputation

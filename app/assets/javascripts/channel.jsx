@@ -1,4 +1,3 @@
-//= require moment
 //= require marked.min
 //= require ReactRouter.min
 //= require fluxxor

@@ -31,6 +31,7 @@
 //= require jquery.iframe-transport
 //= require jquery.fileupload
 //= require components
+//= require moment
 
 (function($) {
 
