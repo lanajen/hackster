@@ -20,10 +20,6 @@ const App = React.createClass({
     }
   },
 
-  handleListFormSubmit(listName) {
-    ListsStore.addList(listName);
-  },
-
   render: function() {
 
     return (
@@ -32,7 +28,7 @@ const App = React.createClass({
           <i className="fa fa-bookmark-o"></i>
           <span>Add to my lists</span>
         </a>
-        <ListsDropdown isOpen={this.state.isDropdownOpen} onFormSubmit={this.handleListFormSubmit} {...this.props} />
+        <ListsDropdown isOpen={this.state.isDropdownOpen} {...this.props} />
       </div>
     );
   }

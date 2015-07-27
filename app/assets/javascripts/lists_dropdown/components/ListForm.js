@@ -1,4 +1,5 @@
 import React from 'react';
+import ListsStore from './../stores/ListsStore';
 import postal from 'postal';
 import _ from 'lodash';
 
@@ -9,27 +10,22 @@ const ListForm = React.createClass({
   getInitialState: function() {
     return {
       canSubmit: false,
-      inputValue: '',
       isLoading: false
     }
   },
 
   componentWillMount() {
     this.updateSub = channel.subscribe('store.changed', function(store) {
-      this.clearInput();
+      this.setState({
+        canSubmit: false,
+        isLoading: false
+      });
+      React.findDOMNode(this.refs.name).value = '';
     }.bind(this));
   },
 
   componentWillUnmount: function() {
     this.updateSub.unsubscribe();
-  },
-
-  clearInput: function() {
-    this.setState({
-      canSubmit: false,
-      inputValue: '',
-      isLoading: false
-    });
   },
 
   handleInputChange: function(e) {
@@ -40,16 +36,15 @@ const ListForm = React.createClass({
       canSubmit = false;
     }
     this.setState({
-      canSubmit: canSubmit,
-      inputValue: e.target.value
+      canSubmit: canSubmit
     });
   },
 
   handleSubmit: function(e) {
     e.preventDefault();
-    let name = React.findDOMNode(this.refs.name).value;;
+    let name = React.findDOMNode(this.refs.name).value;
     if (this.state.canSubmit) {
-      this.props.onSubmit(name);
+      ListsStore.addList(name);
       this.setState({
         canSubmit: false,
         isLoading: true
@@ -63,7 +58,7 @@ const ListForm = React.createClass({
     return (
       <form onSubmit={this.handleSubmit}>
         <div className='input-group'>
-          <input type='text' ref='name' className='form-control' placeholder='Name of new list' value={this.state.inputValue} onChange={this.handleInputChange} />
+          <input type='text' ref='name' className='form-control' placeholder='Name of new list' onChange={this.handleInputChange} />
           <span className='input-group-btn'>
             <button disabled={!this.state.canSubmit} className='btn btn-primary'>{button}</button>
           </span>

@@ -57,7 +57,7 @@ const ListsDropdown = React.createClass({
         <ul className="list-group">
           {lists}
           <li className="list-item">
-            <ListForm isLoading={this.state.isFormLoading} onSubmit={this.handleFormSubmit} />
+            <ListForm />
           </li>
         </ul>
       </div>
