@@ -5,5 +5,6 @@ global.React = require('react');
 global.FollowButton = require('./follow_button/app');
 global.NotificationDropdown = require('./notification_dropdown/app');
 global.FlagButton = require('./flag_button/app');
-
 global.hljs = require('highlight.js');
+global.ListsDropdown = require('./lists_dropdown/app');
+global.FlagButton = require('./flag_button/app');

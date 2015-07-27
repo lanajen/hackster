@@ -1,4 +1,4 @@
-class Platform < List
+class Platform < Collection
   include Checklist
   include Taggable
 

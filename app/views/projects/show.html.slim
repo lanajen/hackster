@@ -1,7 +1,6 @@
 = content_for :head do
   = render 'meta_tags'
 
-= render partial: 'add_to_list_button'
 / - if @hardware_parts.any?
   = content_for :js do
     = render partial: 'shared/modals/buy_all_quote', locals: { project: @project }
@@ -361,7 +360,8 @@
                     = link_to content_tag(:i, '', class: 'fa fa-shopping-cart') + content_tag(:span, "Buy it"), '#', 'data-celery' => @project.celery_id, 'data-celery-version' => 'v2', class: 'btn btn-warning btn-ellipsis btn-block'
                   - if @project.buy_link.present?
                     = link_to content_tag(:i, '', class: 'fa fa-shopping-cart') + content_tag(:span, "Buy it"), @project.buy_link, class: 'btn btn-block btn-warning btn-lg', target: '_blank', rel: 'nofollow'
-                  .add-to-list
+                  - if user_signed_in?
+                    = react_component('ListsDropdown', { path: api_v1_lists_path, projectId: @project.id }, { class: 'react-btn' })
 
               - elsif @can_edit
                 - who = %w(you)

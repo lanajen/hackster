@@ -37,6 +37,10 @@ HackerIo::Application.routes.draw do
           get 'analytics' => 'platforms#analytics', defaults: { format: :json }
         end
       end
+      resources :lists, only: [:index, :create], defaults: { format: :json } do
+        post 'projects' => 'lists#link_project', on: :member
+        delete 'projects' => 'lists#unlink_project', on: :member
+      end
       resources :microsoft_chrome_sync, only: [] do
         get '' => 'microsoft_chrome_sync#show', on: :collection
         patch '' => 'microsoft_chrome_sync#update', on: :collection

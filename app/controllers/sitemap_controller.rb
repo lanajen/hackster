@@ -99,7 +99,7 @@ class SitemapController < ApplicationController
     end
 
     def lists_query
-      List.where(type: 'List').public
+      List.public
     end
 
     def lists_pages offset=0
