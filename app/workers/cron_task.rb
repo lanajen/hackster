@@ -18,61 +18,6 @@ class CronTask < BaseWorker
     User.where.not(invitation_token: nil).where.not(last_sign_in_at: nil).update_all(invitation_token: nil)
   end
 
-  def compute_popularity
-    CronTask.perform_async 'compute_popularity_for_projects'
-    CronTask.perform_async 'compute_popularity_for_users'
-    CronTask.perform_async 'compute_popularity_for_platforms'
-  end
-
-  def compute_popularity_for_projects
-    Project.indexable_and_external.pluck(:id).each do |project_id|
-      CronTask.perform_async 'compute_popularity_for_project', project_id
-    end
-  end
-
-  def compute_popularity_for_project project_id
-    project = Project.find project_id
-    project.update_counters
-    project.compute_popularity
-    project.save
-  end
-
-  def compute_popularity_for_users
-    User.invitation_accepted_or_not_invited.pluck(:id).each do |user_id|
-      CronTask.perform_async 'compute_popularity_for_user', user_id
-    end
-  end
-
-  def compute_popularity_for_user user_id
-    user = User.find user_id
-    user.update_counters
-    user.build_reputation unless user.reputation
-    reputation = user.reputation
-    reputation.compute
-    reputation.save
-  end
-
-  def compute_popularity_for_platforms
-    Platform.find_each do |platform|
-      platform.update_counters
-    end
-  end
-
-  def compute_reputation user_id
-    Rewardino::Event.compute_for_user user_id
-
-    user = User.find user_id
-    user.update_counters only: [:reputation]
-    user.build_reputation unless user.reputation
-    user.reputation.compute_redeemable!
-  end
-
-  def compute_daily_reputation
-    User.invitation_accepted_or_not_invited.find_each do |user|
-      CronTask.perform_async 'compute_reputation', user.id
-    end
-  end
-
   def evaluate_badges
     return unless Rewardino.activated?
 

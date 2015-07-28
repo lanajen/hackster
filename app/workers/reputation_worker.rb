@@ -13,7 +13,7 @@ class ReputationWorker < BaseWorker
 
   def compute_daily_reputation
     User.invitation_accepted_or_not_invited.find_each do |user|
-      CronTask.perform_async 'compute_reputation', user.id
+      self.class.perform_async 'compute_reputation', user.id
     end
   end
 end
