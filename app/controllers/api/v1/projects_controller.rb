@@ -45,7 +45,7 @@ class Api::V1::ProjectsController < Api::V1::BaseController
     if params[:project].try(:[], :widgets_attributes)
       widgets = {}
       params[:project][:widgets_attributes].each do |i, widget|
-        widgets[i] = widget
+        widgets[i] = widget if widget['id'].present?
       end
       all = Widget.where(id: widgets.values.map{|v| v['id'] }).pluck(:id).map{|i| i.to_s }
       widgets.each do |i, widget|
