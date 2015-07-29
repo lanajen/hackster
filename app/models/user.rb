@@ -601,6 +601,7 @@ class User < ActiveRecord::Base
   def simplify_signup!
     skip_confirmation!
     skip_password!
+    generate_user_name
     @override_devise_notification = 'confirmation_instructions_simplified_signup'
   end
 
