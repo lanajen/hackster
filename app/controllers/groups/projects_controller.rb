@@ -11,7 +11,7 @@ class Groups::ProjectsController < ApplicationController
 
     @project_collections = @group.project_collections
 
-    if params[:status] and params[:status].in? %w(approved rejected pending_review)
+    if params[:status] and params[:status].in? %w(approved rejected pending_review featured)
       @project_collections = @project_collections.where(workflow_state: params[:status])
     end
 

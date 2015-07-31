@@ -73,6 +73,7 @@ class UserObserver < ActiveRecord::Observer
     # cleanup when an invited user signs up from a different path
     if record.invitation_token and record.encrypted_password_changed?
       record.invitation_token = nil
+      record.invitation_accepted_at = Time.now if record.invitation_accepted_at.nil?
       record.generate_user_name if record.user_name.blank? and record.new_user_name.blank?
       record.build_reputation unless record.reputation
       record.subscribe_to_all
