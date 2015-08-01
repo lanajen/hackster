@@ -30,7 +30,7 @@ class ChallengeDecorator < ApplicationDecorator
     when :in_progress
       "#{time_left} left to enter"
     when :judging
-      'Judging in progress'
+      model.voting_active? 'Voting in progress' : 'Judging in progress'
     when :judged
       h.content_tag(:i, '', class: 'fa fa-check') + ' Prizes awarded'
     end

@@ -56,6 +56,7 @@ class CronTask < BaseWorker
     CronTask.perform_async 'send_announcement_notifications'
     CronTask.perform_async 'cleanup_duplicates'
     CronTask.perform_async 'clean_invitations'
+    CronTask.perform_in 1.hour, 'launch_cron'
   end
 
   def launch_daily_cron
