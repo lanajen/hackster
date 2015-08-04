@@ -111,6 +111,7 @@
             h4 Admin stuff
           .panel-body
             = f.input :platform_id, label: 'Promoted platform', collection: Platform.order(:full_name)
+            = f.input :activate_banners, inline_label: 'Activate banners', label: false, hint: 'Whether to display banners on sponsor platform hub.', as: :boolean
             .col-md-8.col-md-offset-4 -or-
             = f.input :sponsor_name
             = f.input :sponsor_link
@@ -131,6 +132,8 @@
               - case @challenge.workflow_state.to_sym
               - when :new
                 = link_to 'Launch challenge', update_workflow_challenge_path(@challenge, event: 'launch'), method: :put, class: 'btn btn-success btn-sm', data: { confirm: "Let's do this. Sure?" }
+              - when :in_progress
+                = link_to 'Take offline', update_workflow_challenge_path(@challenge, event: 'take_offline'), method: :put, class: 'btn btn-warning btn-sm', data: { confirm: "Sure?" }
           .form-group
             .col-md-8.col-md-offset-4= link_to 'Delete challenge', challenge_path(@challenge), method: :delete, class: 'btn btn-danger btn-sm', data: { confirm: "Are you sure? There's no coming back!" }
 

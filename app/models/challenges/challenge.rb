@@ -37,6 +37,7 @@ class Challenge < ActiveRecord::Base
   accepts_nested_attributes_for :prizes, :challenge_admins, allow_destroy: true
 
   store :properties, accessors: []
+  hstore_column :hproperties, :activate_banners, :boolean, default: true
   hstore_column :hproperties, :activate_voting, :boolean
   hstore_column :hproperties, :allow_anonymous_votes, :boolean
   hstore_column :hproperties, :custom_css, :string
@@ -70,6 +71,7 @@ class Challenge < ActiveRecord::Base
       event :cancel, transitions_to: :canceled
       event :end, transitions_to: :judging
       event :pause, transitions_to: :paused
+      event :take_offline, transitions_to: :new
     end
     state :canceled
     state :paused do
@@ -108,6 +110,10 @@ class Challenge < ActiveRecord::Base
 
   def cover_image_id=(val)
     self.cover_image = CoverImage.find_by_id(val)
+  end
+
+  def display_banners?
+    platform and activate_banners and !password_protect?
   end
 
   def duration

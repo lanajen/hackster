@@ -15,8 +15,8 @@
 - elsif @challenge
   section#alert-section
     .alert.alert-info.alert-flat.text-center
-      strong> #{@group.name} is having a challenge!
-      ' Join the
+      strong> #{@group.name} is holding a challenge!
+      ' Join
       = link_to @challenge.name, @challenge, class: 'alert-link'
 
 - elsif !user_signed_in?

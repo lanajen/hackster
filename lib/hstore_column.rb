@@ -15,7 +15,7 @@ module HstoreColumn
         column_name = options[:column_name].presence || attribute
         value = send(store_attribute).try(:[], column_name.to_s)
 
-        value = if value.blank? and options[:default]
+        value = if value.nil? and options[:default]
           send "default_#{attribute}"
         else
           cast_value value, type
@@ -35,7 +35,7 @@ module HstoreColumn
           instance_variable_set "@#{attribute}_was", current_val
           instance_variable_set "@#{attribute}_was_set", true
         end
-        if cast_val
+        unless cast_val.nil?
           instance_variable_set "@#{attribute}", cast_val
         else
           remove_instance_variable "@#{attribute}"
@@ -115,7 +115,7 @@ module HstoreColumn
           value
         else
           value
-        end if value
+        end unless value.nil?
       end
 
       def h
