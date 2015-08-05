@@ -1,7 +1,8 @@
 class ChallengeEntryObserver < ActiveRecord::Observer
   def after_approve record
     record.challenge.update_counters only: [:projects]
-    Cashier.expire "project-#{record.project_id}-metadata"
+    Cashier.expire "project-#{record.project_id}-metadata", "challenge-#{record.challenge_id}-projects"
+    record.challenge.purge
     NotificationCenter.notify_all :approved, :challenge_entry, record.id
   end
 

@@ -1,69 +1,44 @@
-/ - if @embed.url.present?
-  section#top-project-section  style="background-image: url(#{@challenge.cover_image})"
-    #teaser-container.wrapper700
-      h1= @challenge.name
-      - if @platform
-        p
-          ' by
-          = link_to @platform.name, platform_home_path(@platform)
-
-      - if @embed.url
-        #video.embed.widescreen= render partial: "api/embeds/#{@embed.provider_name}", locals: { embed: @embed }
-
-      .clearfix
-
-    .project-details
-      span.fa.fa-chevron-down.trigger-main-project-scroll.js-scroll-main-project
-
-/ - else
-  section#top-bg.show-on-desktop
-    #top-bg-image style="background-image:url('#{@challenge.cover_image}');"
-      h1= @challenge.name
-      - if @platform
-        p
-          ' by
-          = link_to @platform.name, platform_home_path(@platform)
-
-.project-list
-  - if @challenge.judged?
-    h2.text-center Winning entries
-    .thumb-list
-      .row.project-list
-        - if @winning_entries_count % 2 == 1
-          .col-sm-3
-        - @winning_entries.each do |entry|
-          = render partial: 'projects/project_thumb', locals: { project: entry.project.decorate, col: 6 }
-          = content_for :js do
-
-            javascript:
-              $(".project-#{entry.project_id} .award-container").html("<div class='project-award'><i class='fa fa-trophy'></i> #{entry.prizes.pluck(:name).to_sentence}</div>");
-
-    - if @other_projects.any?
-      h2.text-center Other entries
+- cache ["challenge-#{@challenge.id}-projects"], tag: ["challenge-#{@challenge.id}-projects"] do
+  .project-list
+    - if @challenge.judged?
+      h2.text-center Winning entries
       .thumb-list
         .row.project-list
-          - @other_projects.each do |project|
-            = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: 4 }
+          - if @winning_entries_count % 2 == 1
+            .col-sm-3
+          - @winning_entries.each do |entry|
+            = render partial: 'projects/project_thumb', locals: { project: entry.project.decorate, col: 6 }
+            = content_for :js do
 
-  - else
-    - if @projects.any?
-      .thumb-list
-        .row.project-list
-          - if @challenge.open_for_submissions? and !@is_challenge_entrant
-            = render partial: 'enter_thumb', locals: { challenge: @challenge }
-          - @projects.each do |project|
-            = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: 4 }
-          - if @challenge.voting_active?
-            - @challenge.entries.each do |entry|
-              = content_for :js do
-                javascript:
-                  text = "#{j render(partial: 'votes/button', locals: { respectable: entry, allow_anonymous_votes: @challenge.allow_anonymous_votes })}";
-                  $('.project-#{entry.project_id} .thumb').append(text);
+              javascript:
+                $(".project-#{entry.project_id} .award-container").html("<div class='project-award'><i class='fa fa-trophy'></i> #{entry.prizes.pluck(:name).to_sentence}</div>");
 
-      .row.text-center= will_paginate @projects
+      - if @other_projects.any?
+        h2.text-center Other entries
+        .thumb-list
+          .row.project-list
+            - @other_projects.each do |project|
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: 4 }
+
     - else
-      .row
-        - if @challenge.open_for_submissions?
-          = render partial: 'enter_thumb', locals: { challenge: @challenge }
-        - else
-          p No submissions.
+      - if @projects.any?
+        .thumb-list
+          .row.project-list
+            - if @challenge.open_for_submissions? and !@is_challenge_entrant
+              = render partial: 'enter_thumb', locals: { challenge: @challenge }
+            - @projects.each do |project|
+              = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: 4 }
+            - if @challenge.voting_active?
+              - @challenge.entries.each do |entry|
+                = content_for :js do
+                  javascript:
+                    text = "#{j render(partial: 'votes/button', locals: { respectable: entry, allow_anonymous_votes: @challenge.allow_anonymous_votes })}";
+                    $('.project-#{entry.project_id} .thumb').append(text);
+
+        .row.text-center= will_paginate @projects
+      - else
+        .row
+          - if @challenge.open_for_submissions?
+            = render partial: 'enter_thumb', locals: { challenge: @challenge }
+          - else
+            p No submissions.

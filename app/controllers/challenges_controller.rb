@@ -1,6 +1,7 @@
 class ChallengesController < ApplicationController
   before_filter :authenticate_user!, only: [:edit, :update, :update_workflow]
   before_filter :load_challenge, only: [:show, :brief, :projects, :update]
+  before_filter :authorize_and_set_cache, only: [:show, :brief, :projects]
   before_filter :load_platform, only: [:show, :brief, :projects]
   before_filter :load_and_authorize_challenge, only: [:enter, :update_workflow]
   before_filter :set_challenge_entrant, only: [:show, :brief, :projects]
@@ -14,9 +15,6 @@ class ChallengesController < ApplicationController
   end
 
   def show
-    authorize! :read, @challenge
-
-    impressionist_async @challenge, "", unique: [:session_hash]
     title @challenge.name
     # @embed = Embed.new(url: @challenge.video_link)
 
@@ -29,12 +27,10 @@ class ChallengesController < ApplicationController
   end
 
   def brief
-    authorize! :read, @challenge
     title "#{@challenge.name} brief"
   end
 
   def projects
-    authorize! :read, @challenge
     title "#{@challenge.name} projects"
     load_projects
   end
@@ -76,6 +72,18 @@ class ChallengesController < ApplicationController
   end
 
   private
+    def authorize_and_set_cache
+      authorize! :read, @challenge
+
+      if user_signed_in?
+        impressionist_async @challenge, '', unique: [:session_hash]
+      else
+        surrogate_keys = [@challenge.record_key, 'challenge']
+        set_surrogate_key_header *surrogate_keys
+        set_cache_control_headers
+      end
+    end
+
     def event_to_human event
       case event
       when 'mark_as_judged'
