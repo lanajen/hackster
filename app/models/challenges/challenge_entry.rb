@@ -8,13 +8,15 @@ class ChallengeEntry < ActiveRecord::Base
   include Workflow
 
   belongs_to :challenge
-  belongs_to :prize
   belongs_to :project
   belongs_to :user
+  has_and_belongs_to_many :prizes
   has_many :votes, as: :respectable, class_name: 'Respect', dependent: :destroy
   has_one :address, as: :addressable
 
   validates :challenge_id, uniqueness: { scope: :project_id }
+
+  attr_accessible :judging_notes, :prize_ids
 
   counters_column :counters_cache
   has_counter :votes, 'votes.count'
@@ -41,7 +43,7 @@ class ChallengeEntry < ActiveRecord::Base
   end
 
   def self.winning
-    where("challenge_projects.prize_id IS NOT NULL").joins("INNER JOIN prizes ON challenge_projects.prize_id = prizes.id").order("prizes.position ASC")
+    joins(:prizes).order("prizes.position ASC")
   end
 
   def approve
@@ -49,7 +51,7 @@ class ChallengeEntry < ActiveRecord::Base
   end
 
   def awarded?
-    workflow_state.in? AWARDED_STATES and prize_id.present?
+    workflow_state.in? AWARDED_STATES and has_prize?
   end
 
   def give_award
@@ -58,6 +60,14 @@ class ChallengeEntry < ActiveRecord::Base
 
   def give_no_award
     notify_observers(:after_award_not_given)
+  end
+
+  def has_prize?
+    prizes.any?
+  end
+
+  def shipping_required_for_prizes?
+    prizes.select{|p| p.requires_shipping? }.any?
   end
 
   def to_tracker

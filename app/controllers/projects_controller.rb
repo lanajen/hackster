@@ -54,7 +54,7 @@ class ProjectsController < ApplicationController
       { user: [], group: [] }
     end
 
-    @challenge_entries = @project.challenge_entries.includes(:challenge).includes(:prize)
+    @challenge_entries = @project.challenge_entries.includes(:challenge).includes(:prizes)
     @communities = @project.groups.where.not(groups: { type: 'Event' }).includes(:avatar).order(full_name: :asc)
 
     @hardware_parts = @project.part_joins.hardware

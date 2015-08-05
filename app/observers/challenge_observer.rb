@@ -25,7 +25,7 @@ class ChallengeObserver < ActiveRecord::Observer
 
   def after_judging record
     record.entries.each do |entry|
-      entry.prize_id.present? ? entry.give_award! : entry.give_no_award!
+      entry.has_prize? ? entry.give_award! : entry.give_no_award!
     end
   end
 

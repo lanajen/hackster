@@ -28,10 +28,11 @@
             input type='hidden' name='current_action' value='judging'
             .row
               .col-md-8
-                = f.input :prize_id, collection: @challenge.prizes
+                = f.association :prizes, collection: @challenge.prizes, as: :check_boxes
                 = f.input :judging_notes, input_html: { rows: 4 }
               .col-md-4
-                = f.submit 'Save and next', class: 'btn btn-primary'
+                = f.submit 'Save', class: 'btn btn-primary'
+                = f.submit 'Save and next', class: 'btn btn-default'
                 = link_to 'Cancel', challenge_entries_path(@challenge), class: 'btn btn-link btn-sm'
     #iframe-container
       #dragbar

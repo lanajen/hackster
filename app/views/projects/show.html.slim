@@ -63,8 +63,8 @@
                     span.project-award>
                       i.fa.fa-trophy
                     ' This project won
-                    ==> @winning_entry.prize.position.ordinalize
-                    ' prize in
+                    => @winning_entry.prizes.pluck(:name).to_sentence
+                    ' in
                     = link_to @winning_entry.challenge.name, @winning_entry.challenge
 
                 #home.project-banner style="background-image: url('#{@project.cover_image}')"
@@ -486,8 +486,8 @@
                     - @challenge_entries.each do |entry|
                       - if entry.awarded?
                         ' Won
-                        ==> entry.prize.position.ordinalize
-                        ' prize in
+                        ==> entry.prizes.pluck(:name).to_sentence
+                        ' in
                       - else
                         ' Participated in
                       = link_to entry.challenge.name, entry.challenge

@@ -36,7 +36,7 @@
           = content_for :js do
 
             javascript:
-              $(".project-#{entry.project_id} .award-container").html("<div class='project-award'><i class='fa fa-trophy'></i> #{entry.prize.name}</div>");
+              $(".project-#{entry.project_id} .award-container").html("<div class='project-award'><i class='fa fa-trophy'></i> #{entry.prizes.pluck(:name).to_sentence}</div>");
 
     - if @other_projects.any?
       h2.text-center Other entries

@@ -73,7 +73,7 @@ class NotificationHandler
         context[:challenge] = entry.challenge
         context[:project] = entry.project
         context[:user] = entry.user
-        context[:prize] = entry.prize
+        context[:prizes] = entry.prizes
       when :comment
         context[:model] = comment = context[:comment] = Comment.find(context_id)
         author = context[:author] = comment.user

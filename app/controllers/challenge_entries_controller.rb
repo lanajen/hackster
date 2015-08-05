@@ -6,13 +6,13 @@ class ChallengeEntriesController < ApplicationController
 
   def index
     authorize! :admin, @challenge
-    @entries = @challenge.entries
+    @entries = @challenge.entries.joins(:project)
     @challenge = @challenge.decorate
 
     # determines how many of each prizes were awarded and how many are left
     if @challenge.judging?
       assigned_prizes = {}
-      @entries.pluck(:prize_id).each do |id|
+      @entries.joins(:prizes).pluck('prizes.id').each do |id|
         assigned_prizes[id] = 0 unless id.in? assigned_prizes
         assigned_prizes[id] += 1
       end
@@ -57,11 +57,16 @@ class ChallengeEntriesController < ApplicationController
     if @entry.update_attributes(params[:challenge_entry])
       next_url = case action
       when 'judging'
-        if next_entry = @challenge.entries.where.not(challenge_projects: { id: @entry.id }).where(challenge_projects: { prize_id: nil }).joins(:project).first
-          edit_challenge_entry_path(@challenge, next_entry)
-        else
-          flash[:notice] = "That was the last entry submitted!"
+        if params[:commit] == 'Save'
+          flash[:notice] = "Changes saved."
           challenge_entries_path(@challenge)
+        else
+          if next_entry = @challenge.entries.where.not(challenge_projects: { id: @entry.id }).where(challenge_projects: { prize_id: nil }).joins(:project).first
+            edit_challenge_entry_path(@challenge, next_entry)
+          else
+            flash[:notice] = "That was the last entry submitted!"
+            challenge_entries_path(@challenge)
+          end
         end
       else
         user_return_to
