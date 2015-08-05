@@ -91,6 +91,7 @@ HackerIo::Application.routes.draw do
         get 'followers' => 'pages#followers'
         get 'hacker_spaces' => 'pages#hacker_spaces'
         get 'issues' => 'pages#issues'
+        get 'lists' => 'pages#lists'
         get 'logs' => 'pages#logs'
         get 'messages' => 'pages#messages'
         get 'newsletter' => 'pages#newsletter'
