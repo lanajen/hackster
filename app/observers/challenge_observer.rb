@@ -7,6 +7,8 @@ class ChallengeObserver < ActiveRecord::Observer
     if (record.changed & %w(video description eligibility requirements judging_criteria how_to_enter rules)).any?
       Cashier.expire "challenge-#{record.id}-brief"
       record.purge
+    elsif record.password_protect_changed?
+      record.purge
     end
   end
 
