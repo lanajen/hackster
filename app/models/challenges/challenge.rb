@@ -59,7 +59,7 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :voting_end_date, :datetime, default: proc{|c| c.end_date ? c.end_date + 7.days : nil }
 
   counters_column :hcounters_cache
-  has_counter :projects, 'entries.approved.count'
+  has_counter :projects, 'projects.count'
 
   is_impressionable counter_cache: true, unique: :session_hash
 
