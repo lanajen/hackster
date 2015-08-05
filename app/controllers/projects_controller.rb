@@ -47,13 +47,6 @@ class ProjectsController < ApplicationController
     @can_update = (@can_edit and current_user.can? :update, @project)
     @locked = (!@can_edit and @project.assignment.present? and @project.assignment.grading_activated? and @project.assignment.private_grades and cannot? :manage, @project.assignment)
 
-    @following = if user_signed_in?
-      # gets all follow_relations and sorts them in { user: [], group: [] } depending on type
-      current_user.follow_relations.select(:followable_id, :followable_type).inject({ user: [], group: [] }) {|h, f| f.followable_type == 'User' ? h[:user] << f.followable_id : h[:group] << f.followable_id; h }
-    else
-      { user: [], group: [] }
-    end
-
     @challenge_entries = @project.challenge_entries.includes(:challenge).includes(:prizes)
     @communities = @project.groups.where.not(groups: { type: 'Event' }).includes(:avatar).order(full_name: :asc)
 
@@ -83,57 +76,6 @@ class ProjectsController < ApplicationController
       @other_projects = Project.public.most_popular.own.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).includes(:team).includes(:cover_image)
       @other_projects = @other_projects.with_group current_platform if is_whitelabel?
     end
-
-    # next/previous project in search
-    # if params[:ref] and params[:ref_id] and params[:offset]
-    #   offset = params[:offset].to_i
-    #   case params[:ref]
-    #   when 'assignment'
-    #     if @assignment = Assignment.find_by_id(params[:ref_id])
-    #       @next = @assignment.projects.order(:created_at).offset(offset + 1).first
-    #       @prev = @assignment.projects.order(:created_at).offset(offset - 1).first unless offset.zero?
-    #     end
-    #   when 'explore'
-    #     sort, by = params[:ref_id].split(/_/)
-
-    #     @projects = Project
-    #     if sort.in? Project::SORTING.keys
-    #       @projects = @projects.send(Project::SORTING[sort])
-    #     end
-
-    #     if by.in? Project::FILTERS.keys
-    #       @projects = @projects.send(Project::FILTERS[by])
-    #     end
-
-    #     @next = @projects.indexable.offset(offset + 1).first
-    #     @prev = @projects.indexable.offset(offset - 1).first unless offset.zero?
-
-    #   when 'event'
-    #     if @event = Event.find_by_id(params[:ref_id])
-    #       @next = @event.projects.live.order('projects.respects_count DESC').offset(offset + 1).first
-    #       @prev = @event.projects.live.order('projects.respects_count DESC').offset(offset - 1).first unless offset.zero?
-    #     end
-
-    #   when 'search'
-    #     params[:q] = params[:ref_id]
-    #     params[:type] = 'project'
-    #     params[:per_page] = 1
-    #     params[:offset] = offset + 1
-    #     params[:include_external] = false
-    #     @next = SearchRepository.new(params).search.results.first
-    #     unless offset.zero?
-    #       params[:offset] = offset - 1
-    #       @prev = SearchRepository.new(params).search.results.first
-    #     end
-    #     params[:offset] = offset
-    #     params.delete(:include_external)
-    #   when 'user'
-    #     if @user = User.find_by_id(params[:ref_id])
-    #       @next = @user.projects.live.order(start_date: :desc, created_at: :desc).offset(offset + 1).first
-    #       @prev = @user.projects.live.order(start_date: :desc, created_at: :desc).offset(offset - 1).first unless offset.zero?
-    #     end
-    #   end
-    # end
 
     @team_members = @project.team_members.includes(:user).includes(user: :avatar)
 

@@ -1,3 +1,19 @@
+- if @challenge.judged?
+  - @winning_entries.each do |entry|
+    = content_for :js do
+
+      javascript:
+        $(".project-#{entry.project_id} .award-container").html("<div class='project-award'><i class='fa fa-trophy'></i> #{entry.prizes.pluck(:name).to_sentence}</div>");
+
+- else
+  - if @projects.any?
+    - if @challenge.voting_active?
+      - @challenge.entries.each do |entry|
+        = content_for :js do
+          javascript:
+            text = "#{j render(partial: 'votes/button', locals: { respectable: entry, allow_anonymous_votes: @challenge.allow_anonymous_votes })}";
+            $('.project-#{entry.project_id} .thumb').append(text);
+
 - cache ["challenge-#{@challenge.id}-projects"], tag: ["challenge-#{@challenge.id}-projects"] do
   .project-list
     - if @challenge.judged?
@@ -8,10 +24,6 @@
             .col-sm-3
           - @winning_entries.each do |entry|
             = render partial: 'projects/project_thumb', locals: { project: entry.project.decorate, col: 6 }
-            = content_for :js do
-
-              javascript:
-                $(".project-#{entry.project_id} .award-container").html("<div class='project-award'><i class='fa fa-trophy'></i> #{entry.prizes.pluck(:name).to_sentence}</div>");
 
       - if @other_projects.any?
         h2.text-center Other entries
@@ -28,12 +40,6 @@
               = render partial: 'enter_thumb', locals: { challenge: @challenge }
             - @projects.each do |project|
               = render partial: 'projects/project_thumb', locals: { project: project.decorate, col: 4 }
-            - if @challenge.voting_active?
-              - @challenge.entries.each do |entry|
-                = content_for :js do
-                  javascript:
-                    text = "#{j render(partial: 'votes/button', locals: { respectable: entry, allow_anonymous_votes: @challenge.allow_anonymous_votes })}";
-                    $('.project-#{entry.project_id} .thumb').append(text);
 
         .row.text-center= will_paginate @projects
       - else
