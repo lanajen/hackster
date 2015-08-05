@@ -57,7 +57,7 @@ class ChallengeEntriesController < ApplicationController
     if @entry.update_attributes(params[:challenge_entry])
       next_url = case action
       when 'judging'
-        if next_entry = @challenge.entries.where.not(challenge_projects: { id: @entry.id }).where(challenge_projects: { prize_id: nil }).first
+        if next_entry = @challenge.entries.where.not(challenge_projects: { id: @entry.id }).where(challenge_projects: { prize_id: nil }).joins(:project).first
           edit_challenge_entry_path(@challenge, next_entry)
         else
           flash[:notice] = "That was the last entry submitted!"
