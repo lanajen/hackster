@@ -22,6 +22,10 @@ class ProjectsController < ApplicationController
       @projects = @projects.send(Project::FILTERS[@by])
     end
 
+    if params[:difficulty].try(:to_sym).in? Project::DIFFICULTIES.values
+      @projects = @projects.where(difficulty: params[:difficulty])
+    end
+
     @projects = @projects.paginate(page: safe_page_params)
 
     respond_to do |format|
