@@ -1,6 +1,6 @@
 class PrizeObserver < ActiveRecord::Observer
   def after_update record
-    if (record.changed? & %w(name cash_value description quantity link position)).any?
+    if (record.changed & %w(name cash_value description quantity link position)).any?
       expire_cache record
     end
   end
