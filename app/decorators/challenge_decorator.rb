@@ -37,6 +37,8 @@ class ChallengeDecorator < ApplicationDecorator
       model.voting_active? ? 'Voting in progress' : 'Judging in progress'
     when :judged
       h.content_tag(:i, '', class: 'fa fa-check') + ' Prizes awarded'
+    when :canceled
+      'Canceled'
     end
   end
 
