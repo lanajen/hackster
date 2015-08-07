@@ -88,6 +88,9 @@ class Challenge < ActiveRecord::Base
       event :mark_as_judged, transitions_to: :judged
     end
     state :judged
+    after_transition do |from, to, triggering_event, *event_args|
+      notify_observers(:"after_#{triggering_event}")
+    end
   end
 
   def self.active
@@ -135,10 +138,6 @@ class Challenge < ActiveRecord::Base
     @duration ||= read_attribute(:duration) || DEFAULT_DURATION
   end
 
-  def end
-    notify_observers(:after_end)
-  end
-
   def ended?
     end_date and Time.now > end_date
   end
@@ -183,15 +182,10 @@ class Challenge < ActiveRecord::Base
 
     self.start_date = Time.now
     save
-    notify_observers(:after_launch)
   end
 
   def locked? session
     password_protect? and session[:challenge_keys].try(:[], id) != Digest::SHA1.hexdigest(password)
-  end
-
-  def mark_as_judged
-    notify_observers(:after_judging)
   end
 
   def new_slug

@@ -40,6 +40,9 @@ class ChallengeEntry < ActiveRecord::Base
       event :mark_prize_shipped, transitions_to: :fullfiled
     end
     state :fullfiled
+    after_transition do |from, to, triggering_event, *event_args|
+      notify_observers(:"after_#{triggering_event}")
+    end
   end
 
   def self.approved
@@ -50,20 +53,8 @@ class ChallengeEntry < ActiveRecord::Base
     joins(:prizes).order("prizes.position ASC")
   end
 
-  def approve
-    notify_observers(:after_approve)
-  end
-
   def awarded?
     workflow_state.in? AWARDED_STATES and has_prize?
-  end
-
-  def give_award
-    notify_observers(:after_award_given)
-  end
-
-  def give_no_award
-    notify_observers(:after_award_not_given)
   end
 
   def has_prize?

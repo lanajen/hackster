@@ -19,25 +19,30 @@ class ChallengeObserver < ActiveRecord::Observer
       platform.save
     end
     expire_cache record
+    expire_index
   end
 
   def after_take_offline record
     disable_challenge_on_platform record
     expire_cache record
+    expire_index
   end
 
   def after_end record
     NotificationCenter.notify_all :completed, :challenge, record.id
     disable_challenge_on_platform record
     expire_cache record
+    expire_index
   end
 
-  def after_judging record
+  def after_mark_as_judged record
     record.entries.each do |entry|
       entry.has_prize? ? entry.give_award! : entry.give_no_award!
     end
     expire_cache record
   end
+
+  alias_method :after_cancel, :after_take_offline
 
   private
     def disable_challenge_on_platform record
@@ -50,5 +55,9 @@ class ChallengeObserver < ActiveRecord::Observer
     def expire_cache record
       Cashier.expire "challenge-#{record.id}-projects", "challenge-#{record.id}-status"
       record.purge
+    end
+
+    def expire_index
+      Cashier.expire 'challenge-index'
     end
 end
