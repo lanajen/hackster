@@ -56,6 +56,6 @@ class Team < Group
 
   private
     def has_team_members
-      errors.add 'members_attributes.1.user_id', "Team needs to have at least one member. Please discard your changes." if members.reject{|m| m.marked_for_destruction? }.count == 0
+      errors.add 'members_attributes.1.user_id', "Team needs to have at least one member. Please discard your changes." if members.includes(:user).reject{|m| m.marked_for_destruction? and !m.user.is?(:admin) }.count == 0
     end
 end
