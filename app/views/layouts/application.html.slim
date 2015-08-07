@@ -93,14 +93,14 @@ html(lang="en")
                             - POPULAR_TAGS.each do |tag, link|
                               li= link_to tag, "#{link}?ref=topnav"
                 li= link_to 'Platforms', platforms_path, class: 'nav-link'
+                li= link_to 'Challenges', challenges_path, class: 'nav-link'
                 li.dropdown
                   a.nav-link.dropdown-toggle data-toggle="dropdown" href='#'
-                    | More
+                    i.fa.fa-ellipsis-h
                     span.caret
                   ul#nav-user-menu.dropdown-menu style='padding:0;margin-top:-10px;'
                     li= link_to 'Curated lists', lists_path, class: 'nav-link'
                     li= link_to 'Hardware Weekend', '/hardwareweekend', class: 'nav-link'
-                    / li= link_to 'Challenges', challenges_path, class: 'nav-link'
                     li= link_to 'Hacker spaces', hacker_spaces_path, class: 'nav-link'
                     li= link_to 'Blog', blog_index_path, class: 'nav-link'
                     / li.dropdown

@@ -1,0 +1,20 @@
+.col-sm-6
+  .category-col
+    .thumb.category-thumb.challenge-thumb
+      .thumb-image.has-link-overlay style="background-image:url('#{challenge.cover_image.try(:file_url)}')"
+        = link_to '', challenge, class: 'link-overlay'
+        .thumb-image-inner
+          h4
+            = link_to challenge.name, challenge
+            - if challenge.platform
+              br
+              a.small sponsored by #{challenge.platform.name}
+
+          - if prize = challenge.prizes.first
+            p
+              strong
+                ' Top prize:
+                - if prize.cash_value
+                  = number_to_currency prize.cash_value, precision: 0
+                - else
+                  = prize.description

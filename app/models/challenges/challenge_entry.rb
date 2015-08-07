@@ -3,6 +3,7 @@ class ChallengeEntry < ActiveRecord::Base
 
   AWARDED_STATES = %w(awarded fullfiled)
   APPROVED_STATES = AWARDED_STATES + %w(qualified unawarded)
+  DISPLAYED_STATES = APPROVED_STATES + %w(new)
 
   include HstoreCounter
   include Workflow
@@ -24,10 +25,13 @@ class ChallengeEntry < ActiveRecord::Base
   workflow do
     state :new do
       event :approve, transitions_to: :qualified
-      event :reject, transitions_to: :unqualified
+      event :disqualify, transitions_to: :unqualified
     end
-    state :unqualified
+    state :unqualified do
+      event :approve, transitions_to: :qualified
+    end
     state :qualified do
+      event :disqualify, transitions_to: :unqualified
       event :give_award, transitions_to: :awarded
       event :give_no_award, transitions_to: :unawarded
     end

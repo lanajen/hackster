@@ -12,6 +12,9 @@ class ChallengesController < ApplicationController
   def index
     title 'Hardware challenges'
     meta_desc "Build the best hardware projects and win awesome prizes!"
+
+    @active_challenges = Challenge.public.active.ends_first
+    @past_challenges = Challenge.public.past.ends_first
   end
 
   def show
@@ -115,7 +118,7 @@ class ChallengesController < ApplicationController
         @winning_entries_count = @winning_entries.count
         @other_projects = @challenge.projects.joins(:challenge_entries).where.not(challenge_projects: { id: @winning_entries.map(&:id) }).for_thumb_display
       else
-        @projects = @challenge.projects.for_thumb_display.paginate(page: params[:page], per_page: per_page)
+        @projects = @challenge.projects.displayed.for_thumb_display.paginate(page: params[:page], per_page: per_page)
       end
     end
 

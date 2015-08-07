@@ -42,6 +42,7 @@
           / = f.input :duration, hint: 'In days', collection: %w(7 10 15 30 45 60)
           / # = f.input :project_ideas, as: :boolean, inline_label: 'Accept project ideas instead of finished projects'
           = f.input :multiple_entries, inline_label: 'Allow more than one entry per person?', as: :boolean, label: false
+          = f.input :auto_approve, inline_label: 'Automatically approve all entries', as: :boolean, label: false, hint: "When an entry is approved, a confirmation email is sent to its author. Whether you choose to automatically approve entries or not, you will be able to approve and disqualify entries from the dashboard at all times."
           = f.input :description, as: :text, input_html: { rows: 10, class: 'text-editor' }
           = f.input :eligibility, as: :text, input_html: { rows: 10, class: 'text-editor' }
           = f.input :requirements, as: :text, input_html: { rows: 10, class: 'text-editor' }
@@ -134,8 +135,11 @@
                 = link_to 'Launch challenge', update_workflow_challenge_path(@challenge, event: 'launch'), method: :put, class: 'btn btn-success btn-sm', data: { confirm: "Let's do this. Sure?" }
               - when :in_progress
                 = link_to 'Take offline', update_workflow_challenge_path(@challenge, event: 'take_offline'), method: :put, class: 'btn btn-warning btn-sm', data: { confirm: "Sure?" }
-          .form-group
-            .col-md-8.col-md-offset-4= link_to 'Delete challenge', challenge_path(@challenge), method: :delete, class: 'btn btn-danger btn-sm', data: { confirm: "Are you sure? There's no coming back!" }
+              - if @challenge.can_cancel?
+                = link_to 'Cancel challenge', update_workflow_challenge_path(@challenge, event: 'cancel'), method: :put, class: 'btn btn-danger btn-sm', data: { confirm: "Are you sure you want to cancel this challenge? There's no way back!" }
+          - if @challenge.new? or current_user.is? :admin
+            .form-group
+              .col-md-8.col-md-offset-4= link_to 'Delete challenge', challenge_path(@challenge), method: :delete, class: 'btn btn-danger btn-sm', data: { confirm: "Are you sure? There's no coming back!" }
 
   .row
     .col-xs-12

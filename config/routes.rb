@@ -314,6 +314,7 @@ HackerIo::Application.routes.draw do
       end
 
       resources :challenge_entries, only: [] do
+        put 'update_workflow' => 'challenge_entries#update_workflow', on: :member
         resources :respects, only: [:create], controller: 'votes' do
           get 'create' => 'votes#create', on: :collection, as: :create
           delete '' => 'votes#destroy', on: :collection

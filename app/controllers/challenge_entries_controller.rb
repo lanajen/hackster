@@ -1,7 +1,7 @@
 class ChallengeEntriesController < ApplicationController
-  before_filter :authenticate_user!, only: [:edit, :update, :destroy]
+  before_filter :authenticate_user!, only: [:edit, :update, :update_workflow, :destroy]
   before_filter :load_challenge, only: [:index, :create]
-  before_filter :load_and_authorize_entry, only: [:edit, :update, :destroy]
+  before_filter :load_and_authorize_entry, only: [:edit, :update, :update_workflow, :destroy]
   layout :set_layout
 
   def index
@@ -53,9 +53,8 @@ class ChallengeEntriesController < ApplicationController
   end
 
   def update
-    action = params[:current_action]
     if @entry.update_attributes(params[:challenge_entry])
-      next_url = case action
+      next_url = case params[:current_action]
       when 'judging'
         if params[:commit] == 'Save'
           flash[:notice] = "Changes saved."
@@ -77,6 +76,15 @@ class ChallengeEntriesController < ApplicationController
     end
   end
 
+  def update_workflow
+    if @entry.send "#{params[:event]}!"
+      flash[:notice] = "Entry #{event_to_human(params[:event])}."
+    else
+      flash[:alert] = "Couldn't #{event_to_human(params[:event])} entry."
+    end
+    redirect_to challenge_entries_path(@challenge)
+  end
+
   def destroy
     @entry.destroy
 
@@ -84,6 +92,15 @@ class ChallengeEntriesController < ApplicationController
   end
 
   private
+    def event_to_human event
+      case event
+      when 'approve'
+        'approved'
+      else
+        "#{event}ed"
+      end
+    end
+
     def load_challenge
       @challenge = Challenge.find params[:challenge_id]
     end
