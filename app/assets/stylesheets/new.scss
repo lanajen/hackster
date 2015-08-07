@@ -203,6 +203,7 @@ h1 {
     top: 0;
     bottom: initial;
     padding: 15px 15px 10%;
+    background-color: #333;
     @include background-image(linear-gradient(top, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 100%));
     h4 {
       font-weight: 900;
@@ -216,6 +217,9 @@ h1 {
   margin-bottom: 30px;
   .thumb-image {
     padding-top: 50%;
+  }
+  .thumb-image-inner {
+    @include background-image(linear-gradient(top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%));
   }
 }
 

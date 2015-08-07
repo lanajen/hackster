@@ -13,12 +13,12 @@
           h2 Challenges open for submission
           .row
             - @active_challenges.each do |challenge|
-              = render partial: 'challenge_thumb', locals: { challenge: challenge }
+              = render partial: 'challenge_thumb', locals: { challenge: challenge.decorate }
 
           h2 Past challenges
           .row
             - @past_challenges.each do |challenge|
-              = render partial: 'challenge_thumb', locals: { challenge: challenge }
+              = render partial: 'challenge_thumb', locals: { challenge: challenge.decorate }
 
     #bottom-bar
       .container.text-center

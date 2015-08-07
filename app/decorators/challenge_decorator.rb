@@ -23,6 +23,10 @@ class ChallengeDecorator < ApplicationDecorator
     "Check out #{model.name}"
   end
 
+  def prizes_count
+    model.prizes.sum(:quantity)
+  end
+
   def status
     case model.workflow_state.to_sym
     when :new
@@ -38,6 +42,16 @@ class ChallengeDecorator < ApplicationDecorator
 
   def time_left
     h.time_diff_in_natural_language(Time.now, model.end_date)
+  end
+
+  def top_prize
+    if prize = model.prizes.first
+      if prize.cash_value
+        h.number_to_currency prize.cash_value, precision: 0
+      else
+        prize.description
+      end
+    end
   end
 
   def to_tweet
