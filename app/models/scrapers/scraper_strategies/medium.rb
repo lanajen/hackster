@@ -7,7 +7,7 @@ module ScraperStrategies
       end
 
       def select_article
-        @parsed.at_css('.postWrapper')
+        @parsed.at_css('.postWrapper') || @parsed.at_css('.postArticle-content')
       end
   end
 end

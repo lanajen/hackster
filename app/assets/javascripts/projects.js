@@ -214,6 +214,7 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
           $('.pe-discard').show();
         }
 
+        $('.pe-save2').show();
         $('.pe-save').slideUp(200);
 
         $('.pe-nav a').removeClass('active');
@@ -286,6 +287,7 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
     $('.pe-panel')
       .on("ajax:beforeSend", 'form.remote', function(xhr, settings){
         $('.pe-save').slideUp(200);
+        $('.pe-save2').show();
         $('.pe-error').hide();
         $(this).closest('.pe-container').addClass('processing');
       })
@@ -295,6 +297,7 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
       })
       .on('ajax:error', 'form.remote', function(xhr, status){
         $('.pe-save').slideDown(200);
+        $('.pe-save2').hide();
         $('.pe-error').show();
       })
       .on('ajax:success', 'form.remote', function(xhr, status){
@@ -313,6 +316,7 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
 
     $('.pe-panel').on('input change', 'form, input, textarea, select', function(e){
       $('.pe-save').slideDown(200);
+      $('.pe-save2').hide();
     });
 
     $('.pe-discard').on('click', function(e){
@@ -320,6 +324,7 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
 
       pe.discardChanges();
       $('.pe-save').slideUp(200);
+      $('.pe-save2').show();
     });
 
     $('.pe-panel form').on('nested:fieldAdded', function(e){
@@ -334,6 +339,7 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
 
     $('#basics').on('change', '[name="project[cover_image_id]"]', function(e){
       $('.pe-save').slideDown(200);
+      $('.pe-save2').hide();
     });
 
     // event methods for software/hardware

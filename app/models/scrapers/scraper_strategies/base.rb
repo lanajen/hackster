@@ -87,7 +87,7 @@ module ScraperStrategies
       end
 
       def crap_list
-        %w(#sidebar #sidebar-right #sidebar-left .sidebar .sidebar-left .sidebar-right #head #header #hd .navbar .navbar-top header footer #ft #footer .sharedaddy .ts-fab-wrapper .shareaholic-canvas .post-nav .navigation .post-data .meta .social-ring .postinfo)
+        %w(#sidebar #sidebar-right #sidebar-left .sidebar .sidebar-left .sidebar-right #head #header #hd .navbar .navbar-top header footer #ft #footer .sharedaddy .ts-fab-wrapper .shareaholic-canvas .post-nav .navigation .post-data .meta .social-ring .postinfo .dsq-brlink noscript)
       end
 
       def extract_code_blocks base=@article
@@ -444,7 +444,7 @@ module ScraperStrategies
       end
 
       def select_article
-        @parsed.at('#content') || @parsed.at('#main') || @parsed.at('body')
+        @parsed.at_css('#content') || @parsed.at_css('#main') || @parsed.at_css('.post') || @parsed.at_css('.content') || @parsed.at_css('body')
       end
 
       def title_levels

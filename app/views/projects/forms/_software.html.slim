@@ -80,6 +80,8 @@
         .box-content
           = render partial: 'projects/forms/software_parts', locals: { project: @project, f: f }
 
+    = render 'projects/forms/pe_save'
+
 
 = content_for :js do
 
