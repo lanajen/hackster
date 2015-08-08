@@ -5,7 +5,7 @@ class Team < Group
   hstore_column :hproperties, :disable_team_append, :boolean
   hstore_column :hproperties, :generated_user_name, :string
 
-  validate :has_team_members
+  validate :has_team_members, if: proc{|t| t.persisted? }
 
   before_save :update_user_name
 
