@@ -88,7 +88,7 @@ class PagesController < ApplicationController
         render json: { count: count } and return
       end
 
-      @challenges = Challenge.where(id: %w(9))
+      @challenges = Challenge.public.active.ends_first
 
       @projects = Project.custom_for(current_user).for_thumb_display.paginate(page: safe_page_params, per_page: 12)
       if @projects.any?
@@ -122,7 +122,8 @@ class PagesController < ApplicationController
       @trending_projects = Project.indexable.magic_sort.for_thumb_display.limit 12
       @last_projects = Project.indexable.last_public.for_thumb_display.limit 12
       @platforms = Platform.public.minimum_followers_strict.order('RANDOM()').for_thumb_display.limit 12
-      @lists = List.where(user_name: featured_lists).each_slice(3).to_a
+      @lists = List.most_members.limit(6).each_slice(3).to_a
+      @challenges = Challenge.public.active.ends_first.limit(2)
 
       @typeahead_tags = List.public.order(:full_name).select{|p| p.projects_count >= 5 or p.followers_count >= 10 }.map do |p|
         { tag: p.name, projects: p.projects_count, url: url_for([p]) }
