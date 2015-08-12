@@ -2,6 +2,10 @@ class CronTask < BaseWorker
   # @queue = :low
   sidekiq_options queue: :cron, retry: 0
 
+  def expire_old_sessions
+    Session.where("created_at < ?", 30.days.ago).delete_all
+  end
+
   def cleanup_duplicates
     ProjectCollection.select("id, count(id) as quantity").group(:project_id, :collectable_id, :collectable_type).having("count(id) > 1").size.each do |c, count|
       ProjectCollection.where(:project_id => c[0], :collectable_id => c[1], :collectable_type => c[2]).limit(count-1).each{|cp| cp.delete }
@@ -48,22 +52,23 @@ class CronTask < BaseWorker
 
   def launch_cron
     CacheWorker.perform_async 'warm_cache'
-    CronTask.perform_async 'update_mailchimp'
-    CronTask.perform_async 'send_assignment_reminder'
-    CronTask.perform_async 'lock_assignment'
-    CronTask.perform_async 'expire_challenges'
-    CronTask.perform_async 'evaluate_badges'
-    CronTask.perform_async 'send_announcement_notifications'
-    CronTask.perform_async 'cleanup_duplicates'
-    CronTask.perform_async 'clean_invitations'
+    CronTask.perform_in 2.minutes, 'update_mailchimp'
+    CronTask.perform_in 4.minutes, 'send_assignment_reminder'
+    CronTask.perform_in 6.minutes, 'lock_assignment'
+    CronTask.perform_in 8.minutes, 'expire_challenges'
+    CronTask.perform_in 10.minutes, 'send_announcement_notifications'
+    CronTask.perform_in 12.minutes, 'cleanup_duplicates'
+    CronTask.perform_in 14.minutes, 'clean_invitations'
+    CronTask.perform_in 16.minutes, 'evaluate_badges'
     CronTask.perform_in 1.hour, 'launch_cron'
   end
 
   def launch_daily_cron
-    ReputationWorker.perform_async 'compute_daily_reputation'
+    CronTask.perform_async 'expire_old_sessions'
+    CronTask.perform_async 'generate_users'
+    ReputationWorker.perform_in 1.minute, 'compute_daily_reputation'
     PopularityWorker.perform_in 1.hour, 'compute_popularity'
     CronTask.perform_in 2.hours, 'send_daily_notifications'
-    CronTask.perform_async 'generate_users'
 
     CronTask.perform_in 24.hours, 'launch_daily_cron'
   end

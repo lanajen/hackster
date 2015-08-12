@@ -39,6 +39,7 @@ gem 'reverse_markdown'
 
 # gem 'autoscaler', '0.9.0', groups: :staging
 gem 'active_model_serializers', '0.8.3'
+gem 'activerecord-session_store'
 gem 'auto_html', '1.6.3'
 gem 'aws-sdk', '1.33.0'
 gem 'bootstrap3-datetimepicker-rails', '3.1.3'
