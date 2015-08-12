@@ -100,7 +100,7 @@ $(function(){
 
     var input = $(this).find('input[name="file_url"]');
     var fileUrl = input.val();
-    var fileName = fileUrl.substring(fileUrl.lastIndexOf('/')+1);
+    var fileName = _.escape(fileUrl.substring(fileUrl.lastIndexOf('/')+1));
     input.val('');
 
     if (fileUrl != '') {
@@ -120,7 +120,7 @@ $(function(){
           <%= file_type %>Functions.checkRemoteFileProcessed(data.job_id, tpl, fileUrl, data.id);
         },
         error: function(data) {
-          $('.<%= file_type %>.preview').html('<div class="help-block has-error">Error processing ' + fileName + '. Please try again.</span>');
+          $('.<%= file_type %>.preview').html('<span class="help-block has-error">Error processing ' + fileName + '. Please try again.</span>');
         }
       });
     }
