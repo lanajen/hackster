@@ -5,7 +5,7 @@
   = content_for :js do
     = render partial: 'shared/modals/buy_all_quote', locals: { project: @project }
 
-= inserts_stats_for @project.id, 'Project'
+= inserts_stats_for @project
 
 - if user_signed_in?
   = content_for :js do

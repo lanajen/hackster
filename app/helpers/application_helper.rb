@@ -221,7 +221,7 @@ module ApplicationHelper
     end
   end
 
-  def inserts_stats_for model_id, model_type
+  def inserts_stats_for model
     base_url = APP_CONFIG['use_ssl'] ? 'https://' : 'http://'
     base_url += APP_CONFIG['stats_url']
     content_for :js do
@@ -233,8 +233,8 @@ module ApplicationHelper
             url: '#{base_url}/stats',
             data: {
               referrer: document.referrer,
-              id: '#{model_id}',
-              type: '#{model_type}',
+              id: '#{model.id}',
+              type: '#{model.model_name}',
               a: '#{action_name}',
               c: '#{controller_name}'
             },

@@ -1,5 +1,7 @@
 - @challenge = @challenge.decorate
 
+= inserts_stats_for @challenge
+
 = content_for :head do
   - if url_for(@challenge) == request.path
     / = render partial: "groups/#{@challenge.identifier.pluralize}/meta_tags"
