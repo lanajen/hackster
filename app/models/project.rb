@@ -400,7 +400,7 @@ class Project < ActiveRecord::Base
   end
 
   def age
-    (Time.now - created_at) / 86400
+    (Time.now - (made_public_at || created_at)) / SECONDS_IN_A_DAY
   end
 
   def all_issues
@@ -413,8 +413,9 @@ class Project < ActiveRecord::Base
     buy_link
   end
 
-  def compute_popularity time_period=365
-    self.popularity_counter = ((respects_count * 4 + impressions_count * 0.05 + comments_count * 2 + featured.to_i * 10) * [1 - [(Math.log(age, time_period)), 1].min, 0.001].max).round(4)
+  def compute_popularity time_period=45  # days
+    boost = 10 * [1 - [(Math.log(age, time_period)), 1].min, 0.001].max
+    self.popularity_counter = ((respects_count * 4 + impressions_count * 0.05 + comments_count * 2 + featured.to_i * 10) * boost).round(4)
   end
 
   def cover_image_id=(val)
