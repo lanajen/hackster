@@ -195,6 +195,7 @@ class User < ActiveRecord::Base
   has_counter :websites, 'websites.values.select{|v| v.present? }.size'
 
   store :properties, accessors: []
+  hstore_column :properties, :active_sessions, :array, default: []
   hstore_column :properties, :has_unread_notifications, :boolean
   hstore_column :properties, :reputation_last_updated_at, :datetime
 

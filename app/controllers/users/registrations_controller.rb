@@ -41,7 +41,9 @@ class Users::RegistrationsController < Devise::RegistrationsController
         # reset the session and sign in the user bypassing validation
         reset_session
         sign_in @user, bypass: true
-        SessionManager.new(current_user).expire_all! session.id  # expire all existing sessions except for the current one
+        session_id = SessionManager.new(@user).new_session! expire: true  # create a new session and expire all others
+        session[:_session_id] = session_id
+        session[:_session_created_at] = Time.now.to_i
       end
       redirect_to after_update_path_for(@user)
     else

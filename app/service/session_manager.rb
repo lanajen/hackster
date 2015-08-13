@@ -1,9 +1,42 @@
 class SessionManager
-  def expire_all! session_id=nil
-    @user.sessions.where.not(session_id: session_id).delete_all
+  def activate_session id, opts={save: true}
+    active_sessions = @user.active_sessions.dup
+    unless active_sessions.include? id
+      active_sessions.unshift id
+      active_sessions.slice! 5
+      @user.active_sessions = active_sessions
+      @user.save if opts[:save]
+    end
+    id
+  end
+
+  def deactivate_session id
+    active_sessions = @user.active_sessions.dup
+    active_sessions.delete id
+    @user.active_sessions = active_sessions
+    @user.save
+  end
+
+  def expire_all! active_session_id=nil
+    # @user.sessions.where.not(session_id: active_session_id).delete_all
+    @user.active_sessions = active_session_id ? [active_session_id] : []
+    @user.save
   end
 
   def initialize user
     @user = user
+  end
+
+  def new_session! opts={}
+    # only save the user once
+    id = activate_session SecureRandom.hex, save: !opts[:expire]
+
+    expire_all! id if opts[:expire]
+
+    id
+  end
+
+  def session_valid? id
+    @user.active_sessions.include? id
   end
 end

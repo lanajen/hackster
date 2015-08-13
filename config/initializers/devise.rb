@@ -275,3 +275,25 @@ Devise.setup do |config|
   # so you need to do it manually. For the users scope, it would be:
   # config.omniauth_path_prefix = "/my_engine/users/auth"
 end
+
+SESSION_MAX_AGE = 30.days
+
+Warden::Manager.after_set_user except: :fetch do |user, warden, opts|
+  warden.raw_session["_session_id"] = SessionManager.new(user).new_session!
+  warden.raw_session["_session_created_at"] = Time.now.to_i
+end
+
+Warden::Manager.after_fetch do |user, warden, opts|
+  unless SessionManager.new(user).session_valid?(warden.raw_session["_session_id"])
+    warden.logout
+    throw :warden, message: :unauthenticated
+  end
+  unless warden.raw_session["_session_created_at"] and warden.raw_session["_session_created_at"].to_i > SESSION_MAX_AGE.ago.to_i
+    warden.logout
+    throw :warden, message: :timeout
+  end
+end
+
+Warden::Manager.before_logout do |user, warden, opts|
+  SessionManager.new(user).deactivate_session warden.raw_session["_session_id"]
+end
