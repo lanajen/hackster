@@ -42,6 +42,11 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     session[:link_accounts] = params[:link_accounts] if params[:link_accounts]
     session[:omniauth_login_locale] = I18n.locale
 
+    begin
+      puts 'session.id: ' + session.id.to_s
+    rescue
+      puts "no session.id"
+    end
     puts "request.params['state']: " + request.params['state'].to_s
     puts "session['omniauth.state']: " + session['omniauth.state'].to_s
 
