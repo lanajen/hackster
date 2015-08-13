@@ -414,6 +414,8 @@ class Project < ActiveRecord::Base
   end
 
   def compute_popularity time_period=45  # days
+    return 0 if age < 0  # for projects that are approved in the future
+
     boost = 10 * [1 - [(Math.log(age, time_period)), 1].min, 0.001].max
     self.popularity_counter = ((respects_count * 4 + impressions_count * 0.05 + comments_count * 2 + featured.to_i * 10) * boost).round(4)
   end

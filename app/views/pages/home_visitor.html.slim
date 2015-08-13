@@ -98,7 +98,7 @@
           h4 Follow topics you enjoy
 
         .row.mg-30
-          - @lists.each do |lists|
+          - @lists.each_slice(3).to_a.each do |lists|
             .col-sm-6.category-row
               - lists.each do |list|
                 .category-col

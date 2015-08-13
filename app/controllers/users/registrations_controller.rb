@@ -37,8 +37,12 @@ class Users::RegistrationsController < Devise::RegistrationsController
       else
         set_flash_message :notice, :updated
       end
-      # Sign in the user bypassing validation in case his password changed
-      sign_in @user, :bypass => true
+      if params[:user][:password]  # password was changed
+        # reset the session and sign in the user bypassing validation
+        reset_session
+        sign_in @user, bypass: true
+        SessionManager.new(current_user).expire_all! session.id  # expire all existing sessions except for the current one
+      end
       redirect_to after_update_path_for(@user)
     else
       render "edit"

@@ -122,7 +122,7 @@ class PagesController < ApplicationController
       @trending_projects = Project.indexable.magic_sort.for_thumb_display.limit 12
       @last_projects = Project.indexable.last_public.for_thumb_display.limit 12
       @platforms = Platform.public.minimum_followers_strict.order('RANDOM()').for_thumb_display.limit 12
-      @lists = List.most_members.limit(6).each_slice(3).to_a
+      @lists = List.most_members.limit(6)
       @challenges = Challenge.public.active.ends_first.limit(2)
 
       @typeahead_tags = List.public.order(:full_name).select{|p| p.projects_count >= 5 or p.followers_count >= 10 }.map do |p|

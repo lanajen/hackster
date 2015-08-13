@@ -42,11 +42,14 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     session[:link_accounts] = params[:link_accounts] if params[:link_accounts]
     session[:omniauth_login_locale] = I18n.locale
 
+    puts "request.params['state']: " + request.params['state'].to_s
+    puts "session['omniauth.state']: " + session['omniauth.state'].to_s
+
     render text: 'Setup complete.', status: 404
   end
 
   def failure
-    set_flash_message :alert, :failure, :kind => OmniAuth::Utils.camelize(failed_strategy.name), :reason => failure_message
+    set_flash_message :alert, :failure, kind: OmniAuth::Utils.camelize(failed_strategy.name), reason: failure_message
 
     logger.error env['omniauth.error'].to_s
 
