@@ -1,4 +1,5 @@
 class Api::V1::JobsController < Api::V1::BaseController
+  before_filter :authenticate_user!
 
   def show
     job_id = params[:id]

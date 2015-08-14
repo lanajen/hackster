@@ -1,5 +1,7 @@
 class SessionManager
   def activate_session id, opts={save: true}
+    return unless id.present?
+
     active_sessions = @user.active_sessions.dup
     unless active_sessions.include? id
       active_sessions.unshift id
@@ -11,10 +13,14 @@ class SessionManager
   end
 
   def deactivate_session id
+    return unless id.present?
+
     active_sessions = @user.active_sessions.dup
-    active_sessions.delete id
-    @user.active_sessions = active_sessions
-    @user.save
+    if active_sessions.include? id and !@user.active_sessions.frozen?
+      active_sessions.delete id
+      @user.active_sessions = active_sessions
+      @user.save
+    end
   end
 
   def expire_all! active_session_id=nil
