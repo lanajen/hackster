@@ -16,7 +16,7 @@ class SessionManager
     return unless id.present?
 
     active_sessions = @user.active_sessions.dup
-    if active_sessions.include? id and !@user.active_sessions.frozen?
+    if active_sessions.include? id and !@user.properties.frozen?
       active_sessions.delete id
       @user.active_sessions = active_sessions
       @user.save
