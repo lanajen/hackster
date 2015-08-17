@@ -24,7 +24,7 @@ html lang="en" class=content_for(:html_class)
     = stylesheet_link_tag "application", :media => "all"
     = javascript_include_tag "//use.typekit.net/okr0yzp.js"
     javascript:
-      try{Typekit.load();}catch(e){}
+      try{Typekit.load({async: true});}catch(e){}
 
     - if current_site.favicon.try(:file_url)
       link href=current_site.favicon.file_url rel="shortcut icon"
