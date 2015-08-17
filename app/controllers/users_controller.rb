@@ -135,7 +135,8 @@ class UsersController < ApplicationController
         message += if is_whitelabel?
           " Welcome!"
         else
-          " Now, <a href='/talk' class='alert-link'>come introduce yourself to the community!</a>"
+          # " Now, <a href='/talk' class='alert-link'>come introduce yourself to the community!</a>"
+          " Welcome!"
         end
         redirect_to user_return_to, notice: message
       end
