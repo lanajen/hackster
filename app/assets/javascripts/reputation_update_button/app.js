@@ -28,7 +28,6 @@ const App = React.createClass({
     let promise = checkJob(jobId);
 
     promise.then(function(response) {
-      console.log('RESPONSE', response);
       if (response.body.status == 'complete') {
         this.setState({
           isLoading: false,

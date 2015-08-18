@@ -426,7 +426,7 @@ class ApplicationController < ActionController::Base
       cookies[:first_seen] = { value: Time.now, expires: 10.years.from_now } unless cookies[:first_seen].present?
 
       return unless is_trackable_page?
-      if cookies[:next_show_banner].to_time < Time.now
+      if cookies[:next_show_banner].present? and cookies[:next_show_banner].to_time < Time.now
         # cookies[:first_seen].to_time < 3.days.ago and (cookies[:last_shown_banner].nil? or cookies[:last_shown_banner].to_time < 3.days.ago)
         @modal = render_to_string partial: 'shared/modals/signup_popup'
         cookies[:last_shown_banner] = { value: Time.now, expires: 10.years.from_now }
