@@ -184,3 +184,9 @@ pre {
   color: #fff;
   padding: 10px 15px;
 }
+pre {
+  code {
+    max-height: 400px;
+    overflow: scroll;
+  }
+}

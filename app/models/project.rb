@@ -69,7 +69,7 @@ class Project < ActiveRecord::Base
   has_many :hardware_parts, -> { where(parts: { type: 'HardwarePart' } ) }, through: :part_joins, source: :part
   has_many :hardware_part_joins, -> { joins(:part).where(parts: { type: 'HardwarePart'}) }, as: :partable, class_name: 'PartJoin', autosave: true
   has_many :parts, through: :part_joins
-  has_many :part_joins, as: :partable, dependent: :destroy do
+  has_many :part_joins, -> { order(:position) }, as: :partable, dependent: :destroy do
     def hardware
       joins(:part).where(parts: { type: 'HardwarePart' })
     end
