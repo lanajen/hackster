@@ -230,8 +230,10 @@ class Part < ActiveRecord::Base
   end
 
   def full_name
-    if platform
-      "#{name} (#{platform.name})"
+    return @full_name if @full_name
+
+    @full_name = if platform and !name.starts_with?(platform.name)
+      "#{platform.name} #{name}"
     else
       name
     end

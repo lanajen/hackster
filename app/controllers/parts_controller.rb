@@ -22,8 +22,13 @@ class PartsController < ApplicationController
   end
 
   def show
-    title "#{@platform.name} #{@part.name} projects"
-    meta_desc "Discover hardware projects made with #{@platform.name} #{@part.name}."
+    title "#{@part.full_name} projects"
+    @meta_desc = if @part.projects_count > 0
+      "#{ActionController::Base.helpers.pluralize @part.projects_count, 'hardware project'} made with #{@part.name} from #{@platform.name}."
+    else
+      "Share your hardware projects made with #{@part.name} from #{@platform.name}."
+    end
+    meta_desc @meta_desc
     @projects = @part.projects.public.paginate(page: safe_page_params)
     @part = @part.decorate
     @challenge = @platform.active_challenge ? @platform.challenges.active.first : nil
