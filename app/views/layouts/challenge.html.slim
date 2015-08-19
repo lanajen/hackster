@@ -112,7 +112,10 @@
             ul.nav.nav-tabs= render 'nav'
             - if @challenge.open_for_submissions? and (!@is_challenge_entrant or @challenge.allow_multiple_entries?)
               ul.list-inline.manage
-                li= link_to 'Enter challenge', '', class: 'btn btn-primary enter-challenge'
+                - if @challenge.idea_survey_link.present?
+                  = link_to @challenge.enter_button_text, @challenge.idea_survey_link, class: 'btn btn-primary', target: '_blank'
+                - else
+                  li= link_to @challenge.enter_button_text, '', class: 'btn btn-primary enter-challenge'
 
             - if can? :admin, @challenge
               ul.list-inline.manage

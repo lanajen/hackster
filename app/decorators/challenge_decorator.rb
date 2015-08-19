@@ -28,6 +28,8 @@ class ChallengeDecorator < ApplicationDecorator
   end
 
   def status
+    return model.custom_status if model.custom_status.present?
+
     case model.workflow_state.to_sym
     when :new
       'Ready to launch'

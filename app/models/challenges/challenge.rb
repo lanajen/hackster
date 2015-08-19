@@ -47,10 +47,13 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :auto_approve, :boolean
   hstore_column :hproperties, :allow_anonymous_votes, :boolean
   hstore_column :hproperties, :custom_css, :string
+  hstore_column :hproperties, :custom_status, :string
   hstore_column :hproperties, :custom_tweet, :string
   hstore_column :hproperties, :description, :string
   hstore_column :hproperties, :eligibility, :string
+  hstore_column :hproperties, :enter_button_text, :string, default: 'Enter challenge'
   hstore_column :hproperties, :how_to_enter, :string
+  hstore_column :hproperties, :idea_survey_link, :string
   hstore_column :hproperties, :judging_criteria, :string
   hstore_column :hproperties, :multiple_entries, :boolean
   hstore_column :hproperties, :password_protect, :boolean
@@ -86,6 +89,7 @@ class Challenge < ActiveRecord::Base
     state :judging do
       event :cancel, transitions_to: :canceled
       event :mark_as_judged, transitions_to: :judged
+      event :reinitialize, transitions_to: :new
     end
     state :judged
     after_transition do |from, to, triggering_event, *event_args|

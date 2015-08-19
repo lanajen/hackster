@@ -112,7 +112,7 @@
             h4 Admin stuff
           .panel-body
             = f.input :platform_id, label: 'Promoted platform', collection: Platform.order(:full_name)
-            = f.input :activate_banners, inline_label: 'Activate banners', label: false, hint: 'Whether to display banners on sponsor platform hub.', as: :boolean
+            = f.input :activate_banners, inline_label: 'Activate banners', label: false, hint: 'Whether to display banners on sponsor platform hub (only when challenge is active).', as: :boolean
             .col-md-8.col-md-offset-4 -or-
             = f.input :sponsor_name
             = f.input :sponsor_link
@@ -123,6 +123,12 @@
               = f_admin.input :roles, label: 'Roles', collection: ChallengeAdmin.roles
               .col-sm-8.col-sm-offset-4= f_admin.link_to_remove 'Remove this admin'
             = f.link_to_add 'Add an admin', :challenge_admins
+            .form-group
+              .col-md-8.col-md-offset-4
+                strong.text-danger USE ONLY IF YOU KNOW HOW TO:
+            = f.input :idea_survey_link
+            = f.input :custom_status
+            = f.input :enter_button_text
 
       .panel.panel-default
         .panel-heading
@@ -135,6 +141,9 @@
                 = link_to 'Launch challenge', update_workflow_challenge_path(@challenge, event: 'launch'), method: :put, class: 'btn btn-success btn-sm', data: { confirm: "Let's do this. Sure?" }
               - when :in_progress
                 = link_to 'Take offline', update_workflow_challenge_path(@challenge, event: 'take_offline'), method: :put, class: 'btn btn-warning btn-sm', data: { confirm: "Sure?" }
+              - when :judging
+                - if current_user.is? :admin
+                  = link_to 'Reinitialize', update_workflow_challenge_path(@challenge, event: 'reinitialize'), method: :put, class: 'btn btn-warning btn-sm', data: { confirm: "Sure?" }
               - if @challenge.can_cancel?
                 = link_to 'Cancel challenge', update_workflow_challenge_path(@challenge, event: 'cancel'), method: :put, class: 'btn btn-danger btn-sm', data: { confirm: "Are you sure you want to cancel this challenge? There's no way back!" }
           - if @challenge.new? or current_user.is? :admin

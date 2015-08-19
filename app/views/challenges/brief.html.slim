@@ -12,14 +12,17 @@
           p style="font-size:11px"
             ' Ends on #{l @challenge.end_date.in_time_zone(PDT_TIME_ZONE)} PST
 
-          - if @is_challenge_entrant
-            p
-              strong Your entry has been registered!
-            - if @challenge.allow_multiple_entries?
-              / small Multiple entries are allowed.
-              = link_to 'Enter an additional project', '', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge'
+          - if @challenge.idea_survey_link.present?
+            = link_to @challenge.enter_button_text, @challenge.idea_survey_link, class: 'btn btn-primary btn-block btn-ellipsis btn-standout', target: '_blank'
           - else
-            = link_to 'Enter challenge', '', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge'
+            - if @is_challenge_entrant
+              p
+                strong Your entry has been registered!
+              - if @challenge.allow_multiple_entries?
+                / small Multiple entries are allowed.
+                = link_to 'Enter an additional project', '', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge'
+            - else
+              = link_to @challenge.enter_button_text, '', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge'
 
         - elsif @challenge.voting_active?
           p.status

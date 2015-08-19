@@ -28,7 +28,7 @@ module HstoreColumn
         current_val = send(attribute)
         return val if val == current_val
 
-        store = send(store_attribute) || {}
+        store = send(store_attribute).dup || {}
 
         cast_val = cast_value val, type
         unless instance_variable_get("@#{attribute}_was_set")

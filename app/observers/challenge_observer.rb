@@ -4,7 +4,7 @@ class ChallengeObserver < ActiveRecord::Observer
       platform.active_challenge = record.display_banners?
       platform.save if platform.active_challenge_changed?
     end
-    if (record.changed & %w(video description eligibility requirements judging_criteria how_to_enter rules)).any?
+    if (record.changed & %w(video description eligibility requirements judging_criteria how_to_enter rules custom_status idea_survey_link enter_button_text)).any?
       Cashier.expire "challenge-#{record.id}-brief"
       record.purge
     elsif record.password_protect_changed?
@@ -43,6 +43,7 @@ class ChallengeObserver < ActiveRecord::Observer
   end
 
   alias_method :after_cancel, :after_take_offline
+  alias_method :after_reinitialize, :after_take_offline
 
   private
     def disable_challenge_on_platform record
