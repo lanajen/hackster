@@ -45,14 +45,3 @@ class ProjectPopularityCounter
     @total_score ||= respects_score + impressions_score + comments_score # + @project.featured.to_i * 10
   end
 end
-
-# defaults = {median_impressions: Project.median_impressions,median_respects: Project.median_respects,};Project.indexable.magic_sort.limit(1000).each{|p| count = ProjectPopularityCounter.new(p, defaults).adjusted_score;p.update_column :popularity_counter, count };nil
-
-# Project.indexable.magic_sort.limit(1000).each{|p| p.update_counters only: [:real_respects] };nil
-
-
-# i=0
-# while i < 1
-#   puts "i=#{i}; #{Math.log(i, 0.0087527352297593)}"
-#   i+=0.0001
-# end

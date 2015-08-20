@@ -7,11 +7,11 @@ class PopularityWorker < BaseWorker
   end
 
   def compute_popularity_for_projects
+    defaults = {
+      median_impressions: Project.median_impressions,
+      median_respects: Project.median_respects,
+    }
     Project.indexable_and_external.pluck(:id).each do |project_id|
-      defaults = {
-        median_impressions: Project.median_impressions,
-        median_respects: Project.median_respects,
-      }
       self.class.perform_async 'compute_popularity_for_project', project_id, defaults
     end
   end
