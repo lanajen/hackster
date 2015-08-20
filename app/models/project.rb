@@ -160,6 +160,7 @@ class Project < ActiveRecord::Base
   has_counter :platform_tags, 'platform_tags_cached.count'
   has_counter :product_tags, 'product_tags_cached.count'
   has_counter :replications, 'replicated_users.count'
+  has_counter :real_respects, 'respects.joins(:user).where.not("users.email ILIKE \'%@user.hackster.io\'").count'
   has_counter :respects, 'respects.count', accessor: false
   has_counter :software_parts, 'software_parts.count'
   has_counter :team_members, 'users.count'
@@ -340,6 +341,14 @@ class Project < ActiveRecord::Base
     order(popularity_counter: :desc, created_at: :desc)
   end
 
+  def self.median_impressions
+    indexable.median(:impressions_count)
+  end
+
+  def self.median_respects
+    indexable.median(:respects_count)
+  end
+
   def self.most_popular
     order(impressions_count: :desc)
   end
@@ -411,13 +420,6 @@ class Project < ActiveRecord::Base
     URI.parse(buy_link).host.gsub(/^www\./, '')
   rescue
     buy_link
-  end
-
-  def compute_popularity time_period=45  # days
-    return 0 if age < 0  # for projects that are approved in the future
-
-    boost = 10 * [1 - [(Math.log(age, time_period)), 1].min, 0.001].max
-    self.popularity_counter = ((respects_count * 4 + impressions_count * 0.05 + comments_count * 2 + featured.to_i * 10) * boost).round(4)
   end
 
   def cover_image_id=(val)

@@ -59,7 +59,8 @@ class CronTask < BaseWorker
     CronTask.perform_in 10.minutes, 'send_announcement_notifications'
     CronTask.perform_in 12.minutes, 'cleanup_duplicates'
     CronTask.perform_in 14.minutes, 'clean_invitations'
-    CronTask.perform_in 16.minutes, 'evaluate_badges'
+    PopularityWorker.perform_in 16.minutes, 'compute_popularity_for_projects'
+    CronTask.perform_in 18.minutes, 'evaluate_badges'
     CronTask.perform_in 1.hour, 'launch_cron'
   end
 

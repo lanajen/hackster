@@ -49,3 +49,5 @@ require File.join Rails.root, 'lib/websites_column'
 require File.join Rails.root, 'lib/checklist'
 # ActionDispatch::Request override
 require File.join Rails.root, 'lib/action_dispatch_request'
+# active record extension
+require File.join Rails.root, 'lib/active_record_extension'

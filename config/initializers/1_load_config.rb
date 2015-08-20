@@ -39,6 +39,7 @@ IMAGE_EXTENSIONS = %w(jpg jpeg gif bmp png)
 PDF_EXTENSIONS = %w(pdf)
 
 SECONDS_IN_A_DAY = 86400
+SECONDS_IN_AN_HOUR = 3600
 
 SKETCHFAB_API_URL = 'https://api.sketchfab.com/v2'
 SKETCHFAB_API_MODEL_ENDPOINT = SKETCHFAB_API_URL + '/models'

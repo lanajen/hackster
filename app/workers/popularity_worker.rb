@@ -2,22 +2,26 @@ class PopularityWorker < BaseWorker
   sidekiq_options queue: :cron, retry: 3
 
   def compute_popularity
-    self.class.perform_async 'compute_popularity_for_projects'
     self.class.perform_async 'compute_popularity_for_users'
     self.class.perform_async 'compute_popularity_for_platforms'
   end
 
   def compute_popularity_for_projects
     Project.indexable_and_external.pluck(:id).each do |project_id|
-      self.class.perform_async 'compute_popularity_for_project', project_id
+      defaults = {
+        median_impressions: Project.median_impressions,
+        median_respects: Project.median_respects,
+      }
+      self.class.perform_async 'compute_popularity_for_project', project_id, defaults
     end
   end
 
-  def compute_popularity_for_project project_id
+  def compute_popularity_for_project project_id, defaults={}
     project = Project.find project_id
     project.update_counters
-    project.compute_popularity
-    project.save
+
+    count = ProjectPopularityCounter.new(project, defaults).adjusted_score
+    project.update_column :popularity_counter, count
   end
 
   def compute_popularity_for_users
