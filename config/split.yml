@@ -14,8 +14,8 @@ promise_20150820:
       link_url: '/projects'
     share:
       text: 'Hackster is a community dedicated to sharing open-source hardware projects.'
-      link_text: 'Share your projects.'
-      link_url: '/projects/new'
+      link_text: 'Browse projects.'
+      link_url: '/projects'
   resettable: false
   goals:
     - signup
