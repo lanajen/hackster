@@ -110,7 +110,7 @@ gem 'simple_form', '3.1.0'
 gem 'sinatra', '>= 1.3.0', require: nil
 # gem 'slack-rtmapi'
 gem 'slim-rails', '3.0.1'
-gem 'split', '0.7.2', :require => 'split/dashboard'
+gem 'split', '1.2.1', require: 'split/dashboard'
 gem 'stripe', '1.22.0'
 gem 'sundawg_country_codes', '0.0.7'
 gem 'text_sanitizer', '0.1.0'

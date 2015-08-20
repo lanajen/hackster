@@ -54,8 +54,12 @@ html(lang="en")
           #hello-world
             .container
               button.close.btn-close  data-close='#hello-world'  &times;
-              ==> SLOGAN
-              = link_to 'Learn more.', about_path
+              /
+                ==> SLOGAN
+                = link_to 'Learn more.', about_path
+              - ab_test :promise_20150820 do |alternative, meta|
+                ==> meta['text']
+                = link_to meta['link_text'], meta['link_url']
         - elsif user_signed_in? and current_user.simplified_signup?
           .alert.alert-flat.alert-warning.alert-smaller
             .container

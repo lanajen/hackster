@@ -1,0 +1,22 @@
+promise_20150820:
+  alternatives:
+    - build
+    - learn
+    - share
+  metadata:
+    build:
+      text: 'Hackster is the place where hardware gets created. Learn, share and connect to build better hardware.'
+      link_text: 'Learn more.'
+      link_url: '/about'
+    learn:
+      text: 'Hackster is a community of people who learn and teach each other how to create hardware.'
+      link_text: 'Browse tutorials.'
+      link_url: '/projects'
+    share:
+      text: 'Hackster is a community dedicated to sharing open-source hardware projects.'
+      link_text: 'Share your projects.'
+      link_url: '/projects/new'
+  resettable: false
+  goals:
+    - signup
+    # - click_link

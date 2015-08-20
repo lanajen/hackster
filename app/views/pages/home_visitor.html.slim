@@ -11,7 +11,9 @@
         / - if Time.now < DateTime.parse('2015-04-19 20:00 -0800')
           = link_to 'Hardware Weekend Dallas', '/dallas', class: 'btn btn-warning btn-sm btn-over'
         .container.text-center
-          h1 Hackster is the place where hardware gets created.
+          / h1 Hackster is the place where hardware gets created.
+          - ab_test :promise_20150820 do |alternative, meta|
+            h1= meta['text']
           .hack-selector-container
             .typeahead-container.hidden-xs
               .inner-container.shakable

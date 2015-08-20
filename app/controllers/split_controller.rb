@@ -15,8 +15,9 @@ class SplitController < ApplicationController
 
   def finish_and_redirect
     experiment = params[:experiment]
-    finished(experiment)
-    redirect_to get_redirect_url_for(experiment)
+    goal = params[:goal]
+    finished goal.present? ? { :"#{experiment}" => goal } : experiment
+    redirect_to params[:redirect_to] || get_redirect_url_for(experiment)
   end
 
   def validate_step

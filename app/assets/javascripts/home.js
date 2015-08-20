@@ -107,12 +107,11 @@ $(function(){
           if (e.which == 13 && !e.shiftKey) {
             e.preventDefault();
             engine.get($(this).val(), function(suggestions) {
-              var match;
-              $.each(suggestions, function(i, suggestion) {
-                match = suggestion;
-                return window.location = suggestion.url;
-              });
-              if (match == null) $('.shakable').shake();
+              if (suggestions.length) {
+                window.location = suggestions[0].url;
+              } else {
+                $('.shakable').shake();
+              }
             });
           }
         });

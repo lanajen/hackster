@@ -125,7 +125,7 @@ class PagesController < ApplicationController
       @lists = List.most_members.limit(6)
       @challenges = Challenge.public.active.ends_first.limit(2)
 
-      @typeahead_tags = List.public.order(:full_name).select{|p| p.projects_count >= 5 or p.followers_count >= 10 }.map do |p|
+      @typeahead_tags = Collection.public.order(:full_name).select{|p| p.projects_count >= 5 or p.followers_count >= 10 }.map do |p|
         { tag: p.name, projects: p.projects_count, url: url_for([p]) }
       end
       @suggestions = {
@@ -136,7 +136,7 @@ class PagesController < ApplicationController
         'Raspberry Pi' => '/raspberry-pi',
         'Wearables' => '/l/wearables',
         'Intel Edison' => '/intel-edison',
-        'Pets' => '/l/animals',
+        'Animals' => '/l/animals',
       }
       render 'home_visitor'
     end

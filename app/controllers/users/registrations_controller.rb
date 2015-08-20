@@ -14,6 +14,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def create
     if experiment = params[:experiment]
       finished experiment
+    elsif session[:split].present?
+      session[:split].each do |experiment, alternative|
+        finished :"#{experiment.split(':')[0]}" => 'signup'
+      end
     end
 
     super

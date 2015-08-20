@@ -10,4 +10,5 @@ Split.configure do |config|
   config.db_failover_on_db_error = proc{|error| Rails.logger.error(error.message) }
   config.allow_multiple_experiments = true # It's fine for me, but might not for you
   config.enabled = true
+  config.experiments = YAML.load_file 'config/split.yml'
 end
