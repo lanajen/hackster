@@ -71,9 +71,8 @@ html lang="en"
       .wrapper700
         p
           strong
-            /
-              ==> SLOGAN
-              = link_to 'Learn more', '/about'
+            ==> SLOGAN
+            = link_to 'Learn more', '/about'
 
             - ab_test :promise_20150820 do |alternative, meta|
               ==> meta['text']

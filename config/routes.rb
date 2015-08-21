@@ -67,9 +67,9 @@ HackerIo::Application.routes.draw do
       get 'sitemap.xml' => 'sitemap#show', as: 'sitemap', defaults: { format: 'xml' }
 
       # api for split a/b testing gem
-      # get 'ab_test' => 'split#start_ab_test'
+      get 'ab_test' => 'split#start_ab_test'
       # post 'finished' => 'split#finished_test'
-      # get 'finish_and_redirect' => 'split#finish_and_redirect'
+      get 'finish_and_redirect' => 'split#finish_and_redirect'
       # get 'validate_step' => 'split#validate_step'
 
       post 'info_requests' => 'pages#create_info_request'

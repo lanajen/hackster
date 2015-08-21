@@ -1002,6 +1002,11 @@ input.placeholder, textarea.placeholder {
   font-weight: bold;
   letter-spacing: 0.5px;
   // text-shadow: 1px 1px 1px #036394;
+  &.fixed {
+    position: fixed;
+    z-index: 10000;
+    width: 100%;
+  }
   .close {
     font-size: 1.5em;
     color: white;

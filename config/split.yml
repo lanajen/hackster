@@ -20,3 +20,22 @@ promise_20150820:
   goals:
     - signup
     # - click_link
+
+promise_20150821:
+  alternatives:
+    # control:
+    - 'Learn, share and connect to build better hardware.'
+    # learn:
+    - 'Learn from others and find thousands of instructions for your next hardware projects.'
+    # connect:
+    - 'Connect with thousands of other hardware enthusiasts around the world.'
+    # collaborate:
+    - 'Find collaborators for your next hardware projects or join existing ones.'
+    # share:
+    - 'Share your open-source hardware projects and get inspiration from thousands of others.'
+    # earn:
+    - 'Earn money and prizes while building hardware.'
+    # help:
+    # - 'Receive support and feedback for your hardware projects.'
+    - 'Get help building your hardware projects.'
+  resettable: false

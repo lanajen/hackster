@@ -3,8 +3,10 @@ class SplitController < ApplicationController
     experiment = params[:experiment]
     control = params[:control]
     alternatives = params[:alternatives]
-    alternative = ab_test(experiment, control, *alternatives)
-    render json: {:alternative => alternative}
+    alternative = (control and alternatives) ? ab_test(experiment, control, *alternatives) : ab_test(experiment)
+    render json: { alternative: alternative }
+  rescue Split::ExperimentNotFound
+    render status: :unprocessable_entity, nothing: true
   end
 
   def finished_test

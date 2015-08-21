@@ -51,15 +51,16 @@ html(lang="en")
     #outer-wrapper
       - unless params[:blank_frame]
         - if show_hello_world?
-          #hello-world
+          #hello-world.fixed
             .container
               button.close.btn-close  data-close='#hello-world'  &times;
               /
                 ==> SLOGAN
                 = link_to 'Learn more.', about_path
-              - ab_test :promise_20150820 do |alternative, meta|
-                ==> meta['text']
-                = link_to meta['link_text'], meta['link_url']
+              .ab-test data-experiment='promise_20150821'
+                span> Hackster.io:
+                span.ab-test-placeholder>
+                = link_to 'Join our community.', finish_and_redirect_path(experiment: 'promise_20150821', redirect_to: new_user_registration_path)
         - elsif user_signed_in? and current_user.simplified_signup?
           .alert.alert-flat.alert-warning.alert-smaller
             .container

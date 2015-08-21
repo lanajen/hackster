@@ -7,24 +7,6 @@
 
 = inserts_stats_for @project
 
-- if user_signed_in?
-  = content_for :js do
-
-    javascript:
-      $(function(){
-        var following = #{@following.to_json.html_safe};
-
-        $.each(following, function(type, ids){
-          var joinedIds = ids.map(function(id){
-            return '.follow-' + type + '-' + id;
-          });
-          joinedIds = joinedIds.join(',');
-          $(joinedIds).filter('.create').remove();
-          $(joinedIds).filter('.destroy').show();
-        });
-        $('.follow-button:hidden').remove();
-      });
-
 = content_for :no_container do
   - cache_unless user_signed_in?, [@project, site_user_name], tag: ["project-#{@project.id}"], expires_in: 3.hours do
     = render 'projects/project_embed_popup'

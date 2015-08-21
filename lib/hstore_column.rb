@@ -15,7 +15,7 @@ module HstoreColumn
         column_name = options[:column_name].presence || attribute
         value = send(store_attribute).try(:[], column_name.to_s)
 
-        value = if value.nil? and options[:default]
+        value = if (value.nil? or value.blank? and value != false) and options[:default]
           send "default_#{attribute}"
         else
           cast_value value, type

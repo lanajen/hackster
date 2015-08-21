@@ -14,7 +14,7 @@
   = f.input :libraries_link, label: 'Link to code libraries page'
   = f.input :datasheet_link, label: 'Link to datasheet'
   = f.input :platform_id, collection: Platform.order(:full_name)
-  = f.input :workflow_state, collection: %w(approved rejected retired)
+  = f.input :workflow_state, collection: %w(approved rejected retired pending_review)
   = f.input :private, inline_label: 'Hide from platform page', label: false, hint: "It might still appear in projects BOM's"
 
 
