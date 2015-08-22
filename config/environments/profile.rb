@@ -84,7 +84,5 @@ HackerIo::Application.configure do
   require File.expand_path('../../../lib/log_request_id', __FILE__)
   config.middleware.use Rack::LogRequestID
 
-  config.cashier.adapter = :redis_store
-  config.cashier.adapter.redis = Redis.new $redis_config
   config.cache_store = :dalli_store
 end

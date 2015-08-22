@@ -165,7 +165,7 @@ HackerIo::Application.routes.draw do
         patch 'projects/:id' => 'groups/projects#update_workflow', as: :update_workflow
       end
 
-      get 'h/:user_name' => 'hacker_spaces#redirect_to_show'
+      # get 'h/:user_name' => 'hacker_spaces#redirect_to_show'
       resources :hacker_spaces, except: [:show, :update], path: 'hackerspaces' do
         get 'create' => 'hacker_spaces#create', on: :collection, as: :create
       end
@@ -181,7 +181,7 @@ HackerIo::Application.routes.draw do
         patch 'process' => 'members#process_request'
       end
 
-      get 'c/:user_name' => 'communities#redirect_to_show'
+      # get 'c/:user_name' => 'communities#redirect_to_show'
       resources :communities, except: [:show, :update]
       scope 'communities/:user_name', as: :communities do
         get '' => 'communities#show'
@@ -365,6 +365,7 @@ HackerIo::Application.routes.draw do
       get 'brooklyn', to: redirect('/hackathons/hardware-weekend/brooklyn')
       get 'washington', to: redirect('/hackathons/hardware-weekend/washington')
       get 'nyc', to: redirect('/hackathons/hardware-weekend/new-york-city')
+      get '/h/pebblerocksboulder', to: redirect('/hackathons/pebble-rocks-boulder/a-pebble-hackathon')
 
       get 'tinyduino', to: redirect('/tinycircuits')
       get 'spark', to: redirect('/particle')

@@ -65,7 +65,7 @@ class MicrosoftChromeSync
     # end
 
     def redis
-      @redis ||= Redis::Namespace.new('ms_chrome', redis: Redis.new($redis_config))
+      @redis ||= Redis::Namespace.new('ms_chrome', redis: RedisConn.conn)
     end
 
     def replace_urls text

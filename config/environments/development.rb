@@ -46,17 +46,6 @@ HackerIo::Application.configure do
 
   config.action_controller.perform_caching = false
   config.cache_store = :dalli_store
-  config.cashier.adapter = :redis_store
-  config.cashier.adapter.redis = Redis.new $redis_config
 
   config.react.variant = :development
-
-  # config.after_initialize do
-  #   Bullet.enable = true
-  #   # Bullet.alert = true
-  #   Bullet.bullet_logger = true
-  #   Bullet.console = true
-  #   Bullet.rails_logger = true
-  #   Bullet.add_footer = true
-  # end
 end

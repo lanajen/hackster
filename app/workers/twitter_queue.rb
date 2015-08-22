@@ -41,7 +41,7 @@ class TwitterQueue < BaseWorker
     end
 
     def redis
-      @redis ||= Redis::Namespace.new('twitter_queue', redis: Redis.new($redis_config))
+      @redis ||= Redis::Namespace.new('twitter_queue', redis: RedisConn.conn)
     end
 
     def twitter_client

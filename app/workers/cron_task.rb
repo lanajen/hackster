@@ -125,6 +125,6 @@ class CronTask < BaseWorker
 
   private
     def redis
-      @redis ||= Redis::Namespace.new('cron_task', redis: Redis.new($redis_config))
+      @redis ||= Redis::Namespace.new('cron_task', redis: RedisConn.conn)
     end
 end

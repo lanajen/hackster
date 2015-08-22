@@ -6,7 +6,7 @@ if defined?(Bundler)
   Bundler.require(:default, Rails.env)
 end
 
-require File.expand_path('../redis_config', __FILE__)
+require File.expand_path('../redis', __FILE__)
 
 module HackerIo
   class Application < Rails::Application
@@ -103,5 +103,9 @@ module HackerIo
     # React Browserify Transform
     config.react.addons = true
     config.browserify_rails.commandline_options = "-t [babelify --optional runtime]"
+
+    # cashier tag caching
+    config.cashier.adapter = :redis_store
+    config.cashier.adapter.redis = RedisConn.conn
   end
 end
