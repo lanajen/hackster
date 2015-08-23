@@ -102,7 +102,7 @@ class Challenge < ActiveRecord::Base
   end
 
   def self.ends_first
-    order(end_date: :desc)
+    order(end_date: :asc)
   end
 
   def self.past
