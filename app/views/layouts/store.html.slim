@@ -32,11 +32,6 @@
                     i.fa.fa-shopping-cart
                     span= current_order.order_lines_count
 
-        .row
-          .col-xs-12
-            .alert.alert-warning.text-center
-              | Due to summer vacations, orders will be processed after August 20th, 2015.
-
         = yield
 
 = render template: "layouts/#{current_layout}"
