@@ -106,6 +106,15 @@ class NotificationHandler
         user = User.find context_id
         relations = {}
 
+        # double check that we haven't sent the email yet to prevent doubles
+        if user.last_sent_projects_email_at.try(:>, 6.hours.ago)
+          message = "Prevented sending duplicate new_projects email to #{user.email}."
+          log_line = LogLine.create(message: message, log_type: 'warning', source: 'notification_handler')
+
+          context[:users] = []  # send no email
+          return
+        end
+
         # get projects newly attached to followed platform
         platform_projects = user.subscribed_to?(notification_type, 'follow_platform_activity') ? Project.select('projects.*, follow_relations.followable_id').self_hosted.joins(:platforms).where(groups: { private: false }).where('projects.made_public_at > ? AND projects.made_public_at < ?', 24.hours.ago, Time.now).approved.joins("INNER JOIN follow_relations ON follow_relations.followable_id = groups.id AND follow_relations.followable_type = 'Group'").where(follow_relations: { user_id: user.id }) : []
         platform_projects.each do |project|
@@ -150,6 +159,7 @@ class NotificationHandler
         context[:projects] = relations
         if context[:projects].any?
           context[:user] = user
+          user.update_attribute :last_sent_projects_email_at, Time.now
         else
           context[:users] = []  # hack to send no email
         end

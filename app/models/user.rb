@@ -198,6 +198,7 @@ class User < ActiveRecord::Base
   store :properties, accessors: []
   hstore_column :properties, :active_sessions, :array, default: []
   hstore_column :properties, :has_unread_notifications, :boolean
+  hstore_column :properties, :last_sent_projects_email_at, :datetime
   hstore_column :properties, :reputation_last_updated_at, :datetime
 
   has_websites :websites, :facebook, :twitter, :linked_in, :website, :blog,
@@ -443,7 +444,16 @@ class User < ActiveRecord::Base
   end
 
   def is_connected_with? provider_name
-    provider_name.to_s.downcase.in? authorizations.pluck(:provider).map{|p| p.downcase }
+    normalize_provider_name(provider_name).downcase.in? authorizations.pluck(:provider).map{|p| p.downcase }
+  end
+
+  # we shouldn't be using this, have to cleanup the code and use the same wording all over
+  def normalize_provider_name provider_name
+    if provider_name == :gplus
+      'Google+'
+    else
+      provider_name.to_s
+    end
   end
 
   def following? followable
