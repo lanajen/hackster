@@ -9,27 +9,27 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def facebook
-    oauthorize 'Facebook'
+    oauthorize 'facebook'
   end
 
   def github
-    oauthorize 'Github'
+    oauthorize 'github'
   end
 
   def gplus
-    oauthorize 'Google+'
+    oauthorize 'gplus'
   end
 
   def linkedin
-    oauthorize 'LinkedIn'
+    oauthorize 'linkedin'
   end
 
   def twitter
-    oauthorize 'Twitter'
+    oauthorize 'twitter'
   end
 
   def windowslive
-    oauthorize 'Microsoft'
+    oauthorize 'windowslive'
   end
 
   def setup
@@ -63,7 +63,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       I18n.locale = session.delete(:omniauth_login_locale) || I18n.default_locale
 
       omniauth_data = case kind
-      when 'Facebook', 'Github', 'Twitter', 'Microsoft'
+      when 'facebook', 'github', 'twitter', 'windowslive'
         request.env['omniauth.auth'].except("extra")
       else
         request.env['omniauth.auth']

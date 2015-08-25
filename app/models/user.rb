@@ -444,16 +444,7 @@ class User < ActiveRecord::Base
   end
 
   def is_connected_with? provider_name
-    normalize_provider_name(provider_name).downcase.in? authorizations.pluck(:provider).map{|p| p.downcase }
-  end
-
-  # we shouldn't be using this, have to cleanup the code and use the same wording all over
-  def normalize_provider_name provider_name
-    if provider_name == :gplus
-      'Google+'
-    else
-      provider_name.to_s
-    end
+    provider_name.to_s.downcase.in? authorizations.pluck(:provider).map{|p| p.downcase }
   end
 
   def following? followable
