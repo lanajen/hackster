@@ -33,7 +33,7 @@ class ProjectPopularityCounter
   end
 
   def respects_per_impressions
-    @respects_per_impressions ||= @project.real_respects_count.to_f / @project.impressions_count
+    @respects_per_impressions ||= (@project.impressions_count.zero? ? 0 : @project.real_respects_count.to_f / @project.impressions_count)
   end
 
   def respects_per_impressions_penalty
