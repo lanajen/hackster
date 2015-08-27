@@ -2,10 +2,10 @@ source 'http://rubygems.org'
 source 'https://rails-assets.org'
 ruby '2.2.2'
 
-gem 'rails', '4.2.1'
+gem 'rails', '4.2.3'
 
 # load early so that env variables are available to other gems
-gem 'dotenv-rails', :groups => [:development, :test]
+gem 'dotenv-rails', groups: [:development, :test]
 
 #  assets
 gem 'fog-aws', '0.1.2'
@@ -14,8 +14,8 @@ gem 'bootstrap-sass', '3.3.1'
 gem 'coffee-rails', '4.0.1'
 gem 'compass-rails', '2.0.4'
 gem 'font-awesome-rails', '4.1.0.0'
-gem 'jquery-rails', '3.0.4'
-gem 'jquery-ui-rails', '4.1.0'
+gem 'jquery-rails', '4.0.4'
+gem 'jquery-ui-rails', '5.0.5'
 gem 'react-rails', '~> 1.0'
 gem 'sass-rails', '5.0.1'
 gem 'slick_rails', '1.4.1'
