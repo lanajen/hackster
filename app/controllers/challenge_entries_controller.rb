@@ -112,6 +112,8 @@ class ChallengeEntriesController < ApplicationController
       case event
       when 'approve'
         'approved'
+      when 'disqualify'
+        'disqualified'
       else
         "#{event}ed"
       end

@@ -51,7 +51,7 @@ class ProjectsController < ApplicationController
     @can_update = (@can_edit and current_user.can? :update, @project)
     @locked = (!@can_edit and @project.assignment.present? and @project.assignment.grading_activated? and @project.assignment.private_grades and cannot? :manage, @project.assignment)
 
-    @challenge_entries = @project.challenge_entries.includes(:challenge).includes(:prizes)
+    @challenge_entries = @project.challenge_entries.where(workflow_state: ChallengeEntry::APPROVED_STATES).includes(:challenge).includes(:prizes)
     @communities = @project.groups.where.not(groups: { type: 'Event' }).includes(:avatar).order(full_name: :asc)
 
     @hardware_parts = @project.part_joins.hardware
