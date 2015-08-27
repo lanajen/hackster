@@ -50,6 +50,7 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :custom_status, :string
   hstore_column :hproperties, :custom_tweet, :string
   hstore_column :hproperties, :description, :string
+  hstore_column :hproperties, :disable_projects_tab, :boolean
   hstore_column :hproperties, :eligibility, :string
   hstore_column :hproperties, :enter_button_text, :string, default: 'Enter challenge'
   hstore_column :hproperties, :how_to_enter, :string

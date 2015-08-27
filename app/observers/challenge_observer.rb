@@ -4,12 +4,23 @@ class ChallengeObserver < ActiveRecord::Observer
       platform.active_challenge = record.display_banners?
       platform.save if platform.active_challenge_changed?
     end
-    if (record.changed & %w(video description eligibility requirements judging_criteria how_to_enter rules custom_status idea_survey_link enter_button_text)).any?
-      Cashier.expire "challenge-#{record.id}-brief"
-      record.purge
-    elsif record.password_protect_changed?
-      record.purge
+
+    # expire or purge only once
+    keys = []
+    purge = false
+    if (record.changed & %w(custom_status idea_survey_link enter_button_text end_date custom_tweet)).any?
+      keys << "challenge-#{record.id}-status"
+      purge = true
     end
+    if (record.changed & %w(video description eligibility requirements judging_criteria how_to_enter rules)).any?
+      keys << "challenge-#{record.id}-brief"
+      purge = true
+    end
+    if record.password_protect_changed? or record.disable_projects_tab_changed?
+      purge = true
+    end
+    Cashier.expire *keys if keys.any?
+    record.purge if purge
   end
 
   def after_launch record
