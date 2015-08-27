@@ -5,6 +5,7 @@ class ChallengesController < ApplicationController
   before_filter :load_platform, only: [:show, :brief, :projects]
   before_filter :load_and_authorize_challenge, only: [:enter, :update_workflow]
   before_filter :set_challenge_entrant, only: [:show, :brief, :projects]
+  before_filter :set_current_entries, only: [:show, :brief]
   before_filter :load_user_projects, only: [:show, :brief, :projects]
   load_and_authorize_resource only: [:edit, :update]
   layout :set_layout
@@ -118,13 +119,14 @@ class ChallengesController < ApplicationController
         @other_projects = @challenge.projects.joins(:challenge_entries).where.not(challenge_projects: { id: @winning_entries.map(&:id) }).for_thumb_display.paginate(page: safe_page_params, per_page: per_page)
       else
         per_page = per_page - 1 if @challenge.open_for_submissions? and !@is_challenge_entrant
-        @projects = @challenge.projects.displayed.for_thumb_display.paginate(page: safe_page_params, per_page: per_page)
+        @projects = @challenge.projects.valid.for_thumb_display.paginate(page: safe_page_params, per_page: per_page)
       end
     end
 
     def load_user_projects
       if user_signed_in? and @challenge.open_for_submissions?
-        @user_projects = current_user.projects.own.self_hosted
+        # @user_projects = current_user.projects.own.self_hosted.where.not(id: @challenge.projects.pluck(:id))
+        @user_projects = current_user.projects.own.self_hosted.where("NOT projects.id IN (SELECT projects.id FROM projects INNER JOIN challenge_projects ON projects.id = challenge_projects.project_id WHERE challenge_projects.challenge_id = ?)", @challenge.id)
         @user_projects = @user_projects.select{|p| p.is_idea? } if @challenge.project_ideas
       else
         @user_projects = []
@@ -133,6 +135,10 @@ class ChallengesController < ApplicationController
 
     def set_challenge_entrant
       @is_challenge_entrant = (user_signed_in? and current_user.is_challenge_entrant? @challenge)
+    end
+
+    def set_current_entries
+      @current_entries = (user_signed_in? ? current_user.challenge_entries_for(@challenge) : [])
     end
 
     def set_layout

@@ -8,7 +8,11 @@ p
   b> Challenge status:
   = @challenge.status
 
-- if @challenge.judging?
+- if @challenge.in_progress?
+  - if @entries.where(workflow_state: :new).any?
+    = link_to 'Moderate new entries', edit_challenge_entry_path(@challenge, @entries.where(workflow_state: :new).first), class: 'btn btn-sm btn-primary'
+
+- elsif @challenge.judging?
   p
     - if @prizes.any?
       b The following prizes are waiting to be awarded:
@@ -30,7 +34,7 @@ p
       ' All prizes have been awarded.
       = link_to 'Mark challenge as judged', update_workflow_challenge_path(@challenge, event: 'mark_as_judged'), method: :put, class: 'btn btn-sm btn-warning', data: { confirm: 'Are you sure? Continuing will close judging and send an email notification to all participants informing them of the outcome.' }
 
-- if @challenge.judged?
+- elsif @challenge.judged?
   table.table.table-striped
     thead
       tr
@@ -85,9 +89,9 @@ table.table.table-striped
           td= entry.has_prize? ? entry.prizes.pluck(:name).to_sentence : 'None'
           td
             - if entry.can_approve?
-              = link_to content_tag(:i, '', class: 'fa fa-check'), update_workflow_challenge_entry_path(entry, event: 'approve'), class: 'btn btn-xs btn-success', rel: 'tooltip', title: 'Approve', data: { method: :put, confirm: 'Are you sure you want to approve this entry?' }
+              = link_to content_tag(:i, '', class: 'fa fa-check'), update_workflow_challenge_single_entry_path(entry, event: 'approve'), class: 'btn btn-xs btn-success', rel: 'tooltip', title: 'Approve', data: { method: :put, confirm: 'Are you sure you want to approve this entry?' }
             - if entry.can_disqualify?
-              = link_to content_tag(:i, '', class: 'fa fa-times'), update_workflow_challenge_entry_path(entry, event: 'disqualify'), class: 'btn btn-xs btn-danger', rel: 'tooltip', title: 'Disqualify', data: { method: :put, confirm: 'Are you sure you want to disqualify this entry?' }
+              = link_to content_tag(:i, '', class: 'fa fa-times'), update_workflow_challenge_single_entry_path(entry, event: 'disqualify'), class: 'btn btn-xs btn-danger', rel: 'tooltip', title: 'Disqualify', data: { method: :put, confirm: 'Are you sure you want to disqualify this entry?' }
             - if @challenge.judging?
               = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_challenge_entry_path(@challenge, entry), class: 'btn btn-xs btn-default', rel: 'tooltip', title: 'Edit'
             - if current_user.is? :admin

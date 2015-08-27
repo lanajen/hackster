@@ -67,6 +67,8 @@ class User < ActiveRecord::Base
   has_many :assigned_issues, through: :assignee_issues, source: :issue
   has_many :authorizations, dependent: :destroy
   has_many :blog_posts, dependent: :destroy
+  has_many :challenge_entries, dependent: :destroy
+  has_many :challenges, through: :challenge_entries
   has_many :comments, -> { order created_at: :desc }, foreign_key: :user_id, dependent: :destroy
   has_many :comment_likes, class_name: 'Respect', through: :comments, source: :likes
   has_many :communities, through: :group_ties, source: :group, class_name: 'Community'
@@ -403,6 +405,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  def challenge_entries_for challenge
+    challenge.entries.where(user_id: id).includes(:project)
+  end
+
   # def has_access? project
   #   permissions.where(permissible_type: 'Project', permissible_id: project.id).any? or group_permissions.where(permissible_type: 'Project', permissible_id: project.id).any?
   # end
@@ -440,7 +446,7 @@ class User < ActiveRecord::Base
   end
 
   def is_challenge_entrant? challenge
-    self.in? challenge.entrants
+    challenge_entries_for(challenge).any?
   end
 
   def is_connected_with? provider_name

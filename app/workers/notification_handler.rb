@@ -68,12 +68,17 @@ class NotificationHandler
       when :challenge
         context[:model] = challenge = context[:challenge] = Challenge.find context_id
         context[:users] = challenge.admins
-      when :challenge_entry
+      when :challenge_entry, :challenge_entry_admin
         context[:model] = entry = context[:entry] = ChallengeEntry.find context_id
-        context[:challenge] = entry.challenge
+        context[:challenge] = challenge = entry.challenge
         context[:project] = entry.project
-        context[:user] = entry.user
-        context[:prizes] = entry.prizes
+        if context_type.to_sym == :challenge_entry
+          context[:user] = entry.user
+          context[:prizes] = entry.prizes
+        else
+          context[:author] = entry.user
+          context[:users] = challenge.admins
+        end
       when :comment
         context[:model] = comment = context[:comment] = Comment.find(context_id)
         author = context[:author] = comment.user

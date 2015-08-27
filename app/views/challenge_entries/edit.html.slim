@@ -25,10 +25,14 @@
                 ' &nbsp;
           hr
           = simple_form_for [@challenge, @entry], url: challenge_entry_path(@challenge, @entry), wrapper: :bootstrap3_horizontal, html: { class: 'form-horizontal' } do |f|
-            input type='hidden' name='current_action' value='judging'
             .row
               .col-md-8
-                = f.association :prizes, collection: @challenge.prizes, as: :check_boxes
+                - if @challenge.in_progress?
+                  input type='hidden' name='current_action' value='moderating'
+                  = f.input :workflow_state, collection: { 'Approve' => :qualified, 'Reject' => :unqualified }, as: :radio_buttons, label: 'Decision'
+                - else
+                  input type='hidden' name='current_action' value='judging'
+                  = f.association :prizes, collection: @challenge.prizes, as: :check_boxes
                 = f.input :judging_notes, input_html: { rows: 4 }
               .col-md-4
                 = f.submit 'Save', class: 'btn btn-primary'

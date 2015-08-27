@@ -6,7 +6,7 @@ class ChallengeEntriesController < ApplicationController
 
   def index
     authorize! :admin, @challenge
-    @entries = @challenge.entries.joins(:project)
+    @entries = @challenge.entries.joins(:project, :user).includes(:prizes, user: :avatar, project: :team).order(:created_at)
     @challenge = @challenge.decorate
 
     # determines how many of each prizes were awarded and how many are left
@@ -55,6 +55,18 @@ class ChallengeEntriesController < ApplicationController
   def update
     if @entry.update_attributes(params[:challenge_entry])
       next_url = case params[:current_action]
+      when 'moderating'
+        if params[:commit] == 'Save'
+          flash[:notice] = "Changes saved."
+          challenge_entries_path(@challenge)
+        else
+          if next_entry = @challenge.entries.where(workflow_state: :new).first
+            edit_challenge_entry_path(@challenge, next_entry)
+          else
+            flash[:notice] = "That was the last entry needing moderation!"
+            challenge_entries_path(@challenge)
+          end
+        end
       when 'judging'
         if params[:commit] == 'Save'
           flash[:notice] = "Changes saved."
@@ -88,7 +100,11 @@ class ChallengeEntriesController < ApplicationController
   def destroy
     @entry.destroy
 
-    redirect_to challenge_entries_path, notice: "Entry deleted."
+    if current_user.id == @entry.user_id
+      redirect_to challenge_path(@challenge), notice: "Your entry has been withdrawn."
+    else
+      redirect_to challenge_entries_path(@challenge), notice: "Entry deleted."
+    end
   end
 
   private
@@ -107,6 +123,7 @@ class ChallengeEntriesController < ApplicationController
 
     def load_and_authorize_entry
       @entry = ChallengeEntry.find params[:id]
+      raise ActiveRecord::RecordNotFound unless params[:challenge_id] == @entry.challenge_id.to_s
       authorize! self.action_name.to_sym, @entry
       @challenge = @entry.challenge
     end

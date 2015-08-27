@@ -3,7 +3,6 @@ class ChallengeEntry < ActiveRecord::Base
 
   AWARDED_STATES = %w(awarded fullfiled)
   APPROVED_STATES = AWARDED_STATES + %w(qualified unawarded)
-  DISPLAYED_STATES = APPROVED_STATES + %w(new)
 
   include HstoreCounter
   include Workflow
@@ -17,7 +16,7 @@ class ChallengeEntry < ActiveRecord::Base
 
   validates :challenge_id, uniqueness: { scope: :project_id }
 
-  attr_accessible :judging_notes, :prize_ids
+  attr_accessible :judging_notes, :prize_ids, :workflow_state
 
   counters_column :counters_cache
   has_counter :votes, 'votes.count'

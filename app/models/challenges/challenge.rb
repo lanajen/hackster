@@ -21,8 +21,8 @@ class Challenge < ActiveRecord::Base
   # "counter_cache: :this_is_not_a_column_that_exists"
   has_many :projects, -> { order('challenge_projects.created_at ASC') },
     through: :entries, counter_cache: :this_is_not_a_column_that_exists do
-    def displayed
-      where("challenge_projects.workflow_state IN (?)", ChallengeEntry::DISPLAYED_STATES)
+    def valid
+      where("challenge_projects.workflow_state IN (?)", ChallengeEntry::APPROVED_STATES)
     end
   end
   has_many :votes, through: :entries
@@ -69,7 +69,7 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :voting_end_date, :datetime, default: proc{|c| c.end_date ? c.end_date + 7.days : nil }
 
   counters_column :hcounters_cache
-  has_counter :projects, 'projects.displayed.count'
+  has_counter :projects, 'projects.valid.count'
 
   is_impressionable counter_cache: true, unique: :session_hash
 
