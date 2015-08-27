@@ -126,9 +126,9 @@
             .form-group
               .col-md-8.col-md-offset-4
                 strong.text-danger USE ONLY IF YOU KNOW HOW TO:
-            = f.input :idea_survey_link
-            = f.input :custom_status
-            = f.input :enter_button_text
+            = f.input :idea_survey_link, label: 'Enter button link', hint: 'This will override the enter button link. Instead of allowing users to select a project on Hackster, it will take them to the link you enter.'
+            = f.input :enter_button_text, hint: "This will override the enter button text. The default is '#{@challenge.default_enter_button_text}'."
+            = f.input :custom_status, hint: 'This will override the status.'
             = f.input :disable_projects_tab, inline_label: 'Disable projects tab', as: :boolean, label: false, hint: 'When submissions are done outside of Hackster'
 
       .panel.panel-default

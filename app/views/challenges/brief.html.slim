@@ -52,9 +52,9 @@
             a2a_config.color_link_text_hover = "333333";
             a2a_config.prioritize = ["facebook", "twitter", "reddit"];
             a2a_config.templates = {
-              twitter: "#{@challenge.to_tweet} #{challenge_url(@challenge)} via @hacksterio"
+              twitter: "#{@challenge.to_tweet.html_safe} #{challenge_url(@challenge)} via @hacksterio"
             };
-            a2a_config.linkname = "#{@challenge.name}"
+            a2a_config.linkname = "#{@challenge.name.html_safe}"
             a2a_config.linkurl = "#{challenge_url(@challenge)}";
           script type="text/javascript" src="//static.addtoany.com/menu/page.js"
           <!-- AddToAny END -->

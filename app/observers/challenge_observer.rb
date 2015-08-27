@@ -8,7 +8,11 @@ class ChallengeObserver < ActiveRecord::Observer
     # expire or purge only once
     keys = []
     purge = false
-    if (record.changed & %w(custom_status idea_survey_link enter_button_text end_date custom_tweet)).any?
+    if (record.changed & %w(slug)).any?
+      keys << "challenge-index"
+      purge = true
+    end
+    if (record.changed & %w(name custom_status idea_survey_link enter_button_text end_date custom_tweet)).any?
       keys << "challenge-#{record.id}-status"
       purge = true
     end
