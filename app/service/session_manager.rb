@@ -21,6 +21,9 @@ class SessionManager
       @user.active_sessions = active_sessions
       @user.save
     end
+  rescue => e
+    message = "Failed deactiving session for user '#{id}'."
+    AppLogger.new(message, 'error', 'session_manager', e).log_and_notify
   end
 
   def expire_all! active_session_id=nil

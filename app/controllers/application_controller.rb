@@ -106,7 +106,7 @@ class ApplicationController < ActionController::Base
       AbstractController::ActionNotFound,
       ActiveRecord::RecordNotFound,
       with: :render_404
-    # rescue_from ActionView::MissingTemplate, with: :render_404_with_error
+    rescue_from ActionView::MissingTemplate, with: :render_404_with_log
   end
 
   rescue_from CanCan::AccessDenied do |exception|
@@ -459,6 +459,11 @@ class ApplicationController < ActionController::Base
       end
     end
 
+    def render_404_with_log(exception)
+      log_error exception
+      render_404 exception
+    end
+
     def render_500(exception)
       # hack because format.all doesn't work anymore
       if exception.class == ActionController::UnknownFormat
@@ -467,15 +472,7 @@ class ApplicationController < ActionController::Base
 
       begin
         unless exception.class.name == 'Sidekiq::Shutdown'
-          clean_backtrace = Rails.backtrace_cleaner.clean(exception.backtrace)
-          message = "#{exception.inspect} // backtrace: #{clean_backtrace.join(' - ')} // user: #{current_user.try(:user_name)} // request_url: #{request.url} // referrer: #{request.referrer} // request_params: #{request.params.to_s} // user_agent #{request.headers['HTTP_USER_AGENT']} // ip: #{request.remote_ip} // format: #{request.format} // HTTP_X_REQUESTED_WITH: #{request.headers['HTTP_X_REQUESTED_WITH']}"
-          log_line = LogLine.create(message: message, log_type: 'error', source: 'controller')
-          logger.error ""
-          logger.error "Exception: #{exception.inspect}"
-          logger.error ""
-          clean_backtrace.each { |line| logger.error "Backtrace: " + line }
-          logger.error ""
-          NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification' if Rails.env == 'production'
+          log_error exception
         end
       rescue
       end
@@ -484,6 +481,11 @@ class ApplicationController < ActionController::Base
         format.html { render template: 'errors/error_500', layout: "layouts/#{current_layout}", status: 500 }
         format.all { render nothing: true, status: 500}
       end
+    end
+
+    def log_error exception
+      message = "user: #{current_user.try(:user_name)} // request_url: #{request.url} // referrer: #{request.referrer} // request_params: #{request.params.to_s} // user_agent #{request.headers['HTTP_USER_AGENT']} // ip: #{request.remote_ip} // format: #{request.format} // HTTP_X_REQUESTED_WITH: #{request.headers['HTTP_X_REQUESTED_WITH']}"
+      AppLogger.new(message, 'error', 'controller', exception).log_and_notify
     end
 
     def set_default_response_format

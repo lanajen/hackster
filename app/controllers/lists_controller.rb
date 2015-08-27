@@ -79,7 +79,7 @@ class ListsController < ApplicationController
     else
       @list.build_avatar unless @list.avatar
       respond_to do |format|
-        format.html { render template: 'groups/lists/edit' }
+        format.html { render template: 'groups/shared/edit' }
         format.js { render json: { group: @list.errors }, status: :unprocessable_entity }
       end
     end
