@@ -15,6 +15,10 @@ class ChallengeEntryObserver < ActiveRecord::Observer
   end
 
   def after_approve record
+    project = record.project
+    if tag = record.challenge.platform.try(:platform_tags).try(:first).try(:name) and !tag.in? project.platform_tags_cached
+      project.platform_tags << PlatformTag.new(name: tag)
+    end
     expire_cache record
     NotificationCenter.notify_all :approved, :challenge_entry, record.id
   end

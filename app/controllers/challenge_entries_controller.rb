@@ -30,12 +30,15 @@ class ChallengeEntriesController < ApplicationController
     @project = Project.find params[:project_id]
     authorize! :enter_in_challenge, @project
 
-    if tag = @challenge.platform.try(:platform_tags).try(:first).try(:name) and !tag.in? @project.platform_tags_cached
-      @project.platform_tags << PlatformTag.new(name: tag)
+    unless @project.valid_for_challenge?
+      flash[:alert] = "Oops! You can only enter finished projects into this challenge. Please complete the project and the write-up before submitting."
+      redirect_to @challenge and return
     end
+
     @project.private = false
     @project.workflow_state = 'idea' if @challenge.project_ideas
     @project.save
+
     entry = @challenge.entries.new
     entry.user_id = current_user.id
     entry.project_id = @project.id

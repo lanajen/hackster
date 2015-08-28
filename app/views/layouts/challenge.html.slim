@@ -179,7 +179,11 @@
       - if user_signed_in?
         - if @user_projects.any?
           h2 Ready to enter the challenge?
-          p Please select the project you would like to enter:
+          p
+            ' Please select the project you would like to enter
+            strong
+              | (complete projects only)
+            | :
           = form_tag challenge_entries_path(@challenge), method: :post do
             = select_tag :project_id, options_from_collection_for_select(@user_projects, :id, :name), class: 'form-control'
             p
