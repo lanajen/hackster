@@ -184,7 +184,7 @@ class Group < ActiveRecord::Base
   def twitter_handle
     return unless twitter_link.present?
 
-    handle = twitter_link.match(/twitter.com\/(.+)/).try(:[], 1)
+    handle = twitter_link.match(/twitter.com\/([a-zA-Z0-9_]+)/).try(:[], 1)
     handle.present? ? "@#{handle}" : nil
   end
 

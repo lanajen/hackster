@@ -55,7 +55,7 @@ class WikiPagesController < ApplicationController
     @group = @page.threadable
     @page.destroy
 
-    redirect_to event_path(@group), notice: 'Page destroyed'
+    redirect_to @group, notice: 'Page deleted.'
   end
 
   private
