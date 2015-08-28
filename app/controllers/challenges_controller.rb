@@ -51,6 +51,11 @@ class ChallengesController < ApplicationController
     end
   end
 
+  def update_mailchimp
+    MailchimpWorker.perform_async 'sync_challenge', @challenge.id
+    redirect_to @challenge, notice: 'Your Mailchimp will be updated shortly.'
+  end
+
   def update_workflow
     if @challenge.send "#{params[:event]}!"
       flash[:notice] = "Challenge #{event_to_human(params[:event])}."

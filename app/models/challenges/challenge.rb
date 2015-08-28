@@ -15,7 +15,8 @@ class Challenge < ActiveRecord::Base
   has_many :admins, through: :challenge_admins, source: :user
   has_many :challenge_admins
   has_many :entries, class_name: 'ChallengeEntry', dependent: :destroy
-  has_many :entrants, through: :projects, source: :users
+  has_many :entrants, -> { uniq }, through: :entries, source: :user
+  has_many :participants, -> { uniq }, through: :projects, source: :users
   has_many :prizes, -> { order(:position) }, dependent: :destroy
   # see https://github.com/rails/rails/issues/19042#issuecomment-91405982 about
   # "counter_cache: :this_is_not_a_column_that_exists"
@@ -30,6 +31,7 @@ class Challenge < ActiveRecord::Base
   has_one :cover_image, as: :attachable, dependent: :destroy
   validates :name, :slug, presence: true
   validates :teaser, :custom_tweet, length: { maximum: 140 }
+  validates :mailchimp_api_key, :mailchimp_list_id, presence: true, if: proc{ |c| c.activate_mailchimp_sync }
   validate :password_exists
   before_validation :assign_new_slug
   before_validation :generate_slug, if: proc{ |c| c.slug.blank? }
@@ -43,6 +45,7 @@ class Challenge < ActiveRecord::Base
 
   store :properties, accessors: []
   hstore_column :hproperties, :activate_banners, :boolean, default: true
+  hstore_column :hproperties, :activate_mailchimp_sync, :boolean
   hstore_column :hproperties, :activate_voting, :boolean
   hstore_column :hproperties, :auto_approve, :boolean
   hstore_column :hproperties, :allow_anonymous_votes, :boolean
@@ -56,6 +59,9 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :how_to_enter, :string
   hstore_column :hproperties, :idea_survey_link, :string
   hstore_column :hproperties, :judging_criteria, :string
+  hstore_column :hproperties, :mailchimp_api_key, :string
+  hstore_column :hproperties, :mailchimp_list_id, :string
+  hstore_column :hproperties, :mailchimp_last_synced_at, :datetime
   hstore_column :hproperties, :multiple_entries, :boolean
   hstore_column :hproperties, :password_protect, :boolean
   hstore_column :hproperties, :password, :string
@@ -193,6 +199,10 @@ class Challenge < ActiveRecord::Base
     password_protect? and session[:challenge_keys].try(:[], id) != Digest::SHA1.hexdigest(password)
   end
 
+  def mailchimp_setup?
+    activate_mailchimp_sync and mailchimp_api_key.present? and mailchimp_list_id.present?
+  end
+
   def new_slug
     # raise new_slug.to_s
     @new_slug ||= slug
@@ -204,6 +214,11 @@ class Challenge < ActiveRecord::Base
 
   def ready_for_judging?
     judging?
+  end
+
+  def sync_mailchimp!
+    MailchimpListManager.new(mailchimp_api_key, mailchimp_list_id).add(participants)
+    update_attribute :mailchimp_last_synced_at, Time.now
   end
 
   def unlock try_password

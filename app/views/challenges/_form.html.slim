@@ -103,8 +103,29 @@
         .panel-heading
           h4 Password protection
         .panel-body
-          = f.input :password_protect, as: :boolean, inline_label: 'Enable password protection'
+          = f.input :password_protect, as: :boolean, inline_label: 'Enable password protection', label: false
           = f.input :password, hint: 'Only if password protection is enabled', as: :string
+
+      .panel.panel-default
+        .panel-heading
+          h4 Mailchimp settings
+        .panel-body
+          = f.input :activate_mailchimp_sync, as: :boolean, inline_label: 'Activate sync with Mailchimp', label: false, hint: 'Note: we do not verify if your credentials are correct. If you do not see any updates on your list after activating this option, please double check your credentials.'
+          #mailchimp_settings style=(@challenge.activate_mailchimp_sync ? '' : 'display:none')
+            - if @challenge.activate_mailchimp_sync
+              .form-group
+                .col-md-4
+                  label.control-label Last synced
+                .col-md-8
+                  - if @challenge.mailchimp_last_synced_at
+                    => l @challenge.mailchimp_last_synced_at.in_time_zone(PDT_TIME_ZONE)
+                    | PDT
+                  - else
+                    | Never
+                  - if @challenge.mailchimp_setup?
+                    = link_to 'Update now', update_mailchimp_challenge_path(@challenge), class: 'btn btn-link btn-sm', data: { method: :patch }
+            = f.input :mailchimp_api_key, label: 'Mailchimp API key', hint: 'API key of the Mailchimp account you want to sync with'
+            = f.input :mailchimp_list_id, label: 'Mailchimp List ID', hint: 'List ID of the Mailchimp list you want to sync with'
 
       - if current_user.is? :admin
         .panel.panel-default
@@ -190,6 +211,13 @@
         $('#voting_dates').slideDown();
       } else {
         $('#voting_dates').slideUp();
+      }
+    });
+    $('#challenge_activate_mailchimp_sync').on('change', function(){
+      if ($(this).is(':checked')) {
+        $('#mailchimp_settings').slideDown();
+      } else {
+        $('#mailchimp_settings').slideUp();
       }
     });
 

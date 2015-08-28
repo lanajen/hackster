@@ -309,6 +309,7 @@ HackerIo::Application.routes.draw do
         post 'projects' => 'challenges#enter', on: :member, as: :enter
         post 'unlock' => 'challenges#unlock', on: :member
         put 'update_workflow' => 'challenges#update_workflow', on: :member
+        patch 'update_mailchimp' => 'challenges#update_mailchimp', on: :member
       end
 
       resources :challenge_entries, only: [], as: :challenge_single_entry do

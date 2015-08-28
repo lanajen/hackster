@@ -52,7 +52,6 @@ class CronTask < BaseWorker
 
   def launch_cron
     CacheWorker.perform_async 'warm_cache'
-    CronTask.perform_in 2.minutes, 'update_mailchimp'
     CronTask.perform_in 4.minutes, 'send_assignment_reminder'
     CronTask.perform_in 6.minutes, 'lock_assignment'
     CronTask.perform_in 8.minutes, 'expire_challenges'
@@ -67,6 +66,8 @@ class CronTask < BaseWorker
   def launch_daily_cron
     CronTask.perform_async 'expire_old_sessions'
     CronTask.perform_async 'generate_users'
+    CronTask.perform_async 'update_mailchimp'
+    CronTask.perform_async 'update_mailchimp_for_challenges'
     ReputationWorker.perform_in 1.minute, 'compute_daily_reputation'
     PopularityWorker.perform_in 1.hour, 'compute_popularity'
     CronTask.perform_in 2.hours, 'send_daily_notifications'
@@ -120,7 +121,13 @@ class CronTask < BaseWorker
   end
 
   def update_mailchimp
-    MailchimpListManager.new(ENV['MAILCHIMP_API_KEY'], ENV['MAILCHIMP_LIST_ID']).update!
+    MailchimpNewsletterListManager.new(ENV['MAILCHIMP_API_KEY'], ENV['MAILCHIMP_LIST_ID']).update!
+  end
+
+  def update_mailchimp_for_challenges
+    Challenge.where("challenges.end_date > ?", 1.day.ago).each do |challenge|
+      challenge.sync_mailchimp! if challenge.mailchimp_setup?
+    end
   end
 
   private

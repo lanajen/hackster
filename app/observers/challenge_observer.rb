@@ -25,6 +25,10 @@ class ChallengeObserver < ActiveRecord::Observer
     end
     Cashier.expire *keys if keys.any?
     record.purge if purge
+
+    if (record.changed & %w(mailchimp_api_key mailchimp_list_id activate_mailchimp_sync)).any? and record.mailchimp_setup?
+      MailchimpWorker.perform_async 'sync_challenge', record.id
+    end
   end
 
   def after_launch record

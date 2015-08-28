@@ -26,7 +26,6 @@ class Project < ActiveRecord::Base
     'trending' => :magic_sort,
     'updated' => :last_updated,
   }
-  STATES = %w(approved pending_review rejected unpublished)
   TYPES = {
     'External (hosted on another site)' => 'ExternalProject',
     'Normal' => 'Project',
