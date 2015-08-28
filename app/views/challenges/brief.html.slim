@@ -21,7 +21,7 @@
                 span.pull-right= link_to content_tag(:i, '', class: 'fa fa-times') + content_tag(:span, 'Withdraw'), challenge_entry_path(@challenge, entry), class: 'btn btn-danger btn-xs entry-withdraw', data: { confirm: 'Are you sure you want to withdraw your entry from the challenge? You can re-enter at any time before submissions close.', method: :delete }
         - if @challenge.allow_multiple_entries?
           / small Multiple entries are allowed.
-          = link_to 'Enter an additional project', '', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge'
+          = link_to 'Enter an additional project', 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge'
 
     - cache ["challenge-#{@challenge.id}-status"], tag: ["challenge-#{@challenge.id}-status"] do
 
@@ -38,7 +38,7 @@
           - if @challenge.idea_survey_link.present?
             = link_to @challenge.enter_button_text, @challenge.idea_survey_link, class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge-btn', target: '_blank'
           - else
-            = link_to @challenge.enter_button_text, '', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge enter-challenge-btn'
+            = link_to @challenge.enter_button_text, 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge enter-challenge-btn'
 
         - elsif @challenge.voting_active?
           p.status
