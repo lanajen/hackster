@@ -5,14 +5,23 @@ class ChallengeEntryObserver < ActiveRecord::Observer
   end
 
   def after_update record
-    if record.workflow_state_changed? and record.workflow_state == 'qualified'
-      after_approve record
+    if record.workflow_state_changed?
+      if record.workflow_state == 'qualified'
+        after_approve record
+      elsif record.workflow_state == 'unqualified'
+        after_disqualify record
+      end
     end
   end
 
   def after_approve record
     expire_cache record
     NotificationCenter.notify_all :approved, :challenge_entry, record.id
+  end
+
+  def after_disqualify record
+    expire_cache record
+    NotificationCenter.notify_all :rejected, :challenge_entry, record.id
   end
 
   def after_give_award record
