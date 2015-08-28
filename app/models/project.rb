@@ -55,7 +55,7 @@ class Project < ActiveRecord::Base
   has_many :assignments, through: :project_collections, source: :collectable, source_type: 'Assignment'
   has_many :awards
   has_many :build_logs, as: :threadable, dependent: :destroy
-  has_many :challenge_entries
+  has_many :challenge_entries, dependent: :destroy
   has_many :comments, -> { order created_at: :asc }, as: :commentable, dependent: :destroy
   # below is a hack because commenters try to add order by comments created_at and pgsql doesn't like it
   has_many :comments_copy, as: :commentable, dependent: :destroy, class_name: 'Comment'
