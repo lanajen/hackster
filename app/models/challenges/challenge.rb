@@ -217,7 +217,7 @@ class Challenge < ActiveRecord::Base
   end
 
   def sync_mailchimp!
-    MailchimpListManager.new(mailchimp_api_key, mailchimp_list_id).add(participants)
+    MailchimpListManager.new(mailchimp_api_key, mailchimp_list_id).add(participants.reorder(''))
     update_attribute :mailchimp_last_synced_at, Time.now
   end
 
