@@ -294,15 +294,15 @@ Rewardino::Event.create!({
 #   models_method: -> (user) { user.invitees.invitation_accepted }
 # })
 
-Rewardino::Event.create!({
-  code: :new_comment,
-  name: 'New comment',
-  description: "You posted a new comment",
-  points: 10,
-  date_method: -> (comment) { comment.created_at },
-  # model_table: 'comments',
-  models_method: -> (user) { user.comments.where(commentable_type: 'Project') }
-})
+# Rewardino::Event.create!({
+#   code: :new_comment,
+#   name: 'New comment',
+#   description: "You posted a new comment",
+#   points: 10,
+#   date_method: -> (comment) { comment.created_at },
+#   # model_table: 'comments',
+#   models_method: -> (user) { user.comments.where(commentable_type: 'Project') }
+# })
 
 Rewardino::Event.create!({
   code: :new_respect,
