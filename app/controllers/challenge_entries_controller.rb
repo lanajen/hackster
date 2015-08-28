@@ -9,6 +9,10 @@ class ChallengeEntriesController < ApplicationController
     @entries = @challenge.entries.joins(:project, :user).includes(:prizes, user: :avatar, project: :team).order(:created_at)
     @challenge = @challenge.decorate
 
+    @approved_entries_count = @entries.where(workflow_state: ChallengeEntry::APPROVED_STATES).count
+    @rejected_entries_count = @entries.where(workflow_state: 'unqualified').count
+    @new_entries_count = @entries.where(workflow_state: 'new').count
+
     # determines how many of each prizes were awarded and how many are left
     if @challenge.judging?
       assigned_prizes = {}
