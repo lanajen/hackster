@@ -15,7 +15,7 @@ class ChallengesController < ApplicationController
     meta_desc "Build the best hardware projects and win awesome prizes!"
 
     @active_challenges = Challenge.public.active.ends_first
-    @past_challenges = Challenge.public.past.ends_first
+    @past_challenges = Challenge.public.past.ends_last
   end
 
   def show

@@ -112,6 +112,10 @@ class Challenge < ActiveRecord::Base
     order(end_date: :asc)
   end
 
+  def self.ends_last
+    order(end_date: :desc)
+  end
+
   def self.past
     where workflow_state: PAST_STATES
   end
