@@ -364,7 +364,7 @@ HackerIo::Application.routes.draw do
       get 'dallas', to: redirect('/hackathons/hardware-weekend/dallas')
       get 'boston', to: redirect('/hackathons/hardware-weekend/boston')
       get 'brooklyn', to: redirect('/hackathons/hardware-weekend/brooklyn')
-      get 'washington', to: redirect('/hackathons/hardware-weekend/washington')
+      get 'dc', to: redirect('/hackathons/hardware-weekend/washington')
       get 'nyc', to: redirect('/hackathons/hardware-weekend/new-york-city')
       get '/h/pebblerocksboulder', to: redirect('/hackathons/pebble-rocks-boulder/a-pebble-hackathon')
 

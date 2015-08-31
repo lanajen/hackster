@@ -1,5 +1,2 @@
-class Channel9Embed < BaseEmbed
-  # def format
-  #   'four-by-three'
-  # end
+class Channel9Embed < VideoEmbed
 end
