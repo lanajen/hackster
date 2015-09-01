@@ -6,4 +6,4 @@ h2
     strong==> @group.date_range
     ' in
     strong==> @group.short_address
-p= @group.mini_resume
+p= @group.hackathon.try(:mini_resume)

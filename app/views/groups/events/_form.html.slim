@@ -68,8 +68,8 @@
         span.input-group-addon hackster.io/hackathons/#{@event.hackathon.user_name.truncate(10)}/
         = f.input_field :user_name
       / = f.input :email
-      / # = f.input :mini_resume, label: 'One line description', as: :text, input_html: { rows: 4 },
-        hint: 'Maximum 140 characters'
+      = f.input :mini_resume, label: 'Event info', as: :text, input_html: { rows: 4 },
+        hint: 'Maximum 140 characters. Will use hackathon one line description if empty.'
 
       = f.input :start_date_dummy, label: 'Starts on', wrapper_html: { id: 'start_date_dummy', class: 'datetimepicker', autocomplete: 'off' } do
         #datepicker.input-group
