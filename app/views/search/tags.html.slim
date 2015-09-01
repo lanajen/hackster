@@ -18,12 +18,12 @@
       hr
         .clearfix
 
-  - if params[:q].present?
-    - if @results.any?
+  - if @tag.present?
+    - if @projects.any?
       .row
-        - @results.each do |project|
+        - @projects.each do |project|
           = render partial: "projects/project_thumb", locals: { project: project.decorate, ref: 'tags' }
-      .text-center= will_paginate @results
+      .text-center= will_paginate @projects
     - else
       .text-center
         .box
