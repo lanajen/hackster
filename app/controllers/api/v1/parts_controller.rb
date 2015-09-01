@@ -8,7 +8,7 @@ class Api::V1::PartsController < Api::V1::BaseController
     end
 
     term = params[:type].gsub(/Part/, '').downcase
-    term = {
+    human_term = {
       'hardware' => 'component',
       'software' => 'app',
       'tool' => 'tool',
@@ -16,9 +16,9 @@ class Api::V1::PartsController < Api::V1::BaseController
 
     if parts.any?
       parts_json = parts.map{|p| { id: p.id, text: p.full_name } }
-      parts_json << { id: '-1', text: "Can't find the right one? <a href='#' class='new-part-modal-toggle btn btn-sm btn-success' data-target= '#new-#{term}-modal' data-toggle='modal' data-value='#{params[:q]}'>Create a new #{term}</a>".html_safe, disabled: true }
+      parts_json << { id: '-1', text: "Can't find the right one? <a href='javascript:void(0)' class='new-part-modal-toggle btn btn-sm btn-success' data-target='#new-#{term}-modal' data-toggle='modal' data-value='#{params[:q]}'>Create a new #{human_term}</a>".html_safe, disabled: true }
     else
-      parts_json = [{ id: '-1', text: "No results for \"#{params[:q]}\". <a href='#' class='new-part-modal-toggle btn btn-sm btn-success' data-target= '#new-#{term}-modal' data-toggle='modal' data-value='#{params[:q]}'>Create a new #{term}</a>".html_safe, disabled: true }]
+      parts_json = [{ id: '-1', text: "No results for \"#{params[:q]}\". <a href='javascript:void(0)' class='new-part-modal-toggle btn btn-sm btn-success' data-target='#new-#{term}-modal' data-toggle='modal' data-value='#{params[:q]}'>Create a new #{human_term}</a>".html_safe, disabled: true }]
     end
 
     render json: parts_json, root: false
