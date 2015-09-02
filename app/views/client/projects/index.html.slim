@@ -3,6 +3,25 @@
   = auto_discovery_link_tag :rss, projects_path(format: :rss, sort: 'recent'), title: "Most recent projects - #{site_name}"
   = auto_discovery_link_tag :atom, projects_path(format: :atom, sort: 'recent'), title: "Most recent projects - #{site_name}"
 
+- if current_platform.name == 'Microsoft' and params[:controller] == 'client/projects' and params[:action] == 'index'
+  = content_for :head_top do
+    <!-- Google Analytics Content Experiment code -->
+    javascript:
+      function utmx_section(){}function utmx(){}(function(){var
+      k='72030454-2',d=document,l=d.location,c=d.cookie;
+      if(l.search.indexOf('utm_expid='+k)>0)return;
+      function f(n){if(c){var i=c.indexOf(n+'=');if(i>-1){var j=c.
+      indexOf(';',i);return escape(c.substring(i+n.length+1,j<0?c.
+      length:j))}}}var x=f('__utmx'),xx=f('__utmxx'),h=l.hash;d.write(
+      '<sc'+'ript src="'+'http'+(l.protocol=='https:'?'s://ssl':
+      '://www')+'.google-analytics.com/ga_exp.js?'+'utmxkey='+k+
+      '&utmx='+(x?x:'')+'&utmxx='+(xx?xx:'')+'&utmxtime='+new Date().
+      valueOf()+(h?'&utmxhash='+escape(h.substr(1)):'')+
+      '" type="text/javascript" charset="utf-8"><\/sc'+'ript>')})();
+    javascript:
+      utmx('url','A/B');
+    <!-- End of Google Analytics Content Experiment code -->
+
 = inserts_stats_for current_platform
 
 - content_for :head do
@@ -78,6 +97,16 @@
           li*{ class: "#{'active' if params[:by] == '7days'}" } = link_to 'Last 7 days', root_path(by: '7days', sort: params[:sort])
           li*{ class: "#{'active' if params[:by] == '30days'}" } = link_to 'Last 30 days', root_path(by: '30days', sort: params[:sort])
           / li*{ class: "#{'active' if params[:by] == 'wip'}" } = link_to 'Work in progress', root_path(by: 'wip', sort: params[:sort])
+
+  - if params[:show_tags]
+    .row
+      css:
+        @media (min-width: 768px) { .suggestions { max-height:30px;overflow:hidden; } }
+      .col-sm-12.suggestions
+        h3 Popular tags:
+        ul.list-unstyled.list-inline
+          - @tags.each do |tag|
+            li= link_to tag, tag_path(tag)
 
   - if @projects.any?
     .row.thumb-list

@@ -21,6 +21,10 @@ class Client::ProjectsController < Client::BaseController
     @announcement = current_platform.announcements.current
     @challenge = current_platform.active_challenge ? current_platform.challenges.active.first : nil
 
+    if params[:show_tags]
+      @tags = Tag.joins("INNER JOIN projects ON projects.id = tags.taggable_id AND tags.taggable_type = 'Project'").joins("INNER JOIN project_collections ON project_collections.project_id = projects.id").where(project_collections: { collectable_id: current_platform.id, collectable_type: 'Group', workflow_state: ProjectCollection::VALID_STATES}).where.not("LOWER(tags.name) = ?", current_platform.name.downcase).group("LOWER(tags.name)").order("count_all DESC").limit(10).count.keys
+    end
+
     respond_to do |format|
       format.html { render layout: 'whitelabel' }
       format.atom { render layout: false }
