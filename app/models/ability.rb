@@ -122,18 +122,12 @@ class Ability
     can [:manage, :enter_in_challenge], Project do |project|
       @user.can? :manage, project.team
     end
-    cannot :update, Project
-    can :update, Project do |project|
-      project.unlocked? and @user.can? :manage, project
-    end
+    cannot :edit_locked, Project
     can :read, Project do |project|
-      project.private? and @user.linked_to_project_via_group? project
+      project.private? and @user.is_staff? project
     end
     can [:update_team, :update_widgets, :comment], Project do |project|
       @user.can? :manage, project
-    end
-    can :comment_privately, Project do |project|
-      project.assignment.present? and @user.is_staff? project
     end
 
     %w(read edit destroy manage).each do |perm|

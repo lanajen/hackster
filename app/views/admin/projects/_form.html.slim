@@ -68,8 +68,8 @@
         = f.input :private, inline_label: 'Make this project private', label: false
         = f.input :hide, inline_label: 'Hide this project from search', label: false
         = f.input :locked, inline_label: 'Should this project be locked for changes?', label: false, as: :boolean
-        = f.input :featured, inline_label: 'Feature this project', label: false
-        = f.input :featured_date, label: 'Feature date'
+        / # = f.input :featured, inline_label: 'Feature this project', label: false
+        / # = f.input :featured_date, label: 'Feature date'
         = f.input :locale, collection: I18n.available_locales.select{|v| v.length == 2 }
 
         / = f.input :current, as: :boolean, label: false, inline_label: 'Currently working on it'

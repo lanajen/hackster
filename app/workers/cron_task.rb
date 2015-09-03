@@ -76,10 +76,9 @@ class CronTask < BaseWorker
   end
 
   def lock_assignment
-    Assignment.where("assignments.submit_by_date < ?", Time.now).each do |assignment|
-      assignment.projects.each do |project|
-        project.locked = true
-        project.save
+    Assignment.pending_grading.each do |assignment|
+      assignment.projects.submitted.each do |project|
+        project.update_attribute :locked, true
       end
     end
   end

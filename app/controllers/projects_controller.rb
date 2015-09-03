@@ -48,8 +48,6 @@ class ProjectsController < ApplicationController
     end
 
     @can_edit = (user_signed_in? and current_user.can? :edit, @project)
-    @can_update = (@can_edit and current_user.can? :update, @project)
-    @locked = (!@can_edit and @project.assignment.present? and @project.assignment.grading_activated? and @project.assignment.private_grades and cannot? :manage, @project.assignment)
 
     @challenge_entries = @project.challenge_entries.where(workflow_state: ChallengeEntry::APPROVED_STATES).includes(:challenge).includes(:prizes)
     @communities = @project.groups.where.not(groups: { type: 'Event' }).includes(:avatar).order(full_name: :asc)
@@ -206,6 +204,8 @@ class ProjectsController < ApplicationController
   end
 
   def edit
+    redirect_to @project, alert: "Your project is locked and cannot be edited at this time." if @project.locked? and !current_user.try(:is?, :admin)
+
     title 'Edit project'
     initialize_project
     @team = @project.team
@@ -292,10 +292,16 @@ class ProjectsController < ApplicationController
 
   def submit
     authorize! :edit, @project
+    msg = 'Your assignment has been submitted. '
     @project.assignment_submitted_at = Time.now
-    @project.locked = true if @project.assignment.past_due?
+    if @project.assignment.past_due?
+      @project.locked = true
+      msg += 'The project will be locked for modifications until grades are sent out.'
+    else
+      msg += "You can still make modifications to the project until the submission deadline on #{l @project.assignment.submit_by_date.in_time_zone(PDT_TIME_ZONE)} PT."
+    end
     @project.save
-    redirect_to @project, notice: 'Your assignment has been submitted. The project will be locked for modifications until grades are sent out.'
+    redirect_to @project, notice: msg
   end
 
   private

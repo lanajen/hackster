@@ -40,7 +40,7 @@ gem 'reverse_markdown'
 
 # gem 'autoscaler', '0.9.0', groups: :staging
 gem 'active_model_serializers', '0.8.3'
-gem 'activerecord-session_store'
+gem 'ambry', '~> 0.3.0'
 gem 'auto_html', '1.6.3'
 gem 'aws-sdk', '1.33.0'
 gem 'bootstrap3-datetimepicker-rails', '3.1.3'
@@ -101,9 +101,7 @@ gem 'rest-client', '1.6.7'
 # gem 'rewardino', '0.0.1'
 # gem 'ruby-filemagic', '0.6.3'  # can't get it to install on heroku
 gem 'rubyzip', '1.1.7'
-gem 'ambry', '~> 0.3.0'
 gem 'sanitize', '2.0.6'
-gem 'sendgrid', '1.2.0'
 gem 'sidekiq', '3.2.5'
 gem 'sidekiq-status', '0.5.1'
 gem 'sidekiq-failures', '0.4.3'

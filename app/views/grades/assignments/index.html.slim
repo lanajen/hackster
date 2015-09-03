@@ -1,9 +1,15 @@
+p
+  strong= link_to @assignment.promotion.name, promotion_path(@assignment.promotion), target: '_blank'
+p
+  ' Grading assignment
+  = link_to @assignment.name, assignment_path(@assignment), target: '_blank'
+
 - if @assignment.private_grades
   .row
     .col-xs-12
       .alert.alert-warning
         i.fa.fa-lock>
-        ' Grades are currently only visible to staff.
+        ' Grades are currently only visible to staff and submitted projects are locked.
         - if @assignment.graded?
           = link_to 'Release grades to students', "/assignments/#{@assignment.id}?assignment[private_grades]=0", class: 'btn btn-warning btn-sm', method: :patch
         - else

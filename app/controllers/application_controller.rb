@@ -112,7 +112,7 @@ class ApplicationController < ActionController::Base
   rescue_from CanCan::AccessDenied do |exception|
     if current_user
       set_flash_message :alert, exception.message
-      redirect_to session[:user_return_to_if_disallowed] || root_url
+      redirect_to session[:user_return_to_if_disallowed].presence || root_url
     else
       redirect_to new_user_session_url
     end

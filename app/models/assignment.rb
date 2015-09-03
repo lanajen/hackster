@@ -10,7 +10,11 @@ class Assignment < ActiveRecord::Base
   belongs_to :promotion
   has_many :grades, through: :projects
   has_many :project_collections, as: :collectable
-  has_many :projects, through: :project_collections
+  has_many :projects, through: :project_collections do
+    def submitted
+      where.not assignment_submitted_at: nil
+    end
+  end
   has_one :document, as: :attachable, dependent: :destroy
   validates :promotion_id, :name, presence: true
   attr_accessible :name, :document_id, :grading_type, :graded, :private_grades,
@@ -22,6 +26,10 @@ class Assignment < ActiveRecord::Base
   hstore_column :properties, :hide_all, :boolean
 
   before_create :generate_id
+
+  def self.pending_grading
+    where("assignments.submit_by_date < ?", Time.now).where.not(grading_type: 'none').where(private_grades: true)
+  end
 
   def document_id=(val)
     self.document = Document.find_by_id(val)
