@@ -25,6 +25,12 @@
               => link_to action.url, action.url, target: '_blank'
               small.text-muted
                 | (we'll check manually after you've placed the order)
+          - when 'twitter'
+            li
+              ' Follow #{action.handle} on Twitter
+              a class="twitter-follow-button" href="https://twitter.com/#{action.handle}" data-show-count="false" Follow #{action.handle}
+              javascript:
+                !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
 
       ' All done?
       = link_to 'Add to cart', store_cart_index_path(store_product_id: product.id), class: 'btn btn-primary btn-sm', data: { method: :post }
