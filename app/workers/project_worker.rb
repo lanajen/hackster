@@ -7,7 +7,7 @@ class ProjectWorker < BaseWorker
     if project.private?
       project.platforms.delete_all
     else
-      platforms = project.platforms = Platform.joins(:platform_tags).references(:tags).where("LOWER(tags.name) IN (?)", project.platform_tags_cached.map{|t| t.downcase })
+      platforms = project.platforms = Platform.joins(:platform_tags).references(:tags).where("LOWER(tags.name) IN (?)", project.platform_tags_cached.map{|t| t.downcase }).uniq
 
       project.sub_platforms.each do |sub_platform|
         project.platforms << sub_platform unless sub_platform.in? platforms

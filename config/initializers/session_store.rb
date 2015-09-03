@@ -1,5 +1,12 @@
-# Be sure to restart your server when you modify this file.
 
-HackerIo::Application.config.session_store :cookie_store, key: '_hackerio_session', domain: APP_CONFIG['default_domain']
-# HackerIo::Application.config.session_store :active_record_store, key: '_hackerio_session', domain: APP_CONFIG['default_domain']
-# ActionDispatch::Session::ActiveRecordStore.session_class = Session
+session_key = '_hackerio_session'
+# dev needs a different key otherwise it creates conflicts with prod and staging
+# which share the same host (hackster.io).
+# this is due to keys being stored in the DB for more controlled expiration.
+# prod and staging are sharing the same DB, dev has its own, so when a prod/staging
+# key is seen by dev it's considered illegal since dev doesn't have it in DB,
+# and it resets the session. In turn, prod/staging will consider dev key illegal too.
+# outcome: can't comfortably switch from dev to prod without having to constantly
+# re-log in.
+session_key += '_dev' if Rails.env.dev?
+HackerIo::Application.config.session_store :cookie_store, key: session_key, domain: APP_CONFIG['default_domain']
