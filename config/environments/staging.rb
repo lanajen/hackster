@@ -87,4 +87,8 @@ HackerIo::Application.configure do
   # if ENV["MEMCACHEDCLOUD_SERVERS"]
   #   config.cache_store = :dalli_store, ENV["MEMCACHEDCLOUD_SERVERS"].split(','), { :username => ENV["MEMCACHEDCLOUD_USERNAME"], :password => ENV["MEMCACHEDCLOUD_PASSWORD"] }
   # end
+
+  config.middleware.insert_after(::Rack::Runtime, "::Rack::Auth::Basic", "Restricted access") do |u, p|
+    [u, p] == [ENV['SITE_USERNAME'], ENV['SITE_PASSWORD']]
+  end
 end
