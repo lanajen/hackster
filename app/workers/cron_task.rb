@@ -2,10 +2,6 @@ class CronTask < BaseWorker
   # @queue = :low
   sidekiq_options queue: :cron, retry: 0
 
-  def expire_old_sessions
-    Session.where("created_at < ?", 30.days.ago).delete_all
-  end
-
   def cleanup_duplicates
     ProjectCollection.select("id, count(id) as quantity").group(:project_id, :collectable_id, :collectable_type).having("count(id) > 1").size.each do |c, count|
       ProjectCollection.where(:project_id => c[0], :collectable_id => c[1], :collectable_type => c[2]).limit(count-1).each{|cp| cp.delete }
@@ -64,7 +60,6 @@ class CronTask < BaseWorker
   end
 
   def launch_daily_cron
-    CronTask.perform_async 'expire_old_sessions'
     CronTask.perform_async 'generate_users'
     CronTask.perform_async 'update_mailchimp'
     CronTask.perform_async 'update_mailchimp_for_challenges'

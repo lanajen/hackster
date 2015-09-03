@@ -4,7 +4,7 @@ class UserObserver < ActiveRecord::Observer
       record.create_reputation
       unless record.invited_to_sign_up?
         advertise_new_user record unless record.simplified_signup?
-        record.send_confirmation_instructions unless record.invitation_accepted?
+        record.send_confirmation_instructions unless record.invitation_accepted? or record.skip_registration_confirmation
       end
     end
   end
