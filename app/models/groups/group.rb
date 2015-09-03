@@ -16,6 +16,7 @@ class Group < ActiveRecord::Base
     'members' => :most_members,
     'name' => :alphabetical_sorting,
     'projects' => :most_projects,
+    'last_project' => :most_recent_project,
   }
 
   include EditableSlug
@@ -63,10 +64,11 @@ class Group < ActiveRecord::Base
   has_websites :websites, :facebook, :twitter, :linked_in, :google_plus,
     :youtube, :website, :blog, :github, :instagram, :flickr, :reddit, :pinterest
 
+  hstore_column :hproperties, :default_project_sorting, :string, default: 'trending'
   hstore_column :hproperties, :hidden, :boolean, default: true
+  hstore_column :hproperties, :last_project_time, :datetime, order: [{ sort_by: :desc, method_name: :most_recent_project }]
   hstore_column :hproperties, :slack_token, :string
   hstore_column :hproperties, :slack_hook_url, :string
-  hstore_column :hproperties, :default_project_sorting, :string, default: 'trending'
 
   counters_column :hcounters_cache
   has_counter :members, 'members.count', accessor: false

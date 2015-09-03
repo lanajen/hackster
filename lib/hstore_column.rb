@@ -92,7 +92,41 @@ module HstoreColumn
           send attribute
         end
       end
+
+      if options[:order]
+        options[:order].each do |order|
+          sort_by = order[:sort_by] || :asc
+          method_name = order[:method_name] || construct_order_method_name(attribute, sort_by, type)
+
+          sort_by = sort_by.to_s.upcase
+          cast_type = cast_type_for type
+
+          define_singleton_method method_name do
+            order "CAST(groups.hproperties -> '#{attribute}' AS #{cast_type}) #{sort_by} NULLS LAST"
+          end
+        end
+      end
     end
+
+    private
+      def cast_type_for type
+        case type
+        when :boolean
+          'BOOLEAN'
+        when :datetime, :integer
+          'INTEGER'
+        end
+      end
+
+      def construct_order_method_name attribute, sort_by, type
+        qualifier = case type
+        when :datetime
+          sort_by == :asc ? 'most_recent' : 'oldest'
+        when :integer
+          sort_by == :asc ? 'most' : 'least'
+        end
+        "#{qualifier}_#{attribute}"
+      end
   end
 
   module InstanceMethods

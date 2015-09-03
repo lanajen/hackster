@@ -2,6 +2,7 @@ class Platform < Collection
   include Checklist
   include Taggable
 
+  DEFAULT_SORT = 'last_project'
   MINIMUM_FOLLOWERS = 5
   MINIMUM_FOLLOWERS_STRICT = 25
   MODERATION_LEVELS = {
