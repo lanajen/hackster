@@ -1,5 +1,4 @@
 source 'http://rubygems.org'
-source 'https://rails-assets.org'
 ruby '2.2.2'
 
 gem 'rails', '4.2.3'
@@ -26,10 +25,12 @@ gem 'zocial-rails', '1.0.2'
 gem "browserify-rails", '1.0.1'
 
 # bower
-gem 'rails-assets-medium-editor', '1.8.14'
-gem 'rails-assets-underscore', '1.7.0'
-gem 'rails-assets-fluxxor', '1.5.2'
-gem 'rails-assets-momentjs', '2.9.0'
+source 'https://rails-assets.org' do
+  gem 'rails-assets-medium-editor', '1.8.14'
+  gem 'rails-assets-underscore', '1.7.0'
+  gem 'rails-assets-fluxxor', '1.5.2'
+  gem 'rails-assets-momentjs', '2.9.0'
+end
 
 gem 'redcarpet', '3.3.2'
 # gem 'github-markdown'
@@ -69,6 +70,7 @@ gem 'impressionist', '1.5.1'
 gem 'imgix', '0.3.1'
 gem 'ipcat', '2.0.1'
 gem 'jbuilder', '2.3.0'
+gem 'mandrill_dm', '1.2.0'
 gem 'mini_magick', '3.7.0'
 gem 'mixpanel', '4.0.8'
 gem 'momentjs-rails', '2.8.1'

@@ -361,6 +361,11 @@ GEM
       nokogiri (>= 1.5.9)
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
+    mandrill-api (1.0.53)
+      excon (>= 0.16.0, < 1.0)
+      json (>= 1.7.7, < 2.0)
+    mandrill_dm (1.2.0)
+      mandrill-api (~> 1.0.53)
     memoizable (0.4.2)
       thread_safe (~> 0.3, >= 0.3.1)
     memory_profiler (0.9.4)
@@ -720,6 +725,7 @@ DEPENDENCIES
   jquery-ui-rails (= 5.0.5)
   mail (>= 2.6.3)
   mailcatcher!
+  mandrill_dm (= 1.2.0)
   mini_magick (= 3.7.0)
   mixpanel (= 4.0.8)
   momentjs-rails (= 2.8.1)
@@ -744,10 +750,10 @@ DEPENDENCIES
   rabl (= 0.11.6)
   rack-attack (= 4.1.0)
   rails (= 4.2.3)
-  rails-assets-fluxxor (= 1.5.2)
-  rails-assets-medium-editor (= 1.8.14)
-  rails-assets-momentjs (= 2.9.0)
-  rails-assets-underscore (= 1.7.0)
+  rails-assets-fluxxor (= 1.5.2)!
+  rails-assets-medium-editor (= 1.8.14)!
+  rails-assets-momentjs (= 2.9.0)!
+  rails-assets-underscore (= 1.7.0)!
   rails-observers (= 0.1.2)
   rails_12factor
   react-rails (~> 1.0)

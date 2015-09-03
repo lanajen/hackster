@@ -6,19 +6,17 @@ class GenericMailer < BaseMailer
       message: @message
     }
 
-    sendgrid_category @message.message_type
-
     headers = {
       subject: substitute_in(@email.subject),
       from: @message.from_email.present? ? "#{@message.name}<#{@message.from_email}>" : DEFAULT_EMAIL,
       reply_to: @message.from_email.present? ? "#{@message.name}<#{@message.from_email}>" : DEFAULT_EMAIL,
+      tags: [@message.message_type],
     }
 
     if @message.recipients.present?
       recipients = @message.recipients.split(/(\s+|;)/)
       recipients = recipients.select { |e| e.match(/^\b[a-z0-9._%-]+@[a-z0-9.-]+\.[a-z]{2,4}\b$/) }
-      sendgrid_recipients recipients
-      headers[:to] = DEFAULT_EMAIL
+      headers[:to] = recipients
     else
       headers[:to] = @message.to_email || DEFAULT_EMAIL
     end
