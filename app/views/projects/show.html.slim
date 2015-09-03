@@ -319,8 +319,7 @@
                   span
                     p
                       i.fa.fa-list>
-                      ' Checklist
-                      = link_to "#{@project.checklist_completion}% complete", edit_project_path(@project, anchor: 'publish'), class: 'alert-link'
+                      = link_to "Checklist: #{@project.checklist_completion}% complete", edit_project_path(@project, anchor: 'publish'), class: 'alert-link'
                   .progress style="margin-bottom: 0"
                     .progress-bar class="progress-bar-#{alert_color}" role="progressbar" style="width: #{@project.checklist_completion}%;"
               - if @project.public?
