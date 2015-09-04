@@ -535,12 +535,12 @@ class Project < ActiveRecord::Base
   end
 
   def set_collection_id id, collection_type
-    self.send("#{collection_type}s").delete_all
+    self.send("#{collection_type}s").destroy_all
     self.send("#{collection_type}s") << collection_type.camelize.constantize.find_by_id(id) if id.to_i != 0
   end
 
   def set_collection collection, collection_type
-    self.send("#{collection_type}s").delete_all
+    self.send("#{collection_type}s").destroy_all
     self.send("#{collection_type}s") << collection if collection
   end
 

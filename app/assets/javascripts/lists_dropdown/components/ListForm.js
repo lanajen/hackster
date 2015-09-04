@@ -58,7 +58,7 @@ const ListForm = React.createClass({
     return (
       <form onSubmit={this.handleSubmit}>
         <div className='input-group'>
-          <input type='text' ref='name' className='form-control' placeholder='Name of new list' onChange={this.handleInputChange} />
+          <input type='text' ref='name' className='form-control' placeholder='Name of new list (eg: "To Do")' onChange={this.handleInputChange} />
           <span className='input-group-btn'>
             <button disabled={!this.state.canSubmit} className='btn btn-primary'>{button}</button>
           </span>
