@@ -3,7 +3,7 @@
   = auto_discovery_link_tag :rss, projects_path(format: :rss, sort: 'recent'), title: "Most recent projects - #{site_name}"
   = auto_discovery_link_tag :atom, projects_path(format: :atom, sort: 'recent'), title: "Most recent projects - #{site_name}"
 
-- if current_platform.name == 'Microsoft' and params[:controller] == 'client/projects' and params[:action] == 'index'
+- if Rails.env.production? and current_platform.name == 'Microsoft' and params[:controller] == 'client/projects' and params[:action] == 'index'
   = content_for :head_top do
     <!-- Google Analytics Content Experiment code -->
     javascript:
