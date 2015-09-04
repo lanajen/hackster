@@ -1,14 +1,18 @@
 class Project < ActiveRecord::Base
 
+  CONTENT_TYPES = {
+    'Getting started guide' => :getting_started,
+    'Showcase only' => :showcase,
+    'Teardown/Unboxing' => :teardown,
+    'Tutorial' => :tutorial,
+  }
   DEFAULT_NAME = 'Untitled'
-
   DIFFICULTIES = {
     'Beginner' => :beginner,
     'Intermediate' => :intermediate,
     'Advanced' => :advanced,
     'Hardcore maker' => :hardcore,
   }
-
   FILTERS = {
     '7days' => :last_7days,
     '30days' => :last_30days,
@@ -128,6 +132,7 @@ class Project < ActiveRecord::Base
 
   validates :name, length: { in: 3..60 }, allow_blank: true
   validates :one_liner, :logo, presence: true, if: proc { |p| p.force_basic_validation? }
+  validates :content_type, presence: true
   validates :one_liner, length: { maximum: 140 }
   validates :new_slug,
     format: { with: /\A[a-z0-9_\-]+\z/, message: "accepts only downcase letters, numbers, dashes '-' and underscores '_'." },
@@ -168,6 +173,7 @@ class Project < ActiveRecord::Base
 
   store :properties, accessors: []
   hstore_column :properties, :celery_id, :string
+  hstore_column :properties, :content_type, :string, default: :tutorial
   hstore_column :properties, :guest_twitter_handle, :string
   hstore_column :properties, :locked, :boolean
   hstore_column :properties, :private_issues, :boolean

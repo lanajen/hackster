@@ -22,6 +22,7 @@
             = f.input :type, as: :hidden, input_html: { value: 'HardwarePart' }
             = f.input :name, input_html: { class: 'reset' }
             = f.input :store_link, label: 'Link to store page', input_html: { class: 'reset' }
+            / # = f.input :platform_id, collection: Platform.public.featured.order("LOWER(groups.full_name)"), label: 'Made by', hint: 'Leave blank if not in the list.', input_html: { class: 'reset' }
 
             .row
               .col-md-8.col-md-offset-4

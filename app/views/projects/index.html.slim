@@ -34,7 +34,6 @@
               li*{ class: "#{'active' if params[:by] == '30days'}" } = link_to 'Last 30 days', projects_path(by: '30days', sort: params[:sort])
               / li*{ class: "#{'active' if params[:by] == 'wip'}" } = link_to 'Work in progress', projects_path(by: 'wip', sort: params[:sort])
 
-          - if current_user.try(:is?, :admin)
           .btn-group
             button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
               ' Difficulty

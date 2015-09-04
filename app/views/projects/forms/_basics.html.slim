@@ -23,6 +23,7 @@
 
       .box
         .box-content
+          = f.input :content_type, collection: Project::CONTENT_TYPES, label: 'Project type', include_blank: false
           = f.input :name, label: "Project name", hint: 'Make it sound cool!', wrapper_html: { 'data-anchor' => 'name' }
           = f.input :one_liner, as: :text, input_html: { rows: 3 },
             hint: "Describe your project in one short sentence", label: 'Elevator pitch', wrapper_html: { 'data-anchor' => 'one_liner' }
