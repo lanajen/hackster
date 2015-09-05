@@ -6,6 +6,7 @@ class Project < ActiveRecord::Base
     'Teardown/Unboxing' => :teardown,
     'Tutorial' => :tutorial,
   }
+  DEFAULT_CONTENT_TYPE = :tutorial
   DEFAULT_NAME = 'Untitled'
   DIFFICULTIES = {
     'Beginner' => :beginner,
