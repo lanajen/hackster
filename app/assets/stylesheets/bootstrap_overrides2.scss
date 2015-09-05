@@ -183,10 +183,7 @@ pre {
   border-radius: 0;
   color: #fff;
   padding: 10px 15px;
-}
-pre {
-  code {
-    max-height: 400px;
-    overflow: scroll;
-  }
+  white-space: pre-wrap;
+  max-height: 400px;
+  overflow: scroll;
 }
