@@ -99,7 +99,7 @@ class ApplicationController < ActionController::Base
   # end code for whitelabel
 
 
-  # unless Rails.application.config.consider_all_requests_local
+  unless Rails.application.config.consider_all_requests_local
     rescue_from Exception, with: :render_500
     rescue_from ActionController::RoutingError,
       ActionController::UnknownController,
@@ -107,7 +107,7 @@ class ApplicationController < ActionController::Base
       ActiveRecord::RecordNotFound,
       with: :render_404
     rescue_from ActionView::MissingTemplate, with: :render_404_with_log
-  # end
+  end
 
   rescue_from CanCan::AccessDenied do |exception|
     if current_user
