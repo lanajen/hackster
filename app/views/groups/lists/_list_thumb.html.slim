@@ -2,7 +2,7 @@
 
   .col-sm-4
     .thumb.list-thumb
-      .thumb-image.has-link-overlay style="background-image:url(#{list.decorate.cover_image})"
+      .thumb-image.has-link-overlay style="background-image:url('#{list.decorate.cover_image}')"
         = link_to '', list, class: 'link-overlay'
         .thumb-image-inner
           h4= link_to list.name, list
