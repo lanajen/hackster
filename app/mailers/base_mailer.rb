@@ -28,7 +28,7 @@ class BaseMailer < ActionMailer::Base
     def default_headers
       {
         from: @context[:from_email] || DEFAULT_EMAIL,
-        reply_to: @context[:from_email] || DEFAULT_EMAIL,
+        reply_to: @context[:reply_to].presence || @context[:from_email] || DEFAULT_EMAIL,
       }
     end
 

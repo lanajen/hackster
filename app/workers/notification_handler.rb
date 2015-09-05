@@ -198,9 +198,13 @@ class NotificationHandler
         end
       when :invited
         context[:model] = user = context[:user] = User.find(context_id)
-        context[:inviter] = user.invited_by if user.invited_by
+        if user.invited_by
+          inviter = context[:inviter] = user.invited_by
+          context[:reply_to] = inviter.email
+        end
       when :invitation
         context[:model] = invited = context[:invited] = User.find(context_id)
+        context[:reply_to] = invited.email
         context[:user] = invited.invited_by if invited.invited_by
       when :issue
         context[:model] = issue = context[:issue] = Issue.find(context_id)
@@ -223,7 +227,8 @@ class NotificationHandler
         context[:group] = group = member.group
         context[:project] = group.project if group.is? :team
         context[:user] = member.user
-        context[:inviter] = member.invited_by
+        inviter = context[:inviter] = member.invited_by
+        context[:reply_to] = inviter.email
       when :membership_request
         context[:model] = member = context[:member] = Member.find(context_id)
         context[:group] = group = member.group
