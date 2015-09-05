@@ -102,7 +102,7 @@ module HstoreColumn
           cast_type = cast_type_for type
 
           define_singleton_method method_name do
-            order "CAST(groups.hproperties -> '#{attribute}' AS #{cast_type}) #{sort_by} NULLS LAST"
+            order "CAST(#{table_name}.#{store_attribute} -> '#{attribute}' AS #{cast_type}) #{sort_by} NULLS LAST"
           end
         end
       end

@@ -41,8 +41,8 @@
             ul.dropdown-menu.pull-right
               li*{ class: "#{'active' if params[:difficulty] == nil}" } = link_to 'All', projects_path
               li*{ class: "#{'active' if params[:difficulty] == 'beginner'}" } = link_to 'Beginner', projects_path(difficulty: 'beginner')
-              li*{ class: "#{'active' if params[:difficulty] == 'advanced'}" } = link_to 'Advanced', projects_path(difficulty: 'advanced')
               li*{ class: "#{'active' if params[:difficulty] == 'intermediate'}" } = link_to 'Intermediate', projects_path(difficulty: 'intermediate')
+              li*{ class: "#{'active' if params[:difficulty] == 'advanced'}" } = link_to 'Advanced', projects_path(difficulty: 'advanced')
               li*{ class: "#{'active' if params[:difficulty] == 'hardcore'}" } = link_to 'Hardcore', projects_path(difficulty: 'hardcore')
       hr
         .clearfix
