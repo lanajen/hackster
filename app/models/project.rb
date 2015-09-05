@@ -132,7 +132,7 @@ class Project < ActiveRecord::Base
 
   validates :name, length: { in: 3..60 }, allow_blank: true
   validates :one_liner, :logo, presence: true, if: proc { |p| p.force_basic_validation? }
-  validates :content_type, presence: true
+  validates :content_type, presence: true, unless: proc { |p| p.external? }
   validates :one_liner, length: { maximum: 140 }
   validates :new_slug,
     format: { with: /\A[a-z0-9_\-]+\z/, message: "accepts only downcase letters, numbers, dashes '-' and underscores '_'." },
@@ -173,7 +173,7 @@ class Project < ActiveRecord::Base
 
   store :properties, accessors: []
   hstore_column :properties, :celery_id, :string
-  hstore_column :properties, :content_type, :string, default: :tutorial
+  hstore_column :properties, :content_type, :string
   hstore_column :properties, :guest_twitter_handle, :string
   hstore_column :properties, :locked, :boolean
   hstore_column :properties, :private_issues, :boolean

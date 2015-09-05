@@ -289,7 +289,7 @@ $(function () {
           if (input.parent().hasClass('input-group')) {
             errorMsg.insertAfter(input.parent());
           } else {
-            errorMsg.appendTo(input.closest('.form-group'));
+            errorMsg.appendTo(input.parent());
           }
         }
       }
