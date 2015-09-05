@@ -17,7 +17,7 @@ class AppLogger
     send_notification(log_line) if Rails.env == 'production'
   end
 
-  def send_notification
+  def send_notification log_line
     NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification'
   end
 

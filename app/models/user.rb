@@ -113,7 +113,6 @@ class User < ActiveRecord::Base
   has_many :replicated_projects, source_type: 'Project', through: :follow_relations, source: :followable
   has_many :respects, dependent: :destroy
   has_many :respected_projects, through: :respects, source: :respectable, source_type: 'Project'
-  has_many :sessions, dependent: :destroy
   has_many :team_grades, through: :teams, source: :grades
   has_many :teams, through: :group_ties, source: :group, class_name: 'Team'
   has_many :thoughts
