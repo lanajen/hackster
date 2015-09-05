@@ -338,6 +338,10 @@ class User < ActiveRecord::Base
     super
   end
 
+  def account_age
+    (Time.now - created_at).to_i / SECONDS_IN_A_DAY
+  end
+
   def add_confirmed_role
     self.roles = roles << 'confirmed_user'
     save
@@ -724,7 +728,6 @@ class User < ActiveRecord::Base
     {
       created_at: (invitation_accepted_at || created_at),
       comments_count: comments_count,
-      email: email,
       has_avatar: avatar.present?,
       has_full_name: full_name.present?,
       has_location: (country.present? || city.present?),
@@ -733,13 +736,11 @@ class User < ActiveRecord::Base
       is_admin: is?(:admin),
       live_projects_count: live_projects_count,
       mini_resume_size: mini_resume.try(:length) || 0,
-      name: full_name,
       projects_count: projects_count,
       project_views_count: project_views_count,
       respects_count: respects_count,
       skills_count: skill_tags_count,
       social_provider: authorizations.first.try(:provider),
-      username: user_name,
       websites_count: websites.values.reject{|v|v.nil?}.count,
     }
   end

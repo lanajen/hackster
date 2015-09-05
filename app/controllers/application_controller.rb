@@ -485,7 +485,7 @@ class ApplicationController < ActionController::Base
 
     def log_error exception
       message = "user: #{current_user.try(:user_name)} // request_url: #{request.url} // referrer: #{request.referrer} // request_params: #{request.params.to_s} // user_agent #{request.headers['HTTP_USER_AGENT']} // ip: #{request.remote_ip} // format: #{request.format} // HTTP_X_REQUESTED_WITH: #{request.headers['HTTP_X_REQUESTED_WITH']}"
-      AppLogger.new(message, 'error', 'controller', exception).log_and_notify
+      AppLogger.new(message, 'error', 'controller', exception).log_and_notify_with_stdout
     end
 
     def set_default_response_format

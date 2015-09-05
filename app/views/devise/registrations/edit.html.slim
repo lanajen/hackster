@@ -45,4 +45,29 @@
           .col-sm-4
             label.control-label Danger zone
           .col-sm-8
-            = link_to "Delete my account", registration_path(resource_name), data: { confirm: "Are you sure? There's no way back! All of account data including your projects will be deleted for ever.", method: :delete}, class: 'btn btn-danger btn-xs'
+            = link_to "Delete my account", 'javascript:void(0)', class: 'btn btn-danger btn-xs toggle-me', id: 'show-delete'
+            = form_tag registration_path(resource_name), method: :delete, style: 'display:none', class: 'toggle-me', id: 'delete-account-form' do
+
+              .form-group
+                label.control-label for='reason'
+                  => content_tag(:abbr, '*', title: 'required')
+                  | Before you go, could you tell us why you made this decision?
+                = text_area_tag :reason, nil, placeholder: 'Your feedback will help us improve the site', class: 'form-control'
+                span.help-block style='display:none;' Please enter a reason
+              = link_to "Oops, I don't want to delete my account", root_path, class: 'btn btn-default'
+              = submit_tag "I understand that I will lose all my data, confirm account deletion", class: 'btn btn-danger btn-xs'
+
+= content_for :js do
+
+  javascript:
+    $('#show-delete').on('click', function(e){
+      $('.toggle-me').toggle();
+    });
+    $('#delete-account-form').on('submit', function(e){
+      if ($('#reason').val() == '') {
+        e.preventDefault();
+        $('#delete-account-form .form-group')
+          .addClass('has-error')
+          .find('.help-block').show();
+      }
+    });

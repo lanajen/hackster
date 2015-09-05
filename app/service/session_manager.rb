@@ -22,7 +22,7 @@ class SessionManager
       @user.save
     end
   rescue => e
-    message = "Failed deactiving session for user '#{id}'."
+    message = "Failed deactiving session for user '#{@user.id}'."
     AppLogger.new(message, 'error', 'session_manager', e).log_and_notify
   end
 

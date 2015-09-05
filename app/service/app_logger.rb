@@ -11,8 +11,12 @@ class AppLogger
     end
   end
 
-  def log_and_notify
+  def log_and_notify_with_stdout
     write_to_stdout
+    log_and_notify
+  end
+
+  def log_and_notify
     log_line = create_log
     send_notification(log_line) if Rails.env == 'production'
   end

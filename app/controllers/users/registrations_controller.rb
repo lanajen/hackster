@@ -51,6 +51,17 @@ class Users::RegistrationsController < Devise::RegistrationsController
     end
   end
 
+  def destroy
+    # tracking their profile and why they're leaving
+    data = current_user.to_tracker_profile.merge({ age: current_user.account_age })
+    track_event 'Deleted account', data
+
+    message = "Closed account aged #{current_user.account_age} days, because \"#{params[:reason]}\"."
+    AppLogger.new(message, 'closed_account', 'registrations_controller').log_and_notify
+
+    super
+  end
+
   protected
     def after_sign_up_path_for(resource)
       cookies[:hackster_user_signed_in] = '1'
