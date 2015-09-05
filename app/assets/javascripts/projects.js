@@ -359,6 +359,9 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
       });
 
     $('.form-within-modal')
+      .on('ajax:beforeSend', function(xhr, settings){
+        $('.error-notif').remove();
+      })
       .on('ajax:success', function(xhr, data, status){
         closeModal($(this).data('modal'));
         pe.reload();
@@ -381,6 +384,7 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
         // cleanup before adding new elements
         $(this).find('.has-error .help-block.error-message').remove();
         $(this).find('.form-group').removeClass('has-error');
+        var errorFields = [];
 
         // make it work for nested attributes in this specific case
         for (model in errors) {
@@ -392,6 +396,8 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
               attribute = attributes[attributes.length - 1];
             }
             var input = $form.find('[name$="['+attribute+']"]');
+            var labelText = input.parent().find('label').text().replace('* ', '');
+            errorFields.push(labelText);
             input.parents('.form-group').addClass('has-error');
             errorMsg = $('<span class="help-block error-message">' + errors[model][attrName] + '</span>');
             if (input.parent().hasClass('input-group')) {
@@ -401,6 +407,8 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
             }
           }
         }
+        var notif = $('<div class="text-danger error-notif" style="margin:20px 0;">Oops, check for errors above (' + errorFields.join(', ') + ').</div>');
+        $(this).find('input[name="commit"]').before(notif);
       });
 
     $('#code-editor-popup').on('modal:opening', function(){
