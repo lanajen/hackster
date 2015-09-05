@@ -64,7 +64,7 @@
 
           .row
             - @challenges.each do |challenge|
-              = render partial: 'challenges/challenge_thumb', locals: { challenge: challenge.decorate }
+              = render partial: 'challenges/challenge_thumb', locals: { challenge: challenge.decorate, thumb_size: :mini }
 
         .text-center
           = link_to 'View more challenges &rarr;'.html_safe, challenges_path, class: 'btn btn-default btn-sm hidden-xs'
