@@ -479,7 +479,6 @@ class User < ActiveRecord::Base
 
   def is_staff? project
     PromotionMember.with_group_roles(%w(ta professor)).where(user_id: id).joins("INNER JOIN groups ON groups.id = members.group_id AND groups.type = 'Promotion'").joins("INNER JOIN assignments ON assignments.promotion_id = groups.id").joins("INNER JOIN project_collections ON project_collections.collectable_id = assignments.id AND project_collections.collectable_type = 'Assignment'").where(project_collections: { project_id: project.id }).any?
-    false
   end
 
   def is_team_member? project, all=true
