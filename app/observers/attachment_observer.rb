@@ -13,6 +13,11 @@ class AttachmentObserver < ActiveRecord::Observer
       when 'Image'
         Cashier.expire "project-#{record.attachable.widgetable_id}-widgets"
       end
+    elsif record.attachable_type.in? %w(List)
+      case record.type
+      when 'CoverImage'
+        Cashier.expire 'lists-index' if record.attachable.public?
+      end
     elsif record.attachable_type.in? %w(Platform)
       case record.type
       when 'Avatar'
