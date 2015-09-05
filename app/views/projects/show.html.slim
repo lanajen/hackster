@@ -49,7 +49,7 @@
                     ' in
                     = link_to @winning_entry.challenge.name, @winning_entry.challenge
 
-                #home.project-banner style="background-image: url('#{@project.cover_image}')"
+                #home.project-banner style="background-image: url('#{@project.cover_image(:large)}')"
                   .project-banner-inner
                     h1.project-title
                       - if @project.is_idea?
@@ -458,7 +458,7 @@
                     - if @last_projects.present?
                       .subtitle Most popular
                     - @other_projects.each do |project|
-                      .project-thumb-mini.has-link-overlay style="background-image: url('#{project.cover_image.try(:imgix_url, :cover_thumb)}')"
+                      .project-thumb-mini.has-link-overlay style="background-image: url('#{project.cover_image.try(:imgix_url, :cover_wide_mini)}')"
                         = link_to '', project, class: 'link-overlay'
                         .project-thumb-mini-inner
                           h4= link_to project.name, project
@@ -466,7 +466,7 @@
                     - if @last_projects.present?
                       .subtitle Most recent
                       - @last_projects.each do |project|
-                        .project-thumb-mini.has-link-overlay style="background-image: url('#{project.cover_image.try(:imgix_url, :cover_thumb)}')"
+                        .project-thumb-mini.has-link-overlay style="background-image: url('#{project.cover_image.try(:imgix_url, :cover_wide_mini)}')"
                           = link_to '', project, class: 'link-overlay'
                           .project-thumb-mini-inner
                             h4= link_to project.name, project

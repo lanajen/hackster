@@ -1,7 +1,11 @@
-.col-sm-6
+- col_size = thumb_size == :mini ? 'col-sm-6' : 'col-xs-12'
+- thumb_image_class = thumb_size == :mini ? 'thumb-image-mini' : ''
+- image_size = thumb_size == :mini ? :cover_wide_mini : :cover_wide_large
+
+div class=col_size
   .category-col
     .thumb.category-thumb.challenge-thumb
-      .thumb-image.has-link-overlay style="background-image:url('#{challenge.cover_image}')"
+      .thumb-image.has-link-overlay class=thumb_image_class style="background-image:url('#{challenge.cover_image(image_size)}')"
         = link_to '', challenge, class: 'link-overlay'
         .thumb-image-inner
           h4
@@ -10,9 +14,10 @@
               br
               a.small sponsored by #{challenge.platform.name}
 
-          p style='margin-bottom:0'
-            strong
-              ' Top prize:
-              = challenge.top_prize
-          p
-            small= pluralize challenge.prizes_count, 'prize'
+          - if thumb_size == :large
+            p style='margin-bottom:0'
+              strong
+                ' Top prize:
+                = challenge.top_prize
+            p
+              small= pluralize challenge.prizes_count, 'prize'
