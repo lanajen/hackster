@@ -12,7 +12,10 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
 
 (function ($, window, document, undefined) {
   $(function() {
-    $('.show-simplified-signup').click(function(e) {
+    $('#simplified-signup-popup').on('modal:open', function(e){
+      $(this).find('#user_email').focus();
+    });
+    $('.show-simplified-signup').on('click', function(e) {
       e.preventDefault();
       $('#simplified-signup-popup input[name="redirect_to"]').val($(this).data('redirect-to'));
       $('#simplified-signup-popup input[name="source"]').val($(this).data('source'));
