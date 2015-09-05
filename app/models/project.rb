@@ -2,7 +2,7 @@ class Project < ActiveRecord::Base
 
   CONTENT_TYPES = {
     'Getting started guide' => :getting_started,
-    'Showcase only' => :showcase,
+    'Showcase only (no instructions)' => :showcase,
     'Teardown/Unboxing' => :teardown,
     'Tutorial' => :tutorial,
   }

@@ -72,11 +72,8 @@ html lang="en"
         p
           strong
             ==> SLOGAN
-            = link_to 'Learn more', '/about'
+            = link_to 'Get started.', new_user_registration_path(source: 'blog_footer')
 
-            - ab_test :promise_20150820 do |alternative, meta|
-              ==> meta['text']
-              = link_to meta['link_text'], meta['link_url']
         p
           ==> link_to content_tag(:i, '', class: 'fa fa-twitter fa-lg'), 'http://twitter.com/hacksterio', alt: 'Hackster.io on Twitter', class: 'link-icon'
           ==> link_to content_tag(:i, '', class: 'fa fa-facebook fa-lg'), 'http://www.facebook.com/hacksterio', alt: 'Hackster.io on Facebook', class: 'link-icon'
