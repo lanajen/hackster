@@ -16,7 +16,7 @@ class AttachmentObserver < ActiveRecord::Observer
     elsif record.attachable_type.in? %w(List)
       case record.type
       when 'CoverImage'
-        Cashier.expire 'lists-index' if record.attachable.public?
+        Cashier.expire "list-#{record.attachable_id}-thumb", 'lists-index' if record.attachable.public?
       end
     elsif record.attachable_type.in? %w(Platform)
       case record.type

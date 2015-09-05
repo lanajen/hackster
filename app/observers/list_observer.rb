@@ -5,8 +5,7 @@ class ListObserver < ActiveRecord::Observer
 
   def after_save record
     if (record.changed & %w(full_name private mini_resume)).any?
-      Cashier.expire "list-#{record.id}-thumb"
-      Cashier.expire 'lists-index'
+      Cashier.expire "list-#{record.id}-thumb", 'lists-index'
     end
   end
 
