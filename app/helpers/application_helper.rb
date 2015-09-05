@@ -56,7 +56,7 @@ module ApplicationHelper
       return f if f.present?
     end
 
-    msg = "Please log in or create an account to get full access to our maker resources and start creating."
+    msg = "Please log in or create an account to get started."
     # group, project, user
 
     case params[:m]

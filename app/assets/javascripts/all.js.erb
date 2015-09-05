@@ -45,19 +45,16 @@ $(window).load(function(){
   };
 
   //Fade in alerts/notices
-  if($('.fade-in').length) {
-    //if there's a slide-in notification on top of the page, wait until it's down sliding down before affixing divs
-    $('.fade-in').delay(2000).slideDown(500,function(){
-      affixDivs();
-    });
-  } else if ($('#hello-world').length) {
-    $('#hello-world')
+  var helloW = $('#hello-world-container');
+  if (helloW.length) {
     var parser = document.createElement('a');
     parser.href = document.referrer;
     if (!document.referrer.length || parser.hostname != '<%= APP_CONFIG['default_host'] %>') {
-      $('#hello-world').delay(2000).slideDown(500,function(){
+      helloW.delay(2000).slideDown(500,function(){
         affixDivs();
       });
+      // not super clean but allows for a bar that slides down and pushes its height
+      $('#hello-world').delay(2000).slideDown(500);
     } else {
       affixDivs();
     }

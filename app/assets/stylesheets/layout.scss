@@ -993,15 +993,20 @@ input.placeholder, textarea.placeholder {
   text-decoration: none;
 }
 
+#hello-world-container {
+  height: 60px;
+  display: none;
+}
 #hello-world {
   display: none;
-  padding: 17px 0 15px;
+  padding: 18px 0 17px;
   border-bottom: 1px solid #036394;
   background: #08C;
   color: white;
   font-weight: bold;
   letter-spacing: 0.5px;
-  // text-shadow: 1px 1px 1px #036394;
+  height: 60px;
+  font-size: 0.9em;
   &.fixed {
     position: fixed;
     z-index: 10000;
