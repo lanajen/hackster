@@ -157,6 +157,7 @@ class CodeWidget < Widget
   attr_accessible :document_attributes, :document_id
 
   accepts_nested_attributes_for :document, allow_destroy: true
+  validates :language, presence: true
   before_validation :force_encoding
   before_validation :disallow_blank_file
   before_save :check_changes
@@ -251,10 +252,6 @@ class CodeWidget < Widget
 
   def human_language
     ACE_LANGUAGES[language]
-  end
-
-  def language
-    properties[:language] || 'text'
   end
 
   def language=(val)
