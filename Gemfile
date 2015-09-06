@@ -7,6 +7,7 @@ gem 'rails', '4.2.3'
 gem 'dotenv-rails', groups: [:development, :test]
 
 #  assets
+gem 'fog'
 gem 'fog-aws', '0.1.2'
 # gem 'asset_sync', '1.1.0'
 gem 'bootstrap-sass', '3.3.1'
