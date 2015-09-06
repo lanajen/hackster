@@ -14,11 +14,15 @@ HackerIo::Application.configure do
   # Compress JavaScripts and CSS
   config.assets.js_compressor = :uglifier
 
-  # Don't fallback to assets pipeline if a precompiled asset is missed
-  config.assets.compile = false
-
   # Generate digests for assets URLs
   config.assets.digest = true
+
+  # store assets in a 'folder' instead of bucket root
+  # config.assets.prefix = "/assets/dev"
+
+  # config.action_controller.asset_host = "//s3.amazonaws.com/#{ENV['FOG_DIRECTORY']}"
+  # config.action_controller.asset_host = ENV['ASSET_HOST']
+  config.static_cache_control = 'public, s-maxage=31536000, maxage=31536000'
 
   config.eager_load = true
 
@@ -66,12 +70,7 @@ HackerIo::Application.configure do
 
   config.action_mailer.default_url_options = { :host => 'dev.hackster.io' }
 
-  # store assets in a 'folder' instead of bucket root
-  config.assets.prefix = "/assets/dev"
-
-  config.action_controller.asset_host = "//s3.amazonaws.com/#{ENV['FOG_DIRECTORY']}"
-
-  config.assets.initialize_on_precompile = false
+  # config.assets.initialize_on_precompile = false
 
   config.react.variant = :production
 
