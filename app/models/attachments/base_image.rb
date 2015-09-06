@@ -7,13 +7,17 @@ class BaseImage < Attachment
 
   def imgix_url version=nil, extra_options={}
     return unless file_url
-    client = Imgix::Client.new(host: ENV['IMGIX_HOST'], token: ENV['IMGIX_TOKEN'], secure: true)
-    path = file_url.gsub "https://#{ENV['FOG_DIRECTORY']}.s3.amazonaws.com", ''
-    if path =~ /\.jpe?g\Z/
-      extra_options.merge!({ fm: :jpg })
+    if BaseUploader.storage == CarrierWave::Storage::File
+      file_url
+    else
+      client = Imgix::Client.new(host: ENV['IMGIX_HOST'], token: ENV['IMGIX_TOKEN'], secure: true)
+      path = file_url.gsub "https://#{ENV['FOG_DIRECTORY']}.s3.amazonaws.com", ''
+      if path =~ /\.jpe?g\Z/
+        extra_options.merge!({ fm: :jpg })
+      end
+      opts = opts_for_version(version).merge extra_options
+      client.path(path).to_url(opts)
     end
-    opts = opts_for_version(version).merge extra_options
-    client.path(path).to_url(opts)
   end
 
   private

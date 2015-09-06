@@ -335,6 +335,10 @@ code.gist {
     min-width: 34px;
   }
 }
+.gist .gist-data {
+  max-height: 410px;
+  overflow: scroll;
+}
 
 .code-editor-container {
   position: relative;

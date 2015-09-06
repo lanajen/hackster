@@ -288,5 +288,5 @@ Warden::Manager.after_fetch do |user, warden, opts|
 end
 
 Warden::Manager.before_logout do |user, warden, opts|
-  SessionManager.new(user).deactivate_session warden.raw_session["_session_id"] if user
+  SessionManager.new(user).deactivate_session warden.raw_session["_session_id"] if user and !user.destroyed?
 end
