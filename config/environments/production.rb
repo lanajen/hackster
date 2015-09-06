@@ -12,7 +12,7 @@ HackerIo::Application.configure do
   config.serve_static_files = false
 
   # Compress JavaScripts and CSS
-  config.assets.css_compressor = :yui
+  config.assets.css_compressor = :sass
   config.assets.js_compressor = :uglifier
 
   # Generate digests for assets URLs
