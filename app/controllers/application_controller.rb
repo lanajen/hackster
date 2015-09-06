@@ -8,10 +8,6 @@ class ApplicationController < ActionController::Base
 
   BOGUS_REQUEST_FORMATS = ['*/*;', '/;', 'hc/url;*/*']
   DEFAULT_RESPONSE_FORMAT = :html
-  KNOWN_EVENTS = {
-    'hob' => 'Identified as hobbyist',
-    'pro' => 'Identified as professional',
-  }
   MOBILE_USER_AGENTS =
     'palm|blackberry|nokia|phone|midp|mobi|symbian|chtml|ericsson|minimo|' +
     'audiovox|motorola|samsung|telit|upg1|windows ce|ucweb|astel|plucker|' +
@@ -388,10 +384,6 @@ class ApplicationController < ActionController::Base
     end
 
     def track_visitor
-      if params[:t] and params[:t].in? KNOWN_EVENTS.keys
-        track_event KNOWN_EVENTS[params[:t]]
-      end
-
       cookies[:visits] = { value: {}.to_json, expires: 10.years.from_now } unless cookies[:visits].present?
       begin
         visits = JSON.parse cookies[:visits]

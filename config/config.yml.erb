@@ -37,4 +37,4 @@ production:
   send_emails: true
   workers_running: <%= ENV['WORKERS_RUNNING'] == 'true' %>
   stats_url: <%= ENV['STATS_URL'] %>
-  use_ssl: <%= ENV['USE_SSL'] %>
+  use_ssl: <%= ENV['USE_SSL'] == 'true' %>

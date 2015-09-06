@@ -4,10 +4,11 @@ require 'sidekiq-status'
 raise 'No config for Redis' unless $redis_config
 
 sidekiq_pool = (ENV['SIDEKIQ_DB_POOL'] || 3).to_i
+sidekiq_redis_size = (ENV['SIDEKIQ_REDIS_SIZE'] || 5).to_i
 
 Sidekiq.configure_server do |config|
   config.failures_default_mode = :exhausted
-  config.redis = $redis_config.merge({ size: 20, namespace: "sidekiq:hacksterio", network_timeout: 8 })
+  config.redis = $redis_config.merge({ size: sidekiq_redis_size, namespace: "sidekiq:hacksterio", network_timeout: 8 })
 
   # database_url = ENV['DATABASE_URL']
   # if database_url
