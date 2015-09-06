@@ -39,7 +39,6 @@ gem 'redcarpet', '3.3.2'
 # gem 'html-pipeline'
 gem 'reverse_markdown'
 
-# gem 'autoscaler', '0.9.0', groups: :staging
 gem 'active_model_serializers', '0.8.3'
 gem 'ambry', '~> 0.3.0'
 gem 'auto_html', '1.6.3'
@@ -130,7 +129,7 @@ gem 'yajl-ruby', '1.1.0'
 gem 'heroku-api', '0.3.22'
 gem 'heroku-forward', '0.4.0'
 gem 'mail', '>= 2.6.3'
-gem 'rails_12factor', group: [:production, :staging, :dev]
+gem 'rails_12factor', group: :production
 
 # gem "bullet", :group => "development"
 # gem 'ruby-prof', group: [:development, :profile]

@@ -543,7 +543,7 @@ class ApplicationController < ActionController::Base
     end
 
     def ssl_configured?
-      Rails.env == 'production'
+      APP_CONFIG['use_ssl']
     end
 
     def user_signed_in?

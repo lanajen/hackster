@@ -15,4 +15,4 @@ CarrierWave.configure do |config|
 
   config.cache_dir = 'carrierwave'
   config.root = Rails.root.join('tmp')
-end if Rails.env.in? %w(production staging dev) or ENV['CARRIERWAVE_FORCE_FOG'] == 'true'
+end if Rails.env.production? or ENV['CARRIERWAVE_FORCE_FOG'] == 'true'
