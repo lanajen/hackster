@@ -84,7 +84,7 @@ module HackerIo
     config.assets.paths << Rails.root.join('vendor', 'assets', 'images')
     config.assets.precompile += %w(.svg .eot .woff .ttf)
 
-    config.middleware.insert_before ActionDispatch::Static, Rack::Deflater
+    # config.middleware.insert_before ActionDispatch::Static, Rack::Deflater
     config.assets.initialize_on_precompile = true
 
     config.logger = Logger.new(STDOUT)

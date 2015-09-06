@@ -2,7 +2,7 @@
 namespace :assets do
   desc "Create .gz versions of assets"
   task :gzip => :environment do
-    zip_types = /\.(?:css|html|js|otf|svg|txt|xml)$/
+    zip_types = /\.(?:css|html|js|otf|svg|eot|woff|ttf|txt|xml)$/
 
     public_assets = File.join(
       Rails.root,
@@ -15,6 +15,8 @@ namespace :assets do
       mtime = File.mtime(f)
       gz_file = "#{f}.gz"
       next if File.exist?(gz_file) && File.mtime(gz_file) >= mtime
+
+      puts "Writing gzip file for #{f}"
 
       File.open(gz_file, "wb") do |dest|
         gz = Zlib::GzipWriter.new(dest, Zlib::BEST_COMPRESSION)
