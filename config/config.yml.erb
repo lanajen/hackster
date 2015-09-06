@@ -6,7 +6,6 @@ development:
   port_required: true
   send_emails: false
   workers_running: false
-  purging_enable: false
   stats_url: www.localhost.local:5000
   use_ssl: false
 
@@ -37,6 +36,5 @@ production:
   port_required: false
   send_emails: true
   workers_running: <%= ENV['WORKERS_RUNNING'] == 'true' %>
-  purging_enable: <%= ENV['FASTLY_API_KEY'].present? %>
   stats_url: <%= ENV['STATS_URL'] %>
   use_ssl: <%= ENV['USE_SSL'] %>
