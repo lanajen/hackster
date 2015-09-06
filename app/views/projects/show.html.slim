@@ -243,16 +243,16 @@
 
                       = link_to 'See all issues', project_logs_path, class: 'btn btn-default btn-sm'
 
-                / # - cache [I18n.locale, "project-#{@project.id}-comments"], tag: ["project-#{@project.id}-comments"], expires_in: 24.hours do
-                / caching needs to be more granular as users have the ability to destroy their own comment but not that of others
-                section#comments.section-container.section-collapsible
-                  h2.section-title
-                    a.title.title-toggle href=''
-                      ' Comments
-                      i.fa.fa-chevron-down
-                      i.fa.fa-chevron-up
-                  .section-content
-                    = render partial: 'widgets/comments', locals: { comments: @comments, commentable: @project }
+              / # - cache [I18n.locale, "project-#{@project.id}-comments"], tag: ["project-#{@project.id}-comments"], expires_in: 24.hours do
+              / caching needs to be more granular as users have the ability to destroy their own comment but not that of others
+              section#comments.section-container.section-collapsible
+                h2.section-title
+                  a.title.title-toggle href=''
+                    ' Comments
+                    i.fa.fa-chevron-down
+                    i.fa.fa-chevron-up
+                .section-content
+                  = render partial: 'widgets/comments', locals: { comments: @comments, commentable: @project }
 
           .col-md-4.right-column
             .container-mobile
