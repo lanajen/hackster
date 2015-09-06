@@ -1,6 +1,10 @@
 module ScraperStrategies
   class Makezine < Wordpress
 
+    def crap_list
+      super + %w(.ctx-sidebar-container)
+    end
+
     private
       def after_parse
         extract_components

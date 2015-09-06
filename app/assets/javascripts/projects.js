@@ -686,7 +686,8 @@ function loadSlickSlider(){
     accessibility: false,
     speed: 500,
     fade: true,
-    dots: true
+    dots: true,
+    adaptiveHeight: true
   });
 }
 
