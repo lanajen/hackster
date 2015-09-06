@@ -130,7 +130,7 @@ gem 'yajl-ruby', '1.1.0'
 gem 'heroku-api', '0.3.22'
 gem 'heroku-forward', '0.4.0'
 gem 'mail', '>= 2.6.3'
-gem 'rails_12factor', group: [:production, :staging]
+gem 'rails_12factor', group: [:production, :staging, :dev]
 
 # gem "bullet", :group => "development"
 # gem 'ruby-prof', group: [:development, :profile]
