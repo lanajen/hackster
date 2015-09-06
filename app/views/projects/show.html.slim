@@ -8,12 +8,12 @@
 = inserts_stats_for @project
 
 = content_for :no_container do
-  - cache_unless user_signed_in?, [@project, site_user_name], tag: ["project-#{@project.id}"], expires_in: 3.hours do
+  - cache_unless user_signed_in?, [I18n.locale, @project, site_user_name], tag: ["project-#{@project.id}"], expires_in: 3.hours do
     = render 'projects/project_embed_popup'
     #content.project-page class="project-#{@project.id}"
       .container-desktop.container
         .row
-          - cache_unless @can_edit, [@project, 'left-column'], tag: ["project-#{@project.id}-left-column"], expires_in: 24.hours do
+          - cache_unless @can_edit, [I18n.locale, @project, 'left-column'], tag: ["project-#{@project.id}-left-column"], expires_in: 24.hours do
 
             .col-md-8.left-column
               - if @project.event
