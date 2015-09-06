@@ -233,24 +233,13 @@ Devise.setup do |config|
   # ==> OmniAuth
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
-  # config.omniauth :github, 'APP_ID', 'APP_SECRET', :scope => 'user,public_repo'
 
-  if Rails.env == 'development'
-    config.omniauth :facebook, '365278140284312', 'cd136e1e867c39cf3a91bb524a5c7660', setup: true, scope: 'email,publish_actions,user_about_me,user_education_history,user_interests,user_location,user_work_history,user_website'
-    config.omniauth :github, 'ae60cb8e8821166815a8', '535dfb7accc01a19457311e2601b85c7447a84d9', scope: 'user:email', setup: true
-    config.omniauth :windowslive, '000000004414B191', 'RqmuThnLE401ydat4zu4CgYQEw-QuiZy', scope: 'wl.basic,wl.emails', setup: true
-  else
-    config.omniauth :facebook, '543757942384158', '17cd88cd421350f4cba3d00a87c71257', setup: true, scope: 'email,publish_actions,user_about_me,user_education_history,user_interests,user_location,user_work_history,user_website'
-    config.omniauth :github, 'b322eb2b4591c7101d72', '030d6c27463f4fde985033e4d050de2bebbd1d8b', scope: 'user:email', setup: true
-    if Rails.env == 'dev'
-      config.omniauth :windowslive, '000000004414C007', '1U9OqgqZCO5biQgGVIRUYQOMe1BswKsH', scope: 'wl.basic,wl.emails', setup: true
-    else
-      config.omniauth :windowslive, '000000004015349D', 'bQsaGvKft9UVNwG-qeZHjTZH7HjGdTju', scope: 'wl.basic,wl.emails', setup: true
-    end
-  end
+  config.omniauth :facebook, ENV['FACEBOOK_API_KEY'], ENV['FACEBOOK_API_SECRET'], setup: true, scope: 'email,publish_actions,user_about_me,user_education_history,user_interests,user_location,user_work_history,user_website'
+  config.omniauth :github, ENV['GITHUB_API_KEY'], ENV['GITHUB_API_SECRET'], scope: 'user:email,repo', setup: true
   config.omniauth :gplus, '194136473933-bh5c4avsnut4s8j4tt1hutvc5klohsak.apps.googleusercontent.com', '51d-2itWVP6yu3_auKinyAd5', scope: 'userinfo.email,plus.login,userinfo.profile', request_visible_actions: 'AddActivity,CreateActivity,CommentActivity', setup: true
   # config.omniauth :linkedin, '75zl0lfslm3m2z', 'gxqbyweSK444eEmN', setup: true, scope: 'r_fullprofile,r_emailaddress,rw_nus'
   config.omniauth :twitter, 'M8s2TSIlY5kPtqoLuwmrQ', 'DFQrskOt9rMvcol6m9P7CJxX7CDH8vv0sFSYn4cq0U', setup: true
+  config.omniauth :windowslive, ENV['WINDOWS_LIVE_API_KEY'], ENV['WINDOWS_LIVE_API_SECRET'], scope: 'wl.basic,wl.emails', setup: true
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or

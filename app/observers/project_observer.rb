@@ -51,11 +51,11 @@ class ProjectObserver < ActiveRecord::Observer
     ProjectWorker.perform_async 'update_platforms', record.id
 
     if record.made_public_at.nil?
-      record.post_new_tweet! unless record.hidden? or Rails.env != 'production'
+      record.post_new_tweet! unless record.hidden?
       record.made_public_at = Time.now
       record.save
     elsif record.made_public_at > Time.now
-      record.post_new_tweet_at! record.made_public_at unless record.hidden? or Rails.env != 'production'
+      record.post_new_tweet_at! record.made_public_at unless record.hidden?
     end
     record.users.each{|u| u.update_counters only: [:approved_projects] }
 

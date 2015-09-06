@@ -30,7 +30,7 @@ html lang="en" class=content_for(:html_class)
     - if current_site.favicon.try(:file_url)
       link href=current_site.favicon.file_url rel="shortcut icon"
 
-    - if Rails.env == 'production'
+    - if ENV['ENABLE_ANALYTICS']
       = raw current_site.analytics_code
       - unless current_user and current_user.is? :admin
         = render partial: 'shared/analytics', locals: { tracker: 'UA-11926897-15', domain: 'hackster.io' }

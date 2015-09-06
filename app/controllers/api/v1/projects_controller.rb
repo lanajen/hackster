@@ -64,13 +64,13 @@ class Api::V1::ProjectsController < Api::V1::BaseController
     else
       message = "Couldn't save project: #{@project.inspect} // user: #{current_user.user_name} // params: #{params.inspect} // errors: #{@project.errors.inspect}"
       log_line = LogLine.create(message: message, log_type: '422', source: 'api/projects')
-      NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification' if Rails.env == 'production'
+      NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification' if ENV['ENABLE_ERROR_NOTIF']
       render json: { project: @project.errors }, status: :unprocessable_entity
     end
   rescue => e
     message = "Couldn't save project: #{@project.inspect} // user: #{current_user.try(:user_name)} // params: #{params.inspect} // exception: #{e.inspect}"
     log_line = LogLine.create(message: message, log_type: '5xx', source: 'api/projects')
-    NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification' if Rails.env == 'production'
+    NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification' if ENV['ENABLE_ERROR_NOTIF']
     render status: :internal_server_error, nothing: true
     raise e if Rails.env.development?
   end

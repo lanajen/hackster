@@ -18,7 +18,7 @@ class AppLogger
 
   def log_and_notify
     log_line = create_log
-    send_notification(log_line) if Rails.env == 'production'
+    send_notification(log_line) if ENV['ENABLE_ERROR_NOTIF']
   end
 
   def send_notification log_line

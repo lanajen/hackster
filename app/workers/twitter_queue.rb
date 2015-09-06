@@ -4,7 +4,7 @@ class TwitterQueue < BaseWorker
 
   def update message
     begin
-      Rails.env == 'production' ? twitter_client.update(message) : puts("Twitter message: #{message}")
+      ENV['ENABLE_TWEETS'] == 'true' ? twitter_client.update(message) : puts("Twitter message: #{message}")
     rescue => e
       LogLine.create(log_type: 'error', source: 'twitter', message: "Error: #{e.inspect} // Tweet: \"#{message}\"")
     end
