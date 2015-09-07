@@ -192,7 +192,7 @@ class Part < ActiveRecord::Base
   end
 
   def self.most_used
-    order("CAST(counters_cache -> 'all_projects_count' AS INT) DESC, name ASC")
+    order("CAST(parts.counters_cache -> 'all_projects_count' AS INT) DESC NULLS LAST, parts.name ASC")
   end
 
   def self.not_invalid

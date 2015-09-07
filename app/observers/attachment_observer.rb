@@ -3,8 +3,13 @@ class AttachmentObserver < ActiveRecord::Observer
     if record.attachable_type == 'Project'
       case record.type
       when 'CoverImage'
-        Cashier.expire "project-#{record.attachable_id}-teaser"
-        Cashier.expire "project-#{record.attachable_id}-thumb"
+        id = record.attachable_id
+        keys = []
+        keys << "project-#{id}-teaser"
+        keys << "project-#{id}-left-column"
+        keys << "project-#{id}"
+        keys << "project-#{id}-thumb"
+        Cashier.expire *keys
       when 'Image'
         Cashier.expire "project-#{record.attachable_id}-widgets"
       end
