@@ -134,7 +134,7 @@
         - @followed.each do |rel|
           - entity = rel.followable
           .thumb-super-item class=dom_id(entity)
-            = link_to image_tag(entity.decorate.avatar(:medium)), entity, title: "You follow #{entity.name}", class: 'istooltip', data: { container: 'body' }
+            = link_to image_tag(entity.decorate.avatar(:mini)), entity, title: "You follow #{entity.name}", class: 'istooltip', data: { container: 'body' }
 
     = content_for :js do
       javascript:

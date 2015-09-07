@@ -2,9 +2,9 @@ class Project < ActiveRecord::Base
 
   CONTENT_TYPES = {
     'Getting started guide' => :getting_started,
-    'Showcase only (no instructions)' => :showcase,
+    'Showcase (no or incomplete instructions)' => :showcase,
     'Teardown/Unboxing' => :teardown,
-    'Tutorial' => :tutorial,
+    'Tutorial (complete instructions)' => :tutorial,
   }
   DEFAULT_CONTENT_TYPE = :tutorial
   DEFAULT_NAME = 'Untitled'
