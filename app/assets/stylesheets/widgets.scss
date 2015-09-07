@@ -299,8 +299,10 @@
 }
 .image-gallery {
   background-color: #fff;
+  min-height: 200px;
 }
 .image-gallery-container {
+  position: relative;
   .file-drop {
     position: absolute;
     z-index: 0;
@@ -314,25 +316,29 @@
     }
     .file-drop-inner {
       background: image-url('upload-bg.png') center center no-repeat #fff;
+      background-size: contain;
       margin: 0 auto;
-      bottom: 20px;
       text-align: center;
-      width: 580px;
-      max-width: 100%;
-      height: 435px;
+      width: 100%;
+      height: 100%;
       border: 7px solid #f2f2f2;
+      .file-drop-instructions {
+        position: absolute;
+        bottom: 10px;
+        width: 100%;
+      }
     }
     .close {
       display: none;
     }
     &.over {
       z-index: 2000;
-      top: 0;
-      left: 30px;
-      right: 30px;
-      bottom: 0;
       .close {
         display: initial;
+        right: 20px;
+        top: 20px;
+        position: absolute;
+        font-size: 3em;
       }
     }
   }

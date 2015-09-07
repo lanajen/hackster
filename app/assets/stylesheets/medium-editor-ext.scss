@@ -274,8 +274,10 @@
         max-width: 250px;
       }
     }
-    .image-gallery-container {
-      min-height: 435px;
+    .image-gallery {
+      background-color: #fafafa;
+      min-height: 200px;
+      padding: 20px 0;
     }
     .embed-frame {
       .image_widget.figure {
@@ -283,6 +285,9 @@
           display: none !important;
         }
       }
+    }
+    pre {
+      max-height: none;
     }
   }
   [contenteditable] {
