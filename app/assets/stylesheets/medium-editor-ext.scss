@@ -135,6 +135,9 @@
       display: block;
       position: relative;
     }
+    .image:not(.slick-active) {
+      margin-bottom: 30px;
+    }
   }
   &:not(.update-201509) {
     width: 100%;
