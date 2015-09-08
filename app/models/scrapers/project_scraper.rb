@@ -51,6 +51,7 @@ class ProjectScraper
       'discourse' => :discourse,
       'frontpage' => :base,
       'joomla' => :base,
+      'mediawiki' => :mediawiki,
       'wordpress' => :wordpress,
     }
     KNOWN_HOSTS = {
