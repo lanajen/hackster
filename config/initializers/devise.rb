@@ -235,7 +235,7 @@ Devise.setup do |config|
   # up on your models and hooks.
 
   config.omniauth :facebook, ENV['FACEBOOK_API_KEY'], ENV['FACEBOOK_API_SECRET'], setup: true, scope: 'email,publish_actions,user_about_me,user_education_history,user_interests,user_location,user_work_history,user_website'
-  config.omniauth :github, ENV['GITHUB_API_KEY'], ENV['GITHUB_API_SECRET'], scope: 'user:email,repo', setup: true
+  config.omniauth :github, ENV['GITHUB_API_KEY'], ENV['GITHUB_API_SECRET'], scope: 'user:email', setup: true
   config.omniauth :gplus, '194136473933-bh5c4avsnut4s8j4tt1hutvc5klohsak.apps.googleusercontent.com', '51d-2itWVP6yu3_auKinyAd5', scope: 'userinfo.email,plus.login,userinfo.profile', request_visible_actions: 'AddActivity,CreateActivity,CommentActivity', setup: true
   # config.omniauth :linkedin, '75zl0lfslm3m2z', 'gxqbyweSK444eEmN', setup: true, scope: 'r_fullprofile,r_emailaddress,rw_nus'
   config.omniauth :twitter, 'M8s2TSIlY5kPtqoLuwmrQ', 'DFQrskOt9rMvcol6m9P7CJxX7CDH8vv0sFSYn4cq0U', setup: true
