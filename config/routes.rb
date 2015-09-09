@@ -28,6 +28,9 @@ HackerIo::Application.routes.draw do
       resources :likes, only: [:create] do
         delete '' => 'likes#destroy', on: :collection
       end
+      scope 'mandrill/webhooks' do
+        post 'unsub' => 'mandrill_webhooks#unsub'
+      end
       resources :projects#, as: :api_projects
       resources :parts, only: [:create, :destroy] do
         get :autocomplete, on: :collection
