@@ -1,6 +1,5 @@
 # - use elastic for search
 # - clean up parts/consolidate
-# - part moderation dashboard
 # - later: search by part
 
 class Part < ActiveRecord::Base
@@ -100,6 +99,10 @@ class Part < ActiveRecord::Base
     where workflow_state: :approved
   end
 
+  def self.has_platform
+    where.not platform_id: nil
+  end
+
   def self.invalid
     where workflow_state: INVALID_STATES
   end
@@ -110,6 +113,10 @@ class Part < ActiveRecord::Base
 
   def self.not_invalid
     where.not workflow_state: INVALID_STATES
+  end
+
+  def self.with_slug
+    where("parts.slug IS NOT NULL AND parts.slug <> ''")
   end
 
   def self.sorted_by_name
@@ -125,7 +132,7 @@ class Part < ActiveRecord::Base
   end
 
   def self.visible
-    public.where("parts.slug IS NOT NULL AND parts.slug <> ''")
+    public.with_slug
   end
 
   def all_projects

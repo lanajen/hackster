@@ -6,13 +6,10 @@
   show all hackerspaces via autocomplete
 
 = content_for :js do
+
   javascript:
     $(function(){
-      $("#project_platform_tags_array").select2({
-        tags: true,
-        tokenSeparators: [',']
-      });
-      $("#project_hacker_space_id").select2();
+      $("#project_hacker_space_id").select2({ width: '100%' });
     });
 
 = simple_nested_form_for @project, url: api_v1_project_path(@project), html: { data: { remote: true }, class: 'form-horizontal remote' }, wrapper: :bootstrap3_horizontal do |f|
@@ -29,7 +26,9 @@
 
       .box
         .box-content
-          = f.input :platform_tags_array, label: 'Platforms used', hint: "Select all the platforms you've used", collection: (Platform.public.order(:full_name).pluck(:full_name) + @project.platform_tags_array).uniq.sort, input_html: { multiple: 'multiple' }, wrapper_html: { 'data-anchor' => 'platform_tags_string' }
+          p.small.mg-20
+            strong> Tip:
+            | Want your project to show on a specific platform hub? All you have to do is select the platform's component or app that you used in your project. You can do so in the Hardware and Software tabs.
           - communities = current_user.is?(:admin) ? Community.where(type: 'Community').order(:full_name) : current_user.communities.where(type: 'Community')
           - if communities.any?
             = f.association :communities, collection: communities, as: :check_boxes

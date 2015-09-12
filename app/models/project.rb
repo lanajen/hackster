@@ -84,6 +84,12 @@ class Project < ActiveRecord::Base
       joins(:part).where(parts: { type: 'ToolPart' })
     end
   end
+  has_many :part_platforms, through: :parts, source: :platform do
+    # doesn't seem to want to work if we make the scope below default
+    def default_scope
+      reorder("groups.full_name ASC").uniq
+    end
+  end
   has_many :project_collections, dependent: :destroy
   has_many :software_parts, -> { where(parts: { type: 'SoftwarePart' } ) }, through: :part_joins, source: :part
   has_many :software_part_joins, -> { joins(:part).where(parts: { type: 'SoftwarePart'}).order(:position).includes(part: { image: [], platform: :avatar }) }, as: :partable, class_name: 'PartJoin', autosave: true

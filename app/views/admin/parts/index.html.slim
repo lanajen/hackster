@@ -4,6 +4,8 @@
     ==>t '.title', :default => model_class.model_name.human.pluralize
     small= link_to t('.new', :default => t("helpers.links.new")), new_admin_part_path, :class => 'btn btn-primary btn-sm'
     small= link_to 'Duplicates', duplicates_admin_parts_path, :class => 'btn btn-primary btn-sm'
+    = link_to 'Show those that need review', '/admin/parts?filters%5Bworkflow_state%5D=pending_review&sort_by=created_at&sort_order=ASC&has_platform=1', class: 'btn btn-sm btn-link'
+    = link_to 'Show those that need URGENT review', '/admin/parts?filters%5Bworkflow_state%5D=pending_review&sort_by=created_at&sort_order=ASC&has_platform=1&with_slug=1', class: 'btn btn-sm btn-link'
 
 ==> render 'admin/shared/search_form_tag'
 - (@fields.keys - %w(created_at workflow_state)).each do |field|
@@ -12,13 +14,13 @@
 = render 'admin/shared/search_form_sort_and_submit'
 </form>
 
+p= "Showing #{@parts.to_a.count} of #{@parts.total_entries} results"
 = form_tag merge_new_admin_parts_path, method: :get
   table.table.table-striped
     thead
       tr
         th
         th= model_class.human_attribute_name(:name)
-        th= model_class.human_attribute_name(:vendor_sku)
         th= model_class.human_attribute_name(:store_link)
         th= model_class.human_attribute_name(:platform)
         th= model_class.human_attribute_name(:projects_count)
@@ -29,13 +31,23 @@
         tr
           td
             input type='checkbox' name='part_ids[]' value=part.id
-          td= part.name
-          td= part.vendor_sku
+          td
+            - if part.has_own_page?
+              = link_to part.name, part
+            - else
+              = part.name
           td= part.vendor_link.presence || part.store_link
           td
             = part.platform.name if part.platform
-          td= part.projects.count
-          td= part.workflow_state
+          td= part.projects_count
+          td
+            - if part.pending_review? and part.platform_id.present?
+              - if part.slug.present?
+                strong Needs urgent review
+              - else
+                strong Needs review
+            - else
+              = part.workflow_state
           td
             = link_to t('.edit', :default => t("helpers.links.edit")), edit_admin_part_path(part.id), :class => 'btn btn-default btn-xs'
             = link_to t('.destroy', :default => t("helpers.links.destroy")), admin_part_path(part.id), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'

@@ -544,7 +544,7 @@ $select2target = null;
     });
 
     function setupSelect2() {
-      $('.pe-panel .select2').each(function(i, el){
+      $('.pe-panel .parts-widget .select2').each(function(i, el){
         el = $(el);
         $select2containers[el.attr('id')] = el.select2(select2Options(el.data('type')));
       });

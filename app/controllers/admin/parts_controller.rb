@@ -10,7 +10,11 @@ class Admin::PartsController < Admin::BaseController
     params[:sort_by] ||= 'created_at'
     params[:per_page] ||= 100
 
-    @parts = filter_for Part.not_invalid, @fields
+    parts = Part.not_invalid
+    parts = parts.has_platform if params[:has_platform]
+    parts = parts.with_slug if params[:with_slug]
+
+    @parts = filter_for parts, @fields
   end
 
   def new

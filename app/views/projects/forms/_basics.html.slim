@@ -1,9 +1,11 @@
 = content_for :js do
+
   javascript:
     $(function(){
       $("#project_product_tags_array").select2({
         tags: true,
-        tokenSeparators: [',']
+        tokenSeparators: [','],
+        width: '100%'
       });
     });
 

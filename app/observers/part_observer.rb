@@ -10,11 +10,8 @@ class PartObserver < ActiveRecord::Observer
   def after_update record
     if record.platform_id.present? and (record.platform_id_changed? or record.private_changed?)
       record.projects.each do |project|
-        platform_name = record.platform.name
-        unless platform_name.in? project.platform_tags_array
-          project.platform_tags_array += [platform_name]
-          project.save
-        end
+        project.update_counters only: [record.identifier.pluralize.to_sym]
+        ProjectWorker.perform_async 'update_platforms', project.id
       end
     end
     if (record.changed & %w(slug name store_link product_page_link)).any?
