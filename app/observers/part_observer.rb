@@ -17,11 +17,13 @@ class PartObserver < ActiveRecord::Observer
         end
       end
     end
-    keys = []
-    record.projects.pluck(:id).each do |id|
-      keys += ["project-#{id}-#{record.class.name.underscore.gsub(/_part/, '')}-parts", "project-#{id}-left-column", "project-#{id}"]
+    if (record.changed & %w(slug name store_link product_page_link)).any?
+      keys = []
+      record.projects.pluck(:id).each do |id|
+        keys += ["project-#{id}-#{record.identifier}-parts", "project-#{id}-left-column", "project-#{id}"]
+      end
+      Cashier.expire *keys if keys.any?
     end
-    Cashier.expire *keys if keys.any?
   end
 
   private

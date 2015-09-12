@@ -357,6 +357,7 @@ $select2target = null;
         form.find('input:file').click();
       })
       .on('modal:closed', function(){
+        $(this).find('.error-notif').remove();
         $(this).find('.has-error .help-block.error-message').remove();
         $(this).find('.form-group').removeClass('has-error');
       });
@@ -410,7 +411,14 @@ $select2target = null;
             }
           }
         }
-        var notif = $('<div class="text-danger error-notif" style="margin:20px 0;">Oops, check for errors above (' + errorFields.join(', ') + ').</div>');
+
+        var msg;
+        if (errors.message) {
+          msg = errors.message;
+        } else {
+          msg = 'Oops, check for errors above (' + errorFields.join(', ') + ').';
+        }
+        var notif = $('<div class="text-danger error-notif" style="margin:20px 0;">' + msg + '</div>');
         $(this).find('input[name="commit"]').before(notif);
       });
 
@@ -575,14 +583,14 @@ $select2target = null;
 
     function prepareOptionTagForPart(part) {
       var data = _.map(part, function(val, key){
-        return val ? 'data-' + key + '="' + val + '"' : null;
+        return val ? 'data-' + key + '="' + _.escape(val) + '"' : null;
       });
       data = _.filter(data, function(val){
         return val;
       });
       if (part.platform) {
         data = data.concat(_.map(part.platform, function(val, key){
-          return 'data-platform-' + key + '="' + val + '"';
+          return 'data-platform-' + key + '="' + _.escape(val) + '"';
         }));
       }
       return '<option value="' + part.id + '" ' + data.join(' ') + '>' + part.name + '</option>';

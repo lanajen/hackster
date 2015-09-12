@@ -40,6 +40,7 @@ gem 'redcarpet', '3.3.2'
 gem 'reverse_markdown'
 
 gem 'active_model_serializers', '0.8.3'
+gem 'addressable', '2.3.8'
 gem 'ambry', '~> 0.3.0'
 gem 'auto_html', '1.6.3'
 gem 'aws-sdk', '1.33.0'

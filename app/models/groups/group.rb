@@ -81,7 +81,6 @@ class Group < ActiveRecord::Base
   validate :website_format_is_valid
   validate :admin_email_is_present
   before_validation :clean_members
-  before_validation :ensure_website_protocol
   after_validation :add_errors_to_user_name
   before_save :ensure_invitation_token
 
@@ -183,13 +182,6 @@ class Group < ActiveRecord::Base
     full_name.presence || user_name
   end
 
-  def twitter_handle
-    return unless twitter_link.present?
-
-    handle = twitter_link.match(/twitter.com\/([a-zA-Z0-9_]+)/).try(:[], 1)
-    handle.present? ? "@#{handle}" : nil
-  end
-
   private
     def add_errors_to_user_name
       if errors[:new_user_name]
@@ -204,18 +196,6 @@ class Group < ActiveRecord::Base
     def clean_members
       members.each do |member|
         members.delete(member) if member.new_record? and member.user.nil?
-      end
-    end
-
-    def ensure_website_protocol
-      return unless websites_changed?
-      websites.each do |type, url|
-        next if type.in? skip_website_check
-        if url.blank?
-          send "#{type}=", nil
-          next
-        end
-        send "#{type}=", 'http://' + url unless url =~ /^http/
       end
     end
 

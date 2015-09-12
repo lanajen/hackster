@@ -18,6 +18,15 @@ class AttachmentObserver < ActiveRecord::Observer
       when 'Image'
         Cashier.expire "project-#{record.attachable.widgetable_id}-widgets"
       end
+    elsif record.attachable_type == 'Part'
+      case record.type
+      when 'Image'
+        keys = []
+        record.attachable.projects.pluck(:id).each do |id|
+          keys += ["project-#{id}-#{record.attachable.identifier}-parts", "project-#{id}-left-column", "project-#{id}"]
+        end
+        Cashier.expire *keys if keys.any?
+      end
     elsif record.attachable_type.in? %w(List)
       case record.type
       when 'CoverImage'

@@ -156,7 +156,6 @@ class User < ActiveRecord::Base
   validate :user_name_is_unique, unless: :being_invited?
 
   # before_validation :generate_password, if: proc{|u| u.skip_password }
-  before_validation :ensure_website_protocol
   before_validation :generate_user_name, if: proc{|u| u.user_name.blank? and u.new_user_name.blank? and !u.invited_to_sign_up? }
   before_create :subscribe_to_all, unless: proc{|u| u.invitation_token.present? }
   before_save :ensure_authentication_token
@@ -748,13 +747,6 @@ class User < ActiveRecord::Base
     @total_orders_this_month ||= orders.valid.this_month.sum("CAST(counters_cache -> 'order_lines_count' AS INTEGER)")
   end
 
-  def twitter_handle
-    return unless twitter_link.present?
-
-    handle = twitter_link.match(/twitter.com\/(.+)/).try(:[], 1)
-    handle.present? ? "@#{handle}" : nil
-  end
-
   def update_last_seen! time=nil
     update_column :last_seen_at, time || Time.now
   end
@@ -766,17 +758,6 @@ class User < ActiveRecord::Base
 
     def email_matches_confirmation
       errors.add(:email, "doesn't match confirmation") unless email.blank? or email == email_confirmation
-    end
-
-    def ensure_website_protocol
-      return unless websites_changed?
-      websites.each do |type, url|
-        if url.blank?
-          send "#{type}=", nil
-          next
-        end
-        send "#{type}=", 'http://' + url unless url =~ /^http/
-      end
     end
 
     def generate_authentication_token

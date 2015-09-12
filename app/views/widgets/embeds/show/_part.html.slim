@@ -10,7 +10,7 @@ tr.fields.part-row  id="part-#{part.id}"
             - if part.part.has_own_page? and !is_whitelabel?
               = link_to part.part.full_name, part.part
             - else
-              = part.part.name
+              = part.part.full_name
         tr
           td style='color: #888;font-size:75%;' = part.comment
   - if options[:show_quantity]

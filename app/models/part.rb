@@ -49,11 +49,11 @@ class Part < ActiveRecord::Base
   validates :name, :type, presence: true
   validates :unit_price, numericality: { greater_than_or_equal_to: 0 }, allow_blank: true
   validates :slug, uniqueness: { scope: :platform_id }, length: { in: 3..100 },
-    format: { with: /\A[a-z0-9\-]+\z/, message: "accepts only lowercase letters, numbers, and dashes '-'." }, if: proc{|p| p.platform_id.present? }
+    format: { with: /\A[a-z0-9\-]+\z/, message: "accepts only lowercase letters, numbers, and dashes '-'." }, allow_blank: true
   validates :one_liner, length: { maximum: 140 }, allow_blank: true
-  before_validation :ensure_website_protocol
   before_validation :ensure_partable, unless: proc{|p| p.persisted? }
-  before_validation :generate_slug, if: proc{|p| (p.slug.blank? or p.name_changed?) and p.platform_id.present? }
+  before_validation :generate_slug, if: proc{|p| (p.slug.blank? and p.approved?) or (p.slug.present? and p.name_changed?) }
+  register_sanitizer :strip_tags, :before_save, :name
   register_sanitizer :strip_whitespace, :before_validation, :mpn, :description, :name
   register_sanitizer :sanitize_description, :before_validation, :description
   after_create proc{|p| p.require_review! if p.workflow_state.blank? or p.new? }
@@ -64,10 +64,6 @@ class Part < ActiveRecord::Base
       event :require_review, transitions_to: :pending_review
       event :retire, transitions_to: :retired
     end
-    # state :pending_review_for_platform do
-    #   event :approve, transitions_to: :approved
-    #   event :reject, transitions_to: :rejected
-    # end
     state :pending_review do
       event :approve, transitions_to: :approved
       event :reject, transitions_to: :rejected
@@ -207,15 +203,19 @@ class Part < ActiveRecord::Base
       self.partable_type = 'Orphan' if partable_type.nil?
     end
 
-    def ensure_website_protocol
-      return unless websites_changed?
-      websites.each do |type, url|
-        if url.blank?
-          send "#{type}=", nil
-          next
-        end
-        send "#{type}=", 'http://' + url unless url =~ /^http/
+    def strip_tags text
+      text = ActionController::Base.helpers.strip_tags(text)
+
+      # so that these characters don't show escaped. Not the cleanest...
+      {
+        '&amp;' => '&',
+        '&lt;' => '<',
+        '&gt;' => '>',
+        '&quot;' => '"',
+      }.each do |code, character|
+        text.gsub! Regexp.new(code), character
       end
+      text
     end
 
     def sanitize_description text

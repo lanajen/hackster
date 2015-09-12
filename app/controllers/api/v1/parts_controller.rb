@@ -1,4 +1,6 @@
 class Api::V1::PartsController < Api::V1::BaseController
+  before_filter :authenticate_user!, only: [:create, :update, :destroy]
+  load_and_authorize_resource only: [:create, :update, :destroy]
 
   def index
     @parts = if params[:q].present?
@@ -18,8 +20,6 @@ class Api::V1::PartsController < Api::V1::BaseController
   end
 
   def create
-    @part = Part.new params[:part]
-
     if @part.save
       render status: :ok, template: 'api/v1/parts/show'
     else
@@ -28,8 +28,6 @@ class Api::V1::PartsController < Api::V1::BaseController
   end
 
   def update
-    @part = Part.find params[:id]
-
     if @part.update_attributes params[:part]
       render status: :ok, template: 'api/v1/parts/show'
     else
@@ -38,7 +36,6 @@ class Api::V1::PartsController < Api::V1::BaseController
   end
 
   def destroy
-    part = Part.find params[:id]
     part.destroy
 
     render status: :ok, nothing: true

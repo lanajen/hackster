@@ -663,6 +663,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_model_serializers (= 0.8.3)
+  addressable (= 2.3.8)
   ambry (~> 0.3.0)
   auto_html (= 1.6.3)
   aws-sdk (= 1.33.0)

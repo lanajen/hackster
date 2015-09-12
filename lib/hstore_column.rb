@@ -52,6 +52,7 @@ module HstoreColumn
         when :json_object
           val.to_s
         else
+          # ActionController::Base.helpers.strip_tags val
           val
         end if val
         column_name = options[:column_name].presence || attribute
@@ -147,6 +148,8 @@ module HstoreColumn
           value.present? ? JSON.parse(value) : nil
         when :string
           value
+        when :url
+          Url.new(value).to_s
         else
           value
         end unless value.nil?
