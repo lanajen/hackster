@@ -71,7 +71,7 @@ class Project < ActiveRecord::Base
   has_many :groups, -> { where(groups: { private: false }, project_collections: { workflow_state: ProjectCollection::VALID_STATES }) }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :hacker_spaces, -> { where("groups.type = 'HackerSpace'") }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :hardware_parts, -> { where(parts: { type: 'HardwarePart' } ) }, through: :part_joins, source: :part
-  has_many :hardware_part_joins, -> { joins(:part).where(parts: { type: 'HardwarePart'}) }, as: :partable, class_name: 'PartJoin', autosave: true
+  has_many :hardware_part_joins, -> { joins(:part).where(parts: { type: 'HardwarePart'}).order(:position).includes(part: { image: [], platform: :avatar }) }, as: :partable, class_name: 'PartJoin', autosave: true
   has_many :parts, through: :part_joins
   has_many :part_joins, -> { order(:position) }, as: :partable, dependent: :destroy do
     def hardware
@@ -86,8 +86,8 @@ class Project < ActiveRecord::Base
   end
   has_many :project_collections, dependent: :destroy
   has_many :software_parts, -> { where(parts: { type: 'SoftwarePart' } ) }, through: :part_joins, source: :part
-  has_many :software_part_joins, -> { joins(:part).where(parts: { type: 'SoftwarePart'}) }, as: :partable, class_name: 'PartJoin', autosave: true
-  has_many :tool_part_joins, -> { joins(:part).where(parts: { type: 'ToolPart'}) }, as: :partable, class_name: 'PartJoin', autosave: true
+  has_many :software_part_joins, -> { joins(:part).where(parts: { type: 'SoftwarePart'}).order(:position).includes(part: { image: [], platform: :avatar }) }, as: :partable, class_name: 'PartJoin', autosave: true
+  has_many :tool_part_joins, -> { joins(:part).where(parts: { type: 'ToolPart'}).order(:position).includes(part: { image: [], platform: :avatar }) }, as: :partable, class_name: 'PartJoin', autosave: true
   has_many :tool_parts, -> { where(parts: { type: 'ToolPart' } ) }, through: :part_joins, source: :part
   has_many :visible_collections, -> { visible }, class_name: 'ProjectCollection'
   has_many :visible_platforms, -> { where("groups.type = 'Platform'") }, through: :visible_collections, source_type: 'Group', source: :collectable

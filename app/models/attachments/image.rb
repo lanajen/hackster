@@ -4,6 +4,8 @@ class Image < BaseImage
     headline: { w: 580, h: 435, fit: :max },
     medium: { w: 400, h: 300, fit: :max },
     thumb: { w: 200, h: 150, fit: :max },
+    part_thumb: { w: 48, h: 48, fit: :fill, bg: '#fff' },
+    mini_thumb: { w: 48, h: 36, fit: :max },
   }
   mount_uploader :file, ImageUploader
 end

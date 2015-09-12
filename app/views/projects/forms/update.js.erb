@@ -2,3 +2,4 @@ var form = $('<%= j render(partial: "projects/forms/#{@panel}") %>');
 $('#<%= @panel %> form').html(form.html());
 
 $('#checklist').replaceWith('<%= j render(partial: "projects/forms/checklist") %>');
+cleanUpSelectBlueprint();

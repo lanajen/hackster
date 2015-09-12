@@ -172,6 +172,7 @@ class Ability
 
     can :manage, Order, user_id: @user.id
 
+    cannot :manage, Part, workflow_state: :approved
     can :manage, Part do |part|
       part.platform_id.present? and @user.can? :manage, part.platform
     end

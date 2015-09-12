@@ -32,9 +32,7 @@ HackerIo::Application.routes.draw do
         post 'unsub' => 'mandrill_webhooks#unsub'
       end
       resources :projects#, as: :api_projects
-      resources :parts, only: [:create, :destroy] do
-        get :autocomplete, on: :collection
-      end
+      resources :parts, only: [:index, :create, :update, :destroy]
       scope 'platforms' do
         get ':user_name' => 'platforms#show', defaults: { format: :json }
         scope ':user_name' do

@@ -109,7 +109,7 @@
                             = link_to content_tag(:i, '', class: 'fa fa-shopping-cart') + content_tag(:span, 'Buy all'), 'javascript:void(0)', class: 'modal-open btn btn-primary btn-sm', 'data-target' => '#buy-all-quote'
                         tbody
                           - @hardware_parts.each do |part|
-                            = render partial: 'widgets/embeds/show/part', locals: { part: part }
+                            = render partial: 'widgets/embeds/show/part', locals: { part: part, options: { show_quantity: true } }
 
               - cache [I18n.locale, "project-#{@project.id}-tool-parts"], tag: ["project-#{@project.id}-tool-parts"] do
                 - if @tool_parts.any?
@@ -123,7 +123,7 @@
                       table.sortable-table.table.table-hover.fields-container
                         tbody
                           - @tool_parts.each do |part|
-                            = render partial: 'projects/tool_part', locals: { part: part }
+                            = render partial: 'widgets/embeds/show/part', locals: { part: part }
 
               - cache [I18n.locale, "project-#{@project.id}-cad"], tag: ["project-#{@project.id}-cad"] do
                 - if @project.widgets.where(type: %w(CadRepoWidget CadFileWidget)).any?
@@ -161,7 +161,7 @@
                       table.sortable-table.table.table-hover.fields-container
                         tbody
                           - @software_parts.each do |part|
-                            = render partial: 'projects/software_part', locals: { part: part }
+                            = render partial: 'widgets/embeds/show/part', locals: { part: part }
 
               - cache [I18n.locale, "project-#{@project.id}-code"], tag: ["project-#{@project.id}-code"] do
                 - if @project.widgets.where(type: %w(CodeWidget CodeRepoWidget)).any?

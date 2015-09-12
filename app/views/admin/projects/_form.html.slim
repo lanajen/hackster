@@ -6,6 +6,7 @@
       = f.input :name, label: 'Title'
       = f.input :one_liner, as: :text, input_html: { rows: 4 },
         hint: 'Maximum 140 characters'
+      = f.input :content_type, collection: Project::CONTENT_TYPES, label: 'Project type'
       = f.input :website, label: 'Project website'
       = f.input :guest_name, label: 'Author name'
       = f.input :guest_twitter_handle, label: 'Author Twitter handle'

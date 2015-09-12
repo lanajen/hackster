@@ -1,36 +1,39 @@
 class Api::V1::PartsController < Api::V1::BaseController
 
-  def autocomplete
-    parts = if params[:q].present?
-      Part.search(q: params[:q], type: params[:type])
+  def index
+    @parts = if params[:q].present?
+      if params[:type].present?
+        params[:human_type] = {
+          'hardware' => 'component',
+          'software' => 'app',
+          'tool' => 'tool',
+        }[params[:type]]
+        params[:type] = params[:type].capitalize + 'Part'
+      end
+
+      Part.search(q: params[:q], type: params[:type]).paginate(page: safe_page_params)
     else
       []
     end
-
-    term = params[:type].gsub(/Part/, '').downcase
-    human_term = {
-      'hardware' => 'component',
-      'software' => 'app',
-      'tool' => 'tool',
-    }[term]
-
-    if parts.any?
-      parts_json = parts.map{|p| { id: p.id, text: p.full_name } }
-      parts_json << { id: '-1', text: "Can't find the right one? <a href='javascript:void(0)' class='new-part-modal-toggle btn btn-sm btn-success' data-target='#new-#{term}-modal' data-toggle='modal' data-value='#{params[:q]}'>Create a new #{human_term}</a>".html_safe, disabled: true }
-    else
-      parts_json = [{ id: '-1', text: "No results for \"#{params[:q]}\". <a href='javascript:void(0)' class='new-part-modal-toggle btn btn-sm btn-success' data-target='#new-#{term}-modal' data-toggle='modal' data-value='#{params[:q]}'>Create a new #{human_term}</a>".html_safe, disabled: true }]
-    end
-
-    render json: parts_json, root: false
   end
 
   def create
-    part = Part.new params[:part]
+    @part = Part.new params[:part]
 
-    if part.save
-      render json: part.to_json
+    if @part.save
+      render status: :ok, template: 'api/v1/parts/show'
     else
-      render status: :unprocessable_entity, json: { part: part.errors }
+      render status: :unprocessable_entity, json: { part: @part.errors }
+    end
+  end
+
+  def update
+    @part = Part.find params[:id]
+
+    if @part.update_attributes params[:part]
+      render status: :ok, template: 'api/v1/parts/show'
+    else
+      render status: :unprocessable_entity, json: { part: @part.errors }
     end
   end
 
@@ -38,6 +41,6 @@ class Api::V1::PartsController < Api::V1::BaseController
     part = Part.find params[:id]
     part.destroy
 
-    render status: :ok, text: ''
+    render status: :ok, nothing: true
   end
 end

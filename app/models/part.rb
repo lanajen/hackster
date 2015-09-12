@@ -4,6 +4,7 @@
 # - later: search by part
 
 class Part < ActiveRecord::Base
+  EDITABLE_STATES = %w(new pending_review)
   INVALID_STATES = %w(rejected retired)
   TYPES = %w(Hardware Software Tool).inject({}){|mem, t| mem[t] = "#{t}Part"; mem }
   include HstoreCounter
@@ -32,7 +33,7 @@ class Part < ActiveRecord::Base
     :description, :image_id, :platform_id,
     :part_joins_attributes, :part_join_ids, :workflow_state, :slug, :one_liner,
     :position, :child_part_relations_attributes,
-    :parent_part_relations_attributes, :type
+    :parent_part_relations_attributes, :type, :link
 
   accepts_nested_attributes_for :part_joins, :child_part_relations,
     :parent_part_relations, allow_destroy: true
@@ -48,11 +49,11 @@ class Part < ActiveRecord::Base
   validates :name, :type, presence: true
   validates :unit_price, numericality: { greater_than_or_equal_to: 0 }, allow_blank: true
   validates :slug, uniqueness: { scope: :platform_id }, length: { in: 3..100 },
-    format: { with: /\A[a-z0-9\-]+\z/, message: "accepts only lowercase letters, numbers, and dashes '-'." }
+    format: { with: /\A[a-z0-9\-]+\z/, message: "accepts only lowercase letters, numbers, and dashes '-'." }, if: proc{|p| p.platform_id.present? }
   validates :one_liner, length: { maximum: 140 }, allow_blank: true
   before_validation :ensure_website_protocol
   before_validation :ensure_partable, unless: proc{|p| p.persisted? }
-  before_validation :generate_slug, if: proc{|p| p.slug.blank? or p.name_changed? }
+  before_validation :generate_slug, if: proc{|p| (p.slug.blank? or p.name_changed?) and p.platform_id.present? }
   register_sanitizer :strip_whitespace, :before_validation, :mpn, :description, :name
   register_sanitizer :sanitize_description, :before_validation, :description
   after_create proc{|p| p.require_review! if p.workflow_state.blank? or p.new? }
@@ -63,6 +64,10 @@ class Part < ActiveRecord::Base
       event :require_review, transitions_to: :pending_review
       event :retire, transitions_to: :retired
     end
+    # state :pending_review_for_platform do
+    #   event :approve, transitions_to: :approved
+    #   event :reject, transitions_to: :rejected
+    # end
     state :pending_review do
       event :approve, transitions_to: :approved
       event :reject, transitions_to: :rejected
@@ -86,101 +91,13 @@ class Part < ActiveRecord::Base
   scope :alphabetical, -> { order name: :asc }
   scope :default_sort, -> { order("parts.position ASC, CAST(parts.counters_cache -> 'all_projects_count' AS INT) DESC NULLS LAST, parts.name ASC") }
 
-  # # beginning of search methods
-  # include TireInitialization
-
-  # def self.tire_index_name
-  #   ELASTIC_SEARCH_INDEX_NAME + '-parts'
-  # end
-
-  # has_tire_index '!approved?', self.tire_index_name
-
-  # tire do
-  #   settings analysis: {
-  #     filter: {
-  #       ngram_filter: {
-  #         type: 'nGram',
-  #         min_gram: 3,
-  #         max_gram: 8
-  #       }
-  #     },
-  #     analyzer: {
-  #       ngram_analyzer: {
-  #         type: 'custom',
-  #         tokenizer: 'standard',
-  #         filter: ['lowercase', 'ngram_filter']
-  #       },
-  #       index_ngram_analyzer: {
-  #         type: 'custom',
-  #         tokenizer: 'standard',
-  #         filter: ['lowercase', 'ngram_filter']
-  #       },
-  #       search_ngram_analyzer: {
-  #         type: 'custom',
-  #         tokenizer: 'standard',
-  #         filter: ['lowercase']
-  #       }
-  #     }
-  #   } do
-  #     mapping do
-  #       indexes :id,              index: :not_analyzed
-  #       indexes :name,            boost: 100, type: 'string', analyzer: 'ngram_analyzer', index_analyzer: "index_ngram_analyzer", search_analyzer: "search_ngram_analyzer"
-  #       # indexes :description,     analyzer: 'snowball', type: 'string', index_analyzer: "index_ngram_analyzer", search_analyzer: "search_ngram_analyzer"
-  #       # indexes :product_tags,    analyzer: 'snowball', type: 'string', index_analyzer: "index_ngram_analyzer", search_analyzer: "search_ngram_analyzer"
-  #       # indexes :mpn,             analyzer: 'snowball', boost: 100, type: 'string', index_analyzer: "index_ngram_analyzer", search_analyzer: "search_ngram_analyzer"
-  #       indexes :created_at
-  #     end
-  #   end
-  # end
-
-  # def to_indexed_json
-  #   {
-  #     _id: id,
-  #     name: name,
-  #     # description: description,
-  #     # mpn: mpn,
-  #     # product_tags: product_tags_string,
-  #     created_at: created_at,
-  #   }.to_json
-  # end
-
-  # def self.index_all
-  #   index.import approved
-  # end
-
-  # def self.search params
-  #   query = params[:q] ? CGI::unescape(params[:q].to_s) : nil
-
-  #   query = params[:q]
-  #   per_page = params[:per_page] || 50
-  #   page = params[:page] || 1
-  #   offset = params[:offset]
-
-  #   Rails.logger.info "Searching parts for #{query} (offset: #{offset}, page: #{page}, per_page: #{per_page})"
-  #   results = Tire.search index_name, load: true, page: page, per_page: per_page do
-  #     query do
-  #       # string query, default_operator: 'AND'
-  #       # match :name, query
-  #       # string "name:#{query}", default_operator: "OR"
-  #       boolean do
-  #         should { string "name:#{query}", default_operator: "OR" }
-  #       end
-  #     end
-  #     size per_page
-  #     from (offset || (per_page.to_i * (page.to_i-1)))
-  #   end
-
-  #   results.results
-  # end
-  # end of search methods
-
   def self.search params
     # escape single quotes and % so it doesn't break the query
     query = params[:q].gsub(/['%]/, ' ').split(/\s+/).map do |token|
-      "(parts.description ILIKE '%#{token}%' OR parts.name ILIKE '%#{token}%' OR parts.product_tags_string ILIKE '%#{token}%')"
+      "(parts.name ILIKE '%#{token}%' OR groups.full_name ILIKE '%#{token}%')"
     end.join(' AND ')
 
-    approved.where(query).where(type: params[:type]).includes(:platform)
+    approved.joins("LEFT JOIN groups ON groups.id = parts.platform_id AND groups.type = 'Platform'").where(query).where(type: params[:type]).order('groups.full_name ASC, parts.name ASC').includes(:platform)
   end
 
   def self.approved
@@ -212,13 +129,21 @@ class Part < ActiveRecord::Base
   end
 
   def self.visible
-    public
+    public.where("parts.slug IS NOT NULL AND parts.slug <> ''")
   end
 
   def all_projects
     ids = [id]
     ids += child_part_relations.pluck(:child_part_id)
     Project.joins("INNER JOIN part_joins ON part_joins.partable_id = projects.id AND part_joins.partable_type = 'Project'").where(part_joins: { part_id: ids })
+  end
+
+  def editable
+    workflow_state.in? EDITABLE_STATES
+  end
+
+  def editable?
+    editable
   end
 
   def identifier
@@ -255,6 +180,10 @@ class Part < ActiveRecord::Base
       end
     end
     self.slug = slug
+  end
+
+  def has_own_page?
+    platform_id.present? and slug.present?
   end
 
   def search_on_octopart

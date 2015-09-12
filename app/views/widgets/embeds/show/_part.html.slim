@@ -1,17 +1,23 @@
-tr.fields  id="part-#{part.id}"
-  td style='width:80%'
+- options = (defined?(options) && options) ? options: {}
+
+tr.fields.part-row  id="part-#{part.id}"
+  td.part-img= image_tag part.part.decorate.image(:part_thumb)
+  td
     table  style='width:100%'
       tbody
         tr
           td
-            - if part.part.platform_id and !is_whitelabel?
+            - if part.part.has_own_page? and !is_whitelabel?
               = link_to part.part.full_name, part.part
             - else
               = part.part.name
         tr
-          td colspan=4 style='color: #888;font-size:75%;' = part.comment
-  td style='width:30px;text-align:center;vertical-align:middle' &times;
-  td style='width:10%;min-width:20px;text-align:center;vertical-align:middle' = part.quantity
+          td style='color: #888;font-size:75%;' = part.comment
+  - if options[:show_quantity]
+    td style='width:30px;text-align:center;vertical-align:middle' &times;
+    td style='width:10%;min-width:20px;text-align:center;vertical-align:middle' = part.quantity
   td style='vertical-align:middle'
     - if part.part.vendor_link.present? or part.part.store_link.present?
       = link_to content_tag(:i, '', class: 'fa fa-shopping-cart'), (part.part.vendor_link.presence || part.part.store_link), target: '_blank', style: 'color:#333'
+    - elsif part.part.product_page_link.present?
+      = link_to content_tag(:i, '', class: 'fa fa-link'), part.part.product_page_link, target: '_blank', style: 'color:#333'

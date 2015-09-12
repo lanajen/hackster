@@ -44,7 +44,7 @@
                         = f_file.input :comment, as: :hidden, input_html: { 'data-field-type' => 'comment' }
                         - if file.type == 'CodeWidget'
                           = f_file.input :raw_code, as: :text, label: false, input_html: { 'data-field-type' => 'raw_code', class: 'hidden' }
-                          = f_file.input :language, as: :hidden, input_html: { 'data-field-type' => 'language' }
+                          = f_file.input :language, as: :hidden, input_html: { 'data-field-type' => 'language' }, label: 'Programming language'
                           / # = f_file.input :document_id, as: :hidden, input_html: { 'data-field-type' => 'document_id' }
                         - else
                           = f_file.input :url, as: :hidden, input_html: { 'data-field-type' => 'url' }
@@ -78,7 +78,7 @@
         .box-title.small-title
           h4 OSs, Apps and online services
         .box-content
-          = render partial: 'projects/forms/software_parts', locals: { project: @project, f: f }
+          = render partial: 'projects/forms/parts', locals: { project: @project, f: f, type: :software, human_type: 'app', options: { prompt: 'Select an app', label: 'App', part_type: 'software', link_type: 'product_page_link' } }
 
     = render 'projects/forms/pe_save'
 
