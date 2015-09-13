@@ -152,7 +152,6 @@ class User < ActiveRecord::Base
       user.validate :email_matches_confirmation
   end
   # validate :email_is_unique_for_registered_users, if: :being_invited?
-  validate :website_format_is_valid
   validate :user_name_is_unique, unless: :being_invited?
 
   # before_validation :generate_password, if: proc{|u| u.skip_password }
@@ -769,13 +768,6 @@ class User < ActiveRecord::Base
 
     def invitation_accepted
       notify_observers(:after_invitation_accepted)
-    end
-
-    def website_format_is_valid
-      websites.each do |type, url|
-        next if url.blank?
-        errors.add type.to_sym, 'is not a valid URL' unless url.downcase =~ URL_REGEXP
-      end
     end
 
     def user_name_is_unique
