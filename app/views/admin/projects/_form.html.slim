@@ -10,7 +10,13 @@
       = f.input :website, label: 'Project website'
       = f.input :guest_name, label: 'Author name'
       = f.input :guest_twitter_handle, label: 'Author Twitter handle'
-      = f.input :platform_tags_string, as: :string, label: 'Platforms', hint: 'Separate tags by commas. Used for finding your project more easily.'
+      = f.input :platform_tags_string, as: :string, label: 'Platform tags', hint: 'Separate tags by commas.'
+      .col-sm-8.col-sm-offset-4
+        ul
+          - @project.project_collections.joins("INNER JOIN groups ON groups.id = project_collections.collectable_id AND project_collections.collectable_type = 'Group'").where(groups: { type: 'Platform' }).includes(:collectable).each do |col|
+            li
+              strong=> col.collectable.name
+              | (#{col.workflow_state})
       = render partial: 'shared/image_form', locals: { file_type: 'cover_image', human_file_type: 'Cover image', image_link: @project.cover_image.try(:imgix_url, :cover_mini_thumb), help_block: 'This should be your nicest picture for this project. In 4:3 format, at least 600x450px for best results', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
       = f.input :type, label: 'Project type', collection: Project::TYPES
       = f.input :workflow_state, label: 'Project approval state', collection: Project.workflow_spec.states.keys

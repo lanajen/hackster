@@ -233,7 +233,6 @@ class Project < ActiveRecord::Base
   add_checklist :cover_image, 'Cover image', 'cover_image and cover_image.file_url'
   add_checklist :difficulty, 'Skill level'
   add_checklist :product_tags_string, 'Tags'
-  add_checklist :platform_tags_string, 'Platforms used'
   add_checklist :description, 'Story'
   add_checklist :hardware_parts, 'Components', 'hardware_parts.any?'
   add_checklist :schematics, 'Schematics', 'widgets.where(type: %w(SchematicWidget SchematicFileWidget)).any?'
