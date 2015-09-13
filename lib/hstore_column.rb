@@ -35,10 +35,10 @@ module HstoreColumn
           instance_variable_set "@#{attribute}_was", current_val
           instance_variable_set "@#{attribute}_was_set", true
         end
-        unless cast_val.nil?
-          instance_variable_set "@#{attribute}", cast_val
+        if cast_val.nil?
+          remove_instance_variable "@#{attribute}" if instance_variable_defined? "@#{attribute}"
         else
-          remove_instance_variable "@#{attribute}"
+          instance_variable_set "@#{attribute}", cast_val
         end
         attribute_will_change! attribute
 
