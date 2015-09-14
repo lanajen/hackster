@@ -538,20 +538,20 @@ $select2target = null;
       }
     });
 
-    $('.pe-panel').on('click', '.parts-widget .edit-in-modal', function(e){
+    $('.project-editor').on('click', '.parts-widget .edit-in-modal', function(e){
       var select = $(this).closest('.fields').find('.select2');
       $select2target = select.attr('id');
     });
 
     function setupSelect2() {
-      $('.pe-panel .parts-widget .select2').each(function(i, el){
+      $('.project-editor .parts-widget .select2').each(function(i, el){
         el = $(el);
         $select2containers[el.attr('id')] = el.select2(select2Options(el.data('type')));
       });
     }
     setupSelect2();
 
-    $('.pe-panel').on('ajax:complete', '.remote:not(#parts-popup)', function(xhr, data, status){
+    $('.project-editor').on('ajax:complete', '.remote:not(#parts-popup)', function(xhr, data, status){
        setupSelect2();
     });
 
@@ -596,7 +596,7 @@ $select2target = null;
       return '<option value="' + part.id + '" ' + data.join(' ') + '>' + part.name + '</option>';
     }
 
-    $('.pe-panel').on('click', '.parts-widget .reveal', function(e){
+    $('.project-editor').on('click', '.parts-widget .reveal', function(e){
       e.preventDefault();
       var parent = $(this).closest('tbody');
       var target = parent.find('[data-name="' + $(this).data('target') + '"]');
@@ -621,7 +621,7 @@ $select2target = null;
       });
     }
 
-    $('.pe-panel').on('click', '.move-up', '.parts-widget', function(e){
+    $('.project-editor').on('click', '.move-up', '.parts-widget', function(e){
       e.preventDefault();
       var parent = $(this).closest('.fields');
       var prev = parent.prev();
@@ -631,7 +631,7 @@ $select2target = null;
       }
     });
 
-    $('.pe-panel').on('click', '.move-down', '.parts-widget', function(e){
+    $('.project-editor').on('click', '.move-down', '.parts-widget', function(e){
       e.preventDefault();
       var parent = $(this).closest('.fields');
       var next = parent.next()
@@ -641,7 +641,7 @@ $select2target = null;
       }
     });
 
-    $('.pe-panel').on('nested:fieldAdded', '.parts-widget', function(e){
+    $('.project-editor').on('nested:fieldAdded', '.parts-widget', function(e){
       var select = $(e.target).find('.select2');
       select.html('<option></option>');
       $select2containers[select.attr('id')] = select.select2(select2Options(select.data('type')));
