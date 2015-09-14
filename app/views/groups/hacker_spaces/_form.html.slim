@@ -35,22 +35,22 @@
       = f.input :country, input_html: { class: 'form-control' }
 
     .col-md-6
+      = f.input :blog_link, label: 'Blog link'
       = f.input :facebook_link, label: 'Facebook link'
       = f.input :flickr_link, label: 'Flickr link'
       = f.input :github_link, label: 'Github link'
       = f.input :google_plus_link, label: 'Google+ link'
+      = f.input :hackerspace_org_link, label: 'Hackerspaces.org link'
       = f.input :instagram_link, label: 'Instagram link'
+      = f.input :irc_link, label: 'IRC link'
       = f.input :linked_in_link, label: 'LinkedIn link'
+      = f.input :mailing_list_link, label: 'Mailing list link'
       = f.input :pinterest_link, label: 'Pinterest link'
       = f.input :reddit_link, label: 'Reddit link'
       = f.input :twitter_link, label: 'Twitter link'
-      = f.input :youtube_link, label: 'Youtube link'
       = f.input :website_link, label: 'Website link'
-      = f.input :blog_link, label: 'Blog link'
       = f.input :wiki_link, label: 'Wiki link'
-      = f.input :mailing_list_link, label: 'Mailing list link'
-      = f.input :hackerspace_org_link, label: 'Hackerspaces.org link'
-      = f.input :irc_link, label: 'IRC link'
+      = f.input :youtube_link, label: 'Youtube link'
 
       = f.input :access_level, label: 'Who can join this group?', collection: Group::ACCESS_LEVELS
       = f.input :private, inline_label: 'Make this group private', label: false, hint: "Private groups are only visible by their members and are invite only."
