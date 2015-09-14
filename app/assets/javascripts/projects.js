@@ -10,6 +10,9 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
   });
 }
 
+$select2containers = {};
+$select2target = null;
+
 (function ($, window, document, undefined) {
   $(function() {
     $('#simplified-signup-popup').on('modal:open', function(e){
@@ -354,6 +357,7 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
         form.find('input:file').click();
       })
       .on('modal:closed', function(){
+        $(this).find('.error-notif').remove();
         $(this).find('.has-error .help-block.error-message').remove();
         $(this).find('.form-group').removeClass('has-error');
       });
@@ -364,7 +368,7 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
       })
       .on('ajax:success', function(xhr, data, status){
         closeModal($(this).data('modal'));
-        pe.reload();
+        if (!$(this).hasClass('no-reload')) pe.reload();
       })
       .on('ajax:error', function(error, xhr, status){
         error.stopPropagation();
@@ -407,7 +411,14 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
             }
           }
         }
-        var notif = $('<div class="text-danger error-notif" style="margin:20px 0;">Oops, check for errors above (' + errorFields.join(', ') + ').</div>');
+
+        var msg;
+        if (errors.message) {
+          msg = errors.message;
+        } else {
+          msg = 'Oops, check for errors above (' + errorFields.join(', ') + ').';
+        }
+        var notif = $('<div class="text-danger error-notif" style="margin:20px 0;">' + msg + '</div>');
         $(this).find('input[name="commit"]').before(notif);
       });
 
@@ -443,15 +454,201 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
         target.find('[data-field-type=type]').val(type);
     });
 
-    $('.pe-panel').on('click', '.edit-in-modal', function(e){
+    $('body').on('click', '.edit-in-modal', function(e){
       e.preventDefault();
       var popup = $(this).data('modal');
-      var inputs = $(this).closest('.fields').find('input[type=hidden], textarea.hidden');
+      if ($('.select2-container--open').length) {
+        var parent = $('.select2-container--open');
+      } else {
+        var parent = $(this);
+      }
+      var inputs = parent.closest('.fields').find('input[type=hidden], textarea.hidden');
       inputs.each(function(i, el){
         var input = $(popup).find('[data-field-type="' + $(el).data('field-type') + '"]');
-        input.val($(el).val());
+        if (input.length)
+          input.val($(el).val());
       });
-      openModal(popup);
+      openModal(popup, this);
+    });
+
+    var select2Options = function(partType){
+      return {
+        minimumInputLength: 3,
+        ajax: {
+          url: "/api/v1/parts",
+          dataType: 'json',
+          delay: 150,
+          data: function (params) {
+            return {
+              q: params.term,  // search term
+              page: params.page,
+              type: partType
+            };
+          },
+          processResults: function (data, page) {
+            var results = _.map(data.parts, function(el){
+              return {
+                id: el.part.id,
+                part: el.part
+              }
+            });
+            var extra = { disabled: true, q: data.q, type: data.type };
+            if (results.length) {
+              extra.id = -1;
+              results.push(extra);
+            } else {
+              extra.id = -2;
+              results = [extra];
+            }
+
+            return {
+              results: results
+            };
+          },
+          cache: true
+        },
+        templateSelection: formatPart,
+        templateResult : formatPart
+      };
+    };
+
+    $('#parts-popup').on('modal:opening', function(e){
+      var button = $(e.relatedTarget);
+      if (button.data('value'))
+        $(this).find('#part_name').val(button.data('value'));
+
+      el = $('.pe-panel .select2-container--open')
+      var select = el.prev();
+      $select2target = select.attr('id');
+      var select2 = $select2containers[$select2target];
+      if (select2)
+        select2.select2('close');
+
+      $('.link-input').hide();
+      $(this).find('.part_' + select.data('link-type')).show();
+
+      var id = $(this).find('[name="id"]').val();
+      basePartsApiUrl = '/api/v1/parts'
+      if (id.length) {
+        $(this).find('form').attr('action', basePartsApiUrl + '/' + id);
+        $(this).find('input[name="_method"]').val('patch');
+      } else {
+        $(this).find('form').attr('action', basePartsApiUrl);
+        $(this).find('input[name="_method"]').val('');
+      }
+    });
+
+    $('.pe-panel').on('click', '.parts-widget .edit-in-modal', function(e){
+      var select = $(this).closest('.fields').find('.select2');
+      $select2target = select.attr('id');
+    });
+
+    function setupSelect2() {
+      $('.pe-panel .parts-widget .select2').each(function(i, el){
+        el = $(el);
+        $select2containers[el.attr('id')] = el.select2(select2Options(el.data('type')));
+      });
+    }
+    setupSelect2();
+
+    $('.pe-panel').on('ajax:complete', '.remote:not(#parts-popup)', function(xhr, data, status){
+       setupSelect2();
+    });
+
+    $('#parts-popup').on('modal:open', function(e){
+      $(this).find('.part_name').focus();
+    });
+
+    $('#parts-popup form').on('ajax:success', function(xhr, data, status){
+      var select = $('#' + $select2target);
+      var tpl = prepareOptionTagForPart(data.part);
+      select.html(tpl);
+      $select2containers[$select2target].val(data.part.id).trigger('change');
+      var parent = select.closest('.fields');
+
+      // update data-field-type inputs after create/update
+      var inputs = $(this).find('input, textarea, select');
+      inputs.each(function(i, el){
+        var field = $(el).data('field-type');
+        if (typeof(field) != 'undefined') {
+          var input = parent.find('[data-field-type="' + field + '"]');
+          if (input.length)
+            input.val($(el).val());
+        }
+      });
+
+      closeModal('#parts-popup');
+      $select2target = null;
+    });
+
+    function prepareOptionTagForPart(part) {
+      var data = _.map(part, function(val, key){
+        return val ? 'data-' + key + '="' + _.escape(val) + '"' : null;
+      });
+      data = _.filter(data, function(val){
+        return val;
+      });
+      if (part.platform) {
+        data = data.concat(_.map(part.platform, function(val, key){
+          return 'data-platform-' + key + '="' + _.escape(val) + '"';
+        }));
+      }
+      return '<option value="' + part.id + '" ' + data.join(' ') + '>' + part.name + '</option>';
+    }
+
+    $('.pe-panel').on('click', '.parts-widget .reveal', function(e){
+      e.preventDefault();
+      var parent = $(this).closest('tbody');
+      var target = parent.find('[data-name="' + $(this).data('target') + '"]');
+      var panel = $(this).closest('.pe-panel');
+      target.slideDown();
+      var li = $(this).closest('li');
+      var ul = li.closest('ul');
+      var tr = ul.closest('tr');
+      li.remove();
+      if (ul.children().length == 0) {
+        tr.remove();
+      }
+    });
+
+    function resetPartPositions(){
+      $('.parts-widget').each(function(j, el){
+        $(el).find('tr:not(.removed) input.position').each(function(i){
+          $(this)
+            .val(i+1)
+            .trigger('change');
+        });
+      });
+    }
+
+    $('.pe-panel').on('click', '.move-up', '.parts-widget', function(e){
+      e.preventDefault();
+      var parent = $(this).closest('.fields');
+      var prev = parent.prev();
+      if (prev.length) {
+        parent.insertBefore(prev);
+        resetPartPositions();
+      }
+    });
+
+    $('.pe-panel').on('click', '.move-down', '.parts-widget', function(e){
+      e.preventDefault();
+      var parent = $(this).closest('.fields');
+      var next = parent.next()
+      if (next.length) {
+        parent.insertAfter(next);
+        resetPartPositions();
+      }
+    });
+
+    $('.pe-panel').on('nested:fieldAdded', '.parts-widget', function(e){
+      var select = $(e.target).find('.select2');
+      select.html('<option></option>');
+      $select2containers[select.attr('id')] = select.select2(select2Options(select.data('type')));
+      resetPartPositions();
+
+      // the blueprint has white spaces and they're copied over when adding a field
+      $(e.target).find('textarea, .reset').val('');
     });
 
     $(document).on('click', '.goto', function(e){
@@ -631,6 +828,8 @@ function checkIfCommentsHaveSameDepthYoungerSiblings() {
     }, 1000);
 
     loadSlickSlider();
+
+    cleanUpSelectBlueprint();
   });
 })(jQuery, window, document);
 
@@ -680,6 +879,75 @@ function cEditorUpdateHeight(div, cEditor) {
   // its inner structure for adapting to a change in size
   cEditor.resize();
 }
+
+function cleanUpSelectBlueprint() {
+  var targets = $('#software_part_joins_fields_blueprint, #hardware_part_joins_fields_blueprint, #tool_part_joins_fields_blueprint');
+  targets = _.filter(targets, function(el){ return !$(el).hasClass('ready'); });
+  $.each(targets, function(i, el){
+    el = $(el);
+    var bp = $(el.data('blueprint'));
+    var select = bp.find('.select2');
+    select.html('<option></option>');
+    var name = select.attr('name');
+    var type = 'new_' + name.match(/\[([a-z_]+_attributes)\]/)[1].replace('_attributes', '');
+    name = name.replace(name.match(/\[[0-9]+\]/)[0], '[' + type + ']');
+    select.attr('name', name);
+    var id = select.attr('id');
+    id = id.replace(id.match(/[0-9]+/)[0], type);
+    select.attr('id', id);
+    el.data('blueprint', bp.prop('outerHTML'));
+    el.addClass('ready');
+  });
+}
+
+function formatPart(result) {
+  if (!result.id || result.id == '' && result.text)
+    return $('<span class="select2--text-only">' + result.text + '</span>');
+
+  if (!result.part) {
+    if (!result.element) {
+      var phrase = result.id == -1 ? "Can't find the right one?" : "No results for '" + _.escape(result.q) + "'";
+
+      return $("<span>" + phrase + " <a href='javascript:void(0)' class='btn btn-sm btn-success edit-in-modal modal-reset' data-modal='#parts-popup' data-value='" + _.escape(result.q) + "'>Create a new " + result.type + "</a></span>");
+    }
+
+    var el = $(result.element);
+    var part = {
+      name: el.data('name'),
+      store_link: el.data('store_link'),
+      product_page_link: el.data('product_page_link'),
+      image_url: el.data('image_url'),
+      editable: el.data('editable') == true
+    };
+    if (el.data('platform-id')) {
+      var platform = {
+        name: el.data('platform-name'),
+        logo_url: el.data('platform-logo_url')
+      }
+    }
+  } else {
+    var part = result.part;
+    var platform = part.platform;
+  }
+
+  var output = '<table class="select2-part"><tbody><tr><td class="part-img">';
+  if (part.image_url)
+    output += '<img src="' + part.image_url + '" />'
+  output += '</td><td class="part-description"><div class="part-name">';
+  if (platform)
+    output += '<img src="' + platform.logo_url + '" class="platform-img"> <span class="platform-name">' + platform.name + '</span> - ';
+  var link = part.store_link && typeof(part.store_link) !== 'undefined' ? part.store_link : null;
+  if (!link)
+    link = part.product_page_link && typeof(part.product_page_link) !== 'undefined' ? part.product_page_link : 'No link';
+  output +=  part.name + '</div><div class="part-link"><i class="fa fa-link"></i><span>' + link + '</span></div></td><td class="part-action">'
+  if (part.editable) {
+    output += '<a class="btn btn-link btn-sm edit-in-modal" data-modal="#parts-popup">Edit</a>';
+  } else {
+    output += '<i class="fa fa-lock help" title="This part cannot be edited."></i>';
+  }
+  output += '</td></tr></tbody></table>';
+  return $(output);
+};
 
 function loadSlickSlider(){
   $('.image-gallery:visible:not(.slick-initialized)').slick({

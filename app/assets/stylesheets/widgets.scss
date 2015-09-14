@@ -691,6 +691,9 @@ p.caption {
     box-shadow: none;
     border-left: 1px solid #ddd;
   }
+  .select2-container {
+    height: 68px;
+  }
   input, textarea, select {
     padding: 12px;
     &:focus, &:hover {
@@ -698,14 +701,17 @@ p.caption {
       box-shadow: none;
     }
   }
+  .select2--text-only {
+    padding: 20px;
+    display: block;
+  }
   .select2-container {
     padding: 0;
     .select2-selection--single .select2-selection__rendered {
       padding: 0;
     }
     .select2-selection--single {
-      height: 44px;
-      padding: 12px;
+      height: 68px;
       &:focus {
         outline: 0;
       }
@@ -731,6 +737,91 @@ p.caption {
     display: none;
   }
 }
+table.select2-part {
+  background: none;
+  border: 0;
+  width: 100%;
+  &:hover {
+    .part-action {
+      @include opacity(1);
+    }
+  }
+  td {
+    background: none;
+    &.part-img {
+      padding: 10px 0 10px 12px;
+      width: 68px;
+      img {
+        width: 48px;
+      }
+      &:empty {
+        display: none;
+      }
+    }
+    &.part-description {
+      padding: 12px;
+    }
+  }
+  .part-name {
+    margin-bottom: 5px;
+  }
+  .part-link {
+    color: #999;
+    font-size: 0.8em;
+    word-break: break-all;
+    white-space: nowrap;
+  }
+  .part-name, .part-link {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 320px;
+    word-wrap: break-word;
+  }
+  .platform-img {
+    width: 13px;
+    vertical-align: baseline;
+  }
+  .platform-name {
+    color: #888;
+    font-weight: bold;
+  }
+  .part-action {
+    min-width: 30px;
+    text-align: center;
+    @include opacity(0);
+  }
+}
+.select2-results {
+  table.select2-part {
+    td {
+      &.part-img {
+        padding: 10px 5px;
+      }
+      &.part-description {
+        padding: 3px 12px;
+      }
+    }
+  }
+  .select2-results__option--highlighted {
+    table.select2-part {
+      .part-link, .platform-name {
+        color: #f0f0f0;
+      }
+      .part-action {
+        @include opacity(0);
+      }
+    }
+  }
+}
 .select2-container {
-  width: 100% !important;
+  max-width: 100% !important;
+}
+.part-row {
+  .part-img {
+    width: 48px;
+    padding-right: 2px
+  }
+  td {
+    vertical-align: middle !important;
+  }
 }

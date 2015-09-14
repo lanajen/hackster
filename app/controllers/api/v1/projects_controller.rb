@@ -1,4 +1,6 @@
 class Api::V1::ProjectsController < Api::V1::BaseController
+  before_filter :authenticate_user!, only: [:create, :update, :destroy]
+  load_and_authorize_resource only: [:create, :update, :destroy]
   # before_filter :public_api_methods, only: [:index, :show]
 
   def index
@@ -25,9 +27,6 @@ class Api::V1::ProjectsController < Api::V1::BaseController
   end
 
   def create
-    project = Project.new params[:project]
-    authorize! :create, project
-
     if project.save
       render json: project, status: :ok
     else
@@ -36,9 +35,6 @@ class Api::V1::ProjectsController < Api::V1::BaseController
   end
 
   def update
-    @project = Project.find params[:id]
-    authorize! :update, @project
-
     @panel = params[:panel]
 
     # hack to clear up widgets that have somehow been deleted and that prevent all thing from being saved
@@ -76,8 +72,6 @@ class Api::V1::ProjectsController < Api::V1::BaseController
   end
 
   def destroy
-    project = Project.find(params[:id])
-    authorize! :destroy, project
     project.destroy
 
     render status: :ok, nothing: true

@@ -71,7 +71,7 @@ class Project < ActiveRecord::Base
   has_many :groups, -> { where(groups: { private: false }, project_collections: { workflow_state: ProjectCollection::VALID_STATES }) }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :hacker_spaces, -> { where("groups.type = 'HackerSpace'") }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :hardware_parts, -> { where(parts: { type: 'HardwarePart' } ) }, through: :part_joins, source: :part
-  has_many :hardware_part_joins, -> { joins(:part).where(parts: { type: 'HardwarePart'}) }, as: :partable, class_name: 'PartJoin', autosave: true
+  has_many :hardware_part_joins, -> { joins(:part).where(parts: { type: 'HardwarePart'}).order(:position).includes(part: { image: [], platform: :avatar }) }, as: :partable, class_name: 'PartJoin', autosave: true
   has_many :parts, through: :part_joins
   has_many :part_joins, -> { order(:position) }, as: :partable, dependent: :destroy do
     def hardware
@@ -84,10 +84,16 @@ class Project < ActiveRecord::Base
       joins(:part).where(parts: { type: 'ToolPart' })
     end
   end
+  has_many :part_platforms, through: :parts, source: :platform do
+    # doesn't seem to want to work if we make the scope below default
+    def default_scope
+      reorder("groups.full_name ASC").uniq
+    end
+  end
   has_many :project_collections, dependent: :destroy
   has_many :software_parts, -> { where(parts: { type: 'SoftwarePart' } ) }, through: :part_joins, source: :part
-  has_many :software_part_joins, -> { joins(:part).where(parts: { type: 'SoftwarePart'}) }, as: :partable, class_name: 'PartJoin', autosave: true
-  has_many :tool_part_joins, -> { joins(:part).where(parts: { type: 'ToolPart'}) }, as: :partable, class_name: 'PartJoin', autosave: true
+  has_many :software_part_joins, -> { joins(:part).where(parts: { type: 'SoftwarePart'}).order(:position).includes(part: { image: [], platform: :avatar }) }, as: :partable, class_name: 'PartJoin', autosave: true
+  has_many :tool_part_joins, -> { joins(:part).where(parts: { type: 'ToolPart'}).order(:position).includes(part: { image: [], platform: :avatar }) }, as: :partable, class_name: 'PartJoin', autosave: true
   has_many :tool_parts, -> { where(parts: { type: 'ToolPart' } ) }, through: :part_joins, source: :part
   has_many :visible_collections, -> { visible }, class_name: 'ProjectCollection'
   has_many :visible_platforms, -> { where("groups.type = 'Platform'") }, through: :visible_collections, source_type: 'Group', source: :collectable
@@ -227,7 +233,6 @@ class Project < ActiveRecord::Base
   add_checklist :cover_image, 'Cover image', 'cover_image and cover_image.file_url'
   add_checklist :difficulty, 'Skill level'
   add_checklist :product_tags_string, 'Tags'
-  add_checklist :platform_tags_string, 'Platforms used'
   add_checklist :description, 'Story'
   add_checklist :hardware_parts, 'Components', 'hardware_parts.any?'
   add_checklist :schematics, 'Schematics', 'widgets.where(type: %w(SchematicWidget SchematicFileWidget)).any?'
