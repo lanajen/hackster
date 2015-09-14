@@ -60,7 +60,7 @@
       ' More products
       span.caret
     ul.dropdown-menu
-      - @platform.parts.each do |part|
+      - @platform.parts.visible.alphabetical.each do |part|
         li= link_to part.name, part
 
 
