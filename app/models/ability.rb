@@ -39,8 +39,8 @@ class Ability
   end
 
   def admin
-    can :manage, :all
-    cannot [:join, :request_access], Group
+    # can :manage, :all
+    # cannot [:join, :request_access], Group
   end
 
   def beta_tester
@@ -173,6 +173,7 @@ class Ability
     can :manage, Order, user_id: @user.id
 
     cannot :update, Part
+    can :create, Part
     can :update, Part, workflow_state: Part::EDITABLE_STATES
     can :manage, Part do |part|
       part.platform_id.present? and @user.can? :manage, part.platform
