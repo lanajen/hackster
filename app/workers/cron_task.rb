@@ -30,12 +30,6 @@ class CronTask < BaseWorker
     end
   end
 
-  def expire_challenges
-    Challenge.where(workflow_state: :in_progress).where("challenges.end_date < ?", Time.now).each do |challenge|
-      challenge.end!
-    end
-  end
-
   def generate_user
     UserGenerator.generate_user
   end
@@ -48,14 +42,13 @@ class CronTask < BaseWorker
 
   def launch_cron
     CacheWorker.perform_async 'warm_cache'
+    CronTask.perform_in 3.minutes, 'lock_assignment'
     CronTask.perform_in 4.minutes, 'send_assignment_reminder'
-    CronTask.perform_in 6.minutes, 'lock_assignment'
-    CronTask.perform_in 8.minutes, 'expire_challenges'
-    CronTask.perform_in 10.minutes, 'send_announcement_notifications'
-    CronTask.perform_in 12.minutes, 'cleanup_duplicates'
-    CronTask.perform_in 14.minutes, 'clean_invitations'
-    PopularityWorker.perform_in 16.minutes, 'compute_popularity_for_projects'
-    CronTask.perform_in 18.minutes, 'evaluate_badges'
+    CronTask.perform_in 6.minutes, 'send_announcement_notifications'
+    CronTask.perform_in 8.minutes, 'cleanup_duplicates'
+    CronTask.perform_in 10.minutes, 'clean_invitations'
+    PopularityWorker.perform_in 12.minutes, 'compute_popularity_for_projects'
+    CronTask.perform_in 14.minutes, 'evaluate_badges'
     CronTask.perform_in 1.hour, 'launch_cron'
   end
 
