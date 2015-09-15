@@ -13,4 +13,9 @@ json.part do
       json.logo_url platform.decorate.avatar(:tiny)
     end
   end
+  json.counters do
+    json.impressions part.impressions_count
+    json.projects part.projects_count
+    json.owners part.owners_count
+  end
 end
