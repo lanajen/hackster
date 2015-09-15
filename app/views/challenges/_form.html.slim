@@ -33,7 +33,21 @@
         .panel-heading
           h4 Challenge settings
         .panel-body
-          = f.input :end_date_dummy, label: 'Entry deadline', wrapper_html: { id: 'entry_deadline', class: 'datetimepicker' }, hint: "The maximum date by which makers can submit entries to the challenge. Time here is UTC (+00), but it will be displayed in PDT (-08)." do
+          = f.input :activate_pre_registration, as: :boolean, inline_label: 'Enable pre-registration', label: false, hint: "You can let users register for the challenge before it's open for submissions."
+          #pre_registration_settings style=(@challenge.activate_pre_registration ? '' : 'display:none')
+            = f.input :pre_registration_start_date_dummy, label: 'Pre-registration start date', wrapper_html: { id: 'pre_registration_start_date_dummy', class: 'datetimepicker' }, hint: "The first date when makers can start registering for the challenge. They will not be able to enter submissions yet. Times are PT (-08)." do
+              #datepicker.input-group
+                = f.input_field :pre_registration_start_date_dummy, as: :string, label: false
+                span.input-group-addon
+                  i.fa.fa-calendar
+          = f.input :pre_registration_start_date, as: :hidden, input_html: { id: 'pre_registration_start_date' }
+          = f.input :start_date_dummy, label: 'Challenge start date', wrapper_html: { id: 'start_date_dummy', class: 'datetimepicker' }, hint: "Participants will be able to enter projects starting that date. Times are PT (-08)." do
+            #datepicker.input-group
+              = f.input_field :start_date_dummy, as: :string, label: false
+              span.input-group-addon
+                i.fa.fa-calendar
+          = f.input :start_date, as: :hidden, input_html: { id: 'start_date' }
+          = f.input :end_date_dummy, label: 'Challenge end date', wrapper_html: { id: 'entry_deadline', class: 'datetimepicker' }, hint: "The maximum date by which makers can submit entries to the challenge. Times are PT (-08)." do
             #datepicker.input-group
               = f.input_field :end_date_dummy, as: :string, label: false
               span.input-group-addon
@@ -159,9 +173,9 @@
           .form-group
             .col-md-8.col-md-offset-4
               - case @challenge.workflow_state.to_sym
-              - when :new
+              / - when :new
                 = link_to 'Launch challenge', update_workflow_challenge_path(@challenge, event: 'launch'), method: :put, class: 'btn btn-success btn-sm', data: { confirm: "Let's do this. Sure?" }
-              - when :in_progress
+              - when :pre_registration, :in_progress
                 = link_to 'Take offline', update_workflow_challenge_path(@challenge, event: 'take_offline'), method: :put, class: 'btn btn-warning btn-sm', data: { confirm: "Sure?" }
               - when :judging
                 - if current_user.is? :admin
@@ -200,6 +214,15 @@
       sideBySide: true
     });
 
+    $('#pre_registration_start_date_dummy').on('change', function(){
+      $('#pre_registration_date').val($('#pre_registration_start_date_dummy').data("DateTimePicker").getDate());
+    });
+    $('#start_date_dummy').on('change', function(){
+      $('#start_date').val($('#start_date_dummy').data("DateTimePicker").getDate());
+    });
+    $('#entry_deadline').on('change', function(){
+      $('#end_date').val($('#entry_deadline').data("DateTimePicker").getDate());
+    });
     $('#entry_deadline').on('change', function(){
       $('#end_date').val($('#entry_deadline').data("DateTimePicker").getDate());
     });
@@ -211,6 +234,13 @@
         $('#voting_dates').slideDown();
       } else {
         $('#voting_dates').slideUp();
+      }
+    });
+    $('#challenge_activate_pre_registration').on('change', function(){
+      if ($(this).is(':checked')) {
+        $('#pre_registration_settings').slideDown();
+      } else {
+        $('#pre_registration_settings').slideUp();
       }
     });
     $('#challenge_activate_mailchimp_sync').on('change', function(){

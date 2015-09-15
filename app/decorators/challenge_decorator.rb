@@ -27,6 +27,14 @@ class ChallengeDecorator < ApplicationDecorator
     model.prizes.sum(:quantity)
   end
 
+  def registration_text
+    if model.open_for_submissions?
+      "Register as a participant"
+    else
+      "Pre-register as a participant"
+    end
+  end
+
   def status
     return model.custom_status if model.custom_status.present?
 

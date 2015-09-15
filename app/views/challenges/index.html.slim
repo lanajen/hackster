@@ -15,6 +15,11 @@
             - @active_challenges.each do |challenge|
               = render partial: 'challenge_thumb', locals: { challenge: challenge.decorate, thumb_size: :large }
 
+          h2 Challenges starting soon
+          .row
+            - @coming_challenges.each do |challenge|
+              = render partial: 'challenge_thumb', locals: { challenge: challenge.decorate, thumb_size: :mini }
+
           h2 Past challenges
           .row
             - @past_challenges.each do |challenge|

@@ -9,6 +9,13 @@ p
   = @challenge.status
 
 p
+  strong>= @challenge.registrations_count
+  ==> pluralize_without_count @challenge.registrations_count, 'registered participant'
+  - if @challenge.registrations_count > 0
+    ' -
+    = link_to 'Download list as CSV', challenge_participants_path(@challenge.slug, format: :csv)
+
+p
   strong>= @new_entries_count
   ==> pluralize_without_count @new_entries_count, 'entry'
   ' awaiting moderation
@@ -23,7 +30,7 @@ p
 
 - if @challenge.in_progress?
   - if @new_entries_count > 0
-    = link_to 'Moderate new entries', edit_challenge_entry_path(@challenge, @entries.where(workflow_state: :new).first), class: 'btn btn-sm btn-primary'
+    p= link_to 'Moderate new entries', edit_challenge_entry_path(@challenge, @entries.where(workflow_state: :new).first), class: 'btn btn-sm btn-primary'
 
 - elsif @challenge.judging?
   p

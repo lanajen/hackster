@@ -594,7 +594,9 @@ class ApplicationController < ActionController::Base
     def safe_page_params
       return nil unless params[:page]
 
-      Integer params[:page]
+      page = Integer params[:page]
+      raise ActiveRecord::RecordNotFound if page < 1
+      page
     rescue
       raise ActiveRecord::RecordNotFound
     end

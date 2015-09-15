@@ -75,6 +75,8 @@ module ApplicationHelper
     end
 
     case params[:reason]
+    when 'register'
+      msg = "Please log in or sign up to register for #{content_tag(:b, challenge.name)}."
     when 'enter'
       msg = "Please log in or sign up to enter #{content_tag(:b, challenge.name)}."
     when 'project'

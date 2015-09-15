@@ -39,8 +39,8 @@ class Ability
   end
 
   def admin
-    # can :manage, :all
-    # cannot [:join, :request_access], Group
+    can :manage, :all
+    cannot [:join, :request_access], Group
   end
 
   def beta_tester
@@ -51,7 +51,7 @@ class Ability
   end
 
   def member
-    can :create, [HackerSpace, Community, Event, Thought]
+    can :create, [HackerSpace, Community, Event, Thought, ]
 
     can :admin, Address do |address|
       address.addressable_type == 'ChallengeEntry' and address.addressable.user_id == @user.id
@@ -61,9 +61,17 @@ class Ability
       @user.in? conversation.participants
     end
 
-    can :enter, Challenge do |challenge|
+    can :create, ChallengeEntry do |entry|
+      challenge = entry.challenge
+      ChallengeRegistration.has_registered? challenge, @user
+    end
+
+    can :create, ChallengeRegistration do |registration|
+      challenge = registration.challenge
       challenge.open_for_submissions? and @user.can? :read, challenge
     end
+
+    can :manage, ChallengeRegistration, user_id: @user.id
 
     can :manage, [Announcement, BuildLog, Issue, Page] do |thread|
       @user.can? :manage, thread.threadable
@@ -156,6 +164,7 @@ class Ability
       @user.is_active_member? assignment.promotion
     end
 
+    can :manage, ChallengeEntry, user_id: @user.id
     can :admin, ChallengeEntry do |entry|
       ChallengeAdmin.where(challenge_id: entry.challenge_id, user_id: @user.id).with_roles(%w(admin judge)).any?
     end

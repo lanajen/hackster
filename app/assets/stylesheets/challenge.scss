@@ -22,9 +22,6 @@
   }
 
   .group-nav {
-    .enter-challenge {
-      margin: 0;
-    }
     .brand {
       h2 {
         max-width: 350px;
@@ -93,8 +90,8 @@
   }
 }
 
-.enter-challenge {
-  margin-bottom: 10px;
+.challenge-cta {
+  margin-bottom: 20px;
 }
 
 .entries-list {
@@ -108,8 +105,4 @@
       }
     }
   }
-}
-
-.enter-challenge-btn {
-  display: none;
 }

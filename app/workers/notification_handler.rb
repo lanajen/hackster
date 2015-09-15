@@ -79,6 +79,10 @@ class NotificationHandler
           context[:author] = entry.user
           context[:users] = challenge.admins
         end
+      when :challenge_registration
+        context[:model] = registration = context[:registration] = ChallengeRegistration.find context_id
+        context[:challenge] = challenge = registration.challenge
+        context[:user] = registration.user
       when :comment
         context[:model] = comment = context[:comment] = Comment.find(context_id)
         author = context[:author] = comment.user

@@ -105,17 +105,15 @@
         section.group-nav.affixable
           .group-nav-inner.hidden-xs
             .brand
-              / # - if @challenge.avatar
-                = image_tag @challenge.avatar.file_url(:mini), class: 'img-thumbnail'
               .img-placeholder
               h2= @challenge.name
             ul.nav.nav-tabs= render 'nav'
-            - if @challenge.open_for_submissions? and (!@is_challenge_entrant or @challenge.allow_multiple_entries?)
+            - if @challenge.registration_open? and !@has_registered
               ul.list-inline.manage
-                - if @challenge.idea_survey_link.present?
-                  = link_to @challenge.enter_button_text, @challenge.idea_survey_link, class: 'btn btn-primary enter-challenge-btn', target: '_blank'
+                - if user_signed_in?
+                  li= link_to @challenge.registration_text, challenge_registrations_path(@challenge), class: 'btn btn-primary register-challenge register-challenge-btn', data: { method: :post }
                 - else
-                  li= link_to @challenge.enter_button_text, 'javascript:void(0)', class: 'btn btn-primary enter-challenge enter-challenge-btn'
+                  li= link_to @challenge.registration_text, new_user_registration_path(redirect_to: create_challenge_registrations_path(@challenge), reason: 'register', m: 'challenge', id: @challenge.id), class: "btn btn-primary btn-block show-simplified-signup", data: { container: 'body', redirect_to: create_challenge_registrations_path(@challenge), source: 'register_challenge' }
 
             - if can? :admin, @challenge
               ul.list-inline.manage
@@ -169,40 +167,3 @@
                         = submit_tag 'Unlock', class: 'btn btn-primary'
 
 = render template: "layouts/#{current_layout}"
-
-#enter-popup.popup-overlay.normal-size.modal-popup class="#{ 'modal-show' if params[:enter] }"
-  .popup-overlay-bg
-  .popup-overlay-outer
-    .popup-overlay-inner
-      button.close data-target='#enter-popup' &times;
-      - link_params = @challenge.project_ideas ? { project: { mark_as_idea: true, platform_tags_string: @platform.try(:name) } } : { project: {platform_tags_string: @platform.try(:name) } }
-      - if user_signed_in?
-        - if @user_projects.any?
-          h2 Ready to enter the challenge?
-          p
-            ' Please select the project you would like to enter
-            strong
-              abbr.istooltip title="Please only enter your project into the contest once complete. You will not gain any advantage over others by entering an incomplete project early."
-                | (complete projects only)
-            | :
-          = form_tag challenge_entries_path(@challenge), method: :post do
-            = select_tag :project_id, options_from_collection_for_select(@user_projects, :id, :name), class: 'form-control'
-            p
-              small
-                ' By entering you agree to the
-                = link_to 'challenge rules', challenge_path(@challenge, anchor: 'rules', show_rules: 1), onclick: 'javascript:closeModal("#enter-popup");$("#rules .section-content").slideDown();'
-            = submit_tag "Enter my project #{'idea ' if @challenge.project_ideas}into the challenge", class: 'btn btn-primary'
-          p
-            small
-              ' or
-              = link_to "create a new project#{' idea' if @challenge.project_ideas}", new_project_path(link_params)
-
-        - else
-          p You need a project #{'idea ' if @challenge.project_ideas}to enter!
-          p= link_to "Create a new project#{' idea' if @challenge.project_ideas}", new_project_path(link_params)
-      - else
-        p You need a project to #{'idea ' if @challenge.project_ideas}enter!
-        p
-          ==> link_to "Create a new project#{' idea' if @challenge.project_ideas}", new_user_registration_path(reason: 'project', redirect_to: new_project_path(link_params), source: 'challenge')
-          ' or
-          = link_to 'log in to use one of your existing projects', new_user_session_path(m: 'challenge', id: @challenge.id, reason: 'enter', redirect_to: challenge_path(@challenge, enter: 't'))
