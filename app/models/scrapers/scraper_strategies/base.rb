@@ -87,7 +87,7 @@ module ScraperStrategies
       end
 
       def crap_list
-        %w(#sidebar #sidebar-right #sidebar-left .sidebar .sidebar-left .sidebar-right #head #header #hd .navbar .navbar-top header footer #ft #footer .sharedaddy .ts-fab-wrapper .shareaholic-canvas .post-nav .navigation .post-data .meta .social-ring .postinfo)
+        %w(#sidebar #sidebar-right #sidebar-left .sidebar .sidebar-left .sidebar-right #head #header #hd .navbar .navbar-top header footer #ft #footer .sharedaddy .ts-fab-wrapper .shareaholic-canvas .post-nav .navigation .post-data .meta .social-ring .postinfo .dsq-brlink noscript #comments)
       end
 
       def extract_code_blocks base=@article
@@ -276,7 +276,7 @@ module ScraperStrategies
           code, lang = extract_code_lines(node)
           next unless code
 
-          file = CodeWidget.new raw_code: code, name: 'Code', language: lang
+          file = CodeWidget.new raw_code: code, name: 'Code', language: lang || 'text'
           file.project = @project
           @widgets << file
           # node.remove  # remove so it's not added to text later
@@ -372,7 +372,7 @@ module ScraperStrategies
           next unless link = node['href']
           if link.match /\/\/.+\/.+\.([a-z0-9]{,5})$/
             ext = File.extname(URI.parse(link).path)[1..-1]
-            next if ext.in? %w(html htm gif jpg jpeg png bmp php aspx asp js css shtml md)
+            next if ext.in? %w(html htm gif jpg jpeg png bmp php aspx asp js css shtml md git)
             next unless test_link(link)
             content = node.text
             title = (content != link) ? content : ''
@@ -444,7 +444,7 @@ module ScraperStrategies
       end
 
       def select_article
-        @parsed.at('#content') || @parsed.at('#main') || @parsed.at('body')
+        @parsed.at_css('#content') || @parsed.at_css('#main') || @parsed.at_css('.post') || @parsed.at_css('.content') || @parsed.at_css('body')
       end
 
       def title_levels

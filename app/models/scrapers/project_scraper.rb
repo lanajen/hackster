@@ -17,6 +17,7 @@ class ProjectScraper
     project.private = (options[:private].nil? ? true : options[:private])
     project.workflow_state = options[:workflow_state]
     project.name = project.name[0..59]
+    project.content_type = Project::DEFAULT_CONTENT_TYPE
     project
   end
 
@@ -50,6 +51,7 @@ class ProjectScraper
       'discourse' => :discourse,
       'frontpage' => :base,
       'joomla' => :base,
+      'mediawiki' => :mediawiki,
       'wordpress' => :wordpress,
     }
     KNOWN_HOSTS = {
@@ -67,6 +69,7 @@ class ProjectScraper
       'hackaday.io' => :hackadayio,
       'instructables.com' => :instructable,
       'kickstarter.com' => :kickstarter,
+      'makezine.com' => :makezine,
       'medium.com' => :medium,
       'pubnub.com' => :pubnub,
       'seeedstudio.com' => :seeed,

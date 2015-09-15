@@ -213,8 +213,28 @@ h1 {
 }
 
 .challenge-thumb {
+  margin-bottom: 30px;
   .thumb-image {
-    padding-top: 50%;
+    padding-top: 20%;
+    background-color: #333;
+    overflow: hidden;
+    &.thumb-image-mini {
+      padding-top: 30%;
+    }
+  }
+  .thumb-image-inner {
+    @include background-image(linear-gradient(top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%));
+  }
+}
+
+@media (max-width: 768px) {
+  .challenge-thumb {
+    .thumb-image {
+      padding-top: 50%;
+      &.thumb-image-mini {
+        padding-top: 40%;
+      }
+    }
   }
 }
 

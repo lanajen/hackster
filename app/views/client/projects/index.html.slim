@@ -3,7 +3,7 @@
   = auto_discovery_link_tag :rss, projects_path(format: :rss, sort: 'recent'), title: "Most recent projects - #{site_name}"
   = auto_discovery_link_tag :atom, projects_path(format: :atom, sort: 'recent'), title: "Most recent projects - #{site_name}"
 
-= inserts_stats_for current_platform.id, 'Group'
+= inserts_stats_for current_platform
 
 - content_for :head do
   meta(property="og:title" content="#{current_platform.name} projects")
@@ -28,9 +28,9 @@
       = link_to @announcement.title, platform_announcement_path(@announcement), class: 'alert-link'
   - elsif @challenge
     .alert.alert-info.text-center
-      strong> #{current_platform.name} is having a challenge!
-      ' Join the
-      ==> link_to @challenge.name, "http://www.hackster.io/challenges/#{@challenge.slug}", class: 'alert-link'
+      strong> #{current_platform.name} is holding a contest!
+      ' Join
+      ==> link_to @challenge.name, "https://www.hackster.io/challenges/#{@challenge.slug}", class: 'alert-link'
       | on Hackster.io
 
   - unless @custom_header.present?
@@ -44,23 +44,18 @@
             li= link_to "Documentation", current_platform.documentation_link, target: '_blank'
           - if current_platform.forums_link.present?
             li= link_to "Forums", current_platform.forums_link, target: '_blank'
-          - if current_platform.shoplocket_token.present?
-            li= link_to (current_platform.cta_text.presence || "Buy #{indefinite_articlerize current_platform.name}"), current_platform.buy_link, class: 'shoplocket-checkout', data: { 'shoplocket-product-token' => current_platform.shoplocket_token }
-            = content_for :js do
-              = javascript_include_tag '//www.shoplocket.com/assets/widgets/embed.js'
-          - else
-            - if current_platform.crowdfunding_link.present?
-              li= link_to (current_platform.cta_text.presence || "Preorder #{indefinite_articlerize current_platform.name}"), current_platform.crowdfunding_link, target: '_blank'
-            - if current_platform.buy_link.present?
-              li= link_to (current_platform.cta_text.presence || "Buy #{indefinite_articlerize current_platform.name}"), current_platform.buy_link, target: '_blank'
-            - if current_platform.download_link.present?
-              li= link_to (current_platform.cta_text.presence || "Download #{current_platform.name}"), current_platform.download_link, target: '_blank'
+          - if current_platform.cta_link.present?
+            li= link_to current_platform.cta_text, current_platform.cta_link, target: '_blank'
 
   .mg-20.clearfix
     .pull-left.btn-group-split
       = render partial: 'followers/button', locals: { followable: current_platform, buttonType: 'text', button_partial: 'button_text', display_name: true }
       - if @custom_header.present?
         = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project"), new_project_path, class: 'btn btn-default'
+
+        - if current_platform.cta_link.present?
+          = link_to current_platform.cta_text, current_platform.cta_link, target: '_blank', class: 'btn btn-sm btn-link', style: 'color: #777'
+
     .btn-group.btn-group-default.pull-right
       .btn-group
         button.btn.btn-default.btn-sm.dropdown-toggle*{ data: { toggle: 'dropdown' } }
@@ -83,6 +78,16 @@
           li*{ class: "#{'active' if params[:by] == '7days'}" } = link_to 'Last 7 days', root_path(by: '7days', sort: params[:sort])
           li*{ class: "#{'active' if params[:by] == '30days'}" } = link_to 'Last 30 days', root_path(by: '30days', sort: params[:sort])
           / li*{ class: "#{'active' if params[:by] == 'wip'}" } = link_to 'Work in progress', root_path(by: 'wip', sort: params[:sort])
+
+  / - if params[:show_tags]
+    .row
+      css:
+        @media (min-width: 768px) { .suggestions { max-height:30px;overflow:hidden; } }
+      .col-sm-12.suggestions
+        h3 Popular tags:
+        ul.list-unstyled.list-inline
+          - @tags.each do |tag|
+            li= link_to tag, tag_path(tag)
 
   - if @projects.any?
     .row.thumb-list

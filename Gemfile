@@ -1,21 +1,21 @@
 source 'http://rubygems.org'
-source 'https://rails-assets.org'
 ruby '2.2.2'
 
-gem 'rails', '4.2.1'
+gem 'rails', '4.2.3'
 
 # load early so that env variables are available to other gems
-gem 'dotenv-rails', :groups => [:development, :test]
+gem 'dotenv-rails', groups: [:development, :test]
 
 #  assets
+gem 'fog'
 gem 'fog-aws', '0.1.2'
-gem 'asset_sync', '1.1.0'
+# gem 'asset_sync', '1.1.0'
 gem 'bootstrap-sass', '3.3.1'
 gem 'coffee-rails', '4.0.1'
 gem 'compass-rails', '2.0.4'
 gem 'font-awesome-rails', '4.1.0.0'
-gem 'jquery-rails', '3.0.4'
-gem 'jquery-ui-rails', '4.1.0'
+gem 'jquery-rails', '4.0.4'
+gem 'jquery-ui-rails', '5.0.5'
 gem 'react-rails', '~> 1.0'
 gem 'sass-rails', '5.0.1'
 gem 'slick_rails', '1.4.1'
@@ -26,10 +26,12 @@ gem 'zocial-rails', '1.0.2'
 gem "browserify-rails", '1.0.1'
 
 # bower
-gem 'rails-assets-medium-editor', '1.8.14'
-gem 'rails-assets-underscore', '1.7.0'
-gem 'rails-assets-fluxxor', '1.5.2'
-gem 'rails-assets-momentjs', '2.9.0'
+source 'https://rails-assets.org' do
+  gem 'rails-assets-medium-editor', '1.8.14'
+  gem 'rails-assets-underscore', '1.7.0'
+  gem 'rails-assets-fluxxor', '1.5.2'
+  gem 'rails-assets-momentjs', '2.9.0'
+end
 
 gem 'redcarpet', '3.3.2'
 # gem 'github-markdown'
@@ -37,8 +39,9 @@ gem 'redcarpet', '3.3.2'
 # gem 'html-pipeline'
 gem 'reverse_markdown'
 
-# gem 'autoscaler', '0.9.0', groups: :staging
 gem 'active_model_serializers', '0.8.3'
+gem 'addressable', '2.3.8'
+gem 'ambry', '~> 0.3.0'
 gem 'auto_html', '1.6.3'
 gem 'aws-sdk', '1.33.0'
 gem 'bootstrap3-datetimepicker-rails', '3.1.3'
@@ -68,6 +71,7 @@ gem 'impressionist', '1.5.1'
 gem 'imgix', '0.3.1'
 gem 'ipcat', '2.0.1'
 gem 'jbuilder', '2.3.0'
+gem 'mandrill_dm', '1.2.0'
 gem 'mini_magick', '3.7.0'
 gem 'mixpanel', '4.0.8'
 gem 'momentjs-rails', '2.8.1'
@@ -98,9 +102,7 @@ gem 'rest-client', '1.6.7'
 # gem 'rewardino', '0.0.1'
 # gem 'ruby-filemagic', '0.6.3'  # can't get it to install on heroku
 gem 'rubyzip', '1.1.7'
-gem 'ambry', '~> 0.3.0'
 gem 'sanitize', '2.0.6'
-gem 'sendgrid', '1.2.0'
 gem 'sidekiq', '3.2.5'
 gem 'sidekiq-status', '0.5.1'
 gem 'sidekiq-failures', '0.4.3'
@@ -109,7 +111,7 @@ gem 'simple_form', '3.1.0'
 gem 'sinatra', '>= 1.3.0', require: nil
 # gem 'slack-rtmapi'
 gem 'slim-rails', '3.0.1'
-gem 'split', '0.7.2', :require => 'split/dashboard'
+gem 'split', '1.2.1', require: 'split/dashboard'
 gem 'stripe', '1.22.0'
 gem 'sundawg_country_codes', '0.0.7'
 gem 'text_sanitizer', '0.1.0'
@@ -128,7 +130,7 @@ gem 'yajl-ruby', '1.1.0'
 gem 'heroku-api', '0.3.22'
 gem 'heroku-forward', '0.4.0'
 gem 'mail', '>= 2.6.3'
-gem 'rails_12factor', group: [:production, :staging]
+gem 'rails_12factor', group: :production
 
 # gem "bullet", :group => "development"
 # gem 'ruby-prof', group: [:development, :profile]

@@ -16,6 +16,7 @@ class Group < ActiveRecord::Base
     'members' => :most_members,
     'name' => :alphabetical_sorting,
     'projects' => :most_projects,
+    'last_project' => :most_recent_project,
   }
 
   include EditableSlug
@@ -24,19 +25,20 @@ class Group < ActiveRecord::Base
   include HstoreCounter
   include WebsitesColumn
 
-  editable_slug :user_name, :before_validation
+  editable_slug :user_name
 
   is_impressionable counter_cache: true, unique: :session_hash
 
   has_many :active_members, -> { where("members.requested_to_join_at IS NULL OR members.approved_to_join = 't'") }, foreign_key: :group_id, class_name: 'Member'
-  has_many :broadcasts, through: :users
   has_many :featured_projects, -> { where("project_collections.workflow_state = 'featured'") }, source: :project, through: :project_collections
   has_many :granted_permissions, as: :grantee, class_name: 'Permission'
   has_many :members, dependent: :destroy
   has_many :permissions, as: :permissible
   has_many :project_collections, dependent: :destroy, as: :collectable
-  has_many :projects, through: :project_collections do
-    # TOOD: see if this can be delegated to ProjectCollection
+  # see https://github.com/rails/rails/issues/19042#issuecomment-91405982 about
+  # "counter_cache: :this_is_not_a_column_that_exists"
+  has_many :projects, through: :project_collections, counter_cache: :this_is_not_a_column_that_exists do
+    # TODO: see if this can be delegated to ProjectCollection
     def visible
       where(project_collections: { workflow_state: ProjectCollection::VALID_STATES })
     end
@@ -62,10 +64,11 @@ class Group < ActiveRecord::Base
   has_websites :websites, :facebook, :twitter, :linked_in, :google_plus,
     :youtube, :website, :blog, :github, :instagram, :flickr, :reddit, :pinterest
 
+  hstore_column :hproperties, :default_project_sorting, :string, default: 'trending'
   hstore_column :hproperties, :hidden, :boolean, default: true
+  hstore_column :hproperties, :last_project_time, :datetime, order: [{ sort_by: :desc, method_name: :most_recent_project }]
   hstore_column :hproperties, :slack_token, :string
   hstore_column :hproperties, :slack_hook_url, :string
-  hstore_column :hproperties, :default_project_sorting, :string, default: 'trending'
 
   counters_column :hcounters_cache
   has_counter :members, 'members.count', accessor: false
@@ -73,12 +76,10 @@ class Group < ActiveRecord::Base
 
   validates :user_name, :new_user_name, length: { in: 3..100 },
     format: { with: /\A[a-zA-Z0-9_\-]+\z/, message: "accepts only letters, numbers, underscores '_' and dashes '-'." }, allow_blank: true, if: proc{|t| t.persisted?}
-  validates :user_name, :new_user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users communities hackerspaces hackers lists) }
-  validates :email, length: { maximum: 255 }
-  validate :website_format_is_valid
+  validates :user_name, :new_user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users communities hackerspaces hackers lists) }, allow_blank: true
+  validates :email, length: { maximum: 255 }, format: { with: EMAIL_REGEXP }, allow_blank: true
   validate :admin_email_is_present
   before_validation :clean_members
-  before_validation :ensure_website_protocol
   after_validation :add_errors_to_user_name
   before_save :ensure_invitation_token
 
@@ -180,13 +181,6 @@ class Group < ActiveRecord::Base
     full_name.presence || user_name
   end
 
-  def twitter_handle
-    return unless twitter_link.present?
-
-    handle = twitter_link.match(/twitter.com\/(.+)/).try(:[], 1)
-    handle.present? ? "@#{handle}" : nil
-  end
-
   private
     def add_errors_to_user_name
       if errors[:new_user_name]
@@ -204,30 +198,11 @@ class Group < ActiveRecord::Base
       end
     end
 
-    def ensure_website_protocol
-      return unless websites_changed?
-      websites.each do |type, url|
-        next if type.in? skip_website_check
-        if url.blank?
-          send "#{type}=", nil
-          next
-        end
-        send "#{type}=", 'http://' + url unless url =~ /^http/
-      end
-    end
-
     def ensure_invitation_token
       self.invitation_token = SecureRandom.urlsafe_base64(nil, false) if invitation_token.nil?
     end
 
     def skip_website_check
       []
-    end
-
-    def website_format_is_valid
-      websites.each do |type, url|
-        next if url.blank? or type.in? skip_website_check
-        errors.add type.to_sym, 'is not a valid URL' unless url.downcase =~ URL_REGEXP
-      end
     end
 end

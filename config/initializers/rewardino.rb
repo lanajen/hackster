@@ -284,25 +284,25 @@ Rewardino::Event.create!({
   users_count_method: -> (project) { project.team_members_count }
 })
 
-Rewardino::Event.create!({
-  code: :accepted_invitation_inviter,
-  name: 'Friend invitation accepted',
-  description: "A friend you invited has accepted their invitation",
-  points: 15,
-  date_method: -> (user) { user.invitation_accepted_at },
-  # model_table: 'users',
-  models_method: -> (user) { user.invitees.invitation_accepted }
-})
+# Rewardino::Event.create!({
+#   code: :accepted_invitation_inviter,
+#   name: 'Friend invitation accepted',
+#   description: "A friend you invited has accepted their invitation",
+#   points: 15,
+#   date_method: -> (user) { user.invitation_accepted_at },
+#   # model_table: 'users',
+#   models_method: -> (user) { user.invitees.invitation_accepted }
+# })
 
-Rewardino::Event.create!({
-  code: :new_comment,
-  name: 'New comment',
-  description: "You posted a new comment",
-  points: 10,
-  date_method: -> (comment) { comment.created_at },
-  # model_table: 'comments',
-  models_method: -> (user) { user.comments.where(commentable_type: 'Project') }
-})
+# Rewardino::Event.create!({
+#   code: :new_comment,
+#   name: 'New comment',
+#   description: "You posted a new comment",
+#   points: 10,
+#   date_method: -> (comment) { comment.created_at },
+#   # model_table: 'comments',
+#   models_method: -> (user) { user.comments.where(commentable_type: 'Project') }
+# })
 
 Rewardino::Event.create!({
   code: :new_respect,
@@ -362,8 +362,8 @@ Rewardino::Event.create!({
   # model_table: 'respects',
   compute_method: -> (event, user, date) {
     event.points.each do |conf|
-      models = Respect.where(respectable_type: %w(Comment)).joins("INNER JOIN comments ON comments.id = respects.respectable_id").where("comments.user_id = ?", user.id).order(:created_at)
-      models += Respect.where(respectable_type: %w(Thought)).joins("INNER JOIN thoughts ON thoughts.id = respects.respectable_id").where("thoughts.user_id = ?", user.id).order(:created_at)
+      models = Respect.where(respectable_type: %w(Comment)).joins("INNER JOIN comments ON comments.id = respects.respectable_id").where("comments.user_id = ? AND respects.user_id <> ?", user.id, user.id).order(:created_at)
+      models += Respect.where(respectable_type: %w(Thought)).joins("INNER JOIN thoughts ON thoughts.id = respects.respectable_id").where("thoughts.user_id = ? AND respects.user_id <> ?", user.id, user.id).order(:created_at)
       # models = models.where("#{event.model_table}.#{event.date_method} > ?", date) if date
 
       models.group_by{|r| [r.respectable_id, r.respectable_type]}.each do |id, group|

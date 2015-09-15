@@ -25,8 +25,8 @@ class OrderPayment
     def payment_attributes
       {
         amount: amount,
-        recipient_name: @order.user.name,
-        recipient_email: @order.user.email,
+        recipient_name: @order.user.try(:name),
+        recipient_email: @order.user.try(:email),
         invoice_number: invoice_number,
         label: payment_label,
       }

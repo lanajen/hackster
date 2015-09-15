@@ -14,7 +14,6 @@ class GroupsController < ApplicationController
     authorize! :read, @group
     title @group.name
     meta_desc "Join the group #{@group.name} on Hackster.io!"
-    @broadcasts = @group.broadcasts.limit 20
     @projects = @group.projects
     @users = @group.members.invitation_accepted_or_not_invited.map(&:user).select{|u| u.invitation_token.nil? }
     @group = @group.decorate

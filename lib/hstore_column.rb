@@ -15,7 +15,7 @@ module HstoreColumn
         column_name = options[:column_name].presence || attribute
         value = send(store_attribute).try(:[], column_name.to_s)
 
-        value = if value.blank? and options[:default]
+        value = if (value.nil? or value.blank? and value != false) and options[:default]
           send "default_#{attribute}"
         else
           cast_value value, type
@@ -28,17 +28,17 @@ module HstoreColumn
         current_val = send(attribute)
         return val if val == current_val
 
-        store = send(store_attribute) || {}
+        store = send(store_attribute).try(:dup) || {}
 
         cast_val = cast_value val, type
         unless instance_variable_get("@#{attribute}_was_set")
           instance_variable_set "@#{attribute}_was", current_val
           instance_variable_set "@#{attribute}_was_set", true
         end
-        if cast_val
-          instance_variable_set "@#{attribute}", cast_val
+        if cast_val.nil?
+          remove_instance_variable "@#{attribute}" if instance_variable_defined? "@#{attribute}"
         else
-          remove_instance_variable "@#{attribute}"
+          instance_variable_set "@#{attribute}", cast_val
         end
         attribute_will_change! attribute
 
@@ -52,6 +52,7 @@ module HstoreColumn
         when :json_object
           val.to_s
         else
+          # ActionController::Base.helpers.strip_tags val
           val
         end if val
         column_name = options[:column_name].presence || attribute
@@ -75,6 +76,8 @@ module HstoreColumn
       if options[:default]
         self.send :define_method, "default_#{attribute}" do
           case options[:default]
+          when Proc
+            options[:default].call(self)
           when String
             options[:default].gsub(/%\{([^\}]+)\}/) do
               eval $1
@@ -90,7 +93,41 @@ module HstoreColumn
           send attribute
         end
       end
+
+      if options[:order]
+        options[:order].each do |order|
+          sort_by = order[:sort_by] || :asc
+          method_name = order[:method_name] || construct_order_method_name(attribute, sort_by, type)
+
+          sort_by = sort_by.to_s.upcase
+          cast_type = cast_type_for type
+
+          define_singleton_method method_name do
+            order "CAST(#{table_name}.#{store_attribute} -> '#{attribute}' AS #{cast_type}) #{sort_by} NULLS LAST"
+          end
+        end
+      end
     end
+
+    private
+      def cast_type_for type
+        case type
+        when :boolean
+          'BOOLEAN'
+        when :datetime, :integer
+          'INTEGER'
+        end
+      end
+
+      def construct_order_method_name attribute, sort_by, type
+        qualifier = case type
+        when :datetime
+          sort_by == :asc ? 'most_recent' : 'oldest'
+        when :integer
+          sort_by == :asc ? 'most' : 'least'
+        end
+        "#{qualifier}_#{attribute}"
+      end
   end
 
   module InstanceMethods
@@ -111,9 +148,11 @@ module HstoreColumn
           value.present? ? JSON.parse(value) : nil
         when :string
           value
+        when :url
+          Url.new(value).to_s
         else
           value
-        end if value
+        end unless value.nil?
       end
 
       def h

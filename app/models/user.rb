@@ -61,13 +61,14 @@ class User < ActiveRecord::Base
          :omniauthable, omniauth_providers: [:facebook, :github, :gplus,
           :linkedin, :twitter, :windowslive]
 
-  belongs_to :invite_code
   has_many :addresses, -> { order(id: :desc) }, as: :addressable
   has_many :assignments, through: :promotions
   has_many :assignee_issues, foreign_key: :assignee_id
   has_many :assigned_issues, through: :assignee_issues, source: :issue
   has_many :authorizations, dependent: :destroy
   has_many :blog_posts, dependent: :destroy
+  has_many :challenge_entries, dependent: :destroy
+  has_many :challenges, through: :challenge_entries
   has_many :comments, -> { order created_at: :desc }, foreign_key: :user_id, dependent: :destroy
   has_many :comment_likes, class_name: 'Respect', through: :comments, source: :likes
   has_many :communities, through: :group_ties, source: :group, class_name: 'Community'
@@ -101,7 +102,7 @@ class User < ActiveRecord::Base
   has_many :owned_parts, -> { order('parts.name') }, source_type: 'Part', through: :follow_relations, source: :followable
   has_many :permissions, as: :grantee
   has_many :platforms, -> { order('groups.full_name ASC') }, through: :group_ties, source: :group, class_name: 'Platform'
-  has_many :projects, -> { where("projects.guest_name IS NULL OR projects.guest_name = ''") }, through: :teams
+  has_many :projects, through: :teams
   has_many :promotions, through: :group_ties, source: :group, class_name: 'Promotion'
   has_many :promotion_group_ties, -> { where(type: 'PromotionMember') }, class_name: 'PromotionMember', dependent: :destroy
   has_many :receipts, dependent: :destroy do
@@ -117,6 +118,7 @@ class User < ActiveRecord::Base
   has_many :thoughts
   has_many :thought_likes, class_name: 'Respect', through: :thoughts, source: :likes
   has_many :user_activities
+  has_many :voted_entries, source_type: 'ChallengeEntry', through: :respects, source: :respectable
   has_one :avatar, as: :attachable, dependent: :destroy
   has_one :reputation, dependent: :destroy
   has_one :slug, as: :sluggable, dependent: :destroy, class_name: 'SlugHistory'
@@ -135,25 +137,24 @@ class User < ActiveRecord::Base
     :email_subscriptions, :web_subscriptions
   accepts_nested_attributes_for :avatar, :projects, allow_destroy: true
 
+  validates :email, format: { with: EMAIL_REGEXP }, allow_blank: true  # devise's regex allows for a lot of crap
   validates :name, length: { in: 1..200 }, allow_blank: true
   validates :city, :country, length: { maximum: 50 }, allow_blank: true
   validates :mini_resume, length: { maximum: 160 }, allow_blank: true
-  validates :user_name, :new_user_name, presence: true, if: proc{|u| u.persisted? }
+  validates :user_name, :new_user_name, presence: true, if: proc{|u| u.persisted? and !u.invited_to_sign_up? }
   validates :user_name, :new_user_name, length: { in: 3..100 },
     format: { with: /\A[a-zA-Z0-9_\-]+\z/, message: "accepts only letters, numbers, underscores '_' and dashes '-'." }, allow_blank: true
   validates :user_name, :new_user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users communities hackerspaces hackers lists products about store api talk) }
+  validates :interest_tags_string, :skill_tags_string, length: { maximum: 255 }
   with_options unless: proc { |u| u.skip_registration_confirmation },
     on: :create do |user|
       user.validates :email_confirmation, presence: true
       user.validate :email_matches_confirmation
-      user.validate :used_valid_invite_code?
   end
   # validate :email_is_unique_for_registered_users, if: :being_invited?
-  validate :website_format_is_valid
   validate :user_name_is_unique, unless: :being_invited?
 
   # before_validation :generate_password, if: proc{|u| u.skip_password }
-  before_validation :ensure_website_protocol
   before_validation :generate_user_name, if: proc{|u| u.user_name.blank? and u.new_user_name.blank? and !u.invited_to_sign_up? }
   before_create :subscribe_to_all, unless: proc{|u| u.invitation_token.present? }
   before_save :ensure_authentication_token
@@ -175,6 +176,7 @@ class User < ActiveRecord::Base
   has_counter :hacker_spaces, 'hacker_spaces.count'
   has_counter :interest_tags, 'interest_tags.count'
   has_counter :invitations, 'invitations.count'
+  has_counter :lists, 'lists.public.count'
   has_counter :live_projects, 'projects.where(private: false).count'
   has_counter :live_hidden_projects, 'projects.where(private: false, hide: true).count'
   has_counter :owned_parts, 'owned_parts.count'
@@ -193,7 +195,10 @@ class User < ActiveRecord::Base
   has_counter :websites, 'websites.values.select{|v| v.present? }.size'
 
   store :properties, accessors: []
+  hstore_column :properties, :active_sessions, :array, default: []
   hstore_column :properties, :has_unread_notifications, :boolean
+  hstore_column :properties, :last_sent_projects_email_at, :datetime
+  hstore_column :properties, :reputation_last_updated_at, :datetime
 
   has_websites :websites, :facebook, :twitter, :linked_in, :website, :blog,
     :github, :google_plus, :youtube, :instagram, :flickr, :reddit, :pinterest
@@ -210,15 +215,6 @@ class User < ActiveRecord::Base
   add_checklist :links, 'Add links to your other web presence', 'has_websites?', group: :get_started
 
   self.per_page = 20
-
-  # broadcastable
-  has_many :broadcasts
-
-  def broadcast event, context_model_id, context_model_type, project_id=nil
-    broadcasts.create event: event, context_model_id: context_model_id,
-      context_model_type: context_model_type, project_id: project_id,
-      broadcastable_type: 'User', broadcastable_id: id
-  end
 
   # beginning of search methods
   include TireInitialization
@@ -340,6 +336,10 @@ class User < ActiveRecord::Base
     super
   end
 
+  def account_age
+    (Time.now - created_at).to_i / SECONDS_IN_A_DAY
+  end
+
   def add_confirmed_role
     self.roles = roles << 'confirmed_user'
     save
@@ -406,8 +406,8 @@ class User < ActiveRecord::Base
     end
   end
 
-  def find_invite_request
-    InviteRequest.find_by_email email
+  def challenge_entries_for challenge
+    challenge.entries.where(user_id: id).includes(:project)
   end
 
   # def has_access? project
@@ -447,7 +447,7 @@ class User < ActiveRecord::Base
   end
 
   def is_challenge_entrant? challenge
-    self.in? challenge.entrants
+    challenge_entries_for(challenge).any?
   end
 
   def is_connected_with? provider_name
@@ -476,7 +476,7 @@ class User < ActiveRecord::Base
   end
 
   def is_staff? project
-    project.try(:assignment).try(:promotion).try(:members).try(:with_group_roles, %w(ta professor)).try(:where, user_id: id).any?
+    PromotionMember.with_group_roles(%w(ta professor)).where(user_id: id).joins("INNER JOIN groups ON groups.id = members.group_id AND groups.type = 'Promotion'").joins("INNER JOIN assignments ON assignments.promotion_id = groups.id").joins("INNER JOIN project_collections ON project_collections.collectable_id = assignments.id AND project_collections.collectable_type = 'Assignment'").where(project_collections: { project_id: project.id }).any?
   end
 
   def is_team_member? project, all=true
@@ -513,17 +513,17 @@ class User < ActiveRecord::Base
     authorizations.create(auth)
   end
 
-  def linked_to_project_via_group? project
-    # sql = "SELECT projects.* FROM groups INNER JOIN permissions ON permissions.grantee_id = groups.id AND permissions.permissible_type = 'Project' AND permissions.grantee_type = 'Group' INNER JOIN projects ON projects.id = permissions.permissible_id INNER JOIN members ON groups.id = members.group_id WHERE members.user_id = ? AND projects.id = ? LIMIT 1;"
-    # sql2 = "SELECT members.* FROM members INNER JOIN groups ON members.group_id = groups.id WHERE members.user_id = ? AND groups.type = 'Promotion' AND groups.id = (SELECT assignments.promotion_id FROM assignments WHERE assignments.id = ?) LIMIT 1"
-    # sql3 = "SELECT members.* FROM members INNER JOIN groups ON members.group_id = groups.id WHERE members.user_id = ? AND groups.type = 'Event' AND groups.id = ? LIMIT 1"
-    # Project.find_by_sql([sql, id, project.id]).first or project.collection_id.present? and (Member.find_by_sql([sql2, id, project.collection_id]).first or Member.find_by_sql([sql3, id, project.collection_id]).first)
+  # def linked_to_project_via_group? project
+  #   # sql = "SELECT projects.* FROM groups INNER JOIN permissions ON permissions.grantee_id = groups.id AND permissions.permissible_type = 'Project' AND permissions.grantee_type = 'Group' INNER JOIN projects ON projects.id = permissions.permissible_id INNER JOIN members ON groups.id = members.group_id WHERE members.user_id = ? AND projects.id = ? LIMIT 1;"
+  #   # sql2 = "SELECT members.* FROM members INNER JOIN groups ON members.group_id = groups.id WHERE members.user_id = ? AND groups.type = 'Promotion' AND groups.id = (SELECT assignments.promotion_id FROM assignments WHERE assignments.id = ?) LIMIT 1"
+  #   # sql3 = "SELECT members.* FROM members INNER JOIN groups ON members.group_id = groups.id WHERE members.user_id = ? AND groups.type = 'Event' AND groups.id = ? LIMIT 1"
+  #   # Project.find_by_sql([sql, id, project.id]).first or project.collection_id.present? and (Member.find_by_sql([sql2, id, project.collection_id]).first or Member.find_by_sql([sql3, id, project.collection_id]).first)
 
-    sql2 = "SELECT members.* FROM members INNER JOIN groups ON members.group_id = groups.id INNER JOIN assignments ON assignments.promotion_id = groups.id INNER JOIN project_collections ON project_collections.collectable_id = assignments.id WHERE project_collections.collectable_type = 'Assignment' AND groups.type = 'Promotion' AND members.user_id = ? AND project_collections.project_id = ? LIMIT 1"
+  #   sql2 = "SELECT members.* FROM members INNER JOIN groups ON members.group_id = groups.id INNER JOIN assignments ON assignments.promotion_id = groups.id INNER JOIN project_collections ON project_collections.collectable_id = assignments.id WHERE project_collections.collectable_type = 'Assignment' AND groups.type = 'Promotion' AND members.user_id = ? AND project_collections.project_id = ? LIMIT 1"
 
-    sql4 = "SELECT members.* FROM members INNER JOIN groups ON members.group_id = groups.id INNER JOIN project_collections ON project_collections.collectable_id = groups.id WHERE project_collections.collectable_type = 'Group' AND members.user_id = ? AND project_collections.project_id = ? LIMIT 1"
-    Member.find_by_sql([sql4, id, project.id]).first or Member.find_by_sql([sql2, id, project.id]).first
-  end
+  #   sql4 = "SELECT members.* FROM members INNER JOIN groups ON members.group_id = groups.id INNER JOIN project_collections ON project_collections.collectable_id = groups.id WHERE project_collections.collectable_type = 'Group' AND members.user_id = ? AND project_collections.project_id = ? LIMIT 1"
+  #   Member.find_by_sql([sql4, id, project.id]).first or Member.find_by_sql([sql2, id, project.id]).first
+  # end
 
   def live_comments
     comments.by_commentable_type(Project).where("projects.private = 'f'")
@@ -538,7 +538,10 @@ class User < ActiveRecord::Base
   end
 
   def mark_has_no_unread_notifications!
-    update_attribute :has_unread_notifications, false if has_unread_notifications?
+    if has_unread_notifications?
+      update_attribute :has_unread_notifications, false
+      receipts.for_notifications.update_all(read: true)
+    end
   end
 
   def name
@@ -558,8 +561,13 @@ class User < ActiveRecord::Base
     Platform.distinct.joins(:project_collections).joins(project_collections: :project).joins(project_collections: { project: :team }).joins(project_collections: { project: { team: :members }}).where(members: { user_id: id }, projects: { private: false })
   end
 
-  def respected? project
-    project.id.in? respected_projects.map(&:id)
+  def respected? respectable
+    case respectable
+    when ChallengeEntry
+      respectable.id.in? voted_entries.map(&:id)
+    when Project
+      respectable.id.in? respected_projects.map(&:id)
+    end
   end
 
   def reset_authentication_token
@@ -604,6 +612,7 @@ class User < ActiveRecord::Base
   def simplify_signup!
     skip_confirmation!
     skip_password!
+    generate_user_name
     @override_devise_notification = 'confirmation_instructions_simplified_signup'
   end
 
@@ -630,12 +639,6 @@ class User < ActiveRecord::Base
   def subscribe_to_all
     %w(email web).each do |notification_type|
       set_subscriptions_for notification_type, subscriptions_const_for(notification_type).keys
-    end
-  end
-
-  def unsubscribe_from_all
-    %w(email web).each do |notification_type|
-      set_subscriptions_for notification_type, []
     end
   end
 
@@ -668,6 +671,23 @@ class User < ActiveRecord::Base
     mask = subscriptions_mask_for(notification_type)
     const = subscriptions_const_for(notification_type)
     const.keys.reject { |r| ((mask || 0) & 2**const.keys.index(r)).zero? }
+  end
+
+  def unsubscribe_from_all
+    %w(email web).each do |notification_type|
+      set_subscriptions_for notification_type, []
+    end
+  end
+
+  def unsubscribe_from notification_type, subscription
+    new_subscriptions = subscriptions_for(notification_type)
+    new_subscriptions.delete(subscription)
+    set_subscriptions_for notification_type, new_subscriptions
+  end
+
+  def unsubscribe_from! notification_type, subscription
+    unsubscribe_from notification_type, subscription
+    save
   end
 
   def project_for_assignment assignment
@@ -705,7 +725,6 @@ class User < ActiveRecord::Base
     {
       created_at: (invitation_accepted_at || created_at),
       comments_count: comments_count,
-      email: email,
       has_avatar: avatar.present?,
       has_full_name: full_name.present?,
       has_location: (country.present? || city.present?),
@@ -714,26 +733,17 @@ class User < ActiveRecord::Base
       is_admin: is?(:admin),
       live_projects_count: live_projects_count,
       mini_resume_size: mini_resume.try(:length) || 0,
-      name: full_name,
       projects_count: projects_count,
       project_views_count: project_views_count,
       respects_count: respects_count,
       skills_count: skill_tags_count,
       social_provider: authorizations.first.try(:provider),
-      username: user_name,
       websites_count: websites.values.reject{|v|v.nil?}.count,
     }
   end
 
   def total_orders_this_month
     @total_orders_this_month ||= orders.valid.this_month.sum("CAST(counters_cache -> 'order_lines_count' AS INTEGER)")
-  end
-
-  def twitter_handle
-    return unless twitter_link.present?
-
-    handle = twitter_link.match(/twitter.com\/(.+)/).try(:[], 1)
-    handle.present? ? "@#{handle}" : nil
   end
 
   def update_last_seen! time=nil
@@ -749,17 +759,6 @@ class User < ActiveRecord::Base
       errors.add(:email, "doesn't match confirmation") unless email.blank? or email == email_confirmation
     end
 
-    def ensure_website_protocol
-      return unless websites_changed?
-      websites.each do |type, url|
-        if url.blank?
-          send "#{type}=", nil
-          next
-        end
-        send "#{type}=", 'http://' + url unless url =~ /^http/
-      end
-    end
-
     def generate_authentication_token
       loop do
         token = Devise.friendly_token
@@ -769,22 +768,6 @@ class User < ActiveRecord::Base
 
     def invitation_accepted
       notify_observers(:after_invitation_accepted)
-    end
-
-    def website_format_is_valid
-      websites.each do |type, url|
-        next if url.blank?
-        errors.add type.to_sym, 'is not a valid URL' unless url.downcase =~ URL_REGEXP
-      end
-    end
-
-    def used_valid_invite_code?
-      return unless invitation_code.present?
-      if invite_code = InviteCode.authenticate(invitation_code)
-        self.invite_code_id = invite_code.id
-      else
-        errors.add :invitation_code, 'is either invalid or expired'
-      end
     end
 
     def user_name_is_unique

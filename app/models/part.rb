@@ -1,9 +1,9 @@
 # - use elastic for search
 # - clean up parts/consolidate
-# - part moderation dashboard
 # - later: search by part
 
 class Part < ActiveRecord::Base
+  EDITABLE_STATES = %w(new pending_review)
   INVALID_STATES = %w(rejected retired)
   TYPES = %w(Hardware Software Tool).inject({}){|mem, t| mem[t] = "#{t}Part"; mem }
   include HstoreCounter
@@ -32,7 +32,7 @@ class Part < ActiveRecord::Base
     :description, :image_id, :platform_id,
     :part_joins_attributes, :part_join_ids, :workflow_state, :slug, :one_liner,
     :position, :child_part_relations_attributes,
-    :parent_part_relations_attributes, :type
+    :parent_part_relations_attributes, :type, :link
 
   accepts_nested_attributes_for :part_joins, :child_part_relations,
     :parent_part_relations, allow_destroy: true
@@ -48,12 +48,13 @@ class Part < ActiveRecord::Base
   validates :name, :type, presence: true
   validates :unit_price, numericality: { greater_than_or_equal_to: 0 }, allow_blank: true
   validates :slug, uniqueness: { scope: :platform_id }, length: { in: 3..100 },
-    format: { with: /\A[a-z0-9\-]+\z/, message: "accepts only lowercase letters, numbers, and dashes '-'." }
+    format: { with: /\A[a-z0-9\-]+\z/, message: "accepts only lowercase letters, numbers, and dashes '-'." }, allow_blank: true
   validates :one_liner, length: { maximum: 140 }, allow_blank: true
-  before_validation :ensure_website_protocol
   before_validation :ensure_partable, unless: proc{|p| p.persisted? }
-  before_validation :generate_slug, if: proc{|p| p.slug.blank? or p.name_changed? }
+  before_validation :generate_slug, if: proc{|p| (p.slug.blank? and p.approved?) or (p.slug.present? and p.name_changed?) }
+  register_sanitizer :strip_tags, :before_save, :name
   register_sanitizer :strip_whitespace, :before_validation, :mpn, :description, :name
+  register_sanitizer :sanitize_description, :before_validation, :description
   after_create proc{|p| p.require_review! if p.workflow_state.blank? or p.new? }
 
   workflow do
@@ -85,104 +86,21 @@ class Part < ActiveRecord::Base
   scope :alphabetical, -> { order name: :asc }
   scope :default_sort, -> { order("parts.position ASC, CAST(parts.counters_cache -> 'all_projects_count' AS INT) DESC NULLS LAST, parts.name ASC") }
 
-  # # beginning of search methods
-  # include TireInitialization
-
-  # def self.tire_index_name
-  #   ELASTIC_SEARCH_INDEX_NAME + '-parts'
-  # end
-
-  # has_tire_index '!approved?', self.tire_index_name
-
-  # tire do
-  #   settings analysis: {
-  #     filter: {
-  #       ngram_filter: {
-  #         type: 'nGram',
-  #         min_gram: 3,
-  #         max_gram: 8
-  #       }
-  #     },
-  #     analyzer: {
-  #       ngram_analyzer: {
-  #         type: 'custom',
-  #         tokenizer: 'standard',
-  #         filter: ['lowercase', 'ngram_filter']
-  #       },
-  #       index_ngram_analyzer: {
-  #         type: 'custom',
-  #         tokenizer: 'standard',
-  #         filter: ['lowercase', 'ngram_filter']
-  #       },
-  #       search_ngram_analyzer: {
-  #         type: 'custom',
-  #         tokenizer: 'standard',
-  #         filter: ['lowercase']
-  #       }
-  #     }
-  #   } do
-  #     mapping do
-  #       indexes :id,              index: :not_analyzed
-  #       indexes :name,            boost: 100, type: 'string', analyzer: 'ngram_analyzer', index_analyzer: "index_ngram_analyzer", search_analyzer: "search_ngram_analyzer"
-  #       # indexes :description,     analyzer: 'snowball', type: 'string', index_analyzer: "index_ngram_analyzer", search_analyzer: "search_ngram_analyzer"
-  #       # indexes :product_tags,    analyzer: 'snowball', type: 'string', index_analyzer: "index_ngram_analyzer", search_analyzer: "search_ngram_analyzer"
-  #       # indexes :mpn,             analyzer: 'snowball', boost: 100, type: 'string', index_analyzer: "index_ngram_analyzer", search_analyzer: "search_ngram_analyzer"
-  #       indexes :created_at
-  #     end
-  #   end
-  # end
-
-  # def to_indexed_json
-  #   {
-  #     _id: id,
-  #     name: name,
-  #     # description: description,
-  #     # mpn: mpn,
-  #     # product_tags: product_tags_string,
-  #     created_at: created_at,
-  #   }.to_json
-  # end
-
-  # def self.index_all
-  #   index.import approved
-  # end
-
-  # def self.search params
-  #   query = params[:q] ? CGI::unescape(params[:q].to_s) : nil
-
-  #   query = params[:q]
-  #   per_page = params[:per_page] || 50
-  #   page = params[:page] || 1
-  #   offset = params[:offset]
-
-  #   Rails.logger.info "Searching parts for #{query} (offset: #{offset}, page: #{page}, per_page: #{per_page})"
-  #   results = Tire.search index_name, load: true, page: page, per_page: per_page do
-  #     query do
-  #       # string query, default_operator: 'AND'
-  #       # match :name, query
-  #       # string "name:#{query}", default_operator: "OR"
-  #       boolean do
-  #         should { string "name:#{query}", default_operator: "OR" }
-  #       end
-  #     end
-  #     size per_page
-  #     from (offset || (per_page.to_i * (page.to_i-1)))
-  #   end
-
-  #   results.results
-  # end
-  # end of search methods
-
   def self.search params
-    query = params[:q].split(/\s+/).map do |token|
-      "(parts.description ILIKE '%#{token}%' OR parts.name ILIKE '%#{token}%' OR parts.product_tags_string ILIKE '%#{token}%')"
+    # escape single quotes and % so it doesn't break the query
+    query = params[:q].gsub(/['%]/, ' ').split(/\s+/).map do |token|
+      "(parts.name ILIKE '%#{token}%' OR groups.full_name ILIKE '%#{token}%')"
     end.join(' AND ')
 
-    approved.where(query).where(type: params[:type]).includes(:platform)
+    approved.joins("LEFT JOIN groups ON groups.id = parts.platform_id AND groups.type = 'Platform'").where(query).where(type: params[:type]).order('groups.full_name ASC, parts.name ASC').includes(:platform)
   end
 
   def self.approved
     where workflow_state: :approved
+  end
+
+  def self.has_platform
+    where.not platform_id: nil
   end
 
   def self.invalid
@@ -190,11 +108,15 @@ class Part < ActiveRecord::Base
   end
 
   def self.most_used
-    order("CAST(counters_cache -> 'all_projects_count' AS INT) DESC, name ASC")
+    order("CAST(parts.counters_cache -> 'all_projects_count' AS INT) DESC NULLS LAST, parts.name ASC")
   end
 
   def self.not_invalid
     where.not workflow_state: INVALID_STATES
+  end
+
+  def self.with_slug
+    where("parts.slug IS NOT NULL AND parts.slug <> ''")
   end
 
   def self.sorted_by_name
@@ -210,13 +132,21 @@ class Part < ActiveRecord::Base
   end
 
   def self.visible
-    public
+    public.with_slug
   end
 
   def all_projects
     ids = [id]
     ids += child_part_relations.pluck(:child_part_id)
     Project.joins("INNER JOIN part_joins ON part_joins.partable_id = projects.id AND part_joins.partable_type = 'Project'").where(part_joins: { part_id: ids })
+  end
+
+  def editable
+    workflow_state.in? EDITABLE_STATES
+  end
+
+  def editable?
+    editable
   end
 
   def identifier
@@ -228,8 +158,10 @@ class Part < ActiveRecord::Base
   end
 
   def full_name
-    if platform
-      "#{name} (#{platform.name})"
+    return @full_name if @full_name
+
+    @full_name = if platform and !name.starts_with?(platform.name)
+      "#{platform.name} #{name}"
     else
       name
     end
@@ -253,8 +185,8 @@ class Part < ActiveRecord::Base
     self.slug = slug
   end
 
-  def one_liner_or_description
-    one_liner.presence || ActionController::Base.helpers.strip_tags(description).try(:truncate, 140)
+  def has_own_page?
+    platform_id.present? and slug.present?
   end
 
   def search_on_octopart
@@ -278,14 +210,39 @@ class Part < ActiveRecord::Base
       self.partable_type = 'Orphan' if partable_type.nil?
     end
 
-    def ensure_website_protocol
-      return unless websites_changed?
-      websites.each do |type, url|
-        if url.blank?
-          send "#{type}=", nil
-          next
+    def strip_tags text
+      text = ActionController::Base.helpers.strip_tags(text)
+
+      # so that these characters don't show escaped. Not the cleanest...
+      {
+        '&amp;' => '&',
+        '&lt;' => '<',
+        '&gt;' => '>',
+        '&quot;' => '"',
+      }.each do |code, character|
+        text.gsub! Regexp.new(code), character
+      end
+      text
+    end
+
+    def sanitize_description text
+      if text
+        doc = Nokogiri::HTML::DocumentFragment.parse(text)
+
+        {
+          'strong' => 'b',
+          'h1' => 'p',
+          'h2' => 'p',
+          'h3' => 'p',
+          'h4' => 'p',
+          'h5' => 'p',
+          'h6' => 'p',
+          'em' => 'i',
+        }.each do |orig_tag, proper_tag|
+          doc.css(orig_tag).each{|el| el.name = proper_tag }
         end
-        send "#{type}=", 'http://' + url unless url =~ /^http/
+
+        Sanitize.clean(doc.to_s.encode("UTF-8"), Sanitize::Config::HACKSTER)
       end
     end
 

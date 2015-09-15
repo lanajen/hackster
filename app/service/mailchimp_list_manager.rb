@@ -1,15 +1,15 @@
 class MailchimpListManager
+  def add users
+    add_subscribers_in_batches(users)
+  end
+
   def initialize api_key, list_id
     Gibbon::API.api_key = api_key
     @list_id = list_id
   end
 
-  def update!
-    subscribers = find_subscribers_that_need_update subscribe: true
-    add_subscribers_in_batches(subscribers) unless subscribers.empty?
-
-    cancellers = find_subscribers_that_need_update subscribe: false
-    remove_subscribers_in_batches(cancellers) unless cancellers.empty?
+  def remove users
+    remove_subscribers_in_batches(users)
   end
 
   private
@@ -19,21 +19,21 @@ class MailchimpListManager
       response = gb.lists.batch_subscribe({ id: @list_id, batch: batch, double_optin: false, update_existing: true })
       failed_emails = response['errors'].map { |error| error['email']['email'] }
       successful_emails = get_email_from_users(users) - failed_emails
-      update_settings_for failed_emails, "subscriptions_masks = subscriptions_masks || hstore('email', (CAST(subscriptions_masks -> 'email' AS INTEGER) - #{2**User::SUBSCRIPTIONS[:email].keys.index('newsletter')})::varchar)"
-      update_settings_for successful_emails, { mailchimp_registered: true }
       puts "Results for adding: #{successful_emails.size} successes, #{failed_emails.size} failures."
+      return { success: successful_emails, fail: failed_emails }
     end
 
     def add_subscribers_in_batches users
-      users.each_slice(1000).each do |slice|
+      users.each_slice(1000).map do |slice|
         add_subscribers slice
-      end
+      end.inject({}){|mem, h| mem.merge(h); h }
     end
 
     def batch_from_user_list users
       users.map { |u| {
         email: { email: u.email },
         email_type: 'html',
+        merge_vars: { full_name: u.full_name },
       } }
     end
 
@@ -51,26 +51,12 @@ class MailchimpListManager
       response = gb.lists.batch_unsubscribe({ id: @list_id, batch: emails, delete_member: true, send_goodbye: false, send_notify: false })
       failed_emails = response['errors'].map { |error| error['email']['email'] }
       successful_emails = get_email_from_users(users) - failed_emails
-      update_settings_for successful_emails, { mailchimp_registered: false }
+      return { success: successful_emails, fail: failed_emails }
     end
 
     def remove_subscribers_in_batches users
-      users.each_slice(1000).each do |slice|
+      users.each_slice(1000).map do |slice|
         remove_subscribers slice
-      end
-    end
-
-    def find_subscribers_that_need_update opts={}
-      users = User.where(mailchimp_registered: !opts[:subscribe])
-      users = if opts[:subscribe]
-        users.with_subscription(:email, :newsletter)
-      else
-        users.without_subscription(:email, :newsletter)
-      end
-      users
-    end
-
-    def update_settings_for emails, settings
-      User.where(email: emails).update_all(settings) if emails.any?
+      end.inject({}){|mem, h| mem.merge(h); h }
     end
 end

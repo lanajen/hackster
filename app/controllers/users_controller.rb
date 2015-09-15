@@ -25,9 +25,10 @@ class UsersController < ApplicationController
     title @user.name
     meta_desc "#{@user.name} is on #{site_name}. Come share your hardware projects with #{@user.name} and other hardware makers and developers."
 
-    @public_projects = @user.projects.live.for_thumb_display.order(start_date: :desc, made_public_at: :desc, created_at: :desc)
+    @public_projects = @user.projects.live.own.for_thumb_display.order(start_date: :desc, made_public_at: :desc, created_at: :desc)
     @public_count = @public_projects.count
     @private_projects = @user.projects.private.for_thumb_display
+    @guest_projects = @user.projects.live.guest.for_thumb_display
     @respected_projects = @user.respected_projects.indexable_and_external.for_thumb_display
     @replicated_projects = @user.replicated_projects
     if is_whitelabel?
@@ -47,6 +48,11 @@ class UsersController < ApplicationController
       end
     else
       @parts = @user.owned_parts
+      @lists = if @user.id == current_user.try(:id) or current_user.try(:is?, :admin)
+        @user.lists.order(:full_name)
+      else
+        @user.lists.public.order(:full_name)
+      end
     end
 
     @comments = if current_platform
@@ -129,7 +135,8 @@ class UsersController < ApplicationController
         message += if is_whitelabel?
           " Welcome!"
         else
-          " Now, <a href='/talk' class='alert-link'>come introduce yourself to the community!</a>"
+          # " Now, <a href='/talk' class='alert-link'>come introduce yourself to the community!</a>"
+          " Welcome!"
         end
         redirect_to user_return_to, notice: message
       end

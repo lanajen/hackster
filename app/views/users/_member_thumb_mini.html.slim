@@ -1,7 +1,7 @@
 - user = (defined?(user) and user) ? user.decorate : member.user.decorate
 
 .thumb.wide-thumb.clearfix
-  = link_to image_tag(user.avatar(:big), class: 'media-object'), user
+  = link_to image_tag(user.avatar(:large), class: 'media-object'), user
 
   .wide-thumb-body
     h5

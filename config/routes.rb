@@ -18,25 +18,30 @@ HackerIo::Application.routes.draw do
       resources :build_logs
       resources :code_files, only: [:create]
       resources :comments, only: [:create, :destroy]
+      resources :flags, only: [:create]
       resources :followers, only: [:create, :index], defaults: { format: :json } do
         collection do
           delete '' => 'followers#destroy'
         end
       end
+      resources :jobs, only: [:create, :show]
       resources :likes, only: [:create] do
         delete '' => 'likes#destroy', on: :collection
       end
-      resources :projects do 
-        get 'images' => 'projects#images', on: :member, defaults: { format: :json }
+      scope 'mandrill/webhooks' do
+        post 'unsub' => 'mandrill_webhooks#unsub'
       end
-      resources :parts, only: [:create, :destroy] do
-        get :autocomplete, on: :collection
-      end
+      resources :projects#, as: :api_projects
+      resources :parts, only: [:index, :create, :update, :destroy]
       scope 'platforms' do
         get ':user_name' => 'platforms#show', defaults: { format: :json }
         scope ':user_name' do
           get 'analytics' => 'platforms#analytics', defaults: { format: :json }
         end
+      end
+      resources :lists, only: [:index, :create], defaults: { format: :json } do
+        post 'projects' => 'lists#link_project', on: :member
+        delete 'projects' => 'lists#unlink_project', on: :member
       end
       resources :microsoft_chrome_sync, only: [] do
         get '' => 'microsoft_chrome_sync#show', on: :collection
@@ -65,12 +70,9 @@ HackerIo::Application.routes.draw do
       # api for split a/b testing gem
       get 'ab_test' => 'split#start_ab_test'
       # post 'finished' => 'split#finished_test'
-      # get 'finish_and_redirect' => 'split#finish_and_redirect'
+      get 'finish_and_redirect' => 'split#finish_and_redirect'
       # get 'validate_step' => 'split#validate_step'
 
-      # get 'experts', to: redirect('/build')
-      # get 'build' => 'expert_requests#new'
-      # resources :expert_requests, only: [:create]
       post 'info_requests' => 'pages#create_info_request'
 
       post 'pusher/auth' => 'users/pusher_authentications#create'
@@ -87,6 +89,7 @@ HackerIo::Application.routes.draw do
         get 'followers' => 'pages#followers'
         get 'hacker_spaces' => 'pages#hacker_spaces'
         get 'issues' => 'pages#issues'
+        get 'lists' => 'pages#lists'
         get 'logs' => 'pages#logs'
         get 'messages' => 'pages#messages'
         get 'newsletter' => 'pages#newsletter'
@@ -163,8 +166,10 @@ HackerIo::Application.routes.draw do
         patch 'projects/:id' => 'groups/projects#update_workflow', as: :update_workflow
       end
 
-      get 'h/:user_name' => 'hacker_spaces#redirect_to_show'
-      resources :hacker_spaces, except: [:show, :update], path: 'hackerspaces'
+      # get 'h/:user_name' => 'hacker_spaces#redirect_to_show'
+      resources :hacker_spaces, except: [:show, :update], path: 'hackerspaces' do
+        get 'create' => 'hacker_spaces#create', on: :collection, as: :create
+      end
       scope 'hackerspaces/:user_name', as: :hacker_space do
         get '' => 'hacker_spaces#show'
         patch '' => 'hacker_spaces#update'
@@ -177,7 +182,7 @@ HackerIo::Application.routes.draw do
         patch 'process' => 'members#process_request'
       end
 
-      get 'c/:user_name' => 'communities#redirect_to_show'
+      # get 'c/:user_name' => 'communities#redirect_to_show'
       resources :communities, except: [:show, :update]
       scope 'communities/:user_name', as: :communities do
         get '' => 'communities#show'
@@ -190,6 +195,7 @@ HackerIo::Application.routes.draw do
         URI.parse(request.url).tap { |uri| uri.path.sub!(/\/l\//i, '/lists/') }.to_s
       }, via: :get
       resources :lists, except: [:show, :update] do
+        get 'create' => 'lists#create', on: :collection, as: :create
         resources :projects, only: [] do
           post 'feature' => 'lists#feature_project'#, as: :platform_feature_project
           delete 'feature' => 'lists#unfeature_project'
@@ -294,15 +300,24 @@ HackerIo::Application.routes.draw do
         get 'projects' => 'challenges#projects'
         patch '' => 'challenges#update'
       end
-      # get 'challenges/:slug' => 'challenges#show', as: :challenge
+
       resources :challenges, except: [:show, :update] do
-        resources :entries, controller: :challenge_entries do
+        resources :entries, controller: :challenge_entries, except: [:show] do
+          put 'update_workflow' => 'challenge_entries#update_workflow', on: :member
           get 'address/edit' => 'addresses#edit', on: :member, as: :edit_address
           patch 'address' => 'addresses#update', on: :member
         end
         post 'projects' => 'challenges#enter', on: :member, as: :enter
         post 'unlock' => 'challenges#unlock', on: :member
         put 'update_workflow' => 'challenges#update_workflow', on: :member
+        patch 'update_mailchimp' => 'challenges#update_mailchimp', on: :member
+      end
+
+      resources :challenge_entries, only: [], as: :challenge_single_entry do
+        resources :respects, only: [:create], controller: 'votes' do
+          get 'create' => 'votes#create', on: :collection, as: :create
+          delete '' => 'votes#destroy', on: :collection
+        end
       end
 
       # resources :skill_requests, path: 'cupidon' do
@@ -311,15 +326,18 @@ HackerIo::Application.routes.draw do
 
       resources :notifications, only: [:index] do
         get 'edit' => 'notifications#edit', on: :collection
-        patch 'edit' => 'notifications#update', on: :collection
+        patch '' => 'notifications#update', on: :collection
+        get 'update' => 'notifications#update_from_link', on: :collection, as: :update
       end
 
       resources :projects, only: [:index]
 
+      resources :quotes, only: [:create]
+
       # dragon
-      get 'partners' => 'partners#index'
-      get 'dragon/leads/new' => 'dragon_queries#new'
-      post 'dragon/leads' => 'dragon_queries#create'
+      # get 'partners' => 'partners#index'
+      # get 'dragon/leads/new' => 'dragon_queries#new'
+      # post 'dragon/leads' => 'dragon_queries#create'
 
       get 'ping' => 'pages#ping'  # for availability monitoring
       get 'obscure/path/to/cron' => 'cron#run'
@@ -347,8 +365,9 @@ HackerIo::Application.routes.draw do
       get 'dallas', to: redirect('/hackathons/hardware-weekend/dallas')
       get 'boston', to: redirect('/hackathons/hardware-weekend/boston')
       get 'brooklyn', to: redirect('/hackathons/hardware-weekend/brooklyn')
-      get 'washington', to: redirect('/hackathons/hardware-weekend/washington')
+      get 'dc', to: redirect('/hackathons/hardware-weekend/washington')
       get 'nyc', to: redirect('/hackathons/hardware-weekend/new-york-city')
+      get '/h/pebblerocksboulder', to: redirect('/hackathons/pebble-rocks-boulder/a-pebble-hackathon')
 
       get 'tinyduino', to: redirect('/tinycircuits')
       get 'spark', to: redirect('/particle')
@@ -379,8 +398,12 @@ HackerIo::Application.routes.draw do
       get 'users/slack_settings' => 'chat_messages#slack_settings', as: :user_slack_settings
       post 'users/slack_settings' => 'chat_messages#save_slack_settings'
 
-      get 'business/payments/:safe_id' => 'payments#show', as: :payment
-      post 'business/payments' => 'payments#create', as: :payments
+      get 'business/payments/:safe_id' => redirect { |params, request|
+        URI.parse(request.url).tap { |uri| uri.path.sub!(/business\//i, '') }.to_s
+      }, via: :get
+
+      get 'payments/:safe_id' => 'payments#show', as: :payment
+      post 'payments' => 'payments#create', as: :payments
 
       constraints(PlatformPage) do
         get ':slug' => 'platforms#show', as: :platform_home, slug: /[A-Za-z0-9_\-]{3,}/

@@ -4,23 +4,33 @@ class ChallengeEntry < ActiveRecord::Base
   AWARDED_STATES = %w(awarded fullfiled)
   APPROVED_STATES = AWARDED_STATES + %w(qualified unawarded)
 
+  include HstoreCounter
   include Workflow
 
   belongs_to :challenge
-  belongs_to :prize
   belongs_to :project
   belongs_to :user
+  has_and_belongs_to_many :prizes
+  has_many :votes, as: :respectable, class_name: 'Respect', dependent: :destroy
   has_one :address, as: :addressable
 
   validates :challenge_id, uniqueness: { scope: :project_id }
 
+  attr_accessible :judging_notes, :prize_ids, :workflow_state
+
+  counters_column :counters_cache
+  has_counter :votes, 'votes.count'
+
   workflow do
     state :new do
       event :approve, transitions_to: :qualified
-      event :reject, transitions_to: :unqualified
+      event :disqualify, transitions_to: :unqualified
     end
-    state :unqualified
+    state :unqualified do
+      event :approve, transitions_to: :qualified
+    end
     state :qualified do
+      event :disqualify, transitions_to: :unqualified
       event :give_award, transitions_to: :awarded
       event :give_no_award, transitions_to: :unawarded
     end
@@ -29,6 +39,9 @@ class ChallengeEntry < ActiveRecord::Base
       event :mark_prize_shipped, transitions_to: :fullfiled
     end
     state :fullfiled
+    after_transition do |from, to, triggering_event, *event_args|
+      notify_observers(:"after_#{triggering_event}")
+    end
   end
 
   def self.approved
@@ -36,22 +49,22 @@ class ChallengeEntry < ActiveRecord::Base
   end
 
   def self.winning
-    where("challenge_projects.prize_id IS NOT NULL").joins("INNER JOIN prizes ON challenge_projects.prize_id = prizes.id").order("prizes.position ASC")
-  end
-
-  def approve
-    notify_observers(:after_approve)
+    joins(:prizes).order("prizes.position ASC")
   end
 
   def awarded?
-    workflow_state.in? AWARDED_STATES and prize_id.present?
+    workflow_state.in? AWARDED_STATES and has_prize?
   end
 
-  def give_award
-    notify_observers(:after_award_given)
+  def has_prize?
+    prizes.any?
   end
 
-  def give_no_award
-    notify_observers(:after_award_not_given)
+  def shipping_required_for_prizes?
+    prizes.select{|p| p.requires_shipping? }.any?
+  end
+
+  def to_tracker
+    {}
   end
 end

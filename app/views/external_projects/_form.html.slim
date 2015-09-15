@@ -1,4 +1,6 @@
-= simple_nested_form_for @project, url: settings_project_path(@project), html: { class: 'form-horizontal remote accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
+= render 'projects/forms/part_form'
+
+= simple_nested_form_for @project, url: settings_project_path(@project), html: { class: 'form-horizontal remote accept-file-upload project-editor' }, wrapper: :bootstrap3_horizontal do |f|
   = f.error_notification
 
   .row
@@ -55,6 +57,14 @@
             = f.input :website, label: 'Official website'
             = f.input :buy_link, label: 'E-commerce page'
 
+      .panel.panel-default
+        .panel-heading
+          h4 Components and supplies
+        .panel-body
+          / p Here go things like microcontrollers, resistors, wires and all things that are part of your final project.
+        .box-content
+          = render partial: 'projects/forms/parts', locals: { project: @project, f: f, type: :hardware, human_type: 'component', options: { prompt: 'Select a component', label: 'Component', part_type: 'hardware', show_quantity: true, link_type: 'store_link' } }
+
 
       .panel.panel-default
         .panel-heading
@@ -72,19 +82,3 @@
             li= link_to 'Edit as admin', edit_admin_project_path(@project), class: 'btn btn-warning btn-sm'
           li= f.submit 'Save changes', class: 'btn btn-primary btn-sm'
           li= link_to 'Cancel', @project, class: 'btn-link btn-sm'
-
-= content_for :js do
-  = tinymce_assets
-
-  javascript:
-    $(function(){
-
-      tinyMCE.init({
-        selector: 'textarea.text-editor',
-        toolbar: "undo redo | bold italic underline | link unlink | bullist numlist",
-        menubar: false,
-        plugins: 'link paste',
-        statusbar: false,
-        height: 300
-      });
-    });

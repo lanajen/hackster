@@ -4,12 +4,13 @@
 = f.input :type, collection: Part::TYPES, hint: "Choose 'Tool' if your product is used during the making of projects, but isn't present in the final project. Example: screwdriver, CNC, Dremel."
 = f.input :one_liner, as: :text, input_html: { rows: 2 }, hint: 'Maximum 140 characters', label: 'Elevator pitch'
 = f.input :description, hint: 'Full description. You can make it as long and thorough as you need.', input_html: { class: 'text-editor', rows: 10 }
-= render partial: 'shared/image_form', locals: { file_type: 'image', human_file_type: 'Product image', image_link: @part.image.try(:imgix_url, :thumb), help_block: 'Make it look nice! PNG with transparent background preferred; JPG/PNG/GIF with white background OK.', attribute_type: 'image', image_version: 'thumb', model: 'part' }
+= render partial: 'shared/image_form', locals: { file_type: 'image', human_file_type: 'Product image', image_link: @part.image.try(:imgix_url, :thumb), help_block: 'High quality images required! Crop any whitespace around the product. PNG with transparent background preferred; JPG/PNG/GIF with white background OK.', attribute_type: 'image', image_version: 'thumb', model: 'part' }
 = f.input :product_tags_string, label: 'Tags', hint: "Most useful tags would include technologies like 'Wifi', 'BLE', 'accelerometer'... Please enter each tag separated by commas."
+= f.input :mpn, label: 'Manufacturer part number (MPN)'
 = f.input :unit_price, label: 'Suggested retail price, $'
 = f.input :store_link, label: 'Link to store page'
 = f.input :product_page_link, hint: 'If different than the store link', label: 'Link to product page'
-  = f.input :get_started_link, label: 'Link to get started page'
+= f.input :get_started_link, label: 'Link to get started page'
 = f.input :documentation_link, label: 'Link to full documentation page'
 = f.input :libraries_link, label: 'Link to code libraries page'
 = f.input :datasheet_link, label: 'Link to datasheet'

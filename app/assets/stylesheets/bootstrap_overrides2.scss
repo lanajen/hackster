@@ -163,11 +163,27 @@ h6, .h6 {
     right: -9px;
   }
 }
-.btn:not(.btn-block) + .btn:not(.btn-block) {
+.btn:not(.btn-block) + .btn:not(.btn-block),
+.btn:not(.btn-block) + .react-btn,
+.react-btn + .btn:not(.btn-block) {
   margin-left: 3px;
+}
+.btn-block + .react-btn,
+.react-btn + .btn-block {
+  margin-top: 5px;
 }
 .btn-group {
   & > .btn:not(.btn-block) + .btn:not(.btn-block) {
     margin-left: 0;
   }
+}
+pre {
+  background-color: #23241f;
+  border: none;
+  border-radius: 0;
+  color: #fff;
+  padding: 10px 15px;
+  white-space: pre-wrap;
+  max-height: 400px;
+  overflow: scroll;
 }

@@ -2,7 +2,7 @@
 
 <p>You must be awesome because you were just awarded a new badge for <strong><%= @context[:badge].explanation(@context[:awarded_badge].level) %></strong></p>
 
-<p>You now have a total of <%= pluralize @context[:user].badges_count, 'badge' %>. Keep it up! <a href="http://www.hackster.io/achievements">Click here to learn more about badges.</a></p>
+<p>You now have a total of <%= pluralize @context[:user].badges_count, 'badge' %>. Keep it up! <a href="https://www.hackster.io/achievements">Click here to learn more about badges.</a></p>
 
 <p>Cheers,<br> The Hackster.io team</p>
 <p>
@@ -12,5 +12,5 @@
 </p>
 
 <p class="unsubscribe">
-  Don't want to receive this type of email? <a href="|unsubscribe_link|">Update your notification preferences</a>
+  Don't want to receive this type of email? <a href="|unsubscribe_link:new_badge|">Unsubscribe</a> or <a href="|update_preferences_link|">update your notification preferences</a>.
 </p>

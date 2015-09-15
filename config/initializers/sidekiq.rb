@@ -4,26 +4,11 @@ require 'sidekiq-status'
 raise 'No config for Redis' unless $redis_config
 
 sidekiq_pool = (ENV['SIDEKIQ_DB_POOL'] || 3).to_i
-
-heroku = nil
-# if ENV['HEROKU_APP'] and Rails.env == 'staging'
-#   require 'autoscaler/sidekiq'
-#   require 'autoscaler/heroku_scaler'
-#   heroku = Autoscaler::HerokuScaler.new
-# end
+sidekiq_redis_size = (ENV['SIDEKIQ_REDIS_SIZE'] || 5).to_i
 
 Sidekiq.configure_server do |config|
-  if heroku
-    config.server_middleware do |chain|
-      Rails.logger.info "[Sidekiq] Running on Heroku in staging, autoscaler is used"
-      chain.add(Autoscaler::Sidekiq::Server, heroku, 60)  # 60 second timeout
-    end
-  else
-    Rails.logger.info "[Sidekiq] Autoscaler isn't used"
-  end
-
   config.failures_default_mode = :exhausted
-  config.redis = $redis_config.merge({ size: 3, namespace: "sidekiq:hacksterio", network_timeout: 5 })
+  config.redis = $redis_config.merge({ size: sidekiq_redis_size, namespace: "sidekiq:hacksterio", network_timeout: 8 })
 
   # database_url = ENV['DATABASE_URL']
   # if database_url
@@ -51,17 +36,11 @@ Sidekiq.configure_server do |config|
 end
 
 Sidekiq.configure_client do |config|
-  if heroku
-    config.client_middleware do |chain|
-      chain.add Autoscaler::Sidekiq::Client, 'critical' => heroku
-    end
-  end
-
   config.client_middleware do |chain|
     chain.add Sidekiq::Status::ClientMiddleware
   end
 
-  config.redis = $redis_config.merge({ size: 1, namespace: "sidekiq:hacksterio", network_timeout: 5 })
+  config.redis = $redis_config.merge({ size: 1, namespace: "sidekiq:hacksterio" })
 end
 
 Sidekiq.options[:concurrency] = sidekiq_pool

@@ -2,7 +2,19 @@ module WebsitesColumn
   module ClassMethods
     def add_websites *websites
       websites.each do |website|
-        hstore_column @@websites_column, "#{website}_link", :string
+        attribute = "#{website}_link"
+        hstore_column @@websites_column, attribute, :url
+
+        validate do |model|
+          value = model.send(attribute)
+          model.validate_url attribute, value if value.present?
+        end
+
+        if website == :twitter
+          define_method :twitter_handle do
+            TwitterHandle.new(twitter_link).handle
+          end
+        end
       end
     end
 
@@ -19,9 +31,16 @@ module WebsitesColumn
     end
   end
 
+  module InstanceMethods
+    def validate_url attribute, url
+      errors.add attribute, 'is not a valid URL' unless Url.new(url).valid?
+    end
+  end
+
   def self.included base
     # dependency
     base.send :include, HstoreColumn unless base.included_modules.include? HstoreColumn
+    base.send :include, InstanceMethods
 
     base.send :extend, ClassMethods
   end

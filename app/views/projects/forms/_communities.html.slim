@@ -6,13 +6,10 @@
   show all hackerspaces via autocomplete
 
 = content_for :js do
+
   javascript:
     $(function(){
-      $("#project_platform_tags_array").select2({
-        tags: true,
-        tokenSeparators: [',']
-      });
-      $("#project_hacker_space_id").select2();
+      $("#project_hacker_space_id").select2({ width: '100%' });
     });
 
 = simple_nested_form_for @project, url: api_v1_project_path(@project), html: { data: { remote: true }, class: 'form-horizontal remote' }, wrapper: :bootstrap3_horizontal do |f|
@@ -29,14 +26,18 @@
 
       .box
         .box-content
-          = f.input :platform_tags_array, label: 'Platforms used', hint: "Select all the platforms you've used", collection: (Platform.public.order(:full_name).pluck(:full_name) + @project.platform_tags_array).uniq.sort, input_html: { multiple: 'multiple' }, wrapper_html: { 'data-anchor' => 'platform_tags_string' }
+          p.small.mg-20
+            strong> Tip:
+            | Want your project to show on a specific platform hub? All you have to do is select the platform's component or app that you used in your project. You can do so in the Hardware and Software tabs.
           - communities = current_user.is?(:admin) ? Community.where(type: 'Community').order(:full_name) : current_user.communities.where(type: 'Community')
           - if communities.any?
             = f.association :communities, collection: communities, as: :check_boxes
           - assignments = current_user.is?(:admin) ? Assignment.order(created_at: :desc) : current_user.assignments.order(created_at: :desc)
           - if assignments.any?
             = f.input :assignment_id, collection: assignments, label: 'Assignment', hint: "If you made the hack as part of a course assignment, select it above."
-          - events = current_user.is?(:admin) ? Event.order(created_at: :desc) : current_user.events.order(created_at: :desc) + Event.recent
+          - events = current_user.is?(:admin) ? Event.order(created_at: :desc) : current_user.events.order(created_at: :desc) + Event.now
           - if events.any?
             = f.input :event_id, collection: events, label: 'Event', hint: "If you made the hack as part of an event, select it above."
           = f.input :hacker_space_id, collection: HackerSpace.public.order("LOWER(full_name) ASC"), label: 'Where did you hack this from?', hint: content_tag(:span, "Select the hacker space you worked from. ") + content_tag(:a, 'See all the hacker spaces.', href: '/hackerspaces')
+
+    = render 'projects/forms/pe_save'

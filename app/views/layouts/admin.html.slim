@@ -26,8 +26,6 @@ html(lang="en")
 
         .container.navbar-collapse.collapse
           ul.nav.navbar-nav
-            / %li= link_to 'Invite requests', admin_invite_requests_path
-            / %li= link_to 'Invite codes', admin_invite_codes_path
             li= link_to 'Projects', admin_projects_path
             li= link_to 'Users', admin_users_path
             li.dropdown
@@ -36,6 +34,7 @@ html(lang="en")
                 span.caret
               ul.dropdown-menu
                 li= link_to 'Hacker Spaces', admin_hacker_spaces_path
+                li= link_to 'Lists', admin_lists_path
                 li= link_to 'Platforms', admin_platforms_path
                 li= link_to 'Others', admin_groups_path
             li= link_to 'Comments', admin_comments_path

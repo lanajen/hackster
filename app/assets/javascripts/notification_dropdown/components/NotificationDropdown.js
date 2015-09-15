@@ -6,9 +6,12 @@ var NotificationDropdown = React.createClass({
   render: function() {
     let notifications = _.map(this.props.notifications, function(note, index) {
       if (note.message) {
-        let bgColor = 'white';
+        let classNames = ['notification-item'];
+        if (!note.read) classNames.push('notification-unread');
+        classNames = classNames.join(' ');
+
         return (
-          <li key={index} className="notification-item" style={{backgroundColor: bgColor}}>
+          <li key={index} className={classNames}>
             <p className="notification" dangerouslySetInnerHTML={{__html: note.message}}></p>
             <p className="notification-time">{note.time}</p>
           </li>
@@ -17,7 +20,7 @@ var NotificationDropdown = React.createClass({
     }).filter(function(item) { return item !== undefined; });
 
     if(!notifications.length) {
-      notifications = (<p className="notification-item" style={{backgroundColor: '#F8F8F8'}}>Notifications about other makers' activity related to you will appear here.</p>);
+      notifications = (<p className="notification-item">Notifications about other makers' activity related to you will appear here.</p>);
     }
 
     if(this.props.isLoading) {

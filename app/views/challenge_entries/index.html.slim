@@ -8,7 +8,24 @@ p
   b> Challenge status:
   = @challenge.status
 
-- if @challenge.judging?
+p
+  strong>= @new_entries_count
+  ==> pluralize_without_count @new_entries_count, 'entry'
+  ' awaiting moderation
+  ' |
+  strong>= @approved_entries_count
+  ==> pluralize_without_count @approved_entries_count, 'entry'
+  ' approved
+  ' |
+  strong>= @rejected_entries_count
+  ==> pluralize_without_count @rejected_entries_count, 'entry'
+  | rejected
+
+- if @challenge.in_progress?
+  - if @new_entries_count > 0
+    = link_to 'Moderate new entries', edit_challenge_entry_path(@challenge, @entries.where(workflow_state: :new).first), class: 'btn btn-sm btn-primary'
+
+- elsif @challenge.judging?
   p
     - if @prizes.any?
       b The following prizes are waiting to be awarded:
@@ -17,7 +34,9 @@ p
           li
             ' "#{prize.name}"
             ' x
-            = quantity
+            => quantity
+            - if quantity < 0
+              | (assigned too many times)
       br
       - if @entries.any?
         ==> link_to 'Start judging', edit_challenge_entry_path(@challenge, @entries.first), class: 'btn btn-sm btn-primary'
@@ -28,7 +47,7 @@ p
       ' All prizes have been awarded.
       = link_to 'Mark challenge as judged', update_workflow_challenge_path(@challenge, event: 'mark_as_judged'), method: :put, class: 'btn btn-sm btn-warning', data: { confirm: 'Are you sure? Continuing will close judging and send an email notification to all participants informing them of the outcome.' }
 
-- if @challenge.judged?
+- elsif @challenge.judged?
   table.table.table-striped
     thead
       tr
@@ -41,13 +60,13 @@ p
       - if @entries.winning.any?
         - @entries.winning.each do |entry|
           tr
-            td= entry.prize.name
+            td= entry.prizes.pluck(:name).to_sentence
             td
               - user = entry.user
               ==> link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
               = link_to user.name, user
-            td= entry.prize.requires_shipping? ? 'Snail Mail' : 'Email'
-            td= entry.prize.requires_shipping? ? entry.address.try(:decorate).try(:full).try(:html_safe) || 'Not entered yet' : entry.user.email
+            td= entry.shipping_required_for_prizes? ? 'Snail Mail' : 'Email'
+            td= entry.shipping_required_for_prizes? ? entry.address.try(:decorate).try(:full).try(:html_safe) || 'Not entered yet' : entry.user.email
             td
               - if @challenge.judging?
                 = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_challenge_entry_path(@challenge, entry), class: 'btn btn-xs btn-default', rel: 'tooltip', title: 'Edit'
@@ -62,24 +81,33 @@ table.table.table-striped
       th Submission date
       th Status
       th Judging notes
+      - if @challenge.activate_voting
+        th Votes
       th Prize awarded
       th
   tbody
     - if @entries.any?
       - @entries.each do |entry|
-        - if entry.project
-          tr
-            td= link_to entry.project.name, entry.project
-            td
-              - user = entry.user
-              ==> link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
-              = link_to user.name, user
-            td= l entry.created_at
-            td= entry.workflow_state
-            td= entry.judging_notes.try(:truncate, 100)
-            td= entry.prize ? entry.prize.name : 'None'
-            td
-              - if @challenge.judging?
-                = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_challenge_entry_path(@challenge, entry), class: 'btn btn-xs btn-default', rel: 'tooltip', title: 'Edit'
+        tr
+          td= link_to entry.project.name, entry.project
+          td
+            - user = entry.user
+            ==> link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
+            = link_to user.name, user
+          td= l entry.created_at
+          td= entry.workflow_state
+          td= entry.judging_notes.try(:truncate, 100)
+          - if @challenge.activate_voting
+            td= entry.votes_count
+          td= entry.has_prize? ? entry.prizes.pluck(:name).to_sentence : 'None'
+          td
+            - if entry.can_approve?
+              = link_to content_tag(:i, '', class: 'fa fa-check'), update_workflow_challenge_entry_path(@challenge, entry, event: 'approve'), class: 'btn btn-xs btn-success', rel: 'tooltip', title: 'Approve', data: { method: :put, confirm: 'Are you sure you want to approve this entry?', container: 'body' }
+            - if entry.can_disqualify?
+              = link_to content_tag(:i, '', class: 'fa fa-times'), update_workflow_challenge_entry_path(@challenge, entry, event: 'disqualify'), class: 'btn btn-xs btn-danger', rel: 'tooltip', title: 'Disqualify', data: { method: :put, confirm: 'Are you sure you want to disqualify this entry?', container: 'body' }
+            - if @challenge.judging?
+              = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_challenge_entry_path(@challenge, entry), class: 'btn btn-xs btn-default', rel: 'tooltip', title: 'Edit', data: { container: 'body' }
+            - if current_user.is? :admin
+              = link_to content_tag(:i, '', class: 'fa fa-trash-o'), challenge_entry_path(@challenge, entry), class: 'btn btn-xs btn-danger', rel: 'tooltip', title: 'Delete', data: { method: :delete, confirm: 'Are you sure you want to delete this entry?', container: 'body' }
     - else
       td.text-center colspan=7 No entries yet

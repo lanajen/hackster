@@ -2,12 +2,12 @@ require 'country_iso_translater'
 
 class SocialProfileBuilder
   KNOWN_PROVIDERS = {
-    'Facebook' => :facebook,
-    'Twitter' => :twitter,
-    'Google+' => :google_plus,
-    'LinkedIn' => :linked_in,
-    'Github' => :github,
-    'Microsoft' => :windowslive,
+    'facebook' => :facebook,
+    'twitter' => :twitter,
+    'gplus' => :google_plus,
+    'linkedin' => :linked_in,
+    'github' => :github,
+    'windowslive' => :windowslive,
   }
 
   def initialize user
@@ -23,7 +23,7 @@ class SocialProfileBuilder
     # logger.info provider.to_s
     # logger.info 'user: ' + @user.to_yaml
     if info and provider.in? KNOWN_PROVIDERS.keys
-      send KNOWN_PROVIDERS[provider], info, data
+      send provider, info, data
       @user.email_confirmation = @user.email
       @user.authorizations.build(
         uid: data.uid,
@@ -93,7 +93,7 @@ class SocialProfileBuilder
       )
     end
 
-    def google_plus info, data
+    def gplus info, data
       assign_attributes(
         user_name: clean_user_name(info.email.match(/^([^@]+)@/)[1]),
         full_name: info.name,
@@ -103,7 +103,7 @@ class SocialProfileBuilder
       build_avatar info.image
     end
 
-    def linked_in info, data
+    def linkedin info, data
       assign_attributes(
         full_name: info.first_name.to_s + ' ' + info.last_name.to_s,
         email: info.email,

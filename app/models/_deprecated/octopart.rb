@@ -1,6 +1,6 @@
 require 'json'
 require 'net/http'
-OCTOPART_API_KEY = Rails.env == 'production' ? '67db2f71' : '2d933f78'
+OCTOPART_API_KEY = Rails.env.production? ? '67db2f71' : '2d933f78'
 
 class Octopart
   def self.search part_name#parts

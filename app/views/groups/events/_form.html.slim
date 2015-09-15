@@ -68,8 +68,8 @@
         span.input-group-addon hackster.io/hackathons/#{@event.hackathon.user_name.truncate(10)}/
         = f.input_field :user_name
       / = f.input :email
-      / # = f.input :mini_resume, label: 'One line description', as: :text, input_html: { rows: 4 },
-        hint: 'Maximum 140 characters'
+      = f.input :mini_resume, label: 'Event info', as: :text, input_html: { rows: 4 },
+        hint: 'Maximum 140 characters. Will use hackathon one line description if empty.'
 
       = f.input :start_date_dummy, label: 'Starts on', wrapper_html: { id: 'start_date_dummy', class: 'datetimepicker', autocomplete: 'off' } do
         #datepicker.input-group
@@ -104,7 +104,7 @@
       = f.input :country, input_html: { class: 'form-control' }
 
     .col-md-6
-      - { facebook: 'Facebook', github: 'Github', google_plus: 'Google+', linked_in: 'LinkedIn', twitter: 'Twitter', youtube: 'Youtube', website: 'Website', blog: 'Blog', instagram: 'Instagram', pinterest: 'Pinterest', flickr: 'Flickr', reddit: 'Reddit' }.each do |link, text|
+      - { facebook: 'Facebook', github: 'Github', google_plus: 'Google+', linked_in: 'LinkedIn', twitter: 'Twitter', youtube: 'Youtube', website: 'Website', blog: 'Blog', instagram: 'Instagram', pinterest: 'Pinterest', flickr: 'Flickr', reddit: 'Reddit' }.sort.each do |link, text|
         = f.input :"#{link}_link", label: "#{text} link", input_html: { value: @event.websites["#{link}_link"]}
       /
         = f.input :facebook_link, label: 'Facebook link'

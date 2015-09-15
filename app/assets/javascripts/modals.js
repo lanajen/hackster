@@ -1,8 +1,8 @@
-function openModal(id) {
+function openModal(id, button) {
   $('.modal-popup:not(' + id  + ')').each(function(i, el){
     closeModal('#' + $(el).attr('id'));
   });
-  $(id).trigger('modal:opening');
+  $(id).trigger({ type: 'modal:opening', relatedTarget: button });
   resizeModal(id);
   return false;
 }

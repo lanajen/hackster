@@ -1,5 +1,7 @@
 - @challenge = @challenge.decorate
 
+= inserts_stats_for @challenge
+
 = content_for :head do
   - if url_for(@challenge) == request.path
     / = render partial: "groups/#{@challenge.identifier.pluralize}/meta_tags"
@@ -110,7 +112,10 @@
             ul.nav.nav-tabs= render 'nav'
             - if @challenge.open_for_submissions? and (!@is_challenge_entrant or @challenge.allow_multiple_entries?)
               ul.list-inline.manage
-                li= link_to 'Enter challenge', '', class: 'btn btn-primary enter-challenge'
+                - if @challenge.idea_survey_link.present?
+                  = link_to @challenge.enter_button_text, @challenge.idea_survey_link, class: 'btn btn-primary enter-challenge-btn', target: '_blank'
+                - else
+                  li= link_to @challenge.enter_button_text, 'javascript:void(0)', class: 'btn btn-primary enter-challenge enter-challenge-btn'
 
             - if can? :admin, @challenge
               ul.list-inline.manage
@@ -173,13 +178,19 @@
       - link_params = @challenge.project_ideas ? { project: { mark_as_idea: true, platform_tags_string: @platform.try(:name) } } : { project: {platform_tags_string: @platform.try(:name) } }
       - if user_signed_in?
         - if @user_projects.any?
-          p Which project do you want to use to enter the challenge?
+          h2 Ready to enter the challenge?
+          p
+            ' Please select the project you would like to enter
+            strong
+              abbr.istooltip title="Please only enter your project into the contest once complete. You will not gain any advantage over others by entering an incomplete project early."
+                | (complete projects only)
+            | :
           = form_tag challenge_entries_path(@challenge), method: :post do
             = select_tag :project_id, options_from_collection_for_select(@user_projects, :id, :name), class: 'form-control'
             p
               small
                 ' By entering you agree to the
-                = link_to 'challenge rules', challenge_path(@challenge, anchor: 'rules'), onclick: 'javascript:closeModal("#enter-popup");$("#rules .section-content").slideDown();'
+                = link_to 'challenge rules', challenge_path(@challenge, anchor: 'rules', show_rules: 1), onclick: 'javascript:closeModal("#enter-popup");$("#rules .section-content").slideDown();'
             = submit_tag "Enter my project #{'idea ' if @challenge.project_ideas}into the challenge", class: 'btn btn-primary'
           p
             small

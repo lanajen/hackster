@@ -19,7 +19,7 @@
           = @payment.label
         p
           b> Amount due:
-          => number_to_currency @payment.amount, precision: 0
+          => number_to_currency @payment.amount, precision: 2
           small.text-muted
             | (+#{number_to_currency @payment.credit_card_fee} credit card fee)
         p

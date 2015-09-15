@@ -88,7 +88,7 @@ module ScraperStrategies
         return unless parts.any?
 
         parts.each_with_index do |comp, i|
-          part = Part.new
+          part = HardwarePart.new
           comment = comp.at_css('.component-description').try(:text).try(:strip)
           part.name = comp.at_css('.component-name, .component-content').text.gsub(comment || '', '').strip
           part.save

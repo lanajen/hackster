@@ -13,6 +13,23 @@
           = f.input :full_name, label: 'List name'
           = f.input :mini_resume, as: :text, input_html: { rows: 3 }, label: 'Short description', hint: "Max 140 characters."
 
+          .cover_image.file-drop.form-group  class="#{'has-error' if @list.errors[:cover_image].present?}"
+            .col-sm-4
+              label.control-label
+                | Cover image
+            .col-sm-8
+              div
+                span.cover_image.image-preview.preview
+                .btn-group
+                  a.btn.btn-default.btn-sm.browse*{ data: { target: '.file_upload.cover_image' } }  Select picture
+                  a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.cover_image" } }
+                    i.fa.fa-link
+                p.help-block A high quality image, at least 1600x430px. An image with no or little text looks a lot better!
+                - if @list.errors[:cover_image]
+                  span.help-block.has-error= @list.errors[:cover_image].to_sentence
+
+          = render partial: 'shared/image_form_bare', locals: { file_type: 'cover_image', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'group' }
+
           - unless user_signed_in?
             - link = link_to 'Already have an account?', new_user_session_path(redirect_to: new_list_path), tabindex: '-1'
             = f.input :admin_email, label: 'Your email', hint: "We'll create an admin account with that email. <b>#{link}</b>".html_safe, required: true

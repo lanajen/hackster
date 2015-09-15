@@ -23,8 +23,7 @@ class License
       abbr: 'LGPL', },
     'http://opensource.org/licenses/MIT' => {
       name: 'MIT license (MIT)',
-      abbr: 'MIT',
-      deprecated: true, },
+      abbr: 'MIT', },
     'http://opensource.org/licenses/MPL-2.0' => {
       name: 'Mozilla Public License 2.0 (MPL-2.0)',
       abbr: 'MPL-2.0', },

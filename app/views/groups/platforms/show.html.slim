@@ -1,7 +1,7 @@
 - unless @group.decorated?
   - @group = begin; "#{@group.class.name}Decorator".constantize.decorate(@group); rescue; @group.decorate; end;
 
-= inserts_stats_for @group.id, 'Group'
+= inserts_stats_for @group
 
 / = content_for :before_main do
   #about style='position: relative;z-index: 999;background: #F2F2F2;'
@@ -55,12 +55,13 @@
             - elsif !@platform.checklist_completed?(:next_level)
               - if @platform.hidden?
                 p.mg-40
-                  strong> Your platform is ready to be featured!
+                  strong>
+                    ' Would you like your platform to be featured on
+                    = link_to 'the platforms page', platforms_path
+                    | ?
                   ' Please email us at
                   => link_to 'platforms@hackster.io', 'mailto:platforms@hackster.io'
-                  ' so we can do a quick quality check and feature it on
-                  = link_to 'the platforms page', platforms_path
-                  | .
+                  ' so we can assess if it's a good fit for our featured list.
               h2.section-title Take your platform to the next level:
               = render 'groups/platforms/checklist', model: @platform, group: :next_level, done: false
 

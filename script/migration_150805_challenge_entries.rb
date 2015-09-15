@@ -1,0 +1,1 @@
+ChallengeEntry.where.not(prize_id: nil).each{|e| e.prizes << Prize.find(e.prize_id) }

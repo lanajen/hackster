@@ -5,17 +5,12 @@ class Groups::PartsController < ApplicationController
   def index
     authorize! :manage, @platform
 
-    @parts = @platform.parts.alphabetical.paginate(page: safe_page_params)
-  end
-
-  def show
-  end
-
-  def new
+    @parts = @platform.parts.alphabetical.visible.paginate(page: safe_page_params)
   end
 
   def create
     @part.platform_id = @platform.id
+    @part.generate_slug
 
     if @part.save
       redirect_to group_products_path(@platform), notice: "#{@part.name} created!"
@@ -24,18 +19,12 @@ class Groups::PartsController < ApplicationController
     end
   end
 
-  def edit
-  end
-
   def update
     if @part.update_attributes(params[:part])
       redirect_to group_products_path(@platform), notice: "#{@part.name} saved!"
     else
       render :edit
     end
-  end
-
-  def destroy
   end
 
   private

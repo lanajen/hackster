@@ -10,7 +10,11 @@ class Admin::PartsController < Admin::BaseController
     params[:sort_by] ||= 'created_at'
     params[:per_page] ||= 100
 
-    @parts = filter_for Part.not_invalid, @fields
+    parts = Part.not_invalid
+    parts = parts.has_platform if params[:has_platform]
+    parts = parts.with_slug if params[:with_slug]
+
+    @parts = filter_for parts, @fields
   end
 
   def new
@@ -80,7 +84,7 @@ class Admin::PartsController < Admin::BaseController
       if params[:merge_parts]
         part_joins = PartJoin.where(part_id: params[:merge_parts].to_a - [@part.id.to_s])
         part_joins.update_all(part_id: @part.id)
-        @part.update_counters only: [:projects]
+        @part.update_counters only: [:projects, :all_projects]
         Part.where(id: params[:merge_parts].to_a - [@part.id.to_s]).update_all(workflow_state: :retired)
       end
     end

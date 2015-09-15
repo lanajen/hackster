@@ -60,6 +60,7 @@
               strong> Sort by:
               .btn-group
                 = link_to 'Alphabetically', platforms_path(sort: 'name'), class: "btn btn-default btn-sm #{'active' if params[:sort] == 'name'}"
+                = link_to 'Last updated', platforms_path(sort: 'last_project'), class: "btn btn-default btn-sm #{'active' if params[:sort] == 'last_project'}"
                 = link_to 'Most followers', platforms_path(sort: 'followers'), class: "btn btn-default btn-sm #{'active' if params[:sort] == 'followers'}"
                 = link_to 'Most projects', platforms_path(sort: 'projects'), class: "btn btn-default btn-sm #{'active' if params[:sort] == 'projects'}"
 

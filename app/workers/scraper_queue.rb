@@ -52,8 +52,6 @@ class ScraperQueue < BaseWorker
       end
     end
 
-    MailerQueue.enqueue_generic_email(@message)
-
   rescue => exception
     @message.subject = "Your project couldn't be imported"
     @message.body = "<p>Hi</p><p>This is to let you know that we couldn't import your page: #{page_url}.</p><p>Please double check that the URL is publicly accessible, and if it's a Github repo make sure that it's public. In any case, we've been notified and will try to fix it. We'll keep you updated.</p><p>Cheers<br/>The Hackster.io team</p>"

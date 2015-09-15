@@ -2,21 +2,28 @@
 //= require jquery_ujs
 //= require bootstrap
 //= require bootstrap_custom
-//= require jquery_nested_form
-//= require placeholders
+//= require underscore
+//= require jquery-ui/sortable
+//= require jquery-ui/widget
 //= require jquery.parallax
-//= require jquery.ui.sortable
 //= require jquery.throttle
+//= require jquery.resize
+//= require jquery.githubRepoWidget.min
+//= require jquery.iframe-transport
+//= require jquery.fileupload
+//= require ilightbox/jquery.mousewheel
+//= require ilightbox/ilightbox.packed
+//= require jquery_nested_form
+//= require bitbucket-widget.min
 //= require slick
 //= require rangy-core
 //= require rangy-cssclassapplier
+//= require browser_timezone_rails/application
+//= require moment
 //= require medium-editor
+//= require placeholders
 //= require medium-editor-ext
 //= require gist-embed
-//= require underscore
-//= require browser_timezone_rails/application
-//= require jquery.resize
-//= require jquery.githubRepoWidget.min
 //= require chats
 //= require projects
 //= require groups
@@ -25,11 +32,6 @@
 //= require all
 //= require mobile
 //= require home
-//= require ilightbox/jquery.mousewheel
-//= require ilightbox/ilightbox.packed
-//= require jquery.ui.widget
-//= require jquery.iframe-transport
-//= require jquery.fileupload
 //= require components
 
 (function($) {
@@ -49,3 +51,5 @@
   };
 
 })(jQuery);
+
+hljs.initHighlightingOnLoad();

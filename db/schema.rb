@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150704213728) do
+ActiveRecord::Schema.define(version: 20150812022934) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -101,20 +101,18 @@ ActiveRecord::Schema.define(version: 20150704213728) do
 
   add_index "awarded_badges", ["awardee_id", "awardee_type", "badge_code"], name: "awarded_badges_awardee_badge_index", unique: true, using: :btree
 
-  create_table "broadcasts", force: :cascade do |t|
-    t.string   "broadcastable_type", limit: 255, null: false
-    t.integer  "broadcastable_id",               null: false
-    t.string   "event",              limit: 255, null: false
-    t.integer  "context_model_id",               null: false
-    t.string   "context_model_type", limit: 255, null: false
-    t.datetime "created_at",                     null: false
-    t.datetime "updated_at",                     null: false
-    t.integer  "user_id"
-    t.integer  "project_id"
+  create_table "blobs", force: :cascade do |t|
+    t.text   "content"
+    t.string "path",    null: false
+    t.hstore "meta"
   end
 
-  add_index "broadcasts", ["broadcastable_type", "broadcastable_id"], name: "index_broadcastable", using: :btree
-  add_index "broadcasts", ["context_model_type", "context_model_id"], name: "index_broadcasted", using: :btree
+  create_table "branches", force: :cascade do |t|
+    t.integer "branchable_id"
+    t.string  "branchable_type"
+    t.integer "commit_id"
+    t.string  "name"
+  end
 
   create_table "challenge_admins", force: :cascade do |t|
     t.integer "challenge_id"
@@ -132,6 +130,12 @@ ActiveRecord::Schema.define(version: 20150704213728) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
+    t.hstore   "counters_cache"
+  end
+
+  create_table "challenge_projects_prizes", force: :cascade do |t|
+    t.integer "challenge_entry_id"
+    t.integer "prize_id"
   end
 
   create_table "challenges", force: :cascade do |t|
@@ -197,6 +201,18 @@ ActiveRecord::Schema.define(version: 20150704213728) do
   add_index "comments", ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type", using: :btree
   add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
 
+  create_table "commits", force: :cascade do |t|
+    t.integer  "committable_id",   null: false
+    t.string   "committable_type", null: false
+    t.integer  "tree_id",          null: false
+    t.integer  "author_id",        null: false
+    t.integer  "committer_id"
+    t.datetime "created_at",       null: false
+    t.text     "comment"
+    t.string   "workflow_state"
+    t.datetime "committed_at"
+  end
+
   create_table "conversations", force: :cascade do |t|
     t.string   "subject",    limit: 255
     t.datetime "created_at"
@@ -240,17 +256,6 @@ ActiveRecord::Schema.define(version: 20150704213728) do
   add_index "grades", ["project_id"], name: "index_grades_on_project_id", using: :btree
   add_index "grades", ["type"], name: "index_grades_on_type", using: :btree
   add_index "grades", ["user_id"], name: "index_grades_on_user_id", using: :btree
-
-  create_table "group_relations", force: :cascade do |t|
-    t.integer  "project_id",                null: false
-    t.integer  "group_id",                  null: false
-    t.string   "workflow_state", limit: 30
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "group_relations", ["group_id"], name: "index_group_relations_on_group_id", using: :btree
-  add_index "group_relations", ["project_id"], name: "index_group_relations_on_project_id", using: :btree
 
   create_table "groups", force: :cascade do |t|
     t.string   "user_name",         limit: 100
@@ -325,25 +330,6 @@ ActiveRecord::Schema.define(version: 20150704213728) do
   add_index "impressions", ["impressionable_type", "message", "impressionable_id"], name: "impressionable_type_message_index", using: :btree
   add_index "impressions", ["user_id"], name: "index_impressions_on_user_id", using: :btree
 
-  create_table "invite_codes", force: :cascade do |t|
-    t.string   "code",       limit: 20
-    t.integer  "limit"
-    t.boolean  "active",                default: true
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
-  end
-
-  create_table "invite_requests", force: :cascade do |t|
-    t.string   "email",       limit: 255
-    t.datetime "created_at",                          null: false
-    t.datetime "updated_at",                          null: false
-    t.boolean  "whitelisted"
-    t.integer  "user_id",                 default: 0, null: false
-    t.integer  "project_id"
-  end
-
-  add_index "invite_requests", ["user_id"], name: "index_invite_requests_on_user_id", using: :btree
-
   create_table "link_data", force: :cascade do |t|
     t.string   "title"
     t.string   "website_name"
@@ -390,27 +376,6 @@ ActiveRecord::Schema.define(version: 20150704213728) do
   add_index "members", ["group_id"], name: "index_members_on_group_id", using: :btree
   add_index "members", ["permission_id"], name: "index_members_on_permission_id", using: :btree
   add_index "members", ["user_id"], name: "index_members_on_user_id", using: :btree
-
-  create_table "monologue_posts", force: :cascade do |t|
-    t.boolean  "published"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "user_id"
-    t.string   "title",        limit: 255
-    t.text     "content"
-    t.string   "url",          limit: 255
-    t.datetime "published_at"
-  end
-
-  add_index "monologue_posts", ["url"], name: "index_monologue_posts_on_url", unique: true, using: :btree
-
-  create_table "monologue_taggings", force: :cascade do |t|
-    t.integer "post_id"
-    t.integer "tag_id"
-  end
-
-  add_index "monologue_taggings", ["post_id"], name: "index_monologue_taggings_on_post_id", using: :btree
-  add_index "monologue_taggings", ["tag_id"], name: "index_monologue_taggings_on_tag_id", using: :btree
 
   create_table "monologue_tags", force: :cascade do |t|
     t.string "name", limit: 255
@@ -600,6 +565,7 @@ ActiveRecord::Schema.define(version: 20150704213728) do
     t.string   "locale",                  limit: 2,   default: "en"
   end
 
+  add_index "projects", ["locale"], name: "index_projects_on_locale", using: :btree
   add_index "projects", ["private"], name: "index_projects_on_private", using: :btree
   add_index "projects", ["team_id"], name: "index_projects_on_team_id", using: :btree
   add_index "projects", ["type"], name: "index_projects_on_type", using: :btree
@@ -652,6 +618,18 @@ ActiveRecord::Schema.define(version: 20150704213728) do
   add_index "respects", ["respectable_id", "respectable_type"], name: "index_respects_on_respectable_id_and_respectable_type", using: :btree
   add_index "respects", ["user_id"], name: "index_respects_on_user_id", using: :btree
 
+  create_table "sessions", force: :cascade do |t|
+    t.string   "session_id", null: false
+    t.integer  "user_id"
+    t.text     "data"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", unique: true, using: :btree
+  add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
+  add_index "sessions", ["user_id"], name: "index_sessions_on_user_id", using: :btree
+
   create_table "slug_histories", force: :cascade do |t|
     t.string   "value",          limit: 255,                     null: false
     t.integer  "sluggable_id",                                   null: false
@@ -672,11 +650,22 @@ ActiveRecord::Schema.define(version: 20150704213728) do
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
     t.hstore   "properties"
+    t.string   "name"
+    t.text     "description"
   end
 
   add_index "store_products", ["available"], name: "index_store_products_on_available", using: :btree
   add_index "store_products", ["source_id", "source_type"], name: "index_store_products_on_source_id_and_source_type", using: :btree
   add_index "store_products", ["unit_cost"], name: "index_store_products_on_unit_cost", using: :btree
+
+  create_table "stories", force: :cascade do |t|
+    t.integer  "project_id",      null: false
+    t.datetime "completion_date"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
+  add_index "stories", ["project_id"], name: "index_stories_on_project_id", using: :btree
 
   create_table "subdomains", force: :cascade do |t|
     t.string   "subdomain",   limit: 255
@@ -701,17 +690,6 @@ ActiveRecord::Schema.define(version: 20150704213728) do
   end
 
   add_index "tags", ["taggable_id", "taggable_type", "type"], name: "index_taggable", using: :btree
-
-  create_table "team_members", force: :cascade do |t|
-    t.integer  "user_id",                null: false
-    t.integer  "project_id",             null: false
-    t.string   "role",       limit: 255
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-  end
-
-  add_index "team_members", ["project_id"], name: "index_team_members_on_project_id", using: :btree
-  add_index "team_members", ["user_id"], name: "index_team_members_on_user_id", using: :btree
 
   create_table "thoughts", force: :cascade do |t|
     t.text     "body"
@@ -747,10 +725,20 @@ ActiveRecord::Schema.define(version: 20150704213728) do
   add_index "threads", ["threadable_id", "threadable_type"], name: "index_blog_posts_on_bloggable_id_and_bloggable_type", using: :btree
   add_index "threads", ["user_id"], name: "index_blog_posts_on_user_id", using: :btree
 
+  create_table "tree_items", force: :cascade do |t|
+    t.integer "tree_id", null: false
+    t.integer "blob_id", null: false
+  end
+
+  create_table "trees", force: :cascade do |t|
+    t.hstore "meta"
+  end
+
   create_table "user_activities", force: :cascade do |t|
     t.integer  "user_id"
     t.string   "event",      limit: 255
     t.datetime "created_at"
+    t.string   "ip"
   end
 
   create_table "users", force: :cascade do |t|
@@ -807,22 +795,6 @@ ActiveRecord::Schema.define(version: 20150704213728) do
   add_index "users", ["invitation_token"], name: "index_users_on_invitation_token", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["type"], name: "index_users_on_type", using: :btree
-
-  create_table "videos", force: :cascade do |t|
-    t.string   "title",           limit: 255
-    t.string   "link",            limit: 255
-    t.string   "provider",        limit: 255
-    t.string   "id_for_provider", limit: 255
-    t.integer  "recordable_id",                            null: false
-    t.string   "thumbnail_link",  limit: 255
-    t.integer  "ratio_height"
-    t.integer  "ratio_width"
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
-    t.string   "recordable_type", limit: 255, default: "", null: false
-  end
-
-  add_index "videos", ["recordable_id", "recordable_type"], name: "recordable_index", using: :btree
 
   create_table "widgets", force: :cascade do |t|
     t.string   "type",            limit: 255,                     null: false

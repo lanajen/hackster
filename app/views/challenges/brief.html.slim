@@ -1,117 +1,149 @@
 .row
   .col-md-4.col-md-push-8
-    section.section-thumbs
-      h4 Challenge status
+    - if !@is_challenge_entrant
+      = content_for :js do
+
+        javascript:
+          $('.enter-challenge-btn').css('display', 'block');
+
+    - else
+      section.section-thumbs
+        h4 Manage your entries
+        ul.entries-list.list-unstyled
+          - @current_entries.each do |entry|
+            - project = entry.project
+            li.award
+              h5= link_to project.name, project
+              p.clearfix.small
+                span.pull-left
+                  strong> Status:
+                  = entry.decorate.status
+                span.pull-right= link_to content_tag(:i, '', class: 'fa fa-times') + content_tag(:span, 'Withdraw'), challenge_entry_path(@challenge, entry), class: 'btn btn-danger btn-xs entry-withdraw', data: { confirm: 'Are you sure you want to withdraw your entry from the challenge? You can re-enter at any time before submissions close.', method: :delete }
+        - if @challenge.allow_multiple_entries?
+          / small Multiple entries are allowed.
+          = link_to 'Enter an additional project', 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge'
+
+    - cache ["challenge-#{@challenge.id}-status"], tag: ["challenge-#{@challenge.id}-status"] do
+
+      section.section-thumbs
+        h4 Challenge status
+
+        - if @challenge.open_for_submissions?
+          p
+            ' Submissions close in
+            strong>= react_component('TimeLeft', { timestamp: @challenge.end_date.to_i }, { tag: 'span' })
+          p style="font-size:11px"
+            ' Ends on #{l @challenge.end_date.in_time_zone(PDT_TIME_ZONE)} PDT
+
+          - if @challenge.idea_survey_link.present?
+            = link_to @challenge.enter_button_text, @challenge.idea_survey_link, class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge-btn', target: '_blank'
+          - else
+            = link_to @challenge.enter_button_text, 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge enter-challenge-btn'
+
+        - elsif @challenge.voting_active?
+          p.status
+            ' Voting ends in
+            strong>= react_component('TimeLeft', { timestamp: @challenge.voting_end_date.to_i }, { tag: 'span' })
+          p style="font-size:11px"
+            ' Ends on #{l @challenge.voting_end_date.in_time_zone(PDT_TIME_ZONE)} PDT
+
+        - else
+          p.status
+            strong= raw @challenge.status
 
       - if @challenge.open_for_submissions?
-        p
-          ' Submissions close in
-          strong>= @challenge.time_left
-        p style="font-size:11px"
-          ' Ends on #{l @challenge.end_date.in_time_zone(PDT_TIME_ZONE)} PST
+        section.section-thumbs
+          h4 Invite others to compete
+          <!-- AddToAny BEGIN -->
+          div class="a2a_kit a2a_kit_size_32 a2a_default_style"
+            a class="a2a_button_facebook"
+            a class="a2a_button_twitter"
+            a class="a2a_button_reddit"
+          javascript:
+            var a2a_config = a2a_config || {};
+            a2a_config.onclick = 1;
+            a2a_config.color_main = "D7E5ED";
+            a2a_config.color_border = "AECADB";
+            a2a_config.color_link_text = "333333";
+            a2a_config.color_link_text_hover = "333333";
+            a2a_config.prioritize = ["facebook", "twitter", "reddit"];
+            a2a_config.templates = {
+              twitter: "#{@challenge.to_tweet.html_safe} #{challenge_url(@challenge)} via @hacksterio"
+            };
+            a2a_config.linkname = "#{@challenge.name.html_safe}"
+            a2a_config.linkurl = "#{challenge_url(@challenge)}";
+          script type="text/javascript" src="//static.addtoany.com/menu/page.js"
+          <!-- AddToAny END -->
 
-        - if @is_challenge_entrant
-          p
-            strong Your entry has been registered!
-          - if @challenge.allow_multiple_entries?
-            / small Multiple entries are allowed.
-            = link_to 'Enter an additional project', '', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge'
-        - else
-          = link_to 'Enter challenge', '', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge'
-      - else
-        p.status
-          strong= raw @challenge.status
+    - cache ["challenge-#{@challenge.id}-prizes"], tag: ["challenge-#{@challenge.id}-prizes"] do
 
-    - if @challenge.open_for_submissions?
       section.section-thumbs
-        h4 Invite others to compete
-        <!-- AddToAny BEGIN -->
-        div class="a2a_kit a2a_kit_size_32 a2a_default_style"
-          a class="a2a_button_facebook"
-          a class="a2a_button_twitter"
-          a class="a2a_button_reddit"
-        javascript:
-          var a2a_config = a2a_config || {};
-          a2a_config.onclick = 1;
-          a2a_config.color_main = "D7E5ED";
-          a2a_config.color_border = "AECADB";
-          a2a_config.color_link_text = "333333";
-          a2a_config.color_link_text_hover = "333333";
-          a2a_config.prioritize = ["facebook", "twitter", "reddit"];
-          a2a_config.templates = {
-            twitter: "#{@challenge.to_tweet} #{challenge_url(@challenge)} via @hacksterio"
-          };
-          a2a_config.linkname = "#{@challenge.name}"
-          a2a_config.linkurl = "#{challenge_url(@challenge)}";
-        script type="text/javascript" src="//static.addtoany.com/menu/page.js"
-        <!-- AddToAny END -->
+        h4 Awards
+        - @challenge.prizes.each do |prize|
+          .award
+            h5
+              i.fa.fa-trophy
+              = prize.name
+            - if prize.image
+              = image_tag prize.image.imgix_url, class: 'img-thumbnail'
+            p
+              - if prize.cash_value.present?
+                strong
+                  = number_to_currency prize.cash_value, precision: 0
+                  - if prize.description.present?
+                    ' :
 
-    section.section-thumbs
-      h4 Awards
-      - @challenge.prizes.each do |prize|
-        .award
-          h5
-            i.fa.fa-trophy
-            = prize.name
-          - if prize.image
-            = image_tag prize.image.imgix_url, class: 'img-thumbnail'
-          p
-            - if prize.cash_value.present?
-              strong
-                = number_to_currency prize.cash_value, precision: 0
-                - if prize.description.present?
-                  ' :
+              - if prize.description.present?
+                - if prize.link.present?
+                  = link_to prize.description, prize.link, target: '_blank'
+                - else
+                  = prize.description
+            - if prize.quantity > 1
+              p.small.text-muted
+                ==> prize.quantity
+                | available
 
-            - if prize.description.present?
-              - if prize.link.present?
-                = link_to prize.description, prize.link, target: '_blank'
-              - else
-                = prize.description
-          - if prize.quantity > 1
-            p.small.text-muted
-              ==> prize.quantity
-              | available
+  - cache ["challenge-#{@challenge.id}-brief"], tag: ["challenge-#{@challenge.id}-brief"] do
 
+    .col-md-8.col-md-pull-4
+      section.section-container.section-collapsible
+        h2.section-title
+          a.title.title-toggle href=''
+            ' Challenge brief
+            i.fa.fa-chevron-down
+            i.fa.fa-chevron-up
 
-  .col-md-8.col-md-pull-4
-    section.section-container.section-collapsible
-      h2.section-title
-        a.title.title-toggle href=''
-          ' Challenge brief
-          i.fa.fa-chevron-down
-          i.fa.fa-chevron-up
+        .section-content.medium-editor
+          - if @challenge.video
+            .mg-20= render partial: "api/embeds/embed", locals: { embed: @challenge.video }
+          = raw @challenge.description
 
-      .section-content.medium-editor
-        - if @challenge.video
-          .mg-20= render partial: "api/embeds/embed", locals: { embed: @challenge.video }
-        = raw @challenge.description
+      .section-interlude
 
-    .section-interlude
+      section.section-container.section-collapsible#rules class=(params[:show_rules] ? '' : 'section-toggled')
+        h2.section-title
+          a.title.title-toggle href=''
+            ' Challenge rules
+            i.fa.fa-chevron-down
+            i.fa.fa-chevron-up
 
-    section.section-container.section-collapsible.section-toggled#rules
-      h2.section-title
-        a.title.title-toggle href=''
-          ' Challenge rules
-          i.fa.fa-chevron-down
-          i.fa.fa-chevron-up
+        .section-content.medium-editor
+          - if @challenge.eligibility.present?
+            h3 Eligibility
+            = raw @challenge.eligibility
 
-      .section-content.medium-editor
-        - if @challenge.eligibility.present?
-          h3 Eligibility
-          = raw @challenge.eligibility
+          - if @challenge.requirements.present?
+            h3 Requirements
+            = raw @challenge.requirements
 
-        - if @challenge.requirements.present?
-          h3 Requirements
-          = raw @challenge.requirements
+          - if @challenge.judging_criteria.present?
+            h3 Judging criteria
+            = raw @challenge.judging_criteria
 
-        - if @challenge.judging_criteria.present?
-          h3 Judging criteria
-          = raw @challenge.judging_criteria
+          - if @challenge.how_to_enter.present?
+            h3 How to enter
+            = raw @challenge.how_to_enter
 
-        - if @challenge.how_to_enter.present?
-          h3 How to enter
-          = raw @challenge.how_to_enter
-
-        - if @challenge.rules.present?
-          h3 Full rules
-          = raw @challenge.rules
+          - if @challenge.rules.present?
+            h3 Full rules
+            = raw @challenge.rules

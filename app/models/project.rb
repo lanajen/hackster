@@ -1,14 +1,19 @@
 class Project < ActiveRecord::Base
 
+  CONTENT_TYPES = {
+    'Getting started guide' => :getting_started,
+    'Showcase (no or incomplete instructions)' => :showcase,
+    'Teardown/Unboxing' => :teardown,
+    'Tutorial (complete instructions)' => :tutorial,
+  }
+  DEFAULT_CONTENT_TYPE = :tutorial
   DEFAULT_NAME = 'Untitled'
-
   DIFFICULTIES = {
     'Beginner' => :beginner,
     'Intermediate' => :intermediate,
     'Advanced' => :advanced,
     'Hardcore maker' => :hardcore,
   }
-
   FILTERS = {
     '7days' => :last_7days,
     '30days' => :last_30days,
@@ -26,7 +31,6 @@ class Project < ActiveRecord::Base
     'trending' => :magic_sort,
     'updated' => :last_updated,
   }
-  STATES = %w(approved pending_review rejected unpublished)
   TYPES = {
     'External (hosted on another site)' => 'ExternalProject',
     'Normal' => 'Project',
@@ -38,7 +42,6 @@ class Project < ActiveRecord::Base
     'product' => 'Product',
   }
 
-  include ActionView::Helpers::SanitizeHelper
   include Checklist
   include EditableSlug
   include HstoreColumn
@@ -56,7 +59,7 @@ class Project < ActiveRecord::Base
   has_many :assignments, through: :project_collections, source: :collectable, source_type: 'Assignment'
   has_many :awards
   has_many :build_logs, as: :threadable, dependent: :destroy
-  has_many :challenge_entries
+  has_many :challenge_entries, dependent: :destroy
   has_many :comments, -> { order created_at: :asc }, as: :commentable, dependent: :destroy
   # below is a hack because commenters try to add order by comments created_at and pgsql doesn't like it
   has_many :comments_copy, as: :commentable, dependent: :destroy, class_name: 'Comment'
@@ -68,9 +71,9 @@ class Project < ActiveRecord::Base
   has_many :groups, -> { where(groups: { private: false }, project_collections: { workflow_state: ProjectCollection::VALID_STATES }) }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :hacker_spaces, -> { where("groups.type = 'HackerSpace'") }, through: :project_collections, source_type: 'Group', source: :collectable
   has_many :hardware_parts, -> { where(parts: { type: 'HardwarePart' } ) }, through: :part_joins, source: :part
-  has_many :hardware_part_joins, -> { joins(:part).where(parts: { type: 'HardwarePart'}) }, as: :partable, class_name: 'PartJoin', autosave: true
+  has_many :hardware_part_joins, -> { joins(:part).where(parts: { type: 'HardwarePart'}).order(:position).includes(part: { image: [], platform: :avatar }) }, as: :partable, class_name: 'PartJoin', autosave: true
   has_many :parts, through: :part_joins
-  has_many :part_joins, as: :partable, dependent: :destroy do
+  has_many :part_joins, -> { order(:position) }, as: :partable, dependent: :destroy do
     def hardware
       joins(:part).where(parts: { type: 'HardwarePart' })
     end
@@ -81,10 +84,16 @@ class Project < ActiveRecord::Base
       joins(:part).where(parts: { type: 'ToolPart' })
     end
   end
+  has_many :part_platforms, through: :parts, source: :platform do
+    # doesn't seem to want to work if we make the scope below default
+    def default_scope
+      reorder("groups.full_name ASC").uniq
+    end
+  end
   has_many :project_collections, dependent: :destroy
   has_many :software_parts, -> { where(parts: { type: 'SoftwarePart' } ) }, through: :part_joins, source: :part
-  has_many :software_part_joins, -> { joins(:part).where(parts: { type: 'SoftwarePart'}) }, as: :partable, class_name: 'PartJoin', autosave: true
-  has_many :tool_part_joins, -> { joins(:part).where(parts: { type: 'ToolPart'}) }, as: :partable, class_name: 'PartJoin', autosave: true
+  has_many :software_part_joins, -> { joins(:part).where(parts: { type: 'SoftwarePart'}).order(:position).includes(part: { image: [], platform: :avatar }) }, as: :partable, class_name: 'PartJoin', autosave: true
+  has_many :tool_part_joins, -> { joins(:part).where(parts: { type: 'ToolPart'}).order(:position).includes(part: { image: [], platform: :avatar }) }, as: :partable, class_name: 'PartJoin', autosave: true
   has_many :tool_parts, -> { where(parts: { type: 'ToolPart' } ) }, through: :part_joins, source: :part
   has_many :visible_collections, -> { visible }, class_name: 'ProjectCollection'
   has_many :visible_platforms, -> { where("groups.type = 'Platform'") }, through: :visible_collections, source_type: 'Group', source: :collectable
@@ -104,7 +113,6 @@ class Project < ActiveRecord::Base
   has_one :cover_image, -> { order created_at: :desc }, as: :attachable, class_name: 'CoverImage', dependent: :destroy  # added order because otherwise it randomly picks up the wrong image
   has_one :logo, as: :attachable, class_name: 'Avatar', dependent: :destroy
   has_one :project_collection, class_name: 'ProjectCollection'
-  has_one :video, as: :recordable, dependent: :destroy
 
   sanitize_text :name
   register_sanitizer :sanitize_description, :before_validation, :description
@@ -124,13 +132,14 @@ class Project < ActiveRecord::Base
     :software_part_joins_attributes, :locale
   attr_accessor :current, :private_changed, :needs_platform_refresh,
     :approved_changed
-  accepts_nested_attributes_for :images, :video, :logo, :team_members,
+  accepts_nested_attributes_for :images, :logo, :team_members,
     :widgets, :cover_image, :permissions, :slug_histories, :team,
     :project_collections, :part_joins, :hardware_part_joins, :tool_part_joins,
     :software_part_joins, allow_destroy: true
 
   validates :name, length: { in: 3..60 }, allow_blank: true
   validates :one_liner, :logo, presence: true, if: proc { |p| p.force_basic_validation? }
+  validates :content_type, presence: true, unless: proc { |p| p.external? }
   validates :one_liner, length: { maximum: 140 }
   validates :new_slug,
     format: { with: /\A[a-z0-9_\-]+\z/, message: "accepts only downcase letters, numbers, dashes '-' and underscores '_'." },
@@ -162,6 +171,7 @@ class Project < ActiveRecord::Base
   has_counter :platform_tags, 'platform_tags_cached.count'
   has_counter :product_tags, 'product_tags_cached.count'
   has_counter :replications, 'replicated_users.count'
+  has_counter :real_respects, 'respects.joins(:user).where.not("users.email ILIKE \'%@user.hackster.io\'").count'
   has_counter :respects, 'respects.count', accessor: false
   has_counter :software_parts, 'software_parts.count'
   has_counter :team_members, 'users.count'
@@ -170,6 +180,7 @@ class Project < ActiveRecord::Base
 
   store :properties, accessors: []
   hstore_column :properties, :celery_id, :string
+  hstore_column :properties, :content_type, :string
   hstore_column :properties, :guest_twitter_handle, :string
   hstore_column :properties, :locked, :boolean
   hstore_column :properties, :private_issues, :boolean
@@ -222,10 +233,9 @@ class Project < ActiveRecord::Base
   add_checklist :cover_image, 'Cover image', 'cover_image and cover_image.file_url'
   add_checklist :difficulty, 'Skill level'
   add_checklist :product_tags_string, 'Tags'
-  add_checklist :platform_tags_string, 'Platforms used'
   add_checklist :description, 'Story'
   add_checklist :hardware_parts, 'Components', 'hardware_parts.any?'
-  add_checklist :schematics, 'Schematics', 'widgets.where(type: %w(SchematicRepoWidget SchematicFileWidget)).any?'
+  add_checklist :schematics, 'Schematics', 'widgets.where(type: %w(SchematicWidget SchematicFileWidget)).any?'
   add_checklist :code, 'Code', 'widgets.where(type: %w(CodeWidget CodeRepoWidget)).any?'
 
   # beginning of search methods
@@ -302,6 +312,10 @@ class Project < ActiveRecord::Base
     includes(project: :users).includes(project: :cover_image).includes(project: :team)
   end
 
+  def self.guest
+    where("projects.guest_name <> '' AND projects.guest_name IS NOT NULL")
+  end
+
   def self.indexable
     live.approved.where(hide: false).where("projects.made_public_at < ?", Time.now)
   end
@@ -336,6 +350,14 @@ class Project < ActiveRecord::Base
 
   def self.magic_sort
     order(popularity_counter: :desc, created_at: :desc)
+  end
+
+  def self.median_impressions
+    indexable.median(:impressions_count)
+  end
+
+  def self.median_respects
+    indexable.median(:respects_count)
   end
 
   def self.most_popular
@@ -390,7 +412,7 @@ class Project < ActiveRecord::Base
 
   def get_next_time_slot last_scheduled_slot
     last_scheduled_slot ||= Time.now
-    last_scheduled_slot + rand(2*60..10*60).minutes
+    last_scheduled_slot + rand(2*60..6*60).minutes
   end
 
   def scheduled_to_be_approved?
@@ -398,7 +420,7 @@ class Project < ActiveRecord::Base
   end
 
   def age
-    (Time.now - created_at) / 86400
+    (Time.now - (made_public_at || created_at)) / SECONDS_IN_A_DAY
   end
 
   def all_issues
@@ -409,10 +431,6 @@ class Project < ActiveRecord::Base
     URI.parse(buy_link).host.gsub(/^www\./, '')
   rescue
     buy_link
-  end
-
-  def compute_popularity time_period=365
-    self.popularity_counter = ((respects_count * 4 + impressions_count * 0.05 + comments_count * 2 + featured.to_i * 10) * [1 - [(Math.log(age, time_period)), 1].min, 0.001].max).round(4)
   end
 
   def cover_image_id=(val)
@@ -523,12 +541,12 @@ class Project < ActiveRecord::Base
   end
 
   def set_collection_id id, collection_type
-    self.send("#{collection_type}s").delete_all
+    self.send("#{collection_type}s").destroy_all
     self.send("#{collection_type}s") << collection_type.camelize.constantize.find_by_id(id) if id.to_i != 0
   end
 
   def set_collection collection, collection_type
-    self.send("#{collection_type}s").delete_all
+    self.send("#{collection_type}s").destroy_all
     self.send("#{collection_type}s") << collection if collection
   end
 
@@ -744,6 +762,10 @@ class Project < ActiveRecord::Base
     I18n.transliterate(guest_name).gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
   end
 
+  def valid_for_challenge?
+    name.present? and !has_default_name? and description.present? and description.size > 100 and cover_image.present?
+  end
+
   def website_host
     URI.parse(website).host.gsub(/^www\./, '')
   rescue
@@ -817,7 +839,18 @@ class Project < ActiveRecord::Base
     end
 
     def strip_tags text
-      sanitize(text, tags: [])
+      text = ActionController::Base.helpers.strip_tags(text)
+
+      # so that these characters don't show escaped. Not the cleanest...
+      {
+        '&amp;' => '&',
+        '&lt;' => '<',
+        '&gt;' => '>',
+        '&quot;' => '"',
+      }.each do |code, character|
+        text.gsub! Regexp.new(code), character
+      end
+      text
     end
 
     def sanitize_description text

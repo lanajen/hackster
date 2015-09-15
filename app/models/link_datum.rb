@@ -48,19 +48,25 @@ class LinkDatum < ActiveRecord::Base
         doc = Nokogiri::HTML(content)
         head = doc.at_css('head')
         body = doc.at_css('body')
-        self.title = get_title head
-        self.website_name = get_website_name head
-        self.link = get_link head
-        captured_image = get_image head, body
-        if captured_image.present?
-          build_image unless image
-          image.remote_file_url = captured_image
+        if head
+          self.title = get_title head
+          self.website_name = get_website_name head
+          self.link = get_link head
+          captured_image = get_image head, body
+          if captured_image.present?
+            build_image unless image
+            image.remote_file_url = captured_image
+          end
+          self.description = get_description head, body
+          self.extra_data_value1 = get_extra_data head, 'data', 1
+          self.extra_data_label1 = get_extra_data head, 'label', 1
+          self.extra_data_value2 = get_extra_data head, 'data', 2
+          self.extra_data_label2 = get_extra_data head, 'label', 2
+        else
+          self.title = link
+          self.website_name = URI(link).host
+          self.description = link
         end
-        self.description = get_description head, body
-        self.extra_data_value1 = get_extra_data head, 'data', 1
-        self.extra_data_label1 = get_extra_data head, 'label', 1
-        self.extra_data_value2 = get_extra_data head, 'data', 2
-        self.extra_data_label2 = get_extra_data head, 'label', 2
       end
     end
 

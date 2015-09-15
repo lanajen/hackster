@@ -16,11 +16,11 @@
         .container
           h1 Welcome to your dashboard!
 
-    section#intro.showcase-section.section-short
+    / section#intro.showcase-section.section-short
       .container
         = link_to content_tag(:i, '', class: 'fa fa-comments') + content_tag(:span, 'Ask a question or share something interesting with the community &rarr;'.html_safe), talk_path
 
-    section.showcase-section.section-short
+    / section.showcase-section.section-short
       .container
         strong> New:
         => link_to 'follow projects by topic', lists_path
@@ -41,7 +41,7 @@
           p
             | To see projects tailored for you, start following platforms, makers and lists you like.
 
-      / = render 'challenges'
+      = render 'challenges'
 
       section#suggested-platforms.showcase-section
         .container
@@ -98,7 +98,7 @@
           = link_to 'View more projects', projects_path, class: 'btn btn-default btn-sm visible-xs-block'
 
     - else
-      / = render 'challenges'
+      = render 'challenges'
 
       section#latest.showcase-section
         .container
@@ -134,7 +134,7 @@
         - @followed.each do |rel|
           - entity = rel.followable
           .thumb-super-item class=dom_id(entity)
-            = link_to image_tag(entity.decorate.avatar(:medium)), entity, title: "You follow #{entity.name}", class: 'istooltip', data: { container: 'body' }
+            = link_to image_tag(entity.decorate.avatar(:mini)), entity, title: "You follow #{entity.name}", class: 'istooltip', data: { container: 'body' }
 
     = content_for :js do
       javascript:

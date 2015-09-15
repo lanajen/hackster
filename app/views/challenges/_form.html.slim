@@ -33,15 +33,16 @@
         .panel-heading
           h4 Challenge settings
         .panel-body
-          = f.input :end_date_dummy, label: 'Entry deadline', wrapper_html: { id: 'datetimepicker' }, hint: "The maximum date by which makers can submit entries to the challenge. Time here is UTC (+00), but it will be displayed in PST (-08)." do
+          = f.input :end_date_dummy, label: 'Entry deadline', wrapper_html: { id: 'entry_deadline', class: 'datetimepicker' }, hint: "The maximum date by which makers can submit entries to the challenge. Time here is UTC (+00), but it will be displayed in PDT (-08)." do
             #datepicker.input-group
               = f.input_field :end_date_dummy, as: :string, label: false
               span.input-group-addon
                 i.fa.fa-calendar
           = f.input :end_date, as: :hidden, input_html: { id: 'end_date' }
           / = f.input :duration, hint: 'In days', collection: %w(7 10 15 30 45 60)
-          = f.input :project_ideas, as: :boolean, inline_label: 'Accept project ideas instead of finished projects'
+          / # = f.input :project_ideas, as: :boolean, inline_label: 'Accept project ideas instead of finished projects'
           = f.input :multiple_entries, inline_label: 'Allow more than one entry per person?', as: :boolean, label: false
+          = f.input :auto_approve, inline_label: 'Automatically approve all entries', as: :boolean, label: false, hint: "When an entry is approved, a confirmation email is sent to its author. Whether you choose to automatically approve entries or not, you will be able to approve and disqualify entries from the dashboard at all times."
           = f.input :description, as: :text, input_html: { rows: 10, class: 'text-editor' }
           = f.input :eligibility, as: :text, input_html: { rows: 10, class: 'text-editor' }
           = f.input :requirements, as: :text, input_html: { rows: 10, class: 'text-editor' }
@@ -85,10 +86,46 @@
 
       .panel.panel-default
         .panel-heading
-          h4 Challenge settings
+          h4 Voting
         .panel-body
-          = f.input :password_protect, as: :boolean, inline_label: 'Enable password protection'
+          = f.input :activate_voting, as: :boolean, inline_label: 'Activate voting', label: false, input_html: { id: 'challenge_activate_voting' }
+          #voting_dates style=(@challenge.activate_voting ? '' : 'display:none')
+            = f.input :allow_anonymous_votes, as: :boolean, inline_label: 'Allow anonymous votes', label: false, hint: "Not recommended. This makes it possible for contestants to fake the number of votes."
+            = f.input :voting_start, label: 'Voting starts on', collection: Challenge::VOTING_START_OPTIONS
+            = f.input :voting_end_date_dummy, label: 'Voting ends on', wrapper_html: { id: 'voting_end_date_dummy', class: 'datetimepicker', autocomplete: 'off' } do
+              #datepicker.input-group
+                = f.input_field :voting_end_date_dummy, as: :string, label: false
+                span.input-group-addon
+                  i.fa.fa-calendar
+            = f.input :voting_end_date, as: :hidden, input_html: { id: 'voting_end_date' }
+
+      .panel.panel-default
+        .panel-heading
+          h4 Password protection
+        .panel-body
+          = f.input :password_protect, as: :boolean, inline_label: 'Enable password protection', label: false
           = f.input :password, hint: 'Only if password protection is enabled', as: :string
+
+      .panel.panel-default
+        .panel-heading
+          h4 Mailchimp settings
+        .panel-body
+          = f.input :activate_mailchimp_sync, as: :boolean, inline_label: 'Activate sync with Mailchimp', label: false, hint: 'Note: we do not verify if your credentials are correct. If you do not see any updates on your list after activating this option, please double check your credentials.'
+          #mailchimp_settings style=(@challenge.activate_mailchimp_sync ? '' : 'display:none')
+            - if @challenge.activate_mailchimp_sync
+              .form-group
+                .col-md-4
+                  label.control-label Last synced
+                .col-md-8
+                  - if @challenge.mailchimp_last_synced_at
+                    => l @challenge.mailchimp_last_synced_at.in_time_zone(PDT_TIME_ZONE)
+                    | PDT
+                  - else
+                    | Never
+                  - if @challenge.mailchimp_setup?
+                    = link_to 'Update now', update_mailchimp_challenge_path(@challenge), class: 'btn btn-link btn-sm', data: { method: :patch }
+            = f.input :mailchimp_api_key, label: 'Mailchimp API key', hint: 'API key of the Mailchimp account you want to sync with'
+            = f.input :mailchimp_list_id, label: 'Mailchimp List ID', hint: 'List ID of the Mailchimp list you want to sync with'
 
       - if current_user.is? :admin
         .panel.panel-default
@@ -96,6 +133,7 @@
             h4 Admin stuff
           .panel-body
             = f.input :platform_id, label: 'Promoted platform', collection: Platform.order(:full_name)
+            = f.input :activate_banners, inline_label: 'Activate banners', label: false, hint: 'Whether to display banners on sponsor platform hub (only when challenge is active).', as: :boolean
             .col-md-8.col-md-offset-4 -or-
             = f.input :sponsor_name
             = f.input :sponsor_link
@@ -106,6 +144,13 @@
               = f_admin.input :roles, label: 'Roles', collection: ChallengeAdmin.roles
               .col-sm-8.col-sm-offset-4= f_admin.link_to_remove 'Remove this admin'
             = f.link_to_add 'Add an admin', :challenge_admins
+            .form-group
+              .col-md-8.col-md-offset-4
+                strong.text-danger USE ONLY IF YOU KNOW HOW TO:
+            = f.input :idea_survey_link, label: 'Enter button link', hint: 'This will override the enter button link. Instead of allowing users to select a project on Hackster, it will take them to the link you enter.'
+            = f.input :enter_button_text, hint: "This will override the enter button text. The default is '#{@challenge.default_enter_button_text}'."
+            = f.input :custom_status, hint: 'This will override the status.'
+            = f.input :disable_projects_tab, inline_label: 'Disable projects tab', as: :boolean, label: false, hint: 'When submissions are done outside of Hackster'
 
       .panel.panel-default
         .panel-heading
@@ -116,8 +161,16 @@
               - case @challenge.workflow_state.to_sym
               - when :new
                 = link_to 'Launch challenge', update_workflow_challenge_path(@challenge, event: 'launch'), method: :put, class: 'btn btn-success btn-sm', data: { confirm: "Let's do this. Sure?" }
-          .form-group
-            .col-md-8.col-md-offset-4= link_to 'Delete challenge', challenge_path(@challenge), method: :delete, class: 'btn btn-danger btn-sm', data: { confirm: "Are you sure? There's no coming back!" }
+              - when :in_progress
+                = link_to 'Take offline', update_workflow_challenge_path(@challenge, event: 'take_offline'), method: :put, class: 'btn btn-warning btn-sm', data: { confirm: "Sure?" }
+              - when :judging
+                - if current_user.is? :admin
+                  = link_to 'Reinitialize', update_workflow_challenge_path(@challenge, event: 'reinitialize'), method: :put, class: 'btn btn-warning btn-sm', data: { confirm: "Sure?" }
+              - if @challenge.can_cancel?
+                = link_to 'Cancel challenge', update_workflow_challenge_path(@challenge, event: 'cancel'), method: :put, class: 'btn btn-danger btn-sm', data: { confirm: "Are you sure you want to cancel this challenge? There's no way back!" }
+          - if @challenge.new? or current_user.is? :admin
+            .form-group
+              .col-md-8.col-md-offset-4= link_to 'Delete challenge', challenge_path(@challenge), method: :delete, class: 'btn btn-danger btn-sm', data: { confirm: "Are you sure? There's no coming back!" }
 
   .row
     .col-xs-12
@@ -137,7 +190,7 @@
   = javascript_include_tag 'datepicker'
 
   javascript:
-    $('#datetimepicker').datetimepicker({
+    $('.datetimepicker').datetimepicker({
       icons: {
           time: "fa fa-clock-o",
           date: "fa fa-calendar",
@@ -147,16 +200,33 @@
       sideBySide: true
     });
 
-    $('#datetimepicker').on('change', function(){
-      $('#end_date').val($('#datetimepicker').data("DateTimePicker").getDate());
+    $('#entry_deadline').on('change', function(){
+      $('#end_date').val($('#entry_deadline').data("DateTimePicker").getDate());
+    });
+    $('#voting_end_date_dummy').on('change', function(){
+      $('#voting_end_date').val($(this).data("DateTimePicker").getDate());
+    });
+    $('#challenge_activate_voting').on('change', function(){
+      if ($(this).is(':checked')) {
+        $('#voting_dates').slideDown();
+      } else {
+        $('#voting_dates').slideUp();
+      }
+    });
+    $('#challenge_activate_mailchimp_sync').on('change', function(){
+      if ($(this).is(':checked')) {
+        $('#mailchimp_settings').slideDown();
+      } else {
+        $('#mailchimp_settings').slideUp();
+      }
     });
 
     jQuery(function($) {
       tinyMCE.init({
         selector: 'textarea.text-editor',
-        toolbar: "undo redo | bold italic underline | alignleft aligncenter alignright | link unlink | bullist numlist | image",
+        toolbar: "undo redo | bold italic underline | alignleft aligncenter alignright | link unlink | bullist numlist | image media",
         menubar: false,
-        plugins: 'link paste image',
+        plugins: 'link paste image media',
         statusbar: false
       });
     });

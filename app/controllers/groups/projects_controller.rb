@@ -11,7 +11,7 @@ class Groups::ProjectsController < ApplicationController
 
     @project_collections = @group.project_collections
 
-    if params[:status] and params[:status].in? %w(approved rejected pending_review)
+    if params[:status] and params[:status].in? %w(approved rejected pending_review featured)
       @project_collections = @project_collections.where(workflow_state: params[:status])
     end
 
@@ -99,7 +99,7 @@ class Groups::ProjectsController < ApplicationController
         when 'hackerspaces'
           @hacker_space = HackerSpace.find_by_user_name! params[:user_name]
         when 'lists'
-          @list = List.where(type: 'List').find_by_user_name! params[:user_name]
+          @list = List.find_by_user_name! params[:user_name]
         end
       else
         @group = Group.find params[:group_id]

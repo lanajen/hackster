@@ -18,61 +18,6 @@ class CronTask < BaseWorker
     User.where.not(invitation_token: nil).where.not(last_sign_in_at: nil).update_all(invitation_token: nil)
   end
 
-  def compute_popularity
-    CronTask.perform_async 'compute_popularity_for_projects'
-    CronTask.perform_async 'compute_popularity_for_users'
-    CronTask.perform_async 'compute_popularity_for_platforms'
-  end
-
-  def compute_popularity_for_projects
-    Project.indexable_and_external.pluck(:id).each do |project_id|
-      CronTask.perform_async 'compute_popularity_for_project', project_id
-    end
-  end
-
-  def compute_popularity_for_project project_id
-    project = Project.find project_id
-    project.update_counters
-    project.compute_popularity
-    project.save
-  end
-
-  def compute_popularity_for_users
-    User.invitation_accepted_or_not_invited.pluck(:id).each do |user_id|
-      CronTask.perform_async 'compute_popularity_for_user', user_id
-    end
-  end
-
-  def compute_popularity_for_user user_id
-    user = User.find user_id
-    user.update_counters
-    user.build_reputation unless user.reputation
-    reputation = user.reputation
-    reputation.compute
-    reputation.compute_redeemable
-    reputation.save
-  end
-
-  def compute_popularity_for_platforms
-    Platform.find_each do |platform|
-      platform.update_counters
-    end
-  end
-
-  def compute_reputation user_id, date=nil
-    date = Time.at(date.to_i) if date
-    Rewardino::Event.compute_for_user user_id, date
-  end
-
-  def compute_daily_reputation
-    date = redis.get('last_update')
-    # date = Time.at(date.to_i) if date.present?
-    User.invitation_accepted_or_not_invited.find_each do |user|
-      CronTask.perform_async 'compute_reputation', user.id, date.presence
-    end
-    redis.set 'last_update', Time.now.to_i
-  end
-
   def evaluate_badges
     return unless Rewardino.activated?
 
@@ -85,49 +30,43 @@ class CronTask < BaseWorker
     end
   end
 
-  def expire_challenges
-    Challenge.where(workflow_state: :in_progress).where("challenges.end_date < ?", Time.now).each do |challenge|
-      challenge.end!
-    end
-  end
-
   def generate_user
     UserGenerator.generate_user
   end
 
   def generate_users
-    User.invitation_accepted_or_not_invited.where("created_at > ?", 1.day.ago).where.not("users.email ILIKE '%user.hackster.io'").size.times do
+    [User.invitation_accepted_or_not_invited.where("created_at > ?", 1.day.ago).where.not("users.email ILIKE '%user.hackster.io'").size, 40].min.times do
       CronTask.perform_at Time.at((1.day.from_now.to_f - Time.now.to_f)*rand + Time.now.to_f), 'generate_user'
     end
   end
 
   def launch_cron
     CacheWorker.perform_async 'warm_cache'
-    CronTask.perform_async 'update_mailchimp'
-    CronTask.perform_async 'send_assignment_reminder'
-    CronTask.perform_async 'lock_assignment'
-    CronTask.perform_async 'expire_challenges'
-    CronTask.perform_async 'evaluate_badges'
-    CronTask.perform_async 'send_announcement_notifications'
-    CronTask.perform_async 'cleanup_duplicates'
-    CronTask.perform_async 'clean_invitations'
+    CronTask.perform_in 3.minutes, 'lock_assignment'
+    CronTask.perform_in 4.minutes, 'send_assignment_reminder'
+    CronTask.perform_in 6.minutes, 'send_announcement_notifications'
+    CronTask.perform_in 8.minutes, 'cleanup_duplicates'
+    CronTask.perform_in 10.minutes, 'clean_invitations'
+    PopularityWorker.perform_in 12.minutes, 'compute_popularity_for_projects'
+    CronTask.perform_in 14.minutes, 'evaluate_badges'
+    CronTask.perform_in 1.hour, 'launch_cron'
   end
 
   def launch_daily_cron
-    self.class.perform_async 'compute_daily_reputation'
-    self.class.perform_in 1.hour, 'compute_popularity'
-    self.class.perform_in 2.hours, 'send_daily_notifications'
-    self.class.perform_in 24.hours, 'launch_daily_cron'
-    self.class.perform_async 'generate_users'
+    CronTask.perform_async 'generate_users'
+    CronTask.perform_async 'update_mailchimp'
+    CronTask.perform_async 'update_mailchimp_for_challenges'
+    ReputationWorker.perform_in 1.minute, 'compute_daily_reputation'
+    PopularityWorker.perform_in 1.hour, 'compute_popularity'
+    CronTask.perform_in 2.hours, 'send_daily_notifications'
 
-    self.class.perform_in 24.hours, 'launch_daily_cron'
+    CronTask.perform_in 24.hours, 'launch_daily_cron'
   end
 
   def lock_assignment
-    Assignment.where("assignments.submit_by_date < ?", Time.now).each do |assignment|
-      assignment.projects.each do |project|
-        project.locked = true
-        project.save
+    Assignment.pending_grading.each do |assignment|
+      assignment.projects.submitted.each do |project|
+        project.update_attribute :locked, true
       end
     end
   end
@@ -169,11 +108,17 @@ class CronTask < BaseWorker
   end
 
   def update_mailchimp
-    MailchimpListManager.new(ENV['MAILCHIMP_API_KEY'], ENV['MAILCHIMP_LIST_ID']).update!
+    MailchimpNewsletterListManager.new(ENV['MAILCHIMP_API_KEY'], ENV['MAILCHIMP_LIST_ID']).update!
+  end
+
+  def update_mailchimp_for_challenges
+    Challenge.where("challenges.end_date > ?", 1.day.ago).each do |challenge|
+      challenge.sync_mailchimp! if challenge.mailchimp_setup?
+    end
   end
 
   private
     def redis
-      @redis ||= Redis::Namespace.new('cron_task', redis: Redis.new($redis_config))
+      @redis ||= Redis::Namespace.new('cron_task', redis: RedisConn.conn)
     end
 end

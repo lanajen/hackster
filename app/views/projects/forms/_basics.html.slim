@@ -1,11 +1,11 @@
-/ add more of the basics
-
 = content_for :js do
+
   javascript:
     $(function(){
       $("#project_product_tags_array").select2({
         tags: true,
-        tokenSeparators: [',']
+        tokenSeparators: [','],
+        width: '100%'
       });
     });
 
@@ -23,6 +23,7 @@
 
       .box
         .box-content
+          = f.input :content_type, collection: Project::CONTENT_TYPES, label: 'Project type', required: true
           = f.input :name, label: "Project name", hint: 'Make it sound cool!', wrapper_html: { 'data-anchor' => 'name' }
           = f.input :one_liner, as: :text, input_html: { rows: 3 },
             hint: "Describe your project in one short sentence", label: 'Elevator pitch', wrapper_html: { 'data-anchor' => 'one_liner' }
@@ -31,3 +32,5 @@
           = f.input :license, collection: License.all, value_method: :url, hint: "Under which license are you sharing your project? We recommend \"GNU General Public License version 3 or later (GPL3+)\".", selected: @project.license.try(:url), include_blank: true
           = f.input :difficulty, collection: Project::DIFFICULTIES, hint: 'How much knowledge does on need to be able to replicate this project?', label: 'Skill level', wrapper_html: { 'data-anchor' => 'difficulty' }
           = f.input :product_tags_array, label: 'Tags', collection: (['Home automation', 'Wearable', 'Internet of Things', 'Lights', 'Animals', 'Wifi', 'Bluetooth', 'Accelerometer', 'Robot', 'Drone', 'Embedded', 'IR', 'LED', 'Display', 'Servo', 'Relay'] + @project.product_tags_array).uniq.sort, input_html: { multiple: 'multiple' }, wrapper_html: { 'data-anchor' => 'product_tags_string' }
+
+    = render 'projects/forms/pe_save'

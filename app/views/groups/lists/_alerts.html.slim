@@ -1,0 +1,14 @@
+- if user_signed_in? and current_user.can? :manage, @group
+  - if !@group.checklist_completed?(:get_started)
+    section.section-admin
+      .container
+        h2.section-title.mg-20 Welcome to your list! Follow this checklist to get started:
+        = render 'groups/platforms/checklist', model: @group, group: :get_started
+  - elsif @group.private?
+    section.section-admin
+      .container
+        p
+          ' Share your list with the rest of the community!
+          strong
+            = link_to 'Make it public', edit_group_path(@group)
+          | .

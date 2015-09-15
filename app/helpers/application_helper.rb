@@ -56,12 +56,14 @@ module ApplicationHelper
       return f if f.present?
     end
 
-    msg = "Please log in or create an account to get full access to our maker resources and start creating."
+    msg = "Please log in or create an account to get started."
     # group, project, user
 
     case params[:m]
     when 'challenge'
       challenge = Challenge.find_by_id(params[:id])
+    when 'challenge_entry'
+      challenge_entry = ChallengeEntry.find_by_id(params[:id])
     when 'group'
       group = Group.find_by_id(params[:id])
     when 'project'
@@ -88,6 +90,8 @@ module ApplicationHelper
     when 'respect'
       if project
         msg = "Please log in or sign up to respect #{content_tag(:b, project.name)}."
+      elsif challenge_entry
+        msg = "Please log in or sign up to vote for #{content_tag(:b, challenge_entry.project.name)}."
       end
     when 'follow'
       if project
@@ -217,7 +221,7 @@ module ApplicationHelper
     end
   end
 
-  def inserts_stats_for model_id, model_type
+  def inserts_stats_for model
     base_url = APP_CONFIG['use_ssl'] ? 'https://' : 'http://'
     base_url += APP_CONFIG['stats_url']
     content_for :js do
@@ -229,8 +233,8 @@ module ApplicationHelper
             url: '#{base_url}/stats',
             data: {
               referrer: document.referrer,
-              id: '#{model_id}',
-              type: '#{model_type}',
+              id: '#{model.id}',
+              type: '#{model.model_name}',
               a: '#{action_name}',
               c: '#{controller_name}'
             },

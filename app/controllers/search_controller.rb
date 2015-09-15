@@ -20,21 +20,18 @@ class SearchController < ApplicationController
 
     begin
       @tag = CGI::unescape params[:tag]
-      params[:q] = @tag
-      opts = params.dup
-      opts[:type] = 'project'
-      opts[:platform_id] = current_platform.id if is_whitelabel?
-      opts[:per_page] = Project.per_page
-      @results = SearchRepository.new(opts).search.results
-      @total = @results.total
+      @projects = Project.indexable.joins("INNER JOIN tags ON tags.taggable_id = projects.id AND tags.taggable_type = 'Project'").where(tags: { type: %w(ProductTag PlatformTag) }).where("LOWER(tags.name) = ?", @tag.downcase).uniq
+      @projects = @projects.joins(:project_collections).where(project_collections: { collectable_id: current_platform.id, collectable_type: 'Group' }) if is_whitelabel?
+      @projects = @projects.magic_sort.for_thumb_display.paginate(page: safe_page_params)
+      @total = @projects.total_entries
 
-      title "#{@results.total} #{@tag} Projects"
-      meta_desc "Interested in #{@tag}? Explore #{@results.total} projects tagged with '#{@tag}'. Find these and other hardware projects on #{site_name}."
+      title "#{@total} #{@tag} Projects"
+      meta_desc "Interested in #{@tag}? Explore #{@total} projects tagged with '#{@tag}'. Find these and other hardware projects on #{site_name}."
 
       # track_event 'Searched projects by tag', { tag: @tag, result_count: @results.size, type: params[:type] }
     rescue => e
       logger.error "Error while searching for #{params[:q]}: #{e.message}"
-      @results = []
+      @projects = []
       @total = 0
     end
   end

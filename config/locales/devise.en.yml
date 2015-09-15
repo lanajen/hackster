@@ -22,7 +22,8 @@ en:
       timeout: 'Your session expired, please sign in again to continue.'
       inactive: 'Your account was not activated yet.'
     sessions:
-      signed_in_hackster: 'Welcome back! <a href="/talk" class="alert-link">What are you up to today?</a>'
+      # signed_in_hackster: 'Welcome back! <a href="/talk" class="alert-link">What are you up to today?</a>'
+      signed_in_hackster: 'Welcome back!'
       signed_in_other: 'Welcome back!'
       signed_out: 'Thanks for visiting, see you soon!'
     passwords:
@@ -43,7 +44,7 @@ en:
       updated: 'Your account information was updated.'
       updated_email: "Check the inbox for %{email}. We've sent an email to confirm the address change."
       update_needs_confirmation: "You updated your account successfully, but we need to verify your new email address. Please check your email and click on the confirm link to finalize confirming your new email address."
-      destroyed: 'Bye! Your account was successfully cancelled. We hope to see you again soon.'
+      destroyed: 'Bye! Your account was successfully deleted. We hope to see you again soon.'
     simplified_registrations:
       signed_up_but_unconfirmed: 'A message with a confirmation link has been sent to your email address. Please open the link to activate your account.'
     unlocks:
@@ -51,7 +52,8 @@ en:
       unlocked: 'Your account has been unlocked successfully. Please sign in to continue.'
       send_paranoid_instructions: 'If your account exists, you will receive an email with instructions about how to unlock it in a few minutes.'
     omniauth_callbacks:
-      success_hackster: 'Welcome back! <a href="/talk" class="alert-link">What are you up to today?</a>'
+      # success_hackster: 'Welcome back! <a href="/talk" class="alert-link">What are you up to today?</a>'
+      success_hackster: 'Welcome back!'
       success_other: 'Welcome back!'
       failure: 'Could not authenticate you from %{kind} because "%{reason}".'
     mailer:

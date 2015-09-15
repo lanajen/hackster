@@ -7,6 +7,7 @@
 = f.input :published_at, hint: 'Time is UTC'
 = f.input :public, label: 'Published', as: :boolean
 = f.input :blog_tags_string, label: 'Tags', hint: 'Enter a list of tags separated by commas'
+= f.input :user_id, label: 'Author user ID', hint: 'Find it from /admin/users'
 
 - @post.build_cover_image unless @post.cover_image.present?
 - image = @post.cover_image || @post.build_cover_image
@@ -32,6 +33,7 @@
   ==> link_to t('.cancel', :default => t("helpers.links.cancel")), admin_blog_posts_path, :class => 'btn btn-default'
   - if @post.persisted?
     = link_to t('.destroy', :default => t("helpers.links.destroy")), admin_blog_post_path(@post), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'
+    = link_to 'Direct link', blog_post_path(@post.slug), class: 'btn btn-link'
 
 = content_for :js do
   = tinymce_assets

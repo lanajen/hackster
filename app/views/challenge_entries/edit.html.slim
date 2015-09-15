@@ -1,7 +1,7 @@
 = content_for :no_container do
   #grader
     #grader-main.container
-      h1
+      p style="margin-top:20px"
         ==> link_to @challenge.name, @challenge, target: '_blank'
         small
           ' Judging entries
@@ -25,13 +25,18 @@
                 ' &nbsp;
           hr
           = simple_form_for [@challenge, @entry], url: challenge_entry_path(@challenge, @entry), wrapper: :bootstrap3_horizontal, html: { class: 'form-horizontal' } do |f|
-            input type='hidden' name='current_action' value='judging'
             .row
               .col-md-8
-                = f.input :prize_id, collection: @challenge.prizes
+                - if @challenge.in_progress?
+                  input type='hidden' name='current_action' value='moderating'
+                  = f.input :workflow_state, collection: { 'Approve' => :qualified, 'Reject' => :unqualified }, as: :radio_buttons, label: 'Decision'
+                - else
+                  input type='hidden' name='current_action' value='judging'
+                  = f.association :prizes, collection: @challenge.prizes, as: :check_boxes
                 = f.input :judging_notes, input_html: { rows: 4 }
               .col-md-4
-                = f.submit 'Save and next', class: 'btn btn-primary'
+                = f.submit 'Save', class: 'btn btn-primary'
+                = f.submit 'Save and next', class: 'btn btn-default'
                 = link_to 'Cancel', challenge_entries_path(@challenge), class: 'btn btn-link btn-sm'
     #iframe-container
       #dragbar

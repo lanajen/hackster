@@ -1,4 +1,5 @@
-APP_CONFIG = YAML.load_file("#{Rails.root}/config/config.yml")[Rails.env]
+template = ERB.new File.new("#{Rails.root}/config/config.yml.erb").read
+APP_CONFIG = YAML.load(template.result(binding))[Rails.env]
 PDT_TIME_ZONE = ActiveSupport::TimeZone.new('Pacific Time (US & Canada)')
 POPULAR_TAGS = {
   'Arduino' => '/arduino',
@@ -18,11 +19,13 @@ POPULAR_TAGS = {
   'Wearable' => '/tags/wearable',
 }
 
-SLOGAN = 'Hackster is the place where hardware gets created. Learn, share and connect to build better hardware.'
-SLOGAN_NO_BRAND = 'The place where hardware gets created.'
+# SLOGAN = 'Hackster is the place where hardware gets created. Learn, share and connect to build better hardware.'
+# SLOGAN_NO_BRAND = 'The place where hardware gets created.'
+SLOGAN = 'Hackster is a community dedicated to learning hardware, from beginner to pro.'
+SLOGAN_NO_BRAND = 'The community dedicated to learning hardware.'
 # where hardware comes to life
-URL_REGEXP = /^((https?:\/\/|)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,}(:[0-9]{1,5})?(\/.*)?)$/ix
-EMAIL_REGEXP = /^[a-zA-Z0-9_\.\+\-]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9\-\.]+$/
+URL_REGEXP = /\A((https?:\/\/|)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,}(:[0-9]{1,5})?(\/.*)?)\Z/ix
+EMAIL_REGEXP = /\A[a-zA-Z0-9_\.\+\-]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9\-\.]+\Z/
 
 if Rails.env == 'development'
   if ENV['UPLOAD'] == 'dev'
@@ -37,6 +40,9 @@ end
 
 IMAGE_EXTENSIONS = %w(jpg jpeg gif bmp png)
 PDF_EXTENSIONS = %w(pdf)
+
+SECONDS_IN_A_DAY = 86400
+SECONDS_IN_AN_HOUR = 3600
 
 SKETCHFAB_API_URL = 'https://api.sketchfab.com/v2'
 SKETCHFAB_API_MODEL_ENDPOINT = SKETCHFAB_API_URL + '/models'

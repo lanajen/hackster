@@ -20,71 +20,72 @@
     }
 
 = content_for :no_container do
-  section.top-banner
-    .top-banner-image style="background-image:url('#{@group.cover_image(:cover_wide)}');" class=@group.bg_class
-      .top-banner-image-inner
-        / .top-banner-image-inner-corner.top-right.text.hidden-xs
-          = @group.class.name
-        .top-banner-image-inner-corner.bottom-right.hidden-xs
-        / .top-banner-image-inner-corner.bottom-left.bottom-center-mobile
-          ul.list-unstyled.list-inline.project-stats
-            = render partial: "groups/#{@group.identifier.pluralize}/stats"
+  .group-page
+    section.top-banner
+      .top-banner-image style="background-image:url('#{@group.cover_image(:cover_wide)}');" class=@group.bg_class
+        .top-banner-image-inner
+          / .top-banner-image-inner-corner.top-right.text.hidden-xs
+            = @group.class.name
+          .top-banner-image-inner-corner.bottom-right.hidden-xs
+          / .top-banner-image-inner-corner.bottom-left.bottom-center-mobile
+            ul.list-unstyled.list-inline.project-stats
+              = render partial: "groups/#{@group.identifier.pluralize}/stats"
 
-        .container.hidden-xs
-          .media
-            - unless @group.type == 'List'
-              .media-left
-                = image_tag @group.avatar(:big), class: 'img-thumbnail'
-            .media-body class=(@group.type == 'List' ? 'no-avatar' : nil)
-              .clearfix
-                - begin
-                  = render partial: "groups/#{@group.identifier.pluralize}/heading"
-                - rescue
-                  h1= @group.name
-                  p= @group.mini_resume
+          .container.hidden-xs
+            .media
+              - unless @group.type == 'List'
+                .media-left
+                  = image_tag @group.avatar(:big), class: 'img-thumbnail'
+              .media-body class=(@group.type == 'List' ? 'no-avatar' : nil)
+                .clearfix
+                  - begin
+                    = render partial: "groups/#{@group.identifier.pluralize}/heading"
+                  - rescue
+                    h1= @group.name
+                    p= @group.mini_resume
 
-              - if @group.model.respond_to?(:show_address) and @group.full_street_address.present?
-                p.secondary-info
-                  i.fa.fa-map-marker
-                  = link_to @group.short_location, "https://www.google.com/maps/search/#{CGI.escape(@group.full_street_address)}", target: '_blank'
+                - if @group.model.respond_to?(:show_address) and @group.full_street_address.present?
+                  p.secondary-info
+                    i.fa.fa-map-marker
+                    = link_to @group.short_location, "https://www.google.com/maps/search/#{CGI.escape(@group.full_street_address)}", target: '_blank'
 
-              .button-content
-                - if @group.model.class.name.in? %w(Platform List)
-                  = render partial: 'followers/button', locals: { followable: @group, button_type: 'text', button_partial: 'button_text', display_name: true }
-                = render partial: "groups/#{@group.identifier.pluralize}/additional_links"
-                a.btn.btn-link.addthis_button_compact
-                  i.fa.fa-share-square-o
+                .button-content
+                  - if @group.model.class.name.in? %w(Platform List)
+                    = render partial: 'followers/button', locals: { followable: @group, button_type: 'text', button_partial: 'button_text', display_name: true }
+                  = render partial: "groups/#{@group.identifier.pluralize}/additional_links"
+                  a.btn.btn-link.addthis_button_compact
+                    i.fa.fa-share-square-o
 
-        .container.visible-xs
-          = image_tag @group.avatar(:big), class: 'img-thumbnail'
+          .container.visible-xs
+            = image_tag @group.avatar(:big), class: 'img-thumbnail'
 
-          - if @group.model.respond_to?(:secondary_name)
-            h1= @group.proper_name
-            h2
-              ==> @group.secondary_name
-              small
-                ' on
-                strong==> @group.date_range
-                ' in
-                strong==> @group.short_address
-          - else
-            h1
-              / # - if @group.model.respond_to?(:company_logo) and @group.company_logo
-                = image_tag @group.company_logo.try(:file_url), class: 'company-logo'
-              = @group.name
-              - if @group.model.respond_to?(:disclaimer) and @group.disclaimer.present?
-                i.fa.fa-info-circle.istooltip.small< title=@group.disclaimer
+            - if @group.model.respond_to?(:secondary_name)
+              h1= @group.proper_name
+              h2
+                ==> @group.secondary_name
+                small
+                  ' on
+                  strong==> @group.date_range
+                  ' in
+                  strong==> @group.short_address
+            - else
+              h1
+                / # - if @group.model.respond_to?(:company_logo) and @group.company_logo
+                  = image_tag @group.company_logo.try(:file_url), class: 'company-logo'
+                = @group.name
+                - if @group.model.respond_to?(:disclaimer) and @group.disclaimer.present?
+                  i.fa.fa-info-circle.istooltip.small< title=@group.disclaimer
 
-          p= @group.mini_resume
-          - if @group.model.class.name.in? %w(Platform List)
-            p= render partial: 'followers/button', locals: { followable: @group, button_type: 'text', button_partial: 'button_text', display_name: true }
+            p= @group.mini_resume
+            - if @group.model.class.name.in? %w(Platform List)
+              p= render partial: 'followers/button', locals: { followable: @group, button_type: 'text', button_partial: 'button_text', display_name: true }
 
-    = render partial: "groups/#{@group.identifier.pluralize}/nav"
+      = render partial: "groups/#{@group.identifier.pluralize}/nav"
 
-  = render partial: "groups/#{@group.identifier.pluralize}/alerts"
+    = render partial: "groups/#{@group.identifier.pluralize}/alerts"
 
-  section.main-section
-    .container
-      = yield
+    section.main-section
+      .container
+        = yield
 
 = render template: "layouts/#{current_layout}"

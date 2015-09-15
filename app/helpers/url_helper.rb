@@ -353,6 +353,11 @@ module UrlHelper
     APP_CONFIG['full_host'] + thought_path(thought, opts)
   end
 
+  def unsubscribe_url user, opts={}
+    update_notifications_url({ user_token: user.authentication_token,
+      user_email: user.email }.merge(opts))
+  end
+
   def url_for(options = nil)
     case options
     when Hash

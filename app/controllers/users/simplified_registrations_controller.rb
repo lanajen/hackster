@@ -7,6 +7,7 @@ class Users::SimplifiedRegistrationsController < Devise::RegistrationsController
     resource_saved = resource.save
     yield resource if block_given?
     if resource_saved
+      resource.send_confirmation_instructions if resource.invitation_token.present?  # not great to have this here but it's the only place I can find where I can assert that it's a simplified registration using an account that had been invited
       sign_in resource_name, resource
       track_signup resource, true
       track_event 'Signed up using simplified process', { source: params[:source], platform: site_platform }

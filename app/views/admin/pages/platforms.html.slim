@@ -19,9 +19,6 @@ table.table.table-striped
       th
         ' Projects
         small (external)
-      th
-        ' Members
-        small (active)
       th Status
       th=t '.actions', :default => t("helpers.actions")
   tbody
@@ -35,10 +32,6 @@ table.table.table-striped
           = group.projects_count
           small
             | (#{group.external_projects_count})
-        td
-          = group.members.size
-          small
-            | (#{group.members.invitation_accepted_or_not_invited.size})
         td
           - if group.private?
             b Private

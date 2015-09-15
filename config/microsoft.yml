@@ -6,22 +6,6 @@ production:
   site.hardwareurl: "http://go.microsoft.com/fwlink/p/?linkID=532948"
   site.signupurl: "https://www.windowsondevices.com/signup.aspx"
 
-dev:
-  site.baseurl: "https://content-private.azurewebsites.net/content"
-  site.repository_url: "https://github.com/ms-iot/content-private/blob/develop/"
-  site.landingurl: "http://devx.windows-int.com/iot"
-  site.hacksterurl: "http://microsoft.dev.hackster.io"
-  site.hardwareurl: "http://go.microsoft.com/fwlink/p/?linkID=532948"
-  site.signupurl: "https://www.windowsondevices.com/signup.aspx"
-
-staging:
-  site.baseurl: "https://content-private.azurewebsites.net/content"
-  site.repository_url: "https://github.com/ms-iot/content-private/blob/develop/"
-  site.landingurl: "http://devx.windows-int.com/iot"
-  site.hacksterurl: "http://microsoft.staging.hackster.io"
-  site.hardwareurl: "http://go.microsoft.com/fwlink/p/?linkID=532948"
-  site.signupurl: "https://www.windowsondevices.com/signup.aspx"
-
 development:
   site.baseurl: "https://content-private.azurewebsites.net/content"
   site.repository_url: "https://github.com/ms-iot/content-private/blob/develop/"

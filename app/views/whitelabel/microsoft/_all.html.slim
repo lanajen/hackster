@@ -54,3 +54,9 @@
 = content_for :footer do
   - cache [I18n.locale, 'ms_chrome_footer'], tag: %W(ms_chrome-#{I18n.short_locale}:chrome_footer) do
     = raw ms_sync.chrome_footer(I18n.locale)
+    javascript:
+      var varAutoFirePV=1;
+      var varClickTracking=1;
+      var varCustomerTracking=1;
+      var Route="13201";
+      document.write("<script type='text/javascript' src='" + (window.location.protocol) + "//c.microsoft.com/ms.js'" + "'><\/script>");

@@ -6,7 +6,7 @@ if defined?(Bundler)
   Bundler.require(:default, Rails.env)
 end
 
-require File.expand_path('../redis_config', __FILE__)
+require File.expand_path('../redis', __FILE__)
 
 module HackerIo
   class Application < Rails::Application
@@ -34,7 +34,7 @@ module HackerIo
       :notification_observer, :part_observer, :thought_observer,
       :blog_post_observer, :impression_observer, :conversation_observer,
       :order_observer, :order_line_observer, :address_observer,
-      :payment_observer
+      :payment_observer, :prize_observer
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
@@ -67,8 +67,7 @@ module HackerIo
 
 
     # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-    config.assets.precompile += %w( admin.css email.css bitbucket-widget.min.css bitbucket-widget.min.js slick.eot slick.svg slick.ttf slick.woff datepicker.js datepicker.css tinymce.js tinymce/plugins/link/plugin.js tinymce/plugins/paste/plugin.js tinymce/plugins/code/plugin.js gmaps/google.js follow_iframe.css follow_iframe.js project-thumb.css
-      channel.js whitelabel/arduino/all.css whitelabel/mediateklabs/min.css whitelabel/mediateklabs/min.js )
+    config.assets.precompile += %w( admin.css email.css bitbucket-widget.min.css bitbucket-widget.min.js slick.eot slick.svg slick.ttf slick.woff datepicker.js datepicker.css tinymce.js tinymce/plugins/link/plugin.js tinymce/plugins/paste/plugin.js tinymce/plugins/media/plugin.js tinymce/plugins/code/plugin.js gmaps/google.js follow_iframe.css follow_iframe.js project-thumb.css channel.js whitelabel/arduino/all.css whitelabel/mediateklabs/min.css whitelabel/mediateklabs/min.js )
 
     config.active_record.whitelist_attributes = false
 
@@ -89,20 +88,16 @@ module HackerIo
 
     config.logger = Logger.new(STDOUT)
 
-    config.action_mailer.delivery_method = :smtp
-    config.action_mailer.smtp_settings = {
-      :address => "smtp.sendgrid.net",
-      :port => 587,
-      :domain => "hackster.io",
-      :authentication => :plain,
-      :user_name => ENV['SENDGRID_USERNAME'],
-      :password => ENV['SENDGRID_PASSWORD']
-    }
+    config.action_mailer.delivery_method = :mandrill
 
     config.middleware.use Rack::Attack
 
     # React Browserify Transform
     config.react.addons = true
     config.browserify_rails.commandline_options = "-t [babelify --stage 0  --optional runtime]"
+
+    # cashier tag caching
+    config.cashier.adapter = :redis_store
+    config.cashier.adapter.redis = RedisConn.conn
   end
 end

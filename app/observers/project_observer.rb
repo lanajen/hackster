@@ -22,8 +22,6 @@ class ProjectObserver < ActiveRecord::Observer
   end
 
   def after_destroy record
-    Broadcast.where(context_model_id: record.id, context_model_type: 'Project').destroy_all
-    Broadcast.where(project_id: record.id).destroy_all
     update_counters record, [:projects, :live_projects]
     record.team.destroy if record.team
     record.purge
@@ -41,10 +39,6 @@ class ProjectObserver < ActiveRecord::Observer
     if record.private_changed?
       update_counters record, [:live_projects]
       record.commenters.each{|u| u.update_counters only: [:comments] }
-      if record.private?
-        Broadcast.where(context_model_id: record.id, context_model_type: 'Project').destroy_all
-        Broadcast.where(project_id: record.id).destroy_all
-      end
       keys = []
       record.users.each { |u| keys << "user-#{u.id}" }
       Cashier.expire *keys
@@ -57,11 +51,11 @@ class ProjectObserver < ActiveRecord::Observer
     ProjectWorker.perform_async 'update_platforms', record.id
 
     if record.made_public_at.nil?
-      record.post_new_tweet! unless record.hidden? or Rails.env != 'production'
+      record.post_new_tweet! unless record.hidden?
       record.made_public_at = Time.now
       record.save
     elsif record.made_public_at > Time.now
-      record.post_new_tweet_at! record.made_public_at unless record.hidden? or Rails.env != 'production'
+      record.post_new_tweet_at! record.made_public_at unless record.hidden?
     end
     record.users.each{|u| u.update_counters only: [:approved_projects] }
 

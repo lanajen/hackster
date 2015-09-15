@@ -11,7 +11,9 @@
         - if can? :edit, @page
           .subtitle
             / ' -
-            = link_to 'Edit', edit_group_page_path(@group, @page)
+            => link_to 'Edit', edit_group_page_path(@group, @page)
+            ' /
+            = link_to 'Delete', wiki_page_path(@page), data: { method: :delete, confirm: 'Are you sure?' }
 
     .section-content.medium-editor
       = raw @page.body
