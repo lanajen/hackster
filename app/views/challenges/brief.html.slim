@@ -137,22 +137,27 @@
       section.section-thumbs
         h4 Timeline
         - if @challenge.activate_pre_registration
-          p style='margin-bottom:0'
-            strong> Registrations open:
-          p #{l @challenge.pre_registration_start_date.in_time_zone(PDT_TIME_ZONE)} PT
+          - if @challenge.pre_registration_start_date
+            p style='margin-bottom:0'
+              strong> Registrations open:
+            p #{l @challenge.pre_registration_start_date.in_time_zone(PDT_TIME_ZONE)} PT
         - if @challenge.activate_pre_contest
+          - if @challenge.pre_contest_start_date
+            p style='margin-bottom:0'
+              strong> Pre-contest opens:
+            p #{l @challenge.pre_contest_start_date.in_time_zone(PDT_TIME_ZONE)} PT
+          - if @challenge.pre_contest_end_date
+            p style='margin-bottom:0'
+              strong> Pre-contest closes:
+            p #{l @challenge.pre_contest_end_date.in_time_zone(PDT_TIME_ZONE)} PT
+        - if @challenge.start_date
           p style='margin-bottom:0'
-            strong> Pre-contest opens:
-          p #{l @challenge.pre_contest_start_date.in_time_zone(PDT_TIME_ZONE)} PT
+            strong> Submissions open:
+          p #{l @challenge.start_date.in_time_zone(PDT_TIME_ZONE)} PT
+        - if @challenge.end_date
           p style='margin-bottom:0'
-            strong> Pre-contest closes:
-          p #{l @challenge.pre_contest_end_date.in_time_zone(PDT_TIME_ZONE)} PT
-        p style='margin-bottom:0'
-          strong> Submissions open:
-        p #{l @challenge.start_date.in_time_zone(PDT_TIME_ZONE)} PT
-        p style='margin-bottom:0'
-          strong> Submissions close:
-        p #{l @challenge.end_date.in_time_zone(PDT_TIME_ZONE)} PT
+            strong> Submissions close:
+          p #{l @challenge.end_date.in_time_zone(PDT_TIME_ZONE)} PT
 
   - cache ["challenge-#{@challenge.id}-brief"], tag: ["challenge-#{@challenge.id}-brief"] do
 
