@@ -28,11 +28,6 @@ HackerIo::Application.routes.draw do
       resources :likes, only: [:create] do
         delete '' => 'likes#destroy', on: :collection
       end
-      resources :projects do 
-        get 'images' => 'projects#images', on: :member, defaults: { format: :json }
-      end
-      resources :parts, only: [:create, :destroy] do
-        get :autocomplete, on: :collection
       scope 'mandrill/webhooks' do
         post 'unsub' => 'mandrill_webhooks#unsub'
       end
