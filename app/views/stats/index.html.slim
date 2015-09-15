@@ -14,20 +14,22 @@
     .box-content
       .row
         .col-sm-3
-          strong>= number_with_delimiter @user.reputation_count
-          = pluralize_without_count @user.reputation_count, 'reputation point'
-          br
-          small.text-muted
-            - if @reputation_this_month.zero?
-              ' No new points yet this month.
-            - else
-              ' +#{number_with_delimiter @reputation_this_month} this month.
-            = link_to 'Read how to get more points.', 'http://hackster.uservoice.com/knowledgebase/topics/92217-hackster-free-store'
-          br
-          br
+          p
+            strong>= number_with_delimiter @user.reputation_count
+            = pluralize_without_count @user.reputation_count, 'reputation point'
+          p
+            small.text-muted
+              - if @reputation_this_month.zero?
+                ' No new points yet this month.
+              - else
+                ' +#{number_with_delimiter @reputation_this_month} this month.
+              = link_to 'Read how to get more points.', 'http://hackster.uservoice.com/knowledgebase/topics/92217-hackster-free-store'
+
+          = react_component('ReputationUpdateButton', { timestamp: @user.reputation_last_updated_at.to_i, userId: (current_user.is?(:admin) ? @user.id : nil) }, { tag: 'p', class: 'small text-muted' })
+
           / small
             ' Redeem your points in the
-            = link_to 'Hackster free store.', ''
+            = link_to 'Hackster free store.', store_path
         .col-sm-9
           #chart_reputation= image_tag 'loader.gif'
       hr

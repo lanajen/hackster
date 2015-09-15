@@ -11,12 +11,11 @@
           = f.error_notification
 
           = f.input :full_name, label: 'List name'
-          = f.input :mini_resume, as: :text, input_html: { rows: 3 }, label: 'Short description', hint: "Max 140 characters.", required: true
+          = f.input :mini_resume, as: :text, input_html: { rows: 3 }, label: 'Short description', hint: "Max 140 characters."
 
           .cover_image.file-drop.form-group  class="#{'has-error' if @list.errors[:cover_image].present?}"
             .col-sm-4
               label.control-label
-                abbr> title="required" *
                 | Cover image
             .col-sm-8
               div

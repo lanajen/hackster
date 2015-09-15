@@ -4,7 +4,7 @@
       h3= link_to part.name, part
 
     .col-md-2.image
-      = image_tag part.image(:headline)
+      = image_tag part.image(:medium)
 
     .col-md-2.col-md-push-8.action-buttons
       - if can? :manage, part

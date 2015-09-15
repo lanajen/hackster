@@ -5,11 +5,12 @@
         h2
           | Fill out your address
         p.subheading
-          | so you can receive your prize
+          ' so you can receive your
+          = pluralize_without_count @entry.prizes.count, 'prize'
       .box-content
         p.text-center
           ' You won
-          b==> @entry.prize.name
+          b=> @entry.prizes.pluck(:name).to_sentence
           ' with
           = link_to @challenge.name, @challenge
 

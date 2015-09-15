@@ -24,8 +24,6 @@
 # end
 
 class TrackerQueue < BaseWorker
-  # extend HerokuAutoScaleDown if Rails.env == 'production'
-  # @queue = :trackers
   sidekiq_options queue: :low, retry: false
 
   def add_to_tracker env, method_name, *args

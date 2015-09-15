@@ -1,0 +1,26 @@
+= content_for :head do
+  = stylesheet_link_tag "//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css"
+
+= content_for :js do
+  = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"
+
+  - popup_id = "#parts-popup"
+
+  .popup-overlay.modal-popup.modal-with-form id=popup_id.gsub('#', '')
+    .popup-overlay-bg.disable-click
+    .popup-overlay-outer
+      .popup-overlay-inner.text-left
+        button.close data-target=popup_id &times;
+        h4.text-center.popup-title Customize a component, tool or app
+
+        = simple_form_for Part.new, url: '', data: { remote: true, modal: popup_id }, html: { class: 'remote form-within-modal no-reload', id: 'parts-popup-form' } do |f|
+          input.resetable type='hidden' name='id' data-field-type='id'
+          input.resetable type='hidden' name='_method'
+          = f.input :type, as: :hidden, input_html: { 'data-field-type' => 'type', class: 'resetable' }
+          = f.input :name, input_html: { 'data-field-type' => 'name', class: 'resetable' }
+          = f.input :store_link, input_html: { 'data-field-type' => 'store_link', class: 'resetable' }, wrapper_html: { class: 'link-input' }, label: 'Link to store'
+          = f.input :product_page_link, input_html: { 'data-field-type' => 'product_page_link', class: 'resetable' }, wrapper_html: { class: 'link-input' }, label: 'Link to product page'
+          = f.association :platform, collection: Platform.public.where("members_count > 0").order("LOWER(groups.full_name)"), input_html: { 'data-field-type' => 'platform_id', class: 'resetable' }, label: 'Made by', hint: 'Leave blank if not in the list.'
+
+          = f.submit 'Save and add to list', class: 'btn btn-primary'
+          = link_to 'Cancel', '#', class: 'close-btn btn btn-link btn-sm', 'data-target' => popup_id

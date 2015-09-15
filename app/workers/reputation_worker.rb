@@ -8,11 +8,12 @@ class ReputationWorker < BaseWorker
     user.update_counters only: [:reputation]
     user.build_reputation unless user.reputation
     user.reputation.compute_redeemable!
+    user.update_attribute :reputation_last_updated_at, Time.now
   end
 
   def compute_daily_reputation
     User.invitation_accepted_or_not_invited.find_each do |user|
-      CronTask.perform_async 'compute_reputation', user.id
+      self.class.perform_async 'compute_reputation', user.id
     end
   end
 end

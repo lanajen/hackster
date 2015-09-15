@@ -3,7 +3,8 @@ class Embed
   LINK_REGEXP = {
     /123d\.circuits\.io\/circuits\/([a-z0-9\-]+)/ => :circuitsio,
     /bitbucket\.org\/([0-9a-zA-Z_\-]+\/[0-9a-zA-Z_\-]+)/ => :bitbucket,
-    /codebender\.cc\/sketch:([0-9]+)/ => :codebender,
+    /channel9\.msdn\.com\/([0-9a-zA-Z_\-\/]+)/ => :channel9,
+    /codebender\.cc\/((?:sketch:|example\/)[0-9a-zA-Z\/:]+)/ => :codebender,
     /gist\.github\.com\/(?:[0-9a-zA-Z_\-]+\/)?([0-9a-zA-Z_\-]+)/ => :gist,
     /github\.com\/(?:downloads\/)?([0-9a-zA-Z_\-\.]+\/[0-9a-zA-Z_\-\.]+)/ => :github,
     /fritzing\.org\/projects\/([0-9a-z-]+)/ => :fritzing,
@@ -54,7 +55,7 @@ class Embed
   end
 
   def for_text_editor?
-    provider and provider_name.to_s.in? %w(instagram kickstarter ustream vimeo vine youtube image mp4)
+    provider and provider_name.to_s.in? %w(instagram kickstarter ustream vimeo vine youtube image mp4 channel9)
   end
 
   def schematic_repo?

@@ -45,19 +45,16 @@ $(window).load(function(){
   };
 
   //Fade in alerts/notices
-  if($('.fade-in').length) {
-    //if there's a slide-in notification on top of the page, wait until it's down sliding down before affixing divs
-    $('.fade-in').delay(2000).slideDown(500,function(){
-      affixDivs();
-    });
-  } else if ($('#hello-world').length) {
-    $('#hello-world')
+  var helloW = $('#hello-world-container');
+  if (helloW.length) {
     var parser = document.createElement('a');
     parser.href = document.referrer;
     if (!document.referrer.length || parser.hostname != '<%= APP_CONFIG['default_host'] %>') {
-      $('#hello-world').delay(2000).slideDown(500,function(){
+      helloW.delay(2000).slideDown(500,function(){
         affixDivs();
       });
+      // not super clean but allows for a bar that slides down and pushes its height
+      $('#hello-world').delay(2000).slideDown(500);
     } else {
       affixDivs();
     }
@@ -89,6 +86,27 @@ $(function () {
     doUserSignedInUpdate();
   } else {
     $('.user-signed-out').show();
+  }
+
+  if ($('.ab-test').length) {
+    $('.ab-test').each(function(i, el){
+      el = $(el);
+      // the double ajax call, and in particular the ping, is a hack to force
+      // the browser to set the correct session, which allows us to correctly
+      // track whether the experiment was completed
+      $.ajax({
+        url: '/ping',
+        success: (function(response){
+          $.ajax({
+            url: '/ab_test',
+            data: { experiment: el.data('experiment') },
+            success: function(response) {
+              el.find('.ab-test-placeholder').text(response.alternative);
+            }
+          });
+        })
+      });
+    });
   }
 
   showAlerts();
@@ -268,7 +286,7 @@ $(function () {
           if (input.parent().hasClass('input-group')) {
             errorMsg.insertAfter(input.parent());
           } else {
-            errorMsg.appendTo(input.closest('.form-group'));
+            errorMsg.appendTo(input.parent());
           }
         }
       }
@@ -303,16 +321,16 @@ $(function () {
   }
 
   // update thumbnail links for projects
-  $(".project-thumb-container.has-data").each(function(i, project){
-    project = $(project);
-    ref = project.data('ref');
-    refId = project.data('ref-id');
-    offset = project.data('offset');
-    $('a.project-link-with-ref', this).each(function(j, link) {
-      href = link.href;
-      link.href = href + "?ref=" + ref + "&ref_id=" + refId + "&offset=" + offset;
-    });
-  });
+  // $(".project-thumb-container.has-data").each(function(i, project){
+  //   project = $(project);
+  //   ref = project.data('ref');
+  //   refId = project.data('ref-id');
+  //   offset = project.data('offset');
+  //   $('a.project-link-with-ref', this).each(function(j, link) {
+  //     href = link.href;
+  //     link.href = href + "?ref=" + ref + "&ref_id=" + refId + "&offset=" + offset;
+  //   });
+  // });
 
   $('a.smooth-scroll').on('click', function(e){
     target = '#' + this.hash.substring(1);

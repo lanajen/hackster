@@ -48,7 +48,11 @@ class UsersController < ApplicationController
       end
     else
       @parts = @user.owned_parts
-      @lists = @user.lists.public.order(:full_name)
+      @lists = if @user.id == current_user.try(:id) or current_user.try(:is?, :admin)
+        @user.lists.order(:full_name)
+      else
+        @user.lists.public.order(:full_name)
+      end
     end
 
     @comments = if current_platform
@@ -131,7 +135,8 @@ class UsersController < ApplicationController
         message += if is_whitelabel?
           " Welcome!"
         else
-          " Now, <a href='/talk' class='alert-link'>come introduce yourself to the community!</a>"
+          # " Now, <a href='/talk' class='alert-link'>come introduce yourself to the community!</a>"
+          " Welcome!"
         end
         redirect_to user_return_to, notice: message
       end

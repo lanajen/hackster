@@ -42,11 +42,7 @@ class GroupDecorator < UserDecorator
   def twitter_share
     message = case model.type
     when 'List'
-      if model.category?
-        "Check out all the #{model.name} hardware projects"
-      else
-        "Check out all the hardware projects curated by #{model.name}"
-      end
+      add_curated_by "Check out all the hardware projects in '#{model.name}'"
     when 'Platform'
       "Check out all the hardware projects made with #{model.name}"
     when 'Event', 'HackerSpace'
@@ -62,11 +58,7 @@ class GroupDecorator < UserDecorator
   def social_share
     message = case model.type
     when 'List'
-      if model.category?
-        "Check out all the #{model.name} hardware projects"
-      else
-        "Check out all the hardware projects curated by #{model.name}"
-      end
+      add_curated_by "Check out all the hardware projects in '#{model.name}'"
     when 'Platform'
       "Check out all the hardware projects made with #{model.name}"
     when 'Event', 'HackerSpace'
@@ -81,4 +73,10 @@ class GroupDecorator < UserDecorator
   def to_share_message
     twitter_share
   end
+
+  private
+    def add_curated_by text
+      text += ", curated by #{model.team_members.first.user.name}" if model.team_members_count > 0
+      text
+    end
 end

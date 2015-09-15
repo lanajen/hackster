@@ -60,14 +60,6 @@ class CommunitiesController < ApplicationController
     end
   end
 
-  def edit
-    @community = Community.find(params[:id])
-    authorize! :update, @community
-    @community.build_avatar unless @community.avatar
-
-    render "groups/communities/#{self.action_name}"
-  end
-
   def update
     authorize! :update, @community
     old_community = @community.dup
@@ -75,21 +67,13 @@ class CommunitiesController < ApplicationController
     if @community.update_attributes(params[:group])
       respond_to do |format|
         format.html { redirect_to @community, notice: 'Profile updated.' }
-        format.js do
-          @community = @community.decorate
-          if old_community.user_name != @community.user_name
-            @refresh = true
-          end
-
-          render "groups/communities/#{self.action_name}"
-        end
 
         track_event 'Updated community'
       end
     else
       @community.build_avatar unless @community.avatar
       respond_to do |format|
-        format.html { render action: 'edit' }
+        format.html { render "groups/shared/edit" }
         format.js { render json: { group: @community.errors }, status: :unprocessable_entity }
       end
     end

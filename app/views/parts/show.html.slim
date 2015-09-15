@@ -2,12 +2,12 @@
   meta(property="og:title" content="#{@part.full_name} projects")
   meta(property="og:description" content="Discover projects built with #{@part.full_name}, and share your own!")
   - if @part.image
-    meta(property="og:image" content=@part.image(:headline))
-    meta(property="twitter:image:src" content=@part.image(:headline))
-    meta(property="og:image:width" content='580')
-    meta(property="og:image:height" content='435')
-    meta(property="twitter:image:width" content='580')
-    meta(property="twitter:image:height" content='435')
+    meta(property="og:image" content=@part.image(:medium))
+    meta(property="twitter:image:src" content=@part.image(:medium))
+    meta(property="og:image:width" content='400')
+    meta(property="og:image:height" content='300')
+    meta(property="twitter:image:width" content='400')
+    meta(property="twitter:image:height" content='300')
   meta(property="og:url" content=platform_part_path(@platform.user_name, @part.slug))
   meta(property="og:site_name" content="Hackster.io")
   meta(property="twitter:card" content="summary")
@@ -60,7 +60,7 @@
       ' More products
       span.caret
     ul.dropdown-menu
-      - @platform.parts.each do |part|
+      - @platform.parts.visible.alphabetical.each do |part|
         li= link_to part.name, part
 
 

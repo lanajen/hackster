@@ -11,7 +11,7 @@
         / - if Time.now < DateTime.parse('2015-04-19 20:00 -0800')
           = link_to 'Hardware Weekend Dallas', '/dallas', class: 'btn btn-warning btn-sm btn-over'
         .container.text-center
-          h1 Hackster is the place where hardware gets created.
+          h1 Hackster is a community dedicated to learning hardware.
           .hack-selector-container
             .typeahead-container.hidden-xs
               .inner-container.shakable
@@ -47,7 +47,7 @@
           = link_to 'View more platforms &rarr;'.html_safe, platforms_path, class: 'btn btn-default btn-sm hidden-xs'
           = link_to 'View more platforms &rarr;'.html_safe, platforms_path, class: 'btn btn-default btn-sm visible-xs-block'
 
-    section.subscribe-block.text-center-mobile
+    / section.subscribe-block.text-center-mobile
       .container
         .row
           .col-sm-6 style='margin-top:3px'
@@ -56,36 +56,19 @@
           .col-sm-6.text-right.text-center-mobile
             = link_to 'Share it with the community &rarr;'.html_safe, new_user_session_path(redirect_to: talk_path)
 
-    / section#trending-projects.showcase-section
-      .container
-        .showcase-section-header.clearfix
-          h4 Participate in challenges and win prizes
+    - if @challenges.any?
+      section#trending-projects.showcase-section
+        .container
+          .showcase-section-header.clearfix
+            h4 Participate in challenges and win prizes
 
-        .row
-          .col-sm-6.category-row
-            .category-col
-              .thumb.category-thumb
-                .thumb-image.has-link-overlay style="background-image:url('https://halckemy.s3.amazonaws.com/uploads/cover_image/file/36555/cover_wide_HeroImage4Cropped2.png')"
-                  = link_to '', '/challenges/hardware-home', class: 'link-overlay'
-                  .thumb-image-inner
-                    h4
-                      = link_to 'Give Your Hardware a Home', '/challenges/hardware-home'
-                      br
-                      a.small sponsored by Autodesk
-                    p
-                      strong Win a Type A Series 1 3D Printer
-          .col-sm-6.category-row
-            .category-col
-              .thumb.category-thumb
-                .thumb-image.has-link-overlay style="background-image:url('https://halckemy.s3.amazonaws.com/uploads/cover_image/file/36527/cover_wide_blog_techniczny_microsoft_azure_web_jobs.png')"
-                  = link_to '', '/challenges/microsoft-azure', class: 'link-overlay'
-                  .thumb-image-inner
-                    h4
-                      = link_to 'Microsoft Azure Challenge', '/challenges/microsoft-azure'
-                      br
-                      a.small sponsored by Microsoft
-                    p
-                      strong Win $5,000
+          .row
+            - @challenges.each do |challenge|
+              = render partial: 'challenges/challenge_thumb', locals: { challenge: challenge.decorate, thumb_size: :mini }
+
+        .text-center
+          = link_to 'View more challenges &rarr;'.html_safe, challenges_path, class: 'btn btn-default btn-sm hidden-xs'
+          = link_to 'View more challenges &rarr;'.html_safe, challenges_path, class: 'btn btn-default btn-sm visible-xs-block'
 
     section#trending-projects.showcase-section
       .container
@@ -115,12 +98,12 @@
           h4 Follow topics you enjoy
 
         .row.mg-30
-          - @lists.each do |lists|
+          - @lists.each_slice(3).to_a.each do |lists|
             .col-sm-6.category-row
               - lists.each do |list|
                 .category-col
                   .thumb.category-thumb
-                    .thumb-image.has-link-overlay style="background-image:url(#{list.decorate.cover_image})"
+                    .thumb-image.has-link-overlay style="background-image:url(#{list.decorate.cover_image(:medium)})"
                       = link_to '', list, class: 'link-overlay'
                       .thumb-image-inner
                         h4

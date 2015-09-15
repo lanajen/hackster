@@ -34,25 +34,18 @@ HackerIo::Application.configure do
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    address: 'localhost',
-    port: 1025
+    :user_name => '4213565d9ed7c2884',
+    :password => '1d91454b790f42',
+    :address => 'mailtrap.io',
+    :domain => 'mailtrap.io',
+    :port => '2525',
+    :authentication => :cram_md5
   }
 
   config.action_mailer.default_url_options = { :host => 'www.localhost.local:5000' }
 
   config.action_controller.perform_caching = false
   config.cache_store = :dalli_store
-  config.cashier.adapter = :redis_store
-  config.cashier.adapter.redis = Redis.new $redis_config
 
   config.react.variant = :development
-
-  # config.after_initialize do
-  #   Bullet.enable = true
-  #   # Bullet.alert = true
-  #   Bullet.bullet_logger = true
-  #   Bullet.console = true
-  #   Bullet.rails_logger = true
-  #   Bullet.add_footer = true
-  # end
 end

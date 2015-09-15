@@ -72,7 +72,9 @@
                                 | Member
                           - else
                             | Not saved
-                        td= f_member.link_to_remove content_tag(:i, '', class: 'fa fa-times-circle-o'), class: 'btn btn-sm btn-danger'
+                        td
+                          - if current_user != member.user or current_user.is? :admin
+                            = f_member.link_to_remove content_tag(:i, '', class: 'fa fa-times-circle-o'), class: 'btn btn-sm btn-danger'
                   tr.sortable-disabled
                     td  colspan=4  = f_team.link_to_add 'Add a member', :members, class: 'btn btn-xs btn-success nested-field-table'
 
@@ -103,6 +105,8 @@
                   .col-xs-offset-4.col-md-8= f_credit.link_to_remove 'Remove this contributor', class: 'btn btn-xs btn-danger'
               = f_cred.link_to_add 'Add another contributor', :credit_lines, class: 'btn btn-xs btn-success', style: 'margin:0 0 0 33.33333%;'
 
+    = render 'projects/forms/pe_save'
+
 = content_for :js do
 
   javascript:
@@ -115,6 +119,7 @@
       var select2Options = {
         placeholder: 'Select a user',
         minimumInputLength: 3,
+        width: '100%',
 
         ajax: {
           url: "/api/v1/users/autocomplete",
@@ -127,17 +132,12 @@
             };
           },
           processResults: function (data, page) {
-            // parse the results into the format expected by Select2.
-            // since we are using custom formatting functions we do not need to
-            // alter the remote JSON data
             return {
               results: data
             };
           },
           cache: true
         }
-        //templateResult: formatRepo, // omitted for brevity, see the source of this page
-        //templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
       };
 
       $('#team-form .select2').select2(select2Options);

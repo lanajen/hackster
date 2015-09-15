@@ -96,3 +96,20 @@
 .enter-challenge {
   margin-bottom: 10px;
 }
+
+.entries-list {
+  .entry-withdraw {
+    display: none;
+  }
+  li {
+    &:hover {
+      .entry-withdraw {
+        display: initial;
+      }
+    }
+  }
+}
+
+.enter-challenge-btn {
+  display: none;
+}

@@ -24,7 +24,7 @@ $(function(){
         $('#' + data.context).data('data', data);
 
         $.ajax({
-          url: '/files/signed_url',
+          url: '<%= signed_url_files_path(locale: nil) %>',
           type: 'GET',
           dataType: 'json',
           data: {file: {name: file.name}, context: data.context},
@@ -74,7 +74,7 @@ $(function(){
       url = $(this).data('url');
 
       $.ajax({
-        url: '/files',
+        url: '<%= files_path(locale: nil) %>',
         type: 'POST',
         dataType: 'json',
         data: {file_url: url, file_type: '<%= file_type %>', context: data.context},

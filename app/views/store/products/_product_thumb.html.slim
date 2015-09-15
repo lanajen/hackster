@@ -1,7 +1,7 @@
 - part = product.source.decorate
 .part-thumb
   a.img-container href=url_for(part)
-    = image_tag(part.image(:headline))
+    = image_tag(part.image(:medium))
     .description= part.one_liner_or_description
   h3= link_to product.decorate.name, part
   .order

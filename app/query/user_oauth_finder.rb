@@ -6,26 +6,14 @@ class UserOauthFinder
   def find_for_oauth provider, auth, resource=nil
     # Rails.logger.info 'auth: ' + auth.to_yaml
     case provider
-    when 'Facebook'
+    when 'facebook', 'github', 'gplus', 'linkedin'
       uid = auth.uid
       email = auth.info.email
       name = auth.info.name
-    when 'Github'
-      uid = auth.uid
-      email = auth.info.email
-      name = auth.info.name
-    when 'Google+'
-      uid = auth.uid
-      email = auth.info.email
-      name = auth.info.name
-    when 'LinkedIn'
-      uid = auth.uid
-      email = auth.info.email
-      name = auth.info.name
-    when 'Twitter'
+    when 'twitter'
       uid = auth.uid
       name = auth.info.name
-    when 'Microsoft'
+    when 'windowslive'
       uid = auth.uid
       name = auth.info.name
       email = auth.info.emails.try(:first).try(:value)

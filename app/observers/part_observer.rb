@@ -10,18 +10,17 @@ class PartObserver < ActiveRecord::Observer
   def after_update record
     if record.platform_id.present? and (record.platform_id_changed? or record.private_changed?)
       record.projects.each do |project|
-        platform_name = record.platform.name
-        unless platform_name.in? project.platform_tags_array
-          project.platform_tags_array += [platform_name]
-          project.save
-        end
+        project.update_counters only: [record.identifier.pluralize.to_sym]
+        ProjectWorker.perform_async 'update_platforms', project.id
       end
     end
-    keys = []
-    record.projects.pluck(:id).each do |id|
-      keys += ["project-#{id}-#{record.class.name.underscore.gsub(/_part/, '')}-parts", "project-#{id}-left-column", "project-#{id}"]
+    if (record.changed & %w(slug name store_link product_page_link)).any?
+      keys = []
+      record.projects.pluck(:id).each do |id|
+        keys += ["project-#{id}-#{record.identifier}-parts", "project-#{id}-left-column", "project-#{id}"]
+      end
+      Cashier.expire *keys if keys.any?
     end
-    Cashier.expire *keys if keys.any?
   end
 
   private

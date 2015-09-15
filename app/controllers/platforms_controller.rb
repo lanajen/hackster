@@ -24,7 +24,7 @@ class PlatformsController < ApplicationController
     title "Explore platforms"
     meta_desc "Find hardware and software platforms to help you build your next projects."
 
-    params[:sort] = (params[:sort].in?(Group::SORTING.keys) ? params[:sort] : 'followers')
+    params[:sort] = (params[:sort].in?(Group::SORTING.keys) ? params[:sort] : Platform::DEFAULT_SORT)
 
     @platforms = Platform.public.featured.for_thumb_display.order("(CASE WHEN CAST(groups.hproperties -> 'is_new' AS BOOLEAN) THEN 1 ELSE 2 END) ASC")
     if params[:sort]

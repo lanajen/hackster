@@ -16,8 +16,11 @@ class ProjectCollectionObserver < ActiveRecord::Observer
     end
   end
 
-  def after_status_updated record
+  def after_status_updated record, from=nil
     update_counters record unless record.collectable_type == 'Assignment'
+    if record.workflow_state == 'approved' and from.to_s == 'pending_review' and record.collectable_type == 'Group'
+      record.collectable.update_attribute :last_project_time, Time.now
+    end
   end
 
   private

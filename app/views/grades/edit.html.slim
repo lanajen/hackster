@@ -1,11 +1,11 @@
 = content_for :no_container do
   #grader
     #grader-main.container
-      h1
-        = link_to @assignment.promotion.name, promotion_path(@assignment.promotion), target: '_blank'
-        small<
-          ' Grading assignment
-          = link_to @assignment.name, assignment_path(@assignment), target: '_blank'
+      p style='margin-top:20px'
+        strong= link_to @assignment.promotion.name, promotion_path(@assignment.promotion), target: '_blank'
+      p
+        ' Grading assignment
+        = link_to @assignment.name, assignment_path(@assignment), target: '_blank'
       .row
         .col-xs-12
           b> Project:

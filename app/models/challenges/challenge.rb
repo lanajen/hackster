@@ -1,6 +1,7 @@
 class Challenge < ActiveRecord::Base
   DEFAULT_DURATION = 60
-  VISIBLE_STATES = %w(in_progress ended paused canceled judging judged)
+  PAST_STATES = %w(judging judged)
+  VISIBLE_STATES = %w(in_progress judging judged)
   VOTING_START_OPTIONS = {
     'Now' => :now,
     'When the challenge ends' => :end,
@@ -14,17 +15,23 @@ class Challenge < ActiveRecord::Base
   has_many :admins, through: :challenge_admins, source: :user
   has_many :challenge_admins
   has_many :entries, class_name: 'ChallengeEntry', dependent: :destroy
-  has_many :entrants, through: :projects, source: :users
+  has_many :entrants, -> { uniq }, through: :entries, source: :user
+  has_many :participants, -> { uniq }, through: :projects, source: :users
   has_many :prizes, -> { order(:position) }, dependent: :destroy
   # see https://github.com/rails/rails/issues/19042#issuecomment-91405982 about
   # "counter_cache: :this_is_not_a_column_that_exists"
   has_many :projects, -> { order('challenge_projects.created_at ASC') },
-    through: :entries, counter_cache: :this_is_not_a_column_that_exists
+    through: :entries, counter_cache: :this_is_not_a_column_that_exists do
+    def valid
+      where("challenge_projects.workflow_state IN (?)", ChallengeEntry::APPROVED_STATES)
+    end
+  end
   has_many :votes, through: :entries
   has_one :avatar, as: :attachable, dependent: :destroy
   has_one :cover_image, as: :attachable, dependent: :destroy
   validates :name, :slug, presence: true
   validates :teaser, :custom_tweet, length: { maximum: 140 }
+  validates :mailchimp_api_key, :mailchimp_list_id, presence: true, if: proc{ |c| c.activate_mailchimp_sync }
   validate :password_exists
   before_validation :assign_new_slug
   before_validation :generate_slug, if: proc{ |c| c.slug.blank? }
@@ -37,14 +44,24 @@ class Challenge < ActiveRecord::Base
   accepts_nested_attributes_for :prizes, :challenge_admins, allow_destroy: true
 
   store :properties, accessors: []
+  hstore_column :hproperties, :activate_banners, :boolean, default: true
+  hstore_column :hproperties, :activate_mailchimp_sync, :boolean
   hstore_column :hproperties, :activate_voting, :boolean
+  hstore_column :hproperties, :auto_approve, :boolean
   hstore_column :hproperties, :allow_anonymous_votes, :boolean
   hstore_column :hproperties, :custom_css, :string
+  hstore_column :hproperties, :custom_status, :string
   hstore_column :hproperties, :custom_tweet, :string
   hstore_column :hproperties, :description, :string
+  hstore_column :hproperties, :disable_projects_tab, :boolean
   hstore_column :hproperties, :eligibility, :string
+  hstore_column :hproperties, :enter_button_text, :string, default: 'Enter challenge'
   hstore_column :hproperties, :how_to_enter, :string
+  hstore_column :hproperties, :idea_survey_link, :string
   hstore_column :hproperties, :judging_criteria, :string
+  hstore_column :hproperties, :mailchimp_api_key, :string
+  hstore_column :hproperties, :mailchimp_list_id, :string
+  hstore_column :hproperties, :mailchimp_last_synced_at, :datetime
   hstore_column :hproperties, :multiple_entries, :boolean
   hstore_column :hproperties, :password_protect, :boolean
   hstore_column :hproperties, :password, :string
@@ -58,7 +75,7 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :voting_end_date, :datetime, default: proc{|c| c.end_date ? c.end_date + 7.days : nil }
 
   counters_column :hcounters_cache
-  has_counter :projects, 'entries.approved.count'
+  has_counter :projects, 'projects.valid.count'
 
   is_impressionable counter_cache: true, unique: :session_hash
 
@@ -70,23 +87,41 @@ class Challenge < ActiveRecord::Base
       event :cancel, transitions_to: :canceled
       event :end, transitions_to: :judging
       event :pause, transitions_to: :paused
+      event :take_offline, transitions_to: :new
     end
     state :canceled
     state :paused do
       event :restart, transitions_to: :in_progress
     end
     state :judging do
+      event :cancel, transitions_to: :canceled
       event :mark_as_judged, transitions_to: :judged
+      event :reinitialize, transitions_to: :new
     end
     state :judged
+    after_transition do |from, to, triggering_event, *event_args|
+      notify_observers(:"after_#{triggering_event}")
+    end
   end
 
   def self.active
     where(workflow_state: :in_progress)
   end
 
+  def self.ends_first
+    order(end_date: :asc)
+  end
+
+  def self.ends_last
+    order(end_date: :desc)
+  end
+
+  def self.past
+    where workflow_state: PAST_STATES
+  end
+
   def self.public
-    where "CAST(hproperties -> 'password_protect' AS BOOLEAN) = ?", false
+    where "CAST(hproperties -> 'password_protect' AS BOOLEAN) = ? OR CAST(hproperties -> 'password_protect' AS BOOLEAN) IS NULL", false
   end
 
   def allow_multiple_entries?
@@ -94,7 +129,7 @@ class Challenge < ActiveRecord::Base
   end
 
   def auto_approve?
-    true
+    auto_approve
   end
 
   def assign_new_slug
@@ -110,12 +145,12 @@ class Challenge < ActiveRecord::Base
     self.cover_image = CoverImage.find_by_id(val)
   end
 
-  def duration
-    @duration ||= read_attribute(:duration) || DEFAULT_DURATION
+  def display_banners?
+    platform and activate_banners and !password_protect?
   end
 
-  def end
-    notify_observers(:after_end)
+  def duration
+    @duration ||= read_attribute(:duration) || DEFAULT_DURATION
   end
 
   def ended?
@@ -162,15 +197,14 @@ class Challenge < ActiveRecord::Base
 
     self.start_date = Time.now
     save
-    notify_observers(:after_launch)
   end
 
   def locked? session
     password_protect? and session[:challenge_keys].try(:[], id) != Digest::SHA1.hexdigest(password)
   end
 
-  def mark_as_judged
-    notify_observers(:after_judging)
+  def mailchimp_setup?
+    activate_mailchimp_sync and mailchimp_api_key.present? and mailchimp_list_id.present?
   end
 
   def new_slug
@@ -184,6 +218,11 @@ class Challenge < ActiveRecord::Base
 
   def ready_for_judging?
     judging?
+  end
+
+  def sync_mailchimp!
+    MailchimpListManager.new(mailchimp_api_key, mailchimp_list_id).add(participants.reorder(''))
+    update_attribute :mailchimp_last_synced_at, Time.now
   end
 
   def unlock try_password

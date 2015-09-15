@@ -32,7 +32,7 @@ class ProjectCollection < ActiveRecord::Base
       event :approve, transitions_to: :approved
     end
     after_transition do |from, to, triggering_event, *event_args|
-      notify_observers 'after_status_updated' if to.to_s.in? %w(approved rejected)
+      notify_observers 'after_status_updated', from if to.to_s.in? %w(approved rejected)
     end
   end
 

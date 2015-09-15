@@ -102,7 +102,7 @@ class Event < GeographicCommunity
   end
 
   def mini_resume
-    hackathon.try(:mini_resume)
+    super.presence || hackathon.try(:mini_resume)
   end
 
   def name

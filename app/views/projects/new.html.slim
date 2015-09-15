@@ -140,7 +140,6 @@
           = simple_nested_form_for @project, html: { class: 'accept-file-upload form-horizontal disable-on-submit' }, wrapper: :bootstrap3_horizontal do |f|
             = f.error_notification
 
-            / # = render partial: 'projects/open_source_switch', locals: { f: f }
             = f.input :name, label: 'What is it called?'
             = f.input :one_liner, as: :text, input_html: { rows: 4 }, label: 'One-liner description, Twitter-style', hint: 'Max 140 characters'
             = f.input :product_tags_string, as: :hidden
@@ -164,6 +163,8 @@
                 p.help-block Will be cropped to fit 4:3 format. 1200x900px or higher recommended.
 
             = render partial: 'shared/image_form_bare', locals: { file_type: 'cover_image', attribute_type: 'cover_image', image_version: 'cover_mini_thumb', model: 'project' }
+
+            = f.input :content_type, collection: Project::CONTENT_TYPES, label: 'Project type', required: true
 
             .form-group
               .col-md-8.col-md-offset-4

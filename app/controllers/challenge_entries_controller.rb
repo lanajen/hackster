@@ -1,18 +1,22 @@
 class ChallengeEntriesController < ApplicationController
-  before_filter :authenticate_user!, only: [:edit, :update, :destroy]
+  before_filter :authenticate_user!, only: [:edit, :update, :update_workflow, :destroy]
   before_filter :load_challenge, only: [:index, :create]
-  before_filter :load_and_authorize_entry, only: [:edit, :update, :destroy]
+  before_filter :load_and_authorize_entry, only: [:edit, :update, :update_workflow, :destroy]
   layout :set_layout
 
   def index
     authorize! :admin, @challenge
-    @entries = @challenge.entries
+    @entries = @challenge.entries.joins(:project, :user).includes(:prizes, user: :avatar, project: :team).order(:created_at)
     @challenge = @challenge.decorate
+
+    @approved_entries_count = @entries.where(workflow_state: ChallengeEntry::APPROVED_STATES).count
+    @rejected_entries_count = @entries.where(workflow_state: 'unqualified').count
+    @new_entries_count = @entries.where(workflow_state: 'new').count
 
     # determines how many of each prizes were awarded and how many are left
     if @challenge.judging?
       assigned_prizes = {}
-      @entries.pluck(:prize_id).each do |id|
+      @entries.joins(:prizes).pluck('prizes.id').each do |id|
         assigned_prizes[id] = 0 unless id.in? assigned_prizes
         assigned_prizes[id] += 1
       end
@@ -30,12 +34,15 @@ class ChallengeEntriesController < ApplicationController
     @project = Project.find params[:project_id]
     authorize! :enter_in_challenge, @project
 
-    if tag = @challenge.platform.try(:platform_tags).try(:first).try(:name) and !tag.in? @project.platform_tags_cached
-      @project.platform_tags << PlatformTag.new(name: tag)
+    unless @project.valid_for_challenge?
+      flash[:alert] = "Oops! You can only enter finished projects into this challenge. Please complete the project and the write-up before submitting."
+      redirect_to @challenge and return
     end
+
     @project.private = false
     @project.workflow_state = 'idea' if @challenge.project_ideas
     @project.save
+
     entry = @challenge.entries.new
     entry.user_id = current_user.id
     entry.project_id = @project.id
@@ -53,15 +60,31 @@ class ChallengeEntriesController < ApplicationController
   end
 
   def update
-    action = params[:current_action]
     if @entry.update_attributes(params[:challenge_entry])
-      next_url = case action
-      when 'judging'
-        if next_entry = @challenge.entries.where.not(challenge_projects: { id: @entry.id }).where(challenge_projects: { prize_id: nil }).first
-          edit_challenge_entry_path(@challenge, next_entry)
-        else
-          flash[:notice] = "That was the last entry submitted!"
+      next_url = case params[:current_action]
+      when 'moderating'
+        if params[:commit] == 'Save'
+          flash[:notice] = "Changes saved."
           challenge_entries_path(@challenge)
+        else
+          if next_entry = @challenge.entries.where(workflow_state: :new).first
+            edit_challenge_entry_path(@challenge, next_entry)
+          else
+            flash[:notice] = "That was the last entry needing moderation!"
+            challenge_entries_path(@challenge)
+          end
+        end
+      when 'judging'
+        if params[:commit] == 'Save'
+          flash[:notice] = "Changes saved."
+          challenge_entries_path(@challenge)
+        else
+          if next_entry = @challenge.entries.where.not(challenge_projects: { id: @entry.id }).where(challenge_projects: { prize_id: nil }).joins(:project).first
+            edit_challenge_entry_path(@challenge, next_entry)
+          else
+            flash[:notice] = "That was the last entry submitted!"
+            challenge_entries_path(@challenge)
+          end
         end
       else
         user_return_to
@@ -72,19 +95,44 @@ class ChallengeEntriesController < ApplicationController
     end
   end
 
+  def update_workflow
+    if @entry.send "#{params[:event]}!"
+      flash[:notice] = "Entry #{event_to_human(params[:event])}."
+    else
+      flash[:alert] = "Couldn't #{event_to_human(params[:event])} entry."
+    end
+    redirect_to challenge_entries_path(@challenge)
+  end
+
   def destroy
     @entry.destroy
 
-    redirect_to challenge_entries_path, notice: "Entry deleted."
+    if current_user.id == @entry.user_id
+      redirect_to challenge_path(@challenge), notice: "Your entry has been withdrawn."
+    else
+      redirect_to challenge_entries_path(@challenge), notice: "Entry deleted."
+    end
   end
 
   private
+    def event_to_human event
+      case event
+      when 'approve'
+        'approved'
+      when 'disqualify'
+        'disqualified'
+      else
+        "#{event}ed"
+      end
+    end
+
     def load_challenge
       @challenge = Challenge.find params[:challenge_id]
     end
 
     def load_and_authorize_entry
       @entry = ChallengeEntry.find params[:id]
+      raise ActiveRecord::RecordNotFound unless params[:challenge_id] == @entry.challenge_id.to_s
       authorize! self.action_name.to_sym, @entry
       @challenge = @entry.challenge
     end

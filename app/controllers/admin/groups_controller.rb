@@ -5,11 +5,15 @@ class Admin::GroupsController < Admin::BaseController
       'created_at' => 'groups.created_at',
       'name' => 'groups.full_name',
       'user_name' => 'groups.user_name',
+      'type' => 'groups.type',
     }
 
     params[:sort_by] ||= 'created_at'
 
-    collection = Group.where(type: %w(Community Promotion Event List))
+    @default_types = %w(Community Promotion Event)
+    type ||= params[:type] || @default_types
+
+    collection = Group.where(type: type)
     @groups = filter_for collection, @fields
   end
 

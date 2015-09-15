@@ -37,12 +37,29 @@ class Users::RegistrationsController < Devise::RegistrationsController
       else
         set_flash_message :notice, :updated
       end
-      # Sign in the user bypassing validation in case his password changed
-      sign_in @user, :bypass => true
+      if params[:user][:password]  # password was changed
+        # reset the session and sign in the user bypassing validation
+        reset_session
+        sign_in @user, bypass: true
+        session_id = SessionManager.new(@user).new_session! expire: true  # create a new session and expire all others
+        session[:_session_id] = session_id
+        session[:_session_created_at] = Time.now.to_i
+      end
       redirect_to after_update_path_for(@user)
     else
       render "edit"
     end
+  end
+
+  def destroy
+    # tracking their profile and why they're leaving
+    data = current_user.to_tracker_profile.merge({ age: current_user.account_age })
+    track_event 'Deleted account', data
+
+    message = "Closed account aged #{current_user.account_age} days, because \"#{params[:reason]}\"."
+    AppLogger.new(message, 'closed_account', 'registrations_controller').log_and_notify
+
+    super
   end
 
   protected

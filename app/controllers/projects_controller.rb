@@ -2,7 +2,6 @@ class ProjectsController < ApplicationController
   before_filter :load_project, only: [:show, :embed, :print, :update, :destroy, :redirect_to_slug_route]
   before_filter :ensure_belongs_to_platform, only: [:show, :embed, :print, :update, :destroy, :redirect_to_slug_route]
   load_and_authorize_resource only: [:index, :new, :edit, :submit, :update_workflow]
-  before_filter :load_lists, only: [:show, :show_external]
   respond_to :html
   after_action :allow_iframe, only: :embed
   skip_before_filter :track_visitor, only: [:show, :embed]
@@ -21,6 +20,10 @@ class ProjectsController < ApplicationController
 
     if @by and @by.in? Project::FILTERS.keys
       @projects = @projects.send(Project::FILTERS[@by])
+    end
+
+    if params[:difficulty].try(:to_sym).in? Project::DIFFICULTIES.values
+      @projects = @projects.where(difficulty: params[:difficulty])
     end
 
     @projects = @projects.paginate(page: safe_page_params)
@@ -45,17 +48,8 @@ class ProjectsController < ApplicationController
     end
 
     @can_edit = (user_signed_in? and current_user.can? :edit, @project)
-    @can_update = (@can_edit and current_user.can? :update, @project)
-    @locked = (!@can_edit and @project.assignment.present? and @project.assignment.grading_activated? and @project.assignment.private_grades and cannot? :manage, @project.assignment)
 
-    @following = if user_signed_in?
-      # gets all follow_relations and sorts them in { user: [], group: [] } depending on type
-      current_user.follow_relations.select(:followable_id, :followable_type).inject({ user: [], group: [] }) {|h, f| f.followable_type == 'User' ? h[:user] << f.followable_id : h[:group] << f.followable_id; h }
-    else
-      { user: [], group: [] }
-    end
-
-    @challenge_entries = @project.challenge_entries.includes(:challenge).includes(:prize)
+    @challenge_entries = @project.challenge_entries.where(workflow_state: ChallengeEntry::APPROVED_STATES).includes(:challenge).includes(:prizes)
     @communities = @project.groups.where.not(groups: { type: 'Event' }).includes(:avatar).order(full_name: :asc)
 
     @hardware_parts = @project.part_joins.hardware
@@ -84,57 +78,6 @@ class ProjectsController < ApplicationController
       @other_projects = Project.public.most_popular.own.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).includes(:team).includes(:cover_image)
       @other_projects = @other_projects.with_group current_platform if is_whitelabel?
     end
-
-    # next/previous project in search
-    # if params[:ref] and params[:ref_id] and params[:offset]
-    #   offset = params[:offset].to_i
-    #   case params[:ref]
-    #   when 'assignment'
-    #     if @assignment = Assignment.find_by_id(params[:ref_id])
-    #       @next = @assignment.projects.order(:created_at).offset(offset + 1).first
-    #       @prev = @assignment.projects.order(:created_at).offset(offset - 1).first unless offset.zero?
-    #     end
-    #   when 'explore'
-    #     sort, by = params[:ref_id].split(/_/)
-
-    #     @projects = Project
-    #     if sort.in? Project::SORTING.keys
-    #       @projects = @projects.send(Project::SORTING[sort])
-    #     end
-
-    #     if by.in? Project::FILTERS.keys
-    #       @projects = @projects.send(Project::FILTERS[by])
-    #     end
-
-    #     @next = @projects.indexable.offset(offset + 1).first
-    #     @prev = @projects.indexable.offset(offset - 1).first unless offset.zero?
-
-    #   when 'event'
-    #     if @event = Event.find_by_id(params[:ref_id])
-    #       @next = @event.projects.live.order('projects.respects_count DESC').offset(offset + 1).first
-    #       @prev = @event.projects.live.order('projects.respects_count DESC').offset(offset - 1).first unless offset.zero?
-    #     end
-
-    #   when 'search'
-    #     params[:q] = params[:ref_id]
-    #     params[:type] = 'project'
-    #     params[:per_page] = 1
-    #     params[:offset] = offset + 1
-    #     params[:include_external] = false
-    #     @next = SearchRepository.new(params).search.results.first
-    #     unless offset.zero?
-    #       params[:offset] = offset - 1
-    #       @prev = SearchRepository.new(params).search.results.first
-    #     end
-    #     params[:offset] = offset
-    #     params.delete(:include_external)
-    #   when 'user'
-    #     if @user = User.find_by_id(params[:ref_id])
-    #       @next = @user.projects.live.order(start_date: :desc, created_at: :desc).offset(offset + 1).first
-    #       @prev = @user.projects.live.order(start_date: :desc, created_at: :desc).offset(offset - 1).first unless offset.zero?
-    #     end
-    #   end
-    # end
 
     @team_members = @project.team_members.includes(:user).includes(user: :avatar)
 
@@ -261,6 +204,8 @@ class ProjectsController < ApplicationController
   end
 
   def edit
+    redirect_to @project, alert: "Your project is locked and cannot be edited at this time." if @project.locked? and !current_user.try(:is?, :admin)
+
     title 'Edit project'
     initialize_project
     @team = @project.team
@@ -347,10 +292,16 @@ class ProjectsController < ApplicationController
 
   def submit
     authorize! :edit, @project
+    msg = 'Your assignment has been submitted. '
     @project.assignment_submitted_at = Time.now
-    @project.locked = true if @project.assignment.past_due?
+    if @project.assignment.past_due?
+      @project.locked = true
+      msg += 'The project will be locked for modifications until grades are sent out.'
+    else
+      msg += "You can still make modifications to the project until the submission deadline on #{l @project.assignment.submit_by_date.in_time_zone(PDT_TIME_ZONE)} PT."
+    end
     @project.save
-    redirect_to @project, notice: 'Your assignment has been submitted. The project will be locked for modifications until grades are sent out.'
+    redirect_to @project, notice: msg
   end
 
   private
@@ -365,15 +316,5 @@ class ProjectsController < ApplicationController
     def initialize_project
       @project.build_logo unless @project.logo
       @project.build_cover_image unless @project.cover_image
-    end
-
-    def load_lists
-      @lists = if user_signed_in?
-        if current_user.is? :admin
-          List.where(type: 'List').order(:full_name)
-        else
-          current_user.lists.order(:full_name)
-        end
-      end
     end
 end

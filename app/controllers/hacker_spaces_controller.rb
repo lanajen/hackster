@@ -1,7 +1,7 @@
 class HackerSpacesController < ApplicationController
   before_filter :authenticate_user!, only: [:edit, :update]
   before_filter :load_hacker_space, only: [:show, :redirect_to_show, :update]
-  layout 'group_shared', only: [:edit, :update, :show]
+  layout 'group_shared', only: [:show]
   respond_to :html
 
   def index
@@ -86,7 +86,7 @@ class HackerSpacesController < ApplicationController
     else
       @hacker_space.build_avatar unless @hacker_space.avatar
       respond_to do |format|
-        format.html { render action: 'edit' }
+        format.html { render 'groups/shared/edit' }
         format.js { render json: { group: @hacker_space.errors }, status: :unprocessable_entity }
       end
     end

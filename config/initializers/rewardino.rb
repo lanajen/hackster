@@ -284,25 +284,25 @@ Rewardino::Event.create!({
   users_count_method: -> (project) { project.team_members_count }
 })
 
-Rewardino::Event.create!({
-  code: :accepted_invitation_inviter,
-  name: 'Friend invitation accepted',
-  description: "A friend you invited has accepted their invitation",
-  points: 15,
-  date_method: -> (user) { user.invitation_accepted_at },
-  # model_table: 'users',
-  models_method: -> (user) { user.invitees.invitation_accepted }
-})
+# Rewardino::Event.create!({
+#   code: :accepted_invitation_inviter,
+#   name: 'Friend invitation accepted',
+#   description: "A friend you invited has accepted their invitation",
+#   points: 15,
+#   date_method: -> (user) { user.invitation_accepted_at },
+#   # model_table: 'users',
+#   models_method: -> (user) { user.invitees.invitation_accepted }
+# })
 
-Rewardino::Event.create!({
-  code: :new_comment,
-  name: 'New comment',
-  description: "You posted a new comment",
-  points: 10,
-  date_method: -> (comment) { comment.created_at },
-  # model_table: 'comments',
-  models_method: -> (user) { user.comments.where(commentable_type: 'Project') }
-})
+# Rewardino::Event.create!({
+#   code: :new_comment,
+#   name: 'New comment',
+#   description: "You posted a new comment",
+#   points: 10,
+#   date_method: -> (comment) { comment.created_at },
+#   # model_table: 'comments',
+#   models_method: -> (user) { user.comments.where(commentable_type: 'Project') }
+# })
 
 Rewardino::Event.create!({
   code: :new_respect,

@@ -1,13 +1,12 @@
 class BaseMailer < ActionMailer::Base
   ADMIN_EMAIL = 'Ben<ben@hackster.io>'
   DEFAULT_EMAIL = 'Hackster.io<hi@hackster.io>'
-  include SendGrid
+  add_template_helper ApplicationHelper
   add_template_helper UrlHelper
 
   def deliver_email context, template, opts={}
     puts "#{Time.now.to_s} - Sending email '#{template}'."
 
-    sendgrid_category template
     @context = context
 
     if context.include? :users
@@ -29,8 +28,12 @@ class BaseMailer < ActionMailer::Base
     def default_headers
       {
         from: @context[:from_email] || DEFAULT_EMAIL,
-        reply_to: @context[:from_email] || DEFAULT_EMAIL,
+        reply_to: @context[:reply_to].presence || @context[:from_email] || DEFAULT_EMAIL,
       }
+    end
+
+    def extract_emails users
+      users.map { |user| user.email }
     end
 
     def get_value_for_token token, opts={}
@@ -122,7 +125,7 @@ class BaseMailer < ActionMailer::Base
     def send_bulk_email type, opts={}
       @users = @context[:users]
       @headers = {
-        to: DEFAULT_EMAIL,
+        to: extract_emails(@users),
       }
       send_email type
     end
@@ -137,14 +140,20 @@ class BaseMailer < ActionMailer::Base
 
       headers = {
         subject: substitute_in(subject),
+        tags: [type],
       }.merge(@headers)
 
       if @users.present?
-        sendgrid_recipients @users.map { |user| user.email }
+        merge_vars = {}
         premailer.to_plain_text.scan(/\|[a-z_:]*\|/).each do |token|
-          substitutes = @users.map { |user| get_value_for_token(token, { user: user }) }
-          sendgrid_substitute token, substitutes
+          @users.each do |user|
+            substitute = get_value_for_token(token, { user: user })
+            merge_vars[user.email] ||= []
+            merge_vars[user.email] << { name: token, content: substitute }
+          end
         end
+        # raise merge_vars.inspect
+        headers[:merge_vars] = merge_vars
       end
 
       # raise premailer.to_inline_css.to_s

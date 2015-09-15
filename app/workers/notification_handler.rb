@@ -68,12 +68,17 @@ class NotificationHandler
       when :challenge
         context[:model] = challenge = context[:challenge] = Challenge.find context_id
         context[:users] = challenge.admins
-      when :challenge_entry
+      when :challenge_entry, :challenge_entry_admin
         context[:model] = entry = context[:entry] = ChallengeEntry.find context_id
-        context[:challenge] = entry.challenge
+        context[:challenge] = challenge = entry.challenge
         context[:project] = entry.project
-        context[:user] = entry.user
-        context[:prize] = entry.prize
+        if context_type.to_sym == :challenge_entry
+          context[:user] = entry.user
+          context[:prizes] = entry.prizes
+        else
+          context[:author] = entry.user
+          context[:users] = challenge.admins
+        end
       when :comment
         context[:model] = comment = context[:comment] = Comment.find(context_id)
         author = context[:author] = comment.user
@@ -106,6 +111,15 @@ class NotificationHandler
         user = User.find context_id
         relations = {}
 
+        # double check that we haven't sent the email yet to prevent doubles
+        if user.last_sent_projects_email_at.try(:>, 6.hours.ago)
+          message = "Prevented sending duplicate new_projects email to #{user.email}."
+          log_line = LogLine.create(message: message, log_type: 'warning', source: 'notification_handler')
+
+          context[:users] = []  # send no email
+          return
+        end
+
         # get projects newly attached to followed platform
         platform_projects = user.subscribed_to?(notification_type, 'follow_platform_activity') ? Project.select('projects.*, follow_relations.followable_id').self_hosted.joins(:platforms).where(groups: { private: false }).where('projects.made_public_at > ? AND projects.made_public_at < ?', 24.hours.ago, Time.now).approved.joins("INNER JOIN follow_relations ON follow_relations.followable_id = groups.id AND follow_relations.followable_type = 'Group'").where(follow_relations: { user_id: user.id }) : []
         platform_projects.each do |project|
@@ -115,7 +129,7 @@ class NotificationHandler
         end
 
         # get projects newly made public by followed users
-        user_projects = user.subscribed_to?(notification_type, 'follow_user_activity') ? Project.select('projects.*, follow_relations.followable_id').self_hosted.joins(:users).where('projects.made_public_at > ?', 24.hours.ago).approved.joins("INNER JOIN follow_relations ON follow_relations.followable_id = users.id AND follow_relations.followable_type = 'User'").where(follow_relations: { user_id: user.id }) : []
+        user_projects = user.subscribed_to?(notification_type, 'follow_user_activity') ? Project.select('projects.*, follow_relations.followable_id').self_hosted.joins(:users).where('projects.made_public_at > ? AND projects.made_public_at < ?', 24.hours.ago, Time.now).approved.joins("INNER JOIN follow_relations ON follow_relations.followable_id = users.id AND follow_relations.followable_type = 'User'").where(follow_relations: { user_id: user.id }) : []
         user_projects.each do |project|
           _user = User.find(project.followable_id)
           relations[_user] = {} unless _user.in? relations.keys
@@ -123,7 +137,7 @@ class NotificationHandler
         end
 
         # get projects newly added to lists
-        list_projects = user.subscribed_to?(notification_type, 'follow_list_activity') ? Project.select('projects.*, follow_relations.followable_id').self_hosted.joins(:lists).where('project_collections.created_at > ?', 24.hours.ago).joins("INNER JOIN follow_relations ON follow_relations.followable_id = groups.id AND follow_relations.followable_type = 'Group'").where(follow_relations: { user_id: user.id }) : []
+        list_projects = user.subscribed_to?(notification_type, 'follow_list_activity') ? Project.select('projects.*, follow_relations.followable_id').self_hosted.joins(:lists).where('project_collections.created_at > ? AND projects.made_public_at < ?', 24.hours.ago, Time.now).joins("INNER JOIN follow_relations ON follow_relations.followable_id = groups.id AND follow_relations.followable_type = 'Group'").where(follow_relations: { user_id: user.id }) : []
         list_projects.each do |project|
           list = List.find(project.followable_id)
           relations[list] = {} unless list.in? relations.keys
@@ -150,6 +164,7 @@ class NotificationHandler
         context[:projects] = relations
         if context[:projects].any?
           context[:user] = user
+          user.update_attribute :last_sent_projects_email_at, Time.now
         else
           context[:users] = []  # hack to send no email
         end
@@ -183,9 +198,13 @@ class NotificationHandler
         end
       when :invited
         context[:model] = user = context[:user] = User.find(context_id)
-        context[:inviter] = user.invited_by if user.invited_by
+        if user.invited_by
+          inviter = context[:inviter] = user.invited_by
+          context[:reply_to] = inviter.email
+        end
       when :invitation
         context[:model] = invited = context[:invited] = User.find(context_id)
+        context[:reply_to] = invited.email
         context[:user] = invited.invited_by if invited.invited_by
       when :issue
         context[:model] = issue = context[:issue] = Issue.find(context_id)
@@ -208,7 +227,8 @@ class NotificationHandler
         context[:group] = group = member.group
         context[:project] = group.project if group.is? :team
         context[:user] = member.user
-        context[:inviter] = member.invited_by
+        inviter = context[:inviter] = member.invited_by
+        context[:reply_to] = inviter.email
       when :membership_request
         context[:model] = member = context[:member] = Member.find(context_id)
         context[:group] = group = member.group

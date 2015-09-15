@@ -3,7 +3,7 @@
   = auto_discovery_link_tag :rss, projects_path(format: :rss, sort: 'recent'), title: "Most recent projects - #{site_name}"
   = auto_discovery_link_tag :atom, projects_path(format: :atom, sort: 'recent'), title: "Most recent projects - #{site_name}"
 
-= inserts_stats_for current_platform.id, 'Group'
+= inserts_stats_for current_platform
 
 - content_for :head do
   meta(property="og:title" content="#{current_platform.name} projects")
@@ -28,8 +28,8 @@
       = link_to @announcement.title, platform_announcement_path(@announcement), class: 'alert-link'
   - elsif @challenge
     .alert.alert-info.text-center
-      strong> #{current_platform.name} is having a challenge!
-      ' Join the
+      strong> #{current_platform.name} is holding a contest!
+      ' Join
       ==> link_to @challenge.name, "https://www.hackster.io/challenges/#{@challenge.slug}", class: 'alert-link'
       | on Hackster.io
 
@@ -78,6 +78,16 @@
           li*{ class: "#{'active' if params[:by] == '7days'}" } = link_to 'Last 7 days', root_path(by: '7days', sort: params[:sort])
           li*{ class: "#{'active' if params[:by] == '30days'}" } = link_to 'Last 30 days', root_path(by: '30days', sort: params[:sort])
           / li*{ class: "#{'active' if params[:by] == 'wip'}" } = link_to 'Work in progress', root_path(by: 'wip', sort: params[:sort])
+
+  / - if params[:show_tags]
+    .row
+      css:
+        @media (min-width: 768px) { .suggestions { max-height:30px;overflow:hidden; } }
+      .col-sm-12.suggestions
+        h3 Popular tags:
+        ul.list-unstyled.list-inline
+          - @tags.each do |tag|
+            li= link_to tag, tag_path(tag)
 
   - if @projects.any?
     .row.thumb-list

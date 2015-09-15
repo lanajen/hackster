@@ -993,18 +993,27 @@ input.placeholder, textarea.placeholder {
   text-decoration: none;
 }
 
+#hello-world-container {
+  height: 60px;
+  display: none;
+}
 #hello-world {
   display: none;
-  padding: 10px 0;
-  @include font-size(12);
+  padding: 18px 0 17px;
   border-bottom: 1px solid #036394;
   background: #08C;
   color: white;
   font-weight: bold;
   letter-spacing: 0.5px;
-  text-shadow: 1px 1px 1px #036394;
+  height: 60px;
+  font-size: 0.9em;
+  &.fixed {
+    position: fixed;
+    z-index: 10000;
+    width: 100%;
+  }
   .close {
-    @include font-size(12);
+    font-size: 1.5em;
     color: white;
     @include opacity(0.9);
   }
@@ -1343,6 +1352,9 @@ input.cmn-toggle ~ .option-checked, input.cmn-toggle:checked ~ .option-unchecked
 }
 .mg-40{
   margin-bottom: 40px !important;
+}
+.rmg-10 {
+  margin-right: 10px;
 }
 .tmg-20 {
   margin-top: 20px !important;

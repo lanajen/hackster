@@ -5,6 +5,8 @@ class Team < Group
   hstore_column :hproperties, :disable_team_append, :boolean
   hstore_column :hproperties, :generated_user_name, :string
 
+  validate :has_team_members, if: proc{|t| t.persisted? }
+
   before_save :update_user_name
 
   def self.default_access_level
@@ -51,4 +53,9 @@ class Team < Group
     assign_new_user_name if new_user_name_changed? and new_user_name.present?
     user_name
   end
+
+  private
+    def has_team_members
+      errors.add 'members_attributes.1.user_id', "Team needs to have at least one member. Please discard your changes." if members.includes(:user).reject{|m| m.marked_for_destruction? and !m.user.is?(:admin) }.count == 0
+    end
 end

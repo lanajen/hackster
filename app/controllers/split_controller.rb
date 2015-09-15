@@ -3,8 +3,10 @@ class SplitController < ApplicationController
     experiment = params[:experiment]
     control = params[:control]
     alternatives = params[:alternatives]
-    alternative = ab_test(experiment, control, *alternatives)
-    render json: {:alternative => alternative}
+    alternative = (control and alternatives) ? ab_test(experiment, control, *alternatives) : ab_test(experiment)
+    render json: { alternative: alternative }
+  rescue Split::ExperimentNotFound
+    render status: :unprocessable_entity, nothing: true
   end
 
   def finished_test
@@ -15,8 +17,9 @@ class SplitController < ApplicationController
 
   def finish_and_redirect
     experiment = params[:experiment]
-    finished(experiment)
-    redirect_to get_redirect_url_for(experiment)
+    goal = params[:goal]
+    finished goal.present? ? { :"#{experiment}" => goal } : experiment
+    redirect_to params[:redirect_to] || get_redirect_url_for(experiment)
   end
 
   def validate_step

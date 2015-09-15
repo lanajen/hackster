@@ -1,11 +1,11 @@
 class StoreProductAction
-  attr_accessor :url, :followable, :type, :message
+  attr_accessor :url, :followable, :type, :message, :handle
 
   def completed_by? user
     case @type
     when 'follow'
       user.following? @followable
-    when 'newsletter_url', 'signup'
+    when 'newsletter_url', 'signup', 'twitter'
       false
     end
   end
@@ -17,6 +17,8 @@ class StoreProductAction
       @followable = options['followable_type'].constantize.find(options['followable_id'])
     when 'newsletter_url', 'signup'
       @url = options['url']
+    when 'twitter'
+      @handle = options['handle']
     end
     @message = options['message']
   end
@@ -29,6 +31,8 @@ class StoreProductAction
       "Signup for their newsletter at #{@url}"
     when 'signup'
       "Register for an account on #{@url}"
+    when 'twitter'
+      "Follow #{@handle} on Twitter"
     end
   end
 end

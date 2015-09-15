@@ -6,7 +6,7 @@ var elementTypes = 'p,h3,h4,i,b,a';
 var progressTpl = '<div class="embed-overlay is-visible"><div class="center-align-wrapper"><div class="center-align-inner"><p class="progress-legend">Uploading...</p><div class="progress progress-striped active"><div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%;"></div></div></div></div>';
 
 var embedOverlay = {
-  main: '<div class="embed-overlay"><div class="center-align-wrapper"><div class="center-align-inner embed-overlay-content"><button class="btn btn-danger btn-lg" data-action="delete-slide"><i class="fa fa-trash-o"></button></div></div></div>',
+  main: '<span class="embed-overlay"><span class="center-align-wrapper"><span class="center-align-inner embed-overlay-content"><button class="btn btn-danger btn-lg" data-action="delete-slide"><i class="fa fa-trash-o"></button></span></span></span>',
   moveLeftBtn: '<button class="btn btn-default btn-lg" data-action="move-left"><i class="fa fa-arrow-left"></button>',
   moveRightBtn: '<button class="btn btn-default btn-lg" data-action="move-right"><i class="fa fa-arrow-right"></button>'
 }
@@ -269,7 +269,7 @@ $(function() {
       _.element.addClass('editable-activated');
       $('#medium-editor, #model-editor').addClass('editor-active');
 
-      $(embedOverlay.main).appendTo(_.element.find('.image-gallery figure, .image-gallery .figure'));
+      $(embedOverlay.main).appendTo(_.element.find('.image-gallery .embed-img'));
       $(embedOverlay.moveLeftBtn).appendTo(_.element.find('.image-gallery.slick-slider .embed-overlay-content'));
       $(embedOverlay.moveRightBtn).appendTo(_.element.find('.image-gallery.slick-slider .embed-overlay-content'));
 
@@ -973,6 +973,24 @@ $(function () {
     focusAtBeginningOfRange(selection.anchorNode);
   });
 
+  // $('#medium-editor').on('keypress keydown', '.editable.editable-activated .is-default-text .default-text', function(e){
+  //   console.log('.is-default-text .default-text', $(this));
+  //   node = $(this);
+
+  //   if (e.which !== 0 && e.charCode !== 0 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+  //     node = node.parent();
+  //     focusAtBeginningOfRange(node[0]);
+  //     node.find('.default-text').remove();
+  //     node.removeClass('is-default-text');
+  //   } else if (e.keyCode == 39) {
+  //     e.preventDefault();
+  //     focusAtBeginningOfRange(node[0]);
+  //   // prevent deleting element
+  //   } else if (e.keyCode == 8) {
+  //     e.preventDefault();
+  //   }
+  // });
+
   $('#medium-editor').on('keypress keydown', '.editable.editable-activated .is-default-text', function(e){
     // console.log($(this));
     node = $(this);
@@ -1190,8 +1208,8 @@ $(function () {
         var reader = new FileReader();
         reader.onload = function(e) {
           el = $('#' + data.context);
-          img = '<div style="background-image:url(' + e.target.result + ')" class="embed-img"></div>';
-          $(img).appendTo(el.find('figure, .figure'));
+          img = '<span class="embed-img"><img src="' + e.target.result + '" /></span>';
+          $(img).appendTo(el.find('figure'));
 
           slider = el.closest('.slick-slider');
           if (slider.length > 0) {
@@ -1203,7 +1221,7 @@ $(function () {
         reader.readAsDataURL(data.files[0]);
       },
       tpl: function(iFile) {
-        return $('<div class="image" id="tmp-file-' + iFile + '"><div class="figure" contenteditable="false">' + progressTpl + '</div></div>');
+        return $('<div class="image" id="tmp-file-' + iFile + '"><figure contenteditable="false">' + progressTpl + '</figure></div>');
       }
     },
     document: {
@@ -1295,9 +1313,9 @@ $(function () {
         },
         success: function(data){
           editor.iFile++;
-          tpl = $('<div class="image" id="tmp-file-' + editor.iFile + '"><div class="figure" contenteditable="false">' + progressTpl + '</div></div>');
-          img = '<div style="background-image:url(' + fileUrl + ')" class="embed-img"></div>';
-          $(img).appendTo(tpl.find('.figure'));
+          tpl = $('<div class="image" id="tmp-file-' + editor.iFile + '"><figure contenteditable="false">' + progressTpl + '</figure></div>');
+          img = '<span class="embed-img"><img src="' + fileUrl + '"/></span>';
+          $(img).appendTo(tpl.find('figure'));
           prgrss = tpl.find('.progress-bar');
           prgrss.css('width:100%');
           prgrss.addClass('progress-bar-success');
@@ -1334,17 +1352,19 @@ $(function () {
           switch (data.status){
             case 'complete':
               el.attr('id', '');
-              el.find('.embed-overlay').replaceWith(embedOverlay.main);
               updateFileUploadDragZone();
               id = el.attr('data-file-id');
               if (el.data('file-type') == 'image') {
+                el.find('.embed-overlay').remove();
+                el.find('.embed-img').append(embedOverlay.main);
                 timestamp = new Date().getTime();
-                $("<div class='figcaption widget-attribute widget-attribute-editable' data-attribute='[images_attributes][" + timestamp + "][title]' contenteditable='true' data-default-text='Type in a caption' data-disable-toolbar='true'></div><span class='widget-attribute' data-attribute='[images_attributes][" + timestamp + "][id]' contenteditable='true' data-value='" + id + "'></span><span class='widget-attribute position' data-attribute='[images_attributes][" + timestamp + "][position]' contenteditable='true'></span>").appendTo(el.find('figure, .figure'));
+                $("<figcaption class='widget-attribute widget-attribute-editable' data-attribute='[images_attributes][" + timestamp + "][title]' contenteditable='true' data-default-text='Type in a caption for this image' data-disable-toolbar='true'></figcaption><span class='widget-attribute' data-attribute='[images_attributes][" + timestamp + "][id]' contenteditable='true' data-value='" + id + "'></span><span class='widget-attribute position' data-attribute='[images_attributes][" + timestamp + "][position]' contenteditable='true'></span>").appendTo(el.find('figure'));
                 el.closest('.image-gallery-container').find('select').append('<option selected="selected" value="' + id + '"></option>');
                 mediumResetPositions(el.closest('.image-gallery').find('.position'));
                 $(embedOverlay.moveLeftBtn).appendTo(el.find('.embed-overlay-content'));
                 $(embedOverlay.moveRightBtn).appendTo(el.find('.embed-overlay-content'));
               } else {
+                el.find('.embed-overlay').replaceWith(embedOverlay.main);
                 $("<div class='figcaption' contenteditable='true' data-default-text='Type in a caption' data-disable-toolbar='true'></div>").appendTo(el.find('.figure'));
                 insertBlankParagraphAfter(el);
                 stylizeEmbedFrames(editor.element);
@@ -1447,24 +1467,39 @@ $(function () {
     },
 
     done: function(e, data){
-      fileType = $('#' + data.context).data('file-type');
+      var el = $('#' + data.context);
+      fileType = el.data('file-type');
+      var attachableId, attachableType;
+      if (fileType == 'image') {
+        attachableId = el.closest('.embed-frame').data('widget-id');
+        attachableType = 'Widget';
+      }
 
-      createFileOnServerAfterUpload(data, fileType, function(data){
+      createFileOnServerAfterUpload(data, fileType, attachableId, attachableType, function(data){
         id = data.id;
         el = $('#' + data.context);
         el.attr('id', '');
         el.attr('data-file-id', id);
         el.attr('data-type', 'file');
-        el.find('.embed-overlay').replaceWith(embedOverlay.main);
         updateFileUploadDragZone();
         if (el.data('file-type') == 'image') {
+          el.find('.embed-overlay').remove();
+          el.find('.embed-img').append(embedOverlay.main);
           timestamp = new Date().getTime();
-          $("<div class='figcaption widget-attribute widget-attribute-editable' data-attribute='[images_attributes][" + timestamp + "][title]' contenteditable='true' data-default-text='Type in a caption' data-disable-toolbar='true'></div><span class='widget-attribute' data-attribute='[images_attributes][" + timestamp + "][id]' contenteditable='true' data-value='" + id + "'></span><span class='widget-attribute position' data-attribute='[images_attributes][" + timestamp + "][position]' contenteditable='true'></span>").appendTo(el.find('figure, .figure'));
+          $("<figcaption class='widget-attribute widget-attribute-editable' data-attribute='[images_attributes][" + timestamp + "][title]' contenteditable='true' data-default-text='Type in a caption for this image' data-disable-toolbar='true'></figcaption><span class='widget-attribute' data-attribute='[images_attributes][" + timestamp + "][id]' contenteditable='true' data-value='" + id + "'></span><span class='widget-attribute position' data-attribute='[images_attributes][" + timestamp + "][position]' contenteditable='true'></span>").appendTo(el.find('figure'));
           el.closest('.image-gallery-container').find('select').append('<option selected="selected" value="' + id + '"></option>');
           mediumResetPositions(el.closest('.image-gallery').find('.position'));
           $(embedOverlay.moveLeftBtn).appendTo(el.find('.embed-overlay-content'));
           $(embedOverlay.moveRightBtn).appendTo(el.find('.embed-overlay-content'));
+          slider = el.closest('.slick-slider');
+          if (slider.length > 0) {
+            var curSlide = slider.slick('slickCurrentSlide');
+            slider.slick('unslick');
+            loadSlickSlider();
+            slider.slick('slickGoTo', curSlide);
+          }
         } else {
+          el.find('.embed-overlay').replaceWith(embedOverlay.main);
           $("<div class='figcaption' contenteditable='true' data-default-text='Type in a caption' data-disable-toolbar='true'></div>").appendTo(el.find('.figure'));
           insertBlankParagraphAfter(el);
           stylizeEmbedFrames(editor.element);
@@ -1475,83 +1510,83 @@ $(function () {
     }
   });
 
-  $('#upload-cover-image').fileupload({
-    dataType: 'xml', // This is really important as s3 gives us back the url of the file in a XML document
-    limitMultifileUploads: 1,
-    sequentialUploads: true,
-    limitConcurrentUploads: 1,
-    fileInput: $('#upload-cover-image form input:file'),
-    dropZone: $('.project-banner'),
+  // $('#upload-cover-image').fileupload({
+  //   dataType: 'xml', // This is really important as s3 gives us back the url of the file in a XML document
+  //   limitMultifileUploads: 1,
+  //   sequentialUploads: true,
+  //   limitConcurrentUploads: 1,
+  //   fileInput: $('#upload-cover-image form input:file'),
+  //   dropZone: $('.project-banner'),
 
-    add: function(e, data) {
-      file = data.files[0];
+  //   add: function(e, data) {
+  //     file = data.files[0];
 
-      validations = {
-        maxFileSize: $('#medium-file-upload input[name="file"]').data('max-file-size'),
-        fileType: 'jpg,jpeg,png,gif,bmp'
-      }
-      // dataFileTypes = $('#medium-file-upload input[name="file"]').data('file-type');
-      // if (dataFileTypes != 'undefined') {
-      //   validations['fileType'] = dataFileTypes;
-      // }
-      errors = checkFileForErrors(file, validations);
-      // fileType = detectFileType(file);
+  //     validations = {
+  //       maxFileSize: $('#medium-file-upload input[name="file"]').data('max-file-size'),
+  //       fileType: 'jpg,jpeg,png,gif,bmp'
+  //     }
+  //     // dataFileTypes = $('#medium-file-upload input[name="file"]').data('file-type');
+  //     // if (dataFileTypes != 'undefined') {
+  //     //   validations['fileType'] = dataFileTypes;
+  //     // }
+  //     errors = checkFileForErrors(file, validations);
+  //     // fileType = detectFileType(file);
 
-      var el = $('.project-banner');
+  //     var el = $('.project-banner');
 
-      data.context = 'home';
+  //     data.context = 'home';
 
-      if (errors.length > 0) {
-        // $('#' + data.context).replaceWith("<div class='help-block has-error upload-error'>Couldn't upload " + file.name + ': ' + errors.join(', ')+'</span>');
-        $('#' + data.context).remove();
-        showErrorBubble("Couldn't upload " + file.name + ': ' + errors.join(', '));
-      } else {
-        $(progressTpl).appendTo(el);
-        var reader = new FileReader();
-        reader.onload = function(e) {
-          el = $('.project-banner');
-          el.data('old-bg-img', el.css('background-image'));
-          el.css('background-image', 'url(' + e.target.result + ')');
-        }
-        reader.readAsDataURL(file);
+  //     if (errors.length > 0) {
+  //       // $('#' + data.context).replaceWith("<div class='help-block has-error upload-error'>Couldn't upload " + file.name + ': ' + errors.join(', ')+'</span>');
+  //       $('#' + data.context).remove();
+  //       showErrorBubble("Couldn't upload " + file.name + ': ' + errors.join(', '));
+  //     } else {
+  //       $(progressTpl).appendTo(el);
+  //       var reader = new FileReader();
+  //       reader.onload = function(e) {
+  //         el = $('.project-banner');
+  //         el.data('old-bg-img', el.css('background-image'));
+  //         el.css('background-image', 'url(' + e.target.result + ')');
+  //       }
+  //       reader.readAsDataURL(file);
 
-        uploadToS3(data, file, $(this));
-      }
-    },
+  //       uploadToS3(data, file, $(this));
+  //     }
+  //   },
 
-    fail: function(e, data){
-      form = $('#upload-cover-image');
-      handleUploadErrors(form);
-      var el = $('.project-banner');
-      el.css('background-image', 'url(' + el.data('old-bg-img') + ')');
-    },
+  //   fail: function(e, data){
+  //     form = $('#upload-cover-image');
+  //     handleUploadErrors(form);
+  //     var el = $('.project-banner');
+  //     el.css('background-image', 'url(' + el.data('old-bg-img') + ')');
+  //   },
 
-    progress: function(e, data) {
-      showUploadProgress(data);
-    },
+  //   progress: function(e, data) {
+  //     showUploadProgress(data);
+  //   },
 
-    success: function(data) {
-      uploadAssignUrl(data);
-    },
+  //   success: function(data) {
+  //     uploadAssignUrl(data);
+  //   },
 
-    done: function(e, data){
-      createFileOnServerAfterUpload(data, 'cover_image', function(data){
-        var id = data.id;
-        formData = { project: { cover_image_id: id }};
-        $('#upload-cover-image a').attr('data-value', id);
-        editor.saveModel(
-          function(){
-            $('.project-banner .embed-overlay').remove();
-          }, function(){
-            var el = $('.project-banner');
-            el.css('background-image', 'url(' + el.data('old-bg-img') + ')');
-            $('.project-banner .embed-overlay').remove();
-            showErrorBubble('the new cover image');
-          },
-          formData);
-      });
-    }
-  });
+  //   done: function(e, data){
+  //     createFileOnServerAfterUpload(data, 'cover_image', null, null, function(data){
+  //       var id = data.id;
+  //       formData = { project: { cover_image_id: id }};
+  //       $('#upload-cover-image a').attr('data-value', id);
+  //       editor.saveModel(
+  //         function(){
+  //           $('.project-banner .embed-overlay').remove();
+  //         }, function(){
+  //           var el = $('.project-banner');
+  //           el.css('background-image', 'url(' + el.data('old-bg-img') + ')');
+  //           $('.project-banner .embed-overlay').remove();
+  //           showErrorBubble('the new cover image');
+  //         },
+  //         formData);
+  //     });
+  //   }
+  // });
 
   // $('#sketchfab-upload').fileupload({
   //   dataType: 'xml', // This is really important as s3 gives us back the url of the file in a XML document
@@ -2158,7 +2193,7 @@ function uploadAssignUrl(data) {
   form.attr('data-url', url);  // pass it to 'done'
 }
 
-function createFileOnServerAfterUpload(data, fileType, successCallback) {
+function createFileOnServerAfterUpload(data, fileType, attachableId, attachableType, successCallback) {
   $('#' + data.context).data('data', data);
 
   form = $('#medium-file-upload');
@@ -2173,8 +2208,8 @@ function createFileOnServerAfterUpload(data, fileType, successCallback) {
       file_url: url,
       file_type: fileType,
       context: data.context,
-      attachable_id: editor.modelId,
-      attachable_type: editor.modelType
+      attachable_id: (attachableId || editor.modelId),
+      attachable_type: (attachableType || editor.modelType)
     },
     async: false,
     success: function(data) { successCallback(data) },

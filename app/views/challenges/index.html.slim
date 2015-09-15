@@ -10,35 +10,18 @@
               p Show us what you're made of by entering our sponsored challenges and take the chance to win awesome prizes!
               hr
 
+          h2 Challenges open for submission
           .row
-            .col-sm-6.category-row
-              .category-col
-                .thumb.category-thumb.challenge-thumb
-                  .thumb-image.has-link-overlay style="background-image:url('https://halckemy.s3.amazonaws.com/uploads/cover_image/file/36555/cover_wide_HeroImage4Cropped2.png')"
-                    = link_to '', '/challenges/hardware-home', class: 'link-overlay'
-                    .thumb-image-inner
-                      h4
-                        = link_to 'Give Your Hardware a Home', '/challenges/hardware-home'
-                        br
-                        a.small sponsored by Autodesk
-                      p
-                        strong Win a Type A Series 1 3D Printer
+            - @active_challenges.each do |challenge|
+              = render partial: 'challenge_thumb', locals: { challenge: challenge.decorate, thumb_size: :large }
 
-            .col-sm-6.category-row
-              .category-col
-                .thumb.category-thumb.challenge-thumb
-                  .thumb-image.has-link-overlay style="background-image:url('https://halckemy.s3.amazonaws.com/uploads/cover_image/file/36527/cover_wide_blog_techniczny_microsoft_azure_web_jobs.png')"
-                    = link_to '', '/challenges/microsoft-azure', class: 'link-overlay'
-                    .thumb-image-inner
-                      h4
-                        = link_to 'Microsoft Azure Challenge', '/challenges/microsoft-azure'
-                        br
-                        a.small sponsored by Microsoft
-                      p
-                        strong Win $5,000
+          h2 Past challenges
+          .row
+            - @past_challenges.each do |challenge|
+              = render partial: 'challenge_thumb', locals: { challenge: challenge.decorate, thumb_size: :mini }
 
     #bottom-bar
       .container.text-center
         p
           ' Want to launch your own challenge?
-          = link_to 'Contact us', 'mailto:challenges@hackster.io?subject=Launch%20a%20challenge', class: 'btn btn-primary'
+          = link_to 'Contact us', 'mailto:adam@hackster.io?subject=Launch+a+challenge', class: 'btn btn-primary'

@@ -4,7 +4,7 @@ class UserObserver < ActiveRecord::Observer
       record.create_reputation
       unless record.invited_to_sign_up?
         advertise_new_user record unless record.simplified_signup?
-        record.send_confirmation_instructions unless record.invitation_accepted?
+        record.send_confirmation_instructions unless record.invitation_accepted? or record.skip_registration_confirmation
       end
     end
   end
@@ -73,6 +73,7 @@ class UserObserver < ActiveRecord::Observer
     # cleanup when an invited user signs up from a different path
     if record.invitation_token and record.encrypted_password_changed?
       record.invitation_token = nil
+      record.invitation_accepted_at = Time.now if record.invitation_accepted_at.nil?
       record.generate_user_name if record.user_name.blank? and record.new_user_name.blank?
       record.build_reputation unless record.reputation
       record.subscribe_to_all

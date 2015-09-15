@@ -2,11 +2,15 @@
 
 <p>This is to let you know that <a href="|project_link|">your entry</a> for <a href="<%= u.challenge_url(@context[:challenge]) %>">|challenge_name|</a> has won a prize!</p>
 
-<p>You have been awarded <strong><%= @context[:prize].position.ordinalize %> place</strong> and won <strong><%= @context[:prize].name %></strong>: <%= @context[:prize].description %>.</p>
+<% prizes = @context[:prizes].map do |prize|
+  "<strong>#{prize.name}</strong> (prize: #{prize.description})"
+ end %>
 
-<% if @context[:prize].requires_shipping? %>
+<p>You have been awarded <%= prizes.to_sentence.html_safe %>.</p>
 
-  <p>To claim your prize, <strong>please fill out your mailing address</strong> at the following link: <a href="<%= u.edit_address_challenge_entry_url(@context[:challenge], @context[:entry]) %>"><%= edit_address_challenge_entry_url(@context[:challenge], @context[:entry]) %></a></p>
+<% if @context[:entry].shipping_required_for_prizes? %>
+
+  <p>To claim your <%= pluralize_without_count @context[:prizes].count, 'prize' %>, <strong>please fill out your mailing address</strong> at the following link: <a href="<%= u.edit_address_challenge_entry_url(@context[:challenge], @context[:entry]) %>"><%= u.edit_address_challenge_entry_url(@context[:challenge], @context[:entry]) %></a></p>
 
 <% else %>
 

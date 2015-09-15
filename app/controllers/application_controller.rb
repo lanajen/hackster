@@ -8,10 +8,6 @@ class ApplicationController < ActionController::Base
 
   BOGUS_REQUEST_FORMATS = ['*/*;', '/;', 'hc/url;*/*']
   DEFAULT_RESPONSE_FORMAT = :html
-  KNOWN_EVENTS = {
-    'hob' => 'Identified as hobbyist',
-    'pro' => 'Identified as professional',
-  }
   MOBILE_USER_AGENTS =
     'palm|blackberry|nokia|phone|midp|mobi|symbian|chtml|ericsson|minimo|' +
     'audiovox|motorola|samsung|telit|upg1|windows ce|ucweb|astel|plucker|' +
@@ -106,13 +102,17 @@ class ApplicationController < ActionController::Base
       AbstractController::ActionNotFound,
       ActiveRecord::RecordNotFound,
       with: :render_404
-    # rescue_from ActionView::MissingTemplate, with: :render_404_with_error
+    rescue_from ActionView::MissingTemplate, with: :render_404_with_log
   end
 
   rescue_from CanCan::AccessDenied do |exception|
     if current_user
-      set_flash_message :alert, exception.message
-      redirect_to session[:user_return_to_if_disallowed] || root_url
+      if request.xhr?
+        render status: :unauthorized, json: { message: "You are not authorized to perform this action." }
+      else
+        set_flash_message :alert, exception.message
+        redirect_to session[request.host].try(:[], :user_return_to_if_disallowed).presence || root_url
+      end
     else
       redirect_to new_user_session_url
     end
@@ -338,7 +338,7 @@ class ApplicationController < ActionController::Base
     end
 
     def tracking_activated?
-      Rails.env == 'production' and !current_user.try(:is?, :admin) and !(request.user_agent.present? and '23.0.1271.97'.in? request.user_agent)
+      Rails.env.production? and !current_user.try(:is?, :admin) and !(request.user_agent.present? and '23.0.1271.97'.in? request.user_agent)
     end
 
     def tracker
@@ -388,10 +388,6 @@ class ApplicationController < ActionController::Base
     end
 
     def track_visitor
-      if params[:t] and params[:t].in? KNOWN_EVENTS.keys
-        track_event KNOWN_EVENTS[params[:t]]
-      end
-
       cookies[:visits] = { value: {}.to_json, expires: 10.years.from_now } unless cookies[:visits].present?
       begin
         visits = JSON.parse cookies[:visits]
@@ -426,7 +422,7 @@ class ApplicationController < ActionController::Base
       cookies[:first_seen] = { value: Time.now, expires: 10.years.from_now } unless cookies[:first_seen].present?
 
       return unless is_trackable_page?
-      if cookies[:next_show_banner].to_time < Time.now
+      if cookies[:next_show_banner].present? and cookies[:next_show_banner].to_time < Time.now
         # cookies[:first_seen].to_time < 3.days.ago and (cookies[:last_shown_banner].nil? or cookies[:last_shown_banner].to_time < 3.days.ago)
         @modal = render_to_string partial: 'shared/modals/signup_popup'
         cookies[:last_shown_banner] = { value: Time.now, expires: 10.years.from_now }
@@ -459,6 +455,11 @@ class ApplicationController < ActionController::Base
       end
     end
 
+    def render_404_with_log(exception)
+      log_error exception
+      render_404 exception
+    end
+
     def render_500(exception)
       # hack because format.all doesn't work anymore
       if exception.class == ActionController::UnknownFormat
@@ -467,15 +468,7 @@ class ApplicationController < ActionController::Base
 
       begin
         unless exception.class.name == 'Sidekiq::Shutdown'
-          clean_backtrace = Rails.backtrace_cleaner.clean(exception.backtrace)
-          message = "#{exception.inspect} // backtrace: #{clean_backtrace.join(' - ')} // user: #{current_user.try(:user_name)} // request_url: #{request.url} // referrer: #{request.referrer} // request_params: #{request.params.to_s} // user_agent #{request.headers['HTTP_USER_AGENT']} // ip: #{request.remote_ip} // format: #{request.format} // HTTP_X_REQUESTED_WITH: #{request.headers['HTTP_X_REQUESTED_WITH']}"
-          log_line = LogLine.create(message: message, log_type: 'error', source: 'controller')
-          logger.error ""
-          logger.error "Exception: #{exception.inspect}"
-          logger.error ""
-          clean_backtrace.each { |line| logger.error "Backtrace: " + line }
-          logger.error ""
-          NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification' if Rails.env == 'production'
+          log_error exception
         end
       rescue
       end
@@ -484,6 +477,11 @@ class ApplicationController < ActionController::Base
         format.html { render template: 'errors/error_500', layout: "layouts/#{current_layout}", status: 500 }
         format.all { render nothing: true, status: 500}
       end
+    end
+
+    def log_error exception
+      message = "user: #{current_user.try(:user_name)} // request_url: #{request.url} // referrer: #{request.referrer} // request_params: #{request.params.to_s} // user_agent #{request.headers['HTTP_USER_AGENT']} // ip: #{request.remote_ip} // format: #{request.format} // HTTP_X_REQUESTED_WITH: #{request.headers['HTTP_X_REQUESTED_WITH']}"
+      AppLogger.new(message, 'error', 'controller', exception).log_and_notify_with_stdout
     end
 
     def set_default_response_format
@@ -541,7 +539,7 @@ class ApplicationController < ActionController::Base
     end
 
     def ssl_configured?
-      Rails.env == 'production'
+      APP_CONFIG['use_ssl']
     end
 
     def user_signed_in?
@@ -606,7 +604,7 @@ class ApplicationController < ActionController::Base
 
       # incoming and
       # removed to allow http caching: checking for referrer in the browser directly
-      !user_signed_in? and (params[:controller].in? %w(projects users platforms)) and params[:action] == 'show'
+      !user_signed_in? and (params[:controller].in? %w(projects users platforms parts)) and params[:action] == 'show'
     rescue
       false
     end

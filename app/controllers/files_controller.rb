@@ -1,6 +1,7 @@
 class FilesController < ApplicationController
   before_filter :authenticate_user!, only: [:show, :destroy]
   skip_before_filter :mark_last_seen!
+  skip_before_filter :set_locale
 
   def create
     render text: 'bad', status: :unprocessable_entity and return unless params[:file_url] and params[:file_type] and params[:file_type].in? %w(avatar image cover_image document sketchfab_file logo company_logo favicon)
@@ -31,7 +32,7 @@ class FilesController < ApplicationController
   end
 
   def remote_upload
-    render text: 'bad', status: :unprocessable_entity and return unless params[:file_url] and params[:file_type] and params[:file_type].in? %w(avatar image cover_image document sketchfab_file logo company_logo favicon)
+    render text: 'bad', status: :unprocessable_entity and return unless params[:file_url] and params[:file_type] and params[:file_type].in? %w(avatar image cover_image document sketchfab_file logo company_logo favicon) and valid_url?(params[:file_url])
 
     @file = params[:file_type].classify.constantize.new params.select{|k,v| k.in? %w(file caption title remote_file_url) }
     @file.attachable_id = params[:attachable_id] || 0
@@ -87,5 +88,9 @@ class FilesController < ApplicationController
           s3_upload_policy_document
         )
       ).gsub(/\n/, '')
+    end
+
+    def valid_url? url
+      url =~ /\A#{URI::regexp(['http', 'https'])}\z/
     end
 end
