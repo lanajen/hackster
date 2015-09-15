@@ -2,11 +2,13 @@
   = active_li_link_to 'Challenge brief', url_for(@challenge), role: 'presentation'
 - elsif @challenge.ended?
   = active_li_link_to content_tag(:span, "Projects") + content_tag(:small, @challenge.projects_count), url_for(@challenge), role: 'presentation'
-  = active_li_link_to content_tag(:span, "Participants") + content_tag(:small, @challenge.registrations_count), challenge_participants_path(@challenge.slug), role: 'presentation'
+  - if @challenge.registrations_count > 0
+    = active_li_link_to content_tag(:span, "Participants") + content_tag(:small, @challenge.registrations_count), challenge_participants_path(@challenge.slug), role: 'presentation'
   = active_li_link_to 'Challenge brief', challenge_brief_path(@challenge.slug), role: 'presentation'
 - else
   = active_li_link_to 'Challenge brief', url_for(@challenge), role: 'presentation'
   - if @challenge.registration_open?
-    = active_li_link_to content_tag(:span, "Participants") + content_tag(:small, @challenge.registrations_count), challenge_participants_path(@challenge.slug), role: 'presentation'
-  - if @challenge.open_for_submissions?
+    - if @challenge.registrations_count > 0
+      = active_li_link_to content_tag(:span, "Participants") + content_tag(:small, @challenge.registrations_count), challenge_participants_path(@challenge.slug), role: 'presentation'
+  - if !@challenge.workflow_state.in? %w(new pre_registration)
     = active_li_link_to content_tag(:span, "Projects") + content_tag(:small, @challenge.projects_count), challenge_projects_path(@challenge.slug), role: 'presentation'

@@ -40,14 +40,31 @@
                 = f.input_field :pre_registration_start_date_dummy, as: :string, label: false
                 span.input-group-addon
                   i.fa.fa-calendar
-          = f.input :pre_registration_start_date, as: :hidden, input_html: { id: 'pre_registration_start_date' }
+            = f.input :pre_registration_start_date, as: :hidden, input_html: { id: 'pre_registration_start_date' }
+
+          = f.input :activate_pre_contest, as: :boolean, inline_label: 'Enable pre-contest', label: false, hint: "This will allow participants to submit ideas to win hardware which they can use to enter the contest."
+          #pre_contest_settings style=(@challenge.activate_pre_contest ? '' : 'display:none')
+            = f.input :idea_survey_link, label: 'Idea form link', hint: 'The link to the form where ideas for the pre-contest will be collected.'
+            = f.input :pre_contest_start_date_dummy, label: 'Pre-contest start date', wrapper_html: { id: 'pre_contest_start_date_dummy', class: 'datetimepicker' }, hint: "Participants will be able to submit ideas for the pre-contest starting this date. Times are PT (-08)." do
+              #datepicker.input-group
+                = f.input_field :pre_contest_start_date_dummy, as: :string, label: false
+                span.input-group-addon
+                  i.fa.fa-calendar
+            = f.input :pre_contest_start_date, as: :hidden, input_html: { id: 'pre_contest_start_date' }
+            = f.input :pre_contest_end_date_dummy, label: 'Pre-contest end date', wrapper_html: { id: 'pre_contest_end_date_dummy', class: 'datetimepicker' }, hint: "The deadline to enter the pre-contest. Times are PT (-08)." do
+              #datepicker.input-group
+                = f.input_field :pre_contest_end_date_dummy, as: :string, label: false
+                span.input-group-addon
+                  i.fa.fa-calendar
+            = f.input :pre_contest_end_date, as: :hidden, input_html: { id: 'pre_contest_end_date' }
+
           = f.input :start_date_dummy, label: 'Challenge start date', wrapper_html: { id: 'start_date_dummy', class: 'datetimepicker' }, hint: "Participants will be able to enter projects starting that date. Times are PT (-08)." do
             #datepicker.input-group
               = f.input_field :start_date_dummy, as: :string, label: false
               span.input-group-addon
                 i.fa.fa-calendar
           = f.input :start_date, as: :hidden, input_html: { id: 'start_date' }
-          = f.input :end_date_dummy, label: 'Challenge end date', wrapper_html: { id: 'entry_deadline', class: 'datetimepicker' }, hint: "The maximum date by which makers can submit entries to the challenge. Times are PT (-08)." do
+          = f.input :end_date_dummy, label: 'Challenge end date', wrapper_html: { id: 'end_date_dummy', class: 'datetimepicker' }, hint: "The maximum date by which makers can submit entries to the challenge. Times are PT (-08)." do
             #datepicker.input-group
               = f.input_field :end_date_dummy, as: :string, label: false
               span.input-group-addon
@@ -161,10 +178,10 @@
             .form-group
               .col-md-8.col-md-offset-4
                 strong.text-danger USE ONLY IF YOU KNOW HOW TO:
-            = f.input :idea_survey_link, label: 'Enter button link', hint: 'This will override the enter button link. Instead of allowing users to select a project on Hackster, it will take them to the link you enter.'
             = f.input :enter_button_text, hint: "This will override the enter button text. The default is '#{@challenge.default_enter_button_text}'."
             = f.input :custom_status, hint: 'This will override the status.'
             = f.input :disable_projects_tab, inline_label: 'Disable projects tab', as: :boolean, label: false, hint: 'When submissions are done outside of Hackster'
+            = f.input :disable_registration, as: :boolean, inline_label: 'Disable registration', label: false, hint: "Temporary option to make old contests work as expected. DO NOT USE FOR NEW CONTESTS."
 
       .panel.panel-default
         .panel-heading
@@ -175,7 +192,7 @@
               - case @challenge.workflow_state.to_sym
               / - when :new
                 = link_to 'Launch challenge', update_workflow_challenge_path(@challenge, event: 'launch'), method: :put, class: 'btn btn-success btn-sm', data: { confirm: "Let's do this. Sure?" }
-              - when :pre_registration, :in_progress
+              - when :pre_registration, :in_progress, :pre_contest_in_progress, :pre_contest_ended
                 = link_to 'Take offline', update_workflow_challenge_path(@challenge, event: 'take_offline'), method: :put, class: 'btn btn-warning btn-sm', data: { confirm: "Sure?" }
               - when :judging
                 - if current_user.is? :admin
@@ -215,20 +232,24 @@
     });
 
     $('#pre_registration_start_date_dummy').on('change', function(){
-      $('#pre_registration_date').val($('#pre_registration_start_date_dummy').data("DateTimePicker").getDate());
+      $('#pre_registration_start_date').val($('#pre_registration_start_date_dummy').data("DateTimePicker").getDate());
+    });
+    $('#pre_contest_start_date_dummy').on('change', function(){
+      $('#pre_contest_start_date').val($('#pre_contest_start_date_dummy').data("DateTimePicker").getDate());
+    });
+    $('#pre_contest_end_date_dummy').on('change', function(){
+      $('#pre_contest_end_date').val($('#pre_contest_end_date_dummy').data("DateTimePicker").getDate());
     });
     $('#start_date_dummy').on('change', function(){
       $('#start_date').val($('#start_date_dummy').data("DateTimePicker").getDate());
     });
-    $('#entry_deadline').on('change', function(){
-      $('#end_date').val($('#entry_deadline').data("DateTimePicker").getDate());
-    });
-    $('#entry_deadline').on('change', function(){
-      $('#end_date').val($('#entry_deadline').data("DateTimePicker").getDate());
+    $('#end_date_dummy').on('change', function(){
+      $('#end_date').val($('#entend_date_dummyry_deadline').data("DateTimePicker").getDate());
     });
     $('#voting_end_date_dummy').on('change', function(){
       $('#voting_end_date').val($(this).data("DateTimePicker").getDate());
     });
+
     $('#challenge_activate_voting').on('change', function(){
       if ($(this).is(':checked')) {
         $('#voting_dates').slideDown();
@@ -241,6 +262,13 @@
         $('#pre_registration_settings').slideDown();
       } else {
         $('#pre_registration_settings').slideUp();
+      }
+    });
+    $('#challenge_activate_pre_contest').on('change', function(){
+      if ($(this).is(':checked')) {
+        $('#pre_contest_settings').slideDown();
+      } else {
+        $('#pre_contest_settings').slideUp();
       }
     });
     $('#challenge_activate_mailchimp_sync').on('change', function(){

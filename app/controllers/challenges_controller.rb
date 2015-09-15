@@ -5,7 +5,7 @@ class ChallengesController < ApplicationController
   before_filter :load_platform, only: [:show, :brief, :projects]
   before_filter :load_and_authorize_challenge, only: [:enter, :update_workflow]
   before_filter :set_challenge_entrant, only: [:show, :brief, :projects]
-  before_filter :load_user_projects, only: [:show, :brief]
+  before_filter :load_user_projects, only: [:show, :brief, :projects]
   load_and_authorize_resource only: [:edit, :update]
   layout :set_layout
 
@@ -151,7 +151,7 @@ class ChallengesController < ApplicationController
     end
 
     def set_challenge_entrant
-      if @has_registered = (user_signed_in? and ChallengeRegistration.has_registered? @challenge, current_user)
+      if @challenge.disable_registration or @has_registered = (user_signed_in? and ChallengeRegistration.has_registered? @challenge, current_user)
         @current_entries = (user_signed_in? ? current_user.challenge_entries_for(@challenge) : [])
         @is_challenge_entrant = @current_entries.any?
       end

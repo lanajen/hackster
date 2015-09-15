@@ -14,7 +14,7 @@
             text = "#{j render(partial: 'votes/button', locals: { respectable: entry, allow_anonymous_votes: @challenge.allow_anonymous_votes })}";
             $('.project-#{entry.project_id} .thumb').append(text);
 
-- cache ["challenge-#{@challenge.id}-projects", safe_page_params, @has_registered, @is_challenge_entrant], tag: ["challenge-#{@challenge.id}-projects"] do
+- cache ["challenge-#{@challenge.id}-projects", safe_page_params, @has_registered, @is_challenge_entrant, @challenge.disable_registration], tag: ["challenge-#{@challenge.id}-projects"] do
   .project-list
     - if @challenge.judged?
       - if safe_page_params.nil? or safe_page_params == 1
@@ -39,7 +39,7 @@
       - if @projects.any?
         .thumb-list
           .row.project-list
-            - if @challenge.registration_open? and !@has_registered
+            - if !@challenge.disable_registration and @challenge.registration_open? and !@has_registered
               = render partial: 'register_thumb', locals: { challenge: @challenge }
             - elsif @challenge.open_for_submissions? and !@is_challenge_entrant
               = render partial: 'enter_thumb', locals: { challenge: @challenge }

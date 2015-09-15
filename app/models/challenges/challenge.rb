@@ -1,6 +1,7 @@
 class Challenge < ActiveRecord::Base
   PAST_STATES = %w(judging judged)
-  REGISTRATION_OPEN_STATES = %w(pre_registration in_progress)
+  OPEN_SUBMISSION_STATES = %w(pre_contest_in_progress in_progress)
+  REGISTRATION_OPEN_STATES = %w(pre_registration pre_contest_in_progress pre_contest_ended in_progress)
   VISIBLE_STATES = %w(in_progress judging judged)
   VOTING_START_OPTIONS = {
     'Now' => :now,
@@ -41,15 +42,18 @@ class Challenge < ActiveRecord::Base
   attr_accessible :new_slug, :name, :prizes_attributes, :platform_id,
     :video_link, :cover_image_id, :end_date, :end_date_dummy, :avatar_id,
     :challenge_admins_attributes, :voting_end_date_dummy, :start_date_dummy,
-    :pre_registration_start_date_dummy, :start_date
+    :pre_registration_start_date_dummy, :start_date, :pre_contest_start_date_dummy,
+    :pre_contest_end_date_dummy
   attr_accessor :new_slug, :end_date_dummy, :voting_end_date_dummy, :start_date_dummy,
-    :pre_registration_start_date_dummy
+    :pre_registration_start_date_dummy, :pre_contest_start_date_dummy,
+    :pre_contest_end_date_dummy
 
   accepts_nested_attributes_for :prizes, :challenge_admins, allow_destroy: true
 
   store :properties, accessors: []
   hstore_column :hproperties, :activate_banners, :boolean, default: true
   hstore_column :hproperties, :activate_mailchimp_sync, :boolean
+  hstore_column :hproperties, :activate_pre_contest, :boolean
   hstore_column :hproperties, :activate_pre_registration, :boolean
   hstore_column :hproperties, :activate_voting, :boolean
   hstore_column :hproperties, :auto_approve, :boolean
@@ -59,6 +63,7 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :custom_tweet, :string
   hstore_column :hproperties, :description, :string
   hstore_column :hproperties, :disable_projects_tab, :boolean
+  hstore_column :hproperties, :disable_registration, :boolean
   hstore_column :hproperties, :eligibility, :string
   hstore_column :hproperties, :enter_button_text, :string, default: 'Submit an entry'
   hstore_column :hproperties, :how_to_enter, :string
@@ -70,6 +75,8 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :multiple_entries, :boolean
   hstore_column :hproperties, :password_protect, :boolean
   hstore_column :hproperties, :password, :string
+  hstore_column :hproperties, :pre_contest_end_date, :datetime
+  hstore_column :hproperties, :pre_contest_start_date, :datetime
   hstore_column :hproperties, :pre_registration_start_date, :datetime
   hstore_column :hproperties, :project_ideas, :boolean
   hstore_column :hproperties, :requirements, :string
@@ -89,10 +96,20 @@ class Challenge < ActiveRecord::Base
   workflow do
     state :new do
       event :prelaunch, transitions_to: :pre_registration
-      event :launch, transitions_to: :in_progress, if: :end_date_is_valid
+      event :launch_contest, transitions_to: :in_progress
+      event :launch_precontest, transitions_to: :pre_contest_in_progress
     end
     state :pre_registration do
-      event :launch, transitions_to: :in_progress
+      event :launch_contest, transitions_to: :in_progress
+      event :launch_precontest, transitions_to: :pre_contest_in_progress
+      event :take_offline, transitions_to: :new
+    end
+    state :pre_contest_in_progress do
+      event :end_pre_contest, transitions_to: :pre_contest_ended
+      event :take_offline, transitions_to: :new
+    end
+    state :pre_contest_ended do
+      event :launch_contest, transitions_to: :in_progress
       event :take_offline, transitions_to: :new
     end
     state :in_progress do
@@ -206,11 +223,9 @@ class Challenge < ActiveRecord::Base
     self.slug = slug
   end
 
-  def launch
+  def launch_contest
     halt and return unless end_date_is_valid?
 
-    self.start_date = Time.now
-    self.activate_pre_registration = false
     save
   end
 
@@ -228,7 +243,11 @@ class Challenge < ActiveRecord::Base
   end
 
   def open_for_submissions?
-    in_progress?
+    workflow_state.in? OPEN_SUBMISSION_STATES
+  end
+
+  def pre_contest_pending?
+    activate_pre_contest? and workflow_state.in? %w(new pre_registration)
   end
 
   def ready_for_judging?
@@ -272,6 +291,14 @@ class Challenge < ActiveRecord::Base
 
   def pre_registration_start_date_dummy
     pre_registration_start_date ? pre_registration_start_date.strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
+  end
+
+  def pre_contest_start_date_dummy
+    pre_contest_start_date ? pre_contest_start_date.strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
+  end
+
+  def pre_contest_end_date_dummy
+    pre_contest_end_date ? pre_contest_end_date.strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
   end
 
   def voting_active?
