@@ -20,7 +20,7 @@ class Admin::ChallengesController < Admin::BaseController
     @challenge = Challenge.new(params[:challenge])
 
     if @challenge.save
-      redirect_to admin_challenges_path, :notice => 'New challenge created'
+      redirect_to edit_challenge_path(@challenge), :notice => 'New challenge created'
     else
       render :new
     end
