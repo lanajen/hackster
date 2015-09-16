@@ -8,6 +8,8 @@ class ChallengesController < ApplicationController
   before_filter :load_user_projects, only: [:show, :brief, :projects]
   load_and_authorize_resource only: [:edit, :update]
   layout :set_layout
+  skip_before_filter :track_visitor, only: [:show, :brief, :projects]
+  skip_after_filter :track_landing_page, only: [:show, :brief, :projects]
 
   def index
     title 'Hardware challenges'
