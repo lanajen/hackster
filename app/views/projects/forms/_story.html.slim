@@ -2,11 +2,11 @@
   bold/italic/h1/links/list
   full width input
 
-/ = content_for :js do
-/   javascript:
-/     $(function(){
-/       editor.activate();
-/     });
+= content_for :js do
+  javascript:
+    $(function(){
+      editor.activate();
+    });
 
 = simple_nested_form_for @project, url: api_v1_project_path(@project), html: { data: { remote: true }, class: 'form-horizontal remote' }, wrapper: :bootstrap3_horizontal do |f|
 
@@ -19,17 +19,8 @@
   .row
     .col-md-8.col-md-offset-2
       = f.error_notification
-      = f.input :description, as: :text, wrapper_html: { class: 'hidden' }
-      = react_component('ReactEditor', { project: @project.story })
-          / p.small.text-muted
-          /   strong> Tip:
-          /   | Add photos and videos by clicking the 'Add media' button to the left. It will show up any time you're on a new paragraph.
-          / #model-editor data-model-id=@project.id data-model-type='Project' data-model-symbol='project' data-model-placeholder="Start describing your #{@project.is_idea? ? 'project idea' : 'project'} here. Enter text or add images and videos by clicking the 'Add media' button to the left." data-model-url='/api/v1/projects' data-save-mode='form'
+      / #react-editor-main-mount
 
-          /   #editable-description.text-widget.project-show-item= render partial: 'shared/medium_editor', locals: { editable: @project.decorate.description(:edit), attribute_name: 'description' }
-
-          / / textarea.wym-editor
-          /   = @project.story
       .box data-anchor='description'
         .box-content
           / # = f.input :description, as: :text, wrapper_html: { class: 'hidden' }
@@ -45,3 +36,6 @@
             = @project.story
 
     = render 'projects/forms/pe_save'
+
+/ = javascript_include_tag \
+/    "editor.js"

@@ -1,5 +1,8 @@
 import React from 'react';
+import rangy from 'rangy';
 import cx from 'classnames';
+import Utils from '../../utils/DOMUtils';
+import _ from 'lodash';
 
 const ToolbarButton = React.createClass({
 
@@ -9,9 +12,13 @@ const ToolbarButton = React.createClass({
     onButtonClick: React.PropTypes.func
   },
 
-  onButtonClick(e) {
+  handleButtonClick(e) {
     e.preventDefault();
     e.stopPropagation();
+
+    if(Utils.isAncestorOfContentEditable(rangy.getSelection().anchorNode)) {
+      return;
+    }
 
     let tagType = this.props.tagType || null;
     let valueArg = this.props.valueArg || null;
@@ -20,11 +27,17 @@ const ToolbarButton = React.createClass({
   },
 
   render: function() {
-    let buttonClasses = cx('btn', this.props.classList);
     let icon = this.props.icon ? (<i className={this.props.icon}></i>) : null;
+    let buttonClasses = this.props.classList;
+
+    if(_.includes(this.props.activeButtons, this.props.tagType)) {
+      buttonClasses = cx(buttonClasses, {['toolbar-btn-active']: true});
+    } else {
+      buttonClasses = cx(buttonClasses, {['toolbar-btn-active']: false});
+    }
 
     return (
-      <button className={buttonClasses} onClick={this.onButtonClick}>
+      <button className={buttonClasses} onClick={this.handleButtonClick}>
         {icon}
       </button>
     );

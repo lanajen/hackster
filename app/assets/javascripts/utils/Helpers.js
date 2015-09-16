@@ -30,7 +30,22 @@ module.exports = {
     }
   },
 
-  isUrlValid: function(url, validExtensions, stringsToMatch) {
+
+  isImageValid(imgFileType) {
+    let isValid = false;
+    let extensions = this.IMAGE_EXTENSIONS;
+    for(let extension in extensions) {
+      if(extensions.hasOwnProperty(extension)) {
+        if(extensions[imgFileType]) {
+          isValid = true;
+        }
+      }
+    }
+    return isValid;
+  },
+
+  isUrlValid: function(url, stringsToMatch) {
+    let validExtensions = this.URL_EXTENSIONS;
     let key = stringsToMatch.filter(function(item) {
       return url.match(item);
     });
@@ -39,6 +54,59 @@ module.exports = {
 
     let regex = new RegExp(validExtensions[key[0]]);
     return url.match(regex) ? true : false;
+  },
+
+  getVideoData(url) {
+    let service = url.match(/(youtube|vimeo|vine)/)[0];
+
+    if(!service) { return null; }
+
+    let regExps = {
+      'vimeo': {
+        regexp: /^.*(vimeo\.com\/)((channels\/[A-z]+\/)|(groups\/[A-z]+\/videos\/))?([0-9]+)/,
+        requestLink: id => `https://vimeo.com/api/v2/video/${id}.json`,
+        index: 5
+      },
+      'vine': {
+        regexp: /^http(?:s?):\/\/(?:www\.)?vine\.co\/v\/([a-zA-Z0-9]{1,13})$/,
+        requestLink: id => `https://vine.co/oembed.json?id=${id}`,
+        index: 1
+      },
+      'youtube': {
+        regexp: /(?:youtube\.com|youtu\.be)\/(?:watch\?v=|v\/|embed\/)?([a-zA-Z0-9\-_]+)/,
+        requestLink: id => `https://img.youtube.com/vi/${id}/0.jpg`,
+        index: 1
+      }
+    };
+
+    let obj = regExps[service],
+        match = url.match(obj.regexp);
+
+    if(match && match.length) {
+      let id = match[obj.index],
+          link = obj.requestLink(id);
+
+      return { id: id, link: link, service: service };
+    } else {
+      return null;
+    }
+  },
+
+  getYouTubeId(url){
+    let ID = '';
+    url = url.replace(/(>|<)/gi,'').split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/)/);
+    if(url[2] !== undefined) {
+      ID = url[2].split(/[^0-9a-z_\-]/i);
+      ID = ID[0];
+    }
+    else {
+      ID = url;
+    }
+    return ID;
+  },
+
+  getVimeoId(url) {
+
   },
 
   createRandomNumber: function() {
@@ -69,7 +137,7 @@ module.exports = {
     snip2code: /snip2code\.com\/Snippet\/([0-9]+\/[0-9a-zA-Z]+)/,
     upverter: /upverter\.com\/[^\/]+\/(?:embed\/)?(?:\#designId\=)?([a-z0-9]+)(?:\/)?(?:[^\/])*/,
     ustream: /ustream\.tv\/([a-z]+\/[0-9]+(\/[a-z]+\/[0-9]+)?)/,
-    vimeo: /(?:player\.)?vimeo\.com\/(?:video\/)?([0-9]+)/,
+    vimeo: /^.*(vimeo\.com\/)((channels\/[A-z]+\/)|(groups\/[A-z]+\/videos\/))?([0-9]+)/,
     vine: /vine\.co\/v\/([a-zA-Z0-9]+)/,
     youtube: /(?:youtube\.com|youtu\.be)\/(?:watch\?v=|v\/|embed\/)?([a-zA-Z0-9\-_]+)/,
     youmagine: /youmagine\.com\/designs\/([a-zA-Z0-9\-]+)/,

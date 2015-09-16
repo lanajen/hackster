@@ -18,71 +18,6 @@ module.exports = {
     });
   },
 
-  addList(name) {
-    return new Promise((resolve, reject) => {
-      request
-        .post('/api/v1/lists')
-        .send({ group: { full_name: name } })
-        .end(function(err, res) {
-          err ? reject(err) : resolve(res);
-        });
-    });
-  },
-
-  checkJob(jobId) {
-    return new Promise((resolve, reject) => {
-      request
-        .get('/api/v1/jobs/' + jobId)
-        .end(function(err, res) {
-          err ? reject(err) : resolve(res);
-        });
-    });
-  },
-
-  fetchLists(projectId) {
-    return new Promise((resolve, reject) => {
-      request
-        .get('/api/v1/lists')
-        .query({ project_id: projectId })
-        .end(function(err, res) {
-          err ? reject(err) : resolve(res);
-        });
-    });
-  },
-
-  fetchNotifications(csrfToken) {
-    return new Promise((resolve, reject) => {
-      request
-        .get('/api/v1/notifications')
-        .set('X-CSRF-Token', csrfToken)
-        .end(function(err, res) {
-          err ? reject(err) : resolve(res);
-        });
-    });
-  },
-
-  flagContent(flaggableType, flaggableId, userId) {
-    return new Promise((resolve, reject) => {
-      request
-        .post('/api/v1/flags')
-        .send({flag: { flaggable_type: flaggableType,  flaggable_id: flaggableId,  user_id: userId} })
-        .end(function(err, res) {
-          err ? reject(err) : resolve(res);
-        });
-    });
-  },
-
-  launchJob(jobType, userId) {
-    return new Promise((resolve, reject) => {
-      request
-        .post('/api/v1/jobs')
-        .send({ type: jobType, user_id: userId })
-        .end(function(err, res) {
-          err ? reject(err) : resolve(res);
-        });
-    });
-  },
-
   removeFromFollowing(id, type, source, csrfToken) {
     return new Promise((resolve, reject) => {
       request
@@ -99,10 +34,11 @@ module.exports = {
     });
   },
 
-  toggleProjectInList(requestType, listId, projectId) {
+  fetchNotifications(csrfToken) {
     return new Promise((resolve, reject) => {
-      request(requestType, '/api/v1/lists/' + listId + '/projects')
-        .send({ project_id: projectId })
+      request
+        .get('/api/v1/notifications')
+        .set('X-CSRF-Token', csrfToken)
         .end(function(err, res) {
           err ? reject(err) : resolve(res);
         });

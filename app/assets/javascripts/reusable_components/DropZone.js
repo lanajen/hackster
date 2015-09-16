@@ -1,4 +1,5 @@
 import React from 'react';
+import Helpers from '../utils/Helpers'; 
 
 const Dropzone = React.createClass({
   getInitialState: function() {
@@ -30,25 +31,29 @@ const Dropzone = React.createClass({
 
   onDrop: function(e) {
     e.preventDefault();
+    let files, filteredFiles;
 
     this.setState({
       isDragActive: false
     });
 
-    var files;
-    if (e.dataTransfer) {
+    if(e.dataTransfer) {
       files = e.dataTransfer.files;
     } else if (e.target) {
       files = e.target.files;
     }
 
-    for (var i = 0; i < files.length; i++) {
-      files[i].preview = URL.createObjectURL(files[i]);
-    }
-
-    if (this.props.onDrop) {
+    if(this.props.onDrop) {
       files = Array.prototype.slice.call(files);
-      this.props.onDrop(files);
+      // Filter files and remove unaccepted extensions.
+      filteredFiles = files.filter(function(file) {
+        if(Helpers.isImageValid(file.type)) {
+          return file;
+        } else {
+          return false;
+        }
+      });
+      this.props.onDrop(filteredFiles);
     }
   },
 
