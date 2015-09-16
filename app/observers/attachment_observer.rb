@@ -49,7 +49,7 @@ class AttachmentObserver < ActiveRecord::Observer
     end
     if record.attachable_type != 'Orphan' and record.attachable
       record.attachable.purge
-      record.attachable.update_attribute :updated_at, Time.now
+      record.attachable.update_attribute :updated_at, Time.now if record.attachable.respond_to? :updated_at
     end
   end
 end
