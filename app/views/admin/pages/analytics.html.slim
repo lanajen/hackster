@@ -35,23 +35,29 @@
   .col-xs-12.col-sm-4
     .panel.panel-default.panel-dashboard
       .panel-heading
-        h3.panel-title Active users (last 24 hours)
+        h3.panel-title Active users - yesterday
       .panel-body
         ==> number_with_delimiter @active_users1d
+        small.text-muted
+          | (#{@pct_active_users1d}%)
 
   .col-xs-12.col-sm-4
     .panel.panel-default.panel-dashboard
       .panel-heading
-        h3.panel-title Active users (last 7 days)
+        h3.panel-title Active users - past 7 days
       .panel-body
         ==> number_with_delimiter @active_users7d
+        small.text-muted
+          | (#{@pct_active_users7d}%)
 
   .col-xs-12.col-sm-4
     .panel.panel-default.panel-dashboard
       .panel-heading
-        h3.panel-title Active users (last 30 days)
+        h3.panel-title Active users - past 30 days
       .panel-body
         ==> number_with_delimiter @active_users30d
+        small.text-muted
+          | (#{@pct_active_users30d}%)
 
 .row
   .col-xs-12.col-sm-4
