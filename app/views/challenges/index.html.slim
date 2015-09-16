@@ -10,10 +10,17 @@
               p Show us what you're made of by entering our sponsored challenges and take the chance to win awesome prizes!
               hr
 
-          h2 Challenges open for submission
-          .row
-            - @active_challenges.each do |challenge|
-              = render partial: 'challenge_thumb', locals: { challenge: challenge.decorate, thumb_size: :large }
+          - if @active_challenges.any?
+            h2 Challenges open for submission
+            .row
+              - @active_challenges.each do |challenge|
+                = render partial: 'challenge_thumb', locals: { challenge: challenge.decorate, thumb_size: :large }
+
+          - if @coming_challenges.any?
+            h2 Challenges starting soon
+            .row
+              - @coming_challenges.each do |challenge|
+                = render partial: 'challenge_thumb', locals: { challenge: challenge.decorate, thumb_size: :mini }
 
           h2 Past challenges
           .row

@@ -29,7 +29,8 @@ class ChallengeEntriesController < ApplicationController
   end
 
   def create
-    authorize! :enter, @challenge
+    entry = @challenge.entries.new
+    authorize! :create, entry
 
     @project = Project.find params[:project_id]
     authorize! :enter_in_challenge, @project
@@ -43,7 +44,6 @@ class ChallengeEntriesController < ApplicationController
     @project.workflow_state = 'idea' if @challenge.project_ideas
     @project.save
 
-    entry = @challenge.entries.new
     entry.user_id = current_user.id
     entry.project_id = @project.id
     if entry.save
@@ -135,10 +135,6 @@ class ChallengeEntriesController < ApplicationController
       raise ActiveRecord::RecordNotFound unless params[:challenge_id] == @entry.challenge_id.to_s
       authorize! self.action_name.to_sym, @entry
       @challenge = @entry.challenge
-    end
-
-    def set_challenge_entrant
-      @is_challenge_entrant = (user_signed_in? and current_user.is_challenge_entrant? @challenge)
     end
 
     def set_layout

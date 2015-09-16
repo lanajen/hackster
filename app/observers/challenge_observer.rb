@@ -31,7 +31,25 @@ class ChallengeObserver < ActiveRecord::Observer
     end
   end
 
-  def after_launch record
+  def after_pre_launch record
+    NotificationCenter.notify_all :prelaunched, :challenge, record.id
+    expire_cache record
+    expire_index
+  end
+
+  def after_launch_precontest record
+    NotificationCenter.notify_all :launched_precontest, :challenge, record.id
+    expire_cache record
+    expire_index
+  end
+
+  def after_end_pre_contest record
+    NotificationCenter.notify_all :ended_precontest, :challenge, record.id
+    expire_cache record
+  end
+
+  def after_launch_contest record
+    NotificationCenter.notify_all :launched_contest, :challenge, record.id
     if record.display_banners?
       platform = record.platform
       platform.active_challenge = true

@@ -1,11 +1,10 @@
 class ChallengesController < ApplicationController
   before_filter :authenticate_user!, only: [:edit, :update, :update_workflow]
-  before_filter :load_challenge, only: [:show, :brief, :projects, :update]
+  before_filter :load_challenge, only: [:show, :brief, :projects, :participants, :update]
   before_filter :authorize_and_set_cache, only: [:show, :brief, :projects]
   before_filter :load_platform, only: [:show, :brief, :projects]
   before_filter :load_and_authorize_challenge, only: [:enter, :update_workflow]
   before_filter :set_challenge_entrant, only: [:show, :brief, :projects]
-  before_filter :set_current_entries, only: [:show, :brief]
   before_filter :load_user_projects, only: [:show, :brief, :projects]
   load_and_authorize_resource only: [:edit, :update]
   layout :set_layout
@@ -15,6 +14,7 @@ class ChallengesController < ApplicationController
     meta_desc "Build the best hardware projects and win awesome prizes!"
 
     @active_challenges = Challenge.public.active.ends_first
+    @coming_challenges = Challenge.public.coming.starts_first
     @past_challenges = Challenge.public.past.ends_last
   end
 
@@ -39,7 +39,20 @@ class ChallengesController < ApplicationController
     load_projects
   end
 
-  def edit
+  def participants
+    title "#{@challenge.name} participants"
+    respond_to do |format|
+      format.html do
+        @participants = @challenge.registrants.reorder("challenge_registrations.created_at DESC").paginate(page: safe_page_params)
+      end
+      format.csv do
+        authorize! :admin, @challenge
+        @registrations = @challenge.registrations.includes(:user).order("users.full_name ASC")
+        file_name = FileNameGenerator.new(@challenge.name)
+        headers['Content-Disposition'] = "attachment; filename=\"#{file_name}.csv\""
+        headers['Content-Type'] ||= 'text/csv'
+      end
+    end
   end
 
   def update
@@ -130,7 +143,6 @@ class ChallengesController < ApplicationController
 
     def load_user_projects
       if user_signed_in? and @challenge.open_for_submissions?
-        # @user_projects = current_user.projects.own.self_hosted.where.not(id: @challenge.projects.pluck(:id))
         @user_projects = current_user.projects.own.self_hosted.where("NOT projects.id IN (SELECT projects.id FROM projects INNER JOIN challenge_projects ON projects.id = challenge_projects.project_id WHERE challenge_projects.challenge_id = ?)", @challenge.id)
         @user_projects = @user_projects.select{|p| p.is_idea? } if @challenge.project_ideas
       else
@@ -139,15 +151,14 @@ class ChallengesController < ApplicationController
     end
 
     def set_challenge_entrant
-      @is_challenge_entrant = (user_signed_in? and current_user.is_challenge_entrant? @challenge)
-    end
-
-    def set_current_entries
-      @current_entries = (user_signed_in? ? current_user.challenge_entries_for(@challenge) : [])
+      if @challenge.disable_registration or @has_registered = (user_signed_in? and ChallengeRegistration.has_registered? @challenge, current_user)
+        @current_entries = (user_signed_in? ? current_user.challenge_entries_for(@challenge) : [])
+        @is_challenge_entrant = @current_entries.any?
+      end
     end
 
     def set_layout
-      if self.action_name.to_s.in? %w(show rules projects brief)
+      if self.action_name.to_s.in? %w(show rules projects brief participants)
         'challenge'
       else
         current_layout
