@@ -1,10 +1,6 @@
-= content_for :head do
-  = stylesheet_link_tag "//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-beta.3/css/select2.min.css"
+= render 'projects/forms/part_form'
 
-= content_for :js do
-  = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-beta.3/js/select2.min.js"
-
-= simple_nested_form_for @project, url: settings_project_path(@project), html: { class: 'form-horizontal remote accept-file-upload' }, wrapper: :bootstrap3_horizontal do |f|
+= simple_nested_form_for @project, url: settings_project_path(@project), html: { class: 'form-horizontal remote accept-file-upload project-editor' }, wrapper: :bootstrap3_horizontal do |f|
   = f.error_notification
 
   .row
@@ -67,7 +63,7 @@
         .panel-body
           / p Here go things like microcontrollers, resistors, wires and all things that are part of your final project.
         .box-content
-          = render partial: 'projects/forms/hardware_parts', locals: { project: @project, f: f }
+          = render partial: 'projects/forms/parts', locals: { project: @project, f: f, type: :hardware, human_type: 'component', options: { prompt: 'Select a component', label: 'Component', part_type: 'hardware', show_quantity: true, link_type: 'store_link' } }
 
 
       .panel.panel-default
@@ -86,19 +82,3 @@
             li= link_to 'Edit as admin', edit_admin_project_path(@project), class: 'btn btn-warning btn-sm'
           li= f.submit 'Save changes', class: 'btn btn-primary btn-sm'
           li= link_to 'Cancel', @project, class: 'btn-link btn-sm'
-
-= content_for :js do
-  = tinymce_assets
-
-  javascript:
-    $(function(){
-
-      tinyMCE.init({
-        selector: 'textarea.text-editor',
-        toolbar: "undo redo | bold italic underline | link unlink | bullist numlist",
-        menubar: false,
-        plugins: 'link paste',
-        statusbar: false,
-        height: 300
-      });
-    });
