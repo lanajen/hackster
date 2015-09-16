@@ -7,7 +7,9 @@ class Prize < ActiveRecord::Base
   validates :quantity, numericality: { only_integer: true, greater_than_or_equal_to: 1 }
 
   attr_accessible :name, :description, :position, :requires_shipping, :quantity,
-    :cash_value, :link
+    :cash_value, :link, :image_attributes
+
+  accepts_nested_attributes_for :image
 
   def requires_shipping?
     requires_shipping

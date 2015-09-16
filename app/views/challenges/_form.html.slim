@@ -105,7 +105,16 @@
                       i.fa.fa-bars.handle
                       = f_prize.input :id, as: :hidden
                       = f_prize.input :position, as: :hidden, input_html: { class: 'position' }
-                    td  style='width:20%'  = f_prize.input :name, label: false, wrapper: false, placeholder: 'Eg: First place'
+                    td  style='width:20%'
+                      table
+                        tr
+                          td= f_prize.input :name, label: false, wrapper: false, placeholder: 'Eg: First place'
+                        tr
+                          - image = prize.image || prize.build_image
+                          td= f_prize.simple_fields_for :image do |f_image|
+                            - if image and image.file_url
+                              = image_tag image.file_url, class: 'img-responsive'
+                            = f_image.input :file, label: false, as: :file
                     td  style='width:30%'  = f_prize.input :description, label: false, wrapper: false, input_html: { rows: 4 }, placeholder: 'Eg: iPad Air'
                     td= f_prize.input :cash_value, label: false, wrapper: false
                     td style='width:15%' = f_prize.input :link, label: false, wrapper: false

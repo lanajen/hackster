@@ -116,7 +116,7 @@
               i.fa.fa-trophy
               = prize.name
             - if prize.image
-              = image_tag prize.image.imgix_url, class: 'img-thumbnail'
+              = image_tag prize.image.imgix_url(:medium)
             p
               - if prize.cash_value.present?
                 strong

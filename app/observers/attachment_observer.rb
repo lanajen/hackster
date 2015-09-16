@@ -39,6 +39,13 @@ class AttachmentObserver < ActiveRecord::Observer
       when 'Logo'
         Cashier.expire "platform-#{record.attachable_id}-client-nav"
       end
+    elsif record.attachable_type == 'Prize'
+      case record.type
+      when 'Image'
+        challenge = record.attachable.challenge
+        Cashier.expire "challenge-#{challenge.id}-prizes"
+        challenge.purge
+      end
     end
     if record.attachable_type != 'Orphan' and record.attachable
       record.attachable.purge
