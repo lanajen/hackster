@@ -270,7 +270,7 @@ SESSION_MAX_AGE = 30.days
 Warden::Manager.after_set_user except: :fetch do |user, warden, opts|
   if user
     warden.raw_session["_session_id"] = SessionManager.new(user).new_session!
-    warden.raw_session["_session_created_at"] = Time.now.to_i
+    # warden.raw_session["_session_created_at"] = Time.now.to_i
   end
 end
 
@@ -280,10 +280,10 @@ Warden::Manager.after_fetch do |user, warden, opts|
       warden.logout
       throw :warden, message: :unauthenticated
     end
-    unless warden.raw_session["_session_created_at"] and warden.raw_session["_session_created_at"].to_i > SESSION_MAX_AGE.ago.to_i
-      warden.logout
-      throw :warden, message: :timeout
-    end
+    # unless warden.raw_session["_session_created_at"] and warden.raw_session["_session_created_at"].to_i > SESSION_MAX_AGE.ago.to_i
+    #   warden.logout
+    #   throw :warden, message: :timeout
+    # end
   end
 end
 
