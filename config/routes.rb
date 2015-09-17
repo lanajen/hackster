@@ -459,6 +459,7 @@ HackerIo::Application.routes.draw do
     end
 
     get 'users/registration/complete_profile' => 'users#after_registration', as: :user_after_registration
+    get 'users/registration/toolbox' => 'users#toolbox', as: :user_toolbox
     patch 'users/registration/complete_profile' => 'users#after_registration_save'
 
     resources :announcements, only: [:destroy] do

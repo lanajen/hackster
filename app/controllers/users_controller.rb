@@ -154,6 +154,9 @@ class UsersController < ApplicationController
     end
   end
 
+  def toolbox
+  end
+
   private
     def set_layout
       action_name.in?(%w(edit update show)) ? 'user' : current_layout

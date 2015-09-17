@@ -5,6 +5,11 @@
 class Part < ActiveRecord::Base
   EDITABLE_STATES = %w(new pending_review)
   INVALID_STATES = %w(rejected retired)
+  SORTING = {
+    'alpha' => :alphabetical,
+    'owned' => :most_followed,
+    'used' => :most_used,
+  }
   TYPES = %w(Hardware Software Tool).inject({}){|mem, t| mem[t] = "#{t}Part"; mem }
   include HstoreCounter
   include Privatable
@@ -88,11 +93,15 @@ class Part < ActiveRecord::Base
 
   def self.search params
     # escape single quotes and % so it doesn't break the query
-    query = params[:q].gsub(/['%]/, ' ').split(/\s+/).map do |token|
-      "(parts.name ILIKE '%#{token}%' OR groups.full_name ILIKE '%#{token}%')"
-    end.join(' AND ')
+    query = if params[:q].present?
+      params[:q].gsub(/['%]/, ' ').split(/\s+/).map do |token|
+        "(parts.name ILIKE '%#{token}%' OR groups.full_name ILIKE '%#{token}%')"
+      end.join(' AND ')
+    else
+      '1=1'
+    end
 
-    approved.joins("LEFT JOIN groups ON groups.id = parts.platform_id AND groups.type = 'Platform'").where(query).where(type: params[:type]).order('groups.full_name ASC, parts.name ASC').includes(:platform)
+    approved.joins("LEFT JOIN groups ON groups.id = parts.platform_id AND groups.type = 'Platform'").where(query).order('groups.full_name ASC, parts.name ASC').includes(:platform)
   end
 
   def self.approved
@@ -105,6 +114,10 @@ class Part < ActiveRecord::Base
 
   def self.invalid
     where workflow_state: INVALID_STATES
+  end
+
+  def self.most_followed
+    order("CAST(parts.counters_cache -> 'owners_count' AS INT) DESC NULLS LAST, parts.name ASC")
   end
 
   def self.most_used

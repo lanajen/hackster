@@ -488,8 +488,8 @@ $select2target = null;
           processResults: function (data, page) {
             var results = _.map(data.parts, function(el){
               return {
-                id: el.part.id,
-                part: el.part
+                id: el.id,
+                part: el
               }
             });
             var extra = { disabled: true, q: data.q, type: data.type };

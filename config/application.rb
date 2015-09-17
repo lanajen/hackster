@@ -94,7 +94,7 @@ module HackerIo
 
     # React Browserify Transform
     config.react.addons = true
-    config.browserify_rails.commandline_options = "-t [babelify --optional runtime]"
+    config.browserify_rails.commandline_options = "-t [babelify --stage 0  --optional runtime]"
 
     # cashier tag caching
     config.cashier.adapter = :redis_store

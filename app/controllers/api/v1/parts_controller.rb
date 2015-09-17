@@ -3,20 +3,28 @@ class Api::V1::PartsController < Api::V1::BaseController
   load_and_authorize_resource only: [:create, :update, :destroy]
 
   def index
-    @parts = if params[:q].present?
-      if params[:type].present?
-        params[:human_type] = {
-          'hardware' => 'component',
-          'software' => 'app',
-          'tool' => 'tool',
-        }[params[:type]]
-        params[:type] = params[:type].capitalize + 'Part'
-      end
+    @parts = Part.approved
 
-      Part.search(q: params[:q], type: params[:type]).paginate(page: safe_page_params)
-    else
-      []
+    if params[:q].present?
+      @parts = @parts.search(q: params[:q])
     end
+
+    if params[:type].present?
+      params[:human_type] = {
+        'hardware' => 'component',
+        'software' => 'app',
+        'tool' => 'tool',
+      }[params[:type]]
+      params[:type] = params[:type].capitalize + 'Part'
+
+      @parts = @parts.where(type: params[:type])
+    end
+
+    if params[:sort]
+      @parts = @parts.send(Part::SORTING[params[:sort]])
+    end
+
+    @parts = @parts.paginate(page: safe_page_params)
   end
 
   def create
