@@ -188,6 +188,7 @@ class Project < ActiveRecord::Base
   hstore_column :properties, :review_comment, :string
   hstore_column :properties, :review_time, :datetime
   hstore_column :properties, :reviewer_id, :string
+  hstore_column :properties, :story_json, :json_object
 
   self.per_page = 18
 

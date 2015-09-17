@@ -10,7 +10,9 @@ export default {
 
   Editor: keyMirror({
     setDOM: null,
+    setInitialDOM: null,
     fetchInitialDOM: null,
+    setProjectData: null,
     createBlockElement: null,
     createBlockElementWithChildren: null,
     transformBlockElement: null,

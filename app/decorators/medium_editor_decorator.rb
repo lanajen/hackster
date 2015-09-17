@@ -62,7 +62,8 @@ module MediumEditorDecorator
         end
         parsed.to_html.html_safe
       else
-        "<p class='paragraph--empty'><br></p>".html_safe
+        return nil;
+        # "<p class='paragraph--empty'><br></p>".html_safe
       end
     end
 end

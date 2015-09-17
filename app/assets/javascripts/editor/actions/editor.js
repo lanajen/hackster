@@ -1,4 +1,5 @@
 import { Editor } from '../constants/ActionTypes';
+import Request from '../utils/Requests';
 
 export function setDOM(dom) {
   return {
@@ -7,13 +8,32 @@ export function setDOM(dom) {
   };
 }
 
-export function fetchInitialDOM() {
-  // FETCH JSON FROM SERVER HERE!!!
-  let json = [];
+export function setInitialDOM(json) {
   return {
-    type: Editor.fetchInitialDOM,
+    type: Editor.setInitialDOM,
     json: json
+  };
+}
+
+export function fetchInitialDOM(projectId, csrfToken) {
+
+  return function (dispatch) {
+    return Request.getStory(projectId, csrfToken)
+      .then(result => {
+        dispatch(setInitialDOM(result));
+      }).catch(err => { 
+        console.log(err);
+      // handle err 
+      });
   }
+}
+
+export function setProjectData(projectId, csrfToken) {
+  return {
+    type: Editor.setProjectData,
+    projectId: projectId,
+    csrfToken: csrfToken
+  };
 }
 
 export function createBlockElement(tag, position, setCursorToNextLine) {

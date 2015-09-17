@@ -2,9 +2,10 @@ import React from 'react';
 import _ from 'lodash';
 import rangy from 'rangy';
 import Sanitize from 'sanitize-html';
-import Utils from '../../utils/DOMUtils';
+import Utils from '../utils/DOMUtils';
 import Helpers from '../../utils/Helpers';
 import ImageUtils from '../../utils/Images';
+import Request from '../utils/Requests';
 import Hashids from 'hashids';
 
 const hashids = new Hashids('hackster', 4);
@@ -32,6 +33,7 @@ const ContentEditable = React.createClass({
 
     /** Issues the Toolbars notice of the CE width on resize. */
     window.addEventListener('resize', this.debouncedResize);
+    /** Sets initial CEWidth for the Toolbars. */
   },
 
   componentWillUnmount() {
@@ -265,10 +267,7 @@ const ContentEditable = React.createClass({
             if(!videoData) { 
               // TODO: HANDLE VIDEO ERROR!
             } else {
-              let metaList = document.getElementsByTagName('meta');
-              let csrfToken = _.findWhere(metaList, {name: 'csrf-token'}).content;
-              let projectId = window.location.href.match(/\/[\d]+/).join('').slice(1);
-              let promise = ImageUtils.fetchImageAndTransform(videoData, projectId, csrfToken);
+              let promise = Request.fetchImageAndTransform(videoData, this.props.editor.projectId, this.props.editor.csrfToken);
 
               promise.then(imageData => {
                 this.props.actions.handleVideo(imageData, depth);
@@ -474,7 +473,7 @@ const ContentEditable = React.createClass({
       this.props.actions.forceUpdate(true);
     }
     /** Removes any text with specified class.  Mimics a placeholder. */
-    if(rangy.getSelection().anchorNode.parentNode.classList.contains('react-editor-placeholder-text')) {
+    if(rangy.getSelection().anchorNode && rangy.getSelection().anchorNode.parentNode.classList.contains('react-editor-placeholder-text')) {
       let target = rangy.getSelection().anchorNode.parentNode;
       target.classList.remove('react-editor-placeholder-text');
       target.textContent = '';

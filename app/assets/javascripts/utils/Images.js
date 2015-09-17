@@ -94,28 +94,28 @@ const ImageUtils = {
     });
   },
 
-  fetchImageAndTransform(videoData, projectId, csrfToken) {
-    return new Promise((resolve, reject) => {
-      request
-        .post(`/api/v1/projects/${projectId}/video_data`)
-        .set('X-CSRF-Token', csrfToken)
-        .send({ videoData: videoData })
-        .end((err, res) => {
-          if(err) reject(err);
-          let image = res.body.poster;
+  // fetchImageAndTransform(videoData, projectId, csrfToken) {
+  //   return new Promise((resolve, reject) => {
+  //     request
+  //       .post(`/api/v1/projects/${projectId}/video_data`)
+  //       .set('X-CSRF-Token', csrfToken)
+  //       .send({ videoData: videoData })
+  //       .end((err, res) => {
+  //         if(err) reject(err);
+  //         let image = res.body.poster;
 
-          if(image === null) {
-            // TODO: Handle err;
-            reject('Error');
-          }
+  //         if(image === null) {
+  //           // TODO: Handle err;
+  //           reject('Error');
+  //         }
 
-          this.handleImageResize(image, function(imageData) {
-            resolve(Object.assign({}, imageData, videoData)); 
-          });
+  //         this.handleImageResize(image, function(imageData) {
+  //           resolve(Object.assign({}, imageData, videoData)); 
+  //         });
 
-        });
-    });
-  }
+  //       });
+  //   });
+  // }
 
 };
 

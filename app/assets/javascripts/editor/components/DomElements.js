@@ -1,6 +1,6 @@
 import React from 'react';
 import { createRandomNumber } from '../../utils/Helpers';
-import Utils from '../../utils/DOMUtils';
+import Utils from '../utils/DOMUtils';
 
 export const ELEMENT = React.createClass({
   render() {

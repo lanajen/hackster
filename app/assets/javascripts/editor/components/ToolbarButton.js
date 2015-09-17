@@ -1,7 +1,7 @@
 import React from 'react';
 import rangy from 'rangy';
 import cx from 'classnames';
-import Utils from '../../utils/DOMUtils';
+import Utils from '../utils/DOMUtils';
 import _ from 'lodash';
 
 const ToolbarButton = React.createClass({

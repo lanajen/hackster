@@ -33,6 +33,7 @@ HackerIo::Application.routes.draw do
       end
       resources :projects do 
         post 'video_data' => 'projects#video_data', defaults: { format: :json }
+        get 'description' => 'projects#description'
       end
       resources :parts, only: [:index, :create, :update, :destroy]
       scope 'platforms' do

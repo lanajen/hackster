@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import { IconButton } from 'material-ui';
-import Utils from '../../utils/DOMUtils';
+import Utils from '../utils/DOMUtils';
 import ImageUtils from '../../utils/Images';
 import Helpers from '../../utils/Helpers';
 

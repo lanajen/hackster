@@ -4,9 +4,10 @@ import PopOver from './PopOver';
 import _ from 'lodash';
 import validator from 'validator';
 import rangy from 'rangy';
-import Utils from '../../utils/DOMUtils';
+import Utils from '../utils/DOMUtils';
 import ImageUtils from '../../utils/Images';
-import Helpers from '../../utils/Helpers';
+import { isImageValid, createRandomNumber } from '../../utils/Helpers';
+
 
 const Toolbar = React.createClass({
 
@@ -34,7 +35,6 @@ const Toolbar = React.createClass({
     let scrollTop = el.getBoundingClientRect().top;
     let windowPos = window.pageYOffset;
 
-      console.log(el, el.getBoundingClientRect(), el.offsetTop, windowPos, this.state.toolbarTopPos);
     if(scrollTop <= 0 && this.state.toolbarTopPos === null && this.state.toolbarTopPos < windowPos && !el.classList.contains('fixed-toolbar')) {
       el.classList.add('fixed-toolbar');
 
@@ -261,7 +261,7 @@ const Toolbar = React.createClass({
 
     files = Array.prototype.slice.call(files);
     filteredFiles = _.filter(files, function(file) {
-      if(Helpers.isImageValid(file.type)) {
+      if(isImageValid(file.type)) {
         return file;
       } else {
         return false;
@@ -299,12 +299,12 @@ const Toolbar = React.createClass({
     ];
 
     let Buttons = buttonList.map(button => {
-      return <Button key={Helpers.createRandomNumber()} classList={button.classList} tagType={button.tagType} icon={button.icon} activeButtons={this.props.toolbar.activeButtons} onClick={button.onClick} />;
+      return <Button key={createRandomNumber()} classList={button.classList} tagType={button.tagType} icon={button.icon} activeButtons={this.props.toolbar.activeButtons} onClick={button.onClick} />;
     });
     
 
     let style = {
-      width: parseInt(this.props.toolbar.CEWidth, 10) + 4 || '100%'
+      width: parseInt(this.props.toolbar.CEWidth, 10) + 4 || 750
     };
 
     return (

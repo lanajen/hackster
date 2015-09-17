@@ -5,7 +5,7 @@ import DropZone from '../../reusable_components/DropZone';
 import ContentEditable from './ContentEditable';
 import ImageToolbar from './ImageToolbar';
 import { createRandomNumber } from '../../utils/Helpers';
-import Utils from '../../utils/DOMUtils';
+import Utils from '../utils/DOMUtils';
 import ImageUtils from '../../utils/Images';
 import Validator from 'validator';
 import HtmlParser from 'htmlparser2';
@@ -14,7 +14,12 @@ import DomHandler from 'domhandler';
 const Editable = React.createClass({
 
   componentWillMount() {
-    this.props.actions.fetchInitialDOM();
+    let metaList = document.getElementsByTagName('meta');
+    let csrfToken = _.findWhere(metaList, {name: 'csrf-token'}).content;
+    let projectId = window.location.href.match(/\/[\d]+/).join('').slice(1);
+
+    this.props.actions.fetchInitialDOM(projectId, csrfToken);
+    this.props.actions.setProjectData(projectId, csrfToken);
   },
 
   shouldComponentUpdate(nextProps) {

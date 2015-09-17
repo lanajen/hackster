@@ -2,7 +2,7 @@ import React from 'react/addons';
 import { Editor } from '../constants/ActionTypes';
 import _ from 'lodash';
 import { createRandomNumber } from '../../utils/Helpers';
-import Utils from '../../utils/DOMUtils';
+import Utils from '../utils/DOMUtils';
 import Helpers from '../../utils/Helpers';
 import async from 'async';
 
@@ -42,6 +42,8 @@ const blockElements = {
 const initialState = {
   html: '',
   dom: [],
+  csrfToken: null,
+  projectId: null,
   isEditable: true,
   isHovered: false,
   getLatestHTML: false,
@@ -62,12 +64,20 @@ export default function(state = initialState, action) {
         dom: ReactifiedDOM
       };
 
-    case Editor.fetchInitialDOM:
+    case Editor.setInitialDOM:
+      console.log('THIS!', action.json);
       let initDom = handleInitialDOM(action.json);
       newDom = createArrayOfComponents(initDom);
       return {
         ...state,
         dom: newDom
+      };
+
+    case Editor.setProjectData:
+      return {
+        ...state,
+        csrfToken: action.csrfToken,
+        projectId: action.projectId
       };
 
     case Editor.createBlockElement:
