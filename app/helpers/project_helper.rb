@@ -7,7 +7,7 @@ module ProjectHelper
         'data-store_link' => part.store_link,
         'data-product_page_link' => part.product_page_link,
         'data-image_url' => part.image.try(:imgix_url, :part_thumb),
-        'data-editable' => part.editable?,
+        'data-status' => part.workflow_state,
       }
       if platform = part.platform
         option_attrs.merge!(

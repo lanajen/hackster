@@ -2,6 +2,7 @@ class User < ActiveRecord::Base
 
   include Checklist
   include EditableSlug
+  include HasAbility
   include HstoreColumn
   include HstoreCounter
   include Roles
@@ -203,8 +204,6 @@ class User < ActiveRecord::Base
   has_websites :websites, :facebook, :twitter, :linked_in, :website, :blog,
     :github, :google_plus, :youtube, :instagram, :flickr, :reddit, :pinterest
 
-  delegate :can?, :cannot?, to: :ability
-
   is_impressionable counter_cache: true, unique: :session_hash
 
   taggable :interest_tags, :skill_tags
@@ -321,10 +320,6 @@ class User < ActiveRecord::Base
   def self.query_for_subscription notification_type, subscription
     const = SUBSCRIPTIONS[notification_type.to_sym]
     "(CAST(users.subscriptions_masks -> '#{notification_type}' AS INTEGER) & #{2**const.keys.index(subscription.to_s)} > 0)"
-  end
-
-  def ability
-    @ability ||= Ability.new(self)
   end
 
   def active_profile?

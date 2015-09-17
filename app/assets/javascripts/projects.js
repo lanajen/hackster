@@ -488,8 +488,8 @@ $select2target = null;
           processResults: function (data, page) {
             var results = _.map(data.parts, function(el){
               return {
-                id: el.part.id,
-                part: el.part
+                id: el.id,
+                part: el
               }
             });
             var extra = { disabled: true, q: data.q, type: data.type };
@@ -917,7 +917,7 @@ function formatPart(result) {
       store_link: el.data('store_link'),
       product_page_link: el.data('product_page_link'),
       image_url: el.data('image_url'),
-      editable: el.data('editable') == true
+      status: el.data('status')
     };
     if (el.data('platform-id')) {
       var platform = {
@@ -940,7 +940,7 @@ function formatPart(result) {
   if (!link)
     link = part.product_page_link && typeof(part.product_page_link) !== 'undefined' ? part.product_page_link : 'No link';
   output +=  part.name + '</div><div class="part-link"><i class="fa fa-link"></i><span>' + link + '</span></div></td><td class="part-action">'
-  if (part.editable) {
+  if (part.status  == 'pending_review') {
     output += '<a class="btn btn-link btn-sm edit-in-modal" data-modal="#parts-popup">Edit</a>';
   } else {
     output += '<i class="fa fa-lock help" title="This part cannot be edited."></i>';

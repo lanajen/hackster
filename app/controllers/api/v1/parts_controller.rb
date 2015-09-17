@@ -1,22 +1,35 @@
 class Api::V1::PartsController < Api::V1::BaseController
-  before_filter :authenticate_user!, only: [:create, :update, :destroy]
-  load_and_authorize_resource only: [:create, :update, :destroy]
+  before_filter :authenticate_platform_or_user, only: [:index]
+  before_filter :authenticate_and_load_resource, only: [:show, :create, :update, :destroy]
+  # before_filter :authenticate_user!, only: [:create, :update, :destroy]
+  # load_and_authorize_resource only: [:create, :update, :destroy]
 
   def index
-    @parts = if params[:q].present?
-      if params[:type].present?
-        params[:human_type] = {
-          'hardware' => 'component',
-          'software' => 'app',
-          'tool' => 'tool',
-        }[params[:type]]
-        params[:type] = params[:type].capitalize + 'Part'
-      end
-
-      Part.search(q: params[:q], type: params[:type]).paginate(page: safe_page_params)
+    @parts = if current_platform
+      current_platform.parts
     else
-      []
+      Part.approved
     end
+
+    if params[:q].present?
+      @parts = @parts.search(q: params[:q])
+    end
+
+    if params[:type].present?
+      params[:human_type] = {
+        'hardware' => 'component',
+        'software' => 'app',
+        'tool' => 'tool',
+      }[params[:type]]
+      params[:type] = params[:type].capitalize + 'Part'
+
+      @parts = @parts.where(type: params[:type])
+    end
+
+    sort = params[:sort] || Part::DEFAULT_SORT
+    @parts = @parts.send(Part::SORTING[sort])
+
+    @parts = @parts.paginate(page: safe_page_params)
   end
 
   def create
@@ -36,8 +49,33 @@ class Api::V1::PartsController < Api::V1::BaseController
   end
 
   def destroy
-    part.destroy
+    @part.destroy
 
     render status: :ok, nothing: true
   end
+
+  private
+    def authenticate_and_load_resource
+      authenticate_platform_or_user
+      load_and_authorize_resource
+    end
+
+    def load_and_authorize_resource
+      if current_platform
+        @part = if params[:id].present?
+          current_platform.parts.where(parts: { id: params[:id ]}).first!
+        else
+          part = current_platform.parts.new params[:part]
+          part.generate_slug
+          part
+        end
+      else
+        @part = if params[:id].present?
+          Part.find params[:id]
+        else
+          Part.new params[:part]
+        end
+      end
+      authorize! self.action_name.to_sym, @part
+    end
 end

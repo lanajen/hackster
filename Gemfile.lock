@@ -98,7 +98,7 @@ GEM
     buftok (0.2.0)
     builder (3.2.2)
     byebug (6.0.2)
-    cancan (1.6.10)
+    cancancan (1.12.0)
     capybara (2.5.0)
       mime-types (>= 1.16)
       nokogiri (>= 1.3.3)
@@ -673,7 +673,7 @@ DEPENDENCIES
   browser-timezone-rails (= 0.0.8)
   browserify-rails (= 1.0.1)
   byebug
-  cancan (= 1.6.10)
+  cancancan (= 1.12.0)
   capybara
   carrierwave (= 0.10.0)
   cashier (= 0.4.1)

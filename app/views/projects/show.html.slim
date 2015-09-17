@@ -300,7 +300,7 @@
                   .progress style="margin-bottom: 0"
                     .progress-bar class="progress-bar-#{alert_color}" role="progressbar" style="width: #{@project.checklist_completion}%;"
               - if @project.public?
-                - if @can_edit and @project.pending_review?
+                - if @can_edit and @project.pending_review? or @project.unpublished?
                   .alert.alert-warning.text-center
                     span
                       p

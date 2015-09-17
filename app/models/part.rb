@@ -3,8 +3,14 @@
 # - later: search by part
 
 class Part < ActiveRecord::Base
+  DEFAULT_SORT = 'alpha'
   EDITABLE_STATES = %w(new pending_review)
   INVALID_STATES = %w(rejected retired)
+  SORTING = {
+    'alpha' => :alphabetical,
+    'owned' => :most_followed,
+    'used' => :most_used,
+  }
   TYPES = %w(Hardware Software Tool).inject({}){|mem, t| mem[t] = "#{t}Part"; mem }
   include HstoreCounter
   include Privatable
@@ -32,7 +38,7 @@ class Part < ActiveRecord::Base
     :description, :image_id, :platform_id,
     :part_joins_attributes, :part_join_ids, :workflow_state, :slug, :one_liner,
     :position, :child_part_relations_attributes,
-    :parent_part_relations_attributes, :type, :link
+    :parent_part_relations_attributes, :type, :link, :image_url
 
   accepts_nested_attributes_for :part_joins, :child_part_relations,
     :parent_part_relations, allow_destroy: true
@@ -88,11 +94,15 @@ class Part < ActiveRecord::Base
 
   def self.search params
     # escape single quotes and % so it doesn't break the query
-    query = params[:q].gsub(/['%]/, ' ').split(/\s+/).map do |token|
-      "(parts.name ILIKE '%#{token}%' OR groups.full_name ILIKE '%#{token}%')"
-    end.join(' AND ')
+    query = if params[:q].present?
+      params[:q].gsub(/['%]/, ' ').split(/\s+/).map do |token|
+        "(parts.name ILIKE '%#{token}%' OR groups.full_name ILIKE '%#{token}%')"
+      end.join(' AND ')
+    else
+      '1=1'
+    end
 
-    approved.joins("LEFT JOIN groups ON groups.id = parts.platform_id AND groups.type = 'Platform'").where(query).where(type: params[:type]).order('groups.full_name ASC, parts.name ASC').includes(:platform)
+    approved.joins("LEFT JOIN groups ON groups.id = parts.platform_id AND groups.type = 'Platform'").where(query).order('groups.full_name ASC, parts.name ASC').includes(:platform)
   end
 
   def self.approved
@@ -105,6 +115,10 @@ class Part < ActiveRecord::Base
 
   def self.invalid
     where workflow_state: INVALID_STATES
+  end
+
+  def self.most_followed
+    order("CAST(parts.counters_cache -> 'owners_count' AS INT) DESC NULLS LAST, parts.name ASC")
   end
 
   def self.most_used
@@ -157,6 +171,11 @@ class Part < ActiveRecord::Base
     self.image = Image.find_by_id(val)
   end
 
+  def image_url=(val)
+    build_image unless image
+    image.remote_file_url = val
+  end
+
   def full_name
     return @full_name if @full_name
 
@@ -206,8 +225,8 @@ class Part < ActiveRecord::Base
 
   private
     def ensure_partable
-      self.partable_id = 0 if partable_id.nil?
-      self.partable_type = 'Orphan' if partable_type.nil?
+      self.partable_id = 0
+      self.partable_type = 'Orphan'
     end
 
     def strip_tags text
