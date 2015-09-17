@@ -63,7 +63,7 @@ class Ability
 
     can :create, ChallengeEntry do |entry|
       challenge = entry.challenge
-      ChallengeRegistration.has_registered? challenge, @user
+      challenge.disable_registration or ChallengeRegistration.has_registered? challenge, @user
     end
 
     can :create, ChallengeRegistration do |registration|
