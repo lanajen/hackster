@@ -134,6 +134,8 @@
                 ==> prize.quantity
                 | available
 
+    - cache ["challenge-#{@challenge.id}-timeline"], tag: ["challenge-#{@challenge.id}-timeline"] do
+
       section.section-thumbs
         h4 Timeline
         - if @challenge.activate_pre_registration
