@@ -232,10 +232,10 @@
   javascript:
     $('.datetimepicker').datetimepicker({
       icons: {
-          time: "fa fa-clock-o",
-          date: "fa fa-calendar",
-          up: "fa fa-arrow-up",
-          down: "fa fa-arrow-down"
+        time: "fa fa-clock-o",
+        date: "fa fa-calendar",
+        up: "fa fa-arrow-up",
+        down: "fa fa-arrow-down"
       },
       sideBySide: true
     });
@@ -253,7 +253,7 @@
       $('#start_date').val($('#start_date_dummy').data("DateTimePicker").getDate());
     });
     $('#end_date_dummy').on('change', function(){
-      $('#end_date').val($('#entend_date_dummyry_deadline').data("DateTimePicker").getDate());
+      $('#end_date').val($('#end_date_dummy').data("DateTimePicker").getDate());
     });
     $('#voting_end_date_dummy').on('change', function(){
       $('#voting_end_date').val($(this).data("DateTimePicker").getDate());

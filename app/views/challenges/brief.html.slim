@@ -134,6 +134,8 @@
                 ==> prize.quantity
                 | available
 
+    - cache ["challenge-#{@challenge.id}-timeline"], tag: ["challenge-#{@challenge.id}-timeline"] do
+
       section.section-thumbs
         h4 Timeline
         - if @challenge.activate_pre_registration
@@ -156,7 +158,7 @@
           p #{l @challenge.start_date.in_time_zone(PDT_TIME_ZONE)} PT
         - if @challenge.end_date
           p style='margin-bottom:0'
-            strong> Submissions close:
+            strong> Contest ends on:
           p #{l @challenge.end_date.in_time_zone(PDT_TIME_ZONE)} PT
 
   - cache ["challenge-#{@challenge.id}-brief"], tag: ["challenge-#{@challenge.id}-brief"] do
@@ -171,7 +173,7 @@
 
         .section-content.medium-editor
           - if @challenge.video
-            .mg-20= render partial: "api/embeds/embed", locals: { embed: @challenge.video }
+            .mg-20= begin; render partial: "api/embeds/embed", locals: { embed: @challenge.video }; rescue; end;
           = raw @challenge.description
 
       .section-interlude
