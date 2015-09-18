@@ -136,10 +136,10 @@ class ChallengesController < ApplicationController
       if @challenge.judged?
         @winning_entries = @challenge.entries.winning.includes(:project).inject([]){|mem, e| mem << e unless mem.select{|m| m.project_id == e.project_id }.any?; mem }
         @winning_entries_count = @winning_entries.count
-        @other_projects = @challenge.projects.joins(:challenge_entries).where.not(challenge_projects: { id: @winning_entries.map(&:id) }).for_thumb_display.paginate(page: safe_page_params, per_page: per_page)
+        @other_projects = @challenge.projects.reorder('').most_respected.where.not(challenge_projects: { id: @winning_entries.map(&:id) }).for_thumb_display.paginate(page: safe_page_params, per_page: per_page)
       else
         per_page = per_page - 1 if @challenge.open_for_submissions? and !@is_challenge_entrant
-        @projects = @challenge.projects.valid.for_thumb_display.paginate(page: safe_page_params, per_page: per_page)
+        @projects = @challenge.projects.valid.reorder("(CASE WHEN projects.workflow_state = 'approved' THEN 1 ELSE 2 END) ASC, challenge_projects.created_at DESC").for_thumb_display.paginate(page: safe_page_params, per_page: per_page)
       end
     end
 
