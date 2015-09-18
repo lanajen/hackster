@@ -95,13 +95,13 @@ class Challenge < ActiveRecord::Base
 
   workflow do
     state :new do
-      event :prelaunch, transitions_to: :pre_registration
+      event :pre_launch, transitions_to: :pre_registration
       event :launch_contest, transitions_to: :in_progress
-      event :launch_precontest, transitions_to: :pre_contest_in_progress
+      event :launch_pre_contest, transitions_to: :pre_contest_in_progress
     end
     state :pre_registration do
       event :launch_contest, transitions_to: :in_progress
-      event :launch_precontest, transitions_to: :pre_contest_in_progress
+      event :launch_pre_contest, transitions_to: :pre_contest_in_progress
       event :take_offline, transitions_to: :new
     end
     state :pre_contest_in_progress do

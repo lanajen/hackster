@@ -36,19 +36,19 @@ class ChallengeObserver < ActiveRecord::Observer
   end
 
   def after_pre_launch record
-    NotificationCenter.notify_all :prelaunched, :challenge, record.id
+    NotificationCenter.notify_all :pre_launched, :challenge, record.id
     expire_cache record
     expire_index
   end
 
-  def after_launch_precontest record
-    NotificationCenter.notify_all :launched_precontest, :challenge, record.id
+  def after_launch_pre_contest record
+    NotificationCenter.notify_all :launched_pre_contest, :challenge, record.id
     expire_cache record
     expire_index
   end
 
   def after_end_pre_contest record
-    NotificationCenter.notify_all :ended_precontest, :challenge, record.id
+    NotificationCenter.notify_all :ended_pre_contest, :challenge, record.id
     expire_cache record
   end
 
