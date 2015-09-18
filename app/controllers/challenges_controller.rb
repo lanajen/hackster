@@ -2,10 +2,10 @@ class ChallengesController < ApplicationController
   before_filter :authenticate_user!, only: [:edit, :update, :update_workflow]
   before_filter :load_challenge, only: [:show, :brief, :projects, :participants, :update]
   before_filter :authorize_and_set_cache, only: [:show, :brief, :projects]
-  before_filter :load_platform, only: [:show, :brief, :projects]
+  before_filter :load_platform, only: [:show, :brief, :projects, :participants]
   before_filter :load_and_authorize_challenge, only: [:enter, :update_workflow]
-  before_filter :set_challenge_entrant, only: [:show, :brief, :projects]
-  before_filter :load_user_projects, only: [:show, :brief, :projects]
+  before_filter :set_challenge_entrant, only: [:show, :brief, :projects, :participants]
+  before_filter :load_user_projects, only: [:show, :brief, :projects, :participants]
   load_and_authorize_resource only: [:edit, :update]
   layout :set_layout
   skip_before_filter :track_visitor, only: [:show, :brief, :projects]

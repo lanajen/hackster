@@ -134,7 +134,7 @@ class Challenge < ActiveRecord::Base
   end
 
   def self.active
-    where(workflow_state: :in_progress)
+    where(workflow_state: REGISTRATION_OPEN_STATES)
   end
 
   def self.coming
