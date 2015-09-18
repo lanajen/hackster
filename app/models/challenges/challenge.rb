@@ -43,10 +43,12 @@ class Challenge < ActiveRecord::Base
     :video_link, :cover_image_id, :end_date, :end_date_dummy, :avatar_id,
     :challenge_admins_attributes, :voting_end_date_dummy, :start_date_dummy,
     :pre_registration_start_date_dummy, :start_date, :pre_contest_start_date_dummy,
-    :pre_contest_end_date_dummy
+    :pre_contest_end_date_dummy, :winners_announced_date_dummy,
+    :pre_winners_announced_date_dummy
   attr_accessor :new_slug, :end_date_dummy, :voting_end_date_dummy, :start_date_dummy,
     :pre_registration_start_date_dummy, :pre_contest_start_date_dummy,
-    :pre_contest_end_date_dummy
+    :pre_contest_end_date_dummy, :winners_announced_date_dummy,
+    :pre_winners_announced_date_dummy
 
   accepts_nested_attributes_for :prizes, :challenge_admins, allow_destroy: true
 
@@ -78,6 +80,7 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :pre_contest_end_date, :datetime
   hstore_column :hproperties, :pre_contest_start_date, :datetime
   hstore_column :hproperties, :pre_registration_start_date, :datetime
+  hstore_column :hproperties, :pre_winners_announced_date, :datetime
   hstore_column :hproperties, :project_ideas, :boolean
   hstore_column :hproperties, :requirements, :string
   hstore_column :hproperties, :rules, :string
@@ -86,6 +89,7 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :sponsor_name, :string
   hstore_column :hproperties, :voting_start, :string, default: :end
   hstore_column :hproperties, :voting_end_date, :datetime, default: proc{|c| c.end_date ? c.end_date + 7.days : nil }
+  hstore_column :hproperties, :winners_announced_date, :datetime
 
   counters_column :hcounters_cache
   has_counter :projects, 'projects.valid.count'
@@ -299,6 +303,14 @@ class Challenge < ActiveRecord::Base
 
   def pre_contest_end_date_dummy
     pre_contest_end_date ? pre_contest_end_date.strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
+  end
+
+  def pre_winners_announced_date_dummy
+    pre_winners_announced_date ? pre_winners_announced_date_dummy.strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
+  end
+
+  def winners_announced_date_dummy
+    winners_announced_date ? winners_announced_date_dummy.strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
   end
 
   def voting_active?
