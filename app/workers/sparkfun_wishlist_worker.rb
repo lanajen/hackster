@@ -21,7 +21,7 @@ class SparkfunWishlistWorker < BaseWorker
       wishlist.parts.each do |part, quantity|
         project.part_joins.new part_id: part.hackster_part.id, quantity: quantity
       end
-      project.name = wishlist.name if project.name.blank? and wishlist.name.present?
+      project.name = wishlist.name if (project.name.blank? or project.has_default_name?) and wishlist.name.present?
       project.description = wishlist.description if project.description.blank? and wishlist.description.present?
 
       project.save

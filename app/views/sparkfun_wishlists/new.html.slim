@@ -68,7 +68,8 @@
               function checkJobIsComplete(id, nextUrl) {
                 var bar = $('#progress-bar .progress-bar');
                 var width = 100 * parseFloat(bar.css('width')) / parseFloat(bar.parent().css('width'));
-                width += 5;
+                width += 3;
+                width = Math.min(width, 100);
                 bar.css('width', width.toString() + '%');
 
                 $.ajax({
