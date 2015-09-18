@@ -4,7 +4,34 @@
 
 <p>Please take time to review <a href="<%= u.challenge_brief_url(@context[:challenge].slug, anchor: 'rules', show_rules: 1) %>">the challenge rules</a> to learn more about the requirements.</p>
 
-<p>You have until <%= l @context[:challenge].end_date.in_time_zone(PDT_TIME_ZONE) %> PDT to submit your entry. Good luck!</p>
+<% if @context[:challenge].activate_pre_contest? %>
+  <p>You have until <%= l @context[:challenge].end_date.in_time_zone(PDT_TIME_ZONE) %> PDT to submit your entry. Good luck!</p>
+<% else %>
+  <p>You have until <%= l @context[:challenge].end_date.in_time_zone(PDT_TIME_ZONE) %> PDT to submit your entry. Good luck!</p>
+<% end %>
+
+<p>Here is the timeline:</p>
+<ol>
+  <% if @context[:challenge].activate_pre_registration %>
+    <% if @context[:challenge].pre_registration_start_date %>
+      <li><strong>Registrations open:</strong> <%= l @context[:challenge].pre_registration_start_date.in_time_zone(PDT_TIME_ZONE) %> PT</li>
+    <% end %>
+  <% end %>
+  <% if @context[:challenge].activate_pre_contest %>
+    <% if @context[:challenge].pre_contest_start_date %>
+      <li><strong>Pre-contest opens:</strong> <%= l @context[:challenge].pre_contest_start_date.in_time_zone(PDT_TIME_ZONE) %> PT</li>
+    <% end %>
+    <% if @context[:challenge].pre_contest_end_date %>
+      <li><strong>Pre-contest closes:</strong> <%= l @context[:challenge].pre_contest_end_date.in_time_zone(PDT_TIME_ZONE) %> PT</li>
+    <% end %>
+  <% end %>
+  <% if @context[:challenge].start_date %>
+    <li><strong>Submissions open:</strong> <%= l @context[:challenge].start_date.in_time_zone(PDT_TIME_ZONE) %> PT</li>
+  <% end %>
+  <% if @context[:challenge].end_date %>
+    <li><strong>Contest ends on:</strong> <%= l @context[:challenge].end_date.in_time_zone(PDT_TIME_ZONE) %> PT</li>
+  <% end %>
+</ol>
 
 <p>Cheers,<br> The Hackster.io team</p>
 <p>
