@@ -118,7 +118,7 @@
                   - if user_signed_in?
                     li= link_to "Register as a participant", challenge_registrations_path(@challenge), class: 'btn btn-primary register-challenge register-challenge-btn', data: { method: :post }
                   - else
-                    li= link_to "Register as a participant", new_user_registration_path(redirect_to: create_challenge_registrations_path(@challenge), reason: 'register', m: 'challenge', id: @challenge.id), class: "btn btn-primary btn-block show-simplified-signup", data: { container: 'body', redirect_to: create_challenge_registrations_path(@challenge), source: 'register_challenge' }
+                    li= link_to "Register as a participant", new_user_registration_path(redirect_to: create_challenge_registrations_path(@challenge), reason: 'register', m: 'challenge', id: @challenge.id), class: "btn btn-primary btn-block show-simplified-signup with-name", data: { container: 'body', redirect_to: create_challenge_registrations_path(@challenge), source: 'register_challenge' }
 
             - if can? :admin, @challenge
               ul.list-inline.manage

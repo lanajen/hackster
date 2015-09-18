@@ -15,14 +15,21 @@ $select2target = null;
 
 (function ($, window, document, undefined) {
   $(function() {
-    $('#simplified-signup-popup').on('modal:open', function(e){
-      $(this).find('#user_email').focus();
-    });
     $('.show-simplified-signup').on('click', function(e) {
       e.preventDefault();
       $('#simplified-signup-popup input[name="redirect_to"]').val($(this).data('redirect-to'));
       $('#simplified-signup-popup input[name="source"]').val($(this).data('source'));
+      if ($(this).hasClass('with-name')) {
+        $('#simplified-signup-popup .full-name-wrapper').show();
+      }
       openModal('#simplified-signup-popup');
+    });
+    $('#simplified-signup-popup').on('modal:open', function(e){
+      if ($(this).find('input[name="user[full_name]"]:visible').length) {
+        $(this).find('input[name="user[full_name]"]').focus();
+      } else {
+        $(this).find('#user_email').focus();
+      }
     });
 
     // if($('#top-project-section').length){
