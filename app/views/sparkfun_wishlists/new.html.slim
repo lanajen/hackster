@@ -96,5 +96,5 @@
       - else
         p
           ' Please
-          => link_to 'log in', new_user_session_path(redirect_to: request.path)
+          => link_to 'log in', new_user_session_path(redirect_to: request.url)
           ' to get started.

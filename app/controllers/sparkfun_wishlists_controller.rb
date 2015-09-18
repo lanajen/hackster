@@ -1,9 +1,6 @@
 class SparkfunWishlistsController < ApplicationController
   before_filter :authenticate_user!, only: [:create]
 
-  def new
-  end
-
   def create
     if params[:wishlist_id].present?
       @project = Project.create content_type: Project::DEFAULT_CONTENT_TYPE
