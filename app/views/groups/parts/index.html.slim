@@ -29,9 +29,9 @@ h2.text-center
                 i.fa.fa-eye-slash.istooltip title='Hidden' data-container='body'
               - else
                 i.fa.fa-eye.istooltip title='Visible' data-container='body'
-                - if part.pending_review?
-                  span
-                    | (pending review)
+              - if part.pending_review?
+                span
+                  | (pending review)
             td
               = link_to 'Edit', edit_group_product_path(@group, part), class: 'btn btn-default btn-sm'
               - if current_user.is? :admin

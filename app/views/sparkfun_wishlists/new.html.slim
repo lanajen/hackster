@@ -42,6 +42,7 @@
                   group.find('.help-block').show();
                   $(this).find('input[type=submit]').prop('disabled', false);
                 } else {
+                  var bar = $('#progress-bar .progress-bar').css('width', '3%');
                   processSparkfunWishlist(wishlistId);
                 }
 

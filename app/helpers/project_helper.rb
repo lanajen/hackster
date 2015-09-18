@@ -8,6 +8,7 @@ module ProjectHelper
         'data-product_page_link' => part.product_page_link,
         'data-image_url' => part.image.try(:imgix_url, :part_thumb),
         'data-status' => part.workflow_state,
+        'data-url' => (part.has_own_page? ? part_url(part) : nil)
       }
       if platform = part.platform
         option_attrs.merge!(

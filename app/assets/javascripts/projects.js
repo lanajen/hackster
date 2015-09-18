@@ -917,7 +917,8 @@ function formatPart(result) {
       store_link: el.data('store_link'),
       product_page_link: el.data('product_page_link'),
       image_url: el.data('image_url'),
-      status: el.data('status')
+      status: el.data('status'),
+      url: el.data('url')
     };
     if (el.data('platform-id')) {
       var platform = {
@@ -940,7 +941,7 @@ function formatPart(result) {
   if (!link)
     link = part.product_page_link && typeof(part.product_page_link) !== 'undefined' ? part.product_page_link : 'No link';
   output +=  part.name + '</div><div class="part-link"><i class="fa fa-link"></i><span>' + link + '</span></div></td><td class="part-action">'
-  if (part.status  == 'pending_review') {
+  if (part.status  == 'pending_review' && !part.url) {
     output += '<a class="btn btn-link btn-sm edit-in-modal" data-modal="#parts-popup">Edit</a>';
   } else {
     output += '<i class="fa fa-lock help" title="This part cannot be edited."></i>';

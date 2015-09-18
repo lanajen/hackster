@@ -190,7 +190,9 @@ class Ability
 
     cannot :update, Part
     can :create, Part
-    can :update, Part, workflow_state: Part::EDITABLE_STATES
+    can :update, Part do |part|
+      part.workflow_state.in? Part::EDITABLE_STATES and part.slug.blank?
+    end
     can :manage, Part do |part|
       part.platform_id.present? and @user.can? :manage, part.platform
     end
