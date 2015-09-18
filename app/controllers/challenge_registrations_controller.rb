@@ -11,7 +11,6 @@ class ChallengeRegistrationsController < ApplicationController
       flash[:notice] = "Welcome to #{@challenge.name}!"
     else
       flash[:alert] = "Something wrong happened, please try again."
-      raise @registration.errors.inspect
     end
     redirect_to @challenge
   end
