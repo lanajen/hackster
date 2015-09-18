@@ -306,11 +306,11 @@ class Challenge < ActiveRecord::Base
   end
 
   def pre_winners_announced_date_dummy
-    pre_winners_announced_date ? pre_winners_announced_date_dummy.strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
+    pre_winners_announced_date ? pre_winners_announced_date.strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
   end
 
   def winners_announced_date_dummy
-    winners_announced_date ? winners_announced_date_dummy.strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
+    winners_announced_date ? winners_announced_date.strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
   end
 
   def voting_active?
