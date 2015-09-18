@@ -18,7 +18,6 @@
 //= require slick
 //= require rangy-core
 //= require rangy-cssclassapplier
-//= require browser_timezone_rails/application
 //= require moment
 //= require medium-editor
 //= require placeholders

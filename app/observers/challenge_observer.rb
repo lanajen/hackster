@@ -20,7 +20,7 @@ class ChallengeObserver < ActiveRecord::Observer
       keys << "challenge-#{record.id}-timeline"
       purge = true
     end
-    if (record.changed & %w(video description eligibility requirements judging_criteria how_to_enter rules)).any?
+    if (record.changed & %w(video_link description eligibility requirements judging_criteria how_to_enter rules)).any?
       keys << "challenge-#{record.id}-brief"
       purge = true
     end
