@@ -334,6 +334,10 @@ HackerIo::Application.routes.draw do
         get 'update' => 'notifications#update_from_link', on: :collection, as: :update
       end
 
+      scope 'sparkfun/wishlists', as: :sparkfun_wishlists do
+        resources :imports, only: [:new, :create], controller: 'sparkfun_wishlists'
+      end
+
       resources :projects, only: [:index]
 
       resources :quotes, only: [:create]
@@ -436,6 +440,7 @@ HackerIo::Application.routes.draw do
 
       # root to: 'pages#home'
     end
+    # end MainSite
 
     devise_for :users, skip: :omniauth_callbacks, controllers: {
       confirmations: 'users/confirmations',

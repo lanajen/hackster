@@ -1,12 +1,17 @@
 class SparkfunWishlistsController < ApplicationController
+  before_filter :authenticate_user!, only: [:create]
 
   def new
-    if user_signed_in?
-      @project = Project.new content_type: Project::DEFAULT_CONTENT_TYPE
-      @project.build_team
-      @project.team.members.new user_id: current_user.id
-      @project.save
+  end
 
+  def create
+    if params[:wishlist_id].present?
+      @project = Project.create content_type: Project::DEFAULT_CONTENT_TYPE
+      job_id = SparkfunWishlistWorker.perform_async 'import', @project.id, params[:wishlist_id], current_user.id
+
+      render json: { job_id: job_id, next_url: edit_project_path(@project) }
+    else
+      head(:unprocessable_entity)
     end
   end
 end

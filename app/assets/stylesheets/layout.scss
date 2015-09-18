@@ -655,7 +655,7 @@ footer {
 }
 .box-content {
   padding: 20px;
-  & > :last-child {
+  & > :last-child, & > :last-child > :last-child {
     margin-bottom: 0;
   }
 }

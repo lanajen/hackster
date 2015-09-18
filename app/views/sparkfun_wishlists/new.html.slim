@@ -1,0 +1,100 @@
+.col-md-6.col-md-offset-3
+  .box
+    .box-title
+      h2 Import a SparkFun wishlist
+      p.subheading
+        | Import an existing SparkFun wishlist into a new Hackster project.
+    .box-content
+      - if user_signed_in?
+        #alert.alert.alert-danger style='display:none;'
+          p Something went wrong, please try again.
+
+        #progress-bar.progress style='display:none;'
+          .progress-bar.progress-bar-striped.active role='progressbar' style='width:5%'
+            | Importing...
+
+        = form_tag sparkfun_wishlists_imports_path, method: :post, id: 'sparkfun_import', data: { remote: true } do
+
+          #wishlist_group.form-group
+            = label_tag :wishlist_id, 'Wishlist ID', class: 'control-label'
+            = text_field_tag :wishlist_id, params[:wishlist_id], class: 'form-control'
+            p.help-block style='display:none' is required
+
+          .form-group
+            = submit_tag 'Import wishlist', class: 'btn btn-primary'
+
+        = content_for :js do
+
+          javascript:
+            $(function(){
+              $('#sparkfun_import').on('submit', function(e){
+                e.preventDefault();
+
+                var wishlistId = $('#wishlist_id').val();
+                var group = $('#wishlist_group');
+                $('#alert').hide();
+                group.removeClass('has-error');
+                group.find('.help-block').hide();
+                $(this).find('input[type=submit]').prop('disabled', true);
+
+                if (wishlistId == '') {
+                  group.addClass('has-error');
+                  group.find('.help-block').show();
+                  $(this).find('input[type=submit]').prop('disabled', false);
+                } else {
+                  processSparkfunWishlist(wishlistId);
+                }
+
+                return false;
+              });
+
+              if ($('#wishlist_id').val() !== '') {
+                $('#sparkfun_import').submit();
+              }
+
+              function processSparkfunWishlist(id) {
+                $('#sparkfun_import').hide();
+                $('#progress-bar').show();
+
+                $.ajax({
+                  url: "#{sparkfun_wishlists_imports_path}",
+                  data: { wishlist_id: id },
+                  type: 'POST'
+                }).done(function(response){
+                  checkJobIsComplete(response.job_id, response.next_url);
+                });
+              }
+
+              function checkJobIsComplete(id, nextUrl) {
+                var bar = $('#progress-bar .progress-bar');
+                var width = 100 * parseFloat(bar.css('width')) / parseFloat(bar.parent().css('width'));
+                width += 5;
+                bar.css('width', width.toString() + '%');
+
+                $.ajax({
+                  url: '/api/v1/jobs/' + id,
+                  data: { id: id },
+                }).done(function(response){
+                  if (response.status == 'complete') {
+                    bar.css('width', '100%');
+                    bar.text('Done! Redirecting...');
+                    window.location.href = nextUrl;
+                  } else if (response.status == 'failed') {
+                    $('#sparkfun_import').show();
+                    $('#sparkfun_import').find('input[type=submit]').prop('disabled', false);
+                    $('#progress-bar').hide();
+                    $('#alert').show();
+                  } else {
+                    window.setTimeout(function(){
+                      checkJobIsComplete(id, nextUrl);
+                    }, 1000);
+                  }
+                });
+              }
+            });
+
+      - else
+        p
+          ' Please
+          => link_to 'log in', new_user_session_path(redirect_to: request.path)
+          ' to get started.

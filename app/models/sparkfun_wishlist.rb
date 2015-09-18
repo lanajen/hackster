@@ -1,12 +1,16 @@
-class SparkfunWishlist
-  BASE_URL = 'https://www.sparkfun.com/wish_lists'
+class SparkfunWishlist < SparkfunResource
+  RESOURCE_ENDPOINT = '/wish_lists'
+
+  attr_reader :description, :name
 
   def fetch
     if sparkfun_json
-      sparkfun_json['items'].keys.each do |mpn|
+      sparkfun_json['items'].each do |mpn, values|
         product_id = mpn.gsub /\A[A-Z]+\-0*/, ''
-        parts << SparkfunPart.new(product_id)
+        parts[SparkfunPart.new(product_id)] = values['quantity']
       end
+      @description = sparkfun_json['description']
+      @name = sparkfun_json['name']
     end
   end
 
@@ -15,24 +19,15 @@ class SparkfunWishlist
     fetch
   end
 
-  def json_url
-    "#{url}.json"
+  def hackster_parts
+    parts.keys.map{|p| p.hackster_part }
+  end
+
+  def has_parts?
+    parts.any?
   end
 
   def parts
-    @parts ||= []
-  end
-
-  def sparkfun_json
-    return @sparkfun_json if @sparkfun_json
-
-    response = open(json_url, ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE).read
-    @sparkfun_json = JSON.parse response
-  rescue => e
-    puts "Failed opening #{json_url}."
-  end
-
-  def url
-    "#{BASE_URL}/#{@id}"
+    @parts ||= {}
   end
 end

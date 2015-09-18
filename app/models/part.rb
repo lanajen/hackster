@@ -34,11 +34,12 @@ class Part < ActiveRecord::Base
 
   taggable :product_tags
 
+  attr_accessor :should_generate_slug
   attr_accessible :name, :vendor_link, :vendor_name, :vendor_sku, :mpn, :unit_price,
-    :description, :image_id, :platform_id,
-    :part_joins_attributes, :part_join_ids, :workflow_state, :slug, :one_liner,
-    :position, :child_part_relations_attributes,
-    :parent_part_relations_attributes, :type, :link, :image_url
+    :description, :image_id, :platform_id, :part_joins_attributes,
+    :part_join_ids, :workflow_state, :slug, :one_liner, :position,
+    :child_part_relations_attributes, :parent_part_relations_attributes, :type,
+    :link, :image_url, :tags, :should_generate_slug
 
   accepts_nested_attributes_for :part_joins, :child_part_relations,
     :parent_part_relations, allow_destroy: true
@@ -57,7 +58,7 @@ class Part < ActiveRecord::Base
     format: { with: /\A[a-z0-9\-]+\z/, message: "accepts only lowercase letters, numbers, and dashes '-'." }, allow_blank: true
   validates :one_liner, length: { maximum: 140 }, allow_blank: true
   before_validation :ensure_partable, unless: proc{|p| p.persisted? }
-  before_validation :generate_slug, if: proc{|p| (p.slug.blank? and p.approved?) or (p.slug.present? and p.name_changed?) }
+  before_validation :generate_slug, if: proc{|p| p.should_generate_slug or (p.slug.blank? and p.approved?) or (p.slug.present? and p.name_changed?) }
   register_sanitizer :strip_tags, :before_save, :name
   register_sanitizer :strip_whitespace, :before_validation, :mpn, :description, :name
   register_sanitizer :sanitize_description, :before_validation, :description
@@ -221,6 +222,10 @@ class Part < ActiveRecord::Base
       # self.total_cost = unit_price * quantity || 1
       result
     end
+  end
+
+  def tags=(val)
+    self.product_tags_string = val
   end
 
   private
