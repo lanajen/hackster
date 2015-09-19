@@ -45,7 +45,7 @@ class ChallengesController < ApplicationController
     title "#{@challenge.name} participants"
     respond_to do |format|
       format.html do
-        @participants = @challenge.registrants.reorder("challenge_registrations.created_at DESC").paginate(page: safe_page_params)
+        @participants = @challenge.registrants.includes(:avatar).reorder("challenge_registrations.created_at DESC").paginate(page: safe_page_params, per_page: 60)
       end
       format.csv do
         authorize! :admin, @challenge
