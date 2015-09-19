@@ -412,7 +412,7 @@ class Project < ActiveRecord::Base
 
   def get_next_time_slot last_scheduled_slot
     last_scheduled_slot ||= Time.now
-    last_scheduled_slot + rand(2*60..6*60).minutes  # every 1 to 4 hours == about 10 a day
+    last_scheduled_slot + rand(1*60..4*60).minutes  # every 1 to 4 hours == about 10 a day
   end
 
   def scheduled_to_be_approved?
