@@ -1,25 +1,40 @@
 import rangy from 'rangy';
 import _ from 'lodash';
+import async from 'async';
 import HtmlParser from 'htmlparser2';
 import DomHandler from 'domhandler';
+import { getVideoData } from '../../utils/Helpers';
+import Request from './Requests';
 
 const Utils = {
 
   getSelectionData() {
-    let sel = rangy.getSelection(),
-        range = sel.getRangeAt(0),
-        commonAncestorContainer = range.commonAncestorContainer,
-        parentNode = this.getRootParentElement(range.startContainer),
-        depth = this.findChildsDepthLevel(parentNode, parentNode.parentNode);
-    return {
-      sel: sel,
-      range: range,
-      commonAncestorContainer: commonAncestorContainer,
-      parentNode: parentNode,
-      depth: depth,
-      startOffset: range.startOffset,
-      anchorNode: sel.anchorNode
-    };
+    let sel = rangy.getSelection();
+    if(!sel.rangeCount) {
+      return {
+        sel: null,
+        range: null,
+        commonAncestorContainer: null,
+        parentNode: null,
+        depth: null,
+        startOffset: null,
+        anchorNode: null
+      };
+    } else {
+      let range = sel.getRangeAt(0),
+          commonAncestorContainer = range.commonAncestorContainer,
+          parentNode = this.getRootParentElement(range.startContainer),
+          depth = this.findChildsDepthLevel(parentNode, parentNode.parentNode);
+      return {
+        sel: sel,
+        range: range,
+        commonAncestorContainer: commonAncestorContainer,
+        parentNode: parentNode,
+        depth: depth,
+        startOffset: range.startOffset,
+        anchorNode: sel.anchorNode
+      };
+    }
   },
 
   /**
@@ -30,7 +45,7 @@ const Utils = {
   getRootParentElement(anchorNode) {
     let parentEl, childNode = anchorNode;
 
-    if(anchorNode.className && anchorNode.className.split(' ').indexOf('content-editable') === 1) {
+    if(anchorNode.className && anchorNode.className.split(' ').indexOf('content-editable') !== -1) {
       return anchorNode;
     }
 
@@ -65,7 +80,7 @@ const Utils = {
   isCommonAncestorContentEditable(commonAncestor) {
     let bool = false;
 
-    if(commonAncestor.className !== undefined && commonAncestor.className.split(' ').indexOf('content-editable') === 1) {
+    if(commonAncestor.className !== undefined && commonAncestor.className.split(' ').indexOf('content-editable') !== -1) {
       bool = true;
     }
 
@@ -342,7 +357,7 @@ const Utils = {
         break;
       }
 
-      if(anchorNode.className && anchorNode.className.split(' ').indexOf('content-editable') === 1) {
+      if(anchorNode.className && anchorNode.className.split(' ').indexOf('content-editable') !== -1) {
         break;
       }
 
@@ -361,7 +376,7 @@ const Utils = {
         break;
       }
 
-      if(anchorNode.className && anchorNode.className.split(' ').indexOf('content-editable') === 1) {
+      if(anchorNode.className && anchorNode.className.split(' ').indexOf('content-editable') !== -1) {
         break;
       }
 
@@ -547,19 +562,392 @@ const Utils = {
     return range;
   },
 
-  parseDescription(html) {
+  parseDescription(html, projectId, csrfToken) {
     return new Promise((resolve, reject) => {
       let handler = new DomHandler((err, dom) => {
         if(err) reject(err);
 
-        let parsedHTML = this.parseTree(dom);
-        resolve(parsedHTML);
+        let clean = this.cleanTree(dom);
+
+        this.convertVideoSrc(clean, projectId, csrfToken, result => {
+          let parsedHTML = this.parseTree(result);
+          console.log('parsed', parsedHTML)
+          resolve(parsedHTML);
+        });
       }, {});
 
       let parser = new HtmlParser.Parser(handler, { decodeEntities: true });
       parser.write(html);
       parser.done();
     });
+  },
+
+  convertVideoSrc(html, projectId, csrfToken, mainCallback) {
+    async.map(html, (item, callback) => {
+      if(item.name === 'div' && item.attribs.class.indexOf('react-editor-video') !== -1) {
+        let wrapper = this.findImageWrapper(item);
+        let img = wrapper.children[0];
+        let figcaption = wrapper.children[1];
+        let videoData = getVideoData(img.attribs.src);
+        let promise = Request.fetchImageAndTransform(videoData, projectId, csrfToken);
+        promise.then(data => {
+          img.attribs.src = data.url;
+          img.attribs.style = 'width:' + data.width + ';';
+          figcaption.attribs.style = 'width:' + data.width + ';';
+
+          wrapper.children[0] = img;
+          wrapper.children[1] = figcaption;
+          item.children[0].children[1].children[0] = wrapper;
+          return callback(null, item);
+        }).catch(err => { console.log(err); });
+      } else {
+        return callback(null, item);
+      }
+    }, (err, result) => {
+      if(err) { return err; }
+      mainCallback(result);
+    });
+  },
+
+  findImageWrapper(element) {
+    let imgWrapper;
+
+    (function recurse(el){
+      if(!el.children) {
+        return el;
+      } else {
+        el.children.forEach(child => {
+          if(child.name === 'div' && child.attribs.class.indexOf('react-editor-image-wrapper') !== -1) {
+            imgWrapper = child;
+          }
+          recurse(child);
+        });
+      }
+    } (element));
+
+    return imgWrapper;
+  },
+
+  cleanTree(html) {
+    let blockEls = {
+      'p': true,
+      'pre': true,
+      'div': true,
+      'blockquote': true,
+      'ul': true
+    };
+
+    let tree = html.map((el, index) => {
+      let mediaData, carousel, video, newEl;
+      if(!blockEls[el.name]) {
+        let P = this.createModel({
+          attribs: {},
+          children: [ el ],
+          content: null,
+          name: 'p'
+        });
+        el = P;
+      }
+      /** If top element is a carousel widget or video, we create the markup for those elements.
+        * Else if the top element is a image, create a Carousel.
+        * Else, recurse through the element.
+        *     If theres images in the element, we're going to convert it to a Carousel.
+        *     Else return the processed tree.
+       */
+      if(el.name === 'div' && el.attribs.class && el.attribs.class.indexOf('embed-frame') !== -1) {
+        if(el.attribs['data-type'] === 'widget') {
+          /** Handle Carousel */
+          mediaData = this.getCarouselData(el);
+          newEl = this.createCarousel(mediaData);
+          return newEl;
+        } else if(el.attribs['data-type'] === 'url') {
+          /** Handle Video */
+          mediaData = this.getMediaData(el);
+          newEl = this.createVideo(mediaData);
+          return newEl;
+        }
+      } else if(el.name === 'img') {
+        /** Handle Carousel */
+        mediaData = [{ src: el.attribs.src, alt: el.attribs.alt || '' }];
+        newEl = this.createCarousel(mediaData);
+        return newEl;
+      } else {
+        let data = this.recurseElement(el);
+        if(data.mediaType) {
+          /** Handle Carousel */
+          mediaData = this.getImages(data.el);
+          newEl = this.createCarousel(mediaData);
+          return newEl;
+        } else {
+          return data.el;
+        }
+      }
+
+    });
+
+    return tree.filter(el => { return el !== undefined });
+  },
+
+  recurseElement(element) {
+    let mediaType = false;
+    let el = (function recurse(el) {
+      let child;
+      if(!el.children) {
+        return el;
+      }
+
+      for(let i = el.children.length; i > 0; i--) {
+        child = el.children[i-1];
+
+        /** Remove script tags */
+        if(child.type === 'script' || child.name === 'script') {
+          child.parent.children.splice(i-1, 1);
+        }
+
+        /** Flag an image */
+        if(child.name === 'img') {
+          mediaType = 'image';
+        }
+
+        if(child.children && child.children.length > 0) {
+          /** Recursion */
+          recurse(child);
+          if(child.children.length < 1) {
+            child.parent.children.splice(i-1, 1);
+          }
+        } else {
+          if(!child.data && child.name !== 'img' && (child.attribs['data-type'] && child.attribs['data-type'] !== 'url')) {  // Node has no content.
+            child.parent.children.splice(i-1, 1);
+          }
+        }
+      }
+      return el;
+    }(element));
+
+    return {
+      mediaType: mediaType,
+      el: el
+    };
+  },
+
+  getMediaData(element) {
+    let src, figcaption, alt;
+
+    (function recurse(el) {
+      if(!el.children) {
+        return;
+      } else {
+        /** If root element is a video, get the url from its attribute. */
+        if(el.attribs.class && el.attribs.class.indexOf('embed-frame') !== -1 && el.attribs['data-type'] === 'url') {
+          src = el.attribs['data-url'];
+        }
+
+        el.children.forEach(child => {
+          if(child.name === 'img' && child.attribs.src.length) {
+            src = child.attribs.src;
+            alt = child.attribs.alt || '';
+          }
+
+          if(child.name === 'figcaption') {
+            figcaption = child.data ? child.data : '';
+          }
+
+          recurse(child);
+        });
+      }
+
+    }(element));
+
+    return {
+      src: src,
+      alt: alt,
+      figcaption: figcaption || ''
+    };
+  },
+
+  getCarouselData(element) {
+    let figures = [];
+    let carouselData = [];
+
+    (function recurse(el) {
+      if(!el.children) {
+        return el;
+      } else {
+        el.children.forEach(child => {
+          if(child.name === 'figure') {
+            figures.push(child);
+          }
+
+          recurse(child);
+        });
+      }
+    }(element));
+
+    figures.forEach(figure => {
+      let fig = {};
+
+      (function recurse(f) {
+        if(!f.children) {
+          return f;
+        } else {
+          f.children.forEach(child => {
+            if(child.name === 'img') {
+              fig.src = child.attribs.src;
+              fig.alt = child.attribs.alt;
+            }
+
+            if(child.name === 'figcaption') {
+              fig.figcaption = child.data || '';
+            }
+            recurse(child);
+          });
+        }
+      }(figure));
+
+      carouselData.push(fig);
+    });
+
+    return carouselData;
+  },
+
+  getImages(element) {
+    let images = [];
+
+    (function recurse(el) {
+      let obj = {};
+      if(!el.children) {
+        return el;
+      } else {
+        el.children.forEach(child => {
+          if(child.name === 'img') {
+            obj.src = child.attribs.src;
+            obj.alt = child.attribs.alt || '';
+            obj.figcaption = '';
+            images.push(obj);
+          }
+          recurse(child);
+        });
+      }
+    }(element));
+
+    return images;
+  },
+
+  createModel(data) {
+    return {
+      attribs: data.attribs,
+      children: data.children,
+      content: data.content,
+      name: data.name
+    }
+  },
+
+  createCarousel(images) {
+    let Carousel, InnerCarousel, Div, Figure, Img, FigCaption;
+    
+    let figures = images.map((image, index) => {
+      let figureClassName = index === 0 ? 'react-editor-figure show' : 'react-editor-figure';
+      Img = this.createModel({
+        attribs: { class: 'react-editor-image', style: '', src: image.src, alt: image.alt, ['data-src']: ''},
+        children: [],
+        content: null,
+        name: 'img'
+      });
+
+      FigCaption = this.createModel({
+        attribs: { class: 'react-editor-figcaption', style: '' },
+        children: [{ type: 'text', data: image.figcaption && image.ficaption.length > 0 ? image.figcaption : 'caption (optional)' }],
+        content: null,
+        name: 'figcaption'
+      });
+
+      Div = this.createModel({
+        attribs: { class: 'react-editor-image-wrapper' },
+        children: [ Img, FigCaption ],
+        content: null,
+        name: 'div'
+      });
+
+      Figure = this.createModel({
+        attribs: { class: figureClassName, ['data-type']: 'image' },
+        children: [ Div ],
+        content: null,
+        name: 'figure'
+      });
+
+      return Figure;
+    });
+
+    InnerCarousel = this.createModel({
+      attribs: { class: 'react-editor-carousel-inner' },
+      children: figures,
+      content: null,
+      name: 'div'
+    });
+
+    Carousel = this.createModel({
+      attribs: { class: 'react-editor-carousel', ['data-type']: 'carousel' },
+      children: [ InnerCarousel ],
+      content: null,
+      name: 'div'
+    });
+
+    return Carousel;
+  },
+
+  createVideo(video) {
+    let InnerVideo, Video, VideoMask, Div, Figure, Img, FigCaption;
+
+    Img = this.createModel({
+      attribs: { class: 'react-editor-image', style: '', src: video.src, alt: video.alt, ['data-src']: ''},
+      children: [],
+      content: null,
+      name: 'img'
+    });
+
+    FigCaption = this.createModel({
+      attribs: { class: 'react-editor-figcaption', style: '' },
+      children: [{ type: 'text', data: video.figcaption && video.ficaption.length > 0 ? video.figcaption : 'caption (optional)' }],
+      content: null,
+      name: 'figcaption'
+    });
+
+    Div = this.createModel({
+      attribs: { class: 'react-editor-image-wrapper' },
+      children: [ Img, FigCaption ],
+      content: null,
+      name: 'div'
+    });
+
+    Figure = this.createModel({
+      attribs: { class: 'react-editor-figure show', ['data-type']: 'image' },
+      children: [ Div ],
+      content: null,
+      name: 'figure'
+    });
+
+    VideoMask = this.createModel({
+      attribs: { class: 'video-mask fa fa-youtube-play' },
+      children: [],
+      content: null,
+      name: 'div'
+    });
+
+    InnerVideo = this.createModel({
+      attribs: { class: 'react-editor-video-inner' },
+      children: [ VideoMask, Figure ],
+      content: null,
+      name: 'div'
+    });
+
+    Video = this.createModel({
+      attribs: { class: 'react-editor-video', ['data-type']: 'video', ['data-video-id']: ''},
+      children: [ InnerVideo ],
+      content: null,
+      name: 'div'
+    });
+
+    return Video;
   },
 
   parseTree(html) {
@@ -616,12 +1004,13 @@ const Utils = {
       'bold': 'strong',
       'i': 'em',
       'italic': 'em',
+      'code': 'pre',
       'carousel': 'carousel',
       'video': 'video'
     };
 
     return converter[nodeName] || nodeName;
-  },
+  }
 
 };
 

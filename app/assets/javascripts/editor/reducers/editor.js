@@ -65,12 +65,12 @@ export default function(state = initialState, action) {
       };
 
     case Editor.setInitialDOM:
-      console.log('THIS!', action.json);
       let initDom = handleInitialDOM(action.json);
       newDom = createArrayOfComponents(initDom);
       return {
         ...state,
-        dom: newDom
+        dom: newDom,
+        getLatestHTML: true
       };
 
     case Editor.setProjectData:

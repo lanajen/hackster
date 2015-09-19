@@ -14,7 +14,6 @@ const ContentEditable = React.createClass({
 
   componentWillMount() {
     this.debouncedEmitChange = _.debounce(this.emitChange, 30);
-    this.debouncedResize = _.debounce(this.handleResize, 30);
   },
 
   componentDidMount() {
@@ -26,18 +25,13 @@ const ContentEditable = React.createClass({
     /** Sets the initial cursor tracker on the first element. */
     if(this.props.editor.cursorPosition.node === null) {
       let firstChild = React.findDOMNode(this).firstChild;
-      this.props.actions.setCursorPosition(0, firstChild, 0, firstChild);
+      if(firstChild) {
+        Utils.setCursorByNode(firstChild);
+        this.props.actions.setCursorPosition(0, firstChild, 0, firstChild);
+      }
     } else {
       this.setCursorOnUpdate();
     }
-
-    /** Issues the Toolbars notice of the CE width on resize. */
-    window.addEventListener('resize', this.debouncedResize);
-    /** Sets initial CEWidth for the Toolbars. */
-  },
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.debouncedResize);
   },
 
   componentWillReceiveProps(nextProps) {
@@ -53,13 +47,6 @@ const ContentEditable = React.createClass({
     }
   },
 
-  componentWillUpdate() {
-    /** Sets initial CEWidth for the Toolbars. */
-    if(this.props.toolbar.CEWidth === null) {
-      this.props.actions.setCEWidth(React.findDOMNode(this).offsetWidth);
-    }
-  },
-
   componentDidUpdate() {
     this.setCursorOnUpdate();
   },
@@ -72,6 +59,7 @@ const ContentEditable = React.createClass({
     let rootNode = React.findDOMNode(this);
     let cursorPosition = this.props.editor.cursorPosition;
     let node = cursorPosition.node || rootNode.children[cursorPosition.pos];
+    if(!node) { return; }
     let nodeByHash = Utils.findBlockNodeByHash(node.getAttribute('data-hash'), rootNode, cursorPosition.pos);
     let el = (this.props.editor.setCursorToNextLine && nodeByHash.nextSibling !== undefined) ? nodeByHash.nextSibling : nodeByHash;
 
@@ -220,11 +208,6 @@ const ContentEditable = React.createClass({
     this.props.onChange(html);
   },
 
-  handleResize() {
-    this.props.actions.toggleImageToolbar(false, {});
-    this.props.actions.setCEWidth(React.findDOMNode(this).offsetWidth);
-  },
-
   preventEvent(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -244,8 +227,8 @@ const ContentEditable = React.createClass({
   },
 
   handleEnterKey(e) { 
-    let { sel, range, parentNode, startOffset, depth, anchorNode } = Utils.getSelectionData(); 
-    if(sel.rangeCount) {
+    let { sel, range, parentNode, startOffset, depth, anchorNode } = Utils.getSelectionData();
+    if(sel !== null) {
       let hasTextAfterCursor = false;
       let cursorOffset = startOffset;
       let hash;
@@ -336,6 +319,7 @@ const ContentEditable = React.createClass({
 
   handleBackspace(e) {
     let { sel, range, parentNode, depth, anchorNode } = Utils.getSelectionData();
+    if(sel === null) { return; }
     if(sel.rangeCount) {
 
       /** Maintains the first element as a P when user is deleting things. */
@@ -371,6 +355,7 @@ const ContentEditable = React.createClass({
 
   handleMediaPermissions(e) {
     let { sel, range, anchorNode, parentNode, depth, startOffset } = Utils.getSelectionData();
+    if(sel === null) { return; }
     if(sel.rangeCount) {
       let prevSib = Utils.getBlockElementsPreviousSibling(parentNode, React.findDOMNode(this));
       let arrowKeys = {
@@ -469,6 +454,7 @@ const ContentEditable = React.createClass({
     /** If user deleted the paragraph under a PRE */
     if(React.findDOMNode(this).lastChild.nodeName === 'PRE') {
       let { depth } = Utils.getSelectionData();
+      if(depth === null) { return; }
       this.createBlockElement('p', depth, false);
       this.props.actions.forceUpdate(true);
     }
@@ -501,7 +487,11 @@ const ContentEditable = React.createClass({
     if(e.keyCode === undefined || e.type === 'mouseup') {
       this.preventEvent(e);
       let node = React.findDOMNode(e.target);
+
+      if(!rangy.getSelection().rangeCount) { return; }
+
       let { sel, range } = Utils.getSelectionData();
+      if(sel === null) { return; }
       let caretRange = Utils.getMouseEventCaretRange(e);
 
       /** Handles cursor placement. */
@@ -532,6 +522,10 @@ const ContentEditable = React.createClass({
   onClick(e) {
     this.preventEvent(e);
     let node = React.findDOMNode(e.target);
+    let { sel, depth, parentNode, startOffset, anchorNode } = Utils.getSelectionData();
+    if(sel === null) { return; }
+
+    this.props.actions.setCursorPosition(depth, parentNode, startOffset, anchorNode);
 
     if(node.nodeName === 'BUTTON' && node.classList && node.classList.contains('reit-controls-button')) {
       this.handleCarouselNavigation(node);

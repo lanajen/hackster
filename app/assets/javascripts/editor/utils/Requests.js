@@ -1,6 +1,6 @@
 import request from 'superagent';
-import ImageUtils from '../../utils/Images';
-import Utils from '../utils/DOMUtils'; 
+import Utils from './DOMUtils';
+import ImageUitls from '../../utils/Images';
 
 export default {
 

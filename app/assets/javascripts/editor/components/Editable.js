@@ -20,11 +20,35 @@ const Editable = React.createClass({
 
     this.props.actions.fetchInitialDOM(projectId, csrfToken);
     this.props.actions.setProjectData(projectId, csrfToken);
+    this.debouncedResize = _.debounce(this.handleResize, 30);
+  },
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.debouncedResize);
+  },
+
+  componentDidMount() {
+    /** Issues the Toolbars notice of the CE width on resize. */
+    window.addEventListener('resize', this.debouncedResize);
+
+    this.props.actions.setCEWidth(React.findDOMNode(this).offsetWidth);
+  },
+
+  componentWillUpdate() {
+    /** Sets initial CEWidth for the Toolbars. */
+    if(this.props.toolbar.CEWidth === 0) {
+      this.props.actions.setCEWidth(React.findDOMNode(this).offsetWidth);
+    }
   },
 
   shouldComponentUpdate(nextProps) {
     return nextProps.editor.dom !== this.props.editor.dom ||
            nextProps.isEditable !== this.props.editor.isEditable;
+  },
+
+  handleResize() {
+    this.props.actions.toggleImageToolbar(false, {});
+    this.props.actions.setCEWidth(React.findDOMNode(this).offsetWidth);
   },
 
   handleContentEditableChange(html) {

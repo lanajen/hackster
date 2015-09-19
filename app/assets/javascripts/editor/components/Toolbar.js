@@ -304,7 +304,7 @@ const Toolbar = React.createClass({
     
 
     let style = {
-      width: parseInt(this.props.toolbar.CEWidth, 10) + 4 || 750
+      width: parseInt(this.props.toolbar.CEWidth, 10) || '100%'
     };
 
     return (
