@@ -11,6 +11,12 @@ class User < ActiveRecord::Base
 
   include Rewardino::Nominee
 
+  DEFAULT_EMAIL_FREQUENCY = :daily
+  PROJECT_EMAIL_FREQUENCIES = {
+    'Once per day' => :daily,
+    'Once per week' => :weekly,
+    'Once per month' => :monthly,
+  }
   ROLES = %w(admin confirmed_user beta_tester moderator)
   SUBSCRIPTIONS = {
     email: {
@@ -157,7 +163,7 @@ class User < ActiveRecord::Base
 
   # before_validation :generate_password, if: proc{|u| u.skip_password }
   before_validation :generate_user_name, if: proc{|u| u.user_name.blank? and u.new_user_name.blank? and !u.invited_to_sign_up? }
-  before_create :subscribe_to_all, unless: proc{|u| u.invitation_token.present? }
+  before_create :set_notification_preferences, unless: proc{|u| u.invitation_token.present? }
   before_save :ensure_authentication_token
   after_invitation_accepted :invitation_accepted
 
@@ -200,6 +206,8 @@ class User < ActiveRecord::Base
   hstore_column :properties, :has_unread_notifications, :boolean
   hstore_column :properties, :last_sent_projects_email_at, :datetime
   hstore_column :properties, :reputation_last_updated_at, :datetime
+
+  hstore_column :hproperties, :project_email_frequency, :string, default: DEFAULT_EMAIL_FREQUENCY
 
   has_websites :websites, :facebook, :twitter, :linked_in, :website, :blog,
     :github, :google_plus, :youtube, :instagram, :flickr, :reddit, :pinterest
@@ -307,6 +315,14 @@ class User < ActiveRecord::Base
 
   def self.with_at_least_one_action
     where(id: (User.joins(:follow_relations).where("follow_relations.user_id = users.id").distinct('users.id').pluck(:id) + User.joins(:projects).distinct('users.id').pluck(:id) + User.joins(:respects).distinct('users.id').pluck(:id) + User.joins(:comments).distinct('users.id').pluck(:id)).uniq)
+  end
+
+  def self.with_email_frequency frequency
+    if frequency.nil?
+      where "CAST (hproperties -> 'project_email_frequency' AS BOOLEAN) IS NULL"
+    else
+      where "hproperties -> 'project_email_frequency' = ?", frequency
+    end
   end
 
   def self.with_subscription notification_type, subscription
@@ -763,6 +779,11 @@ class User < ActiveRecord::Base
 
     def invitation_accepted
       notify_observers(:after_invitation_accepted)
+    end
+
+    def set_notification_preferences
+      subscribe_to_all
+      self.project_email_frequency = DEFAULT_EMAIL_FREQUENCY
     end
 
     def user_name_is_unique

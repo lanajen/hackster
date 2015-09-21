@@ -78,20 +78,15 @@ class CronTask < BaseWorker
   end
 
   def send_daily_notifications
-    project_ids = Project.self_hosted.where('projects.made_public_at > ? AND projects.made_public_at < ?', 24.hours.ago, Time.now).approved.pluck(:id)
+    send_project_notifications 24.hours, :daily
+  end
 
-    users = []
-    users += Platform.joins(:projects).distinct('groups.id').where(projects: { id: project_ids }).map{|t| t.followers.with_subscription(:email, 'follow_platform_activity').pluck(:id) }.flatten
-    users += User.joins(:projects).distinct('users.id').where(projects: { id: project_ids }).map{|u| u.followers.with_subscription(:email, 'follow_user_activity').pluck(:id) }.flatten
+  def send_weekly_notifications
+    send_project_notifications 7.days, :weekly
+  end
 
-    lists = List.joins(:project_collections).where('project_collections.created_at > ?', 24.hours.ago).where(groups: { type: 'List' }).distinct(:id)
-    users += lists.map{|l| l.followers.with_subscription(:email, 'follow_list_activity').pluck(:id) }.flatten
-
-    users.uniq!
-
-    users.each do |user_id|
-      NotificationCenter.notify_via_email nil, 'daily_notification', user_id, 'new_projects'
-    end
+  def send_monthly_notifications
+    send_project_notifications 1.month, :monthly
   end
 
   def send_announcement_notifications
@@ -126,5 +121,22 @@ class CronTask < BaseWorker
   private
     def redis
       @redis ||= Redis::Namespace.new('cron_task', redis: RedisConn.conn)
+    end
+
+    def send_project_notifications time_frame, email_frequency
+      project_ids = Project.self_hosted.where('projects.made_public_at > ? AND projects.made_public_at < ?', time_frame.ago, Time.now).approved.pluck(:id)
+
+      users = []
+      users += Platform.joins(:projects).distinct('groups.id').where(projects: { id: project_ids }).map{|t| t.followers.with_subscription(:email, 'follow_platform_activity').with_email_subscription(email_frequency).pluck(:id) }.flatten
+      users += User.joins(:projects).distinct('users.id').where(projects: { id: project_ids }).map{|u| u.followers.with_subscription(:email, 'follow_user_activity').with_email_subscription(email_frequency).pluck(:id) }.flatten
+
+      lists = List.joins(:project_collections).where('project_collections.created_at > ?', time_frame.ago).where(groups: { type: 'List' }).distinct(:id)
+      users += lists.map{|l| l.followers.with_subscription(:email, 'follow_list_activity').with_email_subscription(email_frequency).pluck(:id) }.flatten
+
+      users.uniq!
+
+      users.each do |user_id|
+        NotificationCenter.notify_via_email nil, "#{email_frequency}_notification", user_id, 'new_projects'
+      end
     end
 end

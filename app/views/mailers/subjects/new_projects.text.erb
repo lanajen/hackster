@@ -1,1 +1,1 @@
-New projects for <%= @context[:followables].map(&:name).to_sentence %>
+<%= pluralize @context[:projects].count, 'new project' %> for <%= @context[:followables].map(&:name).to_sentence %>
