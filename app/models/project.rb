@@ -762,10 +762,6 @@ class Project < ActiveRecord::Base
     I18n.transliterate(guest_name).gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
   end
 
-  def valid_for_challenge?
-    name.present? and !has_default_name? and description.present? and description.size > 100 and cover_image.present?
-  end
-
   def website_host
     URI.parse(website).host.gsub(/^www\./, '')
   rescue

@@ -35,11 +35,6 @@ class ChallengeEntriesController < ApplicationController
     @project = Project.find params[:project_id]
     authorize! :enter_in_challenge, @project
 
-    unless @project.valid_for_challenge?
-      flash[:alert] = "Oops! You can only enter finished projects into this challenge. Please complete the project and the write-up before submitting."
-      redirect_to @challenge and return
-    end
-
     @project.private = false
     @project.workflow_state = 'idea' if @challenge.project_ideas
     @project.save
