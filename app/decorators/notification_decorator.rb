@@ -75,7 +75,12 @@ class NotificationDecorator < ApplicationDecorator
     when CommunityMember, EventMember, HackerSpaceMember, PlatformMember, Member
       member = notifiable
       group = member.group
-      group_link = h.link_to group.name, group
+      group_link = if group.is? :team
+        project = group.projects.first
+        h.link_to project.name, project
+      else
+        h.link_to group.name, group
+      end
       case event
       when :accepted
         user = member.user
