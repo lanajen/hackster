@@ -12,7 +12,7 @@ class ChallengeObserver < ActiveRecord::Observer
       keys << "challenge-index"
       purge = true
     end
-    if (record.changed & %w(name custom_status idea_survey_link enter_button_text end_date start_date activate_pre_registration activate_pre_contest pre_contest_end_date pre_contest_start_date pre_registration_start_date custom_tweet)).any?
+    if (record.changed & %w(name custom_status idea_survey_link enter_button_text end_date start_date activate_pre_registration activate_pre_contest pre_contest_end_date pre_contest_start_date pre_registration_start_date custom_tweet winners_announced_date pre_winners_announced_date)).any?
       keys << "challenge-#{record.id}-status"
       purge = true
     end

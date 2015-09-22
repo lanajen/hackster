@@ -25,7 +25,7 @@ class ChallengesController < ApplicationController
     title @challenge.name
     # @embed = Embed.new(url: @challenge.video_link)
 
-    if @challenge.ended? and !@challenge.disable_projects_tab
+    if @challenge.judged? and !@challenge.disable_projects_tab
       load_projects
       render 'challenges/projects'
     else
