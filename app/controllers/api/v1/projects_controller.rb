@@ -107,6 +107,7 @@ class Api::V1::ProjectsController < Api::V1::BaseController
 
   def description
     project = Project.find params[:id]
+    # render json: { story: project.decorate.description }
 
     if project.story_json == nil and project.description != nil
       render json: { story: nil, description: project.decorate.description }

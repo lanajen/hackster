@@ -55,7 +55,8 @@ const initialState = {
   cursorPosition: { pos: 0, node: null, offset: null, anchorNode: null, rootHash: null },
   setCursorToNextLine: false,
   showImageToolbar: false,
-  imageToolbarData: {}
+  imageToolbarData: {},
+  isDataLoading: false
 };
 
 export default function(state = initialState, action) {
@@ -79,7 +80,6 @@ export default function(state = initialState, action) {
       };
 
     case Editor.setIsFetching:
-      console.log('setting fetching', action.bool);
       return {
         ...state,
         isFetching: action.bool
@@ -254,7 +254,8 @@ export default function(state = initialState, action) {
         cursorPosition: {
           ...state.cursorPosition,
           rootHash: rootHash
-        }
+        },
+        isDataLoading: false
       };
 
     case Editor.addImagesToCarousel:
@@ -262,7 +263,8 @@ export default function(state = initialState, action) {
       newDom = addImagesToCarousel(dom, action.map, action.storeIndex);
       return {
         ...state,
-        dom: newDom
+        dom: newDom,
+        isDataLoading: false
       };
 
     case Editor.deleteImagesFromCarousel:
@@ -307,6 +309,12 @@ export default function(state = initialState, action) {
         dom: newDom
       }
 
+    case Editor.isDataLoading:
+      return {
+        ...state,
+        isDataLoading: action.bool
+      };
+
     default:
       return state;
   };
@@ -331,7 +339,6 @@ function handleInitialDOM(json) {
     CE.json = createArrayOfComponents(CE.json);
     json.push(CE);
   } else {
-    console.log('IN REDUCER', json);
     json = json.map(item => {
       if(item.type === 'CE') {
         item.json = createArrayOfComponents(item.json);
@@ -380,7 +387,7 @@ function _deepSearchForNodeByHash(rootEl, offset, hash) {
 
     for(let i = 0; i < el.props.children.length; i++) {
       child = el.props.children[i];
-      console.log('C', child);
+
       if(child.props.tagProps.hash === hash) {
         target = { position: i, child: child };
         break;
@@ -392,7 +399,7 @@ function _deepSearchForNodeByHash(rootEl, offset, hash) {
     }
 
   }(rootEl));
-  console.log('HI', target, stack);
+
   return target;
 }
 
@@ -1106,7 +1113,6 @@ function deleteComponent(dom, storeIndex) {
 
 function resetImageUrl(dom, data, storeIndex) {
   let component = dom[storeIndex];
-  console.log('C', component, storeIndex);
   let images = component.images.map(image => {
     if(image.uuid = data.uuid) {
       image = Object.assign({}, image, data);
@@ -1115,7 +1121,6 @@ function resetImageUrl(dom, data, storeIndex) {
       return image;
     }
   });
-  console.log('NEW IMAGE DATA', images);
   dom.splice(storeIndex, 1, component);
   return dom;
 }

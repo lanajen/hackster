@@ -29,6 +29,7 @@ const ImageToolbar = React.createClass({
     });
 
     ImageUtils.handleImagesAsync(files, function(map) {
+      this.props.actions.isDataLoading(true);
       this.props.actions.addImagesToCarousel(map, storeIndex);
       this.props.actions.forceUpdate(true);
       this.props.actions.toggleImageToolbar(false, {});

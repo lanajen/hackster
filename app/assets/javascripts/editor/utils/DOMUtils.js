@@ -684,7 +684,7 @@ const Utils = {
         *     Else return the processed tree.
        */
       if(el.name === 'div' && el.attribs.class && el.attribs.class.indexOf('embed-frame') !== -1) {
-        if(el.attribs['data-type'] === 'widget') {
+        if(el.attribs['data-type'] === 'widget' && el.children && el.children[0].attribs.class.indexOf('image_widget') !== -1) {
           /** Handle Carousel */
           mediaData = this.getCarouselData(el);
           newEl = this.createCarousel(mediaData);
@@ -697,6 +697,10 @@ const Utils = {
         } else if(el.attribs['data-type'] === 'file') {
           mediaData = this.getFileData(el);
           newEl = this.createFile(mediaData);
+          return newEl;
+        } else if(el.attribs['data-type'] === 'widget' && el.children && el.children[0].attribs.class.indexOf('old_code_widget') !== -1) {
+          /** Handle Code Widget */
+          newEl = this.createCodeBlock(el);
           return newEl;
         }
       } else if(el.name === 'img') {
@@ -796,11 +800,11 @@ const Utils = {
           }
 
           if(child.name === 'figcaption') {
-            figcaption = child.data ? child.data : '';
+            figcaption = child.data || '';
           }
 
           if(child.name === 'div' && child.attribs.class.indexOf('figcaption') !== -1) {
-            figcaption = child.children ? child.children[0].data : '';
+            figcaption = child.children ? child.children[0].data ? child.children[0].data : '';
           }
 
           recurse(child);
@@ -940,6 +944,34 @@ const Utils = {
       hash: hashids.encode(Math.floor(Math.random() * 9999 + 1))
     }
   }, 
+
+  createCodeBlock(data) {
+    let newData = this.recurseAndReturnEl(data, 'pre');
+    return {
+      type: 'CE',
+      json: [newData]
+    };
+  },
+
+  recurseAndReturnEl(parentEl, elName) {
+    var el;
+    
+    (function recurse(parentEl) {
+      if(!parentEl.children) {
+        return parentEl;
+      } else {
+        parentEl.children.forEach(child => {
+          if(child.name === elName) {
+            el = child;
+            return;
+          }
+          recurse(child);
+        });
+      }
+    }(parentEl));
+
+    return el;
+  },
 
   mergeAndParseTree(collection) {
     let newCollection = [];

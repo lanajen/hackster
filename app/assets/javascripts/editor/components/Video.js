@@ -141,15 +141,20 @@ const Video = React.createClass({
     }
   },
 
+  handleClick() {
+    this.props.actions.toggleImageToolbar(false, {});
+  },
+
   render: function() {
     let data = this.props.videoData[0];
     return (
       <div className="react-editor-video" 
            data-hash={this.props.hash}
            data-video-id={data.id}
-           onFocus={this.handleFocus} 
-           onKeyDown={this.handleKeyDown} 
+           onFocus={this.handleFocus}
+           onKeyDown={this.handleKeyDown}
            onMouseOver={this.handleMouseOver}
+           onClick={this.handleClick}
            tabIndex={0}>
         <div className="react-editor-video-inner">
           <figure className="react-editor-figure" data-type="video">

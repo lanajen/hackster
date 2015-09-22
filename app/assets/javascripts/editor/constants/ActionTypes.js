@@ -40,7 +40,8 @@ export default {
     deleteImagesFromCarousel: null,
     deleteComponent: null,
     createPlaceholderElement: null,
-    resetImageUrl: null
+    resetImageUrl: null,
+    isDataLoading: null
   }),
 
   ImageBucket: keyMirror({

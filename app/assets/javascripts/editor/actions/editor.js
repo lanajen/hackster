@@ -276,7 +276,6 @@ export function resetImageUrl(imageData, storeIndex) {
 }
 
 export function uploadImagesToServer(files, storeIndex, S3BucketURL, AWSAccessKeyId, csrfToken, projectId) {
-  console.log('THINGS', files, storeIndex, S3BucketURL, AWSAccessKeyId, csrfToken, projectId);
   return function(dispatch) {
     files.forEach(file => {
       return ImageHelpers.getS3AuthData(file.name)
@@ -297,4 +296,11 @@ export function uploadImagesToServer(files, storeIndex, S3BucketURL, AWSAccessKe
     });
 
   }
+}
+
+export function isDataLoading(bool) {
+  return {
+    type: Editor.isDataLoading,
+    bool: bool
+  };
 }

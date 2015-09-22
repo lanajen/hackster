@@ -284,6 +284,7 @@ const Toolbar = React.createClass({
 
     ImageUtils.handleImagesAsync(files, function(map) {
       let storeIndex = this.props.editor.currentStoreIndex;
+      this.props.actions.isDataLoading(true);
       this.props.actions.createMediaByType(map, depth, storeIndex, 'Carousel');
       this.props.actions.forceUpdate(true);
 
