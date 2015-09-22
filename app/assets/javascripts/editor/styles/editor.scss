@@ -349,9 +349,11 @@ $desktop-width: 1024px;
    height: 48px;
 
   .react-editor-toolbar-wrapper {
-    height: 48px;
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
+    height: 48px;
     background-color: #E0E0E0;
     z-index: 999;
 
@@ -372,6 +374,7 @@ $desktop-width: 1024px;
       justify-content: center;
       z-index: 1000;
       width: 80%;
+      height: 100%;
 
       .toolbar-btn {
         display: flex;

@@ -7,6 +7,7 @@ import rangy from 'rangy';
 import Utils from '../utils/DOMUtils';
 import ImageUtils from '../../utils/Images';
 import Helpers from '../../utils/Helpers';
+import { LinearProgress } from 'material-ui';
 
 const Toolbar = React.createClass({
 
@@ -287,12 +288,15 @@ const Toolbar = React.createClass({
       this.props.actions.forceUpdate(true);
 
       /** Upload files to AWS. */
-      this.props.actions.uploadImagesToServer(map, 
-                                              storeIndex, 
-                                              this.props.editor.S3BucketURL, 
-                                              this.props.editor.AWSAccessKeyId, 
-                                              this.props.editor.csrfToken, 
-                                              this.props.editor.projectId);
+      this.props.actions.uploadImagesToServer(
+        map, 
+        storeIndex, 
+        this.props.editor.S3BucketURL, 
+        this.props.editor.AWSAccessKeyId, 
+        this.props.editor.csrfToken, 
+        this.props.editor.projectId
+      );
+
     }.bind(this));
 
     React.findDOMNode(this.refs.imageUploadInput).value = '';
@@ -334,11 +338,16 @@ const Toolbar = React.createClass({
       width: parseInt(this.props.toolbar.CEWidth, 10) || '100%'
     };
 
+    let loader = this.props.editor.isDataLoading
+               ? (<LinearProgress style={{ top: 4 }} mode="indeterminate" />)
+               : null;
+
     return (
       <div style={style} ref="toolbar" className="react-editor-toolbar-wrapper">
         <div className="react-editor-toolbar">
           {Buttons}
         </div>
+        {loader}
         <input ref="imageUploadInput" style={{display: 'none'}} type="file" multiple="true" onChange={this.handleImages}/>
         {linkPopOver}
       </div>

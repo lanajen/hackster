@@ -744,6 +744,17 @@ const Utils = {
           mediaType = 'image';
         }
 
+        /** Force unlinked anchors to ems. */
+        if(child.name === 'a' && !Validator.isURL(child.attribs.href)) {
+          child.name = 'em';
+        }
+        /** If child has no name, its likely a text node or comment.  Force these to spans and add an attribs object. */
+        if(child.name === undefined) {
+          child.name = 'span';
+          child.attribs = child.attribs || {};
+        }
+
+
         if(child.children && child.children.length > 0) {
           /** Recursion */
           recurse(child);
