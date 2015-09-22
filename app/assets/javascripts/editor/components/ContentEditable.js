@@ -206,10 +206,10 @@ const ContentEditable = React.createClass({
   },
 
   emitChange(){
-    // let html = React.findDOMNode(this).innerHTML;
+    let html = React.findDOMNode(this).innerHTML;
 
     let { parentNode, depth } = Utils.getSelectionData();
-    let html = parentNode.innerHTML;
+    // let html = parentNode.innerHTML;
     
     this.props.onChange(html, depth);
   },

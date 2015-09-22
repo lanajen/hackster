@@ -616,7 +616,7 @@ const Utils = {
           console.log('BUNK', item);
           return callback(null, null);
         }
-        item.images[0] = videoData;
+        item.images[0] = Object.assign({}, videoData, item.images[0]);
         return callback(null, item);
       } else {
         return callback(null, item);
@@ -785,6 +785,10 @@ const Utils = {
 
           if(child.name === 'figcaption') {
             figcaption = child.data ? child.data : '';
+          }
+
+          if(child.name === 'div' && child.attribs.class.indexOf('figcaption') !== -1) {
+            figcaption = child.children ? child.children[0].data : '';
           }
 
           recurse(child);
@@ -1024,8 +1028,7 @@ const Utils = {
         return item;
       } else if(item.tag === 'ul') {
         item.children = item.children.map(child => {
-          console.log(child.content === '\n', child.children.length < 1 && child.content && child.content.length <= 1 && child.content === '\n');
-          if(child.children && !child.children.length && child.content && child.content.length <= 1 && child.content === '\n') {
+          if(child.children && !child.children.length && child.content && child.content.length <= 1 && (child.content === '\n' || child.content === ' ')) {
             return null;
           } else if(child.tag !== 'li') {
             child.tag = 'li';

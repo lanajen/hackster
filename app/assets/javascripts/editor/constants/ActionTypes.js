@@ -12,6 +12,7 @@ export default {
     setDOM: null,
     setInitialDOM: null,
     fetchInitialDOM: null,
+    setIsFetching: null,
     setCurrentStoreIndex: null,
     setProjectData: null,
     createBlockElement: null,
@@ -38,7 +39,8 @@ export default {
     updateShownImage: null,
     deleteImagesFromCarousel: null,
     deleteComponent: null,
-    createPlaceholderElement: null
+    createPlaceholderElement: null,
+    resetImageUrl: null
   }),
 
   ImageBucket: keyMirror({

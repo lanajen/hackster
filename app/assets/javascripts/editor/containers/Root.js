@@ -36,7 +36,7 @@ export default class Root extends Component {
 
     return (
       <Provider store={store}>
-        {() => <Editor hashLocation={this.state.hashLocation} />}
+        {() => <Editor hashLocation={this.state.hashLocation} {...this.props} />}
       </Provider>
     );
   }

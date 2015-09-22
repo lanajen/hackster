@@ -112,10 +112,6 @@ module.exports = {
     return ID;
   },
 
-  getVimeoId(url) {
-
-  },
-
   createRandomNumber: function() {
     let random = uuid.v4();
     return random;

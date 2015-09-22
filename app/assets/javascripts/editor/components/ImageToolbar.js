@@ -32,6 +32,17 @@ const ImageToolbar = React.createClass({
       this.props.actions.addImagesToCarousel(map, storeIndex);
       this.props.actions.forceUpdate(true);
       this.props.actions.toggleImageToolbar(false, {});
+
+      /** Upload files to AWS. */
+      this.props.actions.uploadImagesToServer(
+        map, 
+        storeIndex, 
+        this.props.editor.S3BucketURL, 
+        this.props.editor.AWSAccessKeyId, 
+        this.props.editor.csrfToken, 
+        this.props.editor.projectId
+      );
+
     }.bind(this));
 
     React.findDOMNode(this.refs.imageToolbarInput).value = '';

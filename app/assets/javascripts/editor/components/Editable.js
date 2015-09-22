@@ -20,9 +20,13 @@ const Editable = React.createClass({
     let csrfToken = _.findWhere(metaList, {name: 'csrf-token'}).content;
     let projectId = window.location.href.match(/\/[\d]+/).join('').slice(1);
 
-    this.props.actions.setProjectData(projectId, csrfToken);
-    this.props.actions.fetchInitialDOM(projectId, csrfToken);
+    this.props.actions.setProjectData(projectId, csrfToken, this.props.S3BucketURL, this.props.AWSAccessKeyId);
     this.debouncedResize = _.debounce(this.handleResize, 30);
+    
+    if(!this.props.editor.dom.length) {
+      this.props.actions.setIsFetching(true);
+      this.props.actions.fetchInitialDOM(projectId, csrfToken);
+    }
   },
 
   componentDidMount() {
@@ -176,10 +180,14 @@ const Editable = React.createClass({
                      ? (<ImageToolbar editor={this.props.editor} actions={this.props.actions} />)
                      : (null);
 
+    let mainContent = this.props.editor.isFetching
+                    ? (<div style={{ textAlign: 'center', padding: '5%' }}><i className="fa fa-spin fa-spinner fa-3x"></i>LOADING...</div>)
+                    : content;
+
     return (
       <div className="box">
         <div className="box-content">
-          {content}
+          {mainContent}
         </div>
         {imageToolbar}
       </div>

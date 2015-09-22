@@ -42,9 +42,12 @@ const blockElements = {
 const initialState = {
   html: '',
   dom: [],
+  isFetching: false,
   currentStoreIndex: 0,
   csrfToken: null,
   projectId: null,
+  S3BucketURL: null,
+  AWSAccessKeyId: null,
   isEditable: true,
   isHovered: false,
   getLatestHTML: false,
@@ -71,7 +74,15 @@ export default function(state = initialState, action) {
       return {
         ...state,
         dom: newDom,
-        getLatestHTML: true
+        getLatestHTML: true,
+        isFetching: false
+      };
+
+    case Editor.setIsFetching:
+      console.log('setting fetching', action.bool);
+      return {
+        ...state,
+        isFetching: action.bool
       };
 
     case Editor.setCurrentStoreIndex:
@@ -84,7 +95,9 @@ export default function(state = initialState, action) {
       return {
         ...state,
         csrfToken: action.csrfToken,
-        projectId: action.projectId
+        projectId: action.projectId,
+        S3BucketURL: action.S3BucketURL,
+        AWSAccessKeyId: action.AWSAccessKeyId
       };
 
     case Editor.createBlockElement:
@@ -285,6 +298,14 @@ export default function(state = initialState, action) {
         ...state,
         dom: newDom,
       };
+
+    case Editor.resetImageUrl:
+      dom = state.dom;
+      newDom = resetImageUrl(dom, action.imageData, action.storeIndex);
+      return {
+        ...state,
+        dom: newDom
+      }
 
     default:
       return state;
@@ -1083,6 +1104,22 @@ function deleteComponent(dom, storeIndex) {
   return dom;
 }
 
+function resetImageUrl(dom, data, storeIndex) {
+  let component = dom[storeIndex];
+  console.log('C', component, storeIndex);
+  let images = component.images.map(image => {
+    if(image.uuid = data.uuid) {
+      image = Object.assign({}, image, data);
+      return image;
+    } else {
+      return image;
+    }
+  });
+  console.log('NEW IMAGE DATA', images);
+  dom.splice(storeIndex, 1, component);
+  return dom;
+}
+
 // function deleteImagesFromCarousel(dom, map, position, storeIndex) {
 //   let carousel = dom[position];
 //   let inner = carousel.props.children[0];
@@ -1231,12 +1268,12 @@ function camelCaseStyleProp(prop) {
 
 function updateComponentAtIndex(dom, json, index, depth) {
   let component = dom[index];
-  let row = component.json[depth];
+  // let row = component.json[depth];
 
-  row.props.children = createArrayOfComponents(json);
-  component.json[depth] = row;
+  // row.props.children = createArrayOfComponents(json);
+  // component.json[depth] = row;
 
-  // component.json = createArrayOfComponents(json);
+  component.json = createArrayOfComponents(json);
 
   dom.splice(index, 1, component);
   return dom;

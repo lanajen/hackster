@@ -2,14 +2,15 @@ import async from 'async';
 import request from 'superagent';
 import _ from 'lodash';
 import xmlParser from 'xml2js';
+import Helpers from './Helpers';
 
 const ImageUtils = {
 
   handleImagesAsync(files, mainCallback) {
     async.map(files, function(file, callback) {
-      this.handleFileReader(file, function(dataUrl) {
-        this.handleImageResize(dataUrl, function(url, width) {
-          callback(null, url, width);
+      this.handleFileReader(file, function(dataUrl, fileName, hash) {
+        this.handleImageResize(dataUrl, fileName, hash, function(data) {
+          return callback(null, data);
         });
       }.bind(this));
     }.bind(this), function(err, results) {
@@ -21,17 +22,22 @@ const ImageUtils = {
 
   handleFileReader(file, callback) {
     let reader = new FileReader(),
-        dataUrl;
+        dataUrl,
+        fileName,
+        hash;
 
     reader.onload = function(upload) {
       dataUrl = upload.target.result;
-      callback(dataUrl);
+      fileName = file.name;
+      hash = Helpers.createRandomNumber();
+
+      callback(dataUrl, fileName, hash);
     }.bind(this);
 
     reader.readAsDataURL(file);
   },
 
-  handleImageResize(imgSrc, callback) {
+  handleImageResize(imgSrc, fileName, hash, callback) {
     let image = new Image();
     image.crossOrigin = 'Anonymous';
     image.onload = function(e) {
@@ -68,7 +74,7 @@ const ImageUtils = {
         canvas.getContext('2d').drawImage(image, 0, 0, width, height);
         dataUrl = canvas.toDataURL('image/jpeg');
       }
-      callback({ url: dataUrl, width: width, show: false, figcaption: null });
+      callback({ url: dataUrl, width: width, show: false, figcaption: null, name: fileName, uuid: hash });
     }.bind(this);
     // Fires the onload event.
     image.src = imgSrc;
@@ -106,7 +112,7 @@ const ImageUtils = {
   },
 
   postToS3(data, file, S3BucketURL, AWSAccessKeyId) {
-    const blob = dataURIToBlob(file.url);
+    const blob = this.dataURIToBlob(file.url);
     const form = new FormData();
     form.append('AWSAccessKeyId', AWSAccessKeyId);
     form.append('key', data.key);

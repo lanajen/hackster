@@ -1,5 +1,7 @@
 import { Editor } from '../constants/ActionTypes';
 import Request from '../utils/Requests';
+import ImageHelpers from '../../utils/Images'; 
+import async from 'async';
 
 export function setDOM(html, index, depth) {
   return {
@@ -29,6 +31,13 @@ export function fetchInitialDOM(projectId, csrfToken) {
   }
 }
 
+export function setIsFetching(bool) {
+  return {
+    type: Editor.setIsFetching,
+    bool: bool
+  };
+}
+
 export function setCurrentStoreIndex(storeIndex) {
   return {
     type: Editor.setCurrentStoreIndex,
@@ -36,11 +45,13 @@ export function setCurrentStoreIndex(storeIndex) {
   };
 }
 
-export function setProjectData(projectId, csrfToken) {
+export function setProjectData(projectId, csrfToken, S3BucketURL, AWSAccessKeyId) {
   return {
     type: Editor.setProjectData,
     projectId: projectId,
-    csrfToken: csrfToken
+    csrfToken: csrfToken,
+    S3BucketURL: S3BucketURL,
+    AWSAccessKeyId: AWSAccessKeyId
   };
 }
 
@@ -254,4 +265,36 @@ export function createPlaceholderElement(msg, depth, storeIndex) {
     depth: depth,
     storeIndex: storeIndex
   };
+}
+
+export function resetImageUrl(imageData, storeIndex) {
+  return {
+    type: Editor.resetImageUrl,
+    imageData: imageData,
+    storeIndex: storeIndex
+  };
+}
+
+export function uploadImagesToServer(files, storeIndex, S3BucketURL, AWSAccessKeyId, csrfToken, projectId) {
+  console.log('THINGS', files, storeIndex, S3BucketURL, AWSAccessKeyId, csrfToken, projectId);
+  return function(dispatch) {
+    files.forEach(file => {
+      return ImageHelpers.getS3AuthData(file.name)
+        .then(data => {
+          return ImageHelpers.postToS3(data, file, S3BucketURL, AWSAccessKeyId);
+        })
+        .then(url => {
+          return ImageHelpers.postURLToServer(url, projectId, csrfToken, 'image', 'tmp-file-0');
+        })
+        .then(response => {
+          let body = Object.assign({}, response.body, file);
+          dispatch(resetImageUrl(body, storeIndex));
+        })
+        .catch(err => {
+          // TODO: Handle error!
+          console.log('Error :' + err);
+        });
+    });
+
+  }
 }

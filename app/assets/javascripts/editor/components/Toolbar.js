@@ -282,8 +282,17 @@ const Toolbar = React.createClass({
     });
 
     ImageUtils.handleImagesAsync(files, function(map) {
-      this.props.actions.createMediaByType(map, depth, this.props.editor.currentStoreIndex, 'Carousel');
+      let storeIndex = this.props.editor.currentStoreIndex;
+      this.props.actions.createMediaByType(map, depth, storeIndex, 'Carousel');
       this.props.actions.forceUpdate(true);
+
+      /** Upload files to AWS. */
+      this.props.actions.uploadImagesToServer(map, 
+                                              storeIndex, 
+                                              this.props.editor.S3BucketURL, 
+                                              this.props.editor.AWSAccessKeyId, 
+                                              this.props.editor.csrfToken, 
+                                              this.props.editor.projectId);
     }.bind(this));
 
     React.findDOMNode(this.refs.imageUploadInput).value = '';

@@ -38,7 +38,7 @@ const Editor = React.createClass({
         <div className="react-editor-toolbar-container">
           <Toolbar hashLocation={this.props.hashLocation} />
         </div>
-        <Editable className="box" refLink={createRandomNumber()} hashLocation={this.props.hashLocation} />
+        <Editable className="box" refLink={createRandomNumber()} hashLocation={this.props.hashLocation} {...this.props}/>
       </div>
     );
   }
