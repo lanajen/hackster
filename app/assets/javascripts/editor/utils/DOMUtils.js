@@ -1023,15 +1023,17 @@ const Utils = {
         item.tag = 'p';
         return item;
       } else if(item.tag === 'ul') {
-        item.children = item.children.filter(child => {
-          if(child.content === null) {
-            return false;
-          } else if(child.content.length <= 1) {
-            return false
+        item.children = item.children.map(child => {
+          console.log(child.content === '\n', child.children.length < 1 && child.content && child.content.length <= 1 && child.content === '\n');
+          if(child.children && !child.children.length && child.content && child.content.length <= 1 && child.content === '\n') {
+            return null;
+          } else if(child.tag !== 'li') {
+            child.tag = 'li';
+            return child
           } else {
-            return true;
+            return child;
           }
-        });
+        }).filter(child => { return child !== null; });
         return item;
       } else if(item.tag === 'br') {
         item.tag = 'p';

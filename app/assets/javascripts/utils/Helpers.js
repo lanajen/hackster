@@ -58,7 +58,6 @@ module.exports = {
 
   getVideoData(url) {
     url = url.replace(/youtu\.be/, 'youtube');
-    console.log('FUCK', url, url.match(/(youtube|vimeo|vine)/));
     let type = url.match(/(youtube|vimeo|vine)/);
     let service = type !== null ? type[0] : null;
 

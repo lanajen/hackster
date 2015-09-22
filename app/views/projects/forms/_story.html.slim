@@ -13,7 +13,7 @@
   .row
     .col-md-8.col-md-offset-2
       = f.error_notification
-      = react_component('ReactEditor', {}, {})
+      = react_component('ReactEditor', {S3BucketURL: "https://#{ENV['FOG_DIRECTORY']}.s3.amazonaws.com", AWSAccessKeyId: "#{ENV['AWS_ACCESS_KEY_ID']}"}, {})
 
       / .box data-anchor='description'
       /   .box-content
