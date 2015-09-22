@@ -691,7 +691,7 @@ const Utils = {
           return newEl;
         } else if(el.attribs['data-type'] === 'url') {
           /** Handle Video */
-          mediaData = this.getMediaData(el);
+          mediaData = this.getVideoData(el);
           newEl = this.createVideo(mediaData);
           return newEl;
         } else if(el.attribs['data-type'] === 'file') {
@@ -781,7 +781,7 @@ const Utils = {
     };
   },
 
-  getMediaData(element) {
+  getVideoData(element) {
     let src, figcaption, alt;
 
     (function recurse(el) {
@@ -799,12 +799,8 @@ const Utils = {
             alt = child.attribs.alt || '';
           }
 
-          if(child.name === 'figcaption') {
-            figcaption = child.data || '';
-          }
-
-          if(child.name === 'div' && child.attribs.class.indexOf('figcaption') !== -1) {
-            figcaption = child.children ? child.children[0].data ? child.children[0].data : '';
+          if(child.name === 'div' && child.attribs.class.indexOf('embed-figcaption') !== -1) {
+            figcaption = child.children[0].data || '';
           }
 
           recurse(child);
