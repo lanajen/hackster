@@ -66,8 +66,7 @@ const ImageUtils = {
         canvas.getContext('2d').drawImage(image, 0, 0, width, height);
         dataUrl = canvas.toDataURL('image/jpeg');
       }
-
-      callback({url: dataUrl, width: width});
+      callback({ url: dataUrl, width: width, show: false, figcaption: null });
     }.bind(this);
     // Fires the onload event.
     image.src = imgSrc;
@@ -92,30 +91,7 @@ const ImageUtils = {
 
       image.src = src;
     });
-  },
-
-  // fetchImageAndTransform(videoData, projectId, csrfToken) {
-  //   return new Promise((resolve, reject) => {
-  //     request
-  //       .post(`/api/v1/projects/${projectId}/video_data`)
-  //       .set('X-CSRF-Token', csrfToken)
-  //       .send({ videoData: videoData })
-  //       .end((err, res) => {
-  //         if(err) reject(err);
-  //         let image = res.body.poster;
-
-  //         if(image === null) {
-  //           // TODO: Handle err;
-  //           reject('Error');
-  //         }
-
-  //         this.handleImageResize(image, function(imageData) {
-  //           resolve(Object.assign({}, imageData, videoData)); 
-  //         });
-
-  //       });
-  //   });
-  // }
+  }
 
 };
 

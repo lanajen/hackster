@@ -51,71 +51,6 @@ $desktop-width: 1024px;
   }
 }
 
-/** GRID  */
-
-.Grid {
-  display: flex;
-}
-
-.Grid-cell {
-  flex: 1;
-}
-
-/* Base classes for all media */
-.Grid--fit > .Grid-cell {
-  flex: 1;
-}
-.Grid--full > .Grid-cell {
-  flex: 0 0 100%;
-}
-.Grid--1of2 > .Grid-cell {
-  flex: 0 0 50%
-}
-.Grid--1of3 > .Grid-cell {
-  flex: 0 0 33.3333%
-}
-.Grid--1of4 > .Grid-cell {
-  flex: 0 0 25%
-}
-
-/* Small to medium screens */
-@media (min-width: 24em) {
-  .small-Grid--fit > .Grid-cell {
-    flex: 1;
-  }
-  .small-Grid--full > .Grid-cell {
-    flex: 0 0 100%;
-  }
-  .small-Grid--1of2 > .Grid-cell {
-    flex: 0 0 50%
-  }
-  .small-Grid--1of3 > .Grid-cell {
-    flex: 0 0 33.3333%
-  }
-  .small-Grid--1of4 > .Grid-cell {
-    flex: 0 0 25%
-  }
-}
-
-/* Large screens */
-@media (min-width: 48em) {
-  .large-Grid--fit > .Grid-cell {
-    flex: 1;
-  }
-  .large-Grid--full > .Grid-cell {
-    flex: 0 0 100%;
-  }
-  .large-Grid--1of2 > .Grid-cell {
-    flex: 0 0 50%
-  }
-  .large-Grid--1of3 > .Grid-cell {
-    flex: 0 0 33.3333%
-  }
-  .large-Grid--1of4 > .Grid-cell {
-    flex: 0 0 25%
-  }
-}
-
 /** Helpers */
 .material-green {
   color: #26A69A;
@@ -131,13 +66,13 @@ $desktop-width: 1024px;
   // width: 726px;
   font-family: "proxima-nova", "HelveticaNeue", Helvetica, Arial, "Lucida Grande", sans-serif;
 
-  .re-box {
+  .box {
       border: 2px solid #ddd;
       border-bottom-left-radius: 4px;
       border-bottom-right-radius: 4px;
       background: #fff;
 
-    .re-box-content {
+    .box-content {
       p {
         min-height: 28px;
         margin-bottom: 10px;
@@ -184,8 +119,8 @@ $desktop-width: 1024px;
 }
 
 .content-editable {
-  @extend .re-box-content;
-  padding: 4% 0;
+  @extend .box-content;
+  padding: 2% 0;
   font-size: 1.5rem;
   word-wrap: break-word;
   font-family: "proxima-nova", "HelveticaNeue", Helvetica, Arial, "Lucida Grande", sans-serif;
@@ -214,6 +149,10 @@ $desktop-width: 1024px;
   display: flex;
   flex-direction: column;
   position: relative;
+
+  &:focus {
+    outline: 2px solid lightblue;
+  }
 
   .react-editor-carousel-inner {
     display: flex;
@@ -245,7 +184,8 @@ $desktop-width: 1024px;
         position: relative;
 
         .react-editor-image {
-          max-width: 100%;
+          max-width: 686px;
+          width: 100%;
           height: auto;
           flex: 1;
           z-index: 1;
@@ -269,6 +209,10 @@ $desktop-width: 1024px;
           text-align: center;
           z-index: 1;
           align-self: center;
+
+          &:focus {
+            outline: none;
+          }
         }
       }
     }
@@ -313,6 +257,10 @@ $desktop-width: 1024px;
 /** Video  */
 .react-editor-video {
   @extend .react-editor-carousel;
+
+  &:focus {
+    outline: 2px solid lightblue;
+  }
   
   .react-editor-video-inner {
     display: flex;
@@ -344,8 +292,9 @@ $desktop-width: 1024px;
         max-height: 514px;
         position: relative;
 
-        .react-editor-image {
-          max-width: 100%;
+        .react-editor-iframe {
+          width: 100%;
+          max-width: 686px;
           height: auto;
           flex: 1;
           z-index: 1;
@@ -369,9 +318,27 @@ $desktop-width: 1024px;
           text-align: center;
           z-index: 1;
           align-self: center;
+
+          &:focus {
+            outline: none;
+          }
         }
       }
     }
+  }
+}
+
+/** File */
+.react-editor-file {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid#E8E7E7;
+  padding: 10px;
+  margin: 0 30px;
+
+  a {
+    padding-left: 10px;
   }
 }
 

@@ -20,7 +20,6 @@
 //= require rangy-cssclassapplier
 //= require browser_timezone_rails/application
 //= require moment
-//= require medium-editor
 //= require placeholders
 //= require medium-editor-ext
 //= require gist-embed

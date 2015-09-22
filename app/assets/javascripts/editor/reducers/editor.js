@@ -42,13 +42,14 @@ const blockElements = {
 const initialState = {
   html: '',
   dom: [],
+  currentStoreIndex: 0,
   csrfToken: null,
   projectId: null,
   isEditable: true,
   isHovered: false,
   getLatestHTML: false,
   forceUpdate: false,
-  cursorPosition: { pos: 0, node: null, offset: null, anchorNode: null },
+  cursorPosition: { pos: 0, node: null, offset: null, anchorNode: null, rootHash: null },
   setCursorToNextLine: false,
   showImageToolbar: false,
   imageToolbarData: {}
@@ -58,19 +59,25 @@ export default function(state = initialState, action) {
   let dom, newDom, cursorPosition;
   switch (action.type) {
     case Editor.setDOM:
-      let ReactifiedDOM = createArrayOfComponents(action.dom);
+      dom = state.dom;
+      newDom = updateComponentAtIndex(dom, action.html, action.index, action.depth);
       return {
         ...state,
-        dom: ReactifiedDOM
+        dom: newDom
       };
 
     case Editor.setInitialDOM:
-      let initDom = handleInitialDOM(action.json);
-      newDom = createArrayOfComponents(initDom);
+      newDom = handleInitialDOM(action.json);
       return {
         ...state,
         dom: newDom,
         getLatestHTML: true
+      };
+
+    case Editor.setCurrentStoreIndex:
+      return {
+        ...state,
+        currentStoreIndex: action.storeIndex
       };
 
     case Editor.setProjectData:
@@ -82,19 +89,11 @@ export default function(state = initialState, action) {
 
     case Editor.createBlockElement:
       dom = state.dom;
-      newDom = handleBlockElementCreation(dom, action.tag, action.position);
+      newDom = handleBlockElementCreation(dom, action.tag, action.position, action.storeIndex);
       return {
         ...state,
         dom: newDom,
         setCursorToNextLine: action.setCursorToNextLine
-      };
-
-    case Editor.createBlockElementWithChildren:
-      dom = state.dom;
-      newDom = createBlockElementWithChildren(dom, action.tag, action.position, action.offset, action.hash);
-      return {
-        ...state,
-        dom: newDom
       };
 
     case Editor.cleanElement:
@@ -107,7 +106,7 @@ export default function(state = initialState, action) {
 
     case Editor.transformBlockElement:
       dom = state.dom;
-      newDom = transformBlockElement(dom, action.tag, action.position, action.cleanChildren);
+      newDom = transformBlockElement(dom, action.tag, action.position, action.cleanChildren, action.storeIndex);
       return {
         ...state,
         dom: newDom
@@ -115,19 +114,34 @@ export default function(state = initialState, action) {
 
     case Editor.transformBlockElements:
       dom = state.dom;
-      newDom = transformBlockElements(dom, action.tag, action.elements);
+      newDom = transformBlockElements(dom, action.tag, action.elements, action.storeIndex);
       return {
         ...state,
         dom: newDom
       };
 
-    case Editor.removeBlockElements:
+    case Editor.prependCE:
       dom = state.dom;
-      newDom = removeBlockElements(dom, action.map);
+      newDom = prependCE(dom, action.storeIndex);
       return {
         ...state,
-        dom: newDom,
-        forceUpdate: true
+        dom: newDom
+      };
+
+    case Editor.setFigCaptionText:
+      dom = state.dom;
+      newDom = setFigCaptionText(dom, action.figureIndex, action.storeIndex, action.html);
+      return {
+        ...state,
+        dom: newDom
+      }
+
+    case Editor.removeBlockElements:
+      dom = state.dom;
+      newDom = removeBlockElements(dom, action.map, action.storeIndex);
+      return {
+        ...state,
+        dom: newDom
       };
 
     case Editor.wrapOrUnwrapBlockElement:
@@ -140,8 +154,8 @@ export default function(state = initialState, action) {
 
     case Editor.handleUnorderedList:
       dom = state.dom;
-      newDom = handleUnorderedList(dom, action.toList, action.elements, action.parent);
-      newDom = _mergeLists(dom);
+      newDom = handleUnorderedList(dom, action.toList, action.elements, action.parent, action.storeIndex);
+      newDom = _mergeLists(dom, action.storeIndex);
       return {
         ...state,
         dom: newDom
@@ -149,7 +163,7 @@ export default function(state = initialState, action) {
 
     case Editor.removeListItemFromList:
       dom = state.dom;
-      newDom = removeListItemFromList(dom, action.parentPos, action.childPos);
+      newDom = removeListItemFromList(dom, action.parentPos, action.childPos, action.storeIndex);
       return {
         ...state,
         dom: newDom
@@ -182,16 +196,14 @@ export default function(state = initialState, action) {
       };
 
     case Editor.setCursorPosition:
-      if(state.cursorPosition === undefined) {
-        console.log('BIG PROBLEM!', action.position, action.node, action.offset, action.anchorNode);
-      }
       return {
         ...state,
         cursorPosition: { 
           pos: action.position, 
           node: action.node,
           offset: action.offset,
-          anchorNode: action.anchorNode
+          anchorNode: action.anchorNode,
+          rootHash: action.rootHash
         }
       };
 
@@ -220,17 +232,21 @@ export default function(state = initialState, action) {
         imageToolbarData: action.data
       };
 
-    case Editor.createCarousel:
+    case Editor.createMediaByType:
       dom = state.dom;
-      newDom = handleCarouselCreation(dom, action.map, action.depth);
+      let { newDom, rootHash } = handleMediaCreation(dom, action.map, action.depth, action.storeIndex, action.mediaType);
       return {
         ...state,
-        dom: newDom
+        dom: newDom,
+        cursorPosition: {
+          ...state.cursorPosition,
+          rootHash: rootHash
+        }
       };
 
     case Editor.addImagesToCarousel:
       dom = state.dom;
-      newDom = addImagesToCarousel(dom, action.map, action.depth);
+      newDom = addImagesToCarousel(dom, action.map, action.storeIndex);
       return {
         ...state,
         dom: newDom
@@ -238,15 +254,25 @@ export default function(state = initialState, action) {
 
     case Editor.deleteImagesFromCarousel:
       dom = state.dom;
-      newDom = deleteImagesFromCarousel(dom, action.map, action.depth);
+      newDom = deleteImagesFromCarousel(dom, action.map, action.depth, action.storeIndex);
+      newDom = _mergeAdjacentCE(newDom);
       return {
         ...state,
         dom: newDom
       };
 
-    case Editor.handleVideo:
+    case Editor.updateShownImage:
       dom = state.dom;
-      newDom = handleVideo(dom, action.data, action.depth);
+      newDom = updateShownImage(dom, action.activeIndex, action.storeIndex, action.direction);
+      return {
+        ...state,
+        dom: newDom
+      };
+
+    case Editor.deleteComponent:
+      dom = state.dom;
+      newDom = deleteComponent(dom, action.storeIndex);
+      newDom = _mergeAdjacentCE(newDom);
       return {
         ...state,
         dom: newDom
@@ -254,10 +280,10 @@ export default function(state = initialState, action) {
 
     case Editor.createPlaceholderElement:
       dom = state.dom;
-      newDom = createPlaceholderElement(dom, action.msg, action.depth);
+      newDom = createPlaceholderElement(dom, action.msg, action.depth, action.storeIndex);
       return {
         ...state,
-        dom: newDom
+        dom: newDom,
       };
 
     default:
@@ -269,30 +295,51 @@ function handleInitialDOM(json) {
   json = json || [];
 
   if(json.length < 1) {
-    let P = {
-      tag: 'p',
-      content: 'Tell your story...',
-      attribs: {
-        class: "react-editor-placeholder-text"
-      },
-      children: []
-    }
-    json.push(P);
+    let CE = {
+      type: 'CE',
+      hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)),
+      json: [{
+        tag: 'p',
+        content: 'Tell your story...',
+        attribs: {
+          class: "react-editor-placeholder-text"
+        },
+        children: []
+      }]
+    };
+    CE.json = createArrayOfComponents(CE.json);
+    json.push(CE);
+  } else {
+    console.log('IN REDUCER', json);
+    json = json.map(item => {
+      if(item.type === 'CE') {
+        item.json = createArrayOfComponents(item.json);
+        return item;
+      } else {
+        return item;
+      }
+    });
   }
 
   return json;
 }
 
-function handleBlockElementCreation(dom, tag, position) {
+function handleBlockElementCreation(dom, tag, position, storeIndex) {
+  let component = dom[storeIndex];
+  let json = component.json;
   let reactEl = mapToComponent[tag];
   let tagProps = { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) };
   let el = reactEl({key: createRandomNumber(), tagProps, children: ['']});
 
-  if(dom.length < 1) {
-    dom.push(el);
+
+  if(json.length < 1) {
+    json.push(el);
   } else {
-    dom.splice(position+1, 0, el);
+    json.splice(position+1, 0, el);
   }
+
+  component.json = json;
+  dom.splice(storeIndex, 1, component);
 
   return dom;
 }
@@ -328,53 +375,9 @@ function _deepSearchForNodeByHash(rootEl, offset, hash) {
   return target;
 }
 
-function _splitChildren(children, offset, hash) {
-  let counter = 0, stack = [], newChildren = children;
-  
-}
-
-function createBlockElementWithChildren(dom, tag, position, offset, hash) {
-  let rootEl = dom[position];
-  let children = rootEl.props.children;
-
-  _deepSearchForNodeByHash(rootEl, offset, hash);
-
-  /** Remove any nested spans that contenteditable created on backspace. */
-  // if(Array.isArray(children) && typeof children[0] === 'string') {
-  //   children = children[0];
-  // } else if(Array.isArray(children)) {
-  //     children = children.map(child => {
-  //       if(child === undefined) {
-  //         return '';
-  //       } else if(child.type === 'span') {
-  //         return child.props.children;
-  //       } else {
-  //         return child;
-  //       }
-  //     }).join('');
-  // }
-  // console.log('LOOK', children);
-  // if(typeof children !== 'string') { return dom; }
-
-  // let splitTextByCursor = (function(children, offset) {
-  //   return [children.substring(0, offset), children.substring(offset, children.length)];
-  // }(children, startOffset));
-  
-  // // WE NEED TO GET WHAT NODE IS BEING SPLIT AND HONOR THE OTHER NESTED ELS.
-
-  // rootEl = React.cloneElement(rootEl, {}, splitTextByCursor[0]);
-  // dom.splice(position, 1, rootEl);
-
-  // let reactEl = mapToComponent[tag];
-  // let tagProps = { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) };
-  // let el = reactEl({key: createRandomNumber(), tagProps, children: splitTextByCursor[1]});
-  // dom.splice(position+1, 0, el);
-
-  return dom;
-}
-
-function transformBlockElement(dom, tag, position, cleanChildren) {
-  let elToReplace = dom[position];
+function transformBlockElement(dom, tag, position, cleanChildren, storeIndex) {
+  let component = dom[storeIndex];
+  let elToReplace = component.json[position];
 
   if(elToReplace !== undefined) {
     let displayName = elToReplace.type.displayName ? elToReplace.type.displayName : elToReplace.type;
@@ -387,101 +390,103 @@ function transformBlockElement(dom, tag, position, cleanChildren) {
     let children = cleanChildren === true ? [''] : elToReplace.props.children;
     let el = reactEl({key: createRandomNumber(), tagProps, children: children });
 
-    dom.splice(position, 1, el);
+    component.json.splice(position, 1, el);
     // If the Element is a PRE and its the last El in the DOM, append a Paragraph below it.
     if(el.type.displayName !== undefined && el.type.displayName.toLowerCase() === 'pre' && position === dom.length-1) {
-      dom = appendParagraph(dom);
+      component.json = appendParagraph(component.json);
     }
 
+    dom.splice(storeIndex, 1, component);
     return dom;
+  } else {
+    return;
   }
 }
 
-function transformBlockElements(dom, tag, elements) {
+function transformBlockElements(dom, tag, elements, storeIndex) {
   let newDom;
   elements.forEach((element) => {
     /** Prevents any DIV block to be transformed. */
     if(element.nodeName !== 'DIV' && element.nodeName !== 'UL') {
-      newDom = transformBlockElement(newDom || dom, tag, element.depth);
+      newDom = transformBlockElement(newDom || dom, tag, element.depth, false, storeIndex);
     } else if(element.nodeName === 'UL') {
-      newDom = transformListItemsToBlockElements(newDom || dom, tag, element.depth);
+      newDom = transformListItemsToBlockElements(newDom || dom, tag, element.depth, storeIndex);
     }
   });
   return newDom;
 }
 
-function cleanElement(dom, position, childPosition) {
-  let el = dom[position];
-  let childEl = childPosition !== null ? el.props.children[childPosition] : null;
-  let children = childPosition !== null ? childEl.props.children : el.props.children;
+// function cleanElement(dom, position, childPosition) {
+//   let el = dom[position];
+//   let childEl = childPosition !== null ? el.props.children[childPosition] : null;
+//   let children = childPosition !== null ? childEl.props.children : el.props.children;
 
-  /** Remove any nested spans that contenteditable created. */
-  if(Array.isArray(children) && typeof children[0] === 'string') {
-    children = children[0];
-  } else if(Array.isArray(children)) {
-      children = children.map(child => {
-        if(child === undefined) {
-          return '';
-        } else if(child.type === 'span') {
-          return child.props.children;
-        } else {
-          return child;
-        }
-      }).join('');
-  }
+//   /** Remove any nested spans that contenteditable created. */
+//   if(Array.isArray(children) && typeof children[0] === 'string') {
+//     children = children[0];
+//   } else if(Array.isArray(children)) {
+//       children = children.map(child => {
+//         if(child === undefined) {
+//           return '';
+//         } else if(child.type === 'span') {
+//           return child.props.children;
+//         } else {
+//           return child;
+//         }
+//       }).join('');
+//   }
 
-  if(childEl !== null) {
-    childEl = React.cloneElement(childEl, {}, children);
-    el.props.children[childPosition] = childEl;
-  } else {
-    el = React.cloneElement(el, {}, children);
-  }
+//   if(childEl !== null) {
+//     childEl = React.cloneElement(childEl, {}, children);
+//     el.props.children[childPosition] = childEl;
+//   } else {
+//     el = React.cloneElement(el, {}, children);
+//   }
 
-  dom.splice(position, 1, el);
-  return dom;
-}
+//   dom.splice(position, 1, el);
+//   return dom;
+// }
 
-function removeBlockElement(dom, position) {
-  let newDom = dom;
-  newDom.splice(position, 1);
-  return newDom;
-}
-
-function removeBlockElements(dom, map) {
-  let newDom = dom;
+function removeBlockElements(dom, map, storeIndex) {
+  let component = dom[storeIndex];
+  let json = component.json;
   let indexes = _.map(map, function(item) {
     return item.depth;
   });
 
-  let woo = _.pullAt(newDom, indexes); // Mutates newDom; removes indexes.
+  _.pullAt(json, indexes); // Mutates json, removes indexes.
   
-  if(newDom[0] === undefined || newDom.length < 1) {
-    newDom = [];
+  if(json[0] === undefined || json.length < 1) {
+    json = [];
     let P = mapToComponent['p'];
     let tagProps = { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) };
-    newDom.push( P({key: createRandomNumber(), tagProps, children: ['']}) );
-  }
-  return newDom;
-}
-
-function wrapOrUnwrapBlockElement(dom, tag, position, shouldWrap) {
-  let elToReplace = dom[position], tagProps, reactEl, newEl;
-  if(shouldWrap) {
-    reactEl = mapToComponent[tag];
-    tagProps = { hash: elToReplace.props.tagProps.hash } || { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) };
-    newEl = reactEl({ tagProps, children: elToReplace });
-    dom.splice(position, 1, newEl);
-  } else {
-    reactEl = elToReplace.props.children[0] || elToReplace.props.children;
-    dom.splice(position, 1, reactEl);
+    json.push( P({key: createRandomNumber(), tagProps, children: ['']}) );
   }
 
+  component.json = json;
+  dom.splice(storeIndex, 1, component);
   return dom;
 }
 
-function removeListItemFromList(dom, parentPos, childPos) {
-  let newDom = dom;
-  let parentEl = newDom[parentPos];
+// function wrapOrUnwrapBlockElement(dom, tag, position, shouldWrap) {
+//   let elToReplace = dom[position], tagProps, reactEl, newEl;
+//   if(shouldWrap) {
+//     reactEl = mapToComponent[tag];
+//     tagProps = { hash: elToReplace.props.tagProps.hash } || { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) };
+//     newEl = reactEl({ tagProps, children: elToReplace });
+//     dom.splice(position, 1, newEl);
+//   } else {
+//     reactEl = elToReplace.props.children[0] || elToReplace.props.children;
+//     dom.splice(position, 1, reactEl);
+//   }
+
+//   return dom;
+// }
+
+function removeListItemFromList(dom, parentPos, childPos, storeIndex) {
+  let component = dom[storeIndex];
+  let json = component.json;
+  let parentEl = json[parentPos];
   
   parentEl.props.children = parentEl.props.children.filter(function(child, index) {
     if(index === childPos) {
@@ -491,12 +496,16 @@ function removeListItemFromList(dom, parentPos, childPos) {
     }
   });
 
-  newDom.splice(parentPos, 1, parentEl);
-  return newDom;
+  json.splice(parentPos, 1, parentEl);
+  component.json = json;
+  dom.splice(storeIndex, 1, component);
+  return dom;
 }
 
-function transformListItemsToBlockElements(dom, tag, position) {
-  let elToReplace = dom[position];
+function transformListItemsToBlockElements(dom, tag, position, storeIndex) {
+  let component = dom[storeIndex];
+  let json = component.json;
+  let elToReplace = json[position];
   let children = elToReplace.props.children;
   let reactEl = mapToComponent[tag], el, tagProps, newChildren;
 
@@ -504,7 +513,7 @@ function transformListItemsToBlockElements(dom, tag, position) {
   if(!Array.isArray(children) && children.type.displayName === 'UL') {
     children = children.props.children;
   }
-  console.log('trans item', elToReplace);
+
   _.forEach(children, function(child, index) {
     if(child !== null && child.type.displayName !== 'DIV') {
       tagProps = index === 0 ? {hash: elToReplace.props.tagProps.hash} : {hash: hashids.encode(Math.floor(Math.random() * 9999 + 1))};
@@ -512,19 +521,56 @@ function transformListItemsToBlockElements(dom, tag, position) {
       el = reactEl({ tagProps, children: newChildren });
 
       if(index === 0) {
-        dom.splice(position+index, 1, el);
+        json.splice(position+index, 1, el);
       } else {
-        dom.splice(position+index, 0, el);
+        json.splice(position+index, 0, el);
       } 
 
       // If the Element is a PRE and its the last El in the DOM, append a Paragraph below it.
       if(el.type.displayName !== undefined && el.type.displayName.toLowerCase() === 'pre' && position === dom.length-1) {
-        dom = appendParagraph(dom);
+        json = appendParagraph(json);
       }
     }
   });
 
+  component.json = json;
+  dom.splice(storeIndex, 1, component);
+  return dom;
+}
 
+function prependCE(dom, storeIndex) {
+  let P = mapToComponent['p'];
+  let p = P({ tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) }, 
+              style: {}, 
+              className: '', 
+              key: createRandomNumber(), 
+              children: [''] 
+            });
+  let CE = {
+    type: 'CE',
+    json: [],
+    hash: hashids.encode(Math.floor(Math.random() * 9999 + 1))
+  };
+  CE.json.push(p);
+  /** We either add a CE or append a Paragraph to the previous CE. */
+  if(storeIndex === 0 || dom[storeIndex-1].type !== 'CE') {
+    dom.splice(storeIndex, 0, CE);
+  } else {
+    let component = dom[storeIndex-1];
+    component.json.push(p);
+    dom.splice(storeIndex-1, 1, component);
+  }
+
+  return dom;
+}
+
+function setFigCaptionText(dom, figureIndex, storeIndex, html) {
+  let component = dom[storeIndex];
+  let images = component.images;
+  images[figureIndex].figcaption = html;
+
+  component.images = images;
+  dom.splice(storeIndex, 1, component);
   return dom;
 }
 
@@ -542,8 +588,10 @@ function _getNodePositionByHash(dom, hash) {
   return nodePosition;
 }
 
-function handleUnorderedList(dom, toList, elements, parentNode) {
+function handleUnorderedList(dom, toList, elements, parentNode, storeIndex) {
   let children, newChildren, reactEl, tagProps;
+  let component = dom[storeIndex];
+  let json = component.json;
 
   if(toList) {
     let li = mapToComponent['li'], 
@@ -557,25 +605,27 @@ function handleUnorderedList(dom, toList, elements, parentNode) {
 
     children = _.map(elements, function(element) {
       if(parentNode.previousLength !== null) {
-        el = dom[element.depth - (parentNode.previousLength - 1)];
+        el = json[element.depth - (parentNode.previousLength - 1)];
       } else {
-        el = dom[element.depth];
+        el = json[element.depth];
       }
       newChildren = el.props.children;
       return li({ key: createRandomNumber(), children: newChildren });
     });
 
     reactEl = mapToComponent['ul'];
-    tagProps = dom[depth].props.tagProps || { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) };
+    tagProps = json[depth].props.tagProps || { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) };
     ul = reactEl({ key: createRandomNumber(), tagProps, children: children });
 
-    dom.splice(depth, elements.length, ul);
+    json.splice(depth, elements.length, ul);
   } else {
-    let depth = _getNodePositionByHash(dom, parentNode.hash);
-    let ul = depth !== undefined ? dom[depth] : dom[parentNode.depth];
-    dom = _transformListItems(dom, elements, ul, depth || parentNode.depth);
+    let depth = _getNodePositionByHash(json, parentNode.hash);
+    let ul = depth !== undefined ? json[depth] : json[parentNode.depth];
+    json = _transformListItems(json, elements, ul, depth || parentNode.depth);
   }
 
+  component.json = json;
+  dom.splice(storeIndex, 1, component);
   return dom;
 }
 
@@ -642,27 +692,30 @@ function _transformChildren(dom, children, position, parentHash) {
  * Runs after everyafter every handleUnorderedList. 
  * It checks if theres ULs above and below the list currently being created.
  */
-function _mergeLists(dom) {
-  let newDom = dom, 
+function _mergeLists(dom, storeIndex) {
+  let component = dom[storeIndex],
+      json = component.json, 
       children = [],
       reactEl = mapToComponent['ul'],
-      positionsToMerge = _createPositionsToMerge(newDom, 'UL'),
+      positionsToMerge = _createPositionsToMerge(json, 'UL'),
       UL;
 
   _.forEach(positionsToMerge, function(position) {
     let parentNodePos = position.shift();
-    let parentNode = newDom[parentNodePos];
+    let parentNode = json[parentNodePos];
     children = [];
 
     _.forEach(position, function(ulPos) {
-      children = children.concat(newDom[ulPos].props.children);
+      children = children.concat(json[ulPos].props.children);
     });
 
     UL = reactEl({tagProps: parentNode.props.tagProps, children: parentNode.props.children.concat(children)});
-    newDom.splice(parentNodePos, position.length+1, UL);
+    json.splice(parentNodePos, position.length+1, UL);
   });
 
-  return newDom;
+  component.json = json;
+  dom.splice(storeIndex, 1, component);
+  return dom;
 }
 
 function _createPositionsToMerge(newDom, el) {
@@ -686,170 +739,281 @@ function _createPositionsToMerge(newDom, el) {
   return positionsToMerge;
 }
 
-function handleCarouselCreation(dom, map, position) {
-  let carousel, inner, children = [];
+function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
+  let component = dom[storeIndex];
+  let json = component.json;
+  let media = {
+    type: mediaType,
+    images: map,
+    hash: hashids.encode(Math.floor(Math.random() * 9999 + 1))
+  };
+  let rootHash;
 
-  _.forEach(map, function(image, index) {
-    if(index === 0) {
-      if(map.length > 1) {
-        carousel = createCarousel(dom, image.url, image.width, position, true);
-      } else {
-        carousel = createCarousel(dom, image.url, image.width, position);
-      }
+  /** Sets the first image to show. */
+  media.images[0].show = true;
 
-    } else {
-      if(map.length > 1 && index === map.length-1) {
-        children.push(createImage(image.url, image.width));
-      } else {
-        children.push(createImage(image.url, image.width));
-      }
+  /** If we're adding a Carousel to the end of a CE.
+    * Else we need to splice the content of the CE by depth.
+   */
+  if(depth === json.length-1) {
+    let removedNode = json.pop();
+    let itemsToRemove = 0;
+    storeIndex += 1;
+
+    /** If theres nothing left in the element, remove it. */
+    if(json.length < 1) {
+      storeIndex -= 1;
+      itemsToRemove = 1;
     }
-  });
 
-  inner = carousel.props.children[0];
-  inner.props.children.push(...children);
-  dom.splice(position, 1, carousel);
+    let P = mapToComponent['p'];
+    rootHash = hashids.encode(Math.floor(Math.random() * 9999 + 1));
+    let CE = {
+      type: 'CE',
+      json: [],
+      hash: rootHash
+    };
 
-  // Append a Paragraph if the carousel is the last element.
-  if(position === dom.length-1) {
-    dom = appendParagraph(dom);
+    let p = P({ tagProps: { hash: removedNode.props.tagProps.hash || hashids.encode(Math.floor(Math.random() * 9999 + 1)) }, 
+                style: {}, 
+                className: '', 
+                key: createRandomNumber(), 
+                children: mediaType === 'Carousel' ? [removedNode.props.children] : ['']
+              });
+
+    CE.json.push(p);
+    dom.splice(storeIndex, itemsToRemove, media);
+    dom.push(CE);
+  } else if(depth === 0 && json[depth+1].props.children) {
+    dom.splice(storeIndex, 0, media);
+  } else {
+    rootHash = hashids.encode(Math.floor(Math.random() * 9999 + 1));
+    let bottomDepthStart = mediaType === 'Video' ? depth+1 : depth;
+    let top = json.slice(0, depth);
+    let bottom = json.slice(bottomDepthStart, json.length);
+    let topCE = { type: 'CE', hash: component.hash, json: top };
+    let bottomCE = { type: 'CE', hash: rootHash, json: bottom };
+
+    dom.splice(storeIndex, 1, topCE);
+    dom.splice(storeIndex+1, 0, media);
+    dom.splice(storeIndex+2, 0, bottomCE);
   }
 
-  return dom;
+  return { newDom: dom, rootHash: rootHash };
 }
 
-function createCarousel(dom, imgSrc, imgWidth, position) {
-  let newDom = dom;
-  let elToReplace = newDom[position] || { props: {tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1))}} };
-  let Figure = mapToComponent['figure'];
-  let Img = mapToComponent['img'];
-  let Div = mapToComponent['div'];
-  let FigCaption = mapToComponent['figcaption'];
-  let Carousel = mapToComponent['carousel'];
-  let FIGURE, IMG, FIGCAPTION, DIV, CAROUSEL, INNERCAROUSEL;
 
-  FIGCAPTION = FigCaption({
-    tagProps: {},
-    style: {},
-    className: 'react-editor-figcaption',
-    key: createRandomNumber(), 
-    children: ['caption (optional)']
-  });
+// function handleCarouselCreation(dom, map, position) {
+//   let carousel, inner, children = [];
+
+//   _.forEach(map, function(image, index) {
+//     if(index === 0) {
+//       if(map.length > 1) {
+//         carousel = createCarousel(dom, image.url, image.width, position, true);
+//       } else {
+//         carousel = createCarousel(dom, image.url, image.width, position);
+//       }
+
+//     } else {
+//       if(map.length > 1 && index === map.length-1) {
+//         children.push(createImage(image.url, image.width));
+//       } else {
+//         children.push(createImage(image.url, image.width));
+//       }
+//     }
+//   });
+
+//   inner = carousel.props.children[0];
+//   inner.props.children.push(...children);
+//   dom.splice(position, 1, carousel);
+
+//   // Append a Paragraph if the carousel is the last element.
+//   if(position === dom.length-1) {
+//     dom = appendParagraph(dom);
+//   }
+
+//   return dom;
+// }
+
+// function createCarousel(dom, imgSrc, imgWidth, position) {
+//   let newDom = dom;
+//   let elToReplace = newDom[position] || { props: {tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1))}} };
+//   let Figure = mapToComponent['figure'];
+//   let Img = mapToComponent['img'];
+//   let Div = mapToComponent['div'];
+//   let FigCaption = mapToComponent['figcaption'];
+//   let Carousel = mapToComponent['carousel'];
+//   let FIGURE, IMG, FIGCAPTION, DIV, CAROUSEL, INNERCAROUSEL;
+
+//   FIGCAPTION = FigCaption({
+//     tagProps: {},
+//     style: {},
+//     className: 'react-editor-figcaption',
+//     key: createRandomNumber(), 
+//     children: ['caption (optional)']
+//   });
   
-  IMG = Img({
-    tagProps: { src: imgSrc, 'data-src': '', alt: ''},
-    style: { width: imgWidth },
-    className: 'react-editor-image', 
-    key: createRandomNumber(), 
-    children: []
+//   IMG = Img({
+//     tagProps: { src: imgSrc, 'data-src': '', alt: ''},
+//     style: { width: imgWidth },
+//     className: 'react-editor-image', 
+//     key: createRandomNumber(), 
+//     children: []
+//   });
+
+//   DIV = Div({
+//     tagProps: {},
+//     className: 'react-editor-image-wrapper',
+//     key: createRandomNumber(),
+//     children: [IMG, FIGCAPTION]
+//   });
+
+//   FIGURE = Figure({
+//     tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)), 'data-type': 'image' },
+//     className: 'react-editor-figure show', 
+//     key: createRandomNumber(), 
+//     children: [DIV]
+//   });
+
+//   INNERCAROUSEL = Div({
+//     tagProps: {},
+//     style: {},
+//     className: 'react-editor-carousel-inner',
+//     key: createRandomNumber(),
+//     children: [FIGURE]
+//   });
+
+//   CAROUSEL = Carousel({
+//     tagProps: { hash: elToReplace.props.tagProps.hash, 'data-type': 'carousel' },
+//     className: 'react-editor-carousel',
+//     key: createRandomNumber(),
+//     children: [INNERCAROUSEL]
+//   });
+
+//   return CAROUSEL;
+// }
+
+function addImagesToCarousel(dom, map, storeIndex) {
+  let component = dom[storeIndex];
+  let newImages = map.map(image => {
+    return { url: image.url, alt: image.alt, width: image.width, figcaption: null };
   });
 
-  DIV = Div({
-    tagProps: {},
-    className: 'react-editor-image-wrapper',
-    key: createRandomNumber(),
-    children: [IMG, FIGCAPTION]
-  });
-
-  FIGURE = Figure({
-    tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)), 'data-type': 'image' },
-    className: 'react-editor-figure show', 
-    key: createRandomNumber(), 
-    children: [DIV]
-  });
-
-  INNERCAROUSEL = Div({
-    tagProps: {},
-    style: {},
-    className: 'react-editor-carousel-inner',
-    key: createRandomNumber(),
-    children: [FIGURE]
-  });
-
-  CAROUSEL = Carousel({
-    tagProps: { hash: elToReplace.props.tagProps.hash, 'data-type': 'carousel' },
-    className: 'react-editor-carousel',
-    key: createRandomNumber(),
-    children: [INNERCAROUSEL]
-  });
-
-  return CAROUSEL;
-}
-
-function addImagesToCarousel(dom, map, position) {
-  let carousel = dom[position];
-  let inner = carousel.props.children[0];
-  let images = _.map(map, function(image) {
-    return createImage(image.url, image.width);
-  });
-
-  /** Remove the class 'show' from current shown */
-  let newChildren = _.map(inner.props.children, function(figure) {
-    if(figure && figure.props.className.split(' ').indexOf('show') === 1) {
-      return React.cloneElement(figure, {className: 'react-editor-figure'});
-    } else {
-      return React.cloneElement(figure);
+  /** Remove current shown image and show the last image added. */
+  component.images.forEach(image => {
+    if(image.show) {
+      image.show = false;
     }
-   });
+  });
+  newImages[newImages.length-1].show = true;
 
-  images[images.length-1] = React.cloneElement(images[images.length-1], {className: 'react-editor-figure show'});
-  newChildren.push(...images);
-  inner = React.cloneElement(inner, {}, [...newChildren]);
-  carousel = React.cloneElement(carousel, {}, [inner]);
-
-  dom.splice(position, 1, carousel);
+  component.images.push(...newImages);
+  dom.splice(storeIndex, 1, component);
   return dom;
 }
 
-function createImage(imgSrc, imgWidth) {
-  let Figure = mapToComponent['figure'];
-  let Img = mapToComponent['img'];
-  let Div = mapToComponent['div'];
-  let FigCaption = mapToComponent['figcaption'];
-  let FIGURE, IMG, FIGCAPTION, DIV;
+function updateShownImage(dom, activeIndex, storeIndex, direction) {
+  let component = dom[storeIndex];
+  let images = component.images;
 
-  FIGCAPTION = FigCaption({
-    tagProps: {},
-    style: { width: imgWidth },
-    className: 'react-editor-figcaption',
-    key: createRandomNumber(), 
-    children: ['caption (optional)']
-  });
-  
-  IMG = Img({
-    tagProps: { src: imgSrc, 'data-src': '', alt: ''},
-    style: { width: imgWidth },
-    className: 'react-editor-image', 
-    key: createRandomNumber(), 
-    children: []
-  });
+  images[activeIndex].show = false;
 
-  DIV = Div({
-    tagProps: {},
-    className: 'react-editor-image-wrapper',
-    key: createRandomNumber(),
-    children: [IMG, FIGCAPTION]
-  });
+  if(direction === 'left') {
+    if(activeIndex === 0) {
+      images[images.length-1].show = true;
+    } else {
+      images[activeIndex-1].show = true;
+    }
+  } else {
+    if(activeIndex === images.length-1) {
+      images[0].show = true;
+    } else {
+      images[activeIndex+1].show = true;
+    }
+  }
 
-  FIGURE = Figure({
-    tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)), 'data-type': 'image' },
-    className: 'react-editor-figure',
-    key: createRandomNumber(), 
-    children: [DIV]
-  });
-
-  return FIGURE;
+  component.images = images;
+  dom.splice(storeIndex, 1, component);
+  return dom;
 }
 
-function deleteImagesFromCarousel(dom, map, position) {
-  let carousel = dom[position];
-  let inner = carousel.props.children[0];
+// function addImagesToCarousel(dom, map, position) {
+//   let carousel = dom[position];
+//   let inner = carousel.props.children[0];
+//   let images = _.map(map, function(image) {
+//     return createImage(image.url, image.width);
+//   });
+
+//   /** Remove the class 'show' from current shown */
+//   let newChildren = _.map(inner.props.children, function(figure) {
+//     if(figure && figure.props.className.split(' ').indexOf('show') === 1) {
+//       return React.cloneElement(figure, {className: 'react-editor-figure'});
+//     } else {
+//       return React.cloneElement(figure);
+//     }
+//    });
+
+//   images[images.length-1] = React.cloneElement(images[images.length-1], {className: 'react-editor-figure show'});
+//   newChildren.push(...images);
+//   inner = React.cloneElement(inner, {}, [...newChildren]);
+//   carousel = React.cloneElement(carousel, {}, [inner]);
+
+//   dom.splice(position, 1, carousel);
+//   return dom;
+// }
+
+// function createImage(imgSrc, imgWidth) {
+//   let Figure = mapToComponent['figure'];
+//   let Img = mapToComponent['img'];
+//   let Div = mapToComponent['div'];
+//   let FigCaption = mapToComponent['figcaption'];
+//   let FIGURE, IMG, FIGCAPTION, DIV;
+
+//   FIGCAPTION = FigCaption({
+//     tagProps: {},
+//     style: { width: imgWidth },
+//     className: 'react-editor-figcaption',
+//     key: createRandomNumber(), 
+//     children: ['caption (optional)']
+//   });
+  
+//   IMG = Img({
+//     tagProps: { src: imgSrc, 'data-src': '', alt: ''},
+//     style: { width: imgWidth },
+//     className: 'react-editor-image', 
+//     key: createRandomNumber(), 
+//     children: []
+//   });
+
+//   DIV = Div({
+//     tagProps: {},
+//     className: 'react-editor-image-wrapper',
+//     key: createRandomNumber(),
+//     children: [IMG, FIGCAPTION]
+//   });
+
+//   FIGURE = Figure({
+//     tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)), 'data-type': 'image' },
+//     className: 'react-editor-figure',
+//     key: createRandomNumber(), 
+//     children: [DIV]
+//   });
+
+//   return FIGURE;
+// }
+
+function deleteImagesFromCarousel(dom, map, position, storeIndex) {
+  let component = dom[storeIndex];
+  let images = component.images;
   let replaceShownImage = false;
-  let newChildren, indexOfShown;
+  let newImages, indexOfShown;
 
   if(map.length < 1) {
-    newChildren = _.filter(inner.props.children, function(figure, index) {
-      if(figure.props.className.split(' ').indexOf('show') === 1) {
+    /** If we're deleting one image, its the one shown. 
+      * Else we look for it.
+    */
+    newImages = _.filter(images, (image, index) => {
+      if(image.show) {
         replaceShownImage = true;
         indexOfShown = index;
         return false;
@@ -858,9 +1022,9 @@ function deleteImagesFromCarousel(dom, map, position) {
       }
     });
   } else {
-    newChildren = _.filter(inner.props.children, function(figure, index) {
-      if(_.includes(map, figure)) {
-        if(figure.props.className.split(' ').indexOf('show') === 1) {
+    newImages = _.filter(images, (image, index) => {
+      if(_.includes(map, image)) {
+        if(image.show) {
           replaceShownImage = true;
           indexOfShown = index;
         }
@@ -872,60 +1036,138 @@ function deleteImagesFromCarousel(dom, map, position) {
   }
 
   /** If user is deleting all the images, delete the carousel while we're at it and be done with it. */
-  if(newChildren.length < 1) {
-    return removeBlockElement(dom, position);
+  if(newImages.length < 1) {
+    let P = mapToComponent['p'];
+    let CE = {
+      type: 'CE',
+      json: [],
+      hash: component.hash
+    };
+    let p = P({ tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) }, 
+                style: {}, 
+                className: '', 
+                key: createRandomNumber(), 
+                children: [''] 
+              });
+    CE.json.push(p);
+    dom.splice(storeIndex, 1, CE);
+    return dom;
   }
 
   if(replaceShownImage) {
     indexOfShown = (indexOfShown - 1) < 0 ? 0 : (indexOfShown-1);
-    newChildren[indexOfShown] = React.cloneElement(newChildren[indexOfShown], {className: 'react-editor-figure show'});
+    newImages[indexOfShown].show = true;
   }
 
-  inner = React.cloneElement(inner, {}, newChildren);
-  carousel = React.cloneElement(carousel, {}, [inner]);
-
-  dom.splice(position, 1, carousel);
+  component.images = newImages;
+  dom.splice(storeIndex, 1, component);
   return dom;
 }
 
-function handleVideo(dom, data, position) {
-  let elToReplace = dom[position] || {props: {tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) }}};
-  let Video = mapToComponent['video'];
-  let Div = mapToComponent['div'];
-  let FIGURE = createImage(data.url, data.width);
-  let INNERVIDEO, VIDEO, VIDEOMASK;
+function _mergeAdjacentCE(dom) {
+  let newDom = [];
 
-  VIDEOMASK = Div({
-    tagProps: {},
-    style: {},
-    className: 'video-mask fa fa-youtube-play',
-    key: createRandomNumber(),
-    children: []
+  dom.forEach((component, index) => {
+    if(index > 0 && dom[index-1].type === 'CE' && component.type === 'CE') {
+      newDom[newDom.length-1].json.push(...component.json);
+    } else {
+      newDom.push(component);
+    }
   });
 
-  INNERVIDEO = Div({
-    tagProps: {},
-    style: {},
-    className: 'react-editor-video-inner',
-    key: createRandomNumber(),
-    children: [VIDEOMASK, FIGURE]
-  });
+  return newDom;
+}
 
-  VIDEO = Video({
-    tagProps: { hash: elToReplace.props.tagProps.hash, 'data-video-id': data.id },
-    className: 'react-editor-video',
-    key: createRandomNumber(),
-    children: [INNERVIDEO]
-  });
-
-  dom.splice(position, 1, VIDEO);
-
-  if(position === dom.length-1) {
-    dom = appendParagraph(dom);
-  }
-
+function deleteComponent(dom, storeIndex) {
+  dom.splice(storeIndex, 1);
   return dom;
 }
+
+// function deleteImagesFromCarousel(dom, map, position, storeIndex) {
+//   let carousel = dom[position];
+//   let inner = carousel.props.children[0];
+//   let replaceShownImage = false;
+//   let newChildren, indexOfShown;
+
+//   if(map.length < 1) {
+//     newChildren = _.filter(inner.props.children, function(figure, index) {
+//       if(figure.props.className.split(' ').indexOf('show') === 1) {
+//         replaceShownImage = true;
+//         indexOfShown = index;
+//         return false;
+//       } else {
+//         return true;
+//       }
+//     });
+//   } else {
+//     newChildren = _.filter(inner.props.children, function(figure, index) {
+//       if(_.includes(map, figure)) {
+//         if(figure.props.className.split(' ').indexOf('show') === 1) {
+//           replaceShownImage = true;
+//           indexOfShown = index;
+//         }
+//         return false;
+//       } else {
+//         return true;
+//       }
+//     });
+//   }
+
+//   /** If user is deleting all the images, delete the carousel while we're at it and be done with it. */
+//   if(newChildren.length < 1) {
+//     return _removeBlockElement(dom, position);
+//   }
+
+//   if(replaceShownImage) {
+//     indexOfShown = (indexOfShown - 1) < 0 ? 0 : (indexOfShown-1);
+//     newChildren[indexOfShown] = React.cloneElement(newChildren[indexOfShown], {className: 'react-editor-figure show'});
+//   }
+
+//   inner = React.cloneElement(inner, {}, newChildren);
+//   carousel = React.cloneElement(carousel, {}, [inner]);
+
+//   dom.splice(position, 1, carousel);
+//   return dom;
+// }
+
+// function handleVideo(dom, data, position) {
+//   let elToReplace = dom[position] || {props: {tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) }}};
+//   let Video = mapToComponent['video'];
+//   let Div = mapToComponent['div'];
+//   let FIGURE = createImage(data.url, data.width);
+//   let INNERVIDEO, VIDEO, VIDEOMASK;
+
+//   VIDEOMASK = Div({
+//     tagProps: {},
+//     style: {},
+//     className: 'video-mask fa fa-youtube-play',
+//     key: createRandomNumber(),
+//     children: []
+//   });
+
+//   INNERVIDEO = Div({
+//     tagProps: {},
+//     style: {},
+//     className: 'react-editor-video-inner',
+//     key: createRandomNumber(),
+//     children: [VIDEOMASK, FIGURE]
+//   });
+
+//   VIDEO = Video({
+//     tagProps: { hash: elToReplace.props.tagProps.hash, 'data-video-id': data.id },
+//     className: 'react-editor-video',
+//     key: createRandomNumber(),
+//     children: [INNERVIDEO]
+//   });
+
+//   dom.splice(position, 1, VIDEO);
+
+//   if(position === dom.length-1) {
+//     dom = appendParagraph(dom);
+//   }
+
+//   return dom;
+// }
 
 function appendParagraph(dom) {
   let P = mapToComponent['p'];
@@ -935,12 +1177,17 @@ function appendParagraph(dom) {
   return dom;
 }
 
-function createPlaceholderElement(dom, msg, position) {
+function createPlaceholderElement(dom, msg, position, storeIndex) {
+  let component = dom[storeIndex];
+  let json = component.json;
+
   let P = mapToComponent['p'];
   let tagProps = { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) };
   let el = P({ key: createRandomNumber(), tagProps, className: 'react-editor-placeholder-text', children: [msg] });
 
-  dom.splice(position, 1, el);
+  json.splice(position, 1, el);
+  component.json = json;
+  dom.splice(storeIndex, 1, component);
   return dom;
 }
 
@@ -982,15 +1229,23 @@ function camelCaseStyleProp(prop) {
   return arr.join('');
 }
 
+function updateComponentAtIndex(dom, json, index, depth) {
+  let component = dom[index];
+  let row = component.json[depth];
+
+  row.props.children = createArrayOfComponents(json);
+  component.json[depth] = row;
+
+  // component.json = createArrayOfComponents(json);
+
+  dom.splice(index, 1, component);
+  return dom;
+}
+
 function createArrayOfComponents(dom) {
   return (function recurse(source, lastHash) {
     lastHash = lastHash || null;
     return source.map(function(item, index) {
-      
-      /** Safety Check */
-      if(item === undefined || item.tag === 'br') {
-        return null;
-      }
 
       let tagProps = { tag: item.tag }, style = {}, hash, props, el;
       let tagPropsMap = {
@@ -1040,7 +1295,7 @@ function createArrayOfComponents(dom) {
         props = Object.assign({}, { key: createRandomNumber() }, { className: item.attribs.class }, { style: style }, { tagProps: tagProps }, { children: children });
         return el(props);
       }
-    });
+    }).filter(item => { return item !== null || item !== undefined; });
   }(dom));
 }
 

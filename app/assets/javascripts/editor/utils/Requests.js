@@ -7,23 +7,23 @@ export default {
   getStory(projectId, csrfToken) {
     return new Promise((resolve, reject) => {
       request(`/api/v1/projects/${projectId}/description`)
-      .set('X-CSRF-Token', csrfToken)
-      .query({ id: projectId })
-      .end((err, res) => {
-        if(err) reject(err);
+        .set('X-CSRF-Token', csrfToken)
+        .query({ id: projectId })
+        .end((err, res) => {
+          if(err) reject(err);
 
-        if(res.body.description !== null && res.body.story === null) {
-          let parsedHtml = Utils.parseDescription(res.body.description);
+          if(res.body.description !== null && res.body.story === null) {
+            let parsedHtml = Utils.parseDescription(res.body.description, projectId, csrfToken);
 
-          parsedHtml.then(parsed => {
-            resolve(parsed);
-          }).catch(err => {
-            reject(err);
-          });
+            parsedHtml.then(parsed => {
+              resolve(parsed);
+            }).catch(err => {
+              reject(err);
+            });
 
-        } else {
-          resolve(res.body.story);
-        }
+          } else {
+            resolve(res.body.story);
+          }
       });
     });
   },
@@ -36,7 +36,7 @@ export default {
         .send({ videoData: videoData })
         .end((err, res) => {
           if(err) reject(err);
-          let image = res.body.poster;
+          let image = res.body ? res.body.poster : null;
 
           if(image === null) {
             // TODO: Handle err;
@@ -44,7 +44,7 @@ export default {
           }
 
           ImageUitls.handleImageResize(image, function(imageData) {
-            resolve(Object.assign({}, imageData, videoData)); 
+            resolve([Object.assign({}, imageData, videoData)]); 
           });
 
         });

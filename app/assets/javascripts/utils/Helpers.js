@@ -57,7 +57,10 @@ module.exports = {
   },
 
   getVideoData(url) {
-    let service = url.match(/(youtube|vimeo|vine)/)[0];
+    url = url.replace(/youtu\.be/, 'youtube');
+    console.log('FUCK', url, url.match(/(youtube|vimeo|vine)/));
+    let type = url.match(/(youtube|vimeo|vine)/);
+    let service = type !== null ? type[0] : null;
 
     if(!service) { return null; }
 
@@ -65,17 +68,20 @@ module.exports = {
       'vimeo': {
         regexp: /^.*(vimeo\.com\/)((channels\/[A-z]+\/)|(groups\/[A-z]+\/videos\/))?([0-9]+)/,
         requestLink: id => `https://vimeo.com/api/v2/video/${id}.json`,
+        embed: id => `https://player.vimeo.com/video/${id}`,
         index: 5
       },
       'vine': {
         regexp: /^http(?:s?):\/\/(?:www\.)?vine\.co\/v\/([a-zA-Z0-9]{1,13})$/,
         requestLink: id => `https://vine.co/oembed.json?id=${id}`,
+        embed: id => `https://vine.co/v/${id}/embed/simple\\`,
         index: 1
       },
       'youtube': {
-        regexp: /(?:youtube\.com|youtu\.be)\/(?:watch\?v=|v\/|embed\/)?([a-zA-Z0-9\-_]+)/,
+        regexp: /^.*(youtu.be\/|v\/|e\/|u\/\w+\/|embed\/|v=)([^#\&\?]*).*/,
         requestLink: id => `https://img.youtube.com/vi/${id}/0.jpg`,
-        index: 1
+        embed: id => `https://www.youtube.com/embed/${id}`,
+        index: 2
       }
     };
 
@@ -84,10 +90,12 @@ module.exports = {
 
     if(match && match.length) {
       let id = match[obj.index],
-          link = obj.requestLink(id);
+          link = obj.requestLink(id),
+          embed = obj.embed(id);
 
-      return { id: id, link: link, service: service };
+      return { id: id, link: link, embed: embed, service: service };
     } else {
+      // TODO: Handle Error!
       return null;
     }
   },

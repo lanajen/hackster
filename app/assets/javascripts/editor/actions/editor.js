@@ -1,10 +1,12 @@
 import { Editor } from '../constants/ActionTypes';
 import Request from '../utils/Requests';
 
-export function setDOM(dom) {
+export function setDOM(html, index, depth) {
   return {
     type: Editor.setDOM,
-    dom: dom
+    index: index,
+    html: html,
+    depth: depth
   };
 }
 
@@ -16,7 +18,6 @@ export function setInitialDOM(json) {
 }
 
 export function fetchInitialDOM(projectId, csrfToken) {
-
   return function (dispatch) {
     return Request.getStory(projectId, csrfToken)
       .then(result => {
@@ -28,6 +29,13 @@ export function fetchInitialDOM(projectId, csrfToken) {
   }
 }
 
+export function setCurrentStoreIndex(storeIndex) {
+  return {
+    type: Editor.setCurrentStoreIndex,
+    storeIndex: storeIndex
+  };
+}
+
 export function setProjectData(projectId, csrfToken) {
   return {
     type: Editor.setProjectData,
@@ -36,39 +44,32 @@ export function setProjectData(projectId, csrfToken) {
   };
 }
 
-export function createBlockElement(tag, position, setCursorToNextLine) {
+export function createBlockElement(tag, position, setCursorToNextLine, storeIndex) {
   return {
     type: Editor.createBlockElement,
     tag: tag,
     position: position,
-    setCursorToNextLine: setCursorToNextLine
+    setCursorToNextLine: setCursorToNextLine,
+    storeIndex: storeIndex
   };
 }
 
-export function createBlockElementWithChildren(tag, position, offset, hash) {
-  return {
-    type: Editor.createBlockElementWithChildren,
-    tag: tag,
-    position: position,
-    offset: offset,
-    hash: hash
-  };
-}
-
-export function transformBlockElement(tag, position, cleanChildren) {
+export function transformBlockElement(tag, position, cleanChildren, storeIndex) {
   return {
     type: Editor.transformBlockElement,
     tag: tag,
     position: position,
-    cleanChildren: cleanChildren
+    cleanChildren: cleanChildren,
+    storeIndex: storeIndex
   };
 }
 
-export function transformBlockElements(tag, elements) {
+export function transformBlockElements(tag, elements, storeIndex) {
   return {
     type: Editor.transformBlockElements,
     tag: tag,
-    elements: elements
+    elements: elements,
+    storeIndex: storeIndex
   };
 }
 
@@ -80,10 +81,11 @@ export function cleanElement(depth, childDepth) {
   };
 }
 
-export function removeBlockElements(map) {
+export function removeBlockElements(map, storeIndex) {
   return {
     type: Editor.removeBlockElements,
-    map: map
+    map: map,
+    storeIndex: storeIndex
   };
 }
 
@@ -96,11 +98,12 @@ export function wrapOrUnwrapBlockElement(tag, depth, shouldWrap) {
   };
 }
 
-export function removeListItemFromList(parentPos, childPos) {
+export function removeListItemFromList(parentPos, childPos, storeIndex) {
   return {
     type: Editor.removeListItemFromList,
     parentPos: parentPos,
-    childPos: childPos
+    childPos: childPos,
+    storeIndex: storeIndex
   };
 }
 
@@ -112,12 +115,29 @@ export function transformListItemsToBlockElements(tag, depth) {
   };
 }
 
-export function handleUnorderedList(toList, elements, parent) {
+export function prependCE(storeIndex) {
+  return {
+    type: Editor.prependCE,
+    storeIndex: storeIndex
+  };
+}
+
+export function setFigCaptionText(figureIndex, storeIndex, html) {
+  return {
+    type: Editor.setFigCaptionText,
+    figureIndex: figureIndex,
+    storeIndex: storeIndex,
+    html: html
+  };
+}
+
+export function handleUnorderedList(toList, elements, parent, storeIndex) {
   return {
     type: Editor.handleUnorderedList,
     toList: toList,
     elements: elements,
-    parent: parent
+    parent: parent,
+    storeIndex: storeIndex
   };
 }
 
@@ -143,14 +163,15 @@ export function forceUpdate(bool) {
   };
 }
 
-export function setCursorPosition(position, node, offset, anchorNode) {
+export function setCursorPosition(position, node, offset, anchorNode, rootHash) {
   // console.log('Cursor ACTION: ', position, node, offset, anchorNode);
   return {
     type: Editor.setCursorPosition,
     position: position,
     node: node,
     offset: offset,
-    anchorNode: anchorNode
+    anchorNode: anchorNode,
+    rootHash: rootHash
   };
 }
 
@@ -183,42 +204,54 @@ export function updateImageToolbarData(data) {
   };
 }
 
-export function createCarousel(map, depth) {
+export function createMediaByType(map, depth, storeIndex, mediaType) {
   return {
-    type: Editor.createCarousel,
+    type: Editor.createMediaByType,
     map: map,
-    depth: depth
+    depth: depth,
+    storeIndex: storeIndex,
+    mediaType: mediaType
   };
 }
 
-export function addImagesToCarousel(map, depth) {
+export function addImagesToCarousel(map, storeIndex) {
   return {
     type: Editor.addImagesToCarousel,
     map: map,
-    depth: depth
+    storeIndex: storeIndex
   };
 }
 
-export function deleteImagesFromCarousel(map, depth) {
+export function deleteImagesFromCarousel(map, depth, storeIndex) {
   return {
     type: Editor.deleteImagesFromCarousel,
     map: map,
-    depth: depth
+    depth: depth,
+    storeIndex: storeIndex
   };
 }
 
-export function handleVideo(data, depth) {
+export function updateShownImage(activeIndex, storeIndex, direction) {
   return {
-    type: Editor.handleVideo,
-    data: data,
-    depth: depth
+    type: Editor.updateShownImage,
+    activeIndex: activeIndex,
+    storeIndex: storeIndex,
+    direction: direction
   };
 }
 
-export function createPlaceholderElement(msg, depth) {
+export function deleteComponent(storeIndex) {
+  return {
+    type: Editor.deleteComponent,
+    storeIndex: storeIndex
+  };
+}
+
+export function createPlaceholderElement(msg, depth, storeIndex) {
   return {
     type: Editor.createPlaceholderElement,
     msg: msg,
-    depth: depth
+    depth: depth,
+    storeIndex: storeIndex
   };
 }

@@ -6,8 +6,7 @@ import validator from 'validator';
 import rangy from 'rangy';
 import Utils from '../utils/DOMUtils';
 import ImageUtils from '../../utils/Images';
-import { isImageValid, createRandomNumber } from '../../utils/Helpers';
-
+import Helpers from '../../utils/Helpers';
 
 const Toolbar = React.createClass({
 
@@ -55,6 +54,13 @@ const Toolbar = React.createClass({
     valueArg = valueArg || null;
     if(document) {
       document.execCommand(tagType, false, valueArg);
+      
+      let { sel, anchorNode, parentNode } = Utils.getSelectionData();
+
+      if(sel !== null) {
+        let list = Utils.createListOfActiveElements(anchorNode, parentNode);
+        this.props.actions.toggleActiveButtons(list);
+      }
     }
   },
 
@@ -85,11 +91,11 @@ const Toolbar = React.createClass({
         console.log('throw err');
         return;
       } else {
-        this.props.actions.transformBlockElements(tagType, arrayOfNodes);
+        this.props.actions.transformBlockElements(tagType, arrayOfNodes, this.props.editor.currentStoreIndex);
         this.props.actions.forceUpdate(true);
       }
     } else {
-      this.props.actions.transformBlockElement(tagType, depth);
+      this.props.actions.transformBlockElement(tagType, depth, false, this.props.editor.currentStoreIndex);
       this.props.actions.forceUpdate(true);
     }
   },
@@ -131,27 +137,28 @@ const Toolbar = React.createClass({
             if(obj.hasOwnProperty(i)) {
               let ul = obj[i];
               elements = Utils.getListItemPositions(ul.start, ul.end, ul.node);
-              this.props.actions.handleUnorderedList(false, elements, { depth: parseInt(i), hash: ul.hash });
+              this.props.actions.handleUnorderedList(false, elements, { depth: parseInt(i), hash: ul.hash }, this.props.editor.currentStoreIndex);
             }
           }
         } else {
           elements = Utils.getListItemPositions(range.startContainer, range.endContainer, parentNode);
-          this.props.actions.handleUnorderedList(false, elements, { depth: Utils.findChildsDepthLevel(parentNode, parentNode.parentNode), hash: null });
+          this.props.actions.handleUnorderedList(false, elements, { depth: Utils.findChildsDepthLevel(parentNode, parentNode.parentNode), hash: null }, this.props.editor.currentStoreIndex);
         }
 
       } else if(range.startContainer.nodeType === 1 && range.startContainer === parentNode) { // Cursor is before single element.
         elements = [Utils.findChildsDepthLevel(sel.anchorNode, parentNode)];
-        this.props.actions.handleUnorderedList(false, elements, { depth: Utils.findChildsDepthLevel(parentNode, parentNode.parentNode), hash: null });
+        console.log('ALSO CHECK THIS', elements);
+        this.props.actions.handleUnorderedList(false, elements, { depth: Utils.findChildsDepthLevel(parentNode, parentNode.parentNode), hash: null }, this.props.editor.currentStoreIndex);
       } else {
         return;
       }
     } else {  // Build UL.
       if(startContainerParent === endContainerParent) { // One block element is selected.
         elements = [{ depth: Utils.findChildsDepthLevel(startContainerParent, startContainerParent.parentNode) }];
-        this.props.actions.handleUnorderedList(true, elements, { depth: null, hash: null, previousLength: null });
+        console.log('HIT', this.props.editor.currentStoreIndex);
+        this.props.actions.handleUnorderedList(true, elements, { depth: null, hash: null, previousLength: null }, this.props.editor.currentStoreIndex);
       } else {  // Multiple blocks are selected.
         let listGroups = Utils.createULGroups(startContainerParent, endContainerParent, parentNode.parentNode);
-
         listGroups.forEach((group, index) => {
           let previousLength = null;
           /** 
@@ -162,7 +169,7 @@ const Toolbar = React.createClass({
             previousLength = listGroups[index-1].length;
           }
           elements = Utils.createArrayOfDOMNodes(group[0], group[group.length-1], parentNode.parentNode);
-          this.props.actions.handleUnorderedList(true, elements, { depth: null, hash: null, previousLength: previousLength});
+          this.props.actions.handleUnorderedList(true, elements, { depth: null, hash: null, previousLength: previousLength}, this.props.editor.currentStoreIndex);
         });
 
       }
@@ -172,21 +179,26 @@ const Toolbar = React.createClass({
   },
 
   handleLinkClick() {
-    let sel = rangy.getSelection();
-    let range = sel.getRangeAt(0);
+    let { sel, range, anchorNode, parentNode } = Utils.getSelectionData();
 
-    if(range.startOffset !== range.endOffset) {
-      if(Utils.isSelectionInAnchor(sel.anchorNode)) {
-        this.handleExecCommand('unlink', 'p');
-      } else {
-        let props = {
-          node: sel.anchorNode,
-          range: range,
-          text: sel.toString(),
-          version: 'init',
-          href: ''
-        };
-        this.props.actions.showPopOver(true, props);
+    if(sel !== null) {
+      let list = Utils.createListOfActiveElements(anchorNode, parentNode);
+      this.props.actions.toggleActiveButtons(list);
+
+      if(range.startOffset !== range.endOffset) {
+        if(Utils.isSelectionInAnchor(sel.anchorNode)) {
+          this.handleExecCommand('unlink', 'p');
+        } else {
+          let props = {
+            node: anchorNode,
+            parentNode: parentNode,
+            range: range,
+            text: sel.toString(),
+            version: 'init',
+            href: ''
+          };
+          this.props.actions.showPopOver(true, props);
+        }
       }
     }
 
@@ -206,6 +218,7 @@ const Toolbar = React.createClass({
         sel.addRange(range);
         sel.collapseToEnd();
       } else {
+        // TODO: HANDLE ERROR.
         console.log('NOT A VALID URL');
       }
     }
@@ -224,7 +237,7 @@ const Toolbar = React.createClass({
       version: 'change',
       href: oldProps.href
     };
-    setTimeout(function() { this.props.actions.showPopOver(true, props); }.bind(this), 50);
+    setTimeout(() => { this.props.actions.showPopOver(true, props); }, 50);
   },
 
   handlePopOverInputChange(href, text, node, range) {
@@ -261,7 +274,7 @@ const Toolbar = React.createClass({
 
     files = Array.prototype.slice.call(files);
     filteredFiles = _.filter(files, function(file) {
-      if(isImageValid(file.type)) {
+      if(Helpers.isImageValid(file.type)) {
         return file;
       } else {
         return false;
@@ -269,7 +282,7 @@ const Toolbar = React.createClass({
     });
 
     ImageUtils.handleImagesAsync(files, function(map) {
-      this.props.actions.createCarousel(map, depth);
+      this.props.actions.createMediaByType(map, depth, this.props.editor.currentStoreIndex, 'Carousel');
       this.props.actions.forceUpdate(true);
     }.bind(this));
 
@@ -277,12 +290,17 @@ const Toolbar = React.createClass({
   },
 
   handleVideoButtonClick() {
-    let { parentNode, depth } = Utils.getSelectionData();
-    this.props.actions.createPlaceholderElement('Paste a link to Youtube, Vimeo or Vine and press Enter', depth);
+    let { depth } = Utils.getSelectionData();
+    this.props.actions.createPlaceholderElement('Paste a link to Youtube, Vimeo or Vine and press Enter', depth, this.props.editor.currentStoreIndex);
     this.props.actions.forceUpdate(true);
   },
 
   render: function() {
+    // console.log('TOOLBAR', this.state.showPopOver);
+    // if(this.props.hashLocation !== '#story') {
+    //   return null;
+    // }
+  
     let linkPopOver = this.props.toolbar.showPopOver ? (
       <PopOver ref="popOver" popOverProps={this.props.toolbar.popOverProps} editor={this.props.editor} onLinkInput={this.handleLinkInput} unMountPopOver={this.unMountPopOver} onVersionChange={this.handlePopOverChange} onInputChange={this.handlePopOverInputChange} removeAnchorTag={this.handleAnchorTagRemoval}/>
     ) : null;
@@ -299,7 +317,7 @@ const Toolbar = React.createClass({
     ];
 
     let Buttons = buttonList.map(button => {
-      return <Button key={createRandomNumber()} classList={button.classList} tagType={button.tagType} icon={button.icon} activeButtons={this.props.toolbar.activeButtons} onClick={button.onClick} />;
+      return <Button key={Helpers.createRandomNumber()} classList={button.classList} tagType={button.tagType} icon={button.icon} activeButtons={this.props.toolbar.activeButtons} onClick={button.onClick} />;
     });
     
 

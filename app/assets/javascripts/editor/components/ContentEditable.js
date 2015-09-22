@@ -13,7 +13,7 @@ const hashids = new Hashids('hackster', 4);
 const ContentEditable = React.createClass({
 
   componentWillMount() {
-    this.debouncedEmitChange = _.debounce(this.emitChange, 30);
+    this.debouncedEmitChange = _.debounce(this.emitChange, 50);
   },
 
   componentDidMount() {
@@ -26,9 +26,9 @@ const ContentEditable = React.createClass({
     if(this.props.editor.cursorPosition.node === null) {
       let firstChild = React.findDOMNode(this).firstChild;
       if(firstChild) {
-        Utils.setCursorByNode(firstChild);
-        this.props.actions.setCursorPosition(0, firstChild, 0, firstChild);
-      }
+        Utils.setCursorByNode(Utils.getLastTextNode(firstChild));
+        this.props.actions.setCursorPosition(0, firstChild, 0, firstChild, React.findDOMNode(this).getAttribute('data-hash'));
+      } 
     } else {
       this.setCursorOnUpdate();
     }
@@ -44,6 +44,8 @@ const ContentEditable = React.createClass({
       this.forceUpdate(function() {
         this.props.actions.forceUpdate(false);
       }.bind(this));
+    } else if(nextProps.editor.forceUpdate === true && this.props.editor.forceUpdate === true) {
+      this.props.actions.forceUpdate(false);
     }
   },
 
@@ -56,8 +58,10 @@ const ContentEditable = React.createClass({
   },
 
   setCursorOnUpdate() {
-    let rootNode = React.findDOMNode(this);
     let cursorPosition = this.props.editor.cursorPosition;
+    if(cursorPosition.rootHash !== React.findDOMNode(this).getAttribute('data-hash')) { return; }
+
+    let rootNode = Utils.findBlockNodeByHash(cursorPosition.rootHash, Utils.getParentOfCE(React.findDOMNode(this)));
     let node = cursorPosition.node || rootNode.children[cursorPosition.pos];
     if(!node) { return; }
     let nodeByHash = Utils.findBlockNodeByHash(node.getAttribute('data-hash'), rootNode, cursorPosition.pos);
@@ -70,11 +74,12 @@ const ContentEditable = React.createClass({
 
     let { sel, range } = Utils.getSelectionData();
     let offset = this.props.editor.setCursorToNextLine ? 0 : cursorPosition.offset;
-    let textNode = el.nodeName === 'DIV' && el.classList.contains('react-editor-carousel')
-                 ? Utils.getTextNodeFromCarousel(el)
-                 : el.nodeName === 'DIV' && el.classList.contains('react-editor-video')
-                 ? Utils.getTextNodeFromVideo(el)
-                 : Utils.getFirstTextNode(el);
+    let textNode = Utils.getLastTextNode(el);
+    // let textNode = el.nodeName === 'DIV' && el.classList.contains('react-editor-carousel')
+    //              ? Utils.getTextNodeFromCarousel(el)
+    //              : el.nodeName === 'DIV' && el.classList.contains('react-editor-video')
+    //              ? Utils.getTextNodeFromVideo(el)
+    //              : Utils.getFirstTextNode(el);
 
     /** Makes sure its a text node. */
     if(textNode.nodeType !== 3 && textNode.nodeType === 1) {
@@ -88,13 +93,14 @@ const ContentEditable = React.createClass({
 
     range.setStart(textNode, offset);
 
-    if(textNode.parentNode.nodeName === 'FIGCAPTION') {
-      range.selectNodeContents(textNode);
-    }
+    // if(textNode.parentNode.nodeName === 'FIGCAPTION') {
+    //   range.selectNodeContents(textNode);
+    // }
 
     // console.log('Setting Cursor To: ', cursorPosition.node, ' @: ' + offset, el, this.props.editor.setCursorToNextLine);
 
     rangy.getSelection().setSingleRange(range);
+    this.props.actions.setCurrentStoreIndex(this.props.storeIndex);
     this.props.actions.setCursorToNextLine(false);
   },
 
@@ -109,13 +115,13 @@ const ContentEditable = React.createClass({
       'A': true
     };
 
-    this.props.actions.setCursorPosition(depth, parentNode, startOffset, anchorNode);
+    this.props.actions.setCursorPosition(depth, parentNode, startOffset, anchorNode, CE.getAttribute('data-hash'));
 
-    if(sel.rangeCount) {
+    if(sel && sel.rangeCount) {
       /** Makes sure there's always a P in CE. */
       if(CE.innerHTML.length < 1) {
         console.log('WTF HAPPEN!?', range, depth);
-        this.createBlockElement('p', 0, false);
+        this.createBlockElement('p', 0, false, this.props.storeIndex);
       }
 
       /** Cleans br tags in top level block elements. */
@@ -129,7 +135,7 @@ const ContentEditable = React.createClass({
 
       /** Cleans up UL tags. */
       if(e.keyCode === 8 && parentNode.nodeName === 'UL' && parentNode.childNodes.length < 1) {
-        this.props.actions.transformBlockElement('p', depth, true);
+        this.props.actions.transformBlockElement('p', depth, true, this.props.storeIndex);
         this.props.actions.forceUpdate(true);
       } else if(e.keyCode === 8 && range.startContainer.nodeName === 'LI' && range.startContainer.textContent.length < 1) {
         /** When a list item is being removed, this sets the cursor to the previous LI.  Saves us a forceUpdate render.*/
@@ -146,17 +152,17 @@ const ContentEditable = React.createClass({
         this.handlePopOver(false);
       }
       /** Handles Image Popover. */
-      if(parentNode.nodeName === 'DIV' && parentNode.classList.contains('react-editor-carousel') && range.startContainer.nodeName === 'DIV') {
-        let node = range.startContainer.firstChild;
-        this.props.actions.toggleImageToolbar(true, { node: parentNode, depth: depth, top: parentNode.offsetTop, height: node.offsetHeight, width: node.offsetWidth, left: node.offsetLeft, type: 'carousel' });
-      } else if(parentNode.nodeName === 'DIV' && parentNode.classList.contains('react-editor-video') && range.startContainer.nodeName === 'DIV') {
-        let node = range.startContainer.firstChild;
-        this.props.actions.toggleImageToolbar(true, { node: parentNode, depth: depth, top: parentNode.offsetTop, height: node.offsetHeight, width: node.offsetWidth, left: node.offsetLeft, type: 'video' });
-      } else {
-        if(this.props.editor.showImageToolbar === true) {
-          this.props.actions.toggleImageToolbar(false, {});
-        }
-      }
+      // if(parentNode.nodeName === 'DIV' && parentNode.classList.contains('react-editor-carousel') && range.startContainer.nodeName === 'DIV') {
+      //   let node = range.startContainer.firstChild;
+      //   this.props.actions.toggleImageToolbar(true, { node: parentNode, depth: depth, top: parentNode.offsetTop, height: node.offsetHeight, width: node.offsetWidth, left: node.offsetLeft, type: 'carousel' });
+      // } else if(parentNode.nodeName === 'DIV' && parentNode.classList.contains('react-editor-video') && range.startContainer.nodeName === 'DIV') {
+      //   let node = range.startContainer.firstChild;
+      //   this.props.actions.toggleImageToolbar(true, { node: parentNode, depth: depth, top: parentNode.offsetTop, height: node.offsetHeight, width: node.offsetWidth, left: node.offsetLeft, type: 'video' });
+      // } else {
+      //   if(this.props.editor.showImageToolbar === true) {
+      //     this.props.actions.toggleImageToolbar(false, {});
+      //   }
+      // }
       /** Handles Active Button Toggling. */
       if(anchorNode.parentNode && activeButtons[anchorNode.parentNode.nodeName]) {
         let list = Utils.createListOfActiveElements(anchorNode, parentNode);
@@ -166,11 +172,11 @@ const ContentEditable = React.createClass({
       }
 
       /** Resets Caption on backspace. */
-      if(anchorNode.nodeName === 'FIGCAPTION' && (e.keyCode === 8 || e.keyCode === 46)) {
-        anchorNode.innerText = 'caption (optional)';
-        range.selectNodeContents(anchorNode);
-        rangy.getSelection().setSingleRange(range);
-      }
+      // if(anchorNode.nodeName === 'FIGCAPTION' && (e.keyCode === 8 || e.keyCode === 46)) {
+      //   anchorNode.innerText = 'caption (optional)';
+      //   range.selectNodeContents(anchorNode);
+      //   rangy.getSelection().setSingleRange(range);
+      // }
     }
   },
 
@@ -200,12 +206,12 @@ const ContentEditable = React.createClass({
   },
 
   emitChange(){
-    let html = React.findDOMNode(this).innerHTML;
-    /** Last resort to make sure theres always an element in the dom. */
-    if(html.length < 1) {
-      html = '<p></p>';
-    }
-    this.props.onChange(html);
+    // let html = React.findDOMNode(this).innerHTML;
+
+    let { parentNode, depth } = Utils.getSelectionData();
+    let html = parentNode.innerHTML;
+    
+    this.props.onChange(html, depth);
   },
 
   preventEvent(e) {
@@ -213,9 +219,9 @@ const ContentEditable = React.createClass({
     e.stopPropagation();
   },
 
-  createBlockElement(type, depth, setCursorToNextLine) {
+  createBlockElement(type, depth, setCursorToNextLine, storeIndex) {
     let cursorPlacement = setCursorToNextLine === false ? false : true;
-    this.props.actions.createBlockElement(type, depth, cursorPlacement);
+    this.props.actions.createBlockElement(type, depth, cursorPlacement, storeIndex);
     this.props.actions.forceUpdate(true);
   },
 
@@ -227,10 +233,11 @@ const ContentEditable = React.createClass({
   },
 
   handleEnterKey(e) { 
-    let { sel, range, parentNode, startOffset, depth, anchorNode } = Utils.getSelectionData();
-    if(sel !== null) {
+    let { sel, range, parentNode, startOffset, depth, anchorNode } = Utils.getSelectionData(); 
+    if(sel.rangeCount) {
       let hasTextAfterCursor = false;
       let cursorOffset = startOffset;
+      let CE = React.findDOMNode(this);
       let hash;
 
       /** If theres text after the cursor. */
@@ -250,21 +257,14 @@ const ContentEditable = React.createClass({
             if(!videoData) { 
               // TODO: HANDLE VIDEO ERROR!
             } else {
-              let promise = Request.fetchImageAndTransform(videoData, this.props.editor.projectId, this.props.editor.csrfToken);
-
-              promise.then(imageData => {
-                this.props.actions.handleVideo(imageData, depth);
-                this.props.actions.forceUpdate(true);
-              }).catch(err => {
-                console.log('Video Err: ' + err);
-              });
+              this.props.actions.createMediaByType([videoData], depth, this.props.storeIndex, 'Video');
+              this.props.actions.forceUpdate(true);
             }
           } else if(hasTextAfterCursor) {
             this.delayedUpdate();
           } else {
             this.preventEvent(e);
-            this.createBlockElement('p', depth);
-            this.props.actions.forceUpdate(true);
+            this.createBlockElement('p', depth, true, this.props.storeIndex);
           }
           break;
 
@@ -273,7 +273,7 @@ const ContentEditable = React.createClass({
             this.delayedUpdate();
           } else {
             this.preventEvent(e);
-            this.createBlockElement('pre', depth, true);
+            this.createBlockElement('pre', depth, true, this.props.storeIndex);
           }
           break;
 
@@ -282,7 +282,7 @@ const ContentEditable = React.createClass({
             this.delayedUpdate();
           } else {
             this.preventEvent(e);
-            this.createBlockElement('p', depth, true);
+            this.createBlockElement('p', depth, true, this.props.storeIndex);
           }
           break;
 
@@ -290,8 +290,8 @@ const ContentEditable = React.createClass({
           if((anchorNode.nodeName === 'LI'|| Utils.getListItemFromTextNode(anchorNode).nodeName === 'LI') && anchorNode.textContent.length < 1) {
             this.preventEvent(e);
             let li = Utils.getListItemFromTextNode(anchorNode);
-            this.props.actions.removeListItemFromList(depth, Utils.getListItemPositions(li, li, li.parentNode)[0]);
-            this.createBlockElement('p', depth);
+            this.props.actions.removeListItemFromList(depth, Utils.getListItemPositions(li, li, li.parentNode)[0], this.props.storeIndex);
+            this.createBlockElement('p', depth, true, this.props.storeIndex);
           }
           break;
 
@@ -300,18 +300,18 @@ const ContentEditable = React.createClass({
             this.preventEvent(e);
 
             if(range.startContainer.nodeName === 'DIV') {
-              this.props.actions.setCursorPosition(depth+1, parentNode, startOffset, anchorNode);
-              this.createBlockElement('p', depth-1, false);
+              this.props.actions.setCursorPosition(depth+1, parentNode, startOffset, anchorNode, CE.getAttribute('data-hash'));
+              this.createBlockElement('p', depth-1, false, this.props.storeIndex);
             } else {
-              this.props.actions.setCursorPosition(depth, parentNode, startOffset, anchorNode);
-              this.createBlockElement('p', depth);
+              this.props.actions.setCursorPosition(depth, parentNode, startOffset, anchorNode, CE.getAttribute('data-hash'));
+              this.createBlockElement('p', depth, true, this.props.storeIndex);
             }
           }
           break;
 
         default:
           this.preventEvent(e);
-          this.createBlockElement('p', depth);
+          this.createBlockElement('p', depth, true, this.props.storeIndex);
           break;
       }
     }
@@ -319,122 +319,114 @@ const ContentEditable = React.createClass({
 
   handleBackspace(e) {
     let { sel, range, parentNode, depth, anchorNode } = Utils.getSelectionData();
-    if(sel === null) { return; }
     if(sel.rangeCount) {
 
       /** Maintains the first element as a P when user is deleting things. */
       if(depth === 0 && parentNode.textContent.length < 1 && React.findDOMNode(this).children.length < 2) {
-        if(range.startContainer.nodeName !== 'FIGCAPTION') {
-          this.preventEvent(e);
-        }
+        this.preventEvent(e);
       }
 
       /** Transorms a PRE or Blockquote to a P if its empty and the first element in CE. */
       if(depth === 0 && (parentNode.nodeName === 'PRE' || parentNode.nodeName === 'BLOCKQUOTE') && parentNode.textContent.length < 1) {
         this.preventEvent(e);
-        this.props.actions.transformBlockElement('p', depth);
+        this.props.actions.transformBlockElement('p', depth, false, this.props.storeIndex);
         this.props.actions.forceUpdate(true);
       }
 
       /** If user deleted the paragraph under a PRE, create a new one. */
       if(React.findDOMNode(this).lastChild.nodeName === 'PRE' && depth === React.findDOMNode(this).children.length) {
-        this.createBlockElement('p', depth, false);
+        this.createBlockElement('p', depth, false, this.props.storeIndex);
         this.props.actions.forceUpdate(true);
       }
-
-      /** Prevents a Carousel being split apart from a delete event.  Normal op would suck the img into the current paragraph. */
-      if(e.keyCode === 46 && parentNode.nextSibling && parentNode.nextSibling.nodeName === 'DIV' 
-         && (parentNode.nextSibling.classList.contains('react-editor-carousel') || parentNode.nextSibling.classList.contains('react-editor-video'))
-         && anchorNode.textContent.length === 0) {
-        this.preventEvent(e);
-        this.props.actions.removeBlockElements([{ depth: depth }]);
-        this.props.actions.toggleImageToolbar(false, {});
+      /** Remove CE unless its the first or last. */
+      if(depth === 0 && this.props.storeIndex !== this.props.editor.dom.length-1
+         && this.props.storeIndex !== 0 && React.findDOMNode(this).textContent.length < 1) {
+         this.props.actions.deleteComponent(this.props.storeIndex);
       }
     }
   },
 
   handleMediaPermissions(e) {
-    let { sel, range, anchorNode, parentNode, depth, startOffset } = Utils.getSelectionData();
-    if(sel === null) { return; }
-    if(sel.rangeCount) {
-      let prevSib = Utils.getBlockElementsPreviousSibling(parentNode, React.findDOMNode(this));
-      let arrowKeys = {
-        '37': true,
-        '38': true,
-        '39': true,
-        '40': true
-      };
+    // let { sel, range, anchorNode, parentNode, depth, startOffset } = Utils.getSelectionData();
+    // if(sel) {
+    //   let prevSib = Utils.getBlockElementsPreviousSibling(parentNode, React.findDOMNode(this));
+    //   let arrowKeys = {
+    //     '37': true,
+    //     '38': true,
+    //     '39': true,
+    //     '40': true
+    //   };
 
-      if(parentNode.nodeName === 'DIV' && parentNode.classList.contains('react-editor-carousel')
-         || parentNode.nodeName === 'DIV' && parentNode.classList.contains('react-editor-video')) {
+      // if(parentNode.nodeName === 'DIV' && parentNode.classList.contains('react-editor-carousel')
+      //    || parentNode.nodeName === 'DIV' && parentNode.classList.contains('react-editor-video')) {
 
         /** Prevents any editing to the image wrapper div. */
-        if(range.startContainer.nodeName === 'DIV' && (range.startContainer.classList.contains('react-editor-image-wrapper')
-          || range.startContainer.classList.contains('react-editor-video-inner'))
-          && !arrowKeys[e.keyCode.toString()]) {
-          this.preventEvent(e);
-        }
+        // if(range.startContainer.nodeName === 'DIV' && (range.startContainer.classList.contains('react-editor-image-wrapper')
+        //   || range.startContainer.classList.contains('react-editor-video-inner'))
+        //   && !arrowKeys[e.keyCode.toString()]) {
+        //   this.preventEvent(e);
+        // }
 
-        if(range.startContainer.nodeName === 'BUTTON' && range.startContainer.classList.contains('reit-controls-button')) {
-          this.preventEvent(e);
-          this.props.actions.setCursorPosition(depth, parentNode, startOffset, anchorNode);
-          this.props.actions.forceUpdate(true);
-        }
+        // if(range.startContainer.nodeName === 'BUTTON' && range.startContainer.classList.contains('reit-controls-button')) {
+        //   this.preventEvent(e);
+        //   this.props.actions.setCursorPosition(depth, parentNode, startOffset, anchorNode, React.findDOMNode(this).getAttribute('data-hash'));
+        //   this.props.actions.forceUpdate(true);
+        // }
 
-        if(anchorNode.nodeType === 3 && anchorNode.parentNode.nodeName === 'FIGCAPTION') {
-          range = rangy.getSelection().getRangeAt(0);
-          /** Prevents backspace on figcaption from moving it up. */
-          if(range.startOffset === 0 && range.endOffset === 0 && !arrowKeys[e.keyCode.toString()] && e.keyCode !== 32) {
-            this.preventEvent(e);
-          }
-          /** Resets figcaption. */
-          if(range.startContainer.textContent === 'caption (optional)' && e.keyCode !== 8 && !arrowKeys[e.keyCode.toString()]) {
-            range.selectNodeContents(anchorNode);
-            rangy.getSelection().setSingleRange(range);
-          }
-        }
+        // if(anchorNode.nodeType === 3 && anchorNode.parentNode.nodeName === 'FIGCAPTION') {
+        //   range = rangy.getSelection().getRangeAt(0);
+        //   /** Prevents backspace on figcaption from moving it up. */
+        //   if(range.startOffset === 0 && range.endOffset === 0 && !arrowKeys[e.keyCode.toString()] && e.keyCode !== 32) {
+        //     this.preventEvent(e);
+        //   }
+        //   /** Resets figcaption. */
+        //   if(range.startContainer.textContent === 'caption (optional)' && e.keyCode !== 8 && !arrowKeys[e.keyCode.toString()]) {
+        //     range.selectNodeContents(anchorNode);
+        //     rangy.getSelection().setSingleRange(range);
+        //   }
+        // }
 
         /** Prevents backspace when figcaption is empty. */
-        if(anchorNode.nodeName === 'FIGCAPTION' && (e.keyCode === 8 || e.keyCode === 46)) {
-          this.preventEvent(e);
-        }
-      }
-    }
+        // if(anchorNode.nodeName === 'FIGCAPTION' && (e.keyCode === 8 || e.keyCode === 46)) {
+        //   this.preventEvent(e);
+        // }
+    //   }
+    // }
   },
 
   handleCarouselNavigation(node) {
-    let carousel = Utils.getRootParentElement(node);
-    let depth = Utils.findChildsDepthLevel(carousel, carousel.parentNode);
-    let inner = carousel.firstChild;
-    let figures = inner.children;
-    let activeImage = _.find(figures, function(fig) {
-      return fig.classList.contains('show');
-    });
-    let activeIndex = _.findIndex(figures, function(fig) {
-      return fig.classList.contains('show');
-    });
+    // let carousel = Utils.getRootParentElement(node);
+    // let depth = Utils.findChildsDepthLevel(carousel, carousel.parentNode);
+    // let inner = carousel.firstChild;
+    // let figures = inner.children;
+    // let activeImage = _.find(figures, function(fig) {
+    //   return fig.classList.contains('show');
+    // });
+    // let activeIndex = _.findIndex(figures, function(fig) {
+    //   return fig.classList.contains('show');
+    // });
 
-    if(figures.length > 1) {
-      let left;
-      activeImage.classList.remove('show');
+    // if(figures.length > 1) {
+    //   let left;
+    //   activeImage.classList.remove('show');
 
-      if(node.classList.contains('left')) {
-        if(activeIndex === 0) {
-          figures[figures.length-1].classList.add('show');
-        } else {
-          figures[activeIndex-1].classList.add('show');
-        }
-      } else {
-        if(activeIndex === figures.length-1) {
-          figures[0].classList.add('show');
-        } else {
-          figures[activeIndex+1].classList.add('show');
-        }
-      }
-      this.props.actions.toggleImageToolbar(false, {});
-      this.props.actions.updateImageToolbarData({ parent: carousel, depth: depth, top: carousel.offsetTop });
-      this.props.actions.getLatestHTML(true);
-    }
+    //   if(node.classList.contains('left')) {
+    //     if(activeIndex === 0) {
+    //       figures[figures.length-1].classList.add('show');
+    //     } else {
+    //       figures[activeIndex-1].classList.add('show');
+    //     }
+    //   } else {
+    //     if(activeIndex === figures.length-1) {
+    //       figures[0].classList.add('show');
+    //     } else {
+    //       figures[activeIndex+1].classList.add('show');
+    //     }
+    //   }
+    //   this.props.actions.toggleImageToolbar(false, {});
+    //   this.props.actions.updateImageToolbarData({ parent: carousel, depth: depth, top: carousel.offsetTop });
+    //   this.props.actions.getLatestHTML(true);
+    // }
   },
 
   handleTab(e) {
@@ -450,12 +442,30 @@ const ContentEditable = React.createClass({
     }
   },
 
+  handleArrowKeys(e) {
+    let { depth } = Utils.getSelectionData();
+    let CE = React.findDOMNode(this);
+
+    /** Cursor is in a CE and moving up to a media element. */
+    if(e.keyCode === 38 && depth === 0 && this.props.storeIndex > 0) {
+      let Editable = Utils.getParentOfCE(CE);
+      let nodeToFocus = Editable.children[this.props.storeIndex-1];
+      nodeToFocus.focus();
+    }
+    /** Cursor is in a CE and moving down to a media element. */
+    if(e.keyCode === 40 && depth === CE.children.length-1 && this.props.storeIndex < this.props.editor.dom.length-1) {
+      let Editable = Utils.getParentOfCE(CE);
+      let nodeToFocus = Editable.children[this.props.storeIndex+1];
+      nodeToFocus.focus();
+    }
+  },
+
   onKeyDown(e) {
     /** If user deleted the paragraph under a PRE */
-    if(React.findDOMNode(this).lastChild.nodeName === 'PRE') {
+    if(React.findDOMNode(this).lastChild && React.findDOMNode(this).lastChild.nodeName === 'PRE') {
       let { depth } = Utils.getSelectionData();
       if(depth === null) { return; }
-      this.createBlockElement('p', depth, false);
+      this.createBlockElement('p', depth, false, this.props.storeIndex);
       this.props.actions.forceUpdate(true);
     }
     /** Removes any text with specified class.  Mimics a placeholder. */
@@ -463,6 +473,11 @@ const ContentEditable = React.createClass({
       let target = rangy.getSelection().anchorNode.parentNode;
       target.classList.remove('react-editor-placeholder-text');
       target.textContent = '';
+    }
+
+    /** Set current storeIndex */
+    if(this.props.editor.currentStoreIndex !== this.props.storeIndex) {
+      this.props.actions.setCurrentStoreIndex(this.props.storeIndex);
     }
 
     this.handleMediaPermissions(e);
@@ -478,6 +493,10 @@ const ContentEditable = React.createClass({
       case 9: // TAB
         this.handleTab(e);
         break;
+      case 38: // UP ARROW
+      case 40: // DOWN ARROW
+        this.handleArrowKeys(e);
+        break;
     default: 
       break;
     }
@@ -487,9 +506,6 @@ const ContentEditable = React.createClass({
     if(e.keyCode === undefined || e.type === 'mouseup') {
       this.preventEvent(e);
       let node = React.findDOMNode(e.target);
-
-      if(!rangy.getSelection().rangeCount) { return; }
-
       let { sel, range } = Utils.getSelectionData();
       if(sel === null) { return; }
       let caretRange = Utils.getMouseEventCaretRange(e);
@@ -510,9 +526,9 @@ const ContentEditable = React.createClass({
         parent = Utils.getRootParentElement(node), 
         depth = Utils.findChildsDepthLevel(parent, parent.parentNode);
 
-    if(node.nodeName === 'IMG' && parent.classList.contains('react-editor-carousel') && this.props.editor.showImageToolbar === false) {
-      this.props.actions.toggleImageToolbar(true, { node: parent, depth: depth , top: parent.offsetTop, height: node.offsetHeight, width: node.offsetWidth, left: node.offsetLeft, type: 'carousel' });
-    }
+    // if(node.nodeName === 'IMG' && parent.classList.contains('react-editor-carousel') && this.props.editor.showImageToolbar === false) {
+    //   this.props.actions.toggleImageToolbar(true, { node: parent, depth: depth , top: parent.offsetTop, height: node.offsetHeight, width: node.offsetWidth, left: node.offsetLeft, type: 'carousel' });
+    // }
 
     if(node.nodeName === 'IMG' && parent.classList.contains('react-editor-video') && this.props.editor.showImageToolbar === false) {
       this.props.actions.toggleImageToolbar(true, { node: parent, depth: depth , top: parent.offsetTop, height: node.offsetHeight, width: node.offsetWidth, left: node.offsetLeft, type: 'video' });
@@ -523,13 +539,18 @@ const ContentEditable = React.createClass({
     this.preventEvent(e);
     let node = React.findDOMNode(e.target);
     let { sel, depth, parentNode, startOffset, anchorNode } = Utils.getSelectionData();
+
     if(sel === null) { return; }
 
-    this.props.actions.setCursorPosition(depth, parentNode, startOffset, anchorNode);
+    this.props.actions.setCursorPosition(depth, parentNode, startOffset, anchorNode, React.findDOMNode(this).getAttribute('data-hash'));
 
-    if(node.nodeName === 'BUTTON' && node.classList && node.classList.contains('reit-controls-button')) {
-      this.handleCarouselNavigation(node);
+    /** Set current storeIndex */
+    if(this.props.editor.currentStoreIndex !== this.props.storeIndex) {
+      this.props.actions.setCurrentStoreIndex(this.props.storeIndex);
     }
+
+    /** Removes a pesky image overlay. */
+    this.props.actions.toggleImageToolbar(false, {});
   },
 
   handlePaste(e) {
@@ -583,7 +604,8 @@ const ContentEditable = React.createClass({
     return (
       <div
         ref="contentEditable"
-        className="no-outline-focus content-editable"
+        data-hash={this.props.hash}
+        className="no-outline-focus content-editable" 
         style={this.props.style || null}
         onInput={this.onInput}
         onKeyDown={this.onKeyDown}

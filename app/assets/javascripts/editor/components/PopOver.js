@@ -75,7 +75,8 @@ const PopOver = React.createClass({
   render: function() {
     let popOverProps = this.props.popOverProps;
     let positions = this.getPositions(popOverProps.node.parentNode);
-    let CP = popOverProps.range.startOffset;
+    let CP = popOverProps.node.textContent.indexOf(popOverProps.range.startContainer.textContent) + popOverProps.range.endOffset;
+    console.log('POPUP', CP, popOverProps.range, popOverProps.node, popOverProps.node.textContent.indexOf(popOverProps.range.startContainer.textContent) + popOverProps.range.endOffset);
     let styles = {
       top: popOverProps.version === 'init' || popOverProps.version === 'change' ? positions.y - 70 : positions.y - 50,
       left: (positions.x - 50) + (CP * 6)

@@ -6,11 +6,14 @@ import DomHandler from 'domhandler';
 import { getVideoData } from '../../utils/Helpers';
 import Request from './Requests';
 
+import Hashids from 'hashids';
+const hashids = new Hashids('hackster', 4);
+
 const Utils = {
 
   getSelectionData() {
     let sel = rangy.getSelection();
-    if(!sel.rangeCount) {
+    if(!sel || !sel.rangeCount) {
       return {
         sel: null,
         range: null,
@@ -217,20 +220,43 @@ const Utils = {
   },
 
   findBlockNodeByHash(hash, parent, byPosition) {
-    let node;
-    let fallbackNode;
-    
-    for(let i = 0; i < parent.children.length; i++) {
-      if(parent.children[i].getAttribute('data-hash') === hash) {
-        node = parent.children[i];
-      }
+    let node, fallbackNode;
 
-      if(i === byPosition) {
-        fallbackNode = parent.children[i];
-      }
-    }
+    (function recurse(el) {
+      let child;
+      if(!el.children) {
+        return;
+      } else {
+        for(let i = 0; i < el.children.length; i++) {
+          child = el.children[i];
+          
+          if(child.getAttribute('data-hash') === hash) {
+            node = child;
+            return;
+          }
 
+          if(byPosition !== undefined && i === byPosition) {
+            fallbackNode = child;
+            return;
+          }
+          recurse(child);
+        }
+      }
+    }(parent));
     return node || fallbackNode;
+  },
+
+  getParentOfCE(root) {
+    let Editable = null;
+
+    while(root.parentNode && !root.classList.contains('box')) {
+      if(root.classList.contains('box-content')) {
+        Editable = root;
+      }
+
+      root = root.parentNode;
+    }
+    return Editable;
   },
 
   getBlockElementsPreviousSibling(node, rootNode) {
@@ -567,11 +593,11 @@ const Utils = {
       let handler = new DomHandler((err, dom) => {
         if(err) reject(err);
 
-        let clean = this.cleanTree(dom);
+        let clean = this.createContainers(dom);
+        this.convertVideoSrc(clean, result => {
+          result = result.filter(item => { return item !== null; });
 
-        this.convertVideoSrc(clean, projectId, csrfToken, result => {
-          let parsedHTML = this.parseTree(result);
-          console.log('parsed', parsedHTML)
+          let parsedHTML = this.mergeAndParseTree(result);
           resolve(parsedHTML);
         });
       }, {});
@@ -582,24 +608,16 @@ const Utils = {
     });
   },
 
-  convertVideoSrc(html, projectId, csrfToken, mainCallback) {
-    async.map(html, (item, callback) => {
-      if(item.name === 'div' && item.attribs.class.indexOf('react-editor-video') !== -1) {
-        let wrapper = this.findImageWrapper(item);
-        let img = wrapper.children[0];
-        let figcaption = wrapper.children[1];
-        let videoData = getVideoData(img.attribs.src);
-        let promise = Request.fetchImageAndTransform(videoData, projectId, csrfToken);
-        promise.then(data => {
-          img.attribs.src = data.url;
-          img.attribs.style = 'width:' + data.width + ';';
-          figcaption.attribs.style = 'width:' + data.width + ';';
-
-          wrapper.children[0] = img;
-          wrapper.children[1] = figcaption;
-          item.children[0].children[1].children[0] = wrapper;
-          return callback(null, item);
-        }).catch(err => { console.log(err); });
+  convertVideoSrc(map, mainCallback) {
+    async.map(map, (item, callback) => {
+      if(item.type === 'Video') {
+        let videoData = getVideoData(item.images[0].src);
+        if(!videoData) {
+          console.log('BUNK', item);
+          return callback(null, null);
+        }
+        item.images[0] = videoData;
+        return callback(null, item);
       } else {
         return callback(null, item);
       }
@@ -608,6 +626,33 @@ const Utils = {
       mainCallback(result);
     });
   },
+
+  // convertVideoSrc(html, projectId, csrfToken, mainCallback) {
+  //   async.map(html, (item, callback) => {
+  //     if(item.name === 'div' && item.attribs.class.indexOf('react-editor-video') !== -1) {
+  //       let wrapper = this.findImageWrapper(item);
+  //       let img = wrapper.children[0];
+  //       let figcaption = wrapper.children[1];
+  //       let videoData = getVideoData(img.attribs.src);
+  //       let promise = Request.fetchImageAndTransform(videoData, projectId, csrfToken);
+  //       promise.then(data => {
+  //         img.attribs.src = data.url;
+  //         img.attribs.style = 'width:' + data.width + ';';
+  //         figcaption.attribs.style = 'width:' + data.width + ';';
+
+  //         wrapper.children[0] = img;
+  //         wrapper.children[1] = figcaption;
+  //         item.children[0].children[1].children[0] = wrapper;
+  //         return callback(null, item);
+  //       }).catch(err => { console.log(err); });
+  //     } else {
+  //       return callback(null, item);
+  //     }
+  //   }, (err, result) => {
+  //     if(err) { return err; }
+  //     mainCallback(result);
+  //   });
+  // },
 
   findImageWrapper(element) {
     let imgWrapper;
@@ -628,27 +673,10 @@ const Utils = {
     return imgWrapper;
   },
 
-  cleanTree(html) {
-    let blockEls = {
-      'p': true,
-      'pre': true,
-      'div': true,
-      'blockquote': true,
-      'ul': true
-    };
-
+  createContainers(html) {
     let tree = html.map((el, index) => {
       let mediaData, carousel, video, newEl;
-      if(!blockEls[el.name]) {
-        let P = this.createModel({
-          attribs: {},
-          children: [ el ],
-          content: null,
-          name: 'p'
-        });
-        el = P;
-      }
-      /** If top element is a carousel widget or video, we create the markup for those elements.
+      /** If top element is a carousel widget, video or file, we create the markup for those elements.
         * Else if the top element is a image, create a Carousel.
         * Else, recurse through the element.
         *     If theres images in the element, we're going to convert it to a Carousel.
@@ -665,6 +693,10 @@ const Utils = {
           mediaData = this.getMediaData(el);
           newEl = this.createVideo(mediaData);
           return newEl;
+        } else if(el.attribs['data-type'] === 'file') {
+          mediaData = this.getFileData(el);
+          newEl = this.createFile(mediaData);
+          return newEl;
         }
       } else if(el.name === 'img') {
         /** Handle Carousel */
@@ -679,19 +711,22 @@ const Utils = {
           newEl = this.createCarousel(mediaData);
           return newEl;
         } else {
-          return data.el;
+          return {
+            type: 'CE',
+            json: [data.el]
+          };
         }
       }
+    }).filter(item => { return item !== undefined; });;
 
-    });
-
-    return tree.filter(el => { return el !== undefined });
+    return tree;
   },
 
   recurseElement(element) {
     let mediaType = false;
     let el = (function recurse(el) {
       let child;
+
       if(!el.children) {
         return el;
       }
@@ -758,11 +793,11 @@ const Utils = {
 
     }(element));
 
-    return {
+    return [{
       src: src,
       alt: alt,
       figcaption: figcaption || ''
-    };
+    }];
   },
 
   getCarouselData(element) {
@@ -792,8 +827,9 @@ const Utils = {
         } else {
           f.children.forEach(child => {
             if(child.name === 'img') {
-              fig.src = child.attribs.src;
+              fig.url = child.attribs.src;
               fig.alt = child.attribs.alt;
+              fig.show = false;
             }
 
             if(child.name === 'figcaption') {
@@ -823,6 +859,7 @@ const Utils = {
             obj.src = child.attribs.src;
             obj.alt = child.attribs.alt || '';
             obj.figcaption = '';
+            obj.show = false;
             images.push(obj);
           }
           recurse(child);
@@ -831,6 +868,26 @@ const Utils = {
     }(element));
 
     return images;
+  },
+
+  getFileData(element) {
+    let url, content;
+
+    (function recurse(el) {
+      if(!el.children) {
+        return el;
+      } else {
+        el.children.forEach(child => {
+          if(child.name === 'a') {
+            url = child.attribs.href;
+            content = child.children[0].data
+          }
+          recurse(child);
+        });
+      }
+    }(element));
+
+    return { url: url, content: content };
   },
 
   createModel(data) {
@@ -843,111 +900,54 @@ const Utils = {
   },
 
   createCarousel(images) {
-    let Carousel, InnerCarousel, Div, Figure, Img, FigCaption;
-    
-    let figures = images.map((image, index) => {
-      let figureClassName = index === 0 ? 'react-editor-figure show' : 'react-editor-figure';
-      Img = this.createModel({
-        attribs: { class: 'react-editor-image', style: '', src: image.src, alt: image.alt, ['data-src']: ''},
-        children: [],
-        content: null,
-        name: 'img'
-      });
-
-      FigCaption = this.createModel({
-        attribs: { class: 'react-editor-figcaption', style: '' },
-        children: [{ type: 'text', data: image.figcaption && image.ficaption.length > 0 ? image.figcaption : 'caption (optional)' }],
-        content: null,
-        name: 'figcaption'
-      });
-
-      Div = this.createModel({
-        attribs: { class: 'react-editor-image-wrapper' },
-        children: [ Img, FigCaption ],
-        content: null,
-        name: 'div'
-      });
-
-      Figure = this.createModel({
-        attribs: { class: figureClassName, ['data-type']: 'image' },
-        children: [ Div ],
-        content: null,
-        name: 'figure'
-      });
-
-      return Figure;
-    });
-
-    InnerCarousel = this.createModel({
-      attribs: { class: 'react-editor-carousel-inner' },
-      children: figures,
-      content: null,
-      name: 'div'
-    });
-
-    Carousel = this.createModel({
-      attribs: { class: 'react-editor-carousel', ['data-type']: 'carousel' },
-      children: [ InnerCarousel ],
-      content: null,
-      name: 'div'
-    });
-
-    return Carousel;
+    images[0].show = true;
+    return {
+      type: 'Carousel',
+      images: images,
+      hash: hashids.encode(Math.floor(Math.random() * 9999 + 1))
+    };
   },
 
-  createVideo(video) {
-    let InnerVideo, Video, VideoMask, Div, Figure, Img, FigCaption;
+  createVideo(images) {
+    images[0].show = true;
+    return {
+      type: 'Video',
+      images: images,
+      hash: hashids.encode(Math.floor(Math.random() * 9999 + 1))
+    };
+  },
 
-    Img = this.createModel({
-      attribs: { class: 'react-editor-image', style: '', src: video.src, alt: video.alt, ['data-src']: ''},
-      children: [],
-      content: null,
-      name: 'img'
+  createFile(data) {
+    return {
+      type: 'File',
+      data: data,
+      hash: hashids.encode(Math.floor(Math.random() * 9999 + 1))
+    }
+  }, 
+
+  mergeAndParseTree(collection) {
+    let newCollection = [];
+
+    collection.forEach((component, index) => {
+      if(index > 0 && collection[index-1].type === 'CE' && component.type === 'CE') {
+        newCollection[newCollection.length-1].json.push(...component.json);
+      } else {
+        newCollection.push(component);
+      }
     });
 
-    FigCaption = this.createModel({
-      attribs: { class: 'react-editor-figcaption', style: '' },
-      children: [{ type: 'text', data: video.figcaption && video.ficaption.length > 0 ? video.figcaption : 'caption (optional)' }],
-      content: null,
-      name: 'figcaption'
+    newCollection = newCollection.map(coll => {
+      if(coll.type === 'CE') {
+        coll.hash = hashids.encode(Math.floor(Math.random() * 9999 + 1));
+        coll.json = this.parseTree(coll.json);
+        coll.json = this.cleanTree(coll.json);
+        return coll;
+      } else {
+        return coll;
+      }
     });
 
-    Div = this.createModel({
-      attribs: { class: 'react-editor-image-wrapper' },
-      children: [ Img, FigCaption ],
-      content: null,
-      name: 'div'
-    });
-
-    Figure = this.createModel({
-      attribs: { class: 'react-editor-figure show', ['data-type']: 'image' },
-      children: [ Div ],
-      content: null,
-      name: 'figure'
-    });
-
-    VideoMask = this.createModel({
-      attribs: { class: 'video-mask fa fa-youtube-play' },
-      children: [],
-      content: null,
-      name: 'div'
-    });
-
-    InnerVideo = this.createModel({
-      attribs: { class: 'react-editor-video-inner' },
-      children: [ VideoMask, Figure ],
-      content: null,
-      name: 'div'
-    });
-
-    Video = this.createModel({
-      attribs: { class: 'react-editor-video', ['data-type']: 'video', ['data-video-id']: ''},
-      children: [ InnerVideo ],
-      content: null,
-      name: 'div'
-    });
-
-    return Video;
+    return newCollection;
   },
 
   parseTree(html) {
@@ -995,21 +995,51 @@ const Utils = {
   transformTagNames(node) {
     let nodeName = node.name;
 
-    if(node.name === 'div' && node.attribs['data-type']) {
-      nodeName = node.attribs['data-type'];
-    }
-
     let converter = {
       'b': 'strong',
       'bold': 'strong',
       'i': 'em',
       'italic': 'em',
       'code': 'pre',
-      'carousel': 'carousel',
-      'video': 'video'
+      'ol': 'ul'
     };
 
     return converter[nodeName] || nodeName;
+  },
+
+  cleanTree(json) {
+    return json.map(item => {
+      if(item.tag === 'li') {
+        item.tag = 'ul';
+        item.children = [{
+          tag: 'li',
+          content: item.content,
+          attribs: {},
+          children: []
+        }];
+        item.content = null;
+        return item;
+      } else if(item.tag === 'span') {
+        item.tag = 'p';
+        return item;
+      } else if(item.tag === 'ul') {
+        item.children = item.children.filter(child => {
+          if(child.content === null) {
+            return false;
+          } else if(child.content.length <= 1) {
+            return false
+          } else {
+            return true;
+          }
+        });
+        return item;
+      } else if(item.tag === 'br') {
+        item.tag = 'p';
+        return item;
+      } else {
+        return item;
+      }
+    });
   }
 
 };

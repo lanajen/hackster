@@ -2,12 +2,6 @@
   bold/italic/h1/links/list
   full width input
 
-/ = content_for :js do
-/   javascript:
-/     $(function(){
-/       editor.activate();
-/     });
-
 = simple_nested_form_for @project, url: api_v1_project_path(@project), html: { data: { remote: true }, class: 'form-horizontal remote' }, wrapper: :bootstrap3_horizontal do |f|
 
   input type='hidden' name='panel' value='story'
@@ -19,7 +13,7 @@
   .row
     .col-md-8.col-md-offset-2
       = f.error_notification
-      #react-editor-main-mount
+      = react_component('ReactEditor', {}, {})
 
       / .box data-anchor='description'
       /   .box-content
@@ -33,7 +27,3 @@
       /       #editable-description.text-widget.project-show-item= render partial: 'shared/medium_editor', locals: { editable: @project.decorate.description(:edit), attribute_name: 'description' }
 
     = render 'projects/forms/pe_save'
-
-= content_for :js do
-  javascript:
-    ReactEditor();

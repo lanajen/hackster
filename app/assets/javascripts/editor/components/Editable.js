@@ -1,8 +1,10 @@
 import React from 'react/addons';
 import _ from 'lodash';
-import async from 'async';
 import DropZone from '../../reusable_components/DropZone';
 import ContentEditable from './ContentEditable';
+import Carousel from './Carousel';
+import Video from './Video';
+import File from './File';
 import ImageToolbar from './ImageToolbar';
 import { createRandomNumber } from '../../utils/Helpers';
 import Utils from '../utils/DOMUtils';
@@ -18,20 +20,22 @@ const Editable = React.createClass({
     let csrfToken = _.findWhere(metaList, {name: 'csrf-token'}).content;
     let projectId = window.location.href.match(/\/[\d]+/).join('').slice(1);
 
-    this.props.actions.fetchInitialDOM(projectId, csrfToken);
     this.props.actions.setProjectData(projectId, csrfToken);
+    this.props.actions.fetchInitialDOM(projectId, csrfToken);
     this.debouncedResize = _.debounce(this.handleResize, 30);
-  },
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.debouncedResize);
   },
 
   componentDidMount() {
     /** Issues the Toolbars notice of the CE width on resize. */
     window.addEventListener('resize', this.debouncedResize);
 
-    this.props.actions.setCEWidth(React.findDOMNode(this).offsetWidth);
+     if(this.props.toolbar.CEWidth === null) {
+      this.props.actions.setCEWidth(React.findDOMNode(this).offsetWidth);
+    }
+  },
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.debouncedResize);
   },
 
   componentWillUpdate() {
@@ -41,20 +45,15 @@ const Editable = React.createClass({
     }
   },
 
-  shouldComponentUpdate(nextProps) {
-    return nextProps.editor.dom !== this.props.editor.dom ||
-           nextProps.isEditable !== this.props.editor.isEditable;
-  },
-
   handleResize() {
     this.props.actions.toggleImageToolbar(false, {});
     this.props.actions.setCEWidth(React.findDOMNode(this).offsetWidth);
   },
 
-  handleContentEditableChange(html) {
+  handleContentEditableChange(storeIndex, html, depth) {
     let promise = this.parseDOM(html);
-    promise.then(function(dom) {
-      this.props.actions.setDOM(dom);
+    promise.then(function(parsedHTML) {
+      this.props.actions.setDOM(parsedHTML, storeIndex, depth);
     }.bind(this)).catch(function(err) { console.log('Parse Error: ' + err); });
   },
 
@@ -64,9 +63,8 @@ const Editable = React.createClass({
         if(err) console.log(err);
         
         let parsedHTML = this.parseTree(dom);
-        this.convertImageSrc(parsedHTML, function(newHTML) {
-          resolve(newHTML);
-        });
+        resolve(parsedHTML);
+
       }.bind(this), {});
 
       let parser = new HtmlParser.Parser(handler, { decodeEntities: true });
@@ -134,103 +132,56 @@ const Editable = React.createClass({
     return converter[nodeName] || nodeName;
   },
 
-  convertImageSrc(html, mainCallback) {
-    async.map(html, function(item, callback) {
-      if(item.tag === 'figure') {
-        _.forEach(item.children, function(child) {
-          if(child.tag === 'img' && child.attribs['data-src'] && child.attribs['data-src'].length > 0) {
-            if(Validator.isURL(child.attribs['data-src'])) {
-              let promise = ImageUtils.createDataURLFromURL(child.attribs['data-src']);
-              promise.then(function(dataUrl) {
-                child.attribs = Object.assign(child.attribs, { src: dataUrl });
-              });
-            }
-          }
-        });
-      }
-      callback(null, item);
-    }, function(err, result) {
-      mainCallback(result);
-    });
-  },
-
-  // handleEditableMouseEnter(e) {
-  //   e.preventDefault();
-  //   e.stopPropagation();
-  //   if(!this.props.editor.isHovered) {
-  //     this.props.actions.isHovered(true);
-  //   }
-  // },
-
-  // handleEditableMouseLeave(e) {
-  //   e.preventDefault();
-  //   e.stopPropagation();
-  //   if(this.props.editor.isHovered) {
-  //     setTimeout(function() {
-  //       this.props.actions.isHovered(false);
-  //     }.bind(this), 500);
-  //   }
-  // },
-
-  handleFilesDrop(files) {
+  handleFilesDrop(storeIndex, files) {
     let node = Utils.getRootParentElement(this.props.editor.cursorPosition.node);
     let depth = Utils.findChildsDepthLevel(node, node.parentNode);
     
     ImageUtils.handleImagesAsync(files, function(map) {
-      this.props.actions.createCarousel(map, depth);
+      this.props.actions.createCarousel(map, depth, storeIndex);
       this.props.actions.forceUpdate(true);
     }.bind(this));
   },
 
-  handleMouseOut(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    let node = React.findDOMNode(e.target);
-
-    /** 
-     * Handles releasing the ImageToolbar overlay component.
-     * First we handle an edge case where the mouse was in a button then placed outside the CE. 
-     * Secondly we handle ignoring any elements inside the Carousel.
-    **/
-    if(node.nodeName === 'BUTTON' && e.nativeEvent.relatedTarget 
-       && (e.nativeEvent.relatedTarget.classList.contains('react-editor-image-wrapper') || e.nativeEvent.relatedTarget.classList.contains('row'))
-       && this.props.editor.showImageToolbar === true) {
-      this.props.actions.toggleImageToolbar(false, {});
-    } else if(node.nodeName === 'DIV' && node.classList.contains('react-editor-image-overlay') 
-       && (e.nativeEvent.relatedTarget && !e.nativeEvent.relatedTarget.classList.contains('reit-controls'))
-       && (e.nativeEvent.relatedTarget && e.nativeEvent.relatedTarget.nodeName !== 'BUTTON')
-       && (e.nativeEvent.relatedTarget && !Utils.getRootOverlayElement(e.nativeEvent.relatedTarget).classList.contains('reit-toolbar'))
-       && this.props.editor.showImageToolbar === true) {
-      this.props.actions.toggleImageToolbar(false, {});
-    }
-  },
-
   render() {
-    let dom = this.props.editor.dom;
-    let html = dom.length < 1 ? this.props.editor.html : dom.map(React.renderToStaticMarkup).join('');
-    // console.log('MOVING PARTS', html);
+    /** Temp fix for Rails router pagination.  This block should never get hit;  its parent (Editor Container) should handle the cancellation. */
+    if(this.props.hashLocation !== '#story') {
+      return null;
+    }
 
-    let content = this.props.editor.isEditable 
-                ? (<DropZone className="dropzone" onDrop={this.handleFilesDrop}>
-                    <ContentEditable refLink={createRandomNumber()} 
-                                      html={html} 
-                                      editor={this.props.editor}
-                                      toolbar={this.props.toolbar}
-                                      actions={this.props.actions}
-                                      onChange={this.handleContentEditableChange} />
-                    </DropZone>)
-                : (dom);
+    let dom = this.props.editor.dom;
+    let content = dom.map((item, index) => {
+      let html;
+      if(item.type === 'CE') {
+        html = item.json.map(React.renderToStaticMarkup).join(''); 
+        return (<DropZone key={index} className="dropzone" onDrop={this.handleFilesDrop.bind(this, index)}>
+                  <ContentEditable html={html} 
+                                   storeIndex={index} 
+                                   editor={this.props.editor} 
+                                   actions={this.props.actions} 
+                                   hash={item.hash} 
+                                   onChange={this.handleContentEditableChange.bind(this, index)} />
+                </DropZone>);
+      } else if(item.type === 'Carousel') {
+        return <Carousel key={index} storeIndex={index} images={item.images} hash={item.hash} editor={this.props.editor} actions={this.props.actions} />
+      } else if(item.type === 'Video'){
+        return <Video key={index} storeIndex={index} videoData={item.images} hash={item.hash} editor={this.props.editor} actions={this.props.actions} />
+      } else if(item.type === 'File') {
+        return <File key={index} storeIndex={index} fileData={item.data} hash={item.hash} editor={this.props.editor} actions={this.props.actions} />
+      } else {
+        return null;
+      }
+    });
 
     let imageToolbar = this.props.editor.showImageToolbar && this.props.editor.isEditable
                      ? (<ImageToolbar editor={this.props.editor} actions={this.props.actions} />)
                      : (null);
 
     return (
-      <div className="re-box">
-        <div className="re-box-content" onMouseOut={this.handleMouseOut}>
+      <div className="box">
+        <div className="box-content">
           {content}
-          {imageToolbar}
         </div>
+        {imageToolbar}
       </div>
     );
   }

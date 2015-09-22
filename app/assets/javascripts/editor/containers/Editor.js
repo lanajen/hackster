@@ -28,20 +28,17 @@ const Editor = React.createClass({
     };
   },
 
-  onContentEditableChange(html) {
-    this.props.actions.setHTML(html);
-  },
-
   render() {
-    let buttonIcon = this.props.editor.isEditable ? 'fa fa-edit btn' : 'fa fa-pencil btn';
-    let buttonColor = this.props.editor.isEditable ? '#80CBC4' : '#4DD0E1';
+    if(this.props.hashLocation !== '#story') {
+      return null;
+    }
 
     return (
       <div className="react-editor-wrapper">
         <div className="react-editor-toolbar-container">
-          <Toolbar />
+          <Toolbar hashLocation={this.props.hashLocation} />
         </div>
-        <Editable className="box" refLink={createRandomNumber()} />
+        <Editable className="box" refLink={createRandomNumber()} hashLocation={this.props.hashLocation} />
       </div>
     );
   }
