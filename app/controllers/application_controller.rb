@@ -606,7 +606,7 @@ class ApplicationController < ActionController::Base
 
       # incoming and
       # removed to allow http caching: checking for referrer in the browser directly
-      !user_signed_in? and (params[:controller].in? %w(projects users platforms parts)) and params[:action] == 'show'
+      !user_signed_in? and (params[:controller].in? %w(projects users platforms parts)) and params[:action] == 'show' or @show_hello_world
     rescue
       false
     end

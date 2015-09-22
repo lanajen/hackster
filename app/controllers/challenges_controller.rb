@@ -6,6 +6,7 @@ class ChallengesController < ApplicationController
   before_filter :load_and_authorize_challenge, only: [:enter, :update_workflow]
   before_filter :set_challenge_entrant, only: [:show, :brief, :projects, :participants]
   before_filter :load_user_projects, only: [:show, :brief, :projects, :participants]
+  before_filter :set_hello_world, only: [:show, :brief, :projects, :participants]
   load_and_authorize_resource only: [:edit, :update]
   layout :set_layout
   skip_before_filter :track_visitor, only: [:show, :brief, :projects]
@@ -157,6 +158,10 @@ class ChallengesController < ApplicationController
         @current_entries = (user_signed_in? ? current_user.challenge_entries_for(@challenge) : [])
         @is_challenge_entrant = @current_entries.any?
       end
+    end
+
+    def set_hello_world
+      @show_hello_world = (!user_signed_in? and @challenge.judged?)
     end
 
     def set_layout
