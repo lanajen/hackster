@@ -800,7 +800,7 @@ const Utils = {
           }
 
           if(child.name === 'div' && child.attribs.class.indexOf('embed-figcaption') !== -1) {
-            figcaption = child.children[0].data || '';
+            figcaption = child.children.length ? child.children[0].data : '';
           }
 
           recurse(child);
