@@ -5,6 +5,7 @@ import HtmlParser from 'htmlparser2';
 import DomHandler from 'domhandler';
 import { getVideoData } from '../../utils/Helpers';
 import Request from './Requests';
+import Validator from 'validator';
 
 import Hashids from 'hashids';
 const hashids = new Hashids('hackster', 4);
