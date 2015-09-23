@@ -86,8 +86,12 @@ const ImageToolbar = React.createClass({
      * First we handle an edge case where the mouse was in a button then placed outside the CE. 
      * Secondly we handle ignoring any elements inside the Carousel.
     **/
-    if((node.nodeName === 'SPAN' || node.nodeName === 'BUTTON' || Utils.isChildOfParentByClass(node, 'react-editor-image-overlay')) 
-       && (e.nativeEvent.relatedTarget.id && e.nativeEvent.relatedTarget.id === 'react-main-mount' || e.nativeEvent.relatedTarget.classList.contains('row'))
+    console.log(e.nativeEvent.relatedTarget);
+    // console.log((node.nodeName === 'SPAN' || node.nodeName === 'BUTTON' || Utils.isChildOfParentByClass(node, 'react-editor-image-overlay')),
+    //    (e.nativeEvent.relatedTarget.id && e.nativeEvent.relatedTarget.id === 'react-main-mount' || e.nativeEvent.relatedTarget.classList.contains('row')),
+    //    this.props.editor.showImageToolbar === true);
+    if((node.nodeName === 'SPAN' || node.nodeName === 'BUTTON' || Utils.isChildOfParentByClass(node, 'react-editor-image-overlay'))
+       && (e.nativeEvent.relatedTarget.id && e.nativeEvent.relatedTarget.id === 'react-main-mount' || e.nativeEvent.relatedTarget.classList.contains('row') || e.nativeEvent.relatedTarget.classList.contains('box-content'))
        && this.props.editor.showImageToolbar === true) {
       this.props.actions.toggleImageToolbar(false, {});
     } else if(node.nodeName === 'DIV' && node.classList.contains('react-editor-image-overlay') 
