@@ -57,7 +57,7 @@ export const DIV = React.createClass({
 
 export const UL = React.createClass({
   render() {
-    let children = this.props.children !== null ? this.props.children.map(function(child, index) {
+    let children = this.props.children !== null && Array.isArray(this.props.children) ? this.props.children.map(function(child, index) {
       let newChildren = child.props.children;
       return <li key={createRandomNumber()}>{newChildren}</li>
     }) : this.props.children;

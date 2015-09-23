@@ -628,33 +628,6 @@ const Utils = {
     });
   },
 
-  // convertVideoSrc(html, projectId, csrfToken, mainCallback) {
-  //   async.map(html, (item, callback) => {
-  //     if(item.name === 'div' && item.attribs.class.indexOf('react-editor-video') !== -1) {
-  //       let wrapper = this.findImageWrapper(item);
-  //       let img = wrapper.children[0];
-  //       let figcaption = wrapper.children[1];
-  //       let videoData = getVideoData(img.attribs.src);
-  //       let promise = Request.fetchImageAndTransform(videoData, projectId, csrfToken);
-  //       promise.then(data => {
-  //         img.attribs.src = data.url;
-  //         img.attribs.style = 'width:' + data.width + ';';
-  //         figcaption.attribs.style = 'width:' + data.width + ';';
-
-  //         wrapper.children[0] = img;
-  //         wrapper.children[1] = figcaption;
-  //         item.children[0].children[1].children[0] = wrapper;
-  //         return callback(null, item);
-  //       }).catch(err => { console.log(err); });
-  //     } else {
-  //       return callback(null, item);
-  //     }
-  //   }, (err, result) => {
-  //     if(err) { return err; }
-  //     mainCallback(result);
-  //   });
-  // },
-
   findImageWrapper(element) {
     let imgWrapper;
 
@@ -942,10 +915,19 @@ const Utils = {
   }, 
 
   createCodeBlock(data) {
-    let newData = this.recurseAndReturnEl(data, 'pre');
+    let pre = this.recurseAndReturnEl(data, 'pre');
+    let PRE = {
+      ...pre,
+      children: [{
+        name: 'code',
+        children: pre.children,
+        attribs: {},
+        type: 'tag'
+      }]
+    };
     return {
       type: 'CE',
-      json: [newData]
+      json: [PRE]
     };
   },
 
@@ -1044,7 +1026,6 @@ const Utils = {
       'bold': 'strong',
       'i': 'em',
       'italic': 'em',
-      'code': 'pre',
       'ol': 'ul'
     };
 
@@ -1063,9 +1044,6 @@ const Utils = {
         }];
         item.content = null;
         return item;
-      } else if(item.tag === 'span') {
-        item.tag = 'p';
-        return item;
       } else if(item.tag === 'ul') {
         item.children = item.children.map(child => {
           if(child.children && !child.children.length && child.content && child.content.length <= 1 && (child.content === '\n' || child.content === ' ')) {
@@ -1078,13 +1056,22 @@ const Utils = {
           }
         }).filter(child => { return child !== null; });
         return item;
-      } else if(item.tag === 'br') {
+      } else if(item.tag === 'div') {
         item.tag = 'p';
         return item;
+      } else if(item.tag === 'span') {
+        if(item.content && item.content === '\n' || item.content === ' ') {
+          return null;
+        } else {
+          item.tag = 'p';
+          return item;
+        }
+      } else if(item.tag === 'br') {
+        return null;
       } else {
         return item;
       }
-    });
+    }).filter(c => { return c !== null; });
   }
 
 };

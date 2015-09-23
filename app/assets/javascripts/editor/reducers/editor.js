@@ -444,37 +444,6 @@ function transformBlockElements(dom, tag, elements, storeIndex) {
   return newDom;
 }
 
-// function cleanElement(dom, position, childPosition) {
-//   let el = dom[position];
-//   let childEl = childPosition !== null ? el.props.children[childPosition] : null;
-//   let children = childPosition !== null ? childEl.props.children : el.props.children;
-
-//   /** Remove any nested spans that contenteditable created. */
-//   if(Array.isArray(children) && typeof children[0] === 'string') {
-//     children = children[0];
-//   } else if(Array.isArray(children)) {
-//       children = children.map(child => {
-//         if(child === undefined) {
-//           return '';
-//         } else if(child.type === 'span') {
-//           return child.props.children;
-//         } else {
-//           return child;
-//         }
-//       }).join('');
-//   }
-
-//   if(childEl !== null) {
-//     childEl = React.cloneElement(childEl, {}, children);
-//     el.props.children[childPosition] = childEl;
-//   } else {
-//     el = React.cloneElement(el, {}, children);
-//   }
-
-//   dom.splice(position, 1, el);
-//   return dom;
-// }
-
 function removeBlockElements(dom, map, storeIndex) {
   let component = dom[storeIndex];
   let json = component.json;
@@ -495,21 +464,6 @@ function removeBlockElements(dom, map, storeIndex) {
   dom.splice(storeIndex, 1, component);
   return dom;
 }
-
-// function wrapOrUnwrapBlockElement(dom, tag, position, shouldWrap) {
-//   let elToReplace = dom[position], tagProps, reactEl, newEl;
-//   if(shouldWrap) {
-//     reactEl = mapToComponent[tag];
-//     tagProps = { hash: elToReplace.props.tagProps.hash } || { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) };
-//     newEl = reactEl({ tagProps, children: elToReplace });
-//     dom.splice(position, 1, newEl);
-//   } else {
-//     reactEl = elToReplace.props.children[0] || elToReplace.props.children;
-//     dom.splice(position, 1, reactEl);
-//   }
-
-//   return dom;
-// }
 
 function removeListItemFromList(dom, parentPos, childPos, storeIndex) {
   let component = dom[storeIndex];

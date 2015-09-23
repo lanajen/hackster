@@ -86,9 +86,9 @@ const Toolbar = React.createClass({
       let endContainer = Utils.getRootParentElement(range.endContainer);
       let arrayOfNodes = Utils.createArrayOfDOMNodes(startContainer, endContainer, commonAncestorContainer);
 
-      /** Restricts transformations if theres a div in the selection */
+      /** Restricts transformations if theres a div (Media block) in the selection */
       if(_.some(arrayOfNodes, { nodeName: 'DIV' })) {
-        // HANDLE ERROR!!!!!!!!!!!!!!!
+        // TODO: HANDLE ERROR!!!!!!!!!!!!!!!
         console.log('throw err');
         return;
       } else {
@@ -311,9 +311,6 @@ const Toolbar = React.createClass({
 
   render: function() {
     // console.log('TOOLBAR', this.state.showPopOver);
-    // if(this.props.hashLocation !== '#story') {
-    //   return null;
-    // }
   
     let linkPopOver = this.props.toolbar.showPopOver ? (
       <PopOver ref="popOver" popOverProps={this.props.toolbar.popOverProps} editor={this.props.editor} onLinkInput={this.handleLinkInput} unMountPopOver={this.unMountPopOver} onVersionChange={this.handlePopOverChange} onInputChange={this.handlePopOverInputChange} removeAnchorTag={this.handleAnchorTagRemoval}/>
