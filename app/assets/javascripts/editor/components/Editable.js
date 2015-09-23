@@ -29,11 +29,25 @@ const Editable = React.createClass({
     }
   },
 
+  tester() { console.log('fucking work!'); },
+
   componentDidMount() {
     /** Issues the Toolbars notice of the CE width on resize. */
     window.addEventListener('resize', this.debouncedResize);
+    let button = document.querySelector('.pe-submit');
+    button.appendChild(document.createElement('button'));
 
-     if(this.props.toolbar.CEWidth === null) {
+    /** Append a story_json input to the hidden form. When the .pe-submit button is pressed, the value will get sent to the server. */
+    let form = document.getElementById('story').children[0];
+    if(document.getElementById('story_json') === null) {
+      let input = document.createElement('input');
+      input.type = 'hidden';
+      input.id = 'story_json';
+      input.name = 'project[story_json]';
+      form.insertBefore(input, form.firstChild);
+    }
+
+    if(this.props.toolbar.CEWidth === null) {
       this.props.actions.setCEWidth(React.findDOMNode(this).offsetWidth);
     }
   },

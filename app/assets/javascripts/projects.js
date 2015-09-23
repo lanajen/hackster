@@ -251,7 +251,8 @@ $select2target = null;
       saveChanges: function() {
         if ($('#story:visible').length) {
           // $('#project_description').html(editor.self.serialize()['element-0'].description);
-          editor.forceSaveModel();
+          // HAS TO GO HERE.  SAVE THE MODEL. REMOVE
+          // editor.forceSaveModel();
         }
         $('.pe-panel:visible form.remote').submit();
       },
@@ -308,7 +309,8 @@ $select2target = null;
       })
       .on('ajax:success', 'form.remote', function(xhr, status){
         if ($('#story:visible').length) {
-          editor.unsavedChanges = false;
+          // REMOVE
+          // editor.unsavedChanges = false;
         }
         pe.serializeForm();
         $('.fields.added').removeClass('added');

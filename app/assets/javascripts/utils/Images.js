@@ -43,7 +43,7 @@ const ImageUtils = {
     image.onload = function(e) {
       // Resize the image.
       let canvas = document.createElement('canvas'),
-          maxSize = 750,
+          maxSize = 580,
           isImageOverSize = false,
           width = image.width,
           height = image.height,
@@ -56,10 +56,10 @@ const ImageUtils = {
               width = maxSize;
           }
       } else {
-          if (height > 514) {
+          if (height > 487) {
               isImageOverSize = true;
-              width *= 514 / height;
-              height = 514;
+              width *= 487 / height;
+              height = 487;
           }
       }
 
