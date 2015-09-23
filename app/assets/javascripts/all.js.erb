@@ -80,7 +80,7 @@ $(window).load(function(){
   if (helloW.length) {
     var parser = document.createElement('a');
     parser.href = document.referrer;
-    if (!document.referrer.length || parser.hostname != '<%= APP_CONFIG['default_host'] %>') {
+    if (!document.referrer.length || parser.hostname != window.location.hostname) {
       helloW.delay(2000).slideDown(500);
       // not super clean but allows for a bar that slides down and pushes its height
       $('#hello-world').delay(2000).slideDown(500,function(){
