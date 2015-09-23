@@ -190,6 +190,7 @@ const ContentEditable = React.createClass({
 
       let props = {
         node: sel.anchorNode,
+        parentNode: document.querySelector('.box'),
         range: range,
         href: anchor.getAttribute('href'),
         text: anchor.textContent,

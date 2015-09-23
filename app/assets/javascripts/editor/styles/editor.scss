@@ -419,12 +419,13 @@ $desktop-width: 1024px;
   position: fixed;
   background-color: transparent;
   z-index: 3000;
+  max-width: 500px;
 
   .react-link-popover {
     @include card(2);
     border-radius: 2px;
 
-    .link-popover-input-container {
+    .link-popover-init-container {
       background-color: #80DEEA;
       border-radius: 2px;
 
@@ -444,8 +445,30 @@ $desktop-width: 1024px;
       }
     }
 
+    .link-popover-change-container {
+      background-color: #80DEEA;
+      border-radius: 2px;
+      max-width: 500px;
+
+      .link-popover-input {
+        display: flex;
+        color: white;
+        background-color: #80DEEA;
+        border-radius: 2px;
+        padding: 5px;
+        max-width: 500px;
+        border: none;
+        text-align: center;
+      }
+
+      .link-popover-input:focus {
+        outline: none;
+      }
+    }
 
     .link-popover-default-container {
+      display: flex;
+      align-items: center;
       padding: 8px;
       background-color: #80DEEA;
       border-radius: 2px;

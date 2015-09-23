@@ -192,7 +192,7 @@ const Toolbar = React.createClass({
         } else {
           let props = {
             node: anchorNode,
-            parentNode: parentNode,
+            parentNode: document.querySelector('.box'),
             range: range,
             text: sel.toString(),
             version: 'init',
@@ -211,12 +211,11 @@ const Toolbar = React.createClass({
     } else {
       if(validator.isURL(href)) {
         let sel = rangy.getSelection();
-        sel.addRange(range);
+        sel.setSingleRange(range);
         this.handleExecCommand('createLink', href);
         /** Grabs the selection again after the DOM was mutated by execCommand. */
         sel = rangy.getSelection();
-        range.commonAncestorContainer.textContent = text;
-        sel.addRange(range);
+        sel.setSingleRange(range);
         sel.collapseToEnd();
       } else {
         // TODO: HANDLE ERROR.
@@ -233,6 +232,7 @@ const Toolbar = React.createClass({
     this.props.actions.showPopOver(false, {});
     let props = {
       node: oldProps.node,
+      parentNode: document.querySelector('.box'),
       range: oldProps.range,
       text: oldProps.text,
       version: 'change',

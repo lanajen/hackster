@@ -1,4 +1,5 @@
 import React from 'react';
+import Utils from '../utils/DOMUtils';
 
 const PopOver = React.createClass({
 
@@ -16,6 +17,10 @@ const PopOver = React.createClass({
 
   componentDidMount() {
     React.findDOMNode(this.refs.input).focus();
+
+    let { sel, range } = Utils.getSelectionData();
+    range = this.props.popOverProps.range;
+    sel.addRange(range);
   },
 
   onBodyClick(e) {
@@ -59,39 +64,31 @@ const PopOver = React.createClass({
     this.props.removeAnchorTag();
   },
 
-  getPositions(element) {
-    let b = element.getBoundingClientRect();
+  getPositions() {
+    let p = Utils.getSelectionCoords();
     let positions = {
-      x: b.left,
-      y: b.top,
-      x2: b.right,
-      y2: b.bottom,
-      w: b.right - b.left,
-      h: b.bottom - b.top
+      x: p.x,
+      y: p.y
     }
     return positions;
   },
 
   render: function() {
     let popOverProps = this.props.popOverProps;
-    let positions = this.getPositions(popOverProps.node.parentNode);
-    let CP = popOverProps.node.textContent.indexOf(popOverProps.range.startContainer.textContent) + popOverProps.range.endOffset;
-    console.log('POPUP', CP, popOverProps.range, popOverProps.node, popOverProps.node.textContent.indexOf(popOverProps.range.startContainer.textContent) + popOverProps.range.endOffset);
-    let styles = {
-      top: popOverProps.version === 'init' || popOverProps.version === 'change' ? positions.y - 70 : positions.y - 50,
-      left: (positions.x - 50) + (CP * 6)
-    };
-
+    let positions = this.getPositions();
+    let styles = popOverProps.version === 'init' || popOverProps.version === 'change' 
+           ? { top: ((positions.y-80) - popOverProps.parentNode.offsetTop), left: ((positions.x-120) - popOverProps.parentNode.offsetLeft) }
+           : { top: ((positions.y-80) - popOverProps.parentNode.offsetTop), left: ((positions.x-150) - popOverProps.parentNode.offsetLeft) };
     let textValue = popOverProps.text || '';
     let version;
 
     if(popOverProps.version === 'init') {
-      version = (<div className="link-popover-input-container">
+      version = (<div className="link-popover-init-container">
                    <input ref="input" className="link-popover-input" type="text" placeholder="Type a link" onKeyPress={this.handleKeyPress.bind(this, 'init')} onKeyDown={this.handleKeyDown}/>
                    <input ref="input2" className="link-popover-input" type="text" placeholder="Change text" defaultValue={textValue} onKeyPress={this.handleKeyPress.bind(this, 'init')} onKeyDown={this.handleKeyDown}/>
                  </div>);
     } else if(popOverProps.version === 'change') {
-      version = (<div className="link-popover-input-container">
+      version = (<div className="link-popover-change-container">
                    <input ref="input" className="link-popover-input" type="text" placeholder="Type a link" defaultValue={popOverProps.href} onKeyPress={this.handleKeyPress.bind(this, 'change')} onKeyDown={this.handleKeyDown}/>
                    <input ref="input2" className="link-popover-input" type="text" placeholder="Change text" defaultValue={textValue} onKeyPress={this.handleKeyPress.bind(this, 'change')} onKeyDown={this.handleKeyDown}/>
                  </div>);
