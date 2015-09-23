@@ -554,6 +554,24 @@ const Utils = {
     }(el, null));
   },
 
+  isChildOfParentByClass(child, parentClass) {
+    let found = false;
+
+    while(child.parentNode && !child.classList.contains('react-editor-wrapper')) {
+      if(child.classList.contains('react-editor-wrapper')) {
+        break;
+      }
+
+      if(child.classList.contains(parentClass)) {
+        found = true;
+      }
+
+      child = child.parentNode;
+    }
+
+    return found;
+  },
+
   /** http://stackoverflow.com/questions/12920225/text-selection-in-divcontenteditable-when-double-click - Tim Down */
   getMouseEventCaretRange(evt) {
     var range, x = evt.clientX, y = evt.clientY;
@@ -972,6 +990,20 @@ const Utils = {
         return coll;
       }
     });
+
+    /** Makes sure theres always a CE at the end. */
+    if(newCollection[newCollection.length-1].type !== 'CE') {
+      newCollection.push({
+        type: 'CE',
+        json: [{
+          tag: 'p',
+          attribs: {},
+          children: [],
+          content: null
+        }],
+        hash: hashids.encode(Math.floor(Math.random() * 9999 + 1))
+      });
+    }
 
     return newCollection;
   },
