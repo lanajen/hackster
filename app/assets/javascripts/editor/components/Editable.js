@@ -35,7 +35,7 @@ const Editable = React.createClass({
     /** Issues the Toolbars notice of the CE width on resize. */
     window.addEventListener('resize', this.debouncedResize);
     let button = document.querySelector('.pe-submit');
-    button.appendChild(document.createElement('button'));
+    button.addEventListener('pe:submit', this.tester);
 
     /** Append a story_json input to the hidden form. When the .pe-submit button is pressed, the value will get sent to the server. */
     let form = document.getElementById('story').children[0];

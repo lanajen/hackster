@@ -252,6 +252,10 @@ $select2target = null;
         if ($('#story:visible').length) {
           // $('#project_description').html(editor.self.serialize()['element-0'].description);
           // HAS TO GO HERE.  SAVE THE MODEL. REMOVE
+          $('.pe-submit').trigger('pe:submit');
+          $('.pe-submit').on('click', function() {
+            $(this).trigger('pe:submit');
+          });
           // editor.forceSaveModel();
         }
         $('.pe-panel:visible form.remote').submit();

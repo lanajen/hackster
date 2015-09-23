@@ -12,7 +12,7 @@ export default {
         .end((err, res) => {
           if(err) reject(err);
 
-          if(res.body.description !== null && res.body.story === null) {
+          if(res.body.description !== null) {
             let parsedHtml = Utils.parseDescription(res.body.description, projectId, csrfToken);
 
             parsedHtml.then(parsed => {
@@ -22,7 +22,7 @@ export default {
             });
 
           } else {
-            resolve(res.body.story);
+            // TODO: HANDLE ERROR!
           }
       });
     });
