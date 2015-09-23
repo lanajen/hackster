@@ -1,13 +1,29 @@
 // document.ready initializes too early and it messes the dimensions used in the following functions
 $(window).load(function(){
-  function updateAffix(top, w, el){
+  function updateAffix(top, bottomB, bottomT, w, el){
     // console.log(top);
     var y = w.scrollTop();
-    // console.log(y);
+    var x = y + w.height();
+    // console.log(x);
     if (y >= top) {
       if (!el.hasClass('affix')) {
         el.addClass('affix');
         el.trigger('affix-on');
+      }
+      if (bottomB) {
+        if (x > bottomB) {
+          if (y > bottomT) {
+            if (!el.hasClass('affix-bottom')) {
+              el.addClass('affix-bottom');
+              el.trigger('affix-bottom-on');
+            }
+          } else {
+            if (el.hasClass('affix-bottom')) {
+              el.removeClass('affix-bottom');
+              el.trigger('affix-bottom-off');
+            }
+          }
+        }
       }
     } else {
       if (el.hasClass('affix')) {
@@ -16,6 +32,15 @@ $(window).load(function(){
       }
     }
   }
+
+  function setAffixableBottom() {
+    if ($('#project-side-nav').length){
+      var cont = $('#content .container');
+      var bottom = cont.offset().top + cont.outerHeight();
+      $('#project-side-nav').data('affix-bottom', bottom);
+    }
+  }
+  setAffixableBottom();
 
   // affixes .affixable
   var $fixedEl;
@@ -26,9 +51,14 @@ $(window).load(function(){
       $.each($fixedEl, function(){
         var top = parseInt($(this).offset().top - (parseFloat(this.style.top) || 0)),
             $this = $(this);
-        updateAffix(top, $window, $this);
+        var bottomB, bottomT;
+        if ($(this).data('affix-bottom')) {
+          bottomB = $(this).data('affix-bottom');
+          bottomT = bottomB - $(this).outerHeight() - parseInt($(this).css('top'));
+        }
+        updateAffix(top, bottomB, bottomT, $window, $this);
         $window.on('scroll.affix',function(){
-          updateAffix(top, $window, $this);
+          updateAffix(top, bottomB, bottomT, $window, $this);
         });
       });
     }
@@ -40,6 +70,7 @@ $(window).load(function(){
     }
     if ($fixedEl.length){
       $(window).off('scroll.affix');
+      setAffixableBottom();
       affixDivs();
     }
   };
@@ -50,20 +81,26 @@ $(window).load(function(){
     var parser = document.createElement('a');
     parser.href = document.referrer;
     if (!document.referrer.length || parser.hostname != '<%= APP_CONFIG['default_host'] %>') {
-      helloW.delay(2000).slideDown(500,function(){
-        affixDivs();
-      });
+      helloW.delay(2000).slideDown(500);
       // not super clean but allows for a bar that slides down and pushes its height
-      $('#hello-world').delay(2000).slideDown(500);
-    } else {
-      affixDivs();
+      $('#hello-world').delay(2000).slideDown(500,function(){
+        updatedScrollEventHandlers();
+      });
     }
-  } else {
-    affixDivs();
   }
+  affixDivs();
 });
 
 $(function () {
+  $('#project-side-nav')
+    .on('affix-bottom-on', function(e){
+      var top = $('#content .container').outerHeight() - $(this).outerHeight();
+      $(this).css('top', top);
+    })
+    .on('affix-bottom-off', function(e){
+      $(this).css('top', '');
+    });
+
   <% if Rails.env == 'dev' %>
     // fix image URLS so they work on dev
     $('img').each(function(i, el) {
@@ -120,6 +157,23 @@ $(function () {
           var input = $('<input type="hidden" name="authenticity_token" />');
           input.val(token);
           $('.user-form').append(input);
+        }
+      });
+    }
+  });
+
+  $('#signup-popup-email input[type="submit"]').on('click', function(e){
+    e.preventDefault();
+    var form = $(this).closest('form');
+    if (!form.find('[name="authenticity_token"]').length) {
+      $.ajax({
+        url: '/csrf',
+        dataType: 'text',
+        success: function(token) {
+          var input = $('<input type="hidden" name="authenticity_token" />');
+          input.val(token);
+          $('.user-form').append(input);
+          form.submit();
         }
       });
     }
@@ -351,12 +405,32 @@ $(function () {
       $(this).css('bottom', 0);
     }
   });
+
+  if ($('#signup-popup').length) {
+    showSignupPopupOrNot();
+  }
 });
 
 function closeNav(nav) {
   nav.slideUp(function(){
     $(this).prev().slideDown();
   });
+}
+
+// show popup if cookie doesn't exist or expired
+// create cookie or update it with expiration date in 24 hours
+function showSignupPopupOrNot() {
+  var val = Cookies.get('showedSignupPopup');
+  if (val) val = parseInt(val);
+  if (!val || val % 5 == 0) {
+    val = 0;
+    Cookies.set('showedSignupPopup', val, { expires: 1 });
+  } else if (val == 1) {
+    window.setTimeout(function() {
+      openModal('#signup-popup');
+    }, 1000);
+  }
+  Cookies.set('showedSignupPopup', val + 1);
 }
 
 function smoothScrollToIfOutOfBounds(target, offsetTop, speed) {
