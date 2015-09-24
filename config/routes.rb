@@ -77,6 +77,8 @@ HackerIo::Application.routes.draw do
 
       post 'pusher/auth' => 'users/pusher_authentications#create'
 
+      get 'hello_world' => 'hello_world#show'
+
       namespace :admin do
         authenticate :user, lambda { |u| u.is? :admin } do
           mount Sidekiq::Web => '/sidekiq'
