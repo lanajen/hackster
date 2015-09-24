@@ -8,7 +8,7 @@ class UsersController < ApplicationController
   skip_after_filter :track_landing_page, only: [:show]
 
   def index
-    title "Browse top makers"
+    title "Browse top community members"
     @users = User.not_admin.invitation_accepted_or_not_invited.where.not(user_name: nil).where('reputations.points > 15').top.paginate(page: safe_page_params)
   end
 

@@ -59,7 +59,7 @@
         .container
           .view-all-header.clearfix
             h4.pull-left Suggested lists to follow
-            / # = link_to 'View more makers', hackers_path, class: 'btn btn-default btn-sm hidden-xs pull-right'
+            / # = link_to 'View more makers', users_path, class: 'btn btn-default btn-sm hidden-xs pull-right'
 
           .row.category-full-row
             - @lists.each do |list|
@@ -71,19 +71,19 @@
                       h4
                         = link_to list.name, list
 
-          / # = link_to 'View more makers', hackers_path, class: 'btn btn-default btn-sm visible-xs-block'
+          / # = link_to 'View more makers', users_path, class: 'btn btn-default btn-sm visible-xs-block'
 
       section#suggested-hackers.showcase-section
         .container
           .view-all-header.clearfix
             h4.pull-left Suggested makers to follow
-            = link_to 'View more makers', hackers_path, class: 'btn btn-default btn-sm hidden-xs pull-right'
+            = link_to 'View more makers', users_path, class: 'btn btn-default btn-sm hidden-xs pull-right'
 
           .row.mobile-scroll-row.thumbs-carousel data-slides-count=6
             - @hackers.each do |user|
               = render partial: 'users/user_thumb_mini', locals: { user: user, actions: %w(follow), col: 'col-md-2' }
 
-          = link_to 'View more makers', hackers_path, class: 'btn btn-default btn-sm visible-xs-block'
+          = link_to 'View more makers', users_path, class: 'btn btn-default btn-sm visible-xs-block'
 
       section#recent-projects.showcase-section.last
         .container

@@ -137,8 +137,8 @@
                   = render partial: 'users/user_thumb_mini', locals: { user: user }
 
         .text-center
-          = link_to 'Browse top makers &rarr;'.html_safe, hackers_path, class: 'btn btn-default btn-sm hidden-xs'
-          = link_to 'Browse top makers &rarr;'.html_safe, hackers_path, class: 'btn btn-default btn-sm visible-xs-block'
+          = link_to 'Browse top makers &rarr;'.html_safe, users_path, class: 'btn btn-default btn-sm hidden-xs'
+          = link_to 'Browse top makers &rarr;'.html_safe, users_path, class: 'btn btn-default btn-sm visible-xs-block'
 
     / section#trending-projects.showcase-section
       .container
@@ -155,6 +155,6 @@
 
     section#signup-now-pretty-please
       .container.text-center
-        h1 Ready to start making?
+        h1 Ready to start learning?
         p Learn, share and connect to build better hardware.
         p= link_to 'Join the Hackster community', new_user_registration_path(source: 'home_bottom'), class: 'btn btn-primary btn-sm'
