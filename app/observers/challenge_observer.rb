@@ -77,10 +77,7 @@ class ChallengeObserver < ActiveRecord::Observer
   end
 
   def after_mark_as_judged record
-    record.entries.each do |entry|
-      entry.has_prize? ? entry.give_award! : entry.give_no_award!
-    end
-    expire_cache record
+    ChallengeWorker.perform_async 'do_after_judged', record.id
   end
 
   alias_method :after_cancel, :after_take_offline

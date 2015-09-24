@@ -74,7 +74,11 @@ class ChallengesController < ApplicationController
 
   def update_workflow
     if @challenge.send "#{params[:event]}!"
-      flash[:notice] = "Challenge #{event_to_human(params[:event])}."
+      flash[:notice] = if params[:event] == 'mark_as_judged'
+        "Marking as judged. Should take a few minutes. If the projects page isn't showing the winning entries in a few minutes, email us."
+      else
+        "Challenge #{event_to_human(params[:event])}."
+      end
       redirect_to @challenge
     else
       # flash[:error] = "Couldn't #{params[:event].gsub(/_/, ' ')} challenge, please try again or contact an admin."
