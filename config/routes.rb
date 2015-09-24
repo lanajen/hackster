@@ -378,6 +378,7 @@ HackerIo::Application.routes.draw do
       get 'dc', to: redirect('/hackathons/hardware-weekend/washington')
       get 'nyc', to: redirect('/hackathons/hardware-weekend/new-york-city')
       get '/h/pebblerocksboulder', to: redirect('/hackathons/pebble-rocks-boulder/a-pebble-hackathon')
+      get 'windows10kit', to: redirect('/microsoft?ref=makezine')
 
       get 'tinyduino', to: redirect('/tinycircuits')
       get 'spark', to: redirect('/particle')
