@@ -1,6 +1,8 @@
 class HelloWorldController < ApplicationController
-  def show
+  skip_before_filter :track_visitor
+  skip_after_filter :track_landing_page
 
+  def show
     hello_world = HelloWorld.new params[:ref]
 
     surrogate_keys = [hello_world.record_key, 'hello_world']
