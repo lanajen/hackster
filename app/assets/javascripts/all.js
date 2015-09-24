@@ -86,28 +86,26 @@ var updatedScrollEventHandlers = function updatedScrollEventHandlers(){
 function fetchHelloWorld() {
   var ref;
 
-  // search GET params
-  var params = window.location.search.replace('?', '').split('&');
-  for (var i = 0; i < params.length; i++) {
-    var tmp = params[i].split('=');
-    if (tmp[0] == 'ref') {
-      ref = decodeURIComponent(tmp[1]);
-      break;
-    }
-  }
+  var parser = document.createElement('a');
+  parser.href = document.referrer;
 
-  if (!ref) {
-    // search referrer
-    var parser = document.createElement('a');
-    parser.href = document.referrer;
-    if (!document.referrer.length) {
-      ref = 'default';
-    } else if (parser.hostname != window.location.hostname) {
+  if (!document.referrer.length || parser.hostname != window.location.hostname) {
+    var ref = 'default';
+
+    if (parser.hostname && parser.hostname != window.location.hostname) {
       ref = parser.hostname;
     }
-  }
 
-  if (ref) {
+    // search GET params
+    var params = window.location.search.replace('?', '').split('&');
+    for (var i = 0; i < params.length; i++) {
+      var tmp = params[i].split('=');
+      if (tmp[0] == 'ref') {
+        ref = decodeURIComponent(tmp[1]);
+        break;
+      }
+    }
+
     $.ajax({
       url: '/hello_world',
       data: { ref: ref }
