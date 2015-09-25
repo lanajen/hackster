@@ -13,16 +13,25 @@ export default {
           if(err) reject(err);
 
           if(res.body.description !== null) {
-            let parsedHtml = Utils.parseDescription(res.body.description, projectId, csrfToken);
+            let description = res.body.description;
 
-            parsedHtml.then(parsed => {
-              resolve(parsed);
-            }).catch(err => {
-              reject(err);
-            });
+            if(!description.length) {
+              resolve([]);
+            } else {
+              let parsedHtml = Utils.parseDescription(description, projectId, csrfToken);
 
+              parsedHtml.then(parsed => {
+                resolve(parsed);
+              }).catch(err => {
+                reject(err);
+              });
+            }
+
+          } else if(res.body.story !== null) {
+            resolve(JSON.parse(res.body.story));
           } else {
             // TODO: HANDLE ERROR!
+            reject('Error Fetching Story!');
           }
       });
     });

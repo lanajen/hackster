@@ -12,6 +12,8 @@ import ImageUtils from '../../utils/Images';
 import Validator from 'validator';
 import HtmlParser from 'htmlparser2';
 import DomHandler from 'domhandler';
+import async from 'async';
+import Parser from '../utils/Parsers';
 
 const Editable = React.createClass({
 
@@ -29,16 +31,17 @@ const Editable = React.createClass({
     }
   },
 
-  tester() { console.log('fucking work!'); },
-
   componentDidMount() {
+    let panel = document.getElementById('story');
+    let form = panel.querySelector('.simple_form');
+    
     /** Issues the Toolbars notice of the CE width on resize. */
     window.addEventListener('resize', this.debouncedResize);
-    let button = document.querySelector('.pe-submit');
-    button.addEventListener('pe:submit', this.tester);
+
+    /** Binds our callback when submit button is pressed. */
+    form.addEventListener('pe:submit', this.handleSubmit);
 
     /** Append a story_json input to the hidden form. When the .pe-submit button is pressed, the value will get sent to the server. */
-    let form = document.getElementById('story').children[0];
     if(document.getElementById('story_json') === null) {
       let input = document.createElement('input');
       input.type = 'hidden';
@@ -53,6 +56,10 @@ const Editable = React.createClass({
   },
 
   componentWillUnmount() {
+    let panel = document.getElementById('story');
+    let form = panel.querySelector('.simple_form');
+
+    form.removeEventListener('pe:submit', this.handleSubmit);
     window.removeEventListener('resize', this.debouncedResize);
   },
 
@@ -69,26 +76,26 @@ const Editable = React.createClass({
   },
 
   handleContentEditableChange(storeIndex, html, depth) {
-    let promise = this.parseDOM(html);
-    promise.then(function(parsedHTML) {
-      this.props.actions.setDOM(parsedHTML, storeIndex, depth);
-    }.bind(this)).catch(function(err) { console.log('Parse Error: ' + err); });
+    return this.parseDOM(html)
+      .then(parsedHTML => {
+        this.props.actions.setDOM(parsedHTML, storeIndex, depth);
+      })
+      .catch(err => { console.log('Parse Error: ' + err); });
   },
 
   parseDOM(html) {
     return new Promise((resolve, reject) => {
-      let handler = new DomHandler(function(err, dom) {
-        if(err) console.log(err);
+      let handler = new DomHandler((err, dom) => {
+        if(err) { reject(err); }
         
         let parsedHTML = this.parseTree(dom);
         resolve(parsedHTML);
-
-      }.bind(this), {});
+      });
 
       let parser = new HtmlParser.Parser(handler, { decodeEntities: true });
       parser.write(html);
       parser.done();
-    }.bind(this));
+    });
   },
 
   parseTree(html) {
@@ -158,6 +165,50 @@ const Editable = React.createClass({
       this.props.actions.createCarousel(map, depth, storeIndex);
       this.props.actions.forceUpdate(true);
     }.bind(this));
+  },
+
+  testP(string) {
+    return new Promise((resolve, reject) => {
+      resolve([string]);
+    });
+  },
+
+  handleSubmit(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    let dom = this.props.editor.dom;
+    let stringifiedJSON, item;
+
+    let promised = dom.map(item => {
+      /** Its super important to clone each item!  Otherwise we mutate the state of the store and bad things happen. */
+      item = _.clone(item);
+
+      if(item.type === 'CE') {
+        stringifiedJSON = item.json.map(React.renderToStaticMarkup).join('');
+
+        return this.parseDOM(stringifiedJSON)
+          .then(json => {
+            item.json = json;
+            return Promise.resolve(item);
+          });
+
+      } else {
+        return Promise.resolve(item);
+      }
+    });
+
+    Promise.all(promised)
+      .then(results => {
+        let input = document.getElementById('story_json');
+        input.value = JSON.stringify(results);
+        /** Submit the hidden form (form is passed from projects.js via Custom Event).  Rails/jQuery takes care of the post request. */
+        e.detail.form.submit();
+        input.value = '';
+      })
+      .catch(err => {
+        console.log(err);
+      });
   },
 
   render() {

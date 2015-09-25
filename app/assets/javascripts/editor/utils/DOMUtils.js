@@ -652,7 +652,7 @@ const Utils = {
     return range;
   },
 
-  parseDescription(html, projectId, csrfToken) {
+  parseDescription(html) {
     return new Promise((resolve, reject) => {
       let handler = new DomHandler((err, dom) => {
         if(err) reject(err);

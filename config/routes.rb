@@ -31,8 +31,7 @@ HackerIo::Application.routes.draw do
       scope 'mandrill/webhooks' do
         post 'unsub' => 'mandrill_webhooks#unsub'
       end
-      resources :projects do 
-        post 'video_data' => 'projects#video_data', defaults: { format: :json }
+      resources :projects do
         get 'description' => 'projects#description'
       end
       resources :parts, only: [:index, :create, :update, :destroy]

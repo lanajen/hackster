@@ -26,7 +26,7 @@ export function fetchInitialDOM(projectId, csrfToken) {
         dispatch(setInitialDOM(result));
       }).catch(err => { 
         console.log(err);
-      // handle err 
+      // TODO: handle err 
       });
   }
 }

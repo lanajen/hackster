@@ -3,6 +3,7 @@ import { Editor } from '../constants/ActionTypes';
 import _ from 'lodash';
 import { createRandomNumber } from '../../utils/Helpers';
 import Utils from '../utils/DOMUtils';
+import Parser from '../utils/Parsers';
 import Helpers from '../../utils/Helpers';
 import async from 'async';
 
@@ -42,6 +43,7 @@ const blockElements = {
 const initialState = {
   html: '',
   dom: [],
+  storyJSON: [],
   isFetching: false,
   currentStoreIndex: 0,
   csrfToken: null,
@@ -62,12 +64,14 @@ const initialState = {
 export default function(state = initialState, action) {
   let dom, newDom, cursorPosition;
   switch (action.type) {
+
     case Editor.setDOM:
       dom = state.dom;
       newDom = updateComponentAtIndex(dom, action.html, action.index, action.depth);
       return {
         ...state,
-        dom: newDom
+        dom: newDom,
+        storyJSON: newDom
       };
 
     case Editor.setInitialDOM:
@@ -75,6 +79,7 @@ export default function(state = initialState, action) {
       return {
         ...state,
         dom: newDom,
+        storyJSON: newDom,
         getLatestHTML: true,
         isFetching: false
       };

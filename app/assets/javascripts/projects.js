@@ -248,13 +248,19 @@ $select2target = null;
         window.scroll(0, 0);  // so it doesn't scroll to the div
       },
 
-      saveChanges: function() {
+      saveChanges: function(e) {
         var $form = $('.pe-panel:visible form.remote');
         if ($('#story:visible').length) {
-          // $('#project_description').html(editor.self.serialize()['element-0'].description);
-          // HAS TO GO HERE.  SAVE THE MODEL. REMOVE
-          $('.pe-submit').trigger('pe:submit');
-          // editor.forceSaveModel();
+          // Custom Event passes the form to React, where call submit.
+          var event = new CustomEvent(
+            'pe:submit', 
+            {
+              detail: { form: $form },
+              bubbles: true,
+              cancelable: true
+            }
+          );
+          $form[0].dispatchEvent(event);
         } else {
           $form.submit();
         }
@@ -322,7 +328,7 @@ $select2target = null;
 
     $('.pe-submit').on('click', function(e){
       e.preventDefault();
-      pe.saveChanges();
+      pe.saveChanges(e);
     });
 
     $('.pe-panel').on('input change', 'form, input, textarea, select', function(e){
