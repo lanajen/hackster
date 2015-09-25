@@ -75,7 +75,8 @@
 
   .row
     .col-md-8.col-md-offset-4= f.submit 'Save changes', class: 'btn btn-primary'
-    = link_to t('.destroy', :default => t("helpers.links.destroy")), admin_part_path(@part.id), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'
+    - if @part.persisted?
+      = link_to t('.destroy', :default => t("helpers.links.destroy")), admin_part_path(@part.id), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'
 
 = content_for :js do
   = tinymce_assets

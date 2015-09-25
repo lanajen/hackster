@@ -83,7 +83,7 @@ class Groups::ProjectsController < ApplicationController
       flash[:alert] = "Couldn't update project, please try again."
     end
 
-    redirect_to group_admin_projects_path @group
+    redirect_to group_admin_projects_path(@group, status: params[:status])
   end
 
   private

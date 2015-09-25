@@ -293,10 +293,6 @@ HackerIo::Application.routes.draw do
 
       resources :project_collections, only: [:edit, :update]
 
-      get 'hackers', to: redirect('/community')
-      get 'community' => 'users#index', as: :users
-      get 'users/:id' => 'users#redirect_to_show', as: :hacker, format: /(html|js)/
-
       scope 'challenges/:slug', as: :challenge do
         get '' => 'challenges#show'
         get 'brief' => 'challenges#brief'
@@ -568,6 +564,12 @@ HackerIo::Application.routes.draw do
         patch 'update_workflow', on: :member
       end
       resources :logs, controller: :build_logs
+    end
+
+    constraints(MainSite) do
+      get 'hackers', to: redirect('/community')
+      get 'community' => 'users#index', as: :users
+      get 'users/:id' => 'users#redirect_to_show', as: :hacker, format: /(html|js)/
     end
 
     constraints(ClientSite) do

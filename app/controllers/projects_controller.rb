@@ -292,7 +292,7 @@ class ProjectsController < ApplicationController
   private
     def ensure_belongs_to_platform
       if is_whitelabel?
-        if (current_platform.platform_tags.map{|t| t.name.downcase } & @project.platform_tags_cached.map{|t| t.downcase }).empty? or @project.users.reject{|u| u.enable_sharing }.any?
+        if !ProjectCollection.exists?(@project.id, 'Group', current_platform.id) or @project.users.reject{|u| u.enable_sharing }.any?
           raise ActiveRecord::RecordNotFound
         end
       end
