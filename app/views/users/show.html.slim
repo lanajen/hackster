@@ -4,7 +4,9 @@
   section#projects-list
     .wrapper
       .main-section-actions.clearfix.mg-30
-        - if user_is_current?
+        - if user_is_current_or_admin?
+          .pull-left
+            ==> link_to content_tag(:i, '', class: 'fa fa-cog') + content_tag(:span, "Edit profile"), profile_edit_path, class: 'btn btn-default'
           .pull-right
             ==> link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project"), new_project_path, class: 'btn btn-default'
             small> or
