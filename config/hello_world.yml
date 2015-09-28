@@ -11,3 +11,6 @@ hello_world:
   dev.windows.com:
     header: "Welcome Windows Developers!"
     message: "<%= SLOGAN %> <a href='/microsoft/projects'>Explore projects for Windows 10 IoT Core and Azure</a>"
+  ms-iot.github.io:
+    header: "Welcome Windows IoT Developers!"
+    message: "<%= SLOGAN %> <a href='/microsoft/projects'>Explore projects for Windows 10 IoT Core and Azure</a>"
