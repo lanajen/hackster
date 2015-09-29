@@ -300,14 +300,44 @@
                   .progress style="margin-bottom: 0"
                     .progress-bar class="progress-bar-#{alert_color}" role="progressbar" style="width: #{@project.checklist_completion}%;"
               - if @project.public?
-                - if @can_edit and @project.pending_review?
+
+
+              - if @can_edit
+                - if @project.public?
+                  - if @project.pending_review? or @project.unpublished?
+                    .alert.alert-warning.text-center
+                      span
+                        p
+                          i.fa.fa-clock-o>
+                          ' We're reviewing your project before it can appear on the home page and the communities you selected.
+                          = link_to 'Learn more.', 'https://hackster.uservoice.com/knowledgebase/articles/588252-i-published-my-project-but-it-doesn-t-appear-on-th', class: 'alert-link'
+
+                - else
+                  - who = %w(you)
+                  - who += ['team members'] if @project.team_members_count > 1
+                  - who += ["professors and TA's of #{@project.assignment.promotion.name}"] if @project.has_assignment?
+
                   .alert.alert-warning.text-center
                     span
                       p
-                        i.fa.fa-clock-o>
-                        ' We're reviewing your project before it can appear on the home page and the communities you selected.
-                        = link_to 'Learn more.', 'https://hackster.uservoice.com/knowledgebase/articles/588252-i-published-my-project-but-it-doesn-t-appear-on-th', class: 'alert-link'
+                        i.fa.fa-lock>
+                        | This project is private so only #{who.to_sentence} can see it.
+                    - if @project.can_be_public? or current_user.try(:is?, :admin)
+                      p= link_to 'Publish publicly', project_path(@project, project: {  private: 0 } ), method: :patch, class: 'btn btn-warning btn-sm btn-block'
+                    - else
+                      = content_tag(:i, '', class: 'fa fa-info-circle istooltip', title: 'You need to add a title, a description and a cover image before you can make it public.')
+                    p
+                      small
+                        = link_to 'Need to privately share?', edit_project_path(@project, anchor: 'publish'), class: 'alert-link'
 
+                section.section-thumbs
+                  h4 Manage this project
+                  - if @project.unlocked? or can? :edit_locked, @project
+                      = link_to 'Edit project and team', edit_project_path(@project), class: 'btn btn-default btn-block'
+                  - else
+                    p This project is locked for editing.
+
+              - if @project.public?
                 section.section-thumbs
                   h4 Do something awesome
                   - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
@@ -322,36 +352,12 @@
                   - if user_signed_in?
                     = react_component('ListsDropdown', { path: api_v1_lists_path, projectId: @project.id }, { class: 'react-btn' })
 
-              - elsif @can_edit
-                - who = %w(you)
-                - who += ['team members'] if @project.team_members_count > 1
-                - who += ["professors and TA's of #{@project.assignment.promotion.name}"] if @project.has_assignment?
-
-                .alert.alert-warning.text-center
-                  span
-                    p
-                      i.fa.fa-lock>
-                      | This project is private so only #{who.to_sentence} can see it.
-                  - if @project.can_be_public? or current_user.try(:is?, :admin)
-                    p= link_to 'Publish publicly', project_path(@project, project: {  private: 0 } ), method: :patch, class: 'btn btn-warning btn-sm btn-block'
-                  - else
-                    = content_tag(:i, '', class: 'fa fa-info-circle istooltip', title: 'You need to add a title, a description and a cover image before you can make it public.')
-                  p
-                    small
-                      = link_to 'Need to privately share?', edit_project_path(@project, anchor: 'publish'), class: 'alert-link'
-              - else
+              - elsif !@can_edit
                 .alert.alert-warning.text-center
                   p
                     i.fa.fa-lock>
                     | This project is private.
 
-              - if @can_edit
-                section.section-thumbs
-                  h4 Manage this project
-                  - if @project.unlocked? or can? :edit_locked, @project
-                      = link_to 'Edit project and team', edit_project_path(@project), class: 'btn btn-default btn-block'
-                  - else
-                    p This project is locked for editing.
 
               - cache [I18n.locale, "project-#{@project.id}-team", @can_edit, @project.guest_name], tag: ["team-#{@project.team_id}"], expires_in: 24.hours do
                 - if @project.guest_name.present?
@@ -452,25 +458,15 @@
                       = link_to entry.challenge.name, entry.challenge
 
               - cache [I18n.locale, "project-#{@project.id}-other", @other_projects, site_user_name], tag: "project-#{@project.id}-other" do
-                - if @other_projects_count > 0
+                - if @other_projects.count > 0
                   section.section-thumbs
-                    h4 Other projects by the same #{pluralize_without_count @project.team_members_count, 'author'}
-                    - if @last_projects.present?
-                      .subtitle Most popular
+                    h4 Similar projects you might like
                     - @other_projects.each do |project|
                       .project-thumb-mini.has-link-overlay style="background-image: url('#{project.cover_image.try(:imgix_url, :cover_wide_mini)}')"
                         = link_to '', project, class: 'link-overlay'
                         .project-thumb-mini-inner
                           h4= link_to project.name, project
                           / # p= render partial: 'projects/by_team', locals: { project: project }
-                    - if @last_projects.present?
-                      .subtitle Most recent
-                      - @last_projects.each do |project|
-                        .project-thumb-mini.has-link-overlay style="background-image: url('#{project.cover_image.try(:imgix_url, :cover_wide_mini)}')"
-                          = link_to '', project, class: 'link-overlay'
-                          .project-thumb-mini-inner
-                            h4= link_to project.name, project
-                            / # p= render partial: 'projects/by_team', locals: { project: project }
 
               - if @project.made_public_at
                 section.section-thumbs
@@ -481,7 +477,7 @@
                 section.section-thumbs.hidden-xs.hidden-sm
                   h4
                     | Table of contents
-                  .affixable style='top:20px'
+                  #project-side-nav.affixable style='top:20px' data-top=20
                     #scroll-nav.section-container
                       ul.nav
                         li.active
@@ -548,3 +544,14 @@
                         .add-to-list
                         - if @project.celery_id.present?
                           = link_to content_tag(:i, '', class: 'fa fa-shopping-cart') + content_tag(:span, "Buy it"), '#', 'data-celery' => @project.celery_id, 'data-celery-version' => 'v2', class: 'btn btn-warning btn-ellipsis btn-block'
+
+    - if @project.public?
+      - cache [I18n.locale, "project-#{@project.id}-other-bottom", @other_projects, site_user_name], tag: "project-#{@project.id}-other" do
+        - if @other_projects.count > 0
+          section.other-projects
+            .container
+              section.section-thumbs
+                h4 style='border:0' Similar projects you might like
+              .row
+                - @other_projects.each do |project|
+                  = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'similar' }

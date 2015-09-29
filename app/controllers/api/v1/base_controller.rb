@@ -15,6 +15,42 @@ class Api::V1::BaseController < ApplicationController
       head(:ok) if request.request_method == 'OPTIONS'
     end
 
+    def authenticate_api_user
+      # return true if Rails.env == 'development'
+
+      authenticate_or_request_with_http_basic do |username, password|
+        load_platform(username)
+        @platform && username == @platform.api_username && password == @platform.api_password
+      end
+    end
+
+    def authenticate_platform_or_user
+      # raise request.headers['Authorization'].inspect
+      if request.headers['Authorization'].present?
+        authenticate_api_user
+      else
+        authenticate_user!
+      end
+    end
+
+    def current_ability
+      if current_platform
+        current_platform.ability
+      elsif current_user
+        current_user.ability
+      else
+        User.new.ability
+      end
+    end
+
+    def current_platform
+      @platform
+    end
+
+    def load_platform username
+      @platform = Platform.find_by_api_username username
+    end
+
     def public_api_methods
       headers['Access-Control-Allow-Origin'] = '*'
     end

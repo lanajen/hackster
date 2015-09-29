@@ -2,10 +2,11 @@ class ChallengesController < ApplicationController
   before_filter :authenticate_user!, only: [:edit, :update, :update_workflow]
   before_filter :load_challenge, only: [:show, :brief, :projects, :participants, :update]
   before_filter :authorize_and_set_cache, only: [:show, :brief, :projects]
-  before_filter :load_platform, only: [:show, :brief, :projects]
+  before_filter :load_platform, only: [:show, :brief, :projects, :participants]
   before_filter :load_and_authorize_challenge, only: [:enter, :update_workflow]
-  before_filter :set_challenge_entrant, only: [:show, :brief, :projects]
-  before_filter :load_user_projects, only: [:show, :brief, :projects]
+  before_filter :set_challenge_entrant, only: [:show, :brief, :projects, :participants]
+  before_filter :load_user_projects, only: [:show, :brief, :projects, :participants]
+  before_filter :set_hello_world, only: [:show, :brief, :projects, :participants]
   load_and_authorize_resource only: [:edit, :update]
   layout :set_layout
   skip_before_filter :track_visitor, only: [:show, :brief, :projects]
@@ -24,7 +25,7 @@ class ChallengesController < ApplicationController
     title @challenge.name
     # @embed = Embed.new(url: @challenge.video_link)
 
-    if @challenge.ended? and !@challenge.disable_projects_tab
+    if @challenge.judged? and !@challenge.disable_projects_tab
       load_projects
       render 'challenges/projects'
     else
@@ -45,7 +46,7 @@ class ChallengesController < ApplicationController
     title "#{@challenge.name} participants"
     respond_to do |format|
       format.html do
-        @participants = @challenge.registrants.reorder("challenge_registrations.created_at DESC").paginate(page: safe_page_params)
+        @participants = @challenge.registrants.includes(:avatar).reorder("challenge_registrations.created_at DESC").paginate(page: safe_page_params, per_page: 60)
       end
       format.csv do
         authorize! :admin, @challenge
@@ -73,7 +74,11 @@ class ChallengesController < ApplicationController
 
   def update_workflow
     if @challenge.send "#{params[:event]}!"
-      flash[:notice] = "Challenge #{event_to_human(params[:event])}."
+      flash[:notice] = if params[:event] == 'mark_as_judged'
+        "Marking as judged. Should take a few minutes. If the projects page isn't showing the winning entries in a few minutes, email us."
+      else
+        "Challenge #{event_to_human(params[:event])}."
+      end
       redirect_to @challenge
     else
       # flash[:error] = "Couldn't #{params[:event].gsub(/_/, ' ')} challenge, please try again or contact an admin."
@@ -136,10 +141,10 @@ class ChallengesController < ApplicationController
       if @challenge.judged?
         @winning_entries = @challenge.entries.winning.includes(:project).inject([]){|mem, e| mem << e unless mem.select{|m| m.project_id == e.project_id }.any?; mem }
         @winning_entries_count = @winning_entries.count
-        @other_projects = @challenge.projects.joins(:challenge_entries).where.not(challenge_projects: { id: @winning_entries.map(&:id) }).for_thumb_display.paginate(page: safe_page_params, per_page: per_page)
+        @other_projects = @challenge.projects.reorder("(CASE WHEN projects.workflow_state = 'approved' THEN 1 ELSE 2 END) ASC").most_respected.where.not(challenge_projects: { id: @winning_entries.map(&:id) }).for_thumb_display.paginate(page: safe_page_params, per_page: per_page)
       else
         per_page = per_page - 1 if @challenge.open_for_submissions? and !@is_challenge_entrant
-        @projects = @challenge.projects.valid.for_thumb_display.paginate(page: safe_page_params, per_page: per_page)
+        @projects = @challenge.projects.valid.reorder("(CASE WHEN projects.workflow_state = 'approved' THEN 1 ELSE 2 END) ASC, challenge_projects.created_at DESC").for_thumb_display.paginate(page: safe_page_params, per_page: per_page)
       end
     end
 
@@ -157,6 +162,10 @@ class ChallengesController < ApplicationController
         @current_entries = (user_signed_in? ? current_user.challenge_entries_for(@challenge) : [])
         @is_challenge_entrant = @current_entries.any?
       end
+    end
+
+    def set_hello_world
+      @show_hello_world = (!user_signed_in? and @challenge.judged?)
     end
 
     def set_layout

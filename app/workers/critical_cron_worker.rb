@@ -3,7 +3,7 @@ class CriticalCronWorker < BaseWorker
 
   def update_challenges_workflow
     Challenge.where(workflow_state: :new).where("CAST(challenges.hproperties -> 'activate_pre_registration' AS BOOLEAN) = ?", true).where("CAST(challenges.hproperties -> 'pre_registration_start_date' AS INTEGER) < ?", Time.now.to_i).each do |challenge|
-      challenge.prelaunch!
+      challenge.pre_launch!
     end
     Challenge.where(workflow_state: %w(new pre_registration)).where("CAST(challenges.hproperties -> 'activate_pre_contest' AS BOOLEAN) = ?", true).where("CAST(challenges.hproperties -> 'pre_contest_start_date' AS INTEGER) < ?", Time.now.to_i).each do |challenge|
       challenge.launch_pre_contest!

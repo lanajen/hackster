@@ -46,7 +46,7 @@ p
               | (assigned too many times)
       br
       - if @entries.any?
-        ==> link_to 'Start judging', edit_challenge_entry_path(@challenge, @entries.first), class: 'btn btn-sm btn-primary'
+        ==> link_to 'Start judging', edit_challenge_entry_path(@challenge, @challenge.entries.where.not(challenge_projects: {workflow_state: :unqualified }).where(challenge_projects: { prize_id: nil }).joins(:project).order(:created_at).first), class: 'btn btn-sm btn-primary'
         ' or
       = link_to 'Mark challenge as judged', update_workflow_challenge_path(@challenge, event: 'mark_as_judged'), method: :put, class: 'btn btn-sm btn-danger', data: { confirm: 'Are you sure? Not all prizes have been awarded. Continuing will close judging and send an email notification to all participants informing them of the outcome.' }
 

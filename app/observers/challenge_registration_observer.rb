@@ -1,7 +1,7 @@
 class ChallengeRegistrationObserver < ActiveRecord::Observer
   def after_create record
     expire_cache record
-    NotificationCenter.notify_all :new, :challenge_registration, record.id, 'challenge_registration'
+    NotificationCenter.notify_via_email :new, :challenge_registration, record.id
     MailchimpWorker.perform_async 'add_new_participants_to_challenge', record.id if record.challenge.mailchimp_setup?
   end
 

@@ -1,0 +1,10 @@
+<p>Hello there,</p>
+
+<p>This is to let you know that <a href="<%= u.challenge_url(@context[:challenge]) %>">|challenge_name|</a> has launched in the pre-contest phase and is now accepting ideas. This phase will run until <%= l @context[:challenge].pre_contest_end_date.in_time_zone(PDT_TIME_ZONE) %> PDT.</p>
+
+<p>Cheers,<br> The Hackster.io team</p>
+<p>
+  <a href="http://www.facebook.com/hacksterio">Like us on Facebook</a>
+  |
+  <a href="http://twitter.com/hacksterio">Follow us on Twitter</a>
+</p>

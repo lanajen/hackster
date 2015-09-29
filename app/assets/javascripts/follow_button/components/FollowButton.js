@@ -127,7 +127,7 @@ const FollowButton = React.createClass({
   render: function() {
     let classes = this.getClasses();
     let classList = classes[this.props.buttonType] || classes['text'];
-    let disable = this.props.currentUserId === this.props.followable.id;
+    let disable = this.props.followable.type === 'User' && this.props.currentUserId === this.props.followable.id;
     let label;
 
     if(this.state.spinner) {

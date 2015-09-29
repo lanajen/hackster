@@ -412,7 +412,7 @@ class Project < ActiveRecord::Base
 
   def get_next_time_slot last_scheduled_slot
     last_scheduled_slot ||= Time.now
-    last_scheduled_slot + rand(2*60..6*60).minutes
+    last_scheduled_slot + rand(1*60..4*60).minutes  # every 1 to 4 hours == about 10 a day
   end
 
   def scheduled_to_be_approved?
@@ -762,10 +762,6 @@ class Project < ActiveRecord::Base
     I18n.transliterate(guest_name).gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
   end
 
-  def valid_for_challenge?
-    name.present? and !has_default_name? and description.present? and description.size > 100 and cover_image.present?
-  end
-
   def website_host
     URI.parse(website).host.gsub(/^www\./, '')
   rescue
@@ -809,7 +805,7 @@ class Project < ActiveRecord::Base
     def generate_slug
       return unless name.present?
 
-      slug = I18n.transliterate(name).gsub(/[^a-zA-Z0-9\-]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
+      slug = I18n.transliterate(name).gsub(/[^a-zA-Z0-9\-]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase.presence || 'untitled'
       parent = team ? self.class.joins(:team).where(groups: { user_name: team.user_name }).where.not(id: id) : self.class.where(team_id: 0).where.not(id: id)
 
       # make sure it doesn't exist

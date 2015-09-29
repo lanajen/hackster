@@ -35,11 +35,6 @@ class ChallengeEntriesController < ApplicationController
     @project = Project.find params[:project_id]
     authorize! :enter_in_challenge, @project
 
-    unless @project.valid_for_challenge?
-      flash[:alert] = "Oops! You can only enter finished projects into this challenge. Please complete the project and the write-up before submitting."
-      redirect_to @challenge and return
-    end
-
     @project.private = false
     @project.workflow_state = 'idea' if @challenge.project_ideas
     @project.save
@@ -79,7 +74,7 @@ class ChallengeEntriesController < ApplicationController
           flash[:notice] = "Changes saved."
           challenge_entries_path(@challenge)
         else
-          if next_entry = @challenge.entries.where.not(challenge_projects: { id: @entry.id }).where(challenge_projects: { prize_id: nil }).joins(:project).first
+          if next_entry = @challenge.entries.where.not(challenge_projects: { id: @entry.id, workflow_state: :unqualified }).where(challenge_projects: { prize_id: nil }).joins(:project).order(:created_at).first
             edit_challenge_entry_path(@challenge, next_entry)
           else
             flash[:notice] = "That was the last entry submitted!"

@@ -21,7 +21,7 @@
           - else
             p
              strong> You're registered!
-             - if (@challenge.activate_pre_contest? and @challenge.pre_contest_start_date > Time.now) or @challenge.start_date > Time.now
+             - if (@challenge.activate_pre_contest? and @challenge.pre_contest_start_date > Time.now) or (!@challenge.activate_pre_contest? and @challenge.start_date > Time.now)
               ' We'll let you know by email when the challenge launches.
             - if @challenge.open_for_submissions?
               - if @challenge.pre_contest_in_progress?
@@ -36,7 +36,7 @@
     - elsif @challenge.disable_registration and @challenge.open_for_submissions?
       = link_to @challenge.enter_button_text, 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'
     - elsif @challenge.registration_open?
-      = link_to "Register as a participant", new_user_registration_path(redirect_to: create_challenge_registrations_path(@challenge), reason: 'register', m: 'challenge', id: @challenge.id), class: "btn btn-primary btn-block btn-ellipsis btn-standout challenge-cta show-simplified-signup", data: { container: 'body', redirect_to: create_challenge_registrations_path(@challenge), source: 'register_challenge' }
+      = link_to "Register as a participant", new_user_registration_path(redirect_to: create_challenge_registrations_path(@challenge), reason: 'register', m: 'challenge', id: @challenge.id), class: "btn btn-primary btn-block btn-ellipsis btn-standout challenge-cta show-simplified-signup with-name", data: { container: 'body', redirect_to: create_challenge_registrations_path(@challenge), source: 'register_challenge' }
 
     - cache ["challenge-#{@challenge.id}-status"], tag: ["challenge-#{@challenge.id}-status"] do
 
@@ -81,6 +81,10 @@
         - else
           p.status
             strong= raw @challenge.status
+            - if @challenge.judging? and @challenge.winners_announced_date
+              p style='margin-bottom:0'
+                strong> Winners announced on:
+                = l @challenge.winners_announced_date, format: :short_date
 
       - if @challenge.registration_open? or (@challenge.disable_registration and @challenge.open_for_submissions?)
         section.section-thumbs
@@ -134,30 +138,47 @@
                 ==> prize.quantity
                 | available
 
+    - cache ["challenge-#{@challenge.id}-timeline"], tag: ["challenge-#{@challenge.id}-timeline"] do
+
       section.section-thumbs
         h4 Timeline
         - if @challenge.activate_pre_registration
           - if @challenge.pre_registration_start_date
-            p style='margin-bottom:0'
-              strong> Registrations open:
-            p #{l @challenge.pre_registration_start_date.in_time_zone(PDT_TIME_ZONE)} PT
+            div class=(@challenge.pre_registration_start_date < Time.now ? 'mute-date' : '')
+              p style='margin-bottom:0'
+                strong> Registrations open:
+              p #{l @challenge.pre_registration_start_date.in_time_zone(PDT_TIME_ZONE)} PT
         - if @challenge.activate_pre_contest
           - if @challenge.pre_contest_start_date
-            p style='margin-bottom:0'
-              strong> Pre-contest opens:
-            p #{l @challenge.pre_contest_start_date.in_time_zone(PDT_TIME_ZONE)} PT
+            div class=(@challenge.pre_contest_start_date < Time.now ? 'mute-date' : '')
+              p style='margin-bottom:0'
+                strong> Pre-contest opens:
+              p #{l @challenge.pre_contest_start_date.in_time_zone(PDT_TIME_ZONE)} PT
           - if @challenge.pre_contest_end_date
-            p style='margin-bottom:0'
-              strong> Pre-contest closes:
-            p #{l @challenge.pre_contest_end_date.in_time_zone(PDT_TIME_ZONE)} PT
+            div class=(@challenge.pre_contest_end_date < Time.now ? 'mute-date' : '')
+              p style='margin-bottom:0'
+                strong> Pre-contest closes:
+              p #{l @challenge.pre_contest_end_date.in_time_zone(PDT_TIME_ZONE)} PT
+          - if @challenge.pre_winners_announced_date
+            div class=(@challenge.pre_winners_announced_date < Time.now ? 'mute-date' : '')
+              p style='margin-bottom:0'
+                strong> Pre-contest winners announced on:
+              p #{l @challenge.pre_winners_announced_date, format: :short_date}
         - if @challenge.start_date
-          p style='margin-bottom:0'
-            strong> Submissions open:
-          p #{l @challenge.start_date.in_time_zone(PDT_TIME_ZONE)} PT
+          div class=(@challenge.start_date < Time.now ? 'mute-date' : '')
+            p style='margin-bottom:0'
+              strong> Submissions open:
+            p #{l @challenge.start_date.in_time_zone(PDT_TIME_ZONE)} PT
         - if @challenge.end_date
-          p style='margin-bottom:0'
-            strong> Submissions close:
-          p #{l @challenge.end_date.in_time_zone(PDT_TIME_ZONE)} PT
+          div class=(@challenge.end_date < Time.now ? 'mute-date' : '')
+            p style='margin-bottom:0'
+              strong> Contest ends on:
+            p #{l @challenge.end_date.in_time_zone(PDT_TIME_ZONE)} PT
+        - if @challenge.winners_announced_date
+          div class=(@challenge.winners_announced_date < Time.now ? 'mute-date' : '')
+            p style='margin-bottom:0'
+              strong> Winners announced on:
+            p #{l @challenge.winners_announced_date, format: :short_date}
 
   - cache ["challenge-#{@challenge.id}-brief"], tag: ["challenge-#{@challenge.id}-brief"] do
 
@@ -171,7 +192,7 @@
 
         .section-content.medium-editor
           - if @challenge.video
-            .mg-20= render partial: "api/embeds/embed", locals: { embed: @challenge.video }
+            .mg-20= begin; render partial: "api/embeds/embed", locals: { embed: @challenge.video }; rescue; end;
           = raw @challenge.description
 
       .section-interlude

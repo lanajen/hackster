@@ -2,6 +2,7 @@ class User < ActiveRecord::Base
 
   include Checklist
   include EditableSlug
+  include HasAbility
   include HstoreColumn
   include HstoreCounter
   include Roles
@@ -146,7 +147,7 @@ class User < ActiveRecord::Base
     format: { with: /\A[a-zA-Z0-9_\-]+\z/, message: "accepts only letters, numbers, underscores '_' and dashes '-'." }, allow_blank: true
   validates :user_name, :new_user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users communities hackerspaces hackers lists products about store api talk) }
   validates :interest_tags_string, :skill_tags_string, length: { maximum: 255 }
-  with_options unless: proc { |u| u.skip_registration_confirmation },
+  with_options unless: proc { |u| u.skip_registration_confirmation or u.email_confirmation.nil? },
     on: :create do |user|
       user.validates :email_confirmation, presence: true
       user.validate :email_matches_confirmation
@@ -202,8 +203,6 @@ class User < ActiveRecord::Base
 
   has_websites :websites, :facebook, :twitter, :linked_in, :website, :blog,
     :github, :google_plus, :youtube, :instagram, :flickr, :reddit, :pinterest
-
-  delegate :can?, :cannot?, to: :ability
 
   is_impressionable counter_cache: true, unique: :session_hash
 
@@ -321,10 +320,6 @@ class User < ActiveRecord::Base
   def self.query_for_subscription notification_type, subscription
     const = SUBSCRIPTIONS[notification_type.to_sym]
     "(CAST(users.subscriptions_masks -> '#{notification_type}' AS INTEGER) & #{2**const.keys.index(subscription.to_s)} > 0)"
-  end
-
-  def ability
-    @ability ||= Ability.new(self)
   end
 
   def active_profile?

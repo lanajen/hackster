@@ -65,19 +65,19 @@
         label.control-label Password
       .col-md-8
         input.form-control type='text' disabled=true value=@group.http_password
-    hr
-    h4.col-md-8.col-md-offset-4 API credentials
-    = f.input :reset_api_credentials, as: :boolean, label: false, inline_label: 'Reset credentials'
-    .form-group
-      .col-md-4
-        label.control-label Username
-      .col-md-8
-        input.form-control type='text' disabled=true value=@group.api_username
-    .form-group
-      .col-md-4
-        label.control-label Password
-      .col-md-8
-        input.form-control type='text' disabled=true value=@group.api_password
+  hr
+  h4.col-md-8.col-md-offset-4 API credentials
+  = f.input :reset_api_credentials, as: :boolean, label: false, inline_label: 'Reset credentials'
+  .form-group
+    .col-md-4
+      label.control-label Username
+    .col-md-8
+      input.form-control type='text' disabled=true value=@group.api_username
+  .form-group
+    .col-md-4
+      label.control-label Password
+    .col-md-8
+      input.form-control type='text' disabled=true value=@group.api_password
 
   h4
     strong Don't use these options (especially if you don't know what you're doing)

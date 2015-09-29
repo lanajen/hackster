@@ -65,6 +65,19 @@
           .row
             - @challenges.each do |challenge|
               = render partial: 'challenges/challenge_thumb', locals: { challenge: challenge.decorate, thumb_size: :mini }
+            - challenge = Challenge.find(15).decorate
+            .col-sm-6
+              .category-col
+                .thumb.category-thumb.challenge-thumb
+                  .thumb-image.has-link-overlay class='thumb-image-mini' style="background-image:url('#{challenge.cover_image(:cover_wide_small)}')"
+                    = link_to '', challenge, class: 'link-overlay'
+                    .thumb-image-inner
+                      p Challenge over. Check out the winners!
+                      h4
+                        = link_to challenge.name, challenge
+                        - if challenge.platform
+                          br
+                          a.small sponsored by #{challenge.platform.name}
 
         .text-center
           = link_to 'View more challenges &rarr;'.html_safe, challenges_path, class: 'btn btn-default btn-sm hidden-xs'
@@ -137,8 +150,8 @@
                   = render partial: 'users/user_thumb_mini', locals: { user: user }
 
         .text-center
-          = link_to 'Browse top makers &rarr;'.html_safe, hackers_path, class: 'btn btn-default btn-sm hidden-xs'
-          = link_to 'Browse top makers &rarr;'.html_safe, hackers_path, class: 'btn btn-default btn-sm visible-xs-block'
+          = link_to 'Browse top makers &rarr;'.html_safe, users_path, class: 'btn btn-default btn-sm hidden-xs'
+          = link_to 'Browse top makers &rarr;'.html_safe, users_path, class: 'btn btn-default btn-sm visible-xs-block'
 
     / section#trending-projects.showcase-section
       .container
@@ -155,6 +168,6 @@
 
     section#signup-now-pretty-please
       .container.text-center
-        h1 Ready to start making?
+        h1 Ready to start learning?
         p Learn, share and connect to build better hardware.
         p= link_to 'Join the Hackster community', new_user_registration_path(source: 'home_bottom'), class: 'btn btn-primary btn-sm'

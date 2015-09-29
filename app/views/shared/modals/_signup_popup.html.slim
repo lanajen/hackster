@@ -1,29 +1,20 @@
-#signup-popup.popup-overlay.modal-popup.modal-show.modal-remove
+#signup-popup.popup-overlay.modal-popup.modal-remove data-width=400
   .popup-overlay-bg
   .popup-overlay-outer
     .popup-overlay-inner
       button.close data-target='#signup-popup' &times;
-      h3
-        | Hackster.io is a community
-        br
-        | for hardware makers.
       p
-        strong Join and start building.
-        / Choose how to connect:
-      / %div{ style: 'font-size: 20px' }
-        = link_to 'Facebook', user_omniauth_authorize_url(:facebook), class: 'zocial icon facebook'
-        = link_to 'Github', user_omniauth_authorize_path(:github), class: 'zocial icon github'
-        = link_to 'Google+', user_omniauth_authorize_path(:gplus), class: 'zocial icon googleplus'
-        = link_to 'Twitter', user_omniauth_authorize_path(:twitter), class: 'zocial icon twitter'
-        = link_to 'Email', 'javascript:$(".popup-overlay-inner").toggleClass("expanded");', class: 'zocial icon email'
+        strong
+          | New to Hackster.io? Join the community dedicated to learning hardware
 
-      = simple_form_for User.new, url: _simplified_registrations_path(source: 'popup'), html: { id: 'signup-popup-email', class: 'form-compact disable-on-submit' } do |f|
-        input  type='hidden' name='redirect_to'
+      = simple_form_for User.new, url: user_registration_path, html: { id: 'signup-popup-email', class: 'form-compact disable-on-submit user-form' }, method: :post, authenticity_token: !csrf_disabled? do |f|
+        input type='hidden' name='redirect_to'
+        input type='hidden' name='source' value='popup'
         = f.input :email, label: false, placeholder: 'Email', tabindex: 1
-        = f.button :submit, "Continue", class: 'btn btn-primary btn-block'
+        = f.input :password, label: false, placeholder: 'Password'
+        = f.button :submit, "Create my free account", class: 'btn btn-primary btn-block'
 
-      p
-        small
-          ==> link_to 'Prefer connecting using your social account?', new_user_registration_path(highlight: 'connect', source: 'popup')
-          ' Already have an account?
-          = link_to 'Sign in', new_user_session_path
+      p.small= link_to 'Prefer connecting using your social account?', new_user_registration_path(highlight: 'connect', source: 'popup')
+      p.small style='margin-bottom:0'
+        ' Already have an account?
+        = link_to 'Sign in', new_user_session_path

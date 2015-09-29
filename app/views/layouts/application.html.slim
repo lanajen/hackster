@@ -43,17 +43,21 @@ html(lang="en")
     link href="#{ asset_path 'favicons/favicon.ico' }" rel="shortcut icon" type="image/vnd.microsoft.icon"
     - if ENV['ENABLE_ANALYTICS'] and !current_user.try(:is?, :admin)
       = render partial: 'shared/analytics', locals: { tracker: 'UA-11926897-15', domain: 'hackster.io', track_outbound: true }
+      <!-- Hotjar Tracking Code for www.hackster.io -->
+      javascript:
+        (function(h,o,t,j,a,r){
+          h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+          h._hjSettings={hjid:81027,hjsv:5};
+          a=o.getElementsByTagName('head')[0];
+          r=o.createElement('script');r.async=1;
+          r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+          a.appendChild(r);
+        })(window,document,'//static.hotjar.com/c/hotjar-','.js?sv=');
+
 
   body class=yield(:body_class) data-user-signed-in=user_signed_in?
     - unless params[:blank_frame]
-      - if show_hello_world?
-        #hello-world-container
-          #hello-world.fixed
-            .container
-              button.close.btn-close data-close='#hello-world-container,#hello-world'  &times;
-              => SLOGAN
-              = link_to 'Get started.', new_user_registration_path(source: 'hello-world')
-      - elsif user_signed_in? and current_user.simplified_signup?
+      - if user_signed_in? and current_user.simplified_signup?
         .alert.alert-flat.alert-warning.alert-smaller
           .container
             ' Hi! Please confirm your email address by clicking the link in the email we've sent you.
@@ -64,6 +68,8 @@ html(lang="en")
       - unless params[:blank_frame]
         - unless user_signed_in?
           = render 'shared/modals/simplified_signup_popup'
+        - if show_hello_world?
+          = render 'shared/modals/signup_popup'
 
         - unless @no_flash
           = bootstrap_flash
@@ -199,7 +205,7 @@ html(lang="en")
         .footer-nav.clearfix
           ul.list-unstyled.list-inline.pull-left
             li= link_to 'About', about_path
-            li= link_to 'Makers', hackers_path
+            li= link_to 'Community', users_path
             / # li= link_to 'Blog', '/blog'
             li= link_to 'Hackster for business', business_path
             / li= link_to 'Partners', '/partners'
@@ -245,6 +251,11 @@ html(lang="en")
     javascript:
        try{Typekit.load({async: true});}catch(e){}
     = javascript_include_tag "application"
+    - unless params[:blank_frame]
+      - if show_hello_world?
+        javascript:
+          $(function(){ fetchHelloWorld(); });
+
     = content_for :js
     - unless is_mobile? or params[:blank_frame]
       = render 'shared/feedback'

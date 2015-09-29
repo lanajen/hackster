@@ -14,6 +14,13 @@ class CronTask < BaseWorker
     end
   end
 
+  def cleanup_buggy_unpublished
+    Project.public.self_hosted.where(workflow_state: :unpublished).where(made_public_at: nil).update_all(workflow_state: :pending_review)
+    Project.public.self_hosted.where(workflow_state: :unpublished).where.not(made_public_at: nil).each do |project|
+      project.update_attribute :workflow_state, :approved
+    end
+  end
+
   def clean_invitations
     User.where.not(invitation_token: nil).where.not(last_sign_in_at: nil).update_all(invitation_token: nil)
   end
@@ -42,6 +49,7 @@ class CronTask < BaseWorker
 
   def launch_cron
     CacheWorker.perform_async 'warm_cache'
+    CronTask.perform_in 3.minutes, 'cleanup_buggy_unpublished'
     CronTask.perform_in 3.minutes, 'lock_assignment'
     CronTask.perform_in 4.minutes, 'send_assignment_reminder'
     CronTask.perform_in 6.minutes, 'send_announcement_notifications'
