@@ -51,6 +51,10 @@ class ProjectCollection < ActiveRecord::Base
     where(workflow_state: 'featured').order("CAST(project_collections.properties -> 'featured_position' AS INTEGER) ASC NULLS LAST")
   end
 
+  def self.featured_order locale
+    order("(CASE WHEN (project_collections.workflow_state = 'featured' AND projects.locale = '#{locale}') THEN (CASE WHEN CAST(project_collections.properties -> 'featured_position' AS INTEGER) IS NULL THEN 99 ELSE CAST(project_collections.properties -> 'featured_position' AS INTEGER) END) ELSE 100 END) ASC")
+  end
+
   def self.most_recent
     order(created_at: :desc)
   end

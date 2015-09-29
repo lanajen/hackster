@@ -61,7 +61,7 @@ module PlatformHelper
     end
     @by = params[:by] || 'all'
 
-    @projects = platform.project_collections.includes(:project).visible.order("(CASE WHEN (project_collections.workflow_state = 'featured' AND projects.locale = '#{I18n.short_locale}') THEN (CASE WHEN CAST(project_collections.properties -> 'featured_position' AS INTEGER) IS NULL THEN 99 ELSE CAST(project_collections.properties -> 'featured_position' AS INTEGER) END) ELSE 100 END) ASC").merge(Project.for_thumb_display_in_collection)
+    @projects = platform.project_collections.includes(:project).visible.featured_order(I18n.short_locale).merge(Project.for_thumb_display_in_collection)
     @projects = if sort == 'recent'
       @projects.most_recent
     else
