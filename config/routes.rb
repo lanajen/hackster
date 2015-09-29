@@ -77,6 +77,8 @@ HackerIo::Application.routes.draw do
 
       post 'pusher/auth' => 'users/pusher_authentications#create'
 
+      get 'hello_world' => 'hello_world#show'
+
       namespace :admin do
         authenticate :user, lambda { |u| u.is? :admin } do
           mount Sidekiq::Web => '/sidekiq'
@@ -163,6 +165,8 @@ HackerIo::Application.routes.draw do
         patch 'awards' => 'grades#update'
         patch 'projects/link' => 'groups/projects#link'
         get 'projects' => 'groups/projects#index', as: :admin_projects
+        get 'projects/featured' => 'groups/projects#featured'
+        patch 'projects/featured' => 'groups/projects#save_featured'
         patch 'projects/:id' => 'groups/projects#update_workflow', as: :update_workflow
       end
 
@@ -291,9 +295,6 @@ HackerIo::Application.routes.draw do
 
       resources :project_collections, only: [:edit, :update]
 
-      get 'hackers' => 'users#index', as: :hackers
-      get 'hackers/:id' => 'users#redirect_to_show', as: :hacker, format: /(html|js)/
-
       scope 'challenges/:slug', as: :challenge do
         get '' => 'challenges#show'
         get 'brief' => 'challenges#brief'
@@ -376,6 +377,7 @@ HackerIo::Application.routes.draw do
       get 'dc', to: redirect('/hackathons/hardware-weekend/washington')
       get 'nyc', to: redirect('/hackathons/hardware-weekend/new-york-city')
       get '/h/pebblerocksboulder', to: redirect('/hackathons/pebble-rocks-boulder/a-pebble-hackathon')
+      get 'windows10kit', to: redirect('/microsoft?ref=makezine')
 
       get 'tinyduino', to: redirect('/tinycircuits')
       get 'spark', to: redirect('/particle')
@@ -552,6 +554,12 @@ HackerIo::Application.routes.draw do
     constraints(UserPage) do
       get ':slug' => 'users#show', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
       get ':user_name' => 'users#show', as: :user, user_name: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
+    end
+
+    constraints(MainSite) do
+      get 'hackers', to: redirect('/community')
+      get 'community' => 'users#index', as: :users
+      get 'users/:id' => 'users#redirect_to_show', as: :hacker, format: /(html|js)/
     end
 
     scope ':user_name/:project_slug', as: :project, user_name: /[A-Za-z0-9_\-]{3,}/, project_slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|js)/ } do

@@ -1,0 +1,16 @@
+hello_world:
+  default:
+    header: "Welcome to Hackster!"
+    message: "<%= SLOGAN %> <a href='<%= new_user_registration_path(source: 'hello-world') %>'>Join us</a>, it's free!"
+  MSnewsletter:
+    header: "Welcome IoT Developers!"
+    message: "Our next IoT contest is launching this October - be the first to be notified: <%= render_to_string partial: 'shared/mailchimp_form' %>"
+  MSblog:
+    header: "Welcome Microsoft Developers!"
+    message: "Our next IoT contest is launching this October - be the first to be notified: <%= render_to_string partial: 'shared/mailchimp_form' %>"
+  dev.windows.com:
+    header: "Welcome Windows Developers!"
+    message: "<%= SLOGAN %> <a href='/microsoft/projects'>Explore projects for Windows 10 IoT Core and Azure</a>"
+  ms-iot.github.io:
+    header: "Welcome Windows IoT Developers!"
+    message: "<%= SLOGAN %> <a href='/microsoft/projects'>Explore projects for Windows 10 IoT Core and Azure</a>"

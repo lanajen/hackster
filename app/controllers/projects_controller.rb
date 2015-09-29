@@ -61,23 +61,8 @@ class ProjectsController < ApplicationController
     meta_desc @project_meta_desc
     @project = @project.decorate
 
-    # other projects by same author
-    @other_projects_count = Project.public.most_popular.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id)
-    @other_projects_count = @other_projects_count.with_group current_platform if is_whitelabel?
-    @other_projects_count = @other_projects_count.size
-
-    if @other_projects_count > 6
-      @other_projects = Project.public.most_popular.own.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).includes(:team).includes(:cover_image)
-      @other_projects = @other_projects.with_group current_platform if is_whitelabel?
-      @other_projects = @other_projects.limit(3)
-
-      @last_projects = Project.public.last_public.own.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: [@project.id] + @other_projects.map(&:id)).includes(:team).includes(:cover_image)
-      @last_projects = @last_projects.with_group current_platform if is_whitelabel?
-      @last_projects = @last_projects.limit(3)
-    else
-      @other_projects = Project.public.most_popular.own.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).includes(:team).includes(:cover_image)
-      @other_projects = @other_projects.with_group current_platform if is_whitelabel?
-    end
+    @other_projects = SimilarProjectsFinder.new(@project).results.for_thumb_display
+    @other_projects = @other_projects.with_group current_platform if is_whitelabel?
 
     @team_members = @project.team_members.includes(:user).includes(user: :avatar)
 
@@ -307,7 +292,7 @@ class ProjectsController < ApplicationController
   private
     def ensure_belongs_to_platform
       if is_whitelabel?
-        if (current_platform.platform_tags.map{|t| t.name.downcase } & @project.platform_tags_cached.map{|t| t.downcase }).empty? or @project.users.reject{|u| u.enable_sharing }.any?
+        if !ProjectCollection.exists?(@project.id, 'Group', current_platform.id) or @project.users.reject{|u| u.enable_sharing }.any?
           raise ActiveRecord::RecordNotFound
         end
       end

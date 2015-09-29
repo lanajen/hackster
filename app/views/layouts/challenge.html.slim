@@ -146,12 +146,7 @@
                 li= link_to "Edit challenge settings", edit_challenge_path(@challenge)
                 li= link_to "Entries dashboard", challenge_entries_path(@challenge)
 
-    / = render partial: "groups/#{@challenge.identifier.pluralize}/alerts"
-
-    - if @challenge.judging? and can? :admin, @challenge
-      .alert.alert-info.alert-flat.text-center
-        strong> This challenge is ready to be judged!
-        = link_to 'Go to the judging dashboard', challenge_entries_path(@challenge), class: 'alert-link'
+    = render partial: "challenges/alerts"
 
     section.main-section
       .container

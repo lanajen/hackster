@@ -458,25 +458,15 @@
                       = link_to entry.challenge.name, entry.challenge
 
               - cache [I18n.locale, "project-#{@project.id}-other", @other_projects, site_user_name], tag: "project-#{@project.id}-other" do
-                - if @other_projects_count > 0
+                - if @other_projects.count > 0
                   section.section-thumbs
-                    h4 Other projects by the same #{pluralize_without_count @project.team_members_count, 'author'}
-                    - if @last_projects.present?
-                      .subtitle Most popular
+                    h4 Similar projects you might like
                     - @other_projects.each do |project|
                       .project-thumb-mini.has-link-overlay style="background-image: url('#{project.cover_image.try(:imgix_url, :cover_wide_mini)}')"
                         = link_to '', project, class: 'link-overlay'
                         .project-thumb-mini-inner
                           h4= link_to project.name, project
                           / # p= render partial: 'projects/by_team', locals: { project: project }
-                    - if @last_projects.present?
-                      .subtitle Most recent
-                      - @last_projects.each do |project|
-                        .project-thumb-mini.has-link-overlay style="background-image: url('#{project.cover_image.try(:imgix_url, :cover_wide_mini)}')"
-                          = link_to '', project, class: 'link-overlay'
-                          .project-thumb-mini-inner
-                            h4= link_to project.name, project
-                            / # p= render partial: 'projects/by_team', locals: { project: project }
 
               - if @project.made_public_at
                 section.section-thumbs
@@ -487,7 +477,7 @@
                 section.section-thumbs.hidden-xs.hidden-sm
                   h4
                     | Table of contents
-                  .affixable style='top:20px'
+                  #project-side-nav.affixable style='top:20px' data-top=20
                     #scroll-nav.section-container
                       ul.nav
                         li.active
@@ -554,3 +544,14 @@
                         .add-to-list
                         - if @project.celery_id.present?
                           = link_to content_tag(:i, '', class: 'fa fa-shopping-cart') + content_tag(:span, "Buy it"), '#', 'data-celery' => @project.celery_id, 'data-celery-version' => 'v2', class: 'btn btn-warning btn-ellipsis btn-block'
+
+    - if @project.public?
+      - cache [I18n.locale, "project-#{@project.id}-other-bottom", @other_projects, site_user_name], tag: "project-#{@project.id}-other" do
+        - if @other_projects.count > 0
+          section.other-projects
+            .container
+              section.section-thumbs
+                h4 style='border:0' Similar projects you might like
+              .row
+                - @other_projects.each do |project|
+                  = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'similar' }

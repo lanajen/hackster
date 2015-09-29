@@ -153,7 +153,7 @@ class User < ActiveRecord::Base
     format: { with: /\A[a-zA-Z0-9_\-]+\z/, message: "accepts only letters, numbers, underscores '_' and dashes '-'." }, allow_blank: true
   validates :user_name, :new_user_name, exclusion: { in: %w(projects terms privacy admin infringement_policy search users communities hackerspaces hackers lists products about store api talk) }
   validates :interest_tags_string, :skill_tags_string, length: { maximum: 255 }
-  with_options unless: proc { |u| u.skip_registration_confirmation },
+  with_options unless: proc { |u| u.skip_registration_confirmation or u.email_confirmation.nil? },
     on: :create do |user|
       user.validates :email_confirmation, presence: true
       user.validate :email_matches_confirmation

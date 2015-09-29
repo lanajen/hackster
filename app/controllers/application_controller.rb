@@ -408,39 +408,39 @@ class ApplicationController < ActionController::Base
         return
       end
 
-      unless cookies[:next_show_banner].present?
-        value = if cookies[:last_shown_banner].present?
-          cookies[:last_shown_banner].to_time + 3.days
-        elsif cookies[:first_seen].present?
-          cookies[:first_seen].to_time + 3.days
-        else
-          3.days.from_now
-        end
-        cookies[:next_show_banner] = { value: value, expires: 10.years.from_now }
-      end
+      # unless cookies[:next_show_banner].present?
+      #   value = if cookies[:last_shown_banner].present?
+      #     cookies[:last_shown_banner].to_time + 3.days
+      #   elsif cookies[:first_seen].present?
+      #     cookies[:first_seen].to_time + 3.days
+      #   else
+      #     3.days.from_now
+      #   end
+      #   cookies[:next_show_banner] = { value: value, expires: 10.years.from_now }
+      # end
 
       cookies[:first_seen] = { value: Time.now, expires: 10.years.from_now } unless cookies[:first_seen].present?
 
       return unless is_trackable_page?
-      if cookies[:next_show_banner].present? and cookies[:next_show_banner].to_time < Time.now
-        # cookies[:first_seen].to_time < 3.days.ago and (cookies[:last_shown_banner].nil? or cookies[:last_shown_banner].to_time < 3.days.ago)
-        @modal = render_to_string partial: 'shared/modals/signup_popup'
-        cookies[:last_shown_banner] = { value: Time.now, expires: 10.years.from_now }
-        cookies[:next_show_banner] = 3.days.from_now
-        if cookies[:shown_banner_count].present?
-          cookies[:shown_banner_count] = cookies[:shown_banner_count].to_i + 1
-        else
-          cookies[:shown_banner_count] = { value: 1, expires: 10.years.from_now }
-        end
-        data = {
-          first_seen: cookies[:first_seen],
-          initial_referrer: cookies[:initial_referrer],
-          landing_page: cookies[:landing_page],
-          shown_banner_count: cookies[:shown_banner_count],
-          visits_count_before_signup: JSON.parse(cookies[:visits]).size,
-        }
-        track_event 'Shown signup popup', data
-      end
+      # if cookies[:next_show_banner].present? and cookies[:next_show_banner].to_time < Time.now
+      #   # cookies[:first_seen].to_time < 3.days.ago and (cookies[:last_shown_banner].nil? or cookies[:last_shown_banner].to_time < 3.days.ago)
+      #   @modal = render_to_string partial: 'shared/modals/signup_popup'
+      #   cookies[:last_shown_banner] = { value: Time.now, expires: 10.years.from_now }
+      #   cookies[:next_show_banner] = 3.days.from_now
+      #   if cookies[:shown_banner_count].present?
+      #     cookies[:shown_banner_count] = cookies[:shown_banner_count].to_i + 1
+      #   else
+      #     cookies[:shown_banner_count] = { value: 1, expires: 10.years.from_now }
+      #   end
+      #   data = {
+      #     first_seen: cookies[:first_seen],
+      #     initial_referrer: cookies[:initial_referrer],
+      #     landing_page: cookies[:landing_page],
+      #     shown_banner_count: cookies[:shown_banner_count],
+      #     visits_count_before_signup: JSON.parse(cookies[:visits]).size,
+      #   }
+      #   track_event 'Shown signup popup', data
+      # end
     end
 
     def require_no_authentication
@@ -606,7 +606,7 @@ class ApplicationController < ActionController::Base
 
       # incoming and
       # removed to allow http caching: checking for referrer in the browser directly
-      !user_signed_in? and (params[:controller].in? %w(projects users platforms parts)) and params[:action] == 'show'
+      !user_signed_in? and (params[:controller].in? %w(projects users platforms parts)) and params[:action] == 'show' or @show_hello_world
     rescue
       false
     end

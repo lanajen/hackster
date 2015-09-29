@@ -72,10 +72,15 @@ class NotificationDecorator < ApplicationDecorator
         name_link = (followable == h.current_user ? 'you' : h.link_to(followable.name, followable))
         "#{follower_link} followed #{name_link}."
       end
-    when CommunityMember, EventMember, HackerSpaceMember, PlatformMember
+    when CommunityMember, EventMember, HackerSpaceMember, PlatformMember, Member
       member = notifiable
       group = member.group
-      group_link = h.link_to group.name, group
+      group_link = if group.is? :team
+        project = group.projects.first
+        h.link_to project.name, project
+      else
+        h.link_to group.name, group
+      end
       case event
       when :accepted
         user = member.user

@@ -92,18 +92,9 @@ class UserObserver < ActiveRecord::Observer
 
   private
     def advertise_new_user record
-      # send_zapier record.email
       NotificationCenter.notify_via_email nil, :user, record.id, 'registration_confirmation' unless record.skip_registration_confirmation
     end
 
     def expire record
-    end
-
-    def send_zapier email
-      return unless email.present?
-
-      # between 8am and 8pm in the next 3 to 7 days
-      time = Time.at(DateTime.tomorrow.in_time_zone(PDT_TIME_ZONE).to_time.to_i + 3.days.to_i + rand(0..4).days.to_i + rand(8.to_f..20.to_f).hours.to_f)
-      ZapierQueue.perform_at time, 'post', email
     end
 end

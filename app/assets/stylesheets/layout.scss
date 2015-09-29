@@ -993,29 +993,51 @@ input.placeholder, textarea.placeholder {
   text-decoration: none;
 }
 
-#hello-world-container {
-  height: 60px;
-  display: none;
-}
 #hello-world {
   display: none;
-  padding: 18px 0 17px;
+  padding: 50px 20px 20px;
   border-bottom: 1px solid #036394;
   background: #08C;
   color: white;
-  font-weight: bold;
-  letter-spacing: 0.5px;
-  height: 60px;
-  font-size: 0.9em;
+  height: 200px;
+  text-shadow: #025782 1px 1px 1px;
+  .content {
+    opacity: 0;
+    @include transition(opacity 100ms);
+  }
   &.fixed {
     position: fixed;
     z-index: 10000;
     width: 100%;
   }
+  .header {
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: 5px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+  }
+  .message {
+    text-align: center;
+    font-size: 1.2em;
+  }
   .close {
-    font-size: 1.5em;
     color: white;
     @include opacity(0.9);
+    position: absolute;
+    top: 6px;
+    right: 12px;
+    font-size: 35px;
+  }
+  .btn-primary {
+    background: #fff;
+    color: #777;
+    &:hover {
+      background: #fafafa;
+    }
+  }
+  .btn-sm {
+    font-size: 0.75em;
   }
   a {
     color: #D1E6F0;
@@ -1023,6 +1045,12 @@ input.placeholder, textarea.placeholder {
     &:hover {
       color: #C4DAE4;
     }
+  }
+}
+@media (max-width: 768px) {
+  #hello-world {
+    padding-top: 20px;
+    font-size: 0.8em;
   }
 }
 
@@ -1149,10 +1177,10 @@ a.hidden-link {
     font-size: 1.5em;
   }
   .close {
-    font-size: 40px;
+    font-size: 28px;
     position: absolute;
-    top: -2px;
-    right: 4px;
+    top: 5px;
+    right: 10px;
     outline: 0;
   }
   p {

@@ -7,12 +7,13 @@ gem 'rails', '4.2.3'
 gem 'dotenv-rails', groups: [:development, :test]
 
 #  assets
-gem 'fog'
-gem 'fog-aws', '0.1.2'
 # gem 'asset_sync', '1.1.0'
 gem 'bootstrap-sass', '3.3.1'
 gem 'coffee-rails', '4.0.1'
 gem 'compass-rails', '2.0.4'
+gem 'fog'
+gem 'fog-aws', '0.1.2'
+# gem 'font_assets'
 gem 'font-awesome-rails', '4.1.0.0'
 gem 'jquery-rails', '4.0.4'
 gem 'jquery-ui-rails', '5.0.5'
@@ -27,6 +28,7 @@ gem "browserify-rails", '1.0.1'
 
 # bower
 source 'https://rails-assets.org' do
+  gem 'rails-assets-js-cookie', '2.0.3'
   gem 'rails-assets-medium-editor', '1.8.14'
   gem 'rails-assets-underscore', '1.7.0'
   gem 'rails-assets-fluxxor', '1.5.2'
