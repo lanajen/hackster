@@ -296,8 +296,8 @@ $(function () {
   window.NestedFormEvents.prototype.insertFields = function(content, assoc, link) {
     if ($(link).hasClass('nested-field-table')) {
       var $tr = $(link).closest('tr');
-      content = content.replace(/^<div class="fields">/,"");
-      content = content.replace(/<\/div>$/,"");
+      content = content.replace(/^<div class="fields">/, '<tr class="fields">');
+      content = content.replace(/<\/div>$/, '</tr>');
       return $(content).insertBefore($tr);
     } else {
       return $(content).insertBefore($(link));

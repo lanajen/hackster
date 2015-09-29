@@ -133,7 +133,7 @@
                     td= f_prize.input :requires_shipping, label: false, wrapper: false
                     td= f_prize.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-xs btn-danger'
               tr.sortable-disabled
-                td  colspan=5  = f.link_to_add 'Add another prize', :prizes, class: 'btn btn-xs btn-success'
+                td  colspan=5  = f.link_to_add 'Add another prize', :prizes, class: 'btn btn-xs btn-success nested-field-table'
 
       .panel.panel-default
         .panel-heading

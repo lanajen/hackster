@@ -45,11 +45,11 @@ class Platform < Collection
 
   attr_accessible :cover_image_id, :client_subdomain_attributes, :logo_id,
     :company_logo_id, :parts_attributes, :reset_api_credentials,
-    :reset_portal_credentials
+    :reset_portal_credentials, :project_collections_attributes
 
   attr_accessor :reset_api_credentials, :reset_portal_credentials
 
-  accepts_nested_attributes_for :client_subdomain, :parts
+  accepts_nested_attributes_for :client_subdomain, :parts, :project_collections
 
   # before_save :update_user_name
   before_save :ensure_api_credentials,

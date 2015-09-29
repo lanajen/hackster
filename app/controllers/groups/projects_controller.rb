@@ -15,6 +15,11 @@ class Groups::ProjectsController < ApplicationController
       @project_collections = @project_collections.where(workflow_state: params[:status])
     end
 
+    if params[:q].present?
+      q = "%#{params[:q]}%"
+      @project_collections = @project_collections.joins(:project).where("projects.name ILIKE ?", q)
+    end
+
     @project_collections = @project_collections.includes(:project).includes(project: :users).order(created_at: :desc).paginate(page: params[:page])
   end
 
@@ -37,6 +42,22 @@ class Groups::ProjectsController < ApplicationController
     else
       @projects = current_user.projects
       render action: "new"
+    end
+  end
+
+  def featured
+    authorize! :moderate, @group
+
+    @projects = @group.project_collections.featured.includes(:project)
+  end
+
+  def save_featured
+    authorize! :moderate, @group
+
+    if @group.update_attributes(params[:group])
+      redirect_to group_admin_projects_path(@group), notice: 'Featured projects saved.'
+    else
+      render :featured
     end
   end
 

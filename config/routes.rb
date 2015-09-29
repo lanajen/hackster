@@ -165,6 +165,8 @@ HackerIo::Application.routes.draw do
         patch 'awards' => 'grades#update'
         patch 'projects/link' => 'groups/projects#link'
         get 'projects' => 'groups/projects#index', as: :admin_projects
+        get 'projects/featured' => 'groups/projects#featured'
+        patch 'projects/featured' => 'groups/projects#save_featured'
         patch 'projects/:id' => 'groups/projects#update_workflow', as: :update_workflow
       end
 
