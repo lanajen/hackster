@@ -556,6 +556,12 @@ HackerIo::Application.routes.draw do
       get ':user_name' => 'users#show', as: :user, user_name: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
     end
 
+    constraints(MainSite) do
+      get 'hackers', to: redirect('/community')
+      get 'community' => 'users#index', as: :users
+      get 'users/:id' => 'users#redirect_to_show', as: :hacker, format: /(html|js)/
+    end
+
     scope ':user_name/:project_slug', as: :project, user_name: /[A-Za-z0-9_\-]{3,}/, project_slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|js)/ } do
       get '' => 'projects#show', as: ''
       delete '' => 'projects#destroy'
@@ -566,12 +572,6 @@ HackerIo::Application.routes.draw do
         patch 'update_workflow', on: :member
       end
       resources :logs, controller: :build_logs
-    end
-
-    constraints(MainSite) do
-      get 'hackers', to: redirect('/community')
-      get 'community' => 'users#index', as: :users
-      get 'users/:id' => 'users#redirect_to_show', as: :hacker, format: /(html|js)/
     end
 
     constraints(ClientSite) do
