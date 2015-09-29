@@ -357,6 +357,7 @@ module UrlHelper
     update_notifications_url({ user_token: user.authentication_token,
       user_email: user.email }.merge(opts))
   end
+  alias_method :change_frequency_url, :unsubscribe_url
 
   def url_for(options = nil)
     case options

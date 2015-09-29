@@ -23,7 +23,12 @@ class NotificationsController < ApplicationController
     if params[:unsubscribe]
       current_user.unsubscribe_from! :email, params[:unsubscribe]
       flash[:notice] = "Notification preferences saved."
+    elsif params[:frequency]
+      current_user.project_email_frequency_proxy = params[:frequency]
+      current_user.save
+      flash[:notice] = "Notification preferences saved."
     end
+
     redirect_to edit_notifications_path
   end
 end

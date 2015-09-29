@@ -71,6 +71,24 @@ class CronTask < BaseWorker
     CronTask.perform_in 24.hours, 'launch_daily_cron'
   end
 
+  def launch_weekly_cron
+    CronTask.perform_in 2.hours, 'send_weekly_notifications'
+
+    next_date = Time.now.in_time_zone(PDT_TIME_ZONE).next_week.advance(hours: 8)
+    CronTask.perform_at next_date, 'launch_weekly_cron'
+  end
+
+  def launch_monthly_cron
+    CronTask.perform_in 2.hours, 'send_monthly_notifications'
+
+    next_date = Time.now.in_time_zone(PDT_TIME_ZONE).next_month.beginning_of_month
+    if next_date.wday != 1
+      next_date = next_date.advance(days: 8 - next_date.wday)
+    end
+    next_date = next_date.advance(hours: 8)
+    CronTask.perform_at next_date, 'launch_monthly_cron'
+  end
+
   def lock_assignment
     Assignment.pending_grading.each do |assignment|
       assignment.projects.submitted.each do |project|
@@ -129,11 +147,11 @@ class CronTask < BaseWorker
       project_ids = Project.self_hosted.where('projects.made_public_at > ? AND projects.made_public_at < ?', time_frame.ago, Time.now).approved.pluck(:id)
 
       users = []
-      users += Platform.joins(:projects).distinct('groups.id').where(projects: { id: project_ids }).map{|t| t.followers.with_subscription(:email, 'follow_platform_activity').with_email_subscription(email_frequency).pluck(:id) }.flatten
-      users += User.joins(:projects).distinct('users.id').where(projects: { id: project_ids }).map{|u| u.followers.with_subscription(:email, 'follow_user_activity').with_email_subscription(email_frequency).pluck(:id) }.flatten
+      users += Platform.joins(:projects).distinct('groups.id').where(projects: { id: project_ids }).map{|t| t.followers.with_subscription(:email, 'new_projects').with_email_frequency(email_frequency).pluck(:id) }.flatten
+      users += User.joins(:projects).distinct('users.id').where(projects: { id: project_ids }).map{|u| u.followers.with_subscription(:email, 'new_projects').with_email_frequency(email_frequency).pluck(:id) }.flatten
 
       lists = List.joins(:project_collections).where('project_collections.created_at > ?', time_frame.ago).where(groups: { type: 'List' }).distinct(:id)
-      users += lists.map{|l| l.followers.with_subscription(:email, 'follow_list_activity').with_email_subscription(email_frequency).pluck(:id) }.flatten
+      users += lists.map{|l| l.followers.with_subscription(:email, 'new_projects').with_email_frequency(email_frequency).pluck(:id) }.flatten
 
       users.uniq!
 

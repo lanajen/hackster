@@ -20,7 +20,7 @@
                   td= User::SUBSCRIPTIONS[:email][sub]
                   td= check_box_tag 'user[email_subscriptions][]', sub, current_user.subscribed_to?('email', sub)
                   td
-              - (User::SUBSCRIPTIONS[:email].keys & User::SUBSCRIPTIONS[:web].keys).each do |sub|
+              - (User::SUBSCRIPTIONS[:email].keys & User::SUBSCRIPTIONS[:web].keys - ['new_projects']).each do |sub|
                 tr
                   td= User::SUBSCRIPTIONS[:email][sub]
                   td= check_box_tag 'user[email_subscriptions][]', sub, current_user.subscribed_to?('email', sub)
@@ -30,6 +30,8 @@
                   td= User::SUBSCRIPTIONS[:web][sub]
                   td
                   td= check_box_tag 'user[web_subscriptions][]', sub, current_user.subscribed_to?('web', sub)
+          = f.input :project_email_frequency_proxy, collection: User::PROJECT_EMAIL_FREQUENCIES, label: 'New projects email frequency'
+
           .form-actions
             = f.button :submit, "Save changes", class: 'btn btn-primary'
             = link_to 'Cancel', user_path(current_user), class: 'btn btn-link btn-sm'

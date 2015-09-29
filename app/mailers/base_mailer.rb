@@ -86,6 +86,10 @@ class BaseMailer < ActionMailer::Base
           return false unless defined?(user) and user
           unsubscribe_token = token.split(/:/)[1]
           url.unsubscribe_url(user, unsubscribe: unsubscribe_token)
+        elsif token =~ /\Achange_frequency_link/
+          return false unless defined?(user) and user
+          frequency = token.split(/:/)[1]
+          url.change_frequency_url(user, frequency: frequency)
         else
           split_token = token.split '_', 2
           object = split_token[0]
