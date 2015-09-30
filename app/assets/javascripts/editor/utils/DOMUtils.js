@@ -62,6 +62,21 @@ const Utils = {
     return parentEl = parentEl === undefined ? childNode : parentEl;
   },
 
+  getParentOfNodeUnderBlockElement(anchorNode, blockElement) {
+    let parent;
+
+    while(anchorNode.parentNode && !anchorNode.parentNode.classList.contains('content-editable')) {
+      if(Object.is(anchorNode.parentNode, blockElement)) {
+        parent = anchorNode;
+        break;
+      }
+
+      anchorNode = anchorNode.parentNode;
+    }
+
+    return parent;
+  },
+
   getRootOverlayElement(anchorNode) {
     let parentEl, childNode = anchorNode;
 
@@ -378,13 +393,9 @@ const Utils = {
   isSelectionInAnchor(anchorNode) {
     let bool = false;
 
-    while(anchorNode.parentNode) {
-      if(anchorNode.localName && anchorNode.localName === 'a') {
+    while(anchorNode.parentNode && (anchorNode.parentNode.classList && !anchorNode.parentNode.classList.contains('content-editable'))) {
+      if(anchorNode.nodeName === 'A') {
         bool = true;
-        break;
-      }
-
-      if(anchorNode.className && anchorNode.className.split(' ').indexOf('content-editable') !== -1) {
         break;
       }
 
@@ -411,6 +422,53 @@ const Utils = {
     }
 
     return node;
+  },
+
+  isNodeChildOfElement(node, elementName) {
+    let isChildOf = false;
+
+    while(node.parentNode && !node.parentNode.classList.contains('content-editable')) {
+      if(node.nodeName === elementName) {
+        isChildOf = true;
+        break;
+      }
+
+      node = node.parentNode;
+    }
+
+    return isChildOf;
+  },
+
+  getParentNodeByElement(node, elementName) {
+    let parent, childNodes = [];
+
+    while(node.parentNode && !node.parentNode.classList.contains('content-editable')) {
+      if(node.nodeName === elementName) {
+        parent = node;
+        break;
+      }
+
+      node = node.parentNode;
+      childNodes.push(node.nodeName.toLowerCase());
+    }
+
+    return { parent: parent, childNodes: childNodes };
+  },
+
+  createNewNodeTree(nodeList, textContent) {
+    let root = document.createElement(nodeList.pop());
+    let newTree = (function recurse(list, root) {
+      if(!list.length) {
+        root.appendChild(document.createTextNode(textContent));
+        return root;
+      } else {
+        root.appendChild(document.createElement(list.pop()));
+        recurse(list, root.firstChild);
+        return root;
+      }
+    }(nodeList, root));
+
+    return newTree;
   },
 
   getTextNodeFromCarousel(div) {
@@ -508,7 +566,7 @@ const Utils = {
       'UL': 'ul'
     };
 
-    while(!Object.is(anchorNode, parentNode) && anchorNode.parentNode !== undefined) {
+    while(anchorNode && !Object.is(anchorNode, parentNode) && anchorNode.parentNode !== undefined) {
       if(anchorNode.nodeType === 1 && map[anchorNode.nodeName]) {
         list.push(map[anchorNode.nodeName]);
       }
@@ -1055,10 +1113,21 @@ const Utils = {
 
   parseTree(html) {
     function handler(html) {
-      return _.map(html, function(item) {
+      return _.map(html, (item) => {
         let name;
+
+        /** Remove these nodes immediately. */
+        if(item.name === 'br' || item.name === 'script' || item.name === 'comment') {
+          return null;
+        }
+
         if(item.name) {
           name = this.transformTagNames(item);
+        }
+
+        /** Remove invalid anchors. */
+        if(item.name === 'a' && !Validator.isURL(item.attribs.src)) {
+          return null;
         }
 
         if(item.type === 'text' && !item.children) {
@@ -1090,7 +1159,7 @@ const Utils = {
             children: handler.apply(this, [item.children || []])
           }
         }
-      }.bind(this));
+      }).filter(item => { return item !== null; });
     }
     return handler.call(this, html);
   },
@@ -1101,7 +1170,6 @@ const Utils = {
     let converter = {
       'b': 'strong',
       'bold': 'strong',
-      'i': 'em',
       'italic': 'em',
       'ol': 'ul'
     };

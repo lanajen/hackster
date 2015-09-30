@@ -14,6 +14,7 @@ const ContentEditable = React.createClass({
 
   componentWillMount() {
     this.debouncedEmitChange = _.debounce(this.emitChange, 50);
+    this.domObserver = new MutationObserver(this.handleDomMutation);
   },
 
   componentDidMount() {
@@ -32,6 +33,14 @@ const ContentEditable = React.createClass({
     } else {
       this.setCursorOnUpdate();
     }
+
+    /** Inits Mutation Observer. */
+    let config = { attributes: true, childList: true, characterData: true };
+    this.domObserver.observe(React.findDOMNode(this), config);
+  },
+
+  componentWillUnmount() {
+    this.domObserver.disconnect();
   },
 
   componentWillReceiveProps(nextProps) {
@@ -57,6 +66,43 @@ const ContentEditable = React.createClass({
     return false;
   },
 
+  handleDomMutation(mutations) {
+    let nodes;
+    const blockEls = {
+      P: true,
+      BLOCKQUOTE: true,
+      UL: true,
+      PRE: true
+    };
+    /** Shallow pass on immediate children of CE.  Makes sure no funny biz happens to our tree.
+      * The observer is mainly for people tinkering with devtools html and perhaps an initial parse / paste action.
+      * We handle deeper children in parseTree in Editable.js.  Why?
+      * Mainly to prevent heavy recursive checks on each node on each dom mutation, which happens on every render on the whole tree.
+     */
+    mutations.forEach(mutation => {
+      nodes = [].slice.apply(mutation.addedNodes);
+      nodes.forEach(node => {
+        
+        if(!blockEls[node.nodeName] && node.parentNode !== null) {
+          console.log('TSK TSK TSK');
+          node.parentNode.removeChild(node);
+        }
+
+        /** Quick sweep on UL children.  Makes sure they're list items. */
+        if(node.nodeName === 'UL') {
+          let children = [].slice.apply(node.childNodes);
+          children.forEach(child => {
+            if(child.nodeName !== 'LI') {
+              let li = document.createElement('li');
+              li.textContent = child.textContent;
+              node.replaceChild(li, child);
+            }
+          });
+        }
+      });
+    });
+  },
+
   setCursorOnUpdate() {
     let cursorPosition = this.props.editor.cursorPosition;
     if(cursorPosition.rootHash !== React.findDOMNode(this).getAttribute('data-hash')) { return; }
@@ -75,11 +121,6 @@ const ContentEditable = React.createClass({
     let { sel, range } = Utils.getSelectionData();
     let offset = this.props.editor.setCursorToNextLine ? 0 : cursorPosition.offset;
     let textNode = Utils.getLastTextNode(el);
-    // let textNode = el.nodeName === 'DIV' && el.classList.contains('react-editor-carousel')
-    //              ? Utils.getTextNodeFromCarousel(el)
-    //              : el.nodeName === 'DIV' && el.classList.contains('react-editor-video')
-    //              ? Utils.getTextNodeFromVideo(el)
-    //              : Utils.getFirstTextNode(el);
 
     /** Makes sure its a text node. */
     if(textNode.nodeType !== 3 && textNode.nodeType === 1) {
@@ -90,15 +131,9 @@ const ContentEditable = React.createClass({
     if(textNode.textContent.length < offset) {
       offset = textNode.textContent.length;
     }
-
-    range.setStart(textNode, offset);
-
-    // if(textNode.parentNode.nodeName === 'FIGCAPTION') {
-    //   range.selectNodeContents(textNode);
-    // }
-
     // console.log('Setting Cursor To: ', cursorPosition.node, ' @: ' + offset, el, this.props.editor.setCursorToNextLine);
 
+    range.setStart(textNode, offset);
     rangy.getSelection().setSingleRange(range);
     this.props.actions.setCurrentStoreIndex(this.props.storeIndex);
     this.props.actions.setCursorToNextLine(false);
@@ -146,23 +181,12 @@ const ContentEditable = React.createClass({
 
 
       /** Handles Anchor PopOver. */
-      if(anchorNode.parentNode && anchorNode.parentNode.nodeName === 'A') {
+      if(Utils.isSelectionInAnchor(anchorNode)) {
         this.handlePopOver(true);
       } else {
         this.handlePopOver(false);
       }
-      /** Handles Image Popover. */
-      // if(parentNode.nodeName === 'DIV' && parentNode.classList.contains('react-editor-carousel') && range.startContainer.nodeName === 'DIV') {
-      //   let node = range.startContainer.firstChild;
-      //   this.props.actions.toggleImageToolbar(true, { node: parentNode, depth: depth, top: parentNode.offsetTop, height: node.offsetHeight, width: node.offsetWidth, left: node.offsetLeft, type: 'carousel' });
-      // } else if(parentNode.nodeName === 'DIV' && parentNode.classList.contains('react-editor-video') && range.startContainer.nodeName === 'DIV') {
-      //   let node = range.startContainer.firstChild;
-      //   this.props.actions.toggleImageToolbar(true, { node: parentNode, depth: depth, top: parentNode.offsetTop, height: node.offsetHeight, width: node.offsetWidth, left: node.offsetLeft, type: 'video' });
-      // } else {
-      //   if(this.props.editor.showImageToolbar === true) {
-      //     this.props.actions.toggleImageToolbar(false, {});
-      //   }
-      // }
+
       /** Handles Active Button Toggling. */
       if(anchorNode.parentNode && activeButtons[anchorNode.parentNode.nodeName]) {
         let list = Utils.createListOfActiveElements(anchorNode, parentNode);
@@ -170,13 +194,6 @@ const ContentEditable = React.createClass({
       } else {
         this.props.actions.toggleActiveButtons([]);
       }
-
-      /** Resets Caption on backspace. */
-      // if(anchorNode.nodeName === 'FIGCAPTION' && (e.keyCode === 8 || e.keyCode === 46)) {
-      //   anchorNode.innerText = 'caption (optional)';
-      //   range.selectNodeContents(anchorNode);
-      //   rangy.getSelection().setSingleRange(range);
-      // }
     }
   },
 
@@ -248,6 +265,11 @@ const ContentEditable = React.createClass({
 
       switch(parentNode.nodeName) {
         case 'P':
+          /** Removes placeholder.  This is when Enter is pressed only, other keys are handled in keydown. */
+          if(parentNode.classList.contains('react-editor-placeholder-text')) {
+            parentNode.classList.remove('react-editor-placeholder-text');
+            parentNode.textContent = '';
+          }
           /**
            * Handles video parser when enter is pressed.
            */
@@ -462,6 +484,8 @@ const ContentEditable = React.createClass({
   },
 
   onKeyDown(e) {
+    let { parentNode } = Utils.getSelectionData();
+
     /** If user deleted the paragraph under a PRE */
     if(React.findDOMNode(this).lastChild && React.findDOMNode(this).lastChild.nodeName === 'PRE') {
       let { depth } = Utils.getSelectionData();
@@ -469,11 +493,11 @@ const ContentEditable = React.createClass({
       this.createBlockElement('p', depth, false, this.props.storeIndex);
       this.props.actions.forceUpdate(true);
     }
-    /** Removes any text with specified class.  Mimics a placeholder. */
-    if(rangy.getSelection().anchorNode && rangy.getSelection().anchorNode.parentNode.classList.contains('react-editor-placeholder-text')) {
-      let target = rangy.getSelection().anchorNode.parentNode;
-      target.classList.remove('react-editor-placeholder-text');
-      target.textContent = '';
+
+    /** Removes placeholder text.  Used mainly for video placeholder.  Enter is handled in handleEnterKey under P. */
+    if(parentNode.classList && parentNode.classList.contains('react-editor-placeholder-text') && e.keyCode !== 13) {
+      parentNode.classList.remove('react-editor-placeholder-text');
+      parentNode.textContent = '';
     }
 
     /** Set current storeIndex */
@@ -507,14 +531,19 @@ const ContentEditable = React.createClass({
     if(e.keyCode === undefined || e.type === 'mouseup') {
       this.preventEvent(e);
       let node = React.findDOMNode(e.target);
-      let { sel, range } = Utils.getSelectionData();
+      let { sel, range, anchorNode } = Utils.getSelectionData();
       if(sel === null) { return; }
       let caretRange = Utils.getMouseEventCaretRange(e);
 
       /** Handles cursor placement. */
       if(node !== React.findDOMNode(this) && (range.startOffset < caretRange.startOffset && range.endOffset !== caretRange.endOffset) 
          || (range.endOffset > caretRange.endOffset && range.startOffset !== caretRange.startOffset)) {
-        sel.setSingleRange(caretRange);
+        // sel.setSingleRange(caretRange);
+      }
+
+      /** Trigger Anchor PopUp when it's selected. */
+      if(Utils.isSelectionInAnchor(anchorNode)) {
+        this.handlePopOver(true);
       }
 
     } else {
@@ -552,6 +581,18 @@ const ContentEditable = React.createClass({
 
     /** Removes a pesky image overlay. */
     this.props.actions.toggleImageToolbar(false, {});
+
+    /** Mostly for anchor popups. */
+    this.trackCursor(e);
+  },
+
+  handleDoubleClick(e) {
+    let { range } = Utils.getSelectionData();
+    
+    /** Trigger Anchor PopUp when it's selected. */
+      if(Utils.isSelectionInAnchor(range.startContainer)) {
+        this.handlePopOver(true);
+      }
   },
 
   handlePaste(e) {
@@ -613,6 +654,7 @@ const ContentEditable = React.createClass({
         onKeyUp={this.onKeyUp}
         onMouseUp={this.onKeyUp}
         onMouseOver={this.onMouseOver}
+        onDoubleClick={this.handleDoubleClick}
         onClick={this.onClick}
         onPaste={this.handlePaste}
         contentEditable={true}

@@ -48,7 +48,7 @@ const Carousel = React.createClass({
       }
     }
     /** On Enter Key */
-    if(e.keyCode === 13) {
+    if(e.keyCode === 13 && React.findDOMNode(e.target).nodeName !== 'FIGCAPTION') {
       e.preventDefault();
       this.props.actions.prependCE(this.props.storeIndex);
     }
@@ -104,7 +104,7 @@ const Carousel = React.createClass({
         parent = Utils.getRootParentElement(currentNode), 
         depth = Utils.findChildsDepthLevel(parent, parent.parentNode);
 
-    if(target.nodeName === 'IMG' && this.props.editor.showImageToolbar === false) {
+    if((target.nodeName === 'IMG' || target.nodeName === 'DIV' && target.classList.contains('react-editor-image-wrapper')) && this.props.editor.showImageToolbar === false) {
       this.props.actions.toggleImageToolbar(true, {
         node: currentNode,
         depth: depth,

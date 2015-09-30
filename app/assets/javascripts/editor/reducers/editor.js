@@ -3,14 +3,13 @@ import { Editor } from '../constants/ActionTypes';
 import _ from 'lodash';
 import { createRandomNumber } from '../../utils/Helpers';
 import Utils from '../utils/DOMUtils';
-import Parser from '../utils/Parsers';
 import Helpers from '../../utils/Helpers';
 import async from 'async';
 
 import Hashids from 'hashids';
 const hashids = new Hashids('hackster', 4);
 
-import { P, A, PRE, BLOCKQUOTE, UL, DIV, FIGURE, FIGCAPTION, IMG, IFRAME, CAROUSEL, VIDEO, ELEMENT } from '../components/DomElements';
+import { P, A, PRE, BLOCKQUOTE, UL, DIV, FIGURE, FIGCAPTION, IMG, ELEMENT } from '../components/DomElements';
 const mapToComponent = {
   'p': React.createFactory(P),
   'a': React.createFactory(A),
@@ -20,19 +19,13 @@ const mapToComponent = {
   'div': React.createFactory(DIV),
   'figure': React.createFactory(FIGURE),
   'figcaption': React.createFactory(FIGCAPTION),
-  'img': React.createFactory(IMG),
-  'iframe': React.createFactory(IFRAME),
-  'carousel': React.createFactory(CAROUSEL),
-  'video': React.createFactory(VIDEO),
+  'code': React.createFactory('code'),
   'strong': React.createFactory('strong'),
   'span': React.createFactory('span'),
   'br': React.createFactory('br'),
   'em': React.createFactory('em'),
   'li': React.createFactory('li'),
-  'code': React.createFactory('code'),
-  'button': React.createFactory('button'),
-  'b': React.createFactory('b'),
-  'i': React.createFactory('i')
+  'b': React.createFactory('b')
 };
 
 const blockElements = {
@@ -189,7 +182,7 @@ export default function(state = initialState, action) {
 
     case Editor.transformListItemsToBlockElements:
       dom = state.dom;
-      newDom = transformListItemsToBlockElements(dom, action.tag, action.depth);
+      newDom = transformListItemsToBlockElements(dom, action.tag, action.depth, action.storeIndex);
       return {
         ...state,
         dom: newDom
@@ -318,6 +311,14 @@ export default function(state = initialState, action) {
       return {
         ...state,
         isDataLoading: action.bool
+      };
+
+    case Editor.splitBlockElement:
+      dom = state.dom;
+      newDom = handleSplitBlockElement(dom, action.tagType, action.nodes, action.depth, action.storeIndex);
+      return {
+        ...state,
+        dom: newDom
       };
 
     default:
@@ -789,97 +790,6 @@ function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
   return { newDom: dom, rootHash: rootHash };
 }
 
-
-// function handleCarouselCreation(dom, map, position) {
-//   let carousel, inner, children = [];
-
-//   _.forEach(map, function(image, index) {
-//     if(index === 0) {
-//       if(map.length > 1) {
-//         carousel = createCarousel(dom, image.url, image.width, position, true);
-//       } else {
-//         carousel = createCarousel(dom, image.url, image.width, position);
-//       }
-
-//     } else {
-//       if(map.length > 1 && index === map.length-1) {
-//         children.push(createImage(image.url, image.width));
-//       } else {
-//         children.push(createImage(image.url, image.width));
-//       }
-//     }
-//   });
-
-//   inner = carousel.props.children[0];
-//   inner.props.children.push(...children);
-//   dom.splice(position, 1, carousel);
-
-//   // Append a Paragraph if the carousel is the last element.
-//   if(position === dom.length-1) {
-//     dom = appendParagraph(dom);
-//   }
-
-//   return dom;
-// }
-
-// function createCarousel(dom, imgSrc, imgWidth, position) {
-//   let newDom = dom;
-//   let elToReplace = newDom[position] || { props: {tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1))}} };
-//   let Figure = mapToComponent['figure'];
-//   let Img = mapToComponent['img'];
-//   let Div = mapToComponent['div'];
-//   let FigCaption = mapToComponent['figcaption'];
-//   let Carousel = mapToComponent['carousel'];
-//   let FIGURE, IMG, FIGCAPTION, DIV, CAROUSEL, INNERCAROUSEL;
-
-//   FIGCAPTION = FigCaption({
-//     tagProps: {},
-//     style: {},
-//     className: 'react-editor-figcaption',
-//     key: createRandomNumber(), 
-//     children: ['caption (optional)']
-//   });
-  
-//   IMG = Img({
-//     tagProps: { src: imgSrc, 'data-src': '', alt: ''},
-//     style: { width: imgWidth },
-//     className: 'react-editor-image', 
-//     key: createRandomNumber(), 
-//     children: []
-//   });
-
-//   DIV = Div({
-//     tagProps: {},
-//     className: 'react-editor-image-wrapper',
-//     key: createRandomNumber(),
-//     children: [IMG, FIGCAPTION]
-//   });
-
-//   FIGURE = Figure({
-//     tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)), 'data-type': 'image' },
-//     className: 'react-editor-figure show', 
-//     key: createRandomNumber(), 
-//     children: [DIV]
-//   });
-
-//   INNERCAROUSEL = Div({
-//     tagProps: {},
-//     style: {},
-//     className: 'react-editor-carousel-inner',
-//     key: createRandomNumber(),
-//     children: [FIGURE]
-//   });
-
-//   CAROUSEL = Carousel({
-//     tagProps: { hash: elToReplace.props.tagProps.hash, 'data-type': 'carousel' },
-//     className: 'react-editor-carousel',
-//     key: createRandomNumber(),
-//     children: [INNERCAROUSEL]
-//   });
-
-//   return CAROUSEL;
-// }
-
 function addImagesToCarousel(dom, map, storeIndex) {
   let component = dom[storeIndex];
   let newImages = map.map(image => {
@@ -923,71 +833,6 @@ function updateShownImage(dom, activeIndex, storeIndex, direction) {
   dom.splice(storeIndex, 1, component);
   return dom;
 }
-
-// function addImagesToCarousel(dom, map, position) {
-//   let carousel = dom[position];
-//   let inner = carousel.props.children[0];
-//   let images = _.map(map, function(image) {
-//     return createImage(image.url, image.width);
-//   });
-
-//   /** Remove the class 'show' from current shown */
-//   let newChildren = _.map(inner.props.children, function(figure) {
-//     if(figure && figure.props.className.split(' ').indexOf('show') === 1) {
-//       return React.cloneElement(figure, {className: 'react-editor-figure'});
-//     } else {
-//       return React.cloneElement(figure);
-//     }
-//    });
-
-//   images[images.length-1] = React.cloneElement(images[images.length-1], {className: 'react-editor-figure show'});
-//   newChildren.push(...images);
-//   inner = React.cloneElement(inner, {}, [...newChildren]);
-//   carousel = React.cloneElement(carousel, {}, [inner]);
-
-//   dom.splice(position, 1, carousel);
-//   return dom;
-// }
-
-// function createImage(imgSrc, imgWidth) {
-//   let Figure = mapToComponent['figure'];
-//   let Img = mapToComponent['img'];
-//   let Div = mapToComponent['div'];
-//   let FigCaption = mapToComponent['figcaption'];
-//   let FIGURE, IMG, FIGCAPTION, DIV;
-
-//   FIGCAPTION = FigCaption({
-//     tagProps: {},
-//     style: { width: imgWidth },
-//     className: 'react-editor-figcaption',
-//     key: createRandomNumber(), 
-//     children: ['caption (optional)']
-//   });
-  
-//   IMG = Img({
-//     tagProps: { src: imgSrc, 'data-src': '', alt: ''},
-//     style: { width: imgWidth },
-//     className: 'react-editor-image', 
-//     key: createRandomNumber(), 
-//     children: []
-//   });
-
-//   DIV = Div({
-//     tagProps: {},
-//     className: 'react-editor-image-wrapper',
-//     key: createRandomNumber(),
-//     children: [IMG, FIGCAPTION]
-//   });
-
-//   FIGURE = Figure({
-//     tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)), 'data-type': 'image' },
-//     className: 'react-editor-figure',
-//     key: createRandomNumber(), 
-//     children: [DIV]
-//   });
-
-//   return FIGURE;
-// }
 
 function deleteImagesFromCarousel(dom, map, position, storeIndex) {
   let component = dom[storeIndex];
@@ -1084,91 +929,37 @@ function resetImageUrl(dom, data, storeIndex) {
   return dom;
 }
 
-// function deleteImagesFromCarousel(dom, map, position, storeIndex) {
-//   let carousel = dom[position];
-//   let inner = carousel.props.children[0];
-//   let replaceShownImage = false;
-//   let newChildren, indexOfShown;
+function handleSplitBlockElement(dom, tagType, nodes, depth, storeIndex) {
+  let component = dom[storeIndex];
+  let json = component.json;
 
-//   if(map.length < 1) {
-//     newChildren = _.filter(inner.props.children, function(figure, index) {
-//       if(figure.props.className.split(' ').indexOf('show') === 1) {
-//         replaceShownImage = true;
-//         indexOfShown = index;
-//         return false;
-//       } else {
-//         return true;
-//       }
-//     });
-//   } else {
-//     newChildren = _.filter(inner.props.children, function(figure, index) {
-//       if(_.includes(map, figure)) {
-//         if(figure.props.className.split(' ').indexOf('show') === 1) {
-//           replaceShownImage = true;
-//           indexOfShown = index;
-//         }
-//         return false;
-//       } else {
-//         return true;
-//       }
-//     });
-//   }
+  let node = React.cloneElement(json[depth], {}, createArrayOfComponents(nodes.shift()));
+  json.splice(depth, 1, node);
 
-//   /** If user is deleting all the images, delete the carousel while we're at it and be done with it. */
-//   if(newChildren.length < 1) {
-//     return _removeBlockElement(dom, position);
-//   }
+  let Blockquote = mapToComponent['blockquote'];
+  let BLOCKQUOTE = Blockquote({
+    tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) },
+    key: createRandomNumber(),
+    children: createArrayOfComponents(nodes.shift())
+  });
 
-//   if(replaceShownImage) {
-//     indexOfShown = (indexOfShown - 1) < 0 ? 0 : (indexOfShown-1);
-//     newChildren[indexOfShown] = React.cloneElement(newChildren[indexOfShown], {className: 'react-editor-figure show'});
-//   }
+  json.splice(depth+1, 0, BLOCKQUOTE);
 
-//   inner = React.cloneElement(inner, {}, newChildren);
-//   carousel = React.cloneElement(carousel, {}, [inner]);
+  if(nodes[0].length) {
+    let p = mapToComponent['p'];
+    let P = p({
+      tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) },
+      key: createRandomNumber(),
+      children: createArrayOfComponents(nodes.shift())
+    });
 
-//   dom.splice(position, 1, carousel);
-//   return dom;
-// }
+    json.splice(depth+2, 0, P);
+  }
 
-// function handleVideo(dom, data, position) {
-//   let elToReplace = dom[position] || {props: {tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) }}};
-//   let Video = mapToComponent['video'];
-//   let Div = mapToComponent['div'];
-//   let FIGURE = createImage(data.url, data.width);
-//   let INNERVIDEO, VIDEO, VIDEOMASK;
-
-//   VIDEOMASK = Div({
-//     tagProps: {},
-//     style: {},
-//     className: 'video-mask fa fa-youtube-play',
-//     key: createRandomNumber(),
-//     children: []
-//   });
-
-//   INNERVIDEO = Div({
-//     tagProps: {},
-//     style: {},
-//     className: 'react-editor-video-inner',
-//     key: createRandomNumber(),
-//     children: [VIDEOMASK, FIGURE]
-//   });
-
-//   VIDEO = Video({
-//     tagProps: { hash: elToReplace.props.tagProps.hash, 'data-video-id': data.id },
-//     className: 'react-editor-video',
-//     key: createRandomNumber(),
-//     children: [INNERVIDEO]
-//   });
-
-//   dom.splice(position, 1, VIDEO);
-
-//   if(position === dom.length-1) {
-//     dom = appendParagraph(dom);
-//   }
-
-//   return dom;
-// }
+  component.json = json;
+  dom.splice(storeIndex, 1, component);
+  return dom;
+}
 
 function appendParagraph(dom) {
   let P = mapToComponent['p'];

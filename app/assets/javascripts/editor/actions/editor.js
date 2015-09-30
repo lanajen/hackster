@@ -1,7 +1,6 @@
 import { Editor } from '../constants/ActionTypes';
 import Request from '../utils/Requests';
 import ImageHelpers from '../../utils/Images'; 
-import async from 'async';
 
 export function setDOM(html, index, depth) {
   return {
@@ -118,11 +117,12 @@ export function removeListItemFromList(parentPos, childPos, storeIndex) {
   };
 }
 
-export function transformListItemsToBlockElements(tag, depth) {
+export function transformListItemsToBlockElements(tag, depth, storeIndex) {
   return {
     type: Editor.transformListItemsToBlockElements,
     tag: tag,
-    depth: depth
+    depth: depth,
+    storeIndex: storeIndex
   };
 }
 
@@ -302,5 +302,14 @@ export function isDataLoading(bool) {
   return {
     type: Editor.isDataLoading,
     bool: bool
+  };
+}
+
+export function splitBlockElement(tagType, nodes, depth, storeIndex) {
+  return {
+    type: Editor.splitBlockElement,
+    nodes: nodes,
+    depth: depth,
+    storeIndex: storeIndex
   };
 }

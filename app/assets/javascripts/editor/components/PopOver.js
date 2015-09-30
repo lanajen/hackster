@@ -16,11 +16,8 @@ const PopOver = React.createClass({
   },
 
   componentDidMount() {
-    React.findDOMNode(this.refs.input).focus();
-
-    let { sel, range } = Utils.getSelectionData();
-    range = this.props.popOverProps.range;
-    sel.addRange(range);
+    let input = React.findDOMNode(this.refs.input);
+    input.focus();
   },
 
   onBodyClick(e) {

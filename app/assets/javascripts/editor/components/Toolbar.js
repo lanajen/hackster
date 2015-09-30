@@ -7,6 +7,7 @@ import rangy from 'rangy';
 import Utils from '../utils/DOMUtils';
 import ImageUtils from '../../utils/Images';
 import Helpers from '../../utils/Helpers';
+import Parser from '../utils/Parser';
 import { LinearProgress } from 'material-ui';
 
 const Toolbar = React.createClass({
@@ -79,8 +80,9 @@ const Toolbar = React.createClass({
     }
 
     if(isNodeInUL && blockEls[tagType]) { // Cleans UL's lis if transforming.
-      this.props.actions.transformListItemsToBlockElements(tagType, depth);
-      this.props.actions.forceUpdate(true);
+      // this.props.actions.transformListItemsToBlockElements(tagType, depth, this.props.editor.currentStoreIndex);
+      // this.props.actions.forceUpdate(true);
+      return;
     } else if(Utils.isCommonAncestorContentEditable(commonAncestorContainer)) {  // Multiple lines are selected.
       let startContainer = Utils.getRootParentElement(range.startContainer);
       let endContainer = Utils.getRootParentElement(range.endContainer);
@@ -100,6 +102,165 @@ const Toolbar = React.createClass({
       this.props.actions.forceUpdate(true);
     }
   },
+
+  handleBlockquote(tagType) {
+    let { sel, range, depth, anchorNode, parentNode } = Utils.getSelectionData();
+    let blockEls = {
+      'BLOCKQUOTE': true,
+      'PRE': true,
+      'UL': true
+    };
+    /** If theres selected text (NOT in a block element or if selection spans multiple nodes), break the paragraph apart into three segments.
+      * Else turn the selection/s to a normal Blockquote.
+     */
+    if(range.startOffset !== range.endOffset && Utils.getRootParentElement(range.startContainer) === Utils.getRootParentElement(range.endContainer)
+       && !blockEls[Utils.getRootParentElement(range.startContainer).nodeName] && range.getNodes([3]).length <= 1) {
+      /** Builds the selected text from scratch honoring all wrapped node types.  We delete the selection in the Promise handler. */
+      let selectedHtml = range.toHtml();
+      let selectedBuild = Utils.getParentNodeByElement(anchorNode, 'P');
+      let newNodeTree = Utils.createNewNodeTree(selectedBuild.childNodes, selectedHtml);
+
+      let parentHtml = parentNode.innerHTML;
+      let startIndex = parentHtml.indexOf(selectedHtml);
+
+      let intro = parentHtml.slice(0, startIndex);
+      let blockquote = newNodeTree.innerHTML;
+      let outro = parentHtml.slice(startIndex + selectedHtml.length);
+
+      let promises = [ intro, blockquote, outro ].map(html => {
+        return Parser.parseDOM(html);
+      });
+      console.log('TEXT', range.toHtml(), selectedHtml, range.commonAncestorContainer);
+      console.log('INTRO: ' + intro, ' BQ: ' + blockquote, ' OUTRO: ' + outro);
+      Promise.all(promises)
+        .then(results => {
+          this.props.actions.splitBlockElement(tagType, results, depth, this.props.editor.currentStoreIndex);
+          this.props.actions.setCursorToNextLine(true);
+          this.props.actions.forceUpdate(true);
+          range.deleteContents();
+        })
+        .catch(err => {
+          //TODO: Handle Err;
+          console.log('ERR:' + err);
+        });
+    } else {
+      this.handleBlockElementTransform(tagType);
+    }
+  },
+
+  handlePre(tagType) {
+    let data = Utils.getSelectionData();
+    let { sel, range, depth, anchorNode, parentNode } = data;
+    let blockEls = {
+      'BLOCKQUOTE': true,
+      'PRE': true,
+      'UL': true
+    };
+    /** If there's selected text and the selection is within the same element, wrap the text in a CODE tag. 
+      * Else we're going to transform the selection or blocks into a PRE tags.
+     */
+    if(range.startOffset !== range.endOffset && Utils.getRootParentElement(range.startContainer) === Utils.getRootParentElement(range.endContainer)
+       && !blockEls[Utils.getRootParentElement(range.startContainer).nodeName]) {
+      let ranges = { start: range.startOffset, end: range.endOffset };
+      let selectedText = range.commonAncestorContainer.textContent.slice(ranges.start, ranges.end);
+
+      /** Mutating the DOM here. We first check for CODE removal, if not, we add a CODE node. */
+      if(Utils.isNodeChildOfElement(range.startContainer, 'CODE') || Utils.isNodeChildOfElement(range.endContainer, 'CODE')) {
+        let textNode = document.createTextNode(selectedText);
+        let codeContainer = Utils.isNodeChildOfElement(range.startContainer, 'CODE') ? range.startContainer : range.endContainer;
+        let { parent, childNodes } = Utils.getParentNodeByElement(codeContainer, 'CODE');
+        /** If all the text is selected, replace CODE block with a textNode.
+          * Else we need to split the element apart and create those nodes.
+         */
+        if(selectedText === parent.textContent) {
+          console.log('First If', selectedText, parent.textContent);
+          parent.parentNode.replaceChild(textNode, parent);
+        } else if(range.getNodes([3]).length > 1) {
+          /** Concat all the text together, remove the current selection and replace it with a new TextNode. */
+          selectedText = range.getNodes([3])
+            .map(node => {
+              return node.textContent;
+            })
+            .reduce((a, b) => {
+              return a + b;
+            }, '');
+          console.log('multi');
+          range.deleteContents();
+          textNode = document.createTextNode(selectedText);
+          parent.parentNode.replaceChild(textNode, parent);
+        } else {
+          let start = parent.textContent.slice(0, range.startOffset);
+          let middle = parent.textContent.slice(range.startOffset, range.endOffset);
+          let end = parent.textContent.slice(range.endOffset);
+          range.deleteContents();
+          /** If start doesn't have a length, then the selection starts @ index 0. 
+            * Else if the selection is in the middle of the text, create two new nodes.
+            * Else selection is at the end of the node, simply append a child node.
+            */
+          if(!start.length) {
+            console.log('FIRSTS', parent, textNode, middle, end);
+            textNode.textContent = parent.textContent;
+            parent.parentNode.insertBefore(textNode, parent);
+          } else if(start.length && end.length) {
+            console.log('SECCS');
+            let code = document.createElement('code');
+            code.textContent = end;
+            parent.textContent = start;
+            parent.parentNode.insertBefore(code, parent.nextSibling);
+            parent.parentNode.insertBefore(textNode, parent.nextSibling);
+          } else {
+            console.log('TURDS');
+            // range.insertNode(textNode);
+            if(parent.parentNode.lastChild === parent) {
+              parent.parentNode.appendChild(textNode);
+            } else {
+              parent.parentNode.insertBefore(textNode, parent.nextSibling);
+            }
+          }
+        }
+        /** Cleans up the dom tree. */
+        parentNode.normalize();
+        /** Reselect the text. */
+        range.selectNodeContents(textNode);
+        sel.setSingleRange(range);
+      } else {
+        let code = document.createElement('code');
+        if(range.getNodes([3]).length > 1) {
+          selectedText = range.getNodes([3])
+              .map(node => {
+                return node.textContent;
+              })
+              .reduce((a, b) => {
+                return a + b;
+              }, '');
+        }
+        code.textContent = selectedText;
+        range.deleteContents();
+        range.insertNode(code);
+        /** Cleans up the dom tree. */
+        parentNode.normalize();
+        this.mergeAdjacentElements(parentNode);
+        /** Reselect the text. */
+        range.selectNodeContents(code.childNodes[0]);
+        sel.setSingleRange(range);
+      }
+    } else {
+      this.handleBlockElementTransform(tagType);
+    }
+  },
+
+  mergeAdjacentElements(parentNode) {
+    let children = [].slice.apply(parentNode.childNodes);
+
+    children.forEach(child => {
+      if(child.nextSibling && child.nextSibling.nodeName === child.nodeName) {
+        let nextData = child.nextSibling.innerHTML;
+        child.innerHTML += nextData;
+        parentNode.removeChild(child.nextSibling);
+      }
+    });
+  },
+
 
   handleUnorderedList() {
     let { sel, range, parentNode } = Utils.getSelectionData();
@@ -247,6 +408,7 @@ const Toolbar = React.createClass({
     anchor.setAttribute('href', href);
     anchor.innerText = text;
     this.props.actions.getLatestHTML(true);
+    Utils.setCursorByNode(anchor);
   },
 
   handleAnchorTagRemoval() {
@@ -320,8 +482,8 @@ const Toolbar = React.createClass({
       { classList: 'toolbar-btn', tagType: 'bold', icon: 'fa fa-bold', onClick: this.handleExecCommand },
       { classList: 'toolbar-btn', tagType: 'italic', icon: 'fa fa-italic', onClick: this.handleExecCommand},
       { classList: 'toolbar-btn', tagType: 'anchor', icon: 'fa fa-link', onClick: this.handleLinkClick},
-      { classList: 'toolbar-btn', tagType: 'blockquote', icon: 'fa fa-quote-right', onClick: this.handleBlockElementTransform},
-      { classList: 'toolbar-btn', tagType: 'pre', icon: 'fa fa-code', onClick: this.handleBlockElementTransform},
+      { classList: 'toolbar-btn', tagType: 'blockquote', icon: 'fa fa-quote-right', onClick: this.handleBlockquote},
+      { classList: 'toolbar-btn', tagType: 'pre', icon: 'fa fa-code', onClick: this.handlePre},
       { classList: 'toolbar-btn', tagType: 'ul', icon: 'fa fa-list', onClick: this.handleUnorderedList},
       { classList: 'toolbar-btn', tagType: 'carousel', icon: 'fa fa-picture-o', onClick: this.handleImageButtonClick},
       { classList: 'toolbar-btn', tagType: 'video', icon: 'fa fa-video-camera', onClick: this.handleVideoButtonClick}

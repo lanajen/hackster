@@ -18,7 +18,7 @@ export default {
     createBlockElement: null,
     transformBlockElement: null,
     transformBlockElements: null,
-    prepentCE: null,
+    prependCE: null,
     setFigCaptionText: null,
     cleanElement: null,
     removeBlockElements: null,
@@ -41,7 +41,8 @@ export default {
     deleteComponent: null,
     createPlaceholderElement: null,
     resetImageUrl: null,
-    isDataLoading: null
+    isDataLoading: null,
+    splitBlockElement: null,
   }),
 
   ImageBucket: keyMirror({
