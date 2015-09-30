@@ -39,6 +39,7 @@ class CronTask < BaseWorker
 
   def generate_user
     UserGenerator.generate_user
+  rescue => e
   end
 
   def generate_users
@@ -95,6 +96,7 @@ class CronTask < BaseWorker
         project.update_attribute :locked, true
       end
     end
+  rescue => e
   end
 
   def send_daily_notifications
