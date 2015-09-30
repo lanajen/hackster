@@ -3,6 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Toolbar from './Toolbar';
 import Editable from './Editable';
+import { Snackbar } from 'material-ui';
 import * as ToolbarActions from '../actions/toolbar';
 import * as EditorActions from '../actions/editor';
 import { createRandomNumber } from '../../utils/Helpers';
@@ -28,6 +29,16 @@ const Editor = React.createClass({
     };
   },
 
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.editor.errorMessenger.show) {
+      this.refs.errorMessenger.show();
+    }
+  },
+
+  handleErrorMessengerDismiss() {
+    this.props.actions.toggleErrorMessenger(false, '');
+  },
+
   render() {
     if(this.props.hashLocation !== '#story') {
       return null;
@@ -39,6 +50,7 @@ const Editor = React.createClass({
           <Toolbar hashLocation={this.props.hashLocation} />
         </div>
         <Editable className="box" refLink={createRandomNumber()} hashLocation={this.props.hashLocation} {...this.props}/>
+        <Snackbar style={{zIndex: 10001}} ref="errorMessenger" message={this.props.editor.errorMessenger.msg} action="Error" autoHideDuration={3000} onActionTouchTap={this.handleErrorMessengerDismiss} onDismiss={this.handleErrorMessengerDismiss} />
       </div>
     );
   }

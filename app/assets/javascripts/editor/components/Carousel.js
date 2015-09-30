@@ -10,10 +10,6 @@ const hashids = new Hashids('hackster', 4);
 
 const Carousel = React.createClass({
 
-  handleFocus() {
-    // console.log('IS FOCUSED :', this.props.storeIndex);
-  },
-
   handleKeyDown(e) {
     let currentNode = React.findDOMNode(this);
     let Editable = Utils.getParentOfCE(currentNode);
@@ -149,9 +145,8 @@ const Carousel = React.createClass({
 
     return (
       <div className="react-editor-carousel" 
-           data-hash={this.props.hash} 
-           onFocus={this.handleFocus} 
-           onKeyDown={this.handleKeyDown} 
+           data-hash={this.props.hash}
+           onKeyDown={this.handleKeyDown}
            onMouseOver={this.handleMouseOver}
            onClick={this.handleClick}
            tabIndex={0}>

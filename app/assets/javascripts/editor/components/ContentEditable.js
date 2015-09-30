@@ -114,7 +114,6 @@ const ContentEditable = React.createClass({
     let el = (this.props.editor.setCursorToNextLine && nodeByHash.nextSibling !== undefined) ? nodeByHash.nextSibling : nodeByHash;
 
     if(el === undefined || el === null) {
-      console.log('PROBLEMO! EL DOESNT EXIST!', nodeByHash, node, cursorPosition);
       return;
     }
 
@@ -155,7 +154,6 @@ const ContentEditable = React.createClass({
     if(sel && sel.rangeCount) {
       /** Makes sure there's always a P in CE. */
       if(CE.innerHTML.length < 1) {
-        console.log('WTF HAPPEN!?', range, depth);
         this.createBlockElement('p', 0, false, this.props.storeIndex);
       }
 
@@ -178,7 +176,6 @@ const ContentEditable = React.createClass({
         range.collapse(false);
         sel.setSingleRange(range);
       }
-
 
       /** Handles Anchor PopOver. */
       if(Utils.isSelectionInAnchor(anchorNode)) {
@@ -278,7 +275,7 @@ const ContentEditable = React.createClass({
             this.preventEvent(e);
             let videoData = Helpers.getVideoData(url);
             if(!videoData) { 
-              // TODO: HANDLE VIDEO ERROR!
+              this.props.actions.toggleErrorMessenger(true, 'Sorry, that Video url smelled funny.');
             } else {
               this.props.actions.createMediaByType([videoData], depth, this.props.storeIndex, 'Video');
               this.props.actions.forceUpdate(true);
@@ -369,89 +366,6 @@ const ContentEditable = React.createClass({
     }
   },
 
-  handleMediaPermissions(e) {
-    // let { sel, range, anchorNode, parentNode, depth, startOffset } = Utils.getSelectionData();
-    // if(sel) {
-    //   let prevSib = Utils.getBlockElementsPreviousSibling(parentNode, React.findDOMNode(this));
-    //   let arrowKeys = {
-    //     '37': true,
-    //     '38': true,
-    //     '39': true,
-    //     '40': true
-    //   };
-
-      // if(parentNode.nodeName === 'DIV' && parentNode.classList.contains('react-editor-carousel')
-      //    || parentNode.nodeName === 'DIV' && parentNode.classList.contains('react-editor-video')) {
-
-        /** Prevents any editing to the image wrapper div. */
-        // if(range.startContainer.nodeName === 'DIV' && (range.startContainer.classList.contains('react-editor-image-wrapper')
-        //   || range.startContainer.classList.contains('react-editor-video-inner'))
-        //   && !arrowKeys[e.keyCode.toString()]) {
-        //   this.preventEvent(e);
-        // }
-
-        // if(range.startContainer.nodeName === 'BUTTON' && range.startContainer.classList.contains('reit-controls-button')) {
-        //   this.preventEvent(e);
-        //   this.props.actions.setCursorPosition(depth, parentNode, startOffset, anchorNode, React.findDOMNode(this).getAttribute('data-hash'));
-        //   this.props.actions.forceUpdate(true);
-        // }
-
-        // if(anchorNode.nodeType === 3 && anchorNode.parentNode.nodeName === 'FIGCAPTION') {
-        //   range = rangy.getSelection().getRangeAt(0);
-        //   /** Prevents backspace on figcaption from moving it up. */
-        //   if(range.startOffset === 0 && range.endOffset === 0 && !arrowKeys[e.keyCode.toString()] && e.keyCode !== 32) {
-        //     this.preventEvent(e);
-        //   }
-        //   /** Resets figcaption. */
-        //   if(range.startContainer.textContent === 'caption (optional)' && e.keyCode !== 8 && !arrowKeys[e.keyCode.toString()]) {
-        //     range.selectNodeContents(anchorNode);
-        //     rangy.getSelection().setSingleRange(range);
-        //   }
-        // }
-
-        /** Prevents backspace when figcaption is empty. */
-        // if(anchorNode.nodeName === 'FIGCAPTION' && (e.keyCode === 8 || e.keyCode === 46)) {
-        //   this.preventEvent(e);
-        // }
-    //   }
-    // }
-  },
-
-  handleCarouselNavigation(node) {
-    // let carousel = Utils.getRootParentElement(node);
-    // let depth = Utils.findChildsDepthLevel(carousel, carousel.parentNode);
-    // let inner = carousel.firstChild;
-    // let figures = inner.children;
-    // let activeImage = _.find(figures, function(fig) {
-    //   return fig.classList.contains('show');
-    // });
-    // let activeIndex = _.findIndex(figures, function(fig) {
-    //   return fig.classList.contains('show');
-    // });
-
-    // if(figures.length > 1) {
-    //   let left;
-    //   activeImage.classList.remove('show');
-
-    //   if(node.classList.contains('left')) {
-    //     if(activeIndex === 0) {
-    //       figures[figures.length-1].classList.add('show');
-    //     } else {
-    //       figures[activeIndex-1].classList.add('show');
-    //     }
-    //   } else {
-    //     if(activeIndex === figures.length-1) {
-    //       figures[0].classList.add('show');
-    //     } else {
-    //       figures[activeIndex+1].classList.add('show');
-    //     }
-    //   }
-    //   this.props.actions.toggleImageToolbar(false, {});
-    //   this.props.actions.updateImageToolbarData({ parent: carousel, depth: depth, top: carousel.offsetTop });
-    //   this.props.actions.getLatestHTML(true);
-    // }
-  },
-
   handleTab(e) {
     this.preventEvent(e);
     let sel = rangy.getSelection(),
@@ -466,11 +380,15 @@ const ContentEditable = React.createClass({
   },
 
   handleArrowKeys(e) {
-    let { depth } = Utils.getSelectionData();
+    let { depth, parentNode, anchorNode } = Utils.getSelectionData();
     let CE = React.findDOMNode(this);
 
     /** Cursor is in a CE and moving up to a media element. */
     if(e.keyCode === 38 && depth === 0 && this.props.storeIndex > 0) {
+      /** If the cursor is in a UL, let the user navigate through the list except if the cursor is the first list item. */
+      if(parentNode.nodeName === 'UL' && Utils.getListItemFromTextNode(anchorNode) !== parentNode.firstChild) {
+        return;
+      }
       let Editable = Utils.getParentOfCE(CE);
       let nodeToFocus = Editable.children[this.props.storeIndex-1];
       nodeToFocus.focus();
@@ -498,14 +416,13 @@ const ContentEditable = React.createClass({
     if(parentNode.classList && parentNode.classList.contains('react-editor-placeholder-text') && e.keyCode !== 13) {
       parentNode.classList.remove('react-editor-placeholder-text');
       parentNode.textContent = '';
+      this.props.actions.getLatestHTML(true);
     }
 
     /** Set current storeIndex */
     if(this.props.editor.currentStoreIndex !== this.props.storeIndex) {
       this.props.actions.setCurrentStoreIndex(this.props.storeIndex);
     }
-
-    this.handleMediaPermissions(e);
 
     switch(e.keyCode || e.charCode) {
       case 13: // ENTER
@@ -530,16 +447,8 @@ const ContentEditable = React.createClass({
   onKeyUp(e) {
     if(e.keyCode === undefined || e.type === 'mouseup') {
       this.preventEvent(e);
-      let node = React.findDOMNode(e.target);
       let { sel, range, anchorNode } = Utils.getSelectionData();
       if(sel === null) { return; }
-      let caretRange = Utils.getMouseEventCaretRange(e);
-
-      /** Handles cursor placement. */
-      if(node !== React.findDOMNode(this) && (range.startOffset < caretRange.startOffset && range.endOffset !== caretRange.endOffset) 
-         || (range.endOffset > caretRange.endOffset && range.startOffset !== caretRange.startOffset)) {
-        // sel.setSingleRange(caretRange);
-      }
 
       /** Trigger Anchor PopUp when it's selected. */
       if(Utils.isSelectionInAnchor(anchorNode)) {
@@ -555,10 +464,6 @@ const ContentEditable = React.createClass({
     let node = React.findDOMNode(e.target),
         parent = Utils.getRootParentElement(node), 
         depth = Utils.findChildsDepthLevel(parent, parent.parentNode);
-
-    // if(node.nodeName === 'IMG' && parent.classList.contains('react-editor-carousel') && this.props.editor.showImageToolbar === false) {
-    //   this.props.actions.toggleImageToolbar(true, { node: parent, depth: depth , top: parent.offsetTop, height: node.offsetHeight, width: node.offsetWidth, left: node.offsetLeft, type: 'carousel' });
-    // }
 
     if(node.nodeName === 'IMG' && parent.classList.contains('react-editor-video') && this.props.editor.showImageToolbar === false) {
       this.props.actions.toggleImageToolbar(true, { node: parent, depth: depth , top: parent.offsetTop, height: node.offsetHeight, width: node.offsetWidth, left: node.offsetLeft, type: 'video' });
@@ -590,9 +495,9 @@ const ContentEditable = React.createClass({
     let { range } = Utils.getSelectionData();
     
     /** Trigger Anchor PopUp when it's selected. */
-      if(Utils.isSelectionInAnchor(range.startContainer)) {
-        this.handlePopOver(true);
-      }
+    if(Utils.isSelectionInAnchor(range.startContainer)) {
+      this.handlePopOver(true);
+    }
   },
 
   handlePaste(e) {

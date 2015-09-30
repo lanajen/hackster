@@ -151,7 +151,6 @@ const Video = React.createClass({
       <div className="react-editor-video" 
            data-hash={this.props.hash}
            data-video-id={data.id}
-           onFocus={this.handleFocus}
            onKeyDown={this.handleKeyDown}
            onMouseOver={this.handleMouseOver}
            onClick={this.handleClick}

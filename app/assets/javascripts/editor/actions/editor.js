@@ -24,8 +24,7 @@ export function fetchInitialDOM(projectId, csrfToken) {
       .then(result => {
         dispatch(setInitialDOM(result));
       }).catch(err => { 
-        console.log(err);
-      // TODO: handle err 
+        dispatch(toggleErrorMessenger(true, 'We had an issue getting your story!'));
       });
   }
 }
@@ -290,8 +289,7 @@ export function uploadImagesToServer(files, storeIndex, S3BucketURL, AWSAccessKe
           dispatch(resetImageUrl(body, storeIndex));
         })
         .catch(err => {
-          // TODO: Handle error!
-          console.log('Error :' + err);
+          dispatch(toggleErrorMessenger(true, 'Woops, we couldn\'t save that image correctly.'));
         });
     });
 
@@ -311,5 +309,13 @@ export function splitBlockElement(tagType, nodes, depth, storeIndex) {
     nodes: nodes,
     depth: depth,
     storeIndex: storeIndex
+  };
+}
+
+export function toggleErrorMessenger(show, msg) {
+  return {
+    type: Editor.toggleErrorMessenger,
+    show: show,
+    msg: msg
   };
 }

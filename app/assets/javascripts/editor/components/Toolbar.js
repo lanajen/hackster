@@ -80,8 +80,7 @@ const Toolbar = React.createClass({
     }
 
     if(isNodeInUL && blockEls[tagType]) { // Cleans UL's lis if transforming.
-      // this.props.actions.transformListItemsToBlockElements(tagType, depth, this.props.editor.currentStoreIndex);
-      // this.props.actions.forceUpdate(true);
+      this.props.actions.toggleErrorMessenger(true, 'List items cannot tranform into a ' + tagType);
       return;
     } else if(Utils.isCommonAncestorContentEditable(commonAncestorContainer)) {  // Multiple lines are selected.
       let startContainer = Utils.getRootParentElement(range.startContainer);
@@ -173,7 +172,6 @@ const Toolbar = React.createClass({
           * Else we need to split the element apart and create those nodes.
          */
         if(selectedText === parent.textContent) {
-          console.log('First If', selectedText, parent.textContent);
           parent.parentNode.replaceChild(textNode, parent);
         } else if(range.getNodes([3]).length > 1) {
           /** Concat all the text together, remove the current selection and replace it with a new TextNode. */
@@ -184,7 +182,6 @@ const Toolbar = React.createClass({
             .reduce((a, b) => {
               return a + b;
             }, '');
-          console.log('multi');
           range.deleteContents();
           textNode = document.createTextNode(selectedText);
           parent.parentNode.replaceChild(textNode, parent);
@@ -195,22 +192,18 @@ const Toolbar = React.createClass({
           range.deleteContents();
           /** If start doesn't have a length, then the selection starts @ index 0. 
             * Else if the selection is in the middle of the text, create two new nodes.
-            * Else selection is at the end of the node, simply append a child node.
+            * Else selection is at the end of the node, append a child node if last or insert before the next node.
             */
           if(!start.length) {
-            console.log('FIRSTS', parent, textNode, middle, end);
             textNode.textContent = parent.textContent;
             parent.parentNode.insertBefore(textNode, parent);
           } else if(start.length && end.length) {
-            console.log('SECCS');
             let code = document.createElement('code');
             code.textContent = end;
             parent.textContent = start;
             parent.parentNode.insertBefore(code, parent.nextSibling);
             parent.parentNode.insertBefore(textNode, parent.nextSibling);
           } else {
-            console.log('TURDS');
-            // range.insertNode(textNode);
             if(parent.parentNode.lastChild === parent) {
               parent.parentNode.appendChild(textNode);
             } else {
@@ -225,16 +218,7 @@ const Toolbar = React.createClass({
         sel.setSingleRange(range);
       } else {
         let code = document.createElement('code');
-        if(range.getNodes([3]).length > 1) {
-          selectedText = range.getNodes([3])
-              .map(node => {
-                return node.textContent;
-              })
-              .reduce((a, b) => {
-                return a + b;
-              }, '');
-        }
-        code.textContent = selectedText;
+        code.innerHTML = range.toHtml();
         range.deleteContents();
         range.insertNode(code);
         /** Cleans up the dom tree. */
@@ -309,7 +293,6 @@ const Toolbar = React.createClass({
 
       } else if(range.startContainer.nodeType === 1 && range.startContainer === parentNode) { // Cursor is before single element.
         elements = [Utils.findChildsDepthLevel(sel.anchorNode, parentNode)];
-        console.log('ALSO CHECK THIS', elements);
         this.props.actions.handleUnorderedList(false, elements, { depth: Utils.findChildsDepthLevel(parentNode, parentNode.parentNode), hash: null }, this.props.editor.currentStoreIndex);
       } else {
         return;
@@ -317,7 +300,6 @@ const Toolbar = React.createClass({
     } else {  // Build UL.
       if(startContainerParent === endContainerParent) { // One block element is selected.
         elements = [{ depth: Utils.findChildsDepthLevel(startContainerParent, startContainerParent.parentNode) }];
-        console.log('HIT', this.props.editor.currentStoreIndex);
         this.props.actions.handleUnorderedList(true, elements, { depth: null, hash: null, previousLength: null }, this.props.editor.currentStoreIndex);
       } else {  // Multiple blocks are selected.
         let listGroups = Utils.createULGroups(startContainerParent, endContainerParent, parentNode.parentNode);
@@ -379,8 +361,7 @@ const Toolbar = React.createClass({
         sel.setSingleRange(range);
         sel.collapseToEnd();
       } else {
-        // TODO: HANDLE ERROR.
-        console.log('NOT A VALID URL');
+        this.props.actions.toggleErrorMessenger(true, 'NOT A VALID URL');
       }
     }
   },
@@ -436,15 +417,17 @@ const Toolbar = React.createClass({
         filteredFiles;
 
     files = Array.prototype.slice.call(files);
-    filteredFiles = _.filter(files, function(file) {
+    filteredFiles = _.filter(files, file => {
       if(Helpers.isImageValid(file.type)) {
         return file;
       } else {
+        let msg = file.name ? file.name + ' is not a valid image!' : 'Sorry, not a valid image';
+        this.props.actions.toggleErrorMessenger(true, msg);
         return false;
       }
     });
 
-    ImageUtils.handleImagesAsync(files, function(map) {
+    ImageUtils.handleImagesAsync(files, map => {
       let storeIndex = this.props.editor.currentStoreIndex;
       this.props.actions.isDataLoading(true);
       this.props.actions.createMediaByType(map, depth, storeIndex, 'Carousel');
@@ -460,7 +443,7 @@ const Toolbar = React.createClass({
         this.props.editor.projectId
       );
 
-    }.bind(this));
+    });
 
     React.findDOMNode(this.refs.imageUploadInput).value = '';
   },

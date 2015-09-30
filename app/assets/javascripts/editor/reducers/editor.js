@@ -51,7 +51,8 @@ const initialState = {
   setCursorToNextLine: false,
   showImageToolbar: false,
   imageToolbarData: {},
-  isDataLoading: false
+  isDataLoading: false,
+  errorMessenger: { show: false, msg: '' }
 };
 
 export default function(state = initialState, action) {
@@ -319,6 +320,13 @@ export default function(state = initialState, action) {
       return {
         ...state,
         dom: newDom
+      };
+
+    case Editor.toggleErrorMessenger:
+      let errorMessenger = { show: action.show, msg: action.msg }
+      return {
+        ...state,
+        errorMessenger: errorMessenger
       };
 
     default:
@@ -972,12 +980,17 @@ function appendParagraph(dom) {
 function createPlaceholderElement(dom, msg, position, storeIndex) {
   let component = dom[storeIndex];
   let json = component.json;
+  let replaceLine = 1;
 
   let P = mapToComponent['p'];
   let tagProps = { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) };
   let el = P({ key: createRandomNumber(), tagProps, className: 'react-editor-placeholder-text', children: [msg] });
 
-  json.splice(position, 1, el);
+  if(json[position].props.children && json[position].props.children.length > 0) {
+    replaceLine = 0;
+  }
+
+  json.splice(position, replaceLine, el);
   component.json = json;
   dom.splice(storeIndex, 1, component);
   return dom;
@@ -998,7 +1011,6 @@ function createStyleObjectFromString(string) {
       styleObj[item[0]] = uri;
     } else if(s !== '' || s !== undefined) {
       item = s.split(':');
-      // TODO: CAMEL CASE ANY HYPHENED STYLE HERE!!!!!!!
       styleProp = item[0].split('-').length > 0 ? camelCaseStyleProp(item[0]) : item[0];
       styleObj[styleProp] = item[1];
     }

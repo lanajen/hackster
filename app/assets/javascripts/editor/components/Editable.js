@@ -1,5 +1,8 @@
 import React from 'react/addons';
 import _ from 'lodash';
+import Validator from 'validator';
+import HtmlParser from 'htmlparser2';
+import DomHandler from 'domhandler';
 import DropZone from '../../reusable_components/DropZone';
 import ContentEditable from './ContentEditable';
 import Carousel from './Carousel';
@@ -9,9 +12,6 @@ import ImageToolbar from './ImageToolbar';
 import { createRandomNumber } from '../../utils/Helpers';
 import Utils from '../utils/DOMUtils';
 import ImageUtils from '../../utils/Images';
-import Validator from 'validator';
-import HtmlParser from 'htmlparser2';
-import DomHandler from 'domhandler';
 import Parser from '../utils/Parser';
 
 const Editable = React.createClass({
@@ -75,146 +75,153 @@ const Editable = React.createClass({
   },
 
   handleContentEditableChange(storeIndex, html, depth) {
-    return this.parseDOM(html)
+    return Parser.parseDOM(html)
       .then(parsedHTML => {
         this.props.actions.setDOM(parsedHTML, storeIndex, depth);
       })
       .catch(err => { console.log('Parse Error: ' + err); });
   },
 
-  parseDOM(html) {
-    return new Promise((resolve, reject) => {
-      let handler = new DomHandler(function(err, dom) {
-        if(err) console.log(err);
+  // parseDOM(html) {
+  //   return new Promise((resolve, reject) => {
+  //     let handler = new DomHandler(function(err, dom) {
+  //       if(err) console.log(err);
 
-        let parsedHTML = this.parseTree(dom);
-        resolve(parsedHTML);
+  //       let parsedHTML = this.parseTree(dom);
+  //       resolve(parsedHTML);
 
-      }.bind(this), { normalizeWhitespace: false });
+  //     }.bind(this), { normalizeWhitespace: false });
 
-      let parser = new HtmlParser.Parser(handler, { decodeEntities: true });
-      parser.write(html);
-      parser.done();
-    }.bind(this));
-  },
+  //     let parser = new HtmlParser.Parser(handler, { decodeEntities: true });
+  //     parser.write(html);
+  //     parser.done();
+  //   }.bind(this));
+  // },
 
-  parseTree(html) {
-    const blockEls = {
-      p: true,
-      blockquote: true,
-      ul: true,
-      pre: true
-    };
+  // parseTree(html) {
+  //   const blockEls = {
+  //     p: true,
+  //     blockquote: true,
+  //     ul: true,
+  //     pre: true
+  //   };
 
-    function handler(html) {
-      return _.map(html, (item) => {
-        let name;
+  //   function handler(html) {
+  //     return _.map(html, (item) => {
+  //       let name;
 
-        /** Remove these nodes immediately. */
-        if(item.name === 'br' || item.name === 'script' || item.name === 'comment') {
-          return null;
-        }
-        /** Transform tags to whitelist. */
-        if(item.name) {
-          name = this.transformTagNames(item);
-        }
+  //       /** Remove these nodes immediately. */
+  //       if(item.name === 'br' || item.name === 'script' || item.name === 'comment') {
+  //         return null;
+  //       }
+  //       /** Transform tags to whitelist. */
+  //       if(item.name) {
+  //         name = this.transformTagNames(item);
+  //       }
 
-        /** Remove invalid anchors. */
-        if(item.name === 'a' && !Validator.isURL(item.attribs.href)) {
-          return null;
-        }
+  //       /** Remove invalid anchors. */
+  //       if(item.name === 'a' && !Validator.isURL(item.attribs.href)) {
+  //         return null;
+  //       }
 
-        /** Recurse through block elements and make sure only inlines exist as children. */
-        if(blockEls[item.name]) {
-          item.children = this.cleanBlockElementChildren(item);
-        }
+  //       /** Recurse through block elements and make sure only inlines exist as children. */
+  //       if(blockEls[item.name]) {
+  //         item.children = this.cleanBlockElementChildren(item);
+  //       }
 
-        if(item.type === 'text' && !item.children) {
-          if(item.data.match(/&nbsp;/g)) {
-            item.data = item.data.replace(/&nbsp;/g, ' ');
-          }
+  //       if(item.type === 'text' && !item.children) {
+  //         if(item.data.match(/&nbsp;/g)) {
+  //           item.data = item.data.replace(/&nbsp;/g, ' ');
+  //         }
 
-          return {
-            tag: 'span',
-            content: item.data,
-            attribs: {},
-            children: []
-          };
-        } else if(item.children && item.children.length === 1 && item.children[0].type === 'text') {
-          if(item.children[0].data.match(/&nbsp;/g)) {
-            item.children[0].data = item.children[0].data.replace(/&nbsp;/g, ' ');
-          }
-          return {
-            tag: name || item.name,
-            content: item.children[0].data,
-            attribs: item.attribs,
-            children: []
-          };
-        } else {
-          return {
-            tag: name || item.name,
-            content: null,
-            attribs: item.attribs,
-            children: handler.apply(this, [item.children || []])
-          }
-        }
-      }).filter(item => { return item !== null; });
-    }
-    return handler.call(this, html);
-  },
+  //         return {
+  //           tag: 'span',
+  //           content: item.data,
+  //           attribs: {},
+  //           children: []
+  //         };
+  //       } else if(item.children && item.children.length === 1 && item.children[0].type === 'text') {
+  //         if(item.children[0].data.match(/&nbsp;/g)) {
+  //           item.children[0].data = item.children[0].data.replace(/&nbsp;/g, ' ');
+  //         }
+  //         return {
+  //           tag: name || item.name,
+  //           content: item.children[0].data,
+  //           attribs: item.attribs,
+  //           children: []
+  //         };
+  //       } else {
+  //         return {
+  //           tag: name || item.name,
+  //           content: null,
+  //           attribs: item.attribs,
+  //           children: handler.apply(this, [item.children || []])
+  //         }
+  //       }
+  //     }).filter(item => { return item !== null; });
+  //   }
+  //   return handler.call(this, html);
+  // },
 
-  transformTagNames(node) {
-    let nodeName = node.name;
+  // transformTagNames(node) {
+  //   let nodeName = node.name;
 
-    let converter = {
-      'b': 'strong',
-      'bold': 'strong',
-      'italic': 'em',
-      'ol': 'ul'
-    };
+  //   let converter = {
+  //     'b': 'strong',
+  //     'bold': 'strong',
+  //     'italic': 'em',
+  //     'ol': 'ul'
+  //   };
 
-    return converter[nodeName] || nodeName;
-  },
+  //   return converter[nodeName] || nodeName;
+  // },
 
-  cleanBlockElementChildren(node) {
-    let children = node.children;
-    const blockEls = {
-      p: true,
-      blockquote: true,
-      ul: true,
-      pre: true
-    };
+  // cleanBlockElementChildren(node) {
+  //   let children = node.children;
+  //   const blockEls = {
+  //     p: true,
+  //     blockquote: true,
+  //     ul: true,
+  //     pre: true
+  //   };
 
-    children = (function recurse(children) {
-      return children.map(child => {
-        if(!child.children || !child.children.length) {
-          return child;
-        } else {
-          if(child.name && blockEls[child.name]) {
-            child.name = 'span';
-          }
-          child.children = recurse(child.children);
-          return child;
-        }
-      });
-    }(children));
+  //   children = (function recurse(children) {
+  //     return children.map(child => {
+  //       if(!child.children || !child.children.length) {
+  //         return child;
+  //       } else {
+  //         if(child.name && blockEls[child.name]) {
+  //           child.name = 'span';
+  //         }
+  //         child.children = recurse(child.children);
+  //         return child;
+  //       }
+  //     });
+  //   }(children));
 
-    return children
-  },
+  //   return children
+  // },
 
   handleFilesDrop(storeIndex, files) {
     let node = Utils.getRootParentElement(this.props.editor.cursorPosition.node);
     let depth = Utils.findChildsDepthLevel(node, node.parentNode);
     
-    ImageUtils.handleImagesAsync(files, function(map) {
-      this.props.actions.createCarousel(map, depth, storeIndex);
+    ImageUtils.handleImagesAsync(files, map => {
+      let storeIndex = this.props.editor.currentStoreIndex;
+      this.props.actions.isDataLoading(true);
+      this.props.actions.createMediaByType(map, depth, storeIndex, 'Carousel');
       this.props.actions.forceUpdate(true);
-    }.bind(this));
-  },
 
-  testP(string) {
-    return new Promise((resolve, reject) => {
-      resolve([string]);
+      /** Upload files to AWS. */
+      this.props.actions.uploadImagesToServer(
+        map, 
+        storeIndex, 
+        this.props.editor.S3BucketURL, 
+        this.props.editor.AWSAccessKeyId, 
+        this.props.editor.csrfToken, 
+        this.props.editor.projectId
+      );
+
     });
   },
 
@@ -232,7 +239,7 @@ const Editable = React.createClass({
       if(item.type === 'CE') {
         stringifiedJSON = item.json.map(React.renderToStaticMarkup).join('');
 
-        return this.parseDOM(stringifiedJSON)
+        return Parser.parseDOM(stringifiedJSON)
           .then(json => {
             item.json = json;
             return Promise.resolve(item);
@@ -252,7 +259,7 @@ const Editable = React.createClass({
         input.value = '';
       })
       .catch(err => {
-        console.log(err);
+        this.props.actions.toggleErrorMessenger(true, 'Bummer, the project didn\'t save correctly.');
       });
   },
 

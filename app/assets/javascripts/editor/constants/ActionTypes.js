@@ -43,6 +43,7 @@ export default {
     resetImageUrl: null,
     isDataLoading: null,
     splitBlockElement: null,
+    toggleErrorMessenger: null,
   }),
 
   ImageBucket: keyMirror({
