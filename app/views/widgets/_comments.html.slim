@@ -1,6 +1,8 @@
+- placeholder = (defined?(placeholder) && placeholder) ? placeholder : nil
+
 .comments
   .user-signed-in style='display:none'
-    = render partial: 'comments/signed_in_form', locals: { commentable: commentable, comment: Comment.new }
+    = render partial: 'comments/signed_in_form', locals: { commentable: commentable, comment: Comment.new, placeholder: placeholder }
   .user-signed-out style='display:none'
     p.sign-up-to-comment
       ' Please
@@ -15,7 +17,7 @@
       - comment[:children].each do |child|
         = render partial: 'comments/comment', locals: { comment: child, comment_target: comment_id }
       .new-comment-reply id="comment-reply-#{comment_id}"
-        = render partial: 'comments/signed_in_form', locals: { commentable: commentable, comment: Comment.new(parent_id: comment_id) }
+        = render partial: 'comments/signed_in_form', locals: { commentable: commentable, comment: Comment.new(parent_id: comment_id), placeholder: placeholder }
 
   - else
     .first-to-comment
