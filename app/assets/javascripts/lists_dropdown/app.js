@@ -24,9 +24,9 @@ const App = React.createClass({
 
     return (
       <div className='lists-dropdown'>
-        <a href="javascript:void(0)" className="btn btn-block btn-default btn-ellipsis toggle-lists-btn" onClick={this.handleListButtonClick}>
+        <a href="javascript:void(0)" className="btn btn-link btn-sm toggle-lists-btn" onClick={this.handleListButtonClick}>
           <i className="fa fa-bookmark-o"></i>
-          <span>Add to my lists</span>
+          <span>Bookmark</span>
         </a>
         <ListsDropdown isOpen={this.state.isDropdownOpen} {...this.props} />
       </div>
