@@ -21,7 +21,7 @@ class HelloWorld
 
   private
     def content
-      @content ||= config['hello_world'][@ref]
+      @content ||= config['hello_world']['default'].merge(config['hello_world'][@ref])
     end
 
     def config
