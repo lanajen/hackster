@@ -124,7 +124,7 @@ gem 'therubyracer', '0.12.0'
 gem 'twitter', '5.11.0'
 gem 'unicorn', '4.7.0'
 gem 'vimeo', '1.5.3'
-gem 'will_paginate', '3.0.4'
+gem 'will_paginate', github: 'mislav/will_paginate'
 gem 'workflow', '1.0.0'
 gem 'yajl-ruby', '1.1.0'
 

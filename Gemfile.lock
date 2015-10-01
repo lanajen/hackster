@@ -1,4 +1,10 @@
 GIT
+  remote: git://github.com/mislav/will_paginate.git
+  revision: 74a6cd0197072903cd8b83744133744ff4b4c046
+  specs:
+    will_paginate (3.0.4)
+
+GIT
   remote: https://github.com/blarralde/fastly-rails.git
   revision: 6a661b04f21ff4024d0a271ef526d0ae1590896e
   specs:
@@ -652,7 +658,6 @@ GEM
     warden (1.2.3)
       rack (>= 1.0)
     websocket (1.2.2)
-    will_paginate (3.0.4)
     workflow (1.0.0)
     xpath (2.0.0)
       nokogiri (~> 1.3)
@@ -777,7 +782,7 @@ DEPENDENCIES
   uglifier (= 2.3.1)
   unicorn (= 4.7.0)
   vimeo (= 1.5.3)
-  will_paginate (= 3.0.4)
+  will_paginate!
   workflow (= 1.0.0)
   yajl-ruby (= 1.1.0)
   zocial-rails (= 1.0.2)
