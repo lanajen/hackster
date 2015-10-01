@@ -36,7 +36,7 @@ class ChallengeObserver < ActiveRecord::Observer
   end
 
   def after_pre_launch record
-    NotificationCenter.notify_all :pre_launched, :challenge, record.id
+    NotificationCenter.notify_via_email :pre_launched, :challenge, record.id
     expire_cache record
     expire_index
   end
@@ -48,7 +48,7 @@ class ChallengeObserver < ActiveRecord::Observer
   end
 
   def after_end_pre_contest record
-    NotificationCenter.notify_all :ended_pre_contest, :challenge, record.id
+    NotificationCenter.notify_via_email :ended_pre_contest, :challenge, record.id
     expire_cache record
   end
 
@@ -70,7 +70,7 @@ class ChallengeObserver < ActiveRecord::Observer
   end
 
   def after_end record
-    NotificationCenter.notify_all :completed, :challenge, record.id
+    NotificationCenter.notify_via_email :completed, :challenge, record.id
     disable_challenge_on_platform record
     expire_cache record
     expire_index
@@ -92,7 +92,7 @@ class ChallengeObserver < ActiveRecord::Observer
     end
 
     def expire_cache record
-      Cashier.expire "challenge-#{record.id}-projects", "challenge-#{record.id}-status"
+      Cashier.expire "challenge-#{record.id}-projects", "challenge-#{record.id}-status", "challenge-#{record.id}-timeline"
       record.purge
     end
 

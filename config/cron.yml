@@ -1,0 +1,23 @@
+minutely:
+  cron: "* * * * *"
+  class: "CriticalCronWorker"
+  args:
+    - launch_cron
+
+hourly:
+  cron: "0 * * * *"
+  class: "CronTask"
+  args:
+    - launch_cron
+
+daily:
+  cron: "0 18 * * *"
+  class: "CronTask"
+  args:
+    - launch_daily_cron
+
+weekly:
+  cron: "0 18 * * 1"
+  class: "CronTask"
+  args:
+    - launch_weekly_cron

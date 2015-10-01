@@ -252,7 +252,7 @@
                     i.fa.fa-chevron-down
                     i.fa.fa-chevron-up
                 .section-content
-                  = render partial: 'widgets/comments', locals: { comments: @comments, commentable: @project }
+                  = render partial: 'widgets/comments', locals: { comments: @comments, commentable: @project, placeholder: 'Share your thoughts! Be respectful and constructive – most Hackster members create and share personal projects in their free time.' }
 
           .col-md-4.right-column
             .container-mobile
@@ -290,69 +290,58 @@
                           | It looks like you have due assignments
                         p= link_to 'Link to an assignment', settings_project_path(@project, anchor: 'sharing'), class: 'btn btn-warning btn-sm btn-block'
 
-              - if @can_edit
-                - alert_color = @project.checklist_completed? ? 'success' : 'warning'
-                .alert.text-center class="alert-#{alert_color}"
-                  span
-                    p
-                      i.fa.fa-list>
-                      = link_to "Checklist: #{@project.checklist_completion}% complete", edit_project_path(@project, anchor: 'publish'), class: 'alert-link'
-                  .progress style="margin-bottom: 0"
-                    .progress-bar class="progress-bar-#{alert_color}" role="progressbar" style="width: #{@project.checklist_completion}%;"
               - if @project.public?
-
+                section.section-thumbs
+                  / h4 Do something awesome
+                  = render 'actions'
 
               - if @can_edit
-                - if @project.public?
-                  - if @project.pending_review? or @project.unpublished?
+                section.section-thumbs
+                  h4 Manage this project
+
+                  - alert_color = @project.checklist_completed? ? 'success' : 'warning'
+                  .alert.text-center class="alert-#{alert_color}"
+                    span
+                      p
+                        i.fa.fa-list>
+                        = link_to "Checklist: #{@project.checklist_completion}% complete", edit_project_path(@project, anchor: 'publish'), class: 'alert-link'
+                    .progress style="margin-bottom: 0"
+                      .progress-bar class="progress-bar-#{alert_color}" role="progressbar" style="width: #{@project.checklist_completion}%;"
+
+
+                  - if @project.public?
+                    - if @project.pending_review? or @project.unpublished?
+                      .alert.alert-warning.text-center
+                        span
+                          p
+                            i.fa.fa-clock-o>
+                            ' We're reviewing your project before it can appear on the home page and the communities you selected.
+                            = link_to 'Learn more.', 'https://hackster.uservoice.com/knowledgebase/articles/588252-i-published-my-project-but-it-doesn-t-appear-on-th', class: 'alert-link'
+
+                  - else
+                    - who = %w(you)
+                    - who += ['team members'] if @project.team_members_count > 1
+                    - who += ["professors and TA's of #{@project.assignment.promotion.name}"] if @project.has_assignment?
+
                     .alert.alert-warning.text-center
                       span
                         p
-                          i.fa.fa-clock-o>
-                          ' We're reviewing your project before it can appear on the home page and the communities you selected.
-                          = link_to 'Learn more.', 'https://hackster.uservoice.com/knowledgebase/articles/588252-i-published-my-project-but-it-doesn-t-appear-on-th', class: 'alert-link'
-
-                - else
-                  - who = %w(you)
-                  - who += ['team members'] if @project.team_members_count > 1
-                  - who += ["professors and TA's of #{@project.assignment.promotion.name}"] if @project.has_assignment?
-
-                  .alert.alert-warning.text-center
-                    span
+                          i.fa.fa-lock>
+                          | This project is private so only #{who.to_sentence} can see it.
+                      - if @project.can_be_public? or current_user.try(:is?, :admin)
+                        p= link_to 'Publish publicly', project_path(@project, project: {  private: 0 } ), method: :patch, class: 'btn btn-warning btn-sm btn-block'
+                      - else
+                        = content_tag(:i, '', class: 'fa fa-info-circle istooltip', title: 'You need to add a title, a description and a cover image before you can make it public.')
                       p
-                        i.fa.fa-lock>
-                        | This project is private so only #{who.to_sentence} can see it.
-                    - if @project.can_be_public? or current_user.try(:is?, :admin)
-                      p= link_to 'Publish publicly', project_path(@project, project: {  private: 0 } ), method: :patch, class: 'btn btn-warning btn-sm btn-block'
-                    - else
-                      = content_tag(:i, '', class: 'fa fa-info-circle istooltip', title: 'You need to add a title, a description and a cover image before you can make it public.')
-                    p
-                      small
-                        = link_to 'Need to privately share?', edit_project_path(@project, anchor: 'publish'), class: 'alert-link'
+                        small
+                          = link_to 'Need to privately share?', edit_project_path(@project, anchor: 'publish'), class: 'alert-link'
 
-                section.section-thumbs
-                  h4 Manage this project
                   - if @project.unlocked? or can? :edit_locked, @project
                       = link_to 'Edit project and team', edit_project_path(@project), class: 'btn btn-default btn-block'
                   - else
                     p This project is locked for editing.
 
-              - if @project.public?
-                section.section-thumbs
-                  h4 Do something awesome
-                  - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
-                    .project-actions.row
-                      .action-item.col-xs-7= render partial: 'respects/button', locals: { respectable: @project }
-                      .action-item.col-xs-5= render partial: 'followers/button', locals: { followable: @project, button_type: 'project', button_partial: 'project_button', display_name: false }
-                  = render 'projects/project_embed_button'
-                  - if @project.celery_id.present?
-                    = link_to content_tag(:i, '', class: 'fa fa-shopping-cart') + content_tag(:span, "Buy it"), '#', 'data-celery' => @project.celery_id, 'data-celery-version' => 'v2', class: 'btn btn-warning btn-ellipsis btn-block'
-                  - if @project.buy_link.present?
-                    = link_to content_tag(:i, '', class: 'fa fa-shopping-cart') + content_tag(:span, "Buy it"), @project.buy_link, class: 'btn btn-block btn-warning btn-lg', target: '_blank', rel: 'nofollow'
-                  - if user_signed_in?
-                    = react_component('ListsDropdown', { path: api_v1_lists_path, projectId: @project.id }, { class: 'react-btn' })
-
-              - elsif !@can_edit
+              - elsif @project.private?
                 .alert.alert-warning.text-center
                   p
                     i.fa.fa-lock>
@@ -536,14 +525,7 @@
 
                     - if @project.public?
                       .show-on-affix style='margin-top:20px;'
-                        - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
-                          .project-actions.row
-                            .action-item.col-xs-7= render partial: 'respects/button', locals: { respectable: @project }
-                            .action-item.col-xs-5= render partial: 'followers/button', locals: { followable: @project, button_type: 'project', button_partial: 'project_button', display_name: false }
-                        = render 'projects/project_embed_button'
-                        .add-to-list
-                        - if @project.celery_id.present?
-                          = link_to content_tag(:i, '', class: 'fa fa-shopping-cart') + content_tag(:span, "Buy it"), '#', 'data-celery' => @project.celery_id, 'data-celery-version' => 'v2', class: 'btn btn-warning btn-ellipsis btn-block'
+                        = render 'actions'
 
     - if @project.public?
       - cache [I18n.locale, "project-#{@project.id}-other-bottom", @other_projects, site_user_name], tag: "project-#{@project.id}-other" do

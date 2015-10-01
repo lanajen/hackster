@@ -475,9 +475,14 @@ function showSignupPopupOrNot() {
     val = 0;
     Cookies.set('showedSignupPopup', val, { expires: 1 });
   } else if (val == 1) {
-    window.setTimeout(function() {
-      openModal('#signup-popup');
-    }, 1000);
+    // show on scroll to make sure they're on the page
+    $window = $(window);
+    $window.on('scroll.showSignupPopup', function(){
+      $window.off('scroll.showSignupPopup');
+      window.setTimeout(function() {
+        openModal('#signup-popup');
+      }, 100);
+    });
   }
   Cookies.set('showedSignupPopup', val + 1);
 }

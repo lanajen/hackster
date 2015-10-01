@@ -11,13 +11,20 @@ class User < ActiveRecord::Base
 
   include Rewardino::Nominee
 
+  DEFAULT_EMAIL_FREQUENCY = :daily
+  PROJECT_EMAIL_FREQUENCIES = {
+    'Never' => :never,
+    'Once per day' => :daily,
+    'Once per week' => :weekly,
+    'Once per month' => :monthly,
+  }
   ROLES = %w(admin confirmed_user beta_tester moderator)
   SUBSCRIPTIONS = {
     email: {
       'newsletter' => 'Newsletter',
       'other' => 'Other mailings (announcements, tips, feedback...)',
-      'new_comment_own' => 'New comment on one of my projects',
-      'new_comment_commented' => "New comment on a project I commented on",
+      'new_comment_own' => 'Somebody comments on one of my projects',
+      'new_comment_commented' => "Somebody comments on a project I commented on",
       'new_respect_own' => 'Somebody respects one of my projects',
       'new_follow_project' => 'Somebody starts following one of my projects',
       'new_follow_me' => 'Somebody starts following me',
@@ -32,6 +39,7 @@ class User < ActiveRecord::Base
       'new_comment_update_commented' => 'Somebody comments on an update I commented on',
       'new_like' => 'Somebody likes one of my updates or comments',
       'new_mention' => 'Somebody mentions me in an update or comment',
+      'new_projects' => 'New projects related to a list, platform or user I follow',
     },
     web: {
       'new_comment_own' => 'New comment on one of my projects',
@@ -50,6 +58,7 @@ class User < ActiveRecord::Base
       'new_comment_update_commented' => 'Somebody comments on an update I commented on',
       'new_like' => 'Somebody likes one of my updates or comments',
       'new_mention' => 'Somebody mentions me in an update or comment',
+      'new_projects' => 'New projects related to a list, platform or user I follow',
     }
   }
   USER_NAME_WORDS_LIST1 = %w(acid ada agent alien chell colossus crash cyborg doc ender enigma hal isambard jarvis kaneda leela morpheus neo nikola oracle phantom radio silicon sim starbuck straylight synergy tank tetsuo trinity zero)
@@ -135,7 +144,7 @@ class User < ActiveRecord::Base
     :first_name, :last_name, :invitation_code, :categories,
     :invitation_limit, :email, :mini_resume, :city, :country,
     :user_name, :full_name, :type, :avatar_id, :enable_sharing,
-    :email_subscriptions, :web_subscriptions
+    :email_subscriptions, :web_subscriptions, :project_email_frequency_proxy
   accepts_nested_attributes_for :avatar, :projects, allow_destroy: true
 
   validates :email, format: { with: EMAIL_REGEXP }, allow_blank: true  # devise's regex allows for a lot of crap
@@ -157,7 +166,7 @@ class User < ActiveRecord::Base
 
   # before_validation :generate_password, if: proc{|u| u.skip_password }
   before_validation :generate_user_name, if: proc{|u| u.user_name.blank? and u.new_user_name.blank? and !u.invited_to_sign_up? }
-  before_create :subscribe_to_all, unless: proc{|u| u.invitation_token.present? }
+  before_create :set_notification_preferences, unless: proc{|u| u.invitation_token.present? }
   before_save :ensure_authentication_token
   after_invitation_accepted :invitation_accepted
 
@@ -200,6 +209,8 @@ class User < ActiveRecord::Base
   hstore_column :properties, :has_unread_notifications, :boolean
   hstore_column :properties, :last_sent_projects_email_at, :datetime
   hstore_column :properties, :reputation_last_updated_at, :datetime
+
+  hstore_column :hproperties, :project_email_frequency, :string, default: DEFAULT_EMAIL_FREQUENCY
 
   has_websites :websites, :facebook, :twitter, :linked_in, :website, :blog,
     :github, :google_plus, :youtube, :instagram, :flickr, :reddit, :pinterest
@@ -307,6 +318,19 @@ class User < ActiveRecord::Base
 
   def self.with_at_least_one_action
     where(id: (User.joins(:follow_relations).where("follow_relations.user_id = users.id").distinct('users.id').pluck(:id) + User.joins(:projects).distinct('users.id').pluck(:id) + User.joins(:respects).distinct('users.id').pluck(:id) + User.joins(:comments).distinct('users.id').pluck(:id)).uniq)
+  end
+
+  def self.with_email_frequency frequency
+    # warning: this will potentially return the same user multiple times
+    if frequency.nil?
+      where "NOT defined(users.hproperties, 'project_email_frequency') OR users.hproperties IS NULL"
+    else
+      if frequency.to_s == DEFAULT_EMAIL_FREQUENCY.to_s
+        where "users.hproperties -> 'project_email_frequency' = ? OR NOT defined(users.hproperties, 'project_email_frequency') OR users.hproperties IS NULL", frequency
+      else
+        where "users.hproperties -> 'project_email_frequency' = ?", frequency
+      end
+    end
   end
 
   def self.with_subscription notification_type, subscription
@@ -508,18 +532,6 @@ class User < ActiveRecord::Base
     authorizations.create(auth)
   end
 
-  # def linked_to_project_via_group? project
-  #   # sql = "SELECT projects.* FROM groups INNER JOIN permissions ON permissions.grantee_id = groups.id AND permissions.permissible_type = 'Project' AND permissions.grantee_type = 'Group' INNER JOIN projects ON projects.id = permissions.permissible_id INNER JOIN members ON groups.id = members.group_id WHERE members.user_id = ? AND projects.id = ? LIMIT 1;"
-  #   # sql2 = "SELECT members.* FROM members INNER JOIN groups ON members.group_id = groups.id WHERE members.user_id = ? AND groups.type = 'Promotion' AND groups.id = (SELECT assignments.promotion_id FROM assignments WHERE assignments.id = ?) LIMIT 1"
-  #   # sql3 = "SELECT members.* FROM members INNER JOIN groups ON members.group_id = groups.id WHERE members.user_id = ? AND groups.type = 'Event' AND groups.id = ? LIMIT 1"
-  #   # Project.find_by_sql([sql, id, project.id]).first or project.collection_id.present? and (Member.find_by_sql([sql2, id, project.collection_id]).first or Member.find_by_sql([sql3, id, project.collection_id]).first)
-
-  #   sql2 = "SELECT members.* FROM members INNER JOIN groups ON members.group_id = groups.id INNER JOIN assignments ON assignments.promotion_id = groups.id INNER JOIN project_collections ON project_collections.collectable_id = assignments.id WHERE project_collections.collectable_type = 'Assignment' AND groups.type = 'Promotion' AND members.user_id = ? AND project_collections.project_id = ? LIMIT 1"
-
-  #   sql4 = "SELECT members.* FROM members INNER JOIN groups ON members.group_id = groups.id INNER JOIN project_collections ON project_collections.collectable_id = groups.id WHERE project_collections.collectable_type = 'Group' AND members.user_id = ? AND project_collections.project_id = ? LIMIT 1"
-  #   Member.find_by_sql([sql4, id, project.id]).first or Member.find_by_sql([sql2, id, project.id]).first
-  # end
-
   def live_comments
     comments.by_commentable_type(Project).where("projects.private = 'f'")
   end
@@ -554,6 +566,19 @@ class User < ActiveRecord::Base
 
   def project_platforms
     Platform.distinct.joins(:project_collections).joins(project_collections: :project).joins(project_collections: { project: :team }).joins(project_collections: { project: { team: :members }}).where(members: { user_id: id }, projects: { private: false })
+  end
+
+  def project_email_frequency_proxy
+    subscribed_to?('email', 'new_projects') ? project_email_frequency : 'never'
+  end
+
+  def project_email_frequency_proxy=val
+    if val == 'never'
+      self.email_subscriptions = email_subscriptions - ['new_projects'] if subscribed_to? 'email', 'new_projects'
+    else
+      self.project_email_frequency = val
+      self.email_subscriptions = email_subscriptions + ['new_projects'] if !subscribed_to? 'email', 'new_projects'
+    end
   end
 
   def respected? respectable
@@ -674,6 +699,17 @@ class User < ActiveRecord::Base
     end
   end
 
+  def subscribe_to notification_type, subscription
+    new_subscriptions = subscriptions_for(notification_type)
+    new_subscriptions << subscription
+    set_subscriptions_for notification_type, new_subscriptions
+  end
+
+  def subscribe_to! notification_type, subscription
+    subscribe_to notification_type, subscription
+    save
+  end
+
   def unsubscribe_from notification_type, subscription
     new_subscriptions = subscriptions_for(notification_type)
     new_subscriptions.delete(subscription)
@@ -763,6 +799,11 @@ class User < ActiveRecord::Base
 
     def invitation_accepted
       notify_observers(:after_invitation_accepted)
+    end
+
+    def set_notification_preferences
+      subscribe_to_all
+      self.project_email_frequency = DEFAULT_EMAIL_FREQUENCY
     end
 
     def user_name_is_unique

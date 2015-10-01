@@ -50,6 +50,14 @@ const ListsDropdown = React.createClass({
       );
     }
 
+    if (!lists.length) {
+      lists = (
+        <li className="list-item">
+          <label>To bookmark this project, create your first list below:</label>
+        </li>
+      );
+    }
+
     let style = this.props.isOpen ? {} : { display: 'none' };
 
     return (

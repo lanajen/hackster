@@ -4,6 +4,9 @@
   <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
   <input style="position: absolute; left: -5000px;" type="text" name="b_3fd72855783c7f1a97812d84e_6ff81e3e5b" tabindex="-1" value="">
   <div class="form-group">
+    <% if defined?(source) && source %>
+      <input type="hidden" value="<%= source %>" name="SOURCE">
+    <% end %>
     <input type="email" value="" name="EMAIL" class="form-control" id="mce-EMAIL" placeholder="email@example.com">
   </div>
   <input type="submit" value="Sign me up!" name="subscribe" id="mc-embedded-subscribe" class="btn btn-primary btn-sm">

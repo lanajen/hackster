@@ -118,7 +118,7 @@ const FollowButton = React.createClass({
       'text': 'follow-button btn btn-primary',
       'text_wide': 'follow-button btn btn-primary disable-link btn-block btn-ellipsis react-button-margin-bottom',
       'part': 'follow-button btn btn-primary btn-block btn-sm',
-      'project': 'follow-button btn btn-primary btn-block btn-ellipsis'
+      'project': 'follow-button btn btn-link btn-sm'
     };
     return classes;
   },
