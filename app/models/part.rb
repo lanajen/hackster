@@ -7,7 +7,7 @@ class Part < ActiveRecord::Base
   EDITABLE_STATES = %w(new pending_review)
   INVALID_STATES = %w(rejected retired)
   SORTING = {
-    'alpha' => :alphabetical,
+    'alpha' => :sorted_by_full_name,
     'owned' => :most_followed,
     'used' => :most_used,
   }
@@ -114,6 +114,10 @@ class Part < ActiveRecord::Base
     where.not platform_id: nil
   end
 
+  def self.include_full_name
+    select("parts.*, CASE WHEN position(groups.full_name IN parts.name) = 0 THEN CONCAT(groups.full_name, ' ', parts.name) ELSE parts.name END AS fname").joins(:platform)
+  end
+
   def self.invalid
     where workflow_state: INVALID_STATES
   end
@@ -136,6 +140,10 @@ class Part < ActiveRecord::Base
 
   def self.sorted_by_name
     order(:name)
+  end
+
+  def self.sorted_by_full_name
+    include_full_name.order("fname ASC")
   end
 
   def self.with_sku

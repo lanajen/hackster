@@ -1,11 +1,20 @@
 import React from 'react';
 
 const SearchBox = React.createClass({
-  render: function() {
+  componentWillMount: function() {
+     this.handleOnKeyUp = _.debounce(this.handleOnKeyUp, 250);
+  },
 
+  handleOnKeyUp: function(e) {
+    let value = React.findDOMNode(this.refs.search).value;
+    this.props.onSearch(value);
+  },
+
+  render: function() {
     return (
-      <div className="search-box">
-        <input type="text" ref="search" placeholder="Search..."/>
+      <div className="search-box input-group">
+        <span className='input-group-addon'><i className="fa fa-search"></i></span>
+        <input className="form-control" type="text" ref="search" placeholder="Search..." onKeyUp={this.handleOnKeyUp} />
       </div>
     );
   },

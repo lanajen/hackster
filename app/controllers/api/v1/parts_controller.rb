@@ -29,7 +29,7 @@ class Api::V1::PartsController < Api::V1::BaseController
     sort = params[:sort] || Part::DEFAULT_SORT
     @parts = @parts.send(Part::SORTING[sort])
 
-    @parts = @parts.paginate(page: safe_page_params)
+    @parts = @parts.includes(:image, platform: :avatar).paginate(page: safe_page_params)
   end
 
   def create

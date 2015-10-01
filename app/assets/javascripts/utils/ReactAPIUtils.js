@@ -39,6 +39,17 @@ module.exports = {
     });
   },
 
+  fetchFollowing(csrfToken) {
+    return new Promise((resolve, reject) => {
+      request
+        .get('/api/v1/followers')
+        .set('X-CSRF-Token', csrfToken)
+        .end(function(err, res) {
+          err ? reject(err) : resolve(res);
+        });
+    });
+  },
+
   fetchLists(projectId) {
     return new Promise((resolve, reject) => {
       request

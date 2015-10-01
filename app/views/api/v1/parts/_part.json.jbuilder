@@ -1,5 +1,6 @@
 json.id part.id
 json.name part.name
+json.full_name part.fname if part.respond_to?(:fname)
 json.type part.type
 json.one_liner part.decorate.one_liner_or_description
 json.description part.description
@@ -20,7 +21,7 @@ if platform = part.platform
   json.platform do
     json.id platform.id
     json.name platform.name
-    json.logo_url platform.decorate.avatar(params[:image_size] || :tiny)
+    json.logo_url platform.decorate.avatar(:tiny)
   end
 end
 json.counters do
