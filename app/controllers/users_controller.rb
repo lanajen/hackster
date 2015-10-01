@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   before_filter :authenticate_user!, except: [:show, :index, :redirect_to_show]
   before_filter :load_user, only: [:show]
-  authorize_resource except: [:after_registration, :after_registration_save, :redirect_to_show]
+  authorize_resource except: [:after_registration, :after_registration_save, :toolbox, :redirect_to_show]
   layout :set_layout
   protect_from_forgery except: :redirect_to_show
   skip_before_filter :track_visitor, only: [:show]

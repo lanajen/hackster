@@ -68,7 +68,6 @@ const App = React.createClass({
     console.log('currentPage', currentPage);
     return (
       <div className='toolbox-selector'>
-        <h1>Fill up your toolbox by selecting components, apps and tools you own or are using</h1>
         <SearchContainer filter={request.filter} onFilterChange={this.handleOnFilterChange} onSearch={this.handleOnSearch} />
         <PartsContainer isFetching={isFetching} parts={parts} nextPage={nextPage} currentPage={currentPage} fetchNextPage={this.handleFetchNextPage} handlePartClick={this.handlePartClick} query={request.query} />
       </div>

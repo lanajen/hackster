@@ -115,7 +115,7 @@ class Part < ActiveRecord::Base
   end
 
   def self.include_full_name
-    select("parts.*, CASE WHEN position(groups.full_name IN parts.name) = 0 THEN CONCAT(groups.full_name, ' ', parts.name) ELSE parts.name END AS fname").joins(:platform)
+    select("parts.*, CASE WHEN position(fng.full_name IN parts.name) = 0 THEN CONCAT(fng.full_name, ' ', parts.name) ELSE parts.name END AS fname").joins("LEFT JOIN groups AS fng ON fng.id = parts.platform_id AND fng.type = 'Platform'")
   end
 
   def self.invalid
