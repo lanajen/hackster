@@ -1,5 +1,5 @@
 class Api::V1::PartsController < Api::V1::BaseController
-  skip_before_filter :verify_authenticity_token, only: [:create, :update, :destroy]
+  protect_from_forgery except: [:create, :update, :destroy]
   before_filter :public_api_methods
   before_filter :authenticate_platform_or_user, only: [:index]
   before_filter :authenticate_and_load_resource, only: [:show, :create, :update, :destroy]
