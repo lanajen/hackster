@@ -21,6 +21,6 @@ class CriticalCronWorker < BaseWorker
 
   def launch_cron
     CriticalCronWorker.perform_async 'update_challenges_workflow'
-    CriticalCronWorker.perform_in 1.minute, 'launch_cron'
+    # CriticalCronWorker.perform_in 1.minute, 'launch_cron'
   end
 end

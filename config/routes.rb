@@ -1,5 +1,6 @@
 require 'route_constraints'
 require 'sidekiq/web'
+require 'sidekiq/cron/web'
 
 HackerIo::Application.routes.draw do
 

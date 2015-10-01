@@ -58,7 +58,6 @@ class CronTask < BaseWorker
     CronTask.perform_in 10.minutes, 'clean_invitations'
     PopularityWorker.perform_in 12.minutes, 'compute_popularity_for_projects'
     CronTask.perform_in 14.minutes, 'evaluate_badges'
-    CronTask.perform_in 1.hour, 'launch_cron'
   end
 
   def launch_daily_cron
@@ -68,26 +67,19 @@ class CronTask < BaseWorker
     ReputationWorker.perform_in 1.minute, 'compute_daily_reputation'
     PopularityWorker.perform_in 1.hour, 'compute_popularity'
     CronTask.perform_in 2.hours, 'send_daily_notifications'
-
-    CronTask.perform_in 24.hours, 'launch_daily_cron'
   end
 
   def launch_weekly_cron
-    CronTask.perform_in 2.hours, 'send_weekly_notifications'
+    CronTask.perform_async 'send_weekly_notifications'
 
-    next_date = Time.now.in_time_zone(PDT_TIME_ZONE).next_week.advance(hours: 8)
-    CronTask.perform_at next_date, 'launch_weekly_cron'
+    # monthly cron on first Monday
+    if Date.today.day.in? (1..7)
+      CronTask.perform_async 'launch_monthly_cron'
+    end
   end
 
   def launch_monthly_cron
-    CronTask.perform_in 2.hours, 'send_monthly_notifications'
-
-    next_date = Time.now.in_time_zone(PDT_TIME_ZONE).next_month.beginning_of_month
-    if next_date.wday != 1
-      next_date = next_date.advance(days: 8 - next_date.wday)
-    end
-    next_date = next_date.advance(hours: 8)
-    CronTask.perform_at next_date, 'launch_monthly_cron'
+    CronTask.perform_async 'send_monthly_notifications'
   end
 
   def lock_assignment
