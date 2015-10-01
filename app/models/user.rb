@@ -321,13 +321,14 @@ class User < ActiveRecord::Base
   end
 
   def self.with_email_frequency frequency
+    # warning: this will potentially return the same user multiple times
     if frequency.nil?
-      where "CAST (hproperties -> 'project_email_frequency' AS BOOLEAN) IS NULL"
+      where "NOT defined(users.hproperties, 'project_email_frequency') OR users.hproperties IS NULL"
     else
       if frequency.to_s == DEFAULT_EMAIL_FREQUENCY.to_s
-        where "hproperties -> 'project_email_frequency' = ? OR CAST (hproperties -> 'project_email_frequency' AS BOOLEAN) IS NULL", frequency
+        where "users.hproperties -> 'project_email_frequency' = ? OR NOT defined(users.hproperties, 'project_email_frequency') OR users.hproperties IS NULL", frequency
       else
-        where "hproperties -> 'project_email_frequency' = ?", frequency
+        where "users.hproperties -> 'project_email_frequency' = ?", frequency
       end
     end
   end

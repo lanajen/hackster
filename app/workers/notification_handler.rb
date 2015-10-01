@@ -68,7 +68,7 @@ class NotificationHandler
       when :challenge
         context[:model] = challenge = context[:challenge] = Challenge.find context_id
         context[:users] = challenge.admins
-        if event == :launched_contest or :launched_pre_contest
+        if event.in? [:launched_contest, :launched_pre_contest]
           context[:users] += challenge.registrants
         end
       when :challenge_entry, :challenge_entry_admin
