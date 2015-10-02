@@ -10,7 +10,6 @@ module ScraperStrategies
           files = []
           attachments.each do |attachment|
             attachments.css('a').each do |node|
-              puts node.inspect
               next unless link = node['href']
               next if link.in? files
               files << link
@@ -58,7 +57,7 @@ module ScraperStrategies
       end
 
       def crap_list
-        super + %w(.inline-ads .photoset-seemore #attachments)
+        super + %w(.inline-ads .photoset-seemore #attachments .photoset-showmore)
       end
 
       def extract_title
@@ -66,7 +65,7 @@ module ScraperStrategies
       end
 
       def select_article
-        steps = @parsed.css('#main-content .step-container').map{|t| t.to_html}.join('')
+        steps = @parsed.css('#instructable-wrapper .step-container').map{|t| t.to_html}.join('')
         Nokogiri::HTML::DocumentFragment.parse(steps)
       end
   end
