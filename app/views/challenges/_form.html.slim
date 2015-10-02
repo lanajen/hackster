@@ -207,6 +207,7 @@
         .panel-heading
           h4 Danger zone
         .panel-body
+          = f.input :ready, as: :boolean, inline_label: "This challenge is ready for launch!", label: false, hint: "When you're ready, check this box to tell the system that it can automatically launch the challenge on the dates specified in the settings."
           .form-group
             .col-md-8.col-md-offset-4
               - case @challenge.workflow_state.to_sym
@@ -228,8 +229,6 @@
       hr
       .pull-right
         ul.list-unstyled.list-inline
-          / if current_user.is? :admin
-            li= link_to 'Edit as admin', edit_admin_challenge_path(@challenge), class: 'btn btn-warning btn-sm'
           li= f.submit 'Save changes', class: 'btn btn-primary btn-sm'
           li= link_to 'Cancel', @challenge, class: 'btn-link btn-sm'
 

@@ -82,6 +82,7 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :pre_registration_start_date, :datetime
   hstore_column :hproperties, :pre_winners_announced_date, :datetime
   hstore_column :hproperties, :project_ideas, :boolean
+  hstore_column :hproperties, :ready, :boolean
   hstore_column :hproperties, :requirements, :string
   hstore_column :hproperties, :rules, :string
   hstore_column :hproperties, :teaser, :string
@@ -159,6 +160,10 @@ class Challenge < ActiveRecord::Base
 
   def self.public
     where "CAST(hproperties -> 'password_protect' AS BOOLEAN) = ? OR CAST(hproperties -> 'password_protect' AS BOOLEAN) IS NULL", false
+  end
+
+  def self.ready
+    where "CAST(hproperties -> 'ready' AS BOOLEAN) = ?", true
   end
 
   def self.starts_first
