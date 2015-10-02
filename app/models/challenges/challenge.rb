@@ -212,7 +212,7 @@ class Challenge < ActiveRecord::Base
   end
 
   def end_date_dummy
-    end_date.strftime("%m/%d/%Y %l:%M %P") if end_date
+    end_date.in_time_zone(PDT_TIME_ZONE).strftime("%m/%d/%Y %l:%M %P") if end_date
   end
 
   def generate_slug
@@ -276,7 +276,7 @@ class Challenge < ActiveRecord::Base
   end
 
   def start_date_dummy
-    start_date.strftime("%m/%d/%Y %l:%M %P") if start_date
+    start_date.in_time_zone(PDT_TIME_ZONE).strftime("%m/%d/%Y %l:%M %P") if start_date
   end
 
   def sync_mailchimp!
@@ -295,27 +295,27 @@ class Challenge < ActiveRecord::Base
   end
 
   def voting_end_date_dummy
-    voting_end_date ? voting_end_date.strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
+    voting_end_date ? voting_end_date.in_time_zone(PDT_TIME_ZONE).strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
   end
 
   def pre_registration_start_date_dummy
-    pre_registration_start_date ? pre_registration_start_date.strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
+    pre_registration_start_date ? pre_registration_start_date.in_time_zone(PDT_TIME_ZONE).strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
   end
 
   def pre_contest_start_date_dummy
-    pre_contest_start_date ? pre_contest_start_date.strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
+    pre_contest_start_date ? pre_contest_start_date.in_time_zone(PDT_TIME_ZONE).strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
   end
 
   def pre_contest_end_date_dummy
-    pre_contest_end_date ? pre_contest_end_date.strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
+    pre_contest_end_date ? pre_contest_end_date.in_time_zone(PDT_TIME_ZONE).strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
   end
 
   def pre_winners_announced_date_dummy
-    pre_winners_announced_date ? pre_winners_announced_date.strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
+    pre_winners_announced_date ? pre_winners_announced_date.in_time_zone(PDT_TIME_ZONE).strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
   end
 
   def winners_announced_date_dummy
-    winners_announced_date ? winners_announced_date.strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
+    winners_announced_date ? winners_announced_date.in_time_zone(PDT_TIME_ZONE).strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
   end
 
   def voting_active?
