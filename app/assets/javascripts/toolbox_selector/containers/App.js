@@ -6,12 +6,6 @@ import SearchContainer from '../components/SearchContainer';
 
 const App = React.createClass({
 
-  // getInitialState() {
-  //   return {
-  //     parts: store.getState().parts
-  //   };
-  // },
-
   componentDidMount() {
     const { dispatch, selectedQueryKey } = this.props;
     dispatch(initialFetchFollowing());
@@ -28,7 +22,7 @@ const App = React.createClass({
 
   dispatchSelectParts: function(options) {
     const { dispatch, request } = this.props;
-    let newReq = Object.assign(request, options);
+    let newReq = Object.assign({}, request, options);
     dispatch(selectParts(newReq));
 
     let currentY = window.scrollY;
@@ -65,10 +59,18 @@ const App = React.createClass({
 
   render: function() {
     const { selectedQueryKey, parts, isFetching, nextPage, currentPage, request } = this.props;
-    console.log('currentPage', currentPage);
     return (
       <div className='toolbox-selector'>
-        <SearchContainer filter={request.filter} onFilterChange={this.handleOnFilterChange} onSearch={this.handleOnSearch} />
+        <h1>Fill up your toolbox by selecting components, apps and tools you own or are using</h1>
+        <div className="row">
+          <div className="col-md-6">
+            <SearchContainer filter={request.filter} onFilterChange={this.handleOnFilterChange} onSearch={this.handleOnSearch} />
+          </div>
+          <div className="col-md-6">
+            <a href='/users/registration/toolbox_save' className="btn btn-primary">Done!</a>
+            <a href={this.props.nextLink} className="btn btn-link btn-sm">I'll do this later</a>
+          </div>
+        </div>
         <PartsContainer isFetching={isFetching} parts={parts} nextPage={nextPage} currentPage={currentPage} fetchNextPage={this.handleFetchNextPage} handlePartClick={this.handlePartClick} query={request.query} />
       </div>
     );
@@ -77,7 +79,6 @@ const App = React.createClass({
 });
 
 function mapStateToProps(state) {
-  console.log('STATE', state);
   const { selectedQueryKey, partsByQueryKey, partsById, followedPartIds } = state;
   const {
     isFetching,

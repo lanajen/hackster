@@ -209,6 +209,7 @@ class User < ActiveRecord::Base
   hstore_column :properties, :has_unread_notifications, :boolean
   hstore_column :properties, :last_sent_projects_email_at, :datetime
   hstore_column :properties, :reputation_last_updated_at, :datetime
+  hstore_column :properties, :toolbox_shown, :boolean
 
   hstore_column :hproperties, :project_email_frequency, :string, default: DEFAULT_EMAIL_FREQUENCY
 

@@ -68,11 +68,15 @@
             - @guest_projects.each_with_index do |project, i|
               = render partial: 'projects/project_thumb', locals: { project: project.decorate, ref: 'userguest', ref_id: @user.id, offset: i }
 
-      - if !is_whitelabel? and @parts.any?
+      - if !is_whitelabel? and (@parts.any? or user_is_current?)
         hr
-        h2
-          ' Toolbox
-          = content_tag(:span, @parts.count, class: 'badge')
+        .clearfix
+          h2.pull-left
+            ' Toolbox
+            = content_tag(:span, @parts.count, class: 'badge')
+          - if user_is_current?
+            .pull-right
+              = link_to 'Find parts to add to my toolbox', user_toolbox_path, class: 'btn btn-default'
         .row
           - @parts.each do |part|
             .col-md-4= render partial: 'parts/part_thumb', locals: { part: part.decorate }

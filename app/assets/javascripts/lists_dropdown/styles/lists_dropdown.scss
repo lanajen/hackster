@@ -8,6 +8,7 @@
     border-top: 0;
     position: absolute;
     z-index: 20;
+    left: 0;
     @include box-shadow(0 1px 2px #666);
     width: 100%;
     max-height: 300px;

@@ -1,4 +1,5 @@
-.toolbox-selector
-  h1 Fill up your toolbox by selecting components, apps and tools you own or are using
-  = link_to "I'll do this later", user_return_to, class: 'btn btn-link btn-sm'
-= react_component 'ToolboxSelector', {}, {}
+- if params[:ref] == 'sign_in'
+  .alert.alert-warning
+    strong> Howdy!
+    | Before you get started today, could you tell us what's in your toolbox? We'll use that information to show you projects that match.
+= react_component 'ToolboxSelector', { nextLink: user_return_to }, {}
