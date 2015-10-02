@@ -1,10 +1,6 @@
 = content_for :head do
   = render 'meta_tags'
 
-/ - if @hardware_parts.any?
-  = content_for :js do
-    = render partial: 'shared/modals/buy_all_quote', locals: { project: @project }
-
 = inserts_stats_for @project
 
 = content_for :no_container do

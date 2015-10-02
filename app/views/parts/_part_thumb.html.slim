@@ -1,5 +1,8 @@
 .part-thumb
-  a.img-container href=url_for(part)
-    = image_tag(part.image(:medium))
+  a.img-container href=(part.has_own_page? ? url_for(part) : nil)
+    - if part.image
+      = image_tag(part.image(:medium))
     .description= part.one_liner_or_description.html_safe
-  h3= link_to part.name, part
+  h3
+    a href=(part.has_own_page? ? url_for(part) : nil)
+      = part.name
