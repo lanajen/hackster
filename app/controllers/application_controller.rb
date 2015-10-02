@@ -94,7 +94,14 @@ class ApplicationController < ActionController::Base
   end
 
   def api_host
-    'api.' + APP_CONFIG['default_domain']
+    return @api_host if @api_host
+
+    @api_host = 'api.'
+    if ENV['SUBDOMAIN'].present? and ENV['SUBDOMAIN'] != 'www'
+      @api_host += ENV['SUBDOMAIN'] + '.'
+    end
+    @api_host += APP_CONFIG['default_domain']
+    @api_host
   end
   # end code for whitelabel
 

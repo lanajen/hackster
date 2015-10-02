@@ -176,6 +176,10 @@ class PagesController < ApplicationController
     render "robots/#{Rails.env}"
   end
 
+  def test
+    not_found if Rails.env.production?
+  end
+
   def terms
     meta_desc 'Read our terms of service.'
     title 'Terms of service'
