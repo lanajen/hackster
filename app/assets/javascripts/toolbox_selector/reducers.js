@@ -44,7 +44,6 @@ function parts(state = {
   items: [],
   request: { query: '', sort: SortFilters.MOST_FOLLOWED, page: 1 }
 }, action) {
-  console.log('parts()', 'ACTION', action);
   switch (action.type) {
   case REQUEST_PARTS:
     return Object.assign({}, state, {
@@ -69,9 +68,6 @@ function partsByQueryKey(state = {}, action) {
   case REQUEST_PARTS:
     let key = generateKey(action.request);
     let partsHash = parts(state[key], action);
-    // console.log('partsByQueryKey', 'REQUEST_PARTS', 'action', action);
-    // console.log('partsByQueryKey', 'REQUEST_PARTS', 'key', key);
-    // console.log('partsByQueryKey', 'REQUEST_PARTS', 'parts', partsHash);
     return Object.assign({}, state, {
       [key]: partsHash
     });
@@ -90,7 +86,6 @@ function partsById(state = {}, action) {
     part = action.parts[action.partId];
     part.isLoading = true;
     action.parts[action.partId] = part;
-    console.log('action.parts', action.parts);
     return Object.assign({}, state, action.parts);
   case FOLLOW_PART:
     part = action.parts[action.partId];
@@ -114,7 +109,6 @@ function followedPartIds(state = [], action) {
   switch (action.type) {
   case RECEIVE_FOLLOWING:
     return Object.assign([], action.following);
-  // case REQUEST_FOLLOWING:
   case FOLLOW_PART:
     newState.push(action.partId);
     return newState;
@@ -135,35 +129,6 @@ function organizePartsById(parts = []) {
   }
   return hash;
 }
-
-// function updatePart(state = {}, action) {
-//   console.log('ACTION', action);
-//   // if (!part) return state;
-//   let part;
-//   if (action.parts) part = action.parts[action.partId];
-
-//   switch (action.type) {
-//   case UPDATING_FOLLOW:
-//     part.isLoading = true;
-//     action.parts[action.partId] = part;
-//     console.log('action.parts', action.parts);
-//     // return Object.assign({}, state, {
-//     //   items: action.parts.map((part, i) => part.id)
-//     // });
-//   case FOLLOW_PART:
-//     part.isLoading = false;
-//     part.isFollowing = true;
-//     action.parts[action.partId] = part;
-//     return Object.assign({}, state, action.parts);
-//   case UNFOLLOW_PART:
-//     part.isLoading = false;
-//     part.isFollowing = false;
-//     action.parts[action.partId] = part;
-//     return Object.assign({}, state, action.parts);
-//   default:
-//     return state;
-//   }
-// }
 
 const rootReducer = combineReducers({
   partsByQueryKey,

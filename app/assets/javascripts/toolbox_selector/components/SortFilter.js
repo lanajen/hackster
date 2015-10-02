@@ -14,8 +14,6 @@ const SortFilter = React.createClass({
   },
 
   render: function() {
-    console.log('FILTER', this.state.value);
-
     return (
       <div className="sort-filter input-group">
         <span className='input-group-addon'><i className="fa fa-sort"></i></span>

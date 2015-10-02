@@ -13,7 +13,6 @@ const App = React.createClass({
   },
 
   componentWillReceiveProps(nextProps) {
-    console.log('new props!', nextProps);
     if (nextProps.selectedQueryKey !== this.props.selectedQueryKey) {
       const { dispatch, selectedQueryKey } = nextProps;
       dispatch(fetchPartsIfNeeded(selectedQueryKey));

@@ -77,7 +77,6 @@ function fetchPartsFromServer(req) {
 }
 
 function doFollowPart(partId, parts) {
-  console.log('doFollowPart');
   return function (dispatch) {
     dispatch(updatingFollow(partId, parts));
 
@@ -102,10 +101,6 @@ function doUnfollowPart(partId, parts) {
 }
 
 function shouldFetchParts(state, queryKey) {
-  // console.log('METHOD', 'shouldFetchParts');
-  // console.log('STATE', state);
-  // console.log('REQUEST', request);
-  // let key = generateKey(request);
   const parts = state.partsByQueryKey[queryKey];
   if (!parts) {
     return true;
@@ -144,9 +139,6 @@ function fetchFollowingFromServer() {
 }
 
 export function generateKey(request) {
-  // let query = request.query || '';
-  // let filter = request.filter || SortFilters.MOST_FOLLOWED;
-  // let page = request.page || 1;
   const { query, filter, page } = request || { query: '', filter: SortFilters.MOST_FOLLOWED, page: 1 };
   return `${query}:${filter}:${page}`;
 }
@@ -164,7 +156,6 @@ export function followOrUnfollowPart(partId) {
   return (dispatch, getState) => {
     let parts = getState().partsById
     let part = parts[partId];
-    console.log('getState().partsById', getState().partsById);
     if (part.isFollowing === true) {
       return dispatch(doUnfollowPart(partId, parts));
     } else {
@@ -174,16 +165,13 @@ export function followOrUnfollowPart(partId) {
 }
 
 function updatingFollow(partId, parts) {
-  console.log('updatingFollow');
   return { type: UPDATING_FOLLOW, partId, parts };
 }
 
 function followPart(partId, parts) {
-  console.log('followPart');
   return { type: FOLLOW_PART, partId, parts };
 }
 
 function unfollowPart(partId, parts) {
-  console.log('unfollowPart');
   return { type: UNFOLLOW_PART, partId, parts };
 }
