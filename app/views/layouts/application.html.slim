@@ -104,6 +104,7 @@ html(lang="en")
                     i.fa.fa-ellipsis-h
                     span.caret
                   ul#nav-user-menu.dropdown-menu style='padding:0;margin-top:-10px;'
+                    li= link_to 'Free Store', store_path, class: 'nav-link'
                     li= link_to 'Curated lists', lists_path, class: 'nav-link'
                     li= link_to 'Hardware Weekend', '/hardwareweekend', class: 'nav-link'
                     li= link_to 'Hacker spaces', hacker_spaces_path, class: 'nav-link'
@@ -229,8 +230,9 @@ html(lang="en")
       = render 'shared/search_form'
       = link_to 'Projects', projects_path(ref: 'topnav'), class: 'mo-nav-link'
       = link_to 'Platforms', platforms_path, class: 'mo-nav-link'
-      = link_to 'Hardware Weekend', '/hardwareweekend', class: 'mo-nav-link'
-      / = link_to 'Challenges', challenges_path, class: 'mo-nav-link'
+      / # = link_to 'Hardware Weekend', '/hardwareweekend', class: 'mo-nav-link'
+      = link_to 'Free Store', store_path, class: 'mo-nav-link'
+      = link_to 'Challenges', challenges_path, class: 'mo-nav-link'
       = link_to 'Hacker spaces', hacker_spaces_path, class: 'mo-nav-link'
       = link_to 'Blog', blog_index_path, class: 'mo-nav-link'
       = link_to content_tag(:i, '', class: 'fa fa-plus') + content_tag(:span, "Add project").html_safe, new_project_path, class: 'mo-nav-link'
