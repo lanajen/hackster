@@ -4,15 +4,16 @@ class Api::V1::BaseController < ApplicationController
   skip_before_filter :verify_authenticity_token
   skip_before_action :set_locale
   before_filter :allow_cors_requests
+  before_filter :public_api_methods, only: [:cors_preflight_check]
 
   def cors_preflight_check
+    head(:ok)
   end
 
   private
     def allow_cors_requests
-      headers['Access-Control-Allow-Methods'] = %w{GET POST PUT DELETE PATCH}.join(',')
-      headers['Access-Control-Allow-Headers'] = %w{Origin Accept Content-Type X-Requested-With X-CSRF-Token}.join(',')
-      head(:ok) if request.request_method == 'OPTIONS'
+      headers['Access-Control-Allow-Methods'] = %w{GET POST PUT DELETE PATCH OPTIONS}.join(',')
+      headers['Access-Control-Allow-Headers'] = %w{Origin Accept Content-Type X-Requested-With X-CSRF-Token Authorization Token}.join(',')
     end
 
     def authenticate_api_user
@@ -25,7 +26,6 @@ class Api::V1::BaseController < ApplicationController
     end
 
     def authenticate_platform_or_user
-      # raise request.headers['Authorization'].inspect
       if request.headers['Authorization'].present?
         authenticate_api_user
       else

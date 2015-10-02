@@ -74,7 +74,7 @@ class ApplicationController < ActionController::Base
   end
 
   def current_site
-    return if request.host == APP_CONFIG['default_host']
+    return if request.host == APP_CONFIG['default_host'] or request.host == api_host
 
     return @current_site if @current_site
 
@@ -86,11 +86,15 @@ class ApplicationController < ActionController::Base
   end
 
   def current_platform
-    return if request.host == APP_CONFIG['default_host']
+    return if request.host == APP_CONFIG['default_host'] or request.host == api_host
 
     return @current_platform if @current_platform
 
     redirect_to root_url(subdomain: 'www') unless @current_platform = current_site.try(:platform)
+  end
+
+  def api_host
+    'api.' + APP_CONFIG['default_domain']
   end
   # end code for whitelabel
 

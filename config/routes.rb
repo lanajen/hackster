@@ -58,13 +58,60 @@ HackerIo::Application.routes.draw do
     end
   end
 
-  # constraints(ApiSite) do
-  # end
+  constraints(ApiSite) do
+    scope module: :api, defaults: { format: :json } do
+      namespace :v1 do
+        get 'embeds' => 'embeds#show'
+        # post 'embeds' => 'embeds#create'
+        resources :announcements
+        resources :build_logs
+        resources :code_files, only: [:create]
+        resources :comments, only: [:create, :destroy]
+        resources :flags, only: [:create]
+        resources :followers, only: [:create, :index] do
+          collection do
+            delete '' => 'followers#destroy'
+          end
+        end
+        resources :jobs, only: [:create, :show]
+        resources :likes, only: [:create] do
+          delete '' => 'likes#destroy', on: :collection
+        end
+        scope 'mandrill/webhooks' do
+          post 'unsub' => 'mandrill_webhooks#unsub'
+        end
+        resources :projects
+        resources :parts, except: [:new, :edit]
+        scope 'platforms' do
+          get ':user_name' => 'platforms#show'
+          scope ':user_name' do
+            get 'analytics' => 'platforms#analytics'
+          end
+        end
+        resources :lists, only: [:index, :create] do
+          post 'projects' => 'lists#link_project', on: :member
+          delete 'projects' => 'lists#unlink_project', on: :member
+        end
+        resources :microsoft_chrome_sync, only: [] do
+          get '' => 'microsoft_chrome_sync#show', on: :collection
+          patch '' => 'microsoft_chrome_sync#update', on: :collection
+        end
+        resources :notifications, only: [:index]
+        resources :thoughts
+        resources :users, only: [] do
+          get :autocomplete, on: :collection
+        end
+        resources :widgets, only: [:destroy, :update, :create]
+        match "*all" => "base#cors_preflight_check", via: :options
+      end
+    end
+  end
 
   devise_for :users, skip: [:session, :password, :registration, :confirmation, :invitation], controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
 
   scope '(:locale)', locale: /[a-z]{2}(-[a-zA-Z]{2})?/ do
     constraints(MainSite) do
+      get 'test' => 'pages#test'
       get 'sitemap_index.xml' => 'sitemap#index', as: 'sitemap_index', defaults: { format: 'xml' }
       get 'sitemap.xml' => 'sitemap#show', as: 'sitemap', defaults: { format: 'xml' }
 
