@@ -286,13 +286,11 @@ class Project < ActiveRecord::Base
   end
 
   def self.custom_for user
-    # indexable.joins("LEFT JOIN project_collections as pj1 ON pj1.project_id = projects.id").joins("LEFT JOIN follow_relations AS fr1 ON fr1.followable_id = pj1.collectable_id AND fr1.followable_type = pj1.collectable_type").joins("LEFT JOIN groups ON groups.id = projects.team_id").joins("LEFT JOIN members ON groups.id = members.group_id").joins("LEFT JOIN follow_relations AS fr2 ON fr2.followable_id = members.user_id AND fr2.followable_type = 'User'").where("fr1.user_id = ? OR fr2.user_id = ?", user.id, user.id).distinct("projects.id").last_public.includes(:project_collections)
-
     col_projects = select('projects.id').joins("LEFT JOIN project_collections as pj1 ON pj1.project_id = projects.id").joins("LEFT JOIN follow_relations AS fr1 ON fr1.followable_id = pj1.collectable_id AND fr1.followable_type = pj1.collectable_type").where("fr1.user_id = ?", user.id).distinct("projects.id")
     user_projects = select('projects.id').joins("LEFT JOIN groups ON groups.id = projects.team_id").joins("LEFT JOIN members ON groups.id = members.group_id").joins("LEFT JOIN follow_relations AS fr2 ON fr2.followable_id = members.user_id AND fr2.followable_type = 'User'").where("fr2.user_id = ?", user.id).distinct("projects.id")
-    part_projects = select('projects.id').joins("LEFT JOIN part_joins as pj2 ON pj2.partable_id = projects.id AND pj2.partable_type = 'Project'").joins("LEFT JOIN follow_relations AS fr3 ON fr3.followable_id = pj2.part_id AND fr3.followable_type = 'Part'").where("fr3.user_id = ?", user.id).distinct("projects.id")
+    part_projects = select('projects.id').joins("LEFT JOIN part_joins as pj2 ON pj2.partable_id = projects.id AND pj2.partable_type = 'Project'").joins("INNER JOIN parts ON pj2.part_id = parts.id").where.not(parts: { platform_id: nil }).joins("LEFT JOIN follow_relations AS fr3 ON fr3.followable_id = pj2.part_id AND fr3.followable_type = 'Part'").where("fr3.user_id = ?", user.id).distinct("projects.id")
 
-    indexable.where("projects.id IN (?) OR projects.id IN (?) OR projects.id IN (?)", col_projects, user_projects, part_projects).last_public.includes(:project_collections, :users, :platforms, :parts)
+    indexable.where("projects.id IN (?) OR projects.id IN (?) OR projects.id IN (?)", col_projects, user_projects, part_projects).last_public.includes(:parts, :platforms, :project_collections, :users)
   end
 
   def self.external
