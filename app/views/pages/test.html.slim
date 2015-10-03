@@ -1,17 +1,18 @@
 = content_for :js do
 
   javascript:
+    var username = 'OI1B0WGzHaZthtED2YuLrA';
+    var password = 'a6aad7e6cc81f98b90a747fa20e815a85f29981a';
     $.ajax({
-      url: 'http://www.localhost.local:5000/api/v1/parts/12101',
-      username: 'OI1B0WGzHaZthtED2YuLrA',
-      password: 'a6aad7e6cc81f98b90a747fa20e815a85f29981a',
+      url: 'https://api.hackster.io/v1/parts/13251',
       dataType: 'json',
       type: 'PATCH',
       data: {
-        'part[name]': 'test part v2'
+        'part[name]': 'test v2',
+        'part[private]': true,
       },
       beforeSend: function(xhr) {
-        var reqHeader = "Basic " + btoa('OI1B0WGzHaZthtED2YuLrA' + ":" + 'a6aad7e6cc81f98b90a747fa20e815a85f29981a');
+        var reqHeader = "Basic " + btoa(username + ":" + password);
         xhr.setRequestHeader("Authorization", reqHeader);
       }
     }).done(function(response){

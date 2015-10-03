@@ -30,3 +30,10 @@
       / # = f.input :enable_comments, inline_label: 'Enable comments', label: false, as: :boolean
       - if @group.checklist_completed?(:get_started)
         = f.input :public, as: :boolean, inline_label: 'Make this list public', label: false
+
+    .col-md-6
+      .form-group
+        .col-md-4
+          label.control-label Danger zone
+        .col-md-8
+          = link_to 'Delete this list', "/groups/#{@list.id}", data: { method: :delete, confirm: "Are you sure? There's no way back." }, class: 'btn btn-danger btn-sm'

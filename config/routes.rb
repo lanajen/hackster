@@ -201,7 +201,7 @@ HackerIo::Application.routes.draw do
       end
 
       # groups
-      resources :groups, only: [:edit, :update] do
+      resources :groups, only: [:edit, :update, :destroy] do
         post 'members' => 'members#create', as: :members
         get 'members/edit' => 'members#edit', as: :edit_members
         patch 'members' => 'members#update'
