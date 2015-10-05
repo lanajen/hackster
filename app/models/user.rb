@@ -730,6 +730,11 @@ class User < ActiveRecord::Base
     project_for_assignment(assignment).any?
   end
 
+  def set_notification_preferences
+    subscribe_to_all
+    self.project_email_frequency = DEFAULT_EMAIL_FREQUENCY
+  end
+
   def submitted_project_to_assignment? assignment
     project_for_assignment(assignment).where("projects.assignment_submitted_at IS NOT NULL").any?
   end
@@ -800,11 +805,6 @@ class User < ActiveRecord::Base
 
     def invitation_accepted
       notify_observers(:after_invitation_accepted)
-    end
-
-    def set_notification_preferences
-      subscribe_to_all
-      self.project_email_frequency = DEFAULT_EMAIL_FREQUENCY
     end
 
     def user_name_is_unique

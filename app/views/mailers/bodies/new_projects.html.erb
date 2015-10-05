@@ -22,7 +22,7 @@
 
 <% others = @context[:projects].count - 10 %>
 <% if others > 0 %>
-  <p>There <%= others == 1 ? 'is' : 'are' %> <%= pluralize others, 'other project' %> for you. To see <%= others == 1 ? 'it' : 'them' %>, <a href="<%= u.root_url %>">go to your dashboard</a>.</p>
+  <p>There <%= others == 1 ? 'is' : 'are' %> <%= pluralize others, 'other project' %> for you. To see <%= others == 1 ? 'it' : 'them' %>, <a href="<%= u.root_url %>?ref=newsletter">go to your dashboard</a>.</p>
 <% end %>
 
 <p>Cheers,<br> The Hackster.io team</p>
