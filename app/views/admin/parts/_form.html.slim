@@ -27,7 +27,6 @@
       .row
         .col-xs-10= f_sub.input_field :child_part_id, as: :select, collection: Part.approved.sorted_by_name, wrapper: false, label_method: :full_name
         .col-xs-2= f_sub.link_to_remove content_tag(:i, '', class: 'fa fa-times'), class: 'btn btn-danger btn-xs'
-  / = f.link_to_add 'Add component', :child_part_relations, class: 'btn btn-link btn-sm'
   = f.simple_fields_for :parent_part_relations do |f_sub|
     = f_sub.input :parent_part_id, label: 'Used in' do
       .row
@@ -41,8 +40,7 @@
         label.control-label Projects
       .col-md-8
         - @part.part_joins.each do |part_join|
-          / # = f.simple_fields_for :part_joins, part_join, wrapper: false do |f_p|
-          - project = part_join.try(:partable) ? (part_join.partable.class == Project ? part_join.partable : part_join.partable.widgetable) : nil
+          - project = part_join.try(:partable) ? (part_join.partable_type == 'Project' ? part_join.partable : part_join.partable.widgetable) : nil
           .row.fields
             .col-xs-11
               - if project
@@ -50,17 +48,10 @@
               - else
                 | No project
 
-              / .col-xs-1= f_p.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-sm btn-danger'
-    / .form-group
-      .col-md-8.col-md-offset-4
-        = f.link_to_add 'Add a project', :part_joins, class: 'btn btn-xs btn-success'
-
   - else
-    / # = f.input :part_join_ids, as: :select
     select name='merge_parts[]' multiple='multiple' style='display:none'
       - @parts.each do |part|
         option value=part.id selected='selected'
-    / input type='hidden' name='merge_parts' value=@parts.pluck(:id)
     .form-group
       .col-md-4
         label.control-label Projects
@@ -75,6 +66,8 @@
 
   .row
     .col-md-8.col-md-offset-4= f.submit 'Save changes', class: 'btn btn-primary'
+    - if @part.persisted?
+      = link_to t('.destroy', :default => t("helpers.links.destroy")), admin_part_path(@part.id), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'
 
 = content_for :js do
   = tinymce_assets

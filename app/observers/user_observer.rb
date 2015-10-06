@@ -18,7 +18,7 @@ class UserObserver < ActiveRecord::Observer
     NotificationCenter.perform_in 15.minutes, 'notify_all', :accepted, :invitation, record.id
     record.create_reputation unless record.reputation
     record.update_column :invitation_token, nil if record.invitation_token.present?
-    record.subscribe_to_all && record.save
+    record.set_notification_preferences && record.save
 
     record.events.each{|e| e.update_counters only: [:participants] }
 
@@ -76,7 +76,7 @@ class UserObserver < ActiveRecord::Observer
       record.invitation_accepted_at = Time.now if record.invitation_accepted_at.nil?
       record.generate_user_name if record.user_name.blank? and record.new_user_name.blank?
       record.build_reputation unless record.reputation
-      record.subscribe_to_all
+      record.set_notification_preferences
       advertise_new_user record
     end
 
@@ -92,18 +92,9 @@ class UserObserver < ActiveRecord::Observer
 
   private
     def advertise_new_user record
-      # send_zapier record.email
       NotificationCenter.notify_via_email nil, :user, record.id, 'registration_confirmation' unless record.skip_registration_confirmation
     end
 
     def expire record
-    end
-
-    def send_zapier email
-      return unless email.present?
-
-      # between 8am and 8pm in the next 3 to 7 days
-      time = Time.at(DateTime.tomorrow.in_time_zone(PDT_TIME_ZONE).to_time.to_i + 3.days.to_i + rand(0..4).days.to_i + rand(8.to_f..20.to_f).hours.to_f)
-      ZapierQueue.perform_at time, 'post', email
     end
 end

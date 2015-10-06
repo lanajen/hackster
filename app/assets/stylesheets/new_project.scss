@@ -13,11 +13,14 @@
     margin-top: 40px;
   }
 }
-// temp
-.right-column {
-  .affix {
+#project-side-nav {
+  &.affix {
     width: 345px;
     top: 20px;
+    // padding-bottom: 20px;
+  }
+  &.affix-bottom {
+    position: absolute;
   }
 }
 #content.project-page {

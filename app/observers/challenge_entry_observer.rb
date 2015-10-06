@@ -1,6 +1,6 @@
 class ChallengeEntryObserver < ActiveRecord::Observer
   def after_create record
-    NotificationCenter.notify_all :new, :challenge_entry, record.id
+    NotificationCenter.notify_via_email :new, :challenge_entry, record.id
     NotificationCenter.notify_via_email :new, :challenge_entry_admin, record.id unless record.challenge.auto_approve
   end
 

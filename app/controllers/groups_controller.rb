@@ -1,6 +1,6 @@
 class GroupsController < ApplicationController
   before_filter :authenticate_user!, except: [:show]
-  before_filter :load_group, only: [:show, :update]
+  before_filter :load_group, only: [:show, :update, :destroy]
   # layout 'group', only: [:edit, :update, :show]
   respond_to :html
 
@@ -63,9 +63,6 @@ class GroupsController < ApplicationController
         format.html { redirect_to @group, notice: 'Profile updated.' }
         format.js do
           @group = @group.decorate
-          # if old_group.interest_tags_string != @group.interest_tags_string or old_group.skill_tags_string != @group.skill_tags_string
-          #   @refresh = true
-          # end
           if old_group.user_name != @group.user_name
             @refresh = true
           end
@@ -83,6 +80,11 @@ class GroupsController < ApplicationController
         format.js { render json: @group.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  def destroy
+    authorize! :destroy, @group
+    redirect_to root_path, notice: "Bye bye #{@group.name}!"
   end
 
   private

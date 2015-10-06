@@ -1,12 +1,20 @@
 = content_for :js do
-  script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.1/handlebars.min.js"
+
   javascript:
-      var hackster_config = {
-        containerId: 'cont',
-        thumbContainerClass: 'col-md-3 col-sm-4',
-        containerClass: 'row'
+    var username = 'OI1B0WGzHaZthtED2YuLrA';
+    var password = 'a6aad7e6cc81f98b90a747fa20e815a85f29981a';
+    $.ajax({
+      url: 'https://api.hackster.io/v1/parts/13251',
+      dataType: 'json',
+      type: 'PATCH',
+      data: {
+        'part[name]': 'test v2',
+        'part[private]': true,
+      },
+      beforeSend: function(xhr) {
+        var reqHeader = "Basic " + btoa(username + ":" + password);
+        xhr.setRequestHeader("Authorization", reqHeader);
       }
-
-  script type="text/javascript" src="http://www.localhost.local:5000/hackers/7800.js?project_ids=9366,9163,9135,9147&auth_token=6822951732be44edf818dc5a97d32ca6"
-
-#cont
+    }).done(function(response){
+      console.log(response);
+    });

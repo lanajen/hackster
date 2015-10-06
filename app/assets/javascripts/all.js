@@ -1,86 +1,172 @@
-// document.ready initializes too early and it messes the dimensions used in the following functions
-$(window).load(function(){
-  function updateAffix(top, w, el){
-    // console.log(top);
-    var y = w.scrollTop();
-    // console.log(y);
-    if (y >= top) {
-      if (!el.hasClass('affix')) {
-        el.addClass('affix');
-        el.trigger('affix-on');
-      }
-    } else {
-      if (el.hasClass('affix')) {
-        el.removeClass('affix');
-        el.trigger('affix-off');
-      }
-    }
+function setAffixableBottom() {
+  if ($('#project-side-nav').length){
+    var cont = $('#content .container');
+    var bottom = cont.offset().top + cont.outerHeight();
+    $('#project-side-nav').data('affix-bottom', bottom);
   }
+}
 
-  // affixes .affixable
-  var $fixedEl;
-  var affixDivs = function affixDivs(){
-    $fixedEl = $('.affixable');
-    var $window = $(window);
-    if ($fixedEl.length) {
-      $.each($fixedEl, function(){
-        var top = parseInt($(this).offset().top - (parseFloat(this.style.top) || 0)),
-            $this = $(this);
-        updateAffix(top, $window, $this);
-        $window.on('scroll.affix',function(){
-          updateAffix(top, $window, $this);
-        });
-      });
+function updateAffix(top, bottomB, bottomT, w, el){
+  // console.log(top);
+  var y = w.scrollTop();
+  var x = y + w.height();
+  // console.log(x);
+  if (y >= top) {
+    if (!el.hasClass('affix')) {
+      el.addClass('affix');
+      el.trigger('affix-on');
     }
-  };
-
-  var updatedScrollEventHandlers = function updatedScrollEventHandlers(){
-    if ($('#scroll-nav').length){
-      $('body').scrollspy('refresh');
-    }
-    if ($fixedEl.length){
-      $(window).off('scroll.affix');
-      affixDivs();
-    }
-  };
-
-  //Fade in alerts/notices
-  var helloW = $('#hello-world-container');
-  if (helloW.length) {
-    var parser = document.createElement('a');
-    parser.href = document.referrer;
-    if (!document.referrer.length || parser.hostname != '<%= APP_CONFIG['default_host'] %>') {
-      helloW.delay(2000).slideDown(500,function(){
-        affixDivs();
-      });
-      // not super clean but allows for a bar that slides down and pushes its height
-      $('#hello-world').delay(2000).slideDown(500);
-    } else {
-      affixDivs();
+    if (bottomB) {
+      if (x > bottomB) {
+        if (y > bottomT) {
+          if (!el.hasClass('affix-bottom')) {
+            el.addClass('affix-bottom');
+            el.trigger('affix-bottom-on');
+          }
+        } else {
+          if (el.hasClass('affix-bottom')) {
+            el.removeClass('affix-bottom');
+            el.trigger('affix-bottom-off');
+          }
+        }
+      }
     }
   } else {
+    if (el.hasClass('affix')) {
+      el.removeClass('affix');
+      el.trigger('affix-off');
+    }
+  }
+}
+
+var $fixedEl = [];
+// affixes .affixable
+var affixDivs = function affixDivs(){
+  $fixedEl = $('.affixable');
+  var $window = $(window);
+  if ($fixedEl.length) {
+    $.each($fixedEl, function(){
+      var $this = $(this);
+      if ($this.hasClass('affix-bottom')) {
+        $this.removeClass('affix-bottom');
+        $this.trigger('affix-bottom-off');
+      }
+      if ($this.hasClass('affix')) {
+        $this.removeClass('affix');
+        $this.trigger('affix-off');
+      }
+      var top = parseInt($(this).offset().top - (parseFloat(this.style.top) || 0));
+      var bottomB, bottomT;
+      if ($this.data('affix-bottom')) {
+        bottomB = $this.data('affix-bottom');
+        bottomT = bottomB - $this.outerHeight() - parseInt($this.css('top'));
+      }
+      // console.log('TOP', top);
+      // console.log('bottomB', bottomB);
+      // console.log('bottomT', bottomT);
+      updateAffix(top, bottomB, bottomT, $window, $this);
+      $window.on('scroll.affix',function(){
+        updateAffix(top, bottomB, bottomT, $window, $this);
+      });
+    });
+  }
+};
+
+var updatedScrollEventHandlers = function updatedScrollEventHandlers(){
+  if ($('#scroll-nav').length){
+    $('body').scrollspy('refresh');
+  }
+  if ($fixedEl.length){
+    $(window).off('scroll.affix');
+    setAffixableBottom();
     affixDivs();
   }
+};
+
+function fetchHelloWorld() {
+  var ref;
+
+  var parser = document.createElement('a');
+  parser.href = document.referrer;
+
+  if (!document.referrer.length || parser.hostname != window.location.hostname) {
+    var ref = 'default';
+
+    if (parser.hostname && parser.hostname != window.location.hostname) {
+      ref = parser.hostname;
+    }
+
+    // search GET params
+    var params = window.location.search.replace('?', '').split('&');
+    for (var i = 0; i < params.length; i++) {
+      var tmp = params[i].split('=');
+      if (tmp[0] == 'ref') {
+        ref = decodeURIComponent(tmp[1]);
+        break;
+      }
+    }
+
+    $.ajax({
+      url: '/hello_world',
+      data: { ref: ref }
+    }).done(function(response){
+      $('body').prepend(response.content);
+      showHelloWorld();
+    });
+  }
+}
+
+function showHelloWorld() {
+  $('#hello-world').fadeIn(100, function(){
+    updatedScrollEventHandlers();
+    var content = $('#hello-world .content');
+    var height = 200 - content.height();
+    $(this)
+      .css('padding-top', height / 2)
+      .find('.content').css('opacity', 1);
+  });
+}
+
+// document.ready initializes too early and it messes the dimensions used in the following functions
+$(window).load(function(){
+  setAffixableBottom();
+  affixDivs();
 });
 
 $(function () {
-  <% if Rails.env == 'dev' %>
-    // fix image URLS so they work on dev
-    $('img').each(function(i, el) {
-      var src = $(el).attr('src');
-      if (typeof(src) != 'undefined') {
-        src = src.replace('hackster-dev', 'halckemy');
-        src = src.replace('/dev/', '/production/');
-        $(el).attr('src', src);
-      }
+  $('#project-side-nav')
+    .on('affix-bottom-on', function(e){
+      var top = $('#content .container').outerHeight() - $(this).outerHeight();
+      $(this).css('top', top);
+    })
+    .on('affix-bottom-off', function(e){
+      $(this).css('top', $(this).data('top'));
     });
 
-    $('[style*="background-image"]').each(function(i, el) {
-      var style = $(el).attr('style');
-      style = style.replace('hackster-dev', 'halckemy');
-      $(el).attr('style', style);
+  // bypass bootstrap .close so we can add callback
+  $('body').on('click', '#hello-world .close', function(e){
+    $($(this).data('target')).slideUp(200, function(){
+      updatedScrollEventHandlers();
     });
-  <% end %>
+  });
+
+  // <% if Rails.env == 'dev' %>
+  //   // fix image URLS so they work on dev
+  //   $('img').each(function(i, el) {
+  //     var src = $(el).attr('src');
+  //     if (typeof(src) != 'undefined') {
+  //       src = src.replace('hackster-dev', 'halckemy');
+  //       src = src.replace('/dev/', '/production/');
+  //       $(el).attr('src', src);
+  //     }
+  //   });
+
+  //   $('[style*="background-image"]').each(function(i, el) {
+  //     var style = $(el).attr('style');
+  //     style = style.replace('hackster-dev', 'halckemy');
+  //     $(el).attr('style', style);
+  //   });
+  // <% end %>
 
   if ($('body').data('user-signed-in')) {
     doUserSignedInUpdate();
@@ -120,6 +206,23 @@ $(function () {
           var input = $('<input type="hidden" name="authenticity_token" />');
           input.val(token);
           $('.user-form').append(input);
+        }
+      });
+    }
+  });
+
+  $('#signup-popup-email input[type="submit"]').on('click', function(e){
+    e.preventDefault();
+    var form = $(this).closest('form');
+    if (!form.find('[name="authenticity_token"]').length) {
+      $.ajax({
+        url: '/csrf',
+        dataType: 'text',
+        success: function(token) {
+          var input = $('<input type="hidden" name="authenticity_token" />');
+          input.val(token);
+          $('.user-form').append(input);
+          form.submit();
         }
       });
     }
@@ -193,8 +296,8 @@ $(function () {
   window.NestedFormEvents.prototype.insertFields = function(content, assoc, link) {
     if ($(link).hasClass('nested-field-table')) {
       var $tr = $(link).closest('tr');
-      content = content.replace(/^<div class="fields">/,"");
-      content = content.replace(/<\/div>$/,"");
+      content = content.replace(/^<div class="fields">/, '<tr class="fields">');
+      content = content.replace(/<\/div>$/, '</tr>');
       return $(content).insertBefore($tr);
     } else {
       return $(content).insertBefore($(link));
@@ -351,12 +454,37 @@ $(function () {
       $(this).css('bottom', 0);
     }
   });
+
+  if ($('#signup-popup').length) {
+    showSignupPopupOrNot();
+  }
 });
 
 function closeNav(nav) {
   nav.slideUp(function(){
     $(this).prev().slideDown();
   });
+}
+
+// show popup if cookie doesn't exist or expired
+// create cookie or update it with expiration date in 24 hours
+function showSignupPopupOrNot() {
+  var val = Cookies.get('showedSignupPopup');
+  if (val) val = parseInt(val);
+  if (!val || val % 5 == 0) {
+    val = 0;
+    Cookies.set('showedSignupPopup', val, { expires: 1 });
+  } else if (val == 1) {
+    // show on scroll to make sure they're on the page
+    $window = $(window);
+    $window.on('scroll.showSignupPopup', function(){
+      $window.off('scroll.showSignupPopup');
+      window.setTimeout(function() {
+        openModal('#signup-popup');
+      }, 100);
+    });
+  }
+  Cookies.set('showedSignupPopup', val + 1);
 }
 
 function smoothScrollToIfOutOfBounds(target, offsetTop, speed) {

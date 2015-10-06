@@ -90,10 +90,9 @@ class PagesController < ApplicationController
 
       @challenges = Challenge.public.active.ends_first
 
-      @projects = Project.custom_for(current_user).for_thumb_display.paginate(page: safe_page_params, per_page: 12)
+      @projects = Project.custom_for(current_user).for_thumb_display.includes(:parts, :project_collections, :users).paginate(page: safe_page_params, per_page: 12)
       if @projects.any?
-        @followed = current_user.follow_relations.includes(:followable).where(follow_relations: { followable_type: %w(User Group) }).includes(followable: :avatar)
-        # @followed = current_user.follow_relations.joins("INNER JOIN project_collections ON follow_relations.followable_id = project_collections.collectable_id AND follow_relations.followable_type = project_collections.collectable_type").joins("INNER JOIN projects ON projects.id = project_collections.project_id").where(projects: { id: @projects.map(&:id) }).distinct([:followable_id, :followable_type]).includes(:followable)
+        @followed = current_user.follow_relations.where(follow_relations: { followable_type: %w(Group) }).includes(followable: [:avatar, :cover_image]) + current_user.follow_relations.where(follow_relations: { followable_type: %w(User) }).includes(followable: :avatar) + current_user.follow_relations.where(follow_relations: { followable_type: %w(Part) }).joins("INNER JOIN parts ON parts.id = follow_relations.followable_id").where.not(parts: { platform_id: nil }).includes(followable: [:image, :platform])
         @current_page = safe_page_params || 1
         @next_page = @current_page + 1
         @next_page = nil if @projects.total_pages < @next_page
@@ -123,7 +122,7 @@ class PagesController < ApplicationController
       @last_projects = Project.indexable.last_public.for_thumb_display.limit 12
       @platforms = Platform.public.minimum_followers_strict.order('RANDOM()').for_thumb_display.limit 12
       @lists = List.most_members.limit(6)
-      @challenges = Challenge.public.active.ends_first.limit(2)
+      @challenges = Challenge.public.active.ends_first.limit(1)  # this should be 2 when MS challenge removed!
 
       @typeahead_tags = Collection.public.order(:full_name).select{|p| p.projects_count >= 5 or p.followers_count >= 10 }.map do |p|
         { tag: p.name, projects: p.projects_count, url: url_for([p]) }
@@ -175,6 +174,10 @@ class PagesController < ApplicationController
 
   def robots
     render "robots/#{Rails.env}"
+  end
+
+  def test
+    not_found if Rails.env.production?
   end
 
   def terms

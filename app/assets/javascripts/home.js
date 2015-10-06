@@ -170,8 +170,9 @@ $(function(){
   }
 
   if ($('#infinite-scrolling').size() > 0) {
-    $(window).on('scroll', $loadMore);
-    $(window).on('scroll', $togglePageVisibility);
+    $(window)
+      .on('scroll', $loadMore)
+      .on('scroll', $togglePageVisibility);
   }
 
   $('#home .follow-button').on('click', function(e){

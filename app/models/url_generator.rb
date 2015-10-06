@@ -10,4 +10,8 @@ class UrlGenerator
     def default_url_options(options = {})
       { locale: nil, host: @host }.merge options
     end
+
+    def is_whitelabel?
+      false
+    end
 end

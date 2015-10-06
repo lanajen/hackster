@@ -21,7 +21,9 @@ h2.text-center
       tbody
         - @parts.each do |part|
           tr
-            td= image_tag part.image.try(:imgix_url, :thumb)
+            td
+              - if part.image
+                = image_tag part.image.try(:imgix_url, :thumb)
             td= link_to part.name, platform_part_path(@group.user_name, part.slug)
             td= part.projects_count
             td
@@ -29,9 +31,9 @@ h2.text-center
                 i.fa.fa-eye-slash.istooltip title='Hidden' data-container='body'
               - else
                 i.fa.fa-eye.istooltip title='Visible' data-container='body'
-                - if part.pending_review?
-                  span
-                    | (pending review)
+              - if part.pending_review?
+                span
+                  | (pending review)
             td
               = link_to 'Edit', edit_group_product_path(@group, part), class: 'btn btn-default btn-sm'
               - if current_user.is? :admin

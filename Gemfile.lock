@@ -1,4 +1,10 @@
 GIT
+  remote: git://github.com/mislav/will_paginate.git
+  revision: 74a6cd0197072903cd8b83744133744ff4b4c046
+  specs:
+    will_paginate (3.0.4)
+
+GIT
   remote: https://github.com/blarralde/fastly-rails.git
   revision: 6a661b04f21ff4024d0a271ef526d0ae1590896e
   specs:
@@ -90,15 +96,12 @@ GEM
       will_paginate
     bootstrap3-datetimepicker-rails (3.1.3)
       momentjs-rails (>= 2.8.1)
-    browser-timezone-rails (0.0.8)
-      jquery-rails
-      rails (>= 3.1)
     browserify-rails (1.0.1)
       railties (>= 4.0.0, < 5.0)
     buftok (0.2.0)
     builder (3.2.2)
     byebug (6.0.2)
-    cancan (1.6.10)
+    cancancan (1.12.0)
     capybara (2.5.0)
       mime-types (>= 1.16)
       nokogiri (>= 1.3.3)
@@ -456,6 +459,7 @@ GEM
       railties (= 4.2.3)
       sprockets-rails
     rails-assets-fluxxor (1.5.2)
+    rails-assets-js-cookie (2.0.3)
     rails-assets-medium-editor (1.8.14)
     rails-assets-momentjs (2.9.0)
     rails-assets-underscore (1.7.0)
@@ -522,6 +526,7 @@ GEM
       rspec-support (~> 3.3.0)
     rspec-support (3.3.0)
     rubyzip (1.1.7)
+    rufus-scheduler (3.1.6)
     sanitize (2.0.6)
       nokogiri (>= 1.4.4)
     sass (3.4.18)
@@ -542,6 +547,9 @@ GEM
       json
       redis (>= 3.0.6)
       redis-namespace (>= 1.3.1)
+    sidekiq-cron (0.3.1)
+      rufus-scheduler (>= 2.0.24)
+      sidekiq (>= 2.17.3)
     sidekiq-failures (0.4.3)
       sidekiq (>= 2.16.0)
     sidekiq-middleware (0.3.0)
@@ -650,7 +658,6 @@ GEM
     warden (1.2.3)
       rack (>= 1.0)
     websocket (1.2.2)
-    will_paginate (3.0.4)
     workflow (1.0.0)
     xpath (2.0.0)
       nokogiri (~> 1.3)
@@ -670,10 +677,9 @@ DEPENDENCIES
   bootstrap-sass (= 3.3.1)
   bootstrap-will_paginate (= 0.0.10)
   bootstrap3-datetimepicker-rails (= 3.1.3)
-  browser-timezone-rails (= 0.0.8)
   browserify-rails (= 1.0.1)
   byebug
-  cancan (= 1.6.10)
+  cancancan (= 1.12.0)
   capybara
   carrierwave (= 0.10.0)
   cashier (= 0.4.1)
@@ -738,6 +744,7 @@ DEPENDENCIES
   rack-attack (= 4.1.0)
   rails (= 4.2.3)
   rails-assets-fluxxor (= 1.5.2)!
+  rails-assets-js-cookie (= 2.0.3)!
   rails-assets-medium-editor (= 1.8.14)!
   rails-assets-momentjs (= 2.9.0)!
   rails-assets-underscore (= 1.7.0)!
@@ -755,6 +762,7 @@ DEPENDENCIES
   sass-rails (= 5.0.1)
   selenium-webdriver
   sidekiq (= 3.2.5)
+  sidekiq-cron (~> 0.3.0)
   sidekiq-failures (= 0.4.3)
   sidekiq-middleware (= 0.3.0)
   sidekiq-status (= 0.5.1)
@@ -774,7 +782,7 @@ DEPENDENCIES
   uglifier (= 2.3.1)
   unicorn (= 4.7.0)
   vimeo (= 1.5.3)
-  will_paginate (= 3.0.4)
+  will_paginate!
   workflow (= 1.0.0)
   yajl-ruby (= 1.1.0)
   zocial-rails (= 1.0.2)

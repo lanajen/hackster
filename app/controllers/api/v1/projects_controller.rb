@@ -1,13 +1,24 @@
 class Api::V1::ProjectsController < Api::V1::BaseController
+  before_filter :public_api_methods, only: [:index, :show]
   before_filter :authenticate_user!, only: [:create, :update, :destroy]
   load_and_authorize_resource only: [:create, :update, :destroy]
-  # before_filter :public_api_methods, only: [:index, :show]
 
   def index
     params[:sort] = (params[:sort].in?(Project::SORTING.keys) ? params[:sort] : 'trending')
     by = (params[:by].in?(Project::FILTERS.keys) ? params[:by] : 'all')
 
-    projects = Project.indexable.for_thumb_display
+    projects = if params[:platform_user_name]
+      parent = Platform.find_by_user_name! params[:platform_user_name]
+      if params[:part_mpn]
+        parent = parent.parts.find_by_mpn! params[:part_mpn]
+      end
+      parent.projects
+    else
+      Project
+    end
+
+    projects = projects.indexable.for_thumb_display
+
     if params[:sort]
       projects = projects.send(Project::SORTING[params[:sort]])
     end
@@ -16,19 +27,16 @@ class Api::V1::ProjectsController < Api::V1::BaseController
       projects = projects.send(Project::FILTERS[by])
     end
 
-    projects = projects.paginate(page: safe_page_params)
-
-    render json: projects
+    @projects = projects.paginate(page: safe_page_params)
   end
 
   def show
-    project = Project.find params[:id]
-    render json: project
+    @project = Project.where(id: params[:id]).public.first!
   end
 
   def create
     if project.save
-      render json: project, status: :ok
+      render status: :ok, nothing: true
     else
       render json: project.errors, status: :unprocessable_entity
     end
@@ -60,7 +68,7 @@ class Api::V1::ProjectsController < Api::V1::BaseController
     else
       message = "Couldn't save project: #{@project.inspect} // user: #{current_user.user_name} // params: #{params.inspect} // errors: #{@project.errors.inspect}"
       log_line = LogLine.create(message: message, log_type: '422', source: 'api/projects')
-      NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification' if ENV['ENABLE_ERROR_NOTIF']
+      # NotificationCenter.notify_via_email nil, :log_line, log_line.id, 'error_notification' if ENV['ENABLE_ERROR_NOTIF']
       render json: { project: @project.errors }, status: :unprocessable_entity
     end
   rescue => e

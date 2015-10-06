@@ -1,4 +1,5 @@
 require 'sidekiq'
+require 'sidekiq-cron'
 require 'sidekiq-status'
 
 raise 'No config for Redis' unless $redis_config
@@ -7,14 +8,9 @@ sidekiq_pool = (ENV['SIDEKIQ_DB_POOL'] || 3).to_i
 sidekiq_redis_size = (ENV['SIDEKIQ_REDIS_SIZE'] || 5).to_i
 
 Sidekiq.configure_server do |config|
+  config.poll_interval = 15
   config.failures_default_mode = :exhausted
   config.redis = $redis_config.merge({ size: sidekiq_redis_size, namespace: "sidekiq:hacksterio", network_timeout: 8 })
-
-  # database_url = ENV['DATABASE_URL']
-  # if database_url
-  #   ENV['DATABASE_URL'] = "#{database_url}?pool=8"
-  #   ActiveRecord::Base.establish_connection
-  # end
 
   config.server_middleware do |chain|
     chain.add Sidekiq::Status::ServerMiddleware, expiration: 30.minutes # default
@@ -44,3 +40,9 @@ Sidekiq.configure_client do |config|
 end
 
 Sidekiq.options[:concurrency] = sidekiq_pool
+
+# schedule_file = File.join Rails.root, 'config/cron.yml'
+
+# if File.exists?(schedule_file)
+#   Sidekiq::Cron::Job.load_from_hash YAML.load_file(schedule_file)
+# end

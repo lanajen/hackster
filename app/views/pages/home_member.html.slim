@@ -11,8 +11,6 @@
       i.fa.fa-eye-slash.show-on-footer-affixed
     section#home-banner
       .home-slide#welcome-back.hero-header
-        / - if Time.now < DateTime.parse('2015-04-19 20:00 -0800')
-          = link_to 'Hardware Weekend Dallas', '/dallas', class: 'btn btn-warning btn-sm btn-over'
         .container
           h1 Welcome to your dashboard!
 
@@ -59,7 +57,7 @@
         .container
           .view-all-header.clearfix
             h4.pull-left Suggested lists to follow
-            / # = link_to 'View more makers', hackers_path, class: 'btn btn-default btn-sm hidden-xs pull-right'
+            / # = link_to 'View more makers', users_path, class: 'btn btn-default btn-sm hidden-xs pull-right'
 
           .row.category-full-row
             - @lists.each do |list|
@@ -71,19 +69,19 @@
                       h4
                         = link_to list.name, list
 
-          / # = link_to 'View more makers', hackers_path, class: 'btn btn-default btn-sm visible-xs-block'
+          / # = link_to 'View more makers', users_path, class: 'btn btn-default btn-sm visible-xs-block'
 
       section#suggested-hackers.showcase-section
         .container
           .view-all-header.clearfix
             h4.pull-left Suggested makers to follow
-            = link_to 'View more makers', hackers_path, class: 'btn btn-default btn-sm hidden-xs pull-right'
+            = link_to 'View more makers', users_path, class: 'btn btn-default btn-sm hidden-xs pull-right'
 
           .row.mobile-scroll-row.thumbs-carousel data-slides-count=6
             - @hackers.each do |user|
               = render partial: 'users/user_thumb_mini', locals: { user: user, actions: %w(follow), col: 'col-md-2' }
 
-          = link_to 'View more makers', hackers_path, class: 'btn btn-default btn-sm visible-xs-block'
+          = link_to 'View more makers', users_path, class: 'btn btn-default btn-sm visible-xs-block'
 
       section#recent-projects.showcase-section.last
         .container
@@ -113,7 +111,8 @@
       section#projects.showcase-section.last
         .container
           .view-all-header.clearfix
-            h4.pull-left Recent projects from makers, platforms and lists you follow
+            h4.pull-left Recent projects from members, platforms and lists you follow
+            = link_to 'Edit your toolbox', user_toolbox_path, class: 'btn btn-default btn-sm hidden-xs pull-right'
 
           #infinite-scrolling
             #page_1.row.page.visible
@@ -123,6 +122,7 @@
                   - dom_ids = common.map{|e| "#{e[0].underscore}_#{e[1]}" }
                   - dom_ids.each do |dom_id|
                     = content_for :js do
+
                       javascript:
                         var thumb = $("#projects .project-#{project.id} .thumb-super");
                         var item = $(".thumb-super-item.#{dom_id}")[0].outerHTML;
@@ -133,10 +133,18 @@
       #hide.hide
         - @followed.each do |rel|
           - entity = rel.followable
-          .thumb-super-item class=dom_id(entity)
-            = link_to image_tag(entity.decorate.avatar(:mini)), entity, title: "You follow #{entity.name}", class: 'istooltip', data: { container: 'body' }
+          - if entity
+            .thumb-super-item class=dom_id(entity)
+              - case entity.class.name
+              - when 'Platform', 'User'
+                = link_to image_tag(entity.decorate.avatar(:mini)), entity, title: "You follow #{entity.name}", class: 'istooltip', data: { container: 'body' }
+              - when 'List'
+                = link_to image_tag(entity.decorate.cover_image(:cover_mini_thumb)), entity, title: "You follow #{entity.name}", class: 'istooltip', data: { container: 'body' }
+              - when 'HardwarePart', 'SoftwarePart', 'ToolPart'
+                = link_to image_tag(entity.decorate.image(:part_thumb)), entity, title: "#{entity.name} is in your toolbox", class: 'istooltip', data: { container: 'body' }
 
     = content_for :js do
+
       javascript:
         var hackers = "#{j render(partial: 'suggestions', locals: { suggestions: @hackers, term: 'hackers' })}";
         $('#projects .project-thumb-container:nth-of-type(9)').after('<div class="hidden-sm">' + hackers + '</div>');

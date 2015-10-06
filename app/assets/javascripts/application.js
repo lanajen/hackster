@@ -14,11 +14,11 @@
 //= require ilightbox/jquery.mousewheel
 //= require ilightbox/ilightbox.packed
 //= require jquery_nested_form
+//= require js-cookie
 //= require bitbucket-widget.min
 //= require slick
 //= require rangy-core
 //= require rangy-cssclassapplier
-//= require browser_timezone_rails/application
 //= require moment
 //= require placeholders
 //= require medium-editor-ext

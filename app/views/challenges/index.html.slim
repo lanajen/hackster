@@ -1,5 +1,5 @@
 = content_for :no_container do
-  - cache [I18n.locale, 'challenge-index', params[:sort]], tag: ['challenge-index'], expires_in: 24.hours do
+  - cache [I18n.locale, 'challenge-index', params[:sort], (!user_signed_in? or !current_user.subscribed_to? :email, 'newsletter')], tag: ['challenge-index'], expires_in: 24.hours do
     .container
       #content
         .content
@@ -15,6 +15,15 @@
             .row
               - @active_challenges.each do |challenge|
                 = render partial: 'challenge_thumb', locals: { challenge: challenge.decorate, thumb_size: :large }
+
+          - if !user_signed_in? or !current_user.subscribed_to? :email, 'newsletter'
+            section.subscribe-block.text-center-mobile style='background:none;border:0;padding:15px 0;'
+              .row
+                .col-md-7 style='margin-top:3px'
+                  = image_tag 'home/envelope.png'
+                  ' Subscribe to our newsletter to be alerted when we launch new contests
+                .col-md-4.col-md-offset-1
+                  .pull-right-desktop= render 'shared/mailchimp_form', source: 'challenge-index'
 
           - if @coming_challenges.any?
             h2 Challenges starting soon

@@ -423,6 +423,7 @@
 
 .project-actions {
   margin-bottom: 5px;
+  position: relative;
   .action-item {
     &:first-child {
       padding-right: 2px;
@@ -431,4 +432,9 @@
       padding-left: 2px;
     }
   }
+}
+
+.other-projects {
+  background: #fff;
+  padding: 60px 0 40px;
 }

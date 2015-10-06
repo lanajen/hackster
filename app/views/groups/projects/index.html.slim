@@ -17,12 +17,19 @@ p= link_to "&larr; Go back to #{@group.name} page".html_safe, @group
         ' Filter by status
         span.caret
       ul.dropdown-menu.pull-right
-        li*{ class: "#{'active' if params[:status].nil? }" } = link_to 'All', group_admin_projects_path(@group)
-        li*{ class: "#{'active' if params[:status] == 'featured'}" } = link_to 'Featured', group_admin_projects_path(@group, status: 'featured')
-        li*{ class: "#{'active' if params[:status] == 'rejected'}" } = link_to 'Hidden', group_admin_projects_path(@group, status: 'rejected')
-        li*{ class: "#{'active' if params[:status] == 'approved'}" } = link_to 'Showing', group_admin_projects_path(@group, status: 'approved')
-        li*{ class: "#{'active' if params[:status] == 'pending_review'}" } = link_to 'Pending review', group_admin_projects_path(@group, status: 'pending_review')
+        li*{ class: "#{'active' if params[:status].nil? }" } = link_to 'All', group_admin_projects_path(@group, q: params[:q])
+        li*{ class: "#{'active' if params[:status] == 'featured'}" } = link_to 'Featured', group_admin_projects_path(@group, status: 'featured', q: params[:q])
+        li*{ class: "#{'active' if params[:status] == 'rejected'}" } = link_to 'Hidden', group_admin_projects_path(@group, status: 'rejected', q: params[:q])
+        li*{ class: "#{'active' if params[:status] == 'approved'}" } = link_to 'Showing', group_admin_projects_path(@group, status: 'approved', q: params[:q])
+        li*{ class: "#{'active' if params[:status] == 'pending_review'}" } = link_to 'Pending review', group_admin_projects_path(@group, status: 'pending_review', q: params[:q])
+    .pull-right style='margin-right:5px'
+      form.form-inline
+        .form-group
+          input.form-control placeholder='Search by name' type='text' name='q' value=params[:q]
+          input type='hidden' name='status' value=params[:status]
     .clearfix
+    - if @group.project_collections.featured.count > 1
+      p= link_to 'Set order of featured projects', group_projects_featured_path(@group)
 
     table.table.table-hover
       thead
@@ -46,12 +53,12 @@ p= link_to "&larr; Go back to #{@group.name} page".html_safe, @group
             td= project_collection.decorate.status
             td
               - if project_collection.can_approve?
-                = link_to content_tag(:i, '', class: 'fa fa-eye'), group_update_workflow_path(@group, project_collection, event: :approve), class: 'btn btn-sm btn-default', title: 'Show on page', rel: 'tooltip', data: { method: :patch }
+                = link_to content_tag(:i, '', class: 'fa fa-eye'), group_update_workflow_path(@group, project_collection, event: :approve, status: params[:status]), class: 'btn btn-sm btn-default', title: 'Show on page', rel: 'tooltip', data: { method: :patch }
               - if project_collection.can_feature?
-                = link_to content_tag(:i, '', class: 'fa fa-star'), group_update_workflow_path(@group, project_collection, event: :feature), class: 'btn btn-sm btn-default', title: 'Feature on page', rel: 'tooltip', data: { method: :patch }
+                = link_to content_tag(:i, '', class: 'fa fa-star'), group_update_workflow_path(@group, project_collection, event: :feature, status: params[:status]), class: 'btn btn-sm btn-default', title: 'Feature on page', rel: 'tooltip', data: { method: :patch }
               - if project_collection.can_unfeature?
-                = link_to content_tag(:i, '', class: 'fa fa-star-o'), group_update_workflow_path(@group, project_collection, event: :unfeature), class: 'btn btn-sm btn-default', title: 'Unfeature from page', rel: 'tooltip', data: { method: :patch }
+                = link_to content_tag(:i, '', class: 'fa fa-star-o'), group_update_workflow_path(@group, project_collection, event: :unfeature, status: params[:status]), class: 'btn btn-sm btn-default', title: 'Unfeature from page', rel: 'tooltip', data: { method: :patch }
               - if project_collection.can_reject?
-                = link_to content_tag(:i, '', class: 'fa fa-eye-slash'), group_update_workflow_path(@group, project_collection, event: :reject), class: 'btn btn-sm btn-default', title: 'Hide from page', rel: 'tooltip', data: { method: :patch }
+                = link_to content_tag(:i, '', class: 'fa fa-eye-slash'), group_update_workflow_path(@group, project_collection, event: :reject, status: params[:status]), class: 'btn btn-sm btn-default', title: 'Hide from page', rel: 'tooltip', data: { method: :patch }
 
     .text-center= will_paginate @project_collections

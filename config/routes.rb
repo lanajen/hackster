@@ -1,5 +1,6 @@
 require 'route_constraints'
 require 'sidekiq/web'
+require 'sidekiq/cron/web'
 
 HackerIo::Application.routes.draw do
 
@@ -31,10 +32,15 @@ HackerIo::Application.routes.draw do
       scope 'mandrill/webhooks' do
         post 'unsub' => 'mandrill_webhooks#unsub'
       end
+<<<<<<< HEAD
       resources :projects do
         get 'description' => 'projects#description'
       end
       resources :parts, only: [:index, :create, :update, :destroy]
+=======
+      resources :projects
+      resources :parts, except: [:new, :edit], defaults: { format: :json }
+>>>>>>> ed466d50a2c84fa7baee2a682dc4a4cec00e3878
       scope 'platforms' do
         get ':user_name' => 'platforms#show', defaults: { format: :json }
         scope ':user_name' do
@@ -59,13 +65,60 @@ HackerIo::Application.routes.draw do
     end
   end
 
-  # constraints(ApiSite) do
-  # end
+  constraints(ApiSite) do
+    scope module: :api, defaults: { format: :json } do
+      namespace :v1 do
+        get 'embeds' => 'embeds#show'
+        # post 'embeds' => 'embeds#create'
+        resources :announcements
+        resources :build_logs
+        resources :code_files, only: [:create]
+        resources :comments, only: [:create, :destroy]
+        resources :flags, only: [:create]
+        resources :followers, only: [:create, :index] do
+          collection do
+            delete '' => 'followers#destroy'
+          end
+        end
+        resources :jobs, only: [:create, :show]
+        resources :likes, only: [:create] do
+          delete '' => 'likes#destroy', on: :collection
+        end
+        scope 'mandrill/webhooks' do
+          post 'unsub' => 'mandrill_webhooks#unsub'
+        end
+        resources :projects
+        resources :parts, except: [:new, :edit]
+        scope 'platforms' do
+          get ':user_name' => 'platforms#show'
+          scope ':user_name' do
+            get 'analytics' => 'platforms#analytics'
+          end
+        end
+        resources :lists, only: [:index, :create] do
+          post 'projects' => 'lists#link_project', on: :member
+          delete 'projects' => 'lists#unlink_project', on: :member
+        end
+        resources :microsoft_chrome_sync, only: [] do
+          get '' => 'microsoft_chrome_sync#show', on: :collection
+          patch '' => 'microsoft_chrome_sync#update', on: :collection
+        end
+        resources :notifications, only: [:index]
+        resources :thoughts
+        resources :users, only: [] do
+          get :autocomplete, on: :collection
+        end
+        resources :widgets, only: [:destroy, :update, :create]
+        match "*all" => "base#cors_preflight_check", via: :options
+      end
+    end
+  end
 
   devise_for :users, skip: [:session, :password, :registration, :confirmation, :invitation], controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
 
   scope '(:locale)', locale: /[a-z]{2}(-[a-zA-Z]{2})?/ do
     constraints(MainSite) do
+      get 'test' => 'pages#test'
       get 'sitemap_index.xml' => 'sitemap#index', as: 'sitemap_index', defaults: { format: 'xml' }
       get 'sitemap.xml' => 'sitemap#show', as: 'sitemap', defaults: { format: 'xml' }
 
@@ -81,6 +134,8 @@ HackerIo::Application.routes.draw do
       post 'info_requests' => 'pages#create_info_request'
 
       post 'pusher/auth' => 'users/pusher_authentications#create'
+
+      get 'hello_world' => 'hello_world#show'
 
       namespace :admin do
         authenticate :user, lambda { |u| u.is? :admin } do
@@ -155,7 +210,7 @@ HackerIo::Application.routes.draw do
       end
 
       # groups
-      resources :groups, only: [:edit, :update] do
+      resources :groups, only: [:edit, :update, :destroy] do
         post 'members' => 'members#create', as: :members
         get 'members/edit' => 'members#edit', as: :edit_members
         patch 'members' => 'members#update'
@@ -167,6 +222,8 @@ HackerIo::Application.routes.draw do
         patch 'awards' => 'grades#update'
         patch 'projects/link' => 'groups/projects#link'
         get 'projects' => 'groups/projects#index', as: :admin_projects
+        get 'projects/featured' => 'groups/projects#featured'
+        patch 'projects/featured' => 'groups/projects#save_featured'
         patch 'projects/:id' => 'groups/projects#update_workflow', as: :update_workflow
       end
 
@@ -292,9 +349,6 @@ HackerIo::Application.routes.draw do
 
       resources :project_collections, only: [:edit, :update]
 
-      get 'hackers' => 'users#index', as: :hackers
-      get 'hackers/:id' => 'users#redirect_to_show', as: :hacker, format: /(html|js)/
-
       scope 'challenges/:slug', as: :challenge do
         get '' => 'challenges#show'
         get 'brief' => 'challenges#brief'
@@ -323,6 +377,10 @@ HackerIo::Application.routes.draw do
       resources :notifications, only: [:index] do
         get 'edit' => 'notifications#edit', on: :collection
         patch 'edit' => 'notifications#update', on: :collection
+      end
+
+      scope 'sparkfun/wishlists', as: :sparkfun_wishlists do
+        resources :imports, only: [:new, :create], controller: 'sparkfun_wishlists'
       end
 
       resources :projects, only: [:index]
@@ -360,6 +418,8 @@ HackerIo::Application.routes.draw do
       get 'brooklyn', to: redirect('/hackathons/hardware-weekend/brooklyn')
       get 'washington', to: redirect('/hackathons/hardware-weekend/washington')
       get 'nyc', to: redirect('/hackathons/hardware-weekend/new-york-city')
+      get '/h/pebblerocksboulder', to: redirect('/hackathons/pebble-rocks-boulder/a-pebble-hackathon')
+      get 'windows10kit', to: redirect('/microsoft?ref=makezine')
 
       get 'tinyduino', to: redirect('/tinycircuits')
       get 'spark', to: redirect('/particle')
@@ -420,6 +480,7 @@ HackerIo::Application.routes.draw do
 
       # root to: 'pages#home'
     end
+    # end MainSite
 
     devise_for :users, skip: :omniauth_callbacks, controllers: {
       confirmations: 'users/confirmations',
@@ -443,6 +504,8 @@ HackerIo::Application.routes.draw do
     end
 
     get 'users/registration/complete_profile' => 'users#after_registration', as: :user_after_registration
+    get 'users/registration/toolbox' => 'users#toolbox', as: :user_toolbox
+    get 'users/registration/toolbox_save' => 'users#toolbox_save', as: :user_toolbox_save
     patch 'users/registration/complete_profile' => 'users#after_registration_save'
 
     resources :announcements, only: [:destroy] do
@@ -531,6 +594,12 @@ HackerIo::Application.routes.draw do
     constraints(UserPage) do
       get ':slug' => 'users#show', slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
       get ':user_name' => 'users#show', as: :user, user_name: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json)/ }
+    end
+
+    constraints(MainSite) do
+      get 'hackers', to: redirect('/community')
+      get 'community' => 'users#index', as: :users
+      get 'users/:id' => 'users#redirect_to_show', as: :hacker, format: /(html|js)/
     end
 
     scope ':user_name/:project_slug', as: :project, user_name: /[A-Za-z0-9_\-]{3,}/, project_slug: /[A-Za-z0-9_\-]{3,}/, constraints: { format: /(html|json|js)/ } do

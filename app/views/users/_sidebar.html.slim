@@ -126,14 +126,11 @@
             ' No skills.
             = link_to 'Add some?', profile_edit_path
 
-      - if user_signed_in? and (user_is_current? or current_user.is? :admin)
+      - if user_signed_in? and current_user.is? :admin
         .display
           h4
             i.fa.fa-cog>
             | Manage
           ul#platform-links
-            - if user_is_current?
-              li= link_to "Edit profile", profile_edit_path
-            - elsif current_user.is? :admin
-              li= link_to "Edit profile as admin", edit_admin_user_path(@user.id)
-              li= link_to 'Award a badge', new_admin_badge_path(awarded_badge: { awardee_id: @user.id })
+            li= link_to "Edit profile as admin", edit_admin_user_path(@user.id)
+            li= link_to 'Award a badge', new_admin_badge_path(awarded_badge: { awardee_id: @user.id })

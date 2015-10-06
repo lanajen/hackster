@@ -62,23 +62,8 @@ class ProjectsController < ApplicationController
     @project = @project.decorate
     @story_json = @project.story_json.html_safe
 
-    # other projects by same author
-    @other_projects_count = Project.public.most_popular.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id)
-    @other_projects_count = @other_projects_count.with_group current_platform if is_whitelabel?
-    @other_projects_count = @other_projects_count.size
-
-    if @other_projects_count > 6
-      @other_projects = Project.public.most_popular.own.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).includes(:team).includes(:cover_image)
-      @other_projects = @other_projects.with_group current_platform if is_whitelabel?
-      @other_projects = @other_projects.limit(3)
-
-      @last_projects = Project.public.last_public.own.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: [@project.id] + @other_projects.map(&:id)).includes(:team).includes(:cover_image)
-      @last_projects = @last_projects.with_group current_platform if is_whitelabel?
-      @last_projects = @last_projects.limit(3)
-    else
-      @other_projects = Project.public.most_popular.own.includes(:team_members).references(:members).where(members:{user_id: @project.users.pluck(:id)}).where.not(id: @project.id).includes(:team).includes(:cover_image)
-      @other_projects = @other_projects.with_group current_platform if is_whitelabel?
-    end
+    @other_projects = SimilarProjectsFinder.new(@project).results.for_thumb_display
+    @other_projects = @other_projects.with_group current_platform if is_whitelabel?
 
     @team_members = @project.team_members.includes(:user).includes(user: :avatar)
 
@@ -295,11 +280,11 @@ class ProjectsController < ApplicationController
     authorize! :edit, @project
     msg = 'Your assignment has been submitted. '
     @project.assignment_submitted_at = Time.now
-    if @project.assignment.past_due?
+    if @project.assignment.past_due? or !(deadline = @project.assignment.submit_by_date)
       @project.locked = true
       msg += 'The project will be locked for modifications until grades are sent out.'
     else
-      msg += "You can still make modifications to the project until the submission deadline on #{l @project.assignment.submit_by_date.in_time_zone(PDT_TIME_ZONE)} PT."
+      msg += "You can still make modifications to the project until the submission deadline on #{l deadline.in_time_zone(PDT_TIME_ZONE)} PT."
     end
     @project.save
     redirect_to @project, notice: msg
@@ -308,7 +293,7 @@ class ProjectsController < ApplicationController
   private
     def ensure_belongs_to_platform
       if is_whitelabel?
-        if (current_platform.platform_tags.map{|t| t.name.downcase } & @project.platform_tags_cached.map{|t| t.downcase }).empty? or @project.users.reject{|u| u.enable_sharing }.any?
+        if !ProjectCollection.exists?(@project.id, 'Group', current_platform.id) or @project.users.reject{|u| u.enable_sharing }.any?
           raise ActiveRecord::RecordNotFound
         end
       end

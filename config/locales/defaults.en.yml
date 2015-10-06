@@ -196,6 +196,7 @@ en:
     am: am
     formats:
       default: ! '%m/%d/%Y at %I:%M %p'
+      short_date: ! '%m/%d/%Y'
       long: ! '%B %d, %Y %H:%M'
       long_date: ! '%B %d, %Y'
       short: ! '%d %b %H:%M'

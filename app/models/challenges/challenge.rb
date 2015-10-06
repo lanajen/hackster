@@ -43,10 +43,12 @@ class Challenge < ActiveRecord::Base
     :video_link, :cover_image_id, :end_date, :end_date_dummy, :avatar_id,
     :challenge_admins_attributes, :voting_end_date_dummy, :start_date_dummy,
     :pre_registration_start_date_dummy, :start_date, :pre_contest_start_date_dummy,
-    :pre_contest_end_date_dummy
+    :pre_contest_end_date_dummy, :winners_announced_date_dummy,
+    :pre_winners_announced_date_dummy
   attr_accessor :new_slug, :end_date_dummy, :voting_end_date_dummy, :start_date_dummy,
     :pre_registration_start_date_dummy, :pre_contest_start_date_dummy,
-    :pre_contest_end_date_dummy
+    :pre_contest_end_date_dummy, :winners_announced_date_dummy,
+    :pre_winners_announced_date_dummy
 
   accepts_nested_attributes_for :prizes, :challenge_admins, allow_destroy: true
 
@@ -78,7 +80,9 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :pre_contest_end_date, :datetime
   hstore_column :hproperties, :pre_contest_start_date, :datetime
   hstore_column :hproperties, :pre_registration_start_date, :datetime
+  hstore_column :hproperties, :pre_winners_announced_date, :datetime
   hstore_column :hproperties, :project_ideas, :boolean
+  hstore_column :hproperties, :ready, :boolean
   hstore_column :hproperties, :requirements, :string
   hstore_column :hproperties, :rules, :string
   hstore_column :hproperties, :teaser, :string
@@ -86,6 +90,7 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :sponsor_name, :string
   hstore_column :hproperties, :voting_start, :string, default: :end
   hstore_column :hproperties, :voting_end_date, :datetime, default: proc{|c| c.end_date ? c.end_date + 7.days : nil }
+  hstore_column :hproperties, :winners_announced_date, :datetime
 
   counters_column :hcounters_cache
   has_counter :projects, 'projects.valid.count'
@@ -95,13 +100,13 @@ class Challenge < ActiveRecord::Base
 
   workflow do
     state :new do
-      event :prelaunch, transitions_to: :pre_registration
+      event :pre_launch, transitions_to: :pre_registration
       event :launch_contest, transitions_to: :in_progress
-      event :launch_precontest, transitions_to: :pre_contest_in_progress
+      event :launch_pre_contest, transitions_to: :pre_contest_in_progress
     end
     state :pre_registration do
       event :launch_contest, transitions_to: :in_progress
-      event :launch_precontest, transitions_to: :pre_contest_in_progress
+      event :launch_pre_contest, transitions_to: :pre_contest_in_progress
       event :take_offline, transitions_to: :new
     end
     state :pre_contest_in_progress do
@@ -134,7 +139,7 @@ class Challenge < ActiveRecord::Base
   end
 
   def self.active
-    where(workflow_state: :in_progress)
+    where(workflow_state: REGISTRATION_OPEN_STATES)
   end
 
   def self.coming
@@ -155,6 +160,10 @@ class Challenge < ActiveRecord::Base
 
   def self.public
     where "CAST(hproperties -> 'password_protect' AS BOOLEAN) = ? OR CAST(hproperties -> 'password_protect' AS BOOLEAN) IS NULL", false
+  end
+
+  def self.ready
+    where "CAST(hproperties -> 'ready' AS BOOLEAN) = ?", true
   end
 
   def self.starts_first
@@ -203,7 +212,7 @@ class Challenge < ActiveRecord::Base
   end
 
   def end_date_dummy
-    end_date.strftime("%m/%d/%Y %l:%M %P") if end_date
+    end_date.in_time_zone(PDT_TIME_ZONE).strftime("%m/%d/%Y %l:%M %P") if end_date
   end
 
   def generate_slug
@@ -267,7 +276,7 @@ class Challenge < ActiveRecord::Base
   end
 
   def start_date_dummy
-    start_date.strftime("%m/%d/%Y %l:%M %P") if start_date
+    start_date.in_time_zone(PDT_TIME_ZONE).strftime("%m/%d/%Y %l:%M %P") if start_date
   end
 
   def sync_mailchimp!
@@ -286,19 +295,27 @@ class Challenge < ActiveRecord::Base
   end
 
   def voting_end_date_dummy
-    voting_end_date ? voting_end_date.strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
+    voting_end_date ? voting_end_date.in_time_zone(PDT_TIME_ZONE).strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
   end
 
   def pre_registration_start_date_dummy
-    pre_registration_start_date ? pre_registration_start_date.strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
+    pre_registration_start_date ? pre_registration_start_date.in_time_zone(PDT_TIME_ZONE).strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
   end
 
   def pre_contest_start_date_dummy
-    pre_contest_start_date ? pre_contest_start_date.strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
+    pre_contest_start_date ? pre_contest_start_date.in_time_zone(PDT_TIME_ZONE).strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
   end
 
   def pre_contest_end_date_dummy
-    pre_contest_end_date ? pre_contest_end_date.strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
+    pre_contest_end_date ? pre_contest_end_date.in_time_zone(PDT_TIME_ZONE).strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
+  end
+
+  def pre_winners_announced_date_dummy
+    pre_winners_announced_date ? pre_winners_announced_date.in_time_zone(PDT_TIME_ZONE).strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
+  end
+
+  def winners_announced_date_dummy
+    winners_announced_date ? winners_announced_date.in_time_zone(PDT_TIME_ZONE).strftime("%m/%d/%Y %l:%M %P") : Time.now.strftime("%m/%d/%Y %l:%M %P")
   end
 
   def voting_active?

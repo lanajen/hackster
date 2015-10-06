@@ -84,6 +84,10 @@ module HackerIo
     config.assets.paths << Rails.root.join('vendor', 'assets', 'images')
     config.assets.precompile += %w(.svg .eot .woff .ttf)
 
+    if ENV['ASSET_HOST_URL'].present?
+      config.action_controller.asset_host = ENV['ASSET_HOST_URL']
+    end
+
     config.assets.initialize_on_precompile = true
 
     config.logger = Logger.new(STDOUT)

@@ -57,6 +57,12 @@
                 span.input-group-addon
                   i.fa.fa-calendar
             = f.input :pre_contest_end_date, as: :hidden, input_html: { id: 'pre_contest_end_date' }
+            = f.input :pre_winners_announced_date_dummy, label: 'Pre-contest winners announcement date', wrapper_html: { id: 'pre_winners_announced_date_dummy', class: 'datetimepicker' }, hint: "The date when you plan on announcing winners of the pre-contest. Only the date will show (not time). Times are PT (-08)." do
+              #datepicker.input-group
+                = f.input_field :pre_winners_announced_date_dummy, as: :string, label: false
+                span.input-group-addon
+                  i.fa.fa-calendar
+            = f.input :pre_winners_announced_date, as: :hidden, input_html: { id: 'pre_winners_announced_date' }
 
           = f.input :start_date_dummy, label: 'Challenge start date', wrapper_html: { id: 'start_date_dummy', class: 'datetimepicker' }, hint: "Participants will be able to enter projects starting that date. Times are PT (-08)." do
             #datepicker.input-group
@@ -70,8 +76,13 @@
               span.input-group-addon
                 i.fa.fa-calendar
           = f.input :end_date, as: :hidden, input_html: { id: 'end_date' }
-          / = f.input :duration, hint: 'In days', collection: %w(7 10 15 30 45 60)
-          / # = f.input :project_ideas, as: :boolean, inline_label: 'Accept project ideas instead of finished projects'
+          = f.input :winners_announced_date_dummy, label: 'Winners announcement date', wrapper_html: { id: 'winners_announced_date_dummy', class: 'datetimepicker' }, hint: "The date when you plan on announcing winners. Only the date will show (not time). Times are PT (-08)." do
+            #datepicker.input-group
+              = f.input_field :winners_announced_date_dummy, as: :string, label: false
+              span.input-group-addon
+                i.fa.fa-calendar
+          = f.input :winners_announced_date, as: :hidden, input_html: { id: 'winners_announced_date' }
+
           = f.input :multiple_entries, inline_label: 'Allow more than one entry per person?', as: :boolean, label: false
           = f.input :auto_approve, inline_label: 'Automatically approve all entries', as: :boolean, label: false, hint: "When an entry is approved, a confirmation email is sent to its author. Whether you choose to automatically approve entries or not, you will be able to approve and disqualify entries from the dashboard at all times."
           = f.input :description, as: :text, input_html: { rows: 10, class: 'text-editor' }
@@ -122,7 +133,7 @@
                     td= f_prize.input :requires_shipping, label: false, wrapper: false
                     td= f_prize.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-xs btn-danger'
               tr.sortable-disabled
-                td  colspan=5  = f.link_to_add 'Add another prize', :prizes, class: 'btn btn-xs btn-success'
+                td  colspan=5  = f.link_to_add 'Add another prize', :prizes, class: 'btn btn-xs btn-success nested-field-table'
 
       .panel.panel-default
         .panel-heading
@@ -196,6 +207,7 @@
         .panel-heading
           h4 Danger zone
         .panel-body
+          = f.input :ready, as: :boolean, inline_label: "This challenge is ready for launch!", label: false, hint: "When you're ready, check this box to tell the system that it can automatically launch the challenge on the dates specified in the settings."
           .form-group
             .col-md-8.col-md-offset-4
               - case @challenge.workflow_state.to_sym
@@ -217,8 +229,6 @@
       hr
       .pull-right
         ul.list-unstyled.list-inline
-          / if current_user.is? :admin
-            li= link_to 'Edit as admin', edit_admin_challenge_path(@challenge), class: 'btn btn-warning btn-sm'
           li= f.submit 'Save changes', class: 'btn btn-primary btn-sm'
           li= link_to 'Cancel', @challenge, class: 'btn-link btn-sm'
 
@@ -232,10 +242,10 @@
   javascript:
     $('.datetimepicker').datetimepicker({
       icons: {
-          time: "fa fa-clock-o",
-          date: "fa fa-calendar",
-          up: "fa fa-arrow-up",
-          down: "fa fa-arrow-down"
+        time: "fa fa-clock-o",
+        date: "fa fa-calendar",
+        up: "fa fa-arrow-up",
+        down: "fa fa-arrow-down"
       },
       sideBySide: true
     });
@@ -253,7 +263,13 @@
       $('#start_date').val($('#start_date_dummy').data("DateTimePicker").getDate());
     });
     $('#end_date_dummy').on('change', function(){
-      $('#end_date').val($('#entend_date_dummyry_deadline').data("DateTimePicker").getDate());
+      $('#end_date').val($('#end_date_dummy').data("DateTimePicker").getDate());
+    });
+    $('#winners_announced_date_dummy').on('change', function(){
+      $('#winners_announced_date').val($('#winners_announced_date_dummy').data("DateTimePicker").getDate());
+    });
+    $('#pre_winners_announced_date_dummy').on('change', function(){
+      $('#pre_winners_announced_date').val($('#pre_winners_announced_date_dummy').data("DateTimePicker").getDate());
     });
     $('#voting_end_date_dummy').on('change', function(){
       $('#voting_end_date').val($(this).data("DateTimePicker").getDate());
