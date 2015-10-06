@@ -1,9 +1,9 @@
 .image  data-type='file' data-file-id=image.id contenteditable='false'
   figure
-    a.embed-img href="javascript:openLightBox(#{uid},#{i});"
+    a.embed-img href="javascript:openLightBox('#{uid}', #{i});"
       = image_tag image.imgix_url(:headline)
-    - if image.title.present?
-      figcaption.widget-attribute.widget-attribute-editable*{ 'data-attribute' => "[images_attributes][#{i}][title]", 'data-value' => image.title, 'data-default-text' => 'Type in a caption for this image', 'data-disable-toolbar' => 'true' } = image.title
+    - if caption.present?
+      figcaption.widget-attribute.widget-attribute-editable*{ 'data-attribute' => "[images_attributes][#{i}][title]", 'data-value' => image.title, 'data-default-text' => 'Type in a caption for this image', 'data-disable-toolbar' => 'true' } = caption
     - else
       figcaption.widget-attribute.widget-attribute-editable*{ 'data-attribute' => "[images_attributes][#{i}][title]", 'data-value' => image.title, 'data-default-text' => 'Type in a caption for this image', 'data-disable-toolbar' => 'true' }
     span.widget-attribute*{ 'data-attribute' => "[images_attributes][#{i}][id]", 'data-value' => image.id }

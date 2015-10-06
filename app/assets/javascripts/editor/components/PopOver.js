@@ -1,17 +1,23 @@
 import React from 'react';
 import Utils from '../utils/DOMUtils';
+import Validator from 'validator';
+import _ from 'lodash';
 
 const PopOver = React.createClass({
 
   componentWillMount() {
-    if(document) {
-      document.addEventListener('click', this.onBodyClick, false);
+    if(window) {
+      window.addEventListener('click', this.onBodyClick, false);
+
+      this.debouncedScroll = _.debounce(this.handleScroll, 10);
+      window.addEventListener('scroll', this.debouncedScroll, false);
     }
   },
 
   componentWillUnmount() {
-    if(document) {
-      document.removeEventListener('click', this.onBodyClick, false);
+    if(window) {
+      window.removeEventListener('click', this.onBodyClick, false);
+      window.removeEventListener('scroll', this.debouncedScroll, false);
     }
   },
 
@@ -24,14 +30,27 @@ const PopOver = React.createClass({
     if( e.target === React.findDOMNode(this.refs.input) || e.target === React.findDOMNode(this.refs.input2) ) {
       return;
     } else if(e.target !== React.findDOMNode(this)) {
-      this.props.unMountPopOver();
+      // this.props.unMountPopOver();
     }
+  },
+
+  handleScroll() {
+    this.props.unMountPopOver();
   },
 
   handleKeyPress(version, e) {
     if(e.key === 'Enter') {
       let value = React.findDOMNode(this.refs.input).value;
       let text = React.findDOMNode(this.refs.input2).value;
+
+      /** Make sure the url protocol is added. */
+      if(Validator.isURL(value)) {
+        if(!Validator.isURL(value, { require_protocol: true })) {
+          value = 'http://' + value;
+        }
+      } else {
+        this.props.actions.toggleErrorMessenger(true, 'Not a valid url');
+      }
 
       if(value.length > 0) {
         if(version === 'init') {
@@ -59,6 +78,13 @@ const PopOver = React.createClass({
 
   handleRemoveAnchorTag() {
     this.props.removeAnchorTag();
+  },
+
+  handleOnPopUpAnchorClick(url, e) {
+    if(window) {
+      e.preventDefault();
+      window.open(url, '_blank');
+    }
   },
 
   getPositions() {
@@ -91,7 +117,7 @@ const PopOver = React.createClass({
                  </div>);
     } else {
       version = (<div ref="input" className="link-popover-default-container">
-                   <a href={popOverProps.href}>{popOverProps.href}</a>
+                   <a href={popOverProps.href} onClick={this.handleOnPopUpAnchorClick.bind(this, popOverProps.href)}>{popOverProps.href}</a>
                    <a href="javascript:void(0);" onClick={this.handleAnchorChange}>Change</a>
                    <a href="javascript:void(0);" onClick={this.handleRemoveAnchorTag}>Remove</a>
                  </div>);

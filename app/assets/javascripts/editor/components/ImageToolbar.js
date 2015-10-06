@@ -14,21 +14,26 @@ const ImageToolbar = React.createClass({
 
   handleImages(e) {
     this.preventEvent(e);
-
     let files = e.target.files,
         storeIndex = this.props.editor.imageToolbarData.storeIndex,
         filteredFiles;
 
     files = Array.prototype.slice.call(files);
-    filteredFiles = _.filter(files, function(file) {
+    filteredFiles = _.filter(files, file => {
       if(Helpers.isImageValid(file.type)) {
-        return file;
+        return true;
       } else {
+        let msg = file.name ? file.name + ' is not a valid image!' : 'Sorry, not a valid image';
+        this.props.actions.toggleErrorMessenger(true, msg);
         return false;
       }
     });
 
-    ImageUtils.handleImagesAsync(files, function(map) {
+    if(!filteredFiles.length) {
+      return;
+    }
+
+    ImageUtils.handleImagesAsync(filteredFiles, function(map) {
       this.props.actions.isDataLoading(true);
       this.props.actions.addImagesToCarousel(map, storeIndex);
       this.props.actions.forceUpdate(true);
@@ -36,8 +41,9 @@ const ImageToolbar = React.createClass({
 
       /** Upload files to AWS. */
       this.props.actions.uploadImagesToServer(
-        map, 
+        map,
         storeIndex, 
+        this.props.editor.lastMediaHash,
         this.props.editor.S3BucketURL, 
         this.props.editor.AWSAccessKeyId, 
         this.props.editor.csrfToken, 
@@ -109,10 +115,10 @@ const ImageToolbar = React.createClass({
   getStyles() {
     let data = this.props.editor.imageToolbarData;
     let styles = {
-      top: data.top,
-      marginLeft: 20,
-      width: data.width,
-      height: (parseInt(data.height, 10) - 27)
+      top: 0,
+      marginLeft: 0,
+      width: data.width || '100%',
+      height: (parseInt(data.height, 10) - 27) || '100%'
     };
     return styles;
   },

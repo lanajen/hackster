@@ -72,7 +72,7 @@ class Embed
         @format = @provider.format
         @provider_id = @provider.id
         @provider_name = @provider.identifier
-        @default_caption = @url
+        @default_caption = options[:default_caption] || @url
         @type = @provider.type
       end
     elsif @widget_id = options[:widget_id]

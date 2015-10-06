@@ -93,6 +93,7 @@ export default {
       'b': 'strong',
       'bold': 'strong',
       'italic': 'em',
+      'i': 'em',
       'ol': 'ul'
     };
 
@@ -123,5 +124,28 @@ export default {
     }(children));
 
     return children
+  },
+
+  removeAttributes(json) {
+    return (function recurse(json) {
+      return json.map(child => {
+        if(!child.children || !child.children.length) {
+          if(child.tag !== 'a') {
+            child.attribs = {};
+          } else {
+            child.attribs = { href: child.attribs.href };
+          }
+          return child;
+        } else {
+          if(child.tag !== 'a') {
+            child.attribs = {};
+          } else {
+            child.attribs = { href: child.attribs.href };
+          }
+          child.children = recurse(child.children);
+          return child;
+        }
+      });
+    }(json));
   }
 }

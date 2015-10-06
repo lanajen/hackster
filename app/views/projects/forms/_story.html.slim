@@ -15,15 +15,4 @@
       = f.error_notification
       = react_component('ReactEditor', {S3BucketURL: "https://#{ENV['FOG_DIRECTORY']}.s3.amazonaws.com", AWSAccessKeyId: "#{ENV['AWS_ACCESS_KEY_ID']}"}, {})
 
-      / .box data-anchor='description'
-      /   .box-content
-      /     / # = f.input :description, as: :text, wrapper_html: { class: 'hidden' }
-
-      /     p.small.text-muted
-      /       strong> Tip:
-      /       | Add photos and videos by clicking the 'Add media' button to the left. It will show up any time you're on a new paragraph.
-      /     #model-editor data-model-id=@project.id data-model-type='Project' data-model-symbol='project' data-model-placeholder="Start describing your #{@project.is_idea? ? 'project idea' : 'project'} here. Enter text or add images and videos by clicking the 'Add media' button to the left." data-model-url='/api/v1/projects' data-save-mode='form'
-
-      /       #editable-description.text-widget.project-show-item= render partial: 'shared/medium_editor', locals: { editable: @project.decorate.description(:edit), attribute_name: 'description' }
-
     = render 'projects/forms/pe_save'

@@ -2,7 +2,7 @@ import React from 'react';
 import Button from './ToolbarButton';
 import PopOver from './PopOver';
 import _ from 'lodash';
-import validator from 'validator';
+import Validator from 'validator';
 import rangy from 'rangy';
 import Utils from '../utils/DOMUtils';
 import ImageUtils from '../../utils/Images';
@@ -216,6 +216,8 @@ const Toolbar = React.createClass({
         /** Reselect the text. */
         range.selectNodeContents(textNode);
         sel.setSingleRange(range);
+        /** Let the store know about the mutation. */
+        this.props.actions.getLatestHTML(true);
       } else {
         let code = document.createElement('code');
         code.innerHTML = range.toHtml();
@@ -227,6 +229,8 @@ const Toolbar = React.createClass({
         /** Reselect the text. */
         range.selectNodeContents(code.childNodes[0]);
         sel.setSingleRange(range);
+        /** Let the store know about the mutation. */
+        this.props.actions.getLatestHTML(true);
       }
     } else {
       this.handleBlockElementTransform(tagType);
@@ -352,16 +356,19 @@ const Toolbar = React.createClass({
     if(href === null) {
       return;
     } else {
-      if(validator.isURL(href)) {
+      if(Validator.isURL(href)) {
         let sel = rangy.getSelection();
         sel.setSingleRange(range);
+        if(!Validator.isURL(href, { require_protocol: true })) {
+          href = 'http://' + href;
+        }
         this.handleExecCommand('createLink', href);
         /** Grabs the selection again after the DOM was mutated by execCommand. */
         sel = rangy.getSelection();
         sel.setSingleRange(range);
         sel.collapseToEnd();
       } else {
-        this.props.actions.toggleErrorMessenger(true, 'NOT A VALID URL');
+        this.props.actions.toggleErrorMessenger(true, 'Not a valid url');
       }
     }
   },
@@ -419,7 +426,7 @@ const Toolbar = React.createClass({
     files = Array.prototype.slice.call(files);
     filteredFiles = _.filter(files, file => {
       if(Helpers.isImageValid(file.type)) {
-        return file;
+        return true;
       } else {
         let msg = file.name ? file.name + ' is not a valid image!' : 'Sorry, not a valid image';
         this.props.actions.toggleErrorMessenger(true, msg);
@@ -427,7 +434,11 @@ const Toolbar = React.createClass({
       }
     });
 
-    ImageUtils.handleImagesAsync(files, map => {
+    if(!filteredFiles.length) {
+      return;
+    }
+
+    ImageUtils.handleImagesAsync(filteredFiles, map => {
       let storeIndex = this.props.editor.currentStoreIndex;
       this.props.actions.isDataLoading(true);
       this.props.actions.createMediaByType(map, depth, storeIndex, 'Carousel');
@@ -435,8 +446,9 @@ const Toolbar = React.createClass({
 
       /** Upload files to AWS. */
       this.props.actions.uploadImagesToServer(
-        map, 
+        map,
         storeIndex, 
+        this.props.editor.lastMediaHash,
         this.props.editor.S3BucketURL, 
         this.props.editor.AWSAccessKeyId, 
         this.props.editor.csrfToken, 
@@ -458,7 +470,7 @@ const Toolbar = React.createClass({
     // console.log('TOOLBAR', this.state.showPopOver);
   
     let linkPopOver = this.props.toolbar.showPopOver ? (
-      <PopOver ref="popOver" popOverProps={this.props.toolbar.popOverProps} editor={this.props.editor} onLinkInput={this.handleLinkInput} unMountPopOver={this.unMountPopOver} onVersionChange={this.handlePopOverChange} onInputChange={this.handlePopOverInputChange} removeAnchorTag={this.handleAnchorTagRemoval}/>
+      <PopOver ref="popOver" popOverProps={this.props.toolbar.popOverProps} editor={this.props.editor} actions={this.props.actions} onLinkInput={this.handleLinkInput} unMountPopOver={this.unMountPopOver} onVersionChange={this.handlePopOverChange} onInputChange={this.handlePopOverInputChange} removeAnchorTag={this.handleAnchorTagRemoval}/>
     ) : null;
 
     let buttonList = [

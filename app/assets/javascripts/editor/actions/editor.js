@@ -23,7 +23,7 @@ export function fetchInitialDOM(projectId, csrfToken) {
     return Request.getStory(projectId, csrfToken)
       .then(result => {
         dispatch(setInitialDOM(result));
-      }).catch(err => { 
+      }).catch(err => {
         dispatch(toggleErrorMessenger(true, 'We had an issue getting your story!'));
       });
   }
@@ -266,15 +266,25 @@ export function createPlaceholderElement(msg, depth, storeIndex) {
   };
 }
 
-export function resetImageUrl(imageData, storeIndex) {
+export function resetImageUrl(imageData, storeIndex, mediaHash) {
   return {
     type: Editor.resetImageUrl,
     imageData: imageData,
+    mediaHash: mediaHash,
     storeIndex: storeIndex
   };
 }
 
-export function uploadImagesToServer(files, storeIndex, S3BucketURL, AWSAccessKeyId, csrfToken, projectId) {
+export function removeImageFromList(imageData, storeIndex, mediaHash) {
+  return {
+    type: Editor.removeImageFromList,
+    imageData: imageData,
+    storeIndex: storeIndex,
+    mediaHash: mediaHash
+  }
+}
+
+export function uploadImagesToServer(files, storeIndex, mediaHash, S3BucketURL, AWSAccessKeyId, csrfToken, projectId) {
   return function(dispatch) {
     files.forEach(file => {
       return ImageHelpers.getS3AuthData(file.name)
@@ -286,10 +296,14 @@ export function uploadImagesToServer(files, storeIndex, S3BucketURL, AWSAccessKe
         })
         .then(response => {
           let body = Object.assign({}, response.body, file);
-          dispatch(resetImageUrl(body, storeIndex));
+          dispatch(resetImageUrl(body, storeIndex, mediaHash));
         })
         .catch(err => {
-          dispatch(toggleErrorMessenger(true, 'Woops, we couldn\'t save that image correctly.'));
+          if(err) {
+            console.log('ERR', err);
+            dispatch(removeImageFromList(file, storeIndex, mediaHash));
+            dispatch(toggleErrorMessenger(true, 'Problem uploading image:' + file.name));
+          }
         });
     });
 
@@ -317,5 +331,13 @@ export function toggleErrorMessenger(show, msg) {
     type: Editor.toggleErrorMessenger,
     show: show,
     msg: msg
+  };
+}
+
+export function handlePastedHTML(html, storeIndex) {
+  return {
+    type: Editor.handlePastedHTML,
+    html: html,
+    storeIndex: storeIndex
   };
 }

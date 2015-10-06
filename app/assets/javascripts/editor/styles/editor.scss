@@ -186,8 +186,8 @@ $desktop-width: 1024px;
         position: relative;
 
         .react-editor-image {
-          // max-width: 580px;
           height: auto;
+          min-height: 100px;
           flex: 1;
           z-index: 1;
           align-self: center;
@@ -381,7 +381,7 @@ $desktop-width: 1024px;
         display: flex;
         flex: 1;
         justify-content: center;
-        color: #757575;
+        color: #444;
         border: none;
         background-color: transparent;
         font-size: 1.6rem;
@@ -399,13 +399,13 @@ $desktop-width: 1024px;
 
         &.toolbar-btn-active {
           color: #E0E0E0;
-          background-color: #757575;
+          background-color: #444;
           border-right: 1px solid #E0E0E0;
         }
 
         &:hover {
           color: #E0E0E0;
-          background-color: #757575;
+          background-color: #444;
         }
       }
     }

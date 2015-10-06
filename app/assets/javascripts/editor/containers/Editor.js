@@ -39,6 +39,10 @@ const Editor = React.createClass({
     this.props.actions.toggleErrorMessenger(false, '');
   },
 
+  handleOnMessageTouch() {
+    this.refs.errorMessenger.dismiss();
+  },
+
   render() {
     if(this.props.hashLocation !== '#story') {
       return null;
@@ -50,7 +54,7 @@ const Editor = React.createClass({
           <Toolbar hashLocation={this.props.hashLocation} />
         </div>
         <Editable className="box" refLink={createRandomNumber()} hashLocation={this.props.hashLocation} {...this.props}/>
-        <Snackbar style={{zIndex: 10001}} ref="errorMessenger" message={this.props.editor.errorMessenger.msg} action="Error" autoHideDuration={3000} onActionTouchTap={this.handleErrorMessengerDismiss} onDismiss={this.handleErrorMessengerDismiss} />
+        <Snackbar style={{zIndex: 10001}} ref="errorMessenger" message={this.props.editor.errorMessenger.msg} action="Error" autoHideDuration={5000} onActionTouchTap={this.handleOnMessageTouch} onDismiss={this.handleErrorMessengerDismiss} />
       </div>
     );
   }

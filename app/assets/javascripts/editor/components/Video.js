@@ -33,10 +33,6 @@ const Video = React.createClass({
     });
   },
 
-  handleFocus() {
-    // console.log('IS FOCUSED :', this.props.storeIndex);
-  },
-
   handleKeyDown(e) {
     let currentNode = React.findDOMNode(this);
     let Editable = Utils.getParentOfCE(currentNode);
@@ -84,18 +80,6 @@ const Video = React.createClass({
     }
   },
 
-  handleNavigation(direction, e) {
-    e.preventDefault();
-    let inner = React.findDOMNode(this.refs.inner);
-    let figures = inner.children;
-    let activeIndex = _.findIndex(figures, function(fig) {
-      return fig.classList.contains('show');
-    });
-
-    this.props.actions.updateShownImage(activeIndex, this.props.storeIndex, direction);
-    this.props.actions.toggleImageToolbar(false, {});
-  },
-
   handleFigCaptionKeys(e, key) {
     if(key === 'Enter') {
       e.preventDefault();
@@ -127,7 +111,11 @@ const Video = React.createClass({
         parent = Utils.getRootParentElement(currentNode), 
         depth = Utils.findChildsDepthLevel(parent, parent.parentNode);
 
-    if((target.nodeName === 'IFRAME' || target.nodeName === 'DIV' && target.classList.contains('react-editor-image-wrapper')) && this.props.editor.showImageToolbar === false) {
+    if(this.props.editor.showImageToolbar && this.props.editor.imageToolbarData.node !== React.findDOMNode(this)) {
+      this.props.actions.toggleImageToolbar(false, {});
+    }
+
+    if((target.nodeName === 'IFRAME' && target.classList.contains('react-editor-iframe') || target.nodeName === 'DIV' && target.classList.contains('react-editor-image-wrapper')) && this.props.editor.showImageToolbar === false) {
       this.props.actions.toggleImageToolbar(true, {
         node: currentNode,
         depth: depth,
@@ -141,26 +129,22 @@ const Video = React.createClass({
     }
   },
 
-  handleClick() {
-    this.props.actions.toggleImageToolbar(false, {});
-  },
-
   render: function() {
     let data = this.props.videoData[0];
+    let imageToolbar = this.props.editor.showImageToolbar && this.props.editor.imageToolbarData.node.getAttribute('data-hash') === this.props.hash
+                     ? (<ImageToolbar editor={this.props.editor} actions={this.props.actions} />)
+                     : (null);
     return (
       <div className="react-editor-video" 
            data-hash={this.props.hash}
-           data-video-id={data.id}
            onKeyDown={this.handleKeyDown}
            onMouseOver={this.handleMouseOver}
-           onClick={this.handleClick}
            tabIndex={0}>
         <div className="react-editor-video-inner">
           <figure className="react-editor-figure" data-type="video">
             <div className="react-editor-image-wrapper">
-              <iframe style={{ height: this.state.height }} ref="iframe" className="react-editor-iframe" src={data.embed} alt={data.alt} frameBorder="0"></iframe>
+              <iframe style={{ height: this.state.height }} ref="iframe" className="react-editor-iframe" src={data.embed} frameBorder="0"></iframe>
               <FigCaption className="react-editor-figcaption"
-                          style={{ width:data.width }}
                           handleFigCaptionKeys={this.handleFigCaptionKeys}
                           setFigCaptionText={this.handleFigCaptionText.bind(this, 0)}
                           html={data.figcaption || 'caption (optional)'}
@@ -168,6 +152,7 @@ const Video = React.createClass({
             </div>
           </figure>
         </div>
+        {imageToolbar}
       </div>
     );
   }

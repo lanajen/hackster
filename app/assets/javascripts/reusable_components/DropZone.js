@@ -46,14 +46,14 @@ const Dropzone = React.createClass({
     if(this.props.onDrop) {
       files = Array.prototype.slice.call(files);
       // Filter files and remove unaccepted extensions.
-      filteredFiles = files.filter(function(file) {
+      files = files.filter(function(file) {
         if(Helpers.isImageValid(file.type)) {
-          return file;
+          return true;
         } else {
           return false;
         }
       });
-      this.props.onDrop(filteredFiles);
+      this.props.onDrop(files);
     }
   },
 

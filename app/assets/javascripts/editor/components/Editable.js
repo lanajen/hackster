@@ -82,127 +82,13 @@ const Editable = React.createClass({
       .catch(err => { console.log('Parse Error: ' + err); });
   },
 
-  // parseDOM(html) {
-  //   return new Promise((resolve, reject) => {
-  //     let handler = new DomHandler(function(err, dom) {
-  //       if(err) console.log(err);
-
-  //       let parsedHTML = this.parseTree(dom);
-  //       resolve(parsedHTML);
-
-  //     }.bind(this), { normalizeWhitespace: false });
-
-  //     let parser = new HtmlParser.Parser(handler, { decodeEntities: true });
-  //     parser.write(html);
-  //     parser.done();
-  //   }.bind(this));
-  // },
-
-  // parseTree(html) {
-  //   const blockEls = {
-  //     p: true,
-  //     blockquote: true,
-  //     ul: true,
-  //     pre: true
-  //   };
-
-  //   function handler(html) {
-  //     return _.map(html, (item) => {
-  //       let name;
-
-  //       /** Remove these nodes immediately. */
-  //       if(item.name === 'br' || item.name === 'script' || item.name === 'comment') {
-  //         return null;
-  //       }
-  //       /** Transform tags to whitelist. */
-  //       if(item.name) {
-  //         name = this.transformTagNames(item);
-  //       }
-
-  //       /** Remove invalid anchors. */
-  //       if(item.name === 'a' && !Validator.isURL(item.attribs.href)) {
-  //         return null;
-  //       }
-
-  //       /** Recurse through block elements and make sure only inlines exist as children. */
-  //       if(blockEls[item.name]) {
-  //         item.children = this.cleanBlockElementChildren(item);
-  //       }
-
-  //       if(item.type === 'text' && !item.children) {
-  //         if(item.data.match(/&nbsp;/g)) {
-  //           item.data = item.data.replace(/&nbsp;/g, ' ');
-  //         }
-
-  //         return {
-  //           tag: 'span',
-  //           content: item.data,
-  //           attribs: {},
-  //           children: []
-  //         };
-  //       } else if(item.children && item.children.length === 1 && item.children[0].type === 'text') {
-  //         if(item.children[0].data.match(/&nbsp;/g)) {
-  //           item.children[0].data = item.children[0].data.replace(/&nbsp;/g, ' ');
-  //         }
-  //         return {
-  //           tag: name || item.name,
-  //           content: item.children[0].data,
-  //           attribs: item.attribs,
-  //           children: []
-  //         };
-  //       } else {
-  //         return {
-  //           tag: name || item.name,
-  //           content: null,
-  //           attribs: item.attribs,
-  //           children: handler.apply(this, [item.children || []])
-  //         }
-  //       }
-  //     }).filter(item => { return item !== null; });
-  //   }
-  //   return handler.call(this, html);
-  // },
-
-  // transformTagNames(node) {
-  //   let nodeName = node.name;
-
-  //   let converter = {
-  //     'b': 'strong',
-  //     'bold': 'strong',
-  //     'italic': 'em',
-  //     'ol': 'ul'
-  //   };
-
-  //   return converter[nodeName] || nodeName;
-  // },
-
-  // cleanBlockElementChildren(node) {
-  //   let children = node.children;
-  //   const blockEls = {
-  //     p: true,
-  //     blockquote: true,
-  //     ul: true,
-  //     pre: true
-  //   };
-
-  //   children = (function recurse(children) {
-  //     return children.map(child => {
-  //       if(!child.children || !child.children.length) {
-  //         return child;
-  //       } else {
-  //         if(child.name && blockEls[child.name]) {
-  //           child.name = 'span';
-  //         }
-  //         child.children = recurse(child.children);
-  //         return child;
-  //       }
-  //     });
-  //   }(children));
-
-  //   return children
-  // },
-
   handleFilesDrop(storeIndex, files) {
+
+    /** DropZone.js handles filtering for images, it'll return an empty array if all wasn't valid. */
+    if(!files.length) {
+      return;
+    }
+
     let node = Utils.getRootParentElement(this.props.editor.cursorPosition.node);
     let depth = Utils.findChildsDepthLevel(node, node.parentNode);
     
@@ -214,8 +100,9 @@ const Editable = React.createClass({
 
       /** Upload files to AWS. */
       this.props.actions.uploadImagesToServer(
-        map, 
+        map,
         storeIndex, 
+        this.props.editor.lastMediaHash,
         this.props.editor.S3BucketURL, 
         this.props.editor.AWSAccessKeyId, 
         this.props.editor.csrfToken, 
@@ -230,7 +117,7 @@ const Editable = React.createClass({
     e.stopPropagation();
 
     let dom = this.props.editor.dom;
-    let stringifiedJSON, item;
+    let stringifiedJSON, item, cleaned;
 
     let promised = dom.map(item => {
       /** Its super important to clone each item!  Otherwise we mutate the state of the store and bad things happen. */
@@ -241,10 +128,36 @@ const Editable = React.createClass({
 
         return Parser.parseDOM(stringifiedJSON)
           .then(json => {
-            item.json = json;
+            cleaned = Parser.removeAttributes(json);
+            item.json = cleaned;
             return Promise.resolve(item);
           });
 
+      } else if(item.type === 'Carousel') {
+        let images = _.clone(item.images);
+        cleaned = images.map(image => {
+          return {
+            id: image.id,
+            figcaption: image.figcaption,
+            uuid: image.uuid,
+            name: image.name,
+            url: null
+          };
+        }).filter(image => { return !image.id ? false : true; });
+        item.images = cleaned;
+        return Promise.resolve(item);
+      } else if(item.type === 'Video') {
+        let video = _.clone(item.video);
+        cleaned = video.map(v => {
+          return {
+            id: v.id,
+            figcaption: v.figcaption,
+            embed: v.embed,
+            service: v.service
+          };
+        });
+        item.video = cleaned;
+        return Promise.resolve(item);
       } else {
         return Promise.resolve(item);
       }
@@ -285,17 +198,13 @@ const Editable = React.createClass({
       } else if(item.type === 'Carousel') {
         return <Carousel key={index} storeIndex={index} images={item.images} hash={item.hash} editor={this.props.editor} actions={this.props.actions} />
       } else if(item.type === 'Video'){
-        return <Video key={index} storeIndex={index} videoData={item.images} hash={item.hash} editor={this.props.editor} actions={this.props.actions} />
+        return <Video key={index} storeIndex={index} videoData={item.video} hash={item.hash} editor={this.props.editor} actions={this.props.actions} />
       } else if(item.type === 'File') {
         return <File key={index} storeIndex={index} fileData={item.data} hash={item.hash} editor={this.props.editor} actions={this.props.actions} />
       } else {
         return null;
       }
     });
-
-    let imageToolbar = this.props.editor.showImageToolbar && this.props.editor.isEditable
-                     ? (<ImageToolbar editor={this.props.editor} actions={this.props.actions} />)
-                     : (null);
 
     let mainContent = this.props.editor.isFetching
                     ? (<div style={{ textAlign: 'center', padding: '5%' }}><i className="fa fa-spin fa-spinner fa-3x"></i>LOADING...</div>)
@@ -306,7 +215,6 @@ const Editable = React.createClass({
         <div className="box-content">
           {mainContent}
         </div>
-        {imageToolbar}
       </div>
     );
   }

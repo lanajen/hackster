@@ -1,5 +1,6 @@
 class ProjectDecorator < ApplicationDecorator
   include MediumEditorDecorator
+  include StoryJsonDecorator
 
   def components_for_buy_all
     @components_for_buy_all ||= model.part_joins.hardware.map{|pj| "#{pj.quantity} x #{pj.part.name}" }
@@ -22,6 +23,10 @@ class ProjectDecorator < ApplicationDecorator
   def description mode=:normal
     # options = (mode == :edit ? { except: ['PartsWidget'] } : {})
     parse_medium model.description#, options
+  end
+
+  def story_json
+    parse_story_json model.story_json
   end
 
   def logo size=nil, use_default=true

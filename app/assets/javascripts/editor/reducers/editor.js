@@ -52,11 +52,12 @@ const initialState = {
   showImageToolbar: false,
   imageToolbarData: {},
   isDataLoading: false,
-  errorMessenger: { show: false, msg: '' }
+  errorMessenger: { show: false, msg: '' },
+  lastMediaHash: null
 };
 
 export default function(state = initialState, action) {
-  let dom, newDom, cursorPosition;
+  let dom, newDom, cursorPosition, mediaHash;
   switch (action.type) {
 
     case Editor.setDOM:
@@ -246,7 +247,7 @@ export default function(state = initialState, action) {
 
     case Editor.createMediaByType:
       dom = state.dom;
-      let { newDom, rootHash } = handleMediaCreation(dom, action.map, action.depth, action.storeIndex, action.mediaType);
+      let { newDom, rootHash, mediaHash } = handleMediaCreation(dom, action.map, action.depth, action.storeIndex, action.mediaType);
       return {
         ...state,
         dom: newDom,
@@ -254,7 +255,9 @@ export default function(state = initialState, action) {
           ...state.cursorPosition,
           rootHash: rootHash
         },
-        isDataLoading: false
+        setCursorToNextLine: false,
+        isDataLoading: false,
+        lastMediaHash: mediaHash
       };
 
     case Editor.addImagesToCarousel:
@@ -301,12 +304,22 @@ export default function(state = initialState, action) {
       };
 
     case Editor.resetImageUrl:
+      mediaHash = action.mediaHash || state.lastMediaHash; 
       dom = state.dom;
-      newDom = resetImageUrl(dom, action.imageData, action.storeIndex);
+      newDom = resetImageUrl(dom, action.imageData, mediaHash, action.storeIndex);
       return {
         ...state,
         dom: newDom
-      }
+      };
+
+    case Editor.removeImageFromList:
+      mediaHash = action.mediaHash || state.lastMediaHash;
+      dom = state.dom;
+      newDom = removeImageFromList(dom, action.imageData, mediaHash, action.storeIndex);
+      return {
+        ...state,
+        dom: newDom
+      };
 
     case Editor.isDataLoading:
       return {
@@ -327,6 +340,15 @@ export default function(state = initialState, action) {
       return {
         ...state,
         errorMessenger: errorMessenger
+      };
+
+    case Editor.handlePastedHTML:
+      dom = state.dom;
+      newDom = handlePastedHTML(dom, action.html, action.storeIndex);
+      newDom = _mergeAdjacentCE(newDom);
+      return {
+        ...state,
+        dom: newDom
       };
 
     default:
@@ -356,6 +378,17 @@ function handleInitialDOM(json) {
     json = json.map(item => {
       if(item.type === 'CE') {
         item.json = createArrayOfComponents(item.json);
+        if(item.json.length < 1) {
+          let P = mapToComponent['p'];
+          item.json.push(P({ 
+            tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) },
+            key: createRandomNumber(), 
+            children: [''] 
+          }));
+        }
+        return item;
+      } else if(item.type === 'Carousel') {
+        item.images[0].show = true;
         return item;
       } else {
         return item;
@@ -562,10 +595,20 @@ function prependCE(dom, storeIndex) {
 
 function setFigCaptionText(dom, figureIndex, storeIndex, html) {
   let component = dom[storeIndex];
-  let images = component.images;
-  images[figureIndex].figcaption = html;
 
-  component.images = images;
+  /** If images, it's a Carousel, else a Video. */
+  if(component.images) {
+    let images = component.images;
+    images[figureIndex].figcaption = html;
+
+    component.images = images;
+  } else {
+    let video = component.video;
+    video[0].figcaption = html;
+
+    component.video = video;
+  }
+
   dom.splice(storeIndex, 1, component);
   return dom;
 }
@@ -738,53 +781,76 @@ function _createPositionsToMerge(newDom, el) {
 function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
   let component = dom[storeIndex];
   let json = component.json;
-  let media = {
-    type: mediaType,
-    images: map,
-    hash: hashids.encode(Math.floor(Math.random() * 9999 + 1))
-  };
-  let rootHash;
+  let media = mediaType === 'Carousel'
+            ? {
+                type: mediaType,
+                images: map,
+                hash: hashids.encode(Math.floor(Math.random() * 9999 + 1))
+              }
+            : {
+                type: mediaType,
+                video: map,
+                hash: hashids.encode(Math.floor(Math.random() * 9999 + 1))
+              };
+  let rootHash = hashids.encode(Math.floor(Math.random() * 9999 + 1));
+  let mediaHash = media.hash;
 
   /** Sets the first image to show. */
-  media.images[0].show = true;
-
-  /** If we're adding a Carousel to the end of a CE.
+  if(media.images) {
+    media.images[0].show = true;
+  }
+  /** 
+    * If we're adding a Media block to the end of a CE.
+    * Else if we're at the top of a CE, remove the current line and prepend the media block.
     * Else we need to splice the content of the CE by depth.
    */
   if(depth === json.length-1) {
     let removedNode = json.pop();
     let itemsToRemove = 0;
-    storeIndex += 1;
-
-    /** If theres nothing left in the element, remove it. */
-    if(json.length < 1) {
-      storeIndex -= 1;
-      itemsToRemove = 1;
-    }
 
     let P = mapToComponent['p'];
-    rootHash = hashids.encode(Math.floor(Math.random() * 9999 + 1));
     let CE = {
       type: 'CE',
       json: [],
       hash: rootHash
     };
 
-    let p = P({ tagProps: { hash: removedNode.props.tagProps.hash || hashids.encode(Math.floor(Math.random() * 9999 + 1)) }, 
-                style: {}, 
-                className: '', 
-                key: createRandomNumber(), 
-                children: mediaType === 'Carousel' ? [removedNode.props.children] : ['']
-              });
-
-    CE.json.push(p);
-    dom.splice(storeIndex, itemsToRemove, media);
-    dom.push(CE);
-  } else if(depth === 0 && json[depth+1].props.children) {
+    /** If theres nothing left in the element, remove it; Unless its the first CE. */
+    if(json.length < 1 && storeIndex !== 0) {
+      itemsToRemove = 1;
+    }
+    /** If there's nothing left in the first CE, we repopulate it here. */
+    if(storeIndex === 0 && !json.length) {
+      json.push(P({ tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) }, 
+                  style: {}, 
+                  className: '', 
+                  key: createRandomNumber(), 
+                  children: ['']
+                }));
+      component.json = json;
+      dom.splice(storeIndex, 1, component);
+    }
+    /** Populate new CE. */
+    CE.json.push(P({ tagProps: { hash: removedNode.props.tagProps.hash || hashids.encode(Math.floor(Math.random() * 9999 + 1)) }, 
+                  style: {}, 
+                  className: '', 
+                  key: createRandomNumber(), 
+                  children: mediaType === 'Carousel' ? [removedNode.props.children] : ['']
+                }));
+    dom.splice(storeIndex+1, itemsToRemove, media);
+    dom.splice(storeIndex+2, 0, CE);
+  } else if(depth === 0 && json[depth+1] && json[depth+1].props.children) {
+    /** Remove the line if it was a video url. */
+    if(mediaType === 'Video') {
+      json.splice(depth, 1);
+    }
+    component.json = json;
+    /** This will place the media block above the component.  */
+    dom.splice(storeIndex, 1, component);
     dom.splice(storeIndex, 0, media);
   } else {
-    rootHash = hashids.encode(Math.floor(Math.random() * 9999 + 1));
-    let bottomDepthStart = mediaType === 'Video' ? depth+1 : depth;
+    /** Remove the line if it was video url. */
+    let bottomDepthStart = mediaType === 'Video' ? depth+1 : depth; 
     let top = json.slice(0, depth);
     let bottom = json.slice(bottomDepthStart, json.length);
     let topCE = { type: 'CE', hash: component.hash, json: top };
@@ -795,24 +861,26 @@ function handleMediaCreation(dom, map, depth, storeIndex, mediaType) {
     dom.splice(storeIndex+2, 0, bottomCE);
   }
 
-  return { newDom: dom, rootHash: rootHash };
+  return { newDom: dom, rootHash: rootHash, mediaHash: mediaHash };
 }
 
 function addImagesToCarousel(dom, map, storeIndex) {
   let component = dom[storeIndex];
+  let images = component.images;
   let newImages = map.map(image => {
-    return { url: image.url, alt: image.alt, width: image.width, figcaption: null };
+    return { url: image.url, alt: image.alt, figcaption: null, uuid: image.uuid };
   });
 
   /** Remove current shown image and show the last image added. */
-  component.images.forEach(image => {
+  images.forEach(image => {
     if(image.show) {
       image.show = false;
     }
   });
   newImages[newImages.length-1].show = true;
 
-  component.images.push(...newImages);
+  images.push(...newImages);
+  component.images = images;
   dom.splice(storeIndex, 1, component);
   return dom;
 }
@@ -844,7 +912,7 @@ function updateShownImage(dom, activeIndex, storeIndex, direction) {
 
 function deleteImagesFromCarousel(dom, map, position, storeIndex) {
   let component = dom[storeIndex];
-  let images = component.images;
+  let images = component.images || component.video;
   let replaceShownImage = false;
   let newImages, indexOfShown;
 
@@ -923,16 +991,54 @@ function deleteComponent(dom, storeIndex) {
   return dom;
 }
 
-function resetImageUrl(dom, data, storeIndex) {
+function resetImageUrl(dom, data, mediaHash, storeIndex) {
   let component = dom[storeIndex];
-  let images = component.images.map(image => {
-    if(image.uuid = data.uuid) {
-      image = Object.assign({}, image, data);
+  /** Make sure we have the correct block. */
+  if(component.type !== 'Carousel' && component.hash !== mediaHash) {
+    dom.forEach((item, index) => {
+      if(item.hash === mediaHash) {
+        component = item;
+        storeIndex = index;
+      }
+    });
+  }
+
+  let images = component.images;
+  let newImages = images.map(image => {
+    if(image.uuid === data.uuid) {
+      image.id = data.id;
       return image;
     } else {
       return image;
     }
   });
+
+  component.images = newImages;
+  dom.splice(storeIndex, 1, component);
+  return dom;
+}
+
+function removeImageFromList(dom, data, mediaHash, storeIndex) {
+  let component = dom[storeIndex];
+
+  /** Make sure we have the correct block. */
+  if(component.type !== 'Carousel' && component.hash !== mediaHash) {
+    dom.forEach((item, index) => {
+      if(item.hash === mediaHash) {
+        component = item;
+        storeIndex = index;
+      }
+    });
+  }
+
+  let images = component.images.filter(image => {
+    if(image.uuid === data.uuid) {
+      return false;
+    } else {
+      return true;
+    }
+  });
+
   dom.splice(storeIndex, 1, component);
   return dom;
 }
@@ -996,6 +1102,23 @@ function createPlaceholderElement(dom, msg, position, storeIndex) {
   return dom;
 }
 
+function handlePastedHTML(dom, html, storeIndex) {
+  let reactified = html.map(item => {
+    if(item.type === 'CE') {
+      let json = createArrayOfComponents(item.json);
+      item.json = json;
+      return item;
+    } else {
+      return item;
+    }
+  });
+  storeIndex += 1;
+  reactified.forEach((item, index) => {
+    dom.splice(storeIndex+index, 0, item)
+  });
+  return dom;
+}
+
 function createStyleObjectFromString(string) {
   let item,
       styleProp,
@@ -1056,8 +1179,7 @@ function createArrayOfComponents(dom) {
         'a': Object.assign({}, { href: item.attribs.href }),
         'iframe': Object.assign({}, { src: item.attribs.src }),
         'img': Object.assign({}, { dataSrc: item.attribs['data-src'], src: item.attribs.src, alt: item.attribs.alt }),
-        'div': Object.assign({}, { bgImage: item.attribs['data-bg-image'] || null, 
-                                   contentEditable: item.attribs.contenteditable || null,
+        'div': Object.assign({}, { contentEditable: item.attribs.contenteditable || null,
                                    'data-type': item.attribs['data-type'] || null,
                                    'data-video-id': item.attribs['data-video-id'] || null }),
         'figure': Object.assign({}, { type: item.attribs['data-type'] || null })
@@ -1073,7 +1195,7 @@ function createArrayOfComponents(dom) {
       if(item.attribs.style && item.tag !== 'span') {
         style = Object.assign({}, createStyleObjectFromString(item.attribs.style));
       }
-      if(tagPropsMap.hasOwnProperty(item.tag)) {
+      if(tagPropsMap.hasOwnProperty(item.tag) && item.attribs) {
         tagProps = tagPropsMap[item.tag];
       }
 

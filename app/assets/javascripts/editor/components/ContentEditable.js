@@ -2,6 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import rangy from 'rangy';
 import Sanitize from 'sanitize-html';
+import Validator from 'validator';
 import Utils from '../utils/DOMUtils';
 import Helpers from '../../utils/Helpers';
 import ImageUtils from '../../utils/Images';
@@ -110,7 +111,7 @@ const ContentEditable = React.createClass({
     let rootNode = Utils.findBlockNodeByHash(cursorPosition.rootHash, Utils.getParentOfCE(React.findDOMNode(this)));
     let node = cursorPosition.node || rootNode.children[cursorPosition.pos];
     if(!node) { return; }
-    let nodeByHash = Utils.findBlockNodeByHash(node.getAttribute('data-hash'), rootNode, cursorPosition.pos);
+    let nodeByHash = Utils.findBlockNodeByHash(node.getAttribute('data-hash'), rootNode, cursorPosition.pos) || rootNode;
     let el = (this.props.editor.setCursorToNextLine && nodeByHash.nextSibling !== undefined) ? nodeByHash.nextSibling : nodeByHash;
 
     if(el === undefined || el === null) {
@@ -157,8 +158,11 @@ const ContentEditable = React.createClass({
         this.createBlockElement('p', 0, false, this.props.storeIndex);
       }
 
-      /** Cleans br tags in top level block elements. */
-      Utils.removeBRTagsFromElement(CE);
+      /** 
+        * Makes sure immediate children are block elements with a hash. 
+        * Removes br tags in immediate children.
+        */
+      Utils.maintainImmediateChildren(CE);
 
       /** Recursively cleans up all br and empty tags. */
       if(e.keyCode === 8 && Utils.isImmediateChildOfContentEditable(parentNode, CE)
@@ -199,7 +203,6 @@ const ContentEditable = React.createClass({
       let sel = rangy.getSelection();
       let range = sel.getRangeAt(0);
       let anchor = Utils.getAnchorNode(range.startContainer);
-
       if(!anchor) { return; }
 
       let props = {
@@ -259,6 +262,9 @@ const ContentEditable = React.createClass({
       if((parentNode.textContent.indexOf(anchorNode.textContent) + startOffset) < parentNode.textContent.length) {
         hasTextAfterCursor = true;
       }
+
+      /** Cleans up the top tree of this CE. */
+      Utils.maintainImmediateChildren(React.findDOMNode(this));
 
       switch(parentNode.nodeName) {
         case 'P':
@@ -401,6 +407,11 @@ const ContentEditable = React.createClass({
     }
   },
 
+  handleSpacebar(e) {
+    let { sel, range } = Utils.getSelectionData();
+    Utils.transformTextToAnchorTag(sel, range, true);
+  },
+
   onKeyDown(e) {
     let { parentNode } = Utils.getSelectionData();
 
@@ -435,6 +446,9 @@ const ContentEditable = React.createClass({
       case 9: // TAB
         this.handleTab(e);
         break;
+      case 32: // SPACEBAR
+        this.handleSpacebar(e);
+        break;
       case 38: // UP ARROW
       case 40: // DOWN ARROW
         this.handleArrowKeys(e);
@@ -446,7 +460,6 @@ const ContentEditable = React.createClass({
 
   onKeyUp(e) {
     if(e.keyCode === undefined || e.type === 'mouseup') {
-      this.preventEvent(e);
       let { sel, range, anchorNode } = Utils.getSelectionData();
       if(sel === null) { return; }
 
@@ -471,7 +484,6 @@ const ContentEditable = React.createClass({
   },
 
   onClick(e) {
-    this.preventEvent(e);
     let node = React.findDOMNode(e.target);
     let { sel, depth, parentNode, startOffset, anchorNode } = Utils.getSelectionData();
 
@@ -502,23 +514,37 @@ const ContentEditable = React.createClass({
 
   handlePaste(e) {
     this.preventEvent(e);
-    let pastedText;
+    let pastedText, dataType;
 
     if(window.clipboardData && window.clipboardData.getData) {  // IE
       pastedText = window.clipboardData.getData('Text');
     } else if(e.clipboardData && e.clipboardData.getData) {
       if(e.clipboardData.types.indexOf('text/html') === 1) {
         pastedText = e.clipboardData.getData('text/html');
+        dataType = 'html';
       } else {
         pastedText = e.clipboardData.getData('text/plain');
+        dataType = 'text';
       }
     }
 
-    let clean = this.handleOnPasteSanitization(pastedText); 
-  
-    e.target.innerHTML += clean;
-    Utils.setCursorByNode(React.findDOMNode(e.target));
-    this.emitChange();
+    if(dataType === 'text') {
+      let clean = this.handleOnPasteSanitization(pastedText); 
+      e.target.innerHTML += clean;
+      Utils.setCursorByNode(React.findDOMNode(e.target));
+      this.emitChange();
+    } else {
+      return Utils.parseDescription(pastedText)
+        .then(results => {
+          /** REMOVE ANYTHING BUT TEXT FOR NOW! */
+          let clean = results.filter(item => {
+            return item.type === 'CE' ? true : false;
+          });
+          this.props.actions.handlePastedHTML(clean, this.props.storeIndex);
+          this.props.actions.forceUpdate(true);
+        })
+        .catch(err => { console.log('ERR0R', err); });
+    }
   },
 
   handleOnPasteSanitization(dirty) {

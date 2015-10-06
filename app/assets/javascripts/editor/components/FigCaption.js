@@ -3,10 +3,6 @@ import Utils from '../utils/DOMUtils';
 
 const FigCaption = React.createClass({
 
-  shouldComponentUpdate() {
-    return false;
-  },
-
   handleInput(e) {
     let html = React.findDOMNode(e.target).textContent;
     this.props.setFigCaptionText(html);

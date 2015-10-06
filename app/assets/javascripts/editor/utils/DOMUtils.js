@@ -3,7 +3,7 @@ import _ from 'lodash';
 import async from 'async';
 import HtmlParser from 'htmlparser2';
 import DomHandler from 'domhandler';
-import { getVideoData } from '../../utils/Helpers';
+import Helpers from '../../utils/Helpers';
 import Request from './Requests';
 import Validator from 'validator';
 
@@ -587,6 +587,55 @@ const Utils = {
     }
   },
 
+  /**
+   * Maintains immediate children of Content Editables.
+   * 1) Makes sure children are block elements with hashes.
+   * 2) Removes <br/> tags and/or wraps rogue text nodes.
+   */
+  maintainImmediateChildren(CE) {
+    let blockEls = {
+      'P': true,
+      'BLOCKQUOTE': true,
+      'PRE': true,
+      'UL': true
+    };
+
+    let P,
+        children = [].slice.apply(CE.childNodes);
+
+    children.forEach(child => {
+      if(blockEls[child.nodeName]) {
+        /** Removes empty span tags. */
+        if(child.firstChild && child.childNodes.length) {
+          let nodes = [].slice.apply(child.children);
+          nodes.forEach(node => {
+            if(!node.childNodes && !node.textContent.length) {
+              child.removeChild(node);
+            }
+          });
+        }
+        return; // Node is legit, boot out early.
+      } else if(child.nodeName === 'BR') {
+        CE.removeChild(child);
+      } else if(!blockEls[child.nodeName] && child.nodeType === 1) {
+        P = document.createElement('p');
+        P.setAttribute('data-hash', hashids.encode(Math.floor(Math.random() * 9999 + 1)));
+        // Copy nodes children over.
+        while(child.hasChildNodes()) {
+          P.appendChild(child.removeChild(child.firstChild));
+        }
+        CE.replaceChild(P, child);
+      } else if(!blockEls[child.nodeName] && child.nodeType === 3) {
+        P = document.createElement('p');
+        P.setAttribute('data-hash', hashids.encode(Math.floor(Math.random() * 9999 + 1)));
+        P.textContent = child.textContent;
+        CE.replaceChild(P, child);
+      } else {
+        return;
+      }
+    });
+  },
+
   removeEmptyTags(el) {
     (function recurse(parent) {
       let children = parent.childNodes,
@@ -628,6 +677,52 @@ const Utils = {
     }
 
     return found;
+  },
+
+  transformTextToAnchorTag(sel, range, setCursor) {
+    /** Operate on current element's parent only, not the root parent. */
+    let parentNode = range.startContainer.parentNode;
+    if(!parentNode) { return; }
+
+    let childNodes = [].slice.apply(parentNode.childNodes);
+    childNodes.forEach(child => {
+      if(child.nodeType === 3 && child.parentNode.nodeName !== 'A' && child.textContent.match(/(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/)) {
+        let words = child.textContent.split(' ');
+        let url = words.filter(word => { return Validator.isURL(word.trim()); })[0];
+
+        if(url && !Helpers.isUrlValid(url, ['youtube', 'vimeo', 'vine'])) {
+          let href = url;
+          let oldRange = range.cloneRange();
+          let index = child.textContent.indexOf(url);
+
+          /** Prepend protocol if there isn't one. */
+          if(!Validator.isURL(href, { require_protocol: true })) {
+            href = 'http://' + href.trim();
+          }
+          /** Create Anchor. */
+          let a = document.createElement('a');
+          a.href = href;
+          a.textContent = url;
+          /** Replace the current text with our new anchor. */
+          console.log('HIT', range, child, url);
+          range.setStart(child, index);
+          range.setEnd(child, index + url.length);
+          range.deleteContents();
+          range.insertNode(a);
+
+          if(setCursor) {
+            /** Sets range after the inserted anchor and appends a blank text node so we can latch on to it. */
+            range.setStartAfter(a);
+            let text = document.createTextNode(' ');
+            range.insertNode(text);
+            /** Grab the text node and set the range to it, thus placing our cursor. */
+            range.selectNodeContents(text);
+            range.setStartAndEnd(text, 0, 0);
+            sel.setSingleRange(range);
+          }
+        }
+      }
+    });
   },
 
   /** http://stackoverflow.com/questions/6846230/coordinates-of-selected-text-in-browser-page - Tim Down */
@@ -733,7 +828,7 @@ const Utils = {
   convertVideoSrc(map, mainCallback) {
     async.map(map, (item, callback) => {
       if(item.type === 'Video') {
-        let videoData = getVideoData(item.images[0].src);
+        let videoData = Helpers.getVideoData(item.images[0].src);
         if(!videoData) {
           console.log('BUNK', item);
           return callback(null, null);
@@ -823,7 +918,14 @@ const Utils = {
 
   recurseElement(element) {
     let mediaType = false;
-    let el = (function recurse(el) {
+    let blockEls = {
+      'div': true,
+      'p': true,
+      'ul': true,
+      'blockquote': true,
+      'pre': true
+    };
+    let el = (function recurse(el, depth) {
       let child;
 
       if(!el.children) {
@@ -853,10 +955,16 @@ const Utils = {
           child.attribs = child.attribs || {};
         }
 
+        /** Transform any nested block element to a span, maintain top level element as a block. */
+        if(blockEls[child.name] && depth !== 0) {
+          child.name = 'span';
+        } else if(child.name === 'div' && depth === 0) {
+          child.name = 'p';
+        }
 
         if(child.children && child.children.length > 0) {
           /** Recursion */
-          recurse(child);
+          recurse(child, depth+1);
           if(child.children.length < 1) {
             child.parent.children.splice(i-1, 1);
           }
@@ -867,7 +975,7 @@ const Utils = {
         }
       }
       return el;
-    }(element));
+    }(element, 0));
 
     return {
       mediaType: mediaType,
@@ -966,7 +1074,7 @@ const Utils = {
       } else {
         el.children.forEach(child => {
           if(child.name === 'img') {
-            obj.src = child.attribs.src;
+            obj.url = child.attribs.src;
             obj.alt = child.attribs.alt || '';
             obj.figcaption = '';
             obj.show = false;
@@ -981,7 +1089,9 @@ const Utils = {
   },
 
   getFileData(element) {
-    let url, content;
+    let url, content,
+        id = element.attribs['data-file-id'],
+        caption = element.attribs['data-caption'] || '';
 
     (function recurse(el) {
       if(!el.children) {
@@ -997,7 +1107,7 @@ const Utils = {
       }
     }(element));
 
-    return { url: url, content: content };
+    return { id: id, caption: caption, url: url, content: content };
   },
 
   createModel(data) {
@@ -1018,11 +1128,10 @@ const Utils = {
     };
   },
 
-  createVideo(images) {
-    images[0].show = true;
+  createVideo(video) {
     return {
       type: 'Video',
-      images: images,
+      video: video,
       hash: hashids.encode(Math.floor(Math.random() * 9999 + 1))
     };
   },
@@ -1092,6 +1201,13 @@ const Utils = {
       } else {
         return coll;
       }
+    })
+    .filter(coll => {
+      if(coll.type === 'CE' && !coll.json.length) {
+        return false;
+      } else {
+        return true;
+      }
     });
 
     /** Makes sure theres always a CE at the end. */
@@ -1128,6 +1244,11 @@ const Utils = {
         /** Remove invalid anchors. */
         if(item.name === 'a' && !Validator.isURL(item.attribs.src)) {
           return null;
+        }
+
+        /** Remove styles */
+        if(item.attribs && item.attribs.style) {
+          item.attribs.style = '';
         }
 
         if(item.type === 'text' && !item.children) {

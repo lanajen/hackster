@@ -20,6 +20,7 @@ const Carousel = React.createClass({
       e.preventDefault();
       currentNode.blur();
       nodeToFocus = Editable.children[this.props.storeIndex-1];
+
       if(nodeToFocus.classList.contains('dropzone')) {
         CE = nodeToFocus.children[1];
         lastChild = CE.lastChild;
@@ -100,7 +101,13 @@ const Carousel = React.createClass({
         parent = Utils.getRootParentElement(currentNode), 
         depth = Utils.findChildsDepthLevel(parent, parent.parentNode);
 
-    if((target.nodeName === 'IMG' || target.nodeName === 'DIV' && target.classList.contains('react-editor-image-wrapper')) && this.props.editor.showImageToolbar === false) {
+    if(this.props.editor.showImageToolbar && this.props.editor.imageToolbarData.node !== React.findDOMNode(this)) {
+      this.props.actions.toggleImageToolbar(false, {});
+    }
+
+    if((target.nodeName === 'IMG' && target.classList.contains('react-editor-image'))
+       || (target.nodeName === 'DIV' && target.classList.contains('react-editor-image-wrapper')) 
+        && this.props.editor.showImageToolbar === false) {
       this.props.actions.toggleImageToolbar(true, {
         node: currentNode,
         depth: depth,
@@ -114,19 +121,14 @@ const Carousel = React.createClass({
     }
   },
 
-  handleClick() {
-    this.props.actions.toggleImageToolbar(false, {});
-  },
-
   render() {
     let figures = this.props.images.map((image, index) => {
       let className = image.show ? 'react-editor-figure show' : 'react-editor-figure';
       return (
         <figure key={index} className={className} data-type="image">
           <div className="react-editor-image-wrapper">
-            <img className="react-editor-image" style={{ width:image.width }} src={image.url} alt={image.alt} />
+            <img className="react-editor-image" src={image.url} alt={image.name} />
             <FigCaption className="react-editor-figcaption"
-                        style={{ width:image.width }}
                         handleFigCaptionKeys={this.handleFigCaptionKeys}
                         setFigCaptionText={this.handleFigCaptionText.bind(this, index)}
                         html={image.figcaption || 'caption (optional)'}
@@ -143,17 +145,21 @@ const Carousel = React.createClass({
                     </div>)
                  : (null);
 
+    let imageToolbar = this.props.editor.showImageToolbar && this.props.editor.imageToolbarData.node.getAttribute('data-hash') === this.props.hash
+                     ? (<ImageToolbar editor={this.props.editor} actions={this.props.actions} />)
+                     : (null);
+
     return (
       <div className="react-editor-carousel" 
            data-hash={this.props.hash}
            onKeyDown={this.handleKeyDown}
            onMouseOver={this.handleMouseOver}
-           onClick={this.handleClick}
            tabIndex={0}>
         <div className="react-editor-carousel-inner" ref="inner">
           {figures}
         </div>
         {controls}
+        {imageToolbar}
       </div>
     );
   }

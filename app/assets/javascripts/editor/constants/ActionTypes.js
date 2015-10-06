@@ -41,9 +41,11 @@ export default {
     deleteComponent: null,
     createPlaceholderElement: null,
     resetImageUrl: null,
+    removeImageFromList: null,
     isDataLoading: null,
     splitBlockElement: null,
     toggleErrorMessenger: null,
+    handlePastedHTML: null,
   }),
 
   ImageBucket: keyMirror({
