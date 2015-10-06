@@ -10,5 +10,6 @@ global.ListsDropdown = require('./lists_dropdown/app');
 global.FlagButton = require('./flag_button/app');
 global.ReputationUpdateButton = require('./reputation_update_button/app');
 global.TimeLeft = require('./time_left/app');
+global.ReactEditor = require('./editor/app');
 global.ToolboxSelector = require('./toolbox_selector/containers/Root');
 
