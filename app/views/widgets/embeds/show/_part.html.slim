@@ -1,7 +1,9 @@
 - options = (defined?(options) && options) ? options: {}
 
 tr.fields.part-row  id="part-#{part.id}"
-  td.part-img= image_tag part.part.decorate.image(:part_thumb)
+  td.part-img
+    - if part.part.image
+      = image_tag part.part.decorate.image(:part_thumb)
   td
     table  style='width:100%'
       tbody

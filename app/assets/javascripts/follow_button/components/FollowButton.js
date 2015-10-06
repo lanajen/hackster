@@ -118,7 +118,7 @@ const FollowButton = React.createClass({
       'text': 'follow-button btn btn-primary',
       'text_wide': 'follow-button btn btn-primary disable-link btn-block btn-ellipsis react-button-margin-bottom',
       'part': 'follow-button btn btn-primary btn-block btn-sm',
-      'project': 'follow-button btn btn-primary btn-block btn-ellipsis'
+      'project': 'follow-button btn btn-link btn-sm'
     };
     return classes;
   },
@@ -127,7 +127,7 @@ const FollowButton = React.createClass({
   render: function() {
     let classes = this.getClasses();
     let classList = classes[this.props.buttonType] || classes['text'];
-    let disable = this.props.currentUserId === this.props.followable.id;
+    let disable = this.props.followable.type === 'User' && this.props.currentUserId === this.props.followable.id;
     let label;
 
     if(this.state.spinner) {

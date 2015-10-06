@@ -10,7 +10,8 @@ li.fields
           input.reset type='hidden' value=part.part.try(:name) data-field-type='name'
           input.reset type='hidden' value=part.part.try(:store_link) data-field-type='store_link'
           input.reset type='hidden' value=part.part.try(:product_page_link) data-field-type='product_page_link'
-          input.reset type='hidden' value=part.part.try(:editable?) data-field-type='editable'
+          input.reset type='hidden' value=part.part.try(:workflow_state) data-field-type='status'
+          input.reset type='hidden' value=(part.part.try(:has_own_page?) ? part_url(part.part) : nil) data-field-type='url'
           input.reset type='hidden' value=part.part.try(:platform_id) data-field-type='platform_id'
           ul.list-inline.pull-right
             li= link_to content_tag(:i, '', class: 'fa fa-angle-up'), '', class: 'btn btn-default btn-xs move-up'

@@ -1,57 +1,92 @@
 .row
   .col-md-4.col-md-push-8
-    - if !@is_challenge_entrant
-      = content_for :js do
+    - if user_signed_in?
+      - if @has_registered or (@challenge.disable_registration and @is_challenge_entrant)
+        section.section-thumbs
+          h4 Manage your entries
+          - if @current_entries.any?
+            ul.entries-list.list-unstyled
+              - @current_entries.each do |entry|
+                - project = entry.project
+                li.award
+                  h5= link_to project.name, project
+                  p.clearfix.small
+                    span.pull-left
+                      strong> Status:
+                      = entry.decorate.status
+                    span.pull-right= link_to content_tag(:i, '', class: 'fa fa-times') + content_tag(:span, 'Withdraw'), challenge_entry_path(@challenge, entry), class: 'btn btn-danger btn-xs entry-withdraw', data: { confirm: 'Are you sure you want to withdraw your entry from the challenge? You can re-enter at any time before submissions close.', method: :delete }
+            - if @challenge.allow_multiple_entries?
+              / small Multiple entries are allowed.
+              = link_to 'Enter an additional project', 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'
+          - else
+            p
+             strong> You're registered!
+             - if (@challenge.activate_pre_contest? and @challenge.pre_contest_start_date > Time.now) or (!@challenge.activate_pre_contest? and @challenge.start_date > Time.now)
+              ' We'll let you know by email when the challenge launches.
+            - if @challenge.open_for_submissions?
+              - if @challenge.pre_contest_in_progress?
+                = link_to "Submit an idea for the pre-contest", @challenge.idea_survey_link, class: 'btn btn-primary btn-block btn-ellipsis btn-standout challenge-cta', target: '_blank'
+              - else
+                = link_to @challenge.enter_button_text, 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'
+      - elsif @challenge.disable_registration and @challenge.open_for_submissions?
+        = link_to @challenge.enter_button_text, 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'
+      - elsif @challenge.registration_open?
+        = link_to "Register as a participant", challenge_registrations_path(@challenge), class: 'btn btn-primary btn-block btn-ellipsis btn-standout challenge-cta', data: { method: :post }
 
-        javascript:
-          $('.enter-challenge-btn').css('display', 'block');
-
-    - else
-      section.section-thumbs
-        h4 Manage your entries
-        ul.entries-list.list-unstyled
-          - @current_entries.each do |entry|
-            - project = entry.project
-            li.award
-              h5= link_to project.name, project
-              p.clearfix.small
-                span.pull-left
-                  strong> Status:
-                  = entry.decorate.status
-                span.pull-right= link_to content_tag(:i, '', class: 'fa fa-times') + content_tag(:span, 'Withdraw'), challenge_entry_path(@challenge, entry), class: 'btn btn-danger btn-xs entry-withdraw', data: { confirm: 'Are you sure you want to withdraw your entry from the challenge? You can re-enter at any time before submissions close.', method: :delete }
-        - if @challenge.allow_multiple_entries?
-          / small Multiple entries are allowed.
-          = link_to 'Enter an additional project', 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge'
+    - elsif @challenge.disable_registration and @challenge.open_for_submissions?
+      = link_to @challenge.enter_button_text, 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'
+    - elsif @challenge.registration_open?
+      = link_to "Register as a participant", new_user_registration_path(redirect_to: create_challenge_registrations_path(@challenge), reason: 'register', m: 'challenge', id: @challenge.id), class: "btn btn-primary btn-block btn-ellipsis btn-standout challenge-cta show-simplified-signup with-name", data: { container: 'body', redirect_to: create_challenge_registrations_path(@challenge), source: 'register_challenge' }
 
     - cache ["challenge-#{@challenge.id}-status"], tag: ["challenge-#{@challenge.id}-status"] do
 
       section.section-thumbs
         h4 Challenge status
 
-        - if @challenge.open_for_submissions?
-          p
-            ' Submissions close in
-            strong>= react_component('TimeLeft', { timestamp: @challenge.end_date.to_i }, { tag: 'span' })
-          p style="font-size:11px"
-            ' Ends on #{l @challenge.end_date.in_time_zone(PDT_TIME_ZONE)} PDT
+        - if @challenge.registration_open? or (@challenge.disable_registration and @challenge.open_for_submissions?)
 
-          - if @challenge.idea_survey_link.present?
-            = link_to @challenge.enter_button_text, @challenge.idea_survey_link, class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge-btn', target: '_blank'
+          - if @challenge.open_for_submissions?
+            - if @challenge.pre_contest_in_progress?
+              - date = @challenge.pre_contest_end_date
+              p
+                strong Pre-contest
+            - else
+              - date = @challenge.end_date
+            p
+              ' Submissions close in
+              strong>= react_component('TimeLeft', { timestamp: date.to_i }, { tag: 'span' })
+            p style="font-size:11px"
+              ' Ends on #{l date.in_time_zone(PDT_TIME_ZONE)} PT
+
           - else
-            = link_to @challenge.enter_button_text, 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge enter-challenge-btn'
+            - if @challenge.pre_contest_pending?
+              - date = @challenge.pre_contest_start_date
+              - phrase = 'Pre-contest opens in'
+            - else
+              - date = @challenge.start_date
+              - phrase = 'Submissions open in'
+            p
+              => phrase
+              strong>= react_component('TimeLeft', { timestamp: date.to_i }, { tag: 'span' })
+            p style="font-size:11px"
+              ' Opens on #{l date.in_time_zone(PDT_TIME_ZONE)} PT
 
         - elsif @challenge.voting_active?
           p.status
             ' Voting ends in
             strong>= react_component('TimeLeft', { timestamp: @challenge.voting_end_date.to_i }, { tag: 'span' })
           p style="font-size:11px"
-            ' Ends on #{l @challenge.voting_end_date.in_time_zone(PDT_TIME_ZONE)} PDT
+            ' Ends on #{l @challenge.voting_end_date.in_time_zone(PDT_TIME_ZONE)} PT
 
         - else
           p.status
             strong= raw @challenge.status
+            - if @challenge.judging? and @challenge.winners_announced_date
+              p style='margin-bottom:0'
+                strong> Winners announced on:
+                = l @challenge.winners_announced_date, format: :short_date
 
-      - if @challenge.open_for_submissions?
+      - if @challenge.registration_open? or (@challenge.disable_registration and @challenge.open_for_submissions?)
         section.section-thumbs
           h4 Invite others to compete
           <!-- AddToAny BEGIN -->
@@ -85,23 +120,67 @@
               i.fa.fa-trophy
               = prize.name
             - if prize.image
-              = image_tag prize.image.imgix_url, class: 'img-thumbnail'
+              = image_tag prize.image.imgix_url(:medium)
             p
-              - if prize.cash_value.present?
-                strong
-                  = number_to_currency prize.cash_value, precision: 0
-                  - if prize.description.present?
-                    ' :
-
               - if prize.description.present?
                 - if prize.link.present?
                   = link_to prize.description, prize.link, target: '_blank'
                 - else
                   = prize.description
-            - if prize.quantity > 1
+              - elsif prize.cash_value.present?
+                strong
+                  = number_to_currency prize.cash_value, precision: 0
+
+            - if prize.quantity > 1 or prize.description.present? and prize.cash_value.present?
               p.small.text-muted
-                ==> prize.quantity
-                | available
+                ' #{number_to_currency prize.cash_value, precision: 0} value
+                - if prize.quantity > 1 and prize.cash_value.present?
+                  ' -
+                - if prize.quantity > 1
+                  => prize.quantity
+                  | available
+
+    - cache ["challenge-#{@challenge.id}-timeline"], tag: ["challenge-#{@challenge.id}-timeline"] do
+
+      section.section-thumbs
+        h4 Timeline
+        - if @challenge.activate_pre_registration
+          - if @challenge.pre_registration_start_date
+            div class=(@challenge.pre_registration_start_date < Time.now ? 'mute-date' : '')
+              p style='margin-bottom:0'
+                strong> Registrations open:
+              p #{l @challenge.pre_registration_start_date.in_time_zone(PDT_TIME_ZONE)} PT
+        - if @challenge.activate_pre_contest
+          - if @challenge.pre_contest_start_date
+            div class=(@challenge.pre_contest_start_date < Time.now ? 'mute-date' : '')
+              p style='margin-bottom:0'
+                strong> Pre-contest opens:
+              p #{l @challenge.pre_contest_start_date.in_time_zone(PDT_TIME_ZONE)} PT
+          - if @challenge.pre_contest_end_date
+            div class=(@challenge.pre_contest_end_date < Time.now ? 'mute-date' : '')
+              p style='margin-bottom:0'
+                strong> Pre-contest closes:
+              p #{l @challenge.pre_contest_end_date.in_time_zone(PDT_TIME_ZONE)} PT
+          - if @challenge.pre_winners_announced_date
+            div class=(@challenge.pre_winners_announced_date < Time.now ? 'mute-date' : '')
+              p style='margin-bottom:0'
+                strong> Pre-contest winners announced on:
+              p #{l @challenge.pre_winners_announced_date, format: :short_date}
+        - if @challenge.start_date
+          div class=(@challenge.start_date < Time.now ? 'mute-date' : '')
+            p style='margin-bottom:0'
+              strong> Submissions open:
+            p #{l @challenge.start_date.in_time_zone(PDT_TIME_ZONE)} PT
+        - if @challenge.end_date
+          div class=(@challenge.end_date < Time.now ? 'mute-date' : '')
+            p style='margin-bottom:0'
+              strong> Contest ends on:
+            p #{l @challenge.end_date.in_time_zone(PDT_TIME_ZONE)} PT
+        - if @challenge.winners_announced_date
+          div class=(@challenge.winners_announced_date < Time.now ? 'mute-date' : '')
+            p style='margin-bottom:0'
+              strong> Winners announced on:
+            p #{l @challenge.winners_announced_date, format: :short_date}
 
   - cache ["challenge-#{@challenge.id}-brief"], tag: ["challenge-#{@challenge.id}-brief"] do
 
@@ -115,7 +194,7 @@
 
         .section-content.medium-editor
           - if @challenge.video
-            .mg-20= render partial: "api/embeds/embed", locals: { embed: @challenge.video }
+            .mg-20= begin; render partial: "api/embeds/embed", locals: { embed: @challenge.video }; rescue; end;
           = raw @challenge.description
 
       .section-interlude

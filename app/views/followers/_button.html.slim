@@ -1,7 +1,7 @@
 - if user_signed_in?
   - buttonType = (defined?(button_type) and button_type) ? button_type : nil
   - followableName = (followable.name and display_name) ? followable.name : nil
-  - display = (defined?(button_type) and button_type.in?(%w(append_sandwich append_hacker text_wide part project))) ? 'display: block;' : 'display: inline-block;'
+  - display = (defined?(button_type) and button_type.in?(%w(append_sandwich append_hacker text_wide part))) ? 'display: block;' : 'display: inline-block;'
 
   = react_component('FollowButton', { currentUserId: current_user.id, buttonType: buttonType, followable: { type: followable.class.model_name.to_s, id: followable.id, name: followableName, source: controller_action } }, { style: display, class: 'react-btn' })
 - else

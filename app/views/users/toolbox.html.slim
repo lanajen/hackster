@@ -1,0 +1,5 @@
+- if params[:ref] == 'sign_in'
+  .alert.alert-warning
+    strong> Howdy!
+    | Before you get started today, could you tell us what's in your toolbox? We'll use that information to show you projects that match.
+= react_component 'ToolboxSelector', { nextLink: user_return_to }, {}

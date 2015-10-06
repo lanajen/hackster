@@ -29,21 +29,16 @@ class ChallengeEntriesController < ApplicationController
   end
 
   def create
-    authorize! :enter, @challenge
+    entry = @challenge.entries.new
+    authorize! :create, entry
 
     @project = Project.find params[:project_id]
     authorize! :enter_in_challenge, @project
-
-    unless @project.valid_for_challenge?
-      flash[:alert] = "Oops! You can only enter finished projects into this challenge. Please complete the project and the write-up before submitting."
-      redirect_to @challenge and return
-    end
 
     @project.private = false
     @project.workflow_state = 'idea' if @challenge.project_ideas
     @project.save
 
-    entry = @challenge.entries.new
     entry.user_id = current_user.id
     entry.project_id = @project.id
     if entry.save
@@ -79,7 +74,7 @@ class ChallengeEntriesController < ApplicationController
           flash[:notice] = "Changes saved."
           challenge_entries_path(@challenge)
         else
-          if next_entry = @challenge.entries.where.not(challenge_projects: { id: @entry.id }).where(challenge_projects: { prize_id: nil }).joins(:project).first
+          if next_entry = @challenge.entries.where.not(challenge_projects: { id: @entry.id, workflow_state: :unqualified }).where(challenge_projects: { prize_id: nil }).joins(:project).order(:created_at).first
             edit_challenge_entry_path(@challenge, next_entry)
           else
             flash[:notice] = "That was the last entry submitted!"
@@ -135,10 +130,6 @@ class ChallengeEntriesController < ApplicationController
       raise ActiveRecord::RecordNotFound unless params[:challenge_id] == @entry.challenge_id.to_s
       authorize! self.action_name.to_sym, @entry
       @challenge = @entry.challenge
-    end
-
-    def set_challenge_entrant
-      @is_challenge_entrant = (user_signed_in? and current_user.is_challenge_entrant? @challenge)
     end
 
     def set_layout

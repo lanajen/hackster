@@ -14,7 +14,7 @@ class ClientSite
   def self.matches?(request)
     if request.domain == APP_CONFIG['default_domain']
       subdomain = request.subdomains[0]
-      !subdomain.in? %w(www beta staging dev stats)
+      !subdomain.in? %w(api www beta staging dev stats)
     else
       site = ClientSubdomain.find_by_domain(request.host).presence and site.enabled?
     end

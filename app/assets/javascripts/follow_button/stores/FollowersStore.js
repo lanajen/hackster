@@ -1,4 +1,5 @@
 import request from 'superagent';
+import { fetchFollowing } from '../../utils/ReactAPIUtils';
 import postal from 'postal';
 import _ from 'lodash';
 
@@ -27,14 +28,7 @@ const followersStore = {
   },
 
   fetchInitialData(csrfToken) {
-    return new Promise((resolve, reject) => {
-      request
-        .get('/api/v1/followers')
-        .set('X-CSRF-Token', csrfToken)
-        .end(function(err, res) {
-          err ? reject(err) : resolve(res);
-        });
-    });
+    return fetchFollowing(csrfToken);
   },
 
   isStorePopulated() {

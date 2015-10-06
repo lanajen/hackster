@@ -1,0 +1,25 @@
+.row
+  .col-md-6.col-md-offset-3
+    p= link_to "&larr; Go back to #{@group.name} project admin".html_safe, url_for([@group, :admin, :projects])
+
+    .box
+      .box-title
+        h2 Set order of featured projects for #{@group.name}
+      .box-content
+        = simple_nested_form_for @group, url: '', html: { class: 'form-horizontal sortable', data: { method: :patch } }, wrapper: :bootstrap3_horizontal  do |f|
+          table#sortable.table.table-condensed.table-sortable
+            thead
+              th
+              th Name
+              th
+            tbody
+              - @projects.each do |col|
+                tr.fields
+                  = f.simple_fields_for :project_collections, col do |f_col|
+                    td
+                      i.fa.fa-bars.handle
+                      = f_col.input :id, as: :hidden
+                      = f_col.input :featured_position, as: :hidden, input_html: { class: 'position' }
+                    td= link_to col.project.name, col.project
+          = f.submit "Save order", class: 'btn btn-primary'
+          = link_to 'Cancel', url_for([@group, :admin, :projects]), class: 'btn btn-link btn-sm'

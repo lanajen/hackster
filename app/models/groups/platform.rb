@@ -1,5 +1,6 @@
 class Platform < Collection
   include Checklist
+  include HasAbility
   include Taggable
 
   DEFAULT_SORT = 'last_project'
@@ -44,11 +45,11 @@ class Platform < Collection
 
   attr_accessible :cover_image_id, :client_subdomain_attributes, :logo_id,
     :company_logo_id, :parts_attributes, :reset_api_credentials,
-    :reset_portal_credentials
+    :reset_portal_credentials, :project_collections_attributes
 
   attr_accessor :reset_api_credentials, :reset_portal_credentials
 
-  accepts_nested_attributes_for :client_subdomain, :parts
+  accepts_nested_attributes_for :client_subdomain, :parts, :project_collections
 
   # before_save :update_user_name
   before_save :ensure_api_credentials,
@@ -139,6 +140,10 @@ class Platform < Collection
     where "CAST(groups.hproperties -> 'hidden' AS BOOLEAN) = ?", false
   end
 
+  def self.find_by_api_username api_username
+    where("groups.hproperties -> 'api_username' = ?", api_username).first
+  end
+
   def self.minimum_followers
     where("CAST(groups.hcounters_cache -> 'members' AS INTEGER) > ?", MINIMUM_FOLLOWERS)
   end
@@ -153,6 +158,10 @@ class Platform < Collection
 
   def self.sub_platform_most_members
     order members_count: :desc
+  end
+
+  def ability
+    @ability ||= Ability.new(self)
   end
 
   def company_logo_id=(val)

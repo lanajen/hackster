@@ -49,3 +49,5 @@ require File.join Rails.root, 'lib/checklist'
 require File.join Rails.root, 'lib/action_dispatch_request'
 # active record extension
 require File.join Rails.root, 'lib/active_record_extension'
+# add ability / cancan to models
+require File.join Rails.root, 'lib/has_ability'

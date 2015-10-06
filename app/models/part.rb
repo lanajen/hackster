@@ -3,8 +3,14 @@
 # - later: search by part
 
 class Part < ActiveRecord::Base
+  DEFAULT_SORT = 'alpha'
   EDITABLE_STATES = %w(new pending_review)
   INVALID_STATES = %w(rejected retired)
+  SORTING = {
+    'alpha' => :sorted_by_full_name,
+    'owned' => :most_followed,
+    'used' => :most_used,
+  }
   TYPES = %w(Hardware Software Tool).inject({}){|mem, t| mem[t] = "#{t}Part"; mem }
   include HstoreCounter
   include Privatable
@@ -28,11 +34,12 @@ class Part < ActiveRecord::Base
 
   taggable :product_tags
 
+  attr_accessor :should_generate_slug
   attr_accessible :name, :vendor_link, :vendor_name, :vendor_sku, :mpn, :unit_price,
-    :description, :image_id, :platform_id,
-    :part_joins_attributes, :part_join_ids, :workflow_state, :slug, :one_liner,
-    :position, :child_part_relations_attributes,
-    :parent_part_relations_attributes, :type, :link
+    :description, :image_id, :platform_id, :part_joins_attributes,
+    :part_join_ids, :workflow_state, :slug, :one_liner, :position,
+    :child_part_relations_attributes, :parent_part_relations_attributes, :type,
+    :link, :image_url, :tags, :should_generate_slug
 
   accepts_nested_attributes_for :part_joins, :child_part_relations,
     :parent_part_relations, allow_destroy: true
@@ -51,7 +58,7 @@ class Part < ActiveRecord::Base
     format: { with: /\A[a-z0-9\-]+\z/, message: "accepts only lowercase letters, numbers, and dashes '-'." }, allow_blank: true
   validates :one_liner, length: { maximum: 140 }, allow_blank: true
   before_validation :ensure_partable, unless: proc{|p| p.persisted? }
-  before_validation :generate_slug, if: proc{|p| (p.slug.blank? and p.approved?) or (p.slug.present? and p.name_changed?) }
+  before_validation :generate_slug, if: proc{|p| p.should_generate_slug or (p.slug.blank? and p.approved?) or (p.slug.present? and p.name_changed?) }
   register_sanitizer :strip_tags, :before_save, :name
   register_sanitizer :strip_whitespace, :before_validation, :mpn, :description, :name
   register_sanitizer :sanitize_description, :before_validation, :description
@@ -88,11 +95,15 @@ class Part < ActiveRecord::Base
 
   def self.search params
     # escape single quotes and % so it doesn't break the query
-    query = params[:q].gsub(/['%]/, ' ').split(/\s+/).map do |token|
-      "(parts.name ILIKE '%#{token}%' OR groups.full_name ILIKE '%#{token}%')"
-    end.join(' AND ')
+    query = if params[:q].present?
+      params[:q].gsub(/['%]/, ' ').split(/\s+/).map do |token|
+        "(parts.name ILIKE '%#{token}%' OR groups.full_name ILIKE '%#{token}%')"
+      end.join(' AND ')
+    else
+      '1=1'
+    end
 
-    approved.joins("LEFT JOIN groups ON groups.id = parts.platform_id AND groups.type = 'Platform'").where(query).where(type: params[:type]).order('groups.full_name ASC, parts.name ASC').includes(:platform)
+    approved.joins("LEFT JOIN groups ON groups.id = parts.platform_id AND groups.type = 'Platform'").where(query).order('groups.full_name ASC, parts.name ASC').includes(:platform)
   end
 
   def self.approved
@@ -103,8 +114,16 @@ class Part < ActiveRecord::Base
     where.not platform_id: nil
   end
 
+  def self.include_full_name
+    select("parts.*, CASE WHEN position(fng.full_name IN parts.name) = 0 THEN CONCAT(fng.full_name, ' ', parts.name) ELSE parts.name END AS fname").joins("LEFT JOIN groups AS fng ON fng.id = parts.platform_id AND fng.type = 'Platform'")
+  end
+
   def self.invalid
     where workflow_state: INVALID_STATES
+  end
+
+  def self.most_followed
+    order("CAST(parts.counters_cache -> 'owners_count' AS INT) DESC NULLS LAST, parts.name ASC")
   end
 
   def self.most_used
@@ -121,6 +140,10 @@ class Part < ActiveRecord::Base
 
   def self.sorted_by_name
     order(:name)
+  end
+
+  def self.sorted_by_full_name
+    include_full_name.order("fname ASC")
   end
 
   def self.with_sku
@@ -155,6 +178,11 @@ class Part < ActiveRecord::Base
 
   def image_id=(val)
     self.image = Image.find_by_id(val)
+  end
+
+  def image_url=(val)
+    build_image unless image
+    image.remote_file_url = val
   end
 
   def full_name
@@ -204,10 +232,14 @@ class Part < ActiveRecord::Base
     end
   end
 
+  def tags=(val)
+    self.product_tags_string = val
+  end
+
   private
     def ensure_partable
-      self.partable_id = 0 if partable_id.nil?
-      self.partable_type = 'Orphan' if partable_type.nil?
+      self.partable_id = 0
+      self.partable_type = 'Orphan'
     end
 
     def strip_tags text

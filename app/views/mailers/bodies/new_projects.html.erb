@@ -2,27 +2,27 @@
 
 <p>There are new projects built by makers or with platforms you follow on <a href="https://www.hackster.io?ref=emailnotif">Hackster.io</a>:</p>
 
-<% @context[:projects].each do |followables, projects| %>
-  Because you follow
-  <%= followables.map do |f|
-    out = ''
-    out += "<img src='#{f.avatar.try(:imgix_url, :tiny)}' style='width:20px;height:20px;vertical-align:middle;'> " if f.avatar
-    out += "<strong><a href='#{u.url_for(f)}?ref=emailnotif'>#{f.name}</a></strong>"
-    out
-  end.to_sentence.html_safe %>:
+<% @context[:projects][0..9].each do |data| %>
+  <% project = data[1][:project]; followables = data[1][:followables] %>
+  <% users = project.users %>
+  <% user = project.users.first %>
 
-  <% projects.each do |project| %>
+  <p style="margin-bottom:10px;">
+    <strong><a href="<%= u.project_url(project)%>?ref=emailnotif"><%= project.name %></a></strong><% if project.guest_name.present? %> by <%= project.guest_name %><% elsif team_name = project.team.full_name.presence %> by Team <%= team_name %><% elsif users.any? %> by <%= users.map{ |user| "<a href='#{u.user_url(user)}?ref=emailnotif'>#{user.name}</a>" }.to_sentence.html_safe %><% end %>: <%= project.one_liner %><% if project.guest_name.present? and user %> (posted by <a href="<%= u.user_url(user) %>?ref=emailnotif"><%= user.name %></a>)<% end %>
+    Because you follow
+    <%= followables.map do |f|
+      out = ''
+      out += "<img src='#{f.avatar.try(:imgix_url, :tiny)}' style='width:20px;height:20px;vertical-align:middle;'> " if f.avatar
+      out += "<strong><a href='#{u.url_for(f)}?ref=emailnotif'>#{f.name}</a></strong>"
+      out
+    end.to_sentence.html_safe %>.
+  </p>
 
-    <% users = project.users %>
-    <% user = project.users.first %>
+<% end %>
 
-    <p>
-      <strong><a href="<%= u.project_url(project)%>?ref=emailnotif"><%= project.name %></a></strong><% if project.guest_name.present? %> by <%= project.guest_name %><% elsif team_name = project.team.full_name.presence %> by Team <%= team_name %><% elsif users.any? %> by <%= users.map{ |user| "<a href='#{u.user_url(user)}?ref=emailnotif'>#{user.name}</a>" }.to_sentence.html_safe %><% end %>: <%= project.one_liner %><% if project.guest_name.present? and user %> (posted by <a href="<%= u.user_url(user) %>?ref=emailnotif"><%= user.name %></a>)<% end %>
-    </p>
-
-  <% end %>
-  <hr style="margin:20px 0;">
-
+<% others = @context[:projects].count - 10 %>
+<% if others > 0 %>
+  <p>There <%= others == 1 ? 'is' : 'are' %> <%= pluralize others, 'other project' %> for you. To see <%= others == 1 ? 'it' : 'them' %>, <a href="<%= u.root_url %>?ref=newsletter">go to your dashboard</a>.</p>
 <% end %>
 
 <p>Cheers,<br> The Hackster.io team</p>
@@ -33,5 +33,9 @@
 </p>
 
 <p class="unsubscribe">
-  Don't want to receive this type of email? <a href="|unsubscribe_link:follow_platform_activity|">Unsubscribe</a> or <a href="|update_preferences_link|">update your notification preferences</a>.
+  <% if @context[:time_frame] == 1.month %>
+    Don't want to receive this type of email? <a href="|unsubscribe_link:new_projects|">Unsubscribe</a> or <a href="|update_preferences_link|">update your notification preferences</a>.
+  <% else %>
+    Too many emails? Choose to receive these notifications <a href="|change_frequency_link:weekly|">weekly</a> or <a href="|change_frequency_link:monthly|">monthly</a>. You can also <a href="|unsubscribe_link:new_projects|">unsubscribe</a> or <a href="|update_preferences_link|">update your notification preferences</a>.
+  <% end %>
 </p>

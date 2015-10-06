@@ -30,7 +30,7 @@ module ApplicationHelper
   end
 
   def build_common_for_follow project, followed
-    (project.project_collections.map{|c| [c.collectable_type, c.collectable_id]} + project.users.map{|u| ['User', u.id]}) & followed.map{|c| [c.followable_type, c.followable_id] }
+    (project.project_collections.map{|c| [c.collectable_type, c.collectable_id]} + project.users.map{|u| ['User', u.id]} + project.parts.map{|p| ['Part', p.id]}) & followed.map{|c| [c.followable_type, c.followable_id] }
   end
 
   def class_for_alert alert, notice
@@ -75,6 +75,8 @@ module ApplicationHelper
     end
 
     case params[:reason]
+    when 'register'
+      msg = "Please log in or sign up to register for #{content_tag(:b, challenge.name)}."
     when 'enter'
       msg = "Please log in or sign up to enter #{content_tag(:b, challenge.name)}."
     when 'project'

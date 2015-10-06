@@ -2,9 +2,18 @@ var text, thumb, item;
 
 <% @followed.each do |rel|
     entity = rel.followable
+    next unless entity
+
+    content = case entity.class.name
+    when 'Platform', 'User'
+      content_tag(:div, link_to(image_tag(entity.decorate.avatar(:medium)), entity, title: "You follow #{entity.name}", class: 'istooltip', data: { container: "body" }), class: "thumb-super-item #{dom_id(entity)}")
+    when 'List'
+    when 'HardwarePart', 'SoftwarePart', 'ToolPart'
+      content_tag(:div, link_to(image_tag(entity.decorate.image(:part_thumb)), entity, title: "#{entity.name} is in your toolbox", class: 'istooltip', data: { container: 'body' }), class: "thumb-super-item #{dom_id(entity)}")
+    end
 %>
   if ($("#hide .<%= dom_id(entity) %>").length == 0) {
-    text = '<%= content_tag(:div, link_to(image_tag(entity.decorate.avatar(:medium)), entity, title: "You follow #{entity.name}", class: 'istooltip', data: { container: "body" }), class: "thumb-super-item #{dom_id(entity)}") %>';
+    text = '<%= content %>';
     $("#hide").append(text);
   }
 <% end %>

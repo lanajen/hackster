@@ -1,6 +1,6 @@
 class ChallengeEntryObserver < ActiveRecord::Observer
   def after_create record
-    NotificationCenter.notify_all :new, :challenge_entry, record.id
+    NotificationCenter.notify_via_email :new, :challenge_entry, record.id
     NotificationCenter.notify_via_email :new, :challenge_entry_admin, record.id unless record.challenge.auto_approve
   end
 
@@ -21,7 +21,7 @@ class ChallengeEntryObserver < ActiveRecord::Observer
     end
     expire_cache record
     NotificationCenter.notify_all :approved, :challenge_entry, record.id
-    MailchimpWorker.perform_async 'add_new_participants_to_challenge', record.id if record.challenge.mailchimp_setup?
+    MailchimpWorker.perform_async 'add_new_participants_to_challenge', record.id, 'challenge_entry' if record.challenge.mailchimp_setup?
   end
 
   def after_disqualify record

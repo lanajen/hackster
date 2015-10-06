@@ -1,8 +1,7 @@
 class Api::V1::MicrosoftChromeSyncController < Api::V1::BaseController
   skip_before_filter :track_visitor
   skip_after_filter :track_landing_page
-  before_filter :load_platform
-  before_filter :authenticate
+  before_filter :authenticate_api_user
 
   def show
     render json: ms_sync.attributes(params[:locale])
@@ -15,15 +14,7 @@ class Api::V1::MicrosoftChromeSyncController < Api::V1::BaseController
   end
 
   private
-    def authenticate
-      return true if Rails.env == 'development'
-
-      authenticate_or_request_with_http_basic do |username, password|
-        username == @platform.api_username && password == @platform.api_password
-      end
-    end
-
-    def load_platform
+    def load_platform username
       @platform = Platform.find_by_user_name! 'microsoft'  # this path is only for them
     end
 

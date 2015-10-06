@@ -31,7 +31,11 @@ class Users::SessionsController < Devise::SessionsController
       track_user current_user.to_tracker_profile
       cookies[:hackster_user_signed_in] = '1'
 
-      user_return_to
+      unless current_user.toolbox_shown
+        user_toolbox_path(ref: 'sign_in')
+      else
+        user_return_to
+      end
     end
 
     def after_sign_out_path_for(resource)

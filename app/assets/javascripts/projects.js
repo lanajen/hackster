@@ -15,14 +15,21 @@ $select2target = null;
 
 (function ($, window, document, undefined) {
   $(function() {
-    $('#simplified-signup-popup').on('modal:open', function(e){
-      $(this).find('#user_email').focus();
-    });
     $('.show-simplified-signup').on('click', function(e) {
       e.preventDefault();
       $('#simplified-signup-popup input[name="redirect_to"]').val($(this).data('redirect-to'));
       $('#simplified-signup-popup input[name="source"]').val($(this).data('source'));
+      if ($(this).hasClass('with-name')) {
+        $('#simplified-signup-popup .full-name-wrapper').show();
+      }
       openModal('#simplified-signup-popup');
+    });
+    $('#simplified-signup-popup').on('modal:open', function(e){
+      if ($(this).find('input[name="user[full_name]"]:visible').length) {
+        $(this).find('input[name="user[full_name]"]').focus();
+      } else {
+        $(this).find('#user_email').focus();
+      }
     });
 
     // if($('#top-project-section').length){
@@ -488,8 +495,8 @@ $select2target = null;
           processResults: function (data, page) {
             var results = _.map(data.parts, function(el){
               return {
-                id: el.part.id,
-                part: el.part
+                id: el.id,
+                part: el
               }
             });
             var extra = { disabled: true, q: data.q, type: data.type };
@@ -917,7 +924,8 @@ function formatPart(result) {
       store_link: el.data('store_link'),
       product_page_link: el.data('product_page_link'),
       image_url: el.data('image_url'),
-      editable: el.data('editable') == true
+      status: el.data('status'),
+      url: el.data('url')
     };
     if (el.data('platform-id')) {
       var platform = {
@@ -940,7 +948,7 @@ function formatPart(result) {
   if (!link)
     link = part.product_page_link && typeof(part.product_page_link) !== 'undefined' ? part.product_page_link : 'No link';
   output +=  part.name + '</div><div class="part-link"><i class="fa fa-link"></i><span>' + link + '</span></div></td><td class="part-action">'
-  if (part.editable) {
+  if (part.status  == 'pending_review' && !part.url) {
     output += '<a class="btn btn-link btn-sm edit-in-modal" data-modal="#parts-popup">Edit</a>';
   } else {
     output += '<i class="fa fa-lock help" title="This part cannot be edited."></i>';

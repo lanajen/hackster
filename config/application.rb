@@ -34,7 +34,7 @@ module HackerIo
       :notification_observer, :part_observer, :thought_observer,
       :blog_post_observer, :impression_observer, :conversation_observer,
       :order_observer, :order_line_observer, :address_observer,
-      :payment_observer, :prize_observer
+      :payment_observer, :prize_observer, :challenge_registration_observer
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
@@ -84,6 +84,10 @@ module HackerIo
     config.assets.paths << Rails.root.join('vendor', 'assets', 'images')
     config.assets.precompile += %w(.svg .eot .woff .ttf)
 
+    if ENV['ASSET_HOST_URL'].present?
+      config.action_controller.asset_host = ENV['ASSET_HOST_URL']
+    end
+
     config.assets.initialize_on_precompile = true
 
     config.logger = Logger.new(STDOUT)
@@ -94,7 +98,7 @@ module HackerIo
 
     # React Browserify Transform
     config.react.addons = true
-    config.browserify_rails.commandline_options = "-t [babelify --optional runtime]"
+    config.browserify_rails.commandline_options = "-t [babelify --stage 0  --optional runtime]"
 
     # cashier tag caching
     config.cashier.adapter = :redis_store

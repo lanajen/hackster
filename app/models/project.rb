@@ -286,9 +286,11 @@ class Project < ActiveRecord::Base
   end
 
   def self.custom_for user
-    # indexable.joins("LEFT JOIN project_collections as pj1 ON pj1.project_id = projects.id").joins("LEFT JOIN follow_relations AS fr1 ON fr1.followable_id = pj1.collectable_id AND fr1.followable_type = pj1.collectable_type").joins("LEFT JOIN groups ON groups.id = projects.team_id").joins("LEFT JOIN members ON groups.id = members.group_id").joins("LEFT JOIN follow_relations AS fr2 ON fr2.followable_id = members.user_id AND fr2.followable_type = 'User'").where("fr1.user_id = ? OR fr2.user_id = ?", user.id, user.id).distinct("projects.id").last_public.includes(:project_collections)
+    col_projects = select('projects.id').joins("LEFT JOIN project_collections as pj1 ON pj1.project_id = projects.id").joins("LEFT JOIN follow_relations AS fr1 ON fr1.followable_id = pj1.collectable_id AND fr1.followable_type = pj1.collectable_type").where("fr1.user_id = ?", user.id).distinct("projects.id")
+    user_projects = select('projects.id').joins("LEFT JOIN groups ON groups.id = projects.team_id").joins("LEFT JOIN members ON groups.id = members.group_id").joins("LEFT JOIN follow_relations AS fr2 ON fr2.followable_id = members.user_id AND fr2.followable_type = 'User'").where("fr2.user_id = ?", user.id).distinct("projects.id")
+    part_projects = select('projects.id').joins("LEFT JOIN part_joins as pj2 ON pj2.partable_id = projects.id AND pj2.partable_type = 'Project'").joins("INNER JOIN parts ON pj2.part_id = parts.id").where.not(parts: { platform_id: nil }).joins("LEFT JOIN follow_relations AS fr3 ON fr3.followable_id = pj2.part_id AND fr3.followable_type = 'Part'").where("fr3.user_id = ?", user.id).distinct("projects.id")
 
-    indexable.where("projects.id IN (?) OR projects.id IN (?)", select('projects.id').joins("LEFT JOIN project_collections as pj1 ON pj1.project_id = projects.id").joins("LEFT JOIN follow_relations AS fr1 ON fr1.followable_id = pj1.collectable_id AND fr1.followable_type = pj1.collectable_type").where("fr1.user_id = ?", user.id).distinct("projects.id"), select('projects.id').joins("LEFT JOIN groups ON groups.id = projects.team_id").joins("LEFT JOIN members ON groups.id = members.group_id").joins("LEFT JOIN follow_relations AS fr2 ON fr2.followable_id = members.user_id AND fr2.followable_type = 'User'").where("fr2.user_id = ?", user.id).distinct("projects.id")).last_public.includes(:project_collections).includes(:users)
+    indexable.where("projects.id IN (?) OR projects.id IN (?) OR projects.id IN (?)", col_projects, user_projects, part_projects).last_public.includes(:parts, :platforms, :project_collections, :users)
   end
 
   def self.external
@@ -412,7 +414,7 @@ class Project < ActiveRecord::Base
 
   def get_next_time_slot last_scheduled_slot
     last_scheduled_slot ||= Time.now
-    last_scheduled_slot + rand(2*60..6*60).minutes
+    last_scheduled_slot + rand(1*60..4*60).minutes  # every 1 to 4 hours == about 10 a day
   end
 
   def scheduled_to_be_approved?
@@ -762,10 +764,6 @@ class Project < ActiveRecord::Base
     I18n.transliterate(guest_name).gsub(/[^a-zA-Z0-9\-_]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
   end
 
-  def valid_for_challenge?
-    name.present? and !has_default_name? and description.present? and description.size > 100 and cover_image.present?
-  end
-
   def website_host
     URI.parse(website).host.gsub(/^www\./, '')
   rescue
@@ -809,7 +807,7 @@ class Project < ActiveRecord::Base
     def generate_slug
       return unless name.present?
 
-      slug = I18n.transliterate(name).gsub(/[^a-zA-Z0-9\-]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase
+      slug = I18n.transliterate(name).gsub(/[^a-zA-Z0-9\-]/, '-').gsub(/(\-)+$/, '').gsub(/^(\-)+/, '').gsub(/(\-){2,}/, '-').downcase.presence || 'untitled'
       parent = team ? self.class.joins(:team).where(groups: { user_name: team.user_name }).where.not(id: id) : self.class.where(team_id: 0).where.not(id: id)
 
       # make sure it doesn't exist

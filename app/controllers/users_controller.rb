@@ -1,14 +1,14 @@
 class UsersController < ApplicationController
   before_filter :authenticate_user!, except: [:show, :index, :redirect_to_show]
   before_filter :load_user, only: [:show]
-  authorize_resource except: [:after_registration, :after_registration_save, :redirect_to_show]
+  authorize_resource except: [:after_registration, :after_registration_save, :toolbox, :toolbox_save, :redirect_to_show]
   layout :set_layout
   protect_from_forgery except: :redirect_to_show
   skip_before_filter :track_visitor, only: [:show]
   skip_after_filter :track_landing_page, only: [:show]
 
   def index
-    title "Browse top makers"
+    title "Browse top community members"
     @users = User.not_admin.invitation_accepted_or_not_invited.where.not(user_name: nil).where('reputations.points > 15').top.paginate(page: safe_page_params)
   end
 
@@ -128,18 +128,14 @@ class UsersController < ApplicationController
   def after_registration_save
     @user = current_user
     if @user.update_attributes(params[:user])
-      if @user.projects.any?
-        redirect_to @user.projects.first, notice: "Profile info saved! Now you can start working on your project."
+      message = "Profile info saved."
+      message += if is_whitelabel?
+        " Welcome!"
       else
-        message = "Profile info saved."
-        message += if is_whitelabel?
-          " Welcome!"
-        else
-          # " Now, <a href='/talk' class='alert-link'>come introduce yourself to the community!</a>"
-          " Welcome!"
-        end
-        redirect_to user_return_to, notice: message
+        # " Now, <a href='/talk' class='alert-link'>come introduce yourself to the community!</a>"
+        " Welcome!"
       end
+      redirect_to user_toolbox_path, notice: message
 
       track_user @user.to_tracker_profile
       track_event 'Completed after registration update', {
@@ -152,6 +148,14 @@ class UsersController < ApplicationController
     else
       render action: 'after_registration'
     end
+  end
+
+  def toolbox
+    current_user.update_attribute :toolbox_shown, true
+  end
+
+  def toolbox_save
+    redirect_to user_return_to, notice: 'Toolbox saved!'
   end
 
   private

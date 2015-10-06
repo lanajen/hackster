@@ -32,7 +32,18 @@ class ChallengeDecorator < ApplicationDecorator
 
     case model.workflow_state.to_sym
     when :new
-      'Ready to launch'
+      if model.ready
+        date = if model.activate_pre_registration
+          "#{l model.pre_registration_start_date.in_time_zone(PDT_TIME_ZONE)} PT"
+        elsif model.activate_pre_contest
+          "#{l model.pre_contest_start_date.in_time_zone(PDT_TIME_ZONE)} PT"
+        else
+          "#{l model.start_date.in_time_zone(PDT_TIME_ZONE)} PT"
+        end
+        "Launch scheduled for #{date}"
+      else
+        "Please mark the challenge as 'ready to launch' when ready."
+      end
     when :in_progress
       "#{time_left} left to enter"
     when :judging

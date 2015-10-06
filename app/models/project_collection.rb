@@ -1,4 +1,5 @@
 class ProjectCollection < ActiveRecord::Base
+  include HstoreColumn
   include Workflow
 
   VALID_STATES = %w(featured approved)
@@ -9,6 +10,8 @@ class ProjectCollection < ActiveRecord::Base
   validates :project_id, uniqueness: { scope: [:collectable_id, :collectable_type] }
 
   after_create :update_status
+
+  hstore_column :properties, :featured_position, :integer
 
   # scope :visible, -> { where(workflow_state: VALID_STATES) }
 
@@ -45,7 +48,11 @@ class ProjectCollection < ActiveRecord::Base
   end
 
   def self.featured
-    where(workflow_state: 'featured')
+    where(workflow_state: 'featured').order("CAST(project_collections.properties -> 'featured_position' AS INTEGER) ASC NULLS LAST")
+  end
+
+  def self.featured_order locale
+    order("(CASE WHEN (project_collections.workflow_state = 'featured' AND projects.locale = '#{locale}') THEN (CASE WHEN CAST(project_collections.properties -> 'featured_position' AS INTEGER) IS NULL THEN 99 ELSE CAST(project_collections.properties -> 'featured_position' AS INTEGER) END) ELSE 100 END) ASC")
   end
 
   def self.most_recent

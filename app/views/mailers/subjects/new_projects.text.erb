@@ -1,1 +1,3 @@
-New projects for <%= @context[:followables].map(&:name).to_sentence %>
+<% followables = @context[:followables][0..4].map(&:name) %>
+<% if @context[:followables].count > 5; followables << 'more...'; end %>
+<%= pluralize @context[:projects].count, 'new project' %> for <%= followables.to_sentence %>

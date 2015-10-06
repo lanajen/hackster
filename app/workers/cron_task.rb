@@ -14,6 +14,13 @@ class CronTask < BaseWorker
     end
   end
 
+  def cleanup_buggy_unpublished
+    Project.public.self_hosted.where(workflow_state: :unpublished).where(made_public_at: nil).update_all(workflow_state: :pending_review)
+    Project.public.self_hosted.where(workflow_state: :unpublished).where.not(made_public_at: nil).each do |project|
+      project.update_attribute :workflow_state, :approved
+    end
+  end
+
   def clean_invitations
     User.where.not(invitation_token: nil).where.not(last_sign_in_at: nil).update_all(invitation_token: nil)
   end
@@ -32,16 +39,18 @@ class CronTask < BaseWorker
 
   def generate_user
     UserGenerator.generate_user
+  rescue => e
   end
 
   def generate_users
-    [User.invitation_accepted_or_not_invited.where("created_at > ?", 1.day.ago).where.not("users.email ILIKE '%user.hackster.io'").size, 40].min.times do
+    [User.invitation_accepted_or_not_invited.where("created_at > ?", 1.day.ago).where.not("users.email ILIKE '%user.hackster.io'").size, 25].min.times do
       CronTask.perform_at Time.at((1.day.from_now.to_f - Time.now.to_f)*rand + Time.now.to_f), 'generate_user'
     end
   end
 
   def launch_cron
     CacheWorker.perform_async 'warm_cache'
+    CronTask.perform_in 3.minutes, 'cleanup_buggy_unpublished'
     CronTask.perform_in 3.minutes, 'lock_assignment'
     CronTask.perform_in 4.minutes, 'send_assignment_reminder'
     CronTask.perform_in 6.minutes, 'send_announcement_notifications'
@@ -49,7 +58,6 @@ class CronTask < BaseWorker
     CronTask.perform_in 10.minutes, 'clean_invitations'
     PopularityWorker.perform_in 12.minutes, 'compute_popularity_for_projects'
     CronTask.perform_in 14.minutes, 'evaluate_badges'
-    CronTask.perform_in 1.hour, 'launch_cron'
   end
 
   def launch_daily_cron
@@ -59,8 +67,19 @@ class CronTask < BaseWorker
     ReputationWorker.perform_in 1.minute, 'compute_daily_reputation'
     PopularityWorker.perform_in 1.hour, 'compute_popularity'
     CronTask.perform_in 2.hours, 'send_daily_notifications'
+  end
 
-    CronTask.perform_in 24.hours, 'launch_daily_cron'
+  def launch_weekly_cron
+    CronTask.perform_async 'send_weekly_notifications'
+
+    # monthly cron on first Monday
+    if Date.today.day.in? (1..7)
+      CronTask.perform_async 'launch_monthly_cron'
+    end
+  end
+
+  def launch_monthly_cron
+    CronTask.perform_async 'send_monthly_notifications'
   end
 
   def lock_assignment
@@ -69,23 +88,19 @@ class CronTask < BaseWorker
         project.update_attribute :locked, true
       end
     end
+  rescue => e
   end
 
   def send_daily_notifications
-    project_ids = Project.self_hosted.where('projects.made_public_at > ? AND projects.made_public_at < ?', 24.hours.ago, Time.now).approved.pluck(:id)
+    send_project_notifications 24.hours, :daily
+  end
 
-    users = []
-    users += Platform.joins(:projects).distinct('groups.id').where(projects: { id: project_ids }).map{|t| t.followers.with_subscription(:email, 'follow_platform_activity').pluck(:id) }.flatten
-    users += User.joins(:projects).distinct('users.id').where(projects: { id: project_ids }).map{|u| u.followers.with_subscription(:email, 'follow_user_activity').pluck(:id) }.flatten
+  def send_weekly_notifications
+    send_project_notifications 7.days, :weekly
+  end
 
-    lists = List.joins(:project_collections).where('project_collections.created_at > ?', 24.hours.ago).where(groups: { type: 'List' }).distinct(:id)
-    users += lists.map{|l| l.followers.with_subscription(:email, 'follow_list_activity').pluck(:id) }.flatten
-
-    users.uniq!
-
-    users.each do |user_id|
-      NotificationCenter.notify_via_email nil, 'daily_notification', user_id, 'new_projects'
-    end
+  def send_monthly_notifications
+    send_project_notifications 1.month, :monthly
   end
 
   def send_announcement_notifications
@@ -120,5 +135,22 @@ class CronTask < BaseWorker
   private
     def redis
       @redis ||= Redis::Namespace.new('cron_task', redis: RedisConn.conn)
+    end
+
+    def send_project_notifications time_frame, email_frequency
+      project_ids = Project.self_hosted.where('projects.made_public_at > ? AND projects.made_public_at < ?', time_frame.ago, Time.now).approved.pluck(:id)
+
+      users = []
+      users += Platform.joins(:projects).distinct('groups.id').where(projects: { id: project_ids }).map{|t| t.followers.with_subscription(:email, 'new_projects').with_email_frequency(email_frequency).pluck(:id) }.flatten
+      users += User.joins(:projects).distinct('users.id').where(projects: { id: project_ids }).map{|u| u.followers.with_subscription(:email, 'new_projects').with_email_frequency(email_frequency).pluck(:id) }.flatten
+
+      lists = List.joins(:project_collections).where('project_collections.created_at > ?', time_frame.ago).where(groups: { type: 'List' }).distinct(:id)
+      users += lists.map{|l| l.followers.with_subscription(:email, 'new_projects').with_email_frequency(email_frequency).pluck(:id) }.flatten
+
+      users.uniq!
+
+      users.each do |user_id|
+        NotificationCenter.notify_via_email nil, "#{email_frequency}_notification", user_id, 'new_projects'
+      end
     end
 end

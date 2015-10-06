@@ -4,37 +4,44 @@ class Ability
   def initialize(resource)
     alias_action :read, :edit, :update, :update_workflow, :moderate, to: :admin
 
-    @user = resource
+    case resource
+    when Platform
+      @platform = resource
 
-    can :read, [Comment, User, Thought, Challenge]
-    cannot :read, [Project, Group, SkillRequest]
-    can :read, [Project, Group], private: false
-    can :read, Assignment do |assignment|
-      assignment.promotion.private == false
-    end
-    can :read, Page do |thread|
-      @user.can? :read, thread.threadable
-    end
-    can :read, Announcement do |thread|
-      !thread.draft? and @user.can? :read, thread.threadable
-    end
-    can :read, BuildLog do |thread|
-      thread.type == 'BuildLog' and @user.can? :read, thread.threadable and !thread.threadable.private_logs
-    end
-    can :read, Issue do |thread|
-      @user.can? :read, thread.threadable and !thread.threadable.private_issues
-    end
-    can :join, Group do |group|
-      !@user.persisted? and group.access_level == 'anyone'
-    end
-    can :create, Group
+      platform
+    when User
+      @user = resource
 
-    member if @user.persisted?
-    @user.roles.each{ |role| send role }
-    # beta_tester if @user.is? :beta_tester
+      can :read, [Comment, User, Thought, Challenge]
+      cannot :read, [Project, Group, SkillRequest]
+      can :read, [Project, Group], private: false
+      can :read, Assignment do |assignment|
+        assignment.promotion.private == false
+      end
+      can :read, Page do |thread|
+        @user.can? :read, thread.threadable
+      end
+      can :read, Announcement do |thread|
+        !thread.draft? and @user.can? :read, thread.threadable
+      end
+      can :read, BuildLog do |thread|
+        thread.type == 'BuildLog' and @user.can? :read, thread.threadable and !thread.threadable.private_logs
+      end
+      can :read, Issue do |thread|
+        @user.can? :read, thread.threadable and !thread.threadable.private_issues
+      end
+      can :join, Group do |group|
+        !@user.persisted? and group.access_level == 'anyone'
+      end
+      can :create, Group
 
-    @user.permissions.each do |permission|
-      can permission.action.to_sym, permission.permissible_type.constantize, id: permission.permissible_id
+      member if @user.persisted?
+      @user.roles.each{ |role| send role }
+      # beta_tester if @user.is? :beta_tester
+
+      @user.permissions.each do |permission|
+        can permission.action.to_sym, permission.permissible_type.constantize, id: permission.permissible_id
+      end
     end
   end
 
@@ -51,7 +58,7 @@ class Ability
   end
 
   def member
-    can :create, [HackerSpace, Community, Event, Thought]
+    can :create, [HackerSpace, Community, Event, Thought, ]
 
     can :admin, Address do |address|
       address.addressable_type == 'ChallengeEntry' and address.addressable.user_id == @user.id
@@ -61,9 +68,17 @@ class Ability
       @user.in? conversation.participants
     end
 
-    can :enter, Challenge do |challenge|
+    can :create, ChallengeEntry do |entry|
+      challenge = entry.challenge
+      challenge.disable_registration or ChallengeRegistration.has_registered? challenge, @user
+    end
+
+    can :create, ChallengeRegistration do |registration|
+      challenge = registration.challenge
       challenge.open_for_submissions? and @user.can? :read, challenge
     end
+
+    can :manage, ChallengeRegistration, user_id: @user.id
 
     can :manage, [Announcement, BuildLog, Issue, Page] do |thread|
       @user.can? :manage, thread.threadable
@@ -156,6 +171,7 @@ class Ability
       @user.is_active_member? assignment.promotion
     end
 
+    can :manage, ChallengeEntry, user_id: @user.id
     can :admin, ChallengeEntry do |entry|
       ChallengeAdmin.where(challenge_id: entry.challenge_id, user_id: @user.id).with_roles(%w(admin judge)).any?
     end
@@ -174,7 +190,9 @@ class Ability
 
     cannot :update, Part
     can :create, Part
-    can :update, Part, workflow_state: Part::EDITABLE_STATES
+    can :update, Part do |part|
+      part.workflow_state.in? Part::EDITABLE_STATES and part.slug.blank?
+    end
     can :manage, Part do |part|
       part.platform_id.present? and @user.can? :manage, part.platform
     end
@@ -183,5 +201,9 @@ class Ability
   def moderator
     can :manage, Project
     can :moderate, Group
+  end
+
+  def platform
+    can :manage, Part, platform_id: @platform.id
   end
 end

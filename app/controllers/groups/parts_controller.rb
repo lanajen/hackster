@@ -5,7 +5,7 @@ class Groups::PartsController < ApplicationController
   def index
     authorize! :manage, @platform
 
-    @parts = @platform.parts.alphabetical.visible.paginate(page: safe_page_params)
+    @parts = @platform.parts.alphabetical.with_slug.paginate(page: safe_page_params)
   end
 
   def create

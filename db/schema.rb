@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150812022934) do
+ActiveRecord::Schema.define(version: 20150928215952) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -137,6 +137,16 @@ ActiveRecord::Schema.define(version: 20150812022934) do
     t.integer "challenge_entry_id"
     t.integer "prize_id"
   end
+
+  create_table "challenge_registrations", force: :cascade do |t|
+    t.integer  "user_id",      null: false
+    t.integer  "challenge_id", null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  add_index "challenge_registrations", ["challenge_id"], name: "index_challenge_registrations_on_challenge_id", using: :btree
+  add_index "challenge_registrations", ["user_id"], name: "index_challenge_registrations_on_user_id", using: :btree
 
   create_table "challenges", force: :cascade do |t|
     t.integer  "duration"
@@ -521,6 +531,7 @@ ActiveRecord::Schema.define(version: 20150812022934) do
     t.datetime "updated_at"
     t.string   "workflow_state",   limit: 255
     t.text     "comment"
+    t.hstore   "properties"
   end
 
   create_table "projects", force: :cascade do |t|

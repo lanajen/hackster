@@ -1,0 +1,62 @@
+hello_world:
+  default:
+    header: "Welcome to Hackster!"
+    message: "<%= SLOGAN %> <a href='<%= new_user_registration_path(source: 'hello-world') %>'>Join us</a>, it's free!"
+  MSnewsletter:
+    header: "Welcome IoT Developers!"
+    message: "Our next IoT contest is launching this October - be the first to be notified: <%= render_to_string partial: 'shared/mailchimp_form', locals: { source: 'hello-world' } %>"
+  MSblog:
+    header: "Welcome Microsoft Developers!"
+    message: "Our next IoT contest is launching this October - be the first to be notified: <%= render_to_string partial: 'shared/mailchimp_form', locals: { source: 'hello-world' } %>"
+  dev.windows.com:
+    header: "Welcome Windows Developers!"
+    message: "<%= SLOGAN %> <a href='/microsoft/projects'>Explore projects for Windows 10 IoT Core and Azure</a>"
+  ms-iot.github.io:
+    header: "Welcome Windows IoT Developers!"
+    message: "<%= SLOGAN %> <a href='/microsoft/projects'>Explore projects for Windows 10 IoT Core and Azure</a>"
+  ifttt.com:
+    header: "Welcome IFTTT Triggerers!"
+  kickstarter.com:
+    header: "Welcome Kickstarter Backers!"
+  raspberrypi.org:
+    header: "Welcome Raspberry Pi Makers!"
+  raspberrypi.stackexchange.com:
+    header: "Welcome Raspberry Pi Makers!"
+  sparkfun.com:
+    header: "Welcome SparkFun Shoppers!"
+  instructables.com:
+    header: "Welcome Instructables Learners!"
+  hackaday.com:
+    header: "Welcome Hackaday Hackers!"
+  stm32duino.com:
+    header: "Welcome STM32 Developers!"
+  vocore.io:
+    header: "Welcome Vocore Developers!"
+  forums.getpebble.com:
+    header: "Welcome Pebble Developers!"
+  developer.getpebble.com:
+    header: "Welcome Pebble Developers!"
+  labs.mediatek.com:
+    header: "Welcome MediaTek Developers!"
+  community.particle.io:
+    header: "Welcome Particle Developers!"
+  particle.io:
+    header: "Welcome Particle Developers!"
+  forum.arduino.cc:
+    header: "Welcome Arduino Makers!"
+  blog.arduino.cc:
+    header: "Welcome Arduino Makers!"
+  1sheeld.com:
+    header: "Welcome 1Sheeld Developers!"
+  esp8266.com:
+    header: "Welcome ESP8266 Developers!"
+  korben.info:
+    header: "Bienvenue Lecteurs de Korben!"
+  viperize.it:
+    header: "Welcome Viperize Developers!"
+  udoo.org:
+    header: "Welcome Udoo Developers!"
+  hanselman.com:
+    header: "Welcome readers of Scott Hanselman's blog!"
+  reddit.com:
+    header: "Welcome Redditers!"
