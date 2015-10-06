@@ -48,7 +48,7 @@ class NotificationHandler
       @template
     end
 
-    def get_context_for notification_type, user_roles
+    def get_context_for notification_type, user_roles=[]
       context = {}
       # context[context_type.to_sym] = context[:model] = model if model
 
@@ -83,6 +83,10 @@ class NotificationHandler
           context[:author] = entry.user
           context[:users] = challenge.admins
         end
+      when :challenge_idea
+        context[:model] = idea = context[:idea] = ChallengeIdea.find context_id
+        context[:challenge] = challenge = idea.challenge
+        context[:user] = idea.user
       when :challenge_registration
         context[:model] = registration = context[:registration] = ChallengeRegistration.find context_id
         context[:challenge] = challenge = registration.challenge

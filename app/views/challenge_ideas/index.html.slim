@@ -1,0 +1,38 @@
+p
+  = link_to "&larr; Return to challenge admin dashboard".html_safe, challenge_admin_path(@challenge)
+
+h1
+  | #{@challenge.name}: pre-contest entries (ideas)
+
+= link_to 'Download list as CSV', challenge_admin_ideas_path(@challenge, format: :csv)
+
+table.table.table-striped
+  thead
+    tr
+      th Idea name
+      th Entrant
+      th Submission date
+      th Status
+      th
+  tbody
+    - if @ideas.any?
+      - @ideas.each do |idea|
+        tr
+          td= link_to idea.name, challenge_idea_path(@challenge, idea)
+          td
+            - user = idea.user
+            ==> link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
+            = link_to user.name, user
+          td= l idea.created_at
+          td= idea.workflow_state
+          td
+            - if idea.can_approve?
+              = link_to content_tag(:i, '', class: 'fa fa-check'), update_workflow_challenge_idea_path(@challenge, idea, event: 'approve'), class: 'btn btn-xs btn-success', rel: 'tooltip', title: 'Approve', data: { method: :put, confirm: 'Are you sure you want to approve this idea?', container: 'body' }
+            - if idea.can_reject?
+              = link_to content_tag(:i, '', class: 'fa fa-times'), update_workflow_challenge_idea_path(@challenge, idea, event: 'reject'), class: 'btn btn-xs btn-danger', rel: 'tooltip', title: 'Reject', data: { method: :put, confirm: 'Are you sure you want to reject this idea?', container: 'body' }
+            - if @challenge.judging?
+              = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_challenge_idea_path(@challenge, idea), class: 'btn btn-xs btn-default', rel: 'tooltip', title: 'Edit', data: { container: 'body' }
+            - if current_user.is? :admin
+              = link_to content_tag(:i, '', class: 'fa fa-trash-o'), challenge_idea_path(@challenge, idea), class: 'btn btn-xs btn-danger', rel: 'tooltip', title: 'Delete', data: { method: :delete, confirm: 'Are you sure you want to delete this idea?', container: 'body' }
+    - else
+      td.text-center colspan=5 No ideas yet

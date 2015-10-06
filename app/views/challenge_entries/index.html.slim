@@ -1,84 +1,10 @@
 p
-  = link_to "&larr; Return to challenge page".html_safe, @challenge
+  = link_to "&larr; Return to challenge admin dashboard".html_safe, challenge_admin_path(@challenge)
 
 h1
-  | #{@challenge.name}: entries
+  | #{@challenge.name}: contest entries
 
-p
-  b> Challenge status:
-  = @challenge.status
-
-p
-  strong>= @challenge.registrations_count
-  ==> pluralize_without_count @challenge.registrations_count, 'registered participant'
-  - if @challenge.registrations_count > 0
-    ' -
-    = link_to 'Download list as CSV', challenge_participants_path(@challenge.slug, format: :csv)
-
-p
-  strong>= @new_entries_count
-  ==> pluralize_without_count @new_entries_count, 'entry'
-  ' awaiting moderation
-  ' |
-  strong>= @approved_entries_count
-  ==> pluralize_without_count @approved_entries_count, 'entry'
-  ' approved
-  ' |
-  strong>= @rejected_entries_count
-  ==> pluralize_without_count @rejected_entries_count, 'entry'
-  | rejected
-
-- if @challenge.in_progress?
-  - if @new_entries_count > 0
-    p= link_to 'Moderate new entries', edit_challenge_entry_path(@challenge, @entries.where(workflow_state: :new).first), class: 'btn btn-sm btn-primary'
-
-- elsif @challenge.judging?
-  p
-    - if @prizes.any?
-      b The following prizes are waiting to be awarded:
-      ul
-        - @prizes.each do |prize, quantity|
-          li
-            ' "#{prize.name}"
-            ' x
-            => quantity
-            - if quantity < 0
-              | (assigned too many times)
-      br
-      - if @entries.any?
-        ==> link_to 'Start judging', edit_challenge_entry_path(@challenge, @challenge.entries.where.not(challenge_projects: {workflow_state: :unqualified }).where(challenge_projects: { prize_id: nil }).joins(:project).order(:created_at).first), class: 'btn btn-sm btn-primary'
-        ' or
-      = link_to 'Mark challenge as judged', update_workflow_challenge_path(@challenge, event: 'mark_as_judged'), method: :put, class: 'btn btn-sm btn-danger', data: { confirm: 'Are you sure? Not all prizes have been awarded. Continuing will close judging and send an email notification to all participants informing them of the outcome.' }
-
-    - else
-      ' All prizes have been awarded.
-      = link_to 'Mark challenge as judged', update_workflow_challenge_path(@challenge, event: 'mark_as_judged'), method: :put, class: 'btn btn-sm btn-warning', data: { confirm: 'Are you sure? Continuing will close judging and send an email notification to all participants informing them of the outcome.' }
-
-- elsif @challenge.judged?
-  table.table.table-striped
-    thead
-      tr
-        th Prize
-        th Entrant
-        th Delivery Method
-        th Address
-        th
-    tbody
-      - if @entries.winning.any?
-        - @entries.winning.each do |entry|
-          tr
-            td= entry.prizes.pluck(:name).to_sentence
-            td
-              - user = entry.user
-              ==> link_to image_tag(user.decorate.avatar(:mini), style: 'width: 20px' ), user
-              = link_to user.name, user
-            td= entry.shipping_required_for_prizes? ? 'Snail Mail' : 'Email'
-            td= entry.shipping_required_for_prizes? ? entry.address.try(:decorate).try(:full).try(:html_safe) || 'Not entered yet' : entry.user.email
-            td
-              - if @challenge.judging?
-                = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_challenge_entry_path(@challenge, entry), class: 'btn btn-xs btn-default', rel: 'tooltip', title: 'Edit'
-      - else
-        td.text-center colspan=7 No entries have been awarded prizes
+= link_to 'Download list as CSV', challenge_admin_entries_path(@challenge, format: :csv)
 
 table.table.table-striped
   thead

@@ -354,10 +354,16 @@ HackerIo::Application.routes.draw do
       end
 
       resources :challenges, except: [:show, :update] do
-        resources :entries, controller: :challenge_entries, except: [:show] do
+        get 'admin/dashboard' => 'challenges#dashboard', as: :admin
+        resources :entries, controller: :challenge_entries, only: [:index], path: 'admin/entries', as: :admin_entries
+        resources :ideas, controller: :challenge_ideas, only: [:index], path: 'admin/ideas', as: :admin_ideas
+        resources :entries, controller: :challenge_entries, except: [:index, :show] do
           put 'update_workflow' => 'challenge_entries#update_workflow', on: :member
           get 'address/edit' => 'addresses#edit', on: :member, as: :edit_address
           patch 'address' => 'addresses#update', on: :member
+        end
+        resources :ideas, controller: :challenge_ideas, only: [:show] do
+          put 'update_workflow' => 'challenge_ideas#update_workflow', on: :member
         end
         resources :registrations, controller: :challenge_registrations, only: [:create, :destroy] do
           get 'create' => 'challenge_registrations#create', on: :collection, as: :create
@@ -375,7 +381,7 @@ HackerIo::Application.routes.draw do
         end
       end
 
-      resources :challenge_ideas, only: [:destroy]
+      resources :challenge_ideas, only: [:destroy], as: :challenge_single_idea
 
       # resources :skill_requests, path: 'cupidon' do
       #   resources :comments, only: [:create]

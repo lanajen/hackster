@@ -1,8 +1,30 @@
 class ChallengeIdeasController < ApplicationController
-  before_filter :authenticate_user!, only: [:new, :create, :update_workflow, :destroy]
+  before_filter :authenticate_user!, only: [:new, :create, :index, :update_workflow, :destroy]
   before_filter :load_challenge, only: [:create, :new]
   before_filter :load_and_authorize_idea, only: [:update_workflow]
   layout :set_layout
+
+  def index
+    @challenge = Challenge.find params[:challenge_id]
+    authorize! :admin, @challenge
+    @ideas = @challenge.ideas.order(:created_at).includes(user: :avatar)
+
+    respond_to do |format|
+      format.html do
+      end
+      format.csv do
+        file_name = FileNameGenerator.new(@challenge.name, 'ideas')
+        headers['Content-Disposition'] = "attachment; filename=\"#{file_name}.csv\""
+        headers['Content-Type'] ||= 'text/csv'
+      end
+    end
+  end
+
+  def show
+    @challenge = Challenge.find params[:challenge_id]
+    authorize! :admin, @challenge
+    @idea = @challenge.ideas.find params[:id]
+  end
 
   def new
     @idea = @challenge.ideas.new
@@ -25,14 +47,14 @@ class ChallengeIdeasController < ApplicationController
     end
   end
 
-  # def update_workflow
-  #   if @idea.send "#{params[:event]}!"
-  #     flash[:notice] = "Idea #{event_to_human(params[:event])}."
-  #   else
-  #     flash[:alert] = "Couldn't #{event_to_human(params[:event])} idea."
-  #   end
-  #   redirect_to challenge_ideas_path(@challenge)
-  # end
+  def update_workflow
+    if @idea.send "#{params[:event]}!"
+      flash[:notice] = "Idea #{event_to_human(params[:event])}."
+    else
+      flash[:alert] = "Couldn't #{event_to_human(params[:event])} idea."
+    end
+    redirect_to challenge_admin_ideas_path(@challenge)
+  end
 
   def destroy
     @idea = ChallengeIdea.find params[:id]
@@ -48,30 +70,28 @@ class ChallengeIdeasController < ApplicationController
   end
 
   private
-    # def event_to_human event
-    #   case event
-    #   when 'approve'
-    #     'approved'
-    #   when 'disqualify'
-    #     'disqualified'
-    #   else
-    #     "#{event}ed"
-    #   end
-    # end
+    def event_to_human event
+      case event
+      when 'approve'
+        'approved'
+      else
+        "#{event}ed"
+      end
+    end
 
     def load_challenge
       @challenge = Challenge.find_by_slug params[:slug]
     end
 
     def load_and_authorize_idea
-      @idea = ChallengeIdea.find_by_slug params[:slug]
+      @idea = ChallengeIdea.find params[:id]
+      raise ActiveRecord::RecordNotFound unless @idea.challenge_id.to_s == params[:challenge_id]
       authorize! self.action_name.to_sym, @idea
       @challenge = @idea.challenge
-      raise ActiveRecord::RecordNotFound unless @challenge.slug == params[:slug]
     end
 
     def set_layout
-      if self.action_name.to_s.in? %w(index)
+      if self.action_name.to_s.in? %w()
         'challenge'
       else
         current_layout

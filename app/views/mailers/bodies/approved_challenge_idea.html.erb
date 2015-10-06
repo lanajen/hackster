@@ -1,15 +1,17 @@
 <p>Hello there,</p>
 
-<p>This is to confirm that we have received your idea "|idea_name|" for <a href="<%= u.challenge_url(@context[:challenge]) %>">|challenge_name|</a>.</p>
+<p>This is to let you know that your entry "|idea_name|" for the pre-contest phase of <a href="<%= u.challenge_url(@context[:challenge]) %>">|challenge_name|</a> has been accepted. Hurray!</p>
 
-<p>It will now be reviewed in order to determine whether it is qualified to enter. Please read <a href="<%= u.challenge_brief_url(@context[:challenge].slug, anchor: 'rules', show_rules: 1) %>">the challenge rules</a> for more information.</p>
+<p>Please note that you have not won any prizes yet; this email simply confirms that your entry is eligible to participate in the pre-contest.</p>
 
-<p>
+<% if @context[:challenge].pre_contest_in_progress? %>
+  <p>
   Submissions to the pre-contest are open until <%= l @context[:challenge].pre_contest_end_date.in_time_zone(PDT_TIME_ZONE) %> PDT.
   <% if @context[:challenge].pre_winners_announced_date %>
     Winners will be announced on <%= l @context[:challenge].pre_winners_announced_date, format: :short_date %>.
   <% end %>
 </p>
+<% end %>
 
 <p>Cheers,<br> The Hackster.io team</p>
 <p>

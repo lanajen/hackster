@@ -56,7 +56,7 @@ $(function () {
   body.on('click', '.modal-open', function(e){
     e.preventDefault();
     target = $(this).data('target');
-    openModal(target);
+    openModal(target, this);
   });
 
   $(document).ajaxComplete(function(event, request) {

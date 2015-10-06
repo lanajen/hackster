@@ -14,20 +14,15 @@ class ChallengeIdeaObserver < ActiveRecord::Observer
   #   end
   # end
 
-  # def after_approve record
-  #   project = record.project
-  #   if tag = record.challenge.platform.try(:platform_tags).try(:first).try(:name) and !tag.in? project.platform_tags_cached
-  #     project.platform_tags << PlatformTag.new(name: tag)
-  #   end
-  #   expire_cache record
-  #   NotificationCenter.notify_all :approved, :challenge_entry, record.id
-  #   MailchimpWorker.perform_async 'add_new_participants_to_challenge', record.id, 'challenge_entry' if record.challenge.mailchimp_setup?
-  # end
+  def after_approve record
+    expire_cache record
+    NotificationCenter.notify_all :approved, :challenge_idea, record.id
+  end
 
-  # def after_reject record
-  #   expire_cache record
-  #   NotificationCenter.notify_all :rejected, :challenge_entry, record.id
-  # end
+  def after_reject record
+    expire_cache record
+    NotificationCenter.notify_all :rejected, :challenge_idea, record.id
+  end
 
   # def after_give_award record
   #   NotificationCenter.notify_all :awarded, :challenge_entry, record.id
@@ -46,10 +41,10 @@ class ChallengeIdeaObserver < ActiveRecord::Observer
   #   NotificationCenter.notify_all :awarded, :challenge_entry, record.id
   # end
 
-  # private
-  #   def expire_cache record
-  #     record.challenge.update_counters only: [:projects]
-  #     Cashier.expire "project-#{record.project_id}-metadata", "challenge-#{record.challenge_id}-projects"
-  #     record.challenge.purge
-  #   end
+  private
+    def expire_cache record
+      record.challenge.update_counters only: [:ideas]
+      Cashier.expire "challenge-#{record.challenge_id}-ideas"
+      record.challenge.purge
+    end
 end

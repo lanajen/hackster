@@ -118,15 +118,59 @@
   padding: 10px;
   background: #fff;
   margin-bottom: 20px;
+  .img-container {
+    img {
+      width: 100%;
+    }
+  }
   h3 {
-    margin: 10px 0;
+    margin: 20px 0 10px;
     font-size: 1.2em;
     font-weight: bold;
   }
-  .field {
+  .author {
+    font-size: 0.9em;
     margin-bottom: 15px;
+  }
+  .field {
+    margin-bottom: 20px;
   }
   .field-title {
     font-weight: bold;
+  }
+  .more {
+    display: none;
+  }
+}
+
+.challenge-idea-thumbs {
+  .challenge-idea {
+    .description {
+      height: 10em;
+      overflow: hidden;
+      position: relative;
+      margin-bottom: 15px;
+      &:after {
+        content: "";
+        height: 60%;
+        display: block;
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        @include background(linear-gradient(top, transparent 0%, #fff 100%));
+      }
+    }
+    .more {
+      display: block;
+    }
+  }
+}
+
+#challenge-idea-popup {
+  .challenge-idea {
+    padding: 0;
+    .field:last-of-type {
+      margin-bottom: 0;
+    }
   }
 }

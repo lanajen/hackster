@@ -44,6 +44,10 @@ class ChallengeDecorator < ApplicationDecorator
       else
         "Please mark the challenge as 'ready to launch' when ready."
       end
+    when :pre_contest_in_progress
+      "Pre-contest in progress"
+    when :pre_contest_ended
+      "Pre-contest ended"
     when :in_progress
       "#{time_left} left to enter"
     when :judging
