@@ -1,0 +1,25 @@
+.challenge-idea
+  .row
+    .col-md-4
+      - if idea.image
+        = image_tag idea.image.imgix_url :medium
+    .col-md-8
+      h3= idea.name
+      p.author
+        ' By
+        - user = idea.user
+        => image_tag user.decorate.avatar(:tiny)
+        = link_to idea.user.name, idea.user
+      .field
+        .field-title
+          strong Description:
+        = raw idea.description
+      - idea.challenge.challenge_idea_fields.each_with_index do |field, i|
+        .field
+          .field-title
+            strong
+              = field.label
+              | :
+          - idea.send("cfield#{i}").split(/\r\n/).each do |string|
+            = string
+            br

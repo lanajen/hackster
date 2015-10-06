@@ -6,15 +6,16 @@
 # ]
 
 class NotificationHandler
-  attr_accessor :event, :context_type, :context_id, :model
+  attr_accessor :event, :context_type, :context_id, :model, :user_roles
 
-  def initialize event, context_type, context_id
+  def initialize event, context_type, context_id, user_roles=[]
     @event = event
     @context_type = context_type
     @context_id = context_id
     @model = if is_class? context_type.camelize.to_s
       context_type.camelize.to_s.constantize.find_by_id context_id
     end
+    @user_roles = user_roles
   end
 
   def notify_all template=nil
@@ -31,7 +32,7 @@ class NotificationHandler
   end
 
   def notify_via_web
-    if context = get_context_for('web')
+    if context = get_context_for('web', user_roles)
       Notification.generate event, context
     end
   end
@@ -47,7 +48,7 @@ class NotificationHandler
       @template
     end
 
-    def get_context_for notification_type
+    def get_context_for notification_type, user_roles
       context = {}
       # context[context_type.to_sym] = context[:model] = model if model
 

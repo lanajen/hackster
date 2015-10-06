@@ -427,7 +427,10 @@ class User < ActiveRecord::Base
   end
 
   def challenge_entries_for challenge
-    challenge.entries.where(user_id: id).includes(:project)
+    {
+      pre_contest: challenge.ideas.where(user_id: id),
+      contest: challenge.entries.where(user_id: id).includes(:project),
+    }
   end
 
   # def has_access? project

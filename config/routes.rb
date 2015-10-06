@@ -349,6 +349,8 @@ HackerIo::Application.routes.draw do
         get 'participants' => 'challenges#participants'
         get 'projects' => 'challenges#projects'
         patch '' => 'challenges#update'
+        resources :ideas, controller: :challenge_ideas, only: [:new, :create]
+        get 'ideas' => 'challenges#ideas'
       end
 
       resources :challenges, except: [:show, :update] do
@@ -372,6 +374,8 @@ HackerIo::Application.routes.draw do
           delete '' => 'votes#destroy', on: :collection
         end
       end
+
+      resources :challenge_ideas, only: [:destroy]
 
       # resources :skill_requests, path: 'cupidon' do
       #   resources :comments, only: [:create]

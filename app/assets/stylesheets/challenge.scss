@@ -113,3 +113,20 @@
 .mute-date {
   color: #888;
 }
+
+.challenge-idea {
+  padding: 10px;
+  background: #fff;
+  margin-bottom: 20px;
+  h3 {
+    margin: 10px 0;
+    font-size: 1.2em;
+    font-weight: bold;
+  }
+  .field {
+    margin-bottom: 15px;
+  }
+  .field-title {
+    font-weight: bold;
+  }
+}

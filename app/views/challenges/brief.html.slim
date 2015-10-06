@@ -4,30 +4,56 @@
       - if @has_registered or (@challenge.disable_registration and @is_challenge_entrant)
         section.section-thumbs
           h4 Manage your entries
-          - if @current_entries.any?
-            ul.entries-list.list-unstyled
-              - @current_entries.each do |entry|
-                - project = entry.project
-                li.award
-                  h5= link_to project.name, project
-                  p.clearfix.small
-                    span.pull-left
-                      strong> Status:
-                      = entry.decorate.status
-                    span.pull-right= link_to content_tag(:i, '', class: 'fa fa-times') + content_tag(:span, 'Withdraw'), challenge_entry_path(@challenge, entry), class: 'btn btn-danger btn-xs entry-withdraw', data: { confirm: 'Are you sure you want to withdraw your entry from the challenge? You can re-enter at any time before submissions close.', method: :delete }
-            - if @challenge.allow_multiple_entries?
-              / small Multiple entries are allowed.
-              = link_to 'Enter an additional project', 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'
+          - if @current_entries.values.select{|v| v.any? }.any?
+            - if @current_entries[:contest].any?
+              - if @current_entries[:pre_contest].any?
+                p
+                  strong.small Contest entries:
+              ul.entries-list.list-unstyled
+                - @current_entries[:contest].each do |entry|
+                  - project = entry.project
+                  li.award
+                    h5= link_to project.name, project
+                    p.clearfix.small
+                      span.pull-left
+                        strong> Status:
+                        = entry.decorate.status
+                      - if @challenge.in_progress?
+                        span.pull-right= link_to content_tag(:i, '', class: 'fa fa-times') + content_tag(:span, 'Withdraw'), challenge_entry_path(@challenge, entry), class: 'btn btn-danger btn-xs entry-withdraw', data: { confirm: 'Are you sure you want to withdraw your entry from the challenge? You can re-enter at any time before submissions close.', method: :delete }
+              - if @challenge.in_progress? and @challenge.allow_multiple_entries?
+                = link_to 'Enter an additional project', 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'
+
+            - if @current_entries[:pre_contest].any?
+              - if @current_entries[:contest].any?
+                hr
+                p
+                  strong.small Pre-contest entries:
+              ul.entries-list.list-unstyled
+                - @current_entries[:pre_contest].each do |entry|
+                  li.award
+                    h5= entry.name
+                    p.clearfix.small
+                      span.pull-left
+                        strong> Status:
+                        = ChallengeEntryDecorator.decorate(entry).status
+                      - if @challenge.pre_contest_in_progress?
+                        span.pull-right= link_to content_tag(:i, '', class: 'fa fa-times') + content_tag(:span, 'Withdraw'), challenge_idea_path(entry), class: 'btn btn-danger btn-xs entry-withdraw', data: { confirm: 'Are you sure you want to withdraw your entry from the challenge? You can re-enter at any time before submissions close.', method: :delete }
+              - if @challenge.pre_contest_in_progress? and @challenge.allow_multiple_entries?
+                = link_to 'Enter an additional idea', new_challenge_idea_path(@challenge.slug), class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'
+
           - else
             p
              strong> You're registered!
              - if (@challenge.activate_pre_contest? and @challenge.pre_contest_start_date > Time.now) or (!@challenge.activate_pre_contest? and @challenge.start_date > Time.now)
               ' We'll let you know by email when the challenge launches.
-            - if @challenge.open_for_submissions?
-              - if @challenge.pre_contest_in_progress?
+          - if @challenge.open_for_submissions?
+            - if @challenge.pre_contest_in_progress?
+              - if @challenge.idea_survey_link.present?
                 = link_to "Submit an idea for the pre-contest", @challenge.idea_survey_link, class: 'btn btn-primary btn-block btn-ellipsis btn-standout challenge-cta', target: '_blank'
-              - else
-                = link_to @challenge.enter_button_text, 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'
+              - elsif @current_entries[:pre_contest].empty?
+                = link_to "Submit an idea for the pre-contest", new_challenge_idea_path(@challenge.slug), class: 'btn btn-primary btn-block btn-ellipsis btn-standout challenge-cta'
+            - elsif @current_entries[:contest].empty?
+              = link_to @challenge.enter_button_text, 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'
       - elsif @challenge.disable_registration and @challenge.open_for_submissions?
         = link_to @challenge.enter_button_text, 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'
       - elsif @challenge.registration_open?

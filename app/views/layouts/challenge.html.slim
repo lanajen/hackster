@@ -107,7 +107,7 @@
             .brand
               .img-placeholder
               h2= @challenge.name
-            ul.nav.nav-tabs= render 'nav'
+            ul.nav.nav-tabs= render 'challenges/nav'
             - if @challenge.disable_registration and @challenge.open_for_submissions?
               - if !@is_challenge_entrant
                 ul.list-inline.manage
@@ -140,7 +140,7 @@
             ul.nav.nav-pills.nav-stacked.nav-justified.submenu-mobile style='display:none;'
               li
                 a.close-nav href='' &times; Close
-              = render 'nav'
+              = render 'challenges/nav'
               - if can? :manage, @challenge
                 li.divider
                 li= link_to "Edit challenge settings", edit_challenge_path(@challenge)

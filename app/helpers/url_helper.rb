@@ -398,6 +398,14 @@ module UrlHelper
     end
   end
 
+  def url_for_challenge_idea_form challenge, idea
+    if idea.persisted?
+      challenge_idea_path(challenge.slug, idea.id)
+    else
+      challenge_ideas_path(challenge.slug)
+    end
+  end
+
   def users_stats_path user=nil
     if user
       super(user_id: user.id)

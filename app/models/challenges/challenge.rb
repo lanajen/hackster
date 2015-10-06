@@ -10,6 +10,7 @@ class Challenge < ActiveRecord::Base
 
   include HstoreColumn
   include HstoreCounter
+  include TablelessAssociation
   include Workflow
 
   belongs_to :platform
@@ -17,6 +18,7 @@ class Challenge < ActiveRecord::Base
   has_many :challenge_admins
   has_many :entries, class_name: 'ChallengeEntry', dependent: :destroy
   has_many :entrants, -> { uniq }, through: :entries, source: :user
+  has_many :ideas, class_name: 'ChallengeIdea', dependent: :destroy, inverse_of: :challenge
   has_many :participants, -> { uniq }, through: :projects, source: :users
   has_many :prizes, -> { order(:position) }, dependent: :destroy
   # see https://github.com/rails/rails/issues/19042#issuecomment-91405982 about
@@ -30,6 +32,7 @@ class Challenge < ActiveRecord::Base
   has_many :registrations, dependent: :destroy, class_name: 'ChallengeRegistration'
   has_many :registrants, -> { order(:full_name) }, through: :registrations, source: :user
   has_many :votes, through: :entries
+  has_many_tableless :challenge_idea_fields, order: :position
   has_one :avatar, as: :attachable, dependent: :destroy
   has_one :cover_image, as: :attachable, dependent: :destroy
   validates :name, :slug, presence: true
@@ -93,6 +96,7 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :winners_announced_date, :datetime
 
   counters_column :hcounters_cache
+  has_counter :ideas, 'ideas.approved.count'
   has_counter :projects, 'projects.valid.count'
   has_counter :registrations, 'registrations.count'
 
