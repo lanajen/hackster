@@ -12,7 +12,7 @@ class ChallengeIdea < ActiveRecord::Base
 
   attr_accessible :name, :image_id
 
-  validates :name, :description, presence: true
+  validates :name, :description, :image_id, presence: true
   after_initialize :set_extra_fields
 
   workflow do
@@ -39,7 +39,12 @@ class ChallengeIdea < ActiveRecord::Base
     where workflow_state: APPROVED_STATES
   end
 
+  def image_id
+    @image_id ||= image.try(:id)
+  end
+
   def image_id=(val)
+    @image_id = val
     self.image = Image.find_by_id(val)
   end
 

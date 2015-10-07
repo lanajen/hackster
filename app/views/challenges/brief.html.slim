@@ -39,7 +39,7 @@
                       - if @challenge.pre_contest_in_progress?
                         span.pull-right= link_to content_tag(:i, '', class: 'fa fa-times') + content_tag(:span, 'Withdraw'), challenge_single_idea_path(entry), class: 'btn btn-danger btn-xs entry-withdraw', data: { confirm: 'Are you sure you want to withdraw your entry from the challenge? You can re-enter at any time before submissions close.', method: :delete }
               - if @challenge.pre_contest_in_progress? and @challenge.allow_multiple_entries?
-                = link_to 'Enter an additional idea', new_challenge_idea_path(@challenge.slug), class: 'btn btn-primary btn-block btn-ellipsis btn-standout challenge-cta'
+                = link_to 'Enter an additional idea', new_challenge_idea_path(@challenge), class: 'btn btn-primary btn-block btn-ellipsis btn-standout challenge-cta'
 
           - else
             p
@@ -51,7 +51,7 @@
               - if @challenge.idea_survey_link.present?
                 = link_to "Submit an idea for the pre-contest", @challenge.idea_survey_link, class: 'btn btn-primary btn-block btn-ellipsis btn-standout challenge-cta', target: '_blank'
               - elsif @current_entries[:pre_contest].empty?
-                = link_to "Submit an idea for the pre-contest", new_challenge_idea_path(@challenge.slug), class: 'btn btn-primary btn-block btn-ellipsis btn-standout challenge-cta'
+                = link_to "Submit an idea for the pre-contest", new_challenge_idea_path(@challenge), class: 'btn btn-primary btn-block btn-ellipsis btn-standout challenge-cta'
             - elsif @current_entries[:contest].empty?
               = link_to @challenge.enter_button_text, 'javascript:void(0)', class: 'btn btn-primary btn-block btn-ellipsis btn-standout enter-challenge challenge-cta'
       - elsif @challenge.disable_registration and @challenge.open_for_submissions?

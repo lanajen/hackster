@@ -2,11 +2,13 @@
   = f.error_notification
 
   = f.input :name, label: 'Name of your idea or concept'
-  .form-group
-    label.control-label Add an image
+  .form-group class=(@idea.errors.messages.include?(:image_id) ? 'has-error' : '')
+    label.control-label
+      abbr> title="required" *
+      | Add an image
     .image.file-drop
       - if @idea.image
-        = hidden_field_tag :image_id, @idea.image.id
+        = hidden_field_tag :image_id, @idea.image_id
       div
         span.image.image-preview.preview
           - if @idea.image
@@ -16,6 +18,8 @@
           a.btn.btn-default.btn-sm.url*{ data: { target: ".remote_file_upload.image" } }
             i.fa.fa-link
     p.help-block Add a nice, high resolution image to enhance your submission! Will be cropped to fit 4:3 format.
+    - if @idea.errors.messages.include?(:image_id)
+      p.help-block= @idea.errors.messages[:image_id].to_sentence
 
   = render partial: 'shared/image_form_bare', locals: { file_type: 'image', attribute_type: 'image', image_version: 'thumb', model: 'challenge_idea' }
 
@@ -26,13 +30,13 @@
   p
     small
       ' Please note: if eligible, your idea will be made public
-      = link_to 'here', challenge_ideas_path(@challenge.slug)
+      = link_to 'here', challenge_ideas_path(@challenge.slug), target: '_blank'
       | .
 
   p
     small
       ' By submitting your idea you agree to the
-      = link_to 'challenge rules', challenge_path(@challenge, anchor: 'rules', show_rules: 1)
+      = link_to 'challenge rules', challenge_path(@challenge, anchor: 'rules', show_rules: 1), target: '_blank'
       | .
 
   .form-actions

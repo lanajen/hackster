@@ -64,6 +64,7 @@ class CronTask < BaseWorker
     CronTask.perform_async 'generate_users'
     CronTask.perform_async 'update_mailchimp'
     CronTask.perform_async 'update_mailchimp_for_challenges'
+    CronTask.perform_async 'send_challenge_reminder'
     ReputationWorker.perform_in 1.minute, 'compute_daily_reputation'
     PopularityWorker.perform_in 1.hour, 'compute_popularity'
     CronTask.perform_in 2.hours, 'send_daily_notifications'
@@ -119,6 +120,24 @@ class CronTask < BaseWorker
         NotificationCenter.notify_all :due, :assignment, user.id unless user.submitted_project_to_assignment?(assignment)
       end
       assignment.update_column :reminder_sent_at, Time.now
+    end
+  end
+
+  def send_challenge_reminder
+    Challenge::REMINDER_TIMES.each do |time|
+      # pre-contest
+      challenges = Challenge.where("CAST(challenges.hproperties -> 'activate_pre_contest' AS BOOLEAN) = 't' AND CAST(challenges.hproperties -> 'pre_contest_end_date' AS INTEGER) < ? AND CAST(challenges.hproperties -> 'pre_contest_end_date' AS INTEGER) > ?", time.from_now.to_i, (time.from_now - 1.day).to_i)
+
+      challenges.each do |challenge|
+        NotificationCenter.notify_all :ending_soon, :challenge, challenge.id, 'pre_contest_ending_soon'
+      end
+
+      # contest
+      challenges = Challenge.where("challenges.end_date < ? AND challenges.end_date > ?", time.from_now, time.from_now - 1.day)
+
+      challenges.each do |challenge|
+        NotificationCenter.notify_all :ending_soon, :challenge, challenge.id
+      end
     end
   end
 

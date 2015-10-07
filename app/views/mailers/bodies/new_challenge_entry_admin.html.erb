@@ -1,6 +1,6 @@
 <p>Hello there,</p>
 
-<p>This is to let you know that <a href="|author_link|">|author_name|</a> posted a <a href="|project_link|">new entry</a> for <a href="<%= u.challenge_url(@context[:challenge]) %>">|challenge_name|</a>.</p>
+<p>This is to let you know that <a href="|author_link|">|author_name|</a> posted a <a href="|project_link|">new entry</a> for <a href="<%= u.challenge_url(@context[:challenge], ref: 'emailnotif') %>">|challenge_name|</a>.</p>
 
 <p>You can moderate it by going to the <a href="<%= u.challenge_admin_entries_url(@context[:challenge]) %>">entries dashboard</a>.</p>
 

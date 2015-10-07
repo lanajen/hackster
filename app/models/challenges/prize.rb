@@ -1,8 +1,8 @@
 class Prize < ActiveRecord::Base
   belongs_to :challenge
-  has_and_belongs_to_many :challenge_entries
+  has_and_belongs_to_many :entries, class_name: 'ChallengeEntry'
+  has_many :projects, through: :entries
   has_one :image, as: :attachable, dependent: :destroy
-  has_one :project
 
   validates :quantity, numericality: { only_integer: true, greater_than_or_equal_to: 1 }
 

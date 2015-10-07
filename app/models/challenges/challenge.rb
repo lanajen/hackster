@@ -2,6 +2,7 @@ class Challenge < ActiveRecord::Base
   PAST_STATES = %w(judging judged)
   OPEN_SUBMISSION_STATES = %w(pre_contest_in_progress in_progress)
   REGISTRATION_OPEN_STATES = %w(pre_registration pre_contest_in_progress pre_contest_ended in_progress)
+  REMINDER_TIMES = [2.weeks, 5.days, 24.hours]
   VISIBLE_STATES = %w(in_progress judging judged)
   VOTING_START_OPTIONS = {
     'Now' => :now,

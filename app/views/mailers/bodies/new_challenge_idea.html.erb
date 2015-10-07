@@ -1,8 +1,8 @@
 <p>Hello there,</p>
 
-<p>This is to confirm that we have received your idea "|idea_name|" for <a href="<%= u.challenge_url(@context[:challenge]) %>">|challenge_name|</a>.</p>
+<p>This is to confirm that we have received your idea "|idea_name|" for <a href="<%= u.challenge_url(@context[:challenge], ref: 'emailnotif') %>">|challenge_name|</a>.</p>
 
-<p>It will now be reviewed in order to determine whether it is qualified to enter. Please read <a href="<%= u.challenge_brief_url(@context[:challenge].slug, anchor: 'rules', show_rules: 1) %>">the challenge rules</a> for more information.</p>
+<p>It will now be reviewed in order to determine whether it is qualified to enter. Please read <a href="<%= u.challenge_brief_url(@context[:challenge].slug, anchor: 'rules', show_rules: 1, ref: 'emailnotif') %>">the challenge rules</a> for more information.</p>
 
 <p>
   Submissions to the pre-contest are open until <%= l @context[:challenge].pre_contest_end_date.in_time_zone(PDT_TIME_ZONE) %> PDT.

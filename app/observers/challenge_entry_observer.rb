@@ -41,9 +41,6 @@ class ChallengeEntryObserver < ActiveRecord::Observer
   alias_method :after_create, :after_destroy
   alias_method :after_disqualify, :after_destroy
 
-  # def after_award_not_given record
-  #   NotificationCenter.notify_all :awarded, :challenge_entry, record.id
-  # end
   private
     def expire_cache record
       record.challenge.update_counters only: [:projects]

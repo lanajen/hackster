@@ -68,9 +68,13 @@ class NotificationHandler
         user.subscribed_to?(notification_type, 'new_badge') ? context[:user] = user : context[:users] = []
       when :challenge
         context[:model] = challenge = context[:challenge] = Challenge.find context_id
-        context[:users] = challenge.admins
-        if event.in? [:launched_contest, :launched_pre_contest]
-          context[:users] += challenge.registrants
+        if event.in? [:ending_soon]
+          context[:users] = challenge.registrants.includes(:challenge_entries).reject{|u| challenge.id.in? u.challenge_entries.map(&:challenge_id) }
+        else
+          context[:users] = challenge.admins
+          if event.in? [:launched_contest, :launched_pre_contest, :judged]
+            context[:users] += challenge.registrants
+          end
         end
       when :challenge_entry, :challenge_entry_admin
         context[:model] = entry = context[:entry] = ChallengeEntry.find context_id
