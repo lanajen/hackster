@@ -8,7 +8,7 @@
   <% user = project.users.first %>
 
   <p style="margin-bottom:10px;">
-    <strong><a href="<%= u.project_url(project)%>?ref=emailnotif"><%= project.name %></a></strong><% if project.guest_name.present? %> by <%= project.guest_name %><% elsif team_name = project.team.full_name.presence %> by Team <%= team_name %><% elsif users.any? %> by <%= users.map{ |user| "<a href='#{u.user_url(user)}?ref=emailnotif'>#{user.name}</a>" }.to_sentence.html_safe %><% end %>: <%= project.one_liner %><% if project.guest_name.present? and user %> (posted by <a href="<%= u.user_url(user) %>?ref=emailnotif"><%= user.name %></a>)<% end %>
+    <strong><a href="<%= u.project_url(project)%>?ref=emailnotif"><%= project.name %></a></strong><% if project.guest_name.present? %> by <%= project.guest_name %><% elsif team_name = project.team.full_name.presence %> by Team <%= team_name %><% elsif users.any? %> by <%= users.map{ |user| "<a href='#{u.user_url(user)}?ref=emailnotif'>#{user.name}</a>" }.to_sentence.html_safe %><% end %>: <%= project.one_liner %><% if project.one_liner !~ /[\.\?\!]\Z/ %>.<% end %><% if project.guest_name.present? and user %> (posted by <a href="<%= u.user_url(user) %>?ref=emailnotif"><%= user.name %></a>)<% end %>
     Because you follow
     <%= followables.map do |f|
       out = ''

@@ -174,3 +174,60 @@
     }
   }
 }
+
+.challenge-thumb-full {
+  background: #fff;
+  margin-bottom: 20px;
+  height: 300px;
+  & > .row {
+    height: 100%;
+  }
+  .details-container {
+    height: 100%;
+  }
+  .details {
+    height: 100%;
+    position: relative;
+    padding: 20px 0 20px 20px;
+    h4 {
+      margin: 0 0 10px;
+    }
+    .sponsor {
+
+    }
+    .bottom {
+      position: absolute;
+      bottom: 20px;
+    }
+    .date {
+      font-size: 0.8em;
+      color: #777;
+      margin-bottom: 5px;
+    }
+  }
+  .cover {
+    @include background-cover;
+    height: 300px;
+  }
+  .prize {
+    padding: 20px 20px 20px 0;
+    h5 {
+      text-transform: uppercase;
+      background: #22F175;
+      padding: 5px 10px;
+      color: #fff;
+      margin: 0 0 25px;
+      display: inline-block;
+      font-weight: bold;
+      font-size: 0.7em;
+      @include border-radius(4px);
+    }
+    img {
+      margin-bottom: 10px;
+      max-height: 150px;
+    }
+    .description {
+      font-size: 0.8em;
+    }
+  }
+}

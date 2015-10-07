@@ -184,7 +184,7 @@
                 | (complete projects only)
             | :
           = form_tag challenge_admin_entries_path(@challenge), method: :post do
-            = select_tag :project_id, options_from_collection_for_select(@user_projects, :id, :name), class: 'form-control'
+            = select_tag :project_id, options_from_collection_for_select(@user_projects, :id, :name), class: 'form-control mg-10'
             p
               small
                 ' By entering you agree to the

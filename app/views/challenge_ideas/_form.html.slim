@@ -25,6 +25,12 @@
 
   p
     small
+      ' Please note: if eligible, your idea will be made public
+      = link_to 'here', challenge_ideas_path(@challenge.slug)
+      | .
+
+  p
+    small
       ' By submitting your idea you agree to the
       = link_to 'challenge rules', challenge_path(@challenge, anchor: 'rules', show_rules: 1)
       | .

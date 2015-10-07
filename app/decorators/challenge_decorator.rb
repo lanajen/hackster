@@ -65,10 +65,10 @@ class ChallengeDecorator < ApplicationDecorator
 
   def top_prize
     if prize = model.prizes.first
-      if prize.cash_value
-        h.number_to_currency prize.cash_value, precision: 0
-      else
+      if prize.description
         prize.description
+      elsif prize.cash_value
+        h.number_to_currency prize.cash_value, precision: 0
       end
     end
   end

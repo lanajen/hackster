@@ -197,7 +197,7 @@ class ChallengesController < ApplicationController
     def set_challenge_entrant
       if @challenge.disable_registration or @has_registered = (user_signed_in? and ChallengeRegistration.has_registered? @challenge, current_user)
         @current_entries = (user_signed_in? ? current_user.challenge_entries_for(@challenge) : {})
-        @is_challenge_entrant = @current_entries.any?
+        @is_challenge_entrant = @current_entries.values.select{|v| v.any? }.any?
       end
     end
 

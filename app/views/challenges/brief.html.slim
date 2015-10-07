@@ -139,7 +139,7 @@
     - cache ["challenge-#{@challenge.id}-prizes"], tag: ["challenge-#{@challenge.id}-prizes"] do
 
       section.section-thumbs
-        h4 Awards
+        h4 Prizes
         - @challenge.prizes.each do |prize|
           .award
             h5
@@ -214,7 +214,7 @@
       section.section-container.section-collapsible
         h2.section-title
           a.title.title-toggle href=''
-            ' Challenge brief
+            ' Contest brief
             i.fa.fa-chevron-down
             i.fa.fa-chevron-up
 
