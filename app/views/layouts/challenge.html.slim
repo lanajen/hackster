@@ -183,7 +183,7 @@
               abbr.istooltip title="Projects will be moderated upon entry. Incomplete projects will not qualify."
                 | (complete projects only)
             | :
-          = form_tag challenge_admin_entries_path(@challenge), method: :post do
+          = form_tag challenge_entries_path(@challenge), method: :post do
             = select_tag :project_id, options_from_collection_for_select(@user_projects, :id, :name), class: 'form-control mg-10'
             p
               small
