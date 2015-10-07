@@ -30,6 +30,9 @@ class ChallengeIdea < ActiveRecord::Base
     end
     state :won
     state :lost
+    after_transition do |from, to, triggering_event, *event_args|
+      notify_observers(:"after_#{triggering_event}")
+    end
   end
 
   def self.approved

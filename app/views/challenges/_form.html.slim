@@ -33,14 +33,15 @@
         .panel-heading
           h4 Challenge settings
         .panel-body
-          = f.input :activate_pre_registration, as: :boolean, inline_label: 'Enable pre-registration', label: false, hint: "You can let users register for the challenge before it's open for submissions."
-          #pre_registration_settings style=(@challenge.activate_pre_registration ? '' : 'display:none')
-            = f.input :pre_registration_start_date_dummy, label: 'Pre-registration start date', wrapper_html: { id: 'pre_registration_start_date_dummy', class: 'datetimepicker' }, hint: "The first date when makers can start registering for the challenge. They will not be able to enter submissions yet. Times are PT (-08)." do
-              #datepicker.input-group
-                = f.input_field :pre_registration_start_date_dummy, as: :string, label: false
-                span.input-group-addon
-                  i.fa.fa-calendar
-            = f.input :pre_registration_start_date, as: :hidden, input_html: { id: 'pre_registration_start_date' }
+          /
+            = f.input :activate_pre_registration, as: :boolean, inline_label: 'Enable pre-registration', label: false, hint: "You can let users register for the challenge before it's open for submissions."
+            #pre_registration_settings style=(@challenge.activate_pre_registration ? '' : 'display:none')
+              = f.input :pre_registration_start_date_dummy, label: 'Pre-registration start date', wrapper_html: { id: 'pre_registration_start_date_dummy', class: 'datetimepicker' }, hint: "The first date when makers can start registering for the challenge. They will not be able to enter submissions yet. Times are PT (-08)." do
+                #datepicker.input-group
+                  = f.input_field :pre_registration_start_date_dummy, as: :string, label: false
+                  span.input-group-addon
+                    i.fa.fa-calendar
+              = f.input :pre_registration_start_date, as: :hidden, input_html: { id: 'pre_registration_start_date' }
 
           = f.input :activate_pre_contest, as: :boolean, inline_label: 'Enable pre-contest', label: false, hint: "This will allow participants to submit ideas to win hardware which they can use to enter the contest."
           #pre_contest_settings style=(@challenge.activate_pre_contest ? '' : 'display:none')
@@ -82,7 +83,7 @@
                           = f_field.input :position, as: :hidden, input_html: { class: 'position' }
                           = f_field.link_to_remove content_tag(:i, '', class: 'fa fa-trash-o'), class: 'btn btn-danger btn-xs'
                     tr.sortable-disabled
-                      td colspan=2 = f.link_to_add 'Add a field', :challenge_idea_fields, class: 'btn btn-xs btn-success nested-field-table'
+                      td colspan=3 = f.link_to_add 'Add a field', :challenge_idea_fields, class: 'btn btn-xs btn-success nested-field-table'
 
 
           = f.input :start_date_dummy, label: 'Challenge start date', wrapper_html: { id: 'start_date_dummy', class: 'datetimepicker' }, hint: "Participants will be able to enter projects starting that date. Times are PT (-08)." do
@@ -105,7 +106,7 @@
           = f.input :winners_announced_date, as: :hidden, input_html: { id: 'winners_announced_date' }
 
           = f.input :multiple_entries, inline_label: 'Allow more than one entry per person?', as: :boolean, label: false
-          = f.input :auto_approve, inline_label: 'Automatically approve all entries', as: :boolean, label: false, hint: "When an entry is approved, a confirmation email is sent to its author. Whether you choose to automatically approve entries or not, you will be able to approve and disqualify entries from the dashboard at all times."
+          / = f.input :auto_approve, inline_label: 'Automatically approve all entries', as: :boolean, label: false, hint: "When an entry is approved, a confirmation email is sent to its author. Whether you choose to automatically approve entries or not, you will be able to approve and disqualify entries from the dashboard at all times."
           = f.input :description, as: :text, input_html: { rows: 10, class: 'text-editor', style: 'max-height: 600px' }
           = f.input :eligibility, as: :text, input_html: { rows: 10, class: 'text-editor' }
           = f.input :requirements, as: :text, input_html: { rows: 10, class: 'text-editor' }

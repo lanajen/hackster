@@ -1,5 +1,5 @@
 .challenge-idea
-  .img-container= idea.decorate.image_tag :medium
+  .img-container= idea.decorate.image_tag :medium_min
   h3= idea.name
   p.author
     ' By
@@ -14,8 +14,9 @@
           strong
             = field.label
             | :
-        - idea.send("cfield#{i}").split(/\r\n/).each do |string|
-          = string
-          br
+        - if field = idea.send("cfield#{i}")
+          - field.split(/\r\n/).each do |string|
+            = string
+            br
 
   = link_to 'View the full idea &rarr;'.html_safe, 'javascript:void(0)', class: 'more modal-open', data: { target: '#challenge-idea-popup' }

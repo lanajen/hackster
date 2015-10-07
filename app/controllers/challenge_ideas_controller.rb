@@ -39,7 +39,7 @@ class ChallengeIdeasController < ApplicationController
     @idea.user_id = current_user.id
 
     if @idea.save
-      idea.approve! if @challenge.auto_approve?
+      @idea.approve! if @challenge.auto_approve?
       flash[:notice] = "Your idea has been entered!"
       redirect_to @challenge
     else

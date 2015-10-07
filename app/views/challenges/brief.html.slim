@@ -190,7 +190,7 @@
           - if @challenge.pre_winners_announced_date
             div class=(@challenge.pre_winners_announced_date < Time.now ? 'mute-date' : '')
               p style='margin-bottom:0'
-                strong> Pre-contest winners announced on:
+                strong> Pre-contest winners announced:
               p #{l @challenge.pre_winners_announced_date, format: :short_date}
         - if @challenge.start_date
           div class=(@challenge.start_date < Time.now ? 'mute-date' : '')
@@ -200,12 +200,12 @@
         - if @challenge.end_date
           div class=(@challenge.end_date < Time.now ? 'mute-date' : '')
             p style='margin-bottom:0'
-              strong> Contest ends on:
+              strong> Contest ends:
             p #{l @challenge.end_date.in_time_zone(PDT_TIME_ZONE)} PT
         - if @challenge.winners_announced_date
           div class=(@challenge.winners_announced_date < Time.now ? 'mute-date' : '')
             p style='margin-bottom:0'
-              strong> Winners announced on:
+              strong> Winners announced:
             p #{l @challenge.winners_announced_date, format: :short_date}
 
   - cache ["challenge-#{@challenge.id}-brief"], tag: ["challenge-#{@challenge.id}-brief"] do
