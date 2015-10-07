@@ -27,6 +27,8 @@ class ChallengeIdeasController < ApplicationController
   end
 
   def new
+    redirect_to @challenge, notice: "Idea submission is currently closed." and return unless @challenge.pre_contest_in_progress?
+
     @idea = @challenge.ideas.new
     authorize! :create, @idea
   end

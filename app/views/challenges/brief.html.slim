@@ -208,7 +208,7 @@
               strong> Winners announced:
             p #{l @challenge.winners_announced_date, format: :short_date}
 
-  - cache ["challenge-#{@challenge.id}-brief"], tag: ["challenge-#{@challenge.id}-brief"] do
+  - cache ["challenge-#{@challenge.id}-brief", params[:show_rules]], tag: ["challenge-#{@challenge.id}-brief"] do
 
     .col-md-8.col-md-pull-4
       section.section-container.section-collapsible
