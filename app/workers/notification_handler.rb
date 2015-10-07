@@ -91,6 +91,11 @@ class NotificationHandler
         context[:model] = idea = context[:idea] = ChallengeIdea.find context_id
         context[:challenge] = challenge = idea.challenge
         context[:user] = idea.user
+      when :challenge_idea_admin
+        context[:model] = idea = context[:idea] = ChallengeIdea.find context_id
+        context[:author] = idea.user
+        context[:challenge] = challenge = idea.challenge
+        context[:users] = challenge.admins
       when :challenge_registration
         context[:model] = registration = context[:registration] = ChallengeRegistration.find context_id
         context[:challenge] = challenge = registration.challenge
