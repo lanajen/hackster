@@ -1173,7 +1173,7 @@ function createArrayOfComponents(dom) {
   return (function recurse(source, lastHash) {
     lastHash = lastHash || null;
     return source.map(function(item, index) {
-
+      item.attribs = item.attribs || {};
       let tagProps = { tag: item.tag }, style = {}, hash, props, el;
       let tagPropsMap = {
         'a': Object.assign({}, { href: item.attribs.href }),

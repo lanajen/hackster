@@ -26,7 +26,11 @@ class ProjectDecorator < ApplicationDecorator
   end
 
   def story_json
-    parse_story_json model.story_json
+    if(model.story_json != nil)
+      parse_story_json model.story_json
+    else
+      ''
+    end
   end
 
   def logo size=nil, use_default=true

@@ -24,6 +24,7 @@ export function fetchInitialDOM(projectId, csrfToken) {
       .then(result => {
         dispatch(setInitialDOM(result));
       }).catch(err => {
+        console.log(err);
         dispatch(toggleErrorMessenger(true, 'We had an issue getting your story!'));
       });
   }

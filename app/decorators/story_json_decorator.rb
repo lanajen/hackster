@@ -17,8 +17,12 @@ module StoryJsonDecorator
           data = { url: video['embed'], caption: video['figcaption'] }
           embed_html data, 'Video'
         when 'File'
-          data = { id: item['id'] }
-          embed_html data, 'File'
+          if(item['data']['id'] != nil)
+            data = { id: item['data']['id'] }
+            embed_html data, 'File'
+          else
+            ''
+          end 
         else
           ''
         end

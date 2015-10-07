@@ -828,12 +828,12 @@ const Utils = {
   convertVideoSrc(map, mainCallback) {
     async.map(map, (item, callback) => {
       if(item.type === 'Video') {
-        let videoData = Helpers.getVideoData(item.images[0].src);
+        let videoData = Helpers.getVideoData(item.video[0].src);
         if(!videoData) {
           console.log('BUNK', item);
           return callback(null, null);
         }
-        item.images[0] = Object.assign({}, videoData, item.images[0]);
+        item.video[0] = Object.assign({}, videoData, item.video[0]);
         return callback(null, item);
       } else {
         return callback(null, item);
@@ -1242,7 +1242,7 @@ const Utils = {
         }
 
         /** Remove invalid anchors. */
-        if(item.name === 'a' && !Validator.isURL(item.attribs.src)) {
+        if(item.name === 'a' && !Validator.isURL(item.attribs.href)) {
           return null;
         }
 
