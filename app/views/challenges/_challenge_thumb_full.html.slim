@@ -4,10 +4,10 @@
       .details
         h4= link_to challenge.name, challenge
         - if platform = challenge.platform.try(:decorate)
-        .small
-          ' Sponsored by
-          => image_tag platform.avatar(:tiny)
-          strong= link_to platform.name, platform
+          .small
+            ' Sponsored by
+            => image_tag platform.avatar(:tiny)
+            strong= link_to platform.name, platform
 
         .bottom
           .date
