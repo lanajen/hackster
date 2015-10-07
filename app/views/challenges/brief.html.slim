@@ -146,7 +146,7 @@
               i.fa.fa-trophy
               = prize.name
             - if prize.image
-              = image_tag prize.image.imgix_url(:medium)
+              div= image_tag prize.image.imgix_url(:medium)
             p
               - if prize.description.present?
                 - if prize.link.present?

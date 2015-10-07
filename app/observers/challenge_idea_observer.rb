@@ -30,9 +30,9 @@ class ChallengeIdeaObserver < ActiveRecord::Observer
   #   Cashier.expire "project-#{record.project_id}-teaser"
   # end
 
-  # def after_destroy record
-  #   expire_cache record if record.project_id
-  # end
+  def after_destroy record
+    expire_cache record
+  end
 
   # alias_method :after_create, :after_destroy
   # alias_method :after_disqualify, :after_destroy
