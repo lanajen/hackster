@@ -11,7 +11,7 @@ class ChallengeIdeaObserver < ActiveRecord::Observer
 
   def after_reject record
     expire_cache record
-    NotificationCenter.notify_all :rejected, :challenge_idea, record.id
+    NotificationCenter.notify_via_email :rejected, :challenge_idea, record.id
   end
 
   def after_update record

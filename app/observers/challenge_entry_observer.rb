@@ -25,7 +25,7 @@ class ChallengeEntryObserver < ActiveRecord::Observer
 
   def after_disqualify record
     expire_cache record
-    NotificationCenter.notify_all :rejected, :challenge_entry, record.id
+    NotificationCenter.notify_via_email :rejected, :challenge_entry, record.id
   end
 
   def after_give_award record
