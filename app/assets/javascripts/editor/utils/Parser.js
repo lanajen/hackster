@@ -2,6 +2,7 @@ import Validator from 'validator';
 import HtmlParser from 'htmlparser2';
 import DomHandler from 'domhandler';
 import _ from 'lodash';
+import { BlockElements } from './Constants';
 
 export default {
 
@@ -22,12 +23,7 @@ export default {
   },
 
   parseTree(html) {
-    const blockEls = {
-      p: true,
-      blockquote: true,
-      ul: true,
-      pre: true
-    };
+    const blockEls = BlockElements;
 
     function handler(html) {
       return _.map(html, (item) => {
@@ -48,7 +44,7 @@ export default {
         }
 
         /** Recurse through block elements and make sure only inlines exist as children. */
-        if(blockEls[item.name]) {
+        if(item.name && blockEls[item.name.toUpperCase()]) {
           item.children = this.cleanBlockElementChildren(item);
         }
 
@@ -94,7 +90,10 @@ export default {
       'bold': 'strong',
       'italic': 'em',
       'i': 'em',
-      'ol': 'ul'
+      'ol': 'ul',
+      'h1': 'h3',
+      'h2': 'h3',
+      'h4': 'h3'
     };
 
     return converter[nodeName] || nodeName;
@@ -102,19 +101,14 @@ export default {
 
   cleanBlockElementChildren(node) {
     let children = node.children;
-    const blockEls = {
-      p: true,
-      blockquote: true,
-      ul: true,
-      pre: true
-    };
+    const blockEls = BlockElements;
 
     children = (function recurse(children) {
       return children.map(child => {
         if(!child.children || !child.children.length) {
           return child;
         } else {
-          if(child.name && blockEls[child.name]) {
+          if(child.name && blockEls[child.name.toUpperCase()]) {
             child.name = 'span';
           }
           child.children = recurse(child.children);

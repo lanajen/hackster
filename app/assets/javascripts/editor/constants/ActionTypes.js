@@ -19,6 +19,7 @@ export default {
     transformBlockElement: null,
     transformBlockElements: null,
     prependCE: null,
+    insertCE: null,
     setFigCaptionText: null,
     cleanElement: null,
     removeBlockElements: null,

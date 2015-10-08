@@ -83,6 +83,10 @@ $desktop-width: 1024px;
         color: #666;
       }
 
+      h3 {
+        @extend p;
+      }
+
       pre {
         border-radius: 0;
         border: none;
@@ -91,7 +95,7 @@ $desktop-width: 1024px;
         padding-left: 15px;
         padding-top: 10px;
         margin: 0 4%;
-        color: #666;
+        color: #fff;
       }
 
       blockquote {
@@ -343,6 +347,12 @@ $desktop-width: 1024px;
   }
 }
 
+/** Placeholder */
+.react-editor-placeholder {
+  text-align: center;
+  min-height: 48px; 
+  width: 100%;
+}
 
 /** Toolbar */
 

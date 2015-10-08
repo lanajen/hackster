@@ -8,6 +8,7 @@ import Utils from '../utils/DOMUtils';
 import ImageUtils from '../../utils/Images';
 import Helpers from '../../utils/Helpers';
 import Parser from '../utils/Parser';
+import { BlockElements } from '../utils/Constants';
 import { LinearProgress } from 'material-ui';
 
 const Toolbar = React.createClass({
@@ -69,17 +70,14 @@ const Toolbar = React.createClass({
   handleBlockElementTransform(tagType) {
     let { sel, range, commonAncestorContainer, parentNode, depth } = Utils.getSelectionData();
     let isNodeInUL = Utils.isNodeInUL(commonAncestorContainer);
-    let blockEls = {
-      'blockquote': true,
-      'pre': true
-    };
+    let blockEls = BlockElements;
 
     if(parentNode.nodeName === 'DIV' && parentNode.classList.contains('react-editor-carousel')
        || parentNode.nodeName === 'DIV' && parentNode.classList.contains('react-editor-video')) {  // Don't transform Media.
       return;
     }
 
-    if(isNodeInUL && blockEls[tagType]) { // Cleans UL's lis if transforming.
+    if(isNodeInUL && blockEls[tagType]) {
       this.props.actions.toggleErrorMessenger(true, 'List items cannot tranform into a ' + tagType);
       return;
     } else if(Utils.isCommonAncestorContentEditable(commonAncestorContainer)) {  // Multiple lines are selected.
@@ -104,15 +102,12 @@ const Toolbar = React.createClass({
 
   handleBlockquote(tagType) {
     let { sel, range, depth, anchorNode, parentNode } = Utils.getSelectionData();
-    let blockEls = {
-      'BLOCKQUOTE': true,
-      'PRE': true,
-      'UL': true
-    };
+    let blockEls = BlockElements;
     /** If theres selected text (NOT in a block element or if selection spans multiple nodes), break the paragraph apart into three segments.
       * Else turn the selection/s to a normal Blockquote.
      */
-    if(range.startOffset !== range.endOffset && Utils.getRootParentElement(range.startContainer) === Utils.getRootParentElement(range.endContainer)
+    if(range.startOffset !== range.endOffset && range.toString() !== parentNode.textContent
+       && Utils.getRootParentElement(range.startContainer) === Utils.getRootParentElement(range.endContainer)
        && !blockEls[Utils.getRootParentElement(range.startContainer).nodeName] && range.getNodes([3]).length <= 1) {
       /** Builds the selected text from scratch honoring all wrapped node types.  We delete the selection in the Promise handler. */
       let selectedHtml = range.toHtml();
@@ -147,14 +142,15 @@ const Toolbar = React.createClass({
     }
   },
 
+  handleHeader(tagType) {
+    this.handleBlockElementTransform(tagType);
+  },
+
   handlePre(tagType) {
     let data = Utils.getSelectionData();
     let { sel, range, depth, anchorNode, parentNode } = data;
-    let blockEls = {
-      'BLOCKQUOTE': true,
-      'PRE': true,
-      'UL': true
-    };
+    let blockEls = BlockElements;
+
     /** If there's selected text and the selection is within the same element, wrap the text in a CODE tag. 
       * Else we're going to transform the selection or blocks into a PRE tags.
      */
@@ -254,10 +250,6 @@ const Toolbar = React.createClass({
     let { sel, range, parentNode } = Utils.getSelectionData();
     let startContainerParent = Utils.getRootParentElement(range.startContainer);
     let endContainerParent = Utils.getRootParentElement(range.endContainer);
-    let blockEls = {
-      'blockquote': true,
-      'pre': true
-    };
     let elements = [];
 
     if(parentNode.nodeName === 'DIV' && parentNode.classList.contains('react-editor-carousel')
@@ -405,6 +397,7 @@ const Toolbar = React.createClass({
     range.selectNodeContents(range.startContainer);
     sel.addRange(range);
     this.handleExecCommand('unlink', 'p');
+    this.unMountPopOver();
     /** Replaces the cursor to the last known position or to the end of the current node. */
     if(this.props.editor.cursorPosition.pos  && this.props.editor.cursorPosition.pos.start) {
       sel.collapse(sel.anchorNode, this.props.editor.cursorPosition.pos.start);
@@ -466,6 +459,10 @@ const Toolbar = React.createClass({
     this.props.actions.forceUpdate(true);
   },
 
+  handleToolbarButtonError(tagType) {
+    this.props.actions.toggleErrorMessenger(true, `Sorry, cannot transform that into a ${tagType}`);
+  },
+
   render: function() {
     // console.log('TOOLBAR', this.state.showPopOver);
   
@@ -476,6 +473,7 @@ const Toolbar = React.createClass({
     let buttonList = [
       { classList: 'toolbar-btn', tagType: 'bold', icon: 'fa fa-bold', onClick: this.handleExecCommand },
       { classList: 'toolbar-btn', tagType: 'italic', icon: 'fa fa-italic', onClick: this.handleExecCommand},
+      { classList: 'toolbar-btn', tagType: 'h3', icon: 'fa fa-header', onClick: this.handleHeader},
       { classList: 'toolbar-btn', tagType: 'anchor', icon: 'fa fa-link', onClick: this.handleLinkClick},
       { classList: 'toolbar-btn', tagType: 'blockquote', icon: 'fa fa-quote-right', onClick: this.handleBlockquote},
       { classList: 'toolbar-btn', tagType: 'pre', icon: 'fa fa-code', onClick: this.handlePre},
@@ -485,7 +483,7 @@ const Toolbar = React.createClass({
     ];
 
     let Buttons = buttonList.map(button => {
-      return <Button key={Helpers.createRandomNumber()} classList={button.classList} tagType={button.tagType} icon={button.icon} activeButtons={this.props.toolbar.activeButtons} onClick={button.onClick} />;
+      return <Button key={Helpers.createRandomNumber()} classList={button.classList} tagType={button.tagType} icon={button.icon} activeButtons={this.props.toolbar.activeButtons} onClick={button.onClick} onError={this.handleToolbarButtonError} />;
     });
     
 

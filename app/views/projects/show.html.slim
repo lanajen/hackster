@@ -92,7 +92,6 @@
                       i.fa.fa-chevron-down
                       i.fa.fa-chevron-up
                   .section-content
-                    / .medium-editor= @project.description
                     .medium-editor= @project.story_json.empty? ? @project.description : @story_json
 
               - cache [I18n.locale, "project-#{@project.id}-hardware-parts", is_whitelabel?], tag: ["project-#{@project.id}-hardware-parts"] do

@@ -40,6 +40,14 @@ export const BLOCKQUOTE = React.createClass({
   }
 });
 
+export const H3 = React.createClass({
+  render() {
+    return (
+      <h3 className={this.props.className} data-hash={this.props.tagProps.hash}>{this.props.children}</h3>
+    );
+  }
+});
+
 export const DIV = React.createClass({
   render() {
     let style = this.props.style || {},

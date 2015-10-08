@@ -4,6 +4,7 @@ import async from 'async';
 import HtmlParser from 'htmlparser2';
 import DomHandler from 'domhandler';
 import Helpers from '../../utils/Helpers';
+import { BlockElements } from './Constants';
 import Request from './Requests';
 import Validator from 'validator';
 
@@ -136,6 +137,23 @@ const Utils = {
         isChild = true;
       }
     });
+
+    return isChild;
+  },
+
+  isChildOfCE(anchorNode) {
+    let isChild = false;
+
+    while(anchorNode.parentNode && anchorNode.nodeName !== 'body') {
+      if(anchorNode.nodeType === 1 && anchorNode.classList.contains('box-content')) {
+        break;
+      }
+
+      if(anchorNode.nodeType === 1 && anchorNode.classList.contains('content-editable')) {
+        isChild = true;
+      }
+      anchorNode = anchorNode.parentNode;
+    }
 
     return isChild;
   },
@@ -593,12 +611,7 @@ const Utils = {
    * 2) Removes <br/> tags and/or wraps rogue text nodes.
    */
   maintainImmediateChildren(CE) {
-    let blockEls = {
-      'P': true,
-      'BLOCKQUOTE': true,
-      'PRE': true,
-      'UL': true
-    };
+    let blockEls = BlockElements;
 
     let P,
         children = [].slice.apply(CE.childNodes);
@@ -923,7 +936,8 @@ const Utils = {
       'p': true,
       'ul': true,
       'blockquote': true,
-      'pre': true
+      'pre': true,
+      'h3': true
     };
     let el = (function recurse(el, depth) {
       let child;
@@ -1019,7 +1033,7 @@ const Utils = {
   },
 
   getCarouselData(element) {
-    let figures = [];
+    let images = [];
     let carouselData = [];
 
     (function recurse(el) {
@@ -1027,38 +1041,39 @@ const Utils = {
         return el;
       } else {
         el.children.forEach(child => {
-          if(child.name === 'figure') {
-            figures.push(child);
+          if(child.name === 'div' && child.attribs && child.attribs.class 
+             && child.attribs.class.indexOf('image') !== -1 && child.attribs['data-file-id']) {
+            images.push(child);
           }
-
           recurse(child);
         });
       }
     }(element));
 
-    figures.forEach(figure => {
-      let fig = {};
+    images.forEach(image => {
+      let obj = {};
+      obj.id = image.attribs['data-file-id'] || null;
 
-      (function recurse(f) {
-        if(!f.children) {
-          return f;
+      (function recurse(i) {
+        if(!i.children) {
+          return i;
         } else {
-          f.children.forEach(child => {
+          i.children.forEach(child => {
             if(child.name === 'img') {
-              fig.url = child.attribs.src;
-              fig.alt = child.attribs.alt;
-              fig.show = false;
+              obj.url = child.attribs.src;
+              obj.alt = child.attribs.alt;
+              obj.show = false;
             }
 
             if(child.name === 'figcaption') {
-              fig.figcaption = child.data || '';
+              obj.figcaption = child.attribs['data-value'] || '';
             }
             recurse(child);
           });
         }
-      }(figure));
+      }(image));
 
-      carouselData.push(fig);
+      carouselData.push(obj);
     });
 
     return carouselData;
@@ -1211,7 +1226,7 @@ const Utils = {
     });
 
     /** Makes sure theres always a CE at the end. */
-    if(newCollection[newCollection.length-1].type !== 'CE') {
+    if(newCollection[newCollection.length-1] && newCollection[newCollection.length-1].type !== 'CE') {
       newCollection.push({
         type: 'CE',
         json: [{
@@ -1292,7 +1307,10 @@ const Utils = {
       'b': 'strong',
       'bold': 'strong',
       'italic': 'em',
-      'ol': 'ul'
+      'ol': 'ul',
+      'h1': 'h3',
+      'h2': 'h3',
+      'h4': 'h3'
     };
 
     return converter[nodeName] || nodeName;

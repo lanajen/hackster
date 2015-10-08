@@ -33,8 +33,9 @@ module StoryJsonDecorator
       if json.empty?
         json
       else
-        json.map { |item| 
-          tag = '<' + item['tag'] + '>'
+        json.map { |item|
+          href = item['tag'] === 'a' ? " href='#{item['attribs']['href']}'" : ''
+          tag = '<' + item['tag'] + href + '>'
           innards = item['content']
           children = item['children'].length < 1 ? '' : build_html(item['children'])
           "#{tag}#{innards}#{children}</#{item['tag']}>"

@@ -8,6 +8,7 @@ import ContentEditable from './ContentEditable';
 import Carousel from './Carousel';
 import Video from './Video';
 import File from './File';
+import Placeholder from './Placeholder';
 import ImageToolbar from './ImageToolbar';
 import { createRandomNumber } from '../../utils/Helpers';
 import Utils from '../utils/DOMUtils';
@@ -74,10 +75,10 @@ const Editable = React.createClass({
     this.props.actions.setCEWidth(React.findDOMNode(this).offsetWidth);
   },
 
-  handleContentEditableChange(storeIndex, html, depth) {
+  handleContentEditableChange(html, depth, storeIndex) {
     return Parser.parseDOM(html)
       .then(parsedHTML => {
-        this.props.actions.setDOM(parsedHTML, storeIndex, depth);
+        this.props.actions.setDOM(parsedHTML, depth, storeIndex);
       })
       .catch(err => { console.log('Parse Error: ' + err); });
   },
@@ -158,22 +159,33 @@ const Editable = React.createClass({
         });
         item.video = cleaned;
         return Promise.resolve(item);
+      } else if(item.type === 'Placeholder') {
+        return null;
       } else {
         return Promise.resolve(item);
       }
-    });
+    }).filter(item => { return item !== null; });
 
     Promise.all(promised)
       .then(results => {
-        let input = document.getElementById('story_json');
-        input.value = JSON.stringify(results);
-        /** Submit the hidden form (form is passed from projects.js via Custom Event).  Rails/jQuery takes care of the post request. */
-        e.detail.form.submit();
-        input.value = '';
+        if(!results || !results.length) {
+          return;
+        } else {
+          let input = document.getElementById('story_json');
+          input.value = JSON.stringify(results);
+          /** Submit the hidden form (form is passed from projects.js via Custom Event).  Rails/jQuery takes care of the post request. */
+          e.detail.form.submit();
+          input.value = '';
+        }
       })
       .catch(err => {
         this.props.actions.toggleErrorMessenger(true, 'Bummer, the project didn\'t save correctly.');
       });
+  },
+
+  handlePlaceholderClick(storeIndex) {
+    console.log('Clicked', storeIndex);
+    this.props.actions.insertCE(storeIndex);
   },
 
   render() {
@@ -193,7 +205,7 @@ const Editable = React.createClass({
                                    editor={this.props.editor} 
                                    actions={this.props.actions} 
                                    hash={item.hash} 
-                                   onChange={this.handleContentEditableChange.bind(this, index)} />
+                                   onChange={this.handleContentEditableChange} />
                 </DropZone>);
       } else if(item.type === 'Carousel') {
         return <Carousel key={index} storeIndex={index} images={item.images} hash={item.hash} editor={this.props.editor} actions={this.props.actions} />
@@ -201,6 +213,8 @@ const Editable = React.createClass({
         return <Video key={index} storeIndex={index} videoData={item.video} hash={item.hash} editor={this.props.editor} actions={this.props.actions} />
       } else if(item.type === 'File') {
         return <File key={index} storeIndex={index} fileData={item.data} hash={item.hash} editor={this.props.editor} actions={this.props.actions} />
+      } else if(item.type === 'Placeholder') {
+        return <Placeholder key={index} storeIndex={index} hash={item.hash} insertCE={this.handlePlaceholderClick} />
       } else {
         return null;
       }

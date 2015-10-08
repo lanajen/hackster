@@ -13,7 +13,7 @@
         .file-drop
         .image-gallery
           - images.sort_by{|id, img| img[:position] }.each do |id, img|
-            - image = server_images.select{|o| o.id == id }.first
+            - image = server_images.select{|o| o.id == id; o }.first
             = render partial: 'api/embeds/carousel_image', locals: { image: image, i: img[:position], caption: img[:caption], uid: uid }
 
 javascript:

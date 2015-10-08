@@ -7,6 +7,7 @@ import Utils from '../utils/DOMUtils';
 import Helpers from '../../utils/Helpers';
 import ImageUtils from '../../utils/Images';
 import Request from '../utils/Requests';
+import { BlockElements } from '../utils/Constants';
 import Hashids from 'hashids';
 
 const hashids = new Hashids('hackster', 4);
@@ -69,12 +70,7 @@ const ContentEditable = React.createClass({
 
   handleDomMutation(mutations) {
     let nodes;
-    const blockEls = {
-      P: true,
-      BLOCKQUOTE: true,
-      UL: true,
-      PRE: true
-    };
+    const blockEls = BlockElements;
     /** Shallow pass on immediate children of CE.  Makes sure no funny biz happens to our tree.
       * The observer is mainly for people tinkering with devtools html and perhaps an initial parse / paste action.
       * We handle deeper children in parseTree in Editable.js.  Why?
@@ -225,11 +221,9 @@ const ContentEditable = React.createClass({
 
   emitChange(){
     let html = React.findDOMNode(this).innerHTML;
-
-    let { parentNode, depth } = Utils.getSelectionData();
-    // let html = parentNode.innerHTML;
+    let { depth } = Utils.getSelectionData();
     
-    this.props.onChange(html, depth);
+    this.props.onChange(html, depth, this.props.storeIndex);
   },
 
   preventEvent(e) {
@@ -347,6 +341,13 @@ const ContentEditable = React.createClass({
     let { sel, range, parentNode, depth, anchorNode } = Utils.getSelectionData();
     if(sel.rangeCount) {
 
+      /** Remove CE unless its the first or last. */
+      if(depth <= 1 && this.props.storeIndex !== this.props.editor.dom.length-1
+         && this.props.storeIndex !== 0 && React.findDOMNode(this).textContent.length < 1) {
+         this.preventEvent(e);
+         this.props.actions.deleteComponent(this.props.storeIndex);
+      }
+
       /** Maintains the first element as a P when user is deleting things. */
       if(depth === 0 && parentNode.textContent.length < 1 && React.findDOMNode(this).children.length < 2) {
         this.preventEvent(e);
@@ -363,11 +364,6 @@ const ContentEditable = React.createClass({
       if(React.findDOMNode(this).lastChild.nodeName === 'PRE' && depth === React.findDOMNode(this).children.length) {
         this.createBlockElement('p', depth, false, this.props.storeIndex);
         this.props.actions.forceUpdate(true);
-      }
-      /** Remove CE unless its the first or last. */
-      if(depth === 0 && this.props.storeIndex !== this.props.editor.dom.length-1
-         && this.props.storeIndex !== 0 && React.findDOMNode(this).textContent.length < 1) {
-         this.props.actions.deleteComponent(this.props.storeIndex);
       }
     }
   },
@@ -536,7 +532,7 @@ const ContentEditable = React.createClass({
     } else {
       return Utils.parseDescription(pastedText)
         .then(results => {
-          /** REMOVE ANYTHING BUT TEXT FOR NOW! */
+          /** REMOVE ANYTHING BUT TEXT FOR NOW! THIS RETURNS ONLY CE'S AND FILTERS IMAGES.*/
           let clean = results.filter(item => {
             return item.type === 'CE' ? true : false;
           });
@@ -549,7 +545,7 @@ const ContentEditable = React.createClass({
 
   handleOnPasteSanitization(dirty) {
     return Sanitize(dirty, {
-      allowedTags: [ 'p', 'div', 'a', 'ul', 'ol', 'li', 'b', 'i', 'blockquote', 'pre', 'code', 'strong', 'em' ],
+      allowedTags: [ 'p', 'div', 'a', 'ul', 'ol', 'li', 'b', 'i', 'blockquote', 'pre', 'code', 'strong', 'em', 'h3' ],
       allowedAttributes: {
         'a': [ 'href' ]
       },
@@ -561,7 +557,9 @@ const ContentEditable = React.createClass({
             attribs: attribs
           };
         },
-        'ol': 'ul'
+        'ol': 'ul',
+        'h1': 'h3',
+        'h2': 'h3'
       },
       exclusiveFilter: function(frame) {
         if(frame.tag === 'a' || frame.tag === 'img' && Object.keys(frame.attribs).length > 0) {

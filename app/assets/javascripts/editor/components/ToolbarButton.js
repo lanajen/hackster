@@ -1,5 +1,4 @@
 import React from 'react';
-import rangy from 'rangy';
 import cx from 'classnames';
 import Utils from '../utils/DOMUtils';
 import _ from 'lodash';
@@ -16,7 +15,10 @@ const ToolbarButton = React.createClass({
     e.preventDefault();
     e.stopPropagation();
 
-    if(Utils.isAncestorOfContentEditable(rangy.getSelection().anchorNode)) {
+    let { anchorNode } = Utils.getSelectionData();
+
+    if(Utils.isAncestorOfContentEditable(anchorNode) || !Utils.isChildOfCE(anchorNode)) {
+      this.props.onError(this.props.tagType);
       return;
     }
 

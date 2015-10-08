@@ -2,12 +2,12 @@ import { Editor } from '../constants/ActionTypes';
 import Request from '../utils/Requests';
 import ImageHelpers from '../../utils/Images'; 
 
-export function setDOM(html, index, depth) {
+export function setDOM(html, depth, storeIndex) {
   return {
     type: Editor.setDOM,
-    index: index,
     html: html,
-    depth: depth
+    depth: depth,
+    storeIndex: storeIndex
   };
 }
 
@@ -129,6 +129,13 @@ export function transformListItemsToBlockElements(tag, depth, storeIndex) {
 export function prependCE(storeIndex) {
   return {
     type: Editor.prependCE,
+    storeIndex: storeIndex
+  };
+}
+
+export function insertCE(storeIndex) {
+  return {
+    type: Editor.insertCE,
     storeIndex: storeIndex
   };
 }

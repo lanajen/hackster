@@ -4,12 +4,13 @@ import _ from 'lodash';
 import { createRandomNumber } from '../../utils/Helpers';
 import Utils from '../utils/DOMUtils';
 import Helpers from '../../utils/Helpers';
+import { ErrorIcons } from '../utils/Constants';
 import async from 'async';
 
 import Hashids from 'hashids';
 const hashids = new Hashids('hackster', 4);
 
-import { P, A, PRE, BLOCKQUOTE, UL, DIV, FIGURE, FIGCAPTION, IMG, ELEMENT } from '../components/DomElements';
+import { P, A, PRE, BLOCKQUOTE, UL, DIV, FIGURE, FIGCAPTION, H3, IMG, ELEMENT } from '../components/DomElements';
 const mapToComponent = {
   'p': React.createFactory(P),
   'a': React.createFactory(A),
@@ -19,6 +20,7 @@ const mapToComponent = {
   'div': React.createFactory(DIV),
   'figure': React.createFactory(FIGURE),
   'figcaption': React.createFactory(FIGCAPTION),
+  'h3': React.createFactory(H3),
   'code': React.createFactory('code'),
   'strong': React.createFactory('strong'),
   'span': React.createFactory('span'),
@@ -62,7 +64,7 @@ export default function(state = initialState, action) {
 
     case Editor.setDOM:
       dom = state.dom;
-      newDom = updateComponentAtIndex(dom, action.html, action.index, action.depth);
+      newDom = updateComponentAtIndex(dom, action.html, action.storeIndex, action.depth);
       return {
         ...state,
         dom: newDom,
@@ -71,6 +73,7 @@ export default function(state = initialState, action) {
 
     case Editor.setInitialDOM:
       newDom = handleInitialDOM(action.json);
+      newDom = _insertPlaceholder(newDom);
       return {
         ...state,
         dom: newDom,
@@ -136,6 +139,15 @@ export default function(state = initialState, action) {
     case Editor.prependCE:
       dom = state.dom;
       newDom = prependCE(dom, action.storeIndex);
+      return {
+        ...state,
+        dom: newDom
+      };
+
+    case Editor.insertCE:
+      dom = state.dom;
+      newDom = insertCE(dom, action.storeIndex);
+      newDom = _mergeAdjacentCE(newDom);
       return {
         ...state,
         dom: newDom
@@ -248,6 +260,8 @@ export default function(state = initialState, action) {
     case Editor.createMediaByType:
       dom = state.dom;
       let { newDom, rootHash, mediaHash } = handleMediaCreation(dom, action.map, action.depth, action.storeIndex, action.mediaType);
+      newDom = _mergeAdjacentCE(newDom);
+      newDom = _insertPlaceholder(newDom);
       return {
         ...state,
         dom: newDom,
@@ -273,6 +287,7 @@ export default function(state = initialState, action) {
       dom = state.dom;
       newDom = deleteImagesFromCarousel(dom, action.map, action.depth, action.storeIndex);
       newDom = _mergeAdjacentCE(newDom);
+      newDom = _insertPlaceholder(newDom);
       return {
         ...state,
         dom: newDom
@@ -290,6 +305,7 @@ export default function(state = initialState, action) {
       dom = state.dom;
       newDom = deleteComponent(dom, action.storeIndex);
       newDom = _mergeAdjacentCE(newDom);
+      newDom = _insertPlaceholder(newDom);
       return {
         ...state,
         dom: newDom
@@ -336,7 +352,8 @@ export default function(state = initialState, action) {
       };
 
     case Editor.toggleErrorMessenger:
-      let errorMessenger = { show: action.show, msg: action.msg }
+      let actionIcon = randomizeErrorActionIcon();
+      let errorMessenger = { show: action.show, msg: action.msg, actionIcon: actionIcon }
       return {
         ...state,
         errorMessenger: errorMessenger
@@ -346,6 +363,7 @@ export default function(state = initialState, action) {
       dom = state.dom;
       newDom = handlePastedHTML(dom, action.html, action.storeIndex);
       newDom = _mergeAdjacentCE(newDom);
+      newDom = _insertPlaceholder(newDom);
       return {
         ...state,
         dom: newDom
@@ -591,6 +609,30 @@ function prependCE(dom, storeIndex) {
   }
 
   return dom;
+}
+
+function insertCE(dom, storeIndex) {
+  let CE = _createCE();
+
+  dom.splice(storeIndex, 1, CE);
+  return dom;
+}
+
+function _createCE() {
+  let P = mapToComponent['p'];
+  let p = P({ tagProps: { hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) }, 
+              style: {}, 
+              className: '', 
+              key: createRandomNumber(), 
+              children: [''] 
+            });
+  let CE = {
+    type: 'CE',
+    json: [],
+    hash: hashids.encode(Math.floor(Math.random() * 9999 + 1))
+  };
+  CE.json.push(p);
+  return CE;
 }
 
 function setFigCaptionText(dom, figureIndex, storeIndex, html) {
@@ -986,6 +1028,37 @@ function _mergeAdjacentCE(dom) {
   return newDom;
 }
 
+function _insertPlaceholder(dom) {
+  let newDom = [];
+
+  dom.forEach((component, index) => {
+    let mediaTypes = {
+      'Carousel': true,
+      'Video': true,
+      'File': true
+    };
+
+    if(mediaTypes[component.type] && (index > 0 && mediaTypes[dom[index-1].type])) {
+      newDom.push(_createPlaceholderComponent());
+      newDom.push(component);
+    } else if(index > 0 && component.type === 'Placeholder' && (!mediaTypes[dom[index-1].type] || (dom[index+1] && !mediaTypes[dom[index+1].type]))) {
+      /** Removes unneccessary placeholders */
+      return;
+    } else {
+      newDom.push(component);
+    }
+  });
+
+  return newDom;
+}
+
+function _createPlaceholderComponent() {
+  return {
+    type: 'Placeholder',
+    hash: hashids.encode(Math.floor(Math.random() * 9999 + 1)) 
+  };
+}
+
 function deleteComponent(dom, storeIndex) {
   dom.splice(storeIndex, 1);
   return dom;
@@ -1119,6 +1192,12 @@ function handlePastedHTML(dom, html, storeIndex) {
   return dom;
 }
 
+function randomizeErrorActionIcon() {
+  const icons = ErrorIcons;
+  let random = Math.floor(Math.random() * icons.length);
+  return icons[random];
+}
+
 function createStyleObjectFromString(string) {
   let item,
       styleProp,
@@ -1158,13 +1237,7 @@ function camelCaseStyleProp(prop) {
 
 function updateComponentAtIndex(dom, json, index, depth) {
   let component = dom[index];
-  // let row = component.json[depth];
-
-  // row.props.children = createArrayOfComponents(json);
-  // component.json[depth] = row;
-
   component.json = createArrayOfComponents(json);
-
   dom.splice(index, 1, component);
   return dom;
 }
