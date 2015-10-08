@@ -62,7 +62,7 @@ class BuildLogsController < ApplicationController
     @project = @log.threadable
     @log.destroy
 
-    redirect_to project_logs_path(@project.user_name_for_url, @project.slug), notice: "\"#{@log.title}\" was deleted."
+    redirect_to project_logs_path(@project), notice: "\"#{@log.title}\" was deleted."
   end
 
   private

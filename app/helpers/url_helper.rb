@@ -174,9 +174,9 @@ module UrlHelper
 
   def issue_form_path_for project, issue, opts={}
     if issue.persisted?
-      project_issue_path(project.user_name_for_url, project.slug, issue.sub_id, opts)
+      project_issue_path(project, issue.sub_id, opts)
     else
-      project_issues_path(project.user_name_for_url, project.slug, opts)
+      project_issues_path(project, opts)
     end
   end
 
@@ -326,6 +326,14 @@ module UrlHelper
     params = params_for_project(project).merge(opts)
     params.delete(:use_route)
     super params
+  end
+
+  def project_issues_path project, opts={}
+    super project.user_name_for_url, project.slug, opts
+  end
+
+  def project_logs_path project, opts={}
+    super project.user_name_for_url, project.slug, opts
   end
 
   def project_embed_url project, opts={}

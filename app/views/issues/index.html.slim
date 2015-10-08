@@ -15,8 +15,8 @@
     section.section-thumbs
       h4 Filter
       .list-group
-        = link_to 'Open issues', project_issues_path(@project.user_name_for_url, @project.slug, status: 'open'), class: "list-group-item #{'active' if params[:status] == 'open'}"
-        = link_to 'Closed issues', project_issues_path(@project.user_name_for_url, @project.slug, status: 'closed'), class: "list-group-item #{'active' if params[:status] == 'closed'}"
+        = link_to 'Open issues', project_issues_path(@project, status: 'open'), class: "list-group-item #{'active' if params[:status] == 'open'}"
+        = link_to 'Closed issues', project_issues_path(@project, status: 'closed'), class: "list-group-item #{'active' if params[:status] == 'closed'}"
 
     - if can? :create, @project.issues.new
       section.section-thumbs

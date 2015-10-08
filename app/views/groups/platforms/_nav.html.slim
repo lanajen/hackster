@@ -63,6 +63,8 @@ section.section-nav
                 li.divider
                 li= link_to 'Moderate projects', url_for([@group, :admin, :projects])
                 li= link_to 'Link an external project', url_for([:new, :project, type: 'external', project: { platform_tags_string: @group.name }])
+                li.divider
+                li= link_to 'Post an announcement', platform_announcements_path(@group)
                 - if @platform.pro?
                   li.divider
                   li= link_to 'Analytics dashboard', platform_analytics_path(@group.user_name)

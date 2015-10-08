@@ -177,8 +177,8 @@
                     h2.section-title
                       a.title.title-toggle href=''
                         - if @project.private_logs
-                          i.fa.fa-lock.istooltip>  title='Build logs are private' data-container='body'
-                        ' Build logs
+                          i.fa.fa-lock.istooltip>  title='Project logs are private' data-container='body'
+                        ' Project logs
                         i.fa.fa-chevron-down
                         i.fa.fa-chevron-up
                     .section-content
@@ -188,7 +188,7 @@
                             h3.title
                               = link_to log.title, log_path(@project, log)
                               .annotation
-                                | Build log ##{log.sub_id}
+                                | Project log ##{log.sub_id}
 
                               .subtitle
                                 ==> time_ago_in_words log.created_at
@@ -199,12 +199,12 @@
                             = raw log.decorate.body
 
                       - else
-                        p No build logs yet.
+                        p No project logs yet.
 
                       - if @can_edit
-                        = link_to 'See and manage all logs (including drafts)', project_logs_path, class: 'btn btn-default btn-sm'
+                        = link_to 'See and manage all logs (including drafts)', project_logs_path(@project), class: 'btn btn-default btn-sm'
                       - elsif @project.build_logs_count > 1
-                        = link_to 'Read previous logs', project_logs_path, class: 'btn btn-default btn-sm btn-block'
+                        = link_to 'Read previous logs', project_logs_path(@project), class: 'btn btn-default btn-sm btn-block'
 
               - cache [I18n.locale, "project-#{@project.id}-issues"], tag: ["project-#{@project.id}-issues"] do
                 - if (@project.issues_count > 0 and !@project.private_issues)
@@ -237,7 +237,7 @@
                       - else
                         p No issues yet.
 
-                      = link_to 'See all issues', project_logs_path, class: 'btn btn-default btn-sm'
+                      = link_to 'See all issues', project_issues_path(@project), class: 'btn btn-default btn-sm'
 
               / # - cache [I18n.locale, "project-#{@project.id}-comments"], tag: ["project-#{@project.id}-comments"], expires_in: 24.hours do
               / caching needs to be more granular as users have the ability to destroy their own comment but not that of others
@@ -334,6 +334,9 @@
 
                   - if @project.unlocked? or can? :edit_locked, @project
                       = link_to 'Edit project and team', edit_project_path(@project), class: 'btn btn-default btn-block'
+                      .project-actions.text-center.tmg-10
+                        = link_to 'Project logs', project_logs_path(@project), class: 'btn btn-link btn-sm'
+                        = link_to 'Issue tracker', project_issues_path(@project), class: 'btn btn-link btn-sm'
                   - else
                     p This project is locked for editing.
 

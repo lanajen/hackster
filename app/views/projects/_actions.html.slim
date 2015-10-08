@@ -1,6 +1,6 @@
 .project-actions
   - if !@can_edit or (user_signed_in? and current_user.is?(:admin) and !current_user.is_team_member? @project)
-    div style="margin-bottom:10px" = render partial: 'respects/button', locals: { respectable: @project }
+    .mg-10= render partial: 'respects/button', locals: { respectable: @project }
   .text-center style='position:relative'
     - if user_signed_in?
       = react_component('ListsDropdown', { path: api_v1_lists_path, projectId: @project.id }, { class: 'react-btn', style: 'display:inline-block;' })

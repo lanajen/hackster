@@ -1,6 +1,6 @@
 .row
     .col-md-4.col-md-push-8
-      = link_to "&larr; See all issues".html_safe, project_issues_path(@project.user_name_for_url, @project.slug), class: 'btn btn-link btn-sm btn-block mg-20 hidden-link'
+      = link_to "&larr; See all issues".html_safe, project_issues_path(@project), class: 'btn btn-link btn-sm btn-block mg-20 hidden-link'
 
       - if can? :edit, @issue
         section.section-thumbs

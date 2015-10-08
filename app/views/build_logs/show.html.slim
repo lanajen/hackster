@@ -1,6 +1,6 @@
 .row
   .col-md-4.col-md-push-8
-    = link_to "&larr; See all build logs".html_safe, project_logs_path(@project.user_name_for_url, @project.slug), class: 'btn btn-link btn-sm btn-block mg-20 hidden-link'
+    = link_to "&larr; See all project logs".html_safe, project_logs_path(@project), class: 'btn btn-link btn-sm btn-block mg-20 hidden-link'
 
     - if can? :edit, @log
       section.section-thumbs

@@ -6,7 +6,7 @@ section.section-container
         - if build_log.draft?
           | (draft)
         - else
-          | Build log ##{build_log.sub_id}
+          | Project log ##{build_log.sub_id}
 
       .subtitle
         ==> time_ago_in_words build_log.created_at

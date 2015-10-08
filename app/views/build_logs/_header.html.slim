@@ -5,7 +5,7 @@
       - if log.draft?
         | (draft)
       - else
-        | Build log ##{log.sub_id}
+        | Project log ##{log.sub_id}
 
     - if can? :edit, log
       .btn-heading
