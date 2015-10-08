@@ -8,6 +8,8 @@ p
   b> Challenge status:
   = @challenge.status
 
+p= link_to 'Admin FAQ', challenge_faq_entries_path(@challenge)
+
 p
   strong>= @challenge.registrations_count
   ==> pluralize_without_count @challenge.registrations_count, 'registered participant'

@@ -19,6 +19,7 @@ class Challenge < ActiveRecord::Base
   has_many :challenge_admins
   has_many :entries, class_name: 'ChallengeEntry', dependent: :destroy
   has_many :entrants, -> { uniq }, through: :entries, source: :user
+  has_many :faq_entries, as: :threadable
   has_many :ideas, class_name: 'ChallengeIdea', dependent: :destroy, inverse_of: :challenge
   has_many :participants, -> { uniq }, through: :projects, source: :users
   has_many :prizes, -> { order(:position) }, dependent: :destroy

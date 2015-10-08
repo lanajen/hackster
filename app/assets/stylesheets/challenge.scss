@@ -231,3 +231,42 @@
     }
   }
 }
+
+.faq-category {
+  font-size: 1em;
+}
+
+.faq-entry {
+  margin-bottom: 40px;
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}
+.faq-question {
+  margin: 0 0 10px;
+  font-weight: bold;
+  font-size: 1em;
+  .anchor {
+    margin-left: 5px;
+    font-size: 0.9em;
+    display: none;
+  }
+  &:hover {
+    .anchor {
+      display: inline;
+    }
+  }
+}
+.faq-answer {
+  padding-left: 20px;
+  p:last-of-type {
+    margin-bottom: 0;
+  }
+}
+
+.back-to-top {
+  a {
+    font-size: 0.8em;
+    color: #777;
+  }
+}

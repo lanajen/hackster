@@ -11,7 +11,14 @@ class Prize < ActiveRecord::Base
 
   accepts_nested_attributes_for :image
 
+  register_sanitizer :trim, :before_save
+  trim_text :name, :description
+
   def requires_shipping?
     requires_shipping
+  end
+
+  def trim text
+    text.strip if text
   end
 end

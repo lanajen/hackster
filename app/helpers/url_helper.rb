@@ -414,6 +414,14 @@ module UrlHelper
     end
   end
 
+  def url_for_faq_entry_form challenge, entry
+    if entry.persisted?
+      challenge_faq_entry_path(challenge, entry.id)
+    else
+      challenge_faq_entries_path(challenge)
+    end
+  end
+
   def users_stats_path user=nil
     if user
       super(user_id: user.id)

@@ -17,11 +17,15 @@ class ChallengeObserver < ActiveRecord::Observer
       purge = true
     end
     if (record.changed & %w(end_date start_date activate_pre_registration activate_pre_contest pre_contest_end_date pre_contest_start_date pre_registration_start_date pre_winners_announced_date winners_announced_date)).any?
-      keys << "challenge-#{record.id}-timeline"
+      keys += ["challenge-#{record.id}-timeline", "challenge-#{record.id}-faq"]
       purge = true
     end
-    if (record.changed & %w(video_link description eligibility requirements judging_criteria how_to_enter rules)).any?
+    if (record.changed & %w(video_link description rules)).any?
       keys << "challenge-#{record.id}-brief"
+      purge = true
+    end
+    if (record.changed & %w(eligibility requirements judging_criteria how_to_enter)).any?
+      keys += ["challenge-#{record.id}-brief", "challenge-#{record.id}-faq"]
       purge = true
     end
     if record.password_protect_changed? or record.disable_projects_tab_changed?

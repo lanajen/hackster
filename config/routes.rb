@@ -351,6 +351,7 @@ HackerIo::Application.routes.draw do
         patch '' => 'challenges#update'
         resources :ideas, controller: :challenge_ideas, only: [:new, :create]
         get 'ideas' => 'challenges#ideas'
+        get 'faq' => 'challenges#faq'
       end
 
       resources :challenges, except: [:show, :update] do
@@ -362,6 +363,7 @@ HackerIo::Application.routes.draw do
           get 'address/edit' => 'addresses#edit', on: :member, as: :edit_address
           patch 'address' => 'addresses#update', on: :member
         end
+        resources :faq_entries, except: [:show, :destroy]
         resources :ideas, controller: :challenge_ideas, only: [:show] do
           put 'update_workflow' => 'challenge_ideas#update_workflow', on: :member
         end
@@ -373,6 +375,8 @@ HackerIo::Application.routes.draw do
         put 'update_workflow' => 'challenges#update_workflow', on: :member
         patch 'update_mailchimp' => 'challenges#update_mailchimp', on: :member
       end
+
+      resources :faq_entries, only: [:destroy]
 
       resources :challenge_entries, only: [], as: :challenge_single_entry do
         resources :respects, only: [:create], controller: 'votes' do

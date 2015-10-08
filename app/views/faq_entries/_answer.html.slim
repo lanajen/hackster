@@ -1,0 +1,9 @@
+.faq-entry id=anchor
+  .faq-question
+    i.fa.fa-quote-left
+    span= question
+    = link_to content_tag(:i, '', class: 'fa fa-link'), "##{anchor}", class: 'anchor'
+  .faq-answer
+    = raw answer
+    .back-to-top
+      = link_to 'back to top', "javascript:smoothScrollTo('#faq', -80)"
