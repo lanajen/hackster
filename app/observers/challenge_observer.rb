@@ -16,7 +16,7 @@ class ChallengeObserver < ActiveRecord::Observer
       keys << "challenge-#{record.id}-status"
       purge = true
     end
-    if (record.changed & %w(end_date start_date activate_pre_registration activate_pre_contest pre_contest_end_date pre_contest_start_date pre_registration_start_date pre_winners_announced_date winners_announced_date)).any?
+    if (record.changed & %w(end_date start_date activate_pre_registration activate_pre_contest pre_contest_end_date pre_contest_start_date pre_registration_start_date pre_winners_announced_date winners_announced_date disabled_pre_contest_winners)).any?
       keys += ["challenge-#{record.id}-timeline", "challenge-#{record.id}-faq"]
       purge = true
     end

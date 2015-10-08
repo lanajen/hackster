@@ -349,7 +349,7 @@ HackerIo::Application.routes.draw do
         get 'participants' => 'challenges#participants'
         get 'projects' => 'challenges#projects'
         patch '' => 'challenges#update'
-        resources :ideas, controller: :challenge_ideas, only: [:new, :create]
+        resources :ideas, controller: :challenge_ideas, only: [:new, :create, :edit, :update]
         get 'ideas' => 'challenges#ideas'
         get 'faq' => 'challenges#faq'
       end

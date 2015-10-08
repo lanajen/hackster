@@ -69,6 +69,7 @@ class Challenge < ActiveRecord::Base
   hstore_column :hproperties, :custom_status, :string
   hstore_column :hproperties, :custom_tweet, :string
   hstore_column :hproperties, :description, :string
+  hstore_column :hproperties, :disable_pre_contest_winners, :boolean
   hstore_column :hproperties, :disable_projects_tab, :boolean
   hstore_column :hproperties, :disable_registration, :boolean
   hstore_column :hproperties, :eligibility, :string
@@ -209,7 +210,7 @@ class Challenge < ActiveRecord::Base
     if activate_pre_contest
       @dates << { date: pre_contest_start_date, label: 'Pre-contest opens' } if pre_contest_start_date
       @dates << { date: pre_contest_end_date, label: 'Pre-contest closes' } if pre_contest_end_date
-      @dates << { date: pre_winners_announced_date, format: :short_date, label: 'Pre-contest winners announced' } if pre_winners_announced_date
+      @dates << { date: pre_winners_announced_date, format: :short_date, label: 'Pre-contest winners announced' } if pre_winners_announced_date and not disable_pre_contest_winners?
     end
 
     @dates << { date: start_date, label: 'Project submissions open' } if start_date
