@@ -11,7 +11,7 @@ class FaqEntryObserver < ActiveRecord::Observer
 
   private
     def expire_cache record
-      Cashier.expire "challenge-#{record.threadable_id}-faqs"
+      Cashier.expire "challenge-#{record.threadable_id}-faq"
       record.threadable.purge
     end
 end

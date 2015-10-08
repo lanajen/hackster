@@ -1,6 +1,6 @@
 class FaqEntriesController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :load_challenge
+  before_filter :load_challenge, except: [:destroy]
   before_filter :load_faq_entry, only: [:edit, :update, :destroy]
 
   def index
@@ -40,7 +40,7 @@ class FaqEntriesController < ApplicationController
     @challenge = @faq_entry.threadable
     @faq_entry.destroy
 
-    redirect_to @challenge, notice: 'FAQ entry deleted.'
+    redirect_to challenge_faq_entries_path(@challenge), notice: 'FAQ entry deleted.'
   end
 
   private
