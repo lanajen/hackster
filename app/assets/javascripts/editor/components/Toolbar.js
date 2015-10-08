@@ -154,13 +154,20 @@ const Toolbar = React.createClass({
   handlePre(tagType) {
     let data = Utils.getSelectionData();
     let { sel, range, depth, anchorNode, parentNode } = data;
-    let blockEls = BlockElements;
+    /** Do not add a P to this.  Hence we dont use the Constant. */
+    let blockEls = {
+      'PRE': true,
+      'UL': true,
+      'H3': true,
+      'BLOCKQUOTE': true
+    };
 
     /** If there's selected text and the selection is within the same element, wrap the text in a CODE tag. 
       * Else we're going to transform the selection or blocks into a PRE tags.
      */
     if(range.startOffset !== range.endOffset && Utils.getRootParentElement(range.startContainer) === Utils.getRootParentElement(range.endContainer)
        && !blockEls[Utils.getRootParentElement(range.startContainer).nodeName]) {
+
       let ranges = { start: range.startOffset, end: range.endOffset };
       let selectedText = range.commonAncestorContainer.textContent.slice(ranges.start, ranges.end);
 

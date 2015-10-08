@@ -62,6 +62,9 @@ const ContentEditable = React.createClass({
 
   componentDidUpdate() {
     this.setCursorOnUpdate();
+
+    /** Cleans up the top tree of this CE. */
+    Utils.maintainImmediateChildren(React.findDOMNode(this));
   },
 
   shouldComponentUpdate(){
@@ -259,9 +262,6 @@ const ContentEditable = React.createClass({
       if((parentNode.textContent.indexOf(anchorNode.textContent) + startOffset) < parentNode.textContent.length) {
         hasTextAfterCursor = true;
       }
-
-      /** Cleans up the top tree of this CE. */
-      // Utils.maintainImmediateChildren(React.findDOMNode(this));
 
       switch(parentNode.nodeName) {
         case 'P':

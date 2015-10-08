@@ -918,7 +918,7 @@ const Utils = {
         }
       } else if(el.name === 'img') {
         /** Handle Carousel */
-        mediaData = [{ src: el.attribs.src, alt: el.attribs.alt || '' }];
+        mediaData = [{ url: el.attribs.src, alt: el.attribs.alt || '' }];
         newEl = this.createCarousel(mediaData);
         return newEl;
       } else {
