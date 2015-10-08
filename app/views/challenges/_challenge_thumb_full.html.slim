@@ -11,8 +11,9 @@
 
         .bottom
           .date
-            ' Participation is open until
-            strong= l challenge.end_date, format: :short_date
+            ' Participation is open until:
+            br
+            strong= l challenge.end_date, format: :long_date
           = link_to 'Participate in this contest', challenge, class: 'btn btn-primary'
     .col-md-9
       .row
