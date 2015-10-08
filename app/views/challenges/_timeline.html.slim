@@ -1,38 +1,12 @@
 - cache ["challenge-#{challenge.id}-timeline"], tag: ["challenge-#{challenge.id}-timeline"] do
-  - if challenge.activate_pre_registration
-    - if challenge.pre_registration_start_date
-      div class=(challenge.pre_registration_start_date < Time.now ? 'mute-date' : '')
+  - challenge.dates.each_with_index do |date, i|
+      div class=class_for_timeline(challenge.dates, i)
         p style='margin-bottom:0'
-          strong> Registrations open:
-        p #{l challenge.pre_registration_start_date.in_time_zone(PDT_TIME_ZONE)} PT
-  - if challenge.activate_pre_contest
-    - if challenge.pre_contest_start_date
-      div class=(challenge.pre_contest_start_date < Time.now ? 'mute-date' : '')
-        p style='margin-bottom:0'
-          strong> Pre-contest opens:
-        p #{l challenge.pre_contest_start_date.in_time_zone(PDT_TIME_ZONE)} PT
-    - if challenge.pre_contest_end_date
-      div class=(challenge.pre_contest_end_date < Time.now ? 'mute-date' : '')
-        p style='margin-bottom:0'
-          strong> Pre-contest closes:
-        p #{l challenge.pre_contest_end_date.in_time_zone(PDT_TIME_ZONE)} PT
-    - if challenge.pre_winners_announced_date
-      div class=(challenge.pre_winners_announced_date < Time.now ? 'mute-date' : '')
-        p style='margin-bottom:0'
-          strong> Pre-contest winners announced:
-        p #{l challenge.pre_winners_announced_date, format: :short_date}
-  - if challenge.start_date
-    div class=(challenge.start_date < Time.now ? 'mute-date' : '')
-      p style='margin-bottom:0'
-        strong> Project submissions open:
-      p #{l challenge.start_date.in_time_zone(PDT_TIME_ZONE)} PT
-  - if challenge.end_date
-    div class=(challenge.end_date < Time.now ? 'mute-date' : '')
-      p style='margin-bottom:0'
-        strong> Project submissions close:
-      p #{l challenge.end_date.in_time_zone(PDT_TIME_ZONE)} PT
-  - if challenge.winners_announced_date
-    div class=(challenge.winners_announced_date < Time.now ? 'mute-date' : '')
-      p style='margin-bottom:0'
-        strong> Winners announced:
-      p #{l challenge.winners_announced_date, format: :short_date}
+          strong>
+            | #{date[:label]}:
+        p
+          - if date[:format]
+            = l date[:date], format: date[:format]
+          - else
+            => l date[:date].in_time_zone(PDT_TIME_ZONE)
+            | PT

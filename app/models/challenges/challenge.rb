@@ -197,6 +197,28 @@ class Challenge < ActiveRecord::Base
     self.cover_image = CoverImage.find_by_id(val)
   end
 
+  def dates
+    return @dates if @dates
+
+    @dates = []
+
+    if activate_pre_registration
+      @dates << { date: pre_registration_date, label: 'Registration opens' } if pre_registration_start_date
+    end
+
+    if activate_pre_contest
+      @dates << { date: pre_contest_start_date, label: 'Pre-contest opens' } if pre_contest_start_date
+      @dates << { date: pre_contest_end_date, label: 'Pre-contest closes' } if pre_contest_end_date
+      @dates << { date: pre_winners_announced_date, format: :short_date, label: 'Pre-contest winners announced' } if pre_winners_announced_date
+    end
+
+    @dates << { date: start_date, label: 'Project submissions open' } if start_date
+    @dates << { date: end_date, label: 'Project submissions close' } if end_date
+    @dates << { date: winners_announced_date, format: :short_date, label: 'Winners announced' } if winners_announced_date
+
+    @dates
+  end
+
   def disable_projects_tab?
     disable_projects_tab
   end
