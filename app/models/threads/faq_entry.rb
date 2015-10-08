@@ -8,7 +8,7 @@ class FaqEntry < Post
       first_text = -1
       last_text = 0
 
-      ps = xml.css('p')
+      ps = xml.children
       ps.each_with_index do |p, i|
         unless p.text.strip.gsub(/\u00a0/, '').empty?
           first_text = i if first_text == -1
@@ -16,6 +16,7 @@ class FaqEntry < Post
         end
       end
 
-      ps.slice(first_text..last_text).map{|p| p.to_html }.join('')
+      out = ps.slice(first_text..last_text)
+      out.map{|p| p.to_html }.join('') if out
     end
 end
