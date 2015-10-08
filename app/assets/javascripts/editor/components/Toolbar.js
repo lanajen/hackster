@@ -77,8 +77,9 @@ const Toolbar = React.createClass({
       return;
     }
 
-    if(isNodeInUL && blockEls[tagType]) {
-      this.props.actions.toggleErrorMessenger(true, 'List items cannot tranform into a ' + tagType);
+    if(isNodeInUL && blockEls[tagType.toUpperCase()]) {
+      this.props.actions.transformListItemsToBlockElements(tagType, depth, this.props.editor.currentStoreIndex);
+      this.props.actions.forceUpdate(true);
       return;
     } else if(Utils.isCommonAncestorContentEditable(commonAncestorContainer)) {  // Multiple lines are selected.
       let startContainer = Utils.getRootParentElement(range.startContainer);
@@ -87,8 +88,6 @@ const Toolbar = React.createClass({
 
       /** Restricts transformations if theres a div (Media block) in the selection */
       if(_.some(arrayOfNodes, { nodeName: 'DIV' })) {
-        // TODO: HANDLE ERROR!!!!!!!!!!!!!!!
-        console.log('throw err');
         return;
       } else {
         this.props.actions.transformBlockElements(tagType, arrayOfNodes, this.props.editor.currentStoreIndex);
@@ -102,7 +101,13 @@ const Toolbar = React.createClass({
 
   handleBlockquote(tagType) {
     let { sel, range, depth, anchorNode, parentNode } = Utils.getSelectionData();
-    let blockEls = BlockElements;
+    /** Do not add a P to this.  We only split a selected text node if its wrapped in a P. */
+    let blockEls = {
+      'PRE': true,
+      'UL': true,
+      'H3': true,
+      'BLOCKQUOTE': true
+    };
     /** If theres selected text (NOT in a block element or if selection spans multiple nodes), break the paragraph apart into three segments.
       * Else turn the selection/s to a normal Blockquote.
      */

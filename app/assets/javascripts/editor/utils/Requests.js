@@ -30,7 +30,6 @@ export default {
           } else if(res.body.story !== null) {
             resolve(JSON.parse(res.body.story));
           } else {
-            // TODO: HANDLE ERROR!
             reject('Error Fetching Story!');
           }
       });

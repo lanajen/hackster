@@ -29,7 +29,7 @@ const ContentEditable = React.createClass({
     if(this.props.editor.cursorPosition.node === null) {
       let firstChild = React.findDOMNode(this).firstChild;
       if(firstChild) {
-        Utils.setCursorByNode(Utils.getLastTextNode(firstChild));
+        Utils.setCursorByNode(firstChild);
         this.props.actions.setCursorPosition(0, firstChild, 0, firstChild, React.findDOMNode(this).getAttribute('data-hash'));
       } 
     } else {
@@ -80,8 +80,9 @@ const ContentEditable = React.createClass({
       nodes = [].slice.apply(mutation.addedNodes);
       nodes.forEach(node => {
         
-        if(!blockEls[node.nodeName] && node.parentNode !== null) {
-          console.log('TSK TSK TSK');
+        let parentNode = Utils.getRootParentElement(node);
+        if(parentNode !== null && !blockEls[parentNode.nodeName]) {
+          // console.log('TSK TSK TSK', node);
           node.parentNode.removeChild(node);
         }
 
@@ -89,10 +90,13 @@ const ContentEditable = React.createClass({
         if(node.nodeName === 'UL') {
           let children = [].slice.apply(node.childNodes);
           children.forEach(child => {
-            if(child.nodeName !== 'LI') {
+            /** The regexp looks for a single instance of carriage return or whitespace. */
+            if(child.nodeName !== 'LI' && child.textContent.length > 0 && child.textContent.match(/^[\u21B5|\s+]{1}$/) === null) {
               let li = document.createElement('li');
               li.textContent = child.textContent;
               node.replaceChild(li, child);
+            } else if(child.nodeName !== 'LI' && child.textContent.match(/^[\u21B5|\s+]{1}$/) !== null || child.textContent.length < 1) {
+              node.removeChild(child);
             }
           });
         }
@@ -118,16 +122,14 @@ const ContentEditable = React.createClass({
     let offset = this.props.editor.setCursorToNextLine ? 0 : cursorPosition.offset;
     let textNode = Utils.getLastTextNode(el);
 
-    /** Makes sure its a text node. */
-    if(textNode.nodeType !== 3 && textNode.nodeType === 1) {
-      textNode = Utils.getLastTextNode(textNode);
+    if(!textNode) {
+      return;
     }
 
     /** Protects setStart from an index that was deleted. */
     if(textNode.textContent.length < offset) {
       offset = textNode.textContent.length;
     }
-    // console.log('Setting Cursor To: ', cursorPosition.node, ' @: ' + offset, el, this.props.editor.setCursorToNextLine);
 
     range.setStart(textNode, offset);
     rangy.getSelection().setSingleRange(range);
@@ -238,6 +240,7 @@ const ContentEditable = React.createClass({
   },
 
   delayedUpdate() {
+    /** We delay this to let the browser handle slicing the text to a new line when Enter is pressed, then we take over asap. */
     setTimeout(() => {
       this.props.actions.setCursorToNextLine(true);
       this.props.actions.forceUpdate(true);
@@ -258,7 +261,7 @@ const ContentEditable = React.createClass({
       }
 
       /** Cleans up the top tree of this CE. */
-      Utils.maintainImmediateChildren(React.findDOMNode(this));
+      // Utils.maintainImmediateChildren(React.findDOMNode(this));
 
       switch(parentNode.nodeName) {
         case 'P':
@@ -288,15 +291,8 @@ const ContentEditable = React.createClass({
           }
           break;
 
+        case 'H3':
         case 'PRE':
-          if(hasTextAfterCursor) {
-            this.delayedUpdate();
-          } else {
-            this.preventEvent(e);
-            this.createBlockElement('pre', depth, true, this.props.storeIndex);
-          }
-          break;
-
         case 'BLOCKQUOTE':
           if(hasTextAfterCursor) {
             this.delayedUpdate();

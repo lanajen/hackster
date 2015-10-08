@@ -516,21 +516,32 @@ const Utils = {
     }
 
     /** If there's no nested elements, we return the textNode of our element. */
-    if(el.childNodes.length > 0 && el.childNodes[0].nodeType === 3) {
+    if(el.childNodes.length && el.childNodes[0].nodeType === 3) {
       return el.childNodes[0];
     }
 
-    if(el.childNodes.length > 0) {
-      lastChild = el.lastChild;
-      textNode = lastChild.childNodes[0];
-
-      while(textNode && textNode.childNodes.length && textNode.childNodes[0].nodeType !== 3) {
-        textNode = textNode.childNodes[0];
-      }
-
+    /**  Retrieve very last element. */
+    lastChild = el.childNodes[el.childNodes.length-1];
+    while(lastChild.lastChild) {
+      lastChild = lastChild.lastChild;
     }
 
-    return textNode || el;
+    /** 
+      * If lastChild is textNode.
+      * Else if the first childNode is a text node, we have our result.
+      * Else somehting went awry and the node has no text node to focus, so we create one.
+     */
+    if(lastChild.nodeType === 3) {
+      textNode = lastChild;
+    } else if(lastChild.childNodes.length && lastChild.childNodes[0].nodeType === 3) {
+      textNode = lastChild.childNodes[0];
+    } else {
+      let text = document.createTextNode('');
+      lastChild.appendChild(text);
+      textNode = text;
+    }
+
+    return textNode;
   },
 
   getFirstTextNode(el) {
@@ -1327,6 +1338,15 @@ const Utils = {
           children: []
         }];
         item.content = null;
+
+        /** Removes empty li's nested or not */
+        item = this.cleanUL(item);
+
+        /** We do this last because cleanUL will dive in recursively and remove all empty tags including the li we just added. */
+        if(!item.content || !item.children.length) {
+          item = null;
+        }
+
         return item;
       } else if(item.tag === 'ul') {
         item.children = item.children.map(child => {
@@ -1339,6 +1359,9 @@ const Utils = {
             return child;
           }
         }).filter(child => { return child !== null; });
+
+        /** Removes empty li's nested or not */
+        item = this.cleanUL(item);
         return item;
       } else if(item.tag === 'div') {
         item.tag = 'p';
@@ -1356,6 +1379,31 @@ const Utils = {
         return item;
       }
     }).filter(c => { return c !== null; });
+  },
+
+  cleanUL(ul) {
+    let newChildren = (function recurse(children) {
+      if(!children.length) {
+        return children;
+      } else {
+        return children.map(child => {
+          if(!child.children.length && (!child.content || child.content.match(/^[\u21B5|\s+]{1}$/) !== null)) {
+            return null;
+          } else {
+            child.children = recurse(child.children);
+
+            if(!child.children.length && (!child.content || child.content.match(/^[\u21B5|\s+]{1}$/) !== null)) {
+              child = null;
+            }
+
+            return child;
+          }
+        }).filter(child => { return child !== null; });
+      }
+    }(ul.children));
+
+    ul.children = newChildren;
+    return ul;
   }
 
 };
