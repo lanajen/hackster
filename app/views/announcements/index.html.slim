@@ -2,6 +2,7 @@
   - if !is_whitelabel? and can? :create, Announcement, @platform
     section.section-thumbs
       h4 Admin actions
+      p.small.text-muted Announcements are great to keep your community informed about what's new with your platform and product. Think of it as a mini-blog for your hub. Your followers will receive an email when you publish an announcement.
       ==> link_to 'New announcement', new_platform_announcement_path(@platform.user_name), class: 'btn btn-sm btn-success'
 
   - if @announcements.any?
