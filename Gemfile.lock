@@ -1,4 +1,12 @@
 GIT
+  remote: /Users/ben/Dropbox/Projects/omniauth-arduino
+  revision: 390f85d58d34962a28ec7a7c0b7a2cc75a563a39
+  specs:
+    omniauth-arduino (0.0.1)
+      omniauth (~> 1.0)
+      omniauth-oauth2 (~> 1.1)
+
+GIT
   remote: git://github.com/mislav/will_paginate.git
   revision: 74a6cd0197072903cd8b83744133744ff4b4c046
   specs:
@@ -725,6 +733,7 @@ DEPENDENCIES
   nested_form (= 0.3.2)
   newrelic_rpm (= 3.12.0.288)
   nokogiri (= 1.6.0)
+  omniauth-arduino!
   omniauth-facebook (= 1.5.1)
   omniauth-github (= 1.1.2)
   omniauth-gplus (= 1.2.0)
