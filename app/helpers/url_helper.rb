@@ -174,7 +174,7 @@ module UrlHelper
 
   def issue_form_path_for project, issue, opts={}
     if issue.persisted?
-      project_issue_path(project, issue.sub_id, opts)
+      issue_path(project, issue, opts)
     else
       project_issues_path(project, opts)
     end
