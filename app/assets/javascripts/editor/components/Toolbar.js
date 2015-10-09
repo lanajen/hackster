@@ -154,13 +154,15 @@ const Toolbar = React.createClass({
   handlePre(tagType) {
     let data = Utils.getSelectionData();
     let { sel, range, depth, anchorNode, parentNode } = data;
-    /** Do not add a P to this.  Hence we dont use the Constant. */
     let blockEls = {
       'PRE': true,
-      'UL': true,
-      'H3': true,
-      'BLOCKQUOTE': true
+      'H3': true
     };
+
+    /** Quicky to undo a code block if nothing is selected and user want to just undo a code at that position. */
+    if(range.startOffset === range.endOffset && Utils.isChildOfCode(anchorNode)) {
+      return;
+    }
 
     /** If there's selected text and the selection is within the same element, wrap the text in a CODE tag. 
       * Else we're going to transform the selection or blocks into a PRE tags.
