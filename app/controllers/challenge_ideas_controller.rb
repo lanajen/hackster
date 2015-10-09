@@ -61,8 +61,14 @@ class ChallengeIdeasController < ApplicationController
   end
 
   def update
-    if @idea.update_attributes(params[:challenge_idea])
-      redirect_to @challenge, notice: "Your idea was successfully edited."
+    @idea.assign_attributes params[:challenge_idea]
+    @idea.workflow_state = :new if @idea.changed? and current_user.id == @idea.user_id and @idea.can_mark_needs_approval?
+    if @idea.save
+      if current_user.id == @idea.user_id
+        redirect_to @challenge, notice: "Your idea was successfully edited."
+      else
+        redirect_to challenge_admin_ideas_path(@challenge), notice: "Idea successfully edited."
+      end
     else
       render :edit
     end

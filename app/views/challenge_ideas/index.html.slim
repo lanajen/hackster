@@ -30,8 +30,7 @@ table.table.table-striped
               = link_to content_tag(:i, '', class: 'fa fa-check'), update_workflow_challenge_idea_path(@challenge, idea, event: 'approve'), class: 'btn btn-xs btn-success', rel: 'tooltip', title: 'Approve', data: { method: :put, confirm: 'Are you sure you want to approve this idea?', container: 'body' }
             - if idea.can_reject?
               = link_to content_tag(:i, '', class: 'fa fa-times'), update_workflow_challenge_idea_path(@challenge, idea, event: 'reject'), class: 'btn btn-xs btn-danger', rel: 'tooltip', title: 'Reject', data: { method: :put, confirm: 'Are you sure you want to reject this idea?', container: 'body' }
-            - if @challenge.judging?
-              = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_challenge_idea_path(@challenge, idea), class: 'btn btn-xs btn-default', rel: 'tooltip', title: 'Edit', data: { container: 'body' }
+            = link_to content_tag(:i, '', class: 'fa fa-pencil'), edit_challenge_idea_path(@challenge.slug, idea), class: 'btn btn-xs btn-default', rel: 'tooltip', title: 'Edit', data: { container: 'body' }
             - if current_user.is? :admin
               = link_to content_tag(:i, '', class: 'fa fa-trash-o'), challenge_idea_path(@challenge, idea), class: 'btn btn-xs btn-danger', rel: 'tooltip', title: 'Delete', data: { method: :delete, confirm: 'Are you sure you want to delete this idea?', container: 'body' }
     - else

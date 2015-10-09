@@ -21,11 +21,13 @@ class ChallengeIdea < ActiveRecord::Base
       event :reject, transitions_to: :rejected
     end
     state :approved do
+      event :mark_needs_approval, transitions_to: :new
       event :reject, transitions_to: :rejected
       event :mark_lost, transitions_to: :lost
       event :mark_won, transitions_to: :won
     end
     state :rejected do
+      event :mark_needs_approval, transitions_to: :new
       event :approve, transitions_to: :approved
     end
     state :won

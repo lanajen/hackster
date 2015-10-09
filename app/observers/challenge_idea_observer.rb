@@ -14,12 +14,8 @@ class ChallengeIdeaObserver < ActiveRecord::Observer
     NotificationCenter.notify_via_email :rejected, :challenge_idea, record.id
   end
 
-  def after_update record
-    extra_fields = record.challenge.challenge_idea_fields.each_with_index.map{|f, i| "cfield#{i}" }
-    if (record.changed & (%w(name image_id description) + extra_fields)).any?
-      record.update_column :workflow_state, :new
-      expire_cache record
-    end
+  def after_mark_needs_approval record
+    expire_cache record
   end
 
   def after_destroy record
