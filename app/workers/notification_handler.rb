@@ -175,8 +175,8 @@ class NotificationHandler
       when :issue
         context[:model] = issue = context[:issue] = Issue.find(context_id)
         project = context[:project] = issue.threadable
-        context[:author] = issue.user
-        context[:users] = project.users
+        context[:author] = author = issue.user
+        context[:users] = project.users - [author]
       when :log_line
         context[:error] = LogLine.find(context_id)
       when :mass_announcement

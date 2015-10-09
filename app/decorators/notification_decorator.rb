@@ -113,7 +113,15 @@ class NotificationDecorator < ApplicationDecorator
         end
       end
     when Issue
-      ''  # TODO
+      issue = notifiable
+      project = issue.threadable
+      author_link = h.link_to issue.user.name, issue.user
+      project_link = h.link_to project.name, project
+      issue_link = h.link_to 'an issue', h.issue_path(project, issue)
+      case event
+      when :new
+        "#{author_link} posted #{issue_link} in #{project_link}."
+      end
     when Project, ExternalProject
       project = notifiable
       project_link = h.link_to project.name, project
