@@ -51,7 +51,7 @@ module TablelessAssociation
       end
 
       if opts[:order] and association_instance.first.try(:respond_to?, opts[:order])
-        association_instance = association_instance.sort_by{|v| v.send(opts[:order]) }
+        association_instance = association_instance.sort_by{|v| v.send(opts[:order]) || 0 }
       end
 
       instance_variable_set "@#{association_name}", association_instance
