@@ -7,6 +7,7 @@ class Image < BaseImage
     thumb: { w: 200, h: 150, fit: :max },
     part_thumb: { w: 48, h: 48, fit: :fill, bg: 'ffffff' },
     mini_thumb: { w: 48, h: 36, fit: :max },
+    tiny: { w: 20, h: 20, fit: :max },
   }
   mount_uploader :file, ImageUploader
 end

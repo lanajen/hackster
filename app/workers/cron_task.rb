@@ -160,11 +160,19 @@ class CronTask < BaseWorker
       project_ids = Project.self_hosted.where('projects.made_public_at > ? AND projects.made_public_at < ?', time_frame.ago, Time.now).approved.pluck(:id)
 
       users = []
+
+      # platform followers
       users += Platform.joins(:projects).distinct('groups.id').where(projects: { id: project_ids }).map{|t| t.followers.with_subscription(:email, 'new_projects').with_email_frequency(email_frequency).pluck(:id) }.flatten
+
+      # user followers
       users += User.joins(:projects).distinct('users.id').where(projects: { id: project_ids }).map{|u| u.followers.with_subscription(:email, 'new_projects').with_email_frequency(email_frequency).pluck(:id) }.flatten
 
+      # list followers
       lists = List.joins(:project_collections).where('project_collections.created_at > ?', time_frame.ago).where(groups: { type: 'List' }).distinct(:id)
       users += lists.map{|l| l.followers.with_subscription(:email, 'new_projects').with_email_frequency(email_frequency).pluck(:id) }.flatten
+
+      # part owners
+      users += Part.joins(:projects).distinct('parts.id').where.not(parts: { platform_id: nil }).where(projects: { id: project_ids }).map{|p| p.owners.with_subscription(:email, 'new_projects').with_email_frequency(email_frequency).pluck(:id) }.flatten
 
       users.uniq!
 

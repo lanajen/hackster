@@ -333,6 +333,14 @@ class NotificationHandler
         relations[list][project.id] = project
       end
 
+      # get projects newly made public by owned parts
+      part_projects = user.subscribed_to?(notification_type, 'new_projects') ? Project.select('projects.*, follow_relations.followable_id').self_hosted.joins(:parts).where('projects.made_public_at > ? AND projects.made_public_at < ?', time_frame.ago, Time.now).approved.joins("INNER JOIN follow_relations ON follow_relations.followable_id = parts.id AND follow_relations.followable_type = 'Part'").where.not(parts: { platform_id: nil }).where(follow_relations: { user_id: user.id }) : []
+      part_projects.each do |project|
+        part = Part.find(project.followable_id)
+        relations[part] = {} unless part.in? relations.keys
+        relations[part][project.id] = project
+      end
+
       # arrange projects so that we know how they're related to followables
       projects = {}
       relations.each do |followable, followed_projects|
