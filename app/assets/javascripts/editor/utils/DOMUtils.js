@@ -908,8 +908,14 @@ const Utils = {
           newEl = this.createVideo(mediaData);
           return newEl;
         } else if(el.attribs['data-type'] === 'file') {
+          /** Handle File */
           mediaData = this.getFileData(el);
-          newEl = this.createFile(mediaData);
+          /** If file has no id or url, remove it. */
+          if(!mediaData.url || !mediaData.id) {
+            newEl = null;
+          } else {
+            newEl = this.createFile(mediaData);
+          }
           return newEl;
         } else if(el.attribs['data-type'] === 'widget' && el.children && el.children[0].attribs.class.indexOf('old_code_widget') !== -1) {
           /** Handle Code Widget */
@@ -935,7 +941,7 @@ const Utils = {
           };
         }
       }
-    }).filter(item => { return item !== undefined; });;
+    }).filter(item => { return item !== null; });;
 
     return tree;
   },

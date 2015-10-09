@@ -122,9 +122,17 @@ const ContentEditable = React.createClass({
     }
 
     let { sel, range } = Utils.getSelectionData();
-    let offset = this.props.editor.setCursorToNextLine ? 0 : cursorPosition.offset;
-    let textNode = Utils.getLastTextNode(el);
+    let textNode, offset;
+    /** If Enter was pressed and we need to focus the next line, grab the first element at position 0. */
+    if(this.props.editor.setCursorToNextLine) {
+      textNode = Utils.getFirstTextNode(el);
+      offset = 0;
+    } else {
+      textNode = Utils.getLastTextNode(el);
+      offset = cursorPosition.offset;
+    }
 
+    /** Abort if something went wrong. */
     if(!textNode) {
       return;
     }
