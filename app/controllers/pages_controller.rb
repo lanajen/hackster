@@ -5,15 +5,6 @@ class PagesController < ApplicationController
   def about
     meta_desc 'What is Hackster.io?'
     title 'What is Hackster.io?'
-    # limit = 4
-    # @most_popular_projects = Project.indexable.magic_sort.limit 6
-
-    # @most_popular_projects = Project.indexable.most_popular.limit limit
-    # @last_projects = Project.indexable.last_public.limit limit
-    # @active_projects = Project.last_updated.limit 4
-    # @featured_projects = Project.featured.limit 4
-    # @wip_projects = Project.wip.limit 4
-    # @tools = Platform.where(user_name: %w(spark electricimp arduino raspberry-pi beagleboard teensy)).order(:full_name)
   end
 
   def achievements
@@ -102,7 +93,6 @@ class PagesController < ApplicationController
           @hackers = User.invitation_accepted_or_not_invited.user_name_set.where("users.id NOT IN (?)", current_user.followed_users.pluck(:id)).joins(:reputation).where("reputations.points > 5").order('RANDOM()').limit(6)
           @lists = List.where(user_name: featured_lists - current_user.followed_lists.pluck(:user_name))
           @platforms = Platform.public.where("groups.id NOT IN (?)", current_user.followed_platforms.pluck(:id)).minimum_followers.order('RANDOM()').limit(6)
-          # @targeted_suggested_platforms = current_user.suggested_platforms
         end
 
       else
@@ -122,7 +112,7 @@ class PagesController < ApplicationController
       @last_projects = Project.indexable.last_public.for_thumb_display.limit 12
       @platforms = Platform.public.minimum_followers_strict.order('RANDOM()').for_thumb_display.limit 12
       @lists = List.most_members.limit(6)
-      @challenges = Challenge.public.active.ends_first.limit(1)  # this should be 2 when MS challenge removed!
+      @challenges = Challenge.public.active.ends_first.limit(2)
 
       @typeahead_tags = Collection.public.order(:full_name).select{|p| p.projects_count >= 5 or p.followers_count >= 10 }.map do |p|
         { tag: p.name, projects: p.projects_count, url: url_for([p]) }
