@@ -9,7 +9,7 @@ class CronTask < BaseWorker
   end
 
   def add_missing_parts_to_user_toolbox id
-    return unless user = User.find_by_id id
+    return unless user = User.find_by_id(id)
 
     user.parts_missing_from_toolbox.each do |part|
       user.owned_parts << part
