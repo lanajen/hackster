@@ -712,7 +712,9 @@ class Project < ActiveRecord::Base
   end
 
   def product_tags_string_changed?
-    product_tags_string_was.split(',').map{|t| t.strip } != product_tags_string.split(',').map{|t| t.strip }
+    return if product_tags_string_was.nil? and product_tags_string.nil?
+
+    (product_tags_string_was.nil? and product_tags_string.present?) or (product_tags_string_was.split(',').map{|t| t.strip } != product_tags_string.split(',').map{|t| t.strip })
   end
 
   def to_js opts={}
