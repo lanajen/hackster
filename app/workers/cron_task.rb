@@ -2,6 +2,20 @@ class CronTask < BaseWorker
   # @queue = :low
   sidekiq_options queue: :cron, retry: 0
 
+  def add_missing_parts_to_users_toolbox
+    User.not_hackster.user_name_set.each do |user|
+      CronTask.perform_async 'add_missing_parts_to_user_toolbox', user.id
+    end
+  end
+
+  def add_missing_parts_to_user_toolbox id
+    return unless user = User.find_by_id id
+
+    user.parts_missing_from_toolbox.each do |part|
+      user.owned_parts << part
+    end
+  end
+
   def cleanup_duplicates
     ProjectCollection.select("id, count(id) as quantity").group(:project_id, :collectable_id, :collectable_type).having("count(id) > 1").size.each do |c, count|
       ProjectCollection.where(:project_id => c[0], :collectable_id => c[1], :collectable_type => c[2]).limit(count-1).each{|cp| cp.delete }
@@ -67,6 +81,7 @@ class CronTask < BaseWorker
     CronTask.perform_async 'send_challenge_reminder'
     ReputationWorker.perform_in 1.minute, 'compute_daily_reputation'
     PopularityWorker.perform_in 1.hour, 'compute_popularity'
+    CronTask.perform_in 1.5.hours, 'add_missing_parts_to_users_toolbox'
     CronTask.perform_in 2.hours, 'send_daily_notifications'
   end
 

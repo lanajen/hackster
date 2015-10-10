@@ -21,7 +21,7 @@ function resizeModal(id) {
     m.trigger('modal:open');
   });
 
-  var height = Math.max(-(p.height() / 2), -($(window).height() / 2 - 20));  // 20 for padding
+  var height = Math.max(-(p.outerHeight() / 2), -($(window).height() / 2 - 20));  // 20 for padding
   p.css('margin-top', height);
 }
 

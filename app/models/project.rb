@@ -327,7 +327,7 @@ class Project < ActiveRecord::Base
   end
 
   def self.live
-    where(private: false)
+    public
   end
 
   def self.last_7days
