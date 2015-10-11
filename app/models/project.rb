@@ -43,6 +43,7 @@ class Project < ActiveRecord::Base
     'Robots',
     'Security',
     'Smartwatches',
+    'Smart appliances',
     'Transportation',
     'Wardriving',
     'Wearables',

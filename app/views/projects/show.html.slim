@@ -333,10 +333,13 @@
                           = link_to 'Need to privately share?', edit_project_path(@project, anchor: 'publish'), class: 'alert-link'
 
                   - if @project.unlocked? or can? :edit_locked, @project
-                      = link_to 'Edit project and team', edit_project_path(@project), class: 'btn btn-default btn-block'
-                      .project-actions.text-center.tmg-10
-                        = link_to 'Project logs', project_logs_path(@project), class: 'btn btn-link btn-sm'
-                        = link_to 'Issue tracker', project_issues_path(@project), class: 'btn btn-link btn-sm'
+                    .btn-group.btn-block
+                      = link_to 'Edit project and team', edit_project_path(@project), class: 'btn btn-default'
+                      button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                        span class="caret"
+                      ul.dropdown-menu
+                        li= link_to 'Project logs', project_logs_path(@project)
+                        li= link_to 'Issue tracker', project_issues_path(@project)
                   - else
                     p This project is locked for editing.
 
